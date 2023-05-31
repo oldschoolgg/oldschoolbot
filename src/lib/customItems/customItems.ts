@@ -6645,3 +6645,17 @@ setCustomItem(
 	},
 	5_000_000
 );
+
+setCustomItem(
+	71_425,
+	'Message in a bottle',
+	'Coal',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	1_000_000
+);

@@ -1,4 +1,6 @@
-import { notEmpty, randInt, Time } from 'e';
+import { AttachmentBuilder } from 'discord.js';
+import { notEmpty, randArrItem, randInt, Time } from 'e';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -6,13 +8,33 @@ import { BitField } from '../../../lib/constants';
 import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { allDyes, dyedItems } from '../../../lib/dyedItems';
 import { gearImages } from '../../../lib/gear/functions/generateGearImage';
+import { makeScriptImage } from '../../../lib/scriptImages';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { flowerTable } from './hotColdCommand';
 
+const messageInABottleMessages = [
+	"We are but a week from finishing our journey, yet the seas have claimed my dearest and only friend, Felris, a noble pup. He was loyal and uplifting, and warmed the heart on a cold day. The tragedy of his loss echoes in the lonely crash of the waves, a vivid reminder of a journey he couldn't complete. Alone, I endure, with only his memory as my companion.",
+	`Dear Finder,
+
+
+Let me introduce you to Slippy, a crewmate whose snores are the stuff of legends. Once, in the dead calm of night, his thunderous snoring was mistaken for an approaching storm, causing a panic-induced sail reefing operation. In our world, it's not "Beware of the Kraken", it's "Beware of Slippy's snores".`,
+	`Crewmen,
+
+
+Tis the last time I will warn ye, if we would come upon he who we shall not name, man the ballista's, and remember... FSR.
+
+
+Focus.
+Shoot.
+Reload.
+
+~ Your Captain`
+];
+
 interface Usable {
 	items: Item[];
-	run: (user: MUser) => Promise<string>;
+	run: (user: MUser) => CommandResponse | Awaited<CommandResponse>;
 }
 export const usables: Usable[] = [];
 
@@ -102,7 +124,7 @@ const genericUsables: {
 	items: [Item, Item] | [Item];
 	cost: Bank;
 	loot: Bank | (() => Bank) | null;
-	response: (loot: Bank) => string;
+	response: (loot: Bank) => CommandResponse | Awaited<CommandResponse>;
 	addToCL?: boolean;
 }[] = [
 	{
@@ -167,6 +189,19 @@ const genericUsables: {
 		response: () =>
 			'You pour the Gloom and doom potion on the Broomstick... it transforms into an evil.. deathly broom with a scythe on one end and a skull handle!',
 		addToCL: true
+	},
+	{
+		items: [getOSItem('Message in a bottle')],
+		cost: new Bank().add('Message in a bottle'),
+		loot: null,
+		response: async () => ({
+			content: 'You open the bottle, reading the scroll inside, and then return it to the ocean...',
+			files: [
+				new AttachmentBuilder(await makeScriptImage(randArrItem(messageInABottleMessages)), {
+					name: 'image.png'
+				})
+			]
+		})
 	}
 ];
 usables.push({

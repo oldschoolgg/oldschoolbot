@@ -266,6 +266,20 @@ const tripFinishEffects: TripFinishEffect[] = [
 				}
 			}
 		}
+	},
+	{
+		name: 'Message in a Bottle',
+		fn: async ({ data, messages, user }) => {
+			const underwaterTrips: activity_type_enum[] = [
+				activity_type_enum.UnderwaterAgilityThieving,
+				activity_type_enum.DepthsOfAtlantis
+			];
+			if (!underwaterTrips.includes(data.type)) return;
+			if (!roll(500)) return;
+			messages.push('You found a message in a bottle!');
+			const bottleLoot = new Bank().add('Message in a bottle');
+			await user.addItemsToBank({ items: bottleLoot, collectionLog: true });
+		}
 	}
 ];
 
