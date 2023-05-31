@@ -192,7 +192,7 @@ AND data->>'runeID' IS NOT NULL;`;
 
 			const notDoneRandomEvents = RandomEvents.filter(i => !eventBank[i.id]).map(i => i.name);
 
-			if (notDoneRandomEvents) {
+			if (notDoneRandomEvents.length > 0) {
 				results.push({
 					reason: `You need to do these random events at least once: ${notDoneRandomEvents.join(', ')}.`
 				});
