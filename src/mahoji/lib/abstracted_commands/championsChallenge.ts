@@ -7,6 +7,10 @@ import { randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export async function championsChallengeCommand(user: MUser, channelID: string) {
+	if (user.minionIsBusy) {
+		return 'Your minion is busy.';
+	}
+
 	const { bank } = user;
 	if (!bank.has(championScrolls)) {
 		return "You don't have a set of Champion Scrolls to do the Champion's Challenge! You need 1 of each.";
