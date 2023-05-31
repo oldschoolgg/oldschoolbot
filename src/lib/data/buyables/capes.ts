@@ -47,7 +47,7 @@ export const capeBuyables: Buyable[] = [
 		customReq: async user => {
 			const meetsReqs = await musicCapeRequirements.check(user);
 			if (!meetsReqs.hasAll) {
-				return [false, `You don't meet the requirements to buy this: ${meetsReqs.reasonsDoesnt.join('\n - ')}`];
+				return [false, `You don't meet the requirements to buy this: \n${meetsReqs.rendered}`];
 			}
 			return [true];
 		}
@@ -61,7 +61,7 @@ export const capeBuyables: Buyable[] = [
 		customReq: async user => {
 			const meetsReqs = await musicCapeRequirements.check(user);
 			if (!meetsReqs.hasAll) {
-				return [false, `You don't meet the requirements to buy this: ${meetsReqs.reasonsDoesnt.join('\n - ')}`];
+				return [false, `You don't meet the requirements to buy this: \n${meetsReqs.rendered}`];
 			}
 			if (user.QP < MAX_QP) {
 				return [false, "You can't buy this because you haven't completed all the quests!"];

@@ -1,5 +1,5 @@
 import { activity_type_enum } from '@prisma/client';
-import { objectEntries } from 'e';
+import { objectEntries, partition } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
@@ -8,7 +8,7 @@ import { RandomEvents } from './randomEvents';
 import { MinigameName, Minigames } from './settings/minigames';
 import { getUsersActivityCounts, prisma } from './settings/prisma';
 import Runecraft from './skilling/skills/runecraft';
-import { Requirements } from './structures/Requirements';
+import { RequirementFailure, Requirements } from './structures/Requirements';
 import { ItemBank } from './types';
 
 export const musicCapeRequirements = new Requirements()
@@ -21,12 +21,13 @@ export const musicCapeRequirements = new Requirements()
 				}
 			});
 			if (count >= 20) {
-				return { doesHave: true, reason: null };
+				return [];
 			}
-			return {
-				doesHave: false,
-				reason: 'You need to complete 20 slayer tasks'
-			};
+			return [
+				{
+					reason: 'You need to complete 20 slayer tasks'
+				}
+			];
 		}
 	})
 	.add({
@@ -112,13 +113,18 @@ WHERE user_id = ${BigInt(user.id)}
 AND type = 'Runecraft'
 AND data->>'runeID' IS NOT NULL;`;
 
-			for (const rune of Runecraft.Runes) {
-				if (!counts.some(c => c.rune_id === rune.id.toString())) {
-					return { doesHave: false, reason: `You need to runecraft ${rune.name} at least once` };
-				}
+			const notDoneRunes = Runecraft.Runes.filter(i => !counts.some(c => c.rune_id === i.id.toString()))
+				.map(i => i.name)
+				.map(s => s.split(' ')[0]);
+			if (notDoneRunes.length > 0) {
+				return [
+					{
+						reason: `You need to Runecraft these runes at least once: ${notDoneRunes.join(', ')}.`
+					}
+				];
 			}
 
-			return { doesHave: true, reason: null };
+			return [];
 		}
 	})
 	.add({
@@ -133,20 +139,30 @@ AND data->>'runeID' IS NOT NULL;`;
 			];
 			const activityCounts = await getUsersActivityCounts(user);
 
-			for (const type of Object.values(activity_type_enum)) {
-				if (typesNotRequiredForMusicCape.includes(type)) continue;
-				const count = activityCounts[type];
-				if (count < 1) {
-					return { doesHave: false, reason: `You need to do ${type} at least once` };
-				}
+			const notDoneActivities = Object.values(activity_type_enum).filter(
+				type => !typesNotRequiredForMusicCape.includes(type) && activityCounts[type] < 1
+			);
+
+			const [firstLot, secondLot] = partition(notDoneActivities, i => notDoneActivities.indexOf(i) < 5);
+
+			if (notDoneActivities.length > 0) {
+				return [
+					{
+						doesHave: false,
+						reason: `You need to do one of EVERY activity, you haven't done... ${firstLot.join(
+							', '
+						)}, and ${secondLot.length} others.`
+					}
+				];
 			}
 
-			return { doesHave: true, reason: null };
+			return [];
 		}
 	})
 	.add({
 		name: 'One of Every Minigame',
 		has: async ({ user }) => {
+			const results: RequirementFailure[] = [];
 			const typesNotRequiredForMusicCape: MinigameName[] = [
 				'corrupted_gauntlet',
 				'raids_challenge_mode',
@@ -155,32 +171,33 @@ AND data->>'runeID' IS NOT NULL;`;
 			];
 
 			const minigameScores = await user.fetchMinigames();
+			const minigamesNotDone = Minigames.filter(
+				i => !typesNotRequiredForMusicCape.includes(i.column) && minigameScores[i.column] < 1
+			).map(i => i.name);
 
-			for (const game of Minigames) {
-				if (typesNotRequiredForMusicCape.includes(game.column)) continue;
-				const score = minigameScores[game.column];
-				if (score < 1) {
-					return { doesHave: false, reason: `You need to do the '${game.name}' minigame at least once` };
-				}
+			if (minigamesNotDone.length > 0) {
+				results.push({
+					reason: `You need to do these minigames at least once: ${minigamesNotDone.join(', ')}.`
+				});
 			}
 
-			return { doesHave: true, reason: null };
+			return results;
 		}
 	})
 	.add({
 		name: 'One of Every Random Event',
 		has: async ({ userStats }) => {
+			const results: RequirementFailure[] = [];
 			const eventBank = userStats.random_event_completions_bank as ItemBank;
-			for (const event of RandomEvents) {
-				if (!eventBank[event.id]) {
-					return {
-						doesHave: false,
-						reason: `You need to do the '${event.name}' random event at least once`
-					};
-				}
-			}
 
-			return { doesHave: true, reason: null };
+			const notDoneRandomEvents = RandomEvents.filter(i => !eventBank[i.id]).map(i => i.name);
+
+			if (notDoneRandomEvents) {
+				results.push({
+					reason: `You need to do these random events at least once: ${notDoneRandomEvents.join(', ')}.`
+				});
+			}
+			return results;
 		}
 	})
 	.add({
@@ -190,21 +207,23 @@ AND data->>'runeID' IS NOT NULL;`;
 			for (const [key, value] of objectEntries(poh)) {
 				if (['user_id', 'background_id'].includes(key)) continue;
 				if (value !== null) {
-					return { doesHave: true, reason: null };
+					return [];
 				}
 			}
-			return { doesHave: false, reason: 'You need to build something in your POH' };
+			return [{ doesHave: false, reason: 'You need to build something in your POH' }];
 		}
 	})
 	.add({
 		name: 'Must have atleast 25% in each house favour',
 		has: async ({ user }) => {
+			const results: RequirementFailure[] = [];
 			const favour = user.kourendFavour;
-			for (const [key, value] of Object.entries(favour)) {
-				if (value < 25) {
-					return { doesHave: false, reason: `You need atleast 25% in ${key} favour` };
-				}
+
+			const notDoneFavours = Object.entries(favour).filter(([_, value]) => value < 25);
+
+			if (notDoneFavours.length > 0) {
+				results.push({ reason: `You need atleast 25% favour in ${notDoneFavours.map(i => i[0]).join(', ')}.` });
 			}
-			return { doesHave: true, reason: null };
+			return results;
 		}
 	});

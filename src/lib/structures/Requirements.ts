@@ -1,26 +1,20 @@
 import { UserStats } from '@prisma/client';
+import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { prisma } from '../settings/prisma';
 import Agility from '../skilling/skills/agility';
 import { ItemBank, Skills } from '../types';
-import { formatSkillRequirements, skillsMeetRequirements } from '../util';
 
-type RequirementResult =
-	| {
-			doesHave: true;
-			reason: null;
-	  }
-	| {
-			doesHave: false;
-			reason: string;
-	  };
+export interface RequirementFailure {
+	reason: string;
+}
 
 type ManualHasFunction = (args: {
 	user: MUser;
 	userStats: UserStats;
-}) => Promise<RequirementResult> | RequirementResult;
+}) => Promise<RequirementFailure[]> | RequirementFailure[];
 
 type Requirement =
 	| ({
@@ -45,50 +39,56 @@ export class Requirements {
 		requirement: Requirement,
 		user: MUser,
 		userStats: UserStats
-	): Promise<RequirementResult> {
+	): Promise<RequirementFailure[]> {
+		const results: RequirementFailure[] = [];
+
 		if ('has' in requirement) {
-			const has = await requirement.has({ user, userStats });
-			if (!has.doesHave) return has;
+			results.push(...(await requirement.has({ user, userStats })));
 		}
 
 		if ('skillRequirements' in requirement) {
-			if (!skillsMeetRequirements(user.skillsAsXP, requirement.skillRequirements)) {
-				return {
-					doesHave: false,
-					reason: `You need ${formatSkillRequirements(requirement.skillRequirements)}.`
-				};
+			const insufficientLevels = [];
+			for (const [skillName, level] of objectEntries(requirement.skillRequirements)) {
+				if (user.skillsAsLevels[skillName] < level!) {
+					insufficientLevels.push(`${level} ${skillName}`);
+				}
+			}
+			if (insufficientLevels) {
+				results.push({
+					reason: `You need these stats: ${insufficientLevels.join(', ')}.`
+				});
 			}
 		}
 
 		if ('clRequirement' in requirement) {
 			if (!user.cl.has(requirement.clRequirement)) {
 				const missingItems = requirement.clRequirement.clone().remove(user.cl);
-				return {
-					doesHave: false,
+				results.push({
 					reason: `You need ${missingItems} in your CL.`
-				};
+				});
 			}
 		}
 
 		if ('kcRequirement' in requirement) {
 			const kcs = userStats.monster_scores as ItemBank;
-
+			const missingMonsterNames = [];
 			for (const [id, amount] of Object.entries(requirement.kcRequirement)) {
 				if (!kcs[id] || kcs[id] < amount) {
-					return {
-						doesHave: false,
-						reason: `You need ${amount}x ${effectiveMonsters.find(m => m.id === parseInt(id))!.name} KC.`
-					};
+					missingMonsterNames.push(`${amount}x ${effectiveMonsters.find(m => m.id === parseInt(id))!.name}`);
 				}
+			}
+			if (missingMonsterNames.length > 0) {
+				results.push({
+					reason: `You need the following KC's: ${missingMonsterNames.join(', ')}.`
+				});
 			}
 		}
 
 		if ('qpRequirement' in requirement) {
 			if (user.QP < requirement.qpRequirement) {
-				return {
-					doesHave: false,
+				results.push({
 					reason: `You need ${requirement.qpRequirement} QP.`
-				};
+				});
 			}
 		}
 
@@ -96,12 +96,11 @@ export class Requirements {
 			const laps = userStats.laps_scores as ItemBank;
 			for (const [id, amount] of Object.entries(requirement.lapsRequirement)) {
 				if (!laps[id] || laps[id] < amount) {
-					return {
-						doesHave: false,
+					results.push({
 						reason: `You need ${amount}x laps in the ${
 							Agility.Courses.find(i => i.id.toString() === id)!.name
 						} KC.`
-					};
+					});
 				}
 			}
 		}
@@ -109,17 +108,13 @@ export class Requirements {
 		if ('sacrificedItemsRequirement' in requirement) {
 			const sacBank = new Bank().add(userStats.sacrificed_bank as ItemBank);
 			if (!sacBank.has(requirement.sacrificedItemsRequirement)) {
-				return {
-					doesHave: false,
+				results.push({
 					reason: `You need to have sacrificed these items: ${requirement.sacrificedItemsRequirement}.`
-				};
+				});
 			}
 		}
 
-		return {
-			doesHave: true,
-			reason: null
-		};
+		return results;
 	}
 
 	async check(user: MUser) {
@@ -138,11 +133,12 @@ export class Requirements {
 			requirementResults.push(this.checkSingleRequirement(requirement, user, userStats));
 		}
 
-		const results = await Promise.all(requirementResults);
+		const results = (await Promise.all(requirementResults)).flat();
 
 		return {
-			hasAll: results.every(i => i.doesHave),
-			reasonsDoesnt: results.filter(i => !i.doesHave).map(i => i.reason!)
+			hasAll: results.length === 0,
+			reasonsDoesnt: results.map(i => i.reason),
+			rendered: `- ${results.map(i => i.reason).join('\n- ')}`
 		};
 	}
 }
