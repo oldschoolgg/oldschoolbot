@@ -217,27 +217,27 @@ export const raidCommand: OSBMahojiCommand = {
 					name: 'help',
 					description: 'Shows helpful information and stats about DOA.'
 				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'simulate',
-					description: 'Shows helpful information and stats about DOA.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.Boolean,
-							name: 'challenge_mode',
-							description: 'Try if you dare.',
-							required: false
-						},
-						{
-							type: ApplicationCommandOptionType.Integer,
-							name: 'team_size',
-							description: 'Team size (1-5).',
-							required: false,
-							min_value: 1,
-							max_value: 5
-						}
-					]
-				},
+				// {
+				// 	type: ApplicationCommandOptionType.Subcommand,
+				// 	name: 'simulate',
+				// 	description: 'Shows helpful information and stats about DOA.',
+				// 	options: [
+				// 		{
+				// 			type: ApplicationCommandOptionType.Boolean,
+				// 			name: 'challenge_mode',
+				// 			description: 'Try if you dare.',
+				// 			required: false
+				// 		},
+				// 		{
+				// 			type: ApplicationCommandOptionType.Integer,
+				// 			name: 'team_size',
+				// 			description: 'Team size (1-5).',
+				// 			required: false,
+				// 			min_value: 1,
+				// 			max_value: 5
+				// 		}
+				// 	]
+				// },
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'reset',
