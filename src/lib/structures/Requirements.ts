@@ -99,7 +99,7 @@ export class Requirements {
 					results.push({
 						reason: `You need ${amount}x laps in the ${
 							Agility.Courses.find(i => i.id.toString() === id)!.name
-						} KC.`
+						} agility course.`
 					});
 				}
 			}

@@ -98,7 +98,6 @@ export const musicCapeRequirements = new Requirements()
 		clRequirement: new Bank().add('Saradomin cape')
 	})
 	.add({
-		name: 'Agility Pyramid',
 		lapsRequirement: {
 			14: 1,
 			8: 1
