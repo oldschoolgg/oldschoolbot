@@ -3,7 +3,8 @@ import { randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { Events, globalDroprates, MAX_LEVEL, PeakTier } from '../../../lib/constants';
+import { Events, MAX_LEVEL, PeakTier } from '../../../lib/constants';
+import { globalDroprates } from '../../../lib/data/globalDroprates';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../../lib/lootTrack';
 import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';

@@ -1,7 +1,8 @@
 import { randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, globalDroprates, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { globalDroprates } from '../../lib/data/globalDroprates';
 import { InventionID } from '../../lib/invention/inventions';
 import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';

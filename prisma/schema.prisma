@@ -171,6 +171,8 @@ model ClientStorage {
   bb_loot                 Json   @default("{}") @db.Json
   moktang_cost            Json   @default("{}") @db.Json
   moktang_loot            Json   @default("{}") @db.Json
+  doa_cost                Json   @default("{}") @db.Json
+  doa_loot                Json   @default("{}") @db.Json
 
   lottery_is_active Boolean @default(false)
 
@@ -503,6 +505,7 @@ enum XpGainSource {
   UnderwaterAgilityThieving
   ChambersOfXeric
   TheatreOfBlood
+  DepthsOfAtlantis
 }
 
 model XPGain {
@@ -591,6 +594,8 @@ model Minigame {
   stealing_creation        Int @default(0)
   tinkering_workshop       Int @default(0)
   balthazars_big_bonanza   Int @default(0)
+  depths_of_atlantis       Int @default(0)
+  depths_of_atlantis_cm    Int @default(0)
 
   new_user NewUser?
 
@@ -882,6 +887,12 @@ model UserStats {
 
   main_server_challenges_won Int @default(0)
 
+  doa_attempts             Int  @default(0)
+  doa_cost                 Json @default("{}")
+  doa_loot                 Json @default("{}")
+  doa_room_attempts_bank   Json @default("{}") @db.Json
+  doa_total_minutes_raided Int  @default(0)
+
   @@map("user_stats")
 }
 
@@ -1080,6 +1091,7 @@ enum activity_type_enum {
   TombsOfAmascut
   BalthazarsBigBonanza
   UnderwaterAgilityThieving
+  DepthsOfAtlantis
 }
 
 enum xp_gains_skill_enum {

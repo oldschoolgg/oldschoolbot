@@ -165,7 +165,7 @@ const source: [string, (string | number)[]][] = [
 	['Fire cape', ['Fire max cape', 'Fire max cape (l)']],
 	['Infernal cape', ['Infernal max cape', 'Infernal max cape (l)', 'TzKal cape']],
 	['Ardougne cloak 4', ['Ardougne max cape']],
-	["Ava's accumulator", ['Accumulator max cape']],
+	["Ava's accumulator", ['Accumulator max cape', 'Tidal collector']],
 	['Mythical cape', ['Mythical max cape']],
 	['Achievement diary cape', ['Achievement diary cape(t)']],
 	[
@@ -285,7 +285,8 @@ const source: [string, (string | number)[]][] = [
 			'Ranged master cape',
 			'Assembler max cape (l)',
 			'Masori assembler',
-			'Masori assembler max cape'
+			'Masori assembler max cape',
+			'Tidal collector'
 		]
 	],
 	['Crafting master cape', ["Artisan's cape"]],
@@ -311,7 +312,7 @@ const source: [string, (string | number)[]][] = [
 	['Pernix chaps', ['Gorajan archer legs']],
 	['Pernix gloves', ['Gorajan archer gloves']],
 	['Pernix boots', ['Gorajan archer boots']],
-	['Abyssal cape', ['Vasa cloak', 'TzKal cape']],
+	['Abyssal cape', ['Vasa cloak', 'TzKal cape', 'Tidal collector']],
 	['Ivandis flail', ['Blisterwood flail']],
 	['Angler hat', ['Spirit angler headband', 'Fishing hat']],
 	['Angler top', ['Spirit angler top', 'Fishing jacket']],
@@ -400,6 +401,8 @@ const source: [string, (string | number)[]][] = [
 	['Rune pouch', ['Divine rune pouch']],
 	['Ghrazi rapier', ['Holy ghrazi rapier']],
 	["Inventors' backpack", ['Invention master cape']],
+	['Ignis ring', ['Ignis ring (i)']],
+	['Ring of piercing', ['Ring of piercing (i)']],
 	// Inventions
 	['Inferno adze', ['Superior inferno adze']],
 	['Gorajan bonecrusher', ['Superior bonecrusher']],

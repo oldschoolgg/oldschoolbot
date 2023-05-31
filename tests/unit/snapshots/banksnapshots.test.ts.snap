@@ -6766,6 +6766,56 @@ exports[`BSO Buyables 1`] = `
     "outputItems": undefined,
   },
   {
+    "customReq": [Function],
+    "gpCost": 1000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Oceanic shroud (tier 1)",
+    "outputItems": undefined,
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 2500,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Oceanic shroud (tier 2)",
+    "outputItems": undefined,
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 5000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Oceanic shroud (tier 3)",
+    "outputItems": undefined,
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 7500,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Oceanic shroud (tier 4)",
+    "outputItems": undefined,
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 10000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Oceanic shroud (tier 5)",
+    "outputItems": undefined,
+  },
+  {
     "gpCost": 1320,
     "itemCost": Bank {
       "bank": {},
@@ -20164,6 +20214,40 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "48322": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "TzKal cape (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70464": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "48322": 1,
+        "52672": 1,
+      },
+      "frozen": false,
+    },
+    "name": "TzKal cape (Volcanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70463": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "40033": 1,
         "48254": 1,
       },
@@ -20173,6 +20257,23 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "41100": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "40033": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gorajan warrior helmet (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70448": 1,
       },
       "frozen": false,
     },
@@ -20198,6 +20299,23 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "40034": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gorajan warrior top (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70449": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "40035": 1,
         "48254": 1,
       },
@@ -20207,6 +20325,23 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "41102": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "40035": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gorajan warrior legs (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70450": 1,
       },
       "frozen": false,
     },
@@ -20232,6 +20367,23 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "40036": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gorajan warrior gloves (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70451": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "40037": 1,
         "48254": 1,
       },
@@ -20241,6 +20393,23 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "41104": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "40037": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gorajan warrior boots (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70452": 1,
       },
       "frozen": false,
     },
@@ -20266,6 +20435,23 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "40042": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gorajan occult helmet (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70453": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "40043": 1,
         "48254": 1,
       },
@@ -20275,6 +20461,23 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "40106": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "40043": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gorajan occult top (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70454": 1,
       },
       "frozen": false,
     },
@@ -20300,6 +20503,23 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "40044": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gorajan occult legs (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70455": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "40045": 1,
         "48254": 1,
       },
@@ -20309,6 +20529,23 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "40108": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "40045": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gorajan occult gloves (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70456": 1,
       },
       "frozen": false,
     },
@@ -20334,6 +20571,23 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "40046": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gorajan occult boots (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70457": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "40047": 1,
         "48254": 1,
       },
@@ -20343,6 +20597,23 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "40110": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "40047": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gorajan archer helmet (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70458": 1,
       },
       "frozen": false,
     },
@@ -20368,6 +20639,23 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "40048": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gorajan archer top (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70459": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "40049": 1,
         "48254": 1,
       },
@@ -20377,6 +20665,23 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "40112": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "40049": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gorajan archer legs (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70460": 1,
       },
       "frozen": false,
     },
@@ -20402,6 +20707,23 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "40050": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gorajan archer gloves (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70461": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "40051": 1,
         "48254": 1,
       },
@@ -20411,6 +20733,23 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "40114": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "40051": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gorajan archer boots (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "70462": 1,
       },
       "frozen": false,
     },
@@ -21553,6 +21892,54 @@ exports[`BSO Creatables 1`] = `
   {
     "cantHaveItems": undefined,
     "inputItems": Bank {
+      "bank": {
+        "27226": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert masori mask",
+    "outputItems": Bank {
+      "bank": {
+        "70447": 2,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "27229": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert masori body",
+    "outputItems": Bank {
+      "bank": {
+        "70447": 4,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "27232": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert masori chaps",
+    "outputItems": Bank {
+      "bank": {
+        "70447": 3,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
       "bank": {},
       "frozen": false,
     },
@@ -22111,6 +22498,165 @@ exports[`BSO Creatables 1`] = `
     "requiredSlayerUnlocks": [
       54,
     ],
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "19481": 1,
+        "19610": 3,
+      },
+      "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "flexible": 5000,
+        "heavy": 5000,
+        "powerful": 5000,
+      },
+    },
+    "name": "Titan ballista",
+    "outputItems": Bank {
+      "bank": {
+        "70422": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "fletching": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "21649": 2,
+        "48208": 3,
+      },
+      "frozen": false,
+    },
+    "name": "Piercing trident",
+    "outputItems": Bank {
+      "bank": {
+        "70421": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 99,
+      "smithing": 99,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "70420": 1,
+        "70421": 1,
+      },
+      "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "magic": 5000,
+        "powerful": 1000,
+        "precious": 1000,
+        "swift": 1000,
+        "treasured": 5000,
+      },
+    },
+    "name": "Atlantean trident",
+    "outputItems": Bank {
+      "bank": {
+        "70431": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "magic": 105,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "70426": 5,
+      },
+      "frozen": false,
+    },
+    "name": "Shark tooth necklace",
+    "outputItems": Bank {
+      "bank": {
+        "70427": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "magic": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "51016": 3,
+        "6733": 10,
+        "70425": 1,
+        "70447": 6,
+      },
+      "frozen": false,
+    },
+    "name": "Ring of piercing",
+    "outputItems": Bank {
+      "bank": {
+        "70429": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 110,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50023": 1,
+        "70429": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Ring of piercing (i)",
+    "outputItems": Bank {
+      "bank": {
+        "70430": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "24214": 1,
+        "27374": 1,
+        "51016": 10,
+        "70428": 1,
+        "70447": 10,
+      },
+      "frozen": false,
+    },
+    "name": "Tidal collector",
+    "outputItems": Bank {
+      "bank": {
+        "70432": 1,
+      },
+      "frozen": false,
+    },
   },
   {
     "cantHaveItems": undefined,

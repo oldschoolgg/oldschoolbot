@@ -91,6 +91,7 @@ import {
 	demonicGorillaCL,
 	diariesCL,
 	discontinuedCustomPetsCL,
+	doaCL,
 	expertCapesCL,
 	fightCavesCL,
 	fishingContestCL,
@@ -594,6 +595,20 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: ({ minigames }) => {
 					return [`${minigames.tombs_of_amascut} KC`];
+				}
+			},
+			'Depths of Atlantis': {
+				alias: ['doa'],
+				kcActivity: {
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'depths_of_atlantis')!.score,
+					'Challenge Mode': async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'depths_of_atlantis_cm')!.score
+				},
+				items: doaCL,
+				isActivity: true,
+				fmtProg: ({ minigames }) => {
+					return [`${minigames.depths_of_atlantis} KC`, `${minigames.depths_of_atlantis_cm} CM KC`];
 				}
 			},
 			'Tormented Demons': {

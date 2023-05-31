@@ -138,6 +138,11 @@ export const fishCommand: OSBMahojiCommand = {
 				break;
 		}
 
+		if (user.hasEquipped('Shark tooth necklace')) {
+			scaledTimePerFish = reduceNumByPercent(scaledTimePerFish, 5);
+			boosts.push('5% for Shark tooth necklace');
+		}
+
 		if (fish.id === itemID('Minnow')) {
 			scaledTimePerFish *= Math.max(
 				0.83,

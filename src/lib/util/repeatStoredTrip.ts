@@ -28,6 +28,7 @@ import type {
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
 	DarkAltarOptions,
+	DOAOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
@@ -739,6 +740,18 @@ export const tripHandlers = {
 		args: (data: ActivityTaskOptionsWithQuantity) => ({
 			underwater: {
 				drift_net_fishing: { minutes: Math.floor(data.duration / Time.Minute) }
+			}
+		})
+	},
+	[activity_type_enum.DepthsOfAtlantis]: {
+		commandName: 'raid',
+		args: (data: DOAOptions) => ({
+			doa: {
+				start: {
+					challenge_mode: data.cm,
+					solo: data.users.length === 1 ? true : undefined,
+					quantity: data.quantity
+				}
 			}
 		})
 	}

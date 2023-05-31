@@ -19,6 +19,7 @@ import {
 } from '../../lib/data/CollectionsExport';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
+import { maxMage, maxMelee, maxRange } from '../../lib/depthsOfAtlantis';
 import { dyedItems } from '../../lib/dyedItems';
 import { materialTypes } from '../../lib/invention';
 import { DisassemblySourceGroups } from '../../lib/invention/groups';
@@ -162,6 +163,31 @@ const thingsToReset = [
 		run: async (user: MUser) => {
 			await user.update({ bank: {} });
 			return 'Reset your bank.';
+		}
+	},
+	{
+		name: 'DOA',
+		run: async (user: MUser) => {
+			await userStatsUpdate(user.id, {
+				doa_attempts: 0,
+				doa_cost: {},
+				doa_loot: {},
+				doa_room_attempts_bank: {},
+				doa_total_minutes_raided: 0
+			});
+
+			await user.update({ collectionLogBank: {} });
+
+			await prisma.minigame.update({
+				where: {
+					user_id: user.id
+				},
+				data: {
+					depths_of_atlantis: 0,
+					depths_of_atlantis_cm: 0
+				}
+			});
+			return 'Reset your CL, doa attempts, cost, loot, kc and total time raided.';
 		}
 	}
 ];
@@ -314,6 +340,20 @@ const nexSupplies = new Bank()
 	.add('Saradomin brew(4)', 100)
 	.add('Super restore(4)', 100)
 	.add('Ranging potion(4)', 100);
+
+const doaSupplies = new Bank()
+	.add('Sanguinesti staff', 1)
+	.add('Blood rune', 500_000_000)
+	.add('Rune pouch')
+	.add('Saradomin brew(4)', 100_000)
+	.add('Super restore(4)', 100_000)
+	.add('Super combat potion(4)', 100_000)
+	.add('Ranging potion(4)', 100_000)
+	.add('Magic potion(4)', 100_000)
+	.add('Enhanced stamina potion', 100_000)
+	.add('Sanfew serum(4)', 100_000)
+	.add('Javelin shaft', 100_000)
+	.add('Obsidian shards', 100_000);
 
 const thingsToWipe = ['bank', 'materials'] as const;
 
@@ -507,7 +547,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'nexhax',
+					name: 'doahax',
 					description: 'Gives you everything needed for Nex.'
 				},
 				{
@@ -614,7 +654,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					materials?: boolean;
 					inventionmax?: boolean;
 				};
-				nexhax?: {};
+				doahax?: {};
 				badnexgear?: {};
 				naxxus?: {};
 				setmonsterkc?: { monster: string; kc: string };
@@ -826,31 +866,26 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					});
 					return 'Gave you gear & supplies for Naxxus';
 				}
-				if (options.nexhax) {
-					const gear = new Gear({
-						[EquipmentSlot.Weapon]: 'Zaryte crossbow',
-						[EquipmentSlot.Shield]: 'Elysian spirit shield',
-						[EquipmentSlot.Ammo]: 'Ruby dragon bolts(e)',
-						[EquipmentSlot.Body]: 'Armadyl chestplate',
-						[EquipmentSlot.Legs]: 'Armadyl chainskirt',
-						[EquipmentSlot.Feet]: 'Pegasian boots',
-						[EquipmentSlot.Cape]: "Ava's assembler",
-						[EquipmentSlot.Neck]: 'Necklace of anguish',
-						[EquipmentSlot.Hands]: 'Zaryte vambraces',
-						[EquipmentSlot.Head]: 'Armadyl helmet',
-						[EquipmentSlot.Ring]: 'Archers ring (i)'
-					});
-					gear.ammo!.quantity = 1_000_000;
+				if (options.doahax) {
 					await user.update({
-						gear_range: gear.raw() as Prisma.InputJsonObject,
-						skills_ranged: convertLVLtoXP(99),
-						skills_prayer: convertLVLtoXP(99),
-						skills_hitpoints: convertLVLtoXP(99),
-						skills_defence: convertLVLtoXP(99),
-						bank: user.bank.clone().add(nexSupplies).bank,
-						GP: user.GP + 10_000_000
+						gear_range: maxRange.raw() as any,
+						gear_mage: maxMage.raw() as any,
+						gear_melee: maxMelee.raw() as any,
+						skills_ranged: 1_000_000_000,
+						skills_prayer: 1_000_000_000,
+						skills_hitpoints: 1_000_000_000,
+						skills_defence: 1_000_000_000,
+						skills_fishing: 1_000_000_000,
+						skills_agility: 1_000_000_000,
+						skills_attack: 1_000_000_000,
+						skills_strength: 1_000_000_000,
+						skills_magic: 1_000_000_000,
+						bank: user.bank.clone().add(doaSupplies).bank,
+						GP: 1_000_000_000,
+						void_staff_charges: 100_000
 					});
-					return 'Gave you range gear, gp, gear and stats for nex.';
+
+					return 'Got you ready for DOA!';
 				}
 				if (options.badnexgear) {
 					const gear = new Gear({

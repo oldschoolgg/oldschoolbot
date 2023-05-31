@@ -1493,6 +1493,23 @@ export const pestControlCL = resolveItems([
 	'Elite void top',
 	'Elite void robe'
 ]);
+export const doaMetamorphPets = resolveItems(['Bruce', 'Pearl', 'Bluey']);
+export const allDOAPets = resolveItems([...doaMetamorphPets, 'Crush']);
+
+export const doaCL = resolveItems([
+	'Shark jaw',
+	'Shark tooth',
+	'Oceanic relic',
+	'Aquifer aegis',
+	'Oceanic dye',
+	'Crush',
+	...doaMetamorphPets,
+	'Oceanic shroud (tier 1)',
+	'Oceanic shroud (tier 2)',
+	'Oceanic shroud (tier 3)',
+	'Oceanic shroud (tier 4)',
+	'Oceanic shroud (tier 5)'
+]);
 
 export const roguesDenOutfit = resolveItems([
 	'Rogue mask',
@@ -2282,7 +2299,8 @@ export const customPetsCL = resolveItems([
 	'Brain lee',
 	'Balloon cat',
 	'Baby yaga house',
-	'Gary'
+	'Gary',
+	'Crush'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([
@@ -2496,7 +2514,8 @@ export const allPetIDs = [
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
 	...resolveItems(['Little parasite', 'Dark squirrel', 'Black swan', 'Abyssal protector']),
 	...metamorphPets,
-	...toaMetamorphPets
+	...toaMetamorphPets,
+	...allDOAPets
 ];
 
 export const antiSantaOutfit = new Bank({

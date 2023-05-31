@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import { globalDroprates, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { globalDroprates } from '../../lib/data/globalDroprates';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';

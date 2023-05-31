@@ -371,6 +371,19 @@ export interface TOAOptions extends ActivityTaskOptionsWithUsers {
 	quantity: number;
 }
 
+export interface DOAStoredRaid {
+	wipedRoom: number | null;
+	users: { deaths: number[] }[];
+}
+
+export interface DOAOptions extends ActivityTaskOptionsWithUsers {
+	leader: string;
+	cm: boolean;
+	fakeDuration: number;
+	quantity: number;
+	raids: DOAStoredRaid[];
+}
+
 export interface NexTaskOptions extends ActivityTaskOptionsWithUsers {
 	quantity: number;
 	leader: string;

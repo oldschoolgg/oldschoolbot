@@ -2,7 +2,7 @@ import { objectEntries, randArrItem, randInt, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
-import { globalDroprates } from '../../../lib/constants';
+import { globalDroprates } from '../../../lib/data/globalDroprates';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { kittens } from '../../../lib/growablePets';
 import { trackLoot } from '../../../lib/lootTrack';

@@ -517,7 +517,7 @@ export const projectiles = {
 		savedByAvas: true
 	},
 	javelin: {
-		items: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin']),
+		items: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin', 'Obsidian javelin']),
 		savedByAvas: false
 	}
 } as const;
@@ -631,6 +631,17 @@ export const toaPurpleItems = resolveItems([
 	'Masori chaps',
 	'Lightbearer',
 	"Osmumten's fang"
+]);
+
+export const doaPurples = resolveItems([
+	'Oceanic relic',
+	'Oceanic dye',
+	'Aquifer aegis',
+	'Shark tooth',
+	'Shark jaw',
+	'Bruce',
+	'Pearl',
+	'Bluey'
 ]);
 
 export enum PeakTier {

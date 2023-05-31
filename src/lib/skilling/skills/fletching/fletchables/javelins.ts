@@ -67,6 +67,14 @@ const Javelins: Fletchable[] = [
 		xp: 15,
 		inputItems: new Bank({ 'Dragon javelin heads': 1, 'Javelin shaft': 1 }),
 		tickRate: 0.13
+	},
+	{
+		name: 'Obsidian javelin',
+		id: itemID('Obsidian javelin'),
+		level: 99,
+		xp: 55,
+		inputItems: new Bank({ 'Obsidian javelin heads': 1, 'Javelin shaft': 1 }),
+		tickRate: 0.13
 	}
 ];
 

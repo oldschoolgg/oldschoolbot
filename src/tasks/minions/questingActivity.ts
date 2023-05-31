@@ -1,7 +1,8 @@
 import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, globalDroprates, MAX_QP } from '../../lib/constants';
+import { Emoji, MAX_QP } from '../../lib/constants';
+import { globalDroprates } from '../../lib/data/globalDroprates';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
