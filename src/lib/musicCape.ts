@@ -150,7 +150,8 @@ AND data->>'runeID' IS NOT NULL;`;
 				activity_type_enum.HalloweenEvent,
 				activity_type_enum.GroupMonsterKilling,
 				activity_type_enum.BirthdayEvent,
-				activity_type_enum.Questing
+				activity_type_enum.Questing,
+				activity_type_enum.BlastFurnace // During the slash command migration this moved to under the smelting activity
 			];
 			const activityCounts = await getUsersActivityCounts(user);
 
