@@ -46,6 +46,7 @@ import {
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
 	DarkAltarOptions,
+	DOAOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FightCavesActivityTaskOptions,
@@ -748,6 +749,14 @@ export function minionStatus(user: MUser) {
 		}
 		case 'UnderwaterAgilityThieving': {
 			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
+		}
+		case 'DepthsOfAtlantis': {
+			const data = currentTask as DOAOptions;
+			const durationRemainingNum = data.finishDate - data.duration + data.fakeDuration - Date.now();
+
+			return `${name} is currently attempting the Depths of Atlantis, if your team is successful and doesn't die, the trip should take ${formatDuration(
+				durationRemainingNum
+			)}.`;
 		}
 		case 'HalloweenMiniMinigame':
 		case 'HalloweenEvent':
