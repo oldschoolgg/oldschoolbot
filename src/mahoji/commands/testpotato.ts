@@ -164,6 +164,31 @@ const thingsToReset = [
 			await user.update({ bank: {} });
 			return 'Reset your bank.';
 		}
+	},
+	{
+		name: 'DOA',
+		run: async (user: MUser) => {
+			await userStatsUpdate(user.id, {
+				doa_attempts: 0,
+				doa_cost: {},
+				doa_loot: {},
+				doa_room_attempts_bank: {},
+				doa_total_minutes_raided: 0
+			});
+
+			await user.update({ collectionLogBank: {} });
+
+			await prisma.minigame.update({
+				where: {
+					user_id: user.id
+				},
+				data: {
+					depths_of_atlantis: 0,
+					depths_of_atlantis_cm: 0
+				}
+			});
+			return 'Reset your CL, doa attempts, cost, loot, kc and total time raided.';
+		}
 	}
 ];
 
