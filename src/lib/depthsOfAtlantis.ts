@@ -13,6 +13,7 @@ import {
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
+import { production } from '../config';
 import { mahojiParseNumber, userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { Emoji } from './constants';
 import { calcSetupPercent } from './data/cox';
@@ -633,6 +634,11 @@ export function createDOATeam({
 			let deaths = 0;
 			let roomTime = room.baseTime;
 
+			const cappedTeamSize = clamp(team.length, 1, 5);
+			if (cappedTeamSize > 1) {
+				roomTime = reduceNumByPercent(roomTime, cappedTeamSize * 2.25);
+			}
+
 			for (const { user, roomKCs } of team) {
 				messages.push(`  Checking boosts for ${user.usernameOrMention}`);
 				for (const boost of room.speedBoosts) {
@@ -910,8 +916,7 @@ export async function doaStartCommand(
 
 	str += ` \n\n${debugStr}`;
 
-	if (createdDOATeam.results[0].messages.length > 0) {
-		// str += `\n**Message:** ${createdDOATeam.results[0].messages.join(',')}`;
+	if (createdDOATeam.results[0].messages.length > 0 && !production) {
 		return {
 			content: str,
 			files: [{ attachment: Buffer.from(createdDOATeam.results[0].messages.join('\n')), name: 'doa.txt' }]

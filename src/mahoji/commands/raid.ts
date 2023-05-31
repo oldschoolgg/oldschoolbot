@@ -2,6 +2,7 @@ import { randArrItem, reduceNumByPercent, roll, sumArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
+import { production } from '../../config';
 import { doaMetamorphPets } from '../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { degradeableItems } from '../../lib/degradeableItems';
@@ -214,28 +215,32 @@ export const raidCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'help',
 					description: 'Shows helpful information and stats about DOA.'
-				}
-				// {
-				// 	type: ApplicationCommandOptionType.Subcommand,
-				// 	name: 'simulate',
-				// 	description: 'Shows helpful information and stats about DOA.',
-				// 	options: [
-				// 		{
-				// 			type: ApplicationCommandOptionType.Boolean,
-				// 			name: 'challenge_mode',
-				// 			description: 'Try if you dare.',
-				// 			required: false
-				// 		},
-				// 		{
-				// 			type: ApplicationCommandOptionType.Integer,
-				// 			name: 'team_size',
-				// 			description: 'Team size (1-5).',
-				// 			required: false,
-				// 			min_value: 1,
-				// 			max_value: 5
-				// 		}
-				// 	]
-				// },
+				},
+				...(production
+					? []
+					: [
+							{
+								type: ApplicationCommandOptionType.Subcommand,
+								name: 'simulate',
+								description: 'Shows helpful information and stats about DOA.',
+								options: [
+									{
+										type: ApplicationCommandOptionType.Boolean,
+										name: 'challenge_mode',
+										description: 'Try if you dare.',
+										required: false
+									},
+									{
+										type: ApplicationCommandOptionType.Integer,
+										name: 'team_size',
+										description: 'Team size (1-5).',
+										required: false,
+										min_value: 1,
+										max_value: 5
+									}
+								]
+							} as any
+					  ])
 			]
 		}
 	],
