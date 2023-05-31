@@ -3,9 +3,8 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
-import { sinsOfTheFatherSkillRequirements } from '../../skilling/functions/questRequirements';
 import { DarkAltarOptions } from '../../types/minions';
-import { formatDuration, formatSkillRequirements, hasSkillReqs } from '../../util';
+import { formatDuration, hasSkillReqs } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import getOSItem from '../../util/getOSItem';
@@ -79,13 +78,6 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 
 	const maxTripLength = calcMaxTripLength(user, 'DarkAltar');
 	const quantity = Math.floor(maxTripLength / timePerRune);
-
-	if (rune === 'blood') {
-		const hasBloodReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);
-		if (!hasBloodReqs) {
-			return `To runecraft ${rune}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
-		}
-	}
 
 	await addSubTaskToActivityTask<DarkAltarOptions>({
 		userID: user.id,
