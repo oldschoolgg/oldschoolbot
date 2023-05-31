@@ -507,7 +507,7 @@ export async function calcDOAInput({
 
 	return {
 		cost,
-		sangCharges,
+		sangCharges: floor(sangCharges),
 		voidStaffCharges,
 		tumShadowCharges
 	};
