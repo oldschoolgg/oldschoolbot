@@ -7,9 +7,10 @@ import { MIMIC_MONSTER_ID, NEX_ID, ZALCANO_ID } from './constants';
 import { RandomEvents } from './randomEvents';
 import { MinigameName, Minigames } from './settings/minigames';
 import { getUsersActivityCounts, prisma } from './settings/prisma';
-import Runecraft from './skilling/skills/runecraft';
 import { RequirementFailure, Requirements } from './structures/Requirements';
 import { ItemBank } from './types';
+import { itemNameFromID } from './util';
+import resolveItems from './util/resolveItems';
 
 export const musicCapeRequirements = new Requirements()
 	.add({
@@ -112,8 +113,23 @@ WHERE user_id = ${BigInt(user.id)}
 AND type = 'Runecraft'
 AND data->>'runeID' IS NOT NULL;`;
 
-			const notDoneRunes = Runecraft.Runes.filter(i => !counts.some(c => c.rune_id === i.id.toString()))
-				.map(i => i.name)
+			const runesToCheck = resolveItems([
+				'Mind rune',
+				'Air rune',
+				'Water Rune',
+				'Fire rune',
+				'Earth rune',
+				'Nature rune',
+				'Death rune',
+				'Body rune',
+				'Cosmic rune',
+				'Chaos rune',
+				'Astral rune',
+				'Wrath rune'
+			]);
+			const notDoneRunes = runesToCheck
+				.filter(i => !counts.some(c => c.rune_id === i.toString()))
+				.map(i => itemNameFromID(i)!)
 				.map(s => s.split(' ')[0]);
 			if (notDoneRunes.length > 0) {
 				return [
