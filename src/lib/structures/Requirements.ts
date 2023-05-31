@@ -53,7 +53,7 @@ export class Requirements {
 					insufficientLevels.push(`${level} ${skillName}`);
 				}
 			}
-			if (insufficientLevels) {
+			if (insufficientLevels.length > 0) {
 				results.push({
 					reason: `You need these stats: ${insufficientLevels.join(', ')}.`
 				});
