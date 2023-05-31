@@ -128,7 +128,9 @@ export const doaTask: MinionTask = {
 						const currentKCBank = new Bank(u.doa_room_attempts_bank as ItemBank);
 						return {
 							doa_room_attempts_bank: currentKCBank.add(newRoomAttempts).bank,
-							doa_attempts: quantity
+							doa_attempts: {
+								increment: quantity
+							}
 						};
 					},
 					{}
