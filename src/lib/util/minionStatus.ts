@@ -652,6 +652,11 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'StrongholdOfSecurity': {
+			return `${name} is currently doing the Stronghold of Security! The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'HalloweenEvent':
 		case 'BlastFurnace': {
 			throw new Error('Removed');
