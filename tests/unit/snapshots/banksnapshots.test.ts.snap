@@ -22603,7 +22603,10 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "51016": 3,
         "6733": 10,
+        "70425": 1,
+        "70447": 6,
       },
       "frozen": false,
     },
