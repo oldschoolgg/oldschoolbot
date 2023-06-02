@@ -41,7 +41,8 @@ export const capeBuyables: Buyable[] = [
 	{
 		name: 'Music cape',
 		outputItems: new Bank({
-			'Music cape': 1
+			'Music cape': 1,
+			'Music hood': 1
 		}),
 		gpCost: 99_000,
 		customReq: async user => {
