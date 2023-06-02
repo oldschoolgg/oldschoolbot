@@ -19,6 +19,7 @@ const creatures: Creature[] = [
 	...magicBoxTrappingCreatures,
 	...netTrappingCreatures,
 	...pitfallTrappingCreatures,
+	...rabbitSnaringCreatures,
 	...trackingCreatures,
 	...customBSOCreatures
 ];
