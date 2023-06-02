@@ -11,6 +11,7 @@ import { duelCommand } from '../lib/abstracted_commands/duelCommand';
 import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
 import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
+import { spinsCommand } from '../lib/abstracted_commands/spinsCommand';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const gambleCommand: OSBMahojiCommand = {
@@ -159,6 +160,17 @@ export const gambleCommand: OSBMahojiCommand = {
 					required: true
 				}
 			]
+		},
+		/**
+		 *
+		 * Spins
+		 *
+		 */
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'spin',
+			description: 'Spin a wheel for a chance at winning a big prize.',
+			options: []
 		}
 	],
 	run: async ({
@@ -173,6 +185,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		slots?: { amount?: string };
 		hot_cold?: { choice?: 'hot' | 'cold'; amount?: string };
 		give_random_item?: { user: MahojiUserOption };
+		spin?: {};
 	}>) => {
 		const user = await mUserFetch(userID);
 
@@ -245,6 +258,10 @@ export const gambleCommand: OSBMahojiCommand = {
 			for (const t of bank) debug.add(t[0].id);
 
 			return `You gave ${qty.toLocaleString()}x ${item.name} to ${recipientuser.usernameOrMention}.`;
+		}
+
+		if (options.spin) {
+			return spinsCommand(user, interaction);
 		}
 
 		return 'Invalid command.';

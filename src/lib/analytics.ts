@@ -66,7 +66,8 @@ export async function analyticsTick() {
 			gp_sell: true,
 			gp_slots: true,
 			gp_tax_balance: true,
-			economyStats_dailiesAmount: true
+			economyStats_dailiesAmount: true,
+			gp_spins: true
 		}
 	});
 	if (!currentClientSettings) throw new Error('No client settings found');
@@ -95,7 +96,8 @@ export async function analyticsTick() {
 			gpDaily: currentClientSettings.gp_daily,
 			gpLuckypick: currentClientSettings.gp_luckypick,
 			gpSlots: currentClientSettings.gp_slots,
-			gpHotCold: currentClientSettings.gp_hotcold
+			gpHotCold: currentClientSettings.gp_hotcold,
+			gpSpins: currentClientSettings.gp_spins
 		}
 	});
 }

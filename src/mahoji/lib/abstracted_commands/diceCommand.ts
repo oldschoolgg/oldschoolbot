@@ -1,14 +1,10 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Util } from 'oldschooljs';
 
+import { handleGamblingOutcome } from '../../../lib/itemSinkTax';
 import { cryptoRand } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import {
-	mahojiParseNumber,
-	updateClientGPTrackSetting,
-	updateGPTrackSetting,
-	userStatsUpdate
-} from '../../mahojiSettings';
+import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings';
 
 export async function diceCommand(user: MUser, interaction: ChatInputCommandInteraction, diceamount?: string) {
 	await deferInteraction(interaction);
@@ -37,8 +33,7 @@ export async function diceCommand(user: MUser, interaction: ChatInputCommandInte
 	const won = roll >= 55;
 	let amountToAdd = won ? amount : -amount;
 
-	await updateClientGPTrackSetting('gp_dice', amountToAdd);
-	await updateGPTrackSetting('gp_dice', amountToAdd, user);
+	await handleGamblingOutcome({ type: 'Dice', user, totalAmount: amountToAdd });
 
 	if (won) {
 		await userStatsUpdate(

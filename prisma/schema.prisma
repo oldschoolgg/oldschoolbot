@@ -54,6 +54,7 @@ model Analytic {
   gpLuckypick        BigInt?
   gpSlots            BigInt?
   gpHotCold          BigInt?
+  gpSpins            BigInt?
 
   @@map("analytics_table")
 }
@@ -114,6 +115,7 @@ model ClientStorage {
   gp_luckypick                 BigInt   @default(0)
   gp_slots                     BigInt   @default(0)
   gp_hotcold                   BigInt   @default(0)
+  gp_spins                     BigInt   @default(0)
   custom_prices                Json     @default("{}") @db.Json
   nightmare_cost               Json     @default("{}") @db.Json
   create_cost                  Json     @default("{}") @db.Json
@@ -138,6 +140,15 @@ model ClientStorage {
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
   grand_exchange_tax_bank  BigInt  @default(0)
+
+  item_sink_tax_bank          BigInt @default(0)
+  item_sink_tax_bank_total    BigInt @default(0)
+  item_sink_items_bought_bank Json   @default("{}") @db.Json
+  item_sink_slots_gp          BigInt @default(0)
+  item_sink_dice_gp           BigInt @default(0)
+  item_sink_luckypick_gp      BigInt @default(0)
+  item_sink_hotcold_gp        BigInt @default(0)
+  item_sink_spins_gp          BigInt @default(0)
 
   @@map("clientStorage")
 }
@@ -680,6 +691,7 @@ model UserStats {
   gp_dice      BigInt @default(0)
   gp_slots     BigInt @default(0)
   gp_hotcold   BigInt @default(0)
+  gp_spins     BigInt @default(0)
 
   total_gp_traded BigInt @default(0)
 

@@ -1,4 +1,4 @@
-import 'source-map-support/register';
+// import 'source-map-support/register';
 import './lib/data/itemAliases';
 import './lib/crons';
 import './lib/MUser';

@@ -9,7 +9,7 @@ async function main() {
 		execSync('dotenv -e .env.example -- prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit' });
 		execSync('dotenv -e .env.example -- prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit' });
 
-		execSync('vitest run --coverage --config vitest.integration.config.ts', {
+		execSync('vitest run spins --coverage --config vitest.integration.config.ts', {
 			stdio: 'inherit'
 		});
 	} catch (err) {

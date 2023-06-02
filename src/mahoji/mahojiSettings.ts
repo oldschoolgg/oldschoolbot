@@ -141,10 +141,8 @@ export async function multipleUserStatsBankUpdate(userID: string, updates: Parti
 
 export async function updateClientGPTrackSetting(
 	setting:
-		| 'gp_luckypick'
 		| 'gp_pickpocket'
 		| 'gp_alch'
-		| 'gp_slots'
 		| 'gp_dice'
 		| 'gp_open'
 		| 'gp_daily'
@@ -164,17 +162,6 @@ export async function updateClientGPTrackSetting(
 		},
 		select: {
 			id: true
-		}
-	});
-}
-export async function updateGPTrackSetting(
-	setting: 'gp_dice' | 'gp_luckypick' | 'gp_slots',
-	amount: number,
-	user: MUser
-) {
-	await userStatsUpdate(user.id, {
-		[setting]: {
-			increment: amount
 		}
 	});
 }
