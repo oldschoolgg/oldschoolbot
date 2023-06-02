@@ -93,6 +93,7 @@ import {
 	miscellaneousCL,
 	monkeyBackpacksCL,
 	motherlodeMineCL,
+	muspahCL,
 	NexCL,
 	oborCL,
 	pestControlCL,
@@ -348,6 +349,12 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.Obor.allItems,
 				items: oborCL,
 				fmtProg: kcProg(Monsters.Obor)
+			},
+			'Phantom Muspah': {
+				alias: Monsters.PhantomMuspah.aliases,
+				allItems: Monsters.PhantomMuspah.allItems,
+				items: muspahCL,
+				fmtProg: kcProg(Monsters.PhantomMuspah)
 			},
 			Sarachnis: {
 				alias: Monsters.Sarachnis.aliases,

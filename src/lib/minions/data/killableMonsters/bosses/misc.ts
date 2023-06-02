@@ -1,7 +1,7 @@
-import { Time } from 'e';
+import { roll, Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { corporealBeastCL } from '../../../../data/CollectionsExport';
+import { corporealBeastCL, muspahCL } from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
@@ -307,6 +307,125 @@ const killableBosses: KillableMonster[] = [
 		healAmountNeeded: 5 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
+	},
+	{
+		id: Monsters.PhantomMuspah.id,
+		name: Monsters.PhantomMuspah.name,
+		aliases: Monsters.PhantomMuspah.aliases,
+		table: Monsters.PhantomMuspah,
+		timeToFinish: Time.Minute * 8,
+		qpRequired: 215,
+		respawnTime: 10_000,
+		levelRequirements: {
+			prayer: 43,
+			agility: 69,
+			thieving: 64,
+			hunter: 56,
+			firemaking: 66,
+			mining: 72,
+			construction: 35,
+			magic: 66,
+			cooking: 62,
+			fishing: 62,
+			smithing: 65,
+			crafting: 40,
+			runecraft: 50,
+			fletching: 50
+		},
+		uniques: muspahCL,
+		defaultAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength],
+		degradeableItemUsage: [
+			{
+				required: true,
+				gearSetup: 'mage',
+				items: [
+					{
+						itemID: itemID("Tumeken's shadow"),
+						boostPercent: 10
+					},
+					{
+						itemID: itemID('Sanguinesti staff'),
+						boostPercent: 5
+					}
+				]
+			}
+		],
+		itemInBankBoosts: [
+			{
+				[itemID('Imbued heart')]: 4,
+				[itemID('Saturated heart')]: 2
+			}
+		],
+		projectileUsage: {
+			required: true,
+			calculateQuantity: ({ quantity }) => quantity * 10
+		},
+		equippedItemBoosts: [
+			{
+				items: [{ boostPercent: 10, itemID: itemID('Twisted bow') }],
+				gearSetup: 'range'
+			},
+			{
+				items: [{ boostPercent: 10, itemID: itemID('Dragon arrow') }],
+				gearSetup: 'range'
+			},
+			{
+				items: [
+					{ boostPercent: 6, itemID: itemID('Masori body (f)') },
+					{ boostPercent: 3, itemID: itemID('Masori body') }
+				],
+				gearSetup: 'range'
+			},
+			{
+				items: [
+					{ boostPercent: 6, itemID: itemID('Masori chaps (f)') },
+					{ boostPercent: 3, itemID: itemID('Masori chaps') }
+				],
+				gearSetup: 'range'
+			},
+			{
+				items: [{ boostPercent: 11, itemID: itemID("Tumeken's shadow") }],
+				gearSetup: 'mage'
+			},
+			{
+				items: [{ boostPercent: 6, itemID: itemID('Ancestral robe top') }],
+				gearSetup: 'mage'
+			},
+			{
+				items: [{ boostPercent: 6, itemID: itemID('Ancestral robe bottom') }],
+				gearSetup: 'mage'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID("Ava's assembler") }],
+				gearSetup: 'range'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID('Zaryte vambraces') }],
+				gearSetup: 'range'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID('Pegasian boots') }],
+				gearSetup: 'range'
+			},
+			{
+				items: [{ boostPercent: 3, itemID: itemID('Eternal boots') }],
+				gearSetup: 'mage'
+			}
+		],
+		effect: async ({ quantity, user, messages }) => {
+			if (user.bank.has('Charged ice')) return;
+			let gotIce = false;
+			for (let i = 0; i < quantity; i++) {
+				if (roll(20)) {
+					gotIce = true;
+					break;
+				}
+			}
+			if (!gotIce) return;
+			await user.addItemsToBank({ items: new Bank().add('Charged ice'), collectionLog: true });
+			messages.push('You got a Charged ice for killing the Phantom Muspah in under 3 minutes!');
+		}
 	}
 ];
 
