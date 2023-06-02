@@ -4,6 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
 import { MIMIC_MONSTER_ID, NEX_ID, ZALCANO_ID } from './constants';
+import { championScrolls } from './data/CollectionsExport';
 import { RandomEvents } from './randomEvents';
 import { MinigameName, Minigames } from './settings/minigames';
 import { getUsersActivityCounts, prisma } from './settings/prisma';
@@ -150,7 +151,8 @@ AND data->>'runeID' IS NOT NULL;`;
 				activity_type_enum.HalloweenEvent,
 				activity_type_enum.GroupMonsterKilling,
 				activity_type_enum.BirthdayEvent,
-				activity_type_enum.Questing
+				activity_type_enum.Questing,
+				activity_type_enum.ChampionsChallenge
 			];
 			const activityCounts = await getUsersActivityCounts(user);
 
@@ -163,7 +165,6 @@ AND data->>'runeID' IS NOT NULL;`;
 			if (notDoneActivities.length > 0) {
 				return [
 					{
-						doesHave: false,
 						reason: `You need to do one of EVERY activity, you haven't done... ${firstLot.join(
 							', '
 						)}, and ${secondLot.length} others.`
@@ -201,11 +202,14 @@ AND data->>'runeID' IS NOT NULL;`;
 	})
 	.add({
 		name: 'One of Every Random Event',
-		has: async ({ userStats }) => {
+		has: async ({ userStats, user }) => {
 			const results: RequirementFailure[] = [];
 			const eventBank = userStats.random_event_completions_bank as ItemBank;
 
-			const notDoneRandomEvents = RandomEvents.filter(i => !eventBank[i.id]).map(i => i.name);
+			const notDoneRandomEvents = RandomEvents.filter(i => {
+				if (i.outfit && i.outfit.every(id => user.cl.has(id))) return false;
+				return !eventBank[i.id];
+			}).map(i => i.name);
 
 			if (notDoneRandomEvents.length > 0) {
 				results.push({
@@ -225,7 +229,7 @@ AND data->>'runeID' IS NOT NULL;`;
 					return [];
 				}
 			}
-			return [{ doesHave: false, reason: 'You need to build something in your POH' }];
+			return [{ reason: 'You need to build something in your POH' }];
 		}
 	})
 	.add({
@@ -240,5 +244,14 @@ AND data->>'runeID' IS NOT NULL;`;
 				results.push({ reason: `You need atleast 25% favour in ${notDoneFavours.map(i => i[0]).join(', ')}.` });
 			}
 			return results;
+		}
+	})
+	.add({
+		name: 'Champions Challenge',
+		has: async ({ user }) => {
+			for (const scroll of championScrolls) {
+				if (user.cl.has(scroll)) return [];
+			}
+			return [{ reason: 'You need to have a Champion Scroll in your CL' }];
 		}
 	});
