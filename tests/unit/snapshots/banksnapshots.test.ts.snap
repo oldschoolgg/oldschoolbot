@@ -3423,6 +3423,7 @@ exports[`OSB Buyables 1`] = `
     "outputItems": Bank {
       "bank": {
         "13221": 1,
+        "13223": 1,
       },
       "frozen": false,
     },
