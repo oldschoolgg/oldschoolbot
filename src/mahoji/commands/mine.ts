@@ -4,8 +4,8 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
+import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Mining from '../../lib/skilling/skills/mining';
-import { Skills } from '../../lib/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -13,20 +13,6 @@ import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
 import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
-
-const daeyaltEssenceSkillRequirements: Skills = {
-	woodcutting: 62,
-	fletching: 60,
-	crafting: 56,
-	agility: 52,
-	attack: 50,
-	slayer: 50,
-	magic: 49,
-	herblore: 40,
-	construction: 5,
-	thieving: 22,
-	strength: 40
-};
 
 export const mineCommand: OSBMahojiCommand = {
 	name: 'mine',
@@ -96,10 +82,10 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		// Check for daeyalt shard requirements.
-		const hasDaeyaltReqs = user.hasSkillReqs(daeyaltEssenceSkillRequirements);
+		const hasDaeyaltReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);
 		if (ore.name === 'Daeyalt essence rock') {
 			if (!hasDaeyaltReqs) {
-				return `To mine ${ore.name}, you need ${formatSkillRequirements(daeyaltEssenceSkillRequirements)}.`;
+				return `To mine ${ore.name}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
 			}
 			if (user.QP < 125) {
 				return `To mine ${ore.name}, you need atleast 125 Quest Points.`;
