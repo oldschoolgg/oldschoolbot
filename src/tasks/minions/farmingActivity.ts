@@ -168,13 +168,17 @@ export const farmingTask: MinionTask = {
 			}
 			checkHealthXp = alivePlants * plantToHarvest.checkXp;
 
+			const cleanHerb = plantToHarvest.herbXp !== undefined && user.bitfield.includes(BitField.CleanHerbsFarming);
+
 			if (plantToHarvest.givesCrops) {
-				let outputCrop = plantToHarvest.outputCrop;
-				if (plantToHarvest.herbXp && user.bitfield.includes(BitField.CleanHerbsFarming)) {
-				  outputCrop = plantToHarvest.cleanHerbCrop; 
-				  herbloreXp = alivePlants * plantToHarvest.herbXp;
+				let cropToHarvest = plantToHarvest.outputCrop;
+				if (cleanHerb) {
+					cropToHarvest = plantToHarvest.cleanHerbCrop;
+					if (plantToHarvest.herbXp) {
+						herbloreXp = alivePlants * plantToHarvest.herbXp;
+					}
 				}
-				if (!plantToHarvest.outputCrop) return;
+				if (!cropToHarvest) return;
 				if (plantToHarvest.variableYield) {
 					cropYield = calcVariableYield(
 						plantToHarvest,
@@ -212,10 +216,10 @@ export const farmingTask: MinionTask = {
 				}
 
 				if (quantity > patchType.lastQuantity) {
-					loot.add(plantToHarvest.outputCrop, cropYield);
+					loot.add(cropToHarvest, cropYield);
 					loot.add('Weeds', quantity - patchType.lastQuantity);
 				} else {
-					loot.add(plantToHarvest.outputCrop, cropYield);
+					loot.add(cropToHarvest, cropYield);
 				}
 
 				if (plantToHarvest.name === 'Limpwurt') {
@@ -295,6 +299,10 @@ export const farmingTask: MinionTask = {
 				infoStr.push(
 					`\nYou received an additional ${bonusXP.toLocaleString()} bonus XP from your farmer's outfit.`
 				);
+			}
+
+			if (cleanHerb) {
+				infoStr.push(`\nYou received ${herbloreXp.toLocaleString()} for cleaning the herbs during your trip.`);
 			}
 
 			await user.addXP({
