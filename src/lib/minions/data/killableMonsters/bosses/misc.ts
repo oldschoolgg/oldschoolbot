@@ -367,7 +367,10 @@ const killableBosses: KillableMonster[] = [
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 10, itemID: itemID('Dragon arrow') }],
+				items: [
+					{ boostPercent: 10, itemID: itemID('Dragon arrow') },
+					{ boostPercent: 6, itemID: itemID('Amethyst arrow') }
+				],
 				gearSetup: 'range'
 			},
 			{
@@ -385,7 +388,10 @@ const killableBosses: KillableMonster[] = [
 				gearSetup: 'range'
 			},
 			{
-				items: [{ boostPercent: 11, itemID: itemID("Tumeken's shadow") }],
+				items: [
+					{ boostPercent: 11, itemID: itemID("Tumeken's shadow") },
+					{ boostPercent: 6, itemID: itemID('Sanguinesti staff') }
+				],
 				gearSetup: 'mage'
 			},
 			{

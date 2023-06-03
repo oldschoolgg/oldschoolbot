@@ -2160,6 +2160,16 @@ const Createables: Createable[] = [
 		requiredSkills: { smithing: 80, crafting: 80 },
 		QPRequired: 150
 	},
+	{
+		name: 'Saturated heart',
+		inputItems: new Bank({
+			'Imbued heart': 1,
+			'Ancient essence': 150_000
+		}),
+		outputItems: new Bank({
+			'Saturated heart': 1
+		})
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
