@@ -129,7 +129,7 @@ class GrandExchangeSingleton {
 				{
 					has: () => true,
 					name: 'Base',
-					amount: 1
+					amount: 2
 				},
 				...[100, 250, 1000].map(num => ({
 					has: (user: MUser) => user.totalLevel >= num,
