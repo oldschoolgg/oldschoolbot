@@ -16,7 +16,8 @@ interface DegradeableItem {
 		| 'serp_helm_charges'
 		| 'blood_fury_charges'
 		| 'tum_shadow_charges'
-		| 'blood_essence_charges';
+		| 'blood_essence_charges'
+		| 'trident_charges';
 	itemsToRefundOnBreak: Bank;
 	setup: GearSetupType;
 	aliases: string[];
@@ -136,6 +137,20 @@ export const degradeableItems: DegradeableItem[] = [
 			charges: 1000
 		},
 		emoji: ''
+	},
+	{
+		item: getOSItem('Trident of the swamp'),
+		settingsKey: 'trident_charges',
+		itemsToRefundOnBreak: new Bank().add('Uncharged toxic trident'),
+		setup: 'mage',
+		aliases: ['trident', 'trident of the swamp'],
+		chargeInput: {
+			cost: new Bank().add('Death rune').add('Chaos rune').add('Fire rune', 5).add("Zulrah's scales"),
+			charges: 1
+		},
+		unchargedItem: getOSItem('Uncharged toxic trident'),
+		convertOnCharge: true,
+		emoji: '🔱'
 	}
 ];
 

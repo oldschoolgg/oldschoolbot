@@ -107,7 +107,7 @@ export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
 	// Calculate superior XP:
 	let superiorSlayXp = 0;
 	let superiorXp = 0;
-	if (superiorQty) {
+	if (superiorQty && osjsSuperior!.data!.hitpoints) {
 		superiorXp = 4 * superiorQty * osjsSuperior!.data!.hitpoints;
 		superiorSlayXp = superiorQty * osjsSuperior!.data!.slayerXP;
 	}

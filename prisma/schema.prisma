@@ -378,6 +378,7 @@ model User {
   blood_fury_charges     Int @default(0)
   tum_shadow_charges     Int @default(0)
   blood_essence_charges  Int @default(0)
+  trident_charges        Int @default(0)
 
   // Balances
   lms_points           Int @default(0)
@@ -866,6 +867,7 @@ enum activity_type_enum {
   ShadesOfMorton
   TombsOfAmascut
   UnderwaterAgilityThieving
+  StrongholdOfSecurity
 }
 
 enum xp_gains_skill_enum {
