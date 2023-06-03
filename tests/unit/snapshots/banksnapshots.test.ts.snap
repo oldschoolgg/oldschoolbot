@@ -8258,6 +8258,23 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "11905": 1,
+        "12932": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Trident of the swamp",
+    "outputItems": Bank {
+      "bank": {
+        "12899": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "12922": 1,
       },
       "frozen": false,
