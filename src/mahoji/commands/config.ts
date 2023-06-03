@@ -50,6 +50,10 @@ const toggles = [
 	{
 		name: "Disable Grand Exchange DM's",
 		bit: BitField.DisableGrandExchangeDMs
+	},
+	{
+		name: 'Clean herbs during farm runs',
+		bit: BitField.CleanHerbsFarming
 	}
 ];
 

@@ -33,6 +33,7 @@ export const farmingTask: MinionTask = {
 		let checkHealthXp = 0;
 		let rakeXp = 0;
 		let woodcuttingXp = 0;
+		let herbloreXp = 0;
 		let payStr = '';
 		let wcStr = '';
 		let rakeStr = '';

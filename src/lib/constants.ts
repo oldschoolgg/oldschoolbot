@@ -224,7 +224,8 @@ export enum BitField {
 	BothBotsMaxedFreeTierOnePerks = 24,
 	HasBloodbarkScroll = 25,
 	DisableAutoFarmContractButton = 26,
-	DisableGrandExchangeDMs = 27
+	DisableGrandExchangeDMs = 27,
+	CleanHerbsFarming = 28
 }
 
 interface BitFieldData {
@@ -284,6 +285,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisableGrandExchangeDMs]: {
 		name: 'Disable Grand Exchange DMs',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.CleanHerbsFarming]: {
+		name: 'Clean herbs during farm runs',
 		protected: false,
 		userConfigurable: true
 	}
