@@ -1,7 +1,7 @@
 import { randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { BitField, Emoji, Events } from '../../lib/constants';
 import { PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { prisma } from '../../lib/settings/prisma';
@@ -169,6 +169,11 @@ export const farmingTask: MinionTask = {
 			checkHealthXp = alivePlants * plantToHarvest.checkXp;
 
 			if (plantToHarvest.givesCrops) {
+				let outputCrop = plantToHarvest.outputCrop;
+				if (plantToHarvest.herbXp && user.bitfield.includes(BitField.CleanHerbsFarming)) {
+				  outputCrop = plantToHarvest.cleanHerbCrop; 
+				  herbloreXp = alivePlants * plantToHarvest.herbXp;
+				}
 				if (!plantToHarvest.outputCrop) return;
 				if (plantToHarvest.variableYield) {
 					cropYield = calcVariableYield(
@@ -299,6 +304,10 @@ export const farmingTask: MinionTask = {
 			await user.addXP({
 				skillName: SkillsEnum.Woodcutting,
 				amount: Math.floor(woodcuttingXp)
+			});
+			await user.addXP({
+				skillName: SkillsEnum.Herblore,
+				amount: Math.floor(herbloreXp)
 			});
 
 			const newFarmingLevel = user.skillLevel(SkillsEnum.Farming);
