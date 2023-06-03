@@ -647,16 +647,12 @@ export function minionStatus(user: MUser) {
 		case 'UnderwaterAgilityThieving': {
 			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
 		}
-		case 'Easter': {
-			return `${name} is currently doing the Easter Event! The trip should take ${formatDuration(
-				durationRemaining
-			)}.`;
-		}
 		case 'StrongholdOfSecurity': {
 			return `${name} is currently doing the Stronghold of Security! The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
 		}
+		case 'Easter':
 		case 'HalloweenEvent':
 		case 'BlastFurnace': {
 			throw new Error('Removed');
