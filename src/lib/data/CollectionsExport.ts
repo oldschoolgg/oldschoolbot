@@ -269,6 +269,14 @@ export const corporealBeastCL = resolveItems([
 	'Spirit shield',
 	'Jar of spirits'
 ]);
+export const muspahCL = resolveItems([
+	'Muphin',
+	'Venator shard',
+	'Ancient icon',
+	'Charged ice',
+	'Frozen cache',
+	'Ancient essence'
+]);
 export const crazyArchaeologistCL = resolveItems(['Odium shard 2', 'Malediction shard 2', 'Fedora']);
 export const dagannothKingsCL = resolveItems([
 	'Pet dagannoth prime',
@@ -1525,7 +1533,8 @@ export const allPetsCL = resolveItems([
 	'Tiny tempor',
 	'Nexling',
 	'Abyssal protector',
-	"Tumeken's guardian"
+	"Tumeken's guardian",
+	'Muphin'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
