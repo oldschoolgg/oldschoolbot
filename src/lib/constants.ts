@@ -390,7 +390,8 @@ export const PATRON_ONLY_GEAR_SETUP =
 export const projectiles = {
 	arrow: {
 		items: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
-		savedByAvas: true
+		savedByAvas: true,
+		weapons: resolveItems(['Twisted bow'])
 	},
 	bolt: {
 		items: resolveItems([
@@ -400,11 +401,19 @@ export const projectiles = {
 			'Diamond dragon bolts (e)',
 			'Ruby dragon bolts (e)'
 		]),
-		savedByAvas: true
+		savedByAvas: true,
+		weapons: resolveItems([
+			'Armadyl crossbow',
+			'Dragon hunter crossbow',
+			'Dragon crossbow',
+			'Zaryte crossbow',
+			'Rune crossbow'
+		])
 	},
 	javelin: {
 		items: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin']),
-		savedByAvas: false
+		savedByAvas: false,
+		weapons: resolveItems(['Heavy ballista'])
 	}
 } as const;
 export type ProjectileType = keyof typeof projectiles;
