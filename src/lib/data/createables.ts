@@ -2170,6 +2170,16 @@ const Createables: Createable[] = [
 			'Saturated heart': 1
 		})
 	},
+	{
+		name: 'Trident of the swamp',
+		inputItems: new Bank({
+			'Trident of the seas (full)': 1,
+			'Magic fang': 1
+		}),
+		outputItems: new Bank({
+			'Trident of the swamp': 1
+		})
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,

@@ -335,6 +335,8 @@ const killableBosses: KillableMonster[] = [
 		uniques: muspahCL,
 		defaultAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength],
+		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
+		attackStyleToUse: GearStat.AttackMagic,
 		degradeableItemUsage: [
 			{
 				required: true,
@@ -342,10 +344,14 @@ const killableBosses: KillableMonster[] = [
 				items: [
 					{
 						itemID: itemID("Tumeken's shadow"),
-						boostPercent: 10
+						boostPercent: 15
 					},
 					{
 						itemID: itemID('Sanguinesti staff'),
+						boostPercent: 10
+					},
+					{
+						itemID: itemID('Trident of the swamp'),
 						boostPercent: 5
 					}
 				]
@@ -353,8 +359,8 @@ const killableBosses: KillableMonster[] = [
 		],
 		itemInBankBoosts: [
 			{
-				[itemID('Imbued heart')]: 4,
-				[itemID('Saturated heart')]: 2
+				[itemID('Saturated heart')]: 4,
+				[itemID('Imbued heart')]: 2
 			}
 		],
 		projectileUsage: {
@@ -431,7 +437,8 @@ const killableBosses: KillableMonster[] = [
 			if (!gotIce) return;
 			await user.addItemsToBank({ items: new Bank().add('Charged ice'), collectionLog: true });
 			messages.push('You got a Charged ice for killing the Phantom Muspah in under 3 minutes!');
-		}
+		},
+		healAmountNeeded: 100
 	}
 ];
 

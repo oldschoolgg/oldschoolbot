@@ -112,6 +112,12 @@ const degradeableItemsCanUse: {
 		attackStyle: 'mage',
 		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 20,
 		boost: 7
+	},
+	{
+		item: getOSItem('Trident of the swamp'),
+		attackStyle: 'mage',
+		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 20,
+		boost: 3
 	}
 ];
 
@@ -355,7 +361,7 @@ export async function minionKillCommand(
 				const degItem = degradeableItemsCanUse.find(i => i.item.id === equippedInThisSet.itemID)!;
 				boosts.push(`${equippedInThisSet.boostPercent}% for ${itemNameFromID(equippedInThisSet.itemID)}`);
 				timeToFinish = reduceNumByPercent(timeToFinish, equippedInThisSet.boostPercent);
-				const estimatedChargesNeeded = degItem.charges(monster, osjsMon!, totalMonsterHP);
+				const estimatedChargesNeeded = Math.ceil(degItem.charges(monster, osjsMon!, totalMonsterHP));
 				const result = await checkUserCanUseDegradeableItem({
 					item: getOSItem(equippedInThisSet.itemID),
 					chargesToDegrade: estimatedChargesNeeded,
@@ -373,7 +379,7 @@ export async function minionKillCommand(
 				convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
 				user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
 			if (isUsing) {
-				const estimatedChargesNeeded = degItem.charges(monster, osjsMon!, totalMonsterHP);
+				const estimatedChargesNeeded = Math.ceil(degItem.charges(monster, osjsMon!, totalMonsterHP));
 				await checkUserCanUseDegradeableItem({
 					item: degItem.item,
 					chargesToDegrade: estimatedChargesNeeded,
@@ -588,7 +594,9 @@ export async function minionKillCommand(
 		if (projectilesNeeded > rangeCheck.ammo.quantity) {
 			return `You need ${projectilesNeeded.toLocaleString()}x ${itemNameFromID(
 				rangeCheck.ammo.item
-			)} to kill ${quantity}x ${monster.name}, and you have ${rangeCheck.ammo.item.toLocaleString()}x equipped.`;
+			)} to kill ${quantity}x ${
+				monster.name
+			}, and you have ${rangeCheck.ammo.quantity.toLocaleString()}x equipped.`;
 		}
 	}
 
@@ -600,12 +608,13 @@ export async function minionKillCommand(
 	}
 
 	for (const degItem of degItemBeingUsed) {
-		const chargesNeeded = degItem.charges(monster, osjsMon!, monsterHP * quantity);
-		await degradeItem({
+		const chargesNeeded = Math.ceil(degItem.charges(monster, osjsMon!, monsterHP * quantity));
+		const degradeResult = await degradeItem({
 			item: degItem.item,
 			chargesToDegrade: chargesNeeded,
 			user
 		});
+		messages.push(degradeResult.userMessage);
 	}
 
 	if (lootToRemove.length > 0) {
