@@ -1,6 +1,8 @@
 import { Bank } from 'oldschooljs';
 
+import { MAX_QP } from '../../constants';
 import { diaries, userhasDiaryTier } from '../../diaries';
+import { musicCapeRequirements } from '../../musicCape';
 import { SkillsEnum } from '../../skilling/types';
 import { Buyable } from './buyables';
 
@@ -156,5 +158,46 @@ export const capeBuyables: Buyable[] = [
 		}),
 		gpCost: 1_000_000_000,
 		qpRequired: 5000
+	},
+	{
+		name: 'Music cape',
+		outputItems: new Bank({
+			'Music cape': 1,
+			'Music hood': 1
+		}),
+		gpCost: 99_000,
+		customReq: async user => {
+			const meetsReqs = await musicCapeRequirements.check(user);
+			if (!meetsReqs.hasAll) {
+				return [false, `You don't meet the requirements to buy this: \n${meetsReqs.rendered}`];
+			}
+			return [true];
+		}
+	},
+	{
+		name: 'Music cape(t)',
+		outputItems: new Bank({
+			'Music cape(t)': 1
+		}),
+		gpCost: 99_000,
+		customReq: async user => {
+			const meetsReqs = await musicCapeRequirements.check(user);
+			if (!meetsReqs.hasAll) {
+				return [false, `You don't meet the requirements to buy this: \n${meetsReqs.rendered}`];
+			}
+			if (user.QP < MAX_QP) {
+				return [false, "You can't buy this because you haven't completed all the quests!"];
+			}
+			for (const diary of diaries.map(d => d.elite)) {
+				const [has] = await userhasDiaryTier(user, diary);
+				if (!has) {
+					return [
+						false,
+						"You can't buy this because you haven't completed all the Elite Achievement diaries!"
+					];
+				}
+			}
+			return [true];
+		}
 	}
 ];

@@ -2239,7 +2239,9 @@ export const capesCL = resolveItems([
 	'Sinhaza shroud tier 2',
 	'Sinhaza shroud tier 3',
 	'Sinhaza shroud tier 4',
-	'Sinhaza shroud tier 5'
+	'Sinhaza shroud tier 5',
+	'Music cape',
+	'Music cape (t)'
 ]);
 export const questCL = resolveItems([
 	'Quest point hood',

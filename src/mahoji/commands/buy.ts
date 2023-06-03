@@ -8,6 +8,7 @@ import { isElligibleForPresent } from '../../lib/settings/settings';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
@@ -66,6 +67,7 @@ export const buyCommand: OSBMahojiCommand = {
 		}
 
 		if (buyable.customReq) {
+			await deferInteraction(interaction);
 			const [hasCustomReq, reason] = await buyable.customReq(user);
 			if (!hasCustomReq) {
 				return reason!;

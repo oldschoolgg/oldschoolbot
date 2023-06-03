@@ -3648,6 +3648,37 @@ exports[`BSO Buyables 1`] = `
     "qpRequired": 5000,
   },
   {
+    "customReq": [Function],
+    "gpCost": 99000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Music cape",
+    "outputItems": Bank {
+      "bank": {
+        "13221": 1,
+        "13223": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 99000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Music cape(t)",
+    "outputItems": Bank {
+      "bank": {
+        "13222": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
     "itemCost": Bank {
       "bank": {
         "12012": 40,
