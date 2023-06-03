@@ -1,11 +1,11 @@
 import { Bank } from 'oldschooljs';
 
-import { soteSkillRequirements } from '../../../mahoji/lib/abstracted_commands/zalcanoCommand';
 import { chompyHats, MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
 import { getToaKCs } from '../../simulation/toa';
+import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
 import { Skills } from '../../types';
 import itemID from '../../util/itemID';
 import { allTeamCapes } from '../misc';
