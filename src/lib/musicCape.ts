@@ -184,7 +184,8 @@ AND data->>'runeID' IS NOT NULL;`;
 				'corrupted_gauntlet',
 				'raids_challenge_mode',
 				'tob_hard',
-				'tithe_farm'
+				'tithe_farm',
+				'champions_challenge'
 			];
 
 			const minigameScores = await user.fetchMinigames();
