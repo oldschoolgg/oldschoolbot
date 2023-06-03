@@ -262,6 +262,11 @@ export const clueCommand: OSBMahojiCommand = {
 					durationMultiplier: 0.94
 				},
 				{
+					item: getOSItem('Music cape'),
+					boost: '5% for Music cape',
+					durationMultiplier: 0.95
+				},
+				{
 					item: getOSItem('Eternal teleport crystal'),
 					boost: '3% for Eternal teleport crystal',
 					durationMultiplier: 0.97
