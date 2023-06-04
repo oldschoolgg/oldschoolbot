@@ -10,7 +10,7 @@ const rabbitSnaringCreatures: Creature[] = [
 		aliases: ['white rabbit', 'rabbit'],
 		level: 27,
 		hunterXP: 144,
-		itemsConsumed: new Bank().add('Ferret', 1),
+		itemsConsumed: new Bank().add('Eastern ferret', 1),
 		table: new LootTable().every('Bones').every('Raw rabbit').every('Rabbit foot'),
 		huntTechnique: HunterTechniqueEnum.RabbitSnaring,
 		multiTraps: true,
