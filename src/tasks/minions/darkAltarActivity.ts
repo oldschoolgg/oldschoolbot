@@ -21,17 +21,20 @@ export const darkAltarTask: MinionTask = {
 			user.addXP({
 				skillName: SkillsEnum.Runecraft,
 				amount: quantity * runeData.xp,
-				duration
+				duration,
+				source: 'DarkAltar'
 			}),
 			user.addXP({
 				skillName: SkillsEnum.Crafting,
 				amount: quantity * 1.7,
-				duration
+				duration,
+				source: 'DarkAltar'
 			}),
 			user.addXP({
 				skillName: SkillsEnum.Mining,
 				amount: quantity * 2.7,
-				duration
+				duration,
+				source: 'DarkAltar'
 			})
 		]);
 
