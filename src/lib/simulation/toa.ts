@@ -1235,7 +1235,7 @@ export async function toaStartCommand(
 					user: u
 				});
 			}
-			if (user.gear.mage.hasEquipped('Void staff')) {
+			if (u.gear.mage.hasEquipped('Void staff')) {
 				await degradeItem({
 					item: getOSItem('Void staff'),
 					chargesToDegrade: VOID_STAFF_CHARGES_PER_RAID * quantity,
