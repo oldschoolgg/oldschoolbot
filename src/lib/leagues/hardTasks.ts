@@ -1179,7 +1179,7 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2156,
-		name: 'Fletch 50,000 javellins',
+		name: 'Fletch 50,000 javelins',
 		has: async ({ fletchedItems }) => {
 			let total = 0;
 			for (const item of Javelins) {
@@ -1224,7 +1224,7 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2161,
-		name: "Runecraft 5000 Tiara's",
+		name: 'Runecraft 5000 Tiaras',
 		has: async ({ user }) => {
 			const tiarasMade = await calculateTiarasMade(user);
 			return sumArr(tiarasMade.items().map(i => i[1])) >= 5000;
@@ -1257,12 +1257,16 @@ export const hardTasks: Task[] = [
 		id: 2165,
 		name: 'Create a Mangobeak from scratch',
 		has: async ({ user }) => {
-			return user.cl.has('Mangobeak') && user.cl.has('Blabberbeak') && user.cl.has('Magical mango');
+			return (
+				(user.cl.has('Mangobeak') || user.owns('Mangobeak')) &&
+				user.cl.has('Blabberbeak') &&
+				user.cl.has('Magical mango')
+			);
 		}
 	},
 	{
 		id: 2166,
-		name: 'Fletch 1000 Dragon javellins',
+		name: 'Fletch 1000 Dragon javelins',
 		has: async ({ fletchedItems }) => {
 			return fletchedItems.amount('Dragon javelin') >= 1000;
 		}

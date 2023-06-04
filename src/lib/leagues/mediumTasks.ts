@@ -1063,7 +1063,7 @@ export const mediumTasks: Task[] = [
 	},
 	{
 		id: 1146,
-		name: "Runecraft 1000 Tiara's",
+		name: 'Runecraft 1000 Tiaras',
 		has: async ({ user }) => {
 			const tiarasMade = await calculateTiarasMade(user);
 			return sumArr(tiarasMade.items().map(i => i[1])) >= 1000;

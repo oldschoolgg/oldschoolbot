@@ -741,7 +741,7 @@ export const eliteTasks: Task[] = [
 	},
 	{
 		id: 3097,
-		name: 'Fletch 200,000 javellins',
+		name: 'Fletch 200,000 javelins',
 		has: async ({ fletchedItems }) => {
 			let total = 0;
 			for (const item of Javelins) {
@@ -770,7 +770,7 @@ export const eliteTasks: Task[] = [
 	},
 	{
 		id: 3100,
-		name: "Runecraft 10,000 Tiara's",
+		name: 'Runecraft 10,000 Tiaras',
 		has: async ({ user }) => {
 			const tiarasMade = await calculateTiarasMade(user);
 			return sumArr(tiarasMade.items().map(i => i[1])) >= 10_000;

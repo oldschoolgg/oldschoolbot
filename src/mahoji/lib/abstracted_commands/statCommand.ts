@@ -1323,7 +1323,7 @@ ${unluckiest
 		name: 'Tiaras Made/Runecrafted',
 		perkTierNeeded: null,
 		run: async user => {
-			return makeResponseForBank(await calculateTiarasMade(user), "Tiara's Made");
+			return makeResponseForBank(await calculateTiarasMade(user), 'Tiaras Made');
 		}
 	},
 	{
