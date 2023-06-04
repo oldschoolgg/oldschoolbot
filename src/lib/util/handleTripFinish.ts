@@ -218,17 +218,13 @@ const tripFinishEffects: TripFinishEffect[] = [
 
 				updateClientGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'));
 				messages.push(
-					`Your Voidling alched ${alchResult.maxCasts}x ${alchResult.itemToAlch.name}. Removed ${
-						alchResult.bankToRemove
-					} from your bank and added ${alchResult.bankToAdd}. ${
+					`<:Voidling:886284972380545034> ${alchResult.maxCasts}x ${
+						alchResult.itemToAlch.name
+					} <:alch:739456571347566623> ${toKMB(alchResult.bankToAdd.amount('Coins'))} GP ${
 						!voidlingEquipped && !user.hasEquipped('Magic master cape')
-							? "As you left your Voidling in the bank, it didn't manage to alch at its full potential."
+							? '<:bank:739459924693614653>⏬'
 							: ''
-					}${
-						user.hasEquipped('Magic master cape')
-							? 'Voidling was buffed by your Magic Master cape, and is alching much faster!'
-							: ''
-					}`
+					}${user.hasEquipped('Magic master cape') ? '<:Magicmastercape:1115026341314703492>⏫' : ''}`
 				);
 			} else if (user.favAlchs(Time.Minute * 30).length !== 0) {
 				messages.push(
