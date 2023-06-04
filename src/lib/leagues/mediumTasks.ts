@@ -32,12 +32,7 @@ import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
 import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, Task } from './leaguesUtils';
-import {
-	calculateChargedItems,
-	calculateTiarasMade,
-	calculateTotalMahoganyHomesPoints,
-	calculateXPSources
-} from './stats';
+import { calculateChargedItems, calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats';
 
 export const mediumTasks: Task[] = [
 	{
@@ -1074,14 +1069,6 @@ export const mediumTasks: Task[] = [
 		name: 'Receive 1000 Carpenter points in Mahogany Homes',
 		has: async ({ user }) => {
 			return (await calculateTotalMahoganyHomesPoints(user)) >= 1000;
-		}
-	},
-	{
-		id: 1148,
-		name: 'Receive 50m XP from Nightmare Zone',
-		has: async ({ user }) => {
-			const nightmareXP = (await calculateXPSources(user)).NightmareZone;
-			return nightmareXP !== undefined && nightmareXP >= 50_000_000;
 		}
 	},
 	{
