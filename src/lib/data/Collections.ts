@@ -113,6 +113,7 @@ import {
 	ignecarusCL,
 	ILeftListStatus,
 	implingsCL,
+	inventorOutfit,
 	IToReturnCollection,
 	kalphiteKingCL,
 	kalphiteQueenCL,
@@ -149,6 +150,7 @@ import {
 	skotizoCL,
 	slayerCL,
 	soulWarsCL,
+	spectatorClothes,
 	spiritAnglerOutfit,
 	templeTrekkingCL,
 	temporossCL,
@@ -1103,15 +1105,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Tinkering Workshop': {
 				alias: ['tw', 'tinkering workshop'],
-				items: resolveItems([
-					"Inventors' gloves",
-					"Inventors' boots",
-					"Inventors' legs",
-					"Inventors' torso",
-					"Inventors' helmet",
-					"Inventors' backpack",
-					'Materials bag'
-				]),
+				items: resolveItems([...inventorOutfit, 'Materials bag']),
 				fmtProg: mgProg('tinkering_workshop')
 			},
 			"Balthazar's Big Bonanza": {
@@ -1455,6 +1449,10 @@ export const allCollectionLogs: ICollection = {
 			},
 			Leagues: {
 				items: resolveItems(['Fuzzy dice', 'Karambinana'])
+			},
+			'Spectator Clothes': {
+				items: spectatorClothes,
+				counts: false
 			}
 		}
 	},

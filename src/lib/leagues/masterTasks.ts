@@ -14,6 +14,7 @@ import {
 	gorajanWarriorOutfit,
 	naxxusCL
 } from '../data/CollectionsExport';
+import { slayerMaskHelms } from '../data/slayerMaskHelms';
 import { Inventions } from '../invention/inventions';
 import { dungBuyables } from '../skilling/skills/dung/dungData';
 import { ashes } from '../skilling/skills/prayer';
@@ -1100,6 +1101,29 @@ export const masterTasks: Task[] = [
 		name: 'Open the Crystal chest 3000 times',
 		has: async ({ opens }) => {
 			return opens.amount('Crystal key') >= 3000;
+		}
+	},
+	{
+		id: 4153,
+		name: 'Fletch 50,000 dragon darts',
+		has: async ({ fletchedItems }) => {
+			return fletchedItems.amount('Dragon dart') >= 50_000;
+		}
+	},
+	{
+		id: 4154,
+		name: 'Obtain all Custom Slayer helms',
+		has: async ({ user }) => {
+			return slayerMaskHelms.every(mask => user.cl.has(mask.helm.id));
+		}
+	},
+	{
+		id: 4155,
+		name: 'Fletch 100,000 Elder bows from scratch',
+		has: async ({ user }) => {
+			return ['Elder bow (u)', 'Elder bow', 'Flax', 'Elder logs', 'Bow string'].every(
+				i => user.cl.amount(i) >= 100_000
+			);
 		}
 	}
 ];

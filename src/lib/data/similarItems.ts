@@ -412,7 +412,8 @@ const source: [string, (string | number)[]][] = [
 	["Karil's leatherskirt", ['Armadyl chainskirt', 'Masori chaps (f)', 'Masori chaps']],
 	['Armadyl helmet', ['Masori mask (f)', 'Masori mask']],
 	['Armadyl chestplate', ['Armadyl chestplate', 'Masori body (f)', 'Masori body']],
-	['Armadyl chainskirt', ['Masori chaps (f)', 'Masori chaps']]
+	['Armadyl chainskirt', ['Masori chaps (f)', 'Masori chaps']],
+	['Music cape', ['Music cape (t)']]
 ];
 
 for (const { baseItem, dyedVersions } of dyedItems) {

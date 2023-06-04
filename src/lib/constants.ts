@@ -750,3 +750,7 @@ export const globalDroprates = {
 	}
 };
 export const ONE_TRILLION = 1_000_000_000_000;
+export const gloriesInventorySize = 26;
+export const gloriesInventoryTime = Time.Minute * 2.2;
+export const wealthInventorySize = 26;
+export const wealthInventoryTime = Time.Minute * 2.2;

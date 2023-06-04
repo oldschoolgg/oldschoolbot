@@ -2,43 +2,18 @@ import { calcPercentOfNum, calcWhatPercent, clamp, randArrItem, randInt, roll, s
 import { Bank } from 'oldschooljs';
 
 import { MAX_LEVEL } from '../../../lib/constants';
+import { spectatorClothes } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { getAllUserTames, tameName, TameSpeciesID } from '../../../lib/tames';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import resolveItems from '../../../lib/util/resolveItems';
 
 function calcXP(user: MUser, duration: number, skill: SkillsEnum) {
 	return calcPercentOfNum(calcWhatPercent(user.skillLevel(skill), MAX_LEVEL), duration / 80);
 }
 
 const tameMessages = ["ate a member of the audience who wasn't watching", 'ate a spectator that was boo-ing you'];
-
-const spectatorClothes = resolveItems([
-	'A stylish hat (male, yellow)',
-	'Shirt (male, yellow)',
-	'Leggings (yellow)',
-	'A stylish hat (male, maroon)',
-	'Shirt (male, maroon)',
-	'Leggings (maroon)',
-	'A stylish hat (male, green)',
-	'Shirt (male, green)',
-	'Leggings (green)',
-	'A stylish hat (female, yellow)',
-	'Shirt (female, yellow)',
-	'Skirt (yellow)',
-	'A stylish hat (female, maroon)',
-	'Shirt (female, maroon)',
-	'Skirt (maroon)',
-	'A stylish hat (female, green)',
-	'Shirt (female, green)',
-	'Skirt (green)',
-	'Shoes (male, shoes)',
-	'Shoes (male, boots)',
-	'Shoes (female, straps)',
-	'Shoes (female, flats)'
-]);
 
 export const bonanzaTask: MinionTask = {
 	type: 'BalthazarsBigBonanza',

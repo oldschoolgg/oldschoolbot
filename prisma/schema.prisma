@@ -506,6 +506,7 @@ enum XpGainSource {
   ChambersOfXeric
   TheatreOfBlood
   DepthsOfAtlantis
+  NightmareZone
 }
 
 model XPGain {
@@ -1092,6 +1093,7 @@ enum activity_type_enum {
   BalthazarsBigBonanza
   UnderwaterAgilityThieving
   DepthsOfAtlantis
+  StrongholdOfSecurity
 }
 
 enum xp_gains_skill_enum {

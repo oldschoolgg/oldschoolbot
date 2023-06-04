@@ -3,7 +3,8 @@ import { Monsters } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { barrowsChestCL, customPetsCL, cyclopsCL, treeBeardCL } from '../data/CollectionsExport';
+import { BitField } from '../constants';
+import { barrowsChestCL, customPetsCL, cyclopsCL, inventorOutfit, treeBeardCL } from '../data/CollectionsExport';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -23,12 +24,15 @@ import { implings } from '../implings';
 import { QueenBlackDragon } from '../minions/data/killableMonsters/custom/demiBosses';
 import { TormentedDemon } from '../minions/data/killableMonsters/custom/TormentedDemon';
 import { baseUserKourendFavour, UserKourendFavour } from '../minions/data/kourendFavour';
+import Darts from '../skilling/skills/fletching/fletchables/darts';
+import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
 import { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
 import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, Task } from './leaguesUtils';
+import { calculateChargedItems, calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats';
 
 export const mediumTasks: Task[] = [
 	{
@@ -987,6 +991,101 @@ export const mediumTasks: Task[] = [
 		name: 'Open the Crystal chest 50 times',
 		has: async ({ opens }) => {
 			return opens.amount('Crystal key') >= 50;
+		}
+	},
+	{
+		id: 1139,
+		name: 'Fletch 10,000 javelins',
+		has: async ({ fletchedItems }) => {
+			let total = 0;
+			for (const item of Javelins) {
+				total += fletchedItems.amount(item.id);
+			}
+			return total >= 10_000;
+		}
+	},
+	{
+		id: 1140,
+		name: 'Fletch 100,000 darts',
+		has: async ({ fletchedItems }) => {
+			let total = 0;
+			for (const item of Darts) {
+				total += fletchedItems.amount(item.id);
+			}
+			return total >= 100_000;
+		}
+	},
+	{
+		id: 1142,
+		name: 'Charge 1000x Ring of wealth',
+		has: async ({ user }) => {
+			const { wealthCharged } = await calculateChargedItems(user);
+			return wealthCharged >= 1000;
+		}
+	},
+	{
+		id: 1143,
+		name: 'Charge 1000x Amulet of glory',
+		has: async ({ user }) => {
+			const { gloriesCharged } = await calculateChargedItems(user);
+			return gloriesCharged >= 1000;
+		}
+	},
+	{
+		id: 1144,
+		name: 'Receive, and alch, a Magical artifact',
+		has: async ({ user, alchingStats }) => {
+			return user.cl.has('Magical artifact') && alchingStats.has('Magical artifact');
+		}
+	},
+	{
+		id: 1145,
+		name: 'Complete 100 games of Trouble brewing',
+		has: async ({ minigames }) => {
+			return minigames.trouble_brewing >= 100;
+		}
+	},
+	{
+		id: 1146,
+		name: 'Runecraft 1000 Tiaras',
+		has: async ({ user }) => {
+			const tiarasMade = await calculateTiarasMade(user);
+			return sumArr(tiarasMade.items().map(i => i[1])) >= 1000;
+		}
+	},
+	{
+		id: 1147,
+		name: 'Receive 1000 Carpenter points in Mahogany Homes',
+		has: async ({ user }) => {
+			return (await calculateTotalMahoganyHomesPoints(user)) >= 1000;
+		}
+	},
+	{
+		id: 1149,
+		name: "Receive a Giant's hand",
+		has: async ({ user }) => {
+			return user.cl.has("Giant's hand");
+		}
+	},
+	{
+		id: 1150,
+		name: 'Receive a Materials bag',
+		has: async ({ user }) => {
+			return user.cl.has('Materials bag');
+		}
+	},
+	{
+		id: 1151,
+		name: "Receive the full Inventors' outfit.",
+		has: async ({ user }) => {
+			return inventorOutfit.every(i => user.cl.has(i));
+		}
+	},
+	{
+		id: 1152,
+		name: 'Use a Guthix engram',
+		has: async ({ user }) => {
+			return user.bitfield.includes(BitField.HasGuthixEngram);
 		}
 	}
 ];

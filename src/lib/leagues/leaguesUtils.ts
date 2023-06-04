@@ -51,6 +51,8 @@ export interface HasFunctionArgs {
 	stashUnits: ParsedUnit[];
 	totalLampedXP: number;
 	userStats: UserStats;
+	fletchedItems: Bank;
+	fromScratchDarts: Bank;
 }
 
 export interface Task {

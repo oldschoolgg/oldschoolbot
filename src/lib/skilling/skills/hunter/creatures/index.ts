@@ -8,6 +8,7 @@ import falconryCreatures from './falconry';
 import magicBoxTrappingCreatures from './magicBoxTrapping';
 import netTrappingCreatures from './netTrapping';
 import pitfallTrappingCreatures from './pitfallTrapping';
+import rabbitSnaringCreatures from './rabbitSnaring';
 import trackingCreatures from './tracking';
 
 const creatures: Creature[] = [
@@ -19,6 +20,7 @@ const creatures: Creature[] = [
 	...magicBoxTrappingCreatures,
 	...netTrappingCreatures,
 	...pitfallTrappingCreatures,
+	...rabbitSnaringCreatures,
 	...trackingCreatures,
 	...customBSOCreatures
 ];
