@@ -250,13 +250,6 @@ export const eliteTasks: Task[] = [
 		}
 	},
 	{
-		id: 3029,
-		name: 'Finish the QBD CL',
-		has: async ({ cl }) => {
-			return queenBlackDragonCL.every(c => cl.has(c));
-		}
-	},
-	{
 		id: 3030,
 		name: 'Finish the Sea Kraken CL',
 		has: async ({ cl }) => {
