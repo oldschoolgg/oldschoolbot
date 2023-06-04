@@ -14,7 +14,14 @@ import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
 import { slayerMaskHelms } from '../../../lib/data/slayerMaskHelms';
-import { calcActualClues } from '../../../lib/leagues/stats';
+import {
+	calcActualClues,
+	calculateAllFletchedItems,
+	calculateChargedItems,
+	calculateDartsFletchedFromScratch,
+	calculateTiarasMade,
+	calculateXPSources
+} from '../../../lib/leagues/stats';
 import backgroundImages from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { RandomEvents } from '../../../lib/randomEvents';
@@ -1290,6 +1297,54 @@ ${unluckiest
 			const itemsNotSacBank = new Bank();
 			for (const item of itemsNotSacFiltered) itemsNotSacBank.add(item);
 			return makeResponseForBank(itemsNotSacBank, 'Not Sacrificed Items');
+		}
+	},
+	{
+		name: 'Items Fletched',
+		perkTierNeeded: null,
+		run: async user => {
+			return makeResponseForBank(await calculateAllFletchedItems(user), 'Fletched Items');
+		}
+	},
+	{
+		name: 'Darts Fletched from Scratch',
+		perkTierNeeded: null,
+		run: async user => {
+			return makeResponseForBank(
+				await calculateDartsFletchedFromScratch({
+					itemsSmithed: await personalSmithingStats(user),
+					itemsFletched: await calculateAllFletchedItems(user)
+				}),
+				'Fletched Items'
+			);
+		}
+	},
+	{
+		name: 'Tiaras Made/Runecrafted',
+		perkTierNeeded: null,
+		run: async user => {
+			return makeResponseForBank(await calculateTiarasMade(user), "Tiara's Made");
+		}
+	},
+	{
+		name: 'Charged Items',
+		perkTierNeeded: null,
+		run: async user => {
+			return makeResponseForBank((await calculateChargedItems(user)).bankOfChargedItems, 'Charged Items');
+		}
+	},
+	{
+		name: 'XP Gain Sources',
+		perkTierNeeded: null,
+		run: async user => {
+			const result = await calculateXPSources(user);
+			return {
+				content: `You have gained....
+				
+${Object.entries(result)
+	.map(i => `${i[0]}: ${i[1].toLocaleString()} XP`)
+	.join('\n')}`
+			};
 		}
 	}
 ] as const;

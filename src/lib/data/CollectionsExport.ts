@@ -78,6 +78,15 @@ export interface ICollection {
 	};
 }
 
+export const inventorOutfit = resolveItems([
+	"Inventors' helmet",
+	"Inventors' torso",
+	"Inventors' legs",
+	"Inventors' gloves",
+	"Inventors' boots",
+	"Inventors' backpack"
+]);
+
 export const moktangCL = resolveItems(['Mini moktang', 'Volcanic dye', 'Igne gear frame', 'Volcanic shards']);
 
 export const dwarvenOutfit = resolveItems([
@@ -1555,6 +1564,32 @@ export const titheFarmCL = resolveItems([
 	"Gricoller's can",
 	'Herb sack'
 ]);
+
+export const spectatorClothes = resolveItems([
+	'A stylish hat (male, yellow)',
+	'Shirt (male, yellow)',
+	'Leggings (yellow)',
+	'A stylish hat (male, maroon)',
+	'Shirt (male, maroon)',
+	'Leggings (maroon)',
+	'A stylish hat (male, green)',
+	'Shirt (male, green)',
+	'Leggings (green)',
+	'A stylish hat (female, yellow)',
+	'Shirt (female, yellow)',
+	'Skirt (yellow)',
+	'A stylish hat (female, maroon)',
+	'Shirt (female, maroon)',
+	'Skirt (maroon)',
+	'A stylish hat (female, green)',
+	'Shirt (female, green)',
+	'Skirt (green)',
+	'Shoes (male, shoes)',
+	'Shoes (male, boots)',
+	'Shoes (female, straps)',
+	'Shoes (female, flats)'
+]);
+
 export const troubleBrewingCL = resolveItems([
 	'Blue naval shirt',
 	'Blue tricorn hat',

@@ -21,10 +21,13 @@ import {
 } from '../diaries';
 import { Cookables } from '../skilling/skills/cooking';
 import Fishing from '../skilling/skills/fishing';
+import Javelins from '../skilling/skills/fletching/fletchables/javelins';
+import Runecraft from '../skilling/skills/runecraft';
 import { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, Task } from './leaguesUtils';
+import { calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats';
 
 export const easyTasks: Task[] = [
 	{
@@ -702,6 +705,77 @@ export const easyTasks: Task[] = [
 		name: 'Open the Crystal chest',
 		has: async ({ opens }) => {
 			return opens.has('Crystal key');
+		}
+	},
+	{
+		id: 97,
+		name: 'Fletch 1000 javelins',
+		has: async ({ fletchedItems }) => {
+			let total = 0;
+			for (const item of Javelins) {
+				total += fletchedItems.amount(item.id);
+			}
+			return total >= 1000;
+		}
+	},
+	{
+		id: 98,
+		name: 'Fletch 1000 darts from scratch',
+		has: async ({ fromScratchDarts }) => {
+			return sumArr(fromScratchDarts.items().map(i => i[1])) >= 1000;
+		}
+	},
+	{
+		id: 99,
+		name: 'Charge a Ring of wealth',
+		has: async ({ activityCounts }) => {
+			return activityCounts.WealthCharging >= 1;
+		}
+	},
+	{
+		id: 100,
+		name: 'Charge an Amulet of glory',
+		has: async ({ activityCounts }) => {
+			return activityCounts.GloryCharging >= 1;
+		}
+	},
+	{
+		id: 101,
+		name: 'Complete a game of Trouble brewing',
+		has: async ({ minigames }) => {
+			return minigames.trouble_brewing >= 1;
+		}
+	},
+	{
+		id: 102,
+		name: 'Runecraft atleast 1 of every Tiara',
+		has: async ({ user }) => {
+			const tiarasMade = await calculateTiarasMade(user);
+			for (const tiara of Runecraft.Tiaras) {
+				if (!tiarasMade.has(tiara.id)) return false;
+			}
+			return true;
+		}
+	},
+	{
+		id: 103,
+		name: 'Receive 100 Carpenter points in Mahogany Homes',
+		has: async ({ user }) => {
+			return (await calculateTotalMahoganyHomesPoints(user)) >= 100;
+		}
+	},
+	{
+		id: 104,
+		name: 'Receive 2000 Warrior guild tokens from Animated Armours',
+		has: async ({ user, activityCounts }) => {
+			return activityCounts.AnimatedArmour >= 1 && user.cl.amount('Warrior guild token') >= 2000;
+		}
+	},
+	{
+		id: 105,
+		name: 'Complete a Tinkering Workshop trip',
+		has: async ({ minigames }) => {
+			return minigames.tinkering_workshop >= 1;
 		}
 	}
 ];

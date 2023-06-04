@@ -33,7 +33,13 @@ import { hardTasks } from './hardTasks';
 import { betterHerbloreStats, HasFunctionArgs, Task } from './leaguesUtils';
 import { masterTasks } from './masterTasks';
 import { mediumTasks } from './mediumTasks';
-import { calcActualClues, calcLeaguesRanking, totalLampedXP } from './stats';
+import {
+	calcActualClues,
+	calcLeaguesRanking,
+	calculateAllFletchedItems,
+	calculateDartsFletchedFromScratch,
+	totalLampedXP
+} from './stats';
 
 export const leagueTasks = [
 	{ name: 'Easy', tasks: easyTasks, points: 20 },
@@ -132,7 +138,8 @@ export async function leaguesCheckUser(userID: string) {
 		actualClues,
 		ranking,
 		smeltingStats,
-		stashUnits
+		stashUnits,
+		fletchedItems
 	] = await Promise.all([
 		personalConstructionStats(mahojiUser),
 		getPOH(userID),
@@ -152,7 +159,8 @@ export async function leaguesCheckUser(userID: string) {
 		calcActualClues(mahojiUser),
 		calcLeaguesRanking(roboChimpUser),
 		personalSmeltingStats(mahojiUser),
-		getParsedStashUnits(userID)
+		getParsedStashUnits(userID),
+		calculateAllFletchedItems(mahojiUser)
 	]);
 	const clPercent = calcCLDetails(mahojiUser).percent;
 	const herbloreStats = betterHerbloreStats(_herbloreStats);
@@ -200,7 +208,12 @@ export async function leaguesCheckUser(userID: string) {
 		smeltingStats,
 		stashUnits,
 		totalLampedXP: totalLampedXP(userStats),
-		userStats
+		userStats,
+		fletchedItems,
+		fromScratchDarts: calculateDartsFletchedFromScratch({
+			itemsFletched: fletchedItems,
+			itemsSmithed: smithingStats
+		})
 	};
 
 	let resStr = '\n';

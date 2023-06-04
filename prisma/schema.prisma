@@ -506,6 +506,7 @@ enum XpGainSource {
   ChambersOfXeric
   TheatreOfBlood
   DepthsOfAtlantis
+  NightmareZone
 }
 
 model XPGain {
