@@ -455,7 +455,10 @@ export async function calcDOAInput({
 	cost.add('Super combat potion(4)', quantity);
 	cost.add('Ranging potion(4)', quantity);
 	cost.add('Sanfew serum(4)', quantity);
-	cost.add('Magic potion(4)', quantity);
+
+	if (!user.owns('Saturated heart') && !user.owns('Imbued heart')) {
+		cost.add('Magic potion(4)', quantity);
+	}
 
 	let brewsNeeded = Math.max(4, 9 - Math.max(1, Math.ceil((kc + 1) / 12)));
 	brewsNeeded += 10;
@@ -910,8 +913,8 @@ export async function doaStartCommand(
 
 	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
 		.map(u => u.usernameOrMention)
-		.join(', ')}) is now off to do ${
-		quantity === 1 ? 'a' : `${quantity}x`
+		.join(', ')}) is now off to do ${quantity === 1 ? 'a' : `${quantity}x`} ${
+		challengeMode ? 'Challenge Mode' : ''
 	} Depths of Atlantis raid - the total trip will take ${formatDuration(createdDOATeam.fakeDuration)}.`;
 
 	str += ` \n\n${debugStr}`;
