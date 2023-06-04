@@ -153,7 +153,8 @@ AND data->>'runeID' IS NOT NULL;`;
 				activity_type_enum.BirthdayEvent,
 				activity_type_enum.Questing,
 				activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
-				activity_type_enum.ChampionsChallenge
+				activity_type_enum.ChampionsChallenge,
+				activity_type_enum.Nex
 			];
 			const activityCounts = await getUsersActivityCounts(user);
 
