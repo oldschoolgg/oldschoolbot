@@ -1,14 +1,11 @@
-import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { wealthInventorySize, wealthInventoryTime } from '../../../lib/constants';
 import { userhasDiaryTier, WildernessDiary } from '../../../lib/diaries';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-
-export const wealthInventorySize = 26;
-export const wealthInventoryTime = Time.Minute * 2.2;
 
 export async function chargeWealthCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	const userBank = user.bank;

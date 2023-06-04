@@ -2,23 +2,15 @@ import { randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { inventorOutfit } from '../../../lib/data/CollectionsExport';
 import { MaterialBank } from '../../../lib/invention/MaterialBank';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClueTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TinkeringWorkshopOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import resolveItems from '../../../lib/util/resolveItems';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
-const inventorOutfit = resolveItems([
-	"Inventors' helmet",
-	"Inventors' torso",
-	"Inventors' legs",
-	"Inventors' gloves",
-	"Inventors' boots",
-	"Inventors' backpack"
-]);
 function tinkerLoot(user: MUser, quantity: number) {
 	const loot = new Bank();
 	let effectiveBank = user.allItemsOwned.clone();

@@ -4,6 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { eggs } from '../../mahoji/commands/offer';
 import { feedableItems } from '../../mahoji/commands/tames';
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { ZALCANO_ID } from '../constants';
 import {
 	abyssalDragonCL,
 	all3rdAgeItems,
@@ -15,8 +16,11 @@ import {
 	nexCL,
 	queenBlackDragonCL,
 	seaKrakenCL,
+	spectatorClothes,
+	troubleBrewingCL,
 	vasaMagusCL
 } from '../data/CollectionsExport';
+import { slayerMaskHelms } from '../data/slayerMaskHelms';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -33,12 +37,15 @@ import {
 	WildernessDiary
 } from '../diaries';
 import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
+import Darts from '../skilling/skills/fletching/fletchables/darts';
+import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
 import { TameSpeciesID, TameType } from '../tames';
 import { ItemBank } from '../types';
 import { calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { leaguesHasCatches, leaguesHasKC, Task } from './leaguesUtils';
+import { calculateTiarasMade } from './stats';
 
 export const eliteTasks: Task[] = [
 	{
@@ -730,6 +737,71 @@ export const eliteTasks: Task[] = [
 		name: 'Receive and use a deathtouched dart',
 		has: async ({ cl, userStats }) => {
 			return cl.has('Deathtouched dart') && userStats.death_touched_darts_used >= 1;
+		}
+	},
+	{
+		id: 3097,
+		name: 'Fletch 200,000 javelins',
+		has: async ({ fletchedItems }) => {
+			let total = 0;
+			for (const item of Javelins) {
+				total += fletchedItems.amount(item.id);
+			}
+			return total >= 200_000;
+		}
+	},
+	{
+		id: 3098,
+		name: 'Fletch 1,000,000 darts',
+		has: async ({ fletchedItems }) => {
+			let total = 0;
+			for (const item of Darts) {
+				total += fletchedItems.amount(item.id);
+			}
+			return total >= 1_000_000;
+		}
+	},
+	{
+		id: 3099,
+		name: 'Receive, and alch, 50x Magical artifacts',
+		has: async ({ user, alchingStats }) => {
+			return user.cl.amount('Magical artifact') >= 50 && alchingStats.amount('Magical artifact') >= 50;
+		}
+	},
+	{
+		id: 3100,
+		name: 'Runecraft 10,000 Tiaras',
+		has: async ({ user }) => {
+			const tiarasMade = await calculateTiarasMade(user);
+			return sumArr(tiarasMade.items().map(i => i[1])) >= 10_000;
+		}
+	},
+	{
+		id: 3101,
+		name: 'Receive all Balthazars Big Bonanza spectator clothes',
+		has: async ({ user }) => {
+			return spectatorClothes.every(i => user.cl.has(i));
+		}
+	},
+	{
+		id: 3102,
+		name: 'Complete the Trouble Brewing CL',
+		has: async ({ user }) => {
+			return troubleBrewingCL.every(i => user.cl.has(i));
+		}
+	},
+	{
+		id: 3103,
+		name: 'Defeat Zalcano 1000 times',
+		has: async args => {
+			return leaguesHasKC(args, { id: ZALCANO_ID }, 1000);
+		}
+	},
+	{
+		id: 3104,
+		name: 'Obtain all Custom Slayer masks',
+		has: async ({ user }) => {
+			return slayerMaskHelms.every(mask => user.cl.has(mask.mask.id));
 		}
 	}
 ];

@@ -5,7 +5,12 @@ import { convertLVLtoXP, convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/uti
 
 import { MAXING_MESSAGE } from '../config';
 import { Channel, Events, GLOBAL_BSO_XP_MULTIPLIER, LEVEL_120_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from './data/CollectionsExport';
+import {
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit,
+	inventorOutfit
+} from './data/CollectionsExport';
 import { skillEmoji } from './data/emojis';
 import { getSimilarItems } from './data/similarItems';
 import { AddXpParams } from './minions/types';
@@ -86,14 +91,7 @@ const skillingOutfitBoosts = [
 	},
 	{
 		skill: SkillsEnum.Invention,
-		outfit: resolveItems([
-			"Inventors' gloves",
-			"Inventors' boots",
-			"Inventors' legs",
-			"Inventors' torso",
-			"Inventors' helmet",
-			"Inventors' backpack"
-		]),
+		outfit: inventorOutfit,
 		individualBoost: 0.5,
 		totalBoost: 4
 	}

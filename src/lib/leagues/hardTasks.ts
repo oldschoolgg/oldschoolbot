@@ -3,6 +3,9 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { circusBuyables } from '../data/buyables/circusBuyables';
+import { fistOfGuthixBuyables } from '../data/buyables/fistOfGuthixBuyables';
+import { stealingCreationBuyables } from '../data/buyables/stealingCreationBuyables';
 import {
 	allGildedItems,
 	brokenPernixOutfit,
@@ -39,11 +42,14 @@ import { MOKTANG_ID } from '../minions/data/killableMonsters/custom/bosses/Mokta
 import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
 import { NexMonster } from '../nex';
 import { allThirdAgeItems } from '../simulation/sharedTables';
+import Darts from '../skilling/skills/fletching/fletchables/darts';
+import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
 import { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { leaguesHasCatches, leaguesHasKC, Task } from './leaguesUtils';
+import { calculateChargedItems, calculateTiarasMade } from './stats';
 
 export const hardTasks: Task[] = [
 	{
@@ -1169,6 +1175,100 @@ export const hardTasks: Task[] = [
 		name: 'Open the Crystal chest 250 times',
 		has: async ({ opens }) => {
 			return opens.amount('Crystal key') >= 250;
+		}
+	},
+	{
+		id: 2156,
+		name: 'Fletch 50,000 javelins',
+		has: async ({ fletchedItems }) => {
+			let total = 0;
+			for (const item of Javelins) {
+				total += fletchedItems.amount(item.id);
+			}
+			return total >= 50_000;
+		}
+	},
+	{
+		id: 2157,
+		name: 'Fletch 500,000 darts',
+		has: async ({ fletchedItems }) => {
+			let total = 0;
+			for (const item of Darts) {
+				total += fletchedItems.amount(item.id);
+			}
+			return total >= 500_000;
+		}
+	},
+	{
+		id: 2158,
+		name: 'Charge 2500x Ring of wealth',
+		has: async ({ user }) => {
+			const { wealthCharged } = await calculateChargedItems(user);
+			return wealthCharged >= 2500;
+		}
+	},
+	{
+		id: 2159,
+		name: 'Charge 2500x Amulet of glory',
+		has: async ({ user }) => {
+			const { gloriesCharged } = await calculateChargedItems(user);
+			return gloriesCharged >= 2500;
+		}
+	},
+	{
+		id: 2160,
+		name: 'Receive, and alch, 10x Magical artifacts',
+		has: async ({ user, alchingStats }) => {
+			return user.cl.amount('Magical artifact') >= 10 && alchingStats.amount('Magical artifact') >= 10;
+		}
+	},
+	{
+		id: 2161,
+		name: 'Runecraft 5000 Tiaras',
+		has: async ({ user }) => {
+			const tiarasMade = await calculateTiarasMade(user);
+			return sumArr(tiarasMade.items().map(i => i[1])) >= 5000;
+		}
+	},
+	{
+		id: 2162,
+		name: 'Buy all Fist of guthix rewards',
+		has: async ({ user }) => {
+			return fistOfGuthixBuyables.every(buyable => user.cl.has(buyable.name));
+		}
+	},
+	{
+		id: 2163,
+		name: 'Buy all Stealing creation rewards',
+		has: async ({ user }) => {
+			return stealingCreationBuyables.every(buyable =>
+				user.cl.has(buyable.outputItems === undefined ? buyable.name : (buyable.outputItems as Bank))
+			);
+		}
+	},
+	{
+		id: 2164,
+		name: 'Buy all Balthazars Big Bonanza rewards',
+		has: async ({ user }) => {
+			return circusBuyables.every(buyable => user.cl.has(buyable.name));
+		}
+	},
+	{
+		id: 2165,
+		name: 'Create a Mangobeak from scratch',
+		has: async ({ user }) => {
+			return (
+				(user.cl.has('Mangobeak') || user.owns('Mangobeak')) &&
+				user.cl.has('Blabberbeak') &&
+				user.cl.has('Magical mango')
+			);
+		}
+	},
+	{
+		id: 2166,
+		name: 'Fletch 1000 Dragon javelins',
+		has: async ({ fletchedItems }) => {
+			return fletchedItems.amount('Dragon javelin') >= 1000;
 		}
 	}
 ];
