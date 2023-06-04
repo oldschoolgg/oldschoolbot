@@ -910,8 +910,8 @@ export async function doaStartCommand(
 
 	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
 		.map(u => u.usernameOrMention)
-		.join(', ')}) is now off to do ${
-		quantity === 1 ? 'a' : `${quantity}x`
+		.join(', ')}) is now off to do ${quantity === 1 ? 'a' : `${quantity}x`} ${
+		challengeMode ? 'Challenge Mode' : ''
 	} Depths of Atlantis raid - the total trip will take ${formatDuration(createdDOATeam.fakeDuration)}.`;
 
 	str += ` \n\n${debugStr}`;
