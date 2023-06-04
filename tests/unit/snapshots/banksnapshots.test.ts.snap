@@ -3413,6 +3413,37 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
+    "customReq": [Function],
+    "gpCost": 99000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Music cape",
+    "outputItems": Bank {
+      "bank": {
+        "13221": 1,
+        "13223": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 99000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Music cape(t)",
+    "outputItems": Bank {
+      "bank": {
+        "13222": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
     "itemCost": Bank {
       "bank": {
         "12012": 40,
@@ -8204,6 +8235,40 @@ exports[`OSB Creatables 1`] = `
     "requiredSkills": {
       "crafting": 80,
       "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "20724": 1,
+        "27616": 150000,
+      },
+      "frozen": false,
+    },
+    "name": "Saturated heart",
+    "outputItems": Bank {
+      "bank": {
+        "27641": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "11905": 1,
+        "12932": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Trident of the swamp",
+    "outputItems": Bank {
+      "bank": {
+        "12899": 1,
+      },
+      "frozen": false,
     },
   },
   {
