@@ -429,6 +429,25 @@ enum XpGainSource {
   UnderwaterAgilityThieving
   ChambersOfXeric
   TheatreOfBlood
+  NightmareZone
+  AshSanctifier
+  OfferingBones
+  TempleTrekking
+  DarkAltar
+  MotherlodeMine
+  Birdhouses
+  GuardiansOfTheRift
+  BuryingBones
+  ScatteringAshes
+  Zalcano
+  Wintertodt
+  FishingTrawler
+  Tempoross
+  TearsOfGuthix
+  ShadesOfMorton
+  PuroPuro
+  MahoganyHomes
+  AerialFishing
 }
 
 model XPGain {
