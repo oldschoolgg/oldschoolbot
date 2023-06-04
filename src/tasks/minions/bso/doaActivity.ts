@@ -215,7 +215,9 @@ export const doaTask: MinionTask = {
 			  } Depths of Atlantis raid${quantity > 1 ? 's' : ''}! Your KC is now ${
 					minigameIncrementResult[0].newScore
 			  }.\n`
-			: `<@${leader}> Your Depths of Atlantis Raid${quantity > 1 ? 's have' : ' has'} finished.\n`;
+			: `<@${leader}> Your${cm ? ' Challenge Mode' : ''} Depths of Atlantis Raid${
+					quantity > 1 ? 's have' : ' has'
+			  } finished.\n`;
 
 		const shouldShowImage = allUsers.length <= 3 && totalLoot.entries().every(i => i[1].length <= 6);
 
