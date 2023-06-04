@@ -1252,7 +1252,7 @@ export const hardTasks: Task[] = [
 			return (
 				(user.cl.has('Mangobeak') || user.owns('Mangobeak')) &&
 				user.cl.has('Blabberbeak') &&
-				user.cl.has('Magical mango')
+				(user.cl.has('Magical mango') || (user.cl.has('Shiny mango') && user.cl.has('Magus scroll')))
 			);
 		}
 	},
