@@ -489,13 +489,6 @@ export const eliteTasks: Task[] = [
 		}
 	},
 	{
-		id: 3061,
-		name: 'Alch 5000 of any item',
-		has: async ({ alchingStats }) => {
-			return sumArr(alchingStats.items().map(i => i[1])) >= 5000;
-		}
-	},
-	{
 		id: 3062,
 		name: 'Clean 15,000 herbs',
 		has: async ({ herbloreStats }) => {

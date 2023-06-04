@@ -1016,17 +1016,6 @@ export const mediumTasks: Task[] = [
 		}
 	},
 	{
-		id: 1141,
-		name: 'Fletch 100,000 darts',
-		has: async ({ fletchedItems }) => {
-			let total = 0;
-			for (const item of Darts) {
-				total += fletchedItems.amount(item.id);
-			}
-			return total >= 100_000;
-		}
-	},
-	{
 		id: 1142,
 		name: 'Charge 1000x Ring of wealth',
 		has: async ({ user }) => {

@@ -15,7 +15,6 @@ import {
 	masterCapesCL,
 	monkeyBackpacksCL,
 	pernixOutfit,
-	seaKrakenCL,
 	skillingPetsCL,
 	torvaOutfit,
 	virtusOutfit
@@ -987,13 +986,6 @@ export const hardTasks: Task[] = [
 		name: 'Defeat Nex 500 Times',
 		has: async ({ monsterScores }) => {
 			return (monsterScores[NexMonster.id] ?? 0) >= 500;
-		}
-	},
-	{
-		id: 2130,
-		name: 'Finish the Sea Kraken CL',
-		has: async ({ cl }) => {
-			return seaKrakenCL.every(gs => cl.has(gs));
 		}
 	},
 	{
