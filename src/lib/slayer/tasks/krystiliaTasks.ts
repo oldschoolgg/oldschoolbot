@@ -31,19 +31,19 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.Bandits,
+		monster: Monsters.Bandit,
 		amount: [75, 125],
 		weight: 4,
-		monsters: [Monsters.bandit],
-		combatLevel: 22,
+		monsters: [Monsters.Bandit.id],
+		combatLevel: 130,
 		unlocked: true
 	},
 	{
 		monster: Monsters.BlackBear,
 		amount: [65, 100],
 		weight: 6,
-		monsters: [21, 320, 470],
-		combatLevel: 21,
+		monsters: [Monsters.BlackBear.id],
+		combatLevel: Monsters.BlackBear.data.combatLevel,
 		unlocked: true
 	},
 	{
@@ -51,7 +51,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [100, 150],
 		extendedAmount: [200, 250],
 		weight: 7,
-		monsters: [172, 188],
+		monsters: [Monsters.BlackDemon.id],
 		combatLevel: 172,
 		unlocked: true
 	},
