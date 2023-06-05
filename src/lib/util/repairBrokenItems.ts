@@ -2,17 +2,24 @@ import { Prisma } from '@prisma/client';
 import { notEmpty } from 'e';
 import { Items } from 'oldschooljs';
 
+import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { GearSetup, GearSetupTypes } from '../gear';
 import { mahojiUserSettingsUpdate } from '../MUser';
 import { prisma } from '../settings/prisma';
 import { ItemBank } from '../types';
 import { moidLink } from '../util';
 
-export async function repairBrokenItemsFromUser({ user }: MUser): Promise<[string] | [string, any[]]> {
+export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] | [string, any[]]> {
+	const { user } = mUser;
 	const changes: Prisma.UserUpdateArgs['data'] = {};
 	const rawBank = user.bank as ItemBank;
 	const rawCL = user.collectionLogBank as ItemBank;
 	const rawTempCL = user.temp_cl as ItemBank;
+
+	const { sacrificed_bank: rawSacLog } = (await mUser.fetchStats({ sacrificed_bank: true })) as {
+		sacrificed_bank: ItemBank;
+	};
+
 	const favorites = user.favoriteItems;
 	let rawTameBanks: [number, ItemBank][] = [];
 	let rawTameFeeds: [number, ItemBank][] = [];
@@ -44,6 +51,7 @@ export async function repairBrokenItemsFromUser({ user }: MUser): Promise<[strin
 		['bank', Object.keys(rawBank)],
 		['cl', Object.keys(rawCL)],
 		['tempcl', Object.keys(rawTempCL)],
+		['sl', Object.keys(rawSacLog)],
 		['favs', favorites],
 		['gear', allGearItemIDs]
 	];
@@ -72,11 +80,13 @@ export async function repairBrokenItemsFromUser({ user }: MUser): Promise<[strin
 	const newBank = { ...rawBank };
 	const newCL = { ...rawCL };
 	const newTempCL = { ...rawTempCL };
+	const newSacLog = { ...rawSacLog };
 
 	for (const id of brokenBank) {
 		delete newBank[id];
 		delete newCL[id];
 		delete newTempCL[id];
+		delete newSacLog[id];
 		for (const [, tameBank] of newTameBanks) {
 			delete tameBank[id];
 		}
@@ -124,6 +134,13 @@ export async function repairBrokenItemsFromUser({ user }: MUser): Promise<[strin
 				});
 			}
 		}
+		await userStatsUpdate(
+			mUser.id,
+			{
+				sacrificed_bank: newSacLog
+			},
+			{}
+		);
 
 		return [
 			`You had ${
