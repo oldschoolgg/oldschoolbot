@@ -302,7 +302,9 @@ export const farmingTask: MinionTask = {
 			}
 
 			if (cleanHerb) {
-				infoStr.push(`\nYou received ${herbloreXp.toLocaleString()} for cleaning the herbs during your trip.`);
+				infoStr.push(
+					`\nYou received ${herbloreXp.toLocaleString()} Herblore XP for cleaning the herbs during your trip.`
+				);
 			}
 
 			await user.addXP({

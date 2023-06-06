@@ -3,6 +3,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { BitField } from '../../../lib/constants';
 import { superCompostables } from '../../../lib/data/filterables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
@@ -82,6 +83,11 @@ export async function harvestCommand({
 	if (user.hasEquippedOrInBank(['Ring of endurance'])) {
 		boostStr.push('10% time for Ring of Endurance');
 		duration *= 0.9;
+	}
+
+	if (seedType === 'herb' && user.bitfield.includes(BitField.CleanHerbsFarming)) {
+		// Assumes an average yield of 8 herbs and 1t per herb
+		duration += patch.lastQuantity * (Time.Second * 0.6 * 8);
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'Farming');
@@ -212,6 +218,11 @@ export async function farmingPlantCommand({
 		}
 	} else {
 		duration = quantity * (timePerPatchTravel + timePerPatchPlant);
+	}
+
+	if (plant.seedType === 'herb' && user.bitfield.includes(BitField.CleanHerbsFarming)) {
+		// Assumes an average yield of 8 herbs and 1t per herb
+		duration += patchType.lastQuantity * (Time.Second * 0.6 * 8);
 	}
 
 	// Reduce time if user has graceful equipped
