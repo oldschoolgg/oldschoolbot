@@ -377,6 +377,7 @@ model User {
   serp_helm_charges      Int @default(0)
   blood_fury_charges     Int @default(0)
   tum_shadow_charges     Int @default(0)
+  blood_essence_charges  Int @default(0)
   trident_charges        Int @default(0)
 
   // Balances
@@ -428,6 +429,25 @@ enum XpGainSource {
   UnderwaterAgilityThieving
   ChambersOfXeric
   TheatreOfBlood
+  NightmareZone
+  AshSanctifier
+  OfferingBones
+  TempleTrekking
+  DarkAltar
+  MotherlodeMine
+  Birdhouses
+  GuardiansOfTheRift
+  BuryingBones
+  ScatteringAshes
+  Zalcano
+  Wintertodt
+  FishingTrawler
+  Tempoross
+  TearsOfGuthix
+  ShadesOfMorton
+  PuroPuro
+  MahoganyHomes
+  AerialFishing
 }
 
 model XPGain {
