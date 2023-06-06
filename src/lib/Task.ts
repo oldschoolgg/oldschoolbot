@@ -11,7 +11,6 @@ import { cookingTask } from '../tasks/minions/cookingActivity';
 import { craftingTask } from '../tasks/minions/craftingActivity';
 import { cutLeapingFishTask } from '../tasks/minions/cutLeapingFishActivity';
 import { darkAltarTask } from '../tasks/minions/darkAltarActivity';
-import { easterTask } from '../tasks/minions/easterActivity';
 import { enchantingTask } from '../tasks/minions/enchantingActivity';
 import { farmingTask } from '../tasks/minions/farmingActivity';
 import { firemakingTask } from '../tasks/minions/firemakingActivity';
@@ -75,6 +74,7 @@ import { sawmillTask } from '../tasks/minions/sawmillActivity';
 import { shootingStarTask } from '../tasks/minions/shootingStarsActivity';
 import { smeltingTask } from '../tasks/minions/smeltingActivity';
 import { smithingTask } from '../tasks/minions/smithingActivity';
+import { strongholdTask } from '../tasks/minions/strongholdOfSecurityActivity';
 import { tiaraRunecraftTask } from '../tasks/minions/tiaraRunecraftActivity';
 import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
 import { vmTask } from '../tasks/minions/volcanicMineActivity';
@@ -175,7 +175,7 @@ export const tasks: MinionTask[] = [
 	cutLeapingFishTask,
 	toaTask,
 	underwaterAgilityThievingTask,
-	easterTask
+	strongholdTask
 ];
 
 export async function syncActivityCache() {

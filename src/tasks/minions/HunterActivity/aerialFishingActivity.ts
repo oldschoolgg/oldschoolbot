@@ -101,8 +101,8 @@ export const aerialFishingTask: MinionTask = {
 			}
 		}
 
-		await user.addXP({ skillName: SkillsEnum.Fishing, amount: fishXpReceived });
-		await user.addXP({ skillName: SkillsEnum.Hunter, amount: huntXpReceived });
+		await user.addXP({ skillName: SkillsEnum.Fishing, amount: fishXpReceived, source: 'AerialFishing' });
+		await user.addXP({ skillName: SkillsEnum.Hunter, amount: huntXpReceived, source: 'AerialFishing' });
 		await user.incrementCreatureScore(bluegill.id, bluegillCaught);
 		await user.incrementCreatureScore(commonTench.id, commonTenchCaught);
 		await user.incrementCreatureScore(mottledEel.id, mottledEelCaught);

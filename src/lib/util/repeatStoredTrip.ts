@@ -89,6 +89,10 @@ export const tripHandlers = {
 		commandName: 'm',
 		args: () => ({})
 	},
+	[activity_type_enum.StrongholdOfSecurity]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.TearsOfGuthix]: {
 		commandName: 'm',
 		args: () => ({})
@@ -214,7 +218,7 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.DarkAltar]: {
 		commandName: 'runecraft',
-		args: (data: DarkAltarOptions) => ({ rune: darkAltarRunes[data.rune].item.name })
+		args: (data: DarkAltarOptions) => ({ rune: `${darkAltarRunes[data.rune].item.name} (zeah)` })
 	},
 	[activity_type_enum.Runecraft]: {
 		commandName: 'runecraft',
@@ -421,7 +425,7 @@ export const tripHandlers = {
 	[activity_type_enum.PuroPuro]: {
 		commandName: 'activities',
 		args: (data: PuroPuroActivityTaskOptions) => ({
-			puro_puro: { impling: data.implingID || '', dark_lure: data.darkLure }
+			puro_puro: { implingTier: data.implingTier || '', dark_lure: data.darkLure }
 		})
 	},
 	[activity_type_enum.Questing]: {

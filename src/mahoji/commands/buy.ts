@@ -6,6 +6,7 @@ import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
@@ -64,6 +65,7 @@ export const buyCommand: OSBMahojiCommand = {
 		}
 
 		if (buyable.customReq) {
+			await deferInteraction(interaction);
 			const [hasCustomReq, reason] = await buyable.customReq(user);
 			if (!hasCustomReq) {
 				return reason!;

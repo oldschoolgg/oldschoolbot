@@ -34,7 +34,7 @@ export const buryingTask: MinionTask = {
 		const XPMod = 1;
 		const xpReceived = newQuantity * bone.xp * XPMod;
 
-		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived });
+		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived, source: 'BuryingBones' });
 		const newLevel = user.skillLevel(SkillsEnum.Prayer);
 
 		let str = `${user}, ${user.minionName} finished burying ${quantity} ${

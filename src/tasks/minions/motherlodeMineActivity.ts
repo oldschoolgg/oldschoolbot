@@ -93,7 +93,8 @@ export const motherlodeMiningTask: MinionTask = {
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Mining,
 			amount: xpReceived,
-			duration
+			duration,
+			source: 'MotherlodeMine'
 		});
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} Pay-dirt. ${xpRes}`;
