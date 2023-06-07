@@ -330,7 +330,8 @@ const source: [string, (string | number)[]][] = [
 	['Armadyl helmet', ['Masori mask (f)', 'Masori mask']],
 	['Armadyl chestplate', ['Armadyl chestplate', 'Masori body (f)', 'Masori body']],
 	['Armadyl chainskirt', ['Masori chaps (f)', 'Masori chaps']],
-	['Music cape', ['Music cape (t)']]
+	['Music cape', ['Music cape (t)']],
+	['Imbued heart', ['Saturated heart']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
