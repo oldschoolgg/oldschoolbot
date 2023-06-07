@@ -85,7 +85,11 @@ export async function harvestCommand({
 		duration *= 0.9;
 	}
 
-	if (seedType === 'herb' && user.bitfield.includes(BitField.CleanHerbsFarming)) {
+	if (
+		seedType === 'herb' &&
+		user.bitfield.includes(BitField.CleanHerbsFarming) &&
+		user.skillLevel(SkillsEnum.Herblore) >= plant.herbLvl!
+	) {
 		// Assumes an average yield of 8 herbs and 1t per herb
 		duration += patch.lastQuantity * (Time.Second * 0.6 * 8);
 	}
@@ -220,7 +224,11 @@ export async function farmingPlantCommand({
 		duration = quantity * (timePerPatchTravel + timePerPatchPlant);
 	}
 
-	if (plant.seedType === 'herb' && user.bitfield.includes(BitField.CleanHerbsFarming)) {
+	if (
+		plant.seedType === 'herb' &&
+		user.bitfield.includes(BitField.CleanHerbsFarming) &&
+		user.skillLevel(SkillsEnum.Herblore) >= plant.herbLvl!
+	) {
 		// Assumes an average yield of 8 herbs and 1t per herb
 		duration += patchType.lastQuantity * (Time.Second * 0.6 * 8);
 	}

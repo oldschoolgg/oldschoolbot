@@ -168,7 +168,10 @@ export const farmingTask: MinionTask = {
 			}
 			checkHealthXp = alivePlants * plantToHarvest.checkXp;
 
-			const cleanHerb = plantToHarvest.herbXp !== undefined && user.bitfield.includes(BitField.CleanHerbsFarming);
+			const cleanHerb =
+				plantToHarvest.herbXp !== undefined &&
+				user.bitfield.includes(BitField.CleanHerbsFarming) &&
+				user.skillLevel(SkillsEnum.Herblore) >= plant.herbLvl!;
 
 			if (plantToHarvest.givesCrops) {
 				let cropToHarvest = plantToHarvest.outputCrop;

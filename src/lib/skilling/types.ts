@@ -230,6 +230,7 @@ export interface Plant {
 	outputCrop?: number;
 	cleanHerbCrop?: number;
 	herbXp?: number;
+	herbLvl?: number;
 	outputLogs?: number;
 	outputRoots?: number;
 	treeWoodcuttingLevel?: number;
