@@ -227,12 +227,12 @@ export async function farmingPlantCommand({
 	if (
 		plant.seedType === 'herb' &&
 		user.bitfield.includes(BitField.CleanHerbsFarming) &&
-		user.skillLevel(SkillsEnum.Herblore) >= plant.herbLvl!
+		planted?.herbLvl !== undefined &&
+		user.skillLevel(SkillsEnum.Herblore) >= planted.herbLvl
 	) {
 		// Assumes an average yield of 8 herbs and 1t per herb
 		duration += patchType.lastQuantity * (Time.Second * 0.6 * 8);
 	}
-
 	// Reduce time if user has graceful equipped
 	if (userHasGracefulEquipped(user)) {
 		boostStr.push('10% time for Graceful');

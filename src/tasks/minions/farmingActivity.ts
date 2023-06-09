@@ -171,15 +171,12 @@ export const farmingTask: MinionTask = {
 			const cleanHerb =
 				plantToHarvest.herbXp !== undefined &&
 				user.bitfield.includes(BitField.CleanHerbsFarming) &&
-				user.skillLevel(SkillsEnum.Herblore) >= plant.herbLvl!;
+				user.skillLevel(SkillsEnum.Herblore) >= plantToHarvest.herbLvl!;
 
 			if (plantToHarvest.givesCrops) {
 				let cropToHarvest = plantToHarvest.outputCrop;
 				if (cleanHerb) {
 					cropToHarvest = plantToHarvest.cleanHerbCrop;
-					if (plantToHarvest.herbXp) {
-						herbloreXp = alivePlants * plantToHarvest.herbXp;
-					}
 				}
 				if (!cropToHarvest) return;
 				if (plantToHarvest.variableYield) {
@@ -223,6 +220,11 @@ export const farmingTask: MinionTask = {
 					loot.add('Weeds', quantity - patchType.lastQuantity);
 				} else {
 					loot.add(cropToHarvest, cropYield);
+				}
+
+				if (cleanHerb && plantToHarvest.herbXp) {
+					herbloreXp = cropYield * plantToHarvest.herbXp;
+					await user.addItemsToCollectionLog(new Bank().add(plantToHarvest.outputCrop).multiply(cropYield));
 				}
 
 				if (plantToHarvest.name === 'Limpwurt') {
