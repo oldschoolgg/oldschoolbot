@@ -337,6 +337,7 @@ const killableBosses: KillableMonster[] = [
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength],
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
 		attackStyleToUse: GearStat.AttackMagic,
+		notifyDrops: resolveItems(['Muphin']),
 		degradeableItemUsage: [
 			{
 				required: true,
