@@ -25,6 +25,14 @@ export interface ActivityTaskOptionsWithUsers extends ActivityTaskOptions {
 	users: string[];
 }
 
+export enum CamdozaalType {
+	Mine = 'mine',
+	Smith = 'smith'
+}
+export interface CamdozaalOptions extends ActivityTaskOptions {
+	ctype: CamdozaalType;
+}
+
 export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	runeID: number;
 	essenceQuantity: number;

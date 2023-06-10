@@ -887,6 +887,7 @@ enum activity_type_enum {
   TombsOfAmascut
   UnderwaterAgilityThieving
   StrongholdOfSecurity
+  Camdozaal
 }
 
 enum xp_gains_skill_enum {
