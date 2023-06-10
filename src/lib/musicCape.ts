@@ -3,8 +3,9 @@ import { objectEntries, partition } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
-import { MIMIC_MONSTER_ID, NEX_ID, ZALCANO_ID } from './constants';
+import { MIMIC_MONSTER_ID, ZALCANO_ID } from './constants';
 import { championScrolls } from './data/CollectionsExport';
+import { NexMonster } from './nex';
 import { RandomEvents } from './randomEvents';
 import { MinigameName, Minigames } from './settings/minigames';
 import { getUsersActivityCounts, prisma } from './settings/prisma';
@@ -70,7 +71,7 @@ export const musicCapeRequirements = new Requirements()
 			[Monsters.CommanderZilyana.id]: 1,
 			[Monsters.Kreearra.id]: 1,
 			[Monsters.KrilTsutsaroth.id]: 1,
-			[NEX_ID]: 1,
+			[NexMonster.id]: 1,
 			[Monsters.Cerberus.id]: 1,
 			[Monsters.GiantMole.id]: 1,
 			[Monsters.Jogre.id]: 1,
