@@ -439,7 +439,7 @@ const killableBosses: KillableMonster[] = [
 			await user.addItemsToBank({ items: new Bank().add('Charged ice'), collectionLog: true });
 			messages.push('You got a Charged ice for killing the Phantom Muspah in under 3 minutes!');
 		},
-		healAmountNeeded: 100
+		healAmountNeeded: 150
 	}
 ];
 
