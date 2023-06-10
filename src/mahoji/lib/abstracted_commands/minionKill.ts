@@ -110,13 +110,13 @@ const degradeableItemsCanUse: {
 	{
 		item: getOSItem("Tumeken's shadow"),
 		attackStyle: 'mage',
-		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 20,
+		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 40,
 		boost: 7
 	},
 	{
 		item: getOSItem('Trident of the swamp'),
 		attackStyle: 'mage',
-		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 20,
+		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 40,
 		boost: 3
 	}
 ];
