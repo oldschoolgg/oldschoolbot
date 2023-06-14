@@ -22,7 +22,8 @@ export const mahoganyHomesTask: MinionTask = {
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Construction,
 			amount: xp + bonusXP,
-			duration
+			duration,
+			source: 'MahoganyHomes'
 		});
 		const flappyRes = await userHasFlappy({ user, duration });
 		if (flappyRes.shouldGiveBoost) {

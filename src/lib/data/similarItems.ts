@@ -413,14 +413,15 @@ const source: [string, (string | number)[]][] = [
 	['Armadyl helmet', ['Masori mask (f)', 'Masori mask']],
 	['Armadyl chestplate', ['Armadyl chestplate', 'Masori body (f)', 'Masori body']],
 	['Armadyl chainskirt', ['Masori chaps (f)', 'Masori chaps']],
-	['Music cape', ['Music cape (t)']]
+	['Music cape', ['Music cape (t)']],
+	['Imbued heart', ['Saturated heart']]
 ];
 
 for (const { baseItem, dyedVersions } of dyedItems) {
 	// Update matching child rows (simmilarItems) first:
 	const matchingChildren = source.filter(s => s[1].includes(baseItem.name));
 
-	if (matchingChildren.length) {
+	if (matchingChildren.length > 0) {
 		for (const matchingRow of matchingChildren) {
 			// Check children (simmilarItems) for dyed variants and add those:
 			for (const subSimilarItem of matchingRow[1]) {

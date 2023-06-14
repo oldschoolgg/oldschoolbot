@@ -153,7 +153,9 @@ AND data->>'runeID' IS NOT NULL;`;
 				activity_type_enum.GroupMonsterKilling,
 				activity_type_enum.BirthdayEvent,
 				activity_type_enum.Questing,
-				activity_type_enum.ChampionsChallenge
+				activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
+				activity_type_enum.ChampionsChallenge,
+				activity_type_enum.Nex
 			];
 			const activityCounts = await getUsersActivityCounts(user);
 
@@ -179,12 +181,13 @@ AND data->>'runeID' IS NOT NULL;`;
 	.add({
 		name: 'One of Every Minigame',
 		has: async ({ user }) => {
-			const results: RequirementFailure[] = [];
+			const results = [];
 			const typesNotRequiredForMusicCape: MinigameName[] = [
 				'corrupted_gauntlet',
 				'raids_challenge_mode',
 				'tob_hard',
-				'tithe_farm'
+				'tithe_farm',
+				'champions_challenge'
 			];
 
 			const minigameScores = await user.fetchMinigames();
@@ -194,7 +197,7 @@ AND data->>'runeID' IS NOT NULL;`;
 
 			if (minigamesNotDone.length > 0) {
 				results.push({
-					reason: `You need to do these minigames at least once: ${minigamesNotDone.join(', ')}.`
+					reason: `You need to do these minigames at least once: ${minigamesNotDone.slice(0, 5).join(', ')}.`
 				});
 			}
 

@@ -57,17 +57,20 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			user.addXP({
 				skillName: SkillsEnum.Runecraft,
 				amount: Math.floor(rcXP),
-				duration
+				duration,
+				source: 'GuardiansOfTheRift'
 			}),
 			user.addXP({
 				skillName: SkillsEnum.Crafting,
 				amount: Math.floor(craftingXP),
-				duration
+				duration,
+				source: 'GuardiansOfTheRift'
 			}),
 			user.addXP({
 				skillName: SkillsEnum.Mining,
 				amount: Math.floor(miningXP),
-				duration
+				duration,
+				source: 'GuardiansOfTheRift'
 			})
 		]);
 

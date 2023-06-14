@@ -763,7 +763,16 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'UnderwaterAgilityThieving': {
+			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
+		}
+		case 'StrongholdOfSecurity': {
+			return `${name} is currently doing the Stronghold of Security! The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'HalloweenMiniMinigame':
+		case 'Easter':
 		case 'HalloweenEvent':
 		case 'Easter':
 		case 'BlastFurnace':

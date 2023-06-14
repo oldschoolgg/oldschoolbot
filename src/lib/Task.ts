@@ -211,7 +211,6 @@ export const tasks: MinionTask[] = [
 	twTask,
 	toaTask,
 	bonanzaTask,
-	toaTask,
 	underwaterAgilityThievingTask,
 	doaTask,
 	strongholdTask

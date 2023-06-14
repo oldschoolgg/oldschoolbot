@@ -94,7 +94,7 @@ export const puroPuroTask: MinionTask = {
 		}
 
 		let str = `<@${userID}>, ${user.minionName} finished hunting in Puro-Puro. `;
-		const xpStr = await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP });
+		const xpStr = await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP, source: 'PuroPuro' });
 		const hunterXpHr = `${Math.round(
 			(hunterXP / (data.duration / Time.Minute)) * 60
 		).toLocaleString()} Hunter XP/Hr`;
@@ -121,7 +121,7 @@ export const puroPuroTask: MinionTask = {
 			const saved = savedRunes > 0 ? `\nYour Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
 			let magicXP = 0;
 			magicXP += spellsUsed * 60;
-			const magicXpStr = await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP });
+			const magicXpStr = await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, source: 'PuroPuro' });
 			const magicXpHr = `${Math.round(
 				(magicXP / (data.duration / Time.Minute)) * 60
 			).toLocaleString()} Magic XP/Hr`;
