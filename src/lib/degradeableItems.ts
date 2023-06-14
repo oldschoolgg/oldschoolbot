@@ -170,7 +170,8 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Blood essence'),
 			charges: 1000
 		},
-		emoji: ''
+		emoji: '',
+		charges: () => 1000
 	},
 	{
 		item: getOSItem('Trident of the swamp'),
@@ -184,7 +185,8 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Uncharged toxic trident'),
 		convertOnCharge: true,
-		emoji: '🔱'
+		emoji: '🔱',
+		charges: () => 1000
 	}
 ];
 

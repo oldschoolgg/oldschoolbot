@@ -523,7 +523,9 @@ export async function minionKillCommand(
 				const degItem = degradeableItemsCanUse.find(i => i.item.id === equippedInThisSet.itemID)!;
 				boosts.push(`${equippedInThisSet.boostPercent}% for ${itemNameFromID(equippedInThisSet.itemID)}`);
 				timeToFinish = reduceNumByPercent(timeToFinish, equippedInThisSet.boostPercent);
-				const estimatedChargesNeeded = Math.ceil(degItem.charges(monster, osjsMon!, totalMonsterHP));
+				const estimatedChargesNeeded = Math.ceil(
+					degItem.charges(monster, osjsMon!, totalMonsterHP, Time.Minute * 30, user)
+				);
 				const result = await checkUserCanUseDegradeableItem({
 					item: getOSItem(equippedInThisSet.itemID),
 					chargesToDegrade: estimatedChargesNeeded,
@@ -541,7 +543,9 @@ export async function minionKillCommand(
 				convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
 				user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
 			if (isUsing) {
-				const estimatedChargesNeeded = Math.ceil(degItem.charges(monster, osjsMon!, totalMonsterHP));
+				const estimatedChargesNeeded = Math.ceil(
+					degItem.charges(monster, osjsMon!, totalMonsterHP, Time.Minute * 30, user)
+				);
 				await checkUserCanUseDegradeableItem({
 					item: degItem.item,
 					chargesToDegrade: estimatedChargesNeeded,
@@ -833,7 +837,7 @@ export async function minionKillCommand(
 	}
 
 	for (const degItem of degItemBeingUsed) {
-		const chargesNeeded = Math.ceil(degItem.charges(monster, osjsMon!, monsterHP * quantity));
+		const chargesNeeded = Math.ceil(degItem.charges(monster, osjsMon!, monsterHP * quantity, duration, user));
 		const degradeResult = await degradeItem({
 			item: degItem.item,
 			chargesToDegrade: chargesNeeded,
