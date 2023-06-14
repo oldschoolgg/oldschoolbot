@@ -3,8 +3,9 @@ import { objectEntries, partition } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
-import { MIMIC_MONSTER_ID, NEX_ID, ZALCANO_ID } from './constants';
+import { MIMIC_MONSTER_ID, ZALCANO_ID } from './constants';
 import { championScrolls } from './data/CollectionsExport';
+import { NexMonster } from './nex';
 import { RandomEvents } from './randomEvents';
 import { MinigameName, Minigames } from './settings/minigames';
 import { getUsersActivityCounts, prisma } from './settings/prisma';
@@ -70,7 +71,7 @@ export const musicCapeRequirements = new Requirements()
 			[Monsters.CommanderZilyana.id]: 1,
 			[Monsters.Kreearra.id]: 1,
 			[Monsters.KrilTsutsaroth.id]: 1,
-			[NEX_ID]: 1,
+			[NexMonster.id]: 1,
 			[Monsters.Cerberus.id]: 1,
 			[Monsters.GiantMole.id]: 1,
 			[Monsters.Jogre.id]: 1,
@@ -152,7 +153,9 @@ AND data->>'runeID' IS NOT NULL;`;
 				activity_type_enum.GroupMonsterKilling,
 				activity_type_enum.BirthdayEvent,
 				activity_type_enum.Questing,
-				activity_type_enum.ChampionsChallenge
+				activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
+				activity_type_enum.ChampionsChallenge,
+				activity_type_enum.Nex
 			];
 			const activityCounts = await getUsersActivityCounts(user);
 
@@ -178,12 +181,13 @@ AND data->>'runeID' IS NOT NULL;`;
 	.add({
 		name: 'One of Every Minigame',
 		has: async ({ user }) => {
-			const results: RequirementFailure[] = [];
+			const results = [];
 			const typesNotRequiredForMusicCape: MinigameName[] = [
 				'corrupted_gauntlet',
 				'raids_challenge_mode',
 				'tob_hard',
-				'tithe_farm'
+				'tithe_farm',
+				'champions_challenge'
 			];
 
 			const minigameScores = await user.fetchMinigames();
@@ -193,7 +197,7 @@ AND data->>'runeID' IS NOT NULL;`;
 
 			if (minigamesNotDone.length > 0) {
 				results.push({
-					reason: `You need to do these minigames at least once: ${minigamesNotDone.join(', ')}.`
+					reason: `You need to do these minigames at least once: ${minigamesNotDone.slice(0, 5).join(', ')}.`
 				});
 			}
 

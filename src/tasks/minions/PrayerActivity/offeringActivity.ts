@@ -71,7 +71,7 @@ export const offeringTask: MinionTask = {
 			xpReceived += bonusXP;
 		}
 
-		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived });
+		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived, source: 'OfferingBones' });
 		const newLevel = user.skillLevel('prayer');
 
 		let str = `${user}, ${user.minionName} finished offering ${newQuantity} ${

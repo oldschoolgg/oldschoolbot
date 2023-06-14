@@ -8,6 +8,7 @@ import PQueue from 'p-queue';
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { BitField, globalConfig, ONE_TRILLION, PerkTier } from './constants';
 import { isCustomItem } from './customItems/util';
+import { marketPricemap } from './marketPrices';
 import { RobochimpUser, roboChimpUserFetch } from './roboChimp';
 import { prisma } from './settings/prisma';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
@@ -138,7 +139,7 @@ class GrandExchangeSingleton {
 				{
 					has: () => true,
 					name: 'Base',
-					amount: 1
+					amount: 2
 				},
 				...[200, 400, 1250].map(num => ({
 					has: (user: MUser) => user.totalLevel >= num,
@@ -362,16 +363,26 @@ class GrandExchangeSingleton {
 
 		const total = price * quantity;
 		const totalAfterTax = applicableTax.newPrice * quantity;
-		return {
-			confirmationStr: `Are you sure you want to create this listing?
+
+		let confirmationStr = `Are you sure you want to create this listing?
 
 ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of ${toKMB(total)}.${
-				type === 'Buy'
-					? ''
-					: applicableTax.taxedAmount > 0
-					? ` At this price, you will receive ${toKMB(totalAfterTax)} after taxes.`
-					: ' No tax will be charged on these items.'
-			}`,
+			type === 'Buy'
+				? ''
+				: applicableTax.taxedAmount > 0
+				? ` At this price, you will receive ${toKMB(totalAfterTax)} after taxes.`
+				: ' No tax will be charged on these items.'
+		}`;
+
+		const guidePrice = marketPricemap.get(item.id);
+		if (guidePrice) {
+			confirmationStr += bold(
+				`\n\n💰 The current estimated market value for this item is ${toKMB(guidePrice.guidePrice)} GP.`
+			);
+		}
+
+		return {
+			confirmationStr,
 			cost,
 			item,
 			price,

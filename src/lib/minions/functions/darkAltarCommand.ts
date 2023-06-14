@@ -33,8 +33,8 @@ const agilityPenalty = 35;
 const mediumDiaryBoost = 20;
 
 export async function darkAltarCommand({ user, channelID, name }: { user: MUser; channelID: string; name: string }) {
-	if (!['blood', 'soul'].includes(name)) return 'Invalid rune.';
 	const stats = user.skillsAsLevels;
+	if (!['blood', 'soul'].includes(name.split(' ')[0])) return 'Invalid rune.';
 	const [hasReqs, neededReqs] = hasSkillReqs(user, {
 		mining: 38,
 		crafting: 38
@@ -97,6 +97,7 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 		}
 	}
 	const quantity = Math.floor(maxTripLength / timePerRune);
+
 	await addSubTaskToActivityTask<DarkAltarOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
@@ -114,6 +115,5 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 	}
-
 	return response;
 }

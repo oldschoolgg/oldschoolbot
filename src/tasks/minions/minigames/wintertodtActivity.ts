@@ -102,8 +102,16 @@ export const wintertodtTask: MinionTask = {
 			}
 		}
 
-		xpStr += `, ${await user.addXP({ skillName: SkillsEnum.Woodcutting, amount: wcXpToGive })}`;
-		xpStr += `, ${await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive })}`;
+		xpStr += `, ${await user.addXP({
+			skillName: SkillsEnum.Woodcutting,
+			amount: wcXpToGive,
+			source: 'Wintertodt'
+		})}`;
+		xpStr += `, ${await user.addXP({
+			skillName: SkillsEnum.Firemaking,
+			amount: fmXpToGive,
+			source: 'Wintertodt'
+		})}`;
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const flappyRes = await userHasFlappy({ user, duration });
 		if (flappyRes.shouldGiveBoost) {
