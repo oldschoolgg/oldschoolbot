@@ -184,7 +184,7 @@ export const rpCommand: OSBMahojiCommand = {
 				interaction,
 				`Are you sure you want to ${actionMsg} ${items} from ${user.usernameOrMention}?`
 			);
-			if (!user.bank.has(items)) {
+			if (!user.owns(items)) {
 				const missing = items.remove(user.bank);
 				return `${user.mention} doesn't have all items. Missing: ${missing}`;
 			}
