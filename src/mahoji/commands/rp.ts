@@ -3,6 +3,7 @@ import { Duration } from '@sapphire/time-utilities';
 import { randArrItem, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
+import { Bank } from 'oldschooljs';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { BitField, Channel } from '../../lib/constants';
@@ -92,6 +93,11 @@ export const rpCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.Boolean,
 							name: 'delete',
 							description: 'To delete the items instead'
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'partial',
+							description: "If they don't have all items, delete what they have"
 						}
 					]
 				}
@@ -107,7 +113,13 @@ export const rpCommand: OSBMahojiCommand = {
 		player?: {
 			viewbank?: { user: MahojiUserOption };
 			add_patron_time?: { user: MahojiUserOption; tier: number; time: string };
-			steal_items?: { user: MahojiUserOption; items: string; reason?: string; delete?: boolean };
+			steal_items?: {
+				user: MahojiUserOption;
+				items: string;
+				reason?: string;
+				delete?: boolean;
+				partial?: boolean;
+			};
 		};
 	}>) => {
 		await deferInteraction(interaction);
@@ -174,6 +186,8 @@ export const rpCommand: OSBMahojiCommand = {
 			if (!isOwner && !ADMIN_IDS.includes(userID)) {
 				return randArrItem(gifs);
 			}
+			const partial = options.player.steal_items.partial ?? false;
+			let removedPartial = false;
 			const toDelete = options.player.steal_items.delete ?? false;
 			const actionMsg = toDelete ? 'delete' : 'steal';
 			const actionMsgPast = toDelete ? 'deleted' : 'stole';
@@ -184,19 +198,27 @@ export const rpCommand: OSBMahojiCommand = {
 				interaction,
 				`Are you sure you want to ${actionMsg} ${items} from ${user.usernameOrMention}?`
 			);
+			let missing = new Bank();
 			if (!user.owns(items)) {
-				const missing = items.remove(user.bank);
-				return `${user.mention} doesn't have all items. Missing: ${missing}`;
+				missing = items.clone().remove(user.bank);
+				if (partial) {
+					items.remove(missing);
+					removedPartial = true;
+				} else {
+					return `${user.mention} doesn't have all items. Missing: ${missing}`;
+				}
 			}
 			await sendToChannelID(Channel.BotLogs, {
 				content: `${adminUser.logName} ${actionMsgPast} \`${items}\` from ${user.logName} for ${
 					options.player.steal_items.reason ?? 'No reason'
-				}`
+				}${removedPartial ? `\n\nFailed to remove: ${missing}` : ''}`
 			});
 
 			await user.removeItemsFromBank(items);
 			if (!toDelete) await adminUser.addItemsToBank({ items, collectionLog: false });
-			return `${toTitleCase(actionMsgPast)} ${items} from ${user.mention}`;
+			return `${toTitleCase(actionMsgPast)} ${items} from ${user.mention}${
+				removedPartial ? `\n\nFailed to remove: ${missing}` : ''
+			}`;
 		}
 
 		return 'Invalid command.';
