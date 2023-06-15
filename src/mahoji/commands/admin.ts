@@ -5,7 +5,6 @@ import { inspect } from 'node:util';
 import { codeBlock, userMention } from '@discordjs/builders';
 import { ClientStorage, economy_transaction_type } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
-import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
 import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions, Message, TextChannel } from 'discord.js';
 import { calcPercentOfNum, noOp, notEmpty, randArrItem, roll, sleep, Time, uniqueArr } from 'e';
@@ -446,45 +445,6 @@ export const adminCommand: OSBMahojiCommand = {
 	options: [
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'add_patron_time',
-			description: 'Give user temporary patron time.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.User,
-					name: 'user',
-					description: 'The user.',
-					required: true
-				},
-				{
-					type: ApplicationCommandOptionType.Integer,
-					name: 'tier',
-					description: 'The tier to give.',
-					required: true,
-					choices: [1, 2, 3, 4, 5, 6].map(i => ({ name: i.toString(), value: i }))
-				},
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'time',
-					description: 'The time.',
-					required: true
-				}
-			]
-		},
-		// {
-		// 	type: ApplicationCommandOptionType.Subcommand,
-		// 	name: 'viewbank',
-		// 	description: 'View a users bank.',
-		// 	options: [
-		// 		{
-		// 			type: ApplicationCommandOptionType.User,
-		// 			name: 'user',
-		// 			description: 'The user.',
-		// 			required: true
-		// 		}
-		// 	]
-		// },
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'shut_down',
 			description: 'Shut down the bot without rebooting.'
 		},
@@ -853,7 +813,6 @@ export const adminCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{
 		givetgb?: { user: MahojiUserOption };
-		viewbank?: { user: MahojiUserOption };
 		reboot?: {};
 		shut_down?: {};
 		debug_patreon?: {};
@@ -863,7 +822,6 @@ export const adminCommand: OSBMahojiCommand = {
 		sync_blacklist?: {};
 		loot_track?: { name: string };
 		cancel_task?: { user: MahojiUserOption };
-		add_patron_time?: { user: MahojiUserOption; tier: number; time: string };
 		sync_roles?: {};
 		sync_patreon?: {};
 		add_ironman_alt?: { main: MahojiUserOption; ironman_alt: MahojiUserOption };
@@ -1197,11 +1155,6 @@ export const adminCommand: OSBMahojiCommand = {
 			await Promise.all([sleep(timer), GrandExchange.queue.onEmpty()]);
 			execSync(`pm2 stop ${BOT_TYPE === 'OSB' ? 'osb' : 'bso'}`);
 		}
-		if (options.viewbank) {
-			const userToCheck = await mUserFetch(options.viewbank.user.user.id);
-			const bank = userToCheck.allItemsOwned;
-			return { files: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
-		}
 
 		if (options.sync_blacklist) {
 			await syncBlacklists();
@@ -1272,7 +1225,7 @@ ${guildCommands.length} Guild commands`;
 		}
 
 		if (options.give_items) {
-			const items = parseBank({ inputStr: options.give_items.items });
+			const items = parseBank({ inputStr: options.give_items.items, noDuplicateItems: true });
 			const user = await mUserFetch(options.give_items.user.user.id);
 			await handleMahojiConfirmation(
 				interaction,
@@ -1342,53 +1295,6 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 				files.push((await makeBankImage({ bank, title: name })).file);
 			}
 			return { content, files };
-		}
-		if (options.add_patron_time) {
-			const { tier, time, user: userToGive } = options.add_patron_time;
-			if (![1, 2, 3, 4, 5].includes(tier)) return 'Invalid input.';
-			const duration = new Duration(time);
-			const ms = duration.offset;
-			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
-			const input = await mahojiUsersSettingsFetch(userToGive.user.id, {
-				premium_balance_expiry_date: true,
-				id: true,
-				premium_balance_tier: true
-			});
-
-			const currentBalanceTier = input.premium_balance_tier;
-
-			if (currentBalanceTier !== null && currentBalanceTier !== tier) {
-				await handleMahojiConfirmation(
-					interaction,
-					`They already have Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
-				);
-			}
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure you want to add ${formatDuration(ms)} of Tier ${tier} patron to ${
-					userToGive.user.username
-				}?`
-			);
-			await mahojiUserSettingsUpdate(input.id, {
-				premium_balance_tier: tier
-			});
-
-			const currentBalanceTime =
-				input.premium_balance_expiry_date === null ? null : Number(input.premium_balance_expiry_date);
-
-			let newBalanceExpiryTime = 0;
-			if (currentBalanceTime !== null && tier === currentBalanceTier) {
-				newBalanceExpiryTime = currentBalanceTime + ms;
-			} else {
-				newBalanceExpiryTime = Date.now() + ms;
-			}
-			await mahojiUserSettingsUpdate(input.id, {
-				premium_balance_expiry_date: newBalanceExpiryTime
-			});
-
-			return `Gave ${formatDuration(ms)} of Tier ${tier} patron to ${
-				userToGive.user.username
-			}. They have ${formatDuration(newBalanceExpiryTime - Date.now())} remaining.`;
 		}
 		if (options.double_loot) {
 			if (options.double_loot.reset) {
