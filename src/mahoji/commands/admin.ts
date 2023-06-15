@@ -1112,7 +1112,7 @@ ${guildCommands.length} Guild commands`;
 		}
 
 		if (options.give_items) {
-			const items = parseBank({ inputStr: options.give_items.items });
+			const items = parseBank({ inputStr: options.give_items.items, noDuplicateItems: true });
 			const user = await mUserFetch(options.give_items.user.user.id);
 			await handleMahojiConfirmation(
 				interaction,
