@@ -118,7 +118,7 @@ export const rpCommand: OSBMahojiCommand = {
 		}
 
 		if (options.player?.add_patron_time) {
-			const { tier, time, user: userToGive } = options.player?.add_patron_time;
+			const { tier, time, user: userToGive } = options.player.add_patron_time;
 			if (![1, 2, 3, 4, 5, 6].includes(tier)) return 'Invalid input.';
 			const duration = new Duration(time);
 			const ms = duration.offset;
