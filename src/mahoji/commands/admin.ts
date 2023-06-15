@@ -5,6 +5,7 @@ import { inspect } from 'node:util';
 import { codeBlock, userMention } from '@discordjs/builders';
 import { ClientStorage, economy_transaction_type } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
+import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
 import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions, Message, TextChannel } from 'discord.js';
 import { calcPercentOfNum, noOp, notEmpty, randArrItem, roll, sleep, Time, uniqueArr } from 'e';
