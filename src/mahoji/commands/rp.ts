@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Duration } from '@sapphire/time-utilities';
 import { randArrItem, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -86,6 +87,11 @@ export const rpCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.String,
 							name: 'reason',
 							description: 'The reason'
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'delete',
+							description: 'To delete the items instead'
 						}
 					]
 				}
@@ -101,7 +107,7 @@ export const rpCommand: OSBMahojiCommand = {
 		player?: {
 			viewbank?: { user: MahojiUserOption };
 			add_patron_time?: { user: MahojiUserOption; tier: number; time: string };
-			steal_items?: { user: MahojiUserOption; items: string; reason?: string };
+			steal_items?: { user: MahojiUserOption; items: string; reason?: string; delete?: boolean };
 		};
 	}>) => {
 		await deferInteraction(interaction);
@@ -168,25 +174,29 @@ export const rpCommand: OSBMahojiCommand = {
 			if (!isOwner && !ADMIN_IDS.includes(userID)) {
 				return randArrItem(gifs);
 			}
+			const toDelete = options.player.steal_items.delete ?? false;
+			const actionMsg = toDelete ? 'delete' : 'steal';
+			const actionMsgPast = toDelete ? 'deleted' : 'stole';
 
 			const items = parseBank({ inputStr: options.player.steal_items.items });
 			const user = await mUserFetch(options.player.steal_items.user.user.id);
 			await handleMahojiConfirmation(
 				interaction,
-				`Are you sure you want to take ${items} from ${user.usernameOrMention}?`
+				`Are you sure you want to ${actionMsg} ${items} from ${user.usernameOrMention}?`
 			);
 			if (!user.bank.has(items)) {
 				const missing = items.remove(user.bank);
 				return `${user.mention} doesn't have all items. Missing: ${missing}`;
 			}
 			await sendToChannelID(Channel.BotLogs, {
-				content: `${adminUser.logName} took \`${items}\` from ${user.logName} for ${
+				content: `${adminUser.logName} ${actionMsgPast} \`${items}\` from ${user.logName} for ${
 					options.player.steal_items.reason ?? 'No reason'
 				}`
 			});
 
 			await user.removeItemsFromBank(items);
-			return `Took ${items} from ${user.mention}`;
+			if (!toDelete) await adminUser.addItemsToBank({ items, collectionLog: false });
+			return `${toTitleCase(actionMsgPast)} ${items} from ${user.mention}`;
 		}
 
 		return 'Invalid command.';
