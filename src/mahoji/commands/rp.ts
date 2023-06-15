@@ -178,7 +178,7 @@ export const rpCommand: OSBMahojiCommand = {
 			const actionMsg = toDelete ? 'delete' : 'steal';
 			const actionMsgPast = toDelete ? 'deleted' : 'stole';
 
-			const items = parseBank({ inputStr: options.player.steal_items.items });
+			const items = parseBank({ inputStr: options.player.steal_items.items, noDuplicateItems: true });
 			const user = await mUserFetch(options.player.steal_items.user.user.id);
 			await handleMahojiConfirmation(
 				interaction,
