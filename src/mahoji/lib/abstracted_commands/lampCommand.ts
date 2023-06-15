@@ -171,14 +171,6 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 	});
 
 	if (!skillsToReceive[skill]) {
-		return 'You use this item on this skill.';
-	}
-
-	if (!skillsToReceive[skill]) {
-		return 'You use this item on this skill.';
-	}
-
-	if (!skillsToReceive[skill]) {
 		return 'This is not a valid skill for this item.';
 	}
 
