@@ -742,13 +742,18 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'UnderwaterAgilityThieving': {
+			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
+		}
+		case 'StrongholdOfSecurity': {
+			return `${name} is currently doing the Stronghold of Security! The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'BalthazarsBigBonanza': {
 			return `${name} is currently performing at Balthazars Big Bonanza, the trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
-		}
-		case 'UnderwaterAgilityThieving': {
-			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
 		}
 		case 'DepthsOfAtlantis': {
 			const data = currentTask as DOAOptions;
@@ -758,23 +763,9 @@ export function minionStatus(user: MUser) {
 				durationRemainingNum
 			)}.`;
 		}
-		case 'StrongholdOfSecurity': {
-			return `${name} is currently doing the Stronghold of Security! The trip should take ${formatDuration(
-				durationRemaining
-			)}.`;
-		}
-		case 'UnderwaterAgilityThieving': {
-			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
-		}
-		case 'StrongholdOfSecurity': {
-			return `${name} is currently doing the Stronghold of Security! The trip should take ${formatDuration(
-				durationRemaining
-			)}.`;
-		}
 		case 'HalloweenMiniMinigame':
 		case 'Easter':
 		case 'HalloweenEvent':
-		case 'Easter':
 		case 'BlastFurnace':
 		case 'TrickOrTreat': {
 			throw new Error('Removed');
