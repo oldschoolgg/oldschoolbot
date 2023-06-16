@@ -968,6 +968,7 @@ model GETransaction {
   sell_listing    GEListing @relation("sell_transactions", fields: [sell_listing_id], references: [id])
   sell_listing_id Int
 
+  @@index([sell_listing_id])
   @@map("ge_transaction")
 }
 
