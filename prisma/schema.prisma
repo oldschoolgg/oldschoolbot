@@ -595,6 +595,7 @@ model LastManStandingGame {
 enum economy_transaction_type {
   trade
   giveaway
+  duel
 }
 
 model EconomyTransaction {

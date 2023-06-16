@@ -5,6 +5,7 @@ import { Bank, Util } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { MUserClass } from '../../../lib/MUser';
+import { prisma } from '../../../lib/settings/prisma';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { mahojiParseNumber, updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
@@ -101,8 +102,9 @@ export async function duelCommand(
 		await duelMessage.edit('The fight is almost over...').catch(noOp);
 		await sleep(2000);
 
+		const taxRate = 0.95;
 		const winningAmount = amount * 2;
-		const tax = winningAmount - Math.floor(winningAmount * 0.95);
+		const tax = winningAmount - Math.floor(winningAmount * taxRate);
 		const dividedAmount = tax / 1_000_000;
 		await updateClientGPTrackSetting('economyStats_duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
 
@@ -125,7 +127,17 @@ export async function duelCommand(
 			{}
 		);
 
-		await winner.addItemsToBank({ items: new Bank().add('Coins', winningAmount - tax), collectionLog: false });
+		const loot = new Bank().add('Coins', winningAmount - tax);
+		await winner.addItemsToBank({ items: loot, collectionLog: false });
+		await prisma.economyTransaction.create({
+			data: {
+				guild_id: interaction.guildId ? BigInt(interaction.guildId) : null,
+				sender: BigInt(loser.id),
+				recipient: BigInt(winner.id),
+				items_sent: new Bank().add('Coins', Math.floor(amount * taxRate)).bank,
+				type: 'duel'
+			}
+		});
 
 		if (amount >= 1_000_000_000) {
 			globalClient.emit(
