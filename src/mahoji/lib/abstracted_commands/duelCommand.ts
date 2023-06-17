@@ -3,8 +3,10 @@ import { noOp, sleep, Time } from 'e';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank, Util } from 'oldschooljs';
 
+import { BLACKLISTED_USERS } from '../../../lib/blacklists';
 import { Emoji, Events } from '../../../lib/constants';
 import { MUserClass } from '../../../lib/MUser';
+import { prisma } from '../../../lib/settings/prisma';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings';
@@ -37,6 +39,7 @@ export async function duelCommand(
 	if (duelTargetUser.isIronman) return "You can't duel someone who is an ironman.";
 	if (duelSourceUser.id === duelTargetUser.id) return 'You cant duel yourself.';
 	if (!(duelTargetUser instanceof MUserClass)) return "You didn't mention a user to duel.";
+	if (BLACKLISTED_USERS.has(duelTargetUser.id)) return 'Target user is blacklisted.';
 	if (targetAPIUser.user.bot) return 'You cant duel a bot.';
 
 	if (!(await checkBal(duelSourceUser, amount))) {
@@ -123,6 +126,15 @@ export async function duelCommand(
 		);
 
 		await winner.addItemsToBank({ items: new Bank().add('Coins', winningAmount), collectionLog: false });
+		await prisma.economyTransaction.create({
+			data: {
+				guild_id: interaction.guildId ? BigInt(interaction.guildId) : null,
+				sender: BigInt(loser.id),
+				recipient: BigInt(winner.id),
+				items_sent: new Bank().add('Coins', Math.floor(amount)).bank,
+				type: 'duel'
+			}
+		});
 
 		if (amount >= 1_000_000_000) {
 			globalClient.emit(
