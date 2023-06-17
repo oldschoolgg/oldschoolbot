@@ -142,6 +142,20 @@ model ClientStorage {
   @@map("clientStorage")
 }
 
+model BuyCommandTransaction {
+  id   String   @id @default(uuid()) @db.Uuid
+  date DateTime @default(now()) @db.Timestamp(6)
+
+  user_id BigInt
+
+  cost_gp                BigInt
+  cost_bank_excluding_gp Json?  @db.Json
+
+  loot_bank Json? @db.Json
+
+  @@map("buy_command_transaction")
+}
+
 enum GearSetupType {
   melee
   range
