@@ -14,6 +14,7 @@ import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { calcMaxRCQuantity, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 import { rewardsGuardianTable } from './../../../lib/simulation/rewardsGuardian';
 import { GuardiansOfTheRiftActivityTaskOptions } from './../../../lib/types/minions';
+import { bloodEssence } from '../../../lib/skilling/functions/calcsRunecrafting';
 
 const catalyticRunesArray: string[] = [
 	'Mind rune',
@@ -142,6 +143,8 @@ export const guardiansOfTheRiftTask: MinionTask = {
 
 		const totalLoot = new Bank();
 		totalLoot.add(rewardsGuardianLoot);
+		const bonusBloods = await bloodEssence(user, runesLoot.amount('Blood rune'));
+		runesLoot.add('Blood rune', bonusBloods);
 		totalLoot.add(runesLoot);
 
 		const { previousCL } = await transactItems({
@@ -164,7 +167,9 @@ export const guardiansOfTheRiftTask: MinionTask = {
 				? ` ${Math.floor((setBonus - 1) * 100)}% Quantity bonus for Raiments Of The Eye Set Items`
 				: ''
 		}. ${xpResRunecraft} ${xpResCrafting} ${xpResMining}`;
-
+		if (bonusBloods > 0) {
+			str += `\n\n**Blood essence used:** ${bonusBloods.toLocaleString()}`;
+		}
 		if (rewardsGuardianLoot.amount('Abyssal Protector') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";
 			globalClient.emit(
