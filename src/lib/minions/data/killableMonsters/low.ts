@@ -101,7 +101,8 @@ const killableMonsters: KillableMonster[] = [
 		name: Monsters.JubblyBird.name,
 		aliases: Monsters.JubblyBird.aliases,
 		timeToFinish: Time.Second * 20,
-		table: Monsters.JubblyBird
+		table: Monsters.JubblyBird,
+		qpRequired: 10
 	},
 	{
 		id: Monsters.ManiacalMonkey.id,
