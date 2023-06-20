@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '../../../lib/lootTrack';
+import { pickaxes, varrockArmours } from '../../../lib/skilling/functions/miningBoosts';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { GuardiansOfTheRiftActivityTaskOptions } from '../../../lib/types/minions';
@@ -10,7 +11,6 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { pickaxes, varrockArmours } from '../../commands/mine';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export async function guardiansOfTheRiftStartCommand(

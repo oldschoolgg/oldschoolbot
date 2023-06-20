@@ -48,6 +48,7 @@ import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
+	checkRangeGearWeapon,
 	convertAttackStyleToGearSetup,
 	convertPvmStylesToGearSetup,
 	formatDuration,
@@ -104,6 +105,18 @@ const degradeableItemsCanUse: {
 		item: getOSItem('Abyssal tentacle'),
 		attackStyle: 'melee',
 		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 20,
+		boost: 3
+	},
+	{
+		item: getOSItem("Tumeken's shadow"),
+		attackStyle: 'mage',
+		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 40,
+		boost: 7
+	},
+	{
+		item: getOSItem('Trident of the swamp'),
+		attackStyle: 'mage',
+		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 40,
 		boost: 3
 	}
 ];
@@ -218,27 +231,6 @@ export async function minionKillCommand(
 	const estimatedQuantity = floor(calcMaxTripLength(user, 'MonsterKilling') / timeToFinish);
 	const totalMonsterHP = monsterHP * estimatedQuantity;
 
-	/**
-	 *
-	 * Degradeable Items
-	 *
-	 */
-	const degItemBeingUsed = [];
-	for (const degItem of degradeableItemsCanUse) {
-		const isUsing =
-			convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
-			user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
-		if (isUsing) {
-			const estimatedChargesNeeded = degItem.charges(monster, osjsMon!, totalMonsterHP);
-			await checkUserCanUseDegradeableItem({
-				item: degItem.item,
-				chargesToDegrade: estimatedChargesNeeded,
-				user
-			});
-			degItemBeingUsed.push(degItem);
-		}
-	}
-
 	// Removed vorkath because he has a special boost.
 	if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
 		if (
@@ -348,6 +340,72 @@ export async function minionKillCommand(
 
 	const maxTripLength = calcMaxTripLength(user, 'MonsterKilling');
 
+	/**
+	 *
+	 * Degradeable Items
+	 *
+	 */
+	const degItemBeingUsed = [];
+	if (monster.degradeableItemUsage) {
+		for (const set of monster.degradeableItemUsage) {
+			const equippedInThisSet = set.items.find(item => user.gear[set.gearSetup].hasEquipped(item.itemID));
+			if (set.required && !equippedInThisSet) {
+				return `You need one of these items equipped in your ${set.gearSetup} setup to kill ${
+					monster.name
+				}: ${set.items
+					.map(i => i.itemID)
+					.map(itemNameFromID)
+					.join(', ')}.`;
+			}
+			if (equippedInThisSet) {
+				const degItem = degradeableItemsCanUse.find(i => i.item.id === equippedInThisSet.itemID)!;
+				boosts.push(`${equippedInThisSet.boostPercent}% for ${itemNameFromID(equippedInThisSet.itemID)}`);
+				timeToFinish = reduceNumByPercent(timeToFinish, equippedInThisSet.boostPercent);
+				const estimatedChargesNeeded = Math.ceil(degItem.charges(monster, osjsMon!, totalMonsterHP));
+				const result = await checkUserCanUseDegradeableItem({
+					item: getOSItem(equippedInThisSet.itemID),
+					chargesToDegrade: estimatedChargesNeeded,
+					user
+				});
+				if (!result.hasEnough) {
+					return result.userMessage;
+				}
+				degItemBeingUsed.push(degItem);
+			}
+		}
+	} else {
+		for (const degItem of degradeableItemsCanUse) {
+			const isUsing =
+				convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
+				user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
+			if (isUsing) {
+				const estimatedChargesNeeded = Math.ceil(degItem.charges(monster, osjsMon!, totalMonsterHP));
+				await checkUserCanUseDegradeableItem({
+					item: degItem.item,
+					chargesToDegrade: estimatedChargesNeeded,
+					user
+				});
+				degItemBeingUsed.push(degItem);
+			}
+		}
+		for (const degItem of degItemBeingUsed) {
+			boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
+			timeToFinish = reduceNumByPercent(timeToFinish, degItem.boost);
+		}
+	}
+
+	if (monster.equippedItemBoosts) {
+		for (const boostSet of monster.equippedItemBoosts) {
+			const equippedInThisSet = boostSet.items.find(item =>
+				user.gear[boostSet.gearSetup].hasEquipped(item.itemID)
+			);
+			if (equippedInThisSet) {
+				boosts.push(`${equippedInThisSet.boostPercent}% for ${itemNameFromID(equippedInThisSet.itemID)}`);
+				timeToFinish = reduceNumByPercent(timeToFinish, equippedInThisSet.boostPercent);
+			}
+		}
+	}
+
 	// If no quantity provided, set it to the max.
 	if (!quantity) {
 		if ([Monsters.Skotizo.id].includes(monster.id)) {
@@ -374,11 +432,6 @@ export async function minionKillCommand(
 		quantity = Math.min(quantity, effectiveQtyRemaining);
 	}
 
-	for (const degItem of degItemBeingUsed) {
-		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
-		timeToFinish = reduceNumByPercent(timeToFinish, degItem.boost);
-	}
-
 	quantity = Math.max(1, quantity);
 	let duration = timeToFinish * quantity;
 	if (quantity > 1 && duration > maxTripLength) {
@@ -387,15 +440,6 @@ export async function minionKillCommand(
 		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(
 			maxTripLength / timeToFinish
 		)}.`;
-	}
-
-	for (const degItem of degItemBeingUsed) {
-		const chargesNeeded = degItem.charges(monster, osjsMon!, monsterHP * quantity);
-		await degradeItem({
-			item: degItem.item,
-			chargesToDegrade: chargesNeeded,
-			user
-		});
 	}
 
 	const totalCost = new Bank();
@@ -537,7 +581,25 @@ export async function minionKillCommand(
 		duration = reduceNumByPercent(duration, noFoodBoost);
 	}
 
-	// Boosts that don't affect quantity:
+	if (monster.projectileUsage?.required) {
+		if (!user.gear.range.ammo?.item) {
+			return `You need range ammo equipped to kill ${monster.name}.`;
+		}
+		const rangeCheck = checkRangeGearWeapon(user.gear.range);
+		if (typeof rangeCheck === 'string') {
+			return `Your range gear isn't right: ${rangeCheck}`;
+		}
+		const projectilesNeeded = monster.projectileUsage.calculateQuantity({ quantity });
+		lootToRemove.add(rangeCheck.ammo.item, projectilesNeeded);
+		if (projectilesNeeded > rangeCheck.ammo.quantity) {
+			return `You need ${projectilesNeeded.toLocaleString()}x ${itemNameFromID(
+				rangeCheck.ammo.item
+			)} to kill ${quantity}x ${
+				monster.name
+			}, and you have ${rangeCheck.ammo.quantity.toLocaleString()}x equipped.`;
+		}
+	}
+
 	duration = randomVariation(duration, 3);
 
 	if (isWeekend()) {
@@ -545,9 +607,19 @@ export async function minionKillCommand(
 		duration *= 0.9;
 	}
 
+	for (const degItem of degItemBeingUsed) {
+		const chargesNeeded = Math.ceil(degItem.charges(monster, osjsMon!, monsterHP * quantity));
+		const degradeResult = await degradeItem({
+			item: degItem.item,
+			chargesToDegrade: chargesNeeded,
+			user
+		});
+		messages.push(degradeResult.userMessage);
+	}
+
 	if (lootToRemove.length > 0) {
 		updateBankSetting('economyStats_PVMCost', lootToRemove);
-		await user.removeItemsFromBank(lootToRemove);
+		await user.specialRemoveItems(lootToRemove);
 		totalCost.add(lootToRemove);
 	}
 
@@ -712,7 +784,7 @@ export async function monsterInfo(user: MUser, name: string): CommandResponse {
 			`**Item Cost per Trip:** ${formatItemCosts(monster.itemCost, timeToFinish * maxCanKill)}\n`
 		);
 	}
-	// let gearReductions=[];
+
 	if (monster.healAmountNeeded) {
 		let [hpNeededPerKill, gearStats] = calculateMonsterFood(monster, user);
 		let gearReductions = gearStats.replace(RegExp(': Reduced from (?:[0-9]+?), '), '\n').replace('), ', ')\n');
@@ -733,6 +805,15 @@ export async function monsterInfo(user: MUser, name: string): CommandResponse {
 	}
 	if (monster.itemInBankBoosts) {
 		totalBoost.push(`${formatItemBoosts(monster.itemInBankBoosts)}`);
+	}
+	if (monster.equippedItemBoosts) {
+		for (const boostSet of monster.equippedItemBoosts) {
+			totalBoost.push(
+				`${boostSet.items
+					.map(i => `${i.boostPercent}% for ${itemNameFromID(i.itemID)}`)
+					.join(' OR ')}, equipped in ${boostSet.gearSetup} setup`
+			);
+		}
 	}
 	if (monster.pohBoosts) {
 		totalBoost.push(
