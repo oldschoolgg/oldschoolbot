@@ -223,7 +223,8 @@ export enum BitField {
 	DisableAshSanctifier = 23,
 	BothBotsMaxedFreeTierOnePerks = 24,
 	HasBloodbarkScroll = 25,
-	DisableAutoFarmContractButton = 26
+	DisableAutoFarmContractButton = 26,
+	DisableGrandExchangeDMs = 27
 }
 
 interface BitFieldData {
@@ -278,6 +279,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.DisableAshSanctifier]: { name: 'Disable Ash Sanctifier', protected: false, userConfigurable: true },
 	[BitField.DisableAutoFarmContractButton]: {
 		name: 'Disable Auto Farm Contract Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableGrandExchangeDMs]: {
+		name: 'Disable Grand Exchange DMs',
 		protected: false,
 		userConfigurable: true
 	}
@@ -381,17 +387,36 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
-export type ProjectileType = 'arrow' | 'bolt';
-export const projectiles: Record<ProjectileType, number[]> = {
-	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
-	bolt: resolveItems([
-		'Runite bolts',
-		'Dragon bolts',
-		'Diamond bolts (e)',
-		'Diamond dragon bolts (e)',
-		'Ruby dragon bolts (e)'
-	])
-};
+export const projectiles = {
+	arrow: {
+		items: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
+		savedByAvas: true,
+		weapons: resolveItems(['Twisted bow'])
+	},
+	bolt: {
+		items: resolveItems([
+			'Runite bolts',
+			'Dragon bolts',
+			'Diamond bolts (e)',
+			'Diamond dragon bolts (e)',
+			'Ruby dragon bolts (e)'
+		]),
+		savedByAvas: true,
+		weapons: resolveItems([
+			'Armadyl crossbow',
+			'Dragon hunter crossbow',
+			'Dragon crossbow',
+			'Zaryte crossbow',
+			'Rune crossbow'
+		])
+	},
+	javelin: {
+		items: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin']),
+		savedByAvas: false,
+		weapons: resolveItems(['Heavy ballista'])
+	}
+} as const;
+export type ProjectileType = keyof typeof projectiles;
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
 export const PHOSANI_NIGHTMARE_ID = 9416;
@@ -473,7 +498,8 @@ const globalConfigSchema = z.object({
 	patreonCampaignID: z.coerce.number().int().default(1),
 	patreonWebhookSecret: z.coerce.string().default(''),
 	httpPort: z.coerce.number().int().default(8080),
-	clientID: z.string().min(15).max(25)
+	clientID: z.string().min(15).max(25),
+	geAdminChannelID: z.string().default('')
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.example' : '.env') });
 
@@ -482,5 +508,8 @@ export const globalConfig = globalConfigSchema.parse({
 	patreonCampaignID: process.env.PATREON_CAMPAIGN_ID,
 	patreonWebhookSecret: process.env.PATREON_WEBHOOK_SECRET,
 	httpPort: process.env.HTTP_PORT,
-	clientID: process.env.CLIENT_ID
+	clientID: process.env.CLIENT_ID,
+	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID
 });
+
+export const ONE_TRILLION = 1_000_000_000_000;

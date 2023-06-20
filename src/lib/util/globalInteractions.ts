@@ -1,13 +1,15 @@
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ButtonInteraction, ButtonStyle, Interaction } from 'discord.js';
 import { removeFromArr, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { buyBingoTicketCommand } from '../../mahoji/commands/bingo';
+import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { ClueTier } from '../clues/clueTiers';
-import { PerkTier } from '../constants';
+import { BitField, PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
@@ -209,7 +211,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 }
 
 async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
-	if (user.minionIsBusy) return 'Your minion is busy.';
+	if (user.minionIsBusy) return interactionReply(interaction, { content: 'Your minion is busy.' });
 	const trips = await fetchRepeatTrips(interaction.user.id);
 	if (trips.length === 0)
 		return interactionReply(interaction, { content: "Couldn't find a trip to repeat.", ephemeral: true });
@@ -252,8 +254,59 @@ async function handlePinnedTripRepeat(user: MUser, id: string, interaction: Butt
 	await repeatTrip(interaction, { data: trip.data, type: trip.activity_type });
 }
 
+async function handleGEButton(user: MUser, id: string, interaction: ButtonInteraction) {
+	if (id === 'ge_cancel_dms') {
+		const mention = mentionCommand(globalClient, 'config', 'user', 'toggle');
+		if (user.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
+			return interactionReply(interaction, {
+				content: `You already disabled Grand Exchange DM's, you can re-enable them using ${mention}.`,
+				ephemeral: true
+			});
+		}
+		await user.update({
+			bitfield: {
+				push: BitField.DisableGrandExchangeDMs
+			}
+		});
+		return interactionReply(interaction, {
+			content: `You have disabled Grand Exchange DM's, and won't receive anymore DM's, you can re-enable them using ${mention}.`,
+			ephemeral: true
+		});
+	}
+	if (id.startsWith('ge_cancel_')) {
+		const cancelUserFacingID = id.split('_')[2];
+		const listing = await prisma.gEListing.findFirst({
+			where: {
+				userfacing_id: cancelUserFacingID,
+				user_id: user.id,
+				cancelled_at: null,
+				fulfilled_at: null,
+				quantity_remaining: {
+					gt: 0
+				}
+			}
+		});
+		if (!listing) {
+			return interactionReply(interaction, {
+				content: 'You cannot cancel this listing, it is either already cancelled, fulfilled or not yours.',
+				ephemeral: true
+			});
+		}
+		const response = await cancelGEListingCommand(user, listing.userfacing_id);
+		return interactionReply(interaction, { content: response, ephemeral: true });
+	}
+}
+
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
+
+	if (globalClient.isShuttingDown) {
+		return interactionReply(interaction, {
+			content: 'The bot is currently rebooting, please try again in a couple minutes.',
+			ephemeral: true
+		});
+	}
+
 	debugLog(`Interaction hook for button [${interaction.customId}]`, {
 		user_id: interaction.user.id,
 		channel_id: interaction.channelId,
@@ -274,9 +327,10 @@ export async function interactionHook(interaction: Interaction) {
 			ephemeral: true
 		});
 	}
+	if (id.startsWith('ge_')) return handleGEButton(user, id, interaction);
 
 	if (!isValidGlobalInteraction(id)) return;
-	if (user.isBusy || globalClient.isShuttingDown) {
+	if (user.isBusy) {
 		return interactionReply(interaction, { content: 'You cannot use a command right now.', ephemeral: true });
 	}
 

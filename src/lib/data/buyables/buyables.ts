@@ -1,11 +1,11 @@
 import { Bank } from 'oldschooljs';
 
-import { soteSkillRequirements } from '../../../mahoji/lib/abstracted_commands/zalcanoCommand';
 import { chompyHats, MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
 import { getToaKCs } from '../../simulation/toa';
+import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
 import { Skills } from '../../types';
 import itemID from '../../util/itemID';
 import { allTeamCapes } from '../misc';
@@ -903,15 +903,23 @@ const Buyables: Buyable[] = [
 		gpCost: 100_000,
 		ironmanPrice: 32_000
 	},
-	{
-		name: 'Flower crown',
+	...[
+		'Flower crown (bisexual)',
+		'Flower crown (asexual)',
+		'Flower crown (transgender)',
+		'Flower crown (pansexual)',
+		'Flower crown (non-binary)',
+		'Flower crown (genderqueer)',
+		'Flower crown (lesbian)',
+		'Flower crown (gay)',
+		'Flower crown'
+	].map(name => ({
+		name,
 		itemCost: new Bank({
 			Coins: 5000
 		}),
-		outputItems: new Bank({
-			'Flower crown': 1
-		})
-	},
+		outputItems: new Bank().add(name)
+	})),
 	{
 		name: 'Mithril seeds',
 		gpCost: 3000,

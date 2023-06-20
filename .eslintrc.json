@@ -6,7 +6,7 @@
 		"@typescript-eslint/default-param-last": 0,
 		"no-return-await": "error",
 		"import/no-cycle": "error",
-		"@typescript-eslint/strict-boolean-expressions": 0,
+		"@typescript-eslint/strict-boolean-expressions": "warn",
 		"@typescript-eslint/no-misused-promises": [
 			"error",
 			{

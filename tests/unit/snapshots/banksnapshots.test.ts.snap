@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`OSB Buyables 1`] = `
 [
@@ -365,6 +365,126 @@ exports[`OSB Buyables 1`] = `
     },
     "name": "Rune pickaxe",
     "outputItems": undefined,
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (bisexual)",
+    "outputItems": Bank {
+      "bank": {
+        "27141": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (asexual)",
+    "outputItems": Bank {
+      "bank": {
+        "27143": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (transgender)",
+    "outputItems": Bank {
+      "bank": {
+        "27145": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (pansexual)",
+    "outputItems": Bank {
+      "bank": {
+        "27147": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (non-binary)",
+    "outputItems": Bank {
+      "bank": {
+        "27149": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (genderqueer)",
+    "outputItems": Bank {
+      "bank": {
+        "27151": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (lesbian)",
+    "outputItems": Bank {
+      "bank": {
+        "27153": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (gay)",
+    "outputItems": Bank {
+      "bank": {
+        "27155": 1,
+      },
+      "frozen": false,
+    },
   },
   {
     "itemCost": Bank {
@@ -3288,6 +3408,37 @@ exports[`OSB Buyables 1`] = `
       "bank": {
         "13280": 1,
         "13281": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 99000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Music cape",
+    "outputItems": Bank {
+      "bank": {
+        "13221": 1,
+        "13223": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 99000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Music cape(t)",
+    "outputItems": Bank {
+      "bank": {
+        "13222": 1,
       },
       "frozen": false,
     },
@@ -8084,6 +8235,40 @@ exports[`OSB Creatables 1`] = `
     "requiredSkills": {
       "crafting": 80,
       "smithing": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "20724": 1,
+        "27616": 150000,
+      },
+      "frozen": false,
+    },
+    "name": "Saturated heart",
+    "outputItems": Bank {
+      "bank": {
+        "27641": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "11905": 1,
+        "12932": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Trident of the swamp",
+    "outputItems": Bank {
+      "bank": {
+        "12899": 1,
+      },
+      "frozen": false,
     },
   },
   {
