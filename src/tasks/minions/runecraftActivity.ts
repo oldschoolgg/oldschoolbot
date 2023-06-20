@@ -42,7 +42,7 @@ export const runecraftTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished crafting ${runeQuantity} ${rune.name}. ${xpRes}`;
 
-		const raimentQuantity = raimentBonus(user, essenceQuantity);
+		const raimentQuantity = raimentBonus(user, runeQuantity);
 		runeQuantity += raimentQuantity;
 		bonusQuantity += raimentQuantity;
 
