@@ -87,7 +87,7 @@ async function favFoodConfig(
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
 	if (!item || secretItems.includes(item.id)) return currentItems;
-	if (!Eatables.some(i => i.id === item.id)) return "That's not a valid item.";
+	if (!Eatables.some(i => i.id === item.id || i.raw === item.id)) return "That's not a valid item.";
 
 	if (itemToAdd) {
 		if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
