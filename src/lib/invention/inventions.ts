@@ -391,7 +391,7 @@ export const Inventions: readonly Invention[] = [
 		itemCost: null,
 		flags: ['equipped'],
 		inventionLevelNeeded: 100,
-		usageCostMultiplier: 0.25
+		usageCostMultiplier: 3
 	}
 ] as const;
 
