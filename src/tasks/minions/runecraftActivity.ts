@@ -61,7 +61,7 @@ export const runecraftTask: MinionTask = {
 			str += 'You received 10% bonus XP from your Master runecrafter outfit.';
 		}
 
-		const raimentQuantity = raimentBonus(user, essenceQuantity);
+		const raimentQuantity = raimentBonus(user, runeQuantity);
 		runeQuantity += raimentQuantity;
 		bonusQuantity += raimentQuantity;
 
