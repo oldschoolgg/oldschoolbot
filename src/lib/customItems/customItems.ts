@@ -6659,3 +6659,200 @@ setCustomItem(
 	},
 	1_000_000
 );
+
+setCustomItem(
+	71_426,
+	'Hellfire bow (ice)',
+	'Hellfire bow',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	71_427,
+	'Hellfire bow (Oceanic)',
+	'Hellfire bow',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	71_428,
+	'OSB Jumper',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_429,
+	'BSO Jumper',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_430,
+	'Paint box',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_431,
+	"Skipper's tie",
+	'Amulet of power',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_432,
+	"Remy's chef hat",
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_433,
+	'Supply crate (s1)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_434,
+	'Supply crate key',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_435,
+	'Archon headdress',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_436,
+	'Archon tassets',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_437,
+	'Archon crest',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_438,
+	'Archon gloves',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_439,
+	'Archon boots',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_440,
+	'Infernal slayer helmet(i) (ice)',
+	'Infernal slayer helmet(i)',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_441,
+	'Chincannon',
+	'Toxic blowpipe',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);

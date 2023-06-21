@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-invalid-this */
 import { Canvas, GlobalFonts, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
 import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
@@ -23,7 +24,7 @@ import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { SkillsEnum } from './skilling/types';
-import { customItemEffect } from './util/customItemEffects';
+import { applyCustomItemEffects } from './util/customItemEffects';
 import resolveItems from './util/resolveItems';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
 
@@ -549,20 +550,13 @@ class BankImageTask {
 				ctx.drawImage(glow, glowX, glowY, glow.width, glow.height);
 			}
 
-			const effect = customItemEffect.get(item.id);
+			const imageAfterEffects = await applyCustomItemEffects(user ?? null, itemImage, item.id);
+
 			if (isNewCLItem) {
-				drawImageWithOutline(
-					ctx,
-					effect ? effect(itemImage, user?.id) : itemImage,
-					x,
-					y,
-					itemWidth,
-					itemHeight,
-					'#ac7fff',
-					1
-				);
+				drawImageWithOutline(ctx, imageAfterEffects, x, y, itemWidth, itemHeight, '#ac7fff', 1);
 			} else {
-				ctx.drawImage(effect ? effect(itemImage, user?.id) : itemImage, x, y, itemWidth, itemHeight);
+				ctx.drawImage(imageAfterEffects, x, y, itemWidth, itemHeight);
+				ctx.restore();
 			}
 
 			// Do not draw the item qty if there is 0 of that item in the bank

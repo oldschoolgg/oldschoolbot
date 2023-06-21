@@ -391,6 +391,16 @@ ${entries.map(i => `**${toTitleCase(i[0])}**: ${toKMB(i[1])}`).join('\n')}`;
 		run: async (_, stats) => {
 			return makeResponseForBank(new Bank(stats.doubled_loot_bank as ItemBank), 'Loot From Double Loot Trips');
 		}
+	},
+	{
+		name: 'Loot Destroyed by Chincannon',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(
+				new Bank(stats.chincannon_destroyed_loot_bank as ItemBank),
+				'Loot Destroyed by Chincannon'
+			);
+		}
 	}
 ];
 

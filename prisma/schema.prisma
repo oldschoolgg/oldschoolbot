@@ -470,6 +470,7 @@ model User {
   gear_template                   Int       @default(0) @db.SmallInt
   unlocked_gear_templates         Int[]
   last_bonanza_date               DateTime? @db.Timestamp(6)
+  painted_items_tuple             Json?     @db.Json
 
   // Invention
   skills_invention          BigInt @default(0) @map("skills.invention")
@@ -928,6 +929,8 @@ model UserStats {
   doa_loot                 Json @default("{}")
   doa_room_attempts_bank   Json @default("{}") @db.Json
   doa_total_minutes_raided Int  @default(0)
+
+  chincannon_destroyed_loot_bank Json @default("{}") @db.Json
 
   @@map("user_stats")
 }

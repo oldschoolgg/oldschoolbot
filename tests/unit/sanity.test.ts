@@ -132,7 +132,9 @@ describe('Sanity', () => {
 			'Seed pack',
 			27_499,
 			27_853,
-			27_828
+			27_828,
+			'Paint box',
+			'Ruby Red paint can'
 		]);
 		for (const i of shouldntBeIn) {
 			if (allMbTables.includes(i)) {

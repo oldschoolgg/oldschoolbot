@@ -84,6 +84,7 @@ export interface UnifiedOpenable {
 	smokeyApplies?: boolean;
 	excludeLootFromBoxes?: boolean;
 	excludeFromOpenAll?: true;
+	extraCostPerOpen?: Bank;
 }
 
 const clueItemsToNotifyOf = resolveItems([

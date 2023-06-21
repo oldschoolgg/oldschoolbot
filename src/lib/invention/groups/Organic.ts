@@ -222,8 +222,6 @@ export const Organic: DisassemblySourceGroup = {
 		{ item: i('Potato cactus'), lvl: 55 },
 		{ item: i('Mort myre fungus'), lvl: 55 },
 		{ item: i("Zulrah's scales"), lvl: 55 },
-		{ item: i('Red chinchompa'), lvl: 55 },
-		{ item: i('Black chinchompa'), lvl: 70 },
 		{ item: i('Black salamander'), lvl: 70 },
 		{ item: i('Chimpchompa'), lvl: 70 },
 		{ item: i('Big banana'), lvl: 70 },

@@ -520,6 +520,14 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Mistleboe'),
 				dye: getOSItem('Christmas dye')
+			},
+			{
+				item: getOSItem('Hellfire bow (ice)'),
+				dye: getOSItem('Ice dye')
+			},
+			{
+				item: getOSItem('Hellfire bow (Oceanic)'),
+				dye: getOSItem('Oceanic dye')
 			}
 		]
 	},
@@ -564,5 +572,14 @@ export const dyedItems: DyedItem[] = [
 		]
 	},
 	...gorajan,
-	...dwarvenDyed
+	...dwarvenDyed,
+	{
+		baseItem: getOSItem('Infernal slayer helmet(i)'),
+		dyedVersions: [
+			{
+				item: getOSItem('Infernal slayer helmet(i) (ice)'),
+				dye: getOSItem('Ice dye')
+			}
+		]
+	}
 ];

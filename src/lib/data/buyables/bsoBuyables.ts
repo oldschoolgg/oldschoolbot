@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import { Buyable } from './buyables';
 import { circusBuyables } from './circusBuyables';
 import { fistOfGuthixBuyables } from './fistOfGuthixBuyables';
+import { keyCrateBuyables } from './keyCrateBuyables';
 import { stealingCreationBuyables } from './stealingCreationBuyables';
 
 const items = [
@@ -68,5 +69,6 @@ export const bsoBuyables: Buyable[] = [
 	},
 	...fistOfGuthixBuyables,
 	...stealingCreationBuyables,
-	...circusBuyables
+	...circusBuyables,
+	...keyCrateBuyables
 ];

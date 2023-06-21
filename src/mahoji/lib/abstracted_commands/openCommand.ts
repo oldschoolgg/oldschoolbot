@@ -82,11 +82,16 @@ export async function abstractedOpenUntilCommand(userID: string, name: string, o
 			openable,
 			quantity: 1,
 			user,
+			// TODO: this is bad
 			totalLeaguesPoints: (await roboChimpUserFetch(user.id)).leagues_points_total
 		});
 		loot.add(thisLoot.bank);
 		amountOpened++;
 		if (loot.has(openUntil.id)) break;
+	}
+
+	if (openable.extraCostPerOpen) {
+		cost.add(openable.extraCostPerOpen.clone().multiply(amountOpened));
 	}
 
 	return finalizeOpening({
@@ -162,10 +167,13 @@ async function finalizeOpening({
 			);
 			bonuses.push(`${smokeyBonus}x ${openable.name}`);
 		}
-		smokeyMsg = bonuses.length ? `${Emoji.Smokey} Bonus Rolls: ${bonuses.join(', ')}` : null;
+		smokeyMsg = bonuses.length > 0 ? `${Emoji.Smokey} Bonus Rolls: ${bonuses.join(', ')}` : null;
 	}
 	if (smokeyMsg) messages.push(smokeyMsg);
 
+	if (!user.owns(cost)) {
+		return `You don't own: ${cost}.`;
+	}
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 	const { previousCL } = await user.addItemsToBank({
 		items: loot,
@@ -250,6 +258,11 @@ export async function abstractedOpenCommand(
 		const { openedItem } = openable;
 		const quantity = typeof _quantity === 'string' ? user.bank.amount(openedItem.id) : _quantity;
 		cost.add(openedItem.id, quantity);
+		if (openable.extraCostPerOpen) {
+			const extraCost = openable.extraCostPerOpen.clone().multiply(quantity);
+			cost.add(extraCost);
+			messages.push(`Removed ${extraCost} from your bank.`);
+		}
 		kcBank.add(openedItem.id, quantity);
 		const thisLoot = await getOpenableLoot({
 			openable,

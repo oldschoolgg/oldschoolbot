@@ -4192,6 +4192,15 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
+    "gpCost": 50000000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Supply crate key",
+    "outputItems": undefined,
+  },
+  {
     "itemCost": Bank {
       "bank": {
         "6183": 1,
@@ -20228,6 +20237,40 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "48202": 1,
+        "48220": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Hellfire bow (ice)",
+    "outputItems": Bank {
+      "bank": {
+        "71426": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "48220": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Hellfire bow (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "71427": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "26374": 1,
         "70235": 1,
       },
@@ -20917,6 +20960,23 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "70246": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "48202": 1,
+        "48327": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Infernal slayer helmet(i) (ice)",
+    "outputItems": Bank {
+      "bank": {
+        "71440": 1,
       },
       "frozen": false,
     },
