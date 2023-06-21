@@ -281,11 +281,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Crate Spawns',
 		fn: async ({ data, messages, user }) => {
 			const accountAge = user.accountAgeInDays();
-			let dropratePerMinute = 25 * 60;
+			let dropratePerMinute = 50 * 60;
 			if (accountAge) {
 				if (accountAge < 31) return;
-				if (accountAge > 500 || user.isIronman) {
-					dropratePerMinute = reduceNumByPercent(dropratePerMinute, 5);
+				if (user.isIronman) {
+					dropratePerMinute = reduceNumByPercent(dropratePerMinute, 15);
 				}
 			}
 			const minutes = Math.floor(data.duration / Time.Minute);
