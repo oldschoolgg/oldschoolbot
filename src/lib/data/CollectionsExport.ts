@@ -2481,7 +2481,6 @@ export const seaKrakenCL = resolveItems([
 	// Tangleroot pets
 	'Fish sack',
 	'Pufferfish',
-	'Fishing trophy',
 	'Squid dye'
 ]);
 
