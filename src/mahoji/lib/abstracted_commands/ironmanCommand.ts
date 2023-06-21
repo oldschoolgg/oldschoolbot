@@ -150,6 +150,7 @@ After becoming an ironman:
 	await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.stashUnit.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.userStats.deleteMany({ where: { user_id: BigInt(user.id) } });
+	await prisma.buyCommandTransaction.deleteMany({ where: { user_id: BigInt(user.id) } });
 
 	// Refund the leagues points they spent
 	const roboChimpUser = await roboChimpUserFetch(user.id);
