@@ -272,7 +272,7 @@ GROUP BY type;`);
 	},
 	{
 		name: 'Personal Monster KC',
-		perkTierNeeded: PerkTier.Four,
+		perkTierNeeded: null,
 		run: async (user: MUser) => {
 			const result: { id: number; kc: number }[] =
 				await prisma.$queryRawUnsafe(`SELECT (data->>'monsterID')::int as id, SUM((data->>'quantity')::int) AS kc
@@ -283,12 +283,16 @@ AND type = 'MonsterKilling'
 AND data IS NOT NULL
 AND data::text != '{}'
 GROUP BY data->>'monsterID';`);
-			const dataPoints: [string, number][] = result
+			const monsterArray = result
 				.sort((a, b) => b.kc - a.kc)
-				.slice(0, 30)
-				.map(i => [killableMonsters.find(mon => mon.id === i.id)?.name ?? i.id.toString(), i.kc]);
-			const buffer = await barChart("Your Monster KC's", val => `${val} KC`, dataPoints);
-			return makeResponseForBuffer(buffer);
+				.map(monster => {
+					const monsterName =
+						killableMonsters.find(mon => mon.id === monster.id)?.name ?? monster.id.toString();
+					return `${monsterName}: ${monster.kc}`;
+				});
+			const attachment = Buffer.from(monsterArray.join('\n'));
+
+			return { files: [{ name: 'personal-kc-export.txt', attachment }] };
 		}
 	},
 	{
