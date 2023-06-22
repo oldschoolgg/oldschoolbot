@@ -25,7 +25,8 @@ export async function buySeedPack(user: MUser, interaction: ChatInputCommandInte
 
 	await handleMahojiConfirmation(
 		interaction,
-		`${user}, please confirm that you want to buy ${quantity}x Seed pack${quantity > 1 ? 's' : ''} for: ${cost}${quantity > 1 ? 's' : ''
+		`${user}, please confirm that you want to buy ${quantity}x Seed pack${quantity > 1 ? 's' : ''} for: ${cost}${
+			quantity > 1 ? 's' : ''
 		}.`
 	);
 
