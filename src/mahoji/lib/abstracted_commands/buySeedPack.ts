@@ -19,6 +19,10 @@ export async function buySeedPack(user: MUser, interaction: ChatInputCommandInte
 
     if (user.skillLevel(SkillsEnum.Farming) < 45) return 'You require atleast 45 farming to trade in spirit seeds';
 
+    if (!user.owns(cost)) {
+        return "You don't have enough spirit seeds for that.";
+    }
+
     await handleMahojiConfirmation(
         interaction,
         `${user}, please confirm that you want to buy ${quantity}x Seed pack${quantity > 1 ? 's' : ''} for: ${cost}${quantity > 1 ? 's' : ''
