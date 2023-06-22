@@ -12,10 +12,16 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
+import { buySeedPack } from '../lib/abstracted_commands/buySeedPack';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
 
-const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }, { name: 'Fossil Island Notes' }];
+const allBuyablesAutocomplete = [
+	...Buyables,
+	{ name: 'Kitten' },
+	{ name: 'Fossil Island Notes' },
+	{ name: 'Seed pack' }
+];
 
 export const buyCommand: OSBMahojiCommand = {
 	name: 'buy',
@@ -48,6 +54,9 @@ export const buyCommand: OSBMahojiCommand = {
 		}
 		if (stringMatches(name, 'Fossil Island Notes')) {
 			return buyFossilIslandNotes(user, interaction, quantity);
+		}
+		if (stringMatches(name, 'Seed pack')) {
+			return buySeedPack(user, interaction, quantity);
 		}
 
 		const buyable = Buyables.find(
