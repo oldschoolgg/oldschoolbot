@@ -87,7 +87,7 @@ async function favFoodConfig(
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
 	if (!item || secretItems.includes(item.id)) return currentItems;
-	if (!Eatables.some(i => i.id === item.id)) return "That's not a valid item.";
+	if (!Eatables.some(i => i.id === item.id || i.raw === item.id)) return "That's not a valid item.";
 
 	if (itemToAdd) {
 		if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
@@ -757,12 +757,24 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'Add an item to your favorite food.',
 							required: false,
 							autocomplete: async (value: string) => {
-								return Eatables.filter(i =>
+								const rawFood = Eatables.filter(i => i.raw).map(i => getItem(i.raw!)!);
+								const autocompleteList = Eatables.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({
 									name: `${i.name}`,
 									value: i.id.toString()
 								}));
+								autocompleteList.push(
+									...rawFood
+										.filter(i =>
+											!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+										)
+										.map(i => ({
+											name: `${i.name}`,
+											value: i.id.toString()
+										}))
+								);
+								return autocompleteList;
 							}
 						},
 						{
@@ -771,14 +783,21 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'Remove an item from your favorite food.',
 							required: false,
 							autocomplete: async (value: string, user: User) => {
+								const rawFood = Eatables.filter(i => i.raw).map(i => getItem(i.raw!)!);
+								const allFood = Eatables.map(i => {
+									return { name: i.name, id: i.id };
+								});
+								allFood.push(...rawFood);
 								const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_food: true });
-								return Eatables.filter(i => {
-									if (!mUser.favorite_food.includes(i.id)) return false;
-									return !value ? true : i.name.toLowerCase().includes(value.toLowerCase());
-								}).map(i => ({
-									name: `${i.name}`,
-									value: i.id.toString()
-								}));
+								return allFood
+									.filter(i => {
+										if (!mUser.favorite_food.includes(i.id)) return false;
+										return !value ? true : i.name.toLowerCase().includes(value.toLowerCase());
+									})
+									.map(i => ({
+										name: `${i.name}`,
+										value: i.id.toString()
+									}));
 							}
 						},
 						{
