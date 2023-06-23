@@ -2,10 +2,12 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
+import { allOpenables } from '../../../lib/openables';
 import { openSeedPack } from '../../../lib/skilling/functions/calcFarmingContracts';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import { addToOpenablesScores } from './openCommand';
 
 export async function buySeedPack(user: MUser, interaction: ChatInputCommandInteraction, quantity: number) {
 	const cost = new Bank().add('Spirit seed', 1).multiply(quantity);
@@ -37,9 +39,9 @@ export async function buySeedPack(user: MUser, interaction: ChatInputCommandInte
 
 	await transactItems({ userID: user.id, itemsToRemove: cost, itemsToAdd: loot, collectionLog: true });
 
-	if (quantity < 5) {
-		return `You recieved ${loot}.`;
-	}
+	const openable = allOpenables.find(i => i.name === 'Seed pack')!.openedItem.id;
+	const kcBank = new Bank().add(openable!, quantity);
+	await addToOpenablesScores(user, kcBank);
 
 	const image = await makeBankImage({
 		title: `Loot from ${quantity} Seed pack${quantity > 1 ? 's' : ''}`,

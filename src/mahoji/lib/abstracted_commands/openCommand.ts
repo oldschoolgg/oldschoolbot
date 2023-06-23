@@ -29,7 +29,7 @@ function getOpenableLoot({ openable, quantity, user }: { openable: UnifiedOpenab
 		: openable.output({ user, self: openable, quantity });
 }
 
-async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
+export async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
 	const { openable_scores: newOpenableScores } = await userStatsUpdate(
 		mahojiUser.id,
 		({ openable_scores }) => ({
