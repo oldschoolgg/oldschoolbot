@@ -786,12 +786,13 @@ export async function minionKillCommand(
 
 	for (const degItem of degItemBeingUsed) {
 		const chargesNeeded = degItem.charges(monster, osjsMon!, monsterHP * quantity, duration, user);
-		await degradeItem({
+		const degradeResult = await degradeItem({
 			item: degItem.item,
 			chargesToDegrade: chargesNeeded,
 			user
 		});
 		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
+		messages.push(degradeResult.userMessage);
 		duration = reduceNumByPercent(duration, degItem.boost);
 	}
 
@@ -834,16 +835,6 @@ export async function minionKillCommand(
 	}
 	if (monster.name === 'Koschei the deathless') {
 		return 'You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.';
-	}
-
-	for (const degItem of degItemBeingUsed) {
-		const chargesNeeded = Math.ceil(degItem.charges(monster, osjsMon!, monsterHP * quantity, duration, user));
-		const degradeResult = await degradeItem({
-			item: degItem.item,
-			chargesToDegrade: chargesNeeded,
-			user
-		});
-		messages.push(degradeResult.userMessage);
 	}
 
 	if (lootToRemove.length > 0) {
