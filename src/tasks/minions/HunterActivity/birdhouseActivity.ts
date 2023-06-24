@@ -27,6 +27,7 @@ export const birdHouseTask: MinionTask = {
 		const currentCraftingLevel = user.skillLevel(SkillsEnum.Crafting);
 		let hunterXP = 0;
 		let craftingXP = 0;
+		let strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
 		const loot = new Bank();
 
 		const birdhouse = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseName);
@@ -41,7 +42,7 @@ export const birdHouseTask: MinionTask = {
 
 			if (placing && gotCraft) {
 				craftingXP = birdhouse.craftXP * 4;
-				str += await user.addXP({ skillName: SkillsEnum.Crafting, amount: craftingXP });
+				str += await user.addXP({ skillName: SkillsEnum.Crafting, amount: craftingXP, source: 'Birdhouses' });
 			}
 
 			const updateBirdhouseData: BirdhouseData = {
@@ -89,20 +90,25 @@ export const birdHouseTask: MinionTask = {
 			hunterXP = birdhouseToCollect.huntXP * 4;
 			for (let i = 0; i < 4; i++) {
 				loot.add(birdhouseToCollect.table.roll());
+				if (strungRabbitFoot) {
+					loot.add(birdhouseToCollect.strungRabbitFootTable.roll());
+				} else {
+					loot.add(birdhouseToCollect.normalNestTable.roll());
+				}
 			}
 			await transactItems({
 				userID: user.id,
 				collectionLog: true,
 				itemsToAdd: loot
 			});
-			await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP });
+			await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP, source: 'Birdhouses' });
 			const newHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 
 			str += `\n\nYou received ${hunterXP.toLocaleString()} XP from collecting the birdhouses.`;
 
 			if (placing && gotCraft) {
 				craftingXP = birdhouse.craftXP * 4;
-				await user.addXP({ skillName: SkillsEnum.Crafting, amount: craftingXP });
+				await user.addXP({ skillName: SkillsEnum.Crafting, amount: craftingXP, source: 'Birdhouses' });
 				str += `You also received ${craftingXP.toLocaleString()} crafting XP for making own birdhouses.`;
 				const newCraftLevel = user.skillLevel(SkillsEnum.Crafting);
 				if (newCraftLevel > currentCraftingLevel) {
@@ -115,6 +121,10 @@ export const birdHouseTask: MinionTask = {
 			}
 
 			str += `\n\nYou received: ${loot}.`;
+
+			if (strungRabbitFoot) {
+				str += "\nYour strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.";
+			}
 
 			let updateBirdhouseData: BirdhouseData = {
 				lastPlaced: null,

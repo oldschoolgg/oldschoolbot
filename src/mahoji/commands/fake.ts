@@ -1,12 +1,11 @@
-import { Canvas, loadImage, SKRSContext2D } from '@napi-rs/canvas';
+import { Canvas, SKRSContext2D } from '@napi-rs/canvas';
 import { randInt } from 'e';
-import fs from 'fs';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { measureTextWidth } from '../../lib/util/canvasUtil';
+import { loadAndCacheLocalImage, measureTextWidth } from '../../lib/util/canvasUtil';
 import { OSBMahojiCommand } from '../lib/util';
 
-const bg = fs.readFileSync('./src/lib/resources/images/tob-bg.png');
+const bg = loadAndCacheLocalImage('./src/lib/resources/images/tob-bg.png');
 
 const randomMessages = ['omfgggggg', '!#@$@#$@##@$', 'adfsjklfadkjsl;l', 'l00000l wtf'];
 
@@ -187,7 +186,7 @@ export const fakeCommand: OSBMahojiCommand = {
 		ctx.font = '16px OSRSFont';
 		ctx.fillStyle = '#000000';
 
-		const image = await loadImage(bg);
+		const image = await bg;
 		ctx.drawImage(image, 0, 0, image.width, image.height);
 		for (const [names, fn] of thingMap) {
 			if (names.has(options.type.toLowerCase())) {

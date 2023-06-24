@@ -54,7 +54,8 @@ export const tobTask: MinionTask = {
 							skillName: val[0],
 							amount: wipedRoom
 								? val[1]
-								: calcPercentOfNum(calcWhatPercent(duration, fakeDuration), val[1])
+								: calcPercentOfNum(calcWhatPercent(duration, fakeDuration), val[1]),
+							source: 'TheatreOfBlood'
 						})
 					)
 				)

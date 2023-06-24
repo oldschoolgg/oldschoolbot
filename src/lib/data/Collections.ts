@@ -93,6 +93,7 @@ import {
 	miscellaneousCL,
 	monkeyBackpacksCL,
 	motherlodeMineCL,
+	muspahCL,
 	NexCL,
 	oborCL,
 	pestControlCL,
@@ -348,6 +349,12 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.Obor.allItems,
 				items: oborCL,
 				fmtProg: kcProg(Monsters.Obor)
+			},
+			'Phantom Muspah': {
+				alias: Monsters.PhantomMuspah.aliases,
+				allItems: Monsters.PhantomMuspah.allItems,
+				items: muspahCL,
+				fmtProg: kcProg(Monsters.PhantomMuspah)
 			},
 			Sarachnis: {
 				alias: Monsters.Sarachnis.aliases,
@@ -1234,6 +1241,10 @@ export async function getCollection(options: {
 	const userStats = await fetchStatsForCL(user);
 	const userCheckBank = getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
+
+	if (clItems.length >= 500) {
+		flags.missing = 'missing';
+	}
 
 	if (Boolean(flags.missing)) {
 		clItems = clItems.filter(i => !userCheckBank.has(i));

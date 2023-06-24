@@ -32,7 +32,7 @@ const greenItems = resolveItems(['Twisted ancestral colour kit']);
 const blueItems = resolveItems(['Metamorphic dust']);
 const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
 
-const purpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
+export const coxPurpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
 
 async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 	let rangeXP = 10_000 * qty;
@@ -46,8 +46,12 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 	}
 
 	const results = [];
-	results.push(await user.addXP({ skillName: SkillsEnum.Ranged, amount: rangeXP, minimal: true }));
-	results.push(await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true }));
+	results.push(
+		await user.addXP({ skillName: SkillsEnum.Ranged, amount: rangeXP, minimal: true, source: 'ChambersOfXeric' })
+	);
+	results.push(
+		await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true, source: 'ChambersOfXeric' })
+	);
 	let [, , styles] = resolveAttackStyles(user, {
 		monsterID: -1
 	});
@@ -56,7 +60,9 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 	}
 	const perSkillMeleeXP = meleeXP / styles.length;
 	for (const style of styles) {
-		results.push(await user.addXP({ skillName: style, amount: perSkillMeleeXP, minimal: true }));
+		results.push(
+			await user.addXP({ skillName: style, amount: perSkillMeleeXP, minimal: true, source: 'ChambersOfXeric' })
+		);
 	}
 	return results;
 }
@@ -159,13 +165,13 @@ export const raidsTask: MinionTask = {
 
 			const items = itemsAdded.items();
 
-			const isPurple = items.some(([item]) => purpleItems.includes(item.id));
+			const isPurple = items.some(([item]) => coxPurpleItems.includes(item.id));
 			const isGreen = items.some(([item]) => greenItems.includes(item.id));
 			const isBlue = items.some(([item]) => blueItems.includes(item.id));
 			const specialLoot = isPurple;
 			const emote = isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
-			if (items.some(([item]) => purpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
-				const itemsToAnnounce = itemsAdded.filter(item => purpleItems.includes(item.id), false);
+			if (items.some(([item]) => coxPurpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
+				const itemsToAnnounce = itemsAdded.filter(item => coxPurpleItems.includes(item.id), false);
 				globalClient.emit(
 					Events.ServerNotification,
 					`${emote} ${user.badgedUsername} just received **${itemsToAnnounce}** on their ${formatOrdinal(
@@ -219,7 +225,7 @@ export const raidsTask: MinionTask = {
 					previousCL: previousCLs[index],
 					customTexts: []
 				})),
-				type: 'Tombs of Amascut'
+				type: 'Chambers of Xerician'
 			});
 		}
 
