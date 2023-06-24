@@ -1,6 +1,7 @@
-import { isFunction } from 'e';
+import { isFunction, notEmpty } from 'e';
 import { writeFileSync } from 'fs';
 import { Bank, Monsters } from 'oldschooljs';
+import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
 import { flowerTable } from '../../mahoji/lib/abstracted_commands/hotColdCommand';
 import { tipTable } from '../../tasks/minions/minigames/gnomeRestaurantActivity';
@@ -13,9 +14,17 @@ import Createables from '../data/createables';
 import { ChewedBonesLootTable } from '../data/offerData';
 import { growablePets } from '../growablePets';
 import killableMonsters from '../minions/data/killableMonsters';
+import { Planks } from '../minions/data/planks';
 import { plunderRooms } from '../minions/data/plunder';
 import Potions from '../minions/data/potions';
+import { EasyEncounterLoot, HardEncounterLoot, MediumEncounterLoot } from '../minions/data/templeTrekking';
+import { allOpenables } from '../openables';
+import { RandomEvents } from '../randomEvents';
 import { shadeChestOpenables } from '../shadesKeys';
+import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../simulation/baGamble';
+import { RawJunkTable, trawlerFish } from '../simulation/fishingTrawler';
+import { rewardsGuardianTable } from '../simulation/rewardsGuardian';
+import { nonUniqueTable } from '../simulation/toa';
 import { Cookables } from '../skilling/skills/cooking';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { allFarmingItems } from '../skilling/skills/farming';
@@ -23,15 +32,20 @@ import Fishing from '../skilling/skills/fishing';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import Herblore from '../skilling/skills/herblore/herblore';
 import Hunter from '../skilling/skills/hunter/hunter';
+import { Castables } from '../skilling/skills/magic/castables';
 import { Enchantables } from '../skilling/skills/magic/enchantables';
+import Mining from '../skilling/skills/mining';
 import Runecraft from '../skilling/skills/runecraft';
 import Smithing from '../skilling/skills/smithing';
 import { stealables } from '../skilling/skills/thieving/stealables';
+import Woodcutting from '../skilling/skills/woodcutting';
 import getOSItem, { getItem } from './getOSItem';
+import resolveItems from './resolveItems';
 
 export const ALL_OBTAINABLE_ITEMS = new Set<number>();
 const totalBankToAdd = new Bank();
 
+for (const log of Woodcutting.Logs) ALL_OBTAINABLE_ITEMS.add(log.id);
 for (const fletch of Fletchables) ALL_OBTAINABLE_ITEMS.add(fletch.id);
 for (const bar of Smithing.Bars) ALL_OBTAINABLE_ITEMS.add(bar.id);
 for (const item of Smithing.SmithableItems) ALL_OBTAINABLE_ITEMS.add(item.id);
@@ -76,8 +90,6 @@ for (const i of Herblore.Mixables) ALL_OBTAINABLE_ITEMS.add(i.id);
 for (const i of Craftables) ALL_OBTAINABLE_ITEMS.add(i.id);
 for (const i of allCLItems) ALL_OBTAINABLE_ITEMS.add(i);
 
-for (const i of totalBankToAdd.items()) ALL_OBTAINABLE_ITEMS.add(i[0].id);
-
 for (const monster of killableMonsters) {
 	const mon = Monsters.get(monster.id);
 	if (!mon) continue;
@@ -100,6 +112,50 @@ for (const room of plunderRooms) {
 	}
 }
 for (const item of tipTable.allItems) ALL_OBTAINABLE_ITEMS.add(item);
+for (const plank of Planks) ALL_OBTAINABLE_ITEMS.add(plank.inputItem);
+for (const impling of Implings) {
+	impling.table.allItems.forEach(i => ALL_OBTAINABLE_ITEMS.add(i));
+}
+
+for (const item of [
+	Mining.GemRockTable.allItems,
+	Mining.GraniteRockTable.allItems,
+	Mining.SandstoneRockTable.allItems,
+	Mining.Ores.map(i => i.id),
+	RandomEvents.map(i => i.loot.allItems),
+	RandomEvents.map(i => i.outfit),
+	allOpenables.map(i => i.allItems),
+	RawJunkTable.allItems,
+	trawlerFish.map(i => i.id),
+	rewardsGuardianTable.allItems,
+	resolveItems([
+		...nonUniqueTable.map(i => i[0]),
+		'Raw chompy',
+		'Chompy chick',
+		'Weeds',
+		'Leaping salmon',
+		'Leaping sturgeon',
+		'Limestone'
+	]),
+	LowGambleTable.allItems,
+	MediumGambleTable.allItems,
+	HighGambleTable.allItems,
+	EasyEncounterLoot.allItems,
+	MediumEncounterLoot.allItems,
+	HardEncounterLoot.allItems,
+	Woodcutting.Logs.filter(i => i.lootTable).map(i => i.lootTable?.allItems)
+]
+	.flat(2)
+	.filter(notEmpty)) {
+	ALL_OBTAINABLE_ITEMS.add(item);
+}
+
+for (const castable of Castables) {
+	if (!castable.output) continue;
+	totalBankToAdd.add(castable.output);
+}
+
+for (const i of totalBankToAdd.items()) ALL_OBTAINABLE_ITEMS.add(i[0].id);
 
 const ids = [
 	1, 2, 6, 8, 10, 12, 35, 36, 39, 40, 41, 42, 43, 44, 45, 46, 48, 50, 52, 53, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72,
@@ -356,7 +412,7 @@ const ids = [
 ];
 
 writeFileSync(
-	'asdf.txt',
+	'not_in_list_but_owned.txt',
 	ids
 		.filter(i => !ALL_OBTAINABLE_ITEMS.has(i))
 		.map(getOSItem)
@@ -366,7 +422,7 @@ writeFileSync(
 );
 
 writeFileSync(
-	'ddd.txt',
+	'in_list_but_not_owned.txt',
 	Array.from(ALL_OBTAINABLE_ITEMS.values())
 		.filter(i => !ids.includes(i))
 		.map(getOSItem)

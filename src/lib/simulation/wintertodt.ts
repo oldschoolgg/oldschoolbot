@@ -116,14 +116,14 @@ const OtherSeedsTable = todtTable([
 	['Spirit seed', [1, 1]]
 ]);
 
-const MaterialTables = new SimpleTable<WintertodtTable>()
+export const MaterialTables = new SimpleTable<WintertodtTable>()
 	.add(GemTable)
 	.add(FishTable)
 	.add(LogTable)
 	.add(HerbTable)
 	.add(OreTable);
 
-const SeedTables = new SimpleTable<WintertodtTable>()
+export const SeedTables = new SimpleTable<WintertodtTable>()
 	.add(OtherSeedsTable)
 	.add(HerbSeedsTable)
 	.add(HerbSeedsTable)
