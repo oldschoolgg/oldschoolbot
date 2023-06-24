@@ -6,6 +6,8 @@ import { noOp, randInt, shuffleArr, Time } from 'e';
 import { production } from '../config';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { BitField, Channel, informationalButtons, PeakTier } from './constants';
+import { GrandExchange } from './grandExchange';
+import { cacheGEPrices } from './marketPrices';
 import { collectMetrics } from './metrics';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { prisma, queryCountStore } from './settings/prisma';
@@ -370,6 +372,22 @@ WHERE bitfield && '{2,3,4,5,6,7,8}'::int[] AND user_stats."last_daily_timestamp"
 			const res = await channel.send({ embeds: [geEmbed] });
 			lastMessageGEID = res.id;
 		}
+	},
+	{
+		name: 'ge_ticker',
+		timer: null,
+		interval: Time.Second * 3,
+		cb: async () => {
+			await GrandExchange.tick();
+		}
+	},
+	{
+		name: 'Cache g.e prices',
+		timer: null,
+		interval: Time.Hour * 4,
+		cb: async () => {
+			await cacheGEPrices();
+		}
 	}
 ];
 
@@ -378,7 +396,6 @@ export function initTickers() {
 		if (ticker.timer !== null) clearTimeout(ticker.timer);
 		const fn = async () => {
 			try {
-				debugLog(`Starting ${ticker.name} ticker`, { type: 'TICKER' });
 				if (globalClient.isShuttingDown) return;
 				await ticker.cb();
 			} catch (err) {
@@ -386,7 +403,6 @@ export function initTickers() {
 				debugLog(`${ticker.name} ticker errored`, { type: 'TICKER' });
 			} finally {
 				ticker.timer = setTimeout(fn, ticker.interval);
-				debugLog(`Finished ${ticker.name} ticker`, { type: 'TICKER' });
 			}
 		};
 		fn();
