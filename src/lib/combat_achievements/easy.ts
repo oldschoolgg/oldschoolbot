@@ -1,4 +1,8 @@
-import type { CombatAchievement } from './combatAchievements';
+import { Monsters } from 'oldschooljs';
+
+import { Requirements } from '../structures/Requirements';
+import { MonsterActivityTaskOptions } from '../types/minions';
+import { type CombatAchievement, isCertainMonsterTrip } from './combatAchievements';
 
 export const easyCombatAchievements: CombatAchievement[] = [
 	{
@@ -6,53 +10,73 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		type: 'kill_count',
 		desc: 'Kill an Aberrant Spectre.',
 		id: 1,
-		kcReq: {
-			monsterID: 2,
-			qty: 1
-		}
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.AberrantSpectre.id]: 1
+			}
+		})
 	},
 	{
 		name: 'Barrows Novice',
 		type: 'kill_count',
 		desc: 'Open the Barrows chest 10 times.',
 		id: 2,
-		kcReq: {
-			monsterID: 1673,
-			qty: 10
-		}
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Barrows.id]: 10
+			}
+		})
 	},
 	{
 		name: 'Defence? What Defence?',
 		type: 'restriction',
 		desc: 'Kill any Barrows Brother using only magical damage.',
 		id: 3,
-		chance: () => {}
+		rng: {
+			chancePerKill: 2,
+			hasChance: isCertainMonsterTrip(Monsters.Barrows.id)
+		}
 	},
 	{
 		name: 'Big, Black and Fiery',
 		type: 'kill_count',
 		desc: 'Kill a Black Dragon.',
 		id: 4,
-		kcReq: {
-			monsterID: 252,
-			qty: 1
-		}
+		requirements: new Requirements().add({
+			OR: [
+				{
+					kcRequirement: {
+						[Monsters.KingBlackDragon.id]: 1
+					}
+				},
+				{
+					kcRequirement: {
+						[Monsters.BlackDragon.id]: 1
+					}
+				}
+			]
+		})
 	},
 	{
 		name: 'The Demonic Punching Bag',
 		type: 'kill_count',
 		desc: 'Kill a Bloodveld.',
 		id: 5,
-		kcReq: {
-			monsterID: 484,
-			qty: 1
-		}
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Bloodveld.id]: 1
+			}
+		})
 	},
 	{
 		name: 'Preparation Is Key',
 		type: 'perfection',
 		desc: 'Kill Bryophyta without suffering any poison damage.',
-		id: 6
+		id: 6,
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.Bryophyta.id)
+		}
 	},
 	{
 		name: 'Fighting as Intended II',
@@ -65,10 +89,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		type: 'kill_count',
 		desc: 'Kill Bryophyta once.',
 		id: 8,
-		kcReq: {
-			monsterID: 8195,
-			qty: 1
-		}
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Bryophyta.id]: 1
+			}
+		})
 	},
 	{
 		name: 'A Slow Death',
@@ -87,40 +112,44 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		type: 'kill_count',
 		desc: 'Kill the Deranged Archaeologist 10 times.',
 		id: 11,
-		kcReq: {
-			monsterID: 7806,
-			qty: 10
-		}
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.DerangedArchaeologist.id]: 10
+			}
+		})
 	},
 	{
 		name: 'The Walking Volcano',
 		type: 'kill_count',
 		desc: 'Kill a Fire Giant.',
 		id: 12,
-		kcReq: {
-			monsterID: 2075,
-			qty: 1
-		}
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.FireGiant.id]: 1
+			}
+		})
 	},
 	{
 		name: 'Giant Mole Novice',
 		type: 'kill_count',
 		desc: 'Kill the Giant Mole 10 times.',
 		id: 13,
-		kcReq: {
-			monsterID: 5779,
-			qty: 10
-		}
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.GiantMole.id]: 10
+			}
+		})
 	},
 	{
 		name: 'A Greater Foe',
 		type: 'kill_count',
 		desc: 'Kill a Greater Demon.',
 		id: 14,
-		kcReq: {
-			monsterID: 2025,
-			qty: 1
-		}
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.GreaterDemon.id]: 1
+			}
+		})
 	},
 	{
 		name: 'Not So Great After All',
@@ -133,30 +162,33 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		type: 'kill_count',
 		desc: 'Kill a Hellhound.',
 		id: 16,
-		kcReq: {
-			monsterID: 104,
-			qty: 1
-		}
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Hellhound.id]: 1
+			}
+		})
 	},
 	{
 		name: 'King Black Dragon Novice',
 		type: 'kill_count',
 		desc: 'Kill the King Black Dragon 10 times.',
 		id: 17,
-		kcReq: {
-			monsterID: 6502,
-			qty: 10
-		}
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.KingBlackDragon.id]: 10
+			}
+		})
 	},
 	{
 		name: 'A Scaley Encounter',
 		type: 'kill_count',
 		desc: 'Kill a Lizardman Shaman.',
 		id: 18,
-		kcReq: {
-			monsterID: 6766,
-			qty: 1
-		}
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.LizardmanShaman.id]: 1
+			}
+		})
 	},
 	{
 		name: 'Shayzien Protector',
@@ -175,32 +207,44 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		type: 'kill_count',
 		desc: 'Kill Obor once.',
 		id: 21,
-		kcReq: {
-			monsterID: 7416,
-			qty: 1
-		}
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Obor.id]: 1
+			}
+		})
 	},
 	{
 		name: 'Fighting as Intended',
 		type: 'restriction',
 		desc: 'Kill Obor on a free to play world.',
-		id: 22
+		id: 22,
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Obor.id]: 1
+			}
+		})
 	},
 	{
 		name: 'Sleeping Giant',
 		type: 'mechanical',
 		desc: 'Kill Obor whilst he is immobilized.',
-		id: 23
+		id: 23,
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Sarachnis.id]: 10
+			}
+		})
 	},
 	{
 		name: 'Sarachnis Novice',
 		type: 'kill_count',
 		desc: 'Kill Sarachnis 10 times.',
 		id: 24,
-		kcReq: {
-			monsterID: 8713,
-			qty: 10
-		}
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Sarachnis.id]: 10
+			}
+		})
 	},
 	{
 		name: 'Master of Buckets',
@@ -225,10 +269,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		type: 'kill_count',
 		desc: 'Subdue Tempoross 5 times.',
 		id: 28,
-		minigameReq: {
-			minigame: 'tempoross',
-			qty: 5
-		}
+		requirements: new Requirements().add({
+			minigames: {
+				tempoross: 5
+			}
+		})
 	},
 	{
 		name: 'Handyman',
@@ -240,32 +285,42 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		name: 'Cosy',
 		type: 'restriction',
 		desc: 'Subdue the Wintertodt with four pieces of warm equipment equipped.',
-		id: 30
+		id: 30,
+		rng: {
+			chancePerKill: 1,
+			hasChance: isCertainMonsterTrip(Monsters.Bryophyta.id)
+		}
 	},
 	{
 		name: 'Mummy!',
 		type: 'mechanical',
 		desc: 'Heal a pyromancer after they have fallen.',
-		id: 31
+		id: 31,
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.Bryophyta.id)
+		}
 	},
 	{
 		name: 'Wintertodt Novice',
 		type: 'kill_count',
 		desc: 'Subdue the Wintertodt 5 times.',
 		id: 32,
-		minigameReq: {
-			minigame: 'wintertodt',
-			qty: 5
-		}
+		requirements: new Requirements().add({
+			minigames: {
+				wintertodt: 5
+			}
+		})
 	},
 	{
 		name: 'A Slithery Encounter',
 		type: 'kill_count',
 		desc: 'Kill a Wyrm.',
 		id: 33,
-		kcReq: {
-			monsterID: 8610,
-			qty: 1
-		}
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Wyrm.id]: 1
+			}
+		})
 	}
 ];

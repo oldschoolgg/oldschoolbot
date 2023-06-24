@@ -1,26 +1,30 @@
 import { sumArr } from 'e';
 
-import { MinigameName } from '../settings/minigames';
-import { ActivityTaskOptions } from '../types/minions';
+import { Requirements } from '../structures/Requirements';
+import { ActivityTaskOptions, MonsterActivityTaskOptions } from '../types/minions';
 import { assert } from '../util';
 import { easyCombatAchievements } from './easy';
 
 type CAType = 'kill_count' | 'mechanical' | 'perfection' | 'restriction' | 'speed' | 'stamina';
 
-export interface CombatAchievement {
+export type CombatAchievement = {
 	id: number;
 	name: string;
 	type: CAType;
 	desc: string;
-	kcReq?: {
-		monsterID: number;
-		qty: number;
-	};
-	minigameReq?: {
-		minigame: MinigameName;
-		qty: number;
-	};
-	chance?: (data: ActivityTaskOptions) => number;
+} & (
+	| { requirements: Requirements }
+	| {
+			rng: {
+				chancePerKill: number;
+				hasChance: (data: ActivityTaskOptions) => boolean;
+			};
+	  }
+);
+
+export function isCertainMonsterTrip(monsterID: number) {
+	return (data: ActivityTaskOptions) =>
+		data.type === 'MonsterKilling' && (data as MonsterActivityTaskOptions).monsterID === monsterID;
 }
 
 export const CombatAchievements = {

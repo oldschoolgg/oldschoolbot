@@ -3,6 +3,7 @@ import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { effectiveMonsters } from '../minions/data/killableMonsters';
+import { MinigameName } from '../settings/minigames';
 import { prisma } from '../settings/prisma';
 import Agility from '../skilling/skills/agility';
 import { ItemBank, Skills } from '../types';
@@ -24,8 +25,12 @@ type Requirement =
 	| { clRequirement: Bank }
 	| { kcRequirement: Record<number, number> }
 	| { qpRequirement: number }
+	// TODO: implement this
+	| { minigames: Partial<Record<MinigameName, number>> }
 	| { lapsRequirement: Record<number, number> }
-	| { sacrificedItemsRequirement: Bank };
+	| { sacrificedItemsRequirement: Bank }
+	// TODO: implement this
+	| { OR: Requirement[] };
 
 export class Requirements {
 	requirements: Requirement[] = [];
