@@ -193,7 +193,7 @@ async function minigamesLb(user: MUser, channelID: string, name: string) {
 					   FROM user_stats
 					   WHERE "tithe_farms_completed" > 10
 					   ORDER BY "tithe_farms_completed"
-					   DESC LIMIT 2000;`
+					   DESC LIMIT 10;`
 		);
 		doMenu(
 			user,
