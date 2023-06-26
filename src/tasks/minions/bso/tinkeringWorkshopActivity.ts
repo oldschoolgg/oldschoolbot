@@ -46,7 +46,7 @@ export const twTask: MinionTask = {
 			xp += randInt(8000, 15_000);
 		}
 
-		if (data.material === 'junk') xp /= 2;
+		if (data.material === 'junk') xp = Math.floor(xp / 2);
 
 		const xpStr = await user.addXP({ amount: xp, skillName: SkillsEnum.Invention, duration });
 		await userStatsUpdate(user.id, oldStats => {
