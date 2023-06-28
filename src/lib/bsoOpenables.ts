@@ -860,7 +860,7 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		name: 'Royal mystery box',
 		id: itemID('Royal mystery box'),
 		openedItem: getOSItem('Royal mystery box'),
-		aliases: ['royal mystery box', 'rmb'],
+		aliases: ['royal mystery box'],
 		output: RoyalMysteryBoxTable,
 		allItems: RoyalMysteryBoxTable.allItems,
 		excludeFromOpenAll: true
@@ -869,7 +869,7 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		name: 'Beach mystery box',
 		id: itemID('Beach mystery box'),
 		openedItem: getOSItem('Beach mystery box'),
-		aliases: ['Beach mystery box', 'bmb'],
+		aliases: ['Beach mystery box'],
 		output: BeachMysteryBoxTable,
 		allItems: BeachMysteryBoxTable.allItems,
 		excludeFromOpenAll: true
@@ -949,7 +949,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem('Spooky box'),
 		aliases: ['spooky box'],
 		output: spookyTable,
-		allItems: spookyTable.allItems
+		allItems: spookyTable.allItems,
+		excludeFromOpenAll: true
 	},
 	{
 		name: 'Christmas box',
@@ -957,7 +958,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem('Christmas box'),
 		aliases: ['christmas box'],
 		output: ChristmasBoxTable,
-		allItems: ChristmasBoxTable.allItems
+		allItems: ChristmasBoxTable.allItems,
+		excludeFromOpenAll: true
 	}
 ];
 
