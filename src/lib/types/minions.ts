@@ -68,6 +68,7 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
+	chinning?: boolean;
 	burstOrBarrage?: number;
 }
 
