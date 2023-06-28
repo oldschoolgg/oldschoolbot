@@ -1,8 +1,8 @@
 import { Monsters } from 'oldschooljs';
 
 import { Requirements } from '../structures/Requirements';
-import { MonsterActivityTaskOptions } from '../types/minions';
-import { type CombatAchievement, isCertainMonsterTrip } from './combatAchievements';
+import { isCertainMonsterTrip } from './caUtils';
+import { type CombatAchievement } from './combatAchievements';
 
 export const easyCombatAchievements: CombatAchievement[] = [
 	{
@@ -82,7 +82,12 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		name: 'Fighting as Intended II',
 		type: 'restriction',
 		desc: 'Kill Bryophyta on a free to play world.',
-		id: 7
+		id: 7,
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Bryophyta.id]: 1
+			}
+		})
 	},
 	{
 		name: 'Bryophyta Novice',
@@ -99,13 +104,22 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		name: 'A Slow Death',
 		type: 'restriction',
 		desc: 'Kill Bryophyta with either poison or venom being the final source of damage.',
-		id: 9
+		id: 9,
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.Bryophyta.id)
+		}
 	},
 	{
 		name: 'Protection from Moss',
 		type: 'mechanical',
 		desc: 'Kill Bryophyta with the Protect from Magic prayer active.',
-		id: 10
+		id: 10,
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Bryophyta.id]: 1
+			}
+		})
 	},
 	{
 		name: 'Deranged Archaeologist Novice',
@@ -155,7 +169,13 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		name: 'Not So Great After All',
 		type: 'restriction',
 		desc: 'Finish off a Greater Demon with a demonbane weapon.',
-		id: 15
+		id: 15,
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.Bryophyta.id)(data) &&
+				user.hasEquipped(['Silverlight', 'Darklight', 'Arclight'], false)
+		}
 	},
 	{
 		name: "A Demon's Best Friend",
@@ -194,13 +214,24 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		name: 'Shayzien Protector',
 		type: 'perfection',
 		desc: 'Kill a Lizardman Shaman in Molch which has not dealt damage to anyone. (excluding its Spawns)',
-		id: 19
+		id: 19,
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.LizardmanShaman.id)
+		}
 	},
 	{
 		name: 'Into the Den of Giants',
 		type: 'kill_count',
 		desc: 'Kill a Hill Giant, Moss Giant and Fire Giant in the Giant Cave within the Shayzien region.',
-		id: 20
+		id: 20,
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.HillGiant.id]: 1,
+				[Monsters.MossGiant.id]: 1,
+				[Monsters.FireGiant.id]: 1
+			}
+		})
 	},
 	{
 		name: 'Obor Novice',
@@ -250,19 +281,31 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		name: 'Master of Buckets',
 		type: 'mechanical',
 		desc: 'Extinguish at least 5 fires during a single Tempoross fight.',
-		id: 25
+		id: 25,
+		rng: {
+			chancePerKill: 3,
+			hasChance: data => data.type === 'Tempoross'
+		}
 	},
 	{
 		name: 'Calm Before the Storm',
 		type: 'mechanical',
 		desc: 'Repair either a mast or a totem pole.',
-		id: 26
+		id: 26,
+		rng: {
+			chancePerKill: 3,
+			hasChance: data => data.type === 'Tempoross'
+		}
 	},
 	{
 		name: 'Fire in the Hole!',
 		type: 'mechanical',
 		desc: 'Attack Tempoross from both sides by loading both cannons on both ships.',
-		id: 27
+		id: 27,
+		rng: {
+			chancePerKill: 3,
+			hasChance: data => data.type === 'Tempoross'
+		}
 	},
 	{
 		name: 'Tempoross Novice',
@@ -279,7 +322,12 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		name: 'Handyman',
 		type: 'mechanical',
 		desc: 'Repair a brazier which has been destroyed by the Wintertodt.',
-		id: 29
+		id: 29,
+		requirements: new Requirements().add({
+			minigames: {
+				wintertodt: 1
+			}
+		})
 	},
 	{
 		name: 'Cosy',
