@@ -22,7 +22,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID("Webweaver bow")]: 25
+				[itemID('Webweaver bow')]: 25
 			},
 			{
 				[itemID("Craw's bow")]: 15
@@ -48,7 +48,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID("Webweaver bow")]: 25
+				[itemID('Webweaver bow')]: 25
 			},
 			{
 				[itemID("Craw's bow")]: 15
@@ -72,8 +72,8 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
 		itemInBankBoosts: [
-			{ 
-				[itemID('Ursine chainmace')]: 25 
+			{
+				[itemID('Ursine chainmace')]: 25
 			},
 			{
 				[itemID("Viggora's chainmace")]: 15
@@ -99,8 +99,8 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
 		itemInBankBoosts: [
-			{ 
-				[itemID('Ursine chainmace')]: 25 
+			{
+				[itemID('Ursine chainmace')]: 25
 			},
 			{
 				[itemID("Viggora's chainmace")]: 15
@@ -125,14 +125,14 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
 		itemInBankBoosts: [
-			{ 
-				[itemID('Ursine chainmace')]: 25 
+			{
+				[itemID('Ursine chainmace')]: 25
 			},
 			{
 				[itemID("Viggora's chainmace")]: 15
 			},
 			{
-				[itemID("Webweaver bow")]: 10
+				[itemID('Webweaver bow')]: 10
 			},
 			{
 				[itemID("Craw's bow")]: 5
@@ -157,14 +157,14 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
 		itemInBankBoosts: [
-			{ 
-				[itemID('Ursine chainmace')]: 25 
+			{
+				[itemID('Ursine chainmace')]: 25
 			},
 			{
 				[itemID("Viggora's chainmace")]: 15
 			},
 			{
-				[itemID("Webweaver bow")]: 10
+				[itemID('Webweaver bow')]: 10
 			},
 			{
 				[itemID("Craw's bow")]: 5
