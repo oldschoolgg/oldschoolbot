@@ -13,56 +13,103 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		name: Monsters.Callisto.name,
 		aliases: Monsters.Callisto.aliases,
 		table: Monsters.Callisto,
-		timeToFinish: Time.Minute * 5.4,
+		timeToFinish: Time.Minute * 4.4,
 		emoji: '<:Callisto_cub:324127376273440768>',
 		wildy: true,
 
-		difficultyRating: 9,
-		itemsRequired: resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]),
+		difficultyRating: 7,
 		notifyDrops: resolveItems(['Callisto cub']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID("Viggora's chainmace")]: 25
+				[itemID("Webweaver bow")]: 25
 			},
 			{
-				[itemID('Berserker ring')]: 3,
-				[itemID('Berserker ring (i)')]: 5
-			},
-			{
-				[itemID('Barrows gloves')]: 3
+				[itemID("Craw's bow")]: 15
 			}
 		],
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultAttackStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.225,
-		healAmountNeeded: 5 * 20,
-		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackSlash]
+		healAmountNeeded: 13 * 20,
+		attackStyleToUse: GearStat.AttackRanged,
+		attackStylesUsed: [GearStat.AttackCrush]
+	},
+	{
+		id: Monsters.Artio.id,
+		name: Monsters.Artio.name,
+		aliases: Monsters.Artio.aliases,
+		table: Monsters.Artio,
+		timeToFinish: Time.Minute * 2,
+		emoji: '<:Callisto_cub:324127376273440768>',
+		wildy: true,
+
+		difficultyRating: 2,
+		notifyDrops: resolveItems(['Callisto cub']),
+		qpRequired: 0,
+		itemInBankBoosts: [
+			{
+				[itemID("Webweaver bow")]: 25
+			},
+			{
+				[itemID("Craw's bow")]: 15
+			}
+		],
+		defaultAttackStyles: [SkillsEnum.Ranged],
+		healAmountNeeded: 8 * 20,
+		attackStyleToUse: GearStat.AttackRanged,
+		attackStylesUsed: [GearStat.AttackCrush]
 	},
 	{
 		id: Monsters.Vetion.id,
 		name: Monsters.Vetion.name,
 		aliases: Monsters.Vetion.aliases,
 		table: Monsters.Vetion,
-		timeToFinish: Time.Minute * 4.4,
+		timeToFinish: Time.Minute * 2.9,
 		emoji: '<:Vetion_jr:324127378999738369>',
 		wildy: true,
 
-		difficultyRating: 8,
-		itemsRequired: resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]),
+		difficultyRating: 7,
 		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
 		itemInBankBoosts: [
-			{
-				[itemID("Viggora's chainmace")]: 25
+			{ 
+				[itemID('Ursine chainmace')]: 25 
 			},
-			{ [itemID('Dragon warhammer')]: 3 }
+			{
+				[itemID("Viggora's chainmace")]: 15
+			}
 		],
 		defaultAttackStyles: [SkillsEnum.Attack],
-		customMonsterHP: 1110,
-		combatXpMultiplier: 1.156,
-		healAmountNeeded: 5 * 20,
-		attackStyleToUse: GearStat.AttackSlash,
+		customMonsterHP: 630,
+		combatXpMultiplier: 1.225,
+		healAmountNeeded: 13 * 20,
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackSlash]
+	},
+	{
+		id: Monsters.Calvarion.id,
+		name: Monsters.Calvarion.name,
+		aliases: Monsters.Calvarion.aliases,
+		table: Monsters.Calvarion,
+		timeToFinish: Time.Minute * 2,
+		emoji: '<:Vetion_jr:324127378999738369>',
+		wildy: true,
+
+		difficultyRating: 2,
+		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
+		qpRequired: 0,
+		itemInBankBoosts: [
+			{ 
+				[itemID('Ursine chainmace')]: 25 
+			},
+			{
+				[itemID("Viggora's chainmace")]: 15
+			}
+		],
+		defaultAttackStyles: [SkillsEnum.Attack],
+		customMonsterHP: 420,
+		healAmountNeeded: 8 * 20,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
@@ -70,25 +117,63 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		name: Monsters.Venenatis.name,
 		aliases: Monsters.Venenatis.aliases,
 		table: Monsters.Venenatis,
-		timeToFinish: Time.Minute * 4.5,
+		timeToFinish: Time.Minute * 3.2,
 		emoji: '<:Venenatis_spiderling:324127379092144129>',
 		wildy: true,
 
-		difficultyRating: 9,
-		itemsRequired: resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]),
+		difficultyRating: 6,
 		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
 		itemInBankBoosts: [
-			{
-				[itemID("Craw's bow")]: 25
+			{ 
+				[itemID('Ursine chainmace')]: 25 
 			},
-			{ [itemID('Barrows gloves')]: 3 }
+			{
+				[itemID("Viggora's chainmace")]: 15
+			},
+			{
+				[itemID("Webweaver bow")]: 10
+			},
+			{
+				[itemID("Craw's bow")]: 5
+			}
 		],
 		defaultAttackStyles: [SkillsEnum.Attack],
 		combatXpMultiplier: 1.525,
-		healAmountNeeded: 5 * 20,
-		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackSlash]
+		healAmountNeeded: 13 * 20,
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackStab]
+	},
+	{
+		id: Monsters.Spindel.id,
+		name: Monsters.Spindel.name,
+		aliases: Monsters.Spindel.aliases,
+		table: Monsters.Spindel,
+		timeToFinish: Time.Minute * 1.77,
+		emoji: '<:Venenatis_spiderling:324127379092144129>',
+		wildy: true,
+
+		difficultyRating: 2,
+		notifyDrops: resolveItems(['Venenatis spiderling']),
+		qpRequired: 0,
+		itemInBankBoosts: [
+			{ 
+				[itemID('Ursine chainmace')]: 25 
+			},
+			{
+				[itemID("Viggora's chainmace")]: 15
+			},
+			{
+				[itemID("Webweaver bow")]: 10
+			},
+			{
+				[itemID("Craw's bow")]: 5
+			}
+		],
+		defaultAttackStyles: [SkillsEnum.Attack],
+		healAmountNeeded: 8 * 20,
+		attackStyleToUse: GearStat.AttackCrush,
+		attackStylesUsed: [GearStat.AttackStab]
 	},
 	{
 		id: Monsters.ChaosElemental.id,
@@ -174,7 +259,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		timeToFinish: Time.Minute * 3.0,
 		emoji: '<:Scorpias_offspring:324127378773377024>',
 		wildy: true,
-		difficultyRating: 8,
+		difficultyRating: 7,
 		notifyDrops: resolveItems(["Scorpia's offspring"]),
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }, { [itemID('Harmonised nightmare staff')]: 10 }],
