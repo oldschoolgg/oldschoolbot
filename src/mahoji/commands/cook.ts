@@ -2,16 +2,16 @@ import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
+import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
+import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { cutLeapingFishCommand } from '../lib/abstracted_commands/cutLeapingFishCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 
 export const cookCommand: OSBMahojiCommand = {
 	name: 'cook',
