@@ -194,7 +194,7 @@ export const huntCommand: OSBMahojiCommand = {
 						? Math.round(duration / (9 * Time.Minute))
 						: Math.round(duration / (18 * Time.Minute));
 
-				if (usingStaminaPotion && userBank.amount('Stamina potion(4)') < staminaPotionQuantity) {
+				if (userBank.amount('Stamina potion(4)') < staminaPotionQuantity) {
 					return `You need ${staminaPotionQuantity}x Stamina potion(4) to hunt for the whole trip, try a lower quantity or make/buy more potions.`;
 				}
 				removeBank.add('Stamina potion(4)', staminaPotionQuantity);
