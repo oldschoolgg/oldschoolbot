@@ -196,7 +196,7 @@ AND data->>'runeID' IS NOT NULL;`;
 
 			if (minigamesNotDone.length > 0) {
 				results.push({
-					reason: `You need to do these minigames at least once: ${minigamesNotDone.join(', ')}.`
+					reason: `You need to do these minigames at least once: ${minigamesNotDone.slice(0, 5).join(', ')}.`
 				});
 			}
 

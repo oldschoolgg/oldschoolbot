@@ -2,14 +2,16 @@ import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
+import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { cutLeapingFishCommand } from '../lib/abstracted_commands/cutLeapingFishCommand';
 import { OSBMahojiCommand } from '../lib/util';
+import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 
 export const cookCommand: OSBMahojiCommand = {
 	name: 'cook',
@@ -73,6 +75,15 @@ export const cookCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`;
 		}
 
+		// These are just for notifying the user, they only take effect in the Activity.
+		const boosts = [];
+		const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
+		const [hasFavour] = gotFavour(user, Favours.Hosidius, 100);
+		if (hasFavour) boosts.push('Using Hosidius Range');
+		if (hasFavour && hasEliteDiary) boosts.push('Kourend Elite Diary');
+		const hasGaunts = user.hasEquipped('Cooking gauntlets');
+		if (hasGaunts) boosts.push('Cooking gauntlets equipped');
+
 		// Based off catherby fish/hr rates
 		let timeToCookSingleCookable = Time.Second * 2.88;
 		if (cookable.id === itemID('Jug of wine') || cookable.id === itemID('Wine of zamorak')) {
@@ -119,6 +130,6 @@ export const cookCommand: OSBMahojiCommand = {
 
 		return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatDuration(
 			duration
-		)} to finish.`;
+		)} to finish.${boosts.length > 0 ? `\n\nBoosts: ${boosts.join(', ')}` : ''}`;
 	}
 };

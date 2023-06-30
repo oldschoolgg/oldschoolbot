@@ -110,13 +110,13 @@ const degradeableItemsCanUse: {
 	{
 		item: getOSItem("Tumeken's shadow"),
 		attackStyle: 'mage',
-		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 20,
+		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 40,
 		boost: 7
 	},
 	{
 		item: getOSItem('Trident of the swamp'),
 		attackStyle: 'mage',
-		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 20,
+		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 40,
 		boost: 3
 	}
 ];
@@ -297,6 +297,7 @@ export async function minionKillCommand(
 	// Calculate Cannon and Barrage boosts + costs:
 	let usingCannon = false;
 	let cannonMulti = false;
+	let chinning = false;
 	let burstOrBarrage = 0;
 	const hasCannon = cannonBanks.some(i => user.owns(i));
 	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
@@ -313,6 +314,9 @@ export async function minionKillCommand(
 	}
 	if (boostChoice === 'burst' && user.skillLevel(SkillsEnum.Magic) < 70) {
 		return `You need 70 Magic to use Ice Burst. You have ${user.skillLevel(SkillsEnum.Magic)}`;
+	}
+	if (boostChoice === 'chinning' && user.skillLevel(SkillsEnum.Ranged) < 65) {
+		return `You need 65 Ranged to use Chinning method. You have ${user.skillLevel(SkillsEnum.Ranged)}`;
 	}
 
 	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
@@ -336,6 +340,31 @@ export async function minionKillCommand(
 		consumableCosts.push(cannonSingleConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
 		boosts.push(`${boostCannon}% for Cannon in singles`);
+	} else if (method === 'chinning' && attackStyles.includes(SkillsEnum.Ranged) && monster!.canChinning) {
+		chinning = true;
+		// Check what Chinchompa to use
+		const chinchompas = ['Black chinchompa', 'Red chinchompa', 'Chinchompa'];
+		let chinchompa = 'Black chinchompa';
+		for (let chin of chinchompas) {
+			if (user.owns(chin) && user.bank.amount(chin) > 5000) {
+				chinchompa = chin;
+				break;
+			}
+		}
+		const chinBoostRapid = chinchompa === 'Chinchompa' ? 73 : chinchompa === 'Red chinchompa' ? 76 : 82;
+		const chinBoostLongRanged = chinchompa === 'Chinchompa' ? 63 : chinchompa === 'Red chinchompa' ? 69 : 77;
+		const chinningConsumables: Consumable = {
+			itemCost: new Bank().add(chinchompa, 1),
+			qtyPerMinute: attackStyles.includes(SkillsEnum.Defence) ? 24 : 33
+		};
+		if (attackStyles.includes(SkillsEnum.Defence)) {
+			timeToFinish = reduceNumByPercent(timeToFinish, chinBoostLongRanged);
+			boosts.push(`${chinBoostLongRanged}% for ${chinchompa} Longrange`);
+		} else {
+			timeToFinish = reduceNumByPercent(timeToFinish, chinBoostRapid);
+			boosts.push(`${chinBoostRapid}% for ${chinchompa} Rapid`);
+		}
+		consumableCosts.push(chinningConsumables);
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'MonsterKilling');
@@ -647,6 +676,7 @@ export async function minionKillCommand(
 		type: 'MonsterKilling',
 		usingCannon: !usingCannon ? undefined : usingCannon,
 		cannonMulti: !cannonMulti ? undefined : cannonMulti,
+		chinning: !chinning ? undefined : chinning,
 		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage
 	});
 	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
