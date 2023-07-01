@@ -51,7 +51,8 @@ export const Roles = {
 	TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '795933981715464192',
 	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '832798997033779220',
 	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '839135887467610123',
-	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '856080958247010324'
+	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '856080958247010324',
+	TopGlobalCL: '1072426869028294747'
 };
 
 export const enum Emoji {
