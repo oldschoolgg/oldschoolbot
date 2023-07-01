@@ -51,7 +51,8 @@ export const Roles = {
 	TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '795933981715464192',
 	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '832798997033779220',
 	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '839135887467610123',
-	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '856080958247010324'
+	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '856080958247010324',
+	TopGlobalCL: '1072426869028294747'
 };
 
 export const enum Emoji {
@@ -432,7 +433,7 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandOption
 }
 
 export const DISABLED_COMMANDS = new Set<string>();
-export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
 export type PvMMethod = (typeof PVM_METHODS)[number];
 
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
