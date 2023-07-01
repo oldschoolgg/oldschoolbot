@@ -205,7 +205,8 @@ async function minigamesLb(user: MUser, channelID: string, name: string) {
 			),
 			'Tithe farm Leaderboard'
 		);
-	} else {
+		return lbMsg(`${minigame.name} Leaderboard`);
+	} 
 		const res = await prisma.minigame.findMany({
 			where: {
 				[minigame.column]: {
@@ -230,7 +231,6 @@ async function minigamesLb(user: MUser, channelID: string, name: string) {
 			),
 			`${minigame.name} Leaderboard`
 		);
-	}
 	return lbMsg(`${minigame.name} Leaderboard`);
 }
 
