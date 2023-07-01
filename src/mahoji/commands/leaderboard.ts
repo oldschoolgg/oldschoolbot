@@ -206,31 +206,29 @@ async function minigamesLb(user: MUser, channelID: string, name: string) {
 			'Tithe farm Leaderboard'
 		);
 		return lbMsg(`${minigame.name} Leaderboard`);
-	} 
-		const res = await prisma.minigame.findMany({
-			where: {
-				[minigame.column]: {
-					gt: minigame.column === 'champions_challenge' ? 1 : 10
-				}
-			},
-			orderBy: {
-				[minigame.column]: 'desc'
-			},
-			take: 10
-		});
+	}
+	const res = await prisma.minigame.findMany({
+		where: {
+			[minigame.column]: {
+				gt: minigame.column === 'champions_challenge' ? 1 : 10
+			}
+		},
+		orderBy: {
+			[minigame.column]: 'desc'
+		},
+		take: 10
+	});
 
-		doMenu(
-			user,
-			channelID,
-			chunk(res, LB_PAGE_SIZE).map((subList, i) =>
-				subList
-					.map(
-						(u, j) => `${getPos(i, j)}**${getUsername(u.user_id)}:** ${u[minigame.column].toLocaleString()}`
-					)
-					.join('\n')
-			),
-			`${minigame.name} Leaderboard`
-		);
+	doMenu(
+		user,
+		channelID,
+		chunk(res, LB_PAGE_SIZE).map((subList, i) =>
+			subList
+				.map((u, j) => `${getPos(i, j)}**${getUsername(u.user_id)}:** ${u[minigame.column].toLocaleString()}`)
+				.join('\n')
+		),
+		`${minigame.name} Leaderboard`
+	);
 	return lbMsg(`${minigame.name} Leaderboard`);
 }
 
