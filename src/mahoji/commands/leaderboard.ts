@@ -187,6 +187,26 @@ async function minigamesLb(user: MUser, channelID: string, name: string) {
 		return `That's not a valid minigame. Valid minigames are: ${Minigames.map(m => m.name).join(', ')}.`;
 	}
 
+	if (minigame.name === 'Tithe farm') {
+		const titheCompletions = await prisma.$queryRawUnsafe<{ id: string; amount: number }[]>(
+			`SELECT user_id::text as id, tithe_farms_completed::int as amount
+					   FROM user_stats
+					   WHERE "tithe_farms_completed" > 10
+					   ORDER BY "tithe_farms_completed"
+					   DESC LIMIT 10;`
+		);
+		doMenu(
+			user,
+			channelID,
+			chunk(titheCompletions, LB_PAGE_SIZE).map((subList, i) =>
+				subList
+					.map(({ id, amount }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${amount.toLocaleString()}`)
+					.join('\n')
+			),
+			'Tithe farm Leaderboard'
+		);
+		return lbMsg(`${minigame.name} Leaderboard`);
+	}
 	const res = await prisma.minigame.findMany({
 		where: {
 			[minigame.column]: {
