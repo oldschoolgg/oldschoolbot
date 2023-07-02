@@ -174,8 +174,6 @@ export const sellCommand: OSBMahojiCommand = {
 			return `You exchanged ${tenchBank} and received: ${loot}.`;
 		}
 
-		console.log(bankToSell.has("Xeric's talisman (inert)"))
-		console.log(bankToSell.items())
 		if (bankToSell.has("Xeric's talisman (inert)")) {
 			const loot = new Bank();
 			const talismanBank = new Bank();
