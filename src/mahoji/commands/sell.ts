@@ -174,6 +174,24 @@ export const sellCommand: OSBMahojiCommand = {
 			return `You exchanged ${tenchBank} and received: ${loot}.`;
 		}
 
+		console.log(bankToSell.has("Xeric's talisman (inert)"))
+		console.log(bankToSell.items())
+		if (bankToSell.has("Xeric's talisman (inert)")) {
+			const loot = new Bank();
+			const talismanBank = new Bank();
+			talismanBank.add("Xeric's talisman (inert)", bankToSell.amount("Xeric's talisman (inert)"));
+
+			loot.add('Lizardman fang', talismanBank.amount("Xeric's talisman (inert)") * 100);
+
+			await handleMahojiConfirmation(
+				interaction,
+				`${user}, please confirm you want to sell ${talismanBank} for **${loot}**.`
+			);
+			await user.removeItemsFromBank(talismanBank);
+			await user.addItemsToBank({ items: loot, collectionLog: false });
+			return `You exchanged ${talismanBank} and received: ${loot}.`;
+		}
+
 		let totalPrice = 0;
 		const taxRatePercent = 20;
 
