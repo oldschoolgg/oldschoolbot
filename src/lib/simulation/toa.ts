@@ -181,7 +181,7 @@ const minTOAStats: Skills = {
 	ranged: 90
 };
 
-let minimumSuppliesNeeded: Bank;
+let minimumSuppliesNeeded = new Bank();
 const minSuppliesWithScmb = new Bank({
 	'Saradomin brew(4)': 10,
 	'Super restore(4)': 5,
