@@ -180,12 +180,21 @@ const minTOAStats: Skills = {
 	prayer: 90,
 	ranged: 90
 };
-const minimumSuppliesNeeded = new Bank({
+
+let minimumSuppliesNeeded: Bank;
+const minSuppliesWithScmb = new Bank({
 	'Saradomin brew(4)': 10,
 	'Super restore(4)': 5,
-	'Ranging potion(4)': 1
+	'Ranging potion(4)': 1,
+	'Super combat potion(4)': 1
 });
-
+const minSuppliesWithAtkStr = new Bank({
+	'Saradomin brew(4)': 10,
+	'Super restore(4)': 5,
+	'Ranging potion(4)': 1,
+	'Super attack(4)': 1,
+	'Super strength(4)': 1
+});
 const miscBoosts = [
 	['Lightbearer', 5, null],
 	["Tumeken's shadow", 25, 'mage'],
@@ -320,10 +329,9 @@ const toaRequirements: {
 		name: 'Supplies',
 		doesMeet: ({ user, quantity }) => {
 			if (user.owns(new Bank().add('Super combat potion(4)', 1))) {
-				minimumSuppliesNeeded.add('Super combat potion(4)', 1);
+				minimumSuppliesNeeded = minSuppliesWithScmb;
 			} else {
-				minimumSuppliesNeeded.add('Super attack(4)', 1);
-				minimumSuppliesNeeded.add('Super strength(4)', 1);
+				minimumSuppliesNeeded = minSuppliesWithAtkStr;
 			}
 			if (!user.owns(minimumSuppliesNeeded.clone().multiply(quantity))) {
 				return `You need atleast this much supplies: ${minimumSuppliesNeeded}.`;
@@ -959,9 +967,9 @@ async function calcTOAInput({
 	const cost = new Bank();
 	const kc = kcOverride ?? (await getMinigameScore(user.id, 'tombs_of_amascut'));
 	if (minimumSuppliesNeeded.has('Super combat potion(4)')) {
-		cost.add('Super combat potion(4)');
-	} else if (minimumSuppliesNeeded.has('Super attack(4)') && minimumSuppliesNeeded.has('Super strength(4)')) {
-		cost.add('Super attack potion(4)', quantity);
+		cost.add('Super combat potion(4)', quantity);
+	} else {
+		cost.add('Super attack(4)', quantity);
 		cost.add('Super strength(4)', quantity);
 	}
 	cost.add('Ranging potion(4)', quantity);
