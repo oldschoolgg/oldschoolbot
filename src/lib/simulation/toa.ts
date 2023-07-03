@@ -328,7 +328,7 @@ const toaRequirements: {
 	{
 		name: 'Supplies',
 		doesMeet: ({ user, quantity }) => {
-			if (user.owns(new Bank().add('Super combat potion(4)', 1))) {
+			if (user.owns('Super combat potion(4)')) {
 				minimumSuppliesNeeded = minSuppliesWithScmb;
 			} else {
 				minimumSuppliesNeeded = minSuppliesWithAtkStr;
