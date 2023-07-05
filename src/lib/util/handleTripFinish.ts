@@ -290,7 +290,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			}
 			const minutes = Math.floor(data.duration / Time.Minute);
 
-			if (user.cl.amount('Birthday crate (s2)') < 3) {
+			if (user.cl.amount('Birthday crate (s2)') === 0) {
 				dropratePerMinute = Math.floor(reduceNumByPercent(dropratePerMinute, 75));
 			}
 
