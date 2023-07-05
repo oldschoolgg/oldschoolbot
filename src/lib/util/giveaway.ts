@@ -113,7 +113,7 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 				if (roll(shardRate)) {
 					await addToDoubleLootTimer(
 						Time.Hour,
-						`${userMention(winner.id)} gave away ${loot.toString().slice(0, 1000)}!`
+						`${userMention(giveaway.user_id)} gave away ${loot.toString().slice(0, 1000)}!`
 					).catch(noOp);
 					break;
 				}
