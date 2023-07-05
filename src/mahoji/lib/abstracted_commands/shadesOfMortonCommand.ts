@@ -253,7 +253,7 @@ export const shadesLogs: ShadesLog[] = [
 ];
 
 function timePerLog() {
-	return Time.Minute * 1;
+	return Time.Minute;
 }
 
 const coffins = ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin', 'Gold coffin'];
