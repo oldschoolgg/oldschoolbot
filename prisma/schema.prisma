@@ -182,6 +182,9 @@ model ClientStorage {
   clue_upgrader_loot         Json @default("{}") @db.Json
   portable_tanner_loot       Json @default("{}") @db.Json
 
+  last_bso_giveaways_ping  DateTime? @db.Timestamp(6)
+  last_giveaway_doubleloot DateTime? @db.Timestamp(6)
+
   @@map("clientStorage")
 }
 
@@ -1132,6 +1135,7 @@ enum activity_type_enum {
   UnderwaterAgilityThieving
   DepthsOfAtlantis
   StrongholdOfSecurity
+  BirthdayCollectIngredients
 }
 
 enum xp_gains_skill_enum {

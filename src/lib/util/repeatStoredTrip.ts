@@ -110,6 +110,10 @@ export const tripHandlers = {
 		commandName: 'm',
 		args: () => ({})
 	},
+	[activity_type_enum.BirthdayCollectIngredients]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.Birdhouse]: {
 		commandName: 'm',
 		args: () => ({})

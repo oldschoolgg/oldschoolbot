@@ -6760,7 +6760,7 @@ setCustomItem(
 
 setCustomItem(
 	71_434,
-	'Supply crate key',
+	'Supply crate key (s1)',
 	'Coal',
 	{
 		customItemData: {
@@ -6855,4 +6855,497 @@ setCustomItem(
 		}
 	},
 	100_000
+);
+
+setCustomItem(
+	71_442,
+	'Acrylic hood',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_443,
+	'Acrylic top',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_444,
+	'Acrylic bottom',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_445,
+	'Acrylic boots',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_446,
+	'Golden cape',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_447,
+	'Ban hammer',
+	'Bronze 2h sword',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_448,
+	'The Interrogator',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_449,
+	'Birthday love note',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_450,
+	'Veteran cape (1 year)',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_451,
+	'Veteran cape (2 year)',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_452,
+	'Veteran cape (3 year)',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_453,
+	'Veteran cape (4 year)',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_454,
+	'Bunch of flowers',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_455,
+	'Golden cape shard',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_456,
+	'Veteran hood (1 year)',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_457,
+	'Veteran hood (2 year)',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+setCustomItem(
+	71_458,
+	'Veteran hood (3 year)',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_459,
+	'Veteran hood (4 year)',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_460,
+	"Koschei's toothpick",
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_461,
+	'Imperial helmet',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_462,
+	'Imperial cuirass',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_463,
+	'Imperial legs',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_464,
+	'Imperial gloves',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_465,
+	'Imperial sabatons',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_466,
+	'Rubber flappy',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_467,
+	'Birthday crate (s2)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_468,
+	'Birthday crate key (s2)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_469,
+	'Cake partyhat',
+	'Red partyhat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_470,
+	'Delicious birthday cake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_471,
+	'Buggy',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_472,
+	'Shelldon shield',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_473,
+	'Bug jar',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_474,
+	'Perfect pot of flour',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_475,
+	'Perfect bucket of milk',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_476,
+	'Perfect egg',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_477,
+	'Full bug jar',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_478,
+	'Acrylic set',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
+		}
+	},
+	10_000
 );

@@ -18,7 +18,6 @@ import { z } from 'zod';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
-import { paintColors } from './paintColors';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
 import getOSItem from './util/getOSItem';
@@ -629,16 +628,7 @@ export const chompyHats = [
 	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
 
-export const secretItems: number[] = resolveItems([
-	...paintColors.map(i => i.itemId),
-	'Paint box',
-	'OSB Jumper',
-	'BSO Jumper',
-	"Skipper's tie",
-	"Remy's chef hat",
-	'Supply crate (s1)',
-	'Supply crate key'
-]);
+export const secretItems: number[] = resolveItems(['Buggy', 'Rubber flappy', 'Cake partyhat']);
 export const gitHash = execSync('git rev-parse HEAD').toString().trim();
 
 export const toaPurpleItems = resolveItems([

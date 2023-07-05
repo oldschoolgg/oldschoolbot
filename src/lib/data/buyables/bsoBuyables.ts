@@ -1,10 +1,13 @@
+import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { isAtleastThisOld } from '../../util';
 import { Buyable } from './buyables';
 import { circusBuyables } from './circusBuyables';
 import { fistOfGuthixBuyables } from './fistOfGuthixBuyables';
 import { keyCrateBuyables } from './keyCrateBuyables';
 import { stealingCreationBuyables } from './stealingCreationBuyables';
+import { veteranCapeBuyables } from './veteranCapeBuyables';
 
 const items = [
 	['Castle wars cape (beginner)', 100],
@@ -70,5 +73,29 @@ export const bsoBuyables: Buyable[] = [
 	...fistOfGuthixBuyables,
 	...stealingCreationBuyables,
 	...circusBuyables,
-	...keyCrateBuyables
+	...keyCrateBuyables,
+	...veteranCapeBuyables,
+	{
+		name: 'Golden cape shard',
+		outputItems: new Bank().add('Golden cape shard'),
+		gpCost: 5_000_000_000,
+		customReq: async user => {
+			if (user.cl.has('Golden cape shard')) {
+				return [false, 'You cannot buy a Golden cape shard if you already bought/received one.'];
+			}
+			const djsUser = await globalClient.fetchUser(user.id);
+			if (!isAtleastThisOld(djsUser.createdAt, Time.Year * 2)) {
+				return [false, 'Your account must be atleast 1 year old to buy this.'];
+			}
+
+			const daysOld = user.accountAgeInDays();
+			if (!daysOld) return [true];
+
+			if (daysOld < 31) {
+				return [false, 'Your minion must be atleast 1 month old to buy this.'];
+			}
+
+			return [true];
+		}
+	}
 ];

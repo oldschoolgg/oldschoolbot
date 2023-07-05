@@ -212,6 +212,24 @@ export const sacrificeCommand: OSBMahojiCommand = {
 				'\n<:skipper:755853421801766912> Skipper has negotiated with the bank and gotten you +30% extra value from your sacrifice.';
 		}
 
+		// BEGIN Golden cape shard
+		const shardPrice = 10_000_000; // 10m
+		const shardRate = 10_000_000_000 / shardPrice; // 10b / 10m = 1 in x chance
+		const shardRolls = Math.floor(totalPrice / shardPrice);
+		let shardCount = 0;
+		for (let i = 0; i < shardRolls; i++) {
+			if (roll(shardRate)) {
+				shardCount++;
+			}
+		}
+
+		if (shardCount > 0) {
+			const shardLoot = new Bank().add('Golden cape shard', shardCount);
+			await user.addItemsToBank({ items: shardLoot, collectionLog: true });
+			str += `\n\nYou've found ${shardLoot}!`;
+		}
+		// END Golden cape shard
+
 		return `You sacrificed ${bankToSac}, with a value of ${totalPrice.toLocaleString()}gp (${toKMB(
 			totalPrice
 		)}). Your total amount sacrificed is now: ${newValue.toLocaleString()}. ${str}`;

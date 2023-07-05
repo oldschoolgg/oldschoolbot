@@ -1,3 +1,4 @@
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, bold, ButtonBuilder, MessageCollector } from 'discord.js';
 import { randInt, reduceNumByPercent, Time } from 'e';
@@ -281,19 +282,44 @@ const tripFinishEffects: TripFinishEffect[] = [
 		name: 'Crate Spawns',
 		fn: async ({ data, messages, user }) => {
 			const accountAge = user.accountAgeInDays();
-			let dropratePerMinute = 50 * 60;
+			let dropratePerMinute = 15 * 60;
 			if (accountAge) {
-				if (accountAge < 31) return;
 				if (user.isIronman) {
-					dropratePerMinute = reduceNumByPercent(dropratePerMinute, 15);
+					dropratePerMinute = Math.floor(reduceNumByPercent(dropratePerMinute, 15));
 				}
 			}
 			const minutes = Math.floor(data.duration / Time.Minute);
+
+			if (user.cl.amount('Birthday crate (s2)') < 3) {
+				dropratePerMinute = Math.floor(reduceNumByPercent(dropratePerMinute, 75));
+			}
+
 			for (let i = 0; i < minutes; i++) {
 				if (roll(dropratePerMinute)) {
-					const loot = new Bank().add('Supply crate (s1)');
+					const loot = new Bank().add('Birthday crate (s2)');
 					await user.addItemsToBank({ items: loot, collectionLog: true });
 					messages.push(bold(`You found ${loot}!`));
+				}
+			}
+		}
+	},
+	{
+		name: 'Bug Finding',
+		fn: async ({ data, messages, user }) => {
+			if (!user.bank.has('Bug jar')) return;
+			const minutes = Math.floor(data.duration / Time.Minute);
+			for (let i = 0; i < minutes; i++) {
+				// Find a bug every 2 hours
+				if (roll(120)) {
+					await transactItems({
+						userID: user.id,
+						collectionLog: false,
+						itemsToAdd: new Bank().add('Full bug jar'),
+						itemsToRemove: new Bank().add('Bug jar')
+					});
+					messages.push(
+						bold(`You found a bug! Hand it in using ${mentionCommand(globalClient, 'birthday', 'hand_in')}`)
+					);
 					break;
 				}
 			}

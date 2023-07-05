@@ -13,7 +13,7 @@ interface Crate {
 export const keyCrates: Crate[] = [
 	{
 		item: getOSItem('Supply crate (s1)'),
-		key: getOSItem('Supply crate key'),
+		key: getOSItem('Supply crate key (s1)'),
 		keyCostGP: 50_000_000,
 		table: new LootTable()
 			.add(new LootTable().add('OSB Jumper').add('BSO Jumper').add("Skipper's tie").add("Remy's chef hat"), 1, 2)
@@ -30,5 +30,34 @@ export const keyCrates: Crate[] = [
 			.add('Baguette', 1, 10)
 			.add('Kebab', 1, 10)
 			.add('Spinach roll', 1, 6)
+	},
+	{
+		item: getOSItem('Birthday crate (s2)'),
+		key: getOSItem('Birthday crate key (s2)'),
+		keyCostGP: 50_000_000,
+		table: new LootTable()
+			.add(
+				new LootTable()
+					.add('Cake partyhat')
+					.add('Rubber flappy')
+					.add('Shelldon shield')
+					.add("Koschei's toothpick"),
+				1,
+				2
+			)
+			.add('Paint box', 1, 5)
+			.add('Imperial helmet', 1, 5)
+			.add('Imperial cuirass', 1, 5)
+			.add('Imperial legs', 1, 5)
+			.add('Imperial gloves', 1, 5)
+			.add('Imperial sabatons', 1, 5)
+			.add('Chocolate bomb', 1, 10)
+			.add('Cake', 1, 11)
+			.add('Chocolate cake', 1, 11)
+			.add('Chocolate bar', 1, 10)
+			.add('Peach', 1, 10)
+			.add('Beer', 1, 10)
+			.add('Birthday balloons', 1, 5)
+			.add('Golden cape shard', 1, 1)
 	}
 ];

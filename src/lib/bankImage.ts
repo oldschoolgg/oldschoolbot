@@ -375,7 +375,7 @@ class BankImageTask {
 			try {
 				await this.fetchAndCacheImage(itemID);
 			} catch (err) {
-				console.error(`Failed to load ${itemID} image`);
+				console.error(`Failed to load ${itemID} image`, err);
 				return this.getItemImage(1);
 			}
 			return this.getItemImage(itemID);
@@ -393,8 +393,8 @@ class BankImageTask {
 	}
 
 	async fetchAndCacheImage(itemID: number) {
-		const imageBuffer = await fetch(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`).then(
-			result => result.buffer()
+		const imageBuffer = await fetch(`https://static.runelite.net/cache/item/icon/${itemID}.png`).then(result =>
+			result.buffer()
 		);
 
 		await fs.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);

@@ -2194,6 +2194,11 @@ const Createables: Createable[] = [
 			'Trident of the swamp': 1
 		})
 	},
+	{
+		name: 'Golden cape',
+		inputItems: new Bank().add('Golden cape shard', 7),
+		outputItems: new Bank().add('Golden cape')
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,

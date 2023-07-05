@@ -2489,6 +2489,10 @@ const armorSetsSrc: { unpacked: Bank; packed: Item }[] = [
 			.add('Ringmaster pants')
 			.add('Ringmaster boots'),
 		packed: getOSItem('Ringmaster set')
+	},
+	{
+		unpacked: new Bank().add('Acrylic hood').add('Acrylic top').add('Acrylic bottom').add('Acrylic boots'),
+		packed: getOSItem('Acrylic set')
 	}
 ];
 

@@ -4,6 +4,7 @@ import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
 import { bossEventTask } from '../tasks/minions/bossEventActivity';
 import { bathhouseTask } from '../tasks/minions/bso/bathhousesActivity';
+import { birthdayCollectTask } from '../tasks/minions/bso/birthdayCollectActivity';
 import { bonanzaTask } from '../tasks/minions/bso/bonanzaActivity';
 import { disassemblingTask } from '../tasks/minions/bso/disassemblingActivity';
 import { doaTask } from '../tasks/minions/bso/doaActivity';
@@ -213,7 +214,8 @@ export const tasks: MinionTask[] = [
 	bonanzaTask,
 	underwaterAgilityThievingTask,
 	doaTask,
-	strongholdTask
+	strongholdTask,
+	birthdayCollectTask
 ];
 
 export async function syncActivityCache() {
