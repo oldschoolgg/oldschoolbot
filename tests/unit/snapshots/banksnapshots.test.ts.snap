@@ -4193,6 +4193,7 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "gpCost": 50000000,
+    "ironmanPrice": 5000000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -4202,6 +4203,7 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "gpCost": 50000000,
+    "ironmanPrice": 5000000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
