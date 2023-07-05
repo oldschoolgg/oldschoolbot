@@ -36,6 +36,7 @@ export const keyCrates: Crate[] = [
 		key: getOSItem('Birthday crate key (s2)'),
 		keyCostGP: 50_000_000,
 		table: new LootTable()
+			.oneIn(250, 'Golden cape shard')
 			.add(
 				new LootTable()
 					.add('Cake partyhat')
@@ -57,7 +58,6 @@ export const keyCrates: Crate[] = [
 			.add('Chocolate bar', 1, 10)
 			.add('Peach', 1, 10)
 			.add('Beer', 1, 10)
-			.add('Birthday balloons', 1, 5)
-			.add('Golden cape shard', 1, 1)
+			.add('Birthday balloons', 1, 6)
 	}
 ];
