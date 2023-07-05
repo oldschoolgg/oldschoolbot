@@ -102,7 +102,10 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 		// If its been 6 hours since the last double loot, roll for it.
 		const lastDoubleLootAdded = (await mahojiClientSettingsFetch({ last_giveaway_doubleloot: true }))
 			.last_giveaway_doubleloot;
-		if (!lastDoubleLootAdded || isAtleastThisOld(lastDoubleLootAdded, Time.Hour * 6)) {
+		if (
+			giveaway.channel_id === '792691343284764693' &&
+			(!lastDoubleLootAdded || isAtleastThisOld(lastDoubleLootAdded, Time.Hour * 6))
+		) {
 			const marketValue = marketPriceOfBank(loot);
 			const shardChunkSize = 50_000_000; // Each chunk is worth 50m
 			const shardRate = 100; // 1 in 100 chance for each 50m chunk
