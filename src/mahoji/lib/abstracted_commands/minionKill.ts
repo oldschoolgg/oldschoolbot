@@ -395,6 +395,7 @@ export async function minionKillCommand(
 	// Calculate Cannon and Barrage boosts + costs:
 	let usingCannon = false;
 	let cannonMulti = false;
+	let chinning = false;
 	let burstOrBarrage = 0;
 	const hasSuperiorCannon = user.owns('Superior dwarf multicannon');
 	const hasCannon = cannonBanks.some(i => user.owns(i)) || hasSuperiorCannon;
@@ -419,6 +420,9 @@ export async function minionKillCommand(
 	}
 	const { canAfford } = await canAffordInventionBoost(user, InventionID.SuperiorDwarfMultiCannon, timeToFinish);
 	const canAffordSuperiorCannonBoost = hasSuperiorCannon ? canAfford : false;
+	if (boostChoice === 'chinning' && user.skillLevel(SkillsEnum.Ranged) < 65) {
+		return `You need 65 Ranged to use Chinning method. You have ${user.skillLevel(SkillsEnum.Ranged)}`;
+	}
 
 	if (
 		boostChoice === 'cannon' &&
@@ -460,6 +464,31 @@ export async function minionKillCommand(
 		consumableCosts.push(cannonSingleConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
 		boosts.push(`${boostCannon}% for Cannon in singles`);
+	} else if (method === 'chinning' && attackStyles.includes(SkillsEnum.Ranged) && monster!.canChinning) {
+		chinning = true;
+		// Check what Chinchompa to use
+		const chinchompas = ['Black chinchompa', 'Red chinchompa', 'Chinchompa'];
+		let chinchompa = 'Black chinchompa';
+		for (let chin of chinchompas) {
+			if (user.owns(chin) && user.bank.amount(chin) > 5000) {
+				chinchompa = chin;
+				break;
+			}
+		}
+		const chinBoostRapid = chinchompa === 'Chinchompa' ? 73 : chinchompa === 'Red chinchompa' ? 76 : 82;
+		const chinBoostLongRanged = chinchompa === 'Chinchompa' ? 63 : chinchompa === 'Red chinchompa' ? 69 : 77;
+		const chinningConsumables: Consumable = {
+			itemCost: new Bank().add(chinchompa, 1),
+			qtyPerMinute: attackStyles.includes(SkillsEnum.Defence) ? 24 : 33
+		};
+		if (attackStyles.includes(SkillsEnum.Defence)) {
+			timeToFinish = reduceNumByPercent(timeToFinish, chinBoostLongRanged);
+			boosts.push(`${chinBoostLongRanged}% for ${chinchompa} Longrange`);
+		} else {
+			timeToFinish = reduceNumByPercent(timeToFinish, chinBoostRapid);
+			boosts.push(`${chinBoostRapid}% for ${chinchompa} Rapid`);
+		}
+		consumableCosts.push(chinningConsumables);
 	}
 
 	const hasBlessing = user.hasEquipped('Dwarven blessing');
@@ -867,6 +896,7 @@ export async function minionKillCommand(
 		type: 'MonsterKilling',
 		usingCannon: !usingCannon ? undefined : usingCannon,
 		cannonMulti: !cannonMulti ? undefined : cannonMulti,
+		chinning: !chinning ? undefined : chinning,
 		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage
 	});
 
