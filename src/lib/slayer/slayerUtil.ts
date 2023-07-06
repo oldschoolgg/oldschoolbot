@@ -47,7 +47,7 @@ export function determineBoostChoice(params: DetermineBoostParams) {
 	if (params.method && params.method === 'none') {
 		return boostChoice;
 	}
-	if (params.method && params.method === 'chinning') {
+	if (params.method && (params.method as string) === 'chinning') {
 		boostChoice = 'chinning';
 	} else if (params.method && params.method === 'barrage') {
 		boostChoice = 'barrage';
