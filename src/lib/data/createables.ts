@@ -1245,6 +1245,16 @@ const Reverteables: Createable[] = [
 			[itemID("Guardian's eye")]: 1
 		},
 		noCl: true
+	},
+	{
+		name: "Revert xeric's talisman (inert)",
+		inputItems: {
+			[itemID("Xeric's talisman (inert)")]: 1
+		},
+		outputItems: {
+			[itemID('Lizardman fang')]: 100
+		},
+		noCl: true
 	}
 ];
 
