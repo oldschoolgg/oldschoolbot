@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { GearStat } from '../../../gear/types';
 import itemID from '../../../util/itemID';
@@ -135,7 +136,10 @@ const killableMonsters: KillableMonster[] = [
 				[itemID('Void ranger helm')]: 5,
 				[itemID('Ancestral hat')]: 5
 			}
-		]
+		],
+		attackStyleToUse: GearStat.AttackRanged,
+		defaultAttackStyles: [SkillsEnum.Ranged, SkillsEnum.Magic],
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength]
 	}
 ];
 
