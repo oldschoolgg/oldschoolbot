@@ -278,7 +278,9 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 			topSacrificers.push(mostValue[i].id);
 			addToUserMap(userMap, mostValue[i].id, `Rank ${i + 1} Sacrifice Value`);
 		}
-		const mostValueIronman = await q<any[]>('SELECT id FROM users WHERE "minion.ironman" = true ORDER BY "sacrificedValue" DESC LIMIT 1;');
+		const mostValueIronman = await q<any[]>(
+			'SELECT id FROM users WHERE "minion.ironman" = true ORDER BY "sacrificedValue" DESC LIMIT 1;'
+		);
 		topSacrificers.push(mostValueIronman[0].id);
 		addToUserMap(userMap, mostValueIronman[0].id, 'Rank 1 Ironman Sacrificed Value');
 
