@@ -36,8 +36,16 @@ export const mageTrainingTask: MinionTask = {
 				}
 			}
 		});
+		const totalPizazzPoints = await prisma.newUser.findUnique({
+			where: { id: userID },
+			select: {
+				pizazz_points: true
+			}
+		});
 
-		let str = `${user}, ${user.minionName} finished completing ${quantity}x Magic Training Arena rooms. You received **${pizazzPoints} Pizazz points**. ${xpRes}`;
+		let str = `${user}, ${
+			user.minionName
+		} finished completing ${quantity}x Magic Training Arena rooms. You received **${pizazzPoints} Pizazz points**. You now have **${totalPizazzPoints?.pizazz_points.toLocaleString()} Pizazz points**. ${xpRes}`;
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
