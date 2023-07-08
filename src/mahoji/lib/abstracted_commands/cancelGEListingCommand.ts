@@ -4,6 +4,7 @@ import { GrandExchange } from '../../../lib/grandExchange';
 import { prisma } from '../../../lib/settings/prisma';
 import { makeTransactFromTableBankQueries } from '../../../lib/tableBank';
 import { logError } from '../../../lib/util/logError';
+import { geLog } from '../../../lib/util/logger';
 
 export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
 	return GrandExchange.queue.add(async () => {
@@ -46,11 +47,17 @@ export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
 			return 'Something went wrong, please try again later.';
 		}
 
-		await user.addItemsToBank({
-			items: refundBank,
-			collectionLog: false,
-			dontAddToTempCL: true
-		});
+		try {
+			await user.addItemsToBank({
+				items: refundBank,
+				collectionLog: false,
+				dontAddToTempCL: true
+			});
+		} catch (e: any) {
+			geLog(`Failed to add refundBank: ${refundBank} to user: ${user.id} because: ${e.message}`);
+			// It's okay to return here without locking because no changes have been made to the GE
+			return 'Something went wrong, please try again shortly';
+		}
 
 		await prisma.$transaction([updateListing, ...makeTransactFromTableBankQueries({ bankToRemove: refundBank })]);
 
