@@ -22,7 +22,7 @@ export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
 		if (listing.cancelled_at) {
 			return 'You cannot cancel a listing that has already been cancelled.';
 		}
-		const newListing = await prisma.gEListing.update({
+		const updateListing = prisma.gEListing.update({
 			where: {
 				id: listing.id
 			},
@@ -32,10 +32,10 @@ export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
 		});
 
 		const refundBank = new Bank();
-		if (newListing.type === 'Buy') {
-			refundBank.add('Coins', Number(newListing.asking_price_per_item) * newListing.quantity_remaining);
+		if (listing.type === 'Buy') {
+			refundBank.add('Coins', Number(listing.asking_price_per_item) * listing.quantity_remaining);
 		} else {
-			refundBank.add(newListing.item_id, newListing.quantity_remaining);
+			refundBank.add(listing.item_id, listing.quantity_remaining);
 		}
 
 		const geBank = await GrandExchange.fetchOwnedBank();
@@ -52,7 +52,7 @@ export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
 			dontAddToTempCL: true
 		});
 
-		await prisma.$transaction(makeTransactFromTableBankQueries({ bankToRemove: refundBank }));
+		await prisma.$transaction([updateListing, ...makeTransactFromTableBankQueries({ bankToRemove: refundBank })]);
 
 		return `Successfully cancelled your listing, you have been refunded ${refundBank}.`;
 	});

@@ -764,10 +764,13 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 		geLog(`Expected G.E Bank: ${shouldHave}`);
 		if (!currentBank.equals(shouldHave)) {
-			throw new Error(
+			geLog(
 				`GE either has extra or insufficient items. The GE has ${currentBank} but should have ${shouldHave}. Difference: ${shouldHave.difference(
 					currentBank
 				)}`
+			);
+			throw new Error(
+				`GE either has extra or insufficient items. Difference: ${shouldHave.difference(currentBank)}`
 			);
 		} else {
 			geLog(
