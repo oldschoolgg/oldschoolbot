@@ -382,11 +382,12 @@ WHERE bitfield && '{2,3,4,5,6,7,8}'::int[] AND user_stats."last_daily_timestamp"
 		}
 	},
 	{
-		name: 'Cache g.e prices',
+		name: 'Cache g.e prices and validate',
 		timer: null,
 		interval: Time.Hour * 4,
 		cb: async () => {
 			await cacheGEPrices();
+			await GrandExchange.extensiveVerification();
 		}
 	}
 ];
