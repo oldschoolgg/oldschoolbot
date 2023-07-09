@@ -281,21 +281,21 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Crate Spawns',
 		fn: async ({ data, messages, user }) => {
-			const accountAge = user.accountAgeInDays();
 			let dropratePerMinute = 15 * 60;
-			if (accountAge) {
-				if (user.isIronman) {
-					dropratePerMinute = Math.floor(reduceNumByPercent(dropratePerMinute, 15));
-				}
-			}
-			const minutes = Math.floor(data.duration / Time.Minute);
 
-			dropratePerMinute = Math.floor(dropratePerMinute / 6);
+			dropratePerMinute = Math.floor(dropratePerMinute / 12);
 
-			if (user.cl.amount('Birthday crate (s2)') === 0) {
+			// First three are almost guaranteed
+			if (user.cl.amount('Birthday crate (s2)') < 3) {
 				dropratePerMinute = Math.floor(reduceNumByPercent(dropratePerMinute, 75));
 			}
 
+			// Ironmen get far more common, they cant buy off others.
+			if (user.isIronman) {
+				dropratePerMinute = Math.floor(reduceNumByPercent(dropratePerMinute, 65));
+			}
+
+			const minutes = Math.floor(data.duration / Time.Minute);
 			for (let i = 0; i < minutes; i++) {
 				if (roll(dropratePerMinute)) {
 					const loot = new Bank().add('Birthday crate (s2)');
