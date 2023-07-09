@@ -9,3 +9,5 @@ import Unf from './unfinishedPotions';
 const mixables: Mixable[] = [...Grimy, ...Unf, ...Potions, ...Crush, ...Tar, ...bsoMixables];
 
 export default mixables;
+
+export const herbloreCL = mixables.map(i => i.id);

@@ -20,7 +20,7 @@ import {
 	gracefulLegs,
 	gracefulTops
 } from './gracefulVariants';
-import { allHolidayItems } from './holidayItems';
+import { allHolidayItems, PartyhatTable } from './holidayItems';
 
 export interface IToReturnCollection {
 	category: string;
@@ -2037,7 +2037,7 @@ export const miscellaneousCL = resolveItems([
 	'Orange egg sac',
 	'Blue egg sac'
 ]);
-export const diariesCL = [
+export const diariesCL = resolveItems([
 	'Karamja gloves 1',
 	'Karamja gloves 2',
 	'Karamja gloves 3',
@@ -2086,7 +2086,7 @@ export const diariesCL = [
 	"Rada's blessing 2",
 	"Rada's blessing 3",
 	"Rada's blessing 4"
-];
+]);
 export const dailyCL = resolveItems([
 	'Goblin paint cannon',
 	'Green banner',
@@ -2889,3 +2889,210 @@ export const fishingContestCL = resolveItems([
 	"Champion's tackle box",
 	'Golden fishing trophy'
 ]);
+
+export const balthazarsBigBonanzaCL = resolveItems([
+	'A stylish hat (male, yellow)',
+	'Shirt (male, yellow)',
+	'Leggings (yellow)',
+	'A stylish hat (male, maroon)',
+	'Shirt (male, maroon)',
+	'Leggings (maroon)',
+	'A stylish hat (male, green)',
+	'Shirt (male, green)',
+	'Leggings (green)',
+	'A stylish hat (female, yellow)',
+	'Shirt (female, yellow)',
+	'Skirt (yellow)',
+	'A stylish hat (female, maroon)',
+	'Shirt (female, maroon)',
+	'Skirt (maroon)',
+	'A stylish hat (female, green)',
+	'Shirt (female, green)',
+	'Skirt (green)',
+	'Shoes (male, shoes)',
+	'Shoes (male, boots)',
+	'Shoes (female, straps)',
+	'Shoes (female, flats)',
+	"Giant's hand",
+	'Acrobat set',
+	'Clown set',
+	'Ringmaster set'
+]);
+
+export const stealingCreationCL = resolveItems([
+	'Stealing creation token',
+	"Fletcher's gloves",
+	"Fletcher's boots",
+	"Fletcher's top",
+	"Fletcher's hat",
+	"Fletcher's legs"
+]);
+
+export const fistOfGuthixCL = resolveItems([
+	'Rune spikeshield',
+	'Rune berserker shield',
+	'Adamant spikeshield',
+	'Adamant berserker shield',
+	'Guthix engram',
+	'Fist of guthix token'
+]);
+
+export const baxtorianBathhousesCL = resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire', 'Phoenix eggling']);
+
+export const monkeyRumbleCL = resolveItems([
+	'Monkey egg',
+	'Marimbo statue',
+	'Monkey dye',
+	'Banana enchantment scroll',
+	'Rumble token',
+	'Big banana',
+	'Monkey crate',
+	'Gorilla rumble greegree',
+	'Beginner rumble greegree',
+	'Intermediate rumble greegree',
+	'Ninja rumble greegree',
+	'Expert ninja rumble greegree',
+	'Elder rumble greegree'
+]);
+
+export const odsCL = resolveItems([
+	'Master runecrafter hat',
+	'Master runecrafter robe',
+	'Master runecrafter skirt',
+	'Master runecrafter boots',
+	'Elder thread',
+	'Elder talisman',
+	'Magic crate',
+	'Lychee seed',
+	'Avocado seed',
+	'Mysterious seed',
+	'Mango seed',
+	'Magical artifact'
+]);
+
+export const tinkeringWorshopCL = resolveItems([...inventorOutfit, 'Materials bag']);
+
+export const emergedZukInfernoCL = resolveItems(['Head of TzKal Zuk', 'Infernal core', 'Tokkul']);
+
+export const polyporeDungeonCL = resolveItems([
+	'Mycelium leggings web',
+	'Mycelium poncho web',
+	'Mycelium visor web',
+	'Neem drupe',
+	'Polypore spore',
+	'Grifolic flake',
+	'Grifolic gloves',
+	'Grifolic orb',
+	'Gorajian mushroom',
+	'Tombshroom spore',
+	'Ganodermic flake',
+	'Ganodermic gloves',
+	'Ganodermic boots'
+]);
+
+export const tormentedDemonCL = resolveItems([
+	'Dragon claw',
+	'Offhand dragon claw',
+	'Ruined dragon armour slice',
+	'Ruined dragon armour lump',
+	'Ruined dragon armour shard',
+	'Dragon limbs'
+]);
+
+export const dungeoneeringCL = resolveItems([
+	'Chaotic rapier',
+	'Chaotic longsword',
+	'Chaotic maul',
+	'Chaotic staff',
+	'Chaotic crossbow',
+	'Offhand Chaotic rapier',
+	'Offhand Chaotic longsword',
+	'Offhand chaotic crossbow',
+	'Scroll of life',
+	'Scroll of efficiency',
+	'Scroll of cleansing',
+	'Scroll of dexterity',
+	'Scroll of teleportation',
+	'Scroll of farming',
+	'Scroll of proficiency',
+	'Scroll of mystery',
+	'Scroll of longevity',
+	'Scroll of the hunt',
+	'Farseer kiteshield',
+	'Chaotic remnant',
+	'Frostbite',
+	'Gorajan shards',
+	'Amulet of zealots',
+	'Herbicide',
+	'Gorajan warrior helmet',
+	'Gorajan warrior top',
+	'Gorajan warrior legs',
+	'Gorajan warrior gloves',
+	'Gorajan warrior boots',
+	'Gorajan archer helmet',
+	'Gorajan archer top',
+	'Gorajan archer legs',
+	'Gorajan archer gloves',
+	'Gorajan archer boots',
+	'Gorajan occult helmet',
+	'Gorajan occult top',
+	'Gorajan occult legs',
+	'Gorajan occult gloves',
+	'Gorajan occult boots',
+	'Arcane blast necklace',
+	'Farsight snapshot necklace',
+	"Brawler's hook necklace",
+	'Daemonheim agility pass',
+	'Dungeoneering dye',
+	'Gorajan bonecrusher (u)'
+]);
+
+export const shootingStarsCL = resolveItems(['Celestial ring (uncharged)', 'Star fragment']);
+export const skillingMiscCL = resolveItems([
+	'Prospector helmet',
+	'Prospector jacket',
+	'Prospector legs',
+	'Prospector boots',
+	'Mining gloves',
+	'Superior mining gloves',
+	'Expert mining gloves',
+	'Golden nugget',
+	'Unidentified minerals',
+	'Big swordfish',
+	'Big shark',
+	'Big bass',
+	'Tangleroot',
+	'Bottomless compost bucket',
+	"Farmer's strawhat",
+	"Farmer's jacket",
+	"Farmer's shirt",
+	"Farmer's boro trousers",
+	"Farmer's boots",
+	"Pharaoh's sceptre",
+	'Baby chinchompa',
+	'Kyatt hat',
+	'Kyatt top',
+	'Kyatt legs',
+	'Spotted cape',
+	'Spottier cape',
+	'Gloves of silence',
+	'Small pouch',
+	'Medium pouch',
+	'Large pouch',
+	'Giant pouch',
+	'Abyssal pouch',
+	'Elder pouch',
+	'Crystal pickaxe',
+	'Crystal axe',
+	'Crystal harpoon',
+	// Dwarven equipment
+	'Dwarven greataxe',
+	'Dwarven greathammer',
+	'Dwarven pickaxe',
+	'Dwarven knife',
+	'Dwarven gauntlets'
+]);
+
+export const crackerCL = PartyhatTable.allItems;
+
+export const leaguesCL = resolveItems(['Fuzzy dice', 'Karambinana']);

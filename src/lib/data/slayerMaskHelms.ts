@@ -164,3 +164,5 @@ for (const a of slayerMaskHelms) {
 		throw new Error(`\n\nMissing ${a.mask.name} from slayerMasters\n\n`);
 	}
 }
+
+export const slayerMasksHelmsCL = slayerMaskHelms.map(i => [i.helm.id, i.mask.id]).flat();

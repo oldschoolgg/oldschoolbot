@@ -14,6 +14,7 @@ import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/c
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 import { minionIsBusy } from '../util/minionIsBusy';
+import resolveItems from '../util/resolveItems';
 import { IMaterialBank, MaterialType } from '.';
 import { MaterialBank } from './MaterialBank';
 
@@ -623,3 +624,5 @@ export async function userHasFlappy({
 		userMsg: ''
 	};
 }
+
+export const inventionCL = [...Inventions.map(i => i.item.id), ...resolveItems('Cogsworth')];
