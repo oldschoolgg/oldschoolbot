@@ -337,6 +337,10 @@ ${(
 ${recentInactiveListings.map(i => geListingToString(i)).join('\n')}`;
 		}
 
+		if (GrandExchange.locked) {
+			return 'The Grand Exchange is currently locked, please try again later.';
+		}
+
 		if (options.buy || options.sell) {
 			const result = await GrandExchange.preCreateListing({
 				user,
