@@ -33,6 +33,14 @@ export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
 			refundBank.add(listing.item_id, listing.quantity_remaining);
 		}
 
+		const geBank = await GrandExchange.fetchOwnedBank();
+		if (!geBank.has(refundBank)) {
+			const error = new Error(`GE doesn't have ${refundBank} to refund ${user.id}, listing ${listing.id}`);
+			logError(error);
+			await GrandExchange.lockGE(error.message);
+			return 'Something went wrong, please try again later.';
+		}
+
 		await prisma.$transaction([
 			prisma.gEListing.update({
 				where: {
@@ -44,14 +52,6 @@ export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
 			}),
 			...makeTransactFromTableBankQueries({ bankToRemove: refundBank })
 		]);
-
-		const geBank = await GrandExchange.fetchOwnedBank();
-		if (!geBank.has(refundBank)) {
-			const error = new Error(`GE doesn't have ${refundBank} to refund ${user.id}, listing ${listing.id}`);
-			logError(error);
-			await GrandExchange.lockGE(error.message);
-			return 'Something went wrong, please try again later.';
-		}
 
 		await user.addItemsToBank({
 			items: refundBank,
