@@ -1,4 +1,5 @@
 import { GEListing, GEListingType, GETransaction } from '@prisma/client';
+import { Stopwatch } from '@sapphire/stopwatch';
 import { bold, ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { calcPercentOfNum, clamp, noOp, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -821,18 +822,10 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	private async _tick() {
 		if (!this.ready) return;
 		if (this.locked) return;
+		const stopwatch = new Stopwatch();
+		stopwatch.start();
 		const { buyListings, sellListings } = await this.fetchActiveListings();
 
-		const allListings = [...buyListings, ...sellListings];
-		for (const listing of allListings) {
-			try {
-				sanityCheckListing(listing);
-			} catch (err: any) {
-				await this.lockGE(err.reason);
-				geLog(err);
-				logError(err);
-			}
-		}
 		for (const buyListing of buyListings) {
 			// These are all valid, matching sell listings we can match with this buy listing.
 			const matchingSellListings = sellListings.filter(
@@ -874,6 +867,9 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			// Process only one transaction per tick
 			break;
 		}
+
+		stopwatch.stop();
+		geLog(`GE tick took ${stopwatch}`);
 	}
 
 	async totalReset() {
