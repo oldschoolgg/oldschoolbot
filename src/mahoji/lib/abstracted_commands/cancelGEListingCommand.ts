@@ -7,6 +7,9 @@ import { logError } from '../../../lib/util/logError';
 import { geLog } from '../../../lib/util/logger';
 
 export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
+	if (GrandExchange.locked) {
+		return 'The Grand Exchange is currently closed; please try again later';
+	}
 	return GrandExchange.queue.add(async () => {
 		const listing = await prisma.gEListing.findFirst({
 			where: {
