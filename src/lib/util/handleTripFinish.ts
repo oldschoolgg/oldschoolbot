@@ -283,7 +283,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: async ({ data, messages, user }) => {
 			let dropratePerMinute = 15 * 60;
 
-			dropratePerMinute = Math.floor(dropratePerMinute / 12);
+			dropratePerMinute = Math.floor(dropratePerMinute / 9);
 
 			// First three are almost guaranteed
 			if (user.cl.amount('Birthday crate (s2)') < 3) {
