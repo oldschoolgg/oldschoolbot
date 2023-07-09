@@ -749,6 +749,10 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		for (const transaction of allTransactions) sanityCheckTransaction(transaction);
 
 		await this.checkGECanFullFilAllListings();
+
+		geLog('Validated GE and found no issues.');
+
+		return true;
 	}
 
 	async checkGECanFullFilAllListings() {
@@ -775,6 +779,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					[...buyListings, ...sellListings].length
 				}x active listings! Difference: ${shouldHave.difference(currentBank)}`
 			);
+			return true;
 		}
 	}
 
