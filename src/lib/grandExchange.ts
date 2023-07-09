@@ -747,6 +747,8 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 		const allTransactions = await prisma.gETransaction.findMany();
 		for (const transaction of allTransactions) sanityCheckTransaction(transaction);
+
+		await this.checkGECanFullFilAllListings();
 	}
 
 	async checkGECanFullFilAllListings() {
@@ -765,9 +767,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		geLog(`Expected G.E Bank: ${shouldHave}`);
 		if (!currentBank.equals(shouldHave)) {
 			throw new Error(
-				`GE either has extra or insufficient items. The GE has ${currentBank} but should have ${shouldHave}. Difference: ${shouldHave.difference(
-					currentBank
-				)}`
+				`GE either has extra or insufficient items. Difference: ${shouldHave.difference(currentBank)}`
 			);
 		} else {
 			geLog(
@@ -817,7 +817,6 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		if (!this.ready) return;
 		if (this.locked) return;
 		const { buyListings, sellListings } = await this.fetchActiveListings();
-		await this.checkGECanFullFilAllListings();
 
 		const allListings = [...buyListings, ...sellListings];
 		for (const listing of allListings) {
