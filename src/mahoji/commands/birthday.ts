@@ -84,7 +84,8 @@ export const birthdayCommand: OSBMahojiCommand = {
 					itemsToAdd: new Bank().add('Bug jar')
 				});
 
-				if (roll(clAdjustedDroprate(user, 'Buggy', 35, 1.2))) {
+				const buggyRate = user.cl.has('Buggy') ? clAdjustedDroprate(user, 'Buggy', 35, 1.2) : 10;
+				if (roll(buggyRate)) {
 					const petLoot = new Bank().add('Buggy');
 					await user.addItemsToBank({ items: petLoot, collectionLog: true });
 					return mahojiChatHead({
