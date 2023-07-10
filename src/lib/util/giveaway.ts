@@ -9,7 +9,7 @@ import { addToDoubleLootTimer } from '../doubleLoot';
 import { marketPriceOfBank } from '../marketPrices';
 import { prisma } from '../settings/prisma';
 import { channelIsSendable, isAtleastThisOld } from '../util';
-import { mahojiClientSettingsFetch } from './clientSettings';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './clientSettings';
 import { logError } from './logError';
 import { sendToChannelID } from './webhook';
 
@@ -115,6 +115,7 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 						Time.Hour,
 						`${userMention(giveaway.user_id)} gave away ${loot.toString().slice(0, 1000)}!`
 					).catch(noOp);
+					await mahojiClientSettingsUpdate({ last_giveaway_doubleloot: new Date() });
 					break;
 				}
 			}
@@ -126,7 +127,7 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 		);
 
 		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${users.length} users joined, the winner is... **${winner.mention}**
-			
+
 They received these items: ${loot}`;
 
 		await sendToChannelID(giveaway.channel_id, {
