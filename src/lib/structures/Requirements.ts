@@ -54,10 +54,6 @@ export class Requirements {
 
 	formatRequirement(req: Requirement): (string | string[])[] {
 		const requirementParts: (string | string[])[] = [];
-		if ('has' in req) {
-			requirementParts.push(req.name);
-		}
-
 		if ('skillRequirements' in req) {
 			requirementParts.push(
 				`Required Skills: ${objectEntries(req.skillRequirements)
@@ -140,11 +136,12 @@ export class Requirements {
 		let finalStr = '';
 		for (const req of this.requirements) {
 			const formatted = this.formatRequirement(req);
+			finalStr += `  - ${req.name}\n`;
 			if (typeof formatted === 'string') {
-				finalStr += formatted;
+				finalStr += `    - ${formatted}`;
 			} else {
 				for (const subReq of formatted) {
-					finalStr += subReq;
+					finalStr += `    - ${subReq}`;
 				}
 			}
 			finalStr += '\n';

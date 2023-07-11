@@ -1,6 +1,7 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { tame_growth, UserStats } from '@prisma/client';
 import { calcWhatPercent, objectEntries } from 'e';
+import { writeFileSync } from 'fs';
 import { Bank, Items } from 'oldschooljs';
 
 import { tameFeedableItems } from '../mahoji/commands/tames';
@@ -759,7 +760,26 @@ const allCLItemsCheckedFor = compCapeCategories
 const overallItemsNotCheckedFor = Items.array()
 	.map(i => i.id)
 	.filter(i => !allCLItemsCheckedFor.includes(i));
-console.log(`${overallItemsNotCheckedFor.map(itemNameFromID).sort().join(', ')}`);
+writeFileSync('tasksszzz.txt', `${overallItemsNotCheckedFor.map(itemNameFromID).sort().join('\n')}`);
+
+export async function generateAllCompCapeTasksList() {
+	let totalRequirements = 0;
+
+	let finalStr = '';
+
+	for (const cat of compCapeCategories) {
+		const tasksLen = cat.requirements.requirements.length;
+		totalRequirements += tasksLen;
+		let subStr = `${cat.name} (${tasksLen} tasks)\n`;
+		subStr += cat.requirements.formatAllRequirements();
+		subStr += '\n\n';
+		finalStr += subStr;
+	}
+
+	return `Completionist Cape Tasks - ${totalRequirements} tasks\n\n
+	
+${finalStr}`;
+}
 
 export async function calculateCompCapeProgress(user: MUser) {
 	let totalRequirements = 0;
