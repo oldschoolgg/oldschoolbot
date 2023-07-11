@@ -445,6 +445,11 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		assert(sellerListing.quantity_remaining > 0, 'Seller listing has 0 quantity remaining.');
 		assert(buyerListing.user_id !== sellerListing.user_id, 'Buyer and seller are the same user.');
 		assert(remainingItemsInBuyLimit !== 0, 'Buyer has 0 remaining items in buy limit.');
+		assert(sellerListing.user_id !== null, 'null seller listing user id');
+		assert(buyerListing.user_id !== null, 'null buyer listing user id');
+		if (buyerListing.user_id === null || sellerListing.user_id === null) {
+			throw new Error('null user id');
+		}
 
 		const quantityToBuy = Math.min(
 			remainingItemsInBuyLimit,
@@ -705,7 +710,10 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				where: {
 					type: GEListingType.Buy,
 					fulfilled_at: null,
-					cancelled_at: null
+					cancelled_at: null,
+					user_id: {
+						not: null
+					}
 				},
 				orderBy: [
 					{
@@ -720,7 +728,10 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				where: {
 					type: GEListingType.Sell,
 					fulfilled_at: null,
-					cancelled_at: null
+					cancelled_at: null,
+					user_id: {
+						not: null
+					}
 				},
 				orderBy: [
 					{
