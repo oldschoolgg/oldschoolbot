@@ -1,7 +1,6 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import { AttachmentBuilder, bold, ButtonBuilder, MessageCollector } from 'discord.js';
-import { randInt, reduceNumByPercent, Time } from 'e';
+import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
+import { randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -276,55 +275,6 @@ const tripFinishEffects: TripFinishEffect[] = [
 			messages.push('You found a message in a bottle!');
 			const bottleLoot = new Bank().add('Message in a bottle');
 			await user.addItemsToBank({ items: bottleLoot, collectionLog: true });
-		}
-	},
-	{
-		name: 'Crate Spawns',
-		fn: async ({ data, messages, user }) => {
-			let dropratePerMinute = 15 * 60;
-
-			dropratePerMinute = Math.floor(dropratePerMinute / 9);
-
-			// First three are almost guaranteed
-			if (user.cl.amount('Birthday crate (s2)') < 3) {
-				dropratePerMinute = Math.floor(reduceNumByPercent(dropratePerMinute, 75));
-			}
-
-			// Ironmen get far more common, they cant buy off others.
-			if (user.isIronman) {
-				dropratePerMinute = Math.floor(reduceNumByPercent(dropratePerMinute, 65));
-			}
-
-			const minutes = Math.floor(data.duration / Time.Minute);
-			for (let i = 0; i < minutes; i++) {
-				if (roll(dropratePerMinute)) {
-					const loot = new Bank().add('Birthday crate (s2)');
-					await user.addItemsToBank({ items: loot, collectionLog: true });
-					messages.push(bold(`You found ${loot}!`));
-				}
-			}
-		}
-	},
-	{
-		name: 'Bug Finding',
-		fn: async ({ data, messages, user }) => {
-			if (!user.bank.has('Bug jar')) return;
-			const minutes = Math.floor(data.duration / Time.Minute);
-			for (let i = 0; i < minutes; i++) {
-				// Find a bug every 2 hours
-				if (roll(60)) {
-					await transactItems({
-						userID: user.id,
-						collectionLog: false,
-						itemsToAdd: new Bank().add('Full bug jar'),
-						itemsToRemove: new Bank().add('Bug jar')
-					});
-					messages.push(
-						bold(`You found a bug! Hand it in using ${mentionCommand(globalClient, 'birthday', 'hand_in')}`)
-					);
-					break;
-				}
-			}
 		}
 	}
 ];
