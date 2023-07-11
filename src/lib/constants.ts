@@ -256,6 +256,7 @@ export enum BitField {
 	HasBloodbarkScroll = 25,
 	DisableAutoFarmContractButton = 26,
 	DisableGrandExchangeDMs = 27,
+	HadAllSlayerUnlocks = 28,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,

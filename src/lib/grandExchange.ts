@@ -1,4 +1,5 @@
 import { GEListing, GEListingType, GETransaction } from '@prisma/client';
+import { Stopwatch } from '@sapphire/stopwatch';
 import { bold, ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { calcPercentOfNum, clamp, noOp, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -444,6 +445,11 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		assert(sellerListing.quantity_remaining > 0, 'Seller listing has 0 quantity remaining.');
 		assert(buyerListing.user_id !== sellerListing.user_id, 'Buyer and seller are the same user.');
 		assert(remainingItemsInBuyLimit !== 0, 'Buyer has 0 remaining items in buy limit.');
+		assert(sellerListing.user_id !== null, 'null seller listing user id');
+		assert(buyerListing.user_id !== null, 'null buyer listing user id');
+		if (buyerListing.user_id === null || sellerListing.user_id === null) {
+			throw new Error('null user id');
+		}
 
 		const quantityToBuy = Math.min(
 			remainingItemsInBuyLimit,
@@ -704,7 +710,10 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				where: {
 					type: GEListingType.Buy,
 					fulfilled_at: null,
-					cancelled_at: null
+					cancelled_at: null,
+					user_id: {
+						not: null
+					}
 				},
 				orderBy: [
 					{
@@ -719,7 +728,10 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				where: {
 					type: GEListingType.Sell,
 					fulfilled_at: null,
-					cancelled_at: null
+					cancelled_at: null,
+					user_id: {
+						not: null
+					}
 				},
 				orderBy: [
 					{
@@ -764,6 +776,12 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 		const allTransactions = await prisma.gETransaction.findMany();
 		for (const transaction of allTransactions) sanityCheckTransaction(transaction);
+
+		await this.checkGECanFullFilAllListings();
+
+		geLog('Validated GE and found no issues.');
+
+		return true;
 	}
 
 	async checkGECanFullFilAllListings() {
@@ -782,9 +800,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		geLog(`Expected G.E Bank: ${shouldHave}`);
 		if (!currentBank.equals(shouldHave)) {
 			throw new Error(
-				`GE either has extra or insufficient items. The GE has ${currentBank} but should have ${shouldHave}. Difference: ${shouldHave.difference(
-					currentBank
-				)}`
+				`GE either has extra or insufficient items. Difference: ${shouldHave.difference(currentBank)}`
 			);
 		} else {
 			geLog(
@@ -792,6 +808,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					[...buyListings, ...sellListings].length
 				}x active listings! Difference: ${shouldHave.difference(currentBank)}`
 			);
+			return true;
 		}
 	}
 
@@ -833,19 +850,10 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	private async _tick() {
 		if (!this.ready) return;
 		if (this.locked) return;
+		const stopwatch = new Stopwatch();
+		stopwatch.start();
 		const { buyListings, sellListings } = await this.fetchActiveListings();
-		await this.checkGECanFullFilAllListings();
 
-		const allListings = [...buyListings, ...sellListings];
-		for (const listing of allListings) {
-			try {
-				sanityCheckListing(listing);
-			} catch (err: any) {
-				await this.lockGE(err.reason);
-				geLog(err);
-				logError(err);
-			}
-		}
 		for (const buyListing of buyListings) {
 			// These are all valid, matching sell listings we can match with this buy listing.
 			const matchingSellListings = sellListings.filter(
@@ -887,6 +895,9 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			// Process only one transaction per tick
 			break;
 		}
+
+		stopwatch.stop();
+		geLog(`GE tick took ${stopwatch}`);
 	}
 
 	async totalReset() {
