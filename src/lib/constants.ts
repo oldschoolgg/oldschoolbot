@@ -225,7 +225,8 @@ export enum BitField {
 	BothBotsMaxedFreeTierOnePerks = 24,
 	HasBloodbarkScroll = 25,
 	DisableAutoFarmContractButton = 26,
-	DisableGrandExchangeDMs = 27
+	DisableGrandExchangeDMs = 27,
+	HadAllSlayerUnlocks = 28
 }
 
 interface BitFieldData {
