@@ -134,7 +134,7 @@ interface FeedableItem {
 	announcementString: string;
 }
 
-export const feedableItems: FeedableItem[] = [
+export const tameFeedableItems: FeedableItem[] = [
 	{
 		item: getOSItem('Ori'),
 		description: '25% extra loot',
@@ -424,7 +424,7 @@ export async function tameImage(user: MUser): CommandResponse {
 		// Draw tame boosts
 		let prevWidth = 0;
 		let feedQty = 0;
-		for (const { item } of feedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species.type))) {
+		for (const { item } of tameFeedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species.type))) {
 			if (tameHasBeenFed(t, item.id)) {
 				const itemImage = await bankImageGenerator.getItemImage(item.id);
 				if (itemImage) {
@@ -736,7 +736,9 @@ async function feedCommand(interaction: ChatInputCommandInteraction, user: MUser
 		bankToAdd.add(item.id, qtyToUse);
 	}
 
-	const thisTameSpecialFeedableItems = feedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species!.type));
+	const thisTameSpecialFeedableItems = tameFeedableItems.filter(f =>
+		f.tameSpeciesCanBeFedThis.includes(species!.type)
+	);
 
 	if (!str || bankToAdd.length === 0) {
 		const image = await makeBankImage({
@@ -1116,7 +1118,7 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 **Growth:** ${tame.growth_percent}% ${tame.growth_stage}
 **Hatch Date:** ${time(tame.date)} / ${time(tame.date, 'R')}
 **${toTitleCase(species.relevantLevelCategory)} Level:** ${tame[`max_${species.relevantLevelCategory}_level`]}
-**Boosts:** ${feedableItems
+**Boosts:** ${tameFeedableItems
 		.filter(i => tameHasBeenFed(tame, i.item.id))
 		.map(i => `${i.item.name} (${i.description})`)
 		.join(', ')}`;

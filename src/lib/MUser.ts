@@ -30,6 +30,7 @@ import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
+import { MTame } from './structures/MTame';
 import { ItemBank, Skills } from './types';
 import { addItemToBank, assert, convertXPtoLVL, itemNameFromID, percentChance } from './util';
 import { determineRunes } from './util/determineRunes';
@@ -656,6 +657,11 @@ export class MUserClass {
 			plant,
 			matchingPlantedCrop: plant ? detailed.patchesDetailed.find(i => i.plant && i.plant === plant) : undefined
 		};
+	}
+
+	async getTames() {
+		const tames = await prisma.tame.findMany({ where: { user_id: this.id } });
+		return tames.map(t => new MTame(t));
 	}
 }
 declare global {

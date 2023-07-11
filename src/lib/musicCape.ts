@@ -91,9 +91,11 @@ export const musicCapeRequirements = new Requirements()
 		}
 	})
 	.add({
+		name: '200 QP',
 		qpRequirement: 200
 	})
 	.add({
+		name: 'Sacrifice Fire Cape',
 		sacrificedItemsRequirement: new Bank().add('Fire cape')
 	})
 	.add({

@@ -1078,10 +1078,6 @@ export const cluesMasterCL = resolveItems([
 ]);
 
 export const cluesGrandmasterCL = resolveItems([
-	'Blood dye',
-	'Third age dye',
-	'Ice dye',
-	'Shadow dye',
 	'Dwarven blessing',
 	'Ring of luck',
 	'Mysterious seed',
@@ -1096,12 +1092,19 @@ export const cluesGrandmasterCL = resolveItems([
 	'Clue hunter gloves',
 	'Clue hunter trousers',
 	'Clue hunter boots',
-	'Clue hunter cloak',
+	'Clue hunter cloak'
+]);
+
+export const cluesGrandmasterRareCL = resolveItems([
 	'First age tiara',
 	'First age amulet',
 	'First age cape',
 	'First age bracelet',
-	'First age ring'
+	'First age ring',
+	'Blood dye',
+	'Third age dye',
+	'Ice dye',
+	'Shadow dye'
 ]);
 
 export const cluesHardRareCL = resolveItems([

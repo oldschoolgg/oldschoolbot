@@ -1,8 +1,18 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
+import { tame_growth, UserStats } from '@prisma/client';
+import { calcWhatPercent, objectEntries } from 'e';
+import { Bank, Items } from 'oldschooljs';
+
+import { tameFeedableItems } from '../mahoji/commands/tames';
+import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
+import { ClueTiers } from './clues/clueTiers';
+import { BitField } from './constants';
 import {
 	abyssalDragonCL,
 	abyssalSireCL,
 	aerialFishingCL,
 	alchemicalHydraCL,
+	allDOAPets,
 	allPetsCL,
 	balthazarsBigBonanzaCL,
 	barbarianAssaultCL,
@@ -15,6 +25,8 @@ import {
 	capesCL,
 	castleWarsCL,
 	cerberusCL,
+	chambersOfXericCL,
+	chambersOfXericMetamorphPets,
 	championsChallengeCL,
 	chaosDruisCL,
 	chaosElementalCL,
@@ -24,6 +36,7 @@ import {
 	cluesEasyCL,
 	cluesEliteCL,
 	cluesEliteRareCL,
+	cluesGrandmasterCL,
 	cluesHardCL,
 	cluesHardRareCL,
 	cluesMasterCL,
@@ -42,8 +55,10 @@ import {
 	dailyCL,
 	demonicGorillaCL,
 	diariesCL,
+	doaCL,
 	dungeoneeringCL,
 	emergedZukInfernoCL,
+	expertCapesCL,
 	fishingContestCL,
 	fishingTrawlerCL,
 	fistOfGuthixCL,
@@ -103,39 +118,58 @@ import {
 	slayerCL,
 	soulWarsCL,
 	stealingCreationCL,
+	templeTrekkingCL,
 	temporossCL,
+	theatreOfBLoodCL,
 	theGauntletCL,
 	theInfernoCL,
 	theNightmareCL,
 	thermonuclearSmokeDevilCL,
 	tinkeringWorshopCL,
 	titheFarmCL,
+	toaCL,
+	tobMetamorphPets,
 	tormentedDemonCL,
 	treeBeardCL,
 	troubleBrewingCL,
+	tzHaarCL,
 	vasaMagusCL,
 	venenatisCL,
 	vetionCL,
 	volcanicMineCL,
 	vorkathCL,
 	wintertodtCL,
+	zalcanoCL,
 	zulrahCL
 } from './data/CollectionsExport';
 import { creatablesCL } from './data/createables';
 import { kibbleCL } from './data/kibble';
 import { slayerMasksHelmsCL } from './data/slayerMaskHelms';
+import { diariesObject, diaryTiers } from './diaries';
 import { growablePetsCL } from './growablePets';
 import { inventionCL } from './invention/inventions';
+import { allLeagueTasks } from './leagues/leagues';
 import { calcActualClues } from './leagues/stats';
+import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
+import { getPOHObject, PoHObjects } from './poh';
+import { roboChimpUserFetch } from './roboChimp';
+import Skillcapes from './skilling/skillcapes';
+import Agility from './skilling/skills/agility';
 import { cookingCL } from './skilling/skills/cooking';
 import { craftingCL } from './skilling/skills/crafting/craftables';
+import { dungBuyables } from './skilling/skills/dung/dungData';
 import { allFarmingItems } from './skilling/skills/farming';
 import { fletchingCL } from './skilling/skills/fletching/fletchables';
 import { herbloreCL } from './skilling/skills/herblore/mixables';
 import { smithingCL } from './skilling/skills/smithing/smithables';
-import { Requirements } from './structures/Requirements';
+import { SlayerRewardsShop } from './slayer/slayerUnlocks';
+import { RequirementFailure, Requirements } from './structures/Requirements';
+import { TameSpeciesID, TameType } from './tames';
+import { ItemBank } from './types';
+import { itemID, itemNameFromID } from './util';
+import resolveItems from './util/resolveItems';
 
-export const minigameCLRequirements = new Requirements()
+const minigameRequirements = new Requirements()
 	.add({ name: "Complete Balthazar's Big Bonanza CL", clRequirement: balthazarsBigBonanzaCL })
 	.add({ name: 'Complete Barbarian Assault CL', clRequirement: barbarianAssaultCL })
 	.add({ name: 'Complete Baxtorian Bathhouses CL', clRequirement: baxtorianBathhousesCL })
@@ -161,9 +195,10 @@ export const minigameCLRequirements = new Requirements()
 	.add({ name: 'Complete Tinkering Workshop CL', clRequirement: tinkeringWorshopCL })
 	.add({ name: 'Complete Tithe Farm CL', clRequirement: titheFarmCL })
 	.add({ name: 'Complete Trouble Brewing CL', clRequirement: troubleBrewingCL })
-	.add({ name: 'Complete Volcanic Mine CL', clRequirement: volcanicMineCL });
+	.add({ name: 'Complete Volcanic Mine CL', clRequirement: volcanicMineCL })
+	.add({ name: 'Complete Temple Trekking CL', clRequirement: templeTrekkingCL });
 
-export const pvmCLRequirements = new Requirements()
+const pvmRequirements = new Requirements()
 	.add({ name: 'Complete Abyssal Sire CL', clRequirement: abyssalSireCL })
 	.add({ name: 'Complete Alchemical Hydra CL', clRequirement: alchemicalHydraCL })
 	.add({ name: 'Complete Barrows Chests CL', clRequirement: barrowsChestCL })
@@ -209,6 +244,7 @@ export const pvmCLRequirements = new Requirements()
 	.add({ name: 'Complete Skotizo CL', clRequirement: skotizoCL })
 	.add({ name: 'Complete Slayer CL', clRequirement: slayerCL })
 	.add({ name: 'Complete Tempoross CL', clRequirement: temporossCL })
+	.add({ name: 'Complete TzHaar CL', clRequirement: tzHaarCL })
 	.add({ name: 'Complete The Gauntlet CL', clRequirement: theGauntletCL })
 	.add({ name: 'Complete The Inferno CL', clRequirement: theInfernoCL })
 	.add({ name: 'Complete The Nightmare CL', clRequirement: theNightmareCL })
@@ -221,9 +257,55 @@ export const pvmCLRequirements = new Requirements()
 	.add({ name: 'Complete Vorkath CL', clRequirement: vorkathCL })
 	.add({ name: 'Complete Wintertodt CL', clRequirement: wintertodtCL })
 	.add({ name: 'Complete Zulrah CL', clRequirement: zulrahCL })
-	.add({ name: 'Obtain all slayer mask and helms', clRequirement: slayerMasksHelmsCL });
+	.add({ name: "Complete Chamber's of Xeric CL", clRequirement: chambersOfXericCL })
+	.add({ name: 'Complete Depths of Atlantis CL', clRequirement: doaCL })
+	.add({ name: 'Complete Theatre of Blood CL', clRequirement: theatreOfBLoodCL })
+	.add({ name: 'Complete Tombs of Amascut CL', clRequirement: toaCL })
+	.add({ name: 'Obtain all Slayer mask and helms', clRequirement: slayerMasksHelmsCL })
+	.add({
+		name: 'Kill a Frost dragon',
+		kcRequirement: {
+			[BSOMonsters.FrostDragon.id]: 1
+		}
+	})
+	.add({
+		name: "Complete the Champion's Challenge",
+		minigames: {
+			champions_challenge: 1
+		}
+	})
+	.add({
+		name: 'Receive all ToB pet metamorphosis',
+		clRequirement: resolveItems(["Lil' Zik", 'Sanguine dust', ...tobMetamorphPets])
+	})
+	.add({
+		name: 'Receive all CoX pet metamorphosis',
+		clRequirement: resolveItems(['Olmlet', 'Metamorphic dust', ...chambersOfXericMetamorphPets])
+	})
+	.add({
+		name: 'Receive/Create all ToA pet metamorphosis',
+		clRequirement: resolveItems([
+			"Tumeken's guardian",
+			'Remnant of akkha',
+			'Akkhito',
+			'Remnant of ba-ba',
+			'Babi',
+			'Remnant of kephri',
+			'Kephriti',
+			'Ancient remnant',
+			"Tumeken's damaged guardian",
+			'Ancient remnant',
+			"Elidinis' damaged guardian",
+			'Remnant of zebak',
+			'Zebo'
+		])
+	})
+	.add({
+		name: 'Receive all DoA pet metamorphosis',
+		clRequirement: allDOAPets
+	});
 
-const skillingCLRequirements = new Requirements()
+const skillingRequirements = new Requirements()
 	.add({ name: 'Complete Aerial Fishing CL', clRequirement: aerialFishingCL })
 	.add({ name: 'Complete All Pets CL', clRequirement: allPetsCL })
 	.add({ name: 'Complete Camdozaal CL', clRequirement: camdozaalCL })
@@ -246,23 +328,8 @@ const skillingCLRequirements = new Requirements()
 	.add({ name: 'Complete Shooting Stars CL', clRequirement: shootingStarsCL })
 	.add({ name: 'Complete Skilling Misc CL', clRequirement: skillingMiscCL })
 	.add({ name: 'Complete Skilling Pets CL', clRequirement: skillingPetsCL })
-	.add({ name: 'Complete Smithing CL', clRequirement: smithingCL });
-
-const otherCLRequirements = new Requirements()
-	.add({ name: 'Complete Achievement Diary CL', clRequirement: diariesCL })
-	.add({ name: 'Complete Daily CL', clRequirement: dailyCL })
-	.add({ name: 'Complete Growable Pets CL', clRequirement: growablePetsCL })
-	.add({ name: 'Complete Implings CL', clRequirement: implingsCL })
-	.add({ name: 'Complete Leagues CL', clRequirement: leaguesCL })
-	.add({ name: 'Complete Miscellaneous CL', clRequirement: miscellaneousCL })
-	.add({ name: 'Complete Quest CL', clRequirement: questCL })
-	.add({ name: 'Complete Random Events CL', clRequirement: randomEventsCL })
-	.add({ name: 'Complete Shayzien Armour CL', clRequirement: shayzienArmourCL })
-	.add({ name: 'Complete Capes CL', clRequirement: capesCL })
-	.add({ name: 'Complete Clothing Mystery Box CL', clRequirement: cmbClothes })
-	.add({ name: 'Complete Creatables CL', clRequirement: creatablesCL })
-	.add({ name: 'Complete Custom Pets CL', clRequirement: customPetsCL })
-	.add({ name: 'Complete Holiday Mystery box CL', clRequirement: holidayCL });
+	.add({ name: 'Complete Smithing CL', clRequirement: smithingCL })
+	.add({ name: 'Complete Zalcano CL', clRequirement: zalcanoCL });
 
 const cluesRequirements = new Requirements()
 	.add({ name: 'Complete Beginner Treasure Trails CL', clRequirement: cluesBeginnerCL })
@@ -307,10 +374,420 @@ const cluesRequirements = new Requirements()
 		}
 	});
 
-const trimmedRequirements = new Requirements().add({
-	name: 'Complete Grandmaster clue log (excluding 1a and 3a dye)',
-	clRequirement: allPetsCL
+const miscRequirements = new Requirements()
+	.add({ name: 'Complete Daily CL', clRequirement: dailyCL })
+	.add({ name: 'Complete Growable Pets CL', clRequirement: growablePetsCL })
+	.add({ name: 'Complete Leagues CL', clRequirement: leaguesCL })
+	.add({ name: 'Complete Miscellaneous CL', clRequirement: miscellaneousCL })
+	.add({ name: 'Complete Quest CL', clRequirement: questCL })
+	.add({ name: 'Complete Random Events CL', clRequirement: randomEventsCL })
+	.add({ name: 'Complete Shayzien Armour CL', clRequirement: shayzienArmourCL })
+	.add({ name: 'Complete Capes CL', clRequirement: capesCL })
+	.add({ name: 'Complete Clothing Mystery Box CL', clRequirement: cmbClothes })
+	.add({ name: 'Complete Creatables CL', clRequirement: creatablesCL })
+	.add({ name: 'Complete Custom Pets CL', clRequirement: customPetsCL })
+	.add({ name: 'Complete Holiday Mystery box CL', clRequirement: holidayCL });
+
+const petTripSource: [string, keyof UserStats][] = [
+	['Brock', 'brock_loot_bank'],
+	['Doug', 'doug_loot_bank'],
+	['Harry', 'harry_loot_bank'],
+	['Obis', 'obis_loot_bank'],
+	['Peky', 'peky_loot_bank'],
+	['Wilvus', 'wilvus_loot_bank']
+];
+for (const [name, key] of petTripSource) {
+	miscRequirements.add({
+		name: `Take ${name} on a trip and receive loot from them`,
+		has: ({ userStats }) => {
+			if (Object.keys(userStats[key] as ItemBank).length === 0) {
+				return [
+					{
+						reason: `You need to take ${name} on a trip and receive loot from them.`
+					}
+				];
+			}
+			return [];
+		}
+	});
+}
+miscRequirements
+	.add({
+		name: 'Buy a trimmed Music cape',
+		has: ({ userStats }) => {
+			const itemsBought = new Bank(userStats.buy_loot_bank as ItemBank);
+			if (!itemsBought.has('Music cape (t)')) {
+				return [
+					{
+						reason: 'You need to buy a trimmed Music cape.'
+					}
+				];
+			}
+			return [];
+		}
+	})
+	.add({
+		name: 'Unlock all Slayer unlocks',
+		has: ({ user }) => {
+			const notUnlocked = SlayerRewardsShop.filter(i => !user.user.slayer_unlocks.includes(i.id));
+			if (notUnlocked.length > 0) {
+				return [
+					{
+						reason: `You need to unlock these slayer unlocks: ${notUnlocked
+							.map(reward => reward.name)
+							.join(', ')}`
+					}
+				];
+			}
+		}
+	})
+	.add({
+		name: 'Unlock all Slayer unlocks',
+		has: ({ user }) => {
+			if (user.user.slayer_unlocks.length === SlayerRewardsShop.length) {
+				return [];
+			}
+
+			return [
+				{
+					reason: `You need to unlock these slayer unlocks: ${SlayerRewardsShop.filter(
+						i => !user.user.slayer_unlocks.includes(i.id)
+					)
+						.map(reward => reward.name)
+						.join(', ')}`
+				}
+			];
+		}
+	})
+	.add({
+		name: 'Buy all Dungeoneering rewards',
+		clRequirement: dungBuyables.map(i => i.item.id)
+	})
+	.add({
+		name: 'Receive a clue scroll of every tier from Zippy',
+		has: ({ stats }) => {
+			const tiersNotReceived = ClueTiers.filter(tier => !stats.lootFromZippyBank.has(tier.scrollID));
+			if (tiersNotReceived.length > 0) {
+				return [
+					{
+						reason: `You need to receive a clue scroll of every tier from Zippy. You still need: ${tiersNotReceived
+							.map(tier => tier.name)
+							.join(', ')}.`
+					}
+				];
+			}
+		}
+	})
+	.add({
+		name: 'Buy a Master quest cape',
+		clRequirement: resolveItems(['Master quest cape'])
+	})
+	.add({
+		name: 'Build the highest tier (level requirement) item in every POH Slot',
+		has: async ({ user }) => {
+			const poh = await getPOH(user.id);
+			const failures: RequirementFailure[] = [];
+			for (const [key, val] of objectEntries(poh)) {
+				if (key === 'user_id' || key === 'background_id') continue;
+				const sorted = PoHObjects.filter(i => i.slot === key && typeof i.level === 'number').sort(
+					(a, b) => (b.level as number) - (a.level as number)
+				);
+				const highestIDs = sorted.filter(i => i.level === sorted[0].level).map(i => i.id);
+				if (!val || typeof val !== 'number' || !highestIDs.includes(val)) {
+					failures.push({
+						reason: `You need to build one of these in the ${key} slot: ${highestIDs
+							.map(getPOHObject)
+							.map(i => i.name)
+							.join(', ')}`
+					});
+				}
+			}
+			return failures;
+		}
+	})
+	.add({
+		name: 'Achieve 100% Favour in all Kourend Houses',
+		favour: {
+			Arceuus: 100,
+			Hosidius: 100,
+			Lovakengj: 100,
+			Piscarilius: 100,
+			Shayzien: 100
+		}
+	});
+
+const skillsRequirements = new Requirements().add({ name: 'Complete Implings CL', clRequirement: implingsCL });
+for (const cape of Skillcapes) {
+	skillsRequirements.add({
+		name: `Achieve 500m ${toTitleCase(cape.skill)} XP and purchase the Master cape`,
+		clRequirement: [cape.masterCape.id]
+	});
+}
+for (const cape of expertCapesCL) {
+	skillsRequirements.add({
+		name: `Purchase a ${itemNameFromID(cape)}`,
+		clRequirement: [cape]
+	});
+}
+skillsRequirements.add({
+	name: 'Complete a lap at every Agility course',
+	has: ({ stats }) => {
+		const coursesNotDone = Agility.Courses.filter(course => !stats.lapsScores.has(course.id));
+		if (coursesNotDone.length > 0) {
+			return [
+				{
+					reason: `You need to complete a lap at every Agility course, you still need to do one at: ${coursesNotDone
+						.map(i => i.name)
+						.join(', ')}.`
+				}
+			];
+		}
+	}
 });
+
+const unlockablesRequirements = new Requirements()
+	.add({
+		name: 'Use a Scroll of Farming',
+		bitfieldRequirement: BitField.HasScrollOfFarming
+	})
+	.add({
+		name: 'Use a Scroll of Longevity',
+		bitfieldRequirement: BitField.HasScrollOfLongevity
+	})
+	.add({
+		name: 'Use a Scroll of the Hunt',
+		bitfieldRequirement: BitField.HasScrollOfTheHunt
+	})
+	.add({
+		name: 'Use a Torn Prayer Scroll',
+		bitfieldRequirement: BitField.HasTornPrayerScroll
+	})
+	.add({
+		name: 'Use a Guthix Engram',
+		bitfieldRequirement: BitField.HasGuthixEngram
+	})
+	.add({
+		name: 'Unlock the Hosidius wallkit',
+		bitfieldRequirement: BitField.HasHosidiusWallkit
+	})
+	.add({
+		name: 'Use a Dexterous Prayer Scroll',
+		bitfieldRequirement: BitField.HasDexScroll
+	})
+	.add({
+		name: 'Use a Daemonheim agility pass',
+		bitfieldRequirement: BitField.HasDaemonheimAgilityPass
+	})
+	.add({
+		name: 'Use a Banana enchantment scroll',
+		bitfieldRequirement: BitField.HasBananaEnchantmentScroll
+	})
+	.add({
+		name: 'Use a Arcane prayer scroll',
+		bitfieldRequirement: BitField.HasArcaneScroll
+	})
+	.add({
+		name: 'Use a Runescroll of bloodbark',
+		bitfieldRequirement: BitField.HasBloodbarkScroll
+	})
+	.add({
+		name: 'Use a Slepey tablet',
+		bitfieldRequirement: BitField.HasSlepeyTablet
+	})
+	.add({
+		name: 'Use/Plant an Ivy seed',
+		bitfieldRequirement: BitField.HasPlantedIvy
+	});
+
+const tameRequirements = new Requirements()
+	.add({
+		name: 'Build a Nursery',
+		has: ({ user }) => {
+			if (user.user.nursery === null) {
+				return 'You need to build a Nursery.';
+			}
+		}
+	})
+	.add({
+		name: 'Obtain, hatch, and fully grow a Monkey Tame',
+		has: async ({ user }) => {
+			const tames = await user.getTames();
+			if (!tames.some(t => t.species.id === TameSpeciesID.Monkey && t.growthStage === tame_growth.adult)) {
+				return 'You need to obtain, hatch, and grow to adult a Monkey Tame.';
+			}
+		},
+		clRequirement: resolveItems(['Monkey egg'])
+	})
+	.add({
+		name: 'Obtain, hatch, and fully grow a Igne Tame',
+		has: async ({ user }) => {
+			const tames = await user.getTames();
+			if (!tames.some(t => t.species.id === TameSpeciesID.Igne && t.growthStage === tame_growth.adult)) {
+				return 'You need to obtain, hatch, and grow to adult a Igne Tame.';
+			}
+		},
+		clRequirement: resolveItems(['Dragon egg'])
+	})
+	.add({
+		name: 'Feed a Monkey tame all items that provide a boost',
+		has: async ({ user }) => {
+			const tames = await user.getTames();
+			const itemsToBeFed = tameFeedableItems.filter(i => i.tameSpeciesCanBeFedThis.includes(TameType.Gatherer));
+
+			const oneTameHasAll = tames
+				.filter(t => t.species.id === TameSpeciesID.Monkey)
+				.some(tame => itemsToBeFed.every(i => tame.fedItems.has(i.item.id)));
+			if (!oneTameHasAll) {
+				return `You need to feed all of these items to one of your Monkey tames: ${itemsToBeFed
+					.map(i => i.item.name)
+					.join(', ')}.`;
+			}
+		}
+	})
+	.add({
+		name: 'Feed a Igne tame all items that provide a boost',
+		has: async ({ user }) => {
+			const tames = await user.getTames();
+			const itemsToBeFed = tameFeedableItems.filter(i => i.tameSpeciesCanBeFedThis.includes(TameType.Combat));
+
+			const oneTameHasAll = tames
+				.filter(t => t.species.id === TameSpeciesID.Igne)
+				.some(tame => itemsToBeFed.every(i => tame.fedItems.has(i.item.id)));
+			if (!oneTameHasAll) {
+				return `You need to feed all of these items to one of your Igne tames: ${itemsToBeFed
+					.map(i => i.item.name)
+					.join(', ')}.`;
+			}
+		}
+	})
+	.add({
+		name: 'Equip a Igne tame with the BiS items',
+		has: async ({ user }) => {
+			const tames = await user.getTames();
+
+			const oneTameHasAll = tames
+				.filter(t => t.species.id === TameSpeciesID.Igne)
+				.some(tame => {
+					return (
+						tame.equippedArmor?.id === itemID('Gorajan igne armor') &&
+						tame.equippedPrimary?.id === itemID('Gorajan igne claws')
+					);
+				});
+			if (!oneTameHasAll) {
+				return 'You need to equip a Igne tame with the BiS items.';
+			}
+		}
+	});
+
+const diaryRequirements = new Requirements();
+for (const [key, b] of objectEntries(diariesObject)) {
+	diaryRequirements.add({
+		name: `Complete the ${b.name} achievement diary`,
+		diaryRequirement: diaryTiers.map(i => [key, i])
+	});
+}
+diaryRequirements.add({ name: 'Complete Achievement Diary CL', clRequirement: diariesCL });
+
+const trimmedRequirements = new Requirements()
+	.add({
+		name: 'Complete the main Grandmaster treasure trails CL',
+		clRequirement: cluesGrandmasterCL
+	})
+	.add({
+		name: 'Complete all Leagues tasks',
+		has: async ({ user }) => {
+			const robochimpUser = await roboChimpUserFetch(user.id);
+			const hasAll =
+				robochimpUser.leagues_completed_tasks_ids.length === allLeagueTasks.length &&
+				allLeagueTasks.every(t => robochimpUser.leagues_completed_tasks_ids.includes(t.id));
+			if (!hasAll) {
+				return 'You need to complete all Leagues tasks.';
+			}
+		}
+	});
+
+const compCapeCategories = [
+	{
+		name: 'PvM',
+		requirements: pvmRequirements
+	},
+	{
+		name: 'Skilling',
+		requirements: skillingRequirements
+	},
+	{
+		name: 'Diaries',
+		requirements: diaryRequirements
+	},
+	{
+		name: 'Tames',
+		requirements: tameRequirements
+	},
+	{
+		name: 'Unlockables',
+		requirements: unlockablesRequirements
+	},
+	{
+		name: 'Treasure Trails',
+		requirements: cluesRequirements
+	},
+	{
+		name: 'Minigames',
+		requirements: minigameRequirements
+	},
+	{
+		name: 'Miscellaneous',
+		requirements: miscRequirements
+	},
+	{
+		name: 'Trimmed',
+		requirements: trimmedRequirements
+	}
+];
+
+const allCLItemsCheckedFor = compCapeCategories
+	.map(i => i.requirements.requirements)
+	.flat(2)
+	.map(req => {
+		if ('clRequirement' in req) {
+			return Array.isArray(req.clRequirement) ? req.clRequirement : req.clRequirement.items().map(i => i[0].id);
+		}
+		return [];
+	})
+	.flat();
+
+const overallItemsNotCheckedFor = Items.array()
+	.map(i => i.id)
+	.filter(i => !allCLItemsCheckedFor.includes(i));
+console.log(`${overallItemsNotCheckedFor.map(itemNameFromID).sort().join(', ')}`);
+
+export async function calculateCompCapeProgress(user: MUser) {
+	let totalRequirements = 0;
+	let totalCompleted = 0;
+
+	let finalStr = '';
+
+	for (const cat of compCapeCategories) {
+		const progress = await cat.requirements.check(user);
+		totalRequirements += progress.totalRequirements;
+		totalCompleted += progress.metRequirements;
+		let subStr = `${cat.name} (Finished ${progress.metRequirements}/${
+			progress.totalRequirements
+		}, ${progress.completionPercentage.toFixed(2)}%)\n`;
+		for (const reason of progress.reasonsDoesnt) {
+			subStr += `	- ${reason}\n`;
+		}
+		subStr += '\n\n';
+		finalStr += subStr;
+	}
+
+	return `Completionist Cape Progress - ${totalCompleted}/${totalRequirements} (${calcWhatPercent(
+		totalCompleted,
+		totalRequirements
+	).toFixed()}%) completed\n\n
+	
+${finalStr}`;
+}
 
 /**
  *
@@ -318,11 +795,15 @@ const trimmedRequirements = new Requirements().add({
  * - Removed olof
  * - Put clues/clues cl into 1 category
  * - Changed Built all STASH Units task to Build AND FILL
- *
+ * - Moved 1a/dyes to new gm rare cl
+ * - Buy a music cape became buy a trimmed music cape
+ * - Put quests stuff into misc category
+ * - Moved some things into different categories
  *
  * TODO:
  * - Remove muphin from skilling cl?
- *
+ * - Create/use every invention
+ * - Disassemble to receive every kind of material
  *
  * Tasks that seem weird/odd:
  * - Complete Grandmaster clue log (excluding 1a and 3a dye)

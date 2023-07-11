@@ -75,6 +75,7 @@ import {
 	cluesEliteCL,
 	cluesEliteRareCL,
 	cluesGrandmasterCL,
+	cluesGrandmasterRareCL,
 	cluesHardCL,
 	cluesHardRareCL,
 	cluesMasterCL,
@@ -790,6 +791,16 @@ export const allCollectionLogs: ICollection = {
 					Default: async (_, __, { openableScores }) => openableScores.amount(19_838)
 				},
 				items: cluesGrandmasterCL,
+				isActivity: true,
+				fmtProg: clueProg(['Grandmaster'])
+			},
+			'Grandmaster Treasure Trails (Rare)': {
+				alias: ['grandmaster', 'clues grandmaster', 'clue grandmaster', 'clue gm', 'gm'],
+				allItems: cluesGrandmasterRareCL,
+				kcActivity: {
+					Default: async (_, __, { openableScores }) => openableScores.amount(19_838)
+				},
+				items: cluesGrandmasterRareCL,
 				isActivity: true,
 				fmtProg: clueProg(['Grandmaster'])
 			},
