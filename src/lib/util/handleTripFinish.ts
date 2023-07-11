@@ -312,7 +312,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			const minutes = Math.floor(data.duration / Time.Minute);
 			for (let i = 0; i < minutes; i++) {
 				// Find a bug every 2 hours
-				if (roll(120)) {
+				if (roll(80)) {
 					await transactItems({
 						userID: user.id,
 						collectionLog: false,
