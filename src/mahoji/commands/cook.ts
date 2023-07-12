@@ -77,7 +77,7 @@ export const cookCommand: OSBMahojiCommand = {
 		}
 
 		// Enable 1 tick Karambwan half way to 99
-		if (skills.cooking >= 92 && (cookable.id === itemID('Cooked karambwan'))) {
+		if (skills.cooking >= 92 && cookable.id === itemID('Cooked karambwan')) {
 			timeToCookSingleCookable /= 3.8;
 			boosts.push('1t karambwans cooking with 92+ cooking');
 		}
