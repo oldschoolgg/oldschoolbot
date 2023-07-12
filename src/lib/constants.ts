@@ -13,12 +13,13 @@ import {
 import * as dotenv from 'dotenv';
 import { Time } from 'e';
 import { CommandOptions } from 'mahoji/dist/lib/types';
+import { Items } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
-import { discontinuedCustomPetsCL } from './data/CollectionsExport';
+import { customItems } from './customItems/util';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
 import getOSItem from './util/getOSItem';
@@ -315,6 +316,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		userConfigurable: false
 	},
 	[BitField.HasBloodbarkScroll]: { name: 'Runescroll of bloodbark Used', protected: false, userConfigurable: false },
+	[BitField.HadAllSlayerUnlocks]: { name: 'Had All Slayer Unlocks', protected: false, userConfigurable: false },
 
 	[BitField.HasGivenBirthdayPack]: { name: 'Has Given Birthday Pack', protected: false, userConfigurable: false },
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
@@ -772,5 +774,5 @@ export const discontinuedItems = resolveItems([
 	'Turkey drumstick',
 	'Golden partyhat',
 	'Black swan',
-	...discontinuedCustomPetsCL
+	...customItems.filter(i => Items.get(i)?.customItemData?.isDiscontinued)
 ]);

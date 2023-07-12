@@ -749,7 +749,8 @@ const allCLItemsCheckedFor = compCapeCategories
 const overallItemsNotCheckedFor = Items.array()
 	.map(i => i.id)
 	.filter(i => !allCLItemsCheckedFor.includes(i));
-writeFileSync('tasksszzz.txt', `${overallItemsNotCheckedFor.map(itemNameFromID).sort().join('\n')}`);
+
+writeFileSync('overallItemsNotCheckedFor.txt', `${overallItemsNotCheckedFor.map(itemNameFromID).sort().join('\n')}`);
 
 export async function generateAllCompCapeTasksList() {
 	let totalRequirements = 0;
@@ -797,24 +798,3 @@ export async function calculateCompCapeProgress(user: MUser) {
 	
 ${finalStr}`;
 }
-
-/**
- *
- *
- * - Removed olof
- * - Put clues/clues cl into 1 category
- * - Changed Built all STASH Units task to Build AND FILL
- * - Moved 1a/dyes to new gm rare cl
- * - Buy a music cape became buy a trimmed music cape
- * - Put quests stuff into misc category
- * - Moved some things into different categories
- *
- * TODO:
- * - Remove muphin from skilling cl?
- * - Create/use every invention
- * - Disassemble to receive every kind of material
- *
- * Tasks that seem weird/odd:
- * - Complete Grandmaster clue log (excluding 1a and 3a dye)
- * - Collect/Complete/Open a Grandmaster clue
- */
