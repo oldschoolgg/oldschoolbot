@@ -225,7 +225,8 @@ export enum BitField {
 	BothBotsMaxedFreeTierOnePerks = 24,
 	HasBloodbarkScroll = 25,
 	DisableAutoFarmContractButton = 26,
-	DisableGrandExchangeDMs = 27
+	DisableGrandExchangeDMs = 27,
+	HadAllSlayerUnlocks = 28
 }
 
 interface BitFieldData {
@@ -256,6 +257,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.HasTornPrayerScroll]: { name: 'Torn Prayer Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasSlepeyTablet]: { name: 'Slepey Tablet Used', protected: false, userConfigurable: false },
 	[BitField.HasBloodbarkScroll]: { name: 'Runescroll of bloodbark Used', protected: false, userConfigurable: false },
+	[BitField.HadAllSlayerUnlocks]: { name: 'Had All Slayer Unlocks', protected: false, userConfigurable: false },
 
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
 	[BitField.HasPermanentEventBackgrounds]: {
