@@ -3,17 +3,8 @@ import { ActionRowBuilder, AttachmentBuilder, BaseMessageOptions, ButtonBuilder,
 import { randInt, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { marketPriceOfBank } from '../../lib/marketPrices';
 import { prisma } from '../../lib/settings/prisma';
-import {
-	channelIsSendable,
-	isAtleastThisOld,
-	isModOrAdmin,
-	isSuperUntradeable,
-	makeComponents,
-	toKMB
-} from '../../lib/util';
-import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
+import { channelIsSendable, isModOrAdmin, isSuperUntradeable, makeComponents } from '../../lib/util';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
@@ -203,22 +194,8 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return 'Error starting giveaway.';
 			}
 
-			// Ping BSO Giveaways role if it's been 5 minutes since last ping
-			const marketPrice = marketPriceOfBank(bank);
-			const BSO_GIVEAWAYS_ROLE_ID = '978535763560005703';
-			let content = `Giveaway started. Market price of this giveaway is ${toKMB(marketPrice)}`;
-			const lastPing = await mahojiClientSettingsFetch({ last_bso_giveaways_ping: true });
-			if (
-				channelID === '792691343284764693' &&
-				marketPrice > 500_000_000 &&
-				(!lastPing.last_bso_giveaways_ping ||
-					isAtleastThisOld(lastPing.last_bso_giveaways_ping, Time.Minute * 5))
-			) {
-				content += ` <@&${BSO_GIVEAWAYS_ROLE_ID}>`;
-			}
-
 			return {
-				content,
+				content: 'Giveaway started.',
 				ephemeral: true,
 				components: makeComponents([makeGiveawayRepeatButton(giveawayID)])
 			};

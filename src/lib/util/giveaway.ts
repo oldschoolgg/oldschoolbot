@@ -1,15 +1,12 @@
 import { Giveaway } from '@prisma/client';
 import { MessageEditOptions, time, userMention } from 'discord.js';
-import { debounce, noOp, randArrItem, roll, Time } from 'e';
+import { debounce, noOp, randArrItem, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Events } from '../constants';
-import { addToDoubleLootTimer } from '../doubleLoot';
-import { marketPriceOfBank } from '../marketPrices';
 import { prisma } from '../settings/prisma';
-import { channelIsSendable, isAtleastThisOld } from '../util';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './clientSettings';
+import { channelIsSendable } from '../util';
 import { logError } from './logError';
 import { sendToChannelID } from './webhook';
 
@@ -98,28 +95,6 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 				type: 'giveaway'
 			}
 		});
-
-		// If its been 6 hours since the last double loot, roll for it.
-		const lastDoubleLootAdded = (await mahojiClientSettingsFetch({ last_giveaway_doubleloot: true }))
-			.last_giveaway_doubleloot;
-		if (
-			giveaway.channel_id === '792691343284764693' &&
-			(!lastDoubleLootAdded || isAtleastThisOld(lastDoubleLootAdded, Time.Hour * 6))
-		) {
-			const marketValue = marketPriceOfBank(loot);
-			const shardChunkSize = 50_000_000; // Each chunk is worth 50m
-			const shardRate = 100; // 1 in 100 chance for each 50m chunk
-			for (let i = 0; i < Math.floor(marketValue / shardChunkSize); i++) {
-				if (roll(shardRate)) {
-					await addToDoubleLootTimer(
-						Time.Hour,
-						`${userMention(giveaway.user_id)} gave away ${loot.toString().slice(0, 1000)}!`
-					).catch(noOp);
-					await mahojiClientSettingsUpdate({ last_giveaway_doubleloot: new Date() });
-					break;
-				}
-			}
-		}
 
 		globalClient.emit(
 			Events.EconomyLog,

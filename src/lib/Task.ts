@@ -4,7 +4,6 @@ import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
 import { bossEventTask } from '../tasks/minions/bossEventActivity';
 import { bathhouseTask } from '../tasks/minions/bso/bathhousesActivity';
-import { birthdayCollectTask } from '../tasks/minions/bso/birthdayCollectActivity';
 import { bonanzaTask } from '../tasks/minions/bso/bonanzaActivity';
 import { disassemblingTask } from '../tasks/minions/bso/disassemblingActivity';
 import { doaTask } from '../tasks/minions/bso/doaActivity';
@@ -214,8 +213,7 @@ export const tasks: MinionTask[] = [
 	bonanzaTask,
 	underwaterAgilityThievingTask,
 	doaTask,
-	strongholdTask,
-	birthdayCollectTask
+	strongholdTask
 ];
 
 export async function syncActivityCache() {
@@ -267,7 +265,8 @@ const ignored: activity_type_enum[] = [
 	activity_type_enum.HalloweenMiniMinigame,
 	activity_type_enum.TrickOrTreat,
 	activity_type_enum.BossEvent,
-	activity_type_enum.HalloweenEvent
+	activity_type_enum.HalloweenEvent,
+	activity_type_enum.BirthdayCollectIngredients
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {
