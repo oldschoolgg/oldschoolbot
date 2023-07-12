@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../constants';
+import { BitField, discontinuedItems } from '../constants';
+import { allDyedItems } from '../dyedItems';
 import { MaterialBank } from '../invention/MaterialBank';
 import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
@@ -2236,4 +2237,5 @@ const Createables: Createable[] = [
 export default Createables;
 export const creatablesCL = Createables.filter(i => i.noCl !== true)
 	.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
-	.flat();
+	.flat()
+	.filter(i => !discontinuedItems.includes(i) && !allDyedItems.includes(i));

@@ -533,7 +533,8 @@ export const theatreOfBloodHardUniques = resolveItems(['Sanguine dust', 'Holy or
 export const theatreOfBLoodCL = resolveItems([
 	...theatreOfBloodNormalUniques,
 	...theatreOfBloodCapes,
-	...theatreOfBloodHardUniques
+	...theatreOfBloodHardUniques,
+	...tobMetamorphPets
 ]);
 
 export const toaCL = resolveItems([

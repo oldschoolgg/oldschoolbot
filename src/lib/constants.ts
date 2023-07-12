@@ -18,6 +18,7 @@ import { z } from 'zod';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
+import { discontinuedCustomPetsCL } from './data/CollectionsExport';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
 import getOSItem from './util/getOSItem';
@@ -764,4 +765,12 @@ export const gloriesInventorySize = 26;
 export const gloriesInventoryTime = Time.Minute * 2.2;
 export const wealthInventorySize = 26;
 export const wealthInventoryTime = Time.Minute * 2.2;
-export const discontinuedItems = resolveItems(['Turkey', 'Raw turkey', 'Burnt turkey', 'Turkey drumstick']);
+export const discontinuedItems = resolveItems([
+	'Turkey',
+	'Raw turkey',
+	'Burnt turkey',
+	'Turkey drumstick',
+	'Golden partyhat',
+	'Black swan',
+	...discontinuedCustomPetsCL
+]);

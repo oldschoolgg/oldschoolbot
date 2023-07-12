@@ -258,10 +258,7 @@ const pvmRequirements = new Requirements()
 	.add({ name: 'Complete Vorkath CL', clRequirement: vorkathCL })
 	.add({ name: 'Complete Wintertodt CL', clRequirement: wintertodtCL })
 	.add({ name: 'Complete Zulrah CL', clRequirement: zulrahCL })
-	.add({ name: "Complete Chamber's of Xeric CL", clRequirement: chambersOfXericCL })
-	.add({ name: 'Complete Depths of Atlantis CL', clRequirement: doaCL })
-	.add({ name: 'Complete Theatre of Blood CL', clRequirement: theatreOfBLoodCL })
-	.add({ name: 'Complete Tombs of Amascut CL', clRequirement: toaCL })
+
 	.add({ name: 'Obtain all Slayer mask and helms', clRequirement: slayerMasksHelmsCL })
 	.add({
 		name: 'Kill a Frost dragon',
@@ -382,13 +379,7 @@ const miscRequirements = new Requirements()
 	.add({ name: 'Complete Miscellaneous CL', clRequirement: miscellaneousCL })
 	.add({ name: 'Complete Quest CL', clRequirement: questCL })
 	.add({ name: 'Complete Random Events CL', clRequirement: randomEventsCL })
-	.add({ name: 'Complete Shayzien Armour CL', clRequirement: shayzienArmourCL })
-	.add({ name: 'Complete Capes CL', clRequirement: capesCL })
-	.add({ name: 'Complete Clothing Mystery Box CL', clRequirement: cmbClothes })
-	.add({ name: 'Complete Creatables CL', clRequirement: creatablesCL })
-	.add({ name: 'Complete Custom Pets CL', clRequirement: customPetsCL })
-	.add({ name: 'Complete Holiday Mystery box CL', clRequirement: holidayCL });
-
+	.add({ name: 'Complete Shayzien Armour CL', clRequirement: shayzienArmourCL });
 const petTripSource: [string, keyof UserStats][] = [
 	['Brock', 'brock_loot_bank'],
 	['Doug', 'doug_loot_bank'],
@@ -429,18 +420,7 @@ miscRequirements
 	})
 	.add({
 		name: 'Unlock all Slayer unlocks',
-		has: ({ user }) => {
-			const notUnlocked = SlayerRewardsShop.filter(i => !user.user.slayer_unlocks.includes(i.id));
-			if (notUnlocked.length > 0) {
-				return [
-					{
-						reason: `You need to unlock these slayer unlocks: ${notUnlocked
-							.map(reward => reward.name)
-							.join(', ')}`
-					}
-				];
-			}
-		}
+		bitfieldRequirement: BitField.HadAllSlayerUnlocks
 	})
 	.add({
 		name: 'Unlock all Slayer unlocks',
@@ -705,7 +685,16 @@ const trimmedRequirements = new Requirements()
 				return 'You need to complete all Leagues tasks.';
 			}
 		}
-	});
+	})
+	.add({ name: 'Complete Capes CL', clRequirement: capesCL })
+	.add({ name: 'Complete Clothing Mystery Box CL', clRequirement: cmbClothes })
+	.add({ name: 'Complete Creatables CL', clRequirement: creatablesCL })
+	.add({ name: 'Complete Custom Pets CL', clRequirement: customPetsCL })
+	.add({ name: 'Complete Holiday Mystery box CL', clRequirement: holidayCL })
+	.add({ name: "Complete Chamber's of Xeric CL", clRequirement: chambersOfXericCL })
+	.add({ name: 'Complete Depths of Atlantis CL', clRequirement: doaCL })
+	.add({ name: 'Complete Theatre of Blood CL', clRequirement: theatreOfBLoodCL })
+	.add({ name: 'Complete Tombs of Amascut CL', clRequirement: toaCL });
 
 const compCapeCategories = [
 	{
