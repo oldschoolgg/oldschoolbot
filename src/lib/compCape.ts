@@ -1,6 +1,6 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { tame_growth, UserStats } from '@prisma/client';
-import { calcWhatPercent, objectEntries } from 'e';
+import { calcWhatPercent, objectEntries, sumArr } from 'e';
 import { writeFileSync } from 'fs';
 import { Bank, Items } from 'oldschooljs';
 
@@ -145,12 +145,12 @@ import {
 } from './data/CollectionsExport';
 import { creatablesCL } from './data/createables';
 import { kibbleCL } from './data/kibble';
+import { getSimilarItems } from './data/similarItems';
 import { slayerMasksHelmsCL } from './data/slayerMaskHelms';
 import { diariesObject, diaryTiers } from './diaries';
 import { growablePetsCL } from './growablePets';
 import { inventionCL } from './invention/inventions';
 import { allLeagueTasks } from './leagues/leagues';
-import { calcActualClues } from './leagues/stats';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
 import { getPOHObject, PoHObjects } from './poh';
 import { roboChimpUserFetch } from './roboChimp';
@@ -163,7 +163,7 @@ import { allFarmingItems } from './skilling/skills/farming';
 import { fletchingCL } from './skilling/skills/fletching/fletchables';
 import { herbloreCL } from './skilling/skills/herblore/mixables';
 import { smithingCL } from './skilling/skills/smithing/smithables';
-import { SlayerRewardsShop } from './slayer/slayerUnlocks';
+import { slayerUnlockableRewards } from './slayer/slayerUnlocks';
 import { RequirementFailure, Requirements } from './structures/Requirements';
 import { TameSpeciesID, TameType } from './tames';
 import { ItemBank } from './types';
@@ -327,7 +327,36 @@ const skillingRequirements = new Requirements()
 	.add({ name: 'Complete Skilling Misc CL', clRequirement: skillingMiscCL })
 	.add({ name: 'Complete Skilling Pets CL', clRequirement: skillingPetsCL })
 	.add({ name: 'Complete Smithing CL', clRequirement: smithingCL })
-	.add({ name: 'Complete Zalcano CL', clRequirement: zalcanoCL });
+	.add({ name: 'Complete Zalcano CL', clRequirement: zalcanoCL })
+	.add({ name: 'Complete Implings CL', clRequirement: implingsCL });
+
+for (const cape of Skillcapes) {
+	skillingRequirements.add({
+		name: `Achieve 500m ${toTitleCase(cape.skill)} XP and purchase the Master cape`,
+		clRequirement: [cape.masterCape.id]
+	});
+}
+for (const cape of expertCapesCL) {
+	skillingRequirements.add({
+		name: `Purchase a ${itemNameFromID(cape)}`,
+		clRequirement: [cape]
+	});
+}
+skillingRequirements.add({
+	name: 'Complete a lap at every Agility course',
+	has: ({ stats }) => {
+		const coursesNotDone = Agility.Courses.filter(course => !stats.lapsScores.has(course.id));
+		if (coursesNotDone.length > 0) {
+			return [
+				{
+					reason: `You need to complete a lap at every Agility course, you still need to do one at: ${coursesNotDone
+						.map(i => i.name)
+						.join(', ')}.`
+				}
+			];
+		}
+	}
+});
 
 const cluesRequirements = new Requirements()
 	.add({ name: 'Complete Beginner Treasure Trails CL', clRequirement: cluesBeginnerCL })
@@ -344,31 +373,70 @@ const cluesRequirements = new Requirements()
 	.add({
 		name: 'Build and Fill all STASH Units',
 		has: ({ stashUnits }) => {
-			const hasBuiltAll = stashUnits.every(i => i.isFull && Boolean(i.builtUnit));
-			if (!hasBuiltAll) {
-				return [
-					{
-						reason: `You have ${
-							stashUnits.filter(i => i.isFull && !i.builtUnit).length
-						} stash units left to build and fill.`
-					}
-				];
+			const amountNotBuilt = stashUnits.filter(i => !i.isFull || !i.builtUnit).length;
+			if (amountNotBuilt > 0) {
+				return `You have ${amountNotBuilt} stash units left to build and fill.`;
 			}
-			return [];
 		}
 	})
 	.add({
 		name: 'Collect/Complete/Open a Grandmaster clue',
 		has: async ({ user }) => {
-			const actualClues = await calcActualClues(user);
-			if (!actualClues.has('Clue scroll (grandmaster)')) {
-				return [
-					{
-						reason: 'You need to Collect/Complete/Open a Grandmaster clue'
-					}
-				];
+			const { clueCounts } = await user.calcActualClues();
+			if (clueCounts.Grandmaster === 0) {
+				return 'You need to Collect/Complete/Open a Grandmaster clue';
 			}
-			return [];
+		}
+	})
+	.add({
+		name: 'Complete 600 Beginner Treasure Trails',
+		clueCompletions: {
+			Beginner: 600
+		}
+	})
+	.add({
+		name: 'Complete 500 Easy Treasure Trails',
+		clueCompletions: {
+			Easy: 500
+		}
+	})
+	.add({
+		name: 'Complete 400 Medium Treasure Trails',
+		clueCompletions: {
+			Medium: 400
+		}
+	})
+	.add({
+		name: 'Complete 300 Hard Treasure Trails',
+		clueCompletions: {
+			Hard: 300
+		}
+	})
+	.add({
+		name: 'Complete 200 Elite Treasure Trails',
+		clueCompletions: {
+			Elite: 200
+		}
+	})
+	.add({
+		name: 'Complete 100 Master Treasure Trails',
+		clueCompletions: {
+			Master: 100
+		}
+	})
+	.add({
+		name: 'Complete 50 Grandmaster Treasure Trails',
+		clueCompletions: {
+			Grandmaster: 50
+		}
+	})
+	.add({
+		name: 'Complete a total of 2001 Treasure Trails',
+		has: ({ clueCounts }) => {
+			const hasAll = sumArr(Object.values(clueCounts)) >= 2001;
+			if (!hasAll) {
+				return 'You need to complete a total of 2001 Treasure Trails';
+			}
 		}
 	});
 
@@ -420,24 +488,14 @@ miscRequirements
 	})
 	.add({
 		name: 'Unlock all Slayer unlocks',
-		bitfieldRequirement: BitField.HadAllSlayerUnlocks
-	})
-	.add({
-		name: 'Unlock all Slayer unlocks',
-		has: ({ user }) => {
-			if (user.user.slayer_unlocks.length === SlayerRewardsShop.length) {
-				return [];
+		has: async ({ user, roboChimpUser }) => {
+			const hasAll =
+				roboChimpUser.leagues_completed_tasks_ids.includes(4103) ||
+				user.user.slayer_unlocks.length >= slayerUnlockableRewards.length ||
+				user.bitfield.includes(BitField.HadAllSlayerUnlocks);
+			if (!hasAll) {
+				return 'Unlock all Slayer unlocks';
 			}
-
-			return [
-				{
-					reason: `You need to unlock these slayer unlocks: ${SlayerRewardsShop.filter(
-						i => !user.user.slayer_unlocks.includes(i.id)
-					)
-						.map(reward => reward.name)
-						.join(', ')}`
-				}
-			];
 		}
 	})
 	.add({
@@ -445,13 +503,15 @@ miscRequirements
 		clRequirement: dungBuyables.map(i => i.item.id)
 	})
 	.add({
-		name: 'Receive a clue scroll of every tier from Zippy',
+		name: 'Receive a casket of every tier from Zippy (excluding Grandmaster)',
 		has: ({ stats }) => {
-			const tiersNotReceived = ClueTiers.filter(tier => !stats.lootFromZippyBank.has(tier.scrollID));
+			const tiersNotReceived = ClueTiers.filter(i => i.name !== 'Grandmaster').filter(
+				tier => !stats.lootFromZippyBank.has(tier.id)
+			);
 			if (tiersNotReceived.length > 0) {
 				return [
 					{
-						reason: `You need to receive a clue scroll of every tier from Zippy. You still need: ${tiersNotReceived
+						reason: `You need to receive a casket of every tier from Zippy. You still need: ${tiersNotReceived
 							.map(tier => tier.name)
 							.join(', ')}.`
 					}
@@ -496,35 +556,6 @@ miscRequirements
 			Shayzien: 100
 		}
 	});
-
-const skillsRequirements = new Requirements().add({ name: 'Complete Implings CL', clRequirement: implingsCL });
-for (const cape of Skillcapes) {
-	skillsRequirements.add({
-		name: `Achieve 500m ${toTitleCase(cape.skill)} XP and purchase the Master cape`,
-		clRequirement: [cape.masterCape.id]
-	});
-}
-for (const cape of expertCapesCL) {
-	skillsRequirements.add({
-		name: `Purchase a ${itemNameFromID(cape)}`,
-		clRequirement: [cape]
-	});
-}
-skillsRequirements.add({
-	name: 'Complete a lap at every Agility course',
-	has: ({ stats }) => {
-		const coursesNotDone = Agility.Courses.filter(course => !stats.lapsScores.has(course.id));
-		if (coursesNotDone.length > 0) {
-			return [
-				{
-					reason: `You need to complete a lap at every Agility course, you still need to do one at: ${coursesNotDone
-						.map(i => i.name)
-						.join(', ')}.`
-				}
-			];
-		}
-	}
-});
 
 const unlockablesRequirements = new Requirements()
 	.add({
@@ -578,6 +609,21 @@ const unlockablesRequirements = new Requirements()
 	.add({
 		name: 'Use/Plant an Ivy seed',
 		bitfieldRequirement: BitField.HasPlantedIvy
+	})
+	.add({
+		name: 'Unlock the Leagues max trip length boost',
+		bitfieldRequirement: BitField.HasLeaguesOneMinuteLengthBoost
+	})
+	.add({
+		name: 'Unlock the sacrifice max trip length boost',
+		has: ({ user }) => {
+			const sac = Number(user.user.sacrificedValue);
+			const { isIronman } = user;
+			const sacPercent = Math.min(100, calcWhatPercent(sac, isIronman ? 5_000_000_000 : 10_000_000_000));
+			if (sacPercent < 100) {
+				return 'You need to sacrifice enough items to unlock the max trip length boost.';
+			}
+		}
 	});
 
 const tameRequirements = new Requirements()
@@ -617,7 +663,11 @@ const tameRequirements = new Requirements()
 
 			const oneTameHasAll = tames
 				.filter(t => t.species.id === TameSpeciesID.Monkey)
-				.some(tame => itemsToBeFed.every(i => tame.fedItems.has(i.item.id)));
+				.some(tame =>
+					itemsToBeFed.every(itemNeedsToBeFed =>
+						getSimilarItems(itemNeedsToBeFed.item.id).some(similarItem => tame.fedItems.has(similarItem))
+					)
+				);
 			if (!oneTameHasAll) {
 				return `You need to feed all of these items to one of your Monkey tames: ${itemsToBeFed
 					.map(i => i.item.name)

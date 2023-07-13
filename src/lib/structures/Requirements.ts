@@ -3,10 +3,12 @@ import { calcWhatPercent, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { getParsedStashUnits, ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
+import { ClueTier } from '../clues/clueTiers';
 import { BitField, BitFieldData } from '../constants';
 import { diariesObject, DiaryTierName, userhasDiaryTier } from '../diaries';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { UserKourendFavour } from '../minions/data/kourendFavour';
+import { RobochimpUser, roboChimpUserFetch } from '../roboChimp';
 import { MinigameName } from '../settings/minigames';
 import { prisma } from '../settings/prisma';
 import Agility from '../skilling/skills/agility';
@@ -18,13 +20,18 @@ export interface RequirementFailure {
 	reason: string;
 }
 
-type ManualHasFunction = (args: {
+type RequirementUserArgs = {
 	user: MUser;
 	userStats: UserStats;
 	stashUnits: ParsedUnit[];
 	minigames: Minigame;
 	stats: MUserStats;
-}) =>
+	roboChimpUser: RobochimpUser;
+} & Awaited<ReturnType<MUser['calcActualClues']>>;
+
+type ManualHasFunction = (
+	args: RequirementUserArgs
+) =>
 	| Promise<RequirementFailure[]>
 	| RequirementFailure[]
 	| undefined
@@ -47,6 +54,7 @@ type Requirement = {
 	| { minigames: Partial<Record<MinigameName, number>> }
 	| { bitfieldRequirement: BitField }
 	| { diaryRequirement: [keyof typeof diariesObject, DiaryTierName][] }
+	| { clueCompletions: Partial<Record<ClueTier['name'], number>> }
 );
 
 export class Requirements {
@@ -157,18 +165,13 @@ export class Requirements {
 
 	async checkSingleRequirement(
 		requirement: Requirement,
-		{
-			user,
-			userStats,
-			minigames,
-			stashUnits,
-			stats
-		}: { user: MUser; userStats: UserStats; minigames: Minigame; stashUnits: ParsedUnit[]; stats: MUserStats }
+		userArgs: RequirementUserArgs
 	): Promise<RequirementFailure[]> {
+		const { user, userStats, minigames } = userArgs;
 		const results: RequirementFailure[] = [];
 
 		if ('has' in requirement) {
-			const result = await requirement.has({ user, userStats, minigames, stashUnits, stats });
+			const result = await requirement.has(userArgs);
 			if (result) {
 				if (typeof result === 'string') {
 					results.push({ reason: result });
@@ -306,12 +309,19 @@ export class Requirements {
 			}
 		}
 
+		if ('clueCompletions' in requirement) {
+			const { clueCounts } = await user.calcActualClues();
+			for (const [key, val] of objectEntries(requirement.clueCompletions)) {
+				if (!clueCounts[key] || !val || clueCounts[key] < val) {
+					results.push({
+						reason: `You need to complete ${val}x ${key} clues.`
+					});
+				}
+			}
+		}
+
 		if ('OR' in requirement) {
-			const orResults = await Promise.all(
-				requirement.OR.map(req =>
-					this.checkSingleRequirement(req, { user, userStats, minigames, stashUnits, stats })
-				)
-			);
+			const orResults = await Promise.all(requirement.OR.map(req => this.checkSingleRequirement(req, userArgs)));
 			if (!orResults.some(i => i.length === 0)) {
 				results.push({
 					reason: `You need to meet one of these requirements:\n${orResults.map((res, index) => {
@@ -337,9 +347,19 @@ export class Requirements {
 		const minigames = await user.fetchMinigames();
 		const stashUnits = await getParsedStashUnits(user.id);
 		const stats = new MUserStats(userStats);
+		const roboChimpUser = await roboChimpUserFetch(user.id);
+		const cluesDone = await user.calcActualClues();
 
 		const requirementResults = this.requirements.map(async i => ({
-			result: await this.checkSingleRequirement(i, { user, userStats, minigames, stashUnits, stats }),
+			result: await this.checkSingleRequirement(i, {
+				user,
+				userStats,
+				minigames,
+				stashUnits,
+				stats,
+				roboChimpUser,
+				...cluesDone
+			}),
 			requirement: i
 		}));
 
