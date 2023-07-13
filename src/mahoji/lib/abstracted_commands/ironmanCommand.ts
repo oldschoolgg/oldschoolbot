@@ -76,9 +76,9 @@ export async function ironmanCommand(
 The following things will be COMPLETELY reset/wiped from your account, with no chance of being recovered: Your entire bank, collection log, GP/Coins, QP/Quest Points, Clue Scores, Monster Scores, all XP. If you type \`confirm\`, they will all be wiped.
 
 After becoming an ironman:
-	- You will no longer be able to receive GP from  \`+daily\`
-	- You will no longer be able to use \`+pay\`, \`+duel\`, \`+sellto\`, \`+sell\`, \`+dice\`
-	- You can de-iron at any time, and keep all your stuff acquired while playing as an ironman.`
+- You will no longer be able to receive GP from  \`+daily\`
+- You will no longer be able to use \`+pay\`, \`+duel\`, \`+sellto\`, \`+sell\`, \`+dice\`
+- You can de-iron at any time, and keep all your stuff acquired while playing as an ironman.`
 		);
 	}
 

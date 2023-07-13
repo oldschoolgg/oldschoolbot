@@ -948,8 +948,8 @@ model GEListing {
 
   userfacing_id String
 
-  user_id String @db.VarChar(19)
-  user    User   @relation(fields: [user_id], references: [id])
+  user_id String? @db.VarChar(19)
+  user    User?   @relation(fields: [user_id], references: [id])
 
   created_at   DateTime  @default(now())
   cancelled_at DateTime?
