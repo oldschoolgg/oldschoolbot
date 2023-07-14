@@ -2,6 +2,7 @@ import { sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { BitField } from '../constants';
 import {
 	all3rdAgeItems,
 	chambersOfXericCL,
@@ -747,8 +748,11 @@ export const masterTasks: Task[] = [
 	{
 		id: 4103,
 		name: 'Unlock every slayer unlock',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.slayer_unlocks.length >= slayerUnlockableRewards.length;
+		has: async ({ mahojiUser, user }) => {
+			return (
+				mahojiUser.slayer_unlocks.length >= slayerUnlockableRewards.length ||
+				user.bitfield.includes(BitField.HadAllSlayerUnlocks)
+			);
 		}
 	},
 	{

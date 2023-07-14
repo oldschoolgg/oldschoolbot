@@ -47,7 +47,6 @@ import { ClueTiers } from './clues/clueTiers';
 import { badgesCache, BitField, globalConfig, ONE_TRILLION, ProjectileType, usernameCache } from './constants';
 import { UserStatsDataNeededForCL } from './data/Collections';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
-import { calcActualClues } from './leagues/stats';
 import type { Consumable } from './minions/types';
 import { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
@@ -672,7 +671,7 @@ export function isModOrAdmin(user: MUser) {
 }
 
 export async function calcClueScores(user: MUser) {
-	const actualClues = await calcActualClues(user);
+	const { actualCluesBank } = await user.calcActualClues();
 	const stats = await user.fetchStats({ openable_scores: true });
 	const openableBank = new Bank(stats.openable_scores as ItemBank);
 	return openableBank
@@ -685,7 +684,7 @@ export async function calcClueScores(user: MUser) {
 				casket: getOSItem(tier.id),
 				clueScroll: getOSItem(tier.scrollID),
 				opened: openableBank.amount(tier.id),
-				actualOpened: actualClues.amount(tier.scrollID)
+				actualOpened: actualCluesBank.amount(tier.scrollID)
 			};
 		})
 		.filter(notEmpty);

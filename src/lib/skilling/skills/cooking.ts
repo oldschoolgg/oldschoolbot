@@ -1,4 +1,5 @@
 import { Emoji } from '../../constants';
+import { removeDiscontinuedItems } from '../../util';
 import itemID from '../../util/itemID';
 import { Cookable, SkillsEnum } from '../types';
 
@@ -303,6 +304,8 @@ export const Cookables: Cookable[] = [
 		burntCookable: itemID('Burnt turkey')
 	}
 ];
+
+export const cookingCL = removeDiscontinuedItems(Cookables.map(i => i.id));
 
 const Cooking = {
 	aliases: ['cooking', 'cook'],

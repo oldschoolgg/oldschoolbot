@@ -566,3 +566,8 @@ export const dyedItems: DyedItem[] = [
 	...gorajan,
 	...dwarvenDyed
 ];
+
+export const allDyedItems = dyedItems
+	.map(i => i.dyedVersions)
+	.flat()
+	.map(i => i.item.id);

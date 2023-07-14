@@ -81,3 +81,5 @@ export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOpt
 		messages.push(`Your ${getOSItem(equippedPet).name} grew into a ${getOSItem(nextPet).name}!`);
 	}
 }
+
+export const growablePetsCL = growablePets.map(i => i.stages).flat();

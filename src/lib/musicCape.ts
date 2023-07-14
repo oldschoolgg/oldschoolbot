@@ -91,9 +91,11 @@ export const musicCapeRequirements = new Requirements()
 		}
 	})
 	.add({
+		name: '200 QP',
 		qpRequirement: 200
 	})
 	.add({
+		name: 'Sacrifice Fire Cape',
 		sacrificedItemsRequirement: new Bank().add('Fire cape')
 	})
 	.add({
@@ -156,7 +158,8 @@ AND data->>'runeID' IS NOT NULL;`;
 				activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
 				activity_type_enum.ChampionsChallenge,
 				activity_type_enum.Nex,
-				activity_type_enum.BossEvent
+				activity_type_enum.BossEvent,
+				activity_type_enum.TrickOrTreat
 			];
 			const activityCounts = await getUsersActivityCounts(user);
 

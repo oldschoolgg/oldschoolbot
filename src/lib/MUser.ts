@@ -8,6 +8,7 @@ import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
+import { ClueTier, ClueTiers } from './clues/clueTiers';
 import { badges, BitField, Emoji, PerkTier, projectiles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
@@ -30,11 +31,12 @@ import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
+import { MTame } from './structures/MTame';
 import { ItemBank, Skills } from './types';
 import { addItemToBank, assert, convertXPtoLVL, itemNameFromID, percentChance } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
-import getOSItem from './util/getOSItem';
+import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
@@ -656,6 +658,58 @@ export class MUserClass {
 			plant,
 			matchingPlantedCrop: plant ? detailed.patchesDetailed.find(i => i.plant && i.plant === plant) : undefined
 		};
+	}
+
+	async getTames() {
+		const tames = await prisma.tame.findMany({ where: { user_id: this.id } });
+		return tames.map(t => new MTame(t));
+	}
+
+	async calcActualClues() {
+		const result: { id: number; qty: number }[] =
+			await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int) AS qty
+FROM activity
+WHERE type = 'ClueCompletion'
+AND user_id = '${this.id}'::bigint
+AND data->>'clueID' IS NOT NULL
+AND completed = true
+GROUP BY data->>'clueID';`);
+		const casketsCompleted = new Bank();
+		for (const res of result) {
+			const item = getItem(res.id);
+			if (!item) continue;
+			casketsCompleted.add(item.id, res.qty);
+		}
+		const stats = await this.fetchStats({ openable_scores: true });
+		const opens = new Bank(stats.openable_scores as ItemBank);
+
+		// Actual clues are only ones that you have: received in your cl, completed in trips, and opened.
+		const actualClues = new Bank();
+
+		for (const [item, qtyCompleted] of casketsCompleted.items()) {
+			const clueTier = ClueTiers.find(i => i.id === item.id)!;
+			actualClues.add(
+				clueTier.scrollID,
+				Math.min(qtyCompleted, this.cl.amount(clueTier.scrollID), opens.amount(clueTier.id))
+			);
+		}
+
+		const clueCounts: Record<ClueTier['name'], number> = {
+			Beginner: 0,
+			Easy: 0,
+			Medium: 0,
+			Hard: 0,
+			Elite: 0,
+			Master: 0,
+			Grandmaster: 0
+		};
+
+		for (const [item, qty] of actualClues.items()) {
+			const clueTier = ClueTiers.find(i => i.scrollID === item.id)!;
+			clueCounts[clueTier.name] = qty;
+		}
+
+		return { actualCluesBank: actualClues, clueCounts };
 	}
 }
 declare global {

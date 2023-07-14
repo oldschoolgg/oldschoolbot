@@ -2,7 +2,7 @@ import { sumArr } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
-import { feedableItems } from '../../mahoji/commands/tames';
+import { tameFeedableItems } from '../../mahoji/commands/tames';
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { ZALCANO_ID } from '../constants';
 import {
@@ -356,7 +356,7 @@ export const eliteTasks: Task[] = [
 				.filter(t => t.species_id === TameSpeciesID.Igne)
 				.some(t => {
 					const fedItems = new Bank(t.fed_items as ItemBank);
-					return feedableItems.some(
+					return tameFeedableItems.some(
 						i => i.tameSpeciesCanBeFedThis.includes(TameType.Combat) && fedItems.has(i.item.id)
 					);
 				});
@@ -370,7 +370,7 @@ export const eliteTasks: Task[] = [
 				.filter(t => t.species_id === TameSpeciesID.Monkey)
 				.some(t => {
 					const fedItems = new Bank(t.fed_items as ItemBank);
-					return feedableItems.some(
+					return tameFeedableItems.some(
 						i => i.tameSpeciesCanBeFedThis.includes(TameType.Gatherer) && fedItems.has(i.item.id)
 					);
 				});

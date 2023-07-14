@@ -8,7 +8,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { ClueTiers } from '../clues/clueTiers';
-import { PerkTier, projectiles } from '../constants';
+import { discontinuedItems, PerkTier, projectiles } from '../constants';
 import { skillEmoji } from '../data/emojis';
 import type { Gear } from '../structures/Gear';
 import type { ArrayItemsResolved, Skills } from '../types';
@@ -221,4 +221,8 @@ export function checkRangeGearWeapon(gear: Gear) {
 		weapon,
 		ammo
 	};
+}
+
+export function removeDiscontinuedItems(arr: number[]) {
+	return arr.filter(i => !discontinuedItems.includes(i));
 }

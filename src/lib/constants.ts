@@ -13,11 +13,13 @@ import {
 import * as dotenv from 'dotenv';
 import { Time } from 'e';
 import { CommandOptions } from 'mahoji/dist/lib/types';
+import { Items } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
+import { customItems } from './customItems/util';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
 import getOSItem from './util/getOSItem';
@@ -769,3 +771,12 @@ export const gloriesInventorySize = 26;
 export const gloriesInventoryTime = Time.Minute * 2.2;
 export const wealthInventorySize = 26;
 export const wealthInventoryTime = Time.Minute * 2.2;
+export const discontinuedItems = resolveItems([
+	'Turkey',
+	'Raw turkey',
+	'Burnt turkey',
+	'Turkey drumstick',
+	'Golden partyhat',
+	'Black swan',
+	...customItems.filter(i => Items.get(i)?.customItemData?.isDiscontinued)
+]);

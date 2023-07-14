@@ -8,4 +8,7 @@ import Mithril from './mithril';
 import Rune from './rune';
 import Steel from './steel';
 
-export default [...Adamant, ...Bronze, ...Iron, ...Mithril, ...Rune, ...Steel, ...Dwarven, ...Gorajan, ...Gold];
+const smithables = [...Adamant, ...Bronze, ...Iron, ...Mithril, ...Rune, ...Steel, ...Dwarven, ...Gorajan, ...Gold];
+
+export default smithables;
+export const smithingCL = smithables.map(i => i.id);

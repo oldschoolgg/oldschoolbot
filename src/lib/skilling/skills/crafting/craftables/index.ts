@@ -24,3 +24,5 @@ export const Craftables: Craftable[] = [
 	...Tanning,
 	...customCraftables
 ];
+
+export const craftingCL = Craftables.map(i => i.id);

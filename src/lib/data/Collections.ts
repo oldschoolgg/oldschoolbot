@@ -10,8 +10,8 @@ import { ClueTier, ClueTiers } from '../clues/clueTiers';
 import { CollectionLogType } from '../collectionLogTask';
 import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
 import { dyedItems } from '../dyedItems';
-import { growablePets } from '../growablePets';
-import { Inventions } from '../invention/inventions';
+import { growablePetsCL } from '../growablePets';
+import { inventionCL } from '../invention/inventions';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
 import { Ignecarus } from '../minions/data/killableMonsters/custom/bosses/Ignecarus';
 import {
@@ -35,11 +35,11 @@ import type { MinigameName } from '../settings/minigames';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { pumpkinHeadUniqueTable } from '../simulation/pumpkinHead';
 import { getToaKCs } from '../simulation/toa';
-import { Cookables } from '../skilling/skills/cooking';
-import { Craftables } from '../skilling/skills/crafting/craftables';
+import { cookingCL } from '../skilling/skills/cooking';
+import { craftingCL } from '../skilling/skills/crafting/craftables';
 import { allFarmingItems } from '../skilling/skills/farming';
-import { Fletchables } from '../skilling/skills/fletching/fletchables';
-import mixables from '../skilling/skills/herblore/mixables';
+import { fletchingCL } from '../skilling/skills/fletching/fletchables';
+import { herbloreCL } from '../skilling/skills/herblore/mixables';
 import smithables from '../skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../skilling/types';
 import type { ItemBank } from '../types';
@@ -53,8 +53,10 @@ import {
 	aerialFishingCL,
 	alchemicalHydraCL,
 	allPetsCL,
+	balthazarsBigBonanzaCL,
 	barbarianAssaultCL,
 	barrowsChestCL,
+	baxtorianBathhousesCL,
 	brimhavenAgilityArenaCL,
 	bryophytaCL,
 	callistoCL,
@@ -73,6 +75,7 @@ import {
 	cluesEliteCL,
 	cluesEliteRareCL,
 	cluesGrandmasterCL,
+	cluesGrandmasterRareCL,
 	cluesHardCL,
 	cluesHardRareCL,
 	cluesMasterCL,
@@ -82,6 +85,7 @@ import {
 	cmbClothes,
 	commanderZilyanaCL,
 	corporealBeastCL,
+	crackerCL,
 	crazyArchaeologistCL,
 	creatureCreationCL,
 	customPetsCL,
@@ -92,10 +96,13 @@ import {
 	diariesCL,
 	discontinuedCustomPetsCL,
 	doaCL,
+	dungeoneeringCL,
+	emergedZukInfernoCL,
 	expertCapesCL,
 	fightCavesCL,
 	fishingContestCL,
 	fishingTrawlerCL,
+	fistOfGuthixCL,
 	FormatProgressFunction,
 	fossilIslandNotesCL,
 	generalGraardorCL,
@@ -113,7 +120,6 @@ import {
 	ignecarusCL,
 	ILeftListStatus,
 	implingsCL,
-	inventorOutfit,
 	IToReturnCollection,
 	kalphiteKingCL,
 	kalphiteQueenCL,
@@ -123,19 +129,23 @@ import {
 	kreeArraCL,
 	krilTsutsarothCL,
 	lastManStandingCL,
+	leaguesCL,
 	magicTrainingArenaCL,
 	mahoganyHomesCL,
 	masterCapesCL,
 	miscellaneousCL,
 	moktangCL,
 	monkeyBackpacksCL,
+	monkeyRumbleCL,
 	motherlodeMineCL,
 	muspahCL,
 	naxxusCL,
 	nexCL,
 	nihilizCL,
 	oborCL,
+	odsCL,
 	pestControlCL,
+	polyporeDungeonCL,
 	queenBlackDragonCL,
 	questCL,
 	randomEventsCL,
@@ -147,12 +157,15 @@ import {
 	seaKrakenCL,
 	shadesOfMorttonCL,
 	shayzienArmourCL,
+	shootingStarsCL,
+	skillingMiscCL,
 	skillingPetsCL,
 	skotizoCL,
 	slayerCL,
 	soulWarsCL,
 	spectatorClothes,
 	spiritAnglerOutfit,
+	stealingCreationCL,
 	templeTrekkingCL,
 	temporossCL,
 	theatreOfBLoodCL,
@@ -160,8 +173,10 @@ import {
 	theInfernoCL,
 	theNightmareCL,
 	thermonuclearSmokeDevilCL,
+	tinkeringWorshopCL,
 	titheFarmCL,
 	toaCL,
+	tormentedDemonCL,
 	treeBeardCL,
 	troubleBrewingCL,
 	tzHaarCL,
@@ -174,9 +189,9 @@ import {
 	zalcanoCL,
 	zulrahCL
 } from './CollectionsExport';
-import Createables from './createables';
-import { kibbles } from './kibble';
-import { slayerMaskHelms } from './slayerMaskHelms';
+import { creatablesCL } from './createables';
+import { kibbleCL } from './kibble';
+import { slayerMasksHelmsCL } from './slayerMaskHelms';
 
 function kcProg(mon: Monster | number): FormatProgressFunction {
 	return ({ stats }) => `${stats.kcBank[typeof mon === 'number' ? mon : mon.id] ?? 0} KC`;
@@ -376,7 +391,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Emerged Zuk Inferno': {
 				alias: ['emerged inferno', 'ezi', 'emerged zuk'],
-				items: resolveItems(['Head of TzKal Zuk', 'Infernal core', 'Tokkul']),
+				items: emergedZukInfernoCL,
 				fmtProg: ({ minigames }) => `${minigames.emerged_inferno} KC`
 			},
 			'Kalphite Queen': {
@@ -621,14 +636,7 @@ export const allCollectionLogs: ICollection = {
 				}
 			},
 			'Tormented Demons': {
-				items: resolveItems([
-					'Dragon claw',
-					'Offhand dragon claw',
-					'Ruined dragon armour slice',
-					'Ruined dragon armour lump',
-					'Ruined dragon armour shard',
-					'Dragon limbs'
-				]),
+				items: tormentedDemonCL,
 				alias: ['td', 'tormented demon', 'tormented demons'],
 				fmtProg: kcProg(BSOMonsters.TormentedDemon.id)
 			},
@@ -686,21 +694,7 @@ export const allCollectionLogs: ICollection = {
 				items: revenantsCL
 			},
 			'Polypore Dungeon': {
-				items: resolveItems([
-					'Mycelium leggings web',
-					'Mycelium poncho web',
-					'Mycelium visor web',
-					'Neem drupe',
-					'Polypore spore',
-					'Grifolic flake',
-					'Grifolic gloves',
-					'Grifolic orb',
-					'Gorajian mushroom',
-					'Tombshroom spore',
-					'Ganodermic flake',
-					'Ganodermic gloves',
-					'Ganodermic boots'
-				])
+				items: polyporeDungeonCL
 			},
 			Slayer: {
 				alias: ['slay'],
@@ -709,7 +703,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Slayer Masks/Helms': {
 				alias: ['slayer Masks/Helms'],
-				items: slayerMaskHelms.map(i => [i.helm.id, i.mask.id]).flat(),
+				items: slayerMasksHelmsCL,
 				fmtProg: skillProg(SkillsEnum.Slayer)
 			},
 			TzHaar: {
@@ -797,6 +791,16 @@ export const allCollectionLogs: ICollection = {
 					Default: async (_, __, { openableScores }) => openableScores.amount(19_838)
 				},
 				items: cluesGrandmasterCL,
+				isActivity: true,
+				fmtProg: clueProg(['Grandmaster'])
+			},
+			'Grandmaster Treasure Trails (Rare)': {
+				alias: ['grandmaster', 'clues grandmaster', 'clue grandmaster', 'clue gm', 'gm'],
+				allItems: cluesGrandmasterRareCL,
+				kcActivity: {
+					Default: async (_, __, { openableScores }) => openableScores.amount(19_838)
+				},
+				items: cluesGrandmasterRareCL,
 				isActivity: true,
 				fmtProg: clueProg(['Grandmaster'])
 			},
@@ -1041,39 +1045,12 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Ourania Delivery Service': {
 				alias: ['ods', 'ourania'],
-				items: resolveItems([
-					'Master runecrafter hat',
-					'Master runecrafter robe',
-					'Master runecrafter skirt',
-					'Master runecrafter boots',
-					'Elder thread',
-					'Elder talisman',
-					'Magic crate',
-					'Lychee seed',
-					'Avocado seed',
-					'Mysterious seed',
-					'Mango seed',
-					'Magical artifact'
-				]),
+				items: odsCL,
 				fmtProg: mgProg('ourania_delivery_service')
 			},
 			"Mad Marimbo's Monkey Rumble": {
 				alias: ['mr', 'mmmr', 'mmr', 'monkey rumble', 'mad marimbos monkey rumble'],
-				items: resolveItems([
-					'Monkey egg',
-					'Marimbo statue',
-					'Monkey dye',
-					'Banana enchantment scroll',
-					'Rumble token',
-					'Big banana',
-					'Monkey crate',
-					'Gorilla rumble greegree',
-					'Beginner rumble greegree',
-					'Intermediate rumble greegree',
-					'Ninja rumble greegree',
-					'Expert ninja rumble greegree',
-					'Elder rumble greegree'
-				]),
+				items: monkeyRumbleCL,
 				fmtProg: mgProg('monkey_rumble')
 			},
 			'Fishing Contest': {
@@ -1083,68 +1060,27 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Baxtorian Bathhouses': {
 				alias: ['bb', 'bax bath', 'baxtorian bathhouses', 'bath', 'baths'],
-				items: resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire', 'Phoenix eggling']),
+				items: baxtorianBathhousesCL,
 				fmtProg: mgProg('bax_baths')
 			},
 			'Fist of Guthix': {
 				alias: ['fog', 'fist of guthix'],
-				items: resolveItems([
-					'Rune spikeshield',
-					'Rune berserker shield',
-					'Adamant spikeshield',
-					'Adamant berserker shield',
-					'Guthix engram',
-					'Fist of guthix token'
-				]),
+				items: fistOfGuthixCL,
 				fmtProg: mgProg('bax_baths')
 			},
 			'Stealing Creation': {
 				alias: ['stealing creation', 'sc'],
-				items: resolveItems([
-					'Stealing creation token',
-					"Fletcher's gloves",
-					"Fletcher's boots",
-					"Fletcher's top",
-					"Fletcher's hat",
-					"Fletcher's legs"
-				]),
+				items: stealingCreationCL,
 				fmtProg: mgProg('stealing_creation')
 			},
 			'Tinkering Workshop': {
 				alias: ['tw', 'tinkering workshop'],
-				items: resolveItems([...inventorOutfit, 'Materials bag']),
+				items: tinkeringWorshopCL,
 				fmtProg: mgProg('tinkering_workshop')
 			},
 			"Balthazar's Big Bonanza": {
 				alias: ['bbb', 'balthazars big bananza', 'circus'],
-				items: resolveItems([
-					'A stylish hat (male, yellow)',
-					'Shirt (male, yellow)',
-					'Leggings (yellow)',
-					'A stylish hat (male, maroon)',
-					'Shirt (male, maroon)',
-					'Leggings (maroon)',
-					'A stylish hat (male, green)',
-					'Shirt (male, green)',
-					'Leggings (green)',
-					'A stylish hat (female, yellow)',
-					'Shirt (female, yellow)',
-					'Skirt (yellow)',
-					'A stylish hat (female, maroon)',
-					'Shirt (female, maroon)',
-					'Skirt (maroon)',
-					'A stylish hat (female, green)',
-					'Shirt (female, green)',
-					'Skirt (green)',
-					'Shoes (male, shoes)',
-					'Shoes (male, boots)',
-					'Shoes (female, straps)',
-					'Shoes (female, flats)',
-					"Giant's hand",
-					'Acrobat set',
-					'Clown set',
-					'Ringmaster set'
-				]),
+				items: balthazarsBigBonanzaCL,
 				fmtProg: mgProg('balthazars_big_bonanza')
 			}
 		}
@@ -1216,60 +1152,14 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true,
 				fmtProg: skillProg(SkillsEnum.Agility)
 			},
-			'Shooting Stars': { items: resolveItems(['Celestial ring (uncharged)', 'Star fragment']) },
+			'Shooting Stars': { items: shootingStarsCL },
 			'Skilling Pets': {
 				alias: ['skill pets'],
 				items: skillingPetsCL
 			},
 			Dungeoneering: {
 				alias: ['dg', 'dung', 'dungeoneering'],
-				items: resolveItems([
-					'Chaotic rapier',
-					'Chaotic longsword',
-					'Chaotic maul',
-					'Chaotic staff',
-					'Chaotic crossbow',
-					'Offhand Chaotic rapier',
-					'Offhand Chaotic longsword',
-					'Offhand chaotic crossbow',
-					'Scroll of life',
-					'Scroll of efficiency',
-					'Scroll of cleansing',
-					'Scroll of dexterity',
-					'Scroll of teleportation',
-					'Scroll of farming',
-					'Scroll of proficiency',
-					'Scroll of mystery',
-					'Scroll of longevity',
-					'Scroll of the hunt',
-					'Farseer kiteshield',
-					'Chaotic remnant',
-					'Frostbite',
-					'Gorajan shards',
-					'Amulet of zealots',
-					'Herbicide',
-					'Gorajan warrior helmet',
-					'Gorajan warrior top',
-					'Gorajan warrior legs',
-					'Gorajan warrior gloves',
-					'Gorajan warrior boots',
-					'Gorajan archer helmet',
-					'Gorajan archer top',
-					'Gorajan archer legs',
-					'Gorajan archer gloves',
-					'Gorajan archer boots',
-					'Gorajan occult helmet',
-					'Gorajan occult top',
-					'Gorajan occult legs',
-					'Gorajan occult gloves',
-					'Gorajan occult boots',
-					'Arcane blast necklace',
-					'Farsight snapshot necklace',
-					"Brawler's hook necklace",
-					'Daemonheim agility pass',
-					'Dungeoneering dye',
-					'Gorajan bonecrusher (u)'
-				]),
+				items: dungeoneeringCL,
 				fmtProg: skillProg(SkillsEnum.Dungeoneering)
 			},
 			Farming: {
@@ -1279,17 +1169,17 @@ export const allCollectionLogs: ICollection = {
 			},
 			Cooking: {
 				counts: false,
-				items: Cookables.map(i => i.id),
+				items: cookingCL,
 				fmtProg: skillProg(SkillsEnum.Cooking)
 			},
 			Crafting: {
 				counts: false,
-				items: Craftables.map(i => i.id),
+				items: craftingCL,
 				fmtProg: skillProg(SkillsEnum.Crafting)
 			},
 			Herblore: {
 				counts: false,
-				items: mixables.map(i => i.id),
+				items: herbloreCL,
 				fmtProg: skillProg(SkillsEnum.Herblore)
 			},
 			Smithing: {
@@ -1299,7 +1189,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			Kibble: {
 				counts: false,
-				items: kibbles.map(i => i.item.id)
+				items: kibbleCL
 			},
 			Graceful: {
 				counts: false,
@@ -1308,58 +1198,15 @@ export const allCollectionLogs: ICollection = {
 			},
 			Fletching: {
 				counts: false,
-				items: Fletchables.map(i => i.id),
+				items: fletchingCL,
 				fmtProg: skillProg(SkillsEnum.Fletching)
 			},
 			'Skilling Misc': {
-				items: resolveItems([
-					'Prospector helmet',
-					'Prospector jacket',
-					'Prospector legs',
-					'Prospector boots',
-					'Mining gloves',
-					'Superior mining gloves',
-					'Expert mining gloves',
-					'Golden nugget',
-					'Unidentified minerals',
-					'Big swordfish',
-					'Big shark',
-					'Big bass',
-					'Tangleroot',
-					'Bottomless compost bucket',
-					"Farmer's strawhat",
-					"Farmer's jacket",
-					"Farmer's shirt",
-					"Farmer's boro trousers",
-					"Farmer's boots",
-					"Pharaoh's sceptre",
-					'Baby chinchompa',
-					'Kyatt hat',
-					'Kyatt top',
-					'Kyatt legs',
-					'Spotted cape',
-					'Spottier cape',
-					'Gloves of silence',
-					'Small pouch',
-					'Medium pouch',
-					'Large pouch',
-					'Giant pouch',
-					'Abyssal pouch',
-					'Elder pouch',
-					'Crystal pickaxe',
-					'Crystal axe',
-					'Crystal harpoon',
-					// Dwarven equipment
-					'Dwarven greataxe',
-					'Dwarven greathammer',
-					'Dwarven pickaxe',
-					'Dwarven knife',
-					'Dwarven gauntlets'
-				])
+				items: skillingMiscCL
 			},
 			Invention: {
 				alias: ['inv'],
-				items: [...Inventions.map(i => i.item.id), ...resolveItems('Cogsworth')],
+				items: inventionCL,
 				fmtProg: skillProg(SkillsEnum.Invention)
 			}
 		}
@@ -1445,17 +1292,20 @@ export const allCollectionLogs: ICollection = {
 				items: holidayCL,
 				alias: ['hmb', 'holiday mystery box']
 			},
+			'Christmas Cracker': {
+				counts: false,
+				items: crackerCL,
+				alias: ['hmb', 'holiday mystery box']
+			},
 			'Growable Pets': {
-				items: growablePets.map(i => i.stages).flat()
+				items: growablePetsCL
 			},
 			Creatables: {
 				counts: false,
-				items: Createables.filter(i => i.noCl !== true)
-					.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
-					.flat()
+				items: creatablesCL
 			},
 			Leagues: {
-				items: resolveItems(['Fuzzy dice', 'Karambinana'])
+				items: leaguesCL
 			},
 			'Spectator Clothes': {
 				items: spectatorClothes,
