@@ -1,6 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
-import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
-import { randInt, Time } from 'e';
+import { AttachmentBuilder, bold, ButtonBuilder, MessageCollector } from 'discord.js';
+import { randInt, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -275,6 +275,28 @@ const tripFinishEffects: TripFinishEffect[] = [
 			messages.push('You found a message in a bottle!');
 			const bottleLoot = new Bank().add('Message in a bottle');
 			await user.addItemsToBank({ items: bottleLoot, collectionLog: true });
+		}
+	},
+	{
+		name: 'Crate Spawns',
+		fn: async ({ data, messages, user }) => {
+			const accountAge = user.accountAgeInDays();
+			let dropratePerMinute = 50 * 60;
+			if (accountAge) {
+				if (accountAge < 31) return;
+				if (user.isIronman) {
+					dropratePerMinute = reduceNumByPercent(dropratePerMinute, 15);
+				}
+			}
+			const minutes = Math.floor(data.duration / Time.Minute);
+			for (let i = 0; i < minutes; i++) {
+				if (roll(dropratePerMinute)) {
+					const loot = new Bank().add('Supply crate (s1)');
+					await user.addItemsToBank({ items: loot, collectionLog: true });
+					messages.push(bold(`You found ${loot}!`));
+					break;
+				}
+			}
 		}
 	}
 ];
