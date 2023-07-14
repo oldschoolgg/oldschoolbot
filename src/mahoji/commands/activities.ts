@@ -194,7 +194,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Number,
+					type: ApplicationCommandOptionType.Integer,
 					name: 'dose',
 					description: 'The dosage to decant them too. (default 4)',
 					required: false,
@@ -225,7 +225,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Number,
+					type: ApplicationCommandOptionType.Integer,
 					name: 'quantity',
 					description: 'The amount of inventories you want to charge.  (optional)',
 					required: false,
