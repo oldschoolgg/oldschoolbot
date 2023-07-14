@@ -69,10 +69,17 @@ export const cookCommand: OSBMahojiCommand = {
 		const hasGaunts = user.hasEquipped('Cooking gauntlets');
 		if (hasGaunts) boosts.push('Cooking gauntlets equipped');
 
-		// Based off catherby fish/hr rates
-		let timeToCookSingleCookable = Time.Second * 2.88;
+		const skills = user.skillsAsLevels;
+		let timeToCookSingleCookable = Time.Second * 2.4 + Time.Second * 0.45;
+
 		if (cookable.id === itemID('Jug of wine') || cookable.id === itemID('Wine of zamorak')) {
-			timeToCookSingleCookable /= 1.6;
+			timeToCookSingleCookable /= 1.9;
+		}
+
+		// Enable 1 tick Karambwan half way to 99
+		if (skills.cooking >= 92 && cookable.id === itemID('Cooked karambwan')) {
+			timeToCookSingleCookable /= 3.8;
+			boosts.push('1t karambwans cooking with 92+ cooking');
 		}
 
 		const userBank = user.bank;
