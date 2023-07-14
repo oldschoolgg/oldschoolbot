@@ -70,8 +70,8 @@ export const cookCommand: OSBMahojiCommand = {
 		const hasGaunts = user.hasEquipped('Cooking gauntlets');
 		if (hasGaunts) boosts.push('Cooking gauntlets equipped');
 
-		// Based off catherby fish/hr rates
-		let timeToCookSingleCookable = Time.Second * 2.88;
+		let timeToCookSingleCookable = Time.Second * 2.4 + Time.Second * 0.45;
+
 		if (cookable.id === itemID('Jug of wine') || cookable.id === itemID('Wine of zamorak')) {
 			timeToCookSingleCookable /= 1.6;
 			if (hasRemy) timeToCookSingleCookable /= 1.5;

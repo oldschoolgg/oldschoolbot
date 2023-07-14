@@ -130,7 +130,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 SELECT users.id, user_stats.last_daily_timestamp
 FROM users
 JOIN user_stats ON users.id::bigint = user_stats.user_id
-WHERE bitfield && '{2,3,4,5,6,7,8}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '4 hours';
+WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '4 hours';
 `
 			);
 

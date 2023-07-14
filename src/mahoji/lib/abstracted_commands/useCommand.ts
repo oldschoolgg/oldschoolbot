@@ -83,6 +83,11 @@ const usableUnlocks: UsableUnlock[] = [
 		item: getOSItem('Runescroll of swampbark'),
 		bitfield: BitField.HasSwampbarkScroll,
 		resultMessage: 'You used your Runescroll of Swampbark, and unlocked the ability to create Swampbark armour.'
+	},
+	{
+		item: getOSItem("Saradomin's light"),
+		bitfield: BitField.HasSaradominsLight,
+		resultMessage: "You used your Saradomin's light."
 	}
 ];
 for (const usableUnlock of usableUnlocks) {
