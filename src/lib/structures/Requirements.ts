@@ -146,12 +146,8 @@ export class Requirements {
 		for (const req of this.requirements) {
 			const formatted = this.formatRequirement(req);
 			finalStr += `  - ${req.name}\n`;
-			if (typeof formatted === 'string') {
-				finalStr += `    - ${formatted}`;
-			} else {
-				for (const subReq of formatted) {
-					finalStr += `    - ${subReq}`;
-				}
+			for (const subReq of formatted) {
+				finalStr += `    - ${subReq}`;
 			}
 			finalStr += '\n';
 		}
