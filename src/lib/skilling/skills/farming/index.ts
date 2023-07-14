@@ -55,6 +55,7 @@ export const CompostTiers = [
 ] as const;
 
 for (const plant of plants) {
+	if (resolveItems(['Pumpkin']).includes(plant.id)) continue;
 	if (plant.outputCrop) allFarmingItems.push(plant.outputCrop);
 	for (const key of Object.keys(plant.inputItems.bank)) {
 		allFarmingItems.push(Number(key));

@@ -3,6 +3,7 @@ export interface CustomItemData {
 	isSuperUntradeable?: boolean;
 	cantDropFromMysteryBoxes?: boolean;
 	cantBeDropped?: true;
+	isDiscontinued?: true;
 }
 
 declare module 'oldschooljs/dist/meta/types' {

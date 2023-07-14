@@ -30027,5 +30027,110 @@ exports[`BSO Creatables 1`] = `
       "runecraft": 77,
     },
   },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "3385": 1,
+        "561": 250,
+      },
+      "frozen": false,
+    },
+    "name": "Swampbark helm",
+    "outputItems": Bank {
+      "bank": {
+        "25398": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "runecraft": 46,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "3387": 1,
+        "561": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Swampbark body",
+    "outputItems": Bank {
+      "bank": {
+        "25389": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "runecraft": 48,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "3389": 1,
+        "561": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Swampbark legs",
+    "outputItems": Bank {
+      "bank": {
+        "25401": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "runecraft": 48,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "3393": 1,
+        "561": 100,
+      },
+      "frozen": false,
+    },
+    "name": "Swampbark boots",
+    "outputItems": Bank {
+      "bank": {
+        "25395": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "runecraft": 42,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "3391": 1,
+        "561": 100,
+      },
+      "frozen": false,
+    },
+    "name": "Swampbark gauntlets",
+    "outputItems": Bank {
+      "bank": {
+        "25392": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "runecraft": 42,
+    },
+  },
 ]
 `;

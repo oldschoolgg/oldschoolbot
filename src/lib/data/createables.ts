@@ -1,6 +1,8 @@
+import { uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { BitField } from '../constants';
+import { BitField, discontinuedItems } from '../constants';
+import { allDyedItems } from '../dyedItems';
 import { MaterialBank } from '../invention/MaterialBank';
 import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
@@ -73,6 +75,37 @@ for (const [bbPart, sbPart, bloodRunes, lvlReq] of bloodBarkPairs) {
 		customReq: async (user: MUser) => {
 			if (!user.bitfield.includes(BitField.HasBloodbarkScroll)) {
 				return 'You need to have used a Runescroll of bloodbark to create this item!';
+			}
+
+			return null;
+		}
+	});
+}
+
+const swampBarkPairs = [
+	['Swampbark helm', 'Splitbark helm', 250, 46],
+	['Swampbark body', 'Splitbark body', 500, 48],
+	['Swampbark legs', 'Splitbark legs', 500, 48],
+	['Swampbark boots', 'Splitbark boots', 100, 42],
+	['Swampbark gauntlets', 'Splitbark gauntlets', 100, 42]
+] as const;
+
+const swampBarkCreatables: Createable[] = [];
+
+for (const [bbPart, sbPart, natRunes, lvlReq] of swampBarkPairs) {
+	const bbItem = getOSItem(bbPart);
+	const sbItem = getOSItem(sbPart);
+
+	swampBarkCreatables.push({
+		name: bbItem.name,
+		inputItems: new Bank().add(sbItem.id).add('Nature rune', natRunes),
+		outputItems: new Bank().add(bbItem.id),
+		requiredSkills: {
+			runecraft: lvlReq
+		},
+		customReq: async (user: MUser) => {
+			if (!user.bitfield.includes(BitField.HasSwampbarkScroll)) {
+				return 'You need to have used a Runescroll of Swampbark to create this item!';
 			}
 
 			return null;
@@ -2235,7 +2268,14 @@ const Createables: Createable[] = [
 	...moktangCreatables,
 	...shadesOfMortonCreatables,
 	...toaCreatables,
-	...bloodBarkCreatables
+	...bloodBarkCreatables,
+	...swampBarkCreatables
 ];
 
 export default Createables;
+export const creatablesCL = uniqueArr(
+	Createables.filter(i => i.noCl !== true)
+		.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
+		.flat()
+		.filter(i => !discontinuedItems.includes(i) && !allDyedItems.includes(i))
+);

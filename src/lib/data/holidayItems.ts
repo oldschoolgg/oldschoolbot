@@ -149,4 +149,4 @@ export const partyHatTableRoll = () => {
 	return PartyhatTable.roll();
 };
 
-export const allHolidayItems = [...baseHolidayItems.allItems, ...PartyhatTable.allItems];
+export const allHolidayItems = [...baseHolidayItems.allItems];

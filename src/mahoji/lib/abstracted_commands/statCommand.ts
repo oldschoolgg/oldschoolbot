@@ -15,7 +15,6 @@ import { Emoji, PerkTier } from '../../../lib/constants';
 import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
 import { slayerMaskHelms } from '../../../lib/data/slayerMaskHelms';
 import {
-	calcActualClues,
 	calculateAllFletchedItems,
 	calculateChargedItems,
 	calculateDartsFletchedFromScratch,
@@ -254,10 +253,10 @@ const bsoOnlyDatapoints: readonly DataPiece[] = [
 		name: 'Actual Clues Done',
 		perkTierNeeded: null,
 		run: async (user: MUser) => {
-			const actualClues = await calcActualClues(user);
+			const actualClues = await user.calcActualClues();
 			return `These are the clues you have acquired, completed and opened yourself:
 
-${actualClues
+${actualClues.actualCluesBank
 	.items()
 	.map(i => `${bold(i[0].name)}: ${i[1].toLocaleString()}`)
 	.join('\n')}`;

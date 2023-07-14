@@ -41,3 +41,5 @@ export const kibbles: Kibble[] = [
 		level: 120
 	}
 ];
+
+export const kibbleCL = kibbles.map(i => i.item.id);

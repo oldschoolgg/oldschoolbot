@@ -34,7 +34,6 @@ import { betterHerbloreStats, HasFunctionArgs, Task } from './leaguesUtils';
 import { masterTasks } from './masterTasks';
 import { mediumTasks } from './mediumTasks';
 import {
-	calcActualClues,
 	calcLeaguesRanking,
 	calculateAllFletchedItems,
 	calculateDartsFletchedFromScratch,
@@ -135,7 +134,7 @@ export async function leaguesCheckUser(userID: string) {
 		spellCastingStats,
 		collectingStats,
 		woodcuttingStats,
-		actualClues,
+		{ actualCluesBank },
 		ranking,
 		smeltingStats,
 		stashUnits,
@@ -156,7 +155,7 @@ export async function leaguesCheckUser(userID: string) {
 		personalSpellCastStats(mahojiUser),
 		personalCollectingStats(mahojiUser),
 		personalWoodcuttingStats(mahojiUser),
-		calcActualClues(mahojiUser),
+		mahojiUser.calcActualClues(),
 		calcLeaguesRanking(roboChimpUser),
 		personalSmeltingStats(mahojiUser),
 		getParsedStashUnits(userID),
@@ -204,7 +203,7 @@ export async function leaguesCheckUser(userID: string) {
 		collectingStats,
 		woodcuttingStats,
 		smithingSuppliesUsed,
-		actualClues,
+		actualClues: actualCluesBank,
 		smeltingStats,
 		stashUnits,
 		totalLampedXP: totalLampedXP(userStats),
@@ -244,7 +243,7 @@ export async function leaguesCheckUser(userID: string) {
 **Total Points:** ${roboChimpUser.leagues_points_total.toLocaleString()} (Rank ${ranking.pointsRanking})
 **Points Balance:** ${roboChimpUser.leagues_points_balance_osb.toLocaleString()} OSB / ${roboChimpUser.leagues_points_balance_bso.toLocaleString()} BSO
 ${resStr}`,
-		finished: finishedIDs
+		finished: [...finishedIDs, ...roboChimpUser.leagues_completed_tasks_ids]
 	};
 }
 

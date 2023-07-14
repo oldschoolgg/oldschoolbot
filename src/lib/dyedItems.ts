@@ -583,3 +583,8 @@ export const dyedItems: DyedItem[] = [
 		]
 	}
 ];
+
+export const allDyedItems = dyedItems
+	.map(i => i.dyedVersions)
+	.flat()
+	.map(i => i.item.id);
