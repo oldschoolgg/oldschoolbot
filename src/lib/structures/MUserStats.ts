@@ -5,8 +5,11 @@ import { ItemBank } from '../types';
 
 export class MUserStats {
 	userStats: UserStats;
+	baHonourLevel: number;
+
 	constructor(userStats: UserStats) {
 		this.userStats = userStats;
+		this.baHonourLevel = userStats.honour_level;
 	}
 
 	get lootFromZippyBank(): Bank {

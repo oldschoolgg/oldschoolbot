@@ -197,7 +197,14 @@ const minigameRequirements = new Requirements()
 	.add({ name: 'Complete Tithe Farm CL', clRequirement: titheFarmCL })
 	.add({ name: 'Complete Trouble Brewing CL', clRequirement: troubleBrewingCL })
 	.add({ name: 'Complete Volcanic Mine CL', clRequirement: volcanicMineCL })
-	.add({ name: 'Complete Temple Trekking CL', clRequirement: templeTrekkingCL });
+	.add({ name: 'Complete Temple Trekking CL', clRequirement: templeTrekkingCL })
+	.add({ name: 'Defeat the Corrupted Gauntlet', minigames: { corrupted_gauntlet: 1 } })
+	.add({ name: 'Defeat the Inferno', minigames: { inferno: 1 } })
+	.add({ name: 'Defeat the Emerged Zuk Inferno', minigames: { emerged_inferno: 1 } })
+	.add({
+		name: 'Reach level 5 Honour level',
+		has: ({ stats }) => stats.baHonourLevel === 5
+	});
 
 const pvmRequirements = new Requirements()
 	.add({ name: 'Complete Abyssal Sire CL', clRequirement: abyssalSireCL })
@@ -328,7 +335,13 @@ const skillingRequirements = new Requirements()
 	.add({ name: 'Complete Skilling Pets CL', clRequirement: skillingPetsCL })
 	.add({ name: 'Complete Smithing CL', clRequirement: smithingCL })
 	.add({ name: 'Complete Zalcano CL', clRequirement: zalcanoCL })
-	.add({ name: 'Complete Implings CL', clRequirement: implingsCL });
+	.add({ name: 'Complete Implings CL', clRequirement: implingsCL })
+	.add({
+		name: 'Complete 2000 laps of the Ape Atoll agility course',
+		lapsRequirement: {
+			6: 2000
+		}
+	});
 
 for (const cape of Skillcapes) {
 	skillingRequirements.add({
@@ -447,7 +460,13 @@ const miscRequirements = new Requirements()
 	.add({ name: 'Complete Miscellaneous CL', clRequirement: miscellaneousCL })
 	.add({ name: 'Complete Quest CL', clRequirement: questCL })
 	.add({ name: 'Complete Random Events CL', clRequirement: randomEventsCL })
-	.add({ name: 'Complete Shayzien Armour CL', clRequirement: shayzienArmourCL });
+	.add({ name: 'Complete Shayzien Armour CL', clRequirement: shayzienArmourCL })
+	.add({
+		name: 'Kill 4000 Chompy Birds',
+		minigames: {
+			big_chompy_bird_hunting: 4000
+		}
+	});
 const petTripSource: [string, keyof UserStats][] = [
 	['Brock', 'brock_loot_bank'],
 	['Doug', 'doug_loot_bank'],
@@ -601,6 +620,10 @@ const unlockablesRequirements = new Requirements()
 	.add({
 		name: 'Use a Runescroll of bloodbark',
 		bitfieldRequirement: BitField.HasBloodbarkScroll
+	})
+	.add({
+		name: 'Use a Runescroll of swampbark',
+		bitfieldRequirement: BitField.HasSwampbarkScroll
 	})
 	.add({
 		name: 'Use a Slepey tablet',

@@ -37,7 +37,8 @@ type ManualHasFunction = (
 	| undefined
 	| Promise<undefined | string>
 	| string
-	| Promise<string>;
+	| Promise<string>
+	| boolean;
 
 type Requirement = {
 	name?: string;
@@ -175,6 +176,8 @@ export class Requirements {
 			if (result) {
 				if (typeof result === 'string') {
 					results.push({ reason: result });
+				} else if (typeof result === 'boolean') {
+					results.push({ reason: requirement.name });
 				} else {
 					results.push(...result);
 				}
