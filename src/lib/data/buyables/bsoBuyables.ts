@@ -84,7 +84,7 @@ export const bsoBuyables: Buyable[] = [
 				return [false, 'You cannot buy a Golden cape shard if you already bought/received one.'];
 			}
 			const djsUser = await globalClient.fetchUser(user.id);
-			if (!isAtleastThisOld(djsUser.createdAt, Time.Year * 1)) {
+			if (!isAtleastThisOld(djsUser.createdAt, Number(Time.Year))) {
 				return [false, 'Your account must be atleast 1 year old to buy this.'];
 			}
 
