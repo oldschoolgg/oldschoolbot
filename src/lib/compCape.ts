@@ -634,6 +634,10 @@ const unlockablesRequirements = new Requirements()
 		bitfieldRequirement: BitField.HasPlantedIvy
 	})
 	.add({
+		name: "Use a Saradomin's light",
+		bitfieldRequirement: BitField.HasSaradominsLight
+	})
+	.add({
 		name: 'Unlock the Leagues max trip length boost',
 		bitfieldRequirement: BitField.HasLeaguesOneMinuteLengthBoost
 	})

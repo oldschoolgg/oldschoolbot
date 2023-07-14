@@ -1,3 +1,4 @@
+import { uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BitField, discontinuedItems } from '../constants';
@@ -2267,7 +2268,9 @@ const Createables: Createable[] = [
 ];
 
 export default Createables;
-export const creatablesCL = Createables.filter(i => i.noCl !== true)
-	.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
-	.flat()
-	.filter(i => !discontinuedItems.includes(i) && !allDyedItems.includes(i));
+export const creatablesCL = uniqueArr(
+	Createables.filter(i => i.noCl !== true)
+		.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
+		.flat()
+		.filter(i => !discontinuedItems.includes(i) && !allDyedItems.includes(i))
+);
