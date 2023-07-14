@@ -4,9 +4,9 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { calculateCompCapeProgress, generateAllCompCapeTasksList } from '../../lib/compCape';
 import { OSBMahojiCommand } from '../lib/util';
 
-export const compCapeCommand: OSBMahojiCommand = {
-	name: 'comp',
-	description: 'Comp cape.',
+export const completionCommand: OSBMahojiCommand = {
+	name: 'completion',
+	description: 'Completionist tasks.',
 	attributes: {
 		requiresMinion: true
 	},
