@@ -778,6 +778,30 @@ ${Object.entries(taskObj)
 	.join('\n')}`;
 }
 
+async function compLeaderboard(user: MUser, ironmanOnly: boolean, channelID: string) {
+	let list = await prisma.$queryRawUnsafe<{ id: string; comp_cape_percent: number }[]>(
+		`SELECT user_id::text AS id, comp_cape_percent
+		 FROM user_stats
+		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
+		 WHERE comp_cape_percent IS NOT NULL
+		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
+		 ORDER BY comp_cape_percent DESC
+		 LIMIT 100;`
+	);
+
+	doMenu(
+		user,
+		channelID,
+		chunk(list, 10).map(subList =>
+			subList
+				.map(({ id, comp_cape_percent }) => `**${getUsername(id)}:** ${comp_cape_percent.toFixed(2)}%`)
+				.join('\n')
+		),
+		'Completionist Leaderboard'
+	);
+	return lbMsg('Completionist Leaderboard');
+}
+
 async function leaguesLeaderboard(user: MUser, channelID: string, type: 'points' | 'tasks' | 'hardest_tasks') {
 	if (type === 'points') return leaguesPointsLeaderboard(user, channelID);
 	if (type === 'hardest_tasks') return leastCompletedLeagueTasksLb();
@@ -1150,6 +1174,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					choices: globalLbTypes.map(i => ({ name: i, value: i }))
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'completion',
+			description: 'Check the completion leaderboard.',
+			options: [ironmanOnlyOption]
 		}
 	],
 	run: async ({
@@ -1176,6 +1206,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		global?: {
 			type: GlobalLbType;
 		};
+		completion?: { ironmen_only?: boolean };
 	}>) => {
 		deferInteraction(interaction);
 		const user = await mUserFetch(userID);
@@ -1195,7 +1226,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			leagues,
 			clues,
 			movers,
-			global
+			global,
+			completion
 		} = options;
 		if (kc) return kcLb(user, channelID, kc.monster, Boolean(kc.ironmen_only));
 		if (farming_contracts) return farmingContractLb(user, channelID, Boolean(farming_contracts.ironmen_only));
@@ -1215,6 +1247,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		if (clues) return cluesLb(user, channelID, clues.clue, Boolean(clues.ironmen_only));
 		if (movers) return gainersLB(user, channelID, movers.type);
 		if (global) return globalLb(user, channelID, global.type);
+		if (completion) return compLeaderboard(user, Boolean(completion.ironmen_only), channelID);
+
 		return 'Invalid input.';
 	}
 };

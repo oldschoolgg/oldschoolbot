@@ -867,11 +867,13 @@ export async function calculateCompCapeProgress(user: MUser) {
 		subStr += '\n\n';
 		finalStr += subStr;
 	}
-
-	return `Completionist Cape Progress - ${totalCompleted}/${totalRequirements} (${calcWhatPercent(
-		totalCompleted,
-		totalRequirements
-	).toFixed()}%) completed\n\n
+	const totalPercent = calcWhatPercent(totalCompleted, totalRequirements);
+	return {
+		resultStr: `Completionist Cape Progress - ${totalCompleted}/${totalRequirements} (${totalPercent.toFixed(
+			2
+		)}%) completed\n\n
 	
-${finalStr}`;
+${finalStr}`,
+		totalPercent
+	};
 }

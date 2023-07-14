@@ -929,6 +929,8 @@ model UserStats {
   doa_room_attempts_bank   Json @default("{}") @db.Json
   doa_total_minutes_raided Int  @default(0)
 
+  comp_cape_percent Decimal?
+
   @@map("user_stats")
 }
 
@@ -1005,6 +1007,8 @@ model HistoricalData {
   cl_completion_count      Int     @db.SmallInt
   GP                       Decimal @db.Decimal(13, 0)
   total_xp                 Decimal @db.Decimal(13, 0)
+
+  comp_cape_percent Decimal? @db.Decimal(5, 2)
 
   user User @relation(fields: [user_id], references: [id])
 
