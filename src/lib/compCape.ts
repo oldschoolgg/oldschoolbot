@@ -6,6 +6,7 @@ import { Bank, Items } from 'oldschooljs';
 
 import { tameFeedableItems } from '../mahoji/commands/tames';
 import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
+import { getUsersLMSStats } from '../tasks/minions/minigames/lmsActivity';
 import { ClueTiers } from './clues/clueTiers';
 import { BitField } from './constants';
 import {
@@ -150,10 +151,11 @@ import { slayerMasksHelmsCL } from './data/slayerMaskHelms';
 import { diariesObject, diaryTiers } from './diaries';
 import { growablePetsCL } from './growablePets';
 import { inventionCL } from './invention/inventions';
-import { allLeagueTasks } from './leagues/leagues';
+import { allLeagueTasks, leagueTasks } from './leagues/leagues';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
 import { getPOHObject, PoHObjects } from './poh';
 import { roboChimpUserFetch } from './roboChimp';
+import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Skillcapes from './skilling/skillcapes';
 import Agility from './skilling/skills/agility';
 import { cookingCL } from './skilling/skills/cooking';
@@ -204,6 +206,13 @@ const minigameRequirements = new Requirements()
 	.add({
 		name: 'Reach level 5 Honour level',
 		has: ({ stats }) => stats.baHonourLevel === 5
+	})
+	.add({
+		name: 'Win 1000 LMS games',
+		has: async ({ user }) => {
+			const stats = await getUsersLMSStats(user);
+			return stats.gamesWon >= 1000;
+		}
 	});
 
 const pvmRequirements = new Requirements()
@@ -340,6 +349,13 @@ const skillingRequirements = new Requirements()
 		name: 'Complete 2000 laps of the Ape Atoll agility course',
 		lapsRequirement: {
 			6: 2000
+		}
+	})
+	.add({
+		name: 'Grow 5 Spirit trees',
+		has: async ({ user }) => {
+			const info = await getFarmingInfo(user.id);
+			return info.patches.spirit.lastQuantity >= 5;
 		}
 	});
 
@@ -753,11 +769,10 @@ const trimmedRequirements = new Requirements()
 	})
 	.add({
 		name: 'Complete all Leagues tasks',
-		has: async ({ user }) => {
-			const robochimpUser = await roboChimpUserFetch(user.id);
+		has: async ({ roboChimpUser }) => {
 			const hasAll =
-				robochimpUser.leagues_completed_tasks_ids.length === allLeagueTasks.length &&
-				allLeagueTasks.every(t => robochimpUser.leagues_completed_tasks_ids.includes(t.id));
+				roboChimpUser.leagues_completed_tasks_ids.length === allLeagueTasks.length &&
+				allLeagueTasks.every(t => roboChimpUser.leagues_completed_tasks_ids.includes(t.id));
 			if (!hasAll) {
 				return 'You need to complete all Leagues tasks.';
 			}
@@ -772,6 +787,15 @@ const trimmedRequirements = new Requirements()
 	.add({ name: 'Complete Depths of Atlantis CL', clRequirement: doaCL })
 	.add({ name: 'Complete Theatre of Blood CL', clRequirement: theatreOfBLoodCL })
 	.add({ name: 'Complete Tombs of Amascut CL', clRequirement: toaCL });
+
+for (const group of leagueTasks) {
+	trimmedRequirements.add({
+		name: `Complete all ${group.name} Leagues tasks`,
+		has: ({ roboChimpUser }) => {
+			return group.tasks.every(t => roboChimpUser.leagues_completed_tasks_ids.includes(t.id));
+		}
+	});
+}
 
 const compCapeCategories = [
 	{

@@ -38,7 +38,8 @@ type ManualHasFunction = (
 	| Promise<undefined | string>
 	| string
 	| Promise<string>
-	| boolean;
+	| boolean
+	| Promise<boolean>;
 
 type Requirement = {
 	name?: string;
