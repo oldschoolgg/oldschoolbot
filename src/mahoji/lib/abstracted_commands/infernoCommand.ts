@@ -325,7 +325,6 @@ async function infernoRun({
 	} else {
 		duration.add(true, -percent, `${dartItem.name} in blowpipe`);
 	}
-	duration.add(true, -percent, `${dartItem.name} in blowpipe`);
 
 	const mageWeapons = {
 		'Ancient staff': 1,
