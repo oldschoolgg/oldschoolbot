@@ -115,6 +115,7 @@ export const lmsTask: MinionTask = {
 				increment: points
 			}
 		});
+		const newLmsStats = await getUsersLMSStats(user);
 
 		handleTripFinish(
 			user,
@@ -123,7 +124,10 @@ export const lmsTask: MinionTask = {
 				user.minionName
 			} finished playing ${quantity}x Last Man Standing matches, you received ${points} points and now have ${
 				newUser.lms_points
-			} points in total. ${calcPerHour(points, duration).toFixed(2)} points/hr
+			} points in total, and have won a total of ${newLmsStats.gamesWon}x games. ${calcPerHour(
+				points,
+				duration
+			).toFixed(2)} points/hr
 ${result
 	.map(
 		(i, inde) =>
