@@ -364,7 +364,7 @@ export class Requirements {
 		}));
 
 		const results = await Promise.all(requirementResults);
-		const flatResults = results.flat();
+		const flatReasons = results.map(r => r.result).flat();
 
 		const totalRequirements = this.requirements.length;
 		const metRequirements = results.filter(i => i.result.length === 0).length;
@@ -375,7 +375,10 @@ export class Requirements {
 			reasonsDoesnt: results
 				.filter(i => i.result.length > 0)
 				.map(i => `${i.requirement.name}: ${i.result.map(t => t.reason).join(', ')}`),
-			rendered: `- ${flatResults.map(i => i.result).join('\n- ')}`,
+			rendered: `- ${flatReasons
+				.filter(i => i.reason)
+				.map(i => i.reason)
+				.join('\n- ')}`,
 			totalRequirements,
 			metRequirements,
 			completionPercentage

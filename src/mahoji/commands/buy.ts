@@ -124,6 +124,10 @@ export const buyCommand: OSBMahojiCommand = {
 			}
 		}
 
+		if (buyable.name === 'Golden cape shard') {
+			quantity = 1;
+		}
+
 		// If itemCost is undefined, it creates a new empty Bank, like we want:
 		const singleCost: Bank = new Bank(buyable.itemCost);
 		if (gpCost) singleCost.add('Coins', gpCost);

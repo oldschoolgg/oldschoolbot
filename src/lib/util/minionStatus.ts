@@ -763,6 +763,11 @@ export function minionStatus(user: MUser) {
 				durationRemainingNum
 			)}.`;
 		}
+		case 'BirthdayCollectIngredients': {
+			return `${name} is currently collecting ingredients, the trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'HalloweenMiniMinigame':
 		case 'Easter':
 		case 'HalloweenEvent':

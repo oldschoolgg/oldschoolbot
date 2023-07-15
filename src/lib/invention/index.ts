@@ -34,7 +34,8 @@ export const materialTypes = [
 	'drygore',
 	'gilded',
 	'orikalkum',
-	'justiciar'
+	'justiciar',
+	'explosive'
 ] as const;
 
 export type MaterialType = (typeof materialTypes)[number];

@@ -346,6 +346,8 @@ export interface RaidsOptions extends ActivityTaskOptionsWithUsers {
 	users: string[];
 	challengeMode: boolean;
 	quantity?: number;
+	// id of user that used chincannon
+	cc?: string;
 }
 
 export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers {

@@ -14,6 +14,7 @@ import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/Chamber
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { GearStats } from '../gear/types';
+import { inventionBoosts } from '../invention/inventions';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { constructGearSetup, Gear } from '../structures/Gear';
@@ -472,6 +473,7 @@ export async function calcCoxDuration(
 	duration: number;
 	maxUserReduction: number;
 	degradeables: { item: Item; user: MUser; chargesToDegrade: number }[];
+	chinCannonUser: MUser | null;
 }> {
 	const team = shuffleArr(_team).slice(0, 9);
 	const size = team.length;
@@ -543,7 +545,23 @@ export async function calcCoxDuration(
 
 	duration -= duration * (teamSizeBoostPercent(size) / 100);
 
-	return { duration, reductions, maxUserReduction: maxSpeedReductionUser / size, degradeables: degradeableItems };
+	let chinCannonUser: MUser | null = null;
+
+	for (const u of team) {
+		if (u.gear.range.hasEquipped('Chincannon')) {
+			duration = reduceNumByPercent(duration, inventionBoosts.chincannon.coxPercentReduction / team.length);
+			chinCannonUser = u;
+			break;
+		}
+	}
+
+	return {
+		duration,
+		reductions,
+		maxUserReduction: maxSpeedReductionUser / size,
+		degradeables: degradeableItems,
+		chinCannonUser
+	};
 }
 
 export async function calcCoxInput(u: MUser, solo: boolean) {

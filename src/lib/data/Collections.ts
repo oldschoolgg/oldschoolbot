@@ -12,6 +12,7 @@ import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
 import { dyedItems } from '../dyedItems';
 import { growablePetsCL } from '../growablePets';
 import { inventionCL } from '../invention/inventions';
+import { keyCrates } from '../keyCrates';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
 import { Ignecarus } from '../minions/data/killableMonsters/custom/bosses/Ignecarus';
 import {
@@ -1444,10 +1445,8 @@ export const allCollectionLogs: ICollection = {
 					'Festive wrapping paper',
 					'Festive jumper (2021)',
 					'Frozen santa hat',
-					'Golden shard',
 					'Seer',
-					'Festive present',
-					'Golden partyhat'
+					'Festive present'
 				]),
 				counts: false
 			},
@@ -1475,6 +1474,21 @@ export const allCollectionLogs: ICollection = {
 					'Festive scarf',
 					'Frosty'
 				]),
+				counts: false
+			},
+			'BSO Birthday 2023': {
+				alias: ['birthday 2023'],
+				items: resolveItems(['Buggy', 'Ban hammer', 'The Interrogator', 'Acrylic set', 'Golden cape shard']),
+				counts: false
+			},
+			'BSO Birthday Crate 2023': {
+				alias: ['birthday crate 2023'],
+				items: keyCrates[1].table.allItems,
+				counts: false
+			},
+			'Miscelleanous (Discontinued)': {
+				alias: ['discontinued misc'],
+				items: resolveItems(['Golden cape shard', 'Golden cape', 'Golden shard', 'Golden partyhat']),
 				counts: false
 			}
 		}

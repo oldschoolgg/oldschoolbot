@@ -15,7 +15,7 @@ import {
 	drawTitleText,
 	fillTextXTimesInCtx
 } from '../../util/canvasUtil';
-import { customItemEffect } from '../../util/customItemEffects';
+import { applyCustomItemEffects } from '../../util/customItemEffects';
 import getOSItem from '../../util/getOSItem';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from '../../util/slayerMaskLeaderboard';
 import { GearSetup, GearSetupType, GearSetupTypes, GearStats, maxDefenceStats, maxOffenceStats } from '..';
@@ -308,9 +308,9 @@ export async function generateGearImage(
 	// Draw items
 	if (petID) {
 		const image = await bankImageGenerator.getItemImage(petID);
-		const effect = customItemEffect.get(petID);
+		const imageAfterEffects = await applyCustomItemEffects(user, image, petID);
 		ctx.drawImage(
-			effect ? effect(image, user.id) : image,
+			imageAfterEffects,
 			(transMogImage ? 200 : 0) + 178 + slotSize / 2 - image.width / 2,
 			190 + slotSize / 2 - image.height / 2,
 			image.width,
@@ -346,7 +346,8 @@ export async function generateGearImage(
 			ctx.drawImage(glow, glowX, glowY, glow.width, glow.height);
 		}
 
-		ctx.drawImage(image, x, y, image.width, image.height);
+		const imageAfterEffects = await applyCustomItemEffects(user, image, item.item);
+		ctx.drawImage(imageAfterEffects, x, y, image.width, image.height);
 
 		if (item.quantity > 1) {
 			drawItemQuantityText(ctx, item.quantity, x + 1, y + 9);

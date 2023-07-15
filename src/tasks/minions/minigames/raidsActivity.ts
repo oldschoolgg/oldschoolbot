@@ -1,5 +1,5 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { shuffleArr } from 'e';
+import { randArrItem, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
@@ -19,7 +19,7 @@ import { handleSpecialCoxLoot } from '../../../lib/util/handleSpecialCoxLoot';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 interface RaidResultUser {
 	personalPoints: number;
@@ -76,7 +76,7 @@ async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 export const raidsTask: MinionTask = {
 	type: 'Raids',
 	async run(data: RaidsOptions) {
-		const { channelID, users, challengeMode, duration, leader, quantity: _quantity } = data;
+		const { channelID, users, challengeMode, duration, leader, quantity: _quantity, cc } = data;
 		const quantity = _quantity ?? 1;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
 		const previousCLs = allUsers.map(i => i.cl.clone());
@@ -169,11 +169,15 @@ export const raidsTask: MinionTask = {
 
 			const [xpResult, { itemsAdded }] = await Promise.all([
 				handleCoxXP(user, quantity, challengeMode),
-				transactItems({
-					userID,
-					itemsToAdd: loot,
-					collectionLog: true
-				}),
+				cc
+					? userStatsBankUpdate(user.id, 'chincannon_destroyed_loot_bank', loot).then(() => ({
+							itemsAdded: new Bank()
+					  }))
+					: transactItems({
+							userID,
+							itemsToAdd: loot,
+							collectionLog: true
+					  }),
 				userStatsUpdate(
 					user.id,
 					{
@@ -195,7 +199,10 @@ export const raidsTask: MinionTask = {
 			const isOrange = items.some(([item]) => orangeItems.includes(item.id));
 			const specialLoot = isPurple || isOrange;
 			const emote = isOrange ? Emoji.Orange : isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
-			if (items.some(([item]) => coxPurpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
+			if (
+				!cc &&
+				items.some(([item]) => coxPurpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))
+			) {
 				const itemsToAnnounce = itemsAdded.filter(item => coxPurpleItems.includes(item.id), false);
 				globalClient.emit(
 					Events.ServerNotification,
@@ -215,9 +222,20 @@ export const raidsTask: MinionTask = {
 			if (flappyMsg) resultMessage += users.length === 1 ? `\n${flappyMsg}` : Emoji.Flappy;
 		}
 
-		updateBankSetting('cox_loot', totalLoot);
+		if (cc) {
+			let msg = randArrItem([
+				'Your team received no loot, your Chincannon blew it up!',
+				'Oops.. your Chincannon blew up all the loot.',
+				'Your Chincannon blew up all the loot!',
+				'Your Chincannon turned the loot into dust.'
+			]);
+			resultMessage += `\n\n**${msg}**`;
+		}
+
+		const effectiveTotalLoot = cc ? new Bank() : totalLoot;
+		updateBankSetting('cox_loot', effectiveTotalLoot);
 		await trackLoot({
-			totalLoot,
+			totalLoot: effectiveTotalLoot,
 			id: minigameID,
 			type: 'Minigame',
 			changeType: 'loot',
@@ -233,28 +251,30 @@ export const raidsTask: MinionTask = {
 		const shouldShowImage = allUsers.length <= 3 && Array.from(raidResults.values()).every(i => i.loot.length <= 6);
 
 		let attachment = undefined;
-		if (users.length === 1) {
-			attachment = await drawChestLootImage({
-				entries: [
-					{
-						loot: totalLoot,
-						user: allUsers[0],
-						previousCL: previousCLs[0],
+		if (!cc) {
+			if (users.length === 1) {
+				attachment = await drawChestLootImage({
+					entries: [
+						{
+							loot: totalLoot,
+							user: allUsers[0],
+							previousCL: previousCLs[0],
+							customTexts: []
+						}
+					],
+					type: 'Chambers of Xerician'
+				});
+			} else if (shouldShowImage) {
+				attachment = await drawChestLootImage({
+					entries: allUsers.map((u, index) => ({
+						loot: raidResults.get(u.id)!.loot,
+						user: u,
+						previousCL: previousCLs[index],
 						customTexts: []
-					}
-				],
-				type: 'Chambers of Xerician'
-			});
-		} else if (shouldShowImage) {
-			attachment = await drawChestLootImage({
-				entries: allUsers.map((u, index) => ({
-					loot: raidResults.get(u.id)!.loot,
-					user: u,
-					previousCL: previousCLs[index],
-					customTexts: []
-				})),
-				type: 'Chambers of Xerician'
-			});
+					})),
+					type: 'Chambers of Xerician'
+				});
+			}
 		}
 
 		handleTripFinish(allUsers[0], channelID, resultMessage, attachment, data, null);

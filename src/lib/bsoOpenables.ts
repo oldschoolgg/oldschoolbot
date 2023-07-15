@@ -14,8 +14,10 @@ import {
 } from './data/CollectionsExport';
 import { baseHolidayItems, PartyhatTable } from './data/holidayItems';
 import { allTrophyItems } from './data/trophies';
+import { keyCrates } from './keyCrates';
 import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
 import { UnifiedOpenable } from './openables';
+import { PaintBoxTable } from './paintColors';
 import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
 import { RuneTable } from './simulation/seedTable';
 import { ExoticSeedsTable } from './simulation/sharedTables';
@@ -960,8 +962,32 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		output: ChristmasBoxTable,
 		allItems: ChristmasBoxTable.allItems,
 		excludeFromOpenAll: true
+	},
+	{
+		name: 'Paint box',
+		id: itemID('Paint box'),
+		openedItem: getOSItem('Paint box'),
+		aliases: ['paint box'],
+		output: PaintBoxTable,
+		allItems: PaintBoxTable.allItems,
+		excludeFromOpenAll: true,
+		smokeyApplies: false
 	}
 ];
+
+for (const crate of keyCrates) {
+	bsoOpenables.push({
+		name: crate.item.name,
+		id: crate.item.id,
+		openedItem: crate.item,
+		aliases: [crate.item.name],
+		output: crate.table,
+		allItems: crate.table.allItems,
+		extraCostPerOpen: new Bank().add(crate.key.id),
+		excludeFromOpenAll: true,
+		smokeyApplies: false
+	});
+}
 
 function randomEquippable(): number {
 	const res = randArrItem(embTable);

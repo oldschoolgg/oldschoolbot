@@ -87,6 +87,7 @@ export class MUserClass {
 	gear!: UserFullGearSetup;
 	skillsAsXP!: Required<Skills>;
 	skillsAsLevels!: Required<Skills>;
+	paintedItems!: Map<number, number>;
 
 	constructor(user: User) {
 		this.user = user;
@@ -123,6 +124,8 @@ export class MUserClass {
 
 		this.skillsAsXP = this.getSkills(false);
 		this.skillsAsLevels = this.getSkills(true);
+
+		this.paintedItems = this.buildPaintedItems();
 	}
 
 	get gearTemplate() {
@@ -647,6 +650,12 @@ export class MUserClass {
 		return Boolean(this.user.minion_hasBought);
 	}
 
+	accountAgeInDays(): null | number {
+		const createdAt = this.user.minion_bought_date;
+		if (!createdAt) return null;
+		return (Date.now() - createdAt.getTime()) / Time.Day;
+	}
+
 	farmingContract() {
 		const currentFarmingContract = this.user.minion_farmingContract as FarmingContract | null;
 		const plant = !currentFarmingContract
@@ -658,6 +667,12 @@ export class MUserClass {
 			plant,
 			matchingPlantedCrop: plant ? detailed.patchesDetailed.find(i => i.plant && i.plant === plant) : undefined
 		};
+	}
+
+	private buildPaintedItems(): Map<number, number> {
+		const rawPaintedItems = this.user.painted_items_tuple;
+		if (!rawPaintedItems) return new Map();
+		return new Map(rawPaintedItems as [number, number][]);
 	}
 
 	async getTames() {

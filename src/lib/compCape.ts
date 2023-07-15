@@ -154,7 +154,6 @@ import { inventionCL } from './invention/inventions';
 import { allLeagueTasks, leagueTasks } from './leagues/leagues';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
 import { getPOHObject, PoHObjects } from './poh';
-import { roboChimpUserFetch } from './roboChimp';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Skillcapes from './skilling/skillcapes';
 import Agility from './skilling/skills/agility';

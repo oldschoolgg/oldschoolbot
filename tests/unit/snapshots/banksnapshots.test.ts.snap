@@ -4192,6 +4192,105 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
+    "gpCost": 50000000,
+    "ironmanPrice": 5000000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Supply crate key (s1)",
+    "outputItems": undefined,
+  },
+  {
+    "gpCost": 50000000,
+    "ironmanPrice": 5000000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Birthday crate key (s2)",
+    "outputItems": undefined,
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Veteran cape (1 year)",
+    "outputItems": Bank {
+      "bank": {
+        "71450": 1,
+        "71456": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 2000000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Veteran cape (2 year)",
+    "outputItems": Bank {
+      "bank": {
+        "71451": 1,
+        "71457": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 3000000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Veteran cape (3 year)",
+    "outputItems": Bank {
+      "bank": {
+        "71452": 1,
+        "71458": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 4000000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Veteran cape (4 year)",
+    "outputItems": Bank {
+      "bank": {
+        "71453": 1,
+        "71459": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 5000000000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Golden cape shard",
+    "outputItems": Bank {
+      "bank": {
+        "71455": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
     "itemCost": Bank {
       "bank": {
         "6183": 1,
@@ -9490,6 +9589,22 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "12899": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "71455": 7,
+      },
+      "frozen": false,
+    },
+    "name": "Golden cape",
+    "outputItems": Bank {
+      "bank": {
+        "71446": 1,
       },
       "frozen": false,
     },
@@ -18180,6 +18295,48 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "71442": 1,
+        "71443": 1,
+        "71444": 1,
+        "71445": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Acrylic set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "71478": 1,
+      },
+      "frozen": false,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "71478": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Unpack Acrylic set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "71442": 1,
+        "71443": 1,
+        "71444": 1,
+        "71445": 1,
+      },
+      "frozen": false,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "12592": 1,
         "12831": 1,
       },
@@ -20245,6 +20402,40 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "48202": 1,
+        "48220": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Hellfire bow (ice)",
+    "outputItems": Bank {
+      "bank": {
+        "71426": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "48220": 1,
+        "70441": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Hellfire bow (Oceanic)",
+    "outputItems": Bank {
+      "bank": {
+        "71427": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "26374": 1,
         "70235": 1,
       },
@@ -20934,6 +21125,23 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "70246": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "48202": 1,
+        "48327": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Infernal slayer helmet(i) (ice)",
+    "outputItems": Bank {
+      "bank": {
+        "71440": 1,
       },
       "frozen": false,
     },

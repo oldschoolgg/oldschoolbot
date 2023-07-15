@@ -14,6 +14,7 @@ import { Defender } from './Defender';
 import { Drygores } from './Drygores';
 import { Dwarven } from './Dwarven';
 import { EnsouledHeads } from './EnsouledHeads';
+import { Explosive } from './Explosive';
 import { Food } from './Food';
 import { Gems } from './Gems';
 import { Gilded } from './Gilded';
@@ -110,7 +111,8 @@ export const DisassemblyGroupMap = {
 	RawFood,
 	MysteryBoxes,
 	Gilded,
-	Whips
+	Whips,
+	Explosive
 } as const;
 
 export const DisassemblySourceGroups = Object.values(DisassemblyGroupMap);

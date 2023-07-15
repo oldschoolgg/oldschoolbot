@@ -36,7 +36,8 @@ export enum InventionID {
 	MechaRod = 12,
 	MasterHammerAndChisel = 13,
 	AbyssalAmulet = 14,
-	RoboFlappy = 15
+	RoboFlappy = 15,
+	ChinCannon = 16
 }
 
 export type Invention = Readonly<{
@@ -123,6 +124,9 @@ export const inventionBoosts = {
 			let index = ClueTiers.indexOf(clue);
 			return (index + 1) * (Time.Minute * 3);
 		}
+	},
+	chincannon: {
+		coxPercentReduction: 60
 	}
 } as const;
 
@@ -376,6 +380,19 @@ export const Inventions: readonly Invention[] = [
 		flags: ['bank'],
 		inventionLevelNeeded: 120,
 		usageCostMultiplier: 0.5
+	},
+	{
+		id: InventionID.ChinCannon,
+		name: 'Chincannon',
+		description: 'A cannon that shoots chinchompas with extra ferocity and speed.',
+		item: getOSItem('Chincannon'),
+		materialTypeBank: new MaterialBank({
+			explosive: 10
+		}),
+		itemCost: null,
+		flags: ['equipped'],
+		inventionLevelNeeded: 100,
+		usageCostMultiplier: 3
 	}
 ] as const;
 
@@ -521,7 +538,7 @@ type InventionItemBoostResult =
 			success: false;
 	  };
 
-export async function canAffordInventionBoost(user: MUser, inventionID: InventionID, duration: number) {
+export function canAffordInventionBoost(user: MUser, inventionID: InventionID, duration: number) {
 	const invention = Inventions.find(i => i.id === inventionID)!;
 	if (invention.usageCostMultiplier === null) {
 		throw new Error('Tried to calculate cost of invention that has no cost.');
