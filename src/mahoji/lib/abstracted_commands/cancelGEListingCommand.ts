@@ -6,6 +6,9 @@ import { makeTransactFromTableBankQueries } from '../../../lib/tableBank';
 import { logError } from '../../../lib/util/logError';
 
 export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
+	if (GrandExchange.locked) {
+		return 'The Grand Exchange is currently closed, please try again later.';
+	}
 	return GrandExchange.queue.add(async () => {
 		const listing = await prisma.gEListing.findFirst({
 			where: {
@@ -22,20 +25,12 @@ export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
 		if (listing.cancelled_at) {
 			return 'You cannot cancel a listing that has already been cancelled.';
 		}
-		const newListing = await prisma.gEListing.update({
-			where: {
-				id: listing.id
-			},
-			data: {
-				cancelled_at: new Date()
-			}
-		});
 
 		const refundBank = new Bank();
-		if (newListing.type === 'Buy') {
-			refundBank.add('Coins', Number(newListing.asking_price_per_item) * newListing.quantity_remaining);
+		if (listing.type === 'Buy') {
+			refundBank.add('Coins', Number(listing.asking_price_per_item) * listing.quantity_remaining);
 		} else {
-			refundBank.add(newListing.item_id, newListing.quantity_remaining);
+			refundBank.add(listing.item_id, listing.quantity_remaining);
 		}
 
 		const geBank = await GrandExchange.fetchOwnedBank();
@@ -46,13 +41,23 @@ export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
 			return 'Something went wrong, please try again later.';
 		}
 
+		await prisma.$transaction([
+			prisma.gEListing.update({
+				where: {
+					id: listing.id
+				},
+				data: {
+					cancelled_at: new Date()
+				}
+			}),
+			...makeTransactFromTableBankQueries({ bankToRemove: refundBank })
+		]);
+
 		await user.addItemsToBank({
 			items: refundBank,
 			collectionLog: false,
 			dontAddToTempCL: true
 		});
-
-		await prisma.$transaction(makeTransactFromTableBankQueries({ bankToRemove: refundBank }));
 
 		return `Successfully cancelled your listing, you have been refunded ${refundBank}.`;
 	});

@@ -142,6 +142,20 @@ model ClientStorage {
   @@map("clientStorage")
 }
 
+model BuyCommandTransaction {
+  id   String   @id @default(uuid()) @db.Uuid
+  date DateTime @default(now()) @db.Timestamp(6)
+
+  user_id BigInt
+
+  cost_gp                BigInt
+  cost_bank_excluding_gp Json?  @db.Json
+
+  loot_bank Json? @db.Json
+
+  @@map("buy_command_transaction")
+}
+
 enum GearSetupType {
   melee
   range
@@ -595,6 +609,7 @@ model LastManStandingGame {
 enum economy_transaction_type {
   trade
   giveaway
+  duel
 }
 
 model EconomyTransaction {
@@ -931,8 +946,8 @@ model GEListing {
 
   userfacing_id String
 
-  user_id String @db.VarChar(19)
-  user    User   @relation(fields: [user_id], references: [id])
+  user_id String? @db.VarChar(19)
+  user    User?   @relation(fields: [user_id], references: [id])
 
   created_at   DateTime  @default(now())
   cancelled_at DateTime?
@@ -968,6 +983,7 @@ model GETransaction {
   sell_listing    GEListing @relation("sell_transactions", fields: [sell_listing_id], references: [id])
   sell_listing_id Int
 
+  @@index([sell_listing_id])
   @@map("ge_transaction")
 }
 
