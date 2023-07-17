@@ -371,7 +371,7 @@ export class Requirements {
 		const completionPercentage = calcWhatPercent(metRequirements, totalRequirements);
 
 		return {
-			hasAll: results.length === 0,
+			hasAll: totalRequirements === metRequirements,
 			reasonsDoesnt: results
 				.filter(i => i.result.length > 0)
 				.map(i => `${i.requirement.name}: ${i.result.map(t => t.reason).join(', ')}`),
