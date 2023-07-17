@@ -229,7 +229,7 @@ export enum BitField {
 	HadAllSlayerUnlocks = 28,
 	HasSwampbarkScroll = 29,
 	HasSaradominsLight = 30,
-  CleanHerbsFarming = 31
+	CleanHerbsFarming = 31
 }
 
 interface BitFieldData {
