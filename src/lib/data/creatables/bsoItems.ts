@@ -71,21 +71,24 @@ const nexCreatables: Createable[] = [
 		inputItems: new Bank().add(piece),
 		outputItems: {
 			[itemID('Armadylean components')]: 1
-		}
+		},
+		forceAddToCl: true
 	})),
 	...brokenTorvaOutfit.map(piece => ({
 		name: `Revert ${getOSItem(piece).name}`,
 		inputItems: new Bank().add(piece),
 		outputItems: {
 			[itemID('Bandosian components')]: 1
-		}
+		},
+		forceAddToCl: true
 	})),
 	...brokenVirtusOutfit.map(piece => ({
 		name: `Revert ${getOSItem(piece).name}`,
 		inputItems: new Bank().add(piece),
 		outputItems: {
 			[itemID('Ancestral components')]: 1
-		}
+		},
+		forceAddToCl: true
 	}))
 ];
 
@@ -93,17 +96,20 @@ const masoriComponents: Createable[] = [
 	{
 		name: 'Revert masori mask',
 		inputItems: new Bank().add('Masori mask'),
-		outputItems: new Bank().add('Masori components', 2)
+		outputItems: new Bank().add('Masori components', 2),
+		forceAddToCl: true
 	},
 	{
 		name: 'Revert masori body',
 		inputItems: new Bank().add('Masori body'),
-		outputItems: new Bank().add('Masori components', 4)
+		outputItems: new Bank().add('Masori components', 4),
+		forceAddToCl: true
 	},
 	{
 		name: 'Revert masori chaps',
 		inputItems: new Bank().add('Masori chaps'),
-		outputItems: new Bank().add('Masori components', 3)
+		outputItems: new Bank().add('Masori components', 3),
+		forceAddToCl: true
 	}
 ];
 
@@ -115,7 +121,8 @@ const componentRevertables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Bandosian components')]: 3
-		}
+		},
+		forceAddToCl: true
 	},
 	{
 		name: 'Revert bandos tassets',
@@ -124,34 +131,38 @@ const componentRevertables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Bandosian components')]: 2
-		}
+		},
+		forceAddToCl: true
 	},
 	{
-		name: 'Revert armadyl helmet',
+		name: 'Revert armadyl helmet (components)',
 		inputItems: {
 			[itemID('Armadyl helmet')]: 1
 		},
 		outputItems: {
 			[itemID('Armadylean components')]: 1
-		}
+		},
+		forceAddToCl: true
 	},
 	{
-		name: 'Revert armadyl chestplate',
+		name: 'Revert armadyl chestplate (components)',
 		inputItems: {
 			[itemID('Armadyl chestplate')]: 1
 		},
 		outputItems: {
 			[itemID('Armadylean components')]: 3
-		}
+		},
+		forceAddToCl: true
 	},
 	{
-		name: 'Revert armadyl chainskirt',
+		name: 'Revert armadyl chainskirt (components)',
 		inputItems: {
 			[itemID('Armadyl chainskirt')]: 1
 		},
 		outputItems: {
 			[itemID('Armadylean components')]: 2
-		}
+		},
+		forceAddToCl: true
 	},
 	{
 		name: 'Revert ancestral hat',
@@ -160,7 +171,8 @@ const componentRevertables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Ancestral components')]: 2
-		}
+		},
+		forceAddToCl: true
 	},
 	{
 		name: 'Revert ancestral robe top',
@@ -169,7 +181,8 @@ const componentRevertables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Ancestral components')]: 3
-		}
+		},
+		forceAddToCl: true
 	},
 	{
 		name: 'Revert ancestral robe bottom',
@@ -178,7 +191,8 @@ const componentRevertables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Ancestral components')]: 3
-		}
+		},
+		forceAddToCl: true
 	},
 	...masoriComponents
 ];
