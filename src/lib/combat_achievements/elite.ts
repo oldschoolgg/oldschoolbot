@@ -1,12 +1,12 @@
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { MIMIC_MONSTER_ID, NEX_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
+import { MIMIC_MONSTER_ID, NEX_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
+import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
 import { GauntletOptions, RaidsOptions } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
 import { type CombatAchievement } from './combatAchievements';
-import { Time } from 'e';
-import { SkillsEnum } from '../skilling/types';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
 	{
@@ -239,27 +239,29 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1022,
 		name: 'Dust Seeker',
 		desc: 'Complete a Chambers of Xeric Challenge mode raid in the target time.',
-        type: 'speed',
-        rng: {
-            chancePerKill: 5,
-            hasChance: data => {
-                if (data.type !== 'Raids' || !(data as RaidsOptions).challengeMode) return false;
-                const raidsData = data as RaidsOptions;
-                let timeMap = {
-                    1: Time.Hour + Time.Minute * 10,
-                    2: Time.Hour + Time.Minute * 5,
-                    3: Time.Minute * 50,
-                    4: Time.Minute * 45,
-                    10: Time.Minute * 42,
-                    23: Time.Hour,
-                }
+		type: 'speed',
+		rng: {
+			chancePerKill: 5,
+			hasChance: data => {
+				if (data.type !== 'Raids' || !(data as RaidsOptions).challengeMode) return false;
+				const raidsData = data as RaidsOptions;
+				let timeMap = {
+					1: Time.Hour + Time.Minute * 10,
+					2: Time.Hour + Time.Minute * 5,
+					3: Time.Minute * 50,
+					4: Time.Minute * 45,
+					10: Time.Minute * 42,
+					23: Time.Hour
+				};
 
-                const entry = Object.entries(timeMap).find(([teamSize]) => raidsData.users.length <= parseInt(teamSize))?.[1];
-                const timeToMeet: number = entry ?? Time.Hour;
-                // mother bitch we dont know the durations per each raid in the trip
-                return data.duration 
-            }
-        }
+				const entry = Object.entries(timeMap).find(
+					([teamSize]) => raidsData.users.length <= parseInt(teamSize)
+				)?.[1];
+				const timeToMeet: number = entry ?? Time.Hour;
+				// mother bitch we dont know the durations per each raid in the trip
+				return data.duration;
+			}
+		}
 	},
 	{
 		id: 1023,
@@ -287,13 +289,16 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1025,
 		name: 'Reminisce',
 		desc: 'Kill Commander Zilyana in a private instance with melee only.',
-        type: 'restriction',
-        rng: {
+		type: 'restriction',
+		rng: {
 			chancePerKill: 1,
-            hasChance: (data, user) => {
-                const styles = user.getAttackStyles()
-                return isCertainMonsterTrip(Monsters.CommanderZilyana.id)(data) && ([SkillsEnum.Ranged, SkillsEnum.Magic] as const).every(styl => !styles.includes(styl))
-            }
+			hasChance: (data, user) => {
+				const styles = user.getAttackStyles();
+				return (
+					isCertainMonsterTrip(Monsters.CommanderZilyana.id)(data) &&
+					([SkillsEnum.Ranged, SkillsEnum.Magic] as const).every(styl => !styles.includes(styl))
+				);
+			}
 		}
 	},
 	{
@@ -409,12 +414,11 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1039,
 		name: 'Death to the Warrior King',
 		desc: 'Kill Dagannoth Rex whilst under attack by Dagannoth Supreme and Dagannoth Prime.',
-        type: 'mechanical',
+		type: 'mechanical',
 		rng: {
 			chancePerKill: 5,
 			hasChance: isCertainMonsterTrip(Monsters.DagannothRex.id)
 		}
-        
 	},
 	{
 		id: 1040,
@@ -443,7 +447,10 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		rng: {
 			chancePerKill: 5,
-			hasChance: (data) =>  isCertainMonsterTrip(Monsters.DagannothPrime.id)(data) || isCertainMonsterTrip(Monsters.DagannothRex.id)(data) || isCertainMonsterTrip(Monsters.DagannothSupreme.id)(data)
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.DagannothPrime.id)(data) ||
+				isCertainMonsterTrip(Monsters.DagannothRex.id)(data) ||
+				isCertainMonsterTrip(Monsters.DagannothSupreme.id)(data)
 		}
 	},
 	{
@@ -668,7 +675,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1071,
 		name: "Can't Escape",
 		desc: 'Kill the Phantom Muspah without running.',
-        type: 'restriction',
+		type: 'restriction',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.PhantomMuspah.id]: 1
@@ -770,12 +777,12 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1083,
 		name: 'Chally Time',
 		desc: 'Defeat the Pestilent Bloat in the Theatre of Blood: Entry Mode by using a crystal halberd special attack as your final attack.',
-        type: 'mechanical',
+		type: 'mechanical',
 		rng: {
 			chancePerKill: 2,
-            hasChance: (data, user) => {
-                return data.type === 'TheatreOfBlood' && user.hasEquipped(["Crystal halberd"])
-            }
+			hasChance: (data, user) => {
+				return data.type === 'TheatreOfBlood' && user.hasEquipped(['Crystal halberd']);
+			}
 		}
 	},
 	{
@@ -785,9 +792,9 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		rng: {
 			chancePerKill: 4,
-            hasChance: (data, ) => {
-                return data.type === 'TheatreOfBlood'
-            }
+			hasChance: data => {
+				return data.type === 'TheatreOfBlood';
+			}
 		}
 	},
 	{
@@ -797,9 +804,9 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		rng: {
 			chancePerKill: 2,
-            hasChance: (data, ) => {
-                return data.type === 'TheatreOfBlood'
-            }
+			hasChance: data => {
+				return data.type === 'TheatreOfBlood';
+			}
 		}
 	},
 	{
@@ -809,9 +816,9 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		rng: {
 			chancePerKill: 2,
-            hasChance: (data, user) => {
-                return data.type === 'TheatreOfBlood' && user.hasEquipped(["Salve amulet"])
-            }
+			hasChance: (data, user) => {
+				return data.type === 'TheatreOfBlood' && user.hasEquipped(['Salve amulet']);
+			}
 		}
 	},
 	{
@@ -821,9 +828,9 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		rng: {
 			chancePerKill: 5,
-            hasChance: (data, ) => {
-                return data.type === 'TheatreOfBlood' 
-            }
+			hasChance: data => {
+				return data.type === 'TheatreOfBlood';
+			}
 		}
 	},
 	{
@@ -833,9 +840,9 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		rng: {
 			chancePerKill: 5,
-            hasChance: (data, ) => {
-                return data.type === 'TheatreOfBlood' 
-            }
+			hasChance: data => {
+				return data.type === 'TheatreOfBlood';
+			}
 		}
 	},
 	{
@@ -845,9 +852,9 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		rng: {
 			chancePerKill: 6,
-            hasChance: (data, ) => {
-                return data.type === 'TheatreOfBlood' 
-            }
+			hasChance: data => {
+				return data.type === 'TheatreOfBlood';
+			}
 		}
 	},
 	{
@@ -857,9 +864,9 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		rng: {
 			chancePerKill: 6,
-            hasChance: (data, ) => {
-                return data.type === 'TheatreOfBlood' 
-            }
+			hasChance: data => {
+				return data.type === 'TheatreOfBlood';
+			}
 		}
 	},
 	{
@@ -869,9 +876,9 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		rng: {
 			chancePerKill: 7,
-            hasChance: (data, ) => {
-                return data.type === 'TheatreOfBlood' 
-            }
+			hasChance: data => {
+				return data.type === 'TheatreOfBlood';
+			}
 		}
 	},
 	{
@@ -881,9 +888,9 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		rng: {
 			chancePerKill: 10,
-            hasChance: (data, ) => {
-                return data.type === 'TheatreOfBlood' 
-            }
+			hasChance: data => {
+				return data.type === 'TheatreOfBlood';
+			}
 		}
 	},
 	{
@@ -893,7 +900,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		rng: {
 			chancePerKill: 5,
-            hasChance: isCertainMonsterTrip(Monsters.ThermonuclearSmokeDevil.id)
+			hasChance: isCertainMonsterTrip(Monsters.ThermonuclearSmokeDevil.id)
 		}
 	},
 	{
@@ -914,7 +921,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		rng: {
 			chancePerKill: 5,
-            hasChance: isCertainMonsterTrip(Monsters.ThermonuclearSmokeDevil.id)
+			hasChance: isCertainMonsterTrip(Monsters.ThermonuclearSmokeDevil.id)
 		}
 	},
 	{
@@ -922,47 +929,71 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		name: 'Tomb Explorer',
 		desc: 'Complete the Tombs of Amascut once.',
 		type: 'kill_count',
-        requirements: new Requirements().add({
-            minigames: {
-                'tombs_of_amascut': 1
-            }
-        })
+		requirements: new Requirements().add({
+			minigames: {
+				tombs_of_amascut: 1
+			}
+		})
 	},
 	{
 		id: 1097,
 		name: "I'm in a rush",
 		desc: 'Defeat Ba-Ba after destroying four or fewer rolling boulders in total without dying yourself.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 10,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 1098,
 		name: 'Dropped the ball',
 		desc: 'Defeat Akkha without dropping any materialising orbs and without dying yourself.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 10,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 1099,
 		name: 'Helpful spirit who?',
 		desc: 'Complete the Tombs of Amascut without using any supplies from the Helpful Spirit and without anyone dying. Honey locusts are included in this restriction.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 10,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 1100,
 		name: 'Down Do Specs',
 		desc: 'Defeat the Wardens after staggering the boss a maximum of twice during phase two, without dying yourself.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 10,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 1101,
 		name: 'Perfect Crondis',
 		desc: 'Complete the Crondis room without letting a crocodile get to the tree, without anyone losing water from their container and in under one minute.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 10,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 1102,
 		name: 'No skipping allowed',
 		desc: 'Defeat Ba-Ba after only attacking the non-weakened boulders in the rolling boulder phase, without dying yourself. The Boulderdash invocation must be activated.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 10,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 1103,
@@ -980,13 +1011,21 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1105,
 		name: 'Perfect Het',
 		desc: 'Complete the Het room without taking any damage from the light beam and orbs. You must destroy the core after one exposure.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 10,
+			hasChance: data => data.type === 'TheatreOfBlood'
+		}
 	},
 	{
 		id: 1106,
 		name: 'Perfect Apmeken',
 		desc: 'Complete the Apmeken room in a group of two or more, without anyone allowing any dangers to trigger, standing in venom or being hit by a volatile baboon. You must complete this room in less than three minutes.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 10,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 1107,
@@ -1022,23 +1061,33 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1112,
 		name: 'Half-Way There',
 		desc: 'Kill a Jal-Zek within the Inferno.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			minigames: {
+				inferno: 1
+			}
+		})
 	},
 	{
 		id: 1113,
 		name: 'Fight Caves Veteran',
 		desc: 'Complete the Fight Caves once.',
-        type: 'kill_count',
+		type: 'kill_count',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.TzTokJad.id]: 1
 			}
+		})
 	},
 	{
 		id: 1114,
 		name: 'A Near Miss!',
 		desc: 'Complete the Fight Caves after surviving a hit from TzTok-Jad without praying.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 2,
+			hasChance: 'FightCaves'
+		}
 	},
 	{
 		id: 1115,
@@ -1051,11 +1100,11 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		name: 'Venenatis Veteran',
 		desc: 'Kill Venenatis 20 times.',
 		type: 'kill_count',
-        requirements: new Requirements().add({
-            kcRequirement: {
-                [Monsters.Venenatis.id]: 20
-            }
-        })
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Venenatis.id]: 20
+			}
+		})
 	},
 	{
 		id: 1117,
@@ -1066,6 +1115,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 			kcRequirement: {
 				[Monsters.Vetion.id]: 20
 			}
+		})
 	},
 	{
 		id: 1118,
@@ -1076,69 +1126,111 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 			kcRequirement: {
 				[Monsters.Vorkath.id]: 50
 			}
+		})
 	},
 	{
 		id: 1119,
 		name: "Stick 'em With the Pointy End",
 		desc: 'Kill Vorkath using melee weapons only.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, user) => {
+				const styles = user.getAttackStyles();
+				return (
+					isCertainMonsterTrip(Monsters.Vorkath.id)(data) &&
+					([SkillsEnum.Ranged, SkillsEnum.Magic] as const).every(styl => !styles.includes(styl))
+				);
+			}
+		}
 	},
 	{
 		id: 1120,
 		name: 'Zombie Destroyer',
 		desc: "Kill Vorkath's zombified spawn without using crumble undead.",
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 2,
+			hasChance: isCertainMonsterTrip(Monsters.Vorkath.id)
+		}
 	},
 	{
 		id: 1121,
 		name: 'Team Player',
 		desc: 'Receive imbued tephra from a golem.',
-		type: 'mechanical'
+		type: 'mechanical',
+		notPossible: true
 	},
 	{
 		id: 1122,
 		name: 'The Spurned Hero',
 		desc: 'Kill Zalcano as the player who has dealt the most damage to her.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 10,
+			hasChance: 'Zalcano'
+		}
 	},
 	{
 		id: 1123,
 		name: 'Zalcano Veteran',
 		desc: 'Kill Zalcano 25 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[ZALCANO_ID]: 25
+			}
+		})
 	},
 	{
 		id: 1124,
 		name: 'Perfect Zalcano',
 		desc: 'Kill Zalcano 5 times in a row without leaving or getting hit by the following: Falling rocks, rock explosions, Zalcano powering up, or standing in a red symbol.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 20,
+			hasChance: 'Zalcano'
+		}
 	},
 	{
 		id: 1125,
 		name: 'Snake. Snake!? Snaaaaaake!',
 		desc: 'Kill 3 Snakelings simultaneously.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 20,
+			hasChance: isCertainMonsterTrip(Monsters.Zulrah.id)
+		}
 	},
 	{
 		id: 1126,
 		name: 'Snake Rebound',
 		desc: 'Kill Zulrah by using the Vengeance spell as the finishing blow.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 20,
+			hasChance: isCertainMonsterTrip(Monsters.Zulrah.id)
+		}
 	},
 	{
 		id: 1127,
 		name: 'Zulrah Speed-Trialist',
 		desc: 'Kill Zulrah in less than 1 minute 20 seconds, without a slayer task.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 50,
+			hasChance: data => isCertainMonsterTrip(Monsters.Zulrah.id)(data)
+		}
 	},
 	{
 		id: 1128,
 		name: 'Zulrah Veteran',
 		desc: 'Kill Zulrah 75 times.',
-        type: 'kill_count',
+		type: 'kill_count',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Zulrah.id]: 75
 			}
+		})
 	}
 ];

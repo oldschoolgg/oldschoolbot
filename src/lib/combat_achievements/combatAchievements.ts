@@ -1,3 +1,4 @@
+import { activity_type_enum } from '@prisma/client';
 import { roll, sumArr } from 'e';
 
 import { Requirements } from '../structures/Requirements';
@@ -16,16 +17,20 @@ export type CombatAchievement = {
 	name: string;
 	type: CAType;
 	desc: string;
+	activityType?: activity_type_enum;
 } & (
 	| { requirements: Requirements }
 	| {
 			rng: {
 				chancePerKill: number;
-				hasChance: (data: ActivityTaskOptions, user: MUser) => boolean;
+				hasChance: activity_type_enum | ((data: ActivityTaskOptions, user: MUser) => boolean);
 			};
 	  }
 	| {
 			customReq: (user: MUser) => Promise<boolean>;
+	  }
+	| {
+			notPossible: true;
 	  }
 );
 
