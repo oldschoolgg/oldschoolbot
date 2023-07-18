@@ -264,7 +264,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		desc: "Kill the Grotesque Guardians without taking damage from Dusk's blinding attack.",
 		rng: {
-			chancePerKill: 10,
+			chancePerKill: 5,
 			hasChance: isCertainMonsterTrip(Monsters.GrotesqueGuardians.id)
 		}
 	},
@@ -274,7 +274,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		desc: "Kill the Grotesque Guardians without taking damage from Dawn's rockfall attack.",
 		rng: {
-			chancePerKill: 10,
+			chancePerKill: 4,
 			hasChance: isCertainMonsterTrip(Monsters.GrotesqueGuardians.id)
 		}
 	},
@@ -316,7 +316,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		desc: 'Finish off Hespori with a special attack.',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 2,
 			hasChance: isCertainMonsterTrip(Monsters.Hespori.id)
 		}
 	},
@@ -326,7 +326,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		desc: 'Kill all of Hesporis flowers within 5 seconds.',
 		rng: {
-			chancePerKill: 10,
+			chancePerKill: 6,
 			hasChance: isCertainMonsterTrip(Monsters.Hespori.id)
 		}
 	},
@@ -658,17 +658,6 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Zulrah.id]: 25
-			}
-		})
-	},
-	{
-		id: 262,
-		name: 'Dagannoth Supreme Adept',
-		type: 'kill_count',
-		desc: 'Kill Dagannoth Supreme 25 times.',
-		requirements: new Requirements().add({
-			kcRequirement: {
-				[Monsters.DagannothSupreme.id]: 25
 			}
 		})
 	}

@@ -5,6 +5,7 @@ import { ActivityTaskOptions } from '../types/minions';
 import { assert } from '../util';
 import { TripFinishEffect } from '../util/handleTripFinish';
 import { easyCombatAchievements } from './easy';
+import { eliteCombatAchievements } from './elite';
 import { hardCombatAchievements } from './hard';
 import { mediumCombatAchievements } from './medium';
 
@@ -43,6 +44,11 @@ export const CombatAchievements = {
 		tasks: hardCombatAchievements,
 		length: 63,
 		name: 'Hard'
+	},
+	elite: {
+		tasks: eliteCombatAchievements,
+		length: 129,
+		name: 'Elite'
 	}
 };
 
