@@ -1,3 +1,4 @@
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
@@ -13,7 +14,6 @@ import { HunterActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { stringMatches } from '../../lib/util/cleanString';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
 import { userHasGracefulEquipped } from '../mahojiSettings';
@@ -122,7 +122,7 @@ export const huntCommand: OSBMahojiCommand = {
 		let [percentReduced, catchTime] = [
 			Math.min(
 				Math.floor(
-					(user.getCreatureScore(creature.id) ?? 1) /
+					(await user.getCreatureScore(creature.id)) /
 						(Time.Hour / ((creature.catchTime * Time.Second) / traps))
 				),
 				creature.huntTechnique === HunterTechniqueEnum.Tracking ? 20 : 10
@@ -149,6 +149,10 @@ export const huntCommand: OSBMahojiCommand = {
 			if (userBank.amount('Saradomin brew(4)') < 10 || userBank.amount('Super restore(4)') < 5) {
 				return `To hunt ${creature.name} in the wilderness you need to have 10x Saradomin brew(4) and 5x Super restore(4) for safety.`;
 			}
+		}
+
+		if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID) {
+			if (usingStaminaPotion) catchTime *= 0.8;
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Hunter');
@@ -183,16 +187,18 @@ export const huntCommand: OSBMahojiCommand = {
 		}
 
 		// If creatures Herbiboar or Razor-backed kebbit use Stamina potion(4)
-		if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID) {
-			let staminaPotionQuantity =
-				creature.id === HERBIBOAR_ID
-					? Math.round(duration / (9 * Time.Minute))
-					: Math.round(duration / (18 * Time.Minute));
+		if (usingStaminaPotion) {
+			if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID) {
+				let staminaPotionQuantity =
+					creature.id === HERBIBOAR_ID
+						? Math.round(duration / (9 * Time.Minute))
+						: Math.round(duration / (18 * Time.Minute));
 
-			if (usingStaminaPotion && userBank.amount('Stamina potion(4)') >= staminaPotionQuantity) {
+				if (userBank.amount('Stamina potion(4)') < staminaPotionQuantity) {
+					return `You need ${staminaPotionQuantity}x Stamina potion(4) to hunt for the whole trip, try a lower quantity or make/buy more potions.`;
+				}
 				removeBank.add('Stamina potion(4)', staminaPotionQuantity);
 				boosts.push(`20% boost for using ${staminaPotionQuantity}x Stamina potion(4)`);
-				duration *= 0.8;
 			}
 		}
 

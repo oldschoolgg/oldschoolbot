@@ -5,6 +5,7 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 export const togTask: MinionTask = {
 	type: 'TearsOfGuthix',
@@ -12,9 +13,13 @@ export const togTask: MinionTask = {
 		const { userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'tears_of_guthix', 1);
-		await user.update({
-			lastTearsOfGuthixTimestamp: new Date().getTime()
-		});
+		await userStatsUpdate(
+			user.id,
+			{
+				last_tears_of_guthix_timestamp: new Date().getTime()
+			},
+			{}
+		);
 
 		// Find lowest level skill
 		let lowestXp = Object.values(user.skillsAsXP)[0];
@@ -51,7 +56,7 @@ export const togTask: MinionTask = {
 		const [hasDiary] = await userhasDiaryTier(user, LumbridgeDraynorDiary.hard);
 		if (hasDiary) xpToGive = increaseNumByPercent(xpToGive, 10);
 
-		const xpStr = await user.addXP({ skillName: lowestSkill, amount: xpToGive, duration });
+		const xpStr = await user.addXP({ skillName: lowestSkill, amount: xpToGive, duration, source: 'TearsOfGuthix' });
 
 		let output = `${user}, ${
 			user.minionName

@@ -1,9 +1,11 @@
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+
 import { prisma } from '../settings/prisma';
-import { activitySync, getActivityOfUser } from '../settings/settings';
+import { activitySync } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
-import { UserError } from '../UserError';
 import { isGroupActivity } from '../util';
 import { logError } from './logError';
+import { getActivityOfUser } from './minionIsBusy';
 
 export default async function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
 	taskToAdd: Omit<T, 'finishDate' | 'id'>

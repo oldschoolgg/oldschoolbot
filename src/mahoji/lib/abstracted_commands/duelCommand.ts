@@ -3,11 +3,13 @@ import { noOp, sleep, Time } from 'e';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank, Util } from 'oldschooljs';
 
+import { BLACKLISTED_USERS } from '../../../lib/blacklists';
 import { Emoji, Events } from '../../../lib/constants';
 import { MUserClass } from '../../../lib/MUser';
+import { prisma } from '../../../lib/settings/prisma';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
+import { mahojiParseNumber, updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
 
 async function checkBal(user: MUser, amount: number) {
 	return user.GP >= amount;
@@ -37,6 +39,7 @@ export async function duelCommand(
 	if (duelTargetUser.isIronman) return "You can't duel someone who is an ironman.";
 	if (duelSourceUser.id === duelTargetUser.id) return 'You cant duel yourself.';
 	if (!(duelTargetUser instanceof MUserClass)) return "You didn't mention a user to duel.";
+	if (BLACKLISTED_USERS.has(duelTargetUser.id)) return 'Target user is blacklisted.';
 	if (targetAPIUser.user.bot) return 'You cant duel a bot.';
 
 	if (!(await checkBal(duelSourceUser, amount))) {
@@ -101,24 +104,42 @@ export async function duelCommand(
 		await duelMessage.edit('The fight is almost over...').catch(noOp);
 		await sleep(2000);
 
+		const taxRate = 0.95;
 		const winningAmount = amount * 2;
-		const tax = winningAmount - winningAmount * 0.95;
-
+		const tax = winningAmount - Math.floor(winningAmount * taxRate);
 		const dividedAmount = tax / 1_000_000;
-		updateGPTrackSetting('duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
+		await updateClientGPTrackSetting('economyStats_duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
 
-		await winner.update({
-			stats_duelWins: {
-				increment: 1
+		await userStatsUpdate(
+			winner.id,
+			{
+				duel_wins: {
+					increment: 1
+				}
+			},
+			{}
+		);
+		await userStatsUpdate(
+			loser.id,
+			{
+				duel_losses: {
+					increment: 1
+				}
+			},
+			{}
+		);
+
+		const loot = new Bank().add('Coins', winningAmount - tax);
+		await winner.addItemsToBank({ items: loot, collectionLog: false });
+		await prisma.economyTransaction.create({
+			data: {
+				guild_id: interaction.guildId ? BigInt(interaction.guildId) : null,
+				sender: BigInt(loser.id),
+				recipient: BigInt(winner.id),
+				items_sent: new Bank().add('Coins', Math.floor(amount * taxRate)).bank,
+				type: 'duel'
 			}
 		});
-		await loser.update({
-			stats_duelLosses: {
-				increment: 1
-			}
-		});
-
-		await winner.addItemsToBank({ items: new Bank().add('Coins', winningAmount - tax), collectionLog: false });
 
 		if (amount >= 1_000_000_000) {
 			globalClient.emit(

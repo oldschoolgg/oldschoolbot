@@ -1,5 +1,8 @@
+import { Canvas, GlobalFonts, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
+import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { AttachmentBuilder } from 'discord.js';
-import { chunk, randInt } from 'e';
+import { chunk, randInt, sumArr } from 'e';
 import { existsSync } from 'fs';
 import * as fs from 'fs/promises';
 import fetch from 'node-fetch';
@@ -7,7 +10,6 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
-import { Canvas, CanvasRenderingContext2D, FontLibrary, Image, loadImage } from 'skia-canvas/lib';
 
 import { BitField, PerkTier, toaPurpleItems } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
@@ -16,21 +18,24 @@ import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import { ItemBank } from '../lib/types';
-import { addArrayOfNumbers, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
-import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
+import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
-import { UserError } from './UserError';
+import resolveItems from './util/resolveItems';
 
-FontLibrary.use({
+const fonts = {
 	OSRSFont: './src/lib/resources/osrs-font.ttf',
 	OSRSFontCompact: './src/lib/resources/osrs-font-compact.otf',
 	'RuneScape Bold 12': './src/lib/resources/osrs-font-bold.ttf',
 	'Smallest Pixel-7': './src/lib/resources/small-pixel.ttf',
 	'RuneScape Quill 8': './src/lib/resources/osrs-font-quill-8.ttf'
-});
+} as const;
 
-export interface BankImageResult {
+for (const [key, val] of Object.entries(fonts)) {
+	GlobalFonts.registerFromPath(val, key);
+}
+
+interface BankImageResult {
 	image: Buffer;
 	isTransparent: boolean;
 }
@@ -46,12 +51,12 @@ const { floor, ceil } = Math;
 type BGSpriteName = 'dark' | 'default' | 'transparent';
 export interface IBgSprite {
 	name: BGSpriteName;
-	border: Canvas;
-	borderCorner: Canvas;
-	borderTitle: Canvas;
-	repeatableBg: Canvas;
-	tabBorderInactive: Canvas;
-	tabBorderActive: Canvas;
+	border: Image;
+	borderCorner: Image;
+	borderTitle: Image;
+	repeatableBg: Image;
+	tabBorderInactive: Image;
+	tabBorderActive: Image;
 	oddListColor: string;
 }
 
@@ -181,10 +186,38 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Reward casket (elite)'), 'elite'],
 
 	[i('Clue scroll (master)'), 'master'],
-	[i('Reward casket (master)'), 'master']
+	[i('Reward casket (master)'), 'master'],
+
+	// Unf pots
+	[i('Avantoe potion (unf)'), 'avan'],
+	[i('Cadantine potion (unf)'), 'cadan'],
+	[i('Dwarf weed potion (unf)'), 'dwarf'],
+	[i('Guam potion (unf)'), 'guam'],
+	[i('Harralander potion (unf)'), 'harra'],
+	[i('Irit potion (unf)'), 'irit'],
+	[i('Kwuarm potion (unf)'), 'kwuarm'],
+	[i('Lantadyme potion (unf)'), 'lanta'],
+	[i('Marrentill potion (unf)'), 'marren'],
+	[i('Ranarr potion (unf)'), 'ranarr'],
+	[i('Snapdragon potion (unf)'), 'snap'],
+	[i('Tarromin potion (unf)'), 'tarro'],
+	[i('Toadflax potion (unf)'), 'toad'],
+	[i('Torstol potion (unf)'), 'torstol'],
+
+	// Logs
+	[i('Logs'), 'Logs'],
+	[i('Oak logs'), 'Oak'],
+	[i('Willow logs'), 'Willow'],
+	[i('Teak logs'), 'Teak'],
+	[i('Arctic pine logs'), 'ArctPine'],
+	[i('Maple logs'), 'Maple'],
+	[i('Mahogany logs'), 'Mahog'],
+	[i('Yew logs'), 'Yew'],
+	[i('Magic logs'), 'Magic'],
+	[i('Redwood logs'), 'Redwood']
 ]);
 
-function drawTitle(ctx: CanvasRenderingContext2D, title: string, canvas: Canvas) {
+function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
 	// Draw Bank Title
 	ctx.font = '16px RuneScape Bold 12';
 	const titleWidthPx = ctx.measureText(title);
@@ -206,12 +239,13 @@ export const bankFlags = [
 	'show_all',
 	'wide'
 ] as const;
-export type BankFlag = typeof bankFlags[number];
+export type BankFlag = (typeof bankFlags)[number];
 
 class BankImageTask {
 	public itemIconsList: Set<number>;
 	public itemIconImagesCache: Map<number, Image>;
 	public backgroundImages: BankBackground[] = [];
+	public alternateImages: { id: number; bgId: number; image: Image }[] = [];
 
 	public _bgSpriteData: Image = new Image();
 	public bgSpriteList: Record<string, IBgSprite> = {};
@@ -239,12 +273,12 @@ class BankImageTask {
 			this._bgSpriteData = d;
 			this.bgSpriteList[bgName] = {
 				name: bgName,
-				border: getClippedRegion(d, 0, 0, 18, 6),
-				borderCorner: getClippedRegion(d, 19, 0, 6, 6),
-				borderTitle: getClippedRegion(d, 26, 0, 18, 6),
-				tabBorderInactive: getClippedRegion(d, 0, 7, 75, 20),
-				tabBorderActive: getClippedRegion(d, 0, 45, 75, 20),
-				repeatableBg: getClippedRegion(d, 93, 0, 96, 65),
+				border: await getClippedRegionImage(d, 0, 0, 18, 6),
+				borderCorner: await getClippedRegionImage(d, 19, 0, 6, 6),
+				borderTitle: await getClippedRegionImage(d, 26, 0, 18, 6),
+				tabBorderInactive: await getClippedRegionImage(d, 0, 7, 75, 20),
+				tabBorderActive: await getClippedRegionImage(d, 0, 45, 75, 20),
+				repeatableBg: await getClippedRegionImage(d, 93, 0, 96, 65),
 				oddListColor: colors[bgName]
 			};
 		}
@@ -262,6 +296,22 @@ class BankImageTask {
 				const purplePath = img.hasPurple
 					? `./src/lib/resources/images/bank_backgrounds/${img.id}_purple.${ext}`
 					: null;
+
+				if (img.alternateImages) {
+					const images = await Promise.all(
+						img.alternateImages.map(async bgId => ({
+							id: bgId.id,
+							bgId: img.id,
+							image: await loadImage(
+								await fs.readFile(
+									`./src/lib/resources/images/bank_backgrounds/${img.id}_${bgId.id}.${ext}`
+								)
+							)
+						}))
+					);
+					this.alternateImages.push(...images);
+				}
+
 				return {
 					...img,
 					image: existsSync(bgPath) ? await loadImage(await fs.readFile(bgPath)) : null,
@@ -322,7 +372,7 @@ class BankImageTask {
 		this.itemIconImagesCache.set(itemID, image);
 	}
 
-	drawBorder(ctx: CanvasRenderingContext2D, sprite: IBgSprite, titleLine = true) {
+	drawBorder(ctx: SKRSContext2D, sprite: IBgSprite, titleLine = true) {
 		// Top border
 		ctx.save();
 		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-x')!;
@@ -385,19 +435,38 @@ class BankImageTask {
 		}
 	}
 
-	getBgAndSprite(bankBgId: number = 1) {
-		const background = this.backgroundImages.find(i => i.id === bankBgId)!;
+	getBgAndSprite(bankBgId: number = 1, user?: MUser) {
+		let background = this.backgroundImages.find(i => i.id === bankBgId)!;
+
+		const currentContract = user?.farmingContract();
+		const isFarmingContractReadyToHarvest = Boolean(
+			currentContract &&
+				currentContract.contract.hasContract &&
+				currentContract.matchingPlantedCrop &&
+				currentContract.matchingPlantedCrop.ready
+		);
+
+		let backgroundImage = background.image!;
+		if (bankBgId === 29 && isFarmingContractReadyToHarvest) {
+			backgroundImage = this.alternateImages.find(i => i.bgId === 29)!.image;
+		}
+		if (bankBgId === 30 && isFarmingContractReadyToHarvest) {
+			backgroundImage = this.alternateImages.find(i => i.bgId === 30)!.image;
+		}
+
 		const hasBgSprite = Boolean(this.bgSpriteList[background.name.toLowerCase()]);
 		const bgSprite = hasBgSprite ? this.bgSpriteList[background.name.toLowerCase()] : this.bgSpriteList.default;
+
 		return {
 			uniqueSprite: hasBgSprite,
 			sprite: bgSprite,
-			background
+			background,
+			backgroundImage
 		};
 	}
 
 	async drawItems(
-		ctx: CanvasRenderingContext2D,
+		ctx: SKRSContext2D,
 		compact: boolean,
 		spacer: number,
 		itemsPerRow: number,
@@ -519,6 +588,8 @@ class BankImageTask {
 
 		let items = bank.items();
 
+		debugLog(`Generating a bank image with ${items.length} items`, { title, userID: user?.id });
+
 		// Sorting
 		const favorites = user?.user.favoriteItems;
 		const weightings = user?.user.bank_sort_weightings as ItemBank;
@@ -552,7 +623,7 @@ class BankImageTask {
 			});
 		}
 
-		const totalValue = addArrayOfNumbers(items.map(([i, q]) => i.price * q));
+		const totalValue = sumArr(items.map(([i, q]) => i.price * q));
 
 		const chunkSize = compact ? 140 : 56;
 		const chunked = chunk(items, chunkSize);
@@ -590,8 +661,9 @@ class BankImageTask {
 		let {
 			sprite: bgSprite,
 			uniqueSprite: hasBgSprite,
-			background: bgImage
-		} = this.getBgAndSprite(bankBackgroundID);
+			background: bgImage,
+			backgroundImage
+		} = this.getBgAndSprite(bankBackgroundID, user);
 
 		const isTransparent = Boolean(bgImage.transparent);
 
@@ -600,7 +672,7 @@ class BankImageTask {
 			currentCL !== undefined &&
 			bank.items().some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
 
-		let actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : bgImage.image!;
+		let actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : backgroundImage;
 
 		const hexColor = user?.user.bank_bg_hex;
 
@@ -662,7 +734,7 @@ class BankImageTask {
 			weightings
 		);
 
-		const image = await canvas.toBuffer('png');
+		const image = await canvas.encode('png');
 
 		return {
 			image,
@@ -678,7 +750,43 @@ const chestLootTypes = [
 		chestImagePurple: loadImage('./src/lib/resources/images/toaChestPurple.png'),
 		width: 240,
 		height: 220,
-		purpleItems: toaPurpleItems
+		purpleItems: toaPurpleItems,
+		position: (canvas: Canvas, image: Image) => [
+			canvas.width - image.width + 25,
+			44 + canvas.height / 4 - image.height / 2
+		],
+		itemRect: [21, 50, 120, 160]
+	},
+	{
+		title: 'Chambers of Xerician',
+		chestImage: loadImage('./src/lib/resources/images/cox.png'),
+		chestImagePurple: loadImage('./src/lib/resources/images/cox.png'),
+		width: 260,
+		height: 180,
+		purpleItems: resolveItems([
+			'Metamorphic dust',
+			'Twisted ancestral colour kit',
+			"Xeric's guard",
+			"Xeric's warrior",
+			"Xeric's sentinel",
+			"Xeric's general",
+			"Xeric's champion",
+			'Olmlet',
+			'Twisted bow',
+			'Elder maul',
+			'Kodai insignia',
+			'Dragon claws',
+			'Ancestral hat',
+			'Ancestral robe top',
+			'Ancestral robe bottom',
+			"Dinh's bulwark",
+			'Dexterous prayer scroll',
+			'Arcane prayer scroll',
+			'Dragon hunter crossbow',
+			'Twisted buckler'
+		]),
+		position: () => [12, 44],
+		itemRect: [135, 45, 120, 120]
 	}
 ] as const;
 
@@ -689,7 +797,7 @@ interface CustomText {
 }
 export async function drawChestLootImage(options: {
 	entries: { previousCL: Bank; user: MUser; loot: Bank; customTexts: CustomText[] }[];
-	type: typeof chestLootTypes[number]['title'];
+	type: (typeof chestLootTypes)[number]['title'];
 }) {
 	const type = chestLootTypes.find(t => t.title === options.type);
 	if (!type) throw new Error(`Invalid chest type: ${options.type}`);
@@ -710,15 +818,21 @@ export async function drawChestLootImage(options: {
 		const isPurple: boolean = loot.items().some(([item]) => type.purpleItems.includes(item.id));
 		if (isPurple) anyoneGotPurple = true;
 		const image = isPurple ? await type.chestImagePurple : await type.chestImage;
-		ctx.drawImage(image, canvas.width - image.width + 25, 44 + canvas.height / 4 - image.height / 2);
-
+		const [x, y] = type.position(canvas, image);
+		ctx.drawImage(image, x, y);
 		drawTitle(ctx, `${user.rawUsername} (${toKMB(loot.value())})`, canvas);
 		ctx.font = '16px OSRSFontCompact';
 		bankImageGenerator.drawBorder(ctx, sprite, true);
+
+		const xOffset = 10;
+		const yOffset = 45;
+		const [iX, iY, iW, iH] = type.itemRect;
+		const itemCanvas = new Canvas(iW + xOffset, iH + yOffset);
+
 		await bankImageGenerator.drawItems(
-			ctx,
+			itemCanvas.getContext('2d'),
 			false,
-			22,
+			5,
 			2,
 			55,
 			loot.items(),
@@ -726,8 +840,10 @@ export async function drawChestLootImage(options: {
 			previousCL,
 			undefined,
 			undefined,
-			10
+			5
 		);
+
+		ctx.drawImage(itemCanvas, iX - xOffset, iY - yOffset);
 
 		ctx.fillStyle = '#FFFF00';
 		ctx.font = '16px OSRSFontCompact';
@@ -740,7 +856,7 @@ export async function drawChestLootImage(options: {
 	const fileName = `${anyoneGotPurple ? 'SPOILER_' : ''}toaloot-${randInt(1, 1000)}.png`;
 
 	if (canvases.length === 1) {
-		return new AttachmentBuilder(await canvases[0].toBuffer('png'), {
+		return new AttachmentBuilder(await canvases[0].encode('png'), {
 			name: fileName
 		});
 	}
@@ -754,7 +870,7 @@ export async function drawChestLootImage(options: {
 		const index = canvases.indexOf(c);
 		combinedCtx.drawImage(c, index * c.width + spaceBetweenImages * index, 0);
 	}
-	return new AttachmentBuilder(await combinedCanvas.toBuffer('png'), {
+	return new AttachmentBuilder(await combinedCanvas.encode('png'), {
 		name: fileName
 	});
 }

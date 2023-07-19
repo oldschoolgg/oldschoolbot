@@ -1,7 +1,7 @@
+import { Image } from '@napi-rs/canvas';
 import { XpGainSource } from '@prisma/client';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
-import { Image } from 'skia-canvas/lib';
 
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
@@ -25,6 +25,7 @@ export type BankBackground = {
 	sacValueRequired?: number;
 	skillsNeeded?: Skills;
 	transparent?: true;
+	alternateImages?: { id: number }[];
 } & (
 	| {
 			hasPurple: true;
@@ -88,6 +89,7 @@ export interface KillableMonster {
 	itemCost?: Consumable;
 	superior?: SimpleMonster;
 	slayerOnly?: boolean;
+	canChinning?: boolean;
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
@@ -100,6 +102,19 @@ export interface KillableMonster {
 		loot: Bank;
 		data: MonsterActivityTaskOptions;
 	}) => Promise<unknown>;
+	degradeableItemUsage?: {
+		required: boolean;
+		gearSetup: GearSetupType;
+		items: { boostPercent: number; itemID: number }[];
+	}[];
+	projectileUsage?: {
+		required: boolean;
+		calculateQuantity: (opts: { quantity: number }) => number;
+	};
+	equippedItemBoosts?: {
+		gearSetup: GearSetupType;
+		items: { boostPercent: number; itemID: number }[];
+	}[];
 }
 /*
  * Monsters will have an array of Consumables
@@ -139,7 +154,7 @@ export interface AddMonsterXpParams {
 }
 
 export interface ResolveAttackStylesParams {
-	monsterID: number;
+	monsterID: number | undefined;
 	boostMethod?: string;
 }
 

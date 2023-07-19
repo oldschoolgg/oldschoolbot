@@ -252,23 +252,23 @@ export const shadesLogs: ShadesLog[] = [
 	}
 ];
 
-function timePerLog() {
-	return Time.Minute * 3;
-}
-
 const coffins = ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin', 'Gold coffin'];
 
 export async function shadesOfMortonStartCommand(user: MUser, channelID: string, logStr: string, shadeStr: string) {
 	let messages: string[] = [];
 	let totalTime = calcMaxTripLength(user, 'ShadesOfMorton');
-	for (const coffin of coffins.reverse()) {
+	for (let i = coffins.length - 1; i >= 0; i--) {
+		const coffin = coffins[i];
 		if (user.hasEquipped(coffin)) {
-			let bonusTime = coffins.indexOf(coffin) * Time.Minute;
-			totalTime += bonusTime;
-			messages.push(`${formatDuration(bonusTime)} bonus max trip length for ${itemNameFromID(coffin)}`);
-			break;
+			let bonusTime = i * Time.Minute;
+			if (bonusTime) {
+				totalTime += bonusTime;
+				messages.push(`${formatDuration(bonusTime)} bonus max trip length for ${itemNameFromID(coffin)}`);
+				break;
+			}
 		}
 	}
+
 	const logItem = getItem(logStr);
 	if (!logItem) return 'Invalid logs item';
 
@@ -283,8 +283,9 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 	const shadesOwned = userBank.amount(shade.item.id);
 	if (!shadesOwned) return `You don't own any ${shade.item.name}! Go kill some shades.`;
 
-	const quantity = Math.min(logsOwned, shadesOwned, Math.floor(totalTime / timePerLog()));
-	const duration = quantity * timePerLog();
+	const timePerLog = Time.Minute;
+	const quantity = Math.min(logsOwned, shadesOwned, Math.floor(totalTime / timePerLog));
+	const duration = quantity * timePerLog;
 
 	let prayerXP = log.prayerXP[shade.shadeName];
 	if (!prayerXP) {

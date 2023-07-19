@@ -8,6 +8,7 @@ import { implings } from '../implings';
 import { MinigameScore } from '../settings/minigames';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
+import { UserStatsDataNeededForCL } from './Collections';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -35,18 +36,23 @@ export interface ILeftListStatus {
 }
 
 export interface IKCActivity {
-	[key: string]: string | string[] | ((user: MUser, minigameScores: MinigameScore[]) => Promise<number>);
+	[key: string]:
+		| string
+		| string[]
+		| ((user: MUser, minigameScores: MinigameScore[], stats: UserStatsDataNeededForCL) => Promise<number>);
 }
 
 export type FormatProgressFunction = ({
 	getKC,
 	minigames,
-	user
+	user,
+	stats
 }: {
 	user: MUser;
-	getKC: (id: number) => number;
+	getKC: (id: number) => Promise<number>;
 	minigames: Minigame;
-}) => string | string[];
+	stats: UserStatsDataNeededForCL;
+}) => string | string[] | Promise<string | string[]>;
 
 export interface ICollectionActivity {
 	[key: string]: {
@@ -262,6 +268,14 @@ export const corporealBeastCL = resolveItems([
 	'Holy elixir',
 	'Spirit shield',
 	'Jar of spirits'
+]);
+export const muspahCL = resolveItems([
+	'Muphin',
+	'Venator shard',
+	'Ancient icon',
+	'Charged ice',
+	'Frozen cache',
+	'Ancient essence'
 ]);
 export const crazyArchaeologistCL = resolveItems(['Odium shard 2', 'Malediction shard 2', 'Fedora']);
 export const dagannothKingsCL = resolveItems([
@@ -1518,7 +1532,9 @@ export const allPetsCL = resolveItems([
 	"Lil' creator",
 	'Tiny tempor',
 	'Nexling',
-	'Abyssal protector'
+	'Abyssal protector',
+	"Tumeken's guardian",
+	'Muphin'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -2110,7 +2126,9 @@ export const capesCL = resolveItems([
 	'Sinhaza shroud tier 2',
 	'Sinhaza shroud tier 3',
 	'Sinhaza shroud tier 4',
-	'Sinhaza shroud tier 5'
+	'Sinhaza shroud tier 5',
+	'Music cape',
+	'Music cape (t)'
 ]);
 export const questCL = resolveItems([
 	'Quest point hood',

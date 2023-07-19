@@ -50,17 +50,22 @@ export async function ashSanctifierEffect(user: MUser, loot: Bank, duration: num
 		user
 	});
 
-	userStatsUpdate(user.id, () => ({
-		ash_sanctifier_prayer_xp: {
-			increment: Math.floor(totalXP)
-		}
-	}));
+	userStatsUpdate(
+		user.id,
+		{
+			ash_sanctifier_prayer_xp: {
+				increment: Math.floor(totalXP)
+			}
+		},
+		{}
+	);
 	const xpStr = await user.addXP({
 		skillName: SkillsEnum.Prayer,
 		amount: totalXP,
 		duration,
 		minimal: true,
-		multiplier: false
+		multiplier: false,
+		source: 'AshSanctifier'
 	});
 
 	const ashString = ashesSanctified.map(ash => `${ash.amount}x ${ash.name}`).join(', ');

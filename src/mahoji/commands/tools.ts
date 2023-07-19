@@ -1,13 +1,13 @@
-import { Embed } from '@discordjs/builders';
+import { EmbedBuilder } from '@discordjs/builders';
 import { Activity, User } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import { CoXUniqueTable } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { BitField, PerkTier } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
@@ -16,6 +16,7 @@ import {
 	evilChickenOutfit,
 	gnomeRestaurantCL,
 	guardiansOfTheRiftCL,
+	shadesOfMorttonCL,
 	toaCL
 } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
@@ -30,11 +31,12 @@ import {
 	isGroupActivity,
 	isNexActivity,
 	isRaidsActivity,
-	isTobActivity,
+	isTOBOrTOAActivity,
 	itemNameFromID,
 	stringMatches
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
@@ -47,7 +49,7 @@ import {
 } from '../lib/abstracted_commands/stashUnitsCommand';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, patronMsg } from '../mahojiSettings';
+import { patronMsg } from '../mahojiSettings';
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);
@@ -122,27 +124,84 @@ ${whereInMassClause(id)};`)
 `;
 }
 
-async function xpGains(interval: string, skill?: string) {
-	if (!TimeIntervals.includes(interval as any)) return 'Invalid time.';
-	const skillObj = skill
-		? skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, skill)))
-		: undefined;
+async function clueGains(user: MUser, interval: string, tier?: string, ironmanOnly?: boolean) {
+	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
 
-	const res: any =
-		await prisma.$queryRawUnsafe(`SELECT user_id::text AS user, sum(xp) AS total_xp, max(date) AS lastDate
-FROM xp_gains
-WHERE date > now() - INTERVAL '1 ${interval.toLowerCase() === 'day' ? 'day' : 'week'}'
-${skillObj ? `AND skill = '${skillObj.id}'` : ''}
-GROUP BY user_id
-ORDER BY total_xp DESC, lastDate ASC
-LIMIT 10;`);
+	let tierFilter = '';
+	let title = '';
+	if (tier) {
+		const clueTier = ClueTiers.find(t => t.name.toLowerCase() === tier.toLowerCase());
+		if (!clueTier) return 'Invalid clue scroll tier.';
+		const tierId = clueTier.id;
+		tierFilter = `AND (a."data"->>'clueID')::int = ${tierId}`;
+		title = `Highest ${clueTier.name} clue scroll completions in the past ${interval}`;
+	} else {
+		title = `Highest All clue scroll completions in the past ${interval}`;
+	}
+
+	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
+	  FROM activity a
+	  JOIN users u ON a.user_id::text = u.id
+	  WHERE a.type = 'ClueCompletion'
+	  AND a.finish_date >= now() - interval '${interval === 'day' ? 1 : 7}' day AND a.completed = true
+	  ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
+	  ${tierFilter}
+	  GROUP BY a.user_id
+	  ORDER BY qty DESC, lastDate ASC
+	  LIMIT 10`;
+
+	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
 
 	if (res.length === 0) {
 		return 'No results found.';
 	}
 
 	let place = 0;
-	const embed = new Embed()
+	const embed = new EmbedBuilder()
+		.setTitle(title)
+		.setDescription(
+			res
+				.map((i: any) => `${++place}. **${getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`)
+				.join('\n')
+		);
+
+	return { embeds: [embed] };
+}
+
+async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) {
+	if (!TimeIntervals.includes(interval as any)) return 'Invalid time.';
+	const skillObj = skill
+		? skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, skill)))
+		: undefined;
+
+	const res: any = await prisma.$queryRawUnsafe(`
+        SELECT 
+            x.user_id::text AS user, 
+            sum(x.xp) AS total_xp, 
+            max(x.date) AS lastDate
+        FROM 
+            xp_gains AS x
+        INNER JOIN 
+            users AS u ON u.id = x.user_id::text
+        WHERE 
+            x.date > now() - INTERVAL '1 ${interval.toLowerCase() === 'day' ? 'day' : 'week'}'
+            ${skillObj ? `AND x.skill = '${skillObj.id}'` : ''}
+			${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
+        GROUP BY 
+            x.user_id
+        ORDER BY 
+            total_xp DESC, 
+            lastDate ASC
+        LIMIT 10;
+    `);
+
+	if (res.length === 0) {
+		return 'No results found.';
+	}
+
+	let place = 0;
+	const embed = new EmbedBuilder()
 		.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
 		.setDescription(
 			res
@@ -153,22 +212,26 @@ LIMIT 10;`);
 	return { embeds: [embed] };
 }
 
-async function kcGains(user: MUser, interval: string, monsterName: string): CommandResponse {
+async function kcGains(user: MUser, interval: string, monsterName: string, ironmanOnly?: boolean): CommandResponse {
 	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
 	const monster = killableMonsters.find(
 		k => stringMatches(k.name, monsterName) || k.aliases.some(a => stringMatches(a, monsterName))
 	);
+
 	if (!monster) {
 		return 'Invalid monster.';
 	}
 
-	const query = `SELECT user_id::text, SUM(("data"->>'quantity')::int) AS qty, MAX(finish_date) AS lastDate FROM activity
-WHERE type = 'MonsterKilling' AND ("data"->>'monsterID')::int = ${monster.id}
-AND finish_date >= now() - interval '${interval === 'day' ? 1 : 7}' day AND completed = true
-GROUP BY 1
-ORDER BY qty DESC, lastDate ASC
-LIMIT 10`;
+	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
+    FROM activity a
+    JOIN users u ON a.user_id::text = u.id
+    WHERE a.type = 'MonsterKilling' AND (a."data"->>'monsterID')::int = ${monster.id}
+    AND a.finish_date >= now() - interval '${interval === 'day' ? 1 : 7}' day AND a.completed = true
+    ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
+    GROUP BY a.user_id
+    ORDER BY qty DESC, lastDate ASC
+    LIMIT 10`;
 
 	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
 
@@ -177,7 +240,7 @@ LIMIT 10`;
 	}
 
 	let place = 0;
-	const embed = new Embed()
+	const embed = new EmbedBuilder()
 		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
 		.setDescription(
 			res
@@ -187,6 +250,10 @@ LIMIT 10`;
 
 	return { embeds: [embed] };
 }
+
+const clueItemsOnlyDroppedInOneTier = ClueTiers.map(i =>
+	i.table.allItems.filter(itemID => ClueTiers.filter(i => i.table.allItems.includes(itemID)).length === 1)
+).flat();
 
 interface DrystreakMinigame {
 	name: string;
@@ -229,31 +296,56 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 		name: 'Tombs of Amascut',
 		key: 'tombs_of_amascut',
 		items: toaCL
+	},
+	{
+		name: 'Shades of Morton',
+		key: 'shades_of_morton',
+		items: shadesOfMorttonCL
 	}
 ];
 
 interface DrystreakEntity {
 	name: string;
 	items: number[];
-	run: (args: { item: Item; ironmanOnly: boolean }) => Promise<{ id: string; val: number | string }[]>;
+	run: (args: { item: Item; ironmanOnly: boolean }) => Promise<string | { id: string; val: number | string }[]>;
 	format: (num: number | string) => string;
 }
-const dryStreakEntities: DrystreakEntity[] = [
+
+export const dryStreakEntities: DrystreakEntity[] = [
 	{
 		name: 'Chambers of Xeric (CoX)',
-		items: CoXUniqueTable.allItems,
+		items: resolveItems([
+			'Dexterous prayer scroll',
+			'Arcane prayer scroll',
+			'Twisted buckler',
+			'Dragon hunter crossbow',
+			"Dinh's bulwark",
+			'Ancestral hat',
+			'Ancestral robe top',
+			'Ancestral robe bottom',
+			'Dragon claws',
+			'Elder maul',
+			'Kodai insignia',
+			'Twisted bow',
+			'Olmlet'
+		]),
 		run: async ({ item, ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<
-				{ id: string; val: number }[]
-			>(`SELECT id, total_cox_points AS val
-FROM users
+				{ id: string; points: number; raids_total_kc: number }[]
+			>(`SELECT "users"."id", "user_stats".total_cox_points AS points, "minigames"."raids" + "minigames"."raids_challenge_mode" AS raids_total_kc
+FROM user_stats
+INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text
+INNER JOIN "minigames" on "minigames"."user_id" = "user_stats"."user_id"::text
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
 ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
-ORDER BY total_cox_points DESC
+ORDER BY "user_stats".total_cox_points DESC
 LIMIT 10;`);
-			return result;
+			return result.map(i => ({
+				id: i.id,
+				val: `${i.points.toLocaleString()} points / ${i.raids_total_kc} KC`
+			}));
 		},
-		format: num => `${num.toLocaleString()} points`
+		format: num => num.toString()
 	},
 	{
 		name: 'Nightmare',
@@ -270,15 +362,17 @@ LIMIT 10;`);
 		run: async ({ item, ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; val: number }[]
-			>(`SELECT "id", ("monsterScores"->>'${NightmareMonster.id}')::int AS val
-				   FROM users
-				   WHERE "collectionLogBank"->>'${item.id}' IS NULL
-				   AND "monsterScores"->>'${NightmareMonster.id}' IS NOT NULL 
-				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
-				   ORDER BY ("monsterScores"->>'${NightmareMonster.id}')::int DESC
-				   LIMIT 10;`);
+			>(`SELECT "id", ("monster_scores"->>'${NightmareMonster.id}')::int AS val
+		   FROM users
+		   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+		   WHERE "collectionLogBank"->>'${item.id}' IS NULL
+		   AND "monster_scores"->>'${NightmareMonster.id}' IS NOT NULL 
+		   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
+		   ORDER BY ("monster_scores"->>'${NightmareMonster.id}')::int DESC
+		   LIMIT 10;`);
 			return result;
 		},
+
 		format: num => `${num.toLocaleString()} KC`
 	},
 	{
@@ -287,6 +381,7 @@ LIMIT 10;`);
 		run: async ({ item, ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT "id", high_gambles AS val
 				   FROM users
+				   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 				   WHERE "collectionLogBank"->>'${item.id}' IS NULL
 				   AND high_gambles > 0
 				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
@@ -350,6 +445,7 @@ LIMIT 10;`);
 (openable_scores->>'6199')::int + (("collectionLogBank"->>'6961')::int * 4) AS factor
 
 FROM users
+INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 WHERE "collectionLogBank"->>'6199' IS NOT NULL
 AND "collectionLogBank"->>'6961' IS NOT NULL
 AND "collectionLogBank"->>'20590' IS NULL
@@ -361,6 +457,53 @@ LIMIT 10;`);
 			return result.map(i => ({
 				id: i.id,
 				val: `${i.mbox_opens} Mystery box Opens, ${i.baguettes_received} Baguettes`
+			}));
+		},
+		format: num => `${num.toLocaleString()}`
+	},
+	{
+		name: 'Clue Scrolls',
+		items: clueItemsOnlyDroppedInOneTier,
+		run: async ({ ironmanOnly, item }) => {
+			const clueTierWithItem = ClueTiers.filter(t => t.allItems.includes(item.id));
+			if (clueTierWithItem.length !== 1) {
+				return 'You can only check items which are dropped by only 1 clue scroll tier.';
+			}
+			const clueTier = clueTierWithItem[0];
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; opens: number }[]
+			>(`SELECT id, (openable_scores->>'${clueTier.id}')::int AS opens
+FROM users
+INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+WHERE "collectionLogBank"->>'${item.id}' IS NULL
+AND openable_scores->>'${clueTier.id}' IS NOT NULL
+AND (openable_scores->>'${clueTier.id}')::int > 100
+${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+ORDER BY opens DESC
+LIMIT 10;`);
+			return result.map(i => ({
+				id: i.id,
+				val: `${i.opens} ${clueTierWithItem[0].name} Casket Opens`
+			}));
+		},
+		format: num => `${num.toLocaleString()}`
+	},
+	{
+		name: 'Superior Slayer Creatures',
+		items: resolveItems(['Imbued heart', 'Eternal gem']),
+		run: async ({ ironmanOnly, item }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; slayer_superior_count: number }[]
+			>(`SELECT id, slayer_superior_count
+FROM users
+INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+WHERE "collectionLogBank"->>'${item.id}' IS NULL
+${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+ORDER BY slayer_superior_count DESC
+LIMIT 10;`);
+			return result.map(i => ({
+				id: i.id,
+				val: `${i.slayer_superior_count} Superiors Slayed`
 			}));
 		},
 		format: num => `${num.toLocaleString()}`
@@ -402,6 +545,7 @@ async function dryStreakCommand(user: MUser, monsterName: string, itemName: stri
 
 		const result = await entity.run({ item, ironmanOnly });
 		if (result.length === 0) return 'No results found.';
+		if (typeof result === 'string') return result;
 
 		return `**Dry Streaks for ${item.name} from ${entity.name}:**\n${result
 			.map(({ id, val }) => `${getUsername(id)}: ${entity.format(val || -1)}`)
@@ -414,9 +558,16 @@ async function dryStreakCommand(user: MUser, monsterName: string, itemName: stri
 	}
 
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
-	const key = 'monsterScores';
+	const key = 'monster_scores';
 	const { id } = mon;
-	const query = `SELECT "id", "${key}"->>'${id}' AS "KC" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NULL AND "${key}"->>'${id}' IS NOT NULL ${ironmanPart} ORDER BY ("${key}"->>'${id}')::int DESC LIMIT 10;`;
+	const query = `SELECT id, "${key}"->>'${id}' AS "KC" 
+				FROM users
+				INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
+				WHERE "collectionLogBank"->>'${item.id}' IS NULL 
+						AND "${key}"->>'${id}' IS NOT NULL 
+						${ironmanPart}
+				ORDER BY ("${key}"->>'${id}')::int DESC
+				LIMIT 10;`;
 
 	const result = await prisma.$queryRawUnsafe<
 		{
@@ -479,7 +630,7 @@ async function checkMassesCommand(guildID: string | undefined) {
 		})
 	)
 		.map(convertStoredActivityToFlatActivity)
-		.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTobActivity(m)) && m.users.length > 1);
+		.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTOBOrTOAActivity(m)) && m.users.length > 1);
 
 	if (masses.length === 0) {
 		return 'There are no active masses in this server.';
@@ -488,15 +639,15 @@ async function checkMassesCommand(guildID: string | undefined) {
 	const massStr = masses
 		.map(m => {
 			const remainingTime =
-				isTobActivity(m) || isNexActivity(m)
+				isTOBOrTOAActivity(m) || isNexActivity(m)
 					? m.finishDate - m.duration + m.fakeDuration - now
 					: m.finishDate - now;
 			if (isGroupActivity(m)) {
 				return [
 					remainingTime,
-					`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${
-						m.users.length
-					} users returning to <#${m.channelID}> in ${formatDuration(remainingTime)}`
+					`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
+						m.channelID
+					}> in ${formatDuration(remainingTime, true)})`
 				];
 			}
 		})
@@ -504,7 +655,7 @@ async function checkMassesCommand(guildID: string | undefined) {
 		.map(m => m![1])
 		.join('\n');
 	return `**Masses in this server:**
-${massStr}`;
+${massStr}`.slice(0, 1999);
 }
 
 export const toolsCommand: OSBMahojiCommand = {
@@ -518,6 +669,37 @@ export const toolsCommand: OSBMahojiCommand = {
 			options: [
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'clue_gains',
+					description: "Show's who has the highest clue scroll completions for a given time period.",
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'time',
+							description: 'The time period.',
+							required: true,
+							choices: ['day', 'week'].map(i => ({ name: i, value: i }))
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'tier',
+							description: 'The tier of clue scroll.',
+							required: false,
+							autocomplete: async value => {
+								return [...ClueTiers.map(i => ({ name: i.name, value: i }))]
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({ name: i.name, value: i.name }));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'ironman',
+							description: 'Only check ironmen accounts.',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'kc_gains',
 					description: "Show's who has the highest KC gains for a given time period.",
 					options: [
@@ -528,7 +710,13 @@ export const toolsCommand: OSBMahojiCommand = {
 							required: true,
 							choices: ['day', 'week'].map(i => ({ name: i, value: i }))
 						},
-						monsterOption
+						monsterOption,
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'ironman',
+							description: 'Only check ironmen accounts.',
+							required: false
+						}
 					]
 				},
 				{
@@ -543,7 +731,13 @@ export const toolsCommand: OSBMahojiCommand = {
 							required: true,
 							choices: ['day', 'week'].map(i => ({ name: i, value: i }))
 						},
-						skillOption
+						skillOption,
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'ironman',
+							description: 'Only check ironmen accounts.',
+							required: false
+						}
 					]
 				},
 				{
@@ -729,13 +923,20 @@ export const toolsCommand: OSBMahojiCommand = {
 		guildID
 	}: CommandRunOptions<{
 		patron?: {
+			clue_gains?: {
+				time: 'day' | 'week';
+				tier?: string;
+				ironman?: boolean;
+			};
 			kc_gains?: {
 				time: 'day' | 'week';
 				monster: string;
+				ironman?: boolean;
 			};
 			xp_gains?: {
 				time: 'day' | 'week';
 				skill?: string;
+				ironman?: boolean;
 			};
 			drystreak?: {
 				monster: string;
@@ -762,13 +963,26 @@ export const toolsCommand: OSBMahojiCommand = {
 			unfill?: { unit: string };
 		};
 	}>) => {
-		deferInteraction(interaction);
+		await deferInteraction(interaction);
 		const mahojiUser = await mUserFetch(userID);
 
 		if (options.patron) {
 			const { patron } = options;
+			if (patron.clue_gains) {
+				return clueGains(
+					mahojiUser,
+					patron.clue_gains.time,
+					patron.clue_gains.tier,
+					Boolean(patron.clue_gains.ironman)
+				);
+			}
 			if (patron.kc_gains) {
-				return kcGains(mahojiUser, patron.kc_gains.time, patron.kc_gains.monster);
+				return kcGains(
+					mahojiUser,
+					patron.kc_gains.time,
+					patron.kc_gains.monster,
+					Boolean(patron.kc_gains.ironman)
+				);
 			}
 			if (patron.drystreak) {
 				return dryStreakCommand(
@@ -783,8 +997,9 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 			if (patron.sacrificed_bank) {
 				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
+				const sacBank = await mahojiUser.fetchStats({ sacrificed_bank: true });
 				const image = await makeBankImage({
-					bank: new Bank(mahojiUser.user.sacrificedBank as ItemBank),
+					bank: new Bank(sacBank.sacrificed_bank as ItemBank),
 					title: 'Your Sacrificed Items'
 				});
 				return {
@@ -810,10 +1025,9 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 			if (patron.xp_gains) {
 				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
+				return xpGains(patron.xp_gains.time, patron.xp_gains.skill, patron.xp_gains.ironman);
 			}
 			if (patron.minion_stats) {
-				deferInteraction(interaction);
 				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser.user);
 			}

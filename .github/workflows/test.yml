@@ -14,7 +14,7 @@ jobs:
         strategy:
             matrix:
                 node_version: [18.12.0]
-                os: [ubuntu-latest, windows-latest]
+                os: [ubuntu-latest]
 
         steps:
             - name: Checkout Project
@@ -36,9 +36,11 @@ jobs:
                   pushd src &&
                   cp config.example.ts config.ts &&
                   popd
+            - name: Copy env
+              run: cp .env.example .env 
             - name: Generate Prisma Client
               run: yarn gen
+            - name: Build
+              run: yarn build
             - name: Test
               run: yarn test:unit
-            - name: Upload coverage data to Codecov
-              uses: codecov/codecov-action@v1

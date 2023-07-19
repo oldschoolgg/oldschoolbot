@@ -1,6 +1,7 @@
-import { User } from '@prisma/client';
-import { ChatInputCommandInteraction } from 'discord.js';
+import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, clamp, reduceNumByPercent, roll, round, Time } from 'e';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
@@ -9,13 +10,20 @@ import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
 import { maxOtherStats } from '../../../lib/structures/Gear';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemID, randomVariation, stringMatches } from '../../../lib/util';
+import {
+	buildClueButtons,
+	formatDuration,
+	itemID,
+	makeComponents,
+	randomVariation,
+	stringMatches
+} from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
+import { userStatsUpdate } from '../../mahojiSettings';
 
 export const BarbBuyables = [
 	{
@@ -90,22 +98,27 @@ export const GambleTiers = [
 ];
 
 export async function barbAssaultLevelCommand(user: MUser) {
-	const currentLevel = user.user.honour_level;
+	const stats = await user.fetchStats({ honour_level: true, honour_points: true });
+	const currentLevel = stats.honour_level;
 	if (currentLevel === 5) {
 		return "You've already reached the highest possible Honour level.";
 	}
 
-	const points = user.user.honour_points;
+	const points = stats.honour_points;
 
 	for (const level of levels) {
 		if (currentLevel >= level.level) continue;
 		if (points < level.cost) {
 			return `You don't have enough points to upgrade to level ${level.level}. You need ${level.cost} points.`;
 		}
-		await user.update({
-			honour_level: { increment: 1 },
-			honour_points: { decrement: level.cost }
-		});
+		await userStatsUpdate(
+			user.id,
+			{
+				honour_level: { increment: 1 },
+				honour_points: { decrement: level.cost }
+			},
+			{}
+		);
 
 		return `You've spent ${level.cost} Honour points to level up to Honour level ${level.level}!`;
 	}
@@ -132,7 +145,8 @@ export async function barbAssaultBuyCommand(
 	}
 
 	const { item, cost } = buyable;
-	const balance = user.user.honour_points;
+	const stats = await user.fetchStats({ honour_points: true });
+	const balance = stats.honour_points;
 	if (balance < cost * quantity) {
 		return `You don't have enough Honour Points to buy ${quantity.toLocaleString()}x ${item.name}. You need ${(
 			cost * quantity
@@ -144,11 +158,15 @@ export async function barbAssaultBuyCommand(
 			cost * quantity
 		).toLocaleString()} honour points?`
 	);
-	await user.update({
-		honour_points: {
-			decrement: cost * quantity
-		}
-	});
+	await userStatsUpdate(
+		user.id,
+		{
+			honour_points: {
+				decrement: cost * quantity
+			}
+		},
+		{}
+	);
 
 	await user.addItemsToBank({ items: new Bank().add(item.id, quantity), collectionLog: true });
 
@@ -167,7 +185,7 @@ export async function barbAssaultGambleCommand(
 	if (!buyable) {
 		return 'You can gamble your points for the Low, Medium and High tiers. For example, `/minigames gamble low`.';
 	}
-	const balance = user.user.honour_points;
+	const { honour_points: balance } = await user.fetchStats({ honour_points: true });
 	const { cost, name, table } = buyable;
 	if (balance < cost * quantity) {
 		return `You don't have enough Honour Points to do ${quantity.toLocaleString()}x ${name} gamble. You need ${(
@@ -180,17 +198,24 @@ export async function barbAssaultGambleCommand(
 			cost * quantity
 		).toLocaleString()} honour points?`
 	);
-	const { newUser } = await user.update({
-		honour_points: {
-			decrement: cost * quantity
+	const newStats = await userStatsUpdate(
+		user.id,
+		{
+			honour_points: {
+				decrement: cost * quantity
+			},
+			high_gambles:
+				name === 'High'
+					? {
+							increment: quantity
+					  }
+					: undefined
 		},
-		high_gambles:
-			name === 'High'
-				? {
-						increment: quantity
-				  }
-				: undefined
-	});
+		{
+			honour_points: true,
+			high_gambles: true
+		}
+	);
 	const loot = new Bank().add(table.roll(quantity));
 	if (loot.has('Pet penance queen')) {
 		const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
@@ -200,13 +225,16 @@ export async function barbAssaultGambleCommand(
 			`<:Pet_penance_queen:324127377649303553> **${user.badgedUsername}'s** minion, ${
 				user.minionName
 			}, just received a Pet penance queen from their ${formatOrdinal(
-				newUser.high_gambles
+				newStats.high_gambles
 			)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
 		);
 	}
 	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
-	return {
+	const perkTier = user.perkTier();
+	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier);
+
+	let response: Awaited<CommandResponse> = {
 		content: `You spent ${(
 			cost * quantity
 		).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`,
@@ -219,8 +247,10 @@ export async function barbAssaultGambleCommand(
 					flags: { showNewCL: 1 }
 				})
 			).file
-		]
+		],
+		components: components.length > 0 ? makeComponents(components) : undefined
 	};
+	return response;
 }
 
 export async function barbAssaultStartCommand(channelID: string, user: MUser) {
@@ -236,7 +266,8 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 		boosts.push(`${strengthPercent}% for ${user.usernameOrMention}'s melee gear`);
 	}
 	// Up to 30% speed boost for honour level
-	const totalLevelPercent = user.user.honour_level * 6;
+	const stats = await user.fetchStats({ honour_level: true });
+	const totalLevelPercent = stats.honour_level * 6;
 	boosts.push(`${totalLevelPercent}% for honour level`);
 	waveTime = reduceNumByPercent(waveTime, totalLevelPercent);
 
@@ -271,8 +302,9 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	return str;
 }
 
-export async function barbAssaultStatsCommand(user: User) {
-	return `**Honour Points:** ${user.honour_points}
-**Honour Level:** ${user.honour_level}
-**High Gambles:** ${user.high_gambles}`;
+export async function barbAssaultStatsCommand(user: MUser) {
+	const stats = await user.fetchStats({ honour_level: true, honour_points: true, high_gambles: true });
+	return `**Honour Points:** ${stats.honour_points}
+**Honour Level:** ${stats.honour_level}
+**High Gambles:** ${stats.high_gambles}`;
 }

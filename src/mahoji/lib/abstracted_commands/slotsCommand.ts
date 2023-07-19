@@ -12,8 +12,9 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { channelIsSendable } from '../../../lib/util';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { handleMahojiConfirmation, mahojiParseNumber, updateGPTrackSetting } from '../../mahojiSettings';
+import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '../../mahojiSettings';
 
 interface Button {
 	name: string;
@@ -164,7 +165,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 	sentMessage?.edit({ content: finishContent, components: getCurrentButtons({ columnsToHide: [] }) }).catch(noOp);
 
 	await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived), collectionLog: false });
-	await updateGPTrackSetting('gp_slots', amountReceived - amount);
+	await updateClientGPTrackSetting('gp_slots', amountReceived - amount);
 	await updateGPTrackSetting('gp_slots', amountReceived - amount, user);
 
 	return {

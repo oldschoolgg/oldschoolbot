@@ -88,7 +88,7 @@ export const killCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Number,
+			type: ApplicationCommandOptionType.Integer,
 			name: 'quantity',
 			description: 'The amount you want to kill.',
 			required: false,
@@ -116,6 +116,6 @@ export const killCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ name: string; quantity?: number; method?: PvMMethod; show_info?: boolean }>) => {
 		const user = await mUserFetch(userID);
 		if (options.show_info) return monsterInfo(user, options.name);
-		return minionKillCommand(user.id, interaction, channelID, options.name, options.quantity, options.method);
+		return minionKillCommand(user, interaction, channelID, options.name, options.quantity, options.method);
 	}
 };

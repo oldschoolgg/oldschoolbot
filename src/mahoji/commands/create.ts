@@ -1,6 +1,6 @@
+import { readFileSync } from 'fs';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { table } from 'table';
 
 import Createables from '../../lib/data/createables';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
@@ -8,37 +8,18 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
-import { deferInteraction } from '../../lib/util/interactionReply';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, userStatsBankUpdate } from '../mahojiSettings';
+import { userStatsBankUpdate } from '../mahojiSettings';
 
-function showAllCreatables() {
-	let content = 'This are the items that you can create:';
-	const creatableTable = table([
-		['Item name', 'Input Items', 'Output Items', 'GP Cost', 'Skills Required', 'QP Required'],
-		...Createables.map(i => {
-			return [
-				i.name,
-				`${new Bank(i.inputItems)}`,
-				`${new Bank(i.outputItems)}`,
-				`${i.GPCost ?? 0}`,
-				`${
-					i.requiredSkills === undefined
-						? ''
-						: Object.entries(i.requiredSkills)
-								.map(entry => `${entry[0]}: ${entry[1]}`)
-								.join('\n')
-				}`,
-				`${i.QPRequired ?? ''}`
-			];
-		})
-	]);
-	return {
-		content,
-		files: [{ attachment: Buffer.from(creatableTable), name: 'Creatables.txt' }]
-	};
-}
+const creatablesTable = readFileSync('./src/lib/data/creatablesTable.txt', 'utf8');
+
+let content = 'Theses are the items that you can create:';
+const allCreatablesTable = {
+	content,
+	files: [{ attachment: Buffer.from(creatablesTable), name: 'Creatables.txt' }]
+};
 
 export const createCommand: OSBMahojiCommand = {
 	name: 'create',
@@ -83,8 +64,7 @@ export const createCommand: OSBMahojiCommand = {
 		const itemName = options.item.toLowerCase();
 		let { quantity } = options;
 		if (options.showall) {
-			await deferInteraction(interaction);
-			return showAllCreatables();
+			return allCreatablesTable;
 		}
 
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
@@ -150,7 +130,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 		if (createableItem.maxCanOwn) {
-			const allItems = user.allItemsOwned();
+			const allItems = user.allItemsOwned;
 			const amountOwned = allItems.amount(createableItem.name);
 			if (amountOwned >= createableItem.maxCanOwn) {
 				return `You already have ${amountOwned}x ${createableItem.name}, you can't create another.`;
@@ -167,7 +147,7 @@ export const createCommand: OSBMahojiCommand = {
 
 		// Check for any items they cant have 2 of.
 		if (createableItem.cantHaveItems) {
-			const allItemsOwnedBank = user.allItemsOwned();
+			const allItemsOwnedBank = user.allItemsOwned;
 			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
 				const numOwned = allItemsOwnedBank.amount(Number(itemID));
 				if (numOwned >= qty) {
@@ -195,6 +175,13 @@ export const createCommand: OSBMahojiCommand = {
 					str = `${user}, please confirm that you want to unpack **${inItems}** into ${outItems}`;
 					break;
 				}
+			}
+		}
+
+		if (createableItem.customReq) {
+			const customReq = await createableItem.customReq(user);
+			if (typeof customReq === 'string') {
+				return customReq;
 			}
 		}
 

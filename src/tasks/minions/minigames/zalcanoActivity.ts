@@ -13,8 +13,7 @@ export const zalcanoTask: MinionTask = {
 	async run(data: ZalcanoActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, performance, isMVP } = data;
 		const user = await mUserFetch(userID);
-		const kc = user.getKC(ZALCANO_ID);
-		await user.incrementKC(ZALCANO_ID, quantity);
+		const { newKC } = await user.incrementKC(ZALCANO_ID, quantity);
 
 		const loot = new Bank();
 
@@ -38,12 +37,13 @@ export const zalcanoTask: MinionTask = {
 			await user.addXP({
 				skillName: SkillsEnum.Mining,
 				amount: miningXP,
-				duration
+				duration,
+				source: 'Zalcano'
 			})
 		);
 
-		xpRes.push(await user.addXP({ skillName: SkillsEnum.Smithing, amount: smithingXP }));
-		xpRes.push(await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP }));
+		xpRes.push(await user.addXP({ skillName: SkillsEnum.Smithing, amount: smithingXP, source: 'Zalcano' }));
+		xpRes.push(await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP, source: 'Zalcano' }));
 
 		await ashSanctifierEffect(user, loot, duration, xpRes);
 
@@ -52,7 +52,7 @@ export const zalcanoTask: MinionTask = {
 				Events.ServerNotification,
 				`**${user.badgedUsername}'s** minion, ${
 					user.minionName
-				}, just received **Smolcano**, their Zalcano KC is ${randInt(kc || 1, (kc || 1) + quantity)}!`
+				}, just received **Smolcano**, their Zalcano KC is ${randInt(newKC - quantity, newKC)}!`
 			);
 		}
 
@@ -72,9 +72,11 @@ export const zalcanoTask: MinionTask = {
 		handleTripFinish(
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${
-				kc + quantity
-			}.\n\n **XP Gains:** ${xpRes.join(', ')}\n`,
+			`${user}, ${
+				user.minionName
+			} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${newKC}.\n\n **XP Gains:** ${xpRes.join(
+				', '
+			)}\n`,
 			image.file.attachment,
 			data,
 			itemsAdded

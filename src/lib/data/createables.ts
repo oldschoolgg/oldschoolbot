@@ -1,9 +1,11 @@
 import { Bank } from 'oldschooljs';
 
+import { BitField } from '../constants';
 import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank, Skills } from '../types';
+import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import { itemNameFromID } from '../util/smallUtils';
 import { chambersOfXericMetamorphPets } from './CollectionsExport';
@@ -39,6 +41,69 @@ export interface Createable {
 	maxCanOwn?: number;
 	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
 	type?: 'pack' | 'unpack';
+	customReq?: (user: MUser) => Promise<string | null>;
+}
+
+const bloodBarkPairs = [
+	['Bloodbark helm', 'Splitbark helm', 250, 79],
+	['Bloodbark body', 'Splitbark body', 500, 81],
+	['Bloodbark legs', 'Splitbark legs', 500, 81],
+	['Bloodbark boots', 'Splitbark boots', 100, 77],
+	['Bloodbark gauntlets', 'Splitbark gauntlets', 100, 77]
+] as const;
+
+const bloodBarkCreatables: Createable[] = [];
+
+for (const [bbPart, sbPart, bloodRunes, lvlReq] of bloodBarkPairs) {
+	const bbItem = getOSItem(bbPart);
+	const sbItem = getOSItem(sbPart);
+
+	bloodBarkCreatables.push({
+		name: bbItem.name,
+		inputItems: new Bank().add(sbItem.id).add('Blood rune', bloodRunes),
+		outputItems: new Bank().add(bbItem.id),
+		requiredSkills: {
+			runecraft: lvlReq
+		},
+		customReq: async (user: MUser) => {
+			if (!user.bitfield.includes(BitField.HasBloodbarkScroll)) {
+				return 'You need to have used a Runescroll of bloodbark to create this item!';
+			}
+
+			return null;
+		}
+	});
+}
+
+const swampBarkPairs = [
+	['Swampbark helm', 'Splitbark helm', 250, 46],
+	['Swampbark body', 'Splitbark body', 500, 48],
+	['Swampbark legs', 'Splitbark legs', 500, 48],
+	['Swampbark boots', 'Splitbark boots', 100, 42],
+	['Swampbark gauntlets', 'Splitbark gauntlets', 100, 42]
+] as const;
+
+const swampBarkCreatables: Createable[] = [];
+
+for (const [bbPart, sbPart, natRunes, lvlReq] of swampBarkPairs) {
+	const bbItem = getOSItem(bbPart);
+	const sbItem = getOSItem(sbPart);
+
+	swampBarkCreatables.push({
+		name: bbItem.name,
+		inputItems: new Bank().add(sbItem.id).add('Nature rune', natRunes),
+		outputItems: new Bank().add(bbItem.id),
+		requiredSkills: {
+			runecraft: lvlReq
+		},
+		customReq: async (user: MUser) => {
+			if (!user.bitfield.includes(BitField.HasSwampbarkScroll)) {
+				return 'You need to have used a Runescroll of Swampbark to create this item!';
+			}
+
+			return null;
+		}
+	});
 }
 
 const goldenProspectorCreatables: Createable[] = [
@@ -1211,6 +1276,16 @@ const Reverteables: Createable[] = [
 			[itemID("Guardian's eye")]: 1
 		},
 		noCl: true
+	},
+	{
+		name: "Revert xeric's talisman (inert)",
+		inputItems: {
+			[itemID("Xeric's talisman (inert)")]: 1
+		},
+		outputItems: {
+			[itemID('Lizardman fang')]: 100
+		},
+		noCl: true
 	}
 ];
 
@@ -2114,6 +2189,38 @@ const Createables: Createable[] = [
 		}),
 		outputItems: new Bank().add('Celestial signet')
 	},
+	{
+		name: 'Eternal teleport crystal',
+		inputItems: new Bank({
+			'Enhanced crystal teleport seed': 1,
+			'Crystal shard': 100
+		}),
+		outputItems: new Bank({
+			'Eternal teleport crystal': 1
+		}),
+		requiredSkills: { smithing: 80, crafting: 80 },
+		QPRequired: 150
+	},
+	{
+		name: 'Saturated heart',
+		inputItems: new Bank({
+			'Imbued heart': 1,
+			'Ancient essence': 150_000
+		}),
+		outputItems: new Bank({
+			'Saturated heart': 1
+		})
+	},
+	{
+		name: 'Trident of the swamp',
+		inputItems: new Bank({
+			'Trident of the seas (full)': 1,
+			'Magic fang': 1
+		}),
+		outputItems: new Bank({
+			'Trident of the swamp': 1
+		})
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
@@ -2136,7 +2243,9 @@ const Createables: Createable[] = [
 	...leaguesCreatables,
 	...guardiansOfTheRiftCreatables,
 	...shadesOfMortonCreatables,
-	...toaCreatables
+	...toaCreatables,
+	...bloodBarkCreatables,
+	...swampBarkCreatables
 ];
 
 export default Createables;

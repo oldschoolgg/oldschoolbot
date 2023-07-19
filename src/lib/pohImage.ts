@@ -1,11 +1,11 @@
+import { Canvas, Image, SKRSContext2D } from '@napi-rs/canvas';
 import { objectEntries, randInt } from 'e';
 import * as fs from 'fs';
 import path from 'path';
-import { Canvas, CanvasRenderingContext2D, Image } from 'skia-canvas/lib';
 
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
-import { getActivityOfUser } from './settings/settings';
-import { canvasImageFromBuffer } from './util/canvasUtil';
+import { canvasImageFromBuffer, loadAndCacheLocalImage } from './util/canvasUtil';
+import { getActivityOfUser } from './util/minionIsBusy';
 import { PlayerOwnedHouse } from '.prisma/client';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
@@ -25,18 +25,19 @@ const FOLDERS = [
 	'dungeon_decoration',
 	'prison',
 	'minion',
-	'garden_decoration'
+	'garden_decoration',
+	'amulet'
 ];
-
-const bg = fs.readFileSync('./src/lib/poh/images/bg_1.jpg');
-const bg2 = fs.readFileSync('./src/lib/poh/images/bg_2.jpg');
 
 class PoHImage {
 	public imageCache: Map<number, Image> = new Map();
 	public bgImages: Image[] = [];
+	initPromise: Promise<void> | null = this.init();
+	initFinished: boolean = false;
+
 	async init() {
-		this.bgImages.push(await canvasImageFromBuffer(bg));
-		this.bgImages.push(await canvasImageFromBuffer(bg2));
+		this.bgImages.push(await loadAndCacheLocalImage('./src/lib/poh/images/bg_1.jpg'));
+		this.bgImages.push(await loadAndCacheLocalImage('./src/lib/poh/images/bg_2.jpg'));
 		for (const folder of FOLDERS) {
 			const currentPath = path.join(CONSTRUCTION_IMG_DIR, folder);
 			const filesInDir = await fs.promises.readdir(currentPath);
@@ -48,9 +49,10 @@ class PoHImage {
 				this.imageCache.set(id, image);
 			}
 		}
+		this.initFinished = true;
 	}
 
-	generateCanvas(bgId: number): [Canvas, CanvasRenderingContext2D] {
+	generateCanvas(bgId: number): [Canvas, SKRSContext2D] {
 		const bgImage = this.bgImages[bgId - 1]!;
 		const canvas = new Canvas(bgImage.width, bgImage.height);
 
@@ -59,11 +61,14 @@ class PoHImage {
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.drawImage(bgImage, 0, 0, bgImage.width, bgImage.height);
-
+		debugLog('Generating a POH image');
 		return [canvas, ctx];
 	}
 
 	randMinionCoords(): [number, number] {
+		if (process.env.TEST) {
+			return [100, TOP_FLOOR_Y];
+		}
 		const roll = randInt(1, 4);
 		const x = randInt(1, HOUSE_WIDTH);
 		switch (roll) {
@@ -81,6 +86,7 @@ class PoHImage {
 	}
 
 	async run(poh: PlayerOwnedHouse, showSpaces = true) {
+		if (!this.initFinished) await this.initPromise;
 		const [canvas, ctx] = this.generateCanvas(poh.background_id);
 		for (const [key, objects] of objectEntries(Placeholders)) {
 			if (!key || !objects) continue;
@@ -118,9 +124,8 @@ class PoHImage {
 			const [x, y] = this.randMinionCoords();
 			ctx.drawImage(image, x - image.width, y - image.height, image.width, image.height);
 		}
-		return canvas.toBuffer('png');
+		return canvas.encode('png');
 	}
 }
 
 export const pohImageGenerator = new PoHImage();
-pohImageGenerator.init();

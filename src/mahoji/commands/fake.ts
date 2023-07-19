@@ -1,18 +1,18 @@
+import { Canvas, SKRSContext2D } from '@napi-rs/canvas';
 import { randInt } from 'e';
-import fs from 'fs';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Canvas, CanvasRenderingContext2D, loadImage } from 'skia-canvas/lib';
 
+import { loadAndCacheLocalImage, measureTextWidth } from '../../lib/util/canvasUtil';
 import { OSBMahojiCommand } from '../lib/util';
 
-const bg = fs.readFileSync('./src/lib/resources/images/tob-bg.png');
+const bg = loadAndCacheLocalImage('./src/lib/resources/images/tob-bg.png');
 
 const randomMessages = ['omfgggggg', '!#@$@#$@##@$', 'adfsjklfadkjsl;l', 'l00000l wtf'];
 
-function arma(ctx: CanvasRenderingContext2D, username: string) {
+function arma(ctx: SKRSContext2D, username: string) {
 	ctx.fillText("Your Kree'arra kill count is: ", 11, 10);
 	ctx.fillStyle = '#ff0000';
-	ctx.fillText(randInt(1, 20).toString(), 12 + ctx.measureText("Your Kree'arra kill count is: ").width, 10);
+	ctx.fillText(randInt(1, 20).toString(), 12 + measureTextWidth(ctx, "Your Kree'arra kill count is: "), 10);
 
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText("You have a funny feeling like you're being followed.", 11, 25);
@@ -28,13 +28,13 @@ function arma(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillStyle = '#000000';
 	ctx.fillText(`${username}: `, 11, 69);
 	ctx.fillStyle = '#0000ff';
-	ctx.fillText(`${randMessage}*`, 12 + ctx.measureText(`${username}: `).width, 69);
+	ctx.fillText(`${randMessage}*`, 12 + measureTextWidth(ctx, `${username}: `), 69);
 }
 
-function bandos(ctx: CanvasRenderingContext2D, username: string) {
+function bandos(ctx: SKRSContext2D, username: string) {
 	ctx.fillText('Your General Graardor kill count is: ', 11, 10);
 	ctx.fillStyle = '#ff0000';
-	ctx.fillText(randInt(1, 20).toString(), 12 + ctx.measureText('Your General Graardor kill count is: ').width, 10);
+	ctx.fillText(randInt(1, 20).toString(), 12 + measureTextWidth(ctx, 'Your General Graardor kill count is: '), 10);
 
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText("You have a funny feeling like you're being followed.", 11, 25);
@@ -50,15 +50,15 @@ function bandos(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillStyle = '#000000';
 	ctx.fillText(`${username}: `, 11, 69);
 	ctx.fillStyle = '#0000ff';
-	ctx.fillText(`${randMessage}*`, 12 + ctx.measureText(`${username}: `).width, 69);
+	ctx.fillText(`${randMessage}*`, 12 + measureTextWidth(ctx, `${username}: `), 69);
 }
 
-function ely(ctx: CanvasRenderingContext2D, username: string) {
+function ely(ctx: SKRSContext2D, username: string) {
 	ctx.fillText('Your Corporeal Beast kill count is: ', 11, 40);
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText(
 		randInt(1, 20).toLocaleString(),
-		12 + ctx.measureText('Your Corporeal Beast kill count is: ').width,
+		12 + measureTextWidth(ctx, 'Your Corporeal Beast kill count is: '),
 		40
 	);
 
@@ -68,13 +68,13 @@ function ely(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillStyle = '#000000';
 	ctx.fillText(`${username}: `, 11, 70);
 	ctx.fillStyle = '#0000ff';
-	ctx.fillText('*', 12 + ctx.measureText(`${username}: `).width, 70);
+	ctx.fillText('*', 12 + measureTextWidth(ctx, `${username}: `), 70);
 }
 
-function sara(ctx: CanvasRenderingContext2D, username: string) {
+function sara(ctx: SKRSContext2D, username: string) {
 	ctx.fillText('Your Commander Zilyana kill count is: ', 11, 10);
 	ctx.fillStyle = '#ff0000';
-	ctx.fillText(randInt(1, 20).toString(), 12 + ctx.measureText('Your Commander Zilyana kill count is: ').width, 10);
+	ctx.fillText(randInt(1, 20).toString(), 12 + measureTextWidth(ctx, 'Your Commander Zilyana kill count is: '), 10);
 
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText("You have a funny feeling like you're being followed.", 11, 25);
@@ -88,27 +88,27 @@ function sara(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillStyle = '#000000';
 	ctx.fillText(`${username}: `, 11, 69);
 	ctx.fillStyle = '#0000ff';
-	ctx.fillText(`${randMessage}*`, 12 + ctx.measureText(`${username}: `).width, 69);
+	ctx.fillText(`${randMessage}*`, 12 + measureTextWidth(ctx, `${username}: `), 69);
 }
 
-function scythe(ctx: CanvasRenderingContext2D, username: string) {
+function scythe(ctx: SKRSContext2D, username: string) {
 	const kc = randInt(1, 20);
 	/* Your completed Theatre of Blood count is: X. */
 	ctx.fillText('Your completed Theatre of Blood count is: ', 11, 10);
 	ctx.fillStyle = '#ff0000';
-	ctx.fillText(kc.toString(), 12 + ctx.measureText('Your completed Theatre of Blood count is: ').width, 10);
+	ctx.fillText(kc.toString(), 12 + measureTextWidth(ctx, 'Your completed Theatre of Blood count is: '), 10);
 	ctx.fillStyle = '#000000';
-	ctx.fillText('.', 12 + ctx.measureText(`Your completed Theatre of Blood count is: ${kc}`).width, 10);
+	ctx.fillText('.', 12 + measureTextWidth(ctx, `Your completed Theatre of Blood count is: ${kc}`), 10);
 
 	/* Username found something special: Scythe of vitur (uncharged) */
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText(username, 11, 25);
 	ctx.fillStyle = '#000000';
-	ctx.fillText(' found something special: ', 12 + ctx.measureText(username).width, 25);
+	ctx.fillText(' found something special: ', 12 + measureTextWidth(ctx, username), 25);
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText(
 		'Scythe of vitur (uncharged)',
-		12 + ctx.measureText(`${username} found something special: `).width,
+		12 + measureTextWidth(ctx, `${username} found something special: `),
 		25
 	);
 
@@ -116,9 +116,9 @@ function scythe(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText(username, 11, 54);
 	ctx.fillStyle = '#000000';
-	ctx.fillText(' found something special: ', 12 + ctx.measureText(username).width, 54);
+	ctx.fillText(' found something special: ', 12 + measureTextWidth(ctx, username), 54);
 	ctx.fillStyle = '#ff0000';
-	ctx.fillText("Lil' Zik", 12 + ctx.measureText(`${username} found something special: `).width, 54);
+	ctx.fillText("Lil' Zik", 12 + measureTextWidth(ctx, `${username} found something special: `), 54);
 
 	/* You have a funny feeling like you're being followed. */
 	ctx.fillText("You have a funny feeling like you're being followed.", 11, 40);
@@ -127,13 +127,13 @@ function scythe(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillStyle = '#000000';
 	ctx.fillText(`${username}: `, 11, 70);
 	ctx.fillStyle = '#0000ff';
-	ctx.fillText('*', 12 + ctx.measureText(`${username}: `).width, 70);
+	ctx.fillText('*', 12 + measureTextWidth(ctx, `${username}: `), 70);
 }
 
-function zammy(ctx: CanvasRenderingContext2D, username: string) {
+function zammy(ctx: SKRSContext2D, username: string) {
 	ctx.fillText("Your K'ril Tsutsaroth kill count is: ", 11, 10);
 	ctx.fillStyle = '#ff0000';
-	ctx.fillText(randInt(1, 20).toString(), 12 + ctx.measureText("Your K'ril Tsutsaroth kill count is: ").width, 10);
+	ctx.fillText(randInt(1, 20).toString(), 12 + measureTextWidth(ctx, "Your K'ril Tsutsaroth kill count is: "), 10);
 
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText("You have a funny feeling like you're being followed.", 11, 25);
@@ -149,7 +149,7 @@ function zammy(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillStyle = '#000000';
 	ctx.fillText(`${username}: `, 11, 69);
 	ctx.fillStyle = '#0000ff';
-	ctx.fillText(`${randMessage}*`, 12 + ctx.measureText(`${username}: `).width, 69);
+	ctx.fillText(`${randMessage}*`, 12 + measureTextWidth(ctx, `${username}: `), 69);
 }
 
 const thingMap = [
@@ -186,7 +186,7 @@ export const fakeCommand: OSBMahojiCommand = {
 		ctx.font = '16px OSRSFont';
 		ctx.fillStyle = '#000000';
 
-		const image = await loadImage(bg);
+		const image = await bg;
 		ctx.drawImage(image, 0, 0, image.width, image.height);
 		for (const [names, fn] of thingMap) {
 			if (names.has(options.type.toLowerCase())) {
@@ -194,7 +194,7 @@ export const fakeCommand: OSBMahojiCommand = {
 				return {
 					files: [
 						{
-							attachment: await canvas.toBuffer('png'),
+							attachment: await canvas.encode('png'),
 							name: `${Math.round(Math.random() * 10_000)}.jpg`
 						}
 					]

@@ -1,11 +1,18 @@
+import { exec } from 'node:child_process';
+
+import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { objectEntries, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
+import { ClueTiers } from '../clues/clueTiers';
+import { PerkTier, projectiles } from '../constants';
 import { skillEmoji } from '../data/emojis';
+import type { Gear } from '../structures/Gear';
 import type { ArrayItemsResolved, Skills } from '../types';
-import { toTitleCase } from './toTitleCase';
+import getOSItem from './getOSItem';
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
@@ -45,10 +52,6 @@ export function formatItemBoosts(items: ItemBank[]) {
 
 export function calcPerHour(value: number, duration: number) {
 	return (value / (duration / Time.Minute)) * 60;
-}
-
-export function removeFromArr<T>(arr: T[] | readonly T[], item: T) {
-	return arr.filter(i => i !== item);
 }
 
 export function formatDuration(ms: number, short = false) {
@@ -120,4 +123,95 @@ export function averageBank(bank: Bank, kc: number) {
 		newBank.add(item.id, Math.floor(qty / kc));
 	}
 	return newBank;
+}
+
+const shortItemNames = new Map([
+	[getOSItem('Saradomin brew(4)'), 'Brew'],
+	[getOSItem('Super restore(4)'), 'Restore'],
+	[getOSItem('Super combat potion(4)'), 'Super combat'],
+	[getOSItem('Sanfew serum(4)'), 'Sanfew'],
+	[getOSItem('Ranging potion(4)'), 'Range pot']
+]);
+
+export function bankToStrShortNames(bank: Bank) {
+	const str = [];
+	for (const [item, qty] of bank.items()) {
+		const shortName = shortItemNames.get(item);
+		str.push(`${qty}x ${shortName ?? item.name}${qty > 1 ? 's' : ''}`);
+	}
+	return str.join(', ');
+}
+
+export function readableStatName(slot: string) {
+	return toTitleCase(slot.replace('_', ' '));
+}
+
+export function makeEasierFarmingContractButton() {
+	return new ButtonBuilder()
+		.setCustomId('FARMING_CONTRACT_EASIER')
+		.setLabel('Ask for easier Contract')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('977410792754413668');
+}
+
+export function buildClueButtons(loot: Bank | null, perkTier: number) {
+	const components: ButtonBuilder[] = [];
+	if (loot && perkTier > PerkTier.One) {
+		const clueReceived = ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0);
+		components.push(
+			...clueReceived.map(clue =>
+				new ButtonBuilder()
+					.setCustomId(`DO_${clue.name.toUpperCase()}_CLUE`)
+					.setLabel(`Do ${clue.name} Clue`)
+					.setStyle(ButtonStyle.Secondary)
+					.setEmoji('365003979840552960')
+			)
+		);
+	}
+	return components;
+}
+
+export function makeAutoFarmButton() {
+	return new ButtonBuilder()
+		.setCustomId('AUTO_FARM')
+		.setLabel('Auto Farm')
+		.setStyle(ButtonStyle.Secondary)
+		.setEmoji('630911040355565599');
+}
+
+export const SQL_sumOfAllCLItems = (clItems: number[]) =>
+	`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`;
+
+export const generateGrandExchangeID = () => miniID(5).toLowerCase();
+
+export function tailFile(fileName: string, numLines: number): Promise<string> {
+	return new Promise((resolve, reject) => {
+		exec(`tail -n ${numLines} ${fileName}`, (error, stdout) => {
+			if (error) {
+				reject(error);
+			} else {
+				resolve(stdout);
+			}
+		});
+	});
+}
+
+export function checkRangeGearWeapon(gear: Gear) {
+	const weapon = gear.equippedWeapon();
+	if (!weapon) return 'You have no weapon equipped.';
+	const { ammo } = gear;
+	if (!ammo) return 'You have no ammo equipped.';
+
+	const projectileCategory = objectEntries(projectiles).find(i => i[1].weapons.includes(weapon.id));
+	if (!projectileCategory) return 'You have an invalid range weapon.';
+	if (!projectileCategory[1].items.includes(ammo.item)) {
+		return `You have invalid ammo for your equipped weapon. For ${
+			projectileCategory[0]
+		}-based weapons, you can use: ${projectileCategory[1].items.map(itemNameFromID).join(', ')}.`;
+	}
+
+	return {
+		weapon,
+		ammo
+	};
 }

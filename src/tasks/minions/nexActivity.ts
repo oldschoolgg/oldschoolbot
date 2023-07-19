@@ -1,10 +1,10 @@
-import { Embed, userMention } from '@discordjs/builders';
+import { EmbedBuilder, userMention } from '@discordjs/builders';
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 
 import { NEX_ID } from '../../lib/constants';
 import { trackLoot } from '../../lib/lootTrack';
 import { handleNexKills } from '../../lib/simulation/nex';
 import { NexTaskOptions } from '../../lib/types/minions';
-import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
 
@@ -45,7 +45,7 @@ export const nexTask: MinionTask = {
 		});
 		await updateBankSetting('nex_loot', loot.totalLoot());
 
-		const embed = new Embed().setThumbnail(
+		const embed = new EmbedBuilder().setThumbnail(
 			'https://cdn.discordapp.com/attachments/342983479501389826/951730848426786846/Nex.webp'
 		).setDescription(`
 ${loot.formatLoot()}`);

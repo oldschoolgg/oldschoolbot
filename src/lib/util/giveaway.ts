@@ -16,6 +16,7 @@ async function refundGiveaway(creator: MUser, loot: Bank) {
 		itemsToAdd: loot
 	});
 	const user = await globalClient.fetchUser(creator.id);
+	debugLog('Refunding a giveaway.', { type: 'GIVEAWAY_REFUND', user_id: creator.id, loot: loot.bank });
 	user.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
 }
 
@@ -53,6 +54,7 @@ export const updateGiveawayMessage = debounce(async (_giveaway: Giveaway) => {
 }, Time.Second);
 
 export async function handleGiveawayCompletion(_giveaway: Giveaway) {
+	debugLog('Completing a giveaway.', { type: 'GIVEAWAY_COMPLETE', giveaway_id: _giveaway.id });
 	if (_giveaway.completed) {
 		throw new Error('Tried to complete an already completed giveaway.');
 	}
@@ -77,7 +79,6 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 		await updateGiveawayMessage(giveaway);
 
 		if (users.length === 0) {
-			logError(`Giveaway[${giveaway.id}] failed.`);
 			await refundGiveaway(creator, loot);
 			return;
 		}

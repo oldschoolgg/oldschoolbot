@@ -1,13 +1,13 @@
-import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/lib';
+import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
+import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 
-import { formatItemStackQuantity, generateHexColorForCashStack } from '../util';
+import { assert } from '../util';
 
-export function fillTextXTimesInCtx(ctx: CanvasRenderingContext2D, text: string, x: number, y: number) {
-	let textPath = ctx.outlineText(text);
-	ctx.fill(textPath.offset(x, y));
+export function fillTextXTimesInCtx(ctx: SKRSContext2D, text: string, x: number, y: number) {
+	ctx.fillText(text, x, y);
 }
 
-export function drawItemQuantityText(ctx: CanvasRenderingContext2D, quantity: number, x: number, y: number) {
+export function drawItemQuantityText(ctx: SKRSContext2D, quantity: number, x: number, y: number) {
 	const quantityColor = generateHexColorForCashStack(quantity);
 	const formattedQuantity = formatItemStackQuantity(quantity);
 	ctx.font = '16px OSRSFontCompact';
@@ -20,7 +20,7 @@ export function drawItemQuantityText(ctx: CanvasRenderingContext2D, quantity: nu
 	fillTextXTimesInCtx(ctx, formattedQuantity, x, y);
 }
 
-export function drawTitleText(ctx: CanvasRenderingContext2D, title: string, x: number, y: number) {
+export function drawTitleText(ctx: SKRSContext2D, title: string, x: number, y: number) {
 	ctx.textAlign = 'center';
 	ctx.font = '16px RuneScape Bold 12';
 
@@ -36,7 +36,7 @@ export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
 }
 
 export function drawImageWithOutline(
-	ctx: CanvasRenderingContext2D,
+	ctx: SKRSContext2D,
 	image: Canvas | Image,
 	dx: number,
 	dy: number,
@@ -59,7 +59,7 @@ export function drawImageWithOutline(
 	ctx.drawImage(image, dx, dy, dw, dh);
 }
 
-function printMultilineText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number) {
+function printMultilineText(ctx: SKRSContext2D, text: string, x: number, y: number) {
 	const lines = text.split(/\r?\n/);
 
 	let linePositionY = y;
@@ -67,17 +67,18 @@ function printMultilineText(ctx: CanvasRenderingContext2D, text: string, x: numb
 		let lineMeasured = ctx.measureText(line);
 		let thisX = Math.floor(x - lineMeasured.width / 2);
 		ctx.fillText(line, thisX, Math.floor(linePositionY));
-		let height = lineMeasured.actualBoundingBoxAscent + lineMeasured.actualBoundingBoxDescent;
+		// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+		let height: number = lineMeasured.actualBoundingBoxAscent + lineMeasured.actualBoundingBoxDescent;
 		linePositionY += height + 1;
 	}
 }
 
 // MIT Copyright (c) 2017 Antonio Román
-const textWrap = (ctx: CanvasRenderingContext2D, text: string, wrapWidth: number): string => {
+const textWrap = (ctx: SKRSContext2D, text: string, wrapWidth: number): string => {
 	const result = [];
 	const buffer = [];
 
-	const spaceWidth = ctx.measureText(' ').width;
+	const spaceWidth: number = ctx.measureText(' ').width;
 
 	// Run the loop for each line
 	for (const line of text.split(/\r?\n/)) {
@@ -85,11 +86,11 @@ const textWrap = (ctx: CanvasRenderingContext2D, text: string, wrapWidth: number
 
 		// Run the loop for each word
 		for (const word of line.split(' ')) {
-			const wordWidth = ctx.measureText(word).width;
+			const wordWidth: number = ctx.measureText(word).width;
 			const wordWidthWithSpace = wordWidth + spaceWidth;
 
 			if (wordWidthWithSpace > spaceLeft) {
-				if (buffer.length) {
+				if (buffer.length > 0) {
 					result.push(buffer.join(' '));
 					buffer.length = 0;
 				}
@@ -101,7 +102,7 @@ const textWrap = (ctx: CanvasRenderingContext2D, text: string, wrapWidth: number
 			}
 		}
 
-		if (buffer.length) {
+		if (buffer.length > 0) {
 			result.push(buffer.join(' '));
 			buffer.length = 0;
 		}
@@ -109,7 +110,7 @@ const textWrap = (ctx: CanvasRenderingContext2D, text: string, wrapWidth: number
 	return result.join('\n');
 };
 
-export function printWrappedText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, wrapWidth: number) {
+export function printWrappedText(ctx: SKRSContext2D, text: string, x: number, y: number, wrapWidth: number) {
 	const wrappedText = textWrap(ctx, text, wrapWidth);
 	return printMultilineText(ctx, wrappedText, x, y);
 }
@@ -118,9 +119,36 @@ export function getClippedRegion(image: Image | Canvas, x: number, y: number, wi
 	const canvas = new Canvas(width, height);
 	const ctx = canvas.getContext('2d');
 	if (image instanceof Canvas) {
-		ctx.drawCanvas(image, x, y, width, height, 0, 0, width, height);
+		ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
 	} else {
 		ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
 	}
 	return canvas;
+}
+export async function getClippedRegionImage(
+	image: Image | Canvas,
+	x: number,
+	y: number,
+	width: number,
+	height: number
+) {
+	const canvas = new Canvas(width, height);
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
+	return loadImage(await canvas.encode('png'));
+}
+
+export function measureTextWidth(ctx: SKRSContext2D, text: string) {
+	const num = ctx.measureText(text).width as number;
+	assert(typeof num === 'number');
+	return num;
+}
+
+const localImageCache = new Map<string, Image>();
+
+export async function loadAndCacheLocalImage(path: string) {
+	const cached = localImageCache.get(path);
+	if (cached) return cached;
+	const image = await loadImage(path);
+	return image;
 }

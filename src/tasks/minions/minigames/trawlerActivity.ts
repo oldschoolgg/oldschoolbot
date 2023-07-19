@@ -19,7 +19,7 @@ export const trawlerTask: MinionTask = {
 
 		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);
 
-		const allItemsOwnedBank = user.allItemsOwned().bank;
+		const allItemsOwnedBank = user.allItemsOwned.bank;
 		const loot = new Bank();
 
 		let totalXP = 0;
@@ -60,7 +60,7 @@ export const trawlerTask: MinionTask = {
 		});
 
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		await user.addXP({ skillName: SkillsEnum.Fishing, amount: totalXP });
+		await user.addXP({ skillName: SkillsEnum.Fishing, amount: totalXP, source: 'FishingTrawler' });
 		const newLevel = user.skillLevel(SkillsEnum.Fishing);
 
 		if (currentLevel !== newLevel) {

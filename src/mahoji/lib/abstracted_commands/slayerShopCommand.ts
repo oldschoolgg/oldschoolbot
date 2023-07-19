@@ -1,11 +1,13 @@
 import { ChatInputCommandInteraction } from 'discord.js';
+import { removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
+import { BitField } from '../../../lib/constants';
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
-import { removeFromArr, stringMatches } from '../../../lib/util';
+import { stringMatches } from '../../../lib/util';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../../lib/util/logError';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 const slayerPurchaseError =
 	'An error occurred trying to make this purchase. Please try again or contact #help-and-support if the issue persists.';
@@ -32,7 +34,7 @@ export async function slayerShopBuyCommand({
 	}
 	if (buyableObj.item) {
 		// Handle buying items with slayer points:
-		if (buyableObj.haveOne && user.allItemsOwned().has(buyableObj.item)) {
+		if (buyableObj.haveOne && user.allItemsOwned.has(buyableObj.item)) {
 			return `You already own a ${buyableObj.name}`;
 		}
 		const qty = buyableObj.haveOne ? 1 : quantity ?? 1;
@@ -67,6 +69,16 @@ export async function slayerShopBuyCommand({
 					slayer_points: { decrement: cost },
 					slayer_unlocks: newUnlocks
 				});
+				if (
+					newUnlocks.length === SlayerRewardsShop.length &&
+					!user.bitfield.includes(BitField.HadAllSlayerUnlocks)
+				) {
+					await user.update({
+						bitfield: {
+							push: BitField.HadAllSlayerUnlocks
+						}
+					});
+				}
 				return `You successfully unlocked ${buyableObj.name}. Remaining slayer points: ${newUser.slayer_points}`;
 			} catch (e) {
 				logError(e, { user_id: user.id, slayer_unlock: buyable });

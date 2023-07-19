@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
 
+import { MAX_XP } from '../constants';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
 import itemID from '../util/itemID';
@@ -15,6 +16,7 @@ interface WintertodtCrateOptions {
 	points: number;
 	itemsOwned: ItemBank;
 	skills: Partial<LevelRequirements>;
+	firemakingXP: number;
 }
 
 type WintertodtTableSlot = [number, [number, number]];
@@ -197,30 +199,37 @@ export class WintertodtCrateClass {
 		return rolls + 1;
 	}
 
-	public rollUnique(itemsOwned: Bank): number | undefined {
+	public rollUnique(itemsOwned: Bank, firemakingXP: number): [number, number] | undefined {
 		// https://oldschool.runescape.wiki/w/Supply_crate#Reward_rolls
-		if (roll(10_000)) return itemID('Dragon axe');
-		if (roll(5000)) return itemID('Phoenix');
-		if (roll(1000)) return itemID('Tome of fire');
+		if (roll(10_000)) return [itemID('Dragon axe'), 1];
+
+		let phoenixDroprate = 5000;
+		if (firemakingXP === MAX_XP) {
+			phoenixDroprate = Math.floor(phoenixDroprate / 15);
+		}
+
+		if (roll(phoenixDroprate)) return [itemID('Phoenix'), 1];
+		if (roll(1000)) return [itemID('Tome of fire'), 1];
 		if (roll(150)) {
 			const glovesOwned = itemsOwned.amount('Warm gloves');
 
 			// If they already own 3 gloves, give only magic seeds.
 			if (glovesOwned && glovesOwned >= 3) {
-				return itemID('Magic seed');
+				return [itemID('Magic seed'), 1];
 			}
-			return itemID('Warm gloves');
+			return [itemID('Warm gloves'), 1];
 		}
 
 		if (roll(150)) {
 			const torchID = itemID('Bruma torch');
 			const torchesOwned = itemsOwned.amount(torchID);
 
-			// If they already own 3 gloves, give only magic seeds.
+			// If they already own 3 torches, give only torstol seeds.
 			if (torchesOwned && torchesOwned >= 3) {
-				return itemID('Torstol seed');
+				const quantity = Math.random() < 0.5 ? 2 : 3;
+				return [itemID('Torstol seed'), quantity];
 			}
-			return torchID;
+			return [torchID, 1];
 		}
 
 		if (roll(150)) {
@@ -233,29 +242,33 @@ export class WintertodtCrateClass {
 			}
 			const minBank = Math.min(...bank);
 			for (let i = 0; i < bank.length; i++) {
-				if (bank[i] === minBank) return pyroPieces[i];
+				if (bank[i] === minBank) return [pyroPieces[i], 1];
 			}
 		}
 	}
 
-	public open({ points, itemsOwned, skills }: WintertodtCrateOptions): ItemBank {
+	public open({ points, itemsOwned, skills, firemakingXP }: WintertodtCrateOptions): Bank {
 		const rolls = this.calcNumberOfRolls(points);
 		if (rolls <= 0) {
-			return {};
+			return new Bank();
 		}
 
 		const loot = new Bank();
 
 		for (let i = 0; i < rolls; i++) {
-			const rolledUnique = this.rollUnique(new Bank().add(itemsOwned).add(loot.values()));
-			if (rolledUnique) {
-				loot.add(rolledUnique);
+			const rolledUnique = this.rollUnique(new Bank().add(itemsOwned).add(loot), firemakingXP);
+
+			if (rolledUnique instanceof Array) {
+				const [itemID, qty] = rolledUnique;
+				loot.add(itemID, qty);
 				continue;
 			}
+
+			loot.add(rolledUnique);
 			loot.add(this.lootRoll(skills));
 		}
 
-		return loot.values();
+		return loot;
 	}
 }
 

@@ -1,5 +1,4 @@
 import { Prisma } from '@prisma/client';
-import { Guild } from 'discord.js';
 import { noOp, notEmpty } from 'e';
 
 import { production, SupportServer } from '../config';
@@ -36,10 +35,10 @@ WHERE "slayer.points" > 50
 ORDER BY "slayer.points" DESC
 LIMIT 1;`;
 
-const longerSlayerTaskStreakQuery = `SELECT id, 'Longest Task Streak' as desc
-FROM users
-WHERE "slayer.task_streak" > 20
-ORDER BY "slayer.task_streak" DESC
+const longerSlayerTaskStreakQuery = `SELECT user_id::text as id, 'Longest Task Streak' as desc
+FROM user_stats
+WHERE "slayer_task_streak" > 20
+ORDER BY "slayer_task_streak" DESC
 LIMIT 1;`;
 
 const mostSlayerTasksDoneQuery = `SELECT user_id::text as id, 'Most Tasks' as desc
@@ -49,18 +48,19 @@ ORDER BY count(user_id) DESC
 LIMIT 1;`;
 
 async function addRoles({
-	g,
 	users,
 	role,
 	badge,
 	userMap
 }: {
-	g: Guild;
 	users: string[];
 	role: string;
 	badge: number | null;
 	userMap?: Record<string, string[]>;
 }): Promise<string> {
+	if (process.env.TEST) return '';
+	const g = globalClient.guilds.cache.get(SupportServer);
+	if (!g) throw new Error('No support guild');
 	let added: string[] = [];
 	let removed: string[] = [];
 	let _role = await g.roles.fetch(role).catch(noOp);
@@ -115,7 +115,7 @@ async function addRoles({
 		}
 		str += `\n${userArr.join(',')}`;
 	}
-	if (added.length || removed.length) {
+	if (added.length > 0 || removed.length > 0) {
 		str += '\n';
 	} else {
 		return `**No Changes:** ${str}`;
@@ -124,8 +124,6 @@ async function addRoles({
 }
 
 export async function runRolesTask() {
-	const g = globalClient.guilds.cache.get(SupportServer);
-	if (!g) throw new Error('No support guild');
 	const skillVals = Object.values(Skills);
 
 	let results: string[] = [];
@@ -183,7 +181,7 @@ export async function runRolesTask() {
 			.sort((a: any, b: any) => b.totalLevel - a.totalLevel)[0];
 		topSkillers.push(rankOneTotal.id);
 
-		results.push(await addRoles({ g: g!, users: topSkillers, role: Roles.TopSkiller, badge: 9 }));
+		results.push(await addRoles({ users: topSkillers, role: Roles.TopSkiller, badge: 9 }));
 	}
 
 	// Top Collectors
@@ -268,7 +266,7 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 			topCollectors.push(id);
 		}
 
-		results.push(await addRoles({ g: g!, users: topCollectors, role: Roles.TopCollector, badge: 10, userMap }));
+		results.push(await addRoles({ users: topCollectors, role: Roles.TopCollector, badge: 10, userMap }));
 	}
 
 	// Top sacrificers
@@ -281,11 +279,14 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 			addToUserMap(userMap, mostValue[i].id, `Rank ${i + 1} Sacrifice Value`);
 		}
 		const mostUniques = await q<any[]>(`SELECT u.id, u.sacbanklength FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
+  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("sacrificed_bank")) sacbanklength, user_id::text as id FROM user_stats
 ) u
 ORDER BY u.sacbanklength DESC LIMIT 1;`);
+
 		const mostUniquesIron = await q<any[]>(`SELECT u.id, u.sacbanklength FROM (
-  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users WHERE "minion.ironman" = true
+  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("sacrificed_bank")) sacbanklength, user_id::text as id FROM user_stats
+  INNER JOIN users ON "user_stats"."user_id"::text = "users"."id"
+  WHERE "users"."minion.ironman" = true
 ) u
 ORDER BY u.sacbanklength DESC LIMIT 1;`);
 		topSacrificers.push(mostUniques[0].id);
@@ -293,7 +294,7 @@ ORDER BY u.sacbanklength DESC LIMIT 1;`);
 		topSacrificers.push(mostUniquesIron[0].id);
 		addToUserMap(userMap, mostUniquesIron[0].id, 'Most Ironman Uniques Sacrificed');
 
-		results.push(await addRoles({ g: g!, users: topSacrificers, role: Roles.TopSacrificer, badge: 8, userMap }));
+		results.push(await addRoles({ users: topSacrificers, role: Roles.TopSacrificer, badge: 8, userMap }));
 	}
 
 	// Top minigamers
@@ -318,7 +319,6 @@ LIMIT 1;`
 
 		results.push(
 			await addRoles({
-				g: g!,
 				users: topMinigamers.map(i => i[0]),
 				role: Roles.TopMinigamer,
 				badge: 11,
@@ -335,6 +335,7 @@ LIMIT 1;`
 					q(
 						`SELECT id, '${t.name}' as n, (openable_scores->>'${t.id}')::int as qty
 FROM users
+INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 WHERE "openable_scores"->>'${t.id}' IS NOT NULL
 ORDER BY qty DESC
 LIMIT 1;`
@@ -353,7 +354,6 @@ LIMIT 1;`
 
 		results.push(
 			await addRoles({
-				g: g!,
 				users: topClueHunters.map(i => i[0]),
 				role: Roles.TopClueHunter,
 				badge: null,
@@ -382,9 +382,9 @@ WHERE type = 'Farming'
 GROUP BY user_id
 ORDER BY count(user_id) DESC
 LIMIT 2;`,
-			`SELECT id, 'Top 2 Tithe Farm' as desc
-FROM users
-ORDER BY "stats.titheFarmsCompleted" DESC
+			`SELECT user_id::text as id, 'Top 2 Tithe Farm' as desc
+FROM user_stats
+ORDER BY "tithe_farms_completed" DESC
 LIMIT 2;`
 		];
 		let res = (await Promise.all(queries.map(q))).map((i: any) => [i[0]?.id, i[0]?.desc]);
@@ -395,7 +395,6 @@ LIMIT 2;`
 
 		results.push(
 			await addRoles({
-				g: g!,
 				users: res.map(i => i[0]),
 				role: '894194027363205150',
 				badge: null,
@@ -421,7 +420,6 @@ LIMIT 2;`
 
 		results.push(
 			await addRoles({
-				g: g!,
 				users: topSlayers.map(i => i[0]),
 				role: Roles.TopSlayer,
 				badge: null,
@@ -470,11 +468,29 @@ LIMIT 50;`;
 
 		results.push(
 			await addRoles({
-				g: g!,
 				users: [highestID],
 				role: '1052481561603346442',
 				badge: null,
 				userMap
+			})
+		);
+	}
+
+	// Global CL %
+	async function globalCL() {
+		const result = await roboChimpClient.$queryRaw<
+			{ id: string; total_cl_percent: number }[]
+		>`SELECT ((osb_cl_percent + bso_cl_percent) / 2) AS total_cl_percent, id::text AS id
+FROM public.user
+WHERE osb_cl_percent IS NOT NULL AND bso_cl_percent IS NOT NULL
+ORDER BY total_cl_percent DESC
+LIMIT 10;`;
+
+		results.push(
+			await addRoles({
+				users: result.slice(0, 10).map(i => i.id),
+				role: Roles.TopGlobalCL,
+				badge: null
 			})
 		);
 	}
@@ -487,7 +503,8 @@ LIMIT 50;`;
 		['Top Collectors', topCollector],
 		['Top Skillers', topSkillers],
 		['Top Farmers', farmers],
-		['Top Giveawayers', giveaways]
+		['Top Giveawayers', giveaways],
+		['Global CL', globalCL]
 	] as const;
 
 	let failed: string[] = [];
@@ -496,6 +513,9 @@ LIMIT 50;`;
 			try {
 				await fn();
 			} catch (err: any) {
+				if (process.env.TEST) {
+					throw err;
+				}
 				failed.push(`${name} (${err.message})`);
 				logError(err);
 			}

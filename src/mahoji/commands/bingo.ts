@@ -1,5 +1,5 @@
 import { time, userMention } from '@discordjs/builders';
-import { BingoTeam, User } from '@prisma/client';
+import { BingoTeam } from '@prisma/client';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { chunk, clamp, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -12,6 +12,7 @@ import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { prisma } from '../../lib/settings/prisma';
 import { makeComponents, toKMB } from '../../lib/util';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../lib/util/logError';
 import {
 	BINGO_TICKET_PRICE,
@@ -24,7 +25,7 @@ import {
 	determineBingoProgress
 } from '../lib/bingo';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { doMenu, getPos } from './leaderboard';
 
 type MakeTeamOptions = {
@@ -124,7 +125,11 @@ async function userCanJoinTeam(userID: string) {
 	return true;
 }
 
-async function makeTeamCommand(interaction: ChatInputCommandInteraction, user: User, options: MakeTeamOptions) {
+async function makeTeamCommand(
+	interaction: ChatInputCommandInteraction,
+	user: { id: string },
+	options: MakeTeamOptions
+) {
 	if (bingoIsActive() && production) {
 		return 'You cannot make a Bingo team, because the bingo has already started!';
 	}
@@ -289,7 +294,12 @@ export const bingoCommand: OSBMahojiCommand = {
 		leave_team?: {};
 		buy_ticket?: { quantity?: number };
 	}>) => {
-		const user = await mahojiUsersSettingsFetch(userID);
+		const user = await mahojiUsersSettingsFetch(userID, {
+			bingo_gp_contributed: true,
+			bingo_tickets_bought: true,
+			temp_cl: true,
+			id: true
+		});
 		const components = user.bingo_tickets_bought > 0 ? undefined : makeComponents([buyBingoTicketButton]);
 		if (options.make_team) return makeTeamCommand(interaction, user, options.make_team);
 		if (options.buy_ticket) {

@@ -89,6 +89,46 @@ const Misc: Craftable[] = [
 		tickRate: 3
 	},
 	{
+		name: 'Splitbark gauntlets',
+		id: itemID('Splitbark gauntlets'),
+		level: 60,
+		xp: 62,
+		inputItems: new Bank().add('Bark').add('Fine cloth'),
+		tickRate: 3
+	},
+	{
+		name: 'Splitbark boots',
+		id: itemID('Splitbark boots'),
+		level: 60,
+		xp: 62,
+		inputItems: new Bank().add('Bark').add('Fine cloth'),
+		tickRate: 3
+	},
+	{
+		name: 'Splitbark helm',
+		id: itemID('Splitbark helm'),
+		level: 61,
+		xp: 124,
+		inputItems: new Bank().add('Bark', 2).add('Fine cloth', 2),
+		tickRate: 3
+	},
+	{
+		name: 'Splitbark legs',
+		id: itemID('Splitbark legs'),
+		level: 60,
+		xp: 186,
+		inputItems: new Bank().add('Bark', 3).add('Fine cloth', 3),
+		tickRate: 3
+	},
+	{
+		name: 'Splitbark body',
+		id: itemID('Splitbark body'),
+		level: 60,
+		xp: 248,
+		inputItems: new Bank().add('Bark', 4).add('Fine cloth', 4),
+		tickRate: 3
+	},
+	{
 		name: 'Neitiznot shield',
 		id: itemID('Neitiznot shield'),
 		level: 1,
@@ -155,14 +195,6 @@ const Misc: Craftable[] = [
 		tickRate: 3
 	},
 	{
-		name: 'Crossbow string',
-		id: itemID('Crossbow string'),
-		level: 10,
-		xp: 15,
-		inputItems: new Bank({ Sinew: 1 }),
-		tickRate: 3
-	},
-	{
 		name: 'Clockwork',
 		id: itemID('Clockwork'),
 		level: 8,
@@ -205,6 +237,14 @@ const Misc: Craftable[] = [
 		inputItems: new Bank({ Amethyst: 1 }),
 		tickRate: 2,
 		outputMultiple: 8
+	},
+	{
+		name: 'Strung rabbit foot',
+		id: itemID('Strung rabbit foot'),
+		level: 37,
+		xp: 4,
+		inputItems: new Bank().add('Ball of wool').add('Rabbit foot'),
+		tickRate: 2
 	}
 ];
 

@@ -4,14 +4,14 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { AlchingActivityTaskOptions } from '../../../lib/types/minions';
+import type { AlchingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getItem } from '../../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 const unlimitedFireRuneProviders = resolveItems([
 	'Staff of fire',

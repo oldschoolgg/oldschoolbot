@@ -42,7 +42,6 @@ export interface Ore {
 	slope: number;
 	intercept: number;
 	petChance?: number;
-	nuggets?: boolean;
 	minerals?: number;
 	clueScrollChance?: number;
 }
@@ -108,6 +107,8 @@ export interface Cookable {
 	inputCookables: ItemBank;
 	stopBurnAt: number;
 	stopBurnAtCG?: number;
+	// Burn level with hosidius/diary: [ noGauntletsHosidius, noGauntletsElite, gauntletsHosidius, gauntletsElite ]
+	burnKourendBonus?: number[];
 	burntCookable: number;
 	alias?: string[];
 }
