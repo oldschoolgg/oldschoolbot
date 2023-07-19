@@ -11,7 +11,7 @@ import {
 } from '../constants';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
-import { GauntletOptions, RaidsOptions } from '../types/minions';
+import { GauntletOptions, NightmareActivityTaskOptions, RaidsOptions } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
 import { type CombatAchievement } from './combatAchievements';
 
@@ -386,7 +386,11 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1033,
 		name: 'Wolf Puncher',
 		desc: 'Kill the Crystalline Hunllef without making more than one attuned weapon.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 5,
+			hasChance: data => data.type === 'Gauntlet' && !(data as GauntletOptions).corrupted
+		}
 	},
 	{
 		id: 1034,
@@ -402,19 +406,32 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1035,
 		name: 'Crystalline Warrior',
 		desc: 'Kill the Crystalline Hunllef with a full set of perfected armour equipped.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 5,
+			hasChance: data => data.type === 'Gauntlet' && !(data as GauntletOptions).corrupted
+		}
 	},
 	{
 		id: 1036,
 		name: 'Egniol Diet',
 		desc: 'Kill the Crystalline Hunllef without making an egniol potion within the Gauntlet.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 5,
+			hasChance: data => data.type === 'Gauntlet' && !(data as GauntletOptions).corrupted
+		}
 	},
 	{
 		id: 1037,
 		name: 'From One King to Another',
 		desc: 'Kill Prime using a Rune Thrownaxe special attack, bounced off Dagannoth Rex.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 5,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.DagannothPrime.id)(data) && user.hasEquipped('Rune thrownaxe')
+		}
 	},
 	{
 		id: 1038,
@@ -484,25 +501,36 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1044,
 		name: 'Hitting Them Where It Hurts',
 		desc: 'Finish off a Demonic Gorilla with a demonbane weapon.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.DemonicGorilla.id)(data) && user.hasEquipped(demonBaneWeapons)
+		}
 	},
 	{
 		id: 1045,
 		name: 'Fragment of Seren Speed-Trialist',
 		desc: 'Kill The Fragment of Seren in less than 4 minutes.',
-		type: 'speed'
+		type: 'speed',
+		notPossible: true
 	},
 	{
 		id: 1046,
 		name: 'Galvek Speed-Trialist',
 		desc: 'Kill Galvek in less than 3 minutes.',
-		type: 'speed'
+		type: 'speed',
+		notPossible: true
 	},
 	{
 		id: 1047,
 		name: 'Ourg Freezer II',
 		desc: 'Kill General Graardor without him attacking any players.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 20,
+			hasChance: isCertainMonsterTrip(Monsters.GeneralGraardor.id)
+		}
 	},
 	{
 		id: 1048,
@@ -519,13 +547,18 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1049,
 		name: 'Hard Hitter',
 		desc: 'Kill the Giant Mole with 4 or fewer instances of damage.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 20,
+			hasChance: isCertainMonsterTrip(Monsters.GiantMole.id)
+		}
 	},
 	{
 		id: 1050,
 		name: 'Glough Speed-Trialist',
 		desc: 'Kill Glough in less than 2 minutes and 30 seconds.',
-		type: 'speed'
+		type: 'speed',
+		notPossible: true
 	},
 	{
 		id: 1051,
@@ -646,13 +679,24 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1062,
 		name: 'Insect Deflection',
 		desc: 'Kill the Kalphite Queen by using the Vengeance spell as the finishing blow.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 2,
+			hasChance: isCertainMonsterTrip(Monsters.KalphiteQueen.id)
+		}
 	},
 	{
 		id: 1063,
 		name: 'Prayer Smasher',
 		desc: "Kill the Kalphite Queen using only the Verac's Flail as a weapon.",
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.KalphiteQueen.id)(data) &&
+				user.attackClass() === 'melee' &&
+				user.hasEquipped("Verac's flail")
+		}
 	},
 	{
 		id: 1064,
@@ -712,13 +756,21 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1069,
 		name: 'Phantom Muspah Speed-Trialist',
 		desc: 'Kill the Phantom Muspah in less than 3 minutes without a slayer task.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 20,
+			hasChance: isCertainMonsterTrip(Monsters.PhantomMuspah.id)
+		}
 	},
 	{
 		id: 1070,
 		name: 'Versatile Drainer',
 		desc: "Drain the Phantom Muspah's Prayer with three different sources in one kill.",
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 10,
+			hasChance: isCertainMonsterTrip(Monsters.PhantomMuspah.id)
+		}
 	},
 	{
 		id: 1071,
@@ -800,25 +852,45 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1078,
 		name: 'Explosion!',
 		desc: 'Kill two Husks at the same time.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 5,
+			hasChance: 'Nightmare'
+		}
 	},
 	{
 		id: 1079,
 		name: 'Nightmare (5-Scale) Speed-Trialist',
 		desc: 'Defeat the Nightmare (5-scale) in less than 5 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 5,
+			hasChance: 'Nightmare'
+		}
 	},
 	{
 		id: 1080,
 		name: 'Nightmare (Solo) Speed-Trialist',
 		desc: 'Defeat the Nightmare (Solo) in less than 23 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 10,
+			hasChance: data => {
+				return data.type === 'Nightmare' && (data as NightmareActivityTaskOptions).method === 'solo';
+			}
+		}
 	},
 	{
 		id: 1081,
 		name: 'Sleep Tight',
 		desc: 'Kill the Nightmare solo.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 1,
+			hasChance: data => {
+				return data.type === 'Nightmare' && (data as NightmareActivityTaskOptions).method === 'solo';
+			}
+		}
 	},
 	{
 		id: 1082,
@@ -1057,13 +1129,15 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1103,
 		name: 'Hardcore Tombs',
 		desc: 'Complete the Tombs of Amascut solo without dying.',
-		type: 'perfection'
+		type: 'perfection',
+		notPossible: true
 	},
 	{
 		id: 1104,
 		name: 'Hardcore Raiders',
 		desc: 'Complete the Tombs of Amascut in a group of two or more without anyone dying.',
-		type: 'perfection'
+		type: 'perfection',
+		notPossible: true
 	},
 	{
 		id: 1105,
@@ -1089,13 +1163,15 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1107,
 		name: 'Novice Tomb Raider',
 		desc: 'Complete the Tombs of Amascut in Entry mode (or above) 50 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		notPossible: true
 	},
 	{
 		id: 1108,
 		name: 'Expert Tomb Explorer',
 		desc: 'Complete the Tombs of Amascut (Expert mode) once.',
-		type: 'kill_count'
+		type: 'kill_count',
+		notPossible: true
 	},
 	{
 		id: 1109,

@@ -78,7 +78,8 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ user
 	for (const task of indexesWithRng) {
 		if (user.user.completed_ca_task_ids.includes(task.id)) continue;
 		if (!('rng' in task)) continue;
-		const hasChance = task.rng.hasChance(data, user);
+		const hasChance =
+			typeof task.rng.hasChance === 'string' ? data.type === task.rng.hasChance : task.rng.hasChance(data, user);
 		if (!hasChance) continue;
 		for (let i = 0; i < quantity; i++) {
 			if (roll(task.rng.chancePerKill)) {
