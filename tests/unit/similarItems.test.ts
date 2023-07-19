@@ -167,7 +167,7 @@ describe('Gear', () => {
 		expect(getSimilarItems(itemID('Rune pouch'))).toEqual(resolveItems(['Rune pouch', 'Divine rune pouch']));
 	});
 
-	test('Celestial signet', () => {
-		expect(getSimilarItems(itemID('Celestial ring'))).toEqual(resolveItems(['Celestial signet', 'Celestial ring']));
+	test('Celestial Ring/Signet', () => {
+		expect(getSimilarItems(itemID('Celestial ring'))).toEqual(resolveItems(['Celestial ring', 'Celestial signet']));
 	});
 });
