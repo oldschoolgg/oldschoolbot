@@ -247,6 +247,13 @@ export class MUserClass {
 		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
 	}
 
+	attackClass(): 'range' | 'mage' | 'melee' {
+		const styles = this.getAttackStyles();
+		if (styles.includes(SkillsEnum.Ranged)) return 'range';
+		if (styles.includes(SkillsEnum.Magic)) return 'mage';
+		return 'melee';
+	}
+
 	getAttackStyles(): AttackStyles[] {
 		const styles = this.user.attack_style;
 		if (styles.length === 0) {

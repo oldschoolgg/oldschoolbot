@@ -1,7 +1,14 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { MIMIC_MONSTER_ID, NEX_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
+import {
+	demonBaneWeapons,
+	MIMIC_MONSTER_ID,
+	NEX_ID,
+	NIGHTMARE_ID,
+	PHOSANI_NIGHTMARE_ID,
+	ZALCANO_ID
+} from '../constants';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
 import { GauntletOptions, RaidsOptions } from '../types/minions';
@@ -336,7 +343,12 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1029,
 		name: 'Finding the Weak Spot',
 		desc: 'Finish off the Corporeal Beast with a Crystal Halberd special attack.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 5,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.CorporealBeast.id)(data) && user.hasEquipped('Crystal halberd')
+		}
 	},
 	{
 		id: 1030,
@@ -380,7 +392,11 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1034,
 		name: '3, 2, 1 - Range',
 		desc: 'Kill the Crystalline Hunllef without taking damage off prayer.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 5,
+			hasChance: data => data.type === 'Gauntlet' && !(data as GauntletOptions).corrupted
+		}
 	},
 	{
 		id: 1035,
@@ -537,37 +553,62 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1053,
 		name: 'Grotesque Guardians Speed-Trialist',
 		desc: 'Kill the Grotesque Guardians in less than 2 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 10,
+			hasChance: isCertainMonsterTrip(Monsters.GrotesqueGuardians.id)
+		}
 	},
 	{
 		id: 1054,
 		name: 'Done before Dusk',
 		desc: 'Kill the Grotesque Guardians before Dusk uses his prison attack for a second time.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 10,
+			hasChance: isCertainMonsterTrip(Monsters.GrotesqueGuardians.id)
+		}
 	},
 	{
 		id: 1055,
 		name: 'Perfect Grotesque Guardians',
 		desc: "Kill the Grotesque Guardians whilst completing the 'Don't look at the eclipse', 'Prison Break', 'Granite Footwork', 'Heal no more', 'Static Awareness' and 'Done before dusk' tasks.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 10,
+			hasChance: isCertainMonsterTrip(Monsters.GrotesqueGuardians.id)
+		}
 	},
 	{
 		id: 1056,
 		name: 'Plant-Based Diet',
 		desc: 'Kill Hespori without losing any prayer points.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 2,
+			hasChance: isCertainMonsterTrip(Monsters.Hespori.id)
+		}
 	},
 	{
 		id: 1057,
 		name: 'Hespori Speed-Trialist',
 		desc: 'Kill the Hespori in less than 48 seconds.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.Hespori.id)
+		}
 	},
 	{
 		id: 1058,
 		name: 'The Bane of Demons',
 		desc: "Defeat K'ril Tsutsaroth in a private instance using only demonbane spells.",
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.KrilTsutsaroth.id)(data) && user.attackClass() === 'mage'
+		}
 	},
 	{
 		id: 1059,
@@ -584,7 +625,11 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1060,
 		name: 'Demonic Defence',
 		desc: "Kill K'ril Tsutsaroth in a private instance without taking any of his melee hits.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 20,
+			hasChance: isCertainMonsterTrip(Monsters.KrilTsutsaroth.id)
+		}
 	},
 	{
 		id: 1061,
@@ -635,7 +680,11 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1066,
 		name: 'Nex Survivors',
 		desc: 'Kill Nex without anyone dying.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(NEX_ID)
+		}
 	},
 	{
 		id: 1067,
@@ -708,13 +757,22 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1074,
 		name: 'Demon Evasion',
 		desc: 'Kill Skotizo without taking any damage.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 10,
+			hasChance: isCertainMonsterTrip(Monsters.Skotizo.id)
+		}
 	},
 	{
 		id: 1075,
 		name: 'Up for the Challenge',
 		desc: 'Kill Skotizo without equipping a demonbane weapon.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.Skotizo.id)(data) && !user.hasEquipped(demonBaneWeapons, false)
+		}
 	},
 	{
 		id: 1076,
@@ -1043,19 +1101,22 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1109,
 		name: "TzHaar-Ket-Rak's Speed-Trialist",
 		desc: "Complete TzHaar-Ket-Rak's first challenge in less than 45 seconds.",
-		type: 'speed'
+		type: 'speed',
+		notPossible: true
 	},
 	{
 		id: 1110,
 		name: 'Facing Jad Head-on III',
 		desc: "Complete TzHaar-Ket-Rak's second challenge with only melee.",
-		type: 'restriction'
+		type: 'restriction',
+		notPossible: true
 	},
 	{
 		id: 1111,
 		name: 'The II Jad Challenge',
 		desc: "Complete TzHaar-Ket-Rak's second challenge.",
-		type: 'kill_count'
+		type: 'kill_count',
+		notPossible: true
 	},
 	{
 		id: 1112,
@@ -1093,7 +1154,11 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		id: 1115,
 		name: 'Facing Jad Head-on',
 		desc: 'Complete the Fight Caves with only melee.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, user) => data.type === 'FightCaves' && user.attackClass() === 'melee'
+		}
 	},
 	{
 		id: 1116,
@@ -1136,11 +1201,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) => {
-				const styles = user.getAttackStyles();
-				return (
-					isCertainMonsterTrip(Monsters.Vorkath.id)(data) &&
-					([SkillsEnum.Ranged, SkillsEnum.Magic] as const).every(styl => !styles.includes(styl))
-				);
+				return isCertainMonsterTrip(Monsters.Vorkath.id)(data) && user.attackClass() === 'melee';
 			}
 		}
 	},

@@ -1,6 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
-import { NIGHTMARE_ID } from '../constants';
+import { demonBaneWeapons, NIGHTMARE_ID } from '../constants';
 import { anglerOutfit } from '../data/CollectionsExport';
 import { Requirements } from '../structures/Requirements';
 import { ItemBank } from '../types';
@@ -348,8 +348,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.KrilTsutsaroth.id)(data) &&
-				user.hasEquipped(['Silverlight', 'Darklight', 'Arclight'], false)
+				isCertainMonsterTrip(Monsters.KrilTsutsaroth.id)(data) && user.hasEquipped(demonBaneWeapons, false)
 		}
 	},
 	{
