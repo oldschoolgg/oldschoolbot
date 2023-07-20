@@ -28,9 +28,10 @@ export const completionCommand: OSBMahojiCommand = {
 	run: async ({ options, userID }: CommandRunOptions<{ check?: {}; view_all_tasks?: {} }>) => {
 		const user = await mUserFetch(userID);
 		if (options.check) {
-			const { resultStr, totalPercent } = await calculateCompCapeProgress(user);
+			const { resultStr, totalPercentTrimmed, totalPercentUntrimmed } = await calculateCompCapeProgress(user);
 			await userStatsUpdate(user.id, {
-				comp_cape_percent: totalPercent
+				comp_cape_percent: totalPercentTrimmed,
+				untrimmed_comp_cape_percent: totalPercentUntrimmed
 			});
 			return {
 				files: [new AttachmentBuilder(Buffer.from(resultStr), { name: 'compcape.txt' })]

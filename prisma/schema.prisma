@@ -935,6 +935,7 @@ model UserStats {
 
   chincannon_destroyed_loot_bank Json     @default("{}") @db.Json
   comp_cape_percent              Decimal?
+  untrimmed_comp_cape_percent    Decimal?
 
   @@map("user_stats")
 }

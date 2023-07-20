@@ -62,6 +62,10 @@ type Requirement = {
 export class Requirements {
 	requirements: Requirement[] = [];
 
+	get size() {
+		return this.requirements.length;
+	}
+
 	formatRequirement(req: Requirement): (string | string[])[] {
 		const requirementParts: (string | string[])[] = [];
 		if ('skillRequirements' in req) {
@@ -170,11 +174,13 @@ export class Requirements {
 
 		if ('has' in requirement) {
 			const result = await requirement.has(userArgs);
-			if (result) {
+			if (typeof result === 'boolean') {
+				if (!result) {
+					results.push({ reason: requirement.name });
+				}
+			} else if (result) {
 				if (typeof result === 'string') {
 					results.push({ reason: result });
-				} else if (typeof result === 'boolean') {
-					results.push({ reason: requirement.name });
 				} else {
 					results.push(...result);
 				}
@@ -371,7 +377,7 @@ export class Requirements {
 		const completionPercentage = calcWhatPercent(metRequirements, totalRequirements);
 
 		return {
-			hasAll: results.length === 0,
+			hasAll: results.filter(i => i.result.length !== 0).length === 0,
 			reasonsDoesnt: results
 				.filter(i => i.result.length > 0)
 				.map(i => `${i.requirement.name}: ${i.result.map(t => t.reason).join(', ')}`),
