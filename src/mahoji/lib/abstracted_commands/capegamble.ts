@@ -45,13 +45,15 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 		}
 	);
 	const newSacrificedCount = newStats[key];
-	await user.removeItemsFromBank(new Bank().add(item.id));
 
 	const chance = type === 'fire' ? 200 : 100;
 	const pet = getOSItem(type === 'fire' ? 'Tzrek-Jad' : 'Jal-nib-rek');
+	const gotPet = roll(chance);
+	const loot = gotPet ? new Bank().add(pet.id) : undefined;
 
-	if (roll(chance)) {
-		await user.addItemsToBank({ items: new Bank().add(pet.id), collectionLog: true });
+	await user.transactItems({ itemsToAdd: loot, itemsToRemove: new Bank().add(item.id), collectionLog: true });
+
+	if (gotPet) {
 		globalClient.emit(
 			Events.ServerNotification,
 			`**${user.badgedUsername}'s** just received their ${formatOrdinal(
