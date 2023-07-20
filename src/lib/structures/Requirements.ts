@@ -170,13 +170,13 @@ export class Requirements {
 
 		if ('has' in requirement) {
 			const result = await requirement.has(userArgs);
-			if (result) {
+			if (typeof result === 'boolean') {
+				if (!result) {
+					results.push({ reason: requirement.name });
+				}
+			} else if (result) {
 				if (typeof result === 'string') {
 					results.push({ reason: result });
-				} else if (typeof result === 'boolean') {
-					if (!result) {
-						results.push({ reason: requirement.name });
-					}
 				} else {
 					results.push(...result);
 				}
