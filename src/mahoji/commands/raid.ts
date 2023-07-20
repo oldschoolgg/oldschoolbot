@@ -107,7 +107,7 @@ export const raidCommand: OSBMahojiCommand = {
 					description: 'Start a Tombs of Amascut trip',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Number,
+							type: ApplicationCommandOptionType.Integer,
 							name: 'raid_level',
 							description: 'Choose the raid level you want to do (1-600).',
 							required: true,
