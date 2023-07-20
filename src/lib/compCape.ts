@@ -845,7 +845,7 @@ const compCapeCategories = [
 		name: 'Trimmed',
 		requirements: trimmedRequirements
 	}
-];
+] as const;
 
 const allCLItemsCheckedFor = compCapeCategories
 	.map(i => i.requirements.requirements)
@@ -884,31 +884,51 @@ ${finalStr}`;
 }
 
 export async function calculateCompCapeProgress(user: MUser) {
-	let totalRequirements = 0;
-	let totalCompleted = 0;
-
 	let finalStr = '';
+
+	let totalRequirementsTrimmed = 0;
+	let totalCompletedTrimmed = 0;
+	let totalCompletedUntrimmed = 0;
 
 	for (const cat of compCapeCategories) {
 		const progress = await cat.requirements.check(user);
-		totalRequirements += progress.totalRequirements;
-		totalCompleted += progress.metRequirements;
+
 		let subStr = `${cat.name} (Finished ${progress.metRequirements}/${
 			progress.totalRequirements
 		}, ${progress.completionPercentage.toFixed(2)}%)\n`;
 		for (const reason of progress.reasonsDoesnt) {
 			subStr += `	- ${reason}\n`;
 		}
+
+		totalRequirementsTrimmed += progress.totalRequirements;
+		totalCompletedTrimmed += progress.metRequirements;
+
+		if (cat.name !== 'Trimmed') {
+			totalCompletedUntrimmed += progress.metRequirements;
+		}
+
 		subStr += '\n\n';
 		finalStr += subStr;
 	}
-	const totalPercent = calcWhatPercent(totalCompleted, totalRequirements);
+
+	const totalRequirementsUntrimmed = totalRequirementsTrimmed - trimmedRequirements.size;
+
+	const totalPercentTrimmed = calcWhatPercent(totalCompletedTrimmed, totalRequirementsTrimmed);
+	const totalPercentUntrimmed = calcWhatPercent(totalCompletedUntrimmed, totalRequirementsUntrimmed);
+
+	const trimmedStr = ` ${totalCompletedTrimmed}/${totalRequirementsTrimmed} (${totalPercentTrimmed.toFixed(2)}%)`;
+	const untrimmedStr = ` ${totalCompletedUntrimmed}/${totalRequirementsUntrimmed} (${totalPercentUntrimmed.toFixed(
+		2
+	)}%)`;
+
 	return {
-		resultStr: `Completionist Cape Progress - ${totalCompleted}/${totalRequirements} (${totalPercent.toFixed(
-			2
-		)}%) completed\n\n
+		resultStr: `Completionist Cape Progress
+
+Trimmed: ${trimmedStr}
+Untrimmed: ${untrimmedStr}
 
 ${finalStr}`,
-		totalPercent
+		totalPercentTrimmed,
+		totalPercentUntrimmed
 	};
 }

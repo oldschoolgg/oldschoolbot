@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { EmbedBuilder } from '@discordjs/builders';
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { Prisma } from '@prisma/client';
+import { Prisma, UserStats } from '@prisma/client';
 import { calcWhatPercent, chunk, objectValues, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
@@ -778,14 +778,15 @@ ${Object.entries(taskObj)
 	.join('\n')}`;
 }
 
-async function compLeaderboard(user: MUser, ironmanOnly: boolean, channelID: string) {
-	let list = await prisma.$queryRawUnsafe<{ id: string; comp_cape_percent: number }[]>(
-		`SELECT user_id::text AS id, comp_cape_percent
+async function compLeaderboard(user: MUser, untrimmed: boolean, ironmanOnly: boolean, channelID: string) {
+	const key: keyof UserStats = untrimmed ? 'untrimmed_comp_cape_percent' : 'comp_cape_percent';
+	let list = await prisma.$queryRawUnsafe<{ id: string; percent: number }[]>(
+		`SELECT user_id::text AS id, ${key} AS percent
 		 FROM user_stats
 		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
-		 WHERE comp_cape_percent IS NOT NULL
+		 WHERE ${key} IS NOT NULL
 		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
-		 ORDER BY comp_cape_percent DESC
+		 ORDER BY ${key} DESC
 		 LIMIT 100;`
 	);
 
@@ -794,7 +795,10 @@ async function compLeaderboard(user: MUser, ironmanOnly: boolean, channelID: str
 		channelID,
 		chunk(list, 10).map(subList =>
 			subList
-				.map(({ id, comp_cape_percent }) => `**${getUsername(id)}:** ${comp_cape_percent.toFixed(2)}%`)
+				.map(
+					({ id, percent }) =>
+						`**${getUsername(id)}:** ${percent.toFixed(2)}% ${untrimmed ? 'Untrimmed' : 'Trimmed'}`
+				)
 				.join('\n')
 		),
 		'Completionist Leaderboard'
@@ -1179,7 +1183,15 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'completion',
 			description: 'Check the completion leaderboard.',
-			options: [ironmanOnlyOption]
+			options: [
+				ironmanOnlyOption,
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'untrimmed',
+					description: 'Show only untrimmed completion.',
+					required: false
+				}
+			]
 		}
 	],
 	run: async ({
@@ -1206,7 +1218,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		global?: {
 			type: GlobalLbType;
 		};
-		completion?: { ironmen_only?: boolean };
+		completion?: { untrimmed?: boolean; ironmen_only?: boolean };
 	}>) => {
 		deferInteraction(interaction);
 		const user = await mUserFetch(userID);
@@ -1247,7 +1259,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		if (clues) return cluesLb(user, channelID, clues.clue, Boolean(clues.ironmen_only));
 		if (movers) return gainersLB(user, channelID, movers.type);
 		if (global) return globalLb(user, channelID, global.type);
-		if (completion) return compLeaderboard(user, Boolean(completion.ironmen_only), channelID);
+		if (completion)
+			return compLeaderboard(user, Boolean(completion.untrimmed), Boolean(completion.ironmen_only), channelID);
 
 		return 'Invalid input.';
 	}

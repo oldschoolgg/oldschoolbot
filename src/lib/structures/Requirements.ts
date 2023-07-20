@@ -62,6 +62,10 @@ type Requirement = {
 export class Requirements {
 	requirements: Requirement[] = [];
 
+	get size() {
+		return this.requirements.length;
+	}
+
 	formatRequirement(req: Requirement): (string | string[])[] {
 		const requirementParts: (string | string[])[] = [];
 		if ('skillRequirements' in req) {
