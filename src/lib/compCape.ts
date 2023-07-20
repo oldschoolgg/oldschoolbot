@@ -563,10 +563,14 @@ miscRequirements
 			const poh = await getPOH(user.id);
 			const failures: RequirementFailure[] = [];
 			for (const [key, val] of objectEntries(poh)) {
-				if (key === 'user_id' || key === 'background_id') continue;
-				const sorted = PoHObjects.filter(i => i.slot === key && typeof i.level === 'number').sort(
-					(a, b) => (b.level as number) - (a.level as number)
-				);
+				if (key === 'user_id' || key === 'background_id' || key === 'altar') continue;
+				const sorted = PoHObjects.filter(
+					i => i.slot === key && (typeof i.level === 'number' || 'construction' in i.level)
+				).sort((a, b) => {
+					const sortA = typeof a.level === 'number' ? a.level : a.level.construction!;
+					const sortB = typeof b.level === 'number' ? b.level : b.level.construction!;
+					return sortB - sortA;
+				});
 				const highestIDs = sorted.filter(i => i.level === sorted[0].level).map(i => i.id);
 				if (!val || typeof val !== 'number' || !highestIDs.includes(val)) {
 					failures.push({
@@ -707,7 +711,9 @@ const tameRequirements = new Requirements()
 				.filter(t => t.species.id === TameSpeciesID.Monkey)
 				.some(tame =>
 					itemsToBeFed.every(itemNeedsToBeFed =>
-						getSimilarItems(itemNeedsToBeFed.item.id).some(similarItem => tame.fedItems.has(similarItem))
+						[itemNeedsToBeFed.item.id, ...getSimilarItems(itemNeedsToBeFed.item.id)].some(similarItem =>
+							tame.fedItems.has(similarItem)
+						)
 					)
 				);
 			if (!oneTameHasAll) {
@@ -725,7 +731,13 @@ const tameRequirements = new Requirements()
 
 			const oneTameHasAll = tames
 				.filter(t => t.species.id === TameSpeciesID.Igne)
-				.some(tame => itemsToBeFed.every(i => tame.fedItems.has(i.item.id)));
+				.some(tame =>
+					itemsToBeFed.every(itemNeedsToBeFed =>
+						[itemNeedsToBeFed.item.id, ...getSimilarItems(itemNeedsToBeFed.item.id)].some(similarItem =>
+							tame.fedItems.has(similarItem)
+						)
+					)
+				);
 			if (!oneTameHasAll) {
 				return `You need to feed all of these items to one of your Igne tames: ${itemsToBeFed
 					.map(i => i.item.name)
@@ -867,7 +879,7 @@ export async function generateAllCompCapeTasksList() {
 	}
 
 	return `Completionist Cape Tasks - ${totalRequirements} tasks\n\n
-	
+
 ${finalStr}`;
 }
 
@@ -895,7 +907,7 @@ export async function calculateCompCapeProgress(user: MUser) {
 		resultStr: `Completionist Cape Progress - ${totalCompleted}/${totalRequirements} (${totalPercent.toFixed(
 			2
 		)}%) completed\n\n
-	
+
 ${finalStr}`,
 		totalPercent
 	};
