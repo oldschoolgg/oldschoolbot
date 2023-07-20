@@ -21813,6 +21813,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "51010": 1,
@@ -21829,6 +21830,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "51011": 1,
@@ -21845,6 +21847,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "51012": 1,
@@ -21861,6 +21864,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "51014": 1,
@@ -21877,6 +21881,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "51013": 1,
@@ -21893,6 +21898,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "51000": 1,
@@ -21909,6 +21915,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "51001": 1,
@@ -21925,6 +21932,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "51002": 1,
@@ -21941,6 +21949,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "51004": 1,
@@ -21957,6 +21966,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "51003": 1,
@@ -21973,6 +21983,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "51005": 1,
@@ -21989,6 +22000,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "51006": 1,
@@ -22005,6 +22017,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "51007": 1,
@@ -22021,6 +22034,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "51009": 1,
@@ -22037,6 +22051,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "51008": 1,
@@ -22053,6 +22068,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "11832": 1,
@@ -22069,6 +22085,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "11834": 1,
@@ -22085,13 +22102,14 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "11826": 1,
       },
       "frozen": false,
     },
-    "name": "Revert armadyl helmet",
+    "name": "Revert armadyl helmet (components)",
     "outputItems": Bank {
       "bank": {
         "51016": 1,
@@ -22101,13 +22119,14 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "11828": 1,
       },
       "frozen": false,
     },
-    "name": "Revert armadyl chestplate",
+    "name": "Revert armadyl chestplate (components)",
     "outputItems": Bank {
       "bank": {
         "51016": 3,
@@ -22117,13 +22136,14 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "11830": 1,
       },
       "frozen": false,
     },
-    "name": "Revert armadyl chainskirt",
+    "name": "Revert armadyl chainskirt (components)",
     "outputItems": Bank {
       "bank": {
         "51016": 2,
@@ -22133,6 +22153,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "21018": 1,
@@ -22149,6 +22170,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "21021": 1,
@@ -22165,6 +22187,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "21024": 1,
@@ -22181,6 +22204,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "27226": 1,
@@ -22197,6 +22221,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "27229": 1,
@@ -22213,6 +22238,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "27232": 1,
@@ -29587,7 +29613,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Revert Armadyl helmet",
+    "name": "Revert Armadyl helmet (to plates)",
     "outputItems": Bank {
       "bank": {
         "27269": 1,
@@ -29603,7 +29629,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Revert Armadyl chestplate",
+    "name": "Revert Armadyl chestplate (to plates)",
     "outputItems": Bank {
       "bank": {
         "27269": 4,
@@ -29619,7 +29645,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Revert Armadyl chainskirt",
+    "name": "Revert Armadyl chainskirt (to plates)",
     "outputItems": Bank {
       "bank": {
         "27269": 3,
