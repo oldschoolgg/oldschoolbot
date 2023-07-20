@@ -278,6 +278,12 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 			topSacrificers.push(mostValue[i].id);
 			addToUserMap(userMap, mostValue[i].id, `Rank ${i + 1} Sacrifice Value`);
 		}
+		const mostValueIronman = await q<any[]>(
+			'SELECT id FROM users WHERE "minion.ironman" = true ORDER BY "sacrificedValue" DESC LIMIT 1;'
+		);
+		topSacrificers.push(mostValueIronman[0].id);
+		addToUserMap(userMap, mostValueIronman[0].id, 'Rank 1 Ironman Sacrificed Value');
+
 		const mostUniques = await q<any[]>(`SELECT u.id, u.sacbanklength FROM (
   SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("sacrificed_bank")) sacbanklength, user_id::text as id FROM user_stats
 ) u
@@ -476,6 +482,25 @@ LIMIT 50;`;
 		);
 	}
 
+	// Global CL %
+	async function globalCL() {
+		const result = await roboChimpClient.$queryRaw<
+			{ id: string; total_cl_percent: number }[]
+		>`SELECT ((osb_cl_percent + bso_cl_percent) / 2) AS total_cl_percent, id::text AS id
+FROM public.user
+WHERE osb_cl_percent IS NOT NULL AND bso_cl_percent IS NOT NULL
+ORDER BY total_cl_percent DESC
+LIMIT 10;`;
+
+		results.push(
+			await addRoles({
+				users: result.slice(0, 10).map(i => i.id),
+				role: Roles.TopGlobalCL,
+				badge: null
+			})
+		);
+	}
+
 	const tup = [
 		['Top Slayer', slayer],
 		['Top Clue Hunters', topClueHunters],
@@ -484,7 +509,8 @@ LIMIT 50;`;
 		['Top Collectors', topCollector],
 		['Top Skillers', topSkillers],
 		['Top Farmers', farmers],
-		['Top Giveawayers', giveaways]
+		['Top Giveawayers', giveaways],
+		['Global CL', globalCL]
 	] as const;
 
 	let failed: string[] = [];

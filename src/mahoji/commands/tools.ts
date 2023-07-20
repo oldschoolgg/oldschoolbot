@@ -16,6 +16,7 @@ import {
 	evilChickenOutfit,
 	gnomeRestaurantCL,
 	guardiansOfTheRiftCL,
+	shadesOfMorttonCL,
 	toaCL
 } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
@@ -295,6 +296,11 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 		name: 'Tombs of Amascut',
 		key: 'tombs_of_amascut',
 		items: toaCL
+	},
+	{
+		name: 'Shades of Morton',
+		key: 'shades_of_morton',
+		items: shadesOfMorttonCL
 	}
 ];
 
