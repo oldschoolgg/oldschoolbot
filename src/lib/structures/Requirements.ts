@@ -174,7 +174,9 @@ export class Requirements {
 				if (typeof result === 'string') {
 					results.push({ reason: result });
 				} else if (typeof result === 'boolean') {
-					results.push({ reason: requirement.name });
+					if (!result) {
+						results.push({ reason: requirement.name });
+					}
 				} else {
 					results.push(...result);
 				}
@@ -371,7 +373,7 @@ export class Requirements {
 		const completionPercentage = calcWhatPercent(metRequirements, totalRequirements);
 
 		return {
-			hasAll: totalRequirements === metRequirements,
+			hasAll: results.filter(i => i.result.length !== 0).length === 0,
 			reasonsDoesnt: results
 				.filter(i => i.result.length > 0)
 				.map(i => `${i.requirement.name}: ${i.result.map(t => t.reason).join(', ')}`),

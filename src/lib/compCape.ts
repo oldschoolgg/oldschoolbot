@@ -803,10 +803,7 @@ for (const group of leagueTasks) {
 	trimmedRequirements.add({
 		name: `Complete all ${group.name} Leagues tasks`,
 		has: ({ roboChimpUser }) => {
-			if (!group.tasks.every(t => roboChimpUser.leagues_completed_tasks_ids.includes(t.id))) {
-				// Returning a truthy result means you don't have the requirement.
-				return true;
-			}
+			return group.tasks.every(t => roboChimpUser.leagues_completed_tasks_ids.includes(t.id));
 		}
 	});
 }
