@@ -18,7 +18,12 @@ export async function capeGambleStatsCommand(user: MUser) {
 **Infernal Cape's Gambled:** ${stats.infernal_cape_sacrifices}`;
 }
 
-export async function capeGambleCommand(user: MUser, type: string, interaction: ChatInputCommandInteraction) {
+export async function capeGambleCommand(
+	user: MUser,
+	type: string,
+	interaction: ChatInputCommandInteraction,
+	autoconfirm: boolean = false
+) {
 	const item = getOSItem(type === 'fire' ? 'Fire cape' : 'Infernal cape');
 	const key: 'infernal_cape_sacrifices' | 'firecapes_sacrificed' =
 		type === 'fire' ? 'firecapes_sacrificed' : 'infernal_cape_sacrifices';
@@ -26,7 +31,9 @@ export async function capeGambleCommand(user: MUser, type: string, interaction: 
 
 	if (capesOwned < 1) return `You have no ${item.name}'s to gamble!`;
 
-	await handleMahojiConfirmation(interaction, `Are you sure you want to gamble a ${item.name}?`);
+	if (!autoconfirm) {
+		await handleMahojiConfirmation(interaction, `Are you sure you want to gamble a ${item.name}?`);
+	}
 
 	// Double check after confirmation dialogue:
 	await user.sync();

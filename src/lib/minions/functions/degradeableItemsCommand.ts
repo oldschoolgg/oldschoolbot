@@ -53,8 +53,8 @@ ${degradeableItems
 		await user.transactItems({
 			filterLoot: false,
 			collectionLog: true,
-			itemsToAdd: new Bank().add(item.unchargedItem!.id),
-			itemsToRemove: new Bank().add(item.item.id).add(cost)
+			itemsToAdd: new Bank().add(item.item.id),
+			itemsToRemove: new Bank().add(item.unchargedItem!.id).add(cost)
 		});
 	} else {
 		await transactItems({ userID: user.id, itemsToRemove: cost });

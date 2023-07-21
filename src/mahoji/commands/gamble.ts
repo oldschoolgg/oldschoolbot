@@ -36,6 +36,12 @@ export const gambleCommand: OSBMahojiCommand = {
 						{ name: 'fire', value: 'fire' },
 						{ name: 'infernal', value: 'infernal' }
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'autoconfirm',
+					description: "Don't ask confirmation message",
+					required: false
 				}
 			]
 		},
@@ -166,7 +172,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		interaction,
 		userID
 	}: CommandRunOptions<{
-		cape?: { type?: string };
+		cape?: { type?: string; autoconfirm?: boolean };
 		dice?: { amount?: string };
 		duel?: { user: MahojiUserOption; amount?: string };
 		lucky_pick?: { amount: string };
@@ -178,7 +184,7 @@ export const gambleCommand: OSBMahojiCommand = {
 
 		if (options.cape) {
 			if (options.cape.type) {
-				return capeGambleCommand(user, options.cape.type, interaction);
+				return capeGambleCommand(user, options.cape.type, interaction, options.cape.autoconfirm);
 			}
 			return capeGambleStatsCommand(user);
 		}

@@ -303,7 +303,10 @@ export class MUserClass {
 	}
 
 	async transactItems(options: Omit<TransactItemsArgs, 'userID'>) {
-		return transactItems({ userID: this.user.id, ...options });
+		const res = await transactItems({ userID: this.user.id, ...options });
+		this.user = res.newUser;
+		this.updateProperties();
+		return res;
 	}
 
 	hasEquipped(_item: number | string | string[] | number[], every = false) {
