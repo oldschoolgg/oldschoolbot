@@ -124,8 +124,11 @@ export async function agilityArenaBuyCommand(user: MUser, input: string, qty = 1
 		if (amountTicketsHas < cost) {
 			return "You don't have enough Agility arena tickets.";
 		}
-		await user.removeItemsFromBank(new Bank().add('Agility arena ticket', cost));
-		await user.addItemsToBank({ items: { [buyable.item.id]: qty }, collectionLog: true });
+		await user.transactItems({
+			itemsToAdd: new Bank().add(buyable.item.id, qty),
+			itemsToRemove: new Bank().add('Agility arena ticket', cost),
+			collectionLog: true
+		});
 		return `Successfully purchased ${qty}x ${buyable.item.name} for ${cost}x Agility arena tickets.`;
 	}
 
