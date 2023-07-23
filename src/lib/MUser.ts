@@ -42,6 +42,7 @@ import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
+import { TransactItemsArgs } from './util/transactItemsFromBank';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
@@ -309,6 +310,13 @@ export class MUserClass {
 			userID: this.id,
 			itemsToRemove: bankToRemove
 		});
+		this.user = res.newUser;
+		this.updateProperties();
+		return res;
+	}
+
+	async transactItems(options: Omit<TransactItemsArgs, 'userID'>) {
+		const res = await transactItems({ userID: this.user.id, ...options });
 		this.user = res.newUser;
 		this.updateProperties();
 		return res;
