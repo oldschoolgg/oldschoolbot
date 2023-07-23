@@ -288,6 +288,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					dropratePerMinute = reduceNumByPercent(dropratePerMinute, 15);
 				}
 			}
+			dropratePerMinute = Math.ceil(dropratePerMinute / 4);
 			const minutes = Math.floor(data.duration / Time.Minute);
 			for (let i = 0; i < minutes; i++) {
 				if (roll(dropratePerMinute)) {
