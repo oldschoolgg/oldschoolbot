@@ -218,10 +218,11 @@ export async function degradeItem({
 			}
 		} else if (hasInBank) {
 			// If its in bank, just remove 1 from bank.
-			await user.removeItemsFromBank(new Bank().add(item.id, 1));
+			let itemsToAdd = undefined;
 			if (degItem.itemsToRefundOnBreak) {
-				await user.addItemsToBank({ items: degItem.itemsToRefundOnBreak, collectionLog: false });
+				itemsToAdd = degItem.itemsToRefundOnBreak;
 			}
+			await user.transactItems({ itemsToRemove: new Bank().add(item.id, 1), itemsToAdd });
 		} else {
 			// If its not in bank OR equipped, something weird has gone on.
 			throw new Error(
