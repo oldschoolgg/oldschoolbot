@@ -7,7 +7,9 @@ import { assert } from '../util';
 import { TripFinishEffect } from '../util/handleTripFinish';
 import { easyCombatAchievements } from './easy';
 import { eliteCombatAchievements } from './elite';
+import { grandmasterCombatAchievements } from './grandmaster';
 import { hardCombatAchievements } from './hard';
+import { masterCombatAchievements } from './master';
 import { mediumCombatAchievements } from './medium';
 
 type CAType = 'kill_count' | 'mechanical' | 'perfection' | 'restriction' | 'speed' | 'stamina';
@@ -54,6 +56,16 @@ export const CombatAchievements = {
 		tasks: eliteCombatAchievements,
 		length: 129,
 		name: 'Elite'
+	},
+	master: {
+		tasks: masterCombatAchievements,
+		length: 129,
+		name: 'Master'
+	},
+	grandmaster: {
+		tasks: grandmasterCombatAchievements,
+		length: 90,
+		name: 'Grandmaster'
 	}
 };
 

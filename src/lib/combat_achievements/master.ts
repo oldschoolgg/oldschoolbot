@@ -3,7 +3,14 @@ import { NightmareOptions } from 'oldschooljs/dist/simulation/misc/Nightmare';
 
 import { NEX_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
 import { Requirements } from '../structures/Requirements';
-import { GauntletOptions, MonsterActivityTaskOptions, NightmareActivityTaskOptions } from '../types/minions';
+import {
+	GauntletOptions,
+	MonsterActivityTaskOptions,
+	NightmareActivityTaskOptions,
+	RaidsOptions,
+	TheatreOfBloodTaskOptions
+} from '../types/minions';
+import resolveItems from '../util/resolveItems';
 import { isCertainMonsterTrip } from './caUtils';
 import { type CombatAchievement } from './combatAchievements';
 
@@ -125,37 +132,61 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2011,
 		name: 'Perfect Olm (Solo)',
 		desc: 'Kill the Great Olm in a solo raid without taking damage from any of the following: Teleport portals, Fire Walls, Healing pools, Crystal Bombs, Crystal Burst or Prayer Orbs. You also cannot let his claws regenerate or take damage from the same acid pool back to back.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 44,
+			hasChance: 'Raids'
+		}
 	},
 	{
 		id: 2012,
 		name: 'Chambers of Xeric (Solo) Speed-Chaser',
 		desc: 'Complete a Chambers of Xeric (Solo) in less than 21 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 25,
+			hasChance: 'Raids'
+		}
 	},
 	{
 		id: 2013,
 		name: 'Chambers of Xeric (5-Scale) Speed-Chaser',
 		desc: 'Complete a Chambers of Xeric (5-scale) in less than 15 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 33,
+			hasChance: 'Raids'
+		}
 	},
 	{
 		id: 2014,
 		name: 'Putting It Olm on the Line',
 		desc: 'Complete a Chambers of Xeric solo raid with more than 40,000 points.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'Raids'
+		}
 	},
 	{
 		id: 2015,
 		name: 'Playing with Lasers',
 		desc: 'Clear the Crystal Crabs room without wasting an orb after the first crystal has been activated.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'Raids'
+		}
 	},
 	{
 		id: 2016,
 		name: 'Chambers of Xeric (Trio) Speed-Chaser',
 		desc: 'Complete a Chambers of Xeric (Trio) in less than 16 minutes and 30 seconds.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 44,
+			hasChance: 'Raids'
+		}
 	},
 	{
 		id: 2017,
@@ -182,61 +213,101 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2019,
 		name: 'Perfect Olm (Trio)',
 		desc: 'Kill the Great Olm in a trio raid without any team member taking damage from any of the following: Teleport portals, Fire Walls, Healing pools, Crystal Bombs, Crystal Burst or Prayer Orbs. You also cannot let his claws regenerate or take damage from the same acid pool back to back.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 35,
+			hasChance: 'Raids'
+		}
 	},
 	{
 		id: 2020,
 		name: 'Anvil No More',
 		desc: 'Kill Tekton before he returns to his anvil for a second time after the fight begins.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'Raids'
+		}
 	},
 	{
 		id: 2021,
 		name: 'Undying Raider',
 		desc: 'Complete a Chambers of Xeric solo raid without dying.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 1,
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+		}
 	},
 	{
 		id: 2022,
 		name: 'Stop Drop and Roll',
 		desc: 'Kill Vasa Nistirio before he performs his teleport attack for the second time.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 15,
+			hasChance: 'Raids'
+		}
 	},
 	{
 		id: 2023,
 		name: 'A Not So Special Lizard',
 		desc: 'Kill the Great Olm in a solo raid without letting him use any of the following special attacks in his second to last phase: Crystal Burst, Lightning Walls, Teleportation Portals or left-hand autohealing.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 33,
+			hasChance: 'Raids'
+		}
 	},
 	{
 		id: 2024,
 		name: 'Blind Spot',
 		desc: 'Kill Tekton without taking any damage.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 45,
+			hasChance: 'Raids'
+		}
 	},
 	{
 		id: 2025,
 		name: 'Immortal Raider',
 		desc: 'Complete a Chambers of Xeric Challenge mode (Solo) raid without dying.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 10,
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+		}
 	},
 	{
 		id: 2026,
 		name: 'Chambers of Xeric: CM (5-Scale) Speed-Chaser',
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (5-scale) in less than 30 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 15,
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+		}
 	},
 	{
 		id: 2027,
 		name: 'Chambers of Xeric: CM (Solo) Speed-Chaser',
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (Solo) in less than 45 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 15,
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+		}
 	},
 	{
 		id: 2028,
 		name: 'Immortal Raid Team',
 		desc: 'Complete a Chambers of Xeric: Challenge mode raid without anyone dying.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 15,
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+		}
 	},
 	{
 		id: 2029,
@@ -253,13 +324,21 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2030,
 		name: 'Chambers of Xeric: CM (Trio) Speed-Chaser',
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (Trio) in less than 35 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 23,
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+		}
 	},
 	{
 		id: 2031,
 		name: 'Moving Collateral',
 		desc: 'Kill Commander Zilyana in a private instance without attacking her directly.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 50,
+			hasChance: isCertainMonsterTrip(Monsters.CommanderZilyana.id)
+		}
 	},
 	{
 		id: 2032,
@@ -614,7 +693,13 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2066,
 		name: 'Precise Positioning',
 		desc: 'Kill Skotizo with the final source of damage being a Chinchompa explosion.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.Skotizo.id)(data) &&
+				resolveItems(['Red chinchompa', 'Black chinchompa']).some(i => user.hasEquipped(i))
+		}
 	},
 	{
 		id: 2067,
@@ -651,7 +736,11 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2070,
 		name: 'Nightmare (Solo) Speed-Chaser',
 		desc: 'Defeat the Nightmare (Solo) in less than 19 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 33,
+			hasChance: 'Nightmare'
+		}
 	},
 	{
 		id: 2071,
@@ -667,7 +756,11 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2072,
 		name: 'Theatre (5-Scale) Speed-Chaser',
 		desc: 'Complete the Theatre of Blood (5-scale) in less than 16 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TheatreOfBlood'
+		}
 	},
 	{
 		id: 2073,
@@ -683,7 +776,11 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2074,
 		name: 'Theatre (4-Scale) Speed-Chaser',
 		desc: 'Complete the Theatre of Blood (4-scale) in less than 17 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 30,
+			hasChance: 'TheatreOfBlood'
+		}
 	},
 	{
 		id: 2075,
@@ -699,7 +796,11 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2076,
 		name: 'Back in My Day...',
 		desc: 'Complete the Theatre of Blood without any member of the team equipping a Scythe of Vitur.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 22,
+			hasChance: (data, user) => data.type === 'TheatreOfBlood' && !user.hasEquipped('Scythe of vitur')
+		}
 	},
 	{
 		id: 2077,
@@ -745,7 +846,11 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2081,
 		name: 'Theatre (Trio) Speed-Chaser',
 		desc: 'Complete the Theatre of Blood (Trio) in less than 20 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 22,
+			hasChance: data => data.type === 'TheatreOfBlood' && (data as TheatreOfBloodTaskOptions).users.length === 3
+		}
 	},
 	{
 		id: 2082,
@@ -792,25 +897,41 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2086,
 		name: 'Perfect Nylocas',
 		desc: 'Kill the Nylocas Vasilias without anyone in the team attacking any Nylocas with the wrong attack style, without letting a pillar collapse and without getting hit by any of the Nylocas Vasilias attacks whilst off prayer.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 55,
+			hasChance: 'TheatreOfBlood'
+		}
 	},
 	{
 		id: 2087,
 		name: 'Theatre of Blood: SM Speed-Chaser',
 		desc: 'Complete the Theatre of Blood: Entry Mode in less than 17 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 10,
+			hasChance: 'TheatreOfBlood'
+		}
 	},
 	{
 		id: 2088,
 		name: 'Hard Mode? Completed It',
 		desc: 'Complete the Theatre of Blood: Hard Mode within the challenge time.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 55,
+			hasChance: data => data.type === 'TheatreOfBlood' && (data as TheatreOfBloodTaskOptions).hardMode
+		}
 	},
 	{
 		id: 2089,
 		name: "Better get movin'",
 		desc: "Defeat Elidinis' Warden in phase three of the Wardens fight with 'Aerial Assault', 'Stay vigilant' and 'Insanity' invocations activated and without dying yourself.",
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 55,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2090,
@@ -827,13 +948,21 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2091,
 		name: 'Chompington',
 		desc: 'Defeat Zebak using only melee attacks and without dying yourself.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 25,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2092,
 		name: 'Tombs Speed Runner',
 		desc: 'Complete the Tombs of Amascut (normal) within 18 mins at any group size.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 44,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2093,
@@ -850,25 +979,41 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2094,
 		name: 'Perfect Akkha',
 		desc: "Complete Akkha in a group of two or more, without anyone taking any damage from the following: Akkha's attacks off-prayer, Akkha's special attacks (orbs, memory, detonate), exploding shadow timers, orbs in the enrage phase or attacking Akkha with the wrong style. You must have all Akkha invocations activated.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 44,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2095,
 		name: 'Perfect Scabaras',
 		desc: 'Complete the Scabaras room in less than a minute without anyone taking any damage from puzzles.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2096,
 		name: 'Perfect Kephri',
 		desc: "Defeat Kephri in a group of two or more, without anyone taking any damage from the following: egg explosions, Kephri's attacks, Exploding Scarabs, Bodyguards, dung attacks. No eggs may hatch throughout the fight.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 55,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2097,
 		name: 'Perfect Zebak',
 		desc: "Defeat Zebak without anyone taking any damage from: poison, Zebak's basic attacks off-prayer, blood spawns and waves. You also must not push more than two jugs on the roar attack during the fight (you may destroy stationary ones). You must have all Zebak invocations activated.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 55,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2098,
@@ -976,7 +1121,11 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2109,
 		name: 'Resourceful Raider',
 		desc: 'Complete the Tombs of Amascut with the "On a diet" and "Dehydration" invocations activated and without anyone dying.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 55,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2110,

@@ -547,7 +547,11 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		id: 3058,
 		name: 'All Praise Zebak',
 		desc: "Defeat Zebak without losing a single prayer point. You must also meet the conditions of the 'Rockin' Around The Croc' achievement.",
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 3059,
@@ -565,19 +569,31 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		id: 3061,
 		name: 'Perfection of Apmeken',
 		desc: "Complete 'Perfect Apmeken' and 'Perfect Ba-Ba' in a single run of the Tombs of Amascut.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 25,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 3062,
 		name: 'Perfection of Het',
 		desc: "Complete 'Perfect Het' and 'Perfect Akkha' in a single run of the Tombs of Amascut.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 25,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 3063,
 		name: 'Tombs Speed Runner III',
 		desc: 'Complete the Tombs of Amascut (expert) within 18 mins in a group of 8.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 3064,
