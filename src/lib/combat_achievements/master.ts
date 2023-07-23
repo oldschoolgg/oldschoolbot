@@ -1,6 +1,9 @@
 import { Monsters } from 'oldschooljs';
+import { NightmareOptions } from 'oldschooljs/dist/simulation/misc/Nightmare';
 
+import { NEX_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
 import { Requirements } from '../structures/Requirements';
+import { GauntletOptions, MonsterActivityTaskOptions, NightmareActivityTaskOptions } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
 import { type CombatAchievement } from './combatAchievements';
 
@@ -9,31 +12,51 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2000,
 		name: 'Lightning Lure',
 		desc: 'Kill the Alchemical Hydra without being hit by the lightning attack.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 15,
+			hasChance: isCertainMonsterTrip(Monsters.AlchemicalHydra.id)
+		}
 	},
 	{
 		id: 2001,
 		name: 'Alchemical Speed-Chaser',
 		desc: 'Kill the Alchemical Hydra in less than 1 minute 45 seconds.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 22,
+			hasChance: isCertainMonsterTrip(Monsters.AlchemicalHydra.id)
+		}
 	},
 	{
 		id: 2002,
 		name: 'Alcleanical Hydra',
 		desc: 'Kill the Alchemical Hydra without taking any damage.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 33,
+			hasChance: isCertainMonsterTrip(Monsters.AlchemicalHydra.id)
+		}
 	},
 	{
 		id: 2003,
 		name: 'Mixing Correctly',
 		desc: 'Kill the Alchemical Hydra without empowering it.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 22,
+			hasChance: isCertainMonsterTrip(Monsters.AlchemicalHydra.id)
+		}
 	},
 	{
 		id: 2004,
 		name: 'Unrequired Antipoisons',
 		desc: 'Kill the Alchemical Hydra without being hit by the acid pool attack.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.AlchemicalHydra.id)
+		}
 	},
 	{
 		id: 2005,
@@ -50,25 +73,42 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2006,
 		name: 'Working Overtime',
 		desc: 'Kill the Alchemical Hydra 15 times without leaving the room.',
-		type: 'stamina'
+		type: 'stamina',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.AlchemicalHydra.id]: 15
+			}
+		})
 	},
 	{
 		id: 2007,
 		name: 'The Flame Skipper',
 		desc: 'Kill the Alchemical Hydra without letting it spawn a flame wall attack.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.AlchemicalHydra.id)
+		}
 	},
 	{
 		id: 2008,
 		name: "Don't Flame Me",
 		desc: 'Kill the Alchemical Hydra without being hit by the flame wall attack.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.AlchemicalHydra.id)
+		}
 	},
 	{
 		id: 2009,
 		name: 'Arooo No More',
 		desc: 'Kill Cerberus without any of the Summoned Souls being spawned.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.Cerberus.id)
+		}
 	},
 	{
 		id: 2010,
@@ -121,7 +161,11 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2017,
 		name: 'No Time for Death',
 		desc: 'Clear the Tightrope room without Killing any Deathly Mages or Deathly Rangers.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 25,
+			hasChance: 'Raids'
+		}
 	},
 	{
 		id: 2018,
@@ -232,199 +276,339 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2033,
 		name: 'Corrupted Gauntlet Master',
 		desc: 'Complete the Corrupted Gauntlet 10 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			minigames: {
+				corrupted_gauntlet: 10
+			}
+		})
 	},
 	{
 		id: 2034,
 		name: 'Corrupted Warrior',
 		desc: 'Kill the Corrupted Hunllef with a full set of perfected corrupted armour equipped.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 5,
+			hasChance: data => data.type === 'Gauntlet' && (data as GauntletOptions).corrupted
+		}
 	},
 	{
 		id: 2035,
 		name: "Defence Doesn't Matter II",
 		desc: 'Kill the Corrupted Hunllef without making any armour within the Corrupted Gauntlet.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 5,
+			hasChance: data => data.type === 'Gauntlet' && (data as GauntletOptions).corrupted
+		}
 	},
 	{
 		id: 2036,
 		name: 'Perfect Corrupted Hunllef',
 		desc: 'Kill the Corrupted Hunllef without taking damage from: Tornadoes, Damaging Floor or Stomp Attacks. Also, do not take damage off prayer and do not attack the Corrupted Hunllef with the wrong weapon.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 20,
+			hasChance: data => data.type === 'Gauntlet' && (data as GauntletOptions).corrupted
+		}
 	},
 	{
 		id: 2037,
 		name: 'Corrupted Gauntlet Speed-Chaser',
 		desc: 'Complete a Corrupted Gauntlet in less than 7 minutes and 30 seconds.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 20,
+			hasChance: data => data.type === 'Gauntlet' && (data as GauntletOptions).corrupted
+		}
 	},
 	{
 		id: 2038,
 		name: 'Gauntlet Master',
 		desc: 'Complete the Gauntlet 20 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			minigames: {
+				gauntlet: 20
+			}
+		})
 	},
 	{
 		id: 2039,
 		name: 'Perfect Crystalline Hunllef',
 		desc: 'Kill the Crystalline Hunllef without taking damage from: Tornadoes, Damaging Floor or Stomp Attacks. Also, do not take damage off prayer and do not attack the Crystalline Hunllef with the wrong weapon.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 20,
+			hasChance: 'Gauntlet'
+		}
 	},
 	{
 		id: 2040,
 		name: 'Gauntlet Speed-Chaser',
 		desc: 'Complete the Gauntlet in less than 5 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 25,
+			hasChance: 'Gauntlet'
+		}
 	},
 	{
 		id: 2041,
 		name: "Defence Doesn't Matter",
 		desc: 'Kill the Crystalline Hunllef without making any armour within the Gauntlet.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 25,
+			hasChance: 'Gauntlet'
+		}
 	},
 	{
 		id: 2042,
 		name: 'Perfect Grotesque Guardians II',
 		desc: 'Kill the Grotesque Guardians 5 times in a row without leaving the instance, whilst completing the Perfect Grotesque Guardians task every time.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 35,
+			hasChance: isCertainMonsterTrip(Monsters.GrotesqueGuardians.id)
+		}
 	},
 	{
 		id: 2043,
 		name: 'Grotesque Guardians Speed-Chaser',
 		desc: 'Kill the Grotesque Guardians in less than 1:40 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 25,
+			hasChance: isCertainMonsterTrip(Monsters.GrotesqueGuardians.id)
+		}
 	},
 	{
 		id: 2044,
 		name: "... 'til Dawn",
 		desc: 'Kill the Grotesque Guardians 20 times without leaving the instance.',
-		type: 'stamina'
+		type: 'stamina',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.GrotesqueGuardians.id]: 20
+			}
+		})
 	},
 	{
 		id: 2045,
 		name: 'Hespori Speed-Chaser',
 		desc: 'Kill the Hespori in less than 36 seconds.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 5,
+			hasChance: isCertainMonsterTrip(Monsters.Hespori.id)
+		}
 	},
 	{
 		id: 2046,
 		name: 'One Hundred Tentacles',
 		desc: 'Kill the Kraken 100 times in a private instance without leaving the room.',
-		type: 'stamina'
+		type: 'stamina',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Kraken.id]: 100
+			}
+		})
 	},
 	{
 		id: 2047,
 		name: 'Swoop No More',
 		desc: "Kill Kree'arra in a private instance without taking any melee damage from the boss or his bodyguards.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 11,
+			hasChance: isCertainMonsterTrip(Monsters.Kreearra.id)
+		}
 	},
 	{
 		id: 2048,
 		name: 'Collateral Damage',
 		desc: "Kill Kree'arra in a private instance without ever attacking him directly.",
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 11,
+			hasChance: isCertainMonsterTrip(Monsters.Kreearra.id)
+		}
 	},
 	{
 		id: 2049,
 		name: 'Contain this!',
 		desc: 'Kill Nex without anyone taking damage from any Ice special attack.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 5,
+			hasChance: 'Nex'
+		}
 	},
 	{
 		id: 2050,
 		name: 'Nex Master',
 		desc: 'Kill Nex 25 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[NEX_ID]: 25
+			}
+		})
 	},
 	{
 		id: 2051,
 		name: 'Shadows Move...',
 		desc: 'Kill Nex without anyone being hit by the Shadow Smash attack.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 11,
+			hasChance: 'Nex'
+		}
 	},
 	{
 		id: 2052,
 		name: 'Nex Trio',
 		desc: 'Kill Nex with three or less players at the start of the fight.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 11,
+			hasChance: 'Nex'
+		}
 	},
 	{
 		id: 2053,
 		name: 'There is no escape!',
 		desc: 'Kill Nex without anyone being hit by the Smoke Dash special attack.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 15,
+			hasChance: 'Nex'
+		}
 	},
 	{
 		id: 2054,
 		name: 'A siphon will solve this',
 		desc: 'Kill Nex without letting her heal from her Blood Siphon special attack.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 15,
+			hasChance: 'Nex'
+		}
 	},
 	{
 		id: 2055,
 		name: 'Walk Straight Pray True',
 		desc: 'Kill the Phantom Muspah without taking any avoidable damage.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 15,
+			hasChance: isCertainMonsterTrip(Monsters.PhantomMuspah.id)
+		}
 	},
 	{
 		id: 2056,
 		name: 'More than just a ranged weapon',
 		desc: 'Kill the Phantom Muspah by only dealing damage to it with a salamander.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 15,
+			hasChance: isCertainMonsterTrip(Monsters.PhantomMuspah.id)
+		}
 	},
 	{
 		id: 2057,
 		name: 'Space is Tight',
 		desc: 'Kill the Phantom Muspah whilst it is surrounded by spikes.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 15,
+			hasChance: isCertainMonsterTrip(Monsters.PhantomMuspah.id)
+		}
 	},
 	{
 		id: 2058,
 		name: 'Phantom Muspah Speed-Chaser',
 		desc: 'Kill the Phantom Muspah in less than 2 minutes without a slayer task.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 33,
+			hasChance: isCertainMonsterTrip(Monsters.PhantomMuspah.id)
+		}
 	},
 	{
 		id: 2059,
 		name: 'Essence Farmer',
 		desc: 'Kill the Phantom Muspah 10 times in one trip.',
-		type: 'stamina'
+		type: 'stamina',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.PhantomMuspah.id]: 10
+			}
+		})
 	},
 	{
 		id: 2060,
 		name: 'Phantom Muspah Master',
 		desc: 'Kill the Phantom Muspah 50 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.PhantomMuspah.id]: 50
+			}
+		})
 	},
 	{
 		id: 2061,
 		name: "Phosani's Speedchaser",
 		desc: "Defeat Phosani's Nightmare within 9 minutes.",
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 22,
+			hasChance: data => data.type === 'Nightmare' && Boolean((data as NightmareActivityTaskOptions).isPhosani)
+		}
 	},
 	{
 		id: 2062,
 		name: "Phosani's Master",
 		desc: "Kill Phosani's Nightmare 5 times.",
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[PHOSANI_NIGHTMARE_ID]: 5
+			}
+		})
 	},
 	{
 		id: 2063,
 		name: 'I Would Simply React',
 		desc: "Kill Phosani's Nightmare without allowing your prayer to be disabled.",
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 22,
+			hasChance: data => data.type === 'Nightmare' && Boolean((data as NightmareActivityTaskOptions).isPhosani)
+		}
 	},
 	{
 		id: 2064,
 		name: 'Crush Hour',
 		desc: "Kill Phosani's Nightmare while killing every parasite and husk in one hit.",
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 33,
+			hasChance: data => data.type === 'Nightmare' && Boolean((data as NightmareActivityTaskOptions).isPhosani)
+		}
 	},
 	{
 		id: 2065,
 		name: 'Dreamland Express',
 		desc: "Kill Phosani's Nightmare without a sleepwalker reaching her during her desperation phase.",
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 33,
+			hasChance: data => data.type === 'Nightmare' && Boolean((data as NightmareActivityTaskOptions).isPhosani)
+		}
 	},
 	{
 		id: 2066,
@@ -436,19 +620,32 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2067,
 		name: 'Perfect Nightmare',
 		desc: "Kill the Nightmare without any player taking damage from the following attacks: Nightmare rifts, an un-cured parasite explosion, Corpse flowers or the Nightmare's Surge. Also, no player can take damage off prayer or have their attacks slowed by the Nightmare spores.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 33,
+			hasChance: 'Nightmare'
+		}
 	},
 	{
 		id: 2068,
 		name: 'Nightmare (5-Scale) Speed-Chaser',
 		desc: 'Defeat the Nightmare (5-scale) in less than 4 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 33,
+			hasChance: 'Nightmare'
+		}
 	},
 	{
 		id: 2069,
 		name: 'Nightmare Master',
 		desc: 'Kill The Nightmare 50 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[NIGHTMARE_ID]: 50
+			}
+		})
 	},
 	{
 		id: 2070,
@@ -460,7 +657,11 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2071,
 		name: 'Perfect Xarpus',
 		desc: "Kill Xarpus without anyone in the team taking any damage from Xarpus' attacks and without letting an exhumed heal Xarpus more than twice.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TheatreOfBlood'
+		}
 	},
 	{
 		id: 2072,
@@ -472,7 +673,11 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2073,
 		name: 'Perfect Verzik',
 		desc: "Defeat Verzik Vitur without anyone in the team taking damage from Verzik Vitur's attacks other than her spider form's correctly prayed against regular magical and ranged attacks.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TheatreOfBlood'
+		}
 	},
 	{
 		id: 2074,
@@ -484,7 +689,11 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2075,
 		name: 'A Timely Snack',
 		desc: 'Kill Sotetseg after surviving at least 3 ball attacks without sharing the damage and without anyone dying throughout the fight.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TheatreOfBlood'
+		}
 	},
 	{
 		id: 2076,
@@ -496,25 +705,41 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2077,
 		name: 'Perfect Sotesteg',
 		desc: "Kill Sotetseg without anyone in the team stepping on the wrong tile in the maze, without getting hit by the tornado and without taking any damage from Sotetseg's attacks whilst off prayer.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TheatreOfBlood'
+		}
 	},
 	{
 		id: 2078,
 		name: "Can't Drain This",
 		desc: 'Kill The Maiden of Sugadinti without anyone in the team losing any prayer points.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TheatreOfBlood'
+		}
 	},
 	{
 		id: 2079,
 		name: 'Can You Dance?',
 		desc: 'Kill Xarpus without anyone in the team using a ranged or magic weapon.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TheatreOfBlood'
+		}
 	},
 	{
 		id: 2080,
 		name: 'Pop It',
 		desc: 'Kill Verzik without any Nylocas being frozen and without anyone taking damage from the Nylocas.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TheatreOfBlood'
+		}
 	},
 	{
 		id: 2081,
@@ -526,25 +751,42 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2082,
 		name: 'Two-Down',
 		desc: 'Kill the Pestilent Bloat before he shuts down for the third time.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TheatreOfBlood'
+		}
 	},
 	{
 		id: 2083,
 		name: 'Perfect Maiden',
 		desc: 'Kill The Maiden of Sugadinti without anyone in the team taking damage from the following sources: Blood Spawn projectiles and Blood Spawn trails. Also, without taking damage off prayer and without letting any of the Nylocas Matomenos heal The Maiden.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TheatreOfBlood'
+		}
 	},
 	{
 		id: 2084,
 		name: 'Perfect Bloat',
 		desc: 'Kill the Pestilent Bloat without anyone in the team taking damage from the following sources: Pestilent flies, Falling body parts or The Pestilent Bloats stomp attack.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TheatreOfBlood'
+		}
 	},
 	{
 		id: 2085,
 		name: 'Theatre of Blood Master',
 		desc: 'Complete the Theatre of Blood 75 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			minigames: {
+				tob: 75
+			}
+		})
 	},
 	{
 		id: 2086,
@@ -574,7 +816,12 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2090,
 		name: 'Tomb Raider',
 		desc: 'Complete the Tombs of Amascut 50 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			minigames: {
+				tombs_of_amascut: 50
+			}
+		})
 	},
 	{
 		id: 2091,
@@ -592,7 +839,12 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2093,
 		name: 'Tomb Looter',
 		desc: 'Complete the Tombs of Amascut 25 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			minigames: {
+				tombs_of_amascut: 25
+			}
+		})
 	},
 	{
 		id: 2094,
@@ -622,49 +874,81 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2098,
 		name: 'You are not prepared',
 		desc: 'Complete a full Tombs of Amascut raid only using supplies given inside the tomb and without anyone dying.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2099,
 		name: 'Perfect Ba-Ba',
 		desc: "Defeat Ba-Ba in a group of two or more, without anyone taking any damage from the following: Ba-Ba's Attacks off-prayer, Ba-Ba's slam, rolling boulders, rubble attack or falling rocks. No sarcophagi may be opened. You must have all Ba-Ba invocations activated.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2100,
 		name: 'Perfect Wardens',
 		desc: 'Defeat The Wardens in a group of two or more, without anyone taking avoidable damage from the following: Warden attacks, obelisk attacks, lightning attacks in phase three, skull attack in phase three, Demi god attacks in phase three. You must have all Wardens invocations activated.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2101,
 		name: 'Ba-Bananza',
 		desc: 'Defeat Ba-Ba with all Ba-Ba invocations activated and the path levelled up to at least four, without dying yourself.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2102,
 		name: "Doesn't bug me",
 		desc: 'Defeat Kephri with all Kephri invocations activated and the path levelled up to at least four, without dying yourself.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2103,
 		name: 'But... Damage',
 		desc: 'Complete the Tombs of Amascut without anyone in your party wearing or holding any equipment at tier 75 or above.',
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2104,
 		name: "Warden't you believe it",
 		desc: 'Defeat the Wardens with all Wardens invocations activated, at expert level and without dying yourself.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2105,
 		name: 'Fancy feet',
 		desc: "Complete phase three of The Wardens in a group of two or more, using only melee attacks and without dying yourself. The 'Insanity' invocation must be activated.",
-		type: 'restriction'
+		type: 'restriction',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2106,
@@ -682,7 +966,11 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2108,
 		name: 'All out of medics',
 		desc: "Defeat Kephri without letting her heal above 25% after the first down. The 'Medic' invocation must be activated. You must do this without dying yourself.",
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2109,
@@ -694,114 +982,180 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2110,
 		name: "Rockin' around the croc",
 		desc: 'Defeat Zebak with all Zebak invocations activated and the path levelled up to at least four, without dying yourself.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 2111,
 		name: 'The IV Jad Challenge',
 		desc: "Complete TzHaar-Ket-Rak's fourth challenge.",
-		type: 'kill_count'
+		type: 'kill_count',
+		notPossible: true
 	},
 	{
 		id: 2112,
 		name: 'Multi-Style Specialist',
 		desc: "Complete TzHaar-Ket-Rak's third challenge while using a different attack style for each JalTok-Jad.",
-		type: 'mechanical'
+		type: 'mechanical',
+		notPossible: true
 	},
 	{
 		id: 2113,
 		name: "TzHaar-Ket-Rak's Speed-Chaser",
 		desc: "Complete TzHaar-Ket-Rak's third challenge in less than 3 minutes.",
-		type: 'speed'
+		type: 'speed',
+		notPossible: true
 	},
 	{
 		id: 2114,
 		name: 'Facing Jad Head-on IV',
 		desc: "Complete TzHaar-Ket-Rak's fourth challenge with only melee.",
-		type: 'restriction'
+		type: 'restriction',
+		notPossible: true
 	},
 	{
 		id: 2115,
 		name: "Supplies? Who Needs 'em?",
 		desc: "Complete TzHaar-Ket-Rak's third challenge without having anything in your inventory.",
-		type: 'perfection'
+		type: 'perfection',
+		notPossible: true
 	},
 	{
 		id: 2116,
 		name: 'Nibblers, Begone!',
 		desc: 'Kill Tzkal-Zuk without letting a pillar fall before wave 67.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 5,
+			hasChance: 'Inferno'
+		}
 	},
 	{
 		id: 2117,
 		name: "You Didn't Say Anything About a Bat",
 		desc: 'Complete the Fight Caves without being attacked by a Tz-Kih.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 5,
+			hasChance: 'FightCaves'
+		}
 	},
 	{
 		id: 2118,
 		name: 'Denying the Healers',
 		desc: 'Complete the Fight caves without letting any of the Yt-MejKot heal.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 5,
+			hasChance: 'FightCaves'
+		}
 	},
 	{
 		id: 2119,
 		name: 'Fight Caves Master',
 		desc: 'Complete the Fight Caves 5 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.TzTokJad.id]: 5
+			}
+		})
 	},
 	{
 		id: 2120,
 		name: 'Fight Caves Speed-Chaser',
 		desc: 'Complete the Fight Caves in less than 30 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 7,
+			hasChance: 'FightCaves'
+		}
 	},
 	{
 		id: 2121,
 		name: 'The Walk',
 		desc: 'Hit Vorkath 12 times during the acid special without getting hit by his rapid fire or the acid pools.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 33,
+			hasChance: isCertainMonsterTrip(Monsters.Vorkath.id)
+		}
 	},
 	{
 		id: 2122,
 		name: 'Extended Encounter',
 		desc: 'Kill Vorkath 10 times without leaving his area.',
-		type: 'stamina'
+		type: 'stamina',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Vorkath.id]: 10
+			}
+		})
 	},
 	{
 		id: 2123,
 		name: 'Dodging the Dragon',
 		desc: 'Kill Vorkath 5 times without taking any damage from his special attacks and without leaving his area.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 33,
+			hasChance: data =>
+				isCertainMonsterTrip(Monsters.Vorkath.id)(data) && (data as MonsterActivityTaskOptions).quantity >= 5
+		}
 	},
 	{
 		id: 2124,
 		name: 'Vorkath Speed-Chaser',
 		desc: 'Kill Vorkath in less than 1 minute and 15 seconds.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 33,
+			hasChance: isCertainMonsterTrip(Monsters.Vorkath.id)
+		}
 	},
 	{
 		id: 2125,
 		name: 'Vorkath Master',
 		desc: 'Kill Vorkath 100 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Vorkath.id]: 100
+			}
+		})
 	},
 	{
 		id: 2126,
 		name: 'Perfect Zulrah',
 		desc: "Kill Zulrah whilst taking no damage from the following: Snakelings, Venom Clouds, Zulrah's Green or Crimson phase.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 55,
+			hasChance: isCertainMonsterTrip(Monsters.Zulrah.id)
+		}
 	},
 	{
 		id: 2127,
 		name: 'Zulrah Master',
 		desc: 'Kill Zulrah 150 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Zulrah.id]: 150
+			}
+		})
 	},
 	{
 		id: 2128,
 		name: 'Zulrah Speed-Chaser',
 		desc: 'Kill Zulrah in less than 1 minute, without a slayer task.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 99,
+			hasChance: isCertainMonsterTrip(Monsters.Zulrah.id)
+		}
 	}
 ];
