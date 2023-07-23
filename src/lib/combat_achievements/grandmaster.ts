@@ -3,7 +3,7 @@ import { Monsters } from 'oldschooljs';
 import { NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
 import { barrowsChestCL } from '../data/CollectionsExport';
 import { Requirements } from '../structures/Requirements';
-import { GauntletOptions, NexTaskOptions, TheatreOfBloodTaskOptions } from '../types/minions';
+import { GauntletOptions, NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
 import { type CombatAchievement } from './combatAchievements';
 
@@ -34,7 +34,11 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		id: 3002,
 		name: 'Chambers of Xeric (5-Scale) Speed-Runner',
 		desc: 'Complete a Chambers of Xeric (5-scale) in less than 12 minutes and 30 seconds.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 55,
+			hasChance: 'Raids'
+		}
 	},
 	{
 		id: 3003,
@@ -51,55 +55,96 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		id: 3004,
 		name: 'Chambers of Xeric (Solo) Speed-Runner',
 		desc: 'Complete a Chambers of Xeric (Solo) in less than 17 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 55,
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+		}
 	},
 	{
 		id: 3005,
 		name: 'Chambers of Xeric (Trio) Speed-Runner',
 		desc: 'Complete a Chambers of Xeric (Trio) in less than 14 minutes and 30 seconds.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 55,
+			hasChance: 'Raids'
+		}
 	},
 	{
 		id: 3006,
 		name: 'Chambers of Xeric: CM (Solo) Speed-Runner',
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (Solo) in less than 38 minutes and 30 seconds.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 30,
+			hasChance: data =>
+				data.type === 'Raids' &&
+				(data as RaidsOptions).challengeMode &&
+				(data as RaidsOptions).users.length === 1
+		}
 	},
 	{
 		id: 3007,
 		name: 'Chambers of Xeric: CM Grandmaster',
 		desc: 'Complete the Chambers of Xeric: Challenge Mode 25 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			minigames: {
+				raids_challenge_mode: 25
+			}
+		})
 	},
 	{
 		id: 3008,
 		name: 'Chambers of Xeric: CM (Trio) Speed-Runner',
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (Trio) in less than 27 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 30,
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+		}
 	},
 	{
 		id: 3009,
 		name: 'Chambers of Xeric: CM (5-Scale) Speed-Runner',
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (5-scale) in less than 25 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 30,
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+		}
 	},
 	{
 		id: 3010,
 		name: 'Peach Conjurer',
 		desc: 'Kill Commander Zilyana 50 times in a privately rented instance without leaving the room.',
-		type: 'stamina'
+		type: 'stamina',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.CommanderZilyana.id]: 50
+			}
+		})
 	},
 	{
 		id: 3011,
 		name: 'Animal Whisperer',
 		desc: 'Kill Commander Zilyana in a private instance without taking any damage from the boss or bodyguards.',
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 50,
+			hasChance: isCertainMonsterTrip(Monsters.CommanderZilyana.id)
+		}
 	},
 	{
 		id: 3012,
 		name: 'Corrupted Gauntlet Speed-Runner',
 		desc: 'Complete a Corrupted Gauntlet in less than 6 minutes and 30 seconds.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 35,
+			hasChance: data => data.type === 'Gauntlet' && (data as GauntletOptions).corrupted
+		}
 	},
 	{
 		id: 3013,
@@ -136,7 +181,11 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		id: 3016,
 		name: 'Gauntlet Speed-Runner',
 		desc: 'Complete the Gauntlet in less than 4 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 35,
+			hasChance: 'Gauntlet'
+		}
 	},
 	{
 		id: 3017,
@@ -265,13 +314,21 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		id: 3029,
 		name: 'Phantom Muspah Speed-Runner',
 		desc: 'Kill the Phantom Muspah in less than 1 minute and 30 seconds without a slayer task.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 35,
+			hasChance: isCertainMonsterTrip(Monsters.PhantomMuspah.id)
+		}
 	},
 	{
 		id: 3030,
 		name: "Phosani's Speedrunner",
 		desc: "Defeat Phosani's Nightmare within 7:30 minutes.",
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 35,
+			hasChance: isCertainMonsterTrip(PHOSANI_NIGHTMARE_ID)
+		}
 	},
 	{
 		id: 3031,
@@ -319,7 +376,11 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		id: 3035,
 		name: 'Nightmare (Solo) Speed-Runner',
 		desc: 'Defeat the Nightmare (Solo) in less than 16 minutes.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 30,
+			hasChance: isCertainMonsterTrip(NIGHTMARE_ID)
+		}
 	},
 	{
 		id: 3036,
@@ -599,13 +660,21 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		id: 3064,
 		name: 'Perfection of Scabaras',
 		desc: "Complete 'Perfect Scabaras' and 'Perfect Kephri' in a single run of Tombs of Amascut.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 22,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 3065,
 		name: 'Insanity',
 		desc: "Complete 'Perfect Wardens' at expert or above.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 33,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 3066,
@@ -617,19 +686,31 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		id: 3067,
 		name: 'Perfection of Crondis',
 		desc: "Complete 'Perfect Crondis' and 'Perfect Zebak' in a single run of the Tombs of Amascut.",
-		type: 'perfection'
+		type: 'perfection',
+		rng: {
+			chancePerKill: 35,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 3068,
 		name: "Akkhan't Do it",
 		desc: 'Defeat Akkha with all Akkha invocations activated and the path levelled up to at least four, without dying yourself.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 35,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 3069,
 		name: "Maybe I'm the boss.",
 		desc: 'Complete a Tombs of Amascut raid with every single boss invocation activated and without anyone dying.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 66,
+			hasChance: 'TombsOfAmascut'
+		}
 	},
 	{
 		id: 3070,
