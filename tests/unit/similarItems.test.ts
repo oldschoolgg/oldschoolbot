@@ -253,6 +253,10 @@ describe('Gear', () => {
 		expect(getSimilarItems(itemID('Rune pouch'))).toEqual(resolveItems(['Rune pouch', 'Divine rune pouch']));
 	});
 
+	test('Celestial Ring/Signet', () => {
+		expect(getSimilarItems(itemID('Celestial ring'))).toEqual(resolveItems(['Celestial ring', 'Celestial signet']));
+	});
+
 	test("Inventors' backpack", () => {
 		const gear = new Gear();
 		gear.equip('Invention master cape');

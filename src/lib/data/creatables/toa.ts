@@ -96,21 +96,24 @@ export const toaCreatables: Createable[] = [
 		inputItems: new Bank({
 			'Armadyl helmet': 1
 		}),
-		outputItems: new Bank({ 'Armadylean plate': 1 })
+		outputItems: new Bank({ 'Armadylean plate': 1 }),
+		forceAddToCl: true
 	},
 	{
 		name: 'Revert Armadyl chestplate (to plates)',
 		inputItems: new Bank({
 			'Armadyl chestplate': 1
 		}),
-		outputItems: new Bank({ 'Armadylean plate': 4 })
+		outputItems: new Bank({ 'Armadylean plate': 4 }),
+		forceAddToCl: true
 	},
 	{
 		name: 'Revert Armadyl chainskirt (to plates)',
 		inputItems: new Bank({
 			'Armadyl chainskirt': 1
 		}),
-		outputItems: new Bank({ 'Armadylean plate': 3 })
+		outputItems: new Bank({ 'Armadylean plate': 3 }),
+		forceAddToCl: true
 	},
 	{
 		name: 'Keris partisan of breaching',
