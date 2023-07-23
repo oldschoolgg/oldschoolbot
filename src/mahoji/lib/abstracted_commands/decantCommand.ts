@@ -11,8 +11,13 @@ export async function decantCommand(user: MUser, itemName: string, dose = 4) {
 	if (!user.owns(potionsToRemove)) {
 		return `You don't own ${potionsToRemove}.`;
 	}
-	await user.removeItemsFromBank(potionsToRemove);
-	await user.addItemsToBank({ items: potionsToAdd });
+
+	await transactItems({
+		userID: user.id,
+		filterLoot: false,
+		itemsToRemove: potionsToRemove,
+		itemsToAdd: potionsToAdd
+	});
 
 	if (user.hasEquipped(['Iron dagger', 'Bronze arrow']) && !user.hasEquippedOrInBank('Clue hunter gloves')) {
 		await user.addItemsToBank({ items: new Bank({ 'Clue hunter gloves': 1 }), collectionLog: true });
