@@ -279,7 +279,12 @@ for (const genericU of genericUsables) {
 			const cost = genericU.cost ? genericU.cost : undefined;
 			const loot =
 				genericU.loot === null ? undefined : genericU.loot instanceof Bank ? genericU.loot : genericU.loot();
-			if (loot || cost) await user.transactItems({ itemsToAdd: loot, itemsToRemove: cost, collectionLog: genericU.addToCL ?? false });
+			if (loot || cost)
+				await user.transactItems({
+					itemsToAdd: loot,
+					itemsToRemove: cost,
+					collectionLog: genericU.addToCL ?? false
+				});
 			return genericU.response(loot ?? new Bank());
 		}
 	});
