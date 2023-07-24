@@ -1,5 +1,4 @@
 import { reduceNumByPercent, Time } from 'e';
-import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
@@ -105,7 +104,7 @@ export async function castCommand(channelID: string, user: MUser, name: string, 
 		if (gpCost > userGP) {
 			return `You need ${gpCost} GP to create ${quantity} planks.`;
 		}
-		await user.removeItemsFromBank(new Bank().add('Coins', gpCost));
+		cost.add('Coins', gpCost);
 	}
 
 	await user.removeItemsFromBank(cost);
