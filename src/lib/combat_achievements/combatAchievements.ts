@@ -87,12 +87,15 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ user
 	if (!('quantity' in data)) return;
 	const quantity = Number(data.quantity);
 	if (isNaN(quantity)) return;
+
 	for (const task of indexesWithRng) {
 		if (user.user.completed_ca_task_ids.includes(task.id)) continue;
 		if (!('rng' in task)) continue;
+
 		const hasChance =
 			typeof task.rng.hasChance === 'string' ? data.type === task.rng.hasChance : task.rng.hasChance(data, user);
 		if (!hasChance) continue;
+
 		for (let i = 0; i < quantity; i++) {
 			if (roll(task.rng.chancePerKill)) {
 				completedTasks.push(task);
@@ -118,6 +121,9 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ user
 export function caToPlayerString(task: CombatAchievement, user: MUser) {
 	if (user.user.completed_ca_task_ids.includes(task.id)) {
 		return `Completed ✅ ${task.name} - ${task.desc}`;
+	}
+	if ('notPossible' in task) {
+		return `Not Possible ❌ ${task.name} - ${task.desc}`;
 	}
 	return `Incomplete ❌ ${task.name} - ${task.desc}`;
 }

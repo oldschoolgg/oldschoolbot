@@ -8,9 +8,10 @@ import {
 	PHOSANI_NIGHTMARE_ID,
 	ZALCANO_ID
 } from '../constants';
+import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
-import { GauntletOptions, NightmareActivityTaskOptions } from '../types/minions';
+import { GauntletOptions, NightmareActivityTaskOptions, TOAOptions } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
 import { type CombatAchievement } from './combatAchievements';
 
@@ -1111,7 +1112,13 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		name: 'Hardcore Tombs',
 		desc: 'Complete the Tombs of Amascut solo without dying.',
 		type: 'perfection',
-		notPossible: true
+		rng: {
+			chancePerKill: 1,
+			hasChance: data =>
+				data.type === 'TombsOfAmascut' &&
+				(data as TOAOptions).users.length === 1 &&
+				!anyoneDiedInTOARaid(data as TOAOptions)
+		}
 	},
 	{
 		id: 1104,
@@ -1145,14 +1152,24 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		name: 'Novice Tomb Raider',
 		desc: 'Complete the Tombs of Amascut in Entry mode (or above) 50 times.',
 		type: 'kill_count',
-		notPossible: true
+		requirements: new Requirements().add({
+			name: 'Complete the Tombs of Amascut Entry mode (or above) 50 times.',
+			has: ({ stats }) => {
+				return stats.getToaKCs().totalKC >= 50;
+			}
+		})
 	},
 	{
 		id: 1108,
 		name: 'Expert Tomb Explorer',
 		desc: 'Complete the Tombs of Amascut (Expert mode) once.',
 		type: 'kill_count',
-		notPossible: true
+		requirements: new Requirements().add({
+			name: 'Complete the Tombs of Amascut (Expert mode) once.',
+			has: ({ stats }) => {
+				return stats.getToaKCs().expertKC >= 1;
+			}
+		})
 	},
 	{
 		id: 1109,
