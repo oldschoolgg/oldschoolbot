@@ -1,5 +1,5 @@
 import { mentionCommand, SimpleTable } from '@oldschoolgg/toolkit';
-import { Minigame, XpGainSource } from '@prisma/client';
+import { Minigame, Prisma, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
 	calcPercentOfNum,
@@ -1593,12 +1593,11 @@ function calculateBoostString(user: MUser) {
 	return str;
 }
 
-export async function getToaKCs(user: MUser) {
-	const userStats = await user.fetchStats({ toa_raid_levels_bank: true });
+export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {
 	let entryKC = 0;
 	let normalKC = 0;
 	let expertKC = 0;
-	for (const [levelStr, qty] of Object.entries(userStats.toa_raid_levels_bank as ItemBank)) {
+	for (const [levelStr, qty] of Object.entries(toaRaidLevelsBank as ItemBank)) {
 		const level = Number(levelStr);
 		if (level >= 300) {
 			expertKC += qty;
@@ -1615,12 +1614,13 @@ export async function getToaKCs(user: MUser) {
 
 export async function toaHelpCommand(user: MUser, channelID: string) {
 	const gearStats = calculateUserGearPercents(user.gear, 300);
-	const { entryKC, normalKC, expertKC, totalKC } = await getToaKCs(user);
 	const stats = await user.fetchStats({
 		total_toa_points: true,
 		total_toa_duration_minutes: true,
-		toa_attempts: true
+		toa_attempts: true,
+		toa_raid_levels_bank: true
 	});
+	const { entryKC, normalKC, expertKC, totalKC } = getToaKCs(stats.toa_raid_levels_bank);
 
 	let totalUniques = 0;
 	for (const item of TOAUniqueTable.allItems) {
@@ -1663,4 +1663,22 @@ ${calculateBoostString(user)}
 `;
 
 	return channelID === '1069176960523190292' ? { content: str, ephemeral: true } : str;
+}
+
+export function normalizeTOAUsers(data: TOAOptions) {
+	const _detailedUsers = data.detailedUsers;
+	const detailedUsers = (
+		(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
+	).map(userArr =>
+		userArr.map(user => ({
+			id: user[0],
+			points: user[1],
+			deaths: user[2]
+		}))
+	);
+	return detailedUsers;
+}
+
+export function anyoneDiedInTOARaid(data: TOAOptions) {
+	return normalizeTOAUsers(data).some(userArr => userArr.some(user => user.deaths.length > 0));
 }

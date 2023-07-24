@@ -1,4 +1,3 @@
-import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import {
@@ -11,7 +10,7 @@ import {
 } from '../constants';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
-import { GauntletOptions, NightmareActivityTaskOptions, RaidsOptions } from '../types/minions';
+import { GauntletOptions, NightmareActivityTaskOptions } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
 import { type CombatAchievement } from './combatAchievements';
 
@@ -248,26 +247,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete a Chambers of Xeric Challenge mode raid in the target time.',
 		type: 'speed',
 		rng: {
-			chancePerKill: 5,
-			hasChance: data => {
-				if (data.type !== 'Raids' || !(data as RaidsOptions).challengeMode) return false;
-				const raidsData = data as RaidsOptions;
-				let timeMap = {
-					1: Time.Hour + Time.Minute * 10,
-					2: Time.Hour + Time.Minute * 5,
-					3: Time.Minute * 50,
-					4: Time.Minute * 45,
-					10: Time.Minute * 42,
-					23: Time.Hour
-				};
-
-				const entry = Object.entries(timeMap).find(
-					([teamSize]) => raidsData.users.length <= parseInt(teamSize)
-				)?.[1];
-				const timeToMeet: number = entry ?? Time.Hour;
-				// mother bitch we dont know the durations per each raid in the trip
-				return data.duration;
-			}
+			chancePerKill: 22,
+			hasChance: 'Raids'
 		}
 	},
 	{

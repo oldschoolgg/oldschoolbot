@@ -659,5 +659,16 @@ export const hardCombatAchievements: CombatAchievement[] = [
 				[Monsters.Zulrah.id]: 25
 			}
 		})
+	},
+	{
+		id: 262,
+		name: 'Dagannoth Prime Adept',
+		type: 'kill_count',
+		desc: 'Kill Dagannoth Prime 25 times.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.DagannothPrime.id]: 25
+			}
+		})
 	}
 ];

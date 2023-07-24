@@ -1,14 +1,15 @@
 import { Monsters } from 'oldschooljs';
-import { NightmareOptions } from 'oldschooljs/dist/simulation/misc/Nightmare';
 
 import { NEX_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
+import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { Requirements } from '../structures/Requirements';
 import {
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
 	RaidsOptions,
-	TheatreOfBloodTaskOptions
+	TheatreOfBloodTaskOptions,
+	TOAOptions
 } from '../types/minions';
 import resolveItems from '../util/resolveItems';
 import { isCertainMonsterTrip } from './caUtils';
@@ -1099,13 +1100,26 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		id: 2106,
 		name: 'Something of an expert myself',
 		desc: 'Complete the Tombs of Amascut raid at level 350 or above without anyone dying.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 1,
+			hasChance: data =>
+				data.type === 'TombsOfAmascut' &&
+				(data as TOAOptions).raidLevel >= 350 &&
+				!anyoneDiedInTOARaid(data as TOAOptions)
+		}
 	},
 	{
 		id: 2107,
 		name: 'Expert Tomb Looter',
 		desc: 'Complete the Tombs of Amascut (Expert mode) 25 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			name: 'Complete the Tombs of Amascut (Expert mode) 25 times.',
+			has: ({ stats }) => {
+				return stats.getToaKCs().expertKC >= 25;
+			}
+		})
 	},
 	{
 		id: 2108,

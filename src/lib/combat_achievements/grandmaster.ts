@@ -2,8 +2,9 @@ import { Monsters } from 'oldschooljs';
 
 import { NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
 import { barrowsChestCL } from '../data/CollectionsExport';
+import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { Requirements } from '../structures/Requirements';
-import { GauntletOptions, NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from '../types/minions';
+import { GauntletOptions, NexTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions, TOAOptions } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
 import { type CombatAchievement } from './combatAchievements';
 
@@ -618,13 +619,26 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		id: 3059,
 		name: "Amascut's Remnant",
 		desc: 'Complete the Tombs of Amascut at raid level 500 or above without anyone dying.',
-		type: 'mechanical'
+		type: 'mechanical',
+		rng: {
+			chancePerKill: 1,
+			hasChance: data =>
+				data.type === 'TombsOfAmascut' &&
+				(data as TOAOptions).raidLevel >= 500 &&
+				!anyoneDiedInTOARaid(data as TOAOptions)
+		}
 	},
 	{
 		id: 3060,
 		name: 'Expert Tomb Raider',
 		desc: 'Complete the Tombs of Amascut (Expert mode) 50 times.',
-		type: 'kill_count'
+		type: 'kill_count',
+		requirements: new Requirements().add({
+			name: 'Complete the Tombs of Amascut (Expert mode) 25 times.',
+			has: ({ stats }) => {
+				return stats.getToaKCs().expertKC >= 50;
+			}
+		})
 	},
 	{
 		id: 3061,
@@ -680,7 +694,11 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		id: 3066,
 		name: 'Tombs Speed Runner II',
 		desc: 'Complete the Tombs of Amascut (expert) within 20 mins at any group size.',
-		type: 'speed'
+		type: 'speed',
+		rng: {
+			chancePerKill: 22,
+			hasChance: data => data.type === 'TombsOfAmascut' && (data as TOAOptions).raidLevel >= 300
+		}
 	},
 	{
 		id: 3067,
