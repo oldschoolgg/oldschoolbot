@@ -1,5 +1,5 @@
 import { mentionCommand, SimpleTable } from '@oldschoolgg/toolkit';
-import { Minigame, Prisma, XpGainSource } from '@prisma/client';
+import { Minigame, XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
 	calcPercentOfNum,
@@ -31,7 +31,7 @@ import { setupParty } from '../party';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { constructGearSetup, Gear } from '../structures/Gear';
-import { ItemBank, MakePartyOptions, Skills } from '../types';
+import { MakePartyOptions, Skills } from '../types';
 import { TOAOptions } from '../types/minions';
 import {
 	assert,
@@ -46,7 +46,7 @@ import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
-import { bankToStrShortNames, exponentialPercentScale } from '../util/smallUtils';
+import { bankToStrShortNames, exponentialPercentScale, getToaKCs } from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 
@@ -1591,25 +1591,6 @@ function calculateBoostString(user: MUser) {
 		str += ` (Missing ${getOSItem(primarySpecWeaponBoosts[0][0]).name})`;
 	}
 	return str;
-}
-
-export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {
-	let entryKC = 0;
-	let normalKC = 0;
-	let expertKC = 0;
-	for (const [levelStr, qty] of Object.entries(toaRaidLevelsBank as ItemBank)) {
-		const level = Number(levelStr);
-		if (level >= 300) {
-			expertKC += qty;
-			continue;
-		}
-		if (level >= 150) {
-			normalKC += qty;
-			continue;
-		}
-		entryKC += qty;
-	}
-	return { entryKC, normalKC, expertKC, totalKC: entryKC + normalKC + expertKC };
 }
 
 export async function toaHelpCommand(user: MUser, channelID: string) {

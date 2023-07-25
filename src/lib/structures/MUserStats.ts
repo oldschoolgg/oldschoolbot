@@ -2,10 +2,10 @@ import { UserStats } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';
-import { ClueBank } from '../minions/types';
+import type { ClueBank } from '../minions/types';
 import { prisma } from '../settings/prisma';
-import { getToaKCs } from '../simulation/toa';
-import { ItemBank } from '../types';
+import type { ItemBank } from '../types';
+import { getToaKCs } from '../util/smallUtils';
 
 export class MUserStats {
 	userStats: UserStats;
