@@ -24,8 +24,8 @@ export const paintColors: PaintColor[] = [
 	{ itemId: 72_458, name: 'Abyssal Purple', rgb: [209, 58, 255], paintCanItem: null as any as Item },
 	{ itemId: 72_459, name: 'Amethyst Purple', rgb: [165, 120, 255], paintCanItem: null as any as Item },
 	{ itemId: 72_460, name: 'Ruby Red', rgb: [255, 0, 0], paintCanItem: null as any as Item },
-	{ itemId: 72_461, name: 'White Lily White', rgb: [255, 255, 255], paintCanItem: null as any as Item },
-	{ itemId: 72_462, name: 'Balfrug Kreeyath Black', rgb: [0, 0, 0], paintCanItem: null as any as Item },
+	{ itemId: 72_461, name: 'Silver Light', rgb: [255, 255, 255], paintCanItem: null as any as Item },
+	{ itemId: 72_462, name: 'Drakan Dark', rgb: [0, 0, 0], paintCanItem: null as any as Item },
 	{ itemId: 72_463, name: 'Inversion', rgb: [1, 2, 3], paintCanItem: null as any as Item }
 ];
 
@@ -108,6 +108,6 @@ export const PaintBoxTable = new LootTable()
 	.add('Abyssal Purple paint can')
 	.add('Amethyst Purple paint can')
 	.add('Ruby Red paint can')
-	.add('White Lily White paint can')
-	.add('Balfrug Kreeyath Black paint can')
+	.add('Silver Light paint can')
+	.add('Drakan Dark paint can')
 	.add('Inversion paint can');
