@@ -205,13 +205,6 @@ const minigameRequirements = new Requirements()
 	.add({
 		name: 'Reach level 5 Honour level',
 		has: ({ stats }) => stats.baHonourLevel === 5
-	})
-	.add({
-		name: 'Win 1000 LMS games',
-		has: async ({ user }) => {
-			const stats = await getUsersLMSStats(user);
-			return stats.gamesWon >= 1000;
-		}
 	});
 
 const pvmRequirements = new Requirements()
@@ -345,12 +338,6 @@ const skillingRequirements = new Requirements()
 	.add({ name: 'Complete Zalcano CL', clRequirement: zalcanoCL })
 	.add({ name: 'Complete Implings CL', clRequirement: implingsCL })
 	.add({
-		name: 'Complete 2000 laps of the Ape Atoll agility course',
-		lapsRequirement: {
-			6: 2000
-		}
-	})
-	.add({
 		name: 'Grow 5 Spirit trees',
 		has: async ({ user }) => {
 			const info = await getFarmingInfo(user.id);
@@ -475,13 +462,8 @@ const miscRequirements = new Requirements()
 	.add({ name: 'Complete Miscellaneous CL', clRequirement: miscellaneousCL })
 	.add({ name: 'Complete Quest CL', clRequirement: questCL })
 	.add({ name: 'Complete Random Events CL', clRequirement: randomEventsCL })
-	.add({ name: 'Complete Shayzien Armour CL', clRequirement: shayzienArmourCL })
-	.add({
-		name: 'Kill 4000 Chompy Birds',
-		minigames: {
-			big_chompy_bird_hunting: 4000
-		}
-	});
+	.add({ name: 'Complete Shayzien Armour CL', clRequirement: shayzienArmourCL });
+
 const petTripSource: [string, keyof UserStats][] = [
 	['Brock', 'brock_loot_bank'],
 	['Doug', 'doug_loot_bank'],
