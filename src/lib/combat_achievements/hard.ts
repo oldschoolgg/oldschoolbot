@@ -3,7 +3,6 @@ import { Monsters } from 'oldschooljs';
 import { demonBaneWeapons, NIGHTMARE_ID } from '../constants';
 import { anglerOutfit } from '../data/CollectionsExport';
 import { Requirements } from '../structures/Requirements';
-import { ItemBank } from '../types';
 import { TemporossActivityTaskOptions } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
 import { type CombatAchievement } from './combatAchievements';
@@ -577,13 +576,11 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		name: 'Confident Raider',
 		type: 'restriction',
 		desc: 'Complete a Tombs of Amascut raid at level 100 or above.',
-		customReq: async user => {
-			const stats = await user.fetchStats({ toa_raid_levels_bank: true });
-			return (
-				Object.entries(stats.toa_raid_levels_bank as ItemBank).filter(([key]) => parseInt(key) >= 100).length >
-				0
-			);
-		}
+		requirements: new Requirements().add({
+			minigames: {
+				tombs_of_amascut: 1
+			}
+		})
 	},
 	{
 		id: 255,

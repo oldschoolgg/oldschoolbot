@@ -81,11 +81,6 @@ export const caCommand: OSBMahojiCommand = {
 					if (hasAll) {
 						completedTasks.push(task);
 					}
-				} else if ('customReq' in task) {
-					const hasReq = await task.customReq(user);
-					if (hasReq) {
-						completedTasks.push(task);
-					}
 				}
 			}
 

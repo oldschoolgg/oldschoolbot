@@ -29,9 +29,6 @@ export type CombatAchievement = {
 			};
 	  }
 	| {
-			customReq: (user: MUser) => Promise<boolean>;
-	  }
-	| {
 			notPossible: true;
 	  }
 );
