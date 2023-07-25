@@ -415,7 +415,8 @@ export async function generateAllGearImage(user: MUser) {
 		for (const enumName of Object.values(EquipmentSlot)) {
 			const item = gear[enumName];
 			if (!item) continue;
-			const image = await bankImageGenerator.getItemImage(item.item);
+			const preImage = await bankImageGenerator.getItemImage(item.item);
+			const image = await applyCustomItemEffects(user, preImage, item.item);
 			let [x, y] = slotCoordinatesCompact[enumName];
 			x = x + slotSize / 2 - image.width / 2;
 			y = y + slotSize / 2 - image.height / 2;
