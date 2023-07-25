@@ -1,8 +1,8 @@
 import { activity_type_enum } from '@prisma/client';
-import { roll, sumArr } from 'e';
+import { deepClone, roll, sumArr } from 'e';
 
 import { Requirements } from '../structures/Requirements';
-import { ActivityTaskOptions } from '../types/minions';
+import { ActivityTaskOptions, ActivityTaskOptionsWithQuantity } from '../types/minions';
 import { assert } from '../util';
 import { TripFinishEffect } from '../util/handleTripFinish';
 import { easyCombatAchievements } from './easy';
@@ -80,9 +80,13 @@ assert(sumArr(Object.values(CombatAchievements).map(i => i.length)) === allCATas
 const indexesWithRng = entries.map(i => i[1].tasks.filter(t => 'rng' in t)).flat();
 
 export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ user, data, messages }) => {
+	const dataCopy = deepClone(data);
+	if (dataCopy.type === 'TheatreOfBlood') {
+		(dataCopy as ActivityTaskOptionsWithQuantity).quantity = 1;
+	}
 	const completedTasks = [];
-	if (!('quantity' in data)) return;
-	const quantity = Number(data.quantity);
+	if (!('quantity' in dataCopy)) return;
+	const quantity = Number(dataCopy.quantity);
 	if (isNaN(quantity)) return;
 
 	for (const task of indexesWithRng) {
@@ -90,7 +94,9 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ user
 		if (!('rng' in task)) continue;
 
 		const hasChance =
-			typeof task.rng.hasChance === 'string' ? data.type === task.rng.hasChance : task.rng.hasChance(data, user);
+			typeof task.rng.hasChance === 'string'
+				? dataCopy.type === task.rng.hasChance
+				: task.rng.hasChance(dataCopy, user);
 		if (!hasChance) continue;
 
 		for (let i = 0; i < quantity; i++) {
