@@ -6,7 +6,6 @@ import { Bank, Items } from 'oldschooljs';
 
 import { tameFeedableItems } from '../mahoji/commands/tames';
 import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
-import { getUsersLMSStats } from '../tasks/minions/minigames/lmsActivity';
 import { ClueTiers } from './clues/clueTiers';
 import { BitField } from './constants';
 import {
