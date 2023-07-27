@@ -1,3 +1,4 @@
+import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from '../util/getOSItem';
@@ -191,3 +192,8 @@ const Skillcapes: Skillcape[] = [
 ];
 
 export default Skillcapes;
+export const allMasterCapesBank = new Bank();
+for (const cape of Skillcapes) {
+	allMasterCapesBank.add(cape.masterCape.id);
+}
+allMasterCapesBank.freeze();

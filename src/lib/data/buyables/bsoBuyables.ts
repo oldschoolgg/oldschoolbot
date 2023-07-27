@@ -2,8 +2,8 @@ import { mentionCommand } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { calculateCompCapeProgress } from '../../compCape';
-import Skillcapes from '../../skilling/skillcapes';
+import { calculateCompCapeProgress } from '../../bso/calculateCompCapeProgress';
+import { allMasterCapesBank } from '../../skilling/skillcapes';
 import { isAtleastThisOld } from '../../util';
 import { Buyable } from './buyables';
 import { circusBuyables } from './circusBuyables';
@@ -19,12 +19,6 @@ const items = [
 	['Castle wars cape (expert)', 2500],
 	['Castle wars cape (legend)', 5000]
 ] as const;
-
-export const allMasterCapesBank = new Bank();
-for (const cape of Skillcapes) {
-	allMasterCapesBank.add(cape.masterCape.id);
-}
-allMasterCapesBank.freeze();
 
 export const bsoBuyables: Buyable[] = [
 	...items.map(i => ({
