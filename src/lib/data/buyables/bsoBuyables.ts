@@ -107,7 +107,6 @@ export const bsoBuyables: Buyable[] = [
 		itemCost: allMasterCapesBank,
 		customReq: async user => {
 			let { totalPercentUntrimmed } = await calculateCompCapeProgress(user);
-			totalPercentUntrimmed = 100;
 			if (totalPercentUntrimmed < 100) {
 				return [
 					false,
