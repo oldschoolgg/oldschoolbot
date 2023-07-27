@@ -196,4 +196,8 @@ export const allMasterCapesBank = new Bank();
 for (const cape of Skillcapes) {
 	allMasterCapesBank.add(cape.masterCape.id);
 }
+allMasterCapesBank.add('Master quest cape');
+allMasterCapesBank.add('Achievement diary cape(t)');
+allMasterCapesBank.add('Music cape (t)');
+
 allMasterCapesBank.freeze();

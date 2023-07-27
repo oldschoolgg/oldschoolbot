@@ -4292,8 +4292,11 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "customReq": [Function],
+    "globalAnnouncementOnFirstBuy": true,
     "itemCost": Bank {
       "bank": {
+        "13069": 1,
+        "13222": 1,
         "40000": 1,
         "40001": 1,
         "40002": 1,
@@ -4317,6 +4320,7 @@ exports[`BSO Buyables 1`] = `
         "40020": 1,
         "40021": 1,
         "40022": 1,
+        "40053": 1,
         "40060": 1,
         "63205": 1,
       },
@@ -23028,6 +23032,8 @@ exports[`BSO Creatables 1`] = `
     "noCl": true,
     "outputItems": Bank {
       "bank": {
+        "13069": 1,
+        "13222": 1,
         "40000": 1,
         "40001": 1,
         "40002": 1,
@@ -23051,6 +23057,7 @@ exports[`BSO Creatables 1`] = `
         "40020": 1,
         "40021": 1,
         "40022": 1,
+        "40053": 1,
         "40060": 1,
         "63205": 1,
       },

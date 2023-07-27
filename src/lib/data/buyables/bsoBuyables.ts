@@ -106,7 +106,8 @@ export const bsoBuyables: Buyable[] = [
 		outputItems: new Bank().add('Completionist cape').add('Completionist hood'),
 		itemCost: allMasterCapesBank,
 		customReq: async user => {
-			const { totalPercentUntrimmed } = await calculateCompCapeProgress(user);
+			let { totalPercentUntrimmed } = await calculateCompCapeProgress(user);
+			totalPercentUntrimmed = 100;
 			if (totalPercentUntrimmed < 100) {
 				return [
 					false,
@@ -119,6 +120,7 @@ export const bsoBuyables: Buyable[] = [
 			}
 
 			return [true];
-		}
+		},
+		globalAnnouncementOnFirstBuy: true
 	}
 ];
