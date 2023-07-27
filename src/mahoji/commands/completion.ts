@@ -43,6 +43,6 @@ export const completionCommand: OSBMahojiCommand = {
 				files: [new AttachmentBuilder(Buffer.from(result), { name: 'compcape.txt' })]
 			};
 		}
-		return 'a';
+		return 'Invalid command.';
 	}
 };
