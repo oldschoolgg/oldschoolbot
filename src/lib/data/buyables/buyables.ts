@@ -40,6 +40,7 @@ export interface Buyable {
 	ironmanPrice?: number;
 	collectionLogReqs?: number[];
 	customReq?: (user: MUser) => Promise<[true] | [false, string]>;
+	globalAnnouncementOnFirstBuy?: boolean;
 }
 
 const randomEventBuyables: Buyable[] = [

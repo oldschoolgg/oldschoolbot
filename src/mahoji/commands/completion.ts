@@ -1,7 +1,8 @@
 import { AttachmentBuilder } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { calculateCompCapeProgress, generateAllCompCapeTasksList } from '../../lib/compCape';
+import { calculateCompCapeProgress } from '../../lib/bso/calculateCompCapeProgress';
+import { generateAllCompCapeTasksList } from '../../lib/compCape';
 import { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 
@@ -43,6 +44,6 @@ export const completionCommand: OSBMahojiCommand = {
 				files: [new AttachmentBuilder(Buffer.from(result), { name: 'compcape.txt' })]
 			};
 		}
-		return 'a';
+		return 'Invalid command.';
 	}
 };

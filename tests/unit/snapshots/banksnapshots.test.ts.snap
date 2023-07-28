@@ -3549,90 +3549,6 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "customReq": [Function],
-    "itemCost": Bank {
-      "bank": {
-        "40000": 1,
-        "40001": 1,
-        "40002": 1,
-        "40004": 1,
-        "40006": 1,
-        "40007": 1,
-        "40012": 1,
-        "40013": 1,
-      },
-      "frozen": false,
-    },
-    "name": "Artisan's cape",
-    "outputItems": Bank {
-      "bank": {
-        "40057": 1,
-      },
-      "frozen": false,
-    },
-  },
-  {
-    "customReq": [Function],
-    "itemCost": Bank {
-      "bank": {
-        "40009": 1,
-        "40011": 1,
-        "40017": 1,
-        "40018": 1,
-        "40019": 1,
-        "40020": 1,
-        "40021": 1,
-      },
-      "frozen": false,
-    },
-    "name": "Combatant's cape",
-    "outputItems": Bank {
-      "bank": {
-        "40056": 1,
-      },
-      "frozen": false,
-    },
-  },
-  {
-    "customReq": [Function],
-    "itemCost": Bank {
-      "bank": {
-        "40003": 1,
-        "40005": 1,
-        "40008": 1,
-        "40010": 1,
-        "40015": 1,
-      },
-      "frozen": false,
-    },
-    "name": "Gatherer's cape",
-    "outputItems": Bank {
-      "bank": {
-        "40055": 1,
-      },
-      "frozen": false,
-    },
-  },
-  {
-    "customReq": [Function],
-    "itemCost": Bank {
-      "bank": {
-        "40014": 1,
-        "40016": 1,
-        "40022": 1,
-        "40060": 1,
-      },
-      "frozen": false,
-    },
-    "name": "Support cape",
-    "outputItems": Bank {
-      "bank": {
-        "40054": 1,
-      },
-      "frozen": false,
-    },
-  },
-  {
     "gpCost": 1000000000,
     "itemCost": Bank {
       "bank": {},
@@ -3676,6 +3592,90 @@ exports[`BSO Buyables 1`] = `
         "13222": 1,
       },
       "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "itemCost": Bank {
+      "bank": {
+        "40014": 1,
+        "40016": 1,
+        "40022": 1,
+        "40060": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Support cape",
+    "outputItems": Bank {
+      "bank": {
+        "40054": 1,
+      },
+      "frozen": true,
+    },
+  },
+  {
+    "customReq": [Function],
+    "itemCost": Bank {
+      "bank": {
+        "40003": 1,
+        "40005": 1,
+        "40008": 1,
+        "40010": 1,
+        "40015": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Gatherer's cape",
+    "outputItems": Bank {
+      "bank": {
+        "40055": 1,
+      },
+      "frozen": true,
+    },
+  },
+  {
+    "customReq": [Function],
+    "itemCost": Bank {
+      "bank": {
+        "40009": 1,
+        "40011": 1,
+        "40017": 1,
+        "40018": 1,
+        "40019": 1,
+        "40020": 1,
+        "40021": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Combatant's cape",
+    "outputItems": Bank {
+      "bank": {
+        "40056": 1,
+      },
+      "frozen": true,
+    },
+  },
+  {
+    "customReq": [Function],
+    "itemCost": Bank {
+      "bank": {
+        "40000": 1,
+        "40001": 1,
+        "40002": 1,
+        "40004": 1,
+        "40006": 1,
+        "40007": 1,
+        "40012": 1,
+        "40013": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Artisan's cape",
+    "outputItems": Bank {
+      "bank": {
+        "40057": 1,
+      },
+      "frozen": true,
     },
   },
   {
@@ -4286,6 +4286,51 @@ exports[`BSO Buyables 1`] = `
     "outputItems": Bank {
       "bank": {
         "71455": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "globalAnnouncementOnFirstBuy": true,
+    "itemCost": Bank {
+      "bank": {
+        "13069": 1,
+        "13222": 1,
+        "40000": 1,
+        "40001": 1,
+        "40002": 1,
+        "40003": 1,
+        "40004": 1,
+        "40005": 1,
+        "40006": 1,
+        "40007": 1,
+        "40008": 1,
+        "40009": 1,
+        "40010": 1,
+        "40011": 1,
+        "40012": 1,
+        "40013": 1,
+        "40014": 1,
+        "40015": 1,
+        "40016": 1,
+        "40017": 1,
+        "40018": 1,
+        "40019": 1,
+        "40020": 1,
+        "40021": 1,
+        "40022": 1,
+        "40053": 1,
+        "40060": 1,
+        "63205": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Completionist cape",
+    "outputItems": Bank {
+      "bank": {
+        "40058": 1,
+        "71479": 1,
       },
       "frozen": false,
     },
@@ -22970,6 +23015,139 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "70432": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "40058": 1,
+        "71479": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert completionist cape",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "13069": 1,
+        "13222": 1,
+        "40000": 1,
+        "40001": 1,
+        "40002": 1,
+        "40003": 1,
+        "40004": 1,
+        "40005": 1,
+        "40006": 1,
+        "40007": 1,
+        "40008": 1,
+        "40009": 1,
+        "40010": 1,
+        "40011": 1,
+        "40012": 1,
+        "40013": 1,
+        "40014": 1,
+        "40015": 1,
+        "40016": 1,
+        "40017": 1,
+        "40018": 1,
+        "40019": 1,
+        "40020": 1,
+        "40021": 1,
+        "40022": 1,
+        "40053": 1,
+        "40060": 1,
+        "63205": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "40054": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Support cape",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "40014": 1,
+        "40016": 1,
+        "40022": 1,
+        "40060": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "40055": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Gatherer's cape",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "40003": 1,
+        "40005": 1,
+        "40008": 1,
+        "40010": 1,
+        "40015": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "40056": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Combatant's cape",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "40009": 1,
+        "40011": 1,
+        "40017": 1,
+        "40018": 1,
+        "40019": 1,
+        "40020": 1,
+        "40021": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "40057": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Artisan's cape",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "40000": 1,
+        "40001": 1,
+        "40002": 1,
+        "40004": 1,
+        "40006": 1,
+        "40007": 1,
+        "40012": 1,
+        "40013": 1,
       },
       "frozen": false,
     },
