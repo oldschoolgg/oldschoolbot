@@ -754,7 +754,7 @@ for (const [key, b] of objectEntries(diariesObject)) {
 }
 diaryRequirements.add({ name: 'Complete Achievement Diary CL', clRequirement: diariesCL });
 
-const trimmedRequirements = new Requirements()
+export const compCapeTrimmedRequirements = new Requirements()
 	.add({
 		name: 'Complete the main Grandmaster treasure trails CL',
 		clRequirement: cluesGrandmasterCL
@@ -781,7 +781,7 @@ const trimmedRequirements = new Requirements()
 	.add({ name: 'Complete Tombs of Amascut CL', clRequirement: toaCL });
 
 for (const group of leagueTasks) {
-	trimmedRequirements.add({
+	compCapeTrimmedRequirements.add({
 		name: `Complete all ${group.name} Leagues tasks`,
 		has: ({ roboChimpUser }) => {
 			return group.tasks.every(t => roboChimpUser.leagues_completed_tasks_ids.includes(t.id));
@@ -789,7 +789,7 @@ for (const group of leagueTasks) {
 	});
 }
 
-const compCapeCategories = [
+export const compCapeCategories = [
 	{
 		name: 'PvM',
 		requirements: pvmRequirements
@@ -824,7 +824,7 @@ const compCapeCategories = [
 	},
 	{
 		name: 'Trimmed',
-		requirements: trimmedRequirements
+		requirements: compCapeTrimmedRequirements
 	}
 ] as const;
 
@@ -862,54 +862,4 @@ export async function generateAllCompCapeTasksList() {
 	return `Completionist Cape Tasks - ${totalRequirements} tasks\n\n
 
 ${finalStr}`;
-}
-
-export async function calculateCompCapeProgress(user: MUser) {
-	let finalStr = '';
-
-	let totalRequirementsTrimmed = 0;
-	let totalCompletedTrimmed = 0;
-	let totalCompletedUntrimmed = 0;
-
-	for (const cat of compCapeCategories) {
-		const progress = await cat.requirements.check(user);
-
-		let subStr = `${cat.name} (Finished ${progress.metRequirements}/${
-			progress.totalRequirements
-		}, ${progress.completionPercentage.toFixed(2)}%)\n`;
-		for (const reason of progress.reasonsDoesnt) {
-			subStr += `	- ${reason}\n`;
-		}
-
-		totalRequirementsTrimmed += progress.totalRequirements;
-		totalCompletedTrimmed += progress.metRequirements;
-
-		if (cat.name !== 'Trimmed') {
-			totalCompletedUntrimmed += progress.metRequirements;
-		}
-
-		subStr += '\n\n';
-		finalStr += subStr;
-	}
-
-	const totalRequirementsUntrimmed = totalRequirementsTrimmed - trimmedRequirements.size;
-
-	const totalPercentTrimmed = calcWhatPercent(totalCompletedTrimmed, totalRequirementsTrimmed);
-	const totalPercentUntrimmed = calcWhatPercent(totalCompletedUntrimmed, totalRequirementsUntrimmed);
-
-	const trimmedStr = ` ${totalCompletedTrimmed}/${totalRequirementsTrimmed} (${totalPercentTrimmed.toFixed(2)}%)`;
-	const untrimmedStr = ` ${totalCompletedUntrimmed}/${totalRequirementsUntrimmed} (${totalPercentUntrimmed.toFixed(
-		2
-	)}%)`;
-
-	return {
-		resultStr: `Completionist Cape Progress
-
-Trimmed: ${trimmedStr}
-Untrimmed: ${untrimmedStr}
-
-${finalStr}`,
-		totalPercentTrimmed,
-		totalPercentUntrimmed
-	};
 }

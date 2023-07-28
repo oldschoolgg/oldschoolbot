@@ -257,8 +257,30 @@ setCustomItem(40_054, 'Support cape', 'Abyssal cape', {}, 200_000_000);
 setCustomItem(40_055, "Gatherer's cape", 'Abyssal cape', {}, 200_000_000);
 setCustomItem(40_056, "Combatant's cape", 'Abyssal cape', {}, 200_000_000);
 setCustomItem(40_057, "Artisan's cape", 'Abyssal cape', {}, 200_000_000);
-setCustomItem(40_058, 'Completionist cape', 'Abyssal cape', {}, 500_000_000);
-setCustomItem(40_059, 'Completionist cape (t)', 'Abyssal cape', {}, 500_000_000);
+setCustomItem(
+	40_058,
+	'Completionist cape',
+	'Abyssal cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000_000
+);
+setCustomItem(
+	40_059,
+	'Completionist cape (t)',
+	'Abyssal cape',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000_000
+);
 
 setCustomItem(40_026, 'Scroll of life', 'Coal', {}, 1_000_000);
 setCustomItem(40_027, 'Herbicide', 'Coal', {}, 1_000_000);
@@ -7377,4 +7399,18 @@ setCustomItem(
 		}
 	},
 	10_000
+);
+
+setCustomItem(
+	71_479,
+	'Completionist hood',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
+			isDiscontinued: true
+		}
+	},
+	50_000_000
 );

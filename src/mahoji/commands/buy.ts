@@ -1,13 +1,15 @@
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { Events } from '../../lib/constants';
 import Buyables from '../../lib/data/buyables/buyables';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
-import { prisma } from '../../lib/settings/prisma';
+import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { isElligibleForPresent } from '../../lib/settings/settings';
-import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
+import { formatSkillRequirements, itemID, itemNameFromID, stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -150,6 +152,27 @@ export const buyCommand: OSBMahojiCommand = {
 			interaction,
 			`${user}, please confirm that you want to buy **${outItems}** for: ${totalCost}.`
 		);
+
+		if (
+			'globalAnnouncementOnFirstBuy' in buyable &&
+			buyable.globalAnnouncementOnFirstBuy &&
+			!user.cl.has(buyable.name)
+		) {
+			let [count, ironCount] = await Promise.all([
+				countUsersWithItemInCl(itemID(buyable.name), false),
+				countUsersWithItemInCl(itemID(buyable.name), true)
+			]);
+
+			let announcement = `**${user.badgedUsername}'s** minion, ${user.minionName}, just purchased their first ${
+				buyable.name
+			}! They are the ${formatOrdinal(count + 1)} player to buy one.`;
+
+			if (user.isIronman) {
+				announcement += `\n\nThey are the ${formatOrdinal(ironCount + 1)} Ironman to buy one.`;
+			}
+
+			globalClient.emit(Events.ServerNotification, announcement);
+		}
 
 		await transactItems({
 			userID: user.id,

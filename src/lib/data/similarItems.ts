@@ -1,4 +1,5 @@
 import { dyedItems } from '../dyedItems';
+import { allMasterCapesBank } from '../skilling/skillcapes';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import {
@@ -418,6 +419,16 @@ const source: [string, (string | number)[]][] = [
 	['Music cape', ['Music cape (t)']],
 	['Imbued heart', ['Saturated heart']]
 ];
+
+// Make max cape count as all master capes
+for (const [cape] of allMasterCapesBank.items()) {
+	const existingSimilarItem = source.find(s => s[0] === cape.name);
+	if (existingSimilarItem) {
+		existingSimilarItem[1].push('Completionist cape', 'Completionist cape (t)');
+	} else {
+		source.push([cape.name, ['Completionist cape', 'Completionist cape (t)']]);
+	}
+}
 
 for (const { baseItem, dyedVersions } of dyedItems) {
 	// Update matching child rows (simmilarItems) first:

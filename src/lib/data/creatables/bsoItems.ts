@@ -1,9 +1,11 @@
 import { Bank } from 'oldschooljs';
 import { resolveBank } from 'oldschooljs/dist/util';
 
+import { expertCapesSource } from '../../bso/expertCapes';
 import { dyedItems } from '../../dyedItems';
 import { MaterialBank } from '../../invention/MaterialBank';
 import { nexBrokenArmorDetails } from '../../nex';
+import { allMasterCapesBank } from '../../skilling/skillcapes';
 import { bones } from '../../skilling/skills/prayer';
 import { Bone } from '../../skilling/types';
 import { assert, resolveNameBank, stringMatches } from '../../util';
@@ -1317,5 +1319,24 @@ export const BsoCreateables: Createable[] = [
 			.add('Abyssal cape')
 			.add('Armadylean components', 10),
 		outputItems: new Bank().add('Tidal collector')
+	},
+	{
+		name: 'Revert completionist cape',
+		outputItems: allMasterCapesBank,
+		inputItems: new Bank().add('Completionist cape').add('Completionist hood'),
+		noCl: true
 	}
 ];
+
+for (const { cape, requiredItems } of expertCapesSource) {
+	const itemCost = new Bank();
+	for (const i of requiredItems) itemCost.add(i);
+	const capeBank = new Bank().add(cape.id).freeze();
+
+	BsoCreateables.push({
+		name: `Revert ${cape.name}`,
+		inputItems: capeBank,
+		outputItems: itemCost,
+		noCl: true
+	});
+}

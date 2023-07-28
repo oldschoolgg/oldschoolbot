@@ -1,6 +1,9 @@
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { calculateCompCapeProgress } from '../../bso/calculateCompCapeProgress';
+import { allMasterCapesBank } from '../../skilling/skillcapes';
 import { isAtleastThisOld } from '../../util';
 import { Buyable } from './buyables';
 import { circusBuyables } from './circusBuyables';
@@ -97,5 +100,26 @@ export const bsoBuyables: Buyable[] = [
 
 			return [true];
 		}
+	},
+	{
+		name: 'Completionist cape',
+		outputItems: new Bank().add('Completionist cape').add('Completionist hood'),
+		itemCost: allMasterCapesBank,
+		customReq: async user => {
+			let { totalPercentUntrimmed } = await calculateCompCapeProgress(user);
+			if (totalPercentUntrimmed < 100) {
+				return [
+					false,
+					`You don't meet the requirements to buy an untrimmed Completionist cape. Refer to ${mentionCommand(
+						globalClient,
+						'completion',
+						'check'
+					)} to see what you are missing.`
+				];
+			}
+
+			return [true];
+		},
+		globalAnnouncementOnFirstBuy: true
 	}
 ];
