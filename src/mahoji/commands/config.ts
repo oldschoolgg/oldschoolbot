@@ -57,6 +57,10 @@ const toggles = [
 	{
 		name: "Disable Grand Exchange DM's",
 		bit: BitField.DisableGrandExchangeDMs
+	},
+	{
+		name: 'Disable Scroll of Longevity',
+		bit: BitField.ScrollOfLongevityDisabled
 	}
 ];
 

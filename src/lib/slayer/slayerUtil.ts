@@ -225,7 +225,10 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		quantity *= 2;
 		messages.push('2x qty for Size Matters unlock');
 	}
-	if (_user.bitfield.includes(BitField.HasScrollOfLongevity)) {
+	if (
+		_user.bitfield.includes(BitField.HasScrollOfLongevity) &&
+		!_user.bitfield.includes(BitField.ScrollOfLongevityDisabled)
+	) {
 		quantity *= 2;
 		messages.push('2x qty for Scroll of longevity');
 	}
