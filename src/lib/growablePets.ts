@@ -38,6 +38,18 @@ export const growablePets: GrowablePet[] = [
 	{
 		growthRate: (Time.Hour * 5) / Time.Minute,
 		stages: resolveItems(['Magic kitten', 'Magic cat'])
+	},
+	{
+		growthRate: (Time.Hour * 2) / Time.Minute,
+		stages: resolveItems(['Zamorak egg', 'Baby zamorak hawk', 'Juvenile zamorak hawk', 'Zamorak hawk'])
+	},
+	{
+		growthRate: (Time.Hour * 2) / Time.Minute,
+		stages: resolveItems(['Guthix egg', 'Baby guthix raptor', 'Juvenile guthix raptor', 'Guthix raptor'])
+	},
+	{
+		growthRate: (Time.Hour * 2) / Time.Minute,
+		stages: resolveItems(['Saradomin egg', 'Baby saradomin owl', 'Juvenile saradomin owl', 'Saradomin owl'])
 	}
 ];
 

@@ -8,6 +8,7 @@ import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { gods } from '../bso/divineDominion';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
@@ -298,6 +299,20 @@ const tripFinishEffects: TripFinishEffect[] = [
 					break;
 				}
 			}
+		}
+	},
+	{
+		name: 'God Favour',
+		fn: async ({ data, user }) => {
+			if (!('monsterID' in data)) return;
+			if (data.type !== 'MonsterKilling') return;
+			const favourableGod = gods.find(g => g.friendlyMonsters.includes(data.monsterID as number));
+			if (!favourableGod) return;
+			const unfavorableGods = gods.filter(g => g.name !== favourableGod.name);
+			await user.addToGodFavour(
+				unfavorableGods.map(g => g.name).filter(g => g !== 'Guthix'),
+				data.duration
+			);
 		}
 	}
 ];

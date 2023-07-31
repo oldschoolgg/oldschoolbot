@@ -2493,6 +2493,46 @@ const armorSetsSrc: { unpacked: Bank; packed: Item }[] = [
 	{
 		unpacked: new Bank().add('Acrylic hood').add('Acrylic top').add('Acrylic bottom').add('Acrylic boots'),
 		packed: getOSItem('Acrylic set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Warpriest of Zamorak helm')
+			.add('Warpriest of Zamorak cuirass')
+			.add('Warpriest of Zamorak greaves')
+			.add('Warpriest of Zamorak boots')
+			.add('Warpriest of Zamorak gauntlets')
+			.add('Warpriest of Zamorak cape'),
+		packed: getOSItem('Warpriest of Zamorak set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Warpriest of Saradomin helm')
+			.add('Warpriest of Saradomin cuirass')
+			.add('Warpriest of Saradomin greaves')
+			.add('Warpriest of Saradomin boots')
+			.add('Warpriest of Saradomin gauntlets')
+			.add('Warpriest of Saradomin cape'),
+		packed: getOSItem('Warpriest of Saradomin set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Warpriest of Armadyl helm')
+			.add('Warpriest of Armadyl cuirass')
+			.add('Warpriest of Armadyl greaves')
+			.add('Warpriest of Armadyl boots')
+			.add('Warpriest of Armadyl gauntlets')
+			.add('Warpriest of Armadyl cape'),
+		packed: getOSItem('Warpriest of Armadyl set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Warpriest of Bandos helm')
+			.add('Warpriest of Bandos cuirass')
+			.add('Warpriest of Bandos greaves')
+			.add('Warpriest of Bandos boots')
+			.add('Warpriest of Bandos gauntlets')
+			.add('Warpriest of Bandos cape'),
+		packed: getOSItem('Warpriest of Bandos set')
 	}
 ];
 

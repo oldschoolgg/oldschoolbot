@@ -9,6 +9,7 @@ import {
 	baxBathSim,
 	baxtorianBathhousesStartCommand
 } from '../../lib/baxtorianBathhouses';
+import { allGodlyItems, divineDominionCheck, divineDominionSacrificeCommand } from '../../lib/bso/divineDominion';
 import { fishingLocations } from '../../lib/fishingContest';
 import { MaterialType } from '../../lib/invention';
 import { bonanzaCommand } from '../lib/abstracted_commands/bonanzaCommand';
@@ -26,7 +27,7 @@ import {
 } from '../lib/abstracted_commands/odsCommand';
 import { stealingCreationCommand } from '../lib/abstracted_commands/stealingCreation';
 import { tinkeringWorkshopCommand } from '../lib/abstracted_commands/tinkeringWorkshopCommand';
-import { ownedMaterialOption } from '../lib/mahojiCommandOptions';
+import { itemOption, ownedMaterialOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const minigamesCommand: OSBMahojiCommand = {
@@ -223,6 +224,34 @@ export const minigamesCommand: OSBMahojiCommand = {
 					options: []
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'divine_dominion',
+			description: 'The Divine Dominion minigame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'check',
+					description: 'Check your Divine Dominion stats.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'sacrifice_god_item',
+					description: 'Sacrifice godly items.',
+					options: [
+						itemOption(item => allGodlyItems.includes(item.id)),
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The quantity you want to sacrifice (default 1).',
+							min_value: 1,
+							required: false
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -261,6 +290,13 @@ export const minigamesCommand: OSBMahojiCommand = {
 		balthazars_big_bonanza?: {
 			start?: {};
 		};
+		divine_dominion?: {
+			check?: {};
+			sacrifice_god_item?: {
+				item: string;
+				quantity?: number;
+			};
+		};
 	}>) => {
 		const klasaUser = await mUserFetch(userID);
 		const {
@@ -269,8 +305,21 @@ export const minigamesCommand: OSBMahojiCommand = {
 			ourania_delivery_service,
 			fishing_contest,
 			fist_of_guthix,
-			stealing_creation
+			stealing_creation,
+			divine_dominion
 		} = options;
+
+		if (divine_dominion?.check) {
+			return divineDominionCheck(klasaUser);
+		}
+
+		if (divine_dominion?.sacrifice_god_item) {
+			return divineDominionSacrificeCommand(
+				klasaUser,
+				divine_dominion.sacrifice_god_item.item,
+				divine_dominion.sacrifice_god_item.quantity
+			);
+		}
 
 		if (baxtorian_bathhouses?.help) {
 			const sim = baxBathSim();

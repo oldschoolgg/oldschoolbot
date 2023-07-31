@@ -7,6 +7,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
+import { GodFavourBank, GodName } from './bso/divineDominion';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTier, ClueTiers } from './clues/clueTiers';
 import { badges, BitField, Emoji, PerkTier, projectiles, usernameCache } from './constants';
@@ -733,6 +734,49 @@ GROUP BY data->>'clueID';`);
 		}
 
 		return { actualCluesBank: actualClues, clueCounts };
+	}
+
+	async getGodFavour(): Promise<GodFavourBank> {
+		let { god_favour_bank: currentFavour } = await this.fetchStats({ god_favour_bank: true });
+		if (!currentFavour) {
+			return {
+				Zamorak: 0,
+				Armadyl: 0,
+				Bandos: 0,
+				Guthix: 0,
+				Saradomin: 0
+			};
+		}
+		return currentFavour as GodFavourBank;
+	}
+
+	async addToGodFavour(gods: GodName[], duration: number) {
+		const currentFavour = await this.getGodFavour();
+		const newFavour = { ...currentFavour };
+
+		for (const god of gods) {
+			const newGodFavour = currentFavour[god] + duration / (Time.Minute * 6.125);
+			newFavour[god] = newGodFavour;
+		}
+
+		// Dont update if nothing changed
+		if (gods.every(god => newFavour[god] === currentFavour[god])) {
+			return currentFavour;
+		}
+
+		const res = await userStatsUpdate(
+			this.id,
+			{
+				god_favour_bank: newFavour
+			},
+			{
+				god_favour_bank: true
+			}
+		);
+
+		return {
+			newFavourBank: res.god_favour_bank
+		};
 	}
 }
 declare global {

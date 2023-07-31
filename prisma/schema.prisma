@@ -937,6 +937,9 @@ model UserStats {
   comp_cape_percent              Decimal?
   untrimmed_comp_cape_percent    Decimal?
 
+  god_favour_bank           Json? @db.Json
+  god_items_sacrificed_bank Json  @default("{}") @db.Json
+
   @@map("user_stats")
 }
 

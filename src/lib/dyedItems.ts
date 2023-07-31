@@ -273,7 +273,9 @@ export const allDyes = [
 	'Monkey dye',
 	'Volcanic dye',
 	'Christmas dye',
-	'Oceanic dye'
+	'Oceanic dye',
+	'Saradomin egg',
+	'Zamorak egg'
 ].map(getOSItem);
 
 export const dyedItems: DyedItem[] = [
@@ -546,6 +548,14 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Vasa cloak (xmas)'),
 				dye: getOSItem('Christmas dye')
+			},
+			{
+				item: getOSItem('Vasa cloak (zamorak)'),
+				dye: getOSItem('Zamorak egg')
+			},
+			{
+				item: getOSItem('Vasa cloak (saradomin)'),
+				dye: getOSItem('Saradomin egg')
 			}
 		]
 	},
