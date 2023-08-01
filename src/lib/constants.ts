@@ -271,7 +271,8 @@ export enum BitField {
 	DisabledGorajanBoneCrusher = 207,
 	HasLeaguesOneMinuteLengthBoost = 208,
 	HasPlantedIvy = 209,
-	HasGuthixEngram = 210
+	HasGuthixEngram = 210,
+	ScrollOfLongevityDisabled = 211
 }
 
 interface BitFieldData {
@@ -361,6 +362,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisableGrandExchangeDMs]: {
 		name: 'Disable Grand Exchange DMs',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.ScrollOfLongevityDisabled]: {
+		name: 'Disable Scroll of Longevity',
 		protected: false,
 		userConfigurable: true
 	}
