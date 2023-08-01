@@ -226,6 +226,8 @@ export const geCommand: OSBMahojiCommand = {
 			return `The current market price of ${itemNameFromID(data.itemID)!} is ${toKMB(
 				data.guidePrice
 			)} (${data.guidePrice.toLocaleString()}) GP.
+
+**Recent price:** ${toKMB(data.averagePriceLast100)} (${data.averagePriceLast100.toLocaleString()}) GP.
 			
 This price is a guide only, calculated from average sale prices, it may not be accurate, it may change, or not reflect the true market price.`;
 		}
