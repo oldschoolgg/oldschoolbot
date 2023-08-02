@@ -1189,7 +1189,7 @@ async function monkeyMagicHandler(
 
 	let reply = `${tameName(tame)} is now casting the ${
 		spellOptions.spell.name
-	} spell ${quantity}x times. The trip will take ${formatDuration(duration)}.`;
+	} spell ${quantity}x times, removed ${finalCost} from your bank. The trip will take ${formatDuration(duration)}.`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
