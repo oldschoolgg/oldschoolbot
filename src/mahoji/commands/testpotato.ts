@@ -355,7 +355,7 @@ const doaSupplies = new Bank()
 	.add('Javelin shaft', 100_000)
 	.add('Obsidian shards', 100_000);
 
-const thingsToWipe = ['bank', 'materials'] as const;
+const thingsToWipe = ['bank', 'materials', 'cl'] as const;
 
 export const testPotatoCommand: OSBMahojiCommand | null = production
 	? null
@@ -712,6 +712,22 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							researched_materials_bank: {}
 						});
 						return 'Reset your materials owned.';
+					}
+					if (thing === 'cl') {
+						await mahojiUserSettingsUpdate(user.id, {
+							collectionLogBank: {},
+							temp_cl: {}
+						});
+						await prisma.userStats.update({
+							where: {
+								user_id: BigInt(user.id)
+							},
+							data: {
+								cl_array: [],
+								cl_array_length: 0
+							}
+						});
+						return 'Reset your collection log.';
 					}
 					return 'Invalid thing to reset.';
 				}

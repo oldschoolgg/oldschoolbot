@@ -191,6 +191,13 @@ export const tameFeedableItems: FeedableItem[] = [
 		description: 'Chance to get 2x loot',
 		tameSpeciesCanBeFedThis: [TameType.Combat, TameType.Gatherer, TameType.Artisan, TameType.Support],
 		announcementString: "With Mr. E's energy absorbed, your tame now has a chance at 2x loot!"
+	},
+	{
+		item: getOSItem('Klik'),
+		description: 'Makes tanning spell faster',
+		tameSpeciesCanBeFedThis: [TameType.Gatherer],
+		announcementString:
+			"Your tame uses a spell to infuse Klik's fire breathing ability into itself. It can now tan hides much faster."
 	}
 ];
 
@@ -1016,6 +1023,12 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 
 	let boosts = [];
 
+	const equippedStaff = seaMonkeyStaves.find(s => s.item.id === tame.equipped_primary);
+	if (equippedStaff) {
+		speed = reduceNumByPercent(speed, 5);
+		boosts.push('5% faster (seamonkey staff)');
+	}
+
 	for (const item of resolveItems(['Voidling', 'Ring of endurance'])) {
 		if (tameHasBeenFed(tame, item)) {
 			speed = reduceNumByPercent(speed, 10);
@@ -1134,6 +1147,16 @@ async function monkeyMagicHandler(
 		maxTripLength += Time.Minute * 35;
 		boosts.push('+35mins trip length (ate a Zak)');
 	}
+
+	if (equippedStaff.tier > 2) {
+		speed = reduceNumByPercent(speed, 10);
+		boosts.push('10% faster for staff');
+	}
+	if (tameHasBeenFed(tame, itemID('Klik'))) {
+		speed = reduceNumByPercent(speed, 20);
+		boosts.push('20% faster for Klik firebreathing');
+	}
+
 	maxTripLength += patronMaxTripBonus(user) * 2;
 
 	const quantity = Math.min(maxCanDo, Math.floor(maxTripLength / speed));
@@ -1207,12 +1230,28 @@ async function tanLeatherCommand(user: MUser, channelID: string, itemName: strin
 	return monkeyMagicHandler(user, channelID, {
 		spell: seaMonkeySpells.find(i => i.id === 1)!,
 		itemID: item.id,
-		costPerItem: item.inputItems,
+		costPerItem: item.inputItems.clone().remove('Coins', item.inputItems.amount('Coins')),
 		lootPerItem: new Bank().add(item.id),
-		timePerSpell: Time.Second,
+		timePerSpell: Time.Millisecond * 500,
 		runes: {
 			per: 5,
 			cost: new Bank().add('Fire rune', 5).add('Nature rune', 1).add('Astral rune', 2)
+		}
+	});
+}
+
+async function superGlassCommand(user: MUser, channelID: string) {
+	const moltenGlass = getOSItem('Molten glass');
+
+	return monkeyMagicHandler(user, channelID, {
+		spell: seaMonkeySpells.find(i => i.id === 4)!,
+		itemID: moltenGlass.id,
+		costPerItem: new Bank().add('Giant seaweed').add('Bucket of sand', 6),
+		lootPerItem: new Bank().add(moltenGlass, 8),
+		timePerSpell: Time.Second * 3,
+		runes: {
+			per: 27,
+			cost: new Bank().add('Air rune', 10).add('Fire rune', 6).add('Astral rune', 2)
 		}
 	});
 }
@@ -1226,9 +1265,9 @@ async function plankMakeCommand(user: MUser, channelID: string, plankName: strin
 	return monkeyMagicHandler(user, channelID, {
 		spell: seaMonkeySpells.find(i => i.id === 2)!,
 		itemID: item.outputItem,
-		costPerItem: new Bank().add(item.inputItem).add('Coins', item.gpCost),
+		costPerItem: new Bank().add(item.inputItem).add('Coins', Math.ceil(calcPercentOfNum(70, item.gpCost))),
 		lootPerItem: new Bank().add(item.outputItem),
-		timePerSpell: Time.Second,
+		timePerSpell: Time.Second * 4,
 		runes: {
 			per: 1,
 			cost: new Bank().add('Earth rune', 15).add('Nature rune', 1).add('Astral rune', 2)
@@ -1245,7 +1284,7 @@ async function spinFlaxCommand(user: MUser, channelID: string) {
 		itemID: bowstring.id,
 		costPerItem: new Bank().add(flax),
 		lootPerItem: new Bank().add(bowstring),
-		timePerSpell: Time.Second,
+		timePerSpell: Time.Millisecond * 800,
 		runes: {
 			per: 5,
 			cost: new Bank().add('Air rune', 5).add('Nature rune', 1).add('Astral rune', 2)
@@ -1429,9 +1468,10 @@ export type TamesCommandOptions = CommandRunOptions<{
 	equip?: { item: string };
 	unequip?: { item: string };
 	cast?: {
-		tan: string;
-		spin_flax: string;
-		plank_make: string;
+		tan?: string;
+		spin_flax?: string;
+		plank_make?: string;
+		superglass_make?: string;
 	};
 }>;
 export const tamesCommand: OSBMahojiCommand = {
@@ -1626,7 +1666,7 @@ export const tamesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.String,
 					name: 'spin_flax',
-					description: 'The what.',
+					description: 'Create flax.',
 					required: false,
 					choices: [{ name: 'Flax', value: 'flax' }]
 				},
@@ -1636,6 +1676,13 @@ export const tamesCommand: OSBMahojiCommand = {
 					description: 'The plank you want to make.',
 					required: false,
 					choices: Planks.map(t => ({ name: t.name, value: t.name }))
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'superglass_make',
+					description: 'Create glass.',
+					required: false,
+					choices: [{ name: 'Molten glass', value: 'molten glass' }]
 				}
 			]
 		}
@@ -1657,6 +1704,7 @@ export const tamesCommand: OSBMahojiCommand = {
 		if (options.cast?.plank_make) return plankMakeCommand(user, channelID, options.cast.plank_make);
 		if (options.cast?.spin_flax) return spinFlaxCommand(user, channelID);
 		if (options.cast?.tan) return tanLeatherCommand(user, channelID, options.cast.tan);
+		if (options.cast?.superglass_make) return superGlassCommand(user, channelID);
 		return 'Invalid command.';
 	}
 };

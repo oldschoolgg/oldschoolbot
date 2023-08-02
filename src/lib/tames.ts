@@ -64,7 +64,7 @@ export const seaMonkeyStaves = [
 ] as const;
 
 export interface SeaMonkeySpell {
-	id: 1 | 2 | 3;
+	id: 1 | 2 | 3 | 4;
 	tierRequired: number;
 	name: string;
 	description: string;
@@ -92,6 +92,13 @@ export const seaMonkeySpells: SeaMonkeySpell[] = [
 		name: 'Spin flax',
 		description: 'Spin flax into bowstrings.',
 		itemIDs: [itemID('Bow string')]
+	},
+	{
+		id: 4,
+		tierRequired: 2,
+		name: 'Superglass make',
+		description: 'Turns seaweed/sand into molten glass',
+		itemIDs: [itemID('Molten glass')]
 	}
 ];
 
@@ -790,8 +797,11 @@ export async function repeatTameTrip({
 					};
 					break;
 				}
-				default: {
-					throw new Error('Invalid spell ID');
+				case 4: {
+					args = {
+						superglass_make: 'molten glass'
+					};
+					break;
 				}
 			}
 			return runCommand({
