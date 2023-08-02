@@ -23,7 +23,7 @@ export async function createHistoricalData(user: MUser) {
 	};
 }
 
-async function clArrayUpdate(user: MUser, newCL: Bank) {
+export async function clArrayUpdate(user: MUser, newCL: Bank) {
 	const id = BigInt(user.id);
 	const newCLArray = Object.keys(newCL.bank).map(i => Number(i));
 	const updateObj = {
