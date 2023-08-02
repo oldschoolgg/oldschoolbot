@@ -8,6 +8,7 @@ import { nexBrokenArmorDetails } from '../../nex';
 import { allMasterCapesBank } from '../../skilling/skillcapes';
 import { bones } from '../../skilling/skills/prayer';
 import { Bone } from '../../skilling/types';
+import { seaMonkeyStaves } from '../../tames';
 import { assert, resolveNameBank, stringMatches } from '../../util';
 import getOSItem from '../../util/getOSItem';
 import itemID from '../../util/itemID';
@@ -979,6 +980,17 @@ const bsoItems: Createable[] = [
 		})
 	}
 ];
+
+for (const staff of seaMonkeyStaves) {
+	bsoItems.push({
+		name: staff.item.name,
+		inputItems: staff.creationCost,
+		outputItems: new Bank().add(staff.item.id),
+		requiredSkills: {
+			magic: staff.userMagicLevel
+		}
+	});
+}
 
 const ganodermic: Createable[] = [
 	{

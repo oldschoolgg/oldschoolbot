@@ -22,12 +22,15 @@ import { getSimilarItems } from './data/similarItems';
 import { trackLoot } from './lootTrack';
 import killableMonsters, { NightmareMonster } from './minions/data/killableMonsters';
 import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBosses';
+import { Planks } from './minions/data/planks';
 import { KillableMonster } from './minions/types';
 import { prisma } from './settings/prisma';
 import { runCommand } from './settings/settings';
-import { assert, channelIsSendable, itemNameFromID, roll } from './util';
+import Tanning from './skilling/skills/crafting/craftables/tanning';
+import { assert, calcPerHour, channelIsSendable, formatDuration, itemNameFromID, roll } from './util';
 import getOSItem from './util/getOSItem';
 import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot';
+import itemID from './util/itemID';
 import { makeBankImage } from './util/makeBankImage';
 import resolveItems from './util/resolveItems';
 
@@ -35,6 +38,62 @@ export enum TameSpeciesID {
 	Igne = 1,
 	Monkey = 2
 }
+
+export const seaMonkeyStaves = [
+	{
+		tier: 1,
+		item: getOSItem('Seamonkey staff (t1)'),
+		creationCost: new Bank().add('Polypore staff'),
+		userMagicLevel: 95,
+		description: 'Can cast basic spells.'
+	},
+	{
+		tier: 2,
+		item: getOSItem('Seamonkey staff (t2)'),
+		creationCost: new Bank().add('Seamonkey staff (t1)').add('Oceanic relic'),
+		userMagicLevel: 105,
+		description: 'Can cast advanced spells.'
+	},
+	{
+		tier: 3,
+		item: getOSItem('Seamonkey staff (t3)'),
+		creationCost: new Bank().add('Seamonkey staff (t2)').add('Aquifer aegis'),
+		userMagicLevel: 115,
+		description: 'Can cast advanced spells, faster.'
+	}
+] as const;
+
+export interface SeaMonkeySpell {
+	id: number;
+	tierRequired: number;
+	name: string;
+	description: string;
+	itemIDs: number[];
+}
+
+export const seaMonkeySpells: SeaMonkeySpell[] = [
+	{
+		id: 1,
+		tierRequired: 2,
+		name: 'Tan Leather',
+		description: 'Tan leather into soft leather.',
+		itemIDs: Tanning.map(i => i.id)
+	},
+	{
+		id: 2,
+		tierRequired: 2,
+		name: 'Plank Make',
+		description: 'Create planks from logs.',
+		itemIDs: Planks.map(i => i.outputItem)
+	},
+	{
+		id: 3,
+		tierRequired: 2,
+		name: 'Spin flax',
+		description: 'Spin flax into bowstrings.',
+		itemIDs: [itemID('Bow string')]
+	}
+];
 
 export const igneArmors = [
 	{
@@ -287,7 +346,15 @@ export interface TameTaskGathererOptions {
 	quantity: number;
 }
 
-export type TameTaskOptions = TameTaskCombatOptions | TameTaskGathererOptions;
+export interface TameTaskSpellCastingOptions {
+	type: 'SpellCasting';
+	spellID: number;
+	itemID: number;
+	quantity: number;
+	loot: ItemBank;
+}
+
+export type TameTaskOptions = TameTaskCombatOptions | TameTaskGathererOptions | TameTaskSpellCastingOptions;
 
 export const tameSpecies: Species[] = [
 	{
@@ -604,6 +671,23 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
 			const { doubleLootMsg } = doubleLootCheck(tame, loot);
 			str += doubleLootMsg;
+			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
+			handleFinish({
+				loot: itemsAdded,
+				message: str,
+				user
+			});
+			break;
+		}
+		case 'SpellCasting': {
+			const spell = seaMonkeySpells.find(s => s.id === activityData.spellID)!;
+			const loot = new Bank(activityData.loot);
+			let str = `${user}, ${tameName(tame)} finished casting the ${spell.name} spell for ${formatDuration(
+				activity.duration
+			)}. ${loot
+				.items()
+				.map(([item, qty]) => `${item.name} ${calcPerHour(qty, activity.duration).toFixed(1)}/hr`)
+				.join(', ')}`;
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
 				loot: itemsAdded,

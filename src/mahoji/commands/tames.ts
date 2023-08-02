@@ -24,9 +24,11 @@ import { badges, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { trackLoot } from '../../lib/lootTrack';
+import { Planks } from '../../lib/minions/data/planks';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import { getUsersPerkTier } from '../../lib/perkTiers';
 import { prisma } from '../../lib/settings/prisma';
+import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	createTameTask,
@@ -35,6 +37,9 @@ import {
 	getTameSpecies,
 	getUsersTame,
 	igneArmors,
+	SeaMonkeySpell,
+	seaMonkeySpells,
+	seaMonkeyStaves,
 	tameGrowthLevel,
 	tameHasBeenFed,
 	TameKillableMonster,
@@ -46,6 +51,7 @@ import {
 	TameType
 } from '../../lib/tames';
 import {
+	exponentialPercentScale,
 	formatDuration,
 	formatSkillRequirements,
 	isWeekend,
@@ -1056,6 +1062,188 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 	return reply;
 }
 
+async function monkeyMagicHandler(
+	user: MUser,
+	channelID: string,
+	spellOptions: {
+		spell: SeaMonkeySpell;
+		itemID: number;
+		costPerItem: Bank;
+		lootPerItem: Bank;
+		timePerSpell: number;
+		runes: {
+			per: number;
+			cost: Bank;
+		};
+	}
+) {
+	if (!spellOptions.spell.itemIDs.includes(spellOptions.itemID)) {
+		throw new Error(`Invalid item ID for spell ${spellOptions.spell.name}: ${spellOptions.itemID}`);
+	}
+	const { tame, activity } = await getUsersTame(user);
+	if (!tame) {
+		return 'You have no selected tame.';
+	}
+
+	if (getTameSpecies(tame).id !== TameSpeciesID.Monkey) {
+		return 'This tame species cannot do magic.';
+	}
+
+	const equippedStaff = seaMonkeyStaves.find(s => s.item.id === tame.equipped_primary);
+
+	if (!equippedStaff) {
+		return 'Your monkey does not have a seamonkey staff equipped.';
+	}
+
+	if (equippedStaff.tier < spellOptions.spell.tierRequired) {
+		return `Your monkey needs atleast a tier ${spellOptions.spell.tierRequired} staff to cast this spell.`;
+	}
+
+	if (activity) {
+		return `${tameName(tame)} is busy.`;
+	}
+
+	const maxCanDo = Math.floor(user.bank.fits(spellOptions.costPerItem));
+	if (maxCanDo < 1) {
+		return "You don't have enough items cast this spell.";
+	}
+
+	let speed = spellOptions.timePerSpell;
+	let boosts = [];
+	const [min] = getTameSpecies(tame).gathererLevelRange;
+	const minBoost = exponentialPercentScale(min, 0.01);
+	const gathererLevelBoost = exponentialPercentScale(tame.max_gatherer_level, 0.01) - minBoost;
+	if (gathererLevelBoost > 0) {
+		speed = reduceNumByPercent(speed, gathererLevelBoost);
+		boosts.push(`${gathererLevelBoost.toFixed(2)}% for gatherer level of ${tame.max_gatherer_level}`);
+	}
+	if (isWeekend()) {
+		speed = reduceNumByPercent(speed, 5);
+		boosts.push('5% weekend boost');
+	}
+	let maxTripLength = Time.Minute * 20 * (4 - tameGrowthLevel(tame));
+	if (tameHasBeenFed(tame, itemID('Zak'))) {
+		maxTripLength += Time.Minute * 35;
+		boosts.push('+35mins trip length (ate a Zak)');
+	}
+	maxTripLength += patronMaxTripBonus(user) * 2;
+
+	const quantity = Math.min(maxCanDo, Math.floor(maxTripLength / speed));
+
+	const runeCost = spellOptions.runes.cost.clone().multiply(Math.ceil(quantity / spellOptions.runes.per));
+
+	const finalCost = new Bank().add(runeCost).add(spellOptions.costPerItem.clone().multiply(quantity));
+	if (!user.bank.has(finalCost)) {
+		return `You need ${finalCost} to cast this spell ${quantity}x times.`;
+	}
+
+	await user.removeItemsFromBank(finalCost);
+	await trackLoot({
+		id: `${spellOptions.spell.name}`,
+		changeType: 'cost',
+		type: 'Skilling',
+		totalCost: finalCost,
+		suffix: 'tame',
+		users: [
+			{
+				id: user.id,
+				cost: finalCost
+			}
+		]
+	});
+	await prisma.tame.update({
+		where: {
+			id: tame.id
+		},
+		data: {
+			total_cost: new Bank(tame.total_cost as ItemBank).add(finalCost).bank
+		}
+	});
+	await updateBankSetting('economyStats_PVMCost', finalCost);
+
+	let duration = Math.floor(quantity * speed);
+
+	await createTameTask({
+		user,
+		channelID: channelID.toString(),
+		selectedTame: tame,
+		data: {
+			type: 'SpellCasting',
+			itemID: spellOptions.itemID,
+			quantity,
+			spellID: spellOptions.spell.id,
+			loot: spellOptions.lootPerItem.clone().multiply(quantity).bank
+		},
+		type: TameType.Gatherer,
+		duration,
+		fakeDuration: undefined
+	});
+
+	let reply = `${tameName(tame)} is now casting the ${
+		spellOptions.spell.name
+	} spell ${quantity}x times. The trip will take ${formatDuration(duration)}.`;
+
+	if (boosts.length > 0) {
+		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+	}
+
+	return reply;
+}
+
+async function tanLeatherCommand(user: MUser, channelID: string, itemName: string) {
+	const item = Tanning.find(i => getOSItem(i.id).name === itemName);
+	if (!item) {
+		return "That's not a valid item to tan.";
+	}
+
+	return monkeyMagicHandler(user, channelID, {
+		spell: seaMonkeySpells.find(i => i.id === 1)!,
+		itemID: item.id,
+		costPerItem: item.inputItems,
+		lootPerItem: new Bank().add(item.id),
+		timePerSpell: Time.Second,
+		runes: {
+			per: 5,
+			cost: new Bank().add('Fire rune', 5).add('Nature rune', 1).add('Astral rune', 2)
+		}
+	});
+}
+
+async function plankMakeCommand(user: MUser, channelID: string, plankName: string) {
+	const item = Planks.find(p => p.name === plankName);
+	if (!item) {
+		return "That's not a valid plank to make.";
+	}
+
+	return monkeyMagicHandler(user, channelID, {
+		spell: seaMonkeySpells.find(i => i.id === 2)!,
+		itemID: item.outputItem,
+		costPerItem: new Bank().add(item.inputItem).add('Coins', item.gpCost),
+		lootPerItem: new Bank().add(item.outputItem),
+		timePerSpell: Time.Second,
+		runes: {
+			per: 1,
+			cost: new Bank().add('Earth rune', 15).add('Nature rune', 1).add('Astral rune', 2)
+		}
+	});
+}
+
+async function spinFlaxCommand(user: MUser, channelID: string) {
+	const flax = getOSItem('Flax');
+	const bowstring = getOSItem('Bow string');
+
+	return monkeyMagicHandler(user, channelID, {
+		spell: seaMonkeySpells.find(i => i.id === 3)!,
+		itemID: bowstring.id,
+		costPerItem: new Bank().add(flax),
+		lootPerItem: new Bank().add(bowstring),
+		timePerSpell: Time.Second,
+		runes: {
+			per: 5,
+			cost: new Bank().add('Air rune', 5).add('Nature rune', 1).add('Astral rune', 2)
+		}
+	});
+}
 async function selectCommand(user: MUser, tameID: number) {
 	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
 	const toSelect = tames.find(t => t.id === tameID);
@@ -1232,6 +1420,11 @@ export type TamesCommandOptions = CommandRunOptions<{
 	status?: {};
 	equip?: { item: string };
 	unequip?: { item: string };
+	cast?: {
+		tan: string;
+		spin_flax: string;
+		plank_make: string;
+	};
 }>;
 export const tamesCommand: OSBMahojiCommand = {
 	name: 'tames',
@@ -1405,6 +1598,38 @@ export const tamesCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'cast',
+			description: 'Make your monkey do some magic!',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'tan',
+					description: 'The leather you want your monkey to tan.',
+					required: false,
+					autocomplete: async input => {
+						return Tanning.filter(t =>
+							!input ? true : t.name.toLowerCase().includes(input.toLowerCase())
+						).map(t => ({ name: t.name, value: t.name }));
+					}
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'spin_flax',
+					description: 'The what.',
+					required: false,
+					choices: [{ name: 'Flax', value: 'flax' }]
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'plank_make',
+					description: 'The plank you want to make.',
+					required: false,
+					choices: Planks.map(t => ({ name: t.name, value: t.name }))
+				}
+			]
 		}
 	],
 	run: async ({ options, userID, channelID, interaction }: TamesCommandOptions) => {
@@ -1421,6 +1646,9 @@ export const tamesCommand: OSBMahojiCommand = {
 		if (options.status) return statusCommand(user);
 		if (options.equip) return tameEquipCommand(user, options.equip.item);
 		if (options.unequip) return tameUnequipCommand(user, options.unequip.item);
+		if (options.cast?.plank_make) return plankMakeCommand(user, channelID, options.cast.plank_make);
+		if (options.cast?.spin_flax) return spinFlaxCommand(user, channelID);
+		if (options.cast?.tan) return tanLeatherCommand(user, channelID, options.cast.tan);
 		return 'Invalid command.';
 	}
 };
