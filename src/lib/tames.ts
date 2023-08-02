@@ -64,7 +64,7 @@ export const seaMonkeyStaves = [
 ] as const;
 
 export interface SeaMonkeySpell {
-	id: number;
+	id: 1 | 2 | 3;
 	tierRequired: number;
 	name: string;
 	description: string;
@@ -686,7 +686,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				activity.duration
 			)}. ${loot
 				.items()
-				.map(([item, qty]) => `${item.name} ${calcPerHour(qty, activity.duration).toFixed(1)}/hr`)
+				.map(([item, qty]) => `${Math.floor(calcPerHour(qty, activity.duration)).toFixed(1)}/hr ${item.name}`)
 				.join(', ')}`;
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
@@ -760,6 +760,44 @@ export async function repeatTameTrip({
 					collect: {
 						name: getOSItem(data.itemID).name
 					}
+				},
+				bypassInhibitors: true,
+				channelID,
+				guildID,
+				user,
+				member,
+				interaction
+			});
+		}
+		case 'SpellCasting': {
+			let args = {};
+			switch (data.spellID) {
+				case 1: {
+					args = {
+						tan: getOSItem(data.itemID).name
+					};
+					break;
+				}
+				case 2: {
+					args = {
+						plank_make: getOSItem(data.itemID).name
+					};
+					break;
+				}
+				case 3: {
+					args = {
+						spin_flax: 'flax'
+					};
+					break;
+				}
+				default: {
+					throw new Error('Invalid spell ID');
+				}
+			}
+			return runCommand({
+				commandName: 'tames',
+				args: {
+					cast: args
 				},
 				bypassInhibitors: true,
 				channelID,

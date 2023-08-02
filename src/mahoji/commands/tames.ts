@@ -131,7 +131,15 @@ const igneClaws = [
 	}
 ].map(i => ({ ...i, tameSpecies: [TameSpeciesID.Igne], slot: 'equipped_primary' as const }));
 
-export const tameEquippables: TameEquippable[] = [...igneClaws, ...igneArmors];
+export const tameEquippables: TameEquippable[] = [
+	...igneClaws,
+	...igneArmors,
+	...seaMonkeyStaves.map(i => ({
+		item: i.item,
+		tameSpecies: [TameSpeciesID.Monkey],
+		slot: 'equipped_primary' as const
+	}))
+];
 
 interface FeedableItem {
 	item: Item;
@@ -1103,9 +1111,9 @@ async function monkeyMagicHandler(
 		return `${tameName(tame)} is busy.`;
 	}
 
-	const maxCanDo = Math.floor(user.bank.fits(spellOptions.costPerItem));
+	const maxCanDo = Math.floor(user.bankWithGP.fits(spellOptions.costPerItem));
 	if (maxCanDo < 1) {
-		return "You don't have enough items cast this spell.";
+		return `You don't have enough items to cast this spell, you need ${spellOptions.costPerItem} per cast.`;
 	}
 
 	let speed = spellOptions.timePerSpell;
@@ -1133,7 +1141,7 @@ async function monkeyMagicHandler(
 	const runeCost = spellOptions.runes.cost.clone().multiply(Math.ceil(quantity / spellOptions.runes.per));
 
 	const finalCost = new Bank().add(runeCost).add(spellOptions.costPerItem.clone().multiply(quantity));
-	if (!user.bank.has(finalCost)) {
+	if (!user.bankWithGP.has(finalCost)) {
 		return `You need ${finalCost} to cast this spell ${quantity}x times.`;
 	}
 

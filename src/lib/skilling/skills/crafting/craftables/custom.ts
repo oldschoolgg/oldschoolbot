@@ -53,15 +53,6 @@ export const customCraftables: Craftable[] = [
 		tickRate: 3
 	},
 	{
-		name: 'Royal dragon leather',
-		id: itemID('Royal dragon leather'),
-		level: 1,
-		xp: 0,
-		inputItems: new Bank({ 'Royal dragonhide': 1, Coins: 2000 }),
-		tickRate: 1,
-		bankChest: true
-	},
-	{
 		name: 'Royal dragonhide body',
 		id: itemID('Royal dragonhide body'),
 		level: 93,
