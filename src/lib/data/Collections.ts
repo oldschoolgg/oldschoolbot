@@ -1311,6 +1311,27 @@ export const allCollectionLogs: ICollection = {
 			'Spectator Clothes': {
 				items: spectatorClothes,
 				counts: false
+			},
+			'Tame Gear': {
+				items: resolveItems([
+					'Dragon igne armor',
+					'Barrows igne armor',
+					'Volcanic igne armor',
+					'Justiciar igne armor',
+					'Drygore igne armor',
+					'Dwarven igne armor',
+					'Gorajan igne armor',
+					'Runite igne claws',
+					'Dragon igne claws',
+					'Barrows igne claws',
+					'Volcanic igne claws',
+					'Drygore igne claws',
+					'Dwarven igne claws',
+					'Gorajan igne claws',
+					'Seamonkey staff (t1)',
+					'Seamonkey staff (t2)',
+					'Seamonkey staff (t3)'
+				])
 			}
 		}
 	},
