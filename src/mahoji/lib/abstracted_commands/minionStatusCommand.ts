@@ -4,6 +4,7 @@ import { stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, minionBuyButton } from '../../../lib/constants';
+import { clArrayUpdate } from '../../../lib/handleNewCLItems';
 import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { makeComponents } from '../../../lib/util';
@@ -60,6 +61,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 	]);
 
 	roboChimpSyncData(roboChimpUser, user);
+	await clArrayUpdate(user, user.cl);
 
 	if (!user.user.minion_hasBought) {
 		return {
