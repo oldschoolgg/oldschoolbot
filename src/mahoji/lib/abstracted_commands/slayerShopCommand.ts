@@ -70,7 +70,7 @@ export async function slayerShopBuyCommand({
 					slayer_unlocks: newUnlocks
 				});
 				if (
-					newUnlocks.length === SlayerRewardsShop.length &&
+					newUnlocks.length === SlayerRewardsShop.filter(u => !u.item).length &&
 					!user.bitfield.includes(BitField.HadAllSlayerUnlocks)
 				) {
 					await user.update({
