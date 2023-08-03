@@ -6258,7 +6258,7 @@ setCustomItem(
 
 setCustomItem(
 	70_433,
-	'Seamonkey staff (1)',
+	'Seamonkey staff (t1)',
 	'Coal',
 	{
 		customItemData: {
@@ -6271,7 +6271,7 @@ setCustomItem(
 
 setCustomItem(
 	70_434,
-	'Seamonkey staff (2)',
+	'Seamonkey staff (t2)',
 	'Coal',
 	{
 		customItemData: {
@@ -6284,7 +6284,7 @@ setCustomItem(
 
 setCustomItem(
 	70_435,
-	'Seamonkey staff (3)',
+	'Seamonkey staff (t3)',
 	'Coal',
 	{
 		customItemData: {
@@ -6297,7 +6297,7 @@ setCustomItem(
 
 setCustomItem(
 	70_436,
-	'Seamonkey staff (4)',
+	'Seamonkey staff (t4)',
 	'Coal',
 	{
 		customItemData: {
