@@ -1149,12 +1149,12 @@ async function monkeyMagicHandler(
 	}
 
 	if (equippedStaff.tier > 2) {
-		speed = reduceNumByPercent(speed, 10);
-		boosts.push('10% faster for staff');
+		speed = reduceNumByPercent(speed, 12);
+		boosts.push('12% faster for staff');
 	}
 	if (tameHasBeenFed(tame, itemID('Klik'))) {
-		speed = reduceNumByPercent(speed, 20);
-		boosts.push('20% faster for Klik firebreathing');
+		speed = reduceNumByPercent(speed, 22);
+		boosts.push('22% faster for Klik firebreathing');
 	}
 
 	maxTripLength += patronMaxTripBonus(user) * 2;
@@ -1250,7 +1250,7 @@ async function superGlassCommand(user: MUser, channelID: string) {
 		lootPerItem: new Bank().add(moltenGlass, 8),
 		timePerSpell: Time.Second * 3,
 		runes: {
-			per: 27,
+			per: 3,
 			cost: new Bank().add('Air rune', 10).add('Fire rune', 6).add('Astral rune', 2)
 		}
 	});
