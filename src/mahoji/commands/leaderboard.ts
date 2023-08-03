@@ -157,7 +157,7 @@ async function sacrificeLb(user: MUser, channelID: string, type: 'value' | 'uniq
 	}
 
 	const mostUniques: { id: string; sacbanklength: number }[] = await prisma.$queryRawUnsafe(
-		`SELECT u.user_id::text AS id, u.sacbanklength 
+		`SELECT u.user_id::text AS id, u.sacbanklength
 				FROM (
   					SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS(sacrificed_bank)) sacbanklength, user_id FROM user_stats
   						${ironmanOnly ? 'INNER JOIN users ON users.id::bigint = user_stats.user_id WHERE "minion.ironman" = true' : ''}
@@ -932,10 +932,11 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					autocomplete: async value => {
 						return [
 							{ name: 'Overall (Main Leaderboard)', value: 'overall' },
-							...['overall+', ...allClNames.map(i => i)]
-								.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
-								.map(i => ({ name: toTitleCase(i), value: i }))
-						];
+							...['overall+', ...allClNames.map(i => i)].map(i => ({
+								name: toTitleCase(i),
+								value: i
+							}))
+						].filter(o => (!value ? true : o.name.toLowerCase().includes(value.toLowerCase())));
 					}
 				},
 				ironmanOnlyOption
