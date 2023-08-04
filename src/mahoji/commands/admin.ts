@@ -436,6 +436,38 @@ The next buy limit reset is at: ${buyLimitInterval.nextResetStr}, it resets ever
 				]
 			};
 		}
+	},
+	{
+		name: 'Buy GP Sinks',
+		run: async () => {
+			const result = await prisma.$queryRawUnsafe<{ item_id: string; total_gp_spent: number }[]>(`SELECT 
+  key AS item_id, 
+  sum((cost_gp / total_items) * value::integer) AS total_gp_spent
+FROM 
+  buy_command_transaction, 
+  json_each_text(loot_bank),
+  (SELECT id, sum(value::integer) as total_items FROM buy_command_transaction, json_each_text(loot_bank) GROUP BY id) subquery
+WHERE
+  buy_command_transaction.id = subquery.id
+GROUP BY 
+  key
+ORDER BY 
+  total_gp_spent DESC 
+LIMIT 
+  20;
+`);
+
+			return {
+				content: result
+					.map(
+						(row, index) =>
+							`${index + 1}. ${
+								getOSItem(Number(row.item_id)).name
+							} - ${row.total_gp_spent.toLocaleString()} GP`
+					)
+					.join('\n')
+			};
+		}
 	}
 ];
 

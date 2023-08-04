@@ -26,7 +26,7 @@ export async function disassemblyTask(data: DisassembleTaskOptions) {
 	}
 
 	await transactMaterialsFromUser({
-		userID: BigInt(data.userID),
+		user,
 		add: materialLoot,
 		addToDisassembledItemsBank: cost
 	});

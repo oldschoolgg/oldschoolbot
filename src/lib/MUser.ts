@@ -13,8 +13,9 @@ import { ClueTier, ClueTiers } from './clues/clueTiers';
 import { badges, BitField, Emoji, PerkTier, projectiles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
-import { GearSetup, UserFullGearSetup } from './gear';
 import { gearImages } from './gear/functions/generateGearImage';
+import { GearSetup, UserFullGearSetup } from './gear/types';
+import { handleNewCLItems } from './handleNewCLItems';
 import { IMaterialBank } from './invention';
 import { MaterialBank } from './invention/MaterialBank';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
@@ -42,6 +43,7 @@ import itemID from './util/itemID';
 import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
+import { repairBrokenItemsFromUser } from './util/repairBrokenItems';
 import resolveItems from './util/resolveItems';
 import { TransactItemsArgs } from './util/transactItemsFromBank';
 
@@ -446,12 +448,14 @@ export class MUserClass {
 	}
 
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
+		const previousCL = new Bank(this.cl.bank);
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
 		this.user = newUser;
 		this.updateProperties();
+		await handleNewCLItems({ itemsAdded: itemsToAdd, user: this, newCL: this.cl, previousCL });
 	}
 
 	async specialRemoveItems(bankToRemove: Bank) {
@@ -777,6 +781,16 @@ GROUP BY data->>'clueID';`);
 		return {
 			newFavourBank: res.god_favour_bank
 		};
+	}
+
+	ownedMaterials() {
+		const materialsOwnedBank = new MaterialBank(this.user.materials_owned as IMaterialBank);
+		return materialsOwnedBank;
+	}
+
+	async repairBrokenItems() {
+		await repairBrokenItemsFromUser(this);
+		await this.sync();
 	}
 }
 declare global {

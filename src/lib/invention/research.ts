@@ -76,7 +76,7 @@ export async function researchCommand({
 	}
 
 	await transactMaterialsFromUser({
-		userID: BigInt(user.id),
+		user,
 		remove: cost,
 		addToResearchedMaterialsBank: true
 	});
