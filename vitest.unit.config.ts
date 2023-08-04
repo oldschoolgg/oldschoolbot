@@ -13,6 +13,7 @@ export default defineConfig({
 		},
 		setupFiles: 'tests/unit/setup.ts',
 		resolveSnapshotPath: (testPath, extension) =>
-			join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`)
+			join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`),
+		threads: false
 	}
 });
