@@ -31,7 +31,6 @@ describe('Images', () => {
 				'Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test',
 			head: 'santa'
 		});
-		await writeFile('./tests/unit/snapshots/chatheads_santa.png', result.files[0].attachment);
 		expect(result.files[0].attachment).toMatchImageSnapshot();
 	});
 
