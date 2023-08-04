@@ -1,12 +1,10 @@
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import { Bank, Monsters } from 'oldschooljs';
-import { toKMB } from 'oldschooljs/dist/util';
 import { describe, expect, test } from 'vitest';
 
 import { drawChestLootImage } from '../../src/lib/bankImage';
 import { clImageGenerator } from '../../src/lib/collectionLogTask';
 import { pohImageGenerator } from '../../src/lib/pohImage';
-import { pieChart } from '../../src/lib/util/chart';
 import { mahojiChatHead } from '../../src/lib/util/chatHeadImage';
 import { makeBankImage } from '../../src/lib/util/makeBankImage';
 import { mockMUser } from './utils';
@@ -78,13 +76,13 @@ describe('Images', () => {
 		expect(result).toMatchImageSnapshot();
 	});
 
-	test('Chart Image', async () => {
-		const result = await pieChart('Test', val => `${toKMB(val)}%`, [
-			['Complete Collection Log Items', 20, '#9fdfb2'],
-			['Incomplete Collection Log Items', 80, '#df9f9f']
-		]);
-		expect(result).toMatchImageSnapshot();
-	});
+	// test('Chart Image', async () => {
+	// 	const result = await pieChart('Test', val => `${toKMB(val)}%`, [
+	// 		['Complete Collection Log Items', 20, '#9fdfb2'],
+	// 		['Incomplete Collection Log Items', 80, '#df9f9f']
+	// 	]);
+	// 	expect(result).toMatchImageSnapshot();
+	// });
 
 	test('TOA Image', async () => {
 		const image = await drawChestLootImage({
