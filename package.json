@@ -1,9 +1,9 @@
 {
 	"scripts": {
-		"gen": "concurrently \"prisma generate\" \"prisma generate --schema prisma/robochimp.prisma\"",
+		"gen": "concurrently \"prisma generate\" \"prisma generate --schema prisma/robochimp.prisma\" && echo \"Generated Prisma Client\"",
 		"lint": "concurrently \"prettier --use-tabs *.{js,md,json} --write\" \"eslint *.ts \"{src,tests}/**/*.ts\" --fix\" \"prettier --use-tabs {src,tests}/**/*.{js,md,json} --write\"",
 		"build:tsc": "tsc -p src",
-		"build": "concurrently \"yarn wipedist\" \"yarn gen\" \"yarn prebuild:scripts\" && yarn build:tsc",
+		"build": "concurrently \"yarn wipedist\" \"yarn gen\" && concurrently \"yarn prebuild:scripts\" && yarn build:tsc && echo \"Finished Building\"",
 		"wipedist": "rimraf \"dist/\"",
 		"start": "yarn build && concurrently \"tsc -w -p src\" \"node dist/\"",
 		"test": "concurrently \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\"",
