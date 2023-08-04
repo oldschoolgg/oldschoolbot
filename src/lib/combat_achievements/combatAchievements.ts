@@ -102,6 +102,7 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ user
 		for (let i = 0; i < quantity; i++) {
 			if (roll(task.rng.chancePerKill)) {
 				completedTasks.push(task);
+				break;
 			}
 		}
 	}

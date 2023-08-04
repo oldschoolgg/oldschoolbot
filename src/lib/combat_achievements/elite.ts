@@ -306,7 +306,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Corporeal Beast without anyone killing the dark core or taking damage from the dark core.',
 		type: 'perfection',
 		rng: {
-			chancePerKill: 1,
+			chancePerKill: 20,
 			hasChance: isCertainMonsterTrip(Monsters.CorporealBeast.id)
 		}
 	},

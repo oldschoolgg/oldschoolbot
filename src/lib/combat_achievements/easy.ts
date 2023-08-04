@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import { warmGear } from '../data/filterables';
 import { Requirements } from '../structures/Requirements';
 import { isCertainMonsterTrip } from './caUtils';
 import { type CombatAchievement } from './combatAchievements';
@@ -173,7 +174,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
-				isCertainMonsterTrip(Monsters.Bryophyta.id)(data) &&
+				isCertainMonsterTrip(Monsters.GreaterDemon.id)(data) &&
 				user.hasEquipped(['Silverlight', 'Darklight', 'Arclight'], false)
 		}
 	},
@@ -336,7 +337,12 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		id: 30,
 		rng: {
 			chancePerKill: 1,
-			hasChance: isCertainMonsterTrip(Monsters.Bryophyta.id)
+			hasChance: (data, user) =>
+				data.type === 'Wintertodt' &&
+				user
+					.allEquippedGearBank()
+					.items()
+					.filter(item => warmGear.includes(item[0].id)).length >= 4
 		}
 	},
 	{
@@ -345,8 +351,8 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		desc: 'Heal a pyromancer after they have fallen.',
 		id: 31,
 		rng: {
-			chancePerKill: 5,
-			hasChance: isCertainMonsterTrip(Monsters.Bryophyta.id)
+			chancePerKill: 15,
+			hasChance: 'Wintertodt'
 		}
 	},
 	{

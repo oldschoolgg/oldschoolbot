@@ -14,6 +14,7 @@ import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { UserKourendFavour } from '../../lib/minions/data/kourendFavour';
 import potions from '../../lib/minions/data/potions';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
 import { tiers } from '../../lib/patreon';
 import { Minigames } from '../../lib/settings/minigames';
@@ -255,12 +256,28 @@ const nexSupplies = new Bank()
 	.add('Super restore(4)', 100)
 	.add('Ranging potion(4)', 100);
 
+const thingsToWipe = ['bank', 'combat_achievements', 'cl'] as const;
+
 export const testPotatoCommand: OSBMahojiCommand | null = production
 	? null
 	: {
 			name: 'testpotato',
 			description: 'Commands for making testing easier and faster.',
 			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'wipe',
+					description: 'Wipe/reset a part of your account.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'thing',
+							description: 'The thing you want to wipe.',
+							required: true,
+							choices: thingsToWipe.map(i => ({ name: i, value: i }))
+						}
+					]
+				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'spawn',
@@ -494,6 +511,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
+				wipe?: { thing: (typeof thingsToWipe)[number] };
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
@@ -506,6 +524,38 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						minion_ironman: !current
 					});
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
+				}
+				if (options.wipe) {
+					let { thing } = options.wipe;
+					if (thing === 'bank') {
+						await mahojiUserSettingsUpdate(user.id, {
+							bank: {}
+						});
+						return 'Reset your bank.';
+					}
+					if (thing === 'cl') {
+						await mahojiUserSettingsUpdate(user.id, {
+							collectionLogBank: {},
+							temp_cl: {}
+						});
+						await prisma.userStats.update({
+							where: {
+								user_id: BigInt(user.id)
+							},
+							data: {
+								cl_array: [],
+								cl_array_length: 0
+							}
+						});
+						return 'Reset your collection log.';
+					}
+					if (thing === 'combat_achievements') {
+						await user.update({
+							completed_ca_task_ids: []
+						});
+						return 'Reset your combat achievements.';
+					}
+					return 'Invalid thing to reset.';
 				}
 				if (options.max) {
 					await roboChimpClient.user.upsert({
