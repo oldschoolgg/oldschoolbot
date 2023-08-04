@@ -1331,6 +1331,27 @@ export const allCollectionLogs: ICollection = {
 					'Seamonkey staff (t2)',
 					'Seamonkey staff (t3)'
 				])
+			},
+			'Divine Dominion': {
+				alias: ['dd', 'divine dominion'],
+				items: resolveItems([
+					'Zamorak egg',
+					'Baby zamorak hawk',
+					'Juvenile zamorak hawk',
+					'Zamorak hawk',
+					'Warpriest of Zamorak set',
+					'Guthix egg',
+					'Baby guthix raptor',
+					'Juvenile guthix raptor',
+					'Guthix raptor',
+					'Saradomin egg',
+					'Baby saradomin owl',
+					'Juvenile saradomin owl',
+					'Saradomin owl',
+					'Warpriest of Saradomin set',
+					'Warpriest of Bandos set',
+					'Warpriest of Armadyl set'
+				])
 			}
 		}
 	},
