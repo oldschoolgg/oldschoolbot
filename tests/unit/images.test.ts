@@ -19,7 +19,8 @@ declare module 'vitest' {
 
 const toMatchImageSnapshotPlugin = configureToMatchImageSnapshot({
 	customSnapshotsDir: './tests/unit/snapshots',
-	noColors: true
+	noColors: true,
+	failureThreshold: 0
 });
 expect.extend({ toMatchImageSnapshot: toMatchImageSnapshotPlugin });
 
@@ -54,7 +55,7 @@ describe('Images', () => {
 
 	test('Bank Image', async () => {
 		let bank = new Bank();
-		for (const item of [...Monsters.Man.allItems, ...Monsters.Cow.allItems]) {
+		for (const item of [...Monsters.Cow.allItems]) {
 			bank.add(item);
 		}
 		bank.add('Twisted bow', 10_000_000);
