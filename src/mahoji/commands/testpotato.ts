@@ -795,13 +795,13 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					if (options.spawn.materials) {
 						const loot = new MaterialBank();
 						for (const t of materialTypes) loot.add(t, 10_000);
-						await transactMaterialsFromUser({ userID: BigInt(user.id), add: loot });
+						await transactMaterialsFromUser({ user, add: loot });
 						return `Gave you ${loot}.`;
 					}
 					if (options.spawn.inventionmax) {
 						const loot = new MaterialBank();
 						for (const t of materialTypes) loot.add(t, 10_000);
-						await transactMaterialsFromUser({ userID: BigInt(user.id), add: loot });
+						await transactMaterialsFromUser({ user, add: loot });
 						await mahojiUserSettingsUpdate(user.id, {
 							unlocked_blueprints: Inventions.map(i => i.id),
 							skills_invention: 200_000_000

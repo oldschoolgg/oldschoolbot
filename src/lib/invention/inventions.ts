@@ -5,9 +5,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { ClueTier, ClueTiers } from '../clues/clueTiers';
-import { mahojiUserSettingsUpdate } from '../MUser';
 import { ItemBank } from '../types';
 import { formatDuration, stringMatches, toKMB } from '../util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings';
@@ -441,27 +439,21 @@ export function inventingCost(invention: Invention) {
 }
 
 export async function transactMaterialsFromUser({
-	userID,
+	user,
 	add,
 	remove,
 	addToDisassembledItemsBank,
 	addToResearchedMaterialsBank,
 	addToGlobalInventionCostBank
 }: {
-	userID: bigint;
+	user: MUser;
 	add?: MaterialBank;
 	remove?: MaterialBank;
 	addToDisassembledItemsBank?: Bank;
 	addToResearchedMaterialsBank?: boolean;
 	addToGlobalInventionCostBank?: boolean;
 }) {
-	const user = await mahojiUsersSettingsFetch(userID, {
-		materials_owned: true,
-		disassembled_items_bank: true,
-		researched_materials_bank: true
-	});
-
-	const materialsOwnedBank = new MaterialBank(user.materials_owned as IMaterialBank);
+	const materialsOwnedBank = user.ownedMaterials();
 	if (add) materialsOwnedBank.add(add);
 	if (remove) materialsOwnedBank.remove(remove);
 
@@ -471,12 +463,12 @@ export async function transactMaterialsFromUser({
 	if (addToDisassembledItemsBank) {
 		updateObject.disassembled_items_bank = addToDisassembledItemsBank
 			.clone()
-			.add(user.disassembled_items_bank as ItemBank).bank;
+			.add(user.user.disassembled_items_bank as ItemBank).bank;
 	}
 	if (addToResearchedMaterialsBank && remove) {
 		updateObject.researched_materials_bank = remove
 			.clone()
-			.add(user.researched_materials_bank as IMaterialBank).bank;
+			.add(user.user.researched_materials_bank as IMaterialBank).bank;
 	}
 
 	if (addToGlobalInventionCostBank && remove) {
@@ -487,7 +479,7 @@ export async function transactMaterialsFromUser({
 		});
 	}
 
-	await mahojiUserSettingsUpdate(userID, updateObject);
+	await user.update(updateObject);
 }
 
 export async function inventCommand(user: MUser, inventionName: string): CommandResponse {
@@ -513,7 +505,7 @@ export async function inventCommand(user: MUser, inventionName: string): Command
 	}
 
 	await transactMaterialsFromUser({
-		userID: BigInt(user.id),
+		user,
 		remove: cost,
 		addToGlobalInventionCostBank: true
 	});
@@ -602,7 +594,7 @@ export async function inventionItemBoost({
 
 	try {
 		await transactMaterialsFromUser({
-			userID: BigInt(user.id),
+			user,
 			remove: materialCost,
 			addToGlobalInventionCostBank: true
 		});

@@ -4,7 +4,6 @@ import { Items } from 'oldschooljs';
 
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { GearSetup, GearSetupTypes } from '../gear';
-import { mahojiUserSettingsUpdate } from '../MUser';
 import { prisma } from '../settings/prisma';
 import { ItemBank } from '../types';
 import { moidLink } from '../util';
@@ -29,7 +28,7 @@ export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] 
 			user_id: user.id
 		}
 	});
-	if (userTames.length) {
+	if (userTames.length > 0) {
 		for (const tame of userTames) {
 			rawTameBanks.push([tame.id, tame.max_total_loot as ItemBank]);
 			rawTameFeeds.push([tame.id, tame.fed_items as ItemBank]);
@@ -118,8 +117,8 @@ export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] 
 			return ['Oopsie...'];
 		}
 
-		await mahojiUserSettingsUpdate(user.id, changes);
-		if (userTames.length) {
+		await mUser.update(changes);
+		if (userTames.length > 0) {
 			for (const tame of userTames) {
 				const tameBank = newTameBanks.find(tb => tb[0] === tame.id)![1];
 				const tameFeed = newTameFeeds.find(tf => tf[0] === tame.id)![1];

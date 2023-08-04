@@ -219,7 +219,7 @@ export const createCommand: OSBMahojiCommand = {
 
 		if (materialCost) {
 			await transactMaterialsFromUser({
-				userID: BigInt(user.id),
+				user,
 				remove: materialCost
 			});
 		}

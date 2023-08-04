@@ -45,7 +45,6 @@ import smithables from '../skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../skilling/types';
 import type { ItemBank } from '../types';
 import { fetchStatsForCL, itemID, stringMatches } from '../util';
-import { repairBrokenItemsFromUser } from '../util/repairBrokenItems';
 import resolveItems from '../util/resolveItems';
 import { shuffleRandom } from '../util/smallUtils';
 import {
@@ -1638,9 +1637,8 @@ export async function getTotalCl(user: MUser, logType: CLType, userStats: UserSt
 	try {
 		result = getUserClData(await getBank(user, logType, userStats), allCLItemsFiltered);
 	} catch (_e) {
-		await repairBrokenItemsFromUser(user);
-		const newUser = await mUserFetch(user.id);
-		const newBank = await getBank(newUser, logType, userStats);
+		await user.repairBrokenItems();
+		const newBank = await getBank(user, logType, userStats);
 		result = getUserClData(newBank, allCLItemsFiltered);
 	}
 	return result;

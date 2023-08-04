@@ -43,6 +43,7 @@ import itemID from './util/itemID';
 import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
+import { repairBrokenItemsFromUser } from './util/repairBrokenItems';
 import resolveItems from './util/resolveItems';
 import { TransactItemsArgs } from './util/transactItemsFromBank';
 
@@ -780,6 +781,16 @@ GROUP BY data->>'clueID';`);
 		return {
 			newFavourBank: res.god_favour_bank
 		};
+	}
+
+	ownedMaterials() {
+		const materialsOwnedBank = new MaterialBank(this.user.materials_owned as IMaterialBank);
+		return materialsOwnedBank;
+	}
+
+	async repairBrokenItems() {
+		await repairBrokenItemsFromUser(this);
+		await this.sync();
 	}
 }
 declare global {
