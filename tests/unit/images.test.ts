@@ -1,4 +1,3 @@
-import { writeFile } from 'fs/promises';
 import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import { Bank, Monsters } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
