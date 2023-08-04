@@ -13,8 +13,9 @@ import { ClueTier, ClueTiers } from './clues/clueTiers';
 import { badges, BitField, Emoji, PerkTier, projectiles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
-import { GearSetup, UserFullGearSetup } from './gear';
 import { gearImages } from './gear/functions/generateGearImage';
+import { GearSetup, UserFullGearSetup } from './gear/types';
+import { handleNewCLItems } from './handleNewCLItems';
 import { IMaterialBank } from './invention';
 import { MaterialBank } from './invention/MaterialBank';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
@@ -446,12 +447,14 @@ export class MUserClass {
 	}
 
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
+		const previousCL = new Bank(this.cl.bank);
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
 		this.user = newUser;
 		this.updateProperties();
+		await handleNewCLItems({ itemsAdded: itemsToAdd, user: this, newCL: this.cl, previousCL });
 	}
 
 	async specialRemoveItems(bankToRemove: Bank) {

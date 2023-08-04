@@ -5,6 +5,7 @@ import { stripNonAlphanumeric } from 'e';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, minionBuyButton, PerkTier } from '../../../lib/constants';
 import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
+import { clArrayUpdate } from '../../../lib/handleNewCLItems';
 import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/tames';
@@ -66,6 +67,7 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 		]);
 
 	roboChimpSyncData(roboChimpUser, user);
+	await clArrayUpdate(user, user.cl);
 
 	if (!user.user.minion_hasBought) {
 		return {

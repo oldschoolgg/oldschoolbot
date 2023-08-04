@@ -226,3 +226,4 @@ export function checkRangeGearWeapon(gear: Gear) {
 export function removeDiscontinuedItems(arr: number[]) {
 	return arr.filter(i => !discontinuedItems.includes(i));
 }
+export const alphabeticalSort = (a: string, b: string) => a.localeCompare(b);
