@@ -48,6 +48,11 @@ const usableUnlocks: UsableUnlock[] = [
 		item: getOSItem('Runescroll of swampbark'),
 		bitfield: BitField.HasSwampbarkScroll,
 		resultMessage: 'You used your Runescroll of Swampbark, and unlocked the ability to create Swampbark armour.'
+	},
+	{
+		item: getOSItem("Saradomin's light"),
+		bitfield: BitField.HasSaradominsLight,
+		resultMessage: "You used your Saradomin's light."
 	}
 ];
 for (const usableUnlock of usableUnlocks) {
@@ -90,11 +95,11 @@ const genericUsables: {
 for (const genericU of genericUsables) {
 	usables.push({
 		items: genericU.items,
-		run: async klasaUser => {
-			if (genericU.cost) await klasaUser.removeItemsFromBank(genericU.cost);
+		run: async user => {
+			const cost = genericU.cost ? genericU.cost : undefined;
 			const loot =
-				genericU.loot === null ? null : genericU.loot instanceof Bank ? genericU.loot : genericU.loot();
-			if (loot) await klasaUser.addItemsToBank({ items: loot });
+				genericU.loot === null ? undefined : genericU.loot instanceof Bank ? genericU.loot : genericU.loot();
+			if (loot || cost) await user.transactItems({ itemsToAdd: loot, itemsToRemove: cost, collectionLog: true });
 			return genericU.response(loot ?? new Bank());
 		}
 	});

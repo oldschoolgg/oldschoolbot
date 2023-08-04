@@ -22338,6 +22338,7 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "11826": 1,
@@ -22354,6 +22355,7 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "11828": 1,
@@ -22370,6 +22372,7 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "11830": 1,

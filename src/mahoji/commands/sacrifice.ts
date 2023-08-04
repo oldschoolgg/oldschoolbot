@@ -120,8 +120,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			);
 
 			const loot = new Bank().add('Death rune', deathRunes);
-			await user.removeItemsFromBank(bankToSac);
-			await user.addItemsToBank({ items: loot, collectionLog: false });
+			await user.transactItems({ itemsToAdd: loot, itemsToRemove: bankToSac });
 			const sacBank = await trackSacBank(user, bankToSac);
 			let totalCatsSacrificed = 0;
 			for (const cat of cats) {
