@@ -1,4 +1,4 @@
-import { roll } from 'e';
+import { roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { MAX_XP } from '../../lib/constants';
@@ -16,7 +16,7 @@ export const herbloreTask: MinionTask = {
 
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.id === mixableID)!;
 
-		let petChance = Math.ceil(31_100_000 / (mixableItem.level * (mixableItem.level / 5)));
+		let petChance = Math.ceil(10_000_000 / (mixableItem.level * (mixableItem.level / 5)));
 		if (user.skillsAsXP.herblore >= MAX_XP) {
 			petChance = Math.ceil(petChance / 2);
 		}
@@ -51,8 +51,10 @@ export const herbloreTask: MinionTask = {
 
 		const loot = new Bank().add(mixableItem.id, outputQuantity);
 
-		if (isMixingPotion) {
-			for (let i = 0; i < quantity; i++) {
+		const minutes = Math.floor(duration / Time.Minute);
+
+		if (isMixingPotion && minutes > 0) {
+			for (let i = 0; i < minutes; i++) {
 				if (roll(petChance)) {
 					loot.add('Herbert');
 				}
