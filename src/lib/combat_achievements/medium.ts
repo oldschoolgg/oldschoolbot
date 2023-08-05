@@ -12,7 +12,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		desc: 'Kill all six Barrows Brothers and loot the Barrows chest without taking any damage from any of the brothers.',
 		rng: {
-			chancePerKill: 200,
+			chancePerKill: 50,
 			hasChance: isCertainMonsterTrip(Monsters.Barrows.id)
 		}
 	},
@@ -274,7 +274,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 			hasChance: (data, user) => {
 				const wep = user.gear.melee.equippedWeapon();
 				return (
-					isCertainMonsterTrip(Monsters.DerangedArchaeologist.id)(data) &&
+					isCertainMonsterTrip(Monsters.KingBlackDragon.id)(data) &&
 					!user.getAttackStyles().includes(SkillsEnum.Magic) &&
 					!user.getAttackStyles().includes(SkillsEnum.Ranged) &&
 					wep !== null &&
@@ -300,11 +300,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		name: 'Sit Back and Relax',
 		type: 'mechanical',
 		desc: 'Deal 100 damage to creatures using undead thralls.',
-		// TODO: HOW DA FUCK?
-		rng: {
-			chancePerKill: 111_111_115,
-			hasChance: data => data.type === 'Wintertodt'
-		}
+		notPossible: true
 	},
 	{
 		id: 127,
