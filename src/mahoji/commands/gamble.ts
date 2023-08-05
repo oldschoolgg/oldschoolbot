@@ -171,6 +171,7 @@ export const gambleCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		interaction,
+		guildID,
 		userID
 	}: CommandRunOptions<{
 		cape?: { type?: string; autoconfirm?: boolean };
@@ -250,7 +251,7 @@ export const gambleCommand: OSBMahojiCommand = {
 			});
 			await prisma.economyTransaction.create({
 				data: {
-					guild_id: undefined,
+					guild_id: guildID ? BigInt(guildID) : undefined,
 					sender: BigInt(senderUser.id),
 					recipient: BigInt(recipientuser.id),
 					items_sent: loot.bank,
