@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
+import { prisma } from '../../lib/settings/prisma';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
@@ -246,6 +247,16 @@ export const gambleCommand: OSBMahojiCommand = {
 				itemsToAdd: loot,
 				collectionLog: false,
 				filterLoot: false
+			});
+			await prisma.economyTransaction.create({
+				data: {
+					guild_id: undefined,
+					sender: BigInt(senderUser.id),
+					recipient: BigInt(recipientuser.id),
+					items_sent: loot.bank,
+					items_received: undefined,
+					type: 'gri'
+				}
 			});
 			let debug = new Bank();
 			for (const t of bank) debug.add(t[0].id);
