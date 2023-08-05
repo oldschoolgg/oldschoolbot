@@ -228,6 +228,7 @@ GROUP BY data->>'collectableID';`);
 }
 
 async function makeResponseForBank(bank: Bank, title: string, content?: string) {
+	sanitizeBank(bank);
 	const image = await makeBankImage({
 		title,
 		bank
