@@ -610,6 +610,7 @@ enum economy_transaction_type {
   trade
   giveaway
   duel
+  gri
 }
 
 model EconomyTransaction {
