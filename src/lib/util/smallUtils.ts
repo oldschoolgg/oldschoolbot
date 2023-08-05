@@ -235,3 +235,4 @@ export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {
 	}
 	return { entryKC, normalKC, expertKC, totalKC: entryKC + normalKC + expertKC };
 }
+export const alphabeticalSort = (a: string, b: string) => a.localeCompare(b);
