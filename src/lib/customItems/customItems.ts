@@ -8095,18 +8095,6 @@ setCustomItem(
 );
 
 setCustomItem(
-	71_535,
-	'Black knight upgrade kit',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	10_000
-);
-
-setCustomItem(
 	71_536,
 	'Dark Temple key',
 	'Coal',

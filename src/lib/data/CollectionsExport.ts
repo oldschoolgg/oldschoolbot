@@ -87,7 +87,13 @@ export const inventorOutfit = resolveItems([
 	"Inventors' backpack"
 ]);
 
-export const moktangCL = resolveItems(['Mini moktang', 'Volcanic dye', 'Igne gear frame', 'Volcanic shards']);
+export const moktangCL = resolveItems([
+	'Mini moktang',
+	'Volcanic dye',
+	'Igne gear frame',
+	'Volcanic shards',
+	'Dragonstone upgrade kit'
+]);
 
 export const dwarvenOutfit = resolveItems([
 	'Dwarven full helm',
@@ -2039,7 +2045,12 @@ export const miscellaneousCL = resolveItems([
 	'Ivy seed',
 	'Merfolk trident',
 	'Orange egg sac',
-	'Blue egg sac'
+	'Dark Temple key',
+	'Elite black knight sword',
+	'Elite black knight kiteshield',
+	'Elite black knight helm',
+	'Elite black knight platebody',
+	'Elite black knight platelegs'
 ]);
 export const diariesCL = resolveItems([
 	'Karamja gloves 1',
