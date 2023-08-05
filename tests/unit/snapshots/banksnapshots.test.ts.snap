@@ -29292,6 +29292,91 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "24034": 1,
+        "71529": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Dragonstone full helm(u)",
+    "outputItems": Bank {
+      "bank": {
+        "71530": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "24037": 1,
+        "71529": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Dragonstone platebody(u)",
+    "outputItems": Bank {
+      "bank": {
+        "71531": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "24040": 1,
+        "71529": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Dragonstone platelegs(u)",
+    "outputItems": Bank {
+      "bank": {
+        "71532": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "24043": 1,
+        "71529": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Dragonstone boots(u)",
+    "outputItems": Bank {
+      "bank": {
+        "71533": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "24046": 1,
+        "71529": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Dragonstone gauntlets(u)",
+    "outputItems": Bank {
+      "bank": {
+        "71534": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "25442": 1,
         "25457": 1,
       },

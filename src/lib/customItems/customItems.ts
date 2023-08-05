@@ -7937,3 +7937,268 @@ setCustomItem(
 	},
 	10_000
 );
+
+setCustomItem(
+	71_522,
+	'Carapace',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	71_523,
+	'Carapace boots',
+	'Adamant boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	71_524,
+	'Carapace gloves',
+	'Adamant gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	71_525,
+	'Carapace helm',
+	'Adamant full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	71_526,
+	'Carapace legs',
+	'Adamant platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	71_527,
+	'Carapace shield',
+	'Adamant kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	71_528,
+	'Carapace torso',
+	'Adamant platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	71_529,
+	'Dragonstone upgrade kit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_530,
+	'Dragonstone full helm(u)',
+	'Dragonstone full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_531,
+	'Dragonstone platebody(u)',
+	'Dragonstone platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_532,
+	'Dragonstone platelegs(u)',
+	'Dragonstone platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_533,
+	'Dragonstone boots(u)',
+	'Dragonstone boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_534,
+	'Dragonstone gauntlets(u)',
+	'Dragonstone gauntlets',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_535,
+	'Black knight upgrade kit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_536,
+	'Dark Temple key',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_537,
+	'Elite black knight sword',
+	'Black 2h sword',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_538,
+	'Elite black knight kiteshield',
+	'Black kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_539,
+	'Elite black knight helm',
+	'Black full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_540,
+	'Elite black knight platebody',
+	'Black platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_541,
+	'Elite black knight platelegs',
+	'Black platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_542,
+	'Zamorakian codex',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_543,
+	'Herbert',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);

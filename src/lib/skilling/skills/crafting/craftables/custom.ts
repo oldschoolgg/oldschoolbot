@@ -2,6 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import itemID from '../../../../util/itemID';
 import { Craftable } from '../../../types';
+import { carapaceCraftables } from './carapace';
 
 export const customCraftables: Craftable[] = [
 	{
@@ -91,5 +92,6 @@ export const customCraftables: Craftable[] = [
 		xp: 2 * 188,
 		inputItems: new Bank({ 'Royal dragon leather': 2 }),
 		tickRate: 3.5
-	}
+	},
+	...carapaceCraftables
 ];

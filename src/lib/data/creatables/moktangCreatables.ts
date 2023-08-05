@@ -32,5 +32,30 @@ export const moktangCreatables: Createable[] = [
 			rocky: 50,
 			magic: 20
 		})
+	},
+	{
+		name: 'Dragonstone full helm(u)',
+		inputItems: new Bank().add('Dragonstone upgrade kit').add('Dragonstone full helm'),
+		outputItems: new Bank().add('Dragonstone full helm(u)')
+	},
+	{
+		name: 'Dragonstone platebody(u)',
+		inputItems: new Bank().add('Dragonstone upgrade kit').add('Dragonstone platebody'),
+		outputItems: new Bank().add('Dragonstone platebody(u)')
+	},
+	{
+		name: 'Dragonstone platelegs(u)',
+		inputItems: new Bank().add('Dragonstone upgrade kit').add('Dragonstone platelegs'),
+		outputItems: new Bank().add('Dragonstone platelegs(u)')
+	},
+	{
+		name: 'Dragonstone boots(u)',
+		inputItems: new Bank().add('Dragonstone upgrade kit').add('Dragonstone boots'),
+		outputItems: new Bank().add('Dragonstone boots(u)')
+	},
+	{
+		name: 'Dragonstone gauntlets(u)',
+		inputItems: new Bank().add('Dragonstone upgrade kit').add('Dragonstone gauntlets'),
+		outputItems: new Bank().add('Dragonstone gauntlets(u)')
 	}
 ];

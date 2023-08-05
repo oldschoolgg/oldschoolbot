@@ -138,6 +138,13 @@ export const stealCommand: OSBMahojiCommand = {
 			stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
 		} a ${stealable.name} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish.`;
 
+		if (stealable.name === 'Black knight guard') {
+			const godFavour = await user.getGodFavour();
+			if (godFavour.Zamorak < 90) {
+				return 'Zamorak does not bid you access to the Dark Temple, where the Black knight guards are.';
+			}
+		}
+
 		if (stealable.type === 'pickpockable') {
 			const [hasArdyHard] = await userhasDiaryTier(user, ArdougneDiary.hard);
 			if (hasArdyHard) {

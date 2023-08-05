@@ -1,7 +1,8 @@
-import { randInt, roll, Time } from 'e';
+import { increaseNumByPercent, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { upgradedDragonstoneOutfit } from '../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { InventionID } from '../../lib/invention/inventions';
 import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
@@ -121,7 +122,14 @@ export const miningTask: MinionTask = {
 
 			// Gem rocks roll off the GemRockTable
 			if (ore.name === 'Gem rock') {
-				for (let i = 0; i < quantity; i++) {
+				let effectiveQty = quantity;
+				if (user.hasEquipped(upgradedDragonstoneOutfit, true)) {
+					effectiveQty = Math.ceil(increaseNumByPercent(quantity, 10));
+					str += `\nYou received 10% extra gems from your Dragonstone armour. (${
+						effectiveQty - quantity
+					} extra)`;
+				}
+				for (let i = 0; i < effectiveQty; i++) {
 					loot.add(Mining.GemRockTable.roll());
 				}
 			} else if (ore.name === 'Volcanic ash') {

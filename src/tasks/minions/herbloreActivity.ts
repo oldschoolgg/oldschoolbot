@@ -1,5 +1,7 @@
+import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { MAX_XP } from '../../lib/constants';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
@@ -14,9 +16,15 @@ export const herbloreTask: MinionTask = {
 
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.id === mixableID)!;
 
+		let petChance = Math.ceil(31_100_000 / (mixableItem.level * (mixableItem.level / 5)));
+		if (user.skillsAsXP.herblore >= MAX_XP) {
+			petChance = Math.ceil(petChance / 2);
+		}
+
 		const isMixingPotion = mixableItem.xp !== 0 && !mixableItem.wesley && !mixableItem.zahur;
 		const hasHerbMasterCape = user.hasEquipped('Herblore master cape');
 		const herbCapePerk = isMixingPotion && hasHerbMasterCape;
+
 		let bonus = 0;
 		if (herbCapePerk) {
 			for (let i = 0; i < quantity; i++) {
@@ -41,11 +49,23 @@ export const herbloreTask: MinionTask = {
 			duration
 		});
 
+		const loot = new Bank().add(mixableItem.id, outputQuantity);
+
+		if (isMixingPotion) {
+			for (let i = 0; i < quantity; i++) {
+				if (roll(petChance)) {
+					loot.add('Herbert');
+				}
+			}
+		}
+
 		let str = `${user}, ${user.minionName} finished making ${outputQuantity - bonus} ${
 			mixableItem.name
 		}s. ${xpRes} ${bonus > 0 ? `\n\n**${bonus}x extra for Herblore master cape**` : ''}`;
 
-		const loot = new Bank().add(mixableItem.id, outputQuantity);
+		if (loot.has('Herbert')) {
+			str += '\n\nYou incorrectly mixed some ingredients, and created Herbert, a weird herby creature!';
+		}
 
 		await transactItems({
 			userID: user.id,

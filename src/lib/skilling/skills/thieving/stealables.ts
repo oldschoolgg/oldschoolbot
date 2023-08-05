@@ -625,6 +625,24 @@ const pickpocketables: Stealable[] = [
 		petChance: 108_718
 	},
 	{
+		name: 'Black knight guard',
+		type: 'pickpockable',
+		level: 75,
+		xp: 198.5,
+		table: new LootTable()
+			.add('Coins', [20, 30])
+			.add('Coins', [200, 300])
+			.add('Bread')
+			.add('Mithril arrow', [1, 16])
+			.tertiary(215, 'Dark Temple key'),
+		id: Monsters.BlackKnight.id,
+		stunTime: 5,
+		stunDamage: 1,
+		slope: 0.475_65,
+		intercept: 0.180_65,
+		petChance: 108_718
+	},
+	{
 		name: 'Hero',
 		type: 'pickpockable',
 		level: 80,

@@ -2360,7 +2360,8 @@ export const customPetsCL = resolveItems([
 	'Balloon cat',
 	'Baby yaga house',
 	'Gary',
-	'Crush'
+	'Crush',
+	'Herbert'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([
@@ -3110,3 +3111,10 @@ export const skillingMiscCL = resolveItems([
 export const crackerCL = PartyhatTable.allItems;
 
 export const leaguesCL = resolveItems(['Fuzzy dice', 'Karambinana']);
+export const upgradedDragonstoneOutfit = resolveItems([
+	'Dragonstone full helm(u)',
+	'Dragonstone platebody(u)',
+	'Dragonstone platelegs(u)',
+	'Dragonstone boots(u)',
+	'Dragonstone gauntlets(u)'
+]);
