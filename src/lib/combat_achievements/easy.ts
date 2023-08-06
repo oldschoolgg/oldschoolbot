@@ -2,6 +2,7 @@ import { Monsters } from 'oldschooljs';
 
 import { warmGear } from '../data/filterables';
 import { Requirements } from '../structures/Requirements';
+import getOSItem from '../util/getOSItem';
 import { isCertainMonsterTrip } from './caUtils';
 import { type CombatAchievement } from './combatAchievements';
 
@@ -84,11 +85,12 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		desc: 'Kill Bryophyta on a free to play world.',
 		id: 7,
-		requirements: new Requirements().add({
-			kcRequirement: {
-				[Monsters.Bryophyta.id]: 1
-			}
-		})
+		rng: {
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.Bryophyta.id)(data) &&
+				user.gear[user.attackClass()].allItems(false).every(i => getOSItem(i).members !== true),
+			chancePerKill: 1
+		}
 	},
 	{
 		name: 'Bryophyta Novice',
