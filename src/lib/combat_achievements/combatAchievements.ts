@@ -1,8 +1,13 @@
 import { activity_type_enum } from '@prisma/client';
-import { deepClone, roll, sumArr } from 'e';
+import { deepClone, notEmpty, roll, sumArr } from 'e';
 
 import { Requirements } from '../structures/Requirements';
-import { ActivityTaskOptions, ActivityTaskOptionsWithQuantity } from '../types/minions';
+import {
+	ActivityTaskOptions,
+	ActivityTaskOptionsWithQuantity,
+	TheatreOfBloodTaskOptions,
+	TOAOptions
+} from '../types/minions';
 import { assert } from '../util';
 import { TripFinishEffect } from '../util/handleTripFinish';
 import { easyCombatAchievements } from './easy';
@@ -86,8 +91,18 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ user
 	}
 	const completedTasks = [];
 	if (!('quantity' in dataCopy)) return;
-	const quantity = Number(dataCopy.quantity);
+	let quantity = Number(dataCopy.quantity);
 	if (isNaN(quantity)) return;
+
+	if (data.type === 'TombsOfAmascut') {
+		const wipedRoom = (data as TOAOptions).wipedRoom ?? 0;
+		const wipedRooms = (Array.isArray(wipedRoom) ? wipedRoom : [wipedRoom]).filter(notEmpty);
+		for (let i = 0; i < wipedRooms.length; i++) quantity--;
+	} else if (data.type === 'TheatreOfBlood') {
+		if ((data as TheatreOfBloodTaskOptions).wipedRoom) {
+			quantity--;
+		}
+	}
 
 	for (const task of indexesWithRng) {
 		if (user.user.completed_ca_task_ids.includes(task.id)) continue;

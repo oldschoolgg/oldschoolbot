@@ -426,8 +426,8 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		desc: 'Subdue the Wintertodt without any of the Pyromancers falling.',
 		rng: {
-			chancePerKill: 100,
-			hasChance: data => data.type === 'Wintertodt'
+			chancePerKill: 50,
+			hasChance: 'Wintertodt'
 		}
 	},
 	{
