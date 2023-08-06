@@ -24,6 +24,8 @@ export const fogTask: MinionTask = {
 
 		if (flappyRes.userMsg) str += `\n${flappyRes.userMsg}`;
 
+		await user.addToGodFavour(['Guthix'], data.duration);
+
 		handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

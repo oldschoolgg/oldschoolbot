@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
+import { prisma } from '../../lib/settings/prisma';
 import { isSuperUntradeable } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
@@ -170,6 +171,7 @@ export const gambleCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		interaction,
+		guildID,
 		userID
 	}: CommandRunOptions<{
 		cape?: { type?: string; autoconfirm?: boolean };
@@ -246,6 +248,16 @@ export const gambleCommand: OSBMahojiCommand = {
 				itemsToAdd: loot,
 				collectionLog: false,
 				filterLoot: false
+			});
+			await prisma.economyTransaction.create({
+				data: {
+					guild_id: guildID ? BigInt(guildID) : undefined,
+					sender: BigInt(senderUser.id),
+					recipient: BigInt(recipientuser.id),
+					items_sent: loot.bank,
+					items_received: undefined,
+					type: 'gri'
+				}
 			});
 			let debug = new Bank();
 			for (const t of bank) debug.add(t[0].id);
