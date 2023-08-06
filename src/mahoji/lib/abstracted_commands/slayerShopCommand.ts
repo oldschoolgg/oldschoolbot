@@ -3,6 +3,7 @@ import { removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
+import { BitField } from '../../../lib/constants';
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
 import { stringMatches } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -68,6 +69,16 @@ export async function slayerShopBuyCommand({
 					slayer_points: { decrement: cost },
 					slayer_unlocks: newUnlocks
 				});
+				if (
+					newUnlocks.length === SlayerRewardsShop.filter(u => !u.item).length &&
+					!user.bitfield.includes(BitField.HadAllSlayerUnlocks)
+				) {
+					await user.update({
+						bitfield: {
+							push: BitField.HadAllSlayerUnlocks
+						}
+					});
+				}
 				return `You successfully unlocked ${buyableObj.name}. Remaining slayer points: ${newUser.slayer_points}`;
 			} catch (e) {
 				logError(e, { user_id: user.id, slayer_unlock: buyable });

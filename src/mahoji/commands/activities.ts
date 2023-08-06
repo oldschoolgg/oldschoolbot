@@ -28,6 +28,7 @@ import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
 import { favourCommand } from '../lib/abstracted_commands/favourCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
+import { otherActivities, otherActivitiesCommand } from '../lib/abstracted_commands/otherActivitiesCommand';
 import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
 import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
@@ -185,7 +186,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Number,
+					type: ApplicationCommandOptionType.Integer,
 					name: 'dose',
 					description: 'The dosage to decant them too. (default 4)',
 					required: false,
@@ -216,7 +217,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Number,
+					type: ApplicationCommandOptionType.Integer,
 					name: 'quantity',
 					description: 'The amount of inventories you want to charge.  (optional)',
 					required: false,
@@ -465,6 +466,20 @@ export const activitiesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'other',
+			description: 'Other, smaller activities.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'activity',
+					description: 'The activity to do.',
+					required: true,
+					choices: otherActivities.map(i => ({ name: i.name, value: i.type }))
+				}
+			]
 		}
 	],
 	run: async ({
@@ -500,6 +515,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 			};
 			drift_net_fishing?: { minutes?: number; no_stams?: boolean };
 		};
+		other?: {
+			activity: string;
+		};
 	}>) => {
 		const user = await mUserFetch(userID);
 		// Minion can be busy
@@ -514,6 +532,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 		const busyStr = `${user.minionName} is currently busy.`;
 		if (isBusy) return busyStr;
 
+		if (options.other) {
+			return otherActivitiesCommand(options.other.activity, user, channelID);
+		}
 		if (options.birdhouses?.action === 'harvest') {
 			return birdhouseHarvestCommand(user, channelID, options.birdhouses.birdhouse);
 		}

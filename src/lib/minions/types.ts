@@ -89,6 +89,7 @@ export interface KillableMonster {
 	itemCost?: Consumable;
 	superior?: SimpleMonster;
 	slayerOnly?: boolean;
+	canChinning?: boolean;
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
@@ -101,6 +102,19 @@ export interface KillableMonster {
 		loot: Bank;
 		data: MonsterActivityTaskOptions;
 	}) => Promise<unknown>;
+	degradeableItemUsage?: {
+		required: boolean;
+		gearSetup: GearSetupType;
+		items: { boostPercent: number; itemID: number }[];
+	}[];
+	projectileUsage?: {
+		required: boolean;
+		calculateQuantity: (opts: { quantity: number }) => number;
+	};
+	equippedItemBoosts?: {
+		gearSetup: GearSetupType;
+		items: { boostPercent: number; itemID: number }[];
+	}[];
 }
 /*
  * Monsters will have an array of Consumables

@@ -8,8 +8,9 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { ClueTiers } from '../clues/clueTiers';
-import { PerkTier } from '../constants';
+import { PerkTier, projectiles } from '../constants';
 import { skillEmoji } from '../data/emojis';
+import type { Gear } from '../structures/Gear';
 import type { ArrayItemsResolved, Skills } from '../types';
 import getOSItem from './getOSItem';
 
@@ -194,3 +195,25 @@ export function tailFile(fileName: string, numLines: number): Promise<string> {
 		});
 	});
 }
+
+export function checkRangeGearWeapon(gear: Gear) {
+	const weapon = gear.equippedWeapon();
+	if (!weapon) return 'You have no weapon equipped.';
+	const { ammo } = gear;
+	if (!ammo) return 'You have no ammo equipped.';
+
+	const projectileCategory = objectEntries(projectiles).find(i => i[1].weapons.includes(weapon.id));
+	if (!projectileCategory) return 'You have an invalid range weapon.';
+	if (!projectileCategory[1].items.includes(ammo.item)) {
+		return `You have invalid ammo for your equipped weapon. For ${
+			projectileCategory[0]
+		}-based weapons, you can use: ${projectileCategory[1].items.map(itemNameFromID).join(', ')}.`;
+	}
+
+	return {
+		weapon,
+		ammo
+	};
+}
+
+export const alphabeticalSort = (a: string, b: string) => a.localeCompare(b);

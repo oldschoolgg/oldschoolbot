@@ -12,6 +12,7 @@ import { badges, BitField, Emoji, projectiles, usernameCache } from './constants
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear/types';
+import { handleNewCLItems } from './handleNewCLItems';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
 import { defaultFarmingContract } from './minions/farming';
@@ -36,6 +37,7 @@ import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
+import { TransactItemsArgs } from './util/transactItemsFromBank';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
@@ -78,6 +80,9 @@ export class MUserClass {
 	bankWithGP!: Bank;
 	cl!: Bank;
 	allItemsOwned!: Bank;
+	gear!: UserFullGearSetup;
+	skillsAsXP!: Required<Skills>;
+	skillsAsLevels!: Required<Skills>;
 
 	constructor(user: User) {
 		this.user = user;
@@ -98,8 +103,22 @@ export class MUserClass {
 		this.cl = new Bank(this.user.collectionLogBank as ItemBank);
 		this.cl.freeze();
 
+		this.gear = {
+			melee: new Gear((this.user.gear_melee as GearSetup | null) ?? { ...defaultGear }),
+			mage: new Gear((this.user.gear_mage as GearSetup | null) ?? { ...defaultGear }),
+			range: new Gear((this.user.gear_range as GearSetup | null) ?? { ...defaultGear }),
+			misc: new Gear((this.user.gear_misc as GearSetup | null) ?? { ...defaultGear }),
+			skilling: new Gear((this.user.gear_skilling as GearSetup | null) ?? { ...defaultGear }),
+			wildy: new Gear((this.user.gear_wildy as GearSetup | null) ?? { ...defaultGear }),
+			fashion: new Gear((this.user.gear_fashion as GearSetup | null) ?? { ...defaultGear }),
+			other: new Gear((this.user.gear_other as GearSetup | null) ?? { ...defaultGear })
+		};
+
 		this.allItemsOwned = this.calculateAllItemsOwned();
 		this.allItemsOwned.freeze();
+
+		this.skillsAsXP = this.getSkills(false);
+		this.skillsAsLevels = this.getSkills(true);
 	}
 
 	countSkillsAtleast99() {
@@ -179,19 +198,6 @@ export class MUserClass {
 
 	skillLevel(skill: xp_gains_skill_enum) {
 		return this.skillsAsLevels[skill];
-	}
-
-	get gear(): UserFullGearSetup {
-		return {
-			melee: new Gear((this.user.gear_melee as GearSetup | null) ?? { ...defaultGear }),
-			mage: new Gear((this.user.gear_mage as GearSetup | null) ?? { ...defaultGear }),
-			range: new Gear((this.user.gear_range as GearSetup | null) ?? { ...defaultGear }),
-			misc: new Gear((this.user.gear_misc as GearSetup | null) ?? { ...defaultGear }),
-			skilling: new Gear((this.user.gear_skilling as GearSetup | null) ?? { ...defaultGear }),
-			wildy: new Gear((this.user.gear_wildy as GearSetup | null) ?? { ...defaultGear }),
-			fashion: new Gear((this.user.gear_fashion as GearSetup | null) ?? { ...defaultGear }),
-			other: new Gear((this.user.gear_other as GearSetup | null) ?? { ...defaultGear })
-		};
 	}
 
 	get minionName() {
@@ -297,6 +303,13 @@ export class MUserClass {
 		return res;
 	}
 
+	async transactItems(options: Omit<TransactItemsArgs, 'userID'>) {
+		const res = await transactItems({ userID: this.user.id, ...options });
+		this.user = res.newUser;
+		this.updateProperties();
+		return res;
+	}
+
 	hasEquipped(_item: number | string | string[] | number[], every = false) {
 		const items = resolveItems(_item);
 		if (items.length === 1 && allPetIDs.includes(items[0])) {
@@ -396,14 +409,6 @@ export class MUserClass {
 		return skills;
 	}
 
-	get skillsAsXP() {
-		return this.getSkills(false);
-	}
-
-	get skillsAsLevels() {
-		return this.getSkills(true);
-	}
-
 	get minionIsBusy() {
 		return minionIsBusy(this.id);
 	}
@@ -426,12 +431,14 @@ export class MUserClass {
 	}
 
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
+		const previousCL = new Bank(this.cl.bank);
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
 		this.user = newUser;
 		this.updateProperties();
+		await handleNewCLItems({ itemsAdded: itemsToAdd, user: this, newCL: this.cl, previousCL });
 	}
 
 	async specialRemoveItems(bankToRemove: Bank) {
@@ -451,7 +458,8 @@ export class MUserClass {
 				dart = [item, quantity];
 				continue;
 			}
-			if (Object.values(projectiles).flat(2).includes(item.id)) {
+			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(item.id));
+			if (projectileCategory) {
 				if (ammoRemove !== null) {
 					bankRemove.add(item.id, quantity);
 					continue;
@@ -473,7 +481,8 @@ export class MUserClass {
 			const newRangeGear = { ...this.gear.range };
 			const ammo = newRangeGear.ammo?.quantity;
 
-			if (hasAvas) {
+			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(equippedAmmo));
+			if (hasAvas && projectileCategory!.savedByAvas) {
 				let ammoCopy = ammoRemove[1];
 				for (let i = 0; i < ammoCopy; i++) {
 					if (percentChance(80)) {

@@ -10,7 +10,7 @@ import { ItemBank } from '../types';
 import { logError } from './logError';
 import { userQueueFn } from './userQueues';
 
-interface TransactItemsArgs {
+export interface TransactItemsArgs {
 	userID: string;
 	itemsToAdd?: Bank;
 	itemsToRemove?: Bank;
@@ -42,14 +42,6 @@ export async function transactItemsFromBank({
 	let itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
 
 	return userQueueFn(userID, async () => {
-		debugLog('transactItemsFromBank', {
-			type: 'TRANSACT_ITEMS',
-			userID,
-			itemsToAdd: itemsToAdd?.bank,
-			itemsToRemove: itemsToRemove?.bank,
-			collectionLog,
-			filterLoot
-		});
 		const settings = await mUserFetch(userID);
 
 		const gpToRemove = (itemsToRemove?.amount('Coins') ?? 0) - (itemsToAdd?.amount('Coins') ?? 0);

@@ -51,7 +51,8 @@ export const Roles = {
 	TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '795933981715464192',
 	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '832798997033779220',
 	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '839135887467610123',
-	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '856080958247010324'
+	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '856080958247010324',
+	TopGlobalCL: '1072426869028294747'
 };
 
 export const enum Emoji {
@@ -224,7 +225,10 @@ export enum BitField {
 	BothBotsMaxedFreeTierOnePerks = 24,
 	HasBloodbarkScroll = 25,
 	DisableAutoFarmContractButton = 26,
-	DisableGrandExchangeDMs = 27
+	DisableGrandExchangeDMs = 27,
+	HadAllSlayerUnlocks = 28,
+	HasSwampbarkScroll = 29,
+	HasSaradominsLight = 30
 }
 
 interface BitFieldData {
@@ -255,6 +259,9 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.HasTornPrayerScroll]: { name: 'Torn Prayer Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasSlepeyTablet]: { name: 'Slepey Tablet Used', protected: false, userConfigurable: false },
 	[BitField.HasBloodbarkScroll]: { name: 'Runescroll of bloodbark Used', protected: false, userConfigurable: false },
+	[BitField.HasSwampbarkScroll]: { name: 'Runescroll of swampbark Used', protected: false, userConfigurable: false },
+	[BitField.HasSaradominsLight]: { name: "Saradomin's light Used", protected: false, userConfigurable: false },
+	[BitField.HadAllSlayerUnlocks]: { name: 'Had All Slayer Unlocks', protected: false, userConfigurable: false },
 
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
 	[BitField.HasPermanentEventBackgrounds]: {
@@ -387,17 +394,36 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
-export type ProjectileType = 'arrow' | 'bolt';
-export const projectiles: Record<ProjectileType, number[]> = {
-	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
-	bolt: resolveItems([
-		'Runite bolts',
-		'Dragon bolts',
-		'Diamond bolts (e)',
-		'Diamond dragon bolts (e)',
-		'Ruby dragon bolts (e)'
-	])
-};
+export const projectiles = {
+	arrow: {
+		items: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
+		savedByAvas: true,
+		weapons: resolveItems(['Twisted bow'])
+	},
+	bolt: {
+		items: resolveItems([
+			'Runite bolts',
+			'Dragon bolts',
+			'Diamond bolts (e)',
+			'Diamond dragon bolts (e)',
+			'Ruby dragon bolts (e)'
+		]),
+		savedByAvas: true,
+		weapons: resolveItems([
+			'Armadyl crossbow',
+			'Dragon hunter crossbow',
+			'Dragon crossbow',
+			'Zaryte crossbow',
+			'Rune crossbow'
+		])
+	},
+	javelin: {
+		items: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin']),
+		savedByAvas: false,
+		weapons: resolveItems(['Heavy ballista'])
+	}
+} as const;
+export type ProjectileType = keyof typeof projectiles;
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
 export const PHOSANI_NIGHTMARE_ID = 9416;
@@ -413,7 +439,7 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandOption
 }
 
 export const DISABLED_COMMANDS = new Set<string>();
-export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
 export type PvMMethod = (typeof PVM_METHODS)[number];
 
 export const NMZ_STRATEGY = ['experience', 'points'] as const;

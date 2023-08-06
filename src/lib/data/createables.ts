@@ -75,6 +75,37 @@ for (const [bbPart, sbPart, bloodRunes, lvlReq] of bloodBarkPairs) {
 	});
 }
 
+const swampBarkPairs = [
+	['Swampbark helm', 'Splitbark helm', 250, 46],
+	['Swampbark body', 'Splitbark body', 500, 48],
+	['Swampbark legs', 'Splitbark legs', 500, 48],
+	['Swampbark boots', 'Splitbark boots', 100, 42],
+	['Swampbark gauntlets', 'Splitbark gauntlets', 100, 42]
+] as const;
+
+const swampBarkCreatables: Createable[] = [];
+
+for (const [bbPart, sbPart, natRunes, lvlReq] of swampBarkPairs) {
+	const bbItem = getOSItem(bbPart);
+	const sbItem = getOSItem(sbPart);
+
+	swampBarkCreatables.push({
+		name: bbItem.name,
+		inputItems: new Bank().add(sbItem.id).add('Nature rune', natRunes),
+		outputItems: new Bank().add(bbItem.id),
+		requiredSkills: {
+			runecraft: lvlReq
+		},
+		customReq: async (user: MUser) => {
+			if (!user.bitfield.includes(BitField.HasSwampbarkScroll)) {
+				return 'You need to have used a Runescroll of Swampbark to create this item!';
+			}
+
+			return null;
+		}
+	});
+}
+
 const goldenProspectorCreatables: Createable[] = [
 	{
 		name: 'Golden prospector boots',
@@ -1245,6 +1276,16 @@ const Reverteables: Createable[] = [
 			[itemID("Guardian's eye")]: 1
 		},
 		noCl: true
+	},
+	{
+		name: "Revert xeric's talisman (inert)",
+		inputItems: {
+			[itemID("Xeric's talisman (inert)")]: 1
+		},
+		outputItems: {
+			[itemID('Lizardman fang')]: 100
+		},
+		noCl: true
 	}
 ];
 
@@ -2160,6 +2201,26 @@ const Createables: Createable[] = [
 		requiredSkills: { smithing: 80, crafting: 80 },
 		QPRequired: 150
 	},
+	{
+		name: 'Saturated heart',
+		inputItems: new Bank({
+			'Imbued heart': 1,
+			'Ancient essence': 150_000
+		}),
+		outputItems: new Bank({
+			'Saturated heart': 1
+		})
+	},
+	{
+		name: 'Trident of the swamp',
+		inputItems: new Bank({
+			'Trident of the seas (full)': 1,
+			'Magic fang': 1
+		}),
+		outputItems: new Bank({
+			'Trident of the swamp': 1
+		})
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
@@ -2183,7 +2244,8 @@ const Createables: Createable[] = [
 	...guardiansOfTheRiftCreatables,
 	...shadesOfMortonCreatables,
 	...toaCreatables,
-	...bloodBarkCreatables
+	...bloodBarkCreatables,
+	...swampBarkCreatables
 ];
 
 export default Createables;

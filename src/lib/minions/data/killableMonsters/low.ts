@@ -1,7 +1,9 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { GearStat } from '../../../gear/types';
+import itemID from '../../../util/itemID';
 import { KillableMonster } from '../../types';
 
 const killableMonsters: KillableMonster[] = [
@@ -102,6 +104,42 @@ const killableMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 20,
 		table: Monsters.JubblyBird,
 		qpRequired: 10
+	},
+	{
+		id: Monsters.ManiacalMonkey.id,
+		name: Monsters.ManiacalMonkey.name,
+		aliases: Monsters.ManiacalMonkey.aliases,
+		timeToFinish: Time.Second * 8.4,
+		table: Monsters.ManiacalMonkey,
+		levelRequirements: {
+			prayer: 74,
+			hitpoints: 74
+		},
+		qpRequired: 175,
+		wildy: false,
+		difficultyRating: 4,
+		canChinning: true,
+		canBarrage: true,
+		canCannon: true,
+		cannonMulti: true,
+		itemInBankBoosts: [
+			{ [itemID('Necklace of anguish')]: 5, [itemID('Occult necklace')]: 5 },
+			{
+				[itemID('Twisted buckler')]: 5,
+				[itemID('Kodai wand')]: 5
+			},
+			{
+				[itemID('Pegasian boots')]: 5,
+				[itemID('Eternal boots')]: 5
+			},
+			{
+				[itemID('Void ranger helm')]: 5,
+				[itemID('Ancestral hat')]: 5
+			}
+		],
+		attackStyleToUse: GearStat.AttackRanged,
+		defaultAttackStyles: [SkillsEnum.Ranged, SkillsEnum.Magic],
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength]
 	}
 ];
 
