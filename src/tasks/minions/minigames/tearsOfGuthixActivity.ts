@@ -72,6 +72,8 @@ export const togTask: MinionTask = {
 			output += ' 10% Bonus XP for Guthix engram';
 		}
 
+		await user.addToGodFavour(['Guthix'], data.duration);
+
 		handleTripFinish(user, channelID, output, undefined, data, null);
 	}
 };
