@@ -12,6 +12,7 @@ import { badges, BitField, Emoji, projectiles, usernameCache } from './constants
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear/types';
+import { handleNewCLItems } from './handleNewCLItems';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
 import { defaultFarmingContract } from './minions/farming';
@@ -36,6 +37,7 @@ import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
+import { TransactItemsArgs } from './util/transactItemsFromBank';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
@@ -301,6 +303,13 @@ export class MUserClass {
 		return res;
 	}
 
+	async transactItems(options: Omit<TransactItemsArgs, 'userID'>) {
+		const res = await transactItems({ userID: this.user.id, ...options });
+		this.user = res.newUser;
+		this.updateProperties();
+		return res;
+	}
+
 	hasEquipped(_item: number | string | string[] | number[], every = false) {
 		const items = resolveItems(_item);
 		if (items.length === 1 && allPetIDs.includes(items[0])) {
@@ -422,12 +431,14 @@ export class MUserClass {
 	}
 
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
+		const previousCL = new Bank(this.cl.bank);
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
 		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
 		this.user = newUser;
 		this.updateProperties();
+		await handleNewCLItems({ itemsAdded: itemsToAdd, user: this, newCL: this.cl, previousCL });
 	}
 
 	async specialRemoveItems(bankToRemove: Bank) {

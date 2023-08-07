@@ -10,7 +10,7 @@ import { ItemBank } from '../types';
 import { logError } from './logError';
 import { userQueueFn } from './userQueues';
 
-interface TransactItemsArgs {
+export interface TransactItemsArgs {
 	userID: string;
 	itemsToAdd?: Bank;
 	itemsToRemove?: Bank;
