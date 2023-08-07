@@ -157,7 +157,7 @@ async function sacrificeLb(user: MUser, channelID: string, type: 'value' | 'uniq
 	}
 
 	const mostUniques: { id: string; sacbanklength: number }[] = await prisma.$queryRawUnsafe(
-		`SELECT u.user_id::text AS id, u.sacbanklength 
+		`SELECT u.user_id::text AS id, u.sacbanklength
 				FROM (
   					SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS(sacrificed_bank)) sacbanklength, user_id FROM user_stats
   						${ironmanOnly ? 'INNER JOIN users ON users.id::bigint = user_stats.user_id WHERE "minion.ironman" = true' : ''}
@@ -187,6 +187,26 @@ async function minigamesLb(user: MUser, channelID: string, name: string) {
 		return `That's not a valid minigame. Valid minigames are: ${Minigames.map(m => m.name).join(', ')}.`;
 	}
 
+	if (minigame.name === 'Tithe farm') {
+		const titheCompletions = await prisma.$queryRawUnsafe<{ id: string; amount: number }[]>(
+			`SELECT user_id::text as id, tithe_farms_completed::int as amount
+					   FROM user_stats
+					   WHERE "tithe_farms_completed" > 10
+					   ORDER BY "tithe_farms_completed"
+					   DESC LIMIT 10;`
+		);
+		doMenu(
+			user,
+			channelID,
+			chunk(titheCompletions, LB_PAGE_SIZE).map((subList, i) =>
+				subList
+					.map(({ id, amount }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${amount.toLocaleString()}`)
+					.join('\n')
+			),
+			'Tithe farm Leaderboard'
+		);
+		return lbMsg(`${minigame.name} Leaderboard`);
+	}
 	const res = await prisma.minigame.findMany({
 		where: {
 			[minigame.column]: {
@@ -912,10 +932,11 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					autocomplete: async value => {
 						return [
 							{ name: 'Overall (Main Leaderboard)', value: 'overall' },
-							...['overall+', ...allClNames.map(i => i)]
-								.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
-								.map(i => ({ name: toTitleCase(i), value: i }))
-						];
+							...['overall+', ...allClNames.map(i => i)].map(i => ({
+								name: toTitleCase(i),
+								value: i
+							}))
+						].filter(o => (!value ? true : o.name.toLowerCase().includes(value.toLowerCase())));
 					}
 				},
 				ironmanOnlyOption

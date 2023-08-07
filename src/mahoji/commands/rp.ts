@@ -1,5 +1,6 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Duration } from '@sapphire/time-utilities';
+import { SnowflakeUtil } from 'discord.js';
 import { randArrItem, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -7,8 +8,9 @@ import { Bank } from 'oldschooljs';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { BitField, Channel } from '../../lib/constants';
+import { GrandExchange } from '../../lib/grandExchange';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { formatDuration } from '../../lib/util';
+import { dateFm, formatDuration } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -25,9 +27,41 @@ export const rpCommand: OSBMahojiCommand = {
 	options: [
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'action',
+			description: 'Action tools',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'validate_ge',
+					description: 'Validate the g.e.',
+					options: []
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'player',
 			description: 'Player manipulation tools',
 			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'set_buy_date',
+					description: 'Set the minion buy date of a user.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user.',
+							required: true
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'message_id',
+							description: 'The message id when they bought their minion.',
+							required: true
+						}
+					]
+				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'viewbank',
@@ -110,6 +144,9 @@ export const rpCommand: OSBMahojiCommand = {
 		interaction,
 		guildID
 	}: CommandRunOptions<{
+		action?: {
+			validate_ge?: {};
+		};
 		player?: {
 			viewbank?: { user: MahojiUserOption };
 			add_patron_time?: { user: MahojiUserOption; tier: number; time: string };
@@ -120,6 +157,10 @@ export const rpCommand: OSBMahojiCommand = {
 				delete?: boolean;
 				partial?: boolean;
 			};
+			set_buy_date?: {
+				user: MahojiUserOption;
+				message_id: string;
+			};
 		};
 	}>) => {
 		await deferInteraction(interaction);
@@ -128,6 +169,30 @@ export const rpCommand: OSBMahojiCommand = {
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
 		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
+
+		if (options.action?.validate_ge) {
+			const isValid = await GrandExchange.extensiveVerification();
+			if (isValid) {
+				return 'No issues found.';
+			}
+			return 'Something was invalid. Check logs!';
+		}
+
+		if (options.player?.set_buy_date) {
+			const userToCheck = await mUserFetch(options.player.set_buy_date.user.user.id);
+			const res = SnowflakeUtil.deconstruct(options.player.set_buy_date.message_id);
+			const date = new Date(Number(res.timestamp));
+
+			await handleMahojiConfirmation(
+				interaction,
+				`Are you sure you want to set the buy date of ${userToCheck.usernameOrMention} to ${dateFm(date)}?`
+			);
+			await sendToChannelID(Channel.BotLogs, {
+				content: `${adminUser.logName} set minion buy date of ${userToCheck.logName} to ${dateFm(date)}`
+			});
+			await userToCheck.update({ minion_bought_date: date });
+			return `Set minion buy date of ${userToCheck.usernameOrMention} to ${dateFm(date)}.`;
+		}
 
 		if (options.player?.viewbank) {
 			const userToCheck = await mUserFetch(options.player.viewbank.user.user.id);
