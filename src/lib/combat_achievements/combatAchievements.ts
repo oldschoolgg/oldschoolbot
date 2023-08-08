@@ -5,6 +5,8 @@ import { Requirements } from '../structures/Requirements';
 import {
 	ActivityTaskOptions,
 	ActivityTaskOptionsWithQuantity,
+	FightCavesActivityTaskOptions,
+	InfernoOptions,
 	TheatreOfBloodTaskOptions,
 	TOAOptions
 } from '../types/minions';
@@ -89,6 +91,13 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ user
 	if (dataCopy.type === 'TheatreOfBlood') {
 		(dataCopy as ActivityTaskOptionsWithQuantity).quantity = 1;
 	}
+	if (
+		dataCopy.type === 'Inferno' &&
+		!(dataCopy as InfernoOptions).diedPreZuk &&
+		!(dataCopy as InfernoOptions).diedZuk
+	) {
+		(dataCopy as ActivityTaskOptionsWithQuantity).quantity = 1;
+	}
 	const completedTasks = [];
 	if (!('quantity' in dataCopy)) return;
 	let quantity = Number(dataCopy.quantity);
@@ -100,6 +109,10 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ user
 		for (let i = 0; i < wipedRooms.length; i++) quantity--;
 	} else if (data.type === 'TheatreOfBlood') {
 		if ((data as TheatreOfBloodTaskOptions).wipedRoom) {
+			quantity--;
+		}
+	} else if (data.type === 'FightCaves') {
+		if ((data as FightCavesActivityTaskOptions).preJadDeathTime) {
 			quantity--;
 		}
 	}
