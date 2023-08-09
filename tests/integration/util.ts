@@ -1,5 +1,5 @@
 import { randomSnowflake } from '@oldschoolgg/toolkit';
-import { uniqueArr } from 'e';
+import { randInt, uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
@@ -7,7 +7,7 @@ import { globalConfig } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
 import { prisma } from '../../src/lib/settings/prisma';
 import { ItemBank } from '../../src/lib/types';
-import { assert } from '../../src/lib/util';
+import { assert, cryptoRand } from '../../src/lib/util';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { ClientStorage, User, UserStats } from '.prisma/client';
@@ -98,7 +98,7 @@ interface UserOptions {
 	id?: string;
 }
 
-export async function createTestUser(id = randomSnowflake(), bank?: Bank) {
+export async function createTestUser(id = cryptoRand(1_000_000_000, 5_000_000_000).toString(), bank?: Bank) {
 	const user = await prisma.user.upsert({
 		create: {
 			id,

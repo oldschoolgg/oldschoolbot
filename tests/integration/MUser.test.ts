@@ -122,4 +122,22 @@ describe('MUser', () => {
 		expect(user.skillsAsXP.agility).toEqual(convertLVLtoXP(50));
 		expect(user.skillsAsXP.attack).toEqual(convertLVLtoXP(50));
 	});
+
+	test('addItemsToCollectionLog', async () => {
+		const user = await createTestUser();
+		const loot = new Bank().add('Coal', 73);
+		{
+			const { newCL, itemsAdded, previousCL } = await user.addItemsToCollectionLog(loot);
+			expect(newCL.equals(loot)).toEqual(true);
+			expect(previousCL.equals(new Bank())).toEqual(true);
+			expect(itemsAdded).toEqual(loot);
+		}
+
+		{
+			const { newCL, itemsAdded, previousCL } = await user.addItemsToCollectionLog(loot);
+			expect(newCL.equals(loot.clone().multiply(2))).toEqual(true);
+			expect(previousCL.equals(loot)).toEqual(true);
+			expect(itemsAdded).toEqual(loot);
+		}
+	});
 });

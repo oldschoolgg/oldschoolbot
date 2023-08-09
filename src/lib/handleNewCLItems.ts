@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from './constants';
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections';
+import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp';
 import { prisma } from './settings/prisma';
 import { fetchStatsForCL } from './util';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
@@ -45,6 +46,10 @@ export async function clArrayUpdate(user: MUser, newCL: Bank) {
 			}
 		})
 	]);
+
+	return {
+		newCLArray
+	};
 }
 
 export async function handleNewCLItems({
@@ -69,7 +74,31 @@ export async function handleNewCLItems({
 
 	if (!didGetNewCLItem) return;
 
-	await clArrayUpdate(user, newCL);
+	const previousCLDetails = calcCLDetails(previousCL);
+	const previousCLRank = previousCLDetails.percent >= 90 ? await calculateOwnCLRanking(user.id) : null;
+
+	await Promise.all([roboChimpSyncData(user), clArrayUpdate(user, newCL)]);
+	const newCLRank = previousCLDetails.percent >= 90 ? await calculateOwnCLRanking(user.id) : null;
+
+	const newCLDetails = calcCLDetails(newCL);
+
+	let newCLPercentMessage: string | null = null;
+
+	const milestonePercentages = [25, 50, 70, 80, 90, 95, 100];
+	for (const milestone of milestonePercentages) {
+		if (previousCLDetails.percent < milestone && newCLDetails.percent >= milestone) {
+			newCLPercentMessage = `${user} just reached ${milestone}% Collection Log completion, after receiving ${newCLItems}!`;
+
+			if (previousCLRank !== newCLRank && newCLRank !== null && previousCLRank !== null) {
+				newCLPercentMessage += ` In the overall CL leaderboard, they went from rank ${previousCLRank} to rank ${newCLRank}.`;
+			}
+		}
+		break;
+	}
+
+	if (newCLPercentMessage) {
+		globalClient.emit(Events.ServerNotification, newCLPercentMessage);
+	}
 
 	const clsWithTheseItems = allCollectionLogsFlat.filter(
 		cl => cl.counts !== false && newCLItems.items().some(([newItem]) => cl.items.includes(newItem.id))
