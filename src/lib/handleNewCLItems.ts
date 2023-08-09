@@ -1,5 +1,4 @@
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
-import { Stopwatch } from '@sapphire/stopwatch';
 import { roll, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -75,10 +74,10 @@ export async function handleNewCLItems({
 	if (!didGetNewCLItem) return;
 
 	const previousCLDetails = calcCLDetails(previousCL);
-	const previousCLRank = previousCLDetails.percent >= 90 ? await calculateOwnCLRanking(user.id) : null;
+	const previousCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
 	await Promise.all([roboChimpSyncData(user), clArrayUpdate(user, newCL)]);
-	const newCLRank = previousCLDetails.percent >= 90 ? await calculateOwnCLRanking(user.id) : null;
+	const newCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
 	const newCLDetails = calcCLDetails(newCL);
 
@@ -121,7 +120,6 @@ export async function handleNewCLItems({
 			  })}!`
 			: '';
 
-		const stopwatch = new Stopwatch();
 		const nthUser = (
 			await fetchCLLeaderboard({
 				ironmenOnly: false,
@@ -130,7 +128,6 @@ export async function handleNewCLItems({
 				method: 'raw_cl'
 			})
 		).length;
-		debugLog(`Took ${stopwatch.stop()} to calc cl leaderboard for ${finishedCL.name}`);
 
 		const placeStr = nthUser > 100 ? '' : ` They are the ${formatOrdinal(nthUser)} user to finish this CL.`;
 
