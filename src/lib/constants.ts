@@ -520,3 +520,4 @@ export const globalConfig = globalConfigSchema.parse({
 });
 
 export const ONE_TRILLION = 1_000_000_000_000;
+export const demonBaneWeapons = resolveItems(['Silverlight', 'Darklight', 'Arclight']);
