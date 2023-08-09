@@ -1,5 +1,5 @@
 import { randomSnowflake } from '@oldschoolgg/toolkit';
-import { randInt, uniqueArr } from 'e';
+import { uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
