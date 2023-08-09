@@ -169,17 +169,16 @@ export const farmingTask: MinionTask = {
 			}
 			checkHealthXp = alivePlants * plantToHarvest.checkXp;
 
-			const cleanHerb =
+			const shouldCleanHerb =
 				plantToHarvest.herbXp !== undefined &&
 				user.bitfield.includes(BitField.CleanHerbsFarming) &&
 				user.skillLevel(SkillsEnum.Herblore) >= plantToHarvest.herbLvl!;
 
 			if (plantToHarvest.givesCrops) {
 				let cropToHarvest = plantToHarvest.outputCrop;
-				if (cleanHerb) {
+				if (shouldCleanHerb) {
 					cropToHarvest = plantToHarvest.cleanHerbCrop;
 				}
-				if (!cropToHarvest) return;
 				if (plantToHarvest.variableYield) {
 					cropYield = calcVariableYield(
 						plantToHarvest,
@@ -223,7 +222,7 @@ export const farmingTask: MinionTask = {
 					loot.add(cropToHarvest, cropYield);
 				}
 
-				if (cleanHerb && plantToHarvest.herbXp) {
+				if (shouldCleanHerb && plantToHarvest.herbXp) {
 					herbloreXp = cropYield * plantToHarvest.herbXp;
 					await user.addItemsToCollectionLog(new Bank().add(plantToHarvest.outputCrop).multiply(cropYield));
 				}
@@ -307,7 +306,7 @@ export const farmingTask: MinionTask = {
 				);
 			}
 
-			if (cleanHerb) {
+			if (herbloreXp > 0) {
 				infoStr.push(
 					`\nYou received ${herbloreXp.toLocaleString()} Herblore XP for cleaning the herbs during your trip.`
 				);
