@@ -26,4 +26,8 @@ global.globalClient = {
 } as any;
 
 // @ts-ignore mock
-MUserStats.fromID = () => {};
+MUserStats.fromID = async () => {
+	return new MUserStats({
+		user_id: ''
+	} as any);
+};
