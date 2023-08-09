@@ -3,6 +3,7 @@ import { XpGainSource } from '@prisma/client';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
+import { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
@@ -165,3 +166,4 @@ export interface BlowpipeData {
 }
 export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
+export type ClueBank = Record<ClueTier['name'], number>;

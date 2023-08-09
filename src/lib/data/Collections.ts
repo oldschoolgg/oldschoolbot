@@ -18,9 +18,9 @@ import {
 } from '../minions/data/templeTrekking';
 import type { MinigameName } from '../settings/minigames';
 import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
-import { getToaKCs } from '../simulation/toa';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { SkillsEnum } from '../skilling/types';
+import { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
 import { fetchStatsForCL, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
@@ -451,9 +451,9 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: {
 					Default: async (_, minigameScores) =>
 						minigameScores.find(i => i.minigame.column === 'tombs_of_amascut')!.score,
-					Entry: async user => getToaKCs(user).then(i => i.entryKC),
-					Normal: async user => getToaKCs(user).then(i => i.normalKC),
-					Expert: async user => getToaKCs(user).then(i => i.expertKC)
+					Entry: async (_, __, { stats }) => stats.getToaKCs().entryKC,
+					Normal: async (_, __, { stats }) => stats.getToaKCs().normalKC,
+					Expert: async (_, __, { stats }) => stats.getToaKCs().expertKC
 				},
 				items: toaCL,
 				isActivity: true,
@@ -1117,6 +1117,7 @@ export interface UserStatsDataNeededForCL {
 	kcBank: ItemBank;
 	highGambles: number;
 	gotrRiftSearches: number;
+	stats: MUserStats;
 }
 
 export function getBank(
