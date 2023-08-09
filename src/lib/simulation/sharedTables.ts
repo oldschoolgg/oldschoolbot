@@ -184,6 +184,11 @@ export const StoneSpiritTable = new LootTable()
 	.add('Gold stone spirit')
 	.add('Runite stone spirit');
 
+export const HighTierStoneSpiritTable = new LootTable()
+	.add('Mithril stone spirit', 4)
+	.add('Adamantite stone spirit', 2)
+	.add('Runite stone spirit', 1);
+
 export const MithrilItemsTable = new LootTable()
 	.add('Mithril dagger')
 	.add('Mithril full helm')
