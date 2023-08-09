@@ -39,7 +39,7 @@ export async function getParsedStashUnits(userID: string): Promise<ParsedUnit[]>
 	return parsed;
 }
 
-interface ParsedUnit {
+export interface ParsedUnit {
 	unit: IStashUnit;
 	isFull: boolean;
 	builtUnit: StashUnit | undefined;

@@ -11,6 +11,9 @@ import { formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 
+export const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
+export type DiaryTierName = (typeof diaryTiers)[number];
+
 export interface DiaryTier {
 	name: 'Easy' | 'Medium' | 'Hard' | 'Elite';
 	items: Item[];
