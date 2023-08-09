@@ -273,7 +273,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		desc: "Kill the Grotesque Guardians without taking damage from Dawn's rockfall attack.",
 		rng: {
-			chancePerKill: 4,
+			chancePerKill: 44,
 			hasChance: isCertainMonsterTrip(Monsters.GrotesqueGuardians.id)
 		}
 	},
@@ -545,7 +545,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		desc: 'Subdue Tempoross, getting rewarded with 10 reward permits from a single Tempoross fight.',
 		rng: {
-			chancePerKill: 2,
+			chancePerKill: 30,
 			hasChance: data => data.type === 'Tempoross' && (data as TemporossActivityTaskOptions).quantity >= 2
 		}
 	},

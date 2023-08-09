@@ -22,7 +22,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		desc: 'Kill the Abyssal Sire without taking damage from the external tentacles, miasma pools, explosion or damage from the Abyssal Sire without praying the appropriate protection prayer.',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 55,
 			hasChance: isCertainMonsterTrip(Monsters.AbyssalSire.id)
 		}
 	},
@@ -137,7 +137,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		desc: 'Kill the Abyssal Portal without forcing Vespula to land.',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 55,
 			hasChance: data => data.type === 'Raids'
 		}
 	},
@@ -147,7 +147,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		desc: 'Kill the Vanguards without them resetting their health.',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 45,
 			hasChance: data => data.type === 'Raids'
 		}
 	},
@@ -157,7 +157,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		desc: 'Receive kill-credit for a Stone Guardian without taking damage from falling rocks.',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 33,
 			hasChance: data => data.type === 'Raids'
 		}
 	},
@@ -177,7 +177,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		desc: 'Receive kill-credit for the Ice Demon without taking any damage.',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 15,
 			hasChance: data => data.type === 'Raids'
 		}
 	},
@@ -198,7 +198,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		desc: 'Kill the Muttadile without letting her or her baby recover hitpoints from the meat tree.',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 55,
 			hasChance: data => data.type === 'Raids'
 		}
 	},
@@ -208,7 +208,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		desc: 'Receive kill-credit for the Ice Demon without activating the Protect from Range prayer.',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 55,
 			hasChance: data => data.type === 'Raids'
 		}
 	},
@@ -218,7 +218,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		desc: 'Complete a Chambers of Xeric raid without anyone dying.',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 33,
 			hasChance: data => data.type === 'Raids'
 		}
 	},
@@ -228,7 +228,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		desc: 'Finish off the Ice Demon with a fire spell.',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 15,
 			hasChance: data => data.type === 'Raids'
 		}
 	},
@@ -338,7 +338,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Corrupted Hunllef without taking damage off prayer.',
 		type: 'perfection',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 44,
 			hasChance: data => data.type === 'Gauntlet' && (data as GauntletOptions).corrupted
 		}
 	},
@@ -370,7 +370,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Crystalline Hunllef without making more than one attuned weapon.',
 		type: 'restriction',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 15,
 			hasChance: data => data.type === 'Gauntlet' && !(data as GauntletOptions).corrupted
 		}
 	},
@@ -380,7 +380,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Crystalline Hunllef without taking damage off prayer.',
 		type: 'perfection',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 15,
 			hasChance: data => data.type === 'Gauntlet' && !(data as GauntletOptions).corrupted
 		}
 	},
@@ -390,7 +390,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Crystalline Hunllef with a full set of perfected armour equipped.',
 		type: 'restriction',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 22,
 			hasChance: data => data.type === 'Gauntlet' && !(data as GauntletOptions).corrupted
 		}
 	},
@@ -421,7 +421,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Dagannoth Prime whilst under attack by Dagannoth Supreme and Dagannoth Rex.',
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 44,
 			hasChance: isCertainMonsterTrip(Monsters.DagannothPrime.id)
 		}
 	},
@@ -431,7 +431,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Dagannoth Rex whilst under attack by Dagannoth Supreme and Dagannoth Prime.',
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 33,
 			hasChance: isCertainMonsterTrip(Monsters.DagannothRex.id)
 		}
 	},
@@ -441,7 +441,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Dagannoth Rex and one other Dagannoth king at the exact same time.',
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 33,
 			hasChance: isCertainMonsterTrip(Monsters.DagannothRex.id)
 		}
 	},
@@ -600,7 +600,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Hespori without losing any prayer points.',
 		type: 'restriction',
 		rng: {
-			chancePerKill: 2,
+			chancePerKill: 4,
 			hasChance: isCertainMonsterTrip(Monsters.Hespori.id)
 		}
 	},
@@ -663,7 +663,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Kalphite Queen by using the Vengeance spell as the finishing blow.',
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 2,
+			chancePerKill: 4,
 			hasChance: isCertainMonsterTrip(Monsters.KalphiteQueen.id)
 		}
 	},
@@ -708,7 +708,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Nex without anyone dying.',
 		type: 'restriction',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 12,
 			hasChance: isCertainMonsterTrip(NEX_ID)
 		}
 	},
@@ -836,7 +836,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill two Husks at the same time.',
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 25,
 			hasChance: 'Nightmare'
 		}
 	},
@@ -846,7 +846,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Defeat the Nightmare (5-scale) in less than 5 minutes.',
 		type: 'speed',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 45,
 			hasChance: 'Nightmare'
 		}
 	},
@@ -903,10 +903,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'In the Theatre of Blood: Entry Mode, freeze any 4 Nylocas with a single Ice Barrage spell.',
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 4,
-			hasChance: data => {
-				return data.type === 'TheatreOfBlood';
-			}
+			chancePerKill: 15,
+			hasChance: 'TheatreOfBlood'
 		}
 	},
 	{
@@ -915,10 +913,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'In the Theatre of Blood: Entry Mode, enter the Pestilent Bloat room from the opposite side.',
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 2,
-			hasChance: data => {
-				return data.type === 'TheatreOfBlood';
-			}
+			chancePerKill: 3,
+			hasChance: 'TheatreOfBlood'
 		}
 	},
 	{
@@ -939,10 +935,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Defeat the Maiden of Sugadinti in the Theatre of Blood: Entry Mode without letting any bloodspawn live for longer than 10 seconds.',
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 5,
-			hasChance: data => {
-				return data.type === 'TheatreOfBlood';
-			}
+			chancePerKill: 13,
+			hasChance: 'TheatreOfBlood'
 		}
 	},
 	{
@@ -951,10 +945,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Defeat Sotetseg in the Theatre of Blood: Entry Mode after having split the big ball with your entire team. This must be done with a group size of at least 2.',
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 5,
-			hasChance: data => {
-				return data.type === 'TheatreOfBlood';
-			}
+			chancePerKill: 13,
+			hasChance: 'TheatreOfBlood'
 		}
 	},
 	{
@@ -963,10 +955,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: "Survive Verzik Vitur's second phase in the Theatre of Blood: Entry Mode without anyone getting bounced by Verzik.",
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 6,
-			hasChance: data => {
-				return data.type === 'TheatreOfBlood';
-			}
+			chancePerKill: 13,
+			hasChance: 'TheatreOfBlood'
 		}
 	},
 	{
@@ -975,10 +965,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: "Survive Verzik Vitur's pillar phase in the Theatre of Blood: Entry Mode without losing a single pillar.",
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 6,
-			hasChance: data => {
-				return data.type === 'TheatreOfBlood';
-			}
+			chancePerKill: 13,
+			hasChance: 'TheatreOfBlood'
 		}
 	},
 	{
@@ -987,10 +975,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'In the Theatre of Blood: Entry Mode, successfully pass on the green ball to a team mate.',
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 7,
-			hasChance: data => {
-				return data.type === 'TheatreOfBlood';
-			}
+			chancePerKill: 13,
+			hasChance: 'TheatreOfBlood'
 		}
 	},
 	{
@@ -999,10 +985,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Xarpus in the Theatre of Blood: Entry Mode without him reflecting any damage to anyone.',
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 10,
-			hasChance: data => {
-				return data.type === 'TheatreOfBlood';
-			}
+			chancePerKill: 22,
+			hasChance: 'TheatreOfBlood'
 		}
 	},
 	{
@@ -1011,7 +995,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Thermonuclear Smoke Devil without it hitting anyone.',
 		type: 'perfection',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 15,
 			hasChance: isCertainMonsterTrip(Monsters.ThermonuclearSmokeDevil.id)
 		}
 	},
@@ -1220,7 +1204,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Fight Caves after surviving a hit from TzTok-Jad without praying.',
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 2,
+			chancePerKill: 3,
 			hasChance: 'FightCaves'
 		}
 	},

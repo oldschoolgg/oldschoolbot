@@ -35,7 +35,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill any Barrows Brother using only magical damage.',
 		id: 3,
 		rng: {
-			chancePerKill: 2,
+			chancePerKill: 4,
 			hasChance: isCertainMonsterTrip(Monsters.Barrows.id)
 		}
 	},
@@ -76,7 +76,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Bryophyta without suffering any poison damage.',
 		id: 6,
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 15,
 			hasChance: isCertainMonsterTrip(Monsters.Bryophyta.id)
 		}
 	},
@@ -219,7 +219,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill a Lizardman Shaman in Molch which has not dealt damage to anyone. (excluding its Spawns)',
 		id: 19,
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 15,
 			hasChance: isCertainMonsterTrip(Monsters.LizardmanShaman.id)
 		}
 	},
@@ -286,8 +286,8 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		desc: 'Extinguish at least 5 fires during a single Tempoross fight.',
 		id: 25,
 		rng: {
-			chancePerKill: 3,
-			hasChance: data => data.type === 'Tempoross'
+			chancePerKill: 22,
+			hasChance: 'Tempoross'
 		}
 	},
 	{
@@ -297,7 +297,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		id: 26,
 		rng: {
 			chancePerKill: 3,
-			hasChance: data => data.type === 'Tempoross'
+			hasChance: 'Tempoross'
 		}
 	},
 	{
@@ -307,7 +307,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		id: 27,
 		rng: {
 			chancePerKill: 3,
-			hasChance: data => data.type === 'Tempoross'
+			hasChance: 'Tempoross'
 		}
 	},
 	{

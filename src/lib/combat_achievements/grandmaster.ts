@@ -591,7 +591,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'In the Theatre of Blood: Hard Mode, complete the Nylocas room without ever letting the Nylocas Prinkipas change styles.',
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 22,
+			chancePerKill: 44,
 			hasChance: data => data.type === 'TheatreOfBlood' && (data as TheatreOfBloodTaskOptions).hardMode
 		}
 	},
@@ -601,7 +601,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Defeat Xarpus in the Theatre of Blood: Hard Mode after letting the exhumeds heal him to full health and without anyone in the team taking any damage.',
 		type: 'perfection',
 		rng: {
-			chancePerKill: 33,
+			chancePerKill: 55,
 			hasChance: data => data.type === 'TheatreOfBlood' && (data as TheatreOfBloodTaskOptions).hardMode
 		}
 	},
@@ -757,7 +757,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Tzkal-Zuk without letting your hitpoints fall below 50 during any wave in the Inferno.',
 		type: 'restriction',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 10,
 			hasChance: 'Inferno'
 		}
 	},
@@ -767,7 +767,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Tzkal-Zuk without killing the JalTok-Jad which spawns during wave 69.',
 		type: 'restriction',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 12,
 			hasChance: 'Inferno'
 		}
 	},

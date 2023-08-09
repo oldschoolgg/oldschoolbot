@@ -481,7 +481,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Hespori in less than 36 seconds.',
 		type: 'speed',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 10,
 			hasChance: isCertainMonsterTrip(Monsters.Hespori.id)
 		}
 	},
@@ -749,7 +749,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: "Kill Xarpus without anyone in the team taking any damage from Xarpus' attacks and without letting an exhumed heal Xarpus more than twice.",
 		type: 'perfection',
 		rng: {
-			chancePerKill: 22,
+			chancePerKill: 50,
 			hasChance: 'TheatreOfBlood'
 		}
 	},
@@ -759,7 +759,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Theatre of Blood (5-scale) in less than 16 minutes.',
 		type: 'speed',
 		rng: {
-			chancePerKill: 22,
+			chancePerKill: 40,
 			hasChance: 'TheatreOfBlood'
 		}
 	},
@@ -769,7 +769,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: "Defeat Verzik Vitur without anyone in the team taking damage from Verzik Vitur's attacks other than her spider form's correctly prayed against regular magical and ranged attacks.",
 		type: 'perfection',
 		rng: {
-			chancePerKill: 22,
+			chancePerKill: 50,
 			hasChance: 'TheatreOfBlood'
 		}
 	},
@@ -779,7 +779,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Theatre of Blood (4-scale) in less than 17 minutes.',
 		type: 'speed',
 		rng: {
-			chancePerKill: 30,
+			chancePerKill: 39,
 			hasChance: 'TheatreOfBlood'
 		}
 	},
@@ -1192,7 +1192,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill Tzkal-Zuk without letting a pillar fall before wave 67.',
 		type: 'perfection',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 10,
 			hasChance: 'Inferno'
 		}
 	},
@@ -1202,7 +1202,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Fight Caves without being attacked by a Tz-Kih.',
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 25,
 			hasChance: 'FightCaves'
 		}
 	},
@@ -1212,7 +1212,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Fight caves without letting any of the Yt-MejKot heal.',
 		type: 'mechanical',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 25,
 			hasChance: 'FightCaves'
 		}
 	},

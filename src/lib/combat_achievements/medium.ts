@@ -65,7 +65,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		desc: "Kill all 3 of Bryophyta's growthlings within 3 seconds of the first one dying.",
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 15,
 			hasChance: isCertainMonsterTrip(Monsters.Bryophyta.id)
 		}
 	},
@@ -151,7 +151,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		desc: 'Kill Dagannoth Rex whilst he is immobilized.',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 15,
 			hasChance: isCertainMonsterTrip(Monsters.DagannothRex.id)
 		}
 	},
@@ -172,7 +172,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		desc: "Kill the Deranged Archaeologist without anyone being hit by his 'Learn to Read' attack.",
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 15,
 			hasChance: isCertainMonsterTrip(Monsters.DerangedArchaeologist.id)
 		}
 	},
@@ -308,7 +308,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		desc: 'Kill Obor without being pushed back more than one square by his knockback attack.',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 15,
 			hasChance: isCertainMonsterTrip(Monsters.Obor.id)
 		}
 	},
@@ -318,7 +318,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		desc: 'Kill Obor without taking any damage off prayer.',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 15,
 			hasChance: isCertainMonsterTrip(Monsters.Obor.id)
 		}
 	},
@@ -395,7 +395,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		desc: 'Kill Skotizo with no altars active.',
 		rng: {
-			chancePerKill: 3,
+			chancePerKill: 15,
 			hasChance: isCertainMonsterTrip(Monsters.Skotizo.id)
 		}
 	},

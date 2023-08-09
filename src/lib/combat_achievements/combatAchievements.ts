@@ -86,7 +86,7 @@ assert(allCATaskIDs.length === new Set(allCATaskIDs).size);
 assert(sumArr(Object.values(CombatAchievements).map(i => i.length)) === allCATaskIDs.length);
 const indexesWithRng = entries.map(i => i[1].tasks.filter(t => 'rng' in t)).flat();
 
-export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ user, data, messages }) => {
+export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data, messages }) => {
 	const dataCopy = deepClone(data);
 	if (dataCopy.type === 'TheatreOfBlood') {
 		(dataCopy as ActivityTaskOptionsWithQuantity).quantity = 1;
@@ -98,7 +98,6 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ user
 	) {
 		(dataCopy as ActivityTaskOptionsWithQuantity).quantity = 1;
 	}
-	const completedTasks = [];
 	if (!('quantity' in dataCopy)) return;
 	let quantity = Number(dataCopy.quantity);
 	if (isNaN(quantity)) return;
@@ -117,37 +116,45 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ user
 		}
 	}
 
-	for (const task of indexesWithRng) {
-		if (user.user.completed_ca_task_ids.includes(task.id)) continue;
-		if (!('rng' in task)) continue;
+	const users = await Promise.all(
+		('users' in data ? (data.users as string[]) : [data.userID]).map(id => mUserFetch(id))
+	);
 
-		const hasChance =
-			typeof task.rng.hasChance === 'string'
-				? dataCopy.type === task.rng.hasChance
-				: task.rng.hasChance(dataCopy, user);
-		if (!hasChance) continue;
+	for (const user of users) {
+		const completedTasks = [];
 
-		for (let i = 0; i < quantity; i++) {
-			if (roll(task.rng.chancePerKill)) {
-				completedTasks.push(task);
-				break;
+		taskLoop: for (const task of indexesWithRng) {
+			if (user.user.completed_ca_task_ids.includes(task.id)) continue;
+			if (!('rng' in task)) continue;
+
+			const hasChance =
+				typeof task.rng.hasChance === 'string'
+					? dataCopy.type === task.rng.hasChance
+					: task.rng.hasChance(dataCopy, user);
+			if (!hasChance) continue;
+
+			for (let i = 0; i < quantity; i++) {
+				console.log(`${user.rawUsername} is rolling 1 in ${task.rng.chancePerKill} for ${task.name}`);
+				if (roll(task.rng.chancePerKill)) {
+					completedTasks.push(task);
+					break taskLoop;
+				}
 			}
 		}
-	}
 
-	if (completedTasks.length === 0) return;
-
-	await user.update({
-		completed_ca_task_ids: {
-			push: completedTasks.map(t => t.id)
+		if (completedTasks.length > 0) {
+			messages.push(
+				`${users.length === 1 ? 'You' : `${user}`} completed the ${completedTasks
+					.map(i => i.name)
+					.join(', ')} Combat Achievement Task${completedTasks.length > 1 ? 's' : ''}!`
+			);
+			await user.update({
+				completed_ca_task_ids: {
+					push: completedTasks.map(t => t.id)
+				}
+			});
 		}
-	});
-
-	messages.push(
-		`You completed the ${completedTasks.map(i => i.name).join(', ')} Combat Achievement Task${
-			completedTasks.length > 1 ? 's' : ''
-		}!`
-	);
+	}
 };
 
 export function caToPlayerString(task: CombatAchievement, user: MUser) {
