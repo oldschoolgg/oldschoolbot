@@ -484,10 +484,14 @@ GROUP BY data->>'clueID';`);
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
-		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
-		this.user = newUser;
-		this.updateProperties();
+		await this.update(updates);
+		const newCL = this.cl;
 		await handleNewCLItems({ itemsAdded: itemsToAdd, user: this, newCL: this.cl, previousCL });
+		return {
+			previousCL,
+			newCL,
+			itemsAdded: itemsToAdd
+		};
 	}
 
 	async specialRemoveItems(bankToRemove: Bank) {
