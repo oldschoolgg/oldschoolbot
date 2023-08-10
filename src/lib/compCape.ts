@@ -359,7 +359,7 @@ for (const cape of expertCapesCL) {
 skillingRequirements.add({
 	name: 'Complete a lap at every Agility course',
 	has: ({ stats }) => {
-		const coursesNotDone = Agility.Courses.filter(course => !stats.lapsScores.has(course.id));
+		const coursesNotDone = Agility.Courses.filter(course => !stats.lapsScores[course.id]);
 		if (coursesNotDone.length > 0) {
 			return [
 				{
@@ -474,8 +474,8 @@ const petTripSource: [string, keyof UserStats][] = [
 for (const [name, key] of petTripSource) {
 	miscRequirements.add({
 		name: `Take ${name} on a trip and receive loot from them`,
-		has: ({ userStats }) => {
-			if (Object.keys(userStats[key] as ItemBank).length === 0) {
+		has: ({ stats }) => {
+			if (Object.keys(stats.userStats[key] as ItemBank).length === 0) {
 				return [
 					{
 						reason: `You need to take ${name} on a trip and receive loot from them.`
@@ -489,8 +489,8 @@ for (const [name, key] of petTripSource) {
 miscRequirements
 	.add({
 		name: 'Buy a trimmed Music cape',
-		has: ({ userStats }) => {
-			const itemsBought = new Bank(userStats.buy_loot_bank as ItemBank);
+		has: ({ stats }) => {
+			const itemsBought = new Bank(stats.userStats.buy_loot_bank as ItemBank);
 			if (!itemsBought.has('Music cape (t)')) {
 				return [
 					{

@@ -451,6 +451,8 @@ model User {
   zeal_tokens          Int @default(0)
   slayer_points        Int @default(0) @map("slayer.points")
 
+  completed_ca_task_ids Int[]
+
   // BSO
   nursery                  Json?    @db.Json
   selected_tame            Int?

@@ -786,3 +786,4 @@ export const discontinuedItems = resolveItems([
 	'Black swan',
 	...customItems.filter(i => Items.get(i)?.customItemData?.isDiscontinued)
 ]);
+export const demonBaneWeapons = resolveItems(['Silverlight', 'Darklight', 'Arclight']);

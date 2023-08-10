@@ -4,13 +4,18 @@ import { MysteryBoxes } from '../../../../../bsoOpenables';
 import {
 	ClueTable,
 	FletchingTipsTable,
+	HighTierStoneSpiritTable,
 	lowRuneHighAdamantTable,
 	runeWeaponTable,
 	StoneSpiritTable
 } from '../../../../../simulation/sharedTables';
 
 export const MOKTANG_ID = 391_241;
-const BarTable = new LootTable().add('Bronze bar', 10).add('Iron bar', 10).add('Steel bar', 10);
+const BarTable = new LootTable()
+	.add('Bronze bar', 10)
+	.add('Iron bar', 10)
+	.add('Steel bar', 10)
+	.add(HighTierStoneSpiritTable, 10);
 
 export const MoktangLootTable = new LootTable()
 	.every(StoneSpiritTable, [3, 6])
@@ -22,6 +27,6 @@ export const MoktangLootTable = new LootTable()
 	.tertiary(16, MysteryBoxes)
 	.tertiary(5, new LootTable().add('Dragonstone upgrade kit'))
 	.add(BarTable)
-	.add(lowRuneHighAdamantTable)
-	.add(FletchingTipsTable)
-	.add(runeWeaponTable);
+	.add(lowRuneHighAdamantTable, [2, 3])
+	.add(FletchingTipsTable, [2, 3])
+	.add(runeWeaponTable, [1, 2]);

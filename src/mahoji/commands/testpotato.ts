@@ -2,7 +2,6 @@ import { Prisma, tame_growth, xp_gains_skill_enum } from '@prisma/client';
 import { noOp, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
@@ -19,7 +18,7 @@ import {
 } from '../../lib/data/CollectionsExport';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
-import { maxMage, maxMelee, maxRange } from '../../lib/depthsOfAtlantis';
+import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { dyedItems } from '../../lib/dyedItems';
 import { materialTypes } from '../../lib/invention';
 import { DisassemblySourceGroups } from '../../lib/invention/groups';
@@ -33,11 +32,9 @@ import { allOpenables } from '../../lib/openables';
 import { tiers } from '../../lib/patreon';
 import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
-import { maxMageGear, maxMeleeOver300Gear, maxRangeGear } from '../../lib/simulation/toa';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
-import { Gear } from '../../lib/structures/Gear';
 import { getUsersTame, tameSpecies } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
 import {
@@ -94,52 +91,14 @@ async function givePatronLevel(user: MUser, tier: number) {
 	return `Gave you tier ${tierToGive[1] - 1} patron.`;
 }
 
-async function giveGear(user: MUser) {
-	const loot = new Bank()
-		.add('Saradomin brew(4)', 10_000)
-		.add('Super restore(4)', 5000)
-		.add('Stamina potion(4)', 1000)
-		.add('Super combat potion(4)', 100)
-		.add('Cooked karambwan', 1000)
-		.add('Ranging potion(4)', 1000)
-		.add('Death rune', 10_000)
-		.add('Blood rune', 100_000)
-		.add('Water rune', 10_000)
-		.add('Coins', 5_000_000)
-		.add('Shark', 5000)
-		.add('Vial of blood', 10_000)
-		.add('Rune pouch', 1)
-		.add('Zamorakian spear')
-		.add('Dragon warhammer')
-		.add('Bandos godsword')
-		.add('Toxic blowpipe');
-	await user.addItemsToBank({ items: loot, collectionLog: false });
-
-	await user.update({
-		GP: 1_000_000_000,
-		slayer_points: 100_000,
-		tentacle_charges: 10_000,
-		gear_mage: maxMageGear.raw() as any,
-		gear_melee: maxMeleeOver300Gear.raw() as any,
-		gear_range: maxRangeGear.raw() as any,
-		blowpipe: {
-			scales: 100_000,
-			dartQuantity: 100_000,
-			dartID: itemID('Rune dart')
-		}
-	});
-
-	await getPOH(user.id);
-	await prisma.playerOwnedHouse.update({
-		where: {
-			user_id: user.id
-		},
-		data: {
-			pool: 29_241
-		}
-	});
-	return `Gave you ${loot}, all BIS setups, 10k tentacle charges, slayer points, 1b GP, blowpipe, gear, supplies.`;
-}
+const gearPresets = [
+	{
+		name: 'ToB',
+		melee: TOBMaxMeleeGear,
+		mage: TOBMaxMageGear,
+		range: TOBMaxRangeGear
+	}
+];
 
 const thingsToReset = [
 	{
@@ -286,13 +245,13 @@ for (const tier of allStashUnitTiers) {
 const potionsPreset = new Bank();
 for (const potion of potions) {
 	for (const actualPotion of potion.items) {
-		potionsPreset.addItem(actualPotion, 10_000);
+		potionsPreset.addItem(actualPotion, 100_000);
 	}
 }
 
 const foodPreset = new Bank();
 for (const food of Eatables.map(food => food.id)) {
-	foodPreset.addItem(food, 10_000);
+	foodPreset.addItem(food, 100_000);
 }
 
 const runePreset = new Bank()
@@ -335,12 +294,6 @@ const spawnPresets = [
 	['runes', runePreset]
 ] as const;
 
-const nexSupplies = new Bank()
-	.add('Shark', 10_000)
-	.add('Saradomin brew(4)', 100)
-	.add('Super restore(4)', 100)
-	.add('Ranging potion(4)', 100);
-
 const doaSupplies = new Bank()
 	.add('Sanguinesti staff', 1)
 	.add('Blood rune', 500_000_000)
@@ -355,7 +308,7 @@ const doaSupplies = new Bank()
 	.add('Javelin shaft', 100_000)
 	.add('Obsidian shards', 100_000);
 
-const thingsToWipe = ['bank', 'materials', 'cl'] as const;
+const thingsToWipe = ['bank', 'materials', 'cl', 'combat_achievements'] as const;
 
 export const testPotatoCommand: OSBMahojiCommand | null = production
 	? null
@@ -499,7 +452,16 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'gear',
-					description: 'Spawn food, pots, runes, coins, blowpipe, POH with a pool, and BiS gear.'
+					description: 'Spawn and equip gear for a particular thing',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'thing',
+							description: 'The thing to spawn gear for.',
+							required: true,
+							choices: gearPresets.map(i => ({ name: i.name, value: i.name }))
+						}
+					]
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -544,21 +506,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							]
 						}
 					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'doahax',
-					description: 'Gives you everything needed for Nex.'
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'badnexgear',
-					description: 'Gives you bad nex gear ahahahahaha'
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'naxxus',
-					description: 'Gives you Naxxus gear'
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -641,7 +588,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 			}: CommandRunOptions<{
 				max?: {};
 				patron?: { tier: string };
-				gear?: {};
+				gear?: { thing: string };
 				reset?: { thing: string };
 				setminigamekc?: { minigame: string; kc: number };
 				setxp?: { skill: string; xp: number };
@@ -729,9 +676,24 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						});
 						return 'Reset your collection log.';
 					}
+					if (thing === 'combat_achievements') {
+						await user.update({
+							completed_ca_task_ids: []
+						});
+						return 'Reset your combat achievements.';
+					}
 					return 'Invalid thing to reset.';
 				}
 				if (options.max) {
+					await getPOH(user.id);
+					await prisma.playerOwnedHouse.update({
+						where: {
+							user_id: user.id
+						},
+						data: {
+							pool: 29_241
+						}
+					});
 					await roboChimpClient.user.upsert({
 						where: {
 							id: BigInt(user.id)
@@ -746,13 +708,60 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							}
 						}
 					});
-					return giveMaxStats(user);
+					await user.addItemsToBank({
+						items: new Bank()
+							.add('Rune pouch')
+							.add('Blood rune', 100_000_000)
+							.add('Death rune', 100_000_000)
+							.add('Blood rune', 100_000_000)
+							.add('Water rune', 100_000_000)
+							.add('Saradomin brew(4)', 100_000_000)
+							.add('Super restore(4)', 100_000_000)
+							.add('Stamina potion(4)', 100_000_000)
+							.add('Super combat potion(4)', 100_000_000)
+							.add('Cooked karambwan', 100_000_000)
+							.add('Ranging potion(4)', 100_000_000)
+							.add('Coins', 100_000_000)
+							.add('Shark', 100_000_000)
+							.add('Vial of blood', 100_000_000)
+							.add('Rune pouch')
+							.add('Zamorakian spear')
+							.add('Dragon warhammer')
+							.add('Bandos godsword')
+							.add('Toxic blowpipe')
+							.add(runePreset)
+							.add(foodPreset)
+							.add(potionsPreset)
+							.add(usables)
+							.add(doaSupplies)
+					});
+					await user.update({
+						GP: 5_000_000_000,
+						slayer_points: 100_000,
+						tentacle_charges: 10_000,
+						gear_mage: TOBMaxMageGear.raw() as any,
+						gear_melee: TOBMaxMeleeGear.raw() as any,
+						gear_range: TOBMaxRangeGear.raw() as any,
+						blowpipe: {
+							scales: 100_000,
+							dartQuantity: 100_000,
+							dartID: itemID('Dragon dart')
+						}
+					});
+					await giveMaxStats(user);
+					return 'Fully maxed your account, stocked your bank.';
 				}
 				if (options.patron) {
 					return givePatronLevel(user, Number(options.patron.tier));
 				}
 				if (options.gear) {
-					return giveGear(user);
+					const gear = gearPresets.find(i => stringMatches(i.name, options.gear?.thing))!;
+					await user.update({
+						gear_melee: gear.melee.raw() as any,
+						gear_range: gear.range.raw() as any,
+						gear_mage: gear.mage.raw() as any
+					});
+					return `Set your gear for ${gear.name}.`;
 				}
 				if (options.reset) {
 					const resettable = thingsToReset.find(i => i.name === options.reset?.thing);
@@ -815,114 +824,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
 					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;
-				}
-				if (options.naxxus) {
-					const mage = new Gear({
-						[EquipmentSlot.Weapon]: 'Void staff',
-						[EquipmentSlot.Shield]: 'Abyssal tome',
-						[EquipmentSlot.Ammo]: 'Dwarven blessing',
-						[EquipmentSlot.Body]: 'Gorajan occult top',
-						[EquipmentSlot.Legs]: 'Gorajan occult legs',
-						[EquipmentSlot.Feet]: 'Gorajan occult boots',
-						[EquipmentSlot.Cape]: 'Vasa cloak',
-						[EquipmentSlot.Neck]: 'Arcane blast necklace',
-						[EquipmentSlot.Hands]: 'Gorajan occult gloves',
-						[EquipmentSlot.Head]: 'Gorajan occult helmet',
-						[EquipmentSlot.Ring]: 'Spellbound ring(i)'
-					});
-					const melee = new Gear({
-						[EquipmentSlot.Weapon]: 'Drygore rapier',
-						[EquipmentSlot.Shield]: 'Offhand drygore rapier',
-						[EquipmentSlot.Ammo]: 'Dwarven blessing',
-						[EquipmentSlot.Body]: 'Gorajan warrior top',
-						[EquipmentSlot.Legs]: 'Gorajan warrior legs',
-						[EquipmentSlot.Feet]: 'Gorajan warrior boots',
-						[EquipmentSlot.Cape]: 'Tzkal cape',
-						[EquipmentSlot.Neck]: "Brawler's hook necklace",
-						[EquipmentSlot.Hands]: 'Gorajan warrior gloves',
-						[EquipmentSlot.Head]: 'Gorajan warrior helmet',
-						[EquipmentSlot.Ring]: 'Ignis ring(i)'
-					});
-					const wildy = new Gear({
-						[EquipmentSlot.Body]: "Karil's leathertop",
-						[EquipmentSlot.Legs]: "Karil's leatherskirt"
-					});
-
-					const supplies = new Bank()
-						.add('Enhanced saradomin brew', 30_000)
-						.add('Enhanced super restore', 10_000)
-						.add('Enhanced divine water', 20_000)
-						.add('Saradomin brew(4)', 10_000)
-						.add('Super restore(4)', 10_000)
-						.add('Stamina potion(4)', 10_000)
-						.add('Crystal acorn', 100)
-						.add('Grand crystal acorn', 100);
-
-					const currentBitfields = user.bitfield ?? [];
-					await mahojiUserSettingsUpdate(user.id, {
-						gear_melee: melee.raw() as Prisma.InputJsonObject,
-						gear_mage: mage.raw() as Prisma.InputJsonObject,
-						gear_wildy: wildy.raw() as Prisma.InputJsonObject,
-						skills_strength: convertLVLtoXP(120),
-						skills_attack: convertLVLtoXP(120),
-						skills_ranged: convertLVLtoXP(120),
-						skills_prayer: convertLVLtoXP(120),
-						skills_hitpoints: convertLVLtoXP(120),
-						skills_defence: convertLVLtoXP(120),
-						skills_magic: convertLVLtoXP(120),
-						skills_slayer: convertLVLtoXP(120),
-						skills_herblore: convertLVLtoXP(120),
-						skills_hunter: convertLVLtoXP(120),
-						skills_farming: convertLVLtoXP(120),
-						QP: 5000,
-						bank: user.bank.add(supplies).bank,
-						GP: user.GP + 1_000_000_000,
-						void_staff_charges: 10_000,
-						bitfield: [...new Set([...currentBitfields, BitField.HasScrollOfFarming])]
-					});
-					return 'Gave you gear & supplies for Naxxus';
-				}
-				if (options.doahax) {
-					await user.update({
-						gear_range: maxRange.raw() as any,
-						gear_mage: maxMage.raw() as any,
-						gear_melee: maxMelee.raw() as any,
-						skills_ranged: 1_000_000_000,
-						skills_prayer: 1_000_000_000,
-						skills_hitpoints: 1_000_000_000,
-						skills_defence: 1_000_000_000,
-						skills_fishing: 1_000_000_000,
-						skills_agility: 1_000_000_000,
-						skills_attack: 1_000_000_000,
-						skills_strength: 1_000_000_000,
-						skills_magic: 1_000_000_000,
-						bank: user.bank.clone().add(doaSupplies).bank,
-						GP: 1_000_000_000,
-						void_staff_charges: 100_000
-					});
-
-					return 'Got you ready for DOA!';
-				}
-				if (options.badnexgear) {
-					const gear = new Gear({
-						[EquipmentSlot.Weapon]: 'Armadyl crossbow',
-						// [EquipmentSlot.Shield]: nu,
-						[EquipmentSlot.Ammo]: 'Ruby dragon bolts(e)',
-						[EquipmentSlot.Body]: "Karil's leathertop",
-						[EquipmentSlot.Legs]: "Karil's leatherskirt",
-						[EquipmentSlot.Feet]: 'Snakeskin boots',
-						[EquipmentSlot.Cape]: "Ava's accumulator",
-						[EquipmentSlot.Neck]: 'Amulet of accuracy',
-						[EquipmentSlot.Hands]: 'Barrows gloves',
-						[EquipmentSlot.Head]: "Karil's coif",
-						[EquipmentSlot.Ring]: 'Archers ring'
-					});
-					gear.ammo!.quantity = 1_000_000;
-					await user.update({
-						gear_range: gear.raw() as Prisma.InputJsonObject,
-						bank: user.bank.add(nexSupplies).bank
-					});
-					return 'Gave you bad nex gear';
 				}
 				if (options.setmonsterkc) {
 					const monster = effectiveMonsters.find(m =>

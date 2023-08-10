@@ -127,7 +127,8 @@ describe('Ironman Command', () => {
 		expect(await prisma.tameActivity.count({ where: { user_id: userId } })).toEqual(0);
 		expect(await prisma.tame.count({ where: { user_id: userId } })).toEqual(0);
 		const userStats = await prisma.userStats.findFirst({ where: { user_id: BigInt(userId) } });
-		expect(userStats?.cl_array_length).toEqual(0);
+		expect(userStats?.cl_array).toEqual(undefined);
+		expect(userStats?.cl_array_length).toEqual(undefined);
 	});
 
 	test('Should de-iron', async () => {

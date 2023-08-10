@@ -53,6 +53,7 @@ import { PaginatedMessage } from './PaginatedMessage';
 import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
 import { Gear } from './structures/Gear';
+import { MUserStats } from './structures/MUserStats';
 import type { Skills } from './types';
 import type {
 	GroupMonsterActivityTaskOptions,
@@ -691,15 +692,8 @@ export async function calcClueScores(user: MUser) {
 }
 
 export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededForCL> {
-	const userStats = await user.fetchStats({
-		sacrificed_bank: true,
-		tithe_farms_completed: true,
-		laps_scores: true,
-		openable_scores: true,
-		monster_scores: true,
-		high_gambles: true,
-		gotr_rift_searches: true
-	});
+	const stats = await MUserStats.fromID(user.id);
+	const { userStats } = stats;
 	return {
 		sacrificedBank: new Bank(userStats.sacrificed_bank as ItemBank),
 		titheFarmsCompleted: userStats.tithe_farms_completed,
@@ -707,7 +701,8 @@ export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededF
 		openableScores: new Bank(userStats.openable_scores as ItemBank),
 		kcBank: userStats.monster_scores as ItemBank,
 		highGambles: userStats.high_gambles,
-		gotrRiftSearches: userStats.gotr_rift_searches
+		gotrRiftSearches: userStats.gotr_rift_searches,
+		stats
 	};
 }
 
