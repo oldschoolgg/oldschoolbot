@@ -22,10 +22,8 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
+				[itemID("Craw's bow")]: 15,
 				[itemID('Webweaver bow')]: 25
-			},
-			{
-				[itemID("Craw's bow")]: 15
 			}
 		],
 		defaultAttackStyles: [SkillsEnum.Ranged],
@@ -48,10 +46,8 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
+				[itemID("Craw's bow")]: 15,
 				[itemID('Webweaver bow')]: 25
-			},
-			{
-				[itemID("Craw's bow")]: 15
 			}
 		],
 		defaultAttackStyles: [SkillsEnum.Ranged],
@@ -73,10 +69,8 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
+				[itemID("Viggora's chainmace")]: 15,
 				[itemID('Ursine chainmace')]: 25
-			},
-			{
-				[itemID("Viggora's chainmace")]: 15
 			}
 		],
 		defaultAttackStyles: [SkillsEnum.Attack],
@@ -100,10 +94,8 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
+				[itemID("Viggora's chainmace")]: 15,
 				[itemID('Ursine chainmace')]: 25
-			},
-			{
-				[itemID("Viggora's chainmace")]: 15
 			}
 		],
 		defaultAttackStyles: [SkillsEnum.Attack],
@@ -126,16 +118,10 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
+				[itemID("Craw's bow")]: 5,
+				[itemID('Webweaver bow')]: 10,
+				[itemID("Viggora's chainmace")]: 15,
 				[itemID('Ursine chainmace')]: 25
-			},
-			{
-				[itemID("Viggora's chainmace")]: 15
-			},
-			{
-				[itemID('Webweaver bow')]: 10
-			},
-			{
-				[itemID("Craw's bow")]: 5
 			}
 		],
 		defaultAttackStyles: [SkillsEnum.Attack],
@@ -158,16 +144,10 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
+				[itemID("Craw's bow")]: 5,
+				[itemID('Webweaver bow')]: 10,
+				[itemID("Viggora's chainmace")]: 15,
 				[itemID('Ursine chainmace')]: 25
-			},
-			{
-				[itemID("Viggora's chainmace")]: 15
-			},
-			{
-				[itemID('Webweaver bow')]: 10
-			},
-			{
-				[itemID("Craw's bow")]: 5
 			}
 		],
 		defaultAttackStyles: [SkillsEnum.Attack],
