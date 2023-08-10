@@ -2,6 +2,7 @@ import { randInt, Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
+import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
 import { Emoji, Events } from '../../lib/constants';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { PatchTypes } from '../../lib/minions/farming';
@@ -10,7 +11,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming, { plants } from '../../lib/skilling/skills/farming';
 import { Plant, SkillsEnum } from '../../lib/skilling/types';
-import { FarmingActivityTaskOptions } from '../../lib/types/minions';
+import { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
 	assert,
 	clAdjustedDroprate,
@@ -426,6 +427,17 @@ export const farmingTask: MinionTask = {
 				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
 					farmingLevel: currentFarmingLevel
 				});
+				const fakeMonsterTaskOptions: MonsterActivityTaskOptions = {
+					monsterID: Monsters.Hespori.id,
+					quantity: patchType.lastQuantity,
+					type: 'MonsterKilling',
+					userID: user.id,
+					duration: data.duration,
+					finishDate: data.finishDate,
+					channelID: data.channelID,
+					id: 1
+				};
+				await combatAchievementTripEffect({ user, loot, messages: infoStr, data: fakeMonsterTaskOptions });
 				loot = hesporiLoot;
 				const plopperDroprate = clAdjustedDroprate(
 					user,

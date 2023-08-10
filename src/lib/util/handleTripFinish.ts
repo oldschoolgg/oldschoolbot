@@ -11,6 +11,7 @@ import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from
 import { gods } from '../bso/divineDominion';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
+import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
@@ -42,9 +43,15 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'ClueCompletion'
 ];
 
+interface TripFinishEffectOptions {
+	data: ActivityTaskOptions;
+	user: MUser;
+	loot: Bank | null;
+	messages: string[];
+}
 export interface TripFinishEffect {
 	name: string;
-	fn: (options: { data: ActivityTaskOptions; user: MUser; loot: Bank | null; messages: string[] }) => unknown;
+	fn: (options: TripFinishEffectOptions) => unknown;
 }
 
 const tripFinishEffects: TripFinishEffect[] = [
@@ -314,6 +321,10 @@ const tripFinishEffects: TripFinishEffect[] = [
 				data.duration
 			);
 		}
+	},
+	{
+		name: 'Combat Achievements',
+		fn: combatAchievementTripEffect
 	}
 ];
 

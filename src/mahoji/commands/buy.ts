@@ -9,6 +9,7 @@ import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { isElligibleForPresent } from '../../lib/settings/settings';
+import { MUserStats } from '../../lib/structures/MUserStats';
 import { formatSkillRequirements, itemID, itemNameFromID, stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -72,7 +73,7 @@ export const buyCommand: OSBMahojiCommand = {
 
 		if (buyable.customReq) {
 			await deferInteraction(interaction);
-			const [hasCustomReq, reason] = await buyable.customReq(user);
+			const [hasCustomReq, reason] = await buyable.customReq(user, await MUserStats.fromID(user.id));
 			if (!hasCustomReq) {
 				return reason!;
 			}

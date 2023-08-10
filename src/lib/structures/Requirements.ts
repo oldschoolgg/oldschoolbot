@@ -1,18 +1,18 @@
-import { Minigame, UserStats } from '@prisma/client';
+import { Minigame } from '@prisma/client';
 import { calcWhatPercent, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { getParsedStashUnits, ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { ClueTier } from '../clues/clueTiers';
-import { BitField, BitFieldData } from '../constants';
+import { BitField, BitFieldData, BOT_TYPE } from '../constants';
 import { diariesObject, DiaryTierName, userhasDiaryTier } from '../diaries';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { UserKourendFavour } from '../minions/data/kourendFavour';
+import { ClueBank } from '../minions/types';
 import { RobochimpUser, roboChimpUserFetch } from '../roboChimp';
 import { MinigameName } from '../settings/minigames';
-import { prisma } from '../settings/prisma';
 import Agility from '../skilling/skills/agility';
-import { ItemBank, Skills } from '../types';
+import { Skills } from '../types';
 import { itemNameFromID } from '../util';
 import { MUserStats } from './MUserStats';
 
@@ -20,14 +20,14 @@ export interface RequirementFailure {
 	reason: string;
 }
 
-type RequirementUserArgs = {
+interface RequirementUserArgs {
 	user: MUser;
-	userStats: UserStats;
 	stashUnits: ParsedUnit[];
 	minigames: Minigame;
 	stats: MUserStats;
 	roboChimpUser: RobochimpUser;
-} & Awaited<ReturnType<MUser['calcActualClues']>>;
+	clueCounts: ClueBank;
+}
 
 type ManualHasFunction = (
 	args: RequirementUserArgs
@@ -169,7 +169,7 @@ export class Requirements {
 		requirement: Requirement,
 		userArgs: RequirementUserArgs
 	): Promise<RequirementFailure[]> {
-		const { user, userStats, minigames } = userArgs;
+		const { user, stats, minigames, clueCounts } = userArgs;
 		const results: RequirementFailure[] = [];
 
 		if ('has' in requirement) {
@@ -216,7 +216,7 @@ export class Requirements {
 		}
 
 		if ('kcRequirement' in requirement) {
-			const kcs = userStats.monster_scores as ItemBank;
+			const kcs = stats.monsterScores;
 			const missingMonsterNames = [];
 			for (const [id, amount] of Object.entries(requirement.kcRequirement)) {
 				if (!kcs[id] || kcs[id] < amount) {
@@ -239,7 +239,7 @@ export class Requirements {
 		}
 
 		if ('lapsRequirement' in requirement) {
-			const laps = userStats.laps_scores as ItemBank;
+			const laps = stats.lapsScores;
 			for (const [id, amount] of Object.entries(requirement.lapsRequirement)) {
 				if (!laps[id] || laps[id] < amount) {
 					results.push({
@@ -252,7 +252,7 @@ export class Requirements {
 		}
 
 		if ('sacrificedItemsRequirement' in requirement) {
-			const sacBank = new Bank().add(userStats.sacrificed_bank as ItemBank);
+			const sacBank = stats.sacrifiedBank();
 			if (!sacBank.has(requirement.sacrificedItemsRequirement)) {
 				results.push({
 					reason: `You need to have sacrificed these items: ${requirement.sacrificedItemsRequirement}.`
@@ -316,9 +316,8 @@ export class Requirements {
 		}
 
 		if ('clueCompletions' in requirement) {
-			const { clueCounts } = await user.calcActualClues();
 			for (const [key, val] of objectEntries(requirement.clueCompletions)) {
-				if (!clueCounts[key] || !val || clueCounts[key] < val) {
+				if (!val || clueCounts[key] < val) {
 					results.push({
 						reason: `You need to complete ${val}x ${key} clues.`
 					});
@@ -341,30 +340,21 @@ export class Requirements {
 	}
 
 	async check(user: MUser) {
-		const userStats = await prisma.userStats.upsert({
-			where: {
-				user_id: BigInt(user.id)
-			},
-			create: {
-				user_id: BigInt(user.id)
-			},
-			update: {}
-		});
 		const minigames = await user.fetchMinigames();
 		const stashUnits = await getParsedStashUnits(user.id);
-		const stats = new MUserStats(userStats);
+		const stats = await MUserStats.fromID(user.id);
 		const roboChimpUser = await roboChimpUserFetch(user.id);
-		const cluesDone = await user.calcActualClues();
+		const clueCounts =
+			BOT_TYPE === 'OSB' ? stats.clueScoresFromOpenables() : (await user.calcActualClues()).clueCounts;
 
 		const requirementResults = this.requirements.map(async i => ({
 			result: await this.checkSingleRequirement(i, {
 				user,
-				userStats,
 				minigames,
 				stashUnits,
 				stats,
 				roboChimpUser,
-				...cluesDone
+				clueCounts
 			}),
 			requirement: i
 		}));

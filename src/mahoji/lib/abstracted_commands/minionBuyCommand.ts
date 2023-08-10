@@ -4,6 +4,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { mahojiInformationalButtons } from '../../../lib/constants';
+import { clArrayUpdate } from '../../../lib/handleNewCLItems';
 import { isAtleastThisOld } from '../../../lib/util';
 
 export async function minionBuyCommand(apiUser: User, user: MUser, ironman: boolean): CommandResponse {
@@ -36,6 +37,8 @@ export async function minionBuyCommand(apiUser: User, user: MUser, ironman: bool
 	if (starter) {
 		await user.addItemsToBank({ items: starter, collectionLog: false });
 	}
+	// Ensure user has a userStats row
+	await clArrayUpdate(user, user.cl);
 
 	return {
 		content: `You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.

@@ -66,7 +66,7 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 			isUsersDailyReady(user)
 		]);
 
-	roboChimpSyncData(roboChimpUser, user);
+	roboChimpSyncData(user);
 	await clArrayUpdate(user, user.cl);
 
 	if (!user.user.minion_hasBought) {

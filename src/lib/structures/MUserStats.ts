@@ -1,7 +1,11 @@
 import { UserStats } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
+import { ClueTiers } from '../clues/clueTiers';
+import { ClueBank } from '../minions/types';
+import { prisma } from '../settings/prisma';
 import { ItemBank } from '../types';
+import { getToaKCs } from '../util/smallUtils';
 
 export class MUserStats {
 	userStats: UserStats;
@@ -10,6 +14,52 @@ export class MUserStats {
 	constructor(userStats: UserStats) {
 		this.userStats = userStats;
 		this.baHonourLevel = userStats.honour_level;
+	}
+
+	static async fromID(id: string) {
+		const userStats = await prisma.userStats.upsert({
+			where: {
+				user_id: BigInt(id)
+			},
+			create: {
+				user_id: BigInt(id)
+			},
+			update: {}
+		});
+		return new MUserStats(userStats);
+	}
+
+	get lapsScores() {
+		return this.userStats.laps_scores as ItemBank;
+	}
+
+	getToaKCs() {
+		return getToaKCs(this.userStats.toa_raid_levels_bank);
+	}
+
+	clueScoresFromOpenables(): ClueBank {
+		const clueCounts = {} as ClueBank;
+		for (const tier of ClueTiers) clueCounts[tier.name] = 0;
+
+		for (const [key, val] of Object.entries(this.userStats.openable_scores as ItemBank)) {
+			const clueTier = ClueTiers.find(i => i.id === parseInt(key));
+			if (!clueTier) continue;
+			clueCounts[clueTier.name] += val;
+		}
+
+		return clueCounts;
+	}
+
+	get monsterScores() {
+		return this.userStats.monster_scores as ItemBank;
+	}
+
+	sacrifiedBank() {
+		return new Bank().add(this.userStats.sacrificed_bank as ItemBank);
+	}
+
+	randomEventCompletionsBank() {
+		return this.userStats.random_event_completions_bank as ItemBank;
 	}
 
 	get lootFromZippyBank(): Bank {
@@ -94,9 +144,5 @@ export class MUserStats {
 
 	get doaLoot(): Bank {
 		return new Bank(this.userStats.doa_loot as ItemBank);
-	}
-
-	get lapsScores(): Bank {
-		return new Bank(this.userStats.laps_scores as ItemBank);
 	}
 }

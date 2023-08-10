@@ -1,6 +1,7 @@
 import { exec } from 'node:child_process';
 
 import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
+import type { Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { objectEntries, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
@@ -225,5 +226,24 @@ export function checkRangeGearWeapon(gear: Gear) {
 
 export function removeDiscontinuedItems(arr: number[]) {
 	return arr.filter(i => !discontinuedItems.includes(i));
+}
+
+export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {
+	let entryKC = 0;
+	let normalKC = 0;
+	let expertKC = 0;
+	for (const [levelStr, qty] of Object.entries(toaRaidLevelsBank as ItemBank)) {
+		const level = Number(levelStr);
+		if (level >= 300) {
+			expertKC += qty;
+			continue;
+		}
+		if (level >= 150) {
+			normalKC += qty;
+			continue;
+		}
+		entryKC += qty;
+	}
+	return { entryKC, normalKC, expertKC, totalKC: entryKC + normalKC + expertKC };
 }
 export const alphabeticalSort = (a: string, b: string) => a.localeCompare(b);
