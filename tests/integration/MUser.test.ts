@@ -82,7 +82,9 @@ async function stressTest(userID: string) {
 
 describe('MUser', () => {
 	test('Should pass stress test', async () => {
-		await Promise.all([stressTest('1'), stressTest('2')]);
+		const firstUser = await createTestUser();
+		const secondUser = await createTestUser();
+		await Promise.all([stressTest(firstUser.id), stressTest(secondUser.id)]);
 	});
 
 	test('Should add XP', async () => {
@@ -121,5 +123,23 @@ describe('MUser', () => {
 		expect(user.skillsAsLevels.attack).toEqual(50);
 		expect(user.skillsAsXP.agility).toEqual(convertLVLtoXP(50));
 		expect(user.skillsAsXP.attack).toEqual(convertLVLtoXP(50));
+	});
+
+	test('addItemsToCollectionLog', async () => {
+		const user = await createTestUser();
+		const loot = new Bank().add('Coal', 73);
+		{
+			const { newCL, itemsAdded, previousCL } = await user.addItemsToCollectionLog(loot);
+			expect(newCL.equals(loot)).toEqual(true);
+			expect(previousCL.equals(new Bank())).toEqual(true);
+			expect(itemsAdded).toEqual(loot);
+		}
+
+		{
+			const { newCL, itemsAdded, previousCL } = await user.addItemsToCollectionLog(loot);
+			expect(newCL.equals(loot.clone().multiply(2))).toEqual(true);
+			expect(previousCL.equals(loot)).toEqual(true);
+			expect(itemsAdded).toEqual(loot);
+		}
 	});
 });
