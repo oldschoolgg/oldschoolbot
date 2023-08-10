@@ -220,7 +220,9 @@ export class Requirements {
 			const missingMonsterNames = [];
 			for (const [id, amount] of Object.entries(requirement.kcRequirement)) {
 				if (!kcs[id] || kcs[id] < amount) {
-					missingMonsterNames.push(`${amount}x ${effectiveMonsters.find(m => m.id === parseInt(id))!.name}`);
+					missingMonsterNames.push(
+						`${amount}x ${effectiveMonsters.find(m => m.id === parseInt(id))?.name ?? id}`
+					);
 				}
 			}
 			if (missingMonsterNames.length > 0) {
