@@ -93,11 +93,6 @@ export class TestUser extends MUserClass {
 	}
 }
 
-interface UserOptions {
-	ownedBank?: Bank;
-	id?: string;
-}
-
 export async function createTestUser(id = cryptoRand(1_000_000_000, 5_000_000_000).toString(), bank?: Bank) {
 	const user = await prisma.user.upsert({
 		create: {
@@ -112,22 +107,18 @@ export async function createTestUser(id = cryptoRand(1_000_000_000, 5_000_000_00
 		}
 	});
 
-	return new TestUser(user);
-}
+	try {
+		await prisma.userStats.create({
+			data: {
+				user_id: BigInt(user.id)
+			}
+		});
+	} catch (err) {
+		console.error(`Failed to make userStats for ${user.id}`);
+		throw new Error(`Failed to make userStats for ${user.id}`);
+	}
 
-export async function integrationCmdRun({
-	command,
-	options = {},
-	userOptions
-}: {
-	command: OSBMahojiCommand;
-	options?: object;
-	userOptions?: UserOptions;
-}) {
-	const userId = userOptions?.id ?? randomSnowflake();
-	await createTestUser(userId, userOptions?.ownedBank);
-	const result = await command.run({ ...commandRunOptions(userId), options });
-	return result;
+	return new TestUser(user);
 }
 
 class TestClient {

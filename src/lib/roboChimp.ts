@@ -36,14 +36,20 @@ const totalXPKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_xp' : 'bso_total_
 export async function roboChimpSyncData(user: MUser) {
 	const [totalClItems, clItems] = getTotalCl(user, 'collection', await fetchStatsForCL(user));
 
-	const newUser = await roboChimpClient.user.update({
+	const updateObj = {
+		[clKey]: round(calcWhatPercent(clItems, totalClItems), 2),
+		[levelKey]: user.totalLevel,
+		[totalXPKey]: sumArr(Object.values(user.skillsAsXP))
+	} as const;
+
+	const newUser = await roboChimpClient.user.upsert({
 		where: {
 			id: BigInt(user.id)
 		},
-		data: {
-			[clKey]: round(calcWhatPercent(clItems, totalClItems), 2),
-			[levelKey]: user.totalLevel,
-			[totalXPKey]: sumArr(Object.values(user.skillsAsXP))
+		update: updateObj,
+		create: {
+			id: BigInt(user.id),
+			...updateObj
 		}
 	});
 

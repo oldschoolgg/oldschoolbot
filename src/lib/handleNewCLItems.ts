@@ -31,20 +31,18 @@ export async function clArrayUpdate(user: MUser, newCL: Bank) {
 		cl_array_length: newCLArray.length
 	} as const;
 
-	await prisma.$transaction([
-		prisma.userStats.upsert({
-			where: {
-				user_id: id
-			},
-			create: {
-				user_id: id,
-				...updateObj
-			},
-			update: {
-				...updateObj
-			}
-		})
-	]);
+	await prisma.userStats.upsert({
+		where: {
+			user_id: id
+		},
+		create: {
+			user_id: id,
+			...updateObj
+		},
+		update: {
+			...updateObj
+		}
+	});
 
 	return {
 		newCLArray
@@ -107,8 +105,6 @@ export async function handleNewCLItems({
 	const newlyCompletedCLs = clsWithTheseItems.filter(cl => {
 		return cl.items.some(item => !previousCL.has(item)) && cl.items.every(item => newCL.has(item));
 	});
-
-	if (newlyCompletedCLs.length === 0) return;
 
 	for (const finishedCL of newlyCompletedCLs) {
 		const kcString = finishedCL.fmtProg

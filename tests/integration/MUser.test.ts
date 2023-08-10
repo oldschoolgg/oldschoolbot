@@ -82,7 +82,9 @@ async function stressTest(userID: string) {
 
 describe('MUser', () => {
 	test('Should pass stress test', async () => {
-		await Promise.all([stressTest('1'), stressTest('2')]);
+		const firstUser = await createTestUser();
+		const secondUser = await createTestUser();
+		await Promise.all([stressTest(firstUser.id), stressTest(secondUser.id)]);
 	});
 
 	test('Should add XP', async () => {
