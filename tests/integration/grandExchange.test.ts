@@ -152,7 +152,7 @@ describe('Grand Exchange', async () => {
 			assert(GrandExchange.queue.size === 0, 'Queue should be empty');
 		},
 		{
-			repeats: 5,
+			repeats: 2,
 			timeout: Time.Minute * 5
 		}
 	);

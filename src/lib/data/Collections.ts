@@ -1064,12 +1064,12 @@ export const overallPlusItems = [
 	)
 ];
 
-export function calcCLDetails(user: MUser) {
-	const clItems = user.cl.filter(i => allCLItemsFiltered.includes(i.id));
+export function calcCLDetails(user: MUser | Bank) {
+	const clItems = (user instanceof Bank ? user : user.cl).filter(i => allCLItemsFiltered.includes(i.id));
 	const debugBank = new Bank(clItems);
 	const owned = clItems.filter(i => allCLItemsFiltered.includes(i.id));
 	const notOwned = shuffleRandom(
-		Number(user.id),
+		Number(user instanceof Bank ? '1' : user.id),
 		allCLItemsFiltered.filter(i => !clItems.has(i))
 	).slice(0, 10);
 	return {

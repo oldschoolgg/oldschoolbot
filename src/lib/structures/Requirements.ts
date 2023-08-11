@@ -8,6 +8,7 @@ import { BitField, BitFieldData, BOT_TYPE } from '../constants';
 import { diariesObject, DiaryTierName, userhasDiaryTier } from '../diaries';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { UserKourendFavour } from '../minions/data/kourendFavour';
+import { ClueBank } from '../minions/types';
 import { RobochimpUser, roboChimpUserFetch } from '../roboChimp';
 import { MinigameName } from '../settings/minigames';
 import Agility from '../skilling/skills/agility';
@@ -25,6 +26,7 @@ interface RequirementUserArgs {
 	minigames: Minigame;
 	stats: MUserStats;
 	roboChimpUser: RobochimpUser;
+	clueCounts: ClueBank;
 }
 
 type ManualHasFunction = (
@@ -167,7 +169,7 @@ export class Requirements {
 		requirement: Requirement,
 		userArgs: RequirementUserArgs
 	): Promise<RequirementFailure[]> {
-		const { user, stats, minigames } = userArgs;
+		const { user, stats, minigames, clueCounts } = userArgs;
 		const results: RequirementFailure[] = [];
 
 		if ('has' in requirement) {
@@ -218,7 +220,9 @@ export class Requirements {
 			const missingMonsterNames = [];
 			for (const [id, amount] of Object.entries(requirement.kcRequirement)) {
 				if (!kcs[id] || kcs[id] < amount) {
-					missingMonsterNames.push(`${amount}x ${effectiveMonsters.find(m => m.id === parseInt(id))!.name}`);
+					missingMonsterNames.push(
+						`${amount}x ${effectiveMonsters.find(m => m.id === parseInt(id))?.name ?? id}`
+					);
 				}
 			}
 			if (missingMonsterNames.length > 0) {
@@ -314,10 +318,6 @@ export class Requirements {
 		}
 
 		if ('clueCompletions' in requirement) {
-			const clueCounts =
-				BOT_TYPE === 'OSB'
-					? userArgs.stats.clueScoresFromOpenables()
-					: (await user.calcActualClues()).clueCounts;
 			for (const [key, val] of objectEntries(requirement.clueCompletions)) {
 				if (!val || clueCounts[key] < val) {
 					results.push({
@@ -346,7 +346,8 @@ export class Requirements {
 		const stashUnits = await getParsedStashUnits(user.id);
 		const stats = await MUserStats.fromID(user.id);
 		const roboChimpUser = await roboChimpUserFetch(user.id);
-		const cluesDone = await user.calcActualClues();
+		const clueCounts =
+			BOT_TYPE === 'OSB' ? stats.clueScoresFromOpenables() : (await user.calcActualClues()).clueCounts;
 
 		const requirementResults = this.requirements.map(async i => ({
 			result: await this.checkSingleRequirement(i, {
@@ -355,7 +356,7 @@ export class Requirements {
 				stashUnits,
 				stats,
 				roboChimpUser,
-				...cluesDone
+				clueCounts
 			}),
 			requirement: i
 		}));
