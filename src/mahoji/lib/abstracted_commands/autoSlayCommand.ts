@@ -9,6 +9,7 @@ import { runCommand } from '../../../lib/settings/settings';
 import { autoslayModes, AutoslayOptionsEnum } from '../../../lib/slayer/constants';
 import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../../lib/slayer/slayerUtil';
 import { hasSkillReqs, stringMatches } from '../../../lib/util';
+import { interactionReply } from '../../../lib/util/interactionReply';
 import { slayerNewTaskCommand } from './slayerTaskCommand';
 
 interface AutoslayLink {
@@ -370,7 +371,10 @@ export async function autoSlayCommand({
 			});
 			return;
 		}
-		interaction.reply({ content: "Can't find any monsters you have the requirements to kill!", ephemeral: true });
+		interactionReply(interaction, {
+			content: "Can't find any monsters you have the requirements to kill!",
+			ephemeral: true
+		});
 		return;
 	}
 	await runCommand({
