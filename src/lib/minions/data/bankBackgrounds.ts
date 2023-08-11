@@ -699,6 +699,13 @@ const backgroundImages: BankBackground[] = [
 		owners: ['235883747658956802'],
 		purpleImage: null,
 		hasPurple: true
+	},
+	{
+		id: 502,
+		name: 'Kiddo CustomBG',
+		image: null,
+		available: false,
+		owners: ['775241966677131306']
 	}
 ];
 
