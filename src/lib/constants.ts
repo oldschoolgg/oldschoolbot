@@ -787,3 +787,10 @@ export const discontinuedItems = resolveItems([
 	...customItems.filter(i => Items.get(i)?.customItemData?.isDiscontinued)
 ]);
 export const demonBaneWeapons = resolveItems(['Silverlight', 'Darklight', 'Arclight']);
+export function herbertDroprate(herbloreXP: number, itemLevel: number) {
+	let petChance = Math.ceil(10_000_000 / (itemLevel * (itemLevel / 5)));
+	if (herbloreXP >= MAX_XP) {
+		petChance = Math.ceil(petChance / 2);
+	}
+	return petChance;
+}

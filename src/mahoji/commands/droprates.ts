@@ -3,10 +3,11 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
-import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { herbertDroprate, MAX_XP, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
+import Potions from '../../lib/skilling/skills/herblore/mixables/potions';
 import { calcBabyYagaHouseDroprate, formatDuration, stringMatches } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -39,6 +40,22 @@ const droprates = [
 			}
 
 			return makeTable(['Name', 'Kills For Helm', 'Mask Droprate'], rows);
+		}
+	},
+	{
+		name: 'Herbert (pet)',
+		output: () => {
+			const rows = [];
+
+			for (const pot of Potions) {
+				let dropratePerMinute = herbertDroprate(1, pot.level);
+				let dropratePerMinuteAtMax = herbertDroprate(MAX_XP, pot.level);
+				rows.push([pot.name, 1 / (60 / dropratePerMinute), 1 / (60 / dropratePerMinuteAtMax)]);
+			}
+
+			return `Herbert is rolled per minute of your trip, and the droprate halves (becomes twice as common) when you have the max (${MAX_XP.toLocaleString()}) Herblore XP.
+			
+${makeTable(['Potion Name', 'Droprate per hour', 'Droprate per hour at max xp'], rows)}`;
 		}
 	}
 ];
@@ -77,7 +94,7 @@ export const dropRatesCommand: OSBMahojiCommand = {
 			required: true,
 			autocomplete: async (val: string) => {
 				return droprates
-					.filter(i => (!val ? true : stringMatches(i.name, val)))
+					.filter(i => (!val ? true : i.name.toLowerCase().includes(val.toLowerCase())))
 					.map(i => ({ name: i.name, value: i.name }));
 			}
 		}

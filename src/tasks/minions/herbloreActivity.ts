@@ -1,7 +1,7 @@
 import { roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MAX_XP } from '../../lib/constants';
+import { herbertDroprate } from '../../lib/constants';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
@@ -16,10 +16,7 @@ export const herbloreTask: MinionTask = {
 
 		const mixableItem = Herblore.Mixables.find(mixable => mixable.id === mixableID)!;
 
-		let petChance = Math.ceil(10_000_000 / (mixableItem.level * (mixableItem.level / 5)));
-		if (user.skillsAsXP.herblore >= MAX_XP) {
-			petChance = Math.ceil(petChance / 2);
-		}
+		const petChance = herbertDroprate(user.skillsAsXP.herblore, mixableItem.level);
 
 		const isMixingPotion = mixableItem.xp !== 0 && !mixableItem.wesley && !mixableItem.zahur;
 		const hasHerbMasterCape = user.hasEquipped('Herblore master cape');
