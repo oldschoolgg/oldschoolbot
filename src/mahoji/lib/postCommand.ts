@@ -26,7 +26,7 @@ export async function postCommand({
 	inhibited: boolean;
 }): Promise<string | undefined> {
 	if (!busyImmuneCommands.includes(abstractCommand.name)) {
-		setTimeout(() => modifyBusyCounter(userID, 1), 1000);
+		setTimeout(() => modifyBusyCounter(userID, -1), 1000);
 	}
 	debugLog('Postcommand', {
 		type: 'RUN_COMMAND',
