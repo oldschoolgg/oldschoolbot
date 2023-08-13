@@ -11,6 +11,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { formatDuration, itemNameFromID, makeComponents, toKMB } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { ownedItemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -215,7 +216,7 @@ export const geCommand: OSBMahojiCommand = {
 		stats?: {};
 		price?: { item: string };
 	}>) => {
-		await interaction.deferReply();
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 
 		if (options.price) {
@@ -226,7 +227,9 @@ export const geCommand: OSBMahojiCommand = {
 			return `The current market price of ${itemNameFromID(data.itemID)!} is ${toKMB(
 				data.guidePrice
 			)} (${data.guidePrice.toLocaleString()}) GP.
-			
+
+**Recent price:** ${toKMB(data.averagePriceLast100)} (${data.averagePriceLast100.toLocaleString()}) GP.
+
 This price is a guide only, calculated from average sale prices, it may not be accurate, it may change, or not reflect the true market price.`;
 		}
 

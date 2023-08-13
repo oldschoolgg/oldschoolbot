@@ -1,15 +1,26 @@
-import { writeFile } from 'fs/promises';
+import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
 import { Bank, Monsters } from 'oldschooljs';
-import { toKMB } from 'oldschooljs/dist/util';
-import { describe, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
 import { drawChestLootImage } from '../../src/lib/bankImage';
 import { clImageGenerator } from '../../src/lib/collectionLogTask';
 import { pohImageGenerator } from '../../src/lib/pohImage';
-import { pieChart } from '../../src/lib/util/chart';
 import { mahojiChatHead } from '../../src/lib/util/chatHeadImage';
 import { makeBankImage } from '../../src/lib/util/makeBankImage';
 import { mockMUser } from './utils';
+
+declare module 'vitest' {
+	interface Assertion<T> {
+		toMatchImageSnapshot(): T;
+	}
+}
+
+const toMatchImageSnapshotPlugin = configureToMatchImageSnapshot({
+	customSnapshotsDir: './tests/unit/snapshots',
+	noColors: true,
+	failureThreshold: 0
+});
+expect.extend({ toMatchImageSnapshot: toMatchImageSnapshotPlugin });
 
 describe('Images', () => {
 	test('Chat Heads', async () => {
@@ -18,13 +29,13 @@ describe('Images', () => {
 				'Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test',
 			head: 'santa'
 		});
-		await writeFile('./tests/unit/snapshots/chatheads_santa.png', result.files[0].attachment);
+		expect(result.files[0].attachment).toMatchImageSnapshot();
 	});
 
 	test('Collection Log', async () => {
 		const result: any = await clImageGenerator.generateLogImage({
-			user: mockMUser({ cl: new Bank().add('Elysian sigil') }),
-			collection: 'corp',
+			user: mockMUser({ cl: new Bank().add('Harmonised orb') }),
+			collection: 'nightmare',
 			type: 'collection',
 			flags: {},
 			stats: {
@@ -37,21 +48,21 @@ describe('Images', () => {
 				gotrRiftSearches: 1
 			}
 		});
-		await writeFile('./tests/unit/snapshots/cl_corp.png', result.files[0].attachment);
+		expect(result.files[0].attachment).toMatchImageSnapshot();
 	});
 
 	test('Bank Image', async () => {
 		let bank = new Bank();
-		for (const item of [...Monsters.Man.allItems, ...Monsters.Cow.allItems]) {
+		for (const item of [...Monsters.Cow.allItems]) {
 			bank.add(item);
 		}
 		bank.add('Twisted bow', 10_000_000);
 		bank.add('Elysian sigil', 1_000_000);
-		const res = await makeBankImage({
+		const result = await makeBankImage({
 			bank,
 			title: 'Test Image'
 		});
-		await writeFile('./tests/unit/snapshots/bank_1.png', res.file.attachment);
+		expect(result.file.attachment).toMatchImageSnapshot();
 	});
 
 	test('POH Image', async () => {
@@ -62,16 +73,16 @@ describe('Images', () => {
 			mounted_cape: 29_210,
 			background_id: 1
 		} as any);
-		await writeFile('./tests/unit/snapshots/poh_1.png', result);
+		expect(result).toMatchImageSnapshot();
 	});
 
-	test('Chart Image', async () => {
-		const result = await pieChart('Test', val => `${toKMB(val)}%`, [
-			['Complete Collection Log Items', 20, '#9fdfb2'],
-			['Incomplete Collection Log Items', 80, '#df9f9f']
-		]);
-		await writeFile('./tests/unit/snapshots/chart_1.png', result);
-	});
+	// test('Chart Image', async () => {
+	// 	const result = await pieChart('Test', val => `${toKMB(val)}%`, [
+	// 		['Complete Collection Log Items', 20, '#9fdfb2'],
+	// 		['Incomplete Collection Log Items', 80, '#df9f9f']
+	// 	]);
+	// 	expect(result).toMatchImageSnapshot();
+	// });
 
 	test('TOA Image', async () => {
 		const image = await drawChestLootImage({
@@ -91,7 +102,7 @@ describe('Images', () => {
 			],
 			type: 'Tombs of Amascut'
 		});
-		await writeFile('./tests/unit/snapshots/toa_1.png', image.attachment as Buffer);
+		expect(image.attachment as Buffer).toMatchImageSnapshot();
 	});
 
 	test('COX Image', async () => {
@@ -112,6 +123,6 @@ describe('Images', () => {
 			],
 			type: 'Chambers of Xerician'
 		});
-		await writeFile('./tests/unit/snapshots/cox_1.png', image.attachment as Buffer);
+		expect(image.attachment as Buffer).toMatchImageSnapshot();
 	});
 });

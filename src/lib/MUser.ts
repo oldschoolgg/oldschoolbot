@@ -8,17 +8,19 @@ import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
+import { ClueTiers } from './clues/clueTiers';
 import { badges, BitField, Emoji, projectiles, usernameCache } from './constants';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear/types';
+import { handleNewCLItems } from './handleNewCLItems';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
 import { defaultFarmingContract } from './minions/farming';
 import { FarmingContract } from './minions/farming/types';
 import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
-import { AddXpParams, BlowpipeData } from './minions/types';
+import { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
 import { getUsersPerkTier, syncPerkTierOfUser } from './perkTiers';
 import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
 import { prisma } from './settings/prisma';
@@ -31,7 +33,7 @@ import { ItemBank, Skills } from './types';
 import { addItemToBank, assert, convertXPtoLVL, itemNameFromID, percentChance } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
-import getOSItem from './util/getOSItem';
+import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
@@ -248,12 +250,60 @@ export class MUserClass {
 		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
 	}
 
+	attackClass(): 'range' | 'mage' | 'melee' {
+		const styles = this.getAttackStyles();
+		if (styles.includes(SkillsEnum.Ranged)) return 'range';
+		if (styles.includes(SkillsEnum.Magic)) return 'mage';
+		return 'melee';
+	}
+
 	getAttackStyles(): AttackStyles[] {
 		const styles = this.user.attack_style;
 		if (styles.length === 0) {
 			return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
 		}
 		return styles as AttackStyles[];
+	}
+
+	async calcActualClues() {
+		const result: { id: number; qty: number }[] =
+			await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int) AS qty
+FROM activity
+WHERE type = 'ClueCompletion'
+AND user_id = '${this.id}'::bigint
+AND data->>'clueID' IS NOT NULL
+AND completed = true
+GROUP BY data->>'clueID';`);
+		const casketsCompleted = new Bank();
+		for (const res of result) {
+			const item = getItem(res.id);
+			if (!item) continue;
+			casketsCompleted.add(item.id, res.qty);
+		}
+		const stats = await this.fetchStats({ openable_scores: true });
+		const opens = new Bank(stats.openable_scores as ItemBank);
+
+		// Actual clues are only ones that you have: received in your cl, completed in trips, and opened.
+		const actualClues = new Bank();
+
+		for (const [item, qtyCompleted] of casketsCompleted.items()) {
+			const clueTier = ClueTiers.find(i => i.id === item.id)!;
+			actualClues.add(
+				clueTier.scrollID,
+				Math.min(qtyCompleted, this.cl.amount(clueTier.scrollID), opens.amount(clueTier.id))
+			);
+		}
+
+		const clueCounts = {} as ClueBank;
+
+		for (const tier of ClueTiers) clueCounts[tier.name] = 0;
+
+		for (const [item, qty] of actualClues.items()) {
+			const clueTier = ClueTiers.find(i => i.scrollID === item.id)!;
+			clueCounts[clueTier.name] = qty;
+		}
+
+		return { actualCluesBank: actualClues, clueCounts };
 	}
 
 	async incrementKC(monsterID: number, amountToAdd = 1) {
@@ -430,12 +480,18 @@ export class MUserClass {
 	}
 
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
+		const previousCL = new Bank(this.cl.bank);
 		const updates = this.calculateAddItemsToCLUpdates({
 			items: itemsToAdd
 		});
-		const { newUser } = await mahojiUserSettingsUpdate(this.id, updates);
-		this.user = newUser;
-		this.updateProperties();
+		await this.update(updates);
+		const newCL = this.cl;
+		await handleNewCLItems({ itemsAdded: itemsToAdd, user: this, newCL: this.cl, previousCL });
+		return {
+			previousCL,
+			newCL,
+			itemsAdded: itemsToAdd
+		};
 	}
 
 	async specialRemoveItems(bankToRemove: Bank) {

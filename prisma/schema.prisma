@@ -402,6 +402,8 @@ model User {
   zeal_tokens          Int @default(0)
   slayer_points        Int @default(0) @map("slayer.points")
 
+  completed_ca_task_ids Int[]
+
   // Migrate
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree Json? @map("farmingPatches.fruit tree") @db.Json
@@ -610,6 +612,7 @@ enum economy_transaction_type {
   trade
   giveaway
   duel
+  gri
 }
 
 model EconomyTransaction {

@@ -337,7 +337,7 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy
 };
 
-export const MAX_QP = 293;
+export const MAX_QP = 298;
 export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
@@ -448,6 +448,7 @@ export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 export const UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL = ['agility', 'thieving', 'agility+thieving'] as const;
 export type UnderwaterAgilityThievingTrainingSkill = (typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL)[number];
 
+export const busyImmuneCommands = ['admin', 'rp'];
 export const usernameCache = new Map<string, string>();
 export const badgesCache = new Map<string, string>();
 export const minionBuyButton = new ButtonBuilder()
@@ -520,3 +521,4 @@ export const globalConfig = globalConfigSchema.parse({
 });
 
 export const ONE_TRILLION = 1_000_000_000_000;
+export const demonBaneWeapons = resolveItems(['Silverlight', 'Darklight', 'Arclight']);

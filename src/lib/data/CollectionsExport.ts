@@ -2233,7 +2233,7 @@ export const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem("Deadman's cape"), cost: 160 },
 	{ item: getOSItem('Swift blade'), cost: 350 },
 	{ item: getOSItem('Guthixian icon'), cost: 500 },
-	{ item: getOSItem('Trouver parchment'), cost: 30 },
+	{ item: getOSItem('Trouver parchment'), cost: 18 },
 	{ item: getOSItem('Wilderness crabs teleport'), cost: 1 },
 	{ item: getOSItem('Blighted bind sack'), quantity: 300, cost: 1 },
 	{ item: getOSItem('Blighted snare sack'), quantity: 150, cost: 1 },

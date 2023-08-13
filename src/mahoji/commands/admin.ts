@@ -403,6 +403,38 @@ The next buy limit reset is at: ${buyLimitInterval.nextResetStr}, it resets ever
 				]
 			};
 		}
+	},
+	{
+		name: 'Buy GP Sinks',
+		run: async () => {
+			const result = await prisma.$queryRawUnsafe<{ item_id: string; total_gp_spent: number }[]>(`SELECT
+  key AS item_id,
+  sum((cost_gp / total_items) * value::integer) AS total_gp_spent
+FROM
+  buy_command_transaction,
+  json_each_text(loot_bank),
+  (SELECT id, sum(value::integer) as total_items FROM buy_command_transaction, json_each_text(loot_bank) GROUP BY id) subquery
+WHERE
+  buy_command_transaction.id = subquery.id
+GROUP BY
+  key
+ORDER BY
+  total_gp_spent DESC
+LIMIT
+  20;
+`);
+
+			return {
+				content: result
+					.map(
+						(row, index) =>
+							`${index + 1}. ${
+								getOSItem(Number(row.item_id)).name
+							} - ${row.total_gp_spent.toLocaleString()} GP`
+					)
+					.join('\n')
+			};
+		}
 	}
 ];
 
@@ -638,8 +670,10 @@ export const adminCommand: OSBMahojiCommand = {
 					name: 'add',
 					description: 'The bitfield to add',
 					required: false,
-					autocomplete: async () => {
-						return Object.entries(BitFieldData).map(i => ({ name: i[1].name, value: i[0] }));
+					autocomplete: async value => {
+						return Object.entries(BitFieldData)
+							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({ name: i[1].name, value: i[0] }));
 					}
 				},
 				{
@@ -647,8 +681,10 @@ export const adminCommand: OSBMahojiCommand = {
 					name: 'remove',
 					description: 'The bitfield to remove',
 					required: false,
-					autocomplete: async () => {
-						return Object.entries(BitFieldData).map(i => ({ name: i[1].name, value: i[0] }));
+					autocomplete: async value => {
+						return Object.entries(BitFieldData)
+							.filter(bf => (!value ? true : bf[1].name.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({ name: i[1].name, value: i[0] }));
 					}
 				}
 			]

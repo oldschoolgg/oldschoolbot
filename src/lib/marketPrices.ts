@@ -13,14 +13,15 @@ interface MarketPriceData {
 	avgSalePriceWithoutOutliers: number;
 	itemID: number;
 	guidePrice: number;
+	averagePriceLast100: number;
 }
 
 export const marketPricemap = new Map<number, MarketPriceData>();
 
 export const cacheGEPrices = async () => {
-	// Fetch all sell transactions from the past two weeks.
+	// Fetch all sell transactions from the past 10 days.
 	const twoWeeksAgo = new Date();
-	twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+	twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 10);
 
 	const rawTransactions = await prisma.gETransaction.findMany({
 		where: {
@@ -69,6 +70,11 @@ export const cacheGEPrices = async () => {
 		const avgSalePriceWithoutOutliers = ss.mean(filteredPrices);
 		const guidePrice = Math.round((medianSalePrice + avgSalePriceWithoutOutliers) / 2);
 
+		// Sort transactions by date (newest to oldest)
+		const sortedTransactions = _.orderBy(transactions, 'created_at', 'desc');
+		const latest100Transactions = sortedTransactions.slice(0, 100);
+		const averagePriceLast100 = ss.mean(latest100Transactions.map(t => Number(t.price_per_item_before_tax)));
+
 		const data = {
 			totalSold: _.sumBy(transactions, 'quantity_bought'),
 			transactionCount: transactions.length,
@@ -78,7 +84,8 @@ export const cacheGEPrices = async () => {
 			medianSalePrice,
 			avgSalePriceWithoutOutliers,
 			itemID: transactions[0].sell_listing.item_id,
-			guidePrice
+			guidePrice,
+			averagePriceLast100
 		};
 		marketPricemap.set(data.itemID, data);
 	});

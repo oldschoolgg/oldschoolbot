@@ -7,6 +7,7 @@ import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farming
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
+import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
@@ -33,10 +34,18 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'ClueCompletion'
 ];
 
-const tripFinishEffects: {
+interface TripFinishEffectOptions {
+	data: ActivityTaskOptions;
+	user: MUser;
+	loot: Bank | null;
+	messages: string[];
+}
+export interface TripFinishEffect {
 	name: string;
-	fn: (options: { data: ActivityTaskOptions; user: MUser; loot: Bank | null; messages: string[] }) => unknown;
-}[] = [
+	fn: (options: TripFinishEffectOptions) => unknown;
+}
+
+const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Track GP Analytics',
 		fn: ({ data, loot }) => {
@@ -71,6 +80,10 @@ const tripFinishEffects: {
 		fn: async ({ data, messages, user }) => {
 			await triggerRandomEvent(user, data.type, data.duration, messages);
 		}
+	},
+	{
+		name: 'Combat Achievements',
+		fn: combatAchievementTripEffect
 	}
 ];
 
