@@ -153,8 +153,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill the Corrupted Hunllef without making an egniol potion within the Corrupted Gauntlet.',
 		type: 'restriction',
 		rng: {
-			chancePerKill: 33,
-			hasChance: data => data.type === 'TheatreOfBlood' && (data as TheatreOfBloodTaskOptions).hardMode
+			chancePerKill: 12,
+			hasChance: data => data.type === 'Gauntlet' && (data as GauntletOptions).corrupted
 		}
 	},
 	{
@@ -164,7 +164,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'kill_count',
 		requirements: new Requirements().add({
 			minigames: {
-				corrupted_gauntlet: 150
+				corrupted_gauntlet: 50
 			}
 		})
 	},
@@ -268,7 +268,9 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		rng: {
 			chancePerKill: 1,
-			hasChance: data => data.type === 'Nex' && (data as NexTaskOptions).users.length <= 2
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.Kreearra.id)(data) &&
+				['Black salamander', 'Red salamander', 'Orange salamander'].some(sal => user.hasEquipped(sal))
 		}
 	},
 	{
@@ -338,7 +340,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		rng: {
 			chancePerKill: 33,
-			hasChance: isCertainMonsterTrip(Monsters.PhantomMuspah.id)
+			hasChance: isCertainMonsterTrip(PHOSANI_NIGHTMARE_ID)
 		}
 	},
 	{
