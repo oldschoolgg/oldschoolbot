@@ -268,7 +268,9 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		rng: {
 			chancePerKill: 1,
-			hasChance: data => data.type === 'Nex' && (data as NexTaskOptions).users.length <= 2
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.Kreearra.id)(data) &&
+				['Black salamander', 'Red salamander', 'Orange salamander'].some(sal => user.hasEquipped(sal))
 		}
 	},
 	{
