@@ -3,6 +3,7 @@ import { XpGainSource } from '@prisma/client';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
+import { QuestID } from '../../mahoji/lib/abstracted_commands/questCommand';
 import { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
@@ -116,6 +117,7 @@ export interface KillableMonster {
 		gearSetup: GearSetupType;
 		items: { boostPercent: number; itemID: number }[];
 	}[];
+	requiredQuests?: QuestID[];
 }
 /*
  * Monsters will have an array of Consumables

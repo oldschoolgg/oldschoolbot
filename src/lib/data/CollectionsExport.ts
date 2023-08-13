@@ -2266,7 +2266,7 @@ export const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem('Paddewwa teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Senntisten teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Annakarl teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Carrallangar teleport'), quantity: 2, cost: 1 },
+	{ item: getOSItem('Carrallanger teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Dareeyak teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Ghorrock teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Kharyrll teleport'), quantity: 2, cost: 1 },
@@ -2295,4 +2295,15 @@ export const NexCL = resolveItems([
 	'Torva platebody (damaged)',
 	'Torva platelegs (damaged)',
 	'Nihil shard'
+]);
+
+export const dukeSucellusCL = resolveItems([
+	'Baron',
+	'Eye of the duke',
+	'Virtus mask',
+	'Virtus robe top',
+	'Virtus robe bottom',
+	'Frozen tablet',
+	'Chromium ingot',
+	"Awakener's orb"
 ]);

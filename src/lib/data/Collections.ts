@@ -24,7 +24,7 @@ import { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
 import { fetchStatsForCL, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
-import { shuffleRandom } from '../util/smallUtils';
+import { itemNameFromID, shuffleRandom } from '../util/smallUtils';
 import {
 	abyssalSireCL,
 	aerialFishingCL,
@@ -1367,3 +1367,11 @@ export function isCLItem(item: Item | number | [Item, number]): boolean {
 	if (Array.isArray(item)) return isCLItem(item[0]);
 	return allCLItemsFiltered.includes(isObject(item) ? item.id : item);
 }
+
+export const bossCLItems = Object.values({
+	...allCollectionLogs['Bosses'].activities,
+	...allCollectionLogs['Raids'].activities
+})
+	.map(i => i.items)
+	.flat();
+console.log(bossCLItems.map(itemNameFromID));

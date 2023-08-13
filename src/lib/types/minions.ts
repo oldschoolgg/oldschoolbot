@@ -389,6 +389,9 @@ export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
 	shadeID: string;
 	logID: number;
 }
+export interface SpecificQuestOptions extends ActivityTaskOptions {
+	questID: number;
+}
 
 export type ActivityTaskData =
 	| ActivityTaskOptions

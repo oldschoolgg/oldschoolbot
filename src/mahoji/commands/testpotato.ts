@@ -1,3 +1,4 @@
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import { Prisma, xp_gains_skill_enum } from '@prisma/client';
 import { noOp, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -6,7 +7,7 @@ import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
 import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
-import { BitField, MAX_INT_JAVA, MAX_QP } from '../../lib/constants';
+import { BitField, MAX_INT_JAVA } from '../../lib/constants';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
@@ -32,14 +33,15 @@ import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
+import { MAX_QP } from '../lib/abstracted_commands/questCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 
-async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
+async function giveMaxStats(user: MUser) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
-		updates[`skills_${skill}`] = convertLVLtoXP(level);
+		updates[`skills_${skill}`] = convertLVLtoXP(99);
 	}
 	await user.update({
 		QP: MAX_QP,
@@ -52,8 +54,6 @@ async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
 			Shayzien: 100
 		} as UserKourendFavour as any
 	});
-
-	return `Gave you level ${level} in all stats, and ${qp} QP.`;
 }
 
 async function givePatronLevel(user: MUser, tier: number) {
@@ -210,7 +210,7 @@ const spawnPresets = [
 	['runes', runePreset]
 ] as const;
 
-const thingsToWipe = ['bank', 'combat_achievements', 'cl'] as const;
+const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests'] as const;
 
 export const testPotatoCommand: OSBMahojiCommand | null = production
 	? null
@@ -446,6 +446,21 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'set',
+					description: 'Set something',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'qp',
+							description: 'Set your quest points.',
+							required: false,
+							min_value: 0,
+							max_value: MAX_QP
+						}
+					]
 				}
 			],
 			run: async ({
@@ -463,12 +478,22 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				irontoggle?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
 				wipe?: { thing: (typeof thingsToWipe)[number] };
+				set?: { qp?: number };
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
 				const user = await mUserFetch(userID.toString());
+				if (options.set) {
+					const { qp } = options.set;
+					if (qp) {
+						await user.update({
+							QP: qp
+						});
+						return `Set your QP to ${qp}.`;
+					}
+				}
 				if (options.irontoggle) {
 					const current = user.isIronman;
 					await user.update({
@@ -505,6 +530,17 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							completed_ca_task_ids: []
 						});
 						return 'Reset your combat achievements.';
+					}
+					if (thing === 'quests') {
+						await user.update({
+							finished_quest_ids: [],
+							collectionLogBank: {}
+						});
+						return `Your QP, and completed quests, have been reset. You can set your QP to a certain number using ${mentionCommand(
+							globalClient,
+							'testpotato',
+							'set'
+						)}.`;
 					}
 					return 'Invalid thing to reset.';
 				}

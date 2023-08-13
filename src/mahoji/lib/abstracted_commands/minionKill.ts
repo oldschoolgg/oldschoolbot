@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import { bold, ChatInputCommandInteraction } from 'discord.js';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -70,6 +70,7 @@ import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahoji
 import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
+import { quests } from './questCommand';
 import { revsCommand } from './revsCommand';
 import { temporossCommand } from './temporossCommand';
 import { wintertodtCommand } from './wintertodtCommand';
@@ -118,6 +119,12 @@ const degradeableItemsCanUse: {
 		attackStyle: 'mage',
 		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 40,
 		boost: 3
+	},
+	{
+		item: getOSItem('Scythe of vitur'),
+		attackStyle: 'melee',
+		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 40,
+		boost: 10
 	}
 ];
 
@@ -626,6 +633,15 @@ export async function minionKillCommand(
 			)} to kill ${quantity}x ${
 				monster.name
 			}, and you have ${rangeCheck.ammo.quantity.toLocaleString()}x equipped.`;
+		}
+	}
+
+	if (monster.requiredQuests) {
+		const incompleteQuest = monster.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+		if (incompleteQuest) {
+			return `You need to have completed the ${bold(
+				quests.find(i => i.id === incompleteQuest)!.name
+			)} quest to kill ${monster.name}.`;
 		}
 	}
 
