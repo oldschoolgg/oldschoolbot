@@ -173,7 +173,7 @@ export const sellCommand: OSBMahojiCommand = {
 		}
 
 		let totalPrice = 0;
-		const taxRatePercent = 20;
+		const taxRatePercent = 25;
 
 		const botItemSellData: Prisma.BotItemSellCreateManyInput[] = [];
 
