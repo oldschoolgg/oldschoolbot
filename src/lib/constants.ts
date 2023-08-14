@@ -337,7 +337,7 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy
 };
 
-export const MAX_QP = 298;
+export const MAX_QP = 293;
 export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
