@@ -456,17 +456,19 @@ from bot_item_sell;`);
 			return {
 				files: [
 					new AttachmentBuilder(
-						result
-							.map(
-								(row, index) =>
-									`${index + 1}. ${
-										getOSItem(Number(row.item_id)).name
-									} - ${row.gp.toLocaleString()} GP (${calcWhatPercent(
-										row.gp,
-										totalGPGivenOut[0].total_gp_given_out
-									).toFixed(1)}%)`
-							)
-							.join('\n'),
+						Buffer.from(
+							result
+								.map(
+									(row, index) =>
+										`${index + 1}. ${
+											getOSItem(Number(row.item_id)).name
+										} - ${row.gp.toLocaleString()} GP (${calcWhatPercent(
+											row.gp,
+											totalGPGivenOut[0].total_gp_given_out
+										).toFixed(1)}%)`
+								)
+								.join('\n')
+						),
 						{ name: 'output.txt' }
 					)
 				]
