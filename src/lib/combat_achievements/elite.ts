@@ -168,7 +168,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Receive kill-credit for a Lizardman Shaman without taking damage from any shamans in the room.',
 		rng: {
 			chancePerKill: 20,
-			hasChance: isCertainMonsterTrip(Monsters.LizardmanShaman.id)
+			hasChance: 'Raids'
 		}
 	},
 	{
@@ -560,7 +560,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'stamina',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[Monsters.DemonicGorilla.id]: 10
+				[Monsters.GrotesqueGuardians.id]: 10
 			}
 		})
 	},
@@ -1109,7 +1109,13 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		name: 'Hardcore Raiders',
 		desc: 'Complete the Tombs of Amascut in a group of two or more without anyone dying.',
 		type: 'perfection',
-		notPossible: true
+		rng: {
+			chancePerKill: 15,
+			hasChance: data =>
+				data.type === 'TombsOfAmascut' &&
+				(data as TOAOptions).users.length === 2 &&
+				(data as TOAOptions).wipedRoom === null
+		}
 	},
 	{
 		id: 1105,
@@ -1117,8 +1123,8 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Het room without taking any damage from the light beam and orbs. You must destroy the core after one exposure.',
 		type: 'perfection',
 		rng: {
-			chancePerKill: 10,
-			hasChance: data => data.type === 'TheatreOfBlood'
+			chancePerKill: 15,
+			hasChance: 'TombsOfAmascut'
 		}
 	},
 	{
@@ -1278,7 +1284,10 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		name: 'Team Player',
 		desc: 'Receive imbued tephra from a golem.',
 		type: 'mechanical',
-		notPossible: true
+		rng: {
+			chancePerKill: 1,
+			hasChance: 'Zalcano'
+		}
 	},
 	{
 		id: 1122,

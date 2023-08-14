@@ -8,7 +8,7 @@ import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
 import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions, Message, TextChannel } from 'discord.js';
-import { calcPercentOfNum, noOp, notEmpty, randArrItem, roll, sleep, Time, uniqueArr } from 'e';
+import { calcPercentOfNum, calcWhatPercent, noOp, notEmpty, randArrItem, roll, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -466,6 +466,45 @@ LIMIT
 							} - ${row.total_gp_spent.toLocaleString()} GP`
 					)
 					.join('\n')
+			};
+		}
+	},
+	{
+		name: 'Sell GP Sources',
+		run: async () => {
+			const result = await prisma.$queryRawUnsafe<
+				{ item_id: number; gp: number }[]
+			>(`select item_id, sum(gp_received) as gp
+from bot_item_sell
+group by item_id
+order by gp desc
+limit 80;
+`);
+
+			const totalGPGivenOut = await prisma.$queryRawUnsafe<
+				{ total_gp_given_out: number }[]
+			>(`select sum(gp_received) as total_gp_given_out
+from bot_item_sell;`);
+
+			return {
+				files: [
+					new AttachmentBuilder(
+						Buffer.from(
+							result
+								.map(
+									(row, index) =>
+										`${index + 1}. ${
+											getOSItem(Number(row.item_id)).name
+										} - ${row.gp.toLocaleString()} GP (${calcWhatPercent(
+											row.gp,
+											totalGPGivenOut[0].total_gp_given_out
+										).toFixed(1)}%)`
+								)
+								.join('\n')
+						),
+						{ name: 'output.txt' }
+					)
+				]
 			};
 		}
 	}

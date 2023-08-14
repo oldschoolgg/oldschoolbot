@@ -11,7 +11,7 @@ import { ItemBank, Skills } from '../types';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import { itemNameFromID } from '../util/smallUtils';
-import { chambersOfXericMetamorphPets } from './CollectionsExport';
+import { chambersOfXericMetamorphPets, tobMetamorphPets } from './CollectionsExport';
 import { amrodCreatables } from './creatables/amrod';
 import { armorAndItemPacks } from './creatables/armorPacks';
 import { BsoCreateables } from './creatables/bsoItems';
@@ -219,6 +219,16 @@ const metamorphPetCreatables: Createable[] = chambersOfXericMetamorphPets.map(pe
 	name: itemNameFromID(pet)!,
 	inputItems: {
 		[itemID('Metamorphic dust')]: 1
+	},
+	outputItems: {
+		[pet]: 1
+	}
+}));
+
+const tobMetamorphPetCreatables: Createable[] = tobMetamorphPets.map(pet => ({
+	name: itemNameFromID(pet)!,
+	inputItems: {
+		[itemID('Sanguine dust')]: 1
 	},
 	outputItems: {
 		[pet]: 1
@@ -2248,6 +2258,7 @@ const Createables: Createable[] = [
 	...hunterClothing,
 	...twistedAncestral,
 	...metamorphPetCreatables,
+	...tobMetamorphPetCreatables,
 	...metamorphPets,
 	...slayerCreatables,
 	...capeCreatables,

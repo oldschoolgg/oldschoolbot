@@ -273,7 +273,7 @@ export async function slayerNewTaskCommand({
 	// Special handling for Turael skip
 	if (currentTask && slayerMasterOverride && slayerMaster && slayerMaster.name === 'Turael') {
 		if (slayerMaster.tasks.find(t => t.monster.id === currentTask.monster_id)) {
-			interaction.reply('You cannot skip this task because Turael assigns it.');
+			interactionReply(interaction, 'You cannot skip this task because Turael assigns it.');
 			return;
 		}
 
@@ -300,7 +300,7 @@ export async function slayerNewTaskCommand({
 			)}.${newSlayerTask.messages.length > 0 ? `\n\n${newSlayerTask.messages.join('\n')}` : ''}`;
 
 		if (showButtons) {
-			await returnSuccess(channelID, await mUserFetch(user.id), `${extraContent ?? ''}\n\n${returnMessage}`);
+			await returnSuccess(channelID, user, `${extraContent ?? ''}\n\n${returnMessage}`);
 			await interactionReply(interaction, { content: 'Slayer task assigned.', ephemeral: true });
 			return;
 		}
@@ -333,12 +333,12 @@ export async function slayerNewTaskCommand({
 		resultMessage += `${warningInfo}${baseInfo}`;
 		if (currentTask && !warningInfo) {
 			if (showButtons) {
-				returnSuccess(channelID, await mUserFetch(user.id), resultMessage);
-				interaction.reply({ content: 'Here is your current slayer task', ephemeral: true });
+				returnSuccess(channelID, user, resultMessage);
+				interactionReply(interaction, { content: 'Here is your current slayer task', ephemeral: true });
 				return;
 			}
 		}
-		interaction.reply(resultMessage);
+		interactionReply(interaction, resultMessage);
 		return;
 	}
 
@@ -358,7 +358,7 @@ export async function slayerNewTaskCommand({
 		newSlayerTask.messages.length > 0 ? `\n\n${newSlayerTask.messages.join('\n')}` : ''
 	}`;
 	if (showButtons) {
-		returnSuccess(channelID, await mUserFetch(user.id), resultMessage);
+		returnSuccess(channelID, user, resultMessage);
 		await interactionReply(interaction, { content: 'Slayer task assigned.', ephemeral: true });
 		return;
 	}
@@ -395,12 +395,13 @@ export async function slayerSkipTaskCommand({
 				showButtons: true
 			});
 		}
-		interaction.reply("You don't have an active task!");
+		interactionReply(interaction, "You don't have an active task!");
 		return;
 	}
 
 	if (block && myBlockList.length >= maxBlocks) {
-		interaction.reply(
+		interactionReply(
+			interaction,
 			`You cannot have more than ${maxBlocks} slayer blocks!\n\nUse:\n` +
 				'`st --unblock kalphite`\n to remove a block.\n' +
 				'`st --list` for list of blocked monsters and their IDs.'
@@ -409,7 +410,8 @@ export async function slayerSkipTaskCommand({
 	}
 	let slayerPoints = user.user.slayer_points ?? 0;
 	if (slayerPoints < (block ? 100 : 30)) {
-		interaction.reply(
+		interactionReply(
+			interaction,
 			`You need ${block ? 100 : 30} points to ${block ? 'block' : 'cancel'},` +
 				` you only have: ${slayerPoints.toLocaleString()}`
 		);
@@ -448,7 +450,7 @@ export async function slayerSkipTaskCommand({
 				showButtons: true
 			});
 		}
-		interaction.reply(resultMessage);
+		interactionReply(interaction, resultMessage);
 		return;
 	} catch (e) {
 		logError(e, {

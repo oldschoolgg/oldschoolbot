@@ -19,8 +19,7 @@ import {
 	Message,
 	MessageEditOptions,
 	SelectMenuInteraction,
-	TextChannel,
-	time
+	TextChannel
 } from 'discord.js';
 import {
 	calcWhatPercent,
@@ -651,10 +650,6 @@ export function getAllIDsOfUser(user: MUser) {
 		allAccounts.push(main);
 	}
 	return allAccounts;
-}
-
-export function dateFm(date: Date) {
-	return `${time(date, 'T')} (${time(date, 'R')})`;
 }
 
 export function getInteractionTypeName(type: InteractionType) {

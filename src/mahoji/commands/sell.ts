@@ -177,7 +177,10 @@ export const sellCommand: OSBMahojiCommand = {
 
 		let totalPrice = 0;
 		const hasSkipper = user.usingPet('Skipper') || user.bank.has('Skipper');
-		const taxRatePercent = hasSkipper ? 15 : 25;
+		let taxRatePercent = 25;
+		if (hasSkipper) {
+			taxRatePercent -= 5;
+		}
 
 		const botItemSellData: Prisma.BotItemSellCreateManyInput[] = [];
 
