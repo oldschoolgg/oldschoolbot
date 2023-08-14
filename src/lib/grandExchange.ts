@@ -131,28 +131,28 @@ class GrandExchangeSingleton {
 				{
 					has: () => true,
 					name: 'Base',
-					amount: 2
+					amount: 3
 				},
-				...[100, 250, 1000].map(num => ({
+				...[100, 250, 1000, 2000].map(num => ({
 					has: (user: MUser) => user.totalLevel >= num,
 					name: `${num} Total Level`,
 					amount: 1
 				})),
-				{
+				...[30, 60, 90, 95].map(num => ({
 					has: (_: MUser, robochimpUser: RobochimpUser) =>
-						robochimpUser.osb_cl_percent && robochimpUser.osb_cl_percent >= 30,
-					name: '30% CL Completion',
+						robochimpUser.osb_cl_percent && robochimpUser.osb_cl_percent >= num,
+					name: `${num}% CL Completion`,
 					amount: 1
-				},
-				{
-					has: (_: MUser, robochimpUser: RobochimpUser) => robochimpUser.leagues_points_total >= 10_000,
-					name: '10k Leagues Points',
+				})),
+				...[10_000, 20_000, 30_000].map(num => ({
+					has: (_: MUser, robochimpUser: RobochimpUser) => robochimpUser.leagues_points_total >= num,
+					name: `${num.toLocaleString()} Leagues Points`,
 					amount: 1
-				},
+				})),
 				{
 					has: (user: MUser) => user.perkTier() >= PerkTier.Four,
 					name: 'Tier 3 Patron',
-					amount: 3
+					amount: 4
 				}
 			]
 		}
