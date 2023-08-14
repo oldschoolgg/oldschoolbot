@@ -13,6 +13,7 @@ import { PerkTier, projectiles } from '../constants';
 import { skillEmoji } from '../data/emojis';
 import type { Gear } from '../structures/Gear';
 import type { ArrayItemsResolved, Skills } from '../types';
+import { dateFm } from '../util';
 import getOSItem from './getOSItem';
 
 export function itemNameFromID(itemID: number | string) {
@@ -236,3 +237,22 @@ export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {
 	return { entryKC, normalKC, expertKC, totalKC: entryKC + normalKC + expertKC };
 }
 export const alphabeticalSort = (a: string, b: string) => a.localeCompare(b);
+
+export function getInterval(intervalHours: number) {
+	const currentTime = new Date();
+	const currentHour = currentTime.getHours();
+
+	// Find the nearest interval start hour (0, intervalHours, 2*intervalHours, etc.)
+	const startHour = currentHour - (currentHour % intervalHours);
+	const startInterval = new Date(currentTime);
+	startInterval.setHours(startHour, 0, 0, 0);
+
+	const endInterval = new Date(startInterval);
+	endInterval.setHours(startHour + intervalHours);
+
+	return {
+		start: startInterval,
+		end: endInterval,
+		nextResetStr: dateFm(endInterval)
+	};
+}

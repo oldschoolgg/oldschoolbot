@@ -7,7 +7,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { NestBoxesTable } from '../../lib/simulation/misc';
-import { itemID, toKMB } from '../../lib/util';
+import { getInterval, itemID, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -90,7 +90,7 @@ export const sellCommand: OSBMahojiCommand = {
 		const bankToSell = parseBank({
 			inputBank: user.bank,
 			inputStr: options.items,
-			maxSize: 70,
+			maxSize: 68,
 			filters: [options.filter],
 			search: options.search,
 			excludeItems: user.user.favoriteItems,
@@ -172,14 +172,70 @@ export const sellCommand: OSBMahojiCommand = {
 			return `You exchanged ${tenchBank} and received: ${loot}.`;
 		}
 
-		let totalPrice = 0;
-		const taxRatePercent = 20;
+		const sellPayoutIntervalHours = 24;
+		const interval = getInterval(sellPayoutIntervalHours);
+		const incrementPercent = 5;
+		const incrementThreshold = 300_000_000;
+		const maxReductionPercent = 50;
+		const baseTaxRate = 20;
+		const totalMaxTaxPercent = 60;
+
+		let totalGPPaidOutToThisUserPastInterval = user.isIronman
+			? 0
+			: Number(
+					(
+						await prisma.botItemSell.aggregate({
+							_sum: {
+								gp_received: true
+							},
+							where: {
+								user_id: user.id,
+								date: {
+									gte: interval.start,
+									lte: interval.end
+								}
+							}
+						})
+					)._sum.gp_received
+			  );
 
 		const botItemSellData: Prisma.BotItemSellCreateManyInput[] = [];
+		let totalPrice = 0;
+
+		const taxRateRangeThisTransaction = [99_999, -1];
 
 		for (const [item, qty] of bankToSell.items()) {
 			const specialPrice = specialSoldItems.get(item.id);
 			let pricePerStack = -1;
+
+			let currentPayout = 0;
+			const increments = Math.floor(totalGPPaidOutToThisUserPastInterval / incrementThreshold);
+			const reduction = Math.min(increments * incrementPercent, maxReductionPercent);
+			let taxRatePercent = Math.min(totalMaxTaxPercent, baseTaxRate + reduction);
+
+			if (specialPrice) {
+				currentPayout = Math.floor(specialPrice * qty);
+			} else {
+				currentPayout = Math.floor(sellPriceOfItem(item, 0).price * qty);
+			}
+
+			for (
+				let payout = totalGPPaidOutToThisUserPastInterval;
+				payout < totalGPPaidOutToThisUserPastInterval + currentPayout;
+				payout += incrementThreshold
+			) {
+				const increments = Math.floor(payout / incrementThreshold);
+				const reduction = Math.min(increments * incrementPercent, maxReductionPercent);
+				taxRatePercent = Math.min(totalMaxTaxPercent, baseTaxRate + reduction);
+			}
+
+			if (taxRatePercent < taxRateRangeThisTransaction[0]) {
+				taxRateRangeThisTransaction[0] = taxRatePercent;
+			}
+			if (taxRatePercent > taxRateRangeThisTransaction[1]) {
+				taxRateRangeThisTransaction[1] = taxRatePercent;
+			}
+
 			if (specialPrice) {
 				pricePerStack = Math.floor(specialPrice * qty);
 			} else {
@@ -188,13 +244,35 @@ export const sellCommand: OSBMahojiCommand = {
 					: sellPriceOfItem(item, taxRatePercent);
 				pricePerStack = Math.floor(price * qty);
 			}
+
+			totalGPPaidOutToThisUserPastInterval += pricePerStack;
 			totalPrice += pricePerStack;
-			botItemSellData.push({
-				item_id: item.id,
-				quantity: qty,
-				gp_received: pricePerStack,
-				user_id: user.id
-			});
+
+			if (!user.isIronman) {
+				const preTaxPricePerStack = sellPriceOfItem(item, 0).price * qty;
+				const taxPaidThisStack = preTaxPricePerStack - pricePerStack;
+				botItemSellData.push({
+					item_id: item.id,
+					quantity: qty,
+					gp_received: pricePerStack,
+					user_id: user.id,
+					tax_percent: taxRatePercent,
+					tax_paid_gp: taxPaidThisStack
+				});
+			}
+		}
+
+		let taxExplanation = `Tax rate increases by ${incrementPercent}% for every ${incrementThreshold} paid out, up to a maximum reduction of ${maxReductionPercent}%. Your tax rate will reset back to ${baseTaxRate}% at ${interval.nextResetStr}.`;
+
+		if (taxRateRangeThisTransaction[0] === taxRateRangeThisTransaction[1]) {
+			taxExplanation = `Tax rate for this transaction: ${taxRateRangeThisTransaction[0]}%`;
+		} else {
+			taxExplanation = `Tax rate for this transaction: ${taxRateRangeThisTransaction[0]}% - ${taxRateRangeThisTransaction[1]}% (increased during this payout)`;
+		}
+
+		await user.sync();
+		if (!user.owns(bankToSell)) {
+			return "You don't have the items you're trying to sell.";
 		}
 
 		await handleMahojiConfirmation(
@@ -203,11 +281,6 @@ export const sellCommand: OSBMahojiCommand = {
 				totalPrice
 			)}).`
 		);
-
-		await user.sync();
-		if (!user.owns(bankToSell)) {
-			return "You don't have the items you're trying to sell.";
-		}
 
 		await transactItems({
 			userID: user.id,
@@ -231,8 +304,8 @@ export const sellCommand: OSBMahojiCommand = {
 			prisma.botItemSell.createMany({ data: botItemSellData })
 		]);
 
-		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
-			user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
+		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})** ${
+			user.isIronman ? '(General store price)' : taxExplanation
 		}.`;
 	}
 };
