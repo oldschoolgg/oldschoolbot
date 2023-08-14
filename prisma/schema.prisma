@@ -768,9 +768,7 @@ model FarmedCrop {
 model BotItemSell {
   id String @id @default(uuid()) @db.Uuid
 
-  date        DateTime @default(now()) @db.Timestamp(6)
-  tax_percent Int?
-  tax_paid_gp BigInt?
+  date DateTime @default(now()) @db.Timestamp(6)
 
   item_id     Int
   quantity    Int
