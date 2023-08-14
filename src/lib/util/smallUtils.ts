@@ -2,7 +2,7 @@ import { exec } from 'node:child_process';
 
 import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, time } from 'discord.js';
 import { objectEntries, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -13,7 +13,6 @@ import { PerkTier, projectiles } from '../constants';
 import { skillEmoji } from '../data/emojis';
 import type { Gear } from '../structures/Gear';
 import type { ArrayItemsResolved, Skills } from '../types';
-import { dateFm } from '../util';
 import getOSItem from './getOSItem';
 
 export function itemNameFromID(itemID: number | string) {
@@ -237,6 +236,10 @@ export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {
 	return { entryKC, normalKC, expertKC, totalKC: entryKC + normalKC + expertKC };
 }
 export const alphabeticalSort = (a: string, b: string) => a.localeCompare(b);
+
+export function dateFm(date: Date) {
+	return `${time(date, 'T')} (${time(date, 'R')})`;
+}
 
 export function getInterval(intervalHours: number) {
 	const currentTime = new Date();
