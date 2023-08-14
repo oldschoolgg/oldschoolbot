@@ -771,6 +771,8 @@ model FarmedCrop {
 model BotItemSell {
   id String @id @default(uuid()) @db.Uuid
 
+  date DateTime @default(now()) @db.Timestamp(6)
+
   item_id     Int
   quantity    Int
   gp_received BigInt

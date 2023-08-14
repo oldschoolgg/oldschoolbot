@@ -252,22 +252,22 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		desc: 'Kill Obor on a free to play world.',
 		id: 22,
-		requirements: new Requirements().add({
-			kcRequirement: {
-				[Monsters.Obor.id]: 1
-			}
-		})
+		rng: {
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.Obor.id)(data) &&
+				user.gear[user.attackClass()].allItems(false).every(i => getOSItem(i).members !== true),
+			chancePerKill: 1
+		}
 	},
 	{
 		name: 'Sleeping Giant',
 		type: 'mechanical',
 		desc: 'Kill Obor whilst he is immobilized.',
 		id: 23,
-		requirements: new Requirements().add({
-			kcRequirement: {
-				[Monsters.Sarachnis.id]: 10
-			}
-		})
+		rng: {
+			chancePerKill: 10,
+			hasChance: isCertainMonsterTrip(Monsters.Obor.id)
+		}
 	},
 	{
 		name: 'Sarachnis Novice',

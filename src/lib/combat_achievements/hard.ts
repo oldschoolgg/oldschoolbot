@@ -3,7 +3,7 @@ import { Monsters } from 'oldschooljs';
 import { demonBaneWeapons, NIGHTMARE_ID } from '../constants';
 import { anglerOutfit } from '../data/CollectionsExport';
 import { Requirements } from '../structures/Requirements';
-import { TemporossActivityTaskOptions } from '../types/minions';
+import { TemporossActivityTaskOptions, TOAOptions } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
 import { type CombatAchievement } from './combatAchievements';
 
@@ -599,8 +599,8 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		desc: 'Complete a Tombs of Amascut raid at level 50 or above.',
 		rng: {
-			chancePerKill: 30,
-			hasChance: data => data.type === 'Wintertodt'
+			chancePerKill: 1,
+			hasChance: data => data.type === 'TombsOfAmascut' && (data as TOAOptions).raidLevel >= 50
 		}
 	},
 	{

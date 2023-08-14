@@ -210,7 +210,7 @@ const spawnPresets = [
 	['runes', runePreset]
 ] as const;
 
-const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests'] as const;
+const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout'] as const;
 
 export const testPotatoCommand: OSBMahojiCommand | null = production
 	? null
@@ -503,6 +503,14 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				}
 				if (options.wipe) {
 					let { thing } = options.wipe;
+					if (thing === 'buypayout') {
+						await prisma.botItemSell.deleteMany({
+							where: {
+								user_id: user.id
+							}
+						});
+						return 'Deleted all your buy payout records, so you have no tax rate accumulated.';
+					}
 					if (thing === 'bank') {
 						await mahojiUserSettingsUpdate(user.id, {
 							bank: {}
