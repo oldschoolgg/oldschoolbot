@@ -50,6 +50,10 @@ const toggles = [
 	{
 		name: "Disable Grand Exchange DM's",
 		bit: BitField.DisableGrandExchangeDMs
+	},
+	{
+		name: "Disable Daily Reminder DM's",
+		bit: BitField.DisableDailyReminderDMs
 	}
 ];
 

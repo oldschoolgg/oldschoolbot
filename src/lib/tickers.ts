@@ -142,19 +142,27 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 		name: 'daily_reminders',
 		interval: Time.Minute * 3,
 		timer: null,
+
 		cb: async () => {
-			const result = await prisma.$queryRawUnsafe<{ id: string; last_daily_timestamp: bigint }[]>(
+			const bitfieldPatron = [2, 3, 4, 5, 6, 7, 8, 12, 21, 24];
+			const reminderHours = 12;
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; last_daily_timestamp: bigint; bitfield: number }[]
+			>(
 				`
-SELECT users.id, user_stats.last_daily_timestamp
-FROM users
-JOIN user_stats ON users.id::bigint = user_stats.user_id
-WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '12 hours';
-`
+                SELECT users.id, user_stats.last_daily_timestamp, users.bitfield
+                FROM users
+                JOIN user_stats ON users.id::bigint = user_stats.user_id
+                WHERE bitfield && '{${bitfieldPatron.join(
+					','
+				)}}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '${reminderHours} hours';
+                `
 			);
 
-			for (const row of result.values()) {
+			for (const row of result) {
 				if (!production) continue;
 				if (Number(row.last_daily_timestamp) === -1) continue;
+				if (row.bitfield === 31) continue;
 
 				await userStatsUpdate(
 					row.id,

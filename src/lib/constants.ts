@@ -228,7 +228,8 @@ export enum BitField {
 	DisableGrandExchangeDMs = 27,
 	HadAllSlayerUnlocks = 28,
 	HasSwampbarkScroll = 29,
-	HasSaradominsLight = 30
+	HasSaradominsLight = 30,
+	DisableDailyReminderDMs = 31
 }
 
 interface BitFieldData {
@@ -291,6 +292,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisableGrandExchangeDMs]: {
 		name: 'Disable Grand Exchange DMs',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableDailyReminderDMs]: {
+		name: 'Disable Daily Reminder DMs',
 		protected: false,
 		userConfigurable: true
 	}
