@@ -2307,3 +2307,42 @@ export const dukeSucellusCL = resolveItems([
 	'Chromium ingot',
 	"Awakener's orb"
 ]);
+
+export const theLeviathanCL = resolveItems([
+	"Lil'viathan",
+	"Leviathan's lure",
+	'Virtus mask',
+	'Virtus robe top',
+	'Virtus robe bottom',
+	'Venator vestige',
+	'Chromium ingot',
+	"Awakener's orb",
+	'Smoke quartz',
+	'Scarred tablet'
+]);
+
+export const theWhispererCL = resolveItems([
+	'Wisp',
+	"Siren's staff",
+	'Virtus mask',
+	'Virtus robe top',
+	'Virtus robe bottom',
+	'Bellator vestige',
+	'Chromium ingot',
+	"Awakener's orb",
+	'Shadow quartz',
+	'Sirenic tablet'
+]);
+
+export const vardorvisCL = resolveItems([
+	'Butch',
+	"Executioner's axe head",
+	'Virtus mask',
+	'Virtus robe top',
+	'Virtus robe bottom',
+	'Ultor vestige',
+	'Chromium ingot',
+	"Awakener's orb",
+	'Blood quartz',
+	'Strangled tablet'
+]);

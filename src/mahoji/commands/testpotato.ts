@@ -606,6 +606,15 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						GP: 5_000_000_000,
 						slayer_points: 100_000,
 						tentacle_charges: 10_000,
+						sang_charges: 10_000,
+						trident_charges: 10_000,
+						serp_helm_charges: 10_000,
+						blood_fury_charges: 10_000,
+						tum_shadow_charges: 10_000,
+						blood_essence_charges: 10_000,
+						ash_sanctifier_charges: 10_000,
+						celestial_ring_charges: 10_000,
+						scythe_of_vitur_charges: 10_000,
 						gear_mage: TOBMaxMageGear.raw() as any,
 						gear_melee: TOBMaxMeleeGear.raw() as any,
 						gear_range: TOBMaxRangeGear.raw() as any,
@@ -616,7 +625,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						}
 					});
 					await giveMaxStats(user);
-					return 'Fully maxed your account, stocked your bank.';
+					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';
 				}
 				if (options.patron) {
 					return givePatronLevel(user, Number(options.patron.tier));
