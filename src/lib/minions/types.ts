@@ -118,6 +118,9 @@ export interface KillableMonster {
 		items: { boostPercent: number; itemID: number }[];
 	}[];
 	requiredQuests?: QuestID[];
+	deathProps?: {
+		hardness: number;
+	};
 }
 /*
  * Monsters will have an array of Consumables

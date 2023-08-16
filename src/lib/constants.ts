@@ -228,7 +228,12 @@ export enum BitField {
 	DisableGrandExchangeDMs = 27,
 	HadAllSlayerUnlocks = 28,
 	HasSwampbarkScroll = 29,
-	HasSaradominsLight = 30
+	HasSaradominsLight = 30,
+
+	UsedScarredTablet = 31,
+	UsedSirenicTablet = 32,
+	UsedStrangledTablet = 33,
+	UsedFrozenTablet = 34
 }
 
 interface BitFieldData {
@@ -262,6 +267,10 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.HasSwampbarkScroll]: { name: 'Runescroll of swampbark Used', protected: false, userConfigurable: false },
 	[BitField.HasSaradominsLight]: { name: "Saradomin's light Used", protected: false, userConfigurable: false },
 	[BitField.HadAllSlayerUnlocks]: { name: 'Had All Slayer Unlocks', protected: false, userConfigurable: false },
+	[BitField.UsedScarredTablet]: { name: 'Used Scarred Tablet', protected: false, userConfigurable: false },
+	[BitField.UsedFrozenTablet]: { name: 'Used Frozen Tablet', protected: false, userConfigurable: false },
+	[BitField.UsedSirenicTablet]: { name: 'Used Sirenic Tablet', protected: false, userConfigurable: false },
+	[BitField.UsedStrangledTablet]: { name: 'Used Strangled Tablet', protected: false, userConfigurable: false },
 
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
 	[BitField.HasPermanentEventBackgrounds]: {

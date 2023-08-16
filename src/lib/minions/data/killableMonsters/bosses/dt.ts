@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { QuestID } from '../../../../../mahoji/lib/abstracted_commands/questCommand';
 import { dukeSucellusCL, theLeviathanCL } from '../../../../data/CollectionsExport';
@@ -79,7 +79,10 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 					}
 				]
 			}
-		]
+		],
+		deathProps: {
+			hardness: 0.6
+		}
 	},
 	{
 		id: Monsters.AwakenedDukeSucellus.id,
@@ -141,7 +144,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		requiredQuests: [QuestID.DesertTreasureII],
 		degradeableItemUsage: [
 			{
-				required: false,
+				required: true,
 				gearSetup: 'melee',
 				items: [
 					{
@@ -150,7 +153,14 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 					}
 				]
 			}
-		]
+		],
+		itemCost: {
+			itemCost: new Bank().add("Awakener's orb"),
+			qtyPerKill: 1
+		},
+		deathProps: {
+			hardness: 0.9
+		}
 	},
 	{
 		id: Monsters.TheLeviathan.id,
@@ -222,7 +232,10 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		healAmountNeeded: 45 * 20 * 2.5,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackRanged],
-		requiredQuests: [QuestID.DesertTreasureII]
+		requiredQuests: [QuestID.DesertTreasureII],
+		deathProps: {
+			hardness: 0.6
+		}
 	},
 	{
 		id: Monsters.AwakenedTheLeviathan.id,
@@ -294,7 +307,14 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		healAmountNeeded: 45 * 20,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackRanged],
-		requiredQuests: [QuestID.DesertTreasureII]
+		requiredQuests: [QuestID.DesertTreasureII],
+		itemCost: {
+			itemCost: new Bank().add("Awakener's orb"),
+			qtyPerKill: 1
+		},
+		deathProps: {
+			hardness: 0.9
+		}
 	},
 	{
 		id: Monsters.TheWhisperer.id,
@@ -310,11 +330,11 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Zaryte vambraces') }],
+				items: [{ boostPercent: 3, itemID: itemID('Tormented bracelet') }],
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Pegasian boots') }],
+				items: [{ boostPercent: 3, itemID: itemID('Eternal boots') }],
 				gearSetup: 'mage'
 			},
 			{
@@ -369,16 +389,23 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		requiredQuests: [QuestID.DesertTreasureII],
 		degradeableItemUsage: [
 			{
-				required: false,
+				required: true,
 				gearSetup: 'mage',
 				items: [
 					{
 						itemID: itemID("Tumeken's shadow"),
 						boostPercent: 15
+					},
+					{
+						itemID: itemID('Sanguinesti staff'),
+						boostPercent: 7
 					}
 				]
 			}
-		]
+		],
+		deathProps: {
+			hardness: 0.6
+		}
 	},
 	{
 		id: Monsters.AwakenedTheWhisperer.id,
@@ -453,16 +480,27 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		requiredQuests: [QuestID.DesertTreasureII],
 		degradeableItemUsage: [
 			{
-				required: false,
+				required: true,
 				gearSetup: 'mage',
 				items: [
 					{
 						itemID: itemID("Tumeken's shadow"),
 						boostPercent: 15
+					},
+					{
+						itemID: itemID('Sanguinesti staff'),
+						boostPercent: 7
 					}
 				]
 			}
-		]
+		],
+		itemCost: {
+			itemCost: new Bank().add("Awakener's orb"),
+			qtyPerKill: 1
+		},
+		deathProps: {
+			hardness: 0.9
+		}
 	},
 	{
 		id: Monsters.Vardorvis.id,
@@ -533,7 +571,10 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 					}
 				]
 			}
-		]
+		],
+		deathProps: {
+			hardness: 0.6
+		}
 	},
 	{
 		id: Monsters.AwakenedVardorvis.id,
@@ -595,7 +636,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		requiredQuests: [QuestID.DesertTreasureII],
 		degradeableItemUsage: [
 			{
-				required: false,
+				required: true,
 				gearSetup: 'melee',
 				items: [
 					{
@@ -604,6 +645,13 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 					}
 				]
 			}
-		]
+		],
+		itemCost: {
+			itemCost: new Bank().add("Awakener's orb"),
+			qtyPerKill: 1
+		},
+		deathProps: {
+			hardness: 0.9
+		}
 	}
 ];

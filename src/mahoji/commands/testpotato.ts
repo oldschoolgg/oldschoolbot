@@ -210,7 +210,7 @@ const spawnPresets = [
 	['runes', runePreset]
 ] as const;
 
-const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout'] as const;
+const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc'] as const;
 
 export const testPotatoCommand: OSBMahojiCommand | null = production
 	? null
@@ -503,6 +503,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				}
 				if (options.wipe) {
 					let { thing } = options.wipe;
+					if (thing === 'kc') {
+						await userStatsUpdate(user.id, {
+							monster_scores: {}
+						});
+						return 'Reset all your KCs.';
+					}
 					if (thing === 'buypayout') {
 						await prisma.botItemSell.deleteMany({
 							where: {

@@ -3,7 +3,7 @@ import { exec } from 'node:child_process';
 import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, time } from 'discord.js';
-import { objectEntries, Time } from 'e';
+import { clamp, objectEntries, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
@@ -258,4 +258,13 @@ export function getInterval(intervalHours: number) {
 		end: endInterval,
 		nextResetStr: dateFm(endInterval)
 	};
+}
+
+export function calculateSimpleMonsterDeathChance(hardness: number, currentKC: number): number {
+	let baseDeathChance = Math.min(90, 100 * hardness);
+	const maxScalingKC = 5 + 75 * hardness;
+	let reductionFactor = Math.min(1, currentKC / maxScalingKC);
+	let deathChance = baseDeathChance - reductionFactor * (baseDeathChance - 1);
+
+	return clamp(deathChance, 1, 90);
 }

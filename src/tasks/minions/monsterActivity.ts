@@ -1,3 +1,4 @@
+import { percentChance } from 'e';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
@@ -10,7 +11,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, isOnSlayerTask } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { calculateSimpleMonsterDeathChance, roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -19,10 +20,23 @@ import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
 	async run(data: MonsterActivityTaskOptions) {
-		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
+		let { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await mUserFetch(userID);
 		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
+
+		let deaths = 0;
+		if (monster.deathProps) {
+			const currentKC = await user.getKC(monsterID);
+			const deathChance = calculateSimpleMonsterDeathChance(monster.deathProps.hardness, currentKC);
+			for (let i = 0; i < quantity; i++) {
+				if (percentChance(deathChance)) {
+					deaths++;
+				}
+			}
+		}
+		quantity -= deaths;
+
 		const { newKC } = await user.incrementKC(monsterID, quantity);
 
 		const isOnTaskResult = await isOnSlayerTask({ user, monsterID, quantityKilled: quantity });
@@ -161,6 +175,9 @@ export const monsterTask: MinionTask = {
 		}
 
 		const messages: string[] = [];
+		if (deaths > 0) {
+			messages.push(`You died ${deaths}x times.`);
+		}
 		if (monster.effect) {
 			await monster.effect({
 				user,
