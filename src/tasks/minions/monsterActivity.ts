@@ -41,14 +41,17 @@ export const monsterTask: MinionTask = {
 		}
 		quantity -= deaths;
 
+		const awakenedMonsters = [
+			Monsters.AwakenedDukeSucellus.id,
+			Monsters.AwakenedTheLeviathan.id,
+			Monsters.AwakenedTheWhisperer.id,
+			Monsters.AwakenedVardorvis.id
+		];
+		const isAwakened = awakenedMonsters.includes(monsterID);
 		if (
 			!user.owns('Ancient blood ornament kit') &&
-			[
-				Monsters.AwakenedDukeSucellus.id,
-				Monsters.AwakenedTheLeviathan.id,
-				Monsters.AwakenedTheWhisperer.id,
-				Monsters.AwakenedVardorvis.id
-			].every(id => Boolean(currentKCs[id]))
+			awakenedMonsters.every(id => Boolean(currentKCs[id])) &&
+			isAwakened
 		) {
 			messages.push('You received an **Ancient blood ornament kit**!');
 			await user.addItemsToBank({

@@ -70,9 +70,9 @@ const usableUnlocks: UsableUnlock[] = [
 		resultMessage: 'You used your Sirenic tablet.'
 	},
 	{
-		item: getOSItem('Sirenic tablet'),
+		item: getOSItem('Strangled tablet'),
 		bitfield: BitField.UsedStrangledTablet,
-		resultMessage: 'You used your Sirenic tablet.'
+		resultMessage: 'You used your Strangled tablet.'
 	}
 ];
 for (const usableUnlock of usableUnlocks) {
