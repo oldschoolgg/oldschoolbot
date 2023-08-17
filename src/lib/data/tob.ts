@@ -199,7 +199,7 @@ export const TOBMaxMageGear = constructGearSetup({
 	feet: 'Eternal boots',
 	weapon: 'Kodai wand',
 	shield: 'Arcane spirit shield',
-	ring: 'Seers ring(i)'
+	ring: 'Magus ring'
 });
 const maxMage = new Gear(TOBMaxMageGear);
 
@@ -212,7 +212,7 @@ export const TOBMaxRangeGear = constructGearSetup({
 	legs: 'Elite void robe',
 	feet: 'Pegasian boots',
 	'2h': 'Twisted bow',
-	ring: 'Archers ring(i)',
+	ring: 'Venator ring',
 	ammo: 'Dragon arrow'
 });
 const maxRange = new Gear(TOBMaxRangeGear);
@@ -227,7 +227,7 @@ export const TOBMaxMeleeGear = constructGearSetup({
 	legs: 'Torva platelegs',
 	feet: 'Primordial boots',
 	'2h': 'Scythe of vitur',
-	ring: 'Berserker ring(i)'
+	ring: 'Ultor ring'
 });
 const maxMelee = new Gear(TOBMaxMeleeGear);
 

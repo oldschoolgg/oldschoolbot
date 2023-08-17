@@ -174,7 +174,7 @@ export const maxMageGear = constructGearSetup({
 	feet: 'Eternal boots',
 	weapon: 'Harmonised nightmare staff',
 	shield: 'Arcane spirit shield',
-	ring: 'Seers ring(i)'
+	ring: 'Magus ring'
 });
 const maxMage = new Gear(maxMageGear);
 
@@ -187,7 +187,7 @@ export const maxRangeGear = constructGearSetup({
 	legs: 'Armadyl chainskirt',
 	feet: 'Pegasian boots',
 	'2h': 'Twisted bow',
-	ring: 'Archers ring(i)',
+	ring: 'Venator ring',
 	ammo: 'Dragon arrow'
 });
 const maxRange = new Gear(maxRangeGear);
