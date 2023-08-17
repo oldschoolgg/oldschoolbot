@@ -1,5 +1,5 @@
 import { percentChance } from 'e';
-import { MonsterKillOptions, Monsters } from 'oldschooljs';
+import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { trackLoot } from '../../lib/lootTrack';
@@ -22,12 +22,16 @@ export const monsterTask: MinionTask = {
 	async run(data: MonsterActivityTaskOptions) {
 		let { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
+
+		const messages: string[] = [];
+
 		const user = await mUserFetch(userID);
 		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
+		const currentKCs = await user.fetchMonsterScores();
 
 		let deaths = 0;
 		if (monster.deathProps) {
-			const currentKC = await user.getKC(monsterID);
+			const currentKC = currentKCs[monsterID];
 			const deathChance = calculateSimpleMonsterDeathChance(monster.deathProps.hardness, currentKC);
 			for (let i = 0; i < quantity; i++) {
 				if (percentChance(deathChance)) {
@@ -36,6 +40,22 @@ export const monsterTask: MinionTask = {
 			}
 		}
 		quantity -= deaths;
+
+		if (
+			!user.owns('Ancient blood ornament kit') &&
+			[
+				Monsters.AwakenedDukeSucellus.id,
+				Monsters.AwakenedTheLeviathan.id,
+				Monsters.AwakenedTheWhisperer.id,
+				Monsters.AwakenedVardorvis.id
+			].every(id => Boolean(currentKCs[id]))
+		) {
+			messages.push('You received an **Ancient blood ornament kit**!');
+			await user.addItemsToBank({
+				items: new Bank().add('Ancient blood ornament kit', 1),
+				collectionLog: !user.cl.has('Ancient blood ornament kit')
+			});
+		}
 
 		const { newKC } = await user.incrementKC(monsterID, quantity);
 
@@ -174,7 +194,6 @@ export const monsterTask: MinionTask = {
 			});
 		}
 
-		const messages: string[] = [];
 		if (deaths > 0) {
 			messages.push(`You died ${deaths}x times.`);
 		}

@@ -251,6 +251,11 @@ export class MUserClass {
 		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
 	}
 
+	async fetchMonsterScores() {
+		const stats = await this.fetchStats({ monster_scores: true });
+		return stats.monster_scores as ItemBank;
+	}
+
 	attackClass(): 'range' | 'mage' | 'melee' {
 		const styles = this.getAttackStyles();
 		if (styles.includes(SkillsEnum.Ranged)) return 'range';
