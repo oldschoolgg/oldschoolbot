@@ -1,11 +1,11 @@
 import { Bank } from 'oldschooljs';
 
-import { soteSkillRequirements } from '../../../mahoji/lib/abstracted_commands/zalcanoCommand';
 import { chompyHats, MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
-import { getToaKCs } from '../../simulation/toa';
+import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
+import { MUserStats } from '../../structures/MUserStats';
 import { Skills } from '../../types';
 import itemID from '../../util/itemID';
 import { allTeamCapes } from '../misc';
@@ -38,7 +38,7 @@ export interface Buyable {
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
 	collectionLogReqs?: number[];
-	customReq?: (user: MUser) => Promise<[true] | [false, string]>;
+	customReq?: (user: MUser, userStats: MUserStats) => Promise<[true] | [false, string]>;
 }
 
 const randomEventBuyables: Buyable[] = [
@@ -96,8 +96,8 @@ for (const [capeName, kcReq] of ichCapes) {
 	toaCapes.push({
 		name: capeName,
 		gpCost: kcReq * 10,
-		customReq: async (user: MUser) => {
-			const toaKCs = await getToaKCs(user);
+		customReq: async (_, stats) => {
+			const toaKCs = stats.getToaKCs();
 			return toaKCs.normalKC + toaKCs.expertKC >= kcReq
 				? [true]
 				: [false, `You need a combined amount of ${kcReq} Normal/Expert Tombs of Amascut KCs to buy this.`];
@@ -186,7 +186,7 @@ const constructionBuyables: Buyable[] = [
 	{
 		name: 'Red dye',
 		gpCost: 100_000,
-		ironmanPrice: 25
+		ironmanPrice: 500
 	},
 	{
 		name: 'Skull',
@@ -216,7 +216,7 @@ const constructionBuyables: Buyable[] = [
 	{
 		name: 'Bucket of water',
 		gpCost: 500,
-		ironmanPrice: 7
+		ironmanPrice: 12
 	}
 ];
 
@@ -282,7 +282,7 @@ const hunterBuyables: Buyable[] = [
 const magicBuyables: Buyable[] = [
 	{
 		name: 'Mystic hat',
-		gpCost: 15_000,
+		gpCost: 25_000,
 		skillsNeeded: {
 			magic: 66
 		}
@@ -876,7 +876,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Bronze pickaxe',
 		gpCost: 500,
-		ironmanPrice: 1
+		ironmanPrice: 100
 	},
 	{
 		name: 'Iron pickaxe',
@@ -903,19 +903,27 @@ const Buyables: Buyable[] = [
 		gpCost: 100_000,
 		ironmanPrice: 32_000
 	},
-	{
-		name: 'Flower crown',
+	...[
+		'Flower crown (bisexual)',
+		'Flower crown (asexual)',
+		'Flower crown (transgender)',
+		'Flower crown (pansexual)',
+		'Flower crown (non-binary)',
+		'Flower crown (genderqueer)',
+		'Flower crown (lesbian)',
+		'Flower crown (gay)',
+		'Flower crown'
+	].map(name => ({
+		name,
 		itemCost: new Bank({
 			Coins: 5000
 		}),
-		outputItems: new Bank({
-			'Flower crown': 1
-		})
-	},
+		outputItems: new Bank().add(name)
+	})),
 	{
 		name: 'Mithril seeds',
 		gpCost: 3000,
-		ironmanPrice: 600,
+		ironmanPrice: 1000,
 		outputItems: new Bank({
 			'Mithril seeds': 1
 		})
@@ -923,17 +931,17 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Brown apron',
 		gpCost: 1000,
-		ironmanPrice: 100
+		ironmanPrice: 250
 	},
 	{
 		name: 'White apron',
 		gpCost: 1000,
-		ironmanPrice: 100
+		ironmanPrice: 250
 	},
 	{
 		name: 'Pink skirt',
 		gpCost: 1000,
-		ironmanPrice: 2
+		ironmanPrice: 100
 	},
 	{
 		name: 'Bull roarer',
@@ -942,7 +950,7 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Rolling pin',
-		gpCost: 50_000,
+		gpCost: 70_000,
 		ironmanPrice: 18_720
 	},
 	{
@@ -967,8 +975,7 @@ const Buyables: Buyable[] = [
 		'Pirate leggings (red)'
 	].map(i => ({
 		name: i,
-		gpCost: 2000,
-		ironmanPrice: 100
+		gpCost: 20_000
 	})),
 	...[
 		'Ghostly boots',
@@ -1007,19 +1014,19 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Bone club',
-		gpCost: 1000
+		gpCost: 5000
 	},
 	{
 		name: 'Bone spear',
-		gpCost: 1000
+		gpCost: 5000
 	},
 	{
 		name: 'Bone dagger',
-		gpCost: 2500
+		gpCost: 8000
 	},
 	{
 		name: 'Dorgeshuun crossbow',
-		gpCost: 2500
+		gpCost: 4000
 	},
 	{
 		name: 'Crystal bow',
@@ -1055,8 +1062,8 @@ const Buyables: Buyable[] = [
 		gpCost: 100_000,
 		ironmanPrice: 10_000,
 		qpRequired: 172,
-		customReq: async (user: MUser) => {
-			const toaKCs = await getToaKCs(user);
+		customReq: async (_, stats) => {
+			const toaKCs = stats.getToaKCs();
 			return toaKCs.expertKC >= 25 ? [true] : [false, 'You need a 25 Expert KC in Tombs of Amascut to buy this.'];
 		}
 	},
@@ -1103,8 +1110,9 @@ for (const cape of allTeamCapes) {
 	Buyables.push({
 		name: cape.name,
 		outputItems: new Bank().add(cape.id),
-		gpCost: 1000
+		gpCost: 5000
 	});
 }
 
 export default Buyables;
+export { Buyables };

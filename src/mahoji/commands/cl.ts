@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import {
@@ -8,7 +9,6 @@ import {
 } from '../../lib/collectionLogTask';
 import { allCollectionLogs } from '../../lib/data/Collections';
 import { fetchStatsForCL } from '../../lib/util';
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const collectionLogCommand: OSBMahojiCommand = {
@@ -26,7 +26,8 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			required: true,
 			autocomplete: async (value: string) => {
 				return [
-					...['overall+', 'overall'].map(i => ({ name: toTitleCase(i), value: i })),
+					{ name: 'Overall (Main Collection Log)', value: 'overall' },
+					{ name: 'Overall+', value: 'overall+' },
 					...Object.entries(allCollectionLogs)
 						.map(i => {
 							return [

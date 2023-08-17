@@ -269,6 +269,14 @@ export const corporealBeastCL = resolveItems([
 	'Spirit shield',
 	'Jar of spirits'
 ]);
+export const muspahCL = resolveItems([
+	'Muphin',
+	'Venator shard',
+	'Ancient icon',
+	'Charged ice',
+	'Frozen cache',
+	'Ancient essence'
+]);
 export const crazyArchaeologistCL = resolveItems(['Odium shard 2', 'Malediction shard 2', 'Fedora']);
 export const dagannothKingsCL = resolveItems([
 	'Pet dagannoth prime',
@@ -1525,7 +1533,8 @@ export const allPetsCL = resolveItems([
 	'Tiny tempor',
 	'Nexling',
 	'Abyssal protector',
-	"Tumeken's guardian"
+	"Tumeken's guardian",
+	'Muphin'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -2117,7 +2126,9 @@ export const capesCL = resolveItems([
 	'Sinhaza shroud tier 2',
 	'Sinhaza shroud tier 3',
 	'Sinhaza shroud tier 4',
-	'Sinhaza shroud tier 5'
+	'Sinhaza shroud tier 5',
+	'Music cape',
+	'Music cape (t)'
 ]);
 export const questCL = resolveItems([
 	'Quest point hood',
@@ -2206,7 +2217,7 @@ export const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem("Deadman's cape"), cost: 160 },
 	{ item: getOSItem('Swift blade'), cost: 350 },
 	{ item: getOSItem('Guthixian icon'), cost: 500 },
-	{ item: getOSItem('Trouver parchment'), cost: 30 },
+	{ item: getOSItem('Trouver parchment'), cost: 18 },
 	{ item: getOSItem('Wilderness crabs teleport'), cost: 1 },
 	{ item: getOSItem('Blighted bind sack'), quantity: 300, cost: 1 },
 	{ item: getOSItem('Blighted snare sack'), quantity: 150, cost: 1 },

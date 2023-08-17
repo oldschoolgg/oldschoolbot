@@ -1,3 +1,4 @@
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, randInt } from 'e';
 
 import { Emoji, Events } from '../../../lib/constants';
@@ -6,7 +7,6 @@ import { getTemporossLoot } from '../../../lib/simulation/tempoross';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TemporossActivityTaskOptions } from '../../../lib/types/minions';
-import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 
@@ -61,7 +61,12 @@ export const temporossTask: MinionTask = {
 			}
 		}
 
-		const xpStr = await user.addXP({ skillName: SkillsEnum.Fishing, amount: fXPtoGive, duration });
+		const xpStr = await user.addXP({
+			skillName: SkillsEnum.Fishing,
+			amount: fXPtoGive,
+			duration,
+			source: 'Tempoross'
+		});
 
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,

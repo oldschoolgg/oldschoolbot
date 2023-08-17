@@ -119,6 +119,7 @@ export const clueCommand: OSBMahojiCommand = {
 		const poh = await getPOH(user.id);
 		const hasOrnateJewelleryBox = poh.jewellery_box === getPOHObject('Ornate jewellery box').id;
 		const hasJewelleryBox = poh.jewellery_box !== null;
+		const hasXericTalisman = poh.amulet === getPOHObject("Mounted xeric's talisman").id;
 
 		// Global Boosts
 		const globalBoosts = [
@@ -154,6 +155,12 @@ export const clueCommand: OSBMahojiCommand = {
 				boosts.push(boost);
 				duration *= durationMultiplier;
 			}
+		}
+
+		// Xeric's Talisman boost
+		if (clueTier.name === 'Medium' && hasXericTalisman) {
+			boosts.push("2% for Mounted Xeric's Talisman");
+			duration *= 0.98;
 		}
 
 		// Specific boosts
@@ -253,6 +260,11 @@ export const clueCommand: OSBMahojiCommand = {
 					item: getOSItem('Kandarin headgear 4'),
 					boost: '6% for Kandarin headgear 4',
 					durationMultiplier: 0.94
+				},
+				{
+					item: getOSItem('Music cape'),
+					boost: '5% for Music cape',
+					durationMultiplier: 0.95
 				},
 				{
 					item: getOSItem('Eternal teleport crystal'),

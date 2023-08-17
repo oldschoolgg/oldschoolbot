@@ -60,6 +60,7 @@ import { wintertodtTask } from '../tasks/minions/minigames/wintertodtActivity';
 import { zalcanoTask } from '../tasks/minions/minigames/zalcanoActivity';
 import { miningTask } from '../tasks/minions/miningActivity';
 import { monsterTask } from '../tasks/minions/monsterActivity';
+import { motherlodeMiningTask } from '../tasks/minions/motherlodeMineActivity';
 import { nexTask } from '../tasks/minions/nexActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
 import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
@@ -72,6 +73,7 @@ import { sawmillTask } from '../tasks/minions/sawmillActivity';
 import { shootingStarTask } from '../tasks/minions/shootingStarsActivity';
 import { smeltingTask } from '../tasks/minions/smeltingActivity';
 import { smithingTask } from '../tasks/minions/smithingActivity';
+import { strongholdTask } from '../tasks/minions/strongholdOfSecurityActivity';
 import { tiaraRunecraftTask } from '../tasks/minions/tiaraRunecraftActivity';
 import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
 import { vmTask } from '../tasks/minions/volcanicMineActivity';
@@ -142,6 +144,7 @@ export const tasks: MinionTask[] = [
 	herbloreTask,
 	fletchingTask,
 	miningTask,
+	motherlodeMiningTask,
 	runecraftTask,
 	sawmillTask,
 	revenantsTask,
@@ -169,7 +172,8 @@ export const tasks: MinionTask[] = [
 	nightmareZoneTask,
 	shadesOfMortonTask,
 	toaTask,
-	underwaterAgilityThievingTask
+	underwaterAgilityThievingTask,
+	strongholdTask
 ];
 
 export async function syncActivityCache() {

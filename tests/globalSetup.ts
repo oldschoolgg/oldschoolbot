@@ -1,4 +1,5 @@
 import '../src/index';
+import '../src/lib/roboChimp';
 
 import { Collection } from 'discord.js';
 
@@ -16,5 +17,8 @@ global.globalClient = {
 				}
 			]
 		}
+	},
+	users: {
+		cache: new Collection()
 	}
 } as any;

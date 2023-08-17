@@ -1,9 +1,9 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Hiscores } from 'oldschooljs';
 import { ACCOUNT_TYPES, hiscoreURLs } from 'oldschooljs/dist/constants';
 
 import { statsEmbed } from '../../lib/util/statsEmbed';
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import { OSBMahojiCommand } from '../lib/util';
 
 const accountTypeOptions = ACCOUNT_TYPES.map(val => {

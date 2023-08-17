@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord.js';
 import { uniqueArr } from 'e';
 import { CommandOption } from 'mahoji/dist/lib/types';
@@ -11,7 +12,6 @@ import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { globalPresets } from '../../lib/structures/Gear';
 import getOSItem from '../../lib/util/getOSItem';
-import { toTitleCase } from '../../lib/util/toTitleCase';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const filterOption: CommandOption = {
@@ -30,6 +30,8 @@ export const filterOption: CommandOption = {
 };
 
 const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
+
+export const tradeableItemArr = itemArr.filter(i => i.tradeable_on_ge);
 
 export const allEquippableItems = Items.array().filter(i => i.equipable && i.equipment?.slot);
 

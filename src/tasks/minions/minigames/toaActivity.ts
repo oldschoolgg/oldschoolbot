@@ -1,3 +1,4 @@
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
 import { isObject, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -9,9 +10,14 @@ import { toaCL } from '../../../lib/data/CollectionsExport';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import { calcTOALoot, calculateXPFromRaid, toaOrnamentKits, toaPetTransmogItems } from '../../../lib/simulation/toa';
+import {
+	calcTOALoot,
+	calculateXPFromRaid,
+	normalizeTOAUsers,
+	toaOrnamentKits,
+	toaPetTransmogItems
+} from '../../../lib/simulation/toa';
 import { TOAOptions } from '../../../lib/types/minions';
-import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { assert } from '../../../lib/util/logError';
 import resolveItems from '../../../lib/util/resolveItems';
@@ -37,24 +43,8 @@ interface RaidResultUser {
 export const toaTask: MinionTask = {
 	type: 'TombsOfAmascut',
 	async run(data: TOAOptions) {
-		const {
-			channelID,
-			raidLevel,
-			duration,
-			leader,
-			quantity,
-			wipedRoom: _wipedRoom,
-			detailedUsers: _detailedUsers
-		} = data;
-		const detailedUsers = (
-			(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
-		).map(userArr =>
-			userArr.map(user => ({
-				id: user[0],
-				points: user[1],
-				deaths: user[2]
-			}))
-		);
+		const { channelID, raidLevel, duration, leader, quantity, wipedRoom: _wipedRoom } = data;
+		const detailedUsers = normalizeTOAUsers(data);
 		const wipedRooms = Array.isArray(_wipedRoom) ? _wipedRoom : [_wipedRoom];
 		assert(Array.isArray(detailedUsers[0]) && isObject(detailedUsers[0][0]), `${detailedUsers}`);
 		const isSolo = detailedUsers[0].length === 1;

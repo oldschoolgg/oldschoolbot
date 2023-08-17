@@ -67,6 +67,12 @@ export const raidCommand: OSBMahojiCommand = {
 							name: 'max_team_size',
 							description: 'Choose a max size for your team.',
 							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'solo',
+							description: 'Solo with a team of 3 bots.',
+							required: false
 						}
 					]
 				},
@@ -101,7 +107,7 @@ export const raidCommand: OSBMahojiCommand = {
 					description: 'Start a Tombs of Amascut trip',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Number,
+							type: ApplicationCommandOptionType.Integer,
 							name: 'raid_level',
 							description: 'Choose the raid level you want to do (1-600).',
 							required: true,
@@ -146,7 +152,11 @@ export const raidCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{
 		cox?: { start?: { type: 'solo' | 'mass'; challenge_mode?: boolean; quantity?: number }; stats?: {} };
-		tob?: { start?: { hard_mode?: boolean; max_team_size?: number }; stats?: {}; check?: { hard_mode?: boolean } };
+		tob?: {
+			start?: { hard_mode?: boolean; max_team_size?: number; solo?: boolean };
+			stats?: {};
+			check?: { hard_mode?: boolean };
+		};
 		toa?: {
 			start?: { raid_level: RaidLevel; max_team_size?: number; solo?: boolean; quantity?: number };
 			help?: {};
@@ -166,7 +176,13 @@ export const raidCommand: OSBMahojiCommand = {
 			return coxCommand(channelID, user, cox.start.type, Boolean(cox.start.challenge_mode), cox.start.quantity);
 		}
 		if (tob?.start) {
-			return tobStartCommand(user, channelID, Boolean(tob.start.hard_mode), tob.start.max_team_size);
+			return tobStartCommand(
+				user,
+				channelID,
+				Boolean(tob.start.hard_mode),
+				tob.start.max_team_size,
+				Boolean(tob.start.solo)
+			);
 		}
 
 		if (options.toa?.start) {

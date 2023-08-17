@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { GearPreset } from '@prisma/client';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { objectValues } from 'e';
@@ -16,7 +17,6 @@ import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
 import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { toTitleCase } from '../../../lib/util/toTitleCase';
 import { transactItemsFromBank } from '../../../lib/util/transactItemsFromBank';
 import { mahojiParseNumber } from '../../mahojiSettings';
 
@@ -302,8 +302,7 @@ export async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, eq
 		return `You dont own ${toRemoveFromBank}!`;
 	}
 
-	await user.removeItemsFromBank(toRemoveFromBank);
-	await user.addItemsToBank({ items: toRemoveFromGear, collectionLog: false });
+	await user.transactItems({ itemsToRemove: toRemoveFromBank, itemsToAdd: toRemoveFromGear });
 	await user.update({
 		[`gear_${gearSetup}`]: gearToEquip
 	});

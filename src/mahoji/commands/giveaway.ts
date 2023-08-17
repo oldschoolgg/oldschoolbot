@@ -7,6 +7,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { channelIsSendable, isModOrAdmin, makeComponents } from '../../lib/util';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -102,7 +103,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 
 			const bank = parseBank({
 				inputStr: options.start.items,
-				inputBank: user.bank,
+				inputBank: user.bankWithGP,
 				excludeItems: user.user.favoriteItems,
 				user,
 				search: options.start.search,
@@ -110,11 +111,11 @@ export const giveawayCommand: OSBMahojiCommand = {
 				maxSize: 70
 			});
 
-			if (!user.bank.has(bank)) {
+			if (!user.bankWithGP.has(bank)) {
 				return "You don't own those items.";
 			}
 
-			if (bank.items().some(i => !i[0].tradeable)) {
+			if (bank.items().some(i => !itemIsTradeable(i[0].id, true))) {
 				return "You can't giveaway untradeable items.";
 			}
 
@@ -132,7 +133,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 			}
 
 			await user.sync();
-			if (!user.bank.has(bank)) {
+			if (!user.bankWithGP.has(bank)) {
 				return "You don't own those items.";
 			}
 
@@ -140,7 +141,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return 'You cannot have a giveaway with no items in it.';
 			}
 
-			const giveawayID = randInt(1, 100_000_000);
+			const giveawayID = randInt(1, 500_000_000);
 
 			const message = await channel.send({
 				content: generateGiveawayContent(user.id, duration.fromNow, []),

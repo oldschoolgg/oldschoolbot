@@ -55,7 +55,8 @@ export const wintertodtTask: MinionTask = {
 				WintertodtCrate.open({
 					points,
 					itemsOwned: user.allItemsOwned.clone().add(loot).bank,
-					skills: user.skillsAsXP
+					skills: user.skillsAsXP,
+					firemakingXP: user.skillsAsXP.firemaking
 				})
 			);
 		}
@@ -116,8 +117,16 @@ export const wintertodtTask: MinionTask = {
 			}
 		}
 
-		xpStr += `, ${await user.addXP({ skillName: SkillsEnum.Woodcutting, amount: wcXpToGive })}`;
-		xpStr += `, ${await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive })}`;
+		xpStr += `, ${await user.addXP({
+			skillName: SkillsEnum.Woodcutting,
+			amount: wcXpToGive,
+			source: 'Wintertodt'
+		})}`;
+		xpStr += `, ${await user.addXP({
+			skillName: SkillsEnum.Firemaking,
+			amount: fmXpToGive,
+			source: 'Wintertodt'
+		})}`;
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		const { itemsAdded, previousCL } = await transactItems({

@@ -27,7 +27,7 @@ export const JewelleryBoxes: PoHObject[] = [
 		name: 'Ornate jewellery box',
 		slot: 'jewellery_box',
 		level: 91,
-		itemCost: new Bank().add('Gold leaf', 2).add('Amulet of glory(4)', 20).add('Ring of wealth (5)'),
+		itemCost: new Bank().add('Gold leaf', 2).add('Amulet of glory(4)', 20).add('Ring of wealth (5)', 20),
 		requiredInPlace: 37_501
 	}
 ];

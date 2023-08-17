@@ -1,3 +1,4 @@
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { EmbedBuilder } from 'discord.js';
 import { shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -14,7 +15,6 @@ import { courses } from '../skilling/skills/agility';
 import creatures from '../skilling/skills/hunter/creatures';
 import { ItemBank, Skills } from '../types';
 import { logError } from './logError';
-import { toTitleCase } from './toTitleCase';
 
 export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const { QP } = user;
@@ -60,7 +60,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const rawBadges = user.user.badges;
 	const badgesStr = rawBadges.map(num => badges[num]).join(' ');
 
-	const embed = new EmbedBuilder().setTitle(`${badgesStr}${user.minionName}`.slice(1, 255)).addFields(
+	const embed = new EmbedBuilder().setTitle(`${badgesStr}${user.minionName}`.slice(0, 255)).addFields(
 		{
 			name: '\u200b',
 			value: ['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
@@ -85,7 +85,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	);
 
 	if (user.isIronman) {
-		embed.setColor(5_460_819);
+		embed.setColor('#535353');
 	}
 
 	const { percent } = calcCLDetails(user);

@@ -1,18 +1,18 @@
 import { Canvas } from '@napi-rs/canvas';
 import { AttachmentBuilder } from 'discord.js';
-import * as fs from 'fs';
 
-import { canvasImageFromBuffer, printWrappedText } from './canvasUtil';
+import { loadAndCacheLocalImage, printWrappedText } from './canvasUtil';
 
-export const textBoxFile = fs.readFileSync('./src/lib/resources/images/textbox.png');
-const mejJalChatHead = fs.readFileSync('./src/lib/resources/images/mejJal.png');
-const janeChatHead = fs.readFileSync('./src/lib/resources/images/jane.png');
-const santaChatHead = fs.readFileSync('./src/lib/resources/images/santa.png');
-const izzyChatHead = fs.readFileSync('./src/lib/resources/images/izzy.png');
-const alryTheAnglerChatHead = fs.readFileSync('./src/lib/resources/images/alryTheAngler.png');
-const ketKehChatHead = fs.readFileSync('./src/lib/resources/images/ketKeh.png');
-const gertrudeChatHead = fs.readFileSync('./src/lib/resources/images/gertrude.png');
-const antiSantaChatHead = fs.readFileSync('./src/lib/resources/images/antisanta.png');
+const textBoxFile = loadAndCacheLocalImage('./src/lib/resources/images/textbox.png');
+const mejJalChatHead = loadAndCacheLocalImage('./src/lib/resources/images/mejJal.png');
+const janeChatHead = loadAndCacheLocalImage('./src/lib/resources/images/jane.png');
+const santaChatHead = loadAndCacheLocalImage('./src/lib/resources/images/santa.png');
+const izzyChatHead = loadAndCacheLocalImage('./src/lib/resources/images/izzy.png');
+const alryTheAnglerChatHead = loadAndCacheLocalImage('./src/lib/resources/images/alryTheAngler.png');
+const ketKehChatHead = loadAndCacheLocalImage('./src/lib/resources/images/ketKeh.png');
+const gertrudeChatHead = loadAndCacheLocalImage('./src/lib/resources/images/gertrude.png');
+const antiSantaChatHead = loadAndCacheLocalImage('./src/lib/resources/images/antisanta.png');
+const bunnyChatHead = loadAndCacheLocalImage('./src/lib/resources/images/bunny.png');
 
 export const chatHeads = {
 	mejJal: mejJalChatHead,
@@ -22,7 +22,8 @@ export const chatHeads = {
 	alry: alryTheAnglerChatHead,
 	ketKeh: ketKehChatHead,
 	gertrude: gertrudeChatHead,
-	antiSanta: antiSantaChatHead
+	antiSanta: antiSantaChatHead,
+	bunny: bunnyChatHead
 };
 
 const names: Record<keyof typeof chatHeads, string> = {
@@ -33,15 +34,16 @@ const names: Record<keyof typeof chatHeads, string> = {
 	alry: 'Alry the Angler',
 	ketKeh: 'Tzhaar-Ket-Keh',
 	gertrude: 'Gertrude',
-	antiSanta: 'Anti-Santa'
+	antiSanta: 'Anti-Santa',
+	bunny: 'Easter Bunny'
 };
 
 export async function newChatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
 	const canvas = new Canvas(519, 142);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
-	const headImage = await canvasImageFromBuffer(chatHeads[head]);
-	const bg = await canvasImageFromBuffer(textBoxFile);
+	const headImage = await chatHeads[head];
+	const bg = await textBoxFile;
 
 	ctx.drawImage(bg, 0, 0);
 	ctx.drawImage(headImage, 28, bg.height / 2 - headImage.height / 2);
