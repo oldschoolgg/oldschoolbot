@@ -11229,6 +11229,86 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "25746": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Lil' maiden",
+    "outputItems": Bank {
+      "bank": {
+        "25748": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25746": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Lil' bloat",
+    "outputItems": Bank {
+      "bank": {
+        "25749": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25746": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Lil' nylo",
+    "outputItems": Bank {
+      "bank": {
+        "25750": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25746": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Lil' sot",
+    "outputItems": Bank {
+      "bank": {
+        "25751": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25746": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Lil' xarp",
+    "outputItems": Bank {
+      "bank": {
+        "25752": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "21748": 1,
       },
       "frozen": false,

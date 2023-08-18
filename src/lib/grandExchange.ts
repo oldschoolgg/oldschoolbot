@@ -12,7 +12,7 @@ import { marketPricemap } from './marketPrices';
 import { RobochimpUser, roboChimpUserFetch } from './roboChimp';
 import { prisma } from './settings/prisma';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
-import { assert, dateFm, generateGrandExchangeID, itemNameFromID, makeComponents, toKMB } from './util';
+import { assert, generateGrandExchangeID, getInterval, itemNameFromID, makeComponents, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
@@ -131,28 +131,28 @@ class GrandExchangeSingleton {
 				{
 					has: () => true,
 					name: 'Base',
-					amount: 2
+					amount: 3
 				},
-				...[100, 250, 1000].map(num => ({
+				...[100, 250, 1000, 2000].map(num => ({
 					has: (user: MUser) => user.totalLevel >= num,
 					name: `${num} Total Level`,
 					amount: 1
 				})),
-				{
+				...[30, 60, 90, 95].map(num => ({
 					has: (_: MUser, robochimpUser: RobochimpUser) =>
-						robochimpUser.osb_cl_percent && robochimpUser.osb_cl_percent >= 30,
-					name: '30% CL Completion',
+						robochimpUser.osb_cl_percent && robochimpUser.osb_cl_percent >= num,
+					name: `${num}% CL Completion`,
 					amount: 1
-				},
-				{
-					has: (_: MUser, robochimpUser: RobochimpUser) => robochimpUser.leagues_points_total >= 10_000,
-					name: '10k Leagues Points',
+				})),
+				...[10_000, 20_000, 30_000].map(num => ({
+					has: (_: MUser, robochimpUser: RobochimpUser) => robochimpUser.leagues_points_total >= num,
+					name: `${num.toLocaleString()} Leagues Points`,
 					amount: 1
-				},
+				})),
 				{
 					has: (user: MUser) => user.perkTier() >= PerkTier.Four,
 					name: 'Tier 3 Patron',
-					amount: 3
+					amount: 4
 				}
 			]
 		}
@@ -189,22 +189,7 @@ class GrandExchangeSingleton {
 	}
 
 	getInterval() {
-		const currentTime = new Date();
-		const currentHour = currentTime.getHours();
-
-		// Find the nearest interval start hour (0, 4, 8, etc.)
-		const startHour = currentHour - (currentHour % 4);
-		const startInterval = new Date(currentTime);
-		startInterval.setHours(startHour, 0, 0, 0);
-
-		const endInterval = new Date(startInterval);
-		endInterval.setHours(startHour + 4);
-
-		return {
-			start: startInterval,
-			end: endInterval,
-			nextResetStr: dateFm(endInterval)
-		};
+		return getInterval(4);
 	}
 
 	async fetchOwnedBank() {
