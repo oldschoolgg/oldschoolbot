@@ -322,7 +322,8 @@ export const farmingTask: MinionTask = {
 			});
 			await user.addXP({
 				skillName: SkillsEnum.Herblore,
-				amount: Math.floor(herbloreXp)
+				amount: Math.floor(herbloreXp),
+				source: 'CleaningHerbsWhileFarming'
 			});
 
 			const newFarmingLevel = user.skillLevel(SkillsEnum.Farming);
