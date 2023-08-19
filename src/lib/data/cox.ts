@@ -202,7 +202,7 @@ export const maxMeleeGear = constructGearSetup({
 	feet: 'Primordial boots',
 	weapon: "Inquisitor's mace",
 	shield: 'Avernic defender',
-	ring: 'Berserker ring(i)'
+	ring: 'Ultor ring'
 });
 const maxMelee = new Gear(maxMeleeGear);
 

@@ -82,6 +82,10 @@ export async function questCommand(user: MUser, channelID: string, name?: string
 			return `You've already completed ${quest.name}.`;
 		}
 
+		if (user.QP < quest.qpReq) {
+			return `You need ${quest.qpReq} QP to do ${quest.name}.`;
+		}
+
 		const duration = quest.calcTime(user);
 
 		await addSubTaskToActivityTask<SpecificQuestOptions>({
