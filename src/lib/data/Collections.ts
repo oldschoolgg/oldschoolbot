@@ -24,7 +24,7 @@ import { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
 import { fetchStatsForCL, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
-import { itemNameFromID, shuffleRandom } from '../util/smallUtils';
+import { shuffleRandom } from '../util/smallUtils';
 import {
 	abyssalSireCL,
 	aerialFishingCL,
