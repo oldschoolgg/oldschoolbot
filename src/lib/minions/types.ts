@@ -11,6 +11,7 @@ import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
+import { calculateSimpleMonsterDeathChance } from '../util';
 import { AttackStyles } from './functions';
 
 export type BankBackground = {
@@ -118,9 +119,7 @@ export interface KillableMonster {
 		items: { boostPercent: number; itemID: number }[];
 	}[];
 	requiredQuests?: QuestID[];
-	deathProps?: {
-		hardness: number;
-	};
+	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
 }
 /*
  * Monsters will have an array of Consumables

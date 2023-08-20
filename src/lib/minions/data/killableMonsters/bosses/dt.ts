@@ -9,6 +9,12 @@ import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { KillableMonster } from '../../../types';
 
+const awakenedDeathProps = {
+	hardness: 0.9,
+	steepness: 0.2,
+	lowestDeathChance: 50
+};
+
 export const desertTreasureKillableBosses: KillableMonster[] = [
 	{
 		id: Monsters.DukeSucellus.id,
@@ -88,7 +94,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		id: Monsters.AwakenedDukeSucellus.id,
 		name: Monsters.AwakenedDukeSucellus.name,
 		aliases: Monsters.AwakenedDukeSucellus.aliases,
-		timeToFinish: Time.Minute * 7.5,
+		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedDukeSucellus,
 		notifyDrops: resolveItems(['Virtus robe top', 'Baron', 'Virtus robe bottom', 'Virtus mask']),
 		qpRequired: 100,
@@ -158,9 +164,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			itemCost: new Bank().add("Awakener's orb"),
 			qtyPerKill: 1
 		},
-		deathProps: {
-			hardness: 0.9
-		}
+		deathProps: awakenedDeathProps
 	},
 	{
 		id: Monsters.TheLeviathan.id,
@@ -241,7 +245,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		id: Monsters.AwakenedTheLeviathan.id,
 		name: Monsters.AwakenedTheLeviathan.name,
 		aliases: Monsters.AwakenedTheLeviathan.aliases,
-		timeToFinish: Time.Minute * 7.5,
+		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedTheLeviathan,
 		notifyDrops: resolveItems(['Virtus robe top', "Lil'viathan", 'Virtus robe bottom', 'Virtus mask']),
 		qpRequired: 100,
@@ -312,9 +316,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			itemCost: new Bank().add("Awakener's orb"),
 			qtyPerKill: 1
 		},
-		deathProps: {
-			hardness: 0.9
-		}
+		deathProps: awakenedDeathProps
 	},
 	{
 		id: Monsters.TheWhisperer.id,
@@ -411,7 +413,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		id: Monsters.AwakenedTheWhisperer.id,
 		name: Monsters.AwakenedTheWhisperer.name,
 		aliases: Monsters.AwakenedTheWhisperer.aliases,
-		timeToFinish: Time.Minute * 7.5,
+		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedTheWhisperer,
 		notifyDrops: resolveItems(['Virtus robe top', 'Wisp', 'Virtus robe bottom', 'Virtus mask']),
 		qpRequired: 100,
@@ -498,9 +500,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			itemCost: new Bank().add("Awakener's orb"),
 			qtyPerKill: 1
 		},
-		deathProps: {
-			hardness: 0.9
-		}
+		deathProps: awakenedDeathProps
 	},
 	{
 		id: Monsters.Vardorvis.id,
@@ -580,7 +580,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		id: Monsters.AwakenedVardorvis.id,
 		name: Monsters.AwakenedVardorvis.name,
 		aliases: Monsters.AwakenedVardorvis.aliases,
-		timeToFinish: Time.Minute * 7.5,
+		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedVardorvis,
 		notifyDrops: resolveItems(['Virtus robe top', 'Baron', 'Virtus robe bottom', 'Virtus mask']),
 		qpRequired: 100,
@@ -650,8 +650,6 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			itemCost: new Bank().add("Awakener's orb"),
 			qtyPerKill: 1
 		},
-		deathProps: {
-			hardness: 0.9
-		}
+		deathProps: awakenedDeathProps
 	}
 ];

@@ -260,11 +260,23 @@ export function getInterval(intervalHours: number) {
 	};
 }
 
-export function calculateSimpleMonsterDeathChance(hardness: number, currentKC: number): number {
-	let baseDeathChance = Math.min(90, 100 * hardness);
-	const maxScalingKC = 5 + 75 * hardness;
+export function calculateSimpleMonsterDeathChance({
+	hardness,
+	currentKC,
+	lowestDeathChance = 1,
+	highestDeathChance = 90,
+	steepness = 0.5
+}: {
+	hardness: number;
+	currentKC: number;
+	lowestDeathChance?: number;
+	highestDeathChance?: number;
+	steepness?: number;
+}): number {
+	let baseDeathChance = Math.min(highestDeathChance, (100 * hardness) / steepness);
+	const maxScalingKC = 5 + (75 * hardness) / steepness;
 	let reductionFactor = Math.min(1, currentKC / maxScalingKC);
-	let deathChance = baseDeathChance - reductionFactor * (baseDeathChance - 1);
+	let deathChance = baseDeathChance - reductionFactor * (baseDeathChance - lowestDeathChance);
 
-	return clamp(deathChance, 1, 90);
+	return clamp(deathChance, lowestDeathChance, highestDeathChance);
 }

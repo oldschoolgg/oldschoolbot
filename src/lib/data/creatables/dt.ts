@@ -59,7 +59,7 @@ const magusRing: Createable[] = [
 const venatorRing: Createable[] = [
 	{
 		name: 'Archer icon',
-		inputItems: new Bank().add('Archer ring'),
+		inputItems: new Bank().add('Archers ring'),
 		outputItems: new Bank().add('Archer icon')
 	},
 	{

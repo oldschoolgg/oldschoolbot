@@ -930,7 +930,7 @@ export async function monsterInfo(user: MUser, name: string): CommandResponse {
 		const maxKillCount = 200;
 		const values: [string, number][] = [];
 		for (let currentKC = 0; currentKC <= maxKillCount; currentKC += 5) {
-			let deathChancePercent = calculateSimpleMonsterDeathChance(monster.deathProps.hardness, currentKC);
+			let deathChancePercent = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC });
 			values.push([currentKC.toString(), round(deathChancePercent, 1)]);
 		}
 		const options: ChartConfiguration = {
