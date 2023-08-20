@@ -3849,10 +3849,10 @@ obliterator@^2.0.1:
   resolved "https://registry.yarnpkg.com/obliterator/-/obliterator-2.0.4.tgz#fa650e019b2d075d745e44f1effeb13a2adbe816"
   integrity sha512-lgHwxlxV1qIg1Eap7LgIeoBWIMFibOjbrYPIPJZcI1mmGAI2m3lNYpK12Y+GBdPQ0U1hRwSord7GIaawz962qQ==
 
-oldschooljs@^2.3.5:
-  version "2.3.5"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.3.5.tgz#debf0faeda1a976383abe51caae26143f470f050"
-  integrity sha512-zZHXG14WxjamjDxoEkPsbpYP9T7VBt0bjO4pGP6/JZ34HDowyTdVBV873uj5OnszCSQqcgW8zasAGJV8pZsS9w==
+oldschooljs@^2.3.6:
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.3.6.tgz#517bb068f10d08f84c5325a01910b1b12798b644"
+  integrity sha512-w71/1gpRf3L9vlJW6ifHA4Cx2Nn5fVIwuqoHCQ4yNPyKz/JQXicZqDrQUDc7WJmLTrdr/ZJxUckBnuoLR7GQ+Q==
   dependencies:
     deepmerge "^4.2.2"
     e "^0.2.32"

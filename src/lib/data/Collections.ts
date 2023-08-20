@@ -1430,4 +1430,3 @@ export const bossCLItems = Object.values({
 })
 	.map(i => i.items)
 	.flat();
-console.log(bossCLItems.map(itemNameFromID));

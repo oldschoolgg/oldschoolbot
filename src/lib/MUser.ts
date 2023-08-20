@@ -490,7 +490,6 @@ GROUP BY data->>'clueID';`);
 			this.cl.items().filter(i => bossCLItems.includes(i[0].id)).length,
 			bossCLItems.length
 		);
-		console.log(`${percentBossCLFinished}%`);
 		return percentBossCLFinished;
 	}
 
