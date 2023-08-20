@@ -916,7 +916,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 25,
-			hasChance: 'Nightmare'
+			hasChance: data => data.type === 'Nightmare' && !(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{
@@ -927,7 +927,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 45,
-			hasChance: 'Nightmare'
+			hasChance: data => data.type === 'Nightmare' && !(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{
@@ -938,9 +938,10 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 10,
-			hasChance: data => {
-				return data.type === 'Nightmare' && (data as NightmareActivityTaskOptions).method === 'solo';
-			}
+			hasChance: data =>
+				data.type === 'Nightmare' &&
+				(data as NightmareActivityTaskOptions).method === 'solo' &&
+				!(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{
@@ -951,9 +952,10 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 1,
-			hasChance: data => {
-				return data.type === 'Nightmare' && (data as NightmareActivityTaskOptions).method === 'solo';
-			}
+			hasChance: data =>
+				data.type === 'Nightmare' &&
+				(data as NightmareActivityTaskOptions).method === 'solo' &&
+				!(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{

@@ -1,6 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
-import { NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
+import { PHOSANI_NIGHTMARE_ID } from '../constants';
 import { barrowsChestCL } from '../data/CollectionsExport';
 import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { Requirements } from '../structures/Requirements';
@@ -414,7 +414,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 22,
-			hasChance: 'Nightmare'
+			hasChance: data => data.type === 'Nightmare' && !(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{
@@ -425,7 +425,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 30,
-			hasChance: 'Nightmare'
+			hasChance: data => data.type === 'Nightmare' && !(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{
@@ -436,7 +436,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 33,
-			hasChance: 'Nightmare'
+			hasChance: data => data.type === 'Nightmare' && !(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{
@@ -447,7 +447,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 22,
-			hasChance: 'Nightmare'
+			hasChance: data => data.type === 'Nightmare' && !(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{

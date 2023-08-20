@@ -3,7 +3,7 @@ import { Monsters } from 'oldschooljs';
 import { demonBaneWeapons, NIGHTMARE_ID } from '../constants';
 import { anglerOutfit } from '../data/CollectionsExport';
 import { Requirements } from '../structures/Requirements';
-import { TemporossActivityTaskOptions, TOAOptions } from '../types/minions';
+import { TOAOptions } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
 import { type CombatAchievement } from './combatAchievements';
 

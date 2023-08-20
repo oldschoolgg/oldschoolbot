@@ -779,7 +779,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 33,
-			hasChance: 'Nightmare'
+			hasChance: data => data.type === 'Nightmare' && !(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{
@@ -790,7 +790,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 33,
-			hasChance: 'Nightmare'
+			hasChance: data => data.type === 'Nightmare' && !(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{
@@ -813,7 +813,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 33,
-			hasChance: 'Nightmare'
+			hasChance: data => data.type === 'Nightmare' && !(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{
