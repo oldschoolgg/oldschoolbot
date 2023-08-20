@@ -3,7 +3,7 @@ import { Prisma, xp_gains_skill_enum } from '@prisma/client';
 import { noOp, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
-import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
+import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
 import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
@@ -11,7 +11,7 @@ import { BitField, MAX_INT_JAVA } from '../../lib/constants';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { UserKourendFavour } from '../../lib/minions/data/kourendFavour';
 import potions from '../../lib/minions/data/potions';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
@@ -23,6 +23,7 @@ import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
 import { stringMatches } from '../../lib/util';
+import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
 import {
 	FarmingPatchName,
 	farmingPatchNames,
@@ -461,6 +462,27 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							max_value: MAX_QP
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'check',
+					description: 'Check something',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'monster_droprates',
+							description: 'Simulation to check droprates on a monster.',
+							required: false,
+							autocomplete: async value => {
+								return killableMonsters
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({
+										name: i.name,
+										value: i.name
+									}));
+							}
+						}
+					]
 				}
 			],
 			run: async ({
@@ -479,12 +501,39 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				forcegrow?: { patch_name: FarmingPatchName };
 				wipe?: { thing: (typeof thingsToWipe)[number] };
 				set?: { qp?: number };
+				check?: { monster_droprates?: string };
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
 				const user = await mUserFetch(userID.toString());
+
+				if (options.check) {
+					if (options.check.monster_droprates) {
+						const monster = killableMonsters.find(m =>
+							stringMatches(m.name, options.check!.monster_droprates)
+						);
+						if (!monster) return 'Invalid monster';
+						const qty = 1_000_000;
+						const loot = monster.table.kill(qty, {});
+						const droprates = calcDropRatesFromBankWithoutUniques(loot, qty);
+						return {
+							files: [
+								{
+									attachment: Buffer.from(`Total Kills: ${qty}
+Total Value of Loot: ${loot.value()}
+GP/hr(roughly): ${toKMB(loot.value() / (monster.timeToFinish * qty))}
+
+Droprates:
+${droprates.join('\n')}`),
+									name: 'monsterinfo.txt'
+								}
+							]
+						};
+					}
+				}
+
 				if (options.set) {
 					const { qp } = options.set;
 					if (qp) {
