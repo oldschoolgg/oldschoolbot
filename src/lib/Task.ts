@@ -73,6 +73,7 @@ import { sawmillTask } from '../tasks/minions/sawmillActivity';
 import { shootingStarTask } from '../tasks/minions/shootingStarsActivity';
 import { smeltingTask } from '../tasks/minions/smeltingActivity';
 import { smithingTask } from '../tasks/minions/smithingActivity';
+import { specificQuestTask } from '../tasks/minions/specificQuestActivity';
 import { strongholdTask } from '../tasks/minions/strongholdOfSecurityActivity';
 import { tiaraRunecraftTask } from '../tasks/minions/tiaraRunecraftActivity';
 import { tokkulShopTask } from '../tasks/minions/tokkulShopActivity';
@@ -173,7 +174,8 @@ export const tasks: MinionTask[] = [
 	shadesOfMortonTask,
 	toaTask,
 	underwaterAgilityThievingTask,
-	strongholdTask
+	strongholdTask,
+	specificQuestTask
 ];
 
 export async function syncActivityCache() {
