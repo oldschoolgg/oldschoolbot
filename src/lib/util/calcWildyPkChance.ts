@@ -98,15 +98,17 @@ export async function calcWildyPKChance(
 		}
 	}
 
-	chanceString += `\n**Death Chance:** ${deathChance.toFixed(2)}% per pk encounter (${deathChanceFromGear.toFixed(
-		2
-	)}% from defensive gear (weight 60% magic, 40% ranged, 20% melee)${
-		deathChanceFromLevels > 0 ? `, ${deathChanceFromLevels.toFixed(2)}% from magic+defence+hitpoints level` : ''
-	}, ${
+	chanceString += `\n**Death Chance:** ${deathChance.toFixed(2)}% per pk encounter (${
 		monster.pkBaseDeathChance ?? 0
-	}% as default pk death chance. ${hasSupplies}x for supply multiplier, ${hasOverheads}x for prayer Level 43+, -${jukingExperience}% death chance for monster KC/Juking experience, ${wildyMultiMultiplier}x death multiplier for being in${
+	}% Base chance, ${
+		deathChanceFromLevels > 0 ? `${deathChanceFromLevels.toFixed(2)}% from low combat levels, ` : ''
+	}${deathChanceFromGear.toFixed(
+		2
+	)}% from gear (weight 60% magic, 40% ranged, 20% melee), ${hasSupplies}x from anti-pk supplies, ${hasOverheads}x from overhead prayers, ${
+		(100 - jukingExperience) / 100
+	}x for KC/juking experience, ${wildyMultiMultiplier}x for being in${
 		wildyMultiMultiplier === 1 ? ' no' : ''
-	} multi.)`;
+	} multi)`;
 
 	return [pkCount, died, chanceString];
 }

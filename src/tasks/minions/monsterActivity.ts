@@ -3,7 +3,7 @@ import { deepClone, percentChance, Time } from 'e';
 import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
-import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+// import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -12,7 +12,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, isOnSlayerTask } from '../../lib/slayer/slayerUtil';
-import { Gear } from '../../lib/structures/Gear';
+// import { Gear } from '../../lib/structures/Gear';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { calculateSimpleMonsterDeathChance, hasSkillReqs, roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
@@ -74,19 +74,20 @@ export const monsterTask: MinionTask = {
 						collectionLog: true,
 						itemsToAdd: antiPKSupplies
 					});
-					messages.push(`Here is your remaining anti-pk supplies: ${itemsAdded}.`);
+					messages.push(`Here is your remaining anti-pk supplies: ${itemsAdded}`);
 				}
 			}
 
 			// Handle lost kc quantity because of pkers
-			const lostQuantity = Math.round(
-				(quantity / (Math.round(duration / Time.Minute) * (died ? 1 : 2))) * pkEncounters
+			const lostQuantity = Math.max(
+				Math.round((quantity / (Math.round(duration / Time.Minute) * (died ? 1 : 2))) * pkEncounters),
+				1
 			);
 			if (lostQuantity > 0) {
 				quantity -= lostQuantity;
 				quantity = Math.max(0, quantity);
 				messages.push(
-					`You missed out on ${lostQuantity}x kills because of pk encounters${died ? ' and death' : ''}.`
+					`You missed out on ${lostQuantity}x kills because of pk encounters${died ? ' and death' : ''}`
 				);
 			}
 
@@ -106,9 +107,15 @@ export const monsterTask: MinionTask = {
 				});
 
 				// const image = await generateGearImage(user, new Gear(calc.newGear), 'wildy', null);
-				await user.update({
-					gear_wildy: calc.newGear as Prisma.InputJsonObject
-				});
+				let reEquipedItems = false;
+				if (!user.bank.has(calc.lostItems)) {
+					await user.update({
+						gear_wildy: calc.newGear as Prisma.InputJsonObject
+					});
+				} else {
+					await user.specialRemoveItems(calc.lostItems);
+					reEquipedItems = true;
+				}
 
 				// Track items lost
 				await trackLoot({
@@ -143,9 +150,11 @@ export const monsterTask: MinionTask = {
 				messages.push(
 					`${
 						hasPrayerLevel && !protectItem
-							? "Oh no! While running for your life, you panicked, got smited and couldn't protect a 4th item."
+							? "Oh no! While running for your life, you panicked, got smited and couldn't protect a 4th item. "
 							: ''
-					} You died, you lost a lot of loot, and these equipped items: ${calc.lostItems}..`
+					}You died, you lost a lot of loot, and these equipped items: ${calc.lostItems}..${
+						reEquipedItems ? ' Your minion reequipped lost items.' : ''
+					}`
 				);
 			}
 		}

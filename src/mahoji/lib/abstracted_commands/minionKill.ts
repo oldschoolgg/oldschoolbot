@@ -707,7 +707,7 @@ export async function minionKillCommand(
 			}
 		} else {
 			lootToRemove.add(antiPKSupplies);
-			pkString += `\n Your minion brought ${antiPKSupplies} to survive potential pkers. (Handed back after trip if lucky)`;
+			pkString += `Your minion brought ${antiPKSupplies} to survive potential pkers. (Handed back after trip if lucky)\n`;
 		}
 		const [pkCount, died, chanceString] = await calcWildyPKChance(
 			user,
