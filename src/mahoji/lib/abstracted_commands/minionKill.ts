@@ -18,7 +18,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { PvMMethod } from '../../../lib/constants';
+import { PeakTier, PvMMethod } from '../../../lib/constants';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
@@ -69,6 +69,7 @@ import { calcWildyPKChance } from '../../../lib/util/calcWildyPkChance';
 import { generateChart } from '../../../lib/util/chart';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahojiSettings';
 import { Peak } from './../../../lib/tickers';
@@ -667,6 +668,59 @@ export async function minionKillCommand(
 		messages.push(degradeResult.userMessage);
 	}
 
+	let wildyPeak = null;
+	let pkString = '';
+	let thePkCount = 0;
+	let hasDied = false;
+	let hasWildySupplies = undefined;
+
+	if (monster.wildy) {
+		const date = new Date().getTime();
+		const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
+		for (const peak of cachedPeakInterval) {
+			if (peak.startTime < date && peak.finishTime > date) {
+				wildyPeak = peak;
+				break;
+			}
+		}
+		if (wildyPeak?.peakTier === PeakTier.High) {
+			if (interaction) {
+				await handleMahojiConfirmation(
+					interaction,
+					`Are you sure you want to kill ${monster.name} during high peak time? PKers are more active.`
+				);
+			}
+		}
+
+		const antiPKSupplies = new Bank()
+			.add('Saradomin brew(4)', Math.max(1, Math.floor(duration / (4 * Time.Minute))))
+			.add('Super restore(4)', Math.max(1, Math.floor(duration / (8 * Time.Minute))))
+			.add('Cooked karambwan', Math.max(1, Math.floor(duration / (4 * Time.Minute))));
+		hasWildySupplies = true;
+		if (!user.bank.has(antiPKSupplies)) {
+			hasWildySupplies = false;
+			if (interaction) {
+				await handleMahojiConfirmation(
+					interaction,
+					`Are you sure you want to kill ${monster.name} without anti-pk supplies? You should bring at least ${antiPKSupplies} on this trip for safety to not die and potentially get smited.`
+				);
+			}
+		} else {
+			lootToRemove.add(antiPKSupplies);
+			pkString += `\n Your minion brought ${antiPKSupplies} to survive potential pkers. (Handed back after trip if lucky)`;
+		}
+		const [pkCount, died, chanceString] = await calcWildyPKChance(
+			user,
+			wildyPeak!,
+			monster,
+			duration,
+			hasWildySupplies
+		);
+		thePkCount = pkCount;
+		hasDied = died;
+		pkString += chanceString;
+	}
+
 	if (lootToRemove.length > 0) {
 		updateBankSetting('economyStats_PVMCost', lootToRemove);
 		await user.specialRemoveItems(lootToRemove);
@@ -688,26 +742,6 @@ export async function minionKillCommand(
 		});
 	}
 
-	let wildyPeak = null;
-	let pkChanceString = '';
-	let thePkCount = 0;
-	let hasDied = false;
-
-	if (monster.wildy) {
-		const date = new Date().getTime();
-		const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
-		for (const peak of cachedPeakInterval) {
-			if (peak.startTime < date && peak.finishTime > date) {
-				wildyPeak = peak;
-				break;
-			}
-		}
-		const [pkCount, died, chanceString] = await calcWildyPKChance(user, wildyPeak!, monster, duration, true);
-		thePkCount = pkCount;
-		hasDied = died;
-		pkChanceString = chanceString;
-	}
-
 	await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
 		monsterID: monster.id,
 		userID: user.id,
@@ -718,7 +752,10 @@ export async function minionKillCommand(
 		usingCannon: !usingCannon ? undefined : usingCannon,
 		cannonMulti: !cannonMulti ? undefined : cannonMulti,
 		chinning: !chinning ? undefined : chinning,
-		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage
+		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage,
+		died: !hasDied ? undefined : hasDied,
+		pkEncounters: !thePkCount ? undefined : thePkCount,
+		hasWildySupplies: !hasWildySupplies ? undefined : hasWildySupplies
 	});
 	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 		duration
@@ -740,12 +777,8 @@ export async function minionKillCommand(
 		response += `\n**Food:** ${foodStr}\n`;
 	}
 
-	if (pkChanceString.length > 0) {
-		response += `\n${pkChanceString}`;
-		response += `\n ${thePkCount} pk encounters.`;
-		if (hasDied) {
-			response += '\n Died to a pker.';
-		}
+	if (pkString.length > 0) {
+		response += `\n${pkString}`;
 	}
 
 	return response;

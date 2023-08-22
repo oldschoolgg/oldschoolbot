@@ -42,9 +42,7 @@ export async function calcWildyPKChance(
 		}
 	}
 
-	let chanceString = `**PK Chance:** ${pkChance.toFixed(3)}% per min (${peakInfluence}x because of ${
-		peak.peakTier
-	} peak time.)`;
+	let chanceString = `**PK Chance:** ${pkChance.toFixed(2)}% per min (${peak.peakTier} peak time)`;
 
 	let died = false;
 	let deathChance = monster.pkBaseDeathChance ?? 0;
@@ -100,7 +98,7 @@ export async function calcWildyPKChance(
 		}
 	}
 
-	chanceString += `\n**Death Chance:** ${deathChance.toFixed(3)}% per pk encounter (${deathChanceFromGear.toFixed(
+	chanceString += `\n**Death Chance:** ${deathChance.toFixed(2)}% per pk encounter (${deathChanceFromGear.toFixed(
 		2
 	)}% from defensive gear (weight 60% magic, 40% ranged, 20% melee)${
 		deathChanceFromLevels > 0 ? `, ${deathChanceFromLevels.toFixed(2)}% from magic+defence+hitpoints level` : ''
