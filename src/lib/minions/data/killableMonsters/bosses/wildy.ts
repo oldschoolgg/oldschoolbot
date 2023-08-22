@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
@@ -13,19 +13,89 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		name: Monsters.Callisto.name,
 		aliases: Monsters.Callisto.aliases,
 		table: Monsters.Callisto,
-		timeToFinish: Time.Minute * 4.4,
+		timeToFinish: Time.Minute * 5,
 		emoji: '<:Callisto_cub:324127376273440768>',
 		wildy: true,
+		wildyMulti: true,
+		pkActivityRating: 9,
+		pkBaseDeathChance: 10,
+
+		// Check respawn time
+		groupKillable: true,
+		respawnTime: Time.Minute * 0.29,
+
+		itemCost: {
+			itemCost: new Bank().add('Blighted ancient ice sack', 1),
+			qtyPerMinute: 4,
+			alternativeConsumables: [
+				{
+					itemCost: new Bank().add('Blood rune', 2).add('Death rune', 4).add('Water rune', 6),
+					qtyPerMinute: 4
+				},
+				{ itemCost: new Bank().add('Stamina potion(4)', 1), qtyPerMinute: 0.125 }
+			]
+		},
 
 		difficultyRating: 7,
 		notifyDrops: resolveItems(['Callisto cub']),
 		qpRequired: 0,
-		itemInBankBoosts: [
+		equippedItemBoosts: [
 			{
-				[itemID("Craw's bow")]: 15,
-				[itemID('Webweaver bow')]: 25
+				items: [
+					{ boostPercent: 4, itemID: itemID('Masori mask (f)') },
+					{ boostPercent: 2, itemID: itemID('Armadyl helmet') },
+					{ boostPercent: 1, itemID: itemID("Karil's coif") }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 3, itemID: itemID('Necklace of anguish') },
+					{ boostPercent: 1, itemID: itemID('Amulet of fury') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [{ boostPercent: 2, itemID: itemID("Ava's assembler") }],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Masori body (f)') },
+					{ boostPercent: 3, itemID: itemID('Masori body') },
+					{ boostPercent: 2, itemID: itemID('Armadyl chestplate') },
+					{ boostPercent: 1, itemID: itemID("Karil's leathertop") }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 14, itemID: itemID('Webweaver bow') },
+					{ boostPercent: 8, itemID: itemID("Craw's bow") },
+					{ boostPercent: 5, itemID: itemID('Zaryte crossbow') },
+					{ boostPercent: 3, itemID: itemID('Armadyl crossbow') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [{ boostPercent: 1, itemID: itemID('Barrows gloves') }],
+				gearSetup: 'wildy'
 			}
 		],
+		minimumGearRequirements: {
+			wildy: {
+				[GearStat.AttackRanged]: 150,
+				[GearStat.DefenceCrush]: 84,
+				[GearStat.DefenceMagic]: 83
+			}
+		},
+		levelRequirements: {
+			prayer: 44,
+			hitpoints: 60,
+			defence: 60,
+			ranged: 65,
+			magic: 70
+		},
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.225,
 		healAmountNeeded: 13 * 20,
@@ -37,19 +107,85 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		name: Monsters.Artio.name,
 		aliases: Monsters.Artio.aliases,
 		table: Monsters.Artio,
-		timeToFinish: Time.Minute * 2,
+		timeToFinish: Time.Minute * 2.3,
 		emoji: '<:Callisto_cub:324127376273440768>',
 		wildy: true,
+		wildyMulti: false,
+		pkActivityRating: 10,
+		pkBaseDeathChance: 10,
+
+		itemCost: {
+			itemCost: new Bank().add('Blighted ancient ice sack', 1),
+			qtyPerMinute: 4,
+			alternativeConsumables: [
+				{
+					itemCost: new Bank().add('Blood rune', 2).add('Death rune', 4).add('Water rune', 6),
+					qtyPerMinute: 4
+				},
+				{ itemCost: new Bank().add('Stamina potion(4)', 1), qtyPerMinute: 0.125 }
+			]
+		},
 
 		difficultyRating: 2,
 		notifyDrops: resolveItems(['Callisto cub']),
 		qpRequired: 0,
-		itemInBankBoosts: [
+		equippedItemBoosts: [
 			{
-				[itemID("Craw's bow")]: 15,
-				[itemID('Webweaver bow')]: 25
+				items: [
+					{ boostPercent: 4, itemID: itemID('Masori mask (f)') },
+					{ boostPercent: 2, itemID: itemID('Armadyl helmet') },
+					{ boostPercent: 1, itemID: itemID("Karil's coif") }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 3, itemID: itemID('Necklace of anguish') },
+					{ boostPercent: 1, itemID: itemID('Amulet of fury') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [{ boostPercent: 2, itemID: itemID("Ava's assembler") }],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Masori body (f)') },
+					{ boostPercent: 3, itemID: itemID('Masori body') },
+					{ boostPercent: 2, itemID: itemID('Armadyl chestplate') },
+					{ boostPercent: 1, itemID: itemID("Karil's leathertop") }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 14, itemID: itemID('Webweaver bow') },
+					{ boostPercent: 8, itemID: itemID("Craw's bow") },
+					{ boostPercent: 5, itemID: itemID('Zaryte crossbow') },
+					{ boostPercent: 3, itemID: itemID('Armadyl crossbow') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [{ boostPercent: 1, itemID: itemID('Barrows gloves') }],
+				gearSetup: 'wildy'
 			}
 		],
+		minimumGearRequirements: {
+			wildy: {
+				[GearStat.AttackRanged]: 150,
+				[GearStat.DefenceCrush]: 84,
+				[GearStat.DefenceMagic]: 83
+			}
+		},
+		levelRequirements: {
+			prayer: 44,
+			hitpoints: 60,
+			defence: 60,
+			ranged: 65,
+			magic: 70
+		},
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		healAmountNeeded: 8 * 20,
 		attackStyleToUse: GearStat.AttackRanged,
@@ -60,19 +196,78 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		name: Monsters.Vetion.name,
 		aliases: Monsters.Vetion.aliases,
 		table: Monsters.Vetion,
-		timeToFinish: Time.Minute * 2.9,
+		timeToFinish: Time.Minute * 3.05,
 		emoji: '<:Vetion_jr:324127378999738369>',
 		wildy: true,
+		wildyMulti: true,
+		pkActivityRating: 9,
+		pkBaseDeathChance: 9,
+
+		// Check respawn time
+		groupKillable: true,
+		respawnTime: Time.Minute * 0.33,
 
 		difficultyRating: 7,
 		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
-		itemInBankBoosts: [
+		equippedItemBoosts: [
 			{
-				[itemID("Viggora's chainmace")]: 15,
-				[itemID('Ursine chainmace')]: 25
+				items: [{ boostPercent: 2, itemID: itemID('Helm of neitiznot') }],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 3, itemID: itemID('Infernal cape') },
+					{ boostPercent: 1, itemID: itemID('Fire cape') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Torva platebody') },
+					{ boostPercent: 2, itemID: itemID("Inquisitor's hauberk") }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 14, itemID: itemID('Ursine chainmace') },
+					{ boostPercent: 8, itemID: itemID("Viggora's chainmace") },
+					{ boostPercent: 5, itemID: itemID("Inquisitor's mace") },
+					{ boostPercent: 3, itemID: itemID('Abyssal bludgeon') },
+					{ boostPercent: 2, itemID: itemID('Sarachnis cudgel') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Avernic defender') },
+					{ boostPercent: 3, itemID: itemID('Dragon defender') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [{ boostPercent: 1, itemID: itemID('Barrows gloves') }],
+				gearSetup: 'wildy'
 			}
+			// Add boost for Ultor ring in future
 		],
+		minimumGearRequirements: {
+			wildy: {
+				[GearStat.AttackCrush]: 73,
+				[GearStat.MeleeStrength]: 80,
+				[GearStat.DefenceSlash]: 110,
+				[GearStat.DefenceMagic]: 30
+			}
+		},
+		levelRequirements: {
+			attack: 75,
+			strength: 75,
+			prayer: 44,
+			hitpoints: 70,
+			defence: 70,
+			magic: 70
+		},
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 630,
 		combatXpMultiplier: 1.225,
@@ -88,16 +283,71 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		timeToFinish: Time.Minute * 2,
 		emoji: '<:Vetion_jr:324127378999738369>',
 		wildy: true,
+		wildyMulti: false,
+		pkActivityRating: 10,
+		pkBaseDeathChance: 9,
 
 		difficultyRating: 2,
 		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
-		itemInBankBoosts: [
+		equippedItemBoosts: [
 			{
-				[itemID("Viggora's chainmace")]: 15,
-				[itemID('Ursine chainmace')]: 25
+				items: [{ boostPercent: 2, itemID: itemID('Helm of neitiznot') }],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 3, itemID: itemID('Infernal cape') },
+					{ boostPercent: 1, itemID: itemID('Fire cape') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Torva platebody') },
+					{ boostPercent: 2, itemID: itemID("Inquisitor's hauberk") }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 14, itemID: itemID('Ursine chainmace') },
+					{ boostPercent: 8, itemID: itemID("Viggora's chainmace") },
+					{ boostPercent: 5, itemID: itemID("Inquisitor's mace") },
+					{ boostPercent: 3, itemID: itemID('Abyssal bludgeon') },
+					{ boostPercent: 2, itemID: itemID('Sarachnis cudgel') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Avernic defender') },
+					{ boostPercent: 3, itemID: itemID('Dragon defender') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [{ boostPercent: 1, itemID: itemID('Barrows gloves') }],
+				gearSetup: 'wildy'
 			}
+			// Add boost for Ultor ring in future
 		],
+		minimumGearRequirements: {
+			wildy: {
+				[GearStat.AttackCrush]: 73,
+				[GearStat.MeleeStrength]: 80,
+				[GearStat.DefenceSlash]: 110,
+				[GearStat.DefenceMagic]: 30
+			}
+		},
+		levelRequirements: {
+			attack: 75,
+			strength: 75,
+			prayer: 44,
+			hitpoints: 70,
+			defence: 70,
+			magic: 70
+		},
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 420,
 		healAmountNeeded: 8 * 20,
@@ -109,21 +359,98 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		name: Monsters.Venenatis.name,
 		aliases: Monsters.Venenatis.aliases,
 		table: Monsters.Venenatis,
-		timeToFinish: Time.Minute * 3.2,
+		timeToFinish: Time.Minute * 3.8,
 		emoji: '<:Venenatis_spiderling:324127379092144129>',
 		wildy: true,
+		wildyMulti: true,
+		pkActivityRating: 9,
+		pkBaseDeathChance: 9,
+
+		// Check respawn time
+		groupKillable: true,
+		respawnTime: Time.Minute * 0.28,
+
+		itemCost: {
+			itemCost: new Bank().add('Bronze knife', 1),
+			qtyPerMinute: 0.8,
+			alternativeConsumables: [
+				{ itemCost: new Bank().add('Iron knife', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Steel knife', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Black knife', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Mithril knife', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Adamant knife', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Rune knife', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Dragon knife', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Rune knife(p++)', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Chinchompa', 1), qtyPerMinute: 0.4 },
+				{ itemCost: new Bank().add('Red Chinchompa', 1), qtyPerMinute: 0.4 },
+				{ itemCost: new Bank().add('Black Chinchompa', 1), qtyPerMinute: 0.4 }
+			]
+		},
 
 		difficultyRating: 6,
 		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
-		itemInBankBoosts: [
+		equippedItemBoosts: [
 			{
-				[itemID("Craw's bow")]: 5,
-				[itemID('Webweaver bow')]: 10,
-				[itemID("Viggora's chainmace")]: 15,
-				[itemID('Ursine chainmace')]: 25
+				items: [{ boostPercent: 2, itemID: itemID('Helm of neitiznot') }],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 3, itemID: itemID('Mythical cape') },
+					{ boostPercent: 2, itemID: itemID('Infernal cape') },
+					{ boostPercent: 1, itemID: itemID('Fire cape') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Torva platebody') },
+					{ boostPercent: 3, itemID: itemID("Inquisitor's hauberk") }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 14, itemID: itemID('Ursine chainmace') },
+					{ boostPercent: 8, itemID: itemID("Viggora's chainmace") },
+					{ boostPercent: 5, itemID: itemID("Inquisitor's mace") },
+					{ boostPercent: 3, itemID: itemID('Abyssal bludgeon') },
+					{ boostPercent: 2, itemID: itemID('Sarachnis cudgel') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Avernic defender') },
+					{ boostPercent: 3, itemID: itemID('Dragon defender') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [{ boostPercent: 1, itemID: itemID('Barrows gloves') }],
+				gearSetup: 'wildy'
 			}
 		],
+		minimumGearRequirements: {
+			wildy: {
+				[GearStat.AttackCrush]: 73,
+				[GearStat.MeleeStrength]: 80,
+				[GearStat.DefenceStab]: 100,
+				[GearStat.DefenceRanged]: 99,
+				[GearStat.DefenceMagic]: 30
+			}
+		},
+		levelRequirements: {
+			attack: 75,
+			strength: 75,
+			prayer: 44,
+			hitpoints: 70,
+			defence: 70,
+			magic: 70
+		},
+
 		defaultAttackStyles: [SkillsEnum.Attack],
 		combatXpMultiplier: 1.525,
 		healAmountNeeded: 13 * 20,
@@ -135,21 +462,93 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		name: Monsters.Spindel.name,
 		aliases: Monsters.Spindel.aliases,
 		table: Monsters.Spindel,
-		timeToFinish: Time.Minute * 1.77,
+		timeToFinish: Time.Minute * 2.3,
 		emoji: '<:Venenatis_spiderling:324127379092144129>',
 		wildy: true,
+		wildyMulti: false,
+		pkActivityRating: 10,
+		pkBaseDeathChance: 9,
+
+		itemCost: {
+			itemCost: new Bank().add('Bronze knife', 1),
+			qtyPerMinute: 0.8,
+			alternativeConsumables: [
+				{ itemCost: new Bank().add('Iron knife', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Steel knife', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Black knife', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Mithril knife', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Adamant knife', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Rune knife', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Dragon knife', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Rune knife(p++)', 1), qtyPerMinute: 0.8 },
+				{ itemCost: new Bank().add('Chinchompa', 1), qtyPerMinute: 0.4 },
+				{ itemCost: new Bank().add('Red Chinchompa', 1), qtyPerMinute: 0.4 },
+				{ itemCost: new Bank().add('Black Chinchompa', 1), qtyPerMinute: 0.4 }
+			]
+		},
 
 		difficultyRating: 2,
 		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
-		itemInBankBoosts: [
+		equippedItemBoosts: [
 			{
-				[itemID("Craw's bow")]: 5,
-				[itemID('Webweaver bow')]: 10,
-				[itemID("Viggora's chainmace")]: 15,
-				[itemID('Ursine chainmace')]: 25
+				items: [{ boostPercent: 2, itemID: itemID('Helm of neitiznot') }],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 3, itemID: itemID('Mythical cape') },
+					{ boostPercent: 2, itemID: itemID('Infernal cape') },
+					{ boostPercent: 1, itemID: itemID('Fire cape') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Torva platebody') },
+					{ boostPercent: 3, itemID: itemID("Inquisitor's hauberk") }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 14, itemID: itemID('Ursine chainmace') },
+					{ boostPercent: 8, itemID: itemID("Viggora's chainmace") },
+					{ boostPercent: 5, itemID: itemID("Inquisitor's mace") },
+					{ boostPercent: 3, itemID: itemID('Abyssal bludgeon') },
+					{ boostPercent: 2, itemID: itemID('Sarachnis cudgel') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 5, itemID: itemID('Avernic defender') },
+					{ boostPercent: 3, itemID: itemID('Dragon defender') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [{ boostPercent: 1, itemID: itemID('Barrows gloves') }],
+				gearSetup: 'wildy'
 			}
 		],
+		minimumGearRequirements: {
+			wildy: {
+				[GearStat.AttackCrush]: 73,
+				[GearStat.MeleeStrength]: 80,
+				[GearStat.DefenceStab]: 100,
+				[GearStat.DefenceRanged]: 99,
+				[GearStat.DefenceMagic]: 30
+			}
+		},
+		levelRequirements: {
+			attack: 75,
+			strength: 75,
+			prayer: 44,
+			hitpoints: 70,
+			defence: 70,
+			magic: 70
+		},
 		defaultAttackStyles: [SkillsEnum.Attack],
 		healAmountNeeded: 8 * 20,
 		attackStyleToUse: GearStat.AttackCrush,
@@ -173,7 +572,8 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID("Craw's bow")]: 25
+				[itemID("Craw's bow")]: 20,
+				[itemID('Webweaver bow')]: 25
 			},
 			{
 				[itemID('Archers ring')]: 3,
@@ -202,7 +602,8 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID("Craw's bow")]: 25
+				[itemID("Craw's bow")]: 20,
+				[itemID('Webweaver bow')]: 25
 			},
 			{ [itemID("Karil's leathertop")]: 3 },
 			{ [itemID("Karil's leatherskirt")]: 3 }

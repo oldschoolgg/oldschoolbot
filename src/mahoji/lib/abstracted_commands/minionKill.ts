@@ -63,10 +63,12 @@ import {
 } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { calcWildyPKChance } from '../../../lib/util/calcWildyPkChance';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahojiSettings';
+import { Peak } from './../../../lib/tickers';
 import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
@@ -667,6 +669,26 @@ export async function minionKillCommand(
 		});
 	}
 
+	let wildyPeak = null;
+	let pkChanceString = '';
+	let thePkCount = 0;
+	let hasDied = false;
+
+	if (monster.wildy) {
+		const date = new Date().getTime();
+		const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
+		for (const peak of cachedPeakInterval) {
+			if (peak.startTime < date && peak.finishTime > date) {
+				wildyPeak = peak;
+				break;
+			}
+		}
+		const [pkCount, died, chanceString] = await calcWildyPKChance(user, wildyPeak!, monster, duration, true);
+		thePkCount = pkCount;
+		hasDied = died;
+		pkChanceString = chanceString;
+	}
+
 	await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
 		monsterID: monster.id,
 		userID: user.id,
@@ -697,6 +719,14 @@ export async function minionKillCommand(
 
 	if (foodStr) {
 		response += `\n**Food:** ${foodStr}\n`;
+	}
+
+	if (pkChanceString.length > 0) {
+		response += `\n${pkChanceString}`;
+		response += `\n ${thePkCount} pk encounters.`;
+		if (hasDied) {
+			response += '\n Died to a pker.';
+		}
 	}
 
 	return response;
