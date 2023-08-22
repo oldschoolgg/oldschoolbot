@@ -163,7 +163,7 @@ export const maxMeleeOver300Gear = constructGearSetup({
 	feet: 'Primordial boots',
 	weapon: "Osmumten's fang",
 	shield: 'Avernic defender',
-	ring: 'Berserker ring(i)'
+	ring: 'Ultor ring'
 });
 
 const SERP_HELM_CHARGES_PER_HOUR = 600;
