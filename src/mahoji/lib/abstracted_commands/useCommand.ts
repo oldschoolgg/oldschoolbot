@@ -53,6 +53,26 @@ const usableUnlocks: UsableUnlock[] = [
 		item: getOSItem("Saradomin's light"),
 		bitfield: BitField.HasSaradominsLight,
 		resultMessage: "You used your Saradomin's light."
+	},
+	{
+		item: getOSItem('Frozen tablet'),
+		bitfield: BitField.UsedFrozenTablet,
+		resultMessage: 'You used your Frozen tablet.'
+	},
+	{
+		item: getOSItem('Scarred tablet'),
+		bitfield: BitField.UsedScarredTablet,
+		resultMessage: 'You used your Scarred tablet.'
+	},
+	{
+		item: getOSItem('Sirenic tablet'),
+		bitfield: BitField.UsedSirenicTablet,
+		resultMessage: 'You used your Sirenic tablet.'
+	},
+	{
+		item: getOSItem('Strangled tablet'),
+		bitfield: BitField.UsedStrangledTablet,
+		resultMessage: 'You used your Strangled tablet.'
 	}
 ];
 for (const usableUnlock of usableUnlocks) {

@@ -1,10 +1,11 @@
 import { randInt } from 'e';
 
-import { Emoji, MAX_QP } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { MAX_GLOBAL_QP } from '../../mahoji/lib/abstracted_commands/questCommand';
 
 export const questingTask: MinionTask = {
 	type: 'Questing',
@@ -23,9 +24,9 @@ export const questingTask: MinionTask = {
 
 		const newQP = currentQP + qpReceived;
 
-		// The minion could be at (MAX_QP - 1) QP, but gain 4 QP here, so we'll trim that down from 4 to 1.
-		if (newQP > MAX_QP) {
-			qpReceived -= newQP - MAX_QP;
+		// The minion could be at (MAX_GLOBAL_QP - 1) QP, but gain 4 QP here, so we'll trim that down from 4 to 1.
+		if (newQP > MAX_GLOBAL_QP) {
+			qpReceived -= newQP - MAX_GLOBAL_QP;
 		}
 
 		let str = `${user}, ${
@@ -34,9 +35,9 @@ export const questingTask: MinionTask = {
 			currentQP + qpReceived
 		}.`;
 
-		const hasMaxQP = newQP >= MAX_QP;
+		const hasMaxQP = newQP >= MAX_GLOBAL_QP;
 		if (hasMaxQP) {
-			str += `\n\nYou have achieved the maximum amount of ${MAX_QP} Quest Points!`;
+			str += `\n\nYou have achieved the maximum amount of ${MAX_GLOBAL_QP} Quest Points!`;
 		}
 
 		await user.update({
