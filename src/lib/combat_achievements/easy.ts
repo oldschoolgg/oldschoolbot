@@ -8,10 +8,11 @@ import { type CombatAchievement } from './combatAchievements';
 
 export const easyCombatAchievements: CombatAchievement[] = [
 	{
+		id: 1,
 		name: 'Noxious Foe',
 		type: 'kill_count',
+		monster: 'Aberrant Spectre',
 		desc: 'Kill an Aberrant Spectre.',
-		id: 1,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.AberrantSpectre.id]: 1
@@ -19,10 +20,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 2,
 		name: 'Barrows Novice',
 		type: 'kill_count',
+		monster: 'Barrows',
 		desc: 'Open the Barrows chest 10 times.',
-		id: 2,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Barrows.id]: 10
@@ -30,20 +32,22 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 3,
 		name: 'Defence? What Defence?',
 		type: 'restriction',
+		monster: 'Barrows',
 		desc: 'Kill any Barrows Brother using only magical damage.',
-		id: 3,
 		rng: {
 			chancePerKill: 4,
 			hasChance: isCertainMonsterTrip(Monsters.Barrows.id)
 		}
 	},
 	{
+		id: 4,
 		name: 'Big, Black and Fiery',
 		type: 'kill_count',
+		monster: 'Black Dragon',
 		desc: 'Kill a Black Dragon.',
-		id: 4,
 		requirements: new Requirements().add({
 			OR: [
 				{
@@ -60,10 +64,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 5,
 		name: 'The Demonic Punching Bag',
 		type: 'kill_count',
+		monster: 'Bloodveld',
 		desc: 'Kill a Bloodveld.',
-		id: 5,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Bloodveld.id]: 1
@@ -71,20 +76,22 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 6,
 		name: 'Preparation Is Key',
 		type: 'perfection',
+		monster: 'Bryophyta',
 		desc: 'Kill Bryophyta without suffering any poison damage.',
-		id: 6,
 		rng: {
 			chancePerKill: 15,
 			hasChance: isCertainMonsterTrip(Monsters.Bryophyta.id)
 		}
 	},
 	{
+		id: 7,
 		name: 'Fighting as Intended II',
 		type: 'restriction',
+		monster: 'Bryophyta',
 		desc: 'Kill Bryophyta on a free to play world.',
-		id: 7,
 		rng: {
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.Bryophyta.id)(data) &&
@@ -93,10 +100,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		}
 	},
 	{
+		id: 8,
 		name: 'Bryophyta Novice',
 		type: 'kill_count',
+		monster: 'Bryophyta',
 		desc: 'Kill Bryophyta once.',
-		id: 8,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Bryophyta.id]: 1
@@ -104,20 +112,22 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 9,
 		name: 'A Slow Death',
 		type: 'restriction',
+		monster: 'Bryophyta',
 		desc: 'Kill Bryophyta with either poison or venom being the final source of damage.',
-		id: 9,
 		rng: {
 			chancePerKill: 5,
 			hasChance: isCertainMonsterTrip(Monsters.Bryophyta.id)
 		}
 	},
 	{
+		id: 10,
 		name: 'Protection from Moss',
 		type: 'mechanical',
+		monster: 'Bryophyta',
 		desc: 'Kill Bryophyta with the Protect from Magic prayer active.',
-		id: 10,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Bryophyta.id]: 1
@@ -125,10 +135,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 11,
 		name: 'Deranged Archaeologist Novice',
 		type: 'kill_count',
+		monster: 'Deranged Archaeologist',
 		desc: 'Kill the Deranged Archaeologist 10 times.',
-		id: 11,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.DerangedArchaeologist.id]: 10
@@ -136,10 +147,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 12,
 		name: 'The Walking Volcano',
 		type: 'kill_count',
+		monster: 'Fire Giant',
 		desc: 'Kill a Fire Giant.',
-		id: 12,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.FireGiant.id]: 1
@@ -147,10 +159,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 13,
 		name: 'Giant Mole Novice',
 		type: 'kill_count',
+		monster: 'Giant Mole',
 		desc: 'Kill the Giant Mole 10 times.',
-		id: 13,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.GiantMole.id]: 10
@@ -158,10 +171,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 14,
 		name: 'A Greater Foe',
 		type: 'kill_count',
+		monster: 'Greater Demon',
 		desc: 'Kill a Greater Demon.',
-		id: 14,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.GreaterDemon.id]: 1
@@ -169,10 +183,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 15,
 		name: 'Not So Great After All',
 		type: 'restriction',
+		monster: 'Greater Demon',
 		desc: 'Finish off a Greater Demon with a demonbane weapon.',
-		id: 15,
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -181,10 +196,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		}
 	},
 	{
+		id: 16,
 		name: "A Demon's Best Friend",
 		type: 'kill_count',
+		monster: 'Hellhound',
 		desc: 'Kill a Hellhound.',
-		id: 16,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Hellhound.id]: 1
@@ -192,10 +208,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 17,
 		name: 'King Black Dragon Novice',
 		type: 'kill_count',
+		monster: 'King Black Dragon',
 		desc: 'Kill the King Black Dragon 10 times.',
-		id: 17,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.KingBlackDragon.id]: 10
@@ -203,10 +220,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 18,
 		name: 'A Scaley Encounter',
 		type: 'kill_count',
+		monster: 'Lizardman Shaman',
 		desc: 'Kill a Lizardman Shaman.',
-		id: 18,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.LizardmanShaman.id]: 1
@@ -214,20 +232,22 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 19,
 		name: 'Shayzien Protector',
 		type: 'perfection',
+		monster: 'Lizardman Shaman',
 		desc: 'Kill a Lizardman Shaman in Molch which has not dealt damage to anyone. (excluding its Spawns)',
-		id: 19,
 		rng: {
 			chancePerKill: 15,
 			hasChance: isCertainMonsterTrip(Monsters.LizardmanShaman.id)
 		}
 	},
 	{
+		id: 20,
 		name: 'Into the Den of Giants',
 		type: 'kill_count',
+		monster: 'Other',
 		desc: 'Kill a Hill Giant, Moss Giant and Fire Giant in the Giant Cave within the Shayzien region.',
-		id: 20,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.HillGiant.id]: 1,
@@ -237,10 +257,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 21,
 		name: 'Obor Novice',
 		type: 'kill_count',
+		monster: 'Obor',
 		desc: 'Kill Obor once.',
-		id: 21,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Obor.id]: 1
@@ -248,10 +269,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 22,
 		name: 'Fighting as Intended',
 		type: 'restriction',
+		monster: 'Obor',
 		desc: 'Kill Obor on a free to play world.',
-		id: 22,
 		rng: {
 			hasChance: (data, user) =>
 				isCertainMonsterTrip(Monsters.Obor.id)(data) &&
@@ -260,20 +282,22 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		}
 	},
 	{
+		id: 23,
 		name: 'Sleeping Giant',
 		type: 'mechanical',
+		monster: 'Obor',
 		desc: 'Kill Obor whilst he is immobilized.',
-		id: 23,
 		rng: {
 			chancePerKill: 10,
 			hasChance: isCertainMonsterTrip(Monsters.Obor.id)
 		}
 	},
 	{
+		id: 24,
 		name: 'Sarachnis Novice',
 		type: 'kill_count',
+		monster: 'Sarachnis',
 		desc: 'Kill Sarachnis 10 times.',
-		id: 24,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Sarachnis.id]: 10
@@ -281,40 +305,44 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 25,
 		name: 'Master of Buckets',
 		type: 'mechanical',
+		monster: 'Tempoross',
 		desc: 'Extinguish at least 5 fires during a single Tempoross fight.',
-		id: 25,
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'Tempoross'
 		}
 	},
 	{
+		id: 26,
 		name: 'Calm Before the Storm',
 		type: 'mechanical',
+		monster: 'Tempoross',
 		desc: 'Repair either a mast or a totem pole.',
-		id: 26,
 		rng: {
 			chancePerKill: 3,
 			hasChance: 'Tempoross'
 		}
 	},
 	{
+		id: 27,
 		name: 'Fire in the Hole!',
 		type: 'mechanical',
+		monster: 'Tempoross',
 		desc: 'Attack Tempoross from both sides by loading both cannons on both ships.',
-		id: 27,
 		rng: {
 			chancePerKill: 3,
 			hasChance: 'Tempoross'
 		}
 	},
 	{
+		id: 28,
 		name: 'Tempoross Novice',
 		type: 'kill_count',
+		monster: 'Tempoross',
 		desc: 'Subdue Tempoross 5 times.',
-		id: 28,
 		requirements: new Requirements().add({
 			minigames: {
 				tempoross: 5
@@ -322,10 +350,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 29,
 		name: 'Handyman',
 		type: 'mechanical',
+		monster: 'Wintertodt',
 		desc: 'Repair a brazier which has been destroyed by the Wintertodt.',
-		id: 29,
 		requirements: new Requirements().add({
 			minigames: {
 				wintertodt: 1
@@ -333,10 +362,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 30,
 		name: 'Cosy',
 		type: 'restriction',
+		monster: 'Wintertodt',
 		desc: 'Subdue the Wintertodt with four pieces of warm equipment equipped.',
-		id: 30,
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -348,20 +378,22 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		}
 	},
 	{
+		id: 31,
 		name: 'Mummy!',
 		type: 'mechanical',
+		monster: 'Wintertodt',
 		desc: 'Heal a pyromancer after they have fallen.',
-		id: 31,
 		rng: {
 			chancePerKill: 15,
 			hasChance: 'Wintertodt'
 		}
 	},
 	{
+		id: 32,
 		name: 'Wintertodt Novice',
 		type: 'kill_count',
+		monster: 'Wintertodt',
 		desc: 'Subdue the Wintertodt 5 times.',
-		id: 32,
 		requirements: new Requirements().add({
 			minigames: {
 				wintertodt: 5
@@ -369,10 +401,11 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		})
 	},
 	{
+		id: 33,
 		name: 'A Slithery Encounter',
 		type: 'kill_count',
+		monster: 'Wyrm',
 		desc: 'Kill a Wyrm.',
-		id: 33,
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Wyrm.id]: 1

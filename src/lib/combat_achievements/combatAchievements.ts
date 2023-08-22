@@ -25,6 +25,7 @@ export type CombatAchievement = {
 	id: number;
 	name: string;
 	type: CAType;
+	monster: string;
 	desc: string;
 	activityType?: activity_type_enum;
 } & (
