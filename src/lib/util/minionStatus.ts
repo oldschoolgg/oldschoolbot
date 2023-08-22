@@ -4,6 +4,7 @@ import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
+import { quests } from '../../mahoji/lib/abstracted_commands/questCommand';
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
@@ -69,6 +70,7 @@ import {
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
+	SpecificQuestOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
 	TOAOptions,
@@ -651,6 +653,12 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently doing the Stronghold of Security! The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'SpecificQuest': {
+			const data = currentTask as SpecificQuestOptions;
+			return `${name} is currently doing the ${
+				quests.find(i => i.id === data.questID)!.name
+			}! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'Easter':
 		case 'HalloweenEvent':

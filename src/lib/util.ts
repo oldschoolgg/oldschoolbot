@@ -17,8 +17,7 @@ import {
 	Message,
 	MessageEditOptions,
 	SelectMenuInteraction,
-	TextChannel,
-	time
+	TextChannel
 } from 'discord.js';
 import { chunk, notEmpty, objectEntries, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -450,10 +449,6 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	await fn();
 	stopwatch.stop();
 	debugLog(`Finished ${name} in ${stopwatch.toString()}`);
-}
-
-export function dateFm(date: Date) {
-	return `${time(date, 'T')} (${time(date, 'R')})`;
 }
 
 export function getInteractionTypeName(type: InteractionType) {

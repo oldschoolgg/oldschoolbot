@@ -1,6 +1,6 @@
 import { userMention } from '@discordjs/builders';
 import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
-import { objectEntries, sumArr, uniqueArr } from 'e';
+import { calcWhatPercent, objectEntries, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -10,6 +10,7 @@ import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
 import { badges, BitField, Emoji, projectiles, usernameCache } from './constants';
+import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear/types';
@@ -250,6 +251,11 @@ export class MUserClass {
 		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
 	}
 
+	async fetchMonsterScores() {
+		const stats = await this.fetchStats({ monster_scores: true });
+		return stats.monster_scores as ItemBank;
+	}
+
 	attackClass(): 'range' | 'mage' | 'melee' {
 		const styles = this.getAttackStyles();
 		if (styles.includes(SkillsEnum.Ranged)) return 'range';
@@ -477,6 +483,14 @@ GROUP BY data->>'clueID';`);
 		const blowpipe = this.user.blowpipe as any as BlowpipeData;
 		validateBlowpipeData(blowpipe);
 		return blowpipe;
+	}
+
+	percentOfBossCLFinished() {
+		const percentBossCLFinished = calcWhatPercent(
+			this.cl.items().filter(i => bossCLItems.includes(i[0].id)).length,
+			bossCLItems.length
+		);
+		return percentBossCLFinished;
 	}
 
 	async addItemsToCollectionLog(itemsToAdd: Bank) {

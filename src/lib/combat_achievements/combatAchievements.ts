@@ -134,7 +134,6 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data
 			if (!hasChance) continue;
 
 			for (let i = 0; i < quantity; i++) {
-				console.log(`${user.rawUsername} is rolling 1 in ${task.rng.chancePerKill} for ${task.name}`);
 				if (roll(task.rng.chancePerKill)) {
 					completedTasks.push(task);
 					break taskLoop;
