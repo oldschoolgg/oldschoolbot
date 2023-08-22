@@ -104,9 +104,9 @@ export async function calcWildyPKChance(
 		deathChanceFromLevels > 0 ? `${deathChanceFromLevels.toFixed(2)}% from low combat levels, ` : ''
 	}${deathChanceFromGear.toFixed(
 		2
-	)}% from gear (weight 60% magic, 40% ranged, 20% melee), ${hasSupplies}x from anti-pk supplies, ${hasOverheads}x from overhead prayers, ${
+	)}x from wildy gear (weight 60% magic, 40% ranged, 20% melee), ${hasSupplies}x from anti-pk supplies, ${hasOverheads}x from overhead prayers, ${
 		(100 - jukingExperience) / 100
-	}x for KC/juking experience, ${wildyMultiMultiplier}x for being in${
+	}x from KC/juking experience, ${wildyMultiMultiplier}x from being in${
 		wildyMultiMultiplier === 1 ? ' no' : ''
 	} multi)`;
 

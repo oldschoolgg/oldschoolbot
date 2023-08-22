@@ -3,7 +3,6 @@ import { deepClone, percentChance, Time } from 'e';
 import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
-// import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -12,7 +11,6 @@ import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, isOnSlayerTask } from '../../lib/slayer/slayerUtil';
-// import { Gear } from '../../lib/structures/Gear';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { calculateSimpleMonsterDeathChance, hasSkillReqs, roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
@@ -46,38 +44,37 @@ export const monsterTask: MinionTask = {
 		const currentKCs = await user.fetchMonsterScores();
 
 		// Wilderness PK Encounters and PK Deaths
+		// Handle remaining anti-pk supplies if any
+		if (hasWildySupplies) {
+			const antiPKSupplies = new Bank()
+				.add('Saradomin brew(4)', Math.max(1, Math.floor(duration / (4 * Time.Minute))))
+				.add('Super restore(4)', Math.max(1, Math.floor(duration / (8 * Time.Minute))))
+				.add('Cooked karambwan', Math.max(1, Math.floor(duration / (4 * Time.Minute))));
 
-		if (pkEncounters && pkEncounters > 0) {
-			// Handle remaining anti-pk supplies if any
-			if (hasWildySupplies) {
-				const antiPKSupplies = new Bank()
-					.add('Saradomin brew(4)', Math.max(1, Math.floor(duration / (4 * Time.Minute))))
-					.add('Super restore(4)', Math.max(1, Math.floor(duration / (8 * Time.Minute))))
-					.add('Cooked karambwan', Math.max(1, Math.floor(duration / (4 * Time.Minute))));
-
-				for (let i = 0; i < pkEncounters; i++) {
-					if (percentChance(2) || died) {
-						antiPKSupplies.bank = {};
-						break;
-					} else if (percentChance(10)) {
-						antiPKSupplies
-							.remove('Saradomin brew(4)', 1)
-							.remove('Super restore(4)', 1)
-							.remove('Cooked karambwan', 1);
-					}
-				}
-
-				// Return remaining anti-pk supplies
-				if (antiPKSupplies.amount('Saradomin brew(4)') > 0) {
-					const { itemsAdded } = await transactItems({
-						userID: user.id,
-						collectionLog: true,
-						itemsToAdd: antiPKSupplies
-					});
-					messages.push(`Here is your remaining anti-pk supplies: ${itemsAdded}`);
+			for (let i = 0; i < (pkEncounters ?? -1); i++) {
+				if (percentChance(2) || died) {
+					antiPKSupplies.bank = {};
+					break;
+				} else if (percentChance(10)) {
+					antiPKSupplies
+						.remove('Saradomin brew(4)', 1)
+						.remove('Super restore(4)', 1)
+						.remove('Cooked karambwan', 1);
 				}
 			}
 
+			// Return remaining anti-pk supplies
+			if (antiPKSupplies.amount('Saradomin brew(4)') > 0) {
+				const { itemsAdded } = await transactItems({
+					userID: user.id,
+					collectionLog: true,
+					itemsToAdd: antiPKSupplies
+				});
+				messages.push(`Here is your remaining anti-pk supplies: ${itemsAdded}`);
+			}
+		}
+
+		if (pkEncounters && pkEncounters > 0) {
 			// Handle lost kc quantity because of pkers
 			const lostQuantity = Math.max(
 				Math.round((quantity / (Math.round(duration / Time.Minute) * (died ? 1 : 2))) * pkEncounters),
@@ -106,7 +103,6 @@ export const monsterTask: MinionTask = {
 					skulled: false
 				});
 
-				// const image = await generateGearImage(user, new Gear(calc.newGear), 'wildy', null);
 				let reEquipedItems = false;
 				if (!user.bank.has(calc.lostItems)) {
 					await user.update({
