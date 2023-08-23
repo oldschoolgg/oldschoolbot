@@ -2,7 +2,7 @@ import { randArrItem, roll } from 'e';
 import { Bank, Items, LootTable } from 'oldschooljs';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 
-import { Emoji } from './constants';
+import { Emoji, OSB_VIRTUS_IDS } from './constants';
 import {
 	allPetIDs,
 	chambersOfXericCL,
@@ -663,7 +663,8 @@ const cantBeDropped = resolveItems([
 	27_783,
 	27_785,
 	27_788,
-	27_790
+	27_790,
+	...OSB_VIRTUS_IDS
 ]);
 
 export const tmbTable: number[] = [];

@@ -3,6 +3,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { VirtusTable } from 'oldschooljs/dist/simulation/subtables/VirtusTable';
 
 import { QuestID } from '../../../../../mahoji/lib/abstracted_commands/questCommand';
+import { OSB_VIRTUS_IDS } from '../../../../constants';
 import { dukeSucellusCL, theLeviathanCL } from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
@@ -658,4 +659,4 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 ];
 
 // Remove virtus from drop tables
-removeItemsFromLootTable(VirtusTable, [26_241, 26_243, 26_245]);
+removeItemsFromLootTable(VirtusTable, OSB_VIRTUS_IDS);

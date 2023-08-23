@@ -801,3 +801,5 @@ export function herbertDroprate(herbloreXP: number, itemLevel: number) {
 	}
 	return petChance;
 }
+
+export const OSB_VIRTUS_IDS = [26_241, 26_243, 26_245];
