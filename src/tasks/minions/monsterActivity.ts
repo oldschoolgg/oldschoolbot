@@ -176,6 +176,7 @@ export const monsterTask: MinionTask = {
 		];
 		const isAwakened = awakenedMonsters.includes(monsterID);
 		if (
+			quantity > 0 &&
 			!user.owns('Ancient blood ornament kit') &&
 			awakenedMonsters.every(id => Boolean(currentKCs[id])) &&
 			isAwakened
