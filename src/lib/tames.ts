@@ -27,7 +27,15 @@ import { KillableMonster } from './minions/types';
 import { prisma } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import Tanning from './skilling/skills/crafting/craftables/tanning';
-import { assert, calcPerHour, channelIsSendable, formatDuration, itemNameFromID, roll } from './util';
+import {
+	assert,
+	calcPerHour,
+	calculateSimpleMonsterDeathChance,
+	channelIsSendable,
+	formatDuration,
+	itemNameFromID,
+	roll
+} from './util';
 import getOSItem from './util/getOSItem';
 import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot';
 import itemID from './util/itemID';
@@ -149,7 +157,7 @@ export const igneArmors = [
 
 export type TameKillableMonster = {
 	loot: (opts: { quantity: number; tame: Tame }) => Bank;
-	deathChance?: (opts: { tame: Tame }) => number;
+	deathChance?: (opts: { tame: Tame; kc: number }) => number;
 	oriWorks?: boolean;
 	mustBeAdult?: boolean;
 	minArmorTier?: Item;
@@ -269,6 +277,12 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 			...i,
 			loot: ({ quantity }) => {
 				return i.table.kill(quantity, {});
+			},
+			deathChance: ({ kc }) => {
+				if (i.deathProps) {
+					return calculateSimpleMonsterDeathChance({ ...i.deathProps, currentKC: kc });
+				}
+				return 0;
 			}
 		})
 	)

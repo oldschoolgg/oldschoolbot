@@ -946,7 +946,8 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		]
 	});
 
-	const deathChance = monster.deathChance ? monster.deathChance({ tame }) : 0;
+	const kcs = await getIgneTameKC(tame);
+	const deathChance = monster.deathChance ? monster.deathChance({ tame, kc: kcs.idBank[monster.id] ?? 0 }) : 0;
 	let realDuration: number = fakeDuration;
 	let deaths = 0;
 	for (let i = 0; i < quantity; i++) {
