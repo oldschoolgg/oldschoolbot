@@ -26,11 +26,11 @@ export const wildyKillableMonsters: KillableMonster[] = [
 
 		itemCost: {
 			itemCost: new Bank().add('Blighted ancient ice sack', 1),
-			qtyPerMinute: 4,
+			qtyPerMinute: 3,
 			alternativeConsumables: [
 				{
 					itemCost: new Bank().add('Blood rune', 2).add('Death rune', 4).add('Water rune', 6),
-					qtyPerMinute: 4
+					qtyPerMinute: 3
 				},
 				{ itemCost: new Bank().add('Stamina potion(4)', 1), qtyPerMinute: 0.125 }
 			]
@@ -116,11 +116,11 @@ export const wildyKillableMonsters: KillableMonster[] = [
 
 		itemCost: {
 			itemCost: new Bank().add('Blighted ancient ice sack', 1),
-			qtyPerMinute: 4,
+			qtyPerMinute: 2.5,
 			alternativeConsumables: [
 				{
 					itemCost: new Bank().add('Blood rune', 2).add('Death rune', 4).add('Water rune', 6),
-					qtyPerMinute: 4
+					qtyPerMinute: 2.5
 				},
 				{ itemCost: new Bank().add('Stamina potion(4)', 1), qtyPerMinute: 0.125 }
 			]
