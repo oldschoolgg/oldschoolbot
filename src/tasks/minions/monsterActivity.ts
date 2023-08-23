@@ -149,7 +149,7 @@ export const monsterTask: MinionTask = {
 							? "Oh no! While running for your life, you panicked, got smited and couldn't protect a 4th item. "
 							: ''
 					}You died, you lost a lot of loot, and these equipped items: ${calc.lostItems}..${
-						reEquipedItems ? ' Your minion reequipped lost items.' : ''
+						reEquipedItems ? ' Your minion equips similar lost items from bank.' : ''
 					}`
 				);
 			}
