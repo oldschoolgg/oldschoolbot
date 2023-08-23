@@ -50,7 +50,7 @@ export const phosaniBISGear = new Gear({
 	hands: 'Ferocious gloves',
 	legs: "Inquisitor's plateskirt",
 	feet: 'Primordial boots',
-	ring: 'Berserker ring(i)',
+	ring: 'Ultor ring',
 	weapon: "Inquisitor's mace",
 	shield: 'Avernic defender',
 	ammo: "Rada's blessing 4"

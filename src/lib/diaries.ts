@@ -2,8 +2,8 @@ import { objectEntries } from 'e';
 import { Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { MAX_REAL_QP } from './constants';
-import { MinigameName } from './settings/settings';
+import { MAX_QP } from '../mahoji/lib/abstracted_commands/questCommand';
+import type { MinigameName } from './settings/minigames';
 import Skillcapes from './skilling/skillcapes';
 import { courses } from './skilling/skills/agility';
 import { ItemBank, Skills } from './types';
@@ -483,13 +483,13 @@ export const FaladorDiary: Diary = {
 			thieving: 13,
 			woodcutting: 75
 		},
-		qp: MAX_REAL_QP,
+		qp: MAX_QP,
 		collectionLogReqs: resolveItems(['Air rune', 'Saradomin brew(3)']),
 		customReq: async (user, summary) => {
 			if (summary) return [false, 'Quest point cape or Skill cape.'];
 			const userBank = user.bank;
 			const skills = user.skillsAsLevels;
-			if (userBank.has('Quest point cape') && user.QP >= MAX_REAL_QP) return [true];
+			if (userBank.has('Quest point cape') && user.QP >= MAX_QP) return [true];
 			for (const cape of Skillcapes) {
 				if ((userBank.has(cape.trimmed) || userBank.has(cape.untrimmed)) && skills[cape.skill] >= 99) {
 					return [true];
@@ -875,7 +875,7 @@ export const LumbridgeDraynorDiary: Diary = {
 			woodcutting: 75
 		},
 		collectionLogReqs: resolveItems(['Magic logs', 'Water rune', 'Adamant platebody']),
-		qp: MAX_REAL_QP
+		qp: MAX_QP
 	}
 };
 

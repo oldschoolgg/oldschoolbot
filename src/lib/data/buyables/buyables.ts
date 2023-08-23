@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import { chompyHats, MAX_QP } from '../../constants';
+import { MAX_QP } from '../../../mahoji/lib/abstracted_commands/questCommand';
+import { chompyHats } from '../../constants';
 import { diaries, userhasDiaryTier } from '../../diaries';
 import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';

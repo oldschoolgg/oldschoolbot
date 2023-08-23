@@ -102,7 +102,12 @@ export const tripHandlers = {
 		commandName: 'm',
 		args: () => ({})
 	},
-	[activity_type_enum.FishingContest]: {
+	[activity_type_enum.FishingContest]: { commandName: 'm', args: () => ({}) },
+	[activity_type_enum.SpecificQuest]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.HalloweenEvent]: {
 		commandName: 'm',
 		args: () => ({})
 	},

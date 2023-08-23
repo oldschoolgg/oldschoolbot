@@ -14,6 +14,7 @@ interface IXPLamp {
 	amount: number;
 	name: string;
 	minimumLevel: number;
+	allowedSkills?: SkillsEnum[];
 }
 
 export const XPLamps: IXPLamp[] = [
@@ -40,6 +41,21 @@ export const XPLamps: IXPLamp[] = [
 		amount: 50_000,
 		name: 'Antique lamp 4',
 		minimumLevel: 70
+	},
+	{
+		itemID: 28_409,
+		amount: 100_000,
+		name: 'Ancient lamp',
+		minimumLevel: 60,
+		allowedSkills: [
+			SkillsEnum.Attack,
+			SkillsEnum.Strength,
+			SkillsEnum.Defence,
+			SkillsEnum.Hitpoints,
+			SkillsEnum.Ranged,
+			SkillsEnum.Magic,
+			SkillsEnum.Prayer
+		]
 	},
 	// BSO Lamps
 	{
@@ -140,6 +156,7 @@ export const Lampables: IXPObject[] = [
 			const skills: Skills = {};
 			const requirements: Skills = {};
 			for (const skill of objectValues(SkillsEnum)) {
+				if (lamp.allowedSkills && !lamp.allowedSkills.includes(skill)) continue;
 				skills[skill] = lamp.amount * data.quantity;
 				requirements[skill] = lamp.minimumLevel;
 			}

@@ -5,6 +5,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
 import { MoktangTaskOptions } from '../../mahoji/lib/abstracted_commands/moktangCommand';
+import { quests } from '../../mahoji/lib/abstracted_commands/questCommand';
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { bossEvents } from '../bossEvents';
 import { ClueTiers } from '../clues/clueTiers';
@@ -79,6 +80,7 @@ import {
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
+	SpecificQuestOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
 	TinkeringWorkshopOptions,
@@ -767,6 +769,12 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently collecting ingredients, the trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'SpecificQuest': {
+			const data = currentTask as SpecificQuestOptions;
+			return `${name} is currently doing the ${
+				quests.find(i => i.id === data.questID)!.name
+			}! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'HalloweenMiniMinigame':
 		case 'Easter':

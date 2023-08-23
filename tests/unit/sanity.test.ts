@@ -131,7 +131,6 @@ describe('Sanity', () => {
 			'Ancient godsword',
 			'Seed pack',
 			27_499,
-			27_853,
 			27_828,
 			'Paint box',
 			'Ruby Red paint can'

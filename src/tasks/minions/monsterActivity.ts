@@ -21,7 +21,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, isOnSlayerTask } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { assert, clAdjustedDroprate, roll } from '../../lib/util';
+import { assert, calculateSimpleMonsterDeathChance, clAdjustedDroprate, roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -153,9 +153,12 @@ export async function clueUpgraderEffect(user: MUser, loot: Bank, messages: stri
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
 	async run(data: MonsterActivityTaskOptions) {
-		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
+		let { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const fullMonster = Monsters.get(monsterID);
+
+		const messages: string[] = [];
+
 		const user = await mUserFetch(userID);
 		if (monster.name === 'Koschei the deathless' && !roll(5000)) {
 			sendToChannelID(channelID, {
@@ -164,6 +167,39 @@ export const monsterTask: MinionTask = {
 		}
 
 		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
+		const currentKCs = await user.fetchMonsterScores();
+
+		let deaths = 0;
+		if (monster.deathProps) {
+			const currentKC = currentKCs[monsterID];
+			const deathChance = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC });
+			for (let i = 0; i < quantity; i++) {
+				if (percentChance(deathChance)) {
+					deaths++;
+				}
+			}
+		}
+		quantity -= deaths;
+
+		const awakenedMonsters = [
+			Monsters.AwakenedDukeSucellus.id,
+			Monsters.AwakenedTheLeviathan.id,
+			Monsters.AwakenedTheWhisperer.id,
+			Monsters.AwakenedVardorvis.id
+		];
+		const isAwakened = awakenedMonsters.includes(monsterID);
+		if (
+			!user.owns('Ancient blood ornament kit') &&
+			awakenedMonsters.every(id => Boolean(currentKCs[id])) &&
+			isAwakened
+		) {
+			messages.push('You received an **Ancient blood ornament kit**!');
+			await user.addItemsToBank({
+				items: new Bank().add('Ancient blood ornament kit', 1),
+				collectionLog: !user.cl.has('Ancient blood ornament kit')
+			});
+		}
+
 		const { newKC } = await user.incrementKC(monsterID, quantity);
 
 		// Abyssal set bonuses -- grants the user a few extra kills
@@ -237,7 +273,6 @@ export const monsterTask: MinionTask = {
 		if (hasKourendHard) await ashSanctifierEffect(user, loot, duration, xpRes);
 
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
-		const messages: string[] = [];
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
 			` Your ${monster.name} KC is now ${newKC}.\n${xpRes}\n`;
@@ -436,6 +471,9 @@ export const monsterTask: MinionTask = {
 			});
 		}
 
+		if (deaths > 0) {
+			messages.push(`You died ${deaths}x times.`);
+		}
 		if (monster.effect) {
 			await monster.effect({
 				user,

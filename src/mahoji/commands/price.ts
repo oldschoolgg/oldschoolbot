@@ -22,7 +22,7 @@ export const priceCommand: OSBMahojiCommand = {
 		const item = getItem(options.item);
 		if (!item || secretItems.includes(item.id)) return "Couldn't find that item.";
 
-		const priceOfItem = item.price;
+		const { basePrice: priceOfItem } = sellPriceOfItem(item);
 
 		const embed = new EmbedBuilder()
 			.setTitle(item.name)

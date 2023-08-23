@@ -5,8 +5,8 @@ exports[`BSO Collection Log Groups/Categories 1`] = `
 Achievement Diary (48)
 Aerial Fishing (9)
 Alchemical Hydra (11)
-All Pets (52)
-All Pets (52)
+All Pets (56)
+All Pets (56)
 Balthazar's Big Bonanza (26)
 Barbarian Assault (11)
 Barrows Chests (25)
@@ -41,7 +41,7 @@ Cooking (28)
 Corporeal Beast (8)
 Crafting (175)
 Crazy archaeologist (3)
-Creatables (654)
+Creatables (670)
 Creature Creation (7)
 Creature Creation (7)
 Custom Pets (40)
@@ -51,6 +51,7 @@ Dagannoth Kings (10)
 Daily (29)
 Depths of Atlantis (14)
 Divine Dominion (16)
+Duke Sucellus (5)
 Dungeoneering (45)
 Dyed Items (83)
 Easter 2022 (3)
@@ -151,7 +152,9 @@ Thanksgiving 2021 (5)
 The Fight Caves (2)
 The Gauntlet (5)
 The Inferno (7)
+The Leviathan (7)
 The Nightmare (12)
+The Whisperer (7)
 Theatre of Blood (22)
 Thermonuclear smoke devil (5)
 Tinkering Workshop (7)
@@ -161,6 +164,7 @@ Tormented Demons (6)
 Treebeard (10)
 Trouble Brewing (34)
 TzHaar (10)
+Vardorvis (7)
 Vasa Magus (5)
 Venenatis (4)
 Vet'ion (4)
@@ -371,6 +375,7 @@ Attas seed
 Average lamp
 Avernic defender hilt
 Avocado seed
+Awakener's orb
 Baby chinchompa
 Baby duckling
 Baby guthix raptor
@@ -413,6 +418,7 @@ Bandos stole
 Bandos tassets
 Banshee slayer helm
 Banshee's mask
+Baron
 Barronite guard
 Barronite handle
 Barronite head
@@ -435,6 +441,7 @@ Beekeeper's top
 Beginner rumble greegree
 Beginner wand
 Beginner's tackle box
+Bellator vestige
 Berserker necklace ornament kit
 Berserker ring
 Big banana
@@ -506,6 +513,7 @@ Black wizard robe (g)
 Black wizard robe (t)
 Blacksmith's helm
 Blood dye
+Blood quartz
 Blood shard
 Bloodhound
 Bloodsoaked feather
@@ -596,6 +604,7 @@ Bucket helm
 Bucket helm (g)
 Builders supply crate
 Burnt page
+Butch
 Cabbage round shield
 Cache of runes
 Callisto cub
@@ -646,6 +655,7 @@ Chompy bird hat (ogre yeoman)
 Chompy bird hat (woodsman)
 Chompy bird hat (yeoman)
 Chompy chick
+Chromium ingot
 Climbing boots (g)
 Clown set
 Clue hunter boots
@@ -830,11 +840,13 @@ Evil chicken feet
 Evil chicken head
 Evil chicken legs
 Evil chicken wings
+Executioner's axe head
 Experimental note
 Expert mining gloves
 Expert ninja rumble greegree
 Explorer backpack
 Eye of the corruptor
+Eye of the duke
 Fancy tiara
 Farmer's boots
 Farmer's boro trousers
@@ -876,6 +888,7 @@ Frog token
 Frostbite
 Frozen cache
 Frozen key
+Frozen tablet
 Frozen whip mix
 Fury ornament kit
 Fuzzy dice
@@ -1235,6 +1248,7 @@ Leggings (yellow)
 Leprechaun hat
 Lesser demon champion scroll
 Lesser demon mask
+Leviathan's lure
 Light bow tie
 Light frame
 Light infinity colour kit
@@ -1251,6 +1265,7 @@ Lil' nylo
 Lil' sot
 Lil' xarp
 Lil' zik
+Lil'viathan
 Little nightmare
 Long bone
 Lost bag
@@ -1668,6 +1683,7 @@ Saradomin robe top
 Saradomin stole
 Saradomin sword
 Saradomin's light
+Scarred tablet
 Scorpia's offspring
 Scribbled note
 Scroll of cleansing
@@ -1691,6 +1707,7 @@ Seers ring
 Seren halo
 Serpentine visage
 Shadow dye
+Shadow quartz
 Shaman mask
 Shark jaw
 Shark tooth
@@ -1744,6 +1761,8 @@ Sinhaza shroud tier 2
 Sinhaza shroud tier 3
 Sinhaza shroud tier 4
 Sinhaza shroud tier 5
+Siren's staff
+Sirenic tablet
 Skeletal visage
 Skeleton champion scroll
 Skeleton monkey
@@ -1762,6 +1781,7 @@ Smiths gloves
 Smiths trousers
 Smiths tunic
 Smoke battlestaff
+Smoke quartz
 Smolcano
 Smouldering stone
 Soaked page
@@ -1802,6 +1822,7 @@ Steel plateskirt (g)
 Steel plateskirt (t)
 Steve
 Strange old lockpick
+Strangled tablet
 Strength amulet (t)
 Studded body (g)
 Studded body (t)
@@ -1874,6 +1895,7 @@ Tzhaar-ket-om
 Tzhaar-ket-om ornament kit
 TzKal-Zuk's skin
 Tzrek-jad
+Ultor vestige
 Uncharged trident
 Uncut onyx
 Unholy blessing
@@ -1881,6 +1903,7 @@ Unidentified minerals
 Unsired
 Uri's hat
 Venator shard
+Venator vestige
 Venenatis spiderling
 Verac's brassard
 Verac's flail
@@ -1950,6 +1973,7 @@ White unicorn mask
 Willow comp bow
 Wilvus
 Wintertoad
+Wisp
 Wizard boots
 Wolf cloak
 Wolf mask

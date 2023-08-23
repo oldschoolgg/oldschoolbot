@@ -9,7 +9,7 @@ export const itemsToDelete = [
 	[26_239, 'Zaryte bow'],
 	[26_241, 'Virtus mask'],
 	[26_243, 'Virtus robe top'],
-	[26_245, 'Virtus robe bottoms'],
+	[26_245, 'Virtus robe bottom'],
 	[26_382, 'Torva full helm'],
 	[26_384, 'Torva platebody'],
 	[26_386, 'Torva platelegs'],

@@ -1706,7 +1706,11 @@ export const allPetsCL = resolveItems([
 	'Nexling',
 	'Abyssal protector',
 	"Tumeken's guardian",
-	'Muphin'
+	'Muphin',
+	'Wisp',
+	"Lil'viathan",
+	'Butch',
+	'Baron'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -2882,7 +2886,7 @@ export const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem('Paddewwa teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Senntisten teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Annakarl teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Carrallangar teleport'), quantity: 2, cost: 1 },
+	{ item: getOSItem('Carrallanger teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Dareeyak teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Ghorrock teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Kharyrll teleport'), quantity: 2, cost: 1 },
@@ -3128,4 +3132,42 @@ export const upgradedDragonstoneOutfit = resolveItems([
 	'Dragonstone platelegs(u)',
 	'Dragonstone boots(u)',
 	'Dragonstone gauntlets(u)'
+]);
+
+export const dukeSucellusCL = resolveItems([
+	'Baron',
+	'Eye of the duke',
+	'Frozen tablet',
+	'Chromium ingot',
+	"Awakener's orb"
+]);
+
+export const theLeviathanCL = resolveItems([
+	"Lil'viathan",
+	"Leviathan's lure",
+	'Venator vestige',
+	'Chromium ingot',
+	"Awakener's orb",
+	'Smoke quartz',
+	'Scarred tablet'
+]);
+
+export const theWhispererCL = resolveItems([
+	'Wisp',
+	"Siren's staff",
+	'Bellator vestige',
+	'Chromium ingot',
+	"Awakener's orb",
+	'Shadow quartz',
+	'Sirenic tablet'
+]);
+
+export const vardorvisCL = resolveItems([
+	'Butch',
+	"Executioner's axe head",
+	'Ultor vestige',
+	'Chromium ingot',
+	"Awakener's orb",
+	'Blood quartz',
+	'Strangled tablet'
 ]);

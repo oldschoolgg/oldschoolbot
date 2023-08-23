@@ -913,6 +913,32 @@ LIMIT 10;
 	return lbMsg('Weekly Movers Leaderboard');
 }
 
+async function caLb(user: MUser, channelID: string) {
+	const users = (
+		await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(
+			`SELECT id, CARDINALITY(completed_ca_task_ids) AS qty
+FROM users
+WHERE CARDINALITY(completed_ca_task_ids) > 0
+ORDER BY CARDINALITY(completed_ca_task_ids) DESC
+LIMIT 50;`
+		)
+	).map(res => ({ ...res, score: Number(res.qty) }));
+
+	doMenu(
+		user,
+		channelID,
+		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
+			subList
+				.map(
+					({ id, qty }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${qty.toLocaleString()} Tasks Completed`
+				)
+				.join('\n')
+		),
+		'Combat Achievements Leaderboard'
+	);
+	return lbMsg('Combat Achievements Leaderboard');
+}
+
 const ironmanOnlyOption = {
 	type: ApplicationCommandOptionType.Boolean,
 	name: 'ironmen_only',
@@ -1193,6 +1219,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					required: false
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'combat_achievements',
+			description: 'Check the combat achievements leaderboards.',
+			options: []
 		}
 	],
 	run: async ({
@@ -1220,6 +1252,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			type: GlobalLbType;
 		};
 		completion?: { untrimmed?: boolean; ironmen_only?: boolean };
+		combat_achievements?: {};
 	}>) => {
 		deferInteraction(interaction);
 		const user = await mUserFetch(userID);
@@ -1240,7 +1273,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			clues,
 			movers,
 			global,
-			completion
+			completion,
+			combat_achievements
 		} = options;
 		if (kc) return kcLb(user, channelID, kc.monster, Boolean(kc.ironmen_only));
 		if (farming_contracts) return farmingContractLb(user, channelID, Boolean(farming_contracts.ironmen_only));
@@ -1263,6 +1297,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		if (completion)
 			return compLeaderboard(user, Boolean(completion.untrimmed), Boolean(completion.ironmen_only), channelID);
 
+		if (combat_achievements) return caLb(user, channelID);
 		return 'Invalid input.';
 	}
 };
