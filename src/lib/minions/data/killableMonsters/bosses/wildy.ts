@@ -42,43 +42,74 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		equippedItemBoosts: [
 			{
 				items: [
-					{ boostPercent: 4, itemID: itemID('Masori mask (f)') },
-					{ boostPercent: 2, itemID: itemID('Armadyl helmet') },
-					{ boostPercent: 1, itemID: itemID("Karil's coif") }
+					{ boostPercent: 2.5, itemID: itemID('Masori mask (f)') },
+					{ boostPercent: 2.5, itemID: itemID('Masori mask') },
+					{ boostPercent: 1, itemID: itemID('Armadyl helmet') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
 					{ boostPercent: 3, itemID: itemID('Necklace of anguish') },
-					{ boostPercent: 1, itemID: itemID('Amulet of fury') }
-				],
-				gearSetup: 'wildy'
-			},
-			{
-				items: [{ boostPercent: 2, itemID: itemID("Ava's assembler") }],
-				gearSetup: 'wildy'
-			},
-			{
-				items: [
-					{ boostPercent: 4, itemID: itemID('Masori body (f)') },
-					{ boostPercent: 3, itemID: itemID('Masori body') },
-					{ boostPercent: 2, itemID: itemID('Armadyl chestplate') },
-					{ boostPercent: 1, itemID: itemID("Karil's leathertop") }
+					{ boostPercent: 1, itemID: itemID('Amulet of fury') },
+					{ boostPercent: 0.5, itemID: itemID('Amulet of glory') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
-					{ boostPercent: 14, itemID: itemID('Webweaver bow') },
-					{ boostPercent: 8, itemID: itemID("Craw's bow") },
-					{ boostPercent: 5, itemID: itemID('Zaryte crossbow') },
-					{ boostPercent: 3, itemID: itemID('Armadyl crossbow') }
+					{ boostPercent: 2, itemID: itemID("Ava's assembler") },
+					{ boostPercent: 0.5, itemID: itemID("Ava's accumulator") }
 				],
 				gearSetup: 'wildy'
 			},
 			{
-				items: [{ boostPercent: 1, itemID: itemID('Barrows gloves') }],
+				items: [
+					{ boostPercent: 3.5, itemID: itemID('Masori body (f)') },
+					{ boostPercent: 3.5, itemID: itemID('Masori body') },
+					{ boostPercent: 0.5, itemID: itemID('Armadyl chestplate') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 3.5, itemID: itemID('Masori chaps (f)') },
+					{ boostPercent: 3.5, itemID: itemID('Masori chaps') },
+					{ boostPercent: 1, itemID: itemID('Armadyl chainskirt') },
+					{ boostPercent: 0.5, itemID: itemID("Black d'hide chaps") }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 28, itemID: itemID('Webweaver bow') },
+					{ boostPercent: 25, itemID: itemID("Craw's bow") },
+					{ boostPercent: 6, itemID: itemID('Zaryte crossbow') },
+					{ boostPercent: 1, itemID: itemID('Armadyl crossbow') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 3, itemID: itemID('Zaryte vambraces') },
+					{ boostPercent: 0.5, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 1.5, itemID: itemID('Pegasian boots') },
+					{ boostPercent: 1, itemID: itemID('Ranger boots') },
+					{ boostPercent: 0.5, itemID: itemID("Guthix d'hide boots") }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 3, itemID: itemID('Venator ring') },
+					{ boostPercent: 1, itemID: itemID('Archers ring (i)') },
+					{ boostPercent: 0.5, itemID: itemID('Brimstone ring') }
+				],
 				gearSetup: 'wildy'
 			}
 		],
@@ -132,43 +163,74 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		equippedItemBoosts: [
 			{
 				items: [
-					{ boostPercent: 4, itemID: itemID('Masori mask (f)') },
-					{ boostPercent: 2, itemID: itemID('Armadyl helmet') },
-					{ boostPercent: 1, itemID: itemID("Karil's coif") }
+					{ boostPercent: 2.5, itemID: itemID('Masori mask (f)') },
+					{ boostPercent: 2.5, itemID: itemID('Masori mask') },
+					{ boostPercent: 1, itemID: itemID('Armadyl helmet') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
 					{ boostPercent: 3, itemID: itemID('Necklace of anguish') },
-					{ boostPercent: 1, itemID: itemID('Amulet of fury') }
-				],
-				gearSetup: 'wildy'
-			},
-			{
-				items: [{ boostPercent: 2, itemID: itemID("Ava's assembler") }],
-				gearSetup: 'wildy'
-			},
-			{
-				items: [
-					{ boostPercent: 4, itemID: itemID('Masori body (f)') },
-					{ boostPercent: 3, itemID: itemID('Masori body') },
-					{ boostPercent: 2, itemID: itemID('Armadyl chestplate') },
-					{ boostPercent: 1, itemID: itemID("Karil's leathertop") }
+					{ boostPercent: 1, itemID: itemID('Amulet of fury') },
+					{ boostPercent: 0.5, itemID: itemID('Amulet of glory') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
-					{ boostPercent: 14, itemID: itemID('Webweaver bow') },
-					{ boostPercent: 8, itemID: itemID("Craw's bow") },
-					{ boostPercent: 5, itemID: itemID('Zaryte crossbow') },
-					{ boostPercent: 3, itemID: itemID('Armadyl crossbow') }
+					{ boostPercent: 2, itemID: itemID("Ava's assembler") },
+					{ boostPercent: 0.5, itemID: itemID("Ava's accumulator") }
 				],
 				gearSetup: 'wildy'
 			},
 			{
-				items: [{ boostPercent: 1, itemID: itemID('Barrows gloves') }],
+				items: [
+					{ boostPercent: 3.5, itemID: itemID('Masori body (f)') },
+					{ boostPercent: 3.5, itemID: itemID('Masori body') },
+					{ boostPercent: 0.5, itemID: itemID('Armadyl chestplate') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 3.5, itemID: itemID('Masori chaps (f)') },
+					{ boostPercent: 3.5, itemID: itemID('Masori chaps') },
+					{ boostPercent: 1, itemID: itemID('Armadyl chainskirt') },
+					{ boostPercent: 0.5, itemID: itemID("Black d'hide chaps") }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 28, itemID: itemID('Webweaver bow') },
+					{ boostPercent: 25, itemID: itemID("Craw's bow") },
+					{ boostPercent: 6, itemID: itemID('Zaryte crossbow') },
+					{ boostPercent: 1, itemID: itemID('Armadyl crossbow') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 3, itemID: itemID('Zaryte vambraces') },
+					{ boostPercent: 0.5, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 1.5, itemID: itemID('Pegasian boots') },
+					{ boostPercent: 1, itemID: itemID('Ranger boots') },
+					{ boostPercent: 0.5, itemID: itemID("Guthix d'hide boots") }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 3, itemID: itemID('Venator ring') },
+					{ boostPercent: 1, itemID: itemID('Archers ring (i)') },
+					{ boostPercent: 0.5, itemID: itemID('Brimstone ring') }
+				],
 				gearSetup: 'wildy'
 			}
 		],
@@ -212,45 +274,78 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
-				items: [{ boostPercent: 2, itemID: itemID('Helm of neitiznot') }],
-				gearSetup: 'wildy'
-			},
-			{
 				items: [
-					{ boostPercent: 3, itemID: itemID('Infernal cape') },
-					{ boostPercent: 1, itemID: itemID('Fire cape') }
+					{ boostPercent: 4, itemID: itemID("Inquisitor's great helm") },
+					{ boostPercent: 2, itemID: itemID('Torva full helm') },
+					{ boostPercent: 1.5, itemID: itemID('Neitiznot faceguard') },
+					{ boostPercent: 1, itemID: itemID('Helm of neitiznot') },
+					{ boostPercent: 0.5, itemID: itemID('Berserker helm') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
-					{ boostPercent: 4, itemID: itemID('Torva platebody') },
-					{ boostPercent: 2, itemID: itemID("Inquisitor's hauberk") }
+					{ boostPercent: 7.5, itemID: itemID('Infernal cape') },
+					{ boostPercent: 6, itemID: itemID('Mythical cape') },
+					{ boostPercent: 3, itemID: itemID('Fire cape') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
-					{ boostPercent: 14, itemID: itemID('Ursine chainmace') },
-					{ boostPercent: 8, itemID: itemID("Viggora's chainmace") },
-					{ boostPercent: 5, itemID: itemID("Inquisitor's mace") },
-					{ boostPercent: 3, itemID: itemID('Abyssal bludgeon') },
-					{ boostPercent: 2, itemID: itemID('Sarachnis cudgel') }
+					{ boostPercent: 9, itemID: itemID("Inquisitor's hauberk") },
+					{ boostPercent: 6, itemID: itemID('Torva platebody') },
+					{ boostPercent: 3, itemID: itemID('Bandos chestplate') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
-					{ boostPercent: 5, itemID: itemID('Avernic defender') },
-					{ boostPercent: 3, itemID: itemID('Dragon defender') }
+					{ boostPercent: 9, itemID: itemID("Inquisitor's plateskirt") },
+					{ boostPercent: 6, itemID: itemID('Torva platelegs') },
+					{ boostPercent: 3, itemID: itemID('Bandos tassets') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
-				items: [{ boostPercent: 1, itemID: itemID('Barrows gloves') }],
+				items: [
+					{ boostPercent: 49.5, itemID: itemID('Ursine chainmace') },
+					{ boostPercent: 46, itemID: itemID("Viggora's chainmace") },
+					{ boostPercent: 21.5, itemID: itemID("Inquisitor's mace") },
+					{ boostPercent: 21, itemID: itemID('Abyssal bludgeon') },
+					{ boostPercent: 2.5, itemID: itemID('Zamorakian hasta') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 16.5, itemID: itemID('Avernic defender') },
+					{ boostPercent: 12.5, itemID: itemID('Dragon defender') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 9, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 5, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Primordial boots') },
+					{ boostPercent: 2.5, itemID: itemID('Dragon boots') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 7.5, itemID: itemID('Ultor ring') },
+					{ boostPercent: 5.5, itemID: itemID('Berserker ring (i)') },
+					{ boostPercent: 5, itemID: itemID('Brimstone ring') }
+				],
 				gearSetup: 'wildy'
 			}
-			// Add boost for Ultor ring in future
 		],
 		minimumGearRequirements: {
 			wildy: {
@@ -292,45 +387,78 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
-				items: [{ boostPercent: 2, itemID: itemID('Helm of neitiznot') }],
-				gearSetup: 'wildy'
-			},
-			{
 				items: [
-					{ boostPercent: 3, itemID: itemID('Infernal cape') },
-					{ boostPercent: 1, itemID: itemID('Fire cape') }
+					{ boostPercent: 4, itemID: itemID("Inquisitor's great helm") },
+					{ boostPercent: 2, itemID: itemID('Torva full helm') },
+					{ boostPercent: 1.5, itemID: itemID('Neitiznot faceguard') },
+					{ boostPercent: 1, itemID: itemID('Helm of neitiznot') },
+					{ boostPercent: 0.5, itemID: itemID('Berserker helm') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
-					{ boostPercent: 4, itemID: itemID('Torva platebody') },
-					{ boostPercent: 2, itemID: itemID("Inquisitor's hauberk") }
+					{ boostPercent: 7.5, itemID: itemID('Infernal cape') },
+					{ boostPercent: 6, itemID: itemID('Mythical cape') },
+					{ boostPercent: 3, itemID: itemID('Fire cape') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
-					{ boostPercent: 14, itemID: itemID('Ursine chainmace') },
-					{ boostPercent: 8, itemID: itemID("Viggora's chainmace") },
-					{ boostPercent: 5, itemID: itemID("Inquisitor's mace") },
-					{ boostPercent: 3, itemID: itemID('Abyssal bludgeon') },
-					{ boostPercent: 2, itemID: itemID('Sarachnis cudgel') }
+					{ boostPercent: 9, itemID: itemID("Inquisitor's hauberk") },
+					{ boostPercent: 6, itemID: itemID('Torva platebody') },
+					{ boostPercent: 3, itemID: itemID('Bandos chestplate') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
-					{ boostPercent: 5, itemID: itemID('Avernic defender') },
-					{ boostPercent: 3, itemID: itemID('Dragon defender') }
+					{ boostPercent: 9, itemID: itemID("Inquisitor's plateskirt") },
+					{ boostPercent: 6, itemID: itemID('Torva platelegs') },
+					{ boostPercent: 3, itemID: itemID('Bandos tassets') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
-				items: [{ boostPercent: 1, itemID: itemID('Barrows gloves') }],
+				items: [
+					{ boostPercent: 49.5, itemID: itemID('Ursine chainmace') },
+					{ boostPercent: 46, itemID: itemID("Viggora's chainmace") },
+					{ boostPercent: 21.5, itemID: itemID("Inquisitor's mace") },
+					{ boostPercent: 21, itemID: itemID('Abyssal bludgeon') },
+					{ boostPercent: 2.5, itemID: itemID('Zamorakian hasta') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 16.5, itemID: itemID('Avernic defender') },
+					{ boostPercent: 12.5, itemID: itemID('Dragon defender') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 9, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 5, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Primordial boots') },
+					{ boostPercent: 2.5, itemID: itemID('Dragon boots') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 7.5, itemID: itemID('Ultor ring') },
+					{ boostPercent: 5.5, itemID: itemID('Berserker ring (i)') },
+					{ boostPercent: 5, itemID: itemID('Brimstone ring') }
+				],
 				gearSetup: 'wildy'
 			}
-			// Add boost for Ultor ring in future
 		],
 		minimumGearRequirements: {
 			wildy: {
@@ -393,43 +521,82 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
-				items: [{ boostPercent: 2, itemID: itemID('Helm of neitiznot') }],
-				gearSetup: 'wildy'
-			},
-			{
 				items: [
-					{ boostPercent: 3, itemID: itemID('Mythical cape') },
-					{ boostPercent: 2, itemID: itemID('Infernal cape') },
-					{ boostPercent: 1, itemID: itemID('Fire cape') }
+					{ boostPercent: 5.5, itemID: itemID("Inquisitor's great helm") },
+					{ boostPercent: 3, itemID: itemID('Torva full helm') },
+					{ boostPercent: 2.5, itemID: itemID('Neitiznot faceguard') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
-					{ boostPercent: 4, itemID: itemID('Torva platebody') },
-					{ boostPercent: 3, itemID: itemID("Inquisitor's hauberk") }
+					{ boostPercent: 5.5, itemID: itemID('Amulet of torture') },
+					{ boostPercent: 4, itemID: itemID('Amulet of strength') },
+					{ boostPercent: 2.5, itemID: itemID('Amulet of fury') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
-					{ boostPercent: 14, itemID: itemID('Ursine chainmace') },
-					{ boostPercent: 8, itemID: itemID("Viggora's chainmace") },
-					{ boostPercent: 5, itemID: itemID("Inquisitor's mace") },
-					{ boostPercent: 3, itemID: itemID('Abyssal bludgeon') },
-					{ boostPercent: 2, itemID: itemID('Sarachnis cudgel') }
+					{ boostPercent: 7.5, itemID: itemID('Infernal cape') },
+					{ boostPercent: 4, itemID: itemID('Mythical cape') },
+					{ boostPercent: 3, itemID: itemID('Fire cape') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
-					{ boostPercent: 5, itemID: itemID('Avernic defender') },
-					{ boostPercent: 3, itemID: itemID('Dragon defender') }
+					{ boostPercent: 10, itemID: itemID("Inquisitor's hauberk") },
+					{ boostPercent: 5, itemID: itemID('Torva platebody') },
+					{ boostPercent: 3, itemID: itemID('Bandos chestplate') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
-				items: [{ boostPercent: 1, itemID: itemID('Barrows gloves') }],
+				items: [
+					{ boostPercent: 10, itemID: itemID("Inquisitor's plateskirt") },
+					{ boostPercent: 5, itemID: itemID('Torva platelegs') },
+					{ boostPercent: 3, itemID: itemID('Bandos tassets') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 52.5, itemID: itemID('Ursine chainmace') },
+					{ boostPercent: 49.5, itemID: itemID("Viggora's chainmace") },
+					{ boostPercent: 24.5, itemID: itemID("Inquisitor's mace") },
+					{ boostPercent: 24, itemID: itemID('Abyssal bludgeon') },
+					{ boostPercent: 1, itemID: itemID('Zamorakian hasta') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 17, itemID: itemID('Avernic defender') },
+					{ boostPercent: 14.5, itemID: itemID('Dragon defender') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 7.5, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 5, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Primordial boots') },
+					{ boostPercent: 2.5, itemID: itemID('Dragon boots') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 7.5, itemID: itemID('Ultor ring') },
+					{ boostPercent: 5.5, itemID: itemID('Berserker ring (i)') },
+					{ boostPercent: 5, itemID: itemID('Brimstone ring') }
+				],
 				gearSetup: 'wildy'
 			}
 		],
@@ -492,43 +659,82 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
-				items: [{ boostPercent: 2, itemID: itemID('Helm of neitiznot') }],
-				gearSetup: 'wildy'
-			},
-			{
 				items: [
-					{ boostPercent: 3, itemID: itemID('Mythical cape') },
-					{ boostPercent: 2, itemID: itemID('Infernal cape') },
-					{ boostPercent: 1, itemID: itemID('Fire cape') }
+					{ boostPercent: 5.5, itemID: itemID("Inquisitor's great helm") },
+					{ boostPercent: 3, itemID: itemID('Torva full helm') },
+					{ boostPercent: 2.5, itemID: itemID('Neitiznot faceguard') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
-					{ boostPercent: 4, itemID: itemID('Torva platebody') },
-					{ boostPercent: 3, itemID: itemID("Inquisitor's hauberk") }
+					{ boostPercent: 5.5, itemID: itemID('Amulet of torture') },
+					{ boostPercent: 4, itemID: itemID('Amulet of strength') },
+					{ boostPercent: 2.5, itemID: itemID('Amulet of fury') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
-					{ boostPercent: 14, itemID: itemID('Ursine chainmace') },
-					{ boostPercent: 8, itemID: itemID("Viggora's chainmace") },
-					{ boostPercent: 5, itemID: itemID("Inquisitor's mace") },
-					{ boostPercent: 3, itemID: itemID('Abyssal bludgeon') },
-					{ boostPercent: 2, itemID: itemID('Sarachnis cudgel') }
+					{ boostPercent: 7.5, itemID: itemID('Infernal cape') },
+					{ boostPercent: 4, itemID: itemID('Mythical cape') },
+					{ boostPercent: 3, itemID: itemID('Fire cape') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
 				items: [
-					{ boostPercent: 5, itemID: itemID('Avernic defender') },
-					{ boostPercent: 3, itemID: itemID('Dragon defender') }
+					{ boostPercent: 10, itemID: itemID("Inquisitor's hauberk") },
+					{ boostPercent: 5, itemID: itemID('Torva platebody') },
+					{ boostPercent: 3, itemID: itemID('Bandos chestplate') }
 				],
 				gearSetup: 'wildy'
 			},
 			{
-				items: [{ boostPercent: 1, itemID: itemID('Barrows gloves') }],
+				items: [
+					{ boostPercent: 10, itemID: itemID("Inquisitor's plateskirt") },
+					{ boostPercent: 5, itemID: itemID('Torva platelegs') },
+					{ boostPercent: 3, itemID: itemID('Bandos tassets') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 52.5, itemID: itemID('Ursine chainmace') },
+					{ boostPercent: 49.5, itemID: itemID("Viggora's chainmace") },
+					{ boostPercent: 24.5, itemID: itemID("Inquisitor's mace") },
+					{ boostPercent: 24, itemID: itemID('Abyssal bludgeon') },
+					{ boostPercent: 1, itemID: itemID('Zamorakian hasta') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 17, itemID: itemID('Avernic defender') },
+					{ boostPercent: 14.5, itemID: itemID('Dragon defender') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 7.5, itemID: itemID('Ferocious gloves') },
+					{ boostPercent: 5, itemID: itemID('Barrows gloves') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 4, itemID: itemID('Primordial boots') },
+					{ boostPercent: 2.5, itemID: itemID('Dragon boots') }
+				],
+				gearSetup: 'wildy'
+			},
+			{
+				items: [
+					{ boostPercent: 7.5, itemID: itemID('Ultor ring') },
+					{ boostPercent: 5.5, itemID: itemID('Berserker ring (i)') },
+					{ boostPercent: 5, itemID: itemID('Brimstone ring') }
+				],
 				gearSetup: 'wildy'
 			}
 		],
