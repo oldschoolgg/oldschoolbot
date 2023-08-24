@@ -1,6 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, bold, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { randInt, reduceNumByPercent, Time } from 'e';
+import { randArrItem, randInt, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -23,6 +23,7 @@ import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
 import { buildClueButtons, channelIsSendable, itemID, makeComponents, roll, toKMB } from '../util';
+import { mahojiChatHead } from './chatHeadImage';
 import {
 	makeAutoContractButton,
 	makeBirdHouseTripButton,
@@ -397,6 +398,23 @@ export async function handleTripFinish(
 
 	if (components.length > 0) {
 		message.components = makeComponents(components);
+	}
+
+	if (roll(100)) {
+		const img = await mahojiChatHead({
+			content: randArrItem([
+				'Traveller, I need your help...',
+				'I have a task for you....',
+				'I have a quest for you...',
+				'Duty calls.'
+			]),
+			head: 'mysteriousFigure'
+		});
+		if (message.files) {
+			message.files.push(...img.files);
+		} else {
+			message.files = img.files;
+		}
 	}
 
 	handleTriggerShootingStar(user, data, components);
