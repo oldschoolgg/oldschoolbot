@@ -9,6 +9,7 @@ import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { boxSpawnHandler } from './boxSpawns';
+import { allMbTables } from './bsoOpenables';
 import { BitField, Emoji, globalConfig, secretItems } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
@@ -144,7 +145,7 @@ const mentionCommands: MentionCommand[] = [
 
 					const wikiURL = isCustom ? '' : `[Wiki Page](${item.wiki_url}) `;
 					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
-						item.tradeable ? 'Tradeable' : 'Untradeable'
+						allMbTables.includes(item.id) ? Emoji.MysteryBox : ''
 					} ${wikiURL}${icons.join(' ')}`;
 					if (gettedItem.id === item.id) {
 						str = bold(str);
