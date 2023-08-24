@@ -2,7 +2,7 @@ import { reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -50,7 +50,7 @@ export async function roguesDenCommand(user: MUser, channelID: string) {
 		await updateBankSetting('rogues_den_cost', staminasToRemove);
 	}
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,

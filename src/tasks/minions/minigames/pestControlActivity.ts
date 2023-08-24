@@ -3,14 +3,14 @@ import { toKMB } from 'oldschooljs/dist/util';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { getBoatType } from '../../../mahoji/lib/abstracted_commands/pestControlCommand';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 export const pestControlTask: MinionTask = {
 	type: 'PestControl',
-	async run(data: MinigameActivityTaskOptions) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, userID, quantity, duration } = data;
 		const user = await mUserFetch(userID);
 

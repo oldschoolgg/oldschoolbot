@@ -2,7 +2,7 @@ import { sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Skills } from '../../../lib/types';
-import { ActivityTaskOptions, SpecificQuestOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
@@ -115,7 +115,7 @@ export async function questCommand(user: MUser, channelID: string, name?: string
 		boosts.push('10% for Graceful');
 	}
 
-	await addSubTaskToActivityTask<ActivityTaskOptions>({
+	await addSubTaskToActivityTask<ActivityTaskOptionsWithNoChanges>({
 		type: 'Questing',
 		duration,
 		userID: user.id,

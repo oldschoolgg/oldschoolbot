@@ -12,7 +12,7 @@ import Grimy from './skilling/skills/herblore/mixables/grimy';
 import { SkillsEnum } from './skilling/types';
 import { getAllUserTames, TameSpeciesID } from './tames';
 import { Skills } from './types';
-import { MinigameActivityTaskOptions } from './types/minions';
+import { BathhouseTaskOptions } from './types/minions';
 import { formatDuration, formatSkillRequirements, skillsMeetRequirements, stringMatches } from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
@@ -22,13 +22,8 @@ import resolveItems, { resolveOSItems } from './util/resolveItems';
 import { updateBankSetting } from './util/updateBankSetting';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;
-type BathhouseTierName = (typeof bathhouseTierNames)[number];
+export type BathhouseTierName = (typeof bathhouseTierNames)[number];
 
-export interface BathhouseTaskOptions extends MinigameActivityTaskOptions {
-	mixture: string;
-	ore: number;
-	tier: BathhouseTierName;
-}
 interface BathhouseOre {
 	item: Item;
 	warmth: number;

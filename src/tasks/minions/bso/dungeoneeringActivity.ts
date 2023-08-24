@@ -4,13 +4,13 @@ import { Bank } from 'oldschooljs';
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { Emoji } from '../../../lib/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
-import { DungeoneeringOptions } from '../../../lib/skilling/skills/dung/dungData';
 import {
 	gorajanShardChance,
 	maxFloorUserCanDo,
 	numberOfGorajanOutfitsEquipped
 } from '../../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { DungeoneeringOptions } from '../../../lib/types/minions';
 import { randomVariation, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 

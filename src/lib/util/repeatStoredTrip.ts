@@ -3,22 +3,19 @@ import { ButtonBuilder, ButtonInteraction, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 
 import { autocompleteMonsters } from '../../mahoji/commands/k';
-import type { BathhouseTaskOptions } from '../baxtorianBathhouses';
 import type { PvMMethod } from '../constants';
 import { kibbles } from '../data/kibble';
-import type { DisassembleTaskOptions } from '../invention/disassemble';
-import type { ResearchTaskOptions } from '../invention/research';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
-import type { DungeoneeringOptions } from '../skilling/skills/dung/dungData';
 import Woodcutting from '../skilling/skills/woodcutting';
 import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	AnimatedArmourActivityTaskOptions,
+	BathhouseTaskOptions,
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
 	CastingActivityTaskOptions,
@@ -28,7 +25,9 @@ import type {
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
 	DarkAltarOptions,
+	DisassembleTaskOptions,
 	DOAOptions,
+	DungeoneeringOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
@@ -54,6 +53,7 @@ import type {
 	PickpocketActivityTaskOptions,
 	PuroPuroActivityTaskOptions,
 	RaidsOptions,
+	ResearchTaskOptions,
 	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,

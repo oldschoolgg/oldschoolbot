@@ -284,6 +284,7 @@ export function calculateSimpleMonsterDeathChance({
 	highestDeathChance?: number;
 	steepness?: number;
 }): number {
+	if (!currentKC) currentKC = 1;
 	currentKC = Math.max(1, currentKC);
 	let baseDeathChance = Math.min(highestDeathChance, (100 * hardness) / steepness);
 	const maxScalingKC = 5 + (75 * hardness) / steepness;
