@@ -1,12 +1,12 @@
-import { Peak } from './../tickers';
-import { escapeMarkdown, BaseMessageOptions, time } from 'discord.js';
+import { toTitleCase } from '@oldschoolgg/toolkit';
+import { BaseMessageOptions, escapeMarkdown, time } from 'discord.js';
+import { Time } from 'e';
 import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
 
 import { Emoji } from '../constants';
 import { SkillsEnum } from '../skilling/types';
+import { Peak } from './../tickers';
 import resolveItems from './resolveItems';
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import { Time } from 'e';
 
 export function skillLevel(user: MUser, skill: SkillsEnum) {
 	const xp = Number(user.user[`skills_${skill}`]);
@@ -90,7 +90,12 @@ export function checkPeakTimes(): BaseMessageOptions {
 	const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
 	let str = '';
 	for (const peak of cachedPeakInterval) {
-		str += `${Emoji.Stopwatch} **${toTitleCase(peak.peakTier)}** peak time: ${time(new Date(peak.startTime), 'T')} to ${time(new Date(peak.finishTime), 'T')} (**${Math.round((peak.finishTime - peak.startTime) / Time.Hour)}** hour peak ${time(new Date(peak.startTime), 'R')})\n`;
+		str += `${Emoji.Stopwatch} **${toTitleCase(peak.peakTier)}** peak time: ${time(
+			new Date(peak.startTime),
+			'T'
+		)} to ${time(new Date(peak.finishTime), 'T')} (**${Math.round(
+			(peak.finishTime - peak.startTime) / Time.Hour
+		)}** hour peak ${time(new Date(peak.startTime), 'R')})\n`;
 	}
 
 	return {

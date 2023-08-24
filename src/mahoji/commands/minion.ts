@@ -29,6 +29,7 @@ import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
+import { checkPeakTimes } from '../../lib/util/minionUtils';
 import {
 	achievementDiaryCommand,
 	claimAchievementDiaryCommand
@@ -44,7 +45,6 @@ import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusComm
 import { skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
-import { checkPeakTimes } from '../../lib/util/minionUtils';
 
 const patMessages = [
 	'You pat {name} on the head.',
