@@ -44,6 +44,7 @@ import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusComm
 import { skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
+import { checkPeakTimes } from '../../lib/util/minionUtils';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -414,6 +415,11 @@ export const minionCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'info',
 			description: 'View general information about your account and minion.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'peak',
+			description: 'View Peak time activity for the Wilderness.'
 		}
 	],
 	run: async ({
@@ -441,6 +447,7 @@ export const minionCommand: OSBMahojiCommand = {
 		blowpipe?: { remove_darts?: boolean; uncharge?: boolean; add?: string; quantity?: number };
 		status?: {};
 		info?: {};
+		peak?: {};
 	}>) => {
 		const user = await mUserFetch(userID);
 		const perkTier = user.perkTier();
@@ -539,6 +546,8 @@ export const minionCommand: OSBMahojiCommand = {
 				options.blowpipe.quantity
 			);
 		}
+
+		if (options.peak) return checkPeakTimes();
 
 		return 'Unknown command';
 	}
