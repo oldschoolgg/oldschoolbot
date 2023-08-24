@@ -1,11 +1,11 @@
 import { Bank } from 'oldschooljs';
 
-import { ActivityTaskOptions } from '../../lib/types/minions';
+import { ActivityTaskOptionsWithNoChanges } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const strongholdTask: MinionTask = {
 	type: 'StrongholdOfSecurity',
-	async run(data: ActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithNoChanges) {
 		const { channelID, userID } = data;
 		const user = await mUserFetch(userID);
 

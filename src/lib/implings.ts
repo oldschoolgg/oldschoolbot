@@ -2,7 +2,7 @@ import { activity_type_enum } from '@prisma/client';
 import { Time } from 'e';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
-import { ActivityTaskOptions } from './types/minions';
+import { ActivityTaskData } from './types/minions';
 import activityInArea, { WorldLocations } from './util/activityInArea';
 
 const {
@@ -102,7 +102,7 @@ const implingTableByWorldLocation = {
 	[WorldLocations.World]: new LootTable().oneIn(85, defaultImpTable)
 };
 
-export function handlePassiveImplings(user: MUser, data: ActivityTaskOptions) {
+export function handlePassiveImplings(user: MUser, data: ActivityTaskData) {
 	if (
 		[
 			'FightCaves',

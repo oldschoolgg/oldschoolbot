@@ -13,7 +13,7 @@ import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
-import { ActivityTaskOptions } from '../types/minions';
+import { ActivityTaskData } from '../types/minions';
 import { buildClueButtons, channelIsSendable, makeComponents } from '../util';
 import {
 	makeAutoContractButton,
@@ -35,7 +35,7 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 ];
 
 interface TripFinishEffectOptions {
-	data: ActivityTaskOptions;
+	data: ActivityTaskData;
 	user: MUser;
 	loot: Bank | null;
 	messages: string[];
@@ -92,7 +92,7 @@ export async function handleTripFinish(
 	channelID: string,
 	_message: string | ({ content: string } & MessageCreateOptions),
 	attachment: AttachmentBuilder | Buffer | undefined,
-	data: ActivityTaskOptions,
+	data: ActivityTaskData,
 	loot: Bank | null,
 	_messages?: string[],
 	_components?: ButtonBuilder[]

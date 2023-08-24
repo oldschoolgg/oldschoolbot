@@ -1,7 +1,7 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -21,7 +21,7 @@ export async function fishingTrawlerCommand(user: MUser, channelID: string) {
 	const quantity = Math.floor(calcMaxTripLength(user, 'FishingTrawler') / tripLength);
 	const duration = quantity * tripLength;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		type: 'FishingTrawler',

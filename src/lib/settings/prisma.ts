@@ -45,7 +45,7 @@ export function convertStoredActivityToFlatActivity(activity: Activity): Activit
 		duration: activity.duration,
 		finishDate: activity.finish_date.getTime(),
 		id: activity.id
-	};
+	} as ActivityTaskData;
 }
 
 /**
