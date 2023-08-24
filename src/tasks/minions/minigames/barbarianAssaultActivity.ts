@@ -2,13 +2,13 @@ import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 
 import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 export const barbAssaultTask: MinionTask = {
 	type: 'BarbarianAssault',
-	async run(data: MinigameActivityTaskOptions) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, userID } = data;
 		const user = await mUserFetch(userID);
 		const { honour_level: currentHonourLevel } = await user.fetchStats({ honour_level: true });
