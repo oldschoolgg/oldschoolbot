@@ -6,9 +6,10 @@ import { Emoji } from '../../../lib/constants';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import {
 	baseTOBUniques,
+	calcTOBBaseDuration,
 	calculateTOBDeaths,
 	calculateTOBUserGearPercents,
-	createTOBTeam,
+	createTOBRaid,
 	minimumTOBSuppliesNeeded,
 	TENTACLE_CHARGES_PER_RAID
 } from '../../../lib/data/tob';
@@ -22,6 +23,7 @@ import { MakePartyOptions } from '../../../lib/types';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration, formatSkillRequirements, skillsMeetRequirements } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import itemID from '../../../lib/util/itemID';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -71,7 +73,8 @@ export async function calcTOBInput(u: MUser) {
 export async function checkTOBUser(
 	user: MUser,
 	isHardMode: boolean,
-	teamSize?: number
+	teamSize?: number,
+	quantity: number = 1
 ): Promise<[false] | [true, string]> {
 	if (!user.user.minion_hasBought) {
 		return [true, `${user.usernameOrMention} doesn't have a minion`];
@@ -88,7 +91,7 @@ export async function checkTOBUser(
 		];
 	}
 
-	if (!user.owns(minimumTOBSuppliesNeeded)) {
+	if (!user.owns(minimumTOBSuppliesNeeded.clone().multiply(quantity))) {
 		return [
 			true,
 			`${user.usernameOrMention} doesn't have enough items, you need a minimum of this amount of items: ${minimumTOBSuppliesNeeded}.`
@@ -109,6 +112,7 @@ export async function checkTOBUser(
 
 	const cost = await calcTOBInput(user);
 	cost.add('Coins', 100_000);
+	cost.multiply(quantity);
 	if (!user.owns(cost)) {
 		return [true, `${user.usernameOrMention} doesn't own ${cost.remove(user.bankWithGP)}`];
 	}
@@ -141,7 +145,7 @@ export async function checkTOBUser(
 	if (meleeGear.hasEquipped('Abyssal tentacle')) {
 		const tentacleResult = checkUserCanUseDegradeableItem({
 			item: getOSItem('Abyssal tentacle'),
-			chargesToDegrade: TENTACLE_CHARGES_PER_RAID,
+			chargesToDegrade: TENTACLE_CHARGES_PER_RAID * quantity,
 			user
 		});
 		if (!tentacleResult.hasEnough) {
@@ -157,11 +161,13 @@ export async function checkTOBUser(
 			`${user.usernameOrMention} needs a Toxic blowpipe (with darts and scales equipped) in their bank to do the Theatre of Blood.`
 		];
 	}
-	if (blowpipeData.dartQuantity < 150) {
-		return [true, `${user.usernameOrMention}, you need atleast 150 darts in your blowpipe.`];
+	const dartsNeeded = 150 * quantity;
+	if (blowpipeData.dartQuantity < dartsNeeded) {
+		return [true, `${user.usernameOrMention}, you need atleast ${dartsNeeded} darts in your blowpipe.`];
 	}
-	if (blowpipeData.scales < 1000) {
-		return [true, `${user.usernameOrMention}, you need atleast 1000 scales in your blowpipe.`];
+	const scalesNeeded = 1000 * quantity;
+	if (blowpipeData.scales < scalesNeeded) {
+		return [true, `${user.usernameOrMention}, you need atleast ${scalesNeeded} scales in your blowpipe.`];
 	}
 	const dartIndex = blowpipeDarts.indexOf(getOSItem(blowpipeData.dartID));
 	if (dartIndex < 5) {
@@ -182,8 +188,12 @@ export async function checkTOBUser(
 		return [true, `${user.usernameOrMention}, you can't use Dragon arrows with a Magic shortbow 🤨`];
 	}
 
-	if (rangeGear.ammo!.quantity < 150) {
-		return [true, `${user.usernameOrMention}, you need atleast 150 arrows equipped in your range setup.`];
+	const arrowsRequired = 150 * quantity;
+	if (rangeGear.ammo!.quantity < arrowsRequired) {
+		return [
+			true,
+			`${user.usernameOrMention}, you need atleast ${arrowsRequired} arrows equipped in your range setup.`
+		];
 	}
 
 	if (isHardMode) {
@@ -207,7 +217,12 @@ export async function checkTOBUser(
 	return [false];
 }
 
-export async function checkTOBTeam(users: MUser[], isHardMode: boolean, solo: boolean): Promise<string | null> {
+export async function checkTOBTeam(
+	users: MUser[],
+	isHardMode: boolean,
+	solo: boolean,
+	quantity: number = 1
+): Promise<string | null> {
 	const userWithoutSupplies = users.find(u => !u.bank.has(minimumTOBSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
@@ -218,7 +233,7 @@ export async function checkTOBTeam(users: MUser[], isHardMode: boolean, solo: bo
 
 	for (const user of users) {
 		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
-		const checkResult = await checkTOBUser(user, isHardMode, users.length);
+		const checkResult = await checkTOBUser(user, isHardMode, users.length, quantity);
 		if (!checkResult[0]) {
 			continue;
 		} else {
@@ -267,7 +282,8 @@ export async function tobStartCommand(
 	channelID: string,
 	isHardMode: boolean,
 	maxSizeInput: number | undefined,
-	solo: boolean
+	solo: boolean,
+	quantity: number | undefined
 ) {
 	if (user.minionIsBusy) {
 		return `${user.usernameOrMention} minion is busy`;
@@ -323,39 +339,63 @@ export async function tobStartCommand(
 	}
 	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy).slice(0, maxSize);
 
-	const teamCheckFailure = await checkTOBTeam(users, isHardMode, solo);
+	const team = await Promise.all(
+		users.map(async u => {
+			const [minigameScores, { tob_attempts, tob_hard_attempts }] = await Promise.all([
+				u.fetchMinigames(),
+				u.fetchStats({ tob_attempts: true, tob_hard_attempts: true })
+			]);
+			return {
+				user: u,
+				bank: u.bank,
+				gear: u.gear,
+				attempts: tob_attempts,
+				hardAttempts: tob_hard_attempts,
+				kc: minigameScores.tob,
+				hardKC: minigameScores.tob_hard
+			};
+		})
+	);
+	const { baseDuration, reductions, maxUserReduction } = calcTOBBaseDuration({ team, hardMode: isHardMode });
+	const maxTripLength = calcMaxTripLength(user, 'TheatreOfBlood');
+
+	const maxTripsCanFit = Math.floor(maxTripLength / baseDuration);
+
+	const qty = quantity ?? maxTripsCanFit;
+	if (qty > maxTripsCanFit) {
+		return `Your minion cannot go on trips longer than ${formatDuration(
+			maxTripLength
+		)}. The most you can do with your teams setup is ${maxTripsCanFit}.`;
+	}
+
+	const teamCheckFailure = await checkTOBTeam(users, isHardMode, solo, qty);
 	if (teamCheckFailure) {
 		return `Your mass failed to start because of this reason: ${teamCheckFailure} ${users}`;
 	}
 
-	const {
-		duration,
-		maxUserReduction,
-		reductions,
-		wipedRoom: _wipedRoom,
-		deathDuration,
-		parsedTeam
-	} = createTOBTeam({
-		team: await Promise.all(
-			users.map(async u => {
-				const [minigameScores, { tob_attempts, tob_hard_attempts }] = await Promise.all([
-					u.fetchMinigames(),
-					u.fetchStats({ tob_attempts: true, tob_hard_attempts: true })
-				]);
-				return {
-					user: u,
-					bank: u.bank,
-					gear: u.gear,
-					attempts: tob_attempts,
-					hardAttempts: tob_hard_attempts,
-					kc: minigameScores.tob,
-					hardKC: minigameScores.tob_hard
-				};
-			})
-		),
-		hardMode: isHardMode
-	});
-	const wipedRoom = _wipedRoom ? TOBRooms.find(room => _wipedRoom.name === room.name)! : null;
+	let totalDuration = 0;
+	let totalFakeDuration = 0;
+	let deaths: number[][][] = [];
+
+	const wipedRooms: (number | null)[] = [];
+	for (let i = 0; i < qty; i++) {
+		const {
+			duration,
+			wipedRoom: _wipedRoom,
+			deathDuration,
+			parsedTeam
+		} = createTOBRaid({
+			team,
+			hardMode: isHardMode,
+			baseDuration
+		});
+		const wipedRoom = _wipedRoom ? TOBRooms.indexOf(TOBRooms.find(room => _wipedRoom.name === room.name)!) : null;
+		wipedRooms.push(wipedRoom);
+		totalFakeDuration += duration;
+		totalDuration += deathDuration === null ? duration : deathDuration;
+
+		deaths.push(parsedTeam.map(i => i.deaths));
+	}
 	let debugStr = '';
 
 	const totalCost = new Bank();
@@ -371,6 +411,7 @@ export async function tobStartCommand(
 					.add('Coins', 100_000)
 					.add(blowpipeData.dartID!, Math.floor(Math.min(blowpipeData.dartQuantity, 156)))
 					.add(u.gear.range.ammo!.item, 100)
+					.multiply(qty)
 			);
 			await userStatsBankUpdate(u.id, 'tob_cost', realCost);
 			const effectiveCost = realCost.clone().remove('Coins', realCost.amount('Coins'));
@@ -379,7 +420,7 @@ export async function tobStartCommand(
 				await degradeItem({
 					item: getOSItem('Abyssal tentacle'),
 					user: u,
-					chargesToDegrade: TENTACLE_CHARGES_PER_RAID
+					chargesToDegrade: TENTACLE_CHARGES_PER_RAID * qty
 				});
 			}
 			debugStr += `**- ${u.usernameOrMention}** (${Emoji.Gear}${total.toFixed(1)}% ${
@@ -401,29 +442,30 @@ export async function tobStartCommand(
 		users: costResult.map(i => ({
 			id: i.userID,
 			cost: i.effectiveCost,
-			duration
+			totalDuration
 		}))
 	});
 
 	await addSubTaskToActivityTask<TheatreOfBloodTaskOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
-		duration: deathDuration ?? duration,
+		duration: totalDuration,
 		type: 'TheatreOfBlood',
 		leader: user.id,
-		users: parsedTeam.map(u => u.id),
+		users: team.map(u => u.user.id),
 		hardMode: isHardMode,
-		wipedRoom: wipedRoom === null ? null : TOBRooms.indexOf(wipedRoom),
-		fakeDuration: duration,
-		deaths: parsedTeam.map(i => i.deaths),
+		wipedRooms,
+		fakeDuration: totalFakeDuration,
+		quantity: qty,
+		deaths,
 		solo
 	});
 
 	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
 		.map(u => u.usernameOrMention)
-		.join(', ')}) is now off to do a Theatre of Blood raid - the total trip will take ${formatDuration(duration)}.${
-		solo ? " You're in a team of 3." : ''
-	}`;
+		.join(', ')}) is now off to do ${qty}x Theatre of Blood raid${
+		qty > 1 ? 's' : ''
+	} - the total trip will take ${formatDuration(totalFakeDuration)}.${solo ? " You're in a team of 3." : ''}`;
 
 	str += ` \n\n${debugStr}`;
 
