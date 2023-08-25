@@ -14,7 +14,6 @@ import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { convertPercentChance } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { sendToChannelID } from '../../../lib/util/webhook';
 import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 const totalXPFromRaid = {
