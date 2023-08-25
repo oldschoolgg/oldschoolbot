@@ -88,7 +88,8 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			}
 		],
 		deathProps: {
-			hardness: 0.6
+			hardness: 0.6,
+			steepness: 0.99
 		}
 	},
 	{
@@ -239,7 +240,8 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackRanged],
 		requiredQuests: [QuestID.DesertTreasureII],
 		deathProps: {
-			hardness: 0.6
+			hardness: 0.6,
+			steepness: 0.99
 		}
 	},
 	{
@@ -407,7 +409,8 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			}
 		],
 		deathProps: {
-			hardness: 0.6
+			hardness: 0.6,
+			steepness: 0.99
 		}
 	},
 	{
@@ -574,7 +577,8 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			}
 		],
 		deathProps: {
-			hardness: 0.6
+			hardness: 0.6,
+			steepness: 0.99
 		}
 	},
 	{
