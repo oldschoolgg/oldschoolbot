@@ -23018,7 +23018,7 @@ exports[`OSB Creatables 1`] = `
     "name": "Bellator ring",
     "outputItems": Bank {
       "bank": {
-        "25488": 1,
+        "28316": 1,
       },
       "frozen": false,
     },
@@ -23069,7 +23069,7 @@ exports[`OSB Creatables 1`] = `
     "name": "Ultor ring",
     "outputItems": Bank {
       "bank": {
-        "25485": 1,
+        "28307": 1,
       },
       "frozen": false,
     },
@@ -23120,7 +23120,7 @@ exports[`OSB Creatables 1`] = `
     "name": "Magus ring",
     "outputItems": Bank {
       "bank": {
-        "25486": 1,
+        "28313": 1,
       },
       "frozen": false,
     },
@@ -23225,7 +23225,7 @@ exports[`OSB Creatables 1`] = `
     "name": "Venator ring",
     "outputItems": Bank {
       "bank": {
-        "25487": 1,
+        "28310": 1,
       },
       "frozen": false,
     },
