@@ -56,7 +56,7 @@ export const tobTask: MinionTask = {
 			const deaths = allDeaths[i];
 			const wipedRoom = wipedRooms[i];
 			const tobUsers = users.map((i, index) => ({ id: i, deaths: deaths[index] }));
-			if (data.solo) {
+			if (data.solo === 'trio') {
 				tobUsers.push({ id: miniID(3), deaths: [] });
 				tobUsers.push({ id: miniID(3), deaths: [] });
 			}
