@@ -372,38 +372,22 @@ interface ParsedTeamMember {
 	deaths: number[];
 	wipeDeaths: number[];
 }
+interface TobTeam {
+	user: MUser;
+	gear: { melee: Gear; range: Gear; mage: Gear };
+	bank: Bank;
+	kc: number;
+	hardKC: number;
+	attempts: number;
+	hardAttempts: number;
+}
 
-export function createTOBTeam({
-	team,
-	hardMode,
-	disableVariation
-}: {
-	team: {
-		user: MUser;
-		gear: { melee: Gear; range: Gear; mage: Gear };
-		bank: Bank;
-		kc: number;
-		hardKC: number;
-		attempts: number;
-		hardAttempts: number;
-	}[];
-	hardMode: boolean;
-	disableVariation?: true;
-}): {
-	reductions: Record<string, number>;
-	duration: number;
-	maxUserReduction: number;
-	parsedTeam: ParsedTeamMember[];
-	wipedRoom: TOBRoom | null;
-	deathDuration: number | null;
-} {
+export function calcTOBBaseDuration({ team, hardMode }: { team: TobTeam[]; hardMode: boolean }) {
 	const teamSize = team.length;
 
 	let individualReductions = [];
 
 	let reductions: Record<string, number> = {};
-
-	let parsedTeam: ParsedTeamMember[] = [];
 
 	for (const u of team) {
 		let userPercentChange = 0;
@@ -464,16 +448,6 @@ export function createTOBTeam({
 			userPercentChange = reduceNumByPercent(userPercentChange, 10);
 		}
 
-		const deathChances = calculateTOBDeaths(u.kc, u.hardKC, u.attempts, u.hardAttempts, hardMode, gearPercents);
-		parsedTeam.push({
-			kc: u.kc,
-			hardKC: u.hardKC,
-			deathChances,
-			wipeDeaths: deathChances.wipeDeaths,
-			deaths: deathChances.deaths,
-			id: u.user.id
-		});
-
 		let reduction = round(userPercentChange / teamSize, 1);
 
 		individualReductions.push(userPercentChange);
@@ -505,8 +479,42 @@ export function createTOBTeam({
 	if (team.length < 5) {
 		duration += (5 - team.length) * (Time.Minute * 1.3);
 	}
+	if (duration < Time.Minute * 15) {
+		duration = Math.max(Time.Minute * 15, duration);
+	}
+	return {
+		baseDuration: duration,
+		reductions,
+		maxUserReduction: maxSpeedReductionUser / teamSize
+	};
+}
+export function createTOBRaid({
+	team,
+	hardMode,
+	baseDuration,
+	disableVariation
+}: {
+	team: TobTeam[];
+	baseDuration: number;
+	hardMode: boolean;
+	disableVariation?: true;
+}): { duration: number; parsedTeam: ParsedTeamMember[]; wipedRoom: TOBRoom | null; deathDuration: number | null } {
+	let parsedTeam: ParsedTeamMember[] = [];
 
-	duration = Math.floor(randomVariation(duration, 5));
+	for (const u of team) {
+		const gearPercents = calculateTOBUserGearPercents(u.user);
+		const deathChances = calculateTOBDeaths(u.kc, u.hardKC, u.attempts, u.hardAttempts, hardMode, gearPercents);
+		parsedTeam.push({
+			kc: u.kc,
+			hardKC: u.hardKC,
+			deathChances,
+			wipeDeaths: team.length === 1 ? deathChances.deaths : deathChances.wipeDeaths,
+			deaths: deathChances.deaths,
+			id: u.user.id
+		});
+	}
+
+	let duration = Math.floor(randomVariation(baseDuration, 5));
 
 	let wipedRoom: TOBRoom | null = null;
 	let deathDuration: number | null = 0;
@@ -533,11 +541,8 @@ export function createTOBTeam({
 		});
 		wipedRoom = null;
 	}
-
 	return {
 		duration,
-		reductions,
-		maxUserReduction: maxSpeedReductionUser / teamSize,
 		parsedTeam,
 		wipedRoom,
 		deathDuration
