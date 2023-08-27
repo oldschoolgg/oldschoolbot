@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import {
-	ActivityTaskOptions,
+	ActivityTaskData,
 	AgilityActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	PickpocketActivityTaskOptions
@@ -15,7 +15,7 @@ export const enum WorldLocations {
 const WorldLocationsChecker = [
 	{
 		area: WorldLocations.Priffdinas,
-		checker: (activity: ActivityTaskOptions) => {
+		checker: (activity: ActivityTaskData) => {
 			if (['Gauntlet', 'Zalcano'].includes(activity.type)) return true;
 			if (
 				activity.type === 'MonsterKilling' &&
@@ -43,7 +43,7 @@ const WorldLocationsChecker = [
 	}
 ];
 
-export default function activityInArea(activity: ActivityTaskOptions) {
+export default function activityInArea(activity: ActivityTaskData) {
 	for (const checkLocation of WorldLocationsChecker) {
 		if (checkLocation.checker(activity)) return checkLocation.area;
 	}

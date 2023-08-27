@@ -1,17 +1,9 @@
-import { ActivityTaskOptions } from '../../../types/minions';
 import getOSItem from '../../../util/getOSItem';
 
 export type Floor = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export function isValidFloor(floor: number | string): floor is Floor {
 	return [1, 2, 3, 4, 5, 6, 7].includes(floor as number);
-}
-
-export interface DungeoneeringOptions extends ActivityTaskOptions {
-	leader: string;
-	users: string[];
-	quantity: number;
-	floor: number;
 }
 
 export const dungBuyables = [

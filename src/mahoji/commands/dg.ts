@@ -6,7 +6,6 @@ import { setupParty } from '../../lib/party';
 import {
 	determineDgLevelForFloor,
 	dungBuyables,
-	DungeoneeringOptions,
 	isValidFloor,
 	requiredSkills
 } from '../../lib/skilling/skills/dung/dungData';
@@ -18,6 +17,7 @@ import {
 } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MakePartyOptions } from '../../lib/types';
+import { DungeoneeringOptions } from '../../lib/types/minions';
 import { channelIsSendable, formatDuration, formatSkillRequirements, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';

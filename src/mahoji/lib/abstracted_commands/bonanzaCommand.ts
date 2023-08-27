@@ -1,7 +1,7 @@
 import { Time } from 'e';
 
 import { production } from '../../../config';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
@@ -20,7 +20,7 @@ export async function bonanzaCommand(user: MUser, channelID: string) {
 		user.minionName
 	} is now off to participate in Balthazar's Big Bonanza! The total trip will take ${formatDuration(duration)}.`;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID,
 		quantity: 1,

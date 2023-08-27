@@ -6,16 +6,12 @@ import { dwarvenOutfit } from '../../../lib/data/CollectionsExport';
 import { trackLoot } from '../../../lib/lootTrack';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
-import { ActivityTaskOptions } from '../../../lib/types/minions';
+import { MoktangTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-
-export interface MoktangTaskOptions extends ActivityTaskOptions {
-	qty: number;
-}
 
 const requiredPickaxes = resolveItems(['Crystal pickaxe', 'Volcanic pickaxe', 'Dwarven pickaxe', 'Dragon pickaxe']);
 

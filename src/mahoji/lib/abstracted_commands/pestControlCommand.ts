@@ -6,7 +6,7 @@ import { Bank } from 'oldschooljs';
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -177,7 +177,7 @@ export async function pestControlStartCommand(user: MUser, channelID: string) {
 
 	let duration = quantity * gameLength;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		duration,

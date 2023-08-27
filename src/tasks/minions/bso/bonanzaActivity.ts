@@ -6,7 +6,7 @@ import { spectatorClothes } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { getAllUserTames, tameName, TameSpeciesID } from '../../../lib/tames';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 function calcXP(user: MUser, duration: number, skill: SkillsEnum) {
@@ -17,7 +17,7 @@ const tameMessages = ["ate a member of the audience who wasn't watching", 'ate a
 
 export const bonanzaTask: MinionTask = {
 	type: 'BalthazarsBigBonanza',
-	async run(data: MinigameActivityTaskOptions) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, duration, userID } = data;
 
 		const [user, tames, incrementResult] = await Promise.all([

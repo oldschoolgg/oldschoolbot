@@ -1,6 +1,6 @@
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, bold, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { randArrItem, randInt, reduceNumByPercent, Time } from 'e';
+import { randArrItem, randInt, reduceNumByPercent, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -21,8 +21,8 @@ import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
-import { ActivityTaskOptions } from '../types/minions';
-import { buildClueButtons, channelIsSendable, itemID, makeComponents, roll, toKMB } from '../util';
+import { ActivityTaskData } from '../types/minions';
+import { buildClueButtons, channelIsSendable, makeComponents, toKMB } from '../util';
 import { mahojiChatHead } from './chatHeadImage';
 import {
 	makeAutoContractButton,
@@ -32,6 +32,7 @@ import {
 	makeOpenSeedPackButton,
 	makeRepeatTripButton
 } from './globalInteractions';
+import itemID from './itemID';
 import { updateBankSetting } from './updateBankSetting';
 import { sendToChannelID } from './webhook';
 
@@ -45,7 +46,7 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 ];
 
 interface TripFinishEffectOptions {
-	data: ActivityTaskOptions;
+	data: ActivityTaskData;
 	user: MUser;
 	loot: Bank | null;
 	messages: string[];
@@ -334,7 +335,7 @@ export async function handleTripFinish(
 	channelID: string,
 	_message: string | ({ content: string } & MessageCreateOptions),
 	attachment: AttachmentBuilder | Buffer | undefined,
-	data: ActivityTaskOptions,
+	data: ActivityTaskData,
 	loot: Bank | null,
 	_messages?: string[],
 	_components?: ButtonBuilder[]

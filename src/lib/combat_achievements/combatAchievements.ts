@@ -2,14 +2,7 @@ import { activity_type_enum } from '@prisma/client';
 import { deepClone, notEmpty, roll, sumArr } from 'e';
 
 import { Requirements } from '../structures/Requirements';
-import {
-	ActivityTaskOptions,
-	ActivityTaskOptionsWithQuantity,
-	FightCavesActivityTaskOptions,
-	InfernoOptions,
-	TheatreOfBloodTaskOptions,
-	TOAOptions
-} from '../types/minions';
+import { ActivityTaskData, TOAOptions } from '../types/minions';
 import { assert } from '../util';
 import { TripFinishEffect } from '../util/handleTripFinish';
 import { easyCombatAchievements } from './easy';
@@ -33,7 +26,7 @@ export type CombatAchievement = {
 	| {
 			rng: {
 				chancePerKill: number;
-				hasChance: activity_type_enum | ((data: ActivityTaskOptions, user: MUser) => boolean);
+				hasChance: activity_type_enum | ((data: ActivityTaskData, user: MUser) => boolean);
 			};
 	  }
 	| {
@@ -90,14 +83,10 @@ const indexesWithRng = entries.map(i => i[1].tasks.filter(t => 'rng' in t)).flat
 export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data, messages }) => {
 	const dataCopy = deepClone(data);
 	if (dataCopy.type === 'TheatreOfBlood') {
-		(dataCopy as ActivityTaskOptionsWithQuantity).quantity = 1;
+		(dataCopy as any).quantity = 1;
 	}
-	if (
-		dataCopy.type === 'Inferno' &&
-		!(dataCopy as InfernoOptions).diedPreZuk &&
-		!(dataCopy as InfernoOptions).diedZuk
-	) {
-		(dataCopy as ActivityTaskOptionsWithQuantity).quantity = 1;
+	if (dataCopy.type === 'Inferno' && !dataCopy.diedPreZuk && !dataCopy.diedZuk) {
+		(dataCopy as any).quantity = 1;
 	}
 	if (!('quantity' in dataCopy)) return;
 	let quantity = Number(dataCopy.quantity);
@@ -108,11 +97,11 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data
 		const wipedRooms = (Array.isArray(wipedRoom) ? wipedRoom : [wipedRoom]).filter(notEmpty);
 		for (let i = 0; i < wipedRooms.length; i++) quantity--;
 	} else if (data.type === 'TheatreOfBlood') {
-		if ((data as TheatreOfBloodTaskOptions).wipedRoom) {
+		if (data.wipedRoom) {
 			quantity--;
 		}
 	} else if (data.type === 'FightCaves') {
-		if ((data as FightCavesActivityTaskOptions).preJadDeathTime) {
+		if (data.preJadDeathTime) {
 			quantity--;
 		}
 	}

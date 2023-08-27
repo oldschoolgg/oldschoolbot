@@ -6,7 +6,7 @@ import { randomVariation } from 'oldschooljs/dist/util';
 import { Emoji } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -120,7 +120,7 @@ export async function odsStartCommand(klasaUser: MUser, channelID: string) {
 		]
 	});
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: klasaUser.id,
 		channelID: channelID.toString(),
 		quantity,

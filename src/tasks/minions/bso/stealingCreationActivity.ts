@@ -2,12 +2,12 @@ import { Bank } from 'oldschooljs';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const scTask: MinionTask = {
 	type: 'StealingCreation',
-	async run(data: MinigameActivityTaskOptions) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, duration, userID } = data;
 
 		const { newScore } = await incrementMinigameScore(userID, 'stealing_creation', quantity);

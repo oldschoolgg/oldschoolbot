@@ -171,7 +171,7 @@ export const monsterTask: MinionTask = {
 
 		let deaths = 0;
 		if (monster.deathProps) {
-			const currentKC = currentKCs[monsterID];
+			const currentKC: number | undefined = currentKCs[monsterID];
 			const deathChance = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC });
 			for (let i = 0; i < quantity; i++) {
 				if (percentChance(deathChance)) {

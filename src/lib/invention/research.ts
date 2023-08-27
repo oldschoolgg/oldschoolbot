@@ -4,7 +4,7 @@ import { clamp, shuffleArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { SkillsEnum } from '../skilling/types';
-import { ActivityTaskOptions } from '../types/minions';
+import { ResearchTaskOptions } from '../types/minions';
 import { formatDuration, roll } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
@@ -24,11 +24,6 @@ function inventionsCanUnlockFromResearch(user: MUser, researchedMaterial: Materi
 		if (i.inventionLevelNeeded > inventionLevel) return false;
 		return true;
 	});
-}
-
-export interface ResearchTaskOptions extends ActivityTaskOptions {
-	material: MaterialType;
-	quantity: number;
 }
 
 export async function researchCommand({
