@@ -428,7 +428,6 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers 
 	hardMode: boolean;
 	fakeDuration: number;
 	wipedRooms: (null | number)[];
-	wipedRoom?: null | number;
 	deaths: number[][][];
 	quantity: number;
 	solo?: boolean;

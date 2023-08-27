@@ -97,11 +97,7 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data
 		const wipedRooms = (Array.isArray(wipedRoom) ? wipedRoom : [wipedRoom]).filter(notEmpty);
 		for (let i = 0; i < wipedRooms.length; i++) quantity--;
 	} else if (data.type === 'TheatreOfBlood') {
-		if (data.wipedRoom) {
-			quantity--;
-		} else if (data.wipedRooms) {
-			quantity -= sumArr(data.wipedRooms.map(i => (i ? i : 0)));
-		}
+		quantity -= sumArr(data.wipedRooms.map(i => (i ? 1 : 0)));
 	} else if (data.type === 'FightCaves') {
 		if (data.preJadDeathTime) {
 			quantity--;
