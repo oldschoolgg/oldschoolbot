@@ -498,7 +498,7 @@ export function createTOBRaid({
 	baseDuration: number;
 	hardMode: boolean;
 	disableVariation?: true;
-}) {
+}): { duration: number; parsedTeam: ParsedTeamMember[]; wipedRoom: TOBRoom | null; deathDuration: number | null } {
 	let parsedTeam: ParsedTeamMember[] = [];
 
 	for (const u of team) {

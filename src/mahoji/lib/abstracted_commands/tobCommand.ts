@@ -1,6 +1,7 @@
 import { calcWhatPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
+import { randomVariation } from 'oldschooljs/dist/util';
 
 import { Emoji } from '../../../lib/constants';
 import { getSimilarItems } from '../../../lib/data/similarItems';
@@ -38,6 +39,8 @@ const minStats = {
 	prayer: 77
 };
 
+const SCYTHE_CHARGES_PER_RAID = 200;
+
 export async function calcTOBInput(u: MUser) {
 	const items = new Bank();
 	const kc = await getMinigameScore(u.id, 'tob');
@@ -61,11 +64,6 @@ export async function calcTOBInput(u: MUser) {
 	items.add('Blood rune', 110);
 	items.add('Death rune', 100);
 	items.add('Water rune', 800);
-
-	if (u.gear.melee.hasEquipped('Scythe of vitur')) {
-		items.add('Blood rune', 600);
-		items.add('Vial of blood', 2);
-	}
 
 	return items;
 }
@@ -150,6 +148,17 @@ export async function checkTOBUser(
 		});
 		if (!tentacleResult.hasEnough) {
 			return [true, tentacleResult.userMessage];
+		}
+	}
+
+	if (meleeGear.hasEquipped('Scythe of Vitur')) {
+		const scytheResult = checkUserCanUseDegradeableItem({
+			item: getOSItem('Scythe of Vitur'),
+			chargesToDegrade: SCYTHE_CHARGES_PER_RAID * quantity,
+			user
+		});
+		if (!scytheResult.hasEnough) {
+			return [true, scytheResult.userMessage];
 		}
 	}
 
@@ -327,7 +336,7 @@ export async function tobStartCommand(
 	let usersWhoConfirmed = [];
 	try {
 		if (solo) {
-			usersWhoConfirmed = [user];
+			usersWhoConfirmed = [user, user, user];
 		} else {
 			usersWhoConfirmed = await setupParty(channel, user, partyOptions);
 		}
@@ -396,6 +405,10 @@ export async function tobStartCommand(
 
 		deaths.push(parsedTeam.map(i => i.deaths));
 	}
+	if (solo) {
+		users.length = 1;
+		team.length = 1;
+	}
 	let debugStr = '';
 
 	const totalCost = new Bank();
@@ -421,6 +434,16 @@ export async function tobStartCommand(
 					item: getOSItem('Abyssal tentacle'),
 					user: u,
 					chargesToDegrade: TENTACLE_CHARGES_PER_RAID * qty
+				});
+			} else if (u.gear.melee.hasEquipped('Scythe of Vitur')) {
+				let usedCharges = 0;
+				for (let x = 0; x < qty; x++) {
+					usedCharges += randomVariation(0.8 * SCYTHE_CHARGES_PER_RAID, 20);
+				}
+				await degradeItem({
+					item: getOSItem('Scythe of Vitur'),
+					user: u,
+					chargesToDegrade: usedCharges
 				});
 			}
 			debugStr += `**- ${u.usernameOrMention}** (${Emoji.Gear}${total.toFixed(1)}% ${
