@@ -368,7 +368,7 @@ export async function tobStartCommand(
 	const { baseDuration, reductions, maxUserReduction } = calcTOBBaseDuration({ team, hardMode: isHardMode });
 	const maxTripLength = calcMaxTripLength(user, 'TheatreOfBlood');
 
-	const maxTripsCanFit = Math.floor(maxTripLength / baseDuration);
+	const maxTripsCanFit = Math.max(1, Math.floor(maxTripLength / baseDuration));
 
 	const qty = quantity ?? maxTripsCanFit;
 	if (qty > maxTripsCanFit) {
