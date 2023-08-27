@@ -5,7 +5,6 @@ import { randomVariation } from 'oldschooljs/dist/util';
 
 import { Emoji } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
-import { bareMinStats } from '../../../lib/data/cox';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import {
 	baseTOBUniques,
@@ -80,13 +79,13 @@ export async function checkTOBUser(
 		return [true, `${user.usernameOrMention} doesn't have a minion`];
 	}
 
-	if (!skillsMeetRequirements(user.skillsAsXP, bareMinStats)) {
+	if (!skillsMeetRequirements(user.skillsAsXP, minStats)) {
 		return [
 			true,
 			`${
 				user.usernameOrMention
 			} doesn't meet the skill requirements to do the Theatre of Blood, you need: ${formatSkillRequirements(
-				bareMinStats
+				minStats
 			)}.`
 		];
 	}
@@ -250,20 +249,20 @@ export async function checkTOBUser(
 export async function checkTOBTeam(
 	users: MUser[],
 	isHardMode: boolean,
-	solo: boolean,
+	solo: 'solo' | 'trio' | undefined,
 	quantity: number = 1
 ): Promise<string | null> {
 	const userWithoutSupplies = users.find(u => !u.bank.has(minimumTOBSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
 	}
-	if ((!solo && users.length < 2) || users.length > 5) {
+	if ((solo === undefined && users.length < 2) || users.length > 5) {
 		return 'TOB team must be 2-5 users';
 	}
 
 	for (const user of users) {
 		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
-		const checkResult = await checkTOBUser(user, isHardMode, users.length, quantity);
+		const checkResult = await checkTOBUser(user, isHardMode, solo === 'trio' ? 3 : users.length, quantity);
 		if (!checkResult[0]) {
 			continue;
 		} else {
@@ -312,7 +311,7 @@ export async function tobStartCommand(
 	channelID: string,
 	isHardMode: boolean,
 	maxSizeInput: number | undefined,
-	solo: boolean,
+	solo: 'solo' | 'trio' | undefined,
 	quantity: number | undefined
 ) {
 	if (user.minionIsBusy) {
@@ -356,8 +355,10 @@ export async function tobStartCommand(
 	if (!channelIsSendable(channel)) return 'No channel found.';
 	let usersWhoConfirmed = [];
 	try {
-		if (solo) {
+		if (solo === 'trio') {
 			usersWhoConfirmed = [user, user, user];
+		} else if (solo === 'solo') {
+			usersWhoConfirmed = [user];
 		} else {
 			usersWhoConfirmed = await setupParty(channel, user, partyOptions);
 		}
@@ -423,10 +424,10 @@ export async function tobStartCommand(
 		wipedRooms.push(wipedRoom);
 		totalFakeDuration += duration;
 		totalDuration += deathDuration === null ? duration : deathDuration;
-		if (solo) parsedTeam.length = 1;
+		if (solo === 'trio') parsedTeam.length = 1;
 		deaths.push(parsedTeam.map(i => i.deaths));
 	}
-	if (solo) {
+	if (solo === 'trio') {
 		users.length = 1;
 		team.length = 1;
 	}
