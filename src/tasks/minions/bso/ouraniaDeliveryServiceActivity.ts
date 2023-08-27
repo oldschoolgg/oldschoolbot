@@ -7,7 +7,7 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ExoticSeedsTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
@@ -26,7 +26,7 @@ const OuraniaTipTable = new LootTable().tertiary(9, BaseTable);
 
 export const odsTask: MinionTask = {
 	type: 'OuraniaDeliveryService',
-	async run(data: MinigameActivityTaskOptions) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, duration, userID } = data;
 
 		incrementMinigameScore(userID, 'ourania_delivery_service', quantity);

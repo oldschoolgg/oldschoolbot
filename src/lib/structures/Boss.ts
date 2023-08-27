@@ -1,4 +1,3 @@
-import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, BaseMessageOptions, TextChannel } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -121,7 +120,7 @@ export interface BossOptions {
 	food: Bank | ((user: MUser) => Bank);
 	settingsKeys?: [ClientBankKey, ClientBankKey];
 	channel: TextChannel;
-	activity: activity_type_enum;
+	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent';
 	massText: string;
 	leader: MUser;
 	minSize: number;
@@ -175,7 +174,7 @@ export class BossInstance {
 	totalPercent: number = -1;
 	settingsKeys?: [ClientBankKey, ClientBankKey];
 	channel: TextChannel;
-	activity: activity_type_enum;
+	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent';
 	massText: string;
 	users: MUser[] | null = null;
 	leader: MUser;

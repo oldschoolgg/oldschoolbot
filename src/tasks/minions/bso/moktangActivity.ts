@@ -8,12 +8,12 @@ import { Events } from '../../../lib/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { trackLoot } from '../../../lib/lootTrack';
 import { MOKTANG_ID, MoktangLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/Moktang';
+import { MoktangTaskOptions } from '../../../lib/types/minions';
 import { itemNameFromID } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { MoktangTaskOptions } from '../../../mahoji/lib/abstracted_commands/moktangCommand';
 
 export const moktangTask: MinionTask = {
 	type: 'Moktang',

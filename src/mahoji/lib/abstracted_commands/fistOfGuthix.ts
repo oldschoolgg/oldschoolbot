@@ -1,6 +1,6 @@
 import { Time } from 'e';
 
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -16,7 +16,7 @@ export async function fistOfGuthixCommand(user: MUser, channelID: string) {
 		user.minionName
 	} is now off to do ${quantity} Fist of Guthix games. The total trip will take ${formatDuration(duration)}.`;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID,
 		quantity,

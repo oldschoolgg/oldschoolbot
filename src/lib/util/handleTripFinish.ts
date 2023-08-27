@@ -21,7 +21,7 @@ import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
-import { ActivityTaskOptions } from '../types/minions';
+import { ActivityTaskData } from '../types/minions';
 import { buildClueButtons, channelIsSendable, itemID, makeComponents, roll, toKMB } from '../util';
 import { mahojiChatHead } from './chatHeadImage';
 import {
@@ -45,7 +45,7 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 ];
 
 interface TripFinishEffectOptions {
-	data: ActivityTaskOptions;
+	data: ActivityTaskData;
 	user: MUser;
 	loot: Bank | null;
 	messages: string[];
@@ -334,7 +334,7 @@ export async function handleTripFinish(
 	channelID: string,
 	_message: string | ({ content: string } & MessageCreateOptions),
 	attachment: AttachmentBuilder | Buffer | undefined,
-	data: ActivityTaskOptions,
+	data: ActivityTaskData,
 	loot: Bank | null,
 	_messages?: string[],
 	_components?: ButtonBuilder[]

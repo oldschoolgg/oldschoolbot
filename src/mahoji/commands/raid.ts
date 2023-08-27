@@ -84,10 +84,10 @@ export const raidCommand: OSBMahojiCommand = {
 					description: 'Start a Theatre of Blood trip',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Boolean,
+							type: ApplicationCommandOptionType.String,
 							name: 'solo',
 							description: 'Attempt the Theatre by yourself.',
-							required: false
+							choices: ['solo', 'trio'].map(i => ({ name: i, value: i }))
 						},
 						{
 							type: ApplicationCommandOptionType.Boolean,
@@ -100,6 +100,14 @@ export const raidCommand: OSBMahojiCommand = {
 							name: 'max_team_size',
 							description: 'Choose a max size for your team.',
 							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The quantity to do.',
+							required: false,
+							min_value: 1,
+							max_value: 10
 						}
 					]
 				},
@@ -252,7 +260,12 @@ export const raidCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		cox?: { start?: { type: 'solo' | 'mass'; challenge_mode?: boolean; quantity?: number }; stats?: {} };
 		tob?: {
-			start?: { solo?: boolean; hard_mode?: boolean; max_team_size?: number };
+			start?: {
+				solo?: 'solo' | 'trio' | undefined;
+				hard_mode?: boolean;
+				max_team_size?: number;
+				quantity?: number;
+			};
 			stats?: {};
 			check?: { hard_mode?: boolean };
 		};
@@ -430,16 +443,15 @@ Slowest finish: ${formatDuration(slowest.time)}
 		if (cox && cox.start) {
 			return coxCommand(channelID, user, cox.start.type, Boolean(cox.start.challenge_mode), cox.start.quantity);
 		}
-		if (tob) {
-			if (tob.start) {
-				return tobStartCommand(
-					user,
-					channelID,
-					Boolean(tob.start.hard_mode),
-					tob.start.max_team_size,
-					Boolean(tob.start.solo)
-				);
-			}
+		if (tob?.start) {
+			return tobStartCommand(
+				user,
+				channelID,
+				Boolean(tob.start.hard_mode),
+				tob.start.max_team_size,
+				tob.start.solo,
+				tob.start.quantity
+			);
 		}
 
 		if (options.toa?.start) {

@@ -253,6 +253,10 @@ export async function minionKillCommand(
 	if (!monster) return invalidMonsterMsg;
 	const maxTripLength = calcMaxTripLength(user, 'MonsterKilling');
 
+	if ([Monsters.Callisto.id, Monsters.Vetion.id, Monsters.Venenatis.id].includes(monster.id)) {
+		return 'That monster is currently disabled.';
+	}
+
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask =
 		usersTask.assignedTask !== null &&

@@ -4,7 +4,7 @@ import { Bank, LootTable, Openables } from 'oldschooljs';
 
 import { BitField } from './constants';
 import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
-import { ActivityTaskOptions } from './types/minions';
+import { ActivityTaskData } from './types/minions';
 import activityInArea, { WorldLocations } from './util/activityInArea';
 
 const {
@@ -143,7 +143,7 @@ const implingTableByWorldLocation: TWorldLocationImplingTable = {
 		new LootTable().oneIn(caughtChance, hasMrE ? mrETable : defaultImpTable)
 };
 
-export async function handlePassiveImplings(user: MUser, data: ActivityTaskOptions) {
+export async function handlePassiveImplings(user: MUser, data: ActivityTaskData) {
 	if (
 		[
 			'FightCaves',

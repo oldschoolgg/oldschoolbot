@@ -6,7 +6,7 @@ import { table } from 'table';
 
 import Skillcapes from '../skilling/skillcapes';
 import { SkillsEnum } from '../skilling/types';
-import { ActivityTaskOptions } from '../types/minions';
+import { DisassembleTaskOptions } from '../types/minions';
 import { calcPerHour, formatDuration, toKMB } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
@@ -17,7 +17,6 @@ import {
 	DisassembleFlag,
 	DisassemblyItem,
 	DisassemblySourceGroup,
-	IMaterialBank,
 	MaterialType
 } from '.';
 import { DisassemblyGroupMap, DisassemblySourceGroups } from './groups';
@@ -342,13 +341,6 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 	};
 }
 
-export interface DisassembleTaskOptions extends ActivityTaskOptions {
-	i: number;
-	qty: number;
-	mats: IMaterialBank;
-	xp: number;
-}
-
 export async function disassembleCommand({
 	user,
 	itemToDisassembleName,
@@ -416,4 +408,5 @@ for (let group of DisassemblySourceGroups) {
 		}
 	}
 }
-if (duplicateItems.length) console.warn(`Found duplicate items ${uniqueArr(duplicateItems.flat().map(i => i.name))}`);
+if (duplicateItems.length > 0)
+	console.warn(`Found duplicate items ${uniqueArr(duplicateItems.flat().map(i => i.name))}`);

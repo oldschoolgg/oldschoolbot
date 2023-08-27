@@ -1,6 +1,5 @@
 import { calcPercentOfNum, calcWhatPercent, randFloat, randInt, reduceNumByPercent, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
 import { randomVariation } from 'oldschooljs/dist/util';
 
 import type { GearStats } from '../gear/types';
@@ -9,7 +8,7 @@ import { constructGearSetup, Gear } from '../structures/Gear';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 import resolveItems from '../util/resolveItems';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from './CollectionsExport';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit, pernixOutfit } from './CollectionsExport';
 
 export interface TOBRoom {
 	name: string;
@@ -188,27 +187,27 @@ function calcSetupPercent(
 }
 
 export const TOBMaxMageGear = constructGearSetup({
-	head: 'Ancestral hat',
+	head: 'Virtus mask',
 	neck: 'Occult necklace',
-	body: 'Ancestral robe top',
-	cape: 'Imbued saradomin cape',
-	hands: 'Tormented bracelet',
-	legs: 'Ancestral robe bottom',
-	feet: 'Eternal boots',
-	weapon: 'Kodai wand',
-	shield: 'Arcane spirit shield',
+	body: 'Virtus robe top',
+	cape: 'Vasa cloak',
+	hands: 'Virtus gloves',
+	legs: 'Virtus robe legs',
+	feet: 'Virtus boots',
+	weapon: 'Virtus wand',
+	shield: 'Virtus book',
 	ring: 'Magus ring'
 });
 const maxMage = new Gear(TOBMaxMageGear);
 
 export const TOBMaxRangeGear = constructGearSetup({
-	head: 'Void ranger helm',
+	head: 'Pernix cowl',
 	neck: 'Necklace of anguish',
-	body: 'Elite void top',
+	body: 'Pernix body',
 	cape: 'Tidal collector',
-	hands: 'Void knight gloves',
-	legs: 'Elite void robe',
-	feet: 'Pegasian boots',
+	hands: 'Pernix gloves',
+	legs: 'Pernix chaps',
+	feet: 'Pernix boots',
 	'2h': 'Twisted bow',
 	ring: 'Ring of piercing(i)',
 	ammo: 'Dragon arrow'
@@ -220,12 +219,13 @@ export const TOBMaxMeleeGear = constructGearSetup({
 	head: 'Torva full helm',
 	neck: 'Amulet of torture',
 	body: 'Torva platebody',
-	cape: 'Infernal cape',
-	hands: 'Ferocious gloves',
+	cape: 'Tzkal cape',
+	hands: 'Torva gloves',
 	legs: 'Torva platelegs',
-	feet: 'Primordial boots',
-	'2h': 'Scythe of vitur',
-	ring: 'Ultor ring'
+	feet: 'Torva boots',
+	weapon: 'Drygore longsword',
+	shield: 'Offhand drygore longsword',
+	ring: 'Ignis ring (i)'
 });
 const maxMelee = new Gear(TOBMaxMeleeGear);
 
@@ -276,82 +276,11 @@ function kcEffectiveness(normalKC: number, hardKC: number, hardMode: boolean) {
 	return kcEffectiveness;
 }
 
-interface ItemBoost {
-	item: Item;
-	boost: number;
-	mustBeEquipped: boolean;
-	setup?: 'mage' | 'range' | 'melee';
-}
-
-const itemBoosts: ItemBoost[][] = [
-	[
-		{
-			item: getOSItem('Scythe of vitur'),
-			boost: 15,
-			mustBeEquipped: true,
-			setup: 'melee'
-		},
-		{
-			item: getOSItem('Scythe of vitur (uncharged)'),
-			boost: 6,
-			mustBeEquipped: true,
-			setup: 'melee'
-		},
-		{
-			item: getOSItem('Blade of saeldor (c)'),
-			boost: 6,
-			mustBeEquipped: true,
-			setup: 'melee'
-		},
-		{
-			item: getOSItem('Abyssal tentacle'),
-			boost: 5.5,
-			mustBeEquipped: true,
-			setup: 'melee'
-		}
-	],
-	[
-		{
-			item: getOSItem('Twisted bow'),
-			boost: 4,
-			mustBeEquipped: true,
-			setup: 'range'
-		}
-	],
-	[
-		{
-			item: getOSItem('Dragon claws'),
-			boost: 6,
-			mustBeEquipped: false
-		},
-		{
-			item: getOSItem('Crystal halberd'),
-			boost: 3,
-			mustBeEquipped: false
-		}
-	],
-	[
-		{
-			item: getOSItem('Dragon warhammer'),
-			boost: 6,
-			mustBeEquipped: false
-		},
-		{
-			item: getOSItem('Bandos godsword'),
-			boost: 3,
-			mustBeEquipped: false
-		}
-	]
-];
-
 const speedReductionForGear = 16;
-const speedReductionForKC = 20;
+const speedReductionForKC = 40;
 const speedReductionForDarts = 4;
 
-const maxSpeedReductionFromItems = itemBoosts.reduce(
-	(sum, items) => sum + Math.max(...items.map(item => item.boost)),
-	0
-);
+const maxSpeedReductionFromItems = 43;
 const maxSpeedReductionUser =
 	(speedReductionForGear + speedReductionForKC + speedReductionForDarts) * 1.3 + maxSpeedReductionFromItems;
 
@@ -370,38 +299,22 @@ interface ParsedTeamMember {
 	deaths: number[];
 	wipeDeaths: number[];
 }
+interface TobTeam {
+	user: MUser;
+	gear: { melee: Gear; range: Gear; mage: Gear };
+	bank: Bank;
+	kc: number;
+	hardKC: number;
+	attempts: number;
+	hardAttempts: number;
+}
 
-export function createTOBTeam({
-	team,
-	hardMode,
-	disableVariation
-}: {
-	team: {
-		user: MUser;
-		gear: { melee: Gear; range: Gear; mage: Gear };
-		bank: Bank;
-		kc: number;
-		hardKC: number;
-		attempts: number;
-		hardAttempts: number;
-	}[];
-	hardMode: boolean;
-	disableVariation?: true;
-}): {
-	reductions: Record<string, number>;
-	duration: number;
-	maxUserReduction: number;
-	parsedTeam: ParsedTeamMember[];
-	wipedRoom: TOBRoom | null;
-	deathDuration: number | null;
-} {
+export function calcTOBBaseDuration({ team, hardMode }: { team: TobTeam[]; hardMode: boolean }) {
 	const teamSize = team.length;
 
 	let individualReductions = [];
 
 	let reductions: Record<string, number> = {};
-
-	let parsedTeam: ParsedTeamMember[] = [];
 
 	for (const u of team) {
 		let userPercentChange = 0;
@@ -485,8 +398,9 @@ export function createTOBTeam({
 			'Void ranger helm'
 		]);
 		const eliteVoid = resolveItems(['Elite void top', 'Elite void robe', 'Void knight gloves', 'Void ranger helm']);
-		if (u.gear.range.hasEquipped(gorajanArcherOutfit, true)) {
-			userPercentChange += 2;
+		const hasGorajanArcher = u.gear.range.hasEquipped(gorajanArcherOutfit, true);
+		if (hasGorajanArcher || u.gear.range.hasEquipped(pernixOutfit, true)) {
+			userPercentChange += hasGorajanArcher ? 2 : 0;
 		} else if (!u.gear.range.hasEquipped(regularVoid, true, true)) {
 			userPercentChange = reduceNumByPercent(userPercentChange, 20);
 		} else if (!u.gear.range.hasEquipped(eliteVoid, true, true)) {
@@ -498,15 +412,6 @@ export function createTOBTeam({
 		if (u.gear.mage.hasEquipped(gorajanOccultOutfit, true)) {
 			userPercentChange += 2;
 		}
-		const deathChances = calculateTOBDeaths(u.kc, u.hardKC, u.attempts, u.hardAttempts, hardMode, gearPercents);
-		parsedTeam.push({
-			kc: u.kc,
-			hardKC: u.hardKC,
-			deathChances,
-			wipeDeaths: team.length === 1 ? deathChances.deaths : deathChances.wipeDeaths,
-			deaths: deathChances.deaths,
-			id: u.user.id
-		});
 
 		let reduction = round(userPercentChange / teamSize, 1);
 
@@ -538,8 +443,39 @@ export function createTOBTeam({
 	if (duration < Time.Minute * 15) {
 		duration = Math.max(Time.Minute * 15, duration);
 	}
+	return {
+		baseDuration: duration,
+		reductions,
+		maxUserReduction: maxSpeedReductionUser / teamSize
+	};
+}
+export function createTOBRaid({
+	team,
+	hardMode,
+	baseDuration,
+	disableVariation
+}: {
+	team: TobTeam[];
+	baseDuration: number;
+	hardMode: boolean;
+	disableVariation?: true;
+}): { duration: number; parsedTeam: ParsedTeamMember[]; wipedRoom: TOBRoom | null; deathDuration: number | null } {
+	let parsedTeam: ParsedTeamMember[] = [];
 
-	duration = Math.floor(randomVariation(duration, 5));
+	for (const u of team) {
+		const gearPercents = calculateTOBUserGearPercents(u.user);
+		const deathChances = calculateTOBDeaths(u.kc, u.hardKC, u.attempts, u.hardAttempts, hardMode, gearPercents);
+		parsedTeam.push({
+			kc: u.kc,
+			hardKC: u.hardKC,
+			deathChances,
+			wipeDeaths: team.length === 1 ? deathChances.deaths : deathChances.wipeDeaths,
+			deaths: deathChances.deaths,
+			id: u.user.id
+		});
+	}
+
+	let duration = Math.floor(randomVariation(baseDuration, 5));
 
 	let wipedRoom: TOBRoom | null = null;
 	let deathDuration: number | null = 0;
@@ -566,11 +502,8 @@ export function createTOBTeam({
 		});
 		wipedRoom = null;
 	}
-
 	return {
 		duration,
-		reductions,
-		maxUserReduction: maxSpeedReductionUser / teamSize,
 		parsedTeam,
 		wipedRoom,
 		deathDuration

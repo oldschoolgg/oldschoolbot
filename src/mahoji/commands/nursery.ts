@@ -8,12 +8,27 @@ import { production } from '../../config';
 import { Events } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { Nursery, Species, tameSpecies } from '../../lib/tames';
+import { Nursery, Species, tameSpecies, TameSpeciesID } from '../../lib/tames';
 import { formatDuration, gaussianRandom, roll } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
+
+function makeTameNickname(species: Species) {
+	switch (species.id) {
+		case TameSpeciesID.Igne: {
+			const prefixs = ['Flame', 'Fierce', 'Crimson', 'Fiery', 'Ancient', 'Scorched', 'Infernal'];
+			const suffixs = ['Fang', 'Heart', 'Tail', 'Claw', 'Tooth', 'Wing'];
+			return `${randArrItem(prefixs)} ${randArrItem(suffixs)}`;
+		}
+		case TameSpeciesID.Monkey: {
+			const prefixs = ['Curious', 'Swift', 'Clever', 'Cheeky', 'Hairy'];
+			const suffixs = ['Tail', 'Foot', 'Heart', 'Monkey', 'Paw'];
+			return `${randArrItem(prefixs)} ${randArrItem(suffixs)}`;
+		}
+	}
+}
 
 export async function generateNewTame(user: MUser, species: Species) {
 	let shinyChance = user.hasEquippedOrInBank(['Ring of luck'])
@@ -41,7 +56,8 @@ export async function generateNewTame(user: MUser, species: Species) {
 			max_support_level: gaussianRandom(minSup, maxSup, 2),
 			max_gatherer_level: gaussianRandom(minGath, maxGath, 2),
 			max_artisan_level: gaussianRandom(minArt, maxArt, 2),
-			max_combat_level: gaussianRandom(minCmbt, maxCmbt, 2)
+			max_combat_level: gaussianRandom(minCmbt, maxCmbt, 2),
+			nickname: makeTameNickname(species)
 		}
 	});
 
