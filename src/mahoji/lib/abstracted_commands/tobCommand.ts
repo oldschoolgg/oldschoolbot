@@ -402,7 +402,7 @@ export async function tobStartCommand(
 		wipedRooms.push(wipedRoom);
 		totalFakeDuration += duration;
 		totalDuration += deathDuration === null ? duration : deathDuration;
-
+		if (solo) parsedTeam.length = 1;
 		deaths.push(parsedTeam.map(i => i.deaths));
 	}
 	if (solo) {
