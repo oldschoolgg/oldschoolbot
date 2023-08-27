@@ -510,7 +510,9 @@ export async function tobStartCommand(
 		.map(u => u.usernameOrMention)
 		.join(', ')}) is now off to do ${qty}x Theatre of Blood raid${
 		qty > 1 ? 's' : ''
-	} - the total trip will take ${formatDuration(totalFakeDuration)}.${solo === 'trio' ? " You're in a team of 3." : ''}`;
+	} - the total trip will take ${formatDuration(totalFakeDuration)}.${
+		solo === 'trio' ? " You're in a team of 3." : ''
+	}`;
 
 	str += ` \n\n${debugStr}`;
 
