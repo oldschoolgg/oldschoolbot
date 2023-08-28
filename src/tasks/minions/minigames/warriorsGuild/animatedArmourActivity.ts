@@ -33,6 +33,6 @@ export const animatedArmorTask: MinionTask = {
 
 		const str = `${user}, ${user.minionName} finished killing ${quantity}x animated ${armour.name} armour and received ${loot}.`;
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish(user, channelID, str, undefined, data, loot, messages);
 	}
 };
