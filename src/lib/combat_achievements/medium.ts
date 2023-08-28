@@ -321,14 +321,14 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 			}
 		})
 	},
-	{
-		id: 126,
-		name: 'Sit Back and Relax',
-		type: 'mechanical',
-		monster: 'Other',
-		desc: 'Deal 100 damage to creatures using undead thralls.',
-		notPossible: true
-	},
+	// {
+	// 	id: 126,
+	// 	name: 'Sit Back and Relax',
+	// 	type: 'mechanical',
+	// 	monster: 'Other',
+	// 	desc: 'Deal 100 damage to creatures using undead thralls.',
+	// 	notPossible: true
+	// },
 	{
 		id: 127,
 		name: 'Back to the Wall',
