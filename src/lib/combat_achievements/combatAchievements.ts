@@ -117,9 +117,6 @@ const indexesWithRng = entries.map(i => i[1].tasks.filter(t => 'rng' in t)).flat
 
 export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data, messages }) => {
 	const dataCopy = deepClone(data);
-	if (dataCopy.type === 'TheatreOfBlood') {
-		(dataCopy as any).quantity = 1;
-	}
 	if (dataCopy.type === 'Inferno' && !dataCopy.diedPreZuk && !dataCopy.diedZuk) {
 		(dataCopy as any).quantity = 1;
 	}
@@ -132,9 +129,7 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data
 		const wipedRooms = (Array.isArray(wipedRoom) ? wipedRoom : [wipedRoom]).filter(notEmpty);
 		for (let i = 0; i < wipedRooms.length; i++) quantity--;
 	} else if (data.type === 'TheatreOfBlood') {
-		if (data.wipedRoom) {
-			quantity--;
-		}
+		quantity -= sumArr(data.wipedRooms.map(i => (i !== null ? 1 : 0)));
 	} else if (data.type === 'FightCaves') {
 		if (data.preJadDeathTime) {
 			quantity--;

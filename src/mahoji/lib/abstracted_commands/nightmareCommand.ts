@@ -205,7 +205,10 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 			effectiveTime = reduceNumByPercent(effectiveTime, 3);
 			soloBoosts.push('3% for Dragon claws');
 		}
-		if (user.hasEquippedOrInBank('Harmonised nightmare staff')) {
+		if (user.hasEquippedOrInBank("Tumeken's shadow")) {
+			effectiveTime = reduceNumByPercent(effectiveTime, 6);
+			soloBoosts.push("6% for Tumeken's shadow");
+		} else if (user.hasEquippedOrInBank('Harmonised nightmare staff')) {
 			effectiveTime = reduceNumByPercent(effectiveTime, 3);
 			soloBoosts.push('3% for Harmonised nightmare staff');
 		}
