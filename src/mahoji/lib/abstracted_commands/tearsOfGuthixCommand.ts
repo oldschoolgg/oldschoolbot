@@ -2,7 +2,7 @@ import { notEmpty, objectEntries, Time } from 'e';
 
 import { Emoji } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
@@ -76,7 +76,7 @@ export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 	duration += Time.Second * 0.6 * userQP;
 	if (duration > Time.Minute * 30) duration = Time.Minute * 30;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'tears_of_guthix',
 		userID: user.id,
 		channelID: channelID.toString(),

@@ -2,7 +2,7 @@ import { User } from '@prisma/client';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -129,7 +129,7 @@ export async function soulWarsStartCommand(user: MUser, channelID: string) {
 	const quantity = Math.floor(calcMaxTripLength(user, 'SoulWars') / perDuration);
 	const duration = quantity * perDuration;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
