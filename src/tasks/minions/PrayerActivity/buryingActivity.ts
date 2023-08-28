@@ -35,9 +35,7 @@ export const buryingTask: MinionTask = {
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived, duration: data.duration });
 		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived, source: 'BuryingBones' });
 
-		let str = `${user}, ${user.minionName} finished burying ${quantity} ${
-			bone.name
-		}, ${xpRes}.`;
+		let str = `${user}, ${user.minionName} finished burying ${quantity} ${bone.name}, ${xpRes}.`;
 
 		if (zealOutfitAmount > 0) {
 			str += `\nYour ${zealOutfitAmount} pieces of Zealot's robes helped you bury an extra ${zealBonesSaved} ${bone.name}.`;

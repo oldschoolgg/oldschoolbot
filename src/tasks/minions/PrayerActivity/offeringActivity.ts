@@ -66,7 +66,12 @@ export const offeringTask: MinionTask = {
 
 		const xpReceived = newQuantity * bone.xp * XPMod;
 
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived, duration: data.duration, source: 'OfferingBones' });
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Prayer,
+			amount: xpReceived,
+			duration: data.duration,
+			source: 'OfferingBones'
+		});
 
 		let str = `${user}, ${user.minionName} finished offering ${newQuantity} ${bone.name}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers, ${xpRes}.`;
 

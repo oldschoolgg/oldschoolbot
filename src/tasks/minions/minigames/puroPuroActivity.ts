@@ -95,7 +95,12 @@ export const puroPuroTask: MinionTask = {
 
 		let str = `<@${userID}>, ${user.minionName} finished hunting in Puro-Puro. `;
 
-		const xpStr = await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP, duration: data.duration, source: 'PuroPuro' });
+		const xpStr = await user.addXP({
+			skillName: SkillsEnum.Hunter,
+			amount: hunterXP,
+			duration: data.duration,
+			source: 'PuroPuro'
+		});
 
 		if (hunterXP > 0) {
 			str += `\n${xpStr}.`;
@@ -123,8 +128,13 @@ export const puroPuroTask: MinionTask = {
 			let magicXP = 0;
 			magicXP += spellsUsed * 60;
 
-			const magicXpStr = await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, duration: data.duration, source: 'PuroPuro' });
-			
+			const magicXpStr = await user.addXP({
+				skillName: SkillsEnum.Magic,
+				amount: magicXP,
+				duration: data.duration,
+				source: 'PuroPuro'
+			});
+
 			if (magicXP > 0) str += `\n${magicXpStr}.`;
 			if (implingTier === 2) {
 				str += `\n**Boosts:** Due to using Dark Lure, you are catching 20% more implings. You used: ${itemCost}. ${saved}`;
