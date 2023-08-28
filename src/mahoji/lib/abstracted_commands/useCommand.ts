@@ -43,6 +43,36 @@ const usableUnlocks: UsableUnlock[] = [
 		item: getOSItem('Runescroll of bloodbark'),
 		bitfield: BitField.HasBloodbarkScroll,
 		resultMessage: 'You used your Runescroll of bloodbark, and unlocked the ability to create Bloodbark armour.'
+	},
+	{
+		item: getOSItem('Runescroll of swampbark'),
+		bitfield: BitField.HasSwampbarkScroll,
+		resultMessage: 'You used your Runescroll of Swampbark, and unlocked the ability to create Swampbark armour.'
+	},
+	{
+		item: getOSItem("Saradomin's light"),
+		bitfield: BitField.HasSaradominsLight,
+		resultMessage: "You used your Saradomin's light."
+	},
+	{
+		item: getOSItem('Frozen tablet'),
+		bitfield: BitField.UsedFrozenTablet,
+		resultMessage: 'You used your Frozen tablet.'
+	},
+	{
+		item: getOSItem('Scarred tablet'),
+		bitfield: BitField.UsedScarredTablet,
+		resultMessage: 'You used your Scarred tablet.'
+	},
+	{
+		item: getOSItem('Sirenic tablet'),
+		bitfield: BitField.UsedSirenicTablet,
+		resultMessage: 'You used your Sirenic tablet.'
+	},
+	{
+		item: getOSItem('Strangled tablet'),
+		bitfield: BitField.UsedStrangledTablet,
+		resultMessage: 'You used your Strangled tablet.'
 	}
 ];
 for (const usableUnlock of usableUnlocks) {
@@ -85,11 +115,11 @@ const genericUsables: {
 for (const genericU of genericUsables) {
 	usables.push({
 		items: genericU.items,
-		run: async klasaUser => {
-			if (genericU.cost) await klasaUser.removeItemsFromBank(genericU.cost);
+		run: async user => {
+			const cost = genericU.cost ? genericU.cost : undefined;
 			const loot =
-				genericU.loot === null ? null : genericU.loot instanceof Bank ? genericU.loot : genericU.loot();
-			if (loot) await klasaUser.addItemsToBank({ items: loot });
+				genericU.loot === null ? undefined : genericU.loot instanceof Bank ? genericU.loot : genericU.loot();
+			if (loot || cost) await user.transactItems({ itemsToAdd: loot, itemsToRemove: cost, collectionLog: true });
 			return genericU.response(loot ?? new Bank());
 		}
 	});

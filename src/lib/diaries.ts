@@ -2,7 +2,7 @@ import { objectEntries } from 'e';
 import { Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { MAX_QP } from './constants';
+import { MAX_QP } from '../mahoji/lib/abstracted_commands/questCommand';
 import type { MinigameName } from './settings/minigames';
 import Skillcapes from './skilling/skillcapes';
 import { courses } from './skilling/skills/agility';
@@ -10,6 +10,9 @@ import { ItemBank, Skills } from './types';
 import { formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
+
+export const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
+export type DiaryTierName = (typeof diaryTiers)[number];
 
 export interface DiaryTier {
 	name: 'Easy' | 'Medium' | 'Hard' | 'Elite';

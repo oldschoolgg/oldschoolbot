@@ -308,7 +308,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 		}
 		if (options.delete) {
 			const preset = await prisma.gearPreset.findFirst({
-				where: { user_id: userID.toString(), name: options.delete.preset }
+				where: { user_id: userID, name: options.delete.preset }
 			});
 			if (!preset) {
 				return "You don't have a gear preset with that name.";
@@ -317,8 +317,8 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 			await prisma.gearPreset.delete({
 				where: {
 					user_id_name: {
-						user_id: userID.toString(),
-						name: options.delete.preset
+						user_id: userID,
+						name: preset.name
 					}
 				}
 			});

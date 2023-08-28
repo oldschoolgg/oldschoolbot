@@ -69,6 +69,6 @@ export async function makeServer(port = globalConfig.httpPort) {
 
 	initRoutes(server);
 
-	server.listen({ port });
+	await server.listen({ port });
 	return server;
 }

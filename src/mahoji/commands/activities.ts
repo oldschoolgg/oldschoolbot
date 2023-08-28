@@ -28,8 +28,9 @@ import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
 import { favourCommand } from '../lib/abstracted_commands/favourCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
+import { otherActivities, otherActivitiesCommand } from '../lib/abstracted_commands/otherActivitiesCommand';
 import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
-import { questCommand } from '../lib/abstracted_commands/questCommand';
+import { questCommand, quests } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { scatterCommand } from '../lib/abstracted_commands/scatterCommand';
 import { underwaterAgilityThievingCommand } from '../lib/abstracted_commands/underwaterCommand';
@@ -146,7 +147,16 @@ export const activitiesCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'quest',
-			description: 'Send your minion to do quests.'
+			description: 'Send your minion to do quests.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'name',
+					description: 'The name of the quest (optional).',
+					choices: quests.map(i => ({ name: i.name, value: i.name })),
+					required: false
+				}
+			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -185,7 +195,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.Number,
+					type: ApplicationCommandOptionType.Integer,
 					name: 'dose',
 					description: 'The dosage to decant them too. (default 4)',
 					required: false,
@@ -216,7 +226,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 					]
 				},
 				{
-					type: ApplicationCommandOptionType.Number,
+					type: ApplicationCommandOptionType.Integer,
 					name: 'quantity',
 					description: 'The amount of inventories you want to charge.  (optional)',
 					required: false,
@@ -465,6 +475,20 @@ export const activitiesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'other',
+			description: 'Other, smaller activities.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'activity',
+					description: 'The activity to do.',
+					required: true,
+					choices: otherActivities.map(i => ({ name: i.name, value: i.type }))
+				}
+			]
 		}
 	],
 	run: async ({
@@ -478,7 +502,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 		champions_challenge?: {};
 		warriors_guild?: { action: string; quantity?: number };
 		collect?: { item: string; quantity?: number; no_stams?: boolean };
-		quest?: {};
+		quest?: {
+			name?: string;
+		};
 		favour?: { name?: string; no_stams?: boolean };
 		decant?: { potion_name: string; dose?: number };
 		charge?: { item: string; quantity?: number };
@@ -489,7 +515,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		enchant?: { name: string; quantity?: number };
 		bury?: { name: string; quantity?: number };
 		scatter?: { name: string; quantity?: number };
-		puro_puro?: { impling: string; dark_lure?: boolean };
+		puro_puro?: { impling: string; dark_lure?: boolean; implingTier?: number };
 		alch?: { item: string; quantity?: number };
 		cast?: { spell: string; quantity?: number };
 		underwater?: {
@@ -499,6 +525,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 				no_stams?: boolean;
 			};
 			drift_net_fishing?: { minutes?: number; no_stams?: boolean };
+		};
+		other?: {
+			activity: string;
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
@@ -514,6 +543,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 		const busyStr = `${user.minionName} is currently busy.`;
 		if (isBusy) return busyStr;
 
+		if (options.other) {
+			return otherActivitiesCommand(options.other.activity, user, channelID);
+		}
 		if (options.birdhouses?.action === 'harvest') {
 			return birdhouseHarvestCommand(user, channelID, options.birdhouses.birdhouse);
 		}
@@ -551,7 +583,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.quest) {
-			return questCommand(user, channelID);
+			return questCommand(user, channelID, options.quest.name);
 		}
 		if (options.favour) {
 			return favourCommand(user, options.favour.name, channelID, options.favour.no_stams);
@@ -581,7 +613,13 @@ export const activitiesCommand: OSBMahojiCommand = {
 			return alchCommand(interaction, channelID, user, options.alch.item, options.alch.quantity);
 		}
 		if (options.puro_puro) {
-			return puroPuroStartCommand(user, channelID, options.puro_puro.impling, options.puro_puro.dark_lure);
+			return puroPuroStartCommand(
+				user,
+				channelID,
+				options.puro_puro.impling,
+				options.puro_puro.dark_lure,
+				options.puro_puro.implingTier
+			);
 		}
 		if (options.cast) {
 			return castCommand(channelID, user, options.cast.spell, options.cast.quantity);

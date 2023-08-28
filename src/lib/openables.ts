@@ -35,6 +35,29 @@ const CacheOfRunesTable = new LootTable()
 		new LootTable().add('Death rune', [2800, 3600]).add('Soul rune', [2800, 3600]).add('Blood rune', [2800, 3600])
 	);
 
+const FrozenCacheTable = new LootTable()
+	.tertiary(250, 'Ancient icon')
+	.tertiary(500, 'Venator shard')
+	.add('Ancient essence', [1970, 2060], 4)
+	.add('Ancient essence', [540, 599], 10)
+	.add('Chaos rune', 480, 5)
+	.add('Rune platelegs', 3, 5)
+	.add("Black d'hide body", 1, 5)
+	.add('Fire rune', 1964, 5)
+	.add('Cannonball', 666, 5)
+	.add('Dragon plateskirt', 1, 5)
+	.add('Torstol seed', 4, 5)
+	.add('Coal', 163, 5)
+	.add('Snapdragon seed', 5, 4)
+	.add('Dragon platelegs', 2, 4)
+	.add('Runite ore', 18, 3)
+	.add('Grimy toadflax', 55, 3)
+	.add('Limpwurt root', 21, 3)
+	.add('Ranarr seed', 8, 3)
+	.add('Silver ore', 101, 2)
+	.add('Spirit seed', 1, 2)
+	.add('Rune sword');
+
 interface OpenArgs {
 	quantity: number;
 	user: MUser;
@@ -88,6 +111,7 @@ for (const clueTier of ClueTiers) {
 			const stats = await user.fetchStats({ openable_scores: true });
 			const nthCasket = ((stats.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
 
+			let gotMilestoneReward = false;
 			// If this tier has a milestone reward, and their new score meets the req, and
 			// they don't own it already, add it to the loot.
 			if (
@@ -95,12 +119,19 @@ for (const clueTier of ClueTiers) {
 				nthCasket >= clueTier.milestoneReward.scoreNeeded &&
 				user.allItemsOwned.amount(clueTier.milestoneReward.itemReward) === 0
 			) {
-				loot.add(clueTier.milestoneReward.itemReward);
+				await user.addItemsToBank({
+					items: new Bank().add(clueTier.milestoneReward.itemReward),
+					collectionLog: true
+				});
+				gotMilestoneReward = true;
 			}
 
 			// Here we check if the loot has any ultra-rares (3rd age, gilded, bloodhound),
 			// and send a notification if they got one.
 			const announcedLoot = loot.filter(i => clueItemsToNotifyOf.includes(i.id), false);
+			if (gotMilestoneReward) {
+				announcedLoot.add(clueTier.milestoneReward!.itemReward);
+			}
 			if (announcedLoot.length > 0) {
 				globalClient.emit(
 					Events.ServerNotification,
@@ -390,6 +421,14 @@ export const allOpenables: UnifiedOpenable[] = [
 		aliases: ['cache of runes'],
 		output: CacheOfRunesTable,
 		allItems: CacheOfRunesTable.allItems
+	},
+	{
+		name: 'Frozen cache',
+		id: itemID('Frozen cache'),
+		openedItem: getOSItem('Frozen cache'),
+		aliases: ['frozen cache'],
+		output: FrozenCacheTable,
+		allItems: FrozenCacheTable.allItems
 	},
 	...clueOpenables,
 	...osjsOpenables,

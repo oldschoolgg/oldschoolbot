@@ -20,19 +20,32 @@ import { updateClientGPTrackSetting, userStatsUpdate } from '../mahojiSettings';
  * - Can be sold by ironmen
  */
 const specialSoldItems = new Map([
+	// Emblem Trader Items
 	[itemID('Ancient emblem'), 500_000],
 	[itemID('Ancient totem'), 1_000_000],
 	[itemID('Ancient statuette'), 2_000_000],
 	[itemID('Ancient medallion'), 4_000_000],
 	[itemID('Ancient effigy'), 8_000_000],
-	[itemID('Ancient relic'), 16_000_000]
+	[itemID('Ancient relic'), 16_000_000],
+	// Simon Templeton Items
+	[itemID('Ivory comb'), 50],
+	[itemID('Pottery scarab'), 75],
+	[itemID('Stone seal'), 100],
+	[itemID('Stone scarab'), 175],
+	[itemID('Stone statuette'), 200],
+	[itemID('Gold seal'), 750],
+	[itemID('Golden scarab'), 1000],
+	[itemID('Golden statuette'), 1250]
 ]);
 
 export const CUSTOM_PRICE_CACHE = new Map<number, number>();
 
 export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; basePrice: number } {
-	if (!item.price || !item.tradeable) return { price: 0, basePrice: 0 };
-	let basePrice = CUSTOM_PRICE_CACHE.get(item.id) ?? item.price;
+	let cachePrice = CUSTOM_PRICE_CACHE.get(item.id);
+	if (!cachePrice && (item.price === undefined || !item.tradeable)) {
+		return { price: 0, basePrice: 0 };
+	}
+	let basePrice = cachePrice ?? item.price;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
 	price = clamp(price, 0, MAX_INT_JAVA);
@@ -100,11 +113,10 @@ export const sellCommand: OSBMahojiCommand = {
 			for (let i = 0; i < moleBank.amount('Mole claw') + moleBank.amount('Mole skin'); i++) {
 				loot.add(NestBoxesTable.roll());
 			}
-			await user.removeItemsFromBank(moleBank);
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
-				itemsToAdd: loot
+				itemsToAdd: loot,
+				itemsToRemove: moleBank
 			});
 			return `You exchanged ${moleBank} and received: ${loot}.`;
 		}
@@ -139,11 +151,10 @@ export const sellCommand: OSBMahojiCommand = {
 				`${user}, please confirm you want to sell ${abbyBank} for **${loot}**.`
 			);
 
-			await user.removeItemsFromBank(abbyBank);
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: false,
-				itemsToAdd: loot
+				itemsToAdd: loot,
+				itemsToRemove: abbyBank
 			});
 			return `You exchanged ${abbyBank} and received: ${loot}.`;
 		}
@@ -159,13 +170,13 @@ export const sellCommand: OSBMahojiCommand = {
 				interaction,
 				`${user}, please confirm you want to sell ${tenchBank} for **${loot}**.`
 			);
-			await user.removeItemsFromBank(tenchBank);
-			await user.addItemsToBank({ items: loot, collectionLog: false });
+
+			await user.transactItems({ itemsToRemove: tenchBank, itemsToAdd: loot });
 			return `You exchanged ${tenchBank} and received: ${loot}.`;
 		}
 
 		let totalPrice = 0;
-		const taxRatePercent = 20;
+		const taxRatePercent = 25;
 
 		const botItemSellData: Prisma.BotItemSellCreateManyInput[] = [];
 

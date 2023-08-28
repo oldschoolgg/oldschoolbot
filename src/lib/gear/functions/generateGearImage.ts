@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 import { Canvas } from '@napi-rs/canvas';
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import * as fs from 'fs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Gear, maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
-import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
+import {
+	drawItemQuantityText,
+	drawTitleText,
+	fillTextXTimesInCtx,
+	loadAndCacheLocalImage
+} from '../../util/canvasUtil';
 import { GearSetup, GearSetupType, GearSetupTypes } from '../types';
-
-const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
-const gearTemplateCompactFile = fs.readFileSync('./src/lib/resources/images/gear_template_compact.png');
 
 /**
  * The default gear in a gear setup, when nothing is equipped.
@@ -86,7 +87,7 @@ export async function generateGearImage(
 	const hexColor = user.user.bank_bg_hex;
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
-	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
+	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template.png');
 	const canvas = new Canvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
@@ -246,7 +247,7 @@ export async function generateAllGearImage(user: MUser) {
 
 	const hexColor = user.user.bank_bg_hex;
 	debugLog('Generating all-gear image', { user_id: user.id });
-	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateCompactFile);
+	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template_compact.png');
 	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;

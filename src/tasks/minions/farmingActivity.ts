@@ -1,6 +1,7 @@
 import { randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
 import { Emoji, Events } from '../../lib/constants';
 import { PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
@@ -8,7 +9,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { FarmingActivityTaskOptions } from '../../lib/types/minions';
+import { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { assert, roll, skillingPetDropRate } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
@@ -310,6 +311,17 @@ export const farmingTask: MinionTask = {
 				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
 					farmingLevel: currentFarmingLevel
 				});
+				const fakeMonsterTaskOptions: MonsterActivityTaskOptions = {
+					monsterID: Monsters.Hespori.id,
+					quantity: patchType.lastQuantity,
+					type: 'MonsterKilling',
+					userID: user.id,
+					duration: data.duration,
+					finishDate: data.finishDate,
+					channelID: data.channelID,
+					id: 1
+				};
+				await combatAchievementTripEffect({ user, loot, messages: infoStr, data: fakeMonsterTaskOptions });
 				loot = hesporiLoot;
 			} else if (
 				patchType.patchPlanted &&

@@ -15,7 +15,10 @@ interface DegradeableItem {
 		| 'ash_sanctifier_charges'
 		| 'serp_helm_charges'
 		| 'blood_fury_charges'
-		| 'tum_shadow_charges';
+		| 'tum_shadow_charges'
+		| 'blood_essence_charges'
+		| 'trident_charges'
+		| 'scythe_of_vitur_charges';
 	itemsToRefundOnBreak: Bank;
 	setup: GearSetupType;
 	aliases: string[];
@@ -123,6 +126,46 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: getOSItem("Tumeken's shadow (uncharged)"),
 		convertOnCharge: true,
 		emoji: '<:Tumekens_shadow:1068491239302901831>'
+	},
+	{
+		item: getOSItem('Blood essence (active)'),
+		settingsKey: 'blood_essence_charges',
+		itemsToRefundOnBreak: new Bank(),
+		setup: 'skilling',
+		aliases: ['blood essence'],
+		chargeInput: {
+			cost: new Bank().add('Blood essence'),
+			charges: 1000
+		},
+		emoji: ''
+	},
+	{
+		item: getOSItem('Trident of the swamp'),
+		settingsKey: 'trident_charges',
+		itemsToRefundOnBreak: new Bank().add('Uncharged toxic trident'),
+		setup: 'mage',
+		aliases: ['trident', 'trident of the swamp'],
+		chargeInput: {
+			cost: new Bank().add('Death rune').add('Chaos rune').add('Fire rune', 5).add("Zulrah's scales"),
+			charges: 1
+		},
+		unchargedItem: getOSItem('Uncharged toxic trident'),
+		convertOnCharge: true,
+		emoji: '🔱'
+	},
+	{
+		item: getOSItem('Scythe of vitur'),
+		settingsKey: 'scythe_of_vitur_charges',
+		itemsToRefundOnBreak: new Bank().add('Scythe of vitur (uncharged)'),
+		setup: 'melee',
+		aliases: ['scythe of vitur'],
+		chargeInput: {
+			cost: new Bank().add('Blood rune', 300).add('Vial of blood'),
+			charges: 100
+		},
+		unchargedItem: getOSItem('Scythe of vitur (uncharged)'),
+		convertOnCharge: true,
+		emoji: ''
 	}
 ];
 
@@ -190,10 +233,11 @@ export async function degradeItem({
 			}
 		} else if (hasInBank) {
 			// If its in bank, just remove 1 from bank.
-			await user.removeItemsFromBank(new Bank().add(item.id, 1));
+			let itemsToAdd = undefined;
 			if (degItem.itemsToRefundOnBreak) {
-				await user.addItemsToBank({ items: degItem.itemsToRefundOnBreak, collectionLog: false });
+				itemsToAdd = degItem.itemsToRefundOnBreak;
 			}
+			await user.transactItems({ itemsToRemove: new Bank().add(item.id, 1), itemsToAdd });
 		} else {
 			// If its not in bank OR equipped, something weird has gone on.
 			throw new Error(

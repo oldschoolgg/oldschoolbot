@@ -48,7 +48,12 @@ export const shadesOfMortonTask: MinionTask = {
 			messages.push('50% bonus firemaking xp for morytania elite diary');
 		}
 
-		let xpStr = await user.addXP({ skillName: SkillsEnum.Firemaking, amount: firemakingXP, duration });
+		let xpStr = await user.addXP({
+			skillName: SkillsEnum.Firemaking,
+			amount: firemakingXP,
+			duration,
+			source: 'ShadesOfMorton'
+		});
 		let prayerXP = log.prayerXP[shade.shadeName];
 		if (!prayerXP) throw new Error(`No prayer XP for ${shade.shadeName} in ${log.oiledLog.name}!`);
 
@@ -58,7 +63,12 @@ export const shadesOfMortonTask: MinionTask = {
 		}
 
 		xpStr += ', ';
-		xpStr += await user.addXP({ skillName: SkillsEnum.Prayer, amount: quantity * prayerXP, duration });
+		xpStr += await user.addXP({
+			skillName: SkillsEnum.Prayer,
+			amount: quantity * prayerXP,
+			duration,
+			source: 'ShadesOfMorton'
+		});
 
 		let str = `${user}, You received ${loot}. ${xpStr}.`;
 

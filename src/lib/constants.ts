@@ -51,7 +51,8 @@ export const Roles = {
 	TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '795933981715464192',
 	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '832798997033779220',
 	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '839135887467610123',
-	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '856080958247010324'
+	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '856080958247010324',
+	TopGlobalCL: '1072426869028294747'
 };
 
 export const enum Emoji {
@@ -223,7 +224,16 @@ export enum BitField {
 	DisableAshSanctifier = 23,
 	BothBotsMaxedFreeTierOnePerks = 24,
 	HasBloodbarkScroll = 25,
-	DisableAutoFarmContractButton = 26
+	DisableAutoFarmContractButton = 26,
+	DisableGrandExchangeDMs = 27,
+	HadAllSlayerUnlocks = 28,
+	HasSwampbarkScroll = 29,
+	HasSaradominsLight = 30,
+
+	UsedScarredTablet = 31,
+	UsedSirenicTablet = 32,
+	UsedStrangledTablet = 33,
+	UsedFrozenTablet = 34
 }
 
 interface BitFieldData {
@@ -254,6 +264,13 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.HasTornPrayerScroll]: { name: 'Torn Prayer Scroll Used', protected: false, userConfigurable: false },
 	[BitField.HasSlepeyTablet]: { name: 'Slepey Tablet Used', protected: false, userConfigurable: false },
 	[BitField.HasBloodbarkScroll]: { name: 'Runescroll of bloodbark Used', protected: false, userConfigurable: false },
+	[BitField.HasSwampbarkScroll]: { name: 'Runescroll of swampbark Used', protected: false, userConfigurable: false },
+	[BitField.HasSaradominsLight]: { name: "Saradomin's light Used", protected: false, userConfigurable: false },
+	[BitField.HadAllSlayerUnlocks]: { name: 'Had All Slayer Unlocks', protected: false, userConfigurable: false },
+	[BitField.UsedScarredTablet]: { name: 'Used Scarred Tablet', protected: false, userConfigurable: false },
+	[BitField.UsedFrozenTablet]: { name: 'Used Frozen Tablet', protected: false, userConfigurable: false },
+	[BitField.UsedSirenicTablet]: { name: 'Used Sirenic Tablet', protected: false, userConfigurable: false },
+	[BitField.UsedStrangledTablet]: { name: 'Used Strangled Tablet', protected: false, userConfigurable: false },
 
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
 	[BitField.HasPermanentEventBackgrounds]: {
@@ -278,6 +295,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.DisableAshSanctifier]: { name: 'Disable Ash Sanctifier', protected: false, userConfigurable: true },
 	[BitField.DisableAutoFarmContractButton]: {
 		name: 'Disable Auto Farm Contract Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableGrandExchangeDMs]: {
+		name: 'Disable Grand Exchange DMs',
 		protected: false,
 		userConfigurable: true
 	}
@@ -324,7 +346,6 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy
 };
 
-export const MAX_QP = 293;
 export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
@@ -381,17 +402,36 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
-export type ProjectileType = 'arrow' | 'bolt';
-export const projectiles: Record<ProjectileType, number[]> = {
-	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
-	bolt: resolveItems([
-		'Runite bolts',
-		'Dragon bolts',
-		'Diamond bolts (e)',
-		'Diamond dragon bolts (e)',
-		'Ruby dragon bolts (e)'
-	])
-};
+export const projectiles = {
+	arrow: {
+		items: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
+		savedByAvas: true,
+		weapons: resolveItems(['Twisted bow'])
+	},
+	bolt: {
+		items: resolveItems([
+			'Runite bolts',
+			'Dragon bolts',
+			'Diamond bolts (e)',
+			'Diamond dragon bolts (e)',
+			'Ruby dragon bolts (e)'
+		]),
+		savedByAvas: true,
+		weapons: resolveItems([
+			'Armadyl crossbow',
+			'Dragon hunter crossbow',
+			'Dragon crossbow',
+			'Zaryte crossbow',
+			'Rune crossbow'
+		])
+	},
+	javelin: {
+		items: resolveItems(['Amethyst javelin', 'Rune javelin', 'Dragon javelin']),
+		savedByAvas: false,
+		weapons: resolveItems(['Heavy ballista'])
+	}
+} as const;
+export type ProjectileType = keyof typeof projectiles;
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
 export const PHOSANI_NIGHTMARE_ID = 9416;
@@ -407,7 +447,7 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandOption
 }
 
 export const DISABLED_COMMANDS = new Set<string>();
-export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'chinning', 'none'] as const;
 export type PvMMethod = (typeof PVM_METHODS)[number];
 
 export const NMZ_STRATEGY = ['experience', 'points'] as const;
@@ -416,6 +456,7 @@ export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 export const UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL = ['agility', 'thieving', 'agility+thieving'] as const;
 export type UnderwaterAgilityThievingTrainingSkill = (typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL)[number];
 
+export const busyImmuneCommands = ['admin', 'rp'];
 export const usernameCache = new Map<string, string>();
 export const badgesCache = new Map<string, string>();
 export const minionBuyButton = new ButtonBuilder()
@@ -473,7 +514,8 @@ const globalConfigSchema = z.object({
 	patreonCampaignID: z.coerce.number().int().default(1),
 	patreonWebhookSecret: z.coerce.string().default(''),
 	httpPort: z.coerce.number().int().default(8080),
-	clientID: z.string().min(15).max(25)
+	clientID: z.string().min(15).max(25),
+	geAdminChannelID: z.string().default('')
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.example' : '.env') });
 
@@ -482,5 +524,9 @@ export const globalConfig = globalConfigSchema.parse({
 	patreonCampaignID: process.env.PATREON_CAMPAIGN_ID,
 	patreonWebhookSecret: process.env.PATREON_WEBHOOK_SECRET,
 	httpPort: process.env.HTTP_PORT,
-	clientID: process.env.CLIENT_ID
+	clientID: process.env.CLIENT_ID,
+	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID
 });
+
+export const ONE_TRILLION = 1_000_000_000_000;
+export const demonBaneWeapons = resolveItems(['Silverlight', 'Darklight', 'Arclight']);

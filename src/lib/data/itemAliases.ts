@@ -2,7 +2,7 @@ import { Items } from 'oldschooljs';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { cleanString } from 'oldschooljs/dist/util/cleanString';
 
-function setItemAlias(id: number, name: string | string[], rename = true) {
+export function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
 	if (!existingItem) {
 		throw new Error(`Tried to add item alias for a non-existant item: ${name} ${id}`);
@@ -273,3 +273,17 @@ setItemAlias(7126, 'Pirate leggings (red)');
 
 setItemAlias(6107, 'Ghostly robe top');
 setItemAlias(6108, 'Ghostly robe bottom');
+
+// Flower crowns
+setItemAlias(27_141, 'Flower crown (bisexual)');
+setItemAlias(27_143, 'Flower crown (asexual)');
+setItemAlias(27_145, 'Flower crown (transgender)');
+setItemAlias(27_147, 'Flower crown (pansexual)');
+setItemAlias(27_149, 'Flower crown (non-binary)');
+setItemAlias(27_151, 'Flower crown (genderqueer)');
+setItemAlias(27_153, 'Flower crown (lesbian)');
+setItemAlias(27_155, 'Flower crown (gay)');
+
+setItemAlias(23_330, 'Rune scimitar (guthix)');
+setItemAlias(23_332, 'Rune scimitar (saradomin)');
+setItemAlias(23_334, 'Rune scimitar (zamorak)');

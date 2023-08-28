@@ -302,8 +302,7 @@ export async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, eq
 		return `You dont own ${toRemoveFromBank}!`;
 	}
 
-	await user.removeItemsFromBank(toRemoveFromBank);
-	await user.addItemsToBank({ items: toRemoveFromGear, collectionLog: false });
+	await user.transactItems({ itemsToRemove: toRemoveFromBank, itemsToAdd: toRemoveFromGear });
 	await user.update({
 		[`gear_${gearSetup}`]: gearToEquip
 	});

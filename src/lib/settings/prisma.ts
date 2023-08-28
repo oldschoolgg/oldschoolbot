@@ -45,7 +45,7 @@ export function convertStoredActivityToFlatActivity(activity: Activity): Activit
 		duration: activity.duration,
 		finishDate: activity.finish_date.getTime(),
 		id: activity.id
-	};
+	} as ActivityTaskData;
 }
 
 /**
@@ -60,6 +60,22 @@ export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolea
 	const result = parseInt(((await prisma.$queryRawUnsafe(query)) as any)[0].count);
 	if (isNaN(result)) {
 		throw new Error(`countUsersWithItemInCl produced invalid number '${result}' for ${itemID}`);
+	}
+	return result;
+}
+
+export async function getUsersActivityCounts(user: MUser) {
+	const counts = await prisma.$queryRaw<{ type: activity_type_enum; count: bigint }[]>`SELECT type, COUNT(type)
+FROM activity
+WHERE user_id = ${BigInt(user.id)}
+GROUP BY type;`;
+
+	let result: Record<activity_type_enum, number> = {} as Record<activity_type_enum, number>;
+	for (const type of Object.values(activity_type_enum)) {
+		result[type] = 0;
+	}
+	for (const { count, type } of counts) {
+		result[type] = Number(count);
 	}
 	return result;
 }

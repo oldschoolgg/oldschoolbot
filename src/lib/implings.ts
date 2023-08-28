@@ -2,7 +2,7 @@ import { activity_type_enum } from '@prisma/client';
 import { Time } from 'e';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
-import { ActivityTaskOptions } from './types/minions';
+import { ActivityTaskData } from './types/minions';
 import activityInArea, { WorldLocations } from './util/activityInArea';
 
 const {
@@ -77,6 +77,13 @@ export const puroImpNormalTable = new LootTable()
 	.add('Dragon impling jar', 1, 88)
 	.add('Lucky impling jar', 1, 18);
 
+export const puroImpHighTierTable = new LootTable()
+	.add('Nature impling jar', 1, 150)
+	.add('Magpie impling jar', 1, 114)
+	.add('Ninja impling jar', 1, 27)
+	.add('Dragon impling jar', 1, 9)
+	.add('Lucky impling jar', 1, 1);
+
 export const defaultImpTable = new LootTable()
 	.add('Baby impling jar', 1, 28_280)
 	.add('Young impling jar', 1, 28_280)
@@ -95,7 +102,7 @@ const implingTableByWorldLocation = {
 	[WorldLocations.World]: new LootTable().oneIn(85, defaultImpTable)
 };
 
-export function handlePassiveImplings(user: MUser, data: ActivityTaskOptions) {
+export function handlePassiveImplings(user: MUser, data: ActivityTaskData) {
 	if (
 		[
 			'FightCaves',

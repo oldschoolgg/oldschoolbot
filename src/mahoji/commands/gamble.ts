@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
+import { prisma } from '../../lib/settings/prisma';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
@@ -36,6 +37,12 @@ export const gambleCommand: OSBMahojiCommand = {
 						{ name: 'fire', value: 'fire' },
 						{ name: 'infernal', value: 'infernal' }
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'autoconfirm',
+					description: "Don't ask confirmation message",
+					required: false
 				}
 			]
 		},
@@ -164,9 +171,10 @@ export const gambleCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		interaction,
+		guildID,
 		userID
 	}: CommandRunOptions<{
-		cape?: { type?: string };
+		cape?: { type?: string; autoconfirm?: boolean };
 		dice?: { amount?: string };
 		duel?: { user: MahojiUserOption; amount?: string };
 		lucky_pick?: { amount: string };
@@ -178,7 +186,7 @@ export const gambleCommand: OSBMahojiCommand = {
 
 		if (options.cape) {
 			if (options.cape.type) {
-				return capeGambleCommand(user, options.cape.type, interaction);
+				return capeGambleCommand(user, options.cape.type, interaction, options.cape.autoconfirm);
 			}
 			return capeGambleStatsCommand(user);
 		}
@@ -240,6 +248,16 @@ export const gambleCommand: OSBMahojiCommand = {
 				itemsToAdd: loot,
 				collectionLog: false,
 				filterLoot: false
+			});
+			await prisma.economyTransaction.create({
+				data: {
+					guild_id: guildID ? BigInt(guildID) : undefined,
+					sender: BigInt(senderUser.id),
+					recipient: BigInt(recipientuser.id),
+					items_sent: loot.bank,
+					items_received: undefined,
+					type: 'gri'
+				}
 			});
 			let debug = new Bank();
 			for (const t of bank) debug.add(t[0].id);

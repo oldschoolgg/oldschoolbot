@@ -60,7 +60,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const rawBadges = user.user.badges;
 	const badgesStr = rawBadges.map(num => badges[num]).join(' ');
 
-	const embed = new EmbedBuilder().setTitle(`${badgesStr}${user.minionName}`.slice(1, 255)).addFields(
+	const embed = new EmbedBuilder().setTitle(`${badgesStr}${user.minionName}`.slice(0, 255)).addFields(
 		{
 			name: '\u200b',
 			value: ['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
@@ -85,7 +85,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	);
 
 	if (user.isIronman) {
-		embed.setColor(5_460_819);
+		embed.setColor('#535353');
 	}
 
 	const { percent } = calcCLDetails(user);

@@ -180,37 +180,44 @@ export async function trekShop(
 		{
 			skillName: SkillsEnum.Agility,
 			amount: 0,
-			minimal: true
+			minimal: true,
+			source: 'TempleTrekking'
 		},
 		{
 			skillName: SkillsEnum.Thieving,
 			amount: 0,
-			minimal: true
+			minimal: true,
+			source: 'TempleTrekking'
 		},
 		{
 			skillName: SkillsEnum.Slayer,
 			amount: 0,
-			minimal: true
+			minimal: true,
+			source: 'TempleTrekking'
 		},
 		{
 			skillName: SkillsEnum.Firemaking,
 			amount: 0,
-			minimal: true
+			minimal: true,
+			source: 'TempleTrekking'
 		},
 		{
 			skillName: SkillsEnum.Fishing,
 			amount: 0,
-			minimal: true
+			minimal: true,
+			source: 'TempleTrekking'
 		},
 		{
 			skillName: SkillsEnum.Woodcutting,
 			amount: 0,
-			minimal: true
+			minimal: true,
+			source: 'TempleTrekking'
 		},
 		{
 			skillName: SkillsEnum.Mining,
 			amount: 0,
-			minimal: true
+			minimal: true,
+			source: 'TempleTrekking'
 		}
 	];
 	for (let i = 0; i < quantity; i++) {

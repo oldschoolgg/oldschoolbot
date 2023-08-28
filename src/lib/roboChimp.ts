@@ -1,8 +1,9 @@
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { PrismaClient, TriviaQuestion, User } from '@prisma/robochimp';
-import { calcWhatPercent, round } from 'e';
+import { calcWhatPercent, round, sumArr } from 'e';
 
+import { BOT_TYPE } from './constants';
 import { getTotalCl } from './data/Collections';
-import { MUserClass } from './MUser';
 import { fetchStatsForCL } from './util';
 
 declare global {
@@ -16,6 +17,8 @@ declare global {
 	}
 }
 
+export type RobochimpUser = User;
+
 global.roboChimpClient = global.roboChimpClient || new PrismaClient();
 
 export async function getRandomTriviaQuestions(): Promise<TriviaQuestion[]> {
@@ -28,18 +31,25 @@ LIMIT 10;`;
 
 const clKey: keyof User = 'osb_cl_percent';
 const levelKey: keyof User = 'osb_total_level';
+const totalXPKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_xp' : 'bso_total_xp';
 
-export async function roboChimpSyncData(user: User, _mUser?: MUserClass) {
-	const mUser = _mUser ?? (await mUserFetch(user.id.toString()));
-	const [totalClItems, clItems] = getTotalCl(mUser, 'collection', await fetchStatsForCL(mUser));
+export async function roboChimpSyncData(user: MUser) {
+	const [totalClItems, clItems] = getTotalCl(user, 'collection', await fetchStatsForCL(user));
 
-	const newUser = await roboChimpClient.user.update({
+	const updateObj = {
+		[clKey]: round(calcWhatPercent(clItems, totalClItems), 2),
+		[levelKey]: user.totalLevel,
+		[totalXPKey]: sumArr(Object.values(user.skillsAsXP))
+	} as const;
+
+	const newUser = await roboChimpClient.user.upsert({
 		where: {
-			id: user.id
+			id: BigInt(user.id)
 		},
-		data: {
-			[clKey]: round(calcWhatPercent(clItems, totalClItems), 2),
-			[levelKey]: mUser.totalLevel
+		update: updateObj,
+		create: {
+			id: BigInt(user.id),
+			...updateObj
 		}
 	});
 
@@ -56,8 +66,16 @@ export async function roboChimpUserFetch(userID: string) {
 		},
 		update: {}
 	});
-	if (!result[clKey] || !result[levelKey]) {
-		return roboChimpSyncData(result);
-	}
+
 	return result;
+}
+
+export async function calculateOwnCLRanking(userID: string) {
+	const clPercentRank = (
+		await roboChimpClient.$queryRaw<{ count: number }[]>`SELECT COUNT(*)
+FROM public.user
+WHERE osb_cl_percent >= (SELECT osb_cl_percent FROM public.user WHERE id = ${BigInt(userID)});`
+	)[0].count;
+
+	return formatOrdinal(clPercentRank);
 }

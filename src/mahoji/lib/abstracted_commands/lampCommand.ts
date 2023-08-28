@@ -13,6 +13,7 @@ interface IXPLamp {
 	amount: number;
 	name: string;
 	minimumLevel: number;
+	allowedSkills?: SkillsEnum[];
 }
 
 export const XPLamps: IXPLamp[] = [
@@ -39,6 +40,21 @@ export const XPLamps: IXPLamp[] = [
 		amount: 50_000,
 		name: 'Antique lamp 4',
 		minimumLevel: 70
+	},
+	{
+		itemID: 28_409,
+		amount: 100_000,
+		name: 'Ancient lamp',
+		minimumLevel: 60,
+		allowedSkills: [
+			SkillsEnum.Attack,
+			SkillsEnum.Strength,
+			SkillsEnum.Defence,
+			SkillsEnum.Hitpoints,
+			SkillsEnum.Ranged,
+			SkillsEnum.Magic,
+			SkillsEnum.Prayer
+		]
 	}
 ];
 
@@ -101,12 +117,13 @@ export const Lampables: IXPObject[] = [
 		}
 	},
 	{
-		items: resolveItems(['Antique lamp 1', 'Antique lamp 2', 'Antique lamp 3', 'Antique lamp 4']),
+		items: XPLamps.map(i => i.itemID),
 		function: data => {
 			const lamp = XPLamps.find(l => l.itemID === data.item.id)!;
 			const skills: Skills = {};
 			const requirements: Skills = {};
 			for (const skill of objectValues(SkillsEnum)) {
+				if (lamp.allowedSkills && !lamp.allowedSkills.includes(skill)) continue;
 				skills[skill] = lamp.amount * data.quantity;
 				requirements[skill] = lamp.minimumLevel;
 			}
@@ -169,14 +186,6 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 		quantity: qty,
 		item
 	});
-
-	if (!skillsToReceive[skill]) {
-		return 'You use this item on this skill.';
-	}
-
-	if (!skillsToReceive[skill]) {
-		return 'You use this item on this skill.';
-	}
 
 	if (!skillsToReceive[skill]) {
 		return 'This is not a valid skill for this item.';

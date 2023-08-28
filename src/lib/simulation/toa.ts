@@ -31,7 +31,7 @@ import { setupParty } from '../party';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { constructGearSetup, Gear } from '../structures/Gear';
-import { ItemBank, MakePartyOptions, Skills } from '../types';
+import { MakePartyOptions, Skills } from '../types';
 import { TOAOptions } from '../types/minions';
 import {
 	assert,
@@ -46,7 +46,7 @@ import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
-import { bankToStrShortNames, exponentialPercentScale } from '../util/smallUtils';
+import { bankToStrShortNames, exponentialPercentScale, getToaKCs } from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 
@@ -163,7 +163,7 @@ export const maxMeleeOver300Gear = constructGearSetup({
 	feet: 'Primordial boots',
 	weapon: "Osmumten's fang",
 	shield: 'Avernic defender',
-	ring: 'Berserker ring(i)'
+	ring: 'Ultor ring'
 });
 
 const SERP_HELM_CHARGES_PER_HOUR = 600;
@@ -180,13 +180,21 @@ const minTOAStats: Skills = {
 	prayer: 90,
 	ranged: 90
 };
-const minimumSuppliesNeeded = new Bank({
+
+let minimumSuppliesNeeded = new Bank();
+const minSuppliesWithScmb = new Bank({
 	'Saradomin brew(4)': 10,
 	'Super restore(4)': 5,
 	'Ranging potion(4)': 1,
 	'Super combat potion(4)': 1
 });
-
+const minSuppliesWithAtkStr = new Bank({
+	'Saradomin brew(4)': 10,
+	'Super restore(4)': 5,
+	'Ranging potion(4)': 1,
+	'Super attack(4)': 1,
+	'Super strength(4)': 1
+});
 const miscBoosts = [
 	['Lightbearer', 5, null],
 	["Tumeken's shadow", 25, 'mage'],
@@ -320,6 +328,11 @@ const toaRequirements: {
 	{
 		name: 'Supplies',
 		doesMeet: ({ user, quantity }) => {
+			if (user.owns('Super combat potion(4)')) {
+				minimumSuppliesNeeded = minSuppliesWithScmb;
+			} else {
+				minimumSuppliesNeeded = minSuppliesWithAtkStr;
+			}
 			if (!user.owns(minimumSuppliesNeeded.clone().multiply(quantity))) {
 				return `You need atleast this much supplies: ${minimumSuppliesNeeded}.`;
 			}
@@ -953,7 +966,12 @@ async function calcTOAInput({
 }> {
 	const cost = new Bank();
 	const kc = kcOverride ?? (await getMinigameScore(user.id, 'tombs_of_amascut'));
-	cost.add('Super combat potion(4)', quantity);
+	if (minimumSuppliesNeeded.has('Super combat potion(4)')) {
+		cost.add('Super combat potion(4)', quantity);
+	} else {
+		cost.add('Super attack(4)', quantity);
+		cost.add('Super strength(4)', quantity);
+	}
 	cost.add('Ranging potion(4)', quantity);
 
 	let serpHelmCharges = 0;
@@ -1575,34 +1593,15 @@ function calculateBoostString(user: MUser) {
 	return str;
 }
 
-export async function getToaKCs(user: MUser) {
-	const userStats = await user.fetchStats({ toa_raid_levels_bank: true });
-	let entryKC = 0;
-	let normalKC = 0;
-	let expertKC = 0;
-	for (const [levelStr, qty] of Object.entries(userStats.toa_raid_levels_bank as ItemBank)) {
-		const level = Number(levelStr);
-		if (level >= 300) {
-			expertKC += qty;
-			continue;
-		}
-		if (level >= 150) {
-			normalKC += qty;
-			continue;
-		}
-		entryKC += qty;
-	}
-	return { entryKC, normalKC, expertKC, totalKC: entryKC + normalKC + expertKC };
-}
-
 export async function toaHelpCommand(user: MUser, channelID: string) {
 	const gearStats = calculateUserGearPercents(user.gear, 300);
-	const { entryKC, normalKC, expertKC, totalKC } = await getToaKCs(user);
 	const stats = await user.fetchStats({
 		total_toa_points: true,
 		total_toa_duration_minutes: true,
-		toa_attempts: true
+		toa_attempts: true,
+		toa_raid_levels_bank: true
 	});
+	const { entryKC, normalKC, expertKC, totalKC } = getToaKCs(stats.toa_raid_levels_bank);
 
 	let totalUniques = 0;
 	for (const item of TOAUniqueTable.allItems) {
@@ -1645,4 +1644,22 @@ ${calculateBoostString(user)}
 `;
 
 	return channelID === '1069176960523190292' ? { content: str, ephemeral: true } : str;
+}
+
+export function normalizeTOAUsers(data: TOAOptions) {
+	const _detailedUsers = data.detailedUsers;
+	const detailedUsers = (
+		(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
+	).map(userArr =>
+		userArr.map(user => ({
+			id: user[0],
+			points: user[1],
+			deaths: user[2]
+		}))
+	);
+	return detailedUsers;
+}
+
+export function anyoneDiedInTOARaid(data: TOAOptions) {
+	return normalizeTOAUsers(data).some(userArr => userArr.some(user => user.deaths.length > 0));
 }

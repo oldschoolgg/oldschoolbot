@@ -1,13 +1,17 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { objectEntries, Time } from 'e';
+import { exec } from 'node:child_process';
+
+import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
+import type { Prisma } from '@prisma/client';
+import { ButtonBuilder, ButtonStyle, time } from 'discord.js';
+import { clamp, objectEntries, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { ClueTiers } from '../clues/clueTiers';
-import { PerkTier } from '../constants';
+import { PerkTier, projectiles } from '../constants';
 import { skillEmoji } from '../data/emojis';
+import type { Gear } from '../structures/Gear';
 import type { ArrayItemsResolved, Skills } from '../types';
 import getOSItem from './getOSItem';
 
@@ -178,3 +182,102 @@ export function makeAutoFarmButton() {
 
 export const SQL_sumOfAllCLItems = (clItems: number[]) =>
 	`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`;
+
+export const generateGrandExchangeID = () => miniID(5).toLowerCase();
+
+export function tailFile(fileName: string, numLines: number): Promise<string> {
+	return new Promise((resolve, reject) => {
+		exec(`tail -n ${numLines} ${fileName}`, (error, stdout) => {
+			if (error) {
+				reject(error);
+			} else {
+				resolve(stdout);
+			}
+		});
+	});
+}
+
+export function checkRangeGearWeapon(gear: Gear) {
+	const weapon = gear.equippedWeapon();
+	if (!weapon) return 'You have no weapon equipped.';
+	const { ammo } = gear;
+	if (!ammo) return 'You have no ammo equipped.';
+
+	const projectileCategory = objectEntries(projectiles).find(i => i[1].weapons.includes(weapon.id));
+	if (!projectileCategory) return 'You have an invalid range weapon.';
+	if (!projectileCategory[1].items.includes(ammo.item)) {
+		return `You have invalid ammo for your equipped weapon. For ${
+			projectileCategory[0]
+		}-based weapons, you can use: ${projectileCategory[1].items.map(itemNameFromID).join(', ')}.`;
+	}
+
+	return {
+		weapon,
+		ammo
+	};
+}
+
+export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {
+	let entryKC = 0;
+	let normalKC = 0;
+	let expertKC = 0;
+	for (const [levelStr, qty] of Object.entries(toaRaidLevelsBank as ItemBank)) {
+		const level = Number(levelStr);
+		if (level >= 300) {
+			expertKC += qty;
+			continue;
+		}
+		if (level >= 150) {
+			normalKC += qty;
+			continue;
+		}
+		entryKC += qty;
+	}
+	return { entryKC, normalKC, expertKC, totalKC: entryKC + normalKC + expertKC };
+}
+export const alphabeticalSort = (a: string, b: string) => a.localeCompare(b);
+
+export function dateFm(date: Date) {
+	return `${time(date, 'T')} (${time(date, 'R')})`;
+}
+
+export function getInterval(intervalHours: number) {
+	const currentTime = new Date();
+	const currentHour = currentTime.getHours();
+
+	// Find the nearest interval start hour (0, intervalHours, 2*intervalHours, etc.)
+	const startHour = currentHour - (currentHour % intervalHours);
+	const startInterval = new Date(currentTime);
+	startInterval.setHours(startHour, 0, 0, 0);
+
+	const endInterval = new Date(startInterval);
+	endInterval.setHours(startHour + intervalHours);
+
+	return {
+		start: startInterval,
+		end: endInterval,
+		nextResetStr: dateFm(endInterval)
+	};
+}
+
+export function calculateSimpleMonsterDeathChance({
+	hardness,
+	currentKC,
+	lowestDeathChance = 1,
+	highestDeathChance = 90,
+	steepness = 0.5
+}: {
+	hardness: number;
+	currentKC: number;
+	lowestDeathChance?: number;
+	highestDeathChance?: number;
+	steepness?: number;
+}): number {
+	if (!currentKC) currentKC = 1;
+	currentKC = Math.max(1, currentKC);
+	let baseDeathChance = Math.min(highestDeathChance, (100 * hardness) / steepness);
+	const maxScalingKC = 5 + (75 * hardness) / steepness;
+	let reductionFactor = Math.min(1, currentKC / maxScalingKC);
+	let deathChance = baseDeathChance - reductionFactor * (baseDeathChance - lowestDeathChance);
+	return clamp(deathChance, lowestDeathChance, highestDeathChance);
+}

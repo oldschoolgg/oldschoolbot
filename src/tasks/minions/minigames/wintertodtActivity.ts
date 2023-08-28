@@ -119,12 +119,14 @@ export const wintertodtTask: MinionTask = {
 		xpStr += `, ${await user.addXP({
 			skillName: SkillsEnum.Woodcutting,
 			amount: wcXpToGive,
-			duration: data.duration
+			duration: data.duration,
+			source: 'Wintertodt'
 		})}`;
 		xpStr += `, ${await user.addXP({
 			skillName: SkillsEnum.Firemaking,
 			amount: fmXpToGive,
-			duration: data.duration
+			duration: data.duration,
+			source: 'Wintertodt'
 		})}`;
 
 		const { itemsAdded, previousCL } = await transactItems({

@@ -1,214 +1,18 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Bank } from 'oldschooljs';
 
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
+import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
+import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Mining from '../../lib/skilling/skills/mining';
-import { Skills } from '../../lib/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
+import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
-
-export const pickaxes = [
-	{
-		id: itemID('Crystal pickaxe'),
-		ticksBetweenRolls: 2.75,
-		miningLvl: 71
-	},
-	{
-		id: itemID('Infernal pickaxe'),
-		ticksBetweenRolls: 2.83,
-		miningLvl: 61
-	},
-	{
-		id: itemID('Dragon pickaxe'),
-		ticksBetweenRolls: 2.83,
-		miningLvl: 61
-	},
-	{
-		id: itemID('Rune pickaxe'),
-		ticksBetweenRolls: 3,
-		miningLvl: 41
-	},
-	{
-		id: itemID('Adamant pickaxe'),
-		ticksBetweenRolls: 4,
-		miningLvl: 31
-	},
-	{
-		id: itemID('Mithril pickaxe'),
-		ticksBetweenRolls: 5,
-		miningLvl: 21
-	},
-	{
-		id: itemID('Black pickaxe'),
-		ticksBetweenRolls: 5,
-		miningLvl: 11
-	},
-	{
-		id: itemID('Steel pickaxe'),
-		ticksBetweenRolls: 6,
-		miningLvl: 6
-	},
-	{
-		id: itemID('Iron pickaxe'),
-		ticksBetweenRolls: 7,
-		miningLvl: 1
-	},
-	{
-		id: itemID('Bronze pickaxe'),
-		ticksBetweenRolls: 8,
-		miningLvl: 1
-	}
-];
-
-const gloves = [
-	{
-		id: itemID('Expert mining gloves'),
-		Percentages: new Bank({
-			'Silver ore': 50,
-			Coal: 40,
-			'Gold ore': 33.33,
-			'Mithril ore': 25,
-			'Adamantite ore': 16.66,
-			'Runite ore': 12.5,
-			Amethyst: 25
-		})
-	},
-	{
-		id: itemID('Superior mining gloves'),
-		Percentages: new Bank({
-			'Silver ore': 0,
-			Coal: 0,
-			'Gold ore': 0,
-			'Mithril ore': 25,
-			'Adamantite ore': 16.66,
-			'Runite ore': 12.5,
-			Amethyst: 0
-		})
-	},
-	{
-		id: itemID('Mining gloves'),
-		Percentages: new Bank({
-			'Silver ore': 50,
-			Coal: 40,
-			'Gold ore': 33.33,
-			'Mithril ore': 0,
-			'Adamantite ore': 0,
-			'Runite ore': 0,
-			Amethyst: 0
-		})
-	}
-];
-
-export const varrockArmours = [
-	{
-		id: itemID('Varrock armour 4'),
-		Percentages: new Bank({
-			Clay: 10,
-			'Copper ore': 10,
-			'Tin ore': 10,
-			'Iron ore': 10,
-			'Silver ore': 10,
-			Coal: 10,
-			'Sandstone (5kg)': 10,
-			'Gold ore': 10,
-			'Granite (5kg)': 10,
-			'Mithril ore': 10,
-			'Adamantite ore': 10,
-			'Runite ore': 10,
-			Amethyst: 10
-		})
-	},
-	{
-		id: itemID('Varrock armour 3'),
-		Percentages: new Bank({
-			Clay: 10,
-			'Copper ore': 10,
-			'Tin ore': 10,
-			'Iron ore': 10,
-			'Silver ore': 10,
-			Coal: 10,
-			'Sandstone (5kg)': 10,
-			'Gold ore': 10,
-			'Granite (5kg)': 10,
-			'Mithril ore': 10,
-			'Adamantite ore': 10,
-			'Runite ore': 0,
-			Amethyst: 0
-		})
-	},
-	{
-		id: itemID('Varrock armour 2'),
-		Percentages: new Bank({
-			Clay: 10,
-			'Copper ore': 10,
-			'Tin ore': 10,
-			'Iron ore': 10,
-			'Silver ore': 10,
-			Coal: 10,
-			'Sandstone (5kg)': 10,
-			'Gold ore': 10,
-			'Granite (5kg)': 10,
-			'Mithril ore': 10,
-			'Adamantite ore': 0,
-			'Runite ore': 0,
-			Amethyst: 0
-		})
-	},
-	{
-		id: itemID('Varrock armour 1'),
-		Percentages: new Bank({
-			Clay: 10,
-			'Copper ore': 10,
-			'Tin ore': 10,
-			'Iron ore': 10,
-			'Silver ore': 10,
-			Coal: 10,
-			'Sandstone (5kg)': 0,
-			'Gold ore': 0,
-			'Granite (5kg)': 0,
-			'Mithril ore': 0,
-			'Adamantite ore': 0,
-			'Runite ore': 0,
-			Amethyst: 0
-		})
-	}
-];
-
-const miningCapeOreEffect: Bank = new Bank({
-	Clay: 5,
-	'Copper ore': 5,
-	'Tin ore': 5,
-	'Iron ore': 5,
-	'Silver ore': 5,
-	Coal: 5,
-	'Sandstone (5kg)': 5,
-	'Gold ore': 5,
-	'Granite (5kg)': 5,
-	'Mithril ore': 5,
-	'Adamantite ore': 5,
-	'Runite ore': 0,
-	Amethyst: 0
-});
-
-const daeyaltEssenceSkillRequirements: Skills = {
-	woodcutting: 62,
-	fletching: 60,
-	crafting: 56,
-	agility: 52,
-	attack: 50,
-	slayer: 50,
-	magic: 49,
-	herblore: 40,
-	construction: 5,
-	thieving: 22,
-	strength: 40
-};
 
 export const mineCommand: OSBMahojiCommand = {
 	name: 'mine',
@@ -224,10 +28,14 @@ export const mineCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The thing you want to mine.',
 			required: true,
-			choices: Mining.Ores.map(i => ({
-				name: i.name,
-				value: i.name
-			}))
+			autocomplete: async (value: string) => {
+				return [...Mining.Ores.map(i => i.name), Mining.MotherlodeMine.name]
+					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
+					.map(i => ({
+						name: i,
+						value: i
+					}));
+			}
 		},
 		{
 			type: ApplicationCommandOptionType.Integer,
@@ -248,28 +56,36 @@ export const mineCommand: OSBMahojiCommand = {
 		userID,
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; powermine?: boolean }>) => {
+		const user = await mUserFetch(userID);
+		let { quantity, powermine } = options;
+
+		const motherlodeMine = Mining.MotherlodeMine.name === options.name;
+
+		if (motherlodeMine) {
+			return motherlodeMineCommand({ user, channelID, quantity });
+		}
+
 		const ore = Mining.Ores.find(
 			ore =>
 				stringMatches(ore.id, options.name) ||
 				stringMatches(ore.name, options.name) ||
 				stringMatches(ore.name.split(' ')[0], options.name)
 		);
-
 		if (!ore) {
-			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}.`;
+			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${
+				Mining.MotherlodeMine.name
+			}.`;
 		}
 
-		let { quantity, powermine } = options;
-		const user = await mUserFetch(userID);
 		if (user.skillsAsLevels.mining < ore.level) {
 			return `${minionName(user)} needs ${ore.level} Mining to mine ${ore.name}.`;
 		}
 
 		// Check for daeyalt shard requirements.
-		const hasDaeyaltReqs = user.hasSkillReqs(daeyaltEssenceSkillRequirements);
+		const hasDaeyaltReqs = user.hasSkillReqs(sinsOfTheFatherSkillRequirements);
 		if (ore.name === 'Daeyalt essence rock') {
 			if (!hasDaeyaltReqs) {
-				return `To mine ${ore.name}, you need ${formatSkillRequirements(daeyaltEssenceSkillRequirements)}.`;
+				return `To mine ${ore.name}, you need ${formatSkillRequirements(sinsOfTheFatherSkillRequirements)}.`;
 			}
 			if (user.QP < 125) {
 				return `To mine ${ore.name}, you need atleast 125 Quest Points.`;
@@ -279,7 +95,7 @@ export const mineCommand: OSBMahojiCommand = {
 		const boosts = [];
 		// Invisible mining level, dosen't help equip pickaxe etc
 		let miningLevel = user.skillsAsLevels.mining;
-		if ((ore.minerals || ore.nuggets) && user.skillsAsLevels.mining >= 60) {
+		if (ore.minerals && miningLevel >= 60) {
 			boosts.push('+7 invisible Mining lvls at the Mining guild');
 			miningLevel += 7;
 		}
@@ -305,7 +121,7 @@ export const mineCommand: OSBMahojiCommand = {
 
 		let glovesRate = 0;
 		if (user.skillsAsLevels.mining >= 60) {
-			for (const glove of gloves) {
+			for (const glove of miningGloves) {
 				if (!user.hasEquipped(glove.id) || !glove.Percentages.has(ore.id)) continue;
 				glovesRate = glove.Percentages.amount(ore.id);
 				if (glovesRate !== 0) {
@@ -339,7 +155,7 @@ export const mineCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (!powermine) {
+		if (!powermine || ore.bankingTime === 0) {
 			powermine = false;
 		} else {
 			boosts.push('**Powermining**');

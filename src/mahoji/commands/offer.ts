@@ -15,6 +15,7 @@ import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import getOSItem from '../../lib/util/getOSItem';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
@@ -88,10 +89,16 @@ export const mineCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({
+		options,
+		userID,
+		channelID,
+		interaction
+	}: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
 		const userBank = user.bank;
 
+		await deferInteraction(interaction);
 		let { quantity } = options;
 		const whichOfferable = Offerables.find(
 			item =>
@@ -107,13 +114,12 @@ export const mineCommand: OSBMahojiCommand = {
 			if (quantity > offerableOwned) {
 				return `You don't have ${quantity} ${whichOfferable.name} to offer the ${whichOfferable.offerWhere}. You have ${offerableOwned}.`;
 			}
-			await user.removeItemsFromBank(new Bank({ [whichOfferable.itemID]: quantity }));
 			let loot = new Bank().add(whichOfferable.table.roll(quantity));
 
-			const { previousCL, itemsAdded } = await transactItems({
-				userID: user.id,
+			const { previousCL, itemsAdded } = await user.transactItems({
 				collectionLog: true,
-				itemsToAdd: loot
+				itemsToAdd: loot,
+				itemsToRemove: new Bank().add(whichOfferable.itemID, quantity)
 			});
 			if (whichOfferable.economyCounter) {
 				const newStats = await userStatsUpdate(
@@ -159,8 +165,7 @@ export const mineCommand: OSBMahojiCommand = {
 			if (!quantity) quantity = quantityOwned;
 			const cost = new Bank().add(egg.id, quantity);
 			if (!user.owns(cost)) return "You don't own enough of these eggs.";
-			await user.removeItemsFromBank(cost);
-			await userStatsBankUpdate(user.id, 'bird_eggs_offered_bank', cost);
+
 			let loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				if (roll(300)) {
@@ -176,11 +181,12 @@ export const mineCommand: OSBMahojiCommand = {
 				amount: quantity * 100
 			});
 
-			const { previousCL, itemsAdded } = await transactItems({
-				userID: user.id,
+			const { previousCL, itemsAdded } = await user.transactItems({
 				collectionLog: true,
-				itemsToAdd: loot
+				itemsToAdd: loot,
+				itemsToRemove: cost
 			});
+			await userStatsBankUpdate(user.id, 'bird_eggs_offered_bank', cost);
 
 			notifyUniques(user, egg.name, evilChickenOutfit, loot, quantity);
 

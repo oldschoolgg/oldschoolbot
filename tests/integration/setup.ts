@@ -14,8 +14,11 @@ vi.mock('../../src/lib/util/webhook', async () => {
 	const actual: any = await vi.importActual('../../src/lib/util/webhook');
 	return {
 		...actual,
-		sendToChannelID: async (args: any) => {
-			console.log(`Sending ${args}`);
-		}
+		sendToChannelID: async (args: any) => {}
 	};
+});
+
+// @ts-ignore mock
+globalClient.fetchUser = async () => ({
+	send: async () => {}
 });

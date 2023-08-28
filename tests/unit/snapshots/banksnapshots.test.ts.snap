@@ -1,4 +1,4 @@
-// Vitest Snapshot v1
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`OSB Buyables 1`] = `
 [
@@ -19,7 +19,7 @@ exports[`OSB Buyables 1`] = `
       },
       "frozen": false,
     },
-    "qpRequired": 293,
+    "qpRequired": 298,
   },
   {
     "aliases": [
@@ -365,6 +365,126 @@ exports[`OSB Buyables 1`] = `
     },
     "name": "Rune pickaxe",
     "outputItems": undefined,
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (bisexual)",
+    "outputItems": Bank {
+      "bank": {
+        "27141": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (asexual)",
+    "outputItems": Bank {
+      "bank": {
+        "27143": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (transgender)",
+    "outputItems": Bank {
+      "bank": {
+        "27145": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (pansexual)",
+    "outputItems": Bank {
+      "bank": {
+        "27147": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (non-binary)",
+    "outputItems": Bank {
+      "bank": {
+        "27149": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (genderqueer)",
+    "outputItems": Bank {
+      "bank": {
+        "27151": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (lesbian)",
+    "outputItems": Bank {
+      "bank": {
+        "27153": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "995": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Flower crown (gay)",
+    "outputItems": Bank {
+      "bank": {
+        "27155": 1,
+      },
+      "frozen": false,
+    },
   },
   {
     "itemCost": Bank {
@@ -3288,6 +3408,37 @@ exports[`OSB Buyables 1`] = `
       "bank": {
         "13280": 1,
         "13281": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 99000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Music cape",
+    "outputItems": Bank {
+      "bank": {
+        "13221": 1,
+        "13223": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 99000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Music cape(t)",
+    "outputItems": Bank {
+      "bank": {
+        "13222": 1,
       },
       "frozen": false,
     },
@@ -8090,6 +8241,40 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "20724": 1,
+        "27616": 150000,
+      },
+      "frozen": false,
+    },
+    "name": "Saturated heart",
+    "outputItems": Bank {
+      "bank": {
+        "27641": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "11905": 1,
+        "12932": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Trident of the swamp",
+    "outputItems": Bank {
+      "bank": {
+        "12899": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "12922": 1,
       },
       "frozen": false,
@@ -9149,6 +9334,23 @@ exports[`OSB Creatables 1`] = `
       "bank": {
         "20665": 1,
         "26820": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "13392": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert xeric's talisman (inert)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "13391": 100,
       },
       "frozen": false,
     },
@@ -11019,6 +11221,86 @@ exports[`OSB Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "22384": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25746": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Lil' maiden",
+    "outputItems": Bank {
+      "bank": {
+        "25748": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25746": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Lil' bloat",
+    "outputItems": Bank {
+      "bank": {
+        "25749": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25746": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Lil' nylo",
+    "outputItems": Bank {
+      "bank": {
+        "25750": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25746": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Lil' sot",
+    "outputItems": Bank {
+      "bank": {
+        "25751": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25746": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Lil' xarp",
+    "outputItems": Bank {
+      "bank": {
+        "25752": 1,
       },
       "frozen": false,
     },
@@ -22136,6 +22418,7 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "11826": 1,
@@ -22152,6 +22435,7 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "11828": 1,
@@ -22168,6 +22452,7 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "11830": 1,
@@ -22580,6 +22865,389 @@ exports[`OSB Creatables 1`] = `
     },
     "requiredSkills": {
       "runecraft": 77,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "3385": 1,
+        "561": 250,
+      },
+      "frozen": false,
+    },
+    "name": "Swampbark helm",
+    "outputItems": Bank {
+      "bank": {
+        "25398": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "runecraft": 46,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "3387": 1,
+        "561": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Swampbark body",
+    "outputItems": Bank {
+      "bank": {
+        "25389": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "runecraft": 48,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "3389": 1,
+        "561": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Swampbark legs",
+    "outputItems": Bank {
+      "bank": {
+        "25401": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "runecraft": 48,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "3393": 1,
+        "561": 100,
+      },
+      "frozen": false,
+    },
+    "name": "Swampbark boots",
+    "outputItems": Bank {
+      "bank": {
+        "25395": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "runecraft": 42,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "3391": 1,
+        "561": 100,
+      },
+      "frozen": false,
+    },
+    "name": "Swampbark gauntlets",
+    "outputItems": Bank {
+      "bank": {
+        "25392": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "runecraft": 42,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "6735": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Warrior icon",
+    "outputItems": Bank {
+      "bank": {
+        "28301": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28279": 1,
+        "28301": 1,
+        "565": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Bellator icon",
+    "outputItems": Bank {
+      "bank": {
+        "28293": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28276": 3,
+        "28293": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Bellator ring",
+    "outputItems": Bank {
+      "bank": {
+        "25488": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "6737": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Berserker icon",
+    "outputItems": Bank {
+      "bank": {
+        "28295": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28285": 1,
+        "28295": 1,
+        "565": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Ultor icon",
+    "outputItems": Bank {
+      "bank": {
+        "28287": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28276": 3,
+        "28287": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Ultor ring",
+    "outputItems": Bank {
+      "bank": {
+        "25485": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "6731": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Seers icon",
+    "outputItems": Bank {
+      "bank": {
+        "28304": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28281": 1,
+        "28304": 1,
+        "565": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Magus icon",
+    "outputItems": Bank {
+      "bank": {
+        "28291": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28276": 3,
+        "28291": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Magus ring",
+    "outputItems": Bank {
+      "bank": {
+        "25486": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "26382": 1,
+        "565": 20000,
+      },
+      "frozen": false,
+    },
+    "name": "Sanguine torva full helm",
+    "outputItems": Bank {
+      "bank": {
+        "28254": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "26384": 1,
+        "565": 20000,
+      },
+      "frozen": false,
+    },
+    "name": "Sanguine torva platebody",
+    "outputItems": Bank {
+      "bank": {
+        "28256": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "26386": 1,
+        "565": 20000,
+      },
+      "frozen": false,
+    },
+    "name": "Sanguine torva platelegs",
+    "outputItems": Bank {
+      "bank": {
+        "28258": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "6733": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Archer icon",
+    "outputItems": Bank {
+      "bank": {
+        "28298": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28283": 1,
+        "28298": 1,
+        "565": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Venator icon",
+    "outputItems": Bank {
+      "bank": {
+        "28289": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28276": 3,
+        "28289": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Venator ring",
+    "outputItems": Bank {
+      "bank": {
+        "25487": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28319": 1,
+        "28321": 1,
+        "28323": 1,
+        "28325": 1,
+        "565": 2000,
+      },
+      "frozen": false,
+    },
+    "name": "Soulreaper axe",
+    "outputItems": Bank {
+      "bank": {
+        "25484": 1,
+      },
+      "frozen": false,
     },
   },
 ]

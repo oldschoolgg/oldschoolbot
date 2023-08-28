@@ -31,6 +31,8 @@ export const filterOption: CommandOption = {
 
 const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
 
+export const tradeableItemArr = itemArr.filter(i => i.tradeable_on_ge);
+
 export const allEquippableItems = Items.array().filter(i => i.equipable && i.equipment?.slot);
 
 export const itemOption = (filter?: (item: Item) => boolean): CommandOption => ({

@@ -50,10 +50,15 @@ ${degradeableItems
 		if (!user.owns(item.unchargedItem!.id)) {
 			return `Your ${item.unchargedItem!.name} disappeared and cannot be charged`;
 		}
-		await user.removeItemsFromBank(new Bank({ [item.unchargedItem!.id]: 1 }));
-		await user.addItemsToBank({ items: { [item.item.id]: 1 }, collectionLog: true, filterLoot: false });
+		await user.transactItems({
+			filterLoot: false,
+			collectionLog: true,
+			itemsToAdd: new Bank().add(item.item.id),
+			itemsToRemove: new Bank().add(item.unchargedItem!.id).add(cost)
+		});
+	} else {
+		await transactItems({ userID: user.id, itemsToRemove: cost });
 	}
-	await transactItems({ userID: user.id, itemsToRemove: cost });
 	const currentCharges = user.user[item.settingsKey];
 	const newCharges = currentCharges + amountOfCharges;
 	await user.update({

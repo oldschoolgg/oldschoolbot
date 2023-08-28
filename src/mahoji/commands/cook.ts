@@ -2,6 +2,8 @@ import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
+import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import Cooking, { Cookables } from '../../lib/skilling/skills/cooking';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, stringMatches } from '../../lib/util';
@@ -58,10 +60,26 @@ export const cookCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${cookable.level} Cooking to cook ${cookable.name}s.`;
 		}
 
-		// Based off catherby fish/hr rates
-		let timeToCookSingleCookable = Time.Second * 2.88;
+		// These are just for notifying the user, they only take effect in the Activity.
+		const boosts = [];
+		const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
+		const [hasFavour] = gotFavour(user, Favours.Hosidius, 100);
+		if (hasFavour) boosts.push('Using Hosidius Range');
+		if (hasFavour && hasEliteDiary) boosts.push('Kourend Elite Diary');
+		const hasGaunts = user.hasEquipped('Cooking gauntlets');
+		if (hasGaunts) boosts.push('Cooking gauntlets equipped');
+
+		const skills = user.skillsAsLevels;
+		let timeToCookSingleCookable = Time.Second * 2.4 + Time.Second * 0.45;
+
 		if (cookable.id === itemID('Jug of wine') || cookable.id === itemID('Wine of zamorak')) {
-			timeToCookSingleCookable /= 1.6;
+			timeToCookSingleCookable /= 1.9;
+		}
+
+		// Enable 1 tick Karambwan half way to 99
+		if (skills.cooking >= 92 && cookable.id === itemID('Cooked karambwan')) {
+			timeToCookSingleCookable /= 3.8;
+			boosts.push('1t karambwans cooking with 92+ cooking');
 		}
 
 		const userBank = user.bank;
@@ -105,6 +123,6 @@ export const cookCommand: OSBMahojiCommand = {
 
 		return `${user.minionName} is now cooking ${quantity}x ${cookable.name}, it'll take around ${formatDuration(
 			duration
-		)} to finish.`;
+		)} to finish.${boosts.length > 0 ? `\n\nBoosts: ${boosts.join(', ')}` : ''}`;
 	}
 };

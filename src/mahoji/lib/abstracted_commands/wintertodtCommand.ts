@@ -5,7 +5,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { Eatables } from '../../../lib/data/eatables';
 import { warmGear } from '../../../lib/data/filterables';
 import { trackLoot } from '../../../lib/lootTrack';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -100,7 +100,7 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 
 	const duration = durationPerTodt * quantity;
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'wintertodt',
 		userID: user.id,
 		channelID: channelID.toString(),

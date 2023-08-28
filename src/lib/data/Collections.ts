@@ -18,9 +18,9 @@ import {
 } from '../minions/data/templeTrekking';
 import type { MinigameName } from '../settings/minigames';
 import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
-import { getToaKCs } from '../simulation/toa';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { SkillsEnum } from '../skilling/types';
+import { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
 import { fetchStatsForCL, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
@@ -64,6 +64,7 @@ import {
 	dailyCL,
 	demonicGorillaCL,
 	diariesCL,
+	dukeSucellusCL,
 	fightCavesCL,
 	fishingTrawlerCL,
 	FormatProgressFunction,
@@ -93,6 +94,7 @@ import {
 	miscellaneousCL,
 	monkeyBackpacksCL,
 	motherlodeMineCL,
+	muspahCL,
 	NexCL,
 	oborCL,
 	pestControlCL,
@@ -115,12 +117,15 @@ import {
 	theatreOfBLoodCL,
 	theGauntletCL,
 	theInfernoCL,
+	theLeviathanCL,
 	theNightmareCL,
 	thermonuclearSmokeDevilCL,
+	theWhispererCL,
 	titheFarmCL,
 	toaCL,
 	troubleBrewingCL,
 	tzHaarCL,
+	vardorvisCL,
 	venenatisCL,
 	vetionCL,
 	volcanicMineCL,
@@ -245,6 +250,58 @@ export const allCollectionLogs: ICollection = {
 					`${stats.kcBank[Monsters.DagannothSupreme.id] ?? 0} Supreme KC`
 				]
 			},
+			'Duke Sucellus': {
+				alias: ['duke', 'duke sucellus'],
+				kcActivity: {
+					Default: [Monsters.DukeSucellus.name, Monsters.AwakenedDukeSucellus.name],
+					Awakened: Monsters.AwakenedDukeSucellus.name
+				},
+				allItems: Monsters.DukeSucellus.allItems,
+				items: dukeSucellusCL,
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.DukeSucellus.id] ?? 0} KC`,
+					`${stats.kcBank[Monsters.AwakenedDukeSucellus.id] ?? 0} Awakened KC`
+				]
+			},
+			'The Leviathan': {
+				alias: ['the leviathan'],
+				kcActivity: {
+					Default: [Monsters.TheLeviathan.name, Monsters.AwakenedTheLeviathan.name],
+					Awakened: Monsters.AwakenedTheLeviathan.name
+				},
+				allItems: Monsters.TheLeviathan.allItems,
+				items: theLeviathanCL,
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.TheLeviathan.id] ?? 0} KC`,
+					`${stats.kcBank[Monsters.AwakenedTheLeviathan.id] ?? 0} Awakened KC`
+				]
+			},
+			Vardorvis: {
+				alias: ['vardorvis'],
+				kcActivity: {
+					Default: [Monsters.Vardorvis.name, Monsters.AwakenedVardorvis.name],
+					Awakened: Monsters.AwakenedVardorvis.name
+				},
+				allItems: Monsters.Vardorvis.allItems,
+				items: vardorvisCL,
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.Vardorvis.id] ?? 0} KC`,
+					`${stats.kcBank[Monsters.AwakenedVardorvis.id] ?? 0} Awakened KC`
+				]
+			},
+			'The Whisperer': {
+				alias: ['the whisperer'],
+				kcActivity: {
+					Default: [Monsters.TheWhisperer.name, Monsters.AwakenedTheWhisperer.name],
+					Awakened: Monsters.AwakenedTheWhisperer.name
+				},
+				allItems: Monsters.TheWhisperer.allItems,
+				items: theWhispererCL,
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.TheWhisperer.id] ?? 0} KC`,
+					`${stats.kcBank[Monsters.AwakenedTheWhisperer.id] ?? 0} Awakened KC`
+				]
+			},
 			'The Fight Caves': {
 				kcActivity: Monsters.TzTokJad.name,
 				alias: ['firecape', 'jad', 'fightcave'],
@@ -349,6 +406,12 @@ export const allCollectionLogs: ICollection = {
 				items: oborCL,
 				fmtProg: kcProg(Monsters.Obor)
 			},
+			'Phantom Muspah': {
+				alias: Monsters.PhantomMuspah.aliases,
+				allItems: Monsters.PhantomMuspah.allItems,
+				items: muspahCL,
+				fmtProg: kcProg(Monsters.PhantomMuspah)
+			},
 			Sarachnis: {
 				alias: Monsters.Sarachnis.aliases,
 				allItems: Monsters.Sarachnis.allItems,
@@ -444,9 +507,9 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: {
 					Default: async (_, minigameScores) =>
 						minigameScores.find(i => i.minigame.column === 'tombs_of_amascut')!.score,
-					Entry: async user => getToaKCs(user).then(i => i.entryKC),
-					Normal: async user => getToaKCs(user).then(i => i.normalKC),
-					Expert: async user => getToaKCs(user).then(i => i.expertKC)
+					Entry: async (_, __, { stats }) => stats.getToaKCs().entryKC,
+					Normal: async (_, __, { stats }) => stats.getToaKCs().normalKC,
+					Expert: async (_, __, { stats }) => stats.getToaKCs().expertKC
 				},
 				items: toaCL,
 				isActivity: true,
@@ -1057,12 +1120,12 @@ export const overallPlusItems = [
 	)
 ];
 
-export function calcCLDetails(user: MUser) {
-	const clItems = user.cl.filter(i => allCLItemsFiltered.includes(i.id));
+export function calcCLDetails(user: MUser | Bank) {
+	const clItems = (user instanceof Bank ? user : user.cl).filter(i => allCLItemsFiltered.includes(i.id));
 	const debugBank = new Bank(clItems);
 	const owned = clItems.filter(i => allCLItemsFiltered.includes(i.id));
 	const notOwned = shuffleRandom(
-		Number(user.id),
+		Number(user instanceof Bank ? '1' : user.id),
 		allCLItemsFiltered.filter(i => !clItems.has(i))
 	).slice(0, 10);
 	return {
@@ -1110,6 +1173,7 @@ export interface UserStatsDataNeededForCL {
 	kcBank: ItemBank;
 	highGambles: number;
 	gotrRiftSearches: number;
+	stats: MUserStats;
 }
 
 export function getBank(
@@ -1235,6 +1299,10 @@ export async function getCollection(options: {
 	const userCheckBank = getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 
+	if (clItems.length >= 500) {
+		flags.missing = 'missing';
+	}
+
 	if (Boolean(flags.missing)) {
 		clItems = clItems.filter(i => !userCheckBank.has(i));
 	}
@@ -1355,3 +1423,10 @@ export function isCLItem(item: Item | number | [Item, number]): boolean {
 	if (Array.isArray(item)) return isCLItem(item[0]);
 	return allCLItemsFiltered.includes(isObject(item) ? item.id : item);
 }
+
+export const bossCLItems = Object.values({
+	...allCollectionLogs['Bosses'].activities,
+	...allCollectionLogs['Raids'].activities
+})
+	.map(i => i.items)
+	.flat();

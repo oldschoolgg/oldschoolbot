@@ -25,7 +25,8 @@ export const nightmareZoneTask: MinionTask = {
 				await user.addXP({
 					skillName: style,
 					amount: Math.floor(xpPerSkill),
-					duration
+					duration,
+					source: 'NightmareZone'
 				})
 			);
 		}
@@ -34,7 +35,8 @@ export const nightmareZoneTask: MinionTask = {
 			await user.addXP({
 				skillName: SkillsEnum.Hitpoints,
 				amount: Math.floor((strategy === 'experience' ? 1.5 : 1) * monsterHP * quantity * 1.33),
-				duration
+				duration,
+				source: 'NightmareZone'
 			})
 		);
 

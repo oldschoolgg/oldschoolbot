@@ -17,5 +17,8 @@ global.globalClient = {
 				}
 			]
 		}
+	},
+	users: {
+		cache: new Collection()
 	}
 } as any;

@@ -46,6 +46,8 @@ model User {
 
     osb_total_level Int?
     bso_total_level Int?
+    osb_total_xp    BigInt?
+    bso_total_xp    BigInt?
     osb_cl_percent  Float?
     bso_cl_percent  Float?
     tag             Tag[]

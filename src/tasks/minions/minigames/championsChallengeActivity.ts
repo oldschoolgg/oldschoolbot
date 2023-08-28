@@ -1,12 +1,12 @@
 import { Bank } from 'oldschooljs';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const championsChallengeTask: MinionTask = {
 	type: 'ChampionsChallenge',
-	async run(data: MinigameActivityTaskOptions) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, userID } = data;
 		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'champions_challenge', 1);

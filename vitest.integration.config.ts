@@ -10,6 +10,7 @@ export default defineConfig({
 			reporter: 'text',
 			include: ['src/lib/MUser.ts']
 		},
-		testTimeout: 30_000
+		testTimeout: 30_000,
+		bail: 1
 	}
 });

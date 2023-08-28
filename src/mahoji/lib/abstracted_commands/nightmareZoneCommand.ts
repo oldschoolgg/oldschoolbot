@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, reduceNumByPercent, round, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MAX_QP, NMZStrategy } from '../../../lib/constants';
+import { NMZStrategy } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
@@ -15,6 +15,7 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
+import { MAX_QP } from './questCommand';
 
 const itemBoosts = [
 	// Special weapons

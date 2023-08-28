@@ -4,6 +4,7 @@ import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
+import { quests } from '../../mahoji/lib/abstracted_commands/questCommand';
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
@@ -51,9 +52,10 @@ import {
 	HunterActivityTaskOptions,
 	InfernoOptions,
 	KourendFavourActivityTaskOptions,
-	MinigameActivityTaskOptions,
+	MinigameActivityTaskOptionsWithNoChanges,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
+	MotherlodeMiningActivityTaskOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
@@ -68,6 +70,7 @@ import {
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
+	SpecificQuestOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
 	TOAOptions,
@@ -157,6 +160,20 @@ export function minionStatus(user: MUser) {
 			const ore = Mining.Ores.find(ore => ore.id === data.oreID);
 
 			return `${name} is currently mining ${ore!.name}. ${
+				data.fakeDurationMax === data.fakeDurationMin
+					? formattedDuration
+					: `approximately ${formatDuration(
+							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
+					  )} **to** ${formatDuration(
+							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
+					  )} remaining.`
+			} Your ${Emoji.Mining} Mining level is ${user.skillLevel(SkillsEnum.Mining)}`;
+		}
+
+		case 'MotherlodeMining': {
+			const data = currentTask as MotherlodeMiningActivityTaskOptions;
+
+			return `${name} is currently mining at the Motherlode Mine. ${
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
 					: `approximately ${formatDuration(
@@ -374,7 +391,7 @@ export function minionStatus(user: MUser) {
 		}
 
 		case 'BarbarianAssault': {
-			const data = currentTask as MinigameActivityTaskOptions;
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently doing ${data.quantity} waves of Barbarian Assault. ${formattedDuration}`;
 		}
 
@@ -456,7 +473,7 @@ export function minionStatus(user: MUser) {
 		}
 
 		case 'SoulWars': {
-			const data = currentTask as MinigameActivityTaskOptions;
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently doing ${data.quantity}x games of Soul Wars. ${formattedDuration}`;
 		}
 
@@ -472,7 +489,7 @@ export function minionStatus(user: MUser) {
 		}
 
 		case 'CastleWars': {
-			const data = currentTask as MinigameActivityTaskOptions;
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently doing ${data.quantity}x Castle Wars games. ${formattedDuration}`;
 		}
 
@@ -526,7 +543,7 @@ export function minionStatus(user: MUser) {
 			} in the wilderness. If they don't die, the trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'PestControl': {
-			const data = currentTask as MinigameActivityTaskOptions;
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently doing ${data.quantity} games of Pest Control. ${formattedDuration}`;
 		}
 		case 'VolcanicMine': {
@@ -556,7 +573,7 @@ export function minionStatus(user: MUser) {
 			)}.`;
 		}
 		case 'LastManStanding': {
-			const data = currentTask as MinigameActivityTaskOptions;
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 
 			return `${name} is currently doing ${
 				data.quantity
@@ -580,7 +597,7 @@ export function minionStatus(user: MUser) {
 			}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'TroubleBrewing': {
-			const data = currentTask as MinigameActivityTaskOptions;
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently doing ${
 				data.quantity
 			}x games of Trouble Brewing. The trip should take ${formatDuration(durationRemaining)}.`;
@@ -596,7 +613,7 @@ export function minionStatus(user: MUser) {
 			)}.`;
 		}
 		case 'GiantsFoundry': {
-			const data = currentTask as MinigameActivityTaskOptions;
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently creating ${
 				data.quantity
 			}x giant weapons for Kovac in the Giants' Foundry minigame. The trip should take ${formatDuration(
@@ -632,11 +649,18 @@ export function minionStatus(user: MUser) {
 		case 'UnderwaterAgilityThieving': {
 			return `${name} is currently doing Underwater Agility and Thieving. ${formattedDuration}`;
 		}
-		case 'Easter': {
-			return `${name} is currently doing the Easter Event! The trip should take ${formatDuration(
+		case 'StrongholdOfSecurity': {
+			return `${name} is currently doing the Stronghold of Security! The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
 		}
+		case 'SpecificQuest': {
+			const data = currentTask as SpecificQuestOptions;
+			return `${name} is currently doing the ${
+				quests.find(i => i.id === data.questID)!.name
+			}! The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'Easter':
 		case 'HalloweenEvent':
 		case 'BlastFurnace': {
 			throw new Error('Removed');

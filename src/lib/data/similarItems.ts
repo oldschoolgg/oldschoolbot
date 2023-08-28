@@ -309,7 +309,9 @@ const source: [string, (string | number)[]][] = [
 	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']],
 	['Magic shortbow', ['Magic shortbow (i)']],
 	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]],
-	['Celestial ring (uncharged)', ['Celestial ring', 'Celestial signet']],
+	['Celestial ring (uncharged)', ['Celestial signet', 'Celestial ring', 'Celestial signet (uncharged)']],
+	['Celestial ring', ['Celestial signet']],
+	['Celestial signet (uncharged)', ['Celestial signet']],
 	['Prospector jacket', ['Golden prospector jacket', 'Varrock armour 4']],
 	['Prospector legs', ['Golden prospector legs']],
 	['Prospector boots', ['Golden prospector boots']],
@@ -329,7 +331,9 @@ const source: [string, (string | number)[]][] = [
 	["Karil's leatherskirt", ['Armadyl chainskirt', 'Masori chaps (f)', 'Masori chaps']],
 	['Armadyl helmet', ['Masori mask (f)', 'Masori mask']],
 	['Armadyl chestplate', ['Armadyl chestplate', 'Masori body (f)', 'Masori body']],
-	['Armadyl chainskirt', ['Masori chaps (f)', 'Masori chaps']]
+	['Armadyl chainskirt', ['Masori chaps (f)', 'Masori chaps']],
+	['Music cape', ['Music cape (t)']],
+	['Imbued heart', ['Saturated heart']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
