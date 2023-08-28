@@ -1,4 +1,5 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ChartConfiguration } from 'chart.js';
+import { bold, ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
@@ -48,6 +49,7 @@ import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
+	calculateSimpleMonsterDeathChance,
 	checkRangeGearWeapon,
 	convertAttackStyleToGearSetup,
 	convertPvmStylesToGearSetup,
@@ -63,6 +65,7 @@ import {
 } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { generateChart } from '../../../lib/util/chart';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -70,6 +73,7 @@ import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahoji
 import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
+import { quests } from './questCommand';
 import { revsCommand } from './revsCommand';
 import { temporossCommand } from './temporossCommand';
 import { wintertodtCommand } from './wintertodtCommand';
@@ -118,6 +122,12 @@ const degradeableItemsCanUse: {
 		attackStyle: 'mage',
 		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 40,
 		boost: 3
+	},
+	{
+		item: getOSItem('Scythe of vitur'),
+		attackStyle: 'melee',
+		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 40,
+		boost: 10
 	}
 ];
 
@@ -171,6 +181,10 @@ export async function minionKillCommand(
 
 	const monster = findMonster(name);
 	if (!monster) return invalidMonsterMsg;
+
+	if ([Monsters.Callisto.id, Monsters.Vetion.id, Monsters.Venenatis.id].includes(monster.id)) {
+		return 'That monster is currently disabled.';
+	}
 
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask =
@@ -297,6 +311,7 @@ export async function minionKillCommand(
 	// Calculate Cannon and Barrage boosts + costs:
 	let usingCannon = false;
 	let cannonMulti = false;
+	let chinning = false;
 	let burstOrBarrage = 0;
 	const hasCannon = cannonBanks.some(i => user.owns(i));
 	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
@@ -313,6 +328,9 @@ export async function minionKillCommand(
 	}
 	if (boostChoice === 'burst' && user.skillLevel(SkillsEnum.Magic) < 70) {
 		return `You need 70 Magic to use Ice Burst. You have ${user.skillLevel(SkillsEnum.Magic)}`;
+	}
+	if (boostChoice === 'chinning' && user.skillLevel(SkillsEnum.Ranged) < 65) {
+		return `You need 65 Ranged to use Chinning method. You have ${user.skillLevel(SkillsEnum.Ranged)}`;
 	}
 
 	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
@@ -336,6 +354,31 @@ export async function minionKillCommand(
 		consumableCosts.push(cannonSingleConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
 		boosts.push(`${boostCannon}% for Cannon in singles`);
+	} else if (method === 'chinning' && attackStyles.includes(SkillsEnum.Ranged) && monster!.canChinning) {
+		chinning = true;
+		// Check what Chinchompa to use
+		const chinchompas = ['Black chinchompa', 'Red chinchompa', 'Chinchompa'];
+		let chinchompa = 'Black chinchompa';
+		for (let chin of chinchompas) {
+			if (user.owns(chin) && user.bank.amount(chin) > 5000) {
+				chinchompa = chin;
+				break;
+			}
+		}
+		const chinBoostRapid = chinchompa === 'Chinchompa' ? 73 : chinchompa === 'Red chinchompa' ? 76 : 82;
+		const chinBoostLongRanged = chinchompa === 'Chinchompa' ? 63 : chinchompa === 'Red chinchompa' ? 69 : 77;
+		const chinningConsumables: Consumable = {
+			itemCost: new Bank().add(chinchompa, 1),
+			qtyPerMinute: attackStyles.includes(SkillsEnum.Defence) ? 24 : 33
+		};
+		if (attackStyles.includes(SkillsEnum.Defence)) {
+			timeToFinish = reduceNumByPercent(timeToFinish, chinBoostLongRanged);
+			boosts.push(`${chinBoostLongRanged}% for ${chinchompa} Longrange`);
+		} else {
+			timeToFinish = reduceNumByPercent(timeToFinish, chinBoostRapid);
+			boosts.push(`${chinBoostRapid}% for ${chinchompa} Rapid`);
+		}
+		consumableCosts.push(chinningConsumables);
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'MonsterKilling');
@@ -600,6 +643,15 @@ export async function minionKillCommand(
 		}
 	}
 
+	if (monster.requiredQuests) {
+		const incompleteQuest = monster.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+		if (incompleteQuest) {
+			return `You need to have completed the ${bold(
+				quests.find(i => i.id === incompleteQuest)!.name
+			)} quest to kill ${monster.name}.`;
+		}
+	}
+
 	duration = randomVariation(duration, 3);
 
 	if (isWeekend()) {
@@ -647,6 +699,7 @@ export async function minionKillCommand(
 		type: 'MonsterKilling',
 		usingCannon: !usingCannon ? undefined : usingCannon,
 		cannonMulti: !cannonMulti ? undefined : cannonMulti,
+		chinning: !chinning ? undefined : chinning,
 		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage
 	});
 	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
@@ -854,7 +907,6 @@ export async function monsterInfo(user: MUser, name: string): CommandResponse {
 	);
 
 	const min = timeToFinish * maxCanKill * 1.01;
-
 	const max = timeToFinish * maxCanKill * 1.2;
 	str.push(
 		`Due to the random variation of an added 1-20% duration, ${maxCanKill}x kills can take between (${formatDuration(
@@ -863,5 +915,69 @@ export async function monsterInfo(user: MUser, name: string): CommandResponse {
 			min * 0.9
 		)}) to (${formatDuration(max * 0.9)}) to finish.\n`
 	);
-	return str.join('\n');
+
+	if (monster.degradeableItemUsage) {
+		for (const item of monster.degradeableItemUsage) {
+			str.push(
+				`${item.items.map(i => `${itemNameFromID(i.itemID)} (${i.boostPercent}% boost)`).join(' OR ')} ${
+					item.required ? 'must' : 'can'
+				} be equipped in your ${item.gearSetup} setup, needs to be charged using /minion charge.`
+			);
+		}
+	}
+
+	let response: InteractionReplyOptions = {
+		content: str.join('\n')
+	};
+
+	if (monster.deathProps) {
+		const maxKillCount = 200;
+		const values: [string, number][] = [];
+		for (let currentKC = 0; currentKC <= maxKillCount; currentKC += 5) {
+			let deathChancePercent = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC });
+			values.push([currentKC.toString(), round(deathChancePercent, 1)]);
+		}
+		const options: ChartConfiguration = {
+			type: 'line',
+			data: {
+				labels: values.map(i => `${i[0]}KC`),
+				datasets: [
+					{
+						data: values.map(i => i[1])
+					}
+				]
+			},
+			options: {
+				plugins: {
+					title: { display: true, text: 'Death Chance vs Kill Count' },
+					datalabels: {
+						font: {
+							weight: 'bolder'
+						},
+						formatter(value) {
+							return `${value}%`;
+						}
+					},
+					legend: {
+						display: false
+					}
+				},
+				scales: {
+					y: {
+						min: 1,
+						max: 100,
+						ticks: {
+							callback(value) {
+								return `${value}%`;
+							}
+						}
+					}
+				}
+			}
+		};
+		const chart = await generateChart(options);
+		response.files = [chart];
+	}
+
+	return response;
 }

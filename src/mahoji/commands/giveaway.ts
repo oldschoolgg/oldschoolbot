@@ -141,7 +141,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 				return 'You cannot have a giveaway with no items in it.';
 			}
 
-			const giveawayID = randInt(1, 100_000_000);
+			const giveawayID = randInt(1, 500_000_000);
 
 			const message = await channel.send({
 				content: generateGiveawayContent(user.id, duration.fromNow, []),

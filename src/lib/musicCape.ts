@@ -9,7 +9,6 @@ import { RandomEvents } from './randomEvents';
 import { MinigameName, Minigames } from './settings/minigames';
 import { getUsersActivityCounts, prisma } from './settings/prisma';
 import { RequirementFailure, Requirements } from './structures/Requirements';
-import { ItemBank } from './types';
 import { itemNameFromID } from './util';
 import resolveItems from './util/resolveItems';
 
@@ -205,9 +204,9 @@ AND data->>'runeID' IS NOT NULL;`;
 	})
 	.add({
 		name: 'One of Every Random Event',
-		has: async ({ userStats, user }) => {
+		has: async ({ stats, user }) => {
 			const results: RequirementFailure[] = [];
-			const eventBank = userStats.random_event_completions_bank as ItemBank;
+			const eventBank = stats.randomEventCompletionsBank();
 
 			const notDoneRandomEvents = RandomEvents.filter(i => {
 				if (i.outfit && i.outfit.every(id => user.cl.has(id))) return false;

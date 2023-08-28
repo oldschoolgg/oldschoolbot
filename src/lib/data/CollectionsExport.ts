@@ -1534,7 +1534,11 @@ export const allPetsCL = resolveItems([
 	'Nexling',
 	'Abyssal protector',
 	"Tumeken's guardian",
-	'Muphin'
+	'Muphin',
+	'Wisp',
+	"Lil'viathan",
+	'Butch',
+	'Baron'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -2217,7 +2221,7 @@ export const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem("Deadman's cape"), cost: 160 },
 	{ item: getOSItem('Swift blade'), cost: 350 },
 	{ item: getOSItem('Guthixian icon'), cost: 500 },
-	{ item: getOSItem('Trouver parchment'), cost: 30 },
+	{ item: getOSItem('Trouver parchment'), cost: 18 },
 	{ item: getOSItem('Wilderness crabs teleport'), cost: 1 },
 	{ item: getOSItem('Blighted bind sack'), quantity: 300, cost: 1 },
 	{ item: getOSItem('Blighted snare sack'), quantity: 150, cost: 1 },
@@ -2266,7 +2270,7 @@ export const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem('Paddewwa teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Senntisten teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Annakarl teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Carrallangar teleport'), quantity: 2, cost: 1 },
+	{ item: getOSItem('Carrallanger teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Dareeyak teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Ghorrock teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Kharyrll teleport'), quantity: 2, cost: 1 },
@@ -2295,4 +2299,54 @@ export const NexCL = resolveItems([
 	'Torva platebody (damaged)',
 	'Torva platelegs (damaged)',
 	'Nihil shard'
+]);
+
+export const dukeSucellusCL = resolveItems([
+	'Baron',
+	'Eye of the duke',
+	'Virtus mask',
+	'Virtus robe top',
+	'Virtus robe bottom',
+	'Frozen tablet',
+	'Chromium ingot',
+	"Awakener's orb"
+]);
+
+export const theLeviathanCL = resolveItems([
+	"Lil'viathan",
+	"Leviathan's lure",
+	'Virtus mask',
+	'Virtus robe top',
+	'Virtus robe bottom',
+	'Venator vestige',
+	'Chromium ingot',
+	"Awakener's orb",
+	'Smoke quartz',
+	'Scarred tablet'
+]);
+
+export const theWhispererCL = resolveItems([
+	'Wisp',
+	"Siren's staff",
+	'Virtus mask',
+	'Virtus robe top',
+	'Virtus robe bottom',
+	'Bellator vestige',
+	'Chromium ingot',
+	"Awakener's orb",
+	'Shadow quartz',
+	'Sirenic tablet'
+]);
+
+export const vardorvisCL = resolveItems([
+	'Butch',
+	"Executioner's axe head",
+	'Virtus mask',
+	'Virtus robe top',
+	'Virtus robe bottom',
+	'Ultor vestige',
+	'Chromium ingot',
+	"Awakener's orb",
+	'Blood quartz',
+	'Strangled tablet'
 ]);

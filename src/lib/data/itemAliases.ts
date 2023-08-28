@@ -283,3 +283,7 @@ setItemAlias(27_149, 'Flower crown (non-binary)');
 setItemAlias(27_151, 'Flower crown (genderqueer)');
 setItemAlias(27_153, 'Flower crown (lesbian)');
 setItemAlias(27_155, 'Flower crown (gay)');
+
+setItemAlias(23_330, 'Rune scimitar (guthix)');
+setItemAlias(23_332, 'Rune scimitar (saradomin)');
+setItemAlias(23_334, 'Rune scimitar (zamorak)');

@@ -77,8 +77,10 @@ async function addCommand(user: MUser, itemName: string, quantity = 1) {
 		return "You can't add to your blowpipe, because your minion is out on a trip.";
 	}
 	if (!user.owns('Toxic blowpipe') && user.owns('Toxic blowpipe (empty)')) {
-		await user.removeItemsFromBank(new Bank().add('Toxic blowpipe (empty)'));
-		await user.addItemsToBank({ items: new Bank().add('Toxic blowpipe'), collectionLog: false });
+		await user.transactItems({
+			itemsToAdd: new Bank().add('Toxic blowpipe'),
+			itemsToRemove: new Bank().add('Toxic blowpipe (empty)')
+		});
 	}
 
 	const hasBlowpipe = user.owns('Toxic blowpipe');

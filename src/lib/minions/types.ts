@@ -3,12 +3,15 @@ import { XpGainSource } from '@prisma/client';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
+import { QuestID } from '../../mahoji/lib/abstracted_commands/questCommand';
+import { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
+import { calculateSimpleMonsterDeathChance } from '../util';
 import { AttackStyles } from './functions';
 
 export type BankBackground = {
@@ -89,6 +92,7 @@ export interface KillableMonster {
 	itemCost?: Consumable;
 	superior?: SimpleMonster;
 	slayerOnly?: boolean;
+	canChinning?: boolean;
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
@@ -114,6 +118,8 @@ export interface KillableMonster {
 		gearSetup: GearSetupType;
 		items: { boostPercent: number; itemID: number }[];
 	}[];
+	requiredQuests?: QuestID[];
+	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
 }
 /*
  * Monsters will have an array of Consumables
@@ -164,3 +170,4 @@ export interface BlowpipeData {
 }
 export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
+export type ClueBank = Record<ClueTier['name'], number>;

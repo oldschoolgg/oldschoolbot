@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -12,7 +12,7 @@ export const pizazzPointsPerHour = 100;
 
 export const mageTrainingTask: MinionTask = {
 	type: 'MageTrainingArena',
-	async run(data: MinigameActivityTaskOptions) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, duration, userID } = data;
 
 		await incrementMinigameScore(userID, 'magic_training_arena', quantity);
@@ -36,8 +36,16 @@ export const mageTrainingTask: MinionTask = {
 				}
 			}
 		});
+		const totalPizazzPoints = await prisma.newUser.findUnique({
+			where: { id: userID },
+			select: {
+				pizazz_points: true
+			}
+		});
 
-		let str = `${user}, ${user.minionName} finished completing ${quantity}x Magic Training Arena rooms. You received **${pizazzPoints} Pizazz points**. ${xpRes}`;
+		let str = `${user}, ${
+			user.minionName
+		} finished completing ${quantity}x Magic Training Arena rooms. You received **${pizazzPoints} Pizazz points**. You now have **${totalPizazzPoints?.pizazz_points.toLocaleString()} Pizazz points**. ${xpRes}`;
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}

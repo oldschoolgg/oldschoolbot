@@ -4,7 +4,7 @@ import { clamp, percentChance, sumArr } from 'e';
 import { Emoji } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { calcPerHour, gaussianRandom } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -97,7 +97,7 @@ function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnType<typ
 
 export const lmsTask: MinionTask = {
 	type: 'LastManStanding',
-	async run(data: MinigameActivityTaskOptions) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, userID, duration } = data;
 		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'lms', quantity);
@@ -115,6 +115,7 @@ export const lmsTask: MinionTask = {
 				increment: points
 			}
 		});
+		const newLmsStats = await getUsersLMSStats(user);
 
 		handleTripFinish(
 			user,
@@ -123,7 +124,10 @@ export const lmsTask: MinionTask = {
 				user.minionName
 			} finished playing ${quantity}x Last Man Standing matches, you received ${points} points and now have ${
 				newUser.lms_points
-			} points in total. ${calcPerHour(points, duration).toFixed(2)} points/hr
+			} points in total, and have won a total of ${newLmsStats.gamesWon}x games. ${calcPerHour(
+				points,
+				duration
+			).toFixed(2)} points/hr
 ${result
 	.map(
 		(i, inde) =>

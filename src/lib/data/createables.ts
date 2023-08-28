@@ -8,11 +8,12 @@ import { ItemBank, Skills } from '../types';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import { itemNameFromID } from '../util/smallUtils';
-import { chambersOfXericMetamorphPets } from './CollectionsExport';
+import { chambersOfXericMetamorphPets, tobMetamorphPets } from './CollectionsExport';
 import { amrodCreatables } from './creatables/amrod';
 import { armorAndItemPacks } from './creatables/armorPacks';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
+import { dtCreatables } from './creatables/dt';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
 import { guardiansOfTheRiftCreatables } from './creatables/guardiansOfTheRiftCreatables';
 import { leaguesCreatables } from './creatables/leagueCreatables';
@@ -68,6 +69,37 @@ for (const [bbPart, sbPart, bloodRunes, lvlReq] of bloodBarkPairs) {
 		customReq: async (user: MUser) => {
 			if (!user.bitfield.includes(BitField.HasBloodbarkScroll)) {
 				return 'You need to have used a Runescroll of bloodbark to create this item!';
+			}
+
+			return null;
+		}
+	});
+}
+
+const swampBarkPairs = [
+	['Swampbark helm', 'Splitbark helm', 250, 46],
+	['Swampbark body', 'Splitbark body', 500, 48],
+	['Swampbark legs', 'Splitbark legs', 500, 48],
+	['Swampbark boots', 'Splitbark boots', 100, 42],
+	['Swampbark gauntlets', 'Splitbark gauntlets', 100, 42]
+] as const;
+
+const swampBarkCreatables: Createable[] = [];
+
+for (const [bbPart, sbPart, natRunes, lvlReq] of swampBarkPairs) {
+	const bbItem = getOSItem(bbPart);
+	const sbItem = getOSItem(sbPart);
+
+	swampBarkCreatables.push({
+		name: bbItem.name,
+		inputItems: new Bank().add(sbItem.id).add('Nature rune', natRunes),
+		outputItems: new Bank().add(bbItem.id),
+		requiredSkills: {
+			runecraft: lvlReq
+		},
+		customReq: async (user: MUser) => {
+			if (!user.bitfield.includes(BitField.HasSwampbarkScroll)) {
+				return 'You need to have used a Runescroll of Swampbark to create this item!';
 			}
 
 			return null;
@@ -181,6 +213,16 @@ const metamorphPetCreatables: Createable[] = chambersOfXericMetamorphPets.map(pe
 	name: itemNameFromID(pet)!,
 	inputItems: {
 		[itemID('Metamorphic dust')]: 1
+	},
+	outputItems: {
+		[pet]: 1
+	}
+}));
+
+const tobMetamorphPetCreatables: Createable[] = tobMetamorphPets.map(pet => ({
+	name: itemNameFromID(pet)!,
+	inputItems: {
+		[itemID('Sanguine dust')]: 1
 	},
 	outputItems: {
 		[pet]: 1
@@ -1245,6 +1287,16 @@ const Reverteables: Createable[] = [
 			[itemID("Guardian's eye")]: 1
 		},
 		noCl: true
+	},
+	{
+		name: "Revert xeric's talisman (inert)",
+		inputItems: {
+			[itemID("Xeric's talisman (inert)")]: 1
+		},
+		outputItems: {
+			[itemID('Lizardman fang')]: 100
+		},
+		noCl: true
 	}
 ];
 
@@ -2186,6 +2238,7 @@ const Createables: Createable[] = [
 	...hunterClothing,
 	...twistedAncestral,
 	...metamorphPetCreatables,
+	...tobMetamorphPetCreatables,
 	...metamorphPets,
 	...slayerCreatables,
 	...capeCreatables,
@@ -2203,7 +2256,9 @@ const Createables: Createable[] = [
 	...guardiansOfTheRiftCreatables,
 	...shadesOfMortonCreatables,
 	...toaCreatables,
-	...bloodBarkCreatables
+	...bloodBarkCreatables,
+	...swampBarkCreatables,
+	...dtCreatables
 ];
 
 export default Createables;

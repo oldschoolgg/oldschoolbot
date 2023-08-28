@@ -76,6 +76,10 @@ export const taskCanBeRepeated = (type: activity_type_enum) =>
 	).includes(type);
 
 export const tripHandlers = {
+	[activity_type_enum.SpecificQuest]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.HalloweenEvent]: {
 		commandName: 'm',
 		args: () => ({})
@@ -356,6 +360,7 @@ export const tripHandlers = {
 		args: (data: MonsterActivityTaskOptions) => {
 			let method: PvMMethod = 'none';
 			if (data.usingCannon) method = 'cannon';
+			if (data.chinning) method = 'chinning';
 			else if (data.burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
 			else if (data.burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
 			return {

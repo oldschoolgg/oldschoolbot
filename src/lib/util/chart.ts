@@ -44,11 +44,16 @@ export async function pieChart(title: string, format: (value: any) => string, va
 	};
 	return generateChart(options);
 }
-export async function lineChart(title: string, format: (value: any) => string, values: [string, number, string?][]) {
+export async function lineChart(
+	title: string,
+	values: [string, number, string?][],
+	yFormat: (value: any) => string = (value: any) => value,
+	xFormat: (value: any) => string = (value: any) => value
+) {
 	const options: ChartConfiguration = {
 		type: 'line',
 		data: {
-			labels: values.map(i => i[0]),
+			labels: values.map(i => `${xFormat(i[0])}`),
 			datasets: [
 				{
 					data: values.map(i => i[1]),
@@ -64,8 +69,11 @@ export async function lineChart(title: string, format: (value: any) => string, v
 						weight: 'bolder'
 					},
 					formatter(value) {
-						return format(value);
+						return `${yFormat(value)}`;
 					}
+				},
+				legend: {
+					display: false
 				}
 			}
 		}

@@ -16,6 +16,7 @@ import {
 	evilChickenOutfit,
 	gnomeRestaurantCL,
 	guardiansOfTheRiftCL,
+	shadesOfMorttonCL,
 	toaCL
 } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
@@ -295,6 +296,11 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 		name: 'Tombs of Amascut',
 		key: 'tombs_of_amascut',
 		items: toaCL
+	},
+	{
+		name: 'Shades of Morton',
+		key: 'shades_of_morton',
+		items: shadesOfMorttonCL
 	}
 ];
 
@@ -636,10 +642,10 @@ async function checkMassesCommand(guildID: string | undefined) {
 				isTOBOrTOAActivity(m) || isNexActivity(m)
 					? m.finishDate - m.duration + m.fakeDuration - now
 					: m.finishDate - now;
-			if (isGroupActivity(m)) {
+			if ('users' in m) {
 				return [
 					remainingTime,
-					`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
+					`${m.type}${m.type === 'Raids' && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
 						m.channelID
 					}> in ${formatDuration(remainingTime, true)})`
 				];

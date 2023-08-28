@@ -248,7 +248,7 @@ export const minionCommand: OSBMahojiCommand = {
 					description: 'The skill you want to use the item on.'
 				},
 				{
-					type: ApplicationCommandOptionType.Number,
+					type: ApplicationCommandOptionType.Integer,
 					name: 'quantity',
 					description: 'You quantity you want to use.',
 					required: false,

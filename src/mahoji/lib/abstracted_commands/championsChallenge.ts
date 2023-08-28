@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { championScrolls } from '../../../lib/data/CollectionsExport';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
@@ -20,7 +20,7 @@ export async function championsChallengeCommand(user: MUser, channelID: string) 
 	for (const id of championScrolls) cost.add(id);
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity: 1,
