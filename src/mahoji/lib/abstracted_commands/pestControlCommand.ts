@@ -23,12 +23,39 @@ let itemBoosts = [
 	[['Dragon claws'].map(getOSItem), 5]
 ] as const;
 
-export type PestControlBoat = ['veteran' | 'intermediate' | 'novice', 3 | 4 | 5];
+export function getBoatType(user: MUser, cbLevel: number) {
+	let type: 'veteran' | 'intermediate' | 'novice' = 'intermediate';
+	let pointsPerGame: number = 1;
 
-export function getBoatType(cbLevel: number): PestControlBoat {
-	if (cbLevel >= 100) return ['veteran', 5];
-	if (cbLevel >= 70) return ['intermediate', 4];
-	return ['novice', 3];
+	if (cbLevel >= 100) {
+		type = 'veteran';
+		pointsPerGame = 5;
+	} else if (cbLevel >= 70) {
+		type = 'intermediate';
+		pointsPerGame = 4;
+	} else {
+		type = 'novice';
+		pointsPerGame = 3;
+	}
+
+	let bonusPointsPerGame = 0;
+
+	if (user.hasCompletedCATier('hard')) {
+		bonusPointsPerGame += 1;
+	}
+
+	if (user.hasCompletedCATier('medium')) {
+		bonusPointsPerGame += 1;
+	}
+	if (user.hasCompletedCATier('easy')) {
+		bonusPointsPerGame += 1;
+	}
+
+	return {
+		boatType: type,
+		pointsPerGame: pointsPerGame + bonusPointsPerGame,
+		bonusPointsPerGame
+	};
 }
 
 let baseStats = {
@@ -186,11 +213,11 @@ export async function pestControlStartCommand(user: MUser, channelID: string) {
 		minigameID: 'pest_control'
 	});
 
-	let [boat] = getBoatType(user.combatLevel);
+	let { boatType } = getBoatType(user, user.combatLevel);
 
 	let str = `${
 		user.minionName
-	} is now doing ${quantity}x Pest Control games on the ${boat} boat. The trip will take ${formatDuration(
+	} is now doing ${quantity}x Pest Control games on the ${boatType} boat. The trip will take ${formatDuration(
 		duration
 	)}.`;
 

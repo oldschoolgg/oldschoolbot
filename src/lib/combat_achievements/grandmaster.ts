@@ -809,30 +809,30 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 			hasChance: 'TombsOfAmascut'
 		}
 	},
-	{
-		id: 3070,
-		name: 'The VI Jad Challenge',
-		desc: "Complete TzHaar-Ket-Rak's sixth challenge.",
-		type: 'kill_count',
-		monster: "TzHaar-Ket-Rak's Challenges",
-		notPossible: true
-	},
-	{
-		id: 3071,
-		name: "TzHaar-Ket-Rak's Speed-Runner",
-		desc: "Complete TzHaar-Ket-Rak's fifth challenge in less than 5 minutes.",
-		type: 'speed',
-		monster: "TzHaar-Ket-Rak's Challenges",
-		notPossible: true
-	},
-	{
-		id: 3072,
-		name: "It Wasn't a Fluke",
-		desc: "Complete TzHaar-Ket-Rak's fifth and sixth challenges back to back without failing.",
-		type: 'perfection',
-		monster: "TzHaar-Ket-Rak's Challenges",
-		notPossible: true
-	},
+	// {
+	// 	id: 3070,
+	// 	name: 'The VI Jad Challenge',
+	// 	desc: "Complete TzHaar-Ket-Rak's sixth challenge.",
+	// 	type: 'kill_count',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
+	// {
+	// 	id: 3071,
+	// 	name: "TzHaar-Ket-Rak's Speed-Runner",
+	// 	desc: "Complete TzHaar-Ket-Rak's fifth challenge in less than 5 minutes.",
+	// 	type: 'speed',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
+	// {
+	// 	id: 3072,
+	// 	name: "It Wasn't a Fluke",
+	// 	desc: "Complete TzHaar-Ket-Rak's fifth and sixth challenges back to back without failing.",
+	// 	type: 'perfection',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
 	{
 		id: 3073,
 		name: "Wasn't Even Close",
