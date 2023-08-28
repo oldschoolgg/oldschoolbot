@@ -7,6 +7,7 @@ import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
 import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
+import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
 import { BitField, MAX_INT_JAVA } from '../../lib/constants';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
@@ -460,6 +461,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							required: false,
 							min_value: 0,
 							max_value: MAX_QP
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'all_ca_tasks',
+							description: 'Finish all CA tasks.',
+							required: false
 						}
 					]
 				},
@@ -500,7 +507,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				irontoggle?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
 				wipe?: { thing: (typeof thingsToWipe)[number] };
-				set?: { qp?: number };
+				set?: { qp?: number; all_ca_tasks?: boolean };
 				check?: { monster_droprates?: string };
 			}>) => {
 				if (production) {
@@ -541,6 +548,14 @@ ${droprates.join('\n')}`),
 							QP: qp
 						});
 						return `Set your QP to ${qp}.`;
+					}
+					if (options.set.all_ca_tasks) {
+						await user.update({
+							completed_ca_task_ids: Object.values(CombatAchievements)
+								.map(i => i.tasks.map(t => t.id))
+								.flat()
+						});
+						return 'Finished all CA tasks.';
 					}
 				}
 				if (options.irontoggle) {

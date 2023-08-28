@@ -1,9 +1,11 @@
 import { activity_type_enum } from '@prisma/client';
 import { deepClone, notEmpty, roll, sumArr } from 'e';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { Requirements } from '../structures/Requirements';
 import { ActivityTaskData, TOAOptions } from '../types/minions';
 import { assert } from '../util';
+import getOSItem from '../util/getOSItem';
 import { TripFinishEffect } from '../util/handleTripFinish';
 import { easyCombatAchievements } from './easy';
 import { eliteCombatAchievements } from './elite';
@@ -34,36 +36,69 @@ export type CombatAchievement = {
 	  }
 );
 
-export const CombatAchievements = {
+interface CARootItem {
+	name: 'Easy' | 'Medium' | 'Hard' | 'Elite' | 'Master' | 'Grandmaster';
+	length: number;
+	tasks: CombatAchievement[];
+	staticRewards: { item: Item; reclaimable: boolean }[];
+}
+type CARoot = Record<'easy' | 'medium' | 'hard' | 'elite' | 'master' | 'grandmaster', CARootItem>;
+
+export const CombatAchievements: CARoot = {
 	easy: {
 		tasks: easyCombatAchievements,
 		length: 33,
-		name: 'Easy'
+		name: 'Easy',
+		staticRewards: [
+			{ item: getOSItem("Ghommal's hilt 1"), reclaimable: true },
+			{ item: getOSItem('Antique lamp (easy ca)'), reclaimable: false }
+		]
 	},
 	medium: {
 		tasks: mediumCombatAchievements,
-		length: 41,
-		name: 'Medium'
+		length: 41 - 1,
+		name: 'Medium',
+		staticRewards: [
+			{ item: getOSItem("Ghommal's hilt 2"), reclaimable: true },
+			{ item: getOSItem('Antique lamp (medium ca)'), reclaimable: false }
+		]
 	},
 	hard: {
 		tasks: hardCombatAchievements,
 		length: 63,
-		name: 'Hard'
+		name: 'Hard',
+		staticRewards: [
+			{ item: getOSItem("Ghommal's hilt 3"), reclaimable: true },
+			{ item: getOSItem('Antique lamp (hard ca)'), reclaimable: false }
+		]
 	},
 	elite: {
 		tasks: eliteCombatAchievements,
-		length: 129,
-		name: 'Elite'
+		length: 129 - 6,
+		name: 'Elite',
+		staticRewards: [
+			{ item: getOSItem("Ghommal's hilt 4"), reclaimable: true },
+			{ item: getOSItem('Antique lamp (elite ca)'), reclaimable: false }
+		]
 	},
 	master: {
 		tasks: masterCombatAchievements,
-		length: 129,
-		name: 'Master'
+		length: 129 - 5,
+		name: 'Master',
+		staticRewards: [
+			{ item: getOSItem("Ghommal's hilt 5"), reclaimable: true },
+			{ item: getOSItem("Ghommal's lucky penny"), reclaimable: true },
+			{ item: getOSItem('Antique lamp (master ca)'), reclaimable: false }
+		]
 	},
 	grandmaster: {
 		tasks: grandmasterCombatAchievements,
-		length: 90,
-		name: 'Grandmaster'
+		length: 90 - 3,
+		name: 'Grandmaster',
+		staticRewards: [
+			{ item: getOSItem("Ghommal's hilt 6"), reclaimable: true },
+			{ item: getOSItem('Antique lamp (grandmaster ca)'), reclaimable: false }
+		]
 	}
 };
 
