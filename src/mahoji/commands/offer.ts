@@ -15,6 +15,7 @@ import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import getOSItem from '../../lib/util/getOSItem';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
@@ -88,10 +89,16 @@ export const mineCommand: OSBMahojiCommand = {
 			min_value: 1
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({
+		options,
+		userID,
+		channelID,
+		interaction
+	}: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
 		const userBank = user.bank;
 
+		await deferInteraction(interaction);
 		let { quantity } = options;
 		const whichOfferable = Offerables.find(
 			item =>

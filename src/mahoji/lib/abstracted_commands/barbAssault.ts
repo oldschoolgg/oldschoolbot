@@ -9,7 +9,7 @@ import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
 import { maxOtherStats } from '../../../lib/structures/Gear';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import {
 	buildClueButtons,
 	formatDuration,
@@ -290,7 +290,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	)} - the total trip will take ${formatDuration(duration)}. `;
 
 	str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
-	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,

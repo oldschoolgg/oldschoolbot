@@ -17,7 +17,8 @@ interface DegradeableItem {
 		| 'blood_fury_charges'
 		| 'tum_shadow_charges'
 		| 'blood_essence_charges'
-		| 'trident_charges';
+		| 'trident_charges'
+		| 'scythe_of_vitur_charges';
 	itemsToRefundOnBreak: Bank;
 	setup: GearSetupType;
 	aliases: string[];
@@ -151,6 +152,20 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: getOSItem('Uncharged toxic trident'),
 		convertOnCharge: true,
 		emoji: '🔱'
+	},
+	{
+		item: getOSItem('Scythe of vitur'),
+		settingsKey: 'scythe_of_vitur_charges',
+		itemsToRefundOnBreak: new Bank().add('Scythe of vitur (uncharged)'),
+		setup: 'melee',
+		aliases: ['scythe of vitur'],
+		chargeInput: {
+			cost: new Bank().add('Blood rune', 300).add('Vial of blood'),
+			charges: 100
+		},
+		unchargedItem: getOSItem('Scythe of vitur (uncharged)'),
+		convertOnCharge: true,
+		emoji: ''
 	}
 ];
 

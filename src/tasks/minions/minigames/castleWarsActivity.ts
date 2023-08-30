@@ -2,14 +2,14 @@ import { SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const ticketTable = new SimpleTable<number>().add(1, 4).add(2, 4).add(3, 1);
 
 export const castleWarsTask: MinionTask = {
 	type: 'CastleWars',
-	async run(data: MinigameActivityTaskOptions) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, userID } = data;
 
 		incrementMinigameScore(userID, 'castle_wars', quantity);

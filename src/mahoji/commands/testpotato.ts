@@ -1,19 +1,21 @@
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import { Prisma, xp_gains_skill_enum } from '@prisma/client';
 import { noOp, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
-import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
+import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
 import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
-import { BitField, MAX_INT_JAVA, MAX_QP } from '../../lib/constants';
+import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
+import { BitField, MAX_INT_JAVA } from '../../lib/constants';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { UserKourendFavour } from '../../lib/minions/data/kourendFavour';
 import potions from '../../lib/minions/data/potions';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
 import { tiers } from '../../lib/patreon';
 import { Minigames } from '../../lib/settings/minigames';
@@ -21,8 +23,8 @@ import { prisma } from '../../lib/settings/prisma';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
-import { Gear } from '../../lib/structures/Gear';
 import { stringMatches } from '../../lib/util';
+import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
 import {
 	FarmingPatchName,
 	farmingPatchNames,
@@ -33,14 +35,15 @@ import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
+import { MAX_QP } from '../lib/abstracted_commands/questCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 
-async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
+async function giveMaxStats(user: MUser) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
-		updates[`skills_${skill}`] = convertLVLtoXP(level);
+		updates[`skills_${skill}`] = convertLVLtoXP(99);
 	}
 	await user.update({
 		QP: MAX_QP,
@@ -53,8 +56,6 @@ async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
 			Shayzien: 100
 		} as UserKourendFavour as any
 	});
-
-	return `Gave you level ${level} in all stats, and ${qp} QP.`;
 }
 
 async function givePatronLevel(user: MUser, tier: number) {
@@ -73,52 +74,14 @@ async function givePatronLevel(user: MUser, tier: number) {
 	return `Gave you tier ${tierToGive[1] - 1} patron.`;
 }
 
-async function giveGear(user: MUser) {
-	const loot = new Bank()
-		.add('Saradomin brew(4)', 10_000)
-		.add('Super restore(4)', 5000)
-		.add('Stamina potion(4)', 1000)
-		.add('Super combat potion(4)', 100)
-		.add('Cooked karambwan', 1000)
-		.add('Ranging potion(4)', 1000)
-		.add('Death rune', 10_000)
-		.add('Blood rune', 100_000)
-		.add('Water rune', 10_000)
-		.add('Coins', 5_000_000)
-		.add('Shark', 5000)
-		.add('Vial of blood', 10_000)
-		.add('Rune pouch', 1)
-		.add('Zamorakian spear')
-		.add('Dragon warhammer')
-		.add('Bandos godsword')
-		.add('Toxic blowpipe');
-	await user.addItemsToBank({ items: loot, collectionLog: false });
-
-	await user.update({
-		GP: 1_000_000_000,
-		slayer_points: 100_000,
-		tentacle_charges: 10_000,
-		gear_mage: TOBMaxMageGear.raw() as any,
-		gear_melee: TOBMaxMeleeGear.raw() as any,
-		gear_range: TOBMaxRangeGear.raw() as any,
-		blowpipe: {
-			scales: 100_000,
-			dartQuantity: 100_000,
-			dartID: itemID('Rune dart')
-		}
-	});
-
-	await getPOH(user.id);
-	await prisma.playerOwnedHouse.update({
-		where: {
-			user_id: user.id
-		},
-		data: {
-			pool: 29_241
-		}
-	});
-	return `Gave you ${loot}, all BIS setups, 10k tentacle charges, slayer points, 1b GP, blowpipe, gear, supplies.`;
-}
+const gearPresets = [
+	{
+		name: 'ToB',
+		melee: TOBMaxMeleeGear,
+		mage: TOBMaxMageGear,
+		range: TOBMaxRangeGear
+	}
+];
 
 const thingsToReset = [
 	{
@@ -205,13 +168,13 @@ for (const tier of allStashUnitTiers) {
 const potionsPreset = new Bank();
 for (const potion of potions) {
 	for (const actualPotion of potion.items) {
-		potionsPreset.addItem(actualPotion, 10_000);
+		potionsPreset.addItem(actualPotion, 100_000);
 	}
 }
 
 const foodPreset = new Bank();
 for (const food of Eatables.map(food => food.id)) {
-	foodPreset.addItem(food, 10_000);
+	foodPreset.addItem(food, 100_000);
 }
 
 const runePreset = new Bank()
@@ -249,11 +212,7 @@ const spawnPresets = [
 	['runes', runePreset]
 ] as const;
 
-const nexSupplies = new Bank()
-	.add('Shark', 10_000)
-	.add('Saradomin brew(4)', 100)
-	.add('Super restore(4)', 100)
-	.add('Ranging potion(4)', 100);
+const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc'] as const;
 
 export const testPotatoCommand: OSBMahojiCommand | null = production
 	? null
@@ -261,6 +220,20 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 			name: 'testpotato',
 			description: 'Commands for making testing easier and faster.',
 			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'wipe',
+					description: 'Wipe/reset a part of your account.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'thing',
+							description: 'The thing you want to wipe.',
+							required: true,
+							choices: thingsToWipe.map(i => ({ name: i, value: i }))
+						}
+					]
+				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'spawn',
@@ -368,7 +341,16 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'gear',
-					description: 'Spawn food, pots, runes, coins, blowpipe, POH with a pool, and BiS gear.'
+					description: 'Spawn and equip gear for a particular thing',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'thing',
+							description: 'The thing to spawn gear for.',
+							required: true,
+							choices: gearPresets.map(i => ({ name: i.name, value: i.name }))
+						}
+					]
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -413,16 +395,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							]
 						}
 					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'nexhax',
-					description: 'Gives you everything needed for Nex.'
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'badnexgear',
-					description: 'Gives you bad nex gear ahahahahaha'
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -476,6 +448,48 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'set',
+					description: 'Set something',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'qp',
+							description: 'Set your quest points.',
+							required: false,
+							min_value: 0,
+							max_value: MAX_QP
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'all_ca_tasks',
+							description: 'Finish all CA tasks.',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'check',
+					description: 'Check something',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'monster_droprates',
+							description: 'Simulation to check droprates on a monster.',
+							required: false,
+							autocomplete: async value => {
+								return killableMonsters
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({
+										name: i.name,
+										value: i.name
+									}));
+							}
+						}
+					]
 				}
 			],
 			run: async ({
@@ -484,22 +498,66 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 			}: CommandRunOptions<{
 				max?: {};
 				patron?: { tier: string };
-				gear?: {};
+				gear?: { thing: string };
 				reset?: { thing: string };
 				setminigamekc?: { minigame: string; kc: number };
 				setxp?: { skill: string; xp: number };
 				spawn?: { preset?: string; collectionlog?: boolean; item?: string; items?: string };
-				nexhax?: {};
-				badnexgear?: {};
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
+				wipe?: { thing: (typeof thingsToWipe)[number] };
+				set?: { qp?: number; all_ca_tasks?: boolean };
+				check?: { monster_droprates?: string };
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
 				const user = await mUserFetch(userID.toString());
+
+				if (options.check) {
+					if (options.check.monster_droprates) {
+						const monster = killableMonsters.find(m =>
+							stringMatches(m.name, options.check!.monster_droprates)
+						);
+						if (!monster) return 'Invalid monster';
+						const qty = 1_000_000;
+						const loot = monster.table.kill(qty, {});
+						const droprates = calcDropRatesFromBankWithoutUniques(loot, qty);
+						return {
+							files: [
+								{
+									attachment: Buffer.from(`Total Kills: ${qty}
+Total Value of Loot: ${loot.value()}
+GP/hr(roughly): ${toKMB(loot.value() / (monster.timeToFinish * qty))}
+
+Droprates:
+${droprates.join('\n')}`),
+									name: 'monsterinfo.txt'
+								}
+							]
+						};
+					}
+				}
+
+				if (options.set) {
+					const { qp } = options.set;
+					if (qp) {
+						await user.update({
+							QP: qp
+						});
+						return `Set your QP to ${qp}.`;
+					}
+					if (options.set.all_ca_tasks) {
+						await user.update({
+							completed_ca_task_ids: Object.values(CombatAchievements)
+								.map(i => i.tasks.map(t => t.id))
+								.flat()
+						});
+						return 'Finished all CA tasks.';
+					}
+				}
 				if (options.irontoggle) {
 					const current = user.isIronman;
 					await user.update({
@@ -507,7 +565,73 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					});
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
 				}
+				if (options.wipe) {
+					let { thing } = options.wipe;
+					if (thing === 'kc') {
+						await userStatsUpdate(user.id, {
+							monster_scores: {}
+						});
+						return 'Reset all your KCs.';
+					}
+					if (thing === 'buypayout') {
+						await prisma.botItemSell.deleteMany({
+							where: {
+								user_id: user.id
+							}
+						});
+						return 'Deleted all your buy payout records, so you have no tax rate accumulated.';
+					}
+					if (thing === 'bank') {
+						await mahojiUserSettingsUpdate(user.id, {
+							bank: {}
+						});
+						return 'Reset your bank.';
+					}
+					if (thing === 'cl') {
+						await mahojiUserSettingsUpdate(user.id, {
+							collectionLogBank: {},
+							temp_cl: {}
+						});
+						await prisma.userStats.update({
+							where: {
+								user_id: BigInt(user.id)
+							},
+							data: {
+								cl_array: [],
+								cl_array_length: 0
+							}
+						});
+						return 'Reset your collection log.';
+					}
+					if (thing === 'combat_achievements') {
+						await user.update({
+							completed_ca_task_ids: []
+						});
+						return 'Reset your combat achievements.';
+					}
+					if (thing === 'quests') {
+						await user.update({
+							finished_quest_ids: [],
+							collectionLogBank: {}
+						});
+						return `Your QP, and completed quests, have been reset. You can set your QP to a certain number using ${mentionCommand(
+							globalClient,
+							'testpotato',
+							'set'
+						)}.`;
+					}
+					return 'Invalid thing to reset.';
+				}
 				if (options.max) {
+					await getPOH(user.id);
+					await prisma.playerOwnedHouse.update({
+						where: {
+							user_id: user.id
+						},
+						data: {
+							pool: 29_241
+						}
+					});
 					await roboChimpClient.user.upsert({
 						where: {
 							id: BigInt(user.id)
@@ -522,13 +646,68 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							}
 						}
 					});
-					return giveMaxStats(user);
+					await user.addItemsToBank({
+						items: new Bank()
+							.add('Rune pouch')
+							.add('Blood rune', 100_000_000)
+							.add('Death rune', 100_000_000)
+							.add('Blood rune', 100_000_000)
+							.add('Water rune', 100_000_000)
+							.add('Saradomin brew(4)', 100_000_000)
+							.add('Super restore(4)', 100_000_000)
+							.add('Stamina potion(4)', 100_000_000)
+							.add('Super combat potion(4)', 100_000_000)
+							.add('Cooked karambwan', 100_000_000)
+							.add('Ranging potion(4)', 100_000_000)
+							.add('Coins', 100_000_000)
+							.add('Shark', 100_000_000)
+							.add('Vial of blood', 100_000_000)
+							.add('Rune pouch')
+							.add('Zamorakian spear')
+							.add('Dragon warhammer')
+							.add('Bandos godsword')
+							.add('Toxic blowpipe')
+							.add(runePreset)
+							.add(foodPreset)
+							.add(potionsPreset)
+							.add(usables)
+					});
+					await user.update({
+						GP: 5_000_000_000,
+						slayer_points: 100_000,
+						tentacle_charges: 10_000,
+						sang_charges: 10_000,
+						trident_charges: 10_000,
+						serp_helm_charges: 10_000,
+						blood_fury_charges: 10_000,
+						tum_shadow_charges: 10_000,
+						blood_essence_charges: 10_000,
+						ash_sanctifier_charges: 10_000,
+						celestial_ring_charges: 10_000,
+						scythe_of_vitur_charges: 10_000,
+						gear_mage: TOBMaxMageGear.raw() as any,
+						gear_melee: TOBMaxMeleeGear.raw() as any,
+						gear_range: TOBMaxRangeGear.raw() as any,
+						blowpipe: {
+							scales: 100_000,
+							dartQuantity: 100_000,
+							dartID: itemID('Dragon dart')
+						}
+					});
+					await giveMaxStats(user);
+					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';
 				}
 				if (options.patron) {
 					return givePatronLevel(user, Number(options.patron.tier));
 				}
 				if (options.gear) {
-					return giveGear(user);
+					const gear = gearPresets.find(i => stringMatches(i.name, options.gear?.thing))!;
+					await user.update({
+						gear_melee: gear.melee.raw() as any,
+						gear_range: gear.range.raw() as any,
+						gear_mage: gear.mage.raw() as any
+					});
+					return `Set your gear for ${gear.name}.`;
 				}
 				if (options.reset) {
 					const resettable = thingsToReset.find(i => i.name === options.reset?.thing);
@@ -572,53 +751,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
 					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;
 				}
-				if (options.nexhax) {
-					const gear = new Gear({
-						[EquipmentSlot.Weapon]: 'Zaryte crossbow',
-						[EquipmentSlot.Shield]: 'Elysian spirit shield',
-						[EquipmentSlot.Ammo]: 'Ruby dragon bolts(e)',
-						[EquipmentSlot.Body]: 'Armadyl chestplate',
-						[EquipmentSlot.Legs]: 'Armadyl chainskirt',
-						[EquipmentSlot.Feet]: 'Pegasian boots',
-						[EquipmentSlot.Cape]: "Ava's assembler",
-						[EquipmentSlot.Neck]: 'Necklace of anguish',
-						[EquipmentSlot.Hands]: 'Zaryte vambraces',
-						[EquipmentSlot.Head]: 'Armadyl helmet',
-						[EquipmentSlot.Ring]: 'Archers ring (i)'
-					});
-					gear.ammo!.quantity = 1_000_000;
-					await user.update({
-						gear_range: gear.raw() as Prisma.InputJsonObject,
-						skills_ranged: convertLVLtoXP(99),
-						skills_prayer: convertLVLtoXP(99),
-						skills_hitpoints: convertLVLtoXP(99),
-						skills_defence: convertLVLtoXP(99),
-						bank: user.bank.clone().add(nexSupplies).bank,
-						GP: user.GP + 10_000_000
-					});
-					return 'Gave you range gear, gp, gear and stats for nex.';
-				}
-				if (options.badnexgear) {
-					const gear = new Gear({
-						[EquipmentSlot.Weapon]: 'Armadyl crossbow',
-						// [EquipmentSlot.Shield]: nu,
-						[EquipmentSlot.Ammo]: 'Ruby dragon bolts(e)',
-						[EquipmentSlot.Body]: "Karil's leathertop",
-						[EquipmentSlot.Legs]: "Karil's leatherskirt",
-						[EquipmentSlot.Feet]: 'Snakeskin boots',
-						[EquipmentSlot.Cape]: "Ava's accumulator",
-						[EquipmentSlot.Neck]: 'Amulet of accuracy',
-						[EquipmentSlot.Hands]: 'Barrows gloves',
-						[EquipmentSlot.Head]: "Karil's coif",
-						[EquipmentSlot.Ring]: 'Archers ring'
-					});
-					gear.ammo!.quantity = 1_000_000;
-					await user.update({
-						gear_range: gear.raw() as Prisma.InputJsonObject,
-						bank: user.bank.add(nexSupplies).bank
-					});
-					return 'Gave you bad nex gear';
-				}
+
 				if (options.setmonsterkc) {
 					const monster = effectiveMonsters.find(m =>
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')

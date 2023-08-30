@@ -4,12 +4,12 @@ import { Bank } from 'oldschooljs';
 import { chompyHats } from '../../../lib/constants';
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const chompHuntTask: MinionTask = {
 	type: 'BigChompyBirdHunting',
-	async run(data: MinigameActivityTaskOptions) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, userID } = data;
 		const user = await mUserFetch(userID);
 

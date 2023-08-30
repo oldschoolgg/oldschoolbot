@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 
+import { Emoji } from '../../../../lib/constants';
 import { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 import { Armours } from '../../../../mahoji/lib/abstracted_commands/warriorsGuildCommand';
@@ -11,13 +12,18 @@ export const animatedArmorTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const armour = Armours.find(armour => armour.name === armourID)!;
 
-		const str = `${user}, ${user.minionName} finished killing ${quantity}x animated ${
-			armour.name
-		} armour and received ${quantity * armour.tokens}x Warrior guild tokens.`;
+		let baseQuantity = quantity * armour.tokens;
+		const loot = new Bank().add('Warrior guild token', baseQuantity);
 
-		const loot = new Bank({
-			'Warrior guild token': quantity * armour.tokens
-		});
+		const messages: string[] = [];
+
+		if (user.hasCompletedCATier('medium')) {
+			loot.add('Warrior guild token', baseQuantity * 2);
+			messages.push(`${Emoji.CombatAchievements} 200% Tokens received for medium CA tier`);
+		} else if (user.hasCompletedCATier('easy')) {
+			loot.add('Warrior guild token', baseQuantity);
+			messages.push(`${Emoji.CombatAchievements} 100% extra Tokens received for easy CA tier`);
+		}
 
 		await transactItems({
 			userID: user.id,
@@ -25,6 +31,8 @@ export const animatedArmorTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		const str = `${user}, ${user.minionName} finished killing ${quantity}x animated ${armour.name} armour and received ${loot}.`;
+
+		handleTripFinish(user, channelID, str, undefined, data, loot, messages);
 	}
 };

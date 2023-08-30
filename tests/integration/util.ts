@@ -7,7 +7,7 @@ import { globalConfig } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
 import { prisma } from '../../src/lib/settings/prisma';
 import { ItemBank } from '../../src/lib/types';
-import { assert } from '../../src/lib/util';
+import { assert, cryptoRand } from '../../src/lib/util';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { ClientStorage, User, UserStats } from '.prisma/client';
@@ -93,12 +93,7 @@ export class TestUser extends MUserClass {
 	}
 }
 
-interface UserOptions {
-	ownedBank?: Bank;
-	id?: string;
-}
-
-export async function createTestUser(id = randomSnowflake(), bank?: Bank) {
+export async function createTestUser(id = cryptoRand(1_000_000_000, 5_000_000_000).toString(), bank?: Bank) {
 	const user = await prisma.user.upsert({
 		create: {
 			id,
@@ -112,22 +107,18 @@ export async function createTestUser(id = randomSnowflake(), bank?: Bank) {
 		}
 	});
 
-	return new TestUser(user);
-}
+	try {
+		await prisma.userStats.create({
+			data: {
+				user_id: BigInt(user.id)
+			}
+		});
+	} catch (err) {
+		console.error(`Failed to make userStats for ${user.id}`);
+		throw new Error(`Failed to make userStats for ${user.id}`);
+	}
 
-export async function integrationCmdRun({
-	command,
-	options = {},
-	userOptions
-}: {
-	command: OSBMahojiCommand;
-	options?: object;
-	userOptions?: UserOptions;
-}) {
-	const userId = userOptions?.id ?? randomSnowflake();
-	await createTestUser(userId, userOptions?.ownedBank);
-	const result = await command.run({ ...commandRunOptions(userId), options });
-	return result;
+	return new TestUser(user);
 }
 
 class TestClient {

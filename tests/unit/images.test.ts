@@ -34,8 +34,8 @@ describe('Images', () => {
 
 	test('Collection Log', async () => {
 		const result: any = await clImageGenerator.generateLogImage({
-			user: mockMUser({ cl: new Bank().add('Elysian sigil') }),
-			collection: 'corp',
+			user: mockMUser({ cl: new Bank().add('Harmonised orb') }),
+			collection: 'nightmare',
 			type: 'collection',
 			flags: {},
 			stats: {
