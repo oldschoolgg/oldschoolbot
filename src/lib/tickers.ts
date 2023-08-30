@@ -142,43 +142,43 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 		name: 'daily_reminders',
 		interval: Time.Minute * 3,
 		timer: null,
-	  
+
 		cb: async () => {
-		  const bitfieldPatron = [2, 3, 4, 5, 6, 7, 8, 12, 21, 24];
-		  const reminderHours = 12;
-		  const result = await prisma.$queryRawUnsafe<
-			{ id: string; last_daily_timestamp: bigint; bitfield: number }[]
-		  >(
-			`
+			const bitfieldPatron = [2, 3, 4, 5, 6, 7, 8, 12, 21, 24];
+			const reminderHours = 12;
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; last_daily_timestamp: bigint; bitfield: number }[]
+			>(
+				`
 			SELECT users.id, user_stats.last_daily_timestamp, users.bitfield
 			FROM users
 			JOIN user_stats ON users.id::bigint = user_stats.user_id
 			WHERE bitfield && '{${bitfieldPatron.join(
-			  ','
+				','
 			)}}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '${reminderHours} hours';
 			`
-		  );
-	  
-		  for (const row of result) {
-			if (!production) continue;
-			if (Number(row.last_daily_timestamp) === -1) continue;
-			if (Array.isArray(row.bitfield) && row.bitfield.includes(35)) {
-			  continue;
-			}
-	  
-			await userStatsUpdate(
-			  row.id,
-			  {
-				last_daily_timestamp: -1,
-			  },
-			  {}
 			);
-	  
-			const user = await globalClient.fetchUser(row.id);
-			await user.send('Your daily is ready!').catch(noOp);
-		  }
+
+			for (const row of result) {
+				if (!production) continue;
+				if (Number(row.last_daily_timestamp) === -1) continue;
+				if (Array.isArray(row.bitfield) && row.bitfield.includes(35)) {
+					continue;
+				}
+
+				await userStatsUpdate(
+					row.id,
+					{
+						last_daily_timestamp: -1
+					},
+					{}
+				);
+
+				const user = await globalClient.fetchUser(row.id);
+				await user.send('Your daily is ready!').catch(noOp);
+			}
 		}
-	  },
+	},
 	{
 		name: 'wilderness_peak_times',
 		timer: null,
