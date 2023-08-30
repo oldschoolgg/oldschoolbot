@@ -236,7 +236,6 @@ export enum BitField {
 	UsedStrangledTablet = 33,
 	UsedFrozenTablet = 34,
 	CleanHerbsFarming = 35
-	
 }
 
 interface BitFieldData {
