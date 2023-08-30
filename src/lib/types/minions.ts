@@ -257,6 +257,7 @@ export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface CutLeapingFishActivityTaskOptions extends ActivityTaskOptions {
+	type: 'CutLeapingFish';
 	fishID: number;
 	quantity: number;
 }
@@ -589,4 +590,4 @@ export type ActivityTaskData =
 	| BirdhouseActivityTaskOptions
 	| FightCavesActivityTaskOptions
 	| ActivityTaskOptionsWithQuantity
-	| MinigameActivityTaskOptionsWithNoChanges;
+	| MinigameActivityTaskOptionsWithNoChanges
