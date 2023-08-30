@@ -5,6 +5,8 @@ import '../minions/data/killableMonsters/index';
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Misc, Monsters } from 'oldschooljs';
 
+import { production } from '../../config';
+import { YETI_ID } from '../constants';
 import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
 
@@ -12,6 +14,9 @@ export default async ({ quantity, bossName, limit, catacombs, onTask }: KillWork
 	const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, bossName)));
 
 	if (osjsMonster) {
+		if (osjsMonster.id === YETI_ID && production) {
+			return { error: 'The bot is too scared to simulate fighting the yeti.' };
+		}
 		if (quantity > limit) {
 			return {
 				error:

@@ -309,7 +309,7 @@ const doaSupplies = new Bank()
 	.add('Javelin shaft', 100_000)
 	.add('Obsidian shards', 100_000);
 
-const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc', 'materials'] as const;
+const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc', 'materials', 'mt'] as const;
 
 export const testPotatoCommand: OSBMahojiCommand | null = production
 	? null
@@ -720,6 +720,15 @@ ${droprates.join('\n')}`),
 				}
 				if (options.wipe) {
 					let { thing } = options.wipe;
+					if (thing === 'mt') {
+						await user.update({
+							bso_mystery_trail_current_step_id: null,
+							collectionLogBank: {},
+							bank: {},
+							bitfield: user.bitfield.filter(i => i !== BitField.HasUnlockedYeti)
+						});
+						return 'MT + cl + bank reset.';
+					}
 					if (thing === 'kc') {
 						await userStatsUpdate(user.id, {
 							monster_scores: {}

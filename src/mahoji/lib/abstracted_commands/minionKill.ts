@@ -19,7 +19,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { PvMMethod } from '../../../lib/constants';
+import { BitField, PvMMethod, YETI_ID } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
@@ -658,7 +658,14 @@ export async function minionKillCommand(
 		}
 	}
 
+	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
+		return "You haven't unlocked this monster..";
+	}
+
 	quantity = Math.max(1, quantity);
+	if (!user.bitfield.includes(BitField.HasUnlockedYeti) && monster.id === YETI_ID) {
+		quantity = 1;
+	}
 	if (quantity > 1 && duration > maxTripLength) {
 		return `${minionName} can't go on PvM trips longer than ${formatDuration(
 			maxTripLength
@@ -877,6 +884,9 @@ export async function minionKillCommand(
 				'You send your minion off to fight Koschei with a Deathtouched dart, they stand a safe distance and throw the dart - Koschei immediately locks' +
 				' eyes with your minion and grabs the dart mid-air, and throws it back, killing your minion instantly.'
 			);
+		}
+		if (monster.name === 'Yeti') {
+			return 'You send your minion off to fight Koschei with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
 		}
 		usedDart = true;
 		await userStatsUpdate(user.id, () => ({

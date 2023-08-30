@@ -488,6 +488,8 @@ model User {
   unlocked_blueprints       Int[]
   disabled_inventions       Int[]
 
+  bso_mystery_trail_current_step_id Int?
+
   // Migrate
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree Json? @map("farmingPatches.fruit tree") @db.Json

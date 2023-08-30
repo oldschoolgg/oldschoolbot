@@ -160,6 +160,11 @@ export const collectables: Collectable[] = [
 		quantity: 1,
 		duration: 2 * Time.Minute,
 		onlyTamesCan: true
+	},
+	{
+		item: getOSItem('Cabbage'),
+		quantity: 28,
+		duration: 1.2 * Time.Minute
 	}
 ];
 

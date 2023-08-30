@@ -8190,3 +8190,237 @@ setCustomItem(
 	},
 	1_000_000
 );
+
+setCustomItem(
+	71_560,
+	'Dungsoaked message',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_561,
+	'Bloodsoaked cowhide',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_562,
+	'Bloodsoaked fur',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_563,
+	'Torn fur',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_564,
+	"Bloodsoaked children's book",
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_565,
+	'Mysterious clue (1)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true,
+			cantBeDropped: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_566,
+	'Mysterious clue (2)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true,
+			cantBeDropped: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_567,
+	'Mysterious clue (3)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true,
+			cantBeDropped: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_568,
+	'Mysterious clue (4)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true,
+			cantBeDropped: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	71_569,
+	'Mysterious clue (5)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true,
+			cantBeDropped: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_570,
+	'Mysterious clue (6)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true,
+			cantBeDropped: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_571,
+	'Penguin egg',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true,
+			cantBeDropped: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_572,
+	'Skip',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true,
+			cantBeDropped: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_573,
+	'Frostfang cape',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true,
+			cantBeDropped: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_574,
+	'Cold heart',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true,
+			cantBeDropped: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_575,
+	'Yeti hide',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true,
+			cantBeDropped: true
+		}
+	},
+	10_000
+);

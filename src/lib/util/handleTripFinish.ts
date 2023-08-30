@@ -1,3 +1,4 @@
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, bold, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { randArrItem, randInt, reduceNumByPercent, roll, Time } from 'e';
@@ -327,6 +328,45 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Combat Achievements',
 		fn: combatAchievementTripEffect
+	},
+	{
+		name: 'Mysterious trail',
+		fn: async ({ data, user, messages }) => {
+			if (user.skillsAsLevels.hunter < 100) return;
+			if (!user.owns('Mysterious clue (1)')) return;
+			if (user.user.bso_mystery_trail_current_step_id === null) return;
+			const { step, stepData, previousStepData, nextStep } = user.getMysteriousTrailData();
+			if (!step || !(await step.didPass(data))) {
+				console.log(`${user} didnt pass 1111`);
+				return;
+			}
+			if (stepData.loot) {
+				if (user.cl.has(stepData.loot)) return;
+				await user.addItemsToBank({ items: stepData.loot, collectionLog: true });
+			}
+			if (previousStepData && previousStepData.clueItem && user.owns(previousStepData.clueItem.id)) {
+				await user.removeItemsFromBank(new Bank().add(previousStepData.clueItem.id));
+			}
+			if (nextStep) {
+				await user.update({
+					bso_mystery_trail_current_step_id: user.user.bso_mystery_trail_current_step_id + 1
+				});
+				messages.push(`❔You found ${stepData.loot}.`);
+			} else {
+				if (user.bitfield.includes(BitField.HasUnlockedYeti)) return;
+				await user.update({
+					bitfield: {
+						push: BitField.HasUnlockedYeti
+					}
+				});
+				const message = `${
+					user.minionName
+				} arrives at the snowy area north of rellekka, finding a giant, monstrous Yeti. At his feet, lay a slain animal. The Yeti looks at ${
+					user.minionName
+				}, and prepares to attack. Use ${mentionCommand(globalClient, 'k')} to fight the yeti!.`;
+				messages.push(message);
+			}
+		}
 	}
 ];
 
@@ -401,13 +441,13 @@ export async function handleTripFinish(
 		message.components = makeComponents(components);
 	}
 
-	if (roll(100)) {
+	if (!user.owns('Mysterious clue (1)') && roll(1)) {
 		const img = await mahojiChatHead({
 			content: randArrItem([
-				'Traveller, I need your help...',
-				'I have a task for you....',
-				'I have a quest for you...',
-				'Duty calls.'
+				'Traveller, I need your help... Use this clue to guide you.',
+				'I have a task for you.... Use this clue to guide you.',
+				'I have a quest for you... Use this clue to guide you.',
+				'Duty calls. Use this clue to guide you.'
 			]),
 			head: 'mysteriousFigure'
 		});
@@ -416,6 +456,14 @@ export async function handleTripFinish(
 		} else {
 			message.files = img.files;
 		}
+		const loot = new Bank().add('Mysterious clue (1)');
+		await user.addItemsToBank({ items: loot, collectionLog: true });
+		if (user.user.bso_mystery_trail_current_step_id === null) {
+			await user.update({
+				bso_mystery_trail_current_step_id: 1
+			});
+		}
+		messages.push(`You received ${loot}.`);
 	}
 
 	handleTriggerShootingStar(user, data, components);

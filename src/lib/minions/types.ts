@@ -121,6 +121,7 @@ export interface KillableMonster {
 	}[];
 	requiredQuests?: QuestID[];
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
+	requiredBitfield?: BitField;
 }
 /*
  * Monsters will have an array of Consumables
