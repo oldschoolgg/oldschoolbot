@@ -123,6 +123,7 @@ export const enum Emoji {
 	Ranged = '<:ranged:630911040258834473>',
 	Gear = '<:gear:835314891950129202>',
 	Slayer = '<:slayer:630911040560824330>',
+	CombatAchievements = '<:combatAchievements:1145015804040065184>',
 	Stopwatch = '⏱️',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
@@ -229,7 +230,13 @@ export enum BitField {
 	HadAllSlayerUnlocks = 28,
 	HasSwampbarkScroll = 29,
 	HasSaradominsLight = 30,
-	CleanHerbsFarming = 31
+
+	UsedScarredTablet = 31,
+	UsedSirenicTablet = 32,
+	UsedStrangledTablet = 33,
+	UsedFrozenTablet = 34,
+	CleanHerbsFarming = 35
+	
 }
 
 interface BitFieldData {
@@ -263,6 +270,10 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.HasSwampbarkScroll]: { name: 'Runescroll of swampbark Used', protected: false, userConfigurable: false },
 	[BitField.HasSaradominsLight]: { name: "Saradomin's light Used", protected: false, userConfigurable: false },
 	[BitField.HadAllSlayerUnlocks]: { name: 'Had All Slayer Unlocks', protected: false, userConfigurable: false },
+	[BitField.UsedScarredTablet]: { name: 'Used Scarred Tablet', protected: false, userConfigurable: false },
+	[BitField.UsedFrozenTablet]: { name: 'Used Frozen Tablet', protected: false, userConfigurable: false },
+	[BitField.UsedSirenicTablet]: { name: 'Used Sirenic Tablet', protected: false, userConfigurable: false },
+	[BitField.UsedStrangledTablet]: { name: 'Used Strangled Tablet', protected: false, userConfigurable: false },
 
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
 	[BitField.HasPermanentEventBackgrounds]: {
@@ -343,7 +354,6 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy
 };
 
-export const MAX_QP = 293;
 export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;

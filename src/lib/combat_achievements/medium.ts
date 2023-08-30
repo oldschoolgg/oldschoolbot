@@ -10,6 +10,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 100,
 		name: 'Pray for Success',
 		type: 'perfection',
+		monster: 'Barrows',
 		desc: 'Kill all six Barrows Brothers and loot the Barrows chest without taking any damage from any of the brothers.',
 		rng: {
 			chancePerKill: 50,
@@ -20,6 +21,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 101,
 		name: 'Barrows Champion',
 		type: 'kill_count',
+		monster: 'Barrows',
 		desc: 'Open the Barrows chest 25 times.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -31,6 +33,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 102,
 		name: "Can't Touch Me",
 		type: 'mechanical',
+		monster: 'Barrows',
 		desc: 'Kill Dharok, Verac, Torag and Guthan without letting them attack you with melee.',
 		rng: {
 			chancePerKill: 50,
@@ -41,6 +44,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 103,
 		name: 'Brutal, Big, Black and Firey',
 		type: 'kill_count',
+		monster: 'Brutal Black Dragon',
 		desc: 'Kill a Brutal Black Dragon.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -52,6 +56,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 104,
 		name: 'Bryophyta Champion',
 		type: 'kill_count',
+		monster: 'Bryophyta',
 		desc: 'Kill Bryophyta 5 times.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -63,6 +68,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 105,
 		name: 'Quick Cutter',
 		type: 'mechanical',
+		monster: 'Bryophyta',
 		desc: "Kill all 3 of Bryophyta's growthlings within 3 seconds of the first one dying.",
 		rng: {
 			chancePerKill: 15,
@@ -73,6 +79,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 106,
 		name: 'Chaos Fanatic Champion',
 		type: 'kill_count',
+		monster: 'Chaos Fanatic',
 		desc: 'Kill the Chaos Fanatic 10 times.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -84,6 +91,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 107,
 		name: 'Sorry, What Was That?',
 		type: 'perfection',
+		monster: 'Chaos Fanatic',
 		desc: 'Kill the Chaos Fanatic without anyone being hit by his explosion attack.',
 		rng: {
 			chancePerKill: 20,
@@ -94,6 +102,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 108,
 		name: "I'd Rather Not Learn",
 		type: 'perfection',
+		monster: 'Crazy Archaeologist',
 		desc: "Kill the Crazy Archaeologist without anyone being hit by his 'Rain of Knowledge' attack.",
 		rng: {
 			chancePerKill: 20,
@@ -104,6 +113,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 109,
 		name: 'Crazy Archaeologist Champion',
 		type: 'kill_count',
+		monster: 'Crazy Archaeologist',
 		desc: 'Kill the Crazy Archaeologist 10 times.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -115,6 +125,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 110,
 		name: 'Mage of the Ruins',
 		type: 'mechanical',
+		monster: 'Crazy Archaeologist',
 		desc: 'Kill the Crazy Archaeologist with only magical attacks.',
 		rng: {
 			chancePerKill: 1,
@@ -127,6 +138,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 111,
 		name: 'Dagannoth Prime Champion',
 		type: 'kill_count',
+		monster: 'Dagannoth Prime',
 		desc: 'Kill Dagannoth Prime 10 times.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -138,6 +150,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 112,
 		name: 'Dagannoth Rex Champion',
 		type: 'kill_count',
+		monster: 'Dagannoth Rex',
 		desc: 'Kill Dagannoth Rex 10 times.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -149,6 +162,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 113,
 		name: 'A Frozen King',
 		type: 'mechanical',
+		monster: 'Dagannoth Rex',
 		desc: 'Kill Dagannoth Rex whilst he is immobilized.',
 		rng: {
 			chancePerKill: 15,
@@ -159,6 +173,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 114,
 		name: 'Dagannoth Supreme Champion',
 		type: 'kill_count',
+		monster: 'Dagannoth Supreme',
 		desc: 'Kill Dagannoth Supreme 10 times.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -170,6 +185,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 115,
 		name: "I'd Rather Be Illiterate",
 		type: 'perfection',
+		monster: 'Deranged Archaeologist',
 		desc: "Kill the Deranged Archaeologist without anyone being hit by his 'Learn to Read' attack.",
 		rng: {
 			chancePerKill: 15,
@@ -180,6 +196,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 116,
 		name: 'Mage of the Swamp',
 		type: 'mechanical',
+		monster: 'Deranged Archaeologist',
 		desc: 'Kill the Deranged Archaeologist with only magical attacks.',
 		rng: {
 			chancePerKill: 1,
@@ -192,6 +209,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 117,
 		name: 'Deranged Archaeologist Champion',
 		type: 'kill_count',
+		monster: 'Deranged Archaeologist',
 		desc: 'Kill the Deranged Archaeologist 25 times.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -203,6 +221,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 118,
 		name: 'A Smashing Time',
 		type: 'kill_count',
+		monster: 'Gargoyle',
 		desc: 'Kill a Gargoyle.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -214,6 +233,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 119,
 		name: 'Giant Mole Champion',
 		type: 'kill_count',
+		monster: 'Giant Mole',
 		desc: 'Kill the Giant mole 25 times.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -225,6 +245,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 120,
 		name: 'Avoiding Those Little Arms',
 		type: 'perfection',
+		monster: 'Giant Mole',
 		desc: 'Kill the Giant Mole without her damaging anyone.',
 		rng: {
 			chancePerKill: 35,
@@ -235,6 +256,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 121,
 		name: 'King Black Dragon Champion',
 		type: 'kill_count',
+		monster: 'King Black Dragon',
 		desc: 'Kill the King Black Dragon 25 times.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -246,6 +268,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 122,
 		name: 'Claw Clipper',
 		type: 'mechanical',
+		monster: 'King Black Dragon',
 		desc: 'Kill the King Black Dragon with the Protect from Melee prayer activated.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -257,6 +280,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 123,
 		name: 'Antifire Protection',
 		type: 'restriction',
+		monster: 'King Black Dragon',
 		desc: 'Kill the King Black Dragon with an antifire potion active and an antidragon shield equipped.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -268,6 +292,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 124,
 		name: 'Hide Penetration',
 		type: 'restriction',
+		monster: 'King Black Dragon',
 		desc: 'Kill the King Black Dragon with a stab weapon.',
 		rng: {
 			chancePerKill: 1,
@@ -288,6 +313,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 125,
 		name: 'Master of Broad Weaponry',
 		type: 'kill_count',
+		monster: 'Kurask',
 		desc: 'Kill a Kurask.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -295,17 +321,19 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 			}
 		})
 	},
-	{
-		id: 126,
-		name: 'Sit Back and Relax',
-		type: 'mechanical',
-		desc: 'Deal 100 damage to creatures using undead thralls.',
-		notPossible: true
-	},
+	// {
+	// 	id: 126,
+	// 	name: 'Sit Back and Relax',
+	// 	type: 'mechanical',
+	// 	monster: 'Other',
+	// 	desc: 'Deal 100 damage to creatures using undead thralls.',
+	// 	notPossible: true
+	// },
 	{
 		id: 127,
 		name: 'Back to the Wall',
 		type: 'mechanical',
+		monster: 'Obor',
 		desc: 'Kill Obor without being pushed back more than one square by his knockback attack.',
 		rng: {
 			chancePerKill: 15,
@@ -316,6 +344,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 128,
 		name: 'Squashing the Giant',
 		type: 'perfection',
+		monster: 'Obor',
 		desc: 'Kill Obor without taking any damage off prayer.',
 		rng: {
 			chancePerKill: 15,
@@ -326,6 +355,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 129,
 		name: 'Obor Champion',
 		type: 'kill_count',
+		monster: 'Obor',
 		desc: 'Kill Obor 5 times.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -337,6 +367,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 130,
 		name: 'Newspaper Enthusiast',
 		type: 'restriction',
+		monster: 'Sarachnis',
 		desc: 'Kill Sarachnis with a crush weapon.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -348,6 +379,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 131,
 		name: 'Sarachnis Champion',
 		type: 'kill_count',
+		monster: 'Sarachnis',
 		desc: 'Kill Sarachnis 25 times.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -359,6 +391,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 132,
 		name: 'A Frozen Foe from the Past',
 		type: 'kill_count',
+		monster: 'Skeletal Wyvern',
 		desc: 'Kill a Skeletal Wyvern.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -370,6 +403,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 133,
 		name: 'Demonbane Weaponry',
 		type: 'restriction',
+		monster: 'Skotizo',
 		desc: 'Kill Skotizo with a demonbane weapon equipped.',
 		rng: {
 			chancePerKill: 1,
@@ -382,6 +416,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 134,
 		name: 'Skotizo Champion',
 		type: 'kill_count',
+		monster: 'Skotizo',
 		desc: 'Kill Skotizo once.',
 		requirements: new Requirements().add({
 			kcRequirement: {
@@ -393,6 +428,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 135,
 		name: 'Demonic Weakening',
 		type: 'mechanical',
+		monster: 'Skotizo',
 		desc: 'Kill Skotizo with no altars active.',
 		rng: {
 			chancePerKill: 15,
@@ -403,6 +439,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 136,
 		name: 'Tempoross Champion',
 		type: 'kill_count',
+		monster: 'Tempoross',
 		desc: 'Subdue Tempoross 10 times.',
 		requirements: new Requirements().add({
 			minigames: {
@@ -414,6 +451,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 137,
 		name: 'The Lone Angler',
 		type: 'perfection',
+		monster: 'Tempoross',
 		desc: 'Subdue Tempoross alone without getting hit by any fires, torrents or waves.',
 		rng: {
 			chancePerKill: 50,
@@ -424,6 +462,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 138,
 		name: 'Leaving No One Behind',
 		type: 'restriction',
+		monster: 'Wintertodt',
 		desc: 'Subdue the Wintertodt without any of the Pyromancers falling.',
 		rng: {
 			chancePerKill: 50,
@@ -434,6 +473,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 139,
 		name: 'Can We Fix It?',
 		type: 'perfection',
+		monster: 'Wintertodt',
 		desc: 'Subdue the Wintertodt without allowing all 4 braziers to be broken at the same time.',
 		rng: {
 			chancePerKill: 6,
@@ -444,6 +484,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		id: 140,
 		name: 'Wintertodt Champion',
 		type: 'kill_count',
+		monster: 'Wintertodt',
 		desc: 'Subdue the Wintertodt 10 times.',
 		requirements: new Requirements().add({
 			minigames: {

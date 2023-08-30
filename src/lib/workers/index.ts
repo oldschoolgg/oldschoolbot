@@ -17,6 +17,7 @@ export interface KillWorkerArgs {
 	limit: number;
 	onTask: boolean;
 	catacombs: boolean;
+	lootTableTertiaryChanges: [string, number][];
 }
 
 export type KillWorkerReturn = Promise<{

@@ -346,8 +346,8 @@ GROUP BY mins;`;
 			if (result.length === 0) return 'No results.';
 			const buffer = await lineChart(
 				'Global Inferno Death Times',
-				val => `${val} Mins`,
-				result.map(i => [i.mins.toString(), i.count])
+				result.map(i => [i.mins.toString(), i.count]),
+				val => `${val} Mins`
 			);
 			return makeResponseForBuffer(buffer);
 		}
@@ -367,8 +367,8 @@ GROUP BY mins;`);
 			if (result.length === 0) return 'No results.';
 			const buffer = await lineChart(
 				'Personal Inferno Death Times',
-				val => `${val} Mins`,
-				result.map(i => [i.mins.toString(), i.count])
+				result.map(i => [i.mins.toString(), i.count]),
+				val => `${val} Mins`
 			);
 			return makeResponseForBuffer(buffer);
 		}

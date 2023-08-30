@@ -5,7 +5,7 @@ exports[`OSB Collection Log Groups/Categories 1`] = `
 Achievement Diary (48)
 Aerial Fishing (9)
 Alchemical Hydra (11)
-All Pets (52)
+All Pets (56)
 Barbarian Assault (11)
 Barrows Chests (25)
 Beginner Treasure Trails (16)
@@ -25,11 +25,12 @@ Chompy Birds (19)
 Commander Zilyana (8)
 Corporeal Beast (7)
 Crazy archaeologist (3)
-Creatables (598)
+Creatables (624)
 Creature Creation (7)
 Cyclopes (8)
 Dagannoth Kings (10)
 Daily (25)
+Duke Sucellus (8)
 Easy Treasure Trails (131)
 Elite Treasure Trail Rewards (Rare) (39)
 Elite Treasure Trails (59)
@@ -91,13 +92,16 @@ Tempoross (12)
 The Fight Caves (2)
 The Gauntlet (5)
 The Inferno (3)
+The Leviathan (10)
 The Nightmare (12)
+The Whisperer (10)
 Theatre of Blood (17)
 Thermonuclear smoke devil (5)
 Tithe Farm (7)
 Tombs of Amascut (26)
 Trouble Brewing (30)
 TzHaar (10)
+Vardorvis (10)
 Venenatis (4)
 Vet'ion (4)
 Volcanic Mine (3)
@@ -281,6 +285,7 @@ Armadyl stole
 Ash covered tome
 Attas seed
 Avernic defender hilt
+Awakener's orb
 Baby chinchompa
 Baby mole
 Ballista limbs
@@ -312,6 +317,7 @@ Bandos robe legs
 Bandos robe top
 Bandos stole
 Bandos tassets
+Baron
 Barronite guard
 Barronite handle
 Barronite head
@@ -327,6 +333,7 @@ Beekeeper's hat
 Beekeeper's legs
 Beekeeper's top
 Beginner wand
+Bellator vestige
 Berserker necklace ornament kit
 Berserker ring
 Big bass
@@ -391,6 +398,7 @@ Black wizard hat (t)
 Black wizard robe (g)
 Black wizard robe (t)
 Blacksmith's helm
+Blood quartz
 Blood shard
 Bloodhound
 Bloody notes
@@ -470,6 +478,7 @@ Bucket helm
 Bucket helm (g)
 Builders supply crate
 Burnt page
+Butch
 Cabbage round shield
 Cache of runes
 Callisto cub
@@ -507,6 +516,7 @@ Chompy bird hat (ogre yeoman)
 Chompy bird hat (woodsman)
 Chompy bird hat (yeoman)
 Chompy chick
+Chromium ingot
 Climbing boots (g)
 Coal bag
 Cockatrice head
@@ -623,10 +633,12 @@ Evil chicken feet
 Evil chicken head
 Evil chicken legs
 Evil chicken wings
+Executioner's axe head
 Experimental note
 Expert mining gloves
 Explorer backpack
 Eye of the corruptor
+Eye of the duke
 Fancy tiara
 Farmer's boots
 Farmer's boro trousers
@@ -647,6 +659,7 @@ Fremennik kilt
 Frog slippers
 Frog token
 Frozen cache
+Frozen tablet
 Frozen whip mix
 Fury ornament kit
 Gauntlet cape
@@ -905,6 +918,7 @@ Left skull half
 Leprechaun hat
 Lesser demon champion scroll
 Lesser demon mask
+Leviathan's lure
 Light bow tie
 Light frame
 Light infinity colour kit
@@ -915,6 +929,7 @@ Light tuxedo shoes
 Lightbearer
 Lil' creator
 Lil' zik
+Lil'viathan
 Little nightmare
 Long bone
 Lost bag
@@ -1246,6 +1261,7 @@ Saradomin robe top
 Saradomin stole
 Saradomin sword
 Saradomin's light
+Scarred tablet
 Scorpia's offspring
 Scribbled note
 Scythe of vitur (uncharged)
@@ -1254,6 +1270,7 @@ Seercull
 Seers ring
 Seren halo
 Serpentine visage
+Shadow quartz
 Shaman mask
 Shayzien banner
 Shayzien body (5)
@@ -1292,6 +1309,8 @@ Sinhaza shroud tier 2
 Sinhaza shroud tier 3
 Sinhaza shroud tier 4
 Sinhaza shroud tier 5
+Siren's staff
+Sirenic tablet
 Skeletal visage
 Skeleton champion scroll
 Skeleton monkey
@@ -1304,6 +1323,7 @@ Smiths gloves
 Smiths trousers
 Smiths tunic
 Smoke battlestaff
+Smoke quartz
 Smolcano
 Smouldering stone
 Soaked page
@@ -1337,6 +1357,7 @@ Steel platelegs (t)
 Steel plateskirt (g)
 Steel plateskirt (t)
 Strange old lockpick
+Strangled tablet
 Strength amulet (t)
 Studded body (g)
 Studded body (t)
@@ -1394,12 +1415,14 @@ Tyrannical ring
 Tzhaar-ket-om
 Tzhaar-ket-om ornament kit
 Tzrek-jad
+Ultor vestige
 Uncharged trident
 Uncut onyx
 Unholy blessing
 Unsired
 Uri's hat
 Venator shard
+Venator vestige
 Venenatis spiderling
 Verac's brassard
 Verac's flail
@@ -1414,6 +1437,9 @@ Victor's cape (1000)
 Victor's cape (50)
 Victor's cape (500)
 Viggora's chainmace (u)
+Virtus mask
+Virtus robe bottom
+Virtus robe top
 Void knight gloves
 Void knight mace
 Void knight robe
@@ -1449,6 +1475,7 @@ White firelighter
 White headband
 White unicorn mask
 Willow comp bow
+Wisp
 Wizard boots
 Wolf cloak
 Wolf mask

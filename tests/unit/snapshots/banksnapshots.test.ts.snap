@@ -19,7 +19,7 @@ exports[`OSB Buyables 1`] = `
       },
       "frozen": false,
     },
-    "qpRequired": 293,
+    "qpRequired": 298,
   },
   {
     "aliases": [
@@ -22970,6 +22970,530 @@ exports[`OSB Creatables 1`] = `
     },
     "requiredSkills": {
       "runecraft": 42,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "6735": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Warrior icon",
+    "outputItems": Bank {
+      "bank": {
+        "28301": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28279": 1,
+        "28301": 1,
+        "565": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Bellator icon",
+    "outputItems": Bank {
+      "bank": {
+        "28293": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28276": 3,
+        "28293": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Bellator ring",
+    "outputItems": Bank {
+      "bank": {
+        "25488": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "6737": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Berserker icon",
+    "outputItems": Bank {
+      "bank": {
+        "28295": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28285": 1,
+        "28295": 1,
+        "565": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Ultor icon",
+    "outputItems": Bank {
+      "bank": {
+        "28287": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28276": 3,
+        "28287": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Ultor ring",
+    "outputItems": Bank {
+      "bank": {
+        "25485": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "6731": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Seers icon",
+    "outputItems": Bank {
+      "bank": {
+        "28304": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28281": 1,
+        "28304": 1,
+        "565": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Magus icon",
+    "outputItems": Bank {
+      "bank": {
+        "28291": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28276": 3,
+        "28291": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Magus ring",
+    "outputItems": Bank {
+      "bank": {
+        "25486": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "26382": 1,
+        "565": 20000,
+      },
+      "frozen": false,
+    },
+    "name": "Sanguine torva full helm",
+    "outputItems": Bank {
+      "bank": {
+        "28254": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "26384": 1,
+        "565": 20000,
+      },
+      "frozen": false,
+    },
+    "name": "Sanguine torva platebody",
+    "outputItems": Bank {
+      "bank": {
+        "28256": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "26386": 1,
+        "565": 20000,
+      },
+      "frozen": false,
+    },
+    "name": "Sanguine torva platelegs",
+    "outputItems": Bank {
+      "bank": {
+        "28258": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "6733": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Archer icon",
+    "outputItems": Bank {
+      "bank": {
+        "28298": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28283": 1,
+        "28298": 1,
+        "565": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Venator icon",
+    "outputItems": Bank {
+      "bank": {
+        "28289": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28276": 3,
+        "28289": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Venator ring",
+    "outputItems": Bank {
+      "bank": {
+        "25487": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28319": 1,
+        "28321": 1,
+        "28323": 1,
+        "28325": 1,
+        "565": 2000,
+      },
+      "frozen": false,
+    },
+    "name": "Soulreaper axe",
+    "outputItems": Bank {
+      "bank": {
+        "25484": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "11864": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Tztok slayer helmet",
+    "outputItems": Bank {
+      "bank": {
+        "25898": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "11865": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Tztok slayer helmet (i)",
+    "outputItems": Bank {
+      "bank": {
+        "25900": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "21012": 1,
+        "21907": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Dragon hunter crossbow (t)",
+    "outputItems": Bank {
+      "bank": {
+        "25916": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25916": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Dragon hunter crossbow (t)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "21012": 1,
+        "21907": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "21012": 1,
+        "7980": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Dragon hunter crossbow (b)",
+    "outputItems": Bank {
+      "bank": {
+        "25918": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25918": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Dragon hunter crossbow (b)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "21012": 1,
+        "7980": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "11864": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Tzkal slayer helmet",
+    "outputItems": Bank {
+      "bank": {
+        "25910": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "11865": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Tzkal slayer helmet (i)",
+    "outputItems": Bank {
+      "bank": {
+        "25912": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "11864": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Vampyric slayer helmet",
+    "outputItems": Bank {
+      "bank": {
+        "25904": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "11865": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Vampyric slayer helmet (i)",
+    "outputItems": Bank {
+      "bank": {
+        "25906": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "22322": 1,
+        "25934": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Ghommal's avernic defender 5",
+    "outputItems": Bank {
+      "bank": {
+        "27550": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "27550": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Ghommal's avernic defender 5",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "22322": 1,
+        "25934": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "22322": 1,
+        "25936": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Ghommal's avernic defender 6",
+    "outputItems": Bank {
+      "bank": {
+        "27552": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "27552": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Ghommal's avernic defender 6",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "22322": 1,
+        "25936": 1,
+      },
+      "frozen": false,
     },
   },
 ]

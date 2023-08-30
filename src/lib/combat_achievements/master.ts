@@ -21,6 +21,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Lightning Lure',
 		desc: 'Kill the Alchemical Hydra without being hit by the lightning attack.',
 		type: 'mechanical',
+		monster: 'Alchemical Hydra',
 		rng: {
 			chancePerKill: 15,
 			hasChance: isCertainMonsterTrip(Monsters.AlchemicalHydra.id)
@@ -31,6 +32,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Alchemical Speed-Chaser',
 		desc: 'Kill the Alchemical Hydra in less than 1 minute 45 seconds.',
 		type: 'speed',
+		monster: 'Alchemical Hydra',
 		rng: {
 			chancePerKill: 22,
 			hasChance: isCertainMonsterTrip(Monsters.AlchemicalHydra.id)
@@ -41,6 +43,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Alcleanical Hydra',
 		desc: 'Kill the Alchemical Hydra without taking any damage.',
 		type: 'perfection',
+		monster: 'Alchemical Hydra',
 		rng: {
 			chancePerKill: 33,
 			hasChance: isCertainMonsterTrip(Monsters.AlchemicalHydra.id)
@@ -51,6 +54,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Mixing Correctly',
 		desc: 'Kill the Alchemical Hydra without empowering it.',
 		type: 'mechanical',
+		monster: 'Alchemical Hydra',
 		rng: {
 			chancePerKill: 22,
 			hasChance: isCertainMonsterTrip(Monsters.AlchemicalHydra.id)
@@ -61,6 +65,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Unrequired Antipoisons',
 		desc: 'Kill the Alchemical Hydra without being hit by the acid pool attack.',
 		type: 'mechanical',
+		monster: 'Alchemical Hydra',
 		rng: {
 			chancePerKill: 25,
 			hasChance: isCertainMonsterTrip(Monsters.AlchemicalHydra.id)
@@ -71,6 +76,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Alchemical Master',
 		desc: 'Kill the Alchemical Hydra 150 times.',
 		type: 'kill_count',
+		monster: 'Alchemical Hydra',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.AlchemicalHydra.id]: 150
@@ -82,6 +88,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Working Overtime',
 		desc: 'Kill the Alchemical Hydra 15 times without leaving the room.',
 		type: 'stamina',
+		monster: 'Alchemical Hydra',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.AlchemicalHydra.id]: 15
@@ -93,6 +100,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'The Flame Skipper',
 		desc: 'Kill the Alchemical Hydra without letting it spawn a flame wall attack.',
 		type: 'mechanical',
+		monster: 'Alchemical Hydra',
 		rng: {
 			chancePerKill: 25,
 			hasChance: isCertainMonsterTrip(Monsters.AlchemicalHydra.id)
@@ -103,6 +111,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: "Don't Flame Me",
 		desc: 'Kill the Alchemical Hydra without being hit by the flame wall attack.',
 		type: 'mechanical',
+		monster: 'Alchemical Hydra',
 		rng: {
 			chancePerKill: 25,
 			hasChance: isCertainMonsterTrip(Monsters.AlchemicalHydra.id)
@@ -113,6 +122,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Arooo No More',
 		desc: 'Kill Cerberus without any of the Summoned Souls being spawned.',
 		type: 'mechanical',
+		monster: 'Cerberus',
 		rng: {
 			chancePerKill: 25,
 			hasChance: isCertainMonsterTrip(Monsters.Cerberus.id)
@@ -123,6 +133,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Cerberus Master',
 		desc: 'Kill Cerberus 150 times.',
 		type: 'kill_count',
+		monster: 'Cerberus',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Cerberus.id]: 150
@@ -134,6 +145,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Olm (Solo)',
 		desc: 'Kill the Great Olm in a solo raid without taking damage from any of the following: Teleport portals, Fire Walls, Healing pools, Crystal Bombs, Crystal Burst or Prayer Orbs. You also cannot let his claws regenerate or take damage from the same acid pool back to back.',
 		type: 'perfection',
+		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 44,
 			hasChance: 'Raids'
@@ -144,6 +156,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Chambers of Xeric (Solo) Speed-Chaser',
 		desc: 'Complete a Chambers of Xeric (Solo) in less than 21 minutes.',
 		type: 'speed',
+		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 25,
 			hasChance: 'Raids'
@@ -154,6 +167,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Chambers of Xeric (5-Scale) Speed-Chaser',
 		desc: 'Complete a Chambers of Xeric (5-scale) in less than 15 minutes.',
 		type: 'speed',
+		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 33,
 			hasChance: 'Raids'
@@ -164,6 +178,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Putting It Olm on the Line',
 		desc: 'Complete a Chambers of Xeric solo raid with more than 40,000 points.',
 		type: 'mechanical',
+		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'Raids'
@@ -174,6 +189,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Playing with Lasers',
 		desc: 'Clear the Crystal Crabs room without wasting an orb after the first crystal has been activated.',
 		type: 'perfection',
+		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'Raids'
@@ -184,6 +200,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Chambers of Xeric (Trio) Speed-Chaser',
 		desc: 'Complete a Chambers of Xeric (Trio) in less than 16 minutes and 30 seconds.',
 		type: 'speed',
+		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 44,
 			hasChance: 'Raids'
@@ -194,6 +211,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'No Time for Death',
 		desc: 'Clear the Tightrope room without Killing any Deathly Mages or Deathly Rangers.',
 		type: 'mechanical',
+		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 25,
 			hasChance: 'Raids'
@@ -204,6 +222,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Chambers of Xeric Master',
 		desc: 'Complete the Chambers of Xeric 75 times.',
 		type: 'kill_count',
+		monster: 'Chambers of Xeric',
 		requirements: new Requirements().add({
 			minigames: {
 				raids: 75
@@ -215,6 +234,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Olm (Trio)',
 		desc: 'Kill the Great Olm in a trio raid without any team member taking damage from any of the following: Teleport portals, Fire Walls, Healing pools, Crystal Bombs, Crystal Burst or Prayer Orbs. You also cannot let his claws regenerate or take damage from the same acid pool back to back.',
 		type: 'perfection',
+		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 35,
 			hasChance: 'Raids'
@@ -225,6 +245,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Anvil No More',
 		desc: 'Kill Tekton before he returns to his anvil for a second time after the fight begins.',
 		type: 'mechanical',
+		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'Raids'
@@ -235,6 +256,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Undying Raider',
 		desc: 'Complete a Chambers of Xeric solo raid without dying.',
 		type: 'perfection',
+		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
@@ -245,6 +267,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Stop Drop and Roll',
 		desc: 'Kill Vasa Nistirio before he performs his teleport attack for the second time.',
 		type: 'mechanical',
+		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 15,
 			hasChance: 'Raids'
@@ -255,6 +278,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'A Not So Special Lizard',
 		desc: 'Kill the Great Olm in a solo raid without letting him use any of the following special attacks in his second to last phase: Crystal Burst, Lightning Walls, Teleportation Portals or left-hand autohealing.',
 		type: 'mechanical',
+		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 33,
 			hasChance: 'Raids'
@@ -265,6 +289,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Blind Spot',
 		desc: 'Kill Tekton without taking any damage.',
 		type: 'perfection',
+		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 45,
 			hasChance: 'Raids'
@@ -275,6 +300,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Immortal Raider',
 		desc: 'Complete a Chambers of Xeric Challenge mode (Solo) raid without dying.',
 		type: 'perfection',
+		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
 			chancePerKill: 10,
 			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
@@ -285,6 +311,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Chambers of Xeric: CM (5-Scale) Speed-Chaser',
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (5-scale) in less than 30 minutes.',
 		type: 'speed',
+		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
 			chancePerKill: 15,
 			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
@@ -295,6 +322,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Chambers of Xeric: CM (Solo) Speed-Chaser',
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (Solo) in less than 45 minutes.',
 		type: 'speed',
+		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
 			chancePerKill: 15,
 			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
@@ -305,6 +333,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Immortal Raid Team',
 		desc: 'Complete a Chambers of Xeric: Challenge mode raid without anyone dying.',
 		type: 'perfection',
+		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
 			chancePerKill: 15,
 			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
@@ -315,6 +344,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Chambers of Xeric: CM Master',
 		desc: 'Complete the Chambers of Xeric: Challenge Mode 10 times.',
 		type: 'kill_count',
+		monster: 'Chambers of Xeric: Challenge Mode',
 		requirements: new Requirements().add({
 			minigames: {
 				raids_challenge_mode: 10
@@ -326,6 +356,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Chambers of Xeric: CM (Trio) Speed-Chaser',
 		desc: 'Complete a Chambers of Xeric: Challenge Mode (Trio) in less than 35 minutes.',
 		type: 'speed',
+		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
 			chancePerKill: 23,
 			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
@@ -336,6 +367,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Moving Collateral',
 		desc: 'Kill Commander Zilyana in a private instance without attacking her directly.',
 		type: 'restriction',
+		monster: 'Commander Zilyana',
 		rng: {
 			chancePerKill: 50,
 			hasChance: isCertainMonsterTrip(Monsters.CommanderZilyana.id)
@@ -346,6 +378,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Corporeal Beast Master',
 		desc: 'Kill the Corporeal Beast 50 times.',
 		type: 'kill_count',
+		monster: 'Corporeal Beast',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.CorporealBeast.id]: 50
@@ -357,6 +390,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Corrupted Gauntlet Master',
 		desc: 'Complete the Corrupted Gauntlet 10 times.',
 		type: 'kill_count',
+		monster: 'Corrupted Hunllef',
 		requirements: new Requirements().add({
 			minigames: {
 				corrupted_gauntlet: 10
@@ -368,6 +402,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Corrupted Warrior',
 		desc: 'Kill the Corrupted Hunllef with a full set of perfected corrupted armour equipped.',
 		type: 'restriction',
+		monster: 'Corrupted Hunllef',
 		rng: {
 			chancePerKill: 5,
 			hasChance: data => data.type === 'Gauntlet' && (data as GauntletOptions).corrupted
@@ -378,6 +413,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: "Defence Doesn't Matter II",
 		desc: 'Kill the Corrupted Hunllef without making any armour within the Corrupted Gauntlet.',
 		type: 'restriction',
+		monster: 'Corrupted Hunllef',
 		rng: {
 			chancePerKill: 5,
 			hasChance: data => data.type === 'Gauntlet' && (data as GauntletOptions).corrupted
@@ -388,6 +424,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Corrupted Hunllef',
 		desc: 'Kill the Corrupted Hunllef without taking damage from: Tornadoes, Damaging Floor or Stomp Attacks. Also, do not take damage off prayer and do not attack the Corrupted Hunllef with the wrong weapon.',
 		type: 'perfection',
+		monster: 'Corrupted Hunllef',
 		rng: {
 			chancePerKill: 20,
 			hasChance: data => data.type === 'Gauntlet' && (data as GauntletOptions).corrupted
@@ -398,6 +435,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Corrupted Gauntlet Speed-Chaser',
 		desc: 'Complete a Corrupted Gauntlet in less than 7 minutes and 30 seconds.',
 		type: 'speed',
+		monster: 'Corrupted Hunllef',
 		rng: {
 			chancePerKill: 20,
 			hasChance: data => data.type === 'Gauntlet' && (data as GauntletOptions).corrupted
@@ -408,6 +446,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Gauntlet Master',
 		desc: 'Complete the Gauntlet 20 times.',
 		type: 'kill_count',
+		monster: 'Crystalline Hunllef',
 		requirements: new Requirements().add({
 			minigames: {
 				gauntlet: 20
@@ -419,6 +458,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Crystalline Hunllef',
 		desc: 'Kill the Crystalline Hunllef without taking damage from: Tornadoes, Damaging Floor or Stomp Attacks. Also, do not take damage off prayer and do not attack the Crystalline Hunllef with the wrong weapon.',
 		type: 'perfection',
+		monster: 'Crystalline Hunllef',
 		rng: {
 			chancePerKill: 20,
 			hasChance: 'Gauntlet'
@@ -429,6 +469,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Gauntlet Speed-Chaser',
 		desc: 'Complete the Gauntlet in less than 5 minutes.',
 		type: 'speed',
+		monster: 'Crystalline Hunllef',
 		rng: {
 			chancePerKill: 25,
 			hasChance: 'Gauntlet'
@@ -439,6 +480,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: "Defence Doesn't Matter",
 		desc: 'Kill the Crystalline Hunllef without making any armour within the Gauntlet.',
 		type: 'restriction',
+		monster: 'Crystalline Hunllef',
 		rng: {
 			chancePerKill: 25,
 			hasChance: 'Gauntlet'
@@ -449,6 +491,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Grotesque Guardians II',
 		desc: 'Kill the Grotesque Guardians 5 times in a row without leaving the instance, whilst completing the Perfect Grotesque Guardians task every time.',
 		type: 'perfection',
+		monster: 'Grotesque Guardians',
 		rng: {
 			chancePerKill: 35,
 			hasChance: isCertainMonsterTrip(Monsters.GrotesqueGuardians.id)
@@ -459,6 +502,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Grotesque Guardians Speed-Chaser',
 		desc: 'Kill the Grotesque Guardians in less than 1:40 minutes.',
 		type: 'speed',
+		monster: 'Grotesque Guardians',
 		rng: {
 			chancePerKill: 25,
 			hasChance: isCertainMonsterTrip(Monsters.GrotesqueGuardians.id)
@@ -469,6 +513,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: "... 'til Dawn",
 		desc: 'Kill the Grotesque Guardians 20 times without leaving the instance.',
 		type: 'stamina',
+		monster: 'Grotesque Guardians',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.GrotesqueGuardians.id]: 20
@@ -480,6 +525,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Hespori Speed-Chaser',
 		desc: 'Kill the Hespori in less than 36 seconds.',
 		type: 'speed',
+		monster: 'Hespori',
 		rng: {
 			chancePerKill: 10,
 			hasChance: isCertainMonsterTrip(Monsters.Hespori.id)
@@ -490,6 +536,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'One Hundred Tentacles',
 		desc: 'Kill the Kraken 100 times in a private instance without leaving the room.',
 		type: 'stamina',
+		monster: 'Kraken',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Kraken.id]: 100
@@ -501,6 +548,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Swoop No More',
 		desc: "Kill Kree'arra in a private instance without taking any melee damage from the boss or his bodyguards.",
 		type: 'perfection',
+		monster: "Kree'arra",
 		rng: {
 			chancePerKill: 11,
 			hasChance: isCertainMonsterTrip(Monsters.Kreearra.id)
@@ -511,6 +559,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Collateral Damage',
 		desc: "Kill Kree'arra in a private instance without ever attacking him directly.",
 		type: 'mechanical',
+		monster: "Kree'arra",
 		rng: {
 			chancePerKill: 11,
 			hasChance: isCertainMonsterTrip(Monsters.Kreearra.id)
@@ -521,6 +570,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Contain this!',
 		desc: 'Kill Nex without anyone taking damage from any Ice special attack.',
 		type: 'mechanical',
+		monster: 'Nex',
 		rng: {
 			chancePerKill: 5,
 			hasChance: 'Nex'
@@ -531,6 +581,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Nex Master',
 		desc: 'Kill Nex 25 times.',
 		type: 'kill_count',
+		monster: 'Nex',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[NEX_ID]: 25
@@ -542,6 +593,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Shadows Move...',
 		desc: 'Kill Nex without anyone being hit by the Shadow Smash attack.',
 		type: 'mechanical',
+		monster: 'Nex',
 		rng: {
 			chancePerKill: 11,
 			hasChance: 'Nex'
@@ -552,6 +604,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Nex Trio',
 		desc: 'Kill Nex with three or less players at the start of the fight.',
 		type: 'restriction',
+		monster: 'Nex',
 		rng: {
 			chancePerKill: 11,
 			hasChance: 'Nex'
@@ -562,6 +615,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'There is no escape!',
 		desc: 'Kill Nex without anyone being hit by the Smoke Dash special attack.',
 		type: 'mechanical',
+		monster: 'Nex',
 		rng: {
 			chancePerKill: 15,
 			hasChance: 'Nex'
@@ -572,6 +626,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'A siphon will solve this',
 		desc: 'Kill Nex without letting her heal from her Blood Siphon special attack.',
 		type: 'mechanical',
+		monster: 'Nex',
 		rng: {
 			chancePerKill: 15,
 			hasChance: 'Nex'
@@ -582,6 +637,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Walk Straight Pray True',
 		desc: 'Kill the Phantom Muspah without taking any avoidable damage.',
 		type: 'perfection',
+		monster: 'Phantom Muspah',
 		rng: {
 			chancePerKill: 15,
 			hasChance: isCertainMonsterTrip(Monsters.PhantomMuspah.id)
@@ -592,9 +648,12 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'More than just a ranged weapon',
 		desc: 'Kill the Phantom Muspah by only dealing damage to it with a salamander.',
 		type: 'restriction',
+		monster: 'Phantom Muspah',
 		rng: {
-			chancePerKill: 15,
-			hasChance: isCertainMonsterTrip(Monsters.PhantomMuspah.id)
+			chancePerKill: 1,
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.PhantomMuspah.id)(data) &&
+				['Black salamander', 'Red salamander', 'Orange salamander'].some(sal => user.hasEquipped(sal))
 		}
 	},
 	{
@@ -602,6 +661,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Space is Tight',
 		desc: 'Kill the Phantom Muspah whilst it is surrounded by spikes.',
 		type: 'mechanical',
+		monster: 'Phantom Muspah',
 		rng: {
 			chancePerKill: 15,
 			hasChance: isCertainMonsterTrip(Monsters.PhantomMuspah.id)
@@ -612,6 +672,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Phantom Muspah Speed-Chaser',
 		desc: 'Kill the Phantom Muspah in less than 2 minutes without a slayer task.',
 		type: 'speed',
+		monster: 'Phantom Muspah',
 		rng: {
 			chancePerKill: 33,
 			hasChance: isCertainMonsterTrip(Monsters.PhantomMuspah.id)
@@ -622,6 +683,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Essence Farmer',
 		desc: 'Kill the Phantom Muspah 10 times in one trip.',
 		type: 'stamina',
+		monster: 'Phantom Muspah',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.PhantomMuspah.id]: 10
@@ -633,6 +695,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Phantom Muspah Master',
 		desc: 'Kill the Phantom Muspah 50 times.',
 		type: 'kill_count',
+		monster: 'Phantom Muspah',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.PhantomMuspah.id]: 50
@@ -644,6 +707,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: "Phosani's Speedchaser",
 		desc: "Defeat Phosani's Nightmare within 9 minutes.",
 		type: 'speed',
+		monster: "Phosani's Nightmare",
 		rng: {
 			chancePerKill: 22,
 			hasChance: data => data.type === 'Nightmare' && Boolean((data as NightmareActivityTaskOptions).isPhosani)
@@ -654,6 +718,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: "Phosani's Master",
 		desc: "Kill Phosani's Nightmare 5 times.",
 		type: 'kill_count',
+		monster: "Phosani's Nightmare",
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[PHOSANI_NIGHTMARE_ID]: 5
@@ -665,6 +730,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'I Would Simply React',
 		desc: "Kill Phosani's Nightmare without allowing your prayer to be disabled.",
 		type: 'mechanical',
+		monster: "Phosani's Nightmare",
 		rng: {
 			chancePerKill: 22,
 			hasChance: data => data.type === 'Nightmare' && Boolean((data as NightmareActivityTaskOptions).isPhosani)
@@ -675,6 +741,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Crush Hour',
 		desc: "Kill Phosani's Nightmare while killing every parasite and husk in one hit.",
 		type: 'mechanical',
+		monster: "Phosani's Nightmare",
 		rng: {
 			chancePerKill: 33,
 			hasChance: data => data.type === 'Nightmare' && Boolean((data as NightmareActivityTaskOptions).isPhosani)
@@ -685,6 +752,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Dreamland Express',
 		desc: "Kill Phosani's Nightmare without a sleepwalker reaching her during her desperation phase.",
 		type: 'mechanical',
+		monster: "Phosani's Nightmare",
 		rng: {
 			chancePerKill: 33,
 			hasChance: data => data.type === 'Nightmare' && Boolean((data as NightmareActivityTaskOptions).isPhosani)
@@ -695,6 +763,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Precise Positioning',
 		desc: 'Kill Skotizo with the final source of damage being a Chinchompa explosion.',
 		type: 'restriction',
+		monster: 'Skotizo',
 		rng: {
 			chancePerKill: 1,
 			hasChance: (data, user) =>
@@ -707,9 +776,10 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Nightmare',
 		desc: "Kill the Nightmare without any player taking damage from the following attacks: Nightmare rifts, an un-cured parasite explosion, Corpse flowers or the Nightmare's Surge. Also, no player can take damage off prayer or have their attacks slowed by the Nightmare spores.",
 		type: 'perfection',
+		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 33,
-			hasChance: 'Nightmare'
+			hasChance: data => data.type === 'Nightmare' && !(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{
@@ -717,9 +787,10 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Nightmare (5-Scale) Speed-Chaser',
 		desc: 'Defeat the Nightmare (5-scale) in less than 4 minutes.',
 		type: 'speed',
+		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 33,
-			hasChance: 'Nightmare'
+			hasChance: data => data.type === 'Nightmare' && !(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{
@@ -727,6 +798,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Nightmare Master',
 		desc: 'Kill The Nightmare 50 times.',
 		type: 'kill_count',
+		monster: 'The Nightmare',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[NIGHTMARE_ID]: 50
@@ -738,9 +810,10 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Nightmare (Solo) Speed-Chaser',
 		desc: 'Defeat the Nightmare (Solo) in less than 19 minutes.',
 		type: 'speed',
+		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 33,
-			hasChance: 'Nightmare'
+			hasChance: data => data.type === 'Nightmare' && !(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{
@@ -748,6 +821,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Xarpus',
 		desc: "Kill Xarpus without anyone in the team taking any damage from Xarpus' attacks and without letting an exhumed heal Xarpus more than twice.",
 		type: 'perfection',
+		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 50,
 			hasChance: 'TheatreOfBlood'
@@ -758,6 +832,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Theatre (5-Scale) Speed-Chaser',
 		desc: 'Complete the Theatre of Blood (5-scale) in less than 16 minutes.',
 		type: 'speed',
+		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 40,
 			hasChance: 'TheatreOfBlood'
@@ -768,6 +843,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Verzik',
 		desc: "Defeat Verzik Vitur without anyone in the team taking damage from Verzik Vitur's attacks other than her spider form's correctly prayed against regular magical and ranged attacks.",
 		type: 'perfection',
+		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 50,
 			hasChance: 'TheatreOfBlood'
@@ -778,8 +854,9 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Theatre (4-Scale) Speed-Chaser',
 		desc: 'Complete the Theatre of Blood (4-scale) in less than 17 minutes.',
 		type: 'speed',
+		monster: 'Theatre of Blood',
 		rng: {
-			chancePerKill: 39,
+			chancePerKill: 22,
 			hasChance: 'TheatreOfBlood'
 		}
 	},
@@ -788,6 +865,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'A Timely Snack',
 		desc: 'Kill Sotetseg after surviving at least 3 ball attacks without sharing the damage and without anyone dying throughout the fight.',
 		type: 'mechanical',
+		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TheatreOfBlood'
@@ -798,6 +876,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Back in My Day...',
 		desc: 'Complete the Theatre of Blood without any member of the team equipping a Scythe of Vitur.',
 		type: 'restriction',
+		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 22,
 			hasChance: (data, user) => data.type === 'TheatreOfBlood' && !user.hasEquipped('Scythe of vitur')
@@ -808,6 +887,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Sotesteg',
 		desc: "Kill Sotetseg without anyone in the team stepping on the wrong tile in the maze, without getting hit by the tornado and without taking any damage from Sotetseg's attacks whilst off prayer.",
 		type: 'perfection',
+		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TheatreOfBlood'
@@ -818,6 +898,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: "Can't Drain This",
 		desc: 'Kill The Maiden of Sugadinti without anyone in the team losing any prayer points.',
 		type: 'restriction',
+		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TheatreOfBlood'
@@ -828,6 +909,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Can You Dance?',
 		desc: 'Kill Xarpus without anyone in the team using a ranged or magic weapon.',
 		type: 'restriction',
+		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TheatreOfBlood'
@@ -838,6 +920,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Pop It',
 		desc: 'Kill Verzik without any Nylocas being frozen and without anyone taking damage from the Nylocas.',
 		type: 'mechanical',
+		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TheatreOfBlood'
@@ -848,6 +931,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Theatre (Trio) Speed-Chaser',
 		desc: 'Complete the Theatre of Blood (Trio) in less than 20 minutes.',
 		type: 'speed',
+		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 22,
 			hasChance: data => data.type === 'TheatreOfBlood' && (data as TheatreOfBloodTaskOptions).users.length === 3
@@ -858,6 +942,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Two-Down',
 		desc: 'Kill the Pestilent Bloat before he shuts down for the third time.',
 		type: 'mechanical',
+		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TheatreOfBlood'
@@ -868,6 +953,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Maiden',
 		desc: 'Kill The Maiden of Sugadinti without anyone in the team taking damage from the following sources: Blood Spawn projectiles and Blood Spawn trails. Also, without taking damage off prayer and without letting any of the Nylocas Matomenos heal The Maiden.',
 		type: 'perfection',
+		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TheatreOfBlood'
@@ -878,6 +964,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Bloat',
 		desc: 'Kill the Pestilent Bloat without anyone in the team taking damage from the following sources: Pestilent flies, Falling body parts or The Pestilent Bloats stomp attack.',
 		type: 'perfection',
+		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TheatreOfBlood'
@@ -888,6 +975,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Theatre of Blood Master',
 		desc: 'Complete the Theatre of Blood 75 times.',
 		type: 'kill_count',
+		monster: 'Theatre of Blood',
 		requirements: new Requirements().add({
 			minigames: {
 				tob: 75
@@ -899,6 +987,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Nylocas',
 		desc: 'Kill the Nylocas Vasilias without anyone in the team attacking any Nylocas with the wrong attack style, without letting a pillar collapse and without getting hit by any of the Nylocas Vasilias attacks whilst off prayer.',
 		type: 'perfection',
+		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 55,
 			hasChance: 'TheatreOfBlood'
@@ -909,6 +998,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Theatre of Blood: SM Speed-Chaser',
 		desc: 'Complete the Theatre of Blood: Entry Mode in less than 17 minutes.',
 		type: 'speed',
+		monster: 'Theatre of Blood: Entry Mode',
 		rng: {
 			chancePerKill: 10,
 			hasChance: 'TheatreOfBlood'
@@ -919,6 +1009,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Hard Mode? Completed It',
 		desc: 'Complete the Theatre of Blood: Hard Mode within the challenge time.',
 		type: 'speed',
+		monster: 'Theatre of Blood: Hard Mode',
 		rng: {
 			chancePerKill: 55,
 			hasChance: data => data.type === 'TheatreOfBlood' && (data as TheatreOfBloodTaskOptions).hardMode
@@ -929,6 +1020,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: "Better get movin'",
 		desc: "Defeat Elidinis' Warden in phase three of the Wardens fight with 'Aerial Assault', 'Stay vigilant' and 'Insanity' invocations activated and without dying yourself.",
 		type: 'mechanical',
+		monster: 'Tombs of Amascut',
 		rng: {
 			chancePerKill: 55,
 			hasChance: 'TombsOfAmascut'
@@ -939,6 +1031,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Tomb Raider',
 		desc: 'Complete the Tombs of Amascut 50 times.',
 		type: 'kill_count',
+		monster: 'Tombs of Amascut',
 		requirements: new Requirements().add({
 			minigames: {
 				tombs_of_amascut: 50
@@ -950,6 +1043,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Chompington',
 		desc: 'Defeat Zebak using only melee attacks and without dying yourself.',
 		type: 'mechanical',
+		monster: 'Tombs of Amascut',
 		rng: {
 			chancePerKill: 25,
 			hasChance: 'TombsOfAmascut'
@@ -960,6 +1054,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Tombs Speed Runner',
 		desc: 'Complete the Tombs of Amascut (normal) within 18 mins at any group size.',
 		type: 'speed',
+		monster: 'Tombs of Amascut',
 		rng: {
 			chancePerKill: 44,
 			hasChance: 'TombsOfAmascut'
@@ -970,6 +1065,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Tomb Looter',
 		desc: 'Complete the Tombs of Amascut 25 times.',
 		type: 'kill_count',
+		monster: 'Tombs of Amascut',
 		requirements: new Requirements().add({
 			minigames: {
 				tombs_of_amascut: 25
@@ -981,6 +1077,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Akkha',
 		desc: "Complete Akkha in a group of two or more, without anyone taking any damage from the following: Akkha's attacks off-prayer, Akkha's special attacks (orbs, memory, detonate), exploding shadow timers, orbs in the enrage phase or attacking Akkha with the wrong style. You must have all Akkha invocations activated.",
 		type: 'perfection',
+		monster: 'Tombs of Amascut',
 		rng: {
 			chancePerKill: 44,
 			hasChance: 'TombsOfAmascut'
@@ -991,6 +1088,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Scabaras',
 		desc: 'Complete the Scabaras room in less than a minute without anyone taking any damage from puzzles.',
 		type: 'perfection',
+		monster: 'Tombs of Amascut',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TombsOfAmascut'
@@ -1001,6 +1099,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Kephri',
 		desc: "Defeat Kephri in a group of two or more, without anyone taking any damage from the following: egg explosions, Kephri's attacks, Exploding Scarabs, Bodyguards, dung attacks. No eggs may hatch throughout the fight.",
 		type: 'perfection',
+		monster: 'Tombs of Amascut',
 		rng: {
 			chancePerKill: 55,
 			hasChance: 'TombsOfAmascut'
@@ -1011,6 +1110,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Zebak',
 		desc: "Defeat Zebak without anyone taking any damage from: poison, Zebak's basic attacks off-prayer, blood spawns and waves. You also must not push more than two jugs on the roar attack during the fight (you may destroy stationary ones). You must have all Zebak invocations activated.",
 		type: 'perfection',
+		monster: 'Tombs of Amascut',
 		rng: {
 			chancePerKill: 55,
 			hasChance: 'TombsOfAmascut'
@@ -1021,6 +1121,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'You are not prepared',
 		desc: 'Complete a full Tombs of Amascut raid only using supplies given inside the tomb and without anyone dying.',
 		type: 'restriction',
+		monster: 'Tombs of Amascut',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TombsOfAmascut'
@@ -1031,6 +1132,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Ba-Ba',
 		desc: "Defeat Ba-Ba in a group of two or more, without anyone taking any damage from the following: Ba-Ba's Attacks off-prayer, Ba-Ba's slam, rolling boulders, rubble attack or falling rocks. No sarcophagi may be opened. You must have all Ba-Ba invocations activated.",
 		type: 'perfection',
+		monster: 'Tombs of Amascut',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TombsOfAmascut'
@@ -1041,6 +1143,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Wardens',
 		desc: 'Defeat The Wardens in a group of two or more, without anyone taking avoidable damage from the following: Warden attacks, obelisk attacks, lightning attacks in phase three, skull attack in phase three, Demi god attacks in phase three. You must have all Wardens invocations activated.',
 		type: 'perfection',
+		monster: 'Tombs of Amascut',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TombsOfAmascut'
@@ -1051,6 +1154,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Ba-Bananza',
 		desc: 'Defeat Ba-Ba with all Ba-Ba invocations activated and the path levelled up to at least four, without dying yourself.',
 		type: 'mechanical',
+		monster: 'Tombs of Amascut: Expert Mode',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TombsOfAmascut'
@@ -1061,6 +1165,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: "Doesn't bug me",
 		desc: 'Defeat Kephri with all Kephri invocations activated and the path levelled up to at least four, without dying yourself.',
 		type: 'mechanical',
+		monster: 'Tombs of Amascut: Expert Mode',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TombsOfAmascut'
@@ -1071,6 +1176,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'But... Damage',
 		desc: 'Complete the Tombs of Amascut without anyone in your party wearing or holding any equipment at tier 75 or above.',
 		type: 'restriction',
+		monster: 'Tombs of Amascut: Expert Mode',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TombsOfAmascut'
@@ -1081,6 +1187,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: "Warden't you believe it",
 		desc: 'Defeat the Wardens with all Wardens invocations activated, at expert level and without dying yourself.',
 		type: 'mechanical',
+		monster: 'Tombs of Amascut: Expert Mode',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TombsOfAmascut'
@@ -1091,6 +1198,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Fancy feet',
 		desc: "Complete phase three of The Wardens in a group of two or more, using only melee attacks and without dying yourself. The 'Insanity' invocation must be activated.",
 		type: 'restriction',
+		monster: 'Tombs of Amascut: Expert Mode',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TombsOfAmascut'
@@ -1101,6 +1209,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Something of an expert myself',
 		desc: 'Complete the Tombs of Amascut raid at level 350 or above without anyone dying.',
 		type: 'mechanical',
+		monster: 'Tombs of Amascut: Expert Mode',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
@@ -1114,6 +1223,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Expert Tomb Looter',
 		desc: 'Complete the Tombs of Amascut (Expert mode) 25 times.',
 		type: 'kill_count',
+		monster: 'Tombs of Amascut: Expert Mode',
 		requirements: new Requirements().add({
 			name: 'Complete the Tombs of Amascut (Expert mode) 25 times.',
 			has: ({ stats }) => {
@@ -1126,6 +1236,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'All out of medics',
 		desc: "Defeat Kephri without letting her heal above 25% after the first down. The 'Medic' invocation must be activated. You must do this without dying yourself.",
 		type: 'mechanical',
+		monster: 'Tombs of Amascut: Expert Mode',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TombsOfAmascut'
@@ -1136,6 +1247,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Resourceful Raider',
 		desc: 'Complete the Tombs of Amascut with the "On a diet" and "Dehydration" invocations activated and without anyone dying.',
 		type: 'restriction',
+		monster: 'Tombs of Amascut: Expert Mode',
 		rng: {
 			chancePerKill: 55,
 			hasChance: 'TombsOfAmascut'
@@ -1146,51 +1258,58 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: "Rockin' around the croc",
 		desc: 'Defeat Zebak with all Zebak invocations activated and the path levelled up to at least four, without dying yourself.',
 		type: 'mechanical',
+		monster: 'Tombs of Amascut: Expert Mode',
 		rng: {
 			chancePerKill: 22,
 			hasChance: 'TombsOfAmascut'
 		}
 	},
-	{
-		id: 2111,
-		name: 'The IV Jad Challenge',
-		desc: "Complete TzHaar-Ket-Rak's fourth challenge.",
-		type: 'kill_count',
-		notPossible: true
-	},
-	{
-		id: 2112,
-		name: 'Multi-Style Specialist',
-		desc: "Complete TzHaar-Ket-Rak's third challenge while using a different attack style for each JalTok-Jad.",
-		type: 'mechanical',
-		notPossible: true
-	},
-	{
-		id: 2113,
-		name: "TzHaar-Ket-Rak's Speed-Chaser",
-		desc: "Complete TzHaar-Ket-Rak's third challenge in less than 3 minutes.",
-		type: 'speed',
-		notPossible: true
-	},
-	{
-		id: 2114,
-		name: 'Facing Jad Head-on IV',
-		desc: "Complete TzHaar-Ket-Rak's fourth challenge with only melee.",
-		type: 'restriction',
-		notPossible: true
-	},
-	{
-		id: 2115,
-		name: "Supplies? Who Needs 'em?",
-		desc: "Complete TzHaar-Ket-Rak's third challenge without having anything in your inventory.",
-		type: 'perfection',
-		notPossible: true
-	},
+	// {
+	// 	id: 2111,
+	// 	name: 'The IV Jad Challenge',
+	// 	desc: "Complete TzHaar-Ket-Rak's fourth challenge.",
+	// 	type: 'kill_count',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
+	// {
+	// 	id: 2112,
+	// 	name: 'Multi-Style Specialist',
+	// 	desc: "Complete TzHaar-Ket-Rak's third challenge while using a different attack style for each JalTok-Jad.",
+	// 	type: 'mechanical',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
+	// {
+	// 	id: 2113,
+	// 	name: "TzHaar-Ket-Rak's Speed-Chaser",
+	// 	desc: "Complete TzHaar-Ket-Rak's third challenge in less than 3 minutes.",
+	// 	type: 'speed',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
+	// {
+	// 	id: 2114,
+	// 	name: 'Facing Jad Head-on IV',
+	// 	desc: "Complete TzHaar-Ket-Rak's fourth challenge with only melee.",
+	// 	type: 'restriction',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
+	// {
+	// 	id: 2115,
+	// 	name: "Supplies? Who Needs 'em?",
+	// 	desc: "Complete TzHaar-Ket-Rak's third challenge without having anything in your inventory.",
+	// 	type: 'perfection',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
 	{
 		id: 2116,
 		name: 'Nibblers, Begone!',
 		desc: 'Kill Tzkal-Zuk without letting a pillar fall before wave 67.',
 		type: 'perfection',
+		monster: 'TzKal-Zuk',
 		rng: {
 			chancePerKill: 10,
 			hasChance: 'Inferno'
@@ -1201,6 +1320,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: "You Didn't Say Anything About a Bat",
 		desc: 'Complete the Fight Caves without being attacked by a Tz-Kih.',
 		type: 'mechanical',
+		monster: 'TzTok-Jad',
 		rng: {
 			chancePerKill: 25,
 			hasChance: 'FightCaves'
@@ -1211,6 +1331,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Denying the Healers',
 		desc: 'Complete the Fight caves without letting any of the Yt-MejKot heal.',
 		type: 'mechanical',
+		monster: 'TzTok-Jad',
 		rng: {
 			chancePerKill: 25,
 			hasChance: 'FightCaves'
@@ -1221,6 +1342,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Fight Caves Master',
 		desc: 'Complete the Fight Caves 5 times.',
 		type: 'kill_count',
+		monster: 'TzTok-Jad',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.TzTokJad.id]: 5
@@ -1232,6 +1354,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Fight Caves Speed-Chaser',
 		desc: 'Complete the Fight Caves in less than 30 minutes.',
 		type: 'speed',
+		monster: 'TzTok-Jad',
 		rng: {
 			chancePerKill: 7,
 			hasChance: 'FightCaves'
@@ -1242,6 +1365,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'The Walk',
 		desc: 'Hit Vorkath 12 times during the acid special without getting hit by his rapid fire or the acid pools.',
 		type: 'mechanical',
+		monster: 'Vorkath',
 		rng: {
 			chancePerKill: 33,
 			hasChance: isCertainMonsterTrip(Monsters.Vorkath.id)
@@ -1252,6 +1376,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Extended Encounter',
 		desc: 'Kill Vorkath 10 times without leaving his area.',
 		type: 'stamina',
+		monster: 'Vorkath',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Vorkath.id]: 10
@@ -1263,6 +1388,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Dodging the Dragon',
 		desc: 'Kill Vorkath 5 times without taking any damage from his special attacks and without leaving his area.',
 		type: 'perfection',
+		monster: 'Vorkath',
 		rng: {
 			chancePerKill: 33,
 			hasChance: data =>
@@ -1274,6 +1400,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Vorkath Speed-Chaser',
 		desc: 'Kill Vorkath in less than 1 minute and 15 seconds.',
 		type: 'speed',
+		monster: 'Vorkath',
 		rng: {
 			chancePerKill: 33,
 			hasChance: isCertainMonsterTrip(Monsters.Vorkath.id)
@@ -1284,6 +1411,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Vorkath Master',
 		desc: 'Kill Vorkath 100 times.',
 		type: 'kill_count',
+		monster: 'Vorkath',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Vorkath.id]: 100
@@ -1295,6 +1423,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Perfect Zulrah',
 		desc: "Kill Zulrah whilst taking no damage from the following: Snakelings, Venom Clouds, Zulrah's Green or Crimson phase.",
 		type: 'perfection',
+		monster: 'Zulrah',
 		rng: {
 			chancePerKill: 55,
 			hasChance: isCertainMonsterTrip(Monsters.Zulrah.id)
@@ -1305,6 +1434,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Zulrah Master',
 		desc: 'Kill Zulrah 150 times.',
 		type: 'kill_count',
+		monster: 'Zulrah',
 		requirements: new Requirements().add({
 			kcRequirement: {
 				[Monsters.Zulrah.id]: 150
@@ -1316,6 +1446,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		name: 'Zulrah Speed-Chaser',
 		desc: 'Kill Zulrah in less than 1 minute, without a slayer task.',
 		type: 'speed',
+		monster: 'Zulrah',
 		rng: {
 			chancePerKill: 99,
 			hasChance: isCertainMonsterTrip(Monsters.Zulrah.id)

@@ -1,7 +1,7 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -23,7 +23,7 @@ function calcPoints() {
 
 export const soulWarsTask: MinionTask = {
 	type: 'SoulWars',
-	async run(data: MinigameActivityTaskOptions) {
+	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
 		const { channelID, quantity, userID } = data;
 		const user = await mUserFetch(userID);
 
