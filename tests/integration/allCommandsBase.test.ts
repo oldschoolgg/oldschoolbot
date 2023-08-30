@@ -38,7 +38,7 @@ import { stealCommand } from '../../src/mahoji/commands/steal';
 import { toolsCommand } from '../../src/mahoji/commands/tools';
 import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { randomMock } from './setup';
-import { integrationCmdRun } from './util';
+import { createTestUser } from './util';
 
 const commands: [OSBMahojiCommand, null | object][] = [
 	[activitiesCommand, null],
@@ -93,9 +93,10 @@ vi.mock('../../src/lib/util/addSubTaskToActivityTask', async () => {
 
 describe('All Commands Base Test', async () => {
 	randomMock();
+	const user = await createTestUser();
 	for (const [command, options] of commands) {
 		test(`Run ${command.name} command`, async () => {
-			await integrationCmdRun({ command, options: options ?? {} });
+			await user.runCommand(command, options ?? {});
 		});
 	}
 });

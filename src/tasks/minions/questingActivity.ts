@@ -1,10 +1,11 @@
 import { randInt } from 'e';
 
-import { Emoji, MAX_QP } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { MAX_QP } from '../../mahoji/lib/abstracted_commands/questCommand';
 
 export const questingTask: MinionTask = {
 	type: 'Questing',
@@ -23,7 +24,7 @@ export const questingTask: MinionTask = {
 
 		const newQP = currentQP + qpReceived;
 
-		// The minion could be at (MAX_QP - 1) QP, but gain 4 QP here, so we'll trim that down from 4 to 1.
+		// The minion could be at (MAX_GLOBAL_QP - 1) QP, but gain 4 QP here, so we'll trim that down from 4 to 1.
 		if (newQP > MAX_QP) {
 			qpReceived -= newQP - MAX_QP;
 		}

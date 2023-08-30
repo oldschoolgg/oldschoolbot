@@ -5,6 +5,7 @@ import { describe, expect, test } from 'vitest';
 
 import { runRolesTask } from '../../src/lib/rolesTask';
 import { prisma } from '../../src/lib/settings/prisma';
+import { cryptoRand } from '../../src/lib/util';
 import { userStatsBankUpdate } from '../../src/mahoji/mahojiSettings';
 import { createTestUser } from './util';
 
@@ -26,7 +27,7 @@ describe('Roles Task', async () => {
 				message_id: randomSnowflake(),
 				reaction_id: randomSnowflake(),
 				users_entered: [],
-				id: 1,
+				id: cryptoRand(1, 100),
 				completed: false,
 				duration: 10_000
 			}

@@ -319,6 +319,7 @@ model User {
   minion_equippedPet     Int?      @map("minion.equippedPet")
   minion_farmingContract Json?     @map("minion.farmingContract") @db.Json
   minion_birdhouseTraps  Json?     @map("minion.birdhouseTraps") @db.Json
+  finished_quest_ids     Int[]
 
   bingo_tickets_bought Int    @default(0)
   bingo_gp_contributed BigInt @default(0)
@@ -394,6 +395,8 @@ model User {
   blood_essence_charges  Int @default(0)
   trident_charges        Int @default(0)
 
+  scythe_of_vitur_charges Int @default(0)
+
   // Balances
   lms_points           Int @default(0)
   volcanic_mine_points Int @default(0)
@@ -401,6 +404,8 @@ model User {
   carpenter_points     Int @default(0)
   zeal_tokens          Int @default(0)
   slayer_points        Int @default(0) @map("slayer.points")
+
+  completed_ca_task_ids Int[]
 
   // Migrate
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
@@ -766,6 +771,8 @@ model FarmedCrop {
 model BotItemSell {
   id String @id @default(uuid()) @db.Uuid
 
+  date DateTime @default(now()) @db.Timestamp(6)
+
   item_id     Int
   quantity    Int
   gp_received BigInt
@@ -904,6 +911,7 @@ enum activity_type_enum {
   TombsOfAmascut
   UnderwaterAgilityThieving
   StrongholdOfSecurity
+  SpecificQuest
 }
 
 enum xp_gains_skill_enum {
