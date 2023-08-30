@@ -591,3 +591,4 @@ export type ActivityTaskData =
 	| FightCavesActivityTaskOptions
 	| ActivityTaskOptionsWithQuantity
 	| MinigameActivityTaskOptionsWithNoChanges
+	| CutLeapingFishActivityTaskOptions;
