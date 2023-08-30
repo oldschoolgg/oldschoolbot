@@ -64,6 +64,7 @@ import {
 	dailyCL,
 	demonicGorillaCL,
 	diariesCL,
+	dukeSucellusCL,
 	fightCavesCL,
 	fishingTrawlerCL,
 	FormatProgressFunction,
@@ -116,12 +117,15 @@ import {
 	theatreOfBLoodCL,
 	theGauntletCL,
 	theInfernoCL,
+	theLeviathanCL,
 	theNightmareCL,
 	thermonuclearSmokeDevilCL,
+	theWhispererCL,
 	titheFarmCL,
 	toaCL,
 	troubleBrewingCL,
 	tzHaarCL,
+	vardorvisCL,
 	venenatisCL,
 	vetionCL,
 	volcanicMineCL,
@@ -244,6 +248,58 @@ export const allCollectionLogs: ICollection = {
 					`${stats.kcBank[Monsters.DagannothPrime.id] ?? 0} Prime KC`,
 					`${stats.kcBank[Monsters.DagannothRex.id] ?? 0} Rex KC`,
 					`${stats.kcBank[Monsters.DagannothSupreme.id] ?? 0} Supreme KC`
+				]
+			},
+			'Duke Sucellus': {
+				alias: ['duke', 'duke sucellus'],
+				kcActivity: {
+					Default: [Monsters.DukeSucellus.name, Monsters.AwakenedDukeSucellus.name],
+					Awakened: Monsters.AwakenedDukeSucellus.name
+				},
+				allItems: Monsters.DukeSucellus.allItems,
+				items: dukeSucellusCL,
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.DukeSucellus.id] ?? 0} KC`,
+					`${stats.kcBank[Monsters.AwakenedDukeSucellus.id] ?? 0} Awakened KC`
+				]
+			},
+			'The Leviathan': {
+				alias: ['the leviathan'],
+				kcActivity: {
+					Default: [Monsters.TheLeviathan.name, Monsters.AwakenedTheLeviathan.name],
+					Awakened: Monsters.AwakenedTheLeviathan.name
+				},
+				allItems: Monsters.TheLeviathan.allItems,
+				items: theLeviathanCL,
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.TheLeviathan.id] ?? 0} KC`,
+					`${stats.kcBank[Monsters.AwakenedTheLeviathan.id] ?? 0} Awakened KC`
+				]
+			},
+			Vardorvis: {
+				alias: ['vardorvis'],
+				kcActivity: {
+					Default: [Monsters.Vardorvis.name, Monsters.AwakenedVardorvis.name],
+					Awakened: Monsters.AwakenedVardorvis.name
+				},
+				allItems: Monsters.Vardorvis.allItems,
+				items: vardorvisCL,
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.Vardorvis.id] ?? 0} KC`,
+					`${stats.kcBank[Monsters.AwakenedVardorvis.id] ?? 0} Awakened KC`
+				]
+			},
+			'The Whisperer': {
+				alias: ['the whisperer'],
+				kcActivity: {
+					Default: [Monsters.TheWhisperer.name, Monsters.AwakenedTheWhisperer.name],
+					Awakened: Monsters.AwakenedTheWhisperer.name
+				},
+				allItems: Monsters.TheWhisperer.allItems,
+				items: theWhispererCL,
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.TheWhisperer.id] ?? 0} KC`,
+					`${stats.kcBank[Monsters.AwakenedTheWhisperer.id] ?? 0} Awakened KC`
 				]
 			},
 			'The Fight Caves': {
@@ -1367,3 +1423,10 @@ export function isCLItem(item: Item | number | [Item, number]): boolean {
 	if (Array.isArray(item)) return isCLItem(item[0]);
 	return allCLItemsFiltered.includes(isObject(item) ? item.id : item);
 }
+
+export const bossCLItems = Object.values({
+	...allCollectionLogs['Bosses'].activities,
+	...allCollectionLogs['Raids'].activities
+})
+	.map(i => i.items)
+	.flat();

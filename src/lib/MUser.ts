@@ -1,6 +1,6 @@
 import { userMention } from '@discordjs/builders';
 import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
-import { objectEntries, sumArr, uniqueArr } from 'e';
+import { calcWhatPercent, objectEntries, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -9,7 +9,9 @@ import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
+import { CombatAchievements } from './combat_achievements/combatAchievements';
 import { badges, BitField, Emoji, projectiles, usernameCache } from './constants';
+import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear/types';
@@ -250,6 +252,11 @@ export class MUserClass {
 		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
 	}
 
+	async fetchMonsterScores() {
+		const stats = await this.fetchStats({ monster_scores: true });
+		return stats.monster_scores as ItemBank;
+	}
+
 	attackClass(): 'range' | 'mage' | 'melee' {
 		const styles = this.getAttackStyles();
 		if (styles.includes(SkillsEnum.Ranged)) return 'range';
@@ -479,6 +486,14 @@ GROUP BY data->>'clueID';`);
 		return blowpipe;
 	}
 
+	percentOfBossCLFinished() {
+		const percentBossCLFinished = calcWhatPercent(
+			this.cl.items().filter(i => bossCLItems.includes(i[0].id)).length,
+			bossCLItems.length
+		);
+		return percentBossCLFinished;
+	}
+
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
 		const previousCL = new Bank(this.cl.bank);
 		const updates = this.calculateAddItemsToCLUpdates({
@@ -702,6 +717,27 @@ GROUP BY data->>'clueID';`);
 			plant,
 			matchingPlantedCrop: plant ? detailed.patchesDetailed.find(i => i.plant && i.plant === plant) : undefined
 		};
+	}
+
+	hasCompletedCATier(tier: keyof typeof CombatAchievements): boolean {
+		return CombatAchievements[tier].tasks.every(task => this.user.completed_ca_task_ids.includes(task.id));
+	}
+
+	buildCATertiaryItemChanges() {
+		const changes = new Map();
+		if (this.hasCompletedCATier('easy')) {
+			changes.set('Clue scroll (easy)', 5);
+		}
+		if (this.hasCompletedCATier('medium')) {
+			changes.set('Clue scroll (medium)', 5);
+		}
+		if (this.hasCompletedCATier('hard')) {
+			changes.set('Clue scroll (hard)', 5);
+		}
+		if (this.hasCompletedCATier('elite')) {
+			changes.set('Clue scroll (elite)', 5);
+		}
+		return changes;
 	}
 }
 declare global {

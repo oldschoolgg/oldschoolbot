@@ -642,10 +642,10 @@ async function checkMassesCommand(guildID: string | undefined) {
 				isTOBOrTOAActivity(m) || isNexActivity(m)
 					? m.finishDate - m.duration + m.fakeDuration - now
 					: m.finishDate - now;
-			if (isGroupActivity(m)) {
+			if ('users' in m) {
 				return [
 					remainingTime,
-					`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
+					`${m.type}${m.type === 'Raids' && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
 						m.channelID
 					}> in ${formatDuration(remainingTime, true)})`
 				];

@@ -1,5 +1,5 @@
 import { activity_type_enum } from '@prisma/client';
-import { AttachmentBuilder, ButtonBuilder, MessageCollector } from 'discord.js';
+import { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
@@ -13,7 +13,7 @@ import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
-import { ActivityTaskOptions } from '../types/minions';
+import { ActivityTaskData } from '../types/minions';
 import { buildClueButtons, channelIsSendable, makeComponents } from '../util';
 import {
 	makeAutoContractButton,
@@ -35,7 +35,7 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 ];
 
 interface TripFinishEffectOptions {
-	data: ActivityTaskOptions;
+	data: ActivityTaskData;
 	user: MUser;
 	loot: Bank | null;
 	messages: string[];
@@ -90,13 +90,17 @@ const tripFinishEffects: TripFinishEffect[] = [
 export async function handleTripFinish(
 	user: MUser,
 	channelID: string,
-	message: string,
+	_message: string | ({ content: string } & MessageCreateOptions),
 	attachment: AttachmentBuilder | Buffer | undefined,
-	data: ActivityTaskOptions,
+	data: ActivityTaskData,
 	loot: Bank | null,
 	_messages?: string[],
 	_components?: ButtonBuilder[]
 ) {
+	const message = typeof _message === 'string' ? { content: _message } : _message;
+	if (attachment) {
+		!message.files ? (message.files = [attachment]) : message.files.push(attachment);
+	}
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
@@ -105,11 +109,13 @@ export async function handleTripFinish(
 
 	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
-		message += `\n**Messages:** ${messages.join(', ')}`;
+		message.content += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
 	if (clueReceived.length > 0 && perkTier < PerkTier.Two) {
-		clueReceived.map(clue => (message += `\n${Emoji.Casket} **You got a ${clue.name} clue scroll** in your loot.`));
+		clueReceived.map(
+			clue => (message.content += `\n${Emoji.Casket} **You got a ${clue.name} clue scroll** in your loot.`)
+		);
 	}
 
 	const existingCollector = collectors.get(user.id);
@@ -151,11 +157,11 @@ export async function handleTripFinish(
 		components.push(..._components);
 	}
 
+	if (components.length > 0) {
+		message.components = makeComponents(components);
+	}
+
 	handleTriggerShootingStar(user, data, components);
 
-	sendToChannelID(channelID, {
-		content: message,
-		image: attachment,
-		components: components.length > 0 ? makeComponents(components) : undefined
-	});
+	sendToChannelID(channelID, message);
 }

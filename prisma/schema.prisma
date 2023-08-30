@@ -319,6 +319,7 @@ model User {
   minion_equippedPet     Int?      @map("minion.equippedPet")
   minion_farmingContract Json?     @map("minion.farmingContract") @db.Json
   minion_birdhouseTraps  Json?     @map("minion.birdhouseTraps") @db.Json
+  finished_quest_ids     Int[]
 
   bingo_tickets_bought Int    @default(0)
   bingo_gp_contributed BigInt @default(0)
@@ -393,6 +394,8 @@ model User {
   tum_shadow_charges     Int @default(0)
   blood_essence_charges  Int @default(0)
   trident_charges        Int @default(0)
+
+  scythe_of_vitur_charges Int @default(0)
 
   // Balances
   lms_points           Int @default(0)
@@ -907,6 +910,7 @@ enum activity_type_enum {
   TombsOfAmascut
   UnderwaterAgilityThieving
   StrongholdOfSecurity
+  SpecificQuest
 }
 
 enum xp_gains_skill_enum {

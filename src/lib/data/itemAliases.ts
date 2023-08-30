@@ -287,3 +287,10 @@ setItemAlias(27_155, 'Flower crown (gay)');
 setItemAlias(23_330, 'Rune scimitar (guthix)');
 setItemAlias(23_332, 'Rune scimitar (saradomin)');
 setItemAlias(23_334, 'Rune scimitar (zamorak)');
+
+setItemAlias(25_920, 'Antique lamp (easy ca)');
+setItemAlias(25_921, 'Antique lamp (medium ca)');
+setItemAlias(25_922, 'Antique lamp (hard ca)');
+setItemAlias(25_923, 'Antique lamp (elite ca)');
+setItemAlias(25_924, 'Antique lamp (master ca)');
+setItemAlias(25_925, 'Antique lamp (grandmaster ca)');

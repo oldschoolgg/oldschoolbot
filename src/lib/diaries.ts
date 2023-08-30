@@ -2,7 +2,7 @@ import { objectEntries } from 'e';
 import { Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { MAX_QP } from './constants';
+import { MAX_QP } from '../mahoji/lib/abstracted_commands/questCommand';
 import type { MinigameName } from './settings/minigames';
 import Skillcapes from './skilling/skillcapes';
 import { courses } from './skilling/skills/agility';

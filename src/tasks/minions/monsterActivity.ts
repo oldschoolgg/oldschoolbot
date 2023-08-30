@@ -1,5 +1,7 @@
-import { MonsterKillOptions, Monsters } from 'oldschooljs';
+import { percentChance } from 'e';
+import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 
+import { Emoji } from '../../lib/constants';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -10,7 +12,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, isOnSlayerTask } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { calculateSimpleMonsterDeathChance, roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -19,10 +21,47 @@ import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
 	async run(data: MonsterActivityTaskOptions) {
-		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
+		let { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
+
+		const messages: string[] = [];
+
 		const user = await mUserFetch(userID);
 		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
+		const currentKCs = await user.fetchMonsterScores();
+
+		let deaths = 0;
+		if (monster.deathProps) {
+			const currentKC: number | undefined = currentKCs[monsterID];
+			const deathChance = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC });
+			for (let i = 0; i < quantity; i++) {
+				if (percentChance(deathChance)) {
+					deaths++;
+				}
+			}
+		}
+		quantity -= deaths;
+
+		const awakenedMonsters = [
+			Monsters.AwakenedDukeSucellus.id,
+			Monsters.AwakenedTheLeviathan.id,
+			Monsters.AwakenedTheWhisperer.id,
+			Monsters.AwakenedVardorvis.id
+		];
+		const isAwakened = awakenedMonsters.includes(monsterID);
+		if (
+			quantity > 0 &&
+			!user.owns('Ancient blood ornament kit') &&
+			awakenedMonsters.every(id => Boolean(currentKCs[id])) &&
+			isAwakened
+		) {
+			messages.push('You received an **Ancient blood ornament kit**!');
+			await user.addItemsToBank({
+				items: new Bank().add('Ancient blood ornament kit', 1),
+				collectionLog: !user.cl.has('Ancient blood ornament kit')
+			});
+		}
+
 		const { newKC } = await user.incrementKC(monsterID, quantity);
 
 		const isOnTaskResult = await isOnSlayerTask({ user, monsterID, quantityKilled: quantity });
@@ -34,13 +73,23 @@ export const monsterTask: MinionTask = {
 			onSlayerTask: isOnTaskResult.isOnTask,
 			slayerMaster: isOnTaskResult.isOnTask ? isOnTaskResult.slayerMaster.osjsEnum : undefined,
 			hasSuperiors: superiorTable,
-			inCatacombs: isInCatacombs
+			inCatacombs: isInCatacombs,
+			lootTableOptions: {
+				tertiaryItemPercentageChanges: user.buildCATertiaryItemChanges()
+			}
 		};
 
 		// Calculate superiors and assign loot.
 		let newSuperiorCount = 0;
 		if (superiorTable && isOnTaskResult.isOnTask) {
-			for (let i = 0; i < quantity; i++) if (roll(200)) newSuperiorCount++;
+			let superiorDroprate = 200;
+			if (user.hasCompletedCATier('elite')) {
+				superiorDroprate = 150;
+				messages.push(`${Emoji.CombatAchievements} 25% more common superiors due to Elite CA tier`);
+			}
+			for (let i = 0; i < quantity; i++) {
+				if (roll(superiorDroprate)) newSuperiorCount++;
+			}
 		}
 		// Regular loot
 		const loot = monster.table.kill(quantity - newSuperiorCount, killOptions);
@@ -160,7 +209,9 @@ export const monsterTask: MinionTask = {
 			});
 		}
 
-		const messages: string[] = [];
+		if (deaths > 0) {
+			messages.push(`You died ${deaths}x times.`);
+		}
 		if (monster.effect) {
 			await monster.effect({
 				user,
