@@ -23272,6 +23272,23 @@ exports[`OSB Creatables 1`] = `
     "customReq": [Function],
     "inputItems": Bank {
       "bank": {
+        "11865": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Tztok slayer helmet (i)",
+    "outputItems": Bank {
+      "bank": {
+        "25900": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
         "21012": 1,
         "21907": 1,
       },
@@ -23361,6 +23378,23 @@ exports[`OSB Creatables 1`] = `
     "customReq": [Function],
     "inputItems": Bank {
       "bank": {
+        "11865": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Tzkal slayer helmet (i)",
+    "outputItems": Bank {
+      "bank": {
+        "25912": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
         "11864": 1,
       },
       "frozen": false,
@@ -23369,6 +23403,23 @@ exports[`OSB Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "25904": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "customReq": [Function],
+    "inputItems": Bank {
+      "bank": {
+        "11865": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Vampyric slayer helmet (i)",
+    "outputItems": Bank {
+      "bank": {
+        "25906": 1,
       },
       "frozen": false,
     },
