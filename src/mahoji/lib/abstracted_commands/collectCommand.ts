@@ -8,10 +8,10 @@ import { Skills } from '../../../lib/types';
 import { CollectingOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { getPOH } from './pohCommand';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export interface Collectable {
 	item: Item;
