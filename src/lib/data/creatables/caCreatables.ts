@@ -14,6 +14,17 @@ export const caCreatables: Createable[] = [
 			return null;
 		}
 	},
+	{
+		name: 'Tztok slayer helmet (i)',
+		inputItems: new Bank().add('Slayer helmet (i)'),
+		outputItems: new Bank().add('Tztok slayer helmet (i)'),
+		customReq: async user => {
+			if (!user.hasCompletedCATier('elite')) {
+				return 'You need to complete the Elite tier of the Combat Achievements to create this item.';
+			}
+			return null;
+		}
+	},
 	//
 	{
 		name: 'Dragon hunter crossbow (t)',
@@ -62,11 +73,33 @@ export const caCreatables: Createable[] = [
 			return null;
 		}
 	},
+	{
+		name: 'Tzkal slayer helmet (i)',
+		inputItems: new Bank().add('Slayer helmet (i)'),
+		outputItems: new Bank().add('Tzkal slayer helmet (i)'),
+		customReq: async user => {
+			if (!user.hasCompletedCATier('grandmaster')) {
+				return 'You need to complete the Grandmaster tier of the Combat Achievements to create this item.';
+			}
+			return null;
+		}
+	},
 	//
 	{
 		name: 'Vampyric slayer helmet',
 		inputItems: new Bank().add('Slayer helmet'),
 		outputItems: new Bank().add('Vampyric slayer helmet'),
+		customReq: async user => {
+			if (!user.hasCompletedCATier('master')) {
+				return 'You need to complete the Master tier of the Combat Achievements to create this item.';
+			}
+			return null;
+		}
+	},
+	{
+		name: 'Vampyric slayer helmet (i)',
+		inputItems: new Bank().add('Slayer helmet (i)'),
+		outputItems: new Bank().add('Vampyric slayer helmet (i)'),
 		customReq: async user => {
 			if (!user.hasCompletedCATier('master')) {
 				return 'You need to complete the Master tier of the Combat Achievements to create this item.';
