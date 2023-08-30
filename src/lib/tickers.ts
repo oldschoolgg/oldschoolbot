@@ -162,7 +162,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 			for (const row of result) {
 				if (!production) continue;
 				if (Number(row.last_daily_timestamp) === -1) continue;
-				if (row.bitfield === 31) continue;
+				if (row.bitfield === 35) continue;
 
 				await userStatsUpdate(
 					row.id,
