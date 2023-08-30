@@ -594,8 +594,13 @@ export function getTameStatus(tameActivity: TameActivity | null) {
 				];
 			case TameType.Gatherer:
 				return [`Collecting ${itemNameFromID(activityData.itemID)?.toLowerCase()}`, timeRemaining];
-			default:
-				return ['This tame type is not released yet.'];
+			case 'SpellCasting':
+				return [
+					`Casting ${seaMonkeySpells.find(i => i.id === activityData.itemID)!.name} ${
+						activityData.quantity
+					}x times`,
+					timeRemaining
+				];
 		}
 	}
 	return ['Idle'];

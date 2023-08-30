@@ -563,8 +563,8 @@ export function shortTameTripDesc(activity: TameActivity) {
 		case TameType.Gatherer: {
 			return `Collecting ${itemNameFromID(data.itemID)}`;
 		}
-		default:
-			return 'Nothing';
+		case 'SpellCasting':
+			return `Casting ${seaMonkeySpells.find(i => i.id === data.spellID)!.name}`;
 	}
 }
 
