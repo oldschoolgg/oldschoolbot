@@ -111,7 +111,7 @@ export async function questCommand(user: MUser, channelID: string, name?: string
 	const qpFromUnfinishedQuests = sumArr(
 		quests.filter(i => !user.user.finished_quest_ids.includes(i.id)).map(i => i.qp)
 	);
-	console.log({ qpFromUnfinishedQuests, currentQP, MAX_GLOBAL_QP });
+
 	if (qpFromUnfinishedQuests > 0 && currentQP >= MAX_GLOBAL_QP) {
 		return `You already have the maximum amount of Quest Points from doing quests, you can get ${qpFromUnfinishedQuests} more from specific quests.`;
 	}
