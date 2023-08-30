@@ -6,6 +6,7 @@ import Buyables from '../../lib/data/buyables/buyables';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
+import { MUserStats } from '../../lib/structures/MUserStats';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -77,7 +78,7 @@ export const buyCommand: OSBMahojiCommand = {
 
 		if (buyable.customReq) {
 			await deferInteraction(interaction);
-			const [hasCustomReq, reason] = await buyable.customReq(user);
+			const [hasCustomReq, reason] = await buyable.customReq(user, await MUserStats.fromID(user.id));
 			if (!hasCustomReq) {
 				return reason!;
 			}

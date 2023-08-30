@@ -1,7 +1,7 @@
 import { Time } from 'e';
 
 import { prisma } from '../../../lib/settings/prisma';
-import { ActivityTaskOptions } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
@@ -19,7 +19,7 @@ export async function strongHoldOfSecurityCommand(user: MUser, channelID: string
 		return "You've already completed the Stronghold of Security!";
 	}
 
-	await addSubTaskToActivityTask<ActivityTaskOptions>({
+	await addSubTaskToActivityTask<ActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		duration: randomVariation(Time.Minute * 10, 5),

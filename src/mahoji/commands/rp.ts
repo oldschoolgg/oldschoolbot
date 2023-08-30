@@ -8,6 +8,7 @@ import { Bank } from 'oldschooljs';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { BitField, Channel } from '../../lib/constants';
+import { GrandExchange } from '../../lib/grandExchange';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { dateFm, formatDuration } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -24,6 +25,19 @@ export const rpCommand: OSBMahojiCommand = {
 	description: 'Admin tools second set',
 	guildID: SupportServer,
 	options: [
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'action',
+			description: 'Action tools',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'validate_ge',
+					description: 'Validate the g.e.',
+					options: []
+				}
+			]
+		},
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'player',
@@ -130,6 +144,9 @@ export const rpCommand: OSBMahojiCommand = {
 		interaction,
 		guildID
 	}: CommandRunOptions<{
+		action?: {
+			validate_ge?: {};
+		};
 		player?: {
 			viewbank?: { user: MahojiUserOption };
 			add_patron_time?: { user: MahojiUserOption; tier: number; time: string };
@@ -152,6 +169,14 @@ export const rpCommand: OSBMahojiCommand = {
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
 		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
+
+		if (options.action?.validate_ge) {
+			const isValid = await GrandExchange.extensiveVerification();
+			if (isValid) {
+				return 'No issues found.';
+			}
+			return 'Something was invalid. Check logs!';
+		}
 
 		if (options.player?.set_buy_date) {
 			const userToCheck = await mUserFetch(options.player.set_buy_date.user.user.id);

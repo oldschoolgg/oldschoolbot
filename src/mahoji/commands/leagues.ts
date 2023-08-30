@@ -7,6 +7,7 @@ import { leagueBuyables } from '../../lib/data/leaguesBuyables';
 import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { getUsername } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 import { doMenu } from './leaderboard';
 
@@ -162,7 +163,7 @@ ${leaguesTrophiesBuyables
 				},
 				take: 100
 			});
-			interaction.deferReply();
+			await deferInteraction(interaction);
 			doMenu(
 				user,
 				channelID,

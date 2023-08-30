@@ -17,7 +17,8 @@ interface DegradeableItem {
 		| 'blood_fury_charges'
 		| 'tum_shadow_charges'
 		| 'blood_essence_charges'
-		| 'trident_charges';
+		| 'trident_charges'
+		| 'scythe_of_vitur_charges';
 	itemsToRefundOnBreak: Bank;
 	setup: GearSetupType;
 	aliases: string[];
@@ -151,6 +152,20 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: getOSItem('Uncharged toxic trident'),
 		convertOnCharge: true,
 		emoji: '🔱'
+	},
+	{
+		item: getOSItem('Scythe of vitur'),
+		settingsKey: 'scythe_of_vitur_charges',
+		itemsToRefundOnBreak: new Bank().add('Scythe of vitur (uncharged)'),
+		setup: 'melee',
+		aliases: ['scythe of vitur'],
+		chargeInput: {
+			cost: new Bank().add('Blood rune', 300).add('Vial of blood'),
+			charges: 100
+		},
+		unchargedItem: getOSItem('Scythe of vitur (uncharged)'),
+		convertOnCharge: true,
+		emoji: ''
 	}
 ];
 
@@ -218,10 +233,11 @@ export async function degradeItem({
 			}
 		} else if (hasInBank) {
 			// If its in bank, just remove 1 from bank.
-			await user.removeItemsFromBank(new Bank().add(item.id, 1));
+			let itemsToAdd = undefined;
 			if (degItem.itemsToRefundOnBreak) {
-				await user.addItemsToBank({ items: degItem.itemsToRefundOnBreak, collectionLog: false });
+				itemsToAdd = degItem.itemsToRefundOnBreak;
 			}
+			await user.transactItems({ itemsToRemove: new Bank().add(item.id, 1), itemsToAdd });
 		} else {
 			// If its not in bank OR equipped, something weird has gone on.
 			throw new Error(

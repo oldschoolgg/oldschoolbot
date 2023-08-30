@@ -1,11 +1,12 @@
 import { Bank } from 'oldschooljs';
 
-import { chompyHats, MAX_QP } from '../../constants';
+import { MAX_QP } from '../../../mahoji/lib/abstracted_commands/questCommand';
+import { chompyHats } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
-import { getToaKCs } from '../../simulation/toa';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
+import { MUserStats } from '../../structures/MUserStats';
 import { Skills } from '../../types';
 import itemID from '../../util/itemID';
 import { allTeamCapes } from '../misc';
@@ -38,7 +39,7 @@ export interface Buyable {
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
 	collectionLogReqs?: number[];
-	customReq?: (user: MUser) => Promise<[true] | [false, string]>;
+	customReq?: (user: MUser, userStats: MUserStats) => Promise<[true] | [false, string]>;
 }
 
 const randomEventBuyables: Buyable[] = [
@@ -96,8 +97,8 @@ for (const [capeName, kcReq] of ichCapes) {
 	toaCapes.push({
 		name: capeName,
 		gpCost: kcReq * 10,
-		customReq: async (user: MUser) => {
-			const toaKCs = await getToaKCs(user);
+		customReq: async (_, stats) => {
+			const toaKCs = stats.getToaKCs();
 			return toaKCs.normalKC + toaKCs.expertKC >= kcReq
 				? [true]
 				: [false, `You need a combined amount of ${kcReq} Normal/Expert Tombs of Amascut KCs to buy this.`];
@@ -1062,8 +1063,8 @@ const Buyables: Buyable[] = [
 		gpCost: 100_000,
 		ironmanPrice: 10_000,
 		qpRequired: 172,
-		customReq: async (user: MUser) => {
-			const toaKCs = await getToaKCs(user);
+		customReq: async (_, stats) => {
+			const toaKCs = stats.getToaKCs();
 			return toaKCs.expertKC >= 25 ? [true] : [false, 'You need a 25 Expert KC in Tombs of Amascut to buy this.'];
 		}
 	},

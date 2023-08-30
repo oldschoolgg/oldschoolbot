@@ -88,7 +88,7 @@ export const killCommand: OSBMahojiCommand = {
 			}
 		},
 		{
-			type: ApplicationCommandOptionType.Number,
+			type: ApplicationCommandOptionType.Integer,
 			name: 'quantity',
 			description: 'The amount you want to kill.',
 			required: false,

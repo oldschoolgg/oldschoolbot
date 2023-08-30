@@ -9,6 +9,10 @@ export interface OSBMahojiCommand extends ICommand {
 	attributes?: Omit<AbstractCommandAttributes, 'description'>;
 }
 
+export function isMahojiUserOption(data: any): data is MahojiUserOption {
+	return 'user' in data && 'id' in data.user;
+}
+
 export function convertMahojiCommandToAbstractCommand(command: OSBMahojiCommand): AbstractCommand {
 	return {
 		name: command.name,
@@ -41,7 +45,7 @@ function compressMahojiArgs(options: CommandOptions) {
 			continue;
 		}
 
-		if ('user' in val || 'member' in val) {
+		if (isMahojiUserOption(val)) {
 			newOptions[key] = (val as MahojiUserOption).user.id;
 			continue;
 		}
