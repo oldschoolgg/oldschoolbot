@@ -48,8 +48,8 @@ export const globalDroprates = {
 	},
 	zak: {
 		name: 'Zak (pet)',
-		baseRate: 6500,
-		clIncrease: 1.3,
+		baseRate: 3000,
+		clIncrease: 1.4,
 		minLength: true,
 		rolledPer: 'minute',
 		notes: ['Drops when smelting things (Excluding blast furnace)', 'Requires 10 QP']
