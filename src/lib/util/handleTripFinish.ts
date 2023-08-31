@@ -454,7 +454,7 @@ export async function handleTripFinish(
 		message.components = makeComponents(components);
 	}
 
-	if (!user.owns('Mysterious clue (1)') && roll(10)) {
+	if (!user.owns('Mysterious clue (1)') && roll(10) && !user.bitfield.includes(BitField.HasUnlockedYeti)) {
 		const img = await mahojiChatHead({
 			content: randArrItem([
 				'Traveller, I need your help... Use this clue to guide you.',
@@ -476,7 +476,9 @@ export async function handleTripFinish(
 				bso_mystery_trail_current_step_id: 1
 			});
 		}
-		messages.push(`You received ${loot}.`);
+		if (message.content) {
+			message.content += `\nYou received ${loot}.`;
+		}
 	}
 
 	handleTriggerShootingStar(user, data, components);
