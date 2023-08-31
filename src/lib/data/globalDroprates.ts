@@ -1,3 +1,4 @@
+import getOSItem from '../util/getOSItem';
 import { itemNameFromID } from '../util/smallUtils';
 import { doaMetamorphPets } from './CollectionsExport';
 
@@ -7,7 +8,8 @@ export const globalDroprates = {
 		baseRate: 7000,
 		clIncrease: 1.5,
 		minLength: true,
-		rolledPer: 'minute'
+		rolledPer: 'minute',
+		item: getOSItem('Doug')
 	},
 	takon: {
 		name: 'Takon (pet)',
@@ -15,7 +17,8 @@ export const globalDroprates = {
 		clIncrease: 1.5,
 		tameBaseRate: 4500,
 		rolledPer: 'kc',
-		minLength: false
+		minLength: false,
+		item: getOSItem('Takon')
 	},
 	steve: {
 		name: 'Steve (pet)',
@@ -23,28 +26,32 @@ export const globalDroprates = {
 		clIncrease: 1.5,
 		tameBaseRate: 500,
 		rolledPer: 'kc',
-		minLength: false
+		minLength: false,
+		item: getOSItem('Steve')
 	},
 	voidling: {
 		name: 'Voidling (pet)',
 		baseRate: 500,
 		clIncrease: 1.5,
 		rolledPer: 'kc',
-		minLength: false
+		minLength: false,
+		item: getOSItem('Voidling')
 	},
 	remy: {
 		name: 'Remy (pet)',
 		baseRate: 5000,
 		clIncrease: 1.5,
 		rolledPer: 'minute',
-		minLength: true
+		minLength: true,
+		item: getOSItem('Remy')
 	},
 	shelldon: {
 		name: 'Shelldon (pet)',
 		baseRate: 8000,
 		clIncrease: 1.5,
 		rolledPer: 'minute',
-		minLength: true
+		minLength: true,
+		item: getOSItem('Shelldon')
 	},
 	zak: {
 		name: 'Zak (pet)',
@@ -52,7 +59,8 @@ export const globalDroprates = {
 		clIncrease: 1.4,
 		minLength: true,
 		rolledPer: 'minute',
-		notes: ['Drops when smelting things (Excluding blast furnace)', 'Requires 10 QP']
+		notes: ['Drops when smelting things (Excluding blast furnace)', 'Requires 10 QP'],
+		item: getOSItem('Zak')
 	},
 	zippyHunter: {
 		name: 'Zippy (pet) (hunter)',
@@ -60,7 +68,8 @@ export const globalDroprates = {
 		clIncrease: 1.5,
 		minLength: false,
 		rolledPer: 'catch',
-		notes: ['Received when hunting Eastern ferrets', 'Can also be received from questing']
+		notes: ['Received when hunting Eastern ferrets', 'Can also be received from questing'],
+		item: getOSItem('Zippy')
 	},
 	zippyQuesting: {
 		name: 'Zippy (pet) (questing)',
@@ -74,7 +83,8 @@ export const globalDroprates = {
 		baseRate: 4000,
 		clIncrease: 1.5,
 		minLength: true,
-		rolledPer: 'minute'
+		rolledPer: 'minute',
+		item: getOSItem('Scruffy')
 	},
 	doaMetamorphPet: {
 		name: `Depths of Atlantis Metamorph (${doaMetamorphPets.map(itemNameFromID).join(', ')})`,
