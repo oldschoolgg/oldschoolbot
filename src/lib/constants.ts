@@ -234,7 +234,8 @@ export enum BitField {
 	UsedScarredTablet = 31,
 	UsedSirenicTablet = 32,
 	UsedStrangledTablet = 33,
-	UsedFrozenTablet = 34
+	UsedFrozenTablet = 34,
+	CleanHerbsFarming = 35
 }
 
 interface BitFieldData {
@@ -301,6 +302,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisableGrandExchangeDMs]: {
 		name: 'Disable Grand Exchange DMs',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.CleanHerbsFarming]: {
+		name: 'Clean herbs during farm runs',
 		protected: false,
 		userConfigurable: true
 	}
