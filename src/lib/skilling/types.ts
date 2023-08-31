@@ -236,6 +236,9 @@ export interface Plant {
 	inputItems: Bank;
 	aliases: string[];
 	outputCrop?: number;
+	cleanHerbCrop?: number;
+	herbXp?: number;
+	herbLvl?: number;
 	outputLogs?: number;
 	outputRoots?: number;
 	treeWoodcuttingLevel?: number;

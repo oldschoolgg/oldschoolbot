@@ -467,6 +467,7 @@ enum XpGainSource {
   PuroPuro
   MahoganyHomes
   AerialFishing
+  CleaningHerbsWhileFarming
 }
 
 model XPGain {
