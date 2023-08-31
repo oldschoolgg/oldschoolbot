@@ -1,13 +1,12 @@
 import { Bank } from 'oldschooljs';
 
-import itemID from '../../../../util/itemID';
+import getOSItem from '../../../../util/getOSItem';
 import { Mixable } from '../../../types';
 
 const Grimy: Mixable[] = [
 	{
-		name: 'Guam leaf',
+		item: getOSItem('Guam leaf'),
 		aliases: ['guam leaf', 'guam', 'grimy guam'],
-		id: itemID('Guam leaf'),
 		level: 3,
 		xp: 2.5,
 		inputItems: new Bank({ 'Grimy guam leaf': 1 }),
@@ -16,9 +15,8 @@ const Grimy: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Marrentill',
+		item: getOSItem('Marrentill'),
 		aliases: ['marrentill', 'grimy marrentill'],
-		id: itemID('Marrentill'),
 		level: 5,
 		xp: 3.8,
 		inputItems: new Bank({ 'Grimy marrentill': 1 }),
@@ -27,9 +25,8 @@ const Grimy: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Tarromin',
+		item: getOSItem('Tarromin'),
 		aliases: ['tarromin', 'grimy tarromin'],
-		id: itemID('Tarromin'),
 		level: 11,
 		xp: 5,
 		inputItems: new Bank({ 'Grimy tarromin': 1 }),
@@ -38,9 +35,8 @@ const Grimy: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Harralander',
+		item: getOSItem('Harralander'),
 		aliases: ['harralander', 'grimy harralander'],
-		id: itemID('Harralander'),
 		level: 20,
 		xp: 6.3,
 		inputItems: new Bank({ 'Grimy harralander': 1 }),
@@ -49,9 +45,8 @@ const Grimy: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Ranarr weed',
+		item: getOSItem('Ranarr weed'),
 		aliases: ['ranarr weed', 'grimy ranarr', 'ranarr', 'grimy ranarr weed'],
-		id: itemID('Ranarr weed'),
 		level: 25,
 		xp: 7.5,
 		inputItems: new Bank({ 'Grimy ranarr weed': 1 }),
@@ -60,9 +55,8 @@ const Grimy: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Toadflax',
+		item: getOSItem('Toadflax'),
 		aliases: ['toadflax', 'grimy toadflax'],
-		id: itemID('Toadflax'),
 		level: 30,
 		xp: 8,
 		inputItems: new Bank({ 'Grimy toadflax': 1 }),
@@ -71,9 +65,8 @@ const Grimy: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Irit leaf',
+		item: getOSItem('Irit leaf'),
 		aliases: ['irit leaf', 'irit', 'grimy irit', 'grimy irit leaf'],
-		id: itemID('Irit leaf'),
 		level: 40,
 		xp: 8.8,
 		inputItems: new Bank({ 'Grimy irit leaf': 1 }),
@@ -82,9 +75,8 @@ const Grimy: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Avantoe',
+		item: getOSItem('Avantoe'),
 		aliases: ['avantoe', 'grimy avantoe'],
-		id: itemID('Avantoe'),
 		level: 48,
 		xp: 10,
 		inputItems: new Bank({ 'Grimy avantoe': 1 }),
@@ -93,9 +85,8 @@ const Grimy: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Kwuarm',
+		item: getOSItem('Kwuarm'),
 		aliases: ['kwuarm', 'grimy kwuarm'],
-		id: itemID('Kwuarm'),
 		level: 54,
 		xp: 11.3,
 		inputItems: new Bank({ 'Grimy kwuarm': 1 }),
@@ -104,9 +95,8 @@ const Grimy: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Snapdragon',
+		item: getOSItem('Snapdragon'),
 		aliases: ['snapdragon', 'grimy snapdragon'],
-		id: itemID('Snapdragon'),
 		level: 59,
 		xp: 11.8,
 		inputItems: new Bank({ 'Grimy snapdragon': 1 }),
@@ -115,9 +105,8 @@ const Grimy: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Cadantine',
+		item: getOSItem('Cadantine'),
 		aliases: ['cadantine', 'grimy cadantine'],
-		id: itemID('Cadantine'),
 		level: 65,
 		xp: 12.5,
 		inputItems: new Bank({ 'Grimy cadantine': 1 }),
@@ -126,9 +115,8 @@ const Grimy: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Lantadyme',
+		item: getOSItem('Lantadyme'),
 		aliases: ['lantadyme', 'grimy lantadyme'],
-		id: itemID('Lantadyme'),
 		level: 67,
 		xp: 13.1,
 		inputItems: new Bank({ 'Grimy lantadyme': 1 }),
@@ -137,9 +125,8 @@ const Grimy: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Dwarf weed',
+		item: getOSItem('Dwarf weed'),
 		aliases: ['dwarf weed', 'grimy dwarf weed'],
-		id: itemID('Dwarf weed'),
 		level: 70,
 		xp: 13.8,
 		inputItems: new Bank({ 'Grimy dwarf weed': 1 }),
@@ -148,9 +135,8 @@ const Grimy: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Torstol',
+		item: getOSItem('Torstol'),
 		aliases: ['torstol', 'grimy torstol'],
-		id: itemID('Torstol'),
 		level: 75,
 		xp: 15,
 		inputItems: new Bank({ 'Grimy torstol': 1 }),

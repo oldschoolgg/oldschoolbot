@@ -9,6 +9,7 @@ import { collectingTask } from '../tasks/minions/collectingActivity';
 import { constructionTask } from '../tasks/minions/constructionActivity';
 import { cookingTask } from '../tasks/minions/cookingActivity';
 import { craftingTask } from '../tasks/minions/craftingActivity';
+import { cutLeapingFishTask } from '../tasks/minions/cutLeapingFishActivity';
 import { darkAltarTask } from '../tasks/minions/darkAltarActivity';
 import { enchantingTask } from '../tasks/minions/enchantingActivity';
 import { farmingTask } from '../tasks/minions/farmingActivity';
@@ -172,6 +173,7 @@ export const tasks: MinionTask[] = [
 	tiaraRunecraftTask,
 	nightmareZoneTask,
 	shadesOfMortonTask,
+	cutLeapingFishTask,
 	toaTask,
 	underwaterAgilityThievingTask,
 	strongholdTask,

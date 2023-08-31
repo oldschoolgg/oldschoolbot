@@ -1,4 +1,5 @@
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Emoji } from '../constants';
@@ -174,9 +175,8 @@ export interface Fletchable {
 }
 
 export interface Mixable {
-	name: string;
+	item: Item;
 	aliases: string[];
-	id: number;
 	level: number;
 	xp: number;
 	inputItems: Bank;
@@ -186,6 +186,12 @@ export interface Mixable {
 	zahur?: boolean;
 	wesley?: boolean;
 	qpRequired?: number;
+}
+
+export interface CutLeapingFish {
+	item: Item;
+	aliases: string[];
+	tickRate: number;
 }
 
 export interface Bone {
