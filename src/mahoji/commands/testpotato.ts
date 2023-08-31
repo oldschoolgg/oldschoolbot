@@ -862,6 +862,9 @@ ${droprates.join('\n')}`),
 							scales: 100_000,
 							dartQuantity: 100_000,
 							dartID: itemID('Dragon dart')
+						},
+						bitfield: {
+							push: BitField.HasUnlockedYeti
 						}
 					});
 					await giveMaxStats(user);
