@@ -110,5 +110,11 @@ export const guardiansOfTheRiftBuyables: Buyable[] = [
 		itemCost: new Bank({
 			'Abyssal pearls': 100
 		})
+	},
+	{
+		name: 'Abyssal lantern',
+		itemCost: new Bank({
+			'Abyssal pearls': 1500
+		})
 	}
 ];
