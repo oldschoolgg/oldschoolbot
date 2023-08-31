@@ -73,7 +73,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 45 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackMagic],
+		attackStylesUsed: [GearStat.AttackSlash],
 		requiredQuests: [QuestID.DesertTreasureII],
 		degradeableItemUsage: [
 			{
@@ -148,7 +148,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 45 * 20 * 2.5,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackMagic],
+		attackStylesUsed: [GearStat.AttackSlash],
 		requiredQuests: [QuestID.DesertTreasureII],
 		degradeableItemUsage: [
 			{
@@ -236,7 +236,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 45 * 20 * 2.5,
-		attackStyleToUse: GearStat.AttackMagic,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
 		requiredQuests: [QuestID.DesertTreasureII],
 		deathProps: {
@@ -312,7 +312,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 45 * 20,
-		attackStyleToUse: GearStat.AttackMagic,
+		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
 		requiredQuests: [QuestID.DesertTreasureII],
 		itemCost: {
@@ -389,7 +389,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 55 * 20,
-		attackStyleToUse: GearStat.AttackRanged,
+		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],
 		requiredQuests: [QuestID.DesertTreasureII],
 		degradeableItemUsage: [
@@ -481,7 +481,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 45 * 20 * 2.5,
-		attackStyleToUse: GearStat.AttackRanged,
+		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],
 		requiredQuests: [QuestID.DesertTreasureII],
 		degradeableItemUsage: [
@@ -562,7 +562,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 45 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackMagic],
+		attackStylesUsed: [GearStat.AttackSlash],
 		requiredQuests: [QuestID.DesertTreasureII],
 		degradeableItemUsage: [
 			{
@@ -637,7 +637,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 45 * 20 * 2.5,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackMagic],
+		attackStylesUsed: [GearStat.AttackSlash],
 		requiredQuests: [QuestID.DesertTreasureII],
 		degradeableItemUsage: [
 			{
