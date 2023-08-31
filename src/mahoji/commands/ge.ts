@@ -1,7 +1,7 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit/dist/util/expressionParser';
-import { GEListing, GETransaction } from '@prisma/client';
+//import { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { sumArr, uniqueArr } from 'e';
+import { /*sumArr,*/ uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 
@@ -9,17 +9,19 @@ import { createGECancelButton, GrandExchange } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 import { prisma } from '../../lib/settings/prisma';
 import { formatDuration, itemNameFromID, makeComponents, toKMB } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
+//import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { ownedItemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 
+/*
 type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
 	sellTransactions: GETransaction[];
 };
+*/
 
 function parseNumber(str: string) {
 	if (typeof str === 'number') str = `${str}`;
@@ -28,6 +30,7 @@ function parseNumber(str: string) {
 	return number;
 }
 
+/*
 function geListingToString(
 	listing: GEListingWithTransactions,
 	buyLimit?: Awaited<ReturnType<(typeof GrandExchange)['checkBuyLimitForListing']>>
@@ -64,6 +67,7 @@ function geListingToString(
 		Number(listing.asking_price_per_item)
 	)} GP each. ${allTransactions.length}x transactions made.${buyLimitStr}`;
 }
+*/
 
 const quantityOption: CommandOption = {
 	name: 'quantity',
@@ -280,6 +284,7 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 		}
 
 		if (options.my_listings) {
+			/*
 			const activeListings = await prisma.gEListing.findMany({
 				where: {
 					user_id: userID,
@@ -325,7 +330,20 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 				},
 				take: 5
 			});
+			*/
 
+			const image = await geImageGenerator.createInterface({
+				user,
+				collection: true
+			});
+
+			return {
+				file: {
+					name: 'fishy.png',
+					attachment: image!
+				}
+			};
+			/*
 			return `**Active Listings**
 ${(
 	await Promise.all(
@@ -338,6 +356,7 @@ ${(
 
 **Recent Fulfilled/Cancelled Listings**
 ${recentInactiveListings.map(i => geListingToString(i)).join('\n')}`;
+*/
 		}
 
 		if (GrandExchange.locked) {

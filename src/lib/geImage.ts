@@ -1,36 +1,39 @@
+import { prisma } from './settings/prisma';
 import { formatItemStackQuantity, toTitleCase, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { Image, SKRSContext2D, loadImage, Canvas } from '@napi-rs/canvas';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { canvasImageFromBuffer, fillTextXTimesInCtx } from './util/canvasUtil';
+import { fillTextXTimesInCtx } from './util/canvasUtil';
 import getOSItem from './util/getOSItem';
 import { logError } from './util/logError';
 import fetch from 'node-fetch';
 
+import { GrandExchange } from './grandExchange';
+import { GEListing } from '@prisma/client';
+
 const CACHE_DIR = './icon_cache';
 
 class GeImageTask {
-	private geInterface: Image | null = null;
-	private geInterfaceCollection: Image | null = null;
-	private geSlotLocked: Image | null = null;
-	private geSlotOpen: Image | null = null;
-	private geSlotActive: Image | null = null;
-	private geProgressShadow: Image | null = null;
-	private geProgressCollectionShadow: Image | null = null;
-	private geCollectionSlot: Image | null = null;
-	private geCollectionSlotLocked: Image | null = null;
-	//private geSetupOffer: Image | null = null;
-	//private geHistoryHeader: Image | null = null;
-	//private geHistoryBody: Image | null = null;
-	//private geHistoryFooter: Image | null = null;
-	private geIconBuy: Image | null = null;
-	private geIconSell: Image | null = null;
-	//private geIconBuyBig: Image | null = null;
-	//private geIconSellBig: Image | null = null;
-	//private geIconSellBuyBig: Image | null = null;
+	public geInterface: Image | null = null;
+	public geInterfaceCollection: Image | null = null;
+	public geSlotLocked: Image | null = null;
+	public geSlotOpen: Image | null = null;
+	public geSlotActive: Image | null = null;
+//	public geProgressShadow: Image | null = null;
+//	public geProgressCollectionShadow: Image | null = null;
+	public geCollectionSlot: Image | null = null;
+	public geCollectionSlotLocked: Image | null = null;
+	//public geSetupOffer: Image | null = null;
+	//public geHistoryHeader: Image | null = null;
+	//public geHistoryBody: Image | null = null;
+	//public geHistoryFooter: Image | null = null;
+	public geIconBuy: Image | null = null;
+	public geIconSell: Image | null = null;
+	//public geIconBuyBig: Image | null = null;
+	//public geIconSellBig: Image | null = null;
+	//public geIconSellBuyBig: Image | null = null;
 	public itemIconsList: Set<number>;
 	public itemIconImagesCache: Map<number, Image>;
-	public alternateImages: { id: number; geId: number; image: Image }[] = [];
 
 	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
@@ -42,72 +45,75 @@ class GeImageTask {
 
 	async init() {
 		await this.prepare();
-
-		// Init bank sprites
-
 		await this.run();
 	}
 
 	async prepare() {
 
-		this.geInterface = await canvasImageFromBuffer(
+		this.geInterface = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_interface.png')
 		);
-		this.geSlotLocked = await canvasImageFromBuffer(
+		this.geSlotLocked = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_slot_locked.png')
 		);
-		this.geSlotOpen = await canvasImageFromBuffer(
+		this.geSlotOpen = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_slot_open.png')
 		);
-		this.geSlotActive = await canvasImageFromBuffer(
+		this.geSlotActive = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_slot_active.png')
 		);
-		this.geProgressShadow = await canvasImageFromBuffer(
+		/*
+		this.geProgressShadow = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_progress_shadow.png')
 		);
-		this.geProgressCollectionShadow = await canvasImageFromBuffer(
+		this.geProgressCollectionShadow = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_shadow_collection_progress.png')
 		);
-		this.geInterfaceCollection = await canvasImageFromBuffer(
+		*/
+		this.geInterfaceCollection = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_interface_collection_box.png')
 		);
-		this.geIconBuy = await canvasImageFromBuffer(
+		this.geIconBuy = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_buy_mini_icon.png')
 		);
-		this.geIconSell = await canvasImageFromBuffer(
+		this.geIconSell = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_sell_mini_icon.png')
 		);
 		/*
-		this.geIconBuyBig = await canvasImageFromBuffer(
+		this.geIconBuyBig = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_icon_buy_big.png')
 		);
-		this.geIconSellBig = await canvasImageFromBuffer(
+		this.geIconSellBig = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_icon_sell_big.png')
 		);
-		this.geIconSellBuyBig = await canvasImageFromBuffer(
+		this.geIconSellBuyBig = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_icon_sellbuy_big.png')
 		);
 		*/
-		this.geCollectionSlot = await canvasImageFromBuffer(
+		this.geCollectionSlot = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_slot_collection.png')
 		);
-		this.geCollectionSlotLocked = await canvasImageFromBuffer(
+		this.geCollectionSlotLocked = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_slot_collection_locked.png')
 		);
 		/*
-		this.geSetupOffer = await canvasImageFromBuffer(
+		this.geSetupOffer = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_setup_offer.png')
 		);
-		this.geHistoryHeader = await canvasImageFromBuffer(
+		this.geHistoryHeader = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_history_header.png')
 		);
-		this.geHistoryBody = await canvasImageFromBuffer(
+		this.geHistoryBody = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_history_body.png')
 		);
-		this.geHistoryFooter = await canvasImageFromBuffer(
+		this.geHistoryFooter = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_history_footer.png')
 		);
 		*/
+	}
+
+	async run() {
+		await this.cacheFiles();
 	}
 
 	async cacheFiles() {
@@ -159,15 +165,15 @@ class GeImageTask {
 	async getSlotImage(
 		ctx: SKRSContext2D,
 		slot: number,
-		slotData: someData | undefined,
 		collection: boolean = false,
-		locked: boolean = false
+		locked: boolean = false,
+		listing: GEListing
 	) {
 		const slotImage = collection
 			? locked
 				? this.geCollectionSlotLocked!
 				: this.geCollectionSlot!
-			: slotData
+			: true
 			? this.geSlotActive!
 			: locked
 			? this.geSlotLocked!
@@ -178,7 +184,7 @@ class GeImageTask {
 			// Draw Bank Title
 			ctx.textAlign = 'center';
 			ctx.font = '16px RuneScape Bold 12';
-			let type = slotData ? ` - ${toTitleCase(slotData.type)}` : '';
+			let type = true ? ` - ${toTitleCase('godis')}` : '';
 			this.drawText(
 				ctx,
 				locked ? 'Locked' : `Slot ${slot}${type}`,
@@ -189,11 +195,11 @@ class GeImageTask {
 			);
 		}
 
-		if (slotData) {
+		if (listing.quantity_remaining) {
 			let cashImage = await this.getItemImage(995);
 			// Get item
-			const itemImage = await this.getItemImage(someData.id);
-
+			const itemImage = await this.getItemImage(listing.item_id);
+			
 			// Draw item
 			ctx.textAlign = 'left';
 			ctx.font = '16px OSRSFontCompact';
@@ -212,7 +218,7 @@ class GeImageTask {
 				ctx.save();
 				ctx.translate(11, 32);
 				// First collection slot (item being bought or cash if selling)
-				if (slotData.collectionQuantity > 0) {
+				if (listing.quantity_remaining > 0) {
 					ctx.drawImage(
 						itemImage,
 						Math.floor((32 - itemImage!.width) / 2) + 2,
@@ -220,14 +226,14 @@ class GeImageTask {
 						itemImage!.width,
 						itemImage!.height
 					); 
-					if (slotData.collectionQuantity > 1) {
-						const formattedQuantity = formatItemStackQuantity(slotData.collectionQuantity);
-						ctx.fillStyle = generateHexColorForCashStack(slotData.collectionQuantity);
+					if (listing.quantity_remaining > 1) {
+						const formattedQuantity = formatItemStackQuantity(listing.quantity_remaining);
+						ctx.fillStyle = generateHexColorForCashStack(listing.quantity_remaining);
 						this.drawText(ctx, formattedQuantity, 0, 9, undefined, 10);
 					}
 				}
-				if (slotData.collectionCash > 0) {
-					if (slotData.collectionQuantity > 0) {
+				if (listing.gp_refunded > 0) {
+					if (listing.quantity_remaining > 0) {
 						ctx.translate(45, 0);
 					}
 					ctx.drawImage(
@@ -237,8 +243,8 @@ class GeImageTask {
 						cashImage!.width,
 						cashImage!.height
 					);
-					const formattedQuantity = formatItemStackQuantity(slotData.collectionCash);
-					ctx.fillStyle = generateHexColorForCashStack(slotData.collectionCash);
+					const formattedQuantity = formatItemStackQuantity(Number(listing.gp_refunded));
+					ctx.fillStyle = generateHexColorForCashStack(Number(listing.gp_refunded));
 					this.drawText(ctx, formattedQuantity, 0, 9, undefined, 10);
 				}
 			} else {
@@ -250,14 +256,14 @@ class GeImageTask {
 					itemImage!.width,
 					itemImage!.height
 				);
-				if (slotData.quantity > 1) {
-					const formattedQuantity = formatItemStackQuantity(slotData.quantity);
-					ctx.fillStyle = generateHexColorForCashStack(slotData.quantity);
+				if (listing.total_quantity > 1) {
+					const formattedQuantity = formatItemStackQuantity(listing.total_quantity);
+					ctx.fillStyle = generateHexColorForCashStack(listing.total_quantity);
 					this.drawText(ctx, formattedQuantity, 0, 9, undefined, 10);
 				} 
 				// Draw item name
 				ctx.translate(39, 11);
-				const itemName = getOSItem(slotData.item).name;
+				const itemName = getOSItem(listing.item_id).name;
 				ctx.fillStyle = '#FFB83F';
 				ctx.font = '16px OSRSFontCompact';
 				this.drawText(ctx, itemName, 0, 0, ctx.measureText('Elysian spirit').width, 10);
@@ -266,7 +272,7 @@ class GeImageTask {
 
 			if (collection) {
 				// Draw icon
-				const icon = slotData.type === 'sell' ? this.geIconSell! : this.geIconBuy!;
+				const icon = listing.type === 'Sell' ? this.geIconSell! : this.geIconBuy!;
 				ctx.save();
 				ctx.translate(41, 2);
 				ctx.drawImage(
@@ -289,7 +295,7 @@ class GeImageTask {
 				ctx.fillStyle = '#ff981f';
 				this.drawText(
 					ctx,
-					`${Number(slotData.price).toLocaleString()} coins`,
+					`${Number(listing.asking_price_per_item).toLocaleString()} coins`,
 					Math.floor(this.geSlotOpen!.width / 2) + 1,
 					17,
 					undefined,
@@ -298,11 +304,14 @@ class GeImageTask {
 				ctx.restore();
 			}
 			// Draw progress bar
+			ctx.save();
+			/*
 			const progressShadowImage = collection ? this.geProgressCollectionShadow! : this.geProgressShadow!;
 
-			ctx.save();
+
 			if (collection) ctx.translate(9, 9);
 			else ctx.translate(5, 75);
+
 
 			const maxWidth = progressShadowImage.width;
 			ctx.fillStyle = '#ff981f';
@@ -316,13 +325,17 @@ class GeImageTask {
 				ctx.fillStyle = '#8F0000';
 				progressWidth = maxWidth;
 			}
+
 			// Change color to show that this trade is locked
+
 			if (slotData.limited && ctx.fillStyle === '#ff981f') {
 				ctx.fillStyle = '#174972';
 			}
+
 			ctx.fillRect(0, 0, progressWidth, progressShadowImage.height);
 			ctx.drawImage(progressShadowImage, 0, 0, progressShadowImage.width, progressShadowImage.height);
 			// Draw locked text
+
 			if (!collection && slotData.limited && ctx.fillStyle === '#174972') {
 				ctx.textAlign = 'center';
 				ctx.fillStyle = '#FFB83F';
@@ -335,6 +348,7 @@ class GeImageTask {
 					10
 				);
 			}
+			*/
 			ctx.restore();
 		}
 	}
@@ -374,12 +388,29 @@ class GeImageTask {
 	}
 
 	async createInterface(opts: {
-		title?: string;
 		user: MUser;
 		collection: boolean;
 		}): Promise<Buffer> {
-		let { user, collection, title = ''} = opts;
-		const userAvailableSlots = this.getUserAvailableSlots(msg);
+		let { user, collection } = opts;
+		const activeListings = await prisma.gEListing.findMany({
+			where: {
+				user_id: user.id,
+				quantity_remaining: {
+					gt: 0
+				},
+				fulfilled_at: null,
+				cancelled_at: null
+			},
+			include: {
+				buyTransactions: true,
+				sellTransactions: true
+			},
+			orderBy: {
+				created_at: 'desc'
+			}
+		});
+
+		const { slots } = await GrandExchange.calculateSlotsOfUser(user);
 		const canvasImage = collection ? this.geInterfaceCollection! : this.geInterface!;
 
 		const canvas = new Canvas(canvasImage.width, canvasImage.height);
@@ -392,7 +423,8 @@ class GeImageTask {
 		else ctx.translate(9, 64);
 		let y = 0;
 		let x = 0;
-		for (let i = 0; i < 8; i++) {
+		for (let i = 0; i < slots; i++) {
+			const listing = activeListings[i];
 			if (i > 0 && i % 4 === 0) {
 				y += (collection ? this.geCollectionSlot!.height : this.geSlotOpen!.height) + 10;
 				x = 0;
@@ -402,9 +434,9 @@ class GeImageTask {
 			await this.getSlotImage(
 				ctx,
 				i + 1,
-				slots.find(s => s.slot === i + 1),
 				collection,
-				!userAvailableSlots.includes(i + 1)
+				false,
+				listing
 			);
 			ctx.restore();
 			x++;
@@ -642,10 +674,6 @@ class GeImageTask {
 		if (!time.m || time.m < 1) return '< 1m';
 		return nums.map(([key, val]) => `${val}${key}`).join('');
 	}
-
-	async run() {
-		await this.cacheFiles();
-	}
 }
 
 declare global {
@@ -659,4 +687,5 @@ declare global {
 	}
 }
 global.geImageGenerator = new GeImageTask();
+console.log('geimage')
 geImageGenerator.init();
