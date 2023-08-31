@@ -857,7 +857,9 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	if (monster.mustBeAdult && tame.growth_stage !== tame_growth.adult) {
 		return 'Only fully grown tames can kill this monster.';
 	}
-
+	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
+		return "You haven't unlocked this monster..";
+	}
 	// Get the amount stronger than minimum, and set boost accordingly:
 	const [speciesMinCombat, speciesMaxCombat] = species.combatLevelRange;
 	// Example: If combat level is 80/100 with 70 min, give a 10% boost.
