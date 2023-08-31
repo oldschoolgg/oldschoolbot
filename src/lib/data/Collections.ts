@@ -1044,6 +1044,31 @@ export const allCollectionLogs: ICollection = {
 				],
 				items: [...godWarsDungeonCL, ...NexCL]
 			},
+			'The Forgotten Four': {
+				counts: false,
+				alias: ['dt2', 'desert treasure 2', 'forgotten four'],
+				kcActivity: {
+					Default: [
+						Monsters.TheLeviathan.name,
+						Monsters.TheWhisperer.name,
+						Monsters.Vardorvis.name,
+						Monsters.DukeSucellus.name
+					],
+					Awakened: [
+						Monsters.AwakenedTheLeviathan.name,
+						Monsters.AwakenedTheWhisperer.name,
+						Monsters.AwakenedVardorvis.name,
+						Monsters.AwakenedDukeSucellus.name
+					]
+				},
+				allItems: [
+					...Monsters.TheLeviathan.allItems,
+					...Monsters.TheWhisperer.allItems,
+					...Monsters.Vardorvis.allItems,
+					...Monsters.DukeSucellus.allItems
+				],
+				items: [...theLeviathanCL, ...theWhispererCL, ...vardorvisCL, ...dukeSucellusCL]
+			},
 			Creatables: {
 				counts: false,
 				items: Createables.filter(i => i.noCl !== true)

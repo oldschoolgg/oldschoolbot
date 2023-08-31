@@ -1264,46 +1264,46 @@ export const masterCombatAchievements: CombatAchievement[] = [
 			hasChance: 'TombsOfAmascut'
 		}
 	},
-	{
-		id: 2111,
-		name: 'The IV Jad Challenge',
-		desc: "Complete TzHaar-Ket-Rak's fourth challenge.",
-		type: 'kill_count',
-		monster: "TzHaar-Ket-Rak's Challenges",
-		notPossible: true
-	},
-	{
-		id: 2112,
-		name: 'Multi-Style Specialist',
-		desc: "Complete TzHaar-Ket-Rak's third challenge while using a different attack style for each JalTok-Jad.",
-		type: 'mechanical',
-		monster: "TzHaar-Ket-Rak's Challenges",
-		notPossible: true
-	},
-	{
-		id: 2113,
-		name: "TzHaar-Ket-Rak's Speed-Chaser",
-		desc: "Complete TzHaar-Ket-Rak's third challenge in less than 3 minutes.",
-		type: 'speed',
-		monster: "TzHaar-Ket-Rak's Challenges",
-		notPossible: true
-	},
-	{
-		id: 2114,
-		name: 'Facing Jad Head-on IV',
-		desc: "Complete TzHaar-Ket-Rak's fourth challenge with only melee.",
-		type: 'restriction',
-		monster: "TzHaar-Ket-Rak's Challenges",
-		notPossible: true
-	},
-	{
-		id: 2115,
-		name: "Supplies? Who Needs 'em?",
-		desc: "Complete TzHaar-Ket-Rak's third challenge without having anything in your inventory.",
-		type: 'perfection',
-		monster: "TzHaar-Ket-Rak's Challenges",
-		notPossible: true
-	},
+	// {
+	// 	id: 2111,
+	// 	name: 'The IV Jad Challenge',
+	// 	desc: "Complete TzHaar-Ket-Rak's fourth challenge.",
+	// 	type: 'kill_count',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
+	// {
+	// 	id: 2112,
+	// 	name: 'Multi-Style Specialist',
+	// 	desc: "Complete TzHaar-Ket-Rak's third challenge while using a different attack style for each JalTok-Jad.",
+	// 	type: 'mechanical',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
+	// {
+	// 	id: 2113,
+	// 	name: "TzHaar-Ket-Rak's Speed-Chaser",
+	// 	desc: "Complete TzHaar-Ket-Rak's third challenge in less than 3 minutes.",
+	// 	type: 'speed',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
+	// {
+	// 	id: 2114,
+	// 	name: 'Facing Jad Head-on IV',
+	// 	desc: "Complete TzHaar-Ket-Rak's fourth challenge with only melee.",
+	// 	type: 'restriction',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
+	// {
+	// 	id: 2115,
+	// 	name: "Supplies? Who Needs 'em?",
+	// 	desc: "Complete TzHaar-Ket-Rak's third challenge without having anything in your inventory.",
+	// 	type: 'perfection',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
 	{
 		id: 2116,
 		name: 'Nibblers, Begone!',

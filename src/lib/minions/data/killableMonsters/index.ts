@@ -48,7 +48,11 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{ [itemID('Barrows gloves')]: 2 },
-			{ [itemID("Iban's staff")]: 5 },
+			{
+				[itemID("Iban's staff")]: 5,
+				[itemID('Harmonised nightmare staff')]: 7,
+				[itemID("Tumeken's shadow")]: 10
+			},
 			{ [itemID('Strange old lockpick')]: 7 }
 		],
 		levelRequirements: {
@@ -87,10 +91,12 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Armadyl chestplate')]: 2
+				[itemID('Armadyl chestplate')]: 2,
+				[itemID('Masori body (f)')]: 4
 			},
 			{
-				[itemID('Armadyl chainskirt')]: 2
+				[itemID('Armadyl chainskirt')]: 2,
+				[itemID('Masori chaps (f)')]: 4
 			},
 			{
 				[itemID('Twisted bow')]: 6

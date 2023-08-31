@@ -1,8 +1,9 @@
-import { notEmpty, randFloat, randInt } from 'e';
+import { notEmpty, objectKeys, randFloat, randInt } from 'e';
 import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
+import { CombatAchievements } from '../combat_achievements/combatAchievements';
 import { PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { KillableMonster } from '../minions/types';
@@ -192,7 +193,16 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 
 	const newUser = await getNewUser(_user.id);
 
-	const quantity = randInt(assignedTask!.amount[0], assignedTask!.amount[1]);
+	let maxQuantity = assignedTask!.amount[1];
+	if (bossTask && _user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)) {
+		for (const tier of objectKeys(CombatAchievements)) {
+			if (_user.hasCompletedCATier(tier)) {
+				maxQuantity += 5;
+			}
+		}
+	}
+
+	const quantity = randInt(assignedTask!.amount[0], maxQuantity);
 	const currentTask = await prisma.slayerTask.create({
 		data: {
 			user_id: newUser.id,

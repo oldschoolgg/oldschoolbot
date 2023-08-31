@@ -2,6 +2,7 @@ import { Prisma } from '@prisma/client';
 import { deepClone, percentChance, Time } from 'e';
 import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 
+import { Emoji } from '../../lib/constants';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -199,13 +200,23 @@ export const monsterTask: MinionTask = {
 			onSlayerTask: isOnTaskResult.isOnTask,
 			slayerMaster: isOnTaskResult.isOnTask ? isOnTaskResult.slayerMaster.osjsEnum : undefined,
 			hasSuperiors: superiorTable,
-			inCatacombs: isInCatacombs
+			inCatacombs: isInCatacombs,
+			lootTableOptions: {
+				tertiaryItemPercentageChanges: user.buildCATertiaryItemChanges()
+			}
 		};
 
 		// Calculate superiors and assign loot.
 		let newSuperiorCount = 0;
 		if (superiorTable && isOnTaskResult.isOnTask) {
-			for (let i = 0; i < quantity; i++) if (roll(200)) newSuperiorCount++;
+			let superiorDroprate = 200;
+			if (user.hasCompletedCATier('elite')) {
+				superiorDroprate = 150;
+				messages.push(`${Emoji.CombatAchievements} 25% more common superiors due to Elite CA tier`);
+			}
+			for (let i = 0; i < quantity; i++) {
+				if (roll(superiorDroprate)) newSuperiorCount++;
+			}
 		}
 		// Regular loot
 		const loot = monster.table.kill(quantity - newSuperiorCount, killOptions);

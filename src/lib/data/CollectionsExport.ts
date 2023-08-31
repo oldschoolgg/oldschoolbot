@@ -2323,9 +2323,11 @@ export const dukeSucellusCL = resolveItems([
 	'Virtus mask',
 	'Virtus robe top',
 	'Virtus robe bottom',
-	'Frozen tablet',
+	'Magus vestige',
 	'Chromium ingot',
-	"Awakener's orb"
+	"Awakener's orb",
+	'Ice quartz',
+	'Frozen tablet'
 ]);
 
 export const theLeviathanCL = resolveItems([
