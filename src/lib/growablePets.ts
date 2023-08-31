@@ -50,6 +50,10 @@ export const growablePets: GrowablePet[] = [
 	{
 		growthRate: (Time.Hour * 2) / Time.Minute,
 		stages: resolveItems(['Saradomin egg', 'Baby saradomin owl', 'Juvenile saradomin owl', 'Saradomin owl'])
+	},
+	{
+		growthRate: (Time.Hour * 2) / Time.Minute,
+		stages: resolveItems(['Penguin egg', 'Skip'])
 	}
 ];
 
@@ -94,4 +98,7 @@ export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOpt
 	}
 }
 
-export const growablePetsCL = growablePets.map(i => i.stages).flat();
+export const growablePetsCL = growablePets
+	.map(i => i.stages)
+	.flat()
+	.filter(i => !resolveItems(['Skip', 'Penguin egg']).includes(i));

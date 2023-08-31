@@ -12,25 +12,25 @@ import { CustomMonster } from './customMonsters';
 const DeadTable = new LootTable().add('Iron med helm').add('Bones').add('Skull').add('Bronze sword');
 
 export const YetiLootTable = new LootTable()
+	.every('Raw yeti meat', [1, 2])
 	.every('Yeti hide', [2, 3])
-	.tertiary(100, 'Frostfang cape')
+	.tertiary(100, 'Frostclaw cape')
 	.tertiary(100, 'Cold heart')
-	.tertiary(500, 'Penguin egg')
+	.tertiary(900, 'Penguin egg')
 	.tertiary(20, DeadTable)
 
 	.add('Gold bracelet', [100, 200])
 
 	/* Weapons and armour */
-	.add('Adamant full helm', [1, 10], 10)
-	.add('Steel platebody', [1, 10], 10)
-	.add('Mithril warhammer', [1, 10], 5)
-	.add('Adamant axe', [1, 10], 5)
+	.add('Rune full helm', [1, 10], 10)
+	.add('Rune platebody', [1, 10], 10)
+	.add('Rune warhammer', [1, 10], 5)
+	.add('Rune axe', [1, 10], 5)
 	.add('Rune kiteshield', [1, 10], 2)
 	.add('Granite shield', [1, 10], 1)
 	.add('Rune warhammer', [1, 10], 1)
 
 	/* Runes */
-	.add('Earth rune', [80, 140], 10)
 	.add('Earth rune', [120, 360], 10)
 	.add('Nature rune', [400, 1200], 5)
 	.add('Law rune', [400, 800], 5)

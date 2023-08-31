@@ -130,7 +130,7 @@ export const mysteriousTrailTracks: Track[] = [
 		steps: [
 			firstStep,
 			{
-				hint: 'Where the masked convene to plot, southwest is the hidden spot.',
+				hint: 'Swine cloak in shadow, not in mud; crack the secret of the rebel bud.',
 				didPass: (data: ActivityTaskData) => {
 					if (
 						data.type === 'MonsterKilling' &&
@@ -149,7 +149,7 @@ export const mysteriousTrailTracks: Track[] = [
 				}
 			},
 			{
-				hint: "Outside the white walls, a secret's planted far and wide.",
+				hint: 'In rows and columns, a green parade, sitting in the dirt, where they were made.',
 				didPass: (data: ActivityTaskData) => {
 					if (data.type === 'Collecting' && data.collectableID === itemID('Cabbage')) {
 						return true;
@@ -159,9 +159,9 @@ export const mysteriousTrailTracks: Track[] = [
 				}
 			},
 			{
-				hint: "Beneath branches that weep not rain, a secret's hidden, not easy to gain.",
+				hint: "Weepless boughs and no rain; enigma solved by blaze's gain.",
 				didPass: (data: ActivityTaskData) => {
-					if (data.type === 'Woodcutting' && data.logID === itemID('Willow logs')) {
+					if (data.type === 'Firemaking' && data.burnableID === itemID('Willow logs')) {
 						return true;
 					}
 
@@ -177,24 +177,24 @@ export const mysteriousTrailTracks: Track[] = [
 							completed: true
 						},
 						orderBy: {
-							finish_date: 'desc'
+							start_date: 'desc'
 						},
 						take: 2
 					});
 					const [_spinTrip, _pickTrip] = lastTwoTrips;
 					if (!_spinTrip || !_pickTrip) return false;
-					const [pickTrip, spinTrip] = [
+					const [spinTrip, pickTrip] = [
 						convertStoredActivityToFlatActivity(_spinTrip),
 						convertStoredActivityToFlatActivity(_pickTrip)
 					];
 					if (spinTrip.type !== 'Crafting' || spinTrip.craftableID !== itemID('Bow string')) return false;
 					if (pickTrip.type !== 'Collecting' || pickTrip.collectableID !== itemID('Flax')) return false;
 
-					return false;
+					return true;
 				}
 			},
 			{
-				hint: 'Sound the horn, take your place, in the final wave, the queens embrace.',
+				hint: 'Where legion begins, and a fighter finds their glory.',
 				didPass: async (data: ActivityTaskData) => {
 					if (data.type === 'BarbarianAssault') return true;
 					return false;
@@ -233,7 +233,7 @@ export const mysteriousTrailTracks: Track[] = [
 				}
 			},
 			{
-				hint: 'An easy task, in Burthorpes shadow, receive your next ask, and then follow.',
+				hint: "In the city of a prince, you'll receive your next task.",
 				didPass: async (data: ActivityTaskData) => {
 					const task = await getUsersCurrentSlayerInfo(data.userID);
 					if (
@@ -248,7 +248,7 @@ export const mysteriousTrailTracks: Track[] = [
 				}
 			},
 			{
-				hint: "Where brawn doesn't meet brain, one must be slain.",
+				hint: "Where brawn doesn't meet brain, yet must be slain.",
 				didPass: (data: ActivityTaskData) => {
 					if (
 						data.type === 'MonsterKilling' &&
@@ -277,16 +277,16 @@ export const mysteriousTrailTracks: Track[] = [
 				}
 			},
 			{
-				hint: "Where blade meets bark, the ripping transformation, a secret's hidden, in what dust remains.",
+				hint: 'Where blade meets bark.',
 				didPass: (data: ActivityTaskData) => data.type === 'Sawmill'
 			},
 			{
-				hint: 'In the swamps lantern, where the wolves cry, hide on the roofs, dont let them eye.',
+				hint: 'In the lantern of the swamp, seek refuge from those that chomp.',
 				didPass: (data: ActivityTaskData) =>
 					data.type === 'Agility' && data.courseID === 'Canifis Rooftop Course'
 			},
 			{
-				hint: "Deep north, black as night, catch them, but don't let them bite.",
+				hint: "Black as night, catch them, but don't let them bite.",
 				didPass: (data: ActivityTaskData) => data.type === 'Hunter' && data.creatureName === 'Black salamander'
 			},
 			{

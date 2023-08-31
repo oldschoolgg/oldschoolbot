@@ -272,5 +272,12 @@ export const Eatables: readonly Eatable[] = [
 		healAmount: 26,
 		raw: itemID('Raw Rocktail'),
 		pvmBoost: 7
+	},
+	{
+		name: 'Raw yeti meat',
+		id: itemID('Raw yeti meat'),
+		healAmount: 26,
+		raw: itemID('Raw yeti meat'),
+		pvmBoost: 8
 	}
 ];

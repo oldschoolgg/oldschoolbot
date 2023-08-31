@@ -8356,10 +8356,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			cantBeSacrificed: true,
-			cantBeDropped: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -8371,10 +8368,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			cantBeSacrificed: true,
-			cantBeDropped: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -8382,14 +8376,11 @@ setCustomItem(
 
 setCustomItem(
 	71_573,
-	'Frostfang cape',
+	'Frostclaw cape',
 	'Fire cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			cantBeSacrificed: true,
-			cantBeDropped: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -8401,10 +8392,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			cantBeSacrificed: true,
-			cantBeDropped: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -8416,10 +8404,19 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			cantBeSacrificed: true,
-			cantBeDropped: true
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_576,
+	'Raw yeti meat',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000

@@ -1,7 +1,7 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, bold, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { randArrItem, randInt, reduceNumByPercent, roll, Time } from 'e';
+import { notEmpty, randArrItem, randInt, reduceNumByPercent, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -17,6 +17,7 @@ import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
+import { mysteriousStepData } from '../mysteryTrail';
 import { triggerRandomEvent } from '../randomEvents';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
@@ -34,6 +35,7 @@ import {
 	makeRepeatTripButton
 } from './globalInteractions';
 import itemID from './itemID';
+import { logError } from './logError';
 import { updateBankSetting } from './updateBankSetting';
 import { sendToChannelID } from './webhook';
 
@@ -337,7 +339,6 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (user.user.bso_mystery_trail_current_step_id === null) return;
 			const { step, stepData, previousStepData, nextStep } = user.getMysteriousTrailData();
 			if (!step || !(await step.didPass(data))) {
-				console.log(`${user} didnt pass 1111`);
 				return;
 			}
 			if (stepData.loot) {
@@ -359,12 +360,24 @@ const tripFinishEffects: TripFinishEffect[] = [
 						push: BitField.HasUnlockedYeti
 					}
 				});
+				for (const item of [
+					...Object.values(mysteriousStepData).map(i => i.clueItem?.id),
+					itemID('Mysterious clue (1)')
+				].filter(notEmpty)) {
+					if (user.owns(item)) {
+						try {
+							await user.removeItemsFromBank(new Bank().add(item));
+						} catch (err) {
+							logError(err);
+						}
+					}
+				}
 				const message = `${
 					user.minionName
 				} arrives at the snowy area north of rellekka, finding a giant, monstrous Yeti. At his feet, lay a slain animal. The Yeti looks at ${
 					user.minionName
 				}, and prepares to attack. Use ${mentionCommand(globalClient, 'k')} to fight the yeti!.`;
-				messages.push(message);
+				messages.push(bold(message));
 			}
 		}
 	}
@@ -441,7 +454,7 @@ export async function handleTripFinish(
 		message.components = makeComponents(components);
 	}
 
-	if (!user.owns('Mysterious clue (1)') && roll(1)) {
+	if (!user.owns('Mysterious clue (1)') && roll(10)) {
 		const img = await mahojiChatHead({
 			content: randArrItem([
 				'Traveller, I need your help... Use this clue to guide you.',
