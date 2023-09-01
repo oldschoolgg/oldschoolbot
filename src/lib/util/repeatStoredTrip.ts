@@ -41,6 +41,7 @@ import {
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
+	OuraniaAltarOptions,
 	PickpocketActivityTaskOptions,
 	PuroPuroActivityTaskOptions,
 	RaidsOptions,
@@ -223,6 +224,10 @@ export const tripHandlers = {
 	[activity_type_enum.DarkAltar]: {
 		commandName: 'runecraft',
 		args: (data: DarkAltarOptions) => ({ rune: `${darkAltarRunes[data.rune].item.name} (zeah)` })
+	},
+	[activity_type_enum.OuraniaAltar]: {
+		commandName: 'runecraft',
+		args: (data: OuraniaAltarOptions) => ({ usestams: data.stamina })
 	},
 	[activity_type_enum.Runecraft]: {
 		commandName: 'runecraft',

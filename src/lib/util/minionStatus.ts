@@ -61,6 +61,7 @@ import {
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
+	OuraniaAltarOptions,
 	PickpocketActivityTaskOptions,
 	PlunderActivityTaskOptions,
 	RaidsOptions,
@@ -542,6 +543,10 @@ export function minionStatus(user: MUser) {
 				data.rune
 			)} runes at the Dark Altar. ${formattedDuration}`;
 		}
+		case 'OuraniaAltar': {
+			return `${name} is currently runecrafting runes at the Ourania Altar. ${formattedDuration}`;
+		}
+
 		case 'Trekking': {
 			return `${name} is currently Temple Trekking. ${formattedDuration}`;
 		}

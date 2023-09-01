@@ -94,6 +94,13 @@ export interface DarkAltarOptions extends ActivityTaskOptions {
 	rune: 'blood' | 'soul';
 }
 
+export interface OuraniaAltarOptions extends ActivityTaskOptions {
+	type: 'OuraniaAltar';
+	quantity: number;
+	stamina: boolean;
+	daeyalt: boolean;
+}
+
 export interface AgilityActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Agility';
 	courseID: string;
@@ -578,6 +585,7 @@ export type ActivityTaskData =
 	| ClueActivityTaskOptions
 	| AlchingActivityTaskOptions
 	| DarkAltarOptions
+	| OuraniaAltarOptions
 	| GroupMonsterActivityTaskOptions
 	| MahoganyHomesActivityTaskOptions
 	| NightmareActivityTaskOptions

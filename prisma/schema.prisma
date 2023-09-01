@@ -453,6 +453,7 @@ enum XpGainSource {
   OfferingBones
   TempleTrekking
   DarkAltar
+  OuraniaAltar
   MotherlodeMine
   Birdhouses
   GuardiansOfTheRift
@@ -888,6 +889,7 @@ enum activity_type_enum {
   MageArena2
   BigChompyBirdHunting
   DarkAltar
+  OuraniaAltar
   Trekking
   Revenants
   PestControl
