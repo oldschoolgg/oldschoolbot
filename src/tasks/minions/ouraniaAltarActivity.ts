@@ -7,10 +7,28 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { OuraniaAltarOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import Runecraft from '../../lib/skilling/skills/runecraft';
 
 interface Runes {
 	[key: string]: number;
 }
+
+const runes: Runes = {
+	airRune: 0,
+	mindRune: 0,
+	waterRune: 0,
+	earthRune: 0,
+	fireRune: 0,
+	bodyRune: 0,
+	cosmicRune: 0,
+	chaosRune: 0,
+	astralRune: 0,
+	natureRune: 0,
+	lawRune: 0,
+	deathRune: 0,
+	bloodRune: 0,
+	soulRune: 0
+};
 
 interface RuneEntry {
 	type: string;
@@ -34,22 +52,6 @@ interface Runes {
 	soulRune: number;
 }
 
-const runes: Runes = {
-	airRune: 0,
-	mindRune: 0,
-	waterRune: 0,
-	earthRune: 0,
-	fireRune: 0,
-	bodyRune: 0,
-	cosmicRune: 0,
-	chaosRune: 0,
-	astralRune: 0,
-	natureRune: 0,
-	lawRune: 0,
-	deathRune: 0,
-	bloodRune: 0,
-	soulRune: 0
-};
 
 export const OuraniaAltarTask: MinionTask = {
 	type: 'OuraniaAltar',
@@ -59,6 +61,7 @@ export const OuraniaAltarTask: MinionTask = {
 		const lvl = user.skillLevel(SkillsEnum.Runecraft);
 
 		let loot = new Bank();
+		let totalXp = 0;
 
 		const firstLoot: RuneEntry[] = [
 			{ type: 'airRune', probability: 50 },
@@ -252,7 +255,12 @@ export const OuraniaAltarTask: MinionTask = {
 				for (const runeType of lootTable) {
 					if (percentChance(runeType.probability)) {
 						runes[runeType.type] += 1;
-						break; // Break the loop after finding the first matching rune
+						const rune = Runecraft.Runes.find(rune => rune.name === runeType.type);
+						if (rune) {
+							// Add the XP of the rune to the total
+							totalXp += rune.xp * 1.7;
+							break; 
+						}
 					}
 				}
 			}
@@ -285,7 +293,11 @@ export const OuraniaAltarTask: MinionTask = {
 
 		generateLootFromTable(selectedLootTable, runes, quantity);
 
-		let xpReceived = 0;
+		
+
+
+		console.log(`Total RuneCrafting XP from loot: ${totalXp}`);
+
 		let runeQuantity = quantity;
 		let bonusQuantity = 0;
 
@@ -302,7 +314,7 @@ export const OuraniaAltarTask: MinionTask = {
 
 		let xpRes = `\n${await user.addXP({
 			skillName: SkillsEnum.Runecraft,
-			amount: xpReceived,
+			amount: totalXp,
 			duration
 		})}`;
 
