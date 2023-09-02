@@ -19525,6 +19525,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "name": "Revert gorajan bonecrusher",
+    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "48012": 1,
