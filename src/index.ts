@@ -6,6 +6,7 @@ import './lib/util/transactItemsFromBank';
 import './lib/util/logger';
 import './lib/data/trophies';
 import './lib/itemMods';
+import './lib/geImage';
 
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
