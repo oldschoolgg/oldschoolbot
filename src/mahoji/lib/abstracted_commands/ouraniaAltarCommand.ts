@@ -88,9 +88,12 @@ export async function ouraniaAltarStartCommand({
 	}
 
 	let totalCost = new Bank();
+	let itemCost = new Bank();
 
 	if (stamina) {
-		totalCost.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
+		itemCost.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
+		totalCost.add(itemCost);
+		boosts.push('20% faster for using Stamina potions.');
 		if (!user.owns(totalCost)) {
 			return `You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
 				Math.ceil(duration / (Time.Minute * 8)),
@@ -130,7 +133,9 @@ export async function ouraniaAltarStartCommand({
 
 	response += `Essence at the Ourania Altar, it'll take around ${formatDuration(
 		duration
-	)} to finish, this will take ${numberOfInventories}x trips to the altar.\n\n**Boosts:** ${boosts.join(', ')}`;
+	)} to finish, this will take ${numberOfInventories}x trips to the altar.\nYour minion has consumed: ${itemCost}.\n\n**Boosts:** ${boosts.join(
+		', '
+	)}`;
 
 	return response;
 }

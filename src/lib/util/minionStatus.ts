@@ -543,7 +543,7 @@ export function minionStatus(user: MUser) {
 			)} runes at the Dark Altar. ${formattedDuration}`;
 		}
 		case 'OuraniaAltar': {
-			return `${name} is currently runecrafting runes at the Ourania Altar. ${formattedDuration}`;
+			return `${name} is currently runecrafting at the Ourania Altar. ${formattedDuration}`;
 		}
 
 		case 'Trekking': {
