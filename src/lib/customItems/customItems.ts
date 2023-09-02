@@ -8421,3 +8421,575 @@ setCustomItem(
 	},
 	10_000
 );
+
+setCustomItem(
+	71_580,
+	'Spooky crate (s3)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_581,
+	'Spooky crate key (s3)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_582,
+	'Spooky spider parasol',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_583,
+	'Voodoo doll',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_584,
+	'Count Draynor torso',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_585,
+	'Count Draynor bottoms',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_586,
+	'Count Draynor cape',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_587,
+	'Count Draynor hands',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_588,
+	'Count Draynor shoes',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_589,
+	'Count Draynor fangs',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_590,
+	'Ghostweave',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_591,
+	'Ghostly ringmaster gloves',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_592,
+	'Ghostly ringmaster shirt',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_593,
+	'Ghostly ringmaster boots',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_594,
+	'Ghostly ringmaster pants',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_595,
+	'Ghostly jester tights',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_596,
+	'Ghostly jester top',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_597,
+	'Ghostly jester boots',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_598,
+	'Ghostly jester gloves',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_599,
+	'Ghostly chicken head',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_600,
+	'Ghostly chicken gloves',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_601,
+	'Ghostly chicken legs',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_602,
+	'Ghostly chicken wings',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_603,
+	'Ghostly chicken feet',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_604,
+	'Ghostly lederhosen boots',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_605,
+	'Ghostly lederhosen top',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_606,
+	'Ghostly lederhosen shorts',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_607,
+	'Ghostly lederhosen hat',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_608,
+	'Ghostly ringmaster hat',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_609,
+	'Ghostly jester hat',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_610,
+	'Ghostly lederhosen gloves',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_611,
+	'Cob cap',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_612,
+	'Pumpkin peepers',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_613,
+	'Ghostly zombie mask',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_614,
+	'Ghostly zombie boots',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_615,
+	'Ghostly zombie shirt',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_616,
+	'Ghostly zombie trousers',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_617,
+	'Ghostly zombie gloves',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_618,
+	'Spooky sombrero',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_619,
+	'Demonic halloween mask',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_620,
+	'Spooky dye',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_621,
+	'The Grim Reaper',
+	'Scythe of vitur',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_622,
+	'Dwarven pumpkinsmasher',
+	'Dwarven warhammer',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_623,
+	'Deathly collector',
+	'Tidal collector',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);

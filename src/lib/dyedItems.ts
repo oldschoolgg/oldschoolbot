@@ -275,7 +275,8 @@ export const allDyes = [
 	'Christmas dye',
 	'Oceanic dye',
 	'Saradomin egg',
-	'Zamorak egg'
+	'Zamorak egg',
+	'Spooky dye'
 ].map(getOSItem);
 
 export const dyedItems: DyedItem[] = [
@@ -459,6 +460,10 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Ho-ho hammer'),
 				dye: getOSItem('Christmas dye')
+			},
+			{
+				item: getOSItem('Dwarven pumpkinsmasher'),
+				dye: getOSItem('Spooky dye')
 			}
 		]
 	},
@@ -589,6 +594,24 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Infernal slayer helmet(i) (ice)'),
 				dye: getOSItem('Ice dye')
+			}
+		]
+	},
+	{
+		baseItem: getOSItem('Scythe of vitur'),
+		dyedVersions: [
+			{
+				item: getOSItem('The Grim Reaper'),
+				dye: getOSItem('Spooky dye')
+			}
+		]
+	},
+	{
+		baseItem: getOSItem('Tidal collector'),
+		dyedVersions: [
+			{
+				item: getOSItem('Deathly collector'),
+				dye: getOSItem('Spooky dye')
 			}
 		]
 	}

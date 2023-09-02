@@ -59,5 +59,42 @@ export const keyCrates: Crate[] = [
 			.add('Peach', 1, 10)
 			.add('Beer', 1, 10)
 			.add('Birthday balloons', 1, 6)
+	},
+	{
+		item: getOSItem('Spooky crate (s3)'),
+		key: getOSItem('Spooky crate key (s3)'),
+		keyCostGP: 20_000_000,
+		table: new LootTable()
+			.add(
+				new LootTable()
+					.add('Cob cap')
+					.add('Pumpkin peepers')
+					.add('Spooky sombrero')
+					.add('Demonic halloween mask')
+					.add('Spooky spider parasol'),
+				1,
+				3
+			)
+			.add('Spooky dye', 1, 2)
+			.add(
+				new LootTable()
+					.add('Count Draynor torso')
+					.add('Count Draynor bottoms')
+					.add('Count Draynor cape')
+					.add('Count Draynor hands')
+					.add('Count Draynor shoes')
+					.add('Count Draynor fangs'),
+				1,
+				5
+			)
+			.add('Bones', 1, 5)
+			.add('Paint box', 1, 5)
+			.add('Vial of blood', 1, 5)
+			.add('Blood rune', [100, 200], 5)
+			.add('Spooky spider parasol', 1, 4)
+			.add('Voodoo doll', 1, 5)
+			.add('Ghostweave', [100, 200], 29)
+			.add('Pumpkin', [5, 15], 16)
+			.add('Purple sweets', [1, 3], 16)
 	}
 ];
