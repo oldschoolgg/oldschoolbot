@@ -206,11 +206,10 @@ const ouraniaAltarTask: MinionTask = {
 		const { quantity, userID, channelID, duration, daeyalt } = data;
 		const user = await mUserFetch(userID);
 		const lvl = user.skillLevel(SkillsEnum.Runecraft);
-
 		const loot = new Bank();
-		let totalXp = 0;
-
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_487_213);
 		const selectedLootTable = lootTable[Math.min(Math.floor(lvl / 10), 10)];
+		let totalXp = 0;
 
 		function generateLootFromTable(lootTable: RuneEntry[], quantity: number) {
 			const updatedRunes: Runes = {};
@@ -225,9 +224,13 @@ const ouraniaAltarTask: MinionTask = {
 						const rune = Runecraft.Runes.find(rune => rune.name === runeType.type);
 						if (rune) {
 							totalXp += rune.xp * 1.7;
+							loot.add(runeType.type, 1); // Add the obtained rune to the loot Bank
 							break;
 						}
 					}
+				}
+				if (roll(petDropRate)) {
+					loot.add('Rift guardian');
 				}
 			}
 		}
@@ -236,13 +239,6 @@ const ouraniaAltarTask: MinionTask = {
 		if (daeyalt) totalXp *= 1.5;
 
 		console.log(`Total RuneCrafting XP from loot: ${totalXp}`);
-
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_487_213);
-		for (let i = 0; i < quantity; i++) {
-			if (roll(petDropRate)) {
-				loot.add('Rift guardian');
-			}
-		}
 
 		let xpRes = `\n${await user.addXP({
 			skillName: SkillsEnum.Runecraft,

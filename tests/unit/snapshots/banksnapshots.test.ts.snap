@@ -5516,6 +5516,16 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
+    "itemCost": Bank {
+      "bank": {
+        "26792": 1500,
+      },
+      "frozen": false,
+    },
+    "name": "Abyssal lantern",
+    "outputItems": undefined,
+  },
+  {
     "customReq": [Function],
     "gpCost": 1000,
     "itemCost": Bank {
