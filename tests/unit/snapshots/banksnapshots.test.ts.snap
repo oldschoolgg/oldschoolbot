@@ -18656,6 +18656,296 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "48015": 1,
+        "48016": 1,
+        "48017": 1,
+        "48018": 1,
+        "48019": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Dwarven armour set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "71706": 1,
+      },
+      "frozen": false,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "71706": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Unpack Dwarven armour set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "48015": 1,
+        "48016": 1,
+        "48017": 1,
+        "48018": 1,
+        "48019": 1,
+      },
+      "frozen": false,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "47511": 1,
+        "47512": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Drygore longsword set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "71705": 1,
+      },
+      "frozen": false,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "71705": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Unpack Drygore longsword set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "47511": 1,
+        "47512": 1,
+      },
+      "frozen": false,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "47515": 1,
+        "47516": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Drygore rapier set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "71703": 1,
+      },
+      "frozen": false,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "71703": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Unpack Drygore rapier set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "47515": 1,
+        "47516": 1,
+      },
+      "frozen": false,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "47513": 1,
+        "47514": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Drygore mace set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "71704": 1,
+      },
+      "frozen": false,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "71704": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Unpack Drygore mace set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "47513": 1,
+        "47514": 1,
+      },
+      "frozen": false,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "2404": 1,
+        "2838": 1,
+        "4273": 1,
+        "432": 1,
+        "709": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Torva armour set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "71700": 1,
+      },
+      "frozen": false,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "71700": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Unpack Torva armour set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "2404": 1,
+        "2838": 1,
+        "4273": 1,
+        "432": 1,
+        "709": 1,
+      },
+      "frozen": false,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "4272": 1,
+        "601": 1,
+        "605": 1,
+        "758": 1,
+        "759": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Pernix armour set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "71701": 1,
+      },
+      "frozen": false,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "71701": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Unpack Pernix armour set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "4272": 1,
+        "601": 1,
+        "605": 1,
+        "758": 1,
+        "759": 1,
+      },
+      "frozen": false,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "2409": 1,
+        "2423": 1,
+        "788": 1,
+        "9654": 1,
+        "983": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Virtus armour set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "71702": 1,
+      },
+      "frozen": false,
+    },
+    "type": "pack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "71702": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Unpack Virtus armour set",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "2409": 1,
+        "2423": 1,
+        "788": 1,
+        "9654": 1,
+        "983": 1,
+      },
+      "frozen": false,
+    },
+    "type": "unpack",
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "12592": 1,
         "12831": 1,
       },
@@ -19229,6 +19519,26 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "48013": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 120,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "48014": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert gorajan bonecrusher",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "48012": 1,
       },
       "frozen": false,
     },

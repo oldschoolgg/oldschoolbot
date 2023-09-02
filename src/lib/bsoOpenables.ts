@@ -214,7 +214,8 @@ export const IronmanPMBTable = new LootTable()
 	.add('Craig')
 	.add('Hoppy')
 	.add('Flappy')
-	.add('Cob');
+	.add('Cob')
+	.add('Gregoyle');
 
 const MonkeyCrateTable = new LootTable()
 	.add('Avocado seed', [2, 5], 2)

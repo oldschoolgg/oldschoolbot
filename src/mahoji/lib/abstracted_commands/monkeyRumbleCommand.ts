@@ -1,4 +1,4 @@
-import { randArrItem, reduceNumByPercent, Time } from 'e';
+import { increaseNumByPercent, randArrItem, reduceNumByPercent, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -78,6 +78,7 @@ export async function monkeyRumbleCommand(user: MUser, channelID: string): Comma
 	let duration = quantity * fightDuration;
 
 	let chanceOfSpecial = Math.floor(125 * (6 - monkeyTierOfUser(user) / 2));
+	chanceOfSpecial = Math.floor(increaseNumByPercent(chanceOfSpecial, 25));
 	if (user.hasEquipped('Big banana')) {
 		chanceOfSpecial = reduceNumByPercent(chanceOfSpecial, 12);
 		boosts.push('12% higher chance of purple monkeys from Big banana');

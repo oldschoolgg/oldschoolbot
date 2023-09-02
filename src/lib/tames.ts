@@ -11,7 +11,7 @@ import {
 	ChatInputCommandInteraction,
 	GuildMember
 } from 'discord.js';
-import { increaseNumByPercent, objectEntries, round, Time } from 'e';
+import { increaseNumByPercent, objectEntries, randArrItem, round, Time } from 'e';
 import { Bank, Items, Misc } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric, TheatreOfBlood } from 'oldschooljs/dist/simulation/misc';
@@ -26,6 +26,8 @@ import { Planks } from './minions/data/planks';
 import { KillableMonster } from './minions/types';
 import { prisma } from './settings/prisma';
 import { runCommand } from './settings/settings';
+import { getTemporossLoot } from './simulation/tempoross';
+import { WintertodtCrate } from './simulation/wintertodt';
 import Tanning from './skilling/skills/crafting/craftables/tanning';
 import {
 	assert,
@@ -107,6 +109,65 @@ export const seaMonkeySpells: SeaMonkeySpell[] = [
 		name: 'Superglass make',
 		description: 'Turns seaweed/sand into molten glass',
 		itemIDs: [itemID('Molten glass')]
+	}
+];
+
+interface ArbitraryTameActivity {
+	name: string;
+	id: 'Tempoross' | 'Wintertodt';
+	run: (opts: {
+		handleFinish(res: { loot: Bank | null; message: string; user: MUser }): Promise<void>;
+		user: MUser;
+		tame: Tame;
+		duration: number;
+	}) => Promise<void>;
+	allowedTames: TameSpeciesID[];
+}
+
+interface ArbitraryTameActivityData {
+	type: ArbitraryTameActivity['id'];
+}
+
+export const arbitraryTameActivities: ArbitraryTameActivity[] = [
+	{
+		name: 'Tempoross',
+		id: 'Tempoross',
+		allowedTames: [TameSpeciesID.Monkey],
+		run: async ({ handleFinish, user, duration, tame }) => {
+			const quantity = Math.ceil(duration / (Time.Minute * 5));
+			const loot = getTemporossLoot(quantity, tame.max_gatherer_level + 15, user.bank);
+			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
+			handleFinish({
+				loot: itemsAdded,
+				message: `${tameName(tame)} finished defeating Tempoross ${quantity}x times, and received ${loot}.`,
+				user
+			});
+		}
+	},
+	{
+		name: 'Wintertodt',
+		id: 'Wintertodt',
+		allowedTames: [TameSpeciesID.Igne],
+		run: async ({ handleFinish, user, duration, tame }) => {
+			const quantity = Math.ceil(duration / (Time.Minute * 5));
+			const loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				loot.add(
+					WintertodtCrate.open({
+						points: randArrItem([500, 500, 750, 1000]),
+						itemsOwned: user.bank.bank,
+						skills: user.skillsAsXP,
+						firemakingXP: user.skillsAsXP.firemaking
+					})
+				);
+			}
+			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
+			handleFinish({
+				loot: itemsAdded,
+				message: `${tameName(tame)} finished defeating Wintertodt ${quantity}x times, and received ${loot}.`,
+				user
+			});
+		}
 	}
 ];
 
@@ -375,7 +436,11 @@ export interface TameTaskSpellCastingOptions {
 	loot: ItemBank;
 }
 
-export type TameTaskOptions = TameTaskCombatOptions | TameTaskGathererOptions | TameTaskSpellCastingOptions;
+export type TameTaskOptions =
+	| ArbitraryTameActivityData
+	| TameTaskCombatOptions
+	| TameTaskGathererOptions
+	| TameTaskSpellCastingOptions;
 
 export const tameSpecies: Species[] = [
 	{
@@ -565,6 +630,12 @@ export function shortTameTripDesc(activity: TameActivity) {
 		}
 		case 'SpellCasting':
 			return `Casting ${seaMonkeySpells.find(i => i.id === data.spellID)!.name}`;
+		case 'Wintertodt': {
+			return 'Fighting Wintertodt';
+		}
+		case 'Tempoross': {
+			return 'Fighting Tempoross';
+		}
 	}
 }
 
@@ -717,6 +788,12 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			});
 			break;
 		}
+		case 'Tempoross':
+		case 'Wintertodt': {
+			const act = arbitraryTameActivities.find(i => i.id === activityData.type)!;
+			await act.run({ handleFinish, user, tame, duration: activity.duration });
+			break;
+		}
 		default: {
 			console.error('Unmatched tame activity type', activity.type);
 			break;
@@ -831,6 +908,23 @@ export async function repeatTameTrip({
 				interaction
 			});
 		}
+		case 'Tempoross':
+		case 'Wintertodt': {
+			return runCommand({
+				commandName: 'tames',
+				args: {
+					activity: {
+						name: data.type
+					}
+				},
+				bypassInhibitors: true,
+				channelID,
+				guildID,
+				user,
+				member,
+				interaction
+			});
+		}
 		default: {
 		}
 	}
@@ -876,7 +970,7 @@ export async function createTameTask({
 }: {
 	user: MUser;
 	channelID: string;
-	type: TameType;
+	type: TameTaskOptions['type'];
 	data: TameTaskOptions;
 	duration: number;
 	selectedTame: Tame;

@@ -8363,8 +8363,32 @@ setCustomItem(
 );
 
 setCustomItem(
+	71_700,
+	'Torva armour set',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
 	71_572,
 	'Skip',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	71_701,
+	'Pernix armour set',
 	'Coal',
 	{
 		customItemData: {
@@ -8395,6 +8419,18 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
+	1_000_000
+);
+
+setCustomItem(
+	71_702,
+	'Virtus armour set',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
 	10_000
 );
 
@@ -8411,8 +8447,32 @@ setCustomItem(
 );
 
 setCustomItem(
+	71_703,
+	'Drygore rapier set',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
 	71_576,
 	'Raw yeti meat',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	71_704,
+	'Drygore mace set',
 	'Coal',
 	{
 		customItemData: {
@@ -8992,4 +9052,28 @@ setCustomItem(
 		}
 	},
 	10_000
+);
+
+setCustomItem(
+	71_705,
+	'Drygore longsword set',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	71_706,
+	'Dwarven armour set',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
 );

@@ -8,13 +8,20 @@ import { globalDroprates } from '../../lib/data/globalDroprates';
 import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import Potions from '../../lib/skilling/skills/herblore/mixables/potions';
-import { calcBabyYagaHouseDroprate, formatDuration, stringMatches } from '../../lib/util';
+import { calcBabyYagaHouseDroprate, clAdjustedDroprate, formatDuration, stringMatches } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 
 function makeTable(headers: string[], rows: (string | number)[][]) {
 	return table([headers, ...rows]);
 }
-const droprates = [
+
+interface GlobalDroprate {
+	name: string;
+	output: (opts: { user: MUser }) => string;
+	notes?: string[];
+}
+
+const droprates: GlobalDroprate[] = [
 	{
 		name: 'Baby yaga house pet',
 		output: () => {
@@ -63,7 +70,7 @@ ${makeTable(['Potion Name', 'Droprate per hour', 'Droprate per hour at max xp'],
 for (const droprate of Object.values(globalDroprates)) {
 	droprates.push({
 		name: droprate.name,
-		output: () => {
+		output: ({ user }) => {
 			let str = `**${droprate.name}**\n\n`;
 			str += `${droprate.name} drops at a rate of **1/${droprate.baseRate}** per ${droprate.rolledPer}.\n`;
 			if ('minLength' in droprate) {
@@ -77,6 +84,18 @@ for (const droprate of Object.values(globalDroprates)) {
 			}
 			if ('notes' in droprate) {
 				str += `\n**Notes:**\n${droprate.notes.join('\n')}`;
+			}
+
+			if ('clIncrease' in droprate && 'item' in droprate) {
+				const inCL = user.cl.amount(droprate.item.id);
+				str += `\n\nYou have ${inCL}x ${
+					droprate.item.name
+				} in your CL, so your current droprate is: **1 in ${clAdjustedDroprate(
+					user,
+					droprate.item.id,
+					droprate.baseRate,
+					droprate.clIncrease
+				)}**.`;
 			}
 			return str;
 		}
@@ -99,10 +118,10 @@ export const dropRatesCommand: OSBMahojiCommand = {
 			}
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ thing: string }>) => {
+	run: async ({ options, user }: CommandRunOptions<{ thing: string }>) => {
 		const obj = droprates.find(drop => stringMatches(drop.name, options.thing));
 		if (!obj) return 'Invalid thing';
-		let output = obj.output();
+		let output = obj.output({ user: await mUserFetch(user.id) });
 		if (obj.notes) {
 			output += `\n\n**Notes:**\n${obj.notes.join('\n')}`;
 		}

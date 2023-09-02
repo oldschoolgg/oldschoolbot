@@ -2533,6 +2533,54 @@ const armorSetsSrc: { unpacked: Bank; packed: Item }[] = [
 			.add('Warpriest of Bandos gauntlets')
 			.add('Warpriest of Bandos cape'),
 		packed: getOSItem('Warpriest of Bandos set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Dwarven full helm')
+			.add('Dwarven platebody')
+			.add('Dwarven platelegs')
+			.add('Dwarven boots')
+			.add('Dwarven gloves'),
+		packed: getOSItem('Dwarven armour set')
+	},
+	{
+		unpacked: new Bank().add('Drygore longsword').add('Offhand drygore longsword'),
+		packed: getOSItem('Drygore longsword set')
+	},
+	{
+		unpacked: new Bank().add('Drygore rapier').add('Offhand drygore rapier'),
+		packed: getOSItem('Drygore rapier set')
+	},
+	{
+		unpacked: new Bank().add('Drygore mace').add('Offhand drygore mace'),
+		packed: getOSItem('Drygore mace set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Torva full helm')
+			.add('Torva platebody')
+			.add('Torva platelegs')
+			.add('Torva boots')
+			.add('Torva gloves'),
+		packed: getOSItem('Torva armour set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Pernix cowl')
+			.add('Pernix body')
+			.add('Pernix chaps')
+			.add('Pernix boots')
+			.add('Pernix gloves'),
+		packed: getOSItem('Pernix armour set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Virtus mask')
+			.add('Virtus robe top')
+			.add('Virtus robe legs')
+			.add('Virtus boots')
+			.add('Virtus gloves'),
+		packed: getOSItem('Virtus armour set')
 	}
 ];
 

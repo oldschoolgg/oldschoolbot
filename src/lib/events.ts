@@ -70,6 +70,12 @@ const cooldownTimers: {
 		timeStamp: (user: MUser) => Number(user.user.last_patron_double_time_trigger),
 		cd: PATRON_DOUBLE_LOOT_COOLDOWN,
 		command: ['tools', 'patron', 'doubleloot']
+	},
+	{
+		name: 'Balthazars Big Bonanza',
+		timeStamp: (user: MUser) => Number(user.user.last_bonanza_date),
+		cd: Time.Day * 7,
+		command: ['bsominigames', 'balthazars_big_bonanza', 'start']
 	}
 ];
 
