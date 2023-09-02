@@ -2,7 +2,6 @@ import { percentChance, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
-import { raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { OuraniaAltarOptions } from '../../lib/types/minions';
@@ -201,10 +200,10 @@ const lootTable: RuneEntry[][] = [
 	]
 ];
 
-const OuraniaAltarTask: MinionTask = {
+const ouraniaAltarTask: MinionTask = {
 	type: 'OuraniaAltar',
 	async run(data: OuraniaAltarOptions) {
-		const { quantity, userID, channelID, duration, stamina, daeyalt } = data;
+		const { quantity, userID, channelID, duration, daeyalt } = data;
 		const user = await mUserFetch(userID);
 		const lvl = user.skillLevel(SkillsEnum.Runecraft);
 
@@ -232,17 +231,11 @@ const OuraniaAltarTask: MinionTask = {
 				}
 			}
 		}
-
 		generateLootFromTable(selectedLootTable, quantity);
 
+		if (daeyalt) totalXp *= 1.5;
+
 		console.log(`Total RuneCrafting XP from loot: ${totalXp}`);
-
-		let runeQuantity = quantity;
-		let bonusQuantity = 0;
-
-		const raimentQuantity = raimentBonus(user, quantity);
-		runeQuantity += raimentQuantity;
-		bonusQuantity += raimentQuantity;
 
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_487_213);
 		for (let i = 0; i < quantity; i++) {
@@ -254,14 +247,11 @@ const OuraniaAltarTask: MinionTask = {
 		let xpRes = `\n${await user.addXP({
 			skillName: SkillsEnum.Runecraft,
 			amount: totalXp,
-			duration
+			duration,
+			source: 'OuraniaAltar'
 		})}`;
 
 		let str = `${user}, ${user.minionName} finished runecrafting at the Ourania altar, you received ${loot}. ${xpRes}`;
-
-		if (bonusQuantity > 0) {
-			str += ` **Bonus Quantity:** ${bonusQuantity.toLocaleString()}`;
-		}
 
 		if (loot.amount('Rift guardian') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";
@@ -285,4 +275,4 @@ const OuraniaAltarTask: MinionTask = {
 	}
 };
 
-export default OuraniaAltarTask;
+export default ouraniaAltarTask;

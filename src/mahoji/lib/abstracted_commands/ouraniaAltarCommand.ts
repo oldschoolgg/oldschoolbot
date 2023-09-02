@@ -7,23 +7,31 @@ import { OuraniaAltarOptions } from '../../../lib/types/minions';
 import { formatDuration, itemID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 const gracefulPenalty = 20;
 
-export async function ouraniaAltarStartCommand(
-	user: MUser,
-	channelID: string,
-	usestams?: boolean,
-	daeyalt_essence?: boolean
-) {
+export async function ouraniaAltarStartCommand({
+	user,
+	channelID,
+	quantity,
+	usestams,
+	daeyalt_essence
+}: {
+	user: MUser;
+	channelID: string;
+	quantity?: number;
+	usestams?: boolean;
+	daeyalt_essence?: boolean;
+}) {
 	let timePerTrip = Time.Minute * 2;
 	let stamina = usestams || false;
 	let daeyalt = daeyalt_essence || false;
 
 	const { bank } = user;
-	let removeBank = new Bank();
-	const userBank = user.bank;
+	const numEssenceOwned = bank.amount('Pure essence');
+	const daeyaltEssenceOwned = bank.amount('Daeyalt essence');
 	const boosts = [];
 
 	let inventorySize = 28;
@@ -54,19 +62,53 @@ export async function ouraniaAltarStartCommand(
 
 	const maxTripLength = calcMaxTripLength(user, 'OuraniaAltar');
 
-	const quantity = Math.floor(maxTripLength / timePerTrip);
-	const duration = quantity * timePerTrip;
+	const maxCanDo = Math.floor(maxTripLength / timePerTrip) * inventorySize;
+
+	// If no quantity provided, set it to the max.
+	if (daeyalt_essence) {
+		if (!quantity) quantity = Math.min(daeyaltEssenceOwned, maxCanDo);
+		if (daeyaltEssenceOwned === 0 || quantity === 0 || daeyaltEssenceOwned < quantity) {
+			return "You don't have enough Daeyalt Essence to craft these runes. You can acquire Daeyalt Shards through Mining, and then exchange for essence with the `/create` command.";
+		}
+	} else {
+		if (!quantity) quantity = Math.min(numEssenceOwned, maxCanDo);
+
+		if (numEssenceOwned === 0 || quantity === 0 || numEssenceOwned < quantity) {
+			return "You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players.";
+		}
+	}
+
+	const numberOfInventories = Math.max(Math.ceil(quantity / inventorySize), 1);
+	let duration = numberOfInventories * timePerTrip;
+
+	if (duration > maxTripLength) {
+		return `${user.minionName} can't go on trips longer than ${formatDuration(
+			maxTripLength
+		)}, try a lower quantity. The highest amount of essence you can craft is ${Math.floor(maxCanDo)}.`;
+	}
+
+	let totalCost = new Bank();
 
 	if (stamina) {
-		let staminaPotionQuantity = Math.round(duration / (9 * Time.Minute));
-
-		if (userBank.amount('Stamina potion(4)') < staminaPotionQuantity) {
-			return `You need ${staminaPotionQuantity}x Stamina potion(4) to hunt for the whole trip, try a lower quantity or make/buy more potions.`;
+		totalCost.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
+		if (!user.owns(totalCost)) {
+			return `You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
+				Math.ceil(duration / (Time.Minute * 8)),
+				1
+			)}x Stamina potion(4).`;
 		}
-		removeBank.add('Stamina potion(4)', staminaPotionQuantity);
-		boosts.push(`20% boost for using ${staminaPotionQuantity}x Stamina potion(4)`);
-		timePerTrip *= 0.8;
 	}
+
+	if (daeyalt_essence) {
+		totalCost.add('Daeyalt essence', quantity);
+		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
+	} else {
+		totalCost.add('Pure essence', quantity);
+	}
+	if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
+
+	await user.removeItemsFromBank(totalCost);
+	updateBankSetting('runecraft_cost', totalCost);
 
 	await addSubTaskToActivityTask<OuraniaAltarOptions>({
 		quantity,
@@ -78,7 +120,17 @@ export async function ouraniaAltarStartCommand(
 		daeyalt
 	});
 
-	return `${user.minionName} is now doing ${quantity}x games of Guardians Of The Rift! It will take ${formatDuration(
+	let response = `${user.minionName} is now crafting ${quantity}x`;
+
+	if (daeyalt_essence) {
+		response += ' Daeyalt ';
+	} else {
+		response += ' Pure ';
+	}
+
+	response += `Essence at the Ourania Altar, it'll take around ${formatDuration(
 		duration
-	)} to finish. ${boosts.length > 0 ? `\n**Boosts:** ${boosts.join(', ')}.` : ''}`;
+	)} to finish, this will take ${numberOfInventories}x trips to the altar.\n\n**Boosts:** ${boosts.join(', ')}`;
+
+	return response;
 }

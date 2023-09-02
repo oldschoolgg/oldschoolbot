@@ -227,7 +227,7 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.OuraniaAltar]: {
 		commandName: 'runecraft',
-		args: (data: OuraniaAltarOptions) => ({ usestams: data.stamina })
+		args: (data: OuraniaAltarOptions) => ({ usestams: data.stamina, daeyalt_essence: data.daeyalt })
 	},
 	[activity_type_enum.Runecraft]: {
 		commandName: 'runecraft',

@@ -13,6 +13,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { ouraniaAltarStartCommand } from '../lib/abstracted_commands/ouraniaAltarCommand';
 import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { calcMaxRCQuantity, userHasGracefulEquipped } from '../mahojiSettings';
@@ -35,6 +36,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			autocomplete: async value => {
 				return [
 					...Runecraft.Runes.map(i => i.name),
+					'ourania altar',
 					'blood rune (zeah)',
 					'soul rune (zeah)',
 					...Runecraft.Tiaras.map(i => i.name)
@@ -85,6 +87,10 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		if (tiaraObj) {
 			return tiaraRunecraftCommand({ user, channelID, name: rune, quantity });
+		}
+
+		if (rune.includes('ourania')) {
+			return ouraniaAltarStartCommand({ user, channelID, quantity, usestams, daeyalt_essence });
 		}
 
 		if (rune.includes('(zeah)')) {
