@@ -162,7 +162,7 @@ class GeImageTask {
 			// Draw Bank Title
 			ctx.textAlign = 'center';
 			ctx.font = '16px RuneScape Bold 12';
-			let type = listing ? ` - ${toTitleCase(listing.type.toString())}` : '';
+			let type = listing ? ` - ${toTitleCase(listing.type.toString())}` : 'Empty';
 			this.drawText(
 				ctx,
 				locked ? 'Locked' : `Slot ${slot}${type}`,
