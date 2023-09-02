@@ -1,5 +1,6 @@
 import { time } from '@discordjs/builders';
 import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import { Tame, tame_growth, TameActivity } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
 import { ChatInputCommandInteraction, User } from 'discord.js';
@@ -31,6 +32,7 @@ import { prisma } from '../../lib/settings/prisma';
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
+	arbitraryTameActivities,
 	createTameTask,
 	getIgneTameKC,
 	getMainTameLevel,
@@ -1479,6 +1481,9 @@ export type TamesCommandOptions = CommandRunOptions<{
 		plank_make?: string;
 		superglass_make?: string;
 	};
+	activity?: {
+		name: string;
+	};
 }>;
 export const tamesCommand: OSBMahojiCommand = {
 	name: 'tames',
@@ -1691,6 +1696,24 @@ export const tamesCommand: OSBMahojiCommand = {
 					choices: [{ name: 'Molten glass', value: 'molten glass' }]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'activity',
+			description: 'Send your tame to do other activities.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'name',
+					description: 'The activity to do.',
+					required: true,
+					autocomplete: async input => {
+						return arbitraryTameActivities
+							.filter(t => (!input ? true : t.name.toLowerCase().includes(input.toLowerCase())))
+							.map(t => ({ name: t.name, value: t.name }));
+					}
+				}
+			]
 		}
 	],
 	run: async ({ options, userID, channelID, interaction }: TamesCommandOptions) => {
@@ -1711,6 +1734,54 @@ export const tamesCommand: OSBMahojiCommand = {
 		if (options.cast?.spin_flax) return spinFlaxCommand(user, channelID);
 		if (options.cast?.tan) return tanLeatherCommand(user, channelID, options.cast.tan);
 		if (options.cast?.superglass_make) return superGlassCommand(user, channelID);
+		if (options.activity) {
+			const tameActivity = arbitraryTameActivities.find(i => stringMatches(i.name, options.activity!.name));
+			if (!tameActivity) {
+				return 'Invalid activity.';
+			}
+			const { tame, activity, species } = await getUsersTame(user);
+			if (activity) {
+				return `${tameName(tame)} is busy.`;
+			}
+			if (!tame || !species) {
+				return 'You have no selected tame.';
+			}
+			if (!tameActivity.allowedTames.includes(tame.species_id)) {
+				return `Your selected tame species cannot do this activity, switch to a different tame: ${mentionCommand(
+					globalClient,
+					'tames',
+					'select'
+				)}.`;
+			}
+			const boosts: string[] = [];
+			let maxTripLength = Time.Minute * 20 * (4 - tameGrowthLevel(tame));
+			if (tameHasBeenFed(tame, itemID('Zak'))) {
+				maxTripLength += Time.Minute * 35;
+				boosts.push('+35mins trip length (ate a Zak)');
+			}
+			maxTripLength += patronMaxTripBonus(user) * 2;
+			const task = await createTameTask({
+				user,
+				channelID: channelID.toString(),
+				selectedTame: tame,
+				data: {
+					type: tameActivity.id
+				},
+				type: tameActivity.id,
+				duration: maxTripLength,
+				fakeDuration: undefined
+			});
+
+			let reply = `${tameName(tame)} is now doing ${tameActivity.name}. The trip will take ${formatDuration(
+				task.duration
+			)}.`;
+
+			if (boosts.length > 0) {
+				reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+			}
+
+			return reply;
+		}
 		return 'Invalid command.';
 	}
 };
