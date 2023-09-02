@@ -157,6 +157,19 @@ export const hunterTask: MinionTask = {
 				}
 			}
 		}
+		if (creature.name === 'Sand Gecko') {
+			const sandyDroprate = clAdjustedDroprate(
+				user,
+				'Sandy',
+				globalDroprates.sandy.baseRate,
+				globalDroprates.sandy.clIncrease
+			);
+			for (let i = 0; i < quantity; i++) {
+				if (roll(sandyDroprate)) {
+					loot.add('Sandy');
+				}
+			}
+		}
 
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
 

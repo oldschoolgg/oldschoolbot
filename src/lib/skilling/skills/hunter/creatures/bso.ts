@@ -11,7 +11,6 @@ const customBSOCreatures: Creature[] = [
 		level: 120,
 		hunterXP: 2100,
 		table: new LootTable()
-			.tertiary(26_000, 'Sandy')
 			.tertiary(
 				22,
 				new LootTable()
