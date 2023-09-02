@@ -19520,6 +19520,25 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "48014": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert gorajan bonecrusher",
+    "outputItems": Bank {
+      "bank": {
+        "48012": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 120,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "20445": 1,
       },
       "frozen": false,

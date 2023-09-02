@@ -244,6 +244,12 @@ const chaoticCreatables: Createable[] = [
 			[itemID('Gorajan bonecrusher')]: 1
 		},
 		requiredSkills: { crafting: 120 }
+	},
+	{
+		name: 'Revert gorajan bonecrusher',
+		inputItems: new Bank().add('Gorajan bonecrusher (u)'),
+		outputItems: new Bank().add('Gorajan shards', 1),
+		requiredSkills: { crafting: 120 }
 	}
 ];
 
