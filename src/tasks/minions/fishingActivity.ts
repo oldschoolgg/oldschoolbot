@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
-import { Cookables } from '../../lib/skilling/skills/cooking';
+import { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';

@@ -550,6 +550,7 @@ enum XpGainSource {
   PuroPuro
   MahoganyHomes
   AerialFishing
+  CleaningHerbsWhileFarming
 }
 
 model XPGain {
@@ -1105,6 +1106,7 @@ enum activity_type_enum {
   MageArena
   Collecting
   MageTrainingArena
+  CutLeapingFish
   MotherlodeMining
   BlastFurnace
   MageArena2

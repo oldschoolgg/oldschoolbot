@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { userhasDiaryTier, WildernessDiary } from '../../../lib/diaries';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { Skills } from '../../../lib/types';
 import { CollectingOptions } from '../../../lib/types/minions';
@@ -67,6 +68,18 @@ export const collectables: Collectable[] = [
 			'Stamina potion(4)': 1
 		}),
 		duration: Time.Minute * 8.5
+	},
+	{
+		item: getOSItem('Wine of zamorak'),
+		quantity: 27,
+		itemCost: new Bank({
+			'Law rune': 27,
+			'Air rune': 27
+		}),
+		skillReqs: {
+			magic: 33
+		},
+		duration: Time.Minute * 3.12
 	},
 	{
 		item: getOSItem('White berries'),
@@ -191,6 +204,13 @@ export async function collectCommand(
 			if (user.skillLevel(skillName as SkillsEnum) < lvl) {
 				return `You need ${lvl} ${skillName} to collect ${collectable.item.name}.`;
 			}
+		}
+	}
+
+	if (collectable.item.id === 245) {
+		const [hasDiary] = await userhasDiaryTier(user, WildernessDiary.hard);
+		if (hasDiary) {
+			collectable.duration = Time.Minute * 2;
 		}
 	}
 

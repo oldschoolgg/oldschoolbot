@@ -22,7 +22,8 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID("Viggora's chainmace")]: 25
+				[itemID("Viggora's chainmace")]: 25,
+				[itemID("Osmumten's fang")]: 10
 			},
 			{
 				[itemID('Berserker ring')]: 3,

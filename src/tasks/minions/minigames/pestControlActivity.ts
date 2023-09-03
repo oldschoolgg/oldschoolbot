@@ -14,7 +14,7 @@ export const pestControlTask: MinionTask = {
 		const { channelID, userID, quantity, duration } = data;
 		const user = await mUserFetch(userID);
 
-		const [boatType, pointsPerGame] = getBoatType(user.combatLevel);
+		let { boatType, pointsPerGame, bonusPointsPerGame } = getBoatType(user, user.combatLevel);
 
 		let points = pointsPerGame * quantity;
 		const flappyRes = await userHasFlappy({ user, duration });
@@ -35,6 +35,10 @@ export const pestControlTask: MinionTask = {
 		let perHour = `(${toKMB((points / (duration / Time.Minute)) * 60)}/Hr)`;
 		let str = `${user}, ${user.minionName} finished ${quantity}x games of Pest Control on the ${boatType} boat. You received ${points}x Void Knight commendation points, you now have ${newUserStats.pest_control_points} points. ${perHour}`;
 		if (flappyRes.shouldGiveBoost) str += `\n${flappyRes.userMsg}`;
+
+		if (bonusPointsPerGame > 0) {
+			str += `\n\n**Bonus points:** ${bonusPointsPerGame} per game`;
+		}
 		handleTripFinish(user, channelID, str, undefined, data, null);
 	}
 };

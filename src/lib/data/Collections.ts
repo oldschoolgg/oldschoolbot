@@ -35,7 +35,7 @@ import { nexLootTable, NexMonster } from '../nex';
 import type { MinigameName } from '../settings/minigames';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { pumpkinHeadUniqueTable } from '../simulation/pumpkinHead';
-import { cookingCL } from '../skilling/skills/cooking';
+import { cookingCL } from '../skilling/skills/cooking/cooking';
 import { craftingCL } from '../skilling/skills/crafting/craftables';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { fletchingCL } from '../skilling/skills/fletching/fletchables';
@@ -1355,6 +1355,31 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Growable Pets': {
 				items: growablePetsCL
+			},
+			'The Forgotten Four': {
+				counts: false,
+				alias: ['dt2', 'desert treasure 2', 'forgotten four'],
+				kcActivity: {
+					Default: [
+						Monsters.TheLeviathan.name,
+						Monsters.TheWhisperer.name,
+						Monsters.Vardorvis.name,
+						Monsters.DukeSucellus.name
+					],
+					Awakened: [
+						Monsters.AwakenedTheLeviathan.name,
+						Monsters.AwakenedTheWhisperer.name,
+						Monsters.AwakenedVardorvis.name,
+						Monsters.AwakenedDukeSucellus.name
+					]
+				},
+				allItems: [
+					...Monsters.TheLeviathan.allItems,
+					...Monsters.TheWhisperer.allItems,
+					...Monsters.Vardorvis.allItems,
+					...Monsters.DukeSucellus.allItems
+				],
+				items: [...theLeviathanCL, ...theWhispererCL, ...vardorvisCL, ...dukeSucellusCL]
 			},
 			Creatables: {
 				counts: false,

@@ -5,7 +5,7 @@ import { globalDroprates } from '../../lib/data/globalDroprates';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
-import Cooking from '../../lib/skilling/skills/cooking';
+import Cooking from '../../lib/skilling/skills/cooking/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { clAdjustedDroprate, roll } from '../../lib/util';

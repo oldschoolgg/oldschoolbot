@@ -4,11 +4,13 @@ import { Bank } from 'oldschooljs';
 
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
-import Cooking, { Cookables } from '../../lib/skilling/skills/cooking';
+import Cooking, { Cookables } from '../../lib/skilling/skills/cooking/cooking';
+import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { cutLeapingFishCommand } from '../lib/abstracted_commands/cutLeapingFishCommand';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const cookCommand: OSBMahojiCommand = {
@@ -26,12 +28,12 @@ export const cookCommand: OSBMahojiCommand = {
 			description: 'The thing you want to cook.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return Cookables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase()))).map(
-					i => ({
-						name: i.name,
-						value: i.name
-					})
-				);
+				return [...Cookables.map(i => i.name), ...LeapingFish.map(i => i.item.name)]
+					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
+					.map(i => ({
+						name: i,
+						value: i
+					}));
 			}
 		},
 		{
@@ -44,6 +46,19 @@ export const cookCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
+		let { quantity, name } = options;
+
+		const barbarianFish = LeapingFish.find(
+			_leapingFish =>
+				stringMatches(_leapingFish.item.name, name) ||
+				stringMatches(_leapingFish.item.name.split(' ')[0], name) ||
+				_leapingFish.aliases.some(alias => stringMatches(alias, name))
+		);
+
+		if (barbarianFish) {
+			return cutLeapingFishCommand({ user, channelID, name, quantity });
+		}
+
 		const cookable = Cooking.Cookables.find(
 			cookable =>
 				stringMatches(cookable.name, options.name) ||
@@ -88,7 +103,6 @@ export const cookCommand: OSBMahojiCommand = {
 
 		const maxTripLength = calcMaxTripLength(user, 'Cooking');
 
-		let { quantity } = options;
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCookSingleCookable);
 			const max = userBank.fits(inputCost);

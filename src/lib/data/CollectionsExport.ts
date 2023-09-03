@@ -3138,8 +3138,11 @@ export const dukeSucellusCL = resolveItems([
 	'Baron',
 	'Eye of the duke',
 	'Frozen tablet',
+	'Magus vestige',
 	'Chromium ingot',
-	"Awakener's orb"
+	"Awakener's orb",
+	'Ice quartz',
+	'Frozen tablet'
 ]);
 
 export const theLeviathanCL = resolveItems([

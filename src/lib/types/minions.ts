@@ -274,6 +274,12 @@ export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
 	zahur: boolean;
 }
 
+export interface CutLeapingFishActivityTaskOptions extends ActivityTaskOptions {
+	type: 'CutLeapingFish';
+	fishID: number;
+	quantity: number;
+}
+
 export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Hunter';
 	creatureName: string;
@@ -728,4 +734,5 @@ export type ActivityTaskData =
 	| DOAOptions
 	| DisassembleTaskOptions
 	| BathhouseTaskOptions
-	| ResearchTaskOptions;
+	| ResearchTaskOptions
+	| CutLeapingFishActivityTaskOptions;

@@ -19,7 +19,7 @@ import {
 	WesternProv,
 	WildernessDiary
 } from '../diaries';
-import { Cookables } from '../skilling/skills/cooking';
+import { Cookables } from '../skilling/skills/cooking/cooking';
 import Fishing from '../skilling/skills/fishing';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import Runecraft from '../skilling/skills/runecraft';

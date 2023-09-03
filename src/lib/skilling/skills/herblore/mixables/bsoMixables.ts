@@ -1,13 +1,12 @@
 import { Bank } from 'oldschooljs';
 
-import itemID from '../../../../util/itemID';
+import getOSItem from '../../../../util/getOSItem';
 import { Mixable } from '../../../types';
 
 export const bsoMixables: Mixable[] = [
 	{
-		name: 'Neem oil',
+		item: getOSItem('Neem oil'),
 		aliases: ['neem oil'],
-		id: itemID('Neem oil'),
 		level: 82,
 		xp: 1.5,
 		inputItems: new Bank({

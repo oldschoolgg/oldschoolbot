@@ -156,7 +156,7 @@ import { getPOHObject, PoHObjects } from './poh';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Skillcapes from './skilling/skillcapes';
 import Agility from './skilling/skills/agility';
-import { cookingCL } from './skilling/skills/cooking';
+import { cookingCL } from './skilling/skills/cooking/cooking';
 import { craftingCL } from './skilling/skills/crafting/craftables';
 import { dungBuyables } from './skilling/skills/dung/dungData';
 import { allFarmingItems } from './skilling/skills/farming';

@@ -26,6 +26,7 @@ import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration, formatSkillRequirements, skillsMeetRequirements } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { determineRunes } from '../../../lib/util/determineRunes';
 import getOSItem from '../../../lib/util/getOSItem';
 import itemID from '../../../lib/util/itemID';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -62,9 +63,8 @@ export async function calcTOBInput(u: MUser) {
 	items.add('Saradomin brew(4)', brewsNeeded);
 	items.add('Super restore(4)', restoresNeeded);
 
-	items.add('Blood rune', 110);
-	items.add('Death rune', 100);
-	items.add('Water rune', 800);
+	const runeCost = new Bank().add('Blood rune', 110).add('Death rune', 100).add('Water rune', 800);
+	items.add(determineRunes(u, runeCost));
 
 	return items;
 }

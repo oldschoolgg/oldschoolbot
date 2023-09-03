@@ -15,6 +15,7 @@ import { chambersOfXericMetamorphPets, tobMetamorphPets } from './CollectionsExp
 import { amrodCreatables } from './creatables/amrod';
 import { armorAndItemPacks } from './creatables/armorPacks';
 import { BsoCreateables } from './creatables/bsoItems';
+import { caCreatables } from './creatables/caCreatables';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { dtCreatables } from './creatables/dt';
@@ -2282,7 +2283,8 @@ const Createables: Createable[] = [
 	...toaCreatables,
 	...bloodBarkCreatables,
 	...swampBarkCreatables,
-	...dtCreatables
+	...dtCreatables,
+	...caCreatables
 ];
 
 export default Createables;

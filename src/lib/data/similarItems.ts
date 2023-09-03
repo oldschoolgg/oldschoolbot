@@ -35,7 +35,10 @@ const slayerHelmSimilar = resolveItems([
 	'Turquoise slayer helmet',
 	'Hydra slayer helmet',
 	'Twisted slayer helmet',
-	'Infernal slayer helmet'
+	'Infernal slayer helmet',
+	'Tztok slayer helmet',
+	'Vampyric slayer helmet',
+	'Tzkal slayer helmet'
 ]);
 const slayerHelmSimilarI = resolveItems([
 	'Black slayer helmet (i)',
@@ -46,7 +49,10 @@ const slayerHelmSimilarI = resolveItems([
 	'Hydra slayer helmet (i)',
 	'Twisted slayer helmet (i)',
 	'Slayer helmet (i)',
-	'Infernal slayer helmet(i)'
+	'Infernal slayer helmet(i)',
+	'Tztok slayer helmet (i)',
+	'Vampyric slayer helmet (i)',
+	'Tzkal slayer helmet (i)'
 ]);
 const bowfaCorruptSimilar = resolveItems([
 	25_869, // Red, 'duplicate' according to osrsbox item-search
@@ -186,7 +192,7 @@ const source: [string, (string | number)[]][] = [
 	['Dragonfire ward', [22_003]],
 	['Dragonfire shield', [11_284]],
 	['Ancient wyvern shield', [21_634]],
-	['Avernic defender', ['Avernic defender (l)']],
+	['Avernic defender', ['Avernic defender (l)', "Ghommal's avernic defender 5", "Ghommal's avernic defender 6"]],
 	['Void melee helm', ['Void melee helm (l)', 'Void melee helm (or)']],
 	['Void mage helm', ['Void mage helm (l)', 'Void mage helm (or)']],
 	['Void ranger helm', ['Void ranger helm (l)', 'Void ranger helm (or)']],
@@ -417,7 +423,10 @@ const source: [string, (string | number)[]][] = [
 	['Armadyl chestplate', ['Armadyl chestplate', 'Masori body (f)', 'Masori body']],
 	['Armadyl chainskirt', ['Masori chaps (f)', 'Masori chaps']],
 	['Music cape', ['Music cape (t)']],
-	['Imbued heart', ['Saturated heart']]
+	['Imbued heart', ['Saturated heart']],
+	['Torva full helm', ['Sanguine torva full helm']],
+	['Torva platebody', ['Sanguine torva platebody']],
+	['Torva platelegs', ['Sanguine torva platelegs']]
 ];
 
 // Make max cape count as all master capes
