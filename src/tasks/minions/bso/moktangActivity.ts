@@ -8,8 +8,16 @@ import { Events } from '../../../lib/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { trackLoot } from '../../../lib/lootTrack';
 import { MOKTANG_ID, MoktangLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/Moktang';
+import {
+	FletchingTipsTable,
+	HighTierStoneSpiritTable,
+	lowRuneHighAdamantTable,
+	runeWeaponTable,
+	StoneSpiritTable
+} from '../../../lib/simulation/sharedTables';
+import Smithing from '../../../lib/skilling/skills/smithing';
 import { MoktangTaskOptions } from '../../../lib/types/minions';
-import { itemNameFromID } from '../../../lib/util';
+import { increaseBankQuantitesByPercent, itemNameFromID } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
@@ -28,6 +36,18 @@ export const moktangTask: MinionTask = {
 		for (let i = 0; i < qty; i++) {
 			loot.add(MoktangLootTable.roll());
 		}
+
+		const bonusPercent = Math.floor(user.skillLevel(SkillsEnum.Mining) / 6);
+
+		increaseBankQuantitesByPercent(loot, bonusPercent, [
+			...StoneSpiritTable.allItems,
+			...HighTierStoneSpiritTable.allItems,
+			...Smithing.Bars.map(i => i.id),
+			...runeWeaponTable.allItems,
+			...FletchingTipsTable.allItems,
+			...lowRuneHighAdamantTable.allItems
+		]);
+
 		if (isDoubleLootActive(data.duration)) {
 			loot.multiply(2);
 			data.cantBeDoubled = true;
@@ -78,7 +98,9 @@ export const moktangTask: MinionTask = {
 			}
 		}
 
-		let str = `${userMention(data.userID)}, ${user.minionName} finished killing ${qty}x Moktang. Received ${loot}.
+		let str = `${userMention(data.userID)}, ${
+			user.minionName
+		} finished killing ${qty}x Moktang. ${bonusPercent}% bonus loot because of your Mining level. Received ${loot}.
 
 ${xpStr}`;
 

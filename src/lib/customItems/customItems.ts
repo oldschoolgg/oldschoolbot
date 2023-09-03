@@ -18,6 +18,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import getOSItem from '../util/getOSItem';
 import { setCustomItem, UN_EQUIPPABLE } from './util';
 
+setCustomItem(1579, "Thieves' armband", 'Rune gloves', {}, 100_000);
 setCustomItem(
 	19_939,
 	'Untradeable Mystery Box',

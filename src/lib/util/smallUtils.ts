@@ -3,7 +3,7 @@ import { exec } from 'node:child_process';
 import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, time } from 'discord.js';
-import { clamp, objectEntries, Time } from 'e';
+import { clamp, objectEntries, roll, Time } from 'e';
 import { Bank, Items, LootTable } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
@@ -305,6 +305,21 @@ export function removeItemsFromLootTable(lootTable: LootTable, itemsToRemove: nu
 	for (const item of lootTable.table) {
 		if (item.item instanceof LootTable) {
 			removeItemsFromLootTable(item.item, itemsToRemove);
+		}
+	}
+}
+
+export function perHourChance(
+	durationMilliseconds: number,
+	oneInXPerHourChance: number,
+	successFunction: () => unknown
+) {
+	const minutesPassed = Math.floor(durationMilliseconds / 60_000);
+	const perMinuteChance = oneInXPerHourChance * 60;
+
+	for (let i = 0; i < minutesPassed; i++) {
+		if (roll(perMinuteChance)) {
+			successFunction();
 		}
 	}
 }

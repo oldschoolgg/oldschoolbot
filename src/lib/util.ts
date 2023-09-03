@@ -535,8 +535,9 @@ export async function asyncGzip(buffer: Buffer) {
 	});
 }
 
-export function increaseBankQuantitesByPercent(bank: Bank, percent: number) {
+export function increaseBankQuantitesByPercent(bank: Bank, percent: number, whitelist: number[] | null = null) {
 	for (const [key, value] of Object.entries(bank.bank)) {
+		if (whitelist !== null && !whitelist.includes(parseInt(key))) continue;
 		const increased = Math.floor(increaseNumByPercent(value, percent));
 		bank.bank[key] = increased;
 	}

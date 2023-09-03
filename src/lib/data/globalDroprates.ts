@@ -98,5 +98,14 @@ export const globalDroprates = {
 		cmReduction: 17,
 		rolledPer: 'kc',
 		notes: ["Droprate increased by 17% in CM's"]
+	},
+	sandy: {
+		name: 'Sandy (pet)',
+		baseRate: 6000,
+		clIncrease: 1.5,
+		minLength: false,
+		rolledPer: 'catch',
+		notes: ['Received when hunting Sandy Geckos'],
+		item: getOSItem('Sandy')
 	}
 };

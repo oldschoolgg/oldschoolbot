@@ -730,3 +730,4 @@ export function herbertDroprate(herbloreXP: number, itemLevel: number) {
 
 export const OSB_VIRTUS_IDS = [26_241, 26_243, 26_245];
 export const YETI_ID = 129_521;
+export const KING_GOLDEMAR_GUARD_ID = 30_913;

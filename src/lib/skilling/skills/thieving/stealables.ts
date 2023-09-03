@@ -23,6 +23,8 @@ import WarriorWoman from 'oldschooljs/dist/simulation/monsters/low/t-z/WarriorWo
 import YanilleWatchman from 'oldschooljs/dist/simulation/monsters/low/t-z/YanilleWatchman';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { KING_GOLDEMAR_GUARD_ID } from '../../../constants';
+
 export interface Stealable {
 	name: string;
 	type: 'pickpockable' | 'stall';
@@ -695,6 +697,20 @@ const pickpocketables: Stealable[] = [
 		slope: 1.611_25,
 		intercept: -80.993_75,
 		fireCapeRequired: true,
+		petChance: 176_743
+	},
+	{
+		name: 'Royal dwarven guard',
+		type: 'pickpockable',
+		level: 99,
+		xp: 95.4,
+		aliases: ['royal dwarven guard'],
+		table: new LootTable().every('Coins', [985, 1485]).tertiary(100_000, 'Kebab'),
+		id: KING_GOLDEMAR_GUARD_ID,
+		stunTime: 5,
+		stunDamage: 9,
+		slope: 0.488_13,
+		intercept: 2.065_13,
 		petChance: 176_743
 	}
 ];
