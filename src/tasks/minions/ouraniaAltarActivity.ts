@@ -2,6 +2,7 @@ import { percentChance, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
+import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { OuraniaAltarOptions } from '../../lib/types/minions';
@@ -207,6 +208,7 @@ const ouraniaAltarTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const lvl = user.skillLevel(SkillsEnum.Runecraft);
 		const loot = new Bank();
+		const [hasArdyMedium] = await userhasDiaryTier(user, ArdougneDiary.medium);
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_487_213);
 		const selectedLootTable = lootTable[Math.min(Math.floor(lvl / 10), 10)];
 		let totalXp = 0;
@@ -223,9 +225,20 @@ const ouraniaAltarTask: MinionTask = {
 						updatedRunes[runeType.type] += 1;
 						const rune = Runecraft.Runes.find(rune => rune.name === runeType.type);
 						if (rune) {
+							if (hasArdyMedium && rune?.ardyDiaryChance && percentChance(rune.ardyDiaryChance)) {
+								loot.add(runeType.type, 2);
+							} else {
+								loot.add(runeType.type, 1);
+							}
 							totalXp += rune.xp * 1.7;
-							loot.add(runeType.type, 1); // Add the obtained rune to the loot Bank
-							break;
+						} else if (runeType.type === 'Soul rune') {
+							// Handle 'Soul rune' separately as it's not in the normal array
+							if (hasArdyMedium && percentChance(10)) {
+								loot.add(runeType.type, 2);
+							} else {
+								loot.add(runeType.type, 1);
+							}
+							totalXp += 29.7 * 1.7;
 						}
 					}
 				}
@@ -246,6 +259,8 @@ const ouraniaAltarTask: MinionTask = {
 		})}`;
 
 		let str = `${user}, ${user.minionName} finished runecrafting at the Ourania altar, you received ${loot}. ${xpRes}`;
+
+		if (hasArdyMedium) str += '\nThe Medium Ardougne Diary is giving you a chance of crafting extra runes.';
 
 		if (loot.amount('Rift guardian') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";

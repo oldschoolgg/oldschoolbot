@@ -15,6 +15,7 @@ export interface Rune {
 	inputRune?: Bank;
 	inputTalisman?: Bank;
 	stams?: boolean;
+	ardyDiaryChance?: number;
 }
 
 export interface Tiara {
@@ -43,7 +44,8 @@ const Runes: Rune[] = [
 			[88, 9],
 			[99, 10]
 		],
-		tripLength: Time.Minute * 0.917
+		tripLength: Time.Minute * 0.917,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 5.5,
@@ -59,7 +61,8 @@ const Runes: Rune[] = [
 			[84, 7],
 			[98, 8]
 		],
-		tripLength: Time.Minute * 0.917
+		tripLength: Time.Minute * 0.917,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 6,
@@ -73,7 +76,8 @@ const Runes: Rune[] = [
 			[76, 5],
 			[95, 6]
 		],
-		tripLength: Time.Minute * 0.917
+		tripLength: Time.Minute * 0.917,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 8.5,
@@ -95,7 +99,8 @@ const Runes: Rune[] = [
 			[52, 3],
 			[78, 4]
 		],
-		tripLength: Time.Minute * 0.917
+		tripLength: Time.Minute * 0.917,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 9,
@@ -126,7 +131,8 @@ const Runes: Rune[] = [
 			[35, 2],
 			[70, 3]
 		],
-		tripLength: Time.Minute * 0.917
+		tripLength: Time.Minute * 0.917,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 9.5,
@@ -157,7 +163,8 @@ const Runes: Rune[] = [
 			[46, 2],
 			[92, 3]
 		],
-		tripLength: Time.Minute * 0.917
+		tripLength: Time.Minute * 0.917,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 10.5,
@@ -178,7 +185,8 @@ const Runes: Rune[] = [
 			[59, 2]
 		],
 		tripLength: Time.Minute * 1.192,
-		qpRequired: 5
+		qpRequired: 5,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 8.5,
@@ -188,7 +196,8 @@ const Runes: Rune[] = [
 			[35, 1],
 			[74, 2]
 		],
-		tripLength: Time.Minute * 1.834
+		tripLength: Time.Minute * 1.834,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 8.7,
@@ -199,7 +208,8 @@ const Runes: Rune[] = [
 			[82, 2]
 		],
 		qpRequired: 15,
-		tripLength: Time.Minute * 0.917
+		tripLength: Time.Minute * 0.917,
+		ardyDiaryChance: 25
 	},
 	{
 		xp: 9,
@@ -209,7 +219,8 @@ const Runes: Rune[] = [
 			[44, 1],
 			[91, 2]
 		],
-		tripLength: Time.Minute * 1.38
+		tripLength: Time.Minute * 1.38,
+		ardyDiaryChance: 22.5
 	},
 	{
 		xp: 9.5,
@@ -220,7 +231,8 @@ const Runes: Rune[] = [
 			[95, 2]
 		],
 		qpRequired: 10,
-		tripLength: Time.Minute * 1.56
+		tripLength: Time.Minute * 1.56,
+		ardyDiaryChance: 20
 	},
 	{
 		xp: 10,
@@ -231,7 +243,8 @@ const Runes: Rune[] = [
 			[99, 2]
 		],
 		qpRequired: 10,
-		tripLength: Time.Minute * 1.192
+		tripLength: Time.Minute * 1.192,
+		ardyDiaryChance: 17.5
 	},
 	{
 		xp: 10.5,
@@ -240,7 +253,8 @@ const Runes: Rune[] = [
 		levels: [[77, 1]],
 		qpRequired: 125,
 		tripLength: Time.Minute * 1.028,
-		stams: true
+		stams: true,
+		ardyDiaryChance: 15
 	},
 	{
 		xp: 8,
