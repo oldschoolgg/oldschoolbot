@@ -1356,6 +1356,20 @@ ${Object.entries(result)
 	.join('\n')}`
 			};
 		}
+	},
+	{
+		name: 'Stealing/Thieving Cost',
+		perkTierNeeded: null,
+		run: async (_, userStats) => {
+			return makeResponseForBank(new Bank(userStats.steal_cost_bank as ItemBank), 'Your Stealing/Thieving Cost');
+		}
+	},
+	{
+		name: 'Stealing/Thieving Loot',
+		perkTierNeeded: null,
+		run: async (_, userStats) => {
+			return makeResponseForBank(new Bank(userStats.steal_loot_bank as ItemBank), 'Your Stealing/Thieving Loot');
+		}
 	}
 ] as const;
 

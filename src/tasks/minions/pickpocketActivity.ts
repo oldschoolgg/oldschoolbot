@@ -6,12 +6,13 @@ import { Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
+import { perHourChance, skillingPetDropRate } from '../../lib/util';
+import { forcefullyUnequipItem } from '../../lib/util/forcefullyUnequipItem';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
-import { rogueOutfitPercentBonus, updateClientGPTrackSetting } from '../../mahoji/mahojiSettings';
+import { rogueOutfitPercentBonus, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { clueUpgraderEffect } from './monsterActivity';
 
 const notMultiplied = resolveItems([
@@ -102,9 +103,13 @@ export const pickpocketTask: MinionTask = {
 
 		let boosts: string[] = [];
 		await clueUpgraderEffect(user, loot, boosts, 'pickpocketing');
-		if (user.hasEquippedOrInBank(itemID("Thieves' armband"))) {
+		if (user.hasEquipped("Thieves' armband")) {
 			boosts.push('3x loot for Thieves armband');
 			loot.multiply(3, notMultiplied);
+			await perHourChance(duration, 40, async () => {
+				await forcefullyUnequipItem(user, getOSItem("Thieves' armband"));
+				boosts.push('Your thieves armband broke!');
+			});
 		}
 
 		let gotWil = false;
@@ -119,6 +124,8 @@ export const pickpocketTask: MinionTask = {
 		if (loot.has('Coins')) {
 			updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
+
+		await userStatsBankUpdate(user.id, 'steal_loot_bank', loot);
 
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,

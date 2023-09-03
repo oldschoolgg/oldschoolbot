@@ -946,6 +946,9 @@ model UserStats {
   god_favour_bank           Json? @db.Json
   god_items_sacrificed_bank Json  @default("{}") @db.Json
 
+  steal_cost_bank Json @default("{}") @db.Json
+  steal_loot_bank Json @default("{}") @db.Json
+
   @@map("user_stats")
 }
 
