@@ -89,7 +89,7 @@ export const inventionBoosts = {
 		boxTrapBoostPercent: 25
 	},
 	arcaneHarvester: {
-		harvestBoostPercent: 20
+		harvestBoostPercent: 100
 	},
 	drygoreSaw: {
 		buildBoostPercent: 40
