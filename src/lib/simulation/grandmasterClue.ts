@@ -94,7 +94,7 @@ const table = new LootTable()
 	.add(DragonTable, [2, 5], 2)
 	.add(runeAlchablesTable, 12, 2)
 	.add(BattlestaffTable, 20, 2)
-	.add('Coins', [4_500_000, 8_200_000])
+	.add('Coins', [8_500_000, 16_200_000])
 	.add(AllBarrows, 3)
 	.add(LogsTable, 2)
 	.add(Supplies, 1, 5);
