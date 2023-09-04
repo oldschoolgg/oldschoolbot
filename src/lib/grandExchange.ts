@@ -1,4 +1,5 @@
 import { GEListing, GEListingType, GETransaction } from '@prisma/client';
+import { Stopwatch } from '@sapphire/stopwatch';
 import { bold, ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
 import { calcPercentOfNum, clamp, noOp, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -7,10 +8,11 @@ import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { BitField, globalConfig, ONE_TRILLION, PerkTier } from './constants';
+import { marketPricemap } from './marketPrices';
 import { RobochimpUser, roboChimpUserFetch } from './roboChimp';
 import { prisma } from './settings/prisma';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
-import { assert, dateFm, generateGrandExchangeID, itemNameFromID, makeComponents, toKMB } from './util';
+import { assert, generateGrandExchangeID, getInterval, itemNameFromID, makeComponents, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
@@ -129,28 +131,28 @@ class GrandExchangeSingleton {
 				{
 					has: () => true,
 					name: 'Base',
-					amount: 1
+					amount: 3
 				},
-				...[100, 250, 1000].map(num => ({
+				...[100, 250, 1000, 2000].map(num => ({
 					has: (user: MUser) => user.totalLevel >= num,
 					name: `${num} Total Level`,
 					amount: 1
 				})),
-				{
+				...[30, 60, 90, 95].map(num => ({
 					has: (_: MUser, robochimpUser: RobochimpUser) =>
-						robochimpUser.osb_cl_percent && robochimpUser.osb_cl_percent >= 30,
-					name: '30% CL Completion',
+						robochimpUser.osb_cl_percent && robochimpUser.osb_cl_percent >= num,
+					name: `${num}% CL Completion`,
 					amount: 1
-				},
-				{
-					has: (_: MUser, robochimpUser: RobochimpUser) => robochimpUser.leagues_points_total >= 10_000,
-					name: '10k Leagues Points',
+				})),
+				...[10_000, 20_000, 30_000].map(num => ({
+					has: (_: MUser, robochimpUser: RobochimpUser) => robochimpUser.leagues_points_total >= num,
+					name: `${num.toLocaleString()} Leagues Points`,
 					amount: 1
-				},
+				})),
 				{
 					has: (user: MUser) => user.perkTier() >= PerkTier.Four,
 					name: 'Tier 3 Patron',
-					amount: 3
+					amount: 4
 				}
 			]
 		}
@@ -187,22 +189,7 @@ class GrandExchangeSingleton {
 	}
 
 	getInterval() {
-		const currentTime = new Date();
-		const currentHour = currentTime.getHours();
-
-		// Find the nearest interval start hour (0, 4, 8, etc.)
-		const startHour = currentHour - (currentHour % 4);
-		const startInterval = new Date(currentTime);
-		startInterval.setHours(startHour, 0, 0, 0);
-
-		const endInterval = new Date(startInterval);
-		endInterval.setHours(startHour + 4);
-
-		return {
-			start: startInterval,
-			end: endInterval,
-			nextResetStr: dateFm(endInterval)
-		};
+		return getInterval(4);
 	}
 
 	async fetchOwnedBank() {
@@ -345,16 +332,26 @@ class GrandExchangeSingleton {
 
 		const total = price * quantity;
 		const totalAfterTax = applicableTax.newPrice * quantity;
-		return {
-			confirmationStr: `Are you sure you want to create this listing?
+
+		let confirmationStr = `Are you sure you want to create this listing?
 
 ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of ${toKMB(total)}.${
-				type === 'Buy'
-					? ''
-					: applicableTax.taxedAmount > 0
-					? ` At this price, you will receive ${toKMB(totalAfterTax)} after taxes.`
-					: ' No tax will be charged on these items.'
-			}`,
+			type === 'Buy'
+				? ''
+				: applicableTax.taxedAmount > 0
+				? ` At this price, you will receive ${toKMB(totalAfterTax)} after taxes.`
+				: ' No tax will be charged on these items.'
+		}`;
+
+		const guidePrice = marketPricemap.get(item.id);
+		if (guidePrice) {
+			confirmationStr += bold(
+				`\n\n💰 The current estimated market value for this item is ${toKMB(guidePrice.guidePrice)} GP.`
+			);
+		}
+
+		return {
+			confirmationStr,
 			cost,
 			item,
 			price,
@@ -416,6 +413,11 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		assert(sellerListing.quantity_remaining > 0, 'Seller listing has 0 quantity remaining.');
 		assert(buyerListing.user_id !== sellerListing.user_id, 'Buyer and seller are the same user.');
 		assert(remainingItemsInBuyLimit !== 0, 'Buyer has 0 remaining items in buy limit.');
+		assert(sellerListing.user_id !== null, 'null seller listing user id');
+		assert(buyerListing.user_id !== null, 'null buyer listing user id');
+		if (buyerListing.user_id === null || sellerListing.user_id === null) {
+			throw new Error('null user id');
+		}
 
 		const quantityToBuy = Math.min(
 			remainingItemsInBuyLimit,
@@ -676,7 +678,10 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				where: {
 					type: GEListingType.Buy,
 					fulfilled_at: null,
-					cancelled_at: null
+					cancelled_at: null,
+					user_id: {
+						not: null
+					}
 				},
 				orderBy: [
 					{
@@ -691,7 +696,10 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				where: {
 					type: GEListingType.Sell,
 					fulfilled_at: null,
-					cancelled_at: null
+					cancelled_at: null,
+					user_id: {
+						not: null
+					}
 				},
 				orderBy: [
 					{
@@ -736,6 +744,12 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 		const allTransactions = await prisma.gETransaction.findMany();
 		for (const transaction of allTransactions) sanityCheckTransaction(transaction);
+
+		await this.checkGECanFullFilAllListings();
+
+		geLog('Validated GE and found no issues.');
+
+		return true;
 	}
 
 	async checkGECanFullFilAllListings() {
@@ -754,9 +768,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		geLog(`Expected G.E Bank: ${shouldHave}`);
 		if (!currentBank.equals(shouldHave)) {
 			throw new Error(
-				`GE either has extra or insufficient items. The GE has ${currentBank} but should have ${shouldHave}. Difference: ${shouldHave.difference(
-					currentBank
-				)}`
+				`GE either has extra or insufficient items. Difference: ${shouldHave.difference(currentBank)}`
 			);
 		} else {
 			geLog(
@@ -764,6 +776,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					[...buyListings, ...sellListings].length
 				}x active listings! Difference: ${shouldHave.difference(currentBank)}`
 			);
+			return true;
 		}
 	}
 
@@ -805,19 +818,10 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	private async _tick() {
 		if (!this.ready) return;
 		if (this.locked) return;
+		const stopwatch = new Stopwatch();
+		stopwatch.start();
 		const { buyListings, sellListings } = await this.fetchActiveListings();
-		await this.checkGECanFullFilAllListings();
 
-		const allListings = [...buyListings, ...sellListings];
-		for (const listing of allListings) {
-			try {
-				sanityCheckListing(listing);
-			} catch (err: any) {
-				await this.lockGE(err.reason);
-				geLog(err);
-				logError(err);
-			}
-		}
 		for (const buyListing of buyListings) {
 			// These are all valid, matching sell listings we can match with this buy listing.
 			const matchingSellListings = sellListings.filter(
@@ -859,6 +863,9 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			// Process only one transaction per tick
 			break;
 		}
+
+		stopwatch.stop();
+		geLog(`GE tick took ${stopwatch}`);
 	}
 
 	async totalReset() {

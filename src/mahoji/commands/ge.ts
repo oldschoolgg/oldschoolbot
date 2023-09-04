@@ -6,10 +6,12 @@ import { CommandRunOptions } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 
 import { createGECancelButton, GrandExchange } from '../../lib/grandExchange';
+import { marketPricemap } from '../../lib/marketPrices';
 import { prisma } from '../../lib/settings/prisma';
 import { formatDuration, itemNameFromID, makeComponents, toKMB } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { ownedItemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -166,6 +168,30 @@ export const geCommand: OSBMahojiCommand = {
 			name: 'stats',
 			description: 'View your g.e stats',
 			options: []
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'price',
+			description: 'Lookup the market price of an item on the g.e',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'item',
+					description: 'The item to lookup.',
+					required: true,
+					autocomplete: async input => {
+						const listings = Array.from(marketPricemap.values());
+						return listings
+							.filter(i =>
+								!input ? true : itemNameFromID(i.itemID)!.toLowerCase().includes(input.toLowerCase())
+							)
+							.map(l => ({
+								name: `${itemNameFromID(l.itemID)!}`,
+								value: l.itemID
+							}));
+					}
+				}
+			]
 		}
 	],
 	run: async ({
@@ -188,9 +214,24 @@ export const geCommand: OSBMahojiCommand = {
 		};
 		my_listings?: {};
 		stats?: {};
+		price?: { item: string };
 	}>) => {
-		await interaction.deferReply();
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
+
+		if (options.price) {
+			const data = marketPricemap.get(Number(options.price.item));
+			if (!data) {
+				return "We don't have price data for that item.";
+			}
+			return `The current market price of ${itemNameFromID(data.itemID)!} is ${toKMB(
+				data.guidePrice
+			)} (${data.guidePrice.toLocaleString()}) GP.
+
+**Recent price:** ${toKMB(data.averagePriceLast100)} (${data.averagePriceLast100.toLocaleString()}) GP.
+
+This price is a guide only, calculated from average sale prices, it may not be accurate, it may change, or not reflect the true market price.`;
+		}
 
 		if (options.stats) {
 			const totalGPYourSales = await prisma.gETransaction.aggregate({
@@ -297,6 +338,10 @@ ${(
 
 **Recent Fulfilled/Cancelled Listings**
 ${recentInactiveListings.map(i => geListingToString(i)).join('\n')}`;
+		}
+
+		if (GrandExchange.locked) {
+			return 'The Grand Exchange is currently locked, please try again later.';
 		}
 
 		if (options.buy || options.sell) {

@@ -257,6 +257,122 @@ const Potions = [
 	{
 		name: 'Ancient brew',
 		items: resolveItems(['Ancient brew(1)', 'Ancient brew(2)', 'Ancient brew(3)', 'Ancient brew(4)'])
+	},
+	{
+		name: 'Attack mix',
+		items: resolveItems(['Attack mix(1)', 'Attack mix(2)'])
+	},
+	{
+		name: 'Antipoison mix',
+		items: resolveItems(['Antipoison mix(1)', 'Antipoison mix(2)'])
+	},
+	{
+		name: "Relicym's mix",
+		items: resolveItems(["Relicym's mix(1)", "Relicym's mix(2)"])
+	},
+	{
+		name: 'Strength mix',
+		items: resolveItems(['Strength mix(1)', 'Strength mix(2)'])
+	},
+	{
+		name: 'Restore mix',
+		items: resolveItems(['Restore mix(1)', 'Restore mix(2)'])
+	},
+	{
+		name: 'Energy mix',
+		items: resolveItems(['Energy mix(1)', 'Energy mix(2)'])
+	},
+	{
+		name: 'Defence mix',
+		items: resolveItems(['Defence mix(1)', 'Defence mix(2)'])
+	},
+	{
+		name: 'Agility mix',
+		items: resolveItems(['Agility mix(1)', 'Agility mix(2)'])
+	},
+	{
+		name: 'Combat mix',
+		items: resolveItems(['Combat mix(1)', 'Combat mix(2)'])
+	},
+	{
+		name: 'Prayer mix',
+		items: resolveItems(['Prayer mix(1)', 'Prayer mix(2)'])
+	},
+	{
+		name: 'Superattack mix',
+		items: resolveItems(['Superattack mix(1)', 'Superattack mix(2)'])
+	},
+	{
+		name: 'Anti-poison supermix',
+		items: resolveItems(['Anti-poison supermix(1)', 'Anti-poison supermix(2)'])
+	},
+	{
+		name: 'Fishing mix',
+		items: resolveItems(['Fishing mix(1)', 'Fishing mix(2)'])
+	},
+	{
+		name: 'Super energy mix',
+		items: resolveItems(['Super energy mix(1)', 'Super energy mix(2)'])
+	},
+	{
+		name: 'Hunting mix',
+		items: resolveItems(['Hunting mix(1)', 'Hunting mix(2)'])
+	},
+	{
+		name: 'Super str. mix',
+		items: resolveItems(['Super str. mix(1)', 'Super str. mix(2)'])
+	},
+	{
+		name: 'Magic essence mix',
+		items: resolveItems(['Magic essence mix(1)', 'Magic essence mix(2)'])
+	},
+	{
+		name: 'Super restore mix',
+		items: resolveItems(['Super restore mix(1)', 'Super restore mix(2)'])
+	},
+	{
+		name: 'Super def. mix',
+		items: resolveItems(['Super def. mix(1)', 'Super def. mix(2)'])
+	},
+	{
+		name: 'Antidote+ mix',
+		items: resolveItems(['Antidote+ mix(1)', 'Antidote+ mix(2)'])
+	},
+	{
+		name: 'Antifire mix',
+		items: resolveItems(['Antifire mix(1)', 'Antifire mix(2)'])
+	},
+	{
+		name: 'Ranging mix',
+		items: resolveItems(['Ranging mix(1)', 'Ranging mix(2)'])
+	},
+	{
+		name: 'Magic mix',
+		items: resolveItems(['Magic mix(1)', 'Magic mix(2)'])
+	},
+	{
+		name: 'Zamorak mix',
+		items: resolveItems(['Zamorak mix(1)', 'Zamorak mix(2)'])
+	},
+	{
+		name: 'Stamina mix',
+		items: resolveItems(['Stamina mix(1)', 'Stamina mix(2)'])
+	},
+	{
+		name: 'Extended antifire mix',
+		items: resolveItems(['Extended antifire mix(1)', 'Extended antifire mix(2)'])
+	},
+	{
+		name: 'Ancient mix',
+		items: resolveItems(['Ancient mix(1)', 'Ancient mix(2)'])
+	},
+	{
+		name: 'Super antifire mix',
+		items: resolveItems(['Super antifire mix(1)', 'Super antifire mix(2)'])
+	},
+	{
+		name: 'Extended super antifire mix',
+		items: resolveItems(['Extended super antifire mix(1)', 'Extended super antifire mix(2)'])
 	}
 ];
 

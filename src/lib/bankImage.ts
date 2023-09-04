@@ -186,7 +186,35 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Reward casket (elite)'), 'elite'],
 
 	[i('Clue scroll (master)'), 'master'],
-	[i('Reward casket (master)'), 'master']
+	[i('Reward casket (master)'), 'master'],
+
+	// Unf pots
+	[i('Avantoe potion (unf)'), 'avan'],
+	[i('Cadantine potion (unf)'), 'cadan'],
+	[i('Dwarf weed potion (unf)'), 'dwarf'],
+	[i('Guam potion (unf)'), 'guam'],
+	[i('Harralander potion (unf)'), 'harra'],
+	[i('Irit potion (unf)'), 'irit'],
+	[i('Kwuarm potion (unf)'), 'kwuarm'],
+	[i('Lantadyme potion (unf)'), 'lanta'],
+	[i('Marrentill potion (unf)'), 'marren'],
+	[i('Ranarr potion (unf)'), 'ranarr'],
+	[i('Snapdragon potion (unf)'), 'snap'],
+	[i('Tarromin potion (unf)'), 'tarro'],
+	[i('Toadflax potion (unf)'), 'toad'],
+	[i('Torstol potion (unf)'), 'torstol'],
+
+	// Logs
+	[i('Logs'), 'Logs'],
+	[i('Oak logs'), 'Oak'],
+	[i('Willow logs'), 'Willow'],
+	[i('Teak logs'), 'Teak'],
+	[i('Arctic pine logs'), 'ArctPine'],
+	[i('Maple logs'), 'Maple'],
+	[i('Mahogany logs'), 'Mahog'],
+	[i('Yew logs'), 'Yew'],
+	[i('Magic logs'), 'Magic'],
+	[i('Redwood logs'), 'Redwood']
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {

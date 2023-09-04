@@ -16,6 +16,7 @@ import {
 	evilChickenOutfit,
 	gnomeRestaurantCL,
 	guardiansOfTheRiftCL,
+	shadesOfMorttonCL,
 	toaCL
 } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
@@ -121,6 +122,51 @@ ${whereInMassClause(id)};`)
 **First Activity:** ${firstActivity.type} ${firstActivityDate.toLocaleDateString('en-CA')}
 **Average Per Day:** ${formatDuration(perDay)}
 `;
+}
+
+async function clueGains(user: MUser, interval: string, tier?: string, ironmanOnly?: boolean) {
+	if (user.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
+
+	let tierFilter = '';
+	let title = '';
+	if (tier) {
+		const clueTier = ClueTiers.find(t => t.name.toLowerCase() === tier.toLowerCase());
+		if (!clueTier) return 'Invalid clue scroll tier.';
+		const tierId = clueTier.id;
+		tierFilter = `AND (a."data"->>'clueID')::int = ${tierId}`;
+		title = `Highest ${clueTier.name} clue scroll completions in the past ${interval}`;
+	} else {
+		title = `Highest All clue scroll completions in the past ${interval}`;
+	}
+
+	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
+	  FROM activity a
+	  JOIN users u ON a.user_id::text = u.id
+	  WHERE a.type = 'ClueCompletion'
+	  AND a.finish_date >= now() - interval '${interval === 'day' ? 1 : 7}' day AND a.completed = true
+	  ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
+	  ${tierFilter}
+	  GROUP BY a.user_id
+	  ORDER BY qty DESC, lastDate ASC
+	  LIMIT 10`;
+
+	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
+
+	if (res.length === 0) {
+		return 'No results found.';
+	}
+
+	let place = 0;
+	const embed = new EmbedBuilder()
+		.setTitle(title)
+		.setDescription(
+			res
+				.map((i: any) => `${++place}. **${getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`)
+				.join('\n')
+		);
+
+	return { embeds: [embed] };
 }
 
 async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) {
@@ -250,6 +296,11 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 		name: 'Tombs of Amascut',
 		key: 'tombs_of_amascut',
 		items: toaCL
+	},
+	{
+		name: 'Shades of Morton',
+		key: 'shades_of_morton',
+		items: shadesOfMorttonCL
 	}
 ];
 
@@ -591,10 +642,10 @@ async function checkMassesCommand(guildID: string | undefined) {
 				isTOBOrTOAActivity(m) || isNexActivity(m)
 					? m.finishDate - m.duration + m.fakeDuration - now
 					: m.finishDate - now;
-			if (isGroupActivity(m)) {
+			if ('users' in m) {
 				return [
 					remainingTime,
-					`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
+					`${m.type}${m.type === 'Raids' && m.challengeMode ? ' CM' : ''}: ${m.users.length} users (<#${
 						m.channelID
 					}> in ${formatDuration(remainingTime, true)})`
 				];
@@ -616,6 +667,37 @@ export const toolsCommand: OSBMahojiCommand = {
 			description: 'Tools that only patrons can use.',
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'clue_gains',
+					description: "Show's who has the highest clue scroll completions for a given time period.",
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'time',
+							description: 'The time period.',
+							required: true,
+							choices: ['day', 'week'].map(i => ({ name: i, value: i }))
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'tier',
+							description: 'The tier of clue scroll.',
+							required: false,
+							autocomplete: async value => {
+								return [...ClueTiers.map(i => ({ name: i.name, value: i }))]
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({ name: i.name, value: i.name }));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'ironman',
+							description: 'Only check ironmen accounts.',
+							required: false
+						}
+					]
+				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'kc_gains',
@@ -841,6 +923,11 @@ export const toolsCommand: OSBMahojiCommand = {
 		guildID
 	}: CommandRunOptions<{
 		patron?: {
+			clue_gains?: {
+				time: 'day' | 'week';
+				tier?: string;
+				ironman?: boolean;
+			};
 			kc_gains?: {
 				time: 'day' | 'week';
 				monster: string;
@@ -881,6 +968,14 @@ export const toolsCommand: OSBMahojiCommand = {
 
 		if (options.patron) {
 			const { patron } = options;
+			if (patron.clue_gains) {
+				return clueGains(
+					mahojiUser,
+					patron.clue_gains.time,
+					patron.clue_gains.tier,
+					Boolean(patron.clue_gains.ironman)
+				);
+			}
 			if (patron.kc_gains) {
 				return kcGains(
 					mahojiUser,

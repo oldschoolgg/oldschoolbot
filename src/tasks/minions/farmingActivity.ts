@@ -1,14 +1,15 @@
 import { randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
+import { BitField, Emoji, Events } from '../../lib/constants';
 import { PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { prisma } from '../../lib/settings/prisma';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { FarmingActivityTaskOptions } from '../../lib/types/minions';
+import { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { assert, roll, skillingPetDropRate } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
@@ -33,6 +34,7 @@ export const farmingTask: MinionTask = {
 		let checkHealthXp = 0;
 		let rakeXp = 0;
 		let woodcuttingXp = 0;
+		let herbloreXp = 0;
 		let payStr = '';
 		let wcStr = '';
 		let rakeStr = '';
@@ -167,8 +169,16 @@ export const farmingTask: MinionTask = {
 			}
 			checkHealthXp = alivePlants * plantToHarvest.checkXp;
 
+			const shouldCleanHerb =
+				plantToHarvest.herbXp !== undefined &&
+				user.bitfield.includes(BitField.CleanHerbsFarming) &&
+				user.skillLevel(SkillsEnum.Herblore) >= plantToHarvest.herbLvl!;
+
 			if (plantToHarvest.givesCrops) {
-				if (!plantToHarvest.outputCrop) return;
+				let cropToHarvest = plantToHarvest.outputCrop;
+				if (shouldCleanHerb) {
+					cropToHarvest = plantToHarvest.cleanHerbCrop;
+				}
 				if (plantToHarvest.variableYield) {
 					cropYield = calcVariableYield(
 						plantToHarvest,
@@ -206,10 +216,15 @@ export const farmingTask: MinionTask = {
 				}
 
 				if (quantity > patchType.lastQuantity) {
-					loot.add(plantToHarvest.outputCrop, cropYield);
+					loot.add(cropToHarvest, cropYield);
 					loot.add('Weeds', quantity - patchType.lastQuantity);
 				} else {
-					loot.add(plantToHarvest.outputCrop, cropYield);
+					loot.add(cropToHarvest, cropYield);
+				}
+
+				if (shouldCleanHerb && plantToHarvest.herbXp) {
+					herbloreXp = cropYield * plantToHarvest.herbXp;
+					await user.addItemsToCollectionLog(new Bank().add(plantToHarvest.outputCrop).multiply(cropYield));
 				}
 
 				if (plantToHarvest.name === 'Limpwurt') {
@@ -291,6 +306,12 @@ export const farmingTask: MinionTask = {
 				);
 			}
 
+			if (herbloreXp > 0) {
+				infoStr.push(
+					`\nYou received ${herbloreXp.toLocaleString()} Herblore XP for cleaning the herbs during your trip.`
+				);
+			}
+
 			await user.addXP({
 				skillName: SkillsEnum.Farming,
 				amount: Math.floor(farmingXpReceived + bonusXP)
@@ -298,6 +319,11 @@ export const farmingTask: MinionTask = {
 			await user.addXP({
 				skillName: SkillsEnum.Woodcutting,
 				amount: Math.floor(woodcuttingXp)
+			});
+			await user.addXP({
+				skillName: SkillsEnum.Herblore,
+				amount: Math.floor(herbloreXp),
+				source: 'CleaningHerbsWhileFarming'
 			});
 
 			const newFarmingLevel = user.skillLevel(SkillsEnum.Farming);
@@ -317,6 +343,17 @@ export const farmingTask: MinionTask = {
 				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
 					farmingLevel: currentFarmingLevel
 				});
+				const fakeMonsterTaskOptions: MonsterActivityTaskOptions = {
+					monsterID: Monsters.Hespori.id,
+					quantity: patchType.lastQuantity,
+					type: 'MonsterKilling',
+					userID: user.id,
+					duration: data.duration,
+					finishDate: data.finishDate,
+					channelID: data.channelID,
+					id: 1
+				};
+				await combatAchievementTripEffect({ user, loot, messages: infoStr, data: fakeMonsterTaskOptions });
 				loot = hesporiLoot;
 			} else if (
 				patchType.patchPlanted &&

@@ -142,6 +142,20 @@ model ClientStorage {
   @@map("clientStorage")
 }
 
+model BuyCommandTransaction {
+  id   String   @id @default(uuid()) @db.Uuid
+  date DateTime @default(now()) @db.Timestamp(6)
+
+  user_id BigInt
+
+  cost_gp                BigInt
+  cost_bank_excluding_gp Json?  @db.Json
+
+  loot_bank Json? @db.Json
+
+  @@map("buy_command_transaction")
+}
+
 enum GearSetupType {
   melee
   range
@@ -305,6 +319,7 @@ model User {
   minion_equippedPet     Int?      @map("minion.equippedPet")
   minion_farmingContract Json?     @map("minion.farmingContract") @db.Json
   minion_birdhouseTraps  Json?     @map("minion.birdhouseTraps") @db.Json
+  finished_quest_ids     Int[]
 
   bingo_tickets_bought Int    @default(0)
   bingo_gp_contributed BigInt @default(0)
@@ -377,6 +392,10 @@ model User {
   serp_helm_charges      Int @default(0)
   blood_fury_charges     Int @default(0)
   tum_shadow_charges     Int @default(0)
+  blood_essence_charges  Int @default(0)
+  trident_charges        Int @default(0)
+
+  scythe_of_vitur_charges Int @default(0)
 
   // Balances
   lms_points           Int @default(0)
@@ -385,6 +404,8 @@ model User {
   carpenter_points     Int @default(0)
   zeal_tokens          Int @default(0)
   slayer_points        Int @default(0) @map("slayer.points")
+
+  completed_ca_task_ids Int[]
 
   // Migrate
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
@@ -427,6 +448,26 @@ enum XpGainSource {
   UnderwaterAgilityThieving
   ChambersOfXeric
   TheatreOfBlood
+  NightmareZone
+  AshSanctifier
+  OfferingBones
+  TempleTrekking
+  DarkAltar
+  MotherlodeMine
+  Birdhouses
+  GuardiansOfTheRift
+  BuryingBones
+  ScatteringAshes
+  Zalcano
+  Wintertodt
+  FishingTrawler
+  Tempoross
+  TearsOfGuthix
+  ShadesOfMorton
+  PuroPuro
+  MahoganyHomes
+  AerialFishing
+  CleaningHerbsWhileFarming
 }
 
 model XPGain {
@@ -574,6 +615,8 @@ model LastManStandingGame {
 enum economy_transaction_type {
   trade
   giveaway
+  duel
+  gri
 }
 
 model EconomyTransaction {
@@ -729,6 +772,8 @@ model FarmedCrop {
 model BotItemSell {
   id String @id @default(uuid()) @db.Uuid
 
+  date DateTime @default(now()) @db.Timestamp(6)
+
   item_id     Int
   quantity    Int
   gp_received BigInt
@@ -837,6 +882,8 @@ enum activity_type_enum {
   Raids
   Collecting
   MageTrainingArena
+  CutLeapingFish
+  MotherlodeMining
   BlastFurnace
   MageArena2
   BigChompyBirdHunting
@@ -864,6 +911,8 @@ enum activity_type_enum {
   ShadesOfMorton
   TombsOfAmascut
   UnderwaterAgilityThieving
+  StrongholdOfSecurity
+  SpecificQuest
 }
 
 enum xp_gains_skill_enum {
@@ -908,8 +957,8 @@ model GEListing {
 
   userfacing_id String
 
-  user_id String @db.VarChar(19)
-  user    User   @relation(fields: [user_id], references: [id])
+  user_id String? @db.VarChar(19)
+  user    User?   @relation(fields: [user_id], references: [id])
 
   created_at   DateTime  @default(now())
   cancelled_at DateTime?
@@ -945,6 +994,7 @@ model GETransaction {
   sell_listing    GEListing @relation("sell_transactions", fields: [sell_listing_id], references: [id])
   sell_listing_id Int
 
+  @@index([sell_listing_id])
   @@map("ge_transaction")
 }
 

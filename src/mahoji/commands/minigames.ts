@@ -744,7 +744,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 					description: 'Start a trip.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Number,
+							type: ApplicationCommandOptionType.Integer,
 							name: 'quantity',
 							description: 'The amount of games to do.',
 							required: false,
@@ -769,7 +769,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Number,
+							type: ApplicationCommandOptionType.Integer,
 							name: 'quantity',
 							description: 'Quantity.',
 							required: false,
@@ -807,7 +807,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							choices: agilityArenaBuyables.map(i => ({ name: `${i.item.name}`, value: i.item.name }))
 						},
 						{
-							type: ApplicationCommandOptionType.Number,
+							type: ApplicationCommandOptionType.Integer,
 							name: 'quantity',
 							description: 'Quantity.',
 							required: false,
@@ -826,7 +826,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 					description: 'Purchase XP using tickets.',
 					options: [
 						{
-							type: ApplicationCommandOptionType.Number,
+							type: ApplicationCommandOptionType.Integer,
 							name: 'quantity',
 							description: 'Quantity.',
 							required: true,
@@ -870,7 +870,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Number,
+							type: ApplicationCommandOptionType.Integer,
 							name: 'quantity',
 							description: 'The amount of weapons to make.',
 							required: false,
@@ -895,7 +895,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Number,
+							type: ApplicationCommandOptionType.Integer,
 							name: 'quantity',
 							description: 'Quantity.',
 							required: false,
@@ -966,7 +966,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							}
 						},
 						{
-							type: ApplicationCommandOptionType.Number,
+							type: ApplicationCommandOptionType.Integer,
 							name: 'quantity',
 							description: 'Quantity.',
 							required: false,

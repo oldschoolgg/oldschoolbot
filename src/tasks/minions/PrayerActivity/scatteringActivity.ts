@@ -21,7 +21,7 @@ export const scatteringTask: MinionTask = {
 		const XPMod = 1;
 		const xpReceived = quantity * ash.xp * XPMod;
 
-		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived });
+		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived, source: 'ScatteringAshes' });
 		const newLevel = user.skillLevel(SkillsEnum.Prayer);
 
 		let str = `${user}, ${user.minionName} finished scattering ${quantity} ${

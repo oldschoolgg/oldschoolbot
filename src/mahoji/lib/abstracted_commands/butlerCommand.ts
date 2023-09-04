@@ -130,9 +130,8 @@ export async function butlerCommand(user: MUser, plankName: string, quantity: nu
 		)}.`;
 	}
 
-	const costBank = new Bank().add('Coins', cost).add(plank!.inputItem, quantity);
+	const costBank = new Bank(consumedItems).add('Coins', cost).add(plank!.inputItem, quantity);
 	await user.removeItemsFromBank(costBank);
-	await user.removeItemsFromBank(consumedItems);
 
 	await updateBankSetting('construction_cost_bank', new Bank().add('Coins', cost));
 

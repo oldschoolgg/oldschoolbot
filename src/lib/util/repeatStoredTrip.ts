@@ -20,6 +20,7 @@ import {
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
@@ -36,6 +37,7 @@ import {
 	MahoganyHomesActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
+	MotherlodeMiningActivityTaskOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
@@ -75,6 +77,10 @@ export const taskCanBeRepeated = (type: activity_type_enum) =>
 	).includes(type);
 
 export const tripHandlers = {
+	[activity_type_enum.SpecificQuest]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.HalloweenEvent]: {
 		commandName: 'm',
 		args: () => ({})
@@ -84,6 +90,10 @@ export const tripHandlers = {
 		args: () => ({})
 	},
 	[activity_type_enum.Birdhouse]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.StrongholdOfSecurity]: {
 		commandName: 'm',
 		args: () => ({})
 	},
@@ -212,7 +222,7 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.DarkAltar]: {
 		commandName: 'runecraft',
-		args: (data: DarkAltarOptions) => ({ rune: darkAltarRunes[data.rune].item.name })
+		args: (data: DarkAltarOptions) => ({ rune: `${darkAltarRunes[data.rune].item.name} (zeah)` })
 	},
 	[activity_type_enum.Runecraft]: {
 		commandName: 'runecraft',
@@ -294,6 +304,13 @@ export const tripHandlers = {
 			zahur: data.zahur
 		})
 	},
+	[activity_type_enum.CutLeapingFish]: {
+		commandName: 'cook',
+		args: (data: CutLeapingFishActivityTaskOptions) => ({
+			name: itemNameFromID(data.fishID),
+			quantity: data.quantity
+		})
+	},
 	[activity_type_enum.Hunter]: {
 		commandName: 'hunt',
 		args: (data: HunterActivityTaskOptions) => ({
@@ -339,11 +356,19 @@ export const tripHandlers = {
 			powermine: data.powermine
 		})
 	},
+	[activity_type_enum.MotherlodeMining]: {
+		commandName: 'mine',
+		args: (data: MotherlodeMiningActivityTaskOptions) => ({
+			name: 'Motherlode mine',
+			quantity: data.quantity
+		})
+	},
 	[activity_type_enum.MonsterKilling]: {
 		commandName: 'k',
 		args: (data: MonsterActivityTaskOptions) => {
 			let method: PvMMethod = 'none';
 			if (data.usingCannon) method = 'cannon';
+			if (data.chinning) method = 'chinning';
 			else if (data.burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
 			else if (data.burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
 			return {
@@ -405,7 +430,7 @@ export const tripHandlers = {
 	[activity_type_enum.PuroPuro]: {
 		commandName: 'activities',
 		args: (data: PuroPuroActivityTaskOptions) => ({
-			puro_puro: { impling: data.implingID || '', dark_lure: data.darkLure }
+			puro_puro: { implingTier: data.implingTier || '', dark_lure: data.darkLure }
 		})
 	},
 	[activity_type_enum.Questing]: {

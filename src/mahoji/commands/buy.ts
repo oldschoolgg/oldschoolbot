@@ -1,11 +1,15 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import Buyables from '../../lib/data/buyables/buyables';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
+import { prisma } from '../../lib/settings/prisma';
+import { MUserStats } from '../../lib/structures/MUserStats';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
@@ -64,7 +68,8 @@ export const buyCommand: OSBMahojiCommand = {
 		}
 
 		if (buyable.customReq) {
-			const [hasCustomReq, reason] = await buyable.customReq(user);
+			await deferInteraction(interaction);
+			const [hasCustomReq, reason] = await buyable.customReq(user, await MUserStats.fromID(user.id));
 			if (!hasCustomReq) {
 				return reason!;
 			}
@@ -119,7 +124,7 @@ export const buyCommand: OSBMahojiCommand = {
 				? new Bank().add(buyable.name)
 				: buyable.outputItems instanceof Bank
 				? buyable.outputItems
-				: buyable.outputItems(await mUserFetch(user.id));
+				: buyable.outputItems(user);
 
 		const outItems = singleOutput.clone().multiply(quantity);
 
@@ -135,12 +140,27 @@ export const buyCommand: OSBMahojiCommand = {
 			itemsToRemove: totalCost
 		});
 
-		updateBankSetting('buy_cost_bank', totalCost);
-		updateBankSetting('buy_loot_bank', outItems);
-		await multipleUserStatsBankUpdate(user.id, {
-			buy_cost_bank: totalCost,
-			buy_loot_bank: outItems
-		});
+		let costBankExcludingGP: ItemBank | undefined = totalCost
+			.clone()
+			.remove('Coins', totalCost.amount('Coins')).bank;
+		if (Object.keys(costBankExcludingGP).length === 0) costBankExcludingGP = undefined;
+
+		await Promise.all([
+			updateBankSetting('buy_cost_bank', totalCost),
+			updateBankSetting('buy_loot_bank', outItems),
+			multipleUserStatsBankUpdate(user.id, {
+				buy_cost_bank: totalCost,
+				buy_loot_bank: outItems
+			}),
+			prisma.buyCommandTransaction.create({
+				data: {
+					user_id: BigInt(user.id),
+					cost_gp: totalCost.amount('Coins'),
+					cost_bank_excluding_gp: costBankExcludingGP,
+					loot_bank: outItems.bank
+				}
+			})
+		]);
 
 		return `You purchased ${outItems}.`;
 	}

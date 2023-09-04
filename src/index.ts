@@ -10,10 +10,9 @@ import './lib/itemMods';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { GatewayIntentBits, InteractionType, Options, Partials, TextChannel } from 'discord.js';
+import { GatewayIntentBits, Options, Partials, TextChannel } from 'discord.js';
 import { isObject } from 'e';
 import { MahojiClient } from 'mahoji';
-import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
 import { join } from 'path';
 import { isMainThread } from 'worker_threads';
 
@@ -26,7 +25,7 @@ import { modalInteractionHook } from './lib/modals';
 import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { syncActivityCache } from './lib/Task';
-import { assert, getInteractionTypeName, runTimedLoggedFn } from './lib/util';
+import { assert, runTimedLoggedFn } from './lib/util';
 import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
 import { handleInteractionError } from './lib/util/interactionReply';
@@ -168,25 +167,6 @@ client.on('interactionCreate', async interaction => {
 	}
 
 	try {
-		if (interaction.type !== InteractionType.ApplicationCommandAutocomplete) {
-			debugLog(`Process ${getInteractionTypeName(interaction.type)} interaction`, {
-				type: 'INTERACTION_PROCESS',
-				user_id: interaction.user.id,
-				guild_id: interaction.guildId,
-				channel_id: interaction.channelId,
-				interaction_id: interaction.id,
-				interaction_type: interaction.type,
-				...(interaction.isChatInputCommand()
-					? {
-							command_name: interaction.commandName,
-							options: convertAPIOptionsToCommandOptions(
-								interaction.options.data,
-								interaction.options.resolved
-							)
-					  }
-					: {})
-			});
-		}
 		await interactionHook(interaction);
 		if (interaction.isModalSubmit()) {
 			await modalInteractionHook(interaction);
@@ -229,7 +209,6 @@ client.on('guildCreate', guild => {
 client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
-client.on('debug', str => debugLog(str, { type: 'DJS-DEBUG' }));
 
 async function main() {
 	if (process.env.TEST) return;

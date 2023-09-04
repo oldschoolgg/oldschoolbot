@@ -209,11 +209,15 @@ async function infernoRun({
 		return 'Your range gear is too bad! You die quickly.';
 	}
 
-	duration.add(
-		rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chainskirt'),
-		-3,
-		'Armadyl'
-	);
+	duration.add(rangeGear.hasEquipped('Masori body (f)') && rangeGear.hasEquipped('Masori chaps (f)'), -5, 'Masori');
+
+	if (!(rangeGear.hasEquipped('Masori body (f)') && rangeGear.hasEquipped('Masori chaps (f)'))) {
+		duration.add(
+			rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chainskirt'),
+			-3,
+			'Armadyl'
+		);
+	}
 
 	duration.add(
 		mageGear.hasEquipped('Ancestral robe top') && mageGear.hasEquipped('Ancestral robe bottom'),
@@ -332,7 +336,7 @@ async function infernoRun({
 		return 'You have no projectiles equipped in your range setup.';
 	}
 	const projectileType: ProjectileType = rangeGear.equippedWeapon()!.name === 'Twisted bow' ? 'arrow' : 'bolt';
-	const projectilesForTheirType = projectiles[projectileType];
+	const projectilesForTheirType = projectiles[projectileType].items;
 	if (!projectilesForTheirType.includes(projectile.item)) {
 		return `You're using incorrect projectiles, you're using a ${
 			rangeGear.equippedWeapon()!.name

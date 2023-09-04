@@ -42,7 +42,7 @@ export const birdHouseTask: MinionTask = {
 
 			if (placing && gotCraft) {
 				craftingXP = birdhouse.craftXP * 4;
-				str += await user.addXP({ skillName: SkillsEnum.Crafting, amount: craftingXP });
+				str += await user.addXP({ skillName: SkillsEnum.Crafting, amount: craftingXP, source: 'Birdhouses' });
 			}
 
 			const updateBirdhouseData: BirdhouseData = {
@@ -101,14 +101,14 @@ export const birdHouseTask: MinionTask = {
 				collectionLog: true,
 				itemsToAdd: loot
 			});
-			await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP });
+			await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP, source: 'Birdhouses' });
 			const newHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 
 			str += `\n\nYou received ${hunterXP.toLocaleString()} XP from collecting the birdhouses.`;
 
 			if (placing && gotCraft) {
 				craftingXP = birdhouse.craftXP * 4;
-				await user.addXP({ skillName: SkillsEnum.Crafting, amount: craftingXP });
+				await user.addXP({ skillName: SkillsEnum.Crafting, amount: craftingXP, source: 'Birdhouses' });
 				str += `You also received ${craftingXP.toLocaleString()} crafting XP for making own birdhouses.`;
 				const newCraftLevel = user.skillLevel(SkillsEnum.Crafting);
 				if (newCraftLevel > currentCraftingLevel) {

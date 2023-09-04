@@ -60,7 +60,7 @@ export const trawlerTask: MinionTask = {
 		});
 
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		await user.addXP({ skillName: SkillsEnum.Fishing, amount: totalXP });
+		await user.addXP({ skillName: SkillsEnum.Fishing, amount: totalXP, source: 'FishingTrawler' });
 		const newLevel = user.skillLevel(SkillsEnum.Fishing);
 
 		if (currentLevel !== newLevel) {

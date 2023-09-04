@@ -16,7 +16,7 @@ export async function getKCByName(user: MUser, kcName: string): Promise<[string,
 	const minigame = Minigames.find(
 		game => stringMatches(game.name, kcName) || game.aliases.some(alias => stringMatches(alias, kcName))
 	);
-	if (minigame) {
+	if (minigame && minigame.name !== 'Tithe farm') {
 		return [minigame.name, await getMinigameScore(user.id, minigame.column)];
 	}
 
@@ -28,7 +28,7 @@ export async function getKCByName(user: MUser, kcName: string): Promise<[string,
 	const stats = await user.fetchStats({ slayer_superior_count: true, tithe_farms_completed: true });
 	const special: [string[], number][] = [
 		[['superior', 'superiors', 'superior slayer monster'], stats.slayer_superior_count],
-		[['tithefarm', 'tithe'], stats.tithe_farms_completed]
+		[['tithe farm', 'Tithe farm', 'tithefarm', 'tithe'], stats.tithe_farms_completed]
 	];
 	const res = special.find(s => s[0].includes(kcName));
 	if (res) {

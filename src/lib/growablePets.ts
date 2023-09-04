@@ -53,9 +53,9 @@ export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOpt
 		// Sync to avoid out of date CL
 		await user.sync();
 		await user.update({
-			minion_equippedPet: nextPet,
-			collectionLogBank: new Bank().add(user.cl).add(nextPet).bank
+			minion_equippedPet: nextPet
 		});
+		await user.addItemsToCollectionLog(new Bank().add(nextPet));
 		messages.push(`Your ${getOSItem(equippedPet).name} grew into a ${getOSItem(nextPet).name}!`);
 	}
 }

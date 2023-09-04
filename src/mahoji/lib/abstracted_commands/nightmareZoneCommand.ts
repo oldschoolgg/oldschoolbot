@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, reduceNumByPercent, round, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MAX_QP, NMZStrategy } from '../../../lib/constants';
+import { NMZStrategy } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
@@ -15,6 +15,7 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
+import { MAX_QP } from './questCommand';
 
 const itemBoosts = [
 	// Special weapons
@@ -410,14 +411,19 @@ export async function nightmareZoneShopCommand(
 			.join(', ')}`;
 	}
 
-	const cost = quantity * shopItem.cost;
+	let costPerItem = shopItem.cost;
+	if (user.hasCompletedCATier('hard')) {
+		costPerItem /= 2;
+	}
+
+	const cost = quantity * costPerItem;
 	if (cost > currentUserPoints) {
-		return `You don't have enough Nightmare Zone points to buy ${quantity.toLocaleString()}x ${shopItem.name} (${
-			shopItem.cost
-		} Nightmare Zone points each).\nYou have ${currentUserPoints} Nightmare Zone points.\n${
-			currentUserPoints < shopItem.cost
+		return `You don't have enough Nightmare Zone points to buy ${quantity.toLocaleString()}x ${
+			shopItem.name
+		} (${costPerItem} Nightmare Zone points each).\nYou have ${currentUserPoints} Nightmare Zone points.\n${
+			currentUserPoints < costPerItem
 				? "You don't have enough Nightmare Zone points for any of this item."
-				: `You only have enough for ${Math.floor(currentUserPoints / shopItem.cost).toLocaleString()}`
+				: `You only have enough for ${Math.floor(currentUserPoints / costPerItem).toLocaleString()}`
 		}`;
 	}
 
@@ -440,7 +446,7 @@ export async function nightmareZoneShopCommand(
 	});
 
 	return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(
-		shopItem.cost * quantity
+		costPerItem * quantity
 	).toLocaleString()} Nightmare Zone points.\nYou now have ${currentUserPoints - cost} Nightmare Zone points left.`;
 }
 

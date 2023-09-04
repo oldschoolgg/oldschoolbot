@@ -7,6 +7,7 @@ import { production } from '../config';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { BitField, Channel, informationalButtons, PeakTier } from './constants';
 import { GrandExchange } from './grandExchange';
+import { cacheGEPrices } from './marketPrices';
 import { collectMetrics } from './metrics';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { prisma, queryCountStore } from './settings/prisma';
@@ -147,7 +148,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 SELECT users.id, user_stats.last_daily_timestamp
 FROM users
 JOIN user_stats ON users.id::bigint = user_stats.user_id
-WHERE bitfield && '{2,3,4,5,6,7,8}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '12 hours';
+WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '12 hours';
 `
 			);
 
@@ -379,6 +380,15 @@ WHERE bitfield && '{2,3,4,5,6,7,8}'::int[] AND user_stats."last_daily_timestamp"
 		cb: async () => {
 			await GrandExchange.tick();
 		}
+	},
+	{
+		name: 'Cache g.e prices and validate',
+		timer: null,
+		interval: Time.Hour * 4,
+		cb: async () => {
+			await cacheGEPrices();
+			await GrandExchange.extensiveVerification();
+		}
 	}
 ];
 
@@ -388,14 +398,12 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
-				debugLog(`Starting ${ticker.name} ticker`, { type: 'TICKER' });
 				await ticker.cb();
 			} catch (err) {
 				logError(err);
 				debugLog(`${ticker.name} ticker errored`, { type: 'TICKER' });
 			} finally {
 				ticker.timer = setTimeout(fn, ticker.interval);
-				debugLog(`Finished ${ticker.name} ticker`, { type: 'TICKER' });
 			}
 		};
 		fn();

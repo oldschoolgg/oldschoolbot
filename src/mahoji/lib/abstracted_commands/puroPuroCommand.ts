@@ -14,14 +14,10 @@ interface PuroImpling {
 	hunterLevel: number;
 	spell: boolean;
 	item: Item | null;
+	tier?: number;
 }
 
-const puroPuroSkillRequirements: Skills = {
-	crafting: 31,
-	woodcutting: 36,
-	hunter: 17
-};
-
+const puroPuroSkillRequirements: Skills = { crafting: 31, woodcutting: 36, hunter: 17 };
 const darkLureSkillRequirements: Skills = {
 	magic: 50,
 	agility: 54,
@@ -35,54 +31,14 @@ const darkLureSkillRequirements: Skills = {
 };
 
 export const puroOptions: PuroImpling[] = [
-	{
-		name: 'All Implings',
-		hunterLevel: 17,
-		spell: true,
-		item: null
-	},
-	{
-		name: 'Dragon Implings',
-		hunterLevel: 83,
-		spell: true,
-		item: getOSItem('Dragon impling jar')
-	},
-	{
-		name: 'Eclectic Implings',
-		hunterLevel: 50,
-		spell: false,
-		item: getOSItem('Eclectic impling jar')
-	},
-	{
-		name: 'Essence Implings',
-		hunterLevel: 42,
-		spell: false,
-		item: getOSItem('Essence impling jar')
-	},
-	{
-		name: 'Earth Implings',
-		hunterLevel: 36,
-		spell: false,
-		item: getOSItem('Earth impling jar')
-	},
-	{
-		name: 'Gourmet Implings',
-		hunterLevel: 28,
-		spell: false,
-		item: getOSItem('Gourmet impling jar')
-	},
-	{
-		name: 'Young Implings',
-		hunterLevel: 22,
-		spell: false,
-		item: getOSItem('Young impling jar')
-	},
-	{
-		name: 'Baby Implings',
-		hunterLevel: 17,
-		spell: false,
-		item: getOSItem('Baby impling jar')
-	}
+	{ name: 'All Implings', hunterLevel: 17, spell: true, item: null, tier: 1 },
+	{ name: 'High-tier Implings', hunterLevel: 58, spell: true, item: null, tier: 2 },
+	{ name: 'Eclectic Implings', hunterLevel: 50, spell: false, item: getOSItem('Eclectic impling jar'), tier: 3 },
+	{ name: 'Essence Implings', hunterLevel: 42, spell: false, item: getOSItem('Essence impling jar'), tier: 4 },
+	{ name: 'Earth Implings', hunterLevel: 36, spell: false, item: getOSItem('Earth impling jar'), tier: 5 },
+	{ name: 'Gourmet Implings', hunterLevel: 28, spell: false, item: getOSItem('Gourmet impling jar'), tier: 6 },
+	{ name: 'Young Implings', hunterLevel: 22, spell: false, item: getOSItem('Young impling jar'), tier: 7 },
+	{ name: 'Baby Implings', hunterLevel: 17, spell: false, item: getOSItem('Baby impling jar'), tier: 8 }
 ];
 
 export default puroOptions;
@@ -90,8 +46,9 @@ export default puroOptions;
 export async function puroPuroStartCommand(
 	user: MUser,
 	channelID: string,
-	impling: string,
-	darkLure: boolean | undefined
+	impling: string | undefined,
+	darkLure: boolean | undefined,
+	implingTier: number | undefined
 ) {
 	const timePerGame = Time.Minute * 10;
 	const maxTripLength = calcMaxTripLength(user, 'PuroPuro');
@@ -101,64 +58,39 @@ export async function puroPuroStartCommand(
 	const hunterLevel = skills.hunter;
 	const [hasReqs, reason] = hasSkillReqs(user, puroPuroSkillRequirements);
 	const [hasDarkLureSkillReqs, lureReason] = hasSkillReqs(user, darkLureSkillRequirements);
-
-	if (!hasReqs) {
-		return `To hunt in Puro-Puro, you need: ${reason}.`;
+	if (!hasReqs) return `To hunt in Puro-Puro, you need: ${reason}.`;
+	if (user.QP < 3) return 'To hunt in Puro-Puro, you need 3 QP.';
+	let impToHunt: PuroImpling | undefined = undefined;
+	if (impling) {
+		impToHunt = puroOptions.find(i => stringMatches(i.name, impling));
+	} else if (implingTier) {
+		impToHunt = puroOptions.find(i => i.tier === implingTier);
 	}
-
-	if (user.QP < 3) {
-		return 'To hunt in Puro-Puro, you need 3 QP.';
-	}
-
-	const impToHunt = puroOptions.find(
-		i =>
-			stringMatches(i.name, impling) ||
-			stringMatches(i.item?.id.toString() ?? '', impling) ||
-			stringMatches(i.name.split(' ')[0], impling)
-	);
-
-	if (!impToHunt) {
-		return 'Error selecting impling, please try again.';
-	}
-
-	if (hunterLevel < impToHunt.hunterLevel) {
+	if (!impToHunt) return 'Error selecting impling, please try again.';
+	if (hunterLevel < impToHunt.hunterLevel)
 		return `${user.minionName} needs atleast level ${impToHunt.hunterLevel} hunter to hunt ${impToHunt.name} in Puro-Puro.`;
-	}
-
-	if (!darkLure || (darkLure && !impToHunt.spell)) {
-		darkLure = false;
-	}
-
+	if (!darkLure || (darkLure && !impToHunt.spell)) darkLure = false;
 	if (darkLure) {
-		if (user.QP < 9) {
-			return 'To use Dark Lure, you need 9 QP.';
-		}
-
-		if (!hasDarkLureSkillReqs) {
-			return `To use Dark Lure, you need: ${lureReason}.`;
-		}
-
+		if (user.QP < 9) return 'To use Dark Lure, you need 9 QP.';
+		if (!hasDarkLureSkillReqs) return `To use Dark Lure, you need: ${lureReason}.`;
 		const currentUserFavour = user.kourendFavour;
 		for (const [key, value] of Object.entries(currentUserFavour)) {
-			if (value < 100) {
+			if (value < 100)
 				return `You don't have the required amount of Favour to cast Dark Lure.\n\nRequired: 100% ${key} Favour.`;
-			}
 		}
-
 		const { bank } = user;
 		const natureRuneID = itemID('Nature rune');
 		const deathRuneID = itemID('Death rune');
-		if (impToHunt.name === 'Dragon Implings') {
-			if (bank.amount(natureRuneID) < 100 || bank.amount(deathRuneID) < 100) {
+		if (impToHunt.tier === 2) {
+			if (bank.amount(natureRuneID) < 100 || bank.amount(deathRuneID) < 100)
 				return "You don't have enough Nature and Death runes to start this trip, you need at least 100 of each.";
-			}
 		} else if (bank.amount(natureRuneID) < 300 || bank.amount(deathRuneID) < 300) {
 			return "You don't have enough Nature and Death runes to start this trip, you need at least 300 of each.";
 		}
 	}
 
 	await addSubTaskToActivityTask<PuroPuroActivityTaskOptions>({
-		implingID: impToHunt.item?.id ?? null,
+		implingTier: impToHunt.tier ?? null,
 		quantity,
 		userID: user.id,
 		duration,

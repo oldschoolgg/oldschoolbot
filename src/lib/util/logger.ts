@@ -8,7 +8,9 @@ const month = (today.getMonth() + 1).toString().padStart(2, '0');
 const day = today.getDate().toString().padStart(2, '0');
 const formattedDate = `${year}-${month}-${day}`;
 
-const pino = pinoCtor(
+export const LOG_FILE_NAME = `./logs/${formattedDate}-${today.getHours()}-${today.getMinutes()}-${BOT_TYPE}-debug-logs.log`;
+
+export const pino = pinoCtor(
 	{
 		level: 'debug',
 		base: {
@@ -22,7 +24,7 @@ const pino = pinoCtor(
 		timestamp: false
 	},
 	pinoCtor.destination({
-		dest: `./logs/${formattedDate}-${today.getHours()}-${today.getMinutes()}-${BOT_TYPE}-debug-logs.log`,
+		dest: LOG_FILE_NAME,
 		mkdir: true,
 		sync: false,
 		minLength: 4096
