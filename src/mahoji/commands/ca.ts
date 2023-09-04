@@ -1,6 +1,7 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
-import { calcWhatPercent } from 'e';
+import { calcWhatPercent, objectEntries } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { Bank } from 'oldschooljs';
 
 import {
 	allCombatAchievementTasks,
@@ -85,7 +86,21 @@ export const caCommand: OSBMahojiCommand = {
 			}
 
 			if (completedTasks.length === 0) {
-				return `You have no completed tasks to claim.\n\n${generalProgressString}`;
+				const claimableRewards = new Bank();
+				for (const [tier, diary] of objectEntries(CombatAchievements)) {
+					if (!user.hasCompletedCATier(tier)) continue;
+					for (const reward of diary.staticRewards) {
+						if (user.owns(reward.item.id)) continue;
+						if (!reward.reclaimable && user.cl.has(reward.item.id)) continue;
+						claimableRewards.add(reward.item.id);
+					}
+				}
+				if (claimableRewards.length > 0) {
+					await user.addItemsToBank({ items: claimableRewards, collectionLog: true });
+					return `You claimed ${claimableRewards}.`;
+				}
+
+				return `You have no completed tasks or rewards to claim.\n\n${generalProgressString}`;
 			}
 
 			await user.update({

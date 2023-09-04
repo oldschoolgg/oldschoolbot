@@ -32,6 +32,7 @@ export const bareMinStats: Skills = {
 };
 
 export const SANGUINESTI_CHARGES_PER_COX = 150;
+export const SHADOW_CHARGES_PER_COX = 130;
 export const TENTACLE_CHARGES_PER_COX = 200;
 
 export function hasMinRaidsRequirements(user: MUser) {
@@ -307,6 +308,16 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity: number
 				return sangResult.userMessage;
 			}
 		}
+		if (user.gear.mage.hasEquipped("Tumeken's shadow")) {
+			const shadowResult = checkUserCanUseDegradeableItem({
+				item: getOSItem("Tumeken's shadow"),
+				chargesToDegrade: SHADOW_CHARGES_PER_COX,
+				user
+			});
+			if (!shadowResult.hasEnough) {
+				return shadowResult.userMessage;
+			}
+		}
 	}
 
 	return null;
@@ -410,6 +421,14 @@ const itemBoosts: ItemBoost[][] = [
 		}
 	],
 	[
+		{
+			item: getOSItem("Tumeken's shadow"),
+			boost: 9,
+			mustBeEquipped: false,
+			setup: 'mage',
+			mustBeCharged: true,
+			requiredCharges: SHADOW_CHARGES_PER_COX
+		},
 		{
 			item: getOSItem('Sanguinesti staff'),
 			boost: 6,

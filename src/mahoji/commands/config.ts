@@ -50,12 +50,23 @@ const toggles = [
 	{
 		name: "Disable Grand Exchange DM's",
 		bit: BitField.DisableGrandExchangeDMs
+	},
+	{
+		name: 'Clean herbs during farm runs',
+		bit: BitField.CleanHerbsFarming
+	},
+	{
+		name: 'Lock Self From Gambling',
+		bit: BitField.SelfGamblingLocked
 	}
 ];
 
 async function handleToggle(user: MUser, name: string) {
 	const toggle = toggles.find(i => stringMatches(i.name, name));
 	if (!toggle) return 'Invalid toggle name.';
+	if (toggle.bit === BitField.SelfGamblingLocked && user.bitfield.includes(BitField.SelfGamblingLocked)) {
+		return 'You cannot toggle this off, you locked yourself from gambling!';
+	}
 	const includedNow = user.bitfield.includes(toggle.bit);
 	const nextArr = includedNow ? removeFromArr(user.bitfield, toggle.bit) : [...user.bitfield, toggle.bit];
 	await user.update({
