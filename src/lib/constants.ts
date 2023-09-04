@@ -235,7 +235,8 @@ export enum BitField {
 	UsedSirenicTablet = 32,
 	UsedStrangledTablet = 33,
 	UsedFrozenTablet = 34,
-	CleanHerbsFarming = 35
+	CleanHerbsFarming = 35,
+	SelfGamblingLocked = 36
 }
 
 interface BitFieldData {
@@ -273,6 +274,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.UsedFrozenTablet]: { name: 'Used Frozen Tablet', protected: false, userConfigurable: false },
 	[BitField.UsedSirenicTablet]: { name: 'Used Sirenic Tablet', protected: false, userConfigurable: false },
 	[BitField.UsedStrangledTablet]: { name: 'Used Strangled Tablet', protected: false, userConfigurable: false },
+	[BitField.SelfGamblingLocked]: { name: 'Self Gambling Lock', protected: false, userConfigurable: false },
 
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
 	[BitField.HasPermanentEventBackgrounds]: {
