@@ -23,7 +23,7 @@ import {
 	calculateBingoTeamDetails,
 	countTotalGPInPrizePool,
 	determineBingoProgress
-} from '../lib/bingo';
+} from '../lib/bingo/bingoUtil';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { doMenu, getPos } from './leaderboard';

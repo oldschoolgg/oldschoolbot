@@ -429,7 +429,8 @@ model User {
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
   kourend_favour            Json? @map("kourend_favour") @db.Json
 
-  geListings GEListing[]
+  geListings       GEListing[]
+  BingoParticipant BingoParticipant[]
 
   @@index([id, last_command_date])
   @@map("users")
@@ -732,16 +733,6 @@ model UserStats {
   @@map("user_stats")
 }
 
-model BingoTeam {
-  id Int @id @unique @default(autoincrement())
-
-  first_user  String @unique @db.VarChar(19)
-  second_user String @unique @db.VarChar(19)
-  third_user  String @unique @db.VarChar(19)
-
-  @@map("bingo_team")
-}
-
 enum CropUpgradeType {
   compost
   supercompost
@@ -1003,4 +994,47 @@ model GEBank {
   quantity BigInt
 
   @@map("ge_bank")
+}
+
+model Bingo {
+  id Int @id @unique @default(autoincrement())
+
+  organizers               String[]
+  start_date               DateTime @default(now()) @db.Timestamp(6)
+  duration_days            Int
+  teamSize                 Int
+  title                    String
+  notifications_channel_id String   @db.VarChar(19)
+  ticket_price             BigInt
+
+  bingo_tiles Json[]
+
+  bingo_participant BingoParticipant[]
+
+  @@map("bingo")
+}
+
+model BingoTeam {
+  id Int @id @unique @default(autoincrement())
+
+  users BingoParticipant[]
+
+  @@map("bingo_team")
+}
+
+model BingoParticipant {
+  tickets_bought Int
+
+  bingo    Bingo @relation(fields: [bingo_id], references: [id])
+  bingo_id Int
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String @id @db.VarChar(19)
+
+  team          BingoTeam @relation(fields: [bingo_team_id], references: [id])
+  bingo_team_id Int
+
+  cl Json @default("{}") @db.Json
+
+  @@map("bingo_participant")
 }
