@@ -431,6 +431,7 @@ model User {
 
   geListings       GEListing[]
   BingoParticipant BingoParticipant[]
+  Bingo            Bingo[]
 
   @@index([id, last_command_date])
   @@map("users")
@@ -999,23 +1000,29 @@ model GEBank {
 model Bingo {
   id Int @id @unique @default(autoincrement())
 
+  creator    User   @relation(fields: [creator_id], references: [id])
+  creator_id String @db.VarChar(19)
+
   organizers               String[]
   start_date               DateTime @default(now()) @db.Timestamp(6)
   duration_days            Int
-  teamSize                 Int
+  team_size                Int
   title                    String
   notifications_channel_id String   @db.VarChar(19)
   ticket_price             BigInt
-
-  bingo_tiles Json[]
+  bingo_tiles              Json[]
 
   bingo_participant BingoParticipant[]
+  BingoTeam         BingoTeam[]
 
   @@map("bingo")
 }
 
 model BingoTeam {
   id Int @id @unique @default(autoincrement())
+
+  bingo    Bingo @relation(fields: [bingo_id], references: [id])
+  bingo_id Int
 
   users BingoParticipant[]
 

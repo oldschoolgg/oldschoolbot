@@ -1,6 +1,6 @@
 import { type Bingo, Prisma } from '@prisma/client';
-import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { chunk } from 'e';
+import { ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
+import { chunk, Time } from 'e';
 import { groupBy } from 'lodash';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
@@ -11,10 +11,11 @@ import { addBanks } from '../../../lib/util/smallUtils';
 import { generateTileName, StoredBingoTile, UniversalBingoTile } from './bingoUtil';
 import { globalBingoTiles } from './globalTiles';
 
-class BingoManager {
+export class BingoManager {
 	public id: number;
 	public organizers: string[];
-	public start_date: Date;
+	public startDate: Date;
+	public endDate: Date;
 	public durationInDays: number;
 	public teamSize: number;
 	public title: string;
@@ -26,8 +27,9 @@ class BingoManager {
 	constructor(options: Bingo) {
 		this.ticketPrice = Number(options.ticket_price);
 		this.id = options.id;
-		this.start_date = options.start_date;
-		this.teamSize = options.teamSize;
+		this.startDate = options.start_date;
+		this.endDate = new Date(this.startDate.getTime() + options.duration_days * Time.Day);
+		this.teamSize = options.team_size;
 		this.organizers = options.organizers;
 		this.title = options.title;
 		this.notificationsChannelID = options.notifications_channel_id;
@@ -44,6 +46,10 @@ class BingoManager {
 			};
 		});
 		this.bingoTiles[0].name;
+	}
+
+	public isActive(): boolean {
+		return this.startDate.getTime() < Date.now() && this.endDate.getTime() > Date.now();
 	}
 
 	getButton() {
@@ -134,19 +140,27 @@ class BingoManager {
 					...this.determineProgressOfBank(participant.cl as ItemBank)
 				}))
 				.sort((a, b) => b.tilesCompletedCount - a.tilesCompletedCount),
-			teams: teams.map(([id, participants]) => ({
-				team_id: Number(id),
-				...this.determineProgressOfBank(addBanks(participants.map(i => i.cl) as ItemBank[]))
-			}))
+			teams: teams
+				.map(([id, participants]) => ({
+					team_id: Number(id),
+					...this.determineProgressOfBank(addBanks(participants.map(i => i.cl) as ItemBank[])),
+					participants
+				}))
+				.sort((a, b) => b.tilesCompletedCount - a.tilesCompletedCount)
 		};
 	}
 
 	async fetchLeaderboard() {
-		const participants = await this.fetchAllParticipants();
-		return `Bingo Leaderboard
-${participants
+		const { teams } = await this.fetchAllParticipants();
+		return `${this.title} - Bingo Leaderboard
+${teams
 	.slice(0, 10)
-	.map((i, index) => `${++index}. <@${i.id}> - ${i.tilesCompletedCount} tiles`)
+	.map(
+		(team, index) =>
+			`${++index}. <@${team.participants.map(participant => userMention(participant.user_id))}> - ${
+				team.tilesCompletedCount
+			} tiles`
+	)
 	.join('\n')}`;
 	}
 }

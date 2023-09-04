@@ -1,7 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import { bingoIsActive, determineBingoProgress, onFinishTile } from '../../mahoji/lib/bingo/bingoUtil';
 import { deduplicateClueScrolls } from '../clues/clueUtils';
 import { handleNewCLItems } from '../handleNewCLItems';
 import { mahojiUserSettingsUpdate } from '../MUser';
