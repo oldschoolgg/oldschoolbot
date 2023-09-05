@@ -426,9 +426,9 @@ model User {
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
   kourend_favour            Json? @map("kourend_favour") @db.Json
 
-  geListings       GEListing[]
-  BingoParticipant BingoParticipant[]
-  Bingo            Bingo[]
+  geListings        GEListing[]
+  bingo_participant BingoParticipant[]
+  bingo             Bingo[]
 
   @@index([id, last_command_date])
   @@map("users")
@@ -1015,7 +1015,7 @@ model Bingo {
   guild_id String @db.VarChar(19)
 
   bingo_participant BingoParticipant[]
-  bingoTeam         BingoTeam[]
+  bingo_team        BingoTeam[]
 
   @@map("bingo")
 }
