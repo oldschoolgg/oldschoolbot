@@ -1000,6 +1000,8 @@ model Bingo {
   creator    User   @relation(fields: [creator_id], references: [id])
   creator_id String @db.VarChar(19)
 
+  is_global Boolean @default(false)
+
   organizers               String[]
   start_date               DateTime @default(now()) @db.Timestamp(6)
   duration_days            Int

@@ -38,7 +38,7 @@ type MakeTeamOptions = {
 	bingo: string;
 };
 
-async function fetchBingosThatUserIsInvolvedIn(userID: string) {
+export async function fetchBingosThatUserIsInvolvedIn(userID: string) {
 	const bingos = await prisma.bingo.findMany({
 		where: {
 			OR: [
@@ -189,7 +189,7 @@ async function leaveTeamCommand(interaction: ChatInputCommandInteraction, bingo:
 		}),
 		prisma.bingoTeam.delete({
 			where: {
-				id: bingo.id
+				id: team.team_id
 			}
 		})
 	]);
@@ -245,8 +245,16 @@ export const bingoCommand: OSBMahojiCommand = {
 						if (!member || !member.guild) return [];
 						const bingos = await prisma.bingo.findMany({
 							where: {
-								guild_id: member.guild.id,
-								was_finalized: false
+								OR: [
+									{
+										guild_id: member.guild.id,
+										was_finalized: false
+									},
+									{
+										is_global: true,
+										was_finalized: false
+									}
+								]
 							}
 						});
 						return bingos
@@ -292,7 +300,25 @@ export const bingoCommand: OSBMahojiCommand = {
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: bingoAutocomplete
+					autocomplete: async (value: string, user: User) => {
+						const bingos = await prisma.bingo.findMany({
+							where: {
+								OR: [
+									{
+										bingo_participant: {
+											some: {
+												user_id: user.id
+											}
+										}
+									}
+								]
+							}
+						});
+						return bingos
+							.map(i => new BingoManager(i))
+							.filter(bingo => (!value ? true : bingo.id.toString() === value))
+							.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
+					}
 				}
 			]
 		},
@@ -388,7 +414,14 @@ export const bingoCommand: OSBMahojiCommand = {
 					name: 'bingo',
 					description: 'The bingo.',
 					required: true,
-					autocomplete: bingoAutocomplete
+					autocomplete: async (value: string, user: User) => {
+						const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
+						return bingos
+							.map(i => new BingoManager(i))
+							.filter(b => b.creatorID === user.id || b.organizers.includes(user.id))
+							.filter(bingo => (!value ? true : bingo.id.toString() === value))
+							.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
+					}
 				},
 				{
 					type: ApplicationCommandOptionType.String,
@@ -404,24 +437,43 @@ export const bingoCommand: OSBMahojiCommand = {
 							}));
 					}
 				},
-				// {
-				// 	type: ApplicationCommandOptionType.String,
-				// 	name: 'remove_tile',
-				// 	description: 'Remove a tile to your bingo.',
-				// 	required: false
-				// },
 				{
 					type: ApplicationCommandOptionType.Boolean,
 					name: 'csv_dump',
 					description: 'Dump a csv file with all the bingo results.',
 					required: false
 				},
-				// {
-				// 	type: ApplicationCommandOptionType.String,
-				// 	name: 'remove_tile',
-				// 	description: 'Remove a tile to your bingo.',
-				// 	required: false
-				// },
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'remove_tile',
+					description: 'Remove a tile from your bingo.',
+					required: false,
+					autocomplete: async (value: string, user: User) => {
+						const bingos = await prisma.bingo.findMany({
+							where: {
+								OR: [
+									{
+										creator_id: user.id
+									},
+									{
+										organizers: {
+											has: user.id
+										}
+									}
+								],
+								was_finalized: false,
+								start_date: {
+									gt: new Date()
+								}
+							}
+						});
+						return bingos
+							.map(b => new BingoManager(b).bingoTiles)
+							.flat()
+							.filter(b => b.name.toLowerCase().includes(value.toLowerCase()))
+							.map(b => ({ name: b.name, value: b.name }));
+					}
+				},
 				{
 					type: ApplicationCommandOptionType.Boolean,
 					name: 'finalize',
@@ -457,7 +509,7 @@ export const bingoCommand: OSBMahojiCommand = {
 			bingo: string;
 			csv_dump?: boolean;
 			add_tile?: string;
-			remove_tile?: boolean;
+			remove_tile?: string;
 			finalize?: boolean;
 		};
 		view?: {
@@ -539,6 +591,11 @@ export const bingoCommand: OSBMahojiCommand = {
 				return 'Start date must be atleast 3 minutes into the future.';
 			}
 
+			// Start date cannot be more than 31 days into the future
+			if (createOptions.start_date.getTime() > Date.now() + Time.Day * 31) {
+				return 'Start date cannot be more than 31 days into the future.';
+			}
+
 			const disclaimer = `You are creating a bingo, please adhere to these rules. If you are found to be breaking these rules, you will be banned.
 
 - The title must not be inappropriate or offensive.
@@ -576,6 +633,9 @@ export const bingoCommand: OSBMahojiCommand = {
 		}
 
 		if (options.manage_bingo) {
+			if (!options.manage_bingo.bingo) {
+				return 'You need to pick which bingo to manage.';
+			}
 			const _bingo = await prisma.bingo.findFirst({
 				where: {
 					id: Number(options.manage_bingo.bingo)
@@ -672,6 +732,37 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 				});
 				return `Added tile "${generateTileName(tileToAdd)}" to your bingo.`;
 			}
+
+			if (options.manage_bingo.remove_tile) {
+				if (bingo.isActive()) {
+					return "You can't remove tiles to a bingo after it has started.";
+				}
+				let newTiles = [...bingo.rawBingoTiles];
+				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo!.remove_tile));
+				if (globalTile) {
+					newTiles = newTiles.filter(t => typeof t === 'number' && t !== globalTile.id);
+				} else {
+					newTiles = newTiles.filter(
+						t => generateTileName(t).toLowerCase() !== options.manage_bingo!.remove_tile!.toLowerCase()
+					);
+				}
+
+				if (newTiles.length === bingo.rawBingoTiles.length) {
+					return 'Invalid tile to remove.';
+				}
+
+				await handleMahojiConfirmation(interaction, 'Are you sure you want to remove this tile?');
+				await prisma.bingo.update({
+					where: {
+						id: bingo.id
+					},
+					data: {
+						bingo_tiles: newTiles as any as Prisma.InputJsonObject
+					}
+				});
+
+				return 'Removed that tile from your bingo.';
+			}
 		}
 
 		if (options.view) {
@@ -701,7 +792,7 @@ ${yourTeam.bingoTableStr}`
 
 			let str = `**${bingo.title}** ${teams.length} teams, ${toKMB(
 				await bingo.countTotalGPInPrizePool()
-			)} Prize Pool
+			)} GP Prize Pool
 **Start:** ${dateFm(bingo.startDate)}
 **Finish:** ${dateFm(bingo.endDate)}
 ${progressString}

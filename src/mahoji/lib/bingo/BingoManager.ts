@@ -22,7 +22,7 @@ export class BingoManager {
 	public title: string;
 	public notificationsChannelID: string;
 	public ticketPrice: number;
-	private rawBingoTiles: StoredBingoTile[];
+	public rawBingoTiles: StoredBingoTile[];
 	public bingoTiles: UniversalBingoTile[];
 	public creatorID: string;
 	wasFinalized: boolean;
@@ -112,9 +112,12 @@ export class BingoManager {
 		return {
 			tilesCompletedCount,
 			bingoTable,
-			bingoTableStr: chunk(bingoTable, rowsForSquare(this.bingoTiles.length))
-				.map(row => `${row.join(' ')}`)
-				.join('\n'),
+			bingoTableStr:
+				this.bingoTiles.length === 0
+					? 'No tiles.'
+					: chunk(bingoTable, rowsForSquare(this.bingoTiles.length))
+							.map(row => `${row.join(' ')}`)
+							.join('\n'),
 			tilesCompleted,
 			tilesNotCompleted
 		};
@@ -128,7 +131,8 @@ export class BingoManager {
 			where: {
 				user: {
 					minion_ironman: false
-				}
+				},
+				bingo_id: this.id
 			}
 		});
 		return Number(sum._sum.tickets_bought) * this.ticketPrice;
@@ -218,7 +222,7 @@ ${teams
 		const after = this.determineProgressOfBank(newCL);
 
 		for (const tile of before.tilesNotCompleted) {
-			const wasCompleted = before.tilesCompleted.some(t => t.name === tile.name);
+			const wasCompleted = after.tilesCompleted.some(t => t.name === tile.name);
 			if (!wasCompleted) continue;
 			sendToChannelID(this.notificationsChannelID, {
 				content: `${userMention(userID)} just finished the '${tile.name}' tile in the ${
