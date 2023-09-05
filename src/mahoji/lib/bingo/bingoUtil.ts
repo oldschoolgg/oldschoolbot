@@ -1,8 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { prisma } from '../../../lib/settings/prisma';
 import { getItem } from '../../../lib/util/getOSItem';
-import { BingoManager } from './BingoManager';
 import { globalBingoTiles } from './globalTiles';
 
 interface CustomReq {
@@ -43,20 +41,4 @@ export function generateTileName(tile: OneOf | AllOf | UniversalBingoTile | Stor
 		return `Receive all of: ${tile.allOf.map(id => getItem(id)?.name).join(', ')}`;
 	}
 	throw new Error(`Invalid tile: ${JSON.stringify(tile)}`);
-}
-
-export async function findBingosWithUserParticipating(userID: string) {
-	const bingos = await prisma.bingo.findMany({
-		where: {
-			start_date: {
-				lt: new Date()
-			},
-			bingo_participant: {
-				some: {
-					user_id: userID
-				}
-			}
-		}
-	});
-	return bingos.map(i => new BingoManager(i));
 }

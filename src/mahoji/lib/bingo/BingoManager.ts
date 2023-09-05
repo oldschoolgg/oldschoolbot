@@ -232,3 +232,19 @@ ${teams
 		}
 	}
 }
+
+export async function findBingosWithUserParticipating(userID: string) {
+	const bingos = await prisma.bingo.findMany({
+		where: {
+			start_date: {
+				lt: new Date()
+			},
+			bingo_participant: {
+				some: {
+					user_id: userID
+				}
+			}
+		}
+	});
+	return bingos.map(i => new BingoManager(i));
+}

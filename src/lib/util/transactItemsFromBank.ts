@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import { findBingosWithUserParticipating } from '../../mahoji/lib/bingo/bingoUtil';
+import { findBingosWithUserParticipating } from '../../mahoji/lib/bingo/BingoManager';
 import { deduplicateClueScrolls } from '../clues/clueUtils';
 import { handleNewCLItems } from '../handleNewCLItems';
 import { mahojiUserSettingsUpdate } from '../MUser';
