@@ -45,7 +45,7 @@ export function hasWildyHuntGearEquipped(setup: GearSetup): [boolean, string, nu
 			0
 		];
 	}
-
+	// Masori body (f) + Masori chaps (f)
 	const maximumStatsBodyLegs = {
 		DefenceMage: 120,
 		DefenceRanged: 97,
