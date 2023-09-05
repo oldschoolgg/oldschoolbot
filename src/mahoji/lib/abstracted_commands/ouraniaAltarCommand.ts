@@ -49,6 +49,11 @@ export async function ouraniaAltarStartCommand({
 		timePerTrip = increaseNumByPercent(timePerTrip, gracefulPenalty);
 	}
 
+	if (user.skillLevel(SkillsEnum.Magic) < 71) {
+		boosts.push('50% slower for less than 71 magic.');
+		timePerTrip = increaseNumByPercent(timePerTrip, 50);
+	}
+
 	if (
 		user.skillLevel(SkillsEnum.Runecraft) >= 99 &&
 		user.hasEquippedOrInBank('Runecraft cape') &&

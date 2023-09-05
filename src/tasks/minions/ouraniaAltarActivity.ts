@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
+import { raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
 import Runecraft, { ouraniaAltarTables } from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { OuraniaAltarOptions } from '../../lib/types/minions';
@@ -28,9 +29,6 @@ const ouraniaAltarTask: MinionTask = {
 			if (!rune) {
 				// Soul Rune
 				runeXp = 29.7;
-				if (hasArdyMedium && percentChance(10)) essenceLoot.multiply(2);
-			} else if (hasArdyMedium && rune.ardyDiaryChance && percentChance(rune.ardyDiaryChance)) {
-				essenceLoot.multiply(2);
 			}
 			totalXp += runeXp * 1.7;
 			if (roll(petDropRate)) {
@@ -41,6 +39,23 @@ const ouraniaAltarTask: MinionTask = {
 
 		if (daeyalt) totalXp *= 1.5;
 
+		let diaryQuantity = 0;
+		let raimentQuantity = 0;
+		for (const [rune, qty] of loot.items()) {
+			const rRune = Runecraft.Runes.find(r => r.id === rune.id);
+			let dBonus = 0;
+			let rBonus = raimentBonus(user, qty);
+			if (hasArdyMedium) {
+				for (let i = 0; i < qty; i++) {
+					if (!rRune && percentChance(10)) dBonus++;
+					else if (rRune && rRune.ardyDiaryChance && percentChance(rRune.ardyDiaryChance)) dBonus++;
+				}
+				diaryQuantity += dBonus;
+			}
+			raimentQuantity += rBonus;
+			loot.add(rune, dBonus + rBonus);
+		}
+
 		let xpRes = `\n${await user.addXP({
 			skillName: SkillsEnum.Runecraft,
 			amount: totalXp,
@@ -48,9 +63,9 @@ const ouraniaAltarTask: MinionTask = {
 			source: 'OuraniaAltar'
 		})}`;
 
-		let str = `${user}, ${user.minionName} finished runecrafting at the Ourania altar, you received ${loot}. ${xpRes}`;
-
-		if (hasArdyMedium) str += '\nThe Medium Ardougne Diary is giving you a chance of crafting extra runes.';
+		let str = `${user}, ${user.minionName} finished runecrafting at the Ourania altar, you received ${loot}.${
+			diaryQuantity > 0 ? `\n${diaryQuantity} bonus runes for completing the medium Ardougne diary.` : ''
+		}${raimentQuantity > 0 ? `\n${raimentQuantity} bonus runes from the Raiments of the eye outfit.` : ''} ${xpRes}`;
 
 		if (loot.amount('Rift guardian') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";
