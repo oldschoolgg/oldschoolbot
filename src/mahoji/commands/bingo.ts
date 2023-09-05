@@ -11,6 +11,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
+import { BOT_TYPE, Emoji } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { channelIsSendable, dateFm, isValidDiscordSnowflake, isValidNickname, toKMB } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
@@ -550,7 +551,12 @@ export const bingoCommand: OSBMahojiCommand = {
 			if (user.isIronman) {
 				return 'Ironmen cannot create bingos.';
 			}
-			// todo: restrict
+			const fee = BOT_TYPE === 'OSB' ? 20_000_000 : 50_000_000;
+			const creationCost = new Bank().add('Coins', fee);
+			if (user.GP < creationCost.amount('Coins')) {
+				return `You need atleast ${creationCost} to create a bingo.`;
+			}
+
 			const channel = globalClient.channels.cache.get(options.create_bingo.notifications_channel_id);
 			if (!channel || !channelIsSendable(channel)) {
 				return 'Invalid notifications channel.';
@@ -620,13 +626,19 @@ export const bingoCommand: OSBMahojiCommand = {
 **Team Size:** ${createOptions.team_size} (*Cannot be changed later*)
 **Notifications Channel:** ${createOptions.notifications_channel_id}
 **Organizers:** ${createOptions.organizers.map(userMention).join(', ')}
+
+${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you will be charged after confirming.** ${
+				Emoji.Warning
+			}
 `;
 
 			await handleMahojiConfirmation(interaction, disclaimer);
 
+			await user.removeItemsFromBank(new Bank().add('Coins', fee));
 			await prisma.bingo.create({
 				data: createOptions
 			});
+
 			debugLog('Created bingo', createOptions);
 
 			return 'Created your Bingo succesfully!';
