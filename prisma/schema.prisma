@@ -321,9 +321,6 @@ model User {
   minion_birdhouseTraps  Json?     @map("minion.birdhouseTraps") @db.Json
   finished_quest_ids     Int[]
 
-  bingo_tickets_bought Int    @default(0)
-  bingo_gp_contributed BigInt @default(0)
-
   // Relations
   farmedCrops    FarmedCrop[]
   botItemSell    BotItemSell[]
@@ -1011,9 +1008,12 @@ model Bingo {
   notifications_channel_id String   @db.VarChar(19)
   ticket_price             BigInt
   bingo_tiles              Json[]
+  was_finalized            Boolean  @default(false)
+
+  guild_id String @db.VarChar(19)
 
   bingo_participant BingoParticipant[]
-  BingoTeam         BingoTeam[]
+  bingoTeam         BingoTeam[]
 
   @@map("bingo")
 }
@@ -1032,16 +1032,17 @@ model BingoTeam {
 model BingoParticipant {
   tickets_bought Int
 
-  bingo    Bingo @relation(fields: [bingo_id], references: [id])
+  bingo    Bingo @relation(fields: [bingo_id], references: [id], onDelete: Cascade)
   bingo_id Int
 
   user    User   @relation(fields: [user_id], references: [id])
-  user_id String @id @db.VarChar(19)
+  user_id String @db.VarChar(19)
 
-  team          BingoTeam @relation(fields: [bingo_team_id], references: [id])
+  team          BingoTeam @relation(fields: [bingo_team_id], references: [id], onDelete: Cascade)
   bingo_team_id Int
 
   cl Json @default("{}") @db.Json
 
+  @@unique([user_id, bingo_id])
   @@map("bingo_participant")
 }

@@ -1,6 +1,6 @@
 import { type Bingo, Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
-import { chunk, Time } from 'e';
+import { chunk, noOp, Time } from 'e';
 import { groupBy } from 'lodash';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
@@ -8,7 +8,8 @@ import { toKMB } from 'oldschooljs/dist/util';
 import { prisma } from '../../../lib/settings/prisma';
 import { ItemBank } from '../../../lib/types';
 import { addBanks } from '../../../lib/util/smallUtils';
-import { generateTileName, StoredBingoTile, UniversalBingoTile } from './bingoUtil';
+import { sendToChannelID } from '../../../lib/util/webhook';
+import { generateTileName, rowsForSquare, StoredBingoTile, UniversalBingoTile } from './bingoUtil';
 import { globalBingoTiles } from './globalTiles';
 
 export class BingoManager {
@@ -23,6 +24,8 @@ export class BingoManager {
 	public ticketPrice: number;
 	private rawBingoTiles: StoredBingoTile[];
 	public bingoTiles: UniversalBingoTile[];
+	public creatorID: string;
+	wasFinalized: boolean;
 
 	constructor(options: Bingo) {
 		this.ticketPrice = Number(options.ticket_price);
@@ -35,6 +38,8 @@ export class BingoManager {
 		this.notificationsChannelID = options.notifications_channel_id;
 		this.durationInDays = options.duration_days;
 		this.rawBingoTiles = options.bingo_tiles as StoredBingoTile[];
+		this.creatorID = options.creator_id;
+		this.wasFinalized = options.was_finalized;
 
 		this.bingoTiles = this.rawBingoTiles.map(tile => {
 			if (typeof tile === 'number') {
@@ -45,11 +50,15 @@ export class BingoManager {
 				...tile
 			};
 		});
-		this.bingoTiles[0].name;
 	}
 
-	public isActive(): boolean {
-		return this.startDate.getTime() < Date.now() && this.endDate.getTime() > Date.now();
+	public isActive() {
+		return (
+			!this.wasFinalized &&
+			this.bingoTiles.length > 0 &&
+			this.startDate.getTime() < Date.now() &&
+			this.endDate.getTime() > Date.now()
+		);
 	}
 
 	getButton() {
@@ -60,10 +69,22 @@ export class BingoManager {
 			.setStyle(ButtonStyle.Secondary);
 	}
 
+	async determineProgressOfUser(userID: string) {
+		const bingoParticipant = await prisma.bingoParticipant.findFirst({
+			where: {
+				user_id: userID,
+				bingo_id: this.id
+			}
+		});
+		if (!bingoParticipant) return null;
+		return this.determineProgressOfBank(bingoParticipant.cl as ItemBank);
+	}
+
 	determineProgressOfBank(_cl: ItemBank | Prisma.JsonValue | Bank) {
 		const cl: Bank = _cl instanceof Bank ? _cl : new Bank(_cl as ItemBank);
 		let tilesCompletedCount = 0;
-		// const tilesCompleted: number[] = [];
+		const tilesCompleted: UniversalBingoTile[] = [];
+		const tilesNotCompleted: UniversalBingoTile[] = [];
 
 		const bingoTable = this.bingoTiles.map(() => '');
 
@@ -81,7 +102,9 @@ export class BingoManager {
 
 			if (completed) {
 				tilesCompletedCount++;
-				// tilesCompleted.push(tile.id);
+				tilesCompleted.push(tile);
+			} else {
+				tilesNotCompleted.push(tile);
 			}
 			bingoTable[i] = completed ? '✅' : '🛑';
 		}
@@ -89,10 +112,11 @@ export class BingoManager {
 		return {
 			tilesCompletedCount,
 			bingoTable,
-			bingoTableStr: chunk(bingoTable, 6)
+			bingoTableStr: chunk(bingoTable, rowsForSquare(this.bingoTiles.length))
 				.map(row => `${row.join(' ')}`)
-				.join('\n')
-			// tilesCompleted
+				.join('\n'),
+			tilesCompleted,
+			tilesNotCompleted
 		};
 	}
 
@@ -162,5 +186,45 @@ ${teams
 			} tiles`
 	)
 	.join('\n')}`;
+	}
+
+	async findTeamWithUser(userID: string) {
+		const { teams } = await this.fetchAllParticipants();
+		const team = teams.find(t => t.participants.some(p => p.user_id === userID));
+		return team;
+	}
+
+	async handleNewItems(userID: string, itemsAdded: Bank) {
+		const bingoParticipant = await prisma.bingoParticipant.findFirst({
+			where: {
+				user_id: userID,
+				bingo_id: this.id
+			}
+		});
+		if (!bingoParticipant) return;
+		const before = this.determineProgressOfBank(bingoParticipant.cl);
+		const newCL = addBanks([bingoParticipant.cl as ItemBank, itemsAdded.bank]);
+		await prisma.bingoParticipant.update({
+			where: {
+				user_id_bingo_id: {
+					user_id: userID,
+					bingo_id: this.id
+				}
+			},
+			data: {
+				cl: newCL.bank
+			}
+		});
+		const after = this.determineProgressOfBank(newCL);
+
+		for (const tile of before.tilesNotCompleted) {
+			const wasCompleted = before.tilesCompleted.some(t => t.name === tile.name);
+			if (!wasCompleted) continue;
+			sendToChannelID(this.notificationsChannelID, {
+				content: `${userMention(userID)} just finished the '${tile.name}' tile in the ${
+					this.title
+				} Bingo! This is their ${after.tilesCompletedCount}/${this.bingoTiles.length} finished tile.`
+			}).catch(noOp);
+		}
 	}
 }

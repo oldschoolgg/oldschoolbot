@@ -1,6 +1,9 @@
 import { Bank } from 'oldschooljs';
 
+import { prisma } from '../../../lib/settings/prisma';
 import { getItem } from '../../../lib/util/getOSItem';
+import { BingoManager } from './BingoManager';
+import { globalBingoTiles } from './globalTiles';
 
 interface CustomReq {
 	customReq: (cl: Bank) => boolean;
@@ -25,36 +28,35 @@ export type GlobalBingoTile = (OneOf | AllOf | CustomReq) & {
 	name: string;
 };
 
-// export async function onFinishTile(
-// 	user: User,
-// 	before: ReturnType<typeof determineBingoProgress>,
-// 	after: ReturnType<typeof determineBingoProgress>
-// ) {
-// 	const finishedTile = after.tilesCompleted.find(id => !before.tilesCompleted.includes(id));
-// 	if (!finishedTile) {
-// 		logError('No finished tile?', { user_id: user.id });
-// 		return;
-// 	}
-// 	if (!user.bingo_tickets_bought) return;
-// 	const tile = bingoTiles.find(i => i.id === finishedTile)!;
-// 	sendToChannelID(BINGO_NOTIFICATION_CHANNEL_ID, {
-// 		content: `${userMention(user.id)} just finished the '${tile.name}' tile! This is their ${
-// 			after.tilesCompletedCount
-// 		}/${bingoTiles.length} finished tile.`
-// 	});
-// }
+export function rowsForSquare(n: number): number {
+	return Math.ceil(Math.sqrt(n));
+}
 
-// export async function csvDumpBingoPlayers() {
-// 	const users = await getAllBingoPlayers();
-// 	return users.map(i => `${i.id}\t${i.tilesCompletedCount}\t${i.tilesCompleted.join(',')}`).join('\n');
-// }
-
-export function generateTileName(tile: OneOf | AllOf) {
+export function generateTileName(tile: OneOf | AllOf | UniversalBingoTile | StoredBingoTile) {
+	if (typeof tile === 'number') {
+		return globalBingoTiles.find(t => t.id === tile)?.name ?? 'Unknown';
+	}
 	if ('oneOf' in tile) {
 		return `Receive one of: ${tile.oneOf.map(id => getItem(id)?.name).join(', ')}`;
 	}
 	if ('allOf' in tile) {
 		return `Receive all of: ${tile.allOf.map(id => getItem(id)?.name).join(', ')}`;
 	}
-	throw new Error(`Invalid tile: ${tile}`);
+	throw new Error(`Invalid tile: ${JSON.stringify(tile)}`);
+}
+
+export async function findBingosWithUserParticipating(userID: string) {
+	const bingos = await prisma.bingo.findMany({
+		where: {
+			start_date: {
+				lt: new Date()
+			},
+			bingo_participant: {
+				some: {
+					user_id: userID
+				}
+			}
+		}
+	});
+	return bingos.map(i => new BingoManager(i));
 }

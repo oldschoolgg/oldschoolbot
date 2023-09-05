@@ -2,7 +2,7 @@ import { exec } from 'node:child_process';
 
 import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { ButtonBuilder, ButtonStyle, SnowflakeUtil, time } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, time } from 'discord.js';
 import { clamp, objectEntries, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
