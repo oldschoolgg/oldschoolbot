@@ -165,6 +165,9 @@ async function makeTeamCommand(
 
 async function leaveTeamCommand(interaction: ChatInputCommandInteraction, bingo: BingoManager) {
 	if (bingo.isActive()) return "You can't leave a bingo team after bingo has started.";
+	if (bingo.wasFinalized) {
+		return "You can't leave a bingo team after bingo has ended.";
+	}
 
 	const team = await bingo.findTeamWithUser(interaction.user.id);
 	if (!team) return "You're not in a team for this bingo.";
