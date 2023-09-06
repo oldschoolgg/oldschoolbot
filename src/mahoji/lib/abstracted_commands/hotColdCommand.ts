@@ -4,6 +4,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { LootTable } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { BitField } from '../../../lib/constants';
 import { mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import resolveItems from '../../../lib/util/resolveItems';
@@ -37,6 +38,9 @@ export async function hotColdCommand(
 	_amount: string | undefined
 ) {
 	if (user.isIronman) return 'Ironmen cannot gamble.';
+	if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
+		return 'You locked yourself from gambling!';
+	}
 	const amount = mahojiParseNumber({ input: _amount, min: 1 });
 	if (!amount || !choice || !['hot', 'cold'].includes(choice) || !Number.isInteger(amount)) return explanation;
 	if (amount < 10_000_000 || amount > 500_000_000) return 'You must gamble between 10m and 500m.';

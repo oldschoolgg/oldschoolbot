@@ -4,7 +4,7 @@ import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank, Util } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../../lib/blacklists';
-import { Emoji, Events } from '../../../lib/constants';
+import { BitField, Emoji, Events } from '../../../lib/constants';
 import { MUserClass } from '../../../lib/MUser';
 import { prisma } from '../../../lib/settings/prisma';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
@@ -28,6 +28,7 @@ export async function duelCommand(
 	const duelTargetUser = duelUser;
 
 	const amount = mahojiParseNumber({ input: duelAmount, min: 1, max: 500_000_000_000 });
+
 	if (!amount) {
 		const winner = Math.random() >= 0.5 ? duelSourceUser : duelTargetUser;
 		return `${winner} won the duel against ${
@@ -35,6 +36,12 @@ export async function duelCommand(
 		} with ${Math.floor(Math.random() * 30 + 1)} HP remaining.`;
 	}
 
+	if (duelSourceUser.bitfield.includes(BitField.SelfGamblingLocked)) {
+		return 'You locked yourself from gambling.';
+	}
+	if (duelTargetUser.bitfield.includes(BitField.SelfGamblingLocked)) {
+		return "You can't duel someone who is locked from gambling.";
+	}
 	if (duelSourceUser.isIronman) return "You can't duel someone as an ironman.";
 	if (duelTargetUser.isIronman) return "You can't duel someone who is an ironman.";
 	if (duelSourceUser.id === duelTargetUser.id) return 'You cant duel yourself.';

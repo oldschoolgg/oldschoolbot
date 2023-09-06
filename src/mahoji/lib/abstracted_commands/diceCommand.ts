@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Util } from 'oldschooljs';
 
+import { BitField } from '../../../lib/constants';
 import { cryptoRand } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import {
@@ -23,6 +24,9 @@ export async function diceCommand(user: MUser, interaction: ChatInputCommandInte
 		return `You rolled **${roll}** on the percentile dice.`;
 	}
 	if (user.isIronman) return "You're an ironman and you cant play dice.";
+	if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
+		return 'You locked yourself from gambling!';
+	}
 
 	if (amount > 500_000_000) {
 		return 'You can only dice up to 500m at a time!';

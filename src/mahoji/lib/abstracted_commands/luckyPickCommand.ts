@@ -10,7 +10,7 @@ import { chunk, noOp, roll, shuffleArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { SILENT_ERROR } from '../../../lib/constants';
+import { BitField, SILENT_ERROR } from '../../../lib/constants';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../../lib/util/logError';
@@ -82,6 +82,9 @@ export async function luckyPickCommand(
 	}
 	if (user.isIronman) {
 		return "Ironmen can't gamble! Go pickpocket some men for GP.";
+	}
+	if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
+		return 'You locked yourself from gambling!';
 	}
 
 	await handleMahojiConfirmation(

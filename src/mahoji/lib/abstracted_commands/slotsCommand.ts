@@ -11,6 +11,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { BitField } from '../../../lib/constants';
 import { channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../../lib/util/interactionReply';
@@ -95,6 +96,9 @@ export async function slotsCommand(
 ): CommandResponse {
 	await deferInteraction(interaction);
 	const amount = mahojiParseNumber({ input: _amount, min: 1 });
+	if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
+		return 'You locked yourself from gambling!';
+	}
 	if (user.isIronman) {
 		return "Ironmen can't gamble! Go pickpocket some men for GP.";
 	}
