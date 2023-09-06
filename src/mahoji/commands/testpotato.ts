@@ -1,5 +1,6 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import { Prisma, tame_growth, xp_gains_skill_enum } from '@prisma/client';
+import { User } from 'discord.js';
 import { noOp, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
@@ -54,8 +55,10 @@ import resolveItems from '../../lib/util/resolveItems';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { MAX_QP } from '../lib/abstracted_commands/questCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
+import { BingoManager } from '../lib/bingo/BingoManager';
 import { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
+import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 import { generateNewTame } from './nursery';
 import { tameImage } from './tames';
 
@@ -623,6 +626,27 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							}
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'bingo_tools',
+					description: 'Bingo tools',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'start_bingo',
+							description: 'Make your bingo start now.',
+							required: true,
+							autocomplete: async (value: string, user: User) => {
+								const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
+								return bingos
+									.map(i => new BingoManager(i))
+									.filter(b => b.creatorID === user.id || b.organizers.includes(user.id))
+									.filter(bingo => (!value ? true : bingo.id.toString() === value))
+									.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
+							}
+						}
+					]
 				}
 			],
 			run: async ({
@@ -656,6 +680,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				refreshic?: {};
 				set?: { qp?: number; all_ca_tasks?: boolean };
 				check?: { monster_droprates?: string };
+				bingo_tools?: { start_bingo: string };
 			}>) => {
 				await deferInteraction(interaction);
 				if (production) {
@@ -684,6 +709,28 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					});
 					return 'reset your last contract date';
 				}
+
+				if (options.bingo_tools) {
+					if (options.bingo_tools.start_bingo) {
+						const bingo = await prisma.bingo.findFirst({
+							where: {
+								id: Number(options.bingo_tools.start_bingo),
+								creator_id: user.id
+							}
+						});
+						if (!bingo) return 'Invalid bingo.';
+						await prisma.bingo.update({
+							where: {
+								id: bingo.id
+							},
+							data: {
+								start_date: new Date()
+							}
+						});
+						return 'Your bingo start date has been set to this moment, so it has just started.';
+					}
+				}
+
 				if (options.check) {
 					if (options.check.monster_droprates) {
 						const monster = killableMonsters.find(m =>

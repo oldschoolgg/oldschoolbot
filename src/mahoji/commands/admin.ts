@@ -919,44 +919,11 @@ export const adminCommand: OSBMahojiCommand = {
 		await deferInteraction(interaction);
 
 		const adminUser = await mUserFetch(userID);
-		const isContributor = adminUser.bitfield.includes(BitField.isContributor);
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
 
-		/**
-		 *
-		 * Contributor Commands
-		 *
-		 */
-		if (!guildID || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
+		if (!guildID || !isMod || (production && guildID.toString() !== '342983479501389826')) return randArrItem(gifs);
 
-		// if (options.wipe_bingo_temp_cls) {
-		// 	if (userID.toString() !== '319396464402890753' && !isMod) return randArrItem(gifs);
-		// 	const usersToReset = await prisma.user.findMany({
-		// 		where: {
-		// 			bingo_tickets_bought: {
-		// 				gt: 0
-		// 			}
-		// 		},
-		// 		select: {
-		// 			id: true
-		// 		}
-		// 	});
-		// 	await handleMahojiConfirmation(interaction, `Reset the temp CL of ${usersToReset.length} users?`);
-		// 	const res = await prisma.user.updateMany({
-		// 		where: {
-		// 			id: {
-		// 				in: usersToReset.map(i => i.id)
-		// 			}
-		// 		},
-		// 		data: {
-		// 			temp_cl: {}
-		// 		}
-		// 	});
-		// 	return `${res.count} temp CLs reset.`;
-		// }
-
-		if (!isMod && !isContributor) return randArrItem(gifs);
 		if (options.givetgb) {
 			const user = await mUserFetch(options.givetgb.user.user.id);
 			if (user.id === adminUser.id) {
