@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
+import { BitField } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
@@ -191,18 +192,22 @@ export const gambleCommand: OSBMahojiCommand = {
 			return capeGambleStatsCommand(user);
 		}
 
-		if (options.dice) {
-			return diceCommand(user, interaction, options.dice.amount);
+		if (options.duel) {
+			const targetUser = await mUserFetch(options.duel.user.user.id);
+			// Block duels when one user has the BitField set, but only
+			if (options.duel.amount && [user, targetUser].some(u => u.bitfield.includes(BitField.SelfGamblingLocked))) {
+				return 'One of you has gambling disabled and cannot participate in this duel!';
+			}
+			return duelCommand(user, interaction, targetUser, options.duel.user, options.duel.amount);
 		}
 
-		if (options.duel) {
-			return duelCommand(
-				user,
-				interaction,
-				await mUserFetch(options.duel.user.user.id),
-				options.duel.user,
-				options.duel.amount
-			);
+		// Block GP Gambling from users with the BitField set:
+		if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
+			return 'You have gambling disabled and cannot gamble!';
+		}
+
+		if (options.dice) {
+			return diceCommand(user, interaction, options.dice.amount);
 		}
 
 		if (options.lucky_pick) {

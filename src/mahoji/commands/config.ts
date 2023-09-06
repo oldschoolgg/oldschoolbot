@@ -1,7 +1,7 @@
 import { EmbedBuilder, inlineCode } from '@discordjs/builders';
 import { hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import { Guild, HexColorString, resolveColor, User } from 'discord.js';
+import { ChatInputCommandInteraction, Guild, HexColorString, resolveColor, User } from 'discord.js';
 import { clamp, removeFromArr, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -19,6 +19,7 @@ import { BankSortMethods } from '../../lib/sorts';
 import { formatDuration, isValidNickname, itemNameFromID, stringMatches } from '../../lib/util';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
@@ -61,11 +62,18 @@ const toggles = [
 	}
 ];
 
-async function handleToggle(user: MUser, name: string) {
+async function handleToggle(user: MUser, name: string, interaction?: ChatInputCommandInteraction) {
 	const toggle = toggles.find(i => stringMatches(i.name, name));
 	if (!toggle) return 'Invalid toggle name.';
-	if (toggle.bit === BitField.SelfGamblingLocked && user.bitfield.includes(BitField.SelfGamblingLocked)) {
-		return 'You cannot toggle this off, you locked yourself from gambling!';
+	if (toggle.bit === BitField.SelfGamblingLocked) {
+		if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
+			return 'You cannot toggle this off, you locked yourself from gambling!';
+		} else if (interaction) {
+			await handleMahojiConfirmation(
+				interaction,
+				`${user}, you cannot disable this option!\n\nAre you sure you want to lockout your ability to gamble?`
+			);
+		}
 	}
 	const includedNow = user.bitfield.includes(toggle.bit);
 	const nextArr = includedNow ? removeFromArr(user.bitfield, toggle.bit) : [...user.bitfield, toggle.bit];
@@ -996,7 +1004,8 @@ LIMIT 20;
 		options,
 		userID,
 		guildID,
-		channelID
+		channelID,
+		interaction
 	}: CommandRunOptions<{
 		server?: {
 			channel?: { choice: 'enable' | 'disable' };
@@ -1047,7 +1056,7 @@ LIMIT 20;
 				pin_trip
 			} = options.user;
 			if (toggle) {
-				return handleToggle(user, toggle.name);
+				return handleToggle(user, toggle.name, interaction);
 			}
 			if (combat_options) {
 				return handleCombatOptions(user, combat_options.action, combat_options.input);
