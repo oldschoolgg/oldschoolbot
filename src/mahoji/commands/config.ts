@@ -54,7 +54,7 @@ const toggles = [
 	{
 		name: "Disable Daily Reminder DM's",
 		bit: BitField.DisableDailyReminderDMs
-  },
+	},
 		name: 'Clean herbs during farm runs',
 		bit: BitField.CleanHerbsFarming
 	},
