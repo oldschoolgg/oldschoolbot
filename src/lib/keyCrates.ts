@@ -87,8 +87,8 @@ export const keyCrates: Crate[] = [
 				1,
 				5
 			)
-			.add('Bones', 1, 5)
-			.add('Paint box', 1, 5)
+			.add('Bones', 1, 9)
+			.add('Paint box', 1, 1)
 			.add('Vial of blood', 1, 5)
 			.add('Blood rune', [100, 200], 5)
 			.add('Spooky spider parasol', 1, 4)
