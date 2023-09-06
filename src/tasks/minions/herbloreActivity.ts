@@ -8,35 +8,24 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export const herbloreTask: MinionTask = {
 	type: 'Herblore',
 	async run(data: HerbloreActivityTaskOptions) {
-		let { mixableID, quantity, zahur, userID, channelID, duration } = data;
+		const { mixableID, quantity, zahur, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
+		const mixableItem = Herblore.Mixables.find(mixable => mixable.item.id === mixableID)!;
+		const xpReceived = zahur && mixableItem.zahur ? 0 : quantity * mixableItem.xp;
+		const outputQuantity = mixableItem.outputMultiple ? quantity * mixableItem.outputMultiple : quantity;
 
-		const mixableItem = Herblore.Mixables.find(mixable => mixable.id === mixableID)!;
+		const xpRes = await user.addXP({ skillName: SkillsEnum.Herblore, amount: xpReceived, duration });
+		const loot = new Bank().add(mixableItem.item.id, outputQuantity);
 
-		const xpReceived = zahur && mixableItem.zahur === true ? 0 : quantity * mixableItem.xp;
+		await transactItems({ userID: user.id, collectionLog: true, itemsToAdd: loot });
 
-		let outputQuantity = quantity;
-
-		if (mixableItem.outputMultiple) {
-			outputQuantity *= mixableItem.outputMultiple;
-		}
-
-		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Herblore,
-			amount: xpReceived,
-			duration
-		});
-
-		let str = `${user}, ${user.minionName} finished making ${outputQuantity}x ${mixableItem.name}. ${xpRes}`;
-
-		const loot = new Bank().add(mixableItem.id, outputQuantity);
-
-		await transactItems({
-			userID: user.id,
-			collectionLog: true,
-			itemsToAdd: loot
-		});
-
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish(
+			user,
+			channelID,
+			`${user}, ${user.minionName} finished making ${outputQuantity}x ${mixableItem.item.name}. ${xpRes}`,
+			undefined,
+			data,
+			loot
+		);
 	}
 };

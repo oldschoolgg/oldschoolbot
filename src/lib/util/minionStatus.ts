@@ -12,7 +12,8 @@ import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
 import Agility from '../skilling/skills/agility';
 import Constructables from '../skilling/skills/construction/constructables';
-import Cooking from '../skilling/skills/cooking';
+import Cooking from '../skilling/skills/cooking/cooking';
+import LeapingFish from '../skilling/skills/cooking/leapingFish';
 import Crafting from '../skilling/skills/crafting';
 import Farming from '../skilling/skills/farming';
 import Firemaking from '../skilling/skills/firemaking';
@@ -39,6 +40,7 @@ import {
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
@@ -306,11 +308,19 @@ export function minionStatus(user: MUser) {
 		}
 		case 'Herblore': {
 			const data = currentTask as HerbloreActivityTaskOptions;
-			const mixable = Herblore.Mixables.find(item => item.id === data.mixableID);
+			const mixable = Herblore.Mixables.find(i => i.item.id === data.mixableID);
 
-			return `${name} is currently mixing ${data.quantity}x ${mixable!.name}. ${formattedDuration} Your ${
+			return `${name} is currently mixing ${data.quantity}x ${mixable!.item.name}. ${formattedDuration} Your ${
 				Emoji.Herblore
 			} Herblore level is ${user.skillLevel(SkillsEnum.Herblore)}`;
+		}
+		case 'CutLeapingFish': {
+			const data = currentTask as CutLeapingFishActivityTaskOptions;
+			const barbarianFish = LeapingFish.find(item => item.item.id === data.id);
+
+			return `${name} is currently cutting ${data.quantity}x ${
+				barbarianFish!.item.name
+			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
 		}
 		case 'Wintertodt': {
 			return `${name} is currently fighting the Wintertodt. ${formattedDuration}`;

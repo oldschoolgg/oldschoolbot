@@ -234,7 +234,9 @@ export enum BitField {
 	UsedSirenicTablet = 32,
 	UsedStrangledTablet = 33,
 	UsedFrozenTablet = 34,
-	DisableDailyReminderDMs = 35
+	CleanHerbsFarming = 35,
+	SelfGamblingLocked = 36,
+  DisableDailyReminderDMs = 37
 }
 
 interface BitFieldData {
@@ -272,6 +274,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.UsedFrozenTablet]: { name: 'Used Frozen Tablet', protected: false, userConfigurable: false },
 	[BitField.UsedSirenicTablet]: { name: 'Used Sirenic Tablet', protected: false, userConfigurable: false },
 	[BitField.UsedStrangledTablet]: { name: 'Used Strangled Tablet', protected: false, userConfigurable: false },
+	[BitField.SelfGamblingLocked]: { name: 'Self Gambling Lock', protected: false, userConfigurable: false },
 
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
 	[BitField.HasPermanentEventBackgrounds]: {
@@ -306,6 +309,10 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisableDailyReminderDMs]: {
 		name: 'Disable Daily Reminder DMs',
+    protected: false,
+	},
+	[BitField.CleanHerbsFarming]: {
+		name: 'Clean herbs during farm runs',
 		protected: false,
 		userConfigurable: true
 	}
