@@ -309,7 +309,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisableDailyReminderDMs]: {
 		name: 'Disable Daily Reminder DMs',
-    protected: false,
+		protected: false,
 	},
 	[BitField.CleanHerbsFarming]: {
 		name: 'Clean herbs during farm runs',
