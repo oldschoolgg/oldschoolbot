@@ -162,7 +162,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 			for (const row of result) {
 				if (!production) continue;
 				if (Number(row.last_daily_timestamp) === -1) continue;
-				if (Array.isArray(row.bitfield) && row.bitfield.includes(35)) {
+				if (Array.isArray(row.bitfield) && row.bitfield.includes(37)) {
 					continue;
 				}
 
