@@ -25,14 +25,15 @@ export async function ouraniaAltarStartCommand({
 	usestams?: boolean;
 	daeyalt_essence?: boolean;
 }) {
-	let timePerTrip = Time.Minute * 2;
-	let stamina = usestams || false;
+	let timePerTrip = Time.Minute * 1.225;
+	const stamina: boolean = usestams !== undefined ? usestams : true;
 	let daeyalt = daeyalt_essence || false;
 
 	const { bank } = user;
 	const numEssenceOwned = bank.amount('Pure essence');
 	const daeyaltEssenceOwned = bank.amount('Daeyalt essence');
 	const boosts = [];
+	const mageLvl = user.skillLevel(SkillsEnum.Magic);
 
 	let inventorySize = 28;
 	// For each pouch the user has, increase their inventory size.
@@ -49,24 +50,22 @@ export async function ouraniaAltarStartCommand({
 		timePerTrip = increaseNumByPercent(timePerTrip, gracefulPenalty);
 	}
 
-	if (user.skillLevel(SkillsEnum.Magic) < 71) {
-		boosts.push('50% slower for less than 71 magic.');
+	if (mageLvl < 71 && user.QP < 120) {
+		boosts.push('50% slower for not having the Ourania Teleport Spell');
 		timePerTrip = increaseNumByPercent(timePerTrip, 50);
 	}
 
-	if (
-		user.skillLevel(SkillsEnum.Runecraft) >= 99 &&
-		user.hasEquippedOrInBank('Runecraft cape') &&
-		inventorySize > 28
-	) {
-		timePerTrip *= 0.97;
-		boosts.push('3% for Runecraft cape');
+	if (user.skillLevel(SkillsEnum.Runecraft) >= 99 && user.hasEquippedOrInBank('Runecraft cape') && inventorySize > 28)
+		if (stamina || mageLvl > 95) {
+			timePerTrip *= 0.8;
+		}
+
+	if (user.hasEquippedOrInBank(['Ring of endurance'])) {
+		boosts.push('2% faster for Ring of Endurance');
+		timePerTrip *= 0.98;
 	}
 
-	if (stamina) timePerTrip *= 0.8;
-
 	const maxTripLength = calcMaxTripLength(user, 'OuraniaAltar');
-
 	const maxCanDo = Math.floor(maxTripLength / timePerTrip) * inventorySize;
 
 	// If no quantity provided, set it to the max.
@@ -95,15 +94,19 @@ export async function ouraniaAltarStartCommand({
 	let totalCost = new Bank();
 	let itemCost = new Bank();
 
-	if (stamina) {
-		itemCost.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
-		totalCost.add(itemCost);
-		boosts.push('20% faster for using Stamina potions.');
-		if (!user.owns(totalCost)) {
-			return `You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
-				Math.ceil(duration / (Time.Minute * 8)),
-				1
-			)}x Stamina potion(4).`;
+	if (stamina || mageLvl > 95) {
+		if (mageLvl > 95) {
+			boosts.push('20% faster for using Spellbook Swap and Vile Vigour instead of Staminas');
+		} else {
+			itemCost.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
+			totalCost.add(itemCost);
+			boosts.push('20% faster for using Stamina potions.');
+			if (!user.owns(totalCost)) {
+				return `You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
+					Math.ceil(duration / (Time.Minute * 8)),
+					1
+				)}x Stamina potion(4).`;
+			}
 		}
 	}
 

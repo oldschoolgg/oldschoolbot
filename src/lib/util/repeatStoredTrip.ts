@@ -230,7 +230,8 @@ export const tripHandlers = {
 		args: (data: OuraniaAltarOptions) => ({
 			rune: 'ourania altar',
 			usestams: data.stamina,
-			daeyalt_essence: data.daeyalt
+			daeyalt_essence: data.daeyalt,
+			quantity: data.quantity
 		})
 	},
 	[activity_type_enum.Runecraft]: {
