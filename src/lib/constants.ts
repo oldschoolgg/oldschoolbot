@@ -236,7 +236,7 @@ export enum BitField {
 	UsedFrozenTablet = 34,
 	CleanHerbsFarming = 35,
 	SelfGamblingLocked = 36,
-  DisableDailyReminderDMs = 37
+	DisableDailyReminderDMs = 37
 }
 
 interface BitFieldData {
