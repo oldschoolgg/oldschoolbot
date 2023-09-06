@@ -302,6 +302,10 @@ const tripFinishEffects: TripFinishEffect[] = [
 				}
 			}
 			dropratePerMinute = Math.ceil(dropratePerMinute / 4);
+			dropratePerMinute = Math.ceil(dropratePerMinute / 3);
+			if (user.isIronman) {
+				dropratePerMinute = Math.ceil(dropratePerMinute / 3);
+			}
 			const minutes = Math.floor(data.duration / Time.Minute);
 			for (let i = 0; i < minutes; i++) {
 				if (roll(dropratePerMinute)) {
