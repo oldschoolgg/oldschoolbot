@@ -271,6 +271,23 @@ async function infernoRun({
 	const hasDivine = rangeGear.hasEquipped('Divine spirit shield') || mageGear.hasEquipped('Divine spirit shield');
 	preZukDeathChance.add(hasDivine, -12, 'Divine');
 	emergedZukDeathChance.add(hasDivine, -9, 'Divine');
+
+	duration.add(rangeGear.hasEquipped('Masori body (f)') && rangeGear.hasEquipped('Masori chaps (f)'), -5, 'Masori');
+
+	if (!(rangeGear.hasEquipped('Masori body (f)') && rangeGear.hasEquipped('Masori chaps (f)'))) {
+		duration.add(
+			rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chainskirt'),
+			-3,
+			'Armadyl'
+		);
+	}
+
+	duration.add(
+		mageGear.hasEquipped('Ancestral robe top') && mageGear.hasEquipped('Ancestral robe bottom'),
+		-4,
+		'Ancestral'
+	);
+
 	preZukDeathChance.add(
 		!hasDivine && (rangeGear.hasEquipped('Elysian spirit shield') || mageGear.hasEquipped('Elysian spirit shield')),
 		-5,

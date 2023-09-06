@@ -57,7 +57,7 @@ const droprates: GlobalDroprate[] = [
 			for (const pot of Potions) {
 				let dropratePerMinute = herbertDroprate(1, pot.level);
 				let dropratePerMinuteAtMax = herbertDroprate(MAX_XP, pot.level);
-				rows.push([pot.name, 1 / (60 / dropratePerMinute), 1 / (60 / dropratePerMinuteAtMax)]);
+				rows.push([pot.item.name, 1 / (60 / dropratePerMinute), 1 / (60 / dropratePerMinuteAtMax)]);
 			}
 
 			return `Herbert is rolled per minute of your trip, and the droprate halves (becomes twice as common) when you have the max (${MAX_XP.toLocaleString()}) Herblore XP.

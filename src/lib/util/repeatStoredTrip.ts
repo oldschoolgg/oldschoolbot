@@ -24,6 +24,7 @@ import type {
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
 	DisassembleTaskOptions,
 	DOAOptions,
@@ -336,6 +337,13 @@ export const tripHandlers = {
 			name: itemNameFromID(data.mixableID),
 			quantity: data.quantity,
 			zahur: data.zahur
+		})
+	},
+	[activity_type_enum.CutLeapingFish]: {
+		commandName: 'cook',
+		args: (data: CutLeapingFishActivityTaskOptions) => ({
+			name: itemNameFromID(data.fishID),
+			quantity: data.quantity
 		})
 	},
 	[activity_type_enum.Hunter]: {

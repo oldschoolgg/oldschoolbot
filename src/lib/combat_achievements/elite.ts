@@ -535,22 +535,22 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 				isCertainMonsterTrip(Monsters.DemonicGorilla.id)(data) && user.hasEquipped(demonBaneWeapons)
 		}
 	},
-	{
-		id: 1045,
-		name: 'Fragment of Seren Speed-Trialist',
-		desc: 'Kill The Fragment of Seren in less than 4 minutes.',
-		type: 'speed',
-		monster: 'Fragment of Seren',
-		notPossible: true
-	},
-	{
-		id: 1046,
-		name: 'Galvek Speed-Trialist',
-		desc: 'Kill Galvek in less than 3 minutes.',
-		type: 'speed',
-		monster: 'Galvek',
-		notPossible: true
-	},
+	// {
+	// 	id: 1045,
+	// 	name: 'Fragment of Seren Speed-Trialist',
+	// 	desc: 'Kill The Fragment of Seren in less than 4 minutes.',
+	// 	type: 'speed',
+	// 	monster: 'Fragment of Seren',
+	// 	notPossible: true
+	// },
+	// {
+	// 	id: 1046,
+	// 	name: 'Galvek Speed-Trialist',
+	// 	desc: 'Kill Galvek in less than 3 minutes.',
+	// 	type: 'speed',
+	// 	monster: 'Galvek',
+	// 	notPossible: true
+	// },
 	{
 		id: 1047,
 		name: 'Ourg Freezer II',
@@ -585,14 +585,14 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 			hasChance: isCertainMonsterTrip(Monsters.GiantMole.id)
 		}
 	},
-	{
-		id: 1050,
-		name: 'Glough Speed-Trialist',
-		desc: 'Kill Glough in less than 2 minutes and 30 seconds.',
-		type: 'speed',
-		monster: 'Glough',
-		notPossible: true
-	},
+	// {
+	// 	id: 1050,
+	// 	name: 'Glough Speed-Trialist',
+	// 	desc: 'Kill Glough in less than 2 minutes and 30 seconds.',
+	// 	type: 'speed',
+	// 	monster: 'Glough',
+	// 	notPossible: true
+	// },
 	{
 		id: 1051,
 		name: 'Grotesque Guardians Veteran',
@@ -776,7 +776,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Nex',
 		rng: {
 			chancePerKill: 12,
-			hasChance: isCertainMonsterTrip(NEX_ID)
+			hasChance: 'Nex'
 		}
 	},
 	{
@@ -1272,30 +1272,30 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 			}
 		})
 	},
-	{
-		id: 1109,
-		name: "TzHaar-Ket-Rak's Speed-Trialist",
-		desc: "Complete TzHaar-Ket-Rak's first challenge in less than 45 seconds.",
-		type: 'speed',
-		monster: "TzHaar-Ket-Rak's Challenges",
-		notPossible: true
-	},
-	{
-		id: 1110,
-		name: 'Facing Jad Head-on III',
-		desc: "Complete TzHaar-Ket-Rak's second challenge with only melee.",
-		type: 'restriction',
-		monster: "TzHaar-Ket-Rak's Challenges",
-		notPossible: true
-	},
-	{
-		id: 1111,
-		name: 'The II Jad Challenge',
-		desc: "Complete TzHaar-Ket-Rak's second challenge.",
-		type: 'kill_count',
-		monster: "TzHaar-Ket-Rak's Challenges",
-		notPossible: true
-	},
+	// {
+	// 	id: 1109,
+	// 	name: "TzHaar-Ket-Rak's Speed-Trialist",
+	// 	desc: "Complete TzHaar-Ket-Rak's first challenge in less than 45 seconds.",
+	// 	type: 'speed',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
+	// {
+	// 	id: 1110,
+	// 	name: 'Facing Jad Head-on III',
+	// 	desc: "Complete TzHaar-Ket-Rak's second challenge with only melee.",
+	// 	type: 'restriction',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
+	// {
+	// 	id: 1111,
+	// 	name: 'The II Jad Challenge',
+	// 	desc: "Complete TzHaar-Ket-Rak's second challenge.",
+	// 	type: 'kill_count',
+	// 	monster: "TzHaar-Ket-Rak's Challenges",
+	// 	notPossible: true
+	// },
 	{
 		id: 1112,
 		name: 'Half-Way There',

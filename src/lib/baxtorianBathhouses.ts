@@ -386,7 +386,7 @@ function calculateResult(data: BathhouseTaskOptions) {
 	const ore = BathhouseOres.find(i => i.item.id === data.ore)!;
 	const tier = bathHouseTiers.find(t => t.name === data.tier)!;
 	const mixture = BathwaterMixtures.find(i => i.name === data.mixture)!;
-	const [firstHerb, secondHerb] = mixture.items.map(herb => Grimy.find(i => i.id === herb.id)!);
+	const [firstHerb, secondHerb] = mixture.items.map(herb => Grimy.find(i => i.item.id === herb.id)!);
 	const speciesCanServe = species.filter(i => i.tier === tier.name);
 
 	const herbXP = quantity * (firstHerb.xp + secondHerb.xp) * 220 * tier.xpMultiplier;
@@ -413,7 +413,7 @@ function calculateResult(data: BathhouseTaskOptions) {
 		firemakingXP,
 		ore,
 		tier,
-		herbs: [firstHerb, secondHerb].map(i => i.id).map(getOSItem),
+		herbs: [firstHerb, secondHerb].map(i => i.item.id).map(getOSItem),
 		speciesServed,
 		mixture,
 		gaveExtraTips

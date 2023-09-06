@@ -87,7 +87,7 @@ export function betterHerbloreStats(herbStats: Bank) {
 			[unfinishedPotions, unfPots],
 			[Potions, pots]
 		] as const) {
-			if (array.some(i => i.id === item[0].id)) {
+			if (array.some(i => i.item.id === item[0].id)) {
 				bank.add(item[0].id, item[1]);
 			}
 		}

@@ -281,13 +281,13 @@ export function gaussianRandom(min: number, max: number, rolls?: number) {
 	return Math.floor(min + gaussianRand(rolls) * (max - min + 1));
 }
 export function isValidNickname(str?: string) {
-	return (
+	return Boolean(
 		str &&
-		typeof str === 'string' &&
-		str.length >= 2 &&
-		str.length <= 30 &&
-		['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
-		stripEmojis(str).length === str.length
+			typeof str === 'string' &&
+			str.length >= 2 &&
+			str.length <= 30 &&
+			['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
+			stripEmojis(str).length === str.length
 	);
 }
 

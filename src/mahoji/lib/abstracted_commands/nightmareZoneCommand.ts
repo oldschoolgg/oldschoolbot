@@ -411,14 +411,19 @@ export async function nightmareZoneShopCommand(
 			.join(', ')}`;
 	}
 
-	const cost = quantity * shopItem.cost;
+	let costPerItem = shopItem.cost;
+	if (user.hasCompletedCATier('hard')) {
+		costPerItem /= 2;
+	}
+
+	const cost = quantity * costPerItem;
 	if (cost > currentUserPoints) {
-		return `You don't have enough Nightmare Zone points to buy ${quantity.toLocaleString()}x ${shopItem.name} (${
-			shopItem.cost
-		} Nightmare Zone points each).\nYou have ${currentUserPoints} Nightmare Zone points.\n${
-			currentUserPoints < shopItem.cost
+		return `You don't have enough Nightmare Zone points to buy ${quantity.toLocaleString()}x ${
+			shopItem.name
+		} (${costPerItem} Nightmare Zone points each).\nYou have ${currentUserPoints} Nightmare Zone points.\n${
+			currentUserPoints < costPerItem
 				? "You don't have enough Nightmare Zone points for any of this item."
-				: `You only have enough for ${Math.floor(currentUserPoints / shopItem.cost).toLocaleString()}`
+				: `You only have enough for ${Math.floor(currentUserPoints / costPerItem).toLocaleString()}`
 		}`;
 	}
 
@@ -441,7 +446,7 @@ export async function nightmareZoneShopCommand(
 	});
 
 	return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(
-		shopItem.cost * quantity
+		costPerItem * quantity
 	).toLocaleString()} Nightmare Zone points.\nYou now have ${currentUserPoints - cost} Nightmare Zone points left.`;
 }
 

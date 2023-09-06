@@ -88,7 +88,8 @@ export const killCommand: OSBMahojiCommand = {
 			bossName: options.name,
 			limit,
 			catacombs: false,
-			onTask: false
+			onTask: false,
+			lootTableTertiaryChanges: Array.from(user.buildCATertiaryItemChanges().entries())
 		});
 
 		if (result.error) {

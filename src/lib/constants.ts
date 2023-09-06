@@ -150,6 +150,7 @@ export const enum Emoji {
 	SlayerMasterCape = '<:slayerMasterCape:869497600284459008>',
 	RunecraftMasterCape = '<:runecraftMasterCape:869497600997470258>',
 	Flappy = '<:Flappy:884799334737129513>',
+	CombatAchievements = '<:combatAchievements:1145015804040065184>',
 	Stopwatch = '⏱️',
 	Smokey = '<:Smokey:886284971914969149>',
 	ItemContract = '<:Item_contract:988422348434718812>',
@@ -265,6 +266,8 @@ export enum BitField {
 	UsedSirenicTablet = 32,
 	UsedStrangledTablet = 33,
 	UsedFrozenTablet = 34,
+	CleanHerbsFarming = 35,
+	SelfGamblingLocked = 36,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -332,6 +335,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.UsedFrozenTablet]: { name: 'Used Frozen Tablet', protected: false, userConfigurable: false },
 	[BitField.UsedSirenicTablet]: { name: 'Used Sirenic Tablet', protected: false, userConfigurable: false },
 	[BitField.UsedStrangledTablet]: { name: 'Used Strangled Tablet', protected: false, userConfigurable: false },
+	[BitField.SelfGamblingLocked]: { name: 'Self Gambling Lock', protected: false, userConfigurable: false },
 
 	[BitField.HasGivenBirthdayPack]: { name: 'Has Given Birthday Pack', protected: false, userConfigurable: false },
 	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
@@ -377,6 +381,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.ScrollOfLongevityDisabled]: {
 		name: 'Disable Scroll of Longevity',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.CleanHerbsFarming]: {
+		name: 'Clean herbs during farm runs',
 		protected: false,
 		userConfigurable: true
 	}

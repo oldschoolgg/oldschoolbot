@@ -29,6 +29,12 @@ const killableBosses: KillableMonster[] = [
 			{
 				[itemID('Dragon warhammer')]: 10,
 				[itemID('Bandos godsword')]: 5
+			},
+			{
+				[itemID("Osmumten's fang")]: 3
+			},
+			{
+				[itemID('Lightbearer')]: 1
 			}
 		],
 		groupKillable: true,
@@ -69,7 +75,17 @@ const killableBosses: KillableMonster[] = [
 			{
 				[itemID('Armadyl crossbow')]: 5,
 				[itemID('Bow of faerdhinen (c)')]: 7,
+				[itemID('Zaryte crossbow')]: 8,
 				[itemID('Twisted bow')]: 10
+			},
+			{
+				[itemID('Masori body (f)')]: 1
+			},
+			{
+				[itemID('Masori chaps (f)')]: 1
+			},
+			{
+				[itemID('Masori mask (f)')]: 1
 			}
 		],
 		groupKillable: true,
@@ -110,7 +126,17 @@ const killableBosses: KillableMonster[] = [
 			{
 				[itemID('Armadyl crossbow')]: 5,
 				[itemID('Bow of faerdhinen (c)')]: 7,
+				[itemID('Zaryte crossbow')]: 8,
 				[itemID('Twisted bow')]: 10
+			},
+			{
+				[itemID('Masori body (f)')]: 1
+			},
+			{
+				[itemID('Masori chaps (f)')]: 1
+			},
+			{
+				[itemID('Masori mask (f)')]: 1
 			}
 		],
 		groupKillable: true,

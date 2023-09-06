@@ -64,6 +64,8 @@ export const quests: Quest[] = [
 	}
 ];
 
+export const MAX_QP = MAX_GLOBAL_QP + sumArr(quests.map(i => i.qp));
+
 export async function questCommand(user: MUser, channelID: string, name?: string) {
 	if (!user.user.minion_hasBought) {
 		return 'You need a minion to do a questing trip';
@@ -102,8 +104,16 @@ export async function questCommand(user: MUser, channelID: string, name?: string
 	}
 
 	const currentQP = user.QP;
-	if (currentQP >= MAX_GLOBAL_QP) {
+	if (currentQP >= MAX_QP) {
 		return 'You already have the maximum amount of Quest Points.';
+	}
+
+	const qpFromUnfinishedQuests = sumArr(
+		quests.filter(i => !user.user.finished_quest_ids.includes(i.id)).map(i => i.qp)
+	);
+
+	if (qpFromUnfinishedQuests > 0 && currentQP >= MAX_GLOBAL_QP) {
+		return `You already have the maximum amount of Quest Points from doing quests, you can get ${qpFromUnfinishedQuests} more from specific quests.`;
 	}
 
 	const boosts = [];
@@ -131,5 +141,3 @@ export async function questCommand(user: MUser, channelID: string, name?: string
 
 	return response;
 }
-
-export const MAX_QP = MAX_GLOBAL_QP + sumArr(quests.map(i => i.qp));

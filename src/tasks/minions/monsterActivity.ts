@@ -228,7 +228,10 @@ export const monsterTask: MinionTask = {
 			onSlayerTask: isOnTaskResult.isOnTask,
 			slayerMaster: isOnTaskResult.isOnTask ? isOnTaskResult.slayerMaster.osjsEnum : undefined,
 			hasSuperiors: superiorTable,
-			inCatacombs: isInCatacombs
+			inCatacombs: isInCatacombs,
+			lootTableOptions: {
+				tertiaryItemPercentageChanges: user.buildCATertiaryItemChanges()
+			}
 		};
 		// Regular loot
 		const loot = (monster as KillableMonster).table.kill(
@@ -239,7 +242,14 @@ export const monsterTask: MinionTask = {
 		// Calculate superiors and assign loot.
 		let newSuperiorCount = 0;
 		if (superiorTable && isOnTaskResult.isOnTask) {
-			for (let i = 0; i < quantity; i++) if (roll(200)) newSuperiorCount++;
+			let superiorDroprate = 200;
+			if (user.hasCompletedCATier('elite')) {
+				superiorDroprate = 150;
+				messages.push(`${Emoji.CombatAchievements} 25% more common superiors due to Elite CA tier`);
+			}
+			for (let i = 0; i < quantity; i++) {
+				if (roll(superiorDroprate)) newSuperiorCount++;
+			}
 		}
 
 		let masterCapeRolls = user.hasEquipped('Slayer master cape') ? newSuperiorCount : 0;

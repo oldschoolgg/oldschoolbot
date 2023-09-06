@@ -10,7 +10,14 @@ import { YETI_ID } from '../constants';
 import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
 
-export default async ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs): KillWorkerReturn => {
+export default async ({
+	quantity,
+	bossName,
+	catacombs,
+	onTask,
+	limit,
+	lootTableTertiaryChanges
+}: KillWorkerArgs): KillWorkerReturn => {
 	const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, bossName)));
 
 	if (osjsMonster) {
@@ -25,7 +32,15 @@ export default async ({ quantity, bossName, limit, catacombs, onTask }: KillWork
 			};
 		}
 
-		return { bank: osjsMonster.kill(quantity, { inCatacombs: catacombs, onSlayerTask: onTask }) };
+		return {
+			bank: osjsMonster.kill(quantity, {
+				inCatacombs: catacombs,
+				onSlayerTask: onTask,
+				lootTableOptions: {
+					tertiaryItemPercentageChanges: new Map(lootTableTertiaryChanges)
+				}
+			})
+		};
 	}
 
 	if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {

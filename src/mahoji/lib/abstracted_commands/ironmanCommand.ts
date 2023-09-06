@@ -28,6 +28,16 @@ export async function ironmanCommand(user: MUser, interaction: ChatInputCommandI
 		return "You can't become an ironman because you have active giveaways.";
 	}
 
+	const bingos = await prisma.bingo.count({
+		where: {
+			creator_id: user.id
+		}
+	});
+
+	if (bingos !== 0) {
+		return "You can't become an ironman because you have active bingos.";
+	}
+
 	const activeGEListings = await GrandExchange.fetchActiveListings();
 	if ([...activeGEListings.buyListings, ...activeGEListings.sellListings].some(i => i.user_id === user.id)) {
 		return `You can't become an ironman because you have active Grand Exchange listings. Cancel them and try again: ${mentionCommand(
