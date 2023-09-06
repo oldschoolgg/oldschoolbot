@@ -281,3 +281,15 @@ export function calculateSimpleMonsterDeathChance({
 	let deathChance = baseDeathChance - reductionFactor * (baseDeathChance - lowestDeathChance);
 	return clamp(deathChance, lowestDeathChance, highestDeathChance);
 }
+
+export function addBanks(banks: ItemBank[]): Bank {
+	const bank = new Bank();
+	for (const _bank of banks) {
+		bank.add(_bank);
+	}
+	return bank;
+}
+
+export function isValidDiscordSnowflake(snowflake: string): boolean {
+	return /^\d{17,19}$/.test(snowflake);
+}
