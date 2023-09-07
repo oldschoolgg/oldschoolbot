@@ -194,7 +194,7 @@ export const gambleCommand: OSBMahojiCommand = {
 
 		if (options.duel) {
 			const targetUser = await mUserFetch(options.duel.user.user.id);
-			// Block duels when one user has the BitField set, but only
+			// Block duels when one user has the BitField set, but only when wagering an amount
 			if (options.duel.amount && [user, targetUser].some(u => u.bitfield.includes(BitField.SelfGamblingLocked))) {
 				return 'One of you has gambling disabled and cannot participate in this duel!';
 			}
