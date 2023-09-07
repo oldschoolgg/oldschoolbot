@@ -772,7 +772,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 						id: bingo.id
 					},
 					data: {
-						bingo_tiles: newTiles as any as Prisma.InputJsonObject
+						bingo_tiles: newTiles as any as Prisma.InputJsonObject[]
 					}
 				});
 
