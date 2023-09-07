@@ -138,7 +138,9 @@ export const runecraftCommand: OSBMahojiCommand = {
 			runners = false;
 			boosts.push('Ironmen stand on their own');
 		}
-	
+
+		let inventorySize = 28;
+
 		if (!runners) {
 			if (!usestams && runeObj.stams) {
 				tripLength *= 3;
@@ -160,29 +162,27 @@ export const runecraftCommand: OSBMahojiCommand = {
 				tripLength *= 0.95;
 				boosts.push('5% for 60+ Agility');
 			}
+
+			// For each pouch the user has, increase their inventory size.
+			for (const pouch of Runecraft.pouches) {
+				if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
+				if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
+				if (bank.has(pouch.id) && pouch.id === itemID('Colossal pouch')) break;
+			}
+
+			if (inventorySize > 28) boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
+
+			if (
+				user.skillLevel(SkillsEnum.Runecraft) >= 99 &&
+				user.hasEquippedOrInBank('Runecraft cape') &&
+				inventorySize > 28
+			) {
+				tripLength *= 0.97;
+				boosts.push('3% for Runecraft cape');
+			}
 		} else if (runners) {
 			tripLength /= 6.6;
 			boosts.push('You paying runners 40m/h to assist you runecrafting');
-		}
-
-		let inventorySize = 28;
-
-		// For each pouch the user has, increase their inventory size.
-		for (const pouch of Runecraft.pouches) {
-			if (user.skillLevel(SkillsEnum.Runecraft) < pouch.level) continue;
-			if (bank.has(pouch.id)) inventorySize += pouch.capacity - 1;
-			if (bank.has(pouch.id) && pouch.id === itemID('Colossal pouch')) break;
-		}
-
-		if (inventorySize > 28) boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
-
-		if (
-			user.skillLevel(SkillsEnum.Runecraft) >= 99 &&
-			user.hasEquippedOrInBank('Runecraft cape') &&
-			inventorySize > 28
-		) {
-			tripLength *= 0.97;
-			boosts.push('3% for Runecraft cape');
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Runecraft');
