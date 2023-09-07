@@ -1,5 +1,5 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { Time } from 'e';
+import { round, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
@@ -62,6 +62,12 @@ export const runecraftCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Boolean,
+			name: 'runners',
+			description: 'Set this to true to use runners (default false)',
+			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
 			name: 'daeyalt_essence',
 			description: 'Set this to true to use daeyalt essence (default false)',
 			required: false
@@ -71,9 +77,15 @@ export const runecraftCommand: OSBMahojiCommand = {
 		userID,
 		options,
 		channelID
-	}: CommandRunOptions<{ rune: string; quantity?: number; usestams?: boolean; daeyalt_essence?: boolean }>) => {
+	}: CommandRunOptions<{
+		rune: string;
+		quantity?: number;
+		usestams?: boolean;
+		runners?: boolean;
+		daeyalt_essence?: boolean;
+	}>) => {
 		const user = await mUserFetch(userID.toString());
-		let { rune, quantity, usestams, daeyalt_essence } = options;
+		let { rune, quantity, usestams, runners, daeyalt_essence } = options;
 
 		rune = rune.toLowerCase().replace('rune', '').trim();
 
@@ -98,11 +110,11 @@ export const runecraftCommand: OSBMahojiCommand = {
 			return `That's not a valid rune. Valid rune are ${Runecraft.Runes.map(_rune => _rune.name).join(', ')}.`;
 		}
 
-		if (usestams === undefined) {
-			usestams = true;
+		if (!runeObj.stams && usestams === undefined) {
+			usestams = false;
 		}
 
-		if (!usestams && !runeObj.stams) {
+		if (usestams === undefined) {
 			usestams = true;
 		}
 
@@ -122,26 +134,30 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		let { tripLength } = runeObj;
 		const boosts = [];
-		if (userHasGracefulEquipped(user)) {
-			tripLength -= tripLength * 0.1;
-			boosts.push('10% for Graceful');
-		}
+		if (!runners) {
+			if (!usestams && runeObj.stams) {
+				tripLength *= 3;
+				boosts.push('**3x slower** for no Stamina potion(4)s');
+			} else if (user.hasEquippedOrInBank(['Ring of endurance'])) {
+				tripLength *= 0.99;
+				const ringStr = '1% boost for Ring of endurance';
+				boosts.push(ringStr);
+			}
+			if (userHasGracefulEquipped(user)) {
+				tripLength -= tripLength * 0.1;
+				boosts.push('10% for Graceful');
+			}
 
-		if (user.skillLevel(SkillsEnum.Agility) >= 90) {
-			tripLength *= 0.9;
-			boosts.push('10% for 90+ Agility');
-		} else if (user.skillLevel(SkillsEnum.Agility) >= 60) {
-			tripLength *= 0.95;
-			boosts.push('5% for 60+ Agility');
-		}
-
-		if (!usestams) {
-			tripLength *= 3;
-			boosts.push('**3x slower** for no Stamina potion(4)s');
-		} else if (user.hasEquippedOrInBank(['Ring of endurance'])) {
-			tripLength *= 0.99;
-			const ringStr = '1% boost for Ring of endurance';
-			boosts.push(ringStr);
+			if (user.skillLevel(SkillsEnum.Agility) >= 90) {
+				tripLength *= 0.9;
+				boosts.push('10% for 90+ Agility');
+			} else if (user.skillLevel(SkillsEnum.Agility) >= 60) {
+				tripLength *= 0.95;
+				boosts.push('5% for 60+ Agility');
+			}
+		} else if (runners) {
+			tripLength /= 6.6;
+			boosts.push('You paying runners 40m/h to assist you runecrafting');
 		}
 
 		let inventorySize = 28;
@@ -200,6 +216,17 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		const totalCost = new Bank();
 
+		const userGP = user.GP;
+		if (runners) {
+			if (userGP < (duration / Time.Hour) * 40_000_000) {
+				return `You do not have enough GP to pay your runners for this trip. You need atleast ${round(
+					Math.ceil((duration / Time.Hour) * 40_000_000) / 1_000_000,
+					2
+				)}M GP.`;
+			}
+			totalCost.add('coins', Math.ceil(Math.ceil((duration / Time.Hour) * 40_000_000)));
+		}
+
 		let imbueCasts = 0;
 		let teleportReduction = 1;
 		let removeTalismanAndOrRunes = new Bank();
@@ -249,33 +276,38 @@ export const runecraftCommand: OSBMahojiCommand = {
 					.clone()
 					.multiply(numberOfInventories)
 			);
-			if (user.hasEquippedOrInBank('Ring of the elements') && bank.has(ringOfTheElementsRuneCost)) {
-				hasRingOfTheElements = true;
-				duration *= 0.97;
-				boosts.push('3% for Ring of the elements');
-				removeTalismanAndOrRunes.add(ringOfTheElementsRuneCost);
-				// if no crafting cape still consume ring of dueling charge
-				if (teleportReduction !== 2) {
-					removeTalismanAndOrRunes.add('Ring of dueling(8)', Math.ceil(numberOfInventories / 8));
+			if (!runners) {
+				if (user.hasEquippedOrInBank('Ring of the elements') && bank.has(ringOfTheElementsRuneCost)) {
+					hasRingOfTheElements = true;
+					duration *= 0.97;
+					boosts.push('3% for Ring of the elements');
+					removeTalismanAndOrRunes.add(ringOfTheElementsRuneCost);
+					// if no crafting cape still consume ring of dueling charge
+					if (teleportReduction !== 2) {
+						removeTalismanAndOrRunes.add('Ring of dueling(8)', Math.ceil(numberOfInventories / 8));
+					}
+				} else {
+					removeTalismanAndOrRunes.add(
+						'Ring of dueling(8)',
+						Math.ceil(numberOfInventories / (4 * teleportReduction))
+					);
 				}
-			} else {
-				removeTalismanAndOrRunes.add(
-					'Ring of dueling(8)',
-					Math.ceil(numberOfInventories / (4 * teleportReduction))
-				);
-			}
-			if (!user.owns(removeTalismanAndOrRunes)) {
-				return `You don't have enough Ring of dueling(8) for this trip. You need ${Math.ceil(
-					numberOfInventories / (4 * teleportReduction)
-				)}x Ring of dueling(8).`;
-			}
-			if (usestams) {
-				removeTalismanAndOrRunes.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
 				if (!user.owns(removeTalismanAndOrRunes)) {
-					return `You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
-						Math.ceil(duration / (Time.Minute * 8)),
-						1
-					)}x Stamina potion(4).`;
+					return `You don't have enough Ring of dueling(8) for this trip. You need ${Math.ceil(
+						numberOfInventories / (4 * teleportReduction)
+					)}x Ring of dueling(8).`;
+				}
+				if (usestams) {
+					removeTalismanAndOrRunes.add(
+						'Stamina potion(4)',
+						Math.max(Math.ceil(duration / (Time.Minute * 8)), 1)
+					);
+					if (!user.owns(removeTalismanAndOrRunes)) {
+						return `You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
+							Math.ceil(duration / (Time.Minute * 8)),
+							1
+						)}x Stamina potion(4).`;
+					}
 				}
 			}
 			totalCost.add(removeTalismanAndOrRunes);
@@ -318,7 +350,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			quantityPerEssence * quantity
 		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
 
-		if (!runeObj.stams) {
+		if (!runeObj.stams && usestams) {
 			response += `\nNote: You are unable to use Stamina Potion's when crafting ${runeObj.name}s.`;
 		}
 
