@@ -201,13 +201,16 @@ export const gambleCommand: OSBMahojiCommand = {
 			return duelCommand(user, interaction, targetUser, options.duel.user, options.duel.amount);
 		}
 
+		if (options.dice) {
+			if (user.bitfield.includes(BitField.SelfGamblingLocked) && options.dice.amount) {
+				return 'You have gambling disabled and cannot gamble!';
+			}
+			return diceCommand(user, interaction, options.dice.amount);
+		}
+
 		// Block GP Gambling from users with the BitField set:
 		if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
 			return 'You have gambling disabled and cannot gamble!';
-		}
-
-		if (options.dice) {
-			return diceCommand(user, interaction, options.dice.amount);
 		}
 
 		if (options.lucky_pick) {
