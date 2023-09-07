@@ -22,7 +22,7 @@ export const barbMixes: Mixable[] = [
 		level: 4,
 		xp: 8,
 		inputItems: new Bank({
-			'Antipoison potion(2)': 1,
+			'Antipoison(2)': 1,
 			Roe: 1
 		}),
 		tickRate: 1,
