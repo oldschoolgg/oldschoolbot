@@ -1,8 +1,8 @@
 import { EmbedBuilder, inlineCode } from '@discordjs/builders';
 import { hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import { Guild, HexColorString, resolveColor, User } from 'discord.js';
-import { clamp, removeFromArr, uniqueArr } from 'e';
+import { ChatInputCommandInteraction, Guild, HexColorString, resolveColor, User } from 'discord.js';
+import { clamp, removeFromArr, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
@@ -22,6 +22,7 @@ import { BankSortMethods } from '../../lib/sorts';
 import { formatDuration, isValidNickname, itemNameFromID, stringMatches } from '../../lib/util';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
+import { interactionReplyGetDuration } from '../../lib/util/interactionHelpers';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
@@ -29,7 +30,15 @@ import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
-const toggles = [
+interface UserConfigToggle {
+	name: string;
+	bit: BitField;
+	canToggle?: (
+		user: MUser,
+		interaction?: ChatInputCommandInteraction
+	) => Promise<{ result: false; message: string } | { result: true; message?: string }>;
+}
+const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable Random Events',
 		bit: BitField.DisabledRandomEvents
@@ -68,22 +77,75 @@ const toggles = [
 	},
 	{
 		name: 'Lock Self From Gambling',
-		bit: BitField.SelfGamblingLocked
+		bit: BitField.SelfGamblingLocked,
+		canToggle: async (user, interaction) => {
+			if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
+				if (user.user.gambling_lockout_expiry && user.user.gambling_lockout_expiry.getTime() > Date.now()) {
+					const timeRemaining = user.user.gambling_lockout_expiry.getTime() - Date.now();
+					return {
+						result: false,
+						message: `You cannot toggle this off for another ${formatDuration(
+							timeRemaining
+						)}, you locked yourself from gambling!`
+					};
+				}
+				return { result: true, message: 'Your Gambling lockout time has expired.' };
+			} else if (interaction) {
+				const durations = [
+					{ display: '24 hours', duration: Time.Day },
+					{ display: '7 days', duration: Time.Day * 7 },
+					{ display: '2 weeks', duration: Time.Day * 14 },
+					{ display: '1 month', duration: Time.Month },
+					{ display: '3 months', duration: Time.Month * 3 },
+					{ display: '6 months', duration: Time.Month * 6 },
+					{ display: '1 year', duration: Time.Year },
+					{ display: '3 years', duration: Time.Year * 3 },
+					{ display: '5 years', duration: Time.Year * 5 }
+				];
+				if (!production) {
+					durations.push({ display: '30 seconds', duration: Time.Second * 30 });
+					durations.push({ display: '1 minute', duration: Time.Minute });
+					durations.push({ display: '5 minutes', duration: Time.Minute * 5 });
+				}
+				const lockoutDuration = await interactionReplyGetDuration(
+					interaction,
+					`${user}, This will lockout your ability to gamble for the specified time. Choose carefully!`,
+					...durations
+				);
+
+				if (lockoutDuration !== false) {
+					await user.update({ gambling_lockout_expiry: new Date(Date.now() + lockoutDuration.duration) });
+					return {
+						result: true,
+						message: `Locking out gambling for ${formatDuration(lockoutDuration.duration)}`
+					};
+				}
+				return { result: false, message: 'Cancelled.' };
+			}
+			// If handleToggle called without an interaction, perhaps by non-interactive code, allow toggle.
+			return { result: true };
+		}
 	}
 ];
 
-async function handleToggle(user: MUser, name: string) {
+async function handleToggle(user: MUser, name: string, interaction?: ChatInputCommandInteraction) {
 	const toggle = toggles.find(i => stringMatches(i.name, name));
 	if (!toggle) return 'Invalid toggle name.';
-	if (toggle.bit === BitField.SelfGamblingLocked && user.bitfield.includes(BitField.SelfGamblingLocked)) {
-		return 'You cannot toggle this off, you locked yourself from gambling!';
+	let messageExtra = '';
+	if (toggle.canToggle) {
+		const toggleResult = await toggle.canToggle(user, interaction);
+		if (!toggleResult.result) {
+			return toggleResult.message;
+		} else if (toggleResult.message) {
+			messageExtra = toggleResult.message;
+		}
 	}
 	const includedNow = user.bitfield.includes(toggle.bit);
 	const nextArr = includedNow ? removeFromArr(user.bitfield, toggle.bit) : [...user.bitfield, toggle.bit];
 	await user.update({
 		bitfield: nextArr
 	});
-	return `Toggled '${toggle.name}' ${includedNow ? 'Off' : 'On'}.`;
+	return `Toggled '${toggle.name}' ${includedNow ? 'Off' : 'On'}.${messageExtra ? `\n\n${messageExtra}` : ''}`;
 }
 
 async function favFoodConfig(
@@ -978,7 +1040,8 @@ LIMIT 20;
 		options,
 		userID,
 		guildID,
-		channelID
+		channelID,
+		interaction
 	}: CommandRunOptions<{
 		server?: {
 			channel?: { choice: 'enable' | 'disable' };
@@ -1027,7 +1090,7 @@ LIMIT 20;
 				pin_trip
 			} = options.user;
 			if (toggle) {
-				return handleToggle(user, toggle.name);
+				return handleToggle(user, toggle.name, interaction);
 			}
 			if (combat_options) {
 				return handleCombatOptions(user, combat_options.action, combat_options.input);
