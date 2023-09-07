@@ -135,7 +135,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 		let { tripLength } = runeObj;
 		const boosts = [];
 		if (user.isIronman && runners) {
-			runners = false;
 			return 'Ironmen can not utilize runners.';
 		}
 
