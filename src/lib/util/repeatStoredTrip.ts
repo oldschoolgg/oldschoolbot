@@ -229,6 +229,7 @@ export const tripHandlers = {
 		args: (data: RunecraftActivityTaskOptions) => ({
 			rune: itemNameFromID(data.runeID),
 			quantity: data.essenceQuantity,
+			runners: data.runners,
 			daeyalt_essence: data.daeyaltEssence,
 			usestams: data.useStaminas
 		})

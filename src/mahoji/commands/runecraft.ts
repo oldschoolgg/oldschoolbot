@@ -136,7 +136,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		const boosts = [];
 		if (user.isIronman && runners) {
 			runners = false;
-			boosts.push('Ironmen stand on their own');
+			return 'Ironmen can not utilize runners.';
 		}
 
 		let inventorySize = 28;
@@ -180,7 +180,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 				tripLength *= 0.97;
 				boosts.push('3% for Runecraft cape');
 			}
-		} else if (runners) {
+		} else {
 			tripLength /= 6.6;
 			boosts.push('You paying runners 40m/h to assist you runecrafting');
 		}
@@ -222,14 +222,15 @@ export const runecraftCommand: OSBMahojiCommand = {
 		const totalCost = new Bank();
 
 		const userGP = user.GP;
+		const runnerCost = (duration / Time.Hour) * 40_000_000;
 		if (runners) {
-			if (userGP < (duration / Time.Hour) * 40_000_000) {
+			if (userGP < runnerCost) {
 				return `You do not have enough GP to pay your runners for this trip. You need atleast ${round(
-					Math.ceil((duration / Time.Hour) * 40_000_000) / 1_000_000,
+					Math.ceil(runnerCost) / 1_000_000,
 					2
 				)}M GP.`;
 			}
-			totalCost.add('coins', Math.ceil(Math.ceil((duration / Time.Hour) * 40_000_000)));
+			totalCost.add('coins', Math.ceil(runnerCost));
 		}
 
 		let imbueCasts = 0;
@@ -335,6 +336,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			channelID: channelID.toString(),
 			essenceQuantity: quantity,
 			useStaminas: usestams,
+			runners,
 			daeyaltEssence: daeyalt_essence,
 			duration,
 			imbueCasts,

@@ -78,6 +78,7 @@ export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	essenceQuantity: number;
 	imbueCasts: number;
 	useStaminas?: boolean;
+	runners?: boolean;
 	daeyaltEssence?: boolean;
 }
 
