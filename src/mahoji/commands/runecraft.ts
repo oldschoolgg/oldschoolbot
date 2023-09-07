@@ -134,6 +134,11 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		let { tripLength } = runeObj;
 		const boosts = [];
+		if (user.isIronman && runners) {
+			runners = false;
+			boosts.push('Ironmen stand on their own');
+		}
+	
 		if (!runners) {
 			if (!usestams && runeObj.stams) {
 				tripLength *= 3;
