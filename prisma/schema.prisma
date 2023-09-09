@@ -1015,6 +1015,8 @@ model Bingo {
 
   guild_id String @db.VarChar(19)
 
+  extra_gp BigInt @default(0)
+
   bingo_participant BingoParticipant[]
   bingo_team        BingoTeam[]
 
