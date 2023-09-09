@@ -849,19 +849,32 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 				}
 				let newTiles = [...bingo.rawBingoTiles];
 				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo!.remove_tile));
+				let tileName = '';
 				if (globalTile) {
 					newTiles = newTiles.filter(
 						t => (isGlobalTile(t) && t.global !== globalTile.id) || !isGlobalTile(t)
 					);
+					tileName = generateTileName(globalTile);
 				} else {
-					newTiles = newTiles.filter(t => md5sum(generateTileName(t)) !== options.manage_bingo!.remove_tile!);
+					const tileToRemove = newTiles.find(
+						t => md5sum(generateTileName(t)) === options.manage_bingo!.remove_tile
+					);
+					if (tileToRemove) {
+						newTiles = newTiles.filter(
+							t => md5sum(generateTileName(t)) !== options.manage_bingo!.remove_tile!
+						);
+						tileName = generateTileName(tileToRemove);
+					}
 				}
 
 				if (newTiles.length === bingo.rawBingoTiles.length) {
 					return 'Invalid tile to remove.';
 				}
 
-				await handleMahojiConfirmation(interaction, 'Are you sure you want to remove this tile?');
+				await handleMahojiConfirmation(
+					interaction,
+					`Are you sure you want to remove this tile?\n\n${tileName}`
+				);
 				await prisma.bingo.update({
 					where: {
 						id: bingo.id
@@ -871,7 +884,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					}
 				});
 
-				return 'Removed that tile from your bingo.';
+				return `Removed \`${tileName}\` from your bingo.`;
 			}
 
 			if (options.manage_bingo.add_extra_gp) {
