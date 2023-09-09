@@ -232,6 +232,20 @@ function parseTileAddInput(input: string): StoredBingoTile | null {
 	};
 }
 
+async function getBingoFromUserInput(input: string) {
+	const where = Number.isNaN(Number(input))
+		? {
+				title: input
+		  }
+		: {
+				id: Number(input)
+		  };
+	const bingo = await prisma.bingo.findFirst({
+		where
+	});
+	return bingo;
+}
+
 export const bingoCommand: OSBMahojiCommand = {
 	name: 'bingo',
 	description: 'Bingo!',
@@ -613,29 +627,17 @@ export const bingoCommand: OSBMahojiCommand = {
 			return image;
 		}
 		if (options.make_team) {
-			const bingo = await prisma.bingo.findFirst({
-				where: {
-					id: Number(options.make_team.bingo)
-				}
-			});
+			const bingo = await getBingoFromUserInput(options.make_team.bingo);
 			if (!bingo) return 'Invalid bingo.';
 			return makeTeamCommand(interaction, new BingoManager(bingo), user, options.make_team);
 		}
 		if (options.leave_team) {
-			const bingo = await prisma.bingo.findFirst({
-				where: {
-					id: Number(options.leave_team.bingo)
-				}
-			});
+			const bingo = await getBingoFromUserInput(options.leave_team.bingo);
 			if (!bingo) return 'Invalid bingo.';
 			return leaveTeamCommand(interaction, new BingoManager(bingo));
 		}
 		if (options.leaderboard) {
-			const bingo = await prisma.bingo.findFirst({
-				where: {
-					id: Number(options.leaderboard.bingo)
-				}
-			});
+			const bingo = await getBingoFromUserInput(options.leaderboard.bingo);
 			if (!bingo) return 'Invalid bingo.';
 			return bingoTeamLeaderboard(user, channelID, new BingoManager(bingo));
 		}
@@ -741,16 +743,7 @@ ${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you
 			if (!options.manage_bingo.bingo) {
 				return 'You need to pick which bingo to manage.';
 			}
-			const where = Number.isNaN(Number(options.manage_bingo.bingo))
-				? {
-						title: options.manage_bingo.bingo
-				  }
-				: {
-						id: Number(options.manage_bingo.bingo)
-				  };
-			const _bingo = await prisma.bingo.findFirst({
-				where
-			});
+			const _bingo = await getBingoFromUserInput(options.manage_bingo.bingo);
 			if (!_bingo) return 'Invalid bingo.';
 			if (_bingo.creator_id !== user.id && !_bingo.organizers.includes(user.id)) {
 				return 'You are not an organizer of this bingo.';
@@ -921,11 +914,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 		}
 
 		if (options.view) {
-			const _bingo = await prisma.bingo.findFirst({
-				where: {
-					id: Number(options.view.bingo)
-				}
-			});
+			const _bingo = await getBingoFromUserInput(options.view.bingo);
 			if (!_bingo) return 'Invalid bingo.';
 			const bingo = new BingoManager(_bingo);
 
