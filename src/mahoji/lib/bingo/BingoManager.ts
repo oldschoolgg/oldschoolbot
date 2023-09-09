@@ -91,7 +91,8 @@ export class BingoManager {
 			}
 		});
 		if (!bingoParticipant) return null;
-		return this.determineProgressOfBank(addBanks(bingoParticipant.users.map(u => u.cl as ItemBank)));
+		const cl = addBanks(bingoParticipant.users.map(u => u.cl as ItemBank));
+		return { ...this.determineProgressOfBank(cl), cl };
 	}
 
 	determineProgressOfBank(_cl: ItemBank | Prisma.JsonValue | Bank) {
