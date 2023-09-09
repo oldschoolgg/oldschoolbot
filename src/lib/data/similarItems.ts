@@ -304,9 +304,9 @@ const source: [string, (string | number)[]][] = [
 	['Herblore master cape', ["Artisan's cape"]],
 	['Runecraft master cape', ["Artisan's cape"]],
 	['Smithing master cape', ["Artisan's cape"]],
-	['Torva full helm', ['Gorajan warrior helmet', 'Infernal slayer helmet(i)']],
-	['Torva platebody', ['Gorajan warrior top']],
-	['Torva platelegs', ['Gorajan warrior legs']],
+	['Torva full helm', ['Sanguine torva full helm', 'Gorajan warrior helmet', 'Infernal slayer helmet(i)']],
+	['Torva platebody', ['Sanguine torva platebody', 'Gorajan warrior top']],
+	['Torva platelegs', ['Sanguine torva platelegs', 'Gorajan warrior legs']],
 	['Torva gloves', ['Gorajan warrior gloves']],
 	['Torva boots', ['Gorajan warrior boots']],
 	['Virtus mask', ['Gorajan occult helmet', 'Infernal slayer helmet(i)']],
@@ -423,10 +423,7 @@ const source: [string, (string | number)[]][] = [
 	['Armadyl chestplate', ['Armadyl chestplate', 'Masori body (f)', 'Masori body']],
 	['Armadyl chainskirt', ['Masori chaps (f)', 'Masori chaps']],
 	['Music cape', ['Music cape (t)']],
-	['Imbued heart', ['Saturated heart']],
-	['Torva full helm', ['Sanguine torva full helm']],
-	['Torva platebody', ['Sanguine torva platebody']],
-	['Torva platelegs', ['Sanguine torva platelegs']]
+	['Imbued heart', ['Saturated heart']]
 ];
 
 // Make max cape count as all master capes
