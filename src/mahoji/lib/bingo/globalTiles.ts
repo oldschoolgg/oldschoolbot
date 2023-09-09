@@ -307,7 +307,15 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 				['Drygore mace', 'Offhand drygore mace'],
 				['Drygore rapier', 'Offhand drygore rapier']
 			].some(set => set.every(item => cl.has(item)));
-		}
+		},
+		allItems: resolveItems([
+			'Drygore longsword',
+			'Offhand drygore longsword',
+			'Drygore mace',
+			'Offhand drygore mace',
+			'Drygore rapier',
+			'Offhand drygore rapier'
+		])
 	},
 	{
 		id: 39,
@@ -329,7 +337,25 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 				['Holy elixir', 'Spirit shield', 'Elysian sigil', 'Elysian spirit shield'],
 				['Holy elixir', 'Spirit shield', 'Divine sigil', 'Divine spirit shield']
 			].some(set => set.every(item => cl.has(item)));
-		}
+		},
+		allItems: resolveItems([
+			'Holy elixir',
+			'Spirit shield',
+			'Spectral sigil',
+			'Spectral spirit shield',
+			'Holy elixir',
+			'Spirit shield',
+			'Arcane sigil',
+			'Arcane spirit shield',
+			'Holy elixir',
+			'Spirit shield',
+			'Elysian sigil',
+			'Elysian spirit shield',
+			'Holy elixir',
+			'Spirit shield',
+			'Divine sigil',
+			'Divine spirit shield'
+		])
 	},
 	{
 		id: 42,
@@ -385,8 +411,9 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 	},
 	{
 		id: 47,
-		name: 'Receive 75 Athelas seeds',
-		customReq: cl => cl.has(new Bank().add('Athelas seed', 75))
+		name: 'Receive 120 Athelas seeds',
+		customReq: cl => cl.has(new Bank().add('Athelas seed', 120)),
+		allItems: resolveItems(['Athelas seed'])
 	},
 	{
 		id: 48,
@@ -444,16 +471,49 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 	},
 	{
 		id: 52,
-		name: 'Receive 3 unique nex armor pieces for a certain armor slot',
+		name: 'Receive a full set of Nex armour',
 		customReq: cl => {
 			return [
-				['Torva full helm (broken)', 'Pernix cowl (broken)', 'Virtus mask (broken)'],
-				['Torva platebody (broken)', 'Pernix body (broken)', 'Virtus robe top (broken)'],
-				['Torva platelegs (broken)', 'Pernix chaps (broken)', 'Virtus robe legs (broken)'],
-				['Torva boots (broken)', 'Pernix boots (broken)', 'Virtus boots (broken)'],
-				['Torva gloves (broken)', 'Pernix gloves (broken)', 'Virtus gloves (broken)']
+				[
+					'Torva full helm (broken)',
+					'Torva platebody (broken)',
+					'Torva platelegs (broken)',
+					'Torva boots (broken)',
+					'Torva gloves (broken)'
+				],
+				[
+					'Pernix cowl (broken)',
+					'Pernix body (broken)',
+					'Pernix chaps (broken)',
+					'Pernix boots (broken)',
+					'Pernix gloves (broken)'
+				],
+				[
+					'Virtus mask (broken)',
+					'Virtus robe top (broken)',
+					'Virtus robe legs (broken)',
+					'Virtus boots (broken)',
+					'Virtus gloves (broken)'
+				]
 			].some(set => set.every(item => cl.has(item)));
-		}
+		},
+		allItems: resolveItems([
+			'Torva full helm (broken)',
+			'Pernix cowl (broken)',
+			'Virtus mask (broken)',
+			'Torva platebody (broken)',
+			'Pernix body (broken)',
+			'Virtus robe top (broken)',
+			'Torva platelegs (broken)',
+			'Pernix chaps (broken)',
+			'Virtus robe legs (broken)',
+			'Torva boots (broken)',
+			'Pernix boots (broken)',
+			'Virtus boots (broken)',
+			'Torva gloves (broken)',
+			'Pernix gloves (broken)',
+			'Virtus gloves (broken)'
+		])
 	},
 	{
 		id: 53,
@@ -467,8 +527,9 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 	},
 	{
 		id: 55,
-		name: 'Receive 5 Gorajan shards',
-		customReq: cl => cl.has(new Bank().add('Gorajan shards', 5))
+		name: 'Receive 4 Gorajan shards',
+		customReq: cl => cl.has(new Bank().add('Gorajan shards', 4)),
+		allItems: resolveItems(['Gorajan shards'])
 	},
 	{
 		id: 56,
@@ -483,7 +544,32 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 	{
 		id: 58,
 		name: 'Receive 50x Korulsi seeds',
-		customReq: cl => cl.has(new Bank().add('Korulsi seed', 50))
+		customReq: cl => cl.has(new Bank().add('Korulsi seed', 50)),
+		allItems: resolveItems(['Korulsi seed'])
+	},
+	{
+		id: 5000,
+		name: 'Create Master Farmer Outfit from Scratch (8 Ent hides + 5 outfit pieces)',
+		customReq: cl => {
+			return (
+				cl.has(new Bank().add('Ent hide', 8)) &&
+				[
+					'Master farmer hat',
+					'Master farmer jacket',
+					'Master farmer pants',
+					'Master farmer gloves',
+					'Master farmer boots'
+				].every(masterFarmerPiece => cl.has(masterFarmerPiece))
+			);
+		},
+		allItems: resolveItems([
+			'Ent hide',
+			'Master farmer hat',
+			'Master farmer jacket',
+			'Master farmer pants',
+			'Master farmer gloves',
+			'Master farmer boots'
+		])
 	}
 ];
 
