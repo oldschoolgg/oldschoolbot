@@ -9,7 +9,7 @@ import { prisma } from '../../../lib/settings/prisma';
 import { ItemBank } from '../../../lib/types';
 import { addBanks } from '../../../lib/util/smallUtils';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { generateTileName, rowsForSquare, StoredBingoTile, UniversalBingoTile } from './bingoUtil';
+import { generateTileName, isGlobalTile, rowsForSquare, StoredBingoTile, UniversalBingoTile } from './bingoUtil';
 import { globalBingoTiles } from './globalTiles';
 
 export class BingoManager {
@@ -38,14 +38,14 @@ export class BingoManager {
 		this.title = options.title;
 		this.notificationsChannelID = options.notifications_channel_id;
 		this.durationInDays = options.duration_days;
-		this.rawBingoTiles = options.bingo_tiles as StoredBingoTile[];
+		this.rawBingoTiles = options.bingo_tiles as unknown as StoredBingoTile[];
 		this.creatorID = options.creator_id;
 		this.wasFinalized = options.was_finalized;
 		this.extraGP = Number(options.extra_gp);
 
 		this.bingoTiles = this.rawBingoTiles.map(tile => {
-			if (typeof tile === 'number') {
-				return globalBingoTiles.find(t => t.id === tile)!;
+			if (isGlobalTile(tile)) {
+				return globalBingoTiles.find(t => t.id === tile.global)!;
 			}
 			return {
 				name: generateTileName(tile),

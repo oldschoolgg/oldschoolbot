@@ -20,7 +20,10 @@ export type UniversalBingoTile = {
 	name: string;
 } & (OneOf | AllOf | CustomReq);
 
-type GlobalTileID = number;
+export interface GlobalTileID {
+	global: number;
+}
+
 export type StoredBingoTile = OneOf | AllOf | GlobalTileID;
 
 export type GlobalBingoTile = (OneOf | AllOf | CustomReq) & {
@@ -28,13 +31,17 @@ export type GlobalBingoTile = (OneOf | AllOf | CustomReq) & {
 	name: string;
 };
 
+export function isGlobalTile(data: any): data is GlobalTileID {
+	return 'global' in data;
+}
+
 export function rowsForSquare(n: number): number {
 	return Math.ceil(Math.sqrt(n));
 }
 
 export function generateTileName(tile: OneOf | AllOf | UniversalBingoTile | StoredBingoTile) {
-	if (typeof tile === 'number') {
-		return globalBingoTiles.find(t => t.id === tile)?.name ?? 'Unknown';
+	if ('global' in tile) {
+		return globalBingoTiles.find(t => t.id === tile.global)?.name ?? 'Unknown';
 	}
 	if ('oneOf' in tile) {
 		return `Receive one of: ${tile.oneOf.map(id => getItem(id)?.name).join(', ')}`;

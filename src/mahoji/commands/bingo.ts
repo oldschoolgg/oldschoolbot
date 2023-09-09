@@ -18,7 +18,7 @@ import { channelIsSendable, dateFm, isValidDiscordSnowflake, isValidNickname, md
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { BingoManager } from '../lib/bingo/BingoManager';
-import { generateTileName, getAllTileItems, StoredBingoTile } from '../lib/bingo/bingoUtil';
+import { generateTileName, getAllTileItems, isGlobalTile, StoredBingoTile } from '../lib/bingo/bingoUtil';
 import { globalBingoTiles } from '../lib/bingo/globalTiles';
 import { OSBMahojiCommand } from '../lib/util';
 import { doMenu, getPos } from './leaderboard';
@@ -820,7 +820,7 @@ The creator of the bingo (${userMention(
 				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo!.add_tile));
 				let tileToAdd: StoredBingoTile | null = null;
 				if (globalTile) {
-					tileToAdd = globalTile.id;
+					tileToAdd = { global: globalTile.id };
 				} else {
 					tileToAdd = parseTileAddInput(options.manage_bingo.add_tile);
 				}
@@ -851,7 +851,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo!.remove_tile));
 				if (globalTile) {
 					newTiles = newTiles.filter(
-						t => (typeof t === 'number' && t !== globalTile.id) || typeof t !== 'number'
+						t => (isGlobalTile(t) && t.global !== globalTile.id) || !isGlobalTile(t)
 					);
 				} else {
 					newTiles = newTiles.filter(t => md5sum(generateTileName(t)) !== options.manage_bingo!.remove_tile!);
