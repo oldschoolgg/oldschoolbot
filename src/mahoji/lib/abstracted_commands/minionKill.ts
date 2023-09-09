@@ -170,7 +170,13 @@ const degradeableItemsCanUse: {
 		item: getOSItem("Tumeken's shadow"),
 		attackStyle: 'mage',
 		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 40,
-		boost: 7
+		boost: 6
+	},
+	{
+		item: getOSItem('Sanguinesti staff'),
+		attackStyle: 'mage',
+		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 25,
+		boost: 5
 	},
 	{
 		item: getOSItem('Trident of the swamp'),
@@ -182,7 +188,13 @@ const degradeableItemsCanUse: {
 		item: getOSItem('Scythe of vitur'),
 		attackStyle: 'melee',
 		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 40,
-		boost: 10
+		boost: 5
+	},
+	{
+		item: getOSItem('Abyssal tentacle'),
+		attackStyle: 'melee',
+		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 20,
+		boost: 3
 	}
 ];
 

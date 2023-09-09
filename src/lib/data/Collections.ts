@@ -1715,14 +1715,15 @@ export interface UserStatsDataNeededForCL {
 
 type CLType = 'sacrifice' | 'bank' | 'collection' | 'temp' | 'tame' | 'disassembly';
 
-export async function getBank(user: MUser, type: CLType, { sacrificedBank }: UserStatsDataNeededForCL) {
+export async function getBank(user: MUser, type: CLType, userStats: UserStatsDataNeededForCL | null) {
 	switch (type) {
 		case 'collection':
 			return new Bank(user.cl);
 		case 'bank':
 			return new Bank(user.bankWithGP);
 		case 'sacrifice':
-			return new Bank(sacrificedBank);
+			if (!userStats) return new Bank();
+			return new Bank(userStats.sacrificedBank);
 		case 'tame': {
 			const { getUsersTamesCollectionLog } = await import('../util/getUsersTameCL');
 			return getUsersTamesCollectionLog(user.id);
@@ -1735,7 +1736,7 @@ export async function getBank(user: MUser, type: CLType, { sacrificedBank }: Use
 	}
 }
 
-export async function getTotalCl(user: MUser, logType: CLType, userStats: UserStatsDataNeededForCL) {
+export async function getTotalCl(user: MUser, logType: CLType, userStats: UserStatsDataNeededForCL | null) {
 	let result = undefined;
 	try {
 		result = getUserClData(await getBank(user, logType, userStats), allCLItemsFiltered);
