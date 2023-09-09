@@ -5,6 +5,7 @@ import { globalBingoTiles } from './globalTiles';
 
 interface CustomReq {
 	customReq: (cl: Bank) => boolean;
+	allItems: number[];
 }
 interface OneOf {
 	oneOf: number[];
@@ -41,4 +42,18 @@ export function generateTileName(tile: OneOf | AllOf | UniversalBingoTile | Stor
 		return `Receive all of: ${tile.allOf.map(id => getItem(id)?.name).join(', ')}`;
 	}
 	throw new Error(`Invalid tile: ${JSON.stringify(tile)}`);
+}
+
+export function getAllTileItems(tile: UniversalBingoTile) {
+	if ('oneOf' in tile) {
+		return tile.oneOf;
+	}
+	if ('allOf' in tile) {
+		return tile.allOf;
+	}
+	if ('customReq' in tile) {
+		return tile.allItems;
+	}
+
+	return [];
 }
