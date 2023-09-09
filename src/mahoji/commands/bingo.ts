@@ -1,5 +1,5 @@
 import { userMention } from '@discordjs/builders';
-import { mentionCommand, stringMatches } from '@oldschoolgg/toolkit';
+import { mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { bold, ChatInputCommandInteraction, User } from 'discord.js';
 import { chunk, noOp, notEmpty, Time, uniqueArr } from 'e';
@@ -14,11 +14,11 @@ import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { clImageGenerator } from '../../lib/collectionLogTask';
 import { BOT_TYPE, Emoji } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
-import { channelIsSendable, dateFm, isValidDiscordSnowflake, isValidNickname, toKMB } from '../../lib/util';
+import { channelIsSendable, dateFm, isValidDiscordSnowflake, isValidNickname, md5sum, toKMB } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { BingoManager } from '../lib/bingo/BingoManager';
-import { generateTileName, getAllTileItems, StoredBingoTile } from '../lib/bingo/bingoUtil';
+import { generateTileName, getAllTileItems, isGlobalTile, StoredBingoTile } from '../lib/bingo/bingoUtil';
 import { globalBingoTiles } from '../lib/bingo/globalTiles';
 import { OSBMahojiCommand } from '../lib/util';
 import { doMenu, getPos } from './leaderboard';
@@ -230,6 +230,20 @@ function parseTileAddInput(input: string): StoredBingoTile | null {
 	return {
 		oneOf: items.map(i => i.id)
 	};
+}
+
+async function getBingoFromUserInput(input: string) {
+	const where = Number.isNaN(Number(input))
+		? {
+				title: input
+		  }
+		: {
+				id: Number(input)
+		  };
+	const bingo = await prisma.bingo.findFirst({
+		where
+	});
+	return bingo;
 }
 
 export const bingoCommand: OSBMahojiCommand = {
@@ -476,7 +490,10 @@ export const bingoCommand: OSBMahojiCommand = {
 							.map(b => new BingoManager(b).bingoTiles)
 							.flat()
 							.filter(b => b.name.toLowerCase().includes(value.toLowerCase()))
-							.map(b => ({ name: b.name, value: b.name }));
+							.map(b => ({
+								name: truncateString(b.name, 100),
+								value: b.id ? b.id.toString() : md5sum(b.name)
+							}));
 					}
 				},
 				{
@@ -610,29 +627,17 @@ export const bingoCommand: OSBMahojiCommand = {
 			return image;
 		}
 		if (options.make_team) {
-			const bingo = await prisma.bingo.findFirst({
-				where: {
-					id: Number(options.make_team.bingo)
-				}
-			});
+			const bingo = await getBingoFromUserInput(options.make_team.bingo);
 			if (!bingo) return 'Invalid bingo.';
 			return makeTeamCommand(interaction, new BingoManager(bingo), user, options.make_team);
 		}
 		if (options.leave_team) {
-			const bingo = await prisma.bingo.findFirst({
-				where: {
-					id: Number(options.leave_team.bingo)
-				}
-			});
+			const bingo = await getBingoFromUserInput(options.leave_team.bingo);
 			if (!bingo) return 'Invalid bingo.';
 			return leaveTeamCommand(interaction, new BingoManager(bingo));
 		}
 		if (options.leaderboard) {
-			const bingo = await prisma.bingo.findFirst({
-				where: {
-					id: Number(options.leaderboard.bingo)
-				}
-			});
+			const bingo = await getBingoFromUserInput(options.leaderboard.bingo);
 			if (!bingo) return 'Invalid bingo.';
 			return bingoTeamLeaderboard(user, channelID, new BingoManager(bingo));
 		}
@@ -738,11 +743,7 @@ ${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you
 			if (!options.manage_bingo.bingo) {
 				return 'You need to pick which bingo to manage.';
 			}
-			const _bingo = await prisma.bingo.findFirst({
-				where: {
-					id: Number(options.manage_bingo.bingo)
-				}
-			});
+			const _bingo = await getBingoFromUserInput(options.manage_bingo.bingo);
 			if (!_bingo) return 'Invalid bingo.';
 			if (_bingo.creator_id !== user.id && !_bingo.organizers.includes(user.id)) {
 				return 'You are not an organizer of this bingo.';
@@ -812,13 +813,13 @@ The creator of the bingo (${userMention(
 				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo!.add_tile));
 				let tileToAdd: StoredBingoTile | null = null;
 				if (globalTile) {
-					tileToAdd = globalTile.id;
+					tileToAdd = { global: globalTile.id };
 				} else {
 					tileToAdd = parseTileAddInput(options.manage_bingo.add_tile);
 				}
 				if (!tileToAdd) {
 					return `Invalid tile to add. You can either select a global/predefined tile, or input a custom tile.
-					
+
 Example: \`add_tile:Coal+Trout+Egg\` is a tile where you have to receive a coal AND trout AND egg.
 Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal OR trout OR egg.`;
 				}
@@ -841,19 +842,32 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 				}
 				let newTiles = [...bingo.rawBingoTiles];
 				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo!.remove_tile));
+				let tileName = '';
 				if (globalTile) {
-					newTiles = newTiles.filter(t => typeof t === 'number' && t !== globalTile.id);
-				} else {
 					newTiles = newTiles.filter(
-						t => generateTileName(t).toLowerCase() !== options.manage_bingo!.remove_tile!.toLowerCase()
+						t => (isGlobalTile(t) && t.global !== globalTile.id) || !isGlobalTile(t)
 					);
+					tileName = generateTileName(globalTile);
+				} else {
+					const tileToRemove = newTiles.find(
+						t => md5sum(generateTileName(t)) === options.manage_bingo!.remove_tile
+					);
+					if (tileToRemove) {
+						newTiles = newTiles.filter(
+							t => md5sum(generateTileName(t)) !== options.manage_bingo!.remove_tile!
+						);
+						tileName = generateTileName(tileToRemove);
+					}
 				}
 
 				if (newTiles.length === bingo.rawBingoTiles.length) {
 					return 'Invalid tile to remove.';
 				}
 
-				await handleMahojiConfirmation(interaction, 'Are you sure you want to remove this tile?');
+				await handleMahojiConfirmation(
+					interaction,
+					`Are you sure you want to remove this tile?\n\n${tileName}`
+				);
 				await prisma.bingo.update({
 					where: {
 						id: bingo.id
@@ -863,7 +877,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					}
 				});
 
-				return 'Removed that tile from your bingo.';
+				return `Removed "${tileName}" from your bingo.`;
 			}
 
 			if (options.manage_bingo.add_extra_gp) {
@@ -900,11 +914,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 		}
 
 		if (options.view) {
-			const _bingo = await prisma.bingo.findFirst({
-				where: {
-					id: Number(options.view.bingo)
-				}
-			});
+			const _bingo = await getBingoFromUserInput(options.view.bingo);
 			if (!_bingo) return 'Invalid bingo.';
 			const bingo = new BingoManager(_bingo);
 
