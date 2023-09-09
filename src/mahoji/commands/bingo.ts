@@ -11,13 +11,14 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
+import { clImageGenerator } from '../../lib/collectionLogTask';
 import { BOT_TYPE, Emoji } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { channelIsSendable, dateFm, isValidDiscordSnowflake, isValidNickname, toKMB } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { BingoManager } from '../lib/bingo/BingoManager';
-import { generateTileName, StoredBingoTile } from '../lib/bingo/bingoUtil';
+import { generateTileName, getAllTileItems, StoredBingoTile } from '../lib/bingo/bingoUtil';
 import { globalBingoTiles } from '../lib/bingo/globalTiles';
 import { OSBMahojiCommand } from '../lib/util';
 import { doMenu, getPos } from './leaderboard';
@@ -485,6 +486,27 @@ export const bingoCommand: OSBMahojiCommand = {
 					required: false
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'items',
+			description: 'View your progress/items.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'bingo',
+					description: 'The bingo to check your items of.',
+					required: true,
+					autocomplete: async (value: string, user: User) => {
+						const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
+						return bingos
+							.map(i => new BingoManager(i))
+							.filter(b => b.isActive())
+							.filter(bingo => (!value ? true : bingo.id.toString() === value))
+							.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
+					}
+				}
+			]
 		}
 	],
 	run: async ({
@@ -493,6 +515,9 @@ export const bingoCommand: OSBMahojiCommand = {
 		interaction,
 		channelID
 	}: CommandRunOptions<{
+		items?: {
+			bingo: string;
+		};
 		leaderboard?: {
 			bingo: string;
 		};
@@ -522,6 +547,60 @@ export const bingoCommand: OSBMahojiCommand = {
 	}>) => {
 		const user = await mUserFetch(userID);
 
+		if (options.items) {
+			const bingoID = Number(options.items.bingo);
+			if (isNaN(bingoID)) {
+				return 'Invalid bingo.';
+			}
+			const bingoParticipant = await prisma.bingoParticipant.findFirst({
+				where: {
+					bingo_id: Number(options.items.bingo),
+					user_id: user.id
+				},
+				include: {
+					bingo: true
+				}
+			});
+
+			if (!bingoParticipant) return 'Invalid bingo.';
+			const bingo = new BingoManager(bingoParticipant.bingo);
+			const teamProgress = (await bingo.determineProgressOfTeam(bingoParticipant.bingo_team_id))!;
+
+			const clItems = [];
+
+			for (const tile of teamProgress.tilesNotCompleted) {
+				const tileItems = getAllTileItems(tile);
+				clItems.push(...tileItems);
+			}
+
+			for (const tile of teamProgress.tilesCompleted) {
+				if ('oneOf' in tile) {
+					const completed = tile.oneOf.find(i => teamProgress.cl.has(i));
+					if (completed) {
+						clItems.push(completed);
+					} else {
+						clItems.push(...tile.oneOf);
+					}
+				}
+
+				if ('allOf' in tile) {
+					clItems.push(...tile.allOf);
+				}
+
+				if ('customReq' in tile) {
+					clItems.push(...tile.allItems.filter(i => teamProgress.cl.has(i)));
+				}
+			}
+
+			const image = await clImageGenerator.makeArbitraryCLImage({
+				user,
+				clItems,
+				userBank: teamProgress.cl,
+				title: 'Bingo'
+			});
+
+			return image;
+		}
 		if (options.make_team) {
 			const bingo = await prisma.bingo.findFirst({
 				where: {
