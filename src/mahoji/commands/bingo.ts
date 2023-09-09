@@ -877,7 +877,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					}
 				});
 
-				return `Removed \`${tileName}\` from your bingo.`;
+				return `Removed "${tileName}" from your bingo.`;
 			}
 
 			if (options.manage_bingo.add_extra_gp) {
