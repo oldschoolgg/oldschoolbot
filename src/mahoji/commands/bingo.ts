@@ -1,5 +1,5 @@
 import { userMention } from '@discordjs/builders';
-import { mentionCommand, stringMatches } from '@oldschoolgg/toolkit';
+import { mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { bold, ChatInputCommandInteraction, User } from 'discord.js';
 import { chunk, noOp, notEmpty, Time, uniqueArr } from 'e';
@@ -14,7 +14,7 @@ import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { clImageGenerator } from '../../lib/collectionLogTask';
 import { BOT_TYPE, Emoji } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
-import { channelIsSendable, dateFm, isValidDiscordSnowflake, isValidNickname, toKMB } from '../../lib/util';
+import { channelIsSendable, dateFm, isValidDiscordSnowflake, isValidNickname, md5sum, toKMB } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { BingoManager } from '../lib/bingo/BingoManager';
@@ -476,7 +476,10 @@ export const bingoCommand: OSBMahojiCommand = {
 							.map(b => new BingoManager(b).bingoTiles)
 							.flat()
 							.filter(b => b.name.toLowerCase().includes(value.toLowerCase()))
-							.map(b => ({ name: b.name, value: b.name }));
+							.map(b => ({
+								name: truncateString(b.name, 100),
+								value: b.id ? b.id.toString() : md5sum(b.name)
+							}));
 					}
 				},
 				{
@@ -738,10 +741,15 @@ ${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you
 			if (!options.manage_bingo.bingo) {
 				return 'You need to pick which bingo to manage.';
 			}
+			const where = Number.isNaN(Number(options.manage_bingo.bingo))
+				? {
+						title: options.manage_bingo.bingo
+				  }
+				: {
+						id: Number(options.manage_bingo.bingo)
+				  };
 			const _bingo = await prisma.bingo.findFirst({
-				where: {
-					id: Number(options.manage_bingo.bingo)
-				}
+				where
 			});
 			if (!_bingo) return 'Invalid bingo.';
 			if (_bingo.creator_id !== user.id && !_bingo.organizers.includes(user.id)) {
@@ -818,7 +826,7 @@ The creator of the bingo (${userMention(
 				}
 				if (!tileToAdd) {
 					return `Invalid tile to add. You can either select a global/predefined tile, or input a custom tile.
-					
+
 Example: \`add_tile:Coal+Trout+Egg\` is a tile where you have to receive a coal AND trout AND egg.
 Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal OR trout OR egg.`;
 				}
@@ -842,11 +850,11 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 				let newTiles = [...bingo.rawBingoTiles];
 				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo!.remove_tile));
 				if (globalTile) {
-					newTiles = newTiles.filter(t => typeof t === 'number' && t !== globalTile.id);
-				} else {
 					newTiles = newTiles.filter(
-						t => generateTileName(t).toLowerCase() !== options.manage_bingo!.remove_tile!.toLowerCase()
+						t => (typeof t === 'number' && t !== globalTile.id) || typeof t !== 'number'
 					);
+				} else {
+					newTiles = newTiles.filter(t => md5sum(generateTileName(t)) !== options.manage_bingo!.remove_tile!);
 				}
 
 				if (newTiles.length === bingo.rawBingoTiles.length) {

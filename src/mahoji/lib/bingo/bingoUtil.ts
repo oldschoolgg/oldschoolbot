@@ -16,6 +16,7 @@ interface AllOf {
 }
 
 export type UniversalBingoTile = {
+	id?: number;
 	name: string;
 } & (OneOf | AllOf | CustomReq);
 
