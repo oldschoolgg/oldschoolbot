@@ -45,21 +45,21 @@ export function hasWildyHuntGearEquipped(setup: GearSetup): [boolean, string, nu
 			0
 		];
 	}
-
+	// Masori body (f) + Masori chaps (f)
 	const maximumStatsBodyLegs = {
-		DefenceMage: 216,
-		DefenceRanged: 244,
-		DefenceStab: 227,
-		DefenceSlash: 222,
-		DefenceCrush: 217
+		DefenceMage: 120,
+		DefenceRanged: 97,
+		DefenceStab: 94,
+		DefenceSlash: 82,
+		DefenceCrush: 103
 	};
 
 	let score =
-		userStatsBodyLegs.userDefenceMage / maximumStatsBodyLegs.DefenceMage +
-		userStatsBodyLegs.userDefenceRanged / maximumStatsBodyLegs.DefenceRanged +
-		userStatsBodyLegs.userDefenceCrush / maximumStatsBodyLegs.DefenceCrush +
-		userStatsBodyLegs.userDefenceSlash / maximumStatsBodyLegs.DefenceSlash +
-		userStatsBodyLegs.userDefenceStab / maximumStatsBodyLegs.DefenceStab;
+		Math.min(userStatsBodyLegs.userDefenceMage / maximumStatsBodyLegs.DefenceMage, 1) +
+		Math.min(userStatsBodyLegs.userDefenceRanged / maximumStatsBodyLegs.DefenceRanged, 1) +
+		Math.min(userStatsBodyLegs.userDefenceCrush / maximumStatsBodyLegs.DefenceCrush, 1) +
+		Math.min(userStatsBodyLegs.userDefenceSlash / maximumStatsBodyLegs.DefenceSlash, 1) +
+		Math.min(userStatsBodyLegs.userDefenceStab / maximumStatsBodyLegs.DefenceStab, 1);
 
 	score /= 5;
 
