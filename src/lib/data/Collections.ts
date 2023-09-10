@@ -1228,7 +1228,7 @@ export interface UserStatsDataNeededForCL {
 export function getBank(
 	user: MUser,
 	type: 'sacrifice' | 'bank' | 'collection' | 'temp',
-	{ sacrificedBank }: UserStatsDataNeededForCL
+	userStats: UserStatsDataNeededForCL | null
 ) {
 	switch (type) {
 		case 'collection':
@@ -1236,7 +1236,8 @@ export function getBank(
 		case 'bank':
 			return new Bank(user.bankWithGP);
 		case 'sacrifice':
-			return new Bank(sacrificedBank);
+			if (!userStats) return new Bank();
+			return new Bank(userStats.sacrificedBank);
 		case 'temp':
 			return new Bank(user.user.temp_cl as ItemBank);
 	}
@@ -1246,7 +1247,7 @@ export function getBank(
 export function getTotalCl(
 	user: MUser,
 	logType: 'sacrifice' | 'bank' | 'collection' | 'temp',
-	userStats: UserStatsDataNeededForCL
+	userStats: UserStatsDataNeededForCL | null
 ) {
 	return getUserClData(getBank(user, logType, userStats).bank, allCLItemsFiltered);
 }

@@ -345,6 +345,7 @@ model User {
   slayer_autoslay_options    Int[]              @map("slayer.autoslay_options")
   bank_sort_method           String?            @db.VarChar(16)
   bank_sort_weightings       Json               @default("{}") @db.Json
+  gambling_lockout_expiry    DateTime?
 
   // Skills
   skills_agility      BigInt @default(0) @map("skills.agility")
@@ -1013,6 +1014,8 @@ model Bingo {
   was_finalized            Boolean  @default(false)
 
   guild_id String @db.VarChar(19)
+
+  extra_gp BigInt @default(0)
 
   bingo_participant BingoParticipant[]
   bingo_team        BingoTeam[]

@@ -2,7 +2,7 @@ import { Canvas, SKRSContext2D } from '@napi-rs/canvas';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { calcWhatPercent, objectEntries } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { Util } from 'oldschooljs';
+import { Bank, Util } from 'oldschooljs';
 
 import { allCollectionLogs, getCollection, getTotalCl, UserStatsDataNeededForCL } from '../lib/data/Collections';
 import { IToReturnCollection } from '../lib/data/CollectionsExport';
@@ -105,7 +105,8 @@ class CollectionLogTask {
 		collection: string;
 		type: CollectionLogType;
 		flags: { [key: string]: string | number };
-		stats: UserStatsDataNeededForCL;
+		stats: UserStatsDataNeededForCL | null;
+		collectionLog?: IToReturnCollection;
 	}): Promise<CommandResponse> {
 		const { sprite } = bankImageGenerator.getBgAndSprite(options.user.user.bankBackground, options.user);
 
@@ -115,6 +116,10 @@ class CollectionLogTask {
 		let { collection, type, user, flags } = options;
 
 		let collectionLog: IToReturnCollection | undefined | false = undefined;
+
+		if (options.collectionLog) {
+			collectionLog = options.collectionLog;
+		}
 
 		if (collection) {
 			collectionLog = await getCollection({
@@ -382,7 +387,7 @@ class CollectionLogTask {
 				ctx.fillStyle = '#FFFFFF';
 				this.drawText(
 					ctx,
-					options.stats.gotrRiftSearches.toLocaleString(),
+					options.stats?.gotrRiftSearches.toLocaleString() ?? '',
 					ctx.measureText(drawnSoFar).width,
 					pixelLevel
 				);
@@ -460,6 +465,36 @@ class CollectionLogTask {
 		return {
 			files: [{ attachment: await canvas.encode('png'), name: `${type}_log_${new Date().valueOf()}.png` }]
 		};
+	}
+
+	async makeArbitraryCLImage({
+		user,
+		title,
+		clItems,
+		userBank
+	}: {
+		user: MUser;
+		title: string;
+		clItems: number[];
+		userBank: Bank;
+	}) {
+		return this.generateLogImage({
+			user,
+			collection: '',
+			type: 'bank',
+			flags: {},
+			stats: null,
+			collectionLog: {
+				name: title,
+				collection: clItems,
+				userItems: userBank,
+				collectionTotal: clItems.length,
+				collectionObtained: clItems.filter(i => userBank.has(i)).length,
+				category: 'idk',
+				leftList: undefined,
+				counts: false
+			}
+		});
 	}
 }
 
