@@ -821,32 +821,6 @@ export const adminCommand: OSBMahojiCommand = {
 		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
 		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
 
-		if (options.wipe_bingo_temp_cls) {
-			if (userID.toString() !== '319396464402890753' && !isMod) return randArrItem(gifs);
-			const usersToReset = await prisma.user.findMany({
-				where: {
-					bingo_tickets_bought: {
-						gt: 0
-					}
-				},
-				select: {
-					id: true
-				}
-			});
-			await handleMahojiConfirmation(interaction, `Reset the temp CL of ${usersToReset.length} users?`);
-			const res = await prisma.user.updateMany({
-				where: {
-					id: {
-						in: usersToReset.map(i => i.id)
-					}
-				},
-				data: {
-					temp_cl: {}
-				}
-			});
-			return `${res.count} temp CLs reset.`;
-		}
-
 		if (!guildID || !isMod || (production && guildID.toString() !== '342983479501389826')) return randArrItem(gifs);
 
 		/**
