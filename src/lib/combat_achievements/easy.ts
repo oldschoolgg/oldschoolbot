@@ -38,7 +38,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		monster: 'Barrows',
 		desc: 'Kill any Barrows Brother using only magical damage.',
 		rng: {
-			chancePerKill: 4,
+			chancePerKill: 1,
 			hasChance: isCertainMonsterTrip(Monsters.Barrows.id)
 		}
 	},
@@ -311,7 +311,7 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		monster: 'Tempoross',
 		desc: 'Extinguish at least 5 fires during a single Tempoross fight.',
 		rng: {
-			chancePerKill: 22,
+			chancePerKill: 5,
 			hasChance: 'Tempoross'
 		}
 	},

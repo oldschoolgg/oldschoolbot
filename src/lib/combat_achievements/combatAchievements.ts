@@ -143,7 +143,7 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data
 	for (const user of users) {
 		const completedTasks = [];
 
-		taskLoop: for (const task of indexesWithRng) {
+		for (const task of indexesWithRng) {
 			if (user.user.completed_ca_task_ids.includes(task.id)) continue;
 			if (!('rng' in task)) continue;
 
@@ -156,7 +156,6 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data
 			for (let i = 0; i < quantity; i++) {
 				if (roll(task.rng.chancePerKill)) {
 					completedTasks.push(task);
-					break taskLoop;
 				}
 			}
 		}

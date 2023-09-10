@@ -143,45 +143,45 @@ export const masterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 2011,
 		name: 'Perfect Olm (Solo)',
-		desc: 'Kill the Great Olm in a solo raid without taking damage from any of the following: Teleport portals, Fire Walls, Healing pools, Crystal Bombs, Crystal Burst or Prayer Orbs. You also cannot let his claws regenerate or take damage from the same acid pool back to back.',
+		desc: 'Kill the Great Olm in a solo raid without taking damage from any of the following: Teleport portals, Fire Walls, Healing pools, Crystal Bombs, Crystal Burst or Prayer Orbs. You also cannot let his claws regenerate or take damage from the same acid pool back to back. (Party size required)',
 		type: 'perfection',
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 44,
-			hasChance: 'Raids'
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
 		}
 	},
 	{
 		id: 2012,
 		name: 'Chambers of Xeric (Solo) Speed-Chaser',
-		desc: 'Complete a Chambers of Xeric (Solo) in less than 21 minutes.',
+		desc: 'Complete a Chambers of Xeric (Solo) in less than 21 minutes. (Party size required)',
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 25,
-			hasChance: 'Raids'
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
 		}
 	},
 	{
 		id: 2013,
 		name: 'Chambers of Xeric (5-Scale) Speed-Chaser',
-		desc: 'Complete a Chambers of Xeric (5-scale) in less than 15 minutes.',
+		desc: 'Complete a Chambers of Xeric (5-scale) in less than 15 minutes. (Party size required)',
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 33,
-			hasChance: 'Raids'
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
 		}
 	},
 	{
 		id: 2014,
 		name: 'Putting It Olm on the Line',
-		desc: 'Complete a Chambers of Xeric solo raid with more than 40,000 points.',
+		desc: 'Complete a Chambers of Xeric solo raid with more than 40,000 points. (Party size required)',
 		type: 'mechanical',
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 22,
-			hasChance: 'Raids'
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
 		}
 	},
 	{
@@ -254,7 +254,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 2021,
 		name: 'Undying Raider',
-		desc: 'Complete a Chambers of Xeric solo raid without dying.',
+		desc: 'Complete a Chambers of Xeric solo raid without dying. (Party size required)',
 		type: 'perfection',
 		monster: 'Chambers of Xeric',
 		rng: {
@@ -276,12 +276,12 @@ export const masterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 2023,
 		name: 'A Not So Special Lizard',
-		desc: 'Kill the Great Olm in a solo raid without letting him use any of the following special attacks in his second to last phase: Crystal Burst, Lightning Walls, Teleportation Portals or left-hand autohealing.',
+		desc: 'Kill the Great Olm in a solo raid without letting him use any of the following special attacks in his second to last phase: Crystal Burst, Lightning Walls, Teleportation Portals or left-hand autohealing. (Party size required)',
 		type: 'mechanical',
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 33,
-			hasChance: 'Raids'
+			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
 		}
 	},
 	{
@@ -298,12 +298,15 @@ export const masterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 2025,
 		name: 'Immortal Raider',
-		desc: 'Complete a Chambers of Xeric Challenge mode (Solo) raid without dying.',
+		desc: 'Complete a Chambers of Xeric Challenge mode (Solo) raid without dying. (Party size required)',
 		type: 'perfection',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
 			chancePerKill: 10,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+			hasChance: data =>
+				data.type === 'Raids' &&
+				(data as RaidsOptions).challengeMode &&
+				(data as RaidsOptions).users.length === 1
 		}
 	},
 	{
@@ -320,12 +323,15 @@ export const masterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 2027,
 		name: 'Chambers of Xeric: CM (Solo) Speed-Chaser',
-		desc: 'Complete a Chambers of Xeric: Challenge Mode (Solo) in less than 45 minutes.',
+		desc: 'Complete a Chambers of Xeric: Challenge Mode (Solo) in less than 45 minutes. (Party size required)',
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
 			chancePerKill: 15,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).challengeMode
+			hasChance: data =>
+				data.type === 'Raids' &&
+				(data as RaidsOptions).challengeMode &&
+				(data as RaidsOptions).users.length === 1
 		}
 	},
 	{
@@ -808,12 +814,15 @@ export const masterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 2070,
 		name: 'Nightmare (Solo) Speed-Chaser',
-		desc: 'Defeat the Nightmare (Solo) in less than 19 minutes.',
+		desc: 'Defeat the Nightmare (Solo) in less than 19 minutes. (Party size required)',
 		type: 'speed',
 		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 33,
-			hasChance: data => data.type === 'Nightmare' && !(data as NightmareActivityTaskOptions).isPhosani
+			hasChance: data =>
+				data.type === 'Nightmare' &&
+				(data as NightmareActivityTaskOptions).method === 'solo' &&
+				!(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{
@@ -934,7 +943,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 22,
-			hasChance: data => data.type === 'TheatreOfBlood' && (data as TheatreOfBloodTaskOptions).users.length === 3
+			hasChance: 'TheatreOfBlood'
 		}
 	},
 	{
@@ -1079,7 +1088,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		monster: 'Tombs of Amascut',
 		rng: {
-			chancePerKill: 44,
+			chancePerKill: 30,
 			hasChance: 'TombsOfAmascut'
 		}
 	},
@@ -1112,7 +1121,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		monster: 'Tombs of Amascut',
 		rng: {
-			chancePerKill: 55,
+			chancePerKill: 35,
 			hasChance: 'TombsOfAmascut'
 		}
 	},
@@ -1448,7 +1457,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Zulrah',
 		rng: {
-			chancePerKill: 99,
+			chancePerKill: 75,
 			hasChance: isCertainMonsterTrip(Monsters.Zulrah.id)
 		}
 	}
