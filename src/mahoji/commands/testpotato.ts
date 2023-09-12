@@ -1,5 +1,6 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import { Prisma, xp_gains_skill_enum } from '@prisma/client';
+import { User } from 'discord.js';
 import { noOp, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
@@ -37,8 +38,10 @@ import { parseStringBank } from '../../lib/util/parseStringBank';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { MAX_QP } from '../lib/abstracted_commands/questCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
+import { BingoManager } from '../lib/bingo/BingoManager';
 import { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
+import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 
 async function giveMaxStats(user: MUser) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
@@ -490,6 +493,27 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							}
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'bingo_tools',
+					description: 'Bingo tools',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'start_bingo',
+							description: 'Make your bingo start now.',
+							required: true,
+							autocomplete: async (value: string, user: User) => {
+								const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
+								return bingos
+									.map(i => new BingoManager(i))
+									.filter(b => b.creatorID === user.id || b.organizers.includes(user.id))
+									.filter(bingo => (!value ? true : bingo.id.toString() === value))
+									.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
+							}
+						}
+					]
 				}
 			],
 			run: async ({
@@ -509,12 +533,34 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				wipe?: { thing: (typeof thingsToWipe)[number] };
 				set?: { qp?: number; all_ca_tasks?: boolean };
 				check?: { monster_droprates?: string };
+				bingo_tools?: { start_bingo: string };
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
 				const user = await mUserFetch(userID.toString());
+
+				if (options.bingo_tools) {
+					if (options.bingo_tools.start_bingo) {
+						const bingo = await prisma.bingo.findFirst({
+							where: {
+								id: Number(options.bingo_tools.start_bingo),
+								creator_id: user.id
+							}
+						});
+						if (!bingo) return 'Invalid bingo.';
+						await prisma.bingo.update({
+							where: {
+								id: bingo.id
+							},
+							data: {
+								start_date: new Date()
+							}
+						});
+						return 'Your bingo start date has been set to this moment, so it has just started.';
+					}
+				}
 
 				if (options.check) {
 					if (options.check.monster_droprates) {
