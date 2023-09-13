@@ -2,6 +2,7 @@ import { gzip } from 'node:zlib';
 
 import { stripEmojis } from '@oldschoolgg/toolkit';
 import { Stopwatch } from '@sapphire/stopwatch';
+import { createHash } from 'crypto';
 import {
 	BaseMessageOptions,
 	ButtonBuilder,
@@ -243,13 +244,13 @@ export function gaussianRandom(min: number, max: number, rolls?: number) {
 }
 
 export function isValidNickname(str?: string) {
-	return (
+	return Boolean(
 		str &&
-		typeof str === 'string' &&
-		str.length >= 2 &&
-		str.length <= 30 &&
-		['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
-		stripEmojis(str).length === str.length
+			typeof str === 'string' &&
+			str.length >= 2 &&
+			str.length <= 30 &&
+			['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
+			stripEmojis(str).length === str.length
 	);
 }
 
@@ -496,6 +497,10 @@ export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededF
 		gotrRiftSearches: userStats.gotr_rift_searches,
 		stats
 	};
+}
+
+export function md5sum(str: string) {
+	return createHash('md5').update(str).digest('hex');
 }
 
 export { assert } from './util/logError';
