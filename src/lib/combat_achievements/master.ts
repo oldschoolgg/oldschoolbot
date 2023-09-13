@@ -165,12 +165,12 @@ export const masterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 2013,
 		name: 'Chambers of Xeric (5-Scale) Speed-Chaser',
-		desc: 'Complete a Chambers of Xeric (5-scale) in less than 15 minutes. (Party size required)',
+		desc: 'Complete a Chambers of Xeric (5-scale) in less than 15 minutes.',
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
 			chancePerKill: 33,
-			hasChance: data => data.type === 'Raids' && (data as RaidsOptions).users.length === 1
+			hasChance: data => data.type === 'Raids'
 		}
 	},
 	{

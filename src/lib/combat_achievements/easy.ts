@@ -1,6 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { warmGear } from '../data/filterables';
+import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
 import getOSItem from '../util/getOSItem';
 import { isCertainMonsterTrip } from './caUtils';
@@ -39,7 +40,8 @@ export const easyCombatAchievements: CombatAchievement[] = [
 		desc: 'Kill any Barrows Brother using only magical damage.',
 		rng: {
 			chancePerKill: 1,
-			hasChance: isCertainMonsterTrip(Monsters.Barrows.id)
+			hasChance: (data, user) =>
+				isCertainMonsterTrip(Monsters.Barrows.id)(data) && user.getAttackStyles().includes(SkillsEnum.Magic)
 		}
 	},
 	{
