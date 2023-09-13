@@ -4,6 +4,7 @@ import { notEmpty, roll, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
@@ -120,7 +121,8 @@ const itemsThatDontAddToTempCL = resolveItems([
 	'Tradeable Mystery box',
 	'Monkey crate',
 	'Magic crate',
-	'Chimpling jar'
+	'Chimpling jar',
+	...ClueTiers.map(t => [t.id, t.scrollID]).flat()
 ]);
 
 async function finalizeOpening({
