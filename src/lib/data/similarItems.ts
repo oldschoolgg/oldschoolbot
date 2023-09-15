@@ -340,6 +340,9 @@ const source: [string, (string | number)[]][] = [
 	['Armadyl chainskirt', ['Masori chaps (f)', 'Masori chaps']],
 	['Music cape', ['Music cape (t)']],
 	['Imbued heart', ['Saturated heart']],
+	["Craw's bow", ['Webweaver bow']],
+	["Viggora's chainmace", ['Ursine chainmace']],
+	["Thammaron's sceptre", ['Accursed sceptre']],
 	['Torva full helm', ['Sanguine torva full helm']],
 	['Torva platebody', ['Sanguine torva platebody']],
 	['Torva platelegs', ['Sanguine torva platelegs']]
