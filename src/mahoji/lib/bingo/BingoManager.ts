@@ -9,7 +9,7 @@ import { prisma } from '../../../lib/settings/prisma';
 import { ItemBank } from '../../../lib/types';
 import { addBanks } from '../../../lib/util/smallUtils';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { generateTileName, rowsForSquare, StoredBingoTile, UniversalBingoTile } from './bingoUtil';
+import { generateTileName, isGlobalTile, rowsForSquare, StoredBingoTile, UniversalBingoTile } from './bingoUtil';
 import { globalBingoTiles } from './globalTiles';
 
 export class BingoManager {
@@ -26,6 +26,7 @@ export class BingoManager {
 	public bingoTiles: UniversalBingoTile[];
 	public creatorID: string;
 	wasFinalized: boolean;
+	extraGP: number;
 
 	constructor(options: Bingo) {
 		this.ticketPrice = Number(options.ticket_price);
@@ -37,13 +38,14 @@ export class BingoManager {
 		this.title = options.title;
 		this.notificationsChannelID = options.notifications_channel_id;
 		this.durationInDays = options.duration_days;
-		this.rawBingoTiles = options.bingo_tiles as StoredBingoTile[];
+		this.rawBingoTiles = options.bingo_tiles as unknown as StoredBingoTile[];
 		this.creatorID = options.creator_id;
 		this.wasFinalized = options.was_finalized;
+		this.extraGP = Number(options.extra_gp);
 
 		this.bingoTiles = this.rawBingoTiles.map(tile => {
-			if (typeof tile === 'number') {
-				return globalBingoTiles.find(t => t.id === tile)!;
+			if (isGlobalTile(tile)) {
+				return globalBingoTiles.find(t => t.id === tile.global)!;
 			}
 			return {
 				name: generateTileName(tile),
@@ -78,6 +80,21 @@ export class BingoManager {
 		});
 		if (!bingoParticipant) return null;
 		return this.determineProgressOfBank(bingoParticipant.cl as ItemBank);
+	}
+
+	async determineProgressOfTeam(teamID: number) {
+		const bingoParticipant = await prisma.bingoTeam.findFirst({
+			where: {
+				id: teamID,
+				bingo_id: this.id
+			},
+			include: {
+				users: true
+			}
+		});
+		if (!bingoParticipant) return null;
+		const cl = addBanks(bingoParticipant.users.map(u => u.cl as ItemBank));
+		return { ...this.determineProgressOfBank(cl), cl };
 	}
 
 	determineProgressOfBank(_cl: ItemBank | Prisma.JsonValue | Bank) {
@@ -119,7 +136,8 @@ export class BingoManager {
 							.map(row => `${row.join(' ')}`)
 							.join('\n'),
 			tilesCompleted,
-			tilesNotCompleted
+			tilesNotCompleted,
+			tilesCompletedMap: new Set(tilesCompleted.map(t => t.name))
 		};
 	}
 
@@ -135,7 +153,9 @@ export class BingoManager {
 				bingo_id: this.id
 			}
 		});
-		return Number(sum._sum.tickets_bought) * this.ticketPrice;
+		let gpFromTickets = Number(sum._sum.tickets_bought) * this.ticketPrice;
+		gpFromTickets += this.extraGP;
+		return gpFromTickets;
 	}
 
 	async fetchAllParticipants() {
@@ -206,7 +226,8 @@ ${teams
 			}
 		});
 		if (!bingoParticipant) return;
-		const before = this.determineProgressOfBank(bingoParticipant.cl);
+		const beforeTeamProgress = await this.determineProgressOfTeam(bingoParticipant.bingo_team_id);
+		const beforeUserProgress = this.determineProgressOfBank(bingoParticipant.cl);
 		const newCL = addBanks([bingoParticipant.cl as ItemBank, itemsAdded.bank]);
 		await prisma.bingoParticipant.update({
 			where: {
@@ -219,17 +240,43 @@ ${teams
 				cl: newCL.bank
 			}
 		});
-		const after = this.determineProgressOfBank(newCL);
+		const afterUserProgress = this.determineProgressOfBank(newCL);
 
-		for (const tile of before.tilesNotCompleted) {
-			const wasCompleted = after.tilesCompleted.some(t => t.name === tile.name);
-			if (!wasCompleted) continue;
-			sendToChannelID(this.notificationsChannelID, {
-				content: `${userMention(userID)} just finished the '${tile.name}' tile in the ${
-					this.title
-				} Bingo! This is their ${after.tilesCompletedCount}/${this.bingoTiles.length} finished tile.`
-			}).catch(noOp);
+		const newUserCompletedTiles = new Set(
+			afterUserProgress.tilesCompleted
+				.filter(t => !beforeUserProgress.tilesCompletedMap.has(t.name))
+				.map(t => t.name)
+		);
+
+		if (newUserCompletedTiles.size === 0) return;
+
+		const afterTeamProgress = await this.determineProgressOfTeam(bingoParticipant.bingo_team_id);
+
+		if (!beforeTeamProgress || !afterTeamProgress) return;
+
+		const newTeamCompletedTiles = new Set(
+			afterTeamProgress.tilesCompleted
+				.filter(t => !beforeTeamProgress.tilesCompletedMap.has(t.name))
+				.map(t => t.name)
+		);
+
+		const finishedStr =
+			newUserCompletedTiles.size === 1
+				? `${Array.from(newUserCompletedTiles)[0]} tile`
+				: `${Array.from(newUserCompletedTiles).join(', ')} tiles`;
+
+		let str = '';
+		if (newTeamCompletedTiles.size > 0) {
+			str = `${userMention(userID)} just finished the ${finishedStr}, giving their team another tile finished!`;
+			str += ` They have finished ${afterUserProgress.tilesCompletedCount}/${this.bingoTiles.length} tiles, their team has now finished ${afterTeamProgress.tilesCompletedCount}/${this.bingoTiles.length} tiles.`;
+		} else {
+			str = `${userMention(userID)} just finished the ${finishedStr}, but didn't get their team any new tiles!`;
+			str += ` They have now finished ${afterUserProgress.tilesCompletedCount}/${this.bingoTiles.length} tiles.`;
 		}
+
+		sendToChannelID(this.notificationsChannelID, {
+			content: str
+		}).catch(noOp);
 	}
 }
 

@@ -188,11 +188,19 @@ export const allCollectionLogs: ICollection = {
 				items: bryophytaCL,
 				fmtProg: kcProg(Monsters.Bryophyta)
 			},
-			Callisto: {
-				alias: Monsters.Callisto.aliases,
+			'Callisto and Artio': {
+				alias: [...Monsters.Callisto.aliases, ...Monsters.Artio.aliases],
+				kcActivity: {
+					Default: [Monsters.Callisto.name, Monsters.Artio.name],
+					Callisto: Monsters.Callisto.name,
+					Artio: Monsters.Artio.name
+				},
 				allItems: Monsters.Callisto.allItems,
 				items: callistoCL,
-				fmtProg: kcProg(Monsters.Callisto)
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.Callisto.id] ?? 0} Callisto KC`,
+					`${stats.kcBank[Monsters.Artio.id] ?? 0} Artio KC`
+				]
 			},
 			Cerberus: {
 				alias: Monsters.Cerberus.aliases,
@@ -442,17 +450,33 @@ export const allCollectionLogs: ICollection = {
 				items: thermonuclearSmokeDevilCL,
 				fmtProg: kcProg(Monsters.ThermonuclearSmokeDevil)
 			},
-			Venenatis: {
-				alias: Monsters.Venenatis.aliases,
+			'Venenatis and Spindel': {
+				alias: [...Monsters.Venenatis.aliases, ...Monsters.Spindel.aliases],
+				kcActivity: {
+					Default: [Monsters.Venenatis.name, Monsters.Spindel.name],
+					Venenatis: Monsters.Venenatis.name,
+					Spindel: Monsters.Spindel.name
+				},
 				allItems: Monsters.Venenatis.allItems,
 				items: venenatisCL,
-				fmtProg: kcProg(Monsters.Venenatis)
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.Venenatis.id] ?? 0} Venenatis KC`,
+					`${stats.kcBank[Monsters.Spindel.id] ?? 0} Spindel KC`
+				]
 			},
-			"Vet'ion": {
-				alias: Monsters.Vetion.aliases,
+			"Vet'ion and Calvar'ion": {
+				alias: [...Monsters.Vetion.aliases, ...Monsters.Calvarion.aliases],
+				kcActivity: {
+					Default: [Monsters.Vetion.name, Monsters.Calvarion.name],
+					Vetion: Monsters.Vetion.name,
+					Calvarion: Monsters.Calvarion.name
+				},
 				allItems: Monsters.Vetion.allItems,
 				items: vetionCL,
-				fmtProg: kcProg(Monsters.Vetion)
+				fmtProg: ({ stats }) => [
+					`${stats.kcBank[Monsters.Vetion.id] ?? 0} Vet'ion KC`,
+					`${stats.kcBank[Monsters.Calvarion.id] ?? 0} Calvar'ion KC`
+				]
 			},
 			Vorkath: {
 				alias: Monsters.Vorkath.aliases,
@@ -1204,7 +1228,7 @@ export interface UserStatsDataNeededForCL {
 export function getBank(
 	user: MUser,
 	type: 'sacrifice' | 'bank' | 'collection' | 'temp',
-	{ sacrificedBank }: UserStatsDataNeededForCL
+	userStats: UserStatsDataNeededForCL | null
 ) {
 	switch (type) {
 		case 'collection':
@@ -1212,7 +1236,8 @@ export function getBank(
 		case 'bank':
 			return new Bank(user.bankWithGP);
 		case 'sacrifice':
-			return new Bank(sacrificedBank);
+			if (!userStats) return new Bank();
+			return new Bank(userStats.sacrificedBank);
 		case 'temp':
 			return new Bank(user.user.temp_cl as ItemBank);
 	}
@@ -1222,7 +1247,7 @@ export function getBank(
 export function getTotalCl(
 	user: MUser,
 	logType: 'sacrifice' | 'bank' | 'collection' | 'temp',
-	userStats: UserStatsDataNeededForCL
+	userStats: UserStatsDataNeededForCL | null
 ) {
 	return getUserClData(getBank(user, logType, userStats).bank, allCLItemsFiltered);
 }

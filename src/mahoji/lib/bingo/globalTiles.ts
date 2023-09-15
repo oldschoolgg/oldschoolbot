@@ -88,7 +88,17 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 					cl.has(item)
 				)
 			);
-		}
+		},
+		allItems: resolveItems([
+			'Odium shard 1',
+			'Odium shard 2',
+			'Odium shard 3',
+			'Odium ward',
+			'Malediction shard 1',
+			'Malediction shard 2',
+			'Malediction shard 3',
+			'Malediction ward'
+		])
 	},
 	{
 		id: 11,
@@ -96,19 +106,12 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 		allOf: resolveItems(['Primordial crystal', 'Pegasian crystal', 'Eternal crystal'])
 	},
 	{
-		id: 12,
-		name: 'Receive/mine 12,000 Silver ore',
-		customReq(cl) {
-			return cl.amount('Silver ore') >= 12_000;
-		}
-	},
-	// Row 3
-	{
 		id: 13,
 		name: 'Receive/hunt 5000 Red chinchompas',
 		customReq(cl) {
 			return cl.amount('Red chinchompa') >= 5000;
-		}
+		},
+		allItems: resolveItems(['Red chinchompa'])
 	},
 	{
 		id: 14,
@@ -124,7 +127,8 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 					i => cl.has(i)
 				).length >= 2
 			);
-		}
+		},
+		allItems: resolveItems(['Ancient hilt', 'Armadyl hilt', 'Bandos hilt', 'Saradomin hilt', 'Zamorak hilt'])
 	},
 	{
 		id: 16,
@@ -141,13 +145,13 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 		name: 'Receive any Champion scroll',
 		oneOf: resolveItems(championScrolls)
 	},
-	// Row 4
 	{
 		id: 19,
 		name: 'Receive/chop 5000 mahogany logs',
 		customReq(cl) {
 			return cl.amount('Mahogany logs') >= 5000;
-		}
+		},
+		allItems: resolveItems(['Mahogany logs'])
 	},
 	{
 		id: 20,

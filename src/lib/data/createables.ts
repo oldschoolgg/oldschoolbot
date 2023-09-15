@@ -174,10 +174,10 @@ const revWeapons: Createable[] = [
 	}
 ];
 
-for (const [uWep, cWep] of [
-	["Viggora's chainmace (u)", "Viggora's chainmace"],
-	["Craw's bow (u)", "Craw's bow"],
-	["Thammaron's sceptre (u)", "Thammaron's sceptre"]
+for (const [uWep, cWep, uUPWep, cUPWep] of [
+	["Viggora's chainmace (u)", "Viggora's chainmace", 'Ursine chainmace (u)', 'Ursine chainmace'],
+	["Craw's bow (u)", "Craw's bow", 'Webweaver bow (u)', 'Webweaver bow'],
+	["Thammaron's sceptre (u)", "Thammaron's sceptre", 'Accursed sceptre (u)', 'Accursed sceptre']
 ]) {
 	revWeapons.push({
 		name: cWep,
@@ -197,6 +197,26 @@ for (const [uWep, cWep] of [
 		outputItems: {
 			[itemID('Revenant ether')]: 7000,
 			[itemID(uWep)]: 1
+		}
+	});
+	revWeapons.push({
+		name: cUPWep,
+		inputItems: {
+			[itemID('Revenant ether')]: 7000,
+			[itemID(uUPWep)]: 1
+		},
+		outputItems: {
+			[itemID(cUPWep)]: 1
+		}
+	});
+	revWeapons.push({
+		name: `Revert ${cUPWep.toLowerCase()}`,
+		inputItems: {
+			[itemID(cUPWep)]: 1
+		},
+		outputItems: {
+			[itemID('Revenant ether')]: 7000,
+			[itemID(uUPWep)]: 1
 		}
 	});
 	revWeapons.push({
@@ -2231,6 +2251,51 @@ const Createables: Createable[] = [
 		}),
 		outputItems: new Bank({
 			'Trident of the swamp': 1
+		})
+	},
+	{
+		name: 'Voidwaker',
+		inputItems: new Bank({
+			'Voidwaker blade': 1,
+			'Voidwaker hilt': 1,
+			'Voidwaker gem': 1,
+			Coins: 500_000
+		}),
+		outputItems: new Bank({
+			Voidwaker: 1
+		})
+	},
+	{
+		name: 'Accursed sceptre (u)',
+		inputItems: new Bank({
+			"Thammaron's sceptre (u)": 1,
+			"Skull of vet'ion": 1,
+			Coins: 500_000
+		}),
+		outputItems: new Bank({
+			'Accursed sceptre (u)': 1
+		})
+	},
+	{
+		name: 'Ursine chainmace (u)',
+		inputItems: new Bank({
+			"Viggora's chainmace (u)": 1,
+			'Claws of callisto': 1,
+			Coins: 500_000
+		}),
+		outputItems: new Bank({
+			'Ursine chainmace (u)': 1
+		})
+	},
+	{
+		name: 'Webweaver bow (u)',
+		inputItems: new Bank({
+			"Craw's bow (u)": 1,
+			'Fangs of venenatis': 1,
+			Coins: 500_000
+		}),
+		outputItems: new Bank({
+			'Webweaver bow (u)	': 1
 		})
 	},
 	...Reverteables,
