@@ -727,6 +727,26 @@ const Reverteables: Createable[] = [
 		noCl: true
 	},
 	{
+		name: 'Revert ancient icon',
+		inputItems: {
+			[itemID('Ancient icon')]: 1
+		},
+		outputItems: {
+			[itemID('Ancient essence')]: 5000
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert venator shard',
+		inputItems: {
+			[itemID('Venator shard')]: 1
+		},
+		outputItems: {
+			[itemID('Ancient essence')]: 50_000
+		},
+		noCl: true
+	},
+	{
 		name: 'Revert volatile nightmare staff',
 		outputItems: new Bank({
 			'Nightmare staff': 1,
