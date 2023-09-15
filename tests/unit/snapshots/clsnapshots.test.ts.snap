@@ -11,7 +11,7 @@ Barrows Chests (25)
 Beginner Treasure Trails (16)
 Brimhaven Agility Arena (8)
 Bryophyta (1)
-Callisto (4)
+Callisto and Artio (6)
 Camdozaal (10)
 Capes (132)
 Castle Wars (39)
@@ -25,7 +25,7 @@ Chompy Birds (19)
 Commander Zilyana (8)
 Corporeal Beast (7)
 Crazy archaeologist (3)
-Creatables (624)
+Creatables (637)
 Creature Creation (7)
 Cyclopes (8)
 Dagannoth Kings (10)
@@ -103,8 +103,8 @@ Tombs of Amascut (26)
 Trouble Brewing (30)
 TzHaar (10)
 Vardorvis (10)
-Venenatis (4)
-Vet'ion (4)
+Venenatis and Spindel (6)
+Vet'ion and Calvar'ion (6)
 Volcanic Mine (3)
 Vorkath (6)
 Wintertodt (10)
@@ -518,6 +518,7 @@ Chompy bird hat (woodsman)
 Chompy bird hat (yeoman)
 Chompy chick
 Chromium ingot
+Claws of callisto
 Climbing boots (g)
 Coal bag
 Cockatrice head
@@ -641,6 +642,7 @@ Explorer backpack
 Eye of the corruptor
 Eye of the duke
 Fancy tiara
+Fangs of venenatis
 Farmer's boots
 Farmer's boro trousers
 Farmer's jacket
@@ -1318,6 +1320,7 @@ Skeletal visage
 Skeleton champion scroll
 Skeleton monkey
 Skotos
+Skull of vet'ion
 Sleeping cap
 Slepey tablet
 Smithing catalyst
@@ -1451,6 +1454,9 @@ Void mage helm
 Void melee helm
 Void ranger helm
 Void seal(8)
+Voidwaker blade
+Voidwaker gem
+Voidwaker hilt
 Volatile orb
 Volcanic mine teleport
 Volcanic whip mix
