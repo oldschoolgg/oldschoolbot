@@ -12,8 +12,8 @@ import { KillableMonster } from '../../../types';
 const awakenedDeathProps = {
 	hardness: 0.9,
 	steepness: 0.1,
-	lowestDeathChance: 0,
-	highestDeathChance: 5
+	lowestDeathChance: 50,
+	highestDeathChance: 95
 };
 
 export const desertTreasureKillableBosses: KillableMonster[] = [
