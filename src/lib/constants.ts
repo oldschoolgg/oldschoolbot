@@ -12,10 +12,13 @@ import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
+import { dateFm } from './util/smallUtils';
 
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
 const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '940760643525570591';
+
+export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB' as 'BSO' | 'OSB';
 
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
@@ -29,7 +32,15 @@ export const Channel = {
 	TestingMain: TestingMainChannelID,
 	BarbarianAssault: DISCORD_SETTINGS.Channels?.BarbarianAssault ?? '789717054902763520',
 	ChambersOfXeric: DISCORD_SETTINGS.Channels?.ChambersOfXeric ?? '835876917252587581',
-	BotLogs: production ? '1051725977320964197' : TestingMainChannelID
+	BotLogs: production ? '1051725977320964197' : TestingMainChannelID,
+	GeneralChannel:
+		BOT_TYPE === 'OSB'
+			? production
+				? '346304390858145792'
+				: '940760643525570591'
+			: production
+			? '792691343284764693'
+			: '940760643525570591'
 };
 
 export const Roles = {
@@ -442,7 +453,6 @@ export const projectiles = {
 } as const;
 export type ProjectileType = keyof typeof projectiles;
 
-export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
 export const PHOSANI_NIGHTMARE_ID = 9416;
 export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
 export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
@@ -495,8 +505,6 @@ export const chompyHats = [
 	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
 
-export const gitHash = execSync('git rev-parse HEAD').toString().trim();
-
 export const toaPurpleItems = resolveItems([
 	"Tumeken's guardian",
 	"Tumeken's shadow (uncharged)",
@@ -539,3 +547,20 @@ export const globalConfig = globalConfigSchema.parse({
 
 export const ONE_TRILLION = 1_000_000_000_000;
 export const demonBaneWeapons = resolveItems(['Silverlight', 'Darklight', 'Arclight']);
+
+const gitHash = execSync('git rev-parse HEAD').toString().trim();
+const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
+
+const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
+
+export const META_CONSTANTS = {
+	GIT_HASH: gitHash,
+	GITHUB_URL: `https://github.com/${gitRemote}/commit/${gitHash}`,
+	STARTUP_DATE: new Date(),
+	GIT_DIFF_URL: `https://github.com/${gitRemote}/compare/${gitHash}...${GIT_BRANCH}`,
+	RENDERED_STR: ''
+};
+META_CONSTANTS.RENDERED_STR = `**Date/Time:** ${dateFm(META_CONSTANTS.STARTUP_DATE)}
+**Git Hash:** ${META_CONSTANTS.GIT_HASH.slice(0, 7)}
+**Commit:** <${META_CONSTANTS.GITHUB_URL}>
+**Code Difference:** <${META_CONSTANTS.GIT_DIFF_URL}>`;
