@@ -47,6 +47,7 @@ import type {
 } from './types/minions';
 import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
+import { itemNameFromID } from './util/smallUtils';
 
 export { cleanString, stringMatches, stripEmojis } from '@oldschoolgg/toolkit';
 export * from 'oldschooljs/dist/util/index';
