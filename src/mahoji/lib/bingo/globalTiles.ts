@@ -570,6 +570,12 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 			'Master farmer gloves',
 			'Master farmer boots'
 		])
+	},
+	{
+		id: 5001,
+		name: 'Receive 5x Squid dye',
+		customReq: cl => cl.has(new Bank().add('Squid dye', 5)),
+		allItems: resolveItems(['Squid dye'])
 	}
 ];
 
