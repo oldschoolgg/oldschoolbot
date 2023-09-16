@@ -9,7 +9,7 @@ import { prisma } from '../../../lib/settings/prisma';
 import { ItemBank } from '../../../lib/types';
 import { addBanks } from '../../../lib/util/smallUtils';
 import { sendToChannelID } from '../../../lib/util/webhook';
-import { generateTileName, rowsForSquare, StoredBingoTile, UniversalBingoTile } from './bingoUtil';
+import { generateTileName, isGlobalTile, rowsForSquare, StoredBingoTile, UniversalBingoTile } from './bingoUtil';
 import { globalBingoTiles } from './globalTiles';
 
 export class BingoManager {
@@ -26,6 +26,7 @@ export class BingoManager {
 	public bingoTiles: UniversalBingoTile[];
 	public creatorID: string;
 	wasFinalized: boolean;
+	extraGP: number;
 
 	constructor(options: Bingo) {
 		this.ticketPrice = Number(options.ticket_price);
@@ -37,13 +38,14 @@ export class BingoManager {
 		this.title = options.title;
 		this.notificationsChannelID = options.notifications_channel_id;
 		this.durationInDays = options.duration_days;
-		this.rawBingoTiles = options.bingo_tiles as StoredBingoTile[];
+		this.rawBingoTiles = options.bingo_tiles as unknown as StoredBingoTile[];
 		this.creatorID = options.creator_id;
 		this.wasFinalized = options.was_finalized;
+		this.extraGP = Number(options.extra_gp);
 
 		this.bingoTiles = this.rawBingoTiles.map(tile => {
-			if (typeof tile === 'number') {
-				return globalBingoTiles.find(t => t.id === tile)!;
+			if (isGlobalTile(tile)) {
+				return globalBingoTiles.find(t => t.id === tile.global)!;
 			}
 			return {
 				name: generateTileName(tile),
@@ -91,7 +93,8 @@ export class BingoManager {
 			}
 		});
 		if (!bingoParticipant) return null;
-		return this.determineProgressOfBank(addBanks(bingoParticipant.users.map(u => u.cl as ItemBank)));
+		const cl = addBanks(bingoParticipant.users.map(u => u.cl as ItemBank));
+		return { ...this.determineProgressOfBank(cl), cl };
 	}
 
 	determineProgressOfBank(_cl: ItemBank | Prisma.JsonValue | Bank) {
@@ -150,7 +153,9 @@ export class BingoManager {
 				bingo_id: this.id
 			}
 		});
-		return Number(sum._sum.tickets_bought) * this.ticketPrice;
+		let gpFromTickets = Number(sum._sum.tickets_bought) * this.ticketPrice;
+		gpFromTickets += this.extraGP;
+		return gpFromTickets;
 	}
 
 	async fetchAllParticipants() {

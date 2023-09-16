@@ -2,6 +2,7 @@ import { gzip } from 'node:zlib';
 
 import { stripEmojis } from '@oldschoolgg/toolkit';
 import { Stopwatch } from '@sapphire/stopwatch';
+import { createHash } from 'crypto';
 import {
 	BaseMessageOptions,
 	ButtonBuilder,
@@ -27,7 +28,7 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import { ClueTiers } from './clues/clueTiers';
-import { badgesCache, BitField, usernameCache } from './constants';
+import { badgesCache, BitField, projectiles, usernameCache } from './constants';
 import { UserStatsDataNeededForCL } from './data/Collections';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import type { Consumable } from './minions/types';
@@ -35,6 +36,7 @@ import { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
+import { Gear } from './structures/Gear';
 import { MUserStats } from './structures/MUserStats';
 import type { ItemBank, Skills } from './types';
 import type {
@@ -45,6 +47,7 @@ import type {
 } from './types/minions';
 import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
+import { itemNameFromID } from './util/smallUtils';
 
 export { cleanString, stringMatches, stripEmojis } from '@oldschoolgg/toolkit';
 export * from 'oldschooljs/dist/util/index';
@@ -498,6 +501,30 @@ export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededF
 	};
 }
 
+export function md5sum(str: string) {
+	return createHash('md5').update(str).digest('hex');
+}
+
 export { assert } from './util/logError';
 export * from './util/smallUtils';
 export { channelIsSendable } from '@oldschoolgg/toolkit';
+
+export function checkRangeGearWeapon(gear: Gear) {
+	const weapon = gear.equippedWeapon();
+	if (!weapon) return 'You have no weapon equipped.';
+	const { ammo } = gear;
+	if (!ammo) return 'You have no ammo equipped.';
+
+	const projectileCategory = objectEntries(projectiles).find(i => i[1].weapons.includes(weapon.id));
+	if (!projectileCategory) return 'You have an invalid range weapon.';
+	if (!projectileCategory[1].items.includes(ammo.item)) {
+		return `You have invalid ammo for your equipped weapon. For ${
+			projectileCategory[0]
+		}-based weapons, you can use: ${projectileCategory[1].items.map(itemNameFromID).join(', ')}.`;
+	}
+
+	return {
+		weapon,
+		ammo
+	};
+}
