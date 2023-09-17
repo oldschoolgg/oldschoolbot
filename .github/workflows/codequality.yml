@@ -28,12 +28,15 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Generate Prisma Client
         run: yarn gen
-      - name: Get list of changed TypeScript files
-        id: getfile
-        run: |
-          echo "FILES_TS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.ts$' | xargs)" >> $GITHUB_ENV
       - name: Run ESLint on changed files
-        run: yarn test:lint $FILES_TS
+        uses: tj-actions/eslint-changed-files@v21
+        with:
+          config_path: ".eslintrc.json"
+          ignore_path: ".eslintignore"
+          extra_args: "--max-warnings=0"
+          file_extensions: |
+            **/*.ts
+            **/*.tsx
 
   Typescript:
     name: Typescript
