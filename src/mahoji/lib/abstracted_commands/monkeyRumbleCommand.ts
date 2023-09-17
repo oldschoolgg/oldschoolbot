@@ -1,4 +1,4 @@
-import { increaseNumByPercent, randArrItem, reduceNumByPercent, Time } from 'e';
+import { randArrItem, reduceNumByPercent, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
