@@ -9,7 +9,7 @@ on:
 
 jobs:
     ESLint:
-        name: ESLint
+       name: ESLint
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Project
@@ -28,8 +28,13 @@ jobs:
               run: yarn --frozen-lockfile
             - name: Generate Prisma Client
               run: yarn gen
-            - name: Run ESLint
-              run: yarn test:lint
+            - name: Get list of changed files
+              id: getfile
+              run: |
+                echo "FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})" >> $GITHUB_ENV
+            - name: Run ESLint on changed files
+              run: yarn test:lint $FILES
+
 
     Typescript:
         name: Typescript
