@@ -157,7 +157,15 @@ export const enum Emoji {
 	Skull = '<:Skull:802136963926065165>',
 	CombatSword = '<:combat:802136963956080650>',
 	OSRSSkull = '<:skull:863392427040440320>',
-	SOTWTrophy = '<:SOTWtrophy:842938096097820693>'
+	SOTWTrophy = '<:SOTWtrophy:842938096097820693>',
+
+	DragonTrophy = '<:DragonTrophy:1152881074259624007>',
+	RuneTrophy = '<:RuneTrophy:1152881071445254164>',
+	AdamantTrophy = '<:AdamantTrophy:1152881069281001472>',
+	MithrilTrophy = '<:MithrilTrophy:1152881066353373236>',
+	SteelTrophy = '<:SteelTrophy:1152881062846939206>',
+	IronTrophy = '<:IronTrophy:1152881060972085279>',
+	BronzeTrophy = '<:BronzeTrophy:1152881057788592188>'
 }
 
 export enum ActivityGroup {
