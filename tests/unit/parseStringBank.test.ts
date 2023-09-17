@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import '../../src/lib/data/itemAliases';
+import '../../src/lib/customItems/customItems';
+
 import { randInt } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';

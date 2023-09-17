@@ -9,7 +9,7 @@ import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
-import { OWNER_IDS, production } from '../../config';
+import { ADMIN_IDS, OWNER_IDS, production } from '../../config';
 import { MysteryBoxes, spookyTable } from '../../lib/bsoOpenables';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
@@ -185,7 +185,7 @@ async function clueGains(user: MUser, interval: string, tier?: string, ironmanOn
 		title = `Highest All clue scroll completions in the past ${interval}`;
 	}
 
-	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
+	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate
 	  FROM activity a
 	  JOIN users u ON a.user_id::text = u.id
 	  WHERE a.type = 'ClueCompletion'
@@ -221,22 +221,22 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) 
 		: undefined;
 
 	const res: any = await prisma.$queryRawUnsafe(`
-        SELECT 
-            x.user_id::text AS user, 
-            sum(x.xp) AS total_xp, 
+        SELECT
+            x.user_id::text AS user,
+            sum(x.xp) AS total_xp,
             max(x.date) AS lastDate
-        FROM 
+        FROM
             xp_gains AS x
-        INNER JOIN 
+        INNER JOIN
             users AS u ON u.id = x.user_id::text
-        WHERE 
+        WHERE
             x.date > now() - INTERVAL '1 ${interval.toLowerCase() === 'day' ? 'day' : 'week'}'
             ${skillObj ? `AND x.skill = '${skillObj.id}'` : ''}
 			${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
-        GROUP BY 
+        GROUP BY
             x.user_id
-        ORDER BY 
-            total_xp DESC, 
+        ORDER BY
+            total_xp DESC,
             lastDate ASC
         LIMIT 10;
     `);
@@ -268,7 +268,7 @@ async function kcGains(user: MUser, interval: string, monsterName: string, ironm
 		return 'Invalid monster.';
 	}
 
-	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
+	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate
     FROM activity a
     JOIN users u ON a.user_id::text = u.id
     WHERE a.type = 'MonsterKilling' AND (a."data"->>'monsterID')::int = ${monster.id}
@@ -319,7 +319,8 @@ export function spawnLampIsReady(user: MUser, channelID: string): [true] | [fals
 	return [true];
 }
 async function spawnLampCommand(user: MUser, channelID: string): CommandResponse {
-	const [lampIsReady, reason] = spawnLampIsReady(user, channelID.toString());
+	const isAdmin = OWNER_IDS.includes(user.id) || ADMIN_IDS.includes(user.id);
+	const [lampIsReady, reason] = isAdmin ? [true, ''] : spawnLampIsReady(user, channelID.toString());
 	if (!lampIsReady && reason) return reason;
 
 	await mahojiUserSettingsUpdate(user.id, {
@@ -527,8 +528,8 @@ LIMIT 10;`);
 		   FROM users
 		   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 		   WHERE "collectionLogBank"->>'${item.id}' IS NULL
-		   AND "monster_scores"->>'${NightmareMonster.id}' IS NOT NULL 
-		   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
+		   AND "monster_scores"->>'${NightmareMonster.id}' IS NOT NULL
+		   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 		   ORDER BY ("monster_scores"->>'${NightmareMonster.id}')::int DESC
 		   LIMIT 10;`);
 			return result;
@@ -545,7 +546,7 @@ LIMIT 10;`);
 				   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 				   WHERE "collectionLogBank"->>'${item.id}' IS NULL
 				   AND high_gambles > 0
-				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
+				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 				   ORDER BY high_gambles DESC
 				   LIMIT 10;`);
 			return result;
@@ -587,7 +588,7 @@ LIMIT 10;`);
             ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
             GROUP BY users.id
             ORDER BY val DESC
-            LIMIT 10 
+            LIMIT 10
 			)
 			AS eggs
 			WHERE eggs.val > 0;`);
@@ -601,7 +602,7 @@ LIMIT 10;`);
 		run: async ({ ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; mbox_opens: number; baguettes_received: number }[]
-			>(`SELECT id, (openable_scores->>'6199')::int AS mbox_opens, ("collectionLogBank"->>'6961')::int AS baguettes_received, 
+			>(`SELECT id, (openable_scores->>'6199')::int AS mbox_opens, ("collectionLogBank"->>'6961')::int AS baguettes_received,
 
 (openable_scores->>'6199')::int + (("collectionLogBank"->>'6961')::int * 4) AS factor
 
@@ -721,11 +722,11 @@ async function dryStreakCommand(user: MUser, monsterName: string, itemName: stri
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
 	const key = 'monster_scores';
 	const { id } = mon;
-	const query = `SELECT id, "${key}"->>'${id}' AS "KC" 
+	const query = `SELECT id, "${key}"->>'${id}' AS "KC"
 				FROM users
 				INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
-				WHERE "collectionLogBank"->>'${item.id}' IS NULL 
-						AND "${key}"->>'${id}' IS NOT NULL 
+				WHERE "collectionLogBank"->>'${item.id}' IS NULL
+						AND "${key}"->>'${id}' IS NOT NULL
 						${ironmanPart}
 				ORDER BY ("${key}"->>'${id}')::int DESC
 				LIMIT 10;`;
