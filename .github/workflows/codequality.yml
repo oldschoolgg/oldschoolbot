@@ -28,12 +28,12 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Generate Prisma Client
         run: yarn gen
-      - name: Get list of changed files
+      - name: Get list of changed TypeScript files
         id: getfile
         run: |
-          echo "FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})" >> $GITHUB_ENV
+          echo "FILES_TS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '\.ts$' | xargs)" >> $GITHUB_ENV
       - name: Run ESLint on changed files
-        run: yarn test:lint $FILES
+        run: yarn test:lint $FILES_TS
 
   Typescript:
     name: Typescript
