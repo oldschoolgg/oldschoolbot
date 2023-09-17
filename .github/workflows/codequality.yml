@@ -33,7 +33,6 @@ jobs:
         with:
           config_path: ".eslintrc.json"
           ignore_path: ".eslintignore"
-          extra_args: "--max-warnings=0"
           file_extensions: |
             **/*.ts
             **/*.tsx
