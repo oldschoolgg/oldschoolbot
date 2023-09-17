@@ -450,6 +450,15 @@ export const allOpenables: UnifiedOpenable[] = [
 		allItems: resolveItems(['Tokkul', 'Lava scale shard', 'Onyx bolt tips'])
 	},
 	{
+		name: 'Scaly blue dragonhide',
+		id: 27_897,
+		openedItem: getOSItem('Scaly blue dragonhide'),
+		aliases: ['Scaly blue dragonhide'],
+		output: new LootTable().add('Blue dragon scale', 50),
+		emoji: Emoji.Casket,
+		allItems: resolveItems(['Blue dragon scale'])
+	},
+	{
 		name: 'Spoils of war',
 		id: itemID('Spoils of war'),
 		openedItem: getOSItem('Spoils of war'),

@@ -423,7 +423,10 @@ const source: [string, (string | number)[]][] = [
 	['Armadyl chestplate', ['Armadyl chestplate', 'Masori body (f)', 'Masori body']],
 	['Armadyl chainskirt', ['Masori chaps (f)', 'Masori chaps']],
 	['Music cape', ['Music cape (t)']],
-	['Imbued heart', ['Saturated heart']]
+	['Imbued heart', ['Saturated heart']],
+	["Craw's bow", ['Webweaver bow']],
+	["Viggora's chainmace", ['Ursine chainmace']],
+	["Thammaron's sceptre", ['Accursed sceptre']]
 ];
 
 // Make max cape count as all master capes

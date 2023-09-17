@@ -29,6 +29,7 @@ import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
+import { checkPeakTimes } from '../../lib/util/minionUtils';
 import {
 	achievementDiaryCommand,
 	claimAchievementDiaryCommand
@@ -424,6 +425,11 @@ export const minionCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
+			name: 'peak',
+			description: 'View Peak time activity for the Wilderness.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
 			name: 'feed_hammy',
 			description: 'Feed an item to your Hammy pet.',
 			options: [
@@ -458,6 +464,7 @@ export const minionCommand: OSBMahojiCommand = {
 		blowpipe?: { remove_darts?: boolean; uncharge?: boolean; add?: string; quantity?: number };
 		status?: {};
 		info?: {};
+		peak?: {};
 		feed_hammy?: {
 			item: string;
 		};
@@ -562,6 +569,8 @@ export const minionCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.feed_hammy) return feedHammyCommand(interaction, user, options.feed_hammy.item);
+
+		if (options.peak) return checkPeakTimes();
 
 		return 'Unknown command';
 	}

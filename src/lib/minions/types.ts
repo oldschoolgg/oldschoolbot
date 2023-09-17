@@ -52,12 +52,20 @@ export interface KillableMonster {
 		kill(quantity: number, options: MonsterKillOptions): Bank;
 	};
 	emoji?: string;
+
+	/**
+	 * Wilderness variables.
+	 */
 	wildy?: boolean;
-	difficultyRating?: number;
+	wildyMulti?: boolean;
+	pkActivityRating?: number;
+	pkBaseDeathChance?: number;
+
 	itemsRequired?: ArrayItemsResolved;
 	notifyDrops?: ArrayItemsResolved;
 	existsInCatacombs?: boolean;
 	qpRequired?: number;
+	difficultyRating?: number;
 
 	/**
 	 * An array of objects of ([key: itemID]: boostPercentage) boosts that apply to
