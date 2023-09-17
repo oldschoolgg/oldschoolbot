@@ -44,10 +44,10 @@ if (production && !process.env.TEST && isMainThread) {
 }
 
 if (!production) {
-   	import("./lib/devHotReload");
+	import('./lib/devHotReload');
 }
 
-	Chart.register(ChartDataLabels);
+Chart.register(ChartDataLabels);
 
 if (SENTRY_DSN) {
 	Sentry.init({
