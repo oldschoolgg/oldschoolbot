@@ -4,7 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
-import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
+import { deepResolveItems } from '../../../../util/resolveItems';
 import { KillableMonster } from '../../../types';
 
 export const wildyKillableMonsters: KillableMonster[] = [

@@ -1,6 +1,6 @@
+import { removeDiscontinuedItems } from '../../../bso/bsoUtil';
 import { Emoji } from '../../../constants';
 import itemID from '../../../util/itemID';
-import { removeDiscontinuedItems } from '../../../util/smallUtils';
 import { Cookable, SkillsEnum } from '../../types';
 
 export const Cookables: Cookable[] = [

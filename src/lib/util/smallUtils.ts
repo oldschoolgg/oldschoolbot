@@ -9,7 +9,6 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { ClueTiers } from '../clues/clueTiers';
-import { discontinuedItems } from '../constants';
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
 import getOSItem from './getOSItem';
@@ -201,10 +200,6 @@ export function tailFile(fileName: string, numLines: number): Promise<string> {
 			}
 		});
 	});
-}
-
-export function removeDiscontinuedItems(arr: number[]) {
-	return arr.filter(i => !discontinuedItems.includes(i));
 }
 
 export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {

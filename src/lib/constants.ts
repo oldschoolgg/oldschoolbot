@@ -501,8 +501,6 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
-export const BOT_TYPE: 'BSO' | 'OSB' = 'BSO';
-
 export const scaryEatables = [
 	{
 		item: getOSItem('Candy teeth'),
