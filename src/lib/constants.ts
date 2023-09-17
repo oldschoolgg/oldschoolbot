@@ -24,10 +24,13 @@ import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
+import { dateFm } from './util/smallUtils';
 
 export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
 
 const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '944924763405574174';
+
+export const BOT_TYPE: 'BSO' | 'OSB' = 'BSO' as 'BSO' | 'OSB';
 
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
@@ -37,11 +40,20 @@ export const Channel = {
 	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
 	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
 	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
+	PatronLogs: '806744016309714966',
 	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? '806744016309714966',
 	HelpAndSupport: '970752140324790384',
 	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? '680770361893322761',
+	ChambersOfXeric: DISCORD_SETTINGS.Channels?.ChambersOfXeric ?? '991383631337635971',
 	BotLogs: production ? '1051725977320964197' : TestingMainChannelID,
-	PatronLogs: '806744016309714966',
+	GeneralChannel:
+		BOT_TYPE === 'OSB'
+			? production
+				? '346304390858145792'
+				: '940760643525570591'
+			: production
+			? '792691343284764693'
+			: '940760643525570591',
 	// BSO Channels
 	BSOGeneral: DISCORD_SETTINGS.Channels?.BSOGeneral ?? '792691343284764693',
 	BSOChannel: DISCORD_SETTINGS.Channels?.BSOChannel ?? '732207379818479756',
@@ -178,7 +190,16 @@ export const enum Emoji {
 	OSRSSkull = '<:skull:863392427040440320>',
 	Invention = '<:Invention:936219232146980874>',
 	BSO = '<:BSO:863823820435619890>',
-	Kuro = '<:kuro:1032277900579319888>'
+	Kuro = '<:kuro:1032277900579319888>',
+	SOTWTrophy = '<:SOTWtrophy:842938096097820693>',
+
+	DragonTrophy = '<:DragonTrophy:1152881074259624007>',
+	RuneTrophy = '<:RuneTrophy:1152881071445254164>',
+	AdamantTrophy = '<:AdamantTrophy:1152881069281001472>',
+	MithrilTrophy = '<:MithrilTrophy:1152881066353373236>',
+	SteelTrophy = '<:SteelTrophy:1152881062846939206>',
+	IronTrophy = '<:IronTrophy:1152881060972085279>',
+	BronzeTrophy = '<:BronzeTrophy:1152881057788592188>'
 }
 
 export enum ActivityGroup {
@@ -491,8 +512,6 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
-export const BOT_TYPE: 'BSO' | 'OSB' = 'BSO';
-
 export const scaryEatables = [
 	{
 		item: getOSItem('Candy teeth'),
@@ -661,7 +680,6 @@ export const chompyHats = [
 ] as const;
 
 export const secretItems: number[] = resolveItems([]);
-export const gitHash = execSync('git rev-parse HEAD').toString().trim();
 
 export const toaPurpleItems = resolveItems([
 	"Tumeken's guardian",
@@ -740,3 +758,20 @@ export function herbertDroprate(herbloreXP: number, itemLevel: number) {
 export const OSB_VIRTUS_IDS = [26_241, 26_243, 26_245];
 export const YETI_ID = 129_521;
 export const KING_GOLDEMAR_GUARD_ID = 30_913;
+
+const gitHash = execSync('git rev-parse HEAD').toString().trim();
+const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
+
+const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
+
+export const META_CONSTANTS = {
+	GIT_HASH: gitHash,
+	GITHUB_URL: `https://github.com/${gitRemote}/commit/${gitHash}`,
+	STARTUP_DATE: new Date(),
+	GIT_DIFF_URL: `https://github.com/${gitRemote}/compare/${gitHash}...${GIT_BRANCH}`,
+	RENDERED_STR: ''
+};
+META_CONSTANTS.RENDERED_STR = `**Date/Time:** ${dateFm(META_CONSTANTS.STARTUP_DATE)}
+**Git Hash:** ${META_CONSTANTS.GIT_HASH.slice(0, 7)}
+**Commit:** <${META_CONSTANTS.GITHUB_URL}>
+**Code Difference:** <${META_CONSTANTS.GIT_DIFF_URL}>`;

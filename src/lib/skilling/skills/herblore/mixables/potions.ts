@@ -401,6 +401,15 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.5
 	},
 	{
+		item: getOSItem('Forgotten brew (4)'),
+		aliases: ['forgotten brew (4)', 'forgotten brew', 'forgotten'],
+		level: 91,
+		xp: 145,
+		inputItems: new Bank({ 'Ancient brew (4)': 1, 'Ancient essence': 80 }),
+		tickRate: 2,
+		bankTimePerPotion: 0.17
+	},
+	{
 		item: getOSItem('Super antifire potion (4)'),
 		aliases: ['super antifire potion (4)', 'super antifire potion', 'super antifire'],
 		level: 92,

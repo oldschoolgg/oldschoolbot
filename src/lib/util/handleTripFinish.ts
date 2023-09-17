@@ -12,6 +12,7 @@ import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from
 import { gods } from '../bso/divineDominion';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
+import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
@@ -24,7 +25,7 @@ import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskData } from '../types/minions';
-import { buildClueButtons, channelIsSendable, makeComponents, toKMB } from '../util';
+import { channelIsSendable, makeComponents, toKMB } from '../util';
 import { mahojiChatHead } from './chatHeadImage';
 import {
 	makeAutoContractButton,

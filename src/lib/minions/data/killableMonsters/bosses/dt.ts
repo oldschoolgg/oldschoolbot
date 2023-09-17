@@ -371,7 +371,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 					{ boostPercent: 5, itemID: itemID('Magus ring') },
 					{ boostPercent: 5, itemID: itemID('Lightbearer') }
 				],
-				gearSetup: 'range'
+				gearSetup: 'mage'
 			},
 			{
 				items: [{ boostPercent: 5, itemID: itemID("Tumeken's shadow") }],
@@ -463,7 +463,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 					{ boostPercent: 5, itemID: itemID('Magus ring') },
 					{ boostPercent: 5, itemID: itemID('Lightbearer') }
 				],
-				gearSetup: 'range'
+				gearSetup: 'mage'
 			},
 			{
 				items: [{ boostPercent: 5, itemID: itemID("Tumeken's shadow") }],

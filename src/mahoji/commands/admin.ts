@@ -28,7 +28,8 @@ import {
 	Channel,
 	COINS_ID,
 	DISABLED_COMMANDS,
-	globalConfig
+	globalConfig,
+	META_CONSTANTS
 } from '../../lib/constants';
 import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
@@ -1187,6 +1188,11 @@ export const adminCommand: OSBMahojiCommand = {
 			await interactionReply(interaction, {
 				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
 			});
+			await sendToChannelID(Channel.GeneralChannel, {
+				content: `I am shutting down! Goodbye :(
+
+${META_CONSTANTS.RENDERED_STR}`
+			}).catch(noOp);
 			process.exit();
 		}
 		if (options.shut_down) {
@@ -1196,6 +1202,11 @@ export const adminCommand: OSBMahojiCommand = {
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
 			await Promise.all([sleep(timer), GrandExchange.queue.onEmpty()]);
+			await sendToChannelID(Channel.GeneralChannel, {
+				content: `I am shutting down! Goodbye :(
+
+${META_CONSTANTS.RENDERED_STR}`
+			}).catch(noOp);
 			execSync(`pm2 stop ${BOT_TYPE === 'OSB' ? 'osb' : 'bso'}`);
 		}
 

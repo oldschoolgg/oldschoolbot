@@ -12,7 +12,7 @@ import {
 	GuildMember
 } from 'discord.js';
 import { increaseNumByPercent, objectEntries, randArrItem, round, Time } from 'e';
-import { Bank, Items, Misc } from 'oldschooljs';
+import { Bank, Items, Misc, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric, TheatreOfBlood } from 'oldschooljs/dist/simulation/misc';
 
@@ -368,6 +368,18 @@ const overrides = [
 	},
 	{
 		id: customDemiBosses.Malygos.id,
+		minArmorTier: getOSItem('Justiciar igne armor')
+	},
+	{
+		id: Monsters.Callisto.id,
+		minArmorTier: getOSItem('Justiciar igne armor')
+	},
+	{
+		id: Monsters.Vetion.id,
+		minArmorTier: getOSItem('Justiciar igne armor')
+	},
+	{
+		id: Monsters.Venenatis.id,
 		minArmorTier: getOSItem('Justiciar igne armor')
 	}
 ] as const;

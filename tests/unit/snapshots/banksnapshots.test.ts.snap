@@ -9678,6 +9678,79 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "27681": 1,
+        "27684": 1,
+        "27687": 1,
+        "995": 500000,
+      },
+      "frozen": false,
+    },
+    "name": "Voidwaker",
+    "outputItems": Bank {
+      "bank": {
+        "27690": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "22552": 1,
+        "27673": 1,
+        "995": 500000,
+      },
+      "frozen": false,
+    },
+    "name": "Accursed sceptre (u)",
+    "outputItems": Bank {
+      "bank": {
+        "27662": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "22542": 1,
+        "27667": 1,
+        "995": 500000,
+      },
+      "frozen": false,
+    },
+    "name": "Ursine chainmace (u)",
+    "outputItems": Bank {
+      "bank": {
+        "27657": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "22547": 1,
+        "27670": 1,
+        "995": 500000,
+      },
+      "frozen": false,
+    },
+    "name": "Webweaver bow (u)",
+    "outputItems": Bank {
+      "bank": {
+        "27652": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "12922": 1,
       },
       "frozen": false,
@@ -9755,6 +9828,40 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "12934": 20000,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "27627": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert ancient icon",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "27616": 5000,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "27614": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert venator shard",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "27616": 50000,
       },
       "frozen": false,
     },
@@ -14312,6 +14419,40 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "21820": 7000,
+        "27657": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Ursine chainmace",
+    "outputItems": Bank {
+      "bank": {
+        "27660": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "27660": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert ursine chainmace",
+    "outputItems": Bank {
+      "bank": {
+        "21820": 7000,
+        "27657": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "22542": 1,
       },
       "frozen": false,
@@ -14362,6 +14503,40 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "21820": 7000,
+        "27652": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Webweaver bow",
+    "outputItems": Bank {
+      "bank": {
+        "27655": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "27655": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert webweaver bow",
+    "outputItems": Bank {
+      "bank": {
+        "21820": 7000,
+        "27652": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "22547": 1,
       },
       "frozen": false,
@@ -14404,6 +14579,40 @@ exports[`BSO Creatables 1`] = `
       "bank": {
         "21820": 7000,
         "22552": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "21820": 7000,
+        "27662": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Accursed sceptre",
+    "outputItems": Bank {
+      "bank": {
+        "27665": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "27665": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert accursed sceptre",
+    "outputItems": Bank {
+      "bank": {
+        "21820": 7000,
+        "27662": 1,
       },
       "frozen": false,
     },

@@ -1,7 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
 import { PHOSANI_NIGHTMARE_ID } from '../constants';
-import { barrowsChestCL } from '../data/CollectionsExport';
 import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { Requirements } from '../structures/Requirements';
 import {
@@ -66,7 +65,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 3004,
 		name: 'Chambers of Xeric (Solo) Speed-Runner',
-		desc: 'Complete a Chambers of Xeric (Solo) in less than 17 minutes.',
+		desc: 'Complete a Chambers of Xeric (Solo) in less than 17 minutes. (Party size required)',
 		type: 'speed',
 		monster: 'Chambers of Xeric',
 		rng: {
@@ -88,7 +87,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 3006,
 		name: 'Chambers of Xeric: CM (Solo) Speed-Runner',
-		desc: 'Complete a Chambers of Xeric: Challenge Mode (Solo) in less than 38 minutes and 30 seconds.',
+		desc: 'Complete a Chambers of Xeric: Challenge Mode (Solo) in less than 38 minutes and 30 seconds. (Party size required)',
 		type: 'speed',
 		monster: 'Chambers of Xeric: Challenge Mode',
 		rng: {
@@ -308,7 +307,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 3025,
 		name: 'Nex Duo',
-		desc: 'Kill Nex with two or less players at the start of the fight.',
+		desc: 'Kill Nex with two or less players at the start of the fight. (Party size required)',
 		type: 'restriction',
 		monster: 'Nex',
 		rng: {
@@ -409,23 +408,29 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 	{
 		id: 3034,
 		name: 'Terrible Parent',
-		desc: 'Kill the Nightmare solo without the Parasites healing the boss for more than 100 health.',
+		desc: 'Kill the Nightmare solo without the Parasites healing the boss for more than 100 health. (Party size required)',
 		type: 'mechanical',
 		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 22,
-			hasChance: data => data.type === 'Nightmare' && !(data as NightmareActivityTaskOptions).isPhosani
+			hasChance: data =>
+				data.type === 'Nightmare' &&
+				(data as NightmareActivityTaskOptions).method === 'solo' &&
+				!(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{
 		id: 3035,
 		name: 'Nightmare (Solo) Speed-Runner',
-		desc: 'Defeat the Nightmare (Solo) in less than 16 minutes.',
+		desc: 'Defeat the Nightmare (Solo) in less than 16 minutes. (Party size required)',
 		type: 'speed',
 		monster: 'The Nightmare',
 		rng: {
 			chancePerKill: 30,
-			hasChance: data => data.type === 'Nightmare' && !(data as NightmareActivityTaskOptions).isPhosani
+			hasChance: data =>
+				data.type === 'Nightmare' &&
+				(data as NightmareActivityTaskOptions).method === 'solo' &&
+				!(data as NightmareActivityTaskOptions).isPhosani
 		}
 	},
 	{
@@ -458,7 +463,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 39,
-			hasChance: data => data.type === 'TheatreOfBlood' && (data as TheatreOfBloodTaskOptions).users.length === 4
+			hasChance: 'TheatreOfBlood'
 		}
 	},
 	{
@@ -492,7 +497,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 50,
-			hasChance: (data, user) => data.type === 'TheatreOfBlood' && barrowsChestCL.every(i => !user.hasEquipped(i))
+			hasChance: 'TheatreOfBlood'
 		}
 	},
 	{
@@ -503,7 +508,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 35,
-			hasChance: data => data.type === 'TheatreOfBlood' && (data as TheatreOfBloodTaskOptions).users.length === 3
+			hasChance: 'TheatreOfBlood'
 		}
 	},
 	{
@@ -514,7 +519,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 33,
-			hasChance: data => data.type === 'TheatreOfBlood' && (data as TheatreOfBloodTaskOptions).users.length === 2
+			hasChance: 'TheatreOfBlood'
 		}
 	},
 	{
@@ -717,7 +722,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		monster: 'Tombs of Amascut: Expert Mode',
 		rng: {
-			chancePerKill: 25,
+			chancePerKill: 30,
 			hasChance: 'TombsOfAmascut'
 		}
 	},
@@ -728,7 +733,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		monster: 'Tombs of Amascut: Expert Mode',
 		rng: {
-			chancePerKill: 25,
+			chancePerKill: 60,
 			hasChance: 'TombsOfAmascut'
 		}
 	},
@@ -761,7 +766,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		monster: 'Tombs of Amascut: Expert Mode',
 		rng: {
-			chancePerKill: 33,
+			chancePerKill: 50,
 			hasChance: 'TombsOfAmascut'
 		}
 	},
@@ -783,7 +788,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		monster: 'Tombs of Amascut: Expert Mode',
 		rng: {
-			chancePerKill: 35,
+			chancePerKill: 55,
 			hasChance: 'TombsOfAmascut'
 		}
 	},
@@ -805,7 +810,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		monster: 'Tombs of Amascut: Expert Mode',
 		rng: {
-			chancePerKill: 66,
+			chancePerKill: 30,
 			hasChance: 'TombsOfAmascut'
 		}
 	},
@@ -862,7 +867,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'restriction',
 		monster: 'TzKal-Zuk',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 1,
 			hasChance: (data, user) => data.type === 'Inferno' && !user.hasEquipped('Twisted bow')
 		}
 	},
@@ -1018,7 +1023,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'speed',
 		monster: 'Zulrah',
 		rng: {
-			chancePerKill: 100,
+			chancePerKill: 110,
 			hasChance: isCertainMonsterTrip(Monsters.Zulrah.id)
 		}
 	}

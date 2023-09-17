@@ -1,4 +1,5 @@
-import { calcWhatPercent, increaseNumByPercent, percentChance, reduceNumByPercent, sumArr, Time } from 'e';
+import { Prisma } from '@prisma/client';
+import { calcWhatPercent, deepClone, increaseNumByPercent, percentChance, reduceNumByPercent, sumArr, Time } from 'e';
 import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -21,8 +22,9 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, isOnSlayerTask } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { assert, calculateSimpleMonsterDeathChance, clAdjustedDroprate, roll } from '../../lib/util';
+import { assert, calculateSimpleMonsterDeathChance, clAdjustedDroprate, hasSkillReqs, roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
+import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -153,7 +155,19 @@ export async function clueUpgraderEffect(user: MUser, loot: Bank, messages: stri
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
 	async run(data: MonsterActivityTaskOptions) {
-		let { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
+		let {
+			monsterID,
+			userID,
+			channelID,
+			quantity,
+			duration,
+			usingCannon,
+			cannonMulti,
+			burstOrBarrage,
+			died,
+			pkEncounters,
+			hasWildySupplies
+		} = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const fullMonster = Monsters.get(monsterID);
 
@@ -169,6 +183,119 @@ export const monsterTask: MinionTask = {
 		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
 		const currentKCs = await user.fetchMonsterScores();
 
+		// Wilderness PK Encounters and PK Deaths
+		// Handle remaining anti-pk supplies if any
+		if (hasWildySupplies) {
+			const antiPKSupplies = new Bank()
+				.add('Saradomin brew(4)', Math.max(1, Math.floor(duration / (4 * Time.Minute))))
+				.add('Super restore(4)', Math.max(1, Math.floor(duration / (8 * Time.Minute))))
+				.add('Cooked karambwan', Math.max(1, Math.floor(duration / (4 * Time.Minute))));
+
+			for (let i = 0; i < (pkEncounters ?? -1); i++) {
+				if (percentChance(2) || died) {
+					antiPKSupplies.bank = {};
+					break;
+				} else if (percentChance(10)) {
+					antiPKSupplies
+						.remove('Saradomin brew(4)', 1)
+						.remove('Super restore(4)', 1)
+						.remove('Cooked karambwan', 1);
+				}
+			}
+
+			// Return remaining anti-pk supplies
+			if (antiPKSupplies.amount('Saradomin brew(4)') > 0) {
+				const { itemsAdded } = await transactItems({
+					userID: user.id,
+					collectionLog: true,
+					itemsToAdd: antiPKSupplies
+				});
+				messages.push(`Here is your remaining anti-pk supplies: ${itemsAdded}`);
+			}
+		}
+
+		if (pkEncounters && pkEncounters > 0) {
+			// Handle lost kc quantity because of pkers
+			const lostQuantity = Math.max(
+				Math.round((quantity / (Math.round(duration / Time.Minute) * (died ? 1 : 2))) * pkEncounters),
+				1
+			);
+			if (lostQuantity > 0) {
+				quantity -= lostQuantity;
+				quantity = Math.max(0, quantity);
+				messages.push(
+					`You missed out on ${lostQuantity}x kills because of pk encounters${died ? ' and death' : ''}`
+				);
+			}
+
+			// Handle death
+			if (died) {
+				// 1 in 20 to get smited without antiPKSupplies and 1 in 300 if the user has super restores
+				const hasPrayerLevel = hasSkillReqs(user, { [SkillsEnum.Prayer]: 25 })[0];
+				const protectItem = roll(hasWildySupplies ? 300 : 20) ? false : hasPrayerLevel;
+				const userGear = { ...deepClone(user.gear.wildy.raw()) };
+
+				const calc = calculateGearLostOnDeathWilderness({
+					gear: userGear,
+					smited: hasPrayerLevel && !protectItem,
+					protectItem: hasPrayerLevel,
+					after20wilderness: monster.pkBaseDeathChance && monster.pkBaseDeathChance >= 5 ? true : false,
+					skulled: false
+				});
+
+				let reEquipedItems = false;
+				if (!user.bank.has(calc.lostItems)) {
+					await user.update({
+						gear_wildy: calc.newGear as Prisma.InputJsonObject
+					});
+				} else {
+					await user.specialRemoveItems(calc.lostItems);
+					reEquipedItems = true;
+				}
+
+				// Track items lost
+				await trackLoot({
+					totalCost: calc.lostItems,
+					id: monster.name,
+					type: 'Monster',
+					changeType: 'cost',
+					users: [
+						{
+							id: user.id,
+							cost: calc.lostItems
+						}
+					]
+				});
+				// Track loot (For duration)
+				await trackLoot({
+					totalLoot: new Bank(),
+					id: monster.name,
+					type: 'Monster',
+					changeType: 'loot',
+					duration,
+					kc: quantity,
+					users: [
+						{
+							id: user.id,
+							loot: new Bank(),
+							duration
+						}
+					]
+				});
+
+				messages.push(
+					`${
+						hasPrayerLevel && !protectItem
+							? "Oh no! While running for your life, you panicked, got smited and couldn't protect a 4th item. "
+							: ''
+					}You died, you lost a lot of loot, and these equipped items: ${calc.lostItems}..${
+						reEquipedItems ? ' Your minion equips similar lost items from bank.' : ''
+					}`
+				);
+			}
+		}
+
+		// Monster deaths
 		let deaths = 0;
 		if (monster.deathProps) {
 			const currentKC: number | undefined = currentKCs[monsterID];
