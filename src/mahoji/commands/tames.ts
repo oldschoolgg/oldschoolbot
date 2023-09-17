@@ -603,6 +603,10 @@ export function getTameStatus(tameActivity: TameActivity | null) {
 					}x times`,
 					timeRemaining
 				];
+			case 'Tempoross':
+				return [`Fighting the Tempoross. ${timeRemaining}`];
+			case 'Wintertodt':
+				return [`Fighting the Wintertodt. ${timeRemaining}`];
 		}
 	}
 	return ['Idle'];
