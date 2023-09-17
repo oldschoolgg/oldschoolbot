@@ -251,7 +251,8 @@ export class BingoManager {
 					? BingoTrophies.filter(
 							t =>
 								team.tilesCompletedCount >= t.guaranteedAt ||
-								t.percentile <= ss.quantileRank(tilesCompletedCounts, team.tilesCompletedCount) * 100
+								100 - t.percentile <=
+									ss.quantileRank(tilesCompletedCounts, team.tilesCompletedCount) * 100
 					  )[0] ?? null
 					: null
 			}))
