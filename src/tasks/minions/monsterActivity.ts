@@ -24,8 +24,8 @@ import { calculateSlayerPoints, isOnSlayerTask } from '../../lib/slayer/slayerUt
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { assert, calculateSimpleMonsterDeathChance, clAdjustedDroprate, hasSkillReqs, roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
-import getOSItem from '../../lib/util/getOSItem';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { sendToChannelID } from '../../lib/util/webhook';
