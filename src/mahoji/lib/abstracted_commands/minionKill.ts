@@ -53,6 +53,7 @@ import { calcPOHBoosts } from '../../../lib/poh';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
+import { Peak } from '../../../lib/tickers';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
 	calculateSimpleMonsterDeathChance,
@@ -79,7 +80,6 @@ import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirma
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { hasMonsterRequirements, resolveAvailableItemBoosts, userStatsUpdate } from '../../mahojiSettings';
-import { Peak } from '../../../lib/tickers';
 import { findBingosWithUserParticipating } from '../bingo/BingoManager';
 import { igneCommand } from './igneCommand';
 import { kgCommand } from './kgCommand';
