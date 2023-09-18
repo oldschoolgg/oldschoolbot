@@ -18,7 +18,7 @@ import { isMainThread } from 'worker_threads';
 
 import { botToken, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { Channel, Events, gitHash, globalConfig } from './lib/constants';
+import { Channel, Events, globalConfig, META_CONSTANTS } from './lib/constants';
 import { onMessage } from './lib/events';
 import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
@@ -36,7 +36,7 @@ import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
-debugLog(`Starting... Git Hash ${gitHash}`);
+debugLog(`Starting... Git Hash ${META_CONSTANTS.GIT_HASH}`);
 
 if (production && !process.env.TEST && isMainThread) {
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -208,7 +208,7 @@ client.on('guildCreate', guild => {
 
 client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
-client.on('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
+client.once('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
 
 async function main() {
 	if (process.env.TEST) return;

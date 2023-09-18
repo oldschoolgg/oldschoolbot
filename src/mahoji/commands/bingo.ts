@@ -12,7 +12,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { clImageGenerator } from '../../lib/collectionLogTask';
-import { BOT_TYPE, Emoji } from '../../lib/constants';
+import { BOT_TYPE, Emoji, usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { channelIsSendable, dateFm, isValidDiscordSnowflake, isValidNickname, md5sum, toKMB } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
@@ -76,8 +76,8 @@ async function bingoTeamLeaderboard(user: MUser, channelID: string, bingo: Bingo
 			subList
 				.map(
 					(team, j) =>
-						`${getPos(i, j)}**${team.participants
-							.map(pt => userMention(pt.user_id))
+						`${getPos(i, j)}** ${`${team.trophy?.emoji} ` ?? ''}${team.participants
+							.map(pt => usernameCache.get(pt.user_id) ?? '?')
 							.join(', ')}:** ${team.tilesCompletedCount.toLocaleString()}`
 				)
 				.join('\n')
@@ -925,6 +925,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 			let progressString = '';
 			if (yourTeam && yourParticipant) {
 				const yourProgress = bingo.determineProgressOfBank(yourParticipant.cl as ItemBank);
+
 				progressString = bingo.isActive()
 					? `You have ${yourProgress.tilesCompletedCount} tiles completed.
 ${yourProgress.bingoTableStr}
@@ -932,6 +933,14 @@ ${yourProgress.bingoTableStr}
 Your team has ${yourTeam.tilesCompletedCount} tiles completed.
 ${yourTeam.bingoTableStr}`
 					: '';
+
+				if (bingo.isGlobal) {
+					progressString += `\n${
+						yourTeam.trophy
+							? `**Trophy:** ${yourTeam.trophy.emoji} ${yourTeam.trophy.item.name}\n`
+							: 'Your team has not qualified for a trophy.'
+					}`;
+				}
 			}
 
 			let str = `**${bingo.title}** ${teams.length} teams, ${toKMB(

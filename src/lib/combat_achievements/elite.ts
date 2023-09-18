@@ -493,7 +493,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		monster: 'Dagannoth Supreme',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 15,
 			hasChance: isCertainMonsterTrip(Monsters.DagannothSupreme.id)
 		}
 	},
@@ -504,7 +504,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		monster: 'Dagannoth Supreme',
 		rng: {
-			chancePerKill: 5,
+			chancePerKill: 30,
 			hasChance: data =>
 				isCertainMonsterTrip(Monsters.DagannothPrime.id)(data) ||
 				isCertainMonsterTrip(Monsters.DagannothRex.id)(data) ||
@@ -933,7 +933,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 	{
 		id: 1080,
 		name: 'Nightmare (Solo) Speed-Trialist',
-		desc: 'Defeat the Nightmare (Solo) in less than 23 minutes.',
+		desc: 'Defeat the Nightmare (Solo) in less than 23 minutes. (Party size required)',
 		type: 'speed',
 		monster: 'The Nightmare',
 		rng: {
@@ -947,7 +947,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 	{
 		id: 1081,
 		name: 'Sleep Tight',
-		desc: 'Kill the Nightmare solo.',
+		desc: 'Kill the Nightmare solo. (Party size required)',
 		type: 'restriction',
 		monster: 'The Nightmare',
 		rng: {
@@ -1199,7 +1199,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 	{
 		id: 1103,
 		name: 'Hardcore Tombs',
-		desc: 'Complete the Tombs of Amascut solo without dying.',
+		desc: 'Complete the Tombs of Amascut solo without dying. (Party size required)',
 		type: 'perfection',
 		monster: 'Tombs of Amascut',
 		rng: {
@@ -1213,14 +1213,14 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 	{
 		id: 1104,
 		name: 'Hardcore Raiders',
-		desc: 'Complete the Tombs of Amascut in a group of two or more without anyone dying.',
+		desc: 'Complete the Tombs of Amascut in a group of two or more without anyone dying. (Party size required)',
 		type: 'perfection',
 		monster: 'Tombs of Amascut',
 		rng: {
 			chancePerKill: 1,
 			hasChance: data =>
 				data.type === 'TombsOfAmascut' &&
-				(data as TOAOptions).users.length === 2 &&
+				(data as TOAOptions).users.length >= 2 &&
 				!anyoneDiedInTOARaid(data as TOAOptions)
 		}
 	},
