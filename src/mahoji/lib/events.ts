@@ -1,10 +1,11 @@
+import { noOp } from 'e';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { DEV_SERVER_ID, production } from '../../config';
 import { cacheBadges } from '../../lib/badges';
 import { syncBlacklists } from '../../lib/blacklists';
-import { DISABLED_COMMANDS, globalConfig } from '../../lib/constants';
+import { Channel, DISABLED_COMMANDS, globalConfig, META_CONSTANTS } from '../../lib/constants';
 import { initCrons } from '../../lib/crons';
 import { GrandExchange } from '../../lib/grandExchange';
 import { prisma } from '../../lib/settings/prisma';
@@ -13,6 +14,7 @@ import { runTimedLoggedFn } from '../../lib/util';
 import { cacheCleanup } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
+import { sendToChannelID } from '../../lib/util/webhook';
 import { cacheUsernames } from '../commands/leaderboard';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
 
@@ -65,4 +67,10 @@ export async function onStartup() {
 
 	initCrons();
 	initTickers();
+
+	sendToChannelID(Channel.GeneralChannel, {
+		content: `I have just turned on!
+
+${META_CONSTANTS.RENDERED_STR}`
+	}).catch(noOp);
 }

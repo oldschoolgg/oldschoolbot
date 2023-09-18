@@ -7,6 +7,7 @@ import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farming
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
+import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
@@ -14,7 +15,7 @@ import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskData } from '../types/minions';
-import { buildClueButtons, channelIsSendable, makeComponents } from '../util';
+import { channelIsSendable, makeComponents } from '../util';
 import {
 	makeAutoContractButton,
 	makeBirdHouseTripButton,

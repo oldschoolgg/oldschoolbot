@@ -8,10 +8,7 @@ import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
-import { ClueTiers } from '../clues/clueTiers';
-import { PerkTier, projectiles } from '../constants';
 import { skillEmoji } from '../data/emojis';
-import type { Gear } from '../structures/Gear';
 import type { ArrayItemsResolved, Skills } from '../types';
 import getOSItem from './getOSItem';
 
@@ -155,23 +152,6 @@ export function makeEasierFarmingContractButton() {
 		.setEmoji('977410792754413668');
 }
 
-export function buildClueButtons(loot: Bank | null, perkTier: number) {
-	const components: ButtonBuilder[] = [];
-	if (loot && perkTier > PerkTier.One) {
-		const clueReceived = ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0);
-		components.push(
-			...clueReceived.map(clue =>
-				new ButtonBuilder()
-					.setCustomId(`DO_${clue.name.toUpperCase()}_CLUE`)
-					.setLabel(`Do ${clue.name} Clue`)
-					.setStyle(ButtonStyle.Secondary)
-					.setEmoji('365003979840552960')
-			)
-		);
-	}
-	return components;
-}
-
 export function makeAutoFarmButton() {
 	return new ButtonBuilder()
 		.setCustomId('AUTO_FARM')
@@ -195,26 +175,6 @@ export function tailFile(fileName: string, numLines: number): Promise<string> {
 			}
 		});
 	});
-}
-
-export function checkRangeGearWeapon(gear: Gear) {
-	const weapon = gear.equippedWeapon();
-	if (!weapon) return 'You have no weapon equipped.';
-	const { ammo } = gear;
-	if (!ammo) return 'You have no ammo equipped.';
-
-	const projectileCategory = objectEntries(projectiles).find(i => i[1].weapons.includes(weapon.id));
-	if (!projectileCategory) return 'You have an invalid range weapon.';
-	if (!projectileCategory[1].items.includes(ammo.item)) {
-		return `You have invalid ammo for your equipped weapon. For ${
-			projectileCategory[0]
-		}-based weapons, you can use: ${projectileCategory[1].items.map(itemNameFromID).join(', ')}.`;
-	}
-
-	return {
-		weapon,
-		ammo
-	};
 }
 
 export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {
