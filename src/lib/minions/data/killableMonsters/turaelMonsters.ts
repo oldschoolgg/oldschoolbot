@@ -477,7 +477,7 @@ export const turaelMonsters: KillableMonster[] = [
 		aliases: Monsters.GrizzlyBear.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.GrizzlyBear,
-		wildy: true,
+		wildy: false,
 
 		difficultyRating: 1,
 		qpRequired: 0,
@@ -629,7 +629,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 15,
 		table: Monsters.KingScorpion,
 
-		wildy: true,
+		wildy: false,
 
 		difficultyRating: 3,
 		qpRequired: 0,

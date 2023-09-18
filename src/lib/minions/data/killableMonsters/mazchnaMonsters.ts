@@ -185,7 +185,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.Hobgoblin.aliases,
 		timeToFinish: Time.Second * 27,
 		table: Monsters.Hobgoblin,
-		wildy: true,
+		wildy: false,
 
 		difficultyRating: 1,
 		qpRequired: 0,
@@ -202,7 +202,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.IceWarrior.aliases,
 		timeToFinish: Time.Second * 28,
 		table: Monsters.IceWarrior,
-		wildy: true,
+		wildy: false,
 
 		difficultyRating: 3,
 		qpRequired: 0,

@@ -670,7 +670,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		aliases: Monsters.IceGiant.aliases,
 		timeToFinish: Time.Second * 16,
 		table: Monsters.IceGiant,
-		wildy: true,
+		wildy: false,
 
 		difficultyRating: 3,
 		notifyDrops: resolveItems(['Giant champion scroll']),
@@ -821,7 +821,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 22,
 		table: Monsters.LesserDemon,
 
-		wildy: true,
+		wildy: false,
 
 		existsInCatacombs: true,
 		difficultyRating: 2,
@@ -867,7 +867,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 14,
 		table: Monsters.MossGiant,
 
-		wildy: true,
+		wildy: false,
 
 		existsInCatacombs: true,
 		difficultyRating: 2,
