@@ -1,5 +1,3 @@
-import '../data/trophies';
-
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
