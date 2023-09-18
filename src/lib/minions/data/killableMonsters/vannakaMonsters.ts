@@ -103,7 +103,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 14,
 		table: Monsters.Ankou,
 
-		wildy: true,
+		wildy: false,
 
 		existsInCatacombs: true,
 		difficultyRating: 2,
@@ -498,7 +498,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 18,
 		table: Monsters.FireGiant,
 
-		wildy: true,
+		wildy: false,
 
 		existsInCatacombs: true,
 		difficultyRating: 2,
