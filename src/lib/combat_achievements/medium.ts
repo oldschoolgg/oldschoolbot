@@ -13,7 +13,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		monster: 'Barrows',
 		desc: 'Kill all six Barrows Brothers and loot the Barrows chest without taking any damage from any of the brothers.',
 		rng: {
-			chancePerKill: 50,
+			chancePerKill: 10,
 			hasChance: isCertainMonsterTrip(Monsters.Barrows.id)
 		}
 	},
@@ -454,7 +454,7 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 		monster: 'Tempoross',
 		desc: 'Subdue Tempoross alone without getting hit by any fires, torrents or waves.',
 		rng: {
-			chancePerKill: 50,
+			chancePerKill: 25,
 			hasChance: data => data.type === 'Tempoross'
 		}
 	},

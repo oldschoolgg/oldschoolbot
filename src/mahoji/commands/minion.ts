@@ -29,6 +29,7 @@ import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
+import { checkPeakTimes } from '../../lib/util/minionUtils';
 import {
 	achievementDiaryCommand,
 	claimAchievementDiaryCommand
@@ -414,6 +415,11 @@ export const minionCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'info',
 			description: 'View general information about your account and minion.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'peak',
+			description: 'View Peak time activity for the Wilderness.'
 		}
 	],
 	run: async ({
@@ -441,6 +447,7 @@ export const minionCommand: OSBMahojiCommand = {
 		blowpipe?: { remove_darts?: boolean; uncharge?: boolean; add?: string; quantity?: number };
 		status?: {};
 		info?: {};
+		peak?: {};
 	}>) => {
 		const user = await mUserFetch(userID);
 		const perkTier = user.perkTier();
@@ -539,6 +546,8 @@ export const minionCommand: OSBMahojiCommand = {
 				options.blowpipe.quantity
 			);
 		}
+
+		if (options.peak) return checkPeakTimes();
 
 		return 'Unknown command';
 	}
