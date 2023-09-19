@@ -203,3 +203,12 @@ export function caToPlayerString(task: CombatAchievement, user: MUser) {
 	}
 	return `Incomplete ❌ ${task.name} - ${task.desc}`;
 }
+
+export function nextCATier(points: number): string {
+	const nextTier = Object.entries(CombatAchievements).find(([_, ca]) => ca.rewardThreshold > points);
+	if (nextTier) {
+		const [tier, ca] = nextTier;
+		return `You are ${ca.rewardThreshold - points} points away from ${tier} tier rewards`;
+	}
+	return 'You have completed all reward tiers';
+}
