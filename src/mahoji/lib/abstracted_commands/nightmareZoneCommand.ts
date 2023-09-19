@@ -435,7 +435,7 @@ export async function nightmareZoneShopCommand(
 	}
 
 	let costPerItem = shopItem.cost;
-	if (user.hasMetCATierThrehold('hard')) {
+	if (user.hasCompletedCATier('hard')) {
 		costPerItem /= 2;
 	}
 

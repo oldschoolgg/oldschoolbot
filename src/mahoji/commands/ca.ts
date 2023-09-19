@@ -90,7 +90,7 @@ export const caCommand: OSBMahojiCommand = {
 			if (completedTasks.length === 0) {
 				const claimableRewards = new Bank();
 				for (const [tier, diary] of objectEntries(CombatAchievements)) {
-					if (!user.hasMetCATierThrehold(tier)) continue;
+					if (!user.hasCompletedCATier(tier)) continue;
 					for (const reward of diary.staticRewards) {
 						if (user.owns(reward.item.id)) continue;
 						if (!reward.reclaimable && user.cl.has(reward.item.id)) continue;
@@ -98,7 +98,10 @@ export const caCommand: OSBMahojiCommand = {
 					}
 				}
 				if (claimableRewards.length > 0) {
-					await user.addItemsToBank({ items: claimableRewards, collectionLog: true });
+					await user.addItemsToBank({
+						items: claimableRewards,
+						collectionLog: true
+					});
 					return `You claimed ${claimableRewards}.`;
 				}
 

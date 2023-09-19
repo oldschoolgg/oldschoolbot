@@ -196,7 +196,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 	let maxQuantity = assignedTask!.amount[1];
 	if (bossTask && _user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)) {
 		for (const tier of objectKeys(CombatAchievements)) {
-			if (_user.hasMetCATierThrehold(tier)) {
+			if (_user.hasCompletedCATier(tier)) {
 				maxQuantity += 5;
 			}
 		}

@@ -111,9 +111,17 @@ export class MUserClass {
 			mage: new Gear((this.user.gear_mage as GearSetup | null) ?? { ...defaultGear }),
 			range: new Gear((this.user.gear_range as GearSetup | null) ?? { ...defaultGear }),
 			misc: new Gear((this.user.gear_misc as GearSetup | null) ?? { ...defaultGear }),
-			skilling: new Gear((this.user.gear_skilling as GearSetup | null) ?? { ...defaultGear }),
+			skilling: new Gear(
+				(this.user.gear_skilling as GearSetup | null) ?? {
+					...defaultGear
+				}
+			),
 			wildy: new Gear((this.user.gear_wildy as GearSetup | null) ?? { ...defaultGear }),
-			fashion: new Gear((this.user.gear_fashion as GearSetup | null) ?? { ...defaultGear }),
+			fashion: new Gear(
+				(this.user.gear_fashion as GearSetup | null) ?? {
+					...defaultGear
+				}
+			),
 			other: new Gear((this.user.gear_other as GearSetup | null) ?? { ...defaultGear })
 		};
 
@@ -501,7 +509,12 @@ GROUP BY data->>'clueID';`);
 		});
 		await this.update(updates);
 		const newCL = this.cl;
-		await handleNewCLItems({ itemsAdded: itemsToAdd, user: this, newCL: this.cl, previousCL });
+		await handleNewCLItems({
+			itemsAdded: itemsToAdd,
+			user: this,
+			newCL: this.cl,
+			previousCL
+		});
 		return {
 			previousCL,
 			newCL,
@@ -672,7 +685,9 @@ GROUP BY data->>'clueID';`);
 	}
 
 	async sync() {
-		const newUser = await prisma.user.findUnique({ where: { id: this.id } });
+		const newUser = await prisma.user.findUnique({
+			where: { id: this.id }
+		});
 		if (!newUser) throw new Error(`Failed to sync user ${this.id}, no record was found`);
 		this.user = newUser;
 		this.updateProperties();
@@ -730,22 +745,22 @@ GROUP BY data->>'clueID';`);
 			.reduce((total, value) => total + value, 0);
 	}
 
-	hasMetCATierThrehold(tier: keyof typeof CombatAchievements): boolean {
+	hasCompletedCATier(tier: keyof typeof CombatAchievements): boolean {
 		return this.caPoints() >= CombatAchievements[tier].rewardThreshold;
 	}
 
 	buildCATertiaryItemChanges() {
 		const changes = new Map();
-		if (this.hasMetCATierThrehold('easy')) {
+		if (this.hasCompletedCATier('easy')) {
 			changes.set('Clue scroll (easy)', 5);
 		}
-		if (this.hasMetCATierThrehold('medium')) {
+		if (this.hasCompletedCATier('medium')) {
 			changes.set('Clue scroll (medium)', 5);
 		}
-		if (this.hasMetCATierThrehold('hard')) {
+		if (this.hasCompletedCATier('hard')) {
 			changes.set('Clue scroll (hard)', 5);
 		}
-		if (this.hasMetCATierThrehold('elite')) {
+		if (this.hasCompletedCATier('elite')) {
 			changes.set('Clue scroll (elite)', 5);
 		}
 		return changes;

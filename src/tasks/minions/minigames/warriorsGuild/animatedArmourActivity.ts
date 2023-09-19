@@ -17,10 +17,10 @@ export const animatedArmorTask: MinionTask = {
 
 		const messages: string[] = [];
 
-		if (user.hasMetCATierThrehold('medium')) {
+		if (user.hasCompletedCATier('medium')) {
 			loot.add('Warrior guild token', baseQuantity * 2);
 			messages.push(`${Emoji.CombatAchievements} 200% Tokens received for medium CA tier`);
-		} else if (user.hasMetCATierThrehold('easy')) {
+		} else if (user.hasCompletedCATier('easy')) {
 			loot.add('Warrior guild token', baseQuantity);
 			messages.push(`${Emoji.CombatAchievements} 100% extra Tokens received for easy CA tier`);
 		}

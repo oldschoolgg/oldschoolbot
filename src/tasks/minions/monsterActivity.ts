@@ -219,7 +219,7 @@ export const monsterTask: MinionTask = {
 		let newSuperiorCount = 0;
 		if (superiorTable && isOnTaskResult.isOnTask) {
 			let superiorDroprate = 200;
-			if (user.hasMetCATierThrehold('elite')) {
+			if (user.hasCompletedCATier('elite')) {
 				superiorDroprate = 150;
 				messages.push(`${Emoji.CombatAchievements} 25% more common superiors due to Elite CA tier`);
 			}

@@ -40,14 +40,14 @@ export function getBoatType(user: MUser, cbLevel: number) {
 
 	let bonusPointsPerGame = 0;
 
-	if (user.hasMetCATierThrehold('hard')) {
+	if (user.hasCompletedCATier('hard')) {
 		bonusPointsPerGame += 1;
 	}
 
-	if (user.hasMetCATierThrehold('medium')) {
+	if (user.hasCompletedCATier('medium')) {
 		bonusPointsPerGame += 1;
 	}
-	if (user.hasMetCATierThrehold('easy')) {
+	if (user.hasCompletedCATier('easy')) {
 		bonusPointsPerGame += 1;
 	}
 
