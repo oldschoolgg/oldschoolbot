@@ -49,51 +49,51 @@ type CARoot = Record<CATier, CARootItem>;
 
 const easy: CARootItem = {
 	tasks: easyCombatAchievements,
-	length: 33,
+	length: easyCombatAchievements.length,
 	name: 'Easy',
 	staticRewards: [
 		{ item: getOSItem("Ghommal's hilt 1"), reclaimable: true },
 		{ item: getOSItem('Antique lamp (easy ca)'), reclaimable: false }
 	],
 	taskPoints: 1,
-	rewardThreshold: 33
+	rewardThreshold: easyCombatAchievements.length
 };
 const medium: CARootItem = {
 	tasks: mediumCombatAchievements,
-	length: 41 - 1,
+	length: mediumCombatAchievements.length,
 	name: 'Medium',
 	staticRewards: [
 		{ item: getOSItem("Ghommal's hilt 2"), reclaimable: true },
 		{ item: getOSItem('Antique lamp (medium ca)'), reclaimable: false }
 	],
 	taskPoints: 2,
-	rewardThreshold: easy.rewardThreshold + (41 - 1) * 2
+	rewardThreshold: easy.rewardThreshold + mediumCombatAchievements.length * 2
 };
 const hard: CARootItem = {
 	tasks: hardCombatAchievements,
-	length: 63,
+	length: hardCombatAchievements.length,
 	name: 'Hard',
 	staticRewards: [
 		{ item: getOSItem("Ghommal's hilt 3"), reclaimable: true },
 		{ item: getOSItem('Antique lamp (hard ca)'), reclaimable: false }
 	],
 	taskPoints: 3,
-	rewardThreshold: medium.rewardThreshold + 63 * 3
+	rewardThreshold: medium.rewardThreshold + hardCombatAchievements.length * 3
 };
 const elite: CARootItem = {
 	tasks: eliteCombatAchievements,
-	length: 129 - 6,
+	length: eliteCombatAchievements.length,
 	name: 'Elite',
 	staticRewards: [
 		{ item: getOSItem("Ghommal's hilt 4"), reclaimable: true },
 		{ item: getOSItem('Antique lamp (elite ca)'), reclaimable: false }
 	],
 	taskPoints: 4,
-	rewardThreshold: hard.rewardThreshold + (129 - 6) * 4
+	rewardThreshold: hard.rewardThreshold + eliteCombatAchievements.length * 4
 };
 const master: CARootItem = {
 	tasks: masterCombatAchievements,
-	length: 129 - 5,
+	length: masterCombatAchievements.length,
 	name: 'Master',
 	staticRewards: [
 		{ item: getOSItem("Ghommal's hilt 5"), reclaimable: true },
@@ -101,11 +101,11 @@ const master: CARootItem = {
 		{ item: getOSItem('Antique lamp (master ca)'), reclaimable: false }
 	],
 	taskPoints: 5,
-	rewardThreshold: elite.rewardThreshold + (129 - 5) * 5
+	rewardThreshold: elite.rewardThreshold + masterCombatAchievements.length * 5
 };
 const grandmaster: CARootItem = {
 	tasks: grandmasterCombatAchievements,
-	length: 90 - 3,
+	length: grandmasterCombatAchievements.length,
 	name: 'Grandmaster',
 	staticRewards: [
 		{ item: getOSItem("Ghommal's hilt 6"), reclaimable: true },
@@ -115,7 +115,7 @@ const grandmaster: CARootItem = {
 		}
 	],
 	taskPoints: 6,
-	rewardThreshold: master.rewardThreshold + (90 - 3) * 6
+	rewardThreshold: master.rewardThreshold + grandmasterCombatAchievements.length * 6
 };
 
 export const CombatAchievements: CARoot = {
