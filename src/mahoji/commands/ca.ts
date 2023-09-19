@@ -1,5 +1,5 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
-import { calcWhatPercent, objectEntries } from 'e';
+import { calcWhatPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
@@ -85,17 +85,22 @@ export const caCommand: OSBMahojiCommand = {
 				}
 			}
 
-			if (completedTasks.length === 0) {
-				const claimableRewards = new Bank();
-				for (const [tier, diary] of objectEntries(CombatAchievements)) {
-					if (!user.hasCompletedCATier(tier)) continue;
+			let claimableRewards = null;
+
+			for (const [_, diary] of Object.entries(CombatAchievements)) {
+				const requiredPoints = diary.rewardPoints;
+				const totalTaskPoints = completedTasks.reduce((total, task) => total + diary.taskPoints, 0);
+
+				if (totalTaskPoints >= requiredPoints) {
+					claimableRewards = new Bank();
 					for (const reward of diary.staticRewards) {
 						if (user.owns(reward.item.id)) continue;
 						if (!reward.reclaimable && user.cl.has(reward.item.id)) continue;
 						claimableRewards.add(reward.item.id);
 					}
 				}
-				if (claimableRewards.length > 0) {
+
+				if (claimableRewards && claimableRewards.length > 0) {
 					await user.addItemsToBank({ items: claimableRewards, collectionLog: true });
 					return `You claimed ${claimableRewards}.`;
 				}

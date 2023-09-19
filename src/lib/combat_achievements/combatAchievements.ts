@@ -41,6 +41,8 @@ interface CARootItem {
 	length: number;
 	tasks: CombatAchievement[];
 	staticRewards: { item: Item; reclaimable: boolean }[];
+	taskPoints: number;
+	rewardPoints: number;
 }
 type CARoot = Record<'easy' | 'medium' | 'hard' | 'elite' | 'master' | 'grandmaster', CARootItem>;
 
@@ -52,7 +54,9 @@ export const CombatAchievements: CARoot = {
 		staticRewards: [
 			{ item: getOSItem("Ghommal's hilt 1"), reclaimable: true },
 			{ item: getOSItem('Antique lamp (easy ca)'), reclaimable: false }
-		]
+		],
+		taskPoints: 1,
+		rewardPoints: 33
 	},
 	medium: {
 		tasks: mediumCombatAchievements,
@@ -61,7 +65,9 @@ export const CombatAchievements: CARoot = {
 		staticRewards: [
 			{ item: getOSItem("Ghommal's hilt 2"), reclaimable: true },
 			{ item: getOSItem('Antique lamp (medium ca)'), reclaimable: false }
-		]
+		],
+		taskPoints: 2,
+		rewardPoints: 113 // Needs updating if tasks get added
 	},
 	hard: {
 		tasks: hardCombatAchievements,
@@ -70,7 +76,9 @@ export const CombatAchievements: CARoot = {
 		staticRewards: [
 			{ item: getOSItem("Ghommal's hilt 3"), reclaimable: true },
 			{ item: getOSItem('Antique lamp (hard ca)'), reclaimable: false }
-		]
+		],
+		taskPoints: 3,
+		rewardPoints: 302 // Needs updating if tasks get added
 	},
 	elite: {
 		tasks: eliteCombatAchievements,
@@ -79,7 +87,9 @@ export const CombatAchievements: CARoot = {
 		staticRewards: [
 			{ item: getOSItem("Ghommal's hilt 4"), reclaimable: true },
 			{ item: getOSItem('Antique lamp (elite ca)'), reclaimable: false }
-		]
+		],
+		taskPoints: 4,
+		rewardPoints: 794 // Needs updating if tasks get added
 	},
 	master: {
 		tasks: masterCombatAchievements,
@@ -89,7 +99,9 @@ export const CombatAchievements: CARoot = {
 			{ item: getOSItem("Ghommal's hilt 5"), reclaimable: true },
 			{ item: getOSItem("Ghommal's lucky penny"), reclaimable: true },
 			{ item: getOSItem('Antique lamp (master ca)'), reclaimable: false }
-		]
+		],
+		taskPoints: 5,
+		rewardPoints: 1414 // Needs updating if tasks get added
 	},
 	grandmaster: {
 		tasks: grandmasterCombatAchievements,
@@ -98,7 +110,9 @@ export const CombatAchievements: CARoot = {
 		staticRewards: [
 			{ item: getOSItem("Ghommal's hilt 6"), reclaimable: true },
 			{ item: getOSItem('Antique lamp (grandmaster ca)'), reclaimable: false }
-		]
+		],
+		taskPoints: 6,
+		rewardPoints: 1936 // Needs updating if tasks get added
 	}
 };
 
