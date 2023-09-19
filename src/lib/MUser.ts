@@ -9,7 +9,7 @@ import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
-import { CombatAchievements } from './combat_achievements/combatAchievements';
+import { CATier, CombatAchievements } from './combat_achievements/combatAchievements';
 import { badges, BitField, Emoji, projectiles, usernameCache } from './constants';
 import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
@@ -719,22 +719,33 @@ GROUP BY data->>'clueID';`);
 		};
 	}
 
-	hasCompletedCATier(tier: keyof typeof CombatAchievements): boolean {
-		return CombatAchievements[tier].tasks.every(task => this.user.completed_ca_task_ids.includes(task.id));
+	caPoints(): number {
+		const keys = Object.keys(CombatAchievements) as CATier[];
+		return keys
+			.map(
+				t =>
+					CombatAchievements[t].tasks.filter(task => this.user.completed_ca_task_ids.includes(task.id))
+						.length * CombatAchievements[t].taskPoints
+			)
+			.reduce((total, value) => total + value, 0);
+	}
+
+	hasMetCATierThrehold(tier: keyof typeof CombatAchievements): boolean {
+		return this.caPoints() >= CombatAchievements[tier].rewardThreshold;
 	}
 
 	buildCATertiaryItemChanges() {
 		const changes = new Map();
-		if (this.hasCompletedCATier('easy')) {
+		if (this.hasMetCATierThrehold('easy')) {
 			changes.set('Clue scroll (easy)', 5);
 		}
-		if (this.hasCompletedCATier('medium')) {
+		if (this.hasMetCATierThrehold('medium')) {
 			changes.set('Clue scroll (medium)', 5);
 		}
-		if (this.hasCompletedCATier('hard')) {
+		if (this.hasMetCATierThrehold('hard')) {
 			changes.set('Clue scroll (hard)', 5);
 		}
-		if (this.hasCompletedCATier('elite')) {
+		if (this.hasMetCATierThrehold('elite')) {
 			changes.set('Clue scroll (elite)', 5);
 		}
 		return changes;

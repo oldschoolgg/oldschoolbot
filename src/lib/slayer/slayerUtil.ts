@@ -196,7 +196,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 	let maxQuantity = assignedTask!.amount[1];
 	if (bossTask && _user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)) {
 		for (const tier of objectKeys(CombatAchievements)) {
-			if (_user.hasCompletedCATier(tier)) {
+			if (_user.hasMetCATierThrehold(tier)) {
 				maxQuantity += 5;
 			}
 		}
@@ -461,8 +461,11 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 }
 
 export async function getSlayerTaskStats(userID: string) {
-	const result: { monster_id: number; total_quantity: number; qty: number }[] =
-		await prisma.$queryRaw`SELECT monster_id, SUM(quantity) AS total_quantity, COUNT(monster_id) AS qty
+	const result: {
+		monster_id: number;
+		total_quantity: number;
+		qty: number;
+	}[] = await prisma.$queryRaw`SELECT monster_id, SUM(quantity) AS total_quantity, COUNT(monster_id) AS qty
 FROM slayer_tasks
 WHERE user_id = ${userID}
 AND quantity_remaining = 0
@@ -491,21 +494,33 @@ export async function setDefaultSlayerMaster(
 		await user.update({
 			slayer_remember_master: null
 		});
-		return { success: true, message: 'Saved Slayer master has been erased.' };
+		return {
+			success: true,
+			message: 'Saved Slayer master has been erased.'
+		};
 	}
 	const master = slayerMasters.find(
 		sm => stringMatches(newMaster, sm.name) || sm.aliases.some(alias => stringMatches(newMaster, alias))
 	);
 	if (!master) {
-		return { success: false, message: `Couldn't find matching slayer master for '${newMaster}` };
+		return {
+			success: false,
+			message: `Couldn't find matching slayer master for '${newMaster}`
+		};
 	}
 	if (!userCanUseMaster(user, master)) {
-		return { success: false, message: `You cannot use ${master.name} to assign tasks yet.` };
+		return {
+			success: false,
+			message: `You cannot use ${master.name} to assign tasks yet.`
+		};
 	}
 	await user.update({
 		slayer_remember_master: master.name
 	});
-	return { success: true, message: `Slayer master updated to: ${master.name}` };
+	return {
+		success: true,
+		message: `Slayer master updated to: ${master.name}`
+	};
 }
 
 export async function setDefaultAutoslay(
@@ -516,19 +531,28 @@ export async function setDefaultAutoslay(
 		await user.update({
 			slayer_autoslay_options: []
 		});
-		return { success: true, message: 'Saved autoslay method has been erased.' };
+		return {
+			success: true,
+			message: 'Saved autoslay method has been erased.'
+		};
 	}
 	const autoslayOption = autoslayModes.find(
 		asc =>
 			stringMatches(newAutoslayMode, asc.name) || asc.aliases.some(alias => stringMatches(newAutoslayMode, alias))
 	);
 	if (!autoslayOption) {
-		return { success: false, message: `Couldn't find matching autoslay option for '${newAutoslayMode}` };
+		return {
+			success: false,
+			message: `Couldn't find matching autoslay option for '${newAutoslayMode}`
+		};
 	}
 	await user.update({
 		slayer_autoslay_options: [autoslayOption.key]
 	});
-	return { success: true, message: `Autoslay method updated to: ${autoslayOption.name} (${autoslayOption.focus})` };
+	return {
+		success: true,
+		message: `Autoslay method updated to: ${autoslayOption.name} (${autoslayOption.focus})`
+	};
 }
 
 export async function isOnSlayerTask({

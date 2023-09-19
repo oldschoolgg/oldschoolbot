@@ -58,7 +58,7 @@ export const caCommand: OSBMahojiCommand = {
 			allCombatAchievementTasks.length
 		} (${calcWhatPercent(completedTaskIDs.size, allCombatAchievementTasks.length).toFixed(
 			2
-		)}%) tasks. Use ${mentionCommand(
+		)}%) tasks for ${user.caPoints()} points. Use ${mentionCommand(
 			globalClient,
 			'ca',
 			'claim'
@@ -88,7 +88,7 @@ export const caCommand: OSBMahojiCommand = {
 			if (completedTasks.length === 0) {
 				const claimableRewards = new Bank();
 				for (const [tier, diary] of objectEntries(CombatAchievements)) {
-					if (!user.hasCompletedCATier(tier)) continue;
+					if (!user.hasMetCATierThrehold(tier)) continue;
 					for (const reward of diary.staticRewards) {
 						if (user.owns(reward.item.id)) continue;
 						if (!reward.reclaimable && user.cl.has(reward.item.id)) continue;

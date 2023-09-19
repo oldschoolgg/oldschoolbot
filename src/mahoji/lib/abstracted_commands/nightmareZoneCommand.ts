@@ -103,8 +103,16 @@ const itemBoosts = [
 ];
 
 export const nightmareZoneImbueables = [
-	{ input: getOSItem('Black mask'), output: getOSItem('Black mask (i)'), points: 1_250_000 },
-	{ input: getOSItem('Slayer helmet'), output: getOSItem('Slayer helmet (i)'), points: 1_250_000 },
+	{
+		input: getOSItem('Black mask'),
+		output: getOSItem('Black mask (i)'),
+		points: 1_250_000
+	},
+	{
+		input: getOSItem('Slayer helmet'),
+		output: getOSItem('Slayer helmet (i)'),
+		points: 1_250_000
+	},
 	{
 		input: getOSItem('Turquoise slayer helmet'),
 		output: getOSItem('Turquoise slayer helmet (i)'),
@@ -140,8 +148,16 @@ export const nightmareZoneImbueables = [
 		output: getOSItem('Hydra slayer helmet (i)'),
 		points: 1_250_000
 	},
-	{ input: getOSItem('Salve amulet'), output: getOSItem('Salve amulet(i)'), points: 800_000 },
-	{ input: getOSItem('Salve amulet (e)'), output: getOSItem('Salve amulet(ei)'), points: 800_000 },
+	{
+		input: getOSItem('Salve amulet'),
+		output: getOSItem('Salve amulet(i)'),
+		points: 800_000
+	},
+	{
+		input: getOSItem('Salve amulet (e)'),
+		output: getOSItem('Salve amulet(ei)'),
+		points: 800_000
+	},
 	{
 		input: getOSItem('Ring of the gods'),
 		output: getOSItem('Ring of the gods (i)'),
@@ -194,7 +210,12 @@ export const nightmareZoneImbueables = [
 	}
 ];
 
-export const nightmareZoneBuyables: { name: string; output: Bank; cost: number; aliases: string[] }[] = [
+export const nightmareZoneBuyables: {
+	name: string;
+	output: Bank;
+	cost: number;
+	aliases: string[];
+}[] = [
 	{
 		name: 'Flax',
 		output: new Bank().add('Flax', 1),
@@ -315,7 +336,9 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 
 	let timePerMonster = Time.Minute * 2;
 	// combat stat boosts
-	const [, , attackStyles] = resolveAttackStyles(user, { monsterID: undefined });
+	const [, , attackStyles] = resolveAttackStyles(user, {
+		monsterID: undefined
+	});
 	const skillTotal = sumArr(attackStyles.map(s => user.skillLevel(s))) + user.skillLevel(SkillsEnum.Hitpoints);
 	if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
 		return 'The Nightmare Zone minigame requires melee combat for efficiency, swap training style using `/minion train style:`';
@@ -412,7 +435,7 @@ export async function nightmareZoneShopCommand(
 	}
 
 	let costPerItem = shopItem.cost;
-	if (user.hasCompletedCATier('hard')) {
+	if (user.hasMetCATierThrehold('hard')) {
 		costPerItem /= 2;
 	}
 
