@@ -47,77 +47,84 @@ interface CARootItem {
 export type CATier = 'easy' | 'medium' | 'hard' | 'elite' | 'master' | 'grandmaster';
 type CARoot = Record<CATier, CARootItem>;
 
+const easy: CARootItem = {
+	tasks: easyCombatAchievements,
+	length: 33,
+	name: 'Easy',
+	staticRewards: [
+		{ item: getOSItem("Ghommal's hilt 1"), reclaimable: true },
+		{ item: getOSItem('Antique lamp (easy ca)'), reclaimable: false }
+	],
+	taskPoints: 1,
+	rewardThreshold: 33
+};
+const medium: CARootItem = {
+	tasks: mediumCombatAchievements,
+	length: 41 - 1,
+	name: 'Medium',
+	staticRewards: [
+		{ item: getOSItem("Ghommal's hilt 2"), reclaimable: true },
+		{ item: getOSItem('Antique lamp (medium ca)'), reclaimable: false }
+	],
+	taskPoints: 2,
+	rewardThreshold: easy.rewardThreshold + (41 - 1) * 2
+};
+const hard: CARootItem = {
+	tasks: hardCombatAchievements,
+	length: 63,
+	name: 'Hard',
+	staticRewards: [
+		{ item: getOSItem("Ghommal's hilt 3"), reclaimable: true },
+		{ item: getOSItem('Antique lamp (hard ca)'), reclaimable: false }
+	],
+	taskPoints: 3,
+	rewardThreshold: medium.rewardThreshold + 63 * 3
+};
+const elite: CARootItem = {
+	tasks: eliteCombatAchievements,
+	length: 129 - 6,
+	name: 'Elite',
+	staticRewards: [
+		{ item: getOSItem("Ghommal's hilt 4"), reclaimable: true },
+		{ item: getOSItem('Antique lamp (elite ca)'), reclaimable: false }
+	],
+	taskPoints: 4,
+	rewardThreshold: hard.rewardThreshold + (129 - 6) * 4
+};
+const master: CARootItem = {
+	tasks: masterCombatAchievements,
+	length: 129 - 5,
+	name: 'Master',
+	staticRewards: [
+		{ item: getOSItem("Ghommal's hilt 5"), reclaimable: true },
+		{ item: getOSItem("Ghommal's lucky penny"), reclaimable: true },
+		{ item: getOSItem('Antique lamp (master ca)'), reclaimable: false }
+	],
+	taskPoints: 5,
+	rewardThreshold: elite.rewardThreshold + (129 - 5) * 5
+};
+const grandmaster: CARootItem = {
+	tasks: grandmasterCombatAchievements,
+	length: 90 - 3,
+	name: 'Grandmaster',
+	staticRewards: [
+		{ item: getOSItem("Ghommal's hilt 6"), reclaimable: true },
+		{
+			item: getOSItem('Antique lamp (grandmaster ca)'),
+			reclaimable: false
+		}
+	],
+	taskPoints: 6,
+	rewardThreshold: master.rewardThreshold + (90 - 3) * 6
+};
+
 export const CombatAchievements: CARoot = {
-	easy: {
-		tasks: easyCombatAchievements,
-		length: 33,
-		name: 'Easy',
-		staticRewards: [
-			{ item: getOSItem("Ghommal's hilt 1"), reclaimable: true },
-			{ item: getOSItem('Antique lamp (easy ca)'), reclaimable: false }
-		],
-		taskPoints: 1,
-		rewardThreshold: 33
-	},
-	medium: {
-		tasks: mediumCombatAchievements,
-		length: 41 - 1,
-		name: 'Medium',
-		staticRewards: [
-			{ item: getOSItem("Ghommal's hilt 2"), reclaimable: true },
-			{ item: getOSItem('Antique lamp (medium ca)'), reclaimable: false }
-		],
-		taskPoints: 2,
-		rewardThreshold: 113
-	},
-	hard: {
-		tasks: hardCombatAchievements,
-		length: 63,
-		name: 'Hard',
-		staticRewards: [
-			{ item: getOSItem("Ghommal's hilt 3"), reclaimable: true },
-			{ item: getOSItem('Antique lamp (hard ca)'), reclaimable: false }
-		],
-		taskPoints: 3,
-		rewardThreshold: 302
-	},
-	elite: {
-		tasks: eliteCombatAchievements,
-		length: 129 - 6,
-		name: 'Elite',
-		staticRewards: [
-			{ item: getOSItem("Ghommal's hilt 4"), reclaimable: true },
-			{ item: getOSItem('Antique lamp (elite ca)'), reclaimable: false }
-		],
-		taskPoints: 4,
-		rewardThreshold: 794
-	},
-	master: {
-		tasks: masterCombatAchievements,
-		length: 129 - 5,
-		name: 'Master',
-		staticRewards: [
-			{ item: getOSItem("Ghommal's hilt 5"), reclaimable: true },
-			{ item: getOSItem("Ghommal's lucky penny"), reclaimable: true },
-			{ item: getOSItem('Antique lamp (master ca)'), reclaimable: false }
-		],
-		taskPoints: 5,
-		rewardThreshold: 1414
-	},
-	grandmaster: {
-		tasks: grandmasterCombatAchievements,
-		length: 90 - 3,
-		name: 'Grandmaster',
-		staticRewards: [
-			{ item: getOSItem("Ghommal's hilt 6"), reclaimable: true },
-			{
-				item: getOSItem('Antique lamp (grandmaster ca)'),
-				reclaimable: false
-			}
-		],
-		taskPoints: 6,
-		rewardThreshold: 1936
-	}
+	easy,
+	medium,
+	hard,
+	elite,
+	master,
+	grandmaster
 };
 
 const entries = Object.entries(CombatAchievements);
