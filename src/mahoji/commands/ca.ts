@@ -123,7 +123,7 @@ export const caCommand: OSBMahojiCommand = {
 			for (const group of Object.values(CombatAchievements)) {
 				result += `${group.name} (${group.tasks.filter(i => completedTaskIDs.has(i.id)).length}/${
 					group.tasks.length
-				} completed)\n`;
+				} completed). Each task in this tier awards ${group.taskPoints} points\n`;
 				for (const task of group.tasks) {
 					if (options.view.type === 'complete' && !completedTaskIDs.has(task.id)) {
 						continue;
