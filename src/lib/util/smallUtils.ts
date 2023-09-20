@@ -10,6 +10,7 @@ import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
+import { roll } from '../util';
 import getOSItem from './getOSItem';
 
 export function itemNameFromID(itemID: number | string) {
@@ -240,6 +241,37 @@ export function calculateSimpleMonsterDeathChance({
 	let reductionFactor = Math.min(1, currentKC / maxScalingKC);
 	let deathChance = baseDeathChance - reductionFactor * (baseDeathChance - lowestDeathChance);
 	return clamp(deathChance, lowestDeathChance, highestDeathChance);
+}
+
+export function perHourChance(
+	durationMilliseconds: number,
+	oneInXPerHourChance: number,
+	successFunction: () => unknown
+) {
+	const minutesPassed = Math.floor(durationMilliseconds / 60_000);
+	const perMinuteChance = oneInXPerHourChance * 60;
+
+	for (let i = 0; i < minutesPassed; i++) {
+		if (roll(perMinuteChance)) {
+			successFunction();
+		}
+	}
+}
+
+export function perTimeUnitChance(
+	durationMilliseconds: number,
+	oneInXPerTimeUnitChance: number,
+	timeUnitInMilliseconds: number,
+	successFunction: () => unknown
+) {
+	const unitsPassed = Math.floor(durationMilliseconds / timeUnitInMilliseconds);
+	const perUnitChance = oneInXPerTimeUnitChance / (timeUnitInMilliseconds / 60_000);
+
+	for (let i = 0; i < unitsPassed; i++) {
+		if (roll(perUnitChance)) {
+			successFunction();
+		}
+	}
 }
 
 export function addBanks(banks: ItemBank[]): Bank {
