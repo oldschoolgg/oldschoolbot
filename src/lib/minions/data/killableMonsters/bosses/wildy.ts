@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { WildernessDiary } from '../../../../diaries';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
@@ -248,6 +249,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			ranged: 65,
 			magic: 70
 		},
+		diaryRequirement: WildernessDiary.medium,
 		defaultAttackStyles: [SkillsEnum.Ranged],
 		healAmountNeeded: 8 * 20,
 		attackStyleToUse: GearStat.AttackRanged,
@@ -476,6 +478,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			defence: 70,
 			magic: 70
 		},
+		diaryRequirement: WildernessDiary.medium,
 		defaultAttackStyles: [SkillsEnum.Attack],
 		customMonsterHP: 420,
 		healAmountNeeded: 8 * 20,
@@ -755,6 +758,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			defence: 70,
 			magic: 70
 		},
+		diaryRequirement: WildernessDiary.medium,
 		defaultAttackStyles: [SkillsEnum.Attack],
 		healAmountNeeded: 8 * 20,
 		attackStyleToUse: GearStat.AttackCrush,
