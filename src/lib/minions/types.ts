@@ -6,7 +6,7 @@ import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 import { QuestID } from '../../mahoji/lib/abstracted_commands/questCommand';
 import { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
-import { DiaryTier } from '../diaries';
+import { Diary, DiaryTier } from '../diaries';
 import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
@@ -129,7 +129,7 @@ export interface KillableMonster {
 	}[];
 	requiredQuests?: QuestID[];
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
-	diaryRequirement?: DiaryTier;
+	diaryRequirement?: [Diary, DiaryTier];
 }
 /*
  * Monsters will have an array of Consumables

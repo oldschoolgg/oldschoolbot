@@ -22,7 +22,7 @@ import { PeakTier, PvMMethod } from '../../../lib/constants';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
-import { userhasDiaryTier } from '../../../lib/diaries';
+import { Diary, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
 import { GearSetupType } from '../../../lib/gear/types';
 import { trackLoot } from '../../../lib/lootTrack';
 import {
@@ -216,9 +216,10 @@ export async function minionKillCommand(
 	}
 
 	if (monster.diaryRequirement) {
-		const [hasDiary] = await userhasDiaryTier(user, monster.diaryRequirement);
+		const [diary, tier]: [Diary, DiaryTier] = monster.diaryRequirement;
+		const [hasDiary] = await userhasDiaryTier(user, tier);
 		if (!hasDiary) {
-			return `${user.minionName} is missing the relevant diary to kill ${monster.name}.`;
+			return `${user.minionName} is missing the ${diary.name} ${tier.name} diary to kill ${monster.name}.`;
 		}
 	}
 
