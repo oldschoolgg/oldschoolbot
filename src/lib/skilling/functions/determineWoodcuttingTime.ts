@@ -34,7 +34,11 @@ export function determineWoodcuttingTime({
 
 	let newQuantity = 0;
 
-	let userMaxTripTicks = calcMaxTripLength(user, 'Woodcutting') / (Time.Second * 0.6);
+	let maxTripLength = calcMaxTripLength(user, 'Woodcutting');
+	if (!powerchopping && user.owns('Log basket')) {
+		maxTripLength += Time.Minute * 5;
+	}
+	let userMaxTripTicks = maxTripLength / (Time.Second * 0.6);
 
 	if (log.name === 'Redwood Logs') {
 		userMaxTripTicks *= 2;

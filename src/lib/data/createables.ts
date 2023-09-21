@@ -15,6 +15,7 @@ import { caCreatables } from './creatables/caCreatables';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { dtCreatables } from './creatables/dt';
+import { forestryCreatables } from './creatables/forestryCreatables';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
 import { guardiansOfTheRiftCreatables } from './creatables/guardiansOfTheRiftCreatables';
 import { leaguesCreatables } from './creatables/leagueCreatables';
@@ -2345,7 +2346,8 @@ const Createables: Createable[] = [
 	...bloodBarkCreatables,
 	...swampBarkCreatables,
 	...dtCreatables,
-	...caCreatables
+	...caCreatables,
+	...forestryCreatables
 ];
 
 export default Createables;
