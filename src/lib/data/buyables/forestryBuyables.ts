@@ -15,7 +15,7 @@ export const forestryBuyables: Buyable[] = [
 	},
 	{
 		name: 'Secateurs blade',
-		itemCost: new Bank().add('Anima-infused bark', 20).add('Oak logs', 10).add('Willow logs', 5).add('Iron bar'),
+		itemCost: new Bank().add('Anima-infused bark', 20).add('Oak logs', 10).add('Willow logs', 5),
 		skillsNeeded: {
 			woodcutting: 35,
 			smithing: 35
@@ -23,7 +23,7 @@ export const forestryBuyables: Buyable[] = [
 	},
 	{
 		name: 'Ritual mulch',
-		itemCost: new Bank().add('Anima-infused bark', 150).add('Maple logs', 10).add('Dwarf weed'),
+		itemCost: new Bank().add('Anima-infused bark', 150).add('Maple logs', 10),
 		skillsNeeded: {
 			woodcutting: 68,
 			farming: 50
@@ -31,7 +31,7 @@ export const forestryBuyables: Buyable[] = [
 	},
 	{
 		name: 'Clover insignia',
-		itemCost: new Bank().add('Anima-infused bark', 200).add('Oak logs', 15).add('Emerald').add('Ball of wool'),
+		itemCost: new Bank().add('Anima-infused bark', 200).add('Oak logs', 15),
 		skillsNeeded: {
 			woodcutting: 70,
 			farming: 35,
@@ -40,7 +40,7 @@ export const forestryBuyables: Buyable[] = [
 	},
 	{
 		name: 'Powdered pollen',
-		itemCost: new Bank().add('Anima-infused bark', 300).add('Willow logs', 15).add('Logs').add('Ball of wool'),
+		itemCost: new Bank().add('Anima-infused bark', 300).add('Willow logs', 15),
 		skillsNeeded: {
 			woodcutting: 35,
 			hunter: 50
