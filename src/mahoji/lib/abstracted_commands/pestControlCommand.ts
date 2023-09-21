@@ -143,9 +143,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 	}
 
 	const { item, cost } = buyable;
-	const { pest_control_points: balance } = await user.fetchStats({
-		pest_control_points: true
-	});
+	const { pest_control_points: balance } = await user.fetchStats({ pest_control_points: true });
 	if (balance < cost) {
 		return `You don't have enough Void knight commendation points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`;
 	}
@@ -164,10 +162,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 		if (!hasDiary) {
 			return "You can't buy this because you haven't completed the Western Provinces hard diary.";
 		}
-		await transactItems({
-			userID: user.id,
-			itemsToRemove: new Bank().add(buyable.inputItem.id)
-		});
+		await transactItems({ userID: user.id, itemsToRemove: new Bank().add(buyable.inputItem.id) });
 	}
 	await userStatsUpdate(
 		user.id,
@@ -179,11 +174,7 @@ export async function pestControlBuyCommand(user: MUser, input: string) {
 		{}
 	);
 	const loot = new Bank().add(item.id);
-	await transactItems({
-		userID: user.id,
-		itemsToAdd: loot,
-		collectionLog: true
-	});
+	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
 
 	return `Successfully purchased ${loot} for ${cost} Void knight commendation points.`;
 }
@@ -256,9 +247,7 @@ export async function pestControlXPCommand(
 	}
 	const xpPerPoint = Math.floor(Math.pow(level, 2) / 600) * xpMultiplier[skillName as keyof typeof xpMultiplier];
 
-	const { pest_control_points: balance } = await user.fetchStats({
-		pest_control_points: true
-	});
+	const { pest_control_points: balance } = await user.fetchStats({ pest_control_points: true });
 	if (balance < amount) {
 		return `You cannot afford this, because you have only ${balance} points.`;
 	}

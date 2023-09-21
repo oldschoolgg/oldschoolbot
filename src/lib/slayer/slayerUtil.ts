@@ -491,7 +491,7 @@ export async function setDefaultSlayerMaster(
 		await user.update({
 			slayer_remember_master: null
 		});
-		return { success: true, message: "Saved Slayer master has been erased." };
+		return { success: true, message: 'Saved Slayer master has been erased.' };
 	}
 	const master = slayerMasters.find(
 		sm => stringMatches(newMaster, sm.name) || sm.aliases.some(alias => stringMatches(newMaster, alias))
@@ -523,7 +523,7 @@ export async function setDefaultAutoslay(
 			stringMatches(newAutoslayMode, asc.name) || asc.aliases.some(alias => stringMatches(newAutoslayMode, alias))
 	);
 	if (!autoslayOption) {
-		return { success: false, message: `Couldn't find matching autoslay option for '${newAutoslayMode}` }
+		return { success: false, message: `Couldn't find matching autoslay option for '${newAutoslayMode}` };
 	}
 	await user.update({
 		slayer_autoslay_options: [autoslayOption.key]
