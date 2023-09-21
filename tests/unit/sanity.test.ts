@@ -1,6 +1,7 @@
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { describe, expect, test } from 'vitest';
 
+import Buyables from '../../src/lib/data/buyables/buyables';
 import { allOpenables } from '../../src/lib/openables';
 import { exponentialPercentScale } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
@@ -54,5 +55,11 @@ describe('Sanity', () => {
 		expect(scep.id).toEqual(9044);
 		expect(scep.equipable).toEqual(true);
 		expect(scep.equipment?.slot).toEqual(EquipmentSlot.Weapon);
+	});
+	test('buyables without output', () => {
+		for (const buyable of Buyables) {
+			if (buyable.outputItems) continue;
+			getOSItem(buyable.name);
+		}
 	});
 });

@@ -7,7 +7,7 @@ import { ClientStorage, economy_transaction_type } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { isThenable } from '@sentry/utils';
 import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions } from 'discord.js';
-import { calcWhatPercent, notEmpty, randArrItem, sleep, Time, uniqueArr } from 'e';
+import { calcWhatPercent, noOp, notEmpty, randArrItem, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -25,7 +25,8 @@ import {
 	BOT_TYPE,
 	Channel,
 	DISABLED_COMMANDS,
-	globalConfig
+	globalConfig,
+	META_CONSTANTS
 } from '../../lib/constants';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetup } from '../../lib/gear/types';
@@ -1080,6 +1081,11 @@ export const adminCommand: OSBMahojiCommand = {
 			await interactionReply(interaction, {
 				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
 			});
+			await sendToChannelID(Channel.GeneralChannel, {
+				content: `I am shutting down! Goodbye :(
+
+${META_CONSTANTS.RENDERED_STR}`
+			}).catch(noOp);
 			process.exit();
 		}
 		if (options.shut_down) {
@@ -1089,6 +1095,11 @@ export const adminCommand: OSBMahojiCommand = {
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
 			await Promise.all([sleep(timer), GrandExchange.queue.onEmpty()]);
+			await sendToChannelID(Channel.GeneralChannel, {
+				content: `I am shutting down! Goodbye :(
+
+${META_CONSTANTS.RENDERED_STR}`
+			}).catch(noOp);
 			execSync(`pm2 stop ${BOT_TYPE === 'OSB' ? 'osb' : 'bso'}`);
 		}
 

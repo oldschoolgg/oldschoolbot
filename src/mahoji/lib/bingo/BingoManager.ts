@@ -4,13 +4,61 @@ import { chunk, noOp, Time } from 'e';
 import { groupBy } from 'lodash';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
+import ss from 'simple-statistics';
 
+import { Emoji } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { ItemBank } from '../../../lib/types';
+import getOSItem from '../../../lib/util/getOSItem';
 import { addBanks } from '../../../lib/util/smallUtils';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { generateTileName, isGlobalTile, rowsForSquare, StoredBingoTile, UniversalBingoTile } from './bingoUtil';
 import { globalBingoTiles } from './globalTiles';
+
+const BingoTrophies = [
+	{
+		item: getOSItem('Comp. dragon trophy'),
+		percentile: 5,
+		guaranteedAt: 25,
+		emoji: Emoji.DragonTrophy
+	},
+	{
+		item: getOSItem('Comp. rune trophy'),
+		percentile: 10,
+		guaranteedAt: 21,
+		emoji: Emoji.RuneTrophy
+	},
+	{
+		item: getOSItem('Comp. adamant trophy'),
+		percentile: 20,
+		guaranteedAt: 16,
+		emoji: Emoji.AdamantTrophy
+	},
+	{
+		item: getOSItem('Comp. mithril trophy'),
+		percentile: 40,
+		guaranteedAt: 12,
+		emoji: Emoji.MithrilTrophy
+	},
+	{
+		item: getOSItem('Comp. steel trophy'),
+		percentile: 50,
+		guaranteedAt: 8,
+		emoji: Emoji.SteelTrophy
+	},
+	{
+		item: getOSItem('Comp. iron trophy'),
+		percentile: 75,
+		guaranteedAt: 5,
+		emoji: Emoji.IronTrophy
+	},
+	{
+		item: getOSItem('Comp. bronze trophy'),
+		percentile: 90,
+		guaranteedAt: 1,
+		emoji: Emoji.BronzeTrophy
+	}
+] as const;
 
 export class BingoManager {
 	public id: number;
@@ -27,6 +75,7 @@ export class BingoManager {
 	public creatorID: string;
 	wasFinalized: boolean;
 	extraGP: number;
+	isGlobal: boolean;
 
 	constructor(options: Bingo) {
 		this.ticketPrice = Number(options.ticket_price);
@@ -42,6 +91,7 @@ export class BingoManager {
 		this.creatorID = options.creator_id;
 		this.wasFinalized = options.was_finalized;
 		this.extraGP = Number(options.extra_gp);
+		this.isGlobal = options.is_global;
 
 		this.bingoTiles = this.rawBingoTiles.map(tile => {
 			if (isGlobalTile(tile)) {
@@ -179,7 +229,14 @@ export class BingoManager {
 			throw new Error(`Couldn't find bingo with ID ${this.id}`);
 		}
 
-		const teams = Object.entries(groupBy(rawBingo.bingo_participant, i => i.bingo_team_id));
+		const teams = Object.entries(groupBy(rawBingo.bingo_participant, i => i.bingo_team_id))
+			.map(([id, participants]) => ({
+				team_id: Number(id),
+				...this.determineProgressOfBank(addBanks(participants.map(i => i.cl) as ItemBank[])),
+				participants
+			}))
+			.sort((a, b) => b.tilesCompletedCount - a.tilesCompletedCount);
+		const tilesCompletedCounts = teams.map(t => t.tilesCompletedCount);
 
 		return {
 			users: rawBingo?.bingo_participant
@@ -188,13 +245,17 @@ export class BingoManager {
 					...this.determineProgressOfBank(participant.cl as ItemBank)
 				}))
 				.sort((a, b) => b.tilesCompletedCount - a.tilesCompletedCount),
-			teams: teams
-				.map(([id, participants]) => ({
-					team_id: Number(id),
-					...this.determineProgressOfBank(addBanks(participants.map(i => i.cl) as ItemBank[])),
-					participants
-				}))
-				.sort((a, b) => b.tilesCompletedCount - a.tilesCompletedCount)
+			teams: teams.map(team => ({
+				...team,
+				trophy: this.isGlobal
+					? BingoTrophies.filter(
+							t =>
+								team.tilesCompletedCount >= t.guaranteedAt ||
+								100 - t.percentile <=
+									ss.quantileRank(tilesCompletedCounts, team.tilesCompletedCount) * 100
+					  )[0] ?? null
+					: null
+			}))
 		};
 	}
 

@@ -93,6 +93,7 @@ export interface RunCommandArgs {
 	bypassInhibitors?: true;
 	guildID: string | undefined | null;
 	interaction: ButtonInteraction | ChatInputCommandInteraction;
+	continueDeltaMillis: number | null;
 }
 export async function runCommand({
 	commandName,
@@ -103,7 +104,8 @@ export async function runCommand({
 	guildID,
 	user,
 	member,
-	interaction
+	interaction,
+	continueDeltaMillis
 }: RunCommandArgs): Promise<null | CommandResponse> {
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channel || !channelIsSendable(channel)) return null;
@@ -163,7 +165,8 @@ export async function runCommand({
 				args,
 				error,
 				isContinue: isContinue ?? false,
-				inhibited
+				inhibited,
+				continueDeltaMillis
 			});
 		} catch (err) {
 			logError(err);

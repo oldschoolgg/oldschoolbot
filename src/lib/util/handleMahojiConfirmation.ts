@@ -51,9 +51,7 @@ export async function handleMahojiConfirmation(
 			])
 		],
 		allowedMentions: {
-			users: [],
-			roles: [],
-			parse: []
+			parse: ['users']
 		}
 	});
 

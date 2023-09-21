@@ -124,6 +124,9 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	cannonMulti?: boolean;
 	chinning?: boolean;
 	burstOrBarrage?: number;
+	died?: boolean;
+	pkEncounters?: number;
+	hasWildySupplies?: boolean;
 }
 
 export interface RevenantOptions extends ActivityTaskOptions {
