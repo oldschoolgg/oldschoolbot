@@ -256,7 +256,8 @@ export async function autoSlayCommand({
 		guildID: isGuildChannel(channel) ? channel.guild.id : undefined,
 		user,
 		member: null,
-		interaction
+		interaction,
+		continueDeltaMillis: null
 	};
 
 	if (method === 'low') {
