@@ -11,7 +11,8 @@ export function makeCommandUsage({
 	commandName,
 	args,
 	isContinue,
-	inhibited
+	inhibited,
+	continueDeltaMillis
 }: {
 	userID: string | bigint;
 	channelID: string | bigint;
@@ -21,6 +22,7 @@ export function makeCommandUsage({
 	args: CommandOptions;
 	isContinue: null | boolean;
 	inhibited: boolean;
+	continueDeltaMillis: number | null;
 }): Prisma.CommandUsageCreateInput {
 	return {
 		user_id: BigInt(userID),
@@ -31,6 +33,7 @@ export function makeCommandUsage({
 		guild_id: guildID ? BigInt(guildID) : null,
 		flags: flags ? (Object.keys(flags).length > 0 ? flags : undefined) : undefined,
 		is_continue: isContinue ?? undefined,
-		inhibited
+		inhibited,
+		continue_delta_millis: continueDeltaMillis
 	};
 }
