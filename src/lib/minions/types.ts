@@ -57,6 +57,7 @@ export interface KillableMonster {
 	 */
 	wildy?: boolean;
 	wildyMulti?: boolean;
+	canBePked?: boolean;
 	pkActivityRating?: number;
 	pkBaseDeathChance?: number;
 
