@@ -22,6 +22,7 @@ import { PeakTier, PvMMethod } from '../../../lib/constants';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
+import { Diary, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
 import { GearSetupType } from '../../../lib/gear/types';
 import { trackLoot } from '../../../lib/lootTrack';
 import {
@@ -212,6 +213,14 @@ export async function minionKillCommand(
 	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Shayzien, 100);
 	if (!hasFavour && monster.id === Monsters.LizardmanShaman.id) {
 		return `${user.minionName} needs ${requiredPoints}% Shayzien Favour to kill Lizardman shamans.`;
+	}
+
+	if (monster.diaryRequirement) {
+		const [diary, tier]: [Diary, DiaryTier] = monster.diaryRequirement;
+		const [hasDiary] = await userhasDiaryTier(user, tier);
+		if (!hasDiary) {
+			return `${user.minionName} is missing the ${diary.name} ${tier.name} diary to kill ${monster.name}.`;
+		}
 	}
 
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, await user.getKC(monster.id));
