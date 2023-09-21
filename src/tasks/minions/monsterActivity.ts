@@ -92,9 +92,7 @@ export const monsterTask: MinionTask = {
 			// Handle death
 			if (died) {
 				// 1 in 20 to get smited without antiPKSupplies and 1 in 300 if the user has super restores
-				const hasPrayerLevel = hasSkillReqs(user, {
-					[SkillsEnum.Prayer]: 25
-				})[0];
+				const hasPrayerLevel = hasSkillReqs(user, { [SkillsEnum.Prayer]: 25 })[0];
 				const protectItem = roll(hasWildySupplies ? 300 : 20) ? false : hasPrayerLevel;
 				const userGear = { ...deepClone(user.gear.wildy.raw()) };
 
@@ -196,11 +194,7 @@ export const monsterTask: MinionTask = {
 
 		const { newKC } = await user.incrementKC(monsterID, quantity);
 
-		const isOnTaskResult = await isOnSlayerTask({
-			user,
-			monsterID,
-			quantityKilled: quantity
-		});
+		const isOnTaskResult = await isOnSlayerTask({ user, monsterID, quantityKilled: quantity });
 
 		const superiorTable = isOnTaskResult.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
 		const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
@@ -327,11 +321,7 @@ export const monsterTask: MinionTask = {
 				});
 				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
 				if (isOnTaskResult.assignedTask.isBoss) {
-					str += ` ${await user.addXP({
-						skillName: SkillsEnum.Slayer,
-						amount: 5000,
-						minimal: true
-					})}`;
+					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5000, minimal: true })}`;
 					str += ' for completing your boss task.';
 				}
 			} else {
