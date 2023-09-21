@@ -7001,6 +7001,280 @@ exports[`BSO Buyables 1`] = `
     "outputItems": undefined,
   },
   {
+    "customReq": [Function],
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Forestry kit",
+    "outputItems": Bank {
+      "bank": {
+        "28136": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "1519": 5,
+        "1521": 10,
+        "2351": 1,
+        "28134": 20,
+      },
+      "frozen": false,
+    },
+    "name": "Secateurs blade",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "smithing": 35,
+      "woodcutting": 35,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "1517": 10,
+        "267": 1,
+        "28134": 150,
+      },
+      "frozen": false,
+    },
+    "name": "Ritual mulch",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "farming": 50,
+      "woodcutting": 68,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "1521": 15,
+        "1605": 1,
+        "1759": 1,
+        "28134": 200,
+      },
+      "frozen": false,
+    },
+    "name": "Clover insignia",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "crafting": 70,
+      "farming": 35,
+      "woodcutting": 70,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "1511": 1,
+        "1519": 15,
+        "1759": 1,
+        "28134": 300,
+      },
+      "frozen": false,
+    },
+    "name": "Powdered pollen",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "hunter": 50,
+      "woodcutting": 35,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "1515": 300,
+        "1517": 300,
+        "1539": 45,
+        "2361": 3,
+        "28134": 3000,
+        "954": 2,
+      },
+      "frozen": false,
+    },
+    "name": "Log brace",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "smithing": 75,
+      "woodcutting": 75,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "1517": 300,
+        "1519": 300,
+        "1734": 1,
+        "1741": 1,
+        "28134": 10000,
+      },
+      "frozen": false,
+    },
+    "name": "Clothes pouch blueprint",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "crafting": 50,
+      "woodcutting": 50,
+    },
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "1517": 300,
+        "1519": 300,
+        "28134": 5000,
+      },
+      "frozen": false,
+    },
+    "name": "Log basket",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "10810": 500,
+        "1513": 500,
+        "1515": 500,
+        "1517": 500,
+        "1519": 500,
+        "1521": 500,
+        "19669": 500,
+        "28134": 15000,
+        "6332": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Funky shaped log",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "1515": 200,
+        "1517": 100,
+        "28134": 1000,
+      },
+      "frozen": false,
+    },
+    "name": "Lumberjack boots",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "1513": 100,
+        "1515": 200,
+        "28134": 1200,
+      },
+      "frozen": false,
+    },
+    "name": "Lumberjack hat",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "1515": 160,
+        "1517": 140,
+        "28134": 1300,
+      },
+      "frozen": false,
+    },
+    "name": "Lumberjack legs",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "1513": 120,
+        "1515": 60,
+        "19669": 120,
+        "28134": 1500,
+      },
+      "frozen": false,
+    },
+    "name": "Lumberjack top",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "10810": 60,
+        "10933": 1,
+        "1513": 60,
+        "1515": 60,
+        "1517": 60,
+        "1519": 60,
+        "1521": 60,
+        "19669": 60,
+        "28134": 1250,
+        "6332": 60,
+      },
+      "frozen": false,
+    },
+    "name": "Forestry boots",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "10810": 60,
+        "10941": 1,
+        "1513": 60,
+        "1515": 60,
+        "1517": 60,
+        "1519": 60,
+        "1521": 60,
+        "19669": 60,
+        "28134": 1250,
+        "6332": 60,
+      },
+      "frozen": false,
+    },
+    "name": "Forestry hat",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "10810": 60,
+        "10940": 1,
+        "1513": 60,
+        "1515": 60,
+        "1517": 60,
+        "1519": 60,
+        "1521": 60,
+        "19669": 60,
+        "28134": 1250,
+        "6332": 60,
+      },
+      "frozen": false,
+    },
+    "name": "Forestry legs",
+    "outputItems": undefined,
+  },
+  {
+    "itemCost": Bank {
+      "bank": {
+        "10810": 60,
+        "10939": 1,
+        "1513": 60,
+        "1515": 60,
+        "1517": 60,
+        "1519": 60,
+        "1521": 60,
+        "19669": 60,
+        "28134": 1250,
+        "6332": 60,
+      },
+      "frozen": false,
+    },
+    "name": "Forestry top",
+    "outputItems": undefined,
+  },
+  {
     "gpCost": 1320,
     "itemCost": Bank {
       "bank": {},
@@ -31832,6 +32106,130 @@ exports[`BSO Creatables 1`] = `
         "25936": 1,
       },
       "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "2351": 1,
+        "28159": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Secateurs attachment",
+    "outputItems": Bank {
+      "bank": {
+        "28161": 50,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "267": 1,
+        "28154": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Nature offerings",
+    "outputItems": Bank {
+      "bank": {
+        "28152": 40,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1605": 1,
+        "1759": 1,
+        "28181": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Leprechaun charm",
+    "outputItems": Bank {
+      "bank": {
+        "28179": 10,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 70,
+      "farming": 35,
+      "woodcutting": 70,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1511": 1,
+        "1759": 1,
+        "28190": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Bee on a stick",
+    "outputItems": Bank {
+      "bank": {
+        "28184": 10,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "hunter": 50,
+      "woodcutting": 35,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1539": 45,
+        "2361": 3,
+        "28146": 1,
+        "954": 2,
+      },
+      "frozen": false,
+    },
+    "name": "Sturdy harness",
+    "outputItems": Bank {
+      "bank": {
+        "28149": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "smithing": 75,
+      "woodcutting": 75,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1734": 1,
+        "1741": 1,
+        "28166": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Clothes pouch",
+    "outputItems": Bank {
+      "bank": {
+        "28163": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 50,
+      "woodcutting": 50,
     },
   },
 ]
