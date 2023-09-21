@@ -163,7 +163,8 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 			member: interaction.member,
 			channelID: interaction.channelId,
 			guildID: interaction.guildId,
-			interaction
+			interaction,
+			continueDeltaMillis: null
 		});
 	}
 
@@ -325,7 +326,8 @@ async function handleGearPresetEquip(user: MUser, id: string, interaction: Butto
 		member: interaction.member,
 		channelID: interaction.channelId,
 		guildID: interaction.guildId,
-		interaction
+		interaction,
+		continueDeltaMillis: null
 	});
 }
 
@@ -428,7 +430,8 @@ export async function interactionHook(interaction: Interaction) {
 		member: interaction.member ?? null,
 		channelID: interaction.channelId,
 		guildID: interaction.guildId,
-		interaction
+		interaction,
+		continueDeltaMillis: null
 	};
 
 	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);

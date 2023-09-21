@@ -725,6 +725,8 @@ model CommandUsage {
   channel_id BigInt?
   guild_id   BigInt?
 
+  continue_delta_millis BigInt?
+
   @@map("command_usage")
 }
 

@@ -50,10 +50,10 @@ export const Channel = {
 		BOT_TYPE === 'OSB'
 			? production
 				? '346304390858145792'
-				: '940760643525570591'
+				: '1154056119019393035'
 			: production
 			? '792691343284764693'
-			: '940760643525570591',
+			: '1154056119019393035',
 	// BSO Channels
 	BSOGeneral: DISCORD_SETTINGS.Channels?.BSOGeneral ?? '792691343284764693',
 	BSOChannel: DISCORD_SETTINGS.Channels?.BSOChannel ?? '732207379818479756',

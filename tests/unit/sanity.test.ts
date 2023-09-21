@@ -3,6 +3,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { assert, describe, expect, test } from 'vitest';
 
 import { allMbTables, embTable, PMBTable, tmbTable, umbTable } from '../../src/lib/bsoOpenables';
+import Buyables from '../../src/lib/data/buyables/buyables';
 import { allPetIDs, masterCapesCL, toaCL } from '../../src/lib/data/CollectionsExport';
 import { itemsToDelete } from '../../src/lib/deletedItems';
 import { dyedItems } from '../../src/lib/dyedItems';
@@ -268,6 +269,12 @@ describe('Sanity', () => {
 					throw new Error(`${name} shouldnt be openable`);
 				}
 			}
+		}
+	});
+	test('buyables without output', () => {
+		for (const buyable of Buyables) {
+			if (buyable.outputItems) continue;
+			getOSItem(buyable.name);
 		}
 	});
 });

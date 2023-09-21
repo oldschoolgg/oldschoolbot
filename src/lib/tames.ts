@@ -832,13 +832,15 @@ export async function repeatTameTrip({
 	guildID,
 	user,
 	member,
-	interaction
+	interaction,
+	continueDeltaMillis
 }: {
 	channelID: string;
 	guildID: string | null;
 	user: MUser;
 	member: APIInteractionGuildMember | GuildMember | null;
 	interaction: ButtonInteraction | ChatInputCommandInteraction;
+	continueDeltaMillis: number | null;
 }) {
 	const activity = await tameLastFinishedActivity(user);
 	if (!activity) {
@@ -860,7 +862,8 @@ export async function repeatTameTrip({
 				guildID,
 				user,
 				member,
-				interaction
+				interaction,
+				continueDeltaMillis
 			});
 		}
 		case TameType.Gatherer: {
@@ -876,7 +879,8 @@ export async function repeatTameTrip({
 				guildID,
 				user,
 				member,
-				interaction
+				interaction,
+				continueDeltaMillis
 			});
 		}
 		case 'SpellCasting': {
@@ -917,7 +921,8 @@ export async function repeatTameTrip({
 				guildID,
 				user,
 				member,
-				interaction
+				interaction,
+				continueDeltaMillis
 			});
 		}
 		case 'Tempoross':
@@ -934,7 +939,8 @@ export async function repeatTameTrip({
 				guildID,
 				user,
 				member,
-				interaction
+				interaction,
+				continueDeltaMillis
 			});
 		}
 		default: {
