@@ -98,10 +98,7 @@ export const caCommand: OSBMahojiCommand = {
 					}
 				}
 				if (claimableRewards.length > 0) {
-					await user.addItemsToBank({
-						items: claimableRewards,
-						collectionLog: true
-					});
+					await user.addItemsToBank({ items: claimableRewards, collectionLog: true });
 					return `You claimed ${claimableRewards}.`;
 				}
 
