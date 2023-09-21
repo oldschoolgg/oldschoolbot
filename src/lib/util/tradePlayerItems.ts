@@ -15,7 +15,7 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 	const itemsToSend = _itemsToSend ? _itemsToSend.clone() : new Bank();
 	const itemsToReceive = _itemsToReceive ? _itemsToReceive.clone() : new Bank();
 
-	// Queue the primary trade function: (Clears cache on completion/failure)
+	// Queue the primary trade function:
 	const processTradePromise = userQueueFn(sender.id, async () => {
 		try {
 			await Promise.all([sender.sync(), recipient.sync()]);
