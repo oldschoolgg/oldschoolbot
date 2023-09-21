@@ -69,6 +69,7 @@ export async function tradePlayerItems(sender: MUser, recipient: MUser, _itemsTo
 			});
 			// Run both in a single transaction, so it all succeeds or all fails:
 			await prisma.$transaction([updateSender, updateRecipient]);
+			await Promise.all([sender.sync(), recipient.sync()]);
 			return { success: true, message: null };
 		} catch (e: any) {
 			// We should only get here if something bad happened... most likely prisma, but possibly command competition
