@@ -3,14 +3,13 @@ import { exec } from 'node:child_process';
 import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, time } from 'discord.js';
-import { clamp, objectEntries, Time } from 'e';
+import { clamp, objectEntries, roll, Time } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
-import { roll } from '../util';
 import getOSItem from './getOSItem';
 
 export function itemNameFromID(itemID: number | string) {
