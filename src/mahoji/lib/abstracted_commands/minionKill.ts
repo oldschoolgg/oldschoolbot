@@ -24,6 +24,7 @@ import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
+import { Diary, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
 import { GearSetupType } from '../../../lib/gear/types';
 import { canAffordInventionBoost, InventionID, inventionItemBoost } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -295,6 +296,14 @@ export async function minionKillCommand(
 	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Shayzien, 100);
 	if (!hasFavour && monster.id === Monsters.LizardmanShaman.id) {
 		return `${user.minionName} needs ${requiredPoints}% Shayzien Favour to kill Lizardman shamans.`;
+	}
+
+	if (monster.diaryRequirement) {
+		const [diary, tier]: [Diary, DiaryTier] = monster.diaryRequirement;
+		const [hasDiary] = await userhasDiaryTier(user, tier);
+		if (!hasDiary) {
+			return `${user.minionName} is missing the ${diary.name} ${tier.name} diary to kill ${monster.name}.`;
+		}
 	}
 
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, await user.getKC(monster.id));
@@ -907,7 +916,7 @@ export async function minionKillCommand(
 	let hasDied = false;
 	let hasWildySupplies = undefined;
 
-	if (monster.wildy) {
+	if (monster.canBePked) {
 		const date = new Date().getTime();
 		const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
 		for (const peak of cachedPeakInterval) {

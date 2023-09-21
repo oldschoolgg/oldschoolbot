@@ -125,7 +125,8 @@ async function returnSuccess(channelID: string, user: MUser, content: string) {
 		userID: user.id,
 		guildID: channel.guild ? channel.guild.id : undefined,
 		user,
-		member: null
+		member: null,
+		continueDeltaMillis: null
 	};
 
 	try {

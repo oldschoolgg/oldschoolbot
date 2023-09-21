@@ -104,6 +104,7 @@ import {
 	fishingContestCL,
 	fishingTrawlerCL,
 	fistOfGuthixCL,
+	forestryCL,
 	FormatProgressFunction,
 	fossilIslandNotesCL,
 	generalGraardorCL,
@@ -1202,6 +1203,12 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: Monsters.Cyclops.name,
 				allItems: Monsters.Cyclops.allItems,
 				items: cyclopsCL
+			},
+			Forestry: {
+				alias: ['forestry'],
+				fmtProg: skillProg(SkillsEnum.Woodcutting),
+				allItems: forestryCL,
+				items: forestryCL
 			},
 			'Fossil Island Notes': {
 				items: fossilIslandNotesCL

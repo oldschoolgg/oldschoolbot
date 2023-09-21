@@ -130,7 +130,8 @@ export const mahojiClient = new MahojiClient({
 				args: options,
 				error,
 				isContinue: false,
-				inhibited
+				inhibited,
+				continueDeltaMillis: null
 			})
 	},
 	djsClient: client

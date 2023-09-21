@@ -1795,6 +1795,21 @@ export const cyclopsCL = resolveItems([
 	'Rune defender',
 	'Dragon defender'
 ]);
+export const forestryCL = resolveItems([
+	'Lumberjack hat',
+	'Lumberjack top',
+	'Lumberjack legs',
+	'Lumberjack boots',
+	'Forestry hat',
+	'Forestry top',
+	'Forestry legs',
+	'Forestry boots',
+	'Funky shaped log',
+	'Log basket',
+	'Log brace',
+	'Clothes pouch blueprint'
+]);
+
 export const fossilIslandNotesCL = resolveItems([
 	'Scribbled note',
 	'Partial note',

@@ -25,7 +25,7 @@ export interface DiaryTier {
 	monsterScores?: Record<string, number>;
 	customReq?: (user: MUser, summary: Boolean) => Promise<[true] | [false, string]>;
 }
-interface Diary {
+export interface Diary {
 	name: string;
 	alias?: string[];
 	easy: DiaryTier;

@@ -426,7 +426,11 @@ const source: [string, (string | number)[]][] = [
 	['Imbued heart', ['Saturated heart']],
 	["Craw's bow", ['Webweaver bow']],
 	["Viggora's chainmace", ['Ursine chainmace']],
-	["Thammaron's sceptre", ['Accursed sceptre']]
+	["Thammaron's sceptre", ['Accursed sceptre']],
+	['Lumberjack hat', ['Forestry hat']],
+	['Lumberjack top', ['Forestry top']],
+	['Lumberjack legs', ['Forestry legs']],
+	['Lumberjack boots', ['Forestry boots']]
 ];
 
 // Make max cape count as all master capes

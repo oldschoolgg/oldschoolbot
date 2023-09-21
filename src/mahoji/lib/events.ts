@@ -1,4 +1,3 @@
-import { noOp } from 'e';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -77,5 +76,5 @@ export async function onStartup() {
 		content: `I have just turned on!
 
 ${META_CONSTANTS.RENDERED_STR}`
-	}).catch(noOp);
+	}).catch(console.error);
 }

@@ -300,7 +300,8 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 								guildID: undefined,
 								user: await mUserFetch(user.id),
 								member: message.member,
-								interaction: selection
+								interaction: selection,
+								continueDeltaMillis: selection.createdAt.getTime() - message.createdAt.getTime()
 							});
 						}
 					} catch {
