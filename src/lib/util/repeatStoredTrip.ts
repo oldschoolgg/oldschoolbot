@@ -666,6 +666,7 @@ export async function repeatTrip(
 		guildID: interaction.guildId,
 		member: interaction.member,
 		channelID: interaction.channelId,
-		user: interaction.user
+		user: interaction.user,
+		continueDeltaMillis: interaction.createdAt.getTime() - interaction.message.createdTimestamp
 	});
 }

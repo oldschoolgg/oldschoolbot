@@ -683,7 +683,7 @@ export async function minionKillCommand(
 	let hasDied = false;
 	let hasWildySupplies = undefined;
 
-	if (monster.wildy) {
+	if (monster.canBePked) {
 		const date = new Date().getTime();
 		const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
 		for (const peak of cachedPeakInterval) {

@@ -18,6 +18,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		emoji: '<:Callisto_cub:324127376273440768>',
 		wildy: true,
 		wildyMulti: true,
+		canBePked: true,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 10,
 
@@ -143,6 +144,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		emoji: '<:Callisto_cub:324127376273440768>',
 		wildy: true,
 		wildyMulti: false,
+		canBePked: true,
 		pkActivityRating: 10,
 		pkBaseDeathChance: 10,
 
@@ -264,6 +266,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		emoji: '<:Vetion_jr:324127378999738369>',
 		wildy: true,
 		wildyMulti: true,
+		canBePked: true,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 9,
 
@@ -381,6 +384,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		emoji: '<:Vetion_jr:324127378999738369>',
 		wildy: true,
 		wildyMulti: false,
+		canBePked: true,
 		pkActivityRating: 10,
 		pkBaseDeathChance: 9,
 
@@ -494,6 +498,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		emoji: '<:Venenatis_spiderling:324127379092144129>',
 		wildy: true,
 		wildyMulti: true,
+		canBePked: true,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 9,
 
@@ -636,6 +641,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		emoji: '<:Venenatis_spiderling:324127379092144129>',
 		wildy: true,
 		wildyMulti: false,
+		canBePked: true,
 		pkActivityRating: 10,
 		pkBaseDeathChance: 9,
 
