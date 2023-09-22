@@ -1,7 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import '../../src/lib/data/itemAliases';
-import '../../src/lib/customItems/customItems';
-
 import { randInt } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
@@ -379,6 +376,13 @@ describe('Bank Parsers', () => {
 		}
 	});
 
+	test('edge cases', () => {
+		const usersBank = new Bank().add('Coal', 100).add('Huge lamp', 3);
+
+		expect(parseBank({ inputBank: usersBank, inputStr: '# coal' }).toString()).toEqual('100x Coal');
+		expect(parseBank({ inputBank: usersBank, inputStr: '0 coal' }).toString()).toEqual('100x Coal');
+		expect(parseBank({ inputBank: usersBank, inputStr: 'coal' }).toString()).toEqual('100x Coal');
+	});
 	test('ensureOldNamesDontWorkForCustomItems', () => {
 		const usersBank = new Bank()
 			.add('Doug', 3)
