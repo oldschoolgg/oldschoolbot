@@ -150,21 +150,20 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 				{ id: string; last_daily_timestamp: bigint; bitfield: number }[]
 			>(
 				`
-			SELECT users.id, user_stats.last_daily_timestamp, users.bitfield
-			FROM users
-			JOIN user_stats ON users.id::bigint = user_stats.user_id
-			WHERE bitfield && '{${bitfieldPatron.join(
-				','
-			)}}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '${reminderHours} hours';
-			`
+				SELECT users.id, user_stats.last_daily_timestamp, users.bitfield
+				FROM users
+				JOIN user_stats ON users.id::bigint = user_stats.user_id
+				WHERE bitfield && '{${bitfieldPatron.join(
+					','
+				)}}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '${reminderHours} hours';
+				`
 			);
-
 			for (const row of result) {
-				if (!production) continue;
-				if (Number(row.last_daily_timestamp) === -1) continue;
-				if (Array.isArray(row.bitfield) && row.bitfield.includes(37)) {
+				if (Array.isArray(row.bitfield) && row.bitfield.includes(BitField.DisabledDailyReminders)) {
 					continue;
 				}
+				if (!production) continue;
+				if (Number(row.last_daily_timestamp) === -1) continue;
 
 				await userStatsUpdate(
 					row.id,
@@ -173,7 +172,6 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 					},
 					{}
 				);
-
 				const user = await globalClient.fetchUser(row.id);
 				await user.send('Your daily is ready!').catch(noOp);
 			}

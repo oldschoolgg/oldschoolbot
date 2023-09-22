@@ -61,10 +61,6 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisableGrandExchangeDMs
 	},
 	{
-		name: "Disable Daily Reminder DM's",
-		bit: BitField.DisableDailyReminderDMs
-	},
-	{
 		name: 'Clean herbs during farm runs',
 		bit: BitField.CleanHerbsFarming
 	},
@@ -122,6 +118,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable farming reminders',
 		bit: BitField.DisabledFarmingReminders
+	},
+	{
+		name: 'Disable daily reminders',
+		bit: BitField.DisabledDailyReminders
 	}
 ];
 
