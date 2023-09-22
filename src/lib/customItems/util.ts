@@ -19,12 +19,12 @@ export function isCustomItem(itemID: number) {
 export const hasSet: Item[] = [];
 
 // Prevent old item names from matching customItems
-export function ensureCustomItemName(nameToTest: string) {
+export function isDeletedItemName(nameToTest: string) {
 	const cleanNameToTest = deepCleanString(nameToTest);
 	if (overwrittenItemNames.get(cleanNameToTest)) {
-		return false;
+		return true;
 	}
-	return true;
+	return false;
 }
 
 export function setCustomItem(id: number, name: string, baseItem: string, newItemData?: Partial<Item>, price = 0) {

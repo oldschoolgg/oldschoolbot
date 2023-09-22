@@ -5,7 +5,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
 import { ONE_TRILLION } from '../constants';
-import { ensureCustomItemName } from '../customItems/util';
+import { isDeletedItemName } from '../customItems/util';
 import { filterableTypes } from '../data/filterables';
 import { cleanString, stringMatches } from '../util';
 
@@ -24,10 +24,10 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 		return parseQuantityAndItem(split.join(' '));
 	}
 
-	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
+	let [potentialQty, ...potentialName] = split.length === 1 ? ['', split[0]] : split;
 
-	if (!ensureCustomItemName(str)) return [];
-	if (!isNaN(Number(potentialQty)) && !ensureCustomItemName(potentialName.join(' '))) return [];
+	if (isDeletedItemName(str)) return [];
+	if (!isNaN(Number(potentialQty)) && isDeletedItemName(potentialName.join(' '))) return [];
 
 	let lazyItemGet = Items.get(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
 	if (str.includes('#') && lazyItemGet && inputBank) {
