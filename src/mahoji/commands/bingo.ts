@@ -1,5 +1,5 @@
 import { userMention } from '@discordjs/builders';
-import { mentionCommand, stringMatches } from '@oldschoolgg/toolkit';
+import { mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { bold, ChatInputCommandInteraction, User } from 'discord.js';
 import { chunk, noOp, notEmpty, Time, uniqueArr } from 'e';
@@ -11,13 +11,14 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
-import { BOT_TYPE, Emoji } from '../../lib/constants';
+import { clImageGenerator } from '../../lib/collectionLogTask';
+import { BOT_TYPE, Emoji, usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
-import { channelIsSendable, dateFm, isValidDiscordSnowflake, isValidNickname, toKMB } from '../../lib/util';
+import { channelIsSendable, dateFm, isValidDiscordSnowflake, isValidNickname, md5sum, toKMB } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { BingoManager } from '../lib/bingo/BingoManager';
-import { generateTileName, StoredBingoTile } from '../lib/bingo/bingoUtil';
+import { generateTileName, getAllTileItems, isGlobalTile, StoredBingoTile } from '../lib/bingo/bingoUtil';
 import { globalBingoTiles } from '../lib/bingo/globalTiles';
 import { OSBMahojiCommand } from '../lib/util';
 import { doMenu, getPos } from './leaderboard';
@@ -75,8 +76,8 @@ async function bingoTeamLeaderboard(user: MUser, channelID: string, bingo: Bingo
 			subList
 				.map(
 					(team, j) =>
-						`${getPos(i, j)}**${team.participants
-							.map(pt => userMention(pt.user_id))
+						`${getPos(i, j)}** ${`${team.trophy?.emoji} ` ?? ''}${team.participants
+							.map(pt => usernameCache.get(pt.user_id) ?? '?')
 							.join(', ')}:** ${team.tilesCompletedCount.toLocaleString()}`
 				)
 				.join('\n')
@@ -229,6 +230,20 @@ function parseTileAddInput(input: string): StoredBingoTile | null {
 	return {
 		oneOf: items.map(i => i.id)
 	};
+}
+
+async function getBingoFromUserInput(input: string) {
+	const where = Number.isNaN(Number(input))
+		? {
+				title: input
+		  }
+		: {
+				id: Number(input)
+		  };
+	const bingo = await prisma.bingo.findFirst({
+		where
+	});
+	return bingo;
 }
 
 export const bingoCommand: OSBMahojiCommand = {
@@ -475,7 +490,10 @@ export const bingoCommand: OSBMahojiCommand = {
 							.map(b => new BingoManager(b).bingoTiles)
 							.flat()
 							.filter(b => b.name.toLowerCase().includes(value.toLowerCase()))
-							.map(b => ({ name: b.name, value: b.name }));
+							.map(b => ({
+								name: truncateString(b.name, 100),
+								value: b.id ? b.id.toString() : md5sum(b.name)
+							}));
 					}
 				},
 				{
@@ -483,6 +501,34 @@ export const bingoCommand: OSBMahojiCommand = {
 					name: 'finalize',
 					description: 'Finalize/end the bingo.',
 					required: false
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'add_extra_gp',
+					description: 'Add extra gp to the prize.',
+					required: false,
+					min_value: 1_000_000
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'items',
+			description: 'View your progress/items.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'bingo',
+					description: 'The bingo to check your items of.',
+					required: true,
+					autocomplete: async (value: string, user: User) => {
+						const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
+						return bingos
+							.map(i => new BingoManager(i))
+							.filter(b => b.isActive())
+							.filter(bingo => (!value ? true : bingo.id.toString() === value))
+							.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
+					}
 				}
 			]
 		}
@@ -493,6 +539,9 @@ export const bingoCommand: OSBMahojiCommand = {
 		interaction,
 		channelID
 	}: CommandRunOptions<{
+		items?: {
+			bingo: string;
+		};
 		leaderboard?: {
 			bingo: string;
 		};
@@ -515,6 +564,7 @@ export const bingoCommand: OSBMahojiCommand = {
 			add_tile?: string;
 			remove_tile?: string;
 			finalize?: boolean;
+			add_extra_gp?: number;
 		};
 		view?: {
 			bingo: string;
@@ -522,30 +572,72 @@ export const bingoCommand: OSBMahojiCommand = {
 	}>) => {
 		const user = await mUserFetch(userID);
 
-		if (options.make_team) {
-			const bingo = await prisma.bingo.findFirst({
+		if (options.items) {
+			const bingoID = Number(options.items.bingo);
+			if (isNaN(bingoID)) {
+				return 'Invalid bingo.';
+			}
+			const bingoParticipant = await prisma.bingoParticipant.findFirst({
 				where: {
-					id: Number(options.make_team.bingo)
+					bingo_id: Number(options.items.bingo),
+					user_id: user.id
+				},
+				include: {
+					bingo: true
 				}
 			});
+
+			if (!bingoParticipant) return 'Invalid bingo.';
+			const bingo = new BingoManager(bingoParticipant.bingo);
+			const teamProgress = (await bingo.determineProgressOfTeam(bingoParticipant.bingo_team_id))!;
+
+			const clItems = [];
+
+			for (const tile of teamProgress.tilesNotCompleted) {
+				const tileItems = getAllTileItems(tile);
+				clItems.push(...tileItems);
+			}
+
+			for (const tile of teamProgress.tilesCompleted) {
+				if ('oneOf' in tile) {
+					const completed = tile.oneOf.find(i => teamProgress.cl.has(i));
+					if (completed) {
+						clItems.push(completed);
+					} else {
+						clItems.push(...tile.oneOf);
+					}
+				}
+
+				if ('allOf' in tile) {
+					clItems.push(...tile.allOf);
+				}
+
+				if ('customReq' in tile) {
+					clItems.push(...tile.allItems.filter(i => teamProgress.cl.has(i)));
+				}
+			}
+
+			const image = await clImageGenerator.makeArbitraryCLImage({
+				user,
+				clItems,
+				userBank: teamProgress.cl,
+				title: 'Bingo'
+			});
+
+			return image;
+		}
+		if (options.make_team) {
+			const bingo = await getBingoFromUserInput(options.make_team.bingo);
 			if (!bingo) return 'Invalid bingo.';
 			return makeTeamCommand(interaction, new BingoManager(bingo), user, options.make_team);
 		}
 		if (options.leave_team) {
-			const bingo = await prisma.bingo.findFirst({
-				where: {
-					id: Number(options.leave_team.bingo)
-				}
-			});
+			const bingo = await getBingoFromUserInput(options.leave_team.bingo);
 			if (!bingo) return 'Invalid bingo.';
 			return leaveTeamCommand(interaction, new BingoManager(bingo));
 		}
 		if (options.leaderboard) {
-			const bingo = await prisma.bingo.findFirst({
-				where: {
-					id: Number(options.leaderboard.bingo)
-				}
-			});
+			const bingo = await getBingoFromUserInput(options.leaderboard.bingo);
 			if (!bingo) return 'Invalid bingo.';
 			return bingoTeamLeaderboard(user, channelID, new BingoManager(bingo));
 		}
@@ -651,11 +743,7 @@ ${Emoji.Warning} **You will pay a ${toKMB(fee)} GP fee to create this bingo, you
 			if (!options.manage_bingo.bingo) {
 				return 'You need to pick which bingo to manage.';
 			}
-			const _bingo = await prisma.bingo.findFirst({
-				where: {
-					id: Number(options.manage_bingo.bingo)
-				}
-			});
+			const _bingo = await getBingoFromUserInput(options.manage_bingo.bingo);
 			if (!_bingo) return 'Invalid bingo.';
 			if (_bingo.creator_id !== user.id && !_bingo.organizers.includes(user.id)) {
 				return 'You are not an organizer of this bingo.';
@@ -725,13 +813,13 @@ The creator of the bingo (${userMention(
 				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo!.add_tile));
 				let tileToAdd: StoredBingoTile | null = null;
 				if (globalTile) {
-					tileToAdd = globalTile.id;
+					tileToAdd = { global: globalTile.id };
 				} else {
 					tileToAdd = parseTileAddInput(options.manage_bingo.add_tile);
 				}
 				if (!tileToAdd) {
 					return `Invalid tile to add. You can either select a global/predefined tile, or input a custom tile.
-					
+
 Example: \`add_tile:Coal+Trout+Egg\` is a tile where you have to receive a coal AND trout AND egg.
 Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal OR trout OR egg.`;
 				}
@@ -754,38 +842,79 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 				}
 				let newTiles = [...bingo.rawBingoTiles];
 				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo!.remove_tile));
+				let tileName = '';
 				if (globalTile) {
-					newTiles = newTiles.filter(t => typeof t === 'number' && t !== globalTile.id);
-				} else {
 					newTiles = newTiles.filter(
-						t => generateTileName(t).toLowerCase() !== options.manage_bingo!.remove_tile!.toLowerCase()
+						t => (isGlobalTile(t) && t.global !== globalTile.id) || !isGlobalTile(t)
 					);
+					tileName = generateTileName(globalTile);
+				} else {
+					const tileToRemove = newTiles.find(
+						t => md5sum(generateTileName(t)) === options.manage_bingo!.remove_tile
+					);
+					if (tileToRemove) {
+						newTiles = newTiles.filter(
+							t => md5sum(generateTileName(t)) !== options.manage_bingo!.remove_tile!
+						);
+						tileName = generateTileName(tileToRemove);
+					}
 				}
 
 				if (newTiles.length === bingo.rawBingoTiles.length) {
 					return 'Invalid tile to remove.';
 				}
 
-				await handleMahojiConfirmation(interaction, 'Are you sure you want to remove this tile?');
+				await handleMahojiConfirmation(
+					interaction,
+					`Are you sure you want to remove this tile?\n\n${tileName}`
+				);
 				await prisma.bingo.update({
 					where: {
 						id: bingo.id
 					},
 					data: {
-						bingo_tiles: newTiles as any as Prisma.InputJsonObject
+						bingo_tiles: newTiles as any as Prisma.InputJsonObject[]
 					}
 				});
 
-				return 'Removed that tile from your bingo.';
+				return `Removed "${tileName}" from your bingo.`;
+			}
+
+			if (options.manage_bingo.add_extra_gp) {
+				const amount = Number(options.manage_bingo.add_extra_gp);
+				if (isNaN(amount) || amount < 1) {
+					return 'Invalid amount.';
+				}
+
+				const cost = new Bank().add('Coins', amount);
+				if (user.GP < cost.amount('Coins')) {
+					return `You need atleast ${cost} to add that much GP to the prize pool.`;
+				}
+
+				await handleMahojiConfirmation(
+					interaction,
+					`Are you sure you want to add ${cost} to the prize pool? You cannot undo this.`
+				);
+
+				await user.removeItemsFromBank(cost);
+				await prisma.bingo.update({
+					where: {
+						id: bingo.id
+					},
+					data: {
+						extra_gp: {
+							increment: amount
+						}
+					}
+				});
+				debugLog('Added extra gp to bingo', { bingoID: bingo.id, amount });
+
+				return `Added ${cost} to the prize pool.`;
 			}
 		}
 
 		if (options.view) {
-			const _bingo = await prisma.bingo.findFirst({
-				where: {
-					id: Number(options.view.bingo)
-				}
-			});
+			const _bingo = await getBingoFromUserInput(options.view.bingo);
 			if (!_bingo) return 'Invalid bingo.';
 			const bingo = new BingoManager(_bingo);
 
@@ -796,6 +925,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 			let progressString = '';
 			if (yourTeam && yourParticipant) {
 				const yourProgress = bingo.determineProgressOfBank(yourParticipant.cl as ItemBank);
+
 				progressString = bingo.isActive()
 					? `You have ${yourProgress.tilesCompletedCount} tiles completed.
 ${yourProgress.bingoTableStr}
@@ -803,6 +933,14 @@ ${yourProgress.bingoTableStr}
 Your team has ${yourTeam.tilesCompletedCount} tiles completed.
 ${yourTeam.bingoTableStr}`
 					: '';
+
+				if (bingo.isGlobal) {
+					progressString += `\n${
+						yourTeam.trophy
+							? `**Trophy:** ${yourTeam.trophy.emoji} ${yourTeam.trophy.item.name}\n`
+							: 'Your team has not qualified for a trophy.'
+					}`;
+				}
 			}
 
 			let str = `**${bingo.title}** ${teams.length} teams, ${toKMB(

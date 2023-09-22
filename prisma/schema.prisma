@@ -340,11 +340,11 @@ model User {
   bankBackground             Int                @default(1)
   attack_style               String[]
   combat_options             Int[]
-  farming_patch_reminders    Boolean            @default(true)
   slayer_remember_master     String?            @map("slayer.remember_master")
   slayer_autoslay_options    Int[]              @map("slayer.autoslay_options")
   bank_sort_method           String?            @db.VarChar(16)
   bank_sort_weightings       Json               @default("{}") @db.Json
+  gambling_lockout_expiry    DateTime?
 
   // Skills
   skills_agility      BigInt @default(0) @map("skills.agility")
@@ -566,6 +566,8 @@ model CommandUsage {
   args       Json?   @db.Json
   channel_id BigInt?
   guild_id   BigInt?
+
+  continue_delta_millis BigInt?
 
   @@map("command_usage")
 }
@@ -1013,6 +1015,8 @@ model Bingo {
   was_finalized            Boolean  @default(false)
 
   guild_id String @db.VarChar(19)
+
+  extra_gp BigInt @default(0)
 
   bingo_participant BingoParticipant[]
   bingo_team        BingoTeam[]

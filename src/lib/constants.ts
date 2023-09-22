@@ -12,10 +12,13 @@ import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
+import { dateFm } from './util/smallUtils';
 
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
 const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '940760643525570591';
+
+export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB' as 'BSO' | 'OSB';
 
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
@@ -29,7 +32,15 @@ export const Channel = {
 	TestingMain: TestingMainChannelID,
 	BarbarianAssault: DISCORD_SETTINGS.Channels?.BarbarianAssault ?? '789717054902763520',
 	ChambersOfXeric: DISCORD_SETTINGS.Channels?.ChambersOfXeric ?? '835876917252587581',
-	BotLogs: production ? '1051725977320964197' : TestingMainChannelID
+	BotLogs: production ? '1051725977320964197' : TestingMainChannelID,
+	GeneralChannel:
+		BOT_TYPE === 'OSB'
+			? production
+				? '346304390858145792'
+				: '1154056119019393035'
+			: production
+			? '792691343284764693'
+			: '1154056119019393035'
 };
 
 export const Roles = {
@@ -146,7 +157,15 @@ export const enum Emoji {
 	Skull = '<:Skull:802136963926065165>',
 	CombatSword = '<:combat:802136963956080650>',
 	OSRSSkull = '<:skull:863392427040440320>',
-	SOTWTrophy = '<:SOTWtrophy:842938096097820693>'
+	SOTWTrophy = '<:SOTWtrophy:842938096097820693>',
+
+	DragonTrophy = '<:DragonTrophy:1152881074259624007>',
+	RuneTrophy = '<:RuneTrophy:1152881071445254164>',
+	AdamantTrophy = '<:AdamantTrophy:1152881069281001472>',
+	MithrilTrophy = '<:MithrilTrophy:1152881066353373236>',
+	SteelTrophy = '<:SteelTrophy:1152881062846939206>',
+	IronTrophy = '<:IronTrophy:1152881060972085279>',
+	BronzeTrophy = '<:BronzeTrophy:1152881057788592188>'
 }
 
 export enum ActivityGroup {
@@ -236,7 +255,8 @@ export enum BitField {
 	UsedFrozenTablet = 34,
 	CleanHerbsFarming = 35,
 	SelfGamblingLocked = 36,
-	DisableDailyReminderDMs = 37
+	DisabledFarmingReminders = 37,
+	DisabledDailyReminders = 38
 }
 
 interface BitFieldData {
@@ -307,12 +327,18 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
-	[BitField.DisableDailyReminderDMs]: {
-		name: 'Disable Daily Reminder DMs',
-		protected: false,
-	},
 	[BitField.CleanHerbsFarming]: {
 		name: 'Clean herbs during farm runs',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisabledFarmingReminders]: {
+		name: 'Disable Farming Reminders',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisabledDailyReminders]: {
+		name: 'Disable Daily Reminder DMs',
 		protected: false,
 		userConfigurable: true
 	}
@@ -446,7 +472,6 @@ export const projectiles = {
 } as const;
 export type ProjectileType = keyof typeof projectiles;
 
-export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
 export const PHOSANI_NIGHTMARE_ID = 9416;
 export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
 export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
@@ -499,8 +524,6 @@ export const chompyHats = [
 	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
 
-export const gitHash = execSync('git rev-parse HEAD').toString().trim();
-
 export const toaPurpleItems = resolveItems([
 	"Tumeken's guardian",
 	"Tumeken's shadow (uncharged)",
@@ -543,3 +566,20 @@ export const globalConfig = globalConfigSchema.parse({
 
 export const ONE_TRILLION = 1_000_000_000_000;
 export const demonBaneWeapons = resolveItems(['Silverlight', 'Darklight', 'Arclight']);
+
+const gitHash = execSync('git rev-parse HEAD').toString().trim();
+const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
+
+const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
+
+export const META_CONSTANTS = {
+	GIT_HASH: gitHash,
+	GITHUB_URL: `https://github.com/${gitRemote}/commit/${gitHash}`,
+	STARTUP_DATE: new Date(),
+	GIT_DIFF_URL: `https://github.com/${gitRemote}/compare/${gitHash}...${GIT_BRANCH}`,
+	RENDERED_STR: ''
+};
+META_CONSTANTS.RENDERED_STR = `**Date/Time:** ${dateFm(META_CONSTANTS.STARTUP_DATE)}
+**Git Hash:** ${META_CONSTANTS.GIT_HASH.slice(0, 7)}
+**Commit:** <${META_CONSTANTS.GITHUB_URL}>
+**Code Difference:** <${META_CONSTANTS.GIT_DIFF_URL}>`;

@@ -137,7 +137,7 @@ export async function transactItemsFromBank({
 
 		const newCL = new Bank(newUser.collectionLogBank as ItemBank);
 
-		if (!dontAddToTempCL) {
+		if (!dontAddToTempCL && collectionLog) {
 			const activeBingos = await findBingosWithUserParticipating(userID);
 			for (const bingo of activeBingos) {
 				if (bingo.isActive()) {

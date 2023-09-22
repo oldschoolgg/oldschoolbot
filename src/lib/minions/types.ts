@@ -6,6 +6,7 @@ import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 import { QuestID } from '../../mahoji/lib/abstracted_commands/questCommand';
 import { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
+import { Diary, DiaryTier } from '../diaries';
 import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
@@ -51,12 +52,21 @@ export interface KillableMonster {
 		kill(quantity: number, options: MonsterKillOptions): Bank;
 	};
 	emoji?: string;
+
+	/**
+	 * Wilderness variables.
+	 */
 	wildy?: boolean;
-	difficultyRating?: number;
+	wildyMulti?: boolean;
+	canBePked?: boolean;
+	pkActivityRating?: number;
+	pkBaseDeathChance?: number;
+
 	itemsRequired?: ArrayItemsResolved;
 	notifyDrops?: ArrayItemsResolved;
 	existsInCatacombs?: boolean;
 	qpRequired?: number;
+	difficultyRating?: number;
 
 	/**
 	 * An array of objects of ([key: itemID]: boostPercentage) boosts that apply to
@@ -120,6 +130,7 @@ export interface KillableMonster {
 	}[];
 	requiredQuests?: QuestID[];
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
+	diaryRequirement?: [Diary, DiaryTier];
 }
 /*
  * Monsters will have an array of Consumables

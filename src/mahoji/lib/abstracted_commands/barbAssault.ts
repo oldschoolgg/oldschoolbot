@@ -4,20 +4,14 @@ import { calcWhatPercent, clamp, reduceNumByPercent, roll, round, Time } from 'e
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
+import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { Events } from '../../../lib/constants';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
 import { maxOtherStats } from '../../../lib/structures/Gear';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import {
-	buildClueButtons,
-	formatDuration,
-	itemID,
-	makeComponents,
-	randomVariation,
-	stringMatches
-} from '../../../lib/util';
+import { formatDuration, itemID, makeComponents, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';

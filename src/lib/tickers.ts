@@ -1,7 +1,7 @@
 import { EmbedBuilder } from '@discordjs/builders';
 import { Activity } from '@prisma/client';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, TextChannel } from 'discord.js';
-import { noOp, randInt, shuffleArr, Time } from 'e';
+import { noOp, randInt, removeFromArr, shuffleArr, Time } from 'e';
 
 import { production } from '../config';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
@@ -241,14 +241,15 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 							BitField.isContributor,
 							BitField.isModerator
 						]
-					},
-					farming_patch_reminders: true
+					}
 				},
 				select: {
-					id: true
+					id: true,
+					bitfield: true
 				}
 			});
-			for (const { id } of users) {
+			for (const { id, bitfield } of users) {
+				if (bitfield.includes(BitField.DisabledFarmingReminders)) continue;
 				const { patches } = await getFarmingInfo(id);
 				for (const patchType of farmingPatchNames) {
 					const patch = patches[patchType];
@@ -310,7 +311,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 						// Check disable first so minion doesn't have to be free to disable reminders.
 						if (selection.customId === 'DISABLE') {
 							await mahojiUserSettingsUpdate(user.id, {
-								farming_patch_reminders: false
+								bitfield: removeFromArr(bitfield, BitField.DisabledFarmingReminders)
 							});
 							await user.send('Farming patch reminders have been disabled.');
 							return;
@@ -329,7 +330,8 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 								guildID: undefined,
 								user: await mUserFetch(user.id),
 								member: message.member,
-								interaction: selection
+								interaction: selection,
+								continueDeltaMillis: selection.createdAt.getTime() - message.createdAt.getTime()
 							});
 						}
 					} catch {

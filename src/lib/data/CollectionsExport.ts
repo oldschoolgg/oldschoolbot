@@ -213,7 +213,14 @@ export const barrowsChestCL = resolveItems([
 	'Bolt rack'
 ]);
 export const bryophytaCL = resolveItems(["Bryophyta's essence"]);
-export const callistoCL = resolveItems(['Callisto cub', 'Tyrannical ring', 'Dragon pickaxe', 'Dragon 2h sword']);
+export const callistoCL = resolveItems([
+	'Callisto cub',
+	'Tyrannical ring',
+	'Dragon pickaxe',
+	'Dragon 2h sword',
+	'Claws of callisto',
+	'Voidwaker hilt'
+]);
 export const cerberusCL = resolveItems([
 	'Hellpuppy',
 	'Eternal crystal',
@@ -403,9 +410,18 @@ export const venenatisCL = resolveItems([
 	'Venenatis spiderling',
 	'Treasonous ring',
 	'Dragon pickaxe',
-	'Dragon 2h sword'
+	'Dragon 2h sword',
+	'Fangs of venenatis',
+	'Voidwaker gem'
 ]);
-export const vetionCL = resolveItems(["Vet'ion jr.", 'Ring of the gods', 'Dragon pickaxe', 'Dragon 2h sword']);
+export const vetionCL = resolveItems([
+	"Vet'ion jr.",
+	'Ring of the gods',
+	'Dragon pickaxe',
+	'Dragon 2h sword',
+	"Skull of vet'ion",
+	'Voidwaker blade'
+]);
 export const vorkathCL = resolveItems([
 	'Vorki',
 	"Vorkath's head",
@@ -1607,6 +1623,21 @@ export const cyclopsCL = resolveItems([
 	'Rune defender',
 	'Dragon defender'
 ]);
+export const forestryCL = resolveItems([
+	'Lumberjack hat',
+	'Lumberjack top',
+	'Lumberjack legs',
+	'Lumberjack boots',
+	'Forestry hat',
+	'Forestry top',
+	'Forestry legs',
+	'Forestry boots',
+	'Funky shaped log',
+	'Log basket',
+	'Log brace',
+	'Clothes pouch blueprint'
+]);
+
 export const fossilIslandNotesCL = resolveItems([
 	'Scribbled note',
 	'Partial note',
