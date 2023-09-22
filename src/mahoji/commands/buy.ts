@@ -43,7 +43,7 @@ export const buyCommand: OSBMahojiCommand = {
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity?: string }>) => {
 		const user = await mUserFetch(userID.toString());
 		const { name } = options;
-		const quantity = mahojiParseNumber({ input: options.quantity, min: 1 }) ?? 1;
+		let quantity = mahojiParseNumber({ input: options.quantity, min: 1 }) ?? 1;
 		if (stringMatches(name, 'kitten')) {
 			return buyKitten(user);
 		}
@@ -73,6 +73,10 @@ export const buyCommand: OSBMahojiCommand = {
 			if (!hasCustomReq) {
 				return reason!;
 			}
+		}
+
+		if (buyable.maxQuantity) {
+			quantity = quantity > buyable.maxQuantity ? buyable.maxQuantity : quantity;
 		}
 
 		if (buyable.qpRequired) {
