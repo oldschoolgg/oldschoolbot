@@ -389,7 +389,6 @@ model User {
   bankBackground             Int                @default(1)
   attack_style               String[]
   combat_options             Int[]
-  farming_patch_reminders    Boolean            @default(true)
   slayer_remember_master     String?            @map("slayer.remember_master")
   slayer_autoslay_options    Int[]              @map("slayer.autoslay_options")
   bank_sort_method           String?            @db.VarChar(16)

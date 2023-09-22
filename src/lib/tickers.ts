@@ -1,7 +1,7 @@
 import { EmbedBuilder } from '@discordjs/builders';
 import { Activity } from '@prisma/client';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, TextChannel } from 'discord.js';
-import { noOp, randInt, shuffleArr, Time } from 'e';
+import { noOp, randInt, removeFromArr, shuffleArr, Time } from 'e';
 
 import { production } from '../config';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
@@ -212,14 +212,15 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 							BitField.isContributor,
 							BitField.isModerator
 						]
-					},
-					farming_patch_reminders: true
+					}
 				},
 				select: {
-					id: true
+					id: true,
+					bitfield: true
 				}
 			});
-			for (const { id } of users) {
+			for (const { id, bitfield } of users) {
+				if (bitfield.includes(BitField.DisabledFarmingReminders)) continue;
 				const { patches } = await getFarmingInfo(id);
 				for (const patchType of farmingPatchNames) {
 					const patch = patches[patchType];
@@ -281,7 +282,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 						// Check disable first so minion doesn't have to be free to disable reminders.
 						if (selection.customId === 'DISABLE') {
 							await mahojiUserSettingsUpdate(user.id, {
-								farming_patch_reminders: false
+								bitfield: removeFromArr(bitfield, BitField.DisabledFarmingReminders)
 							});
 							await user.send('Farming patch reminders have been disabled.');
 							return;

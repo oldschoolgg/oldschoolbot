@@ -10,7 +10,7 @@ import { addXP } from './addXP';
 import { GodFavourBank, GodName } from './bso/divineDominion';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
-import { CombatAchievements } from './combat_achievements/combatAchievements';
+import { CATier, CombatAchievements } from './combat_achievements/combatAchievements';
 import { badges, BitField, Emoji, PerkTier, projectiles, usernameCache } from './constants';
 import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
@@ -813,8 +813,19 @@ GROUP BY data->>'clueID';`);
 		await this.sync();
 	}
 
+	caPoints(): number {
+		const keys = Object.keys(CombatAchievements) as CATier[];
+		return keys
+			.map(
+				t =>
+					CombatAchievements[t].tasks.filter(task => this.user.completed_ca_task_ids.includes(task.id))
+						.length * CombatAchievements[t].taskPoints
+			)
+			.reduce((total, value) => total + value, 0);
+	}
+
 	hasCompletedCATier(tier: keyof typeof CombatAchievements): boolean {
-		return CombatAchievements[tier].tasks.every(task => this.user.completed_ca_task_ids.includes(task.id));
+		return this.caPoints() >= CombatAchievements[tier].rewardThreshold;
 	}
 
 	buildCATertiaryItemChanges() {

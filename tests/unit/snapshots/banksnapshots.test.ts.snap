@@ -7006,124 +7006,84 @@ exports[`BSO Buyables 1`] = `
       "bank": {},
       "frozen": false,
     },
+    "maxQuantity": 1,
     "name": "Forestry kit",
-    "outputItems": Bank {
-      "bank": {
-        "28136": 1,
-      },
-      "frozen": false,
-    },
+    "outputItems": undefined,
   },
   {
     "itemCost": Bank {
       "bank": {
         "1519": 5,
         "1521": 10,
-        "2351": 1,
         "28134": 20,
       },
       "frozen": false,
     },
     "name": "Secateurs blade",
     "outputItems": undefined,
-    "skillsNeeded": {
-      "smithing": 35,
-      "woodcutting": 35,
-    },
   },
   {
     "itemCost": Bank {
       "bank": {
         "1517": 10,
-        "267": 1,
         "28134": 150,
       },
       "frozen": false,
     },
     "name": "Ritual mulch",
     "outputItems": undefined,
-    "skillsNeeded": {
-      "farming": 50,
-      "woodcutting": 68,
-    },
   },
   {
     "itemCost": Bank {
       "bank": {
         "1521": 15,
-        "1605": 1,
-        "1759": 1,
         "28134": 200,
       },
       "frozen": false,
     },
     "name": "Clover insignia",
     "outputItems": undefined,
-    "skillsNeeded": {
-      "crafting": 70,
-      "farming": 35,
-      "woodcutting": 70,
-    },
   },
   {
     "itemCost": Bank {
       "bank": {
-        "1511": 1,
         "1519": 15,
-        "1759": 1,
         "28134": 300,
       },
       "frozen": false,
     },
     "name": "Powdered pollen",
     "outputItems": undefined,
-    "skillsNeeded": {
-      "hunter": 50,
-      "woodcutting": 35,
-    },
   },
   {
     "itemCost": Bank {
       "bank": {
         "1515": 300,
         "1517": 300,
-        "1539": 45,
-        "2361": 3,
         "28134": 3000,
-        "954": 2,
       },
       "frozen": false,
     },
     "name": "Log brace",
     "outputItems": undefined,
-    "skillsNeeded": {
-      "smithing": 75,
-      "woodcutting": 75,
-    },
   },
   {
     "itemCost": Bank {
       "bank": {
         "1517": 300,
         "1519": 300,
-        "1734": 1,
-        "1741": 1,
         "28134": 10000,
       },
       "frozen": false,
     },
     "name": "Clothes pouch blueprint",
     "outputItems": undefined,
-    "skillsNeeded": {
-      "crafting": 50,
-      "woodcutting": 50,
-    },
   },
   {
     "itemCost": Bank {
       "bank": {
-        "1517": 300,
         "1519": 300,
+        "1521": 300,
         "28134": 5000,
       },
       "frozen": false,
@@ -7143,6 +7103,7 @@ exports[`BSO Buyables 1`] = `
         "19669": 500,
         "28134": 15000,
         "6332": 500,
+        "6333": 500,
       },
       "frozen": false,
     },
@@ -7176,8 +7137,8 @@ exports[`BSO Buyables 1`] = `
   {
     "itemCost": Bank {
       "bank": {
+        "1513": 140,
         "1515": 160,
-        "1517": 140,
         "28134": 1300,
       },
       "frozen": false,
@@ -7211,6 +7172,7 @@ exports[`BSO Buyables 1`] = `
         "19669": 60,
         "28134": 1250,
         "6332": 60,
+        "6333": 60,
       },
       "frozen": false,
     },
@@ -7230,6 +7192,7 @@ exports[`BSO Buyables 1`] = `
         "19669": 60,
         "28134": 1250,
         "6332": 60,
+        "6333": 60,
       },
       "frozen": false,
     },
@@ -7249,6 +7212,7 @@ exports[`BSO Buyables 1`] = `
         "19669": 60,
         "28134": 1250,
         "6332": 60,
+        "6333": 60,
       },
       "frozen": false,
     },
@@ -7268,6 +7232,7 @@ exports[`BSO Buyables 1`] = `
         "19669": 60,
         "28134": 1250,
         "6332": 60,
+        "6333": 60,
       },
       "frozen": false,
     },
