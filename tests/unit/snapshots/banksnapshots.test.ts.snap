@@ -5651,13 +5651,9 @@ exports[`OSB Buyables 1`] = `
       "bank": {},
       "frozen": false,
     },
+    "maxQuantity": 1,
     "name": "Forestry kit",
-    "outputItems": Bank {
-      "bank": {
-        "28136": 1,
-      },
-      "frozen": false,
-    },
+    "outputItems": undefined,
   },
   {
     "itemCost": Bank {

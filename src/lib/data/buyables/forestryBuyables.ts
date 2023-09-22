@@ -5,13 +5,13 @@ import { Buyable } from './buyables';
 export const forestryBuyables: Buyable[] = [
 	{
 		name: 'Forestry kit',
-		outputItems: () => new Bank().add('Forestry kit'),
 		customReq: async user => {
 			if (user.allItemsOwned.has('Forestry kit')) {
 				return [false, 'You already own this item.'];
 			}
 			return [true];
-		}
+		},
+		maxQuantity: 1
 	},
 	{
 		name: 'Secateurs blade',
