@@ -318,7 +318,7 @@ export const monsterTask: MinionTask = {
 		if (
 			quantity > 0 &&
 			!user.owns('Ancient blood ornament kit') &&
-			awakenedMonsters.every(id => Boolean(currentKCs[id])) &&
+			awakenedMonsters.every(id => Boolean(currentKCs[id]) || monsterID === id) &&
 			isAwakened
 		) {
 			messages.push('You received an **Ancient blood ornament kit**!');

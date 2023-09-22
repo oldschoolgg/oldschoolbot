@@ -79,6 +79,10 @@ export const buyCommand: OSBMahojiCommand = {
 			}
 		}
 
+		if (buyable.maxQuantity) {
+			quantity = quantity > buyable.maxQuantity ? buyable.maxQuantity : quantity;
+		}
+
 		if (buyable.qpRequired) {
 			const { QP } = user;
 			if (QP < buyable.qpRequired) {

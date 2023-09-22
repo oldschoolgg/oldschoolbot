@@ -139,7 +139,9 @@ export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
 				loot: itemsAdded,
-				message: `${tameName(tame)} finished defeating Tempoross ${quantity}x times, and received ${loot}.`,
+				message: `${user}, ${tameName(
+					tame
+				)} finished defeating Tempoross ${quantity}x times, and received ${loot}.`,
 				user
 			});
 		}
@@ -164,7 +166,9 @@ export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
 				loot: itemsAdded,
-				message: `${tameName(tame)} finished defeating Wintertodt ${quantity}x times, and received ${loot}.`,
+				message: `${user}, ${tameName(
+					tame
+				)} finished defeating Wintertodt ${quantity}x times, and received ${loot}.`,
 				user
 			});
 		}

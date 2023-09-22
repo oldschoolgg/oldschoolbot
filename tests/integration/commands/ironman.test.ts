@@ -79,10 +79,10 @@ describe('Ironman Command', () => {
 					start_date: new Date(),
 					finish_date: new Date(),
 					duration: 1,
-					completed: false,
-					type: 'asdf',
+					completed: true,
+					type: 'pvm',
 					channel_id: '',
-					data: {}
+					data: { type: 'pvm', monsterID: 707_070, quantity: 4 }
 				}
 			}),
 			prisma.historicalData.create({
@@ -122,7 +122,7 @@ describe('Ironman Command', () => {
 		expect(await prisma.xPGain.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
 		expect(await prisma.stashUnit.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
 		expect(await prisma.historicalData.count({ where: { user_id: userId } })).toEqual(0);
-		expect(await prisma.userStats.count({ where: { user_id: BigInt(userId) } })).toEqual(1);
+		expect(await prisma.userStats.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
 		expect(await prisma.fishingContestCatch.count({ where: { user_id: BigInt(userId) } })).toEqual(0);
 		expect(await prisma.tameActivity.count({ where: { user_id: userId } })).toEqual(0);
 		expect(await prisma.tame.count({ where: { user_id: userId } })).toEqual(0);
