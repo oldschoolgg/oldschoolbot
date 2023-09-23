@@ -14,6 +14,7 @@ import { aerialFishBuyables } from './aerialFishBuyables';
 import { canifisClothes } from './canifisClothes';
 import { capeBuyables } from './capes';
 import { castleWarsBuyables } from './castleWars';
+import { forestryBuyables } from './forestryBuyables';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
 import { guardiansOfTheRiftBuyables } from './guardiansOfTheRifBuyables';
@@ -40,6 +41,7 @@ export interface Buyable {
 	ironmanPrice?: number;
 	collectionLogReqs?: number[];
 	customReq?: (user: MUser, userStats: MUserStats) => Promise<[true] | [false, string]>;
+	maxQuantity?: number;
 }
 
 const randomEventBuyables: Buyable[] = [
@@ -1095,7 +1097,8 @@ const Buyables: Buyable[] = [
 	...shootingStarsBuyables,
 	...guardiansOfTheRiftBuyables,
 	...toaCapes,
-	...mairinsMarketBuyables
+	...mairinsMarketBuyables,
+	...forestryBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

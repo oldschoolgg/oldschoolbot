@@ -114,6 +114,10 @@ const toggles: UserConfigToggle[] = [
 			// If handleToggle called without an interaction, perhaps by non-interactive code, allow toggle.
 			return { result: true };
 		}
+	},
+	{
+		name: 'Disable farming reminders',
+		bit: BitField.DisabledFarmingReminders
 	}
 ];
 
