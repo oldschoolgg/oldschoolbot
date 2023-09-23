@@ -776,7 +776,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Nex',
 		rng: {
 			chancePerKill: 12,
-			hasChance: 'Nex'
+			hasChance: data => data.type === 'Nex'
 		}
 	},
 	{

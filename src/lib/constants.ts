@@ -471,7 +471,7 @@ export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
 export const MIN_LENGTH_FOR_PET = Time.Minute * 5;
 export const HESPORI_ID = 8583;
-export const NEX_ID = 11_278;
+export const NEX_ID = 46_274;
 
 export const LEVEL_99_XP = convertLVLtoXP(99);
 export const LEVEL_120_XP = convertLVLtoXP(120);
