@@ -1,8 +1,8 @@
 import { formatOrdinal, miniID } from '@oldschoolgg/toolkit';
-import { calcPercentOfNum, calcWhatPercent, objectEntries, roll, shuffleArr } from 'e';
+import { calcPercentOfNum, calcWhatPercent, objectEntries, randArrItem, roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
+import { CHINCANNON_MESSAGES, Emoji, Events } from '../../../lib/constants';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -37,7 +37,8 @@ export const tobTask: MinionTask = {
 			duration,
 			fakeDuration,
 			deaths: allDeaths,
-			quantity
+			quantity,
+			cc: chincannonUser
 		} = data;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
 
@@ -86,11 +87,13 @@ export const tobTask: MinionTask = {
 			)}% (1 in ${convertPercentChance(result.percentChanceOfUnique)})`;
 
 			// Track loot for T3+ patrons
-			await Promise.all(
-				allUsers.map(user => {
-					return userStatsBankUpdate(user.id, 'tob_loot', new Bank(result.loot[user.id]));
-				})
-			);
+			if (!chincannonUser) {
+				await Promise.all(
+					allUsers.map(user => {
+						return userStatsBankUpdate(user.id, 'tob_loot', new Bank(result.loot[user.id]));
+					})
+				);
+			}
 
 			for (let [userID, _userLoot] of Object.entries(result.loot)) {
 				if (data.solo && userID !== leader) continue;
@@ -143,15 +146,20 @@ export const tobTask: MinionTask = {
 				const lootStr = userLoot.remove('Coins', 100_000).toString();
 				const str = isPurple ? `${Emoji.Purple} ||${lootStr.padEnd(30, ' ')}||` : `||${lootStr}||`;
 
-				resultMessage += `\n${raidId}: ${deathStr}**${user}** received: ${str}`;
+				resultMessage += `\n${raidId}: ${deathStr}**${user}** ${
+					chincannonUser ? 'had this loot blown up' : 'received'
+				}: ${str}`;
 			}
 		}
-		// Give everyone their loot:
-		await Promise.all(
-			allUsers.map(u => {
-				u.addItemsToBank({ items: teamsLoot.get(u.id), collectionLog: true });
-			})
-		);
+
+		if (chincannonUser) {
+			await Promise.all(
+				allUsers.map(u => userStatsBankUpdate(u.id, 'chincannon_destroyed_loot_bank', teamsLoot.get(u.id)))
+			);
+		} else {
+			// Give everyone their loot:
+			await Promise.all(allUsers.map(u => u.addItemsToBank({ items: teamsLoot.get(u.id), collectionLog: true })));
+		}
 
 		// Give them their earned attempts:
 		if (earnedAttempts > 0) {
@@ -189,9 +197,10 @@ export const tobTask: MinionTask = {
 			)
 		);
 
-		await updateBankSetting('tob_loot', totalLoot);
+		const effectiveTotalLoot = chincannonUser ? new Bank() : totalLoot;
+		await updateBankSetting('tob_loot', effectiveTotalLoot);
 		await trackLoot({
-			totalLoot,
+			totalLoot: effectiveTotalLoot,
 			id: minigameID,
 			type: 'Minigame',
 			changeType: 'loot',
@@ -203,6 +212,11 @@ export const tobTask: MinionTask = {
 				duration
 			}))
 		});
+
+		if (chincannonUser) {
+			let msg = randArrItem(CHINCANNON_MESSAGES);
+			resultMessage += `\n\n**${msg}**`;
+		}
 
 		return handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null, undefined);
 	}

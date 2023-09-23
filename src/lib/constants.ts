@@ -772,3 +772,10 @@ META_CONSTANTS.RENDERED_STR = `**Date/Time:** ${dateFm(META_CONSTANTS.STARTUP_DA
 **Git Hash:** ${META_CONSTANTS.GIT_HASH.slice(0, 7)}
 **Commit:** <${META_CONSTANTS.GITHUB_URL}>
 **Code Difference:** <${META_CONSTANTS.GIT_DIFF_URL}>`;
+
+export const CHINCANNON_MESSAGES = [
+	'Your team received no loot, your Chincannon blew it up!',
+	'Oops.. your Chincannon blew up all the loot.',
+	'Your Chincannon blew up all the loot!',
+	'Your Chincannon turned the loot into dust.'
+];

@@ -496,6 +496,8 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers 
 	deaths: number[][][];
 	quantity: number;
 	solo?: 'solo' | 'trio';
+	// id of user that used chincannon
+	cc?: string;
 }
 
 type UserID = string;
@@ -511,6 +513,8 @@ export interface TOAOptions extends ActivityTaskOptionsWithUsers {
 	fakeDuration: number;
 	wipedRoom: null | number | (number | null)[];
 	quantity: number;
+	// id of user that used chincannon
+	cc?: string;
 }
 
 export interface DOAStoredRaid {
@@ -525,6 +529,8 @@ export interface DOAOptions extends ActivityTaskOptionsWithUsers {
 	fakeDuration: number;
 	quantity: number;
 	raids: DOAStoredRaid[];
+	// id of user that used chincannon
+	cc?: string;
 }
 
 export interface NexTaskOptions extends ActivityTaskOptionsWithUsers {
