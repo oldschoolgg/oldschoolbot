@@ -442,8 +442,6 @@ export async function tobStartCommand(
 		deaths.push(parsedTeam.map(i => i.deaths));
 	}
 
-	console.log({ qty, totalDuration, durPerRaid: totalDuration / qty });
-
 	if (solo === 'trio') {
 		users.length = 1;
 		team.length = 1;

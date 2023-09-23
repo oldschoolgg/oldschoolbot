@@ -107,7 +107,7 @@ export const raidCommand: OSBMahojiCommand = {
 							description: 'The quantity to do.',
 							required: false,
 							min_value: 1,
-							max_value: 10
+							max_value: 30
 						}
 					]
 				},
