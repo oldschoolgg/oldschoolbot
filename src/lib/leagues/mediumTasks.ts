@@ -1,10 +1,19 @@
 import { sumArr } from 'e';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { BitField } from '../constants';
-import { barrowsChestCL, customPetsCL, cyclopsCL, inventorOutfit, treeBeardCL } from '../data/CollectionsExport';
+import {
+	barrowsChestCL,
+	chambersOfXericCL,
+	customPetsCL,
+	cyclopsCL,
+	inventorOutfit,
+	theatreOfBLoodCL,
+	toaCL,
+	treeBeardCL
+} from '../data/CollectionsExport';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -1086,6 +1095,16 @@ export const mediumTasks: Task[] = [
 		name: 'Use a Guthix engram',
 		has: async ({ user }) => {
 			return user.bitfield.includes(BitField.HasGuthixEngram);
+		}
+	},
+	{
+		id: 1153,
+		name: 'Have 3 unique items destroyed by the Chincannon',
+		has: async ({ userStats }) => {
+			const bank = new Bank(userStats.chincannon_destroyed_loot_bank as ItemBank);
+			const uniques = [...chambersOfXericCL, ...theatreOfBLoodCL, ...toaCL];
+			const destroyedUniques = bank.items().filter(i => uniques.includes(i[0].id));
+			return destroyedUniques.length >= 5;
 		}
 	}
 ];
