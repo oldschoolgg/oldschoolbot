@@ -31,7 +31,17 @@ import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 const plantsNotUsedForArcaneHarvester = ['Mysterious tree'].map(i => Farming.Plants.find(p => p.name === i)!);
 assert(!(plantsNotUsedForArcaneHarvester as any[]).includes(undefined));
 
-async function arcaneHarvesterEffect(user: MUser, plant: Plant, loot: Bank): Promise<string | undefined> {
+async function farmingLootBoosts(user: MUser, plant: Plant, loot: Bank, messages: string[]) {
+	let bonusPercentage = 0;
+	if (user.allItemsOwned.has('Plopper')) {
+		bonusPercentage += 100;
+		messages.push('100% for Plopper');
+	}
+
+	if (user.allItemsOwned.has('Farming master cape')) {
+		bonusPercentage += 100;
+		messages.push('100% for Farming master cape');
+	}
 	if (plantsNotUsedForArcaneHarvester.includes(plant)) return;
 	if (user.hasEquippedOrInBank(['Arcane harvester'])) {
 		const boostRes = await inventionItemBoost({
@@ -40,10 +50,13 @@ async function arcaneHarvesterEffect(user: MUser, plant: Plant, loot: Bank): Pro
 			duration: plant.level * Time.Second * 30
 		});
 		if (boostRes.success) {
-			increaseBankQuantitesByPercent(loot, inventionBoosts.arcaneHarvester.harvestBoostPercent);
-			return `\n${inventionBoosts.arcaneHarvester.harvestBoostPercent}% bonus yield from Arcane Harvester (${boostRes.messages})`;
+			bonusPercentage += inventionBoosts.arcaneHarvester.harvestBoostPercent;
+			messages.push(
+				`${inventionBoosts.arcaneHarvester.harvestBoostPercent}% bonus yield from Arcane Harvester (${boostRes.messages})`
+			);
 		}
 	}
+	increaseBankQuantitesByPercent(loot, bonusPercentage);
 }
 
 const mutations = [
@@ -199,9 +212,7 @@ export const farmingTask: MinionTask = {
 				amount: Math.floor(farmingXpReceived + bonusXP)
 			})}`;
 
-			if (hasPlopper) loot.multiply(4);
-			const res = await arcaneHarvesterEffect(user, plant, loot);
-			if (res) infoStr.push(res);
+			await farmingLootBoosts(user, plant, loot, infoStr);
 
 			if (loot.has('Plopper')) {
 				loot.bank[itemID('Plopper')] = 1;
@@ -563,18 +574,13 @@ export const farmingTask: MinionTask = {
 				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
 			}
 
-			if (loot.has('Plopper')) {
-				infoStr.push(
-					'<:plopper:787310793321349120> You found a pig on a farm and have adopted it to help you with farming.'
-				);
-			}
-
-			if (hasPlopper) loot.multiply(4);
-			const res = await arcaneHarvesterEffect(user, plantToHarvest, loot);
-			if (res) infoStr.push(res);
+			await farmingLootBoosts(user, plant, loot, infoStr);
 
 			if (loot.has('Plopper')) {
 				loot.bank[itemID('Plopper')] = 1;
+				infoStr.push(
+					'<:plopper:787310793321349120> You found a pig on a farm and have adopted it to help you with farming.'
+				);
 			}
 
 			if (user.hasEquippedOrInBank('Farming master cape')) {
