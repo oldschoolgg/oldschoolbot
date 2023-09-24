@@ -658,7 +658,7 @@ export function createDOATeam({
 						messages.push(
 							`    ${user.usernameOrMention} missed the ${
 								boost.name
-							} boost, it wouldve saved ${formatDuration(actualDecrease)}`
+							} boost, it would've saved ${formatDuration(actualDecrease)}`
 						);
 					}
 				}
@@ -833,6 +833,7 @@ export async function doaStartCommand(
 		challengeMode
 	});
 
+	console.log(createdDOATeam);
 	let debugStr = '';
 
 	const totalCost = new Bank();
@@ -961,9 +962,9 @@ export async function doaHelpCommand(user: MUser) {
 
 	const minigameStats = await user.fetchMinigames();
 
-	let str = `**Depths of Atlantis** 
+	let str = `**Depths of Atlantis**
 
-**Attempts:** 
+**Attempts:**
 ${DOARooms.map(i => `- ${i.name}: ${(stats.doa_room_attempts_bank as ItemBank)[i.id] ?? 0} Attempts`).join('\n')}
 
 **KC**: ${minigameStats.depths_of_atlantis} KC
