@@ -1,3 +1,4 @@
+import { codeBlock } from '@discordjs/builders';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Duration } from '@sapphire/time-utilities';
 import { SnowflakeUtil } from 'discord.js';
@@ -72,6 +73,12 @@ export const rpCommand: OSBMahojiCommand = {
 							name: 'user',
 							description: 'The user.',
 							required: true
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'json',
+							description: 'Get bank in JSON format',
+							required: false
 						}
 					]
 				},
@@ -148,7 +155,7 @@ export const rpCommand: OSBMahojiCommand = {
 			validate_ge?: {};
 		};
 		player?: {
-			viewbank?: { user: MahojiUserOption };
+			viewbank?: { user: MahojiUserOption; json?: boolean };
 			add_patron_time?: { user: MahojiUserOption; tier: number; time: string };
 			steal_items?: {
 				user: MahojiUserOption;
@@ -197,6 +204,13 @@ export const rpCommand: OSBMahojiCommand = {
 		if (options.player?.viewbank) {
 			const userToCheck = await mUserFetch(options.player.viewbank.user.user.id);
 			const bank = userToCheck.allItemsOwned;
+			if (options.player?.viewbank.json) {
+				const json = JSON.stringify(bank.bank);
+				if (json.length > 1900) {
+					return { files: [{ attachment: Buffer.from(json), name: 'bank.json' }] };
+				}
+				return `${codeBlock('json', json)}`;
+			}
 			return { files: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
 		}
 

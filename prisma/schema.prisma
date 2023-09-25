@@ -688,6 +688,7 @@ model UserStats {
   total_toa_duration_minutes Int  @default(0)
 
   deaths                   Int @default(0)
+  pk_evasion_exp           Int @default(0)
   dice_wins                Int @default(0)
   dice_losses              Int @default(0)
   duel_losses              Int @default(0)
