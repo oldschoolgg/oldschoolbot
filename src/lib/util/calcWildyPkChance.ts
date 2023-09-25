@@ -126,7 +126,7 @@ export async function calcWildyPKChance(
 	)}x from wildy gear (weight 60% magic, 40% ranged, 20% melee), ${hasSupplies}x from anti-pk supplies, ${hasOverheads}x from overhead prayers, ${(
 		(100 - evasionReduction) /
 		100
-	).toFixed(2)}x from KC/juking experience, ${wildyMultiMultiplier}x from being in${
+	).toFixed(2)}x from risky Wilderness experience, ${wildyMultiMultiplier}x from being in${
 		wildyMultiMultiplier === 1 ? ' no' : ''
 	} multi)`;
 
