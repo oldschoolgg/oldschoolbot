@@ -64,7 +64,14 @@ export async function calcTOBInput(u: MUser) {
 		healingNeeded += 40;
 	}
 
-	items.add(getUserFoodFromBank(u, healingNeeded, u.user.favorite_food, false, 20) || new Bank().add('Shark', 5));
+	items.add(
+		getUserFoodFromBank({
+			user: u,
+			totalHealingNeeded: healingNeeded,
+			favoriteFood: u.user.favorite_food,
+			minimumHealAmount: 20
+		}) || new Bank().add('Shark', 5)
+	);
 
 	items.add('Saradomin brew(4)', brewsNeeded);
 	items.add('Super restore(4)', restoresNeeded);
