@@ -15,6 +15,7 @@ export default function getUserFoodFromBank({
 	favoriteFood,
 	minimumHealAmount,
 	isWilderness,
+	unavailableBank,
 	raw
 }: {
 	user: MUser;
@@ -22,9 +23,11 @@ export default function getUserFoodFromBank({
 	favoriteFood: readonly number[];
 	minimumHealAmount?: number;
 	isWilderness?: boolean;
+	unavailableBank?: Bank;
 	raw?: boolean;
 }): false | Bank {
-	const userBank = user.bank;
+	let userBank = user.bank;
+	if (unavailableBank) userBank = userBank.clone().remove(unavailableBank);
 	let totalHealingCalc = totalHealingNeeded;
 	let foodToRemove = new Bank();
 

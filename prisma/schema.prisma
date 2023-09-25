@@ -891,6 +891,7 @@ model UserStats {
   on_task_monster_scores           Json @default("{}") @db.Json
   on_task_with_mask_monster_scores Json @default("{}") @db.Json
   deaths                           Int  @default(0)
+  pk_evasion_exp                   Int  @default(0)
   dice_wins                        Int  @default(0)
   dice_losses                      Int  @default(0)
   duel_losses                      Int  @default(0)
