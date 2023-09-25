@@ -32,7 +32,8 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			alternativeConsumables: [
 				{
 					itemCost: new Bank().add('Blood rune', 2).add('Death rune', 4).add('Water rune', 6),
-					qtyPerMinute: 3
+					qtyPerMinute: 3,
+					isRuneCost: true
 				},
 				{ itemCost: new Bank().add('Stamina potion(4)', 1), qtyPerMinute: 0.125 }
 			]
@@ -117,9 +118,9 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		],
 		minimumGearRequirements: {
 			wildy: {
-				[GearStat.AttackRanged]: 150,
-				[GearStat.DefenceCrush]: 84,
-				[GearStat.DefenceMagic]: 83
+				[GearStat.AttackRanged]: 115,
+				[GearStat.DefenceCrush]: 71,
+				[GearStat.DefenceMagic]: 68
 			}
 		},
 		levelRequirements: {
@@ -154,7 +155,8 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			alternativeConsumables: [
 				{
 					itemCost: new Bank().add('Blood rune', 2).add('Death rune', 4).add('Water rune', 6),
-					qtyPerMinute: 2.5
+					qtyPerMinute: 2.5,
+					isRuneCost: true
 				},
 				{ itemCost: new Bank().add('Stamina potion(4)', 1), qtyPerMinute: 0.125 }
 			]
@@ -239,9 +241,9 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		],
 		minimumGearRequirements: {
 			wildy: {
-				[GearStat.AttackRanged]: 150,
-				[GearStat.DefenceCrush]: 84,
-				[GearStat.DefenceMagic]: 83
+				[GearStat.AttackRanged]: 115,
+				[GearStat.DefenceCrush]: 71,
+				[GearStat.DefenceMagic]: 68
 			}
 		},
 		levelRequirements: {
