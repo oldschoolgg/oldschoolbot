@@ -33,19 +33,29 @@ describe('util', () => {
 				bank: b,
 				skillLevel: () => 99
 			} as any as MUser);
-		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark')), 500, [])).toStrictEqual(false);
-		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark', 100)), 500, [])).toStrictEqual(
-			new Bank().add('Shark', 25)
-		);
-		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark', 30).add('Tuna', 20)), 750, [])).toStrictEqual(
-			new Bank().add('Shark', 28).add('Tuna', 20)
-		);
 		expect(
-			getUserFoodFromBank(
-				fakeUser(new Bank().add('Shark', 100).add('Lobster', 20).add('Shrimps', 50).add('Coal')),
-				1700,
-				[]
-			)
+			getUserFoodFromBank({ user: fakeUser(new Bank().add('Shark')), totalHealingNeeded: 500, favoriteFood: [] })
+		).toStrictEqual(false);
+		expect(
+			getUserFoodFromBank({
+				user: fakeUser(new Bank().add('Shark', 100)),
+				totalHealingNeeded: 500,
+				favoriteFood: []
+			})
+		).toStrictEqual(new Bank().add('Shark', 25));
+		expect(
+			getUserFoodFromBank({
+				user: fakeUser(new Bank().add('Shark', 30).add('Tuna', 20)),
+				totalHealingNeeded: 750,
+				favoriteFood: []
+			})
+		).toStrictEqual(new Bank().add('Shark', 28).add('Tuna', 20));
+		expect(
+			getUserFoodFromBank({
+				user: fakeUser(new Bank().add('Shark', 100).add('Lobster', 20).add('Shrimps', 50).add('Coal')),
+				totalHealingNeeded: 1700,
+				favoriteFood: []
+			})
 		).toStrictEqual(new Bank().add('Lobster', 20).add('Shark', 66).add('Shrimps', 50));
 	});
 
