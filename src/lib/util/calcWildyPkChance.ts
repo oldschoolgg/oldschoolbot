@@ -99,7 +99,7 @@ export async function calcWildyPKChance(
 	const defensiveGearPercent =
 		(defensiveMageGearPercent * 60 + defensiveRangeGearPercent * 40 + defensiveMeleeGearPercent * 20) / 100;
 
-	const deathChanceFromGear = (100 + (100 - defensiveGearPercent) * 5) / 100;
+	const deathChanceFromGear = Math.max(0.05, (100 + (100 - defensiveGearPercent) * 5) / 100);
 	deathChance *= deathChanceFromGear;
 
 	deathChance *= hasSupplies;
