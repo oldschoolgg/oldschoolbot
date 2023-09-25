@@ -89,7 +89,7 @@ export const inventionBoosts = {
 		boxTrapBoostPercent: 25
 	},
 	arcaneHarvester: {
-		harvestBoostPercent: 20
+		harvestBoostPercent: 100
 	},
 	drygoreSaw: {
 		buildBoostPercent: 40
@@ -124,7 +124,8 @@ export const inventionBoosts = {
 		}
 	},
 	chincannon: {
-		coxPercentReduction: 60
+		coxPercentReduction: 60,
+		tobPercentReduction: 60
 	}
 } as const;
 
@@ -241,7 +242,7 @@ export const Inventions: readonly Invention[] = [
 		flags: ['bank'],
 		itemCost: null,
 		inventionLevelNeeded: 110,
-		usageCostMultiplier: 0.8
+		usageCostMultiplier: 1
 	},
 	{
 		id: InventionID.PortableTanner,

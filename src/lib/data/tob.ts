@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import { randomVariation } from 'oldschooljs/dist/util';
 
 import type { GearStats } from '../gear/types';
+import { inventionBoosts } from '../invention/inventions';
 import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
 import { constructGearSetup, Gear } from '../structures/Gear';
 import getOSItem from '../util/getOSItem';
@@ -443,6 +444,11 @@ export function calcTOBBaseDuration({ team, hardMode }: { team: TobTeam[]; hardM
 	if (duration < Time.Minute * 15) {
 		duration = Math.max(Time.Minute * 15, duration);
 	}
+
+	if (team.some(u => u.user.hasEquipped('Chincannon'))) {
+		duration = reduceNumByPercent(duration, inventionBoosts.chincannon.tobPercentReduction);
+	}
+
 	return {
 		baseDuration: duration,
 		reductions,
@@ -459,7 +465,13 @@ export function createTOBRaid({
 	baseDuration: number;
 	hardMode: boolean;
 	disableVariation?: true;
-}): { duration: number; parsedTeam: ParsedTeamMember[]; wipedRoom: TOBRoom | null; deathDuration: number | null } {
+}): {
+	chinCannonUser: MUser | null;
+	duration: number;
+	parsedTeam: ParsedTeamMember[];
+	wipedRoom: TOBRoom | null;
+	deathDuration: number | null;
+} {
 	let parsedTeam: ParsedTeamMember[] = [];
 
 	for (const u of team) {
@@ -476,6 +488,15 @@ export function createTOBRaid({
 	}
 
 	let duration = Math.floor(randomVariation(baseDuration, 5));
+
+	let chinCannonUser: MUser | null = null;
+
+	for (const u of team) {
+		if (u.gear.range.hasEquipped('Chincannon')) {
+			chinCannonUser = u.user;
+			break;
+		}
+	}
 
 	let wipedRoom: TOBRoom | null = null;
 	let deathDuration: number | null = 0;
@@ -506,6 +527,7 @@ export function createTOBRaid({
 		duration,
 		parsedTeam,
 		wipedRoom,
-		deathDuration
+		deathDuration,
+		chinCannonUser
 	};
 }

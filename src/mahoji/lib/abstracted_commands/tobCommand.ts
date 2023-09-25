@@ -16,6 +16,12 @@ import {
 	TENTACLE_CHARGES_PER_RAID
 } from '../../../lib/data/tob';
 import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
+import {
+	canAffordInventionBoost,
+	inventionBoosts,
+	InventionID,
+	inventionItemBoost
+} from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
 import getUserFoodFromBank from '../../../lib/minions/functions/getUserFoodFromBank';
@@ -189,7 +195,10 @@ export async function checkTOBUser(
 	const requiredRangeWeapons = ['Magic shortbow', 'Twisted bow', 'Zaryte bow', 'Hellfire bow'];
 	const requiredRangeAmmo = ['Amethyst arrow', 'Rune arrow', 'Dragon arrow', 'Hellfire arrow'];
 	const rangeGear = user.gear.range;
-	if (!rangeGear.hasEquipped(requiredRangeWeapons) || !rangeGear.hasEquipped(requiredRangeAmmo)) {
+	if (
+		!user.hasEquipped('Chincannon') &&
+		(!rangeGear.hasEquipped(requiredRangeWeapons) || !rangeGear.hasEquipped(requiredRangeAmmo))
+	) {
 		return [
 			true,
 			`${user.usernameOrMention} needs one of the following weapons: ${requiredRangeWeapons.join(
@@ -205,7 +214,7 @@ export async function checkTOBUser(
 	}
 
 	const arrowsRequired = 150 * quantity;
-	if (rangeGear.ammo!.quantity < arrowsRequired) {
+	if (!user.hasEquipped('Chincannon') && rangeGear.ammo!.quantity < arrowsRequired) {
 		return [
 			true,
 			`${user.usernameOrMention}, you need atleast ${arrowsRequired} arrows equipped in your range setup.`
@@ -230,7 +239,7 @@ export async function checkTOBUser(
 			return [true, 'You must either have a charged Scythe of vitur, or dual Drygore longswords to solo ToB'];
 		}
 		const minRangeSoloGear = ['Hellfire bow', 'Hellfire arrow'];
-		if (!rangeGear.hasEquipped(minRangeSoloGear, true)) {
+		if (!rangeGear.hasEquipped('Chincannon') && !rangeGear.hasEquipped(minRangeSoloGear, true)) {
 			return [true, 'You must either have a Hellfire bow and Hellfire arrows equipped to solo ToB'];
 		}
 		const mageGear = user.gear.mage;
@@ -408,18 +417,23 @@ export async function tobStartCommand(
 	let totalFakeDuration = 0;
 	let deaths: number[][][] = [];
 
+	let chinCannonUser: MUser | null = null;
 	const wipedRooms: (number | null)[] = [];
 	for (let i = 0; i < qty; i++) {
 		const {
 			duration,
 			wipedRoom: _wipedRoom,
 			deathDuration,
-			parsedTeam
+			parsedTeam,
+			chinCannonUser: thisChinCannonUser
 		} = createTOBRaid({
 			team,
 			hardMode: isHardMode,
 			baseDuration
 		});
+		if (thisChinCannonUser && !chinCannonUser) {
+			chinCannonUser = thisChinCannonUser;
+		}
 		const wipedRoom = _wipedRoom ? TOBRooms.indexOf(TOBRooms.find(room => _wipedRoom.name === room.name)!) : null;
 		wipedRooms.push(wipedRoom);
 		totalFakeDuration += duration;
@@ -427,6 +441,7 @@ export async function tobStartCommand(
 		if (solo === 'trio') parsedTeam.length = 1;
 		deaths.push(parsedTeam.map(i => i.deaths));
 	}
+
 	if (solo === 'trio') {
 		users.length = 1;
 		team.length = 1;
@@ -435,22 +450,42 @@ export async function tobStartCommand(
 
 	const totalCost = new Bank();
 
+	if (chinCannonUser) {
+		if (!canAffordInventionBoost(chinCannonUser, InventionID.ChinCannon, totalDuration).canAfford) {
+			return `${chinCannonUser.usernameOrMention} doesn't have enough materials to use the Chincannon for this trip.`;
+		}
+	}
+
 	const costResult = await Promise.all(
 		users.map(async u => {
 			const supplies = await calcTOBInput(u);
 			const { total } = calculateTOBUserGearPercents(u);
 			const blowpipeData = u.blowpipe;
-			const { realCost } = await u.specialRemoveItems(
-				supplies
-					.clone()
-					.add('Coins', 100_000)
-					.add(blowpipeData.dartID!, Math.floor(Math.min(blowpipeData.dartQuantity, 156)))
-					.add(u.gear.range.ammo!.item, 100)
-					.multiply(qty)
-			);
+			const preChincannonCost = supplies
+				.clone()
+				.add('Coins', 100_000)
+				.add(blowpipeData.dartID!, Math.floor(Math.min(blowpipeData.dartQuantity, 156)));
+
+			const isChincannonUser = u.id === chinCannonUser?.id;
+
+			if (!isChincannonUser) {
+				preChincannonCost.add(u.gear.range.ammo!.item, 100);
+			}
+			const { realCost } = await u.specialRemoveItems(preChincannonCost.multiply(qty));
 			await userStatsBankUpdate(u.id, 'tob_cost', realCost);
 			const effectiveCost = realCost.clone().remove('Coins', realCost.amount('Coins'));
 			totalCost.add(effectiveCost);
+			if (isChincannonUser) {
+				const res = await inventionItemBoost({
+					user,
+					inventionID: InventionID.ChinCannon,
+					duration: totalDuration
+				});
+				if (!res.success) {
+					throw new Error(`${u.id} did not have enough charges to use the Chincannon.`);
+				}
+				debugStr += ` ${inventionBoosts.chincannon.tobPercentReduction}% speed increase from the Chincannon (${res.messages})`;
+			}
 			if (u.gear.melee.hasEquipped('Abyssal tentacle')) {
 				await degradeItem({
 					item: getOSItem('Abyssal tentacle'),
@@ -503,7 +538,8 @@ export async function tobStartCommand(
 		fakeDuration: totalFakeDuration,
 		quantity: qty,
 		deaths,
-		solo
+		solo,
+		cc: chinCannonUser?.id
 	});
 
 	let str = `${partyOptions.leader.usernameOrMention}'s party (${users

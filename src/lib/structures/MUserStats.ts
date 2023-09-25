@@ -145,4 +145,8 @@ export class MUserStats {
 	get doaLoot(): Bank {
 		return new Bank(this.userStats.doa_loot as ItemBank);
 	}
+
+	get chinCannonDestroyedLoot(): Bank {
+		return new Bank(this.userStats.chincannon_destroyed_loot_bank as ItemBank);
+	}
 }
