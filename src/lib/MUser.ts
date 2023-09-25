@@ -1,4 +1,5 @@
 import { userMention } from '@discordjs/builders';
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { calcWhatPercent, objectEntries, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -509,20 +510,21 @@ GROUP BY data->>'clueID';`);
 		};
 	}
 
-	async specialRemoveItems(bankToRemove: Bank) {
+	async specialRemoveItems(bankToRemove: Bank, options?: { wildy?: boolean }) {
 		bankToRemove = determineRunes(this, bankToRemove);
 		const bankRemove = new Bank();
 		let dart: [Item, number] | null = null;
 		let ammoRemove: [Item, number] | null = null;
 
+		const gearKey = options?.wildy ? 'wildy' : 'range';
 		const realCost = bankToRemove.clone();
-		const rangeGear = this.gear.range;
+		const rangeGear = this.gear[gearKey];
 		const hasAvas = rangeGear.hasEquipped("Ava's assembler");
 		const updates: Prisma.UserUpdateArgs['data'] = {};
 
 		for (const [item, quantity] of bankToRemove.items()) {
 			if (blowpipeDarts.includes(item)) {
-				if (dart !== null) throw new Error('Tried to remove more than 1 blowpipe dart.');
+				if (dart !== null) throw new UserError('Tried to remove more than 1 blowpipe dart.');
 				dart = [item, quantity];
 				continue;
 			}
@@ -541,12 +543,12 @@ GROUP BY data->>'clueID';`);
 		if (ammoRemove) {
 			const equippedAmmo = rangeGear.ammo?.item;
 			if (!equippedAmmo) {
-				throw new Error('No ammo equipped.');
+				throw new UserError('No ammo equipped.');
 			}
 			if (equippedAmmo !== ammoRemove[0].id) {
-				throw new Error(`Has ${itemNameFromID(equippedAmmo)}, but needs ${ammoRemove[0].name}.`);
+				throw new UserError(`Has ${itemNameFromID(equippedAmmo)}, but needs ${ammoRemove[0].name}.`);
 			}
-			const newRangeGear = { ...this.gear.range };
+			const newRangeGear = { ...this.gear[gearKey] };
 			const ammo = newRangeGear.ammo?.quantity;
 
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(equippedAmmo));
@@ -560,13 +562,14 @@ GROUP BY data->>'clueID';`);
 				}
 			}
 			if (!ammo || ammo < ammoRemove[1])
-				throw new Error(
-					`Not enough ${ammoRemove[0].name} equipped in range gear, you need ${
+				throw new UserError(
+					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${
 						ammoRemove![1]
 					} but you have only ${ammo}.`
 				);
 			newRangeGear.ammo!.quantity -= ammoRemove![1];
-			updates.gear_range = newRangeGear as any as Prisma.InputJsonObject;
+			const updateKey = options?.wildy ? 'gear_wildy' : 'gear_range';
+			updates[updateKey] = newRangeGear as any as Prisma.InputJsonObject;
 		}
 
 		if (dart) {
@@ -582,20 +585,20 @@ GROUP BY data->>'clueID';`);
 			const scales = Math.ceil((10 / 3) * dart[1]);
 			const rawBlowpipeData = this.blowpipe;
 			if (!this.allItemsOwned.has('Toxic blowpipe') || !rawBlowpipeData) {
-				throw new Error("You don't have a Toxic blowpipe.");
+				throw new UserError("You don't have a Toxic blowpipe.");
 			}
 			if (!rawBlowpipeData.dartID || !rawBlowpipeData.dartQuantity) {
-				throw new Error('You have no darts in your Toxic blowpipe.');
+				throw new UserError('You have no darts in your Toxic blowpipe.');
 			}
 			if (rawBlowpipeData.dartQuantity < dart[1]) {
-				throw new Error(
+				throw new UserError(
 					`You don't have enough ${itemNameFromID(
 						rawBlowpipeData.dartID
 					)}s in your Toxic blowpipe, you need ${dart[1]}, but you have only ${rawBlowpipeData.dartQuantity}.`
 				);
 			}
 			if (!rawBlowpipeData.scales || rawBlowpipeData.scales < scales) {
-				throw new Error(
+				throw new UserError(
 					`You don't have enough Zulrah's scales in your Toxic blowpipe, you need ${scales} but you have only ${rawBlowpipeData.scales}.`
 				);
 			}
@@ -608,7 +611,7 @@ GROUP BY data->>'clueID';`);
 
 		if (bankRemove.length > 0) {
 			if (!this.bankWithGP.has(bankRemove)) {
-				throw new Error(`You don't own: ${bankRemove.clone().remove(this.bankWithGP)}.`);
+				throw new UserError(`You don't own: ${bankRemove.clone().remove(this.bankWithGP)}.`);
 			}
 			await transactItems({ userID: this.id, itemsToRemove: bankRemove });
 		}
