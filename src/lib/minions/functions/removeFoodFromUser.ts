@@ -15,7 +15,8 @@ export default async function removeFoodFromUser({
 	healPerAction,
 	activityName,
 	attackStylesUsed,
-	learningPercentage
+	learningPercentage,
+	isWilderness
 }: {
 	user: MUser;
 	totalHealingNeeded: number;
@@ -23,6 +24,7 @@ export default async function removeFoodFromUser({
 	activityName: string;
 	attackStylesUsed: GearSetupType[];
 	learningPercentage?: number;
+	isWilderness?: boolean;
 }): Promise<{ foodRemoved: Bank; reductions: string[]; reductionRatio: number }> {
 	const originalTotalHealing = totalHealingNeeded;
 	const rawGear = user.gear;
@@ -47,7 +49,7 @@ export default async function removeFoodFromUser({
 	}
 	const favoriteFood = user.user.favorite_food;
 
-	const foodToRemove = getUserFoodFromBank(user, totalHealingNeeded, favoriteFood);
+	const foodToRemove = getUserFoodFromBank(user, totalHealingNeeded, favoriteFood, undefined, isWilderness);
 	if (!foodToRemove) {
 		throw new UserError(
 			`You don't have enough food to do ${activityName}! You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.map(
