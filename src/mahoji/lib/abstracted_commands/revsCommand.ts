@@ -41,7 +41,7 @@ export async function revsCommand(
 			m.name.split(' ').some(a => stringMatches(a, name))
 	);
 	if (!monster || !name) {
-		return `That's not a valid revenant. The valid revenants are: ${revenantMonsters.map(m => m.name).join(', ')}.`;
+		return `That's not a valid Revenant. The valid Revenants are: ${revenantMonsters.map(m => m.name).join(', ')}.`;
 	}
 
 	const key = ({ melee: 'attack_crush', mage: 'attack_magic', range: 'attack_ranged' } as const)[style];
@@ -50,11 +50,11 @@ export async function revsCommand(
 
 	const weapon = userGear.equippedWeapon();
 	if (!weapon) {
-		return 'You have no weapon equipped in your wildy outfit.';
+		return 'You have no weapon equipped in your Wildy outfit.';
 	}
 
 	if (weapon.equipment![key] < 10) {
-		return `Your weapon is terrible, you can't kill revenants. You should have ${style} gear equipped in your wildy outfit, as this is what you're currently training. You can change this using \`/minion train\``;
+		return `Your weapon is terrible, you can't kill Revenants. You should have ${style} gear equipped in your wildy outfit, as this is what you're currently training. You can change this using \`/minion train\``;
 	}
 
 	let timePerMonster = monster.timeToFinish;

@@ -522,73 +522,6 @@ export async function minionKillCommand(
 			}, you need: ${formatMissingItems(consumableCosts, timeToFinish)} per kill.`;
 		}
 	}
-	// Check food
-	let foodStr: string = '';
-	// Find best eatable boost and add 1% extra
-	const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
-	if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
-		const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, user);
-		foodStr += foodMessages;
-
-		let gearToCheck: GearSetupType = convertAttackStyleToGearSetup(monster.attackStyleToUse);
-		if (monster.wildy) gearToCheck = 'wildy';
-
-		try {
-			const { foodRemoved, reductions, reductionRatio } = await removeFoodFromUser({
-				user,
-				totalHealingNeeded: healAmountNeeded * quantity,
-				healPerAction: Math.ceil(healAmountNeeded / quantity),
-				activityName: monster.name,
-				attackStylesUsed: monster.wildy
-					? ['wildy']
-					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
-				learningPercentage: percentReduced,
-				isWilderness: monster.wildy
-			});
-
-			if (foodRemoved.length === 0) {
-				boosts.push(`${noFoodBoost}% for no food`);
-				duration = reduceNumByPercent(duration, noFoodBoost);
-			} else {
-				for (const [item, qty] of foodRemoved.items()) {
-					const eatable = Eatables.find(e => e.id === item.id);
-					if (!eatable) continue;
-
-					const healAmount =
-						typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(user);
-					const amountHealed = qty * healAmount;
-					if (amountHealed < calcPercentOfNum(75 * reductionRatio, healAmountNeeded * quantity)) continue;
-					const boost = eatable.pvmBoost;
-					if (boost) {
-						if (boost < 0) {
-							boosts.push(`${boost}% for ${eatable.name}`);
-							duration = increaseNumByPercent(duration, Math.abs(boost));
-						} else {
-							boosts.push(`${boost}% for ${eatable.name}`);
-							duration = reduceNumByPercent(duration, boost);
-						}
-					}
-					break;
-				}
-			}
-
-			totalCost.add(foodRemoved);
-			if (reductions.length > 0) {
-				foodStr += `, ${reductions.join(', ')}`;
-			}
-			foodStr += `, **Removed ${foodRemoved}**`;
-		} catch (e: any) {
-			if (typeof e === 'string') {
-				return e;
-			}
-			if (e.message) {
-				return e.message;
-			}
-		}
-	} else {
-		boosts.push(`${noFoodBoost}% for no food`);
-		duration = reduceNumByPercent(duration, noFoodBoost);
-	}
 
 	if (monster.projectileUsage?.required) {
 		if (!user.gear.range.ammo?.item) {
@@ -710,7 +643,8 @@ export async function minionKillCommand(
 			}
 		} else {
 			lootToRemove.add(antiPKSupplies);
-			pkString += `Your minion brought ${antiPKSupplies} to survive potential pkers. (Handed back after trip if lucky)\n`;
+			pkString +=
+				'Your minion brought some supplies to survive potential pkers. (Handed back after trip if lucky)\n';
 		}
 		const [pkCount, died, chanceString] = await calcWildyPKChance(
 			user,
@@ -722,6 +656,75 @@ export async function minionKillCommand(
 		thePkCount = pkCount;
 		hasDied = died;
 		pkString += chanceString;
+	}
+
+	// Check food last, so we can remove any pending loot (pk supplies-food costs) from the bank before removing food.
+	let foodStr: string = '';
+	// Find best eatable boost and add 1% extra
+	const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
+	if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
+		const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, user);
+		foodStr += foodMessages;
+
+		let gearToCheck: GearSetupType = convertAttackStyleToGearSetup(monster.attackStyleToUse);
+		if (monster.wildy) gearToCheck = 'wildy';
+
+		try {
+			const { foodRemoved, reductions, reductionRatio } = await removeFoodFromUser({
+				user,
+				totalHealingNeeded: healAmountNeeded * quantity,
+				healPerAction: Math.ceil(healAmountNeeded / quantity),
+				activityName: monster.name,
+				attackStylesUsed: monster.wildy
+					? ['wildy']
+					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
+				learningPercentage: percentReduced,
+				isWilderness: monster.wildy,
+				unavailableBank: lootToRemove
+			});
+
+			if (foodRemoved.length === 0) {
+				boosts.push(`${noFoodBoost}% for no food`);
+				duration = reduceNumByPercent(duration, noFoodBoost);
+			} else {
+				for (const [item, qty] of foodRemoved.items()) {
+					const eatable = Eatables.find(e => e.id === item.id);
+					if (!eatable) continue;
+
+					const healAmount =
+						typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(user);
+					const amountHealed = qty * healAmount;
+					if (amountHealed < calcPercentOfNum(75 * reductionRatio, healAmountNeeded * quantity)) continue;
+					const boost = eatable.pvmBoost;
+					if (boost) {
+						if (boost < 0) {
+							boosts.push(`${boost}% for ${eatable.name}`);
+							duration = increaseNumByPercent(duration, Math.abs(boost));
+						} else {
+							boosts.push(`${boost}% for ${eatable.name}`);
+							duration = reduceNumByPercent(duration, boost);
+						}
+					}
+					break;
+				}
+			}
+
+			totalCost.add(foodRemoved);
+			if (reductions.length > 0) {
+				foodStr += `, ${reductions.join(', ')}`;
+			}
+			foodStr += `, **Removed ${foodRemoved}**`;
+		} catch (e: any) {
+			if (typeof e === 'string') {
+				return e;
+			}
+			if (e.message) {
+				return e.message;
+			}
+		}
+	} else {
+		boosts.push(`${noFoodBoost}% for no food`);
+		duration = reduceNumByPercent(duration, noFoodBoost);
 	}
 
 	if (lootToRemove.length > 0) {

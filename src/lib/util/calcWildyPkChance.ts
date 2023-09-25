@@ -12,7 +12,7 @@ import { percentChance } from '../util';
 const peakFactor = [
 	{
 		peakTier: PeakTier.High,
-		factor: 5
+		factor: 2.5
 	},
 	{
 		peakTier: PeakTier.Medium,
@@ -54,7 +54,6 @@ export async function calcWildyPKChance(
 	let chanceString = `**PK Chance:** ${pkChance.toFixed(2)}% per min (${peak.peakTier} peak time)`;
 
 	const evasionReduction = await getWildEvasionPercent(user);
-	pkChance = reduceNumByPercent(pkChance, evasionReduction);
 
 	const tripMinutes = Math.round(duration / Time.Minute);
 	let pkCount = 0;
@@ -72,7 +71,8 @@ export async function calcWildyPKChance(
 	const deathChanceFromLevels = Math.max(0, (100 - (statLvls / 297) * 100) / 5);
 	deathChance += deathChanceFromLevels;
 
-	const wildyMultiMultiplier = monster.wildyMulti === true ? 4 : 1;
+	// Multi does make it riskier, but only if there's actually a team on you
+	const wildyMultiMultiplier = monster.wildyMulti === true ? 2 : 1;
 	const hasSupplies = supplies ? 0.5 : 1;
 	const hasOverheads = user.skillLevel(SkillsEnum.Prayer) >= 43 ? 0.25 : 1;
 
