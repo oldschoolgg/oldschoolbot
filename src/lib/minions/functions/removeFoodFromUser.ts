@@ -49,7 +49,13 @@ export default async function removeFoodFromUser({
 	}
 	const favoriteFood = user.user.favorite_food;
 
-	const foodToRemove = getUserFoodFromBank(user, totalHealingNeeded, favoriteFood, undefined, isWilderness);
+	const foodToRemove = getUserFoodFromBank({
+		user,
+		totalHealingNeeded,
+		favoriteFood,
+		minimumHealAmount: undefined,
+		isWilderness
+	});
 	if (!foodToRemove) {
 		throw new UserError(
 			`You don't have enough food to do ${activityName}! You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.map(

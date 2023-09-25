@@ -9,13 +9,19 @@ function getRealHealAmount(user: MUser, healAmount: ((user: MUser) => number) | 
 	return healAmount(user);
 }
 
-export default function getUserFoodFromBank(
-	user: MUser,
-	totalHealingNeeded: number,
-	favoriteFood: readonly number[],
-	minimumHealAmount?: number,
-	isWilderness?: boolean
-): false | Bank {
+export default function getUserFoodFromBank({
+	user,
+	totalHealingNeeded,
+	favoriteFood,
+	minimumHealAmount,
+	isWilderness
+}: {
+	user: MUser;
+	totalHealingNeeded: number;
+	favoriteFood: readonly number[];
+	minimumHealAmount?: number;
+	isWilderness?: boolean;
+}): false | Bank {
 	const userBank = user.bank;
 	let totalHealingCalc = totalHealingNeeded;
 	let foodToRemove = new Bank();
