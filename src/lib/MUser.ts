@@ -509,14 +509,15 @@ GROUP BY data->>'clueID';`);
 		};
 	}
 
-	async specialRemoveItems(bankToRemove: Bank) {
+	async specialRemoveItems(bankToRemove: Bank, options?: { wildy?: boolean }) {
 		bankToRemove = determineRunes(this, bankToRemove);
 		const bankRemove = new Bank();
 		let dart: [Item, number] | null = null;
 		let ammoRemove: [Item, number] | null = null;
 
+		const gearKey = options?.wildy ? 'wildy' : 'range';
 		const realCost = bankToRemove.clone();
-		const rangeGear = this.gear.range;
+		const rangeGear = this.gear[gearKey];
 		const hasAvas = rangeGear.hasEquipped("Ava's assembler");
 		const updates: Prisma.UserUpdateArgs['data'] = {};
 
@@ -546,7 +547,7 @@ GROUP BY data->>'clueID';`);
 			if (equippedAmmo !== ammoRemove[0].id) {
 				throw new Error(`Has ${itemNameFromID(equippedAmmo)}, but needs ${ammoRemove[0].name}.`);
 			}
-			const newRangeGear = { ...this.gear.range };
+			const newRangeGear = { ...this.gear[gearKey] };
 			const ammo = newRangeGear.ammo?.quantity;
 
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(equippedAmmo));
@@ -561,12 +562,13 @@ GROUP BY data->>'clueID';`);
 			}
 			if (!ammo || ammo < ammoRemove[1])
 				throw new Error(
-					`Not enough ${ammoRemove[0].name} equipped in range gear, you need ${
+					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${
 						ammoRemove![1]
 					} but you have only ${ammo}.`
 				);
 			newRangeGear.ammo!.quantity -= ammoRemove![1];
-			updates.gear_range = newRangeGear as any as Prisma.InputJsonObject;
+			const updateKey = options?.wildy ? 'gear_wildy' : 'gear_range';
+			updates[updateKey] = newRangeGear as any as Prisma.InputJsonObject;
 		}
 
 		if (dart) {
