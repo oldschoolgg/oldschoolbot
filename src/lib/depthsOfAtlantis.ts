@@ -833,7 +833,6 @@ export async function doaStartCommand(
 		challengeMode
 	});
 
-	console.log(createdDOATeam);
 	let debugStr = '';
 
 	const totalCost = new Bank();
