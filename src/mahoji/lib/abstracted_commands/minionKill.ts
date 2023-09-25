@@ -65,7 +65,7 @@ import {
 } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { calcWildyPKChance } from '../../../lib/util/calcWildyPkChance';
+import { calcWildyPKChance, increaseWildEvasionXp } from '../../../lib/util/calcWildyPkChance';
 import { generateChart } from '../../../lib/util/chart';
 import findMonster from '../../../lib/util/findMonster';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -144,9 +144,7 @@ export async function minionKillCommand(
 
 	const monster = findMonster(name);
 	if (!monster) return invalidMonsterMsg;
-	if (['Callisto', 'Artio', "Vet'ion", "Calvar'ion", 'Spindel', 'Venenatis'].includes(monster.name)) {
-		return `The monster ${monster.name} is disabled.`;
-	}
+
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask =
 		usersTask.assignedTask !== null &&
@@ -663,8 +661,8 @@ export async function minionKillCommand(
 	let hasDied: boolean | undefined = undefined;
 	let hasWildySupplies = undefined;
 
-	// Leaving the code in here to give Fishy a chance to fix it.
-	if (0 > 1 && monster.canBePked) {
+	if (monster.canBePked) {
+		await increaseWildEvasionXp(user, duration);
 		thePkCount = 0;
 		hasDied = false;
 		const date = new Date().getTime();

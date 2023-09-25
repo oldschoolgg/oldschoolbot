@@ -13,6 +13,7 @@ import { RevenantOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { getWildEvasionPercent, increaseWildEvasionXp } from '../../../lib/util/calcWildyPkChance';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -113,7 +114,12 @@ export async function revsCommand(
 	let deathChanceFromGear = Math.max(20, 100 - defensiveGearPercent) / 4;
 	deathChance += deathChanceFromGear;
 
+	const evasionDeathReduction = await getWildEvasionPercent(user);
+	deathChance = reduceNumByPercent(deathChance, evasionDeathReduction);
+
 	const died = percentChance(deathChance);
+
+	await increaseWildEvasionXp(user, duration);
 
 	await addSubTaskToActivityTask<RevenantOptions>({
 		monsterID: monster.id,
