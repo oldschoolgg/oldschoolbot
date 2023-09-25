@@ -657,12 +657,14 @@ export async function minionKillCommand(
 
 	let wildyPeak = null;
 	let pkString = '';
-	let thePkCount = 0;
-	let hasDied = false;
+	let thePkCount: number | undefined = undefined;
+	let hasDied: boolean | undefined = undefined;
 	let hasWildySupplies = undefined;
 
 	// Leaving the code in here to give Fishy a chance to fix it.
 	if (0 > 1 && monster.canBePked) {
+		thePkCount = 0;
+		hasDied = false;
 		const date = new Date().getTime();
 		const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
 		for (const peak of cachedPeakInterval) {
@@ -754,9 +756,9 @@ export async function minionKillCommand(
 		cannonMulti: !cannonMulti ? undefined : cannonMulti,
 		chinning: !chinning ? undefined : chinning,
 		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage,
-		died: !hasDied ? undefined : hasDied,
-		pkEncounters: !thePkCount ? undefined : thePkCount,
-		hasWildySupplies: !hasWildySupplies ? undefined : hasWildySupplies
+		died: hasDied,
+		pkEncounters: thePkCount,
+		hasWildySupplies
 	});
 	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 		duration
