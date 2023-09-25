@@ -3,7 +3,7 @@ import { calcPercentOfNum, calcWhatPercent, increaseNumByPercent, reduceNumByPer
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { checkUserCanUseDegradeableItem, degradeableItems, degradeItem } from '../../../lib/degradeableItems';
+import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem } from '../../../lib/degradeableItems';
 import { GearStats } from '../../../lib/gear';
 import { trackLoot } from '../../../lib/lootTrack';
 import { Naxxus, NAXXUS_HP } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
@@ -209,9 +209,12 @@ export async function naxxusCommand(user: MUser, channelID: string, quantity: nu
 	const duration = effectiveTime * quantity;
 	// Some degrading items use charges based on DURATION
 	// It is important this is after duration modifiers so that the item isn't over-charged
-	for (const degItem of degradeableItems) {
-		if (user.gear[degItem.setup].hasEquipped(degItem.item.name) && ['melee', 'mage'].includes(degItem.setup)) {
-			const chargesNeeded = degItem.charges(NAXXUS_HP * quantity, duration, user);
+	for (const degItem of degradeablePvmBoostItems) {
+		if (
+			user.gear[degItem.degradeable.setup].hasEquipped(degItem.item.name) &&
+			['melee', 'mage'].includes(degItem.degradeable.setup)
+		) {
+			const chargesNeeded = degItem.charges({ totalHP: NAXXUS_HP * quantity, duration, user });
 			const res = checkUserCanUseDegradeableItem({
 				item: degItem.item,
 				chargesToDegrade: chargesNeeded,

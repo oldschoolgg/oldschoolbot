@@ -190,6 +190,7 @@ export const Eatables: readonly Eatable[] = [
 		name: 'Blighted karambwan',
 		id: itemID('Blighted karambwan'),
 		healAmount: 18,
+		raw: null,
 		wildyOnly: true
 	},
 	{
@@ -247,6 +248,7 @@ export const Eatables: readonly Eatable[] = [
 		name: 'Blighted manta ray',
 		id: itemID('Blighted manta ray'),
 		healAmount: 22,
+		raw: null,
 		pvmBoost: 3,
 		wildyOnly: true
 	},
@@ -294,6 +296,7 @@ export const Eatables: readonly Eatable[] = [
 
 			return hp * (1 / 10) + c;
 		},
+		raw: null,
 		pvmBoost: 4,
 		wildyOnly: true
 	},

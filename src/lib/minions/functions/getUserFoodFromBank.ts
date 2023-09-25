@@ -15,14 +15,14 @@ export default function getUserFoodFromBank({
 	favoriteFood,
 	minimumHealAmount,
 	isWilderness,
-	raw = false
+	raw
 }: {
 	user: MUser;
 	totalHealingNeeded: number;
 	favoriteFood: readonly number[];
 	minimumHealAmount?: number;
 	isWilderness?: boolean;
-	raw: boolean;
+	raw?: boolean;
 }): false | Bank {
 	const userBank = user.bank;
 	let totalHealingCalc = totalHealingNeeded;

@@ -33,7 +33,6 @@ interface DegradeableItem {
 	};
 	unchargedItem?: Item;
 	convertOnCharge?: boolean;
-	charges: (totalHP: number, duration: number, user: MUser) => number;
 	emoji?: string;
 }
 
@@ -68,7 +67,6 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Abyssal whip'),
 			charges: 10_000
 		},
-		charges: (totalHP: number) => totalHP / 20,
 		emoji: '<:Abyssal_tentacle:1068551359755989033>'
 	},
 	{
@@ -82,8 +80,7 @@ export const degradeableItems: DegradeableItem[] = [
 			charges: 1
 		},
 		unchargedItem: getOSItem('Sanguinesti staff (uncharged)'),
-		convertOnCharge: true,
-		charges: (totalHP: number) => totalHP / 20
+		convertOnCharge: true
 	},
 	{
 		item: getOSItem('Void staff'),
@@ -97,16 +94,6 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		convertOnCharge: true,
 		unchargedItem: getOSItem('Void staff (u)'),
-		charges: (_totalHP: number, duration: number, user: MUser) => {
-			const mageGear = user.gear.mage;
-			const minutesDuration = Math.ceil(duration / Time.Minute);
-			if (user.hasEquipped('Magic master cape')) {
-				return Math.ceil(minutesDuration / 3);
-			} else if (mageGear.hasEquipped('Vasa cloak')) {
-				return Math.ceil(minutesDuration / 2);
-			}
-			return minutesDuration;
-		},
 		emoji: '<:Sanguinesti_staff_uncharged:455403545298993162>'
 	},
 	{
@@ -121,7 +108,6 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Celestial ring (uncharged)'),
 		convertOnCharge: true,
-		charges: (duration: number) => duration,
 		emoji: '<:Celestial_ring:1068551362587132084>'
 	},
 	{
@@ -135,8 +121,6 @@ export const degradeableItems: DegradeableItem[] = [
 			charges: 10
 		},
 		unchargedItem: getOSItem('Ash sanctifier'),
-		// Unused
-		charges: () => 1000,
 		emoji: '<:Ash_sanctifier:1068551364168405032>'
 	},
 	{
@@ -151,7 +135,6 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Serpentine helm (uncharged)'),
 		convertOnCharge: true,
-		charges: () => 1000,
 		emoji: '<:Serpentine_helm:1068491236123619379>'
 	},
 	{
@@ -166,7 +149,6 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Amulet of fury'),
 		convertOnCharge: true,
-		charges: () => 1000,
 		emoji: '<:Amulet_of_blood_fury:1068491286530752562>'
 	},
 	{
@@ -181,7 +163,6 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem("Tumeken's shadow (uncharged)"),
 		convertOnCharge: true,
-		charges: () => 1000,
 		emoji: '<:Tumekens_shadow:1068491239302901831>'
 	},
 	{
@@ -194,8 +175,7 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Blood essence'),
 			charges: 1000
 		},
-		emoji: '',
-		charges: () => 1000
+		emoji: ''
 	},
 	{
 		item: getOSItem('Trident of the swamp'),
@@ -209,8 +189,7 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Uncharged toxic trident'),
 		convertOnCharge: true,
-		emoji: '🔱',
-		charges: () => 1000
+		emoji: '🔱'
 	},
 	{
 		item: getOSItem('Scythe of vitur'),
@@ -224,8 +203,7 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Scythe of vitur (uncharged)'),
 		convertOnCharge: true,
-		emoji: '',
-		charges: () => 1000
+		emoji: ''
 	}
 ];
 
@@ -264,6 +242,22 @@ export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
 		attackStyle: 'melee',
 		charges: ({ totalHP }) => totalHP / 20,
 		boost: 3
+	},
+	{
+		item: getOSItem('Void staff'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Void staff'))!,
+		attackStyle: 'mage',
+		boost: 8,
+		charges: ({ duration, user }) => {
+			const mageGear = user.gear.mage;
+			const minutesDuration = Math.ceil(duration / Time.Minute);
+			if (user.hasEquipped('Magic master cape')) {
+				return Math.ceil(minutesDuration / 3);
+			} else if (mageGear.hasEquipped('Vasa cloak')) {
+				return Math.ceil(minutesDuration / 2);
+			}
+			return minutesDuration;
+		}
 	}
 ];
 
