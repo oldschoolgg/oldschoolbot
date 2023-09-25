@@ -144,7 +144,9 @@ export async function minionKillCommand(
 
 	const monster = findMonster(name);
 	if (!monster) return invalidMonsterMsg;
-
+	if (['Callisto', 'Artio', "Vet'ion", "Calvar'ion", 'Spindel', 'Venenatis'].includes(monster.name)) {
+		return `The monster ${monster.name} is disabled.`;
+	}
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask =
 		usersTask.assignedTask !== null &&
