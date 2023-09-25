@@ -1,9 +1,12 @@
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
+import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { GearSetupType } from './gear/types';
+import { KillableMonster } from './minions/types';
 import { assert } from './util';
 import getOSItem from './util/getOSItem';
+import itemID from './util/itemID';
 import { updateBankSetting } from './util/updateBankSetting';
 
 interface DegradeableItem {
@@ -29,6 +32,26 @@ interface DegradeableItem {
 	unchargedItem?: Item;
 	convertOnCharge?: boolean;
 	emoji: string;
+}
+
+interface DegradeableItemPVMBoost {
+	item: Item;
+	degradeable: DegradeableItem;
+	attackStyle: GearSetupType;
+	charges: ({
+		killableMon,
+		osjsMonster,
+		totalHP,
+		duration,
+		user
+	}: {
+		killableMon?: KillableMonster;
+		osjsMonster?: Monster;
+		totalHP: number;
+		duration: number;
+		user: MUser;
+	}) => number;
+	boost: number;
 }
 
 export const degradeableItems: DegradeableItem[] = [
@@ -169,6 +192,44 @@ export const degradeableItems: DegradeableItem[] = [
 	}
 ];
 
+export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
+	{
+		item: getOSItem("Tumeken's shadow"),
+		degradeable: degradeableItems.find(di => di.item.id === itemID("Tumeken's shadow"))!,
+		attackStyle: 'mage',
+		charges: ({ totalHP }) => totalHP / 40,
+		boost: 6
+	},
+	{
+		item: getOSItem('Sanguinesti staff'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Sanguinesti staff'))!,
+		attackStyle: 'mage',
+		charges: ({ totalHP }) => totalHP / 25,
+		boost: 5
+	},
+	{
+		item: getOSItem('Trident of the swamp'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Trident of the swamp'))!,
+		attackStyle: 'mage',
+		charges: ({ totalHP }) => totalHP / 40,
+		boost: 3
+	},
+	{
+		item: getOSItem('Scythe of vitur'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Scythe of vitur'))!,
+		attackStyle: 'melee',
+		charges: ({ totalHP }) => totalHP / 40,
+		boost: 5
+	},
+	{
+		item: getOSItem('Abyssal tentacle'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Abyssal tentacle'))!,
+		attackStyle: 'melee',
+		charges: ({ totalHP }) => totalHP / 20,
+		boost: 3
+	}
+];
+
 export function checkUserCanUseDegradeableItem({
 	item,
 	chargesToDegrade,
@@ -177,7 +238,7 @@ export function checkUserCanUseDegradeableItem({
 	item: Item;
 	chargesToDegrade: number;
 	user: MUser;
-}): { hasEnough: true } | { hasEnough: false; userMessage: string } {
+}): { hasEnough: true; currentCharges: number } | { hasEnough: false; currentCharges: number; userMessage: string } {
 	const degItem = degradeableItems.find(i => i.item === item);
 	if (!degItem) throw new Error('Invalid degradeable item');
 	const currentCharges = user.user[degItem.settingsKey];
@@ -186,11 +247,13 @@ export function checkUserCanUseDegradeableItem({
 	if (newCharges < 0) {
 		return {
 			hasEnough: false,
+			currentCharges,
 			userMessage: `${user.usernameOrMention}, your ${item.name} has only ${currentCharges} charges remaining, but you need ${chargesToDegrade}.`
 		};
 	}
 	return {
-		hasEnough: true
+		hasEnough: true,
+		currentCharges
 	};
 }
 
