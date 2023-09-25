@@ -933,7 +933,7 @@ export async function drawChestLootImage(options: {
 		canvases.push(canvas);
 	}
 
-	const fileName = `${anyoneGotPurple ? 'SPOILER_' : ''}toaloot-${randInt(1, 1000)}.png`;
+	const fileName = `${anyoneGotPurple ? 'SPOILER_' : ''}chestloot-${randInt(1, 1000)}.png`;
 
 	if (canvases.length === 1) {
 		return new AttachmentBuilder(await canvases[0].encode('png'), {

@@ -538,7 +538,12 @@ export async function removeRawFood({
 		foodBoosts.push(`${obj.foodReduction}% less for ${obj.item.name}`);
 	}
 
-	const foodToRemove = getUserFoodFromBank(user, totalHealingNeeded, user.user.favorite_food, true);
+	const foodToRemove = getUserFoodFromBank({
+		user,
+		totalHealingNeeded,
+		favoriteFood: user.user.favorite_food,
+		raw: true
+	});
 	if (!foodToRemove) {
 		return {
 			success: false,

@@ -6,7 +6,7 @@ import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeri
 
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
-import { Emoji, Events } from '../../../lib/constants';
+import { CHINCANNON_MESSAGES, Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
 import { userHasFlappy } from '../../../lib/invention/inventions';
@@ -223,12 +223,7 @@ export const raidsTask: MinionTask = {
 		}
 
 		if (cc) {
-			let msg = randArrItem([
-				'Your team received no loot, your Chincannon blew it up!',
-				'Oops.. your Chincannon blew up all the loot.',
-				'Your Chincannon blew up all the loot!',
-				'Your Chincannon turned the loot into dust.'
-			]);
+			let msg = randArrItem(CHINCANNON_MESSAGES);
 			resultMessage += `\n\n**${msg}**`;
 		}
 

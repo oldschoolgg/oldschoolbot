@@ -13,6 +13,7 @@ import { RevenantOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { getWildEvasionPercent, increaseWildEvasionXp } from '../../../lib/util/calcWildyPkChance';
 import combatAmmoUsage from '../../../lib/util/combatAmmoUsage';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -41,7 +42,7 @@ export async function revsCommand(
 			m.name.split(' ').some(a => stringMatches(a, name))
 	);
 	if (!monster || !name) {
-		return `That's not a valid revenant. The valid revenants are: ${revenantMonsters.map(m => m.name).join(', ')}.`;
+		return `That's not a valid Revenant. The valid Revenants are: ${revenantMonsters.map(m => m.name).join(', ')}.`;
 	}
 
 	const key = ({ melee: 'attack_crush', mage: 'attack_magic', range: 'attack_ranged' } as const)[style];
@@ -50,11 +51,11 @@ export async function revsCommand(
 
 	const weapon = userGear.equippedWeapon();
 	if (!weapon) {
-		return 'You have no weapon equipped in your wildy outfit.';
+		return 'You have no weapon equipped in your Wildy outfit.';
 	}
 
 	if (weapon.equipment![key] < 10) {
-		return `Your weapon is terrible, you can't kill revenants. You should have ${style} gear equipped in your wildy outfit, as this is what you're currently training. You can change this using \`/minion train\``;
+		return `Your weapon is terrible, you can't kill Revenants. You should have ${style} gear equipped in your wildy outfit, as this is what you're currently training. You can change this using \`/minion train\``;
 	}
 
 	let timePerMonster = monster.timeToFinish;
@@ -131,7 +132,12 @@ export async function revsCommand(
 	let deathChanceFromGear = Math.max(20, 100 - defensiveGearPercent) / 4;
 	deathChance += deathChanceFromGear;
 
+	const evasionDeathReduction = await getWildEvasionPercent(user);
+	deathChance = reduceNumByPercent(deathChance, evasionDeathReduction);
+
 	const died = percentChance(deathChance);
+
+	await increaseWildEvasionXp(user, duration);
 
 	await addSubTaskToActivityTask<RevenantOptions>({
 		monsterID: monster.id,
