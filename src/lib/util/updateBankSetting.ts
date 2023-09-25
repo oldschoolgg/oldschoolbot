@@ -59,7 +59,8 @@ type ClientBankKey =
 	| 'nex_loot'
 	| 'nmz_cost'
 	| 'toa_cost'
-	| 'toa_loot';
+	| 'toa_loot'
+	| 'ourania_loot';
 
 export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);

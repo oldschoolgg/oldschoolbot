@@ -25,7 +25,7 @@ export async function ouraniaAltarStartCommand({
 	usestams?: boolean;
 	daeyalt_essence?: boolean;
 }) {
-	let timePerTrip = Time.Minute * 1.225;
+	let timePerTrip = Time.Minute * 1.05;
 	const stamina: boolean = usestams !== undefined ? usestams : true;
 	let daeyalt = daeyalt_essence || false;
 
@@ -55,10 +55,9 @@ export async function ouraniaAltarStartCommand({
 		timePerTrip = increaseNumByPercent(timePerTrip, 50);
 	}
 
-	if (user.skillLevel(SkillsEnum.Runecraft) >= 99 && user.hasEquippedOrInBank('Runecraft cape') && inventorySize > 28)
-		if (stamina || mageLvl > 95) {
-			timePerTrip *= 0.8;
-		}
+	if (stamina || mageLvl > 95) {
+		timePerTrip *= 0.8;
+	}
 
 	if (user.hasEquippedOrInBank(['Ring of endurance'])) {
 		boosts.push('2% faster for Ring of Endurance');

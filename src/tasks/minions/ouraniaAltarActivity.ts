@@ -3,12 +3,14 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
+import { trackLoot } from '../../lib/lootTrack';
 import { raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
 import Runecraft, { ouraniaAltarTables } from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { OuraniaAltarOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
 
 const ouraniaAltarTask: MinionTask = {
 	type: 'OuraniaAltar',
@@ -85,6 +87,23 @@ const ouraniaAltarTask: MinionTask = {
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
+		});
+
+		updateBankSetting('ourania_loot', loot);
+		await trackLoot({
+			id: 'ourania_altar',
+			type: 'Skilling',
+			duration,
+			kc: quantity,
+			totalLoot: loot,
+			changeType: 'loot',
+			users: [
+				{
+					id: user.id,
+					loot,
+					duration
+				}
+			]
 		});
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
