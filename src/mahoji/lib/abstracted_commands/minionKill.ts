@@ -447,12 +447,25 @@ export async function minionKillCommand(
 	const infiniteWaterRunes = user.hasEquipped(getSimilarItems(itemID('Staff of water')), false);
 	const perKillCost = new Bank();
 	// Calculate per kill cost:
+	const tripConsumableCost = (c: Consumable, q: number, d: number) => {
+		const consumableCost = c.itemCost.clone();
+		if (c.qtyPerKill) {
+			consumableCost.multiply(q);
+		} else if (c.qtyPerMinute) {
+			consumableCost.multiply(d / Time.Minute);
+		}
+		for (const [item, qty] of Object.entries(consumableCost.bank)) {
+			consumableCost.bank[item] = Math.ceil(qty);
+		}
+		return consumableCost;
+	};
 	if (consumableCosts.length > 0) {
 		for (const cc of consumableCosts) {
 			let consumable = cc;
-			if (consumable.alternativeConsumables && !user.owns(consumable.itemCost)) {
+
+			if (consumable.alternativeConsumables && !user.owns(tripConsumableCost(consumable, quantity, duration))) {
 				for (const c of consumable.alternativeConsumables) {
-					if (user.owns(c.itemCost)) {
+					if (user.owns(tripConsumableCost(c, quantity, duration))) {
 						consumable = c;
 						break;
 					}
@@ -477,6 +490,7 @@ export async function minionKillCommand(
 
 				// Calculate supply for 1 kill
 				const oneKcCost = consumable.itemCost.clone().multiply(multiply);
+
 				// Can't use Bank.add() because it discards < 1 qty.
 				for (const [itemID, qty] of Object.entries(oneKcCost.bank)) {
 					if (perKillCost.bank[itemID]) perKillCost.bank[itemID] += qty;
@@ -528,7 +542,8 @@ export async function minionKillCommand(
 				attackStylesUsed: monster.wildy
 					? ['wildy']
 					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
-				learningPercentage: percentReduced
+				learningPercentage: percentReduced,
+				isWilderness: monster.wildy
 			});
 
 			if (foodRemoved.length === 0) {
@@ -646,7 +661,8 @@ export async function minionKillCommand(
 	let hasDied = false;
 	let hasWildySupplies = undefined;
 
-	if (monster.canBePked) {
+	// Leaving the code in here to give Fishy a chance to fix it.
+	if (0 > 1 && monster.canBePked) {
 		const date = new Date().getTime();
 		const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
 		for (const peak of cachedPeakInterval) {
@@ -664,10 +680,23 @@ export async function minionKillCommand(
 			}
 		}
 
-		const antiPKSupplies = new Bank()
-			.add('Saradomin brew(4)', Math.max(1, Math.floor(duration / (4 * Time.Minute))))
-			.add('Super restore(4)', Math.max(1, Math.floor(duration / (8 * Time.Minute))))
-			.add('Cooked karambwan', Math.max(1, Math.floor(duration / (4 * Time.Minute))));
+		const antiPkBrewsNeeded = Math.max(1, Math.floor(duration / (4 * Time.Minute)));
+		const antiPkRestoresNeeded = Math.max(1, Math.floor(duration / (8 * Time.Minute)));
+		const antiPkKarambwanNeeded = Math.max(1, Math.floor(duration / (4 * Time.Minute)));
+
+		const antiPKSupplies = new Bank();
+		if (user.bank.amount('Blighted super restore(4)') >= antiPkRestoresNeeded) {
+			antiPKSupplies.add('Blighted super restore(4)', antiPkRestoresNeeded);
+		} else {
+			antiPKSupplies.add('Super restore(4)', antiPkRestoresNeeded);
+		}
+		if (user.bank.amount('Blighted karambwan') >= antiPkKarambwanNeeded) {
+			antiPKSupplies.add('Blighted karambwan', antiPkKarambwanNeeded);
+		} else {
+			antiPKSupplies.add('Cooked karambwan', antiPkKarambwanNeeded);
+		}
+		antiPKSupplies.add('Saradomin brew(4)', antiPkBrewsNeeded);
+
 		hasWildySupplies = true;
 		if (!user.bank.has(antiPKSupplies)) {
 			hasWildySupplies = false;
