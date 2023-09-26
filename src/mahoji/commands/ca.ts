@@ -4,44 +4,20 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import {
+	allCAMonsterNames,
 	allCombatAchievementTasks,
 	caToPlayerString,
 	CombatAchievement,
 	CombatAchievements,
 	nextCATier
 } from '../../lib/combat_achievements/combatAchievements';
-import { easyCombatAchievements } from '../../lib/combat_achievements/easy';
-import { eliteCombatAchievements } from '../../lib/combat_achievements/elite';
-import { grandmasterCombatAchievements } from '../../lib/combat_achievements/grandmaster';
-import { hardCombatAchievements } from '../../lib/combat_achievements/hard';
-import { masterCombatAchievements } from '../../lib/combat_achievements/master';
-import { mediumCombatAchievements } from '../../lib/combat_achievements/medium';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 
 const viewTypes = ['all', 'incomplete', 'complete'] as const;
 type ViewType = (typeof viewTypes)[number];
 
-const collectMonsterNames = (...achievements: CombatAchievement[][]) => {
-	const allMonsterNamesSet = new Set<string>();
-	for (const achievementGroup of achievements) {
-		for (const achievement of achievementGroup) {
-			allMonsterNamesSet.add(achievement.monster);
-		}
-	}
-	return Array.from(allMonsterNamesSet);
-};
-
-const allMonsterNames = collectMonsterNames(
-	easyCombatAchievements,
-	mediumCombatAchievements,
-	hardCombatAchievements,
-	eliteCombatAchievements,
-	masterCombatAchievements,
-	grandmasterCombatAchievements
-);
-
-type MonsterNames = (typeof allMonsterNames)[number];
+type MonsterNames = (typeof allCAMonsterNames)[number];
 
 interface CombatAchievementGroup {
 	name: string;
@@ -95,7 +71,7 @@ export const caCommand: OSBMahojiCommand = {
 					name: 'name',
 					description: 'What boss do you want to view?',
 					autocomplete: async (value: string) => {
-						return allMonsterNames
+						return allCAMonsterNames
 							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i, value: i }));
 					},
@@ -202,6 +178,9 @@ export const caCommand: OSBMahojiCommand = {
 				const tasksForSelectedMonster = allCombatAchievementTasks.filter(
 					task => task.monster === selectedMonster
 				);
+
+				if (tasksForSelectedMonster.length === 0)
+					return 'No Combat Achievement tasks found for the specified monster.';
 
 				const maxContentLength = 750;
 				const result = buildCombatAchievementsResult(
