@@ -3,6 +3,7 @@ import { calcWhatPercent, objectEntries } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
+import { buildCombatAchievementsResult } from '../../lib/combat_achievements/caUtils';
 import {
 	allCAMonsterNames,
 	allCombatAchievementTasks,
@@ -15,47 +16,10 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 
 const viewTypes = ['all', 'incomplete', 'complete'] as const;
-type ViewType = (typeof viewTypes)[number];
+
+export type CAViewType = (typeof viewTypes)[number];
 
 type MonsterNames = (typeof allCAMonsterNames)[number];
-
-interface CombatAchievementGroup {
-	name: string;
-	tasks: CombatAchievement[];
-}
-
-const buildCombatAchievementsResult = (
-	completedTaskIDs: Set<number>,
-	combatAchievements: CombatAchievementGroup,
-	type: ViewType,
-	maxContentLength: number
-) => {
-	const { name, tasks } = combatAchievements;
-	let result = `Combat Achievement tasks for ${name}:\n\n`;
-
-	const completedTasks = tasks.filter(task => completedTaskIDs.has(task.id));
-	const allTasksCompleted = completedTasks.length === tasks.length;
-
-	if (type === 'complete' && completedTasks.length === 0) {
-		return `No tasks completed for ${name}.`;
-	}
-
-	if (type === 'incomplete' && allTasksCompleted) {
-		return `All tasks completed for ${name}.`;
-	}
-
-	for (const task of tasks) {
-		if (type === 'complete' && !completedTaskIDs.has(task.id)) continue;
-		if (type === 'incomplete' && completedTaskIDs.has(task.id)) continue;
-		const completionStatus = completedTaskIDs.has(task.id) ? 'Completed' : 'Incomplete';
-		result += `Name: ${task.name}\nDescription: ${task.desc}\nStatus: ${completionStatus}\n\n`;
-	}
-
-	return {
-		content: result.length <= maxContentLength ? result : 'Result too large. Check the attached file for details.',
-		files: result.length > maxContentLength ? [{ attachment: Buffer.from(result), name: 'caBoss.txt' }] : undefined
-	};
-};
 
 export const caCommand: OSBMahojiCommand = {
 	name: 'ca',
@@ -101,7 +65,7 @@ export const caCommand: OSBMahojiCommand = {
 		claim?: {};
 		view?: {
 			name?: MonsterNames;
-			type?: ViewType;
+			type?: CAViewType;
 		};
 	}>) => {
 		await deferInteraction(interaction);
@@ -172,7 +136,7 @@ export const caCommand: OSBMahojiCommand = {
 
 		if (options.view) {
 			let selectedMonster = options.view.name;
-			let tasksView: ViewType = options.view.type || 'all';
+			let tasksView: CAViewType = options.view.type || 'all';
 
 			if (selectedMonster) {
 				const tasksForSelectedMonster = allCombatAchievementTasks.filter(
