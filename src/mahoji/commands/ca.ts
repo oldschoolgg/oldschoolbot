@@ -55,7 +55,18 @@ const buildCombatAchievementsResult = (
 	maxContentLength: number
 ) => {
 	const { name, tasks } = combatAchievements;
-	let result = `${name}:\n\n`;
+	let result = `Combat Achievement tasks for ${name}:\n\n`;
+
+	const completedTasks = tasks.filter(task => completedTaskIDs.has(task.id));
+	const allTasksCompleted = completedTasks.length === tasks.length;
+
+	if (type === 'complete' && completedTasks.length === 0) {
+		return `No tasks completed for ${name}.`;
+	}
+
+	if (type === 'incomplete' && allTasksCompleted) {
+		return `All tasks completed for ${name}.`;
+	}
 
 	for (const task of tasks) {
 		if (type === 'complete' && !completedTaskIDs.has(task.id)) continue;
@@ -195,7 +206,7 @@ export const caCommand: OSBMahojiCommand = {
 				const maxContentLength = 750;
 				const result = buildCombatAchievementsResult(
 					completedTaskIDs,
-					{ name: `Combat Achievement tasks for ${selectedMonster}`, tasks: tasksForSelectedMonster },
+					{ name: `${selectedMonster}`, tasks: tasksForSelectedMonster },
 					tasksView,
 					maxContentLength
 				);
