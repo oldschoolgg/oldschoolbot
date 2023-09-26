@@ -81,10 +81,21 @@ export const caCommand: OSBMahojiCommand = {
 			options: [
 				{
 					type: ApplicationCommandOptionType.String,
+					name: 'name',
+					description: 'What boss do you want to view?',
+					autocomplete: async (value: string) => {
+						return allMonsterNames
+							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({ name: i, value: i }));
+					},
+					required: false
+				},
+				{
+					type: ApplicationCommandOptionType.String,
 					name: 'type',
 					description: 'What do you want to view?',
 					choices: viewTypes.map(i => ({ name: i, value: i })),
-					required: true
+					required: false
 				}
 			]
 		},
@@ -93,31 +104,6 @@ export const caCommand: OSBMahojiCommand = {
 			name: 'claim',
 			description: 'Claim your completed Combat Achievements.',
 			options: []
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'boss',
-			description: 'View your Combat Achievements progress for a certain boss.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'name',
-					description: 'What boss do you want to view?',
-					autocomplete: async (value: string) => {
-						return allMonsterNames
-							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({ name: i, value: i }));
-					},
-					required: true
-				},
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'type',
-					description: 'What tasks do you want to view?',
-					choices: viewTypes.map(i => ({ name: i, value: i })),
-					required: false
-				}
-			]
 		}
 	],
 	run: async ({
@@ -127,10 +113,7 @@ export const caCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		claim?: {};
 		view?: {
-			type: ViewType;
-		};
-		boss?: {
-			name: MonsterNames;
+			name?: MonsterNames;
 			type?: ViewType;
 		};
 	}>) => {
@@ -201,6 +184,24 @@ export const caCommand: OSBMahojiCommand = {
 		}
 
 		if (options.view) {
+			let selectedMonster = options.view.name;
+			let tasksView: ViewType = options.view.type || 'all';
+
+			if (selectedMonster) {
+				const tasksForSelectedMonster = allCombatAchievementTasks.filter(
+					task => task.monster === selectedMonster
+				);
+
+				const maxContentLength = 750;
+				const result = buildCombatAchievementsResult(
+					completedTaskIDs,
+					{ name: `Combat Achievement tasks for ${selectedMonster}`, tasks: tasksForSelectedMonster },
+					tasksView,
+					maxContentLength
+				);
+				return result;
+			}
+
 			let result = '';
 
 			for (const group of Object.values(CombatAchievements)) {
@@ -225,24 +226,6 @@ export const caCommand: OSBMahojiCommand = {
 			};
 		}
 
-		if (options.boss) {
-			const selectedMonster = options.boss.name;
-			let tasksView: ViewType = options.boss.type || 'all';
-
-			const tasksForSelectedMonster = allCombatAchievementTasks.filter(task => task.monster === selectedMonster);
-			if (tasksForSelectedMonster.length === 0) {
-				return `No Combat Achievement tasks found for the specified monster: ${selectedMonster}`;
-			}
-
-			const maxContentLength = 750;
-			const result = buildCombatAchievementsResult(
-				completedTaskIDs,
-				{ name: `Combat Achievement tasks for ${selectedMonster}`, tasks: tasksForSelectedMonster },
-				tasksView,
-				maxContentLength
-			);
-			return result;
-		}
 		return 'Invalid command.';
 	}
 };
