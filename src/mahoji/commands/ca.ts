@@ -22,25 +22,24 @@ import { OSBMahojiCommand } from '../lib/util';
 const viewTypes = ['all', 'incomplete', 'complete'] as const;
 type ViewType = (typeof viewTypes)[number];
 
-const monsterNamesFromAchievements = (achievements: CombatAchievement[]) => {
-	return achievements.map(achievement => achievement.monster);
+const collectMonsterNames = (...achievements: CombatAchievement[][]) => {
+	const allMonsterNamesSet = new Set<string>();
+	for (const achievementGroup of achievements) {
+		for (const achievement of achievementGroup) {
+			allMonsterNamesSet.add(achievement.monster);
+		}
+	}
+	return Array.from(allMonsterNamesSet);
 };
 
-const allMonsterNamesSet = new Set<string>();
-
-const addMonsterNamesFromAchievements = (achievements: CombatAchievement[]) => {
-	const monsterNames = monsterNamesFromAchievements(achievements);
-	monsterNames.forEach(monster => allMonsterNamesSet.add(monster));
-};
-
-addMonsterNamesFromAchievements(easyCombatAchievements);
-addMonsterNamesFromAchievements(mediumCombatAchievements);
-addMonsterNamesFromAchievements(hardCombatAchievements);
-addMonsterNamesFromAchievements(eliteCombatAchievements);
-addMonsterNamesFromAchievements(masterCombatAchievements);
-addMonsterNamesFromAchievements(grandmasterCombatAchievements);
-
-const allMonsterNames = Array.from(allMonsterNamesSet);
+const allMonsterNames = collectMonsterNames(
+	easyCombatAchievements,
+	mediumCombatAchievements,
+	hardCombatAchievements,
+	eliteCombatAchievements,
+	masterCombatAchievements,
+	grandmasterCombatAchievements
+);
 
 type MonsterNames = (typeof allMonsterNames)[number];
 
@@ -52,27 +51,23 @@ interface CombatAchievementGroup {
 const buildCombatAchievementsResult = (
 	completedTaskIDs: Set<number>,
 	combatAchievements: CombatAchievementGroup,
+	type: ViewType,
 	maxContentLength: number
 ) => {
 	const { name, tasks } = combatAchievements;
-
-	let result = `${name}\n\n`;
+	let result = `${name}:\n\n`;
 
 	for (const task of tasks) {
+		if (type === 'complete' && !completedTaskIDs.has(task.id)) continue;
+		if (type === 'incomplete' && completedTaskIDs.has(task.id)) continue;
 		const completionStatus = completedTaskIDs.has(task.id) ? 'Completed' : 'Incomplete';
 		result += `Name: ${task.name}\nDescription: ${task.desc}\nStatus: ${completionStatus}\n\n`;
 	}
 
-	if (result.length <= maxContentLength) {
-		return {
-			content: result
-		};
-	} else {
-		return {
-			content: 'Result too large. Check the attached file for details.',
-			files: [{ attachment: Buffer.from(result), name: 'caBoss.txt' }]
-		};
-	}
+	return {
+		content: result.length <= maxContentLength ? result : 'Result too large. Check the attached file for details.',
+		files: result.length > maxContentLength ? [{ attachment: Buffer.from(result), name: 'caBoss.txt' }] : undefined
+	};
 };
 
 export const caCommand: OSBMahojiCommand = {
@@ -114,6 +109,13 @@ export const caCommand: OSBMahojiCommand = {
 							.map(i => ({ name: i, value: i }));
 					},
 					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'type',
+					description: 'What tasks do you want to view?',
+					choices: viewTypes.map(i => ({ name: i, value: i })),
+					required: false
 				}
 			]
 		}
@@ -129,6 +131,7 @@ export const caCommand: OSBMahojiCommand = {
 		};
 		boss?: {
 			name: MonsterNames;
+			type?: ViewType;
 		};
 	}>) => {
 		await deferInteraction(interaction);
@@ -224,6 +227,7 @@ export const caCommand: OSBMahojiCommand = {
 
 		if (options.boss) {
 			const selectedMonster = options.boss.name;
+			let tasksView: ViewType = options.boss.type || 'all';
 
 			console.log(selectedMonster);
 
@@ -233,17 +237,15 @@ export const caCommand: OSBMahojiCommand = {
 				return `No Combat Achievement tasks found for the specified monster: ${selectedMonster}`;
 			}
 
-			const maxContentLength = 750;  // Set the maximum content length
+			const maxContentLength = 750;
 
 			const result = buildCombatAchievementsResult(
 				completedTaskIDs,
-				{
-					name: `Combat Achievement tasks for ${selectedMonster}`,
-					tasks: tasksForSelectedMonster
-				} as CombatAchievementGroup,
-				maxContentLength  // Pass the maximum content length
+				{ name: `Combat Achievement tasks for ${selectedMonster}`, tasks: tasksForSelectedMonster },
+				tasksView,
+				maxContentLength
 			);
-			
+
 			return result;
 		}
 		return 'Invalid command.';
