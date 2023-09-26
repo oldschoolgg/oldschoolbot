@@ -229,23 +229,18 @@ export const caCommand: OSBMahojiCommand = {
 			const selectedMonster = options.boss.name;
 			let tasksView: ViewType = options.boss.type || 'all';
 
-			console.log(selectedMonster);
-
 			const tasksForSelectedMonster = allCombatAchievementTasks.filter(task => task.monster === selectedMonster);
-
 			if (tasksForSelectedMonster.length === 0) {
 				return `No Combat Achievement tasks found for the specified monster: ${selectedMonster}`;
 			}
 
 			const maxContentLength = 750;
-
 			const result = buildCombatAchievementsResult(
 				completedTaskIDs,
 				{ name: `Combat Achievement tasks for ${selectedMonster}`, tasks: tasksForSelectedMonster },
 				tasksView,
 				maxContentLength
 			);
-
 			return result;
 		}
 		return 'Invalid command.';
