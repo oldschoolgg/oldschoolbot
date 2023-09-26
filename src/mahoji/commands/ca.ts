@@ -10,11 +10,70 @@ import {
 	CombatAchievements,
 	nextCATier
 } from '../../lib/combat_achievements/combatAchievements';
+import { easyCombatAchievements } from '../../lib/combat_achievements/easy';
+import { eliteCombatAchievements } from '../../lib/combat_achievements/elite';
+import { grandmasterCombatAchievements } from '../../lib/combat_achievements/grandmaster';
+import { hardCombatAchievements } from '../../lib/combat_achievements/hard';
+import { masterCombatAchievements } from '../../lib/combat_achievements/master';
+import { mediumCombatAchievements } from '../../lib/combat_achievements/medium';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 
 const viewTypes = ['all', 'incomplete', 'complete'] as const;
 type ViewType = (typeof viewTypes)[number];
+
+const monsterNamesFromAchievements = (achievements: CombatAchievement[]) => {
+	return achievements.map(achievement => achievement.monster);
+};
+
+const allMonsterNamesSet = new Set<string>();
+
+const addMonsterNamesFromAchievements = (achievements: CombatAchievement[]) => {
+	const monsterNames = monsterNamesFromAchievements(achievements);
+	monsterNames.forEach(monster => allMonsterNamesSet.add(monster));
+};
+
+addMonsterNamesFromAchievements(easyCombatAchievements);
+addMonsterNamesFromAchievements(mediumCombatAchievements);
+addMonsterNamesFromAchievements(hardCombatAchievements);
+addMonsterNamesFromAchievements(eliteCombatAchievements);
+addMonsterNamesFromAchievements(masterCombatAchievements);
+addMonsterNamesFromAchievements(grandmasterCombatAchievements);
+
+const allMonsterNames = Array.from(allMonsterNamesSet);
+
+type MonsterNames = (typeof allMonsterNames)[number];
+
+interface CombatAchievementGroup {
+	name: string;
+	tasks: CombatAchievement[];
+}
+
+const buildCombatAchievementsResult = (
+	completedTaskIDs: Set<number>,
+	combatAchievements: CombatAchievementGroup,
+	maxContentLength: number
+) => {
+	const { name, tasks } = combatAchievements;
+
+	let result = `${name}\n\n`;
+
+	for (const task of tasks) {
+		const completionStatus = completedTaskIDs.has(task.id) ? 'Completed' : 'Incomplete';
+		result += `Name: ${task.name}\nDescription: ${task.desc}\nStatus: ${completionStatus}\n\n`;
+	}
+
+	if (result.length <= maxContentLength) {
+		return {
+			content: result
+		};
+	} else {
+		return {
+			content: 'Result too large. Check the attached file for details.',
+			files: [{ attachment: Buffer.from(result), name: 'caBoss.txt' }]
+		};
+	}
+};
 
 export const caCommand: OSBMahojiCommand = {
 	name: 'ca',
@@ -39,6 +98,24 @@ export const caCommand: OSBMahojiCommand = {
 			name: 'claim',
 			description: 'Claim your completed Combat Achievements.',
 			options: []
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'boss',
+			description: 'View your Combat Achievements progress for a certain boss.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'name',
+					description: 'What boss do you want to view?',
+					autocomplete: async (value: string) => {
+						return allMonsterNames
+							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({ name: i, value: i }));
+					},
+					required: true
+				}
+			]
 		}
 	],
 	run: async ({
@@ -49,6 +126,9 @@ export const caCommand: OSBMahojiCommand = {
 		claim?: {};
 		view?: {
 			type: ViewType;
+		};
+		boss?: {
+			name: MonsterNames;
 		};
 	}>) => {
 		await deferInteraction(interaction);
@@ -140,6 +220,31 @@ export const caCommand: OSBMahojiCommand = {
 				content: generalProgressString,
 				files: [{ attachment: Buffer.from(result), name: 'ca.txt' }]
 			};
+		}
+
+		if (options.boss) {
+			const selectedMonster = options.boss.name;
+
+			console.log(selectedMonster);
+
+			const tasksForSelectedMonster = allCombatAchievementTasks.filter(task => task.monster === selectedMonster);
+
+			if (tasksForSelectedMonster.length === 0) {
+				return `No Combat Achievement tasks found for the specified monster: ${selectedMonster}`;
+			}
+
+			const maxContentLength = 750;  // Set the maximum content length
+
+			const result = buildCombatAchievementsResult(
+				completedTaskIDs,
+				{
+					name: `Combat Achievement tasks for ${selectedMonster}`,
+					tasks: tasksForSelectedMonster
+				} as CombatAchievementGroup,
+				maxContentLength  // Pass the maximum content length
+			);
+			
+			return result;
 		}
 		return 'Invalid command.';
 	}
