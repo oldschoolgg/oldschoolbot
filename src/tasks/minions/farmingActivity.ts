@@ -31,14 +31,16 @@ import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 const plantsNotUsedForArcaneHarvester = ['Mysterious tree'].map(i => Farming.Plants.find(p => p.name === i)!);
 assert(!(plantsNotUsedForArcaneHarvester as any[]).includes(undefined));
 
+const plopperBoostPercent = 100;
+
 async function farmingLootBoosts(user: MUser, plant: Plant, loot: Bank, messages: string[]) {
 	let bonusPercentage = 0;
 	if (user.allItemsOwned.has('Plopper')) {
-		bonusPercentage += 100;
-		messages.push('100% for Plopper');
+		bonusPercentage += plopperBoostPercent;
+		messages.push(`${plopperBoostPercent}% for Plopper`);
 	}
 
-	if (user.allItemsOwned.has('Farming master cape')) {
+	if (user.hasEquippedOrInBank('Farming master cape')) {
 		bonusPercentage += 100;
 		messages.push('100% for Farming master cape');
 	}
@@ -249,7 +251,7 @@ export const farmingTask: MinionTask = {
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
-			if (hasPlopper) str += '\nYou received 4x loot from Plopper';
+			if (hasPlopper) str += `\nYou received ${plopperBoostPercent}% bonus loot from Plopper`;
 
 			handleTripFinish(user, channelID, str, undefined, data, null);
 		} else if (patchType.patchPlanted) {
@@ -638,7 +640,7 @@ export const farmingTask: MinionTask = {
 				});
 			}
 
-			if (hasPlopper) infoStr.push('\nYou received 4x loot from Plopper');
+			if (hasPlopper) infoStr.push(`\nYou received ${plopperBoostPercent}% bonus loot from Plopper`);
 
 			handleTripFinish(
 				user,
