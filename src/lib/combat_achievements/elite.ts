@@ -1,13 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
-import {
-	demonBaneWeapons,
-	MIMIC_MONSTER_ID,
-	NEX_ID,
-	NIGHTMARE_ID,
-	PHOSANI_NIGHTMARE_ID,
-	ZALCANO_ID
-} from '../constants';
+import { demonBaneWeapons, MIMIC_MONSTER_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
+import { NexMonster } from '../nex';
 import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
@@ -787,7 +781,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		monster: 'Nex',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[NEX_ID]: 1
+				[NexMonster.id]: 1
 			}
 		})
 	},
