@@ -363,7 +363,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 			return gearLost.lostItems.toString();
 		}
 
-		const userGear = { ...deepClone(user.gear.wildy.raw()) };
+		const userGear = user.gear.wildy;
 		const scenarios = [
 			{ skulled: true, after20wilderness: true, smited: false, protectItem: true },
 			{ skulled: true, after20wilderness: true, smited: true, protectItem: true },
