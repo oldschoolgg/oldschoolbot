@@ -344,7 +344,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 			files: [file]
 		};
 	}
-	if (stringMatches(input, 'lost on death')) {
+	if (stringMatches(input, 'lost on wildy death')) {
 		interface GearLostOptions {
 			gear: GearSetup;
 			skulled: boolean;
@@ -358,70 +358,39 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 			return results; // Return the entire results object
 		}
 
+		function calculateAndGetString(options: GearLostOptions, smited: boolean): string {
+			const gearLost = showGearLost({ ...options, smited });
+			return gearLost.lostItems.toString();
+		}
+
 		const userGear = { ...deepClone(user.gear.wildy.raw()) };
-		const skulledOptions: GearLostOptions = {
-			gear: userGear,
-			skulled: true,
-			after20wilderness: true,
-			smited: false,
-			protectItem: true
-		};
-		const gearLostSkulled = showGearLost(skulledOptions);
-		const skulledString = gearLostSkulled.lostItems.toString();
+		const scenarios = [
+			{ skulled: true, after20wilderness: true, smited: false, protectItem: true },
+			{ skulled: true, after20wilderness: true, smited: true, protectItem: true },
+			{ skulled: false, after20wilderness: true, smited: true, protectItem: true },
+			{ skulled: false, after20wilderness: true, smited: false, protectItem: true },
+			{ skulled: false, after20wilderness: false, smited: true, protectItem: true },
+			{ skulled: false, after20wilderness: false, smited: false, protectItem: true }
+		];
 
-		const skulledSmitedOptions: GearLostOptions = {
-			gear: userGear,
-			skulled: true,
-			after20wilderness: true,
-			smited: true,
-			protectItem: true
-		};
-		const gearLostSkulledSmited = showGearLost(skulledSmitedOptions);
-		const skulledSmitedString = gearLostSkulledSmited.lostItems.toString();
+		const scenarioDescriptions = [
+			'when skulled',
+			'when skulled and smited',
+			'in 20+ Wilderness and smited',
+			'in 20+ Wilderness',
+			'in less than 20 Wilderness and smited',
+			'in less than 20 Wilderness'
+		];
 
-		const lowWildyOptions: GearLostOptions = {
-			gear: userGear,
-			skulled: false,
-			after20wilderness: false,
-			smited: false,
-			protectItem: true
-		};
-		const gearLostLowWildy = showGearLost(lowWildyOptions);
-		const lowWildyString = gearLostLowWildy.lostItems.toString();
+		const content = scenarios
+			.map((scenario, index) => {
+				const lostItemsString = calculateAndGetString({ gear: userGear, ...scenario }, scenario.smited);
+				const description = scenarioDescriptions[index];
+				return `The gear you would lose ${description}:\n${lostItemsString}`;
+			})
+			.join('\n\n');
 
-		const lowWildySmitedOptions: GearLostOptions = {
-			gear: userGear,
-			skulled: false,
-			after20wilderness: false,
-			smited: true,
-			protectItem: true
-		};
-		const gearLostLowWildySmited = showGearLost(lowWildySmitedOptions);
-		const lowWildySmitedString = gearLostLowWildySmited.lostItems.toString();
-
-		const wildySmitedOptions: GearLostOptions = {
-			gear: userGear,
-			skulled: false,
-			after20wilderness: true,
-			smited: true,
-			protectItem: true
-		};
-		const gearLostWildySmited = showGearLost(wildySmitedOptions);
-		const wildySmitedString = gearLostWildySmited.lostItems.toString();
-
-		const wildyOptions: GearLostOptions = {
-			gear: userGear,
-			skulled: false,
-			after20wilderness: true,
-			smited: false,
-			protectItem: true
-		};
-		const gearLostWildy = showGearLost(wildyOptions);
-		const wildyString = gearLostWildy.lostItems.toString();
-
-		return {
-			content: `The gear you would lose when skulled: ${skulledString}.\nThe gear you would lose when skulled and smited: ${skulledSmitedString}.\nThe gear you would lose in sub 20 Wilderness: ${lowWildyString}.\nThe gear you would lose in sub 20 Wilderness and smited: ${lowWildySmitedString}.\nThe gear you would lose after 20 Wilderness: ${wildyString}. \nThe gear you would lose after 20 Wilderness and smited: ${wildySmitedString}.`
-		};
+		return { content };
 	}
 	if (!isValidGearSetup(input)) return 'Invalid setup.';
 	const gear = user.gear[input];
