@@ -134,7 +134,7 @@ export const gearCommand: OSBMahojiCommand = {
 					name: 'setup',
 					description: 'The setup you want to view.',
 					required: true,
-					choices: ['All', ...GearSetupTypes].map(i => ({ name: toTitleCase(i), value: i }))
+					choices: ['All', ...GearSetupTypes, 'Lost on death'].map(i => ({ name: toTitleCase(i), value: i }))
 				},
 				{
 					type: ApplicationCommandOptionType.Boolean,

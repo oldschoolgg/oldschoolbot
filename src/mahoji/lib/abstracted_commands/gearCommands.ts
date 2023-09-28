@@ -1,7 +1,7 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { GearPreset } from '@prisma/client';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { objectValues } from 'e';
+import { deepClone, objectValues } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -13,6 +13,7 @@ import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllComm
 import { prisma } from '../../../lib/settings/prisma';
 import { defaultGear, Gear, globalPresets } from '../../../lib/structures/Gear';
 import { assert, formatSkillRequirements, isValidGearSetup, stringMatches } from '../../../lib/util';
+import calculateGearLostOnDeathWilderness from '../../../lib/util/calculateGearLostOnDeathWilderness';
 import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
 import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -341,6 +342,85 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 		return {
 			content: 'Here are all your gear setups',
 			files: [file]
+		};
+	}
+	if (stringMatches(input, 'lost on death')) {
+		interface GearLostOptions {
+			gear: GearSetup;
+			skulled: boolean;
+			after20wilderness: boolean;
+			smited: boolean;
+			protectItem: boolean;
+		}
+
+		function showGearLost(options: GearLostOptions) {
+			const results = calculateGearLostOnDeathWilderness(options);
+			return results; // Return the entire results object
+		}
+
+		const userGear = { ...deepClone(user.gear.wildy.raw()) };
+		const skulledOptions: GearLostOptions = {
+			gear: userGear,
+			skulled: true,
+			after20wilderness: true,
+			smited: false,
+			protectItem: true
+		};
+		const gearLostSkulled = showGearLost(skulledOptions);
+		const skulledString = gearLostSkulled.lostItems.toString();
+
+		const skulledSmitedOptions: GearLostOptions = {
+			gear: userGear,
+			skulled: true,
+			after20wilderness: true,
+			smited: true,
+			protectItem: true
+		};
+		const gearLostSkulledSmited = showGearLost(skulledSmitedOptions);
+		const skulledSmitedString = gearLostSkulledSmited.lostItems.toString();
+
+		const lowWildyOptions: GearLostOptions = {
+			gear: userGear,
+			skulled: false,
+			after20wilderness: false,
+			smited: false,
+			protectItem: true
+		};
+		const gearLostLowWildy = showGearLost(lowWildyOptions);
+		const lowWildyString = gearLostLowWildy.lostItems.toString();
+
+		const lowWildySmitedOptions: GearLostOptions = {
+			gear: userGear,
+			skulled: false,
+			after20wilderness: false,
+			smited: true,
+			protectItem: true
+		};
+		const gearLostLowWildySmited = showGearLost(lowWildySmitedOptions);
+		const lowWildySmitedString = gearLostLowWildySmited.lostItems.toString();
+
+		const wildySmitedOptions: GearLostOptions = {
+			gear: userGear,
+			skulled: false,
+			after20wilderness: true,
+			smited: true,
+			protectItem: true
+		};
+		const gearLostWildySmited = showGearLost(wildySmitedOptions);
+		const wildySmitedString = gearLostWildySmited.lostItems.toString();
+
+		const wildyOptions: GearLostOptions = {
+			gear: userGear,
+			skulled: false,
+			after20wilderness: true,
+			smited: false,
+			protectItem: true
+		};
+		const gearLostWildy = showGearLost(wildyOptions);
+		const wildyString = gearLostWildy.lostItems.toString();
+
+		return {
+			content: `The gear you would lose when skulled: ${skulledString}.\nThe gear you would lose when skulled and smited: ${skulledSmitedString}.\nThe gear you would lose in sub 20 Wilderness: ${lowWildyString}.\nThe gear you would lose in sub 20 Wilderness and smited: ${lowWildySmitedString}.\nThe gear you would lose after 20 Wilderness: ${wildyString}. \nThe gear you would lose after 20 Wilderness and smited: ${wildySmitedString}.`
 		};
 	}
 	if (!isValidGearSetup(input)) return 'Invalid setup.';
