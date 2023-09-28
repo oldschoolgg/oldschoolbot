@@ -1,7 +1,7 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { GearPreset } from '@prisma/client';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { deepClone, objectValues } from 'e';
+import { objectValues } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
