@@ -130,7 +130,7 @@ export async function gearEquipMultiCommand(
 	});
 
 	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.user.minion_equippedPet);
-	let content = `You equipped ${equipBank} on your ${setup} setup, and unequipped ${unequipBank}.`;
+	let content = `You equipped ${equipBank} in your ${setup} setup, and unequipped ${unequipBank}.`;
 	if (skillFailBank!.length > 0) {
 		content += `\nThese items failed to be equipped as you don't have the requirements: ${skillFailBank}.`;
 	}
@@ -364,7 +364,7 @@ export async function gearSwapCommand(
 	if (first === 'wildy' || second === 'wildy') {
 		await handleMahojiConfirmation(
 			interaction,
-			'Are you sure you want to swap your gear with a wilderness setup? You can lose items on your wilderness setup!'
+			'Are you sure you want to swap your gear with a wilderness setup? You can lose items in your wilderness setup!'
 		);
 	}
 
