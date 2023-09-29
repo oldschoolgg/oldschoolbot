@@ -745,6 +745,12 @@ const Buyables: Buyable[] = [
 		gpCost: 99_000
 	},
 	{
+		name: 'Rope',
+		aliases: ['rope'],
+		gpCost: 100,
+		ironmanPrice: 25
+	},
+	{
 		name: 'Fishing Bait',
 		aliases: ['fishing bait'],
 		gpCost: 20,
