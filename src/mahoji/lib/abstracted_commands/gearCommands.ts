@@ -392,7 +392,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 
 		const updatedContent = `${content}\n\nThis assumes you have 25 prayer for the protect item prayer.`;
 
-		return { updatedContent };
+		return { content: updatedContent };
 	}
 	if (!isValidGearSetup(input)) return 'Invalid setup.';
 	const gear = user.gear[input];
