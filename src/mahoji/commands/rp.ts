@@ -6,6 +6,7 @@ import { randArrItem, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { BitField, Channel } from '../../lib/constants';
@@ -14,12 +15,20 @@ import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { dateFm, formatDuration } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
+import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { gifs } from './admin';
+
+const itemFilters = [
+	{
+		name: 'Tradeable',
+		filter: (item: Item) => itemIsTradeable(item.id, true)
+	}
+];
 
 export const rpCommand: OSBMahojiCommand = {
 	name: 'rp',
@@ -123,7 +132,14 @@ export const rpCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.String,
 							name: 'items',
 							description: 'The items to take',
-							required: true
+							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'item_filter',
+							description: 'A preconfigured item filter.',
+							required: false,
+							choices: itemFilters.map(i => ({ name: i.name, value: i.name }))
 						},
 						{
 							type: ApplicationCommandOptionType.String,
@@ -134,11 +150,6 @@ export const rpCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.Boolean,
 							name: 'delete',
 							description: 'To delete the items instead'
-						},
-						{
-							type: ApplicationCommandOptionType.Boolean,
-							name: 'partial',
-							description: "If they don't have all items, delete what they have"
 						}
 					]
 				}
@@ -159,10 +170,10 @@ export const rpCommand: OSBMahojiCommand = {
 			add_patron_time?: { user: MahojiUserOption; tier: number; time: string };
 			steal_items?: {
 				user: MahojiUserOption;
-				items: string;
+				items?: string;
+				item_filter?: string;
 				reason?: string;
 				delete?: boolean;
-				partial?: boolean;
 			};
 			set_buy_date?: {
 				user: MahojiUserOption;
@@ -265,39 +276,54 @@ export const rpCommand: OSBMahojiCommand = {
 			if (!isOwner && !ADMIN_IDS.includes(userID)) {
 				return randArrItem(gifs);
 			}
-			const partial = options.player.steal_items.partial ?? false;
-			let removedPartial = false;
 			const toDelete = options.player.steal_items.delete ?? false;
 			const actionMsg = toDelete ? 'delete' : 'steal';
 			const actionMsgPast = toDelete ? 'deleted' : 'stole';
 
-			const items = parseBank({ inputStr: options.player.steal_items.items, noDuplicateItems: true });
-			const user = await mUserFetch(options.player.steal_items.user.user.id);
+			const userToStealFrom = await mUserFetch(options.player.steal_items.user.user.id);
+
+			const items = new Bank();
+			if (options.player.steal_items.item_filter) {
+				const filter = itemFilters.find(i => i.name === options.player!.steal_items!.item_filter);
+				if (!filter) return 'Invalid item filter.';
+				for (const [item, qty] of userToStealFrom.bank.items()) {
+					if (filter.filter(item)) {
+						items.add(item.id, qty);
+					}
+				}
+			} else {
+				items.add(
+					parseBank({
+						inputStr: options.player.steal_items.items,
+						noDuplicateItems: true,
+						inputBank: userToStealFrom.bank
+					})
+				);
+			}
 			await handleMahojiConfirmation(
 				interaction,
-				`Are you sure you want to ${actionMsg} ${items} from ${user.usernameOrMention}?`
+				`Are you sure you want to ${actionMsg} ${items.toString().slice(0, 500)} from ${
+					userToStealFrom.usernameOrMention
+				}?`
 			);
 			let missing = new Bank();
-			if (!user.owns(items)) {
-				missing = items.clone().remove(user.bank);
-				if (partial) {
-					items.remove(missing);
-					removedPartial = true;
-				} else {
-					return `${user.mention} doesn't have all items. Missing: ${missing}`;
-				}
+			if (!userToStealFrom.owns(items)) {
+				missing = items.clone().remove(userToStealFrom.bank);
+				return `${userToStealFrom.mention} doesn't have all items. Missing: ${missing
+					.toString()
+					.slice(0, 500)}`;
 			}
+
 			await sendToChannelID(Channel.BotLogs, {
-				content: `${adminUser.logName} ${actionMsgPast} \`${items}\` from ${user.logName} for ${
-					options.player.steal_items.reason ?? 'No reason'
-				}${removedPartial ? `\n\nFailed to remove: ${missing}` : ''}`
+				content: `${adminUser.logName} ${actionMsgPast} \`${items.toString().slice(0, 500)}\` from ${
+					userToStealFrom.logName
+				} for ${options.player.steal_items.reason ?? 'No reason'}`,
+				files: [{ attachment: Buffer.from(items.toString()), name: 'items.txt' }]
 			});
 
-			await user.removeItemsFromBank(items);
+			await userToStealFrom.removeItemsFromBank(items);
 			if (!toDelete) await adminUser.addItemsToBank({ items, collectionLog: false });
-			return `${toTitleCase(actionMsgPast)} ${items} from ${user.mention}${
-				removedPartial ? `\n\nFailed to remove: ${missing}` : ''
-			}`;
+			return `${toTitleCase(actionMsgPast)} ${items.toString().slice(0, 500)} from ${userToStealFrom.mention}`;
 		}
 
 		return 'Invalid command.';
