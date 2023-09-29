@@ -8275,3 +8275,78 @@ setCustomItem(
 	},
 	1_000_000
 );
+
+setCustomItem(
+	71_800,
+	'Divination master cape',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000
+);
+setCustomItem(
+	71_801,
+	'Divination hood',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	20_000
+);
+
+setCustomItem(
+	71_802,
+	'Divination cape',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	20_000
+);
+
+setCustomItem(
+	71_803,
+	'Divination cape(t)',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	20_000
+);
+
+setCustomItem(
+	71_804,
+	'Divination potion',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	20_000
+);
+
+setCustomItem(
+	71_805,
+	'Extreme divination potion',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	20_000
+);
