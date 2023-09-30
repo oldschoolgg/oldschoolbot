@@ -15,7 +15,7 @@ import { sendToChannelID } from '../../../lib/util/webhook';
 import { generateTileName, isGlobalTile, rowsForSquare, StoredBingoTile, UniversalBingoTile } from './bingoUtil';
 import { globalBingoTiles } from './globalTiles';
 
-const BingoTrophies = [
+export const BingoTrophies = [
 	{
 		item: getOSItem('Comp. dragon trophy'),
 		percentile: 5,
@@ -76,6 +76,7 @@ export class BingoManager {
 	wasFinalized: boolean;
 	extraGP: number;
 	isGlobal: boolean;
+	trophiesApply: boolean;
 
 	constructor(options: Bingo) {
 		this.ticketPrice = Number(options.ticket_price);
@@ -92,6 +93,8 @@ export class BingoManager {
 		this.wasFinalized = options.was_finalized;
 		this.extraGP = Number(options.extra_gp);
 		this.isGlobal = options.is_global;
+
+		this.trophiesApply = options.trophies_apply;
 
 		this.bingoTiles = this.rawBingoTiles.map(tile => {
 			if (isGlobalTile(tile)) {
@@ -255,7 +258,8 @@ export class BingoManager {
 								100 - t.percentile <=
 									ss.quantileRank(tilesCompletedCounts, team.tilesCompletedCount) * 100
 					  )[0] ?? null
-					: null
+					: null,
+				rank: index + 1
 			}))
 		};
 	}
