@@ -245,11 +245,12 @@ export class BingoManager {
 					...this.determineProgressOfBank(participant.cl as ItemBank)
 				}))
 				.sort((a, b) => b.tilesCompletedCount - a.tilesCompletedCount),
-			teams: teams.map(team => ({
+			teams: teams.map((team, index) => ({
 				...team,
 				trophy: this.isGlobal
 					? BingoTrophies.filter(
 							t =>
+								index < 3 ||
 								team.tilesCompletedCount >= t.guaranteedAt ||
 								100 - t.percentile <=
 									ss.quantileRank(tilesCompletedCounts, team.tilesCompletedCount) * 100
