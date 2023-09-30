@@ -1019,6 +1019,8 @@ model Bingo {
 
   extra_gp BigInt @default(0)
 
+  trophies_apply Boolean @default(false)
+
   bingo_participant BingoParticipant[]
   bingo_team        BingoTeam[]
 
