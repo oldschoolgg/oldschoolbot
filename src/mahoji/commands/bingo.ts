@@ -928,7 +928,6 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 				const result = await bingo.fetchAllParticipants();
 
 				const toInsert: Prisma.ReclaimableItemCreateManyInput[] = [];
-				let debugStr = [];
 
 				for (const team of result.teams) {
 					if (!team.trophy) continue;
@@ -950,21 +949,17 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 									.join(', ')}) placed ${formatOrdinal(team.rank)} with ${
 									team.tilesCompletedCount
 								} tiles completed.`,
-								date: new Date().toISOString(),
+								date: bingo.endDate.toISOString(),
 								user_id: userID
 							})
 						);
 						toInsert.push(...reclaimableItems);
-						debugStr.push(`${userID} would receive ${trophiesToReceive.map(t => t.item.name).join(', ')}`);
 					}
 				}
 
-				console.log(debugStr.join('\n'));
-				debugLog(debugStr.join('\n'));
-
-				// await prisma.reclaimableItem.createMany({
-				// 	data: toInsert
-				// });
+				await prisma.reclaimableItem.createMany({
+					data: toInsert
+				});
 
 				return 'Handed out trophies.';
 			}
