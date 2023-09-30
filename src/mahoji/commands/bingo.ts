@@ -933,7 +933,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 				for (const team of result.teams) {
 					if (!team.trophy) continue;
 					const trophiesToReceive = BingoTrophies.filter(
-						trophy => trophy.percentile <= team.trophy!.percentile
+						trophy => trophy.percentile >= team.trophy!.percentile
 					);
 
 					for (const userID of team.participants.map(t => t.user_id)) {
