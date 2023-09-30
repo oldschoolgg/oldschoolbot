@@ -515,6 +515,21 @@ model User {
   @@map("users")
 }
 
+model ReclaimableItem {
+  user_id String @db.VarChar(19)
+  key     String
+
+  name        String
+  description String
+  date        DateTime @default(now()) @db.Timestamp(6)
+  item_id     Int
+  quantity    Int
+
+  @@id([user_id, key])
+  @@unique([user_id, key])
+  @@map("reclaimable_item")
+}
+
 model Webhook {
   channel_id    String @id @db.VarChar(19)
   webhook_id    String @db.VarChar(19)
