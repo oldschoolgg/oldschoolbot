@@ -787,9 +787,11 @@ The creator of the bingo (${userMention(
 								teams
 									.map(team =>
 										[
-											team.participants.map(u => u.user_id).join(','),
-											team.bingoTableStr,
-											team.tilesCompletedCount
+											team.participants
+												.map(u => usernameCache.get(u.user_id) ?? u.user_id)
+												.join(','),
+											team.tilesCompletedCount,
+											team.trophy?.item.name ?? 'No Trophy'
 										].join('\t')
 									)
 									.join('\n')
@@ -798,7 +800,7 @@ The creator of the bingo (${userMention(
 						},
 						{
 							attachment: Buffer.from(
-								users.map(u => [u.id, u.bingoTableStr, u.tilesCompletedCount].join('\t')).join('\n')
+								users.map(u => [u.id, u.tilesCompletedCount].join('\t')).join('\n')
 							),
 							name: 'users.txt'
 						}
