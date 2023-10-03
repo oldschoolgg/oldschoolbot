@@ -163,9 +163,6 @@ export const chopCommand: OSBMahojiCommand = {
 			break;
 		}
 
-		//boost message for forestry item boosts
-	
-
 		//boost message for powerchopping & forestry boosts
 		if (!powerchop) {
 			powerchop = false;
