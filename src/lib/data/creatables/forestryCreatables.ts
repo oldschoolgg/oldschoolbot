@@ -49,5 +49,14 @@ export const forestryCreatables: Createable[] = [
 			crafting: 50,
 			woodcutting: 50
 		}
+	},
+	{
+		name: 'Forestry basket',
+		inputItems: new Bank().add('Forestry kit').add('Log basket').add('Sturdy harness'),
+		outputItems: new Bank().add('Forestry basket'),
+		requiredSkills: {
+			smithing: 75,
+			woodcutting: 75,
+		}
 	}
 ];

@@ -24078,5 +24078,27 @@ exports[`OSB Creatables 1`] = `
       "woodcutting": 50,
     },
   },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28136": 1,
+        "28140": 1,
+        "28149": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Forestry basket",
+    "outputItems": Bank {
+      "bank": {
+        "28143": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "smithing": 75,
+      "woodcutting": 75,
+    },
+  },
 ]
 `;
