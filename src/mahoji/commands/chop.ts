@@ -163,13 +163,13 @@ export const chopCommand: OSBMahojiCommand = {
 			break;
 		}
 
-		//boost message for powerchopping & forestry boosts
+		// boost message for powerchopping & forestry boosts
 		if (!powerchop) {
 			powerchop = false;
-			if (user.owns('Forestry basket',{includeGear: true}) || user.owns('Log basket',{includeGear:true})) {
+			if (user.owns('Forestry basket', { includeGear: true }) || user.owns('Log basket', { includeGear: true })) {
 				boosts.push(
 					`+5 trip minutes for having a ${
-						user.owns('Forestry basket',{includeGear: true}) ? 'Forestry basket' : 'Log basket'
+						user.owns('Forestry basket', { includeGear: true }) ? 'Forestry basket' : 'Log basket'
 					}`
 				);
 			}
