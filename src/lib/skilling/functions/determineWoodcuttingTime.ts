@@ -35,10 +35,7 @@ export function determineWoodcuttingTime({
 	let newQuantity = 0;
 
 	let maxTripLength = calcMaxTripLength(user, 'Woodcutting');
-	if (
-		!powerchopping &&
-		(user.owns('Forestry basket', { includeGear: true }) || user.owns('Log basket', { includeGear: true }))
-	) {
+	if (!powerchopping && user.hasEquippedOrInBank('Log Basket')) {
 		maxTripLength += Time.Minute * 5;
 	}
 	let userMaxTripTicks = maxTripLength / (Time.Second * 0.6);
