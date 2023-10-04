@@ -55,7 +55,7 @@
 		"table": "^6.8.0",
 		"utf-8-validate": "^6.0.3",
 		"zlib-sync": "^0.1.8",
-		"zod": "^3.22.2"
+		"zod": "^3.22.3"
 	},
 	"devDependencies": {
 		"@oldschoolgg/eslint-config": "^2.0.13",

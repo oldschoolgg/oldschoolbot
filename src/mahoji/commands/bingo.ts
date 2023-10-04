@@ -1,5 +1,5 @@
 import { userMention } from '@discordjs/builders';
-import { mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
+import { formatOrdinal, mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { bold, ChatInputCommandInteraction, User } from 'discord.js';
 import { chunk, noOp, notEmpty, Time, uniqueArr } from 'e';
@@ -17,7 +17,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { channelIsSendable, dateFm, isValidDiscordSnowflake, isValidNickname, md5sum, toKMB } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { BingoManager } from '../lib/bingo/BingoManager';
+import { BingoManager, BingoTrophies } from '../lib/bingo/BingoManager';
 import { generateTileName, getAllTileItems, isGlobalTile, StoredBingoTile } from '../lib/bingo/bingoUtil';
 import { globalBingoTiles } from '../lib/bingo/globalTiles';
 import { OSBMahojiCommand } from '../lib/util';
@@ -508,6 +508,12 @@ export const bingoCommand: OSBMahojiCommand = {
 					description: 'Add extra gp to the prize.',
 					required: false,
 					min_value: 1_000_000
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'trophy_handout',
+					description: 'Hand out trophies.',
+					required: false
 				}
 			]
 		},
@@ -565,6 +571,7 @@ export const bingoCommand: OSBMahojiCommand = {
 			remove_tile?: string;
 			finalize?: boolean;
 			add_extra_gp?: number;
+			trophy_handout?: boolean;
 		};
 		view?: {
 			bingo: string;
@@ -787,9 +794,11 @@ The creator of the bingo (${userMention(
 								teams
 									.map(team =>
 										[
-											team.participants.map(u => u.user_id).join(','),
-											team.bingoTableStr,
-											team.tilesCompletedCount
+											team.participants
+												.map(u => usernameCache.get(u.user_id) ?? u.user_id)
+												.join(','),
+											team.tilesCompletedCount,
+											team.trophy?.item.name ?? 'No Trophy'
 										].join('\t')
 									)
 									.join('\n')
@@ -798,7 +807,7 @@ The creator of the bingo (${userMention(
 						},
 						{
 							attachment: Buffer.from(
-								users.map(u => [u.id, u.bingoTableStr, u.tilesCompletedCount].join('\t')).join('\n')
+								users.map(u => [u.id, u.tilesCompletedCount].join('\t')).join('\n')
 							),
 							name: 'users.txt'
 						}
@@ -910,6 +919,49 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 				debugLog('Added extra gp to bingo', { bingoID: bingo.id, amount });
 
 				return `Added ${cost} to the prize pool.`;
+			}
+
+			if (options.manage_bingo.trophy_handout) {
+				if (!bingo.isGlobal || !bingo.wasFinalized || !bingo.trophiesApply) {
+					return 'This bingo is not eligible for trophies.';
+				}
+				const result = await bingo.fetchAllParticipants();
+
+				const toInsert: Prisma.ReclaimableItemCreateManyInput[] = [];
+
+				for (const team of result.teams) {
+					if (!team.trophy) continue;
+					const trophiesToReceive = BingoTrophies.filter(
+						trophy => trophy.percentile >= team.trophy!.percentile
+					);
+
+					for (const userID of team.participants.map(t => t.user_id)) {
+						const reclaimableItems: Prisma.ReclaimableItemCreateManyInput[] = trophiesToReceive.map(
+							trophy => ({
+								name: `Bingo Trophy (${trophy.item.name})`,
+								quantity: 1,
+								key: `bso-bingo-2-${trophy.item.id}`,
+								item_id: trophy.item.id,
+								description: `Awarded for placing in the top ${trophy.percentile}% of ${
+									bingo.title
+								}. Your team (${team.participants
+									.map(t => usernameCache.get(t.user_id) ?? t.user_id)
+									.join(', ')}) placed ${formatOrdinal(team.rank)} with ${
+									team.tilesCompletedCount
+								} tiles completed.`,
+								date: bingo.endDate.toISOString(),
+								user_id: userID
+							})
+						);
+						toInsert.push(...reclaimableItems);
+					}
+				}
+
+				await prisma.reclaimableItem.createMany({
+					data: toInsert
+				});
+
+				return 'Handed out trophies.';
 			}
 		}
 
