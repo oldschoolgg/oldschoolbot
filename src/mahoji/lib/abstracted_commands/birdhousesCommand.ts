@@ -115,13 +115,31 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	}
 
 	let canPay = false;
-	for (const currentSeed of validSeeds) {
-		const seedCost = new Bank().add(currentSeed.itemID, currentSeed.amount * 4);
-		if (userBank.has(seedCost)) {
-			infoStr.push(`You baited the birdhouses with ${seedCost}.`);
-			removeBank.add(seedCost);
-			canPay = true;
-			break;
+
+	const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_bh_seeds: true });
+	const favourites = mUser.favorite_bh_seeds;
+	if (favourites.length > 0) {
+		for (const fav of favourites) {
+			const seed = validSeeds.find(s => s.itemID === fav);
+			if (!seed) continue;
+			const seedCost = new Bank().add(seed.itemID, seed.amount * 4);
+			if (userBank.has(seedCost)) {
+				infoStr.push(`You baited the birdhouses with ${seedCost}.`);
+				removeBank.add(seedCost);
+				canPay = true;
+				break;
+			}
+		}
+		if (!canPay) return "You don't have enough favourited seeds to bait the birdhouses.";
+	} else {
+		for (const currentSeed of validSeeds) {
+			const seedCost = new Bank().add(currentSeed.itemID, currentSeed.amount * 4);
+			if (userBank.has(seedCost)) {
+				infoStr.push(`You baited the birdhouses with ${seedCost}.`);
+				removeBank.add(seedCost);
+				canPay = true;
+				break;
+			}
 		}
 	}
 
