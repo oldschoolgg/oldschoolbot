@@ -240,31 +240,25 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) 
 		? skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, skill)))
 		: undefined;
 
-	try {
-		const xpRecords = await executeXPGainsQuery(intervalValue, skillObj?.id, Boolean(ironmanOnly));
+	const xpRecords = await executeXPGainsQuery(intervalValue, skillObj?.id, Boolean(ironmanOnly));
 
-		if (xpRecords.length === 0) {
-			return 'No results found.';
-		}
-
-		let place = 0;
-		const embed = new EmbedBuilder()
-			.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
-			.setDescription(
-				xpRecords
-					.map(
-						record =>
-							`${++place}. **${getUsername(record.user)}**: ${Number(
-								record.total_xp
-							).toLocaleString()} XP`
-					)
-					.join('\n')
-			);
-
-		return { embeds: [embed] };
-	} catch (err: any) {
-		return err.message;
+	if (xpRecords.length === 0) {
+		return 'No results found.';
 	}
+
+	let place = 0;
+	const embed = new EmbedBuilder()
+		.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
+		.setDescription(
+			xpRecords
+				.map(
+					record =>
+						`${++place}. **${getUsername(record.user)}**: ${Number(record.total_xp).toLocaleString()} XP`
+				)
+				.join('\n')
+		);
+
+	return { embeds: [embed] };
 }
 
 async function kcGains(interval: string, monsterName: string, ironmanOnly?: boolean): CommandResponse {
