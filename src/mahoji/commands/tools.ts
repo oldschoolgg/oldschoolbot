@@ -262,7 +262,7 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) 
 			);
 
 		return { embeds: [embed] };
-			} catch (error) {
+	} catch (error) {
 		console.error('An error occurred while fetching XP gains:', error);
 		return 'An error occurred while fetching XP gains.';
 	}
