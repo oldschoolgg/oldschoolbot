@@ -41,6 +41,7 @@ export interface Buyable {
 	ironmanPrice?: number;
 	collectionLogReqs?: number[];
 	customReq?: (user: MUser, userStats: MUserStats) => Promise<[true] | [false, string]>;
+	maxQuantity?: number;
 }
 
 const randomEventBuyables: Buyable[] = [

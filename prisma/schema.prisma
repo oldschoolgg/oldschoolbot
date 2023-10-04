@@ -341,7 +341,6 @@ model User {
   bankBackground             Int                @default(1)
   attack_style               String[]
   combat_options             Int[]
-  farming_patch_reminders    Boolean            @default(true)
   slayer_remember_master     String?            @map("slayer.remember_master")
   slayer_autoslay_options    Int[]              @map("slayer.autoslay_options")
   bank_sort_method           String?            @db.VarChar(16)
@@ -434,6 +433,21 @@ model User {
 
   @@index([id, last_command_date])
   @@map("users")
+}
+
+model ReclaimableItem {
+  user_id String @db.VarChar(19)
+  key     String
+
+  name        String
+  description String
+  date        DateTime @default(now()) @db.Timestamp(6)
+  item_id     Int
+  quantity    Int
+
+  @@id([user_id, key])
+  @@unique([user_id, key])
+  @@map("reclaimable_item")
 }
 
 model Webhook {
@@ -690,6 +704,7 @@ model UserStats {
   total_toa_duration_minutes Int  @default(0)
 
   deaths                   Int @default(0)
+  pk_evasion_exp           Int @default(0)
   dice_wins                Int @default(0)
   dice_losses              Int @default(0)
   duel_losses              Int @default(0)
@@ -1019,6 +1034,8 @@ model Bingo {
   guild_id String @db.VarChar(19)
 
   extra_gp BigInt @default(0)
+
+  trophies_apply Boolean @default(false)
 
   bingo_participant BingoParticipant[]
   bingo_team        BingoTeam[]

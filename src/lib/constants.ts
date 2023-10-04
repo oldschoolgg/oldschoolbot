@@ -255,7 +255,8 @@ export enum BitField {
 	UsedStrangledTablet = 33,
 	UsedFrozenTablet = 34,
 	CleanHerbsFarming = 35,
-	SelfGamblingLocked = 36
+	SelfGamblingLocked = 36,
+	DisabledFarmingReminders = 37
 }
 
 interface BitFieldData {
@@ -328,6 +329,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.CleanHerbsFarming]: {
 		name: 'Clean herbs during farm runs',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisabledFarmingReminders]: {
+		name: 'Disable Farming Reminders',
 		protected: false,
 		userConfigurable: true
 	}

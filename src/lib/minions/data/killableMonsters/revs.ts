@@ -12,7 +12,9 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantCyclops,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 6,
+		pkBaseDeathChance: 5
 	},
 	{
 		id: Monsters.RevenantDarkBeast.id,
@@ -22,7 +24,9 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantDarkBeast,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 9,
+		pkBaseDeathChance: 4
 	},
 	{
 		id: Monsters.RevenantDemon.id,
@@ -32,7 +36,9 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantDemon,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 6,
+		pkBaseDeathChance: 5
 	},
 	{
 		id: Monsters.RevenantDragon.id,
@@ -42,7 +48,9 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantDragon,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 8,
+		pkBaseDeathChance: 7
 	},
 	{
 		id: Monsters.RevenantGoblin.id,
@@ -52,7 +60,9 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantGoblin,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 5,
+		pkBaseDeathChance: 5
 	},
 	{
 		id: Monsters.RevenantHellhound.id,
@@ -62,7 +72,9 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantHellhound,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 6,
+		pkBaseDeathChance: 5
 	},
 	{
 		id: Monsters.RevenantHobgoblin.id,
@@ -72,7 +84,9 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantHobgoblin,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 5,
+		pkBaseDeathChance: 5
 	},
 	{
 		id: Monsters.RevenantImp.id,
@@ -82,7 +96,9 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantImp,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 4,
+		pkBaseDeathChance: 3
 	},
 	{
 		id: Monsters.RevenantKnight.id,
@@ -92,7 +108,9 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantKnight,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 8,
+		pkBaseDeathChance: 6
 	},
 	{
 		id: Monsters.RevenantOrk.id,
@@ -102,7 +120,9 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantOrk,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 7,
+		pkBaseDeathChance: 6
 	},
 	{
 		id: Monsters.RevenantPyrefiend.id,
@@ -112,6 +132,8 @@ export const revenantMonsters: KillableMonster[] = [
 		table: Monsters.RevenantPyrefiend,
 		wildy: true,
 		difficultyRating: 9,
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 7,
+		pkBaseDeathChance: 5
 	}
 ];
