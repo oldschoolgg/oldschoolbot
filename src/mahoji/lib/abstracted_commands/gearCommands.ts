@@ -390,7 +390,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 			})
 			.join('\n\n');
 
-		const updatedContent = `${content}\n\nThis assumes you have 25 prayer for the protect item prayer.`;
+		const updatedContent = `${content}\n\nThese assume you have atleast 25 prayer for the protect item prayer.`;
 
 		return { content: updatedContent };
 	}
