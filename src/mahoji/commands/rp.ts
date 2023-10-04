@@ -12,13 +12,17 @@ import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { BitField, Channel } from '../../lib/constants';
 import { GearSetupType } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
+import { marketPricemap } from '../../lib/marketPrices';
 import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { patreonTask } from '../../lib/patreon';
 import { allPerkBitfields } from '../../lib/perkTiers';
 import { prisma } from '../../lib/settings/prisma';
+import { TeamLoot } from '../../lib/simulation/TeamLoot';
+import { ItemBank } from '../../lib/types';
 import { dateFm, formatDuration } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
@@ -32,6 +36,7 @@ import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { gifs } from './admin';
 import { getUserInfo } from './minion';
+import { sellPriceOfItem } from './sell';
 
 const itemFilters = [
 	{
@@ -259,6 +264,31 @@ export const rpCommand: OSBMahojiCommand = {
 							description: 'The reason'
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'list_trades',
+					description: 'Show trades between users',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user',
+							required: true
+						},
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'partner',
+							description: 'Optional second user, will only show trades between the users',
+							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'guild_id',
+							description: 'Optional - Restrict search to this guild.',
+							required: false
+						}
+					]
 				}
 			]
 		}
@@ -296,6 +326,11 @@ export const rpCommand: OSBMahojiCommand = {
 			add_ironman_alt?: { main: MahojiUserOption; ironman_alt: MahojiUserOption };
 			view_user?: { user: MahojiUserOption };
 			migrate_user?: { source: MahojiUserOption; dest: MahojiUserOption; reason?: string };
+			list_trades?: {
+				user: MahojiUserOption;
+				partner?: MahojiUserOption;
+				guild_id?: string;
+			};
 		};
 	}>) => {
 		await deferInteraction(interaction);
@@ -597,6 +632,105 @@ export const rpCommand: OSBMahojiCommand = {
 				return 'Done';
 			}
 			return result;
+		}
+		if (options.player?.list_trades) {
+			const baseSql =
+				'SELECT date, sender::text as sender_id, recipient::text as recipient_id, s.username as sender, r.username as recipient, items_sent, items_received, type, guild_id::text from economy_transaction e inner join new_users s on sender = s.id::bigint inner join new_users r on recipient = r.id::bigint';
+			const where: string[] = [];
+			if (options.player.list_trades.partner) {
+				const inUsers = `(${options.player.list_trades.partner.user.id}, ${options.player.list_trades.user.user.id})`;
+				where.push(`(sender IN ${inUsers} AND recipient IN ${inUsers})`);
+			} else {
+				where.push(
+					`(sender = ${options.player.list_trades.user.user.id} OR recipient = ${options.player.list_trades.user.user.id})`
+				);
+			}
+			if (options.player.list_trades.guild_id) {
+				where.push(`guild_id = ${options.player.list_trades.guild_id}`);
+			}
+
+			const sql = `${`${baseSql} WHERE ${where.join(' AND ')}`} ORDER BY date DESC`;
+
+			let report =
+				'date\tguild_id\tsender_id\trecipient_id\tsender\trecipient\tsent_bank\trcvd_bank\tsent_value\trcvd_value\tsent_value_last_100\trcvd_value_last_100\n';
+
+			const totalsSent = new TeamLoot();
+			const totalsRcvd = new TeamLoot();
+			const result: {
+				date: Date;
+				sender_id: string;
+				recipient_id: string;
+				sender: string;
+				recipient: string;
+				items_sent: ItemBank;
+				items_received: ItemBank;
+				type: 'gri' | 'trade' | 'giveaway';
+				guild_id: string;
+			}[] = await prisma.$queryRawUnsafe(sql);
+			for (const row of result) {
+				const sentBank = new Bank(row.items_sent);
+				const recvBank = new Bank(row.items_received);
+
+				// Calculate values of the traded banks:
+				let sentValueGuide = 0;
+				let sentValueLast100 = 0;
+				let recvValueGuide = 0;
+				let recvValueLast100 = 0;
+
+				// We use Object.entries(bank) instead of bank.items() so we can filter out deleted/broken items:
+				for (const [itemId, qty] of Object.entries(sentBank.bank)) {
+					try {
+						const item = getOSItem(Number(itemId));
+						const marketData = marketPricemap.get(item.id);
+						if (marketData) {
+							sentValueGuide += marketData.guidePrice * qty;
+							sentValueLast100 += marketData.averagePriceLast100 * qty;
+						} else {
+							const { price } = sellPriceOfItem(item, 0);
+							sentValueGuide += price * qty;
+							sentValueLast100 += price * qty;
+						}
+					} catch (e) {
+						// This means item doesn't exist at this point in time.
+						delete sentBank.bank[itemId];
+					}
+				}
+				for (const [itemId, qty] of Object.entries(recvBank.bank)) {
+					try {
+						const item = getOSItem(Number(itemId));
+						const marketData = marketPricemap.get(item.id);
+						if (marketData) {
+							recvValueGuide += marketData.guidePrice * qty;
+							recvValueLast100 += marketData.averagePriceLast100 * qty;
+						} else {
+							const { price } = sellPriceOfItem(item, 0);
+							recvValueGuide += price * qty;
+							recvValueLast100 += price * qty;
+						}
+					} catch (e) {
+						// This means item doesn't exist at this point in time.
+						delete recvBank.bank[itemId];
+					}
+				}
+				totalsSent.add(row.sender_id, 'Coins', sentValueLast100);
+				totalsRcvd.add(row.sender_id, 'Coins', recvValueLast100);
+				totalsSent.add(row.recipient_id, 'Coins', recvValueLast100);
+				totalsRcvd.add(row.recipient_id, 'Coins', sentValueLast100);
+
+				// Add report row:
+				report += `${row.date.toLocaleString('en-us')}\t${row.guild_id}\t${row.sender_id}\t${
+					row.recipient_id
+				}\t${row.sender}\t${
+					row.recipient
+				}\t${sentBank}\t${recvBank}\t${sentValueGuide}\t${recvValueGuide}\t${sentValueLast100}\t${recvValueLast100}\n`;
+			}
+			report += '\n\n';
+			report += 'User ID\tTotal Sent\tTotal Received\n';
+			for (const [userId, bank] of totalsSent.entries()) {
+				report += `${userId}\t${bank}\t${totalsRcvd.get(userId)}\n`;
+			}
+
+			return { files: [{ attachment: Buffer.from(report), name: 'trade_report.txt' }] };
 		}
 
 		return 'Invalid command.';
