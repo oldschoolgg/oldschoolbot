@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
+import itemID from 'oldschooljs/dist/util/itemID';
 
 import { nestTable, strungRabbitFootNestTable } from '../../../simulation/birdsNest';
 
@@ -175,6 +176,184 @@ const birdhouses: Birdhouse[] = [
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
 		qpRequired: 3
+	}
+];
+
+export const validSeeds = [
+	{
+		name: 'Hammerstone seed',
+		itemID: itemID('Hammerstone seed'),
+		amount: 10
+	},
+	{
+		name: 'Asgarnian seed',
+		itemID: itemID('Asgarnian seed'),
+		amount: 10
+	},
+	{
+		name: 'Barley seed',
+		itemID: itemID('Barley seed'),
+		amount: 10
+	},
+	{
+		name: 'Yanillian seed',
+		itemID: itemID('Yanillian seed'),
+		amount: 10
+	},
+	{
+		name: 'Krandorian seed',
+		itemID: itemID('Krandorian seed'),
+		amount: 10
+	},
+	{
+		name: 'Wildblood seed',
+		itemID: itemID('Wildblood seed'),
+		amount: 5
+	},
+	{
+		name: 'Potato seed',
+		itemID: itemID('Potato seed'),
+		amount: 10
+	},
+	{
+		name: 'Onion seed',
+		itemID: itemID('Onion seed'),
+		amount: 10
+	},
+	{
+		name: 'Cabbage seed',
+		itemID: itemID('Cabbage seed'),
+		amount: 10
+	},
+	{
+		name: 'Tomato seed',
+		itemID: itemID('Tomato seed'),
+		amount: 10
+	},
+	{
+		name: 'Sweetcorn seed',
+		itemID: itemID('Sweetcorn seed'),
+		amount: 10
+	},
+	{
+		name: 'Strawberry seed',
+		itemID: itemID('Strawberry seed'),
+		amount: 10
+	},
+	{
+		name: 'Watermelon seed',
+		itemID: itemID('Watermelon seed'),
+		amount: 10
+	},
+	{
+		name: 'Marigold seed',
+		itemID: itemID('Marigold seed'),
+		amount: 10
+	},
+	{
+		name: 'Rosemary seed',
+		itemID: itemID('Rosemary seed'),
+		amount: 10
+	},
+	{
+		name: 'Nasturtium seed',
+		itemID: itemID('Nasturtium seed'),
+		amount: 10
+	},
+	{
+		name: 'Woad seed',
+		itemID: itemID('Woad seed'),
+		amount: 10
+	},
+	{
+		name: 'Limpwurt seed',
+		itemID: itemID('Limpwurt seed'),
+		amount: 10
+	},
+	{
+		name: 'Marrentill seed',
+		itemID: itemID('Marrentill seed'),
+		amount: 10
+	},
+	{
+		name: 'Guam seed',
+		itemID: itemID('Guam seed'),
+		amount: 10
+	},
+	{
+		name: 'Tarromin seed',
+		itemID: itemID('Tarromin seed'),
+		amount: 10
+	},
+	{
+		name: 'Harralander seed',
+		itemID: itemID('Harralander seed'),
+		amount: 10
+	},
+	{
+		name: 'Jute seed',
+		itemID: itemID('Jute seed'),
+		amount: 10
+	},
+	{
+		name: 'White lily seed',
+		itemID: itemID('White lily seed'),
+		amount: 10
+	},
+	{
+		name: 'Snape grass seed',
+		itemID: itemID('Snape grass seed'),
+		amount: 10
+	},
+	{
+		name: 'Irit seed',
+		itemID: itemID('Irit seed'),
+		amount: 5
+	},
+	{
+		name: 'Dwarf weed seed',
+		itemID: itemID('Dwarf weed seed'),
+		amount: 5
+	},
+	{
+		name: 'Kwuarm seed',
+		itemID: itemID('Kwuarm seed'),
+		amount: 5
+	},
+	{
+		name: 'Cadantine seed',
+		itemID: itemID('Cadantine seed'),
+		amount: 5
+	},
+	{
+		name: 'Lantadyme seed',
+		itemID: itemID('Lantadyme seed'),
+		amount: 5
+	},
+	{
+		name: 'Avantoe seed',
+		itemID: itemID('Avantoe seed'),
+		amount: 5
+	},
+	{
+		name: 'Toadflax seed',
+		itemID: itemID('Toadflax seed'),
+		amount: 5
+	},
+	{
+		name: 'Ranarr seed',
+		itemID: itemID('Ranarr seed'),
+		amount: 5
+	},
+	{
+		name: 'Snapdragon seed',
+		itemID: itemID('Snapdragon seed'),
+		amount: 5
+	},
+	{
+		name: 'Torstol seed',
+		itemID: itemID('Torstol seed'),
+		amount: 5
 	}
 ];
 
