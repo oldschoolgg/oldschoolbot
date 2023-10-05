@@ -16,7 +16,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { PeakTier, PvMMethod } from '../../../lib/constants';
+import { BitField, PeakTier, PvMMethod } from '../../../lib/constants';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem } from '../../../lib/degradeableItems';
@@ -606,7 +606,7 @@ export async function minionKillCommand(
 				break;
 			}
 		}
-		if (wildyPeak?.peakTier === PeakTier.High) {
+		if (wildyPeak?.peakTier === PeakTier.High && !user.bitfield.includes(BitField.DisableHighPeakTimeWarning)) {
 			if (interaction) {
 				await handleMahojiConfirmation(
 					interaction,

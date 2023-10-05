@@ -118,6 +118,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable farming reminders',
 		bit: BitField.DisabledFarmingReminders
+	},
+	{
+		name: 'Disable wilderness high peak time warning',
+		bit: BitField.DisableHighPeakTimeWarning
 	}
 ];
 
