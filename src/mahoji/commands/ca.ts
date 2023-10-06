@@ -22,7 +22,7 @@ export type CAViewType = (typeof viewTypes)[number];
 type MonsterNames = (typeof allCAMonsterNames)[number];
 
 const filteredCAMonsterNames = allCAMonsterNames
-	.filter(i => (typeof value !== 'string' || i.toLowerCase().includes(value.toLowerCase())))
+	.filter(i => typeof value !== 'string' || i.toLowerCase().includes(value.toLowerCase()))
 	.map(i => ({ name: i, value: i }));
 const autocompleteOptions = value === '' ? allCAMonsterNames.map(i => ({ name: i, value: i })) : filteredCAMonsterNames;
 
