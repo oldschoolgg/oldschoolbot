@@ -22,8 +22,8 @@ export type CAViewType = (typeof viewTypes)[number];
 type MonsterNames = (typeof allCAMonsterNames)[number];
 
 const filteredCAMonsterNames = allCAMonsterNames
-  .filter(i => (!value || i.toLowerCase().includes(value.toLowerCase())))
-  .map(i => ({ name: i, value: i }));
+	.filter(i => (!value || i.toLowerCase().includes(value.toLowerCase())))
+	.map(i => ({ name: i, value: i }));
 const autocompleteOptions = value === '' ? allCAMonsterNames.map(i => ({ name: i, value: i })) : filteredCAMonsterNames;
 
 export const caCommand: OSBMahojiCommand = {
