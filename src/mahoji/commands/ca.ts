@@ -21,11 +21,6 @@ export type CAViewType = (typeof viewTypes)[number];
 
 type MonsterNames = (typeof allCAMonsterNames)[number];
 
-const filteredCAMonsterNames = allCAMonsterNames
-	.filter(i => typeof value !== 'string' || i.toLowerCase().includes(value.toLowerCase()))
-	.map(i => ({ name: i, value: i }));
-const autocompleteOptions = value === '' ? allCAMonsterNames.map(i => ({ name: i, value: i })) : filteredCAMonsterNames;
-
 export const caCommand: OSBMahojiCommand = {
 	name: 'ca',
 	description: 'Combat Achievements',
@@ -39,7 +34,11 @@ export const caCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					name: 'name',
 					description: 'What boss do you want to view?',
-					autocomplete: autocompleteOptions,
+					autocomplete: async (value: string) => {
+						return allCAMonsterNames
+							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({ name: i, value: i }));
+					},
 					required: false
 				},
 				{
