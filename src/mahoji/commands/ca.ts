@@ -136,7 +136,7 @@ export const caCommand: OSBMahojiCommand = {
 
 		if (options.view) {
 			let selectedMonster = options.view.name;
-			let tasksView: CAViewType = options.view.type || 'all';
+			let tasksView: CAViewType = options.view.type !== undefined ? options.view.type : 'all';
 
 			if (selectedMonster) {
 				const tasksForSelectedMonster = allCombatAchievementTasks.filter(
