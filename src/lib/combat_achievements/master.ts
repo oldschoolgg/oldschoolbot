@@ -1,6 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
-import { NEX_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
+import { NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
+import { NexMonster } from '../nex';
 import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { Requirements } from '../structures/Requirements';
 import {
@@ -590,7 +591,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Nex',
 		requirements: new Requirements().add({
 			kcRequirement: {
-				[NEX_ID]: 25
+				[NexMonster.id]: 25
 			}
 		})
 	},
