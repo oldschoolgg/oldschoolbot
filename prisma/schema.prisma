@@ -515,6 +515,21 @@ model User {
   @@map("users")
 }
 
+model ReclaimableItem {
+  user_id String @db.VarChar(19)
+  key     String
+
+  name        String
+  description String
+  date        DateTime @default(now()) @db.Timestamp(6)
+  item_id     Int
+  quantity    Int
+
+  @@id([user_id, key])
+  @@unique([user_id, key])
+  @@map("reclaimable_item")
+}
+
 model Webhook {
   channel_id    String @id @db.VarChar(19)
   webhook_id    String @db.VarChar(19)
@@ -891,6 +906,7 @@ model UserStats {
   on_task_monster_scores           Json @default("{}") @db.Json
   on_task_with_mask_monster_scores Json @default("{}") @db.Json
   deaths                           Int  @default(0)
+  pk_evasion_exp                   Int  @default(0)
   dice_wins                        Int  @default(0)
   dice_losses                      Int  @default(0)
   duel_losses                      Int  @default(0)
@@ -1271,6 +1287,8 @@ model Bingo {
   guild_id String @db.VarChar(19)
 
   extra_gp BigInt @default(0)
+
+  trophies_apply Boolean @default(false)
 
   bingo_participant BingoParticipant[]
   bingo_team        BingoTeam[]

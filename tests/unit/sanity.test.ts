@@ -20,6 +20,7 @@ import getOSItem from '../../src/lib/util/getOSItem';
 import itemID from '../../src/lib/util/itemID';
 import itemIsTradeable from '../../src/lib/util/itemIsTradeable';
 import resolveItems from '../../src/lib/util/resolveItems';
+import { BingoTrophies } from '../../src/mahoji/lib/bingo/BingoManager';
 
 describe('Sanity', () => {
 	test('santa hats should be tradeable', () => {
@@ -275,6 +276,16 @@ describe('Sanity', () => {
 		for (const buyable of Buyables) {
 			if (buyable.outputItems) continue;
 			getOSItem(buyable.name);
+		}
+	});
+	test('trophies', () => {
+		for (const trophy of BingoTrophies) {
+			if (trophy.item.customItemData?.cantBeSacrificed !== true) {
+				throw new Error(`${trophy.item.name} can be sacrificed`);
+			}
+			if (itemIsTradeable(trophy.item.id)) {
+				throw new Error(`${trophy.item.name} is tradeable`);
+			}
 		}
 	});
 });

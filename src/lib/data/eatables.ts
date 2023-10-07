@@ -6,6 +6,7 @@ export interface Eatable {
 	raw: number | null;
 	healAmount: ((user: MUser) => number) | number;
 	pvmBoost?: number;
+	wildyOnly?: boolean;
 }
 
 export const Eatables: readonly Eatable[] = [
@@ -186,6 +187,13 @@ export const Eatables: readonly Eatable[] = [
 		raw: itemID('Raw karambwan')
 	},
 	{
+		name: 'Blighted karambwan',
+		id: itemID('Blighted karambwan'),
+		healAmount: 18,
+		raw: null,
+		wildyOnly: true
+	},
+	{
 		name: 'Curry',
 		id: itemID('Curry'),
 		healAmount: 19,
@@ -237,6 +245,14 @@ export const Eatables: readonly Eatable[] = [
 		pvmBoost: 3
 	},
 	{
+		name: 'Blighted manta ray',
+		id: itemID('Blighted manta ray'),
+		healAmount: 22,
+		raw: null,
+		pvmBoost: 3,
+		wildyOnly: true
+	},
+	{
 		name: 'Tuna potato',
 		id: itemID('Tuna potato'),
 		healAmount: 22,
@@ -265,6 +281,24 @@ export const Eatables: readonly Eatable[] = [
 			return hp * (1 / 10) + c;
 		},
 		pvmBoost: 4
+	},
+	{
+		name: 'Blighted anglerfish',
+		id: itemID('Blighted anglerfish'),
+		healAmount: (user: MUser) => {
+			const hp = user.skillLevel('hitpoints');
+			let c = 2;
+			if (hp > 10) c = 2;
+			if (hp > 25) c = 4;
+			if (hp > 50) c = 6;
+			if (hp > 75) c = 8;
+			if (hp > 93) c = 13;
+
+			return hp * (1 / 10) + c;
+		},
+		raw: null,
+		pvmBoost: 4,
+		wildyOnly: true
 	},
 	{
 		name: 'Rocktail',

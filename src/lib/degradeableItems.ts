@@ -1,10 +1,13 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
+import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { GearSetupType } from './gear/types';
+import { KillableMonster } from './minions/types';
 import { assert } from './util';
 import getOSItem from './util/getOSItem';
+import itemID from './util/itemID';
 import { updateBankSetting } from './util/updateBankSetting';
 
 interface DegradeableItem {
@@ -30,8 +33,27 @@ interface DegradeableItem {
 	};
 	unchargedItem?: Item;
 	convertOnCharge?: boolean;
-	charges: (totalHP: number, duration: number, user: MUser) => number;
 	emoji?: string;
+}
+
+interface DegradeableItemPVMBoost {
+	item: Item;
+	degradeable: DegradeableItem;
+	attackStyle: GearSetupType;
+	charges: ({
+		killableMon,
+		osjsMonster,
+		totalHP,
+		duration,
+		user
+	}: {
+		killableMon?: KillableMonster;
+		osjsMonster?: Monster;
+		totalHP: number;
+		duration: number;
+		user: MUser;
+	}) => number;
+	boost: number;
 }
 
 export const degradeableItems: DegradeableItem[] = [
@@ -45,7 +67,6 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Abyssal whip'),
 			charges: 10_000
 		},
-		charges: (totalHP: number) => totalHP / 20,
 		emoji: '<:Abyssal_tentacle:1068551359755989033>'
 	},
 	{
@@ -59,8 +80,7 @@ export const degradeableItems: DegradeableItem[] = [
 			charges: 1
 		},
 		unchargedItem: getOSItem('Sanguinesti staff (uncharged)'),
-		convertOnCharge: true,
-		charges: (totalHP: number) => totalHP / 20
+		convertOnCharge: true
 	},
 	{
 		item: getOSItem('Void staff'),
@@ -74,16 +94,6 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		convertOnCharge: true,
 		unchargedItem: getOSItem('Void staff (u)'),
-		charges: (_totalHP: number, duration: number, user: MUser) => {
-			const mageGear = user.gear.mage;
-			const minutesDuration = Math.ceil(duration / Time.Minute);
-			if (user.hasEquipped('Magic master cape')) {
-				return Math.ceil(minutesDuration / 3);
-			} else if (mageGear.hasEquipped('Vasa cloak')) {
-				return Math.ceil(minutesDuration / 2);
-			}
-			return minutesDuration;
-		},
 		emoji: '<:Sanguinesti_staff_uncharged:455403545298993162>'
 	},
 	{
@@ -98,7 +108,6 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Celestial ring (uncharged)'),
 		convertOnCharge: true,
-		charges: (duration: number) => duration,
 		emoji: '<:Celestial_ring:1068551362587132084>'
 	},
 	{
@@ -112,8 +121,6 @@ export const degradeableItems: DegradeableItem[] = [
 			charges: 10
 		},
 		unchargedItem: getOSItem('Ash sanctifier'),
-		// Unused
-		charges: () => 1000,
 		emoji: '<:Ash_sanctifier:1068551364168405032>'
 	},
 	{
@@ -128,7 +135,6 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Serpentine helm (uncharged)'),
 		convertOnCharge: true,
-		charges: () => 1000,
 		emoji: '<:Serpentine_helm:1068491236123619379>'
 	},
 	{
@@ -143,7 +149,6 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Amulet of fury'),
 		convertOnCharge: true,
-		charges: () => 1000,
 		emoji: '<:Amulet_of_blood_fury:1068491286530752562>'
 	},
 	{
@@ -158,7 +163,6 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem("Tumeken's shadow (uncharged)"),
 		convertOnCharge: true,
-		charges: () => 1000,
 		emoji: '<:Tumekens_shadow:1068491239302901831>'
 	},
 	{
@@ -171,8 +175,7 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Blood essence'),
 			charges: 1000
 		},
-		emoji: '',
-		charges: () => 1000
+		emoji: ''
 	},
 	{
 		item: getOSItem('Trident of the swamp'),
@@ -186,8 +189,7 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Uncharged toxic trident'),
 		convertOnCharge: true,
-		emoji: '🔱',
-		charges: () => 1000
+		emoji: '🔱'
 	},
 	{
 		item: getOSItem('Scythe of vitur'),
@@ -201,8 +203,61 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Scythe of vitur (uncharged)'),
 		convertOnCharge: true,
-		emoji: '',
-		charges: () => 1000
+		emoji: ''
+	}
+];
+
+export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
+	{
+		item: getOSItem("Tumeken's shadow"),
+		degradeable: degradeableItems.find(di => di.item.id === itemID("Tumeken's shadow"))!,
+		attackStyle: 'mage',
+		charges: ({ totalHP }) => totalHP / 40,
+		boost: 6
+	},
+	{
+		item: getOSItem('Sanguinesti staff'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Sanguinesti staff'))!,
+		attackStyle: 'mage',
+		charges: ({ totalHP }) => totalHP / 25,
+		boost: 5
+	},
+	{
+		item: getOSItem('Trident of the swamp'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Trident of the swamp'))!,
+		attackStyle: 'mage',
+		charges: ({ totalHP }) => totalHP / 40,
+		boost: 3
+	},
+	{
+		item: getOSItem('Scythe of vitur'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Scythe of vitur'))!,
+		attackStyle: 'melee',
+		charges: ({ totalHP }) => totalHP / 40,
+		boost: 5
+	},
+	{
+		item: getOSItem('Abyssal tentacle'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Abyssal tentacle'))!,
+		attackStyle: 'melee',
+		charges: ({ totalHP }) => totalHP / 20,
+		boost: 3
+	},
+	{
+		item: getOSItem('Void staff'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Void staff'))!,
+		attackStyle: 'mage',
+		boost: 8,
+		charges: ({ duration, user }) => {
+			const mageGear = user.gear.mage;
+			const minutesDuration = Math.ceil(duration / Time.Minute);
+			if (user.hasEquipped('Magic master cape')) {
+				return Math.ceil(minutesDuration / 3);
+			} else if (mageGear.hasEquipped('Vasa cloak')) {
+				return Math.ceil(minutesDuration / 2);
+			}
+			return minutesDuration;
+		}
 	}
 ];
 
@@ -214,7 +269,7 @@ export function checkUserCanUseDegradeableItem({
 	item: Item;
 	chargesToDegrade: number;
 	user: MUser;
-}): { hasEnough: true } | { hasEnough: false; userMessage: string } {
+}): { hasEnough: true; currentCharges: number } | { hasEnough: false; currentCharges: number; userMessage: string } {
 	const degItem = degradeableItems.find(i => i.item === item);
 	if (!degItem) throw new Error('Invalid degradeable item');
 	const currentCharges = user.user[degItem.settingsKey];
@@ -223,11 +278,13 @@ export function checkUserCanUseDegradeableItem({
 	if (newCharges < 0) {
 		return {
 			hasEnough: false,
+			currentCharges,
 			userMessage: `${user.usernameOrMention}, your ${item.name} has only ${currentCharges} charges remaining, but you need ${chargesToDegrade}.`
 		};
 	}
 	return {
-		hasEnough: true
+		hasEnough: true,
+		currentCharges
 	};
 }
 

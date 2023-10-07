@@ -373,9 +373,7 @@ export async function baxtorianBathhousesStartCommand({
 		tier: bathHouseTier.name
 	});
 
-	return `${userMention(user.id)}, your minion is now working at the Baxtorian Bathhouses for ${formatDuration(
-		duration
-	)}.
+	return `${user.minionName} is now working at the Baxtorian Bathhouses for ${formatDuration(duration)}.
 ${Emoji.Firemaking} **Water Heating cost:** ${heatingCost}
 ${Emoji.Herblore} **Water Mixture cost:** ${herbCost}
 **Boosts:** ${boosts.length > 0 ? boosts.join(', ') : 'None.'}`;
