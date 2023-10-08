@@ -233,6 +233,13 @@ const genericUsables: {
 				})
 			]
 		})
+	},
+	{
+		items: [getOSItem('Spooky aura'), getOSItem('Spooky sheet')],
+		cost: new Bank().add('Spooky aura').add('Spooky sheet'),
+		loot: new Bank().add('Casper'),
+		response: () =>
+			'You throw the spooky sheet onto the spooky aura, only to realize the aura is actually a ghost! Wow!'
 	}
 ];
 usables.push({

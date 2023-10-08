@@ -535,6 +535,10 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Hellfire bow (Oceanic)'),
 				dye: getOSItem('Oceanic dye')
+			},
+			{
+				item: getOSItem('Demonic piercer'),
+				dye: getOSItem('Spooky dye')
 			}
 		]
 	},
@@ -583,6 +587,10 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('TzKal cape (Volcanic)'),
 				dye: getOSItem('Volcanic dye')
+			},
+			{
+				item: getOSItem('TzKal cape (spooky)'),
+				dye: getOSItem('Spooky dye')
 			}
 		]
 	},

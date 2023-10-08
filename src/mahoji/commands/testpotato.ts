@@ -313,7 +313,17 @@ const doaSupplies = new Bank()
 	.add('Javelin shaft', 100_000)
 	.add('Obsidian shards', 100_000);
 
-const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc', 'materials', 'mt'] as const;
+const thingsToWipe = [
+	'bank',
+	'combat_achievements',
+	'cl',
+	'quests',
+	'buypayout',
+	'kc',
+	'materials',
+	'mt',
+	'mortimer_cooldown'
+] as const;
 
 export const testPotatoCommand: OSBMahojiCommand | null = production
 	? null
@@ -782,6 +792,12 @@ ${droprates.join('\n')}`),
 				}
 				if (options.wipe) {
 					let { thing } = options.wipe;
+					if (thing === 'mortimer_cooldown') {
+						await user.update({
+							last_mortimer_kill_date: null
+						});
+						return 'Reset your mortimer cooldown.';
+					}
 					if (thing === 'mt') {
 						await user.update({
 							bso_mystery_trail_current_step_id: null,

@@ -9078,3 +9078,341 @@ setCustomItem(
 	},
 	1_000_000
 );
+
+setCustomItem(
+	71_900,
+	'Maledict hat',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_901,
+	'Maledict top',
+	'Rune platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_902,
+	'Maledict legs',
+	'Rune platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_903,
+	'Maledict cape',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_904,
+	'Maledict boots',
+	'Rune boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_905,
+	'Maledict amulet',
+	'Amulet of strength',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_906,
+	'Maledict ring',
+	'Diamond ring',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_907,
+	'Maledict gloves',
+	'Rune gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_908,
+	'Maledict codex',
+	'Rune kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_909,
+	'Covenant of grimace',
+	'Rune dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_910,
+	'Bag of tricks',
+	'Rune dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_911,
+	"Fool's ace",
+	'Rune dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_912,
+	"Pandora's box",
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_913,
+	'Splooky fwizzle',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_916,
+	'Miss Chief',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_917,
+	'Doopy',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_919,
+	'Demonic piercer',
+	'Hellfire bow',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_920,
+	'Bat bat',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_921,
+	'Casper',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_922,
+	'TzKal cape (spooky)',
+	'TzKal cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_923,
+	'Soul shield',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_924,
+	'Evil partyhat',
+	'Red partyhat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_925,
+	'Spooky sheet',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_926,
+	'Spooky aura',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_927,
+	'Cosmic dice',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_928,
+	'Purple halloween mask',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);

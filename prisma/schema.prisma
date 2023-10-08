@@ -509,12 +509,26 @@ model User {
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
   kourend_favour            Json? @map("kourend_favour") @db.Json
 
+  last_mortimer_kill_date DateTime? @db.Timestamp(6)
+
   geListings        GEListing[]
   bingo_participant BingoParticipant[]
   bingo             Bingo[]
 
   @@index([id, last_command_date])
   @@map("users")
+}
+
+model MortimerTricks {
+  id Int @id @default(autoincrement())
+
+  trickster_id String  @db.VarChar(19)
+  target_id    String  @db.VarChar(19)
+  completed    Boolean @default(false)
+
+  date DateTime @default(now()) @db.Timestamp(6)
+
+  @@map("mortimer_trick")
 }
 
 model ReclaimableItem {
@@ -1168,6 +1182,7 @@ enum activity_type_enum {
   StrongholdOfSecurity
   BirthdayCollectIngredients
   SpecificQuest
+  Mortimer
 }
 
 enum xp_gains_skill_enum {
