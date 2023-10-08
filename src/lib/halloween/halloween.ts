@@ -121,22 +121,22 @@ export function determineMortimerLoot(user: MUser) {
 		}
 	}
 
-	if (percentChance(60)) {
+	if (percentChance(50)) {
 		loot.add(uniqueLootItem);
 	} else if (user.owns('Bag of tricks')) {
 		loot.add(MaledictMortimerBackupTable.roll());
 	}
 
-	const petDroprate = clAdjustedDroprate(user, 'Miss Chief', 10, 2.5);
+	const petDroprate = clAdjustedDroprate(user, 'Miss Chief', 15, 2.5);
 	if (roll(petDroprate)) {
 		loot.add('Miss Chief');
 	}
-	const covenantDroprate = clAdjustedDroprate(user, 'Covenant of grimace', 20, 2);
+	const covenantDroprate = clAdjustedDroprate(user, 'Covenant of grimace', 25, 2);
 	if (roll(covenantDroprate)) {
 		loot.add('Covenant of grimace');
 	}
 
-	const codexDroprate = clAdjustedDroprate(user, 'Maledict codex', 5, 2.5);
+	const codexDroprate = clAdjustedDroprate(user, 'Maledict codex', 8, 2.5);
 	if (roll(codexDroprate)) {
 		loot.add('Maledict codex');
 	}
