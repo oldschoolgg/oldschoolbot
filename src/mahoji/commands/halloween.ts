@@ -78,7 +78,8 @@ export const halloweenCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 
 		if (options.view) {
-			return `You have ${user.cl.amount('Splooky fwizzle')}x Splooky fwizzle.
+			return `You have found a total of: ${user.cl.amount('Splooky fwizzle')}x Splooky fwizzle.
+You currently have: ${user.bank.amount('Splooky fwizzle')}x Splooky fwizzle.
 
 You have bought ${halloweenShop.filter(i => user.cl.has(i.item!.id)).length}/${
 				halloweenShop.length
