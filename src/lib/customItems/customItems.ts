@@ -9228,8 +9228,7 @@ setCustomItem(
 	'Rune dagger',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
