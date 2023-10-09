@@ -149,7 +149,7 @@ export function determineMortimerLoot(user: MUser) {
 			'Miss Chief',
 			...MaledictMortimerOutfitTable.allItems
 		])) {
-			if (loot.has(item)) {
+			if (loot.has(item) && user.cl.has(item)) {
 				loot.remove(item);
 				loot.add('Splooky fwizzle', 120);
 			}
