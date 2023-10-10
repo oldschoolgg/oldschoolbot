@@ -278,8 +278,10 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 		let topSacrificers: string[] = [];
 		const mostValue = await q<any[]>('SELECT id FROM users ORDER BY "sacrificedValue" DESC LIMIT 3;');
 		for (let i = 0; i < 3; i++) {
-			topSacrificers.push(mostValue[i].id);
-			addToUserMap(userMap, mostValue[i].id, `Rank ${i + 1} Sacrifice Value`);
+			if (mostValue[i] !== undefined) {
+				topSacrificers.push(mostValue[i].id);
+				addToUserMap(userMap, mostValue[i].id, `Rank ${i + 1} Sacrifice Value`);
+			}
 		}
 		const mostValueIronman = await q<any[]>(
 			'SELECT id FROM users WHERE "minion.ironman" = true ORDER BY "sacrificedValue" DESC LIMIT 1;'

@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { runRolesTask } from '../../src/lib/rolesTask';
+import { MinigameName, Minigames } from '../../src/lib/settings/minigames';
 import { prisma } from '../../src/lib/settings/prisma';
 import { cryptoRand } from '../../src/lib/util';
 import { userStatsBankUpdate } from '../../src/mahoji/mahojiSettings';
@@ -20,8 +21,20 @@ describe('Roles Task', async () => {
 			skills_invention: 1000
 		});
 		const ironUser = await createTestUser();
-		await ironUser.update({ minion_ironman: true });
+		await ironUser.update({ minion_ironman: true, sacrificedValue: 1_000_000 });
 		await userStatsBankUpdate(ironUser.id, 'sacrificed_bank', new Bank().add('Coal', 10_000));
+
+		// Create minigame scores:
+		const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
+		const minigameUpdate: { [K in MinigameName]?: number } = {};
+		for (const minigame of minigames) {
+			minigameUpdate[minigame] = 1000;
+		}
+		await prisma.minigame.upsert({
+			where: { user_id: ironUser.id },
+			update: minigameUpdate,
+			create: { user_id: ironUser.id, ...minigameUpdate }
+		});
 
 		await prisma.giveaway.create({
 			data: {

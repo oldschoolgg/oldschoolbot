@@ -357,14 +357,11 @@ async function infernoRun({
 		['range', rangeGear, rangeWeapons]
 	] as const) {
 		const weapon = setup.equippedWeapon();
-		if (
-			!weapon ||
-			!Object.keys(weapons)
-				.map(itemID)
-				.map(i => [i, ...getSimilarItems(i)])
-				.flat(2)
-				.includes(weapon.id)
-		) {
+		const validWeapons = Object.keys(weapons)
+			.map(itemID)
+			.map(id => getSimilarItems(id))
+			.flat();
+		if (!weapon || !validWeapons.includes(weapon.id)) {
 			return `You need one of these weapons in your ${name} setup: ${Object.keys(weapons).join(', ')}.`;
 		}
 	}
