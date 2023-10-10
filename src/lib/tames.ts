@@ -514,7 +514,7 @@ export const tameSpecies: Species[] = [
 
 export function tameHasBeenFed(tame: Tame, item: string | number) {
 	const { id } = Items.get(item)!;
-	const items = [id, ...getSimilarItems(id)];
+	const items = getSimilarItems(id);
 	return items.some(i => Boolean((tame.fed_items as ItemBank)[i]));
 }
 

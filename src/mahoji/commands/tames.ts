@@ -797,7 +797,7 @@ async function feedCommand(interaction: ChatInputCommandInteraction, user: MUser
 
 	let specialStrArr = [];
 	for (const { item, description, tameSpeciesCanBeFedThis } of thisTameSpecialFeedableItems) {
-		const similarItems = [item.id, ...getSimilarItems(item.id)];
+		const similarItems = getSimilarItems(item.id);
 		if (similarItems.some(si => bankToAdd.has(si))) {
 			if (!tameSpeciesCanBeFedThis.includes(species!.type)) {
 				await handleMahojiConfirmation(

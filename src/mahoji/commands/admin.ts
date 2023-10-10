@@ -791,19 +791,6 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'givetgb',
-			description: 'Give em a tgb',
-			options: [
-				{
-					type: ApplicationCommandOptionType.User,
-					name: 'user',
-					description: 'The user',
-					required: true
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'view',
 			description: 'View something',
 			options: [
@@ -889,7 +876,6 @@ export const adminCommand: OSBMahojiCommand = {
 		guildID,
 		channelID
 	}: CommandRunOptions<{
-		givetgb?: { user: MahojiUserOption };
 		reboot?: {};
 		shut_down?: {};
 		debug_patreon?: {};
@@ -924,15 +910,6 @@ export const adminCommand: OSBMahojiCommand = {
 		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
 
 		if (!guildID || !isMod || (production && guildID.toString() !== '342983479501389826')) return randArrItem(gifs);
-
-		if (options.givetgb) {
-			const user = await mUserFetch(options.givetgb.user.user.id);
-			if (user.id === adminUser.id) {
-				return randArrItem(gifs);
-			}
-			await user.addItemsToBank({ items: new Bank().add('Tester gift box'), collectionLog: true });
-			return `Gave 1x Tester gift box to ${user}.`;
-		}
 		/**
 		 *
 		 * Mod Only Commands

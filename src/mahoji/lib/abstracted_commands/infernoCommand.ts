@@ -403,8 +403,8 @@ async function infernoRun({
 		}
 	}
 	if (!isEmergedZuk) {
-		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 7.5, 'Zuk with ACB');
-		duration.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 4.5, 'ACB');
+		zukDeathChance.add(rangeGear.hasEquipped('Armadyl crossbow', true, true), 7.5, 'Zuk with ACB');
+		duration.add(rangeGear.hasEquipped('Armadyl crossbow', true, true), 4.5, 'ACB');
 	}
 	const usingTbow =
 		rangeGear.hasEquipped('Twisted bow', true, true) || rangeGear.hasEquipped('Hellfire bow', true, true);

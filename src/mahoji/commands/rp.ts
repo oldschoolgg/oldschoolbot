@@ -55,6 +55,19 @@ export const rpCommand: OSBMahojiCommand = {
 			options: [
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'givetgb',
+					description: 'Give em a tgb',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user',
+							required: true
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'set_buy_date',
 					description: 'Set the minion buy date of a user.',
 					options: [
@@ -166,6 +179,7 @@ export const rpCommand: OSBMahojiCommand = {
 			validate_ge?: {};
 		};
 		player?: {
+			givetgb?: { user: MahojiUserOption };
 			viewbank?: { user: MahojiUserOption; json?: boolean };
 			add_patron_time?: { user: MahojiUserOption; tier: number; time: string };
 			steal_items?: {
@@ -186,8 +200,21 @@ export const rpCommand: OSBMahojiCommand = {
 		const adminUser = await mUserFetch(userID);
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
-		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
+		const isContrib = isMod || adminUser.bitfield.includes(BitField.isContributor);
 
+		if (!guildID || !isContrib || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
+		// Contributor+ only commands:
+		if (options.player?.givetgb) {
+			const user = await mUserFetch(options.player?.givetgb.user.user.id);
+			if (user.id === adminUser.id) {
+				return randArrItem(gifs);
+			}
+			await user.addItemsToBank({ items: new Bank().add('Tester gift box'), collectionLog: true });
+			return `Gave 1x Tester gift box to ${user}.`;
+		}
+
+		if (!isMod) return randArrItem(gifs);
+		// Mod+ only commands:
 		if (options.action?.validate_ge) {
 			const isValid = await GrandExchange.extensiveVerification();
 			if (isValid) {
