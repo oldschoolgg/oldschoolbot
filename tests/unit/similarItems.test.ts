@@ -239,7 +239,7 @@ describe('Gear', () => {
 		}
 	}
 
-	expect(getSimilarItems(itemID('Infernal max cape'))).toEqual([]);
+	expect(getSimilarItems(itemID('Infernal max cape'))).toEqual([itemID('Infernal max cape')]);
 
 	test('toa', () => {
 		let testGear = new Gear({ cape: 'Masori assembler max cape' });

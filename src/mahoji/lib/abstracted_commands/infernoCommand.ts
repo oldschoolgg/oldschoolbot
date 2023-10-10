@@ -357,14 +357,11 @@ async function infernoRun({
 		['range', rangeGear, rangeWeapons]
 	] as const) {
 		const weapon = setup.equippedWeapon();
-		if (
-			!weapon ||
-			!Object.keys(weapons)
-				.map(itemID)
-				.map(i => [i, ...getSimilarItems(i)])
-				.flat(2)
-				.includes(weapon.id)
-		) {
+		const validWeapons = Object.keys(weapons)
+			.map(itemID)
+			.map(id => getSimilarItems(id))
+			.flat();
+		if (!weapon || !validWeapons.includes(weapon.id)) {
 			return `You need one of these weapons in your ${name} setup: ${Object.keys(weapons).join(', ')}.`;
 		}
 	}
@@ -406,8 +403,8 @@ async function infernoRun({
 		}
 	}
 	if (!isEmergedZuk) {
-		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 7.5, 'Zuk with ACB');
-		duration.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 4.5, 'ACB');
+		zukDeathChance.add(rangeGear.hasEquipped('Armadyl crossbow', true, true), 7.5, 'Zuk with ACB');
+		duration.add(rangeGear.hasEquipped('Armadyl crossbow', true, true), 4.5, 'ACB');
 	}
 	const usingTbow =
 		rangeGear.hasEquipped('Twisted bow', true, true) || rangeGear.hasEquipped('Hellfire bow', true, true);

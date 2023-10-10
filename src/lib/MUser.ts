@@ -434,7 +434,7 @@ GROUP BY data->>'clueID';`);
 		const { bank } = this;
 		const items = resolveItems(_items);
 		for (const baseID of items) {
-			const similarItems = [...getSimilarItems(baseID), baseID];
+			const similarItems = getSimilarItems(baseID);
 			const hasOneEquipped = similarItems.some(id => this.hasEquipped(id, true));
 			const hasOneInBank = similarItems.some(id => bank.has(id));
 			// If only one needs to be equipped, return true now if it is equipped.

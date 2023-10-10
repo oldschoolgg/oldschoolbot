@@ -692,9 +692,7 @@ const tameRequirements = new Requirements()
 				.filter(t => t.species.id === TameSpeciesID.Monkey)
 				.some(tame =>
 					itemsToBeFed.every(itemNeedsToBeFed =>
-						[itemNeedsToBeFed.item.id, ...getSimilarItems(itemNeedsToBeFed.item.id)].some(similarItem =>
-							tame.fedItems.has(similarItem)
-						)
+						getSimilarItems(itemNeedsToBeFed.item.id).some(similarItem => tame.fedItems.has(similarItem))
 					)
 				);
 			if (!oneTameHasAll) {
@@ -714,9 +712,7 @@ const tameRequirements = new Requirements()
 				.filter(t => t.species.id === TameSpeciesID.Igne)
 				.some(tame =>
 					itemsToBeFed.every(itemNeedsToBeFed =>
-						[itemNeedsToBeFed.item.id, ...getSimilarItems(itemNeedsToBeFed.item.id)].some(similarItem =>
-							tame.fedItems.has(similarItem)
-						)
+						getSimilarItems(itemNeedsToBeFed.item.id).some(similarItem => tame.fedItems.has(similarItem))
 					)
 				);
 			if (!oneTameHasAll) {
