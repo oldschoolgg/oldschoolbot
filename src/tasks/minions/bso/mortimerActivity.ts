@@ -8,6 +8,7 @@ import { MALEDICT_MORTIMER_ID, mortimerEndMessages } from '../../../lib/simulati
 import { MortimerOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
+import resolveItems from '../../../lib/util/resolveItems';
 
 export const mortimerTask: MinionTask = {
 	type: 'Mortimer',
@@ -29,10 +30,10 @@ export const mortimerTask: MinionTask = {
 		loot.add(determineMortimerLoot(user));
 
 		let icon = '';
-		if (loot.has(['Covenant of grimace', 'Miss chief'])) {
+		if (resolveItems(['Covenant of grimace', 'Miss chief']).some(i => loot.has(i))) {
 			icon = '🟨';
 		} else if (
-			loot.has([
+			resolveItems([
 				'Maledict amulet',
 				'Maledict codex',
 				'Maledict hat',
@@ -42,7 +43,7 @@ export const mortimerTask: MinionTask = {
 				'Maledict cape',
 				'Maledict ring',
 				'Maledict gloves'
-			])
+			]).some(i => loot.has(i))
 		) {
 			icon = '🟪';
 		} else if (activeTrick !== null) {
@@ -65,7 +66,7 @@ export const mortimerTask: MinionTask = {
 		}
 
 		const str = `Maledict Mortimer says... ${bold(randArrItem(mortimerEndMessages))}
-	
+
 ${icon}${user.rawUsername} received ${bold(fakeLoot.toString())}.`;
 
 		return handleTripFinish(
