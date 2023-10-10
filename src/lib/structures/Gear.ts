@@ -438,10 +438,7 @@ export class Gear {
 				if (inverse) {
 					values.push(...inverse.values());
 				}
-				const similarItems = getSimilarItems(item);
-				if (similarItems) {
-					values.push(...similarItems);
-				}
+				values.push(...getSimilarItems(item));
 			}
 		}
 
@@ -471,8 +468,8 @@ export class Gear {
 			let currentCount = 0;
 			for (const i of [...items]) {
 				const similarItems = getSimilarItems(i);
-				if (similarItems.length > 0) {
-					if (similarItems.some(si => allItems.includes(si))) currentCount++;
+				if (similarItems.some(si => allItems.includes(si))) {
+					currentCount++;
 				} else if (allItems.includes(i)) currentCount++;
 			}
 			return currentCount === targetCount;
@@ -480,7 +477,6 @@ export class Gear {
 		// similar = true, every = false
 		for (const i of [...items]) {
 			const similarItems = getSimilarItems(i);
-			similarItems.push(i);
 			if (similarItems.some(si => allItems.includes(si))) return true;
 		}
 		return false;
