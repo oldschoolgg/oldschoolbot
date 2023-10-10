@@ -64,7 +64,8 @@ export const inventionBoosts = {
 			{ runes: ['Lava rune', 'Steam rune', 'Smoke rune'], boost: 20 },
 			{ runes: ['Death rune', 'Astral rune', 'Wrath rune', 'Law rune', 'Nature rune'], boost: 50 },
 			{ runes: ['Chaos rune', 'Cosmic rune'], boost: 60 },
-			{ runes: ['Blood rune', 'Soul rune'], boost: 95 },
+			{ runes: ['Blood rune', 'Soul rune'], boost: 65 },
+			{ runes: ['Blood rune (zeah)', 'Soul rune (zeah)'], boost: 95 },
 			{ runes: ['Elder rune'], boost: 65 }
 		]
 	},

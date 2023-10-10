@@ -82,7 +82,7 @@ export async function darkAltarCommand({ user, channelID, name }: { user: MUser;
 	// Calculate Abyssal amulet boost:
 	if (user.hasEquippedOrInBank(['Abyssal amulet'])) {
 		const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
-			b.runes.some(r => stringMatches(r, `${rune} rune`))
+			b.runes.some(r => stringMatches(r, `${rune} rune (zeah)`))
 		);
 		if (abyssalAmuletBoost) {
 			const res = await inventionItemBoost({
