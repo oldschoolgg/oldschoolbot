@@ -13,7 +13,7 @@ import { BitField, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/const
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { prisma } from '../../lib/settings/prisma';
-import { validSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
+import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
 import { BankSortMethods } from '../../lib/sorts';
@@ -275,23 +275,25 @@ async function favBhSeedsConfig(
 	}
 
 	const currentFavorites = user.user.favorite_bh_seeds;
-	const item = getItem(itemToAdd ?? itemToRemove);
+	if (itemToAdd || itemToRemove) {
+		const item = getItem(itemToAdd ?? itemToRemove);
+		if (!item) return "That item doesn't exist.";
+		if (!birdhouseSeeds.some(seed => seed.itemID === item.id)) return "That item can't be used in birdhouses.";
+		if (itemToAdd) {
+			if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
+			await user.update({ favorite_bh_seeds: [...currentFavorites, item.id] });
+			return `You favorited ${item.name}.`;
+		}
+		if (itemToRemove) {
+			if (!currentFavorites.includes(item.id)) return 'This item is not favorited.';
+			await user.update({ favorite_bh_seeds: removeFromArr(currentFavorites, item.id) });
+			return `You unfavorited ${item.name}.`;
+		}
+	}
+
 	const currentItems = `Your current favorite items are: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
-	if (!item) return currentItems;
-	if (!validSeeds.some(seed => seed.itemID === item.id)) return "That item can't be used in birdhouses.";
-
-	if (itemToAdd) {
-		if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
-		await user.update({ favorite_bh_seeds: [...currentFavorites, item.id] });
-		return `You favorited ${item.name}.`;
-	}
-	if (itemToRemove) {
-		if (!currentFavorites.includes(item.id)) return 'This item is not favorited.';
-		await user.update({ favorite_bh_seeds: removeFromArr(currentFavorites, item.id) });
-		return `You unfavorited ${item.name}.`;
-	}
 	return currentItems;
 }
 
@@ -954,8 +956,8 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'Add an item to your favorite birdhouse seeds.',
 							required: false,
 							autocomplete: async (value: string) => {
-								return validSeeds
-									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+								return birdhouseSeeds
+									.filter(i => (!value ? true : stringMatches(i.name, value)))
 									.map(i => ({
 										name: `${i.name}`,
 										value: i.itemID.toString()
@@ -969,10 +971,10 @@ export const configCommand: OSBMahojiCommand = {
 							required: false,
 							autocomplete: async (value: string, user: User) => {
 								const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_bh_seeds: true });
-								return validSeeds
+								return birdhouseSeeds
 									.filter(i => {
 										if (!mUser.favorite_bh_seeds.includes(i.itemID)) return false;
-										return !value ? true : i.name.toLowerCase().includes(value.toLowerCase());
+										return !value ? true : stringMatches(i.name, value);
 									})
 									.map(i => ({
 										name: `${i.name}`,

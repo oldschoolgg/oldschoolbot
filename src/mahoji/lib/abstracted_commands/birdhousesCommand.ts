@@ -2,7 +2,7 @@ import { time } from '@discordjs/builders';
 import { User } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import birdhouses, { Birdhouse, validSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
+import birdhouses, { Birdhouse, birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import defaultBirdhouseTrap, { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
@@ -120,7 +120,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	const favourites = mUser.favorite_bh_seeds;
 	if (favourites.length > 0) {
 		for (const fav of favourites) {
-			const seed = validSeeds.find(s => s.itemID === fav);
+			const seed = birdhouseSeeds.find(s => s.itemID === fav);
 			if (!seed) continue;
 			const seedCost = new Bank().add(seed.itemID, seed.amount * 4);
 			if (userBank.has(seedCost)) {
@@ -132,7 +132,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 		}
 		if (!canPay) return "You don't have enough favourited seeds to bait the birdhouses.";
 	} else {
-		for (const currentSeed of validSeeds) {
+		for (const currentSeed of birdhouseSeeds) {
 			const seedCost = new Bank().add(currentSeed.itemID, currentSeed.amount * 4);
 			if (userBank.has(seedCost)) {
 				infoStr.push(`You baited the birdhouses with ${seedCost}.`);

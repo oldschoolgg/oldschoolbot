@@ -179,7 +179,7 @@ const birdhouses: Birdhouse[] = [
 	}
 ];
 
-export const validSeeds = [
+export const birdhouseSeeds = [
 	{
 		name: 'Hammerstone seed',
 		itemID: itemID('Hammerstone seed'),
