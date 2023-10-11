@@ -198,12 +198,7 @@ const mentionCommands: MentionCommand[] = [
 
 					if (user.cl.has(item.id)) icons.push(Emoji.CollectionLog);
 					if (user.bank.has(item.id)) icons.push(Emoji.Bank);
-					if (
-						(sacrificedBank as ItemBank)[item.id] !== undefined &&
-						(sacrificedBank as ItemBank)[item.id] !== null
-					) {
-						icons.push(Emoji.Incinerator);
-					}
+					if (((sacrificedBank as ItemBank)[item.id] ?? 0) > 0) icons.push(Emoji.Incinerator);
 
 					const price = toKMB(Math.floor(item.price));
 
