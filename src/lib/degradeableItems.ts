@@ -27,7 +27,6 @@ interface DegradeableItem {
 		variant: Item;
 		refund: Bank;
 	}[];
-
 	setup: GearSetupType;
 	aliases: string[];
 	chargeInput: {
