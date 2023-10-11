@@ -22,7 +22,7 @@ interface DegradeableItem {
 		| 'blood_essence_charges'
 		| 'trident_charges'
 		| 'scythe_of_vitur_charges';
-	itemsToRefundOnBreak: Bank;
+	run: (user: MUser) => Bank;
 	setup: GearSetupType;
 	aliases: string[];
 	chargeInput: {
@@ -58,7 +58,9 @@ export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem('Abyssal tentacle'),
 		settingsKey: 'tentacle_charges',
-		itemsToRefundOnBreak: new Bank().add('Kraken tentacle'),
+		run: () => {
+			return new Bank().add('Kraken tentacle');
+		},
 		setup: 'melee',
 		aliases: ['tentacle', 'tent'],
 		chargeInput: {
@@ -70,7 +72,15 @@ export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem('Sanguinesti staff'),
 		settingsKey: 'sang_charges',
-		itemsToRefundOnBreak: new Bank().add('Sanguinesti staff (uncharged)'),
+		run: (user: MUser) => {
+			let unchargedItem: string = '';
+			if (user.hasEquipped('Holy sanguinesti staff')) {
+				unchargedItem = 'Holy sanguinesti staff (uncharged)';
+			} else {
+				unchargedItem = 'Sanguinesti staff (uncharged)';
+			}
+			return new Bank().add(unchargedItem);
+		},
 		setup: 'mage',
 		aliases: ['sang', 'sang staff', 'sanguinesti staff', 'sanguinesti'],
 		chargeInput: {
@@ -84,7 +94,9 @@ export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem('Celestial ring'),
 		settingsKey: 'celestial_ring_charges',
-		itemsToRefundOnBreak: new Bank().add('Celestial ring (uncharged)'),
+		run: () => {
+			return new Bank().add('Celestial ring (uncharged)');
+		},
 		setup: 'skilling',
 		aliases: ['celestial ring'],
 		chargeInput: {
@@ -98,7 +110,9 @@ export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem('Ash sanctifier'),
 		settingsKey: 'ash_sanctifier_charges',
-		itemsToRefundOnBreak: new Bank().add('Ash sanctifier'),
+		run: () => {
+			return new Bank().add('Ash sanctifier');
+		},
 		setup: 'skilling',
 		aliases: ['ash sanctifier'],
 		chargeInput: {
@@ -111,7 +125,9 @@ export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem('Serpentine helm'),
 		settingsKey: 'serp_helm_charges',
-		itemsToRefundOnBreak: new Bank().add('Serpentine helm (uncharged)'),
+		run: () => {
+			return new Bank().add('Serpentine helm (uncharged)');
+		},
 		setup: 'melee',
 		aliases: ['serp', 'serp helm', 'serpentine helm'],
 		chargeInput: {
@@ -125,7 +141,9 @@ export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem('Amulet of blood fury'),
 		settingsKey: 'blood_fury_charges',
-		itemsToRefundOnBreak: new Bank().add('Amulet of fury'),
+		run: () => {
+			return new Bank().add('Amulet of fury');
+		},
 		setup: 'melee',
 		aliases: ['blood fury', 'amulet of blood fury'],
 		chargeInput: {
@@ -139,7 +157,9 @@ export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem("Tumeken's shadow"),
 		settingsKey: 'tum_shadow_charges',
-		itemsToRefundOnBreak: new Bank().add("Tumeken's shadow (uncharged)"),
+		run: () => {
+			return new Bank().add("Tumeken's shadow (uncharged)");
+		},
 		setup: 'mage',
 		aliases: ['ts', 'tum shadow', 'tumekens shadow'],
 		chargeInput: {
@@ -153,7 +173,9 @@ export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem('Blood essence (active)'),
 		settingsKey: 'blood_essence_charges',
-		itemsToRefundOnBreak: new Bank(),
+		run: () => {
+			return new Bank();
+		},
 		setup: 'skilling',
 		aliases: ['blood essence'],
 		chargeInput: {
@@ -165,7 +187,15 @@ export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem('Trident of the swamp'),
 		settingsKey: 'trident_charges',
-		itemsToRefundOnBreak: new Bank().add('Uncharged toxic trident'),
+		run: (user: MUser) => {
+			let unchargedItem: string = '';
+			if (user.hasEquipped('Trident of the swamp')) {
+				unchargedItem = 'Uncharged toxic trident';
+			} else {
+				unchargedItem = 'Uncharged trident';
+			}
+			return new Bank().add(unchargedItem);
+		},
 		setup: 'mage',
 		aliases: ['trident', 'trident of the swamp'],
 		chargeInput: {
@@ -179,7 +209,17 @@ export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem('Scythe of vitur'),
 		settingsKey: 'scythe_of_vitur_charges',
-		itemsToRefundOnBreak: new Bank().add('Scythe of vitur (uncharged)'),
+		run: (user: MUser) => {
+			let unchargedItem: string = '';
+			if (user.hasEquipped('Holy Scythe of vitur')) {
+				unchargedItem = 'Holy scythe of vitur (uncharged)';
+			} else if (user.hasEquipped('Sanguine Scythe of vitur')) {
+				unchargedItem = 'Sanguine scythe of vitur (uncharged)';
+			} else {
+				unchargedItem = 'Scythe of vitur (uncharged)';
+			}
+			return new Bank().add(unchargedItem);
+		},
 		setup: 'melee',
 		aliases: ['scythe of vitur'],
 		chargeInput: {
@@ -285,22 +325,22 @@ export async function degradeItem({
 		updateBankSetting('degraded_items_cost', itemsDeleted);
 
 		if (hasEquipped) {
-			// If its equipped, unequip and delete it.
+			// If its equipped, give user new item, unequip old item and delete it.
 			const gear = { ...user.gear[degItem.setup].raw() };
+			if (degItem.run !== undefined) {
+				const bankValue = degItem.run(user);
+				await user.addItemsToBank({ items: bankValue, collectionLog: false });
+			}
 			gear[item.equipment!.slot] = null;
 			await user.update({
 				[`gear_${degItem.setup}`]: gear
 			});
-			if (degItem.itemsToRefundOnBreak) {
-				await user.addItemsToBank({ items: degItem.itemsToRefundOnBreak, collectionLog: false });
-			}
 		} else if (hasInBank) {
 			// If its in bank, just remove 1 from bank.
-			let itemsToAdd = undefined;
-			if (degItem.itemsToRefundOnBreak) {
-				itemsToAdd = degItem.itemsToRefundOnBreak;
+			if (degItem.run !== undefined) {
+				const itemsToAdd = degItem.run(user); // Call the function to get the actual Bank value
+				await user.transactItems({ itemsToRemove: new Bank().add(item.id, 1), itemsToAdd });
 			}
-			await user.transactItems({ itemsToRemove: new Bank().add(item.id, 1), itemsToAdd });
 		} else {
 			// If its not in bank OR equipped, something weird has gone on.
 			throw new Error(
