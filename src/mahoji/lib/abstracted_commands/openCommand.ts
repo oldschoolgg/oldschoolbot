@@ -1,6 +1,6 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { notEmpty, roll, uniqueArr } from 'e';
+import { noOp, notEmpty, randArrItem, roll, shuffleArr, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
 
@@ -9,8 +9,9 @@ import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
+import { prisma } from '../../../lib/settings/prisma';
 import { ItemBank } from '../../../lib/types';
-import { assert, makeComponents } from '../../../lib/util';
+import { assert, itemNameFromID, makeComponents } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -184,8 +185,44 @@ async function finalizeOpening({
 		filterLoot: false,
 		dontAddToTempCL: openables.some(i => itemsThatDontAddToTempCL.includes(i.id))
 	});
+
+	const fakeTrickedLoot = loot.clone();
+
+	const openableWithTricking = openables.find(i => 'trickableItems' in i);
+	if (
+		openableWithTricking &&
+		'trickableItems' in openableWithTricking &&
+		openableWithTricking.trickableItems !== undefined
+	) {
+		const activeTrick = await prisma.mortimerTricks.findFirst({
+			where: {
+				target_id: user.id,
+				completed: false
+			}
+		});
+		if (activeTrick) {
+			// Pick a random item not in CL, or just a random one if all are in CL
+			const trickedItem =
+				shuffleArr(openableWithTricking.trickableItems).find(i => !user.cl.has(i)) ??
+				randArrItem(openableWithTricking.trickableItems);
+			fakeTrickedLoot.add(trickedItem);
+			const trickster = await globalClient.users.fetch(activeTrick.trickster_id).catch(noOp);
+			trickster
+				?.send(`You just tricked ${user.rawUsername} into thinking they got a ${itemNameFromID(trickedItem)}!`)
+				.catch(noOp);
+			await prisma.mortimerTricks.update({
+				where: {
+					id: activeTrick.id
+				},
+				data: {
+					completed: true
+				}
+			});
+		}
+	}
+
 	const image = await makeBankImage({
-		bank: loot,
+		bank: fakeTrickedLoot,
 		title:
 			openables.length === 1
 				? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`

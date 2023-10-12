@@ -9,6 +9,7 @@ import { MediumCasket, MediumClueTable } from 'oldschooljs/dist/simulation/clues
 
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import itemID from '../util/itemID';
+import resolveItems from '../util/resolveItems';
 import { beginnerReqs, ClueReqs } from './clueReqs';
 import {
 	beginnerStashes,
@@ -40,6 +41,7 @@ export interface ClueTier {
 	stashUnits: StashUnitTier;
 	reqs: ClueReqs;
 	qtyForGrandmasters: number;
+	trickableItems?: number[];
 }
 
 export const ClueTiers: ClueTier[] = [
@@ -148,6 +150,13 @@ export const ClueTiers: ClueTier[] = [
 		allItems: GrandmasterClueTable.allItems,
 		stashUnits: masterStashes,
 		reqs: beginnerReqs,
-		qtyForGrandmasters: 0
+		qtyForGrandmasters: 0,
+		trickableItems: resolveItems([
+			'First age tiara',
+			'First age amulet',
+			'First age cape',
+			'First age bracelet',
+			'First age ring'
+		])
 	}
 ];

@@ -85,6 +85,7 @@ export interface UnifiedOpenable {
 	excludeLootFromBoxes?: boolean;
 	excludeFromOpenAll?: true;
 	extraCostPerOpen?: Bank;
+	trickableItems?: number[];
 }
 
 const clueItemsToNotifyOf = resolveItems([
@@ -208,7 +209,8 @@ for (const clueTier of ClueTiers) {
 			return { bank: loot, message };
 		},
 		emoji: Emoji.Casket,
-		allItems: clueTier.allItems
+		allItems: clueTier.allItems,
+		trickableItems: clueTier.trickableItems
 	});
 }
 

@@ -81,6 +81,7 @@ export const halloweenCommand: OSBMahojiCommand = {
 			return `You have found a total of: ${user.cl.amount('Splooky fwizzle')}x Splooky fwizzle.
 You currently have: ${user.bank.amount('Splooky fwizzle')}x Splooky fwizzle.
 
+
 You have bought ${halloweenShop.filter(i => user.cl.has(i.item!.id)).length}/${
 				halloweenShop.length
 			} of the Halloween store items.
@@ -106,11 +107,13 @@ ${halloweenShop
 			}
 			let { cost } = buyable;
 
-			// Increase cost by 25% for each owned
-			for (let i = 0; i < user.cl.amount(buyable.item!.id); i++) {
-				let increasePercent = 25;
-				if (buyable.item!.name === 'Spooky aura') increasePercent = 450;
-				cost = Math.floor(increaseNumByPercent(cost, increasePercent));
+			// Increase cost by 25% for each owned, except for "Fool's ace"
+			if (buyable.item.name !== "Fool's ace") {
+				for (let i = 0; i < user.cl.amount(buyable.item!.id); i++) {
+					let increasePercent = 25;
+					if (buyable.item!.name === 'Spooky aura') increasePercent = 450;
+					cost = Math.floor(increaseNumByPercent(cost, increasePercent));
+				}
 			}
 
 			const itemCost = new Bank().add('Splooky fwizzle', cost);

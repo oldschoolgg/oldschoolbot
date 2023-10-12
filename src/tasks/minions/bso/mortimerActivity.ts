@@ -1,11 +1,12 @@
 import { bold } from 'discord.js';
-import { randArrItem } from 'e';
+import { noOp, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { determineMortimerLoot } from '../../../lib/halloween/halloween';
 import { prisma } from '../../../lib/settings/prisma';
 import { MALEDICT_MORTIMER_ID, mortimerEndMessages } from '../../../lib/simulation/maledictMortimer';
 import { MortimerOptions } from '../../../lib/types/minions';
+import { itemNameFromID } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
@@ -62,7 +63,12 @@ export const mortimerTask: MinionTask = {
 
 		const fakeLoot = loot.clone();
 		if (trickDidActivate) {
-			fakeLoot.add(randArrItem(['Covenant of grimace', 'Miss chief', 'Maledict codex', 'Maledict amulet']));
+			const item = randArrItem(['Covenant of grimace', 'Miss chief', 'Maledict codex', 'Maledict amulet']);
+			globalClient.users.cache
+				.get(activeTrick!.trickster_id)
+				?.send(`You just tricked ${user.rawUsername} into thinking they got a ${itemNameFromID(item)}!`)
+				.catch(noOp);
+			fakeLoot.add(item);
 		}
 
 		const str = `Maledict Mortimer says... ${bold(randArrItem(mortimerEndMessages))}
