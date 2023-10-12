@@ -530,7 +530,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Theatre of Blood',
 		rng: {
 			chancePerKill: 50,
-			hasChance: data => data.type === 'TheatreOfBlood' && (data as TheatreOfBloodTaskOptions).hardMode
+			hasChance: 'TheatreOfBlood'
 		}
 	},
 	{
