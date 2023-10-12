@@ -155,6 +155,11 @@ export async function minionKillCommand(
 		return `You can't kill ${monster.name}, because you're not on a slayer task.`;
 	}
 
+	if (isOnTask && usersTask.assignedTask?.wilderness) {
+		monster.wildy = true;
+		monster.canBePked = true;
+	}
+
 	// Set chosen boost based on priority:
 	const myCBOpts = user.combatOptions;
 	const boostChoice = determineBoostChoice({
@@ -594,7 +599,7 @@ export async function minionKillCommand(
 	let hasDied: boolean | undefined = undefined;
 	let hasWildySupplies = undefined;
 
-	if (monster.canBePked || usersTask.assignedTask?.wilderness) {
+	if (monster.canBePked) {
 		await increaseWildEvasionXp(user, duration);
 		thePkCount = 0;
 		hasDied = false;
