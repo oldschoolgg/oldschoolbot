@@ -279,21 +279,37 @@ export async function slayerNewTaskCommand({
 			interactionReply(interaction, 'You cannot skip this task because Turael assigns it.');
 			return;
 		}
-
-		await handleMahojiConfirmation(
-			interaction,
-			`Really cancel task? This will reset your streak to 0 and give you a new ${slayerMaster.name} task.`
-		);
-		await prisma.slayerTask.update({
-			where: {
-				id: currentTask.id
-			},
-			data: {
-				skipped: true,
-				quantity_remaining: 0
-			}
-		});
-		await userStatsUpdate(user.id, { slayer_task_streak: 0 }, {});
+		if (currentTask?.slayer_master_id === 8) {
+			await handleMahojiConfirmation(
+				interaction,
+				`Really cancel task? This will reset your wilderness streak to 0 and give you a new ${slayerMaster.name} task.`
+			);
+			await prisma.slayerTask.update({
+				where: {
+					id: currentTask.id
+				},
+				data: {
+					skipped: true,
+					quantity_remaining: 0
+				}
+			});
+			await userStatsUpdate(user.id, { slayer_wildy_task_streak: 0 }, {});
+		} else {
+			await handleMahojiConfirmation(
+				interaction,
+				`Really cancel task? This will reset your streak to 0 and give you a new ${slayerMaster.name} task.`
+			);
+			await prisma.slayerTask.update({
+				where: {
+					id: currentTask.id
+				},
+				data: {
+					skipped: true,
+					quantity_remaining: 0
+				}
+			});
+			await userStatsUpdate(user.id, { slayer_task_streak: 0 }, {});
+		}
 		const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
 		const returnMessage =
