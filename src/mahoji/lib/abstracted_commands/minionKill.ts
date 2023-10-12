@@ -594,7 +594,7 @@ export async function minionKillCommand(
 	let hasDied: boolean | undefined = undefined;
 	let hasWildySupplies = undefined;
 
-	if (monster.canBePked) {
+	if (monster.canBePked || usersTask.assignedTask?.wilderness) {
 		await increaseWildEvasionXp(user, duration);
 		thePkCount = 0;
 		hasDied = false;

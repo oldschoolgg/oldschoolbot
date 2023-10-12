@@ -243,8 +243,9 @@ export async function slayerNewTaskCommand({
 
 	const has99SlayerCape = user.skillLevel('slayer') >= 99 && user.hasEquippedOrInBank('Slayer cape');
 
-	// Chooses a default slayer master:
+	// Chooses a default slayer master (excluding Krystilia):
 	const proposedDefaultMaster = slayerMasters
+		.filter(sm => sm.id !== 8) // Exclude Krystilia
 		.sort((a, b) => b.basePoints - a.basePoints)
 		.find(sm => userCanUseMaster(user, sm));
 

@@ -299,7 +299,25 @@ export const monsterTask: MinionTask = {
 			const quantityLeft = Math.max(0, isOnTaskResult.currentTask!.quantity_remaining - effectiveSlayed);
 
 			thisTripFinishesTask = quantityLeft === 0;
-			if (thisTripFinishesTask) {
+			if (thisTripFinishesTask && (isOnTaskResult.slayerMaster.id === 8)) {
+				const newStats = await userStatsUpdate(
+					user.id,
+					{
+						slayer_wildy_task_streak: {
+							increment: 1
+						}
+					},
+					{ slayer_wildy_task_streak: true }
+				);
+				const currentStreak = newStats.slayer_wildy_task_streak;
+				const points = await calculateSlayerPoints(currentStreak, isOnTaskResult.slayerMaster, user);
+				const secondNewUser = await user.update({
+					slayer_points: {
+						increment: points
+					}
+				});
+				str += `\n**You've completed ${currentStreak} wilderness tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
+			} else if (thisTripFinishesTask && (isOnTaskResult.slayerMaster.id !== 8)) {
 				const newStats = await userStatsUpdate(
 					user.id,
 					{
