@@ -77,7 +77,7 @@ export const kingGoldemarTask: MinionTask = {
 
 		const userGettingTricked = users[0];
 		let trickDidActivate = false;
-		if (users.length === 1 && dwwhRecipient !== userGettingTricked) {
+		if (users.length === 1 && dwwhRecipient !== userGettingTricked && 5 > 10) {
 			const activeTrick = await prisma.mortimerTricks.findFirst({
 				where: {
 					target_id: userGettingTricked.id,
