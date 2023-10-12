@@ -724,7 +724,7 @@ model UserStats {
   honour_points            Int @default(0)
 
   slayer_task_streak        Int @default(0)
-  slayer_wildy_task_streak Int @default(0)
+  slayer_wildy_task_streak  Int @default(0)
   slayer_superior_count     Int @default(0)
   slayer_unsired_offered    Int @default(0)
   slayer_chewed_offered     Int @default(0)
