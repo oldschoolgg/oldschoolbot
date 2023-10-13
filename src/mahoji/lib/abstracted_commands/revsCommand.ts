@@ -28,7 +28,8 @@ export async function revsCommand(
 	user: MUser,
 	channelID: string,
 	interaction: ChatInputCommandInteraction | null,
-	name: string
+	name: string,
+	quantity: number | undefined
 ): CommandResponse {
 	const style = convertAttackStylesToSetup(user.user.attack_style);
 	const userGear = user.gear.wildy;
@@ -67,22 +68,31 @@ export async function revsCommand(
 		boosts.push(`${35}% for ${specialWeapon.name}`);
 	}
 
-	const quantity = Math.floor(calcMaxTripLength(user, 'Revenants') / timePerMonster);
+	const maxTripLength = Math.floor(calcMaxTripLength(user, 'Revenants'));
+	if (!quantity) {
+		quantity = Math.max(1, Math.floor(maxTripLength / timePerMonster));
+	}
 	let duration = quantity * timePerMonster;
 
 	const cost = new Bank();
 
 	let hasPrayerPots = true;
-	if (user.bank.amount('Prayer potion(4)') < 5) {
+
+	const initialPrayerPots = 1; // At least 1 prayer potion
+	const millisecondsPer8Minutes = 480_000; // 8 minutes in milliseconds
+	const additionalPrayerPots = Math.round(duration / millisecondsPer8Minutes);
+	const totalPrayerPots = initialPrayerPots + additionalPrayerPots;
+
+	if (user.bank.amount('Prayer potion(4)') < totalPrayerPots) {
 		hasPrayerPots = false;
 		if (interaction) {
 			await handleMahojiConfirmation(
 				interaction,
-				'Are you sure you want to kill revenants without prayer potions? You should bring at least 5 Prayer potion(4).'
+				`Are you sure you want to kill revenants without enough prayer potions? You should bring at least ${totalPrayerPots} Prayer potion(4).`
 			);
 		}
 	} else {
-		cost.add('Prayer potion(4)', 5);
+		cost.add('Prayer potion(4)', totalPrayerPots);
 	}
 
 	updateBankSetting('economyStats_PVMCost', cost);

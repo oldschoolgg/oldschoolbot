@@ -454,7 +454,8 @@ export const tripHandlers = {
 	[activity_type_enum.Revenants]: {
 		commandName: 'k',
 		args: (data: RevenantOptions) => ({
-			name: autocompleteMonsters.find(i => i.id === data.monsterID)?.name ?? data.monsterID.toString()
+			name: autocompleteMonsters.find(i => i.id === data.monsterID)?.name ?? data.monsterID.toString(),
+			quantity: data.quantity
 		})
 	},
 	[activity_type_enum.RoguesDenMaze]: {
