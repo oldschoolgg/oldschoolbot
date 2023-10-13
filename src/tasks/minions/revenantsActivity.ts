@@ -1,6 +1,6 @@
 import type { Prisma } from '@prisma/client';
 import { deepClone, roll } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { trackLoot } from '../../lib/lootTrack';
@@ -14,6 +14,7 @@ import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLost
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 
 export const revenantsTask: MinionTask = {
 	type: 'Revenants',
@@ -92,7 +93,16 @@ export const revenantsTask: MinionTask = {
 
 		const { newKC } = await user.incrementKC(monsterID, quantity);
 
-		const loot = monster.table.kill(quantity, { skulled });
+		// Add slayer
+		const usersTask = await getUsersCurrentSlayerInfo(user.id);
+		const isOnTask =
+			usersTask.currentTask !== null &&
+			usersTask.currentTask !== undefined &&
+			usersTask.currentTask.monster_id === Monsters.RevenantImp.id
+
+		console.log(isOnTask);
+
+		const loot = monster.table.kill(quantity, { onSlayerTask: isOnTask });
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}.` +
 			` Your ${monster.name} KC is now ${newKC}.\n`;
