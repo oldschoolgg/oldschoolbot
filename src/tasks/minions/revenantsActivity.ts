@@ -5,6 +5,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { trackLoot } from '../../lib/lootTrack';
 import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
+import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -95,6 +96,8 @@ export const revenantsTask: MinionTask = {
 
 		const { newKC } = await user.incrementKC(monsterID, quantity);
 
+		let str = `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}.`;
+
 		// Add slayer
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
@@ -103,40 +106,6 @@ export const revenantsTask: MinionTask = {
 			usersTask.currentTask.monster_id === Monsters.RevenantImp.id;
 
 		const isOnTaskResult = await isOnSlayerTask({ user, monsterID, quantityKilled: quantity });
-
-		const loot = monster.table.kill(quantity, { onSlayerTask: isOnTask });
-		let str =
-			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}.` +
-			` Your ${monster.name} KC is now ${newKC}.\n`;
-
-		announceLoot({
-			user,
-			monsterID: monster.id,
-			loot,
-			notifyDrops: monster.notifyDrops
-		});
-
-		const { previousCL, itemsAdded } = await transactItems({
-			userID: user.id,
-			itemsToAdd: loot,
-			collectionLog: true
-		});
-
-		await trackLoot({
-			totalLoot: itemsAdded,
-			id: monster.name,
-			type: 'Monster',
-			changeType: 'loot',
-			duration,
-			kc: quantity,
-			users: [
-				{
-					id: user.id,
-					loot: itemsAdded,
-					duration
-				}
-			]
-		});
 
 		let thisTripFinishesTask = false;
 
@@ -177,6 +146,51 @@ export const revenantsTask: MinionTask = {
 				}
 			});
 		}
+
+		const xpRes: string[] = [];
+		xpRes.push(
+			await addMonsterXP(user, {
+				monsterID,
+				quantity,
+				duration,
+				isOnTask: isOnTaskResult.isOnTask,
+				taskQuantity: isOnTaskResult.isOnTask ? isOnTaskResult.quantitySlayed : null,
+				minimal: true
+			})
+		);
+
+		const loot = monster.table.kill(quantity, { onSlayerTask: isOnTask });
+
+		str += ` Your ${monster.name} KC is now ${newKC}.\n\n${xpRes.join(' ')}`;
+
+		announceLoot({
+			user,
+			monsterID: monster.id,
+			loot,
+			notifyDrops: monster.notifyDrops
+		});
+
+		const { previousCL, itemsAdded } = await transactItems({
+			userID: user.id,
+			itemsToAdd: loot,
+			collectionLog: true
+		});
+
+		await trackLoot({
+			totalLoot: itemsAdded,
+			id: monster.name,
+			type: 'Monster',
+			changeType: 'loot',
+			duration,
+			kc: quantity,
+			users: [
+				{
+					id: user.id,
+					loot: itemsAdded,
+					duration
+				}
+			]
+		});
 
 		const image = await makeBankImage({
 			bank: itemsAdded,
