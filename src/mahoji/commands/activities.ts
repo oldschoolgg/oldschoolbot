@@ -115,6 +115,25 @@ export const activitiesCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
+			name: 'camdozaal',
+			description: 'Send your minion to do activities inside the Ruins of Camdozaal',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'action',
+					description: 'Start mining, smithing, fishing inside the Ruins of Camdozaal'
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'quantity',
+					description: 'The quantity you want to do (optional).',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
 			name: 'collect',
 			description: 'Sends your minion to collect items.',
 			options: [
