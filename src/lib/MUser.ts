@@ -733,29 +733,19 @@ GROUP BY data->>'clueID';`);
 			.reduce((total, value) => total + value, 0);
 	}
 
-	hasCompletedCATier(tier: keyof typeof CombatAchievements): boolean {
-		return this.caPoints() >= CombatAchievements[tier].rewardThreshold;
+	hasCompletedCATier(tier: string): boolean {
+		return this.caPoints() >= CombatAchievements[tier as keyof typeof CombatAchievements].rewardThreshold;
 	}
 
 	buildTertiaryItemChanges(ringOfWealthI: boolean) {
 		const changes = new Map();
-		if (ringOfWealthI) {
-			changes.set('Clue scroll (easy)', 50);
-			changes.set('Clue scroll (medium)', 50);
-			changes.set('Clue scroll (hard)', 50);
-			changes.set('Clue scroll (elite)', 50);
-		}
-		if (this.hasCompletedCATier('easy')) {
-			changes.set('Clue scroll (easy)', 5);
-		}
-		if (this.hasCompletedCATier('medium')) {
-			changes.set('Clue scroll (medium)', 5);
-		}
-		if (this.hasCompletedCATier('hard')) {
-			changes.set('Clue scroll (hard)', 5);
-		}
-		if (this.hasCompletedCATier('elite')) {
-			changes.set('Clue scroll (elite)', 5);
+		const tiers = ['easy', 'medium', 'hard', 'elite'];
+		for (const tier of tiers) {
+			let change = ringOfWealthI ? 50 : 0;
+			if (this.hasCompletedCATier(tier)) {
+				change += 5;
+			}
+			changes.set(`Clue scroll (${tier})`, change);
 		}
 		return changes;
 	}
