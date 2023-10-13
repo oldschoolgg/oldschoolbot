@@ -257,6 +257,9 @@ export function getCommonTaskName(task: Monster) {
 		case Monsters.TzHaarKet.id:
 			commonName = 'TzHaar';
 			break;
+		case Monsters.RevenantImp.id:
+			commonName = 'Revenant';
+			break;
 		default:
 	}
 	if (commonName !== 'TzHaar' && !commonName.endsWith('s')) commonName += 's';
