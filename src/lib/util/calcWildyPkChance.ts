@@ -33,7 +33,7 @@ export async function getPkEvasionExp(user: MUser) {
 
 export async function getWildEvasionPercent(user: MUser) {
 	// Caps out to 10% as before
-	const maxReductionPercent = 1000;
+	const maxReductionPercent = 10;
 	return randomVariation(calcPercentOfNum(await getPkEvasionExp(user), maxReductionPercent), 10);
 }
 
