@@ -2190,6 +2190,15 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Ring of wealth (i)',
+		inputItems: new Bank({
+			'Ring of wealth': 1,
+			'Ring of wealth scroll': 1
+		}),
+		GPCost: 50_000,
+		outputItems: { [itemID('Ring of wealth (i)')]: 1 }
+	},
+	{
 		name: 'Strange hallowed tome',
 		inputItems: new Bank({
 			'Mysterious page 1': 1,

@@ -737,8 +737,14 @@ GROUP BY data->>'clueID';`);
 		return this.caPoints() >= CombatAchievements[tier].rewardThreshold;
 	}
 
-	buildCATertiaryItemChanges() {
+	buildTertiaryItemChanges(ringOfWealthI: boolean) {
 		const changes = new Map();
+		if (ringOfWealthI) {
+			changes.set('Clue scroll (easy)', 50);
+			changes.set('Clue scroll (medium)', 50);
+			changes.set('Clue scroll (hard)', 50);
+			changes.set('Clue scroll (elite)', 50);
+		}
 		if (this.hasCompletedCATier('easy')) {
 			changes.set('Clue scroll (easy)', 5);
 		}

@@ -195,6 +195,7 @@ export const monsterTask: MinionTask = {
 
 		const superiorTable = isOnTaskResult.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
 		const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
+		const ringOfWealthI = (user.gear.wildy.hasEquipped('Ring of wealth (i)') && monster.canBePked) as boolean;
 
 		const killOptions: MonsterKillOptions = {
 			onSlayerTask: isOnTaskResult.isOnTask,
@@ -202,7 +203,7 @@ export const monsterTask: MinionTask = {
 			hasSuperiors: superiorTable,
 			inCatacombs: isInCatacombs,
 			lootTableOptions: {
-				tertiaryItemPercentageChanges: user.buildCATertiaryItemChanges()
+				tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(ringOfWealthI)
 			}
 		};
 
