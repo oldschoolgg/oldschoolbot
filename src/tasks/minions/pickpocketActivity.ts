@@ -60,7 +60,7 @@ export const pickpocketTask: MinionTask = {
 		if (obj.type === 'pickpockable') {
 			for (let i = 0; i < successfulQuantity; i++) {
 				const lootItems = obj.table.roll(1, {
-					tertiaryItemPercentageChanges: user.buildCATertiaryItemChanges()
+					tertiaryItemPercentageChanges: user.buildTertiaryItemChanges( false )
 				});
 				// TODO: Remove Rocky from loot tables in oldschoolJS
 				if (lootItems.has('Rocky')) lootItems.remove('Rocky');
