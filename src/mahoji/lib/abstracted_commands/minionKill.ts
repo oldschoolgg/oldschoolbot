@@ -240,46 +240,70 @@ export async function minionKillCommand(
 				boosts.push('15% for Dragon hunter crossbow');
 			}
 		}
-	} else if (
-		monster.name.toLowerCase() !== 'vorkath' &&
-		osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)
-	) {
-		if (
-			user.hasEquippedOrInBank('Dragon hunter lance') &&
-			!attackStyles.includes(SkillsEnum.Ranged) &&
-			!attackStyles.includes(SkillsEnum.Magic)
-		) {
-			timeToFinish = reduceNumByPercent(timeToFinish, dragonBoost);
-			boosts.push('15% for Dragon hunter lance');
-		} else if (user.hasEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
-			timeToFinish = reduceNumByPercent(timeToFinish, dragonBoost);
-			boosts.push('15% for Dragon hunter crossbow');
-		}
-	}
-
-	if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
-		const blackMask =
-			isOnTask &&
-			(monster.canBePked ? wildyGear.hasEquipped('Black mask (i)') : user.hasEquippedOrInBank('Black mask'));
-		const salveAmulet =
-			undeadMonster &&
-			(monster.canBePked ? wildyGear.hasEquipped('Salve amulet(i)') : user.hasEquippedOrInBank('Salve amulet'));
-
-		if (blackMask) {
+		// Calculate Slayer helmet boost on task if they have black mask or similar
+		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
+			if (isOnTask && wildyGear.hasEquipped('Black mask (i)')) {
+				blackMaskBoost = oneSixthBoost;
+				blackMaskBoostMsg = `${blackMaskBoost}% for Black mask (i) on non-melee task`;
+			}
+		} else if (isOnTask && wildyGear.hasEquipped('Black mask')) {
 			blackMaskBoost = oneSixthBoost;
-			blackMaskBoostMsg = `${blackMaskBoost}% for Black mask${monster.canBePked ? ' (i)' : ''} on ${
-				isOnTask ? 'non-melee' : 'melee'
-			} task`;
+			blackMaskBoostMsg = `${blackMaskBoost}% for Black mask on melee task`;
 		}
 
-		if (salveAmulet) {
-			const enhancedBoost = monster.canBePked
-				? wildyGear.hasEquipped('Salve amulet(ei)')
-				: user.hasEquippedOrInBank('Salve amulet(e)');
+		// Calculate Salve amulet boost on task if the monster is undead or similar
+		if (undeadMonster && (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic))) {
+			if (wildyGear.hasEquipped('Salve amulet(i)')) {
+				const enhancedBoost = wildyGear.hasEquipped('Salve amulet(ei)');
+				salveAmuletBoost = enhancedBoost ? 20 : oneSixthBoost;
+				salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
+					enhancedBoost ? '(ei)' : '(i)'
+				} on non-melee task`;
+			}
+		} else if (undeadMonster && user.hasEquippedOrInBank('Salve amulet')) {
+			const enhancedBoost = user.hasEquippedOrInBank('Salve amulet(e)');
 			salveAmuletBoost = enhancedBoost ? 20 : oneSixthBoost;
-			salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${enhancedBoost ? '(ei)' : '(i)'} on ${
-				isOnTask ? 'non-melee' : 'melee'
-			} task`;
+			salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${enhancedBoost ? ' (e)' : ''} on melee task`;
+		}
+	} else {
+		if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
+			if (
+				user.hasEquippedOrInBank('Dragon hunter lance') &&
+				!attackStyles.includes(SkillsEnum.Ranged) &&
+				!attackStyles.includes(SkillsEnum.Magic)
+			) {
+				timeToFinish = reduceNumByPercent(timeToFinish, dragonBoost);
+				boosts.push('15% for Dragon hunter lance');
+			} else if (user.hasEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
+				timeToFinish = reduceNumByPercent(timeToFinish, dragonBoost);
+				boosts.push('15% for Dragon hunter crossbow');
+			}
+		}
+
+		// Calculate Slayer helmet boost on task if they have black mask or similar
+		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
+			if (isOnTask && user.hasEquippedOrInBank('Black mask (i)')) {
+				blackMaskBoost = oneSixthBoost;
+				blackMaskBoostMsg = `${blackMaskBoost}% for Black mask (i) on non-melee task`;
+			}
+		} else if (isOnTask && user.hasEquippedOrInBank('Black mask')) {
+			blackMaskBoost = oneSixthBoost;
+			blackMaskBoostMsg = `${blackMaskBoost}% for Black mask on melee task`;
+		}
+
+		// Calculate Salve amulet boost on task if the monster is undead or similar
+		if (undeadMonster && (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic))) {
+			if (user.hasEquippedOrInBank('Salve amulet(i)')) {
+				const enhancedBoost = user.hasEquippedOrInBank('Salve amulet(ei)');
+				salveAmuletBoost = enhancedBoost ? 20 : oneSixthBoost;
+				salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
+					enhancedBoost ? '(ei)' : '(i)'
+				} on non-melee task`;
+			}
+		} else if (undeadMonster && user.hasEquippedOrInBank('Salve amulet')) {
+			const enhancedBoost = user.hasEquippedOrInBank('Salve amulet(e)');
+			salveAmuletBoost = enhancedBoost ? 20 : oneSixthBoost;
+			salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${enhancedBoost ? ' (e)' : ''} on melee task`;
 		}
 	}
 

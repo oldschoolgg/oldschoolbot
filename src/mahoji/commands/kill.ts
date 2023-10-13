@@ -78,7 +78,7 @@ export const killCommand: OSBMahojiCommand = {
 			limit: determineKillLimit(user),
 			catacombs: false,
 			onTask: false,
-			lootTableTertiaryChanges: Array.from(user.buildTertiaryItemChanges( false ).entries())
+			lootTableTertiaryChanges: Array.from(user.buildTertiaryItemChanges(false).entries())
 		});
 
 		if (result.error) {
