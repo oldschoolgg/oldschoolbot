@@ -145,7 +145,7 @@ export async function handleTripFinish(
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 		if (
 			(currentTask === null || currentTask.quantity_remaining <= 0) &&
-			['MonsterKilling', 'Inferno', 'FightCaves'].includes(data.type)
+			['MonsterKilling', 'Inferno', 'FightCaves', 'Revenants'].includes(data.type)
 		) {
 			components.push(makeNewSlayerTaskButton());
 		}
