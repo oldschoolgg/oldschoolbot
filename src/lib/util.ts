@@ -319,6 +319,17 @@ export function isSuperUntradeable(item: number | Item) {
 	return id >= 40_000 && id <= 45_000;
 }
 
+export function isGEUntradeable(item: number | Item) {
+	const fullItem = typeof item === 'number' ? Items.get(item) : item;
+	if (!fullItem || !fullItem.customItemData || !fullItem.customItemData.superTradeableButTradeableOnGE) {
+		return isSuperUntradeable(item);
+	}
+	if (fullItem.customItemData.isSuperUntradeable && fullItem.customItemData.superTradeableButTradeableOnGE) {
+		return false;
+	}
+	return isSuperUntradeable(item);
+}
+
 export function birdhouseLimit(user: MUser) {
 	let base = 4;
 	if (user.bitfield.includes(BitField.HasScrollOfTheHunt)) base += 4;

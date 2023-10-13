@@ -9358,7 +9358,8 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			isSuperUntradeable: true,
+			superTradeableButTradeableOnGE: true
 		}
 	},
 	100_000
@@ -9410,7 +9411,8 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			isSuperUntradeable: true,
+			superTradeableButTradeableOnGE: true
 		}
 	},
 	100_000
