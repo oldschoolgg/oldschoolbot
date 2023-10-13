@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { deepClone, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -6,7 +6,9 @@ import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { trackLoot } from '../../lib/lootTrack';
 import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import announceLoot from '../../lib/minions/functions/announceLoot';
+import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { calculateSlayerPoints, getUsersCurrentSlayerInfo, isOnSlayerTask } from '../../lib/slayer/slayerUtil';
 import { Gear } from '../../lib/structures/Gear';
 import type { RevenantOptions } from '../../lib/types/minions';
 import { hasSkillReqs } from '../../lib/util';
@@ -14,7 +16,7 @@ import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLost
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 export const revenantsTask: MinionTask = {
 	type: 'Revenants',
@@ -98,9 +100,9 @@ export const revenantsTask: MinionTask = {
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask.monster_id === Monsters.RevenantImp.id
+			usersTask.currentTask.monster_id === Monsters.RevenantImp.id;
 
-		console.log(isOnTask);
+		const isOnTaskResult = await isOnSlayerTask({ user, monsterID, quantityKilled: quantity });
 
 		const loot = monster.table.kill(quantity, { onSlayerTask: isOnTask });
 		let str =
@@ -135,6 +137,46 @@ export const revenantsTask: MinionTask = {
 				}
 			]
 		});
+
+		let thisTripFinishesTask = false;
+
+		if (isOnTaskResult.isOnTask) {
+			const { quantitySlayed } = isOnTaskResult;
+			const quantityLeft = Math.max(0, isOnTaskResult.currentTask!.quantity_remaining - quantitySlayed);
+
+			thisTripFinishesTask = quantityLeft === 0;
+			if (thisTripFinishesTask) {
+				const newStats = await userStatsUpdate(
+					user.id,
+					{
+						slayer_wildy_task_streak: {
+							increment: 1
+						}
+					},
+					{ slayer_wildy_task_streak: true }
+				);
+				const currentStreak = newStats.slayer_wildy_task_streak;
+				const points = await calculateSlayerPoints(currentStreak, isOnTaskResult.slayerMaster, user);
+				const secondNewUser = await user.update({
+					slayer_points: {
+						increment: points
+					}
+				});
+				str += `\n**You've completed ${currentStreak} wilderness tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
+			} else {
+				str += `\nYou killed ${quantitySlayed}x of your ${
+					isOnTaskResult.currentTask!.quantity_remaining
+				} remaining kills, you now have ${quantityLeft} kills remaining.`;
+			}
+			await prisma.slayerTask.update({
+				where: {
+					id: isOnTaskResult.currentTask!.id
+				},
+				data: {
+					quantity_remaining: quantityLeft
+				}
+			});
+		}
 
 		const image = await makeBankImage({
 			bank: itemsAdded,
