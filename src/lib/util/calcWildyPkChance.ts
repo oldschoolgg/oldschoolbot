@@ -12,7 +12,7 @@ import { percentChance } from '../util';
 const peakFactor = [
 	{
 		peakTier: PeakTier.High,
-		factor: 2.5
+		factor: 5
 	},
 	{
 		peakTier: PeakTier.Medium,
@@ -32,7 +32,8 @@ export async function getPkEvasionExp(user: MUser) {
 }
 
 export async function getWildEvasionPercent(user: MUser) {
-	const maxReductionPercent = 75;
+	//Caps out to 10% as before
+	const maxReductionPercent = 1000;
 	return randomVariation(calcPercentOfNum(await getPkEvasionExp(user), maxReductionPercent), 10);
 }
 
@@ -50,11 +51,11 @@ export async function calcWildyPKChance(
 ): Promise<[number, boolean, string]> {
 	// Chance per minute, Difficulty from 1 to 10, and factor a million difference, High peak 5x as likley encounter, Medium peak 1x, Low peak 5x as unlikley
 	const peakInfluence = peakFactor.find(_peaktier => _peaktier.peakTier === peak?.peakTier)?.factor ?? 1;
-	let pkChance = (1 / (7_000_000 / (Math.pow(monster.pkActivityRating ?? 1, 6) * peakInfluence))) * 100;
+	const pkChance = (1 / (7_000_000 / (Math.pow(monster.pkActivityRating ?? 1, 6) * peakInfluence))) * 100;
 	let chanceString = `**PK Chance:** ${pkChance.toFixed(2)}% per min (${peak.peakTier} peak time)`;
 
 	const evasionReduction = await getWildEvasionPercent(user);
-
+	console.log(evasionReduction)
 	const tripMinutes = Math.round(duration / Time.Minute);
 	let pkCount = 0;
 	for (let i = 0; i < tripMinutes; i++) {
