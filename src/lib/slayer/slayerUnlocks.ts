@@ -62,6 +62,7 @@ export enum SlayerTaskUnlocksEnum {
 	WyverNotherTwo,
 	Basilonger,
 	MoreAtStake,
+	Revenenenenenants,
 	// Item Purchases:
 	SlayerRing,
 	HerbSack,
@@ -514,5 +515,15 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 300,
 		canBeRemoved: false,
 		aliases: ['broad bolts', 'broads', 'broad arrows', 'fletching', 'broad fletching']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.Revenenenenenants,
+		name: 'Revenenenenenants',
+		desc: 'Extends Revenants tasks',
+		slayerPointCost: 100,
+		extendID: [Monsters.RevenantImp.id],
+		extendMult: 1.5,
+		canBeRemoved: true,
+		aliases: ['extend revenants', 'extend revs']
 	}
 ];

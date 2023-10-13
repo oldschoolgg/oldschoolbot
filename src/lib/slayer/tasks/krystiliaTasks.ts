@@ -272,6 +272,8 @@ export const krystiliaTasks: AssignableSlayerTask[] = [
 			Monsters.RevenantOrk.id,
 			Monsters.RevenantPyrefiend.id
 		],
+		extendedAmount: [100, 150],
+		extendedUnlockId: SlayerTaskUnlocksEnum.Revenenenenenants,
 		unlocked: true,
 		wilderness: true
 	},
