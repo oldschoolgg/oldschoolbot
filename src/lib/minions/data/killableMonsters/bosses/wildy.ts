@@ -118,9 +118,9 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		],
 		minimumGearRequirements: {
 			wildy: {
-				[GearStat.AttackRanged]: 115,
-				[GearStat.DefenceCrush]: 71,
-				[GearStat.DefenceMagic]: 68
+				[GearStat.AttackRanged]: 150,
+				[GearStat.DefenceCrush]: 84,
+				[GearStat.DefenceMagic]: 83
 			}
 		},
 		levelRequirements: {
@@ -241,9 +241,9 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		],
 		minimumGearRequirements: {
 			wildy: {
-				[GearStat.AttackRanged]: 115,
-				[GearStat.DefenceCrush]: 71,
-				[GearStat.DefenceMagic]: 68
+				[GearStat.AttackRanged]: 150,
+				[GearStat.DefenceCrush]: 84,
+				[GearStat.DefenceMagic]: 83
 			}
 		},
 		levelRequirements: {

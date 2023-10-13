@@ -32,7 +32,7 @@ export async function getPkEvasionExp(user: MUser) {
 }
 
 export async function getWildEvasionPercent(user: MUser) {
-	//Caps out to 10% as before
+	// Caps out to 10% as before
 	const maxReductionPercent = 1000;
 	return randomVariation(calcPercentOfNum(await getPkEvasionExp(user), maxReductionPercent), 10);
 }
@@ -55,7 +55,7 @@ export async function calcWildyPKChance(
 	let chanceString = `**PK Chance:** ${pkChance.toFixed(2)}% per min (${peak.peakTier} peak time)`;
 
 	const evasionReduction = await getWildEvasionPercent(user);
-	console.log(evasionReduction)
+	console.log(evasionReduction);
 	const tripMinutes = Math.round(duration / Time.Minute);
 	let pkCount = 0;
 	for (let i = 0; i < tripMinutes; i++) {
