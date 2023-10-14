@@ -46,7 +46,7 @@ const camdozaalFishes: Fish[] = [
 export const camdozaalFishingTask: MinionTask = {
 	type: 'CamdozaalFishing',
 	async run(data: ActivityTaskOptionsWithQuantity) {
-		let { userID, channelID, quantity } = data;
+		let { userID, channelID, quantity, duration } = data;
 		const user = await mUserFetch(userID);
 		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
 
@@ -116,7 +116,7 @@ export const camdozaalFishingTask: MinionTask = {
 			.add(tetra.id, tetraCaught)
 			.add(catfish.id, catfishCaught);
 
-		let fishXpReceived =
+		let fishingXpReceived =
 			guppyCaught * guppy.xp! +
 			cavefishCaught * cavefish.xp! +
 			tetraCaught * tetra.xp! +
@@ -131,46 +131,37 @@ export const camdozaalFishingTask: MinionTask = {
 				true
 			)
 		) {
-			const amountToAdd = Math.floor(fishXpReceived * (2.5 / 100));
-			fishXpReceived += amountToAdd;
+			const amountToAdd = Math.floor(fishingXpReceived * (2.5 / 100));
+			fishingXpReceived += amountToAdd;
 			bonusXP += amountToAdd;
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
 				if (user.hasEquipped(parseInt(itemID))) {
-					const amountToAdd = Math.floor(fishXpReceived * (bonus / 100));
-					fishXpReceived += amountToAdd;
+					const amountToAdd = Math.floor(fishingXpReceived * (bonus / 100));
+					fishingXpReceived += amountToAdd;
 					bonusXP += amountToAdd;
 				}
 			}
 		}
 
 		// Add xp to user
-		await user.addXP({ skillName: SkillsEnum.Fishing, amount: fishXpReceived, source: 'CamdozaalFishing' });
-
-		// Not sure if there is an fish score? ie. await user.incrementCreatureScore(bluegill.id, bluegillCaught);
-
-		const newFishLevel = user.skillLevel(SkillsEnum.Fishing);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Mining,
+			amount: fishingXpReceived,
+			duration,
+			source: 'CamdozaalMining'
+		});
 
 		const xpBonusPercent = anglerBoostPercent(user);
 		if (xpBonusPercent > 0) {
-			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, fishXpReceived));
+			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, fishingXpReceived));
 		}
 
-		let str = `${user}, ${
-			user.minionName
-		} finished fishing in Camdozzal! You received ${barroniteShards}x Barronite shards and caught ${catfishCaught}x ${
-			catfish.name
-		}, ${tetraCaught}x ${tetra.name}, ${cavefishCaught}x ${cavefish.name}, ${guppyCaught}x ${
-			guppy.name
-		}, you also received ${fishXpReceived.toLocaleString()} Fishing XP.`;
+		let str = `${user}, ${user.minionName} finished mining in Camdozzal! ${xpRes}`;
 
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
-		}
-
-		if (newFishLevel > currentFishLevel) {
-			str += `\n\n${user.minionName}'s Fishing level is now ${newFishLevel}!`;
 		}
 
 		// Add clue scrolls
@@ -185,7 +176,7 @@ export const camdozaalFishingTask: MinionTask = {
 			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a **Heron** while Aerial fishing at level ${currentFishLevel} Fishing!`
+				`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a **Heron** while Fishing in Camdozaal at level ${currentFishLevel} Fishing!`
 			);
 		}
 
@@ -198,7 +189,7 @@ export const camdozaalFishingTask: MinionTask = {
 		// BankImage
 		const image = await makeBankImage({
 			bank: itemsAdded,
-			title: `Loot From ${quantity}x Cyclops`,
+			title: `Loot From ${quantity}x Camdozaal Fishing`,
 			user,
 			previousCL
 		});

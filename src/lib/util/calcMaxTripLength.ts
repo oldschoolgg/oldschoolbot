@@ -34,6 +34,9 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 		case 'Raids':
 		case 'TheatreOfBlood':
 		case 'TombsOfAmascut':
+		case 'CamdozaalMining':
+		case 'CamdozaalSmithing':
+		case 'CamdozaalFishing':
 		case 'Pickpocket':
 		case 'SoulWars':
 		case 'Cyclops': {

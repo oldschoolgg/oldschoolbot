@@ -1,4 +1,5 @@
 import { Time } from 'e';
+import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { randomVariation } from 'oldschooljs/dist/util';
 
@@ -8,51 +9,73 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 async function miningCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	if (user.skillLevel(SkillsEnum.Fishing) < 7) {
-		return 'You need at least level 7 Fishing to fish in the Ruins of Camdozaal';
+	if (user.skillLevel(SkillsEnum.Mining) < 14) {
+		return 'You need at least level 14 Mining to fish in the Ruins of Camdozaal.';
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'CamdozaalFishing');
-	const timePerFish = randomVariation(2.5, 4) * Time.Second;
+	const maxTripLength = calcMaxTripLength(user, 'CamdozaalMining');
+	const timePerMine = randomVariation(6.5, 10) * Time.Second;
 	if (!quantity) {
-		quantity = Math.floor(maxTripLength / timePerFish);
+		quantity = Math.floor(maxTripLength / timePerMine);
 	}
-	const duration = timePerFish * quantity;
+	const duration = timePerMine * quantity;
+
+	if (duration > maxTripLength) {
+		return `${user.minionName} can't go on trips longer than ${formatDuration(
+			maxTripLength
+		)}, try a lower quantity. The highest amount of Barronite rocks you can mine is ${Math.floor(
+			maxTripLength / timePerMine
+		)}.`;
+	}
 
 	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'CamdozaalFishing'
+		type: 'CamdozaalMining'
 	});
 
-	return `${user.minionName} is now fishing in the Ruins of Camdozaal, it will take around ${formatDuration(
+	return `${user.minionName} is now mining in the Ruins of Camdozaal, it will take around ${formatDuration(
 		duration
 	)} to finish.`;
 }
 
 async function smithingCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	if (user.skillLevel(SkillsEnum.Fishing) < 7) {
-		return 'You need at least level 7 Fishing to fish in the Ruins of Camdozaal';
+	if (user.skillLevel(SkillsEnum.Smithing) < 14) {
+		return 'You need at least level 14 Smithing to smith in the Ruins of Camdozaal';
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'CamdozaalFishing');
-	const timePerFish = randomVariation(2.5, 4) * Time.Second;
+	const maxTripLength = calcMaxTripLength(user, 'CamdozaalSmithing');
+	const timePerSmith = 3 * Time.Second;
 	if (!quantity) {
-		quantity = Math.floor(maxTripLength / timePerFish);
+		quantity = Math.floor(maxTripLength / timePerSmith);
 	}
-	const duration = timePerFish * quantity;
+	const duration = timePerSmith * quantity;
+
+	if (user.bank.amount('Barronite deposit') < quantity) {
+		return "You don't have enough Barronite desposit's to smelt.";
+	}
+
+	if (duration > maxTripLength) {
+		return `${user.minionName} can't go on trips longer than ${formatDuration(
+			maxTripLength
+		)}, try a lower quantity. The highest amount of Barronite deposits you can smith is ${Math.floor(
+			maxTripLength / timePerSmith
+		)}.`;
+	}
+
+	await user.removeItemsFromBank(new Bank().add('Barronite deposit', quantity));
 
 	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'CamdozaalFishing'
+		type: 'CamdozaalSmithing'
 	});
 
-	return `${user.minionName} is now fishing in the Ruins of Camdozaal, it will take around ${formatDuration(
+	return `${user.minionName} is now smithing in the Ruins of Camdozaal, it will take around ${formatDuration(
 		duration
 	)} to finish.`;
 }
@@ -63,11 +86,19 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'CamdozaalFishing');
-	const timePerFish = randomVariation(2.5, 4) * Time.Second;
+	const timePerFish = randomVariation(6.5, 10) * Time.Second;
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerFish);
 	}
 	const duration = timePerFish * quantity;
+
+	if (duration > maxTripLength) {
+		return `${user.minionName} can't go on trips longer than ${formatDuration(
+			maxTripLength
+		)}, try a lower quantity. The highest amount of Camdozaal fish you can catch is ${Math.floor(
+			maxTripLength / timePerFish
+		)}.`;
+	}
 
 	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,

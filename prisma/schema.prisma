@@ -482,6 +482,8 @@ enum XpGainSource {
   MahoganyHomes
   AerialFishing
   CleaningHerbsWhileFarming
+  CamdozaalMining
+  CamdozaalSmithing
   CamdozaalFishing
 }
 
