@@ -50,7 +50,7 @@ export async function calcWildyPKChance(
 ): Promise<[number, boolean, string]> {
 	// Chance per minute, Difficulty from 1 to 10, and factor a million difference, High peak 5x as likley encounter, Medium peak 1x, Low peak 5x as unlikley
 	const peakInfluence = peakFactor.find(_peaktier => _peaktier.peakTier === peak?.peakTier)?.factor ?? 1;
-	let pkChance = (1 / (7_000_000 / (Math.pow(4, 6) * peakInfluence))) * 100;
+	let pkChance = (1 / (7_000_000 / (Math.pow(5, 6) * peakInfluence))) * 100;
 	if (monster.canBePked && monster.pkActivityRating && monster.pkActivityRating >= 4) {
 		pkChance = (1 / (7_000_000 / (Math.pow(monster.pkActivityRating, 6) * peakInfluence))) * 100;
 	}
@@ -67,7 +67,7 @@ export async function calcWildyPKChance(
 	}
 
 	let died = false;
-	let deathChance = monster.pkBaseDeathChance ?? 0;
+	let deathChance = monster.pkBaseDeathChance || (monster.canBePked ? 5 : 0);
 
 	const statLvls =
 		user.skillLevel(SkillsEnum.Defence) + user.skillLevel(SkillsEnum.Magic) + user.skillLevel(SkillsEnum.Hitpoints);
