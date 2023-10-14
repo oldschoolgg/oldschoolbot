@@ -53,7 +53,7 @@ To run the bot, you need the following things first: Git, [NodeJS v18+](https://
    3. Copy your Discord ID into both `OWNER_IDS` and `ADMIN_IDS`. You can get your Discord ID by opening Settings, selecting My Account, selecting the three dots next to your user name and selecting Copy ID. You may need to enable Developer Mode in Advanced Settings to be given this option.
    4. Enter the Server ID where you want to Administer your bot from in `SupportServer`. You can get this by right clicking the logo of the server and selecting Copy ID.
    5. Enter the Server ID into `DEV_SERVER_ID`
-6. Make a .env file copy from the example `cp .env.example .env`
+6. Make a .env file copy from the example `cp .env.example .env` 
 7. Update this new `.env` file:
    1. Input your username, password, and schema names into `DATABASE_URL` and `ROBOCHIMP_DATABASE_URL` using the format `postgresql://USER:PASSWORD@HOST:PORT/DATABASE`
    2. Input your Application ID you retrieved earlier into `CLIENT_ID`
