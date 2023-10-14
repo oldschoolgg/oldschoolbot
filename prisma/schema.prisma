@@ -482,6 +482,7 @@ enum XpGainSource {
   MahoganyHomes
   AerialFishing
   CleaningHerbsWhileFarming
+  CamdozaalFishing
 }
 
 model XPGain {
@@ -920,6 +921,9 @@ enum activity_type_enum {
   UnderwaterAgilityThieving
   StrongholdOfSecurity
   SpecificQuest
+  CamdozaalFishing
+  CamdozaalMining
+  CamdozaalSmithing
 }
 
 enum xp_gains_skill_enum {

@@ -45,6 +45,7 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'Easter'
 		| 'ShootingStars'
 		| 'HalloweenEvent'
+		| 'CamdozaalFishing'
 		| 'StrongholdOfSecurity';
 }
 
@@ -57,7 +58,10 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 		| 'WealthCharging'
 		| 'GloryCharging'
 		| 'AerialFishing'
-		| 'FishingTrawler';
+		| 'FishingTrawler'
+		| 'CamdozaalFishing'
+		| 'CamdozaalMining'
+		| 'CamdozaalSmithing';
 	quantity: number;
 }
 

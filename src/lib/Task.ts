@@ -3,6 +3,9 @@ import { Activity, activity_type_enum } from '@prisma/client';
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
 import { butlerTask } from '../tasks/minions/butlerActivity';
+import { camdozaalFishingTask } from '../tasks/minions/camdozaalActivity/camdozaalFishingActivity';
+import { camdozaalMiningTask } from '../tasks/minions/camdozaalActivity/camdozaalMiningActivity';
+import { camdozaalSmithingTask } from '../tasks/minions/camdozaalActivity/camdozaalSmithingActivity';
 import { castingTask } from '../tasks/minions/castingActivity';
 import { clueTask } from '../tasks/minions/clueActivity';
 import { collectingTask } from '../tasks/minions/collectingActivity';
@@ -179,7 +182,10 @@ export const tasks: MinionTask[] = [
 	underwaterAgilityThievingTask,
 	strongholdTask,
 	specificQuestTask,
-	halloweenTask
+	halloweenTask,
+	camdozaalMiningTask,
+	camdozaalSmithingTask,
+	camdozaalFishingTask
 ];
 
 export async function syncActivityCache() {

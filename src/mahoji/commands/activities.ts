@@ -122,7 +122,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.String,
 					name: 'action',
-					description: 'Start mining, smithing, fishing inside the Ruins of Camdozaal',
+					description: 'Start mining, smithing, or fishing inside the Ruins of Camdozaal',
 					choices: ['mining', 'smithing', 'fishing'].map(i => ({ name: i, value: i })),
 					required: true
 				},
