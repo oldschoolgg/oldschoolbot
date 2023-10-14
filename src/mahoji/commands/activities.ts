@@ -16,6 +16,7 @@ import { alchCommand } from '../lib/abstracted_commands/alchCommand';
 import { birdhouseCheckCommand, birdhouseHarvestCommand } from '../lib/abstracted_commands/birdhousesCommand';
 import { buryCommand } from '../lib/abstracted_commands/buryCommand';
 import { butlerCommand } from '../lib/abstracted_commands/butlerCommand';
+import { camdozaalCommand } from '../lib/abstracted_commands/camdozaalCommand';
 import { castCommand } from '../lib/abstracted_commands/castCommand';
 import { championsChallengeCommand } from '../lib/abstracted_commands/championsChallenge';
 import { chargeGloriesCommand } from '../lib/abstracted_commands/chargeGloriesCommand';
@@ -121,7 +122,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.String,
 					name: 'action',
-					description: 'Start mining, smithing, fishing inside the Ruins of Camdozaal'
+					description: 'Start mining, smithing, fishing inside the Ruins of Camdozaal',
+					choices: ['mining', 'smithing', 'fishing'].map(i => ({ name: i, value: i })),
+					required: true
 				},
 				{
 					type: ApplicationCommandOptionType.Integer,
@@ -520,6 +523,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		chompy_hunt?: { action: 'start' | 'claim' };
 		champions_challenge?: {};
 		warriors_guild?: { action: string; quantity?: number };
+		camdozaal?: { action: string; quantity?: number };
 		collect?: { item: string; quantity?: number; no_stams?: boolean };
 		quest?: {
 			name?: string;
@@ -591,6 +595,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 				options.warriors_guild.action,
 				options.warriors_guild.quantity
 			);
+		}
+		if (options.camdozaal) {
+			return camdozaalCommand(user, channelID, options.camdozaal.action, options.camdozaal.quantity);
 		}
 		if (options.collect) {
 			return collectCommand(
