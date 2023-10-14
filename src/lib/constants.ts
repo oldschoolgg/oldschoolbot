@@ -696,7 +696,7 @@ export const secretItems: number[] = resolveItems([
 	'Maledict ring',
 	'Maledict gloves',
 	'Covenant of grimace',
-	'Miss chief'
+	'Mini mortimer'
 ]);
 
 export const toaPurpleItems = resolveItems([
