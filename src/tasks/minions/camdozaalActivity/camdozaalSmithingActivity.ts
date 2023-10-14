@@ -5,7 +5,7 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 
-const camdozaalMiningLootTable = new LootTable()
+const barroniteDepositLootTable = new LootTable()
 	.add('Barronite shards', [6, 8], 12)
 	.add('Barronite shards', [15, 35], 1)
 	.tertiary(200, 'Barronite head')
@@ -24,7 +24,7 @@ export const camdozaalSmithingTask: MinionTask = {
 
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
-			loot.add(camdozaalMiningLootTable.roll());
+			loot.add(barroniteDepositLootTable.roll());
 		}
 
 		let smithingXpReceived = quantity * 30;

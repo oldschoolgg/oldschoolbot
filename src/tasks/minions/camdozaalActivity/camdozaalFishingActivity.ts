@@ -109,6 +109,9 @@ export const camdozaalFishingTask: MinionTask = {
 				}
 			}
 		}
+		console.log(`fish lvl is${currentFishLevel}`);
+		console.log(camdozaalFishTable);
+
 		// Add Barronite shards received and fish caught
 		loot.add('Barronite shards', barroniteShards)
 			.add(guppy.id, guppyCaught)
@@ -147,10 +150,10 @@ export const camdozaalFishingTask: MinionTask = {
 
 		// Add xp to user
 		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Mining,
+			skillName: SkillsEnum.Fishing,
 			amount: fishingXpReceived,
 			duration,
-			source: 'CamdozaalMining'
+			source: 'CamdozaalFishing'
 		});
 
 		const xpBonusPercent = anglerBoostPercent(user);
@@ -158,7 +161,7 @@ export const camdozaalFishingTask: MinionTask = {
 			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, fishingXpReceived));
 		}
 
-		let str = `${user}, ${user.minionName} finished mining in Camdozzal! ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished fishing in Camdozzal! ${xpRes}`;
 
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
