@@ -127,9 +127,9 @@ export function determineMortimerLoot(user: MUser) {
 		loot.add(MaledictMortimerBackupTable.roll());
 	}
 
-	const petDroprate = clAdjustedDroprate(user, 'Miss Chief', 15, 2.5);
+	const petDroprate = clAdjustedDroprate(user, 'Mini mortimer', 15, 2.5);
 	if (roll(petDroprate)) {
-		loot.add('Miss Chief');
+		loot.add('Mini mortimer');
 	}
 	const covenantDroprate = clAdjustedDroprate(user, 'Covenant of grimace', 25, 2);
 	if (roll(covenantDroprate)) {
@@ -146,7 +146,7 @@ export function determineMortimerLoot(user: MUser) {
 			'Maledict amulet',
 			'Maledict codex',
 			'Covenant of grimace',
-			'Miss Chief',
+			'Mini mortimer',
 			...MaledictMortimerOutfitTable.allItems
 		])) {
 			if (loot.has(item) && user.cl.has(item)) {

@@ -31,7 +31,7 @@ export const mortimerTask: MinionTask = {
 		loot.add(determineMortimerLoot(user));
 
 		let icon = '';
-		if (resolveItems(['Covenant of grimace', 'Miss chief']).some(i => loot.has(i))) {
+		if (resolveItems(['Covenant of grimace', 'Mini mortimer']).some(i => loot.has(i))) {
 			icon = '🟨';
 		} else if (
 			resolveItems([
@@ -63,7 +63,7 @@ export const mortimerTask: MinionTask = {
 
 		const fakeLoot = loot.clone();
 		if (trickDidActivate) {
-			const item = randArrItem(['Covenant of grimace', 'Miss chief', 'Maledict codex', 'Maledict amulet']);
+			const item = randArrItem(['Covenant of grimace', 'Mini mortimer', 'Maledict codex', 'Maledict amulet']);
 			globalClient.users.cache
 				.get(activeTrick!.trickster_id)
 				?.send(`You just tricked ${user.rawUsername} into thinking they got a ${itemNameFromID(item)}!`)

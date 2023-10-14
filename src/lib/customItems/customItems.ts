@@ -9262,7 +9262,7 @@ setCustomItem(
 
 setCustomItem(
 	71_916,
-	'Miss Chief',
+	'Mini mortimer',
 	'Herbi',
 	{
 		customItemData: {
