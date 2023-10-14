@@ -670,8 +670,10 @@ export function minionStatus(user: MUser) {
 				quests.find(i => i.id === data.questID)!.name
 			}! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
+		case 'HalloweenEvent': {
+			return `${name} is doing the Halloween event! The trip should take ${formatDuration(durationRemaining)}.`;
+		}
 		case 'Easter':
-		case 'HalloweenEvent':
 		case 'BlastFurnace': {
 			throw new Error('Removed');
 		}
