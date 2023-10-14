@@ -246,8 +246,6 @@ export async function minionKillCommand(
 		}
 	}
 
-	applyDragonBoost();
-
 	function applyBlackMaskBoost() {
 		const hasBlackMask = monster?.canBePked
 			? wildyGear.hasEquipped('Black mask')
@@ -268,49 +266,48 @@ export async function minionKillCommand(
 	}
 
 	function calculateSalveAmuletBoost() {
-		if (isUndead) {
-			const hasSalveAmulet = monster?.canBePked
+		let salveBoost = false;
+		let salveEnhanced = false;
+		const style = attackStyles[0];
+		if (style === 'ranged' || style === 'magic') {
+			salveBoost = monster?.canBePked
+				? wildyGear.hasEquipped('Salve amulet(i)')
+				: user.hasEquippedOrInBank('Salve amulet (i)');
+			salveEnhanced = monster?.canBePked
+				? wildyGear.hasEquipped('Salve amulet(ei)')
+				: user.hasEquippedOrInBank('Salve amulet (ei)');
+			if (salveBoost) {
+				salveAmuletBoost = salveEnhanced ? 20 : oneSixthBoost;
+				salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
+					salveEnhanced ? '(ei)' : '(i)'
+				} on non-melee task`;
+			}
+		} else {
+			salveBoost = monster?.canBePked
 				? wildyGear.hasEquipped('Salve amulet')
 				: user.hasEquippedOrInBank('Salve amulet');
-			const hasSalveAmuletI = monster?.canBePked
-				? wildyGear.hasEquipped('Salve amulet(i)')
-				: user.hasEquippedOrInBank('Salve amulet(i)');
-			const hasSalveAmuletE = monster?.canBePked
-				? wildyGear.hasEquipped('Salve amulet(e)')
-				: user.hasEquippedOrInBank('Salve amulet(e)');
-			const hasSalveAmuletEI = monster?.canBePked
-				? wildyGear.hasEquipped('Salve amulet(ei)')
-				: user.hasEquippedOrInBank('Salve amulet(ei)');
-
-			if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
-				if (hasSalveAmuletI) {
-					salveAmuletBoost = hasSalveAmuletEI ? 20 : oneSixthBoost;
-					salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
-						hasSalveAmuletEI ? '(ei)' : '(i)'
-					} on non-melee task`;
-				}
-			} else if (hasSalveAmulet) {
-				salveAmuletBoost = hasSalveAmuletE ? 20 : oneSixthBoost;
+			salveEnhanced = monster?.canBePked
+				? wildyGear.hasEquipped('Salve amulet (e)')
+				: user.hasEquippedOrInBank('Salve amulet (e)');
+			if (salveBoost) {
+				salveAmuletBoost = salveEnhanced ? 20 : oneSixthBoost;
 				salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
-					hasSalveAmuletE ? ' (e)' : ''
+					salveEnhanced ? ' (e)' : ''
 				} on melee task`;
 			}
 		}
 	}
-
-	if (isDragon) {
-		if (isOnTask) {
-			applyDragonBoost();
-		} else if (monster.name.toLowerCase() !== 'vorkath') {
-			applyDragonBoost();
-		}
+	if (isDragon && monster.name.toLowerCase() !== 'vorkath') {
+		applyDragonBoost();
 	}
 
 	if (isOnTask) {
 		applyBlackMaskBoost();
 	}
 
-	calculateSalveAmuletBoost();
+	if (isUndead) {
+		calculateSalveAmuletBoost();
+	}
 
 	// Only choose greater boost:
 	if (salveAmuletBoost || blackMaskBoost) {
