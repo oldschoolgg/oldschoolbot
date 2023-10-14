@@ -1,4 +1,4 @@
-import { calcPercentOfNum, randInt } from 'e';
+import { randInt } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
@@ -10,8 +10,8 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 
+// Types of fish in camdozaal
 const camdozaalFishes: Fish[] = [
 	{
 		level: 7,
@@ -77,7 +77,7 @@ export const camdozaalFishingTask: MinionTask = {
 		let catfishCaught = 0;
 		let barroniteShards = 0;
 
-		// Count fish and barronite shards received
+		// Count loot received during trip
 		const loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
@@ -109,25 +109,23 @@ export const camdozaalFishingTask: MinionTask = {
 				}
 			}
 		}
-		console.log(`fish lvl is${currentFishLevel}`);
-		console.log(camdozaalFishTable);
 
-		// Add Barronite shards received and fish caught
+		// Add Barronite shards & fish from trip
 		loot.add('Barronite shards', barroniteShards)
 			.add(guppy.id, guppyCaught)
 			.add(cavefish.id, cavefishCaught)
 			.add(tetra.id, tetraCaught)
 			.add(catfish.id, catfishCaught);
 
+		// Add up the xp from the trip
 		let fishingXpReceived =
 			guppyCaught * guppy.xp! +
 			cavefishCaught * cavefish.xp! +
 			tetraCaught * tetra.xp! +
 			catfishCaught * catfish.xp!;
-
 		let bonusXP = 0;
 
-		// If they have the entire angler outfit, give an extra 2.5% xp bonus
+		// If user has the entire angler outfit, give an extra 2.5% xp bonus
 		if (
 			user.gear.skilling.hasEquipped(
 				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
@@ -138,7 +136,7 @@ export const camdozaalFishingTask: MinionTask = {
 			fishingXpReceived += amountToAdd;
 			bonusXP += amountToAdd;
 		} else {
-			// For each angler item, check if they have it, give its' XP boost if so.
+			// For each angler item, check if they have it, give its' XP boost
 			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
 				if (user.hasEquipped(parseInt(itemID))) {
 					const amountToAdd = Math.floor(fishingXpReceived * (bonus / 100));
@@ -156,13 +154,8 @@ export const camdozaalFishingTask: MinionTask = {
 			source: 'CamdozaalFishing'
 		});
 
-		const xpBonusPercent = anglerBoostPercent(user);
-		if (xpBonusPercent > 0) {
-			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, fishingXpReceived));
-		}
-
+		// Trip finish message
 		let str = `${user}, ${user.minionName} finished fishing in Camdozzal! ${xpRes}`;
-
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
@@ -183,13 +176,14 @@ export const camdozaalFishingTask: MinionTask = {
 			);
 		}
 
-		// Give the user items
+		// Give the user the items from the trip
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		// BankImage
+
+		// BankImage to show the user their loot
 		const image = await makeBankImage({
 			bank: itemsAdded,
 			title: `Loot From ${quantity}x Camdozaal Fishing`,

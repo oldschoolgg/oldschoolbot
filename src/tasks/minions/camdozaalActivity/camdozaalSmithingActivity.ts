@@ -5,6 +5,7 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 
+// Barronite deposit loot table
 const barroniteDepositLootTable = new LootTable()
 	.add('Barronite shards', [6, 8], 12)
 	.add('Barronite shards', [15, 35], 1)
@@ -22,11 +23,13 @@ export const camdozaalSmithingTask: MinionTask = {
 		let { quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
 
+		// Count loot received during trip
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
 			loot.add(barroniteDepositLootTable.roll());
 		}
 
+		// Add up the xp from the trip
 		let smithingXpReceived = quantity * 30;
 
 		// Add xp to user
@@ -37,15 +40,17 @@ export const camdozaalSmithingTask: MinionTask = {
 			source: 'CamdozaalSmithing'
 		});
 
+		// Trip finish message
 		let str = `${user}, ${user.minionName} finished smithing in Camdozzal! ${xpRes}`;
 
-		// Give the user items
+		// Give the user the items from the trip
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		// BankImage
+
+		// BankImage to show the user their loot
 		const image = await makeBankImage({
 			bank: itemsAdded,
 			title: `Loot From ${quantity}x Barronite deposit`,

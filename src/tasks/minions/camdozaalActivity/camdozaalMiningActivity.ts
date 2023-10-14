@@ -9,6 +9,7 @@ import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 
+// Custom gem loot table for barronite rocks
 const gemTable = new LootTable()
 	.add('Uncut sapphire', 0, 70)
 	.add('Uncut sapphire', 1, 32)
@@ -16,6 +17,7 @@ const gemTable = new LootTable()
 	.add('Uncut ruby', 1, 8)
 	.add('Uncut diamond', 1, 8);
 
+// Barronite rock loot table
 const barroniteTable = new LootTable().add('Barronite shards', [4, 6], 76).add('Barronite deposit', 1, 24);
 
 export const camdozaalMiningTask: MinionTask = {
@@ -28,7 +30,7 @@ export const camdozaalMiningTask: MinionTask = {
 		let barroniteShardMined = 0;
 		let barroniteDepositMined = 0;
 
-		// Count mined loot from barronite rocks
+		// Count loot received during trip
 		const loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
@@ -50,10 +52,11 @@ export const camdozaalMiningTask: MinionTask = {
 			}
 		}
 
+		// Add up the xp from the trip
 		let miningXpReceived = barroniteShardMined * 16 + barroniteDepositMined * 32;
 		let bonusXP = 0;
 
-		// If they have the entire prospector outfit, give an extra 2.5% xp bonus
+		// If user has the entire prospector outfit, give an extra 2.5% xp bonus
 		if (
 			user.gear.skilling.hasEquipped(
 				Object.keys(Mining.prospectorItems).map(i => parseInt(i)),
@@ -64,7 +67,7 @@ export const camdozaalMiningTask: MinionTask = {
 			miningXpReceived += amountToAdd;
 			bonusXP += amountToAdd;
 		} else {
-			// For each prospector item, check if they have it, give its' XP boost if so.
+			// For each prospector item, check if they have it, give its' XP boost
 			for (const [itemID, bonus] of Object.entries(Mining.prospectorItems)) {
 				if (user.hasEquipped(parseInt(itemID))) {
 					const amountToAdd = Math.floor(miningXpReceived * (bonus / 100));
@@ -82,8 +85,8 @@ export const camdozaalMiningTask: MinionTask = {
 			source: 'CamdozaalMining'
 		});
 
+		// Trip finish message
 		let str = `${user}, ${user.minionName} finished mining in Camdozzal! ${xpRes}`;
-
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
@@ -104,13 +107,14 @@ export const camdozaalMiningTask: MinionTask = {
 			);
 		}
 
-		// Give the user items
+		// Give the user the items from the trip
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		// BankImage
+
+		// BankImage to show the user their loot
 		const image = await makeBankImage({
 			bank: itemsAdded,
 			title: `Loot From ${quantity}x Barronite rocks`,
