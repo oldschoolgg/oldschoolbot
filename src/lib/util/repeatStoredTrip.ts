@@ -148,6 +148,10 @@ export const tripHandlers = {
 		commandName: 'm',
 		args: () => ({})
 	},
+	[activity_type_enum.Mortimer]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.Easter]: {
 		commandName: 'm',
 		args: () => ({})

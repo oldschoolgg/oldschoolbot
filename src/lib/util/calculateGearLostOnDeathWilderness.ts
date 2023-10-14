@@ -172,7 +172,8 @@ const itemsThatBreakOnDeath: Record<number, number> = {
 	[itemID('Hellfire bownana')]: itemID('Hellfire bownana (broken)'),
 	[itemID('Mistleboe')]: itemID('Hellfire bow (broken)'),
 	[itemID('Hellfire bow (ice)')]: itemID('Hellfire bow (broken)'),
-	[itemID('Hellfire bow (Oceanic)')]: itemID('Hellfire bow (broken)')
+	[itemID('Hellfire bow (Oceanic)')]: itemID('Hellfire bow (broken)'),
+	[itemID('Demonic piercer')]: itemID('Hellfire bow (broken)')
 };
 
 export default function calculateGearLostOnDeathWilderness(

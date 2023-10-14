@@ -786,6 +786,11 @@ export function minionStatus(user: MUser) {
 				quests.find(i => i.id === data.questID)!.name
 			}! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
+		case 'Mortimer': {
+			return `${name} is currently fighting Maledict Mortimer! The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'HalloweenMiniMinigame':
 		case 'Easter':
 		case 'HalloweenEvent':

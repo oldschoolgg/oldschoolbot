@@ -1,6 +1,7 @@
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, bold, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { randInt, reduceNumByPercent, roll, Time } from 'e';
+import { notEmpty, randArrItem, randInt, reduceNumByPercent, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -15,8 +16,10 @@ import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
+import { halloweenTripEffect } from '../halloween/halloween';
 import { handlePassiveImplings } from '../implings';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
+import { mysteriousStepData } from '../mysteryTrail';
 import { triggerRandomEvent } from '../randomEvents';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
@@ -24,6 +27,7 @@ import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, makeComponents, toKMB } from '../util';
+import { mahojiChatHead } from './chatHeadImage';
 import {
 	makeAutoContractButton,
 	makeBirdHouseTripButton,
@@ -33,6 +37,7 @@ import {
 	makeRepeatTripButton
 } from './globalInteractions';
 import itemID from './itemID';
+import { logError } from './logError';
 import { updateBankSetting } from './updateBankSetting';
 import { sendToChannelID } from './webhook';
 
@@ -298,11 +303,14 @@ const tripFinishEffects: TripFinishEffect[] = [
 					dropratePerMinute = reduceNumByPercent(dropratePerMinute, 15);
 				}
 			}
-			dropratePerMinute = Math.ceil(dropratePerMinute / 4);
+			dropratePerMinute = Math.ceil(dropratePerMinute / 3);
+			if (user.isIronman) {
+				dropratePerMinute = Math.ceil(dropratePerMinute / 3);
+			}
 			const minutes = Math.floor(data.duration / Time.Minute);
 			for (let i = 0; i < minutes; i++) {
 				if (roll(dropratePerMinute)) {
-					const loot = new Bank().add('Supply crate (s1)');
+					const loot = new Bank().add('Spooky crate (s3)');
 					await user.addItemsToBank({ items: loot, collectionLog: true });
 					messages.push(bold(`You found ${loot}!`));
 					break;
@@ -327,6 +335,56 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Combat Achievements',
 		fn: combatAchievementTripEffect
+	},
+	{
+		name: 'Mysterious trail',
+		fn: async ({ data, user, messages }) => {
+			if (user.skillsAsLevels.hunter < 100) return;
+			if (!user.owns('Mysterious clue (1)')) return;
+			if (user.user.bso_mystery_trail_current_step_id === null) return;
+			const { step, stepData, previousStepData, nextStep } = user.getMysteriousTrailData();
+			if (!step || !(await step.didPass(data))) {
+				return;
+			}
+			if (stepData.loot) {
+				if (user.cl.has(stepData.loot)) return;
+				await user.addItemsToBank({ items: stepData.loot, collectionLog: true });
+			}
+			if (previousStepData && previousStepData.clueItem && user.owns(previousStepData.clueItem.id)) {
+				await user.removeItemsFromBank(new Bank().add(previousStepData.clueItem.id));
+			}
+			if (nextStep) {
+				await user.update({
+					bso_mystery_trail_current_step_id: user.user.bso_mystery_trail_current_step_id + 1
+				});
+				messages.push(`❔You found ${stepData.loot}.`);
+			} else {
+				if (user.bitfield.includes(BitField.HasUnlockedYeti)) return;
+				await user.update({
+					bitfield: {
+						push: BitField.HasUnlockedYeti
+					}
+				});
+				for (const item of [
+					...Object.values(mysteriousStepData).map(i => i.clueItem?.id),
+					itemID('Mysterious clue (1)')
+				].filter(notEmpty)) {
+					if (user.owns(item)) {
+						try {
+							await user.removeItemsFromBank(new Bank().add(item));
+						} catch (err) {
+							logError(err);
+						}
+					}
+				}
+				const message = `${
+					user.minionName
+				} arrives at the snowy area north of rellekka, finding a giant, monstrous Yeti. At his feet, lay a slain animal. The Yeti looks at ${
+					user.minionName
+				}, and prepares to attack. Use ${mentionCommand(globalClient, 'k')} to fight the yeti!.`;
+				messages.push(bold(message));
+			}
+		}
 	}
 ];
 
@@ -347,6 +405,9 @@ export async function handleTripFinish(
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
+
+	const users = 'users' in data ? await Promise.all(data.users.map(id => mUserFetch(id))) : [user];
+	await halloweenTripEffect.fn({ data, users, messages });
 
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 
@@ -399,6 +460,33 @@ export async function handleTripFinish(
 
 	if (components.length > 0) {
 		message.components = makeComponents(components);
+	}
+
+	if (!user.owns('Mysterious clue (1)') && roll(10) && !user.bitfield.includes(BitField.HasUnlockedYeti)) {
+		const img = await mahojiChatHead({
+			content: randArrItem([
+				'Traveller, I need your help... Use this clue to guide you.',
+				'I have a task for you.... Use this clue to guide you.',
+				'I have a quest for you... Use this clue to guide you.',
+				'Duty calls. Use this clue to guide you.'
+			]),
+			head: 'mysteriousFigure'
+		});
+		if (message.files) {
+			message.files.push(...img.files);
+		} else {
+			message.files = img.files;
+		}
+		const loot = new Bank().add('Mysterious clue (1)');
+		await user.addItemsToBank({ items: loot, collectionLog: true });
+		if (user.user.bso_mystery_trail_current_step_id === null) {
+			await user.update({
+				bso_mystery_trail_current_step_id: 1
+			});
+		}
+		if (message.content) {
+			message.content += `\nYou received ${loot}.`;
+		}
 	}
 
 	handleTriggerShootingStar(user, data, components);

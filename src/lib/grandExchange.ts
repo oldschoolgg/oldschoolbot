@@ -17,7 +17,7 @@ import {
 	assert,
 	generateGrandExchangeID,
 	getInterval,
-	isSuperUntradeable,
+	isGEUntradeable,
 	itemNameFromID,
 	makeComponents,
 	toKMB
@@ -295,7 +295,7 @@ class GrandExchangeSingleton {
 			return { error: 'Invalid item.' };
 		}
 
-		if (isSuperUntradeable(item.id)) {
+		if (isGEUntradeable(item.id)) {
 			return { error: 'Invalid item.' };
 		}
 

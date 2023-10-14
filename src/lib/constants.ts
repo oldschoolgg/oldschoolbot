@@ -301,7 +301,8 @@ export enum BitField {
 	HasLeaguesOneMinuteLengthBoost = 208,
 	HasPlantedIvy = 209,
 	HasGuthixEngram = 210,
-	ScrollOfLongevityDisabled = 211
+	ScrollOfLongevityDisabled = 211,
+	HasUnlockedYeti = 212
 }
 
 interface BitFieldData {
@@ -337,6 +338,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.HasScrollOfTheHunt]: { name: 'Scroll of the Hunt Used', protected: false, userConfigurable: false },
 	[BitField.HasPlantedIvy]: { name: 'Has Planted Ivy Seed', protected: false, userConfigurable: false },
 	[BitField.HasGuthixEngram]: { name: 'Has Guthix Engram', protected: false, userConfigurable: false },
+	[BitField.HasUnlockedYeti]: { name: 'Yeti Unlocked', protected: false, userConfigurable: false },
 	[BitField.HasBananaEnchantmentScroll]: {
 		name: 'Banana Enchantment Scroll Used',
 		protected: false,
@@ -683,7 +685,19 @@ export const chompyHats = [
 	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
 
-export const secretItems: number[] = resolveItems([]);
+export const secretItems: number[] = resolveItems([
+	'Maledict amulet',
+	'Maledict codex',
+	'Maledict hat',
+	'Maledict top',
+	'Maledict legs',
+	'Maledict boots',
+	'Maledict cape',
+	'Maledict ring',
+	'Maledict gloves',
+	'Covenant of grimace',
+	'Miss chief'
+]);
 
 export const toaPurpleItems = resolveItems([
 	"Tumeken's guardian",
@@ -760,6 +774,7 @@ export function herbertDroprate(herbloreXP: number, itemLevel: number) {
 }
 
 export const OSB_VIRTUS_IDS = [26_241, 26_243, 26_245];
+export const YETI_ID = 129_521;
 export const KING_GOLDEMAR_GUARD_ID = 30_913;
 
 const gitHash = execSync('git rev-parse HEAD').toString().trim();

@@ -706,6 +706,14 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['775241966677131306']
+	},
+	{
+		id: 503,
+		name: 'Halloween Manor',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	}
 ];
 

@@ -1,5 +1,5 @@
-import { AttachmentBuilder } from 'discord.js';
-import { notEmpty, randArrItem, randInt, Time } from 'e';
+import { AttachmentBuilder, bold } from 'discord.js';
+import { notEmpty, objectEntries, randArrItem, randInt, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -8,6 +8,7 @@ import { BitField } from '../../../lib/constants';
 import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { allDyes, dyedItems } from '../../../lib/dyedItems';
 import { gearImages } from '../../../lib/gear/functions/generateGearImage';
+import { mysteriousStepData } from '../../../lib/mysteryTrail';
 import { makeScriptImage } from '../../../lib/scriptImages';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
@@ -232,6 +233,13 @@ const genericUsables: {
 				})
 			]
 		})
+	},
+	{
+		items: [getOSItem('Spooky aura'), getOSItem('Spooky sheet')],
+		cost: new Bank().add('Spooky aura').add('Spooky sheet'),
+		loot: new Bank().add('Casper'),
+		response: () =>
+			'You throw the spooky sheet onto the spooky aura, only to realize the aura is actually a ghost! Wow!'
 	}
 ];
 usables.push({
@@ -315,6 +323,36 @@ usables.push({
 		await user.removeItemsFromBank(new Bank().add('Double loot token'));
 		await addToDoubleLootTimer(Time.Minute * randInt(6, 36), `${user} used a Double Loot token!`);
 		return 'You used your Double Loot Token!';
+	}
+});
+
+for (const [_, val] of objectEntries(mysteriousStepData)) {
+	if (!val.clueItem) continue;
+	usables.push({
+		items: [val.clueItem],
+		run: async (user: MUser) => {
+			const { step, track, stepData, minionMessage } = user.getMysteriousTrailData();
+			if (!step || !track || !stepData) return 'Hmmm..';
+			return `You read the ${val.clueItem.name} and it says...
+		
+${bold(step.hint)}
+
+${minionMessage}`;
+		}
+	});
+}
+usables.push({
+	items: [getOSItem('Mysterious clue (1)')],
+	run: async (user: MUser) => {
+		const { step, track, stepData, minionMessage } = user.getMysteriousTrailData();
+		if (!step || !track || !stepData) return 'Hmmm..';
+		return `You read the Mysterious clue (1) and it says...
+		
+${bold(`In Lumbridge's dawn, where bovine graze,
+Lay one to rest in the morning haze,
+In its yield, your path will blaze.`)}
+
+This looks like a treasure trail. ${minionMessage}`;
 	}
 });
 

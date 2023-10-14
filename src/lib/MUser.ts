@@ -1,7 +1,7 @@
 import { userMention } from '@discordjs/builders';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
-import { calcWhatPercent, objectEntries, sumArr, Time, uniqueArr } from 'e';
+import { calcWhatPercent, objectEntries, randArrItem, sumArr, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -28,6 +28,7 @@ import { FarmingContract } from './minions/farming/types';
 import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
+import { mysteriousStepData, mysteriousTrailTracks } from './mysteryTrail';
 import { getUsersPerkTier, syncPerkTierOfUser } from './perkTiers';
 import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
 import { prisma } from './settings/prisma';
@@ -38,7 +39,7 @@ import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
 import { MTame } from './structures/MTame';
 import { ItemBank, Skills } from './types';
-import { addItemToBank, assert, convertXPtoLVL, itemNameFromID, percentChance } from './util';
+import { addItemToBank, assert, convertXPtoLVL, itemNameFromID, murMurSort, percentChance } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
@@ -814,6 +815,31 @@ GROUP BY data->>'clueID';`);
 	async repairBrokenItems() {
 		await repairBrokenItemsFromUser(this);
 		await this.sync();
+	}
+
+	getMysteriousTrailData() {
+		const currentStepID = this.user.bso_mystery_trail_current_step_id as 1 | 2 | 3 | 4 | 5 | 6 | 7 | null;
+		if (currentStepID === null) {
+			return { step: null, track: null };
+		}
+		const [trackID] = murMurSort(
+			mysteriousTrailTracks.map(i => i.id),
+			`${this.id}i222v1dv,2`
+		);
+		const track = mysteriousTrailTracks.find(i => i.id === trackID)!;
+		const step = track.steps[currentStepID - 1];
+		if (!step) {
+			throw new Error(`No step for ${currentStepID} ${this.id}`);
+		}
+		return {
+			step,
+			nextStep: track.steps[currentStepID as any] ?? null,
+			track,
+			stepData: mysteriousStepData[currentStepID],
+			nextStepData: mysteriousStepData[(currentStepID + 1) as keyof typeof mysteriousStepData],
+			previousStepData: mysteriousStepData[(currentStepID - 1) as keyof typeof mysteriousStepData],
+			minionMessage: randArrItem(mysteriousStepData[currentStepID].messages).replace('{minion}', this.minionName)
+		};
 	}
 
 	caPoints(): number {

@@ -34,6 +34,14 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 	if (hasSet.some(i => i.name === name) && name !== 'Smokey') {
 		throw new Error(`Tried to add 2 custom items with same name, called ${name}`);
 	}
+	if (
+		newItemData &&
+		newItemData.customItemData &&
+		newItemData.customItemData.superTradeableButTradeableOnGE &&
+		!newItemData.customItemData.isSuperUntradeable
+	) {
+		throw new Error('Tried to add a custom item with superTradeableButTradeableOnGE, but not isSuperUntradeable');
+	}
 	const data = deepMerge({ ...getOSItem(baseItem) }, { ...newItemData, name, id });
 	data.price = price || 1;
 

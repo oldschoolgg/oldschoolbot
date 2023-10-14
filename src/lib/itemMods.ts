@@ -4,6 +4,7 @@ export interface CustomItemData {
 	cantDropFromMysteryBoxes?: boolean;
 	cantBeDropped?: true;
 	isDiscontinued?: true;
+	superTradeableButTradeableOnGE?: true;
 }
 
 declare module 'oldschooljs/dist/meta/types' {

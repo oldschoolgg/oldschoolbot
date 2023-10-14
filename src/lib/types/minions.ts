@@ -667,6 +667,10 @@ export interface BathhouseTaskOptions extends MinigameActivityTaskOptions {
 	tier: BathhouseTierName;
 }
 
+export interface MortimerOptions extends ActivityTaskOptions {
+	type: 'Mortimer';
+}
+
 export type ActivityTaskData =
 	| MonsterActivityTaskOptions
 	| WoodcuttingActivityTaskOptions
@@ -744,4 +748,5 @@ export type ActivityTaskData =
 	| DisassembleTaskOptions
 	| BathhouseTaskOptions
 	| ResearchTaskOptions
-	| CutLeapingFishActivityTaskOptions;
+	| CutLeapingFishActivityTaskOptions
+	| MortimerOptions;
