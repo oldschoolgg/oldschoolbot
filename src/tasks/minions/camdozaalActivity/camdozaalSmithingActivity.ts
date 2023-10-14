@@ -1,5 +1,4 @@
-import { calcPercentOfNum } from 'e';
-import { randInt, roll } from 'e/dist/lib/chance';
+import { calcPercentOfNum, randInt } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
@@ -8,8 +7,9 @@ import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClu
 import Fishing from '../../../lib/skilling/skills/fishing';
 import { Fish, SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { skillingPetDropRate } from '../../../lib/util';
+import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 
 const camdozaalFishes: Fish[] = [
@@ -190,13 +190,20 @@ export const camdozaalSmithingTask: MinionTask = {
 			);
 		}
 
-		await transactItems({
+		// Give the user items
+		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		str += `\n\nYou received: ${loot}.`;
+		// BankImage
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity}x Cyclops`,
+			user,
+			previousCL
+		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
 	}
 };
