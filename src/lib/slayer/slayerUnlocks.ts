@@ -36,6 +36,7 @@ export enum SlayerTaskUnlocksEnum {
 	StopTheWyvern,
 	Basilocked,
 	ActualVampyreSlayer,
+	IWildyMoreSlayer,
 	// Extension Unlocks
 	NeedMoreDarkness,
 	AnkouVeryMuch,
@@ -222,6 +223,14 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 80,
 		canBeRemoved: true,
 		aliases: ['vampyre slayer', 'vampire slayer', 'actual vampire slayer', 'vampyres', 'vampires']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.IWildyMoreSlayer,
+		name: 'I Wildy More Slayer',
+		desc: 'Krystilia will be able to assign Jellies, Dust Devils, Nechryaels and Abyssal Demons as your task.',
+		slayerPointCost: 0,
+		canBeRemoved: true,
+		aliases: ['wildy slayer']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.SlayerRing,

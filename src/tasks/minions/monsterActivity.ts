@@ -229,7 +229,7 @@ export const monsterTask: MinionTask = {
 		if (newSuperiorCount) {
 			// Superior loot and totems if in catacombs
 			loot.add(superiorTable!.kill(newSuperiorCount));
-			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
+			if (isInCatacombs && !isInWilderness) loot.add('Dark totem base', newSuperiorCount);
 			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
 		}
 
