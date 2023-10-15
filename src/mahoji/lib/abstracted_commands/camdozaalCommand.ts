@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { randomVariation } from 'oldschooljs/dist/util';
 
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
@@ -14,7 +13,7 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'CamdozaalMining');
-	const timePerMine = randomVariation(6.5, 10) * Time.Second;
+	const timePerMine = 4.5 * Time.Second;
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerMine);
 	}
@@ -47,7 +46,7 @@ async function smithingCommand(user: MUser, channelID: string, quantity: number 
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'CamdozaalSmithing');
-	const timePerSmith = 3 * Time.Second;
+	const timePerSmith = 3.5 * Time.Second;
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerSmith);
 	}
@@ -86,7 +85,7 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'CamdozaalFishing');
-	const timePerFish = randomVariation(6.5, 10) * Time.Second;
+	const timePerFish = 5.5 * Time.Second;
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerFish);
 	}
