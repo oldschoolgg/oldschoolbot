@@ -64,7 +64,7 @@ export async function calcWildyPKChance(
 	}
 
 	let died = false;
-	let deathChance = monster.pkBaseDeathChance || (monster.canBePked ? 5 : 0);
+	let deathChance = monster.pkBaseDeathChance ?? 0;
 
 	const statLvls =
 		user.skillLevel(SkillsEnum.Defence) + user.skillLevel(SkillsEnum.Magic) + user.skillLevel(SkillsEnum.Hitpoints);

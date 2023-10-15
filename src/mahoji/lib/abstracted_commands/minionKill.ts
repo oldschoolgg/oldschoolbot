@@ -38,7 +38,12 @@ import {
 } from '../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
-import { AttackStyles, calculateMonsterFood, resolveAttackStyles } from '../../../lib/minions/functions';
+import {
+	AttackStyles,
+	calculateMonsterFood,
+	convertAttackStylesToSetup,
+	resolveAttackStyles
+} from '../../../lib/minions/functions';
 import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { Consumable } from '../../../lib/minions/types';
@@ -75,7 +80,7 @@ import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
 import { quests } from './questCommand';
-import { revsCommand } from './revsCommand';
+import { revsCommand, revsSpecialWeapons } from './revsCommand';
 import { temporossCommand } from './temporossCommand';
 import { wintertodtCommand } from './wintertodtCommand';
 import { zalcanoCommand } from './zalcanoCommand';
@@ -229,6 +234,15 @@ export async function minionKillCommand(
 	const isUndead = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
 	const isDragon = osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon);
 
+	function applyWildyBoost() {
+		const style = convertAttackStylesToSetup(user.user.attack_style);
+		const specialWeapon = revsSpecialWeapons[style];
+		if (wildyGear.hasEquipped(specialWeapon.name)) {
+			timeToFinish = reduceNumByPercent(timeToFinish, 15);
+			boosts.push(`${15}% for ${specialWeapon.name}`);
+		}
+	}
+
 	function applyDragonBoost() {
 		const hasDragonLance = monster?.canBePked
 			? wildyGear.hasEquipped('Dragon hunter lance')
@@ -300,6 +314,10 @@ export async function minionKillCommand(
 	}
 	if (isDragon && monster.name.toLowerCase() !== 'vorkath') {
 		applyDragonBoost();
+	}
+
+	if (monster.canBePked) {
+		applyWildyBoost();
 	}
 
 	if (isOnTask) {

@@ -18,7 +18,7 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
-const specialWeapons = {
+export const revsSpecialWeapons = {
 	melee: getOSItem("Viggora's chainmace"),
 	range: getOSItem("Craw's bow"),
 	mage: getOSItem("Thammaron's sceptre")
@@ -62,7 +62,7 @@ export async function revsCommand(
 	timePerMonster = reduceNumByPercent(timePerMonster, gearPercent / 4);
 	boosts.push(`${(gearPercent / 4).toFixed(2)}% (out of a possible 25%) for ${key}`);
 
-	const specialWeapon = specialWeapons[style];
+	const specialWeapon = revsSpecialWeapons[style];
 	if (userGear.hasEquipped(specialWeapon.name)) {
 		timePerMonster = reduceNumByPercent(timePerMonster, 35);
 		boosts.push(`${35}% for ${specialWeapon.name}`);
