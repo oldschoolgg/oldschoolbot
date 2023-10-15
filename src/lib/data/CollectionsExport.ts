@@ -1828,9 +1828,9 @@ export const slayerCL = resolveItems([
 	'Mystic gloves (dusk)',
 	'Mystic boots (dusk)',
 	'Basilisk jaw',
-	// "Dagon'hai hat",
-	// "Dagon'hai robe top",
-	// "Dagon'hai robe bottom",
+	"Dagon'hai hat",
+	"Dagon'hai robe top",
+	"Dagon'hai robe bottom",
 	'Blood shard'
 ]);
 export const tzHaarCL = resolveItems([

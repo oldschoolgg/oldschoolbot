@@ -41,7 +41,9 @@ export const nieveMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 2,
+		pkBaseDeathChance: 7
 	},
 	{
 		id: Monsters.BrutalBlackDragon.id,

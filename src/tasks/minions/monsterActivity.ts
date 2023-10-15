@@ -34,7 +34,8 @@ export const monsterTask: MinionTask = {
 			burstOrBarrage,
 			died,
 			pkEncounters,
-			hasWildySupplies
+			hasWildySupplies,
+			isInWilderness
 		} = data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 
@@ -195,6 +196,7 @@ export const monsterTask: MinionTask = {
 
 		const superiorTable = isOnTaskResult.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
 		const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
+
 		const ringOfWealthI = (user.gear.wildy.hasEquipped('Ring of wealth (i)') && monster.canBePked) as boolean;
 
 		const killOptions: MonsterKillOptions = {
@@ -228,6 +230,7 @@ export const monsterTask: MinionTask = {
 			// Superior loot and totems if in catacombs
 			loot.add(superiorTable!.kill(newSuperiorCount));
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
+			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
 		}
 
 		const xpRes: string[] = [];

@@ -155,7 +155,8 @@ export async function minionKillCommand(
 		return `You can't kill ${monster.name}, because you're not on a slayer task.`;
 	}
 
-	if (isOnTask && usersTask.assignedTask?.wilderness) {
+	const isInWilderness = isOnTask && usersTask.assignedTask?.wilderness;
+	if (isInWilderness) {
 		monster.wildy = true;
 		monster.canBePked = true;
 	}
@@ -810,7 +811,8 @@ export async function minionKillCommand(
 		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage,
 		died: hasDied,
 		pkEncounters: thePkCount,
-		hasWildySupplies
+		hasWildySupplies,
+		isInWilderness
 	});
 	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 		duration

@@ -58,7 +58,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		healAmountNeeded: 35,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackStab],
-		canBarrage: true
+		canBarrage: true,
+		pkActivityRating: 7,
+		pkBaseDeathChance: 10
 	},
 	{
 		id: Monsters.AbyssalSire.id,
@@ -118,7 +120,9 @@ export const vannakaMonsters: KillableMonster[] = [
 				[itemID('Kodai wand')]: 12,
 				[itemID('Staff of the dead')]: 8
 			}
-		]
+		],
+		pkActivityRating: 4,
+		pkBaseDeathChance: 3
 	},
 	{
 		id: Monsters.BabyBlueDragon.id,
@@ -223,7 +227,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		healAmountNeeded: 12,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic],
-		canCannon: true
+		canCannon: true,
+		pkActivityRating: 4,
+		pkBaseDeathChance: 6
 	},
 	{
 		id: Monsters.BlueDragon.id,
@@ -435,7 +441,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		canBarrage: true,
 		healAmountNeeded: 16,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackCrush]
+		attackStylesUsed: [GearStat.AttackCrush],
+		pkActivityRating: 6,
+		pkBaseDeathChance: 8
 	},
 	{
 		id: Monsters.ElfArcher.id,
@@ -507,7 +515,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		healAmountNeeded: 17,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
-		canCannon: true
+		canCannon: true,
+		pkActivityRating: 3,
+		pkBaseDeathChance: 8
 	},
 	{
 		id: Monsters.Gargoyle.id,
@@ -600,7 +610,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		canBarrage: true,
-		canCannon: true
+		canCannon: true,
+		pkActivityRating: 8,
+		pkBaseDeathChance: 9
 	},
 	{
 		id: Monsters.GreenDragon.id,
@@ -662,7 +674,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		canCannon: true,
 		// Not multi but you can safespot for the same effect
 		cannonMulti: true,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 5,
+		pkBaseDeathChance: 8
 	},
 	{
 		id: Monsters.IceGiant.id,
@@ -680,7 +694,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 2,
+		pkBaseDeathChance: 6
 	},
 	{
 		id: Monsters.IceTroll.id,
@@ -772,7 +788,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		superior: Monsters.VitreousJelly,
 		healAmountNeeded: 14,
 		attackStyleToUse: GearStat.AttackRanged,
-		attackStylesUsed: [GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackMagic],
+		pkActivityRating: 6,
+		pkBaseDeathChance: 8
 	},
 	{
 		id: Monsters.JungleHorror.id,
@@ -840,7 +858,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		canCannon: true,
 		// No multi spots (i think) but you can safespot for same effect.
 		cannonMulti: true,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 7,
+		pkBaseDeathChance: 9
 	},
 	{
 		id: Monsters.Molanisk.id,
@@ -875,7 +895,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		healAmountNeeded: 17,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
-		canCannon: true
+		canCannon: true,
+		pkActivityRating: 4,
+		pkBaseDeathChance: 3
 	},
 	{
 		id: Monsters.Bryophyta.id,
@@ -1109,7 +1131,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		healAmountNeeded: 27,
 		attackStyleToUse: GearStat.AttackRanged,
-		attackStylesUsed: [GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackMagic],
+		pkActivityRating: 4,
+		pkBaseDeathChance: 6
 	},
 	{
 		id: Monsters.SpiritualRanger.id,
@@ -1127,7 +1151,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		healAmountNeeded: 25,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackRanged]
+		attackStylesUsed: [GearStat.AttackRanged],
+		pkActivityRating: 4,
+		pkBaseDeathChance: 6
 	},
 	{
 		id: Monsters.SpiritualWarrior.id,
@@ -1145,7 +1171,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		healAmountNeeded: 26,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackSlash]
+		attackStylesUsed: [GearStat.AttackSlash],
+		pkActivityRating: 4,
+		pkBaseDeathChance: 6
 	},
 	{
 		id: Monsters.TerrorDog.id,

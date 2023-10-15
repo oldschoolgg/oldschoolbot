@@ -14,7 +14,9 @@ export const krystiliaMonsters: KillableMonster[] = [
 		wildy: true,
 
 		difficultyRating: 5,
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1
 	},
 	{
 		id: Monsters.ChaosDruid.id,
@@ -29,7 +31,9 @@ export const krystiliaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: true,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1
 	},
 	{
 		id: Monsters.DarkWarrior.id,
@@ -44,7 +48,9 @@ export const krystiliaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1
 	},
 	{
 		id: Monsters.DeadlyRedSpider.id,
@@ -74,7 +80,9 @@ export const krystiliaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: true,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 2,
+		pkBaseDeathChance: 7
 	},
 	{
 		id: Monsters.Ent.id,
@@ -90,7 +98,9 @@ export const krystiliaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 2,
+		pkBaseDeathChance: 4
 	},
 	{
 		id: Monsters.GuardBandit.id,
@@ -105,7 +115,9 @@ export const krystiliaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: true,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1
 	},
 	{
 		id: Monsters.LavaDragon.id,
@@ -119,7 +131,9 @@ export const krystiliaMonsters: KillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
 		notifyDrops: resolveItems(['Draconic visage']),
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 3,
+		pkBaseDeathChance: 4
 	},
 	{
 		id: Monsters.MagicAxe.id,
@@ -134,8 +148,10 @@ export const krystiliaMonsters: KillableMonster[] = [
 		// itemsRequired: resolveItems(['Lockpick']),
 		qpRequired: 0,
 		levelRequirements: {
-			// theiving: 23
-		}
+			thieving: 23
+		},
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1
 	},
 	{
 		id: Monsters.Mammoth.id,
@@ -150,7 +166,9 @@ export const krystiliaMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: true,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1
 	},
 	{
 		id: Monsters.Pirate.id,
@@ -164,8 +182,10 @@ export const krystiliaMonsters: KillableMonster[] = [
 		difficultyRating: 3,
 		// itemsRequired: resolveItems(['Lockpick']),
 		levelRequirements: {
-			// thieving: 39
+			thieving: 39
 		},
-		qpRequired: 0
+		qpRequired: 0,
+		pkActivityRating: 1,
+		pkBaseDeathChance: 1
 	}
 ];

@@ -239,10 +239,10 @@ export const krystiliaTasks: AssignableSlayerTask[] = [
 		wilderness: true
 	},
 	{
-		monster: Monsters.Nechryael,
+		monster: Monsters.GreaterNechryael,
 		amount: [75, 125],
 		weight: 5,
-		monsters: [Monsters.Nechryael.id],
+		monsters: [Monsters.GreaterNechryael.id],
 		slayerLevel: 80,
 		unlocked: true,
 		wilderness: true
