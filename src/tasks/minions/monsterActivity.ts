@@ -197,7 +197,7 @@ export const monsterTask: MinionTask = {
 		const superiorTable = isOnTaskResult.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
 		const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
 
-		const ringOfWealthI = (user.gear.wildy.hasEquipped('Ring of wealth (i)') && monster.canBePked) as boolean;
+		const ringOfWealthI = (user.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness) as boolean;
 
 		const killOptions: MonsterKillOptions = {
 			onSlayerTask: isOnTaskResult.isOnTask,
@@ -211,16 +211,23 @@ export const monsterTask: MinionTask = {
 
 		// Calculate superiors and assign loot.
 		let newSuperiorCount = 0;
+
 		if (superiorTable && isOnTaskResult.isOnTask) {
-			let superiorDroprate = 200;
-			if (user.hasCompletedCATier('elite')) {
-				superiorDroprate = 150;
-				messages.push(`${Emoji.CombatAchievements} 25% more common superiors due to Elite CA tier`);
-			}
-			for (let i = 0; i < quantity; i++) {
-				if (roll(superiorDroprate)) newSuperiorCount++;
+			if (!(isInWilderness && monster.name === 'Bloodveld')) {
+				let superiorDroprate = 200;
+				if (user.hasCompletedCATier('elite')) {
+					superiorDroprate = 150;
+					messages.push(`${Emoji.CombatAchievements} 25% more common superiors due to Elite CA tier`);
+				}
+
+				for (let i = 0; i < quantity; i++) {
+					if (roll(superiorDroprate)) {
+						newSuperiorCount++;
+					}
+				}
 			}
 		}
+
 		// Regular loot
 		const loot = monster.table.kill(quantity - newSuperiorCount, killOptions);
 		if (monster.specialLoot) {
