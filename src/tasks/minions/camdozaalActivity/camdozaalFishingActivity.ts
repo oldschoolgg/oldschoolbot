@@ -87,26 +87,16 @@ export const camdozaalFishingTask: MinionTask = {
 			}
 			if (fishingRoll === 5) {
 				barroniteShards += 3;
-			}
-			if (fishingRoll !== 5) {
+			} else {
 				const fishCaught = camdozaalFishTable.roll();
-
 				if (fishCaught.has(guppy.id)) {
 					guppyCaught++;
-					continue;
-				}
-				if (fishCaught.has(cavefish.id)) {
+				  } else if (fishCaught.has(cavefish.id)) {
 					cavefishCaught++;
-					continue;
-				}
-				if (fishCaught.has(tetra.id)) {
+				  } else if (fishCaught.has(tetra.id)) {
 					tetraCaught++;
-					continue;
-				}
-				if (fishCaught.has(catfish.id)) {
+				  } else if (fishCaught.has(catfish.id)) {
 					catfishCaught++;
-					continue;
-				}
 			}
 		}
 
