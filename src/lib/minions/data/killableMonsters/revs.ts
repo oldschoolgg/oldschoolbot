@@ -4,17 +4,30 @@ import { Monsters } from 'oldschooljs';
 import { KillableMonster } from '../../types';
 
 export const revenantMonsters: KillableMonster[] = [
+	// Ordered by combat level for autoslayer checks
 	{
-		id: Monsters.RevenantCyclops.id,
-		name: Monsters.RevenantCyclops.name,
-		aliases: Monsters.RevenantCyclops.aliases,
-		timeToFinish: Time.Second * 50,
-		table: Monsters.RevenantCyclops,
+		id: Monsters.RevenantDragon.id,
+		name: Monsters.RevenantDragon.name,
+		aliases: Monsters.RevenantDragon.aliases,
+		timeToFinish: Time.Second * 90,
+		table: Monsters.RevenantDragon,
 		wildy: true,
 		difficultyRating: 9,
 		qpRequired: 0,
-		pkActivityRating: 6,
-		pkBaseDeathChance: 5
+		pkActivityRating: 8,
+		pkBaseDeathChance: 7
+	},
+	{
+		id: Monsters.RevenantKnight.id,
+		name: Monsters.RevenantKnight.name,
+		aliases: Monsters.RevenantKnight.aliases,
+		timeToFinish: Time.Second * 75,
+		table: Monsters.RevenantKnight,
+		wildy: true,
+		difficultyRating: 9,
+		qpRequired: 0,
+		pkActivityRating: 8,
+		pkBaseDeathChance: 6
 	},
 	{
 		id: Monsters.RevenantDarkBeast.id,
@@ -29,6 +42,18 @@ export const revenantMonsters: KillableMonster[] = [
 		pkBaseDeathChance: 4
 	},
 	{
+		id: Monsters.RevenantOrk.id,
+		name: Monsters.RevenantOrk.name,
+		aliases: Monsters.RevenantOrk.aliases,
+		timeToFinish: Time.Second * 65,
+		table: Monsters.RevenantOrk,
+		wildy: true,
+		difficultyRating: 9,
+		qpRequired: 0,
+		pkActivityRating: 7,
+		pkBaseDeathChance: 6
+	},
+	{
 		id: Monsters.RevenantDemon.id,
 		name: Monsters.RevenantDemon.name,
 		aliases: Monsters.RevenantDemon.aliases,
@@ -41,35 +66,23 @@ export const revenantMonsters: KillableMonster[] = [
 		pkBaseDeathChance: 5
 	},
 	{
-		id: Monsters.RevenantDragon.id,
-		name: Monsters.RevenantDragon.name,
-		aliases: Monsters.RevenantDragon.aliases,
-		timeToFinish: Time.Second * 90,
-		table: Monsters.RevenantDragon,
-		wildy: true,
-		difficultyRating: 9,
-		qpRequired: 0,
-		pkActivityRating: 8,
-		pkBaseDeathChance: 7
-	},
-	{
-		id: Monsters.RevenantGoblin.id,
-		name: Monsters.RevenantGoblin.name,
-		aliases: Monsters.RevenantGoblin.aliases,
-		timeToFinish: Time.Second * 25,
-		table: Monsters.RevenantGoblin,
-		wildy: true,
-		difficultyRating: 9,
-		qpRequired: 0,
-		pkActivityRating: 5,
-		pkBaseDeathChance: 5
-	},
-	{
 		id: Monsters.RevenantHellhound.id,
 		name: Monsters.RevenantHellhound.name,
 		aliases: Monsters.RevenantHellhound.aliases,
 		timeToFinish: Time.Second * 55,
 		table: Monsters.RevenantHellhound,
+		wildy: true,
+		difficultyRating: 9,
+		qpRequired: 0,
+		pkActivityRating: 6,
+		pkBaseDeathChance: 5
+	},
+	{
+		id: Monsters.RevenantCyclops.id,
+		name: Monsters.RevenantCyclops.name,
+		aliases: Monsters.RevenantCyclops.aliases,
+		timeToFinish: Time.Second * 50,
+		table: Monsters.RevenantCyclops,
 		wildy: true,
 		difficultyRating: 9,
 		qpRequired: 0,
@@ -89,42 +102,6 @@ export const revenantMonsters: KillableMonster[] = [
 		pkBaseDeathChance: 5
 	},
 	{
-		id: Monsters.RevenantImp.id,
-		name: Monsters.RevenantImp.name,
-		aliases: Monsters.RevenantImp.aliases,
-		timeToFinish: Time.Second * 20,
-		table: Monsters.RevenantImp,
-		wildy: true,
-		difficultyRating: 9,
-		qpRequired: 0,
-		pkActivityRating: 4,
-		pkBaseDeathChance: 3
-	},
-	{
-		id: Monsters.RevenantKnight.id,
-		name: Monsters.RevenantKnight.name,
-		aliases: Monsters.RevenantKnight.aliases,
-		timeToFinish: Time.Second * 75,
-		table: Monsters.RevenantKnight,
-		wildy: true,
-		difficultyRating: 9,
-		qpRequired: 0,
-		pkActivityRating: 8,
-		pkBaseDeathChance: 6
-	},
-	{
-		id: Monsters.RevenantOrk.id,
-		name: Monsters.RevenantOrk.name,
-		aliases: Monsters.RevenantOrk.aliases,
-		timeToFinish: Time.Second * 65,
-		table: Monsters.RevenantOrk,
-		wildy: true,
-		difficultyRating: 9,
-		qpRequired: 0,
-		pkActivityRating: 7,
-		pkBaseDeathChance: 6
-	},
-	{
 		id: Monsters.RevenantPyrefiend.id,
 		name: Monsters.RevenantPyrefiend.name,
 		aliases: Monsters.RevenantPyrefiend.aliases,
@@ -135,5 +112,29 @@ export const revenantMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		pkActivityRating: 7,
 		pkBaseDeathChance: 5
+	},
+	{
+		id: Monsters.RevenantGoblin.id,
+		name: Monsters.RevenantGoblin.name,
+		aliases: Monsters.RevenantGoblin.aliases,
+		timeToFinish: Time.Second * 25,
+		table: Monsters.RevenantGoblin,
+		wildy: true,
+		difficultyRating: 9,
+		qpRequired: 0,
+		pkActivityRating: 5,
+		pkBaseDeathChance: 5
+	},
+	{
+		id: Monsters.RevenantImp.id,
+		name: Monsters.RevenantImp.name,
+		aliases: Monsters.RevenantImp.aliases,
+		timeToFinish: Time.Second * 20,
+		table: Monsters.RevenantImp,
+		wildy: true,
+		difficultyRating: 9,
+		qpRequired: 0,
+		pkActivityRating: 4,
+		pkBaseDeathChance: 3
 	}
 ];

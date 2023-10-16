@@ -5,6 +5,7 @@ import { Monsters } from 'oldschooljs';
 
 import { PvMMethod } from '../../../lib/constants';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
+import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { runCommand } from '../../../lib/settings/settings';
 import { autoslayModes, AutoslayOptionsEnum } from '../../../lib/slayer/constants';
 import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../../lib/slayer/slayerUtil';
@@ -202,6 +203,12 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientName: Monsters.Lizardman.name,
 		efficientMonster: Monsters.Lizardman.id,
 		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.RevenantImp.id,
+		efficientName: Monsters.RevenantDemon.name,
+		efficientMonster: Monsters.RevenantDemon.id,
+		efficientMethod: 'none'
 	}
 ];
 
@@ -344,10 +351,14 @@ export async function autoSlayCommand({
 			return;
 		}
 
-		const allMonsters = killableMonsters.filter(m => {
+		const allMonsters = [...killableMonsters, ...revenantMonsters].filter(m => {
 			return usersTask.assignedTask!.monsters.includes(m.id);
 		});
-		if (allMonsters.length === 0) return 'Please report this error. No monster variations found.';
+
+		if (allMonsters.length === 0) {
+			return 'Please report this error. No monster variations found.';
+		}
+
 		let maxDiff = 0;
 		let maxMobName: string | null = null;
 
