@@ -4,6 +4,7 @@ import { notEmpty, randInt, removeFromArr, Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
+import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { prisma } from '../../../lib/settings/prisma';
 import { runCommand } from '../../../lib/settings/settings';
 import { slayerMasters } from '../../../lib/slayer/slayerMasters';
@@ -68,7 +69,8 @@ const returnSuccessButtons = [
 function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 	if (assignedTask) {
 		const altMobs = assignedTask.monsters;
-		const alternateMonsters = killableMonsters
+		const allMonsters = [...killableMonsters, ...revenantMonsters];
+		const alternateMonsters = allMonsters
 			.filter(m => {
 				return altMobs.includes(m.id) && m!.id !== assignedTask.monster.id;
 			})

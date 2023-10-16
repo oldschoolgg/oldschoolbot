@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, randInt, reduceNumByPercent, Time } from 'e';
+import { floor } from 'lodash';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -8,6 +9,7 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { convertAttackStylesToSetup } from '../../../lib/minions/functions';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { maxDefenceStats, maxOffenceStats } from '../../../lib/structures/Gear';
 import { RevenantOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, stringMatches } from '../../../lib/util';
@@ -31,6 +33,7 @@ export async function revsCommand(
 	name: string,
 	quantity: number | undefined
 ): CommandResponse {
+	const { minionName } = user;
 	const style = convertAttackStylesToSetup(user.user.attack_style);
 	const userGear = user.gear.wildy;
 
@@ -44,6 +47,12 @@ export async function revsCommand(
 	if (!monster || !name) {
 		return `That's not a valid Revenant. The valid Revenants are: ${revenantMonsters.map(m => m.name).join(', ')}.`;
 	}
+
+	const usersTask = await getUsersCurrentSlayerInfo(user.id);
+	const isOnTask =
+		usersTask.assignedTask !== null &&
+		usersTask.currentTask !== null &&
+		usersTask.assignedTask.monsters.includes(monster.id);
 
 	const key = ({ melee: 'attack_crush', mage: 'attack_magic', range: 'attack_ranged' } as const)[style];
 	const gearStat = userGear.getStats()[key];
@@ -70,14 +79,29 @@ export async function revsCommand(
 
 	const maxTripLength = Math.floor(calcMaxTripLength(user, 'Revenants'));
 	if (!quantity) {
-		quantity = Math.max(1, Math.floor(maxTripLength / timePerMonster));
+		quantity = floor(maxTripLength / timePerMonster);
 	}
+
+	if (isOnTask) {
+		let effectiveQtyRemaining = usersTask.currentTask!.quantity_remaining;
+		quantity = Math.min(quantity, effectiveQtyRemaining);
+	}
+
+	quantity = Math.max(1, quantity);
+
 	let duration = quantity * timePerMonster;
+
+	if (quantity > 1 && duration > maxTripLength) {
+		return `${minionName} can't go on PvM trips longer than ${formatDuration(
+			maxTripLength
+		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(
+			maxTripLength / timePerMonster
+		)}.`;
+	}
 
 	const cost = new Bank();
 
 	let hasPrayerPots = true;
-
 	const initialPrayerPots = 1; // At least 1 prayer potion
 	const millisecondsPer8Minutes = 480_000; // 8 minutes in milliseconds
 	const additionalPrayerPots = Math.round(duration / millisecondsPer8Minutes);
