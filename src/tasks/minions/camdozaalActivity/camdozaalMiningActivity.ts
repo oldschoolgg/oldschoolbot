@@ -96,7 +96,7 @@ export const camdozaalMiningTask: MinionTask = {
 		addSkillingClueToLoot(user, SkillsEnum.Mining, quantity, clueScrollChance, loot);
 
 		// Rock golem roll
-		const totalBarroniteMined = barroniteShardMined + barroniteShardMined;
+		const totalBarroniteMined = barroniteShardMined + barroniteDepositMined;
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, 741_600);
 		if (roll(petDropRate / totalBarroniteMined)) {
 			loot.add('Rock Golem');

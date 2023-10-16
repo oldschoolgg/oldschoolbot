@@ -91,12 +91,13 @@ export const camdozaalFishingTask: MinionTask = {
 				const fishCaught = camdozaalFishTable.roll();
 				if (fishCaught.has(guppy.id)) {
 					guppyCaught++;
-				  } else if (fishCaught.has(cavefish.id)) {
+				} else if (fishCaught.has(cavefish.id)) {
 					cavefishCaught++;
-				  } else if (fishCaught.has(tetra.id)) {
+				} else if (fishCaught.has(tetra.id)) {
 					tetraCaught++;
-				  } else if (fishCaught.has(catfish.id)) {
+				} else if (fishCaught.has(catfish.id)) {
 					catfishCaught++;
+				}
 			}
 		}
 
