@@ -89,7 +89,7 @@ export const monsterTask: MinionTask = {
 
 		if (pkEncounters && pkEncounters > 0) {
 			// Handle lost kc quantity because of pkers
-			let lostQuantity = Math.max(
+			const lostQuantity = Math.max(
 				Math.round((quantity / (Math.round(duration / Time.Minute) * (died ? 1 : 2))) * pkEncounters),
 				1
 			);
@@ -97,9 +97,7 @@ export const monsterTask: MinionTask = {
 				quantity -= lostQuantity;
 				quantity = Math.max(0, quantity);
 				messages.push(
-					`You missed out on ${Math.max(1, lostQuantity)}x kills because of pk encounters${
-						died ? ' and death' : ''
-					}`
+					`You missed out on ${lostQuantity}x kills because of pk encounters${died ? ' and death' : ''}`
 				);
 			}
 
