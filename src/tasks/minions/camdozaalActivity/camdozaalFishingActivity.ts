@@ -57,10 +57,7 @@ export const camdozaalFishingTask: MinionTask = {
 		const catfish = camdozaalFishes.find(_fish => _fish.name === 'Raw catfish')!;
 
 		// Loot table based on users fishing level
-		const camdozaalFishTable = new LootTable();
-		if (currentFishLevel >= guppy.level) {
-			camdozaalFishTable.add(guppy.id);
-		}
+		const camdozaalFishTable = new LootTable().add(guppy.id);
 		if (currentFishLevel >= cavefish.level) {
 			camdozaalFishTable.add(cavefish.id);
 		}
