@@ -4,31 +4,12 @@ import { Bank, Monsters } from 'oldschooljs';
 import { KillableMonster } from '../../types';
 
 export const revenantMonsters: KillableMonster[] = [
-	// Ordered by combat level for autoslayer checks
 	{
-		id: Monsters.RevenantDragon.id,
-		name: Monsters.RevenantDragon.name,
-		aliases: Monsters.RevenantDragon.aliases,
-		timeToFinish: Time.Second * 147,
-		table: Monsters.RevenantDragon,
-		wildy: true,
-		difficultyRating: 9,
-		qpRequired: 0,
-		pkActivityRating: 9,
-		pkBaseDeathChance: 8,
-		itemCost: {
-			itemCost: new Bank().add('Blighted super restore (4)', 1),
-			qtyPerMinute: 0.17,
-			alternativeConsumables: [{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }]
-		},
-		canBePked: true
-	},
-	{
-		id: Monsters.RevenantKnight.id,
-		name: Monsters.RevenantKnight.name,
-		aliases: Monsters.RevenantKnight.aliases,
-		timeToFinish: Time.Second * 123,
-		table: Monsters.RevenantKnight,
+		id: Monsters.RevenantCyclops.id,
+		name: Monsters.RevenantCyclops.name,
+		aliases: Monsters.RevenantCyclops.aliases,
+		timeToFinish: Time.Second * 82,
+		table: Monsters.RevenantCyclops,
 		wildy: true,
 		difficultyRating: 9,
 		qpRequired: 0,
@@ -60,24 +41,6 @@ export const revenantMonsters: KillableMonster[] = [
 		canBePked: true
 	},
 	{
-		id: Monsters.RevenantOrk.id,
-		name: Monsters.RevenantOrk.name,
-		aliases: Monsters.RevenantOrk.aliases,
-		timeToFinish: Time.Second * 106,
-		table: Monsters.RevenantOrk,
-		wildy: true,
-		difficultyRating: 9,
-		qpRequired: 0,
-		pkActivityRating: 9,
-		pkBaseDeathChance: 8,
-		itemCost: {
-			itemCost: new Bank().add('Blighted super restore (4)', 1),
-			qtyPerMinute: 0.17,
-			alternativeConsumables: [{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }]
-		},
-		canBePked: true
-	},
-	{
 		id: Monsters.RevenantDemon.id,
 		name: Monsters.RevenantDemon.name,
 		aliases: Monsters.RevenantDemon.aliases,
@@ -96,13 +59,13 @@ export const revenantMonsters: KillableMonster[] = [
 		canBePked: true
 	},
 	{
-		id: Monsters.RevenantHellhound.id,
-		name: Monsters.RevenantHellhound.name,
-		aliases: Monsters.RevenantHellhound.aliases,
-		timeToFinish: Time.Second * 90,
-		table: Monsters.RevenantHellhound,
+		id: Monsters.RevenantDragon.id,
+		name: Monsters.RevenantDragon.name,
+		aliases: Monsters.RevenantDragon.aliases,
+		timeToFinish: Time.Second * 147,
+		table: Monsters.RevenantDragon,
 		wildy: true,
-		difficultyRating: 9,
+		difficultyRating: 10,
 		qpRequired: 0,
 		pkActivityRating: 9,
 		pkBaseDeathChance: 8,
@@ -114,11 +77,24 @@ export const revenantMonsters: KillableMonster[] = [
 		canBePked: true
 	},
 	{
-		id: Monsters.RevenantCyclops.id,
-		name: Monsters.RevenantCyclops.name,
-		aliases: Monsters.RevenantCyclops.aliases,
-		timeToFinish: Time.Second * 82,
-		table: Monsters.RevenantCyclops,
+		id: Monsters.RevenantGoblin.id,
+		name: Monsters.RevenantGoblin.name,
+		aliases: Monsters.RevenantGoblin.aliases,
+		timeToFinish: Time.Second * 41,
+		table: Monsters.RevenantGoblin,
+		wildy: true,
+		difficultyRating: 9,
+		qpRequired: 0,
+		pkActivityRating: 8,
+		pkBaseDeathChance: 8,
+		canBePked: true
+	},
+	{
+		id: Monsters.RevenantHellhound.id,
+		name: Monsters.RevenantHellhound.name,
+		aliases: Monsters.RevenantHellhound.aliases,
+		timeToFinish: Time.Second * 90,
+		table: Monsters.RevenantHellhound,
 		wildy: true,
 		difficultyRating: 9,
 		qpRequired: 0,
@@ -150,6 +126,55 @@ export const revenantMonsters: KillableMonster[] = [
 		canBePked: true
 	},
 	{
+		id: Monsters.RevenantImp.id,
+		name: Monsters.RevenantImp.name,
+		aliases: Monsters.RevenantImp.aliases,
+		timeToFinish: Time.Second * 33,
+		table: Monsters.RevenantImp,
+		wildy: true,
+		difficultyRating: 9,
+		qpRequired: 0,
+		pkActivityRating: 8,
+		pkBaseDeathChance: 8,
+		canBePked: true
+	},
+	{
+		id: Monsters.RevenantKnight.id,
+		name: Monsters.RevenantKnight.name,
+		aliases: Monsters.RevenantKnight.aliases,
+		timeToFinish: Time.Second * 123,
+		table: Monsters.RevenantKnight,
+		wildy: true,
+		difficultyRating: 9,
+		qpRequired: 0,
+		pkActivityRating: 9,
+		pkBaseDeathChance: 8,
+		itemCost: {
+			itemCost: new Bank().add('Blighted super restore (4)', 1),
+			qtyPerMinute: 0.17,
+			alternativeConsumables: [{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }]
+		},
+		canBePked: true
+	},
+	{
+		id: Monsters.RevenantOrk.id,
+		name: Monsters.RevenantOrk.name,
+		aliases: Monsters.RevenantOrk.aliases,
+		timeToFinish: Time.Second * 106,
+		table: Monsters.RevenantOrk,
+		wildy: true,
+		difficultyRating: 9,
+		qpRequired: 0,
+		pkActivityRating: 9,
+		pkBaseDeathChance: 8,
+		itemCost: {
+			itemCost: new Bank().add('Blighted super restore (4)', 1),
+			qtyPerMinute: 0.17,
+			alternativeConsumables: [{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }]
+		},
+		canBePked: true
+	},
+	{
 		id: Monsters.RevenantPyrefiend.id,
 		name: Monsters.RevenantPyrefiend.name,
 		aliases: Monsters.RevenantPyrefiend.aliases,
@@ -165,32 +190,6 @@ export const revenantMonsters: KillableMonster[] = [
 			qtyPerMinute: 0.17,
 			alternativeConsumables: [{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }]
 		},
-		canBePked: true
-	},
-	{
-		id: Monsters.RevenantGoblin.id,
-		name: Monsters.RevenantGoblin.name,
-		aliases: Monsters.RevenantGoblin.aliases,
-		timeToFinish: Time.Second * 41,
-		table: Monsters.RevenantGoblin,
-		wildy: true,
-		difficultyRating: 9,
-		qpRequired: 0,
-		pkActivityRating: 8,
-		pkBaseDeathChance: 8,
-		canBePked: true
-	},
-	{
-		id: Monsters.RevenantImp.id,
-		name: Monsters.RevenantImp.name,
-		aliases: Monsters.RevenantImp.aliases,
-		timeToFinish: Time.Second * 33,
-		table: Monsters.RevenantImp,
-		wildy: true,
-		difficultyRating: 9,
-		qpRequired: 0,
-		pkActivityRating: 8,
-		pkBaseDeathChance: 8,
 		canBePked: true
 	}
 ];
