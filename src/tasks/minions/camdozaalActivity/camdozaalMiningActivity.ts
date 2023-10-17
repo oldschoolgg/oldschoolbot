@@ -50,7 +50,8 @@ export const camdozaalMiningTask: MinionTask = {
 		}
 
 		// Add up the xp from the trip
-		let miningXpReceived = barroniteShardMined * 16 + barroniteDepositMined * 32;
+		let miningXpReceived =
+			barroniteShardMined * Mining.CamdozaalMine.xp + barroniteDepositMined * Mining.CamdozaalMine.xp * 2;
 		let bonusXP = 0;
 
 		// If user has the entire prospector outfit, give an extra 2.5% xp bonus

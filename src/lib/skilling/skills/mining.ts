@@ -262,7 +262,7 @@ const MotherlodeMine: Ore = {
 // Uses determineMiningTime function, therefore Ore object and id -1
 const CamdozaalMine: Ore = {
 	level: 14,
-	xp: -1,
+	xp: 16,
 	id: -1,
 	name: 'Barronite rocks',
 	respawnTime: 3,
