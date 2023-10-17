@@ -111,7 +111,7 @@ GROUP BY data->>'oreID';`);
 	return items;
 }
 
-export async function personalHerbloreStats(user: MUser) {
+export async function personalHerbloreStats(user: MUser, stats: UserStats) {
 	const result: { id: number; qty: number }[] =
 		await prisma.$queryRawUnsafe(`SELECT (data->>'mixableID')::int AS id, SUM((data->>'quantity')::int) AS qty
 FROM activity
@@ -126,6 +126,7 @@ GROUP BY data->>'mixableID';`);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
+	items.add(new Bank(stats.herbs_cleaned_while_farming_bank as ItemBank));
 	return items;
 }
 export async function personalAlchingStats(user: MUser, includeAgilityAlching = true) {
@@ -574,8 +575,8 @@ ${result
 	{
 		name: 'Personal Herblore Stats',
 		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser) => {
-			const result = await personalHerbloreStats(user);
+		run: async (user: MUser, stats) => {
+			const result = await personalHerbloreStats(user, stats);
 			if (result.length === 0) return "You haven't made anything yet.";
 			return `You've made...
 ${result
@@ -1079,6 +1080,16 @@ ${unluckiest
 			const itemsNotSacBank = new Bank();
 			for (const item of itemsNotSacFiltered) itemsNotSacBank.add(item);
 			return makeResponseForBank(itemsNotSacBank, 'Not Sacrificed Items');
+		}
+	},
+	{
+		name: 'Herbs cleaned while farming',
+		perkTierNeeded: PerkTier.Four,
+		run: (_, userStats) => {
+			return makeResponseForBank(
+				new Bank().add(userStats.herbs_cleaned_while_farming_bank as ItemBank),
+				'Herbs cleaned while farming'
+			);
 		}
 	}
 ] as const;
