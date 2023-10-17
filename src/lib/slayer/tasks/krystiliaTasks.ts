@@ -36,14 +36,14 @@ export const krystiliaTasks: AssignableSlayerTask[] = [
 		unlocked: true,
 		wilderness: true
 	},
-	{
-		monster: Monsters.Bandit,
-		amount: [75, 125],
-		weight: 4,
-		monsters: [Monsters.Bandit.id],
-		unlocked: true,
-		wilderness: true
-	},
+	// {
+	//	monster: Monsters.Bandit,
+	//	amount: [75, 125],
+	//	weight: 4,
+	//	monsters: [Monsters.Bandit.id],
+	//	unlocked: true,
+	//	wilderness: true
+	// },
 	{
 		monster: Monsters.GrizzlyBear,
 		amount: [65, 100],

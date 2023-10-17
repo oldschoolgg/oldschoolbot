@@ -769,7 +769,7 @@ export async function minionKillCommand(
 		foodStr += foodMessages;
 
 		let gearToCheck: GearSetupType = convertAttackStyleToGearSetup(monster.attackStyleToUse);
-		if (monster.wildy) gearToCheck = 'wildy';
+		if (isInWilderness) gearToCheck = 'wildy';
 
 		try {
 			const { foodRemoved, reductions, reductionRatio } = await removeFoodFromUser({
