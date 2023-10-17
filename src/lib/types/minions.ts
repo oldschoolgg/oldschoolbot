@@ -130,16 +130,6 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	isInWilderness?: boolean;
 }
 
-export interface RevenantOptions extends ActivityTaskOptions {
-	type: 'Revenants';
-	monsterID: number;
-	quantity: number;
-	died: boolean;
-	fakeDuration: number;
-	usingPrayerPots: boolean;
-	skulled: boolean;
-	style: 'melee' | 'range' | 'mage';
-}
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	type: 'ClueCompletion';
 
@@ -575,7 +565,6 @@ export type ActivityTaskData =
 	| MiningActivityTaskOptions
 	| MotherlodeMiningActivityTaskOptions
 	| PlunderActivityTaskOptions
-	| RevenantOptions
 	| SmithingActivityTaskOptions
 	| SmeltingActivityTaskOptions
 	| TiaraRunecraftActivityTaskOptions

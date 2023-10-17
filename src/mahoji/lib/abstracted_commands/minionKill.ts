@@ -51,6 +51,7 @@ import { calcPOHBoosts } from '../../../lib/poh';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
+import { maxOffenceStats } from '../../../lib/structures/Gear';
 import { Peak } from '../../../lib/tickers';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
@@ -73,6 +74,7 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { calcWildyPKChance, increaseWildEvasionXp } from '../../../lib/util/calcWildyPkChance';
 import { generateChart } from '../../../lib/util/chart';
 import findMonster from '../../../lib/util/findMonster';
+import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahojiSettings';
@@ -80,12 +82,17 @@ import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
 import { quests } from './questCommand';
-import { revsCommand, revsSpecialWeapons } from './revsCommand';
 import { temporossCommand } from './temporossCommand';
 import { wintertodtCommand } from './wintertodtCommand';
 import { zalcanoCommand } from './zalcanoCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
+
+const revSpecialWeapons = {
+	melee: getOSItem("Viggora's chainmace"),
+	range: getOSItem("Craw's bow"),
+	mage: getOSItem("Thammaron's sceptre")
+} as const;
 
 function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
 	const str = [];
@@ -131,6 +138,9 @@ export async function minionKillCommand(
 		return 'Your minion is busy.';
 	}
 	const { minionName } = user;
+	const wildyGear = user.gear.wildy;
+	const style = convertAttackStylesToSetup(user.user.attack_style);
+	const key = ({ melee: 'attack_crush', mage: 'attack_magic', range: 'attack_ranged' } as const)[style];
 
 	const boosts = [];
 	let messages: string[] = [];
@@ -143,11 +153,17 @@ export async function minionKillCommand(
 	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name);
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID);
 
-	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
-		return revsCommand(user, channelID, interaction, name, quantity);
+	let monster = findMonster(name);
+	let revenants = false;
+
+	const matchedRevenantMonster = revenantMonsters.find(monster =>
+		monster.aliases.some(alias => stringMatches(alias, name))
+	);
+	if (matchedRevenantMonster) {
+		monster = matchedRevenantMonster;
+		revenants = true;
 	}
 
-	const monster = findMonster(name);
 	if (!monster) return invalidMonsterMsg;
 
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
@@ -164,6 +180,20 @@ export async function minionKillCommand(
 	if (isInWilderness) {
 		monster.wildy = true;
 		monster.canBePked = true;
+	}
+
+	const wildyGearStat = wildyGear.getStats()[key];
+	const revGearPercent = Math.max(0, calcWhatPercent(wildyGearStat, maxOffenceStats[key]));
+
+	if (revenants) {
+		const weapon = wildyGear.equippedWeapon();
+		if (!weapon) {
+			return 'You have no weapon equipped in your Wildy outfit.';
+		}
+
+		if (weapon.equipment![key] < 10) {
+			return `Your weapon is terrible, you can't kill Revenants. You should have ${style} gear equipped in your wildy outfit, as this is what you're currently training. You can change this using \`/minion train\``;
+		}
 	}
 
 	// Set chosen boost based on priority:
@@ -228,20 +258,10 @@ export async function minionKillCommand(
 	let salveAmuletBoost = 0;
 	let salveAmuletBoostMsg = '';
 
-	const wildyGear = user.gear.wildy;
 	const dragonBoost = 15; // Common boost percentage for dragon-related gear
 
 	const isUndead = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
 	const isDragon = osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon);
-
-	function applyWildyBoost() {
-		const style = convertAttackStylesToSetup(user.user.attack_style);
-		const specialWeapon = revsSpecialWeapons[style];
-		if (wildyGear.hasEquipped(specialWeapon.name)) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push(`${15}% for ${specialWeapon.name}`);
-		}
-	}
 
 	function applyDragonBoost() {
 		const hasDragonLance = monster?.canBePked
@@ -316,10 +336,6 @@ export async function minionKillCommand(
 		applyDragonBoost();
 	}
 
-	if (monster.canBePked) {
-		applyWildyBoost();
-	}
-
 	if (isOnTask) {
 		applyBlackMaskBoost();
 	}
@@ -336,6 +352,17 @@ export async function minionKillCommand(
 		} else {
 			timeToFinish = reduceNumByPercent(timeToFinish, blackMaskBoost);
 			boosts.push(blackMaskBoostMsg);
+		}
+	}
+
+	if (revenants) {
+		timeToFinish = reduceNumByPercent(timeToFinish, revGearPercent / 4);
+		boosts.push(`${(revGearPercent / 4).toFixed(2)}% (out of a possible 25%) for ${key}`);
+
+		const specialWeapon = revSpecialWeapons[style];
+		if (wildyGear.hasEquipped(specialWeapon.name)) {
+			timeToFinish = reduceNumByPercent(timeToFinish, 35);
+			boosts.push(`${35}% for ${specialWeapon.name}`);
 		}
 	}
 

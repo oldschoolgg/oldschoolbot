@@ -6,6 +6,7 @@ import { Emoji } from '../../lib/constants';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { prisma } from '../../lib/settings/prisma';
@@ -37,7 +38,18 @@ export const monsterTask: MinionTask = {
 			hasWildySupplies,
 			isInWilderness
 		} = data;
-		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
+
+		let monster = killableMonsters.find(mon => mon.id === monsterID)!;
+		let revenants = false;
+
+		const matchedRevenantMonster = revenantMonsters.find(mon => mon.id === monsterID)!;
+		if (matchedRevenantMonster) {
+			monster = matchedRevenantMonster;
+			revenants = true;
+		}
+
+		let skulled = false;
+		if (revenants) skulled = true;
 
 		const messages: string[] = [];
 
@@ -102,7 +114,7 @@ export const monsterTask: MinionTask = {
 					smited: hasPrayerLevel && !protectItem,
 					protectItem: hasPrayerLevel,
 					after20wilderness: monster.pkBaseDeathChance && monster.pkBaseDeathChance >= 5 ? true : false,
-					skulled: false
+					skulled
 				});
 
 				let reEquipedItems = false;
