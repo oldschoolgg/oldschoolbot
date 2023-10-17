@@ -176,7 +176,7 @@ export async function minionKillCommand(
 		return `You can't kill ${monster.name}, because you're not on a slayer task.`;
 	}
 
-	const isInWilderness = isOnTask && usersTask.assignedTask?.wilderness || monster.canBePked;
+	const isInWilderness = (isOnTask && usersTask.assignedTask?.wilderness) || monster.canBePked;
 	if (isInWilderness) {
 		monster.wildy = true;
 		monster.canBePked = true;
