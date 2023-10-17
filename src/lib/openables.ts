@@ -11,6 +11,7 @@ import { cluesRaresCL } from './data/CollectionsExport';
 import { defaultFarmingContract } from './minions/farming';
 import { FarmingContract } from './minions/farming/types';
 import { shadeChestOpenables } from './shadesKeys';
+import { nestTable } from './simulation/birdsNest';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,
@@ -276,6 +277,14 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['nest box (seeds)', 'seeds nest box', 'nest box seeds', 'seed nest box'],
 		output: Openables.NestBoxSeeds.table,
 		allItems: Openables.NestBoxSeeds.table.allItems
+	},
+	{
+		name: 'Bird nest (ent)',
+		id: 5070,
+		openedItem: getOSItem(5070),
+		aliases: ['bird nest (ent)', 'ent nest', 'ent bird nest', 'bird nest ent'],
+		output: nestTable,
+		allItems: nestTable.allItems
 	},
 	{
 		name: 'Ogre coffin',
