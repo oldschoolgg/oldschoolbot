@@ -1,7 +1,6 @@
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
-import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import Mining from '../../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
@@ -25,7 +24,8 @@ export const camdozaalMiningTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		let { quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
-		const currentMiningLevel = user.skillLevel(SkillsEnum.Mining);
+		const camdozaalMine = Mining.CamdozaalMine;
+		const currentLevel = user.skillLevel(SkillsEnum.Mining);
 
 		let barroniteShardMined = 0;
 		let barroniteDepositMined = 0;
@@ -38,16 +38,12 @@ export const camdozaalMiningTask: MinionTask = {
 				loot.add(gemTable.roll());
 			} else {
 				const barroniteMined = barroniteTable.roll();
-
 				if (barroniteMined.has('Barronite shards')) {
 					barroniteShardMined++;
 					loot.add(barroniteMined);
-					continue;
-				}
-				if (barroniteMined.has('Barronite deposit')) {
+				} else if (barroniteMined.has('Barronite deposit')) {
 					barroniteDepositMined++;
 					loot.add(barroniteMined);
-					continue;
 				}
 			}
 		}
@@ -91,19 +87,14 @@ export const camdozaalMiningTask: MinionTask = {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		// Add clue scrolls
-		const clueScrollChance = 257_770;
-		addSkillingClueToLoot(user, SkillsEnum.Mining, quantity, clueScrollChance, loot);
-
 		// Rock golem roll
-		const totalBarroniteMined = barroniteShardMined + barroniteDepositMined;
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, 741_600);
-		if (roll(petDropRate / totalBarroniteMined)) {
-			loot.add('Rock Golem');
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, camdozaalMine.petChance!);
+		if (roll(petDropRate / quantity)) {
+			loot.add('Rock golem');
 			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Mining} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a **Rock Golem** while Mining in Camdozaal at level ${currentMiningLevel} Mining!`
+				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining at the ${Mining.CamdozaalMine.name} at level ${currentLevel} Mining!`
 			);
 		}
 

@@ -1,43 +1,86 @@
-import { Time } from 'e';
+import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
+import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
+import Mining from '../../../lib/skilling/skills/mining';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
+import { formatDuration, itemNameFromID, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { minionName } from '../../../lib/util/minionUtils';
 
 async function miningCommand(user: MUser, channelID: string, quantity: number | undefined) {
-	if (user.skillLevel(SkillsEnum.Mining) < 14) {
+	let miningLevel = user.skillLevel(SkillsEnum.Mining);
+	if (miningLevel < 14) {
 		return 'You need at least level 14 Mining to fish in the Ruins of Camdozaal.';
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'CamdozaalMining');
-	const timePerMine = 4.5 * Time.Second;
-	if (!quantity) {
-		quantity = Math.floor(maxTripLength / timePerMine);
+	const boosts = [];
+	// Checks if user own Celestial ring or Celestial signet
+	if (user.hasEquippedOrInBank(['Celestial ring (uncharged)'])) {
+		boosts.push('+4 invisible Mining lvls for Celestial ring');
+		miningLevel += 4;
 	}
-	const duration = timePerMine * quantity;
+	// Default bronze pickaxe, last in the array
+	let currentPickaxe = pickaxes[pickaxes.length - 1];
+	boosts.push(`**${currentPickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(currentPickaxe.id)}`);
 
-	if (duration > maxTripLength) {
-		return `${user.minionName} can't go on trips longer than ${formatDuration(
-			maxTripLength
-		)}, try a lower quantity. The highest amount of Barronite rocks you can mine is ${Math.floor(
-			maxTripLength / timePerMine
-		)}.`;
+	// For each pickaxe, if they have it, give them its' bonus and break.
+	for (const pickaxe of pickaxes) {
+		if (!user.hasEquippedOrInBank([pickaxe.id]) || user.skillsAsLevels.mining < pickaxe.miningLvl) continue;
+		currentPickaxe = pickaxe;
+		boosts.pop();
+		boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
+		break;
 	}
+
+	const glovesRate = 0;
+	const armourEffect = 0;
+	const miningCapeEffect = 0;
+	const goldSilverBoost = false;
+	const powermine = false;
+	const barroniteRocks = Mining.CamdozaalMine;
+
+	// Calculate the time it takes to mine specific quantity or as many as possible
+	let [duration, newQuantity] = determineMiningTime({
+		quantity,
+		user,
+		ore: barroniteRocks,
+		ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
+		glovesRate,
+		armourEffect,
+		miningCapeEffect,
+		powermining: powermine,
+		goldSilverBoost,
+		miningLvl: miningLevel
+	});
+
+	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+	const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
 	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
 		channelID: channelID.toString(),
-		quantity,
+		quantity: newQuantity,
 		duration,
 		type: 'CamdozaalMining'
 	});
 
-	return `${user.minionName} is now mining in the Ruins of Camdozaal, it will take around ${formatDuration(
-		duration
-	)} to finish.`;
+	let response = `${minionName(user)} is now mining inside the Ruins of Camdozaal until your minion ${
+		quantity ? `mined ${quantity}x barronite rocks or gets tired` : 'is satisfied'
+	}, it'll take ${
+		quantity
+			? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
+			: formatDuration(duration)
+	} to finish.`;
+
+	if (boosts.length > 0) {
+		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+	}
+
+	return response;
 }
 
 async function smithingCommand(user: MUser, channelID: string, quantity: number | undefined) {

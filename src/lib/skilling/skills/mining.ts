@@ -259,6 +259,20 @@ const MotherlodeMine: Ore = {
 	petChance: 247_200
 };
 
+// Uses determineMiningTime function, therefore Ore object and id -1
+const CamdozaalMine: Ore = {
+	level: 14,
+	xp: -1,
+	id: -1,
+	name: 'Barronite rocks',
+	respawnTime: 3,
+	bankingTime: 20,
+	slope: 0.082_71,
+	intercept: 30.872,
+	petChance: 741_600,
+	clueScrollChance: 741_600
+};
+
 const prospectorItems: { [key: number]: number } = {
 	[itemID('Prospector helmet')]: 0.4,
 	[itemID('Prospector jacket')]: 0.8,
@@ -270,6 +284,7 @@ const Mining = {
 	aliases: ['mining'],
 	Ores: ores,
 	MotherlodeMine,
+	CamdozaalMine,
 	GemRockTable,
 	GraniteRockTable,
 	SandstoneRockTable,
