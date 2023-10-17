@@ -202,6 +202,7 @@ async function returnSuccess(channelID: string, user: MUser, content: string) {
 					interaction: selection,
 					...options
 				});
+				return;
 			}
 		}
 	} catch (err: unknown) {
@@ -469,6 +470,7 @@ export async function slayerSkipTaskCommand({
 			});
 		}
 		interactionReply(interaction, resultMessage);
+		return;
 	} catch (e) {
 		logError(e, {
 			user_id: user.id.toString(),
