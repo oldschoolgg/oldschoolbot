@@ -120,6 +120,10 @@ export const tripHandlers = {
 		commandName: 'm',
 		args: () => ({})
 	},
+	[activity_type_enum.Revenants]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.AerialFishing]: {
 		commandName: 'activities',
 		args: () => ({ aerial_fishing: {} })
