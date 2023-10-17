@@ -41,7 +41,7 @@ export const camdozaalSmithingTask: MinionTask = {
 		});
 
 		// Trip finish message
-		let str = `${user}, ${user.minionName} finished smithing in Camdozzal! ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished smithing in Camdozaal! ${xpRes}`;
 
 		// Give the user the items from the trip
 		const { previousCL, itemsAdded } = await transactItems({

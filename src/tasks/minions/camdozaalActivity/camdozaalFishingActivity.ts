@@ -143,7 +143,7 @@ export const camdozaalFishingTask: MinionTask = {
 		});
 
 		// Trip finish message
-		let str = `${user}, ${user.minionName} finished fishing in Camdozzal! ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished fishing in Camdozaal! ${xpRes}`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
@@ -160,7 +160,7 @@ export const camdozaalFishingTask: MinionTask = {
 			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a **Heron** while Fishing in Camdozaal at level ${currentFishLevel} Fishing!`
+				`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Heron while fishing in Camdozaal at level ${currentFishLevel} Fishing!`
 			);
 		}
 

@@ -83,7 +83,7 @@ export const camdozaalMiningTask: MinionTask = {
 		});
 
 		// Trip finish message
-		let str = `${user}, ${user.minionName} finished mining in Camdozzal! ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished mining in Camdozaal! ${xpRes}`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
@@ -100,7 +100,7 @@ export const camdozaalMiningTask: MinionTask = {
 			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining at the ${Mining.CamdozaalMine.name} at level ${currentLevel} Mining!`
+				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining in Camdozaal at level ${currentLevel} Mining!`
 			);
 		}
 
