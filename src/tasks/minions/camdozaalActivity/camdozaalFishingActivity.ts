@@ -1,47 +1,14 @@
 import { randInt } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
-import { itemID } from 'oldschooljs/dist/util';
 
 import { Emoji, Events } from '../../../lib/constants';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import Fishing from '../../../lib/skilling/skills/fishing';
-import { Fish, SkillsEnum } from '../../../lib/skilling/types';
+import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-
-// Types of fish in camdozaal
-const camdozaalFishes: Fish[] = [
-	{
-		level: 7,
-		xp: 8,
-		id: itemID('Raw guppy'),
-		name: 'Raw guppy',
-		timePerFish: 1
-	},
-	{
-		level: 20,
-		xp: 16,
-		id: itemID('Raw cavefish'),
-		name: 'Raw cavefish',
-		timePerFish: 1
-	},
-	{
-		level: 33,
-		xp: 24,
-		id: itemID('Raw tetra'),
-		name: 'Raw tetra',
-		timePerFish: 1
-	},
-	{
-		level: 46,
-		xp: 33,
-		id: itemID('Raw catfish'),
-		name: 'Raw catfish',
-		timePerFish: 1
-	}
-];
 
 export const camdozaalFishingTask: MinionTask = {
 	type: 'CamdozaalFishing',
@@ -51,10 +18,10 @@ export const camdozaalFishingTask: MinionTask = {
 		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
 
 		// Fish types inside camdozaal
-		const guppy = camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
-		const cavefish = camdozaalFishes.find(_fish => _fish.name === 'Raw cavefish')!;
-		const tetra = camdozaalFishes.find(_fish => _fish.name === 'Raw tetra')!;
-		const catfish = camdozaalFishes.find(_fish => _fish.name === 'Raw catfish')!;
+		const guppy = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
+		const cavefish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw cavefish')!;
+		const tetra = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw tetra')!;
+		const catfish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw catfish')!;
 
 		// Loot table based on users fishing level
 		const camdozaalFishTable = new LootTable().add(guppy.id);
@@ -149,18 +116,18 @@ export const camdozaalFishingTask: MinionTask = {
 		}
 
 		// Add clue scrolls
-		const clueScrollChance = 257_770;
-		addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, clueScrollChance, loot);
+		if (guppy.clueScrollChance) {
+			addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, guppy.clueScrollChance, loot);
+		}
 
-		// Heron Pet roll
-		const totalFishCaught = catfishCaught + tetraCaught + cavefishCaught + guppyCaught;
-		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Fishing, 257_770);
-		if (roll(petDropRate / totalFishCaught)) {
-			loot.add('Heron');
+		// Rock golem roll
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Fishing, guppy.petChance!);
+		if (roll(petDropRate / quantity)) {
+			loot.add('Rock golem');
 			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
-				`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Heron while fishing in Camdozaal at level ${currentFishLevel} Fishing!`
+				`${Emoji.Fishing} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Heron while fishing in Camdozaal at level ${currentFishLevel} Fishing!`
 			);
 		}
 

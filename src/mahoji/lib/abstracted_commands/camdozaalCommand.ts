@@ -4,6 +4,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
+import Fishing from '../../../lib/skilling/skills/fishing';
 import Mining from '../../../lib/skilling/skills/mining';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID, randomVariation } from '../../../lib/util';
@@ -133,7 +134,9 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'CamdozaalFishing');
-	const timePerFish = 5.5 * Time.Second;
+	const camdozaalfish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
+	let timePerFish = camdozaalfish.timePerFish * Time.Second;
+
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerFish);
 	}
