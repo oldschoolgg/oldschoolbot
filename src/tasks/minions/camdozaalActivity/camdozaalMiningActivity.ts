@@ -1,6 +1,7 @@
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
+import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import Mining from '../../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
@@ -85,6 +86,11 @@ export const camdozaalMiningTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished mining in Camdozzal! ${xpRes}`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
+		}
+
+		// Add clue scrolls
+		if (Mining.CamdozaalMine.clueScrollChance) {
+			addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, Mining.CamdozaalMine.clueScrollChance, loot);
 		}
 
 		// Rock golem roll
