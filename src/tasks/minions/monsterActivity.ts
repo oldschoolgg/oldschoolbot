@@ -207,7 +207,7 @@ export const monsterTask: MinionTask = {
 		const isOnTaskResult = await isOnSlayerTask({ user, monsterID, quantityKilled: quantity });
 
 		const superiorTable = isOnTaskResult.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
-		const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
+		const isInCatacombs = (!usingCannon ? monster.existsInCatacombs ?? undefined : undefined) && !isInWilderness;
 
 		const ringOfWealthI = (user.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness) as boolean;
 
@@ -248,7 +248,7 @@ export const monsterTask: MinionTask = {
 		if (newSuperiorCount) {
 			// Superior loot and totems if in catacombs
 			loot.add(superiorTable!.kill(newSuperiorCount));
-			if (isInCatacombs && !isInWilderness) loot.add('Dark totem base', newSuperiorCount);
+			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
 		}
 
