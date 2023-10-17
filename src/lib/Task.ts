@@ -226,7 +226,8 @@ const ignored: activity_type_enum[] = [
 	activity_type_enum.BirthdayEvent,
 	activity_type_enum.BlastFurnace,
 	activity_type_enum.Easter,
-	activity_type_enum.HalloweenEvent
+	activity_type_enum.HalloweenEvent,
+	activity_type_enum.Revenants
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {
