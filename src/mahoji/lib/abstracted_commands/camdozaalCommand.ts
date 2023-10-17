@@ -97,7 +97,7 @@ async function smithingCommand(user: MUser, channelID: string, quantity: number 
 	const itemsNeeded = new Bank({ 'Barronite deposit': 1 }).clone();
 	const maxCanDo = user.bank.fits(itemsNeeded);
 	if (maxCanDo === 0) {
-		return "You don't have enough supplies to smith even one of this item!";
+		return "You don't own a single Barronite deposit!";
 	}
 	if (maxCanDo < quantity) {
 		quantity = maxCanDo;
