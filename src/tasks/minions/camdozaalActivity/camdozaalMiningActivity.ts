@@ -90,9 +90,8 @@ export const camdozaalMiningTask: MinionTask = {
 		}
 
 		// Add clue scrolls
-		if (Mining.CamdozaalMine.clueScrollChance) {
-			addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, Mining.CamdozaalMine.clueScrollChance, loot);
-		}
+		let clueScrollChance = Mining.CamdozaalMine.clueScrollChance!;
+		addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, clueScrollChance, loot);
 
 		// Rock golem roll
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, camdozaalMine.petChance!);
