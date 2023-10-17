@@ -93,12 +93,17 @@ async function smithingCommand(user: MUser, channelID: string, quantity: number 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerSmith);
 	}
-	const duration = timePerSmith * quantity;
 
-	if (user.bank.amount('Barronite deposit') < quantity) {
-		return "You don't have enough Barronite desposit's to smelt.";
+	const itemsNeeded = new Bank({ 'Barronite deposit': 1 }).clone();
+	const maxCanDo = user.bank.fits(itemsNeeded);
+	if (maxCanDo === 0) {
+		return "You don't have enough supplies to smelt even one of this item!";
+	}
+	if (maxCanDo < quantity) {
+		quantity = maxCanDo;
 	}
 
+	const duration = timePerSmith * quantity;
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
