@@ -120,10 +120,10 @@ export const camdozaalFishingTask: MinionTask = {
 			addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, guppy.clueScrollChance, loot);
 		}
 
-		// Rock golem roll
+		// Heron Pet roll
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Fishing, guppy.petChance!);
 		if (roll(petDropRate / quantity)) {
-			loot.add('Rock golem');
+			loot.add('Heron');
 			str += "\nYou have a funny feeling you're being followed...";
 			globalClient.emit(
 				Events.ServerNotification,
