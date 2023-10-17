@@ -60,7 +60,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackStab],
 		canBarrage: true,
 		pkActivityRating: 7,
-		pkBaseDeathChance: 10
+		pkBaseDeathChance: 10,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.AbyssalSire.id,
@@ -122,7 +123,8 @@ export const vannakaMonsters: KillableMonster[] = [
 			}
 		],
 		pkActivityRating: 4,
-		pkBaseDeathChance: 3
+		pkBaseDeathChance: 3,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.BabyBlueDragon.id,
@@ -229,7 +231,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackMagic],
 		canCannon: true,
 		pkActivityRating: 4,
-		pkBaseDeathChance: 6
+		pkBaseDeathChance: 6,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.BlueDragon.id,
@@ -443,7 +446,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		pkActivityRating: 6,
-		pkBaseDeathChance: 8
+		pkBaseDeathChance: 8,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.ElfArcher.id,
@@ -517,7 +521,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		pkActivityRating: 3,
-		pkBaseDeathChance: 8
+		pkBaseDeathChance: 8,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.Gargoyle.id,
@@ -612,7 +617,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		canBarrage: true,
 		canCannon: true,
 		pkActivityRating: 8,
-		pkBaseDeathChance: 9
+		pkBaseDeathChance: 9,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.GreenDragon.id,
@@ -676,7 +682,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		cannonMulti: true,
 		canBarrage: false,
 		pkActivityRating: 5,
-		pkBaseDeathChance: 8
+		pkBaseDeathChance: 8,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.IceGiant.id,
@@ -696,7 +703,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		pkActivityRating: 2,
-		pkBaseDeathChance: 6
+		pkBaseDeathChance: 6,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.IceTroll.id,
@@ -790,7 +798,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic],
 		pkActivityRating: 6,
-		pkBaseDeathChance: 8
+		pkBaseDeathChance: 8,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.JungleHorror.id,
@@ -860,7 +869,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		cannonMulti: true,
 		canBarrage: false,
 		pkActivityRating: 7,
-		pkBaseDeathChance: 9
+		pkBaseDeathChance: 9,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.Molanisk.id,
@@ -1133,7 +1143,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic],
 		pkActivityRating: 4,
-		pkBaseDeathChance: 6
+		pkBaseDeathChance: 6,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.SpiritualRanger.id,
@@ -1153,7 +1164,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackRanged],
 		pkActivityRating: 4,
-		pkBaseDeathChance: 6
+		pkBaseDeathChance: 6,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.SpiritualWarrior.id,
@@ -1173,7 +1185,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		pkActivityRating: 4,
-		pkBaseDeathChance: 6
+		pkBaseDeathChance: 6,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.TerrorDog.id,

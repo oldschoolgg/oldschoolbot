@@ -263,6 +263,15 @@ export async function minionKillCommand(
 	const isUndead = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
 	const isDragon = osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon);
 
+	function applyRevWeaponBoost() {
+		const style = convertAttackStylesToSetup(user.user.attack_style);
+		const specialWeapon = revSpecialWeapons[style];
+		if (wildyGear.hasEquipped(specialWeapon.name)) {
+			timeToFinish = reduceNumByPercent(timeToFinish, 15);
+			boosts.push(`${15}% for ${specialWeapon.name}`);
+		}
+	}
+
 	function applyDragonBoost() {
 		const hasDragonLance = monster?.canBePked
 			? wildyGear.hasEquipped('Dragon hunter lance')
@@ -332,6 +341,11 @@ export async function minionKillCommand(
 			}
 		}
 	}
+
+	if (isInWilderness && monster.revsWeaponBoost) {
+		applyRevWeaponBoost();
+	}
+
 	if (isDragon && monster.name.toLowerCase() !== 'vorkath') {
 		applyDragonBoost();
 	}

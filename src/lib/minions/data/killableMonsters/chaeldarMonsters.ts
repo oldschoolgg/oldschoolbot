@@ -39,7 +39,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
 		healAmountNeeded: 24,
 		pkActivityRating: 7,
-		pkBaseDeathChance: 10
+		pkBaseDeathChance: 10,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.BlackDemon.id,
@@ -68,7 +69,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		pkActivityRating: 7,
-		pkBaseDeathChance: 9
+		pkBaseDeathChance: 9,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.CaveHorror.id,
@@ -233,7 +235,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		cannonMulti: true,
 		canBarrage: false,
 		pkActivityRating: 7,
-		pkBaseDeathChance: 9
+		pkBaseDeathChance: 9,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.IronDragon.id,

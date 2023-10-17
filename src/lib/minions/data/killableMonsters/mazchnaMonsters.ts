@@ -88,7 +88,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		pkActivityRating: 4,
-		pkBaseDeathChance: 2
+		pkBaseDeathChance: 2,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.FeralVampyre.id,
@@ -165,7 +166,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		pkActivityRating: 1,
-		pkBaseDeathChance: 5
+		pkBaseDeathChance: 5,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.Obor.id,
@@ -217,7 +219,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		pkActivityRating: 4,
-		pkBaseDeathChance: 3
+		pkBaseDeathChance: 3,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.Killerwatt.id,

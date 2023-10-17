@@ -43,7 +43,8 @@ export const nieveMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		pkActivityRating: 2,
-		pkBaseDeathChance: 7
+		pkBaseDeathChance: 7,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.BrutalBlackDragon.id,

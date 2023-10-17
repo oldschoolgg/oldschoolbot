@@ -487,7 +487,8 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		pkActivityRating: 8,
-		pkBaseDeathChance: 4
+		pkBaseDeathChance: 4,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.GrizzlyBearCub.id,
@@ -855,7 +856,8 @@ export const turaelMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		pkActivityRating: 3,
-		pkBaseDeathChance: 2
+		pkBaseDeathChance: 2,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.Seagull.id,
@@ -908,7 +910,8 @@ export const turaelMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		pkActivityRating: 1,
-		pkBaseDeathChance: 1
+		pkBaseDeathChance: 1,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.SkeletonFremennik.id,
@@ -987,7 +990,8 @@ export const turaelMonsters: KillableMonster[] = [
 		cannonMulti: false,
 		canBarrage: false,
 		pkActivityRating: 1,
-		pkBaseDeathChance: 1
+		pkBaseDeathChance: 1,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.SulphurLizard.id,
@@ -1221,7 +1225,8 @@ export const turaelMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush],
 		pkActivityRating: 6,
-		pkBaseDeathChance: 4
+		pkBaseDeathChance: 4,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.ZombieRat.id,

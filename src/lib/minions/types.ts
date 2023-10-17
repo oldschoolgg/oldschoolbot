@@ -67,6 +67,7 @@ export interface KillableMonster {
 	existsInCatacombs?: boolean;
 	qpRequired?: number;
 	difficultyRating?: number;
+	revsWeaponBoost?: boolean;
 
 	/**
 	 * An array of objects of ([key: itemID]: boostPercentage) boosts that apply to
