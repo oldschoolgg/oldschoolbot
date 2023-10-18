@@ -9,17 +9,6 @@ import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 
-// Custom gem loot table for barronite rocks
-const gemTable = new LootTable()
-	.add('Uncut sapphire', 0, 70)
-	.add('Uncut sapphire', 1, 32)
-	.add('Uncut emerald', 1, 16)
-	.add('Uncut ruby', 1, 8)
-	.add('Uncut diamond', 1, 8);
-
-// Barronite rock loot table
-const barroniteTable = new LootTable().add('Barronite shards', [4, 6], 76).add('Barronite deposit', 1, 24);
-
 export const camdozaalMiningTask: MinionTask = {
 	type: 'CamdozaalMining',
 	async run(data: ActivityTaskOptionsWithQuantity) {
@@ -28,6 +17,26 @@ export const camdozaalMiningTask: MinionTask = {
 		const camdozaalMine = Mining.CamdozaalMine;
 		const currentLevel = user.skillLevel(SkillsEnum.Mining);
 
+		// amulet of glory check for mining
+		let barroniteGems = 256;
+		if (user.hasEquipped('amulet of glory')) {
+			barroniteGems = 86;
+		}
+
+		// Barronite rock loot table
+		const barroniteTable = new LootTable()
+			.add('Barronite shards', [4, 6], 76)
+			.add('Barronite deposit', 1, 24)
+			.tertiary(
+				barroniteGems,
+				new LootTable()
+					.add('Uncut sapphire', 0, 70)
+					.add('Uncut sapphire', 1, 32)
+					.add('Uncut emerald', 1, 16)
+					.add('Uncut ruby', 1, 8)
+					.add('Uncut diamond', 1, 8)
+			);
+
 		let barroniteShardMined = 0;
 		let barroniteDepositMined = 0;
 
@@ -35,17 +44,13 @@ export const camdozaalMiningTask: MinionTask = {
 		const loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
-			if (roll(256)) {
-				loot.add(gemTable.roll());
-			} else {
-				const barroniteMined = barroniteTable.roll();
-				if (barroniteMined.has('Barronite shards')) {
-					barroniteShardMined++;
-					loot.add(barroniteMined);
-				} else if (barroniteMined.has('Barronite deposit')) {
-					barroniteDepositMined++;
-					loot.add(barroniteMined);
-				}
+			const barroniteMined = barroniteTable.roll();
+			if (barroniteMined.has('Barronite shards')) {
+				barroniteShardMined++;
+				loot.add(barroniteMined);
+			} else if (barroniteMined.has('Barronite deposit')) {
+				barroniteDepositMined++;
+				loot.add(barroniteMined);
 			}
 		}
 

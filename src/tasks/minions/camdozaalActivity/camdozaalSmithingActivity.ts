@@ -9,13 +9,13 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 const barroniteDepositLootTable = new LootTable()
 	.add('Barronite shards', [6, 8], 12)
 	.add('Barronite shards', [15, 35], 1)
-	.tertiary(200, 'Barronite head')
-	.tertiary(300, 'Imcando hammer (broken)')
-	.tertiary(350, 'Ancient astroscope')
-	.tertiary(350, 'Ancient carcanet')
-	.tertiary(350, 'Ancient globe')
-	.tertiary(350, 'Ancient ledger')
-	.tertiary(350, 'Ancient treatise');
+	.oneIn(200, 'Barronite head')
+	.oneIn(300, 'Imcando hammer (broken)')
+	.oneIn(350, 'Ancient astroscope')
+	.oneIn(350, 'Ancient carcanet')
+	.oneIn(350, 'Ancient globe')
+	.oneIn(350, 'Ancient ledger')
+	.oneIn(350, 'Ancient treatise');
 
 export const camdozaalSmithingTask: MinionTask = {
 	type: 'CamdozaalSmithing',

@@ -1,4 +1,3 @@
-import { randInt } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
@@ -24,7 +23,10 @@ export const camdozaalFishingTask: MinionTask = {
 		const catfish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw catfish')!;
 
 		// Loot table based on users fishing level
-		const camdozaalFishTable = new LootTable().add(guppy.id);
+		const camdozaalFishTable = new LootTable()
+			.add(guppy.id)
+			.oneIn(256, 'Barronite handle')
+			.oneIn(5, 'Barronite shards', 3);
 		if (currentFishLevel >= cavefish.level) {
 			camdozaalFishTable.add(cavefish.id);
 		}
@@ -39,38 +41,28 @@ export const camdozaalFishingTask: MinionTask = {
 		let cavefishCaught = 0;
 		let tetraCaught = 0;
 		let catfishCaught = 0;
-		let barroniteShards = 0;
 
 		// Count loot received during trip
 		const loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
-			let fishingRoll = randInt(1, 5);
-			if (roll(250)) {
-				loot.add('Barronite handle');
-			}
-			if (fishingRoll === 5) {
-				barroniteShards += 3;
+			const fishCaught = camdozaalFishTable.roll();
+			if (fishCaught.has(guppy.id)) {
+				guppyCaught++;
+				loot.add(guppy.id);
+			} else if (fishCaught.has(cavefish.id)) {
+				cavefishCaught++;
+				loot.add(cavefish.id);
+			} else if (fishCaught.has(tetra.id)) {
+				tetraCaught++;
+				loot.add(tetra.id);
+			} else if (fishCaught.has(catfish.id)) {
+				catfishCaught++;
+				loot.add(cavefish.id);
 			} else {
-				const fishCaught = camdozaalFishTable.roll();
-				if (fishCaught.has(guppy.id)) {
-					guppyCaught++;
-				} else if (fishCaught.has(cavefish.id)) {
-					cavefishCaught++;
-				} else if (fishCaught.has(tetra.id)) {
-					tetraCaught++;
-				} else if (fishCaught.has(catfish.id)) {
-					catfishCaught++;
-				}
+				loot.add(fishCaught);
 			}
 		}
-
-		// Add Barronite shards & fish from trip
-		loot.add('Barronite shards', barroniteShards)
-			.add(guppy.id, guppyCaught)
-			.add(cavefish.id, cavefishCaught)
-			.add(tetra.id, tetraCaught)
-			.add(catfish.id, catfishCaught);
 
 		// Add up the xp from the trip
 		let fishingXpReceived =
