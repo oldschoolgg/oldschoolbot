@@ -71,7 +71,7 @@ export const mortimerTask: MinionTask = {
 			fakeLoot.add(item);
 		}
 
-		const str = `Maledict Mortimer says... ${bold(randArrItem(mortimerEndMessages))}
+		const str = `${user}, Maledict Mortimer says... ${bold(randArrItem(mortimerEndMessages))}
 
 ${icon}${user.rawUsername} received ${bold(fakeLoot.toString())}.`;
 
