@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { describe, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
 import backgroundImages from '../../src/lib/minions/data/bankBackgrounds';
 
