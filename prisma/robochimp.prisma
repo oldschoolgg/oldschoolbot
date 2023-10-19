@@ -52,6 +52,8 @@ model User {
     bso_cl_percent  Float?
     tag             Tag[]
 
+    store_bitfield Int[]
+
     @@map("user")
 }
 
@@ -71,4 +73,14 @@ model Tag {
     creator User   @relation(fields: [user_id], references: [id])
 
     @@map("tag")
+}
+
+model StoreCode {
+    product_id Int
+    code       String @id @unique
+
+    redeemed_at         DateTime?
+    redeemed_by_user_id String?   @db.VarChar(19)
+
+    @@map("store_code")
 }
