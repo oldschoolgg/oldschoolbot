@@ -14,4 +14,7 @@ describe('Bank Backgrounds', () => {
 			}
 		}
 	});
+	test('No duplicate ids', async () => {
+		expect(backgroundImages.length).toBe(new Set(backgroundImages.map(bg => bg.id)).size);
+	});
 });
