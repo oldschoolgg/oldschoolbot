@@ -21,6 +21,7 @@ import { GearSetup, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
 import { IMaterialBank } from './invention';
 import { MaterialBank } from './invention/MaterialBank';
+import backgroundImages from './minions/data/bankBackgrounds';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
 import { defaultFarmingContract } from './minions/farming';
@@ -872,6 +873,30 @@ GROUP BY data->>'clueID';`);
 			changes.set('Clue scroll (elite)', 5);
 		}
 		return changes;
+	}
+
+	async checkBankBackground() {
+		if (this.bitfield.includes(BitField.isModerator)) {
+			return;
+		}
+		const resetBackground = async () => {
+			await this.update({ bankBackground: 1 });
+		};
+		const background = backgroundImages.find(i => i.id === this.user.bankBackground);
+		if (!background) {
+			return resetBackground();
+		}
+		if (background.id === 1) return;
+		if (background.storeBitField && this.user.store_bitfield.includes(background.storeBitField)) {
+			return;
+		}
+		if (background.perkTierNeeded && this.perkTier() >= background.perkTierNeeded) {
+			return;
+		}
+		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
+			return;
+		}
+		return resetBackground();
 	}
 }
 declare global {
