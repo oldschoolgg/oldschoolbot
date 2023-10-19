@@ -395,6 +395,38 @@ const backgroundImages: BankBackground[] = [
 		gpCost: 500_000,
 		transparent: true,
 		storeBitField: StoreBitfield.HasSetThreeTransparentAnimalsPermanentBankBackgrounds
+	},
+	{
+		id: 32,
+		name: 'Troll',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000
+	},
+	{
+		id: 33,
+		name: 'Christmas',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000
+	},
+	{
+		id: 35,
+		name: 'Jad',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000
+	},
+	{
+		id: 36,
+		name: 'Halloween Logo',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000
 	}
 ];
 
