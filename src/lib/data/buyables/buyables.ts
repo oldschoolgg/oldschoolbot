@@ -933,6 +933,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Salve amulet',
 		gpCost: 200_000,
+		ironmanPrice: 20_000,
 		skillsNeeded: {
 			crafting: 35
 		},

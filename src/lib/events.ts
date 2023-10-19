@@ -15,6 +15,7 @@ import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
 import { prisma } from './settings/prisma';
+import { ItemBank } from './types';
 import { channelIsSendable, formatDuration, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
@@ -136,6 +137,7 @@ const mentionCommands: MentionCommand[] = [
 			if (items.length === 0) return msg.reply('No results for that item.');
 
 			const gettedItem = items[0];
+			const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });
 
 			let str = `Found ${items.length} items:\n${items
 				.slice(0, 5)
@@ -146,6 +148,7 @@ const mentionCommands: MentionCommand[] = [
 					if (user.bank.has(item.id)) icons.push(Emoji.Bank);
 					const isCustom = customItems.includes(item.id);
 					if (isCustom) icons.push(Emoji.BSO);
+					if (((sacrificedBank as ItemBank)[item.id] ?? 0) > 0) icons.push(Emoji.Incinerator);
 
 					const price = toKMB(Math.floor(item.price));
 

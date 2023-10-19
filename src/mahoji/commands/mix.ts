@@ -1,5 +1,5 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { reduceNumByPercent, Time } from 'e';
+import { clamp, reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
@@ -125,6 +125,7 @@ export const mixCommand: OSBMahojiCommand = {
 			}
 		}
 
+		quantity = clamp(quantity, 1, maxCanDo);
 		if (quantity * timeToMixSingleItem > maxTripLength)
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength

@@ -203,20 +203,22 @@ export const minionCommand: OSBMahojiCommand = {
 						const isMod = mUser.bitfield.includes(BitField.isModerator);
 						const bankImages = bankImageGenerator.backgroundImages;
 						const allAccounts = getAllIDsOfUser(mUser);
-						const owned = bankImages.filter(i => i.owners?.some(i => allAccounts.includes(i)));
-						return [
-							...owned,
-							...bankImages
-								.filter(bg => isMod || bg.available)
-								.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
-						].map(i => {
-							const name = owned.includes(i)
-								? `${i.name} (Your Custom Bg)`
-								: i.perkTierNeeded
-								? `${i.name} (Tier ${i.perkTierNeeded - 1} patrons)`
-								: i.name;
-							return { name, value: i.name };
-						});
+						const owned = bankImages
+							.filter(
+								bg =>
+									(bg.storeBitField && mUser.user.store_bitfield.includes(bg.storeBitField)) ||
+									bg.owners?.some(i => allAccounts.includes(i))
+							)
+							.map(bg => bg.id);
+						return bankImages
+							.filter(bg => isMod || bg.available || owned.includes(bg.id))
+							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
+							.map(i => {
+								const name = i.perkTierNeeded
+									? `${i.name} (Tier ${i.perkTierNeeded - 1} patrons)`
+									: i.name;
+								return { name, value: i.name };
+							});
 					}
 				}
 			]

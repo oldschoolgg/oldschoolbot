@@ -1,5 +1,6 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { PrismaClient, TriviaQuestion, User } from '@prisma/robochimp';
+import deepEqual from 'deep-equal';
 import { calcWhatPercent, round, sumArr } from 'e';
 
 import { BOT_TYPE } from './constants';
@@ -53,6 +54,9 @@ export async function roboChimpSyncData(user: MUser) {
 		}
 	});
 
+	if (!deepEqual(newUser.store_bitfield, user.user.store_bitfield)) {
+		await user.update({ store_bitfield: newUser.store_bitfield });
+	}
 	return newUser;
 }
 

@@ -333,7 +333,10 @@ export const farmingTask: MinionTask = {
 
 				if (shouldCleanHerb && plantToHarvest.herbXp) {
 					herbloreXp = cropYield * plantToHarvest.herbXp;
-					await user.addItemsToCollectionLog(new Bank().add(plantToHarvest.outputCrop).multiply(cropYield));
+					const uncleanedHerbLoot = new Bank().add(plantToHarvest.outputCrop, cropYield);
+					await user.addItemsToCollectionLog(uncleanedHerbLoot);
+					const cleanedHerbLoot = new Bank().add(plantToHarvest.cleanHerbCrop, cropYield);
+					await userStatsBankUpdate(user.id, 'herbs_cleaned_while_farming_bank', cleanedHerbLoot);
 				}
 
 				if (plantToHarvest.name === 'Limpwurt') {

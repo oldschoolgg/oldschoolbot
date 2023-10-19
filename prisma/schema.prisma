@@ -487,6 +487,8 @@ model User {
 
   bso_mystery_trail_current_step_id Int?
 
+  store_bitfield Int[]
+
   // Migrate
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree Json? @map("farmingPatches.fruit tree") @db.Json
@@ -964,6 +966,8 @@ model UserStats {
 
   last_daily_timestamp           BigInt @default(0)
   last_tears_of_guthix_timestamp BigInt @default(0)
+
+  herbs_cleaned_while_farming_bank Json @default("{}") @db.Json
 
   main_server_challenges_won Int @default(0)
 

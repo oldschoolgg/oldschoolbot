@@ -34,6 +34,13 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 		return `Your bank background is now **${selectedImage.name}**!`;
 	}
 
+	if (selectedImage.storeBitField && user.user.store_bitfield.includes(selectedImage.storeBitField)) {
+		await user.update({
+			bankBackground: selectedImage.id
+		});
+		return `Your bank background is now **${selectedImage.name}**!`;
+	}
+
 	if (selectedImage.sacValueRequired) {
 		const sac = Number(user.user.sacrificedValue);
 		if (sac < selectedImage.sacValueRequired) {
