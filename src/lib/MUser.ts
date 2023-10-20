@@ -896,6 +896,19 @@ GROUP BY data->>'clueID';`);
 		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
 			return;
 		}
+		if (!background.storeBitField && !background.perkTierNeeded && !background.bitfield && !background.owners) {
+			return;
+		}
+		if (background.owners) {
+			const userIDs = [
+				this.id,
+				...this.user.ironman_alts,
+				...(this.user.main_account ? [this.user.main_account] : [])
+			];
+			if (background.owners.some(owner => userIDs.includes(owner))) {
+				return;
+			}
+		}
 		return resetBackground();
 	}
 }
