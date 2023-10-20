@@ -166,6 +166,8 @@ export class BingoManager {
 				completed = tile.oneOf.some(id => cl.has([id]));
 			} else if ('allOf' in tile) {
 				completed = tile.allOf.every(id => cl.has(id));
+			} else if ('bank' in tile) {
+				completed = cl.has(tile.bank);
 			} else {
 				completed = tile.customReq(cl);
 			}
