@@ -40,7 +40,15 @@ import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
 import { MTame } from './structures/MTame';
 import { ItemBank, Skills } from './types';
-import { addItemToBank, assert, convertXPtoLVL, itemNameFromID, murMurSort, percentChance } from './util';
+import {
+	addItemToBank,
+	assert,
+	convertXPtoLVL,
+	getAllIDsOfUser,
+	itemNameFromID,
+	murMurSort,
+	percentChance
+} from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
@@ -900,11 +908,7 @@ GROUP BY data->>'clueID';`);
 			return;
 		}
 		if (background.owners) {
-			const userIDs = [
-				this.id,
-				...this.user.ironman_alts,
-				...(this.user.main_account ? [this.user.main_account] : [])
-			];
+			const userIDs = getAllIDsOfUser(this);
 			if (background.owners.some(owner => userIDs.includes(owner))) {
 				return;
 			}
