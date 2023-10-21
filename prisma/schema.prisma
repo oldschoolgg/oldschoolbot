@@ -404,6 +404,8 @@ model User {
 
   completed_ca_task_ids Int[]
 
+  store_bitfield Int[]
+
   // Migrate
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
   farmingPatches_fruit_tree Json? @map("farmingPatches.fruit tree") @db.Json

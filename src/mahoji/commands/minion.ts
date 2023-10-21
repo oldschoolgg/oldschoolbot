@@ -201,8 +201,11 @@ export const minionCommand: OSBMahojiCommand = {
 						const mUser = await mUserFetch(user.id);
 						const isMod = mUser.bitfield.includes(BitField.isModerator);
 						const bankImages = bankImageGenerator.backgroundImages;
+						const owned = bankImages
+							.filter(bg => bg.storeBitField && mUser.user.store_bitfield.includes(bg.storeBitField))
+							.map(bg => bg.id);
 						return bankImages
-							.filter(bg => isMod || bg.available)
+							.filter(bg => isMod || bg.available || owned.includes(bg.id))
 							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => {
 								const name = i.perkTierNeeded
