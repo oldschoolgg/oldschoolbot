@@ -279,7 +279,7 @@ export async function minionKillCommand(
 		const hasBlackMask = monster?.canBePked
 			? wildyGear.hasEquipped('Black mask')
 			: user.hasEquippedOrInBank('Black mask');
-		const hasBlackMaskI = isOnTask
+		const hasBlackMaskI = monster?.canBePked
 			? wildyGear.hasEquipped('Black mask (i)')
 			: user.hasEquippedOrInBank('Black mask (i)');
 
