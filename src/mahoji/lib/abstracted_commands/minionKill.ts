@@ -369,18 +369,30 @@ export async function minionKillCommand(
 	}
 
 	function applyBlackMaskBoost() {
+		const hasInfernalSlayerHelmI = monster?.canBePked
+			? wildyGear.hasEquipped('Infernal slayer helmet(i)')
+			: user.hasEquippedOrInBank('Infernal slayer helmet(i)');
+		const hasInfernalSlayerHelm = monster?.canBePked
+			? wildyGear.hasEquipped('Infernal slayer helmet')
+			: user.hasEquippedOrInBank('Infernal slayer helmet');
 		const hasBlackMask = monster?.canBePked
 			? wildyGear.hasEquipped('Black mask')
 			: user.hasEquippedOrInBank('Black mask');
-		const hasBlackMaskI = isOnTask
+		const hasBlackMaskI = monster?.canBePked
 			? wildyGear.hasEquipped('Black mask (i)')
 			: user.hasEquippedOrInBank('Black mask (i)');
 
 		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
-			if (hasBlackMaskI) {
+			if (hasInfernalSlayerHelmI) {
+				blackMaskBoost = 22;
+				blackMaskBoostMsg = `${blackMaskBoost}% for Infernal slayer helmet(i) on task`;
+			} else if (hasBlackMaskI) {
 				blackMaskBoost = oneSixthBoost;
 				blackMaskBoostMsg = `${blackMaskBoost}% for Black mask (i) on non-melee task`;
 			}
+		} else if (hasInfernalSlayerHelm) {
+			blackMaskBoost = 17;
+			blackMaskBoostMsg = `${blackMaskBoost}% for Infernal slayer helmet on melee task`;
 		} else if (hasBlackMask) {
 			blackMaskBoost = oneSixthBoost;
 			blackMaskBoostMsg = `${blackMaskBoost}% for Black mask on melee task`;
