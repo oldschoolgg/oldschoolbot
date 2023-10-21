@@ -103,7 +103,7 @@ class PatreonTask {
 	async changeTier(userID: string, from: PerkTier, to: PerkTier) {
 		const user = await prisma.user.findFirst({
 			where: { id: userID },
-			select: { bitfield: true, bankBackground: true }
+			select: { bitfield: true }
 		});
 		if (!user) return null;
 
