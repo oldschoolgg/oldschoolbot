@@ -120,14 +120,6 @@ class PatreonTask {
 				bitfield: newBitfield
 			});
 		} catch (_) {}
-
-		// Remove patron bank background
-		const bg = backgroundImages.find(bg => bg.id === user.bankBackground);
-		if (bg && bg.perkTierNeeded && bg.perkTierNeeded > to) {
-			await mahojiUserSettingsUpdate(userID, {
-				bankBackground: 1
-			});
-		}
 	}
 
 	async givePerks(userID: string, perkTier: PerkTier) {
