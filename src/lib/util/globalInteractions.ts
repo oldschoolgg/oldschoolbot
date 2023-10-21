@@ -242,6 +242,9 @@ function icDonateValidation(user: MUser, donator: MUser) {
 	if (user.id === donator.id) {
 		return 'You cannot donate to yourself.';
 	}
+	if (user.bitfield.includes(BitField.NoItemContractDonations)) {
+		return "That user doesn't want donations.";
+	}
 	const details = getItemContractDetails(user);
 	if (!details.nextContractIsReady || !details.currentItem) {
 		return "That user's Item Contract isn't ready.";
@@ -298,7 +301,7 @@ async function donateICHandler(interaction: ButtonInteraction) {
 
 		return interactionReply(interaction, {
 			content: `${donator}, you donated ${cost} to ${user}!
-	
+
 ${user.mention} ${await handInContract(null, user)}`,
 			allowedMentions: {
 				users: [user.id]

@@ -129,6 +129,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable farming reminders',
 		bit: BitField.DisabledFarmingReminders
+	},
+	{
+		name: 'Disable Item Contract Donations',
+		bit: BitField.NoItemContractDonations
 	}
 ];
 
