@@ -200,7 +200,9 @@ export const tobTask: MinionTask = {
 				duration
 			}))
 		});
-
+		if (data.solo) {
+			return handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, totalLoot, undefined);
+		}
 		return handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null, undefined);
 	}
 };
