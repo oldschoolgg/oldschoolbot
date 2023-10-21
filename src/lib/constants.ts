@@ -302,7 +302,8 @@ export enum BitField {
 	HasPlantedIvy = 209,
 	HasGuthixEngram = 210,
 	ScrollOfLongevityDisabled = 211,
-	HasUnlockedYeti = 212
+	HasUnlockedYeti = 212,
+	NoItemContractDonations = 213
 }
 
 interface BitFieldData {
@@ -413,6 +414,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisabledFarmingReminders]: {
 		name: 'Disable Farming Reminders',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.NoItemContractDonations]: {
+		name: 'Disable Item Contract donations',
 		protected: false,
 		userConfigurable: true
 	}
