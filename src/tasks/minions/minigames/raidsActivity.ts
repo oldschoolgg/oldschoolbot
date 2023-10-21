@@ -217,6 +217,8 @@ export const raidsTask: MinionTask = {
 				],
 				type: 'Chambers of Xerician'
 			});
+
+			handleTripFinish(allUsers[0], channelID, resultMessage, attachment, data, totalLoot);
 		} else if (shouldShowImage) {
 			attachment = await drawChestLootImage({
 				entries: allUsers.map((u, index) => ({
@@ -227,8 +229,8 @@ export const raidsTask: MinionTask = {
 				})),
 				type: 'Chambers of Xerician'
 			});
-		}
 
-		handleTripFinish(allUsers[0], channelID, resultMessage, attachment, data, null);
+			handleTripFinish(allUsers[0], channelID, resultMessage, attachment, data, null);
+		}
 	}
 };
