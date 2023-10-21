@@ -158,7 +158,7 @@ class PatreonTask {
 	async removePerks(userID: string) {
 		const user = await prisma.user.findFirst({
 			where: { id: userID },
-			select: { bitfield: true, badges: true, bank_bg_hex: true }
+			select: { bitfield: true, badges: true }
 		});
 		if (!user) return null;
 
