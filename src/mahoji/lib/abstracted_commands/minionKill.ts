@@ -349,22 +349,21 @@ export async function minionKillCommand(
 			: user.hasEquippedOrInBank('Black mask (i)');
 
 		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
-			if (hasInfernalSlayerHelmI) {
-				blackMaskBoost = 22;
-				blackMaskBoostMsg = `${blackMaskBoost}% for Infernal slayer helmet(i) on task`;
-			} else if (hasBlackMaskI) {
+			if (hasBlackMaskI) {
 				blackMaskBoost = oneSixthBoost;
 				blackMaskBoostMsg = `${blackMaskBoost}% for Black mask (i) on non-melee task`;
 			}
-		} else if (hasInfernalSlayerHelmI) {
-			blackMaskBoost = 22;
-			blackMaskBoostMsg = `${blackMaskBoost}% for Infernal slayer helmet(i) on task`;
 		} else if (hasInfernalSlayerHelm) {
 			blackMaskBoost = 17;
 			blackMaskBoostMsg = `${blackMaskBoost}% for Infernal slayer helmet on melee task`;
 		} else if (hasBlackMask) {
 			blackMaskBoost = oneSixthBoost;
 			blackMaskBoostMsg = `${blackMaskBoost}% for Black mask on melee task`;
+		}
+
+		if (hasInfernalSlayerHelmI) {
+			blackMaskBoost = 22;
+			blackMaskBoostMsg = `${blackMaskBoost}% for Infernal slayer helmet(i) on task`;
 		}
 	}
 
