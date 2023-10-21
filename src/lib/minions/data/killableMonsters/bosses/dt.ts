@@ -493,11 +493,11 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Zaryte vambraces') }],
+				items: [{ boostPercent: 3, itemID: itemID('Tormented bracelet') }],
 				gearSetup: 'mage'
 			},
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Pegasian boots') }],
+				items: [{ boostPercent: 3, itemID: itemID('Eternal boots') }],
 				gearSetup: 'mage'
 			},
 			{
