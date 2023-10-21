@@ -515,7 +515,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		id: 244,
 		name: 'Inspect Repellent',
 		type: 'perfection',
-		monster: 'Phantom Muspah',
+		monster: 'Sarachnis',
 		desc: 'Kill Sarachnis without her dealing damage to anyone.',
 		rng: {
 			chancePerKill: 10,
