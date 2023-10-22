@@ -328,7 +328,9 @@ export async function minionKillCommand(
 			(hasDragonLance && !attackStyles.includes(SkillsEnum.Ranged) && !attackStyles.includes(SkillsEnum.Magic)) ||
 			(hasDragonCrossbow && attackStyles.includes(SkillsEnum.Ranged))
 		) {
-			const boostMessage = hasDragonLance ? `${dragonBoost}% for Dragon hunter lance` : `${dragonBoost}% for Dragon hunter crossbow`;
+			const boostMessage = hasDragonLance
+				? `${dragonBoost}% for Dragon hunter lance`
+				: `${dragonBoost}% for Dragon hunter crossbow`;
 			timeToFinish = reduceNumByPercent(timeToFinish, dragonBoost);
 			boosts.push(boostMessage);
 		}
