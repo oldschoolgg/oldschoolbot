@@ -1,3 +1,4 @@
+import { bold } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -13,6 +14,7 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
+import { quests } from '../lib/abstracted_commands/questCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
 
@@ -83,6 +85,14 @@ export const buyCommand: OSBMahojiCommand = {
 			const { QP } = user;
 			if (QP < buyable.qpRequired) {
 				return `You need ${buyable.qpRequired} QP to purchase this item.`;
+			}
+		}
+		if (buyable.requiredQuests) {
+			const incompleteQuest = buyable.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+			if (incompleteQuest) {
+				return `You need to have completed the ${bold(
+					quests.find(i => i.id === incompleteQuest)!.name
+				)} quest to buy the ${buyable.name}.`;
 			}
 		}
 
