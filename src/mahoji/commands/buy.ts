@@ -87,6 +87,7 @@ export const buyCommand: OSBMahojiCommand = {
 				return `You need ${buyable.qpRequired} QP to purchase this item.`;
 			}
 		}
+
 		if (buyable.requiredQuests) {
 			const incompleteQuest = buyable.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
 			if (incompleteQuest) {
