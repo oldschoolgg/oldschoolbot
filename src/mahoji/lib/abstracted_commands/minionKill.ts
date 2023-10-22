@@ -304,46 +304,12 @@ export async function minionKillCommand(
 
 	const monsterHP = osjsMon?.data.hitpoints ?? 100;
 
-	// Removed vorkath because he has a special boost.
-	if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
-		if (
-			user.hasEquippedOrInBank('Dragon hunter lance') &&
-			!attackStyles.includes(SkillsEnum.Ranged) &&
-			!attackStyles.includes(SkillsEnum.Magic)
-		) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 20);
-			boosts.push('20% for Dragon hunter lance');
-		} else if (user.hasEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 20);
-			boosts.push('20% for Dragon hunter crossbow');
-		}
-	}
-
 	// Black mask and salve don't stack.
 	const oneSixthBoost = 16.67;
 	let blackMaskBoost = 0;
 	let blackMaskBoostMsg = '';
 	let salveAmuletBoost = 0;
 	let salveAmuletBoostMsg = '';
-
-	// Calculate Slayer helmet boost on task if they have black mask or similar
-	if (isOnTask && user.hasEquippedOrInBank('Infernal slayer helmet(i)')) {
-		blackMaskBoost = 22;
-		blackMaskBoostMsg = `${blackMaskBoost}% for Infernal slayer helmet(i) on task`;
-	} else if (
-		isOnTask &&
-		user.hasEquippedOrInBank('Infernal slayer helmet') &&
-		!attackStyles.includes(SkillsEnum.Ranged) &&
-		!attackStyles.includes(SkillsEnum.Magic)
-	) {
-		blackMaskBoost = 17;
-		blackMaskBoostMsg = `${blackMaskBoost}% for Infernal slayer helmet on melee task`;
-	} else if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
-		if (isOnTask && user.hasEquippedOrInBank('Black mask (i)')) {
-			blackMaskBoost = oneSixthBoost;
-			blackMaskBoostMsg = `${blackMaskBoost}% for Black mask (i) on non-melee task`;
-		}
-	}
 
 	const dragonBoost = 15; // Common boost percentage for dragon-related gear
 
@@ -362,17 +328,25 @@ export async function minionKillCommand(
 			(hasDragonLance && !attackStyles.includes(SkillsEnum.Ranged) && !attackStyles.includes(SkillsEnum.Magic)) ||
 			(hasDragonCrossbow && attackStyles.includes(SkillsEnum.Ranged))
 		) {
-			const boostMessage = hasDragonLance ? '15% for Dragon hunter lance' : '15% for Dragon hunter crossbow';
+			const boostMessage = hasDragonLance
+				? `${dragonBoost}% for Dragon hunter lance`
+				: `${dragonBoost}% for Dragon hunter crossbow`;
 			timeToFinish = reduceNumByPercent(timeToFinish, dragonBoost);
 			boosts.push(boostMessage);
 		}
 	}
 
 	function applyBlackMaskBoost() {
+		const hasInfernalSlayerHelmI = monster?.canBePked
+			? wildyGear.hasEquipped('Infernal slayer helmet(i)')
+			: user.hasEquippedOrInBank('Infernal slayer helmet(i)');
+		const hasInfernalSlayerHelm = monster?.canBePked
+			? wildyGear.hasEquipped('Infernal slayer helmet')
+			: user.hasEquippedOrInBank('Infernal slayer helmet');
 		const hasBlackMask = monster?.canBePked
 			? wildyGear.hasEquipped('Black mask')
 			: user.hasEquippedOrInBank('Black mask');
-		const hasBlackMaskI = isOnTask
+		const hasBlackMaskI = monster?.canBePked
 			? wildyGear.hasEquipped('Black mask (i)')
 			: user.hasEquippedOrInBank('Black mask (i)');
 
@@ -381,9 +355,17 @@ export async function minionKillCommand(
 				blackMaskBoost = oneSixthBoost;
 				blackMaskBoostMsg = `${blackMaskBoost}% for Black mask (i) on non-melee task`;
 			}
+		} else if (hasInfernalSlayerHelm) {
+			blackMaskBoost = 17;
+			blackMaskBoostMsg = `${blackMaskBoost}% for Infernal slayer helmet on melee task`;
 		} else if (hasBlackMask) {
 			blackMaskBoost = oneSixthBoost;
 			blackMaskBoostMsg = `${blackMaskBoost}% for Black mask on melee task`;
+		}
+
+		if (hasInfernalSlayerHelmI) {
+			blackMaskBoost = 22;
+			blackMaskBoostMsg = `${blackMaskBoost}% for Infernal slayer helmet(i) on task`;
 		}
 	}
 
