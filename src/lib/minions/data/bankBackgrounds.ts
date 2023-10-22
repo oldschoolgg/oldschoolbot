@@ -430,4 +430,9 @@ const backgroundImages: BankBackground[] = [
 	}
 ];
 
+export function getBankBgById(bgId: number) {
+	const result = backgroundImages.find(bgi => bgi.id === bgId);
+	return result ?? backgroundImages[0];
+}
+
 export default backgroundImages;
