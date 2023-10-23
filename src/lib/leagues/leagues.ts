@@ -1,5 +1,5 @@
 import { activity_type_enum, User } from '@prisma/client';
-import { calcWhatPercent } from 'e';
+import { calcWhatPercent, sumArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -18,8 +18,6 @@ import {
 } from '../../mahoji/lib/abstracted_commands/statCommand';
 import { BitField } from '../constants';
 import { calcCLDetails } from '../data/Collections';
-import { mahojiUserSettingsUpdate } from '../MUser';
-import { roboChimpUserFetch } from '../roboChimp';
 import { getMinigameEntity } from '../settings/minigames';
 import { prisma } from '../settings/prisma';
 import smithables from '../skilling/skills/smithing/smithables';
@@ -47,6 +45,8 @@ export const leagueTasks = [
 	{ name: 'Elite', tasks: eliteTasks, points: 150 },
 	{ name: 'Master', tasks: masterTasks, points: 250 }
 ];
+
+export const maxLeaguesPoints = sumArr(leagueTasks.map(group => group.tasks.length * group.points));
 
 export const allLeagueTasks = leagueTasks.map(i => i.tasks).flat(2);
 
@@ -117,7 +117,8 @@ function calcSuppliesUsedForSmithing(itemsSmithed: Bank) {
 }
 
 export async function leaguesCheckUser(userID: string) {
-	const [mahojiUser, roboChimpUser] = await Promise.all([mUserFetch(userID), roboChimpUserFetch(userID)]);
+	const mahojiUser = await mUserFetch(userID);
+	const roboChimpUser = await mahojiUser.fetchRobochimpUser();
 	const [
 		conStats,
 		poh,
@@ -268,7 +269,7 @@ const unlockables: {
 		name: '+1m max trip length',
 		points: 50_000,
 		onUnlock: async (user: MUser) => {
-			await mahojiUserSettingsUpdate(user.id, {
+			await user.update({
 				bitfield: {
 					push: BitField.HasLeaguesOneMinuteLengthBoost
 				}
@@ -282,8 +283,9 @@ const unlockables: {
 ];
 
 export async function leaguesClaimCommand(userID: string, finishedTaskIDs: number[]) {
-	const roboChimpUser = await roboChimpUserFetch(userID);
 	const mahojiUser = await mUserFetch(userID);
+	const roboChimpUser = await mahojiUser.fetchRobochimpUser();
+
 	const newlyFinishedTasks = finishedTaskIDs.filter(i => !roboChimpUser.leagues_completed_tasks_ids.includes(i));
 
 	const unlockMessages: string[] = [];

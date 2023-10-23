@@ -2,7 +2,6 @@ import { sumArr } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
-import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { BitField } from '../constants';
 import {
 	barrowsChestCL,
@@ -375,8 +374,8 @@ export const mediumTasks: Task[] = [
 		id: 1052,
 		name: 'Complete 20 Farming contracts',
 		has: async ({ user }) => {
-			const contract = getFarmingContractOfUser(user);
-			return contract.contractsCompleted >= 20;
+			const contract = user.farmingContract();
+			return contract.contract.contractsCompleted >= 20;
 		}
 	},
 	{

@@ -2,7 +2,6 @@ import { sumArr } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
-import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { circusBuyables } from '../data/buyables/circusBuyables';
 import { fistOfGuthixBuyables } from '../data/buyables/fistOfGuthixBuyables';
 import { stealingCreationBuyables } from '../data/buyables/stealingCreationBuyables';
@@ -507,8 +506,8 @@ export const hardTasks: Task[] = [
 		id: 2059,
 		name: 'Complete 50 Farming contracts',
 		has: async ({ user }) => {
-			const contract = getFarmingContractOfUser(user);
-			return contract.contractsCompleted >= 50;
+			const contract = user.farmingContract();
+			return contract.contract.contractsCompleted >= 50;
 		}
 	},
 	{

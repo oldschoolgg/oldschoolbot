@@ -1746,7 +1746,7 @@ export interface UserStatsDataNeededForCL {
 
 type CLType = 'sacrifice' | 'bank' | 'collection' | 'temp' | 'tame' | 'disassembly';
 
-export async function getBank(user: MUser, type: CLType, userStats: UserStatsDataNeededForCL | null) {
+export async function getBank(user: MUser, type: CLType, userStats: UserStatsDataNeededForCL | MUserStats | null) {
 	switch (type) {
 		case 'collection':
 			return new Bank(user.cl);
@@ -1767,7 +1767,11 @@ export async function getBank(user: MUser, type: CLType, userStats: UserStatsDat
 	}
 }
 
-export async function getTotalCl(user: MUser, logType: CLType, userStats: UserStatsDataNeededForCL | null) {
+export async function getTotalCl(
+	user: MUser,
+	logType: CLType,
+	userStats: UserStatsDataNeededForCL | MUserStats | null
+) {
 	let result = undefined;
 	try {
 		result = getUserClData(await getBank(user, logType, userStats), allCLItemsFiltered);

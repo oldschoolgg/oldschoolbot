@@ -1,7 +1,6 @@
 import { sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { BitField } from '../constants';
 import {
 	all3rdAgeItems,
@@ -741,8 +740,8 @@ export const masterTasks: Task[] = [
 		id: 4102,
 		name: 'Complete 500 Farming contracts',
 		has: async ({ user }) => {
-			const contract = getFarmingContractOfUser(user);
-			return contract.contractsCompleted >= 500;
+			const contract = user.farmingContract();
+			return contract.contract.contractsCompleted >= 500;
 		}
 	},
 	{

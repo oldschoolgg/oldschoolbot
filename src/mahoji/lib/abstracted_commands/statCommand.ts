@@ -21,7 +21,7 @@ import {
 	calculateTiarasMade,
 	calculateXPSources
 } from '../../../lib/leagues/stats';
-import backgroundImages from '../../../lib/minions/data/bankBackgrounds';
+import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { RandomEvents } from '../../../lib/randomEvents';
 import { getMinigameScore } from '../../../lib/settings/minigames';
@@ -414,7 +414,7 @@ export const dataPoints: readonly DataPiece[] = [
 			const result: { type: activity_type_enum; qty: number }[] =
 				await prisma.$queryRawUnsafe(`SELECT type, count(type) AS qty
 FROM activity
-WHERE completed = true	
+WHERE completed = true
 AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY type;`);
@@ -923,7 +923,7 @@ GROUP BY "bankBackground";`);
 			return result
 				.map(
 					(res: any) =>
-						`**${backgroundImages[res.bankBackground - 1].name}:** ${parseInt(res.count).toLocaleString()}`
+						`**${getBankBgById(res.bankBackground).name}:** ${parseInt(res.count).toLocaleString()}`
 				)
 				.join('\n');
 		}
@@ -1179,7 +1179,7 @@ FROM   (
                              SUM(FLOOR(value::numeric)::bigint) AS itemqty
                   FROM       users
                   CROSS JOIN jsonb_each_text("collectionLogBank")
-				  WHERE "users"."minion.ironman" = true 
+				  WHERE "users"."minion.ironman" = true
                   GROUP BY   KEY ) s;`;
 			const bank = new Bank(res[0].banks);
 			return {
