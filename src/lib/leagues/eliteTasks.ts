@@ -3,7 +3,6 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
 import { tameFeedableItems } from '../../mahoji/commands/tames';
-import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { ZALCANO_ID } from '../constants';
 import {
 	abyssalDragonCL,
@@ -295,8 +294,8 @@ export const eliteTasks: Task[] = [
 		id: 3036,
 		name: 'Complete 100 Farming contracts',
 		has: async ({ user }) => {
-			const contract = getFarmingContractOfUser(user);
-			return contract.contractsCompleted >= 100;
+			const contract = user.farmingContract();
+			return contract.contract.contractsCompleted >= 100;
 		}
 	},
 	{

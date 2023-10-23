@@ -2,7 +2,6 @@ import { sumArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
-import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { barrowsChestCL, customPetsCL } from '../data/CollectionsExport';
 import {
 	ArdougneDiary,
@@ -323,8 +322,8 @@ export const easyTasks: Task[] = [
 		id: 43,
 		name: 'Complete a Farming contract',
 		has: async ({ user }) => {
-			const contract = getFarmingContractOfUser(user);
-			return contract.contractsCompleted >= 1;
+			const contract = user.farmingContract();
+			return contract.contract.contractsCompleted >= 1;
 		}
 	},
 	{
