@@ -9456,7 +9456,7 @@ setCustomItem(
 
 setCustomItem(
 	71_933,
-	'Bloodstone Obelisk',
+	'Bloodstone obelisk',
 	'Coal',
 	{
 		customItemData: {
@@ -9554,18 +9554,6 @@ setCustomItem(
 	71_941,
 	'Vampyre hunter cuffs',
 	'Rune gloves',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	100_000
-);
-
-setCustomItem(
-	71_942,
-	'Vampyre hunter amulet',
-	'Amulet of strength',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true

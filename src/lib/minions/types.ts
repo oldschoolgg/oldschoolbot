@@ -124,6 +124,7 @@ export interface KillableMonster {
 		items: { boostPercent: number; itemID: number }[];
 	}[];
 	projectileUsage?: {
+		requiredAmmo?: number[];
 		required: boolean;
 		calculateQuantity: (opts: { quantity: number }) => number;
 	};

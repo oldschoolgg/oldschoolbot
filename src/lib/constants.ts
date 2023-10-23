@@ -571,6 +571,7 @@ export const projectiles = {
 	},
 	bolt: {
 		items: resolveItems([
+			'Silver bolts',
 			'Runite bolts',
 			'Dragon bolts',
 			'Diamond bolts (e)',

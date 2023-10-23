@@ -779,6 +779,14 @@ export async function minionKillCommand(
 		if (!user.gear.range.ammo?.item) {
 			return `You need range ammo equipped to kill ${monster.name}.`;
 		}
+		if (
+			monster.projectileUsage.requiredAmmo &&
+			!monster.projectileUsage.requiredAmmo.includes(user.gear.range.ammo.item)
+		) {
+			return `You need to be using one of these projectiles to fight ${
+				monster.name
+			}: ${monster.projectileUsage.requiredAmmo.join(', ')}.`;
+		}
 		const rangeCheck = checkRangeGearWeapon(user.gear.range);
 		if (typeof rangeCheck === 'string') {
 			return `Your range gear isn't right: ${rangeCheck}`;

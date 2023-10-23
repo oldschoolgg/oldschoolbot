@@ -1,10 +1,11 @@
-import { roll, Time } from 'e';
+import { roll, shuffleArr, Time } from 'e';
 import { Bank, LootTable, Monsters } from 'oldschooljs';
 
 import { globalDroprates } from '../../../../data/globalDroprates';
 import { GearStat } from '../../../../gear';
 import { GrimyHerbTable, runeWeaponTable } from '../../../../simulation/sharedTables';
-import { clAdjustedDroprate } from '../../../../util';
+import { clAdjustedDroprate, randomVariation } from '../../../../util';
+import resolveItems from '../../../../util/resolveItems';
 import { CustomMonster } from './customMonsters';
 
 export const VladimirDrakan: CustomMonster = {
@@ -16,6 +17,8 @@ export const VladimirDrakan: CustomMonster = {
 	hp: 330,
 	table: new LootTable()
 		.every('Vampyre dust')
+		.tertiary(512, 'Blightbrand')
+		.tertiary(256, 'Vampyric plushie')
 		.tertiary(290, 'Clue scroll (grandmaster)')
 		.add('Rune arrow', [12, 36])
 		.add('Water talisman')
@@ -52,6 +55,19 @@ export const VladimirDrakan: CustomMonster = {
 		if (roll(droprate)) {
 			loot.add('Echo');
 		}
+		const outfit = shuffleArr(
+			resolveItems([
+				'Vampyre hunter boots',
+				'Vampyre hunter legs',
+				'Vampyre hunter top',
+				'Vampyre hunter cuffs',
+				'Vampyre hunter hat'
+			])
+		);
+		const unownedPiece = shuffleArr(outfit).find(i => !user.cl.has(i)) ?? outfit[0];
+		if (roll(32)) {
+			loot.add(unownedPiece);
+		}
 	},
 	pohBoosts: {
 		pool: {
@@ -63,5 +79,9 @@ export const VladimirDrakan: CustomMonster = {
 		steepness: 0.5,
 		lowestDeathChance: 0.01,
 		highestDeathChance: 70
+	},
+	projectileUsage: {
+		required: true,
+		calculateQuantity: (opts: { quantity: number }) => Math.ceil(randomVariation(opts.quantity * 50, 5))
 	}
 };
