@@ -161,11 +161,10 @@ export function userCanUseTask(
 		!myUnlocks.includes(SlayerTaskUnlocksEnum.Basilocked)
 	)
 		return false;
-	if ((
-		lmon === 'dust devil' ||
-		lmon === 'greater nechryael' ||
-		lmon === 'abyssal demon' ||
-		lmon === 'jelly') && lmast === 'krystilia' && !myUnlocks.includes(SlayerTaskUnlocksEnum.IWildyMoreSlayer))
+	if (
+		(lmon === 'dust devil' || lmon === 'greater nechryael' || lmon === 'abyssal demon' || lmon === 'jelly') &&
+		lmast === 'krystilia' &&
+		!myUnlocks.includes(SlayerTaskUnlocksEnum.IWildyMoreSlayer)
 	)
 		return false;
 	return true;
