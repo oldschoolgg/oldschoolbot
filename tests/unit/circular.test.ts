@@ -7,7 +7,7 @@ describe('Circular Dependencies', () => {
 		'Circular Dependencies',
 		async () => {
 			const res = Object.values(await madge('./dist/index.js').then(res => res.circularGraph())).flat(2);
-			expect(res).toEqual([]);
+			expect(res.toString()).toEqual('[]');
 		},
 		{ timeout: Time.Minute }
 	);

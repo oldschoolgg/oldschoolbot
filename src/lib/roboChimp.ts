@@ -3,7 +3,7 @@ import { PrismaClient, TriviaQuestion, User } from '@prisma/robochimp';
 import deepEqual from 'deep-equal';
 import { calcWhatPercent, round, sumArr } from 'e';
 
-import { BOT_TYPE } from './constants';
+import { BOT_TYPE, masteryKey } from './constants';
 import { getTotalCl } from './data/Collections';
 import { calculateMastery } from './mastery';
 import { MUserStats } from './structures/MUserStats';
@@ -34,7 +34,6 @@ LIMIT 10;`;
 const clKey: keyof User = 'osb_cl_percent';
 const levelKey: keyof User = 'osb_total_level';
 const totalXPKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_xp' : 'bso_total_xp';
-const masteryKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
 
 export async function roboChimpSyncData(user: MUser) {
 	const stats = await MUserStats.fromID(user.id);
