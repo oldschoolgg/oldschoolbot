@@ -6,7 +6,7 @@ import { Bank, LootTable } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { allMbTables, MysteryBoxes, PMBTable } from '../../lib/bsoOpenables';
-import { Emoji } from '../../lib/constants';
+import { BitField, Emoji } from '../../lib/constants';
 import { AbyssalDragonLootTable } from '../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { kalphiteKingLootTable } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
@@ -258,7 +258,10 @@ export const icCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		const details = getItemContractDetails(user);
 		const components =
-			details.nextContractIsReady && details.currentItem !== null && !user.isIronman
+			details.nextContractIsReady &&
+			details.currentItem !== null &&
+			!user.isIronman &&
+			!user.bitfield.includes(BitField.NoItemContractDonations)
 				? makeComponents([
 						new ButtonBuilder()
 							.setStyle(ButtonStyle.Primary)
@@ -276,7 +279,7 @@ export const icCommand: OSBMahojiCommand = {
 					} You have no item contract available at the moment. Come back in ${formatDuration(
 						details.durationRemaining
 					)}.
-			
+
 ${details.infoStr}`
 				};
 			}

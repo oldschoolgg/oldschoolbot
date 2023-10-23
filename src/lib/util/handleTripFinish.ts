@@ -458,6 +458,8 @@ export async function handleTripFinish(
 		components.push(..._components);
 	}
 
+	handleTriggerShootingStar(user, data, components);
+
 	if (components.length > 0) {
 		message.components = makeComponents(components);
 	}

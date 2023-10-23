@@ -21,6 +21,7 @@ import { GearSetup, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
 import { IMaterialBank } from './invention';
 import { MaterialBank } from './invention/MaterialBank';
+import backgroundImages from './minions/data/bankBackgrounds';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
 import { defaultFarmingContract } from './minions/farming';
@@ -39,7 +40,15 @@ import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
 import { MTame } from './structures/MTame';
 import { ItemBank, Skills } from './types';
-import { addItemToBank, assert, convertXPtoLVL, itemNameFromID, murMurSort, percentChance } from './util';
+import {
+	addItemToBank,
+	assert,
+	convertXPtoLVL,
+	getAllIDsOfUser,
+	itemNameFromID,
+	murMurSort,
+	percentChance
+} from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
@@ -872,6 +881,39 @@ GROUP BY data->>'clueID';`);
 			changes.set('Clue scroll (elite)', 5);
 		}
 		return changes;
+	}
+
+	async checkBankBackground() {
+		if (this.bitfield.includes(BitField.isModerator)) {
+			return;
+		}
+		const resetBackground = async () => {
+			await this.update({ bankBackground: 1 });
+		};
+		const background = backgroundImages.find(i => i.id === this.user.bankBackground);
+		if (!background) {
+			return resetBackground();
+		}
+		if (background.id === 1) return;
+		if (background.storeBitField && this.user.store_bitfield.includes(background.storeBitField)) {
+			return;
+		}
+		if (background.perkTierNeeded && this.perkTier() >= background.perkTierNeeded) {
+			return;
+		}
+		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
+			return;
+		}
+		if (!background.storeBitField && !background.perkTierNeeded && !background.bitfield && !background.owners) {
+			return;
+		}
+		if (background.owners) {
+			const userIDs = getAllIDsOfUser(this);
+			if (background.owners.some(owner => userIDs.includes(owner))) {
+				return;
+			}
+		}
+		return resetBackground();
 	}
 }
 declare global {

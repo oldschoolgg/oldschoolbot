@@ -1,3 +1,4 @@
+import { StoreBitfield } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { BitField, PerkTier } from '../../constants';
@@ -14,7 +15,8 @@ const backgroundImages: BankBackground[] = [
 		id: 2,
 		name: 'Swampman',
 		image: null,
-		available: false
+		available: false,
+		storeBitField: StoreBitfield.HasSetTwoDarkPermanentBankBackgrounds
 	},
 	{
 		id: 3,
@@ -22,7 +24,8 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
+		gpCost: 10_000_000,
+		storeBitField: StoreBitfield.HasSetTwoDarkPermanentBankBackgrounds
 	},
 	{
 		id: 4,
@@ -36,7 +39,8 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
+		gpCost: 10_000_000,
+		storeBitField: StoreBitfield.HasSetTwoDarkPermanentBankBackgrounds
 	},
 	{
 		id: 6,
@@ -44,7 +48,8 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Six,
-		gpCost: 10_000_000
+		gpCost: 10_000_000,
+		storeBitField: StoreBitfield.HasSetTwoDarkPermanentBankBackgrounds
 	},
 	{
 		id: 7,
@@ -71,7 +76,27 @@ const backgroundImages: BankBackground[] = [
 			'Pet general graardor': 1,
 			"Pet k'ril tsutsaroth": 1,
 			"Pet kree'arra": 1,
-			'Pet zilyana': 1
+			'Pet zilyana': 1,
+			Nexling: 1,
+			'Ancient hilt': 1,
+			'Nihil horn': 1,
+			'Zaryte vambraces': 1,
+			'Nihil shard': 1,
+			'Torva full helm (broken)': 1,
+			'Torva platebody (broken)': 1,
+			'Torva platelegs (broken)': 1,
+			'Torva boots (broken)': 1,
+			'Torva gloves (broken)': 1,
+			'Pernix cowl (broken)': 1,
+			'Pernix body (broken)': 1,
+			'Pernix chaps (broken)': 1,
+			'Pernix boots (broken)': 1,
+			'Pernix gloves (broken)': 1,
+			'Virtus mask (broken)': 1,
+			'Virtus robe top (broken)': 1,
+			'Virtus robe legs (broken)': 1,
+			'Virtus boots (broken)': 1,
+			'Virtus gloves (broken)': 1
 		}),
 		itemCost: new Bank({
 			'Armadyl godsword': 1,
@@ -144,180 +169,6 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 11,
-		name: 'Ariana Grande',
-		image: null,
-		available: false
-	},
-	{
-		id: 12,
-		name: 'Transparent',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000,
-		transparent: true
-	},
-	{
-		id: 13,
-		name: 'Hween',
-		image: null,
-		available: false
-	},
-	{
-		id: 14,
-		name: 'CoX',
-		image: null,
-		hasPurple: true,
-		purpleImage: null,
-		available: true,
-		bitfield: BitField.HasPermanentEventBackgrounds
-	},
-	{
-		id: 15,
-		name: 'Homer',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
-	},
-	{
-		id: 16,
-		name: 'Jad',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
-	},
-	{
-		id: 17,
-		name: 'Bop',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 2_147_483_647,
-		sacValueRequired: 2_147_483_647
-	},
-	{
-		id: 18,
-		name: 'Racc',
-		image: null,
-		available: false
-	},
-	{
-		id: 19,
-		name: 'Rick CustomBG',
-		image: null,
-		available: false,
-		owners: ['604278562320810009']
-	},
-	{
-		id: 22,
-		name: 'Nieve',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 20_000_000
-	},
-	{
-		id: 23,
-		name: 'ToB',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 20_000_000,
-		transparent: true,
-		hasPurple: true,
-		purpleImage: null
-	},
-	{
-		id: 24,
-		name: 'Zilyana',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Three,
-		gpCost: 20_000_000
-	},
-	{
-		id: 25,
-		name: 'Zilyana Transparent',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Three,
-		gpCost: 20_000_000,
-		transparent: true
-	},
-	{
-		id: 26,
-		name: 'Konar Transparent',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 20_000_000,
-		transparent: true
-	},
-	{
-		id: 27,
-		name: 'Konar',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 20_000_000
-	},
-	{
-		id: 28,
-		name: 'Sandwich Lady',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 20_000_000,
-		transparent: true
-	},
-	{
-		id: 29,
-		name: 'Farmer Jane (Dynamic)',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 500_000,
-		alternateImages: [{ id: 1 }]
-	},
-	{
-		id: 30,
-		name: 'Farmer Jane (Transparent, Dynamic)',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 500_000,
-		transparent: true,
-		alternateImages: [{ id: 1 }]
-	},
-	{
-		id: 31,
-		name: 'Swans (Transparent)',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 500_000,
-		transparent: true
-	},
-	{
-		id: 32,
-		name: 'Peepo Scooter',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
-	},
-	{
-		id: 33,
-		name: 'Halloween Bot Avatar',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
-	},
-	{
-		id: 34,
 		name: 'Dark',
 		image: null,
 		available: true,
@@ -325,91 +176,43 @@ const backgroundImages: BankBackground[] = [
 		gpCost: 10_000_000
 	},
 	{
-		id: 35,
-		name: 'whale',
-		image: null,
-		available: false
-	},
-	{
-		id: 36,
+		id: 12,
 		name: 'Morytania',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Five,
-		gpCost: 10_000_000
+		gpCost: 10_000_000,
+		storeBitField: StoreBitfield.HasSetOneNaturePermanentBankBackgrounds
 	},
 	{
-		id: 37,
+		id: 13,
 		name: 'Grass',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
+		gpCost: 10_000_000,
+		storeBitField: StoreBitfield.HasSetOneNaturePermanentBankBackgrounds
 	},
 	{
-		id: 38,
-		name: 'baannanna CustomBG',
-		image: null,
-		available: false,
-		owners: ['209825195131797504'],
-		transparent: true
-	},
-	{
-		id: 39,
-		name: 'Zuk',
+		id: 14,
+		name: 'CoX',
 		image: null,
 		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
-	},
-	{
-		id: 40,
-		name: 'Turbo CustomBG',
-		image: null,
-		available: false,
-		owners: ['288054683161853952'],
-		purpleImage: null,
-		hasPurple: true
-	},
-	{
-		id: 41,
-		name: 'theshadyhobo CustomBG',
-		image: null,
-		available: false,
-		owners: ['343104695209951255']
-	},
-	{
-		id: 42,
-		name: 'iYeeYee CustomBG',
-		image: null,
-		available: false,
-		owners: ['545103898558595092']
-	},
-	{
-		id: 47,
-		name: 'Slav CustomBG',
-		image: null,
-		available: false,
-		owners: ['164490892533563393']
-	},
-	{
-		id: 48,
-		name: 'Beans CustomBG',
-		image: null,
-		available: false,
-		owners: ['134922117081858050']
-	},
-	{
-		id: 52,
-		name: 'Cyrillax CustomBG',
-		image: null,
+		bitfield: BitField.HasPermanentEventBackgrounds,
 		hasPurple: true,
 		purpleImage: null,
-		available: false,
-		owners: ['425134194436341760']
+		storeBitField: StoreBitfield.HasDynamicCoXBackgroundPermanentBankBackgrounds
 	},
 	{
-		id: 67,
+		id: 15,
+		name: 'OSB',
+		image: null,
+		available: true,
+		bitfield: BitField.HasPermanentEventBackgrounds,
+		storeBitField: StoreBitfield.HasSetTwoDarkPermanentBankBackgrounds
+	},
+	{
+		id: 16,
 		name: 'Wilderness',
 		image: null,
 		available: true,
@@ -448,19 +251,21 @@ const backgroundImages: BankBackground[] = [
 			'Tyrannical ring': 1,
 			'Ring of the gods': 1
 		}),
-		gpCost: 100_000_000
+		gpCost: 100_000_000,
+		storeBitField: StoreBitfield.HasSetTwoDarkPermanentBankBackgrounds
 	},
 	{
-		id: 68,
+		id: 17,
 		name: 'Grand Exchange',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 2_147_483_647,
-		sacValueRequired: 2_147_483_647
+		sacValueRequired: 2_147_483_647,
+		storeBitField: StoreBitfield.HasSetOneNaturePermanentBankBackgrounds
 	},
 	{
-		id: 69,
+		id: 18,
 		name: 'Falador Park',
 		image: null,
 		available: true,
@@ -471,18 +276,22 @@ const backgroundImages: BankBackground[] = [
 		gpCost: 100_000_000,
 		skillsNeeded: {
 			farming: 99
-		}
+		},
+		storeBitField: StoreBitfield.HasSetOneNaturePermanentBankBackgrounds
 	},
 	{
-		id: 75,
-		name: 'Sunny CustomBG',
-		image: null,
-		available: false,
-		owners: ['501893557960048650']
-	},
-	{
-		id: 76,
+		id: 19,
 		name: 'Pets',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true,
+		storeBitField: StoreBitfield.HasSetThreeTransparentAnimalsPermanentBankBackgrounds
+	},
+	{
+		id: 20,
+		name: 'Transparent',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
@@ -490,85 +299,183 @@ const backgroundImages: BankBackground[] = [
 		transparent: true
 	},
 	{
-		id: 77,
-		name: 'Volt CustomBG',
+		id: 21,
+		name: 'Smokey',
 		image: null,
-		available: false,
-		owners: ['793267134821957673']
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true,
+		storeBitField: StoreBitfield.HasSetThreeTransparentAnimalsPermanentBankBackgrounds
 	},
 	{
-		id: 80,
-		name: 'Spartin CustomBG',
+		id: 22,
+		name: 'Nieve',
 		image: null,
-		available: false,
-		owners: ['322626810779271169']
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		storeBitField: StoreBitfield.HasSetFourGirlsPermanentBankBackgrounds
 	},
 	{
-		id: 81,
-		name: 'Eggscape CustomBG',
+		id: 23,
+		name: 'ToB',
 		image: null,
-		available: false,
-		owners: ['268767449791332354']
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true,
+		hasPurple: true,
+		purpleImage: null,
+		storeBitField: StoreBitfield.HasDynamicToBBackgroundPermanentBankBackgrounds
 	},
 	{
-		id: 82,
-		name: 'Guacamole CustomBG',
+		id: 24,
+		name: 'Zilyana',
 		image: null,
-		available: false,
-		owners: ['367701420549341215']
+		available: true,
+		perkTierNeeded: PerkTier.Three,
+		gpCost: 20_000_000,
+		storeBitField: StoreBitfield.HasSetFourGirlsPermanentBankBackgrounds
 	},
 	{
-		id: 83,
-		name: 'Zbe CustomBG',
+		id: 25,
+		name: 'Zilyana Transparent',
 		image: null,
-		available: false,
-		owners: ['252309543634075659']
+		available: true,
+		perkTierNeeded: PerkTier.Three,
+		gpCost: 20_000_000,
+		transparent: true,
+		storeBitField: StoreBitfield.HasSetFourGirlsPermanentBankBackgrounds
 	},
 	{
-		id: 84,
-		name: 'Hayz CustomBG',
+		id: 26,
+		name: 'Konar Transparent',
 		image: null,
-		available: false,
-		owners: ['416304907243749382'],
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true,
+		storeBitField: StoreBitfield.HasSetFourGirlsPermanentBankBackgrounds
+	},
+	{
+		id: 27,
+		name: 'Konar',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		storeBitField: StoreBitfield.HasSetFourGirlsPermanentBankBackgrounds
+	},
+	{
+		id: 28,
+		name: 'Sandwich Lady',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true,
+		storeBitField: StoreBitfield.HasSetFourGirlsPermanentBankBackgrounds
+	},
+	{
+		id: 29,
+		name: 'Farmer Jane (Dynamic)',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000,
+		alternateImages: [{ id: 1 }],
+		storeBitField: StoreBitfield.HasDynamicFarmingBackgroundPermanentBankBackgrounds
+	},
+	{
+		id: 30,
+		name: 'Farmer Jane (Transparent, Dynamic)',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000,
+		transparent: true,
+		alternateImages: [{ id: 1 }],
+		storeBitField: StoreBitfield.HasDynamicFarmingBackgroundPermanentBankBackgrounds
+	},
+	{
+		id: 31,
+		name: 'Swans (Transparent)',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000,
+		transparent: true,
+		storeBitField: StoreBitfield.HasSetThreeTransparentAnimalsPermanentBankBackgrounds
+	},
+	{
+		id: 32,
+		name: 'Troll',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000
+	},
+	{
+		id: 33,
+		name: 'Christmas',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000
+	},
+	{
+		id: 35,
+		name: 'Jad',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000
+	},
+	{
+		id: 36,
+		name: 'Halloween Logo',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000
+	},
+	{
+		id: 503,
+		name: 'Halloween Manor',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
+	},
+	{
+		id: 504,
+		name: 'Skipper',
+		image: null,
+		available: true,
+		gpCost: 10_000_000,
+		perkTierNeeded: PerkTier.Four,
 		transparent: true
 	},
 	{
-		id: 85,
-		name: 'Mylife CustomBG',
+		id: 505,
+		name: 'Remy',
 		image: null,
-		available: false,
-		owners: ['251536370613485568']
+		available: true,
+		gpCost: 10_000_000,
+		perkTierNeeded: PerkTier.Four,
+		transparent: true
 	},
 	{
-		id: 86,
-		name: 'Anime CustomBG',
+		id: 506,
+		name: 'Peepo Scooter',
 		image: null,
-		available: false,
-		owners: ['363917147052834819']
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
 	},
 	{
-		id: 87,
-		name: 'Hekla CustomBG',
-		image: null,
-		available: false,
-		owners: ['255767128051810305']
-	},
-	{
-		id: 88,
-		name: 'Benny CustomBG',
-		image: null,
-		available: false,
-		owners: ['507686806624534529']
-	},
-	{
-		id: 89,
-		name: 'Abyssalcrow8 CustomBG',
-		image: null,
-		available: false,
-		owners: ['268901875158351872']
-	},
-	{
-		id: 90,
+		id: 507,
 		name: 'Ignecarus',
 		image: null,
 		available: true,
@@ -586,113 +493,14 @@ const backgroundImages: BankBackground[] = [
 		perkTierNeeded: PerkTier.Four
 	},
 	{
-		id: 91,
-		name: 'Tetreths CustomBG',
+		id: 1000,
+		name: 'Kiddo CustomBG',
 		image: null,
 		available: false,
-		owners: ['577647179909431311']
+		owners: ['775241966677131306']
 	},
 	{
-		id: 92,
-		name: 'Smokey',
-		image: null,
-		available: true,
-		gpCost: 100_000_000,
-		perkTierNeeded: PerkTier.Four,
-		transparent: true
-	},
-	{
-		id: 93,
-		name: 'Purrincess CustomBG',
-		image: null,
-		available: false,
-		owners: ['538600275221413900']
-	},
-	{
-		id: 94,
-		name: 'Rezero CustomBG',
-		image: null,
-		available: false,
-		owners: ['192621282452439041']
-	},
-	{
-		id: 95,
-		name: 'OilInGasLife CustomBG',
-		image: null,
-		available: false,
-		owners: ['944238795329511465']
-	},
-	{
-		id: 96,
-		name: 'Remy',
-		image: null,
-		available: true,
-		gpCost: 10_000_000,
-		perkTierNeeded: PerkTier.Four,
-		transparent: true
-	},
-	{
-		id: 97,
-		name: 'Skipper',
-		image: null,
-		available: true,
-		gpCost: 10_000_000,
-		perkTierNeeded: PerkTier.Four,
-		transparent: true
-	},
-	{
-		id: 98,
-		name: 'Jersey CustomBG',
-		image: null,
-		available: false,
-		owners: ['252113050704805890']
-	},
-	{
-		id: 100,
-		name: 'Christmas Tree',
-		image: null,
-		available: false
-	},
-	{
-		id: 101,
-		name: 'TastyPum CustomBG',
-		image: null,
-		available: false,
-		owners: ['794368001856110594']
-	},
-	{
-		id: 102,
-		name: 'Serg CustomBG',
-		image: null,
-		available: false,
-		owners: ['797618464176996372']
-	},
-	{
-		id: 103,
-		name: 'Epic CustomBG',
-		image: null,
-		available: false,
-		owners: ['874714227984719922']
-	},
-	{
-		id: 105,
-		name: 'Troll',
-		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
-	},
-	{
-		id: 500,
-		name: 'Kabe CustomBG',
-		image: null,
-		available: false,
-		owners: ['354873929522741248'],
-		purpleImage: null,
-		hasPurple: true
-	},
-	{
-		id: 501,
+		id: 1001,
 		name: 'Timebrawler CustomBG',
 		image: null,
 		available: false,
@@ -701,19 +509,113 @@ const backgroundImages: BankBackground[] = [
 		hasPurple: true
 	},
 	{
-		id: 502,
-		name: 'Kiddo CustomBG',
+		id: 1002,
+		name: 'Serg CustomBG',
 		image: null,
 		available: false,
-		owners: ['775241966677131306']
+		owners: ['797618464176996372']
 	},
 	{
-		id: 503,
-		name: 'Halloween Manor',
+		id: 1003,
+		name: 'TastyPum CustomBG',
 		image: null,
-		available: true,
-		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
+		available: false,
+		owners: ['794368001856110594']
+	},
+	{
+		id: 1004,
+		name: 'Jersey CustomBG',
+		image: null,
+		available: false,
+		owners: ['252113050704805890']
+	},
+	{
+		id: 1005,
+		name: 'Abyssalcrow8 CustomBG',
+		image: null,
+		available: false,
+		owners: ['268901875158351872']
+	},
+	{
+		id: 1006,
+		name: 'Benny CustomBG',
+		image: null,
+		available: false,
+		owners: ['507686806624534529']
+	},
+	{
+		id: 1007,
+		name: 'Hekla CustomBG',
+		image: null,
+		available: false,
+		owners: ['255767128051810305']
+	},
+	{
+		id: 1008,
+		name: 'Mylife CustomBG',
+		image: null,
+		available: false,
+		owners: ['251536370613485568']
+	},
+	{
+		id: 1009,
+		name: 'Cyrillax CustomBG',
+		image: null,
+		hasPurple: true,
+		purpleImage: null,
+		available: false,
+		owners: ['425134194436341760']
+	},
+	{
+		id: 1010,
+		name: 'theshadyhobo CustomBG',
+		image: null,
+		available: false,
+		owners: ['343104695209951255']
+	},
+	{
+		id: 1011,
+		name: 'Turbo CustomBG',
+		image: null,
+		available: false,
+		owners: ['288054683161853952'],
+		purpleImage: null,
+		hasPurple: true
+	},
+	{
+		id: 1012,
+		name: 'Fishy CustomBG',
+		image: null,
+		available: false,
+		owners: ['212931609123487744']
+	},
+	{
+		id: 1013,
+		name: 'Beans CustomBG',
+		image: null,
+		available: false,
+		owners: ['134922117081858050']
+	},
+	{
+		id: 1014,
+		name: 'Coolbop CustomBG',
+		image: null,
+		available: false,
+		owners: ['198993057323024384']
+	},
+	{
+		id: 1015,
+		name: 'Thievious CustomBG',
+		image: null,
+		available: false,
+		owners: ['411025849966526470']
+	},
+	{
+		id: 1016,
+		name: 'Rickturpentine CustomBG',
+		image: null,
+		available: false,
+		owners: ['604278562320810009']
 	}
 ];
 

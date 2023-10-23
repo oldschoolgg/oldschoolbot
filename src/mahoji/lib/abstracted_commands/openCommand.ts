@@ -145,7 +145,7 @@ async function finalizeOpening({
 	if (!user.bank.has(cost)) return `You don't have ${cost}.`;
 	const newOpenableScores = await addToOpenablesScores(user, kcBank);
 
-	const hasSmokey = user.owns('Smokey');
+	const hasSmokey = user.allItemsOwned.has('Smokey');
 	let smokeyMsg: string | null = null;
 
 	if (hasSmokey) {

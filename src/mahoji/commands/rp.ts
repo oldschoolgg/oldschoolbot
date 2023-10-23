@@ -12,10 +12,13 @@ import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { BitField, Channel } from '../../lib/constants';
 import { GrandExchange } from '../../lib/grandExchange';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
+import { patreonTask } from '../../lib/patreon';
+import { prisma } from '../../lib/settings/prisma';
 import { dateFm, formatDuration } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
+import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -44,6 +47,12 @@ export const rpCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'validate_ge',
 					description: 'Validate the g.e.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'patreon_reset',
+					description: 'Reset all patreon data.',
 					options: []
 				}
 			]
@@ -177,6 +186,7 @@ export const rpCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		action?: {
 			validate_ge?: {};
+			patreon_reset?: {};
 		};
 		player?: {
 			givetgb?: { user: MahojiUserOption };
@@ -221,6 +231,21 @@ export const rpCommand: OSBMahojiCommand = {
 				return 'No issues found.';
 			}
 			return 'Something was invalid. Check logs!';
+		}
+
+		if (options.action?.patreon_reset) {
+			const bitfieldsToRemove = [
+				BitField.IsPatronTier1,
+				BitField.IsPatronTier2,
+				BitField.IsPatronTier3,
+				BitField.IsPatronTier4,
+				BitField.IsPatronTier5,
+				BitField.IsPatronTier6
+			];
+			await prisma.$queryRaw`UPDATE users SET bitfield = bitfield - '{${bitfieldsToRemove.join(',')}'::int[];`;
+			await patreonTask.run();
+			await syncLinkedAccounts();
+			return 'Finished.';
 		}
 
 		if (options.player?.set_buy_date) {

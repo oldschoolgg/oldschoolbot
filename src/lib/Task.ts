@@ -89,7 +89,6 @@ import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
 import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
 import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity';
 import { questingTask } from '../tasks/minions/questingActivity';
-import { revenantsTask } from '../tasks/minions/revenantsActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
 import { sawmillTask } from '../tasks/minions/sawmillActivity';
 import { shootingStarTask } from '../tasks/minions/shootingStarsActivity';
@@ -170,7 +169,6 @@ export const tasks: MinionTask[] = [
 	motherlodeMiningTask,
 	runecraftTask,
 	sawmillTask,
-	revenantsTask,
 	woodcuttingTask,
 	wealthChargeTask,
 	tokkulShopTask,
@@ -272,7 +270,9 @@ const ignored: activity_type_enum[] = [
 	activity_type_enum.TrickOrTreat,
 	activity_type_enum.BossEvent,
 	activity_type_enum.HalloweenEvent,
-	activity_type_enum.BirthdayCollectIngredients
+	activity_type_enum.BirthdayCollectIngredients,
+	activity_type_enum.HalloweenEvent,
+	activity_type_enum.Revenants
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {

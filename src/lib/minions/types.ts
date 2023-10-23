@@ -1,4 +1,5 @@
 import { Image } from '@napi-rs/canvas';
+import { StoreBitfield } from '@oldschoolgg/toolkit';
 import { XpGainSource } from '@prisma/client';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
@@ -31,6 +32,7 @@ export type BankBackground = {
 	transparent?: true;
 	owners?: string[];
 	alternateImages?: { id: number }[];
+	storeBitField?: StoreBitfield;
 } & (
 	| {
 			hasPurple: true;

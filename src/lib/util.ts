@@ -54,6 +54,7 @@ import {
 	usernameCache
 } from './constants';
 import { UserStatsDataNeededForCL } from './data/Collections';
+import { getSimilarItems } from './data/similarItems';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import type { Consumable } from './minions/types';
 import { MUserClass } from './MUser';
@@ -737,7 +738,12 @@ export function checkRangeGearWeapon(gear: Gear) {
 	const { ammo } = gear;
 	if (!ammo) return 'You have no ammo equipped.';
 
-	const projectileCategory = objectEntries(projectiles).find(i => i[1].weapons.includes(weapon.id));
+	const projectileCategory = objectEntries(projectiles).find(i =>
+		i[1].weapons
+			.map(w => getSimilarItems(w))
+			.flat()
+			.includes(weapon.id)
+	);
 	if (!projectileCategory) return 'You have an invalid range weapon.';
 	if (!projectileCategory[1].items.includes(ammo.item)) {
 		return `You have invalid ammo for your equipped weapon. For ${
