@@ -218,6 +218,9 @@ export const tobTask: MinionTask = {
 			resultMessage += `\n\n**${msg}**`;
 		}
 
+		if (data.solo) {
+			return handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, totalLoot, undefined);
+		}
 		return handleTripFinish(allUsers[0], channelID, resultMessage, undefined, data, null, undefined);
 	}
 };

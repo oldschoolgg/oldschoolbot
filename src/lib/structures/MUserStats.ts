@@ -10,10 +10,12 @@ import { getToaKCs } from '../util/smallUtils';
 export class MUserStats {
 	userStats: UserStats;
 	baHonourLevel: number;
+	sacrificedBank: Bank;
 
 	constructor(userStats: UserStats) {
 		this.userStats = userStats;
 		this.baHonourLevel = userStats.honour_level;
+		this.sacrificedBank = new Bank().add(this.userStats.sacrificed_bank as ItemBank);
 	}
 
 	static async fromID(id: string) {

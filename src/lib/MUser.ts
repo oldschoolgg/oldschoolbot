@@ -31,6 +31,7 @@ import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpip
 import { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
 import { mysteriousStepData, mysteriousTrailTracks } from './mysteryTrail';
 import { getUsersPerkTier, syncPerkTierOfUser } from './perkTiers';
+import { roboChimpUserFetch } from './roboChimp';
 import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
 import { prisma } from './settings/prisma';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
@@ -914,6 +915,10 @@ GROUP BY data->>'clueID';`);
 			}
 		}
 		return resetBackground();
+	}
+
+	async fetchRobochimpUser() {
+		return roboChimpUserFetch(this.id);
 	}
 }
 declare global {

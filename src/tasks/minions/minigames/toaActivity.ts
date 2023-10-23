@@ -269,7 +269,7 @@ export const toaTask: MinionTask = {
 					  })
 					: undefined,
 				data,
-				null
+				itemsAddedTeamLoot.totalLoot()
 			);
 		}
 

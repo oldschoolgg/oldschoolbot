@@ -299,18 +299,6 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.45
 	},
 	{
-		item: getOSItem('Cadantine blood potion (unf)'),
-		aliases: ['cadantine blood potion (unf)', 'cadantine blood potion', 'cadantine blood'],
-		level: 80,
-		xp: 0,
-		inputItems: new Bank({
-			'Vial of blood': 1,
-			Cadantine: 1
-		}),
-		tickRate: 1,
-		bankTimePerPotion: 0.3
-	},
-	{
 		item: getOSItem('Bastion potion (3)'),
 		aliases: ['bastion potion (3)', 'bastion potion', 'bastion'],
 		level: 80,

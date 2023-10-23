@@ -1,4 +1,5 @@
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import { bold } from 'discord.js';
 import { notEmpty, randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -15,6 +16,7 @@ import {
 } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
+import { calculateMastery } from '../../lib/mastery';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { AttackStyles } from '../../lib/minions/functions';
 import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
@@ -24,6 +26,7 @@ import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
+import { MUserStats } from '../../lib/structures/MUserStats';
 import { convertLVLtoXP, getAllIDsOfUser, getUsername, isValidNickname } from '../../lib/util';
 import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem from '../../lib/util/getOSItem';
@@ -439,6 +442,11 @@ export const minionCommand: OSBMahojiCommand = {
 					...ownedItemOption()
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'mastery',
+			description: 'View your minions mastery.'
 		}
 	],
 	run: async ({
@@ -470,6 +478,7 @@ export const minionCommand: OSBMahojiCommand = {
 		feed_hammy?: {
 			item: string;
 		};
+		mastery?: {};
 	}>) => {
 		const user = await mUserFetch(userID);
 		const perkTier = user.perkTier();
@@ -573,6 +582,14 @@ export const minionCommand: OSBMahojiCommand = {
 		if (options.feed_hammy) return feedHammyCommand(interaction, user, options.feed_hammy.item);
 
 		if (options.peak) return checkPeakTimes();
+
+		if (options.mastery) {
+			const { masteryFactors, totalMastery } = await calculateMastery(user, await MUserStats.fromID(user.id));
+			const substr = masteryFactors.map(i => `${bold(i.name)}: ${i.percentage.toFixed(2)}%`).join('\n');
+			return `You have ${totalMastery.toFixed(2)}% mastery.
+			
+${substr}`;
+		}
 
 		return 'Unknown command';
 	}
