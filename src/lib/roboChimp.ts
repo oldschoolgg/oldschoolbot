@@ -5,7 +5,8 @@ import { calcWhatPercent, round, sumArr } from 'e';
 
 import { BOT_TYPE } from './constants';
 import { getTotalCl } from './data/Collections';
-import { fetchStatsForCL } from './util';
+import { calculateMastery } from './mastery';
+import { MUserStats } from './structures/MUserStats';
 
 declare global {
 	const roboChimpClient: PrismaClient;
@@ -33,14 +34,21 @@ LIMIT 10;`;
 const clKey: keyof User = 'osb_cl_percent';
 const levelKey: keyof User = 'osb_total_level';
 const totalXPKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_xp' : 'bso_total_xp';
+const masteryKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
 
 export async function roboChimpSyncData(user: MUser) {
-	const [totalClItems, clItems] = getTotalCl(user, 'collection', await fetchStatsForCL(user));
+	const stats = await MUserStats.fromID(user.id);
+	const [totalClItems, clItems] = getTotalCl(user, 'collection', stats);
+	const clCompletionPercentage = round(calcWhatPercent(clItems, totalClItems), 2);
+	const totalXP = sumArr(Object.values(user.skillsAsXP));
+
+	const { totalMastery } = await calculateMastery(user, stats);
 
 	const updateObj = {
-		[clKey]: round(calcWhatPercent(clItems, totalClItems), 2),
+		[clKey]: clCompletionPercentage,
 		[levelKey]: user.totalLevel,
-		[totalXPKey]: sumArr(Object.values(user.skillsAsXP))
+		[totalXPKey]: totalXP,
+		[masteryKey]: totalMastery
 	} as const;
 
 	const newUser = await roboChimpClient.user.upsert({
