@@ -107,5 +107,14 @@ export const globalDroprates = {
 		rolledPer: 'catch',
 		notes: ['Received when hunting Sandy Geckos'],
 		item: getOSItem('Sandy')
+	},
+	echo: {
+		name: 'Echo (pet)',
+		baseRate: 3000,
+		clIncrease: 1.5,
+		minLength: false,
+		rolledPer: 'kill',
+		notes: ['Received from killing Vladimir Drakan'],
+		item: getOSItem('Echo')
 	}
 };

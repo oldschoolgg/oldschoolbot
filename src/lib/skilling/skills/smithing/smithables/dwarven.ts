@@ -124,6 +124,16 @@ const Dwarven: SmithedItem[] = [
 		outputMultiple: 1,
 		requiresBlacksmith: true,
 		cantBeDoubled: true
+	},
+	{
+		name: 'Silver stake',
+		level: 95,
+		xp: 300,
+		id: itemID('Silver stake'),
+		inputBars: { [itemID('Silver bar')]: 3, [itemID('Elder logs')]: 1 },
+		timeToUse: Time.Second * 3,
+		outputMultiple: 1,
+		cantBeDoubled: true
 	}
 ];
 
