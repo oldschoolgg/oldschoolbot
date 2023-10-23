@@ -626,3 +626,5 @@ export const hweenGiveableItems = resolveItems([
 	'Witch cape',
 	'Halloween wig'
 ]);
+
+export const masteryKey = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';

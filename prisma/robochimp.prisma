@@ -50,7 +50,10 @@ model User {
     bso_total_xp    BigInt?
     osb_cl_percent  Float?
     bso_cl_percent  Float?
-    tag             Tag[]
+    osb_mastery     Float?
+    bso_mastery     Float?
+
+    tag Tag[]
 
     store_bitfield Int[]
 
