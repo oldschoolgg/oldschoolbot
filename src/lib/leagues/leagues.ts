@@ -1,5 +1,5 @@
 import { activity_type_enum, User } from '@prisma/client';
-import { calcWhatPercent } from 'e';
+import { calcWhatPercent, sumArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -47,6 +47,8 @@ export const leagueTasks = [
 	{ name: 'Elite', tasks: eliteTasks, points: 150 },
 	{ name: 'Master', tasks: masterTasks, points: 250 }
 ];
+
+export const maxLeaguesPoints = sumArr(leagueTasks.map(group => group.tasks.length * group.points));
 
 export const allLeagueTasks = leagueTasks.map(i => i.tasks).flat(2);
 
