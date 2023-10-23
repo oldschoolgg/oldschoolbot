@@ -311,7 +311,7 @@ export async function minionKillCommand(
 	let salveAmuletBoost = 0;
 	let salveAmuletBoostMsg = '';
 
-	const dragonBoost = 15; // Common boost percentage for dragon-related gear
+	const dragonBoost = 20; // Common boost percentage for dragon-related gear
 
 	const isUndead = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
 	const isDragon = osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon);
