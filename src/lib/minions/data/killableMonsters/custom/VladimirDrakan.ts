@@ -13,17 +13,17 @@ export const VladimirDrakan: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Vladimir Drakan',
 	aliases: ['vladimir drakan', 'vd'],
-	timeToFinish: Time.Minute * 22,
+	timeToFinish: Time.Minute * 15,
 	hp: 330,
 	table: new LootTable()
 		.every('Vampyre dust')
 		.tertiary(512, 'Blightbrand')
 		.tertiary(256, 'Vampyric plushie')
-		.tertiary(290, 'Clue scroll (grandmaster)')
-		.add('Rune arrow', [12, 36])
-		.add('Water talisman')
-		.add('Adamant platelegs', [2, 5])
-		.add('Adamant platebody', [2, 5])
+		.tertiary(50, 'Clue scroll (elite)')
+		.tertiary(100, 'Clue scroll (master)')
+		.tertiary(256, 'Clue scroll (grandmaster)')
+		.add('Blood orange seed', [5, 10])
+		.add(new LootTable().add('Rune arrow').add('Adamant platebody'), [10, 15])
 		.add(runeWeaponTable, [2, 5])
 		.add('Pure essence', 50)
 		.add(GrimyHerbTable, 5)
