@@ -7,7 +7,7 @@ import EliteClueTable from 'oldschooljs/dist/simulation/clues/Elite';
 import HardClueTable from 'oldschooljs/dist/simulation/clues/Hard';
 import MasterCasket from 'oldschooljs/dist/simulation/clues/Master';
 import MediumClueTable from 'oldschooljs/dist/simulation/clues/Medium';
-import { ChambersOfXeric, Nightmare, TheatreOfBlood } from 'oldschooljs/dist/simulation/misc';
+import { ChambersOfXeric, Nightmare } from 'oldschooljs/dist/simulation/misc';
 import { EliteMimicTable, MasterMimicTable } from 'oldschooljs/dist/simulation/misc/Mimic';
 
 import { rollNaxxusLoot } from '../tasks/minions/bso/naxxusActivity';
@@ -27,7 +27,9 @@ import {
 	nexCL,
 	nexUniqueDrops,
 	temporossCL,
-	theatreOfBLoodCL,
+	theatreOfBloodCapes,
+	theatreOfBloodHardUniques,
+	theatreOfBloodNormalUniques,
 	theGauntletCL,
 	theNightmareCL,
 	theNightmareNormalCL,
@@ -41,6 +43,7 @@ import { openShadeChest } from './shadesKeys';
 import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
 import { gauntlet } from './simulation/gauntlet';
 import { getTemporossLoot } from './simulation/tempoross';
+import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
@@ -89,7 +92,7 @@ export const finishables: Finishable[] = [
 	{
 		name: 'Theatre of Blood (Solo, Non-HM)',
 		aliases: ['tob', 'theatre of blood'],
-		cl: theatreOfBLoodCL,
+		cl: [...theatreOfBloodNormalUniques, ...theatreOfBloodCapes],
 		kill: () => new Bank(TheatreOfBlood.complete({ hardMode: false, team: [{ id: '1', deaths: [] }] }).loot['1']),
 		tertiaryDrops: [
 			{ itemId: itemID('Sinhaza shroud tier 1'), kcNeeded: 100 },
@@ -102,7 +105,7 @@ export const finishables: Finishable[] = [
 	{
 		name: 'Theatre of Blood (Solo, HM)',
 		aliases: ['tob hard', 'tob hard mode', 'tobhm'],
-		cl: theatreOfBLoodCL,
+		cl: [...theatreOfBloodNormalUniques, ...theatreOfBloodCapes, ...theatreOfBloodHardUniques],
 		kill: () => new Bank(TheatreOfBlood.complete({ hardMode: true, team: [{ id: '1', deaths: [] }] }).loot['1']),
 		tertiaryDrops: [
 			{ itemId: itemID('Sinhaza shroud tier 1'), kcNeeded: 100 },
