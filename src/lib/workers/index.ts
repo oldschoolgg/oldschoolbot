@@ -29,6 +29,7 @@ export type KillWorkerReturn = Promise<{
 
 export interface FinishWorkerArgs {
 	name: string;
+	tertiaries?: boolean;
 }
 
 export type FinishWorkerReturn = Promise<
@@ -48,6 +49,6 @@ export const casketWorker = new Piscina({ filename: resolve(__dirname, 'casket.w
 
 export const Workers = {
 	casketOpen: (args: CasketWorkerArgs): Promise<[Bank, string]> => casketWorker.run(args),
-	kill: (args: KillWorkerArgs): Promise<KillWorkerReturn> => killWorker.run(args),
-	finish: (args: FinishWorkerArgs): Promise<FinishWorkerReturn> => finishWorker.run(args)
+	kill: (args: KillWorkerArgs): KillWorkerReturn => killWorker.run(args),
+	finish: (args: FinishWorkerArgs): FinishWorkerReturn => finishWorker.run(args)
 };
