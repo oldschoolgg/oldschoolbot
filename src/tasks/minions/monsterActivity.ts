@@ -264,7 +264,7 @@ export const monsterTask: MinionTask = {
 					reEquipedItems = true;
 				}
 
-				if (calc.gearToRefund) {
+				if (calc.gearToRefund.length > 0) {
 					await user.addItemsToBank({ items: calc.gearToRefund, collectionLog: false });
 					messages.push(`Your ${calc.gearThatBroke} broke, turning into ${calc.gearToRefund} in your bank.`);
 				}
