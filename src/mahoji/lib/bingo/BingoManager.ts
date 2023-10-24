@@ -4,7 +4,7 @@ import { chunk, noOp, Time } from 'e';
 import { groupBy } from 'lodash';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
-import ss from 'simple-statistics';
+import * as ss from 'simple-statistics';
 
 import { Emoji } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';

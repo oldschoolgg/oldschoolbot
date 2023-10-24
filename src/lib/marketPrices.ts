@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import ss from 'simple-statistics';
+import * as ss from 'simple-statistics';
 
 import { prisma } from './settings/prisma';
 

@@ -9,9 +9,11 @@ import { getToaKCs } from '../util/smallUtils';
 
 export class MUserStats {
 	userStats: UserStats;
+	sacrificedBank: Bank;
 
 	constructor(userStats: UserStats) {
 		this.userStats = userStats;
+		this.sacrificedBank = new Bank().add(this.userStats.sacrificed_bank as ItemBank);
 	}
 
 	static async fromID(id: string) {
