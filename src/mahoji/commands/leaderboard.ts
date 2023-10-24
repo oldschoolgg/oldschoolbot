@@ -6,7 +6,7 @@ import { calcWhatPercent, chunk, objectValues, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
-import { badges, badgesCache, Emoji, usernameCache } from '../../lib/constants';
+import { badges, badgesCache, Emoji, masteryKey, usernameCache } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
@@ -772,6 +772,38 @@ LIMIT 50;`
 	return lbMsg('Combat Achievements Leaderboard');
 }
 
+async function masteryLb(user: MUser, channelID: string) {
+	const users = await roboChimpClient.user.findMany({
+		where: {
+			[masteryKey]: { not: null }
+		},
+		orderBy: {
+			[masteryKey]: 'desc'
+		},
+		take: 50,
+		select: {
+			id: true,
+			osb_mastery: true,
+			bso_mastery: true
+		}
+	});
+
+	doMenu(
+		user,
+		channelID,
+		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
+			subList
+				.map(
+					(lUser, j) =>
+						`${getPos(i, j)}**${getUsername(lUser.id)}:** ${lUser[masteryKey]!.toFixed(3)}% mastery`
+				)
+				.join('\n')
+		),
+		'Mastery Leaderboard'
+	);
+	return lbMsg('Mastery Leaderboard');
+}
+
 const ironmanOnlyOption = {
 	type: ApplicationCommandOptionType.Boolean,
 	name: 'ironmen_only',
@@ -1016,6 +1048,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			name: 'combat_achievements',
 			description: 'Check the combat achievements leaderboards.',
 			options: []
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'mastery',
+			description: 'Check the mastery leaderboard.',
+			options: []
 		}
 	],
 	run: async ({
@@ -1041,6 +1079,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			type: GlobalLbType;
 		};
 		combat_achievements?: {};
+		mastery?: {};
 	}>) => {
 		deferInteraction(interaction);
 		const user = await mUserFetch(userID);
@@ -1059,7 +1098,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			clues,
 			movers,
 			global,
-			combat_achievements
+			combat_achievements,
+			mastery
 		} = options;
 		if (kc) return kcLb(user, channelID, kc.monster, Boolean(kc.ironmen_only));
 		if (farming_contracts) return farmingContractLb(user, channelID, Boolean(farming_contracts.ironmen_only));
@@ -1078,6 +1118,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		if (movers) return gainersLB(user, channelID, movers.type);
 		if (global) return globalLb(user, channelID, global.type);
 		if (combat_achievements) return caLb(user, channelID);
+		if (mastery) return masteryLb(user, channelID);
 		return 'Invalid input.';
 	}
 };

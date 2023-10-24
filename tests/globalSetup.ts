@@ -20,5 +20,8 @@ global.globalClient = {
 	},
 	users: {
 		cache: new Collection()
+	},
+	channels: {
+		cache: new Collection()
 	}
 } as any;
