@@ -4,9 +4,10 @@ import { expect, test } from 'vitest';
 
 import { Gear } from '../../src/lib/structures/Gear';
 import { monsterTask } from '../../src/tasks/minions/monsterActivity';
-import { createTestUser } from './util';
+import { createTestUser, mockClient } from './util';
 
 test('calculateGearLostOnDeathWilderness', async () => {
+	await mockClient();
 	const user = await createTestUser();
 
 	const gear = new Gear();
