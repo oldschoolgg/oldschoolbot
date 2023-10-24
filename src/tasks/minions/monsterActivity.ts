@@ -13,7 +13,6 @@ import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
@@ -169,15 +168,9 @@ export const monsterTask: MinionTask = {
 			pkEncounters,
 			hasWildySupplies
 		} = data;
-		let monster = killableMonsters.find(mon => mon.id === monsterID)!;
-		const fullMonster = Monsters.get(monsterID);
-		let revenants = false;
 
-		const matchedRevenantMonster = revenantMonsters.find(mon => mon.id === monsterID)!;
-		if (matchedRevenantMonster) {
-			monster = matchedRevenantMonster;
-			revenants = true;
-		}
+		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
+		const revenants = monster.name.includes('Revenant');
 
 		let skulled = false;
 		if (revenants) skulled = true;
@@ -190,6 +183,7 @@ export const monsterTask: MinionTask = {
 				content: `${user}, ${user.minionName} failed to defeat Koschei the deathless.`
 			});
 		}
+		const fullMonster = Monsters.get(monsterID);
 
 		const [hasKourendHard] = await userhasDiaryTier(user, KourendKebosDiary.hard);
 		const currentKCs = await user.fetchMonsterScores();

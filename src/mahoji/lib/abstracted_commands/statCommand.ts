@@ -1381,6 +1381,16 @@ ${Object.entries(result)
 				'Herbs cleaned while farming'
 			);
 		}
+	},
+	{
+		name: 'Implings Obtained Passively',
+		perkTierNeeded: null,
+		run: (_, userStats) => {
+			return makeResponseForBank(
+				new Bank().add(userStats.passive_implings_bank as ItemBank),
+				'Implings Obtained Passively'
+			);
+		}
 	}
 ] as const;
 
