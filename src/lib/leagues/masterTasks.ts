@@ -1,5 +1,5 @@
 import { sumArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Openables } from 'oldschooljs';
 
 import { BitField } from '../constants';
 import {
@@ -15,6 +15,7 @@ import {
 	naxxusCL
 } from '../data/CollectionsExport';
 import { slayerMaskHelms } from '../data/slayerMaskHelms';
+import { implings } from '../implings';
 import { Inventions } from '../invention/inventions';
 import { dungBuyables } from '../skilling/skills/dung/dungData';
 import { ashes } from '../skilling/skills/prayer';
@@ -1093,10 +1094,12 @@ export const masterTasks: Task[] = [
 		name: 'Catch 100 of every impling passively (excluding Lucky implings)',
 		has: async ({ userStats }) => {
 			let loot = new Bank(userStats.passive_implings_bank as ItemBank);
-			return loot
-				.items()
-				.filter(i => i[0].name !== 'Lucky impling jar')
-				.every(i => i[1] >= 100 || (i[0].name === 'Mystery impling jar' && i[1] >= 50));
+			for (const implingId of Object.keys(implings)) {
+				if (Number(implingId) !== Openables.LuckyImpling.id && loot.amount(Number(implingId)) < 100) {
+					return false;
+				}
+			}
+			return true;
 		}
 	},
 	{

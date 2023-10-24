@@ -1,5 +1,5 @@
 import { sumArr } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, Monsters, Openables } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
 import { circusBuyables } from '../data/buyables/circusBuyables';
@@ -35,6 +35,7 @@ import {
 	WildernessDiary
 } from '../diaries';
 import { dyedItems } from '../dyedItems';
+import { implings } from '../implings';
 import { Inventions } from '../invention/inventions';
 import { MOKTANG_ID } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
@@ -1148,10 +1149,12 @@ export const hardTasks: Task[] = [
 		name: 'Catch 20 of every impling passively (excluding Lucky implings)',
 		has: async ({ userStats }) => {
 			let loot = new Bank(userStats.passive_implings_bank as ItemBank);
-			return loot
-				.items()
-				.filter(i => i[0].name !== 'Lucky impling jar')
-				.every(i => i[1] >= 20);
+			for (const implingId of Object.keys(implings)) {
+				if (Number(implingId) !== Openables.LuckyImpling.id && loot.amount(Number(implingId)) < 20) {
+					return false;
+				}
+			}
+			return true;
 		}
 	},
 	{
