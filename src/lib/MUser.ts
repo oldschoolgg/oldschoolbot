@@ -768,16 +768,15 @@ GROUP BY data->>'clueID';`);
 			return resetBackground();
 		}
 		if (background.id === 1) return;
-		if (background.storeBitField && this.user.store_bitfield.includes(background.storeBitField)) {
-			return;
+		if (background.storeBitField && !this.user.store_bitfield.includes(background.storeBitField)) {
+			return resetBackground();
 		}
-		if (background.perkTierNeeded && this.perkTier() >= background.perkTierNeeded) {
-			return;
+		if (background.perkTierNeeded && this.perkTier() < background.perkTierNeeded) {
+			return resetBackground();
 		}
-		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
-			return;
+		if (background.bitfield && !this.bitfield.includes(background.bitfield)) {
+			return resetBackground();
 		}
-		return resetBackground();
 	}
 
 	async fetchRobochimpUser() {
