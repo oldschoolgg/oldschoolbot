@@ -777,6 +777,9 @@ GROUP BY data->>'clueID';`);
 		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
 			return;
 		}
+		if (!background.storeBitField && !background.perkTierNeeded && !background.bitfield) {
+			return;
+		}
 		return resetBackground();
 	}
 

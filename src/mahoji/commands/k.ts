@@ -2,14 +2,12 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { NEX_ID, PVM_METHODS, PvMMethod, ZALCANO_ID } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import { prisma } from '../../lib/settings/prisma';
 import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const autocompleteMonsters = [
 	...killableMonsters,
-	...revenantMonsters,
 	{
 		id: -1,
 		name: 'Tempoross',
