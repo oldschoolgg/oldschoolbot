@@ -5,7 +5,6 @@ import { production } from '../config';
 import { cacheBadges } from './badges';
 import { BadgesEnum, BitField, Channel, globalConfig, PatronTierID, PerkTier } from './constants';
 import { fetchSponsors, getUserIdFromGithubID } from './http/util';
-import backgroundImages from './minions/data/bankBackgrounds';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { getUsersPerkTier } from './perkTiers';
 import { roboChimpUserFetch } from './roboChimp';
@@ -104,7 +103,7 @@ class PatreonTask {
 	async changeTier(userID: string, from: PerkTier, to: PerkTier) {
 		const user = await prisma.user.findFirst({
 			where: { id: userID },
-			select: { bitfield: true, bankBackground: true }
+			select: { bitfield: true }
 		});
 		if (!user) return null;
 
@@ -120,14 +119,6 @@ class PatreonTask {
 				bitfield: newBitfield
 			});
 		} catch (_) {}
-
-		// Remove patron bank background
-		const bg = backgroundImages.find(bg => bg.id === user.bankBackground);
-		if (bg && bg.perkTierNeeded && bg.perkTierNeeded > to) {
-			await mahojiUserSettingsUpdate(userID, {
-				bankBackground: 1
-			});
-		}
 	}
 
 	async givePerks(userID: string, perkTier: PerkTier) {
@@ -167,7 +158,7 @@ class PatreonTask {
 	async removePerks(userID: string) {
 		const user = await prisma.user.findFirst({
 			where: { id: userID },
-			select: { bitfield: true, badges: true, bank_bg_hex: true, bankBackground: true }
+			select: { bitfield: true, badges: true }
 		});
 		if (!user) return null;
 
@@ -185,19 +176,6 @@ class PatreonTask {
 		await mahojiUserSettingsUpdate(userID, {
 			badges: userBadges.filter(number => !patronBadges.includes(number))
 		});
-
-		// Remove patron bank background
-		const bg = backgroundImages.find(bg => bg.id === user.bankBackground);
-		if (bg?.perkTierNeeded) {
-			await mahojiUserSettingsUpdate(userID, {
-				bankBackground: 1
-			});
-		}
-		if (user.bank_bg_hex !== null) {
-			await mahojiUserSettingsUpdate(userID, {
-				bank_bg_hex: null
-			});
-		}
 	}
 
 	async syncGithub() {

@@ -6,7 +6,6 @@ import { Emoji } from '../../lib/constants';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { prisma } from '../../lib/settings/prisma';
@@ -39,14 +38,8 @@ export const monsterTask: MinionTask = {
 			isInWilderness
 		} = data;
 
-		let monster = killableMonsters.find(mon => mon.id === monsterID)!;
-		let revenants = false;
-
-		const matchedRevenantMonster = revenantMonsters.find(mon => mon.id === monsterID)!;
-		if (matchedRevenantMonster) {
-			monster = matchedRevenantMonster;
-			revenants = true;
-		}
+		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
+		const revenants = monster.name.includes('Revenant');
 
 		let skulled = false;
 		if (revenants) skulled = true;

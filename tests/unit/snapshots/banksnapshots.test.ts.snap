@@ -1955,6 +1955,18 @@ exports[`OSB Buyables 1`] = `
     "qpRequired": 175,
   },
   {
+    "gpCost": 75000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Ring of shadows",
+    "outputItems": undefined,
+    "requiredQuests": [
+      1,
+    ],
+  },
+  {
     "gpCost": 1000000,
     "itemCost": Bank {
       "bank": {},
