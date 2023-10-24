@@ -12,7 +12,8 @@
 		"dev": "yarn wipedist && tsc -w -p src",
 		"test:watch": "vitest --config vitest.unit.config.ts --coverage",
 		"test:integration": "ts-node ./src/scripts/integration-tests.ts",
-		"prebuild:scripts": "ts-node -T ./src/scripts/render-creatables-file.ts"
+		"prebuild:scripts": "ts-node -T ./src/scripts/render-creatables-file.ts",
+		"build:esbuild": "esbuild --bundle src/index.ts --outdir=dist --platform=node --loader:.node=file --external:canvas"
 	},
 	"dependencies": {
 		"@discordjs/builders": "^1.5.0",
@@ -76,6 +77,7 @@
 		"@typescript-eslint/parser": "^5.41.0",
 		"@vitest/coverage-c8": "^0.31.0",
 		"concurrently": "^7.6.0",
+		"esbuild": "^0.19.5",
 		"eslint": "^8.36.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-import": "^2.26.0",
