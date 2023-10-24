@@ -38,7 +38,5 @@ jobs:
           popd
       - name: Copy env
         run: cp .env.example .env
-      - name: Build
-        run: yarn build
       - name: Test
         run: yarn test:integration
