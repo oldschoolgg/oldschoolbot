@@ -8,6 +8,7 @@ import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { BitField, globalConfig, ONE_TRILLION, PerkTier } from './constants';
+import { createGECancelButton } from './geHelpers';
 import { marketPricemap } from './marketPrices';
 import { RobochimpUser, roboChimpUserFetch } from './roboChimp';
 import { prisma } from './settings/prisma';
@@ -90,17 +91,6 @@ function sanityCheckTransaction({
 	);
 
 	validateNumber(tax_rate_percent);
-}
-
-export function createGECancelButton(listing: GEListing) {
-	const button = new ButtonBuilder()
-		.setCustomId(`ge_cancel_${listing.userfacing_id}`)
-		.setLabel(
-			`Cancel ${listing.type} ${toKMB(listing.total_quantity)} ${itemNameFromID(listing.item_id)}`.slice(0, 79)
-		)
-		.setStyle(ButtonStyle.Secondary);
-
-	return button;
 }
 
 class GrandExchangeSingleton {
