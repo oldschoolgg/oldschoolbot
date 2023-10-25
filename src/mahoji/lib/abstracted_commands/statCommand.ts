@@ -1180,7 +1180,7 @@ ${unluckiest
 	},
 	{
 		name: 'Weekly XP Gains',
-		perkTierNeeded: null,
+		perkTierNeeded: PerkTier.Four,
 		run: async user => {
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_total_xp]);
@@ -1191,7 +1191,7 @@ ${unluckiest
 	},
 	{
 		name: 'Weekly CL slot gains',
-		perkTierNeeded: null,
+		perkTierNeeded: PerkTier.Four,
 		run: async user => {
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_cl_completion_count]);
@@ -1202,7 +1202,7 @@ ${unluckiest
 	},
 	{
 		name: 'Weekly CL leaderboard rank gains',
-		perkTierNeeded: null,
+		perkTierNeeded: PerkTier.Four,
 		run: async user => {
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_cl_global_rank]);
@@ -1218,7 +1218,7 @@ ${unluckiest
 	},
 	{
 		name: 'Weekly GP gains',
-		perkTierNeeded: null,
+		perkTierNeeded: PerkTier.Four,
 		run: async user => {
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_GP]);
