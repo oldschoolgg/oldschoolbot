@@ -231,6 +231,8 @@ export const raidsTask: MinionTask = {
 			});
 
 			handleTripFinish(allUsers[0], channelID, resultMessage, attachment, data, null);
+		} else {
+			handleTripFinish(allUsers[0], channelID, resultMessage, attachment, data, null);
 		}
 	}
 };
