@@ -81,15 +81,51 @@ export async function lineChart(
 	return generateChart(options);
 }
 
-export async function barChart(title: string, format: (value: any) => string, values: [string, number, string?][]) {
+export async function barChart(
+	title: string,
+	format: (value: any) => string,
+	values: [string, number, string?][],
+	useRelativeColors: boolean = false
+) {
+	const positiveValues = values.map(i => i[1]).filter(v => v > 0);
+	const negativeValues = values.map(i => i[1]).filter(v => v < 0);
+
+	const maxPositiveValue = positiveValues.length > 0 ? Math.max(...positiveValues) : 0;
+	const maxNegativeValue = negativeValues.length > 0 ? Math.abs(Math.min(...negativeValues)) : 0;
+
+	const getRelativeSaturation = (value: number) => {
+		const saturationRange = 10; // Difference between max and min saturation
+		const minSaturation = 60; // Lowered the min saturation to 60 for more difference
+		if (value >= 0 && maxPositiveValue !== 0) {
+			return minSaturation + (value / maxPositiveValue) * saturationRange;
+		} else if (value < 0 && maxNegativeValue !== 0) {
+			return minSaturation + (Math.abs(value) / maxNegativeValue) * saturationRange;
+		}
+		return minSaturation;
+	};
+
+	const getLightness = (value: number) => {
+		if (value >= 0) {
+			return 30 + (value / maxPositiveValue) * 20;
+		}
+		return 70 - (Math.abs(value) / maxNegativeValue) * 20;
+	};
+
+	const getColorForValue = (value: number) => {
+		const hue = value >= 0 ? 120 : 0; // 120 for green, 0 for red
+		const saturation = useRelativeColors ? getRelativeSaturation(value) : 100;
+		const lightness = useRelativeColors ? getLightness(value) : 50;
+		return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+	};
+
 	const options: ChartConfiguration = {
 		type: 'bar',
 		data: {
-			labels: values.map(i => format(i[0])),
+			labels: values.map(i => i[0]),
 			datasets: [
 				{
 					data: values.map(i => i[1]),
-					backgroundColor: values.map((val, index) => val[2] ?? randomHexColor(index))
+					backgroundColor: values.map(val => val[2] ?? getColorForValue(val[1]))
 				}
 			]
 		},
