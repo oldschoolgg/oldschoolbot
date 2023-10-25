@@ -49,7 +49,7 @@ export const tobTask: MinionTask = {
 		const totalLoot = new Bank();
 		let wipeCount = 0;
 		let earnedAttempts = 0;
-		let resultMessage = `**${allTag} Your ${hardMode ? 'Hard Mode' : ''} Theatre of Blood has finished**\n`;
+		let resultMessage = `**${allTag} Your ${hardMode ? 'Hard Mode ' : ''}Theatre of Blood has finished**\n`;
 
 		for (let i = 0; i < quantity; i++) {
 			const raidId = i + 1;
