@@ -94,8 +94,8 @@ export async function barChart(
 	const maxNegativeValue = negativeValues.length > 0 ? Math.abs(Math.min(...negativeValues)) : 0;
 
 	const getRelativeSaturation = (value: number) => {
-		const saturationRange = 10; // Difference between max and min saturation
-		const minSaturation = 60; // Lowered the min saturation to 60 for more difference
+		const saturationRange = 10;
+		const minSaturation = 60;
 		if (value >= 0 && maxPositiveValue !== 0) {
 			return minSaturation + (value / maxPositiveValue) * saturationRange;
 		} else if (value < 0 && maxNegativeValue !== 0) {
@@ -112,7 +112,7 @@ export async function barChart(
 	};
 
 	const getColorForValue = (value: number) => {
-		const hue = value >= 0 ? 120 : 0; // 120 for green, 0 for red
+		const hue = value >= 0 ? 120 : 0;
 		const saturation = useRelativeColors ? getRelativeSaturation(value) : 100;
 		const lightness = useRelativeColors ? getLightness(value) : 50;
 		return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
