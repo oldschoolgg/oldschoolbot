@@ -221,35 +221,48 @@ export const tobTask: MinionTask = {
 				duration
 			}))
 		});
+		const shouldShowImage = allUsers.length <= 3 && teamsLoot.entries().every(i => i[1].length <= 6);
 
-		const oneRaid = raidId === 1;
-		let attachment = undefined;
-		if (users.length === 1 && oneRaid) {
-			attachment = await drawChestLootImage({
-				entries: [
-					{
-						loot: totalLoot.remove('Coins', 100_000),
-						user: allUsers[0],
-						previousCL: previousCLs[0],
-						customTexts: []
-					}
-				],
-				type: 'Theatre of Blood'
-			});
-		} else if (allUsers.length <= 3 && oneRaid) {
-			attachment = await drawChestLootImage({
-				entries: allUsers.map((u, index) => ({
-					loot: teamsLoot.get(u.id).remove('Coins', 100_000),
-					user: u,
-					previousCL: previousCLs[index],
-					customTexts: []
-				})),
-				type: 'Theatre of Blood'
-			});
+		if (users.length === 1) {
+			return handleTripFinish(
+				allUsers[0],
+				channelID,
+				resultMessage,
+				shouldShowImage
+					? await await drawChestLootImage({
+							entries: [
+								{
+									loot: totalLoot.remove('Coins', raidId * 100_000),
+									user: allUsers[0],
+									previousCL: previousCLs[0],
+									customTexts: []
+								}
+							],
+							type: 'Theatre of Blood'
+					  })
+					: undefined,
+				data,
+				totalLoot
+			);
 		}
-		if (data.solo) {
-			return handleTripFinish(allUsers[0], channelID, resultMessage, attachment, data, totalLoot, undefined);
-		}
-		return handleTripFinish(allUsers[0], channelID, resultMessage, attachment, data, null, undefined);
+
+		handleTripFinish(
+			allUsers[0],
+			channelID,
+			resultMessage,
+			shouldShowImage
+				? await drawChestLootImage({
+						entries: allUsers.map((u, index) => ({
+							loot: teamsLoot.get(u.id).remove('Coins', raidId * 100_000),
+							user: u,
+							previousCL: previousCLs[index],
+							customTexts: []
+						})),
+						type: 'Theatre of Blood'
+				  })
+				: undefined,
+			data,
+			null
+		);
 	}
 };
