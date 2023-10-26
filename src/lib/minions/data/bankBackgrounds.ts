@@ -1,3 +1,4 @@
+import { StoreBitfield } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { BitField, PerkTier } from '../../constants';
@@ -14,7 +15,8 @@ const backgroundImages: BankBackground[] = [
 		id: 2,
 		name: 'Swampman',
 		image: null,
-		available: false
+		available: false,
+		storeBitField: StoreBitfield.HasSetTwoDarkPermanentBankBackgrounds
 	},
 	{
 		id: 3,
@@ -22,7 +24,8 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
+		gpCost: 10_000_000,
+		storeBitField: StoreBitfield.HasSetTwoDarkPermanentBankBackgrounds
 	},
 	{
 		id: 4,
@@ -36,7 +39,8 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
+		gpCost: 10_000_000,
+		storeBitField: StoreBitfield.HasSetTwoDarkPermanentBankBackgrounds
 	},
 	{
 		id: 6,
@@ -44,7 +48,8 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Six,
-		gpCost: 10_000_000
+		gpCost: 10_000_000,
+		storeBitField: StoreBitfield.HasSetTwoDarkPermanentBankBackgrounds
 	},
 	{
 		id: 7,
@@ -164,7 +169,8 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Five,
-		gpCost: 10_000_000
+		gpCost: 10_000_000,
+		storeBitField: StoreBitfield.HasSetOneNaturePermanentBankBackgrounds
 	},
 	{
 		id: 13,
@@ -172,7 +178,8 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
+		gpCost: 10_000_000,
+		storeBitField: StoreBitfield.HasSetOneNaturePermanentBankBackgrounds
 	},
 	{
 		id: 14,
@@ -181,14 +188,16 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		bitfield: BitField.HasPermanentEventBackgrounds,
 		hasPurple: true,
-		purpleImage: null
+		purpleImage: null,
+		storeBitField: StoreBitfield.HasDynamicCoXBackgroundPermanentBankBackgrounds
 	},
 	{
 		id: 15,
 		name: 'OSB',
 		image: null,
 		available: true,
-		bitfield: BitField.HasPermanentEventBackgrounds
+		bitfield: BitField.HasPermanentEventBackgrounds,
+		storeBitField: StoreBitfield.HasSetTwoDarkPermanentBankBackgrounds
 	},
 	{
 		id: 16,
@@ -230,7 +239,8 @@ const backgroundImages: BankBackground[] = [
 			'Tyrannical ring': 1,
 			'Ring of the gods': 1
 		}),
-		gpCost: 100_000_000
+		gpCost: 100_000_000,
+		storeBitField: StoreBitfield.HasSetTwoDarkPermanentBankBackgrounds
 	},
 	{
 		id: 17,
@@ -239,7 +249,8 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 2_147_483_647,
-		sacValueRequired: 2_147_483_647
+		sacValueRequired: 2_147_483_647,
+		storeBitField: StoreBitfield.HasSetOneNaturePermanentBankBackgrounds
 	},
 	{
 		id: 18,
@@ -253,7 +264,8 @@ const backgroundImages: BankBackground[] = [
 		gpCost: 100_000_000,
 		skillsNeeded: {
 			farming: 99
-		}
+		},
+		storeBitField: StoreBitfield.HasSetOneNaturePermanentBankBackgrounds
 	},
 	{
 		id: 19,
@@ -262,7 +274,8 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 20_000_000,
-		transparent: true
+		transparent: true,
+		storeBitField: StoreBitfield.HasSetThreeTransparentAnimalsPermanentBankBackgrounds
 	},
 	{
 		id: 20,
@@ -280,7 +293,8 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 20_000_000,
-		transparent: true
+		transparent: true,
+		storeBitField: StoreBitfield.HasSetThreeTransparentAnimalsPermanentBankBackgrounds
 	},
 	{
 		id: 22,
@@ -288,7 +302,8 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		gpCost: 20_000_000
+		gpCost: 20_000_000,
+		storeBitField: StoreBitfield.HasSetFourGirlsPermanentBankBackgrounds
 	},
 	{
 		id: 23,
@@ -299,7 +314,8 @@ const backgroundImages: BankBackground[] = [
 		gpCost: 20_000_000,
 		transparent: true,
 		hasPurple: true,
-		purpleImage: null
+		purpleImage: null,
+		storeBitField: StoreBitfield.HasDynamicToBBackgroundPermanentBankBackgrounds
 	},
 	{
 		id: 24,
@@ -307,7 +323,8 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Three,
-		gpCost: 20_000_000
+		gpCost: 20_000_000,
+		storeBitField: StoreBitfield.HasSetFourGirlsPermanentBankBackgrounds
 	},
 	{
 		id: 25,
@@ -316,7 +333,8 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		perkTierNeeded: PerkTier.Three,
 		gpCost: 20_000_000,
-		transparent: true
+		transparent: true,
+		storeBitField: StoreBitfield.HasSetFourGirlsPermanentBankBackgrounds
 	},
 	{
 		id: 26,
@@ -325,7 +343,8 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 20_000_000,
-		transparent: true
+		transparent: true,
+		storeBitField: StoreBitfield.HasSetFourGirlsPermanentBankBackgrounds
 	},
 	{
 		id: 27,
@@ -333,7 +352,8 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		gpCost: 20_000_000
+		gpCost: 20_000_000,
+		storeBitField: StoreBitfield.HasSetFourGirlsPermanentBankBackgrounds
 	},
 	{
 		id: 28,
@@ -342,7 +362,8 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 20_000_000,
-		transparent: true
+		transparent: true,
+		storeBitField: StoreBitfield.HasSetFourGirlsPermanentBankBackgrounds
 	},
 	{
 		id: 29,
@@ -351,7 +372,8 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 500_000,
-		alternateImages: [{ id: 1 }]
+		alternateImages: [{ id: 1 }],
+		storeBitField: StoreBitfield.HasDynamicFarmingBackgroundPermanentBankBackgrounds
 	},
 	{
 		id: 30,
@@ -361,7 +383,8 @@ const backgroundImages: BankBackground[] = [
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 500_000,
 		transparent: true,
-		alternateImages: [{ id: 1 }]
+		alternateImages: [{ id: 1 }],
+		storeBitField: StoreBitfield.HasDynamicFarmingBackgroundPermanentBankBackgrounds
 	},
 	{
 		id: 31,
@@ -370,8 +393,46 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 500_000,
-		transparent: true
+		transparent: true,
+		storeBitField: StoreBitfield.HasSetThreeTransparentAnimalsPermanentBankBackgrounds
+	},
+	{
+		id: 32,
+		name: 'Troll',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000
+	},
+	{
+		id: 33,
+		name: 'Christmas',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000
+	},
+	{
+		id: 35,
+		name: 'Jad',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000
+	},
+	{
+		id: 36,
+		name: 'Halloween Logo',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 500_000
 	}
 ];
+
+export function getBankBgById(bgId: number) {
+	const result = backgroundImages.find(bgi => bgi.id === bgId);
+	return result ?? backgroundImages[0];
+}
 
 export default backgroundImages;

@@ -18,6 +18,7 @@ import { fishingTask } from '../tasks/minions/fishingActivity';
 import { fletchingTask } from '../tasks/minions/fletchingActivity';
 import { gloryChargingTask } from '../tasks/minions/gloryChargingActivity';
 import { groupoMonsterTask } from '../tasks/minions/groupMonsterActivity';
+import { halloweenTask } from '../tasks/minions/halloweenActivity';
 import { herbloreTask } from '../tasks/minions/herbloreActivity';
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
@@ -68,7 +69,6 @@ import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
 import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
 import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity';
 import { questingTask } from '../tasks/minions/questingActivity';
-import { revenantsTask } from '../tasks/minions/revenantsActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
 import { sawmillTask } from '../tasks/minions/sawmillActivity';
 import { shootingStarTask } from '../tasks/minions/shootingStarsActivity';
@@ -149,7 +149,6 @@ export const tasks: MinionTask[] = [
 	motherlodeMiningTask,
 	runecraftTask,
 	sawmillTask,
-	revenantsTask,
 	woodcuttingTask,
 	wealthChargeTask,
 	tokkulShopTask,
@@ -177,7 +176,8 @@ export const tasks: MinionTask[] = [
 	toaTask,
 	underwaterAgilityThievingTask,
 	strongholdTask,
-	specificQuestTask
+	specificQuestTask,
+	halloweenTask
 ];
 
 export async function syncActivityCache() {
@@ -226,7 +226,8 @@ const ignored: activity_type_enum[] = [
 	activity_type_enum.BirthdayEvent,
 	activity_type_enum.BlastFurnace,
 	activity_type_enum.Easter,
-	activity_type_enum.HalloweenEvent
+	activity_type_enum.HalloweenEvent,
+	activity_type_enum.Revenants
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {

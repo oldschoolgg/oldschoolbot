@@ -370,5 +370,5 @@ for (const [baseItem, similarItems] of source) {
 
 export function getSimilarItems(itemID: number): number[] {
 	const similars = similarItems.get(itemID);
-	return similars ? [itemID, ...similars] : [];
+	return similars ? [itemID, ...similars] : [itemID];
 }
