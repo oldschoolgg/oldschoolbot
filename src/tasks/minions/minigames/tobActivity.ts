@@ -22,7 +22,7 @@ async function handleTobXP(user: MUser, isHm: boolean) {
 	let hitpointsXP = 13_000;
 	let rangeXP = 1000;
 	let magicXP = 1000;
-	let meleeXP = 12_000;
+	let meleeXP = 36_000;
 
 	if (isHm) {
 		hitpointsXP *= 1.2;
