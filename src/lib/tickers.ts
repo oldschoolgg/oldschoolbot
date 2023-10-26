@@ -165,6 +165,11 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 				);
 				const user = await globalClient.fetchUser(row.id);
 				await user.send('Your daily is ready!').catch(noOp);
+				new ButtonBuilder()
+					.setCustomId('CLAIM_DAILY')
+					.setLabel('Claim Daily')
+					.setEmoji('493286312854683654')
+					.setStyle(ButtonStyle.Secondary);
 			}
 		}
 	},
