@@ -36,7 +36,12 @@ export const monsterTask: MinionTask = {
 			pkEncounters,
 			hasWildySupplies
 		} = data;
+
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
+		const revenants = monster.name.includes('Revenant');
+
+		let skulled = false;
+		if (revenants) skulled = true;
 
 		const messages: string[] = [];
 
@@ -101,7 +106,7 @@ export const monsterTask: MinionTask = {
 					smited: hasPrayerLevel && !protectItem,
 					protectItem: hasPrayerLevel,
 					after20wilderness: monster.pkBaseDeathChance && monster.pkBaseDeathChance >= 5 ? true : false,
-					skulled: false
+					skulled
 				});
 
 				let reEquipedItems = false;

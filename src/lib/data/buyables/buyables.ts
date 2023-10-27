@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { MAX_QP } from '../../../mahoji/lib/abstracted_commands/questCommand';
+import { MAX_QP, QuestID } from '../../../mahoji/lib/abstracted_commands/questCommand';
 import { chompyHats } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { Favours } from '../../minions/data/kourendFavour';
@@ -31,6 +31,7 @@ export interface Buyable {
 	name: string;
 	outputItems?: Bank | ((user: MUser) => Bank);
 	qpRequired?: number;
+	requiredQuests?: QuestID[];
 	gpCost?: number;
 	itemCost?: Bank;
 	aliases?: string[];
@@ -715,6 +716,11 @@ const questBuyables: Buyable[] = [
 		gpCost: 2_500_000,
 		qpRequired: 175,
 		ironmanPrice: 2000
+	},
+	{
+		name: 'Ring of shadows',
+		gpCost: 75_000,
+		requiredQuests: [QuestID.DesertTreasureII]
 	}
 ];
 
@@ -853,6 +859,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Salve amulet',
 		gpCost: 200_000,
+		ironmanPrice: 20_000,
 		skillsNeeded: {
 			crafting: 35
 		},

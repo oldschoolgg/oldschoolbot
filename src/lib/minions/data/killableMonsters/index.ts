@@ -33,6 +33,7 @@ const killableMonsters: KillableMonster[] = [
 	...turaelMonsters,
 	...vannakaMonsters,
 	...low,
+	...revenantMonsters,
 	...creatureCreationCreatures,
 	...reanimatedMonsters,
 	{
@@ -367,7 +368,6 @@ export default killableMonsters;
 
 export const effectiveMonsters = [
 	...killableMonsters,
-	...revenantMonsters,
 	NightmareMonster,
 	{
 		name: 'Zalcano',

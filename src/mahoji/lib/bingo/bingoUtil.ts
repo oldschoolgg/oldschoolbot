@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 
+import { ItemBank } from '../../../lib/types';
 import { getItem } from '../../../lib/util/getOSItem';
 import { globalBingoTiles } from './globalTiles';
 
@@ -15,18 +16,22 @@ interface AllOf {
 	allOf: number[];
 }
 
+interface BankTile {
+	bank: ItemBank;
+}
+
 export type UniversalBingoTile = {
 	id?: number;
 	name: string;
-} & (OneOf | AllOf | CustomReq);
+} & (OneOf | AllOf | BankTile | CustomReq);
 
 export interface StoredGlobalTile {
 	global: number;
 }
 
-export type StoredBingoTile = OneOf | AllOf | StoredGlobalTile;
+export type StoredBingoTile = OneOf | AllOf | BankTile | StoredGlobalTile;
 
-export type GlobalBingoTile = (OneOf | AllOf | CustomReq) & {
+export type GlobalBingoTile = (OneOf | AllOf | BankTile | CustomReq) & {
 	id: number;
 	name: string;
 };
@@ -39,7 +44,9 @@ export function rowsForSquare(n: number): number {
 	return Math.ceil(Math.sqrt(n));
 }
 
-export function generateTileName(tile: OneOf | AllOf | UniversalBingoTile | StoredBingoTile | GlobalBingoTile) {
+export function generateTileName(
+	tile: OneOf | AllOf | BankTile | UniversalBingoTile | StoredBingoTile | GlobalBingoTile
+) {
 	if ('global' in tile) {
 		return globalBingoTiles.find(t => t.id === tile.global)?.name ?? 'Unknown';
 	}
@@ -52,10 +59,13 @@ export function generateTileName(tile: OneOf | AllOf | UniversalBingoTile | Stor
 	if ('allOf' in tile) {
 		return `Receive all of: ${tile.allOf.map(id => getItem(id)?.name).join(', ')}`;
 	}
+	if ('bank' in tile) {
+		return `Receive all of: ${new Bank(tile.bank)}`;
+	}
 	throw new Error(`Invalid tile: ${JSON.stringify(tile)}`);
 }
 
-export function getAllTileItems(tile: UniversalBingoTile) {
+export function getAllTileItems(tile: UniversalBingoTile): number[] {
 	if ('oneOf' in tile) {
 		return tile.oneOf;
 	}
@@ -64,6 +74,9 @@ export function getAllTileItems(tile: UniversalBingoTile) {
 	}
 	if ('customReq' in tile) {
 		return tile.allItems;
+	}
+	if ('bank' in tile) {
+		return new Bank(tile.bank).items().map(i => i[0].id);
 	}
 
 	return [];
