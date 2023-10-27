@@ -54,10 +54,10 @@ export const musicCapeRequirements = new Requirements()
 			.add('Raw monkfish')
 			.add('Brittle key')
 	})
-	// .add({
-	// 	name: '750 Barronite shards to unlock Race Against the Clock inside the Camdozaal Vault',
-	// 	clRequirement: new Bank().add('Barronite shards', 750)
-	// })
+	.add({
+		name: '750 Barronite shards to access the Camdozaal Vault',
+		clRequirement: new Bank().add('Barronite shards', 750)
+	})
 	.add({
 		kcRequirement: {
 			[MIMIC_MONSTER_ID]: 1,
