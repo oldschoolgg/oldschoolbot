@@ -53,6 +53,7 @@ export const musicCapeRequirements = new Requirements()
 			.add('Fire cape')
 			.add('Raw monkfish')
 			.add('Brittle key')
+			.add('Revenant ether')
 	})
 	// .add({
 	// 	name: '750 Barronite shards to unlock Race Against the Clock inside the Camdozaal Vault',
