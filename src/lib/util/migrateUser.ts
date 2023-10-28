@@ -4,7 +4,7 @@ import { cancelUsersListings } from '../../mahoji/lib/abstracted_commands/cancel
 import { prisma } from '../settings/prisma';
 import { logError } from './logError';
 
-export async function migrateUser(_source: string | MUser, _dest: string | MUser): Promise<string> {
+export async function migrateUser(_source: string | MUser, _dest: string | MUser): Promise<string | true> {
 	const sourceUser = typeof _source === 'string' ? await mUserFetch(_source) : _source;
 	const destUser = typeof _dest === 'string' ? await mUserFetch(_dest) : _dest;
 
@@ -178,5 +178,5 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	// This regenerates a default users table row for the now-clean sourceUser
 	await mUserFetch(sourceUser.id);
 
-	return 'Done';
+	return true;
 }

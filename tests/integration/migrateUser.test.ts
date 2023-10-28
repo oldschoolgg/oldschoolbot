@@ -723,7 +723,7 @@ describe('migrate user test', async () => {
 		await sourceData.sync();
 
 		const migrateResult = await migrateUser(sourceUser.id, destUserId);
-		expect(migrateResult).toEqual('Done');
+		expect(migrateResult).toEqual(true);
 
 		const newData = new UserData(destUserId);
 		await newData.sync();
@@ -741,7 +741,7 @@ describe('migrate user test', async () => {
 		await sourceData.sync();
 
 		const migrateResult = await migrateUser(sourceUser.id, destUser.id);
-		expect(migrateResult).toEqual('Done');
+		expect(migrateResult).toEqual(true);
 
 		const newData = new UserData(destUser.id);
 		await newData.sync();
@@ -782,8 +782,8 @@ describe('migrate user test', async () => {
 
 			const result = await migrateUser(sourceUser, destUserId);
 
-			if (result !== 'Done') console.log(`Error: ${sourceUser.id} - ${result}`);
-			expect(result).toEqual('Done');
+			if (result !== true) throw new Error(`${sourceUser.id} - ${result}`);
+			expect(result).toEqual(true);
 
 			const newData = new UserData(destUserId);
 			await newData.sync();
@@ -818,7 +818,7 @@ describe('migrate user test', async () => {
 			await sourceData.sync();
 
 			const result = await migrateUser(sourceUser, destUser);
-			expect(result).toEqual('Done');
+			expect(result).toEqual(true);
 
 			const newData = new UserData(destUser);
 			await newData.sync();
@@ -850,7 +850,7 @@ describe('migrate user test', async () => {
 			await sourceData.sync();
 
 			const result = await migrateUser(sourceUser, destUser);
-			expect(result).toEqual('Done');
+			expect(result).toEqual(true);
 
 			const newData = new UserData(destUser);
 			await newData.sync();

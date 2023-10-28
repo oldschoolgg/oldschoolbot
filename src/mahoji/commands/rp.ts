@@ -212,6 +212,11 @@ export const rpCommand: OSBMahojiCommand = {
 							name: 'dest',
 							description: 'Destination account (any existing data on this account will be deleted)',
 							required: true
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'reason',
+							description: 'The reason'
 						}
 					]
 				}
@@ -244,7 +249,7 @@ export const rpCommand: OSBMahojiCommand = {
 			};
 			add_ironman_alt?: { main: MahojiUserOption; ironman_alt: MahojiUserOption };
 			view_user?: { user: MahojiUserOption };
-			migrate_user?: { source: MahojiUserOption; dest: MahojiUserOption };
+			migrate_user?: { source: MahojiUserOption; dest: MahojiUserOption; reason?: string };
 		};
 	}>) => {
 		await deferInteraction(interaction);
@@ -473,13 +478,23 @@ export const rpCommand: OSBMahojiCommand = {
 			if (!isOwner && !isAdmin) {
 				return randArrItem(gifs);
 			}
-			const sourceUser = await mUserFetch(options.player.migrate_user.source.user.id);
-			const destUser = await mUserFetch(options.player.migrate_user.dest.user.id);
+			const { source, dest, reason } = options.player.migrate_user;
+			const sourceUser = await mUserFetch(source.user.id);
+			const destUser = await mUserFetch(dest.user.id);
 			await handleMahojiConfirmation(
 				interaction,
 				`Are you 1000%, totally, **REALLY** sure that \`${sourceUser.usernameOrMention}\` is the account you want to preserve, and \`${destUser.usernameOrMention}\` is the new account that will have ALL existing data destroyed?`
 			);
-			return migrateUser(sourceUser, destUser);
+			const result = await migrateUser(sourceUser, destUser);
+			if (result === true) {
+				await sendToChannelID(Channel.BotLogs, {
+					content: `${adminUser.logName} migrated ${sourceUser.logName} to ${destUser.logName}${
+						reason ? `, for ${reason}` : ''
+					}`
+				});
+				return 'Done';
+			}
+			return result;
 		}
 
 		return 'Invalid command.';
