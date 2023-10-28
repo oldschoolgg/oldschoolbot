@@ -2,7 +2,7 @@ import { codeBlock } from '@discordjs/builders';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Duration } from '@sapphire/time-utilities';
 import { SnowflakeUtil } from 'discord.js';
-import { randArrItem, Time } from 'e';
+import { randArrItem, sumArr, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
@@ -13,6 +13,7 @@ import { BitField, Channel } from '../../lib/constants';
 import { GrandExchange } from '../../lib/grandExchange';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { patreonTask } from '../../lib/patreon';
+import { allPerkBitfields } from '../../lib/perkTiers';
 import { prisma } from '../../lib/settings/prisma';
 import { dateFm, formatDuration } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -34,6 +35,12 @@ const itemFilters = [
 		filter: (item: Item) => itemIsTradeable(item.id, true)
 	}
 ];
+
+function isProtectedAccount(user: MUser) {
+	if ([...ADMIN_IDS, ...OWNER_IDS].includes(user.id)) return true;
+	if ([BitField.isModerator, BitField.isContributor].some(bf => user.bitfield.includes(bf))) return true;
+	return false;
+}
 
 export const rpCommand: OSBMahojiCommand = {
 	name: 'rp',
@@ -481,9 +488,25 @@ export const rpCommand: OSBMahojiCommand = {
 			const { source, dest, reason } = options.player.migrate_user;
 			const sourceUser = await mUserFetch(source.user.id);
 			const destUser = await mUserFetch(dest.user.id);
+
+			if (isProtectedAccount(destUser)) return 'You cannot clobber that account.';
+			if (allPerkBitfields.some(pt => destUser.bitfield.includes(pt))) {
+				await handleMahojiConfirmation(
+					interaction,
+					`The target user, ${destUser.logName}, has a Patreon Tier; are you really sure you want to DELETE all data from that account?`
+				);
+			}
+			const sourceXp = sumArr(Object.values(sourceUser.skillsAsXP));
+			const destXp = sumArr(Object.values(destUser.skillsAsXP));
+			if (destXp > sourceXp) {
+				await handleMahojiConfirmation(
+					interaction,
+					`The target user, ${destUser.logName}, has more XP than the source user; are you really sure the names aren't backwards?`
+				);
+			}
 			await handleMahojiConfirmation(
 				interaction,
-				`Are you 1000%, totally, **REALLY** sure that \`${sourceUser.usernameOrMention}\` is the account you want to preserve, and \`${destUser.usernameOrMention}\` is the new account that will have ALL existing data destroyed?`
+				`Are you 1000%, totally, **REALLY** sure that \`${sourceUser.logName}\` is the account you want to preserve, and \`${destUser.logName}\` is the new account that will have ALL existing data destroyed?`
 			);
 			const result = await migrateUser(sourceUser, destUser);
 			if (result === true) {
