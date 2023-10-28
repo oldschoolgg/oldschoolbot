@@ -705,6 +705,7 @@ describe('migrate user test', async () => {
 	});
 
 	const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+	const sleepDelay = 200;
 
 	beforeEach(() => {
 		vi.useFakeTimers({ toFake: ['Date'] });
@@ -776,7 +777,7 @@ describe('migrate user test', async () => {
 			await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
 
 			// sleep to let the DB catch up - necessary!
-			await sleep(300);
+			await sleep(sleepDelay);
 			const sourceData = new UserData(sourceUser);
 			await sourceData.sync();
 
@@ -813,7 +814,7 @@ describe('migrate user test', async () => {
 			await runRandomTestCommandsOnUser(destUser, destRolls);
 
 			// sleep to let the DB catch up - necessary!
-			await sleep(300);
+			await sleep(sleepDelay);
 			const sourceData = new UserData(sourceUser);
 			await sourceData.sync();
 
@@ -845,7 +846,7 @@ describe('migrate user test', async () => {
 			await runAllTestCommandsOnUser(destUser);
 
 			// sleep to let the DB catch up - necessary!
-			await sleep(300);
+			await sleep(sleepDelay);
 			const sourceData = new UserData(sourceUser);
 			await sourceData.sync();
 
@@ -866,4 +867,7 @@ describe('migrate user test', async () => {
 		},
 		{ repeats: 3 }
 	);
+
+	// Sleep to avoid 'command failed' errors
+	await sleep(sleepDelay);
 });
