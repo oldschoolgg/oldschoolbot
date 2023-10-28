@@ -1,6 +1,6 @@
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 
-import { cancelUsersListings } from '../geHelpers';
+import { cancelUsersListings } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import { prisma } from '../settings/prisma';
 import { logError } from './logError';
 
