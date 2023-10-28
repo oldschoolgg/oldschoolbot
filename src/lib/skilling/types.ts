@@ -51,6 +51,7 @@ export interface Log {
 	level: number;
 	xp: number;
 	id: number;
+	leaf?: number;
 	lootTable?: LootTable;
 	name: string;
 	aliases?: string[];
