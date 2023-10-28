@@ -1,5 +1,4 @@
 import { EmbedBuilder } from '@discordjs/builders';
-import { Activity } from '@prisma/client';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, TextChannel } from 'discord.js';
 import { noOp, randInt, removeFromArr, shuffleArr, Time } from 'e';
 
@@ -14,7 +13,7 @@ import { prisma, queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
-import { completeActivity } from './Task';
+import { processPendingActivities } from './Task';
 import { awaitMessageComponentInteraction, getSupportGuild, stringMatches } from './util';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
 import { handleGiveawayCompletion } from './util/giveaway';
@@ -113,29 +112,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 		timer: null,
 		interval: Time.Second * 5,
 		cb: async () => {
-			const activities: Activity[] = await prisma.activity.findMany({
-				where: {
-					completed: false,
-					finish_date: production
-						? {
-								lt: new Date()
-						  }
-						: undefined
-				}
-			});
-
-			await prisma.activity.updateMany({
-				where: {
-					id: {
-						in: activities.map(i => i.id)
-					}
-				},
-				data: {
-					completed: true
-				}
-			});
-
-			await Promise.all(activities.map(completeActivity));
+			await processPendingActivities();
 		}
 	},
 	{

@@ -15,11 +15,13 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(prisma.$executeRaw`SET CONSTRAINTS ALL DEFERRED`);
 
 	// Delete Queries
+	// Slayer task must come before new_user since it's linked to new_users 500 IQ.
+	transactions.push(prisma.slayerTask.deleteMany({ where: { user_id: destUser.id } }));
+
 	transactions.push(prisma.newUser.deleteMany({ where: { id: destUser.id } }));
 
 	transactions.push(prisma.gearPreset.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.giveaway.deleteMany({ where: { user_id: destUser.id } }));
-	transactions.push(prisma.slayerTask.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.botItemSell.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.historicalData.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.farmedCrop.deleteMany({ where: { user_id: destUser.id } }));
@@ -176,14 +178,5 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	// This regenerates a default users table row for the now-clean sourceUser
 	await mUserFetch(sourceUser.id);
 
-	// Note: This doesn't update masses in Activity table where the user isn't the host, probably too much time/cpu.
-	/* tests:
-		Count activities
-		count total number of GE listings for both sides, target should end up with all
-		Should end up with all command_usage
-		Compare banks / clog / userstats
-		** Make list of tables and fuzz random combinations
-
-	 */
 	return 'Done';
 }

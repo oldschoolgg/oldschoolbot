@@ -23,5 +23,6 @@ global.globalClient = {
 	},
 	channels: {
 		cache: new Collection()
-	}
+	},
+	busyCounterCache: new Map<string, number>()
 } as any;
