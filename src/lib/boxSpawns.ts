@@ -124,19 +124,22 @@ const createdChallenge: Challenge = async (msg: Message): Promise<User | null> =
 		return null;
 	}
 };
-const monsters = [...Object.values(BSOMonsters), ...killableMonsters].map(i => {
-	let allItems = [];
-	if (i.table instanceof LootTable) {
-		allItems = i.table.allItems;
-	} else {
-		allItems = Monsters.get(i.id)!.allItems;
-	}
+const monsters = [...Object.values(BSOMonsters), ...killableMonsters]
+	.map(i => {
+		let allItems = [];
+		if (i.table instanceof LootTable) {
+			allItems = i.table.allItems;
+		} else {
+			allItems = Monsters.get(i.id)!.allItems;
+		}
 
-	return {
-		name: i.name,
-		allItems
-	};
-});
+		return {
+			name: i.name,
+			allItems
+		};
+	})
+	.filter(m => m.allItems.length >= 3);
+
 const monsterDropChallenge: Challenge = async (msg: Message): Promise<User | null> => {
 	let monster = randArrItem(monsters);
 
