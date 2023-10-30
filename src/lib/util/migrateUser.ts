@@ -158,6 +158,18 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 		prisma.gEListing.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);
 
+	// Update Users in group activities:
+	const updateUsers = `UPDATE activity
+	SET data = data::jsonb
+		|| CONCAT('{"users":', REPLACE(data->>'users', '${sourceUser.id}', '${destUser.id}'),'}')::jsonb
+		|| CONCAT('{"leader":"', REPLACE(data->>'leader', '${sourceUser.id}', '${destUser.id}'), '"}')::jsonb
+	WHERE (data->'users')::jsonb ? '${sourceUser.id}'`;
+	transactions.push(prisma.$queryRawUnsafe(updateUsers));
+
+	// Update `detailedUsers` in ToA
+	const updateToAUsers = `UPDATE activity SET data = data::jsonb || CONCAT('{"detailedUsers":', REPLACE(data->>'detailedUsers', '${sourceUser.id}', '${destUser.id}'),'}')::jsonb WHERE type = 'TombsOfAmascut' AND data->>'detailedUsers' LIKE '%${sourceUser.id}%'`;
+	transactions.push(prisma.$queryRawUnsafe(updateToAUsers));
+
 	try {
 		await prisma.$transaction(transactions);
 	} catch (err: any) {

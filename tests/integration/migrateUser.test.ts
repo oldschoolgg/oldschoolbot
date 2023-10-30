@@ -21,7 +21,7 @@ import {
 	UserStats,
 	XPGain
 } from '@prisma/client';
-import { deepClone, randArrItem, randInt } from 'e';
+import { deepClone, randArrItem, randInt, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
@@ -32,6 +32,7 @@ import { prisma } from '../../src/lib/settings/prisma';
 import { SkillsEnum } from '../../src/lib/skilling/types';
 import { processPendingActivities } from '../../src/lib/Task';
 import { Skills } from '../../src/lib/types';
+import { isGroupActivity } from '../../src/lib/util';
 import { migrateUser } from '../../src/lib/util/migrateUser';
 import resolveItems from '../../src/lib/util/resolveItems';
 import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems';
@@ -386,7 +387,21 @@ class UserData {
 			const dstCt = target.activities?.length ?? 0;
 			if (srcCt !== dstCt) {
 				errors.push(`Wrong number of activities. ${srcCt} vs ${dstCt}`);
-			} else if (!this.activities!.every(s => target.activities!.some(t => s.id === t.id))) {
+			} else if (
+				!this.activities!.every(s =>
+					target.activities!.some(t => {
+						if (isGroupActivity(s.data)) {
+							if (!isGroupActivity(t.data)) return false;
+							// First check for manipulated group activity user array:
+							const srcUsers = JSON.stringify(s.data.users).replace(this.id, target.id);
+							const dstUsers = JSON.stringify(t.data.users);
+							return srcUsers === dstUsers;
+						}
+						// Otherwise just look for the ID, since nothing else is mangled.
+						return s.id === t.id;
+					})
+				)
+			) {
 				errors.push("One or more activities don't match");
 			}
 		}
@@ -608,6 +623,36 @@ const allTableCommands: TestCommand[] = [
 				await user.runCommand(activity[0], activity[1]);
 				await processPendingActivities();
 			}
+		}
+	},
+	{
+		name: 'Group Activity',
+		cmd: async user => {
+			const users = shuffleArr([user.id, randomSnowflake(), randomSnowflake()]);
+			const data = {
+				leader: user.id,
+				users,
+				detailedUsers: [users.map(u => [u, randInt(15_000, 25_000), []])],
+				quantity: 1,
+				wipedRoom: [null],
+				raidLevel: 450
+			};
+			const duration = 30 * 60 * 1000;
+			const start_date = new Date();
+			const finish_date = new Date(start_date.getTime() + duration);
+			await prisma.activity.create({
+				data: {
+					type: 'TombsOfAmascut',
+					user_id: BigInt(user.id),
+					start_date,
+					finish_date,
+					data,
+					duration,
+					completed: true,
+					group_activity: true,
+					channel_id: 1_111_111_111_111n
+				}
+			});
 		}
 	},
 	{
@@ -911,15 +956,19 @@ async function runAllTestCommandsOnUser(user: TestUser) {
 }
 
 async function runRandomTestCommandsOnUser(user: TestUser, numCommands: number = 6) {
+	const commandHistory: string[] = [];
 	const priorityCommands = allTableCommands.filter(c => c.priority);
 	const otherCommands = allTableCommands.filter(c => !c.priority);
 	for (const command of priorityCommands) {
+		commandHistory.push(`${new Date().toISOString()}:${command.name}`);
 		await runTestCommand(user, command);
 	}
 	for (let i = 0; i < numCommands; i++) {
 		const command = randArrItem(otherCommands);
+		commandHistory.push(`${new Date().toISOString()}:${command.name}`);
 		await runTestCommand(user, command);
 	}
+	return commandHistory;
 }
 
 async function buildBaseUser(userId: string) {
@@ -967,6 +1016,7 @@ async function buildBaseUser(userId: string) {
 		skills_defence: 13_034_431,
 		skills_attack: 13_034_431,
 		skills_strength: 13_034_431,
+		skills_agility: randInt(1_000_000, 5_000_000),
 		bitfield: [BitField.HasHosidiusWallkit],
 		kourend_favour: { Hosidius: 100, Arceuus: 0, Shayzien: 0, Lovakengj: 0 },
 		GP: 100_000_000
@@ -985,17 +1035,40 @@ describe('migrate user test', async () => {
 	});
 
 	const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
-	const sleepDelay = 200;
+	const sleepDelay = 350;
+
+	const logResult = (
+		result: { result: boolean; errors: string[] },
+		sourceData: UserData,
+		newData: UserData,
+		srcHistory?: string[],
+		dstHistory?: string[]
+	) => {
+		if (!result.result) {
+			if (srcHistory) {
+				console.log(`Source Command History: ${sourceData.id}`);
+				console.log(srcHistory);
+			}
+			if (dstHistory) {
+				console.log(`Target Command History: ${newData.id}`);
+				console.log(dstHistory);
+			}
+			console.log(`source: ${sourceData.id}  dest: ${newData.id}`);
+			console.log(result.errors);
+			console.log(JSON.stringify(sourceData));
+			console.log(JSON.stringify(newData));
+		}
+	};
 
 	await GrandExchange.totalReset();
 	await GrandExchange.init();
 
 	beforeEach(() => {
-		vi.useFakeTimers({ toFake: ['Date'] });
-		vi.setSystemTime(Date.now() + 24 * 60 * 60 * 1000 + randInt(50_000, 99_999));
+		// vi.useFakeTimers({ toFake: ['Date'] });
+		// vi.setSystemTime(Date.now() + 24 * 60 * 60 * 1000 + randInt(50_000, 99_999));
 	});
 	afterEach(() => {
-		vi.useRealTimers();
+		// vi.useRealTimers();
 	});
 	test('test migrating existing user to target with no records', async () => {
 		const sourceUser = await buildBaseUser(randomSnowflake());
@@ -1012,7 +1085,10 @@ describe('migrate user test', async () => {
 		const newData = new UserData(destUserId);
 		await newData.sync();
 
-		expect(sourceData.equals(newData).result).toBe(true);
+		const compareResult = sourceData.equals(newData);
+		logResult(compareResult, sourceData, newData);
+
+		expect(compareResult.result).toBe(true);
 	});
 
 	test('test migrating full user on top of full profile', async () => {
@@ -1029,7 +1105,10 @@ describe('migrate user test', async () => {
 
 		const newData = new UserData(destUser.id);
 		await newData.sync();
-		expect(sourceData.equals(newData).result).toBe(true);
+		const compareResult = sourceData.equals(newData);
+		logResult(compareResult, sourceData, newData);
+
+		expect(compareResult.result).toBe(true);
 
 		if (newData.poh) newData.poh.spellbook_altar = 33;
 		if (newData.userStats) newData.userStats.sacrificed_bank = new Bank().add('Cannonball').bank;
@@ -1059,7 +1138,7 @@ describe('migrate user test', async () => {
 			const destUserId = randomSnowflake();
 
 			const sourceRolls = randInt(6, 11);
-			await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
+			const cmdHistory = await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
 
 			// sleep to let the DB catch up - necessary!
 			await sleep(sleepDelay);
@@ -1074,13 +1153,9 @@ describe('migrate user test', async () => {
 			const newData = new UserData(destUserId);
 			await newData.sync();
 
-			const compareResult = newData.equals(sourceData);
-			if (!compareResult.result) {
-				console.log(`source: ${sourceUser.id}  dest: ${destUserId}`);
-				console.log(compareResult.errors);
-				console.log(JSON.stringify(sourceData));
-				console.log(JSON.stringify(newData));
-			}
+			const compareResult = sourceData.equals(newData);
+			logResult(compareResult, sourceData, newData, cmdHistory, []);
+
 			expect(compareResult.result).toBe(true);
 		},
 		{ repeats: 3 }
@@ -1095,8 +1170,8 @@ describe('migrate user test', async () => {
 			const sourceRolls = randInt(5, 12);
 			const destRolls = randInt(5, 12);
 
-			await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
-			await runRandomTestCommandsOnUser(destUser, destRolls);
+			const srcHistory = await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
+			const dstHistory = await runRandomTestCommandsOnUser(destUser, destRolls);
 
 			// sleep to let the DB catch up - necessary!
 			await sleep(sleepDelay);
@@ -1109,13 +1184,9 @@ describe('migrate user test', async () => {
 			const newData = new UserData(destUser);
 			await newData.sync();
 
-			const compareResult = newData.equals(sourceData);
-			if (!compareResult.result) {
-				console.log(`source: ${sourceUser.id}  dest: ${destUser.id}`);
-				console.log(compareResult.errors);
-				console.log(JSON.stringify(sourceData));
-				console.log(JSON.stringify(newData));
-			}
+			const compareResult = sourceData.equals(newData);
+			logResult(compareResult, sourceData, newData, srcHistory, dstHistory);
+
 			expect(compareResult.result).toBe(true);
 		},
 		{ repeats: 6 }
@@ -1127,7 +1198,7 @@ describe('migrate user test', async () => {
 			const sourceUser = await buildBaseUser(randomSnowflake());
 			const destUser = await buildBaseUser(randomSnowflake());
 
-			await runRandomTestCommandsOnUser(sourceUser);
+			const cmdHistory = await runRandomTestCommandsOnUser(sourceUser);
 			await runAllTestCommandsOnUser(destUser);
 
 			// sleep to let the DB catch up - necessary!
@@ -1141,13 +1212,9 @@ describe('migrate user test', async () => {
 			const newData = new UserData(destUser);
 			await newData.sync();
 
-			const compareResult = newData.equals(sourceData);
-			if (!compareResult.result) {
-				console.log(`source: ${sourceUser.id}  dest: ${destUser.id}`);
-				console.log(compareResult.errors);
-				console.log(JSON.stringify(sourceData));
-				console.log(JSON.stringify(newData));
-			}
+			const compareResult = sourceData.equals(newData);
+			logResult(compareResult, sourceData, newData, cmdHistory, []);
+
 			expect(compareResult.result).toBe(true);
 		},
 		{ repeats: 3 }
