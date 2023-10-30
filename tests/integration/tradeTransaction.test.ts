@@ -21,8 +21,6 @@ describe('Transactionalized Trade Test', async () => {
 		return userId;
 	}
 
-	globalClient.busyCounterCache = new Map<string, number>();
-
 	test('Test valid trade between Cyr and Magna...', async () => {
 		const startingBankCyr = new Bank().add('Coins', 10_000_000).add('Twisted bow', 2).add('Dragon arrow', 1000);
 		const cyr = await createUserWithBank(startingBankCyr);

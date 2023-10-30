@@ -2,7 +2,10 @@ import { randomSnowflake } from '@oldschoolgg/toolkit';
 import {
 	Activity,
 	Bingo,
+	BingoParticipant,
+	BuyCommandTransaction,
 	CommandUsage,
+	EconomyTransaction,
 	FarmedCrop,
 	GearPreset,
 	Giveaway,
@@ -13,8 +16,10 @@ import {
 	PinnedTrip,
 	PlayerOwnedHouse,
 	Prisma,
+	ReclaimableItem,
 	SlayerTask,
-	UserStats
+	UserStats,
+	XPGain
 } from '@prisma/client';
 import { deepClone, randArrItem, randInt } from 'e';
 import { Bank } from 'oldschooljs';
@@ -22,11 +27,15 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { BitField } from '../../src/lib/constants';
 import { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
+import { GrandExchange } from '../../src/lib/grandExchange';
 import { prisma } from '../../src/lib/settings/prisma';
 import { SkillsEnum } from '../../src/lib/skilling/types';
 import { processPendingActivities } from '../../src/lib/Task';
 import { Skills } from '../../src/lib/types';
 import { migrateUser } from '../../src/lib/util/migrateUser';
+import resolveItems from '../../src/lib/util/resolveItems';
+import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems';
+import { buyCommand } from '../../src/mahoji/commands/buy';
 import { chopCommand } from '../../src/mahoji/commands/chop';
 import { configCommand } from '../../src/mahoji/commands/config';
 import { farmingCommand } from '../../src/mahoji/commands/farming';
@@ -65,6 +74,7 @@ const randomActivities: [OSBMahojiCommand, Object][] = [
 	[fishCommand, { name: 'Trout' }],
 	[fishCommand, { name: 'Swordfish' }]
 ];
+
 interface TestCommand {
 	name: string;
 	cmd: [OSBMahojiCommand, Object] | ((user: TestUser) => Promise<any>);
@@ -100,7 +110,13 @@ class UserData {
 	lms?: LastManStandingGame[];
 	lootTrack?: LootTrack[];
 	botItemSell?: BotItemSell[];
+	buyCommandTx?: BuyCommandTransaction[];
 	historicalData?: HistoricalData[];
+	reclaimableItems?: ReclaimableItem[];
+	xpGains?: XPGain[];
+	economyTx?: EconomyTransaction[];
+	bingoParticipant?: BingoParticipant[];
+	// Special:
 	bingos?: Bingo[];
 	commandUsage?: CommandUsage[];
 	geListings?: GEListing[];
@@ -134,6 +150,12 @@ class UserData {
 			orderBy: { stash_id: 'asc' }
 		});
 		if (stashUnits.length > 0) this.stashUnits = stashUnits;
+
+		const gearPresets = await prisma.gearPreset.findMany({
+			where: { user_id: this.id },
+			orderBy: { name: 'asc' }
+		});
+		if (gearPresets.length > 0) this.gearPresets = gearPresets;
 
 		const activities = await prisma.activity.findMany({
 			where: { user_id: BigInt(this.id) },
@@ -179,6 +201,37 @@ class UserData {
 			orderBy: { item_id: 'asc' }
 		});
 		if (botItemSell.length > 0) this.botItemSell = botItemSell;
+
+		const buyCommandTx = await prisma.buyCommandTransaction.findMany({
+			where: { user_id: BigInt(this.id) },
+			orderBy: { id: 'asc' }
+		});
+		if (buyCommandTx.length > 0) this.buyCommandTx = buyCommandTx;
+
+		const reclaimableItems = await prisma.reclaimableItem.findMany({
+			where: { user_id: this.id },
+			orderBy: { key: 'asc' }
+		});
+		if (reclaimableItems.length > 0) this.reclaimableItems = reclaimableItems;
+
+		const xpGains = await prisma.xPGain.findMany({
+			where: { user_id: BigInt(this.id) },
+			orderBy: { id: 'asc' }
+		});
+		if (xpGains.length > 0) this.xpGains = xpGains;
+
+		const economyTx = await prisma.economyTransaction.findMany({
+			where: { OR: [{ sender: BigInt(this.id) }, { recipient: BigInt(this.id) }] },
+			orderBy: { date: 'asc' }
+		});
+
+		if (economyTx.length > 0) this.economyTx = economyTx;
+
+		const bingoParticipant = await prisma.bingoParticipant.findMany({
+			where: { user_id: this.id },
+			orderBy: { bingo_id: 'asc' }
+		});
+		if (bingoParticipant.length > 0) this.bingoParticipant = bingoParticipant;
 
 		const userStats = await prisma.userStats.findFirst({ where: { user_id: BigInt(this.id) } });
 		if (userStats) this.userStats = userStats;
@@ -232,7 +285,7 @@ class UserData {
 			if (
 				this.gear![gearSlot as GearSetupType].toString() !== target.gear![gearSlot as GearSetupType].toString()
 			) {
-				errors.push(`${gearSlot} gear doesn't match.`);
+				errors.push(`${gearSlot} gear doesn't match`);
 			}
 		}
 
@@ -312,9 +365,21 @@ class UserData {
 					)
 				)
 			) {
-				errors.push("One or more stash units doesn't match");
+				errors.push("One or more stash units don't match");
 			}
 		}
+
+		// GearPresets check:
+		if (this.gearPresets !== target.gearPresets) {
+			const srcCt = this.gearPresets?.length ?? 0;
+			const dstCt = target.gearPresets?.length ?? 0;
+			if (srcCt !== dstCt) {
+				errors.push(`Wrong number of GearPrests. ${srcCt} vs ${dstCt}`);
+			} else if (!this.gearPresets!.every(s => target.gearPresets!.some(t => s.name === t.name))) {
+				errors.push("One or more GearPresets don't match");
+			}
+		}
+
 		// Activities check:
 		if (this.activities !== target.activities) {
 			const srcCt = this.activities?.length ?? 0;
@@ -322,7 +387,7 @@ class UserData {
 			if (srcCt !== dstCt) {
 				errors.push(`Wrong number of activities. ${srcCt} vs ${dstCt}`);
 			} else if (!this.activities!.every(s => target.activities!.some(t => s.id === t.id))) {
-				errors.push("One or more activities doesn't match.");
+				errors.push("One or more activities don't match");
 			}
 		}
 		// Slayer Task check:
@@ -332,7 +397,7 @@ class UserData {
 			if (srcCt !== dstCt) {
 				errors.push(`Wrong number of slayer tasks. ${srcCt} vs ${dstCt}`);
 			} else if (!this.slayerTasks!.every(s => target.slayerTasks!.some(t => s.id === t.id))) {
-				errors.push("One or more slayer tasks doesn't match.");
+				errors.push("One or more slayer tasks don't match.");
 			}
 		}
 
@@ -400,6 +465,18 @@ class UserData {
 				errors.push("One or more BotItemSell rows don't match.");
 			}
 		}
+
+		// BuyCommandTransaction
+		if (this.buyCommandTx !== target.buyCommandTx) {
+			const srcCt = this.buyCommandTx?.length ?? 0;
+			const dstCt = target.buyCommandTx?.length ?? 0;
+			if (srcCt !== dstCt) {
+				errors.push(`Wrong number of BuyCommandTransaction rows. ${srcCt} vs ${dstCt}`);
+			} else if (!this.buyCommandTx!.every(s => target.buyCommandTx!.some(t => s.id === t.id))) {
+				errors.push("One or more BuyCommandTransaction rows don't match.");
+			}
+		}
+
 		// Historical Data
 		if (this.historicalData !== target.historicalData) {
 			const srcCt = this.historicalData?.length ?? 0;
@@ -414,6 +491,64 @@ class UserData {
 				errors.push("One or more Historical Data rows don't match.");
 			}
 		}
+
+		// Reclaimable Items
+		if (this.reclaimableItems !== target.reclaimableItems) {
+			const srcCt = this.reclaimableItems?.length ?? 0;
+			const dstCt = target.reclaimableItems?.length ?? 0;
+			if (srcCt !== dstCt) {
+				errors.push(`Wrong number of ReclaimableItems rows. ${srcCt} vs ${dstCt}`);
+			} else if (!this.reclaimableItems!.every(s => target.reclaimableItems!.some(t => s.key === t.key))) {
+				errors.push("One or more ReclaimableItems rows don't match.");
+			}
+		}
+
+		// XPGains
+		if (this.xpGains !== target.xpGains) {
+			const srcCt = this.xpGains?.length ?? 0;
+			const dstCt = target.xpGains?.length ?? 0;
+			if (srcCt !== dstCt) {
+				errors.push(`Wrong number of BotItemSell rows. ${srcCt} vs ${dstCt}`);
+			} else if (!this.xpGains!.every(s => target.xpGains!.some(t => s.id === t.id))) {
+				errors.push("One or more BotItemSell rows don't match.");
+			}
+		}
+
+		// Economy Tx
+		if (this.economyTx !== target.economyTx) {
+			const srcCt = this.economyTx?.length ?? 0;
+			const dstCt = target.economyTx?.length ?? 0;
+			if (srcCt !== dstCt) {
+				errors.push(`Wrong number of EconomyTransaction rows. ${srcCt} vs ${dstCt}`);
+			} else if (
+				!this.economyTx!.every(s =>
+					target.economyTx!.some(t => {
+						if ([t.sender, s.sender].includes(BigInt(this.id))) {
+							return t.recipient === s.recipient && s.id === t.id;
+						}
+						return t.sender === s.sender && s.id === t.id;
+					})
+				)
+			) {
+				errors.push("One or more EconomyTransaction rows don't match.");
+			}
+		}
+
+		// BingoParticipant
+		if (this.bingoParticipant !== target.bingoParticipant) {
+			const srcCt = this.bingoParticipant?.length ?? 0;
+			const dstCt = target.bingoParticipant?.length ?? 0;
+			if (srcCt !== dstCt) {
+				errors.push(`Wrong number of BingoParticipant rows. ${srcCt} vs ${dstCt}`);
+			} else if (
+				!this.bingoParticipant!.every(s =>
+					target.bingoParticipant!.some(t => s.bingo_id === t.bingo_id && s.bingo_team_id === t.bingo_team_id)
+				)
+			) {
+				errors.push("One or more BingoParticipant rows don't match.");
+			}
+		}
+
 		// Merged-multi row checks: (Don't compare counts, only check if bigger set contains smaller set)
 		// Bingo
 		if (this.bingos !== target.bingos) {
@@ -491,6 +626,41 @@ const allTableCommands: TestCommand[] = [
 		priority: true
 	},
 	{
+		name: 'Buy command transaction',
+		cmd: async user => {
+			const randomBuyItems: string[] = [
+				'Vial',
+				'Feather',
+				'Bucket',
+				'Vial of water',
+				'Eye of newt',
+				'Fishing bait'
+			];
+			await user.runCommand(buyCommand, {
+				name: randArrItem(randomBuyItems),
+				quantity: randInt(1, 100).toString()
+			});
+		}
+	},
+	{
+		name: 'Economy Transaction (sender)',
+		cmd: async user => {
+			const randomItems = ['Cannonball', 'Blood rune', 'Twisted bow', 'Kodai wand', 'Bandos tassets'];
+			const recvBank = new Bank().add(randArrItem(randomItems), randInt(10, 99)).add(randArrItem(randomItems));
+			const partner = await createTestUser(randomSnowflake(), recvBank);
+			await tradePlayerItems(user, partner, undefined, recvBank);
+		}
+	},
+	{
+		name: 'Economy Transaction (receiver)',
+		cmd: async user => {
+			const randomItems = ['Feather', 'Soul rune', 'Dragon claws', 'Ghrazi rapier', 'Bandos boots'];
+			const recvBank = new Bank().add(randArrItem(randomItems), randInt(10, 99)).add(randArrItem(randomItems));
+			const partner = await createTestUser(randomSnowflake(), recvBank);
+			await tradePlayerItems(partner, user, recvBank, undefined);
+		}
+	},
+	{
 		name: 'Skilling Gear',
 		cmd: [
 			gearCommand,
@@ -509,7 +679,7 @@ const allTableCommands: TestCommand[] = [
 			{
 				equip: {
 					gear_setup: 'melee',
-					items: 'Bandos chestplate, Bandos tassets, Berserker ring, Grazi rapier'
+					items: 'Bandos chestplate, Bandos tassets, Berserker ring, Ghrazi rapier'
 				}
 			}
 		]
@@ -597,7 +767,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'GE Listings',
 		cmd: async user => {
-			const item = randArrItem(['Cannonball', 'Feather', 'Fire rune', 'Guam leaf']);
+			const item = randArrItem(resolveItems(['Cannonball', 'Feather', 'Fire rune', 'Guam leaf'])).toString();
 			const price = randInt(1, 100);
 			const quantity = randInt(1, 100);
 			await user.runCommand(geCommand, { buy: { item, quantity, price } });
@@ -626,6 +796,35 @@ const allTableCommands: TestCommand[] = [
 				guild_id: '342983479501389826'
 			};
 			await prisma.bingo.create({ data: createOptions });
+		}
+	},
+	{
+		name: 'Bingo Participant',
+		cmd: async user => {
+			const activeBingos = await prisma.bingo.findMany({ select: { id: true } });
+			if (activeBingos.length === 0) return;
+			const myBingo = randArrItem(activeBingos).id;
+			// Check if we're in this bingo already:
+			const existingTeam = await prisma.bingoParticipant.findFirst({
+				where: { user_id: user.id, bingo_id: myBingo }
+			});
+			if (existingTeam) return;
+			await prisma.bingoTeam.create({
+				data: {
+					bingo_id: myBingo,
+					users: {
+						createMany: {
+							data: [
+								{
+									bingo_id: myBingo,
+									tickets_bought: 1,
+									user_id: user.id
+								}
+							]
+						}
+					}
+				}
+			});
 		}
 	},
 	{
@@ -729,7 +928,7 @@ async function buildBaseUser(userId: string) {
 		.add('Bandos chestplate')
 		.add('Bandos tassets')
 		.add('Bandos boots')
-		.add('Berseker ring')
+		.add('Berserker ring')
 		.add('Ghrazi rapier');
 
 	const userData: Partial<Prisma.UserCreateInput> = {
@@ -761,6 +960,9 @@ describe('migrate user test', async () => {
 
 	const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 	const sleepDelay = 200;
+
+	await GrandExchange.totalReset();
+	await GrandExchange.init();
 
 	beforeEach(() => {
 		vi.useFakeTimers({ toFake: ['Date'] });
@@ -808,12 +1010,14 @@ describe('migrate user test', async () => {
 		newData.skillsAsLevels!.cooking = 1_000_000;
 		newData.bingos = [];
 		newData.botItemSell = [];
+		if (newData.gear?.melee) newData.gear.melee.weapon = null;
 
 		const badResult = sourceData.equals(newData);
 		expect(badResult.result).toBe(false);
 
 		const expectedBadResult = [
 			`Failed comparing ${sourceUser.id} vs ${destUser.id}:`,
+			"melee gear doesn't match",
 			"cooking level doesn't match. 1 vs 1000000",
 			"POH Object doesn't match: null !== 33",
 			'User Stats doesn\'t match: {} !== {"2":1}',

@@ -5,6 +5,7 @@ import { Collection } from 'discord.js';
 
 global.globalClient = {
 	isReady: () => true,
+	emit: () => true,
 	guilds: { cache: new Collection() },
 	mahojiClient: {
 		commands: {

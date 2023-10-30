@@ -28,6 +28,7 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(prisma.minigame.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.playerOwnedHouse.deleteMany({ where: { user_id: destUser.id } }));
 	transactions.push(prisma.pinnedTrip.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.reclaimableItem.deleteMany({ where: { user_id: destUser.id } }));
 
 	transactions.push(prisma.activity.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 	transactions.push(prisma.xPGain.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
@@ -36,14 +37,13 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(prisma.lootTrack.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 	transactions.push(prisma.buyCommandTransaction.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 	transactions.push(prisma.stashUnit.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
+	transactions.push(prisma.bingoParticipant.deleteMany({ where: { user_id: destUser.id } }));
 
 	// For tables that aren't deleted, we often have to convert from target => source first to avoid FK errors, or null
 	transactions.push(
 		prisma.bingo.updateMany({ where: { creator_id: destUser.id }, data: { creator_id: sourceUser.id } })
 	);
-	transactions.push(
-		prisma.bingoParticipant.updateMany({ where: { user_id: destUser.id }, data: { user_id: sourceUser.id } })
-	);
+
 	// Without this, the user_id will be set to null when the Key'd users row is deleted:
 	transactions.push(
 		prisma.gEListing.updateMany({ where: { user_id: destUser.id }, data: { user_id: sourceUser.id } })
@@ -89,6 +89,9 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	);
 	transactions.push(
 		prisma.historicalData.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
+	transactions.push(
+		prisma.reclaimableItem.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
 	);
 
 	transactions.push(
