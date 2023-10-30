@@ -865,6 +865,32 @@ const allTableCommands: TestCommand[] = [
 				}
 			});
 		}
+	},
+	{
+		name: 'Reclaimable Item (spoofed)',
+		cmd: async user => {
+			const slugs = [
+				['osb', 'osrs'],
+				['holiday', 'misc', 'party', 'hween', 'bday']
+			];
+			let key = '';
+			for (const group of slugs) {
+				key += `${randArrItem(group)}-`;
+			}
+			const itemId = randInt(10_000, 25_000);
+			key += `${itemId}`;
+			await prisma.reclaimableItem.create({
+				data: {
+					user_id: user.id,
+					key,
+					name: `OSB Item ${itemId}`,
+					description: `A reclaimable OSB item with id: ${itemId}`,
+					date: new Date(),
+					item_id: itemId,
+					quantity: 1
+				}
+			});
+		}
 	}
 ];
 
@@ -1032,7 +1058,7 @@ describe('migrate user test', async () => {
 			const sourceUser = await buildBaseUser(randomSnowflake());
 			const destUserId = randomSnowflake();
 
-			const sourceRolls = randInt(4, 9);
+			const sourceRolls = randInt(6, 11);
 			await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
 
 			// sleep to let the DB catch up - necessary!
@@ -1066,8 +1092,8 @@ describe('migrate user test', async () => {
 			const sourceUser = await buildBaseUser(randomSnowflake());
 			const destUser = await buildBaseUser(randomSnowflake());
 
-			const sourceRolls = randInt(3, 8);
-			const destRolls = randInt(3, 8);
+			const sourceRolls = randInt(5, 12);
+			const destRolls = randInt(5, 12);
 
 			await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
 			await runRandomTestCommandsOnUser(destUser, destRolls);
