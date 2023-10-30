@@ -4,6 +4,7 @@ import {
 	Bingo,
 	CommandUsage,
 	FarmedCrop,
+	GearPreset,
 	Giveaway,
 	HistoricalData,
 	LastManStandingGame,
@@ -31,6 +32,8 @@ import { configCommand } from '../../src/mahoji/commands/config';
 import { farmingCommand } from '../../src/mahoji/commands/farming';
 import { fishCommand } from '../../src/mahoji/commands/fish';
 import { geCommand } from '../../src/mahoji/commands/ge';
+import { gearCommand } from '../../src/mahoji/commands/gear';
+import { gearPresetsCommand } from '../../src/mahoji/commands/gearpresets';
 import { killCommand } from '../../src/mahoji/commands/k';
 import { mineCommand } from '../../src/mahoji/commands/mine';
 import { minigamesCommand } from '../../src/mahoji/commands/minigames';
@@ -44,8 +47,6 @@ import { syncNewUserUsername } from '../../src/mahoji/lib/preCommand';
 import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { createTestUser, mockClient, TestUser } from './util';
 import { BotItemSell, GEListing, StashUnit } from '.prisma/client';
-
-const sourceUserName = 'testUserXXXX';
 
 const randomActivities: [OSBMahojiCommand, Object][] = [
 	[runecraftCommand, { rune: 'Fire rune' }],
@@ -90,6 +91,7 @@ class UserData {
 	minigames?: Minigame;
 	userStats?: UserStats;
 	stashUnits?: StashUnit[];
+	gearPresets?: GearPreset[];
 	activities?: Activity[];
 	slayerTasks?: SlayerTask[];
 	giveaways?: Giveaway[];
@@ -484,9 +486,48 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Create new_users entry',
 		cmd: async user => {
-			await syncNewUserUsername(user, sourceUserName);
+			await syncNewUserUsername(user, `testUser${randInt(1000, 9999).toString()}`);
 		},
 		priority: true
+	},
+	{
+		name: 'Skilling Gear',
+		cmd: [
+			gearCommand,
+			{
+				equip: {
+					gear_setup: 'skilling',
+					items: 'Pyromancer garb, Pyromancer boots, Pyromancer hood, Pyromancer robe, Warm gloves'
+				}
+			}
+		]
+	},
+	{
+		name: 'Melee Gear',
+		cmd: [
+			gearCommand,
+			{
+				equip: {
+					gear_setup: 'melee',
+					items: 'Bandos chestplate, Bandos tassets, Berserker ring, Grazi rapier'
+				}
+			}
+		]
+	},
+	{
+		name: 'GearPresets',
+		cmd: async user => {
+			const presetNamme = `preset${randInt(100, 999).toString()}`;
+			await user.runCommand(gearPresetsCommand, {
+				create: {
+					name: presetNamme,
+					body: 'Bandos chestplate',
+					legs: 'Bandos tassets',
+					ring: 'Berserker ring',
+					weapon: 'Ghrazi rapier'
+				}
+			});
+		}
 	},
 	{
 		name: 'Create giveaway',
@@ -678,7 +719,18 @@ async function buildBaseUser(userId: string) {
 		.add('Gold ring', 1)
 		.add('Gold necklace', 1)
 		.add('Bronze spear', 1)
-		.add('Dragon pickaxe');
+		.add('Dragon pickaxe')
+		// Gear items to equip:
+		.add('Pyromancer hood')
+		.add('Pyromancer garb')
+		.add('Pyromancer robe')
+		.add('Pyromancer boots')
+		.add('Warm gloves')
+		.add('Bandos chestplate')
+		.add('Bandos tassets')
+		.add('Bandos boots')
+		.add('Berseker ring')
+		.add('Ghrazi rapier');
 
 	const userData: Partial<Prisma.UserCreateInput> = {
 		skills_runecraft: 13_034_431,
@@ -687,6 +739,9 @@ async function buildBaseUser(userId: string) {
 		skills_construction: 6_600_000,
 		skills_farming: 1_000_000,
 		skills_fishing: 13_034_431,
+		skills_defence: 13_034_431,
+		skills_attack: 13_034_431,
+		skills_strength: 13_034_431,
 		bitfield: [BitField.HasHosidiusWallkit],
 		kourend_favour: { Hosidius: 100, Arceuus: 0, Shayzien: 0, Lovakengj: 0 },
 		GP: 100_000_000
