@@ -11,11 +11,9 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 
 let strForestry = '';
-let fakeEvent = 0;
-
 function handleForestry({ user, log, duration, loot }: { user: MUser; log: Log; duration: number; loot: Bank }) {
 	if (resolveItems(['Redwood logs', 'Logs']).includes(log.id)) return;
-
+	let [case1, case2, case3, case4, case5, case6, case7, case8, case9, totalEvents] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 	const strugglingSaplingTable = new LootTable()
 		.add('Leaves', 20)
 		.add('Oak Leaves', 20)
@@ -28,74 +26,75 @@ function handleForestry({ user, log, duration, loot }: { user: MUser; log: Log; 
 		let itemsToAdd = undefined;
 		let event = randInt(1, 9);
 
-		// Only four out of nine events in-game give any items other than Anima-infused bark
+		// Forestry events
 		switch (event) {
-			case 1: // Pheasant Control Forestry event
-				loot.add('Pheasant tail feathers', randInt(12, 25));
-				if (user.owns('Padded spoon')) {
-					if (roll(10)) {
-						loot.add('Golden pheasant egg', 1);
-						strForestry +=
-							' Completed the Pheasant Control Forestry event. You feel a connection to the pheasants as if one wishes to travel with you...';
-					} else {
-						strForestry += ' Completed the Pheasant Control Forestry event.';
-					}
-					await user.transactItems({ itemsToRemove: new Bank().add('Padded spoon', 1), itemsToAdd });
-				} else {
-					strForestry += ' Completed the Pheasant Control Forestry event.';
-				}
+			case 1: // Rising Roots event
+				case1++;
 				break;
-			case 2: // Poachers Forestry event
+			case 2: // Struggling Sapling event
+				case2++;
+				loot.add(strugglingSaplingTable.roll());
+				break;
+			case 3: // Flowering Bush
+				case3++;
+				break;
+			case 4: // Woodcutting Leprechaun
+				case4++;
+				break;
+			case 5: // Bee Hive
+				case5++;
+				break;
+			case 6: // Friendly Ent
+				case6++;
+				break;
+			case 7: // Poachers Forestry event
+				case7++;
 				if (user.owns('Trap disarmer')) {
 					if (roll(10)) {
 						loot.add('Golden Fox whistle', 1);
-						strForestry += ' Completed the Poachers Forestry event. The fox has left you a gift...';
-					} else {
-						strForestry += ' Completed the Poachers Forestry event.';
 					}
 					await user.transactItems({ itemsToRemove: new Bank().add('Trap disarmer', 1), itemsToAdd });
-				} else {
-					strForestry += ' Completed the Poachers Forestry event.';
 				}
 				break;
-			case 3: // Enchantment Ritual Forestry event
+			case 8: // Enchantment Ritual Forestry event
+				case8++;
 				if (roll(10)) {
 					loot.add('Petal garland', 1);
-					strForestry +=
-						'  Completed the Enchantment Ritual Forestry event. The Dryad has left you a gift...';
-				} else {
-					strForestry += ' Completed the Enchantment Ritual Forestry event.';
 				}
 				break;
-			case 4: // Struggling Sapling Forestry Event
-				strForestry += ' Completed the Struggling Sapling Forestry event.';
-				loot.add(strugglingSaplingTable.roll());
-				break;
-			case 5:
-				fakeEvent++;
-				break;
-			case 6:
-				fakeEvent++;
-				break;
-			case 7:
-				fakeEvent++;
-				break;
-			case 8:
-				fakeEvent++;
-				break;
-			case 9:
-				fakeEvent++;
+			case 9: // Pheasant Control Forestry event
+				case9++;
+				loot.add('Pheasant tail feathers', randInt(12, 35));
+				if (user.owns('Padded spoon')) {
+					if (roll(10)) {
+						loot.add('Golden pheasant egg', 1);
+					}
+					await user.transactItems({ itemsToRemove: new Bank().add('Padded spoon', 1), itemsToAdd });
+				}
 				break;
 		}
-
 		// Give user Anima-infused bark
 		loot.add('Anima-infused bark', randInt(500, 1000));
 	});
-	// Message for non-unique events
-	if (strForestry === '' && loot.has('Anima-infused bark')) {
-		strForestry += ' Completed some Forestry events.';
-	} else if (fakeEvent > 0) {
-		strForestry += ' Completed some other Forestry events.';
+	// Generate forestry message
+	const events = [
+		{ event: 'Rising Roots', value: case1 },
+		{ event: 'Struggling Sapling', value: case2 },
+		{ event: 'Flowering Bush', value: case3 },
+		{ event: 'Woodcutting Leprechaun', value: case4 },
+		{ event: 'Bee Hive', value: case5 },
+		{ event: 'Friendly Ent', value: case6 },
+		{ event: 'Poachers', value: case7 },
+		{ event: 'Enchantment Ritual', value: case8 },
+		{ event: 'Pheasant Control', value: case9 }
+	];
+	events.forEach(eventObj => (totalEvents += eventObj.value));
+	const eventCounts = events
+		.filter(eventObj => eventObj.value > 0)
+		.map(eventObj => `${eventObj.value} ${eventObj.event}`);
+	const completedEvents = eventCounts.join(' & ');
+	if (completedEvents.length > 0) {
+		strForestry = `Completed Forestry event${totalEvents > 1 ? 's:' : ':'} ${completedEvents}.`;
 	}
 }
 
@@ -173,15 +172,29 @@ export const woodcuttingTask: MinionTask = {
 		// Add Forestry events
 		handleForestry({ user, log, duration, loot });
 
-		// End of Trip message
+		// End of trip message
 		let str = `${user}, ${user.minionName} finished woodcutting. ${xpRes}`;
 		if (bonusXP > 0) {
-			str += `. **Bonus XP:** ${bonusXP.toLocaleString()}`;
+			str += `. **Bonus XP:** ${bonusXP.toLocaleString()}\n`;
 		}
 		if (strungRabbitFoot && !log.clueNestsOnly) {
-			str += "\nYour strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.";
+			str += "Your strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.\n";
 		}
-		str += `\n ${strForestry}`;
+
+		// Add Forestry message
+		str += `${strForestry !== '' ? `${strForestry}\n` : ''}`;
+		strForestry = '';
+		str += `${
+			loot.has('Golden pheasant egg')
+				? '- You feel a connection to the pheasants as if one wishes to travel with you...\n'
+				: ''
+		}`;
+		str += `${
+			loot.has('Golden Fox whistle')
+				? '- You feel a connection to the fox as if it wishes to travel with you...\n'
+				: ''
+		}`;
+		str += `${loot.has('Petal garland') ? '- The Dryad has left you a gift...\n' : ''}`;
 
 		// Roll for pet
 		if (log.petChance) {
