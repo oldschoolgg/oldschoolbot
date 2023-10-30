@@ -49,7 +49,7 @@ function handleForestry({ user, log, duration, loot }: { user: MUser; log: Log; 
 				break;
 			case 7: // Poachers Forestry event
 				case7++;
-				if (user.owns('Trap disarmer') && !user.owns('Fox whistle')) {
+				if (user.owns('Trap disarmer')) {
 					if (roll(20)) {
 						loot.add('Fox whistle', 1);
 					}
@@ -58,16 +58,14 @@ function handleForestry({ user, log, duration, loot }: { user: MUser; log: Log; 
 				break;
 			case 8: // Enchantment Ritual Forestry event
 				case8++;
-				if (!user.owns('Petal garland')) {
-					if (roll(20)) {
-						loot.add('Petal garland', 1);
-					}
+				if (roll(20)) {
+					loot.add('Petal garland', 1);
 				}
 				break;
 			case 9: // Pheasant Control Forestry event
 				case9++;
 				loot.add('Pheasant tail feathers', randInt(12, 45));
-				if (user.owns('Padded spoon') && !user.owns('Golden pheasant egg')) {
+				if (user.owns('Padded spoon')) {
 					if (roll(20)) {
 						loot.add('Golden pheasant egg', 1);
 					}
