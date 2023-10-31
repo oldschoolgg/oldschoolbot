@@ -58,7 +58,7 @@ const extraEncountersTable = new SimpleTable<number>()
 	.add(6, 3)
 	.add(7, 1);
 
-function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnType<typeof getUsersLMSStats>>) {
+export function calculateResultOfLMSGames(qty: number, lmsStats: Awaited<ReturnType<typeof getUsersLMSStats>>) {
 	const gameResults: LMSGameSimulated[] = [];
 
 	// 0 at 0kc, 1 at 120kc
