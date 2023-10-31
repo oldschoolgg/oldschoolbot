@@ -1227,7 +1227,7 @@ describe('migrate user test', async () => {
 	});
 
 	const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
-	const sleepDelay = 400;
+	const sleepDelay = 1000;
 
 	const logResult = (
 		result: { result: boolean; errors: string[] },
