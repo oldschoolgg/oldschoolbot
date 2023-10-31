@@ -10,10 +10,11 @@ import { perTimeUnitChance, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 
-let strForestry = '';
-function handleForestry({ user, log, duration, loot }: { user: MUser; log: Log; duration: number; loot: Bank }) {
+async function handleForestry({ user, log, duration, loot }: { user: MUser; log: Log; duration: number; loot: Bank }) {
 	if (resolveItems(['Redwood logs', 'Logs']).includes(log.id)) return;
 	let [case1, case2, case3, case4, case5, case6, case7, case8, case9, totalEvents] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+	let strForestry = '';
+	let wcMultiplier = user.skillLevel(SkillsEnum.Woodcutting) / 100;
 	const strugglingSaplingTable = new LootTable()
 		.add('Leaves', 20)
 		.add('Oak Leaves', 20)
@@ -76,26 +77,57 @@ function handleForestry({ user, log, duration, loot }: { user: MUser; log: Log; 
 		// Give user Anima-infused bark
 		loot.add('Anima-infused bark', randInt(500, 1000));
 	});
-	// Generate forestry message
+
 	const events = [
-		{ event: 'Rising Roots', value: case1 },
-		{ event: 'Struggling Sapling', value: case2 },
-		{ event: 'Flowering Bush', value: case3 },
-		{ event: 'Woodcutting Leprechaun', value: case4 },
-		{ event: 'Bee Hive', value: case5 },
-		{ event: 'Friendly Ent', value: case6 },
-		{ event: 'Poachers', value: case7 },
-		{ event: 'Enchantment Ritual', value: case8 },
-		{ event: 'Pheasant Control', value: case9 }
+		{ event: 'Rising Roots', value: case1, Xp: undefined },
+		{ event: 'Struggling Sapling', value: case2, Xp: undefined },
+		{ event: 'Flowering Bush', value: case3, Xp: undefined },
+		{ event: 'Woodcutting Leprechaun', value: case4, Xp: undefined },
+		{ event: 'Bee Hive', value: case5, Xp: SkillsEnum.Construction },
+		{ event: 'Friendly Ent', value: case6, Xp: SkillsEnum.Fletching },
+		{ event: 'Poachers', value: case7, Xp: SkillsEnum.Hunter },
+		{ event: 'Enchantment Ritual', value: case8, Xp: undefined },
+		{ event: 'Pheasant Control', value: case9, Xp: SkillsEnum.Thieving }
 	];
 	events.forEach(eventObj => (totalEvents += eventObj.value));
+
+	// Give the user xp from Forestry events
+	let xpRes = await user.addXP({
+		skillName: SkillsEnum.Woodcutting,
+		amount: totalEvents * randInt(1800, 2000) * wcMultiplier
+	});
+	for (const eventObj of events) {
+		if (eventObj.Xp !== undefined) {
+			xpRes += await user.addXP({
+				skillName: eventObj.Xp,
+				amount: eventObj.value * randInt(300, 600) * wcMultiplier
+			});
+		}
+	}
+
+	// Generate forestry message
 	const eventCounts = events
 		.filter(eventObj => eventObj.value > 0)
 		.map(eventObj => `${eventObj.value} ${eventObj.event}`);
 	const completedEvents = eventCounts.join(' & ');
-	if (completedEvents.length > 0) {
-		strForestry = `Completed Forestry event${totalEvents > 1 ? 's:' : ':'} ${completedEvents}.`;
-	}
+	strForestry += `${
+		completedEvents.length > 0
+			? `Completed Forestry event${totalEvents > 1 ? 's:' : ':'} ${completedEvents}. ${xpRes}.\n`
+			: ''
+	}`;
+	strForestry += `${
+		loot.has('Golden pheasant egg')
+			? '- You feel a connection to the pheasants as if one wishes to travel with you...\n'
+			: ''
+	}`;
+	strForestry += `${
+		loot.has('Golden Fox whistle')
+			? '- You feel a connection to the fox as if it wishes to travel with you...\n'
+			: ''
+	}`;
+	strForestry += `${loot.has('Petal garland') ? '- The Dryad has left you a gift...\n' : ''}`;
+
+	return strForestry;
 }
 
 export const woodcuttingTask: MinionTask = {
@@ -169,9 +201,6 @@ export const woodcuttingTask: MinionTask = {
 			);
 		}
 
-		// Add Forestry events
-		handleForestry({ user, log, duration, loot });
-
 		// End of trip message
 		let str = `${user}, ${user.minionName} finished woodcutting. ${xpRes}`;
 		if (bonusXP > 0) {
@@ -181,20 +210,8 @@ export const woodcuttingTask: MinionTask = {
 			str += "Your strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.\n";
 		}
 
-		// Add Forestry message
-		str += `${strForestry !== '' ? `${strForestry}\n` : ''}`;
-		strForestry = '';
-		str += `${
-			loot.has('Golden pheasant egg')
-				? '- You feel a connection to the pheasants as if one wishes to travel with you...\n'
-				: ''
-		}`;
-		str += `${
-			loot.has('Golden Fox whistle')
-				? '- You feel a connection to the fox as if it wishes to travel with you...\n'
-				: ''
-		}`;
-		str += `${loot.has('Petal garland') ? '- The Dryad has left you a gift...\n' : ''}`;
+		// Forestry events
+		str += await handleForestry({ user, log, duration, loot });
 
 		// Roll for pet
 		if (log.petChance) {
@@ -223,6 +240,6 @@ export const woodcuttingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		void handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };
