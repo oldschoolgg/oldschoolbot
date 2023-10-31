@@ -607,7 +607,7 @@ async function handleRSN(user: MUser, newRSN: string) {
 function pinnedTripLimit(perkTier: number) {
 	return clamp(perkTier + 1, 1, 4);
 }
-async function pinTripCommand(
+export async function pinTripCommand(
 	user: MUser,
 	tripId: string | undefined,
 	emoji: string | undefined,

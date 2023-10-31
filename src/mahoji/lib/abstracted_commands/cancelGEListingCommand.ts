@@ -91,7 +91,8 @@ export async function cancelGEListingCommand(user: MUser, idToCancel: string) {
 		await user.addItemsToBank({
 			items: refundBank,
 			collectionLog: false,
-			dontAddToTempCL: true
+			dontAddToTempCL: true,
+			neverUpdateHistory: true
 		});
 
 		return `Successfully cancelled your listing, you have been refunded ${refundBank}.`;
