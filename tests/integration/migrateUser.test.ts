@@ -1,6 +1,7 @@
 import { randomSnowflake } from '@oldschoolgg/toolkit';
 import {
 	Activity,
+	activity_type_enum,
 	Bingo,
 	BingoParticipant,
 	BuyCommandTransaction,
@@ -22,60 +23,45 @@ import {
 	UserStats,
 	XPGain
 } from '@prisma/client';
-import { deepClone, randArrItem, randInt, shuffleArr } from 'e';
+import { deepClone, randArrItem, randInt, shuffleArr, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { describe, expect, test, vi } from 'vitest';
 
 import { BitField } from '../../src/lib/constants';
 import { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
 import { GrandExchange } from '../../src/lib/grandExchange';
+import { trackLoot } from '../../src/lib/lootTrack';
+import { incrementMinigameScore, MinigameName } from '../../src/lib/settings/minigames';
 import { prisma } from '../../src/lib/settings/prisma';
 import { SkillsEnum } from '../../src/lib/skilling/types';
+import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
+import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil';
 import { processPendingActivities } from '../../src/lib/Task';
 import { Skills } from '../../src/lib/types';
 import { isGroupActivity } from '../../src/lib/util';
+import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti';
+import { findPlant } from '../../src/lib/util/farmingHelpers';
+import getOSItem from '../../src/lib/util/getOSItem';
 import { migrateUser } from '../../src/lib/util/migrateUser';
 import resolveItems from '../../src/lib/util/resolveItems';
 import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems';
-import { buyCommand } from '../../src/mahoji/commands/buy';
-import { chopCommand } from '../../src/mahoji/commands/chop';
-import { configCommand } from '../../src/mahoji/commands/config';
-import { farmingCommand } from '../../src/mahoji/commands/farming';
-import { fishCommand } from '../../src/mahoji/commands/fish';
+import { updateBankSetting } from '../../src/lib/util/updateBankSetting';
+import { pinTripCommand } from '../../src/mahoji/commands/config';
 import { geCommand } from '../../src/mahoji/commands/ge';
-import { gearCommand } from '../../src/mahoji/commands/gear';
-import { gearPresetsCommand } from '../../src/mahoji/commands/gearpresets';
-import { killCommand } from '../../src/mahoji/commands/k';
-import { mineCommand } from '../../src/mahoji/commands/mine';
-import { minigamesCommand } from '../../src/mahoji/commands/minigames';
+import { createOrEditGearSetup } from '../../src/mahoji/commands/gearpresets';
 import { minionCommand } from '../../src/mahoji/commands/minion';
-import { pohCommand } from '../../src/mahoji/commands/poh';
-import { runecraftCommand } from '../../src/mahoji/commands/runecraft';
-import { sellCommand } from '../../src/mahoji/commands/sell';
-import { slayerCommand } from '../../src/mahoji/commands/slayer';
-import { toolsCommand } from '../../src/mahoji/commands/tools';
+import { getPOH, pohWallkitCommand } from '../../src/mahoji/lib/abstracted_commands/pohCommand';
+import {
+	stashUnitBuildAllCommand,
+	stashUnitFillAllCommand
+} from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { syncNewUserUsername } from '../../src/mahoji/lib/preCommand';
 import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
+import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings';
+import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity';
 import { createTestUser, mockClient, TestUser } from './util';
 import { BotItemSell, FishingContestCatch, GEListing, StashUnit, Tame, TameActivity } from '.prisma/client';
-
-const randomActivities: [OSBMahojiCommand, Object][] = [
-	[runecraftCommand, { rune: 'Fire rune' }],
-	[runecraftCommand, { rune: 'Earth rune' }],
-	[runecraftCommand, { rune: 'Air rune' }],
-	[chopCommand, { name: 'Logs' }],
-	[chopCommand, { name: 'Oak logs' }],
-	[chopCommand, { name: 'Willow logs' }],
-	[chopCommand, { name: 'Teak logs' }],
-	[mineCommand, { name: 'Runite ore' }],
-	[mineCommand, { name: 'Coal' }],
-	[mineCommand, { name: 'Adamantite ore' }],
-	[mineCommand, { name: 'Mithril ore' }],
-	[fishCommand, { name: 'Karambwanji' }],
-	[fishCommand, { name: 'Sardine' }],
-	[fishCommand, { name: 'Trout' }],
-	[fishCommand, { name: 'Swordfish' }]
-];
 
 interface TestCommand {
 	name: string;
@@ -719,10 +705,32 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Random Activities',
 		cmd: async user => {
+			const randomActivities: activity_type_enum[] = [
+				'Runecraft',
+				'Woodcutting',
+				'Mining',
+				'Crafting',
+				'Fletching',
+				'Firemaking'
+			];
 			for (let x = 0; x < 3; x++) {
 				const activity = randArrItem(randomActivities);
-				await user.runCommand(activity[0], activity[1]);
-				await processPendingActivities();
+				const baseDate = new Date();
+				const start_date = new Date(baseDate.getTime() - randInt(30, 100) * Time.Hour);
+				const duration = Time.Hour - randInt(10, 30) * Time.Minute;
+				const finish_date = new Date(start_date.getTime() + duration);
+				const data = {
+					user_id: BigInt(user.id),
+					start_date,
+					finish_date,
+					completed: true,
+					type: activity,
+					data: {},
+					group_activity: false,
+					channel_id: 11_111_111_111n,
+					duration
+				};
+				await prisma.activity.create({ data });
 			}
 		}
 	},
@@ -758,11 +766,15 @@ const allTableCommands: TestCommand[] = [
 	},
 	{
 		name: 'Generate POH',
-		cmd: [pohCommand, { view: {} }]
+		cmd: async user => {
+			await getPOH(user.id);
+		}
 	},
 	{
 		name: 'Set POH Wallkit',
-		cmd: [pohCommand, { wallkit: { name: 'Hosidius' } }]
+		cmd: async user => {
+			await pohWallkitCommand(user, 'Hosidius');
+		}
 	},
 	{
 		name: 'Create new_users entry',
@@ -782,9 +794,14 @@ const allTableCommands: TestCommand[] = [
 				'Eye of newt',
 				'Fishing bait'
 			];
-			await user.runCommand(buyCommand, {
-				name: randArrItem(randomBuyItems),
-				quantity: randInt(1, 100).toString()
+			const lootBank = new Bank().add(randArrItem(randomBuyItems), randInt(10, 999));
+			await prisma.buyCommandTransaction.create({
+				data: {
+					user_id: BigInt(user.id),
+					cost_gp: randInt(10_000, 10_000_000),
+					cost_bank_excluding_gp: new Bank().bank,
+					loot_bank: lootBank.bank
+				}
 			});
 		}
 	},
@@ -808,41 +825,44 @@ const allTableCommands: TestCommand[] = [
 	},
 	{
 		name: 'Skilling Gear',
-		cmd: [
-			gearCommand,
-			{
-				equip: {
-					gear_setup: 'skilling',
-					items: 'Pyromancer garb, Pyromancer boots, Pyromancer hood, Pyromancer robe, Warm gloves'
-				}
-			}
-		]
+		cmd: async user => {
+			const setup = 'skilling';
+			const items = 'Pyromancer garb, Pyromancer boots, Pyromancer hood, Pyromancer robe, Warm gloves';
+			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
+			if (!resultSuccess) return failMsg!;
+
+			await user.update({ [`gear_${setup}`]: equippedGear });
+		}
 	},
 	{
 		name: 'Melee Gear',
-		cmd: [
-			gearCommand,
-			{
-				equip: {
-					gear_setup: 'melee',
-					items: 'Bandos chestplate, Bandos tassets, Berserker ring, Ghrazi rapier'
-				}
-			}
-		]
+		cmd: async user => {
+			const setup = 'melee';
+			const items = 'Bandos chestplate, Bandos tassets, Berserker ring, Ghrazi rapier';
+			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
+			if (!resultSuccess) return failMsg!;
+
+			await user.update({ [`gear_${setup}`]: equippedGear });
+		}
 	},
 	{
 		name: 'GearPresets',
 		cmd: async user => {
 			const presetNamme = `preset${randInt(100, 999).toString()}`;
-			await user.runCommand(gearPresetsCommand, {
-				create: {
-					name: presetNamme,
+			await createOrEditGearSetup(
+				user,
+				undefined,
+				presetNamme,
+				false,
+				{
 					body: 'Bandos chestplate',
 					legs: 'Bandos tassets',
 					ring: 'Berserker ring',
 					weapon: 'Ghrazi rapier'
-				}
-			});
+				},
+				undefined,
+				undefined
+			);
 		}
 	},
 	{
@@ -866,17 +886,40 @@ const allTableCommands: TestCommand[] = [
 	},
 	{
 		name: 'Slayer task',
-		cmd: [slayerCommand, { new_task: { master: 'Turael' } }]
+		cmd: async user => {
+			await assignNewSlayerTask(user, slayerMasters.find(sm => sm.name === 'Turael')!);
+		}
 	},
 	{
 		name: 'Farmed crop',
-		cmd: [farmingCommand, { plant: { plant_name: 'Potato' } }],
-		activity: true
+		cmd: async user => {
+			const plant = findPlant('Potato')!;
+			await prisma.farmedCrop.create({
+				data: {
+					user_id: user.id,
+					date_planted: new Date(),
+					item_id: plant.id,
+					quantity_planted: randInt(8, 16),
+					was_autofarmed: false,
+					paid_for_protection: true,
+					upgrade_type: 'compost'
+				}
+			});
+		}
 	},
 	{
 		name: 'Minigames',
-		cmd: [minigamesCommand, { mahogany_homes: { start: { tier: '1' } } }],
-		activity: true
+		cmd: async user => {
+			const minigames: MinigameName[] = [
+				'mahogany_homes',
+				'pyramid_plunder',
+				'agility_arena',
+				'raids',
+				'gauntlet'
+			];
+			const quantity = randInt(10, 20);
+			await incrementMinigameScore(user.id, randArrItem(minigames), quantity);
+		}
 	},
 	{
 		name: 'Pin Trip',
@@ -886,29 +929,123 @@ const allTableCommands: TestCommand[] = [
 				select: { id: true }
 			});
 			if (result) {
-				const { id: activityId } = result;
-				await user.runCommand(configCommand, { user: { pin_trip: { trip: activityId.toString() } } });
+				await pinTripCommand(user, result.id.toString(), undefined, undefined);
 			}
 		}
 	},
 	{
 		name: 'Last man standing',
-		cmd: [minigamesCommand, { lms: { start: {} } }],
-		activity: true
+		cmd: async user => {
+			const quantity = 7;
+			const lmsStats = await getUsersLMSStats(user);
+
+			const result = calculateResultOfLMSGames(quantity, lmsStats);
+
+			await prisma.lastManStandingGame.createMany({
+				data: result.map(i => ({ ...i, user_id: BigInt(user.id), points: undefined }))
+			});
+			const points = sumArr(result.map(i => i.points));
+
+			await user.update({
+				lms_points: {
+					increment: points
+				}
+			});
+		}
 	},
 	{
 		name: 'Loot track',
-		cmd: [killCommand, { name: 'Goblin' }],
-		activity: true
+		cmd: async user => {
+			const randomItems = ['Smouldering stone', 'Elysian sigil', 'Twisted bow', 'Pegasian crystal'];
+			const duration = randInt(30, 45) * Time.Minute;
+			const quantity = randInt(50, 500);
+			const totalLoot = new Bank().add(randArrItem(randomItems));
+			const totalCost = new Bank().add('Coins', randInt(100, 10_000)).add('Saradomin brew(4)', randInt(1, 99));
+			// Track items lost
+			await trackLoot({
+				totalCost,
+				id: 'Goblin',
+				type: 'Monster',
+				changeType: 'cost',
+				users: [
+					{
+						id: user.id,
+						cost: totalCost
+					}
+				]
+			});
+			// Track loot (For duration)
+			await trackLoot({
+				totalLoot,
+				id: 'Goblin',
+				type: 'Monster',
+				changeType: 'loot',
+				duration,
+				kc: quantity,
+				users: [
+					{
+						id: user.id,
+						loot: totalLoot,
+						duration
+					}
+				]
+			});
+		}
 	},
 	{
 		name: 'User stats',
-		cmd: [farmingCommand, { tithe_farm: {} }],
-		activity: true
+		cmd: async user => {
+			const points = randInt(1000, 10_000);
+
+			await userStatsUpdate(
+				user.id,
+				{
+					tithe_farms_completed: {
+						increment: 1
+					},
+					tithe_farm_points: {
+						increment: points
+					}
+				},
+				{}
+			);
+		}
 	},
 	{
 		name: 'Bot Item Transaction',
-		cmd: [sellCommand, { items: '2 Shield right half' }]
+		cmd: async user => {
+			const randomSellItems = ['Shield left half', 'Feather', 'Cannonball', 'Elysian sigil', 'Fire rune'];
+			const itemPrice = randInt(500, 50_000_000);
+			const bankToSell = new Bank();
+			const item = getOSItem(randArrItem(randomSellItems));
+			const qty = randInt(1, 10);
+			const totalPrice = itemPrice * qty;
+
+			bankToSell.add(item, qty);
+			const botItemSellData: Prisma.BotItemSellCreateManyInput[] = [];
+			botItemSellData.push({
+				item_id: item.id,
+				quantity: qty,
+				gp_received: totalPrice,
+				user_id: user.id
+			});
+
+			await Promise.all([
+				updateClientGPTrackSetting('gp_sell', totalPrice),
+				updateBankSetting('sold_items_bank', bankToSell),
+				userStatsUpdate(
+					user.id,
+					userStats => ({
+						items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
+						sell_gp: {
+							increment: totalPrice
+						}
+					}),
+					{}
+				),
+				prisma.botItemSell.createMany({ data: botItemSellData })
+			]);
+		}
 	},
 	{
 		name: 'GE Listings',
@@ -922,8 +1059,8 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Stash Units',
 		cmd: async user => {
-			await user.runCommand(toolsCommand, { stash_units: { build_all: {} } });
-			await user.runCommand(toolsCommand, { stash_units: { fill_all: {} } });
+			await stashUnitBuildAllCommand(user);
+			await stashUnitFillAllCommand(user, user.user);
 		}
 	},
 	{
@@ -1226,9 +1363,6 @@ describe('migrate user test', async () => {
 		};
 	});
 
-	const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
-	const sleepDelay = 1000;
-
 	const logResult = (
 		result: { result: boolean; errors: string[] },
 		sourceData: UserData,
@@ -1334,8 +1468,6 @@ describe('migrate user test', async () => {
 			const sourceRolls = randInt(6, 11);
 			const cmdHistory = await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
 
-			// sleep to let the DB catch up - necessary!
-			await sleep(sleepDelay);
 			const sourceData = new UserData(sourceUser);
 			await sourceData.sync();
 
@@ -1367,8 +1499,6 @@ describe('migrate user test', async () => {
 			const srcHistory = await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
 			const dstHistory = await runRandomTestCommandsOnUser(destUser, destRolls);
 
-			// sleep to let the DB catch up - necessary!
-			await sleep(sleepDelay);
 			const sourceData = new UserData(sourceUser);
 			await sourceData.sync();
 
@@ -1395,8 +1525,6 @@ describe('migrate user test', async () => {
 			const cmdHistory = await runRandomTestCommandsOnUser(sourceUser);
 			await runAllTestCommandsOnUser(destUser);
 
-			// sleep to let the DB catch up - necessary!
-			await sleep(sleepDelay);
 			const sourceData = new UserData(sourceUser);
 			await sourceData.sync();
 
@@ -1413,7 +1541,4 @@ describe('migrate user test', async () => {
 		},
 		{ repeats: 3 }
 	);
-
-	// Sleep to avoid 'command failed' errors
-	await sleep(sleepDelay);
 });
