@@ -23,7 +23,7 @@ import {
 } from '@prisma/client';
 import { deepClone, randArrItem, randInt, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 
 import { BitField } from '../../src/lib/constants';
 import { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
@@ -1063,13 +1063,6 @@ describe('migrate user test', async () => {
 	await GrandExchange.totalReset();
 	await GrandExchange.init();
 
-	beforeEach(() => {
-		// vi.useFakeTimers({ toFake: ['Date'] });
-		// vi.setSystemTime(Date.now() + 24 * 60 * 60 * 1000 + randInt(50_000, 99_999));
-	});
-	afterEach(() => {
-		// vi.useRealTimers();
-	});
 	test('test migrating existing user to target with no records', async () => {
 		const sourceUser = await buildBaseUser(randomSnowflake());
 		await runAllTestCommandsOnUser(sourceUser);
