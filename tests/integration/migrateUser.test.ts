@@ -74,7 +74,7 @@ class UserData {
 	private mUser: MUser | null = null;
 
 	// Robochimp:
-	githubId?: number | null;
+	githubId: number | null;
 
 	// User info
 	id: string;
@@ -110,6 +110,7 @@ class UserData {
 
 	constructor(_user: string | MUser) {
 		this.id = typeof _user === 'string' ? _user : _user.id;
+		this.githubId = null;
 	}
 
 	async sync() {
@@ -1010,10 +1011,19 @@ const allTableCommands: TestCommand[] = [
 		}
 	},
 	{
-		name: 'Sync robochimp user',
+		name: 'Create robochimp user',
 		cmd: async user => {
-			await user.runCommand(minionCommand, { status: {} });
-			await roboChimpClient.user.updateMany({ where: { id: BigInt(user.id) }, data: { github_id: 123_456 } });
+			const updateObj = { github_id: 123_456 };
+			await roboChimpClient.user.upsert({
+				where: {
+					id: BigInt(user.id)
+				},
+				update: updateObj,
+				create: {
+					id: BigInt(user.id),
+					...updateObj
+				}
+			});
 		}
 	},
 	{
