@@ -265,6 +265,33 @@ class UserData {
 		});
 		if (geListings.length > 0) this.geListings = geListings;
 
+		// BSO Data:
+		const tames = await prisma.tame.findMany({
+			where: { user_id: this.id },
+			orderBy: { id: 'asc' }
+		});
+		if (tames.length > 0) this.tames = tames;
+
+		const tameActivity = await prisma.tameActivity.findMany({
+			where: { user_id: this.id },
+			orderBy: { id: 'asc' }
+		});
+		if (tameActivity.length > 0) this.tameActivity = tameActivity;
+
+		const fishingContestCatches = await prisma.fishingContestCatch.findMany({
+			where: { user_id: BigInt(this.id) },
+			orderBy: { id: 'asc' }
+		});
+		if (fishingContestCatches.length > 0) this.fishingContestCatches = fishingContestCatches;
+
+		// BSO Limited Event Data:
+		const mortimerTricks = await prisma.mortimerTricks.findMany({
+			where: { OR: [{ trickster_id: this.id }, { target_id: this.id }] },
+			orderBy: { date: 'asc' }
+		});
+
+		if (mortimerTricks.length > 0) this.mortimerTricks = mortimerTricks;
+
 		this.loaded = true;
 	}
 
@@ -606,6 +633,73 @@ class UserData {
 			const smallerSet = balance ? target.geListings : this.geListings;
 			if (!smallerSet.every(s => biggerSet.some(b => s.id === b.id))) {
 				errors.push('Mismatched GE Listing data - Comparison failed.');
+			}
+		}
+
+		// BSO Data
+		// Tames
+		if (this.tames !== target.tames) {
+			const srcCt = this.tames?.length ?? 0;
+			const dstCt = target.tames?.length ?? 0;
+			if (srcCt !== dstCt) {
+				errors.push(`Wrong number of Tames. ${srcCt} vs ${dstCt}`);
+			} else if (
+				!this.tames!.every(s =>
+					target.tames!.some(
+						t => s.nickname === t.nickname && s.max_combat_level === t.max_combat_level && s.id === t.id
+					)
+				)
+			) {
+				errors.push("One or more Tames don't match.");
+			}
+		}
+		// Tame Activity
+		if (this.tameActivity !== target.tameActivity) {
+			const srcCt = this.tameActivity?.length ?? 0;
+			const dstCt = target.tameActivity?.length ?? 0;
+			if (srcCt !== dstCt) {
+				errors.push(`Wrong number of Tame Activity rows. ${srcCt} vs ${dstCt}`);
+			} else if (
+				!this.tameActivity!.every(s =>
+					target.tameActivity!.some(t => JSON.stringify(s.data) === JSON.stringify(t.data) && s.id === t.id)
+				)
+			) {
+				errors.push("One or more Tame Activities don't match.");
+			}
+		}
+		// Fishing Contest Catches
+		if (this.fishingContestCatches !== target.fishingContestCatches) {
+			const srcCt = this.fishingContestCatches?.length ?? 0;
+			const dstCt = target.fishingContestCatches?.length ?? 0;
+			if (srcCt !== dstCt) {
+				errors.push(`Wrong number of fishingContestCatches rows. ${srcCt} vs ${dstCt}`);
+			} else if (
+				!this.fishingContestCatches!.every(s =>
+					target.fishingContestCatches!.some(t => s.name === t.name && s.id === t.id)
+				)
+			) {
+				errors.push("One or more fishingContestCatches don't match.");
+			}
+		}
+
+		// BSO Limited Event Data:
+		// Mortimer Tricks
+		if (this.mortimerTricks !== target.mortimerTricks) {
+			const srcCt = this.mortimerTricks?.length ?? 0;
+			const dstCt = target.mortimerTricks?.length ?? 0;
+			if (srcCt !== dstCt) {
+				errors.push(`Wrong number of MortimerTricks rows. ${srcCt} vs ${dstCt}`);
+			} else if (
+				!this.mortimerTricks!.every(s =>
+					target.mortimerTricks!.some(t => {
+						if ([t.trickster_id, s.trickster_id].includes(this.id)) {
+							return t.target_id === s.target_id && s.id === t.id;
+						}
+						return t.trickster_id === s.trickster_id && s.id === t.id;
+					})
+				)
+			) {
+				errors.push("One or more MortimerTricks rows don't match.");
 			}
 		}
 
@@ -1133,7 +1227,7 @@ describe('migrate user test', async () => {
 	});
 
 	const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
-	const sleepDelay = 350;
+	const sleepDelay = 400;
 
 	const logResult = (
 		result: { result: boolean; errors: string[] },
@@ -1208,6 +1302,11 @@ describe('migrate user test', async () => {
 		newData.botItemSell = [];
 		if (newData.gear?.melee) newData.gear.melee.weapon = null;
 
+		// BSO Data failure simulation:
+		newData.tames![0].nickname = 'Not my real nickname';
+		// BSO Limited Event Failure simulation:
+		newData.mortimerTricks![0].trickster_id = '111111111';
+
 		const badResult = sourceData.equals(newData);
 		expect(badResult.result).toBe(false);
 
@@ -1217,7 +1316,11 @@ describe('migrate user test', async () => {
 			"cooking level doesn't match. 1 vs 1000000",
 			"POH Object doesn't match: null !== 33",
 			'User Stats doesn\'t match: {} !== {"2":1}',
-			'Wrong number of BotItemSell rows. 1 vs 0'
+			'Wrong number of BotItemSell rows. 1 vs 0',
+			// BSO Failure Check
+			"One or more Tames don't match.",
+			// BSO Event Failure Check
+			"One or more MortimerTricks rows don't match."
 		];
 		expect(badResult.errors).toEqual(expectedBadResult);
 	});
