@@ -13,6 +13,7 @@ import {
 	LastManStandingGame,
 	LootTrack,
 	Minigame,
+	MortimerTricks,
 	PinnedTrip,
 	PlayerOwnedHouse,
 	Prisma,
@@ -56,7 +57,7 @@ import { toolsCommand } from '../../src/mahoji/commands/tools';
 import { syncNewUserUsername } from '../../src/mahoji/lib/preCommand';
 import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { createTestUser, mockClient, TestUser } from './util';
-import { BotItemSell, GEListing, StashUnit } from '.prisma/client';
+import { BotItemSell, FishingContestCatch, GEListing, StashUnit, Tame, TameActivity } from '.prisma/client';
 
 const randomActivities: [OSBMahojiCommand, Object][] = [
 	[runecraftCommand, { rune: 'Fire rune' }],
@@ -121,6 +122,12 @@ class UserData {
 	bingos?: Bingo[];
 	commandUsage?: CommandUsage[];
 	geListings?: GEListing[];
+	// BSO Data
+	tames?: Tame[];
+	tameActivity?: TameActivity[];
+	fishingContestCatches?: FishingContestCatch[];
+	// BSO Event Data
+	mortimerTricks?: MortimerTricks[];
 
 	constructor(_user: string | MUser) {
 		this.id = typeof _user === 'string' ? _user : _user.id;
@@ -933,6 +940,97 @@ const allTableCommands: TestCommand[] = [
 					date: new Date(),
 					item_id: itemId,
 					quantity: 1
+				}
+			});
+		}
+	},
+	// BSO Commands / data tables
+	{
+		name: 'Create tame',
+		cmd: async user => {
+			const tameNicknames = ['Xlaug', 'Smog', 'Xmaug', 'Infernape', 'Charmander', 'Charizard'];
+			await prisma.tame.create({
+				data: {
+					user_id: user.id,
+					nickname: randArrItem(tameNicknames),
+					species_id: 1,
+					growth_stage: 'adult',
+					growth_percent: 100,
+					max_combat_level: randInt(75, 100),
+					max_artisan_level: randInt(1, 10),
+					max_gatherer_level: randInt(15, 30),
+					max_support_level: randInt(1, 10)
+				}
+			});
+		},
+		priority: true
+	},
+	{
+		name: 'Create tame activity',
+		cmd: async user => {
+			const tame = await prisma.tame.findFirst({ where: { user_id: user.id }, select: { id: true } });
+			if (!tame) return false;
+			const start_date = new Date();
+			const duration = 60 * 60 * 1000;
+			const finish_date = new Date(start_date.getTime() + duration);
+			await prisma.tameActivity.create({
+				data: {
+					start_date,
+					finish_date,
+					duration,
+					user_id: user.id,
+					tame_id: tame.id,
+					type: 'pvm',
+					channel_id: '1111111111111111111',
+					completed: true,
+					data: { type: 'pvm', monsterID: 707_070, quantity: randInt(30, 100) }
+				}
+			});
+		}
+	},
+	{
+		name: 'Fishing Contest Catch',
+		cmd: async user => {
+			const fishNames = [
+				['Pacific', 'Atlantic', 'Antarctic', 'Arctic', 'Indian', 'Summer', 'Frowning', 'Smiling'],
+				['Outback', 'Tailback', 'Longfin', 'Tuna', 'Bluefin', 'Whaleback', 'Tigerfish', 'Striped-back']
+			];
+			const name = fishNames.map(slug => randArrItem(slug)).join(' ');
+			await prisma.fishingContestCatch.create({
+				data: {
+					user_id: BigInt(user.id),
+					name,
+					length_cm: randInt(80, 120)
+				}
+			});
+		},
+		priority: true
+	},
+	// BSO Event data
+	{
+		name: 'Mortimer tricks you',
+		cmd: async user => {
+			const target_id = user.id;
+			const trickster_id = randomSnowflake();
+			await prisma.mortimerTricks.create({
+				data: {
+					trickster_id,
+					target_id,
+					completed: false
+				}
+			});
+		}
+	},
+	{
+		name: 'Mortimer tricks target',
+		cmd: async user => {
+			const trickster_id = user.id;
+			const target_id = randomSnowflake();
+			await prisma.mortimerTricks.create({
+				data: {
+					trickster_id,
+					target_id,
+					completed: false
 				}
 			});
 		}

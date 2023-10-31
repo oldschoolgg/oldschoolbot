@@ -39,6 +39,16 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	transactions.push(prisma.stashUnit.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
 	transactions.push(prisma.bingoParticipant.deleteMany({ where: { user_id: destUser.id } }));
 
+	// BSO: Delete target
+	transactions.push(prisma.tameActivity.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.tame.deleteMany({ where: { user_id: destUser.id } }));
+	transactions.push(prisma.fishingContestCatch.deleteMany({ where: { user_id: BigInt(destUser.id) } }));
+
+	// BSO Event: (The update commands are later...)
+	transactions.push(
+		prisma.mortimerTricks.deleteMany({ where: { OR: [{ trickster_id: destUser.id }, { target_id: destUser.id }] } })
+	);
+
 	// For tables that aren't deleted, we often have to convert from target => source first to avoid FK errors, or null
 	transactions.push(
 		prisma.bingo.updateMany({ where: { creator_id: destUser.id }, data: { creator_id: sourceUser.id } })
@@ -156,6 +166,29 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	// GE Listing isn't wiped for destUser.id as that could mess up the GE
 	transactions.push(
 		prisma.gEListing.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
+
+	// BSO Updates:
+	transactions.push(
+		prisma.tameActivity.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } })
+	);
+	transactions.push(prisma.tame.updateMany({ where: { user_id: sourceUser.id }, data: { user_id: destUser.id } }));
+	transactions.push(
+		prisma.fishingContestCatch.updateMany({
+			where: { user_id: BigInt(sourceUser.id) },
+			data: { user_id: BigInt(destUser.id) }
+		})
+	);
+
+	// BSO Event Updates:
+	transactions.push(
+		prisma.mortimerTricks.updateMany({
+			where: { trickster_id: sourceUser.id },
+			data: { trickster_id: destUser.id }
+		})
+	);
+	transactions.push(
+		prisma.mortimerTricks.updateMany({ where: { target_id: sourceUser.id }, data: { target_id: destUser.id } })
 	);
 
 	// Update Users in group activities:

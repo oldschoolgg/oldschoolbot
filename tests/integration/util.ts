@@ -1,6 +1,6 @@
 import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
-import { uniqueArr } from 'e';
+import { Time, uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
@@ -17,7 +17,7 @@ export const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'opti
 	userID,
 	guildID: '342983479501389826',
 	member: {} as any,
-	user: { id: userID } as any,
+	user: { id: userID, createdAt: new Date().getTime() - Time.Year } as any,
 	channelID: '111111111',
 	interaction: {
 		deferReply: () => Promise.resolve(),
