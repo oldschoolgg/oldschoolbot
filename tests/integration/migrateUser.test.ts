@@ -929,12 +929,6 @@ const allTableCommands: TestCommand[] = [
 				user_id: user.id
 			});
 
-			await transactItems({
-				userID: user.id,
-				itemsToAdd: new Bank().add('Coins', totalPrice),
-				itemsToRemove: bankToSell
-			});
-
 			await Promise.all([
 				updateClientGPTrackSetting('gp_sell', totalPrice),
 				updateBankSetting('sold_items_bank', bankToSell),
@@ -1177,9 +1171,6 @@ describe('migrate user test', async () => {
 		};
 	});
 
-	const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
-	const sleepDelay = 350;
-
 	const logResult = (
 		result: { result: boolean; errors: string[] },
 		sourceData: UserData,
@@ -1276,8 +1267,6 @@ describe('migrate user test', async () => {
 			const sourceRolls = randInt(6, 11);
 			const cmdHistory = await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
 
-			// sleep to let the DB catch up - necessary!
-			await sleep(sleepDelay);
 			const sourceData = new UserData(sourceUser);
 			await sourceData.sync();
 
@@ -1309,8 +1298,6 @@ describe('migrate user test', async () => {
 			const srcHistory = await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
 			const dstHistory = await runRandomTestCommandsOnUser(destUser, destRolls);
 
-			// sleep to let the DB catch up - necessary!
-			await sleep(sleepDelay);
 			const sourceData = new UserData(sourceUser);
 			await sourceData.sync();
 
@@ -1337,8 +1324,6 @@ describe('migrate user test', async () => {
 			const cmdHistory = await runRandomTestCommandsOnUser(sourceUser);
 			await runAllTestCommandsOnUser(destUser);
 
-			// sleep to let the DB catch up - necessary!
-			await sleep(sleepDelay);
 			const sourceData = new UserData(sourceUser);
 			await sourceData.sync();
 
@@ -1355,7 +1340,4 @@ describe('migrate user test', async () => {
 		},
 		{ repeats: 3 }
 	);
-
-	// Sleep to avoid 'command failed' errors
-	await sleep(sleepDelay);
 });
