@@ -1058,6 +1058,8 @@ model HistoricalData {
   GP                       Decimal @db.Decimal(13, 0)
   total_xp                 Decimal @db.Decimal(13, 0)
 
+  mastery_percentage Decimal? @db.Decimal(5, 2)
+
   comp_cape_percent Decimal? @db.Decimal(5, 2)
 
   user User @relation(fields: [user_id], references: [id])

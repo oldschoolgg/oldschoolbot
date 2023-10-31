@@ -45,7 +45,7 @@
 		"he": "^1.2.0",
 		"lodash": "^4.17.21",
 		"lru-cache": "^8.0.0",
-		"mahoji": "^0.0.62",
+		"mahoji": "^0.0.7",
 		"murmurhash": "^2.0.1",
 		"node-cron": "^3.0.2",
 		"node-fetch": "^2.6.7",
