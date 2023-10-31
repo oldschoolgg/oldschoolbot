@@ -3884,10 +3884,10 @@ magic-string@^0.30.0:
   dependencies:
     "@jridgewell/sourcemap-codec" "^1.4.13"
 
-mahoji@^0.0.62:
-  version "0.0.62"
-  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.62.tgz#c4c6164e788252396a2e7848af26d74814f161e3"
-  integrity sha512-XURC3zhuvToFTiiMiqB2ISKLpB/v4VsIrjZ2AfmHgbt2GqSNMhyRLpHt/Xh1TjiznAABfwj1P9X6kM3Q3gkhkw==
+mahoji@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.7.tgz#bb99bc2e32bc934534328d054698625c57af61ee"
+  integrity sha512-N5R29v9ltVwYgMbD8xa1YQf60B0Jhgzqrj2Tz5m/b7XbbCy10pQYbRuF9dwcemhNJqJWmFhEGj/sFtZXTgq+gQ==
 
 make-dir@^3.0.0:
   version "3.1.0"

@@ -14,7 +14,7 @@ vi.mock('../../src/lib/util/webhook', async () => {
 	const actual: any = await vi.importActual('../../src/lib/util/webhook');
 	return {
 		...actual,
-		sendToChannelID: async (args: any) => {}
+		sendToChannelID: async (_args: any) => {}
 	};
 });
 
