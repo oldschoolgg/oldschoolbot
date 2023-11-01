@@ -79,28 +79,35 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 	});
 
 	const events = [
-		{ event: 'Rising Roots', value: case1, Xp: undefined },
-		{ event: 'Struggling Sapling', value: case2, Xp: undefined },
-		{ event: 'Flowering Bush', value: case3, Xp: undefined },
-		{ event: 'Woodcutting Leprechaun', value: case4, Xp: undefined },
-		{ event: 'Bee Hive', value: case5, Xp: SkillsEnum.Construction },
-		{ event: 'Friendly Ent', value: case6, Xp: SkillsEnum.Fletching },
-		{ event: 'Poachers', value: case7, Xp: SkillsEnum.Hunter },
-		{ event: 'Enchantment Ritual', value: case8, Xp: undefined },
-		{ event: 'Pheasant Control', value: case9, Xp: SkillsEnum.Thieving }
+		{ event: 'Rising Roots', value: case1, uniqueXP: undefined },
+		{ event: 'Struggling Sapling', value: case2, uniqueXP: SkillsEnum.Farming },
+		{ event: 'Flowering Bush', value: case3, uniqueXP: undefined },
+		{ event: 'Woodcutting Leprechaun', value: case4, uniqueXP: undefined },
+		{ event: 'Bee Hive', value: case5, uniqueXP: SkillsEnum.Construction },
+		{ event: 'Friendly Ent', value: case6, uniqueXP: SkillsEnum.Fletching },
+		{ event: 'Poachers', value: case7, uniqueXP: SkillsEnum.Hunter },
+		{ event: 'Enchantment Ritual', value: case8, uniqueXP: undefined },
+		{ event: 'Pheasant Control', value: case9, uniqueXP: SkillsEnum.Thieving }
 	];
 	events.forEach(eventObj => (totalEvents += eventObj.value));
 
-	// Give the user xp from Forestry events
+	// Give user woodcutting xp for each event completed
 	let xpRes = await user.addXP({
 		skillName: SkillsEnum.Woodcutting,
 		amount: totalEvents * randInt(1800, 2000) * wcMultiplier
 	});
+
+	// Give user unique xp per event
 	for (const eventObj of events) {
-		if (eventObj.Xp !== undefined) {
+		let defaultAmount = eventObj.value * randInt(300, 600) * wcMultiplier;
+		if (eventObj.uniqueXP !== undefined) {
+			if (eventObj.event === 'Pheasant Control') {
+				// Pheasant Control gives 3 times the unique xp compared to other events
+				defaultAmount *= 3;
+			}
 			xpRes += await user.addXP({
-				skillName: eventObj.Xp,
-				amount: eventObj.value * randInt(300, 600) * wcMultiplier
+				skillName: eventObj.uniqueXP,
+				amount: defaultAmount
 			});
 		}
 	}
