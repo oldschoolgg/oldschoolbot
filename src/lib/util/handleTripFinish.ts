@@ -16,7 +16,6 @@ import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
-import { halloweenTripEffect } from '../halloween/halloween';
 import { handlePassiveImplings } from '../implings';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
 import { mysteriousStepData } from '../mysteryTrail';
@@ -405,9 +404,6 @@ export async function handleTripFinish(
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
-
-	const users = 'users' in data ? await Promise.all(data.users.map(id => mUserFetch(id))) : [user];
-	await halloweenTripEffect.fn({ data, users, messages });
 
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 

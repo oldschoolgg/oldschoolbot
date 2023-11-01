@@ -17,7 +17,6 @@ import { kibbleTask } from '../tasks/minions/bso/kibbleActivity';
 import { kingGoldemarTask } from '../tasks/minions/bso/kingGoldemarActivity';
 import { moktangTask } from '../tasks/minions/bso/moktangActivity';
 import { mrTask } from '../tasks/minions/bso/monkeyRumbleActivity';
-import { mortimerTask } from '../tasks/minions/bso/mortimerActivity';
 import { naxxusTask } from '../tasks/minions/bso/naxxusActivity';
 import { nexTask } from '../tasks/minions/bso/nexActivity';
 import { odsTask } from '../tasks/minions/bso/ouraniaDeliveryServiceActivity';
@@ -217,8 +216,7 @@ export const tasks: MinionTask[] = [
 	underwaterAgilityThievingTask,
 	doaTask,
 	strongholdTask,
-	specificQuestTask,
-	mortimerTask
+	specificQuestTask
 ];
 
 export async function processPendingActivities() {
@@ -298,7 +296,8 @@ const ignored: activity_type_enum[] = [
 	activity_type_enum.HalloweenEvent,
 	activity_type_enum.BirthdayCollectIngredients,
 	activity_type_enum.HalloweenEvent,
-	activity_type_enum.Revenants
+	activity_type_enum.Revenants,
+	activity_type_enum.Mortimer
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {
