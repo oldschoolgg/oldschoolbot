@@ -15,7 +15,7 @@ import { fetchCLLeaderboard } from './util/clLeaderboard';
 export async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
 	const clStats = calcCLDetails(user);
 	const clRank = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
-	const { totalMastery } = await calculateMastery(user, await MUserStats.fromID(user.id));
+	const { totalMastery, compCapeProgress } = await calculateMastery(user, await MUserStats.fromID(user.id));
 
 	return {
 		user_id: user.id,
@@ -24,6 +24,8 @@ export async function createHistoricalData(user: MUser): Promise<Prisma.Historic
 		cl_completion_percentage: clStats.percent,
 		cl_completion_count: clStats.owned.length,
 		cl_global_rank: Number(clRank[0].count),
+		comp_cape_percent: compCapeProgress.totalPercentTrimmed,
+		comp_cape_percent_untrimmed: compCapeProgress.totalPercentUntrimmed,
 		mastery_percentage: totalMastery
 	};
 }
