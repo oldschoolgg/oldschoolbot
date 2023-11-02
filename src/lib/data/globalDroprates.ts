@@ -110,7 +110,7 @@ export const globalDroprates = {
 	},
 	echo: {
 		name: 'Echo (pet)',
-		baseRate: 3000,
+		baseRate: 1000,
 		clIncrease: 1.5,
 		minLength: false,
 		rolledPer: 'kill',
