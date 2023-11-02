@@ -338,14 +338,14 @@ class BankImageTask {
 		}
 	}
 
-	async getItemImage(itemID: number): Promise<Image> {
+	async getItemImage(itemID: number, user?: MUser): Promise<Image> {
 		const cachedImage = this.itemIconImagesCache.get(itemID);
 		if (cachedImage) return cachedImage;
 
 		const isOnDisk = this.itemIconsList.has(itemID);
 		if (!isOnDisk) {
 			await this.fetchAndCacheImage(itemID);
-			return this.getItemImage(itemID);
+			return this.getItemImage(itemID, user);
 		}
 
 		const imageBuffer = await fs.readFile(path.join(CACHE_DIR, `${itemID}.png`));
@@ -476,7 +476,8 @@ class BankImageTask {
 		currentCL: Bank | undefined,
 		mahojiFlags: BankFlag[] | undefined,
 		weightings: Readonly<ItemBank> | undefined,
-		verticalSpacer = 0
+		verticalSpacer = 0,
+		user?: MUser
 	) {
 		// Draw Items
 		ctx.textAlign = 'start';
@@ -493,7 +494,7 @@ class BankImageTask {
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			let [item, quantity] = items[i];
-			const itemImage = await this.getItemImage(item.id);
+			const itemImage = await this.getItemImage(item.id, user);
 			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
 			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
 			const isNewCLItem =
@@ -731,7 +732,9 @@ class BankImageTask {
 			flags,
 			currentCL,
 			opts.mahojiFlags,
-			weightings
+			weightings,
+			undefined,
+			user
 		);
 
 		const image = await canvas.encode('png');
@@ -840,7 +843,8 @@ export async function drawChestLootImage(options: {
 			previousCL,
 			undefined,
 			undefined,
-			5
+			5,
+			user
 		);
 
 		ctx.drawImage(itemCanvas, iX - xOffset, iY - yOffset);

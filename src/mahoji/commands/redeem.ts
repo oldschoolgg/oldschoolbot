@@ -1,5 +1,6 @@
 import { bold } from '@discordjs/builders';
-import { products } from '@oldschoolgg/toolkit';
+import { ProductID, products } from '@oldschoolgg/toolkit';
+import { notEmpty } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { roboChimpSyncData } from '../../lib/roboChimp';
@@ -42,27 +43,43 @@ export const redeemCommand: OSBMahojiCommand = {
 			return 'You already have this, redeeming it again would be a waste!';
 		}
 
-		await roboChimpClient.$transaction([
-			roboChimpClient.storeCode.update({
-				where: {
-					code: options.code
-				},
-				data: {
-					redeemed_at: new Date(),
-					redeemed_by_user_id: user.id
+		if (product.type === 'active') {
+			switch (product.id) {
+				case ProductID.OneHourDoubleLoot: {
+					return 'You cannot redeem this on OSB.';
 				}
-			}),
-			roboChimpClient.user.update({
-				where: {
-					id: BigInt(userID)
-				},
-				data: {
-					store_bitfield: {
-						push: product.bit
+				case ProductID.ThreeHourDoubleLoot: {
+					return 'You cannot redeem this on OSB.';
+				}
+			}
+		}
+
+		await roboChimpClient.$transaction(
+			[
+				roboChimpClient.storeCode.update({
+					where: {
+						code: options.code
+					},
+					data: {
+						redeemed_at: new Date(),
+						redeemed_by_user_id: user.id
 					}
-				}
-			})
-		]);
+				}),
+				'bit' in product
+					? roboChimpClient.user.update({
+							where: {
+								id: BigInt(userID)
+							},
+							data: {
+								store_bitfield: {
+									push: product.bit
+								}
+							}
+					  })
+					: undefined
+			].filter(notEmpty)
+		);
+
 		await roboChimpSyncData(user);
 
 		return `You have redeemed: ${bold(product.name)}!`;

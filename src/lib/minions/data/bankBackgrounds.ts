@@ -427,6 +427,15 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 500_000
+	},
+	{
+		id: 503,
+		name: 'Halloween Manor',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000,
+		storeBitField: StoreBitfield.HalloweenItemIconPack
 	}
 ];
 
