@@ -1,6 +1,5 @@
 import '../customItems/customItems';
 import '../data/itemAliases';
-import '../minions/data/killableMonsters/index';
 
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Misc, Monsters } from 'oldschooljs';
@@ -8,6 +7,7 @@ import { Bank, Misc, Monsters } from 'oldschooljs';
 import { production } from '../../config';
 import { YETI_ID } from '../constants';
 import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
+import killableMonsters from '../minions/data/killableMonsters/index';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
 
 export default async ({
@@ -32,7 +32,7 @@ export default async ({
 			};
 		}
 
-		return {
+		const result = {
 			bank: osjsMonster.kill(quantity, {
 				inCatacombs: catacombs,
 				onSlayerTask: onTask,
@@ -41,6 +41,13 @@ export default async ({
 				}
 			})
 		};
+
+		const killableMonster = killableMonsters.find(mon => mon.id === osjsMonster.id);
+		if (killableMonster && killableMonster.specialLoot) {
+			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity });
+		}
+
+		return result;
 	}
 
 	if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {

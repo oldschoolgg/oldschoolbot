@@ -50,8 +50,8 @@ const killableBosses: KillableMonster[] = [
 		healAmountNeeded: 20 * 5,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
-		specialLoot: async (loot, user) => {
-			if (!user.owns('Frozen key') && !user.owns('Frozen key piece (bandos)')) {
+		specialLoot: async ({ loot, ownedItems }) => {
+			if (!ownedItems.has('Frozen key') && !ownedItems.has('Frozen key piece (bandos)')) {
 				loot.add('Frozen key piece (bandos)');
 			}
 		}
@@ -105,8 +105,8 @@ const killableBosses: KillableMonster[] = [
 		healAmountNeeded: 18 * 4,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic],
-		specialLoot: async (loot, user) => {
-			if (!user.owns('Frozen key') && !user.owns('Frozen key piece (saradomin)')) {
+		specialLoot: async ({ loot, ownedItems }) => {
+			if (!ownedItems.has('Frozen key') && !ownedItems.has('Frozen key piece (saradomin)')) {
 				loot.add('Frozen key piece (saradomin)');
 			}
 		}
@@ -157,8 +157,8 @@ const killableBosses: KillableMonster[] = [
 		healAmountNeeded: 18 * 4,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic],
-		specialLoot: async (loot, user) => {
-			if (!user.owns('Frozen key') && !user.owns('Frozen key piece (armadyl)')) {
+		specialLoot: async ({ loot, ownedItems }) => {
+			if (!ownedItems.has('Frozen key') && !ownedItems.has('Frozen key piece (armadyl)')) {
 				loot.add('Frozen key piece (armadyl)');
 			}
 		}
@@ -202,8 +202,8 @@ const killableBosses: KillableMonster[] = [
 		healAmountNeeded: 20 * 3,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackMagic],
-		specialLoot: async (loot, user) => {
-			if (!user.owns('Frozen key') && !user.owns('Frozen key piece (zamorak)')) {
+		specialLoot: async ({ loot, ownedItems }) => {
+			if (!ownedItems.has('Frozen key') && !ownedItems.has('Frozen key piece (zamorak)')) {
 				loot.add('Frozen key piece (zamorak)');
 			}
 		}
