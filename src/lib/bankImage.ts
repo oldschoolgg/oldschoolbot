@@ -11,7 +11,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
-import { BitField, PerkTier, toaPurpleItems } from '../lib/constants';
+import { BitField, BOT_TYPE, ItemIconPacks, PerkTier, toaPurpleItems } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
@@ -336,9 +336,32 @@ class BankImageTask {
 		for (const fileName of filesInDir) {
 			this.itemIconsList.add(parseInt(path.parse(fileName).name));
 		}
+
+		for (const pack of ItemIconPacks) {
+			const directories = BOT_TYPE === 'OSB' ? ['osb'] : ['osb', 'bso'];
+
+			for (const dir of directories) {
+				const filesInThisDir = await fs.readdir(`./src/lib/resources/images/icon_packs/${pack.id}_${dir}`);
+				for (const fileName of filesInThisDir) {
+					const themedItemID = parseInt(path.parse(fileName).name);
+					const image = await loadImage(
+						`./src/lib/resources/images/icon_packs/${pack.id}_${BOT_TYPE.toLowerCase()}/${fileName}`
+					);
+					pack.icons.set(themedItemID, image);
+				}
+			}
+		}
 	}
 
 	async getItemImage(itemID: number, user?: MUser): Promise<Image> {
+		if (user && user.user.icon_pack_id !== null) {
+			for (const pack of ItemIconPacks) {
+				if (pack.id === user.user.icon_pack_id) {
+					return pack.icons.get(itemID) ?? this.getItemImage(itemID, undefined);
+				}
+			}
+		}
+
 		const cachedImage = this.itemIconImagesCache.get(itemID);
 		if (cachedImage) return cachedImage;
 
