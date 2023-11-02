@@ -13,6 +13,7 @@ import { BitField, Channel } from '../../lib/constants';
 import { GearSetupType } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
 import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
+import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { patreonTask } from '../../lib/patreon';
 import { allPerkBitfields } from '../../lib/perkTiers';
@@ -158,6 +159,12 @@ export const rpCommand: OSBMahojiCommand = {
 							description: 'Unequip all gear slots',
 							type: ApplicationCommandOptionType.Boolean,
 							required: false
+						},
+						{
+							name: 'pet',
+							description: 'Unequip pet also?',
+							type: ApplicationCommandOptionType.Boolean,
+							required: false
 						}
 					]
 				},
@@ -280,6 +287,7 @@ export const rpCommand: OSBMahojiCommand = {
 				user: MahojiUserOption;
 				gear_setup?: string;
 				all?: boolean;
+				pet?: boolean;
 			};
 			set_buy_date?: {
 				user: MahojiUserOption;
@@ -428,7 +436,12 @@ export const rpCommand: OSBMahojiCommand = {
 				const result = await unEquipAllCommand(targetUser.id, gear as GearSetupType, true);
 				if (!result.endsWith('setup.')) return result;
 			}
-			return `Successfully removed ${gearSlot} gear`;
+
+			let petResult = '';
+			if (opts.pet) {
+				petResult = await unequipPet(targetUser);
+			}
+			return `Successfully removed ${gearSlot} gear.${opts.pet ? ` ${petResult}` : ''}`;
 		}
 
 		// Steal Items
