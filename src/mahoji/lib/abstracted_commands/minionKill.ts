@@ -56,6 +56,7 @@ import { Peak } from '../../../lib/tickers';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
 	calculateSimpleMonsterDeathChance,
+	calculateTripConsumableCost,
 	checkRangeGearWeapon,
 	convertAttackStyleToGearSetup,
 	convertPvmStylesToGearSetup,
@@ -537,25 +538,17 @@ export async function minionKillCommand(
 	const infiniteWaterRunes = user.hasEquipped(getSimilarItems(itemID('Staff of water')), false);
 	const perKillCost = new Bank();
 	// Calculate per kill cost:
-	const tripConsumableCost = (c: Consumable, q: number, d: number) => {
-		const consumableCost = c.itemCost.clone();
-		if (c.qtyPerKill) {
-			consumableCost.multiply(q);
-		} else if (c.qtyPerMinute) {
-			consumableCost.multiply(d / Time.Minute);
-		}
-		for (const [item, qty] of Object.entries(consumableCost.bank)) {
-			consumableCost.bank[item] = Math.ceil(qty);
-		}
-		return consumableCost;
-	};
+
 	if (consumableCosts.length > 0) {
 		for (const cc of consumableCosts) {
 			let consumable = cc;
 
-			if (consumable.alternativeConsumables && !user.owns(tripConsumableCost(consumable, quantity, duration))) {
+			if (
+				consumable.alternativeConsumables &&
+				!user.owns(calculateTripConsumableCost(consumable, quantity, duration))
+			) {
 				for (const c of consumable.alternativeConsumables) {
-					if (user.owns(tripConsumableCost(c, quantity, duration))) {
+					if (user.owns(calculateTripConsumableCost(c, quantity, duration))) {
 						consumable = c;
 						break;
 					}

@@ -1,4 +1,5 @@
 import { AttachmentBuilder } from 'discord.js';
+import { notEmpty } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
@@ -51,21 +52,30 @@ export const finishCommand: OSBMahojiCommand = {
 
 		const result = `It took you ${kc.toLocaleString()} KC to finish the ${val.name} CL.`;
 		const finishStr = kcBank.items().sort(sorts.quantity).reverse();
+
+		const cost = new Bank(workerRes.cost);
+		const costImage =
+			cost.length > 0
+				? await makeBankImage({ bank: cost, title: `Estimated Cost for ${kc}x ${val.name}` })
+				: undefined;
+
 		if (finishStr.length < 20) {
 			return {
 				content: `${result}
 ${finishStr.map(i => `**${i[0].name}:** ${i[1]} KC`).join('\n')}`,
-				files: [image.file]
+				files: [image.file, costImage?.file].filter(notEmpty)
 			};
 		}
+
 		return {
 			content: `It took you ${kc.toLocaleString()} KC to finish the ${val.name} CL.`,
 			files: [
 				image.file,
 				new AttachmentBuilder(Buffer.from(finishStr.map(i => `${i[0].name}: ${i[1]} KC`).join('\n')), {
 					name: 'finish.txt'
-				})
-			]
+				}),
+				costImage?.file
+			].filter(notEmpty)
 		};
 	}
 };
