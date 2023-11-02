@@ -1593,7 +1593,7 @@ export const allCollectionLogs: ICollection = {
 					'Soul shield',
 					'Bag of tricks',
 					'Bat bat',
-					'Miss Chief',
+					'Mini mortimer',
 					'Casper',
 					'Covenant of grimace'
 				]),
@@ -1619,7 +1619,7 @@ export const allCollectionLogs: ICollection = {
 					'Soul shield',
 					'Bag of tricks',
 					'Bat bat',
-					'Miss Chief',
+					'Mini mortimer',
 					'Casper',
 					'Covenant of grimace'
 				])
