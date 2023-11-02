@@ -96,6 +96,7 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 		skillName: SkillsEnum.Woodcutting,
 		amount: totalEvents * randInt(1800, 2000) * wcMultiplier
 	});
+	xpRes += ' ';
 
 	// Give user unique xp per event
 	for (const eventObj of events) {
@@ -107,7 +108,8 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 			}
 			xpRes += await user.addXP({
 				skillName: eventObj.uniqueXP,
-				amount: defaultAmount
+				amount: defaultAmount,
+				minimal: true
 			});
 		}
 	}
@@ -119,7 +121,7 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 	const completedEvents = eventCounts.join(' & ');
 	strForestry += `${
 		completedEvents.length > 0
-			? `Completed Forestry event${totalEvents > 1 ? 's:' : ':'} ${completedEvents}. ${xpRes}.\n`
+			? `Completed Forestry event${totalEvents > 1 ? 's:' : ':'} ${completedEvents}. ${xpRes}\n`
 			: ''
 	}`;
 	strForestry += `${
