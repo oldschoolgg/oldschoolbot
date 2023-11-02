@@ -3,6 +3,7 @@ import { ProductID, products } from '@oldschoolgg/toolkit';
 import { notEmpty } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { BOT_TYPE } from '../../lib/constants';
 import { roboChimpSyncData } from '../../lib/roboChimp';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -43,13 +44,15 @@ export const redeemCommand: OSBMahojiCommand = {
 			return 'You already have this, redeeming it again would be a waste!';
 		}
 
-		if (product.type === 'active') {
-			switch (product.id) {
-				case ProductID.OneHourDoubleLoot: {
-					return 'You cannot redeem this on OSB.';
-				}
-				case ProductID.ThreeHourDoubleLoot: {
-					return 'You cannot redeem this on OSB.';
+		if (BOT_TYPE === 'OSB') {
+			if (product.type === 'active') {
+				switch (product.id) {
+					case ProductID.OneHourDoubleLoot: {
+						return 'You cannot redeem this on OSB.';
+					}
+					case ProductID.ThreeHourDoubleLoot: {
+						return 'You cannot redeem this on OSB.';
+					}
 				}
 			}
 		}
