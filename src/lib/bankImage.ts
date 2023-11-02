@@ -231,7 +231,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Mahogany logs'), 'Mahog'],
 	[i('Yew logs'), 'Yew'],
 	[i('Magic logs'), 'Magic'],
-	[i('Redwood logs'), 'Redwood']
+	[i('Redwood logs'), 'Redwood'],
 	[i('Elder logs'), 'Elder']
 ]);
 
