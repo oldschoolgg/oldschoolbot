@@ -7,6 +7,27 @@ import { assert } from '../../../lib/util';
 import resolveItems from '../../../lib/util/resolveItems';
 import { GlobalBingoTile } from './bingoUtil';
 
+const otherSpiritShieldParts = resolveItems(['Blessed spirit shield', 'Holy elixir', 'Spirit shield']);
+const allSpiritShieldSets = [
+	resolveItems(['Elysian spirit shield', 'Elysian sigil', ...otherSpiritShieldParts]),
+	resolveItems(['Arcane spirit shield', 'Arcane sigil', ...otherSpiritShieldParts]),
+	resolveItems(['Spectral spirit shield', 'Spectral sigil', ...otherSpiritShieldParts])
+];
+
+const allRingSets = [
+	resolveItems(['Ultor ring', 'Ultor icon', 'Chromium ingot', 'Ultor vestige', 'Berserker icon', 'Berserker ring']),
+	resolveItems(['Magus ring', 'Magus icon', 'Chromium ingot', 'Magus vestige', 'Seers icon', 'Seers ring']),
+	resolveItems(['Venator ring', 'Venator icon', 'Chromium ingot', 'Venator vestige', 'Archer icon', 'Archers ring']),
+	resolveItems([
+		'Bellator ring',
+		'Bellator icon',
+		'Chromium ingot',
+		'Bellator vestige',
+		'Warrior icon',
+		'Warrior ring'
+	])
+];
+
 export const globalBingoTiles: GlobalBingoTile[] = [
 	{
 		id: 1,
@@ -576,6 +597,22 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 		name: 'Receive 5x Squid dye',
 		customReq: cl => cl.has(new Bank().add('Squid dye', 5)),
 		allItems: resolveItems(['Squid dye'])
+	},
+	{
+		id: 5002,
+		name: 'Create any spirit shield from scratch',
+		customReq: (cl: Bank) => {
+			return allSpiritShieldSets.some(set => set.every(item => cl.has(item)));
+		},
+		allItems: allSpiritShieldSets.flat(2)
+	},
+	{
+		id: 5003,
+		name: 'Create a Ultor, Magus, Venator or Bellator ring from scratch',
+		customReq: (cl: Bank) => {
+			return allRingSets.some(set => set.every(item => cl.has(item))) && cl.amount('Chromium ingot') >= 3;
+		},
+		allItems: allRingSets.flat(2)
 	}
 ];
 

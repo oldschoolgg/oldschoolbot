@@ -38,6 +38,10 @@ const Potions = [
 		items: resolveItems(['Serum 207(1)', 'Serum 207(2)', 'Serum 207(3)', 'Serum 207(4)'])
 	},
 	{
+		name: 'Guthix rest',
+		items: resolveItems(['Guthix rest(1)', 'Guthix rest(2)', 'Guthix rest(3)', 'Guthix rest(4)'])
+	},
+	{
 		name: 'Compost potion',
 		items: resolveItems(['Compost potion(1)', 'Compost potion(2)', 'Compost potion(3)', 'Compost potion(4)'])
 	},

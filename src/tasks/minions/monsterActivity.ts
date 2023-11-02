@@ -370,11 +370,9 @@ export const monsterTask: MinionTask = {
 				tertiaryItemPercentageChanges: user.buildCATertiaryItemChanges()
 			}
 		};
+		const finalQuantity = isDoubleLootActive(duration) ? quantity * 2 : boostedQuantity;
 		// Regular loot
-		const loot = (monster as KillableMonster).table.kill(
-			isDoubleLootActive(duration) ? quantity * 2 : boostedQuantity,
-			killOptions
-		);
+		const loot = (monster as KillableMonster).table.kill(finalQuantity, killOptions);
 
 		// Calculate superiors and assign loot.
 		let newSuperiorCount = 0;
@@ -392,8 +390,9 @@ export const monsterTask: MinionTask = {
 		let masterCapeRolls = user.hasEquipped('Slayer master cape') ? newSuperiorCount : 0;
 		newSuperiorCount += masterCapeRolls;
 
+		// Regular loot
 		if (monster.specialLoot) {
-			monster.specialLoot(loot, user, data);
+			monster.specialLoot({ loot, ownedItems: user.allItemsOwned, quantity: finalQuantity });
 		}
 
 		if (newSuperiorCount) {
