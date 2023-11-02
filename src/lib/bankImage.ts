@@ -232,7 +232,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Yew logs'), 'Yew'],
 	[i('Magic logs'), 'Magic'],
 	[i('Redwood logs'), 'Redwood'],
-	[i('Elder logs'), 'Elder']
+	[i('Elder logs'), 'Elder'],
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
