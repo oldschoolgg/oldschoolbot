@@ -202,7 +202,7 @@ export const monsterTask: MinionTask = {
 		const superiorTable = isOnTaskResult.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
 		const isInCatacombs = (!usingCannon ? monster.existsInCatacombs ?? undefined : undefined) && !isInWilderness;
 
-		const ringOfWealthI = (user.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness) as boolean;
+		const hasRingOfWealthI = user.gear.wildy.hasEquipped('Ring of wealth (i)') && (isInWilderness as boolean);
 
 		const killOptions: MonsterKillOptions = {
 			onSlayerTask: isOnTaskResult.isOnTask,
@@ -210,7 +210,7 @@ export const monsterTask: MinionTask = {
 			hasSuperiors: superiorTable,
 			inCatacombs: isInCatacombs,
 			lootTableOptions: {
-				tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(ringOfWealthI)
+				tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(hasRingOfWealthI)
 			}
 		};
 
@@ -314,9 +314,10 @@ export const monsterTask: MinionTask = {
 					: quantitySlayed;
 
 			const quantityLeft = Math.max(0, isOnTaskResult.currentTask!.quantity_remaining - effectiveSlayed);
+			const isUsingKrystilia = isOnTaskResult.slayerMaster.id === 8;
 
 			thisTripFinishesTask = quantityLeft === 0;
-			if (thisTripFinishesTask && isOnTaskResult.slayerMaster.id === 8) {
+			if (thisTripFinishesTask && isUsingKrystilia) {
 				const newStats = await userStatsUpdate(
 					user.id,
 					{
@@ -334,7 +335,7 @@ export const monsterTask: MinionTask = {
 					}
 				});
 				str += `\n**You've completed ${currentStreak} wilderness tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
-			} else if (thisTripFinishesTask && isOnTaskResult.slayerMaster.id !== 8) {
+			} else if (thisTripFinishesTask) {
 				const newStats = await userStatsUpdate(
 					user.id,
 					{

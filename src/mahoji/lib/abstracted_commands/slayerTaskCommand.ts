@@ -4,7 +4,6 @@ import { notEmpty, randInt, removeFromArr, Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
-import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { prisma } from '../../../lib/settings/prisma';
 import { runCommand } from '../../../lib/settings/settings';
 import { slayerMasters } from '../../../lib/slayer/slayerMasters';
@@ -69,8 +68,7 @@ const returnSuccessButtons = [
 function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 	if (assignedTask) {
 		const altMobs = assignedTask.monsters;
-		const allMonsters = [...killableMonsters, ...revenantMonsters];
-		const alternateMonsters = allMonsters
+		const alternateMonsters = killableMonsters
 			.filter(m => {
 				return altMobs.includes(m.id) && m!.id !== assignedTask.monster.id;
 			})
@@ -281,37 +279,24 @@ export async function slayerNewTaskCommand({
 			interactionReply(interaction, 'You cannot skip this task because Turael assigns it.');
 			return;
 		}
-		if (currentTask?.slayer_master_id === 8) {
-			await handleMahojiConfirmation(
-				interaction,
-				`Really cancel task? This will reset your wilderness streak to 0 and give you a new ${slayerMaster.name} task.`
-			);
-			await prisma.slayerTask.update({
-				where: {
-					id: currentTask.id
-				},
-				data: {
-					skipped: true,
-					quantity_remaining: 0
-				}
-			});
-			await userStatsUpdate(user.id, { slayer_wildy_task_streak: 0 }, {});
-		} else {
-			await handleMahojiConfirmation(
-				interaction,
-				`Really cancel task? This will reset your streak to 0 and give you a new ${slayerMaster.name} task.`
-			);
-			await prisma.slayerTask.update({
-				where: {
-					id: currentTask.id
-				},
-				data: {
-					skipped: true,
-					quantity_remaining: 0
-				}
-			});
-			await userStatsUpdate(user.id, { slayer_task_streak: 0 }, {});
-		}
+		const isUsingKrystilia = Boolean(currentTask?.slayer_master_id === 8);
+		const taskStreakKey = isUsingKrystilia ? 'slayer_wildy_task_streak' : 'slayer_task_streak';
+		const warning = `Really cancel task? This will reset your${
+			isUsingKrystilia ? ' wilderness' : ''
+		} streak to 0 and give you a new ${slayerMaster.name} task.`;
+
+		await handleMahojiConfirmation(interaction, warning);
+		await prisma.slayerTask.update({
+			where: {
+				id: currentTask.id
+			},
+			data: {
+				skipped: true,
+				quantity_remaining: 0
+			}
+		});
+		await userStatsUpdate(user.id, { [taskStreakKey]: 0 }, {});
+
 		const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
 		const returnMessage =

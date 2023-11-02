@@ -738,15 +738,15 @@ GROUP BY data->>'clueID';`);
 			.reduce((total, value) => total + value, 0);
 	}
 
-	hasCompletedCATier(tier: string): boolean {
-		return this.caPoints() >= CombatAchievements[tier as keyof typeof CombatAchievements].rewardThreshold;
+	hasCompletedCATier(tier: keyof typeof CombatAchievements): boolean {
+		return this.caPoints() >= CombatAchievements[tier].rewardThreshold;
 	}
 
-	buildTertiaryItemChanges(ringOfWealthI: boolean) {
+	buildTertiaryItemChanges(hasRingOfWealthI: boolean) {
 		const changes = new Map();
-		const tiers = ['easy', 'medium', 'hard', 'elite'];
+		const tiers = Object.keys(CombatAchievements) as Array<keyof typeof CombatAchievements>;
 		for (const tier of tiers) {
-			let change = ringOfWealthI ? 50 : 0;
+			let change = hasRingOfWealthI ? 50 : 0;
 			if (this.hasCompletedCATier(tier)) {
 				change += 5;
 			}
