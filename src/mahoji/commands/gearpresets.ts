@@ -32,7 +32,7 @@ function parseInputGear(inputGear: InputGear) {
 	return gear;
 }
 
-async function createOrEditGearSetup(
+export async function createOrEditGearSetup(
 	user: MUser,
 	setupToCopy: GearSetupType | undefined,
 	name = '',

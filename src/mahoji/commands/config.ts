@@ -1,7 +1,7 @@
 import { EmbedBuilder, inlineCode } from '@discordjs/builders';
 import { hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import { ChatInputCommandInteraction, Guild, HexColorString, resolveColor, User } from 'discord.js';
+import { bold, ChatInputCommandInteraction, Guild, HexColorString, resolveColor, User } from 'discord.js';
 import { clamp, removeFromArr, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -9,7 +9,7 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
-import { BitField, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/constants';
+import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { prisma } from '../../lib/settings/prisma';
@@ -607,7 +607,7 @@ async function handleRSN(user: MUser, newRSN: string) {
 function pinnedTripLimit(perkTier: number) {
 	return clamp(perkTier + 1, 1, 4);
 }
-async function pinTripCommand(
+export async function pinTripCommand(
 	user: MUser,
 	tripId: string | undefined,
 	emoji: string | undefined,
@@ -1054,6 +1054,20 @@ LIMIT 20;
 							}
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'icon_pack',
+					description: 'Change your icon pack',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'name',
+							description: 'The icon pack you want to use.',
+							required: true,
+							choices: ['Default', ...ItemIconPacks.map(i => i.name)].map(i => ({ name: i, value: i }))
+						}
+					]
 				}
 			]
 		}
@@ -1082,6 +1096,7 @@ LIMIT 20;
 			favorite_items?: { add?: string; remove?: string; reset?: boolean };
 			slayer?: { master?: string; autoslay?: string };
 			pin_trip?: { trip?: string; unpin_trip?: string; emoji?: string; custom_name?: string };
+			icon_pack?: { name?: string };
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
@@ -1111,8 +1126,34 @@ LIMIT 20;
 				favorite_food,
 				favorite_items,
 				slayer,
-				pin_trip
+				pin_trip,
+				icon_pack
 			} = options.user;
+			if (icon_pack) {
+				if (icon_pack.name) {
+					if (icon_pack.name === 'Default') {
+						if (user.user.icon_pack_id) {
+							await user.update({
+								icon_pack_id: null
+							});
+							return 'Your icon pack is now set to default.';
+						}
+						return 'Your icon pack is already set to default.';
+					}
+
+					const pack = ItemIconPacks.find(i => i.name === icon_pack.name);
+					if (!pack) return 'Invalid icon pack.';
+
+					if (!user.user.store_bitfield.includes(pack.storeBitfield)) {
+						return 'You do not own this icon pack.';
+					}
+					await user.update({
+						icon_pack_id: pack.id
+					});
+					return `Your icon pack is now set to ${bold(pack.name)}.`;
+				}
+			}
+
 			if (toggle) {
 				return handleToggle(user, toggle.name, interaction);
 			}

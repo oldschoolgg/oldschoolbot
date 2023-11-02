@@ -8353,9 +8353,9 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "customReq": [Function],
     "inputItems": Bank {
       "bank": {
-        "10587": 1,
         "4081": 1,
       },
       "frozen": false,
@@ -8363,7 +8363,6 @@ exports[`OSB Creatables 1`] = `
     "name": "Salve amulet (e)",
     "outputItems": Bank {
       "bank": {
-        "10587": 1,
         "10588": 1,
       },
       "frozen": false,
@@ -8371,9 +8370,9 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "customReq": [Function],
     "inputItems": Bank {
       "bank": {
-        "10587": 1,
         "12017": 1,
       },
       "frozen": false,
@@ -8381,7 +8380,6 @@ exports[`OSB Creatables 1`] = `
     "name": "Salve amulet(ei)",
     "outputItems": Bank {
       "bank": {
-        "10587": 1,
         "12018": 1,
       },
       "frozen": false,
