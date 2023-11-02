@@ -1,5 +1,6 @@
 import { Activity, activity_type_enum } from '@prisma/client';
 
+import { production } from '../config';
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
 import { bossEventTask } from '../tasks/minions/bossEventActivity';
@@ -16,7 +17,6 @@ import { kibbleTask } from '../tasks/minions/bso/kibbleActivity';
 import { kingGoldemarTask } from '../tasks/minions/bso/kingGoldemarActivity';
 import { moktangTask } from '../tasks/minions/bso/moktangActivity';
 import { mrTask } from '../tasks/minions/bso/monkeyRumbleActivity';
-import { mortimerTask } from '../tasks/minions/bso/mortimerActivity';
 import { naxxusTask } from '../tasks/minions/bso/naxxusActivity';
 import { nexTask } from '../tasks/minions/bso/nexActivity';
 import { odsTask } from '../tasks/minions/bso/ouraniaDeliveryServiceActivity';
@@ -216,10 +216,34 @@ export const tasks: MinionTask[] = [
 	underwaterAgilityThievingTask,
 	doaTask,
 	strongholdTask,
-	specificQuestTask,
-	mortimerTask
+	specificQuestTask
 ];
 
+export async function processPendingActivities() {
+	const activities: Activity[] = await prisma.activity.findMany({
+		where: {
+			completed: false,
+			finish_date: production
+				? {
+						lt: new Date()
+				  }
+				: undefined
+		}
+	});
+
+	await prisma.activity.updateMany({
+		where: {
+			id: {
+				in: activities.map(i => i.id)
+			}
+		},
+		data: {
+			completed: true
+		}
+	});
+
+	return Promise.all(activities.map(completeActivity));
+}
 export async function syncActivityCache() {
 	const tasks = await prisma.activity.findMany({ where: { completed: false } });
 
@@ -272,7 +296,8 @@ const ignored: activity_type_enum[] = [
 	activity_type_enum.HalloweenEvent,
 	activity_type_enum.BirthdayCollectIngredients,
 	activity_type_enum.HalloweenEvent,
-	activity_type_enum.Revenants
+	activity_type_enum.Revenants,
+	activity_type_enum.Mortimer
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {

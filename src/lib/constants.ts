@@ -692,19 +692,7 @@ export const chompyHats = [
 	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
 
-export const secretItems: number[] = resolveItems([
-	'Maledict amulet',
-	'Maledict codex',
-	'Maledict hat',
-	'Maledict top',
-	'Maledict legs',
-	'Maledict boots',
-	'Maledict cape',
-	'Maledict ring',
-	'Maledict gloves',
-	'Covenant of grimace',
-	'Mini mortimer'
-]);
+export const secretItems: number[] = resolveItems([]);
 
 export const toaPurpleItems = resolveItems([
 	"Tumeken's guardian",

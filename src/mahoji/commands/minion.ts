@@ -451,6 +451,7 @@ export const minionCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		userID,
+		user: apiUser,
 		options,
 		interaction,
 		channelID
@@ -558,8 +559,7 @@ export const minionCommand: OSBMahojiCommand = {
 			return `Your ${kcName} KC is: ${kcAmount}.`;
 		}
 
-		if (options.buy)
-			return minionBuyCommand(await globalClient.users.fetch(user.id), user, Boolean(options.buy.ironman));
+		if (options.buy) return minionBuyCommand(apiUser, user, Boolean(options.buy.ironman));
 		if (options.ironman) return ironmanCommand(user, interaction);
 
 		if (options.charge) {
@@ -587,7 +587,7 @@ export const minionCommand: OSBMahojiCommand = {
 			const { masteryFactors, totalMastery } = await calculateMastery(user, await MUserStats.fromID(user.id));
 			const substr = masteryFactors.map(i => `${bold(i.name)}: ${i.percentage.toFixed(2)}%`).join('\n');
 			return `You have ${totalMastery.toFixed(2)}% mastery.
-			
+
 ${substr}`;
 		}
 

@@ -324,7 +324,7 @@ model SlayerTask {
   monster_id         Int
   skipped            Boolean
   user_id            String   @db.VarChar(19)
-  new_user           NewUser  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_43bf436cc70acda1752fb6e6006")
+  new_user           NewUser  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade, map: "FK_43bf436cc70acda1752fb6e6006")
 
   @@index([user_id, quantity_remaining], map: "slayer_task_quantity_remaining")
   @@map("slayer_tasks")
@@ -1058,7 +1058,11 @@ model HistoricalData {
   GP                       Decimal @db.Decimal(13, 0)
   total_xp                 Decimal @db.Decimal(13, 0)
 
+  mastery_percentage Decimal? @db.Decimal(5, 2)
+
   comp_cape_percent Decimal? @db.Decimal(5, 2)
+
+  comp_cape_percent_untrimmed Decimal? @db.Decimal(5, 2)
 
   user User @relation(fields: [user_id], references: [id])
 

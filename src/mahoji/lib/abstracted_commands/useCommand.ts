@@ -239,7 +239,8 @@ const genericUsables: {
 		cost: new Bank().add('Spooky aura').add('Spooky sheet'),
 		loot: new Bank().add('Casper'),
 		response: () =>
-			'You throw the spooky sheet onto the spooky aura, only to realize the aura is actually a ghost! Wow!'
+			'You throw the spooky sheet onto the spooky aura, only to realize the aura is actually a ghost! Wow!',
+		addToCL: true
 	}
 ];
 usables.push({

@@ -1,5 +1,5 @@
 import { sumArr } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, Monsters, Openables } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
 import { tameFeedableItems } from '../../mahoji/commands/tames';
@@ -35,6 +35,7 @@ import {
 	WesternProv,
 	WildernessDiary
 } from '../diaries';
+import { implings } from '../implings';
 import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
@@ -704,10 +705,12 @@ export const eliteTasks: Task[] = [
 		name: 'Catch 30 of every impling passively (excluding lucky implings)',
 		has: async ({ userStats }) => {
 			let loot = new Bank(userStats.passive_implings_bank as ItemBank);
-			return loot
-				.items()
-				.filter(i => i[0].name !== 'Lucky impling jar')
-				.every(i => i[1] >= 30);
+			for (const implingId of Object.keys(implings)) {
+				if (Number(implingId) !== Openables.LuckyImpling.id && loot.amount(Number(implingId)) < 30) {
+					return false;
+				}
+			}
+			return true;
 		}
 	},
 	{

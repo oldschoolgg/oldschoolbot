@@ -8,7 +8,6 @@ import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/bosses/
 import { MOKTANG_ID } from '../../lib/minions/data/killableMonsters/custom/bosses/Moktang';
 import { Naxxus } from '../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
-import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import { NexMonster } from '../../lib/nex';
 import { prisma } from '../../lib/settings/prisma';
 import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
@@ -16,7 +15,6 @@ import { OSBMahojiCommand } from '../lib/util';
 
 export const autocompleteMonsters = [
 	...killableMonsters,
-	...revenantMonsters,
 	{
 		id: -1,
 		name: 'Tempoross',

@@ -8,9 +8,7 @@ import { prisma } from '../../../src/lib/settings/prisma';
 import { ironmanCommand } from '../../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 
 describe('Ironman Command', () => {
-	let activityId = 1;
 	async function createUserWithEverything(userId: string, userData: Partial<Prisma.UserCreateInput> = {}) {
-		activityId += 1;
 		await prisma.user.create({
 			data: { id: userId, skills_agility: 100_000_000, skills_attack: 100_000_000, ...userData }
 		});
@@ -28,9 +26,8 @@ describe('Ironman Command', () => {
 				data: {}
 			}
 		});
-		await prisma.tame.create({
+		const newTame = await prisma.tame.create({
 			data: {
-				id: activityId,
 				user_id: userId,
 				species_id: 1,
 				max_artisan_level: 1,
@@ -74,7 +71,7 @@ describe('Ironman Command', () => {
 			prisma.fishingContestCatch.create({ data: { user_id: BigInt(userId), name: 'a', length_cm: 1 } }),
 			prisma.tameActivity.create({
 				data: {
-					tame_id: activityId,
+					tame_id: newTame.id,
 					user_id: userId,
 					start_date: new Date(),
 					finish_date: new Date(),

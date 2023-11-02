@@ -229,11 +229,16 @@ export default function calculateGearLostOnDeathWilderness(
 		lostItemsBank.add(originalItem.id);
 	}
 
-	const brokenGear: Record<number, Bank> = {};
+	const gearThatBroke = new Bank();
+	const gearToRefund = new Bank();
 	for (const item of lostItemsBank.items()) {
 		if (itemsThatBreakOnDeath[item[0].id]) {
-			lostItemsBank.remove(item[0].id, item[1]);
-			brokenGear[item[0].id] = new Bank().add(itemsThatBreakOnDeath[item[0].id], item[1]);
+			const itemID = item[0].id;
+			const qty = item[1];
+			gearThatBroke.add(itemID, qty);
+			lostItemsBank.remove(itemID, qty);
+			const brokenID = itemsThatBreakOnDeath[itemID];
+			gearToRefund.add(brokenID, qty);
 		}
 	}
 
@@ -241,6 +246,7 @@ export default function calculateGearLostOnDeathWilderness(
 	return {
 		lostItems: lostItemsBank,
 		newGear: userGear,
-		brokenGear
+		gearThatBroke,
+		gearToRefund
 	};
 }

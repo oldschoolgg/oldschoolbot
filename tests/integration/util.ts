@@ -1,5 +1,6 @@
 import { randomSnowflake } from '@oldschoolgg/toolkit';
-import { uniqueArr } from 'e';
+import { Prisma } from '@prisma/client';
+import { Time, uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
@@ -16,10 +17,12 @@ export const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'opti
 	userID,
 	guildID: '342983479501389826',
 	member: {} as any,
-	user: { id: userID } as any,
+	user: { id: userID, createdAt: new Date().getTime() - Time.Year } as any,
 	channelID: '111111111',
 	interaction: {
-		deferReply: () => Promise.resolve()
+		deferReply: () => Promise.resolve(),
+		editReply: () => Promise.resolve(),
+		followUp: () => Promise.resolve()
 	} as any,
 	client: {} as any
 });
@@ -90,14 +93,20 @@ export class TestUser extends MUserClass {
 	}
 }
 
-export async function createTestUser(id = cryptoRand(1_000_000_000, 5_000_000_000).toString(), bank?: Bank) {
+export async function createTestUser(
+	id = cryptoRand(1_000_000_000, 5_000_000_000).toString(),
+	bank?: Bank,
+	userData: Partial<Prisma.UserCreateInput> = {}
+) {
 	const user = await prisma.user.upsert({
 		create: {
 			id,
-			bank: bank?.bank
+			bank: bank?.bank,
+			...userData
 		},
 		update: {
-			bank: bank?.bank
+			bank: bank?.bank,
+			...userData
 		},
 		where: {
 			id

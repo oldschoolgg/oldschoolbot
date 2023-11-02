@@ -532,7 +532,7 @@ export const chambersOfXericCL = resolveItems([
 	"Xeric's general",
 	"Xeric's champion"
 ]);
-const theatreOfBloodCapes = resolveItems([
+export const theatreOfBloodCapes = resolveItems([
 	'Sinhaza shroud tier 1',
 	'Sinhaza shroud tier 2',
 	'Sinhaza shroud tier 3',
@@ -2426,7 +2426,8 @@ export const discontinuedCustomPetsCL = resolveItems([
 	'Kuro',
 	'Frosty',
 	'Eggy',
-	'Buggy'
+	'Buggy',
+	'Casper'
 ]);
 
 export const kingGoldemarCL = resolveItems([

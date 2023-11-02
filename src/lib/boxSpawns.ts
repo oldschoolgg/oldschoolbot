@@ -3,13 +3,17 @@ import { EmbedBuilder, Message, User } from 'discord.js';
 import { isFunction, randArrItem, shuffleArr, Time } from 'e';
 import he from 'he';
 import fetch from 'node-fetch';
-import { Bank, Items } from 'oldschooljs';
+import { Bank, Items, LootTable, Monsters } from 'oldschooljs';
 
 import { production } from '../config';
-import { roll, stringMatches } from '../lib/util';
+import { itemNameFromID, roll, stringMatches } from '../lib/util';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { MysteryBoxes } from './bsoOpenables';
+import { allCollectionLogsFlat } from './data/Collections';
 import Createables from './data/createables';
+import killableMonsters from './minions/data/killableMonsters';
+import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
+import { LampTable } from './xpLamps';
 
 const triviaChallenge: Challenge = async (msg: Message): Promise<User | null> => {
 	const { question, correct_answer, incorrect_answers } = await fetch(
@@ -120,7 +124,80 @@ const createdChallenge: Challenge = async (msg: Message): Promise<User | null> =
 		return null;
 	}
 };
+const monsters = [...Object.values(BSOMonsters), ...killableMonsters]
+	.map(i => {
+		let allItems = [];
+		if (i.table instanceof LootTable) {
+			allItems = i.table.allItems;
+		} else {
+			allItems = Monsters.get(i.id)!.allItems;
+		}
 
+		return {
+			name: i.name,
+			allItems
+		};
+	})
+	.filter(m => m.allItems.length >= 3);
+
+const monsterDropChallenge: Challenge = async (msg: Message): Promise<User | null> => {
+	let monster = randArrItem(monsters);
+
+	const items = shuffleArr(monster.allItems).slice(0, 3);
+	const validMonsters = monsters.filter(mon => items.every(t => mon.allItems.includes(t)));
+
+	const embed = new EmbedBuilder()
+		.setTitle('Reply with the answer for a reward!')
+		.setDescription(`Name a monster that drops these 3 items: ${items.map(itemNameFromID).join(', ')}`)
+		.setThumbnail(
+			'https://cdn.discordapp.com/attachments/357422607982919680/1100378550189707314/534px-Mystery_box_detail.png'
+		);
+
+	await msg.channel.send({ embeds: [embed] });
+
+	try {
+		const collected = await msg.channel.awaitMessages({
+			max: 1,
+			time: Time.Second * 30,
+			errors: ['time'],
+			filter: _msg => validMonsters.some(m => stringMatches(_msg.content, m.name))
+		});
+
+		const winner = collected.first()?.author;
+		return winner ?? null;
+	} catch (err) {
+		await msg.channel.send(`Nobody answered in time, sorry! The correct answer was: ${monster.name}`);
+		return null;
+	}
+};
+
+const collectionLogChallenge: Challenge = async (msg: Message): Promise<User | null> => {
+	const cl = randArrItem(allCollectionLogsFlat);
+
+	const embed = new EmbedBuilder()
+		.setTitle('Reply with the answer for a reward!')
+		.setDescription(`Name any item from this collection log: ${cl.name}`)
+		.setThumbnail(
+			'https://cdn.discordapp.com/attachments/357422607982919680/1100378550189707314/534px-Mystery_box_detail.png'
+		);
+
+	await msg.channel.send({ embeds: [embed] });
+
+	try {
+		const collected = await msg.channel.awaitMessages({
+			max: 1,
+			time: Time.Second * 30,
+			errors: ['time'],
+			filter: _msg => cl.items.some(c => stringMatches(_msg.content, itemNameFromID(c)))
+		});
+
+		const winner = collected.first()?.author;
+		return winner ?? null;
+	} catch (err) {
+		await msg.channel.send('Nobody answered in time, sorry!');
+		return null;
+	}
+};
 // export async function reactChallenge(msg: Message): Promise<User | null> {
 // 	const embed = new EmbedBuilder()
 // 		.setTitle('Answer this for a reward!')
@@ -162,7 +239,15 @@ export async function boxSpawnHandler(msg: Message) {
 	if (!roll(20)) return;
 	lastDrop = Date.now();
 
-	const item: Challenge = randArrItem([itemChallenge, triviaChallenge, createdChallenge]);
+	const item: Challenge = randArrItem([
+		itemChallenge,
+		triviaChallenge,
+		createdChallenge,
+		collectionLogChallenge,
+		collectionLogChallenge,
+		monsterDropChallenge,
+		monsterDropChallenge
+	]);
 	const winner = await item(msg);
 	if (!winner) return;
 	const winnerUser = await mUserFetch(winner.id);
@@ -176,10 +261,10 @@ export async function boxSpawnHandler(msg: Message) {
 		{ main_server_challenges_won: true }
 	);
 	let wonStr = `This is your ${formatOrdinal(newStats.main_server_challenges_won)} challenge win!`;
+	const loot = roll(20) ? LampTable.roll() : MysteryBoxes.roll();
 	if (!winnerUser.isIronman) {
-		const loot = MysteryBoxes.roll();
 		await winnerUser.addItemsToBank({ items: loot, collectionLog: true });
 		return msg.channel.send(`Congratulations, ${winner}! You received: **${loot}**. ${wonStr}`);
 	}
-	return msg.channel.send(`Congratulations, ${winner}! You won! But you stand alone, no box for you. ${wonStr}`);
+	return msg.channel.send(`Congratulations, ${winner}! You won! But you stand alone, no ${loot} for you. ${wonStr}`);
 }

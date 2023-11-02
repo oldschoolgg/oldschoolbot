@@ -66,6 +66,10 @@ export async function calculateMastery(user: MUser, stats: MUserStats) {
 	const totalMastery = sumArr(masteryFactors.map(i => i.percentage)) / masteryFactors.length;
 	return {
 		masteryFactors,
-		totalMastery
+		totalMastery,
+		compCapeProgress: {
+			totalPercentTrimmed,
+			totalPercentUntrimmed
+		}
 	};
 }

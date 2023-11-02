@@ -1,18 +1,11 @@
-import { EmbedBuilder } from '@discordjs/builders';
-import { increaseNumByPercent, randArrItem, Time } from 'e';
+import { increaseNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
 import { halloweenShop } from '../../lib/halloween/halloween';
-import { prisma } from '../../lib/settings/prisma';
-import { mortimerStartMessages } from '../../lib/simulation/maledictMortimer';
-import { MortimerOptions } from '../../lib/types/minions';
 import { murMurSort } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { minionIsBusy } from '../../lib/util/minionIsBusy';
-import { dateFm } from '../../lib/util/smallUtils';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const halloweenCommand: OSBMahojiCommand = {
@@ -43,36 +36,15 @@ export const halloweenCommand: OSBMahojiCommand = {
 					}
 				}
 			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'fight_mortimer',
-			description: 'Send your minion to fight Maledict Mortimer.',
-			options: []
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'trick',
-			description: 'Trick a user into thinking they got a rare drop from Maledict Mortimer.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.User,
-					name: 'user',
-					description: 'The user to trick.',
-					required: true
-				}
-			]
 		}
 	],
 	run: async ({
 		interaction,
 		options,
-		userID,
-		channelID
+		userID
 	}: CommandRunOptions<{
 		trick?: { user: MahojiUserOption };
 		view?: {};
-		fight_mortimer: {};
 		shop?: { buy_item?: string };
 	}>) => {
 		const user = await mUserFetch(userID);
@@ -134,70 +106,6 @@ ${halloweenShop
 			});
 
 			return `Bought ${buyable.item!.name} for ${itemCost}.`;
-		}
-
-		if (options.fight_mortimer) {
-			if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
-
-			const currentDate = new Date();
-			const lastPlayedDate = new Date(Number(user.user.last_mortimer_kill_date));
-
-			if (
-				currentDate.getDate() === lastPlayedDate.getDate() &&
-				currentDate.getMonth() === lastPlayedDate.getMonth() &&
-				currentDate.getFullYear() === lastPlayedDate.getFullYear()
-			) {
-				const nextDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1);
-				return `You can fight Maledict Mortimer again... ${dateFm(nextDate)}.`;
-			}
-			const duration = Time.Minute * 10;
-			await addSubTaskToActivityTask<MortimerOptions>({
-				userID: user.id,
-				channelID,
-				duration,
-				type: 'Mortimer'
-			});
-			await user.update({
-				last_mortimer_kill_date: new Date()
-			});
-
-			return {
-				embeds: [
-					new EmbedBuilder()
-						.setImage(
-							'https://cdn.discordapp.com/attachments/357422607982919680/1159790935236943893/Maledict_Mortimer.png'
-						)
-						.setAuthor({ name: 'Maledict Mortimer' })
-						.setDescription(`${randArrItem(mortimerStartMessages)}`)
-				]
-			};
-		}
-
-		if (options.trick) {
-			const userToTrick = await mUserFetch(options.trick.user.user.id);
-			if (user.id === userToTrick.id) {
-				return 'You cannot trick yourself.';
-			}
-
-			const cost = new Bank().add("Fool's ace");
-			if (!user.owns(cost)) {
-				return `You need ${cost} to trick someone.`;
-			}
-
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure you want to trick ${userToTrick.rawUsername}? ${cost} will be removed from your bank.`
-			);
-
-			await user.removeItemsFromBank(cost);
-			await prisma.mortimerTricks.create({
-				data: {
-					trickster_id: user.id,
-					target_id: userToTrick.id
-				}
-			});
-
-			return "You used your Fool's ace, on the targets next trip, they will receive a fake drop.";
 		}
 
 		return 'Invalid command.';

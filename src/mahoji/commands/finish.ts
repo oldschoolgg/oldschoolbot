@@ -24,15 +24,22 @@ export const finishCommand: OSBMahojiCommand = {
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({ name: i.name, value: i.name }));
 			}
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'tertiaries',
+			description: 'Whether or not to include Tertiaries (e.g. capes)',
+			required: false
 		}
 	],
-	run: async ({ interaction, options }: CommandRunOptions<{ input: string }>) => {
+	run: async ({ interaction, options }: CommandRunOptions<{ input: string; tertiaries?: boolean }>) => {
 		await deferInteraction(interaction);
+		const { input: finishable, tertiaries } = options;
 		const val = finishables.find(
-			i => stringMatches(i.name, options.input) || i.aliases?.some(alias => stringMatches(alias, options.input))
+			i => stringMatches(i.name, finishable) || i.aliases?.some(alias => stringMatches(alias, finishable))
 		);
 		if (!val) return "That's not a valid thing you can simulate finishing.";
-		const workerRes = await Workers.finish({ name: val.name });
+		const workerRes = await Workers.finish({ name: val.name, tertiaries });
 		if (typeof workerRes === 'string') return workerRes;
 		const { kc } = workerRes;
 		const kcBank = new Bank(workerRes.kcBank);
