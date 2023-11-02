@@ -15,6 +15,7 @@ export default async ({ name, tertiaries }: FinishWorkerArgs): FinishWorkerRetur
 			finishCL = removeFromArr(finishCL, itemId);
 		}
 	}
+	const cost = new Bank();
 	let loot = new Bank();
 	const kcBank = new Bank();
 	let kc = 0;
@@ -22,7 +23,9 @@ export default async ({ name, tertiaries }: FinishWorkerArgs): FinishWorkerRetur
 	for (let i = 0; i < maxAttempts; i++) {
 		if (finishCL.every(id => loot.has(id))) break;
 		kc++;
-		const thisLoot = val.kill({ accumulatedLoot: loot, totalRuns: i });
+		const res = val.kill({ accumulatedLoot: loot, totalRuns: i });
+		const thisLoot = 'cost' in res ? res.loot : res;
+		if ('cost' in res) cost.add(res.cost);
 
 		if (tertiaries && val.tertiaryDrops) {
 			for (const drop of val.tertiaryDrops) {
@@ -43,5 +46,5 @@ export default async ({ name, tertiaries }: FinishWorkerArgs): FinishWorkerRetur
 				.join(', ')}`;
 		}
 	}
-	return { kc, kcBank: kcBank.bank, loot: loot.bank };
+	return { kc, kcBank: kcBank.bank, loot: loot.bank, cost: cost.bank };
 };
