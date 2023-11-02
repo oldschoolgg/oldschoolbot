@@ -446,7 +446,8 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
+		gpCost: 10_000_000,
+		storeBitField: StoreBitfield.HalloweenItemIconPack
 	},
 	{
 		id: 504,
