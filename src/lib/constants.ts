@@ -1,5 +1,7 @@
 import path from 'node:path';
 
+import { Image } from '@napi-rs/canvas';
+import { StoreBitfield } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { execSync } from 'child_process';
 import {
@@ -844,3 +846,12 @@ export const hweenGiveableItems = resolveItems([
 ]);
 
 export const masteryKey = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
+
+export const ItemIconPacks = [
+	{
+		name: 'Halloween',
+		storeBitfield: StoreBitfield.HalloweenItemIconPack,
+		id: 'halloween',
+		icons: new Map<number, Image>()
+	}
+];

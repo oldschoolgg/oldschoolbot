@@ -116,6 +116,13 @@ for (const [bbPart, sbPart, natRunes, lvlReq] of swampBarkPairs) {
 	});
 }
 
+const salveECustomReq: NonNullable<Createable['customReq']> = async user => {
+	if (!user.owns("Tarn's diary")) {
+		return "You need a 'Tarn's diary' to make this item.";
+	}
+	return null;
+};
+
 const goldenProspectorCreatables: Createable[] = [
 	{
 		name: 'Golden prospector boots',
@@ -2186,24 +2193,22 @@ const Createables: Createable[] = [
 	{
 		name: 'Salve amulet (e)',
 		inputItems: new Bank({
-			'Salve amulet': 1,
-			"Tarn's diary": 1
+			'Salve amulet': 1
 		}),
 		outputItems: {
-			[itemID('Salve amulet (e)')]: 1,
-			[itemID("Tarn's diary")]: 1
-		}
+			[itemID('Salve amulet (e)')]: 1
+		},
+		customReq: salveECustomReq
 	},
 	{
 		name: 'Salve amulet(ei)',
 		inputItems: new Bank({
-			'Salve amulet(i)': 1,
-			"Tarn's diary": 1
+			'Salve amulet(i)': 1
 		}),
 		outputItems: {
-			[itemID('Salve amulet(ei)')]: 1,
-			[itemID("Tarn's diary")]: 1
-		}
+			[itemID('Salve amulet(ei)')]: 1
+		},
+		customReq: salveECustomReq
 	},
 	{
 		name: 'Strange hallowed tome',
