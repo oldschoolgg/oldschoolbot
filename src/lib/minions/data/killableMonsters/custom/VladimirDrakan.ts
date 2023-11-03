@@ -45,13 +45,8 @@ export const VladimirDrakan: CustomMonster = {
 		itemCost: new Bank().add('Vial of blood', 1).add('Silver stake', 1),
 		qtyPerKill: 1
 	},
-	specialLoot: async (loot, user) => {
-		const droprate = clAdjustedDroprate(
-			user,
-			'Echo',
-			globalDroprates.echo.baseRate,
-			globalDroprates.echo.clIncrease
-		);
+	specialLoot: async ({ loot, cl }) => {
+		const droprate = clAdjustedDroprate(cl, 'Echo', globalDroprates.echo.baseRate, globalDroprates.echo.clIncrease);
 		if (roll(droprate)) {
 			loot.add('Echo');
 		}
@@ -64,7 +59,7 @@ export const VladimirDrakan: CustomMonster = {
 				'Vampyre hunter hat'
 			])
 		);
-		const unownedPiece = shuffleArr(outfit).find(i => !user.cl.has(i)) ?? outfit[0];
+		const unownedPiece = shuffleArr(outfit).find(i => !cl.has(i)) ?? outfit[0];
 		if (roll(32)) {
 			loot.add(unownedPiece);
 		}
