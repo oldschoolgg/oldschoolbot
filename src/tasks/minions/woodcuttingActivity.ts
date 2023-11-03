@@ -3,6 +3,7 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
+import { eggNest } from '../../lib/simulation/birdsNest';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { Log, SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
@@ -12,10 +13,12 @@ import resolveItems from '../../lib/util/resolveItems';
 
 async function handleForestry({ user, log, duration, loot }: { user: MUser; log: Log; duration: number; loot: Bank }) {
 	if (resolveItems(['Redwood logs', 'Logs']).includes(log.id)) return;
+
 	let [case1, case2, case3, case4, case5, case6, case7, case8, case9, totalEvents] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 	let strForestry = '';
+	let defaultAmount = randInt(400, 600);
 	let wcMultiplier = user.skillLevel(SkillsEnum.Woodcutting) / 100;
-	const strugglingSaplingTable = new LootTable()
+	const leafTable = new LootTable()
 		.add('Leaves', 20)
 		.add('Oak Leaves', 20)
 		.add('Willow Leaves', 20)
@@ -29,12 +32,12 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 
 		// Forestry events
 		switch (event) {
-			case 1: // Rising Roots event
+			case 1: // Rising Roots
 				case1++;
 				break;
-			case 2: // Struggling Sapling event
+			case 2: // Struggling Sapling
 				case2++;
-				loot.add(strugglingSaplingTable.roll());
+				loot.add(leafTable.roll());
 				break;
 			case 3: // Flowering Bush
 				case3++;
@@ -42,32 +45,42 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 			case 4: // Woodcutting Leprechaun
 				case4++;
 				break;
-			case 5: // Bee Hive
+			case 5: // Beehive
 				case5++;
+				if (user.owns('Smoker canister')) {
+					loot.add('Sturdy beehive parts', randInt(3, 5));
+					await user.transactItems({ itemsToRemove: new Bank().add('Smoker canister', 1), itemsToAdd });
+				} else if (roll(3)) {
+					loot.add('Sturdy beehive parts', 1);
+				}
 				break;
 			case 6: // Friendly Ent
 				case6++;
+				loot.add(leafTable.roll());
+				if (roll(2)) {
+					loot.add(eggNest.roll());
+				}
 				break;
-			case 7: // Poachers Forestry event
+			case 7: // Poachers
 				case7++;
 				if (user.owns('Trap disarmer')) {
-					if (roll(20)) {
+					if (roll(25)) {
 						loot.add('Fox whistle', 1);
 					}
 					await user.transactItems({ itemsToRemove: new Bank().add('Trap disarmer', 1), itemsToAdd });
 				}
 				break;
-			case 8: // Enchantment Ritual Forestry event
+			case 8: // Enchantment Ritual
 				case8++;
-				if (roll(20)) {
+				if (roll(25)) {
 					loot.add('Petal garland', 1);
 				}
 				break;
-			case 9: // Pheasant Control Forestry event
+			case 9: // Pheasant Control
 				case9++;
-				loot.add('Pheasant tail feathers', randInt(12, 45));
+				loot.add('Pheasant tail feathers', randInt(8, 30));
 				if (user.owns('Padded spoon')) {
-					if (roll(20)) {
+					if (roll(25)) {
 						loot.add('Golden pheasant egg', 1);
 					}
 					await user.transactItems({ itemsToRemove: new Bank().add('Padded spoon', 1), itemsToAdd });
@@ -79,15 +92,20 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 	});
 
 	const events = [
-		{ event: 'Rising Roots', value: case1, uniqueXP: undefined },
-		{ event: 'Struggling Sapling', value: case2, uniqueXP: SkillsEnum.Farming },
-		{ event: 'Flowering Bush', value: case3, uniqueXP: undefined },
-		{ event: 'Woodcutting Leprechaun', value: case4, uniqueXP: undefined },
-		{ event: 'Bee Hive', value: case5, uniqueXP: SkillsEnum.Construction },
-		{ event: 'Friendly Ent', value: case6, uniqueXP: SkillsEnum.Fletching },
-		{ event: 'Poachers', value: case7, uniqueXP: SkillsEnum.Hunter },
-		{ event: 'Enchantment Ritual', value: case8, uniqueXP: undefined },
-		{ event: 'Pheasant Control', value: case9, uniqueXP: SkillsEnum.Thieving }
+		{ event: 'Rising Roots', value: case1, uniqueXP: undefined, amount: defaultAmount },
+		{ event: 'Struggling Sapling', value: case2, uniqueXP: SkillsEnum.Farming, amount: defaultAmount },
+		{ event: 'Flowering Bush', value: case3, uniqueXP: undefined, amount: defaultAmount },
+		{ event: 'Woodcutting Leprechaun', value: case4, uniqueXP: undefined, amount: defaultAmount },
+		{ event: 'Beehive', value: case5, uniqueXP: SkillsEnum.Construction, amount: defaultAmount },
+		{ event: 'Friendly Ent', value: case6, uniqueXP: SkillsEnum.Fletching, amount: defaultAmount },
+		{ event: 'Poachers', value: case7, uniqueXP: SkillsEnum.Hunter, amount: defaultAmount },
+		{ event: 'Enchantment Ritual', value: case8, uniqueXP: undefined, amount: defaultAmount },
+		{
+			event: 'Pheasant Control',
+			value: case9,
+			uniqueXP: SkillsEnum.Thieving,
+			amount: loot.amount('Pheasant tail feathers') * 100
+		}
 	];
 	events.forEach(eventObj => (totalEvents += eventObj.value));
 
@@ -100,15 +118,10 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 
 	// Give user unique xp per event
 	for (const eventObj of events) {
-		let defaultAmount = eventObj.value * randInt(300, 600) * wcMultiplier;
 		if (eventObj.uniqueXP !== undefined) {
-			if (eventObj.event === 'Pheasant Control') {
-				// Pheasant Control gives 3 times the unique xp compared to other events
-				defaultAmount *= 3;
-			}
 			xpRes += await user.addXP({
 				skillName: eventObj.uniqueXP,
-				amount: defaultAmount,
+				amount: eventObj.value * eventObj.amount * wcMultiplier,
 				minimal: true
 			});
 		}
@@ -119,6 +132,11 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 		.filter(eventObj => eventObj.value > 0)
 		.map(eventObj => `${eventObj.value} ${eventObj.event}`);
 	const completedEvents = eventCounts.join(' & ');
+	strForestry += `${
+		loot.has('Sturdy beehive parts')
+			? '- The temporary beehive was made so well you could repurpose parts of it to build a permanent hive.\n'
+			: ''
+	}`;
 	strForestry += `${
 		completedEvents.length > 0
 			? `Completed Forestry event${totalEvents > 1 ? 's:' : ':'} ${completedEvents}. ${xpRes}\n`
@@ -134,7 +152,7 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 			? '- You feel a connection to the fox as if it wishes to travel with you...\n'
 			: ''
 	}`;
-	strForestry += `${loot.has('Petal garland') ? '- The Dryad has left you a gift...\n' : ''}`;
+	strForestry += `${loot.has('Petal garland') ? '- The Dryad also hands you a Petal garland.\n' : ''}`;
 
 	return strForestry;
 }

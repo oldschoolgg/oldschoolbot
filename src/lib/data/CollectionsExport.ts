@@ -1645,7 +1645,8 @@ export const forestryCL = resolveItems([
 	'Pheasant legs',
 	'Pheasant boots',
 	'Pheasant cape',
-	'Petal garland'
+	'Petal garland',
+	'Sturdy beehive parts'
 ]);
 
 export const fossilIslandNotesCL = resolveItems([
