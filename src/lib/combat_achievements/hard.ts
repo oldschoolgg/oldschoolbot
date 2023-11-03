@@ -241,7 +241,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		id: 220,
 		name: 'Why Are You Running?',
 		type: 'mechanical',
-		monster: 'General Graardor',
+		monster: 'Giant Mole',
 		desc: 'Kill the Giant Mole without her burrowing more than 2 times.',
 		rng: {
 			chancePerKill: 20,
