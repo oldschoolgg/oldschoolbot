@@ -202,7 +202,10 @@ export const monsterTask: MinionTask = {
 		const superiorTable = isOnTaskResult.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
 		const isInCatacombs = (!usingCannon ? monster.existsInCatacombs ?? undefined : undefined) && !isInWilderness;
 
-		const hasRingOfWealthI = user.gear.wildy.hasEquipped('Ring of wealth (i)') && (isInWilderness as boolean);
+		let hasRingOfWealthI = user.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness;
+		if (!hasRingOfWealthI) {
+			hasRingOfWealthI = false;
+		}
 
 		const killOptions: MonsterKillOptions = {
 			onSlayerTask: isOnTaskResult.isOnTask,
