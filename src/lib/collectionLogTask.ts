@@ -283,7 +283,7 @@ class CollectionLogTask {
 				i = 0;
 				y += 1;
 			}
-			const itemImage = await bankImageGenerator.getItemImage(item);
+			const itemImage = await bankImageGenerator.getItemImage(item, user);
 
 			let qtyText = 0;
 			if (!userCollectionBank.has(item)) {

@@ -307,7 +307,7 @@ export async function generateGearImage(
 
 	// Draw items
 	if (petID) {
-		const image = await bankImageGenerator.getItemImage(petID);
+		const image = await bankImageGenerator.getItemImage(petID, user);
 		const imageAfterEffects = await applyCustomItemEffects(user, image, petID);
 		ctx.drawImage(
 			imageAfterEffects,
@@ -321,7 +321,7 @@ export async function generateGearImage(
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
 		if (!item) continue;
-		const image = await bankImageGenerator.getItemImage(item.item);
+		const image = await bankImageGenerator.getItemImage(item.item, user);
 
 		let [x, y] = slotCoordinates[enumName];
 		x = x + slotSize / 2 - image.width / 2;
@@ -415,7 +415,7 @@ export async function generateAllGearImage(user: MUser) {
 		for (const enumName of Object.values(EquipmentSlot)) {
 			const item = gear[enumName];
 			if (!item) continue;
-			const preImage = await bankImageGenerator.getItemImage(item.item);
+			const preImage = await bankImageGenerator.getItemImage(item.item, user);
 			const image = await applyCustomItemEffects(user, preImage, item.item);
 			let [x, y] = slotCoordinatesCompact[enumName];
 			x = x + slotSize / 2 - image.width / 2;
@@ -437,7 +437,7 @@ export async function generateAllGearImage(user: MUser) {
 	ctx.drawImage(gearTemplateImage, 42, 1, 36, 36, petX, petY, 36, 36);
 	const userPet = user.user.minion_equippedPet;
 	if (userPet) {
-		const image = await bankImageGenerator.getItemImage(userPet);
+		const image = await bankImageGenerator.getItemImage(userPet, user);
 		ctx.drawImage(image, petX, petY, image.width, image.height);
 	}
 
