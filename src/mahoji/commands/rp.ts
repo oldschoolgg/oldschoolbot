@@ -10,7 +10,10 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { BitField, Channel } from '../../lib/constants';
+import { GearSetupType } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
+import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
+import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { patreonTask } from '../../lib/patreon';
 import { allPerkBitfields } from '../../lib/perkTiers';
@@ -24,6 +27,7 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { migrateUser } from '../../lib/util/migrateUser';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { sendToChannelID } from '../../lib/util/webhook';
+import { gearSetupOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { gifs } from './admin';
@@ -132,6 +136,35 @@ export const rpCommand: OSBMahojiCommand = {
 							name: 'time',
 							description: 'The time.',
 							required: true
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'unequip_all_items',
+					description: 'Force unequip all items from a user.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user.',
+							required: true
+						},
+						{
+							...gearSetupOption,
+							required: false
+						},
+						{
+							name: 'all',
+							description: 'Unequip all gear slots',
+							type: ApplicationCommandOptionType.Boolean,
+							required: false
+						},
+						{
+							name: 'pet',
+							description: 'Unequip pet also?',
+							type: ApplicationCommandOptionType.Boolean,
+							required: false
 						}
 					]
 				},
@@ -250,6 +283,12 @@ export const rpCommand: OSBMahojiCommand = {
 				reason?: string;
 				delete?: boolean;
 			};
+			unequip_all_items?: {
+				user: MahojiUserOption;
+				gear_setup?: string;
+				all?: boolean;
+				pet?: boolean;
+			};
 			set_buy_date?: {
 				user: MahojiUserOption;
 				message_id: string;
@@ -366,6 +405,46 @@ export const rpCommand: OSBMahojiCommand = {
 				userToGive.user.username
 			}. They have ${formatDuration(newBalanceExpiryTime - Date.now())} remaining.`;
 		}
+
+		// Unequip Items
+		if (options.player?.unequip_all_items) {
+			if (!isOwner && !isAdmin) {
+				return randArrItem(gifs);
+			}
+			const allGearSlots = ['melee', 'range', 'mage', 'misc', 'skilling', 'other', 'wildy', 'fashion'];
+			const opts = options.player.unequip_all_items;
+			const targetUser = await mUserFetch(opts.user.user.id);
+			const warningMsgs: string[] = [];
+			if (targetUser.minionIsBusy) warningMsgs.push("User's minion is busy.");
+			const gearSlot = opts.all
+				? 'all'
+				: opts.gear_setup && allGearSlots.includes(opts.gear_setup)
+				? opts.gear_setup
+				: undefined;
+			if (gearSlot === undefined) {
+				return 'No gear slot specified.';
+			}
+			await handleMahojiConfirmation(
+				interaction,
+				`Unequip ${gearSlot} gear from ${targetUser.usernameOrMention}?${
+					warningMsgs.length > 0 ? warningMsgs.join('\n') : ''
+				}`
+			);
+			const slotsToUnequip = gearSlot === 'all' ? allGearSlots : [gearSlot];
+
+			for (const gear of slotsToUnequip) {
+				const result = await unEquipAllCommand(targetUser.id, gear as GearSetupType, true);
+				if (!result.endsWith('setup.')) return result;
+			}
+
+			let petResult = '';
+			if (opts.pet) {
+				petResult = await unequipPet(targetUser);
+			}
+			return `Successfully removed ${gearSlot} gear.${opts.pet ? ` ${petResult}` : ''}`;
+		}
+
+		// Steal Items
 		if (options.player?.steal_items) {
 			if (!isOwner && !isAdmin) {
 				return randArrItem(gifs);
