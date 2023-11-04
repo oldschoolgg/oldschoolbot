@@ -345,7 +345,7 @@ class BankImageTask {
 				for (const fileName of filesInThisDir) {
 					const themedItemID = parseInt(path.parse(fileName).name);
 					const image = await loadImage(
-						`./src/lib/resources/images/icon_packs/${pack.id}_${BOT_TYPE.toLowerCase()}/${fileName}`
+						`./src/lib/resources/images/icon_packs/${pack.id}_${dir}/${fileName}`
 					);
 					pack.icons.set(themedItemID, image);
 				}
