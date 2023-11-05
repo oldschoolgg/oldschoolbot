@@ -12,7 +12,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
-import { BitField, BOT_TYPE, doaPurples, ItemIconPacks, PerkTier, toaPurpleItems } from '../lib/constants';
+import { BitField, doaPurples, PerkTier, toaPurpleItems } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import { calcWholeDisXP, findDisassemblyGroup } from '../lib/invention/disassemble';
@@ -232,7 +232,22 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Yew logs'), 'Yew'],
 	[i('Magic logs'), 'Magic'],
 	[i('Redwood logs'), 'Redwood'],
-	[i('Elder logs'), 'Elder']
+	[i('Elder logs'), 'Elder'],
+
+	// XP Lamps
+	[i('Tiny lamp'), '20k xp'],
+	[i('Small lamp'), '50k xp'],
+	[i('Average lamp'), '100k xp'],
+	[i('Large lamp'), '1m xp'],
+	[i('Huge lamp'), '5m xp'],
+
+	// Uncharged and Jmod
+	[i('Holy sanguinesti staff (uncharged)'), 'Uncharged'],
+	[i('Sanguinesti staff (uncharged)'), 'Uncharged'],
+	[i('Scythe of vitur (uncharged)'), 'Uncharged'],
+	[i('Holy scythe of vitur (uncharged)'), 'Uncharged'],
+	[i('Sanguine scythe of vitur (uncharged)'), 'Uncharged'],
+	[i('Scythe of vitur (JMod)'), 'JMod']
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
@@ -365,32 +380,9 @@ class BankImageTask {
 		for (const fileName of filesInDir) {
 			this.itemIconsList.add(parseInt(path.parse(fileName).name));
 		}
-
-		for (const pack of ItemIconPacks) {
-			const directories = BOT_TYPE === 'OSB' ? ['osb'] : ['osb', 'bso'];
-
-			for (const dir of directories) {
-				const filesInThisDir = await fs.readdir(`./src/lib/resources/images/icon_packs/${pack.id}_${dir}`);
-				for (const fileName of filesInThisDir) {
-					const themedItemID = parseInt(path.parse(fileName).name);
-					const image = await loadImage(
-						`./src/lib/resources/images/icon_packs/${pack.id}_${dir}/${fileName}`
-					);
-					pack.icons.set(themedItemID, image);
-				}
-			}
-		}
 	}
 
-	async getItemImage(itemID: number, user?: MUser): Promise<Image> {
-		if (user && user.user.icon_pack_id !== null) {
-			for (const pack of ItemIconPacks) {
-				if (pack.id === user.user.icon_pack_id) {
-					return pack.icons.get(itemID) ?? this.getItemImage(itemID, undefined);
-				}
-			}
-		}
-
+	async getItemImage(itemID: number): Promise<Image> {
 		const cachedImage = this.itemIconImagesCache.get(itemID);
 		if (cachedImage) return cachedImage;
 
@@ -400,9 +392,9 @@ class BankImageTask {
 				await this.fetchAndCacheImage(itemID);
 			} catch (err) {
 				console.error(`Failed to load ${itemID} image`, err);
-				return this.getItemImage(1, user);
+				return this.getItemImage(1);
 			}
-			return this.getItemImage(itemID, user);
+			return this.getItemImage(itemID);
 		}
 
 		const imageBuffer = await fs.readFile(path.join(CACHE_DIR, `${itemID}.png`));
@@ -531,10 +523,10 @@ class BankImageTask {
 		items: [Item, number][],
 		flags: FlagMap,
 		currentCL: Bank | undefined,
+		user: MUser | undefined,
 		mahojiFlags: BankFlag[] | undefined,
 		weightings: Readonly<ItemBank> | undefined,
-		verticalSpacer = 0,
-		user?: MUser
+		verticalSpacer = 0
 	) {
 		// Draw Items
 		ctx.textAlign = 'start';
@@ -551,7 +543,7 @@ class BankImageTask {
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			let [item, quantity] = items[i];
-			const itemImage = await this.getItemImage(item.id, user);
+			const itemImage = await this.getItemImage(item.id);
 			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
 			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
 			const isNewCLItem =
@@ -822,10 +814,9 @@ class BankImageTask {
 			items,
 			flags,
 			currentCL,
+			user,
 			opts.mahojiFlags,
-			weightings,
-			undefined,
-			user
+			weightings
 		);
 
 		const image = await canvas.encode('png');
@@ -942,10 +933,10 @@ export async function drawChestLootImage(options: {
 			loot.items(),
 			new Map().set('showNewCL', true),
 			previousCL,
+			user,
 			undefined,
 			undefined,
-			5,
-			user
+			5
 		);
 
 		ctx.drawImage(itemCanvas, iX - xOffset, iY - yOffset);
