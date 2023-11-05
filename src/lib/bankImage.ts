@@ -139,7 +139,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Jute seed'), 'Jute'],
 	[i('Yanillian seed'), 'yani'],
 	[i('Krandorian seed'), 'krand'],
-	[i('Wildblood seed'), 'wild.b'],
+	[i('Wildblood seed'), 'wild'],
 
 	// Herbs
 	[i('Guam leaf'), 'guam'],
@@ -226,7 +226,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Oak logs'), 'Oak'],
 	[i('Willow logs'), 'Willow'],
 	[i('Teak logs'), 'Teak'],
-	[i('Arctic pine logs'), 'ArctPine'],
+	[i('Arctic pine logs'), 'Arctpine'],
 	[i('Maple logs'), 'Maple'],
 	[i('Mahogany logs'), 'Mahog'],
 	[i('Yew logs'), 'Yew'],
@@ -243,9 +243,9 @@ const forcedShortNameMap = new Map<number, string>([
 
 	// Uncharged and Jmod
 	[i('Holy sanguinesti staff (uncharged)'), 'Uncharged'],
-	[i('Sanguinesti staff (uncharged)'), 'Uncharged'],
-	[i('Scythe of vitur (uncharged)'), 'Uncharged'],
-	[i('Holy scythe of vitur (uncharged)'), 'Uncharged'],
+	[i('Sanguinesti staff (uncharged)'), 'unchrgd'],
+	[i('Scythe of vitur (uncharged)'), 'unchrgd'],
+	[i('Holy scythe of vitur (uncharged)'), 'unchrgd'],
 	[i('Sanguine scythe of vitur (uncharged)'), 'Uncharged'],
 	[i('Scythe of vitur (JMod)'), 'JMod']
 ]);
