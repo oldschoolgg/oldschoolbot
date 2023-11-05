@@ -12,7 +12,19 @@ import { perTimeUnitChance, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 
-async function handleForestry({ user, log, duration, loot }: { user: MUser; log: Log; duration: number; loot: Bank }) {
+async function handleForestry({
+	user,
+	log,
+	duration,
+	loot,
+	itemsToRemove
+}: {
+	user: MUser;
+	log: Log;
+	duration: number;
+	loot: Bank;
+	itemsToRemove: Bank;
+}) {
 	if (resolveItems(['Redwood logs', 'Logs']).includes(log.id)) return;
 
 	let [case1, case2, case3, case4, case5, case6, case7, case8, case9, totalEvents] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -28,7 +40,6 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 		.add('Magic Leaves', 20);
 
 	perTimeUnitChance(duration, 20, Time.Minute, async () => {
-		let itemsToAdd = undefined;
 		let event = randInt(1, 9);
 
 		// Forestry events
@@ -49,9 +60,9 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 				break;
 			case 5: // Beehive
 				case5++;
-				if (user.owns('Smoker canister')) {
+				if (user.bank.amount('Smoker canister') > itemsToRemove.amount('Smoker canister')) {
 					loot.add('Sturdy beehive parts', randInt(2, 6));
-					await user.transactItems({ itemsToRemove: new Bank().add('Smoker canister', 1), itemsToAdd });
+					itemsToRemove.add('Smoker canister', 1);
 				} else if (roll(3)) {
 					loot.add('Sturdy beehive parts', 1);
 				}
@@ -65,27 +76,27 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 				break;
 			case 7: // Poachers
 				case7++;
-				if (user.owns('Trap disarmer')) {
-					if (roll(25)) {
+				if (user.bank.amount('Trap disarmer') > itemsToRemove.amount('Trap disarmer')) {
+					if (roll(30)) {
 						loot.add('Fox whistle', 1);
 					}
-					await user.transactItems({ itemsToRemove: new Bank().add('Trap disarmer', 1), itemsToAdd });
+					itemsToRemove.add('Smoker canister', 1);
 				}
 				break;
 			case 8: // Enchantment Ritual
 				case8++;
-				if (roll(25)) {
+				if (roll(30)) {
 					loot.add('Petal garland', 1);
 				}
 				break;
 			case 9: // Pheasant Control
 				case9++;
 				loot.add('Pheasant tail feathers', randInt(8, 30));
-				if (user.owns('Padded spoon')) {
-					if (roll(25)) {
+				if (user.bank.amount('Padded spoon') > itemsToRemove.amount('Padded spoon')) {
+					if (roll(30)) {
 						loot.add('Golden pheasant egg', 1);
 					}
-					await user.transactItems({ itemsToRemove: new Bank().add('Padded spoon', 1), itemsToAdd });
+					itemsToRemove.add('Padded spoon', 1);
 				}
 				break;
 		}
@@ -135,13 +146,13 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 		.map(eventObj => `${eventObj.value} ${eventObj.event}`);
 	const completedEvents = eventCounts.join(' & ');
 	strForestry += `${
-		loot.has('Sturdy beehive parts')
-			? '- The temporary beehive was made so well you could repurpose parts of it to build a permanent hive.\n'
+		completedEvents.length > 0
+			? `Completed Forestry event${totalEvents > 1 ? 's:' : ':'} ${completedEvents}. ${xpRes}\n`
 			: ''
 	}`;
 	strForestry += `${
-		completedEvents.length > 0
-			? `Completed Forestry event${totalEvents > 1 ? 's:' : ':'} ${completedEvents}. ${xpRes}\n`
+		loot.has('Sturdy beehive parts')
+			? '- The temporary beehive was made so well you could repurpose parts of it to build a permanent hive.\n'
 			: ''
 	}`;
 	strForestry += `${
@@ -163,11 +174,29 @@ export const woodcuttingTask: MinionTask = {
 		const { logID, quantity, userID, channelID, duration, powerchopping } = data;
 		const user = await mUserFetch(userID);
 		const log = Woodcutting.Logs.find(i => i.id === logID)!;
+		const forestersRations = user.bank.amount("Forester's ration");
 
 		let strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
+		let itemsToRemove = new Bank();
 		let xpReceived = quantity * log.xp;
 		let bonusXP = 0;
+		let rationUsed = 0;
+		let lostLogs = 0;
 		let loot = new Bank();
+
+		// Felling axe +10% xp bonus & 20% logs lost
+		if (user.gear.skilling.hasEquipped('Bronze felling axe')) {
+			for (let i = 0; i < quantity && i < forestersRations; i++) {
+				rationUsed++;
+				if (roll(5)) {
+					lostLogs++;
+				}
+			}
+			const fellingXP = rationUsed * log.xp * 0.1;
+			bonusXP += fellingXP;
+			xpReceived += fellingXP;
+			itemsToRemove.add("Forester's ration", rationUsed);
+		}
 
 		// If they have the entire lumberjack outfit, give an extra 0.5% xp bonus
 		if (
@@ -202,7 +231,7 @@ export const woodcuttingTask: MinionTask = {
 			if (log.lootTable) {
 				loot.add(log.lootTable.roll(quantity));
 			} else {
-				loot.add(log.id, quantity);
+				loot.add(log.id, quantity - lostLogs);
 			}
 		}
 
@@ -238,7 +267,7 @@ export const woodcuttingTask: MinionTask = {
 		}
 
 		// Forestry events
-		str += await handleForestry({ user, log, duration, loot });
+		str += await handleForestry({ user, log, duration, loot, itemsToRemove });
 
 		// Roll for pet
 		if (log.petChance) {
@@ -257,14 +286,17 @@ export const woodcuttingTask: MinionTask = {
 			}
 		}
 
-		// Loot message
-		str += `\nYou received ${loot}.`;
+		// Loot received, items used, and logs lost message
+		str += `\nYou received ${loot}. `;
+		str += `${itemsToRemove !== null ? `You used ${itemsToRemove}. ` : ''}`;
+		str += `${lostLogs > 0 ? `You lost ${lostLogs}x ${log.name} due to using a felling axe.` : ''}`;
 
 		// Give the user loot
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,
-			itemsToAdd: loot
+			itemsToAdd: loot,
+			itemsToRemove
 		});
 
 		void handleTripFinish(user, channelID, str, undefined, data, loot);
