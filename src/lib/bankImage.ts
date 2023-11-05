@@ -139,7 +139,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Jute seed'), 'Jute'],
 	[i('Yanillian seed'), 'yani'],
 	[i('Krandorian seed'), 'krand'],
-	[i('Wildblood seed'), 'wild'],
+	[i('Wildblood seed'), 'wild.b'],
 
 	// Herbs
 	[i('Guam leaf'), 'guam'],
@@ -226,7 +226,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Oak logs'), 'Oak'],
 	[i('Willow logs'), 'Willow'],
 	[i('Teak logs'), 'Teak'],
-	[i('Arctic pine logs'), 'Arctpine'],
+	[i('Arctic pine logs'), 'ArctPine'],
 	[i('Maple logs'), 'Maple'],
 	[i('Mahogany logs'), 'Mahog'],
 	[i('Yew logs'), 'Yew'],
@@ -239,15 +239,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Small lamp'), '50k xp'],
 	[i('Average lamp'), '100k xp'],
 	[i('Large lamp'), '1m xp'],
-	[i('Huge lamp'), '5m xp'],
-
-	// Uncharged and Jmod
-	[i('Holy sanguinesti staff (uncharged)'), 'Uncharged'],
-	[i('Sanguinesti staff (uncharged)'), 'unchrgd'],
-	[i('Scythe of vitur (uncharged)'), 'unchrgd'],
-	[i('Holy scythe of vitur (uncharged)'), 'unchrgd'],
-	[i('Sanguine scythe of vitur (uncharged)'), 'Uncharged'],
-	[i('Scythe of vitur (JMod)'), 'JMod']
+	[i('Huge lamp'), '5m xp'],
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
