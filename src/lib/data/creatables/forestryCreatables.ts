@@ -135,8 +135,8 @@ export const forestryCreatables: Createable[] = [
 	},
 	{
 		name: 'Iron felling axe',
-		inputItems: new Bank().add('Iron axe handle').add('Iron axe'),
-		outputItems: new Bank().add('Steel felling axe')
+		inputItems: new Bank().add('Felling axe handle').add('Iron axe'),
+		outputItems: new Bank().add('Iron felling axe')
 	},
 	{
 		name: 'Steel felling axe',

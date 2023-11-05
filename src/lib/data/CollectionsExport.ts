@@ -1634,7 +1634,7 @@ export const forestryCL = resolveItems([
 	'Forestry top',
 	'Forestry legs',
 	'Forestry boots',
-	"Twitcher's gloves",
+	// "Twitcher's gloves", Removed until feedback on how to handle Twitcher's gloves
 	'Funky shaped log',
 	'Log basket',
 	'Log brace',

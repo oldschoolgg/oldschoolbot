@@ -65,11 +65,11 @@ export const forestryBuyables: Buyable[] = [
 		name: 'Felling axe handle',
 		itemCost: new Bank().add('Anima-infused bark', 10_000).add('Oak logs', 500)
 	},
-	{
-		name: "Twitcher's gloves",
-		itemCost: new Bank().add('Anima-infused bark', 2500),
-		outputItems: new Bank({ "Twitcher's gloves": 250 })
-	},
+	// { // Removed until feedback on how to handle Twitcher's gloves
+	// 	name: "Twitcher's gloves",
+	// 	itemCost: new Bank().add('Anima-infused bark', 250).add('Willow logs', 25),
+	// 	outputItems: new Bank({ "Twitcher's gloves": 250 })
+	// },
 	{
 		name: 'Funky shaped log',
 		itemCost: new Bank()

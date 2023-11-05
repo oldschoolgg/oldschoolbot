@@ -2,6 +2,7 @@ import { randInt, Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
+import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
@@ -41,6 +42,7 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 				break;
 			case 3: // Flowering Bush
 				case3++;
+				loot.add('Strange fruit', randInt(4, 8)).add(MediumSeedPackTable.roll());
 				break;
 			case 4: // Woodcutting Leprechaun
 				case4++;
@@ -48,7 +50,7 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 			case 5: // Beehive
 				case5++;
 				if (user.owns('Smoker canister')) {
-					loot.add('Sturdy beehive parts', randInt(3, 5));
+					loot.add('Sturdy beehive parts', randInt(2, 6));
 					await user.transactItems({ itemsToRemove: new Bank().add('Smoker canister', 1), itemsToAdd });
 				} else if (roll(3)) {
 					loot.add('Sturdy beehive parts', 1);
@@ -148,9 +150,7 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 			: ''
 	}`;
 	strForestry += `${
-		loot.has('Golden Fox whistle')
-			? '- You feel a connection to the fox as if it wishes to travel with you...\n'
-			: ''
+		loot.has('Fox whistle') ? '- You feel a connection to the fox as if it wishes to travel with you...\n' : ''
 	}`;
 	strForestry += `${loot.has('Petal garland') ? '- The Dryad also hands you a Petal garland.\n' : ''}`;
 
