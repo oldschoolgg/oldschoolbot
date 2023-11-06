@@ -239,7 +239,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Small lamp'), '50k xp'],
 	[i('Average lamp'), '100k xp'],
 	[i('Large lamp'), '1m xp'],
-	[i('Huge lamp'), '5m xp'],
+	[i('Huge lamp'), '5m xp']
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
