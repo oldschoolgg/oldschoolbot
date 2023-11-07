@@ -185,7 +185,7 @@ export const woodcuttingTask: MinionTask = {
 		let loot = new Bank();
 
 		// Felling axe +10% xp bonus & 20% logs lost
-		if (user.gear.skilling.hasEquipped('Bronze felling axe')) {
+		if (user.gear.skilling.hasEquipped('Bronze felling axe') && !log.lootTable) {
 			for (let i = 0; i < quantity && i < forestersRations; i++) {
 				rationUsed++;
 				if (roll(5)) {

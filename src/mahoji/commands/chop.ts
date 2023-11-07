@@ -167,11 +167,19 @@ export const chopCommand: OSBMahojiCommand = {
 		if (!powerchop) {
 			powerchop = false;
 			if (user.owns('Forestry basket', { includeGear: true }) || user.owns('Log basket', { includeGear: true })) {
-				boosts.push(
-					`+5 trip minutes for having a ${
-						user.owns('Forestry basket', { includeGear: true }) ? 'Forestry basket' : 'Log basket'
-					}`
-				);
+				if (log.name === 'Redwood Logs') {
+					boosts.push(
+						`+10 trip minutes for having a ${
+							user.owns('Forestry basket', { includeGear: true }) ? 'Forestry basket' : 'Log basket'
+						}`
+					);
+				} else {
+					boosts.push(
+						`+5 trip minutes for having a ${
+							user.owns('Forestry basket', { includeGear: true }) ? 'Forestry basket' : 'Log basket'
+						}`
+					);
+				}
 			}
 		} else {
 			boosts.push('**Powerchopping**');
