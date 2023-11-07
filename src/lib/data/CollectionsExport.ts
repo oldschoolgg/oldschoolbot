@@ -1634,7 +1634,7 @@ export const forestryCL = resolveItems([
 	'Forestry top',
 	'Forestry legs',
 	'Forestry boots',
-	// "Twitcher's gloves", Removed until feedback on how to handle Twitcher's gloves
+	"Twitcher's gloves",
 	'Funky shaped log',
 	'Log basket',
 	'Log brace',
@@ -1648,7 +1648,29 @@ export const forestryCL = resolveItems([
 	'Petal garland',
 	'Sturdy beehive parts'
 ]);
-
+export const allForestryCL = resolveItems([
+	'Anima-infused bark',
+	"Forester's ration",
+	'Leaves',
+	'Oak leaves',
+	'Willow leaves',
+	'Maple leaves',
+	'Yew leaves',
+	'Magic leaves',
+	'Magic leaves',
+	'Egg cushion',
+	'Padded spoon',
+	'Trap disarmer blueprint',
+	'Trap disarmer',
+	'Smoker fuel',
+	'Smoker canister',
+	'Crystal charm',
+	'Petal circlet',
+	'Powdered pollen',
+	'Bee on a stick',
+	'Clover insignia',
+	'Leprechaun charm'
+]);
 export const fossilIslandNotesCL = resolveItems([
 	'Scribbled note',
 	'Partial note',
@@ -2265,12 +2287,12 @@ export const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem('Guthixian icon'), cost: 500 },
 	{ item: getOSItem('Trouver parchment'), cost: 18 },
 	{ item: getOSItem('Wilderness crabs teleport'), cost: 1 },
-	{ item: getOSItem('Blighted bind sack'), quantity: 300, cost: 1 },
-	{ item: getOSItem('Blighted snare sack'), quantity: 150, cost: 1 },
-	{ item: getOSItem('Blighted entangle sack'), quantity: 70, cost: 1 },
-	{ item: getOSItem('Blighted teleport spell sack'), quantity: 50, cost: 1 },
-	{ item: getOSItem('Blighted vengeance sack'), quantity: 50, cost: 1 },
-	{ item: getOSItem('Blighted ancient ice sack'), quantity: 30, cost: 1 },
+	// { item: getOSItem('Blighted bind sack'), quantity: 300, cost: 1 },
+	// { item: getOSItem('Blighted snare sack'), quantity: 150, cost: 1 },
+	// { item: getOSItem('Blighted entangle sack'), quantity: 70, cost: 1 },
+	// { item: getOSItem('Blighted teleport spell sack'), quantity: 50, cost: 1 },
+	// { item: getOSItem('Blighted vengeance sack'), quantity: 50, cost: 1 },
+	// { item: getOSItem('Blighted ancient ice sack'), quantity: 30, cost: 1 },
 	{ item: getOSItem('Adamant arrow'), quantity: 350, cost: 1 },
 	{ item: getOSItem('Bolt rack'), quantity: 200, cost: 1 },
 	{ item: getOSItem('Rune arrow'), quantity: 300, cost: 3 },

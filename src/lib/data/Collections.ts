@@ -29,6 +29,7 @@ import {
 	abyssalSireCL,
 	aerialFishingCL,
 	alchemicalHydraCL,
+	allForestryCL,
 	allPetsCL,
 	barbarianAssaultCL,
 	barrowsChestCL,
@@ -890,7 +891,7 @@ export const allCollectionLogs: ICollection = {
 			Forestry: {
 				alias: ['forestry'],
 				fmtProg: skillProg(SkillsEnum.Woodcutting),
-				allItems: forestryCL,
+				allItems: allForestryCL,
 				items: forestryCL
 			},
 			'Fossil Island Notes': {
