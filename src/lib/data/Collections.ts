@@ -889,7 +889,7 @@ export const allCollectionLogs: ICollection = {
 				items: cyclopsCL
 			},
 			Forestry: {
-				alias: ['forestry'],
+				alias: ['forestry', 'forest', 'for'],
 				fmtProg: skillProg(SkillsEnum.Woodcutting),
 				allItems: allForestryCL,
 				items: forestryCL

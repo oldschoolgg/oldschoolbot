@@ -1651,6 +1651,7 @@ export const forestryCL = resolveItems([
 export const allForestryCL = resolveItems([
 	'Anima-infused bark',
 	"Forester's ration",
+	'Pheasant tail feathers',
 	'Leaves',
 	'Oak leaves',
 	'Willow leaves',
@@ -1669,7 +1670,11 @@ export const allForestryCL = resolveItems([
 	'Powdered pollen',
 	'Bee on a stick',
 	'Clover insignia',
-	'Leprechaun charm'
+	'Leprechaun charm',
+	'Ritual mulch',
+	'Nature offerings',
+	'Secateurs blade',
+	'Secateurs attachment'
 ]);
 export const fossilIslandNotesCL = resolveItems([
 	'Scribbled note',
