@@ -9085,9 +9085,7 @@ setCustomItem(
 	'Rune full helm',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9099,9 +9097,7 @@ setCustomItem(
 	'Rune platebody',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9113,9 +9109,7 @@ setCustomItem(
 	'Rune platelegs',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9127,9 +9121,7 @@ setCustomItem(
 	'Fire cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9141,9 +9133,7 @@ setCustomItem(
 	'Rune boots',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9155,9 +9145,7 @@ setCustomItem(
 	'Amulet of strength',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9169,9 +9157,7 @@ setCustomItem(
 	'Diamond ring',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9183,9 +9169,7 @@ setCustomItem(
 	'Rune gloves',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9197,9 +9181,7 @@ setCustomItem(
 	'Rune kiteshield',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9211,9 +9193,7 @@ setCustomItem(
 	'Rune dagger',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9225,9 +9205,7 @@ setCustomItem(
 	'Rune dagger',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9251,9 +9229,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9278,9 +9254,7 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9318,9 +9292,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9332,9 +9304,7 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9359,9 +9329,7 @@ setCustomItem(
 	'Bronze kiteshield',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9373,9 +9341,7 @@ setCustomItem(
 	'Red partyhat',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9413,9 +9379,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9427,9 +9391,7 @@ setCustomItem(
 	'Rune full helm',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
