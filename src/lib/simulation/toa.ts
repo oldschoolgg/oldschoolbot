@@ -26,6 +26,7 @@ import { Emoji } from '../constants';
 import { getSimilarItems } from '../data/similarItems';
 import { degradeItem } from '../degradeableItems';
 import { GearStats, UserFullGearSetup } from '../gear/types';
+import { canAffordInventionBoost, inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
 import { trackLoot } from '../lootTrack';
 import { setupParty } from '../party';
 import { getMinigameScore } from '../settings/minigames';
@@ -213,7 +214,7 @@ const primarySpecWeaponBoosts = [
 	['Dragon claws', 6]
 ] as const;
 
-const REQUIRED_RANGE_WEAPONS = resolveItems(['Hellfire bow', 'Twisted bow', 'Bow of faerdhinen (c)']);
+const REQUIRED_RANGE_WEAPONS = resolveItems(['Hellfire bow', 'Twisted bow', 'Bow of faerdhinen (c)', 'Chincannon']);
 const MELEE_REQUIRED_WEAPONS = resolveItems(['Zamorakian hasta', 'Ghrazi rapier', "Osmumten's fang"]);
 const MELEE_REQUIRED_ARMOR = resolveItems(['Fire cape', 'Infernal cape']);
 const BP_DARTS_NEEDED = 150;
@@ -1235,6 +1236,14 @@ export async function toaStartCommand(
 
 	const totalCost = new Bank();
 
+	const { chincannonUser: chinCannonUserID } = toaSimResults[0];
+	const chinCannonUser = chinCannonUserID ? users.find(i => i.id === chinCannonUserID)! : null;
+	if (chinCannonUser) {
+		if (!canAffordInventionBoost(chinCannonUser, InventionID.ChinCannon, fakeDuration).canAfford) {
+			return `${chinCannonUser.usernameOrMention} doesn't have enough materials to use the Chincannon for this trip.`;
+		}
+	}
+
 	const costResult = await Promise.all(
 		users.map(async u => {
 			const { cost, blowpipeCost } = await calcTOAInput({ user: u, duration: fakeDuration, quantity });
@@ -1265,6 +1274,20 @@ export async function toaStartCommand(
 					chargesToDegrade: TUMEKEN_SHADOW_PER_RAID * quantity,
 					user: u
 				});
+			}
+
+			const isChincannonUser = u.id === chinCannonUser?.id;
+			if (isChincannonUser) {
+				const res = await inventionItemBoost({
+					user,
+					inventionID: InventionID.ChinCannon,
+					duration: fakeDuration
+				});
+				if (!res.success) {
+					throw new Error(`${u.id} did not have enough charges to use the Chincannon.`);
+				}
+
+				debugStr += ` ${inventionBoosts.chincannon.toaPercentReduction}% speed increase from the Chincannon (${res.messages})`;
 			}
 			await userStatsBankUpdate(u.id, 'toa_cost', realCost);
 			const effectiveCost = realCost.clone();
@@ -1319,7 +1342,8 @@ export async function toaStartCommand(
 		wipedRoom: toaSimResults.map(i => i.wipedRoom),
 		fakeDuration,
 		raidLevel,
-		quantity
+		quantity,
+		cc: chinCannonUserID ?? undefined
 	});
 
 	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
@@ -1432,6 +1456,7 @@ export function createTOATeam({
 		wipedRoom: number | null;
 		deathDuration: number | null;
 		messages: string[];
+		chincannonUser: string | null;
 	}[] = [];
 
 	let parsedTeam = [];
@@ -1531,6 +1556,11 @@ export function createTOATeam({
 		duration += (5 - team.length) * (Time.Minute * 1.3);
 	}
 
+	const chincannonUser = team.find(u => u.user.hasEquipped('Chincannon'));
+	if (chincannonUser) {
+		duration = reduceNumByPercent(duration, inventionBoosts.chincannon.toaPercentReduction);
+	}
+
 	duration = Math.floor(randomVariation(duration, 1));
 
 	for (let i = 0; i < quantity; i++) {
@@ -1573,7 +1603,8 @@ export function createTOATeam({
 			parsedTeam: usersWithPointsAndDeaths,
 			wipedRoom,
 			deathDuration,
-			messages: uniqueArr(messages)
+			messages: uniqueArr(messages),
+			chincannonUser: chincannonUser?.user.id ?? null
 		});
 	}
 

@@ -188,6 +188,7 @@ import {
 	vasaMagusCL,
 	venenatisCL,
 	vetionCL,
+	vladDrakanCL,
 	volcanicMineCL,
 	vorkathCL,
 	wintertodtCL,
@@ -394,6 +395,12 @@ export const allCollectionLogs: ICollection = {
 					`${stats.kcBank[Monsters.Vardorvis.id] ?? 0} KC`,
 					`${stats.kcBank[Monsters.AwakenedVardorvis.id] ?? 0} Awakened KC`
 				]
+			},
+			'Vladimir Drakan': {
+				alias: BSOMonsters.VladimirDrakan.aliases,
+				allItems: BSOMonsters.VladimirDrakan.table.allItems,
+				items: vladDrakanCL,
+				fmtProg: kcProg(BSOMonsters.VladimirDrakan.id)
 			},
 			'The Whisperer': {
 				alias: ['the whisperer'],

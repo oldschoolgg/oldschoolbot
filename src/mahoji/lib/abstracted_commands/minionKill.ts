@@ -778,7 +778,7 @@ export async function minionKillCommand(
 		) {
 			return `You need to be using one of these projectiles to fight ${
 				monster.name
-			}: ${monster.projectileUsage.requiredAmmo.join(', ')}.`;
+			}: ${monster.projectileUsage.requiredAmmo.map(itemNameFromID).join(', ')}.`;
 		}
 		const rangeCheck = checkRangeGearWeapon(user.gear.range);
 		if (typeof rangeCheck === 'string') {

@@ -3206,3 +3206,14 @@ export const vardorvisCL = resolveItems([
 	'Blood quartz',
 	'Strangled tablet'
 ]);
+
+export const vladDrakanCL = resolveItems([
+	'Vampyre hunter boots',
+	'Vampyre hunter legs',
+	'Vampyre hunter top',
+	'Vampyre hunter cuffs',
+	'Vampyre hunter hat',
+	'Blightbrand',
+	'Vampyric plushie',
+	'Echo'
+]);

@@ -127,7 +127,8 @@ export const inventionBoosts = {
 	},
 	chincannon: {
 		coxPercentReduction: 60,
-		tobPercentReduction: 60
+		tobPercentReduction: 60,
+		toaPercentReduction: 60
 	}
 } as const;
 

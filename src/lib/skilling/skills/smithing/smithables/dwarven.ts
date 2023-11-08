@@ -134,6 +134,15 @@ const Dwarven: SmithedItem[] = [
 		timeToUse: Time.Second * 3,
 		outputMultiple: 1,
 		cantBeDoubled: true
+	},
+	{
+		name: 'Silver bolts (unf)',
+		level: 21,
+		xp: 50.0,
+		id: itemID('Silver bolts (unf)'),
+		inputBars: { [itemID('Silver bar')]: 1 },
+		timeToUse: Time.Second * 3.4,
+		outputMultiple: 10
 	}
 ];
 
