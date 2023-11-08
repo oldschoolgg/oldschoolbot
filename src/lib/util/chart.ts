@@ -47,17 +47,20 @@ export async function pieChart(title: string, format: (value: any) => string, va
 export async function lineChart(
 	title: string,
 	values: [string, number, string?][],
-	yFormat: (value: any) => string = (value: any) => value,
-	xFormat: (value: any) => string = (value: any) => value
+	yFormat: (value: number) => string = (value: number) => value.toString(),
+	xFormat: (value: string) => string = (value: string) => value,
+	showDataLabels = true
 ) {
-	const options: ChartConfiguration = {
+	const options: ChartConfiguration<'line'> = {
 		type: 'line',
 		data: {
-			labels: values.map(i => `${xFormat(i[0])}`),
+			labels: values.map(i => xFormat(i[0])),
 			datasets: [
 				{
 					data: values.map(i => i[1]),
-					backgroundColor: values.map((val, index) => val[2] ?? randomHexColor(index))
+					backgroundColor: values.map((_, index) => randomHexColor(index)),
+					fill: false,
+					pointRadius: 0
 				}
 			]
 		},
@@ -65,11 +68,12 @@ export async function lineChart(
 			plugins: {
 				title: { display: true, text: title },
 				datalabels: {
+					display: showDataLabels,
 					font: {
 						weight: 'bolder'
 					},
-					formatter(value) {
-						return `${yFormat(value)}`;
+					formatter(value: number) {
+						return yFormat(value);
 					}
 				},
 				legend: {
@@ -78,6 +82,7 @@ export async function lineChart(
 			}
 		}
 	};
+
 	return generateChart(options);
 }
 
