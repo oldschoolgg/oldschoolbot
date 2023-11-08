@@ -11,6 +11,7 @@ import { badges } from '../constants';
 import { calcCLDetails } from '../data/Collections';
 import { skillEmoji } from '../data/emojis';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
+import { MALEDICT_MORTIMER_ID } from '../simulation/maledictMortimer';
 import { courses } from '../skilling/skills/agility';
 import creatures from '../skilling/skills/hunter/creatures';
 import { ItemBank, Skills } from '../types';
@@ -171,7 +172,9 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 		}
 	}
 
-	const monsterScores = Object.entries(userStats.monster_scores as ItemBank).sort((a, b) => a[1] - b[1]);
+	const monsterScores = Object.entries(userStats.monster_scores as ItemBank)
+		.sort((a, b) => a[1] - b[1])
+		.filter(i => ![MALEDICT_MORTIMER_ID].includes(Number(i[0])));
 	if (monsterScores.length > 0) {
 		const [id, score] = monsterScores[0];
 		const res = effectiveMonsters.find(c => c.id === parseInt(id))!;
