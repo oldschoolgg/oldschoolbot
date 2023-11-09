@@ -599,7 +599,7 @@ export async function cacheUsernames() {
 	}
 }
 
-const globalLbTypes = ['xp', 'cl'] as const;
+const globalLbTypes = ['xp', 'cl', 'mastery'] as const;
 type GlobalLbType = (typeof globalLbTypes)[number];
 async function globalLb(user: MUser, channelID: string, type: GlobalLbType) {
 	if (type === 'xp') {
@@ -637,6 +637,29 @@ LIMIT 10;
 			'Global (OSB+BSO) XP Leaderboard (% of the max XP)'
 		);
 		return lbMsg('Global (OSB+BSO) XP Leaderboard');
+	}
+
+	if (type === 'mastery') {
+		const result = await roboChimpClient.$queryRaw<
+			{
+				id: string;
+				avg: number;
+			}[]
+		>`SELECT id::text, ((osb_mastery + bso_mastery) / 2) AS avg
+FROM public.user
+WHERE osb_mastery IS NOT NULL AND bso_mastery IS NOT NULL
+ORDER BY avg DESC
+LIMIT 10;
+`;
+		doMenu(
+			user,
+			channelID,
+			chunk(result, LB_PAGE_SIZE).map((subList, i) =>
+				subList.map(({ id, avg }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${avg.toFixed(2)}%`).join('\n')
+			),
+			'Global (OSB+BSO) Mastery Leaderboard'
+		);
+		return lbMsg('Global Mastery Leaderboard');
 	}
 
 	const result = await roboChimpClient.$queryRaw<

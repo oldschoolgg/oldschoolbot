@@ -413,7 +413,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.Integer,
 					name: 'quantity',
-					description: 'The quantity you want to bury.',
+					description: 'The quantity you want to alch.',
 					required: false,
 					min_value: 1
 				}
