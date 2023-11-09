@@ -90,7 +90,8 @@ export const inventionBoosts = {
 		boxTrapBoostPercent: 25
 	},
 	arcaneHarvester: {
-		harvestBoostPercent: 100
+		harvestBoostPercent: 100,
+		herbiboarExtraYieldPercent: 50
 	},
 	drygoreSaw: {
 		buildBoostPercent: 40
@@ -126,7 +127,8 @@ export const inventionBoosts = {
 	},
 	chincannon: {
 		coxPercentReduction: 60,
-		tobPercentReduction: 60
+		tobPercentReduction: 60,
+		toaPercentReduction: 60
 	}
 } as const;
 
@@ -234,7 +236,7 @@ export const Inventions: readonly Invention[] = [
 	{
 		id: InventionID.ArcaneHarvester,
 		name: 'Arcane harvester',
-		description: `Increases farming yield by ${inventionBoosts.arcaneHarvester.harvestBoostPercent}%.`,
+		description: `Increases farming and herbiboar yield by ${inventionBoosts.arcaneHarvester.harvestBoostPercent}%.`,
 		item: getOSItem('Arcane harvester'),
 		materialTypeBank: new MaterialBank({
 			organic: 5,
@@ -243,7 +245,7 @@ export const Inventions: readonly Invention[] = [
 		flags: ['bank'],
 		itemCost: null,
 		inventionLevelNeeded: 110,
-		usageCostMultiplier: 1
+		usageCostMultiplier: 0.75
 	},
 	{
 		id: InventionID.PortableTanner,

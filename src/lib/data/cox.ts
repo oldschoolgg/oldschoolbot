@@ -568,7 +568,7 @@ export async function calcCoxDuration(
 
 	for (const u of team) {
 		if (u.gear.range.hasEquipped('Chincannon')) {
-			duration = reduceNumByPercent(duration, inventionBoosts.chincannon.coxPercentReduction / team.length);
+			duration = reduceNumByPercent(duration, inventionBoosts.chincannon.coxPercentReduction);
 			chinCannonUser = u;
 			break;
 		}

@@ -435,6 +435,15 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
+		item: getOSItem('Vial of blood'),
+		aliases: ['Vial of blood'],
+		level: 94,
+		xp: 125,
+		inputItems: new Bank().add('Dwarf weed potion (unf)', 1).add('Blood orange', 1),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
 		item: getOSItem('Extended super antifire (4)'),
 		aliases: ['Extended super antifire (4)', 'Extended super antifire'],
 		level: 98,

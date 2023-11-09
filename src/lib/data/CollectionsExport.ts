@@ -2407,7 +2407,8 @@ export const customPetsCL = resolveItems([
 	'Baby yaga house',
 	'Gary',
 	'Crush',
-	'Herbert'
+	'Herbert',
+	'Echo'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([
@@ -3205,4 +3206,15 @@ export const vardorvisCL = resolveItems([
 	"Awakener's orb",
 	'Blood quartz',
 	'Strangled tablet'
+]);
+
+export const vladDrakanCL = resolveItems([
+	'Vampyre hunter boots',
+	'Vampyre hunter legs',
+	'Vampyre hunter top',
+	'Vampyre hunter cuffs',
+	'Vampyre hunter hat',
+	'Blightbrand',
+	'Vampyric plushie',
+	'Echo'
 ]);

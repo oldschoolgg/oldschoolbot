@@ -8,6 +8,7 @@ import { BattlestaffTable, runeAlchablesTable, StoneSpiritTable } from '../../..
 import resolveItems from '../../../../util/resolveItems';
 import { CustomMonster } from './customMonsters';
 import { TormentedDemon } from './TormentedDemon';
+import { VladimirDrakan } from './VladimirDrakan';
 import { Yeti } from './Yeti';
 
 export const CockroachSoldier: CustomMonster = {
@@ -68,5 +69,6 @@ export const MiscCustomMonsters = {
 	TormentedDemon,
 	CockroachSoldier,
 	EliteBlackKnight,
-	Yeti
+	Yeti,
+	VladimirDrakan
 };

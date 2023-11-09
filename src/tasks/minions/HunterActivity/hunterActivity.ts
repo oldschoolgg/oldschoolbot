@@ -6,12 +6,19 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { Events, MAX_LEVEL, PeakTier } from '../../../lib/constants';
 import { globalDroprates } from '../../../lib/data/globalDroprates';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { clAdjustedDroprate, roll, skillingPetDropRate, stringMatches } from '../../../lib/util';
+import {
+	clAdjustedDroprate,
+	increaseBankQuantitesByPercent,
+	roll,
+	skillingPetDropRate,
+	stringMatches
+} from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -119,7 +126,29 @@ export const hunterTask: MinionTask = {
 		let magicSecStr = '';
 		let herbXP = 0;
 		let xpStr = '';
+		const messages = [];
+
+		let increasedOutputPercent = 0;
 		if (creature.id === HERBIBOAR_ID) {
+			if (user.hasEquippedOrInBank(['Arcane harvester'])) {
+				const boostRes = await inventionItemBoost({
+					user,
+					inventionID: InventionID.ArcaneHarvester,
+					duration: quantity * Time.Minute * 4
+				});
+
+				if (boostRes.success) {
+					messages.push(
+						`${inventionBoosts.arcaneHarvester.herbiboarExtraYieldPercent}% bonus yield from Arcane Harvester (${boostRes.messages})`
+					);
+					increasedOutputPercent += inventionBoosts.arcaneHarvester.herbiboarExtraYieldPercent;
+				}
+			}
+			if (user.hasEquippedOrInBank('Herblore master cape')) {
+				const bonus = 20;
+				messages.push(`${bonus}% bonus yield from Herblore master cape`);
+				increasedOutputPercent += bonus;
+			}
 			creatureTable = generateHerbiTable(
 				user.skillLevel('herblore'),
 				user.hasEquippedOrInBank('Magic secateurs')
@@ -144,6 +173,11 @@ export const hunterTask: MinionTask = {
 				loot.add(itemID('Baby chinchompa'));
 			}
 		}
+
+		if (increasedOutputPercent) {
+			increaseBankQuantitesByPercent(loot, increasedOutputPercent);
+		}
+
 		if (creature.name === 'Eastern ferret') {
 			const zippyDroprate = clAdjustedDroprate(
 				user,
@@ -211,6 +245,10 @@ export const hunterTask: MinionTask = {
 
 		if (died) {
 			str += `\n${diedStr}`;
+		}
+
+		if (messages.length > 0) {
+			str += `\n${messages.join('\n')}`;
 		}
 
 		if (loot.amount('Baby chinchompa') > 0 || loot.amount('Herbi') > 0) {

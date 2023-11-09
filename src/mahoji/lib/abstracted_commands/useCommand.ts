@@ -284,6 +284,13 @@ usables.push({
 	}
 });
 
+usables.push({
+	items: [getOSItem('Echo'), getOSItem('Banana')],
+	run: async () => {
+		return 'https://media.tenor.com/LqrZCROBYzQAAAAd/eat-banana-bat.gif';
+	}
+});
+
 for (const group of dyedItems) {
 	for (const dyedVersion of group.dyedVersions) {
 		for (const dye of allDyes.filter(i => i !== dyedVersion.dye)) {

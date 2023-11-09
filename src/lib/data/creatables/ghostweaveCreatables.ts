@@ -8,7 +8,6 @@ const ghostWeaveItems = resolveItems([
 	'Ghostly zombie gloves',
 	'Ghostly zombie trousers',
 	'Ghostly zombie shirt',
-	'Ghostly zombie gloves',
 	'Ghostly zombie boots',
 	'Ghostly zombie mask',
 

@@ -109,7 +109,7 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
-	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number }) => void;
+	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number; cl: Bank }) => void;
 	effect?: (opts: {
 		messages: string[];
 		user: MUser;
@@ -124,6 +124,7 @@ export interface KillableMonster {
 		items: { boostPercent: number; itemID: number }[];
 	}[];
 	projectileUsage?: {
+		requiredAmmo?: number[];
 		required: boolean;
 		calculateQuantity: (opts: { quantity: number }) => number;
 	};

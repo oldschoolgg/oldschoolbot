@@ -24399,38 +24399,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Ghostly zombie gloves",
-    "outputItems": Bank {
-      "bank": {
-        "71617": 1,
-      },
-      "frozen": false,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {
-        "71617": 1,
-      },
-      "frozen": false,
-    },
-    "name": "Revert Ghostly zombie gloves",
-    "outputItems": Bank {
-      "bank": {
-        "71590": 90,
-      },
-      "frozen": false,
-    },
-  },
-  {
-    "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {
-        "71590": 100,
-      },
-      "frozen": false,
-    },
     "name": "Ghostly zombie boots",
     "outputItems": Bank {
       "bank": {

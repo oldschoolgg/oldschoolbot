@@ -160,7 +160,7 @@ export const stealCommand: OSBMahojiCommand = {
 				user.hasEquippedOrInBank(["Thieves' armband"])
 			);
 
-			if (user.hasEquipped(['Thieving cape', 'Thieving cape(t)'])) {
+			if (user.hasEquipped(['Thieving cape', 'Thieving cape(t)', 'Thieving master cape'])) {
 				boosts.push('+10% chance of success from Thieving cape');
 			}
 

@@ -19,6 +19,7 @@ export interface CustomMonster extends Readonly<Omit<Readonly<KillableMonster>, 
 	readonly baseMonster: Monster;
 	readonly hp?: number;
 	readonly customMonsterData?: Partial<MonsterData>;
+	readonly allItems?: number[];
 }
 
 export const customKillableMonsters: KillableMonster[] = [];

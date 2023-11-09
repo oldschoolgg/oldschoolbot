@@ -630,8 +630,13 @@ export function getUsername(id: string | bigint, withBadges: boolean = true) {
 	return username;
 }
 
-export function clAdjustedDroprate(user: MUser, item: string | number, baseRate: number, increaseMultiplier: number) {
-	const amountInCL = user.cl.amount(item);
+export function clAdjustedDroprate(
+	user: MUser | Bank,
+	item: string | number,
+	baseRate: number,
+	increaseMultiplier: number
+) {
+	const amountInCL = user instanceof Bank ? user.amount(item) : user.cl.amount(item);
 	if (amountInCL === 0) return baseRate;
 	let newRate = baseRate;
 	for (let i = 0; i < amountInCL; i++) {

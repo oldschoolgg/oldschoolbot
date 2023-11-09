@@ -64,7 +64,6 @@ export async function ashSanctifierEffect(user: MUser, loot: Bank, duration: num
 		amount: totalXP,
 		duration,
 		minimal: true,
-		multiplier: false,
 		source: 'AshSanctifier'
 	});
 

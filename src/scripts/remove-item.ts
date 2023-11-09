@@ -102,7 +102,8 @@ UPDATE user_stats
 SET ${removeFromBankQuery('ic_cost_bank')},
     ${removeFromBankQuery('ic_donations_given_bank')},
     ${removeFromBankQuery('ic_donations_received_bank')},
-    ${removeFromBankQuery('tame_cl_bank')};
+    ${removeFromBankQuery('tame_cl_bank')},
+    ${removeFromBankQuery('create_loot_bank')};
 `;
 
 FINAL_QUERY += bsoUserStatsBankQuery;
