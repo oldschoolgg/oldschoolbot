@@ -106,12 +106,16 @@ export const dungBuyables = [
 	{
 		item: getOSItem('Dungeoneering dye'),
 		cost: 4_000_000
-	},
+	}
+];
+const bonecrusherBuyable = [
 	{
 		item: getOSItem('Gorajan bonecrusher (u)'),
 		cost: 25_000_000
 	}
 ];
+
+export const dungCombinedBuyables = [...dungBuyables, ...bonecrusherBuyable];
 
 export function determineDgLevelForFloor(floor: number) {
 	return Math.floor(floor * 20 - 20);
