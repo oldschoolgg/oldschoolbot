@@ -5,7 +5,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { setupParty } from '../../lib/party';
 import {
 	determineDgLevelForFloor,
-	dungBuyables,
 	dungCombinedBuyables,
 	isValidFloor,
 	requiredSkills
@@ -180,7 +179,7 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 async function buyCommand(user: MUser, name: string, quantity?: number) {
 	const buyable = dungCombinedBuyables.find(i => stringMatches(name, i.item.name));
 	if (!buyable) {
-		return `That isn't a buyable item. Here are the items you can buy: \n\n${dungBuyables
+		return `That isn't a buyable item. Here are the items you can buy: \n\n${dungCombinedBuyables
 			.map(i => `**${i.item.name}:** ${i.cost.toLocaleString()} tokens`)
 			.join('\n')}.`;
 	}
