@@ -445,7 +445,7 @@ export function calcTOBBaseDuration({ team, hardMode }: { team: TobTeam[]; hardM
 		duration = Math.max(Time.Minute * 15, duration);
 	}
 
-	if (team.some(u => u.user.hasEquipped('Chincannon'))) {
+	if (team.some(u => u.user.gear.range.hasEquipped('Chincannon'))) {
 		duration = reduceNumByPercent(duration, inventionBoosts.chincannon.tobPercentReduction);
 	}
 

@@ -392,7 +392,7 @@ export const monsterTask: MinionTask = {
 
 		// Regular loot
 		if (monster.specialLoot) {
-			monster.specialLoot({ loot, ownedItems: user.allItemsOwned, quantity: finalQuantity });
+			monster.specialLoot({ loot, ownedItems: user.allItemsOwned, quantity: finalQuantity, cl: user.cl });
 		}
 
 		if (newSuperiorCount) {

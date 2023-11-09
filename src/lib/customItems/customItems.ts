@@ -9085,9 +9085,7 @@ setCustomItem(
 	'Rune full helm',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9099,9 +9097,7 @@ setCustomItem(
 	'Rune platebody',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9113,9 +9109,7 @@ setCustomItem(
 	'Rune platelegs',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9127,9 +9121,7 @@ setCustomItem(
 	'Fire cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9141,9 +9133,7 @@ setCustomItem(
 	'Rune boots',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9155,9 +9145,7 @@ setCustomItem(
 	'Amulet of strength',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9169,9 +9157,7 @@ setCustomItem(
 	'Diamond ring',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9183,9 +9169,7 @@ setCustomItem(
 	'Rune gloves',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9197,9 +9181,7 @@ setCustomItem(
 	'Rune kiteshield',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9211,9 +9193,7 @@ setCustomItem(
 	'Rune dagger',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9225,9 +9205,7 @@ setCustomItem(
 	'Rune dagger',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9251,9 +9229,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9274,13 +9250,11 @@ setCustomItem(
 
 setCustomItem(
 	71_916,
-	'Miss Chief',
+	'Mini mortimer',
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9318,9 +9292,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9332,9 +9304,7 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9359,9 +9329,7 @@ setCustomItem(
 	'Bronze kiteshield',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9373,9 +9341,7 @@ setCustomItem(
 	'Red partyhat',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9413,9 +9379,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000
@@ -9427,9 +9391,187 @@ setCustomItem(
 	'Rune full helm',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-			superTradeableButTradeableOnGE: true
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_930,
+	'Echo',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_931,
+	'Blood chalice',
+	'Rune dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_932,
+	'Hemoglyphs',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_933,
+	'Bloodstone obelisk',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_934,
+	'Vampyric plushie',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_935,
+	'Drakan fangs',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_936,
+	'Silver stake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_937,
+	'Vampyre hunter boots',
+	'Rune boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_938,
+	'Vampyre hunter legs',
+	'Rune platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_939,
+	'Vampyre hunter hat',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_940,
+	'Vampyre hunter top',
+	'Rune platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_941,
+	'Vampyre hunter cuffs',
+	'Rune gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_943,
+	'Blightbrand',
+	'Dragon dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_944,
+	'Blood orange seed',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	71_945,
+	'Blood orange',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000

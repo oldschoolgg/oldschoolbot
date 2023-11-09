@@ -2,6 +2,7 @@ import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../minions/data/killableMonsters';
 import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import { AssignableSlayerTask } from '../types';
 
 export const mazchnaTasks: AssignableSlayerTask[] = [
@@ -267,7 +268,8 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
-			Monsters.VyrewatchSentinel.id
+			Monsters.VyrewatchSentinel.id,
+			BSOMonsters.VladimirDrakan.id
 		],
 		combatLevel: 35,
 		questPoints: 1,

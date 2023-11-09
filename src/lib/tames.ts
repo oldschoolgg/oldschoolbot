@@ -39,6 +39,7 @@ import {
 	roll
 } from './util';
 import getOSItem from './util/getOSItem';
+import { getUsersTamesCollectionLog } from './util/getUsersTameCL';
 import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot';
 import itemID from './util/itemID';
 import { makeBankImage } from './util/makeBankImage';
@@ -135,7 +136,11 @@ export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 		allowedTames: [TameSpeciesID.Monkey],
 		run: async ({ handleFinish, user, duration, tame }) => {
 			const quantity = Math.ceil(duration / (Time.Minute * 5));
-			const loot = getTemporossLoot(quantity, tame.max_gatherer_level + 15, user.bank);
+			const loot = getTemporossLoot(
+				quantity,
+				tame.max_gatherer_level + 15,
+				await getUsersTamesCollectionLog(user.id)
+			);
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
 				loot: itemsAdded,

@@ -1,9 +1,10 @@
 import { bold } from '@discordjs/builders';
 import { ProductID, products } from '@oldschoolgg/toolkit';
-import { notEmpty } from 'e';
+import { notEmpty, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { BOT_TYPE } from '../../lib/constants';
+import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { roboChimpSyncData } from '../../lib/roboChimp';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -82,6 +83,21 @@ export const redeemCommand: OSBMahojiCommand = {
 					: undefined
 			].filter(notEmpty)
 		);
+
+		if (BOT_TYPE === 'BSO') {
+			if (product.type === 'active') {
+				switch (product.id) {
+					case ProductID.OneHourDoubleLoot: {
+						await addToDoubleLootTimer(Time.Hour, `Purchased by ${user}`);
+						break;
+					}
+					case ProductID.ThreeHourDoubleLoot: {
+						await addToDoubleLootTimer(Time.Hour * 3, `Purchased by ${user}`);
+						break;
+					}
+				}
+			}
+		}
 
 		await roboChimpSyncData(user);
 

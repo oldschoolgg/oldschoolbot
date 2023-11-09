@@ -161,7 +161,7 @@ class GrandExchangeSingleton {
 				{
 					has: (user: MUser) => user.perkTier() >= PerkTier.Four,
 					name: 'Tier 3 Patron',
-					amount: 4
+					amount: 10
 				}
 			]
 		}

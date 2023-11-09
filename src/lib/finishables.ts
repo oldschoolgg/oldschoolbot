@@ -39,6 +39,7 @@ import pets from './data/pets';
 import killableMonsters from './minions/data/killableMonsters';
 import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/Moktang';
 import { Naxxus } from './minions/data/killableMonsters/custom/bosses/Naxxus';
+import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
 import { NEX_UNIQUE_DROPRATE, NexMonster } from './nex';
 import { openShadeChest } from './shadesKeys';
 import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
@@ -294,18 +295,21 @@ export const finishables: Finishable[] = [
 	}
 ];
 
-const monsterPairedCLs = Monsters.map(mon => {
-	const cl = allCollectionLogsFlat.find(c => stringMatches(c.name, mon.name));
-	if (!cl) return null;
-	if (!cl.items.every(id => mon.allItems.includes(id))) return null;
-	if (finishables.some(f => stringMatches(f.name, mon.name))) return null;
-	return {
-		name: mon.name,
-		aliases: mon.aliases,
-		cl: cl.items,
-		mon
-	};
-}).filter(notEmpty);
+const monsterPairedCLs = [...Monsters.values(), ...Object.values(BSOMonsters)]
+	.map(mon => {
+		const cl = allCollectionLogsFlat.find(c => stringMatches(c.name, mon.name));
+		if (!cl) return null;
+		if (!('allItems' in mon) || !mon.allItems) return;
+		if (!cl.items.every(id => mon.allItems!.includes(id))) return null;
+		if (finishables.some(f => stringMatches(f.name, mon.name))) return null;
+		return {
+			name: mon.name,
+			aliases: mon.aliases,
+			cl: cl.items,
+			mon
+		};
+	})
+	.filter(notEmpty);
 
 for (const mon of monsterPairedCLs) {
 	const killableMonster = killableMonsters.find(m => m.id === mon.mon.id);
@@ -321,9 +325,10 @@ for (const mon of monsterPairedCLs) {
 			if (killableMonster?.itemCost) {
 				cost.add(calculateTripConsumableCost(killableMonster.itemCost, 1, killableMonster.timeToFinish));
 			}
-			let loot = mon.mon.kill(1, {});
+
+			let loot = 'kill' in mon.mon ? mon.mon.kill(1, {}) : mon.mon.table.roll();
 			if (killableMonster && killableMonster.specialLoot) {
-				killableMonster.specialLoot({ ownedItems: accumulatedLoot, loot, quantity: 1 });
+				killableMonster.specialLoot({ ownedItems: accumulatedLoot, loot, quantity: 1, cl: accumulatedLoot });
 			}
 			return { loot, cost };
 		}
