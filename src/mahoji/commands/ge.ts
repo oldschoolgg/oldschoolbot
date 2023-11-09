@@ -1,3 +1,4 @@
+import { getItem } from '@oldschoolgg/toolkit';
 import { evalMathExpression } from '@oldschoolgg/toolkit/dist/util/expressionParser';
 import { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
@@ -5,16 +6,20 @@ import { sumArr, uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 
+import { PerkTier } from '../../lib/constants';
 import { createGECancelButton, GrandExchange } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 import { prisma } from '../../lib/settings/prisma';
 import { formatDuration, itemNameFromID, makeComponents, toKMB } from '../../lib/util';
+import { lineChart } from '../../lib/util/chart';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
+import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
-import { itemArr, ownedItemOption } from '../lib/mahojiCommandOptions';
+import { itemArr, itemOption, ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
+import { patronMsg } from '../mahojiSettings';
 
 type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
@@ -192,6 +197,18 @@ export const geCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'view',
+			description: 'Lookup the market price of an item on the g.e',
+			options: [
+				{
+					...itemOption(item => Boolean(item.tradeable_on_ge)),
+					name: 'price_history',
+					description: 'View the price history of an item.'
+				}
+			]
 		}
 	],
 	run: async ({
@@ -215,6 +232,7 @@ export const geCommand: OSBMahojiCommand = {
 		my_listings?: {};
 		stats?: {};
 		price?: { item: string };
+		view?: { price_history?: string };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
@@ -338,6 +356,49 @@ ${(
 
 **Recent Fulfilled/Cancelled Listings**
 ${recentInactiveListings.map(i => geListingToString(i)).join('\n')}`;
+		}
+
+		if (options.view) {
+			if (options.view.price_history) {
+				const item = getItem(options.view.price_history);
+				if (!item) return 'Invalid item.';
+				if (!itemIsTradeable(item.id)) return 'That item is not tradeable on the Grand Exchange.';
+				if (user.perkTier() < PerkTier.Four) {
+					return patronMsg(PerkTier.Four);
+				}
+				let result = await prisma.$queryRawUnsafe<
+					{ quantity_bought: number; price_per_item_before_tax: number; created_at: Date }[]
+				>(`SELECT 
+  sellTransactions.created_at, 
+  sellTransactions.price_per_item_before_tax,
+  sellTransactions.quantity_bought
+FROM 
+  ge_listing
+INNER JOIN 
+  ge_transaction AS sellTransactions ON ge_listing.id = sellTransactions.sell_listing_id
+WHERE 
+  ge_listing.item_id = ${item.id}
+AND 
+  ge_listing.cancelled_at IS NULL
+AND 
+  ge_listing.fulfilled_at IS NOT NULL
+ORDER BY 
+  sellTransactions.created_at DESC;`);
+				if (result.length < 2) return 'No price history found for that item.';
+				if (result[0].price_per_item_before_tax <= 1_000_000) {
+					result = result.filter(i => i.quantity_bought > 1);
+				}
+				const buffer = await lineChart(
+					`Price History for ${item.name}`,
+					result.map(i => [new Date(i.created_at).toDateString(), i.price_per_item_before_tax]),
+					val => val.toString(),
+					val => val,
+					false
+				);
+				return {
+					files: [buffer]
+				};
+			}
 		}
 
 		if (GrandExchange.locked) {
