@@ -43,7 +43,9 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 
 	// Unlock extra patches in Atlantis
 	const atlantisPatches: Partial<Record<FarmingPatchName, number>> = {
-		fruit_tree: 1
+		fruit_tree: 1,
+		seaweed: 2,
+		tree: 1
 	};
 	if (doaCL.some(itemID => user.cl.has(itemID))) {
 		const extraAtlantisPatches = atlantisPatches[plant.seedType];
