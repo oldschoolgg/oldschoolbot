@@ -106,6 +106,10 @@ export const dungBuyables = [
 	{
 		item: getOSItem('Dungeoneering dye'),
 		cost: 4_000_000
+	},
+	{
+		item: getOSItem('Gorajan bonecrusher (u)'),
+		cost: 25_000_000
 	}
 ];
 
