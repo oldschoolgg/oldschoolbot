@@ -1,5 +1,6 @@
 import { sumArr } from 'e';
-import { Bank, Openables } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
+import { LuckyImpling } from 'oldschooljs/dist/simulation/openables/Implings';
 
 import { BitField } from '../constants';
 import {
@@ -17,6 +18,7 @@ import {
 import { slayerMaskHelms } from '../data/slayerMaskHelms';
 import { implings } from '../implings';
 import { Inventions } from '../invention/inventions';
+import { MysteryImpling } from '../simulation/customImplings';
 import { dungBuyables } from '../skilling/skills/dung/dungData';
 import { ashes } from '../skilling/skills/prayer';
 import Dwarven from '../skilling/skills/smithing/smithables/dwarven';
@@ -1090,12 +1092,16 @@ export const masterTasks: Task[] = [
 		}
 	},
 	{
-		id: 4151,
+		id: 4151, // 50 mystery impling, 100 of every other imping (excluding Lucky implings)
 		name: 'Catch 100 of every impling passively (excluding Lucky implings)',
 		has: async ({ userStats }) => {
 			let loot = new Bank(userStats.passive_implings_bank as ItemBank);
+			const excludedImplings = [LuckyImpling.id, MysteryImpling.id];
 			for (const implingId of Object.keys(implings)) {
-				if (Number(implingId) !== Openables.LuckyImpling.id && loot.amount(Number(implingId)) < 100) {
+				if (
+					loot.amount(Number(MysteryImpling.id)) < 50 ||
+					(!excludedImplings.includes(Number(implingId)) && loot.amount(Number(implingId)) < 100)
+				) {
 					return false;
 				}
 			}
