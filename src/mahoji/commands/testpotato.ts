@@ -62,7 +62,7 @@ import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 import { generateNewTame } from './nursery';
 import { tameImage } from './tames';
 
-async function giveMaxStats(user: MUser) {
+export async function giveMaxStats(user: MUser) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
 		updates[`skills_${skill}`] = convertLVLtoXP(99);
