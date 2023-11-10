@@ -286,6 +286,12 @@ export function murMurHashChance(input: string, percent: number) {
 	return hash < percent * 100;
 }
 
+const getMurKey = (input: string | number, sortHash: string) => `${input.toString()}-${sortHash}`;
+
+export function murMurSort<T extends string | number>(arr: T[], sortHash: string) {
+	return [...arr].sort((a, b) => murmurHash.v3(getMurKey(b, sortHash)) - murmurHash.v3(getMurKey(a, sortHash)));
+}
+
 export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {
 	let setup: GearSetupType = 'melee';
 
