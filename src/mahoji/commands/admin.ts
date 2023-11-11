@@ -474,28 +474,6 @@ from bot_item_sell;`);
 				]
 			};
 		}
-	},
-	{
-		name: 'Max G.E Slot users',
-		run: async () => {
-			const res = await prisma.$queryRawUnsafe<{ user_id: string; slots_used: number }[]>(`
-SELECT user_id, COUNT(*) AS slots_used
-FROM ge_listing
-WHERE cancelled_at IS NULL AND fulfilled_at IS NULL
-GROUP BY user_id
-HAVING COUNT(*) >= 3
-ORDER BY slots_used DESC;
-`);
-			let usersUsingAllSlots = 0;
-			for (const row of res) {
-				const user = await mUserFetch(row.user_id);
-				const { slots } = await GrandExchange.calculateSlotsOfUser(user);
-				if (row.slots_used >= slots) usersUsingAllSlots++;
-			}
-			return {
-				content: `There are ${usersUsingAllSlots}x users using all their G.E slots.`
-			};
-		}
 	}
 ];
 

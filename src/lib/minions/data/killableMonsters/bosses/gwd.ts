@@ -25,7 +25,7 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 7,
 		notifyDrops: resolveItems(['Pet general graardor']),
-		qpRequired: 1,
+		qpRequired: 75,
 		itemInBankBoosts: [
 			{
 				[itemID('Dragon warhammer')]: 10,
@@ -68,7 +68,7 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 7,
 		notifyDrops: resolveItems(['Pet zilyana']),
-		qpRequired: 1,
+		qpRequired: 75,
 		itemInBankBoosts: [
 			{
 				[itemID('Ranger boots')]: 3,
@@ -124,7 +124,7 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 7,
 		notifyDrops: resolveItems(["Pet kree'arra"]),
-		qpRequired: 1,
+		qpRequired: 75,
 		itemInBankBoosts: [
 			{
 				[itemID('Armadyl crossbow')]: 5,
@@ -177,7 +177,7 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 7,
 		notifyDrops: resolveItems(["Pet k'ril tsutsaroth"]),
-		qpRequired: 1,
+		qpRequired: 75,
 		itemInBankBoosts: [
 			{
 				[itemID('Dragon warhammer')]: 10,
