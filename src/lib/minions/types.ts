@@ -108,7 +108,7 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
-	specialLoot?: (loot: Bank, user: MUser, data: MonsterActivityTaskOptions) => Promise<void>;
+	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number }) => void;
 	effect?: (opts: {
 		messages: string[];
 		user: MUser;

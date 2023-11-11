@@ -343,8 +343,11 @@ WHERE completed = true
 AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY type;`);
-			const dataPoints: [string, number][] = result.filter(i => i.hours >= 1).map(i => [i.type, i.hours]);
-			const buffer = await barChart('Your Activity Durations', val => `${val} Hours`, dataPoints);
+			const dataPoints: [string, number][] = result
+				.filter(i => i.hours >= 1)
+				.sort((a, b) => b.hours - a.hours)
+				.map(i => [i.type, i.hours]);
+			const buffer = await barChart('Your Activity Durations', val => `${val} Hrs`, dataPoints);
 			return makeResponseForBuffer(buffer);
 		}
 	},
