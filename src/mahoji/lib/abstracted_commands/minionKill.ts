@@ -151,7 +151,7 @@ export async function minionKillCommand(
 	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID);
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
-	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name);
+	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name, quantity);
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID);
 
 	let monster = findMonster(name);

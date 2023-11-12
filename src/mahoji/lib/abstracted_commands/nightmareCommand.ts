@@ -1,7 +1,9 @@
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import { reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BitField, PHOSANI_NIGHTMARE_ID, ZAM_HASTA_CRUSH } from '../../../lib/constants';
+import { degradeItem } from '../../../lib/degradeableItems';
 import { trackLoot } from '../../../lib/lootTrack';
 import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
@@ -14,6 +16,7 @@ import { formatDuration, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
+import getOSItem from '../../../lib/util/getOSItem';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements } from '../../mahojiSettings';
@@ -56,6 +59,9 @@ export const phosaniBISGear = new Gear({
 	ammo: "Rada's blessing 4"
 });
 
+const shadowChargesPerKc = 70;
+const sangChargesPerKc = 85;
+
 async function checkReqs(
 	users: MUser[],
 	monster: KillableMonster,
@@ -85,11 +91,6 @@ async function checkReqs(
 			}.`;
 		}
 
-		const cost = perUserCost(isPhosani, quantity);
-		if (!user.owns(cost)) {
-			return `${user.usernameOrMention} doesn't own ${cost}`;
-		}
-
 		if (isPhosani) {
 			const requirements = hasSkillReqs(user, {
 				prayer: 70,
@@ -109,20 +110,41 @@ async function checkReqs(
 	}
 }
 
-function perUserCost(isPhosani: boolean, quantity: number) {
+function perUserCost(user: MUser, quantity: number, isPhosani: boolean, hasShadow: boolean, hasSang: boolean) {
 	const cost = new Bank();
+	const tumCharges = shadowChargesPerKc * quantity;
+	const sangCharges = sangChargesPerKc * quantity;
+	if (hasShadow && user.user.tum_shadow_charges < tumCharges) {
+		return `You need atleast ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+			globalClient,
+			'minion',
+			'charge'
+		)}`;
+	}
+	if (hasSang && user.user.sang_charges < sangCharges) {
+		return `You need atleast ${sangCharges} Sanguinesti staff charges to use it, otherwise it has to be unequipped: ${mentionCommand(
+			globalClient,
+			'minion',
+			'charge'
+		)}`;
+	}
 	if (isPhosani) {
 		cost.add('Super combat potion(4)', Math.max(1, Math.floor(quantity / 2)))
 			.add('Sanfew serum(4)', quantity)
-			.add('Super restore(4)', quantity)
-			.add('Fire rune', 10 * 70 * quantity)
+			.add('Super restore(4)', quantity);
+		if (hasShadow || hasSang) {
+			return cost;
+		}
+		cost.add('Fire rune', 10 * 70 * quantity)
 			.add('Air rune', 7 * 70 * quantity)
 			.add('Wrath rune', 70 * quantity);
 	}
 	return cost;
 }
 
-export async function nightmareCommand(user: MUser, channelID: string, name: string) {
+export async function nightmareCommand(user: MUser, channelID: string, name: string, qty: number | undefined) {
+	const hasShadow = user.gear.mage.hasEquipped("Tumeken's shadow") ? true : false;
+	const hasSang = user.gear.mage.hasEquipped('Sanguinesti staff') ? true : false;
 	name = name.toLowerCase();
 	let isPhosani = false;
 	let type: 'solo' | 'mass' = 'solo';
@@ -132,9 +154,6 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 	} else if (name.includes('mass')) {
 		type = 'mass';
 	}
-
-	const err = await checkReqs([user], NightmareMonster, 2, isPhosani);
-	if (err) return err;
 
 	const users = type === 'mass' ? [user, user, user, user] : [user];
 	const soloBoosts: string[] = [];
@@ -205,9 +224,12 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 			effectiveTime = reduceNumByPercent(effectiveTime, 3);
 			soloBoosts.push('3% for Dragon claws');
 		}
-		if (user.hasEquippedOrInBank("Tumeken's shadow")) {
+		if (hasShadow) {
 			effectiveTime = reduceNumByPercent(effectiveTime, 6);
 			soloBoosts.push("6% for Tumeken's shadow");
+		} else if (hasSang) {
+			effectiveTime = reduceNumByPercent(effectiveTime, 3);
+			soloBoosts.push('3% for Sanguinesti Staff');
 		} else if (user.hasEquippedOrInBank('Harmonised nightmare staff')) {
 			effectiveTime = reduceNumByPercent(effectiveTime, 3);
 			soloBoosts.push('3% for Harmonised nightmare staff');
@@ -221,22 +243,21 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 	let durQtyRes = await calcDurQty(
 		users,
 		{ ...NightmareMonster, timeToFinish: effectiveTime },
-		undefined,
+		qty,
 		Time.Minute * 5,
 		Time.Minute * 30
 	);
 	if (typeof durQtyRes === 'string') return durQtyRes;
 	let [quantity, duration, perKillTime] = durQtyRes;
 
-	const secondErr = await checkReqs(users, NightmareMonster, quantity, isPhosani);
-	if (secondErr) return secondErr;
-
-	duration = quantity * perKillTime - NightmareMonster.respawnTime!;
+	const err = await checkReqs(users, NightmareMonster, quantity, isPhosani);
+	if (err) return err;
 
 	const totalCost = new Bank();
 	let soloFoodUsage: Bank | null = null;
 	const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
-	const cost = perUserCost(isPhosani, quantity);
+	const cost = perUserCost(user, quantity, isPhosani, hasShadow, hasSang);
+	if (typeof cost === 'string') return cost;
 	if (!user.owns(cost)) {
 		return `${user} doesn't own ${cost}.`;
 	}
@@ -251,6 +272,10 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		});
 
 		const { realCost } = await user.specialRemoveItems(cost);
+
+		if (typeof realCost === 'string') {
+			return realCost;
+		}
 		soloFoodUsage = realCost.clone().add(foodRemoved);
 
 		totalCost.add(foodRemoved).add(realCost);
@@ -258,6 +283,20 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		return typeof _err === 'string' ? _err : _err.message;
 	}
 
+	if (user.gear.mage.hasEquipped("Tumeken's shadow")) {
+		await degradeItem({
+			item: getOSItem("Tumeken's shadow"),
+			chargesToDegrade: shadowChargesPerKc * quantity,
+			user
+		});
+	}
+	if (user.gear.mage.hasEquipped('Sanguinesti staff')) {
+		await degradeItem({
+			item: getOSItem('Sanguinesti staff'),
+			chargesToDegrade: sangChargesPerKc * quantity,
+			user
+		});
+	}
 	await updateBankSetting('nightmare_cost', totalCost);
 	await trackLoot({
 		id: 'nightmare',
@@ -286,7 +325,9 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		type === 'solo'
 			? `${await soloMessage(user, duration, quantity, isPhosani)}
 ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}
-Removed ${soloFoodUsage} from your bank.`
+Removed ${soloFoodUsage} from your bank. ${
+					hasShadow ? `Your minion is using ${shadowChargesPerKc * quantity} Tumeken's shadow charges. ` : ''
+			  }${hasSang ? `Your minion is using ${sangChargesPerKc * quantity} Sanguinesti staff charges. ` : ''}`
 			: `${user.usernameOrMention}'s party of ${
 					users.length
 			  } is now off to kill ${quantity}x Nightmare. Each kill takes ${formatDuration(
