@@ -14,7 +14,7 @@ import { runCommand } from './settings/settings';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { processPendingActivities } from './Task';
-import { awaitMessageComponentInteraction, getSupportGuild, stringMatches } from './util';
+import { awaitMessageComponentInteraction, getSupportGuild, makeComponents, stringMatches } from './util';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
 import { handleGiveawayCompletion } from './util/giveaway';
 import { logError } from './util/logError';
@@ -128,6 +128,13 @@ JOIN user_stats ON users.id::bigint = user_stats.user_id
 WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '12 hours';
 `
 			);
+			const dailyDMButton = new ButtonBuilder()
+				.setCustomId('CLAIM_DAILY')
+				.setLabel('Claim Daily')
+				.setEmoji('493286312854683654')
+				.setStyle(ButtonStyle.Secondary);
+			const components = [dailyDMButton];
+			let str = 'Your daily is ready!';
 
 			for (const row of result.values()) {
 				if (!production) continue;
@@ -141,12 +148,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 					{}
 				);
 				const user = await globalClient.fetchUser(row.id);
-				await user.send('Your daily is ready!').catch(noOp);
-				new ButtonBuilder()
-					.setCustomId('CLAIM_DAILY')
-					.setLabel('Claim Daily')
-					.setEmoji('493286312854683654')
-					.setStyle(ButtonStyle.Secondary);
+				await user.send({ content: str, components: makeComponents(components) }).catch(noOp);
 			}
 		}
 	},
