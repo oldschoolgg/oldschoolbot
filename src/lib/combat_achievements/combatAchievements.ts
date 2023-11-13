@@ -51,6 +51,12 @@ export type CombatAchievement = {
 			};
 	  }
 	| {
+			time: {
+				maxTimeAllowed: number;
+				hasChance: activity_type_enum | ((data: ActivityTaskData, user: MUser) => boolean);
+			};
+	  }
+	| {
 			notPossible: true;
 	  }
 );
@@ -158,6 +164,7 @@ const allCATaskIDs = entries.map(i => i[1].tasks.map(t => t.id)).flat();
 assert(allCATaskIDs.length === new Set(allCATaskIDs).size);
 assert(sumArr(Object.values(CombatAchievements).map(i => i.length)) === allCATaskIDs.length);
 const indexesWithRng = entries.map(i => i[1].tasks.filter(t => 'rng' in t)).flat();
+const indexesWithTime = entries.map(i => i[1].tasks.filter(t => 'time' in t)).flat();
 
 export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data, messages }) => {
 	const dataCopy = deepClone(data);
@@ -202,6 +209,19 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data
 					qty--;
 					break;
 				}
+			}
+		}
+		for (const task of indexesWithTime) {
+			if (qty === 0) break;
+			if (user.user.completed_ca_task_ids.includes(task.id)) continue;
+			if (!('time' in task)) continue;
+			const hasChance =
+				typeof task.time.hasChance === 'string'
+					? dataCopy.type === task.time.hasChance
+					: task.time.hasChance(dataCopy, user);
+			if (!hasChance) continue;
+			if (data.duration / qty < task.time.maxTimeAllowed) {
+				completedTasks.push(task);
 			}
 		}
 

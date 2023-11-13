@@ -1,3 +1,4 @@
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { PHOSANI_NIGHTMARE_ID } from '../constants';
@@ -933,8 +934,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		desc: 'Complete the Inferno in less than 65 minutes.',
 		type: 'speed',
 		monster: 'TzKal-Zuk',
-		rng: {
-			chancePerKill: 15,
+		time: {
+			maxTimeAllowed: Time.Minute * 65,
 			hasChance: 'Inferno'
 		}
 	},
