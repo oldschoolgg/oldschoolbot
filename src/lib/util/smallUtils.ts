@@ -2,8 +2,10 @@ import { exec } from 'node:child_process';
 
 import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { ButtonBuilder, ButtonStyle, time } from 'discord.js';
+import deepmerge from 'deepmerge';
+import { ButtonBuilder, ButtonStyle, InteractionReplyOptions, time } from 'discord.js';
 import { clamp, objectEntries, roll, Time } from 'e';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
@@ -283,4 +285,29 @@ export function addBanks(banks: ItemBank[]): Bank {
 
 export function isValidDiscordSnowflake(snowflake: string): boolean {
 	return /^\d{17,19}$/.test(snowflake);
+}
+
+const TOO_LONG_STR = 'The result was too long (over 2000 characters), please read the attached file.';
+
+export function returnStringOrFile(string: string | InteractionReplyOptions): Awaited<CommandResponse> {
+	if (typeof string === 'string') {
+		if (string.length > 2000) {
+			return {
+				content: TOO_LONG_STR,
+				files: [{ attachment: Buffer.from(string), name: 'result.txt' }]
+			};
+		}
+		return string;
+	}
+	if (string.content && string.content.length > 2000) {
+		return deepmerge(
+			string,
+			{
+				content: TOO_LONG_STR,
+				files: [{ attachment: Buffer.from(string.content), name: 'result.txt' }]
+			},
+			{ clone: false }
+		);
+	}
+	return string;
 }
