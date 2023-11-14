@@ -2080,8 +2080,13 @@ export const capesCL = resolveItems([
 	'Slayer cape(t)',
 	'Quest point hood',
 	'Quest point cape',
+	'Quest point cape(t)',
 	'Achievement diary hood',
+	'Achievement diary cape',
 	'Achievement diary cape(t)',
+	'Music hood',
+	'Music cape',
+	'Music cape (t)',
 	'Max hood',
 	'Max cape',
 	'Ardougne max hood',
@@ -2162,8 +2167,12 @@ export const capesCL = resolveItems([
 	'Sinhaza shroud tier 3',
 	'Sinhaza shroud tier 4',
 	'Sinhaza shroud tier 5',
-	'Music cape',
-	'Music cape (t)'
+	"Icthlarin's hood (tier 5)",
+	"Icthlarin's shroud (tier 1)",
+	"Icthlarin's shroud (tier 2)",
+	"Icthlarin's shroud (tier 3)",
+	"Icthlarin's shroud (tier 4)",
+	"Icthlarin's shroud (tier 5)"
 ]);
 export const questCL = resolveItems([
 	'Quest point hood',
