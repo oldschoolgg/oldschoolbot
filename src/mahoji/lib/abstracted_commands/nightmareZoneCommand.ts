@@ -480,5 +480,7 @@ export async function nightmareZoneImbueCommand(user: MUser, input = '') {
 		itemsToRemove: cost,
 		collectionLog: true
 	});
-	return `Added ${loot} to your bank, removed ${imbueCost}x Nightmare Zone points and ${cost}.`;
+	return `Added ${loot} to your bank, removed ${imbueCost}x Nightmare Zone points and ${cost}.${
+		user.hasCompletedCATier('hard') ? ' 50% off for having completed the Hard Tier of the Combat Achievement.' : ''
+	}`;
 }
