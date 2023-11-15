@@ -268,7 +268,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	50_000_000
+	100_000_000
 );
 setCustomItem(
 	40_059,
@@ -280,7 +280,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	50_000_000
+	250_000_000
 );
 
 setCustomItem(40_026, 'Scroll of life', 'Coal', {}, 1_000_000);
