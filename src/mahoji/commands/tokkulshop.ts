@@ -173,9 +173,9 @@ export const tksCommand: OSBMahojiCommand = {
 			itemID: loot.items()[0][0].id
 		});
 
-		return `${
-			user.minionName
-		} is now ${action}ing ${loot} from the Tzhaar Shops, in return for ${cost}. The trip will take ${formatDuration(
+		return `${user.minionName} is now ${action}ing ${
+			action === 'buy' ? loot : cost
+		} from the Tzhaar Shops, in return for ${action === 'buy' ? cost : loot}. The trip will take ${formatDuration(
 			duration
 		)}.`;
 	}
