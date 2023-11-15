@@ -1093,7 +1093,7 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4151,
-		name: 'Catch 50 mystery impling and 100 of every other imping passively (excluding Lucky implings)',
+		name: 'Catch 50 mystery implings, and 100 of every other imping passively (excluding Lucky implings)',
 		has: async ({ userStats }) => {
 			let loot = new Bank(userStats.passive_implings_bank as ItemBank);
 			const excludedImplings = [LuckyImpling.id, MysteryImpling.id];
