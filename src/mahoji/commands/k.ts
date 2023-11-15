@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { NEX_ID, PVM_METHODS, PvMMethod, ZALCANO_ID } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
+import { returnStringOrFile } from '../../lib/util/smallUtils';
 import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -113,7 +114,9 @@ export const killCommand: OSBMahojiCommand = {
 		interaction
 	}: CommandRunOptions<{ name: string; quantity?: number; method?: PvMMethod; show_info?: boolean }>) => {
 		const user = await mUserFetch(userID);
-		if (options.show_info) return monsterInfo(user, options.name);
+		if (options.show_info) {
+			return returnStringOrFile(await monsterInfo(user, options.name));
+		}
 		return minionKillCommand(user, interaction, channelID, options.name, options.quantity, options.method);
 	}
 };
