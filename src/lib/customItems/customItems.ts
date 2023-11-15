@@ -9406,7 +9406,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	100_000
+	1_000_000
 );
 
 setCustomItem(
