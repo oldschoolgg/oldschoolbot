@@ -2095,6 +2095,8 @@ export const capesCL = resolveItems([
 	'Infernal max cape',
 	'Assembler max hood',
 	'Assembler max cape',
+	'Masori assembler max hood',
+	'Masori assembler max cape',
 	'Imbued guthix max hood',
 	'Imbued guthix max cape',
 	'Imbued saradomin max hood',
