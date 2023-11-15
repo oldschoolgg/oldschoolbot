@@ -9576,3 +9576,16 @@ setCustomItem(
 	},
 	100_000
 );
+
+setCustomItem(
+	71_946,
+	'Completionist hood (t)',
+	'Dragon full helm',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000_000
+);
