@@ -95,10 +95,12 @@ export const tksCommand: OSBMahojiCommand = {
 		if (user.minionIsBusy) return `${user.minionName} is currently busy and cannot go to the Tzhaar shops.`;
 		const [hasKaramjaDiary] = await userhasDiaryTier(user, KaramjaDiary.easy);
 		const item = TokkulShopItems.find(i => stringMatches(i.name, options.buy?.name ?? options.sell?.name ?? ''));
+		const hasKilledJad: boolean = (await user.getKC(TzTokJad.id)) >= 1 ? true : false;
+		const isIronman = user.user.minion_ironman ? true : false;
 		if (!item) return "That's not a valid item.";
-		const jadKC = await user.getKC(TzTokJad.id);
-		if (item.requireFireCape && jadKC < 1) {
-			return `You are not worthy JalYt. Before you can buy/sell ${item.name}, you need to have defeated the might TzTok-Jad!`;
+
+		if (item.requireFireCape && !hasKilledJad) {
+			return `You are not worthy JalYt. Before you can buy/sell ${item.name}, you need to have defeated the mighty TzTok-Jad!`;
 		}
 		const { bank } = user;
 		const maxTripLength = calcMaxTripLength(user, activity_type_enum.TokkulShop);
@@ -106,7 +108,25 @@ export const tksCommand: OSBMahojiCommand = {
 		const cost = new Bank();
 		const loot = new Bank();
 
-		const amountOfRestocksNeededToBuy = item.stock ? Math.ceil(quantity / item.stock) : null;
+		let amountOfRestocksNeededToBuy = null;
+		if (hasKilledJad) {
+			if (isIronman) {
+				amountOfRestocksNeededToBuy = item.rinIMShopStock
+					? Math.ceil((quantity / item.rinIMShopStock) * 1.25)
+					: item.stock
+					? Math.ceil(quantity / item.stock)
+					: null;
+			} else {
+				amountOfRestocksNeededToBuy = item.rinShopStock
+					? Math.ceil((quantity / item.rinShopStock) * 1.25)
+					: item.stock
+					? Math.ceil(quantity / item.stock)
+					: null;
+			}
+		} else {
+			amountOfRestocksNeededToBuy = item.stock ? Math.ceil(quantity / item.stock) : null;
+		}
+
 		const duration =
 			options.buy && amountOfRestocksNeededToBuy
 				? amountOfRestocksNeededToBuy * Time.Minute
