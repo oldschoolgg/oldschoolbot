@@ -120,14 +120,16 @@ export const tksCommand: OSBMahojiCommand = {
 
 		// Calculate the shop stock for the item the user wants to buy
 		let shopStock = null;
-		if (hasKilledJad && options.buy) {
-			if (isIronman) {
-				shopStock = item.rinIMShopStock ? item.rinIMShopStock : item.stock ? item.stock : null;
+		if (options.buy) {
+			if (hasKilledJad) {
+				if (isIronman) {
+					shopStock = item.rinIMShopStock ? item.rinIMShopStock : item.stock ? item.stock : null;
+				} else {
+					shopStock = item.rinShopStock ? item.rinShopStock : item.stock ? item.stock : null;
+				}
 			} else {
-				shopStock = item.rinShopStock ? item.rinShopStock : item.stock ? item.stock : null;
+				shopStock = item.stock ? item.stock : null;
 			}
-		} else if (options.buy) {
-			shopStock = item.stock ? item.stock : null;
 		}
 
 		// Calculate the amount of trips needed to buy the quantity given
