@@ -6,7 +6,7 @@ interface BaseTKSItem {
 	stock?: number;
 	rinShopStock?: number;
 	rinIMShopStock?: number;
-	aliases: string[];
+	aliases?: string[];
 	requireFireCape?: boolean;
 }
 
