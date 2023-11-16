@@ -180,7 +180,7 @@ export const tksCommand: OSBMahojiCommand = {
 			)}.`
 		);
 
-		// Give the user loot, remove the cost, and update bank settings
+		// Remove the cost, and update bank settings
 		await transactItems({ userID: user.id, itemsToRemove: cost });
 		await updateBankSetting('tks_cost', cost);
 
