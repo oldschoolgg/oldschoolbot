@@ -167,7 +167,7 @@ export const tksCommand: OSBMahojiCommand = {
 				maxTripLength
 			)}. ${
 				maxCanTransact
-					? `The max ${item.name.toLocaleLowerCase()}s you can ${
+					? `The max ${item.name.toLowerCase()}s you can ${
 							action === 'buy' ? 'buy' : 'sell'
 					  } is ${maxCanTransact}`
 					: ''
