@@ -165,6 +165,7 @@ ${leaguesTrophiesBuyables
 			});
 			await deferInteraction(interaction);
 			doMenu(
+				interaction,
 				user,
 				channelID,
 				chunk(result, 10).map(subList =>

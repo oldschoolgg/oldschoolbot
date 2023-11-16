@@ -115,7 +115,7 @@ export const monsterTask: MinionTask = {
 						gear_wildy: calc.newGear as Prisma.InputJsonObject
 					});
 				} else {
-					await user.specialRemoveItems(calc.lostItems);
+					await user.specialRemoveItems(calc.lostItems, { wildy: monster.wildy ? true : false });
 					reEquipedItems = true;
 				}
 
