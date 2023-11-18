@@ -58,7 +58,7 @@ export const leaguesOSRSCommand: OSBMahojiCommand = {
 			content: `You have completed ${leaguesResult.league_tasks.length} tasks.
 You have ${leaguesResult.league_tasks.reduce((acc, cur) => acc + leaguesData[cur].points, 0)} points.
 Your rarest task is **${leaguesData[rarestTaskCompleted].title}** with ${
-				leaguesData[rarestTaskCompleted].completionPercentage ?? 'Unknown'
+				leaguesData[rarestTaskCompleted].completionPercentage ?? '<0.1'
 			}% completion.
 `,
 			embeds: [
