@@ -383,7 +383,7 @@ AND
 AND 
   ge_listing.fulfilled_at IS NOT NULL
 ORDER BY 
-  sellTransactions.created_at DESC;`);
+  sellTransactions.created_at ASC;`);
 				if (result.length < 2) return 'No price history found for that item.';
 				if (result[0].price_per_item_before_tax <= 1_000_000) {
 					result = result.filter(i => i.quantity_bought > 1);
