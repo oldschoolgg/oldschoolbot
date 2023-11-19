@@ -623,7 +623,9 @@ const backgroundImages: BankBackground[] = [
 		name: 'boyo CustomBG',
 		image: null,
 		available: false,
-		owners: ['505593989584519169']
+		owners: ['505593989584519169'],
+		purpleImage: null,
+		hasPurple: true
 	}
 ];
 
