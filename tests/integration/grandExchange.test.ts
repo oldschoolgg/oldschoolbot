@@ -1,4 +1,4 @@
-import { calcPercentOfNum, randArrItem, randInt, shuffleArr, Time } from 'e';
+import { calcPercentOfNum, randArrItem, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { afterAll, describe, expect, test } from 'vitest';
 
@@ -56,23 +56,15 @@ describe('Grand Exchange', async () => {
 
 			const totalExpectedBank = new Bank();
 			let users: TestUser[] = [];
-			let amountOfUsers = randInt(50, 100);
+			let amountOfUsers = randInt(300, 400);
 
-			let initPromises = [];
 			for (let i = 0; i < amountOfUsers; i++) {
-				initPromises.push(
-					(async () => {
-						const user = await createTestUser();
-						await user.addItemsToBank({ items: sampleBank });
-						users.push(user);
-						totalExpectedBank.add(sampleBank);
-						assert(user.bankWithGP.equals(sampleBank), 'Test users bank should match sample bank');
-					})()
-				);
+				const user = await createTestUser();
+				await user.addItemsToBank({ items: sampleBank });
+				users.push(user);
+				totalExpectedBank.add(sampleBank);
+				assert(user.bankWithGP.equals(sampleBank), 'Test users bank should match sample bank');
 			}
-			await Promise.all(initPromises);
-
-			users = shuffleArr(users);
 
 			for (let i = 0; i < users.length; i++) {
 				for (const item of itemPool) {
@@ -115,7 +107,7 @@ describe('Grand Exchange', async () => {
 				}
 			}
 
-			for (let i = 0; i < 30; i++) {
+			for (let i = 0; i < 100; i++) {
 				await GrandExchange.tick();
 				await Promise.all([
 					GrandExchange.checkGECanFullFilAllListings(),
@@ -125,7 +117,7 @@ describe('Grand Exchange', async () => {
 
 			const testBank = new Bank();
 			const cancelPromises = [];
-			for (const user of shuffleArr(users)) {
+			for (const user of users) {
 				cancelPromises.push(cancelAllListings(user));
 			}
 
