@@ -13,10 +13,11 @@ test('Killing Men', async () => {
 	await user.addItemsToBank({ items: startingBank });
 	await user.max();
 	await user.runCommand(killCommand, {
-		name: 'man'
+		name: 'general graardor'
 	});
 
 	(await user.runActivity()) as MonsterActivityTaskOptions;
+	await user.sync();
 
 	expect(user.bank.amount('Shark')).toBeLessThan(1_000_000);
 
