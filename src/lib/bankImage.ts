@@ -238,11 +238,11 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Scythe of vitur (JMod)'), 'JMod'],
 
 	// XP Lamps
-	[i('Tiny lamp'), '20k xp'],
-	[i('Small lamp'), '50k xp'],
-	[i('Average lamp'), '100k xp'],
-	[i('Large lamp'), '1m xp'],
-	[i('Huge lamp'), '5m xp']
+	[i('Tiny lamp'), 'T.20k'],
+	[i('Small lamp'), 'Sm.50k'],
+	[i('Average lamp'), 'Av.100k'],
+	[i('Large lamp'), 'Lg.1m'],
+	[i('Huge lamp'), 'Hg.5m']
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
