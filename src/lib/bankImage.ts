@@ -11,7 +11,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
-import { BitField, PerkTier, toaPurpleItems } from '../lib/constants';
+import { BitField, BOT_TYPE, ItemIconPacks, PerkTier, toaPurpleItems } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
@@ -21,6 +21,7 @@ import { ItemBank } from '../lib/types';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
+import { TOBUniques } from './data/tob';
 import resolveItems from './util/resolveItems';
 
 const fonts = {
@@ -336,16 +337,39 @@ class BankImageTask {
 		for (const fileName of filesInDir) {
 			this.itemIconsList.add(parseInt(path.parse(fileName).name));
 		}
+
+		for (const pack of ItemIconPacks) {
+			const directories = BOT_TYPE === 'OSB' ? ['osb'] : ['osb', 'bso'];
+
+			for (const dir of directories) {
+				const filesInThisDir = await fs.readdir(`./src/lib/resources/images/icon_packs/${pack.id}_${dir}`);
+				for (const fileName of filesInThisDir) {
+					const themedItemID = parseInt(path.parse(fileName).name);
+					const image = await loadImage(
+						`./src/lib/resources/images/icon_packs/${pack.id}_${dir}/${fileName}`
+					);
+					pack.icons.set(themedItemID, image);
+				}
+			}
+		}
 	}
 
-	async getItemImage(itemID: number): Promise<Image> {
+	async getItemImage(itemID: number, user?: MUser): Promise<Image> {
+		if (user && user.user.icon_pack_id !== null) {
+			for (const pack of ItemIconPacks) {
+				if (pack.id === user.user.icon_pack_id) {
+					return pack.icons.get(itemID) ?? this.getItemImage(itemID, undefined);
+				}
+			}
+		}
+
 		const cachedImage = this.itemIconImagesCache.get(itemID);
 		if (cachedImage) return cachedImage;
 
 		const isOnDisk = this.itemIconsList.has(itemID);
 		if (!isOnDisk) {
 			await this.fetchAndCacheImage(itemID);
-			return this.getItemImage(itemID);
+			return this.getItemImage(itemID, user);
 		}
 
 		const imageBuffer = await fs.readFile(path.join(CACHE_DIR, `${itemID}.png`));
@@ -476,7 +500,8 @@ class BankImageTask {
 		currentCL: Bank | undefined,
 		mahojiFlags: BankFlag[] | undefined,
 		weightings: Readonly<ItemBank> | undefined,
-		verticalSpacer = 0
+		verticalSpacer = 0,
+		user?: MUser
 	) {
 		// Draw Items
 		ctx.textAlign = 'start';
@@ -493,7 +518,7 @@ class BankImageTask {
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			let [item, quantity] = items[i];
-			const itemImage = await this.getItemImage(item.id);
+			const itemImage = await this.getItemImage(item.id, user);
 			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
 			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
 			const isNewCLItem =
@@ -731,7 +756,9 @@ class BankImageTask {
 			flags,
 			currentCL,
 			opts.mahojiFlags,
-			weightings
+			weightings,
+			undefined,
+			user
 		);
 
 		const image = await canvas.encode('png');
@@ -754,6 +781,19 @@ const chestLootTypes = [
 		position: (canvas: Canvas, image: Image) => [
 			canvas.width - image.width + 25,
 			44 + canvas.height / 4 - image.height / 2
+		],
+		itemRect: [21, 50, 120, 160]
+	},
+	{
+		title: 'Theatre of Blood',
+		chestImage: loadImage('./src/lib/resources/images/tobChest.png'),
+		chestImagePurple: loadImage('./src/lib/resources/images/tobChestPurple.png'),
+		width: 260,
+		height: 180,
+		purpleItems: TOBUniques,
+		position: (canvas: Canvas, image: Image) => [
+			canvas.width - image.width,
+			55 + canvas.height / 4 - image.height / 2
 		],
 		itemRect: [21, 50, 120, 160]
 	},
@@ -840,7 +880,8 @@ export async function drawChestLootImage(options: {
 			previousCL,
 			undefined,
 			undefined,
-			5
+			5,
+			user
 		);
 
 		ctx.drawImage(itemCanvas, iX - xOffset, iY - yOffset);

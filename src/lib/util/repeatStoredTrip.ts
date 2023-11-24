@@ -44,7 +44,6 @@ import {
 	PickpocketActivityTaskOptions,
 	PuroPuroActivityTaskOptions,
 	RaidsOptions,
-	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
@@ -118,6 +117,10 @@ export const tripHandlers = {
 		args: () => ({})
 	},
 	[activity_type_enum.Easter]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.Revenants]: {
 		commandName: 'm',
 		args: () => ({})
 	},
@@ -408,7 +411,8 @@ export const tripHandlers = {
 	[activity_type_enum.Nightmare]: {
 		commandName: 'k',
 		args: (data: NightmareActivityTaskOptions) => ({
-			name: data.isPhosani ? 'phosani nightmare' : data.method === 'mass' ? 'mass nightmare' : 'solo nightmare'
+			name: data.isPhosani ? 'phosani nightmare' : data.method === 'mass' ? 'mass nightmare' : 'solo nightmare',
+			quantity: data.quantity
 		})
 	},
 	[activity_type_enum.Offering]: {
@@ -449,12 +453,6 @@ export const tripHandlers = {
 					quantity: data.quantity
 				}
 			}
-		})
-	},
-	[activity_type_enum.Revenants]: {
-		commandName: 'k',
-		args: (data: RevenantOptions) => ({
-			name: autocompleteMonsters.find(i => i.id === data.monsterID)?.name ?? data.monsterID.toString()
 		})
 	},
 	[activity_type_enum.RoguesDenMaze]: {

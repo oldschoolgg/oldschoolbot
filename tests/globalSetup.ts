@@ -5,6 +5,7 @@ import { Collection } from 'discord.js';
 
 global.globalClient = {
 	isReady: () => true,
+	emit: () => true,
 	guilds: { cache: new Collection() },
 	mahojiClient: {
 		commands: {
@@ -20,5 +21,9 @@ global.globalClient = {
 	},
 	users: {
 		cache: new Collection()
-	}
+	},
+	channels: {
+		cache: new Collection()
+	},
+	busyCounterCache: new Map<string, number>()
 } as any;

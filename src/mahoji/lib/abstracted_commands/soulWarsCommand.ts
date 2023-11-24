@@ -185,9 +185,13 @@ export async function soulWarsImbueCommand(user: MUser, input = '') {
 			.map(i => i.input.name)
 			.join(', ')}.`;
 	}
+	let imbueCost = item.tokens;
+	if (user.hasCompletedCATier('hard')) {
+		imbueCost /= 2;
+	}
 	const bal = user.user.zeal_tokens;
-	if (bal < item.tokens) {
-		return `You don't have enough Zeal Tokens to imbue a ${item.input.name}. You have ${bal} but need ${item.tokens}.`;
+	if (bal < imbueCost) {
+		return `You don't have enough Zeal Tokens to imbue a ${item.input.name}. You have ${bal} but need ${imbueCost}.`;
 	}
 	const { bank } = user;
 	if (!bank.has(item.input.id)) {
@@ -195,7 +199,7 @@ export async function soulWarsImbueCommand(user: MUser, input = '') {
 	}
 	await user.update({
 		zeal_tokens: {
-			decrement: item.tokens
+			decrement: imbueCost
 		}
 	});
 	const cost = new Bank().add(item.input.id);
@@ -206,5 +210,7 @@ export async function soulWarsImbueCommand(user: MUser, input = '') {
 		itemsToRemove: cost,
 		collectionLog: true
 	});
-	return `Added ${loot} to your bank, removed ${item.tokens}x Zeal Tokens and ${cost}.`;
+	return `Added ${loot} to your bank, removed ${imbueCost}x Zeal Tokens and ${cost}.${
+		user.hasCompletedCATier('hard') ? ' 50% off for having completed the Hard Tier of the Combat Achievement.' : ''
+	}`;
 }
