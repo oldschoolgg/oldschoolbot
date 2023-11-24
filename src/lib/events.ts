@@ -189,6 +189,7 @@ const mentionCommands: MentionCommand[] = [
 			if (items.length === 0) return msg.reply('No results for that item.');
 
 			const gettedItem = items[0];
+			const { sacrificed_bank: sacrificedBank } = await user.fetchStats({ sacrificed_bank: true });
 
 			let str = `Found ${items.length} items:\n${items
 				.slice(0, 5)
@@ -197,6 +198,7 @@ const mentionCommands: MentionCommand[] = [
 
 					if (user.cl.has(item.id)) icons.push(Emoji.CollectionLog);
 					if (user.bank.has(item.id)) icons.push(Emoji.Bank);
+					if (((sacrificedBank as ItemBank)[item.id] ?? 0) > 0) icons.push(Emoji.Incinerator);
 
 					const price = toKMB(Math.floor(item.price));
 

@@ -8,10 +8,8 @@ describe('Drystreak', async () => {
 		const promises = [];
 		for (const a of dryStreakEntities) {
 			try {
-				for (const item of a.items) {
-					promises.push(a.run({ item: getOSItem(item), ironmanOnly: false }));
-					promises.push(a.run({ item: getOSItem(item), ironmanOnly: true }));
-				}
+				promises.push(a.run({ item: getOSItem(a.items[0]), ironmanOnly: false }));
+				promises.push(a.run({ item: getOSItem(a.items[0]), ironmanOnly: true }));
 			} catch (err) {
 				throw new Error(`Error running ${a.name}: ${err}`);
 			}

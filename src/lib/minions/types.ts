@@ -1,4 +1,5 @@
 import { Image } from '@napi-rs/canvas';
+import { StoreBitfield } from '@oldschoolgg/toolkit';
 import { XpGainSource } from '@prisma/client';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
@@ -30,6 +31,7 @@ export type BankBackground = {
 	skillsNeeded?: Skills;
 	transparent?: true;
 	alternateImages?: { id: number }[];
+	storeBitField?: StoreBitfield;
 } & (
 	| {
 			hasPurple: true;
@@ -106,7 +108,7 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
-	specialLoot?: (loot: Bank, user: MUser, data: MonsterActivityTaskOptions) => Promise<void>;
+	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number }) => void;
 	effect?: (opts: {
 		messages: string[];
 		user: MUser;

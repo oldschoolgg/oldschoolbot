@@ -11,7 +11,7 @@ import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
-import backgroundImages from '../../../lib/minions/data/bankBackgrounds';
+import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { RandomEvents } from '../../../lib/randomEvents';
 import { getMinigameScore } from '../../../lib/settings/minigames';
@@ -37,6 +37,82 @@ interface DataPiece {
 
 function wrap(str: string) {
 	return `'"${str}"'`;
+}
+
+async function fetchHistoricalDataDifferences(user: MUser) {
+	const result = await prisma.$queryRawUnsafe<
+		{
+			user_id: string;
+			week_start: string;
+			diff_cl_global_rank: number;
+			diff_cl_completion_percentage: number;
+			diff_cl_completion_count: number;
+			diff_GP: number;
+			diff_total_xp: number;
+		}[]
+	>(`WITH DateSeries AS (
+    SELECT generate_series(
+        (SELECT DATE_TRUNC('week', MIN(date)) FROM historical_data WHERE user_id = '${user.id}'),
+        (SELECT DATE_TRUNC('week', MAX(date)) FROM historical_data WHERE user_id = '${user.id}'),
+        '1 week'::interval
+    )::DATE AS week_start
+),
+WeeklyLastValue AS (
+    SELECT
+        ds.week_start,
+        hd.user_id,
+        FIRST_VALUE(cl_global_rank) OVER (PARTITION BY hd.user_id, ds.week_start ORDER BY hd.date DESC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_cl_global_rank,
+        FIRST_VALUE(cl_completion_percentage) OVER (PARTITION BY hd.user_id, ds.week_start ORDER BY hd.date DESC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_cl_completion_percentage,
+        FIRST_VALUE(cl_completion_count) OVER (PARTITION BY hd.user_id, ds.week_start ORDER BY hd.date DESC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_cl_completion_count,
+        FIRST_VALUE("GP") OVER (PARTITION BY hd.user_id, ds.week_start ORDER BY hd.date DESC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "last_GP",
+        FIRST_VALUE(total_xp) OVER (PARTITION BY hd.user_id, ds.week_start ORDER BY hd.date DESC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_total_xp
+    FROM
+        DateSeries ds
+    LEFT JOIN historical_data hd ON hd.date BETWEEN ds.week_start AND ds.week_start + '6 days'::interval AND hd.user_id = '${user.id}'
+),
+DistinctWeeklyLastValue AS (
+    SELECT DISTINCT
+        user_id,
+        week_start,
+        last_cl_global_rank,
+        last_cl_completion_percentage,
+        last_cl_completion_count,
+        "last_GP",
+        last_total_xp
+    FROM
+        WeeklyLastValue
+),
+Differences AS (
+    SELECT
+        user_id,
+        week_start,
+        last_cl_global_rank - COALESCE(LAG(last_cl_global_rank) OVER (PARTITION BY user_id ORDER BY week_start), 0) AS diff_cl_global_rank,
+        last_cl_completion_percentage - COALESCE(LAG(last_cl_completion_percentage) OVER (PARTITION BY user_id ORDER BY week_start), 0) AS diff_cl_completion_percentage,
+        last_cl_completion_count - COALESCE(LAG(last_cl_completion_count) OVER (PARTITION BY user_id ORDER BY week_start), 0) AS diff_cl_completion_count,
+        "last_GP" - COALESCE(LAG("last_GP") OVER (PARTITION BY user_id ORDER BY week_start), 0) AS "diff_GP",
+        last_total_xp - COALESCE(LAG(last_total_xp) OVER (PARTITION BY user_id ORDER BY week_start), 0) AS diff_total_xp
+    FROM
+        DistinctWeeklyLastValue
+	WHERE
+        week_start > (SELECT MIN(week_start) FROM DistinctWeeklyLastValue WHERE user_id = '${user.id}')
+)
+
+SELECT
+    user_id,
+    week_start,
+    diff_cl_global_rank,
+    diff_cl_completion_percentage,
+    diff_cl_completion_count,
+    "diff_GP",
+    diff_total_xp
+FROM
+    Differences
+WHERE
+    week_start > (SELECT DATE_TRUNC('week', MIN(date)) FROM historical_data WHERE user_id = '${user.id}');
+`);
+	const x = result.filter(i => i.user_id !== null);
+	x.shift();
+	return x;
 }
 
 export async function personalConstructionStats(user: MUser) {
@@ -111,7 +187,7 @@ GROUP BY data->>'oreID';`);
 	return items;
 }
 
-export async function personalHerbloreStats(user: MUser) {
+export async function personalHerbloreStats(user: MUser, stats: UserStats) {
 	const result: { id: number; qty: number }[] =
 		await prisma.$queryRawUnsafe(`SELECT (data->>'mixableID')::int AS id, SUM((data->>'quantity')::int) AS qty
 FROM activity
@@ -126,6 +202,7 @@ GROUP BY data->>'mixableID';`);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
+	items.add(new Bank(stats.herbs_cleaned_while_farming_bank as ItemBank));
 	return items;
 }
 export async function personalAlchingStats(user: MUser, includeAgilityAlching = true) {
@@ -247,7 +324,7 @@ export const dataPoints: readonly DataPiece[] = [
 			const result: { type: activity_type_enum; qty: number }[] =
 				await prisma.$queryRawUnsafe(`SELECT type, count(type) AS qty
 FROM activity
-WHERE completed = true	
+WHERE completed = true
 AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY type;`);
@@ -266,8 +343,11 @@ WHERE completed = true
 AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY type;`);
-			const dataPoints: [string, number][] = result.filter(i => i.hours >= 1).map(i => [i.type, i.hours]);
-			const buffer = await barChart('Your Activity Durations', val => `${val} Hours`, dataPoints);
+			const dataPoints: [string, number][] = result
+				.filter(i => i.hours >= 1)
+				.sort((a, b) => b.hours - a.hours)
+				.map(i => [i.type, i.hours]);
+			const buffer = await barChart('Your Activity Durations', val => `${val} Hrs`, dataPoints);
 			return makeResponseForBuffer(buffer);
 		}
 	},
@@ -574,8 +654,8 @@ ${result
 	{
 		name: 'Personal Herblore Stats',
 		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser) => {
-			const result = await personalHerbloreStats(user);
+		run: async (user: MUser, stats) => {
+			const result = await personalHerbloreStats(user, stats);
 			if (result.length === 0) return "You haven't made anything yet.";
 			return `You've made...
 ${result
@@ -741,7 +821,7 @@ GROUP BY "bankBackground";`);
 			return result
 				.map(
 					(res: any) =>
-						`**${backgroundImages[res.bankBackground - 1].name}:** ${parseInt(res.count).toLocaleString()}`
+						`**${getBankBgById(res.bankBackground).name}:** ${parseInt(res.count).toLocaleString()}`
 				)
 				.join('\n');
 		}
@@ -963,7 +1043,7 @@ FROM   (
                              SUM(FLOOR(value::numeric)::bigint) AS itemqty
                   FROM       users
                   CROSS JOIN jsonb_each_text("collectionLogBank")
-				  WHERE "users"."minion.ironman" = true 
+				  WHERE "users"."minion.ironman" = true
                   GROUP BY   KEY ) s;`;
 			const bank = new Bank(res[0].banks);
 			return {
@@ -1079,6 +1159,75 @@ ${unluckiest
 			const itemsNotSacBank = new Bank();
 			for (const item of itemsNotSacFiltered) itemsNotSacBank.add(item);
 			return makeResponseForBank(itemsNotSacBank, 'Not Sacrificed Items');
+		}
+	},
+	{
+		name: 'Herbs cleaned while farming',
+		perkTierNeeded: PerkTier.Four,
+		run: (_, userStats) => {
+			return makeResponseForBank(
+				new Bank().add(userStats.herbs_cleaned_while_farming_bank as ItemBank),
+				'Herbs cleaned while farming'
+			);
+		}
+	},
+	{
+		name: 'Implings Obtained Passively',
+		perkTierNeeded: null,
+		run: (_, userStats) => {
+			return makeResponseForBank(
+				new Bank().add(userStats.passive_implings_bank as ItemBank),
+				'Implings Obtained Passively'
+			);
+		}
+	},
+	{
+		name: 'Weekly XP Gains',
+		perkTierNeeded: PerkTier.Four,
+		run: async user => {
+			const result = await fetchHistoricalDataDifferences(user);
+			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_total_xp]);
+			return makeResponseForBuffer(
+				await barChart('Your Weekly XP Gains', val => `${toKMB(val)} XP`, dataPoints, true)
+			);
+		}
+	},
+	{
+		name: 'Weekly CL slot gains',
+		perkTierNeeded: PerkTier.Four,
+		run: async user => {
+			const result = await fetchHistoricalDataDifferences(user);
+			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_cl_completion_count]);
+			return makeResponseForBuffer(
+				await barChart('Your Weekly CL slot Gains', val => `${toKMB(val)} Slots`, dataPoints, true)
+			);
+		}
+	},
+	{
+		name: 'Weekly CL leaderboard rank gains',
+		perkTierNeeded: PerkTier.Four,
+		run: async user => {
+			const result = await fetchHistoricalDataDifferences(user);
+			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_cl_global_rank]);
+			return makeResponseForBuffer(
+				await barChart(
+					'Your Weekly CL leaderboard rank gains',
+					val => `${val > 0 ? `+${val}` : val}`,
+					dataPoints,
+					true
+				)
+			);
+		}
+	},
+	{
+		name: 'Weekly GP gains',
+		perkTierNeeded: PerkTier.Four,
+		run: async user => {
+			const result = await fetchHistoricalDataDifferences(user);
+			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_GP]);
+			return makeResponseForBuffer(
+				await barChart('Your Weekly GP gains', val => `${toKMB(val)} GP`, dataPoints, true)
+			);
 		}
 	}
 ] as const;

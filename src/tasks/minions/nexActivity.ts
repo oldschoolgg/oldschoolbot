@@ -1,4 +1,4 @@
-import { EmbedBuilder, userMention } from '@discordjs/builders';
+import { userMention } from '@discordjs/builders';
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 
 import { NEX_ID } from '../../lib/constants';
@@ -46,19 +46,15 @@ export const nexTask: MinionTask = {
 		});
 		await updateBankSetting('nex_loot', loot.totalLoot());
 
-		const embed = new EmbedBuilder().setThumbnail(
-			'https://cdn.discordapp.com/attachments/342983479501389826/951730848426786846/Nex.webp'
-		).setDescription(`
-${loot.formatLoot()}`);
-
 		handleTripFinish(
 			allMUsers[0],
 			channelID,
 			{
 				content: `${allMention} Your team finished killing ${quantity}x Nex.${
 					wipedKill ? ` Your team wiped on the ${formatOrdinal(wipedKill)} kill.` : ''
-				}`,
-				embeds: [embed]
+				}
+				
+${loot.formatLoot()}`
 			},
 			undefined,
 			data,

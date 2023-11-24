@@ -1,5 +1,7 @@
 import path from 'node:path';
 
+import { Image } from '@napi-rs/canvas';
+import { StoreBitfield } from '@oldschoolgg/toolkit';
 import { execSync } from 'child_process';
 import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import * as dotenv from 'dotenv';
@@ -578,3 +580,62 @@ META_CONSTANTS.RENDERED_STR = `**Date/Time:** ${dateFm(META_CONSTANTS.STARTUP_DA
 **Git Hash:** ${META_CONSTANTS.GIT_HASH.slice(0, 7)}
 **Commit:** <${META_CONSTANTS.GITHUB_URL}>
 **Code Difference:** <${META_CONSTANTS.GIT_DIFF_URL}>`;
+
+export const hweenGiveableItems = resolveItems([
+	'Gravedigger mask',
+	'Gravedigger top',
+	'Gravedigger leggings',
+	'Gravedigger gloves',
+	'Gravedigger boots',
+	'Jack lantern mask',
+	'Scythe',
+	'Grim reaper hood',
+	'Jonas mask',
+	'Skeleton mask',
+	'Skeleton shirt',
+	'Skeleton leggings',
+	'Skeleton gloves',
+	'Skeleton boots',
+	'Anti-panties',
+	'Banshee mask',
+	'Banshee top',
+	'Banshee robe',
+	'Hunting knife',
+	'Eek',
+	'Clown mask',
+	'Clown bow tie',
+	'Clown gown',
+	'Clown trousers',
+	'Clown shoes',
+	'Pumpkin lantern',
+	'Skeleton lantern',
+	'Spooky hood',
+	'Spooky robe',
+	'Spooky skirt',
+	'Spooky gloves',
+	'Spooky boots',
+	'Headless head',
+	'Magical pumpkin',
+	'Haunted wine bottle',
+	'Ugly halloween jumper (black)',
+	'Ugly halloween jumper (orange)',
+	'Saucepan',
+	"Black h'ween mask",
+	'Witch hat',
+	'Witch top',
+	'Witch robes',
+	'Witch boots',
+	'Witch cape',
+	'Halloween wig'
+]);
+
+export const masteryKey = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
+
+export const ItemIconPacks = [
+	{
+		name: 'Halloween',
+		storeBitfield: StoreBitfield.HalloweenItemIconPack,
+		id: 'halloween',
+		icons: new Map<number, Image>()
+	}
+];

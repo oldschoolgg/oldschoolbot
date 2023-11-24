@@ -17,6 +17,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { channelIsSendable, dateFm, isValidDiscordSnowflake, isValidNickname, md5sum, toKMB } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
+import { parseBank } from '../../lib/util/parseStringBank';
 import { BingoManager, BingoTrophies } from '../lib/bingo/BingoManager';
 import { generateTileName, getAllTileItems, isGlobalTile, StoredBingoTile } from '../lib/bingo/bingoUtil';
 import { globalBingoTiles } from '../lib/bingo/globalTiles';
@@ -66,10 +67,16 @@ export async function fetchBingosThatUserIsInvolvedIn(userID: string) {
 	return bingos;
 }
 
-async function bingoTeamLeaderboard(user: MUser, channelID: string, bingo: BingoManager): CommandResponse {
+async function bingoTeamLeaderboard(
+	interaction: ChatInputCommandInteraction,
+	user: MUser,
+	channelID: string,
+	bingo: BingoManager
+): CommandResponse {
 	const { teams } = await bingo.fetchAllParticipants();
 
 	doMenu(
+		interaction,
 		user,
 		channelID,
 		chunk(teams, 10).map((subList, i) =>
@@ -206,13 +213,21 @@ async function leaveTeamCommand(interaction: ChatInputCommandInteraction, bingo:
 }
 
 function parseTileAddInput(input: string): StoredBingoTile | null {
-	if (input.includes('+') && input.includes('|')) {
+	const plus = input.includes('+');
+	const pipe = input.includes('|');
+
+	if (plus && pipe) {
 		return null;
 	}
 
-	const delimiter = input.includes('+') ? '+' : '|';
+	if (!plus && !pipe) {
+		return { bank: parseBank({ inputStr: input, noDuplicateItems: true }) }.bank;
+	}
+
+	const delimiter = plus ? '+' : '|';
 	const arr = input.split(delimiter);
 	const items = [];
+
 	for (const name of arr) {
 		const item = getItem(name);
 		if (item) {
@@ -222,14 +237,8 @@ function parseTileAddInput(input: string): StoredBingoTile | null {
 	if (items.length === 0) {
 		return null;
 	}
-	if (delimiter === '+') {
-		return {
-			allOf: items.map(i => i.id)
-		};
-	}
-	return {
-		oneOf: items.map(i => i.id)
-	};
+
+	return delimiter === '+' ? { allOf: items.map(i => i.id) } : { oneOf: items.map(i => i.id) };
 }
 
 async function getBingoFromUserInput(input: string) {
@@ -646,7 +655,7 @@ export const bingoCommand: OSBMahojiCommand = {
 		if (options.leaderboard) {
 			const bingo = await getBingoFromUserInput(options.leaderboard.bingo);
 			if (!bingo) return 'Invalid bingo.';
-			return bingoTeamLeaderboard(user, channelID, new BingoManager(bingo));
+			return bingoTeamLeaderboard(interaction, user, channelID, new BingoManager(bingo));
 		}
 
 		if (options.create_bingo) {

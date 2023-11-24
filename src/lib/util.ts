@@ -30,6 +30,7 @@ import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import { ClueTiers } from './clues/clueTiers';
 import { badgesCache, BitField, projectiles, usernameCache } from './constants';
 import { UserStatsDataNeededForCL } from './data/Collections';
+import { getSimilarItems } from './data/similarItems';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import type { Consumable } from './minions/types';
 import { MUserClass } from './MUser';
@@ -217,6 +218,19 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	return str.join('');
 }
 
+export const calculateTripConsumableCost = (c: Consumable, quantity: number, duration: number) => {
+	const consumableCost = c.itemCost.clone();
+	if (c.qtyPerKill) {
+		consumableCost.multiply(quantity);
+	} else if (c.qtyPerMinute) {
+		consumableCost.multiply(duration / Time.Minute);
+	}
+	for (const [item, qty] of Object.entries(consumableCost.bank)) {
+		consumableCost.bank[item] = Math.ceil(qty);
+	}
+	return consumableCost;
+};
+
 export function formatPohBoosts(boosts: POHBoosts) {
 	const bonusStr = [];
 	const slotStr = [];
@@ -270,6 +284,12 @@ export function convertPercentChance(percent: number) {
 export function murMurHashChance(input: string, percent: number) {
 	const hash = murmurHash.v3(input) % 1e4;
 	return hash < percent * 100;
+}
+
+const getMurKey = (input: string | number, sortHash: string) => `${input.toString()}-${sortHash}`;
+
+export function murMurSort<T extends string | number>(arr: T[], sortHash: string) {
+	return [...arr].sort((a, b) => murmurHash.v3(getMurKey(b, sortHash)) - murmurHash.v3(getMurKey(a, sortHash)));
 }
 
 export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {
@@ -515,7 +535,12 @@ export function checkRangeGearWeapon(gear: Gear) {
 	const { ammo } = gear;
 	if (!ammo) return 'You have no ammo equipped.';
 
-	const projectileCategory = objectEntries(projectiles).find(i => i[1].weapons.includes(weapon.id));
+	const projectileCategory = objectEntries(projectiles).find(i =>
+		i[1].weapons
+			.map(w => getSimilarItems(w))
+			.flat()
+			.includes(weapon.id)
+	);
 	if (!projectileCategory) return 'You have an invalid range weapon.';
 	if (!projectileCategory[1].items.includes(ammo.item)) {
 		return `You have invalid ammo for your equipped weapon. For ${

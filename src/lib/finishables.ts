@@ -31,6 +31,7 @@ import {
 	wintertodtCL
 } from './data/CollectionsExport';
 import pets from './data/pets';
+import killableMonsters from './minions/data/killableMonsters';
 import { openShadeChest } from './shadesKeys';
 import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
 import { gauntlet } from './simulation/gauntlet';
@@ -38,6 +39,7 @@ import { handleNexKills } from './simulation/nex';
 import { getTemporossLoot } from './simulation/tempoross';
 import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
+import { calculateTripConsumableCost } from './util';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
@@ -51,7 +53,7 @@ export interface Finishable {
 	name: string;
 	aliases?: string[];
 	cl: number[];
-	kill: (args: KillArgs) => Bank;
+	kill: (args: KillArgs) => Bank | { cost: Bank; loot: Bank };
 	customResponse?: (kc: number) => string;
 	maxAttempts?: number;
 	tertiaryDrops?: { itemId: number; kcNeeded: number }[];
@@ -278,11 +280,25 @@ const monsterPairedCLs = Monsters.map(mon => {
 }).filter(notEmpty);
 
 for (const mon of monsterPairedCLs) {
+	const killableMonster = killableMonsters.find(m => m.id === mon.mon.id);
 	finishables.push({
 		name: mon.name,
 		aliases: mon.aliases,
 		cl: mon.cl,
-		kill: () => mon.mon.kill(1, {})
+		kill: ({ accumulatedLoot }) => {
+			const cost = new Bank();
+			if (killableMonster && killableMonster.healAmountNeeded) {
+				cost.add('Swordfish', Math.ceil(killableMonster.healAmountNeeded / 14));
+			}
+			if (killableMonster?.itemCost) {
+				cost.add(calculateTripConsumableCost(killableMonster.itemCost, 1, killableMonster.timeToFinish));
+			}
+			let loot = mon.mon.kill(1, {});
+			if (killableMonster && killableMonster.specialLoot) {
+				killableMonster.specialLoot({ ownedItems: accumulatedLoot, loot, quantity: 1 });
+			}
+			return { loot, cost };
+		}
 	});
 }
 

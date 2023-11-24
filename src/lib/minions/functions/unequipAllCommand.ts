@@ -4,12 +4,16 @@ import { Bank } from 'oldschooljs';
 import { GearSetupType, GearSetupTypes } from '../../gear/types';
 import { defaultGear } from '../../structures/Gear';
 
-export async function unEquipAllCommand(userID: string, gearType: GearSetupType | undefined): Promise<string> {
+export async function unEquipAllCommand(
+	userID: string,
+	gearType: GearSetupType | undefined,
+	bypassBusy?: boolean
+): Promise<string> {
 	if (!gearType || !GearSetupTypes.includes(gearType)) {
 		return `That's not a valid setup, the valid setups are: ${GearSetupTypes.join(', ')}.`;
 	}
 	const user = await mUserFetch(userID);
-	if (user.minionIsBusy) {
+	if (!bypassBusy && user.minionIsBusy) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 	const currentEquippedGear = user.gear[gearType];
