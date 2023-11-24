@@ -1,17 +1,21 @@
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import { Prisma } from '@prisma/client';
 import { roll, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from './constants';
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections';
+import { calculateMastery } from './mastery';
 import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp';
 import { prisma } from './settings/prisma';
+import { MUserStats } from './structures/MUserStats';
 import { fetchStatsForCL } from './util';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
 
-export async function createHistoricalData(user: MUser) {
+export async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
 	const clStats = calcCLDetails(user);
 	const clRank = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
+	const { totalMastery } = await calculateMastery(user, await MUserStats.fromID(user.id));
 
 	return {
 		user_id: user.id,
@@ -19,7 +23,8 @@ export async function createHistoricalData(user: MUser) {
 		total_xp: sumArr(Object.values(user.skillsAsXP)),
 		cl_completion_percentage: clStats.percent,
 		cl_completion_count: clStats.owned.length,
-		cl_global_rank: Number(clRank[0].count)
+		cl_global_rank: Number(clRank[0].count),
+		mastery_percentage: totalMastery
 	};
 }
 

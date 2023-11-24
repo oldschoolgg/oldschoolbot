@@ -345,6 +345,7 @@ model User {
   bank_sort_method           String?            @db.VarChar(16)
   bank_sort_weightings       Json               @default("{}") @db.Json
   gambling_lockout_expiry    DateTime?
+  icon_pack_id               String?
 
   // Skills
   skills_agility      BigInt @default(0) @map("skills.agility")
@@ -820,6 +821,8 @@ model HistoricalData {
   cl_completion_count      Int     @db.SmallInt
   GP                       Decimal @db.Decimal(13, 0)
   total_xp                 Decimal @db.Decimal(13, 0)
+
+  mastery_percentage Decimal? @db.Decimal(5, 2)
 
   user User @relation(fields: [user_id], references: [id])
 

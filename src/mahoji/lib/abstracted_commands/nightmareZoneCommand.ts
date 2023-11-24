@@ -412,10 +412,6 @@ export async function nightmareZoneShopCommand(
 	}
 
 	let costPerItem = shopItem.cost;
-	if (user.hasCompletedCATier('hard')) {
-		costPerItem /= 2;
-	}
-
 	const cost = quantity * costPerItem;
 	if (cost > currentUserPoints) {
 		return `You don't have enough Nightmare Zone points to buy ${quantity.toLocaleString()}x ${
@@ -459,9 +455,13 @@ export async function nightmareZoneImbueCommand(user: MUser, input = '') {
 			.map(i => i.input.name)
 			.join(', ')}.`;
 	}
+	let imbueCost = item.points;
+	if (user.hasCompletedCATier('hard')) {
+		imbueCost /= 2;
+	}
 	const bal = user.user.nmz_points;
-	if (bal < item.points) {
-		return `You don't have enough Nightmare Zone points to imbue a ${item.input.name}. You have ${bal} but need ${item.points}.`;
+	if (bal < imbueCost) {
+		return `You don't have enough Nightmare Zone points to imbue a ${item.input.name}. You have ${bal} but need ${imbueCost}.`;
 	}
 	const { bank } = user;
 	if (!bank.has(item.input.id)) {
@@ -469,7 +469,7 @@ export async function nightmareZoneImbueCommand(user: MUser, input = '') {
 	}
 	await user.update({
 		nmz_points: {
-			decrement: item.points
+			decrement: imbueCost
 		}
 	});
 	const cost = new Bank().add(item.input.id);
@@ -480,5 +480,7 @@ export async function nightmareZoneImbueCommand(user: MUser, input = '') {
 		itemsToRemove: cost,
 		collectionLog: true
 	});
-	return `Added ${loot} to your bank, removed ${item.points}x Nightmare Zone points and ${cost}.`;
+	return `Added ${loot} to your bank, removed ${imbueCost}x Nightmare Zone points and ${cost}.${
+		user.hasCompletedCATier('hard') ? ' 50% off for having completed the Hard Tier of the Combat Achievement.' : ''
+	}`;
 }

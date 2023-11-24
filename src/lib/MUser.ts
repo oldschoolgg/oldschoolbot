@@ -333,19 +333,22 @@ GROUP BY data->>'clueID';`);
 		items,
 		collectionLog = false,
 		filterLoot = true,
-		dontAddToTempCL = false
+		dontAddToTempCL = false,
+		neverUpdateHistory = false
 	}: {
 		items: ItemBank | Bank;
 		collectionLog?: boolean;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
+		neverUpdateHistory?: boolean;
 	}) {
 		const res = await transactItems({
 			collectionLog,
 			itemsToAdd: new Bank(items),
 			filterLoot,
 			dontAddToTempCL,
-			userID: this.id
+			userID: this.id,
+			neverUpdateHistory
 		});
 		this.user = res.newUser;
 		this.updateProperties();
@@ -775,6 +778,9 @@ GROUP BY data->>'clueID';`);
 			return;
 		}
 		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
+			return;
+		}
+		if (!background.storeBitField && !background.perkTierNeeded && !background.bitfield) {
 			return;
 		}
 		return resetBackground();
