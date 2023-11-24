@@ -629,7 +629,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		id: 254,
 		name: 'Confident Raider',
 		type: 'restriction',
-		monster: 'Theatre of Blood: Entry Mode',
+		monster: 'Tombs of Amascut: Entry Mode',
 		desc: 'Complete a Tombs of Amascut raid at level 100 or above.',
 		requirements: new Requirements().add({
 			minigames: {
