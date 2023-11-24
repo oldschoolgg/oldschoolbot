@@ -957,9 +957,9 @@ export const configCommand: OSBMahojiCommand = {
 							required: false,
 							autocomplete: async (value: string) => {
 								return birdhouseSeeds
-									.filter(i => (!value ? true : stringMatches(i.name, value)))
+									.filter(i => (!value ? true : stringMatches(i.item.name, value)))
 									.map(i => ({
-										name: `${i.name}`,
+										name: `${i.item.name}`,
 										value: i.item.id.toString()
 									}));
 							}
@@ -974,10 +974,10 @@ export const configCommand: OSBMahojiCommand = {
 								return birdhouseSeeds
 									.filter(i => {
 										if (!mUser.favorite_bh_seeds.includes(i.item.id)) return false;
-										return !value ? true : stringMatches(i.name, value);
+										return !value ? true : stringMatches(i.item.name, value);
 									})
 									.map(i => ({
-										name: `${i.name}`,
+										name: `${i.item.name}`,
 										value: i.item.id.toString()
 									}));
 							}

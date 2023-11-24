@@ -181,177 +181,142 @@ const birdhouses: Birdhouse[] = [
 
 export const birdhouseSeeds = [
 	{
-		name: 'Hammerstone seed',
 		item: getOSItem('Hammerstone seed'),
 		amount: 10
 	},
 	{
-		name: 'Asgarnian seed',
 		item: getOSItem('Asgarnian seed'),
 		amount: 10
 	},
 	{
-		name: 'Barley seed',
 		item: getOSItem('Barley seed'),
 		amount: 10
 	},
 	{
-		name: 'Yanillian seed',
 		item: getOSItem('Yanillian seed'),
 		amount: 10
 	},
 	{
-		name: 'Krandorian seed',
 		item: getOSItem('Krandorian seed'),
 		amount: 10
 	},
 	{
-		name: 'Wildblood seed',
 		item: getOSItem('Wildblood seed'),
 		amount: 5
 	},
 	{
-		name: 'Potato seed',
 		item: getOSItem('Potato seed'),
 		amount: 10
 	},
 	{
-		name: 'Onion seed',
 		item: getOSItem('Onion seed'),
 		amount: 10
 	},
 	{
-		name: 'Cabbage seed',
 		item: getOSItem('Cabbage seed'),
 		amount: 10
 	},
 	{
-		name: 'Tomato seed',
 		item: getOSItem('Tomato seed'),
 		amount: 10
 	},
 	{
-		name: 'Sweetcorn seed',
 		item: getOSItem('Sweetcorn seed'),
 		amount: 10
 	},
 	{
-		name: 'Strawberry seed',
 		item: getOSItem('Strawberry seed'),
 		amount: 10
 	},
 	{
-		name: 'Watermelon seed',
 		item: getOSItem('Watermelon seed'),
 		amount: 10
 	},
 	{
-		name: 'Marigold seed',
 		item: getOSItem('Marigold seed'),
 		amount: 10
 	},
 	{
-		name: 'Rosemary seed',
 		item: getOSItem('Rosemary seed'),
 		amount: 10
 	},
 	{
-		name: 'Nasturtium seed',
 		item: getOSItem('Nasturtium seed'),
 		amount: 10
 	},
 	{
-		name: 'Woad seed',
 		item: getOSItem('Woad seed'),
 		amount: 10
 	},
 	{
-		name: 'Limpwurt seed',
 		item: getOSItem('Limpwurt seed'),
 		amount: 10
 	},
 	{
-		name: 'Marrentill seed',
 		item: getOSItem('Marrentill seed'),
 		amount: 10
 	},
 	{
-		name: 'Guam seed',
 		item: getOSItem('Guam seed'),
 		amount: 10
 	},
 	{
-		name: 'Tarromin seed',
 		item: getOSItem('Tarromin seed'),
 		amount: 10
 	},
 	{
-		name: 'Harralander seed',
 		item: getOSItem('Harralander seed'),
 		amount: 10
 	},
 	{
-		name: 'Jute seed',
 		item: getOSItem('Jute seed'),
 		amount: 10
 	},
 	{
-		name: 'White lily seed',
 		item: getOSItem('White lily seed'),
 		amount: 10
 	},
 	{
-		name: 'Snape grass seed',
 		item: getOSItem('Snape grass seed'),
 		amount: 10
 	},
 	{
-		name: 'Irit seed',
 		item: getOSItem('Irit seed'),
 		amount: 5
 	},
 	{
-		name: 'Dwarf weed seed',
 		item: getOSItem('Dwarf weed seed'),
 		amount: 5
 	},
 	{
-		name: 'Kwuarm seed',
 		item: getOSItem('Kwuarm seed'),
 		amount: 5
 	},
 	{
-		name: 'Cadantine seed',
 		item: getOSItem('Cadantine seed'),
 		amount: 5
 	},
 	{
-		name: 'Lantadyme seed',
 		item: getOSItem('Lantadyme seed'),
 		amount: 5
 	},
 	{
-		name: 'Avantoe seed',
 		item: getOSItem('Avantoe seed'),
 		amount: 5
 	},
 	{
-		name: 'Toadflax seed',
 		item: getOSItem('Toadflax seed'),
 		amount: 5
 	},
 	{
-		name: 'Ranarr seed',
 		item: getOSItem('Ranarr seed'),
 		amount: 5
 	},
 	{
-		name: 'Snapdragon seed',
 		item: getOSItem('Snapdragon seed'),
 		amount: 5
 	},
 	{
-		name: 'Torstol seed',
 		item: getOSItem('Torstol seed'),
 		amount: 5
 	}
