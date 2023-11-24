@@ -13,6 +13,7 @@ const arrayColumns = [
 	['users', 'favoriteItems'],
 	['users', 'favorite_alchables'],
 	['users', 'favorite_food'],
+	['users', 'favorite_bh_seeds'],
 	['users', 'attack_style'],
 	['users', 'combat_options'],
 	['users', 'ironman_alts'],
