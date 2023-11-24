@@ -21,6 +21,7 @@ import { ItemBank } from '../lib/types';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
+import { TOBUniques } from './data/tob';
 import resolveItems from './util/resolveItems';
 
 const fonts = {
@@ -780,6 +781,19 @@ const chestLootTypes = [
 		position: (canvas: Canvas, image: Image) => [
 			canvas.width - image.width + 25,
 			44 + canvas.height / 4 - image.height / 2
+		],
+		itemRect: [21, 50, 120, 160]
+	},
+	{
+		title: 'Theatre of Blood',
+		chestImage: loadImage('./src/lib/resources/images/tobChest.png'),
+		chestImagePurple: loadImage('./src/lib/resources/images/tobChestPurple.png'),
+		width: 260,
+		height: 180,
+		purpleItems: TOBUniques,
+		position: (canvas: Canvas, image: Image) => [
+			canvas.width - image.width,
+			55 + canvas.height / 4 - image.height / 2
 		],
 		itemRect: [21, 50, 120, 160]
 	},
