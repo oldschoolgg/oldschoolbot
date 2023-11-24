@@ -204,7 +204,8 @@ export async function processPendingActivities() {
 		}
 	});
 
-	return Promise.all(activities.map(completeActivity));
+	await Promise.all(activities.map(completeActivity));
+	return activities;
 }
 export async function syncActivityCache() {
 	const tasks = await prisma.activity.findMany({ where: { completed: false } });
