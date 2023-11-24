@@ -48,7 +48,7 @@ export const nightmareTask: MinionTask = {
 			}
 		}
 
-		await addMonsterXP(user, {
+		let xpRes = await addMonsterXP(user, {
 			monsterID: NIGHTMARE_ID,
 			quantity: Math.ceil(quantity / team.length),
 			duration,
@@ -113,7 +113,7 @@ export const nightmareTask: MinionTask = {
 			handleTripFinish(
 				user,
 				channelID,
-				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName}, you died ${deaths} times. Your ${monsterName} KC is now ${kc}.`,
+				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName}, you died ${deaths} times. Your ${monsterName} KC is now ${kc}. ${xpRes}`,
 				image.file.attachment,
 				data,
 				itemsAdded
