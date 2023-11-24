@@ -1,9 +1,9 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-import itemID from 'oldschooljs/dist/util/itemID';
 
 import { nestTable, strungRabbitFootNestTable } from '../../../simulation/birdsNest';
+import getOSItem from '../../../util/getOSItem';
 
 export interface Birdhouse {
 	name: string;
@@ -182,177 +182,177 @@ const birdhouses: Birdhouse[] = [
 export const birdhouseSeeds = [
 	{
 		name: 'Hammerstone seed',
-		itemID: itemID('Hammerstone seed'),
+		item: getOSItem('Hammerstone seed'),
 		amount: 10
 	},
 	{
 		name: 'Asgarnian seed',
-		itemID: itemID('Asgarnian seed'),
+		item: getOSItem('Asgarnian seed'),
 		amount: 10
 	},
 	{
 		name: 'Barley seed',
-		itemID: itemID('Barley seed'),
+		item: getOSItem('Barley seed'),
 		amount: 10
 	},
 	{
 		name: 'Yanillian seed',
-		itemID: itemID('Yanillian seed'),
+		item: getOSItem('Yanillian seed'),
 		amount: 10
 	},
 	{
 		name: 'Krandorian seed',
-		itemID: itemID('Krandorian seed'),
+		item: getOSItem('Krandorian seed'),
 		amount: 10
 	},
 	{
 		name: 'Wildblood seed',
-		itemID: itemID('Wildblood seed'),
+		item: getOSItem('Wildblood seed'),
 		amount: 5
 	},
 	{
 		name: 'Potato seed',
-		itemID: itemID('Potato seed'),
+		item: getOSItem('Potato seed'),
 		amount: 10
 	},
 	{
 		name: 'Onion seed',
-		itemID: itemID('Onion seed'),
+		item: getOSItem('Onion seed'),
 		amount: 10
 	},
 	{
 		name: 'Cabbage seed',
-		itemID: itemID('Cabbage seed'),
+		item: getOSItem('Cabbage seed'),
 		amount: 10
 	},
 	{
 		name: 'Tomato seed',
-		itemID: itemID('Tomato seed'),
+		item: getOSItem('Tomato seed'),
 		amount: 10
 	},
 	{
 		name: 'Sweetcorn seed',
-		itemID: itemID('Sweetcorn seed'),
+		item: getOSItem('Sweetcorn seed'),
 		amount: 10
 	},
 	{
 		name: 'Strawberry seed',
-		itemID: itemID('Strawberry seed'),
+		item: getOSItem('Strawberry seed'),
 		amount: 10
 	},
 	{
 		name: 'Watermelon seed',
-		itemID: itemID('Watermelon seed'),
+		item: getOSItem('Watermelon seed'),
 		amount: 10
 	},
 	{
 		name: 'Marigold seed',
-		itemID: itemID('Marigold seed'),
+		item: getOSItem('Marigold seed'),
 		amount: 10
 	},
 	{
 		name: 'Rosemary seed',
-		itemID: itemID('Rosemary seed'),
+		item: getOSItem('Rosemary seed'),
 		amount: 10
 	},
 	{
 		name: 'Nasturtium seed',
-		itemID: itemID('Nasturtium seed'),
+		item: getOSItem('Nasturtium seed'),
 		amount: 10
 	},
 	{
 		name: 'Woad seed',
-		itemID: itemID('Woad seed'),
+		item: getOSItem('Woad seed'),
 		amount: 10
 	},
 	{
 		name: 'Limpwurt seed',
-		itemID: itemID('Limpwurt seed'),
+		item: getOSItem('Limpwurt seed'),
 		amount: 10
 	},
 	{
 		name: 'Marrentill seed',
-		itemID: itemID('Marrentill seed'),
+		item: getOSItem('Marrentill seed'),
 		amount: 10
 	},
 	{
 		name: 'Guam seed',
-		itemID: itemID('Guam seed'),
+		item: getOSItem('Guam seed'),
 		amount: 10
 	},
 	{
 		name: 'Tarromin seed',
-		itemID: itemID('Tarromin seed'),
+		item: getOSItem('Tarromin seed'),
 		amount: 10
 	},
 	{
 		name: 'Harralander seed',
-		itemID: itemID('Harralander seed'),
+		item: getOSItem('Harralander seed'),
 		amount: 10
 	},
 	{
 		name: 'Jute seed',
-		itemID: itemID('Jute seed'),
+		item: getOSItem('Jute seed'),
 		amount: 10
 	},
 	{
 		name: 'White lily seed',
-		itemID: itemID('White lily seed'),
+		item: getOSItem('White lily seed'),
 		amount: 10
 	},
 	{
 		name: 'Snape grass seed',
-		itemID: itemID('Snape grass seed'),
+		item: getOSItem('Snape grass seed'),
 		amount: 10
 	},
 	{
 		name: 'Irit seed',
-		itemID: itemID('Irit seed'),
+		item: getOSItem('Irit seed'),
 		amount: 5
 	},
 	{
 		name: 'Dwarf weed seed',
-		itemID: itemID('Dwarf weed seed'),
+		item: getOSItem('Dwarf weed seed'),
 		amount: 5
 	},
 	{
 		name: 'Kwuarm seed',
-		itemID: itemID('Kwuarm seed'),
+		item: getOSItem('Kwuarm seed'),
 		amount: 5
 	},
 	{
 		name: 'Cadantine seed',
-		itemID: itemID('Cadantine seed'),
+		item: getOSItem('Cadantine seed'),
 		amount: 5
 	},
 	{
 		name: 'Lantadyme seed',
-		itemID: itemID('Lantadyme seed'),
+		item: getOSItem('Lantadyme seed'),
 		amount: 5
 	},
 	{
 		name: 'Avantoe seed',
-		itemID: itemID('Avantoe seed'),
+		item: getOSItem('Avantoe seed'),
 		amount: 5
 	},
 	{
 		name: 'Toadflax seed',
-		itemID: itemID('Toadflax seed'),
+		item: getOSItem('Toadflax seed'),
 		amount: 5
 	},
 	{
 		name: 'Ranarr seed',
-		itemID: itemID('Ranarr seed'),
+		item: getOSItem('Ranarr seed'),
 		amount: 5
 	},
 	{
 		name: 'Snapdragon seed',
-		itemID: itemID('Snapdragon seed'),
+		item: getOSItem('Snapdragon seed'),
 		amount: 5
 	},
 	{
 		name: 'Torstol seed',
-		itemID: itemID('Torstol seed'),
+		item: getOSItem('Torstol seed'),
 		amount: 5
 	}
 ];

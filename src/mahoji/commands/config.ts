@@ -278,7 +278,7 @@ async function favBhSeedsConfig(
 	if (itemToAdd || itemToRemove) {
 		const item = getItem(itemToAdd ?? itemToRemove);
 		if (!item) return "That item doesn't exist.";
-		if (!birdhouseSeeds.some(seed => seed.itemID === item.id)) return "That item can't be used in birdhouses.";
+		if (!birdhouseSeeds.some(seed => seed.item.id === item.id)) return "That item can't be used in birdhouses.";
 		if (itemToAdd) {
 			if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
 			await user.update({ favorite_bh_seeds: [...currentFavorites, item.id] });
@@ -960,7 +960,7 @@ export const configCommand: OSBMahojiCommand = {
 									.filter(i => (!value ? true : stringMatches(i.name, value)))
 									.map(i => ({
 										name: `${i.name}`,
-										value: i.itemID.toString()
+										value: i.item.id.toString()
 									}));
 							}
 						},
@@ -973,12 +973,12 @@ export const configCommand: OSBMahojiCommand = {
 								const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_bh_seeds: true });
 								return birdhouseSeeds
 									.filter(i => {
-										if (!mUser.favorite_bh_seeds.includes(i.itemID)) return false;
+										if (!mUser.favorite_bh_seeds.includes(i.item.id)) return false;
 										return !value ? true : stringMatches(i.name, value);
 									})
 									.map(i => ({
 										name: `${i.name}`,
-										value: i.itemID.toString()
+										value: i.item.id.toString()
 									}));
 							}
 						},

@@ -120,9 +120,9 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	const favourites = mUser.favorite_bh_seeds;
 	if (favourites.length > 0) {
 		for (const fav of favourites) {
-			const seed = birdhouseSeeds.find(s => s.itemID === fav);
+			const seed = birdhouseSeeds.find(s => s.item.id === fav);
 			if (!seed) continue;
-			const seedCost = new Bank().add(seed.itemID, seed.amount * 4);
+			const seedCost = new Bank().add(seed.item.id, seed.amount * 4);
 			if (userBank.has(seedCost)) {
 				infoStr.push(`You baited the birdhouses with ${seedCost}.`);
 				removeBank.add(seedCost);
@@ -133,7 +133,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 		if (!canPay) return "You don't have enough favourited seeds to bait the birdhouses.";
 	} else {
 		for (const currentSeed of birdhouseSeeds) {
-			const seedCost = new Bank().add(currentSeed.itemID, currentSeed.amount * 4);
+			const seedCost = new Bank().add(currentSeed.item.id, currentSeed.amount * 4);
 			if (userBank.has(seedCost)) {
 				infoStr.push(`You baited the birdhouses with ${seedCost}.`);
 				removeBank.add(seedCost);
