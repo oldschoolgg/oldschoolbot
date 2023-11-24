@@ -1,5 +1,6 @@
 import { Activity, activity_type_enum } from '@prisma/client';
 
+import { production } from '../config';
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
 import { butlerTask } from '../tasks/minions/butlerActivity';
@@ -180,6 +181,31 @@ export const tasks: MinionTask[] = [
 	halloweenTask
 ];
 
+export async function processPendingActivities() {
+	const activities: Activity[] = await prisma.activity.findMany({
+		where: {
+			completed: false,
+			finish_date: production
+				? {
+						lt: new Date()
+				  }
+				: undefined
+		}
+	});
+
+	await prisma.activity.updateMany({
+		where: {
+			id: {
+				in: activities.map(i => i.id)
+			}
+		},
+		data: {
+			completed: true
+		}
+	});
+
+	return Promise.all(activities.map(completeActivity));
+}
 export async function syncActivityCache() {
 	const tasks = await prisma.activity.findMany({ where: { completed: false } });
 

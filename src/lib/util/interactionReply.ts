@@ -11,6 +11,9 @@ import { SILENT_ERROR } from '../constants';
 import { logErrorForInteraction } from './logError';
 
 export function interactionReply(interaction: RepliableInteraction, response: string | InteractionReplyOptions) {
+	if (interaction.replied) {
+		return interaction.followUp(response);
+	}
 	if (interaction.deferred) {
 		return interaction.editReply(response);
 	}

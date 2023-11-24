@@ -3,6 +3,7 @@ import '../data/itemAliases';
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Misc, Monsters } from 'oldschooljs';
 
+import killableMonsters from '../minions/data/killableMonsters';
 import { handleNexKills } from '../simulation/nex';
 import { calcDropRatesFromBank } from '../util/calcDropRatesFromBank';
 import resolveItems from '../util/resolveItems';
@@ -27,7 +28,7 @@ export default async ({
 			};
 		}
 
-		return {
+		const result = {
 			bank: osjsMonster.kill(quantity, {
 				inCatacombs: catacombs,
 				onSlayerTask: onTask,
@@ -36,6 +37,13 @@ export default async ({
 				}
 			})
 		};
+
+		const killableMonster = killableMonsters.find(mon => mon.id === osjsMonster.id);
+		if (killableMonster && killableMonster.specialLoot) {
+			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity });
+		}
+
+		return result;
 	}
 
 	if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {

@@ -1,185 +1,75 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
-import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Bank } from 'oldschooljs';
+import fetch from 'node-fetch';
+import { Hiscores } from 'oldschooljs';
 
-import { leagueBuyables } from '../../lib/data/leaguesBuyables';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
-import { getUsername } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
-import { deferInteraction } from '../../lib/util/interactionReply';
+import leaguesJson from '../../lib/leagues.json';
+import { statsEmbed } from '../../lib/util/statsEmbed';
 import { OSBMahojiCommand } from '../lib/util';
-import { doMenu } from './leaderboard';
 
-const leaguesTrophiesBuyables = [
-	{
-		item: getOSItem('BSO dragon trophy'),
-		leaguesPointsRequired: 60_000
-	},
-	{
-		item: getOSItem('BSO rune trophy'),
-		leaguesPointsRequired: 50_000
-	},
-	{
-		item: getOSItem('BSO adamant trophy'),
-		leaguesPointsRequired: 40_000
-	},
-	{
-		item: getOSItem('BSO mithril trophy'),
-		leaguesPointsRequired: 30_000
-	},
-	{
-		item: getOSItem('BSO steel trophy'),
-		leaguesPointsRequired: 20_000
-	},
-	{
-		item: getOSItem('BSO iron trophy'),
-		leaguesPointsRequired: 10_000
-	},
-	{
-		item: getOSItem('BSO bronze trophy'),
-		leaguesPointsRequired: 5000
-	}
-];
+interface LeaguesData {
+	[key: string]: {
+		id: number;
+		title: string;
+		points: number;
+		completionPercentage: number | null;
+	};
+}
 
-export const leaguesCommand: OSBMahojiCommand = {
+const leaguesData: LeaguesData = leaguesJson;
+
+export const leaguesOSRSCommand: OSBMahojiCommand = {
 	name: 'leagues',
-	description: 'Compete in the OSB/BSO Leagues.',
+	description: 'Check the stats of a OSRS account.',
 	options: [
 		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'help',
-			description: 'Shows help and information about leagues.'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'claim_trophy',
-			description: 'Claim your leagues trophys.'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'leaderboard',
-			description: 'The leagues leaderboard.'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'buy_reward',
-			description: 'Buy a reward with your leagues points.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'item',
-					description: 'The item to buy.',
-					required: true,
-					autocomplete: async (value: string) => {
-						return leagueBuyables
-							.filter(i => (!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({ name: i.item.name, value: i.item.name }));
-					}
-				}
-			]
+			type: ApplicationCommandOptionType.String,
+			name: 'username',
+			description: 'The RuneScape username of the account.',
+			required: true
 		}
 	],
-	run: async ({
-		options,
-		userID,
-		channelID,
-		interaction
-	}: CommandRunOptions<{
-		help?: {};
-		claim_trophy?: {};
-		leaderboard?: {};
-		buy_reward?: { item: string };
-	}>) => {
-		const user = await mUserFetch(userID.toString());
-		const roboChimpUser = await roboChimpUserFetch(user.id);
-
-		if (options.claim_trophy) {
-			const loot = new Bank();
-			for (const trophy of leaguesTrophiesBuyables) {
-				if (
-					roboChimpUser.leagues_points_total >= trophy.leaguesPointsRequired &&
-					!user.allItemsOwned.has(trophy.item.id)
-				) {
-					loot.add(trophy.item.id);
+	run: async ({ options }: CommandRunOptions<{ username: string }>) => {
+		const leaguesResult: {
+			username: string;
+			league_tasks: number[];
+		} = await fetch(
+			`https://sync.runescape.wiki/runelite/player/${encodeURIComponent(
+				options.username
+			)}/TRAILBLAZER_RELOADED_LEAGUE`,
+			{
+				headers: {
+					'User-Agent': 'Old School Bot - @magnaboy'
 				}
 			}
-
-			if (loot.length === 0) {
-				return `You don't have any trophies you can claim. You have ${roboChimpUser.leagues_points_total.toLocaleString()} points.
-
-${leaguesTrophiesBuyables
-	.map(i => `${i.item.name}: Requires ${i.leaguesPointsRequired.toLocaleString()} points`)
-	.join('\n')}`;
-			}
-
-			await user.addItemsToBank({ items: loot, collectionLog: false });
-			return `You received ${loot}.`;
+		)
+			.then(res => res.json())
+			.catch(() => null);
+		if (!leaguesResult || 'error' in leaguesResult) {
+			return 'Error fetching leagues stats. Are you using the WikiSync plugin?';
 		}
+		const player = await Hiscores.fetch(options.username, {
+			type: 'seasonal'
+		});
 
-		if (options.buy_reward) {
-			let quantity = 1;
-			const pointsCostMultiplier = 150;
-
-			const item = leagueBuyables.find(i => stringMatches(i.item.name, options.buy_reward?.item));
-
-			if (!item) return "That's not a valid item.";
-
-			let baseCost = item.price * pointsCostMultiplier;
-			const cost = quantity * baseCost;
-			if (roboChimpUser.leagues_points_balance_osb < cost) {
-				return `You don't have enough League Points to purchase this. You need ${cost}, but you have ${roboChimpUser.leagues_points_balance_osb}.`;
-			}
-			const newUser = await roboChimpClient.user.update({
-				where: {
-					id: BigInt(user.id)
-				},
-				data: {
-					leagues_points_balance_osb: {
-						decrement: cost
-					}
-				}
-			});
-
-			const loot = new Bank().add(item.item.id, quantity);
-			await transactItems({
-				userID: user.id,
-				itemsToAdd: loot,
-				collectionLog: true
-			});
-
-			return `You spent ${cost} Leagues Points and received ${loot}. You have ${newUser.leagues_points_balance_osb} points remaining.`;
-		}
-
-		if (options.leaderboard) {
-			const result = await roboChimpClient.user.findMany({
-				where: {
-					leagues_points_total: {
-						gt: 0
-					}
-				},
-				orderBy: {
-					leagues_points_total: 'desc'
-				},
-				take: 100
-			});
-			await deferInteraction(interaction);
-			doMenu(
-				user,
-				channelID,
-				chunk(result, 10).map(subList =>
-					subList
-						.map(
-							({ id, leagues_points_total }) =>
-								`**${getUsername(id)}:** ${leagues_points_total.toLocaleString()} Pts`
-						)
-						.join('\n')
-				),
-				'Leagues Points Leaderboard'
-			);
-			return null;
-		}
-
-		return 'https://bso-wiki.oldschool.gg/leagues';
+		const [rarestTaskCompleted] = leaguesResult.league_tasks.sort((a, b) => {
+			return (leaguesData[a].completionPercentage ?? 0) - (leaguesData[b].completionPercentage ?? 0);
+		});
+		return {
+			content: `You have completed ${leaguesResult.league_tasks.length} tasks.
+You have ${leaguesResult.league_tasks.reduce((acc, cur) => acc + leaguesData[cur].points, 0)} points.
+Your rarest task is **${leaguesData[rarestTaskCompleted].title}** with ${
+				leaguesData[rarestTaskCompleted].completionPercentage ?? '<0.1'
+			}% completion.
+`,
+			embeds: [
+				statsEmbed({
+					username: options.username,
+					color: 7_981_338,
+					player,
+					postfix: '(Leagues)',
+					key: 'level'
+				})
+			]
+		};
 	}
 };

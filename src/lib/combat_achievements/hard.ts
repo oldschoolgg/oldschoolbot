@@ -241,7 +241,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		id: 220,
 		name: 'Why Are You Running?',
 		type: 'mechanical',
-		monster: 'General Graardor',
+		monster: 'Giant Mole',
 		desc: 'Kill the Giant Mole without her burrowing more than 2 times.',
 		rng: {
 			chancePerKill: 20,
@@ -629,7 +629,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		id: 254,
 		name: 'Confident Raider',
 		type: 'restriction',
-		monster: 'Theatre of Blood: Entry Mode',
+		monster: 'Tombs of Amascut: Entry Mode',
 		desc: 'Complete a Tombs of Amascut raid at level 100 or above.',
 		requirements: new Requirements().add({
 			minigames: {

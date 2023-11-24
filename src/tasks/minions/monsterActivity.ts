@@ -115,7 +115,7 @@ export const monsterTask: MinionTask = {
 						gear_wildy: calc.newGear as Prisma.InputJsonObject
 					});
 				} else {
-					await user.specialRemoveItems(calc.lostItems);
+					await user.specialRemoveItems(calc.lostItems, { wildy: monster.wildy ? true : false });
 					reEquipedItems = true;
 				}
 
@@ -224,9 +224,10 @@ export const monsterTask: MinionTask = {
 			}
 		}
 		// Regular loot
-		const loot = monster.table.kill(quantity - newSuperiorCount, killOptions);
+		const finalQuantity = quantity - newSuperiorCount;
+		const loot = monster.table.kill(finalQuantity, killOptions);
 		if (monster.specialLoot) {
-			monster.specialLoot(loot, user, data);
+			monster.specialLoot({ loot, ownedItems: user.allItemsOwned, quantity: finalQuantity });
 		}
 		if (newSuperiorCount) {
 			// Superior loot and totems if in catacombs
