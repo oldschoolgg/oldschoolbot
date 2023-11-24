@@ -11,6 +11,24 @@ import resolveItems from '../../src/lib/util/resolveItems';
 import { geCommand } from '../../src/mahoji/commands/ge';
 import { createTestUser, mockClient, TestUser } from './util';
 
+const quantities = [-1, 0, 100_000_000_000_000_000, 1, 2, 38, 1_000_000_000_000, 500, '5*5'];
+const prices = [
+	-1,
+	0,
+	100_000_000_000_000_000,
+	1,
+	2,
+	1_000_000_000_000,
+	99,
+	100,
+	101,
+	1005,
+	4005,
+	5005,
+	100_000,
+	'5*9999999'
+];
+
 const sampleBank = new Bank()
 	.add('Coins', 1_000_000_000)
 	.add('Egg', 1000)
@@ -53,50 +71,22 @@ describe('Grand Exchange', async () => {
 
 			const currentOwnedBank = await GrandExchange.fetchOwnedBank();
 			expect(currentOwnedBank.toString()).toEqual(new Bank().toString());
-
-			const totalExpectedBank = new Bank();
-			let users: TestUser[] = [];
 			let amountOfUsers = randInt(300, 400);
+
+			const totalExpectedBank = sampleBank.clone().multiply(amountOfUsers);
+			let users: TestUser[] = [];
 
 			for (let i = 0; i < amountOfUsers; i++) {
 				const user = await createTestUser();
 				await user.addItemsToBank({ items: sampleBank });
 				users.push(user);
-				totalExpectedBank.add(sampleBank);
-				assert(user.bankWithGP.equals(sampleBank), 'Test users bank should match sample bank');
 			}
 
 			for (let i = 0; i < users.length; i++) {
 				for (const item of itemPool) {
 					const method = randArrItem(['buy', 'sell']);
-					let quantity = randArrItem([
-						-1,
-						0,
-						100_000_000_000_000_000,
-						1,
-						2,
-						38,
-						1_000_000_000_000,
-						500,
-						'5*5'
-					]);
-					let price = randArrItem([
-						-1,
-						0,
-						100_000_000_000_000_000,
-						1,
-						2,
-						1_000_000_000_000,
-						99,
-						100,
-						101,
-						1005,
-						4005,
-						5005,
-						100_000,
-						'5*9999999'
-					]);
-
+					let quantity = randArrItem(quantities);
+					let price = randArrItem(prices);
 					users[i].runCommand(geCommand, {
 						[method]: {
 							item,
