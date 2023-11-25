@@ -123,7 +123,13 @@ export const tksCommand: OSBMahojiCommand = {
 		if (options.buy) {
 			if (hasKilledJad) {
 				if (isIronman) {
-					shopStock = item.rinIMShopStock ? item.rinIMShopStock : item.stock ? item.stock : null;
+					shopStock = item.rinIMShopStock
+						? item.rinIMShopStock
+						: item.rinShopStock
+						? item.rinShopStock
+						: item.stock
+						? item.stock
+						: null;
 				} else {
 					shopStock = item.rinShopStock ? item.rinShopStock : item.stock ? item.stock : null;
 				}
