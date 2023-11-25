@@ -4359,6 +4359,25 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
+    "customReq": [Function],
+    "globalAnnouncementOnFirstBuy": true,
+    "itemCost": Bank {
+      "bank": {
+        "40058": 1,
+        "71479": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Completionist cape (t)",
+    "outputItems": Bank {
+      "bank": {
+        "40059": 1,
+        "71946": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
     "itemCost": Bank {
       "bank": {
         "6183": 1,

@@ -268,7 +268,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	50_000_000
+	100_000_000
 );
 setCustomItem(
 	40_059,
@@ -280,7 +280,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	50_000_000
+	250_000_000
 );
 
 setCustomItem(40_026, 'Scroll of life', 'Coal', {}, 1_000_000);
@@ -9406,7 +9406,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	100_000
+	1_000_000
 );
 
 setCustomItem(
@@ -9575,4 +9575,17 @@ setCustomItem(
 		}
 	},
 	100_000
+);
+
+setCustomItem(
+	71_946,
+	'Completionist hood (t)',
+	'Dragon full helm',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000_000
 );

@@ -121,5 +121,26 @@ export const bsoBuyables: Buyable[] = [
 			return [true];
 		},
 		globalAnnouncementOnFirstBuy: true
+	},
+	{
+		name: 'Completionist cape (t)',
+		outputItems: new Bank().add('Completionist cape (t)').add('Completionist hood (t)'),
+		itemCost: new Bank().add('Completionist cape').add('Completionist hood'),
+		customReq: async user => {
+			let { totalPercentTrimmed } = await calculateCompCapeProgress(user);
+			if (totalPercentTrimmed < 100) {
+				return [
+					false,
+					`You don't meet the requirements to buy a trimmed Completionist cape. Refer to ${mentionCommand(
+						globalClient,
+						'completion',
+						'check'
+					)} to see what you are missing.`
+				];
+			}
+
+			return [true];
+		},
+		globalAnnouncementOnFirstBuy: true
 	}
 ];

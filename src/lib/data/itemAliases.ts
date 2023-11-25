@@ -117,6 +117,9 @@ setItemAlias(47_509, ['emb'], false);
 setItemAlias(19_837, ['gmc'], false);
 setItemAlias(19_838, ['gm'], false);
 setItemAlias(50_421, ['cmb'], false);
+setItemAlias(40_058, ['ccu'], false);
+setItemAlias(40_059, ['cct'], false);
+
 // Castle wars
 setItemAlias(25_165, 'Red decorative full helm');
 setItemAlias(4071, 'Red decorative helm');
