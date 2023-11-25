@@ -218,6 +218,19 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	return str.join('');
 }
 
+export const calculateTripConsumableCost = (c: Consumable, quantity: number, duration: number) => {
+	const consumableCost = c.itemCost.clone();
+	if (c.qtyPerKill) {
+		consumableCost.multiply(quantity);
+	} else if (c.qtyPerMinute) {
+		consumableCost.multiply(duration / Time.Minute);
+	}
+	for (const [item, qty] of Object.entries(consumableCost.bank)) {
+		consumableCost.bank[item] = Math.ceil(qty);
+	}
+	return consumableCost;
+};
+
 export function formatPohBoosts(boosts: POHBoosts) {
 	const bonusStr = [];
 	const slotStr = [];
@@ -271,6 +284,12 @@ export function convertPercentChance(percent: number) {
 export function murMurHashChance(input: string, percent: number) {
 	const hash = murmurHash.v3(input) % 1e4;
 	return hash < percent * 100;
+}
+
+const getMurKey = (input: string | number, sortHash: string) => `${input.toString()}-${sortHash}`;
+
+export function murMurSort<T extends string | number>(arr: T[], sortHash: string) {
+	return [...arr].sort((a, b) => murmurHash.v3(getMurKey(b, sortHash)) - murmurHash.v3(getMurKey(a, sortHash)));
 }
 
 export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {

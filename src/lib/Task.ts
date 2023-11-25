@@ -1,5 +1,6 @@
 import { Activity, activity_type_enum } from '@prisma/client';
 
+import { production } from '../config';
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
 import { butlerTask } from '../tasks/minions/butlerActivity';
@@ -69,7 +70,6 @@ import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
 import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
 import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity';
 import { questingTask } from '../tasks/minions/questingActivity';
-import { revenantsTask } from '../tasks/minions/revenantsActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
 import { sawmillTask } from '../tasks/minions/sawmillActivity';
 import { shootingStarTask } from '../tasks/minions/shootingStarsActivity';
@@ -150,7 +150,6 @@ export const tasks: MinionTask[] = [
 	motherlodeMiningTask,
 	runecraftTask,
 	sawmillTask,
-	revenantsTask,
 	woodcuttingTask,
 	wealthChargeTask,
 	tokkulShopTask,
@@ -182,6 +181,32 @@ export const tasks: MinionTask[] = [
 	halloweenTask
 ];
 
+export async function processPendingActivities() {
+	const activities: Activity[] = await prisma.activity.findMany({
+		where: {
+			completed: false,
+			finish_date: production
+				? {
+						lt: new Date()
+				  }
+				: undefined
+		}
+	});
+
+	await prisma.activity.updateMany({
+		where: {
+			id: {
+				in: activities.map(i => i.id)
+			}
+		},
+		data: {
+			completed: true
+		}
+	});
+
+	await Promise.all(activities.map(completeActivity));
+	return activities;
+}
 export async function syncActivityCache() {
 	const tasks = await prisma.activity.findMany({ where: { completed: false } });
 
@@ -228,7 +253,8 @@ const ignored: activity_type_enum[] = [
 	activity_type_enum.BirthdayEvent,
 	activity_type_enum.BlastFurnace,
 	activity_type_enum.Easter,
-	activity_type_enum.HalloweenEvent
+	activity_type_enum.HalloweenEvent,
+	activity_type_enum.Revenants
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {

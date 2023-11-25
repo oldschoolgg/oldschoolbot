@@ -2,7 +2,6 @@ import { User } from '@prisma/client';
 import { notEmpty } from 'e';
 
 import { SupportServer } from '../config';
-import { PrecommandUser } from '../mahoji/lib/preCommand';
 import { BitField, PerkTier, Roles } from './constants';
 import { logError } from './util/logError';
 
@@ -15,8 +14,19 @@ const tier3ElligibleBits = [
 	BitField.IsWikiContributor
 ];
 
+export const allPerkBitfields: BitField[] = [
+	BitField.IsPatronTier6,
+	BitField.IsPatronTier5,
+	BitField.IsPatronTier4,
+	BitField.IsPatronTier3,
+	BitField.IsPatronTier2,
+	BitField.IsPatronTier1,
+	BitField.HasPermanentTierOne,
+	BitField.BothBotsMaxedFreeTierOnePerks
+];
+
 export function getUsersPerkTier(
-	userOrBitfield: MUser | User | PrecommandUser | BitField[],
+	userOrBitfield: MUser | User | BitField[],
 	noCheckOtherAccounts?: boolean
 ): PerkTier | 0 {
 	if (userOrBitfield instanceof GlobalMUserClass && userOrBitfield.user.premium_balance_tier !== null) {
@@ -89,7 +99,7 @@ export function getUsersPerkTier(
 	return 0;
 }
 
-export function syncPerkTierOfUser(user: MUser | PrecommandUser) {
+export function syncPerkTierOfUser(user: MUser) {
 	const perkTier = getUsersPerkTier(user, true);
 	perkTierCache.set(user.id, perkTier);
 	return perkTier;

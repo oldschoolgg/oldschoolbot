@@ -44,6 +44,21 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
+		item: getOSItem('Guthix rest (3)'),
+		aliases: ['guthix rest (3)', 'guthix rest'],
+		level: 18,
+		xp: 59,
+		inputItems: new Bank({
+			'Cup of hot water': 1,
+			'Guam leaf': 1,
+			Harralander: 1,
+			Marrentill: 1
+		}),
+		tickRate: 2,
+		bankTimePerPotion: 1.5,
+		zahur: false
+	},
+	{
 		item: getOSItem('Compost potion (3)'),
 		aliases: ['compost potion (3)', 'compost potion', 'compost'],
 		level: 22,
@@ -297,18 +312,6 @@ const Potions: Mixable[] = [
 		}),
 		tickRate: 2,
 		bankTimePerPotion: 0.45
-	},
-	{
-		item: getOSItem('Cadantine blood potion (unf)'),
-		aliases: ['cadantine blood potion (unf)', 'cadantine blood potion', 'cadantine blood'],
-		level: 80,
-		xp: 0,
-		inputItems: new Bank({
-			'Vial of blood': 1,
-			Cadantine: 1
-		}),
-		tickRate: 1,
-		bankTimePerPotion: 0.3
 	},
 	{
 		item: getOSItem('Bastion potion (3)'),
