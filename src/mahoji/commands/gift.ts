@@ -268,7 +268,7 @@ ${items}`
 
 			await handleMahojiConfirmation(
 				interaction,
-				`Are you sure you want to send this gift box (${giftBox.id}) to ${recipient}? You cannot get it back.`
+				`Are you sure you want to send this gift box (${giftBox.id}) to ${recipient.badgedUsername}? You cannot get it back.`
 			);
 			await prisma.giftBox.update({
 				where: {
@@ -281,7 +281,7 @@ ${items}`
 			});
 
 			regenerateGiftCountCache();
-			return `You sent the gift box to ${recipient}!`;
+			return `You sent the gift box to ${recipient.badgedUsername}!`;
 		}
 
 		return 'Invalid options.';
