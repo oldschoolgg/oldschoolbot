@@ -2,10 +2,10 @@ import { time } from '@discordjs/builders';
 import { User } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import birdhouses, { Birdhouse } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
+import birdhouses, { Birdhouse, birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import defaultBirdhouseTrap, { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { birdhouseLimit, formatDuration, itemID, stringMatches } from '../../../lib/util';
+import { birdhouseLimit, formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
@@ -17,150 +17,6 @@ interface BirdhouseDetails {
 	birdHouse: Birdhouse | null;
 	readyAt: Date | null;
 }
-
-const birdhouseSeedReq = [
-	{
-		itemID: itemID('Hammerstone seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Asgarnian seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Barley seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Yanillian seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Krandorian seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Wildblood seed'),
-		amount: 5
-	},
-	{
-		itemID: itemID('Potato seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Onion seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Cabbage seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Tomato seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Sweetcorn seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Strawberry seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Watermelon seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Marigold seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Rosemary seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Nasturtium seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Woad seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Limpwurt seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Marrentill seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Guam seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Tarromin seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Harralander seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Jute seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('White lily seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Snape grass seed'),
-		amount: 10
-	},
-	{
-		itemID: itemID('Irit seed'),
-		amount: 5
-	},
-
-	{
-		itemID: itemID('Dwarf weed seed'),
-		amount: 5
-	},
-	{
-		itemID: itemID('Kwuarm seed'),
-		amount: 5
-	},
-	{
-		itemID: itemID('Cadantine seed'),
-		amount: 5
-	},
-	{
-		itemID: itemID('Lantadyme seed'),
-		amount: 5
-	},
-	{
-		itemID: itemID('Avantoe seed'),
-		amount: 5
-	},
-	{
-		itemID: itemID('Toadflax seed'),
-		amount: 5
-	},
-	{
-		itemID: itemID('Ranarr seed'),
-		amount: 5
-	},
-	{
-		itemID: itemID('Snapdragon seed'),
-		amount: 5
-	},
-	{
-		itemID: itemID('Torstol seed'),
-		amount: 5
-	}
-];
 
 export async function calculateBirdhouseDetails(userID: string | bigint): Promise<BirdhouseDetails> {
 	const bh = await mahojiUsersSettingsFetch(userID, {
@@ -261,13 +117,31 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	}
 
 	let canPay = false;
-	for (const currentSeed of birdhouseSeedReq) {
-		const seedCost = new Bank().add(currentSeed.itemID, currentSeed.amount * birdHouses);
-		if (userBank.has(seedCost)) {
-			infoStr.push(`You baited the birdhouses with ${seedCost}.`);
-			removeBank.add(seedCost);
-			canPay = true;
-			break;
+
+	const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_bh_seeds: true });
+	const favourites = mUser.favorite_bh_seeds;
+	if (favourites.length > 0) {
+		for (const fav of favourites) {
+			const seed = birdhouseSeeds.find(s => s.item.id === fav);
+			if (!seed) continue;
+			const seedCost = new Bank().add(seed.item, seed.amount * birdHouses);
+			if (userBank.has(seedCost)) {
+				infoStr.push(`You baited the birdhouses with ${seedCost}.`);
+				removeBank.add(seedCost);
+				canPay = true;
+				break;
+			}
+		}
+		if (!canPay) return "You don't have enough favourited seeds to bait the birdhouses.";
+	} else {
+		for (const currentSeed of birdhouseSeeds) {
+			const seedCost = new Bank().add(currentSeed.item.id, currentSeed.amount * 4);
+			if (userBank.has(seedCost)) {
+				infoStr.push(`You baited the birdhouses with ${seedCost}.`);
+				removeBank.add(seedCost);
+				canPay = true;
+				break;
+			}
 		}
 	}
 

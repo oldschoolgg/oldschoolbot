@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { nestTable, strungRabbitFootNestTable } from '../../../simulation/birdsNest';
+import getOSItem from '../../../util/getOSItem';
 
 export interface Birdhouse {
 	name: string;
@@ -196,6 +197,149 @@ const birdhouses: Birdhouse[] = [
 		qpRequired: 33,
 		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 9]),
 		strungRabbitFootTable: new LootTable().tertiary(2, strungRabbitFootNestTable, [1, 9])
+	}
+];
+
+export const birdhouseSeeds = [
+	{
+		item: getOSItem('Hammerstone seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Asgarnian seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Barley seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Yanillian seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Krandorian seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Wildblood seed'),
+		amount: 5
+	},
+	{
+		item: getOSItem('Potato seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Onion seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Cabbage seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Tomato seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Sweetcorn seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Strawberry seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Watermelon seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Marigold seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Rosemary seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Nasturtium seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Woad seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Limpwurt seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Marrentill seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Guam seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Tarromin seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Harralander seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Jute seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('White lily seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Snape grass seed'),
+		amount: 10
+	},
+	{
+		item: getOSItem('Irit seed'),
+		amount: 5
+	},
+	{
+		item: getOSItem('Dwarf weed seed'),
+		amount: 5
+	},
+	{
+		item: getOSItem('Kwuarm seed'),
+		amount: 5
+	},
+	{
+		item: getOSItem('Cadantine seed'),
+		amount: 5
+	},
+	{
+		item: getOSItem('Lantadyme seed'),
+		amount: 5
+	},
+	{
+		item: getOSItem('Avantoe seed'),
+		amount: 5
+	},
+	{
+		item: getOSItem('Toadflax seed'),
+		amount: 5
+	},
+	{
+		item: getOSItem('Ranarr seed'),
+		amount: 5
+	},
+	{
+		item: getOSItem('Snapdragon seed'),
+		amount: 5
+	},
+	{
+		item: getOSItem('Torstol seed'),
+		amount: 5
 	}
 ];
 

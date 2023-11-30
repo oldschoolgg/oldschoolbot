@@ -791,6 +791,11 @@ const Buyables: Buyable[] = [
 		aliases: ['quest cape'],
 		qpRequired: MAX_QP,
 		gpCost: 99_000
+	},{
+		name: 'Rope',
+		aliases: ['rope'],
+		gpCost: 100,
+		ironmanPrice: 25
 	},
 	{
 		name: 'Fishing Bait',

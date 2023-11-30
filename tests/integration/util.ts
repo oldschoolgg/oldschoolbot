@@ -6,9 +6,11 @@ import { Bank } from 'oldschooljs';
 
 import { globalConfig } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
-import { prisma } from '../../src/lib/settings/prisma';
+import { convertStoredActivityToFlatActivity, prisma } from '../../src/lib/settings/prisma';
+import { processPendingActivities } from '../../src/lib/Task';
 import { ItemBank } from '../../src/lib/types';
 import { assert, cryptoRand } from '../../src/lib/util';
+import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { ClientStorage, User, UserStats } from '.prisma/client';
@@ -90,6 +92,23 @@ export class TestUser extends MUserClass {
 		if (stats[key] !== value) {
 			throw new Error(`Expected ${key} to be ${value} but got ${stats[key]}`);
 		}
+	}
+
+	async max() {
+		await giveMaxStats(this);
+		return this;
+	}
+
+	async runActivity() {
+		const [finishedActivity] = await processPendingActivities();
+		if (!finishedActivity) {
+			throw new Error('runActivity: No activity was ran');
+		}
+		if (finishedActivity.user_id.toString() !== this.id) {
+			throw new Error('runActivity: Ran activity, but it didnt belong to this user');
+		}
+		const data = convertStoredActivityToFlatActivity(finishedActivity);
+		return data;
 	}
 }
 

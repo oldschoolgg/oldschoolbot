@@ -23,7 +23,10 @@ import { ItemBank } from '../lib/types';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
+import { giftCountCache } from '../mahoji/commands/gift';
+import { TOBUniques } from './data/tob';
 import { SkillsEnum } from './skilling/types';
+import { murMurSort } from './util';
 import { applyCustomItemEffects } from './util/customItemEffects';
 import resolveItems from './util/resolveItems';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
@@ -50,6 +53,12 @@ const CACHE_DIR = './icon_cache';
 const itemSize = 32;
 const distanceFromTop = 32;
 const distanceFromSide = 16;
+
+const sourceGiftItemIDs = [26_298, 26_300, 26_302, 26_308, 26_316, 26_318, 26_320, 26_322, 26_324];
+const giftItemIDList: number[] = [];
+for (let i = 0; i < 100; i++) {
+	giftItemIDList.push(...sourceGiftItemIDs);
+}
 
 const { floor, ceil } = Math;
 
@@ -272,6 +281,8 @@ class BankImageTask {
 	public redGlow: Image | null = null;
 	public bananaGlow: Image | null = null;
 	public glows: Map<number, Image>;
+	public treeImage!: Image;
+
 	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
 		this.itemIconsList = new Set();
@@ -288,6 +299,7 @@ class BankImageTask {
 	async init() {
 		this.redGlow = await loadImage(await fs.readFile('./src/lib/resources/images/red-glow.png'));
 		this.bananaGlow = await loadImage(await fs.readFile('./src/lib/resources/images/banana-glow.png'));
+		this.treeImage = await loadImage('./src/lib/resources/images/xmastree.png');
 		const colors: Record<BGSpriteName, string> = {
 			default: '#655741',
 			dark: '#393939',
@@ -803,6 +815,28 @@ class BankImageTask {
 			);
 		}
 
+		ctx.drawImage(this.treeImage, 370, 170);
+		if (user) {
+			const giftsOwned = giftCountCache.get(user.id);
+
+			const boundingBoxX = 326;
+			const boundingBoxY = 295;
+			const boundingBoxWidth = 150;
+			const boundingBoxHeight = 25;
+
+			if (giftsOwned) {
+				const sorted = murMurSort(giftItemIDList, user.id);
+				for (let i = 0; i < giftsOwned; i++) {
+					const image = await this.getItemImage(sorted[i], user);
+
+					const x = boundingBoxX + (randInt(0, boundingBoxWidth) - image.width / 2);
+					const y = boundingBoxY + (randInt(0, boundingBoxHeight) - image.height / 2);
+
+					ctx.drawImage(image, x, y);
+				}
+			}
+		}
+
 		if (showValue) {
 			title += ` (Value: ${toKMB(totalValue)})`;
 		}
@@ -848,6 +882,19 @@ const chestLootTypes = [
 		position: (canvas: Canvas, image: Image) => [
 			canvas.width - image.width + 25,
 			44 + canvas.height / 4 - image.height / 2
+		],
+		itemRect: [21, 50, 120, 160]
+	},
+	{
+		title: 'Theatre of Blood',
+		chestImage: loadImage('./src/lib/resources/images/tobChest.png'),
+		chestImagePurple: loadImage('./src/lib/resources/images/tobChestPurple.png'),
+		width: 260,
+		height: 180,
+		purpleItems: TOBUniques,
+		position: (canvas: Canvas, image: Image) => [
+			canvas.width - image.width,
+			55 + canvas.height / 4 - image.height / 2
 		],
 		itemRect: [21, 50, 120, 160]
 	},

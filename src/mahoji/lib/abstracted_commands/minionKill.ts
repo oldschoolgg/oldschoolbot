@@ -12,7 +12,6 @@ import {
 	Time,
 	uniqueArr
 } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
@@ -184,7 +183,7 @@ export async function minionKillCommand(
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
 	if (['vasa', 'vasa magus'].some(i => stringMatches(i, name))) return vasaCommand(user, channelID, quantity);
-	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name);
+	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name, quantity);
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID);
 	if (['igne ', 'ignecarus'].some(i => name.toLowerCase().includes(i)))
 		return igneCommand(interaction, user, channelID, name, quantity);
@@ -1089,7 +1088,7 @@ export async function minionKillCommand(
 	return response;
 }
 
-export async function monsterInfo(user: MUser, name: string): CommandResponse {
+export async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
 	const monster = findMonster(name);
 
 	if (stringMatches(name, 'nightmare')) {

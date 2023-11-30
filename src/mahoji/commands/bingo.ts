@@ -67,10 +67,16 @@ export async function fetchBingosThatUserIsInvolvedIn(userID: string) {
 	return bingos;
 }
 
-async function bingoTeamLeaderboard(user: MUser, channelID: string, bingo: BingoManager): CommandResponse {
+async function bingoTeamLeaderboard(
+	interaction: ChatInputCommandInteraction,
+	user: MUser,
+	channelID: string,
+	bingo: BingoManager
+): CommandResponse {
 	const { teams } = await bingo.fetchAllParticipants();
 
 	doMenu(
+		interaction,
 		user,
 		channelID,
 		chunk(teams, 10).map((subList, i) =>
@@ -649,7 +655,7 @@ export const bingoCommand: OSBMahojiCommand = {
 		if (options.leaderboard) {
 			const bingo = await getBingoFromUserInput(options.leaderboard.bingo);
 			if (!bingo) return 'Invalid bingo.';
-			return bingoTeamLeaderboard(user, channelID, new BingoManager(bingo));
+			return bingoTeamLeaderboard(interaction, user, channelID, new BingoManager(bingo));
 		}
 
 		if (options.create_bingo) {
