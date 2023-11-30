@@ -64,7 +64,17 @@ async function handleTobXP(user: MUser, isHm: boolean) {
 export const tobTask: MinionTask = {
 	type: 'TheatreOfBlood',
 	async run(data: TheatreOfBloodTaskOptions) {
-		const { channelID, users, hardMode, leader, wipedRooms, duration, deaths: allDeaths, quantity, cc: chincannonUser} = data;
+		const {
+			channelID,
+			users,
+			hardMode,
+			leader,
+			wipedRooms,
+			duration,
+			deaths: allDeaths,
+			quantity,
+			cc: chincannonUser
+		} = data;
 		const allUsers = await Promise.all(users.map(async u => mUserFetch(u)));
 		const minigameID = hardMode ? 'tob_hard' : 'tob';
 		const allTag = allUsers.map(u => u.toString()).join('');

@@ -681,7 +681,12 @@ export async function cacheUsernames() {
 	}
 }
 
-async function itemContractLb(interaction:ChatInputCommandInteraction,user: MUser, channelID: string, ironmanOnly?: boolean) {
+async function itemContractLb(
+	interaction: ChatInputCommandInteraction,
+	user: MUser,
+	channelID: string,
+	ironmanOnly?: boolean
+) {
 	const results = await prisma.user.findMany({
 		select: {
 			id: true,
@@ -802,7 +807,7 @@ LIMIT 20;`;
 	return lbMsg('Global (OSB+BSO) CL Leaderboard');
 }
 
-async function leaguesPointsLeaderboard(interaction:ChatInputCommandInteraction,user: MUser, channelID: string) {
+async function leaguesPointsLeaderboard(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
 	const result = await roboChimpClient.user.findMany({
 		where: {
 			leagues_points_total: {
@@ -870,7 +875,13 @@ ${Object.entries(taskObj)
 	.join('\n')}`;
 }
 
-async function compLeaderboard(interaction:ChatInputCommandInteraction,user: MUser, untrimmed: boolean, ironmanOnly: boolean, channelID: string) {
+async function compLeaderboard(
+	interaction: ChatInputCommandInteraction,
+	user: MUser,
+	untrimmed: boolean,
+	ironmanOnly: boolean,
+	channelID: string
+) {
 	const key: keyof UserStats = untrimmed ? 'untrimmed_comp_cape_percent' : 'comp_cape_percent';
 	let list = await prisma.$queryRawUnsafe<{ id: string; percent: number }[]>(
 		`SELECT user_id::text AS id, ${key} AS percent
@@ -899,8 +910,13 @@ async function compLeaderboard(interaction:ChatInputCommandInteraction,user: MUs
 	return lbMsg('Completionist Leaderboard');
 }
 
-async function leaguesLeaderboard(interaction:ChatInputCommandInteraction,user: MUser, channelID: string, type: 'points' | 'tasks' | 'hardest_tasks') {
-	if (type === 'points') return leaguesPointsLeaderboard(interaction,user, channelID);
+async function leaguesLeaderboard(
+	interaction: ChatInputCommandInteraction,
+	user: MUser,
+	channelID: string,
+	type: 'points' | 'tasks' | 'hardest_tasks'
+) {
+	if (type === 'points') return leaguesPointsLeaderboard(interaction, user, channelID);
 	if (type === 'hardest_tasks') return leastCompletedLeagueTasksLb();
 	const result: { id: number; tasks_completed: number }[] =
 		await roboChimpClient.$queryRaw`SELECT id::text, COALESCE(cardinality(leagues_completed_tasks_ids), 0) AS tasks_completed
@@ -1418,26 +1434,41 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			return farmingContractLb(interaction, user, channelID, Boolean(farming_contracts.ironmen_only));
 		}
 		if (inferno) return infernoLb();
-		if (sacrifice) return sacrificeLb(interaction,user, channelID, sacrifice.type, Boolean(sacrifice.ironmen_only));
-		if (minigames) return minigamesLb(interaction,user, channelID, minigames.minigame);
-		if (hunter_catches) return creaturesLb(interaction,user, channelID, hunter_catches.creature);
-		if (agility_laps) return lapsLb(interaction,user, channelID, agility_laps.course);
-		if (gp) return gpLb(interaction,user, channelID, Boolean(gp.ironmen_only));
+		if (sacrifice)
+			return sacrificeLb(interaction, user, channelID, sacrifice.type, Boolean(sacrifice.ironmen_only));
+		if (minigames) return minigamesLb(interaction, user, channelID, minigames.minigame);
+		if (hunter_catches) return creaturesLb(interaction, user, channelID, hunter_catches.creature);
+		if (agility_laps) return lapsLb(interaction, user, channelID, agility_laps.course);
+		if (gp) return gpLb(interaction, user, channelID, Boolean(gp.ironmen_only));
 		if (skills) {
-			return skillsLb(interaction, user, channelID, skills.skill, skills.xp ? 'xp' : 'level', Boolean(skills.ironmen_only));
+			return skillsLb(
+				interaction,
+				user,
+				channelID,
+				skills.skill,
+				skills.xp ? 'xp' : 'level',
+				Boolean(skills.ironmen_only)
+			);
 		}
-		if (opens) return openLb(interaction,user, channelID, opens.openable, Boolean(opens.ironmen_only));
-		if (cl) return clLb(interaction,user, channelID, cl.cl, Boolean(cl.ironmen_only), Boolean(cl.tames));
-		if (item_contract_streak) return itemContractLb(interaction,user, channelID, item_contract_streak.ironmen_only);
-		if (leagues) return leaguesLeaderboard(interaction,user, channelID, leagues.type);
-		if (clues) return cluesLb(interaction,user, channelID, clues.clue, Boolean(clues.ironmen_only));
-		if (movers) return gainersLB(interaction,user, channelID, movers.type);
-		if (global) return globalLb(interaction,user, channelID, global.type);
+		if (opens) return openLb(interaction, user, channelID, opens.openable, Boolean(opens.ironmen_only));
+		if (cl) return clLb(interaction, user, channelID, cl.cl, Boolean(cl.ironmen_only), Boolean(cl.tames));
+		if (item_contract_streak)
+			return itemContractLb(interaction, user, channelID, item_contract_streak.ironmen_only);
+		if (leagues) return leaguesLeaderboard(interaction, user, channelID, leagues.type);
+		if (clues) return cluesLb(interaction, user, channelID, clues.clue, Boolean(clues.ironmen_only));
+		if (movers) return gainersLB(interaction, user, channelID, movers.type);
+		if (global) return globalLb(interaction, user, channelID, global.type);
 		if (completion)
-			return compLeaderboard(interaction,user, Boolean(completion.untrimmed), Boolean(completion.ironmen_only), channelID);
+			return compLeaderboard(
+				interaction,
+				user,
+				Boolean(completion.untrimmed),
+				Boolean(completion.ironmen_only),
+				channelID
+			);
 
-		if (combat_achievements) return caLb(interaction,user, channelID);
-		if (mastery) return masteryLb(interaction,user, channelID);
+		if (combat_achievements) return caLb(interaction, user, channelID);
+		if (mastery) return masteryLb(interaction, user, channelID);
 		return 'Invalid input.';
 	}
 };

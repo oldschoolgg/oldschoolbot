@@ -1,4 +1,4 @@
-import { Time, roll } from 'e';
+import { roll, Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { VirtusTable } from 'oldschooljs/dist/simulation/subtables/VirtusTable';
 

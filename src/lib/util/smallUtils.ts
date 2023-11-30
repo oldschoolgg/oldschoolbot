@@ -5,8 +5,8 @@ import type { Prisma } from '@prisma/client';
 import deepmerge from 'deepmerge';
 import { ButtonBuilder, ButtonStyle, InteractionReplyOptions, time } from 'discord.js';
 import { clamp, objectEntries, roll, Time } from 'e';
-import { Bank, Items, LootTable } from 'oldschooljs';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { Bank, Items, LootTable } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
