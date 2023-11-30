@@ -434,6 +434,9 @@ model User {
   bingo_participant BingoParticipant[]
   bingo             Bingo[]
 
+  gift_boxes_owned   GiftBox[] @relation("gift_boxes_owned")
+  gift_boxes_created GiftBox[] @relation("gift_boxes_created")
+
   @@index([id, last_command_date])
   @@map("users")
 }
@@ -1077,4 +1080,27 @@ model BingoParticipant {
 
   @@unique([user_id, bingo_id])
   @@map("bingo_participant")
+}
+
+enum GiftBoxStatus {
+  Created
+  Sent
+  Opened
+}
+
+model GiftBox {
+  id         String        @id
+  created_at DateTime      @default(now()) @db.Timestamp(6)
+  status     GiftBoxStatus
+  name       String?
+
+  creator_id String? @db.VarChar(19)
+  creator    User?   @relation("gift_boxes_created", fields: [creator_id], references: [id])
+
+  owner_id String? @db.VarChar(19)
+  owner    User?   @relation("gift_boxes_owned", fields: [owner_id], references: [id])
+
+  items Json @default("{}") @db.Json
+
+  @@map("gift_box")
 }
