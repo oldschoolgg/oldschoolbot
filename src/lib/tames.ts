@@ -801,6 +801,8 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				.items()
 				.map(([item, qty]) => `${Math.floor(calcPerHour(qty, activity.duration)).toFixed(1)}/hr ${item.name}`)
 				.join(', ')}`;
+			const { doubleLootMsg } = doubleLootCheck(tame, loot);
+			str += doubleLootMsg;
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
 				loot: itemsAdded,
