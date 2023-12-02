@@ -279,7 +279,16 @@ ${items}`
 					status: GiftBoxStatus.Sent
 				}
 			});
-
+			await prisma.economyTransaction.create({
+				data: {
+					guild_id: interaction.guildId ?? undefined,
+					sender: BigInt(user.id),
+					recipient: BigInt(recipient.id),
+					items_sent: giftBox.items as string,
+					items_received: undefined,
+					type: 'gift'
+				}
+			});
 			regenerateGiftCountCache();
 			return `You sent the gift box to ${recipient.badgedUsername}!`;
 		}
