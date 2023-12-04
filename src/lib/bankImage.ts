@@ -243,7 +243,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Redwood logs'), 'Redwood'],
 	[i('Elder logs'), 'Elder'],
 
-	// Uncharged and Jmod
+	// Jmod
 	[i('Scythe of vitur (JMod)'), 'JMod'],
 
 	// XP Lamps
