@@ -108,6 +108,7 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 
 		if (shouldGiveTicket) {
 			await creator.tryGiveSmokeyLotteryTickets('giveawayTickets', 1);
+			await creator.update({ last_giveaway_ticket_given_date: new Date() });
 		}
 
 		globalClient.emit(
