@@ -2250,8 +2250,13 @@ export const capesCL = resolveItems([
 	'Dungeoneering cape(t)',
 	'Quest point hood',
 	'Quest point cape',
+	'Quest point cape(t)',
 	'Achievement diary hood',
+	'Achievement diary cape',
 	'Achievement diary cape(t)',
+	'Music hood',
+	'Music cape',
+	'Music cape (t)',
 	'Max hood',
 	'Max cape',
 	'Ardougne max hood',
@@ -2260,6 +2265,8 @@ export const capesCL = resolveItems([
 	'Infernal max cape',
 	'Assembler max hood',
 	'Assembler max cape',
+	'Masori assembler max hood',
+	'Masori assembler max cape',
 	'Imbued guthix max hood',
 	'Imbued guthix max cape',
 	'Imbued saradomin max hood',
@@ -2345,7 +2352,13 @@ export const capesCL = resolveItems([
 	"Xeric's warrior",
 	"Xeric's sentinel",
 	"Xeric's general",
-	"Xeric's champion"
+	"Xeric's champion",
+	"Icthlarin's hood (tier 5)",
+	"Icthlarin's shroud (tier 1)",
+	"Icthlarin's shroud (tier 2)",
+	"Icthlarin's shroud (tier 3)",
+	"Icthlarin's shroud (tier 4)",
+	"Icthlarin's shroud (tier 5)"
 ]);
 export const questCL = resolveItems([
 	'Quest point hood',

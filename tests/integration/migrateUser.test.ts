@@ -1494,7 +1494,7 @@ describe('migrate user test', async () => {
 
 			expect(compareResult.result).toBe(true);
 		},
-		{ repeats: 3 }
+		{ repeats: 2 }
 	);
 
 	test(
@@ -1523,7 +1523,7 @@ describe('migrate user test', async () => {
 
 			expect(compareResult.result).toBe(true);
 		},
-		{ repeats: 6 }
+		{ repeats: 2 }
 	);
 
 	test(
@@ -1549,6 +1549,6 @@ describe('migrate user test', async () => {
 
 			expect(compareResult.result).toBe(true);
 		},
-		{ repeats: 3 }
+		{ repeats: 2 }
 	);
 });

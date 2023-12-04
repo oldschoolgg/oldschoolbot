@@ -450,7 +450,8 @@ export const tripHandlers = {
 	[activity_type_enum.Nightmare]: {
 		commandName: 'k',
 		args: (data: NightmareActivityTaskOptions) => ({
-			name: data.isPhosani ? 'phosani nightmare' : data.method === 'mass' ? 'mass nightmare' : 'solo nightmare'
+			name: data.isPhosani ? 'phosani nightmare' : data.method === 'mass' ? 'mass nightmare' : 'solo nightmare',
+			quantity: data.quantity
 		})
 	},
 	[activity_type_enum.Offering]: {

@@ -9,7 +9,6 @@ import { createTestUser, mockClient } from '../util';
 describe('Sacrifice Command', async () => {
 	await mockClient();
 	const user = await createTestUser();
-	const userID = user.id;
 
 	test('No options provided', async () => {
 		const result = await user.runCommand(sacrificeCommand, {});

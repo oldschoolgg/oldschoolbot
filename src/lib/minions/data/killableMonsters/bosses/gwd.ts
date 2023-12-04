@@ -24,7 +24,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 7,
-		qpRequired: 75,
+		qpRequired: 1,
 		itemInBankBoosts: [
 			{
 				[itemID('Dragon warhammer')]: 10,
@@ -66,7 +66,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 7,
-		qpRequired: 75,
+		qpRequired: 1,
 		itemInBankBoosts: [
 			{
 				[itemID('Ranger boots')]: 3,
@@ -121,7 +121,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 7,
-		qpRequired: 75,
+		qpRequired: 1,
 		itemInBankBoosts: [
 			{
 				[itemID('Armadyl crossbow')]: 5,
@@ -173,7 +173,7 @@ const killableBosses: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 7,
-		qpRequired: 75,
+		qpRequired: 1,
 		itemInBankBoosts: [
 			{
 				[itemID('Dragon warhammer')]: 10,

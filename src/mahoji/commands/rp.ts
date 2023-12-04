@@ -496,7 +496,7 @@ export const rpCommand: OSBMahojiCommand = {
 					parseBank({
 						inputStr: options.player.steal_items.items,
 						noDuplicateItems: true,
-						inputBank: userToStealFrom.bank
+						inputBank: userToStealFrom.bankWithGP
 					})
 				);
 			}
@@ -508,7 +508,7 @@ export const rpCommand: OSBMahojiCommand = {
 			);
 			let missing = new Bank();
 			if (!userToStealFrom.owns(items)) {
-				missing = items.clone().remove(userToStealFrom.bank);
+				missing = items.clone().remove(userToStealFrom.bankWithGP);
 				return `${userToStealFrom.mention} doesn't have all items. Missing: ${missing
 					.toString()
 					.slice(0, 500)}`;
