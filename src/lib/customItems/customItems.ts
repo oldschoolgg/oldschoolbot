@@ -9680,7 +9680,6 @@ setCustomItem(
 	'Red partyhat',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
