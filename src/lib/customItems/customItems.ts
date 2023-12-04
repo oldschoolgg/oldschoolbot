@@ -9590,6 +9590,90 @@ setCustomItem(
 	50_000_000
 );
 
+/**
+ *
+ * START Christmas 2023
+ *
+ */
+
+setCustomItem(
+	72_000,
+	'Grinch head',
+	'Bronze full helm',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_001,
+	'Grinch top',
+	'Bronze platebody',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_002,
+	'Grinch legs',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_003,
+	'Grinch feet',
+	'Bronze boots',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_004,
+	'Grinch hands',
+	'Bronze gloves',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_005,
+	'Grinch santa hat',
+	'Santa hat',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
 setCustomItem(
 	72_006,
 	'Festive partyhat',
@@ -9708,12 +9792,24 @@ setCustomItem(
 );
 
 setCustomItem(
+	72_015,
+	'Infernal slayer helmet(i) (xmas)',
+	'Infernal slayer helmet(i)',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
 	72_016,
 	'Festive crate (s4)',
 	'Coal',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9726,6 +9822,18 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_018,
+	'Santa costume top (male)',
+	'Rune platebody',
+	{
+		customItemData: {
 			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
@@ -9734,9 +9842,325 @@ setCustomItem(
 );
 
 setCustomItem(
+	72_019,
+	'Santa costume top (female)',
+	'Rune platebody',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_020,
+	'Santa costume skirt',
+	'Rune platelegs',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_021,
+	'Santa costume pants',
+	'Rune platelegs',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_022,
+	'Santa costume gloves',
+	'Rune gloves',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_023,
+	'Santa costume boots',
+	'Rune boots',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_024,
+	'Raw rat milk',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_025,
+	'Scorched rat milk',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_026,
+	'Fresh rat milk',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_027,
+	'Pristine chocolate bar',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_028,
+	'Cocoa bean',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_029,
+	'Chomped chocolate bits',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_030,
+	'Ashy flour',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_031,
+	'Snail oil',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_032,
+	'Grimy salt',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_033,
+	'Milk with spoon',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_034,
+	'Banana-butter',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_035,
+	'Smokey egg',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_036,
+	'Hairy banana-butter',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_037,
+	'Christmas cake recipe',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_038,
+	'Ginger root',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_039,
+	'Dodgy bread',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_040,
+	'Gingerbread',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_041,
+	'Christmas cake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_042,
+	'Burnt christmas cake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+setCustomItem(
 	72_043,
 	'Mistle-bow-tie',
-	'Amulet of power',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_044,
+	'Burnt butter',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_045,
+	'Note from pets',
+	'Coal',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -9792,3 +10216,33 @@ setCustomItem(
 	},
 	1
 );
+
+setCustomItem(
+	72_054,
+	'Tinsel twirler',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_055,
+	'Metallic chocolate dust',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+/**
+ *
+ * END Christmas 2023
+ *
+ */

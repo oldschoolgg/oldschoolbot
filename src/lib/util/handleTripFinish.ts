@@ -11,6 +11,7 @@ import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/
 import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { gods } from '../bso/divineDominion';
 import { MysteryBoxes } from '../bsoOpenables';
+import { christmasEventTripEffect } from '../christmasEvent';
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
@@ -194,6 +195,9 @@ const tripFinishEffects: TripFinishEffect[] = [
 				case itemID('Harry'): {
 					for (let i = 0; i < minutes; i++) {
 						bonusLoot.add('Banana', randInt(1, 3));
+						if (roll(500)) {
+							bonusLoot.add('Cocoa bean');
+						}
 					}
 					userStatsBankUpdate(user.id, 'harry_loot_bank', bonusLoot);
 					messages.push(`<:harry:749945071104819292>: ${bonusLoot}.`);
@@ -404,6 +408,9 @@ export async function handleTripFinish(
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
+
+	const users = 'users' in data ? await Promise.all(data.users.map(id => mUserFetch(id))) : [user];
+	await christmasEventTripEffect({ users, data, messages });
 
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 

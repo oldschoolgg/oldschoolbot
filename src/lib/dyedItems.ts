@@ -602,6 +602,10 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Infernal slayer helmet(i) (ice)'),
 				dye: getOSItem('Ice dye')
+			},
+			{
+				item: getOSItem('Infernal slayer helmet(i) (xmas)'),
+				dye: getOSItem('Christmas dye')
 			}
 		]
 	},

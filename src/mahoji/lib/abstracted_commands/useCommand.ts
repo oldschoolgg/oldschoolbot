@@ -241,6 +241,183 @@ const genericUsables: {
 		response: () =>
 			'You throw the spooky sheet onto the spooky aura, only to realize the aura is actually a ghost! Wow!',
 		addToCL: true
+	},
+	/**
+	 *
+	 * Milk
+	 *
+	 */
+	// Raw rat milk
+	{
+		items: [getOSItem('Bucket'), getOSItem('Remy')],
+		cost: new Bank().add('Bucket'),
+		loot: new Bank().add('Raw rat milk'),
+		response: () => 'You milk Remy (???) and obtain some raw rat milk. Gross.',
+		addToCL: true
+	},
+	// Scorched rat milk
+	{
+		items: [getOSItem('Raw rat milk'), getOSItem('Klik')],
+		cost: new Bank().add('Raw rat milk'),
+		loot: new Bank().add('Scorched rat milk'),
+		response: () =>
+			'You hold up the raw rat milk to Klik, and look away as he breathes a hot fire on it, purifying it.',
+		addToCL: true
+	},
+	// Fresh rat milk
+	{
+		items: [getOSItem('Scorched rat milk'), getOSItem('Wintertoad')],
+		cost: new Bank().add('Scorched rat milk'),
+		loot: new Bank().add('Fresh rat milk'),
+		response: () => 'You put your Wintertoad in the milk to cool it down.',
+		addToCL: true
+	},
+	/**
+	 *
+	 * Chocolate bar
+	 *
+	 */
+	// Chomped chocolate bits
+	{
+		items: [getOSItem('Cocoa bean'), getOSItem('Steve')],
+		cost: new Bank().add('Cocoa bean'),
+		loot: new Bank().add('Chomped chocolate bits'),
+		response: () => "You throw the cocoa bean in Steve's mouth, who then chomps it into tiny pieces.",
+		addToCL: true
+	},
+	// Metallic cocolate dust
+	{
+		items: [getOSItem('Chomped chocolate bits'), getOSItem('Takon')],
+		cost: new Bank().add('Chomped chocolate bits'),
+		loot: new Bank().add('Metallic chocolate dust'),
+		response: () =>
+			'Takon smashes the chocolate bits on his anvil, turning them into chocolate dust... *tastes some* metallic... chocolate dust.',
+		addToCL: true
+	},
+	// Chocolate bar
+	{
+		items: [getOSItem('Metallic chocolate dust'), getOSItem('Fresh rat milk')],
+		cost: new Bank().add('Metallic chocolate dust').add('Fresh rat milk'),
+		loot: new Bank().add('Pristine chocolate bar'),
+		response: () => 'You created a Pristine chocolate bar.',
+		addToCL: true
+	},
+	// Ashy Flour
+	{
+		items: [getOSItem('Ashes'), getOSItem('Skipper')],
+		cost: new Bank().add('Ashes'),
+		loot: new Bank().add('Ashy flour'),
+		response: () => "Skipper manages to do some paperwork magic, and legally classify the ashes as 'Ashy flour'.",
+		addToCL: true
+	},
+	/**
+	 *
+	 * Snail oil
+	 *
+	 */
+	{
+		items: [getOSItem('Vial'), getOSItem('Gary')],
+		cost: new Bank().add('Vial'),
+		loot: new Bank().add('Snail oil'),
+		response: () => "You scrape some of Gary's oil into a vial.",
+		addToCL: true
+	},
+	/**
+	 *
+	 * Grimy salt
+	 *
+	 */
+	{
+		items: [getOSItem('Vial'), getOSItem('Herbert')],
+		cost: new Bank().add('Vial'),
+		loot: new Bank().add('Grimy salt'),
+		response: () => 'You scrape a knife along Herberts back, collecting some salt.',
+		addToCL: true
+	},
+	{
+		items: [getOSItem('Vial'), getOSItem('Ishi')],
+		cost: new Bank().add('Vial'),
+		loot: new Bank().add('Grimy salt'),
+		response: () => 'You collect some salt from Ishi.',
+		addToCL: true
+	},
+	/**
+	 *
+	 * Banana-butter
+	 *
+	 */
+	{
+		items: [getOSItem('Wooden spoon'), getOSItem('Fresh rat milk')],
+		cost: new Bank().add('Wooden spoon').add('Fresh rat milk'),
+		loot: new Bank().add('Milk with spoon'),
+		response: () => 'You put a spoon in the bucket, someone just needs to mix it now.',
+		addToCL: true
+	},
+	{
+		items: [getOSItem('Milk with spoon'), getOSItem('Harry')],
+		cost: new Bank().add('Milk with spoon'),
+		loot: new Bank().add('Hairy banana-butter'),
+		response: () =>
+			'Harry mixes the butter, accidentally dropping mixing a banana into it... and some hair (someone should peck it out).',
+		addToCL: true
+	},
+	{
+		items: [getOSItem('Hairy banana-butter'), getOSItem('Peky')],
+		cost: new Bank().add('Hairy banana-butter'),
+		loot: new Bank().add('Banana-butter'),
+		response: () =>
+			'Peky picks out all their hairs from the butter, leaving you with a fresh batch of Banana-butter.',
+		addToCL: true
+	},
+	// Phoenix egg (u)
+	{
+		items: [getOSItem('Logs'), getOSItem('Phoenix eggling')],
+		cost: new Bank().add('Logs'),
+		loot: new Bank().add('Smokey egg'),
+		response: () => 'You feed some logs to your Phoenix eggling, and it poops out a hot, smokey egg.',
+		addToCL: true
+	},
+	// Ginger root
+	{
+		items: [getOSItem('Christmas cake recipe'), getOSItem('Doug')],
+		cost: new Bank(),
+		loot: new Bank().add('Ginger root'),
+		response: () => 'You show the recipe to Doug, who goes off digging and returns with a Ginger root.',
+		addToCL: true
+	},
+	// Dodgy bread
+	{
+		items: [getOSItem('Ashy flour'), getOSItem('Fresh rat milk')],
+		cost: new Bank().add('Ashy flour').add('Fresh rat milk'),
+		loot: new Bank().add('Dodgy bread'),
+		response: () => 'You make some Dodgy bread.',
+		addToCL: true
+	},
+	// Gingerbread
+	{
+		items: [getOSItem('Ginger root'), getOSItem('Dodgy bread')],
+		cost: new Bank().add('Ginger root').add('Dodgy bread'),
+		loot: new Bank().add('Gingerbread'),
+		response: () => 'You make some Gingerbread.',
+		addToCL: true
+	},
+	{
+		items: [getOSItem('Note from pets')],
+		cost: new Bank(),
+		loot: null,
+		response: async () => {
+			if (Date.now() < 1_703_373_960 * 1000) {
+				return "You can't open the note until Christmas.";
+			}
+
+			return {
+				files: [
+					new AttachmentBuilder(await makeScriptImage(''), {
+						name: 'image.png'
+					})
+				]
+			};
+		}
 	}
 ];
 usables.push({
@@ -288,6 +465,31 @@ usables.push({
 	items: [getOSItem('Echo'), getOSItem('Banana')],
 	run: async () => {
 		return 'https://media.tenor.com/LqrZCROBYzQAAAAd/eat-banana-bat.gif';
+	}
+});
+
+usables.push({
+	items: [getOSItem('Christmas cake recipe')],
+	run: async () => {
+		return {
+			files: [
+				new AttachmentBuilder(
+					await makeScriptImage(`Christmas Cake Recipe:
+- The Christmas Spirit; loving help of friends.
+- 1x Fresh rodent milk
+- 1x Pristine chocolate bar
+- 1x A special egg
+- 1x Gingerbread
+- 1x Grimy salt
+- 1x Snail oil
+- 1x Banana-butter
+- 1x Ashy flour`),
+					{
+						name: 'image.png'
+					}
+				)
+			]
+		};
 	}
 });
 

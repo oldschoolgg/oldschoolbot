@@ -51,6 +51,7 @@ export const WilvusTable = new LootTable()
 	.add('Coins', [30_000, 100_000])
 	.add('Tokkul', [5, 500])
 	.add('Uncut diamond', [1, 5])
+	.add('Cocoa bean')
 	.add('Crystal shard', [1, 3])
 	.tertiary(
 		20,
