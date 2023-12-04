@@ -72,12 +72,12 @@ function determineLoot(cl: Bank, duration: number) {
 
 			// Outfit
 			for (const piece of shuffleArr(grinchOutfit)) {
-				if (roll(4 * (cl.amount(piece) + 1))) {
+				if (roll(8 * (cl.amount(piece) + 1))) {
 					loot.add(piece);
 				}
 			}
 			for (const piece of shuffleArr(santaOutfit)) {
-				if (roll(4 * (cl.amount(piece) + 1))) {
+				if (roll(8 * (cl.amount(piece) + 1))) {
 					loot.add(piece);
 				}
 			}
