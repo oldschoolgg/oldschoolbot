@@ -141,7 +141,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Jute seed'), 'Jute'],
 	[i('Yanillian seed'), 'yani'],
 	[i('Krandorian seed'), 'krand'],
-	[i('Wildblood seed'), 'wild'],
+	[i('Wildblood seed'), 'wild.b'],
 
 	// Herbs
 	[i('Guam leaf'), 'guam'],
@@ -218,7 +218,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Oak logs'), 'Oak'],
 	[i('Willow logs'), 'Willow'],
 	[i('Teak logs'), 'Teak'],
-	[i('Arctic pine logs'), 'Arctpine'],
+	[i('Arctic pine logs'), 'ArctPine'],
 	[i('Maple logs'), 'Maple'],
 	[i('Mahogany logs'), 'Mahog'],
 	[i('Yew logs'), 'Yew'],
