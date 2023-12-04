@@ -224,12 +224,12 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Yew logs'), 'Yew'],
 	[i('Magic logs'), 'Magic'],
 	[i('Redwood logs'), 'Redwood'],
-	// Uncharged and Jmod
-	[i('Holy sanguinesti staff (uncharged)'), 'Uncharged'],
-	[i('Sanguinesti staff (uncharged)'), 'Uncharged'],
-	[i('Scythe of vitur (uncharged)'), 'Uncharged'],
-	[i('Holy scythe of vitur (uncharged)'), 'Uncharged'],
-	[i('Sanguine scythe of vitur (uncharged)'), 'Uncharged']
+	// Uncharged
+	[i('Holy sanguinesti staff (uncharged)'), 'Unch.'],
+	[i('Sanguinesti staff (uncharged)'), 'Unch.'],
+	[i('Scythe of vitur (uncharged)'), 'Unch.'],
+	[i('Holy scythe of vitur (uncharged)'), 'Unch.'],
+	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.']
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
