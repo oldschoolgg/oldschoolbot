@@ -179,7 +179,7 @@ export async function christmasEventTripEffect({
 		if (loot.length > 0) {
 			await user.addItemsToBank({ items: loot, collectionLog: true });
 		}
-		if (gifts > 0) {
+		if (gifts > 0 && !user.isIronman) {
 			const didGet = await pickAndGiveGrinchGift(user);
 			messages.push(
 				`<:Grinchion:1180975861206364311> ${Emoji.Gift} ${name} caught a grinchion stealing a present!${
