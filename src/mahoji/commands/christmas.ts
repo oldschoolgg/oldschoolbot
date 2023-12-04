@@ -2,7 +2,7 @@ import { mentionCommand } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { smokeyLotteryMaxTickets } from '../../lib/christmasEvent';
+import { getSmokeyLotteryGiveawayInterval, smokeyLotteryMaxTickets } from '../../lib/christmasEvent';
 import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -58,7 +58,9 @@ export const christmasCommand: OSBMahojiCommand = {
 			const data = user.smokeyLotteryData();
 			return `**Your Tickets:**\n
 **Grinchion Tickets:** ${data.grinchionTickets}/${smokeyLotteryMaxTickets.grinchionTickets}
-**Giveaway Tickets:** ${data.giveawayTickets}/${smokeyLotteryMaxTickets.giveawayTickets}
+**Giveaway Tickets:** ${data.giveawayTickets}/${smokeyLotteryMaxTickets.giveawayTickets} Next daily reset: ${
+				getSmokeyLotteryGiveawayInterval().nextResetStr
+			}
 **Challenge Tickets:** ${data.challengeTickets}/${smokeyLotteryMaxTickets.challengeTickets}
 **Pet Hunt Tickets:** ${data.petHuntTickets}/${smokeyLotteryMaxTickets.petHuntTickets}
 `;
