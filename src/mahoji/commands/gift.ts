@@ -1,4 +1,4 @@
-import { mentionCommand, miniID } from '@oldschoolgg/toolkit';
+import { mentionCommand, miniID, truncateString } from '@oldschoolgg/toolkit';
 import { GiftBoxStatus } from '@prisma/client';
 import { debounce, Time } from 'e';
 import { groupBy } from 'lodash';
@@ -10,7 +10,7 @@ import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BOT_TYPE } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { ItemBank } from '../../lib/types';
-import { isSuperUntradeable, isValidNickname } from '../../lib/util';
+import { containsBlacklistedWord, isSuperUntradeable, isValidNickname } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -152,10 +152,23 @@ export const giftCommand: OSBMahojiCommand = {
 				}
 			});
 
+			const giftsOwnedButNotOpened = await prisma.giftBox.findMany({
+				where: {
+					owner_id: user.id,
+					status: GiftBoxStatus.Sent
+				}
+			});
+
 			return `**Gifts You Haven't Sent Yet:**
-${giftsCreatedNotSent
-	.map(g => `${g.name ? `${g.name} (${g.id})` : g.id}: ${new Bank(g.items as ItemBank)}`)
-	.join('\n')}`;
+${giftsCreatedNotSent.map(g => `${g.name ? `${g.name} (${g.id})` : g.id}: ${new Bank(g.items as ItemBank)}`).join('\n')}
+	
+**Gifts You Haven't Opened Yet:**
+${truncateString(
+	giftsOwnedButNotOpened
+		.map(g => `${g.name ? `${g.name} (${g.id})` : g.id}: ${new Bank(g.items as ItemBank)}`)
+		.join('\n'),
+	1000
+)}`;
 		}
 
 		if (options.open) {
@@ -194,13 +207,17 @@ ${giftsCreatedNotSent
 		}
 
 		if (options.create) {
-			if (options.create.name && !isValidNickname(options.create.name)) {
-				return 'That name cannot be used for your gift box (no special characters).';
+			if (
+				options.create.name &&
+				!isValidNickname(options.create.name) &&
+				containsBlacklistedWord(options.create.name)
+			) {
+				return 'That name cannot be used for your gift box; no special characters, less than 30 characters and no inappropriate words.';
 			}
 			const items = parseBank({
 				inputBank: user.bankWithGP,
 				inputStr: options.create.items,
-				maxSize: 20
+				maxSize: 30
 			});
 
 			if (items.length === 0 || items.length > 20) {
@@ -284,6 +301,16 @@ ${items}`
 				}
 			});
 
+			await prisma.economyTransaction.create({
+				data: {
+					guild_id: interaction.guildId ? BigInt(interaction.guildId) : undefined,
+					sender: BigInt(user.id),
+					recipient: BigInt(recipient.id),
+					items_sent: giftBox.items as string,
+					items_received: undefined,
+					type: 'gift'
+				}
+			});
 			regenerateGiftCountCache();
 			return `You sent the gift box to ${recipient.badgedUsername}!`;
 		}

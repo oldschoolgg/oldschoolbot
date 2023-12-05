@@ -36,6 +36,19 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "aliases": [
+      "rope",
+    ],
+    "gpCost": 100,
+    "ironmanPrice": 25,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Rope",
+    "outputItems": undefined,
+  },
+  {
+    "aliases": [
       "fishing bait",
     ],
     "gpCost": 20,
