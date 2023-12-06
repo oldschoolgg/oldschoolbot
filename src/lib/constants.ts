@@ -80,7 +80,8 @@ export const Roles = {
 	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '848967350120218636',
 	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '867967551819358219',
 	TopInventor: '992799099801833582',
-	TopLeagues: '1005417171112972349'
+	TopLeagues: '1005417171112972349',
+	EventOrganizer: '1149907536749801542'
 };
 
 export const enum DefaultPingableRoles {
