@@ -1695,11 +1695,6 @@ export const allCollectionLogs: ICollection = {
 				items: resolveItems(['Buggy', 'Ban hammer', 'The Interrogator', 'Acrylic set', 'Golden cape shard']),
 				counts: false
 			},
-			'BSO Birthday Crate 2023': {
-				alias: ['birthday crate 2023'],
-				items: keyCrates[1].table.allItems,
-				counts: false
-			},
 			'Miscelleanous (Discontinued)': {
 				alias: ['discontinued misc'],
 				items: resolveItems(['Golden cape shard', 'Golden cape', 'Golden shard', 'Golden partyhat']),
@@ -1708,6 +1703,14 @@ export const allCollectionLogs: ICollection = {
 		}
 	}
 };
+
+for (const crate of keyCrates) {
+	allCollectionLogs.Discontinued.activities[crate.item.name] = {
+		alias: [crate.item.name.toLowerCase()],
+		items: resolveItems([crate.item.id, crate.key.id, ...crate.table.allItems]),
+		counts: false
+	};
+}
 // Get all items, from all monsters and all CLs into a variable, for uses like mostdrops
 export const allDroppedItems = uniqueArr([
 	...Object.values(allCollectionLogs)
