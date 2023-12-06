@@ -797,53 +797,6 @@ export const CHINCANNON_MESSAGES = [
 	'Your Chincannon blew up all the loot!',
 	'Your Chincannon turned the loot into dust.'
 ];
-export const hweenGiveableItems = resolveItems([
-	'Gravedigger mask',
-	'Gravedigger top',
-	'Gravedigger leggings',
-	'Gravedigger gloves',
-	'Gravedigger boots',
-	'Jack lantern mask',
-	'Scythe',
-	'Grim reaper hood',
-	'Jonas mask',
-	'Skeleton mask',
-	'Skeleton shirt',
-	'Skeleton leggings',
-	'Skeleton gloves',
-	'Skeleton boots',
-	'Anti-panties',
-	'Banshee mask',
-	'Banshee top',
-	'Banshee robe',
-	'Hunting knife',
-	'Eek',
-	'Clown mask',
-	'Clown bow tie',
-	'Clown gown',
-	'Clown trousers',
-	'Clown shoes',
-	'Pumpkin lantern',
-	'Skeleton lantern',
-	'Spooky hood',
-	'Spooky robe',
-	'Spooky skirt',
-	'Spooky gloves',
-	'Spooky boots',
-	'Headless head',
-	'Magical pumpkin',
-	'Haunted wine bottle',
-	'Ugly halloween jumper (black)',
-	'Ugly halloween jumper (orange)',
-	'Saucepan',
-	"Black h'ween mask",
-	'Witch hat',
-	'Witch top',
-	'Witch robes',
-	'Witch boots',
-	'Witch cape',
-	'Halloween wig'
-]);
 
 export const masteryKey = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
 
@@ -855,3 +808,9 @@ export const ItemIconPacks = [
 		icons: new Map<number, Image>()
 	}
 ];
+
+export const patronFeatures = {
+	ShowEnteredInGiveawayList: {
+		tier: PerkTier.Four
+	}
+};
