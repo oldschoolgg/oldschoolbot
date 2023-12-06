@@ -825,6 +825,7 @@ enum economy_transaction_type {
   giveaway
   duel
   gri
+  gift
 }
 
 model EconomyTransaction {

@@ -22,7 +22,7 @@ describe('Price Abusing', () => {
 			const priceSoldFor = sellPriceOfItem(item, 0);
 			const priceBoughtFor = b.gpCost;
 			if (priceSoldFor.price > priceBoughtFor!) {
-				console.log(
+				throw new Error(
 					`${item.name} has an abusable price: buys for ${priceBoughtFor}, sells for ${priceSoldFor.price}.`
 				);
 			}
@@ -30,7 +30,7 @@ describe('Price Abusing', () => {
 			if (b.ironmanPrice) {
 				const storePrice = sellStorePriceOfItem(item, 1);
 				if (storePrice.price > b.ironmanPrice) {
-					console.log(
+					throw new Error(
 						`${item.name} has an abusable price: buys for ${storePrice.price}, sells for ${b.ironmanPrice}.`
 					);
 				}
@@ -38,12 +38,12 @@ describe('Price Abusing', () => {
 
 			const sacPrice = sacrificePriceOfItem(item, 1);
 			if (sacPrice > priceBoughtFor!) {
-				console.log(
+				throw new Error(
 					`${item.name} has an abusable sacrifice price: buys for ${priceBoughtFor}, sacrifices for ${sacPrice}.`
 				);
 			}
 			if (b.ironmanPrice && sacPrice > b.ironmanPrice) {
-				console.log(
+				throw new Error(
 					`${item.name} has an abusable ironman sacrifice price: buys for ${b.ironmanPrice}, sacrifices for ${sacPrice}.`
 				);
 			}
