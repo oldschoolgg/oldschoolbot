@@ -19,7 +19,6 @@ import { fishingTask } from '../tasks/minions/fishingActivity';
 import { fletchingTask } from '../tasks/minions/fletchingActivity';
 import { gloryChargingTask } from '../tasks/minions/gloryChargingActivity';
 import { groupoMonsterTask } from '../tasks/minions/groupMonsterActivity';
-import { halloweenTask } from '../tasks/minions/halloweenActivity';
 import { herbloreTask } from '../tasks/minions/herbloreActivity';
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
@@ -177,8 +176,7 @@ export const tasks: MinionTask[] = [
 	toaTask,
 	underwaterAgilityThievingTask,
 	strongholdTask,
-	specificQuestTask,
-	halloweenTask
+	specificQuestTask
 ];
 
 export async function processPendingActivities() {
