@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { Bank } from 'oldschooljs';
 import * as ss from 'simple-statistics';
 
 import { prisma } from './settings/prisma';
@@ -90,3 +91,16 @@ export const cacheGEPrices = async () => {
 		marketPricemap.set(data.itemID, data);
 	});
 };
+
+export function marketPriceOfBank(bank: Bank) {
+	let value = 0;
+	for (const [item, qty] of bank.items()) {
+		const data = marketPricemap.get(item.id);
+		if (data) {
+			value += data.guidePrice * qty;
+		} else {
+			value += item.price * qty;
+		}
+	}
+	return value;
+}
