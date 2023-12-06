@@ -591,3 +591,9 @@ export const ItemIconPacks = [
 		icons: new Map<number, Image>()
 	}
 ];
+
+export const patronFeatures = {
+	ShowEnteredInGiveawayList: {
+		tier: PerkTier.Four
+	}
+};
