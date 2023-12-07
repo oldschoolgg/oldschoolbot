@@ -163,12 +163,7 @@ export const giftCommand: OSBMahojiCommand = {
 ${giftsCreatedNotSent.map(g => `${g.name ? `${g.name} (${g.id})` : g.id}: ${new Bank(g.items as ItemBank)}`).join('\n')}
 	
 **Gifts You Haven't Opened Yet:**
-${truncateString(
-	giftsOwnedButNotOpened
-		.map(g => `${g.name ? `${g.name} (${g.id})` : g.id}: ${new Bank(g.items as ItemBank)}`)
-		.join('\n'),
-	1000
-)}`;
+${truncateString(giftsOwnedButNotOpened.map(g => `${g.name ? `${g.name} (${g.id})` : g.id}`).join('\n'), 1000)}`;
 		}
 
 		if (options.open) {
