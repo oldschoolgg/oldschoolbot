@@ -14,6 +14,7 @@ import { cacheCleanup } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { sendToChannelID } from '../../lib/util/webhook';
+import { regenerateGiftCountCache } from '../commands/gift';
 import { cacheUsernames } from '../commands/leaderboard';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
 
@@ -66,6 +67,8 @@ export async function onStartup() {
 
 	initCrons();
 	initTickers();
+
+	await regenerateGiftCountCache();
 
 	sendToChannelID(Channel.GeneralChannel, {
 		content: `I have just turned on!
