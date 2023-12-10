@@ -9667,7 +9667,6 @@ setCustomItem(
 	'Santa hat',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
