@@ -1,6 +1,5 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
@@ -64,7 +63,6 @@ import {
 	PickpocketActivityTaskOptions,
 	PlunderActivityTaskOptions,
 	RaidsOptions,
-	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
@@ -370,6 +368,18 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently fighting cyclopes in the Warriors' Guild. ${formattedDuration}`;
 		}
 
+		case 'CamdozaalFishing': {
+			return `${name} is currently Fishing in the Ruins of Camdozaal. ${formattedDuration}`;
+		}
+
+		case 'CamdozaalMining': {
+			return `${name} is currently Mining in the Ruins of Camdozaal. ${formattedDuration}`;
+		}
+
+		case 'CamdozaalSmithing': {
+			return `${name} is currently Smithing in the Ruins of Camdozaal. ${formattedDuration}`;
+		}
+
 		case 'Sepulchre': {
 			const data = currentTask as SepulchreActivityTaskOptions;
 
@@ -544,13 +554,6 @@ export function minionStatus(user: MUser) {
 		}
 		case 'Trekking': {
 			return `${name} is currently Temple Trekking. ${formattedDuration}`;
-		}
-		case 'Revenants': {
-			const data = currentTask as RevenantOptions;
-			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
-			return `${data.skulled ? `${Emoji.OSRSSkull} ` : ''} ${name} is currently killing ${data.quantity}x ${
-				Monsters.get(data.monsterID)!.name
-			} in the wilderness. If they don't die, the trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'PestControl': {
 			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;

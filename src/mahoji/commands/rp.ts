@@ -2,7 +2,7 @@ import { codeBlock } from '@discordjs/builders';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Duration } from '@sapphire/time-utilities';
 import { SnowflakeUtil } from 'discord.js';
-import { randArrItem, Time } from 'e';
+import { randArrItem, sumArr, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
@@ -10,9 +10,13 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { BitField, Channel } from '../../lib/constants';
+import { GearSetupType } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
+import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
+import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { patreonTask } from '../../lib/patreon';
+import { allPerkBitfields } from '../../lib/perkTiers';
 import { prisma } from '../../lib/settings/prisma';
 import { dateFm, formatDuration } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -20,11 +24,14 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { migrateUser } from '../../lib/util/migrateUser';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { sendToChannelID } from '../../lib/util/webhook';
+import { gearSetupOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { gifs } from './admin';
+import { getUserInfo } from './minion';
 
 const itemFilters = [
 	{
@@ -32,6 +39,12 @@ const itemFilters = [
 		filter: (item: Item) => itemIsTradeable(item.id, true)
 	}
 ];
+
+function isProtectedAccount(user: MUser) {
+	if ([...ADMIN_IDS, ...OWNER_IDS].includes(user.id)) return true;
+	if ([BitField.isModerator, BitField.isContributor].some(bf => user.bitfield.includes(bf))) return true;
+	return false;
+}
 
 export const rpCommand: OSBMahojiCommand = {
 	name: 'rp',
@@ -128,6 +141,35 @@ export const rpCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'unequip_all_items',
+					description: 'Force unequip all items from a user.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user.',
+							required: true
+						},
+						{
+							...gearSetupOption,
+							required: false
+						},
+						{
+							name: 'all',
+							description: 'Unequip all gear slots',
+							type: ApplicationCommandOptionType.Boolean,
+							required: false
+						},
+						{
+							name: 'pet',
+							description: 'Unequip pet also?',
+							type: ApplicationCommandOptionType.Boolean,
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'steal_items',
 					description: 'Steal items from a user',
 					options: [
@@ -161,6 +203,62 @@ export const rpCommand: OSBMahojiCommand = {
 							description: 'To delete the items instead'
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'add_ironman_alt',
+					description: 'Add an ironman alt account for a user',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'main',
+							description: 'The main',
+							required: true
+						},
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'ironman_alt',
+							description: 'The ironman alt',
+							required: true
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'view_user',
+					description: 'View a users info',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user',
+							required: true
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'migrate_user',
+					description: "Migrate a user's minion profile across Discord accounts",
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'source',
+							description: 'Source account with data to preserve and migrate',
+							required: true
+						},
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'dest',
+							description: 'Destination account (any existing data on this account will be deleted)',
+							required: true
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'reason',
+							description: 'The reason'
+						}
+					]
 				}
 			]
 		}
@@ -185,17 +283,27 @@ export const rpCommand: OSBMahojiCommand = {
 				reason?: string;
 				delete?: boolean;
 			};
+			unequip_all_items?: {
+				user: MahojiUserOption;
+				gear_setup?: string;
+				all?: boolean;
+				pet?: boolean;
+			};
 			set_buy_date?: {
 				user: MahojiUserOption;
 				message_id: string;
 			};
+			add_ironman_alt?: { main: MahojiUserOption; ironman_alt: MahojiUserOption };
+			view_user?: { user: MahojiUserOption };
+			migrate_user?: { source: MahojiUserOption; dest: MahojiUserOption; reason?: string };
 		};
 	}>) => {
 		await deferInteraction(interaction);
 
 		const adminUser = await mUserFetch(userID);
 		const isOwner = OWNER_IDS.includes(userID.toString());
-		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
+		const isAdmin = ADMIN_IDS.includes(userID);
+		const isMod = isOwner || isAdmin || adminUser.bitfield.includes(BitField.isModerator);
 		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
 
 		if (options.action?.validate_ge) {
@@ -297,8 +405,48 @@ export const rpCommand: OSBMahojiCommand = {
 				userToGive.user.username
 			}. They have ${formatDuration(newBalanceExpiryTime - Date.now())} remaining.`;
 		}
+
+		// Unequip Items
+		if (options.player?.unequip_all_items) {
+			if (!isOwner && !isAdmin) {
+				return randArrItem(gifs);
+			}
+			const allGearSlots = ['melee', 'range', 'mage', 'misc', 'skilling', 'other', 'wildy', 'fashion'];
+			const opts = options.player.unequip_all_items;
+			const targetUser = await mUserFetch(opts.user.user.id);
+			const warningMsgs: string[] = [];
+			if (targetUser.minionIsBusy) warningMsgs.push("User's minion is busy.");
+			const gearSlot = opts.all
+				? 'all'
+				: opts.gear_setup && allGearSlots.includes(opts.gear_setup)
+				? opts.gear_setup
+				: undefined;
+			if (gearSlot === undefined) {
+				return 'No gear slot specified.';
+			}
+			await handleMahojiConfirmation(
+				interaction,
+				`Unequip ${gearSlot} gear from ${targetUser.usernameOrMention}?${
+					warningMsgs.length > 0 ? warningMsgs.join('\n') : ''
+				}`
+			);
+			const slotsToUnequip = gearSlot === 'all' ? allGearSlots : [gearSlot];
+
+			for (const gear of slotsToUnequip) {
+				const result = await unEquipAllCommand(targetUser.id, gear as GearSetupType, true);
+				if (!result.endsWith('setup.')) return result;
+			}
+
+			let petResult = '';
+			if (opts.pet) {
+				petResult = await unequipPet(targetUser);
+			}
+			return `Successfully removed ${gearSlot} gear.${opts.pet ? ` ${petResult}` : ''}`;
+		}
+
+		// Steal Items
 		if (options.player?.steal_items) {
-			if (!isOwner && !ADMIN_IDS.includes(userID)) {
+			if (!isOwner && !isAdmin) {
 				return randArrItem(gifs);
 			}
 			const toDelete = options.player.steal_items.delete ?? false;
@@ -321,7 +469,7 @@ export const rpCommand: OSBMahojiCommand = {
 					parseBank({
 						inputStr: options.player.steal_items.items,
 						noDuplicateItems: true,
-						inputBank: userToStealFrom.bank
+						inputBank: userToStealFrom.bankWithGP
 					})
 				);
 			}
@@ -333,7 +481,7 @@ export const rpCommand: OSBMahojiCommand = {
 			);
 			let missing = new Bank();
 			if (!userToStealFrom.owns(items)) {
-				missing = items.clone().remove(userToStealFrom.bank);
+				missing = items.clone().remove(userToStealFrom.bankWithGP);
 				return `${userToStealFrom.mention} doesn't have all items. Missing: ${missing
 					.toString()
 					.slice(0, 500)}`;
@@ -349,6 +497,106 @@ export const rpCommand: OSBMahojiCommand = {
 			await userToStealFrom.removeItemsFromBank(items);
 			if (!toDelete) await adminUser.addItemsToBank({ items, collectionLog: false });
 			return `${toTitleCase(actionMsgPast)} ${items.toString().slice(0, 500)} from ${userToStealFrom.mention}`;
+		}
+		if (options.player?.add_ironman_alt) {
+			const mainAccount = await mahojiUsersSettingsFetch(options.player.add_ironman_alt.main.user.id, {
+				minion_ironman: true,
+				id: true,
+				ironman_alts: true,
+				main_account: true
+			});
+			const altAccount = await mahojiUsersSettingsFetch(options.player.add_ironman_alt.ironman_alt.user.id, {
+				minion_ironman: true,
+				bitfield: true,
+				id: true,
+				ironman_alts: true,
+				main_account: true
+			});
+			const mainUser = await mUserFetch(mainAccount.id);
+			const altUser = await mUserFetch(altAccount.id);
+			if (mainAccount === altAccount) return "They're they same account.";
+			if (mainAccount.minion_ironman) return `${mainUser.usernameOrMention} is an ironman.`;
+			if (!altAccount.minion_ironman) return `${altUser.usernameOrMention} is not an ironman.`;
+			if (!altAccount.bitfield.includes(BitField.PermanentIronman)) {
+				return `${altUser.usernameOrMention} is not a *permanent* ironman.`;
+			}
+
+			const peopleWithThisAltAlready = (
+				await prisma.$queryRawUnsafe<unknown[]>(
+					`SELECT id FROM users WHERE '${altAccount.id}' = ANY(ironman_alts);`
+				)
+			).length;
+			if (peopleWithThisAltAlready > 0) {
+				return `Someone already has ${altUser.usernameOrMention} as an ironman alt.`;
+			}
+			if (mainAccount.main_account) {
+				return `${mainUser.usernameOrMention} has a main account connected already.`;
+			}
+			if (altAccount.main_account) {
+				return `${altUser.usernameOrMention} has a main account connected already.`;
+			}
+			const mainAccountsAlts = mainAccount.ironman_alts;
+			if (mainAccountsAlts.includes(altAccount.id)) {
+				return `${mainUser.usernameOrMention} already has ${altUser.usernameOrMention} as an alt.`;
+			}
+
+			await handleMahojiConfirmation(
+				interaction,
+				`Are you sure that \`${altUser.usernameOrMention}\` is the alt account of \`${mainUser.usernameOrMention}\`?`
+			);
+			await mahojiUserSettingsUpdate(mainAccount.id, {
+				ironman_alts: {
+					push: altAccount.id
+				}
+			});
+			await mahojiUserSettingsUpdate(altAccount.id, {
+				main_account: mainAccount.id
+			});
+			return `You set \`${altUser.usernameOrMention}\` as the alt account of \`${mainUser.usernameOrMention}\`.`;
+		}
+
+		if (options.player?.view_user) {
+			const userToView = await mUserFetch(options.player.view_user.user.user.id);
+			return (await getUserInfo(userToView)).everythingString;
+		}
+
+		if (options.player?.migrate_user) {
+			if (!isOwner && !isAdmin) {
+				return randArrItem(gifs);
+			}
+			const { source, dest, reason } = options.player.migrate_user;
+			const sourceUser = await mUserFetch(source.user.id);
+			const destUser = await mUserFetch(dest.user.id);
+
+			if (isProtectedAccount(destUser)) return 'You cannot clobber that account.';
+			if (allPerkBitfields.some(pt => destUser.bitfield.includes(pt))) {
+				await handleMahojiConfirmation(
+					interaction,
+					`The target user, ${destUser.logName}, has a Patreon Tier; are you really sure you want to DELETE all data from that account?`
+				);
+			}
+			const sourceXp = sumArr(Object.values(sourceUser.skillsAsXP));
+			const destXp = sumArr(Object.values(destUser.skillsAsXP));
+			if (destXp > sourceXp) {
+				await handleMahojiConfirmation(
+					interaction,
+					`The target user, ${destUser.logName}, has more XP than the source user; are you really sure the names aren't backwards?`
+				);
+			}
+			await handleMahojiConfirmation(
+				interaction,
+				`Are you 1000%, totally, **REALLY** sure that \`${sourceUser.logName}\` is the account you want to preserve, and \`${destUser.logName}\` is the new account that will have ALL existing data destroyed?`
+			);
+			const result = await migrateUser(sourceUser, destUser);
+			if (result === true) {
+				await sendToChannelID(Channel.BotLogs, {
+					content: `${adminUser.logName} migrated ${sourceUser.logName} to ${destUser.logName}${
+						reason ? `, for ${reason}` : ''
+					}`
+				});
+				return 'Done';
+			}
+			return result;
 		}
 
 		return 'Invalid command.';

@@ -9,7 +9,7 @@ import { diariesObject, DiaryTierName, userhasDiaryTier } from '../diaries';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { UserKourendFavour } from '../minions/data/kourendFavour';
 import { ClueBank } from '../minions/types';
-import { RobochimpUser, roboChimpUserFetch } from '../roboChimp';
+import type { RobochimpUser } from '../roboChimp';
 import { MinigameName } from '../settings/minigames';
 import Agility from '../skilling/skills/agility';
 import { Skills } from '../types';
@@ -345,7 +345,7 @@ export class Requirements {
 		const minigames = await user.fetchMinigames();
 		const stashUnits = await getParsedStashUnits(user.id);
 		const stats = await MUserStats.fromID(user.id);
-		const roboChimpUser = await roboChimpUserFetch(user.id);
+		const roboChimpUser = await user.fetchRobochimpUser();
 		const clueCounts =
 			BOT_TYPE === 'OSB' ? stats.clueScoresFromOpenables() : (await user.calcActualClues()).clueCounts;
 

@@ -4,22 +4,16 @@ exports[`OSB Buyables 1`] = `
 [
   {
     "aliases": [
-      "quest cape",
+      "rope",
     ],
-    "gpCost": 99000,
+    "gpCost": 100,
+    "ironmanPrice": 25,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
     },
-    "name": "Quest point cape",
-    "outputItems": Bank {
-      "bank": {
-        "9813": 1,
-        "9814": 1,
-      },
-      "frozen": false,
-    },
-    "qpRequired": 298,
+    "name": "Rope",
+    "outputItems": undefined,
   },
   {
     "aliases": [
@@ -258,6 +252,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 200000,
+    "ironmanPrice": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -1954,6 +1949,18 @@ exports[`OSB Buyables 1`] = `
     "qpRequired": 175,
   },
   {
+    "gpCost": 75000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Ring of shadows",
+    "outputItems": undefined,
+    "requiredQuests": [
+      1,
+    ],
+  },
+  {
     "gpCost": 1000000,
     "itemCost": Bank {
       "bank": {},
@@ -3380,8 +3387,49 @@ exports[`OSB Buyables 1`] = `
     "outputItems": undefined,
   },
   {
+    "aliases": [
+      "quest cape",
+    ],
+    "gpCost": 99000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Quest point cape",
+    "outputItems": Bank {
+      "bank": {
+        "9813": 1,
+        "9814": 1,
+      },
+      "frozen": false,
+    },
+    "qpRequired": 298,
+  },
+  {
+    "aliases": [
+      "quest cape(t)",
+    ],
     "customReq": [Function],
-    "gpCost": 1000000,
+    "gpCost": 99000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Quest point cape(t)",
+    "outputItems": Bank {
+      "bank": {
+        "13068": 1,
+      },
+      "frozen": false,
+    },
+    "qpRequired": 298,
+  },
+  {
+    "aliases": [
+      "achievement cape",
+    ],
+    "customReq": [Function],
+    "gpCost": 99000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -3389,7 +3437,6 @@ exports[`OSB Buyables 1`] = `
     "name": "Achievement diary cape",
     "outputItems": Bank {
       "bank": {
-        "13069": 1,
         "13070": 1,
         "19476": 1,
       },
@@ -3397,20 +3444,23 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
+    "aliases": [
+      "achievement cape(t)",
+    ],
     "customReq": [Function],
-    "gpCost": 2277000,
+    "gpCost": 99000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
     },
-    "name": "Max cape",
+    "name": "Achievement diary cape(t)",
     "outputItems": Bank {
       "bank": {
-        "13280": 1,
-        "13281": 1,
+        "13069": 1,
       },
       "frozen": false,
     },
+    "qpRequired": 298,
   },
   {
     "customReq": [Function],
@@ -3439,6 +3489,22 @@ exports[`OSB Buyables 1`] = `
     "outputItems": Bank {
       "bank": {
         "13222": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 2277000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Max cape",
+    "outputItems": Bank {
+      "bank": {
+        "13280": 1,
+        "13281": 1,
       },
       "frozen": false,
     },
@@ -8340,9 +8406,9 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "customReq": [Function],
     "inputItems": Bank {
       "bank": {
-        "10587": 1,
         "4081": 1,
       },
       "frozen": false,
@@ -8350,7 +8416,6 @@ exports[`OSB Creatables 1`] = `
     "name": "Salve amulet (e)",
     "outputItems": Bank {
       "bank": {
-        "10587": 1,
         "10588": 1,
       },
       "frozen": false,
@@ -8358,9 +8423,9 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "customReq": [Function],
     "inputItems": Bank {
       "bank": {
-        "10587": 1,
         "12017": 1,
       },
       "frozen": false,
@@ -8368,7 +8433,6 @@ exports[`OSB Creatables 1`] = `
     "name": "Salve amulet(ei)",
     "outputItems": Bank {
       "bank": {
-        "10587": 1,
         "12018": 1,
       },
       "frozen": false,
@@ -24076,6 +24140,44 @@ exports[`OSB Creatables 1`] = `
     "requiredSkills": {
       "crafting": 50,
       "woodcutting": 50,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25635": 1,
+        "25637": 1,
+        "25639": 1,
+        "25676": 1500,
+      },
+      "frozen": false,
+    },
+    "name": "Barronite mace",
+    "noCl": false,
+    "outputItems": Bank {
+      "bank": {
+        "25641": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25633": 1,
+        "25676": 1500,
+      },
+      "frozen": false,
+    },
+    "name": "Imcando hammer",
+    "noCl": false,
+    "outputItems": Bank {
+      "bank": {
+        "25644": 1,
+      },
+      "frozen": false,
     },
   },
 ]
