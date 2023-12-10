@@ -180,7 +180,6 @@ export const tasks: MinionTask[] = [
 	underwaterAgilityThievingTask,
 	strongholdTask,
 	specificQuestTask,
-	halloweenTask,
 	camdozaalMiningTask,
 	camdozaalSmithingTask,
 	camdozaalFishingTask
