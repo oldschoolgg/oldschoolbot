@@ -4,13 +4,15 @@ interface BaseTKSItem {
 	name: string;
 	itemID: number;
 	stock?: number;
+	rinShopStock?: number;
+	rinIMShopStock?: number;
 	aliases?: string[];
 	requireFireCape?: boolean;
 }
 
 interface TokkulShopItem extends BaseTKSItem {
-	tokkulReturn: number;
 	tokkulCost?: number;
+	tokkulReturn: number;
 	diaryTokkulCost?: number;
 	diaryTokkulReturn?: number;
 }
@@ -21,131 +23,166 @@ const TokkulShopItems: TokkulShopItem[] = [
 		name: 'Tin ore',
 		itemID: itemID('Tin ore'),
 		stock: 5,
-		tokkulReturn: 1,
+		rinShopStock: 25,
 		tokkulCost: 4,
-		diaryTokkulReturn: 1,
+		tokkulReturn: 0,
 		diaryTokkulCost: 3,
+		diaryTokkulReturn: 1,
 		aliases: ['tin']
 	},
 	{
 		name: 'Copper ore',
 		itemID: itemID('Copper ore'),
 		stock: 5,
-		tokkulReturn: 1,
+		rinShopStock: 25,
 		tokkulCost: 4,
-		diaryTokkulReturn: 1,
+		tokkulReturn: 0,
 		diaryTokkulCost: 3,
+		diaryTokkulReturn: 1,
 		aliases: ['copper']
 	},
 	{
 		name: 'Iron ore',
 		itemID: itemID('Iron ore'),
 		stock: 2,
-		tokkulReturn: 1,
+		rinShopStock: 12,
 		tokkulCost: 25,
-		diaryTokkulReturn: 3,
+		tokkulReturn: 2,
 		diaryTokkulCost: 22,
+		diaryTokkulReturn: 5,
 		aliases: ['iron']
 	},
 	{
 		name: 'Silver ore',
 		itemID: itemID('Silver ore'),
-		tokkulReturn: 7,
-		diaryTokkulReturn: 15,
+		rinShopStock: 15,
+		tokkulCost: 112,
+		tokkulReturn: 11,
+		diaryTokkulCost: 97,
+		diaryTokkulReturn: 26,
 		aliases: ['silver']
 	},
 	{
 		name: 'Coal',
 		itemID: itemID('Coal'),
-		tokkulReturn: 4,
-		diaryTokkulReturn: 9
+		rinShopStock: 20,
+		tokkulCost: 67,
+		tokkulReturn: 6,
+		diaryTokkulCost: 58,
+		diaryTokkulReturn: 15,
+		aliases: ['coal']
 	},
 	{
 		name: 'Gold ore',
 		itemID: itemID('Gold ore'),
-		tokkulReturn: 15,
-		diaryTokkulReturn: 34,
+		rinShopStock: 12,
+		tokkulCost: 225,
+		tokkulReturn: 22,
+		diaryTokkulCost: 195,
+		diaryTokkulReturn: 52,
 		aliases: ['gold']
 	},
 	{
 		name: 'Mithril ore',
 		itemID: itemID('Mithril ore'),
-		tokkulReturn: 16,
-		diaryTokkulReturn: 37,
+		rinShopStock: 4,
+		tokkulCost: 243,
+		tokkulReturn: 24,
+		diaryTokkulCost: 210,
+		diaryTokkulReturn: 56,
 		aliases: ['mithril']
 	},
 	{
 		name: 'Adamantite ore',
 		itemID: itemID('Adamantite ore'),
-		tokkulReturn: 40,
-		diaryTokkulReturn: 93,
+		rinShopStock: 2,
+		tokkulCost: 600,
+		tokkulReturn: 60,
+		diaryTokkulCost: 520,
+		diaryTokkulReturn: 140,
 		aliases: ['adamantite', 'adamant', 'addy']
 	},
 	{
 		name: 'Runite ore',
 		itemID: itemID('Runite ore'),
-		tokkulReturn: 320,
-		diaryTokkulReturn: 746,
+		rinShopStock: 1,
+		tokkulCost: 4800,
+		tokkulReturn: 480,
+		diaryTokkulCost: 4160,
+		diaryTokkulReturn: 1120,
 		aliases: ['runite', 'rune ore', 'rune']
 	},
 	{
 		name: 'Uncut sapphire',
 		itemID: itemID('Uncut sapphire'),
 		stock: 1,
-		tokkulReturn: 2,
+		rinShopStock: 16,
+		rinIMShopStock: 10,
 		tokkulCost: 37,
-		diaryTokkulReturn: 5,
+		tokkulReturn: 3,
 		diaryTokkulCost: 32,
+		diaryTokkulReturn: 8,
 		aliases: ['sapphire']
 	},
 	{
 		name: 'Uncut emerald',
 		itemID: itemID('Uncut emerald'),
 		stock: 1,
-		tokkulReturn: 5,
+		rinShopStock: 12,
+		rinIMShopStock: 7,
 		tokkulCost: 75,
-		diaryTokkulReturn: 11,
+		tokkulReturn: 7,
 		diaryTokkulCost: 65,
+		diaryTokkulReturn: 17,
 		aliases: ['emerald']
 	},
 	{
 		name: 'Uncut ruby',
 		itemID: itemID('Uncut ruby'),
-		tokkulReturn: 10,
-		diaryTokkulReturn: 23,
+		rinShopStock: 8,
+		rinIMShopStock: 4,
+		tokkulCost: 150,
+		tokkulReturn: 15,
+		diaryTokkulCost: 130,
+		diaryTokkulReturn: 35,
 		aliases: ['ruby']
 	},
 	{
 		name: 'Uncut diamond',
 		itemID: itemID('Uncut diamond'),
-		tokkulReturn: 20,
-		diaryTokkulReturn: 46,
+		rinShopStock: 6,
+		rinIMShopStock: 2,
+		tokkulCost: 300,
+		tokkulReturn: 30,
+		diaryTokkulCost: 260,
+		diaryTokkulReturn: 70,
 		aliases: ['diamond']
 	},
 	{
 		name: 'Uncut dragonstone',
 		itemID: itemID('Uncut dragonstone'),
-		tokkulReturn: 100,
-		diaryTokkulReturn: 233
+		tokkulReturn: 150,
+		diaryTokkulReturn: 350,
+		aliases: ['dragonstone']
 	},
 	{
 		name: 'Uncut onyx',
 		itemID: itemID('Uncut onyx'),
 		stock: 1,
-		tokkulReturn: 20_000,
 		tokkulCost: 300_000,
-		diaryTokkulReturn: 46_662,
+		tokkulReturn: 30_000,
 		diaryTokkulCost: 260_000,
+		diaryTokkulReturn: 70_000,
 		aliases: ['onyx']
 	},
 	{
 		name: 'Onyx bolt tips',
 		itemID: itemID('Onyx bolt tips'),
 		stock: 50,
-		tokkulReturn: 100,
 		tokkulCost: 1500,
-		diaryTokkulReturn: 233,
+		tokkulReturn: 150,
 		diaryTokkulCost: 1300,
+		diaryTokkulReturn: 350,
 		aliases: ['onyx tips', 'onix bolts']
 	},
 	// Equipment Store
