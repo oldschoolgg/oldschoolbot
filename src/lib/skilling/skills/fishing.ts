@@ -236,6 +236,46 @@ const fishes: Fish[] = [
 	}
 ];
 
+// Types of fish in camdozaal
+const camdozaalFishes: Fish[] = [
+	{
+		level: 7,
+		xp: 8,
+		id: itemID('Raw guppy'),
+		name: 'Raw guppy',
+		petChance: 257_770,
+		timePerFish: 5.5,
+		clueScrollChance: 257_770
+	},
+	{
+		level: 20,
+		xp: 16,
+		id: itemID('Raw cavefish'),
+		name: 'Raw cavefish',
+		petChance: 257_770,
+		timePerFish: 5.5,
+		clueScrollChance: 257_770
+	},
+	{
+		level: 33,
+		xp: 24,
+		id: itemID('Raw tetra'),
+		name: 'Raw tetra',
+		petChance: 257_770,
+		timePerFish: 5.5,
+		clueScrollChance: 257_770
+	},
+	{
+		level: 46,
+		xp: 33,
+		id: itemID('Raw catfish'),
+		name: 'Raw catfish',
+		petChance: 257_770,
+		timePerFish: 5.5,
+		clueScrollChance: 257_770
+	}
+];
+
 const anglerItems: { [key: number]: number } = {
 	[itemID('Angler hat')]: 0.4,
 	[itemID('Angler top')]: 0.8,
@@ -246,6 +286,7 @@ const anglerItems: { [key: number]: number } = {
 const Fishing = {
 	aliases: ['fishing'],
 	Fishes: fishes,
+	camdozaalFishes,
 	id: SkillsEnum.Fishing,
 	emoji: Emoji.Fishing,
 	anglerItems,
