@@ -38,11 +38,6 @@ import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
 debugLog(`Starting... Git Hash ${META_CONSTANTS.GIT_HASH}`);
 
-if (production && !process.env.TEST && isMainThread) {
-	// eslint-disable-next-line @typescript-eslint/no-var-requires
-	require('segfault-handler').registerHandler('crash.log');
-}
-
 if (!production) {
 	import('./lib/devHotReload');
 }
