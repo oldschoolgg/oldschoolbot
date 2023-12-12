@@ -227,7 +227,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Redwood logs'), 'Redwood'],
 	...XPLamps.map(lamp => [lamp.itemID, toKMB(lamp.amount)] as const),
   
-  // Uncharged
+	// Uncharged
 	[i('Holy sanguinesti staff (uncharged)'), 'Unch.'],
 	[i('Sanguinesti staff (uncharged)'), 'Unch.'],
 	[i('Scythe of vitur (uncharged)'), 'Unch.'],
