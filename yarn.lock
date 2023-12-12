@@ -740,10 +740,10 @@
     eslint-plugin-unicorn "^44.0.2"
     prettier "^2.7.1"
 
-"@oldschoolgg/toolkit@^0.0.22":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/@oldschoolgg/toolkit/-/toolkit-0.0.22.tgz#a94c6b32b4af28d927344703987b0795591f728c"
-  integrity sha512-bbqm/KiDXDvEiLe9tOdqoNXq9X6lkNcNwFn7tHpCbowakTHJHKyCQZH4j4iyAds0T60C9rtwGQ7uWMuGXfgaSw==
+"@oldschoolgg/toolkit@^0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@oldschoolgg/toolkit/-/toolkit-0.0.23.tgz#6805c7f6321ca0f13c5ad84478ea79051e13e319"
+  integrity sha512-84RhRCa8McsB5SJ39sJ51XxSapdr008ZCILNz7xVBTvyagBso2BlxM81tMx0+mcn/Xu3IbQnvrv7nKw5eyXZbQ==
   dependencies:
     deepmerge "^4.3.1"
     e "^0.2.3"
@@ -3884,10 +3884,10 @@ magic-string@^0.30.0:
   dependencies:
     "@jridgewell/sourcemap-codec" "^1.4.13"
 
-mahoji@^0.0.62:
-  version "0.0.62"
-  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.62.tgz#c4c6164e788252396a2e7848af26d74814f161e3"
-  integrity sha512-XURC3zhuvToFTiiMiqB2ISKLpB/v4VsIrjZ2AfmHgbt2GqSNMhyRLpHt/Xh1TjiznAABfwj1P9X6kM3Q3gkhkw==
+mahoji@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.7.tgz#bb99bc2e32bc934534328d054698625c57af61ee"
+  integrity sha512-N5R29v9ltVwYgMbD8xa1YQf60B0Jhgzqrj2Tz5m/b7XbbCy10pQYbRuF9dwcemhNJqJWmFhEGj/sFtZXTgq+gQ==
 
 make-dir@^3.0.0:
   version "3.1.0"
@@ -4164,10 +4164,10 @@ obliterator@^2.0.1:
   resolved "https://registry.yarnpkg.com/obliterator/-/obliterator-2.0.4.tgz#fa650e019b2d075d745e44f1effeb13a2adbe816"
   integrity sha512-lgHwxlxV1qIg1Eap7LgIeoBWIMFibOjbrYPIPJZcI1mmGAI2m3lNYpK12Y+GBdPQ0U1hRwSord7GIaawz962qQ==
 
-oldschooljs@^2.3.7:
-  version "2.3.7"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.3.7.tgz#d1fd55d9965e126b62f5bccc76724c98fc9ae946"
-  integrity sha512-KhvEyah8XwQXsRY9+Yf0cETsLwj6Jz6/22yj0HsYQjXfghh30rovyaXKAiAALWmO0YkSUG0u+RhgU+u2QpqoPQ==
+oldschooljs@^2.3.8:
+  version "2.3.8"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.3.8.tgz#56b788d083b68bebe01c1f7de2c9d3d258304293"
+  integrity sha512-e0N3ovIXdTY3yiGOLFydpQT+H0KEh9uBkGgvYg2fAGnx/lx1CObjCFg3vK3AiwWjXd85wuAVJ4lmQyehcqZSTA==
   dependencies:
     deepmerge "^4.2.2"
     e "^0.2.32"
@@ -5570,9 +5570,9 @@ vite-node@0.31.0:
     vite "^3.0.0 || ^4.0.0"
 
 "vite@^3.0.0 || ^4.0.0":
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-4.5.0.tgz#ec406295b4167ac3bc23e26f9c8ff559287cff26"
-  integrity sha512-ulr8rNLA6rkyFAlVWw2q5YJ91v098AFQ2R0PRFwPzREXOUJQPtFUG0t+/ZikhaOCDqFoDhN6/v8Sq0o4araFAw==
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-4.5.1.tgz#3370986e1ed5dbabbf35a6c2e1fb1e18555b968a"
+  integrity sha512-AXXFaAJ8yebyqzoNB9fu2pHoo/nWX+xZlaRwoeYUxEqBO+Zj4msE5G+BhGBll9lYEKv9Hfks52PAF2X7qDYXQA==
   dependencies:
     esbuild "^0.18.10"
     postcss "^8.4.27"

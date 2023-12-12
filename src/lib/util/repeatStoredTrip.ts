@@ -156,6 +156,24 @@ export const tripHandlers = {
 			warriors_guild: { action: 'tokens', quantity: data.quantity }
 		})
 	},
+	[activity_type_enum.CamdozaalMining]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			camdozaal: { action: 'mining', quantity: data.quantity }
+		})
+	},
+	[activity_type_enum.CamdozaalSmithing]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			camdozaal: { action: 'smithing', quantity: data.quantity }
+		})
+	},
+	[activity_type_enum.CamdozaalFishing]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			camdozaal: { action: 'fishing', quantity: data.quantity }
+		})
+	},
 	[activity_type_enum.BarbarianAssault]: {
 		commandName: 'minigames',
 		args: () => ({ barb_assault: { start: {} } })
@@ -411,7 +429,8 @@ export const tripHandlers = {
 	[activity_type_enum.Nightmare]: {
 		commandName: 'k',
 		args: (data: NightmareActivityTaskOptions) => ({
-			name: data.isPhosani ? 'phosani nightmare' : data.method === 'mass' ? 'mass nightmare' : 'solo nightmare'
+			name: data.isPhosani ? 'phosani nightmare' : data.method === 'mass' ? 'mass nightmare' : 'solo nightmare',
+			quantity: data.quantity
 		})
 	},
 	[activity_type_enum.Offering]: {

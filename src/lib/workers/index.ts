@@ -37,6 +37,7 @@ export type FinishWorkerReturn = Promise<
 			loot: ItemBank;
 			kcBank: ItemBank;
 			kc: number;
+			cost: ItemBank;
 	  }
 	| string
 >;

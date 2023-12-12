@@ -41,7 +41,8 @@ const noSacPrice = resolveItems([
 	'Limestone brick',
 	'Helm of neitiznot',
 	'Cannon barrels',
-	'Broad arrowheads'
+	'Broad arrowheads',
+	'Rope'
 ]);
 
 export function sacrificePriceOfItem(item: Item, qty: number) {

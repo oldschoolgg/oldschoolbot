@@ -35,17 +35,27 @@ const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane p
 export const coxPurpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
 
 async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
+	let hitpointsXP = 12_000 * qty;
 	let rangeXP = 10_000 * qty;
 	let magicXP = 1500 * qty;
 	let meleeXP = 8000 * qty;
 
 	if (isCm) {
+		hitpointsXP *= 1.5;
 		rangeXP *= 1.5;
 		magicXP *= 1.5;
 		meleeXP *= 1.5;
 	}
 
 	const results = [];
+	results.push(
+		await user.addXP({
+			skillName: SkillsEnum.Hitpoints,
+			amount: hitpointsXP,
+			minimal: true,
+			source: 'ChambersOfXeric'
+		})
+	);
 	results.push(
 		await user.addXP({ skillName: SkillsEnum.Ranged, amount: rangeXP, minimal: true, source: 'ChambersOfXeric' })
 	);
@@ -204,35 +214,46 @@ export const raidsTask: MinionTask = {
 
 		const shouldShowImage = allUsers.length <= 3 && Array.from(raidResults.values()).every(i => i.loot.length <= 6);
 
-		let attachment = undefined;
 		if (users.length === 1) {
-			attachment = await drawChestLootImage({
-				entries: [
-					{
-						loot: totalLoot,
-						user: allUsers[0],
-						previousCL: previousCLs[0],
-						customTexts: []
-					}
-				],
-				type: 'Chambers of Xerician'
-			});
-
-			handleTripFinish(allUsers[0], channelID, resultMessage, attachment, data, totalLoot);
-		} else if (shouldShowImage) {
-			attachment = await drawChestLootImage({
-				entries: allUsers.map((u, index) => ({
-					loot: raidResults.get(u.id)!.loot,
-					user: u,
-					previousCL: previousCLs[index],
-					customTexts: []
-				})),
-				type: 'Chambers of Xerician'
-			});
-
-			handleTripFinish(allUsers[0], channelID, resultMessage, attachment, data, null);
-		} else {
-			handleTripFinish(allUsers[0], channelID, resultMessage, attachment, data, null);
+			return handleTripFinish(
+				allUsers[0],
+				channelID,
+				resultMessage,
+				shouldShowImage
+					? await drawChestLootImage({
+							entries: [
+								{
+									loot: totalLoot,
+									user: allUsers[0],
+									previousCL: previousCLs[0],
+									customTexts: []
+								}
+							],
+							type: 'Chambers of Xerician'
+					  })
+					: undefined,
+				data,
+				totalLoot
+			);
 		}
+
+		handleTripFinish(
+			allUsers[0],
+			channelID,
+			resultMessage,
+			shouldShowImage
+				? await drawChestLootImage({
+						entries: allUsers.map((u, index) => ({
+							loot: raidResults.get(u.id)!.loot,
+							user: u,
+							previousCL: previousCLs[index],
+							customTexts: []
+						})),
+						type: 'Chambers of Xerician'
+				  })
+				: undefined,
+			data,
+			null
+		);
 	}
 };

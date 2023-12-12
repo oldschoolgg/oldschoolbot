@@ -14,6 +14,17 @@ const tier3ElligibleBits = [
 	BitField.IsWikiContributor
 ];
 
+export const allPerkBitfields: BitField[] = [
+	BitField.IsPatronTier6,
+	BitField.IsPatronTier5,
+	BitField.IsPatronTier4,
+	BitField.IsPatronTier3,
+	BitField.IsPatronTier2,
+	BitField.IsPatronTier1,
+	BitField.HasPermanentTierOne,
+	BitField.BothBotsMaxedFreeTierOnePerks
+];
+
 export function getUsersPerkTier(
 	userOrBitfield: MUser | User | BitField[],
 	noCheckOtherAccounts?: boolean
