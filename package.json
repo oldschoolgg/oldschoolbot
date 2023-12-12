@@ -56,7 +56,7 @@
 		"simple-statistics": "^7.8.3",
 		"table": "^6.8.0",
 		"utf-8-validate": "^6.0.3",
-		"zlib-sync": "^0.1.8",
+		"zlib-sync": "^0.1.9",
 		"zod": "^3.22.3"
 	},
 	"devDependencies": {
