@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import { ActivityTaskOptions } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -39,7 +39,7 @@ export async function mageArenaCommand(user: MUser, channelID: string) {
 
 	updateBankSetting('mage_arena_cost', totalCost);
 
-	await addSubTaskToActivityTask<ActivityTaskOptions>({
+	await addSubTaskToActivityTask<ActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		duration,

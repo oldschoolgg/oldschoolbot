@@ -49,7 +49,10 @@ export async function handleMahojiConfirmation(
 					customId: 'CANCEL'
 				})
 			])
-		]
+		],
+		allowedMentions: {
+			parse: ['users']
+		}
 	});
 
 	return new Promise<void>(async (resolve, reject) => {

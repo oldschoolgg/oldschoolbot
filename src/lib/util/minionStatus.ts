@@ -1,9 +1,9 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
+import { quests } from '../../mahoji/lib/abstracted_commands/questCommand';
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
@@ -11,7 +11,8 @@ import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
 import Agility from '../skilling/skills/agility';
 import Constructables from '../skilling/skills/construction/constructables';
-import Cooking from '../skilling/skills/cooking';
+import Cooking from '../skilling/skills/cooking/cooking';
+import LeapingFish from '../skilling/skills/cooking/leapingFish';
 import Crafting from '../skilling/skills/crafting';
 import Farming from '../skilling/skills/farming';
 import Firemaking from '../skilling/skills/firemaking';
@@ -38,6 +39,7 @@ import {
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
@@ -51,7 +53,7 @@ import {
 	HunterActivityTaskOptions,
 	InfernoOptions,
 	KourendFavourActivityTaskOptions,
-	MinigameActivityTaskOptions,
+	MinigameActivityTaskOptionsWithNoChanges,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	MotherlodeMiningActivityTaskOptions,
@@ -61,7 +63,6 @@ import {
 	PickpocketActivityTaskOptions,
 	PlunderActivityTaskOptions,
 	RaidsOptions,
-	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
@@ -69,6 +70,7 @@ import {
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
+	SpecificQuestOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
 	TOAOptions,
@@ -304,11 +306,19 @@ export function minionStatus(user: MUser) {
 		}
 		case 'Herblore': {
 			const data = currentTask as HerbloreActivityTaskOptions;
-			const mixable = Herblore.Mixables.find(item => item.id === data.mixableID);
+			const mixable = Herblore.Mixables.find(i => i.item.id === data.mixableID);
 
-			return `${name} is currently mixing ${data.quantity}x ${mixable!.name}. ${formattedDuration} Your ${
+			return `${name} is currently mixing ${data.quantity}x ${mixable!.item.name}. ${formattedDuration} Your ${
 				Emoji.Herblore
 			} Herblore level is ${user.skillLevel(SkillsEnum.Herblore)}`;
+		}
+		case 'CutLeapingFish': {
+			const data = currentTask as CutLeapingFishActivityTaskOptions;
+			const barbarianFish = LeapingFish.find(item => item.item.id === data.id);
+
+			return `${name} is currently cutting ${data.quantity}x ${
+				barbarianFish!.item.name
+			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
 		}
 		case 'Wintertodt': {
 			return `${name} is currently fighting the Wintertodt. ${formattedDuration}`;
@@ -358,6 +368,18 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently fighting cyclopes in the Warriors' Guild. ${formattedDuration}`;
 		}
 
+		case 'CamdozaalFishing': {
+			return `${name} is currently Fishing in the Ruins of Camdozaal. ${formattedDuration}`;
+		}
+
+		case 'CamdozaalMining': {
+			return `${name} is currently Mining in the Ruins of Camdozaal. ${formattedDuration}`;
+		}
+
+		case 'CamdozaalSmithing': {
+			return `${name} is currently Smithing in the Ruins of Camdozaal. ${formattedDuration}`;
+		}
+
 		case 'Sepulchre': {
 			const data = currentTask as SepulchreActivityTaskOptions;
 
@@ -389,7 +411,7 @@ export function minionStatus(user: MUser) {
 		}
 
 		case 'BarbarianAssault': {
-			const data = currentTask as MinigameActivityTaskOptions;
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently doing ${data.quantity} waves of Barbarian Assault. ${formattedDuration}`;
 		}
 
@@ -471,7 +493,7 @@ export function minionStatus(user: MUser) {
 		}
 
 		case 'SoulWars': {
-			const data = currentTask as MinigameActivityTaskOptions;
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently doing ${data.quantity}x games of Soul Wars. ${formattedDuration}`;
 		}
 
@@ -487,7 +509,7 @@ export function minionStatus(user: MUser) {
 		}
 
 		case 'CastleWars': {
-			const data = currentTask as MinigameActivityTaskOptions;
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently doing ${data.quantity}x Castle Wars games. ${formattedDuration}`;
 		}
 
@@ -533,15 +555,8 @@ export function minionStatus(user: MUser) {
 		case 'Trekking': {
 			return `${name} is currently Temple Trekking. ${formattedDuration}`;
 		}
-		case 'Revenants': {
-			const data = currentTask as RevenantOptions;
-			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
-			return `${data.skulled ? `${Emoji.OSRSSkull} ` : ''} ${name} is currently killing ${data.quantity}x ${
-				Monsters.get(data.monsterID)!.name
-			} in the wilderness. If they don't die, the trip should take ${formatDuration(durationRemaining)}.`;
-		}
 		case 'PestControl': {
-			const data = currentTask as MinigameActivityTaskOptions;
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently doing ${data.quantity} games of Pest Control. ${formattedDuration}`;
 		}
 		case 'VolcanicMine': {
@@ -571,7 +586,7 @@ export function minionStatus(user: MUser) {
 			)}.`;
 		}
 		case 'LastManStanding': {
-			const data = currentTask as MinigameActivityTaskOptions;
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 
 			return `${name} is currently doing ${
 				data.quantity
@@ -595,7 +610,7 @@ export function minionStatus(user: MUser) {
 			}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'TroubleBrewing': {
-			const data = currentTask as MinigameActivityTaskOptions;
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently doing ${
 				data.quantity
 			}x games of Trouble Brewing. The trip should take ${formatDuration(durationRemaining)}.`;
@@ -611,7 +626,7 @@ export function minionStatus(user: MUser) {
 			)}.`;
 		}
 		case 'GiantsFoundry': {
-			const data = currentTask as MinigameActivityTaskOptions;
+			const data = currentTask as MinigameActivityTaskOptionsWithNoChanges;
 			return `${name} is currently creating ${
 				data.quantity
 			}x giant weapons for Kovac in the Giants' Foundry minigame. The trip should take ${formatDuration(
@@ -652,8 +667,16 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'SpecificQuest': {
+			const data = currentTask as SpecificQuestOptions;
+			return `${name} is currently doing the ${
+				quests.find(i => i.id === data.questID)!.name
+			}! The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'HalloweenEvent': {
+			return `${name} is doing the Halloween event! The trip should take ${formatDuration(durationRemaining)}.`;
+		}
 		case 'Easter':
-		case 'HalloweenEvent':
 		case 'BlastFurnace': {
 			throw new Error('Removed');
 		}

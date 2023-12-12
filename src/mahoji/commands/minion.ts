@@ -1,4 +1,5 @@
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import { bold } from 'discord.js';
 import { notEmpty, randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -15,6 +16,7 @@ import {
 } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
+import { calculateMastery } from '../../lib/mastery';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { AttackStyles } from '../../lib/minions/functions';
 import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
@@ -24,11 +26,13 @@ import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
+import { MUserStats } from '../../lib/structures/MUserStats';
 import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
 import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
+import { checkPeakTimes } from '../../lib/util/minionUtils';
 import {
 	achievementDiaryCommand,
 	claimAchievementDiaryCommand
@@ -200,8 +204,11 @@ export const minionCommand: OSBMahojiCommand = {
 						const mUser = await mUserFetch(user.id);
 						const isMod = mUser.bitfield.includes(BitField.isModerator);
 						const bankImages = bankImageGenerator.backgroundImages;
+						const owned = bankImages
+							.filter(bg => bg.storeBitField && mUser.user.store_bitfield.includes(bg.storeBitField))
+							.map(bg => bg.id);
 						return bankImages
-							.filter(bg => isMod || bg.available)
+							.filter(bg => isMod || bg.available || owned.includes(bg.id))
 							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => {
 								const name = i.perkTierNeeded
@@ -414,6 +421,16 @@ export const minionCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'info',
 			description: 'View general information about your account and minion.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'peak',
+			description: 'View Peak time activity for the Wilderness.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'mastery',
+			description: 'View your minions mastery.'
 		}
 	],
 	run: async ({
@@ -441,6 +458,8 @@ export const minionCommand: OSBMahojiCommand = {
 		blowpipe?: { remove_darts?: boolean; uncharge?: boolean; add?: string; quantity?: number };
 		status?: {};
 		info?: {};
+		peak?: {};
+		mastery?: {};
 	}>) => {
 		const user = await mUserFetch(userID);
 		const perkTier = user.perkTier();
@@ -538,6 +557,16 @@ export const minionCommand: OSBMahojiCommand = {
 				options.blowpipe.add,
 				options.blowpipe.quantity
 			);
+		}
+
+		if (options.peak) return checkPeakTimes();
+
+		if (options.mastery) {
+			const { masteryFactors, totalMastery } = await calculateMastery(user, await MUserStats.fromID(user.id));
+			const substr = masteryFactors.map(i => `${bold(i.name)}: ${i.percentage.toFixed(2)}%`).join('\n');
+			return `You have ${totalMastery.toFixed(2)}% mastery.
+			
+${substr}`;
 		}
 
 		return 'Unknown command';

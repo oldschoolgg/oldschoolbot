@@ -1,17 +1,17 @@
 import { exec } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 
 import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { ButtonBuilder, ButtonStyle, time } from 'discord.js';
-import { objectEntries, Time } from 'e';
+import deepmerge from 'deepmerge';
+import { ButtonBuilder, ButtonStyle, InteractionReplyOptions, time } from 'discord.js';
+import { clamp, objectEntries, roll, Time } from 'e';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
-import { ClueTiers } from '../clues/clueTiers';
-import { PerkTier, projectiles } from '../constants';
 import { skillEmoji } from '../data/emojis';
-import type { Gear } from '../structures/Gear';
 import type { ArrayItemsResolved, Skills } from '../types';
 import getOSItem from './getOSItem';
 
@@ -155,23 +155,6 @@ export function makeEasierFarmingContractButton() {
 		.setEmoji('977410792754413668');
 }
 
-export function buildClueButtons(loot: Bank | null, perkTier: number) {
-	const components: ButtonBuilder[] = [];
-	if (loot && perkTier > PerkTier.One) {
-		const clueReceived = ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0);
-		components.push(
-			...clueReceived.map(clue =>
-				new ButtonBuilder()
-					.setCustomId(`DO_${clue.name.toUpperCase()}_CLUE`)
-					.setLabel(`Do ${clue.name} Clue`)
-					.setStyle(ButtonStyle.Secondary)
-					.setEmoji('365003979840552960')
-			)
-		);
-	}
-	return components;
-}
-
 export function makeAutoFarmButton() {
 	return new ButtonBuilder()
 		.setCustomId('AUTO_FARM')
@@ -195,26 +178,6 @@ export function tailFile(fileName: string, numLines: number): Promise<string> {
 			}
 		});
 	});
-}
-
-export function checkRangeGearWeapon(gear: Gear) {
-	const weapon = gear.equippedWeapon();
-	if (!weapon) return 'You have no weapon equipped.';
-	const { ammo } = gear;
-	if (!ammo) return 'You have no ammo equipped.';
-
-	const projectileCategory = objectEntries(projectiles).find(i => i[1].weapons.includes(weapon.id));
-	if (!projectileCategory) return 'You have an invalid range weapon.';
-	if (!projectileCategory[1].items.includes(ammo.item)) {
-		return `You have invalid ammo for your equipped weapon. For ${
-			projectileCategory[0]
-		}-based weapons, you can use: ${projectileCategory[1].items.map(itemNameFromID).join(', ')}.`;
-	}
-
-	return {
-		weapon,
-		ammo
-	};
 }
 
 export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {
@@ -258,4 +221,110 @@ export function getInterval(intervalHours: number) {
 		end: endInterval,
 		nextResetStr: dateFm(endInterval)
 	};
+}
+
+export function calculateSimpleMonsterDeathChance({
+	hardness,
+	currentKC,
+	lowestDeathChance = 1,
+	highestDeathChance = 90,
+	steepness = 0.5
+}: {
+	hardness: number;
+	currentKC: number;
+	lowestDeathChance?: number;
+	highestDeathChance?: number;
+	steepness?: number;
+}): number {
+	if (!currentKC) currentKC = 1;
+	currentKC = Math.max(1, currentKC);
+	let baseDeathChance = Math.min(highestDeathChance, (100 * hardness) / steepness);
+	const maxScalingKC = 5 + (75 * hardness) / steepness;
+	let reductionFactor = Math.min(1, currentKC / maxScalingKC);
+	let deathChance = baseDeathChance - reductionFactor * (baseDeathChance - lowestDeathChance);
+	return clamp(deathChance, lowestDeathChance, highestDeathChance);
+}
+
+export function perHourChance(
+	durationMilliseconds: number,
+	oneInXPerHourChance: number,
+	successFunction: () => unknown
+) {
+	const minutesPassed = Math.floor(durationMilliseconds / 60_000);
+	const perMinuteChance = oneInXPerHourChance * 60;
+
+	for (let i = 0; i < minutesPassed; i++) {
+		if (roll(perMinuteChance)) {
+			successFunction();
+		}
+	}
+}
+
+export function perTimeUnitChance(
+	durationMilliseconds: number,
+	oneInXPerTimeUnitChance: number,
+	timeUnitInMilliseconds: number,
+	successFunction: () => unknown
+) {
+	const unitsPassed = Math.floor(durationMilliseconds / timeUnitInMilliseconds);
+	const perUnitChance = oneInXPerTimeUnitChance / (timeUnitInMilliseconds / 60_000);
+
+	for (let i = 0; i < unitsPassed; i++) {
+		if (roll(perUnitChance)) {
+			successFunction();
+		}
+	}
+}
+
+export function addBanks(banks: ItemBank[]): Bank {
+	const bank = new Bank();
+	for (const _bank of banks) {
+		bank.add(_bank);
+	}
+	return bank;
+}
+
+export function isValidDiscordSnowflake(snowflake: string): boolean {
+	return /^\d{17,19}$/.test(snowflake);
+}
+
+const TOO_LONG_STR = 'The result was too long (over 2000 characters), please read the attached file.';
+
+export function returnStringOrFile(string: string | InteractionReplyOptions): Awaited<CommandResponse> {
+	if (typeof string === 'string') {
+		if (string.length > 2000) {
+			return {
+				content: TOO_LONG_STR,
+				files: [{ attachment: Buffer.from(string), name: 'result.txt' }]
+			};
+		}
+		return string;
+	}
+	if (string.content && string.content.length > 2000) {
+		return deepmerge(
+			string,
+			{
+				content: TOO_LONG_STR,
+				files: [{ attachment: Buffer.from(string.content), name: 'result.txt' }]
+			},
+			{ clone: false }
+		);
+	}
+	return string;
+}
+
+const wordBlacklistBase64 = readFileSync('./src/lib/data/wordBlacklist.txt', 'utf-8');
+const wordBlacklist = Buffer.from(wordBlacklistBase64.trim(), 'base64')
+	.toString('utf8')
+	.split('\n')
+	.map(word => word.trim().toLowerCase());
+
+export function containsBlacklistedWord(str: string): boolean {
+	const lowerCaseStr = str.toLowerCase();
+	for (const word of wordBlacklist) {
+		if (lowerCaseStr.includes(word)) {
+			return true;
+		}
+	}
+	return false;
 }

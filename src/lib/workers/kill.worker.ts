@@ -3,12 +3,20 @@ import '../data/itemAliases';
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Misc, Monsters } from 'oldschooljs';
 
+import killableMonsters from '../minions/data/killableMonsters';
 import { handleNexKills } from '../simulation/nex';
 import { calcDropRatesFromBank } from '../util/calcDropRatesFromBank';
 import resolveItems from '../util/resolveItems';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
 
-export default async ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs): KillWorkerReturn => {
+export default async ({
+	quantity,
+	bossName,
+	catacombs,
+	onTask,
+	limit,
+	lootTableTertiaryChanges
+}: KillWorkerArgs): KillWorkerReturn => {
 	const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, bossName)));
 
 	if (osjsMonster) {
@@ -20,7 +28,22 @@ export default async ({ quantity, bossName, limit, catacombs, onTask }: KillWork
 			};
 		}
 
-		return { bank: osjsMonster.kill(quantity, { inCatacombs: catacombs, onSlayerTask: onTask }) };
+		const result = {
+			bank: osjsMonster.kill(quantity, {
+				inCatacombs: catacombs,
+				onSlayerTask: onTask,
+				lootTableOptions: {
+					tertiaryItemPercentageChanges: new Map(lootTableTertiaryChanges)
+				}
+			})
+		};
+
+		const killableMonster = killableMonsters.find(mon => mon.id === osjsMonster.id);
+		if (killableMonster && killableMonster.specialLoot) {
+			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity });
+		}
+
+		return result;
 	}
 
 	if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {

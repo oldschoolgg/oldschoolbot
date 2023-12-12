@@ -1,6 +1,7 @@
 import { userMention } from '@discordjs/builders';
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
-import { objectEntries, sumArr, uniqueArr } from 'e';
+import { calcWhatPercent, objectEntries, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -9,11 +10,14 @@ import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
+import { CATier, CombatAchievements } from './combat_achievements/combatAchievements';
 import { badges, BitField, Emoji, projectiles, usernameCache } from './constants';
+import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
+import backgroundImages from './minions/data/bankBackgrounds';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
 import { defaultFarmingContract } from './minions/farming';
@@ -22,6 +26,7 @@ import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
 import { getUsersPerkTier, syncPerkTierOfUser } from './perkTiers';
+import { roboChimpUserFetch } from './roboChimp';
 import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
 import { prisma } from './settings/prisma';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
@@ -250,6 +255,11 @@ export class MUserClass {
 		return (stats.monster_scores as ItemBank)[monsterID] ?? 0;
 	}
 
+	async fetchMonsterScores() {
+		const stats = await this.fetchStats({ monster_scores: true });
+		return stats.monster_scores as ItemBank;
+	}
+
 	attackClass(): 'range' | 'mage' | 'melee' {
 		const styles = this.getAttackStyles();
 		if (styles.includes(SkillsEnum.Ranged)) return 'range';
@@ -323,19 +333,22 @@ GROUP BY data->>'clueID';`);
 		items,
 		collectionLog = false,
 		filterLoot = true,
-		dontAddToTempCL = false
+		dontAddToTempCL = false,
+		neverUpdateHistory = false
 	}: {
 		items: ItemBank | Bank;
 		collectionLog?: boolean;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
+		neverUpdateHistory?: boolean;
 	}) {
 		const res = await transactItems({
 			collectionLog,
 			itemsToAdd: new Bank(items),
 			filterLoot,
 			dontAddToTempCL,
-			userID: this.id
+			userID: this.id,
+			neverUpdateHistory
 		});
 		this.user = res.newUser;
 		this.updateProperties();
@@ -411,7 +424,7 @@ GROUP BY data->>'clueID';`);
 		const { bank } = this;
 		const items = resolveItems(_items);
 		for (const baseID of items) {
-			const similarItems = [...getSimilarItems(baseID), baseID];
+			const similarItems = getSimilarItems(baseID);
 			const hasOneEquipped = similarItems.some(id => this.hasEquipped(id, true));
 			const hasOneInBank = similarItems.some(id => bank.has(id));
 			// If only one needs to be equipped, return true now if it is equipped.
@@ -479,6 +492,14 @@ GROUP BY data->>'clueID';`);
 		return blowpipe;
 	}
 
+	percentOfBossCLFinished() {
+		const percentBossCLFinished = calcWhatPercent(
+			this.cl.items().filter(i => bossCLItems.includes(i[0].id)).length,
+			bossCLItems.length
+		);
+		return percentBossCLFinished;
+	}
+
 	async addItemsToCollectionLog(itemsToAdd: Bank) {
 		const previousCL = new Bank(this.cl.bank);
 		const updates = this.calculateAddItemsToCLUpdates({
@@ -494,20 +515,21 @@ GROUP BY data->>'clueID';`);
 		};
 	}
 
-	async specialRemoveItems(bankToRemove: Bank) {
+	async specialRemoveItems(bankToRemove: Bank, options?: { wildy?: boolean }) {
 		bankToRemove = determineRunes(this, bankToRemove);
 		const bankRemove = new Bank();
 		let dart: [Item, number] | null = null;
 		let ammoRemove: [Item, number] | null = null;
 
+		const gearKey = options?.wildy ? 'wildy' : 'range';
 		const realCost = bankToRemove.clone();
-		const rangeGear = this.gear.range;
+		const rangeGear = this.gear[gearKey];
 		const hasAvas = rangeGear.hasEquipped("Ava's assembler");
 		const updates: Prisma.UserUpdateArgs['data'] = {};
 
 		for (const [item, quantity] of bankToRemove.items()) {
 			if (blowpipeDarts.includes(item)) {
-				if (dart !== null) throw new Error('Tried to remove more than 1 blowpipe dart.');
+				if (dart !== null) throw new UserError('Tried to remove more than 1 blowpipe dart.');
 				dart = [item, quantity];
 				continue;
 			}
@@ -526,12 +548,12 @@ GROUP BY data->>'clueID';`);
 		if (ammoRemove) {
 			const equippedAmmo = rangeGear.ammo?.item;
 			if (!equippedAmmo) {
-				throw new Error('No ammo equipped.');
+				throw new UserError('No ammo equipped.');
 			}
 			if (equippedAmmo !== ammoRemove[0].id) {
-				throw new Error(`Has ${itemNameFromID(equippedAmmo)}, but needs ${ammoRemove[0].name}.`);
+				throw new UserError(`Has ${itemNameFromID(equippedAmmo)}, but needs ${ammoRemove[0].name}.`);
 			}
-			const newRangeGear = { ...this.gear.range };
+			const newRangeGear = { ...this.gear[gearKey] };
 			const ammo = newRangeGear.ammo?.quantity;
 
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(equippedAmmo));
@@ -545,13 +567,14 @@ GROUP BY data->>'clueID';`);
 				}
 			}
 			if (!ammo || ammo < ammoRemove[1])
-				throw new Error(
-					`Not enough ${ammoRemove[0].name} equipped in range gear, you need ${
+				throw new UserError(
+					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${
 						ammoRemove![1]
 					} but you have only ${ammo}.`
 				);
 			newRangeGear.ammo!.quantity -= ammoRemove![1];
-			updates.gear_range = newRangeGear as any as Prisma.InputJsonObject;
+			const updateKey = options?.wildy ? 'gear_wildy' : 'gear_range';
+			updates[updateKey] = newRangeGear as any as Prisma.InputJsonObject;
 		}
 
 		if (dart) {
@@ -567,20 +590,20 @@ GROUP BY data->>'clueID';`);
 			const scales = Math.ceil((10 / 3) * dart[1]);
 			const rawBlowpipeData = this.blowpipe;
 			if (!this.allItemsOwned.has('Toxic blowpipe') || !rawBlowpipeData) {
-				throw new Error("You don't have a Toxic blowpipe.");
+				throw new UserError("You don't have a Toxic blowpipe.");
 			}
 			if (!rawBlowpipeData.dartID || !rawBlowpipeData.dartQuantity) {
-				throw new Error('You have no darts in your Toxic blowpipe.');
+				throw new UserError('You have no darts in your Toxic blowpipe.');
 			}
 			if (rawBlowpipeData.dartQuantity < dart[1]) {
-				throw new Error(
+				throw new UserError(
 					`You don't have enough ${itemNameFromID(
 						rawBlowpipeData.dartID
 					)}s in your Toxic blowpipe, you need ${dart[1]}, but you have only ${rawBlowpipeData.dartQuantity}.`
 				);
 			}
 			if (!rawBlowpipeData.scales || rawBlowpipeData.scales < scales) {
-				throw new Error(
+				throw new UserError(
 					`You don't have enough Zulrah's scales in your Toxic blowpipe, you need ${scales} but you have only ${rawBlowpipeData.scales}.`
 				);
 			}
@@ -593,7 +616,7 @@ GROUP BY data->>'clueID';`);
 
 		if (bankRemove.length > 0) {
 			if (!this.bankWithGP.has(bankRemove)) {
-				throw new Error(`You don't own: ${bankRemove.clone().remove(this.bankWithGP)}.`);
+				throw new UserError(`You don't own: ${bankRemove.clone().remove(this.bankWithGP)}.`);
 			}
 			await transactItems({ userID: this.id, itemsToRemove: bankRemove });
 		}
@@ -702,6 +725,69 @@ GROUP BY data->>'clueID';`);
 			plant,
 			matchingPlantedCrop: plant ? detailed.patchesDetailed.find(i => i.plant && i.plant === plant) : undefined
 		};
+	}
+
+	caPoints(): number {
+		const keys = Object.keys(CombatAchievements) as CATier[];
+		return keys
+			.map(
+				t =>
+					CombatAchievements[t].tasks.filter(task => this.user.completed_ca_task_ids.includes(task.id))
+						.length * CombatAchievements[t].taskPoints
+			)
+			.reduce((total, value) => total + value, 0);
+	}
+
+	hasCompletedCATier(tier: keyof typeof CombatAchievements): boolean {
+		return this.caPoints() >= CombatAchievements[tier].rewardThreshold;
+	}
+
+	buildCATertiaryItemChanges() {
+		const changes = new Map();
+		if (this.hasCompletedCATier('easy')) {
+			changes.set('Clue scroll (easy)', 5);
+		}
+		if (this.hasCompletedCATier('medium')) {
+			changes.set('Clue scroll (medium)', 5);
+		}
+		if (this.hasCompletedCATier('hard')) {
+			changes.set('Clue scroll (hard)', 5);
+		}
+		if (this.hasCompletedCATier('elite')) {
+			changes.set('Clue scroll (elite)', 5);
+		}
+		return changes;
+	}
+
+	async checkBankBackground() {
+		if (this.bitfield.includes(BitField.isModerator)) {
+			return;
+		}
+		const resetBackground = async () => {
+			await this.update({ bankBackground: 1 });
+		};
+		const background = backgroundImages.find(i => i.id === this.user.bankBackground);
+		if (!background) {
+			return resetBackground();
+		}
+		if (background.id === 1) return;
+		if (background.storeBitField && this.user.store_bitfield.includes(background.storeBitField)) {
+			return;
+		}
+		if (background.perkTierNeeded && this.perkTier() >= background.perkTierNeeded) {
+			return;
+		}
+		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
+			return;
+		}
+		if (!background.storeBitField && !background.perkTierNeeded && !background.bitfield) {
+			return;
+		}
+		return resetBackground();
+	}
+
+	async fetchRobochimpUser() {
+		return roboChimpUserFetch(this.id);
 	}
 }
 declare global {

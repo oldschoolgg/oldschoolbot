@@ -2,11 +2,12 @@ import { objectEntries } from 'e';
 import { Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { MAX_QP } from './constants';
-import type { MinigameName } from './settings/minigames';
+import { MAX_QP } from '../mahoji/lib/abstracted_commands/questCommand';
+import type { MinigameName, MinigameScore } from './settings/minigames';
 import Skillcapes from './skilling/skillcapes';
 import { courses } from './skilling/skills/agility';
-import { ItemBank, Skills } from './types';
+import { MUserStats } from './structures/MUserStats';
+import { Skills } from './types';
 import { formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
@@ -24,9 +25,9 @@ export interface DiaryTier {
 	lapsReqs?: Record<string, number>;
 	qp?: number;
 	monsterScores?: Record<string, number>;
-	customReq?: (user: MUser, summary: Boolean) => Promise<[true] | [false, string]>;
+	customReq?: (user: MUser, summary: Boolean, stats: MUserStats) => [true] | [false, string];
 }
-interface Diary {
+export interface Diary {
 	name: string;
 	alias?: string[];
 	easy: DiaryTier;
@@ -35,7 +36,11 @@ interface Diary {
 	elite: DiaryTier;
 }
 
-export async function userhasDiaryTier(user: MUser, tier: DiaryTier): Promise<[true] | [false, string]> {
+export function userhasDiaryTierSync(
+	user: MUser,
+	tier: DiaryTier,
+	data: { stats: MUserStats; minigameScores: MinigameScore[] }
+): [true] | [false, string] {
 	const [hasReqs] = hasSkillReqs(user, tier.skillReqs);
 	const skills = user.skillsAsLevels;
 	let canDo = true;
@@ -52,9 +57,8 @@ export async function userhasDiaryTier(user: MUser, tier: DiaryTier): Promise<[t
 	const { bank } = user;
 	const { cl } = user;
 	const qp = user.QP;
-	const stats = await user.fetchStats({ laps_scores: true, monster_scores: true });
-	const lapScores = stats.laps_scores as ItemBank;
-	const monsterScores = stats.monster_scores as ItemBank;
+	const lapScores = data.stats.lapsScores;
+	const { monsterScores } = data.stats;
 
 	if (tier.ownedItems) {
 		const unownedItems = tier.ownedItems.filter(i => !bank.has(i));
@@ -79,9 +83,8 @@ export async function userhasDiaryTier(user: MUser, tier: DiaryTier): Promise<[t
 
 	if (tier.minigameReqs) {
 		const entries = Object.entries(tier.minigameReqs);
-		const scores = await user.fetchMinigameScores();
 		for (const [key, neededScore] of entries) {
-			const thisScore = scores.find(m => m.minigame.column === key)!;
+			const thisScore = data.minigameScores.find(m => m.minigame.column === key)!;
 			if (thisScore.score < neededScore!) {
 				canDo = false;
 				reasons.push(
@@ -117,7 +120,7 @@ export async function userhasDiaryTier(user: MUser, tier: DiaryTier): Promise<[t
 	}
 
 	if (tier.customReq) {
-		const [hasCustomReq, reason] = await tier.customReq(user, false);
+		const [hasCustomReq, reason] = tier.customReq(user, false, data.stats);
 		if (!hasCustomReq) {
 			canDo = false;
 			reasons.push(reason!);
@@ -126,6 +129,13 @@ export async function userhasDiaryTier(user: MUser, tier: DiaryTier): Promise<[t
 
 	if (canDo) return [true];
 	return [canDo, reasons.join('\n- ')];
+}
+
+export async function userhasDiaryTier(user: MUser, tier: DiaryTier): Promise<[true] | [false, string]> {
+	return userhasDiaryTierSync(user, tier, {
+		stats: await MUserStats.fromID(user.id),
+		minigameScores: await user.fetchMinigameScores()
+	});
 }
 
 export const WesternProv: Diary = {
@@ -485,7 +495,7 @@ export const FaladorDiary: Diary = {
 			woodcutting: 75
 		},
 		collectionLogReqs: resolveItems(['Air rune', 'Saradomin brew(3)']),
-		customReq: async (user, summary) => {
+		customReq: (user, summary) => {
 			if (summary) return [false, 'Quest point cape or Skill cape.'];
 			const userBank = user.bank;
 			const skills = user.skillsAsLevels;
@@ -658,10 +668,9 @@ export const KandarinDiary: Diary = {
 			smithing: 90
 		},
 		collectionLogReqs: resolveItems(['Grimy dwarf weed', 'Shark']),
-		customReq: async (user, summary) => {
+		customReq: (_, summary, stats) => {
 			if (summary) return [false, 'Barbarian Assault Honour Level of 5.'];
-			const stats = await user.fetchStats({ honour_level: true });
-			const honourLevel = stats.honour_level;
+			const honourLevel = stats.userStats.honour_level;
 			if (honourLevel < 5) {
 				return [false, 'your Barbarian Assault Honour Level is less than 5'];
 			}

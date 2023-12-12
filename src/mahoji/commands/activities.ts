@@ -16,6 +16,7 @@ import { alchCommand } from '../lib/abstracted_commands/alchCommand';
 import { birdhouseCheckCommand, birdhouseHarvestCommand } from '../lib/abstracted_commands/birdhousesCommand';
 import { buryCommand } from '../lib/abstracted_commands/buryCommand';
 import { butlerCommand } from '../lib/abstracted_commands/butlerCommand';
+import { camdozaalCommand } from '../lib/abstracted_commands/camdozaalCommand';
 import { castCommand } from '../lib/abstracted_commands/castCommand';
 import { championsChallengeCommand } from '../lib/abstracted_commands/championsChallenge';
 import { chargeGloriesCommand } from '../lib/abstracted_commands/chargeGloriesCommand';
@@ -30,7 +31,7 @@ import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand'
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
 import { otherActivities, otherActivitiesCommand } from '../lib/abstracted_commands/otherActivitiesCommand';
 import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
-import { questCommand } from '../lib/abstracted_commands/questCommand';
+import { questCommand, quests } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { scatterCommand } from '../lib/abstracted_commands/scatterCommand';
 import { underwaterAgilityThievingCommand } from '../lib/abstracted_commands/underwaterCommand';
@@ -115,6 +116,27 @@ export const activitiesCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
+			name: 'camdozaal',
+			description: 'Send your minion to do activities inside the Ruins of Camdozaal',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'action',
+					description: 'Start mining, smithing, or fishing inside the Ruins of Camdozaal',
+					choices: ['mining', 'smithing', 'fishing'].map(i => ({ name: i, value: i })),
+					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'quantity',
+					description: 'The quantity you want to do (optional).',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
 			name: 'collect',
 			description: 'Sends your minion to collect items.',
 			options: [
@@ -147,7 +169,16 @@ export const activitiesCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'quest',
-			description: 'Send your minion to do quests.'
+			description: 'Send your minion to do quests.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'name',
+					description: 'The name of the quest (optional).',
+					choices: quests.map(i => ({ name: i.name, value: i.name })),
+					required: false
+				}
+			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -382,7 +413,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.Integer,
 					name: 'quantity',
-					description: 'The quantity you want to bury.',
+					description: 'The quantity you want to alch.',
 					required: false,
 					min_value: 1
 				}
@@ -492,8 +523,11 @@ export const activitiesCommand: OSBMahojiCommand = {
 		chompy_hunt?: { action: 'start' | 'claim' };
 		champions_challenge?: {};
 		warriors_guild?: { action: string; quantity?: number };
+		camdozaal?: { action: string; quantity?: number };
 		collect?: { item: string; quantity?: number; no_stams?: boolean };
-		quest?: {};
+		quest?: {
+			name?: string;
+		};
 		favour?: { name?: string; no_stams?: boolean };
 		decant?: { potion_name: string; dose?: number };
 		charge?: { item: string; quantity?: number };
@@ -562,6 +596,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 				options.warriors_guild.quantity
 			);
 		}
+		if (options.camdozaal) {
+			return camdozaalCommand(user, channelID, options.camdozaal.action, options.camdozaal.quantity);
+		}
 		if (options.collect) {
 			return collectCommand(
 				user,
@@ -572,7 +609,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.quest) {
-			return questCommand(user, channelID);
+			return questCommand(user, channelID, options.quest.name);
 		}
 		if (options.favour) {
 			return favourCommand(user, options.favour.name, channelID, options.favour.no_stams);

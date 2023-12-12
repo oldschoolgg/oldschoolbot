@@ -1,18 +1,25 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
-import { calcWhatPercent } from 'e';
+import { calcWhatPercent, objectEntries } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { Bank } from 'oldschooljs';
 
+import { buildCombatAchievementsResult } from '../../lib/combat_achievements/caUtils';
 import {
+	allCAMonsterNames,
 	allCombatAchievementTasks,
 	caToPlayerString,
 	CombatAchievement,
-	CombatAchievements
+	CombatAchievements,
+	nextCATier
 } from '../../lib/combat_achievements/combatAchievements';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 
 const viewTypes = ['all', 'incomplete', 'complete'] as const;
-type ViewType = (typeof viewTypes)[number];
+
+export type CAViewType = (typeof viewTypes)[number];
+
+type MonsterNames = (typeof allCAMonsterNames)[number];
 
 export const caCommand: OSBMahojiCommand = {
 	name: 'ca',
@@ -25,10 +32,21 @@ export const caCommand: OSBMahojiCommand = {
 			options: [
 				{
 					type: ApplicationCommandOptionType.String,
+					name: 'name',
+					description: 'What boss do you want to view?',
+					autocomplete: async (value: string) => {
+						return allCAMonsterNames
+							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({ name: i, value: i }));
+					},
+					required: false
+				},
+				{
+					type: ApplicationCommandOptionType.String,
 					name: 'type',
 					description: 'What do you want to view?',
 					choices: viewTypes.map(i => ({ name: i, value: i })),
-					required: true
+					required: false
 				}
 			]
 		},
@@ -46,18 +64,20 @@ export const caCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		claim?: {};
 		view?: {
-			type: ViewType;
+			name?: MonsterNames;
+			type?: CAViewType;
 		};
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		const completedTaskIDs = new Set(user.user.completed_ca_task_ids);
 
+		const currentPoints = user.caPoints();
 		const generalProgressString = `You have completed ${completedTaskIDs.size}/${
 			allCombatAchievementTasks.length
 		} (${calcWhatPercent(completedTaskIDs.size, allCombatAchievementTasks.length).toFixed(
 			2
-		)}%) tasks. Use ${mentionCommand(
+		)}%) tasks for ${currentPoints} points. ${nextCATier(currentPoints)}.\r\nUse ${mentionCommand(
 			globalClient,
 			'ca',
 			'claim'
@@ -85,7 +105,21 @@ export const caCommand: OSBMahojiCommand = {
 			}
 
 			if (completedTasks.length === 0) {
-				return `You have no completed tasks to claim.\n\n${generalProgressString}`;
+				const claimableRewards = new Bank();
+				for (const [tier, diary] of objectEntries(CombatAchievements)) {
+					if (!user.hasCompletedCATier(tier)) continue;
+					for (const reward of diary.staticRewards) {
+						if (user.owns(reward.item.id)) continue;
+						if (!reward.reclaimable && user.cl.has(reward.item.id)) continue;
+						claimableRewards.add(reward.item.id);
+					}
+				}
+				if (claimableRewards.length > 0) {
+					await user.addItemsToBank({ items: claimableRewards, collectionLog: true });
+					return `You claimed ${claimableRewards}.`;
+				}
+
+				return `You have no completed tasks or rewards to claim.\n\n${generalProgressString}`;
 			}
 
 			await user.update({
@@ -101,12 +135,33 @@ export const caCommand: OSBMahojiCommand = {
 		}
 
 		if (options.view) {
+			let selectedMonster = options.view.name;
+			let tasksView: CAViewType = options.view.type !== undefined ? options.view.type : 'all';
+
+			if (selectedMonster) {
+				const tasksForSelectedMonster = allCombatAchievementTasks.filter(
+					task => task.monster === selectedMonster
+				);
+
+				if (tasksForSelectedMonster.length === 0)
+					return 'No Combat Achievement tasks found for the specified monster.';
+
+				const maxContentLength = 750;
+				const result = buildCombatAchievementsResult(
+					completedTaskIDs,
+					{ name: `${selectedMonster}`, tasks: tasksForSelectedMonster },
+					tasksView,
+					maxContentLength
+				);
+				return result;
+			}
+
 			let result = '';
 
 			for (const group of Object.values(CombatAchievements)) {
 				result += `${group.name} (${group.tasks.filter(i => completedTaskIDs.has(i.id)).length}/${
 					group.tasks.length
-				} completed)\n`;
+				} completed). Each task in this tier awards ${group.taskPoints} points\n`;
 				for (const task of group.tasks) {
 					if (options.view.type === 'complete' && !completedTaskIDs.has(task.id)) {
 						continue;
@@ -124,6 +179,7 @@ export const caCommand: OSBMahojiCommand = {
 				files: [{ attachment: Buffer.from(result), name: 'ca.txt' }]
 			};
 		}
+
 		return 'Invalid command.';
 	}
 };

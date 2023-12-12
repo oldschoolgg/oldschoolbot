@@ -7,7 +7,7 @@ import { ClientStorage, economy_transaction_type } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { isThenable } from '@sentry/utils';
 import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions } from 'discord.js';
-import { calcWhatPercent, notEmpty, randArrItem, sleep, Time, uniqueArr } from 'e';
+import { calcWhatPercent, noOp, notEmpty, randArrItem, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -25,7 +25,8 @@ import {
 	BOT_TYPE,
 	Channel,
 	DISABLED_COMMANDS,
-	globalConfig
+	globalConfig,
+	META_CONSTANTS
 } from '../../lib/constants';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetup } from '../../lib/gear/types';
@@ -62,7 +63,6 @@ import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
-import { getUserInfo } from './minion';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -474,6 +474,28 @@ from bot_item_sell;`);
 				]
 			};
 		}
+	},
+	{
+		name: 'Max G.E Slot users',
+		run: async () => {
+			const res = await prisma.$queryRawUnsafe<{ user_id: string; slots_used: number }[]>(`
+SELECT user_id, COUNT(*) AS slots_used
+FROM ge_listing
+WHERE cancelled_at IS NULL AND fulfilled_at IS NULL
+GROUP BY user_id
+HAVING COUNT(*) >= 3
+ORDER BY slots_used DESC;
+`);
+			let usersUsingAllSlots = 0;
+			for (const row of res) {
+				const user = await mUserFetch(row.user_id);
+				const { slots } = await GrandExchange.calculateSlotsOfUser(user);
+				if (row.slots_used >= slots) usersUsingAllSlots++;
+			}
+			return {
+				content: `There are ${usersUsingAllSlots}x users using all their G.E slots.`
+			};
+		}
 	}
 ];
 
@@ -585,25 +607,6 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'add_ironman_alt',
-			description: 'Add an ironman alt account for a user',
-			options: [
-				{
-					type: ApplicationCommandOptionType.User,
-					name: 'main',
-					description: 'The main',
-					required: true
-				},
-				{
-					type: ApplicationCommandOptionType.User,
-					name: 'ironman_alt',
-					description: 'The ironman alt',
-					required: true
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'badges',
 			description: 'Manage badges of a user',
 			options: [
@@ -662,19 +665,6 @@ export const adminCommand: OSBMahojiCommand = {
 							.filter(i => disabledCommands.includes(i.name))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'view_user',
-			description: 'View a users info',
-			options: [
-				{
-					type: ApplicationCommandOptionType.User,
-					name: 'user',
-					description: 'The user',
-					required: true
 				}
 			]
 		},
@@ -802,11 +792,9 @@ export const adminCommand: OSBMahojiCommand = {
 		cancel_task?: { user: MahojiUserOption };
 		sync_roles?: {};
 		sync_patreon?: {};
-		add_ironman_alt?: { main: MahojiUserOption; ironman_alt: MahojiUserOption };
 		badges?: { user: MahojiUserOption; add?: string; remove?: string };
 		bypass_age?: { user: MahojiUserOption };
 		command?: { enable?: string; disable?: string };
-		view_user?: { user: MahojiUserOption };
 		set_price?: { item: string; price: number };
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
 		ltc?: { item?: string };
@@ -820,32 +808,6 @@ export const adminCommand: OSBMahojiCommand = {
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
 		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
-
-		if (options.wipe_bingo_temp_cls) {
-			if (userID.toString() !== '319396464402890753' && !isMod) return randArrItem(gifs);
-			const usersToReset = await prisma.user.findMany({
-				where: {
-					bingo_tickets_bought: {
-						gt: 0
-					}
-				},
-				select: {
-					id: true
-				}
-			});
-			await handleMahojiConfirmation(interaction, `Reset the temp CL of ${usersToReset.length} users?`);
-			const res = await prisma.user.updateMany({
-				where: {
-					id: {
-						in: usersToReset.map(i => i.id)
-					}
-				},
-				data: {
-					temp_cl: {}
-				}
-			});
-			return `${res.count} temp CLs reset.`;
-		}
 
 		if (!guildID || !isMod || (production && guildID.toString() !== '342983479501389826')) return randArrItem(gifs);
 
@@ -879,62 +841,6 @@ export const adminCommand: OSBMahojiCommand = {
 			await patreonTask.run();
 			syncLinkedAccounts();
 			return 'Finished syncing patrons.';
-		}
-		if (options.add_ironman_alt) {
-			const mainAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.main.user.id, {
-				minion_ironman: true,
-				id: true,
-				ironman_alts: true,
-				main_account: true
-			});
-			const altAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.ironman_alt.user.id, {
-				minion_ironman: true,
-				bitfield: true,
-				id: true,
-				ironman_alts: true,
-				main_account: true
-			});
-			const mainUser = await mUserFetch(mainAccount.id);
-			const altUser = await mUserFetch(altAccount.id);
-			if (mainAccount === altAccount) return "They're they same account.";
-			if (mainAccount.minion_ironman) return `${mainUser.usernameOrMention} is an ironman.`;
-			if (!altAccount.minion_ironman) return `${altUser.usernameOrMention} is not an ironman.`;
-			if (!altAccount.bitfield.includes(BitField.PermanentIronman)) {
-				return `${altUser.usernameOrMention} is not a *permanent* ironman.`;
-			}
-
-			const peopleWithThisAltAlready = (
-				await prisma.$queryRawUnsafe<unknown[]>(
-					`SELECT id FROM users WHERE '${altAccount.id}' = ANY(ironman_alts);`
-				)
-			).length;
-			if (peopleWithThisAltAlready > 0) {
-				return `Someone already has ${altUser.usernameOrMention} as an ironman alt.`;
-			}
-			if (mainAccount.main_account) {
-				return `${mainUser.usernameOrMention} has a main account connected already.`;
-			}
-			if (altAccount.main_account) {
-				return `${altUser.usernameOrMention} has a main account connected already.`;
-			}
-			const mainAccountsAlts = mainAccount.ironman_alts;
-			if (mainAccountsAlts.includes(altAccount.id)) {
-				return `${mainUser.usernameOrMention} already has ${altUser.usernameOrMention} as an alt.`;
-			}
-
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure that \`${altUser.usernameOrMention}\` is the alt account of \`${mainUser.usernameOrMention}\`?`
-			);
-			await mahojiUserSettingsUpdate(mainAccount.id, {
-				ironman_alts: {
-					push: altAccount.id
-				}
-			});
-			await mahojiUserSettingsUpdate(altAccount.id, {
-				main_account: mainAccount.id
-			});
-			return `You set \`${altUser.usernameOrMention}\` as the alt account of \`${mainUser.usernameOrMention}\`.`;
 		}
 
 		if (options.badges) {
@@ -1032,10 +938,6 @@ export const adminCommand: OSBMahojiCommand = {
 			}
 			return 'Invalid.';
 		}
-		if (options.view_user) {
-			const userToView = await mUserFetch(options.view_user.user.user.id);
-			return (await getUserInfo(userToView)).everythingString;
-		}
 		if (options.set_price) {
 			const item = getItem(options.set_price.item);
 			if (!item) return 'Invalid item.';
@@ -1106,6 +1008,11 @@ export const adminCommand: OSBMahojiCommand = {
 			await interactionReply(interaction, {
 				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
 			});
+			await sendToChannelID(Channel.GeneralChannel, {
+				content: `I am shutting down! Goodbye :(
+
+${META_CONSTANTS.RENDERED_STR}`
+			}).catch(noOp);
 			process.exit();
 		}
 		if (options.shut_down) {
@@ -1115,6 +1022,11 @@ export const adminCommand: OSBMahojiCommand = {
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
 			await Promise.all([sleep(timer), GrandExchange.queue.onEmpty()]);
+			await sendToChannelID(Channel.GeneralChannel, {
+				content: `I am shutting down! Goodbye :(
+
+${META_CONSTANTS.RENDERED_STR}`
+			}).catch(noOp);
 			execSync(`pm2 stop ${BOT_TYPE === 'OSB' ? 'osb' : 'bso'}`);
 		}
 

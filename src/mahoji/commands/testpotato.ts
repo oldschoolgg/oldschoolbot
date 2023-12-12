@@ -1,16 +1,19 @@
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import { Prisma, xp_gains_skill_enum } from '@prisma/client';
+import { User } from 'discord.js';
 import { noOp, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
-import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
+import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
 import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
-import { BitField, MAX_INT_JAVA, MAX_QP } from '../../lib/constants';
+import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
+import { BitField, MAX_INT_JAVA } from '../../lib/constants';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { UserKourendFavour } from '../../lib/minions/data/kourendFavour';
 import potions from '../../lib/minions/data/potions';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
@@ -22,6 +25,7 @@ import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
 import { stringMatches } from '../../lib/util';
+import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
 import {
 	FarmingPatchName,
 	farmingPatchNames,
@@ -32,14 +36,17 @@ import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
+import { MAX_QP } from '../lib/abstracted_commands/questCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
+import { BingoManager } from '../lib/bingo/BingoManager';
 import { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
+import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 
-async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
+export async function giveMaxStats(user: MUser) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
-		updates[`skills_${skill}`] = convertLVLtoXP(level);
+		updates[`skills_${skill}`] = convertLVLtoXP(99);
 	}
 	await user.update({
 		QP: MAX_QP,
@@ -52,8 +59,6 @@ async function giveMaxStats(user: MUser, level = 99, qp = MAX_QP) {
 			Shayzien: 100
 		} as UserKourendFavour as any
 	});
-
-	return `Gave you level ${level} in all stats, and ${qp} QP.`;
 }
 
 async function givePatronLevel(user: MUser, tier: number) {
@@ -210,7 +215,7 @@ const spawnPresets = [
 	['runes', runePreset]
 ] as const;
 
-const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'buypayout'] as const;
+const thingsToWipe = ['bank', 'combat_achievements', 'cl', 'quests', 'buypayout', 'kc'] as const;
 
 export const testPotatoCommand: OSBMahojiCommand | null = production
 	? null
@@ -446,6 +451,69 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'set',
+					description: 'Set something',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'qp',
+							description: 'Set your quest points.',
+							required: false,
+							min_value: 0,
+							max_value: MAX_QP
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'all_ca_tasks',
+							description: 'Finish all CA tasks.',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'check',
+					description: 'Check something',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'monster_droprates',
+							description: 'Simulation to check droprates on a monster.',
+							required: false,
+							autocomplete: async value => {
+								return killableMonsters
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({
+										name: i.name,
+										value: i.name
+									}));
+							}
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'bingo_tools',
+					description: 'Bingo tools',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'start_bingo',
+							description: 'Make your bingo start now.',
+							required: true,
+							autocomplete: async (value: string, user: User) => {
+								const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
+								return bingos
+									.map(i => new BingoManager(i))
+									.filter(b => b.creatorID === user.id || b.organizers.includes(user.id))
+									.filter(bingo => (!value ? true : bingo.id.toString() === value))
+									.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
+							}
+						}
+					]
 				}
 			],
 			run: async ({
@@ -463,12 +531,79 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				irontoggle?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
 				wipe?: { thing: (typeof thingsToWipe)[number] };
+				set?: { qp?: number; all_ca_tasks?: boolean };
+				check?: { monster_droprates?: string };
+				bingo_tools?: { start_bingo: string };
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
 				const user = await mUserFetch(userID.toString());
+
+				if (options.bingo_tools) {
+					if (options.bingo_tools.start_bingo) {
+						const bingo = await prisma.bingo.findFirst({
+							where: {
+								id: Number(options.bingo_tools.start_bingo),
+								creator_id: user.id
+							}
+						});
+						if (!bingo) return 'Invalid bingo.';
+						await prisma.bingo.update({
+							where: {
+								id: bingo.id
+							},
+							data: {
+								start_date: new Date()
+							}
+						});
+						return 'Your bingo start date has been set to this moment, so it has just started.';
+					}
+				}
+
+				if (options.check) {
+					if (options.check.monster_droprates) {
+						const monster = killableMonsters.find(m =>
+							stringMatches(m.name, options.check!.monster_droprates)
+						);
+						if (!monster) return 'Invalid monster';
+						const qty = 1_000_000;
+						const loot = monster.table.kill(qty, {});
+						const droprates = calcDropRatesFromBankWithoutUniques(loot, qty);
+						return {
+							files: [
+								{
+									attachment: Buffer.from(`Total Kills: ${qty}
+Total Value of Loot: ${loot.value()}
+GP/hr(roughly): ${toKMB(loot.value() / (monster.timeToFinish * qty))}
+
+Droprates:
+${droprates.join('\n')}`),
+									name: 'monsterinfo.txt'
+								}
+							]
+						};
+					}
+				}
+
+				if (options.set) {
+					const { qp } = options.set;
+					if (qp) {
+						await user.update({
+							QP: qp
+						});
+						return `Set your QP to ${qp}.`;
+					}
+					if (options.set.all_ca_tasks) {
+						await user.update({
+							completed_ca_task_ids: Object.values(CombatAchievements)
+								.map(i => i.tasks.map(t => t.id))
+								.flat()
+						});
+						return 'Finished all CA tasks.';
+					}
+				}
 				if (options.irontoggle) {
 					const current = user.isIronman;
 					await user.update({
@@ -478,6 +613,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				}
 				if (options.wipe) {
 					let { thing } = options.wipe;
+					if (thing === 'kc') {
+						await userStatsUpdate(user.id, {
+							monster_scores: {}
+						});
+						return 'Reset all your KCs.';
+					}
 					if (thing === 'buypayout') {
 						await prisma.botItemSell.deleteMany({
 							where: {
@@ -513,6 +654,17 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							completed_ca_task_ids: []
 						});
 						return 'Reset your combat achievements.';
+					}
+					if (thing === 'quests') {
+						await user.update({
+							finished_quest_ids: [],
+							collectionLogBank: {}
+						});
+						return `Your QP, and completed quests, have been reset. You can set your QP to a certain number using ${mentionCommand(
+							globalClient,
+							'testpotato',
+							'set'
+						)}.`;
 					}
 					return 'Invalid thing to reset.';
 				}
@@ -570,6 +722,15 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						GP: 5_000_000_000,
 						slayer_points: 100_000,
 						tentacle_charges: 10_000,
+						sang_charges: 10_000,
+						trident_charges: 10_000,
+						serp_helm_charges: 10_000,
+						blood_fury_charges: 10_000,
+						tum_shadow_charges: 10_000,
+						blood_essence_charges: 10_000,
+						ash_sanctifier_charges: 10_000,
+						celestial_ring_charges: 10_000,
+						scythe_of_vitur_charges: 10_000,
 						gear_mage: TOBMaxMageGear.raw() as any,
 						gear_melee: TOBMaxMeleeGear.raw() as any,
 						gear_range: TOBMaxRangeGear.raw() as any,
@@ -580,7 +741,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						}
 					});
 					await giveMaxStats(user);
-					return 'Fully maxed your account, stocked your bank.';
+					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';
 				}
 				if (options.patron) {
 					return givePatronLevel(user, Number(options.patron.tier));
