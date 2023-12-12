@@ -4,6 +4,9 @@ import { production } from '../config';
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
 import { butlerTask } from '../tasks/minions/butlerActivity';
+import { camdozaalFishingTask } from '../tasks/minions/camdozaalActivity/camdozaalFishingActivity';
+import { camdozaalMiningTask } from '../tasks/minions/camdozaalActivity/camdozaalMiningActivity';
+import { camdozaalSmithingTask } from '../tasks/minions/camdozaalActivity/camdozaalSmithingActivity';
 import { castingTask } from '../tasks/minions/castingActivity';
 import { clueTask } from '../tasks/minions/clueActivity';
 import { collectingTask } from '../tasks/minions/collectingActivity';
@@ -176,7 +179,10 @@ export const tasks: MinionTask[] = [
 	toaTask,
 	underwaterAgilityThievingTask,
 	strongholdTask,
-	specificQuestTask
+	specificQuestTask,
+	camdozaalMiningTask,
+	camdozaalSmithingTask,
+	camdozaalFishingTask
 ];
 
 export async function processPendingActivities() {

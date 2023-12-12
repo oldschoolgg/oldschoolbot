@@ -278,7 +278,10 @@ const activitiesCantGetStars: activity_type_enum[] = [
 	'Nex',
 	'TombsOfAmascut',
 	'TheatreOfBlood',
-	'Raids'
+	'Raids',
+	'CamdozaalMining',
+	'CamdozaalSmithing',
+	'CamdozaalFishing'
 ];
 
 export const starCache = new Map<string, Star & { expiry: number }>();
