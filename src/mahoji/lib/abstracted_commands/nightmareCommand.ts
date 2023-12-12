@@ -266,19 +266,23 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		return typeof _err === 'string' ? _err : _err.message;
 	}
 
-	if (user.gear.mage.hasEquipped("Tumeken's shadow")) {
-		await degradeItem({
-			item: getOSItem("Tumeken's shadow"),
-			chargesToDegrade: shadowChargesPerKc * quantity,
-			user
-		});
-	} else if (user.gear.mage.hasEquipped('Sanguinesti staff')) {
-		await degradeItem({
-			item: getOSItem('Sanguinesti staff'),
-			chargesToDegrade: sangChargesPerKc * quantity,
-			user
-		});
+	// Only remove charges for phosani since these items only boost phosani
+	if (isPhosani) {
+		if (user.gear.mage.hasEquipped("Tumeken's shadow")) {
+			await degradeItem({
+				item: getOSItem("Tumeken's shadow"),
+				chargesToDegrade: shadowChargesPerKc * quantity,
+				user
+			});
+		} else if (user.gear.mage.hasEquipped('Sanguinesti staff')) {
+			await degradeItem({
+				item: getOSItem('Sanguinesti staff'),
+				chargesToDegrade: sangChargesPerKc * quantity,
+				user
+			});
+		}
 	}
+
 	await updateBankSetting('nightmare_cost', totalCost);
 	await trackLoot({
 		id: 'nightmare',
@@ -315,9 +319,15 @@ ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
 					NightmareMonster.timeToFinish
 			  )} - the total trip will take ${formatDuration(duration)}.`;
 
-	str += `\n\nRemoved ${soloFoodUsage} from your bank. ${
-		hasShadow ? `Your minion is using ${shadowChargesPerKc * quantity} Tumeken's shadow charges. ` : ''
-	}${hasSang ? `Your minion is using ${sangChargesPerKc * quantity} Sanguinesti staff charges. ` : ''}`;
+	str += `\n\nRemoved ${soloFoodUsage} from your bank.${
+		isPhosani
+			? hasShadow
+				? ` Your minion is using ${shadowChargesPerKc * quantity} Tumeken's shadow charges. `
+				: hasSang
+				? ` Your minion is using ${sangChargesPerKc * quantity} Sanguinesti staff charges. `
+				: ''
+			: ''
+	}`;
 
 	return str;
 }
