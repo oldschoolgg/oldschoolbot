@@ -242,6 +242,9 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Magic logs'), 'Magic'],
 	[i('Redwood logs'), 'Redwood'],
 	[i('Elder logs'), 'Elder']
+
+	// JMod
+	[i('Scythe of vitur (JMod)'), 'JMod']
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
