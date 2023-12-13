@@ -9,6 +9,7 @@ import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import bosses from './bosses';
+import { camdozaalMonsters } from './camdozaalMonsters';
 import { chaeldarMonsters } from './chaeldarMonsters';
 import { creatureCreationCreatures } from './creatureCreation';
 import { konarMonsters } from './konarMonsters';
@@ -26,6 +27,7 @@ const killableMonsters: KillableMonster[] = [
 	...chaeldarMonsters,
 	...konarMonsters,
 	...krystiliaMonsters,
+	...camdozaalMonsters,
 	...mazchnaMonsters,
 	...nieveMonsters,
 	...turaelMonsters,

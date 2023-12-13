@@ -21,7 +21,10 @@ import { ItemBank } from '../lib/types';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
+import { giftCountCache } from '../mahoji/commands/gift';
+import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
 import { TOBUniques } from './data/tob';
+import { murMurSort } from './util';
 import resolveItems from './util/resolveItems';
 
 const fonts = {
@@ -46,6 +49,12 @@ const CACHE_DIR = './icon_cache';
 const itemSize = 32;
 const distanceFromTop = 32;
 const distanceFromSide = 16;
+
+const sourceGiftItemIDs = [26_298, 26_300, 26_302, 26_308, 26_316, 26_318, 26_320, 26_322, 26_324];
+const giftItemIDList: number[] = [];
+for (let i = 0; i < 100; i++) {
+	giftItemIDList.push(...sourceGiftItemIDs);
+}
 
 const { floor, ceil } = Math;
 
@@ -215,7 +224,15 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Mahogany logs'), 'Mahog'],
 	[i('Yew logs'), 'Yew'],
 	[i('Magic logs'), 'Magic'],
-	[i('Redwood logs'), 'Redwood']
+	[i('Redwood logs'), 'Redwood'],
+	...XPLamps.map(lamp => [lamp.itemID, toKMB(lamp.amount)] as const),
+
+	// Uncharged
+	[i('Holy sanguinesti staff (uncharged)'), 'Unch.'],
+	[i('Sanguinesti staff (uncharged)'), 'Unch.'],
+	[i('Scythe of vitur (uncharged)'), 'Unch.'],
+	[i('Holy scythe of vitur (uncharged)'), 'Unch.'],
+	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.']
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
@@ -250,6 +267,7 @@ class BankImageTask {
 
 	public _bgSpriteData: Image = new Image();
 	public bgSpriteList: Record<string, IBgSprite> = {};
+	public treeImage!: Image;
 
 	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
@@ -260,6 +278,7 @@ class BankImageTask {
 	}
 
 	async init() {
+		this.treeImage = await loadImage('./src/lib/resources/images/xmastree.png');
 		const colors: Record<BGSpriteName, string> = {
 			default: '#655741',
 			dark: '#393939',
@@ -734,6 +753,28 @@ class BankImageTask {
 				wide ? canvas.width : actualBackground.width! * (resizeBg === -1 ? 1 : resizeBg),
 				wide ? canvas.height : actualBackground.height! * (resizeBg === -1 ? 1 : resizeBg)
 			);
+		}
+
+		ctx.drawImage(this.treeImage, 370, 170);
+		if (user) {
+			const giftsOwned = giftCountCache.get(user.id);
+
+			const boundingBoxX = 326;
+			const boundingBoxY = 295;
+			const boundingBoxWidth = 150;
+			const boundingBoxHeight = 25;
+
+			if (giftsOwned) {
+				const sorted = murMurSort(giftItemIDList, user.id);
+				for (let i = 0; i < giftsOwned; i++) {
+					const image = await this.getItemImage(sorted[i], user);
+
+					const x = boundingBoxX + (randInt(0, boundingBoxWidth) - image.width / 2);
+					const y = boundingBoxY + (randInt(0, boundingBoxHeight) - image.height / 2);
+
+					ctx.drawImage(image, x, y);
+				}
+			}
 		}
 
 		if (showValue) {

@@ -1,4 +1,5 @@
 import { exec } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 
 import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
@@ -310,4 +311,20 @@ export function returnStringOrFile(string: string | InteractionReplyOptions): Aw
 		);
 	}
 	return string;
+}
+
+const wordBlacklistBase64 = readFileSync('./src/lib/data/wordBlacklist.txt', 'utf-8');
+const wordBlacklist = Buffer.from(wordBlacklistBase64.trim(), 'base64')
+	.toString('utf8')
+	.split('\n')
+	.map(word => word.trim().toLowerCase());
+
+export function containsBlacklistedWord(str: string): boolean {
+	const lowerCaseStr = str.toLowerCase();
+	for (const word of wordBlacklist) {
+		if (lowerCaseStr.includes(word)) {
+			return true;
+		}
+	}
+	return false;
 }
