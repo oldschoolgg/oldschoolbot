@@ -134,6 +134,7 @@ model ClientStorage {
   nmz_cost                     Json     @default("{}") @db.Json
   toa_cost                     Json     @default("{}") @db.Json
   toa_loot                     Json     @default("{}") @db.Json
+  ourania_loot                 Json     @default("{}") @db.Json
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
@@ -474,6 +475,7 @@ enum XpGainSource {
   OfferingBones
   TempleTrekking
   DarkAltar
+  OuraniaAltar
   MotherlodeMine
   Birdhouses
   GuardiansOfTheRift
@@ -910,6 +912,7 @@ enum activity_type_enum {
   MageArena2
   BigChompyBirdHunting
   DarkAltar
+  OuraniaAltar
   Trekking
   Revenants
   PestControl
