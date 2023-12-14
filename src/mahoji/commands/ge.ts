@@ -357,7 +357,6 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 
 			const image = await geImageGenerator.createInterface({
 				user,
-				collection: false,
 				page: options.my_listings.page ?? 1,
 				activeListings
 			});
