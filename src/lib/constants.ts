@@ -825,3 +825,14 @@ export const patronFeatures = {
 		tier: PerkTier.Four
 	}
 };
+
+export const christmasCakeIngredients = resolveItems([
+	'Gingerbread',
+	'Grimy salt',
+	'Snail oil',
+	'Ashy flour',
+	'Banana-butter',
+	'Fresh rat milk',
+	'Pristine chocolate bar',
+	'Smokey egg'
+]);

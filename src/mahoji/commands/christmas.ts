@@ -1,9 +1,17 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { getItem, mentionCommand } from '@oldschoolgg/toolkit';
+import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { getSmokeyLotteryGiveawayInterval, smokeyLotteryMaxTickets } from '../../lib/christmasEvent';
+import { christmasCakeIngredients } from '../../lib/constants';
+import { formatDuration } from '../../lib/util';
 import { mahojiChatHead } from '../../lib/util/chatHeadImage';
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
+import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { Cooldowns } from '../lib/Cooldowns';
+import { itemOption, ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const christmasCommand: OSBMahojiCommand = {
@@ -36,6 +44,23 @@ export const christmasCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'info',
 					description: 'View information on the event.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'ironman_food_bank',
+					description: 'Donate food ingredients to the ironman food bank.',
+					options: [
+						{
+							...ownedItemOption(i => christmasCakeIngredients.includes(i.id)),
+							name: 'donate_item',
+							description: 'The item you want to donate to the food bank.'
+						},
+						{
+							...itemOption(i => christmasCakeIngredients.includes(i.id)),
+							name: 'take_item',
+							description: 'The item you want to take from the food bank.'
+						}
+					]
 				}
 			]
 		}
@@ -50,9 +75,56 @@ export const christmasCommand: OSBMahojiCommand = {
 		main_event?: {
 			speak_to_rudolph?: {};
 			info?: {};
+			ironman_food_bank?: {
+				donate_item?: string;
+				take_item?: string;
+			};
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
+
+		if (options.main_event?.ironman_food_bank) {
+			if (!user.isIronman) return 'You must be an ironman to use the food bank.';
+			if (options.main_event.ironman_food_bank.donate_item) {
+				const item = getItem(options.main_event.ironman_food_bank.donate_item);
+				if (!item) return 'Invalid item.';
+				if (!christmasCakeIngredients.includes(item.id)) return 'Invalid item.';
+				if (user.bank.amount(item.id) === 0) return `You don't have any ${item.name}.`;
+				const items = new Bank().add(item);
+				await transactItems({
+					userID: user.id,
+					collectionLog: false,
+					itemsToRemove: items
+				});
+				await updateBankSetting('xmas_ironman_food_bank', items);
+				return `You donated ${items} to the food bank.`;
+			}
+
+			if (options.main_event.ironman_food_bank.take_item) {
+				const isOnCooldown = Cooldowns.get(user.id, 'FOODBANK', Time.Hour * 6);
+				if (isOnCooldown !== null) {
+					return `You can take another item from the food bank in: ${formatDuration(isOnCooldown)}.`;
+				}
+				const item = getItem(options.main_event.ironman_food_bank.take_item);
+				if (!item) return 'Invalid item.';
+				if (!christmasCakeIngredients.includes(item.id)) return 'Invalid item.';
+				if (user.bank.amount(item.id) > 0) return `You already have a ${item.name}.`;
+				const currentBank = new Bank(
+					(await mahojiClientSettingsFetch({ xmas_ironman_food_bank: true }))
+						.xmas_ironman_food_bank as ItemBank
+				);
+				const items = new Bank().add(item);
+				if (!currentBank.has(items)) return `The food bank doesn't have any ${item.name}.`;
+				const newBank = currentBank.remove(items);
+				await mahojiClientSettingsUpdate({ xmas_ironman_food_bank: newBank.bank });
+				await transactItems({
+					userID: user.id,
+					collectionLog: true,
+					itemsToAdd: new Bank().add(item)
+				});
+				return `You took ${items} from the food bank.`;
+			}
+		}
 
 		if (options.smokey_lottery?.view) {
 			const data = user.smokeyLotteryData();

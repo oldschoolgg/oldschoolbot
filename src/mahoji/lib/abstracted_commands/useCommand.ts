@@ -285,6 +285,13 @@ const genericUsables: {
 		response: () => "You throw the cocoa bean in Steve's mouth, who then chomps it into tiny pieces.",
 		addToCL: true
 	},
+	{
+		items: [getOSItem('Cocoa bean'), getOSItem('Frostbite')],
+		cost: new Bank().add('Cocoa bean'),
+		loot: new Bank().add('Chomped chocolate bits'),
+		response: () => "You throw the cocoa bean in Frostbite's mouth, who then chomps it into tiny pieces.",
+		addToCL: true
+	},
 	// Metallic cocolate dust
 	{
 		items: [getOSItem('Chomped chocolate bits'), getOSItem('Takon')],
@@ -292,6 +299,14 @@ const genericUsables: {
 		loot: new Bank().add('Metallic chocolate dust'),
 		response: () =>
 			'Takon smashes the chocolate bits on his anvil, turning them into chocolate dust... *tastes some* metallic... chocolate dust.',
+		addToCL: true
+	},
+	{
+		items: [getOSItem('Chomped chocolate bits'), getOSItem('Ori')],
+		cost: new Bank().add('Chomped chocolate bits'),
+		loot: new Bank().add('Metallic chocolate dust'),
+		response: () =>
+			'Ori smashes the chocolate bits on his anvil, turning them into chocolate dust... *tastes some* metallic... chocolate dust.',
 		addToCL: true
 	},
 	// Chocolate bar
@@ -320,6 +335,13 @@ const genericUsables: {
 		cost: new Bank().add('Vial'),
 		loot: new Bank().add('Snail oil'),
 		response: () => "You scrape some of Gary's oil into a vial.",
+		addToCL: true
+	},
+	{
+		items: [getOSItem('Vial'), getOSItem('Plopper')],
+		cost: new Bank().add('Vial'),
+		loot: new Bank().add('Snail oil'),
+		response: () => 'You pick some snails off Ploppers skin and squeeze them into the vials.',
 		addToCL: true
 	},
 	/**
@@ -377,12 +399,26 @@ const genericUsables: {
 		response: () => 'You feed some logs to your Phoenix eggling, and it poops out a hot, smokey egg.',
 		addToCL: true
 	},
+	{
+		items: [getOSItem('Egg'), getOSItem('Klik')],
+		cost: new Bank().add('Egg'),
+		loot: new Bank().add('Smokey egg'),
+		response: () => 'You hold a egg to Klik, he sets it on fire, and it turns into a smokey egg.',
+		addToCL: true
+	},
 	// Ginger root
 	{
 		items: [getOSItem('Christmas cake recipe'), getOSItem('Doug')],
 		cost: new Bank(),
 		loot: new Bank().add('Ginger root'),
 		response: () => 'You show the recipe to Doug, who goes off digging and returns with a Ginger root.',
+		addToCL: true
+	},
+	{
+		items: [getOSItem('Christmas cake recipe'), getOSItem('Wilvus')],
+		cost: new Bank(),
+		loot: new Bank().add('Ginger root'),
+		response: () => 'You show the recipe to Wilvus, who goes off and steals it from a mole who had one.',
 		addToCL: true
 	},
 	// Dodgy bread

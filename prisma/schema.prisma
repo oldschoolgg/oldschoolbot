@@ -185,6 +185,8 @@ model ClientStorage {
   last_bso_giveaways_ping  DateTime? @db.Timestamp(6)
   last_giveaway_doubleloot DateTime? @db.Timestamp(6)
 
+  xmas_ironman_food_bank Json @default("{}") @db.Json
+
   @@map("clientStorage")
 }
 

@@ -88,7 +88,8 @@ export type ClientBankKey =
 	| 'toa_cost'
 	| 'toa_loot'
 	| 'doa_cost'
-	| 'doa_loot';
+	| 'doa_loot'
+	| 'xmas_ironman_food_bank';
 
 export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);
