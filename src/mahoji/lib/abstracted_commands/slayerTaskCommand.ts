@@ -117,7 +117,7 @@ export async function slayerStatusCommand(mahojiUser: MUser) {
 
 async function returnSuccess(channelID: string, user: MUser, content: string) {
 	const channel = globalClient.channels.cache.get(String(channelID));
-	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
+	if (!channelIsSendable(channel)) return;
 
 	const sentMessage = await channel.send({ content, components: returnSuccessButtons });
 
@@ -126,7 +126,8 @@ async function returnSuccess(channelID: string, user: MUser, content: string) {
 		userID: user.id,
 		guildID: channel.guild ? channel.guild.id : undefined,
 		user,
-		member: null
+		member: null,
+		continueDeltaMillis: null
 	};
 
 	try {

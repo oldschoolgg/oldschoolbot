@@ -13,6 +13,7 @@ const arrayColumns = [
 	['users', 'favoriteItems'],
 	['users', 'favorite_alchables'],
 	['users', 'favorite_food'],
+	['users', 'favorite_bh_seeds'],
 	['users', 'attack_style'],
 	['users', 'combat_options'],
 	['users', 'ironman_alts'],
@@ -118,10 +119,6 @@ for (const { table, name, body } of checkConstraints) {
 }
 startupScripts.push({
 	sql: 'CREATE UNIQUE INDEX IF NOT EXISTS activity_only_one_task ON activity (user_id, completed) WHERE NOT completed;'
-});
-
-startupScripts.push({
-	sql: 'CREATE INDEX CONCURRENTLY IF NOT EXISTS bitfield_gin_index ON users USING GIN (bitfield gin__int_ops) WHERE farming_patch_reminders = true;'
 });
 
 export async function runStartupScripts() {

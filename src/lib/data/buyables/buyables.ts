@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { MAX_QP } from '../../../mahoji/lib/abstracted_commands/questCommand';
+import { QuestID } from '../../../mahoji/lib/abstracted_commands/questCommand';
 import { chompyHats } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { Favours } from '../../minions/data/kourendFavour';
@@ -8,12 +8,12 @@ import { MinigameName } from '../../settings/settings';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
 import { MUserStats } from '../../structures/MUserStats';
 import { Skills } from '../../types';
-import itemID from '../../util/itemID';
 import { allTeamCapes } from '../misc';
 import { aerialFishBuyables } from './aerialFishBuyables';
 import { canifisClothes } from './canifisClothes';
 import { capeBuyables } from './capes';
 import { castleWarsBuyables } from './castleWars';
+import { forestryBuyables } from './forestryBuyables';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
 import { guardiansOfTheRiftBuyables } from './guardiansOfTheRifBuyables';
@@ -30,6 +30,7 @@ export interface Buyable {
 	name: string;
 	outputItems?: Bank | ((user: MUser) => Bank);
 	qpRequired?: number;
+	requiredQuests?: QuestID[];
 	gpCost?: number;
 	itemCost?: Bank;
 	aliases?: string[];
@@ -40,6 +41,7 @@ export interface Buyable {
 	ironmanPrice?: number;
 	collectionLogReqs?: number[];
 	customReq?: (user: MUser, userStats: MUserStats) => Promise<[true] | [false, string]>;
+	maxQuantity?: number;
 }
 
 const randomEventBuyables: Buyable[] = [
@@ -713,6 +715,11 @@ const questBuyables: Buyable[] = [
 		gpCost: 2_500_000,
 		qpRequired: 175,
 		ironmanPrice: 2000
+	},
+	{
+		name: 'Ring of shadows',
+		gpCost: 75_000,
+		requiredQuests: [QuestID.DesertTreasureII]
 	}
 ];
 
@@ -733,14 +740,10 @@ const noveltyFood: Buyable[] = [
 
 const Buyables: Buyable[] = [
 	{
-		name: 'Quest point cape',
-		outputItems: new Bank({
-			[itemID('Quest point cape')]: 1,
-			[itemID('Quest point hood')]: 1
-		}),
-		aliases: ['quest cape'],
-		qpRequired: MAX_QP,
-		gpCost: 99_000
+		name: 'Rope',
+		aliases: ['rope'],
+		gpCost: 100,
+		ironmanPrice: 25
 	},
 	{
 		name: 'Fishing Bait',
@@ -851,6 +854,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Salve amulet',
 		gpCost: 200_000,
+		ironmanPrice: 20_000,
 		skillsNeeded: {
 			crafting: 35
 		},
@@ -1095,7 +1099,8 @@ const Buyables: Buyable[] = [
 	...shootingStarsBuyables,
 	...guardiansOfTheRiftBuyables,
 	...toaCapes,
-	...mairinsMarketBuyables
+	...mairinsMarketBuyables,
+	...forestryBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

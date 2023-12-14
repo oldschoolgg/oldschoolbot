@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node_version: [18.12.0]
+        node_version: [18.12.0, 20]
         os: [ubuntu-latest]
 
     steps:
@@ -38,9 +38,5 @@ jobs:
           popd
       - name: Copy env
         run: cp .env.example .env
-      - name: Generate Prisma Client
-        run: yarn gen
-      - name: Build
-        run: yarn build
       - name: Test
         run: yarn test:integration

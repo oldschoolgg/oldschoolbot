@@ -15,6 +15,7 @@ import { caCreatables } from './creatables/caCreatables';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { dtCreatables } from './creatables/dt';
+import { forestryCreatables } from './creatables/forestryCreatables';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
 import { guardiansOfTheRiftCreatables } from './creatables/guardiansOfTheRiftCreatables';
 import { leaguesCreatables } from './creatables/leagueCreatables';
@@ -107,6 +108,13 @@ for (const [bbPart, sbPart, natRunes, lvlReq] of swampBarkPairs) {
 		}
 	});
 }
+
+const salveECustomReq: NonNullable<Createable['customReq']> = async user => {
+	if (!user.owns("Tarn's diary")) {
+		return "You need a 'Tarn's diary' to make this item.";
+	}
+	return null;
+};
 
 const goldenProspectorCreatables: Createable[] = [
 	{
@@ -591,6 +599,26 @@ const hunterClothing: Createable[] = [
 		inputItems: new Bank({ 'Dark kebbit fur': 2 }),
 		outputItems: new Bank({ 'Gloves of silence': 1 }),
 		GPCost: 600
+	}
+];
+
+const camdozaalItems: Createable[] = [
+	{
+		name: 'Barronite mace',
+		inputItems: new Bank({
+			'Barronite handle': 1,
+			'Barronite guard': 1,
+			'Barronite head': 1,
+			'Barronite shards': 1500
+		}),
+		outputItems: new Bank({ 'Barronite mace	': 1 }),
+		noCl: false
+	},
+	{
+		name: 'Imcando hammer',
+		inputItems: new Bank({ 'Imcando hammer (broken)': 1, 'Barronite shards': 1500 }),
+		outputItems: new Bank({ 'Imcando hammer': 1 }),
+		noCl: false
 	}
 ];
 
@@ -2169,24 +2197,22 @@ const Createables: Createable[] = [
 	{
 		name: 'Salve amulet (e)',
 		inputItems: new Bank({
-			'Salve amulet': 1,
-			"Tarn's diary": 1
+			'Salve amulet': 1
 		}),
 		outputItems: {
-			[itemID('Salve amulet (e)')]: 1,
-			[itemID("Tarn's diary")]: 1
-		}
+			[itemID('Salve amulet (e)')]: 1
+		},
+		customReq: salveECustomReq
 	},
 	{
 		name: 'Salve amulet(ei)',
 		inputItems: new Bank({
-			'Salve amulet(i)': 1,
-			"Tarn's diary": 1
+			'Salve amulet(i)': 1
 		}),
 		outputItems: {
-			[itemID('Salve amulet(ei)')]: 1,
-			[itemID("Tarn's diary")]: 1
-		}
+			[itemID('Salve amulet(ei)')]: 1
+		},
+		customReq: salveECustomReq
 	},
 	{
 		name: 'Strange hallowed tome',
@@ -2345,7 +2371,9 @@ const Createables: Createable[] = [
 	...bloodBarkCreatables,
 	...swampBarkCreatables,
 	...dtCreatables,
-	...caCreatables
+	...caCreatables,
+	...forestryCreatables,
+	...camdozaalItems
 ];
 
 export default Createables;

@@ -40,7 +40,7 @@ export const soulWarsTask: MinionTask = {
 
 		await incrementMinigameScore(user.id, 'soul_wars', quantity);
 
-		const str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${user.user.zeal_tokens}.\n\n`;
+		const str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${user.user.zeal_tokens}.\n`;
 
 		handleTripFinish(user, channelID, str, undefined!, data, null);
 	}

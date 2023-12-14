@@ -87,7 +87,18 @@ export const gearSwap: IGearSwap = {
 	[itemID('Frozen abyssal whip')]: [itemID('Abyssal whip'), itemID('Frozen whip mix')],
 	12_848: [itemID('Granite maul'), itemID('Granite clamp')],
 	24_227: [24_225, itemID('Granite clamp')],
-	[itemID('Abyssal tentacle')]: [itemID('Abyssal whip'), itemID('Kraken tentacle')]
+	[itemID('Abyssal tentacle')]: [itemID('Abyssal whip'), itemID('Kraken tentacle')],
+	[itemID("Thammaron's sceptre (a)")]: [itemID("Thammaron's sceptre (au)")],
+	[itemID('Webweaver bow')]: [itemID('Webweaver bow (u)')],
+	[itemID('Ursine chainmace')]: [itemID('Ursine chainmace (u)')],
+	[itemID('Accursed sceptre')]: [itemID('Accursed sceptre (u)')],
+	[itemID('Accursed sceptre (a)')]: [itemID('Accursed sceptre (au)')],
+	[itemID('Webweaver bow')]: [itemID('Webweaver bow (u)')],
+	[itemID('Venator bow')]: [itemID('Venator bow (uncharged)')],
+	// These 3 are NOT for BSO
+	[itemID('Sanguine torva platebody')]: [itemID('Torva platebody')],
+	[itemID('Sanguine torva platelegs')]: [itemID('Torva platelegs')],
+	[itemID('Sanguine torva full helm')]: [itemID('Torva full helm')]
 };
 
 export const lockedItems = resolveItems([
@@ -154,7 +165,7 @@ export const lockedItems = resolveItems([
 	'Ranger hat (l)',
 	'Healer hat (l)',
 	'Fighter torso (l)',
-	'Penance skirt (l)'
+	'Ancient sceptre (l)'
 ]);
 
 export default function calculateGearLostOnDeathWilderness(

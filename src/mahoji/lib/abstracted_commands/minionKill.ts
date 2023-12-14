@@ -11,17 +11,15 @@ import {
 	Time,
 	uniqueArr
 } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-import { Item } from 'oldschooljs/dist/meta/types';
-import Monster from 'oldschooljs/dist/structures/Monster';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { PeakTier, PvMMethod } from '../../../lib/constants';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
-import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
+import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem } from '../../../lib/degradeableItems';
+import { Diary, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
 import { GearSetupType } from '../../../lib/gear/types';
 import { trackLoot } from '../../../lib/lootTrack';
 import {
@@ -39,17 +37,25 @@ import {
 } from '../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
-import { AttackStyles, calculateMonsterFood, resolveAttackStyles } from '../../../lib/minions/functions';
+import {
+	AttackStyles,
+	calculateMonsterFood,
+	convertAttackStylesToSetup,
+	resolveAttackStyles
+} from '../../../lib/minions/functions';
 import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import { Consumable, KillableMonster } from '../../../lib/minions/types';
+import { Consumable } from '../../../lib/minions/types';
 import { calcPOHBoosts } from '../../../lib/poh';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
+import { maxOffenceStats } from '../../../lib/structures/Gear';
+import { Peak } from '../../../lib/tickers';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
 	calculateSimpleMonsterDeathChance,
+	calculateTripConsumableCost,
 	checkRangeGearWeapon,
 	convertAttackStyleToGearSetup,
 	convertPvmStylesToGearSetup,
@@ -65,24 +71,28 @@ import {
 } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { calcWildyPKChance } from '../../../lib/util/calcWildyPkChance';
+import { calcWildyPKChance, increaseWildEvasionXp } from '../../../lib/util/calcWildyPkChance';
 import { generateChart } from '../../../lib/util/chart';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahojiSettings';
-import { Peak } from './../../../lib/tickers';
 import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
 import { quests } from './questCommand';
-import { revsCommand } from './revsCommand';
 import { temporossCommand } from './temporossCommand';
 import { wintertodtCommand } from './wintertodtCommand';
 import { zalcanoCommand } from './zalcanoCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
+
+const revSpecialWeapons = {
+	melee: getOSItem("Viggora's chainmace"),
+	range: getOSItem("Craw's bow"),
+	mage: getOSItem("Thammaron's sceptre")
+} as const;
 
 function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
 	const str = [];
@@ -95,44 +105,6 @@ function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
 }
 
 const { floor } = Math;
-
-const degradeableItemsCanUse: {
-	item: Item;
-	attackStyle: GearSetupType;
-	charges: (killableMon: KillableMonster, monster: Monster, totalHP: number) => number;
-	boost: number;
-}[] = [
-	{
-		item: getOSItem("Tumeken's shadow"),
-		attackStyle: 'mage',
-		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 40,
-		boost: 6
-	},
-	{
-		item: getOSItem('Sanguinesti staff'),
-		attackStyle: 'mage',
-		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 25,
-		boost: 5
-	},
-	{
-		item: getOSItem('Trident of the swamp'),
-		attackStyle: 'mage',
-		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 40,
-		boost: 3
-	},
-	{
-		item: getOSItem('Scythe of vitur'),
-		attackStyle: 'melee',
-		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 40,
-		boost: 5
-	},
-	{
-		item: getOSItem('Abyssal tentacle'),
-		attackStyle: 'melee',
-		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 20,
-		boost: 3
-	}
-];
 
 function applySkillBoost(user: MUser, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = sumArr(styles.map(s => user.skillLevel(s)));
@@ -166,6 +138,9 @@ export async function minionKillCommand(
 		return 'Your minion is busy.';
 	}
 	const { minionName } = user;
+	const wildyGear = user.gear.wildy;
+	const style = convertAttackStylesToSetup(user.user.attack_style);
+	const key = ({ melee: 'attack_crush', mage: 'attack_magic', range: 'attack_ranged' } as const)[style];
 
 	const boosts = [];
 	let messages: string[] = [];
@@ -175,14 +150,20 @@ export async function minionKillCommand(
 	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID);
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
-	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name);
+	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name, quantity);
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID);
 
-	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
-		return revsCommand(user, channelID, interaction, name);
+	let monster = findMonster(name);
+	let revenants = false;
+
+	const matchedRevenantMonster = revenantMonsters.find(monster =>
+		monster.aliases.some(alias => stringMatches(alias, name))
+	);
+	if (matchedRevenantMonster) {
+		monster = matchedRevenantMonster;
+		revenants = true;
 	}
 
-	const monster = findMonster(name);
 	if (!monster) return invalidMonsterMsg;
 
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
@@ -193,6 +174,20 @@ export async function minionKillCommand(
 
 	if (monster.slayerOnly && !isOnTask) {
 		return `You can't kill ${monster.name}, because you're not on a slayer task.`;
+	}
+
+	const wildyGearStat = wildyGear.getStats()[key];
+	const revGearPercent = Math.max(0, calcWhatPercent(wildyGearStat, maxOffenceStats[key]));
+
+	if (revenants) {
+		const weapon = wildyGear.equippedWeapon();
+		if (!weapon) {
+			return 'You have no weapon equipped in your Wildy outfit.';
+		}
+
+		if (weapon.equipment![key] < 10) {
+			return `Your weapon is terrible, you can't kill Revenants. You should have ${style} gear equipped in your wildy outfit, as this is what you're currently training. You can change this using \`/minion train\``;
+		}
 	}
 
 	// Set chosen boost based on priority:
@@ -212,6 +207,14 @@ export async function minionKillCommand(
 	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Shayzien, 100);
 	if (!hasFavour && monster.id === Monsters.LizardmanShaman.id) {
 		return `${user.minionName} needs ${requiredPoints}% Shayzien Favour to kill Lizardman shamans.`;
+	}
+
+	if (monster.diaryRequirement) {
+		const [diary, tier]: [Diary, DiaryTier] = monster.diaryRequirement;
+		const [hasDiary] = await userhasDiaryTier(user, tier);
+		if (!hasDiary) {
+			return `${user.minionName} is missing the ${diary.name} ${tier.name} diary to kill ${monster.name}.`;
+		}
 	}
 
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, await user.getKC(monster.id));
@@ -241,23 +244,6 @@ export async function minionKillCommand(
 	}
 
 	const monsterHP = osjsMon?.data.hitpoints ?? 100;
-	const estimatedQuantity = floor(calcMaxTripLength(user, 'MonsterKilling') / timeToFinish);
-	const totalMonsterHP = monsterHP * estimatedQuantity;
-
-	// Removed vorkath because he has a special boost.
-	if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
-		if (
-			user.hasEquippedOrInBank('Dragon hunter lance') &&
-			!attackStyles.includes(SkillsEnum.Ranged) &&
-			!attackStyles.includes(SkillsEnum.Magic)
-		) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push('15% for Dragon hunter lance');
-		} else if (user.hasEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push('15% for Dragon hunter crossbow');
-		}
-	}
 
 	// Black mask and salve don't stack.
 	const oneSixthBoost = 16.67;
@@ -266,31 +252,90 @@ export async function minionKillCommand(
 	let salveAmuletBoost = 0;
 	let salveAmuletBoostMsg = '';
 
-	// Calculate Slayer helmet boost on task if they have black mask or similar
-	if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
-		if (isOnTask && user.hasEquippedOrInBank('Black mask (i)')) {
-			blackMaskBoost = oneSixthBoost;
-			blackMaskBoostMsg = `${blackMaskBoost}% for Black mask (i) on non-melee task`;
+	const dragonBoost = 15; // Common boost percentage for dragon-related gear
+
+	const isUndead = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
+	const isDragon = osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon);
+
+	function applyDragonBoost() {
+		const hasDragonLance = monster?.canBePked
+			? wildyGear.hasEquipped('Dragon hunter lance')
+			: user.hasEquippedOrInBank('Dragon hunter lance');
+		const hasDragonCrossbow = monster?.canBePked
+			? wildyGear.hasEquipped('Dragon hunter crossbow')
+			: user.hasEquippedOrInBank('Dragon hunter crossbow');
+
+		if (
+			(hasDragonLance && !attackStyles.includes(SkillsEnum.Ranged) && !attackStyles.includes(SkillsEnum.Magic)) ||
+			(hasDragonCrossbow && attackStyles.includes(SkillsEnum.Ranged))
+		) {
+			const boostMessage = hasDragonLance ? '15% for Dragon hunter lance' : '15% for Dragon hunter crossbow';
+			timeToFinish = reduceNumByPercent(timeToFinish, dragonBoost);
+			boosts.push(boostMessage);
 		}
-	} else if (isOnTask && user.hasEquippedOrInBank('Black mask')) {
-		blackMaskBoost = oneSixthBoost;
-		blackMaskBoostMsg = `${blackMaskBoost}% for Black mask on melee task`;
 	}
 
-	// Calculate Salve amulet boost on task if the monster is undead or similar
-	const undeadMonster = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
-	if (undeadMonster && (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic))) {
-		if (user.hasEquippedOrInBank('Salve amulet(i)')) {
-			const enhancedBoost = user.hasEquippedOrInBank('Salve amulet(ei)');
-			salveAmuletBoost = enhancedBoost ? 20 : oneSixthBoost;
-			salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
-				enhancedBoost ? '(ei)' : '(i)'
-			} on non-melee task`;
+	function applyBlackMaskBoost() {
+		const hasBlackMask = monster?.canBePked
+			? wildyGear.hasEquipped('Black mask')
+			: user.hasEquippedOrInBank('Black mask');
+		const hasBlackMaskI = monster?.canBePked
+			? wildyGear.hasEquipped('Black mask (i)')
+			: user.hasEquippedOrInBank('Black mask (i)');
+
+		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
+			if (hasBlackMaskI) {
+				blackMaskBoost = oneSixthBoost;
+				blackMaskBoostMsg = `${blackMaskBoost}% for Black mask (i) on non-melee task`;
+			}
+		} else if (hasBlackMask) {
+			blackMaskBoost = oneSixthBoost;
+			blackMaskBoostMsg = `${blackMaskBoost}% for Black mask on melee task`;
 		}
-	} else if (undeadMonster && user.hasEquippedOrInBank('Salve amulet')) {
-		const enhancedBoost = user.hasEquippedOrInBank('Salve amulet(e)');
-		salveAmuletBoost = enhancedBoost ? 20 : oneSixthBoost;
-		salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${enhancedBoost ? ' (e)' : ''} on melee task`;
+	}
+
+	function calculateSalveAmuletBoost() {
+		let salveBoost = false;
+		let salveEnhanced = false;
+		const style = attackStyles[0];
+		if (style === 'ranged' || style === 'magic') {
+			salveBoost = monster?.canBePked
+				? wildyGear.hasEquipped('Salve amulet(i)')
+				: user.hasEquippedOrInBank('Salve amulet (i)');
+			salveEnhanced = monster?.canBePked
+				? wildyGear.hasEquipped('Salve amulet(ei)')
+				: user.hasEquippedOrInBank('Salve amulet (ei)');
+			if (salveBoost) {
+				salveAmuletBoost = salveEnhanced ? 20 : oneSixthBoost;
+				salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
+					salveEnhanced ? '(ei)' : '(i)'
+				} on non-melee task`;
+			}
+		} else {
+			salveBoost = monster?.canBePked
+				? wildyGear.hasEquipped('Salve amulet')
+				: user.hasEquippedOrInBank('Salve amulet');
+			salveEnhanced = monster?.canBePked
+				? wildyGear.hasEquipped('Salve amulet (e)')
+				: user.hasEquippedOrInBank('Salve amulet (e)');
+			if (salveBoost) {
+				salveAmuletBoost = salveEnhanced ? 20 : oneSixthBoost;
+				salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
+					salveEnhanced ? ' (e)' : ''
+				} on melee task`;
+			}
+		}
+	}
+	if (isDragon && monster.name.toLowerCase() !== 'vorkath') {
+		applyDragonBoost();
+	}
+
+	if (isOnTask) {
+		applyBlackMaskBoost();
+	}
+
+	if (isUndead) {
+		calculateSalveAmuletBoost();
 	}
 
 	// Only choose greater boost:
@@ -301,6 +346,17 @@ export async function minionKillCommand(
 		} else {
 			timeToFinish = reduceNumByPercent(timeToFinish, blackMaskBoost);
 			boosts.push(blackMaskBoostMsg);
+		}
+	}
+
+	if (revenants) {
+		timeToFinish = reduceNumByPercent(timeToFinish, revGearPercent / 4);
+		boosts.push(`${(revGearPercent / 4).toFixed(2)}% (out of a possible 25%) for ${key}`);
+
+		const specialWeapon = revSpecialWeapons[style];
+		if (wildyGear.hasEquipped(specialWeapon.name)) {
+			timeToFinish = reduceNumByPercent(timeToFinish, 35);
+			boosts.push(`${35}% for ${specialWeapon.name}`);
 		}
 	}
 
@@ -400,33 +456,19 @@ export async function minionKillCommand(
 					.join(', ')}.`;
 			}
 			if (equippedInThisSet) {
-				const degItem = degradeableItemsCanUse.find(i => i.item.id === equippedInThisSet.itemID)!;
+				const degItem = degradeablePvmBoostItems.find(i => i.item.id === equippedInThisSet.itemID)!;
 				boosts.push(`${equippedInThisSet.boostPercent}% for ${itemNameFromID(equippedInThisSet.itemID)}`);
 				timeToFinish = reduceNumByPercent(timeToFinish, equippedInThisSet.boostPercent);
-				const estimatedChargesNeeded = Math.ceil(degItem.charges(monster, osjsMon!, totalMonsterHP));
-				const result = await checkUserCanUseDegradeableItem({
-					item: getOSItem(equippedInThisSet.itemID),
-					chargesToDegrade: estimatedChargesNeeded,
-					user
-				});
-				if (!result.hasEnough) {
-					return result.userMessage;
-				}
 				degItemBeingUsed.push(degItem);
 			}
 		}
 	} else {
-		for (const degItem of degradeableItemsCanUse) {
+		for (const degItem of degradeablePvmBoostItems) {
 			const isUsing =
 				convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
 				user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
 			if (isUsing) {
-				const estimatedChargesNeeded = Math.ceil(degItem.charges(monster, osjsMon!, totalMonsterHP));
-				await checkUserCanUseDegradeableItem({
-					item: degItem.item,
-					chargesToDegrade: estimatedChargesNeeded,
-					user
-				});
+				// We assume they have enough charges, add the boost, and degrade at the end to avoid doing it twice.
 				degItemBeingUsed.push(degItem);
 			}
 		}
@@ -495,12 +537,17 @@ export async function minionKillCommand(
 	const infiniteWaterRunes = user.hasEquipped(getSimilarItems(itemID('Staff of water')), false);
 	const perKillCost = new Bank();
 	// Calculate per kill cost:
+
 	if (consumableCosts.length > 0) {
 		for (const cc of consumableCosts) {
 			let consumable = cc;
-			if (consumable.alternativeConsumables && !user.owns(consumable.itemCost)) {
+
+			if (
+				consumable.alternativeConsumables &&
+				!user.owns(calculateTripConsumableCost(consumable, quantity, duration))
+			) {
 				for (const c of consumable.alternativeConsumables) {
-					if (user.owns(c.itemCost)) {
+					if (user.owns(calculateTripConsumableCost(c, quantity, duration))) {
 						consumable = c;
 						break;
 					}
@@ -525,6 +572,7 @@ export async function minionKillCommand(
 
 				// Calculate supply for 1 kill
 				const oneKcCost = consumable.itemCost.clone().multiply(multiply);
+
 				// Can't use Bank.add() because it discards < 1 qty.
 				for (const [itemID, qty] of Object.entries(oneKcCost.bank)) {
 					if (perKillCost.bank[itemID]) perKillCost.bank[itemID] += qty;
@@ -556,7 +604,149 @@ export async function minionKillCommand(
 			}, you need: ${formatMissingItems(consumableCosts, timeToFinish)} per kill.`;
 		}
 	}
-	// Check food
+
+	if (monster.projectileUsage?.required) {
+		if (!user.gear.range.ammo?.item) {
+			return `You need range ammo equipped to kill ${monster.name}.`;
+		}
+		const rangeCheck = checkRangeGearWeapon(user.gear.range);
+		if (typeof rangeCheck === 'string') {
+			return `Your range gear isn't right: ${rangeCheck}`;
+		}
+		const projectilesNeeded = monster.projectileUsage.calculateQuantity({ quantity });
+		lootToRemove.add(rangeCheck.ammo.item, projectilesNeeded);
+		if (projectilesNeeded > rangeCheck.ammo.quantity) {
+			return `You need ${projectilesNeeded.toLocaleString()}x ${itemNameFromID(
+				rangeCheck.ammo.item
+			)} to kill ${quantity}x ${
+				monster.name
+			}, and you have ${rangeCheck.ammo.quantity.toLocaleString()}x equipped.`;
+		}
+	}
+
+	if (monster.requiredQuests) {
+		const incompleteQuest = monster.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+		if (incompleteQuest) {
+			return `You need to have completed the ${bold(
+				quests.find(i => i.id === incompleteQuest)!.name
+			)} quest to kill ${monster.name}.`;
+		}
+	}
+
+	duration = randomVariation(duration, 3);
+
+	if (isWeekend()) {
+		boosts.push('10% for Weekend');
+		duration *= 0.9;
+	}
+
+	const degradeablesWithEnoughCharges = [];
+	for (const degItem of degItemBeingUsed) {
+		const chargesNeeded = Math.ceil(
+			degItem.charges({
+				killableMon: monster,
+				osjsMonster: osjsMon!,
+				totalHP: monsterHP * quantity,
+				user,
+				duration
+			})
+		);
+		const result = await checkUserCanUseDegradeableItem({
+			item: degItem.item,
+			chargesToDegrade: chargesNeeded,
+			user
+		});
+		if (!result.hasEnough) {
+			return result.userMessage;
+		}
+		degradeablesWithEnoughCharges.push({ degItem, chargesNeeded });
+	}
+	for (const { degItem, chargesNeeded } of degradeablesWithEnoughCharges) {
+		const degradeResult = await degradeItem({
+			item: degItem.item,
+			chargesToDegrade: chargesNeeded,
+			user
+		});
+		messages.push(degradeResult.userMessage);
+	}
+
+	let wildyPeak = null;
+	let pkString = '';
+	let thePkCount: number | undefined = undefined;
+	let hasDied: boolean | undefined = undefined;
+	let hasWildySupplies = undefined;
+
+	if (monster.canBePked) {
+		await increaseWildEvasionXp(user, duration);
+		thePkCount = 0;
+		hasDied = false;
+		const date = new Date().getTime();
+		const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
+		for (const peak of cachedPeakInterval) {
+			if (peak.startTime < date && peak.finishTime > date) {
+				wildyPeak = peak;
+				break;
+			}
+		}
+		if (wildyPeak?.peakTier === PeakTier.High) {
+			if (interaction) {
+				await handleMahojiConfirmation(
+					interaction,
+					`Are you sure you want to kill ${monster.name} during high peak time? PKers are more active.`
+				);
+			}
+		}
+
+		const antiPkBrewsNeeded = Math.max(1, Math.floor(duration / (4 * Time.Minute)));
+		const antiPkRestoresNeeded = Math.max(1, Math.floor(duration / (8 * Time.Minute)));
+		const antiPkKarambwanNeeded = Math.max(1, Math.floor(duration / (4 * Time.Minute)));
+
+		const antiPKSupplies = new Bank();
+		if (user.bank.amount('Blighted super restore(4)') >= antiPkRestoresNeeded) {
+			antiPKSupplies.add('Blighted super restore(4)', antiPkRestoresNeeded);
+		} else {
+			antiPKSupplies.add('Super restore(4)', antiPkRestoresNeeded);
+		}
+		if (user.bank.amount('Blighted karambwan') >= antiPkKarambwanNeeded) {
+			antiPKSupplies.add('Blighted karambwan', antiPkKarambwanNeeded);
+		} else {
+			antiPKSupplies.add('Cooked karambwan', antiPkKarambwanNeeded);
+		}
+		antiPKSupplies.add('Saradomin brew(4)', antiPkBrewsNeeded);
+
+		hasWildySupplies = true;
+		if (!user.bank.has(antiPKSupplies)) {
+			hasWildySupplies = false;
+			if (interaction) {
+				await handleMahojiConfirmation(
+					interaction,
+					`Are you sure you want to kill ${monster.name} without anti-pk supplies? You should bring at least ${antiPKSupplies} on this trip for safety to not die and potentially get smited.`
+				);
+			}
+		} else {
+			lootToRemove.add(antiPKSupplies);
+			pkString +=
+				'Your minion brought some supplies to survive potential pkers. (Handed back after trip if lucky)\n';
+		}
+		const [pkCount, died, chanceString] = await calcWildyPKChance(
+			user,
+			wildyPeak!,
+			monster,
+			duration,
+			hasWildySupplies
+		);
+		thePkCount = pkCount;
+		hasDied = died;
+		pkString += chanceString;
+	}
+
+	if (lootToRemove.length > 0) {
+		updateBankSetting('economyStats_PVMCost', lootToRemove);
+		await user.specialRemoveItems(lootToRemove, { wildy: monster.wildy ? true : false });
+		totalCost.add(lootToRemove);
+	}
+
+	// Check food last, so we can remove any pending loot (pk supplies-food costs) from the bank before removing food.
 	let foodStr: string = '';
 	// Find best eatable boost and add 1% extra
 	const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
@@ -576,7 +766,8 @@ export async function minionKillCommand(
 				attackStylesUsed: monster.wildy
 					? ['wildy']
 					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
-				learningPercentage: percentReduced
+				learningPercentage: percentReduced,
+				isWilderness: monster.wildy
 			});
 
 			if (foodRemoved.length === 0) {
@@ -623,110 +814,6 @@ export async function minionKillCommand(
 		duration = reduceNumByPercent(duration, noFoodBoost);
 	}
 
-	if (monster.projectileUsage?.required) {
-		if (!user.gear.range.ammo?.item) {
-			return `You need range ammo equipped to kill ${monster.name}.`;
-		}
-		const rangeCheck = checkRangeGearWeapon(user.gear.range);
-		if (typeof rangeCheck === 'string') {
-			return `Your range gear isn't right: ${rangeCheck}`;
-		}
-		const projectilesNeeded = monster.projectileUsage.calculateQuantity({ quantity });
-		lootToRemove.add(rangeCheck.ammo.item, projectilesNeeded);
-		if (projectilesNeeded > rangeCheck.ammo.quantity) {
-			return `You need ${projectilesNeeded.toLocaleString()}x ${itemNameFromID(
-				rangeCheck.ammo.item
-			)} to kill ${quantity}x ${
-				monster.name
-			}, and you have ${rangeCheck.ammo.quantity.toLocaleString()}x equipped.`;
-		}
-	}
-
-	if (monster.requiredQuests) {
-		const incompleteQuest = monster.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
-		if (incompleteQuest) {
-			return `You need to have completed the ${bold(
-				quests.find(i => i.id === incompleteQuest)!.name
-			)} quest to kill ${monster.name}.`;
-		}
-	}
-
-	duration = randomVariation(duration, 3);
-
-	if (isWeekend()) {
-		boosts.push('10% for Weekend');
-		duration *= 0.9;
-	}
-
-	for (const degItem of degItemBeingUsed) {
-		const chargesNeeded = Math.ceil(degItem.charges(monster, osjsMon!, monsterHP * quantity));
-		const degradeResult = await degradeItem({
-			item: degItem.item,
-			chargesToDegrade: chargesNeeded,
-			user
-		});
-		messages.push(degradeResult.userMessage);
-	}
-
-	let wildyPeak = null;
-	let pkString = '';
-	let thePkCount = 0;
-	let hasDied = false;
-	let hasWildySupplies = undefined;
-
-	if (monster.wildy) {
-		const date = new Date().getTime();
-		const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
-		for (const peak of cachedPeakInterval) {
-			if (peak.startTime < date && peak.finishTime > date) {
-				wildyPeak = peak;
-				break;
-			}
-		}
-		if (wildyPeak?.peakTier === PeakTier.High) {
-			if (interaction) {
-				await handleMahojiConfirmation(
-					interaction,
-					`Are you sure you want to kill ${monster.name} during high peak time? PKers are more active.`
-				);
-			}
-		}
-
-		const antiPKSupplies = new Bank()
-			.add('Saradomin brew(4)', Math.max(1, Math.floor(duration / (4 * Time.Minute))))
-			.add('Super restore(4)', Math.max(1, Math.floor(duration / (8 * Time.Minute))))
-			.add('Cooked karambwan', Math.max(1, Math.floor(duration / (4 * Time.Minute))));
-		hasWildySupplies = true;
-		if (!user.bank.has(antiPKSupplies)) {
-			hasWildySupplies = false;
-			if (interaction) {
-				await handleMahojiConfirmation(
-					interaction,
-					`Are you sure you want to kill ${monster.name} without anti-pk supplies? You should bring at least ${antiPKSupplies} on this trip for safety to not die and potentially get smited.`
-				);
-			}
-		} else {
-			lootToRemove.add(antiPKSupplies);
-			pkString += `Your minion brought ${antiPKSupplies} to survive potential pkers. (Handed back after trip if lucky)\n`;
-		}
-		const [pkCount, died, chanceString] = await calcWildyPKChance(
-			user,
-			wildyPeak!,
-			monster,
-			duration,
-			hasWildySupplies
-		);
-		thePkCount = pkCount;
-		hasDied = died;
-		pkString += chanceString;
-	}
-
-	if (lootToRemove.length > 0) {
-		updateBankSetting('economyStats_PVMCost', lootToRemove);
-		await user.specialRemoveItems(lootToRemove);
-		totalCost.add(lootToRemove);
-	}
-
 	if (totalCost.length > 0) {
 		await trackLoot({
 			id: monster.name,
@@ -753,9 +840,9 @@ export async function minionKillCommand(
 		cannonMulti: !cannonMulti ? undefined : cannonMulti,
 		chinning: !chinning ? undefined : chinning,
 		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage,
-		died: !hasDied ? undefined : hasDied,
-		pkEncounters: !thePkCount ? undefined : thePkCount,
-		hasWildySupplies: !hasWildySupplies ? undefined : hasWildySupplies
+		died: hasDied,
+		pkEncounters: thePkCount,
+		hasWildySupplies
 	});
 	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 		duration
@@ -784,7 +871,7 @@ export async function minionKillCommand(
 	return response;
 }
 
-export async function monsterInfo(user: MUser, name: string): CommandResponse {
+export async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
 	const monster = findMonster(name);
 
 	if (stringMatches(name, 'nightmare')) {
