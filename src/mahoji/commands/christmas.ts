@@ -101,10 +101,6 @@ export const christmasCommand: OSBMahojiCommand = {
 			}
 
 			if (options.main_event.ironman_food_bank.take_item) {
-				const isOnCooldown = Cooldowns.get(user.id, 'FOODBANK', Time.Hour * 6);
-				if (isOnCooldown !== null) {
-					return `You can take another item from the food bank in: ${formatDuration(isOnCooldown)}.`;
-				}
 				const item = getItem(options.main_event.ironman_food_bank.take_item);
 				if (!item) return 'Invalid item.';
 				if (!christmasCakeIngredients.includes(item.id)) return 'Invalid item.';
@@ -115,6 +111,10 @@ export const christmasCommand: OSBMahojiCommand = {
 				);
 				const items = new Bank().add(item);
 				if (!currentBank.has(items)) return `The food bank doesn't have any ${item.name}.`;
+				const isOnCooldown = Cooldowns.get(user.id, 'FOODBANK', Time.Hour * 6);
+				if (isOnCooldown !== null) {
+					return `You can take another item from the food bank in: ${formatDuration(isOnCooldown)}.`;
+				}
 				const newBank = currentBank.remove(items);
 				await mahojiClientSettingsUpdate({ xmas_ironman_food_bank: newBank.bank });
 				await transactItems({
