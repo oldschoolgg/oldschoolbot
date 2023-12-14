@@ -1,5 +1,5 @@
 import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
-import { formatItemStackQuantity, generateHexColorForCashStack, toTitleCase } from '@oldschoolgg/toolkit';
+import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { GEListing, GETransaction } from '@prisma/client';
 import * as fs from 'fs/promises';
 import { floor } from 'lodash';
@@ -28,14 +28,10 @@ function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
 
 class GeImageTask {
 	public geInterface: Image | null = null;
-	public geInterfaceCollection: Image | null = null;
 	public geSlotLocked: Image | null = null;
 	public geSlotOpen: Image | null = null;
 	public geSlotActive: Image | null = null;
 	public geProgressShadow: Image | null = null;
-	public geProgressCollectionShadow: Image | null = null;
-	public geCollectionSlot: Image | null = null;
-	public geCollectionSlotLocked: Image | null = null;
 	public geIconBuy: Image | null = null;
 	public geIconSell: Image | null = null;
 	public itemIconsList: Set<number>;
@@ -70,23 +66,11 @@ class GeImageTask {
 		this.geProgressShadow = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_progress_shadow.png')
 		);
-		this.geProgressCollectionShadow = await loadImage(
-			await fs.readFile('./src/lib/resources/images/grandexchange/ge_shadow_collection_progress.png')
-		);
-		this.geInterfaceCollection = await loadImage(
-			await fs.readFile('./src/lib/resources/images/grandexchange/ge_interface_collection_box.png')
-		);
 		this.geIconBuy = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_buy_mini_icon.png')
 		);
 		this.geIconSell = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_sell_mini_icon.png')
-		);
-		this.geCollectionSlot = await loadImage(
-			await fs.readFile('./src/lib/resources/images/grandexchange/ge_slot_collection.png')
-		);
-		this.geCollectionSlotLocked = await loadImage(
-			await fs.readFile('./src/lib/resources/images/grandexchange/ge_slot_collection_locked.png')
 		);
 	}
 
@@ -140,41 +124,11 @@ class GeImageTask {
 		}
 	}
 
-	async getSlotImage(
-		ctx: SKRSContext2D,
-		slot: number,
-		collection: boolean = false,
-		locked: boolean = false,
-		listing: GEListingWithTransactions | undefined
-	) {
-		const slotImage = collection
-			? locked
-				? this.geCollectionSlotLocked!
-				: this.geCollectionSlot!
-			: listing
-			? this.geSlotActive!
-			: locked
-			? this.geSlotLocked!
-			: this.geSlotOpen!;
+	async getSlotImage(ctx: SKRSContext2D, locked: boolean = false, listing: GEListingWithTransactions | undefined) {
+		const slotImage = listing ? this.geSlotActive! : locked ? this.geSlotLocked! : this.geSlotOpen!;
 		ctx.drawImage(slotImage, 0, 0, slotImage.width, slotImage.height);
 
-		if (!collection) {
-			// Draw Bank Title
-			ctx.textAlign = 'center';
-			ctx.font = '16px RuneScape Bold 12';
-			let type = listing ? ` - ${toTitleCase(listing.type.toString())}` : ' - Empty';
-			this.drawText(
-				ctx,
-				locked ? 'Locked' : `Slot ${slot}${type}`,
-				Math.floor(slotImage.width / 2),
-				17,
-				undefined,
-				10
-			);
-		}
-
 		if (listing) {
-			let cashImage = await this.getItemImage(995);
 			// Get item
 			const itemImage = await this.getItemImage(listing.item_id);
 
@@ -182,112 +136,50 @@ class GeImageTask {
 			ctx.textAlign = 'left';
 			ctx.font = '16px OSRSFontCompact';
 			ctx.save();
-			if (collection) {
-				// Draw the small icon
-				ctx.translate(81, 15);
-				ctx.drawImage(
-					itemImage,
-					Math.floor((18 - itemImage!.width) / 2) + 2,
-					Math.floor((18 - itemImage!.height) / 2),
-					18,
-					18
-				);
-				ctx.restore();
-				ctx.save();
-				ctx.translate(11, 32);
-				// First collection slot (item being bought or cash if selling)
-				if (listing.quantity_remaining > 0) {
-					ctx.drawImage(
-						itemImage,
-						Math.floor((32 - itemImage!.width) / 2) + 2,
-						Math.floor((32 - itemImage!.height) / 2),
-						itemImage!.width,
-						itemImage!.height
-					);
-					if (listing.quantity_remaining > 1) {
-						const formattedQuantity = formatItemStackQuantity(listing.quantity_remaining);
-						ctx.fillStyle = generateHexColorForCashStack(listing.quantity_remaining);
-						this.drawText(ctx, formattedQuantity, 0, 9, undefined, 10);
-					}
-				}
-				if (listing.gp_refunded > 0) {
-					if (listing.quantity_remaining > 0) {
-						ctx.translate(45, 0);
-					}
-					ctx.drawImage(
-						cashImage,
-						Math.floor((32 - cashImage!.width) / 2) + 2,
-						Math.floor((32 - cashImage!.height) / 2),
-						cashImage!.width,
-						cashImage!.height
-					);
-					const formattedQuantity = formatItemStackQuantity(Number(listing.gp_refunded));
-					ctx.fillStyle = generateHexColorForCashStack(Number(listing.gp_refunded));
-					this.drawText(ctx, formattedQuantity, 0, 9, undefined, 10);
-				}
-			} else {
-				ctx.translate(8, 34);
-				ctx.drawImage(
-					itemImage,
-					Math.floor((32 - itemImage!.width) / 2) + 2,
-					Math.floor((32 - itemImage!.height) / 2),
-					itemImage!.width,
-					itemImage!.height
-				);
-				if (listing.total_quantity > 1) {
-					const formattedQuantity = formatItemStackQuantity(listing.total_quantity);
-					ctx.fillStyle = generateHexColorForCashStack(listing.total_quantity);
-					this.drawText(ctx, formattedQuantity, 0, 9, undefined, 10);
-				}
-				// Draw item name
-				ctx.translate(39, 11);
-				const itemName = getOSItem(listing.item_id).name;
-				ctx.fillStyle = '#FFB83F';
-				ctx.font = '16px OSRSFontCompact';
-				this.drawText(ctx, itemName, 0, 0, ctx.measureText('Elysian spirit').width, 10);
+
+			ctx.translate(8, 34);
+			ctx.drawImage(
+				itemImage,
+				Math.floor((32 - itemImage!.width) / 2) + 2,
+				Math.floor((32 - itemImage!.height) / 2),
+				itemImage!.width,
+				itemImage!.height
+			);
+			if (listing.total_quantity > 1) {
+				const formattedQuantity = formatItemStackQuantity(listing.total_quantity);
+				ctx.fillStyle = generateHexColorForCashStack(listing.total_quantity);
+				this.drawText(ctx, formattedQuantity, 0, 9, undefined, 10);
 			}
+			// Draw item name
+			ctx.translate(39, 11);
+			const itemName = getOSItem(listing.item_id).name;
+			ctx.fillStyle = '#FFB83F';
+			ctx.font = '16px OSRSFontCompact';
+			this.drawText(ctx, itemName, 0, 0, ctx.measureText('Elysian spirit').width, 10);
 			ctx.restore();
 
-			if (collection) {
-				// Draw icon
-				const icon = listing.type === 'Sell' ? this.geIconSell! : this.geIconBuy!;
-				ctx.save();
-				ctx.translate(41, 2);
-				ctx.drawImage(
-					icon,
-					Math.floor((32 - icon!.width) / 2) + 2,
-					Math.floor((32 - icon!.height) / 2),
-					icon!.width,
-					icon!.height
-				);
-				ctx.restore();
-			}
+			ctx.save();
+			// Draw item value of the transaction
+			ctx.translate(0, 87);
+			ctx.font = '16px OSRSFontCompact';
+			ctx.textAlign = 'center';
 
-			if (!collection) {
-				ctx.save();
-				// Draw item value of the transaction
-				ctx.translate(0, 87);
-				ctx.font = '16px OSRSFontCompact';
-				ctx.textAlign = 'center';
-
-				ctx.fillStyle = '#ff981f';
-				this.drawText(
-					ctx,
-					`${Number(listing.asking_price_per_item).toLocaleString()} coins`,
-					Math.floor(this.geSlotOpen!.width / 2) + 1,
-					17,
-					undefined,
-					10
-				);
-				ctx.restore();
-			}
+			ctx.fillStyle = '#ff981f';
+			this.drawText(
+				ctx,
+				`${Number(listing.asking_price_per_item).toLocaleString()} coins`,
+				Math.floor(this.geSlotOpen!.width / 2) + 1,
+				17,
+				undefined,
+				10
+			);
+			ctx.restore();
 			// Draw progress bar
 			ctx.save();
 
-			const progressShadowImage = collection ? this.geProgressCollectionShadow! : this.geProgressShadow!;
+			const progressShadowImage = this.geProgressShadow!;
 
-			if (collection) ctx.translate(9, 9);
-			else ctx.translate(5, 75);
+			ctx.translate(5, 75);
 
 			const maxWidth = progressShadowImage.width;
 			ctx.fillStyle = '#ff981f';
@@ -347,16 +239,15 @@ class GeImageTask {
 
 	async createInterface(opts: {
 		user: MUser;
-		collection: boolean;
 		page: number;
 		activeListings: (GEListing & {
 			buyTransactions: GETransaction[];
 			sellTransactions: GETransaction[];
 		})[];
 	}): Promise<Buffer> {
-		let { user, collection, page, activeListings } = opts;
+		let { user, page, activeListings } = opts;
 		const { slots, maxPossible } = await GrandExchange.calculateSlotsOfUser(user);
-		const canvasImage = collection ? this.geInterfaceCollection! : this.geInterface!;
+		const canvasImage = this.geInterface!;
 		const canvas = new Canvas(canvasImage.width, canvasImage.height);
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
@@ -373,19 +264,18 @@ class GeImageTask {
 			drawTitle(ctx, pageTitle, canvas);
 		}
 
-		if (collection) ctx.translate(15, 44);
-		else ctx.translate(9, 64);
+		ctx.translate(9, 64);
 		let y = 0;
 		let x = 0;
 		for (let i = (page - 1) * chunkSize; i < maxPossible; i++) {
 			const listing: GEListingWithTransactions = activeListings[i];
 			if (i > (page - 1) * chunkSize && i % 4 === 0) {
-				y += (collection ? this.geCollectionSlot!.height : this.geSlotOpen!.height) + 10;
+				y += this.geSlotOpen!.height + 10;
 				x = 0;
 			}
 			ctx.save();
-			ctx.translate(x * (collection ? this.geCollectionSlot!.width + 10 : this.geSlotOpen!.width + 2), y);
-			await this.getSlotImage(ctx, i + 1, collection, i >= slots ? true : false, listing);
+			ctx.translate(x * (this.geSlotOpen!.width + 2), y);
+			await this.getSlotImage(ctx, i >= slots ? true : false, listing);
 			ctx.restore();
 			x++;
 			if (i > (page - 1) * chunkSize + 8) break;
