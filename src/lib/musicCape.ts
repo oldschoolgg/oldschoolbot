@@ -53,11 +53,12 @@ export const musicCapeRequirements = new Requirements()
 			.add('Fire cape')
 			.add('Raw monkfish')
 			.add('Brittle key')
+			.add('Revenant ether')
 	})
-	// .add({
-	// 	name: '750 Barronite shards to unlock Race Against the Clock inside the Camdozaal Vault',
-	// 	clRequirement: new Bank().add('Barronite shards', 750)
-	// })
+	.add({
+		name: '750 Barronite shards to access the Camdozaal Vault',
+		clRequirement: new Bank().add('Barronite shards', 750)
+	})
 	.add({
 		kcRequirement: {
 			[MIMIC_MONSTER_ID]: 1,
@@ -153,7 +154,8 @@ AND data->>'runeID' IS NOT NULL;`;
 				activity_type_enum.Questing,
 				activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
 				activity_type_enum.ChampionsChallenge,
-				activity_type_enum.Nex
+				activity_type_enum.Nex,
+				activity_type_enum.Revenants // This is now under monsterActivity
 			];
 			const activityCounts = await getUsersActivityCounts(user);
 

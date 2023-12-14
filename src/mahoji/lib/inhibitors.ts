@@ -18,7 +18,6 @@ import { formatDuration } from '../../lib/util';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';
 import { Cooldowns } from './Cooldowns';
-import { PrecommandUser } from './preCommand';
 
 export interface AbstractCommandAttributes {
 	examples?: string[];
@@ -40,7 +39,7 @@ interface Inhibitor {
 	name: string;
 	run: (options: {
 		APIUser: User;
-		user: PrecommandUser;
+		user: MUser;
 		command: AbstractCommand;
 		guild: Guild | null;
 		channel: TextChannel | DMChannel;
@@ -84,7 +83,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ user, command }) => {
 			if (!command.attributes?.requiresMinion) return false;
 
-			if (!user.minion_hasBought) {
+			if (!user.user.minion_hasBought) {
 				return {
 					content: 'You need a minion to use this command.',
 					components: [
@@ -170,7 +169,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ channel, guild, user, member }) => {
 			if (!guild || !member) return false;
 			// Allow green gem badge holders to run commands in support channel:
-			if (channel.id === Channel.HelpAndSupport && user.badges.includes(BadgesEnum.GreenGem)) {
+			if (channel.id === Channel.HelpAndSupport && user.user.badges.includes(BadgesEnum.GreenGem)) {
 				return false;
 			}
 
@@ -256,7 +255,7 @@ export async function runInhibitors({
 	bypassInhibitors,
 	APIUser
 }: {
-	user: PrecommandUser;
+	user: MUser;
 	APIUser: User;
 	channel: TextChannel | DMChannel;
 	member: GuildMember | null;

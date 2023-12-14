@@ -17,6 +17,7 @@ import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
+import backgroundImages from './minions/data/bankBackgrounds';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
 import { defaultFarmingContract } from './minions/farming';
@@ -25,6 +26,7 @@ import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
 import { getUsersPerkTier, syncPerkTierOfUser } from './perkTiers';
+import { roboChimpUserFetch } from './roboChimp';
 import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
 import { prisma } from './settings/prisma';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
@@ -331,19 +333,22 @@ GROUP BY data->>'clueID';`);
 		items,
 		collectionLog = false,
 		filterLoot = true,
-		dontAddToTempCL = false
+		dontAddToTempCL = false,
+		neverUpdateHistory = false
 	}: {
 		items: ItemBank | Bank;
 		collectionLog?: boolean;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
+		neverUpdateHistory?: boolean;
 	}) {
 		const res = await transactItems({
 			collectionLog,
 			itemsToAdd: new Bank(items),
 			filterLoot,
 			dontAddToTempCL,
-			userID: this.id
+			userID: this.id,
+			neverUpdateHistory
 		});
 		this.user = res.newUser;
 		this.updateProperties();
@@ -752,6 +757,37 @@ GROUP BY data->>'clueID';`);
 			changes.set('Clue scroll (elite)', 5);
 		}
 		return changes;
+	}
+
+	async checkBankBackground() {
+		if (this.bitfield.includes(BitField.isModerator)) {
+			return;
+		}
+		const resetBackground = async () => {
+			await this.update({ bankBackground: 1 });
+		};
+		const background = backgroundImages.find(i => i.id === this.user.bankBackground);
+		if (!background) {
+			return resetBackground();
+		}
+		if (background.id === 1) return;
+		if (background.storeBitField && this.user.store_bitfield.includes(background.storeBitField)) {
+			return;
+		}
+		if (background.perkTierNeeded && this.perkTier() >= background.perkTierNeeded) {
+			return;
+		}
+		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
+			return;
+		}
+		if (!background.storeBitField && !background.perkTierNeeded && !background.bitfield) {
+			return;
+		}
+		return resetBackground();
+	}
+
+	async fetchRobochimpUser() {
+		return roboChimpUserFetch(this.id);
 	}
 }
 declare global {
