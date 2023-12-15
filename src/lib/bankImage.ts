@@ -22,6 +22,7 @@ import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { giftCountCache } from '../mahoji/commands/gift';
+import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
 import { TOBUniques } from './data/tob';
 import { murMurSort } from './util';
 import resolveItems from './util/resolveItems';
@@ -223,7 +224,15 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Mahogany logs'), 'Mahog'],
 	[i('Yew logs'), 'Yew'],
 	[i('Magic logs'), 'Magic'],
-	[i('Redwood logs'), 'Redwood']
+	[i('Redwood logs'), 'Redwood'],
+	...XPLamps.map(lamp => [lamp.itemID, toKMB(lamp.amount)] as const),
+
+	// Uncharged
+	[i('Holy sanguinesti staff (uncharged)'), 'Unch.'],
+	[i('Sanguinesti staff (uncharged)'), 'Unch.'],
+	[i('Scythe of vitur (uncharged)'), 'Unch.'],
+	[i('Holy scythe of vitur (uncharged)'), 'Unch.'],
+	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.']
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {

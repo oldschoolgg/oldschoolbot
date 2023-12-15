@@ -21,7 +21,7 @@ import { itemOption, ownedItemOption, tradeableItemArr } from '../lib/mahojiComm
 import { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
 
-type GEListingWithTransactions = GEListing & {
+export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
 	sellTransactions: GETransaction[];
 };
@@ -144,7 +144,16 @@ export const geCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'my_listings',
 			description: 'View your listings',
-			options: []
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'page',
+					description: 'The page you want to view.',
+					required: false,
+					min_value: 1,
+					max_value: 10
+				}
+			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -229,7 +238,9 @@ export const geCommand: OSBMahojiCommand = {
 		cancel?: {
 			listing: string;
 		};
-		my_listings?: {};
+		my_listings?: {
+			page: number;
+		};
 		stats?: {};
 		price?: { item: string };
 		view?: { price_history?: string };
@@ -344,18 +355,30 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 				take: 5
 			});
 
-			return `**Active Listings**
-${(
-	await Promise.all(
-		activeListings.map(async listing => {
-			const buyLimit = await GrandExchange.checkBuyLimitForListing(listing);
-			return geListingToString(listing, buyLimit);
-		})
-	)
-).join('\n')}
+			const image = await geImageGenerator.createInterface({
+				user,
+				page: options.my_listings.page ?? 1,
+				activeListings
+			});
 
-**Recent Fulfilled/Cancelled Listings**
-${recentInactiveListings.map(i => geListingToString(i)).join('\n')}`;
+			return {
+				content: `**Active Listings**\n${(
+					await Promise.all(
+						activeListings.map(async listing => {
+							const buyLimit = await GrandExchange.checkBuyLimitForListing(listing);
+							return geListingToString(listing, buyLimit);
+						})
+					)
+				).join('\n')}\n\n**Recent Fulfilled/Cancelled Listings**\n${recentInactiveListings
+					.map(i => geListingToString(i))
+					.join('\n')}`,
+				files: [
+					{
+						name: 'ge.png',
+						attachment: image!
+					}
+				]
+			};
 		}
 
 		if (options.view) {
