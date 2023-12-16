@@ -740,13 +740,7 @@ export async function minionKillCommand(
 		pkString += chanceString;
 	}
 
-	if (lootToRemove.length > 0) {
-		updateBankSetting('economyStats_PVMCost', lootToRemove);
-		await user.specialRemoveItems(lootToRemove, { wildy: monster.wildy ? true : false });
-		totalCost.add(lootToRemove);
-	}
-
-	// Check food last, so we can remove any pending loot (pk supplies-food costs) from the bank before removing food.
+	// Check food
 	let foodStr: string = '';
 	// Find best eatable boost and add 1% extra
 	const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
@@ -812,6 +806,13 @@ export async function minionKillCommand(
 	} else {
 		boosts.push(`${noFoodBoost}% for no food`);
 		duration = reduceNumByPercent(duration, noFoodBoost);
+	}
+
+	// Remove items after food calc to prevent losing items if the user doesn't have the right amount of food. Example: Mossy key
+	if (lootToRemove.length > 0) {
+		updateBankSetting('economyStats_PVMCost', lootToRemove);
+		await user.specialRemoveItems(lootToRemove, { wildy: monster.wildy ? true : false });
+		totalCost.add(lootToRemove);
 	}
 
 	if (totalCost.length > 0) {
