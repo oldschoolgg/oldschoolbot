@@ -1,5 +1,5 @@
 import { GiftBoxStatus } from '@prisma/client';
-import { roll, round, shuffleArr, sumArr, Time, uniqueArr } from 'e';
+import { percentChance, roll, round, shuffleArr, sumArr, Time, uniqueArr } from 'e';
 import { writeFileSync } from 'fs';
 import { Bank } from 'oldschooljs';
 import { z } from 'zod';
@@ -91,7 +91,7 @@ function determineLoot(cl: Bank, duration: number) {
 				loot.add('Grinch santa hat');
 			}
 
-			if (roll(3)) {
+			if (percentChance(90)) {
 				smokeyLotteryTickets++;
 			}
 		}
