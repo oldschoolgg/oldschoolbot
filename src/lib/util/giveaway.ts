@@ -101,7 +101,7 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 		const interval = getSmokeyLotteryGiveawayInterval();
 		const lastTicketDate = creator.user.last_giveaway_ticket_given_date;
 		const shouldGiveTicket =
-			giveaway.channel_id === '792691343284764693' &&
+			['1126919039340511363', '792691343284764693', '1087277246361915392'].includes(giveaway.channel_id) &&
 			marketPriceOfBank(loot) > 50_000_000 &&
 			(!lastTicketDate || lastTicketDate < interval.start) &&
 			creator.smokeyLotteryData().giveawayTickets < smokeyLotteryMaxTickets.giveawayTickets;
