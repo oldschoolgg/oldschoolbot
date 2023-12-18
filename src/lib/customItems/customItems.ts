@@ -9602,7 +9602,6 @@ setCustomItem(
 	'Bronze full helm',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9615,7 +9614,6 @@ setCustomItem(
 	'Bronze platebody',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9628,7 +9626,6 @@ setCustomItem(
 	'Bronze platelegs',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9641,7 +9638,6 @@ setCustomItem(
 	'Bronze boots',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9654,7 +9650,6 @@ setCustomItem(
 	'Bronze gloves',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9691,7 +9686,6 @@ setCustomItem(
 	'Rune platebody',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9704,7 +9698,6 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9717,7 +9710,6 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9730,7 +9722,6 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9743,7 +9734,6 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9756,7 +9746,6 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9769,7 +9758,6 @@ setCustomItem(
 	'Bronze platebody',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9782,7 +9770,6 @@ setCustomItem(
 	'Bronze platebody',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9832,7 +9819,6 @@ setCustomItem(
 	'Rune platebody',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9845,7 +9831,6 @@ setCustomItem(
 	'Rune platebody',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9858,7 +9843,6 @@ setCustomItem(
 	'Rune platelegs',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9871,7 +9855,6 @@ setCustomItem(
 	'Rune platelegs',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9884,7 +9867,6 @@ setCustomItem(
 	'Rune gloves',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
@@ -9897,7 +9879,6 @@ setCustomItem(
 	'Rune boots',
 	{
 		customItemData: {
-			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
 		}
 	},
