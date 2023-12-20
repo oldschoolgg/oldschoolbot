@@ -38,7 +38,7 @@ export function determineMiningTime({
 
 	const bankTime = goldSilverBoost ? ore.bankingTime / 3.3 : ore.bankingTime;
 	const chanceOfSuccess = ore.slope * miningLvl + intercept;
-	const respawnTimeOrPick = ticksBetweenRolls > ore.respawnTime ? ticksBetweenRolls : ore.respawnTime;
+	let respawnTimeOrPick = ticksBetweenRolls > ore.respawnTime ? ticksBetweenRolls : ore.respawnTime;
 
 	let newQuantity = 0;
 
@@ -52,9 +52,9 @@ export function determineMiningTime({
 		userMaxTripTicks *= 1.5;
 	}
 
-	// Mining master cape boost
+	// Mining master cape boost, makes respawnTimeOrPick 3x faster effectively creating a ~2x speed boost
 	if (user.hasEquipped('Mining master cape')) {
-		userMaxTripTicks = reduceNumByPercent(userMaxTripTicks, 50);
+		respawnTimeOrPick = reduceNumByPercent(respawnTimeOrPick, 66);
 	}
 
 	while (timeElapsed < userMaxTripTicks) {
