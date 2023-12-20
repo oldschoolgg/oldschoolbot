@@ -1,5 +1,5 @@
 import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
-import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
+import { formatItemStackQuantity, generateHexColorForCashStack, toTitleCase } from '@oldschoolgg/toolkit';
 import { GEListing, GETransaction } from '@prisma/client';
 import * as fs from 'fs/promises';
 import { floor } from 'lodash';
@@ -124,9 +124,27 @@ class GeImageTask {
 		}
 	}
 
-	async getSlotImage(ctx: SKRSContext2D, locked: boolean = false, listing: GEListingWithTransactions | undefined) {
+	async getSlotImage(
+		ctx: SKRSContext2D,
+		slot: number,
+		locked: boolean = false,
+		listing: GEListingWithTransactions | undefined
+	) {
 		const slotImage = listing ? this.geSlotActive! : locked ? this.geSlotLocked! : this.geSlotOpen!;
 		ctx.drawImage(slotImage, 0, 0, slotImage.width, slotImage.height);
+
+		// Draw Bank Title
+		ctx.textAlign = 'center';
+		ctx.font = '16px RuneScape Bold 12';
+		let type = listing ? ` - ${toTitleCase(listing.type.toString())}` : ' - Empty';
+		this.drawText(
+			ctx,
+			locked ? 'Locked' : `Slot ${slot}${type}`,
+			Math.floor(slotImage.width / 2),
+			17,
+			undefined,
+			10
+		);
 
 		if (listing) {
 			// Get item
@@ -275,7 +293,7 @@ class GeImageTask {
 			}
 			ctx.save();
 			ctx.translate(x * (this.geSlotOpen!.width + 2), y);
-			await this.getSlotImage(ctx, i >= slots ? true : false, listing);
+			await this.getSlotImage(ctx, i + 1, i >= slots ? true : false, listing);
 			ctx.restore();
 			x++;
 			if (i > (page - 1) * chunkSize + 8) break;
