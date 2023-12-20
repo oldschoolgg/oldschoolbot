@@ -1577,7 +1577,8 @@ export const shadesOfMorttonCL = resolveItems([
 	"Zealot's robe bottom",
 	"Zealot's boots",
 	"Tree wizards' journal",
-	'Bloody notes'
+	'Bloody notes',
+	'Gary'
 ]);
 export const soulWarsCL = resolveItems(["Lil' creator", 'Red soul cape', 'Ectoplasmator']);
 

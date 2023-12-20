@@ -18,7 +18,10 @@ export const revenantMonsters: KillableMonster[] = [
 		itemCost: {
 			itemCost: new Bank().add('Blighted super restore (4)', 1),
 			qtyPerMinute: 0.17,
-			alternativeConsumables: [{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }]
+			alternativeConsumables: [
+				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+			]
 		},
 		canBePked: true
 	},
@@ -36,7 +39,10 @@ export const revenantMonsters: KillableMonster[] = [
 		itemCost: {
 			itemCost: new Bank().add('Blighted super restore (4)', 1),
 			qtyPerMinute: 0.17,
-			alternativeConsumables: [{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }]
+			alternativeConsumables: [
+				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+			]
 		},
 		canBePked: true
 	},
@@ -54,7 +60,10 @@ export const revenantMonsters: KillableMonster[] = [
 		itemCost: {
 			itemCost: new Bank().add('Blighted super restore (4)', 1),
 			qtyPerMinute: 0.17,
-			alternativeConsumables: [{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }]
+			alternativeConsumables: [
+				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+			]
 		},
 		canBePked: true
 	},
@@ -72,7 +81,10 @@ export const revenantMonsters: KillableMonster[] = [
 		itemCost: {
 			itemCost: new Bank().add('Blighted super restore (4)', 1),
 			qtyPerMinute: 0.17,
-			alternativeConsumables: [{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }]
+			alternativeConsumables: [
+				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+			]
 		},
 		canBePked: true
 	},
@@ -103,7 +115,10 @@ export const revenantMonsters: KillableMonster[] = [
 		itemCost: {
 			itemCost: new Bank().add('Blighted super restore (4)', 1),
 			qtyPerMinute: 0.17,
-			alternativeConsumables: [{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }]
+			alternativeConsumables: [
+				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+			]
 		},
 		canBePked: true
 	},
@@ -121,7 +136,10 @@ export const revenantMonsters: KillableMonster[] = [
 		itemCost: {
 			itemCost: new Bank().add('Blighted super restore (4)', 1),
 			qtyPerMinute: 0.17,
-			alternativeConsumables: [{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }]
+			alternativeConsumables: [
+				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+			]
 		},
 		canBePked: true
 	},
@@ -152,7 +170,10 @@ export const revenantMonsters: KillableMonster[] = [
 		itemCost: {
 			itemCost: new Bank().add('Blighted super restore (4)', 1),
 			qtyPerMinute: 0.17,
-			alternativeConsumables: [{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }]
+			alternativeConsumables: [
+				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+			]
 		},
 		canBePked: true
 	},
@@ -170,7 +191,10 @@ export const revenantMonsters: KillableMonster[] = [
 		itemCost: {
 			itemCost: new Bank().add('Blighted super restore (4)', 1),
 			qtyPerMinute: 0.17,
-			alternativeConsumables: [{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }]
+			alternativeConsumables: [
+				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+			]
 		},
 		canBePked: true
 	},
@@ -188,7 +212,10 @@ export const revenantMonsters: KillableMonster[] = [
 		itemCost: {
 			itemCost: new Bank().add('Blighted super restore (4)', 1),
 			qtyPerMinute: 0.17,
-			alternativeConsumables: [{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }]
+			alternativeConsumables: [
+				{ itemCost: new Bank().add('Super restore (4)', 1), qtyPerMinute: 0.17 },
+				{ itemCost: new Bank().add('Prayer potion (4)', 1), qtyPerMinute: 0.17 }
+			]
 		},
 		canBePked: true
 	}

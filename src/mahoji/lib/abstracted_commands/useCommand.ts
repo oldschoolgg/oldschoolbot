@@ -624,6 +624,6 @@ export async function useCommand(user: MUser, _firstItem: string, _secondItem?: 
 	if (!bank.has(checkBank)) return `You don't own ${checkBank}.`;
 
 	const usable = usables.find(i => i.items.length === items.length && i.items.every(t => items.includes(t)));
-	if (!usable) return "That's not a usable item.";
+	if (!usable) return `That's not a usable ${items.length === 1 ? 'item' : 'combination'}.`;
 	return usable.run(user);
 }

@@ -7,6 +7,7 @@ import './lib/util/transactItemsFromBank';
 import './lib/util/logger';
 import './lib/data/trophies';
 import './lib/itemMods';
+import './lib/geImage';
 
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
@@ -15,7 +16,6 @@ import { GatewayIntentBits, Options, Partials, TextChannel } from 'discord.js';
 import { isObject } from 'e';
 import { MahojiClient } from 'mahoji';
 import { join } from 'path';
-import { isMainThread } from 'worker_threads';
 
 import { botToken, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
@@ -38,11 +38,6 @@ import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
 debugLog(`Starting... Git Hash ${META_CONSTANTS.GIT_HASH}`);
-
-if (production && !process.env.TEST && isMainThread) {
-	// eslint-disable-next-line @typescript-eslint/no-var-requires
-	require('segfault-handler').registerHandler('crash.log');
-}
 
 if (!production) {
 	import('./lib/devHotReload');
