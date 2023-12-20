@@ -1,4 +1,4 @@
-import { percentChance, Time } from 'e';
+import { percentChance, reduceNumByPercent, Time } from 'e';
 
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import { Ore } from './../types';
@@ -50,6 +50,11 @@ export function determineMiningTime({
 
 	if (ore.name === 'Amethyst' || ore.name === 'Daeyalt essence rock') {
 		userMaxTripTicks *= 1.5;
+	}
+
+	// Mining master cape boost
+	if (user.hasEquipped('Mining master cape')) {
+		userMaxTripTicks = reduceNumByPercent(userMaxTripTicks, 50);
 	}
 
 	while (timeElapsed < userMaxTripTicks) {

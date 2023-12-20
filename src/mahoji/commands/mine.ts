@@ -101,6 +101,12 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		const boosts = [];
+
+		// Mining master cape boost message
+		if (user.hasEquipped('Mining master cape')) {
+			boosts.push('2x boost for being a master miner');
+		}
+
 		// Invisible mining level, dosen't help equip pickaxe etc
 		let miningLevel = user.skillsAsLevels.mining;
 		if (ore.minerals && miningLevel >= 60) {
