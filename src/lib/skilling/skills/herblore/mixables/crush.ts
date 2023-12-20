@@ -95,7 +95,7 @@ const Crush: Mixable[] = [
 		aliases: ['lava dragon scale', 'lava dragon dust', 'lava dragon', 'lava shard'],
 		level: 1,
 		xp: 0,
-		inputItems: new Bank({ 11_992: 1 }),
+		inputItems: new Bank({ 'Lava scale': 1 }),
 		tickRate: 1,
 		bankTimePerPotion: 0,
 		wesley: true
