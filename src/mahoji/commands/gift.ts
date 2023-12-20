@@ -161,7 +161,7 @@ export const giftCommand: OSBMahojiCommand = {
 
 			return `**Gifts You Haven't Sent Yet:**
 ${giftsCreatedNotSent.map(g => `${g.name ? `${g.name} (${g.id})` : g.id}: ${new Bank(g.items as ItemBank)}`).join('\n')}
-	
+
 **Gifts You Haven't Opened Yet:**
 ${truncateString(giftsOwnedButNotOpened.map(g => `${g.name ? `${g.name} (${g.id})` : g.id}`).join('\n'), 1000)}`;
 		}
@@ -204,8 +204,7 @@ ${truncateString(giftsOwnedButNotOpened.map(g => `${g.name ? `${g.name} (${g.id}
 		if (options.create) {
 			if (
 				options.create.name &&
-				!isValidNickname(options.create.name) &&
-				containsBlacklistedWord(options.create.name)
+				(!isValidNickname(options.create.name) || containsBlacklistedWord(options.create.name))
 			) {
 				return 'That name cannot be used for your gift box; no special characters, less than 30 characters and no inappropriate words.';
 			}
