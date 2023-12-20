@@ -154,18 +154,19 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			str += params.minimal
 				? `(Levelled up to ${newLevel})`
 				: `\n**Congratulations! Your ${name} level is now ${newLevel}** 🎉`;
-		} else if (preMax !== -1) {
-			for (const XPMilestone of [50_000_000, 100_000_000, 150_000_000, MAX_XP]) {
-				if (newXP < XPMilestone) break;
+		}
 
-				if (currentXP < XPMilestone && newXP >= XPMilestone) {
-					str += params.minimal
-						? `(Achieved ${XPMilestone.toLocaleString()} XP)`
-						: `\n**Congratulations! Your ${name} has achieved ${XPMilestone.toLocaleString()} XP** 🎉`;
-					break;
-				}
+		for (const XPMilestone of [50_000_000, 100_000_000, 150_000_000, MAX_XP]) {
+			if (newXP < XPMilestone) break;
+
+			if (currentXP < XPMilestone && newXP >= XPMilestone) {
+				str += params.minimal
+					? `(Achieved ${XPMilestone.toLocaleString()} XP)`
+					: `\n**Congratulations! Your ${name} has achieved ${XPMilestone.toLocaleString()} XP** 🎉`;
+				break;
 			}
 		}
 	}
+
 	return str;
 }
