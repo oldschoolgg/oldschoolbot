@@ -23,9 +23,16 @@ export const miningTask: MinionTask = {
 		let { quantity } = data;
 		const user = await mUserFetch(userID);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
+		const isMasterMiner = user.hasEquipped('Mining master cape');
 
 		let xpReceived = quantity * ore.xp;
 		let bonusXP = 0;
+
+		// Mining master cape boost
+		if (isMasterMiner) {
+			xpReceived *= 2;
+			quantity *= 2;
+		}
 
 		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
 		if (
@@ -85,7 +92,7 @@ export const miningTask: MinionTask = {
 			}
 
 			if (numberOfMinerals > 0) {
-				if (user.hasEquipped('Mining master cape')) {
+				if (isMasterMiner) {
 					numberOfMinerals *= 2;
 				}
 				loot.add('Unidentified minerals', numberOfMinerals);
@@ -219,8 +226,9 @@ export const miningTask: MinionTask = {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		if (user.hasEquipped('Mining master cape')) {
-			str += '\n2x minerals for Mining master cape.';
+		// Mining master cape boost message
+		if (isMasterMiner) {
+			str += `\n2x ore${ore.minerals ? ' and minerals' : ''} for being a master miner.`;
 		}
 
 		await transactItems({

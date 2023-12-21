@@ -1,4 +1,4 @@
-import { percentChance, reduceNumByPercent, Time } from 'e';
+import { percentChance, Time } from 'e';
 
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import { Ore } from './../types';
@@ -50,11 +50,6 @@ export function determineMiningTime({
 
 	if (ore.name === 'Amethyst' || ore.name === 'Daeyalt essence rock') {
 		userMaxTripTicks *= 1.5;
-	}
-
-	// Mining master cape boost, makes respawnTimeOrPick 3x faster effectively creating a ~2x speed boost
-	if (user.hasEquipped('Mining master cape')) {
-		respawnTimeOrPick = reduceNumByPercent(respawnTimeOrPick, 66);
 	}
 
 	while (timeElapsed < userMaxTripTicks) {
