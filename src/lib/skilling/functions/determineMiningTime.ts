@@ -38,7 +38,7 @@ export function determineMiningTime({
 
 	const bankTime = goldSilverBoost ? ore.bankingTime / 3.3 : ore.bankingTime;
 	const chanceOfSuccess = ore.slope * miningLvl + intercept;
-	let respawnTimeOrPick = ticksBetweenRolls > ore.respawnTime ? ticksBetweenRolls : ore.respawnTime;
+	const respawnTimeOrPick = ticksBetweenRolls > ore.respawnTime ? ticksBetweenRolls : ore.respawnTime;
 
 	let newQuantity = 0;
 

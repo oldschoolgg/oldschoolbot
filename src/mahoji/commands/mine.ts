@@ -101,7 +101,6 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		const boosts = [];
-
 		// Invisible mining level, dosen't help equip pickaxe etc
 		let miningLevel = user.skillsAsLevels.mining;
 		if (ore.minerals && miningLevel >= 60) {
