@@ -33248,5 +33248,43 @@ exports[`BSO Creatables 1`] = `
       "woodcutting": 50,
     },
   },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25635": 1,
+        "25637": 1,
+        "25639": 1,
+        "25676": 1500,
+      },
+      "frozen": false,
+    },
+    "name": "Barronite mace",
+    "noCl": false,
+    "outputItems": Bank {
+      "bank": {
+        "25641": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25633": 1,
+        "25676": 1500,
+      },
+      "frozen": false,
+    },
+    "name": "Imcando hammer",
+    "noCl": false,
+    "outputItems": Bank {
+      "bank": {
+        "25644": 1,
+      },
+      "frozen": false,
+    },
+  },
 ]
 `;

@@ -2041,7 +2041,7 @@ setCustomItem(
 	},
 	1000
 );
-setCustomItem(50_067, 'Grifolic flake ', 'Coal', {}, 1000);
+setCustomItem(50_067, 'Grifolic flake', 'Coal', {}, 1000);
 setCustomItem(
 	50_068,
 	'Grifolic shield',

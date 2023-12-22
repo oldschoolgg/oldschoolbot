@@ -594,6 +594,9 @@ enum XpGainSource {
   MahoganyHomes
   AerialFishing
   CleaningHerbsWhileFarming
+  CamdozaalMining
+  CamdozaalSmithing
+  CamdozaalFishing
 }
 
 model XPGain {
@@ -1203,6 +1206,9 @@ enum activity_type_enum {
   BirthdayCollectIngredients
   SpecificQuest
   Mortimer
+  CamdozaalFishing
+  CamdozaalMining
+  CamdozaalSmithing
 }
 
 enum xp_gains_skill_enum {
