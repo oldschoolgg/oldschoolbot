@@ -379,6 +379,18 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently fighting cyclopes in the Warriors' Guild. ${formattedDuration}`;
 		}
 
+		case 'CamdozaalFishing': {
+			return `${name} is currently Fishing in the Ruins of Camdozaal. ${formattedDuration}`;
+		}
+
+		case 'CamdozaalMining': {
+			return `${name} is currently Mining in the Ruins of Camdozaal. ${formattedDuration}`;
+		}
+
+		case 'CamdozaalSmithing': {
+			return `${name} is currently Smithing in the Ruins of Camdozaal. ${formattedDuration}`;
+		}
+
 		case 'Sepulchre': {
 			const data = currentTask as SepulchreActivityTaskOptions;
 

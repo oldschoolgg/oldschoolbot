@@ -10,6 +10,7 @@ import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import { bossKillables } from './bosses';
+import { camdozaalMonsters } from './camdozaalMonsters';
 import { chaeldarMonsters } from './chaeldarMonsters';
 import { creatureCreationCreatures } from './creatureCreation';
 import { Ignecarus } from './custom/bosses/Ignecarus';
@@ -34,6 +35,7 @@ const killableMonsters: KillableMonster[] = [
 	...chaeldarMonsters,
 	...konarMonsters,
 	...krystiliaMonsters,
+	...camdozaalMonsters,
 	...mazchnaMonsters,
 	...nieveMonsters,
 	...turaelMonsters,

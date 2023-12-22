@@ -74,6 +74,9 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 		| 'GloryCharging'
 		| 'AerialFishing'
 		| 'FishingTrawler'
+		| 'CamdozaalFishing'
+		| 'CamdozaalMining'
+		| 'CamdozaalSmithing'
 		| 'Naxxus';
 	quantity: number;
 }
