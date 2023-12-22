@@ -272,6 +272,13 @@ const genericUsables: {
 		response: () => 'You put your Wintertoad in the milk to cool it down.',
 		addToCL: true
 	},
+	{
+		items: [getOSItem('Scorched rat milk'), getOSItem('Frosty')],
+		cost: new Bank().add('Scorched rat milk'),
+		loot: new Bank().add('Fresh rat milk'),
+		response: () => 'You dip your Frosty into the milk, cooling it down. Frosty seems a little slimmer now.',
+		addToCL: true
+	},
 	/**
 	 *
 	 * Chocolate bar
@@ -580,7 +587,7 @@ for (const [_, val] of objectEntries(mysteriousStepData)) {
 			const { step, track, stepData, minionMessage } = user.getMysteriousTrailData();
 			if (!step || !track || !stepData) return 'Hmmm..';
 			return `You read the ${val.clueItem.name} and it says...
-		
+
 ${bold(step.hint)}
 
 ${minionMessage}`;
@@ -593,7 +600,7 @@ usables.push({
 		const { step, track, stepData, minionMessage } = user.getMysteriousTrailData();
 		if (!step || !track || !stepData) return 'Hmmm..';
 		return `You read the Mysterious clue (1) and it says...
-		
+
 ${bold(`In Lumbridge's dawn, where bovine graze,
 Lay one to rest in the morning haze,
 In its yield, your path will blaze.`)}
