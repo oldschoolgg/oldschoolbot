@@ -24,6 +24,7 @@ import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { giftCountCache } from '../mahoji/commands/gift';
+import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
 import { TOBUniques } from './data/tob';
 import { SkillsEnum } from './skilling/types';
 import { murMurSort } from './util';
@@ -242,7 +243,8 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Magic logs'), 'Magic'],
 	[i('Redwood logs'), 'Redwood'],
 	[i('Elder logs'), 'Elder'],
-
+  
+	// jmod  
 	[i('Scythe of vitur (JMod)'), 'JMod']
 ]);
 

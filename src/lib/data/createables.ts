@@ -609,6 +609,26 @@ const hunterClothing: Createable[] = [
 	}
 ];
 
+const camdozaalItems: Createable[] = [
+	{
+		name: 'Barronite mace',
+		inputItems: new Bank({
+			'Barronite handle': 1,
+			'Barronite guard': 1,
+			'Barronite head': 1,
+			'Barronite shards': 1500
+		}),
+		outputItems: new Bank({ 'Barronite mace	': 1 }),
+		noCl: false
+	},
+	{
+		name: 'Imcando hammer',
+		inputItems: new Bank({ 'Imcando hammer (broken)': 1, 'Barronite shards': 1500 }),
+		outputItems: new Bank({ 'Imcando hammer': 1 }),
+		noCl: false
+	}
+];
+
 const metamorphPets: Createable[] = [
 	{
 		name: 'Midnight',
@@ -2376,7 +2396,8 @@ const Createables: Createable[] = [
 	...swampBarkCreatables,
 	...dtCreatables,
 	...caCreatables,
-	...forestryCreatables
+	...forestryCreatables,
+	...camdozaalItems
 ];
 
 export default Createables;

@@ -40,6 +40,18 @@ export async function gearPresetEquipCommand(user: MUser, gearSetup: string, pre
 	}
 	const preset = (userPreset ?? globalPreset) as GearPreset;
 
+	// Checks the preset to make sure the user has the required stats for every item in the preset
+	for (const gearItemId of Object.values(preset)) {
+		if (gearItemId !== null) {
+			const itemToEquip = getItem(gearItemId);
+			if (itemToEquip?.equipment?.requirements && !user.hasSkillReqs(itemToEquip.equipment.requirements)) {
+				return `You can't equip this preset because ${
+					itemToEquip.name
+				} requires these stats: ${formatSkillRequirements(itemToEquip.equipment.requirements)}.`;
+			}
+		}
+	}
+
 	const toRemove = new Bank();
 	function gearItem(val: null | number) {
 		if (val === null) return null;
