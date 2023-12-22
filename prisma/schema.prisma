@@ -1197,6 +1197,7 @@ enum activity_type_enum {
   BirthdayCollectIngredients
   SpecificQuest
   Mortimer
+  MemoryHarvest
 }
 
 enum xp_gains_skill_enum {

@@ -661,6 +661,12 @@ export interface MortimerOptions extends ActivityTaskOptions {
 	type: 'Mortimer';
 }
 
+export interface MemoryHarvestOptions extends ActivityTaskOptions {
+	type: 'MemoryHarvest';
+	e: string;
+	t: string;
+}
+
 export type ActivityTaskData =
 	| MonsterActivityTaskOptions
 	| WoodcuttingActivityTaskOptions
@@ -738,4 +744,5 @@ export type ActivityTaskData =
 	| BathhouseTaskOptions
 	| ResearchTaskOptions
 	| CutLeapingFishActivityTaskOptions
-	| MortimerOptions;
+	| MortimerOptions
+	| MemoryHarvestOptions;
