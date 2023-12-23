@@ -250,6 +250,7 @@ export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
 	mixableID: number;
 	quantity: number;
 	zahur: boolean;
+	wesley: boolean;
 }
 
 export interface CutLeapingFishActivityTaskOptions extends ActivityTaskOptions {
