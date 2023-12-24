@@ -188,6 +188,13 @@ const Skillcapes: Skillcape[] = [
 		untrimmed: itemID('Invention cape'),
 		trimmed: itemID('Invention cape(t)'),
 		masterCape: getOSItem('Invention master cape')
+	},
+	{
+		skill: SkillsEnum.Divination,
+		hood: itemID('Divination hood'),
+		untrimmed: itemID('Divination cape'),
+		trimmed: itemID('Divination cape(t)'),
+		masterCape: getOSItem('Divination master cape')
 	}
 ];
 

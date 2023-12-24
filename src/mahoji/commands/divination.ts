@@ -1,12 +1,11 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { divinationEnergies } from '../../lib/bso/divination';
+import { divinationEnergies, MemoryHarvestType, memoryHarvestTypes } from '../../lib/bso/divination';
 import { MemoryHarvestOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { formatDuration } from '../../lib/util/smallUtils';
 import { OSBMahojiCommand } from '../lib/util';
-
-const memoryHarvestTypes = ['convert to xp', 'convert to energy', 'convert with energy to xp'];
 
 export const divinationCommand: OSBMahojiCommand = {
 	name: 'divination',
@@ -21,15 +20,28 @@ export const divinationCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					name: 'energy',
 					description: 'The type of memory.',
-					choices: divinationEnergies.map(e => ({ name: e.type, value: e.type })),
+					choices: divinationEnergies.map(e => ({ name: `${e.type} (Level ${e.level})`, value: e.type })),
 					required: true
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: ApplicationCommandOptionType.Integer,
 					name: 'type',
 					description: 'The method of harvesting (default: convert to xp)',
 					required: false,
-					choices: memoryHarvestTypes.map(e => ({ name: e, value: e }))
+					choices: [
+						{
+							name: 'Convert to XP (Default)',
+							value: MemoryHarvestType.ConvertToXP
+						},
+						{
+							name: 'Convert to Energy',
+							value: MemoryHarvestType.ConvertToEnergy
+						},
+						{
+							name: 'Convert to XP with Energy',
+							value: MemoryHarvestType.ConvertWithEnergyToXP
+						}
+					]
 				}
 			]
 		}
@@ -38,22 +50,34 @@ export const divinationCommand: OSBMahojiCommand = {
 		options,
 		userID,
 		channelID
-	}: CommandRunOptions<{ harvest_memories?: { energy: string; type?: string } }>) => {
+	}: CommandRunOptions<{ harvest_memories?: { energy: string; type?: number } }>) => {
 		const user = await mUserFetch(userID);
 
 		if (options.harvest_memories) {
-			const memoryHarvestMethod = options.harvest_memories.type ?? memoryHarvestTypes[0];
-			if (!memoryHarvestTypes.includes)
-				await addSubTaskToActivityTask<MemoryHarvestOptions>({
-					userID: user.id,
-					channelID,
-					duration: calcMaxTripLength(user, 'MemoryHarvest'),
-					type: 'MemoryHarvest',
-					e: options.harvest_memories.energy,
-					t: options.harvest_memories.type
-				});
+			const memoryHarvestMethodIndex = options.harvest_memories.type ?? 0;
+			if (!memoryHarvestTypes[memoryHarvestMethodIndex]) {
+				return 'Invalid memory harvest method.';
+			}
+
+			const energy = divinationEnergies.find(e => e.type === options.harvest_memories!.energy);
+			if (!energy) {
+				return 'Invalid energy type.';
+			}
+			const duration = calcMaxTripLength(user, 'MemoryHarvest');
+			await addSubTaskToActivityTask<MemoryHarvestOptions>({
+				userID: user.id,
+				channelID,
+				duration,
+				type: 'MemoryHarvest',
+				e: energy.item.id,
+				t: memoryHarvestMethodIndex
+			});
+
+			return `${user.minionName} is now harvesting ${energy.type} memories (${
+				memoryHarvestTypes[memoryHarvestMethodIndex].name
+			}), it'll take around ${formatDuration(duration)} to finish.`;
 		}
 
-		return str;
+		return 'Invalid command.';
 	}
 };

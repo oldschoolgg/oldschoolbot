@@ -38,6 +38,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { getUsersTame, tameSpecies } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
 import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
@@ -322,7 +323,8 @@ const thingsToWipe = [
 	'kc',
 	'materials',
 	'mt',
-	'mortimer_cooldown'
+	'mortimer_cooldown',
+	'trips'
 ] as const;
 
 export const testPotatoCommand: OSBMahojiCommand | null = production
@@ -403,7 +405,9 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							name: 'skill',
 							description: 'The skill.',
 							required: true,
-							choices: Object.values(Skills).map(s => ({ name: s.name, value: s.id }))
+							choices: Object.values(Skills)
+								.map(s => ({ name: s.name, value: s.id }))
+								.filter(i => i.value !== SkillsEnum.Woodcutting)
 						},
 						{
 							type: ApplicationCommandOptionType.Integer,
@@ -792,6 +796,14 @@ ${droprates.join('\n')}`),
 				}
 				if (options.wipe) {
 					let { thing } = options.wipe;
+					if (thing === 'trips') {
+						await prisma.activity.deleteMany({
+							where: {
+								user_id: BigInt(user.id)
+							}
+						});
+						return 'Deleted all your trips.';
+					}
 					if (thing === 'mortimer_cooldown') {
 						await user.update({
 							last_mortimer_kill_date: null

@@ -351,3 +351,9 @@ export function containsBlacklistedWord(str: string): boolean {
 	}
 	return false;
 }
+
+export function calculateAverageTimeForSuccess(probabilityPercent: number, timeFrameMilliseconds: number): number {
+	let probabilityOfSuccess = probabilityPercent / 100;
+	let averageTimeUntilSuccessMilliseconds = timeFrameMilliseconds / probabilityOfSuccess;
+	return averageTimeUntilSuccessMilliseconds;
+}

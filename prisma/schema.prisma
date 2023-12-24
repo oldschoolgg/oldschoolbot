@@ -522,6 +522,8 @@ model User {
   gift_boxes_owned   GiftBox[] @relation("gift_boxes_owned")
   gift_boxes_created GiftBox[] @relation("gift_boxes_created")
 
+  skills_divination BigInt @default(0) @map("skills.divination")
+
   @@index([id, last_command_date])
   @@map("users")
 }
@@ -591,6 +593,8 @@ enum XpGainSource {
   CamdozaalMining
   CamdozaalSmithing
   CamdozaalFishing
+  MemoryHarvest
+  GuthixianCache
 }
 
 model XPGain {
@@ -681,6 +685,7 @@ model Minigame {
   balthazars_big_bonanza   Int @default(0)
   depths_of_atlantis       Int @default(0)
   depths_of_atlantis_cm    Int @default(0)
+  guthixian_cache          Int @default(0)
 
   new_user NewUser?
 
@@ -1204,6 +1209,7 @@ enum activity_type_enum {
   CamdozaalMining
   CamdozaalSmithing
   MemoryHarvest
+  GuthixianCache
 }
 
 enum xp_gains_skill_enum {
@@ -1232,6 +1238,7 @@ enum xp_gains_skill_enum {
   dungeoneering
   slayer
   invention
+  divination
 }
 
 enum tame_growth {

@@ -240,7 +240,7 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 	if (!xpObject) return "That's not a valid item to use.";
 
 	if (!isValidSkill(skill)) return "That's not a valid skill.";
-	if (skill === SkillsEnum.Invention) {
+	if (skill === SkillsEnum.Invention || skill === SkillsEnum.Divination) {
 		return 'A magic force prevents you from using lamps on this skill.';
 	}
 

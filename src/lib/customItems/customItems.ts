@@ -9862,3 +9862,212 @@ setCustomItem(
 	},
 	1
 );
+
+setCustomItem(
+	73_022,
+	'Boon of elder energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_023,
+	'Boon of lustrous energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_024,
+	'Boon of vibrant energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_025,
+	'Boon of gleaming energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_026,
+	'Boon of sparkling energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_027,
+	'Boon of glowing energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_028,
+	'Boon of bright energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_029,
+	'Boon of flickering energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_030,
+	'Boon of incandescent energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_031,
+	'Boon of luminous energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_032,
+	'Boon of radiant energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_033,
+	'Boon of brilliant energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_034,
+	"Diviner's headwear",
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_035,
+	"Diviner's robe",
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_036,
+	"Diviner's legwear",
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_037,
+	"Diviner's handwear",
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_038,
+	"Diviner's footwear",
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);

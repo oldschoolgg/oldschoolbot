@@ -245,6 +245,11 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Depths of Atlantis - Challenge Mode',
 		aliases: ['doa cm'],
 		column: 'depths_of_atlantis_cm'
+	},
+	{
+		name: 'Guthixian Cache',
+		aliases: ['guthixian cache'],
+		column: 'guthixian_cache'
 	}
 ];
 

@@ -2,7 +2,6 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Emoji } from '../constants';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank, Skills } from '../types';
 import { FarmingPatchName } from '../util/farmingHelpers';
@@ -32,7 +31,8 @@ export enum SkillsEnum {
 	Hitpoints = 'hitpoints',
 	Dungeoneering = 'dungeoneering',
 	Slayer = 'slayer',
-	Invention = 'invention'
+	Invention = 'invention',
+	Divination = 'divination'
 }
 
 export interface Ore {
@@ -224,7 +224,7 @@ export type LevelRequirements = Partial<{
 export interface Skill {
 	aliases: string[];
 	id: SkillsEnum;
-	emoji: Emoji;
+	emoji: string;
 	name: string;
 }
 

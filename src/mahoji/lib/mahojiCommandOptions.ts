@@ -78,7 +78,9 @@ export const skillOption: CommandOption = {
 	name: 'skill',
 	description: 'The skill you want to select.',
 	required: false,
-	choices: Object.values(SkillsEnum).map(i => ({ name: toTitleCase(i), value: i }))
+	choices: Object.values(SkillsEnum)
+		.map(i => ({ name: toTitleCase(i), value: i }))
+		.slice(0, 25)
 };
 
 export const gearSetupOption: CommandOption = {

@@ -11,10 +11,12 @@ import { doaTask } from '../tasks/minions/bso/doaActivity';
 import { dungeoneeringTask } from '../tasks/minions/bso/dungeoneeringActivity';
 import { fishingContestTask } from '../tasks/minions/bso/fishingContestActivity';
 import { fogTask } from '../tasks/minions/bso/fogActivity';
+import { guthixianCacheTask } from '../tasks/minions/bso/guthixianCacheActivity';
 import { ignecarusTask } from '../tasks/minions/bso/ignecarusActivity';
 import { kalphiteKingTask } from '../tasks/minions/bso/kalphiteKingActivity';
 import { kibbleTask } from '../tasks/minions/bso/kibbleActivity';
 import { kingGoldemarTask } from '../tasks/minions/bso/kingGoldemarActivity';
+import { memoryHarvestTask } from '../tasks/minions/bso/memoryHarvestActivity';
 import { moktangTask } from '../tasks/minions/bso/moktangActivity';
 import { mrTask } from '../tasks/minions/bso/monkeyRumbleActivity';
 import { naxxusTask } from '../tasks/minions/bso/naxxusActivity';
@@ -222,7 +224,9 @@ export const tasks: MinionTask[] = [
 	specificQuestTask,
 	camdozaalMiningTask,
 	camdozaalSmithingTask,
-	camdozaalFishingTask
+	camdozaalFishingTask,
+	memoryHarvestTask,
+	guthixianCacheTask
 ];
 
 export async function processPendingActivities() {

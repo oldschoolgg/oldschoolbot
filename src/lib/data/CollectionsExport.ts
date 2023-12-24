@@ -3233,3 +3233,11 @@ export const vladDrakanCL = resolveItems([
 	'Vampyric plushie',
 	'Echo'
 ]);
+
+export const divinersOutfit = resolveItems([
+	"Diviner's headwear",
+	"Diviner's robe",
+	"Diviner's legwear",
+	"Diviner's handwear",
+	"Diviner's footwear"
+]);

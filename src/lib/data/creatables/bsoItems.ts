@@ -15,6 +15,7 @@ import itemID from '../../util/itemID';
 import resolveItems from '../../util/resolveItems';
 import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit } from '../CollectionsExport';
 import { Createable } from '../createables';
+import { divinationCreatables } from './divinationCreatables';
 import { ghostCreatables } from './ghostweaveCreatables';
 import { slayerMaskCreatables } from './slayerMasks';
 
@@ -1346,7 +1347,8 @@ export const BsoCreateables: Createable[] = [
 		inputItems: new Bank().add('Completionist cape').add('Completionist hood'),
 		noCl: true
 	},
-	...ghostCreatables
+	...ghostCreatables,
+	...divinationCreatables
 ];
 
 for (const { cape, requiredItems } of expertCapesSource) {
