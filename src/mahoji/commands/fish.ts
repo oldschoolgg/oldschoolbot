@@ -99,7 +99,7 @@ export const fishCommand: OSBMahojiCommand = {
 		// 2x boost for having Fishing master cape equipped
 		if (user.hasEquipped('Fishing master cape')) {
 			scaledTimePerFish = reduceNumByPercent(scaledTimePerFish, 50);
-			boosts.push('2x boost for being a master fisher');
+			boosts.push('2x faster for being a master fisher');
 		}
 
 		let maxTripLength = calcMaxTripLength(user, 'Fishing');
