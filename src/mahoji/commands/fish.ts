@@ -143,12 +143,6 @@ export const fishCommand: OSBMahojiCommand = {
 			boosts.push('5% for Shark tooth necklace');
 		}
 
-		// Fishing master cape boost
-		if (user.hasEquipped('Fishing master cape')) {
-			scaledTimePerFish = reduceNumByPercent(scaledTimePerFish, 50);
-			boosts.push('2x boost for being a master fisher');
-		}
-
 		if (fish.id === itemID('Minnow')) {
 			scaledTimePerFish *= Math.max(
 				0.83,
