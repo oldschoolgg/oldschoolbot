@@ -91,11 +91,17 @@ export const fishCommand: OSBMahojiCommand = {
 			Time.Second * fish.timePerFish * (1 + (100 - user.skillLevel(SkillsEnum.Fishing)) / 100);
 
 		const boosts = [];
-		const hasShelldon = user.usingPet('Shelldon');
-		if (hasShelldon) {
-			scaledTimePerFish /= 2;
+		// 2x boost for having Shelldon equipped
+		if (user.usingPet('Shelldon')) {
+			scaledTimePerFish = reduceNumByPercent(scaledTimePerFish, 50);
 			boosts.push('2x faster for Shelldon');
 		}
+		// 2x boost for having Fishing master cape equipped
+		if (user.hasEquipped('Fishing master cape')) {
+			scaledTimePerFish = reduceNumByPercent(scaledTimePerFish, 50);
+			boosts.push('2x boost for being a master fisher');
+		}
+
 		let maxTripLength = calcMaxTripLength(user, 'Fishing');
 
 		const boostedTimePerFish = reduceNumByPercent(scaledTimePerFish, inventionBoosts.mechaRod.speedBoostPercent);
