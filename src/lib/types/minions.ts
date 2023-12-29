@@ -137,6 +137,7 @@ export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 
 	clueID: number;
 	quantity: number;
+	implingID?: number;
 }
 
 export interface FishingActivityTaskOptions extends ActivityTaskOptions {
