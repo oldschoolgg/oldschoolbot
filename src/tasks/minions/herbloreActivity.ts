@@ -1,4 +1,4 @@
-import { percentChance, randInt, roll, Time } from 'e';
+import { randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { herbertDroprate } from '../../lib/constants';
