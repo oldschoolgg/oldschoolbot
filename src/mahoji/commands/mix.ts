@@ -144,6 +144,7 @@ export const mixCommand: OSBMahojiCommand = {
 			userID: user.id,
 			channelID: channelID.toString(),
 			zahur: Boolean(zahur),
+			wesley: Boolean(wesley),
 			quantity,
 			duration: quantity * timeToMixSingleItem,
 			type: 'Herblore'

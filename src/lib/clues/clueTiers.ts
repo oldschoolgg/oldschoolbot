@@ -40,6 +40,7 @@ export interface ClueTier {
 	aliases: string[];
 	stashUnits: StashUnitTier;
 	reqs: ClueReqs;
+	implings?: number[];
 	qtyForGrandmasters: number;
 	trickableItems?: number[];
 }
@@ -56,6 +57,7 @@ export const ClueTiers: ClueTier[] = [
 		allItems: BeginnerClueTable.allItems,
 		stashUnits: beginnerStashes,
 		reqs: beginnerReqs,
+		implings: resolveItems(['Baby impling jar', 'Young impling jar']),
 		qtyForGrandmasters: 0
 	},
 	{
@@ -73,6 +75,7 @@ export const ClueTiers: ClueTier[] = [
 		allItems: EasyClueTable.allItems,
 		stashUnits: easyStashes,
 		reqs: beginnerReqs,
+		implings: resolveItems(['Baby impling jar', 'Young impling jar', 'Gourmet impling jar']),
 		qtyForGrandmasters: 300
 	},
 	{
@@ -90,6 +93,7 @@ export const ClueTiers: ClueTier[] = [
 		allItems: MediumClueTable.allItems,
 		stashUnits: mediumStashes,
 		reqs: beginnerReqs,
+		implings: resolveItems(['Earth impling jar', 'Essence impling jar', 'Eclectic impling jar']),
 		qtyForGrandmasters: 250
 	},
 	{
@@ -103,6 +107,7 @@ export const ClueTiers: ClueTier[] = [
 		allItems: HardClueTable.allItems,
 		stashUnits: hardStashes,
 		reqs: beginnerReqs,
+		implings: resolveItems(['Nature impling jar', 'Magpie impling jar', 'Ninja impling jar']),
 		qtyForGrandmasters: 200
 	},
 	{
@@ -120,6 +125,7 @@ export const ClueTiers: ClueTier[] = [
 		allItems: EliteClueTable.allItems,
 		stashUnits: eliteStashes,
 		reqs: beginnerReqs,
+		implings: resolveItems(['Crystal impling jar', 'Dragon impling jar']),
 		qtyForGrandmasters: 150
 	},
 	{

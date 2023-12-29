@@ -1,4 +1,5 @@
 import { Activity, activity_type_enum } from '@prisma/client';
+import { z, ZodSchema } from 'zod';
 
 import { production } from '../config';
 import { agilityTask } from '../tasks/minions/agilityActivity';
@@ -261,6 +262,14 @@ export async function syncActivityCache() {
 	}
 }
 
+const ActivityTaskOptionsSchema = z.object({
+	userID: z.string(),
+	duration: z.number(),
+	id: z.number(),
+	finishDate: z.number(),
+	channelID: z.string()
+});
+
 export async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
 	debugLog(`Attemping to complete activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
@@ -276,6 +285,13 @@ export async function completeActivity(_activity: Activity) {
 
 	modifyBusyCounter(activity.userID, 1);
 	try {
+		if ('dataSchema' in task && task.dataSchema) {
+			const schema = ActivityTaskOptionsSchema.and(task.dataSchema);
+			const { success } = schema.safeParse(activity);
+			if (!success) {
+				console.error(`Invalid activity data for ${activity.type} task: ${JSON.stringify(activity)}`);
+			}
+		}
 		await task.run(activity);
 	} catch (err) {
 		logError(err);
@@ -288,6 +304,7 @@ export async function completeActivity(_activity: Activity) {
 
 interface IMinionTask {
 	type: activity_type_enum;
+	dataSchema?: ZodSchema;
 	run: Function;
 }
 declare global {

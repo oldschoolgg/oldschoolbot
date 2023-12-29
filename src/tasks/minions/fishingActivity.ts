@@ -1,5 +1,6 @@
 import { calcPercentOfNum, percentChance, randInt } from 'e';
 import { Bank } from 'oldschooljs';
+import { z } from 'zod';
 
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
@@ -29,8 +30,17 @@ function radasBlessing(user: MUser) {
 	return { blessingEquipped: false, blessingChance: 0 };
 }
 
+const allFishIDs = Fishing.Fishes.map(fish => fish.id);
+
 export const fishingTask: MinionTask = {
 	type: 'Fishing',
+	dataSchema: z.object({
+		type: z.literal('Fishing'),
+		fishID: z.number().refine(fishID => allFishIDs.includes(fishID), {
+			message: 'Invalid fish ID'
+		}),
+		quantity: z.number().min(1)
+	}),
 	async run(data: FishingActivityTaskOptions) {
 		let { fishID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);

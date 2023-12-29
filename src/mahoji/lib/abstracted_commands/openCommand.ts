@@ -2,12 +2,12 @@ import { stringMatches } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { noOp, notEmpty, randArrItem, roll, shuffleArr, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { Emoji, PerkTier } from '../../../lib/constants';
-import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
+import { allOpenables, getOpenableLoot, UnifiedOpenable } from '../../../lib/openables';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { ItemBank } from '../../../lib/types';
@@ -27,22 +27,6 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 		if (a.name.includes('Clue')) return -1;
 		return 0;
 	});
-
-function getOpenableLoot({
-	openable,
-	quantity,
-	user,
-	totalLeaguesPoints
-}: {
-	openable: UnifiedOpenable;
-	quantity: number;
-	user: MUser;
-	totalLeaguesPoints: number;
-}) {
-	return openable.output instanceof LootTable
-		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity, totalLeaguesPoints });
-}
 
 async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
 	const { openable_scores: newOpenableScores } = await userStatsUpdate(
