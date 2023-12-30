@@ -337,10 +337,11 @@ export const clueCommand: OSBMahojiCommand = {
 			const bankedImplings = user.bank.amount(clueImpling.id);
 			let openedImplings = 0;
 			let implingLoot = new Bank();
-			while (implingClues + bankedClues < maxCanDo && ++openedImplings < bankedImplings) {
+			while (implingClues + bankedClues < maxCanDo && openedImplings < bankedImplings) {
 				const impLoot = await getOpenableLoot({ openable: implingJarOpenable, user, quantity: 1 });
 				implingLoot.add(impLoot.bank);
 				implingClues = implingLoot.amount(clueTier.scrollID);
+				openedImplings++;
 			}
 			if (implingLoot.has(clueTier.scrollID)) {
 				implingLoot.remove(clueTier.scrollID, implingLoot.amount(clueTier.scrollID));
