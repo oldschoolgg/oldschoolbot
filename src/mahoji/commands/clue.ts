@@ -97,7 +97,7 @@ export const clueCommand: OSBMahojiCommand = {
 				const hasClueImps = allClueImps.filter(imp => bank.has(imp.id));
 				return hasClueImps
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-					.map(i => ({ name: `${i.name} (${bank.amount(i.id)} Owned)`, value: i.name }));
+					.map(i => ({ name: `${i.name} (${bank.amount(i.id)}x Owned)`, value: i.name }));
 			}
 		}
 	],
@@ -115,7 +115,9 @@ export const clueCommand: OSBMahojiCommand = {
 			: null;
 
 		if (options.implings) {
-			if (!clueImpling) return 'Invalid impling, please check you entry.';
+			if (!clueImpling) {
+				return `Invalid impling. Please check your entry, **${options.implings}** doesn't match any impling jars. Make sure the quantity isn't included, etc.`;
+			}
 			if (!user.bank.has(clueImpling.id)) return `You don't have any ${clueImpling.name}s in your bank.`;
 			if (!clueTier.implings?.includes(clueImpling.id)) return `These clues aren't found in ${clueImpling.name}s`;
 		}
@@ -320,6 +322,7 @@ export const clueCommand: OSBMahojiCommand = {
 		timeToFinish = result.duration;
 
 		let implingLootString = '';
+		let implingClues = 0;
 		if (!clueImpling) {
 			const cost = new Bank().add(clueTier.scrollID, quantity);
 			if (!user.owns(cost)) return `You don't own ${cost}.`;
@@ -334,11 +337,11 @@ export const clueCommand: OSBMahojiCommand = {
 			const bankedImplings = user.bank.amount(clueImpling.id);
 			let openedImplings = 0;
 			let implingLoot = new Bank();
-			let implingClues = 0;
-			while (implingClues + bankedClues < maxCanDo && ++openedImplings < bankedImplings) {
+			while (implingClues + bankedClues < maxCanDo && openedImplings < bankedImplings) {
 				const impLoot = await getOpenableLoot({ openable: implingJarOpenable, user, quantity: 1 });
 				implingLoot.add(impLoot.bank);
 				implingClues = implingLoot.amount(clueTier.scrollID);
+				openedImplings++;
 			}
 			if (implingLoot.has(clueTier.scrollID)) {
 				implingLoot.remove(clueTier.scrollID, implingLoot.amount(clueTier.scrollID));
@@ -346,7 +349,8 @@ export const clueCommand: OSBMahojiCommand = {
 
 			await user.transactItems({
 				itemsToAdd: implingLoot,
-				itemsToRemove: new Bank().add(clueImpling, openedImplings).add(clueTier.scrollID, bankedClues)
+				itemsToRemove: new Bank().add(clueImpling, openedImplings).add(clueTier.scrollID, bankedClues),
+				collectionLog: true
 			});
 			if (bankedClues + implingClues === 0) {
 				return `You don't have any clues, and didn't find any in ${openedImplings}x ${clueImpling.name}s. At least you received the following loot: ${implingLoot}.`;
@@ -362,6 +366,7 @@ export const clueCommand: OSBMahojiCommand = {
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
 			clueID: clueTier.id,
 			implingID: clueImpling ? clueImpling.id : undefined,
+			implingClues: clueImpling ? implingClues : undefined,
 			userID: user.id,
 			channelID: channelID.toString(),
 			quantity,
