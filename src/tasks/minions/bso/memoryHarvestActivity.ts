@@ -1,8 +1,9 @@
-import { Time } from 'e';
+import { increaseNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { divinationEnergies, MemoryHarvestType, memoryHarvestTypes } from '../../../lib/bso/divination';
+import { divinationEnergies, energyPerMemory, MemoryHarvestType } from '../../../lib/bso/divination';
 import { Emoji } from '../../../lib/constants';
+import { inventionBoosts } from '../../../lib/invention/inventions';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MemoryHarvestOptions } from '../../../lib/types/minions';
 import { calculateAverageTimeForSuccess, formatDuration, roll } from '../../../lib/util';
@@ -32,55 +33,115 @@ function calcConversionResult(hasBoon: boolean, method: MemoryHarvestType, energ
 	}
 }
 
-function memoryHarvestResult() {}
+export function memoryHarvestResult({
+	duration,
+	energy,
+	harvestMethod,
+	hasBoon,
+	hasWispBuster,
+	divinationLevel
+}: {
+	divinationLevel: number;
+	duration: number;
+	energy: (typeof divinationEnergies)[0];
+	harvestMethod: MemoryHarvestType;
+	hasBoon: boolean;
+	hasWispBuster: boolean;
+}) {
+	const petChance = (200 - energy.level) * 100_000;
+	const totalSeconds = Math.round(duration / Time.Second);
+	const totalTimePerRound = SECONDS_TO_HARVEST + SECONDS_TO_CONVERT * MEMORIES_PER_HARVEST;
+	const rounds = Math.floor(totalSeconds / totalTimePerRound);
+
+	// TODO:!! Removing energy? cost? what if they dont have? converting with energy to xp
+	const loot = new Bank();
+	const cost = new Bank();
+	let totalDivinationXP = 0;
+	let totalMemoriesHarvested = 0;
+
+	for (let i = 0; i < rounds; i++) {
+		// Step 1: Harvest memories
+		let memoriesHarvested = MEMORIES_PER_HARVEST;
+
+		if (hasWispBuster) {
+			memoriesHarvested = increaseNumByPercent(
+				memoriesHarvested,
+				inventionBoosts.wispBuster.memoryHarvestExtraYieldPercent
+			);
+		}
+
+		totalMemoriesHarvested += memoriesHarvested;
+
+		// Step 2: Convert memories
+		const { xp } = calcConversionResult(hasBoon, harvestMethod, energy);
+		totalDivinationXP += xp * memoriesHarvested;
+
+		switch (harvestMethod) {
+			case MemoryHarvestType.ConvertToXP: {
+				break;
+			}
+			case MemoryHarvestType.ConvertToEnergy: {
+				loot.add(energy.item, energyPerMemory(divinationLevel, energy));
+				break;
+			}
+			case MemoryHarvestType.ConvertWithEnergyToXP: {
+				cost.add(energy.item, memoriesHarvested * 5);
+				break;
+			}
+		}
+
+		let clueChance = 5000;
+		// Step 3: Roll for pet
+		for (let t = 0; t < memoriesHarvested; t++) {
+			if (roll(petChance)) {
+				loot.add('Doopy');
+			}
+			if (hasWispBuster && roll(clueChance) && 'clueTable' in energy && energy.clueTable) {
+				loot.add(energy.clueTable.roll());
+			}
+		}
+	}
+
+	return {
+		cost,
+		loot,
+		totalDivinationXP,
+		totalMemoriesHarvested,
+		petChancePerMemory: petChance,
+		avgPetTime: calculateAverageTimeForSuccess((totalMemoriesHarvested / petChance) * 100, duration)
+	};
+}
 
 export const memoryHarvestTask: MinionTask = {
 	type: 'MemoryHarvest',
 	async run(data: MemoryHarvestOptions) {
-		let { userID, channelID, duration, e: energyItemID, t: harvestMethodIndex } = data;
+		let { userID, channelID, duration, e: energyItemID, t: harvestMethodIndex, h: hasWispBuster } = data;
 		const user = await mUserFetch(userID);
 		const energy = divinationEnergies.find(t => t.item.id === energyItemID)!;
 		const hasBoon = energy.boonBitfield !== null ? user.bitfield.includes(energy.boonBitfield) : false;
-		const petChance = (200 - energy.level) * 100_000;
-		const totalSeconds = Math.round(duration / Time.Second);
-		const totalTimePerRound = SECONDS_TO_HARVEST + SECONDS_TO_CONVERT * MEMORIES_PER_HARVEST;
-		const rounds = Math.floor(totalSeconds / totalTimePerRound);
 
-		const harvestMethod = memoryHarvestTypes[harvestMethodIndex];
+		const { totalDivinationXP, totalMemoriesHarvested, petChancePerMemory, loot, avgPetTime, cost } =
+			memoryHarvestResult({
+				duration,
+				hasBoon,
+				energy,
+				harvestMethod: harvestMethodIndex,
+				hasWispBuster,
+				divinationLevel: user.skillLevel('divination')
+			});
 
-		// TODO:!! Removing energy? cost? what if they dont have? converting with energy to xp
-		const loot = new Bank();
-		let totalDivinationXP = 0;
-		let totalMemoriesHarvested = 0;
-
-		for (let i = 0; i < rounds; i++) {
-			// Step 1: Harvest memories
-			const memoriesHarvested = MEMORIES_PER_HARVEST;
-			totalMemoriesHarvested += memoriesHarvested;
-
-			// Step 2: Convert memories
-			const { xp } = calcConversionResult(hasBoon, harvestMethod.id, energy);
-			totalDivinationXP += xp * memoriesHarvested;
-
-			switch (harvestMethod.id) {
-				case MemoryHarvestType.ConvertToXP: {
-					break;
-				}
-				case MemoryHarvestType.ConvertToEnergy: {
-					loot.add(energy.item, memoriesHarvested);
-					break;
-				}
-				case MemoryHarvestType.ConvertWithEnergyToXP: {
-					break;
-				}
+		if (cost.length > 0) {
+			if (!user.owns(cost)) {
+				return handleTripFinish(
+					user,
+					channelID,
+					`${user}, ${user.minionName} couldn't complete the trip because they didn't have the required items: ${cost}.`,
+					undefined,
+					data,
+					loot
+				);
 			}
-
-			// Step 3: Roll for pet
-			for (let i = 0; i < memoriesHarvested; i++) {
-				if (roll(petChance)) {
-					loot.add('Doopy');
-				}
-			}
+			await user.removeItemsFromBank(cost);
 		}
 
 		const xpRes = await user.addXP({
@@ -90,15 +151,13 @@ export const memoryHarvestTask: MinionTask = {
 			duration
 		});
 
-		let str = `${user.minionName} finished harvesting ${totalMemoriesHarvested.toLocaleString()}x ${
+		let str = `${user}, ${user.minionName} finished harvesting ${totalMemoriesHarvested.toLocaleString()}x ${
 			energy.type
 		} memories, and turning them into ${
-			harvestMethod.id === MemoryHarvestType.ConvertToEnergy ? 'energies' : 'XP'
+			harvestMethodIndex === MemoryHarvestType.ConvertToEnergy ? 'energies' : 'XP'
 		}. ${xpRes}.
 		
-Pet chance 1 in ${petChance.toLocaleString()}, ${formatDuration(
-			calculateAverageTimeForSuccess((totalMemoriesHarvested / petChance) * 100, duration)
-		)} on average to get pet`;
+Pet chance 1 in ${petChancePerMemory.toLocaleString()}, ${formatDuration(avgPetTime)} on average to get pet`;
 
 		if (loot.length > 0) {
 			await user.addItemsToBank({

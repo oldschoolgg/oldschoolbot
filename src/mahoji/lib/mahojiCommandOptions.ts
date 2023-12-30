@@ -78,9 +78,11 @@ export const skillOption: CommandOption = {
 	name: 'skill',
 	description: 'The skill you want to select.',
 	required: false,
-	choices: Object.values(SkillsEnum)
-		.map(i => ({ name: toTitleCase(i), value: i }))
-		.slice(0, 25)
+	autocomplete: async (value: string) => {
+		return Object.values(SkillsEnum)
+			.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
+			.map(i => ({ name: toTitleCase(i), value: i }));
+	}
 };
 
 export const gearSetupOption: CommandOption = {

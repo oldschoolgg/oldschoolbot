@@ -4,6 +4,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { divinationEnergies } from '../../../lib/bso/divination';
 import { BitField } from '../../../lib/constants';
 import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { allDyes, dyedItems } from '../../../lib/dyedItems';
@@ -131,7 +132,14 @@ const usableUnlocks: UsableUnlock[] = [
 		item: getOSItem('Strangled tablet'),
 		bitfield: BitField.UsedStrangledTablet,
 		resultMessage: 'You used your Strangled tablet.'
-	}
+	},
+	...divinationEnergies
+		.filter(e => e.boonBitfield !== null)
+		.map(e => ({
+			item: e.boon!,
+			bitfield: e.boonBitfield!,
+			resultMessage: `You used your ${e.boon!.name}, and now receive bonus XP!`
+		}))
 ];
 for (const usableUnlock of usableUnlocks) {
 	usables.push({

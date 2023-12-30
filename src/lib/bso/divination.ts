@@ -1,3 +1,6 @@
+import { clamp } from 'e';
+import { LootTable } from 'oldschooljs';
+
 import { BitField } from '../constants';
 import getOSItem from '../util/getOSItem';
 
@@ -78,7 +81,8 @@ export const divinationEnergies = [
 		item: getOSItem('Gleaming energy'),
 		boon: getOSItem('Boon of gleaming energy'),
 		boonBitfield: BitField.HasGleamingBoon,
-		boonEnergyCost: 800
+		boonEnergyCost: 800,
+		clueTable: new LootTable().add('Clue scroll (beginner)', 1, 7).add('Clue scroll (easy)', 1, 6)
 	},
 	{
 		level: 60,
@@ -91,7 +95,8 @@ export const divinationEnergies = [
 		item: getOSItem('Vibrant energy'),
 		boon: getOSItem('Boon of vibrant energy'),
 		boonBitfield: BitField.HasVibrantBoon,
-		boonEnergyCost: 1000
+		boonEnergyCost: 1000,
+		clueTable: new LootTable().add('Clue scroll (beginner)', 1, 7).add('Clue scroll (easy)', 1, 6)
 	},
 	{
 		level: 70,
@@ -104,7 +109,11 @@ export const divinationEnergies = [
 		item: getOSItem('Lustrous energy'),
 		boon: getOSItem('Boon of lustrous energy'),
 		boonBitfield: BitField.HasLustrousBoon,
-		boonEnergyCost: 1250
+		boonEnergyCost: 1250,
+		clueTable: new LootTable()
+			.add('Clue scroll (beginner)', 1, 7)
+			.add('Clue scroll (easy)', 1, 6)
+			.add('Clue scroll (medium)', 1, 5)
 	},
 	{
 		level: 75,
@@ -117,7 +126,11 @@ export const divinationEnergies = [
 		item: getOSItem('Elder energy'),
 		boon: getOSItem('Boon of elder energy'),
 		boonBitfield: BitField.HasElderBoon,
-		boonEnergyCost: 1375
+		boonEnergyCost: 1375,
+		clueTable: new LootTable()
+			.add('Clue scroll (easy)', 1, 6)
+			.add('Clue scroll (medium)', 1, 5)
+			.add('Clue scroll (hard)', 1, 4)
 	},
 	{
 		level: 80,
@@ -130,7 +143,12 @@ export const divinationEnergies = [
 		item: getOSItem('Brilliant energy'),
 		boon: getOSItem('Boon of brilliant energy'),
 		boonBitfield: BitField.HasBrilliantBoon,
-		boonEnergyCost: 1500
+		boonEnergyCost: 1500,
+		clueTable: new LootTable()
+			.add('Clue scroll (easy)', 1, 6)
+			.add('Clue scroll (medium)', 1, 5)
+			.add('Clue scroll (hard)', 1, 4)
+			.add('Clue scroll (elite)', 1, 3)
 	},
 	{
 		level: 85,
@@ -143,7 +161,12 @@ export const divinationEnergies = [
 		item: getOSItem('Radiant energy'),
 		boon: getOSItem('Boon of radiant energy'),
 		boonBitfield: BitField.HasRadiantBoon,
-		boonEnergyCost: 1750
+		boonEnergyCost: 1750,
+		clueTable: new LootTable()
+			.add('Clue scroll (medium)', 1, 5)
+			.add('Clue scroll (hard)', 1, 4)
+			.add('Clue scroll (elite)', 1, 3)
+			.add('Clue scroll (master)', 1, 2)
 	},
 	{
 		level: 90,
@@ -156,7 +179,12 @@ export const divinationEnergies = [
 		item: getOSItem('Luminous energy'),
 		boon: getOSItem('Boon of luminous energy'),
 		boonBitfield: BitField.HasLuminousBoon,
-		boonEnergyCost: 2000
+		boonEnergyCost: 2000,
+		clueTable: new LootTable()
+			.add('Clue scroll (hard)', 1, 4)
+			.add('Clue scroll (elite)', 1, 3)
+			.add('Clue scroll (master)', 1, 2)
+			.add('Clue scroll (grandmaster)', 1, 1)
 	},
 	{
 		level: 95,
@@ -169,7 +197,11 @@ export const divinationEnergies = [
 		item: getOSItem('Incandescent energy'),
 		boon: getOSItem('Boon of incandescent energy'),
 		boonBitfield: BitField.HasIncandescentBoon,
-		boonEnergyCost: 2250
+		boonEnergyCost: 2250,
+		clueTable: new LootTable()
+			.add('Clue scroll (elite)', 1, 3)
+			.add('Clue scroll (master)', 1, 2)
+			.add('Clue scroll (grandmaster)', 1, 1)
 	}
 ];
 
@@ -184,3 +216,8 @@ export const memoryHarvestTypes = [
 	{ id: MemoryHarvestType.ConvertToEnergy, name: 'Convert to Energy' },
 	{ id: MemoryHarvestType.ConvertWithEnergyToXP, name: 'Convert to XP with Energy' }
 ];
+
+export function energyPerMemory(divLevel: number, energy: (typeof divinationEnergies)[number]) {
+	const difference = clamp(divLevel - energy.level, 0, 5);
+	return difference + 1;
+}

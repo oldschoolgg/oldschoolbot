@@ -35,7 +35,8 @@ export enum InventionID {
 	MasterHammerAndChisel = 13,
 	AbyssalAmulet = 14,
 	RoboFlappy = 15,
-	ChinCannon = 16
+	ChinCannon = 16,
+	WispBuster = 17
 }
 
 export type Invention = Readonly<{
@@ -129,6 +130,9 @@ export const inventionBoosts = {
 		coxPercentReduction: 60,
 		tobPercentReduction: 60,
 		toaPercentReduction: 60
+	},
+	wispBuster: {
+		memoryHarvestExtraYieldPercent: 20
 	}
 } as const;
 
@@ -390,6 +394,23 @@ export const Inventions: readonly Invention[] = [
 		item: getOSItem('Chincannon'),
 		materialTypeBank: new MaterialBank({
 			explosive: 10
+		}),
+		itemCost: null,
+		flags: ['equipped'],
+		inventionLevelNeeded: 100,
+		usageCostMultiplier: 3
+	},
+	{
+		id: InventionID.WispBuster,
+		name: 'Wisp-buster',
+		description:
+			'A device that enhances the harvesting of divination memories, increasing yield and harvesting clue scrolls.',
+		item: getOSItem('Wisp-buster'),
+		materialTypeBank: new MaterialBank({
+			pious: 3,
+			crystal: 3,
+			magic: 3,
+			heavy: 1
 		}),
 		itemCost: null,
 		flags: ['equipped'],
