@@ -322,6 +322,7 @@ export const clueCommand: OSBMahojiCommand = {
 		timeToFinish = result.duration;
 
 		let implingLootString = '';
+		let implingClues = 0;
 		if (!clueImpling) {
 			const cost = new Bank().add(clueTier.scrollID, quantity);
 			if (!user.owns(cost)) return `You don't own ${cost}.`;
@@ -336,7 +337,6 @@ export const clueCommand: OSBMahojiCommand = {
 			const bankedImplings = user.bank.amount(clueImpling.id);
 			let openedImplings = 0;
 			let implingLoot = new Bank();
-			let implingClues = 0;
 			while (implingClues + bankedClues < maxCanDo && ++openedImplings < bankedImplings) {
 				const impLoot = await getOpenableLoot({ openable: implingJarOpenable, user, quantity: 1 });
 				implingLoot.add(impLoot.bank);
@@ -348,7 +348,8 @@ export const clueCommand: OSBMahojiCommand = {
 
 			await user.transactItems({
 				itemsToAdd: implingLoot,
-				itemsToRemove: new Bank().add(clueImpling, openedImplings).add(clueTier.scrollID, bankedClues)
+				itemsToRemove: new Bank().add(clueImpling, openedImplings).add(clueTier.scrollID, bankedClues),
+				collectionLog: true
 			});
 			if (bankedClues + implingClues === 0) {
 				return `You don't have any clues, and didn't find any in ${openedImplings}x ${clueImpling.name}s. At least you received the following loot: ${implingLoot}.`;
@@ -364,6 +365,7 @@ export const clueCommand: OSBMahojiCommand = {
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
 			clueID: clueTier.id,
 			implingID: clueImpling ? clueImpling.id : undefined,
+			implingClues: clueImpling ? implingClues : undefined,
 			userID: user.id,
 			channelID: channelID.toString(),
 			quantity,
