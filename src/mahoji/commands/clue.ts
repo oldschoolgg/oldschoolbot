@@ -97,7 +97,7 @@ export const clueCommand: OSBMahojiCommand = {
 				const hasClueImps = allClueImps.filter(imp => bank.has(imp.id));
 				return hasClueImps
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-					.map(i => ({ name: `${i.name} (${bank.amount(i.id)} Owned)`, value: i.name }));
+					.map(i => ({ name: `${i.name} (${bank.amount(i.id)}x Owned)`, value: i.name }));
 			}
 		}
 	],
@@ -115,7 +115,9 @@ export const clueCommand: OSBMahojiCommand = {
 			: null;
 
 		if (options.implings) {
-			if (!clueImpling) return 'Invalid impling, please check you entry.';
+			if (!clueImpling) {
+				return `Invalid impling. Please check your entry, **${options.implings}** doesn't match any impling jars. Make sure the quantity isn't included, etc.`;
+			}
 			if (!user.bank.has(clueImpling.id)) return `You don't have any ${clueImpling.name}s in your bank.`;
 			if (!clueTier.implings?.includes(clueImpling.id)) return `These clues aren't found in ${clueImpling.name}s`;
 		}
