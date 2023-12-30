@@ -273,7 +273,8 @@ export const giveawayCommand: OSBMahojiCommand = {
 							.slice(0, 30)
 							.join('\n')
 					)
-				]
+				],
+				ephemeral: true
 			};
 		}
 	}
