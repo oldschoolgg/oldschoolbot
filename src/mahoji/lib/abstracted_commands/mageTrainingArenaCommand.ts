@@ -62,6 +62,13 @@ export const mageTrainingArenaBuyables = [
 	{
 		item: getOSItem("Mage's book"),
 		cost: 1260
+	},
+	// Special add Bones to Peaches
+	{
+		item: getOSItem('Peach'),
+		name: 'Bones to Peaches',
+		cost: 520,
+		clOnly: true
 	}
 ];
 
@@ -69,7 +76,7 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 	const buyable = mageTrainingArenaBuyables.find(i => stringMatches(input, i.item.name));
 	if (!buyable) {
 		return `Here are the items you can buy: \n\n${mageTrainingArenaBuyables
-			.map(i => `**${i.item.name}:** ${i.cost} points`)
+			.map(i => `**${i.clOnly ? i.name : i.item.name}:** ${i.cost} points`)
 			.join('\n')}.`;
 	}
 
@@ -82,7 +89,9 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 	}
 
 	if (balance < cost) {
-		return `You don't have enough Pizazz Points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`;
+		return `You don't have enough Pizazz Points to buy the ${
+			buyable.clOnly ? buyable.name : item.name
+		}. You need ${cost}, but you have only ${balance}.`;
 	}
 
 	if (upgradesFrom) {
@@ -99,10 +108,13 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 			}
 		}
 	});
+	if (buyable.clOnly) {
+		await user.addItemsToCollectionLog(new Bank().add(item));
+	} else {
+		await user.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
+	}
 
-	await user.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
-
-	return `Successfully purchased 1x ${item.name} for ${cost} Pizazz Points.`;
+	return `Successfully purchased 1x ${buyable.clOnly ? buyable.name : item.name} for ${cost} Pizazz Points.`;
 }
 
 export async function mageTrainingArenaPointsCommand(user: MUser) {
@@ -111,7 +123,12 @@ export async function mageTrainingArenaPointsCommand(user: MUser) {
 	return `You have **${parsedUser.pizazz_points.toLocaleString()}** Pizazz points.
 **Pizazz Points Per Hour:** ${pizazzPointsPerHour}
 ${mageTrainingArenaBuyables
-	.map(i => `${i.item.name} - ${i.cost} pts - ${formatDuration((i.cost / pizazzPointsPerHour) * (Time.Minute * 60))}`)
+	.map(
+		i =>
+			`${i.clOnly ? i.name : i.item.name} - ${i.cost} pts - ${formatDuration(
+				(i.cost / pizazzPointsPerHour) * (Time.Minute * 60)
+			)}`
+	)
 	.join('\n')}
         
 Hint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **/minigames mage_training_arena train**. You can buy rewards using **/minigames mage_training_arena buy**.`;
