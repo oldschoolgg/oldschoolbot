@@ -37,14 +37,11 @@ export const agilityArenaTask: MinionTask = {
 
 		await incrementMinigameScore(user.id, 'agility_arena', ticketsReceived);
 
-		await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP });
-		const nextLevel = user.skillLevel(SkillsEnum.Agility);
+		const xpRes = await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP, duration: data.duration });
 
 		let str = `${user}, ${user.minionName} finished doing the Brimhaven Agility Arena for ${formatDuration(
 			duration
-		)}, you received ${Math.floor(
-			agilityXP
-		).toLocaleString()} Agility XP and ${ticketsReceived} Agility arena tickets.`;
+		)}, ${xpRes} and ${ticketsReceived} Agility arena tickets.`;
 
 		// Roll for pet
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Agility, 26_404);
@@ -60,10 +57,6 @@ export const agilityArenaTask: MinionTask = {
 					`${Emoji.Agility} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
 				);
 			}
-		}
-
-		if (nextLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Agility level is now ${nextLevel}!`;
 		}
 
 		if (bonusTickets > 0) {

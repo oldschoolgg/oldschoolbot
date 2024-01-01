@@ -94,11 +94,17 @@ export const puroPuroTask: MinionTask = {
 		}
 
 		let str = `<@${userID}>, ${user.minionName} finished hunting in Puro-Puro. `;
-		const xpStr = await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP, source: 'PuroPuro' });
-		const hunterXpHr = `${Math.round(
-			(hunterXP / (data.duration / Time.Minute)) * 60
-		).toLocaleString()} Hunter XP/Hr`;
-		str += `\n${xpStr}. You are getting ${hunterXpHr}.`;
+
+		const xpStr = await user.addXP({
+			skillName: SkillsEnum.Hunter,
+			amount: hunterXP,
+			duration: data.duration,
+			source: 'PuroPuro'
+		});
+
+		if (hunterXP > 0) {
+			str += `\n${xpStr}.`;
+		}
 
 		if (darkLure) {
 			const spellsUsed = bank.items().reduce((prev, curr) => {
@@ -121,11 +127,15 @@ export const puroPuroTask: MinionTask = {
 			const saved = savedRunes > 0 ? `\nYour Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
 			let magicXP = 0;
 			magicXP += spellsUsed * 60;
-			const magicXpStr = await user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, source: 'PuroPuro' });
-			const magicXpHr = `${Math.round(
-				(magicXP / (data.duration / Time.Minute)) * 60
-			).toLocaleString()} Magic XP/Hr`;
-			if (magicXP > 0) str += `\n${magicXpStr}. You are getting ${magicXpHr}.`;
+
+			const magicXpStr = await user.addXP({
+				skillName: SkillsEnum.Magic,
+				amount: magicXP,
+				duration: data.duration,
+				source: 'PuroPuro'
+			});
+
+			if (magicXP > 0) str += `\n${magicXpStr}.`;
 			if (implingTier === 2) {
 				str += `\n**Boosts:** Due to using Dark Lure, you are catching 20% more implings. You used: ${itemCost}. ${saved}`;
 			} else {

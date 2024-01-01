@@ -42,8 +42,12 @@ export const zalcanoTask: MinionTask = {
 			})
 		);
 
-		xpRes.push(await user.addXP({ skillName: SkillsEnum.Smithing, amount: smithingXP, source: 'Zalcano' }));
-		xpRes.push(await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP, source: 'Zalcano' }));
+		xpRes.push(
+			await user.addXP({ skillName: SkillsEnum.Smithing, amount: smithingXP, duration, source: 'Zalcano' })
+		);
+		xpRes.push(
+			await user.addXP({ skillName: SkillsEnum.Runecraft, amount: runecraftXP, duration, source: 'Zalcano' })
+		);
 
 		await ashSanctifierEffect(user, loot, duration, xpRes);
 
