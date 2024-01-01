@@ -9,18 +9,35 @@ function getRealHealAmount(user: MUser, healAmount: ((user: MUser) => number) | 
 	return healAmount(user);
 }
 
-export default function getUserFoodFromBank(
-	user: MUser,
-	totalHealingNeeded: number,
-	favoriteFood: readonly number[],
-	minimumHealAmount?: number
-): false | Bank {
-	const userBank = user.bank;
+export default function getUserFoodFromBank({
+	user,
+	totalHealingNeeded,
+	favoriteFood,
+	minimumHealAmount,
+	isWilderness,
+	unavailableBank
+}: {
+	user: MUser;
+	totalHealingNeeded: number;
+	favoriteFood: readonly number[];
+	minimumHealAmount?: number;
+	isWilderness?: boolean;
+	unavailableBank?: Bank;
+}): false | Bank {
+	let userBank = user.bank;
+	if (unavailableBank) userBank = userBank.clone().remove(unavailableBank);
 	let totalHealingCalc = totalHealingNeeded;
 	let foodToRemove = new Bank();
 
-	let sorted = [...Eatables]
+	let sorted = [...Eatables.filter(e => (isWilderness ? true : !e.wildyOnly))]
 		.sort((i, j) => (getRealHealAmount(user, i.healAmount) > getRealHealAmount(user, j.healAmount) ? 1 : -1))
+		.sort((k, l) => {
+			if (isWilderness) {
+				if (k.wildyOnly && !l.wildyOnly) return -1;
+				if (!k.wildyOnly && l.wildyOnly) return 1;
+			}
+			return 0;
+		})
 		.sort((a, b) => {
 			if (!userBank.has(a.id)) return 1;
 			if (!userBank.has(b.id)) return -1;

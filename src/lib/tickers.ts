@@ -1,7 +1,6 @@
 import { EmbedBuilder } from '@discordjs/builders';
-import { Activity } from '@prisma/client';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, TextChannel } from 'discord.js';
-import { noOp, randInt, shuffleArr, Time } from 'e';
+import { noOp, randInt, removeFromArr, shuffleArr, Time } from 'e';
 
 import { production } from '../config';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
@@ -14,8 +13,8 @@ import { prisma, queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
-import { completeActivity } from './Task';
-import { awaitMessageComponentInteraction, getSupportGuild, stringMatches } from './util';
+import { processPendingActivities } from './Task';
+import { awaitMessageComponentInteraction, getSupportGuild, makeComponents, stringMatches } from './util';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
 import { handleGiveawayCompletion } from './util/giveaway';
 import { logError } from './util/logError';
@@ -113,29 +112,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 		timer: null,
 		interval: Time.Second * 5,
 		cb: async () => {
-			const activities: Activity[] = await prisma.activity.findMany({
-				where: {
-					completed: false,
-					finish_date: production
-						? {
-								lt: new Date()
-						  }
-						: undefined
-				}
-			});
-
-			await prisma.activity.updateMany({
-				where: {
-					id: {
-						in: activities.map(i => i.id)
-					}
-				},
-				data: {
-					completed: true
-				}
-			});
-
-			await Promise.all(activities.map(completeActivity));
+			await processPendingActivities();
 		}
 	},
 	{
@@ -151,6 +128,13 @@ JOIN user_stats ON users.id::bigint = user_stats.user_id
 WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_timestamp" != -1 AND to_timestamp(user_stats."last_daily_timestamp" / 1000) < now() - INTERVAL '12 hours';
 `
 			);
+			const dailyDMButton = new ButtonBuilder()
+				.setCustomId('CLAIM_DAILY')
+				.setLabel('Claim Daily')
+				.setEmoji('493286312854683654')
+				.setStyle(ButtonStyle.Secondary);
+			const components = [dailyDMButton];
+			let str = 'Your daily is ready!';
 
 			for (const row of result.values()) {
 				if (!production) continue;
@@ -164,7 +148,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 					{}
 				);
 				const user = await globalClient.fetchUser(row.id);
-				await user.send('Your daily is ready!').catch(noOp);
+				await user.send({ content: str, components: makeComponents(components) }).catch(noOp);
 			}
 		}
 	},
@@ -230,14 +214,15 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 							BitField.isContributor,
 							BitField.isModerator
 						]
-					},
-					farming_patch_reminders: true
+					}
 				},
 				select: {
-					id: true
+					id: true,
+					bitfield: true
 				}
 			});
-			for (const { id } of users) {
+			for (const { id, bitfield } of users) {
+				if (bitfield.includes(BitField.DisabledFarmingReminders)) continue;
 				const { patches } = await getFarmingInfo(id);
 				for (const patchType of farmingPatchNames) {
 					const patch = patches[patchType];
@@ -299,7 +284,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 						// Check disable first so minion doesn't have to be free to disable reminders.
 						if (selection.customId === 'DISABLE') {
 							await mahojiUserSettingsUpdate(user.id, {
-								farming_patch_reminders: false
+								bitfield: removeFromArr(bitfield, BitField.DisabledFarmingReminders)
 							});
 							await user.send('Farming patch reminders have been disabled.');
 							return;
@@ -318,7 +303,8 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 								guildID: undefined,
 								user: await mUserFetch(user.id),
 								member: message.member,
-								interaction: selection
+								interaction: selection,
+								continueDeltaMillis: selection.createdAt.getTime() - message.createdAt.getTime()
 							});
 						}
 					} catch {

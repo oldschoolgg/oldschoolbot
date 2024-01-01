@@ -36,7 +36,12 @@ export const monsterTask: MinionTask = {
 			pkEncounters,
 			hasWildySupplies
 		} = data;
+
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
+		const revenants = monster.name.includes('Revenant');
+
+		let skulled = false;
+		if (revenants) skulled = true;
 
 		const messages: string[] = [];
 
@@ -101,7 +106,7 @@ export const monsterTask: MinionTask = {
 					smited: hasPrayerLevel && !protectItem,
 					protectItem: hasPrayerLevel,
 					after20wilderness: monster.pkBaseDeathChance && monster.pkBaseDeathChance >= 5 ? true : false,
-					skulled: false
+					skulled
 				});
 
 				let reEquipedItems = false;
@@ -110,7 +115,7 @@ export const monsterTask: MinionTask = {
 						gear_wildy: calc.newGear as Prisma.InputJsonObject
 					});
 				} else {
-					await user.specialRemoveItems(calc.lostItems);
+					await user.specialRemoveItems(calc.lostItems, { wildy: monster.wildy ? true : false });
 					reEquipedItems = true;
 				}
 
@@ -179,7 +184,7 @@ export const monsterTask: MinionTask = {
 		if (
 			quantity > 0 &&
 			!user.owns('Ancient blood ornament kit') &&
-			awakenedMonsters.every(id => Boolean(currentKCs[id])) &&
+			awakenedMonsters.every(id => Boolean(currentKCs[id]) || monsterID === id) &&
 			isAwakened
 		) {
 			messages.push('You received an **Ancient blood ornament kit**!');
@@ -219,9 +224,10 @@ export const monsterTask: MinionTask = {
 			}
 		}
 		// Regular loot
-		const loot = monster.table.kill(quantity - newSuperiorCount, killOptions);
+		const finalQuantity = quantity - newSuperiorCount;
+		const loot = monster.table.kill(finalQuantity, killOptions);
 		if (monster.specialLoot) {
-			monster.specialLoot(loot, user, data);
+			monster.specialLoot({ loot, ownedItems: user.allItemsOwned, quantity: finalQuantity });
 		}
 		if (newSuperiorCount) {
 			// Superior loot and totems if in catacombs

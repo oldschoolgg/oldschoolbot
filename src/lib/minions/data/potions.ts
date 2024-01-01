@@ -10,6 +10,15 @@ const Potions = [
 		items: resolveItems(['Super restore(1)', 'Super restore(2)', 'Super restore(3)', 'Super restore(4)'])
 	},
 	{
+		name: 'Blighted super restore',
+		items: resolveItems([
+			'Blighted super restore(1)',
+			'Blighted super restore(2)',
+			'Blighted super restore(3)',
+			'Blighted super restore(4)'
+		])
+	},
+	{
 		name: 'Prayer potion',
 		items: resolveItems(['Prayer potion(1)', 'Prayer potion(2)', 'Prayer potion(3)', 'Prayer potion(4)'])
 	},
@@ -36,6 +45,10 @@ const Potions = [
 	{
 		name: 'Serum 207',
 		items: resolveItems(['Serum 207(1)', 'Serum 207(2)', 'Serum 207(3)', 'Serum 207(4)'])
+	},
+	{
+		name: 'Guthix rest',
+		items: resolveItems(['Guthix rest(1)', 'Guthix rest(2)', 'Guthix rest(3)', 'Guthix rest(4)'])
 	},
 	{
 		name: 'Compost potion',
@@ -257,6 +270,10 @@ const Potions = [
 	{
 		name: 'Ancient brew',
 		items: resolveItems(['Ancient brew(1)', 'Ancient brew(2)', 'Ancient brew(3)', 'Ancient brew(4)'])
+	},
+	{
+		name: 'Forgotten brew',
+		items: resolveItems(['Forgotten brew(1)', 'Forgotten brew(2)', 'Forgotten brew(3)', 'Forgotten brew(4)'])
 	},
 	{
 		name: 'Attack mix',

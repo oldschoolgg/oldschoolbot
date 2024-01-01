@@ -13,6 +13,7 @@ import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllComm
 import { prisma } from '../../../lib/settings/prisma';
 import { defaultGear, Gear, globalPresets } from '../../../lib/structures/Gear';
 import { assert, formatSkillRequirements, isValidGearSetup, stringMatches } from '../../../lib/util';
+import calculateGearLostOnDeathWilderness from '../../../lib/util/calculateGearLostOnDeathWilderness';
 import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
 import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -38,6 +39,18 @@ export async function gearPresetEquipCommand(user: MUser, gearSetup: string, pre
 		return "You don't have a gear preset with that name.";
 	}
 	const preset = (userPreset ?? globalPreset) as GearPreset;
+
+	// Checks the preset to make sure the user has the required stats for every item in the preset
+	for (const gearItemId of Object.values(preset)) {
+		if (gearItemId !== null) {
+			const itemToEquip = getItem(gearItemId);
+			if (itemToEquip?.equipment?.requirements && !user.hasSkillReqs(itemToEquip.equipment.requirements)) {
+				return `You can't equip this preset because ${
+					itemToEquip.name
+				} requires these stats: ${formatSkillRequirements(itemToEquip.equipment.requirements)}.`;
+			}
+		}
+	}
 
 	const toRemove = new Bank();
 	function gearItem(val: null | number) {
@@ -342,6 +355,56 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 			content: 'Here are all your gear setups',
 			files: [file]
 		};
+	}
+	if (stringMatches(input, 'lost on wildy death')) {
+		interface GearLostOptions {
+			gear: GearSetup;
+			skulled: boolean;
+			after20wilderness: boolean;
+			smited: boolean;
+			protectItem: boolean;
+		}
+
+		function showGearLost(options: GearLostOptions) {
+			const results = calculateGearLostOnDeathWilderness(options);
+			return results; // Return the entire results object
+		}
+
+		function calculateAndGetString(options: GearLostOptions, smited: boolean): string {
+			const gearLost = showGearLost({ ...options, smited });
+			return gearLost.lostItems.toString();
+		}
+
+		const userGear = user.gear.wildy;
+		const scenarios = [
+			{ skulled: true, after20wilderness: true, smited: false, protectItem: true },
+			{ skulled: true, after20wilderness: true, smited: true, protectItem: true },
+			{ skulled: false, after20wilderness: true, smited: true, protectItem: true },
+			{ skulled: false, after20wilderness: true, smited: false, protectItem: true },
+			{ skulled: false, after20wilderness: false, smited: true, protectItem: true },
+			{ skulled: false, after20wilderness: false, smited: false, protectItem: true }
+		];
+
+		const scenarioDescriptions = [
+			'when skulled',
+			'when skulled and smited',
+			'in 20+ Wilderness and smited',
+			'in 20+ Wilderness',
+			'in less than 20 Wilderness and smited',
+			'in less than 20 Wilderness'
+		];
+
+		const content = scenarios
+			.map((scenario, index) => {
+				const lostItemsString = calculateAndGetString({ gear: userGear, ...scenario }, scenario.smited);
+				const description = scenarioDescriptions[index];
+				return `The gear you would lose ${description}:\n${lostItemsString}`;
+			})
+			.join('\n\n');
+
+		const updatedContent = `${content}\n\nThese assume you have atleast 25 prayer for the protect item prayer.`;
+
+		return { content: updatedContent };
 	}
 	if (!isValidGearSetup(input)) return 'Invalid setup.';
 	const gear = user.gear[input];

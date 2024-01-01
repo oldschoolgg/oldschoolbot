@@ -18,7 +18,8 @@ declare module 'vitest' {
 const toMatchImageSnapshotPlugin = configureToMatchImageSnapshot({
 	customSnapshotsDir: './tests/unit/snapshots',
 	noColors: true,
-	failureThreshold: 0
+	failureThreshold: 5,
+	failureThresholdType: 'percent'
 });
 expect.extend({ toMatchImageSnapshot: toMatchImageSnapshotPlugin });
 

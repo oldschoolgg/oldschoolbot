@@ -345,7 +345,12 @@ const source: [string, (string | number)[]][] = [
 	["Thammaron's sceptre", ['Accursed sceptre']],
 	['Torva full helm', ['Sanguine torva full helm']],
 	['Torva platebody', ['Sanguine torva platebody']],
-	['Torva platelegs', ['Sanguine torva platelegs']]
+	['Torva platelegs', ['Sanguine torva platelegs']],
+
+	['Lumberjack hat', ['Forestry hat']],
+	['Lumberjack top', ['Forestry top']],
+	['Lumberjack legs', ['Forestry legs']],
+	['Lumberjack boots', ['Forestry boots']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
@@ -364,5 +369,5 @@ for (const [baseItem, similarItems] of source) {
 
 export function getSimilarItems(itemID: number): number[] {
 	const similars = similarItems.get(itemID);
-	return similars ? [itemID, ...similars] : [];
+	return similars ? [itemID, ...similars] : [itemID];
 }

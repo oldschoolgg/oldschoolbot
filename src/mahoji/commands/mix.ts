@@ -1,5 +1,5 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { Time } from 'e';
+import { clamp, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
@@ -99,6 +99,7 @@ export const mixCommand: OSBMahojiCommand = {
 		const maxCanDo = user.bankWithGP.fits(baseCost);
 
 		if (maxCanDo < quantity) quantity = maxCanDo;
+		quantity = clamp(quantity, 1, maxCanDo);
 		if (quantity * timeToMixSingleItem > maxTripLength)
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
@@ -117,6 +118,7 @@ export const mixCommand: OSBMahojiCommand = {
 			userID: user.id,
 			channelID: channelID.toString(),
 			zahur: Boolean(zahur),
+			wesley: Boolean(wesley),
 			quantity,
 			duration: quantity * timeToMixSingleItem,
 			type: 'Herblore'

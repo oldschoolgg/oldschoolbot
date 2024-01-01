@@ -67,6 +67,7 @@ import {
 	dukeSucellusCL,
 	fightCavesCL,
 	fishingTrawlerCL,
+	forestryCL,
 	FormatProgressFunction,
 	fossilIslandNotesCL,
 	generalGraardorCL,
@@ -886,6 +887,12 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.Cyclops.allItems,
 				items: cyclopsCL
 			},
+			Forestry: {
+				alias: ['forestry'],
+				fmtProg: skillProg(SkillsEnum.Woodcutting),
+				allItems: forestryCL,
+				items: forestryCL
+			},
 			'Fossil Island Notes': {
 				items: fossilIslandNotesCL
 			},
@@ -1228,7 +1235,7 @@ export interface UserStatsDataNeededForCL {
 export function getBank(
 	user: MUser,
 	type: 'sacrifice' | 'bank' | 'collection' | 'temp',
-	userStats: UserStatsDataNeededForCL | null
+	userStats: UserStatsDataNeededForCL | MUserStats | null
 ) {
 	switch (type) {
 		case 'collection':
@@ -1247,7 +1254,7 @@ export function getBank(
 export function getTotalCl(
 	user: MUser,
 	logType: 'sacrifice' | 'bank' | 'collection' | 'temp',
-	userStats: UserStatsDataNeededForCL | null
+	userStats: UserStatsDataNeededForCL | MUserStats | null
 ) {
 	return getUserClData(getBank(user, logType, userStats).bank, allCLItemsFiltered);
 }

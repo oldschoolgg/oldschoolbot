@@ -1,5 +1,7 @@
 import path from 'node:path';
 
+import { Image } from '@napi-rs/canvas';
+import { StoreBitfield } from '@oldschoolgg/toolkit';
 import { execSync } from 'child_process';
 import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import * as dotenv from 'dotenv';
@@ -37,10 +39,10 @@ export const Channel = {
 		BOT_TYPE === 'OSB'
 			? production
 				? '346304390858145792'
-				: '940760643525570591'
+				: '1154056119019393035'
 			: production
 			? '792691343284764693'
-			: '940760643525570591'
+			: '1154056119019393035'
 };
 
 export const Roles = {
@@ -255,7 +257,8 @@ export enum BitField {
 	UsedStrangledTablet = 33,
 	UsedFrozenTablet = 34,
 	CleanHerbsFarming = 35,
-	SelfGamblingLocked = 36
+	SelfGamblingLocked = 36,
+	DisabledFarmingReminders = 37
 }
 
 interface BitFieldData {
@@ -328,6 +331,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.CleanHerbsFarming]: {
 		name: 'Clean herbs during farm runs',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisabledFarmingReminders]: {
+		name: 'Disable Farming Reminders',
 		protected: false,
 		userConfigurable: true
 	}
@@ -572,3 +580,20 @@ META_CONSTANTS.RENDERED_STR = `**Date/Time:** ${dateFm(META_CONSTANTS.STARTUP_DA
 **Git Hash:** ${META_CONSTANTS.GIT_HASH.slice(0, 7)}
 **Commit:** <${META_CONSTANTS.GITHUB_URL}>
 **Code Difference:** <${META_CONSTANTS.GIT_DIFF_URL}>`;
+
+export const masteryKey = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
+
+export const ItemIconPacks = [
+	{
+		name: 'Halloween',
+		storeBitfield: StoreBitfield.HalloweenItemIconPack,
+		id: 'halloween',
+		icons: new Map<number, Image>()
+	}
+];
+
+export const patronFeatures = {
+	ShowEnteredInGiveawayList: {
+		tier: PerkTier.Four
+	}
+};
