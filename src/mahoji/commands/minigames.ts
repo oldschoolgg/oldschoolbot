@@ -548,7 +548,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
 									)
-									.map(i => ({ name: i.item.name, value: i.item.name }));
+									.map(i => ({
+										name: i.clOnly ? i.name : i.item.name,
+										value: i.clOnly ? i.name : i.item.name
+									}));
 							}
 						}
 					]
