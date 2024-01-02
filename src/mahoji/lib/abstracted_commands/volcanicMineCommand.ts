@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -86,8 +86,24 @@ export const VolcanicMineShop: { name: string; output: Bank; cost: number; clOnl
 		output: new Bank({ 'Ash covered tome': 1 }),
 		cost: 40_000,
 		clOnly: true
+	},
+	{
+		name: 'Ore pack',
+		output: new Bank(),
+		cost: 4000,
+		addToCl: true
 	}
 ];
+
+const orePackTable = new LootTable()
+	.every('Iron ore', [15, 25])
+	.every('Coal', [5, 7])
+	.every('Silver ore', [4, 6])
+	.every('Gold ore', [3, 5])
+	.every('Mithril ore', [2, 5])
+	.every('Adamantite ore', [1, 3])
+	.every('Runite ore', [0, 1])
+	.tertiary(100, 'Dragon pickaxe (broken)');
 
 export async function volcanicMineCommand(user: MUser, channelID: string, gameQuantity: number | undefined) {
 	const skills = user.skillsAsLevels;
@@ -200,9 +216,16 @@ export async function volcanicMineShopCommand(
 			shopItem.name
 		}**?`
 	);
-
+	const rolledItems = new Bank();
 	if (shopItem.clOnly) {
 		await user.addItemsToCollectionLog(new Bank().add(shopItem.output).multiply(quantity));
+	} else if (shopItem.name === 'Ore pack') {
+		rolledItems.add(orePackTable.roll(quantity));
+		await transactItems({
+			userID: user.id,
+			collectionLog: shopItem.addToCl === true,
+			itemsToAdd: rolledItems
+		});
 	} else {
 		await transactItems({
 			userID: user.id,
@@ -218,7 +241,9 @@ export async function volcanicMineShopCommand(
 
 	return `You sucessfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(
 		shopItem.cost * quantity
-	).toLocaleString()} Volcanic Mine points.${
+	).toLocaleString()} Volcanic Mine points${
+		rolledItems.amount('Iron ore') > 1 ? ` and you received: ${rolledItems}` : ''
+	}.${
 		shopItem.clOnly
 			? `\n${quantity > 1 ? 'These items were' : 'This item was'} directly added to your collection log.`
 			: ''
