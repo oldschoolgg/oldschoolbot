@@ -1,5 +1,6 @@
 import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
 import { noOp, Time } from 'e';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/util';
 
 import { MAXING_MESSAGE, SupportServer } from '../config';
@@ -43,6 +44,13 @@ async function onMax(user: MUser) {
 	sendToChannelID(SupportServer, { content: str }).catch(noOp);
 	const kUser = await globalClient.fetchUser(user.id);
 	kUser.send(MAXING_MESSAGE).catch(noOp);
+}
+
+async function onBigMileStone(user: MUser, mileStone: number) {
+	const str = `🎉 ${user.badgedUsername}'s minion just achieved ${mileStone / 1_000_000}M XP in every skill!🎉`;
+
+	globalClient.emit(Events.ServerNotification, str);
+	sendToChannelID(SupportServer, { content: str }).catch(noOp);
 }
 
 export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
@@ -99,6 +107,13 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 						user.minionName
 					}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(params.skillName)}!`
 				);
+				// Check if they achived XPMilestone in all skills
+				if (
+					Object.values(user.skillsAsXP).filter(XP => XP >= XPMilestone).length + 1 >=
+					Object.values(SkillsEnum).length
+				) {
+					onBigMileStone(user, XPMilestone);
+				}
 				break;
 			}
 		}
