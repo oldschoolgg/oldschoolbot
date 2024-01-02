@@ -1,8 +1,11 @@
-import { clamp } from 'e';
-import { LootTable } from 'oldschooljs';
+import { Portent } from '@prisma/client';
+import { Bank, LootTable } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../constants';
+import { prisma } from '../settings/prisma';
 import getOSItem from '../util/getOSItem';
+import itemID from '../util/itemID';
 
 export const divinationEnergies = [
 	{
@@ -217,7 +220,59 @@ export const memoryHarvestTypes = [
 	{ id: MemoryHarvestType.ConvertWithEnergyToXP, name: 'Convert to XP with Energy' }
 ];
 
-export function energyPerMemory(divLevel: number, energy: (typeof divinationEnergies)[number]) {
-	const difference = clamp(divLevel - energy.level, 0, 5);
-	return difference + 1;
+export enum PortentID {
+	CachePortent = itemID('Cache portent')
+}
+interface SourcePortent {
+	id: PortentID;
+	item: Item;
+	divinationLevelToCreate: number;
+	cost: Bank;
+	chargesPerPortent: number;
+	addChargeMessage: (portent: Portent) => string;
+}
+
+export const portents: SourcePortent[] = [
+	{
+		id: PortentID.CachePortent,
+		item: getOSItem('Cache portent'),
+		divinationLevelToCreate: 50,
+		cost: new Bank().add('Lustrous energy', 500).add('Molten glass', 100),
+		chargesPerPortent: 2,
+		addChargeMessage: portent =>
+			`You used a Cache portent, your next ${portent.charges_remaining} Guthixian cache trips will grant you a Guthixian cache boost item.`
+	}
+];
+
+export async function chargePortentIfHasCharges({
+	user,
+	portentID,
+	charges
+}: {
+	user: MUser;
+	portentID: PortentID;
+	charges: number;
+}): Promise<{ didCharge: false } | { didCharge: true; portent: Portent }> {
+	const portent = await prisma.portent.findFirst({
+		where: {
+			item_id: portentID,
+			user_id: user.id
+		}
+	});
+	if (!portent) return { didCharge: false };
+	if (portent.charges_remaining < charges) return { didCharge: false };
+	const newPortent = await prisma.portent.update({
+		where: {
+			item_id_user_id: {
+				item_id: portentID,
+				user_id: user.id
+			}
+		},
+		data: {
+			charges_remaining: {
+				decrement: charges
+			}
+		}
+	});
+	return { didCharge: true, portent: newPortent };
 }

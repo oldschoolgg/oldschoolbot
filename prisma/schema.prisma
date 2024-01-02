@@ -522,7 +522,9 @@ model User {
   gift_boxes_owned   GiftBox[] @relation("gift_boxes_owned")
   gift_boxes_created GiftBox[] @relation("gift_boxes_created")
 
-  skills_divination BigInt @default(0) @map("skills.divination")
+  skills_divination                BigInt    @default(0) @map("skills.divination")
+  guthixian_cache_boosts_available Int       @default(0)
+  Portent                          Portent[]
 
   @@index([id, last_command_date])
   @@map("users")
@@ -1391,4 +1393,16 @@ model GiftBox {
   items Json @default("{}") @db.Json
 
   @@map("gift_box")
+}
+
+model Portent {
+  item_id Int @id
+
+  user_id String @db.VarChar(19)
+  user    User   @relation(fields: [user_id], references: [id])
+
+  total_charges     Int
+  charges_remaining Int
+
+  @@map("portent")
 }

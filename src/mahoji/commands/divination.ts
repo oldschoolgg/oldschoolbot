@@ -7,7 +7,7 @@ import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/inve
 import { MemoryHarvestOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { formatDuration, returnStringOrFile } from '../../lib/util/smallUtils';
+import { calcPerHour, formatDuration, returnStringOrFile } from '../../lib/util/smallUtils';
 import { memoryHarvestResult } from '../../tasks/minions/bso/memoryHarvestActivity';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -64,24 +64,42 @@ export const divinationCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 
 		if (options.xphr) {
-			let results = '';
+			let results = `${[
+				'Type',
+				'Method',
+				'Boosts',
+				'Pet Time (Hours)',
+				'XP/Hr',
+				'Memories/HR',
+				'GMC/hr',
+				'MC/hr',
+				'EnergyLoot/hr',
+				'EnergyCost/hr'
+			].join('\t')}\n`;
 			for (const energy of divinationEnergies) {
 				for (const harvestMethod of memoryHarvestTypes) {
-					for (const hasBoonAndWispBuster of [true, false]) {
+					for (const hasBoonAndWispBusterAndGuthixianBoost of [true, false]) {
 						const res = memoryHarvestResult({
 							duration: Time.Hour,
 							energy,
-							hasBoon: hasBoonAndWispBuster,
+							hasBoon: hasBoonAndWispBusterAndGuthixianBoost,
 							harvestMethod: harvestMethod.id,
-							hasWispBuster: hasBoonAndWispBuster,
-							divinationLevel: user.skillLevel('divination')
+							hasWispBuster: hasBoonAndWispBusterAndGuthixianBoost,
+							divinationLevel: user.skillLevel('divination'),
+							hasGuthixianBoost: true
 						});
+
 						results += [
 							energy.type,
 							harvestMethod.name,
-							hasBoonAndWispBuster ? 'Has Boon+Wispbuster' : 'No boosts',
+							hasBoonAndWispBusterAndGuthixianBoost ? 'Has Boon+Wispbuster+GuthixianBoost' : 'No boosts',
 							res.avgPetTime / Time.Hour,
-							res.totalDivinationXP * GLOBAL_BSO_XP_MULTIPLIER
+							res.totalDivinationXP * GLOBAL_BSO_XP_MULTIPLIER,
+							calcPerHour(res.totalMemoriesHarvested, Time.Hour),
+							calcPerHour(res.loot.amount('Clue scroll (grandmaster)'), Time.Hour),
+							calcPerHour(res.loot.amount('Clue scroll (master)'), Time.Hour),
+							calcPerHour(res.loot.amount(energy.item.id), Time.Hour),
+							calcPerHour(res.cost.amount(energy.item.id), Time.Hour)
 						].join('\t');
 						results += '\n';
 					}
@@ -103,6 +121,10 @@ export const divinationCommand: OSBMahojiCommand = {
 				return 'Invalid energy type.';
 			}
 
+			if (energy.level > user.skillLevel('divination')) {
+				return `You need ${energy.level} divination to harvest ${energy.type} memories.`;
+			}
+
 			const duration = calcMaxTripLength(user, 'MemoryHarvest');
 
 			const boosts: string[] = [];
@@ -121,13 +143,20 @@ export const divinationCommand: OSBMahojiCommand = {
 				}
 			}
 
+			const hasGuthixianBoost = user.user.guthixian_cache_boosts_available > 0;
+
+			if (hasGuthixianBoost) {
+				boosts.push('20% extra XP for Guthixian Cache boost');
+			}
+
 			const preEmptiveResult = memoryHarvestResult({
 				duration,
 				energy,
 				harvestMethod: memoryHarvestMethodIndex,
 				hasBoon: energy.boonBitfield !== null ? user.bitfield.includes(energy.boonBitfield) : false,
 				hasWispBuster,
-				divinationLevel: user.skillLevel('divination')
+				divinationLevel: user.skillLevel('divination'),
+				hasGuthixianBoost
 			});
 
 			if (

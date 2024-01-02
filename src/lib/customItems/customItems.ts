@@ -10073,3 +10073,27 @@ setCustomItem(
 );
 
 // 73_039 Wisp-buster
+
+setCustomItem(
+	73_040,
+	'Guthixian cache boost',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_041,
+	'Cache portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);

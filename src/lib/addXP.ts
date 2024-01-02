@@ -6,6 +6,7 @@ import { convertLVLtoXP, convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/uti
 import { MAXING_MESSAGE } from '../config';
 import { Channel, Events, GLOBAL_BSO_XP_MULTIPLIER, LEVEL_120_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants';
 import {
+	divinersOutfit,
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
 	gorajanWarriorOutfit,
@@ -92,6 +93,12 @@ const skillingOutfitBoosts = [
 	{
 		skill: SkillsEnum.Invention,
 		outfit: inventorOutfit,
+		individualBoost: 0.5,
+		totalBoost: 4
+	},
+	{
+		skill: SkillsEnum.Divination,
+		outfit: divinersOutfit,
 		individualBoost: 0.5,
 		totalBoost: 4
 	}

@@ -1,7 +1,7 @@
-import { increaseNumByPercent, Time } from 'e';
+import { calcPercentOfNum, increaseNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { divinationEnergies, energyPerMemory, MemoryHarvestType } from '../../../lib/bso/divination';
+import { divinationEnergies, MemoryHarvestType } from '../../../lib/bso/divination';
 import { Emoji } from '../../../lib/constants';
 import { inventionBoosts } from '../../../lib/invention/inventions';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -39,7 +39,7 @@ export function memoryHarvestResult({
 	harvestMethod,
 	hasBoon,
 	hasWispBuster,
-	divinationLevel
+	hasGuthixianBoost
 }: {
 	divinationLevel: number;
 	duration: number;
@@ -47,13 +47,13 @@ export function memoryHarvestResult({
 	harvestMethod: MemoryHarvestType;
 	hasBoon: boolean;
 	hasWispBuster: boolean;
+	hasGuthixianBoost: boolean;
 }) {
 	const petChance = (200 - energy.level) * 100_000;
 	const totalSeconds = Math.round(duration / Time.Second);
 	const totalTimePerRound = SECONDS_TO_HARVEST + SECONDS_TO_CONVERT * MEMORIES_PER_HARVEST;
 	const rounds = Math.floor(totalSeconds / totalTimePerRound);
 
-	// TODO:!! Removing energy? cost? what if they dont have? converting with energy to xp
 	const loot = new Bank();
 	const cost = new Bank();
 	let totalDivinationXP = 0;
@@ -76,21 +76,27 @@ export function memoryHarvestResult({
 		const { xp } = calcConversionResult(hasBoon, harvestMethod, energy);
 		totalDivinationXP += xp * memoriesHarvested;
 
+		let energyPerMemory = Math.ceil((100 - energy.level) / 150);
 		switch (harvestMethod) {
 			case MemoryHarvestType.ConvertToXP: {
 				break;
 			}
 			case MemoryHarvestType.ConvertToEnergy: {
-				loot.add(energy.item, energyPerMemory(divinationLevel, energy));
+				let energyAmount = energyPerMemory * memoriesHarvested;
+				if (hasGuthixianBoost) {
+					const twentyPercentRoundedUp = Math.ceil(calcPercentOfNum(20, energyAmount));
+					energyAmount += twentyPercentRoundedUp;
+				}
+				loot.add(energy.item, energyAmount);
 				break;
 			}
 			case MemoryHarvestType.ConvertWithEnergyToXP: {
-				cost.add(energy.item, memoriesHarvested * 5);
+				cost.add(energy.item, energyPerMemory * memoriesHarvested);
 				break;
 			}
 		}
 
-		let clueChance = 5000;
+		let clueChance = 1200;
 		// Step 3: Roll for pet
 		for (let t = 0; t < memoriesHarvested; t++) {
 			if (roll(petChance)) {
@@ -100,6 +106,10 @@ export function memoryHarvestResult({
 				loot.add(energy.clueTable.roll());
 			}
 		}
+	}
+
+	if (hasGuthixianBoost) {
+		totalDivinationXP = increaseNumByPercent(totalDivinationXP, 20);
 	}
 
 	return {
@@ -119,6 +129,15 @@ export const memoryHarvestTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const energy = divinationEnergies.find(t => t.item.id === energyItemID)!;
 		const hasBoon = energy.boonBitfield !== null ? user.bitfield.includes(energy.boonBitfield) : false;
+		let didGetGuthixianBoost = false;
+		if (user.user.guthixian_cache_boosts_available > 0) {
+			await user.update({
+				guthixian_cache_boosts_available: {
+					decrement: 1
+				}
+			});
+			didGetGuthixianBoost = true;
+		}
 
 		const { totalDivinationXP, totalMemoriesHarvested, petChancePerMemory, loot, avgPetTime, cost } =
 			memoryHarvestResult({
@@ -127,7 +146,8 @@ export const memoryHarvestTask: MinionTask = {
 				energy,
 				harvestMethod: harvestMethodIndex,
 				hasWispBuster,
-				divinationLevel: user.skillLevel('divination')
+				divinationLevel: user.skillLevel('divination'),
+				hasGuthixianBoost: didGetGuthixianBoost
 			});
 
 		if (cost.length > 0) {
@@ -170,6 +190,13 @@ Pet chance 1 in ${petChancePerMemory.toLocaleString()}, ${formatDuration(avgPetT
 		const boosts = [];
 		if (hasBoon) {
 			boosts.push('10% extra XP for Boon');
+		}
+		if (didGetGuthixianBoost) {
+			boosts.push('20% extra XP for Guthixian Cache boost');
+		}
+
+		if (boosts.length > 0) {
+			str += `\n\n**Boosts:** ${boosts.join(', ')}`;
 		}
 
 		return handleTripFinish(user, channelID, str, undefined, data, loot);

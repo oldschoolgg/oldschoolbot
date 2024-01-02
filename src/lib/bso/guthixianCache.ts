@@ -7,23 +7,6 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 
 const getGuthixianCacheInterval = () => getInterval(24);
 
-export async function checkIfHasGuthixianCacheBoost(user: MUser) {
-	const lastTrips = await prisma.activity.findMany({
-		where: {
-			user_id: BigInt(user.id),
-			type: 'GuthixianCache',
-			completed: true
-		},
-		orderBy: {
-			finish_date: 'desc'
-		},
-		take: 1
-	});
-	const [lastTrip] = lastTrips;
-	if (!lastTrip) return false;
-	return Date.now() - lastTrip.finish_date.getTime() < Time.Hour * 3;
-}
-
 export async function joinGuthixianCache(user: MUser, channelID: string) {
 	if (user.minionIsBusy) {
 		return `${user.minionName} is busy.`;
