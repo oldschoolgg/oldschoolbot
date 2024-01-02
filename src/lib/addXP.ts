@@ -47,7 +47,7 @@ async function onMax(user: MUser) {
 }
 
 async function onBigMileStone(user: MUser, mileStone: number) {
-	const str = `🎉 ${user.badgedUsername}'s minion just achieved ${mileStone / 1_000_000}M XP in every skill!🎉`;
+	const str = `🎉 ${user.badgedUsername}'s minion just achieved ${mileStone / 1_000_000} M XP in every skill!🎉`;
 
 	globalClient.emit(Events.ServerNotification, str);
 	sendToChannelID(SupportServer, { content: str }).catch(noOp);
