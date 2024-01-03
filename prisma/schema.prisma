@@ -1396,7 +1396,7 @@ model GiftBox {
 }
 
 model Portent {
-  item_id Int @id
+  item_id Int
 
   user_id String @db.VarChar(19)
   user    User   @relation(fields: [user_id], references: [id])
@@ -1404,5 +1404,6 @@ model Portent {
   total_charges     Int
   charges_remaining Int
 
+  @@unique([item_id, user_id])
   @@map("portent")
 }

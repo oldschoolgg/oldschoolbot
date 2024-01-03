@@ -84,9 +84,10 @@ export const divinationCommand: OSBMahojiCommand = {
 							energy,
 							hasBoon: hasBoonAndWispBusterAndGuthixianBoost,
 							harvestMethod: harvestMethod.id,
-							hasWispBuster: hasBoonAndWispBusterAndGuthixianBoost,
 							divinationLevel: user.skillLevel('divination'),
-							hasGuthixianBoost: true
+							hasGuthixianBoost: hasBoonAndWispBusterAndGuthixianBoost,
+							hasDivineHand: hasBoonAndWispBusterAndGuthixianBoost,
+							hasWispBuster: hasBoonAndWispBusterAndGuthixianBoost
 						});
 
 						results += [
@@ -129,6 +130,7 @@ export const divinationCommand: OSBMahojiCommand = {
 
 			const boosts: string[] = [];
 			let hasWispBuster = false;
+			let hasDivineHand = false;
 			if (user.hasEquipped('Wisp-buster')) {
 				const boostResult = await inventionItemBoost({
 					user,
@@ -137,9 +139,21 @@ export const divinationCommand: OSBMahojiCommand = {
 				});
 				if (boostResult.success) {
 					boosts.push(
-						`${inventionBoosts.wispBuster.memoryHarvestExtraYieldPercent}% extra yield for Wisp-buster (${boostResult.messages})`
+						`${inventionBoosts.wispBuster.xpIncreasePercent}% extra XP for Wisp-buster (${boostResult.messages})`
 					);
 					hasWispBuster = true;
+				}
+			} else if (user.hasEquipped('Divine hand')) {
+				const boostResult = await inventionItemBoost({
+					user,
+					inventionID: InventionID.DivineHand,
+					duration
+				});
+				if (boostResult.success) {
+					boosts.push(
+						`${inventionBoosts.divineHand.memoryHarvestExtraYieldPercent}% extra energy yield and Clue scrolls for Divine hand (${boostResult.messages})`
+					);
+					hasDivineHand = true;
 				}
 			}
 
@@ -156,7 +170,8 @@ export const divinationCommand: OSBMahojiCommand = {
 				hasBoon: energy.boonBitfield !== null ? user.bitfield.includes(energy.boonBitfield) : false,
 				hasWispBuster,
 				divinationLevel: user.skillLevel('divination'),
-				hasGuthixianBoost
+				hasGuthixianBoost,
+				hasDivineHand
 			});
 
 			if (
@@ -173,7 +188,8 @@ export const divinationCommand: OSBMahojiCommand = {
 				type: 'MemoryHarvest',
 				e: energy.item.id,
 				t: memoryHarvestMethodIndex,
-				h: hasWispBuster
+				wb: hasWispBuster,
+				dh: hasDivineHand
 			});
 
 			let str = `${user.minionName} is now harvesting ${energy.type} memories (${
