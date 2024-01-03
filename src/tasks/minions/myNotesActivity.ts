@@ -56,7 +56,7 @@ export const myNotesTask: MinionTask = {
 				? undefined
 				: await makeBankImage({
 						bank: itemsAdded,
-						title: `Loot From rummaging ${quantity}x Skeletons:`,
+						title: `Loot From Rummaging ${quantity}x Skeletons:`,
 						user,
 						previousCL
 				  });
