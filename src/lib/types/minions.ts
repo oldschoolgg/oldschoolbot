@@ -26,6 +26,7 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'BarbarianAssault'
 		| 'AgilityArena'
 		| 'ChampionsChallenge'
+		| 'MyNotes'
 		| 'AerialFishing'
 		| 'DriftNet'
 		| 'SoulWars'
@@ -60,7 +61,8 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 		| 'FishingTrawler'
 		| 'CamdozaalFishing'
 		| 'CamdozaalMining'
-		| 'CamdozaalSmithing';
+		| 'CamdozaalSmithing'
+		| 'MyNotes';
 	quantity: number;
 }
 

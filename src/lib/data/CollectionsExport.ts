@@ -1674,6 +1674,10 @@ export const motherlodeMineCL = resolveItems([
 	'Prospector legs',
 	'Prospector boots'
 ]);
+export const myNotesCL = resolveItems([
+	11_341, 11_342, 11_343, 11_344, 11_345, 11_346, 11_347, 11_348, 11_349, 11_350, 11_351, 11_352, 11_353, 11_354,
+	11_355, 11_356, 11_357, 11_358, 11_359, 11_360, 11_361, 11_362, 11_363, 11_364, 11_365, 11_366
+]);
 export const randomEventsCL = resolveItems([
 	'Camo top',
 	'Camo bottoms',

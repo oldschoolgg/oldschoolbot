@@ -29,6 +29,7 @@ import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
 import { favourCommand } from '../lib/abstracted_commands/favourCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
+import { myNotesCommand } from '../lib/abstracted_commands/myNotesCommand';
 import { otherActivities, otherActivitiesCommand } from '../lib/abstracted_commands/otherActivitiesCommand';
 import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
 import { questCommand, quests } from '../lib/abstracted_commands/questCommand';
@@ -92,6 +93,11 @@ export const activitiesCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'champions_challenge',
 			description: 'Send your minion to do the Champions Challenge.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'my_notes',
+			description: 'Send your minion to rummage skeletons for Ancient pages.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -522,6 +528,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		plank_make?: { action: string; type: string; quantity?: number };
 		chompy_hunt?: { action: 'start' | 'claim' };
 		champions_challenge?: {};
+		my_notes?: {};
 		warriors_guild?: { action: string; quantity?: number };
 		camdozaal?: { action: string; quantity?: number };
 		collect?: { item: string; quantity?: number; no_stams?: boolean };
@@ -587,6 +594,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.champions_challenge) {
 			return championsChallengeCommand(user, channelID);
+		}
+		if (options.my_notes) {
+			return myNotesCommand(user, channelID);
 		}
 		if (options.warriors_guild) {
 			return warriorsGuildCommand(

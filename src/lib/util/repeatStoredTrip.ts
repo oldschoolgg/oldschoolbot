@@ -140,10 +140,6 @@ export const tripHandlers = {
 		commandName: 'minigames',
 		args: () => ({ agility_arena: { start: {} } })
 	},
-	[activity_type_enum.AgilityArena]: {
-		commandName: 'minigames',
-		args: () => ({ agility_arena: { start: {} } })
-	},
 	[activity_type_enum.Alching]: {
 		commandName: 'activities',
 		args: (data: AlchingActivityTaskOptions) => ({
@@ -213,6 +209,10 @@ export const tripHandlers = {
 	[activity_type_enum.ChampionsChallenge]: {
 		commandName: 'activities',
 		args: () => ({ champions_challenge: {} })
+	},
+	[activity_type_enum.MyNotes]: {
+		commandName: 'activities',
+		args: () => ({ my_notes: {} })
 	},
 	[activity_type_enum.Collecting]: {
 		commandName: 'activities',
