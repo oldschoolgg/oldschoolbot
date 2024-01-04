@@ -36,7 +36,7 @@ const triviaChallenge: Challenge = async (msg: Message): Promise<User | null> =>
 	try {
 		const collected = await msg.channel.awaitMessages({
 			max: 1,
-			time: 14_000,
+			time: Time.Second * 30,
 			errors: ['time'],
 			filter: _msg => stringMatches(_msg.content, correct_answer)
 		});
@@ -68,7 +68,7 @@ const itemChallenge: Challenge = async (msg: Message): Promise<User | null> => {
 	try {
 		const collected = await msg.channel.awaitMessages({
 			max: 1,
-			time: 14_000,
+			time: Time.Second * 30,
 			errors: ['time'],
 			filter: _msg => stringMatches(_msg.content, randomItem.name)
 		});
