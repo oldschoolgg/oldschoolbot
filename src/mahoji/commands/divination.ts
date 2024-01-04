@@ -1,13 +1,12 @@
-import { increaseNumByPercent, Time } from 'e';
+import { increaseNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { divinationEnergies, MemoryHarvestType, memoryHarvestTypes } from '../../lib/bso/divination';
-import { GLOBAL_BSO_XP_MULTIPLIER } from '../../lib/constants';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { MemoryHarvestOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { calcPerHour, formatDuration, returnStringOrFile } from '../../lib/util/smallUtils';
+import { formatDuration } from '../../lib/util/smallUtils';
 import { memoryHarvestResult } from '../../tasks/minions/bso/memoryHarvestActivity';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -48,67 +47,14 @@ export const divinationCommand: OSBMahojiCommand = {
 					]
 				}
 			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'xphr',
-			description: 'XP.',
-			options: []
 		}
 	],
 	run: async ({
 		options,
 		userID,
 		channelID
-	}: CommandRunOptions<{ harvest_memories?: { energy: string; type?: number }; xphr?: {} }>) => {
+	}: CommandRunOptions<{ harvest_memories?: { energy: string; type?: number } }>) => {
 		const user = await mUserFetch(userID);
-
-		if (options.xphr) {
-			let results = `${[
-				'Type',
-				'Method',
-				'Boosts',
-				'Pet Time (Hours)',
-				'XP/Hr',
-				'Memories/HR',
-				'GMC/hr',
-				'MC/hr',
-				'EnergyLoot/hr',
-				'EnergyCost/hr'
-			].join('\t')}\n`;
-			for (const energy of divinationEnergies) {
-				for (const harvestMethod of memoryHarvestTypes) {
-					for (const hasBoonAndWispBusterAndGuthixianBoost of [true, false]) {
-						const res = memoryHarvestResult({
-							duration: Time.Hour,
-							energy,
-							hasBoon: hasBoonAndWispBusterAndGuthixianBoost,
-							harvestMethod: harvestMethod.id,
-							divinationLevel: user.skillLevel('divination'),
-							hasGuthixianBoost: hasBoonAndWispBusterAndGuthixianBoost,
-							hasDivineHand: hasBoonAndWispBusterAndGuthixianBoost,
-							hasWispBuster: hasBoonAndWispBusterAndGuthixianBoost
-						});
-
-						results += [
-							energy.type,
-							harvestMethod.name,
-							hasBoonAndWispBusterAndGuthixianBoost ? 'Has Boon+Wispbuster+GuthixianBoost' : 'No boosts',
-							res.avgPetTime / Time.Hour,
-							res.totalDivinationXP * GLOBAL_BSO_XP_MULTIPLIER,
-							calcPerHour(res.totalMemoriesHarvested, Time.Hour),
-							calcPerHour(res.loot.amount('Clue scroll (grandmaster)'), Time.Hour),
-							calcPerHour(res.loot.amount('Clue scroll (master)'), Time.Hour),
-							calcPerHour(res.loot.amount(energy.item.id), Time.Hour),
-							calcPerHour(res.cost.amount(energy.item.id), Time.Hour)
-						].join('\t');
-						results += '\n';
-					}
-				}
-			}
-
-			return returnStringOrFile(results);
-		}
 
 		if (options.harvest_memories) {
 			const memoryHarvestMethodIndex = options.harvest_memories.type ?? 0;

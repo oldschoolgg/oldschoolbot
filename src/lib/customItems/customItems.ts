@@ -10100,14 +10100,14 @@ setCustomItem(
 
 // 73_042 Divine hand
 
-setCustomItem(
-	73_043,
-	'Cache portent',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1
-);
+// setCustomItem(
+// 	73_043,
+// 	'Cache portent',
+// 	'Coal',
+// 	{
+// 		customItemData: {
+// 			cantDropFromMysteryBoxes: true
+// 		}
+// 	},
+// 	1
+// );

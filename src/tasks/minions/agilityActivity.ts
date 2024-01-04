@@ -8,20 +8,123 @@ import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import Agility from '../../lib/skilling/skills/agility';
 import { gorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
-import { SkillsEnum } from '../../lib/skilling/types';
+import { Course, SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank, clAdjustedDroprate, randomVariation, skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';
 
-function chanceOfFailingAgilityPyramid(user: MUser) {
-	const lvl = user.skillLevel(SkillsEnum.Agility);
+function chanceOfFailingAgilityPyramid(lvl: number) {
 	if (lvl < 40) return 95;
 	if (lvl < 50) return 30;
 	if (lvl < 60) return 20;
 	if (lvl < 75) return 5;
 	return 0;
+}
+
+function calculateMarks({
+	agilityLevel,
+	course,
+	quantity,
+	hasDiaryBonus,
+	usingHarry,
+	boosts
+}: {
+	boosts: string[];
+	agilityLevel: number;
+	usingHarry: boolean;
+	course: Course;
+	quantity: number;
+	hasDiaryBonus: boolean;
+}) {
+	if (!course.marksPer60) return 0;
+	const timePerLap = course.lapTime * Time.Second;
+	const maxQuantity = Math.floor((Time.Minute * 30) / timePerLap);
+	let totalMarks = 0;
+
+	for (let i = 0; i < Math.floor(course.marksPer60 * (quantity / maxQuantity)); i++) {
+		if (roll(2)) {
+			totalMarks += 1;
+		}
+	}
+
+	if (hasDiaryBonus) {
+		totalMarks = Math.floor(increaseNumByPercent(totalMarks, 25));
+		boosts.push('25% extra marks of grace for Ardougne Elite Diary');
+	}
+
+	if (usingHarry) {
+		let harryBonus = Math.ceil(randomVariation(totalMarks * 2, 10));
+		boosts.push(`Harry found you ${harryBonus - totalMarks}x extra Marks of grace.`);
+		totalMarks = harryBonus;
+	} else if (course.id !== 5 && agilityLevel >= course.level + 20) {
+		totalMarks = Math.ceil(totalMarks / 5);
+		boosts.push('5x less marks for course level being too low');
+	}
+
+	return totalMarks;
+}
+
+export function calculateAgilityResult({
+	quantity,
+	course,
+	agilityLevel,
+	duration,
+	usingHarry,
+	hasDiaryBonus
+}: {
+	quantity: number;
+	course: Course;
+	agilityLevel: number;
+	duration: number;
+	usingHarry: boolean;
+	hasDiaryBonus: boolean;
+}) {
+	const boosts: string[] = [];
+	const loot = new Bank();
+
+	let failChance = 100 - (100 * agilityLevel) / (course.level + 5);
+	if (course.name === 'Agility Pyramid') {
+		failChance = chanceOfFailingAgilityPyramid(agilityLevel);
+	}
+
+	// Calculate failed laps
+	let lapsFailed = 0;
+	for (let t = 0; t < quantity; t++) {
+		if (randInt(1, 100) < chanceOfFailingAgilityPyramid(agilityLevel)) {
+			lapsFailed += 1;
+		}
+	}
+
+	const xpReceived =
+		(quantity - lapsFailed / 2) * (typeof course.xp === 'number' ? course.xp : course.xp(agilityLevel));
+
+	// Calculate Crystal Shards for Priff
+	if (course.name === 'Prifddinas Rooftop Course') {
+		// 15 Shards per hour
+		loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+	}
+
+	// Agility pyramid
+	if (course.name === 'Agility Pyramid') {
+		loot.add('Coins', 10_000 * (quantity - lapsFailed));
+	}
+
+	const marksOfGrace = calculateMarks({ agilityLevel, course, quantity, hasDiaryBonus, boosts, usingHarry });
+	if (marksOfGrace > 0) {
+		loot.add('Mark of grace', marksOfGrace);
+	}
+
+	return {
+		xpReceived,
+		loot,
+		boosts,
+		failChance,
+		successfulLaps: quantity - lapsFailed,
+		marksOfGrace,
+		lapsFailed
+	};
 }
 
 export const agilityTask: MinionTask = {
@@ -33,53 +136,22 @@ export const agilityTask: MinionTask = {
 
 		const course = Agility.Courses.find(course => course.name === courseID)!;
 
-		// Calculate failed laps
-		let lapsFailed = 0;
-		if (course.name === 'Agility Pyramid') {
-			for (let t = 0; t < quantity; t++) {
-				if (randInt(1, 100) < chanceOfFailingAgilityPyramid(user)) {
-					lapsFailed += 1;
-				}
-			}
-		} else {
-			for (let t = 0; t < quantity; t++) {
-				if (randInt(1, 100) > (100 * user.skillLevel(SkillsEnum.Agility)) / (course.level + 5)) {
-					lapsFailed += 1;
-				}
-			}
-		}
-
-		// Calculate marks of grace
-		let totalMarks = 0;
-		const timePerLap = course.lapTime * Time.Second;
-		const maxQuantity = Math.floor((Time.Minute * 30) / timePerLap);
-		if (course.marksPer60) {
-			for (let i = 0; i < Math.floor(course.marksPer60 * (quantity / maxQuantity)); i++) {
-				if (roll(2)) {
-					totalMarks += 1;
-				}
-			}
-		}
-
-		if (user.usingPet('Harry')) {
-			totalMarks = Math.ceil(randomVariation(totalMarks * 2, 10));
-		} else if (course.id !== 5 && user.skillLevel(SkillsEnum.Agility) >= course.level + 20) {
-			totalMarks = Math.ceil(totalMarks / 5);
-		}
-
 		const [hasArdyElite] = await userhasDiaryTier(user, ArdougneDiary.elite);
-		const diaryBonus = hasArdyElite && course.name === 'Ardougne Rooftop Course';
-		if (diaryBonus) {
-			totalMarks = Math.floor(increaseNumByPercent(totalMarks, 25));
-		}
+		const hasDiaryBonus = hasArdyElite && course.name === 'Ardougne Rooftop Course';
 
-		const xpReceived =
-			(quantity - lapsFailed / 2) * (typeof course.xp === 'number' ? course.xp : course.xp(currentLevel));
+		const { successfulLaps, loot, xpReceived, lapsFailed } = calculateAgilityResult({
+			quantity,
+			course,
+			agilityLevel: currentLevel,
+			duration,
+			hasDiaryBonus,
+			usingHarry: user.usingPet('Harry')
+		});
 
 		const { laps_scores: newLapScores } = await userStatsUpdate(
 			user.id,
 			({ laps_scores }) => ({
-				laps_scores: addItemToBank(laps_scores as ItemBank, course.id, quantity - lapsFailed)
+				laps_scores: addItemToBank(laps_scores as ItemBank, course.id, successfulLaps)
 			}),
 			{ laps_scores: true }
 		);
@@ -90,17 +162,8 @@ export const agilityTask: MinionTask = {
 			duration
 		});
 
-		const loot = new Bank();
-		if (course.marksPer60) loot.add('Mark of grace', totalMarks);
-
-		// Calculate Crystal Shards for Priff
-		if (course.name === 'Prifddinas Rooftop Course') {
-			// 15 Shards per hour
-			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
-		}
-
+		// Agility pyramid gp tracking
 		if (course.name === 'Agility Pyramid') {
-			loot.add('Coins', 10_000 * (quantity - lapsFailed));
 			await userStatsUpdate(
 				user.id,
 				{
@@ -121,18 +184,12 @@ export const agilityTask: MinionTask = {
 				amount: alch.quantity * 65,
 				duration
 			})}`;
-			updateClientGPTrackSetting('gp_alch', alchGP);
+			await updateClientGPTrackSetting('gp_alch', alchGP);
 		}
 
-		let str = `${user}, ${user.minionName} finished ${quantity} ${
-			course.name
-		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${
-			diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
-		}.\n${xpRes}`;
+		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}.\n${xpRes}`;
 
-		if (user.usingPet('Harry')) {
-			str += 'Harry found you extra Marks of grace.';
-		}
+		// Roll for monkey backpacks
 		if (course.id === 6) {
 			const currentLapCount = (newLapScores as ItemBank)[course.id];
 			for (const monkey of Agility.MonkeyBackpacks) {
@@ -143,8 +200,10 @@ export const agilityTask: MinionTask = {
 				}
 			}
 		}
+
+		// Roll for pets
+		const minutes = Math.round(duration / Time.Minute);
 		if (duration >= MIN_LENGTH_FOR_PET) {
-			const minutes = duration / Time.Minute;
 			if (course.id === 4) {
 				const scruffyDroprate = clAdjustedDroprate(
 					user,
@@ -191,14 +250,12 @@ export const agilityTask: MinionTask = {
 					roll(Math.floor((gorajanShardChance(user).chance * 2.5) / minutes))
 				) {
 					const item = roll(30) ? getOSItem('Dungeoneering dye') : getOSItem('Gorajan shards');
-
-					let quantity = 1;
-
+					let shardQty = 1;
 					if (isDoubleLootActive(duration)) {
-						quantity *= 2;
+						shardQty *= 2;
 					}
-					loot.add(item.id, quantity);
-					str += `\nYou received **${quantity}x ${item.name}**`;
+					loot.add(item.id, shardQty);
+					str += `\nYou received **${shardQty}x ${item.name}**`;
 				}
 			}
 		}

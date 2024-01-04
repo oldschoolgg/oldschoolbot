@@ -313,9 +313,12 @@ export function isValidDiscordSnowflake(snowflake: string): boolean {
 
 const TOO_LONG_STR = 'The result was too long (over 2000 characters), please read the attached file.';
 
-export function returnStringOrFile(string: string | InteractionReplyOptions): Awaited<CommandResponse> {
+export function returnStringOrFile(
+	string: string | InteractionReplyOptions,
+	forceFile = false
+): Awaited<CommandResponse> {
 	if (typeof string === 'string') {
-		if (string.length > 2000) {
+		if (string.length > 2000 || forceFile) {
 			return {
 				content: TOO_LONG_STR,
 				files: [{ attachment: Buffer.from(string), name: 'result.txt' }]
@@ -323,7 +326,7 @@ export function returnStringOrFile(string: string | InteractionReplyOptions): Aw
 		}
 		return string;
 	}
-	if (string.content && string.content.length > 2000) {
+	if (string.content && (string.content.length > 2000 || forceFile)) {
 		return deepmerge(
 			string,
 			{
