@@ -25,7 +25,6 @@ export const offeringTask: MinionTask = {
 	async run(data: OfferingActivityTaskOptions) {
 		const { boneID, quantity, userID, channelID } = data;
 		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
 		const { zealOutfitAmount, zealOutfitChance } = zealOutfitBoost(user);
 
 		const bone = Prayer.Bones.find(bone => bone.inputId === boneID);
@@ -67,17 +66,17 @@ export const offeringTask: MinionTask = {
 
 		const xpReceived = newQuantity * bone.xp * XPMod;
 
-		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived, source: 'OfferingBones' });
-		const newLevel = user.skillLevel('prayer');
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Prayer,
+			amount: xpReceived,
+			duration: data.duration,
+			source: 'OfferingBones'
+		});
 
-		let str = `${user}, ${user.minionName} finished offering ${newQuantity} ${
-			bone.name
-		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers, you also received ${xpReceived.toLocaleString()} XP.`;
+		let str = `${user}, ${user.minionName} finished offering ${newQuantity} ${bone.name}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers, ${xpRes}.`;
+
 		if (zealOutfitAmount > 0) {
 			str += `\nYour ${zealOutfitAmount} pieces of Zealot's robes helped you offer an extra ${zealBonesSaved} bones.`;
-		}
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;
 		}
 
 		handleTripFinish(user, channelID, str, undefined, data, null);

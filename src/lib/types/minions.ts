@@ -137,6 +137,8 @@ export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 
 	clueID: number;
 	quantity: number;
+	implingID?: number;
+	implingClues?: number;
 }
 
 export interface FishingActivityTaskOptions extends ActivityTaskOptions {
@@ -250,6 +252,7 @@ export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
 	mixableID: number;
 	quantity: number;
 	zahur: boolean;
+	wesley: boolean;
 }
 
 export interface CutLeapingFishActivityTaskOptions extends ActivityTaskOptions {
