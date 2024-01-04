@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -81,7 +81,7 @@ export async function agilityArenaCommand(user: MUser, channelID: string): Comma
 		boosts.push('10% extra tickets for Karamja Elite diary');
 	}
 
-	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		duration,
@@ -124,8 +124,11 @@ export async function agilityArenaBuyCommand(user: MUser, input: string, qty = 1
 		if (amountTicketsHas < cost) {
 			return "You don't have enough Agility arena tickets.";
 		}
-		await user.removeItemsFromBank(new Bank().add('Agility arena ticket', cost));
-		await user.addItemsToBank({ items: { [buyable.item.id]: qty }, collectionLog: true });
+		await user.transactItems({
+			itemsToAdd: new Bank().add(buyable.item.id, qty),
+			itemsToRemove: new Bank().add('Agility arena ticket', cost),
+			collectionLog: true
+		});
 		return `Successfully purchased ${qty}x ${buyable.item.name} for ${cost}x Agility arena tickets.`;
 	}
 

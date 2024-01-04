@@ -3,6 +3,7 @@ import { Bank, Misc } from 'oldschooljs';
 
 import { BitField, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
+import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
@@ -10,7 +11,6 @@ import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
 
 const RawNightmare = Misc.Nightmare;
 
@@ -48,7 +48,7 @@ export const nightmareTask: MinionTask = {
 			}
 		}
 
-		await addMonsterXP(user, {
+		let xpRes = await addMonsterXP(user, {
 			monsterID: NIGHTMARE_ID,
 			quantity: Math.ceil(quantity / team.length),
 			duration,
@@ -113,7 +113,7 @@ export const nightmareTask: MinionTask = {
 			handleTripFinish(
 				user,
 				channelID,
-				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName}, you died ${deaths} times. Your ${monsterName} KC is now ${kc}.`,
+				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName}, you died ${deaths} times. Your ${monsterName} KC is now ${kc}. ${xpRes}`,
 				image.file.attachment,
 				data,
 				itemsAdded

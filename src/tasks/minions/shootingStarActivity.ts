@@ -2,10 +2,11 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Emoji, Events } from '../../lib/constants';
+import type { ShootingStarsOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { ShootingStarsData, starSizes } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
+import { starSizes } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 
-export async function shootingStarsActivity(data: ShootingStarsData) {
+export async function shootingStarsActivity(data: ShootingStarsOptions) {
 	const user = await mUserFetch(data.userID);
 	const star = starSizes.find(i => i.size === data.size)!;
 	const { usersWith } = data;

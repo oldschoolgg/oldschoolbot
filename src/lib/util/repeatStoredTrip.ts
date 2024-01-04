@@ -20,6 +20,7 @@ import {
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
@@ -43,7 +44,6 @@ import {
 	PickpocketActivityTaskOptions,
 	PuroPuroActivityTaskOptions,
 	RaidsOptions,
-	RevenantOptions,
 	RunecraftActivityTaskOptions,
 	SawmillActivityTaskOptions,
 	ScatteringActivityTaskOptions,
@@ -76,6 +76,10 @@ export const taskCanBeRepeated = (type: activity_type_enum) =>
 	).includes(type);
 
 export const tripHandlers = {
+	[activity_type_enum.SpecificQuest]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.HalloweenEvent]: {
 		commandName: 'm',
 		args: () => ({})
@@ -116,6 +120,10 @@ export const tripHandlers = {
 		commandName: 'm',
 		args: () => ({})
 	},
+	[activity_type_enum.Revenants]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.AerialFishing]: {
 		commandName: 'activities',
 		args: () => ({ aerial_fishing: {} })
@@ -146,6 +154,24 @@ export const tripHandlers = {
 		commandName: 'activities',
 		args: (data: AnimatedArmourActivityTaskOptions) => ({
 			warriors_guild: { action: 'tokens', quantity: data.quantity }
+		})
+	},
+	[activity_type_enum.CamdozaalMining]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			camdozaal: { action: 'mining', quantity: data.quantity }
+		})
+	},
+	[activity_type_enum.CamdozaalSmithing]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			camdozaal: { action: 'smithing', quantity: data.quantity }
+		})
+	},
+	[activity_type_enum.CamdozaalFishing]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			camdozaal: { action: 'fishing', quantity: data.quantity }
 		})
 	},
 	[activity_type_enum.BarbarianAssault]: {
@@ -299,6 +325,13 @@ export const tripHandlers = {
 			zahur: data.zahur
 		})
 	},
+	[activity_type_enum.CutLeapingFish]: {
+		commandName: 'cook',
+		args: (data: CutLeapingFishActivityTaskOptions) => ({
+			name: itemNameFromID(data.fishID),
+			quantity: data.quantity
+		})
+	},
 	[activity_type_enum.Hunter]: {
 		commandName: 'hunt',
 		args: (data: HunterActivityTaskOptions) => ({
@@ -356,6 +389,7 @@ export const tripHandlers = {
 		args: (data: MonsterActivityTaskOptions) => {
 			let method: PvMMethod = 'none';
 			if (data.usingCannon) method = 'cannon';
+			if (data.chinning) method = 'chinning';
 			else if (data.burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
 			else if (data.burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
 			return {
@@ -395,7 +429,8 @@ export const tripHandlers = {
 	[activity_type_enum.Nightmare]: {
 		commandName: 'k',
 		args: (data: NightmareActivityTaskOptions) => ({
-			name: data.isPhosani ? 'phosani nightmare' : data.method === 'mass' ? 'mass nightmare' : 'solo nightmare'
+			name: data.isPhosani ? 'phosani nightmare' : data.method === 'mass' ? 'mass nightmare' : 'solo nightmare',
+			quantity: data.quantity
 		})
 	},
 	[activity_type_enum.Offering]: {
@@ -436,12 +471,6 @@ export const tripHandlers = {
 					quantity: data.quantity
 				}
 			}
-		})
-	},
-	[activity_type_enum.Revenants]: {
-		commandName: 'k',
-		args: (data: RevenantOptions) => ({
-			name: autocompleteMonsters.find(i => i.id === data.monsterID)?.name ?? data.monsterID.toString()
 		})
 	},
 	[activity_type_enum.RoguesDenMaze]: {
@@ -653,6 +682,7 @@ export async function repeatTrip(
 		guildID: interaction.guildId,
 		member: interaction.member,
 		channelID: interaction.channelId,
-		user: interaction.user
+		user: interaction.user,
+		continueDeltaMillis: interaction.createdAt.getTime() - interaction.message.createdTimestamp
 	});
 }

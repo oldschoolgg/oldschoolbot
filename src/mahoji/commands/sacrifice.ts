@@ -41,7 +41,8 @@ const noSacPrice = resolveItems([
 	'Limestone brick',
 	'Helm of neitiznot',
 	'Cannon barrels',
-	'Broad arrowheads'
+	'Broad arrowheads',
+	'Rope'
 ]);
 
 export function sacrificePriceOfItem(item: Item, qty: number) {
@@ -120,8 +121,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			);
 
 			const loot = new Bank().add('Death rune', deathRunes);
-			await user.removeItemsFromBank(bankToSac);
-			await user.addItemsToBank({ items: loot, collectionLog: false });
+			await user.transactItems({ itemsToAdd: loot, itemsToRemove: bankToSac });
 			const sacBank = await trackSacBank(user, bankToSac);
 			let totalCatsSacrificed = 0;
 			for (const cat of cats) {

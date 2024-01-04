@@ -1,12 +1,22 @@
+import { randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
-import { SkillsEnum } from '../../lib/skilling/types';
+import { Log, SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { roll, skillingPetDropRate } from '../../lib/util';
+import { perTimeUnitChance, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import resolveItems from '../../lib/util/resolveItems';
+
+function handleForestry({ log, duration, loot }: { log: Log; duration: number; loot: Bank }) {
+	if (resolveItems(['Redwood logs', 'Logs']).includes(log.id)) return;
+
+	perTimeUnitChance(duration, 20, Time.Minute, () => {
+		loot.add('Anima-infused bark', randInt(500, 1000));
+	});
+}
 
 export const woodcuttingTask: MinionTask = {
 	type: 'Woodcutting',
@@ -49,6 +59,8 @@ export const woodcuttingTask: MinionTask = {
 		});
 
 		let loot = new Bank();
+
+		handleForestry({ log, duration, loot });
 
 		if (!powerchopping) {
 			if (log.lootTable) {

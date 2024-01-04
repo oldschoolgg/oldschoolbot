@@ -1,15 +1,16 @@
-import { randInt, Time } from 'e';
+import { notEmpty, randInt, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
+import { allOpenables, getOpenableLoot } from '../../lib/openables';
 import { getPOHObject } from '../../lib/poh';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import getOSItem from '../../lib/util/getOSItem';
+import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -72,13 +73,35 @@ export const clueCommand: OSBMahojiCommand = {
 			name: 'tier',
 			description: 'The clue you want to do.',
 			required: true,
-			autocomplete: async (_, user) => {
+			autocomplete: async (value, user) => {
 				const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
-				return ClueTiers.map(i => ({ name: `${i.name} (${bank.amount(i.scrollID)}x Owned)`, value: i.name }));
+				return ClueTiers.map(i => ({
+					name: `${i.name} (${bank.amount(i.scrollID)}x Owned)`,
+					value: i.name
+				})).filter(i => !value || i.value.toLowerCase().includes(value));
+			}
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'implings',
+			description: 'Implings to use for multiple clues per trip.',
+			required: false,
+			autocomplete: async (value, user) => {
+				const allClueImps = ClueTiers.filter(t => t.name !== 'Beginner')
+					.map(i => i.implings)
+					.filter(notEmpty)
+					.flat()
+					.map(getItem)
+					.filter(notEmpty);
+				const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
+				const hasClueImps = allClueImps.filter(imp => bank.has(imp.id));
+				return hasClueImps
+					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+					.map(i => ({ name: `${i.name} (${bank.amount(i.id)}x Owned)`, value: i.name }));
 			}
 		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ tier: string }>) => {
+	run: async ({ options, userID, channelID }: CommandRunOptions<{ tier: string; implings?: string }>) => {
 		const user = await mUserFetch(userID);
 		let quantity = 1;
 
@@ -87,11 +110,23 @@ export const clueCommand: OSBMahojiCommand = {
 		);
 		if (!clueTier) return 'Invalid clue tier.';
 
+		const clueImpling = options.implings
+			? getItem(/^[0-9]+$/.test(options.implings) ? Number(options.implings) : options.implings)
+			: null;
+
+		if (options.implings) {
+			if (!clueImpling) {
+				return `Invalid impling. Please check your entry, **${options.implings}** doesn't match any impling jars. Make sure the quantity isn't included, etc.`;
+			}
+			if (!user.bank.has(clueImpling.id)) return `You don't have any ${clueImpling.name}s in your bank.`;
+			if (!clueTier.implings?.includes(clueImpling.id)) return `These clues aren't found in ${clueImpling.name}s`;
+		}
+
 		const boosts = [];
 
 		const stats = await user.fetchStats({ openable_scores: true });
 
-		const [timeToFinish, percentReduced] = reducedClueTime(
+		let [timeToFinish, percentReduced] = reducedClueTime(
 			clueTier,
 			(stats.openable_scores as ItemBank)[clueTier.id] ?? 1
 		);
@@ -109,10 +144,6 @@ export const clueCommand: OSBMahojiCommand = {
 				maxTripLength / timeToFinish
 			)}.`;
 		}
-
-		const cost = new Bank().add(clueTier.scrollID, quantity);
-		if (!user.owns(cost)) return `You don't own ${cost}.`;
-		await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
 
 		const randomAddedDuration = randInt(1, 20);
 		duration += (randomAddedDuration * duration) / 100;
@@ -288,10 +319,54 @@ export const clueCommand: OSBMahojiCommand = {
 		const boostList = clueTierBoosts[clueTierName];
 		const result = applyClueBoosts(user, boostList, boosts, duration, clueTier);
 
-		duration = result.duration;
+		timeToFinish = result.duration;
+
+		let implingLootString = '';
+		let implingClues = 0;
+		if (!clueImpling) {
+			const cost = new Bank().add(clueTier.scrollID, quantity);
+			if (!user.owns(cost)) return `You don't own ${cost}.`;
+			await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
+		} else {
+			const implingJarOpenable = allOpenables.find(o => o.aliases.some(a => stringMatches(a, clueImpling.name)));
+			// If this triggers, it means OSJS probably broke / is missing an alias for an impling jar:
+			if (!implingJarOpenable) return 'Invalid impling jar.';
+
+			const bankedClues = user.bank.amount(clueTier.scrollID);
+			const maxCanDo = Math.floor(maxTripLength / timeToFinish);
+			const bankedImplings = user.bank.amount(clueImpling.id);
+			let openedImplings = 0;
+			let implingLoot = new Bank();
+			while (implingClues + bankedClues < maxCanDo && openedImplings < bankedImplings) {
+				const impLoot = await getOpenableLoot({ openable: implingJarOpenable, user, quantity: 1 });
+				implingLoot.add(impLoot.bank);
+				implingClues = implingLoot.amount(clueTier.scrollID);
+				openedImplings++;
+			}
+			if (implingLoot.has(clueTier.scrollID)) {
+				implingLoot.remove(clueTier.scrollID, implingLoot.amount(clueTier.scrollID));
+			}
+
+			await user.transactItems({
+				itemsToAdd: implingLoot,
+				itemsToRemove: new Bank().add(clueImpling, openedImplings).add(clueTier.scrollID, bankedClues),
+				collectionLog: true
+			});
+			if (bankedClues + implingClues === 0) {
+				return `You don't have any clues, and didn't find any in ${openedImplings}x ${clueImpling.name}s. At least you received the following loot: ${implingLoot}.`;
+			}
+			quantity = bankedClues + implingClues;
+			implingLootString = `\n\nYou will find ${implingClues} clue${
+				implingClues === 0 || implingClues > 1 ? 's' : ''
+			} from ${openedImplings}x ${clueImpling.name}s, and receive the following loot: ${implingLoot}.`;
+		}
+
+		duration = timeToFinish * quantity;
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
 			clueID: clueTier.id,
+			implingID: clueImpling ? clueImpling.id : undefined,
+			implingClues: clueImpling ? implingClues : undefined,
 			userID: user.id,
 			channelID: channelID.toString(),
 			quantity,
@@ -302,6 +377,6 @@ export const clueCommand: OSBMahojiCommand = {
 			clueTier.name
 		} clues, it'll take around ${formatDuration(duration)} to finish.${
 			boosts.length > 0 ? `\n\n**Boosts:** ${boosts.join(', ')}.` : ''
-		}`;
+		}${implingLootString}`;
 	}
 };

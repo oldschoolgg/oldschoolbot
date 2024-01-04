@@ -1,13 +1,16 @@
 import { randomSnowflake } from '@oldschoolgg/toolkit';
+import { Prisma } from '@prisma/client';
 import { uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { globalConfig } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
-import { prisma } from '../../src/lib/settings/prisma';
+import { convertStoredActivityToFlatActivity, prisma } from '../../src/lib/settings/prisma';
+import { processPendingActivities } from '../../src/lib/Task';
 import { ItemBank } from '../../src/lib/types';
-import { assert } from '../../src/lib/util';
+import { assert, cryptoRand } from '../../src/lib/util';
+import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { ClientStorage, User, UserStats } from '.prisma/client';
@@ -19,7 +22,9 @@ export const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'opti
 	user: { id: userID } as any,
 	channelID: '111111111',
 	interaction: {
-		deferReply: () => Promise.resolve()
+		deferReply: () => Promise.resolve(),
+		editReply: () => Promise.resolve(),
+		followUp: () => Promise.resolve()
 	} as any,
 	client: {} as any
 });
@@ -91,43 +96,57 @@ export class TestUser extends MUserClass {
 			throw new Error(`Expected ${key} to be ${value} but got ${stats[key]}`);
 		}
 	}
+
+	async max() {
+		await giveMaxStats(this);
+		return this;
+	}
+
+	async runActivity() {
+		const [finishedActivity] = await processPendingActivities();
+		if (!finishedActivity) {
+			throw new Error('runActivity: No activity was ran');
+		}
+		if (finishedActivity.user_id.toString() !== this.id) {
+			throw new Error('runActivity: Ran activity, but it didnt belong to this user');
+		}
+		const data = convertStoredActivityToFlatActivity(finishedActivity);
+		return data;
+	}
 }
 
-interface UserOptions {
-	ownedBank?: Bank;
-	id?: string;
-}
-
-export async function createTestUser(id = randomSnowflake(), bank?: Bank) {
+export async function createTestUser(
+	id = cryptoRand(1_000_000_000, 5_000_000_000).toString(),
+	bank?: Bank,
+	userData: Partial<Prisma.UserCreateInput> = {}
+) {
 	const user = await prisma.user.upsert({
 		create: {
 			id,
-			bank: bank?.bank
+			bank: bank?.bank,
+			...userData
 		},
 		update: {
-			bank: bank?.bank
+			bank: bank?.bank,
+			...userData
 		},
 		where: {
 			id
 		}
 	});
 
-	return new TestUser(user);
-}
+	try {
+		await prisma.userStats.create({
+			data: {
+				user_id: BigInt(user.id)
+			}
+		});
+	} catch (err) {
+		console.error(`Failed to make userStats for ${user.id}`);
+		throw new Error(`Failed to make userStats for ${user.id}`);
+	}
 
-export async function integrationCmdRun({
-	command,
-	options = {},
-	userOptions
-}: {
-	command: OSBMahojiCommand;
-	options?: object;
-	userOptions?: UserOptions;
-}) {
-	const userId = userOptions?.id ?? randomSnowflake();
-	await createTestUser(userId, userOptions?.ownedBank);
-	const result = await command.run({ ...commandRunOptions(userId), options });
-	return result;
+	return new TestUser(user);
 }
 
 class TestClient {

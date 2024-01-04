@@ -1,18 +1,19 @@
-import { EmbedBuilder, userMention } from '@discordjs/builders';
+import { userMention } from '@discordjs/builders';
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 
 import { NEX_ID } from '../../lib/constants';
 import { trackLoot } from '../../lib/lootTrack';
 import { handleNexKills } from '../../lib/simulation/nex';
 import { NexTaskOptions } from '../../lib/types/minions';
+import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { sendToChannelID } from '../../lib/util/webhook';
 
 export const nexTask: MinionTask = {
 	type: 'Nex',
 	async run(data: NexTaskOptions) {
 		const { quantity, channelID, users, wipedKill, duration, userDetails } = data;
 		const allMention = userDetails.map(t => userMention(t[0])).join(' ');
+		const allMUsers = await Promise.all(users.map(id => mUserFetch(id)));
 
 		const survivedQuantity = wipedKill ? wipedKill - 1 : quantity;
 		const loot = handleNexKills({
@@ -26,7 +27,7 @@ export const nexTask: MinionTask = {
 
 		for (const [uID, uLoot] of loot.entries()) {
 			await transactItems({ userID: uID, collectionLog: true, itemsToAdd: uLoot });
-			const user = await mUserFetch(uID);
+			const user = allMUsers.find(i => i.id === uID)!;
 			await user.incrementKC(NEX_ID, quantity - userDetails.find(i => i[0] === uID)![2].length);
 		}
 
@@ -45,16 +46,19 @@ export const nexTask: MinionTask = {
 		});
 		await updateBankSetting('nex_loot', loot.totalLoot());
 
-		const embed = new EmbedBuilder().setThumbnail(
-			'https://cdn.discordapp.com/attachments/342983479501389826/951730848426786846/Nex.webp'
-		).setDescription(`
-${loot.formatLoot()}`);
-
-		sendToChannelID(channelID, {
-			embed,
-			content: `${allMention} Your team finished killing ${quantity}x Nex.${
-				wipedKill ? ` Your team wiped on the ${formatOrdinal(wipedKill)} kill.` : ''
-			}`
-		});
+		handleTripFinish(
+			allMUsers[0],
+			channelID,
+			{
+				content: `${allMention} Your team finished killing ${quantity}x Nex.${
+					wipedKill ? ` Your team wiped on the ${formatOrdinal(wipedKill)} kill.` : ''
+				}
+				
+${loot.formatLoot()}`
+			},
+			undefined,
+			data,
+			loot.totalLoot()
+		);
 	}
 };

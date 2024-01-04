@@ -150,7 +150,7 @@ describe('Gear', () => {
 		}
 	}
 
-	expect(getSimilarItems(itemID('Infernal max cape'))).toEqual([]);
+	expect(getSimilarItems(itemID('Infernal max cape'))).toEqual([itemID('Infernal max cape')]);
 
 	test('toa', () => {
 		let testGear = new Gear({ cape: 'Masori assembler max cape' });
@@ -165,5 +165,9 @@ describe('Gear', () => {
 
 	test('Divine rune pouch', () => {
 		expect(getSimilarItems(itemID('Rune pouch'))).toEqual(resolveItems(['Rune pouch', 'Divine rune pouch']));
+	});
+
+	test('Celestial Ring/Signet', () => {
+		expect(getSimilarItems(itemID('Celestial ring'))).toEqual(resolveItems(['Celestial ring', 'Celestial signet']));
 	});
 });

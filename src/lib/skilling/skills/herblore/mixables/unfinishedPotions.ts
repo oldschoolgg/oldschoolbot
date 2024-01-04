@@ -1,13 +1,12 @@
 import { Bank } from 'oldschooljs';
 
-import itemID from '../../../../util/itemID';
+import getOSItem from '../../../../util/getOSItem';
 import { Mixable } from '../../../types';
 
 const unfinishedPotions: Mixable[] = [
 	{
-		name: 'Guam potion (unf)',
+		item: getOSItem('Guam potion (unf)'),
 		aliases: ['guam potion (unf)', 'guam (unf)', 'guam potion'],
-		id: itemID('Guam potion (unf)'),
 		level: 3,
 		xp: 0,
 		inputItems: new Bank({ 'guam leaf': 1, 'Vial of water': 1 }),
@@ -16,9 +15,8 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Marrentill potion (unf)',
+		item: getOSItem('Marrentill potion (unf)'),
 		aliases: ['marrentill potion (unf)', 'marrentill potion', 'marrentill (unf)'],
-		id: itemID('Marrentill potion (unf)'),
 		level: 5,
 		xp: 0,
 		inputItems: new Bank({ Marrentill: 1, 'Vial of water': 1 }),
@@ -27,10 +25,9 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Tarromin potion (unf)',
+		item: getOSItem('Tarromin potion (unf)'),
 		aliases: ['tarromin potion (unf)', 'tarromin potion', 'tarromin (unf)'],
-		id: itemID('Tarromin potion (unf)'),
-		level: 11,
+		level: 12,
 		xp: 0,
 		inputItems: new Bank({ Tarromin: 1, 'Vial of water': 1 }),
 		tickRate: 1,
@@ -38,10 +35,9 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Harralander potion (unf)',
+		item: getOSItem('Harralander potion (unf)'),
 		aliases: ['harralander potion (unf)', 'harralander potion', 'harralander (unf)'],
-		id: itemID('Harralander potion (unf)'),
-		level: 20,
+		level: 22,
 		xp: 0,
 		inputItems: new Bank({ Harralander: 1, 'Vial of water': 1 }),
 		tickRate: 1,
@@ -49,10 +45,9 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Ranarr potion (unf)',
+		item: getOSItem('Ranarr potion (unf)'),
 		aliases: ['ranarr potion (unf)', 'ranarr potion', 'ranarr (unf)'],
-		id: itemID('Ranarr potion (unf)'),
-		level: 25,
+		level: 30,
 		xp: 0,
 		inputItems: new Bank({ 'Ranarr weed': 1, 'Vial of water': 1 }),
 		tickRate: 1,
@@ -60,10 +55,9 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Toadflax potion (unf)',
+		item: getOSItem('Toadflax potion (unf)'),
 		aliases: ['toadflax potion (unf)', 'toadflax potion', 'toadflax (unf)'],
-		id: itemID('Toadflax potion (unf)'),
-		level: 30,
+		level: 34,
 		xp: 0,
 		inputItems: new Bank({ Toadflax: 1, 'Vial of water': 1 }),
 		tickRate: 1,
@@ -71,10 +65,9 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Irit potion (unf)',
+		item: getOSItem('Irit potion (unf)'),
 		aliases: ['irit potion (unf)', 'irit potion', 'irit (unf)'],
-		id: itemID('Irit potion (unf)'),
-		level: 40,
+		level: 45,
 		xp: 0,
 		inputItems: new Bank({ 'Irit leaf': 1, 'Vial of water': 1 }),
 		tickRate: 1,
@@ -82,10 +75,9 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Avantoe potion (unf)',
+		item: getOSItem('Avantoe potion (unf)'),
 		aliases: ['avantoe potion (unf)', 'avantoe potion', 'avantoe (unf)'],
-		id: itemID('Avantoe potion (unf)'),
-		level: 48,
+		level: 50,
 		xp: 0,
 		inputItems: new Bank({ Avantoe: 1, 'Vial of water': 1 }),
 		tickRate: 1,
@@ -93,10 +85,9 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Kwuarm potion (unf)',
+		item: getOSItem('Kwuarm potion (unf)'),
 		aliases: ['kwuarm potion (unf)', 'kwuarm potion', 'kwuarm (unf)'],
-		id: itemID('Kwuarm potion (unf)'),
-		level: 54,
+		level: 55,
 		xp: 0,
 		inputItems: new Bank({ Kwuarm: 1, 'Vial of water': 1 }),
 		tickRate: 1,
@@ -104,10 +95,9 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Snapdragon potion (unf)',
+		item: getOSItem('Snapdragon potion (unf)'),
 		aliases: ['snapdragon potion (unf)', 'snapdragon potion', 'snapdragon (unf)'],
-		id: itemID('Snapdragon potion (unf)'),
-		level: 59,
+		level: 63,
 		xp: 0,
 		inputItems: new Bank({ Snapdragon: 1, 'Vial of water': 1 }),
 		tickRate: 1,
@@ -115,10 +105,9 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Cadantine potion (unf)',
+		item: getOSItem('Cadantine potion (unf)'),
 		aliases: ['cadantine potion (unf)', 'cadantine potion', 'cadantine (unf)'],
-		id: itemID('Cadantine potion (unf)'),
-		level: 65,
+		level: 66,
 		xp: 0,
 		inputItems: new Bank({ Cadantine: 1, 'Vial of water': 1 }),
 		tickRate: 1,
@@ -126,10 +115,9 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Lantadyme potion (unf)',
+		item: getOSItem('Lantadyme potion (unf)'),
 		aliases: ['lantadyme potion (unf)', 'lantadyme potion', 'lantadyme (unf)'],
-		id: itemID('Lantadyme potion (unf)'),
-		level: 67,
+		level: 69,
 		xp: 0,
 		inputItems: new Bank({ Lantadyme: 1, 'Vial of water': 1 }),
 		tickRate: 1,
@@ -137,10 +125,9 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Dwarf weed potion (unf)',
+		item: getOSItem('Dwarf weed potion (unf)'),
 		aliases: ['dwarf weed potion', 'dwarf weed (unf)', 'dwarf weed potion (unf)'],
-		id: itemID('Dwarf weed potion (unf)'),
-		level: 70,
+		level: 72,
 		xp: 0,
 		inputItems: new Bank({ 'Dwarf weed': 1, 'Vial of water': 1 }),
 		tickRate: 1,
@@ -148,12 +135,24 @@ const unfinishedPotions: Mixable[] = [
 		zahur: true
 	},
 	{
-		name: 'Torstol potion (unf)',
+		item: getOSItem('Torstol potion (unf)'),
 		aliases: ['torstol potion', 'torstol (unf)', 'torstol potion (unf)'],
-		id: itemID('Torstol potion (unf)'),
-		level: 75,
+		level: 78,
 		xp: 0,
 		inputItems: new Bank({ Torstol: 1, 'Vial of water': 1 }),
+		tickRate: 1,
+		bankTimePerPotion: 0.3,
+		zahur: true
+	},
+	{
+		item: getOSItem('Cadantine blood potion (unf)'),
+		aliases: ['cadantine blood potion (unf)', 'cadantine blood potion', 'cadantine blood'],
+		level: 80,
+		xp: 0,
+		inputItems: new Bank({
+			'Vial of blood': 1,
+			Cadantine: 1
+		}),
 		tickRate: 1,
 		bankTimePerPotion: 0.3,
 		zahur: true

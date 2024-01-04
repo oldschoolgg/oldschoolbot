@@ -9,6 +9,7 @@ import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import bosses from './bosses';
+import { camdozaalMonsters } from './camdozaalMonsters';
 import { chaeldarMonsters } from './chaeldarMonsters';
 import { creatureCreationCreatures } from './creatureCreation';
 import { konarMonsters } from './konarMonsters';
@@ -26,11 +27,13 @@ const killableMonsters: KillableMonster[] = [
 	...chaeldarMonsters,
 	...konarMonsters,
 	...krystiliaMonsters,
+	...camdozaalMonsters,
 	...mazchnaMonsters,
 	...nieveMonsters,
 	...turaelMonsters,
 	...vannakaMonsters,
 	...low,
+	...revenantMonsters,
 	...creatureCreationCreatures,
 	...reanimatedMonsters,
 	{
@@ -48,7 +51,11 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{ [itemID('Barrows gloves')]: 2 },
-			{ [itemID("Iban's staff")]: 5 },
+			{
+				[itemID("Iban's staff")]: 5,
+				[itemID('Harmonised nightmare staff')]: 7,
+				[itemID("Tumeken's shadow")]: 10
+			},
 			{ [itemID('Strange old lockpick')]: 7 }
 		],
 		levelRequirements: {
@@ -87,10 +94,12 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Armadyl chestplate')]: 2
+				[itemID('Armadyl chestplate')]: 2,
+				[itemID('Masori body (f)')]: 4
 			},
 			{
-				[itemID('Armadyl chainskirt')]: 2
+				[itemID('Armadyl chainskirt')]: 2,
+				[itemID('Masori chaps (f)')]: 4
 			},
 			{
 				[itemID('Twisted bow')]: 6
@@ -359,7 +368,6 @@ export default killableMonsters;
 
 export const effectiveMonsters = [
 	...killableMonsters,
-	...revenantMonsters,
 	NightmareMonster,
 	{
 		name: 'Zalcano',

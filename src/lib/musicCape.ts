@@ -9,7 +9,6 @@ import { RandomEvents } from './randomEvents';
 import { MinigameName, Minigames } from './settings/minigames';
 import { getUsersActivityCounts, prisma } from './settings/prisma';
 import { RequirementFailure, Requirements } from './structures/Requirements';
-import { ItemBank } from './types';
 import { itemNameFromID } from './util';
 import resolveItems from './util/resolveItems';
 
@@ -54,11 +53,12 @@ export const musicCapeRequirements = new Requirements()
 			.add('Fire cape')
 			.add('Raw monkfish')
 			.add('Brittle key')
+			.add('Revenant ether')
 	})
-	// .add({
-	// 	name: '750 Barronite shards to unlock Race Against the Clock inside the Camdozaal Vault',
-	// 	clRequirement: new Bank().add('Barronite shards', 750)
-	// })
+	.add({
+		name: '750 Barronite shards to access the Camdozaal Vault',
+		clRequirement: new Bank().add('Barronite shards', 750)
+	})
 	.add({
 		kcRequirement: {
 			[MIMIC_MONSTER_ID]: 1,
@@ -154,7 +154,8 @@ AND data->>'runeID' IS NOT NULL;`;
 				activity_type_enum.Questing,
 				activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
 				activity_type_enum.ChampionsChallenge,
-				activity_type_enum.Nex
+				activity_type_enum.Nex,
+				activity_type_enum.Revenants // This is now under monsterActivity
 			];
 			const activityCounts = await getUsersActivityCounts(user);
 
@@ -205,9 +206,9 @@ AND data->>'runeID' IS NOT NULL;`;
 	})
 	.add({
 		name: 'One of Every Random Event',
-		has: async ({ userStats, user }) => {
+		has: async ({ stats, user }) => {
 			const results: RequirementFailure[] = [];
-			const eventBank = userStats.random_event_completions_bank as ItemBank;
+			const eventBank = stats.randomEventCompletionsBank();
 
 			const notDoneRandomEvents = RandomEvents.filter(i => {
 				if (i.outfit && i.outfit.every(id => user.cl.has(id))) return false;

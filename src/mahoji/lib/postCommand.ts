@@ -1,7 +1,7 @@
 import { CommandOptions } from 'mahoji/dist/lib/types';
 
 import { modifyBusyCounter } from '../../lib/busyCounterCache';
-import { shouldTrackCommand } from '../../lib/constants';
+import { busyImmuneCommands, shouldTrackCommand } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { makeCommandUsage } from '../../lib/util/commandUsage';
 import { logError } from '../../lib/util/logError';
@@ -14,7 +14,8 @@ export async function postCommand({
 	channelID,
 	args,
 	isContinue,
-	inhibited
+	inhibited,
+	continueDeltaMillis
 }: {
 	abstractCommand: AbstractCommand;
 	userID: string;
@@ -24,8 +25,11 @@ export async function postCommand({
 	args: CommandOptions;
 	isContinue: boolean;
 	inhibited: boolean;
+	continueDeltaMillis: number | null;
 }): Promise<string | undefined> {
-	setTimeout(() => modifyBusyCounter(userID, -1), 1000);
+	if (!busyImmuneCommands.includes(abstractCommand.name)) {
+		setTimeout(() => modifyBusyCounter(userID, -1), 1000);
+	}
 	debugLog('Postcommand', {
 		type: 'RUN_COMMAND',
 		command_name: abstractCommand.name,
@@ -42,7 +46,8 @@ export async function postCommand({
 			args,
 			isContinue,
 			flags: null,
-			inhibited
+			inhibited,
+			continueDeltaMillis
 		});
 		try {
 			await prisma.$transaction([

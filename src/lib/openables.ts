@@ -111,6 +111,7 @@ for (const clueTier of ClueTiers) {
 			const stats = await user.fetchStats({ openable_scores: true });
 			const nthCasket = ((stats.openable_scores as ItemBank)[clueTier.id] ?? 0) + quantity;
 
+			let gotMilestoneReward = false;
 			// If this tier has a milestone reward, and their new score meets the req, and
 			// they don't own it already, add it to the loot.
 			if (
@@ -118,12 +119,19 @@ for (const clueTier of ClueTiers) {
 				nthCasket >= clueTier.milestoneReward.scoreNeeded &&
 				user.allItemsOwned.amount(clueTier.milestoneReward.itemReward) === 0
 			) {
-				loot.add(clueTier.milestoneReward.itemReward);
+				await user.addItemsToBank({
+					items: new Bank().add(clueTier.milestoneReward.itemReward),
+					collectionLog: true
+				});
+				gotMilestoneReward = true;
 			}
 
 			// Here we check if the loot has any ultra-rares (3rd age, gilded, bloodhound),
 			// and send a notification if they got one.
 			const announcedLoot = loot.filter(i => clueItemsToNotifyOf.includes(i.id), false);
+			if (gotMilestoneReward) {
+				announcedLoot.add(clueTier.milestoneReward!.itemReward);
+			}
 			if (announcedLoot.length > 0) {
 				globalClient.emit(
 					Events.ServerNotification,
@@ -391,6 +399,15 @@ export const allOpenables: UnifiedOpenable[] = [
 		allItems: resolveItems(['Tokkul', 'Lava scale shard', 'Onyx bolt tips'])
 	},
 	{
+		name: 'Scaly blue dragonhide',
+		id: 27_897,
+		openedItem: getOSItem('Scaly blue dragonhide'),
+		aliases: ['Scaly blue dragonhide'],
+		output: new LootTable().add('Blue dragon scale', 50),
+		emoji: Emoji.Casket,
+		allItems: resolveItems(['Blue dragon scale'])
+	},
+	{
 		name: 'Spoils of war',
 		id: itemID('Spoils of war'),
 		openedItem: getOSItem('Spoils of war'),
@@ -433,3 +450,17 @@ for (const openable of allOpenables) {
 }
 
 export const allOpenablesIDs = new Set(allOpenables.map(i => i.id));
+
+export function getOpenableLoot({
+	openable,
+	quantity,
+	user
+}: {
+	openable: UnifiedOpenable;
+	quantity: number;
+	user: MUser;
+}) {
+	return openable.output instanceof LootTable
+		? { bank: openable.output.roll(quantity), message: null }
+		: openable.output({ user, self: openable, quantity });
+}
