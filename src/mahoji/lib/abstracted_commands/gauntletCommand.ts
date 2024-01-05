@@ -3,6 +3,7 @@ import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 
 import { BitField } from '../../../lib/constants';
 import { getMinigameScore } from '../../../lib/settings/minigames';
+import { SkillsEnum } from '../../../lib/skilling/types';
 import { GauntletOptions } from '../../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -54,6 +55,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	}
 	const readableName = `${toTitleCase(type)} Gauntlet`;
 	const requiredSkills = type === 'corrupted' ? corruptedRequirements : standardRequirements;
+	const prayLevel = user.skillLevel(SkillsEnum.Prayer);
 
 	if (!user.hasSkillReqs(requiredSkills)) {
 		return `You don't have the required stats to do the ${readableName}, you need: ${formatSkillRequirements(
@@ -105,11 +107,17 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	if (user.bitfield.includes(BitField.HasArcaneScroll)) {
 		boosts.push('5% for Augury');
 		baseLength = reduceNumByPercent(baseLength, 5);
+	} else if (prayLevel >= 45) {
+		boosts.push('2% for Mystic Might');
+		baseLength = reduceNumByPercent(baseLength, 2);
 	}
 
 	if (user.bitfield.includes(BitField.HasDexScroll)) {
 		boosts.push('5% for Rigour');
 		baseLength = reduceNumByPercent(baseLength, 5);
+	} else if (prayLevel >= 44) {
+		boosts.push('2% for Eagle Eye');
+		baseLength = reduceNumByPercent(baseLength, 2);
 	}
 
 	// Add a 5% variance to account for randomness of gauntlet
