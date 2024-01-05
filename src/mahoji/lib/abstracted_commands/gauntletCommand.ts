@@ -4,7 +4,7 @@ import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { BitField } from '../../../lib/constants';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { GauntletOptions } from '../../../lib/types/minions';
-import { formatDuration, formatSkillRequirements } from '../../../lib/util';
+import { formatDuration, formatSkillRequirements, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
@@ -70,28 +70,50 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 		return "You can't attempt the Corrupted Gauntlet, you have less than 50 normal Gauntlets completed - you would not stand a chance in the Corrupted Gauntlet!";
 	}
 
-	let baseLength = type === 'corrupted' ? Time.Minute * 10 : Time.Minute * 14;
+	// Base times for gauntlet prep.
+	const normPrep = Time.Minute * 8;
+	const corrPrep = Time.Minute * 7.5;
+
+	// Base times for Hunllef fight.
+	const normHunllef = Time.Minute * 3.5;
+	const corrHunllef = Time.Minute * 5.5;
+
+	let baseLength = type === 'corrupted' ? corrPrep + corrHunllef : normPrep + normHunllef;
 
 	const boosts = [];
 
+	// Gauntlet prep boost
+	let prepBoost = Math.min(100, calcWhatPercent(corruptedKC + normalKC, 100)) / 5;
+	if (prepBoost > 1) {
+		if (type === 'corrupted') {
+			baseLength = reduceNumByPercent(baseLength, prepBoost);
+			boosts.push(`${prepBoost}% boost for experience with preparation`);
+		} else {
+			prepBoost *= 2;
+			baseLength = reduceNumByPercent(baseLength, prepBoost);
+			boosts.push(`${prepBoost}% boost for experience with preparation (2x for normal prep)`);
+		}
+	}
+
+	// Hunllef boss fight boost
 	const scoreBoost = Math.min(100, calcWhatPercent(type === 'corrupted' ? corruptedKC : normalKC, 100)) / 5;
 	if (scoreBoost > 1) {
 		baseLength = reduceNumByPercent(baseLength, scoreBoost);
-		boosts.push(`${scoreBoost}% boost for experience in the minigame`);
+		boosts.push(`${scoreBoost}% boost for ${type === 'corrupted' ? 'Corrupted ' : ''}Hunllef KC`);
 	}
 
 	if (user.bitfield.includes(BitField.HasArcaneScroll)) {
-		boosts.push('3% for Augury');
-		baseLength = reduceNumByPercent(baseLength, 3);
+		boosts.push('5% for Augury');
+		baseLength = reduceNumByPercent(baseLength, 5);
 	}
 
 	if (user.bitfield.includes(BitField.HasDexScroll)) {
-		boosts.push('3% for Rigour');
-		baseLength = reduceNumByPercent(baseLength, 3);
+		boosts.push('5% for Rigour');
+		baseLength = reduceNumByPercent(baseLength, 5);
 	}
 
-	let gauntletLength = baseLength;
-	if (type === 'corrupted') gauntletLength *= 1.3;
+	// Add a 5% variance to account for randomness of gauntlet
+	let gauntletLength = randomVariation(baseLength, 5);
 
 	const maxTripLength = calcMaxTripLength(user, 'Gauntlet');
 
