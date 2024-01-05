@@ -91,7 +91,8 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	}
 
 	// Hunllef boss fight boost
-	const scoreBoost = Math.min(100, calcWhatPercent(type === 'corrupted' ? corruptedKC : normalKC, 100)) / 5;
+	const scoreBoost =
+		Math.min(100, calcWhatPercent(type === 'corrupted' ? corruptedKC : normalKC + corruptedKC, 100)) / 5;
 	if (scoreBoost > 1) {
 		baseLength = reduceNumByPercent(baseLength, scoreBoost);
 		boosts.push(`${scoreBoost}% boost for ${type === 'corrupted' ? 'Corrupted ' : ''}Hunllef KC`);
