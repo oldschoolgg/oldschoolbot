@@ -19,7 +19,8 @@ const baseRequirements = {
 	smithing: 70,
 	herblore: 70,
 	construction: 70,
-	hunter: 70
+	hunter: 70,
+	prayer: 77
 };
 
 const standardRequirements = {
@@ -28,8 +29,7 @@ const standardRequirements = {
 	strength: 80,
 	defence: 80,
 	magic: 80,
-	ranged: 80,
-	prayer: 77
+	ranged: 80
 };
 
 const corruptedRequirements = {
@@ -38,14 +38,7 @@ const corruptedRequirements = {
 	strength: 90,
 	defence: 90,
 	magic: 90,
-	ranged: 90,
-	prayer: 77,
-	// Skilling
-	cooking: 70,
-	farming: 70,
-	fishing: 70,
-	mining: 70,
-	woodcutting: 70
+	ranged: 90
 };
 
 export async function gauntletCommand(user: MUser, channelID: string, type: 'corrupted' | 'normal' = 'normal') {
