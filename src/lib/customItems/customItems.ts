@@ -10126,7 +10126,7 @@ setCustomItem(
 
 setCustomItem(
 	72_044,
-	'Burnt butter',
+	'Rudolph',
 	'Coal',
 	{
 		customItemData: {

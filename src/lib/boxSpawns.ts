@@ -263,13 +263,6 @@ export async function boxSpawnHandler(msg: Message) {
 	let wonStr = `This is your ${formatOrdinal(newStats.main_server_challenges_won)} challenge win!`;
 	const loot = roll(20) ? LampTable.roll() : MysteryBoxes.roll();
 	if (!winnerUser.isIronman) {
-		if (winnerUser.smokeyLotteryData().challengeTickets === 0) {
-			await winnerUser.addItemsToBank({ items: loot, collectionLog: true });
-			await winnerUser.tryGiveSmokeyLotteryTickets('challengeTickets', 1);
-			return msg.channel.send(`Congratulations, ${winner}! You received: **${loot}**. ${wonStr}
-
-<:smokeyticket:1176941131083300884> You found a Smokey ticket!`);
-		}
 		await winnerUser.addItemsToBank({ items: loot, collectionLog: true });
 		return msg.channel.send(`Congratulations, ${winner}! You received: **${loot}**. ${wonStr}`);
 	}
