@@ -125,8 +125,8 @@ const mentionCommands: MentionCommand[] = [
 		}
 	},
 	{
-		name: 'issssssss',
-		aliases: ['issssssss'],
+		name: 'is',
+		aliases: ['is'],
 		description: 'Searches for items.',
 		run: async ({ msg, components, user, content }: MentionCommandOptions) => {
 			const items = Items.filter(
