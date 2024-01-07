@@ -4,7 +4,9 @@ import { debounce, noOp, randArrItem, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { getSmokeyLotteryGiveawayInterval, smokeyLotteryMaxTickets } from '../christmasEvent';
 import { Events } from '../constants';
+import { marketPriceOfBank } from '../marketPrices';
 import { prisma } from '../settings/prisma';
 import { channelIsSendable } from '../util';
 import { logError } from './logError';
@@ -96,14 +98,31 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 			}
 		});
 
+		const interval = getSmokeyLotteryGiveawayInterval();
+		const lastTicketDate = creator.user.last_giveaway_ticket_given_date;
+		const shouldGiveTicket =
+			['1126919039340511363', '792691343284764693', '1087277246361915392'].includes(giveaway.channel_id) &&
+			marketPriceOfBank(loot) > 50_000_000 &&
+			(!lastTicketDate || lastTicketDate < interval.start) &&
+			creator.smokeyLotteryData().giveawayTickets < smokeyLotteryMaxTickets.giveawayTickets;
+
+		if (shouldGiveTicket) {
+			await creator.tryGiveSmokeyLotteryTickets('giveawayTickets', 1);
+			await creator.update({ last_giveaway_ticket_given_date: new Date() });
+		}
+
 		globalClient.emit(
 			Events.EconomyLog,
 			`${winner.mention}[${winner.id}] won ${loot} in a giveaway of ${users.length} made by ${creator.mention}[${creator.id}].`
 		);
 
-		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${users.length} users joined, the winner is... **${winner.mention}**
+		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${users.length} users joined, the winner is... **${
+			winner.mention
+		}**
 
-They received these items: ${loot}`;
+They received these items: ${loot}.${
+			shouldGiveTicket ? `${creator} received a smokey lottery ticket for this giveaway.` : ''
+		}`;
 
 		await sendToChannelID(giveaway.channel_id, {
 			content: str

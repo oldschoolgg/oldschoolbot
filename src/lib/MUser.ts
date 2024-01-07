@@ -10,6 +10,12 @@ import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { GodFavourBank, GodName } from './bso/divineDominion';
 import { userIsBusy } from './busyCounterCache';
+import {
+	defaultSmokeyLotteryData,
+	SmokeyLotteryData,
+	smokeyLotteryMaxTickets,
+	smokeyLotterySchema
+} from './christmasEvent';
 import { ClueTiers } from './clues/clueTiers';
 import { CATier, CombatAchievements } from './combat_achievements/combatAchievements';
 import { badges, BitField, Emoji, PerkTier, projectiles, usernameCache } from './constants';
@@ -922,6 +928,28 @@ GROUP BY data->>'clueID';`);
 
 	async fetchRobochimpUser() {
 		return roboChimpUserFetch(this.id);
+	}
+
+	smokeyLotteryData(): SmokeyLotteryData {
+		const raw = this.user.smokey_lottery_tickets;
+		if (!raw) {
+			return defaultSmokeyLotteryData;
+		}
+		return smokeyLotterySchema.parse(raw);
+	}
+
+	async tryGiveSmokeyLotteryTickets(key: keyof SmokeyLotteryData, amount: number): Promise<boolean> {
+		const data = this.smokeyLotteryData();
+		if (data[key] >= smokeyLotteryMaxTickets[key]) {
+			return false;
+		}
+		await this.update({
+			smokey_lottery_tickets: {
+				...data,
+				[key]: Math.min(smokeyLotteryMaxTickets[key], data[key] + amount)
+			}
+		});
+		return true;
 	}
 }
 declare global {

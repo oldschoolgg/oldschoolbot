@@ -96,5 +96,42 @@ export const keyCrates: Crate[] = [
 			.add('Ghostweave', [100, 200], 29)
 			.add('Pumpkin', [5, 15], 16)
 			.add('Purple sweets', [1, 3], 16)
+	},
+	{
+		item: getOSItem('Festive crate (s4)'),
+		key: getOSItem('Festive crate key (s4)'),
+		keyCostGP: 20_000_000,
+		table: new LootTable()
+			.add(
+				new LootTable()
+					.add('Christmas cape (classic)', 1, 1)
+					.add('Christmas cape (rainbow)', 1, 2)
+					.add('Christmas cape (snowy tree)', 1, 2)
+					.add('Christmas cape (wintertodt blue)', 1, 2)
+					.add('Festive partyhat')
+			)
+			.add('Christmas cape (rainbow)')
+			.add('Christmas jumper (green)')
+			.add('Christmas jumper (jolly red)')
+			.add('Christmas jumper (frosty)')
+			.add('Mistle-bow-tie')
+			.add(new LootTable().add('Frosty parasol').add('Frosty wings').add('Frosty cape').add('Frosty staff'))
+			.add(
+				new LootTable()
+					.add('Carrot')
+					.add('Pavlova')
+					.add('Prawns')
+					.add('Pretzel')
+					.add('Roast potatoes')
+					.add('Gr-egg-oyle special')
+					.add('Christmas pudding')
+					.add('Yule log')
+					.add("Dougs' chocolate mud")
+					.add('Corn on the cob')
+					.add('Roasted ham')
+					.add('Pumpkinhead pie'),
+				1,
+				89
+			)
 	}
 ];

@@ -1,3 +1,5 @@
+import { Bank } from 'oldschooljs';
+
 import { removeDiscontinuedItems } from '../../../bso/bsoUtil';
 import { Emoji } from '../../../constants';
 import itemID from '../../../util/itemID';
@@ -302,6 +304,24 @@ export const Cookables: Cookable[] = [
 		stopBurnAt: 70,
 		stopBurnAtCG: 37,
 		burntCookable: itemID('Burnt turkey')
+	},
+	{
+		level: 80,
+		xp: 1000,
+		id: itemID('Christmas cake'),
+		name: 'Christmas cake',
+		inputCookables: new Bank()
+			.add('Gingerbread')
+			.add('Grimy salt')
+			.add('Snail oil')
+			.add('Ashy flour')
+			.add('Banana-butter')
+			.add('Fresh rat milk')
+			.add('Pristine chocolate bar')
+			.add('Smokey egg').bank,
+		stopBurnAt: 150,
+		stopBurnAtCG: 150,
+		burntCookable: itemID('Burnt christmas cake')
 	}
 ];
 

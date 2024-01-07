@@ -185,6 +185,8 @@ model ClientStorage {
   last_bso_giveaways_ping  DateTime? @db.Timestamp(6)
   last_giveaway_doubleloot DateTime? @db.Timestamp(6)
 
+  xmas_ironman_food_bank Json @default("{}") @db.Json
+
   @@map("clientStorage")
 }
 
@@ -521,6 +523,10 @@ model User {
 
   gift_boxes_owned   GiftBox[] @relation("gift_boxes_owned")
   gift_boxes_created GiftBox[] @relation("gift_boxes_created")
+
+  smokey_lottery_tickets          Json?     @db.Json
+  grinchions_caught               Int       @default(0)
+  last_giveaway_ticket_given_date DateTime? @db.Timestamp(6)
 
   @@index([id, last_command_date])
   @@map("users")
@@ -1381,6 +1387,8 @@ model GiftBox {
   owner    User?   @relation("gift_boxes_owned", fields: [owner_id], references: [id])
 
   items Json @default("{}") @db.Json
+
+  is_grinch_box Boolean @default(false)
 
   @@map("gift_box")
 }
