@@ -10100,14 +10100,74 @@ setCustomItem(
 
 // 73_042 Divine hand
 
-// setCustomItem(
-// 	73_043,
-// 	'Cache portent',
-// 	'Coal',
-// 	{
-// 		customItemData: {
-// 			cantDropFromMysteryBoxes: true
-// 		}
-// 	},
-// 	1
-// );
+setCustomItem(
+	73_043,
+	'Graceful portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_044,
+	'Rogues portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_045,
+	'Ancient energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_046,
+	'Boon of ancient energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_047,
+	'Dungeon portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_048,
+	'Lucky portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);

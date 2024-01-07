@@ -205,8 +205,29 @@ export const divinationEnergies = [
 			.add('Clue scroll (elite)', 1, 3)
 			.add('Clue scroll (master)', 1, 2)
 			.add('Clue scroll (grandmaster)', 1, 1)
+	},
+	{
+		level: 110,
+		type: 'Ancient',
+		harvestXP: 30,
+		convertNormal: 108,
+		convertBoon: 118.8,
+		convertWithEnergy: 134.6,
+		convertWithEnergyAndBoon: 187.9,
+		item: getOSItem('Ancient energy'),
+		boon: getOSItem('Boon of ancient energy'),
+		boonBitfield: BitField.HasAncientBoon,
+		boonEnergyCost: 2250,
+		clueTable: new LootTable()
+			.add('Clue scroll (elite)', 1, 2)
+			.add('Clue scroll (master)', 1, 2)
+			.add('Clue scroll (grandmaster)', 1, 1)
 	}
 ];
+
+for (const energy of divinationEnergies) {
+	energy.boonEnergyCost = energy.level * 50;
+}
 
 export const allDivinationEnergyTypes = divinationEnergies.map(e => e.type);
 export enum MemoryHarvestType {
@@ -221,7 +242,11 @@ export const memoryHarvestTypes = [
 ];
 
 export enum PortentID {
-	CachePortent = itemID('Cache portent')
+	CachePortent = itemID('Cache portent'),
+	GracefulPortent = itemID('Graceful portent'),
+	RoguesPortent = itemID('Rogues portent'),
+	DungeonPortent = itemID('Dungeon portent'),
+	LuckyPortent = itemID('Lucky portent')
 }
 interface SourcePortent {
 	id: PortentID;
@@ -230,19 +255,79 @@ interface SourcePortent {
 	cost: Bank;
 	chargesPerPortent: number;
 	addChargeMessage: (portent: Portent) => string;
+	description: string;
 }
 
 export const portents: SourcePortent[] = [
 	{
 		id: PortentID.CachePortent,
 		item: getOSItem('Cache portent'),
-		divinationLevelToCreate: 50,
-		cost: new Bank().add('Lustrous energy', 500).add('Molten glass', 100),
+		description:
+			'Gives you a tradeable Guthixian cache boost item instead of instantly activating it, 1 charge per boost/item.',
+		divinationLevelToCreate: 80,
+		cost: new Bank().add('Lustrous energy', 500).add('Molten glass', 50),
 		chargesPerPortent: 2,
 		addChargeMessage: portent =>
 			`You used a Cache portent, your next ${portent.charges_remaining} Guthixian cache trips will grant you a Guthixian cache boost item.`
+	},
+	{
+		id: PortentID.GracefulPortent,
+		item: getOSItem('Graceful portent'),
+		description: 'Converts marks of grace into extra agility XP, one charge is used per minute.',
+		divinationLevelToCreate: 80,
+		cost: new Bank().add('Luminous energy', 500).add('Super energy(4)', 30),
+		chargesPerPortent: 60 * 5,
+		addChargeMessage: portent =>
+			`You used a Graceful portent, it will turn marks of grace into extra agility XP in your next ${portent.charges_remaining} minutes of agility.`
+	},
+	{
+		id: PortentID.RoguesPortent,
+		item: getOSItem('Rogues portent'),
+		description: "Give's 3x loot from pickpocketing, does not stack with thieves armband.",
+		divinationLevelToCreate: 110,
+		cost: new Bank().add('Ancient energy', 200).add('Elder rune', 1000),
+		chargesPerPortent: 120,
+		addChargeMessage: portent =>
+			`You used a Rogues portent, you will receive 3x loot in your next ${portent.charges_remaining} minutes of pickpocketing.`
+	},
+	{
+		id: PortentID.DungeonPortent,
+		item: getOSItem('Dungeon portent'),
+		description: 'Converts dungeoneering tokens into extra dungeoneering xp.',
+		divinationLevelToCreate: 95,
+		cost: new Bank().add('Brilliant energy', 512).add('Twisted bow', 1000),
+		chargesPerPortent: 120,
+		addChargeMessage: portent =>
+			`You used a Dungeon portent, all your Dungeoneering tokens will turn into bonus XP for your next ${portent.charges_remaining} minutes of dungeoneering.`
+	},
+	{
+		id: PortentID.LuckyPortent,
+		item: getOSItem('Lucky portent'),
+		description: 'Grants double loot from IC rewards and double xp from tears of guthix.',
+		divinationLevelToCreate: 105,
+		cost: new Bank().add('Incandescent energy', 256).add('Twisted bow', 1000),
+		chargesPerPortent: 4,
+		addChargeMessage: portent =>
+			`You used a Lucky portent, your next ${portent.charges_remaining} Tears of Guthix or Item Contracts will grant you double the reward.`
 	}
 ];
+
+export async function getAllPortentCharges(user: MUser) {
+	const usersPortents = await prisma.portent.findMany({
+		where: {
+			user_id: user.id
+		}
+	});
+	let result: Record<PortentID, number> = {};
+	for (const portent of portents) {
+		result[portent.id] = 0;
+	}
+	for (const portent of usersPortents) {
+		const srcPortent = portents.find(p => p.id === portent.item_id)!;
+		result[srcPortent.id] = portent.charges_remaining;
+	}
+	return result;
+}
 
 export async function chargePortentIfHasCharges({
 	user,

@@ -63,6 +63,7 @@ export function memoryHarvestResult({
 	const cost = new Bank();
 	let totalDivinationXP = 0;
 	let totalMemoriesHarvested = 0;
+	const energyPerMemory = (120 - energy.level) / 150;
 
 	for (let i = 0; i < rounds; i++) {
 		// Step 1: Harvest memories
@@ -71,10 +72,10 @@ export function memoryHarvestResult({
 		totalMemoriesHarvested += memoriesHarvested;
 
 		// Step 2: Convert memories
-		const { xp } = calcConversionResult(hasBoon, harvestMethod, energy);
+		let { xp } = calcConversionResult(hasBoon, harvestMethod, energy);
+		xp = increaseNumByPercent(xp, 30);
 		totalDivinationXP += xp * memoriesHarvested;
 
-		let energyPerMemory = Math.ceil((100 - energy.level) / 150);
 		switch (harvestMethod) {
 			case MemoryHarvestType.ConvertToXP: {
 				break;
@@ -140,7 +141,8 @@ export function memoryHarvestResult({
 		totalMemoriesHarvested,
 		petChancePerMemory: petChance,
 		avgPetTime: calculateAverageTimeForSuccess((totalMemoriesHarvested / petChance) * 100, duration),
-		boosts
+		boosts,
+		energyPerMemory
 	};
 }
 

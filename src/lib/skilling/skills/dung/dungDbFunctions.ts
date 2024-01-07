@@ -9,11 +9,11 @@ export function hasRequiredLevels(user: MUser, floor: number) {
 	return skillsMeetRequirements(user.skillsAsXP, requiredSkills(floor));
 }
 
-export function maxFloorUserCanDo(user: MUser) {
+export function calcMaxFloorUserCanDo(user: MUser) {
 	return [7, 6, 5, 4, 3, 2, 1].find(floor => hasRequiredLevels(user, floor)) || 1;
 }
 
-export function gorajanShardChance(user: MUser) {
+export function calcGorajanShardChance(user: MUser) {
 	let goraShardBoosts = [];
 	let baseRate = 2000;
 	if (user.hasEquipped('Dungeoneering master cape')) {

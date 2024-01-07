@@ -1,5 +1,6 @@
 import { increaseNumByPercent, randInt } from 'e';
 
+import { chargePortentIfHasCharges, PortentID } from '../../../lib/bso/divination';
 import { BitField } from '../../../lib/constants';
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
@@ -61,6 +62,15 @@ export const togTask: MinionTask = {
 			xpToGive = increaseNumByPercent(xpToGive, 10);
 		}
 
+		const { didCharge } = await chargePortentIfHasCharges({
+			user,
+			portentID: PortentID.LuckyPortent,
+			charges: 1
+		});
+		if (didCharge) {
+			xpToGive *= 2;
+		}
+
 		const xpStr = await user.addXP({ skillName: lowestSkill, amount: xpToGive, duration, source: 'TearsOfGuthix' });
 
 		let output = `${user}, ${
@@ -70,6 +80,9 @@ export const togTask: MinionTask = {
 		}`;
 		if (hasEngram) {
 			output += ' 10% Bonus XP for Guthix engram';
+		}
+		if (didCharge) {
+			output += '\nYour Lucky Portent doubled your XP!';
 		}
 
 		await user.addToGodFavour(['Guthix'], data.duration);

@@ -1,7 +1,13 @@
 import { increaseNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { divinationEnergies, MemoryHarvestType, memoryHarvestTypes } from '../../lib/bso/divination';
+import {
+	divinationEnergies,
+	getAllPortentCharges,
+	MemoryHarvestType,
+	memoryHarvestTypes,
+	portents
+} from '../../lib/bso/divination';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { MemoryHarvestOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -47,14 +53,44 @@ export const divinationCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'portent',
+			description: 'View a portent.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'portent',
+					description: 'The portent to view.',
+					choices: portents.map(p => ({ name: p.item.name, value: p.item.name })),
+					required: true
+				}
+			]
 		}
 	],
 	run: async ({
 		options,
 		userID,
 		channelID
-	}: CommandRunOptions<{ harvest_memories?: { energy: string; type?: number } }>) => {
+	}: CommandRunOptions<{ harvest_memories?: { energy: string; type?: number }; portent?: { portent: string } }>) => {
 		const user = await mUserFetch(userID);
+
+		if (options.portent) {
+			const portentCharges = await getAllPortentCharges(user);
+			const portent = portents.find(p => p.item.name === options.portent!.portent);
+			if (!portent) {
+				return 'Invalid portent.';
+			}
+			return `**${portent.item.name}**
+			
+Description: ${portent.description}
+Cost: ${portent.cost}
+
+You have ${portentCharges[portent.id]} charges left, and you receive ${
+				portent.chargesPerPortent
+			} charges per portent used.`;
+		}
 
 		if (options.harvest_memories) {
 			const memoryHarvestMethodIndex = options.harvest_memories.type ?? 0;

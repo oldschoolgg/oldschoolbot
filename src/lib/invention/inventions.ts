@@ -411,14 +411,14 @@ export const Inventions: readonly Invention[] = [
 		item: getOSItem('Wisp-buster'),
 		materialTypeBank: new MaterialBank({
 			pious: 3,
-			crystal: 3,
+			powerful: 3,
 			magic: 3,
 			heavy: 1
 		}),
 		itemCost: null,
 		flags: ['equipped'],
 		inventionLevelNeeded: 100,
-		usageCostMultiplier: 3
+		usageCostMultiplier: 1
 	},
 	{
 		id: InventionID.DivineHand,
@@ -434,7 +434,7 @@ export const Inventions: readonly Invention[] = [
 		itemCost: null,
 		flags: ['equipped'],
 		inventionLevelNeeded: 100,
-		usageCostMultiplier: 3
+		usageCostMultiplier: 1
 	}
 ] as const;
 

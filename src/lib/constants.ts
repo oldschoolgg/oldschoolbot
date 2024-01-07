@@ -318,7 +318,8 @@ export enum BitField {
 	HasRadiantBoon = 222,
 	HasLuminousBoon = 223,
 	HasIncandescentBoon = 224,
-	HasVibrantBoon = 225
+	HasVibrantBoon = 225,
+	HasAncientBoon = 226
 }
 
 interface BitFieldData {
@@ -450,6 +451,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.HasVibrantBoon]: {
 		name: 'Has Vibrant Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasAncientBoon]: {
+		name: 'Has Ancient Boon',
 		protected: false,
 		userConfigurable: false
 	},

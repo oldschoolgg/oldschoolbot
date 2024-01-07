@@ -2,15 +2,16 @@ import { increaseNumByPercent, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { chargePortentIfHasCharges, PortentID } from '../../lib/bso/divination';
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import Agility from '../../lib/skilling/skills/agility';
-import { gorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
+import { calcGorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { Course, SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, clAdjustedDroprate, randomVariation, skillingPetDropRate } from '../../lib/util';
+import { addItemToBank, clAdjustedDroprate, randomVariation, skillingPetDropRate, toKMB } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';
@@ -72,7 +73,8 @@ export function calculateAgilityResult({
 	agilityLevel,
 	duration,
 	usingHarry,
-	hasDiaryBonus
+	hasDiaryBonus,
+	hasAgilityPortent
 }: {
 	quantity: number;
 	course: Course;
@@ -80,6 +82,7 @@ export function calculateAgilityResult({
 	duration: number;
 	usingHarry: boolean;
 	hasDiaryBonus: boolean;
+	hasAgilityPortent: boolean;
 }) {
 	const boosts: string[] = [];
 	const loot = new Bank();
@@ -97,7 +100,7 @@ export function calculateAgilityResult({
 		}
 	}
 
-	const xpReceived =
+	let xpReceived =
 		(quantity - lapsFailed / 2) * (typeof course.xp === 'number' ? course.xp : course.xp(agilityLevel));
 
 	// Calculate Crystal Shards for Priff
@@ -112,8 +115,15 @@ export function calculateAgilityResult({
 	}
 
 	const marksOfGrace = calculateMarks({ agilityLevel, course, quantity, hasDiaryBonus, boosts, usingHarry });
+	let portentXP = 0;
 	if (marksOfGrace > 0) {
-		loot.add('Mark of grace', marksOfGrace);
+		if (hasAgilityPortent) {
+			portentXP = marksOfGrace * 2312;
+			xpReceived += portentXP;
+			boosts.push(`Your Graceful portent granted you ${toKMB(portentXP)} bonus XP.`);
+		} else {
+			loot.add('Mark of grace', marksOfGrace);
+		}
 	}
 
 	return {
@@ -123,7 +133,8 @@ export function calculateAgilityResult({
 		failChance,
 		successfulLaps: quantity - lapsFailed,
 		marksOfGrace,
-		lapsFailed
+		lapsFailed,
+		portentXP
 	};
 }
 
@@ -131,6 +142,7 @@ export const agilityTask: MinionTask = {
 	type: 'Agility',
 	async run(data: AgilityActivityTaskOptions) {
 		let { courseID, quantity, userID, channelID, duration, alch } = data;
+		const minutes = Math.round(duration / Time.Minute);
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
@@ -139,19 +151,29 @@ export const agilityTask: MinionTask = {
 		const [hasArdyElite] = await userhasDiaryTier(user, ArdougneDiary.elite);
 		const hasDiaryBonus = hasArdyElite && course.name === 'Ardougne Rooftop Course';
 
-		const { successfulLaps, loot, xpReceived, lapsFailed } = calculateAgilityResult({
+		const portentResult = await chargePortentIfHasCharges({
+			user,
+			portentID: PortentID.GracefulPortent,
+			charges: minutes
+		});
+
+		const { successfulLaps, loot, xpReceived, lapsFailed, portentXP } = calculateAgilityResult({
 			quantity,
 			course,
 			agilityLevel: currentLevel,
 			duration,
 			hasDiaryBonus,
-			usingHarry: user.usingPet('Harry')
+			usingHarry: user.usingPet('Harry'),
+			hasAgilityPortent: portentResult.didCharge
 		});
 
 		const { laps_scores: newLapScores } = await userStatsUpdate(
 			user.id,
 			({ laps_scores }) => ({
-				laps_scores: addItemToBank(laps_scores as ItemBank, course.id, successfulLaps)
+				laps_scores: addItemToBank(laps_scores as ItemBank, course.id, successfulLaps),
+				xp_from_graceful_portent: {
+					increment: portentXP
+				}
 			}),
 			{ laps_scores: true }
 		);
@@ -202,7 +224,6 @@ export const agilityTask: MinionTask = {
 		}
 
 		// Roll for pets
-		const minutes = Math.round(duration / Time.Minute);
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			if (course.id === 4) {
 				const scruffyDroprate = clAdjustedDroprate(
@@ -247,7 +268,7 @@ export const agilityTask: MinionTask = {
 			if (course.id === 30) {
 				if (
 					user.skillLevel(SkillsEnum.Dungeoneering) >= 80 &&
-					roll(Math.floor((gorajanShardChance(user).chance * 2.5) / minutes))
+					roll(Math.floor((calcGorajanShardChance(user).chance * 2.5) / minutes))
 				) {
 					const item = roll(30) ? getOSItem('Dungeoneering dye') : getOSItem('Gorajan shards');
 					let shardQty = 1;
