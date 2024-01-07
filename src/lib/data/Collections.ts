@@ -1695,6 +1695,27 @@ export const allCollectionLogs: ICollection = {
 				items: resolveItems(['Buggy', 'Ban hammer', 'The Interrogator', 'Acrylic set', 'Golden cape shard']),
 				counts: false
 			},
+			'Christmas 2023': {
+				alias: ['xmas 2023', 'christmas 2023'],
+				items: resolveItems([
+					'Santa costume top (male)',
+					'Santa costume top (female)',
+					'Santa costume skirt',
+					'Santa costume pants',
+					'Santa costume gloves',
+					'Santa costume boots',
+					'Tinsel twirler',
+					'Grinch head',
+					'Grinch top',
+					'Grinch legs',
+					'Grinch feet',
+					'Grinch hands',
+					'Grinch santa hat',
+					'Christmas cake',
+					'Rudolph'
+				]),
+				counts: false
+			},
 			'Miscelleanous (Discontinued)': {
 				alias: ['discontinued misc'],
 				items: resolveItems(['Golden cape shard', 'Golden cape', 'Golden shard', 'Golden partyhat']),

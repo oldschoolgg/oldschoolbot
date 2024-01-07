@@ -142,5 +142,10 @@ export const bsoBuyables: Buyable[] = [
 			return [true];
 		},
 		globalAnnouncementOnFirstBuy: true
+	},
+	{
+		name: 'Wooden spoon',
+		gpCost: 1000,
+		outputItems: new Bank().add('Wooden spoon')
 	}
 ];

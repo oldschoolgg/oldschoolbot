@@ -103,7 +103,7 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 
 		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${users.length} users joined, the winner is... **${winner.mention}**
 
-They received these items: ${loot}`;
+They received these items: ${loot}.`;
 
 		await sendToChannelID(giveaway.channel_id, {
 			content: str

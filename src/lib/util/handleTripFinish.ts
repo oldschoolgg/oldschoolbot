@@ -309,7 +309,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			const minutes = Math.floor(data.duration / Time.Minute);
 			for (let i = 0; i < minutes; i++) {
 				if (roll(dropratePerMinute)) {
-					const loot = new Bank().add('Spooky crate (s3)');
+					const loot = new Bank().add('Festive crate (s4)');
 					await user.addItemsToBank({ items: loot, collectionLog: true });
 					messages.push(bold(`You found ${loot}!`));
 					break;

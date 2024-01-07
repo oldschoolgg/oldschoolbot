@@ -89,7 +89,8 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		sacrificedValue: 0,
 		id: overrides?.id ?? '',
 		disabled_inventions: [],
-		monsterScores: {}
+		monsterScores: {},
+		skills_divination: 0
 	} as unknown as User;
 };
 

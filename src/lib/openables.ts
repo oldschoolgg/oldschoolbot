@@ -504,3 +504,19 @@ for (const openable of allOpenables) {
 }
 
 export const allOpenablesIDs = new Set(allOpenables.map(i => i.id));
+
+export function getOpenableLoot({
+	openable,
+	quantity,
+	user,
+	totalLeaguesPoints
+}: {
+	openable: UnifiedOpenable;
+	quantity: number;
+	user: MUser;
+	totalLeaguesPoints: number;
+}) {
+	return openable.output instanceof LootTable
+		? { bank: openable.output.roll(quantity), message: null }
+		: openable.output({ user, self: openable, quantity, totalLeaguesPoints });
+}

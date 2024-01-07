@@ -91,6 +91,16 @@ const Crush: Mixable[] = [
 		wesley: true
 	},
 	{
+		item: getOSItem('Lava scale shard'),
+		aliases: ['lava dragon scale', 'lava dragon dust', 'lava dragon', 'lava shard'],
+		level: 1,
+		xp: 0,
+		inputItems: new Bank({ 'Lava scale': 1 }),
+		tickRate: 1,
+		bankTimePerPotion: 0,
+		wesley: true
+	},
+	{
 		item: getOSItem('Athelas paste'),
 		aliases: ['athelas paste', 'athelas'],
 		level: 82,
