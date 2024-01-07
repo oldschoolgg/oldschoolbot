@@ -1709,7 +1709,8 @@ export const allCollectionLogs: ICollection = {
 					'Grinch top',
 					'Grinch legs',
 					'Grinch feet',
-					'Grinch hands'
+					'Grinch hands',
+					'Grinch santa hat'
 				]),
 				counts: false
 			},
