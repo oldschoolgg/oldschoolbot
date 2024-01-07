@@ -865,7 +865,6 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		}
 
 		stopwatch.stop();
-		geLog(`GE tick took ${stopwatch}`);
 	}
 
 	async totalReset() {
