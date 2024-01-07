@@ -1,6 +1,5 @@
 import { GiftBoxStatus } from '@prisma/client';
-import { percentChance, roll, round, shuffleArr, sumArr, Time, uniqueArr } from 'e';
-import { writeFileSync } from 'fs';
+import { percentChance, roll, shuffleArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { z } from 'zod';
 
@@ -8,8 +7,7 @@ import { production } from '../config';
 import { Emoji } from './constants';
 import { prisma } from './settings/prisma';
 import { ActivityTaskData } from './types/minions';
-import { formatDuration, getInterval } from './util';
-import { barChart } from './util/chart';
+import { getInterval } from './util';
 import resolveItems from './util/resolveItems';
 
 export const smokeyLotteryMaxTickets = {
@@ -18,7 +16,6 @@ export const smokeyLotteryMaxTickets = {
 	grinchionTickets: 15,
 	challengeTickets: 1
 };
-const HOURS_PLAYED_PER_DAY = 13;
 
 export const grinchOutfit = resolveItems(['Grinch head', 'Grinch top', 'Grinch legs', 'Grinch feet', 'Grinch hands']);
 export const santaOutfit = resolveItems([
@@ -104,63 +101,6 @@ function determineLoot(cl: Bank, duration: number) {
 		smokeyLotteryTickets
 	};
 }
-
-function simulateFinishingSingleChristmas() {
-	const totalLoot = new Bank();
-	const tripLength = Time.Minute * 30;
-	let totalTime = 0;
-	let totalGifts = 0;
-	let totalGrinchesCaught = 0;
-	let totalTickets = 0;
-	while (
-		resolveItems([...grinchOutfit, ...santaOutfit, 'Grinch santa hat']).some(i => !totalLoot.has(i)) ||
-		totalTickets < smokeyLotteryMaxTickets.grinchionTickets
-	) {
-		totalTime += tripLength;
-		const { loot, gifts, grinchesCaught, smokeyLotteryTickets } = determineLoot(totalLoot, tripLength);
-		totalLoot.add(loot);
-		totalGifts += gifts;
-		totalGrinchesCaught += grinchesCaught;
-		totalTickets += smokeyLotteryTickets;
-	}
-
-	return {
-		totalTime,
-		totalLoot,
-		totalGrinchesCaught,
-		totalGifts,
-		totalTickets,
-		playTimeDays: round(Math.round(totalTime / Time.Hour) / HOURS_PLAYED_PER_DAY, 1)
-	};
-}
-
-async function simulateAverageFinish() {
-	const results: ReturnType<typeof simulateFinishingSingleChristmas>[] = [];
-	for (let i = 0; i < 500; i++) {
-		results.push(simulateFinishingSingleChristmas());
-	}
-	results.sort((a, b) => b.totalTime - a.totalTime);
-	const averageFinishTime = sumArr(results.map(i => i.totalTime)) / results.length;
-	const averageFinishTimeHours = averageFinishTime / Time.Hour;
-	const averageDaysToFinish = averageFinishTimeHours / HOURS_PLAYED_PER_DAY;
-	const averageGiftsPerFinish = sumArr(results.map(i => i.totalGifts)) / results.length;
-	const uniqueHours = uniqueArr(results.map(i => i.playTimeDays)).sort((a, b) => a - b);
-
-	console.log(`
-Average of ${formatDuration(averageFinishTime)} to finish, ${averageDaysToFinish.toFixed(
-		2
-	)} days of playtime (${HOURS_PLAYED_PER_DAY}hrs/day)
-Average of ${averageGiftsPerFinish} gifts
-`);
-
-	const res = await barChart(
-		'Finish Times',
-		str => str,
-		uniqueHours.map(i => [`${i} days`, results.filter(t => t.playTimeDays === i).length])
-	);
-	writeFileSync('./finishTimes.png', res);
-}
-simulateAverageFinish();
 
 export async function christmasEventTripEffect({
 	users,
