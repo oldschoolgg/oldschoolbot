@@ -2,8 +2,8 @@ import { randInt } from 'e';
 
 import { userHasMasterFarmerOutfit } from '../../../mahoji/mahojiSettings';
 import { BitField } from '../../constants';
-import { doaCL } from '../../data/CollectionsExport';
 import { Favours, gotFavour } from '../../minions/data/kourendFavour';
+import { hasUnlockedAtlantis } from '../../util';
 import { FarmingPatchName } from '../../util/farmingHelpers';
 import { Plant, SkillsEnum } from '../types';
 
@@ -47,7 +47,7 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 		seaweed: 2,
 		tree: 1
 	};
-	if (doaCL.some(itemID => user.cl.has(itemID))) {
+	if (hasUnlockedAtlantis(user)) {
 		const extraAtlantisPatches = atlantisPatches[plant.seedType];
 		if (extraAtlantisPatches) {
 			numOfPatches += extraAtlantisPatches;

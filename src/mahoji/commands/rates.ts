@@ -71,45 +71,49 @@ export const ratesCommand: OSBMahojiCommand = {
 			for (const energy of divinationEnergies) {
 				for (const harvestMethod of memoryHarvestTypes) {
 					for (const hasBoonAndWispBusterAndGuthixianBoost of [true, false]) {
-						const res = memoryHarvestResult({
-							duration: Time.Hour,
-							energy,
-							hasBoon: hasBoonAndWispBusterAndGuthixianBoost,
-							harvestMethod: harvestMethod.id,
-							divinationLevel: user.skillLevel('divination'),
-							hasGuthixianBoost: hasBoonAndWispBusterAndGuthixianBoost,
-							hasDivineHand: hasBoonAndWispBusterAndGuthixianBoost,
-							hasWispBuster: hasBoonAndWispBusterAndGuthixianBoost
-						});
+						for (const hasPot of [true, false]) {
+							const res = memoryHarvestResult({
+								duration: Time.Hour,
+								energy,
+								hasBoon: hasBoonAndWispBusterAndGuthixianBoost,
+								harvestMethod: harvestMethod.id,
+								hasGuthixianBoost: hasBoonAndWispBusterAndGuthixianBoost,
+								hasDivineHand: hasBoonAndWispBusterAndGuthixianBoost,
+								hasWispBuster: hasBoonAndWispBusterAndGuthixianBoost,
+								isUsingDivinationPotion: hasPot
+							});
 
-						const energyPerHour = calcPerHour(res.loot.amount(energy.item.id), Time.Hour);
+							const energyPerHour = calcPerHour(res.loot.amount(energy.item.id), Time.Hour);
 
-						const nextEnergy = divinationEnergies[divinationEnergies.indexOf(energy) + 1];
-						let timeToGetBoon = 0;
-						if (
-							nextEnergy &&
-							nextEnergy.boonEnergyCost &&
-							energyPerHour > 0 &&
-							res.loot.has(energy.item.id)
-						) {
-							timeToGetBoon = nextEnergy.boonEnergyCost / energyPerHour;
+							const nextEnergy = divinationEnergies[divinationEnergies.indexOf(energy) + 1];
+							let timeToGetBoon = 0;
+							if (
+								nextEnergy &&
+								nextEnergy.boonEnergyCost &&
+								energyPerHour > 0 &&
+								res.loot.has(energy.item.id)
+							) {
+								timeToGetBoon = nextEnergy.boonEnergyCost / energyPerHour;
+							}
+
+							results += [
+								energy.type,
+								harvestMethod.name,
+								hasBoonAndWispBusterAndGuthixianBoost
+									? 'Has Boon+Wispbuster+GuthixianBoost'
+									: 'No boosts',
+								res.avgPetTime / Time.Hour,
+								res.totalDivinationXP * GLOBAL_BSO_XP_MULTIPLIER,
+								calcPerHour(res.totalMemoriesHarvested, Time.Hour),
+								calcPerHour(res.loot.amount('Clue scroll (grandmaster)'), Time.Hour),
+								calcPerHour(res.loot.amount('Clue scroll (master)'), Time.Hour),
+								energyPerHour,
+								calcPerHour(res.cost.amount(energy.item.id), Time.Hour),
+								res.energyPerMemory,
+								timeToGetBoon
+							].join('\t');
+							results += '\n';
 						}
-
-						results += [
-							energy.type,
-							harvestMethod.name,
-							hasBoonAndWispBusterAndGuthixianBoost ? 'Has Boon+Wispbuster+GuthixianBoost' : 'No boosts',
-							res.avgPetTime / Time.Hour,
-							res.totalDivinationXP * GLOBAL_BSO_XP_MULTIPLIER,
-							calcPerHour(res.totalMemoriesHarvested, Time.Hour),
-							calcPerHour(res.loot.amount('Clue scroll (grandmaster)'), Time.Hour),
-							calcPerHour(res.loot.amount('Clue scroll (master)'), Time.Hour),
-							energyPerHour,
-							calcPerHour(res.cost.amount(energy.item.id), Time.Hour),
-							res.energyPerMemory,
-							timeToGetBoon
-						].join('\t');
-						results += '\n';
 					}
 				}
 			}

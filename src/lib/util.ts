@@ -54,6 +54,7 @@ import {
 	usernameCache
 } from './constants';
 import { UserStatsDataNeededForCL } from './data/Collections';
+import { doaCL } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import type { Consumable } from './minions/types';
@@ -773,4 +774,8 @@ export function checkRangeGearWeapon(gear: Gear) {
 		weapon,
 		ammo
 	};
+}
+
+export function hasUnlockedAtlantis(user: MUser) {
+	return doaCL.some(itemID => user.cl.has(itemID));
 }

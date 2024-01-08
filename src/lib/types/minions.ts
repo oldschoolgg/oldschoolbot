@@ -674,6 +674,7 @@ export interface MemoryHarvestOptions extends ActivityTaskOptions {
 	t: number;
 	wb: boolean;
 	dh: boolean;
+	dp: boolean;
 }
 
 export type ActivityTaskData =

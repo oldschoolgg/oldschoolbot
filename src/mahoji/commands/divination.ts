@@ -1,5 +1,6 @@
 import { increaseNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { Bank } from 'oldschooljs';
 
 import {
 	divinationEnergies,
@@ -51,6 +52,11 @@ export const divinationCommand: OSBMahojiCommand = {
 							value: MemoryHarvestType.ConvertWithEnergyToXP
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'no_potion',
+					description: 'Dont use divination potions'
 				}
 			]
 		},
@@ -73,7 +79,10 @@ export const divinationCommand: OSBMahojiCommand = {
 		options,
 		userID,
 		channelID
-	}: CommandRunOptions<{ harvest_memories?: { energy: string; type?: number }; portent?: { portent: string } }>) => {
+	}: CommandRunOptions<{
+		harvest_memories?: { energy: string; type?: number; no_potion?: boolean };
+		portent?: { portent: string };
+	}>) => {
 		const user = await mUserFetch(userID);
 
 		if (options.portent) {
@@ -104,7 +113,22 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 				return 'Invalid energy type.';
 			}
 
-			if (energy.level > user.skillLevel('divination')) {
+			if ('hasReq' in energy && energy.hasReq) {
+				const unmetReason = energy.hasReq(user);
+				if (unmetReason !== null) {
+					return unmetReason;
+				}
+			}
+
+			const potionBank = new Bank().add('Divination potion');
+			const isUsingDivinationPotion = !options.harvest_memories.no_potion && user.owns(potionBank);
+
+			let effectiveLevel = user.skillLevel('divination');
+			if (isUsingDivinationPotion) {
+				effectiveLevel += 10;
+			}
+
+			if (energy.level > effectiveLevel) {
 				return `You need ${energy.level} divination to harvest ${energy.type} memories.`;
 			}
 
@@ -151,9 +175,9 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 				harvestMethod: memoryHarvestMethodIndex,
 				hasBoon: energy.boonBitfield !== null ? user.bitfield.includes(energy.boonBitfield) : false,
 				hasWispBuster,
-				divinationLevel: user.skillLevel('divination'),
 				hasGuthixianBoost,
-				hasDivineHand
+				hasDivineHand,
+				isUsingDivinationPotion
 			});
 
 			if (
@@ -161,6 +185,10 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 				user.bank.amount(energy.item.id) < increaseNumByPercent(preEmptiveResult.cost.amount(energy.item.id), 5)
 			) {
 				return `You don't have enough ${energy.item.name} to convert with energy, get more or switch to a different harvest method.`;
+			}
+
+			if (isUsingDivinationPotion) {
+				await user.removeItemsFromBank(potionBank);
 			}
 
 			await addSubTaskToActivityTask<MemoryHarvestOptions>({
@@ -171,7 +199,8 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 				e: energy.item.id,
 				t: memoryHarvestMethodIndex,
 				wb: hasWispBuster,
-				dh: hasDivineHand
+				dh: hasDivineHand,
+				dp: isUsingDivinationPotion
 			});
 
 			let str = `${user.minionName} is now harvesting ${energy.type} memories (${

@@ -40,9 +40,9 @@ export function memoryHarvestResult({
 	hasBoon,
 	hasWispBuster,
 	hasDivineHand,
-	hasGuthixianBoost
+	hasGuthixianBoost,
+	isUsingDivinationPotion
 }: {
-	divinationLevel: number;
 	duration: number;
 	energy: (typeof divinationEnergies)[0];
 	harvestMethod: MemoryHarvestType;
@@ -50,6 +50,7 @@ export function memoryHarvestResult({
 	hasWispBuster: boolean;
 	hasGuthixianBoost: boolean;
 	hasDivineHand: boolean;
+	isUsingDivinationPotion: boolean;
 }) {
 	const boosts: string[] = [];
 
@@ -91,6 +92,9 @@ export function memoryHarvestResult({
 						energyAmount,
 						inventionBoosts.divineHand.memoryHarvestExtraYieldPercent
 					);
+				}
+				if (isUsingDivinationPotion) {
+					energyAmount = increaseNumByPercent(energyAmount, 3);
 				}
 				loot.add(energy.item, Math.ceil(energyAmount));
 				break;
@@ -134,6 +138,11 @@ export function memoryHarvestResult({
 		boosts.push(`${inventionBoosts.divineHand.memoryHarvestExtraYieldPercent}% extra energy for Divine hand`);
 	}
 
+	if (isUsingDivinationPotion) {
+		totalDivinationXP = increaseNumByPercent(totalDivinationXP, 3);
+		boosts.push('3% extra XP/energy for Divination potion');
+	}
+
 	return {
 		cost,
 		loot,
@@ -156,7 +165,8 @@ export const memoryHarvestTask: MinionTask = {
 			e: energyItemID,
 			t: harvestMethodIndex,
 			wb: hasWispBuster,
-			dh: hasDivineHand
+			dh: hasDivineHand,
+			dp: isUsingDivinationPotion
 		} = data;
 		const user = await mUserFetch(userID);
 		const energy = divinationEnergies.find(t => t.item.id === energyItemID)!;
@@ -178,9 +188,9 @@ export const memoryHarvestTask: MinionTask = {
 				energy,
 				harvestMethod: harvestMethodIndex,
 				hasWispBuster,
-				divinationLevel: user.skillLevel('divination'),
 				hasGuthixianBoost: didGetGuthixianBoost,
-				hasDivineHand
+				hasDivineHand,
+				isUsingDivinationPotion
 			});
 
 		if (cost.length > 0) {

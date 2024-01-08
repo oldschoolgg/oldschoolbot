@@ -4,6 +4,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../constants';
 import { prisma } from '../settings/prisma';
+import { hasUnlockedAtlantis } from '../util';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 
@@ -221,7 +222,13 @@ export const divinationEnergies = [
 		clueTable: new LootTable()
 			.add('Clue scroll (elite)', 1, 2)
 			.add('Clue scroll (master)', 1, 2)
-			.add('Clue scroll (grandmaster)', 1, 1)
+			.add('Clue scroll (grandmaster)', 1, 1),
+		hasReq: (user: MUser) => {
+			if (!hasUnlockedAtlantis(user)) {
+				return 'You need to have unlocked the city of Atlantis to harvest this energy.';
+			}
+			return null;
+		}
 	}
 ];
 
