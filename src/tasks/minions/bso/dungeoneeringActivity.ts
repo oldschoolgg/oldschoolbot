@@ -78,7 +78,7 @@ export function calculateDungeoneeringResult({
 		loot.add('Gorajan bonecrusher (u)');
 	}
 
-	let portentXP = tokens * 16.646;
+	let portentXP = Math.ceil(tokens * 16.646);
 	if (hasDungeonPortent && tokens > 0) {
 		xp += portentXP;
 		tokens = 0;

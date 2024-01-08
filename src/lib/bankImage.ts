@@ -183,6 +183,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Grimy dwarf weed'), 'dwarf'],
 	[i('Grimy torstol'), 'torstol'],
 	[i('Grimy korulsi'), 'korulsi'],
+	[i('Grimy spirit weed'), 'spirit'],
 
 	[i('Compost'), 'compost'],
 	[i('Supercompost'), 'super'],

@@ -10806,3 +10806,15 @@ setCustomItem(
 	},
 	1
 );
+
+setCustomItem(
+	73_049,
+	'Divination potion',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);

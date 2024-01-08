@@ -559,6 +559,15 @@ const Potions: Mixable[] = [
 		}),
 		tickRate: 2,
 		bankTimePerPotion: 0.3
+	},
+	{
+		item: getOSItem('Divination potion'),
+		aliases: ['divination potion'],
+		level: 105,
+		xp: 115,
+		inputItems: new Bank().add('Spirit weed').add('Advax berry'),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
 	}
 ];
 

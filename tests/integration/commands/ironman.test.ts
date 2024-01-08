@@ -104,7 +104,7 @@ describe('Ironman Command', () => {
 		const user = await mUserFetch(userId);
 		expect(user.GP).toEqual(0);
 		expect(user.isIronman).toEqual(true);
-		expect(user.totalLevel).toEqual(34);
+		expect(user.totalLevel).toEqual(35);
 		expect(user.QP).toEqual(0);
 		expect(user.bank.equals(new Bank())).toEqual(true);
 		expect(user.cl.equals(new Bank())).toEqual(true);

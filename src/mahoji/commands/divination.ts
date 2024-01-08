@@ -158,7 +158,7 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 
 			if (
 				method.id === MemoryHarvestType.ConvertWithEnergyToXP &&
-				user.bank.amount(energy.item.id) < increaseNumByPercent(preEmptiveResult.totalMemoriesHarvested, 5) * 5
+				user.bank.amount(energy.item.id) < increaseNumByPercent(preEmptiveResult.cost.amount(energy.item.id), 5)
 			) {
 				return `You don't have enough ${energy.item.name} to convert with energy, get more or switch to a different harvest method.`;
 			}
