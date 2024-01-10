@@ -24,7 +24,7 @@ for (let i = 0; i < divinationEnergies.length; i++) {
 for (const portent of portents) {
 	divinationCreatables.push({
 		name: portent.item.name,
-		inputItems: portent.cost,
+		inputItems: portent.cost.clone().add('Elder rune', 20),
 		outputItems: new Bank().add(portent.item),
 		requiredSkills: {
 			divination: portent.divinationLevelToCreate

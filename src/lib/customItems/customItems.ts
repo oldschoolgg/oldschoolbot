@@ -10818,3 +10818,27 @@ setCustomItem(
 	},
 	1
 );
+
+setCustomItem(
+	73_050,
+	'Divine egg',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_051,
+	'Jar of memories',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);

@@ -14,17 +14,19 @@ const MEMORIES_PER_HARVEST = SECONDS_TO_HARVEST * 2;
 const SECONDS_TO_CONVERT = 1;
 
 function calcConversionResult(hasBoon: boolean, method: MemoryHarvestType, energy: (typeof divinationEnergies)[0]) {
+	let convertToXPXP = hasBoon ? energy.convertBoon ?? energy.convertNormal : energy.convertNormal;
+
 	switch (method) {
 		case MemoryHarvestType.ConvertToXP: {
-			let xp = hasBoon ? energy.convertBoon ?? energy.convertNormal : energy.convertNormal;
-			return { xp };
+			return { xp: convertToXPXP };
 		}
 		case MemoryHarvestType.ConvertToEnergy: {
-			let xp = 1;
+			let xp = 1 + Math.ceil(convertToXPXP / 3.5);
 			return { xp };
 		}
 		case MemoryHarvestType.ConvertWithEnergyToXP: {
 			let xp = hasBoon ? energy.convertWithEnergyAndBoon ?? energy.convertWithEnergy : energy.convertWithEnergy;
+			xp = increaseNumByPercent(xp, 15);
 			return { xp };
 		}
 		default: {
@@ -54,7 +56,7 @@ export function memoryHarvestResult({
 }) {
 	const boosts: string[] = [];
 
-	const petChance = (200 - energy.level) * 100_000;
+	const petChance = (200 - energy.level) * 20_000;
 	const totalSeconds = Math.round(duration / Time.Second);
 	let totalTimePerRound = SECONDS_TO_HARVEST + SECONDS_TO_CONVERT * MEMORIES_PER_HARVEST;
 
@@ -74,14 +76,21 @@ export function memoryHarvestResult({
 
 		// Step 2: Convert memories
 		let { xp } = calcConversionResult(hasBoon, harvestMethod, energy);
-		xp = increaseNumByPercent(xp, 30);
+		xp = increaseNumByPercent(xp, 40);
+
 		totalDivinationXP += xp * memoriesHarvested;
 
 		switch (harvestMethod) {
 			case MemoryHarvestType.ConvertToXP: {
+				if (roll(75)) {
+					loot.add('Divine egg');
+				}
 				break;
 			}
 			case MemoryHarvestType.ConvertToEnergy: {
+				if (roll(30)) {
+					loot.add('Divine egg');
+				}
 				let energyAmount = energyPerMemory * memoriesHarvested;
 				if (hasGuthixianBoost) {
 					const twentyPercentRoundedUp = Math.ceil(calcPercentOfNum(20, energyAmount));

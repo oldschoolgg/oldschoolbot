@@ -133,7 +133,7 @@ export const inventionBoosts = {
 		toaPercentReduction: 60
 	},
 	wispBuster: {
-		xpIncreasePercent: 25
+		xpIncreasePercent: 30
 	},
 	divineHand: {
 		memoryHarvestExtraYieldPercent: 30
@@ -407,12 +407,12 @@ export const Inventions: readonly Invention[] = [
 	{
 		id: InventionID.WispBuster,
 		name: 'Wisp-buster',
-		description: 'A device increases the speed of memory harvesting, giving more xp/hr.',
+		description: `A device increases the speed of memory harvesting, giving ${inventionBoosts.wispBuster.xpIncreasePercent}% more xp.`,
 		item: getOSItem('Wisp-buster'),
 		materialTypeBank: new MaterialBank({
-			pious: 3,
-			powerful: 3,
-			magic: 3,
+			pious: 4,
+			powerful: 1,
+			magic: 4,
 			heavy: 1
 		}),
 		itemCost: null,
@@ -423,13 +423,12 @@ export const Inventions: readonly Invention[] = [
 	{
 		id: InventionID.DivineHand,
 		name: 'Divine hand',
-		description:
-			'A device that enhances the harvesting of divination memories, increasing yield and harvesting clue scrolls.',
+		description: `A device that enhances the harvesting of divination memories, increasing energy yield by ${inventionBoosts.divineHand.memoryHarvestExtraYieldPercent}% and harvesting clue scrolls.`,
 		item: getOSItem('Divine hand'),
 		materialTypeBank: new MaterialBank({
 			pious: 2,
-			magic: 3,
-			strong: 5
+			magic: 7,
+			strong: 1
 		}),
 		itemCost: null,
 		flags: ['equipped'],

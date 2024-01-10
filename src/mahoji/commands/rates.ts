@@ -57,7 +57,11 @@ export const ratesCommand: OSBMahojiCommand = {
 			let results = `${[
 				'Type',
 				'Method',
-				'Boosts',
+				'Wisp-buster',
+				'Cache Boost',
+				'Divine Hand',
+				'Divination Potion',
+				'Boon',
 				'Pet Time (Hours)',
 				'XP/Hr',
 				'Memories/HR',
@@ -70,49 +74,56 @@ export const ratesCommand: OSBMahojiCommand = {
 			].join('\t')}\n`;
 			for (const energy of divinationEnergies) {
 				for (const harvestMethod of memoryHarvestTypes) {
-					for (const hasBoonAndWispBusterAndGuthixianBoost of [true, false]) {
-						for (const hasPot of [true, false]) {
-							const res = memoryHarvestResult({
-								duration: Time.Hour,
-								energy,
-								hasBoon: hasBoonAndWispBusterAndGuthixianBoost,
-								harvestMethod: harvestMethod.id,
-								hasGuthixianBoost: hasBoonAndWispBusterAndGuthixianBoost,
-								hasDivineHand: hasBoonAndWispBusterAndGuthixianBoost,
-								hasWispBuster: hasBoonAndWispBusterAndGuthixianBoost,
-								isUsingDivinationPotion: hasPot
-							});
+					for (const hasCacheBoost of [true, false]) {
+						for (const hasPotAndBoon of [true, false]) {
+							for (const hasWispBuster of [true, false]) {
+								for (const hasDivineHand of [true, false]) {
+									if (hasDivineHand && hasWispBuster) continue;
+									const res = memoryHarvestResult({
+										duration: Time.Hour,
+										energy,
+										hasBoon: hasPotAndBoon,
+										harvestMethod: harvestMethod.id,
+										hasGuthixianBoost: hasCacheBoost,
+										hasDivineHand,
+										hasWispBuster,
+										isUsingDivinationPotion: hasPotAndBoon
+									});
 
-							const energyPerHour = calcPerHour(res.loot.amount(energy.item.id), Time.Hour);
+									const energyPerHour = calcPerHour(res.loot.amount(energy.item.id), Time.Hour);
 
-							const nextEnergy = divinationEnergies[divinationEnergies.indexOf(energy) + 1];
-							let timeToGetBoon = 0;
-							if (
-								nextEnergy &&
-								nextEnergy.boonEnergyCost &&
-								energyPerHour > 0 &&
-								res.loot.has(energy.item.id)
-							) {
-								timeToGetBoon = nextEnergy.boonEnergyCost / energyPerHour;
+									const nextEnergy = divinationEnergies[divinationEnergies.indexOf(energy) + 1];
+									let timeToGetBoon = 0;
+									if (
+										nextEnergy &&
+										nextEnergy.boonEnergyCost &&
+										energyPerHour > 0 &&
+										res.loot.has(energy.item.id)
+									) {
+										timeToGetBoon = nextEnergy.boonEnergyCost / energyPerHour;
+									}
+
+									results += [
+										energy.type,
+										harvestMethod.name,
+										hasWispBuster ? 'Has Wisp-buster' : 'No Wisp-buster',
+										hasCacheBoost ? 'Has Cache Boost' : 'No Cache Boost',
+										hasDivineHand ? 'Has Divine Hand' : 'No Divine Hand',
+										hasPotAndBoon ? 'Has Pot' : 'No Pot',
+										hasPotAndBoon ? 'Has Boon' : 'No Boon',
+										res.avgPetTime / Time.Hour,
+										res.totalDivinationXP * GLOBAL_BSO_XP_MULTIPLIER,
+										calcPerHour(res.totalMemoriesHarvested, Time.Hour),
+										calcPerHour(res.loot.amount('Clue scroll (grandmaster)'), Time.Hour),
+										calcPerHour(res.loot.amount('Clue scroll (master)'), Time.Hour),
+										energyPerHour,
+										calcPerHour(res.cost.amount(energy.item.id), Time.Hour),
+										res.energyPerMemory,
+										timeToGetBoon
+									].join('\t');
+									results += '\n';
+								}
 							}
-
-							results += [
-								energy.type,
-								harvestMethod.name,
-								hasBoonAndWispBusterAndGuthixianBoost
-									? 'Has Boon+Wispbuster+GuthixianBoost'
-									: 'No boosts',
-								res.avgPetTime / Time.Hour,
-								res.totalDivinationXP * GLOBAL_BSO_XP_MULTIPLIER,
-								calcPerHour(res.totalMemoriesHarvested, Time.Hour),
-								calcPerHour(res.loot.amount('Clue scroll (grandmaster)'), Time.Hour),
-								calcPerHour(res.loot.amount('Clue scroll (master)'), Time.Hour),
-								energyPerHour,
-								calcPerHour(res.cost.amount(energy.item.id), Time.Hour),
-								res.energyPerMemory,
-								timeToGetBoon
-							].join('\t');
-							results += '\n';
 						}
 					}
 				}

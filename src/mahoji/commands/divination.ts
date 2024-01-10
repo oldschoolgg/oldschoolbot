@@ -1,4 +1,4 @@
-import { increaseNumByPercent } from 'e';
+import { increaseNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
@@ -131,10 +131,15 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 			if (energy.level > effectiveLevel) {
 				return `You need ${energy.level} divination to harvest ${energy.type} memories.`;
 			}
-
-			const duration = calcMaxTripLength(user, 'MemoryHarvest');
-
 			const boosts: string[] = [];
+
+			let duration = calcMaxTripLength(user, 'MemoryHarvest');
+
+			if (user.hasEquipped('Jar of memories')) {
+				duration += Time.Minute * 7;
+				boosts.push('7mins extra trip length for Jar of memories');
+			}
+
 			let hasWispBuster = false;
 			let hasDivineHand = false;
 			if (user.hasEquipped('Wisp-buster')) {
