@@ -85,10 +85,14 @@ export const sacrificeCommand: OSBMahojiCommand = {
 
 		// Show user sacrifice stats if no options are given for /sacrifice
 		if (!options.filter && !options.items && !options.search) {
-			return `${Emoji.Incinerator} **Your Sacrifice Stats** ${
-				Emoji.Incinerator
-			}\n\n**Current Minion Icon:** ${currentIcon}\n**Sacrificed Value:** ${sacVal.toLocaleString()} GP\n**Unique Items Sacrificed:** ${sacUniqVal.toLocaleString()} items`;
+			return (
+				`${Emoji.Incinerator} **Your Sacrifice Stats** ${Emoji.Incinerator}\n\n` +
+				`**Current Minion Icon:** ${currentIcon === null ? Emoji.Minion : currentIcon}\n` +
+				`**Sacrificed Value:** ${sacVal.toLocaleString()} GP\n` +
+				`**Unique Items Sacrificed:** ${sacUniqVal.toLocaleString()} item${sacUniqVal === 1 ? '' : 's'}`
+			);
 		}
+
 		deferInteraction(interaction);
 
 		const bankToSac = parseBank({
