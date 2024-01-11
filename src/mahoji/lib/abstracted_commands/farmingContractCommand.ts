@@ -6,7 +6,7 @@ import { ContractOption, FarmingContract, FarmingContractDifficultyLevel } from 
 import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
 import { plants } from '../../../lib/skilling/skills/farming';
-import { makeComponents, makeEasierFarmingContractButton, roughMergeMahojiResponse } from '../../../lib/util';
+import { makeAutoContractButton, makeComponents, makeEasierFarmingContractButton, roughMergeMahojiResponse } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { findPlant } from '../../../lib/util/farmingHelpers';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
@@ -87,7 +87,7 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 					)
 				).files,
 				components:
-					newContractLevel !== 'easy' ? makeComponents([makeEasierFarmingContractButton()]) : undefined
+					newContractLevel !== 'easy' ? makeComponents([makeAutoContractButton, makeEasierFarmingContractButton()]) : undefined
 			};
 		}
 
@@ -104,7 +104,7 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 			).files,
 			components:
 				currentContract.difficultyLevel !== 'easy'
-					? makeComponents([makeEasierFarmingContractButton()])
+					? makeComponents([makeAutoContractButton, makeEasierFarmingContractButton()])
 					: undefined
 		};
 	}
@@ -140,7 +140,7 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 				`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
 			)
 		).files,
-		components: input !== 'easy' ? makeComponents([makeEasierFarmingContractButton()]) : undefined
+		components: input !== 'easy' ? makeComponents([makeAutoContractButton, makeEasierFarmingContractButton()]) : undefined
 	};
 }
 
