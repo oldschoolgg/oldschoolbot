@@ -108,7 +108,7 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 			components:
 				currentContract.difficultyLevel !== 'easy'
 					? makeComponents([makeAutoContractButton, makeEasierFarmingContractButton()])
-				: undefined
+					: undefined
 		};
 	}
 
