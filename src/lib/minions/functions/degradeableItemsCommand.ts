@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { mahojiParseNumber } from '../../../mahoji/mahojiSettings';
 import { degradeableItems } from '../../degradeableItems';
 import { stringMatches } from '../../util';
+import getOSItem from '../../util/getOSItem';
 import { handleMahojiConfirmation } from '../../util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../util/updateBankSetting';
 
@@ -37,6 +38,11 @@ export async function degradeableItemsCommand(
 		return `You don't own ${cost}.`;
 	}
 
+	// Error for Ash sanctifier
+	if (item.item === getOSItem('Ash sanctifier') && !user.owns('Ash sanctifier')) {
+		return "You don't own a Ash sanctifier.";
+	}
+
 	// Check if the item needs converted and has a uncharged version
 	const needConvert = item.convertOnCharge && item.unchargedItem;
 
@@ -52,9 +58,8 @@ export async function degradeableItemsCommand(
 	}
 
 	// Show error message if the user doesn't have the charged, uncharged, or variants of the item in the bank
-	if (!user.hasEquippedOrInBank(chargedItem.id) && !user.owns(unchargedItem.id)) {
-		return `You don't own a ${chargedItem.name}${
-			unchargedItem!.name === chargedItem.name ? '' : `, ${unchargedItem!.name}`
+	if (needConvert && !user.hasEquippedOrInBank(chargedItem.id) && !user.hasEquippedOrInBank(unchargedItem.id)) {
+		return `You don't own a ${chargedItem.name}, ${unchargedItem!.name}
 		}${item.itemVariants.length >= 1 ? ', or any variants.' : '.'}`;
 	}
 

@@ -329,7 +329,6 @@ export async function degradeItem({
 			await user.update({
 				[`gear_${degItem.setup}`]: gear
 			});
-			console.log(removeItems);
 			itemsDeleted.add(removeItems);
 			// Add the uncharged version to the users bank
 			await user.addItemsToBank({ items: refundItems, collectionLog: false });
