@@ -18,7 +18,7 @@ const BarTable = new LootTable()
 	.add(HighTierStoneSpiritTable, 10);
 
 export const MoktangLootTable = new LootTable()
-	.every(StoneSpiritTable, [3, 6])
+	.every(StoneSpiritTable, [15, 30])
 	.tertiary(1536, 'Mini moktang')
 	.tertiary(750, 'Volcanic dye')
 	.tertiary(716, 'Igne gear frame')

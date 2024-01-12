@@ -37,7 +37,8 @@ export enum InventionID {
 	RoboFlappy = 15,
 	ChinCannon = 16,
 	WispBuster = 17,
-	DivineHand = 18
+	DivineHand = 18,
+	DrygoreAxe = 19
 }
 
 export type Invention = Readonly<{
@@ -137,6 +138,9 @@ export const inventionBoosts = {
 	},
 	divineHand: {
 		memoryHarvestExtraYieldPercent: 30
+	},
+	drygoreAxe: {
+		woodcuttingSpeedBoostPercent: 30
 	}
 } as const;
 
@@ -434,6 +438,20 @@ export const Inventions: readonly Invention[] = [
 		flags: ['equipped'],
 		inventionLevelNeeded: 100,
 		usageCostMultiplier: 1
+	},
+	{
+		id: InventionID.DrygoreAxe,
+		name: 'Drygore axe',
+		description: `Speeds up woodcutting by ${inventionBoosts.drygoreAxe.woodcuttingSpeedBoostPercent}%.`,
+		item: getOSItem('Drygore axe'),
+		materialTypeBank: new MaterialBank({
+			drygore: 7,
+			sharp: 3
+		}),
+		itemCost: new Bank().add('Dwarven greataxe'),
+		flags: ['equipped'],
+		inventionLevelNeeded: 100,
+		usageCostMultiplier: 0.85
 	}
 ] as const;
 

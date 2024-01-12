@@ -253,7 +253,10 @@ export enum PortentID {
 	GracefulPortent = itemID('Graceful portent'),
 	RoguesPortent = itemID('Rogues portent'),
 	DungeonPortent = itemID('Dungeon portent'),
-	LuckyPortent = itemID('Lucky portent')
+	LuckyPortent = itemID('Lucky portent'),
+	RebirthPortent = itemID('Rebirth portent'),
+	MiningPortent = itemID('Mining portent'),
+	LumberjackPortent = itemID('Lumberjack portent')
 }
 interface SourcePortent {
 	id: PortentID;
@@ -316,6 +319,26 @@ export const portents: SourcePortent[] = [
 		chargesPerPortent: 4,
 		addChargeMessage: portent =>
 			`You used a Lucky portent, your next ${portent.charges_remaining} Tears of Guthix or Item Contracts will grant you double the reward.`
+	},
+	{
+		id: PortentID.RebirthPortent,
+		item: getOSItem('Rebirth portent'),
+		description: 'Gives you a chance to receive divine eggs from skilling, 1 charge per egg.',
+		divinationLevelToCreate: 90,
+		cost: new Bank().add('Brilliant energy', 512).add('Twisted bow', 1000),
+		chargesPerPortent: 4,
+		addChargeMessage: portent =>
+			`You used a Rebirth portent, you can now receive ${portent.charges_remaining}x Divine eggs from skilling.`
+	},
+	{
+		id: PortentID.MiningPortent,
+		item: getOSItem('Mining portent'),
+		description: 'Gives you a chance to receive divine eggs from skilling, 1 charge per egg.',
+		divinationLevelToCreate: 90,
+		cost: new Bank().add('Brilliant energy', 512).add('Twisted bow', 1000),
+		chargesPerPortent: 4,
+		addChargeMessage: portent =>
+			`You used a Mining portent, you can now receive ${portent.charges_remaining}x Divine eggs from skilling.`
 	}
 ];
 

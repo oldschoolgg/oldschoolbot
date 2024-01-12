@@ -10842,3 +10842,41 @@ setCustomItem(
 	},
 	1
 );
+
+setCustomItem(
+	73_052,
+	'Rebirth portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_053,
+	'Mining portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_054,
+	'Lumberjack portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+// 73_055 Drygore axe

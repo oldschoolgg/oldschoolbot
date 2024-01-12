@@ -25525,6 +25525,7 @@ exports[`BSO Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "1775": 50,
+        "50021": 20,
         "73013": 500,
       },
       "frozen": false,
@@ -25545,6 +25546,7 @@ exports[`BSO Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "3016": 30,
+        "50021": 20,
         "73012": 500,
       },
       "frozen": false,
@@ -25564,7 +25566,7 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
-        "50021": 1000,
+        "50021": 1020,
         "73045": 200,
       },
       "frozen": false,
@@ -25585,6 +25587,7 @@ exports[`BSO Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "20997": 1000,
+        "50021": 20,
         "73005": 512,
       },
       "frozen": false,
@@ -25605,6 +25608,7 @@ exports[`BSO Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "20997": 1000,
+        "50021": 20,
         "73011": 256,
       },
       "frozen": false,

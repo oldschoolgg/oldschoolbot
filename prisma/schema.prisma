@@ -1418,5 +1418,6 @@ model Portent {
   charges_remaining Int
 
   @@unique([item_id, user_id])
+  @@index([user_id])
   @@map("portent")
 }
