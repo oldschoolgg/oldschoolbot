@@ -100,7 +100,13 @@ export const PMBTable = new LootTable()
 	.add('Little nightmare')
 	.add("Lil' creator")
 	.add('Tiny tempor')
-	.add('Abyssal protector');
+	.add('Abyssal protector')
+	.add("Tumeken's guardian")
+	.add('Muphin')
+	.add('Baron')
+	.add('Butch')
+	.add("Lil'viathan")
+	.add('Wisp');
 
 const DwarvenCrateTable = new LootTable()
 	.add('Dwarven ore')
