@@ -23,9 +23,9 @@ interface DegradeableItem {
 		| 'trident_charges'
 		| 'scythe_of_vitur_charges';
 	itemsToRefundOnBreak: Bank;
-	refundVariants: {
-		variant: Item;
-		refund: Bank;
+	itemVariants: {
+		chargedVariant: Item;
+		unchargedVariant: Item;
 	}[];
 	setup: GearSetupType;
 	aliases: string[];
@@ -63,7 +63,7 @@ export const degradeableItems: DegradeableItem[] = [
 		item: getOSItem('Abyssal tentacle'),
 		settingsKey: 'tentacle_charges',
 		itemsToRefundOnBreak: new Bank().add('Kraken tentacle').freeze(),
-		refundVariants: [],
+		itemVariants: [],
 		setup: 'melee',
 		aliases: ['tentacle', 'tent'],
 		chargeInput: {
@@ -76,10 +76,10 @@ export const degradeableItems: DegradeableItem[] = [
 		item: getOSItem('Sanguinesti staff'),
 		settingsKey: 'sang_charges',
 		itemsToRefundOnBreak: new Bank().add('Sanguinesti staff (uncharged)').freeze(),
-		refundVariants: [
+		itemVariants: [
 			{
-				variant: getOSItem('Holy sanguinesti staff'),
-				refund: new Bank().add('Holy sanguinesti staff (uncharged)').freeze()
+				chargedVariant: getOSItem('Holy sanguinesti staff'),
+				unchargedVariant: getOSItem('Holy sanguinesti staff (uncharged)')
 			}
 		],
 		setup: 'mage',
@@ -96,7 +96,7 @@ export const degradeableItems: DegradeableItem[] = [
 		item: getOSItem('Celestial ring'),
 		settingsKey: 'celestial_ring_charges',
 		itemsToRefundOnBreak: new Bank().add('Celestial ring (uncharged)').freeze(),
-		refundVariants: [],
+		itemVariants: [],
 		setup: 'skilling',
 		aliases: ['celestial ring'],
 		chargeInput: {
@@ -111,7 +111,7 @@ export const degradeableItems: DegradeableItem[] = [
 		item: getOSItem('Ash sanctifier'),
 		settingsKey: 'ash_sanctifier_charges',
 		itemsToRefundOnBreak: new Bank().add('Ash sanctifier').freeze(),
-		refundVariants: [],
+		itemVariants: [],
 		setup: 'skilling',
 		aliases: ['ash sanctifier'],
 		chargeInput: {
@@ -125,7 +125,7 @@ export const degradeableItems: DegradeableItem[] = [
 		item: getOSItem('Serpentine helm'),
 		settingsKey: 'serp_helm_charges',
 		itemsToRefundOnBreak: new Bank().add('Serpentine helm (uncharged)').freeze(),
-		refundVariants: [],
+		itemVariants: [],
 		setup: 'melee',
 		aliases: ['serp', 'serp helm', 'serpentine helm'],
 		chargeInput: {
@@ -140,7 +140,7 @@ export const degradeableItems: DegradeableItem[] = [
 		item: getOSItem('Amulet of blood fury'),
 		settingsKey: 'blood_fury_charges',
 		itemsToRefundOnBreak: new Bank().add('Amulet of fury').freeze(),
-		refundVariants: [],
+		itemVariants: [],
 		setup: 'melee',
 		aliases: ['blood fury', 'amulet of blood fury'],
 		chargeInput: {
@@ -155,9 +155,9 @@ export const degradeableItems: DegradeableItem[] = [
 		item: getOSItem("Tumeken's shadow"),
 		settingsKey: 'tum_shadow_charges',
 		itemsToRefundOnBreak: new Bank().add("Tumeken's shadow (uncharged)").freeze(),
-		refundVariants: [],
+		itemVariants: [],
 		setup: 'mage',
-		aliases: ['ts', 'tum shadow', 'tumekens shadow'],
+		aliases: ['shadow', 'ts', 'tum shadow', 'tumekens shadow'],
 		chargeInput: {
 			cost: new Bank().add('Soul rune', 2).add('Chaos rune', 5).freeze(),
 			charges: 1
@@ -170,9 +170,9 @@ export const degradeableItems: DegradeableItem[] = [
 		item: getOSItem('Blood essence (active)'),
 		settingsKey: 'blood_essence_charges',
 		itemsToRefundOnBreak: new Bank().freeze(),
-		refundVariants: [],
+		itemVariants: [],
 		setup: 'skilling',
-		aliases: ['blood essence'],
+		aliases: ['blood ess'],
 		chargeInput: {
 			cost: new Bank().add('Blood essence').freeze(),
 			charges: 1000
@@ -183,7 +183,7 @@ export const degradeableItems: DegradeableItem[] = [
 		item: getOSItem('Trident of the swamp'),
 		settingsKey: 'trident_charges',
 		itemsToRefundOnBreak: new Bank().add('Uncharged toxic trident').freeze(),
-		refundVariants: [],
+		itemVariants: [],
 		setup: 'mage',
 		aliases: ['trident', 'trident of the swamp'],
 		chargeInput: {
@@ -198,18 +198,18 @@ export const degradeableItems: DegradeableItem[] = [
 		item: getOSItem('Scythe of vitur'),
 		settingsKey: 'scythe_of_vitur_charges',
 		itemsToRefundOnBreak: new Bank().add('Scythe of vitur (uncharged)').freeze(),
-		refundVariants: [
+		itemVariants: [
 			{
-				variant: getOSItem('Holy scythe of vitur'),
-				refund: new Bank().add('Holy scythe of vitur (uncharged)').freeze()
+				chargedVariant: getOSItem('Holy scythe of vitur'),
+				unchargedVariant: getOSItem('Holy scythe of vitur (uncharged)')
 			},
 			{
-				variant: getOSItem('Sanguine scythe of vitur'),
-				refund: new Bank().add('Sanguine scythe of vitur (uncharged)').freeze()
+				chargedVariant: getOSItem('Sanguine scythe of vitur'),
+				unchargedVariant: getOSItem('Sanguine scythe of vitur (uncharged)')
 			}
 		],
 		setup: 'melee',
-		aliases: ['scythe of vitur'],
+		aliases: ['scy', 'scythe'],
 		chargeInput: {
 			cost: new Bank().add('Blood rune', 300).add('Vial of blood').freeze(),
 			charges: 100
@@ -302,39 +302,51 @@ export async function degradeItem({
 	const newCharges = Math.floor(currentCharges - chargesToDegrade);
 
 	if (newCharges <= 0) {
-		// If no more charges left, break and refund the item.
+		// If the user runs out for charges for a degradeable item, break and refund the item.
 		const hasEquipped = user.gear[degItem.setup].hasEquipped(item.id, false);
-		const hasInBank = user.owns(item.id);
+		const hasInBank = user.hasEquippedOrInBank(item.id);
+		const itemsDeleted = new Bank();
+
+		// Update the settingsKey to 0 to prevent negative charges
 		await user.update({
 			[degItem.settingsKey]: 0
 		});
-		const itemsDeleted = new Bank().add(item.id);
-
-		updateBankSetting('degraded_items_cost', itemsDeleted);
 
 		if (hasEquipped) {
-			// Get the users equipped item.
+			// Get the users equipped item and check for variants
 			let refundItems = degItem.itemsToRefundOnBreak;
-			for (const variant of degItem.refundVariants) {
-				if (user.gear[degItem.setup].hasEquipped(variant.variant.id, false, false)) {
-					refundItems = variant.refund;
+			let removeItems = degItem.item.id;
+			for (const variant of degItem.itemVariants!) {
+				if (user.gear[degItem.setup].hasEquipped(variant.chargedVariant.id, false, false)) {
+					removeItems = variant.chargedVariant.id;
+					refundItems = new Bank().add(variant.unchargedVariant).freeze();
+					break;
 				}
 			}
-			// Unequip and delete the users item.
+			// Unequip and delete the item from the users gear setup
 			const gear = { ...user.gear[degItem.setup].raw() };
 			gear[item.equipment!.slot] = null;
 			await user.update({
 				[`gear_${degItem.setup}`]: gear
 			});
-			// Give the user the uncharged version of their charged item.
+			console.log(removeItems);
+			itemsDeleted.add(removeItems);
+			// Add the uncharged version to the users bank
 			await user.addItemsToBank({ items: refundItems, collectionLog: false });
 		} else if (hasInBank) {
-			// If its in bank, just remove 1 from bank.
-			let itemsToAdd = undefined;
-			if (degItem.itemsToRefundOnBreak) {
-				itemsToAdd = degItem.itemsToRefundOnBreak;
+			// Get the item in the users bank and check for variants
+			let refundItems = degItem.itemsToRefundOnBreak;
+			let removeItems = degItem.item.id;
+			for (const variant of degItem.itemVariants!) {
+				if (user.hasEquippedOrInBank(variant.chargedVariant.id)) {
+					refundItems = new Bank().add(variant.unchargedVariant).freeze();
+					removeItems = variant.chargedVariant.id;
+					break;
+				}
 			}
-			await user.transactItems({ itemsToRemove: new Bank().add(item.id, 1), itemsToAdd });
+			itemsDeleted.add(removeItems);
+			// Remove the charged item from the users bank and add the uncharged version to the users bank
+			await user.transactItems({ itemsToRemove: new Bank().add(removeItems).freeze(), itemsToAdd: refundItems });
 		} else {
 			// If its not in bank OR equipped, something weird has gone on.
 			throw new Error(
@@ -342,11 +354,16 @@ export async function degradeItem({
 			);
 		}
 
+		// Update degraded_items_cost with the items deleted
+		await updateBankSetting('degraded_items_cost', itemsDeleted);
+
+		// Notify the user when a degradable item has broken.
 		return {
 			userMessage: `Your ${item.name} ran out of charges and broke.`
 		};
 	}
-	// If it has charges left still, just remove those charges and nothing else.
+
+	// If the degradeable item still has charges remaining, remove those charges and show the user a message of remaining charges.
 	await user.update({
 		[degItem.settingsKey]: newCharges
 	});
