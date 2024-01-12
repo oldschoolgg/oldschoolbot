@@ -89,7 +89,7 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 				).files,
 				components:
 					newContractLevel !== 'easy'
-						? makeComponents([makeAutoContractButton, makeEasierFarmingContractButton()])
+					? makeComponents([makeAutoContractButton(), makeEasierFarmingContractButton()])
 						: undefined
 			};
 		}
@@ -107,7 +107,8 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 			).files,
 			components:
 				currentContract.difficultyLevel !== 'easy'
- makeComponents([makeAutoContractButton, makeEasierFarmingContractButton()])
+					?
+ makeComponents([makeAutoContractButton(), makeEasierFarmingContractButton()])
 					: undefined
 		};
 	}
@@ -144,7 +145,8 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 			)
 		).files,
 		components:
-			input !== 'easy' ? makeComponents([makeAutoContractButton, makeEasierFarmingContractButton()]) : undefined
+			input !== 'easy'
+					? makeComponents([makeAutoContractButton(), makeEasierFarmingContractButton()]) : undefined
 	};
 }
 
