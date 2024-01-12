@@ -143,10 +143,10 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 				`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
 			)
 		).files,
-				components:
-					newContractLevel !== 'easy'
-						? makeComponents([makeAutoContractButton(), makeEasierFarmingContractButton()])
-						: undefined
+		components:
+			newContractLevel !== 'easy'
+				? makeComponents([makeAutoContractButton(), makeEasierFarmingContractButton()])
+				: undefined
 	};
 }
 
