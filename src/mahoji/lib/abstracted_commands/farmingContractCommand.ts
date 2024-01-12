@@ -1,3 +1,4 @@
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
@@ -9,7 +10,6 @@ import { plants } from '../../../lib/skilling/skills/farming';
 import { makeComponents, makeEasierFarmingContractButton, roughMergeMahojiResponse } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { findPlant } from '../../../lib/util/farmingHelpers';
-import { makeAutoContractButton } from '../../../lib/util/globalInteractions';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { farmingPlantCommand, harvestCommand } from './farmingCommand';
@@ -25,6 +25,12 @@ const contractToFarmingLevel = {
 	medium: 65,
 	hard: 85
 };
+
+const autoContractButton = new ButtonBuilder()
+	.setCustomId('AUTO_FARMING_CONTRACT')
+	.setLabel('Auto Farming Contract')
+	.setStyle(ButtonStyle.Secondary)
+	.setEmoji('977410792754413668');
 
 export async function farmingContractCommand(userID: string, input?: ContractOption): CommandResponse {
 	const user = await mUserFetch(userID);
@@ -89,8 +95,8 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 				).files,
 				components:
 					newContractLevel !== 'easy'
-						? makeComponents([makeAutoContractButton(), makeEasierFarmingContractButton()])
-						: undefined
+						? makeComponents([makeEasierFarmingContractButton(), autoContractButton])
+						: makeComponents([autoContractButton])
 			};
 		}
 
@@ -107,8 +113,8 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 			).files,
 			components:
 				currentContract.difficultyLevel !== 'easy'
-					? makeComponents([makeAutoContractButton(), makeEasierFarmingContractButton()])
-					: undefined
+					? makeComponents([makeEasierFarmingContractButton(), autoContractButton])
+					: makeComponents([autoContractButton])
 		};
 	}
 
@@ -144,7 +150,9 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 			)
 		).files,
 		components:
-			input !== 'easy' ? makeComponents([makeAutoContractButton(), makeEasierFarmingContractButton()]) : undefined
+			input !== 'easy'
+				? makeComponents([makeEasierFarmingContractButton(), autoContractButton])
+				: makeComponents([autoContractButton])
 	};
 }
 
