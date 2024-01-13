@@ -1009,10 +1009,13 @@ model UserStats {
   steal_cost_bank Json @default("{}") @db.Json
   steal_loot_bank Json @default("{}") @db.Json
 
-  xp_from_graceful_portent BigInt @default(0)
-  loot_from_lucky_portent  Json   @default("{}") @db.Json
-  xp_from_dungeon_portent  BigInt @default(0)
-  loot_from_rogues_portent Json   @default("{}") @db.Json
+  xp_from_graceful_portent         BigInt @default(0)
+  loot_from_lucky_portent          Json   @default("{}") @db.Json
+  xp_from_dungeon_portent          BigInt @default(0)
+  loot_from_rogues_portent         Json   @default("{}") @db.Json
+  xp_from_mining_portent           BigInt @default(0)
+  xp_from_hunter_portent           BigInt @default(0)
+  loot_destroyed_by_hunter_portent Json   @default("{}") @db.Json
 
   @@map("user_stats")
 }

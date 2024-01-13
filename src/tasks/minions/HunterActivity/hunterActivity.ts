@@ -3,6 +3,7 @@ import { randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import { chargePortentIfHasCharges, PortentID } from '../../../lib/bso/divination';
 import { Events, MAX_LEVEL, PeakTier } from '../../../lib/constants';
 import { globalDroprates } from '../../../lib/data/globalDroprates';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
@@ -17,7 +18,8 @@ import {
 	increaseBankQuantitesByPercent,
 	roll,
 	skillingPetDropRate,
-	stringMatches
+	stringMatches,
+	toKMB
 } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
@@ -166,12 +168,33 @@ export const hunterTask: MinionTask = {
 				});
 			}
 		}
+
+		const minutes = Math.ceil(duration / Time.Minute);
+		const portentResult = await chargePortentIfHasCharges({
+			user,
+			portentID: PortentID.PacifistPortent,
+			charges: minutes
+		});
 		const loot = new Bank();
-		for (let i = 0; i < successfulQuantity - pkedQuantity; i++) {
-			loot.add(creatureTable.roll());
-			if (roll(petDropRate) && creature.name.toLowerCase().includes('chinchompa')) {
-				loot.add(itemID('Baby chinchompa'));
+		const realQuantity = successfulQuantity - pkedQuantity;
+		if (!portentResult.didCharge) {
+			for (let i = 0; i < realQuantity; i++) {
+				loot.add(creatureTable.roll());
+				if (roll(petDropRate) && creature.name.toLowerCase().includes('chinchompa')) {
+					loot.add(itemID('Baby chinchompa'));
+				}
 			}
+		} else {
+			let bonusXP = realQuantity * (creature.hunterXP * (creature.hunterXP / 4));
+			if (died) {
+				bonusXP /= 2;
+			}
+			xpReceived += bonusXP;
+			messages.push(
+				`${toKMB(bonusXP)} bonus XP from your Pacifist Portent (${
+					portentResult.portent.charges_remaining
+				} charges remaining)`
+			);
 		}
 
 		if (increasedOutputPercent) {

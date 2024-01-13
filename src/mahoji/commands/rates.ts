@@ -1,21 +1,28 @@
 import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { Bank } from 'oldschooljs';
 
 import { divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
 import { GLOBAL_BSO_XP_MULTIPLIER } from '../../lib/constants';
 import { inventionBoosts } from '../../lib/invention/inventions';
+import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import Agility from '../../lib/skilling/skills/agility';
 import {
 	calcGorajanShardChance,
 	calcMaxFloorUserCanDo,
 	numberOfGorajanOutfitsEquipped
 } from '../../lib/skilling/skills/dung/dungDbFunctions';
+import Mining from '../../lib/skilling/skills/mining';
+import Smithing from '../../lib/skilling/skills/smithing';
+import { convertBankToPerHourStats } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { calcPerHour, returnStringOrFile } from '../../lib/util/smallUtils';
 import { calculateAgilityResult } from '../../tasks/minions/agilityActivity';
 import { calculateDungeoneeringResult } from '../../tasks/minions/bso/dungeoneeringActivity';
 import { memoryHarvestResult } from '../../tasks/minions/bso/memoryHarvestActivity';
+import { calculateMiningResult } from '../../tasks/minions/miningActivity';
 import { OSBMahojiCommand } from '../lib/util';
+import { calculateMiningInput } from './mine';
 
 export const ratesCommand: OSBMahojiCommand = {
 	name: 'rates',
@@ -43,6 +50,12 @@ export const ratesCommand: OSBMahojiCommand = {
 					name: 'dungeoneering',
 					description: 'Dungeoneering.',
 					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'mining',
+					description: 'Mining.',
+					options: []
 				}
 			]
 		}
@@ -50,8 +63,123 @@ export const ratesCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		userID
-	}: CommandRunOptions<{ xphr?: { divination_memory_harvesting?: {}; agility?: {}; dungeoneering?: {} } }>) => {
+	}: CommandRunOptions<{
+		xphr?: { divination_memory_harvesting?: {}; agility?: {}; dungeoneering?: {}; mining?: {} };
+	}>) => {
 		const user = await mUserFetch(userID);
+
+		if (options.xphr?.mining) {
+			let results = `${[
+				'Ore',
+				'XP/Hr',
+				'Powermining',
+				'Portent',
+				'S. Inferno Adze',
+				'Volcanic Pickaxe',
+				'Smithing XP',
+				'Loot',
+				'Cost'
+			].join('\t')}\n`;
+			const duration = Time.Hour * 3;
+			for (const ore of Mining.Ores) {
+				for (const isPowerminingInput of [true, false]) {
+					for (const shouldTryUseSpirits of [true, false]) {
+						for (const shouldUsePortent of [true, false]) {
+							for (const usingAdze of [true, false]) {
+								for (const hasOffhandVolcPick of [true, false]) {
+									if (shouldUsePortent && !shouldTryUseSpirits) continue;
+
+									const smeltedOre = Smithing.Bars.find(
+										o =>
+											o.inputOres.bank[ore.id] &&
+											o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
+									);
+									if (usingAdze && (!smeltedOre || isPowerminingInput)) continue;
+
+									let miningLevel = 120;
+									const fakeGear = user.gear.skilling.clone();
+									fakeGear.equip('Volcanic pickaxe');
+									fakeGear.equip('Varrock armour 4');
+									fakeGear.equip('Mining master cape');
+									fakeGear.equip('Amulet of glory');
+									fakeGear.equip('Prospector helmet');
+									fakeGear.equip('Prospector jacket');
+									fakeGear.equip('Prospector legs');
+									fakeGear.equip('Prospector boots');
+
+									const secondaryGearSetup = fakeGear.clone();
+									if (usingAdze) {
+										secondaryGearSetup.equip('Superior inferno adze');
+									}
+
+									const fullSetup = {
+										skilling: fakeGear,
+										misc: secondaryGearSetup
+									} as any;
+
+									const result = calculateMiningInput({
+										nameInput: ore.name,
+										quantityInput: undefined,
+										isPowermining: isPowerminingInput,
+										gear: fullSetup,
+										hasSOTFQuest: true,
+										qp: 500,
+										miningLevel,
+										craftingLevel: 120,
+										strengthLevel: 120,
+										maxTripLength: duration
+									});
+									if (typeof result === 'string') continue;
+									const spiritOre = stoneSpirits.find(t => t.ore.id === ore.id);
+									const amountOfSpiritsToUse =
+										spiritOre !== undefined && shouldTryUseSpirits
+											? Math.min(result.newQuantity, 100_000)
+											: 0;
+
+									if (shouldTryUseSpirits && !spiritOre) continue;
+									const { totalMiningXPToAdd, smithingXPFromAdze, loot, totalCost } =
+										calculateMiningResult({
+											duration,
+											isPowermining: result.isPowermining,
+											isUsingObsidianPickaxe: hasOffhandVolcPick,
+											quantity: result.newQuantity,
+											hasMiningMasterCape: true,
+											ore,
+											allGear: fullSetup,
+											miningLevel,
+											disabledInventions: [],
+											equippedPet: null,
+											amountOfSpiritsToUse,
+											spiritOre,
+											portentResult: !shouldUsePortent
+												? { didCharge: false }
+												: ({ didCharge: true, portent: { charges_remaining: 1000 } } as any),
+											collectionLog: new Bank(),
+											miningXP: 500_000_000
+										});
+
+									results += [
+										ore.name,
+										Math.floor(
+											calcPerHour(totalMiningXPToAdd * GLOBAL_BSO_XP_MULTIPLIER, duration)
+										).toLocaleString(),
+										result.isPowermining ? 'Powermining' : 'NOT Powermining',
+										shouldUsePortent ? 'Has Portent' : 'No Portent',
+										usingAdze ? 'Has Adze' : 'No Adze',
+										hasOffhandVolcPick ? 'Has Volc Pick' : 'No Volc Pick',
+										calcPerHour(smithingXPFromAdze * GLOBAL_BSO_XP_MULTIPLIER, duration),
+										convertBankToPerHourStats(loot, duration).join(', '),
+										convertBankToPerHourStats(totalCost, duration).join(', ')
+									].join('\t');
+									results += '\n';
+								}
+							}
+						}
+					}
+				}
+			}
+			return returnStringOrFile(results, true);
+		}
 
 		if (options.xphr?.divination_memory_harvesting) {
 			let results = `${[

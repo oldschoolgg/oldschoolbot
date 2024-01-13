@@ -11,7 +11,7 @@ import {
 } from '../../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { DungeoneeringOptions } from '../../../lib/types/minions';
-import { randomVariation, roll } from '../../../lib/util';
+import { randomVariation, roll, toKMB } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
@@ -98,7 +98,7 @@ export const dungeoneeringTask: MinionTask = {
 		for (const id of users) {
 			const u = await mUserFetch(id);
 			const gorajanEquipped = numberOfGorajanOutfitsEquipped(u);
-			const { didCharge } = await chargePortentIfHasCharges({
+			const portentResult = await chargePortentIfHasCharges({
 				user: u,
 				portentID: PortentID.DungeonPortent,
 				charges: Math.floor(duration / Time.Minute)
@@ -112,7 +112,7 @@ export const dungeoneeringTask: MinionTask = {
 				gorajanShardChance: calcGorajanShardChance(u).chance,
 				duration,
 				maxFloorUserCanDo: calcMaxFloorUserCanDo(u),
-				hasDungeonPortent: didCharge
+				hasDungeonPortent: portentResult.didCharge
 			});
 
 			const xpStr = await u.addXP({
@@ -138,7 +138,14 @@ export const dungeoneeringTask: MinionTask = {
 				}));
 			}
 
-			str += `${u} received: ${xpStr} and <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens`;
+			if (portentResult.didCharge) {
+				str += `${u} received: ${xpStr}, ${toKMB(portentXP)} of which is from from their portent (${
+					portentResult.portent.charges_remaining
+				} charges remaining)`;
+			} else {
+				str += `${u} received: ${xpStr} and <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens`;
+			}
+
 			str += '\n';
 		}
 

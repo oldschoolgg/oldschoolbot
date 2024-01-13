@@ -47,7 +47,6 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 	// Calculate the time it takes to mine specific quantity or as many as possible
 	let [duration, newQuantity] = determineMiningTime({
 		quantity,
-		user,
 		ore: barroniteRocks,
 		ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
 		glovesRate,
@@ -55,7 +54,9 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 		miningCapeEffect,
 		powermining: powermine,
 		goldSilverBoost,
-		miningLvl: miningLevel
+		miningLvl: miningLevel,
+		maxTripLength: calcMaxTripLength(user, 'Mining'),
+		hasGlory: user.hasEquipped('Amulet of glory')
 	});
 
 	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;

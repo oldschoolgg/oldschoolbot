@@ -607,12 +607,13 @@ export function generateXPLevelQuestion() {
 }
 
 export function skillingPetDropRate(
-	user: MUserClass,
+	userOrSkillXP: MUserClass | number,
 	skill: SkillsEnum,
 	baseDropRate: number
 ): { petDropRate: number } {
-	const twoHundredMillXP = user.skillsAsXP[skill] >= 5_000_000_000;
-	const skillLevel = user.skillsAsLevels[skill];
+	const xp = typeof userOrSkillXP === 'number' ? userOrSkillXP : userOrSkillXP.skillsAsXP[skill];
+	const twoHundredMillXP = xp >= 5_000_000_000;
+	const skillLevel = convertXPtoLVL(xp);
 	const petRateDivisor = twoHundredMillXP ? 15 : 1;
 	const dropRate = Math.floor((baseDropRate - skillLevel * 25) / petRateDivisor);
 	return { petDropRate: dropRate };

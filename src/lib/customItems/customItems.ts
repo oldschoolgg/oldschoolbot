@@ -10857,7 +10857,7 @@ setCustomItem(
 
 setCustomItem(
 	73_053,
-	'Mining portent',
+	'Spiritual mining portent',
 	'Coal',
 	{
 		customItemData: {
@@ -10869,7 +10869,7 @@ setCustomItem(
 
 setCustomItem(
 	73_054,
-	'Lumberjack portent',
+	'Pacifist hunting portent',
 	'Coal',
 	{
 		customItemData: {

@@ -255,8 +255,8 @@ export enum PortentID {
 	DungeonPortent = itemID('Dungeon portent'),
 	LuckyPortent = itemID('Lucky portent'),
 	RebirthPortent = itemID('Rebirth portent'),
-	MiningPortent = itemID('Mining portent'),
-	LumberjackPortent = itemID('Lumberjack portent')
+	MiningPortent = itemID('Spiritual mining portent'),
+	PacifistPortent = itemID('Pacifist hunting portent')
 }
 interface SourcePortent {
 	id: PortentID;
@@ -332,13 +332,23 @@ export const portents: SourcePortent[] = [
 	},
 	{
 		id: PortentID.MiningPortent,
-		item: getOSItem('Mining portent'),
-		description: 'Gives you a chance to receive divine eggs from skilling, 1 charge per egg.',
+		item: getOSItem('Spiritual mining portent'),
+		description: 'Consumes stone spirits to grant extra mining XP, instead of extra ore.',
 		divinationLevelToCreate: 90,
-		cost: new Bank().add('Brilliant energy', 512).add('Twisted bow', 1000),
-		chargesPerPortent: 4,
+		cost: new Bank().add('Luminous energy', 1200).add('Twisted bow', 1000),
+		chargesPerPortent: 1000,
 		addChargeMessage: portent =>
-			`You used a Mining portent, you can now receive ${portent.charges_remaining}x Divine eggs from skilling.`
+			`You used a Spiritual mining portent, your next ${portent.charges_remaining}x stone spirits will grant XP instead of ore.`
+	},
+	{
+		id: PortentID.PacifistPortent,
+		item: getOSItem('Pacifist hunting portent'),
+		description: 'Enables you to train Hunter as a pacifist, releasing your catch for bonus XP.',
+		divinationLevelToCreate: 120,
+		cost: new Bank().add('Incandescent energy', 1000).add('Twisted bow', 1000),
+		chargesPerPortent: 60 * 2.5,
+		addChargeMessage: portent =>
+			`You used a Pacifist hunting portent, your next ${portent.charges_remaining}x minutes of Hunter will grant bonus XP for pacifist hunting.`
 	}
 ];
 
