@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import { mahojiParseNumber } from '../../../mahoji/mahojiSettings';
 import { degradeableItems } from '../../degradeableItems';
 import { stringMatches } from '../../util';
-import getOSItem from '../../util/getOSItem';
 import { handleMahojiConfirmation } from '../../util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../util/updateBankSetting';
 
@@ -18,15 +17,16 @@ export async function degradeableItemsCommand(
 	const item = degradeableItems.find(i => [i.item.name, ...i.aliases].some(n => stringMatches(n, input ?? '')));
 	const number = mahojiParseNumber({ input: quantity, min: 1, max: 1_000_000 });
 
-	// If not input on `/minion charge` show the user what can be charged, the amounts, and their current charges
+	// If no input on `/minion charge`, show the user what can be charged, the amounts, and their current charges
 	if (!input || !number || !item || number < 1 || number > 100_000) {
-		return `Use \`/minion charge item: [${degradeableItems.map(i => i.item.name).join('|')}] amount:[1-100,000]\`
-    ${degradeableItems
-		.map(i => {
-			const charges = user.user[i.settingsKey];
-			return `${i.item.name}: ${charges.toLocaleString()} charges`;
-		})
-		.join('\n')}`;
+		return `Use \`/minion charge item: [${degradeableItems
+			.map(i => i.item.name)
+			.join('|')}] amount:[1-100,000]\`\n${degradeableItems
+			.map(i => {
+				const charges = user.user[i.settingsKey];
+				return `${i.item.name}: ${charges.toLocaleString()} charges`;
+			})
+			.join('\n')}`;
 	}
 
 	// Get the cost and amount of charges
@@ -38,13 +38,9 @@ export async function degradeableItemsCommand(
 		return `You don't own ${cost}.`;
 	}
 
-	// Error for Ash sanctifier
-	if (item.item === getOSItem('Ash sanctifier') && !user.owns('Ash sanctifier')) {
-		return "You don't own a Ash sanctifier.";
-	}
-
 	// Check if the item needs converted and has a uncharged version
 	const needConvert = item.convertOnCharge && item.unchargedItem;
+	const noConvert = !item.convertOnCharge && item.unchargedItem;
 
 	// Check for variants in the users bank
 	let unchargedItem = item.unchargedItem!;
@@ -59,8 +55,11 @@ export async function degradeableItemsCommand(
 
 	// Show error message if the user doesn't have the charged, uncharged, or variants of the item in the bank
 	if (needConvert && !user.hasEquippedOrInBank(chargedItem.id) && !user.hasEquippedOrInBank(unchargedItem.id)) {
-		return `You don't own a ${chargedItem.name}, ${unchargedItem!.name}
-		}${item.itemVariants.length >= 1 ? ', or any variants.' : '.'}`;
+		return `You don't own a ${chargedItem.name}, or ${unchargedItem!.name}${
+			item.itemVariants.length >= 1 ? ', or any variants.' : '.'
+		}`;
+	} else if (noConvert && !user.hasEquippedOrInBank(chargedItem.id)) {
+		return `You don't own ${chargedItem.name}.`;
 	}
 
 	// Confirmation the user must acknowledge before charging

@@ -70,6 +70,8 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Abyssal whip').freeze(),
 			charges: 10_000
 		},
+		convertOnCharge: true,
+		unchargedItem: getOSItem('Kraken tentacle'),
 		emoji: '<:Abyssal_tentacle:1068551359755989033>'
 	},
 	{
@@ -358,7 +360,7 @@ export async function degradeItem({
 
 		// Notify the user when a degradable item has broken.
 		return {
-			userMessage: `Your ${item.name} ran out of charges and broke.`
+			userMessage: `Your ${item.name} ran out of charges and broke`
 		};
 	}
 
@@ -369,7 +371,7 @@ export async function degradeItem({
 	const chargesAfter = user.user[degItem.settingsKey];
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
-		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining.`
+		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining`
 	};
 }
 
