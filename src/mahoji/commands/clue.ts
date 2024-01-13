@@ -13,7 +13,7 @@ import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
 	// Every 3 hours become 1% better to a cap of 10%
@@ -347,6 +347,7 @@ export const clueCommand: OSBMahojiCommand = {
 				implingLoot.remove(clueTier.scrollID, implingLoot.amount(clueTier.scrollID));
 			}
 
+			await addToOpenablesScores(user, new Bank().add(implingJarOpenable.id, openedImplings));
 			await user.transactItems({
 				itemsToAdd: implingLoot,
 				itemsToRemove: new Bank().add(clueImpling, openedImplings).add(clueTier.scrollID, bankedClues),
