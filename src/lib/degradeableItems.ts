@@ -11,6 +11,13 @@ import { updateBankSetting } from './util/updateBankSetting';
 
 interface DegradeableItem {
 	item: Item;
+	unchargedItem?: Item;
+	itemsToRefundOnBreak: Bank;
+	itemVariants: {
+		chargedVariant: Item;
+		unchargedVariant: Item;
+		variantRefundOnBreak: Bank;
+	}[];
 	settingsKey:
 		| 'tentacle_charges'
 		| 'sang_charges'
@@ -22,18 +29,12 @@ interface DegradeableItem {
 		| 'blood_essence_charges'
 		| 'trident_charges'
 		| 'scythe_of_vitur_charges';
-	itemsToRefundOnBreak: Bank;
-	itemVariants: {
-		chargedVariant: Item;
-		unchargedVariant: Item;
-	}[];
 	setup: GearSetupType;
 	aliases: string[];
 	chargeInput: {
 		cost: Bank;
 		charges: number;
 	};
-	unchargedItem?: Item;
 	convertOnCharge?: boolean;
 	emoji: string;
 }
@@ -61,9 +62,19 @@ interface DegradeableItemPVMBoost {
 export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem('Abyssal tentacle'),
-		settingsKey: 'tentacle_charges',
+		unchargedItem: getOSItem('Kraken tentacle'),
 		itemsToRefundOnBreak: new Bank().add('Kraken tentacle').freeze(),
-		itemVariants: [],
+		itemVariants: [
+			{
+				chargedVariant: getOSItem('Abyssal tentacle (or)'),
+				unchargedVariant: getOSItem('Abyssal tentacle (or)'),
+				variantRefundOnBreak: new Bank()
+					.add('Kraken tentacle')
+					.add('Shattered relics variety ornament kit')
+					.freeze()
+			}
+		],
+		settingsKey: 'tentacle_charges',
 		setup: 'melee',
 		aliases: ['tentacle', 'tent'],
 		chargeInput: {
@@ -71,108 +82,108 @@ export const degradeableItems: DegradeableItem[] = [
 			charges: 10_000
 		},
 		convertOnCharge: true,
-		unchargedItem: getOSItem('Kraken tentacle'),
 		emoji: '<:Abyssal_tentacle:1068551359755989033>'
 	},
 	{
 		item: getOSItem('Sanguinesti staff'),
-		settingsKey: 'sang_charges',
+		unchargedItem: getOSItem('Sanguinesti staff (uncharged)'),
 		itemsToRefundOnBreak: new Bank().add('Sanguinesti staff (uncharged)').freeze(),
 		itemVariants: [
 			{
 				chargedVariant: getOSItem('Holy sanguinesti staff'),
-				unchargedVariant: getOSItem('Holy sanguinesti staff (uncharged)')
+				unchargedVariant: getOSItem('Holy sanguinesti staff (uncharged)'),
+				variantRefundOnBreak: new Bank().add('Holy sanguinesti staff (uncharged)').freeze()
 			}
 		],
+		settingsKey: 'sang_charges',
 		setup: 'mage',
 		aliases: ['sang', 'sang staff', 'sanguinesti staff', 'sanguinesti'],
 		chargeInput: {
 			cost: new Bank().add('Blood rune', 3).freeze(),
 			charges: 1
 		},
-		unchargedItem: getOSItem('Sanguinesti staff (uncharged)'),
 		convertOnCharge: true,
 		emoji: '<:Sanguinesti_staff_uncharged:455403545298993162>'
 	},
 	{
 		item: getOSItem('Celestial ring'),
-		settingsKey: 'celestial_ring_charges',
+		unchargedItem: getOSItem('Celestial ring (uncharged)'),
 		itemsToRefundOnBreak: new Bank().add('Celestial ring (uncharged)').freeze(),
 		itemVariants: [],
+		settingsKey: 'celestial_ring_charges',
 		setup: 'skilling',
 		aliases: ['celestial ring'],
 		chargeInput: {
 			cost: new Bank().add('Stardust', 10).freeze(),
 			charges: 10
 		},
-		unchargedItem: getOSItem('Celestial ring (uncharged)'),
 		convertOnCharge: true,
 		emoji: '<:Celestial_ring:1068551362587132084>'
 	},
 	{
 		item: getOSItem('Ash sanctifier'),
-		settingsKey: 'ash_sanctifier_charges',
-		itemsToRefundOnBreak: new Bank().add('Ash sanctifier').freeze(),
+		unchargedItem: getOSItem('Ash sanctifier'),
+		itemsToRefundOnBreak: new Bank().freeze(),
 		itemVariants: [],
+		settingsKey: 'ash_sanctifier_charges',
 		setup: 'skilling',
 		aliases: ['ash sanctifier'],
 		chargeInput: {
 			cost: new Bank().add('Death rune', 1).freeze(),
 			charges: 10
 		},
-		unchargedItem: getOSItem('Ash sanctifier'),
 		emoji: '<:Ash_sanctifier:1068551364168405032>'
 	},
 	{
 		item: getOSItem('Serpentine helm'),
-		settingsKey: 'serp_helm_charges',
+		unchargedItem: getOSItem('Serpentine helm (uncharged)'),
 		itemsToRefundOnBreak: new Bank().add('Serpentine helm (uncharged)').freeze(),
 		itemVariants: [],
+		settingsKey: 'serp_helm_charges',
 		setup: 'melee',
 		aliases: ['serp', 'serp helm', 'serpentine helm'],
 		chargeInput: {
 			cost: new Bank().add("Zulrah's scales").freeze(),
 			charges: 1
 		},
-		unchargedItem: getOSItem('Serpentine helm (uncharged)'),
 		convertOnCharge: true,
 		emoji: '<:Serpentine_helm:1068491236123619379>'
 	},
 	{
 		item: getOSItem('Amulet of blood fury'),
-		settingsKey: 'blood_fury_charges',
+		unchargedItem: getOSItem('Amulet of fury'),
 		itemsToRefundOnBreak: new Bank().add('Amulet of fury').freeze(),
 		itemVariants: [],
+		settingsKey: 'blood_fury_charges',
 		setup: 'melee',
 		aliases: ['blood fury', 'amulet of blood fury'],
 		chargeInput: {
 			cost: new Bank().add('Blood shard').freeze(),
 			charges: 10_000
 		},
-		unchargedItem: getOSItem('Amulet of fury'),
 		convertOnCharge: true,
 		emoji: '<:Amulet_of_blood_fury:1068491286530752562>'
 	},
 	{
 		item: getOSItem("Tumeken's shadow"),
-		settingsKey: 'tum_shadow_charges',
+		unchargedItem: getOSItem("Tumeken's shadow (uncharged)"),
 		itemsToRefundOnBreak: new Bank().add("Tumeken's shadow (uncharged)").freeze(),
 		itemVariants: [],
+		settingsKey: 'tum_shadow_charges',
 		setup: 'mage',
 		aliases: ['shadow', 'ts', 'tum shadow', 'tumekens shadow'],
 		chargeInput: {
 			cost: new Bank().add('Soul rune', 2).add('Chaos rune', 5).freeze(),
 			charges: 1
 		},
-		unchargedItem: getOSItem("Tumeken's shadow (uncharged)"),
 		convertOnCharge: true,
 		emoji: '<:Tumekens_shadow:1068491239302901831>'
 	},
 	{
 		item: getOSItem('Blood essence (active)'),
-		settingsKey: 'blood_essence_charges',
 		itemsToRefundOnBreak: new Bank().freeze(),
 		itemVariants: [],
+		settingsKey: 'blood_essence_charges',
 		setup: 'skilling',
 		aliases: ['blood ess'],
 		chargeInput: {
@@ -183,40 +194,42 @@ export const degradeableItems: DegradeableItem[] = [
 	},
 	{
 		item: getOSItem('Trident of the swamp'),
-		settingsKey: 'trident_charges',
+		unchargedItem: getOSItem('Uncharged toxic trident'),
 		itemsToRefundOnBreak: new Bank().add('Uncharged toxic trident').freeze(),
 		itemVariants: [],
+		settingsKey: 'trident_charges',
 		setup: 'mage',
 		aliases: ['trident', 'trident of the swamp'],
 		chargeInput: {
 			cost: new Bank().add('Death rune').add('Chaos rune').add('Fire rune', 5).add("Zulrah's scales").freeze(),
 			charges: 1
 		},
-		unchargedItem: getOSItem('Uncharged toxic trident'),
 		convertOnCharge: true,
 		emoji: '🔱'
 	},
 	{
 		item: getOSItem('Scythe of vitur'),
-		settingsKey: 'scythe_of_vitur_charges',
+		unchargedItem: getOSItem('Scythe of vitur (uncharged)'),
 		itemsToRefundOnBreak: new Bank().add('Scythe of vitur (uncharged)').freeze(),
 		itemVariants: [
 			{
 				chargedVariant: getOSItem('Holy scythe of vitur'),
-				unchargedVariant: getOSItem('Holy scythe of vitur (uncharged)')
+				unchargedVariant: getOSItem('Holy scythe of vitur (uncharged)'),
+				variantRefundOnBreak: new Bank().add('Holy scythe of vitur (uncharged)').freeze()
 			},
 			{
 				chargedVariant: getOSItem('Sanguine scythe of vitur'),
-				unchargedVariant: getOSItem('Sanguine scythe of vitur (uncharged)')
+				unchargedVariant: getOSItem('Sanguine scythe of vitur (uncharged)'),
+				variantRefundOnBreak: new Bank().add('Sanguine scythe of vitur (uncharged)').freeze()
 			}
 		],
+		settingsKey: 'scythe_of_vitur_charges',
 		setup: 'melee',
 		aliases: ['scy', 'scythe'],
 		chargeInput: {
 			cost: new Bank().add('Blood rune', 300).add('Vial of blood').freeze(),
 			charges: 100
 		},
-		unchargedItem: getOSItem('Scythe of vitur (uncharged)'),
 		convertOnCharge: true,
 		emoji: ''
 	}
@@ -321,7 +334,7 @@ export async function degradeItem({
 			for (const variant of degItem.itemVariants!) {
 				if (user.gear[degItem.setup].hasEquipped(variant.chargedVariant.id, false, false)) {
 					removeItems = variant.chargedVariant.id;
-					refundItems = new Bank().add(variant.unchargedVariant).freeze();
+					refundItems = variant.variantRefundOnBreak;
 					break;
 				}
 			}
@@ -340,7 +353,7 @@ export async function degradeItem({
 			let removeItems = degItem.item.id;
 			for (const variant of degItem.itemVariants!) {
 				if (user.hasEquippedOrInBank(variant.chargedVariant.id)) {
-					refundItems = new Bank().add(variant.unchargedVariant).freeze();
+					refundItems = variant.variantRefundOnBreak;
 					removeItems = variant.chargedVariant.id;
 					break;
 				}
