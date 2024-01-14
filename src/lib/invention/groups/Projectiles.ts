@@ -84,6 +84,7 @@ export const Projectiles: DisassemblySourceGroup = {
 		{ item: i('Adamant bolts (unf)'), lvl: 50 },
 		{ item: i('Runite bolts'), lvl: 50 },
 		{ item: i('Runite bolts (unf)'), lvl: 50 },
+		{ item: i('Amethyst broad bolts'), lvl: 55 },
 		{ item: i('Dragon bolts'), lvl: 60, flags: new Set(['orikalkum']) },
 		{ item: i('Dragon bolts (unf)'), lvl: 60, flags: new Set(['orikalkum']) },
 		{ item: i('Dragonstone bolts (e)'), lvl: 71 },
