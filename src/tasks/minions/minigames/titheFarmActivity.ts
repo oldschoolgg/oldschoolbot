@@ -14,7 +14,6 @@ export const titheFarmTask: MinionTask = {
 		const { userID, channelID, duration } = data;
 		const baseHarvest = 85;
 		const lootStr: string[] = [];
-		const levelStr: string[] = [];
 
 		const user = await mUserFetch(userID);
 		const userStats = await user.fetchStats({ tithe_farm_points: true, tithe_farms_completed: true });
@@ -62,7 +61,7 @@ export const titheFarmTask: MinionTask = {
 		const bonusFruitXp = 250 * fruitXp;
 		const farmingXp = harvestXp + depositXp + bonusFruitXp;
 
-		const harvestStr = `${user} ${user.minionName} successfully harvested ${determineHarvest}x ${fruit} fruit and received ${farmingXp} Farming XP.`;
+		const harvestStr = `${user} ${user.minionName} successfully harvested ${determineHarvest}x ${fruit} fruit.`;
 		const completedStr = `You have completed the ${Emoji.MinigameIcon} Tithe Farm ${
 			titheFarmsCompleted + 1
 		}x times. You now have ${titheFarmPoints + determinePoints} points to spend.`;
@@ -95,13 +94,11 @@ export const titheFarmTask: MinionTask = {
 			bonusXpStr = `You received an additional ${Math.floor(bonusXp)} Bonus XP from your farmer's outfit pieces.`;
 		}
 
-		await user.addXP({ skillName: SkillsEnum.Farming, amount: Math.floor(totalXp) });
-
-		const newFarmingLevel = user.skillLevel(SkillsEnum.Farming);
-
-		if (newFarmingLevel > farmingLvl) {
-			levelStr.push(`\n\n${user.minionName}'s Farming level is now ${newFarmingLevel}!`);
-		}
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Farming,
+			amount: Math.floor(totalXp),
+			duration: data.duration
+		});
 
 		const loot = new Bank();
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, 7_494_389);
@@ -126,7 +123,7 @@ export const titheFarmTask: MinionTask = {
 			});
 		}
 
-		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n${flappyRes.userMsg}`;
+		const returnStr = `${harvestStr} ${xpRes} ${bonusXpStr}\n\n${completedStr}${lootStr}\n\n${flappyRes.userMsg}`;
 
 		handleTripFinish(user, channelID, returnStr, undefined, data, loot.length > 0 ? loot : null);
 	}

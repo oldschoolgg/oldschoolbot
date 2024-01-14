@@ -10,7 +10,11 @@ import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/tames';
 import { makeComponents } from '../../../lib/util';
-import { makeAutoContractButton, makeBirdHouseTripButton } from '../../../lib/util/globalInteractions';
+import {
+	makeAutoContractButton,
+	makeAutoSlayButton,
+	makeBirdHouseTripButton
+} from '../../../lib/util/globalInteractions';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
 import { getItemContractDetails } from '../../commands/ic';
@@ -121,13 +125,7 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 	}
 
 	if (!minionIsBusy) {
-		buttons.push(
-			new ButtonBuilder()
-				.setCustomId('AUTO_SLAY')
-				.setLabel('Auto Slay')
-				.setEmoji('630911040560824330')
-				.setStyle(ButtonStyle.Secondary)
-		);
+		buttons.push(makeAutoSlayButton());
 	}
 
 	buttons.push(

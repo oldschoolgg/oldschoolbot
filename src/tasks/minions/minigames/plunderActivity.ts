@@ -45,7 +45,7 @@ export const plunderTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: thievingXP });
+		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: thievingXP, duration: data.duration });
 
 		let str = `${user}, ${user.minionName} finished doing the Pyramid Plunder ${quantity}x times. ${totalAmountUrns}x urns opened. ${xpRes}  ${flappyRes.userMsg}`;
 

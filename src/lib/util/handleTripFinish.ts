@@ -29,6 +29,7 @@ import { channelIsSendable, makeComponents, toKMB } from '../util';
 import { mahojiChatHead } from './chatHeadImage';
 import {
 	makeAutoContractButton,
+	makeAutoSlayButton,
 	makeBirdHouseTripButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
@@ -444,6 +445,8 @@ export async function handleTripFinish(
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
 			components.push(makeNewSlayerTaskButton());
+		} else {
+			components.push(makeAutoSlayButton());
 		}
 		if (loot?.has('Seed pack')) {
 			components.push(makeOpenSeedPackButton());
