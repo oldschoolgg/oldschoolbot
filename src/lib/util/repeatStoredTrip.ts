@@ -1,4 +1,4 @@
-import { activity_type_enum, Prisma } from '@prisma/client';
+import { Activity, activity_type_enum, Prisma } from '@prisma/client';
 import { ButtonBuilder, ButtonInteraction, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 
@@ -6,7 +6,7 @@ import { autocompleteMonsters } from '../../mahoji/commands/k';
 import { PvMMethod } from '../constants';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
-import { prisma } from '../settings/prisma';
+import { convertStoredActivityToFlatActivity, prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import {
 	ActivityTaskOptionsWithQuantity,
@@ -16,6 +16,7 @@ import {
 	BuryingActivityTaskOptions,
 	ButlerActivityTaskOptions,
 	CastingActivityTaskOptions,
+	ClueActivityTaskOptions,
 	CollectingOptions,
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
@@ -59,10 +60,15 @@ import {
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 import { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
+import getOSItem from './getOSItem';
 import { deferInteraction } from './interactionReply';
 
-export const taskCanBeRepeated = (type: activity_type_enum) =>
-	!(
+export const taskCanBeRepeated = (activity: Activity) => {
+	if (activity.type === activity_type_enum.ClueCompletion) {
+		const realActivity = convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
+		return realActivity.implingID !== undefined;
+	}
+	return !(
 		[
 			activity_type_enum.TearsOfGuthix,
 			activity_type_enum.ShootingStars,
@@ -70,21 +76,21 @@ export const taskCanBeRepeated = (type: activity_type_enum) =>
 			activity_type_enum.BlastFurnace,
 			activity_type_enum.Easter,
 			activity_type_enum.TokkulShop,
-			activity_type_enum.Birdhouse,
-			activity_type_enum.ClueCompletion
+			activity_type_enum.Birdhouse
 		] as activity_type_enum[]
-	).includes(type);
+	).includes(activity.type);
+};
 
 export const tripHandlers = {
+	[activity_type_enum.ClueCompletion]: {
+		commandName: 'clue',
+		args: (data: ClueActivityTaskOptions) => ({ tier: data.clueID, implings: getOSItem(data.implingID!).name })
+	},
 	[activity_type_enum.SpecificQuest]: {
 		commandName: 'm',
 		args: () => ({})
 	},
 	[activity_type_enum.HalloweenEvent]: {
-		commandName: 'm',
-		args: () => ({})
-	},
-	[activity_type_enum.ClueCompletion]: {
 		commandName: 'm',
 		args: () => ({})
 	},
@@ -621,7 +627,7 @@ for (const type of Object.values(activity_type_enum)) {
 }
 
 export async function fetchRepeatTrips(userID: string) {
-	const res = await prisma.activity.findMany({
+	const res: Activity[] = await prisma.activity.findMany({
 		where: {
 			user_id: BigInt(userID),
 			finish_date: {
@@ -631,18 +637,14 @@ export async function fetchRepeatTrips(userID: string) {
 		orderBy: {
 			id: 'desc'
 		},
-		take: 20,
-		select: {
-			data: true,
-			type: true
-		}
+		take: 20
 	});
 	const filtered: {
 		type: activity_type_enum;
 		data: Prisma.JsonValue;
 	}[] = [];
 	for (const trip of res) {
-		if (!taskCanBeRepeated(trip.type)) continue;
+		if (!taskCanBeRepeated(trip)) continue;
 		if (trip.type === activity_type_enum.Farming && !(trip.data as any as FarmingActivityTaskOptions).autoFarmed) {
 			continue;
 		}
