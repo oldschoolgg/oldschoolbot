@@ -76,6 +76,7 @@ export const Projectiles: DisassemblySourceGroup = {
 		{ item: i('Emerald bolts (e)'), lvl: 30 },
 		{ item: i('Ruby bolts (e)'), lvl: 30 },
 		{ item: i('Bolt rack'), lvl: 35 },
+		{ item: i('Broad bolts'), lvl: 35 },
 		{ item: i('Diamond bolts (e)'), lvl: 35 },
 		{ item: i('Onyx bolts'), lvl: 35 },
 		{ item: i('Onyx bolts (e)'), lvl: 40 },
