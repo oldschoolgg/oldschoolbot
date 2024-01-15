@@ -2,6 +2,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
+import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { Events } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { toKMB } from '../../lib/util';
@@ -44,6 +45,8 @@ export const payCommand: OSBMahojiCommand = {
 		// Ensure the recipient's users row exists:
 		if (!amount) return "That's not a valid amount.";
 		const { GP } = user;
+		const isBlacklisted = BLACKLISTED_USERS.has(recipient.id);
+		if (isBlacklisted) return "Blacklisted players can't be paid.";
 		if (recipient.id === user.id) return "You can't send money to yourself.";
 		if (user.isIronman) return "Iron players can't send money.";
 		if (recipient.isIronman) return "Iron players can't receive money.";
