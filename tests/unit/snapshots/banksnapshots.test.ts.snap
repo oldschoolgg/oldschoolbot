@@ -25628,6 +25628,69 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "20997": 1000,
+        "50021": 20,
+        "73005": 512,
+      },
+      "frozen": false,
+    },
+    "name": "Rebirth portent",
+    "outputItems": Bank {
+      "bank": {
+        "73052": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "20997": 1000,
+        "50021": 20,
+        "73012": 1200,
+      },
+      "frozen": false,
+    },
+    "name": "Spiritual mining portent",
+    "outputItems": Bank {
+      "bank": {
+        "73053": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "20997": 1000,
+        "50021": 20,
+        "73011": 1000,
+      },
+      "frozen": false,
+    },
+    "name": "Pacifist hunting portent",
+    "outputItems": Bank {
+      "bank": {
+        "73054": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 120,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "40054": 1,
       },
       "frozen": false,

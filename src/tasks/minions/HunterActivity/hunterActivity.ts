@@ -382,6 +382,6 @@ export const hunterTask: MinionTask = {
 			});
 		}
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };
