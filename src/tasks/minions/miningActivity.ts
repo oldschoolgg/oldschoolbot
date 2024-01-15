@@ -190,24 +190,27 @@ export function calculateMiningResult({
 		}
 
 		if (spiritOre && amountOfSpiritsToUse > 0) {
-			if (portentResult?.didCharge) {
-				spiritualMiningPortentXP = amountOfSpiritsToUse * (ore.xp * (ore.xp / 10));
-				totalMiningXPToAdd += spiritualMiningPortentXP;
+			const spiritCost = new Bank().add(spiritOre.spirit.id, amountOfSpiritsToUse);
+			totalCost.add(spiritCost);
 
-				messages.push(
-					`You received ${toKMB(spiritualMiningPortentXP)} bonus XP from your Spiritual mining portent (${
-						portentResult.portent.charges_remaining
-					} charges remaining).`
-				);
-			} else {
-				const spiritCost = new Bank().add(spiritOre.spirit.id, amountOfSpiritsToUse);
-				totalCost.add(spiritCost);
-				const spiritBank = new Bank().add(ore.id, amountOfSpiritsToUse);
-				loot.add(spiritBank);
-				oresFromSpiritsBank.add(ore.id, amountOfSpiritsToUse);
-				messages.push(`You received ${spiritBank} from your ${spiritCost}.`);
-			}
+			const spiritBank = new Bank().add(ore.id, amountOfSpiritsToUse);
+			loot.add(spiritBank);
+			oresFromSpiritsBank.add(ore.id, amountOfSpiritsToUse);
+			messages.push(`You received ${spiritBank} from your ${spiritCost}.`);
 		}
+	}
+
+	if (spiritOre && amountOfSpiritsToUse > 0 && portentResult?.didCharge) {
+		const spiritCost = new Bank().add(spiritOre.spirit.id, amountOfSpiritsToUse);
+		totalCost.add(spiritCost);
+		spiritualMiningPortentXP = amountOfSpiritsToUse * (ore.xp * (ore.xp / 10));
+		totalMiningXPToAdd += spiritualMiningPortentXP;
+
+		messages.push(
+			`You received ${toKMB(spiritualMiningPortentXP)} bonus XP from your Spiritual mining portent (${
+				portentResult.portent.charges_remaining
+			} charges remaining).`
+		);
 	}
 
 	let smithingXPFromAdze = 0;

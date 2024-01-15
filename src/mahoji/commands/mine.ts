@@ -140,9 +140,12 @@ export function calculateMiningInput({
 
 	if (ore.bankingTime === 0) {
 		isPowermining = false;
-	} else {
+	}
+
+	if (isPowermining) {
 		messages.push('**Powermining**');
 	}
+
 	// Calculate the time it takes to mine specific quantity or as many as possible
 	let [timeToMine, newQuantity] = determineMiningTime({
 		quantity: quantityInput,

@@ -313,5 +313,5 @@ export interface Creature {
 	qpRequired?: number;
 	slope: number;
 	intercept: number;
-	bait?: (quantity: number, user: MUser) => Bank;
+	bait?: (quantity: number) => Bank;
 }

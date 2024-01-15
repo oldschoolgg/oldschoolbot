@@ -3,7 +3,6 @@ import { gzip } from 'node:zlib';
 import { stripEmojis } from '@oldschoolgg/toolkit';
 import { PrismaClient } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
-import { createHash } from 'crypto';
 import {
 	BaseMessageOptions,
 	bold,
@@ -742,10 +741,6 @@ export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededF
 		gotrRiftSearches: userStats.gotr_rift_searches,
 		stats
 	};
-}
-
-export function md5sum(str: string) {
-	return createHash('md5').update(str).digest('hex');
 }
 
 export { assert } from './util/logError';

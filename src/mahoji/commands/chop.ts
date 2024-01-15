@@ -195,7 +195,6 @@ export const chopCommand: OSBMahojiCommand = {
 				boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
 				break;
 			}
-			boosts.push(`**${axeMultiplier}x** success multiplier for Bronze axe`);
 		}
 
 		if (log.name === 'Ivy') {

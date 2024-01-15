@@ -1,9 +1,10 @@
+import { InteractionReplyOptions } from 'discord.js';
 import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
-import { GLOBAL_BSO_XP_MULTIPLIER } from '../../lib/constants';
+import { GLOBAL_BSO_XP_MULTIPLIER, PeakTier } from '../../lib/constants';
 import { inventionBoosts } from '../../lib/invention/inventions';
 import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import Agility from '../../lib/skilling/skills/agility';
@@ -12,16 +13,23 @@ import {
 	calcMaxFloorUserCanDo,
 	numberOfGorajanOutfitsEquipped
 } from '../../lib/skilling/skills/dung/dungDbFunctions';
+import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
+import { HunterTechniqueEnum } from '../../lib/skilling/types';
+import { Gear } from '../../lib/structures/Gear';
 import { convertBankToPerHourStats } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { deferInteraction } from '../../lib/util/interactionReply';
+import itemID from '../../lib/util/itemID';
 import { calcPerHour, returnStringOrFile } from '../../lib/util/smallUtils';
 import { calculateAgilityResult } from '../../tasks/minions/agilityActivity';
 import { calculateDungeoneeringResult } from '../../tasks/minions/bso/dungeoneeringActivity';
 import { memoryHarvestResult } from '../../tasks/minions/bso/memoryHarvestActivity';
+import { calculateHunterResult } from '../../tasks/minions/HunterActivity/hunterActivity';
 import { calculateMiningResult } from '../../tasks/minions/miningActivity';
 import { OSBMahojiCommand } from '../lib/util';
+import { calculateHunterInput } from './hunt';
 import { calculateMiningInput } from './mine';
 
 export const ratesCommand: OSBMahojiCommand = {
@@ -56,17 +64,156 @@ export const ratesCommand: OSBMahojiCommand = {
 					name: 'mining',
 					description: 'Mining.',
 					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'hunter',
+					description: 'XP/hr rates for Hunter.',
+					options: []
 				}
 			]
 		}
 	],
 	run: async ({
 		options,
-		userID
+		userID,
+		interaction
 	}: CommandRunOptions<{
-		xphr?: { divination_memory_harvesting?: {}; agility?: {}; dungeoneering?: {}; mining?: {} };
+		xphr?: { divination_memory_harvesting?: {}; agility?: {}; dungeoneering?: {}; mining?: {}; hunter?: {} };
 	}>) => {
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
+
+		if (options.xphr?.hunter) {
+			let results = `${[
+				'Creature',
+				'XP/Hr',
+				'Portent',
+				'Quick Trap',
+				'Max Learning',
+				'Stam&Hunt Pots',
+				'Successful qty/hr',
+				'QuantityHunted'
+			].join('\t')}\n`;
+
+			for (const creature of Hunter.Creatures) {
+				for (const hasPortent of [true, false]) {
+					for (const _hasQuickTrap of [true, false]) {
+						for (const usingStamAndHunterPotions of [true, false]) {
+							for (const hasMaxLearning of [true, false]) {
+								let hasQuickTrap =
+									_hasQuickTrap && creature.huntTechnique === HunterTechniqueEnum.BoxTrapping;
+								if (creature.huntTechnique !== HunterTechniqueEnum.BoxTrapping && _hasQuickTrap) {
+									continue;
+								}
+								const duration = Time.Hour * 5;
+								const skillsAsLevels = {
+									...user.skillsAsLevels,
+									hunter: 120,
+									fishing: 120,
+									agility: 120,
+									mining: 120,
+									woodcutting: 120,
+									prayer: 120,
+									herblore: 120
+								};
+
+								const creatureScores = hasMaxLearning ? { [creature.id]: 100_000_000 } : {};
+
+								const gear = new Gear();
+								gear.equip('Beginner rumble greegree');
+								gear.equip('Masori body (f)');
+								gear.equip('Masori chaps (f)');
+								gear.equip('Dragon boots');
+								gear.equip('Fire cape');
+
+								const bank = new Bank()
+									.add('Hunter potion(4)', 1000)
+									.add('Simple kibble', 100_000)
+									.add('Delicious kibble', 100_000)
+									.add('Stamina potion(4)', 1000)
+									.add('Eastern ferret', 10_000)
+									.add('Saradomin brew(4)', 1000)
+									.add('Super restore(4)', 1000)
+									.add('Banana', 100_000)
+									.add('Magic box', 50_000)
+									.add('Butterfly jar', 10_000);
+
+								const fullSetup = {
+									wildy: gear
+								} as any;
+
+								const inputResult = calculateHunterInput({
+									creatureScores,
+									creature,
+									skillsAsLevels,
+									isUsingHunterPotion: usingStamAndHunterPotions,
+									shouldUseStaminaPotions: usingStamAndHunterPotions,
+									bank,
+									quantityInput: undefined,
+									allGear: fullSetup,
+									hasHunterMasterCape: true,
+									maxTripLength: duration,
+									isUsingQuickTrap: hasQuickTrap,
+									quickTrapMessages: '',
+									QP: 5000,
+									hasGraceful: true
+								});
+
+								if (typeof inputResult === 'string') {
+									console.log(inputResult);
+									continue;
+								}
+								const result = calculateHunterResult({
+									creature,
+									allItemsOwned: new Bank(),
+									skillsAsLevels,
+									usingHuntPotion: usingStamAndHunterPotions,
+									bank,
+									quantity: inputResult.quantity,
+									duration,
+									creatureScores,
+									allGear: user.gear,
+									collectionLog: new Bank(),
+									equippedPet: itemID('Sandy'),
+									skillsAsXP: skillsAsLevels,
+									hasHunterMasterCape: true,
+									wildyPeakTier: PeakTier.Low,
+									isUsingArcaneHarvester: false,
+									arcaneHarvesterMessages: undefined,
+									portentResult: hasPortent
+										? { didCharge: true, portent: { charges_remaining: 1000 } as any }
+										: { didCharge: false },
+									invincible: true,
+									noRandomness: true
+								});
+								results += [
+									creature.name,
+									Math.floor(
+										calcPerHour(result.totalHunterXP * GLOBAL_BSO_XP_MULTIPLIER, duration)
+									).toLocaleString(),
+									hasPortent ? 'Has Portent' : 'No Portent',
+									hasQuickTrap
+										? 'Has Quick Trap'
+										: creature.huntTechnique === HunterTechniqueEnum.BoxTrapping
+										? 'No Quick Trap'
+										: 'Not Applicable',
+									hasMaxLearning ? 'Max Learning' : 'No Max Learning',
+									usingStamAndHunterPotions ? 'Has Pots' : 'No Pots',
+									calcPerHour(result.successfulQuantity, duration).toLocaleString(),
+									inputResult.quantity
+								].join('\t');
+								results += '\n';
+							}
+						}
+					}
+				}
+			}
+			return {
+				...(returnStringOrFile(results, true) as InteractionReplyOptions),
+				content: 'Assumes: Hunter master cape, level 120 Hunter, full Graceful, Sandy pet equipped.'
+			};
+		}
 
 		if (options.xphr?.mining) {
 			let results = `${[
@@ -80,7 +227,7 @@ export const ratesCommand: OSBMahojiCommand = {
 				'Loot',
 				'Cost'
 			].join('\t')}\n`;
-			const duration = Time.Hour * 3;
+			const duration = Number(Time.Hour);
 			for (const ore of Mining.Ores) {
 				for (const isPowerminingInput of [true, false]) {
 					for (const shouldTryUseSpirits of [true, false]) {
@@ -178,7 +325,11 @@ export const ratesCommand: OSBMahojiCommand = {
 					}
 				}
 			}
-			return returnStringOrFile(results, true);
+			return {
+				...(returnStringOrFile(results, true) as InteractionReplyOptions),
+				content:
+					'Assumes: Mining master cape, full Prospector, Glory, Varrock armour 4, 120 mining, Volcanic pickaxe.'
+			};
 		}
 
 		if (options.xphr?.divination_memory_harvesting) {
