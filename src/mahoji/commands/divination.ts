@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import {
+	basePortentCost,
 	divinationEnergies,
 	getAllPortentCharges,
 	MemoryHarvestType,
@@ -94,7 +95,7 @@ export const divinationCommand: OSBMahojiCommand = {
 			return `**${portent.item.name}**
 			
 Description: ${portent.description}
-Cost: ${portent.cost}
+Cost: ${portent.cost} and base cost of ${basePortentCost}
 
 You have ${portentCharges[portent.id]} charges left, and you receive ${
 				portent.chargesPerPortent

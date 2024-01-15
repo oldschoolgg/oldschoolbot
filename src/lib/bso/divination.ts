@@ -248,6 +248,7 @@ export const memoryHarvestTypes = [
 	{ id: MemoryHarvestType.ConvertWithEnergyToXP, name: 'Convert to XP with Energy' }
 ];
 
+export const basePortentCost = new Bank().add('Elder rune', 20).freeze();
 export enum PortentID {
 	CachePortent = itemID('Cache portent'),
 	GracefulPortent = itemID('Graceful portent'),
@@ -275,7 +276,7 @@ export const portents: SourcePortent[] = [
 		description:
 			'Gives you a tradeable Guthixian cache boost item instead of instantly activating it, 1 charge per boost/item.',
 		divinationLevelToCreate: 80,
-		cost: new Bank().add('Lustrous energy', 500).add('Molten glass', 50),
+		cost: new Bank().add('Radiant energy', 500).add('Molten glass', 50),
 		chargesPerPortent: 2,
 		addChargeMessage: portent =>
 			`You used a Cache portent, your next ${portent.charges_remaining} Guthixian cache trips will grant you a Guthixian cache boost item.`
@@ -295,7 +296,7 @@ export const portents: SourcePortent[] = [
 		item: getOSItem('Rogues portent'),
 		description: "Give's 3x loot from pickpocketing, does not stack with thieves armband.",
 		divinationLevelToCreate: 110,
-		cost: new Bank().add('Ancient energy', 200).add('Elder rune', 1000),
+		cost: new Bank().add('Ancient energy', 200).add('Elder rune', 500),
 		chargesPerPortent: 120,
 		addChargeMessage: portent =>
 			`You used a Rogues portent, you will receive 3x loot in your next ${portent.charges_remaining} minutes of pickpocketing.`
@@ -305,7 +306,7 @@ export const portents: SourcePortent[] = [
 		item: getOSItem('Dungeon portent'),
 		description: 'Converts dungeoneering tokens into extra dungeoneering xp.',
 		divinationLevelToCreate: 95,
-		cost: new Bank().add('Brilliant energy', 512).add('Twisted bow', 1000),
+		cost: new Bank().add('Ancient energy', 512),
 		chargesPerPortent: 120,
 		addChargeMessage: portent =>
 			`You used a Dungeon portent, all your Dungeoneering tokens will turn into bonus XP for your next ${portent.charges_remaining} minutes of dungeoneering.`
@@ -315,7 +316,7 @@ export const portents: SourcePortent[] = [
 		item: getOSItem('Lucky portent'),
 		description: 'Grants double loot from IC rewards and double xp from tears of guthix.',
 		divinationLevelToCreate: 105,
-		cost: new Bank().add('Incandescent energy', 256).add('Twisted bow', 1000),
+		cost: new Bank().add('Incandescent energy', 256),
 		chargesPerPortent: 4,
 		addChargeMessage: portent =>
 			`You used a Lucky portent, your next ${portent.charges_remaining} Tears of Guthix or Item Contracts will grant you double the reward.`
@@ -325,8 +326,8 @@ export const portents: SourcePortent[] = [
 		item: getOSItem('Rebirth portent'),
 		description: 'Gives you a chance to receive divine eggs from skilling, 1 charge per egg.',
 		divinationLevelToCreate: 90,
-		cost: new Bank().add('Brilliant energy', 512).add('Twisted bow', 1000),
-		chargesPerPortent: 4,
+		cost: new Bank().add('Ancient energy', 512),
+		chargesPerPortent: 200,
 		addChargeMessage: portent =>
 			`You used a Rebirth portent, you can now receive ${portent.charges_remaining}x Divine eggs from skilling.`
 	},
@@ -335,7 +336,7 @@ export const portents: SourcePortent[] = [
 		item: getOSItem('Spiritual mining portent'),
 		description: 'Consumes stone spirits to grant extra mining XP, instead of extra ore.',
 		divinationLevelToCreate: 90,
-		cost: new Bank().add('Luminous energy', 1200).add('Twisted bow', 1000),
+		cost: new Bank().add('Incandescent energy', 1200),
 		chargesPerPortent: 1000,
 		addChargeMessage: portent =>
 			`You used a Spiritual mining portent, your next ${portent.charges_remaining}x stone spirits will grant XP instead of ore.`
@@ -345,7 +346,7 @@ export const portents: SourcePortent[] = [
 		item: getOSItem('Pacifist hunting portent'),
 		description: 'Enables you to train Hunter as a pacifist, releasing your catch for bonus XP.',
 		divinationLevelToCreate: 120,
-		cost: new Bank().add('Incandescent energy', 1000).add('Twisted bow', 1000),
+		cost: new Bank().add('Incandescent energy', 1000).add('Rocktail', 30),
 		chargesPerPortent: 60 * 2.5,
 		addChargeMessage: portent =>
 			`You used a Pacifist hunting portent, your next ${portent.charges_remaining}x minutes of Hunter will grant bonus XP for pacifist hunting.`

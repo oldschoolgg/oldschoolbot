@@ -25281,7 +25281,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Flickering energy",
+    "name": "Boon of flickering energy",
     "outputItems": Bank {
       "bank": {
         "73029": 1,
@@ -25300,7 +25300,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Bright energy",
+    "name": "Boon of bright energy",
     "outputItems": Bank {
       "bank": {
         "73028": 1,
@@ -25319,7 +25319,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Glowing energy",
+    "name": "Boon of glowing energy",
     "outputItems": Bank {
       "bank": {
         "73027": 1,
@@ -25338,7 +25338,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Sparkling energy",
+    "name": "Boon of sparkling energy",
     "outputItems": Bank {
       "bank": {
         "73026": 1,
@@ -25357,7 +25357,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Gleaming energy",
+    "name": "Boon of gleaming energy",
     "outputItems": Bank {
       "bank": {
         "73025": 1,
@@ -25376,7 +25376,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Vibrant energy",
+    "name": "Boon of vibrant energy",
     "outputItems": Bank {
       "bank": {
         "73024": 1,
@@ -25395,7 +25395,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Lustrous energy",
+    "name": "Boon of lustrous energy",
     "outputItems": Bank {
       "bank": {
         "73023": 1,
@@ -25414,7 +25414,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Elder energy",
+    "name": "Boon of elder energy",
     "outputItems": Bank {
       "bank": {
         "73022": 1,
@@ -25433,7 +25433,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Brilliant energy",
+    "name": "Boon of brilliant energy",
     "outputItems": Bank {
       "bank": {
         "73033": 1,
@@ -25452,7 +25452,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Radiant energy",
+    "name": "Boon of radiant energy",
     "outputItems": Bank {
       "bank": {
         "73032": 1,
@@ -25471,7 +25471,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Luminous energy",
+    "name": "Boon of luminous energy",
     "outputItems": Bank {
       "bank": {
         "73031": 1,
@@ -25490,7 +25490,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Incandescent energy",
+    "name": "Boon of incandescent energy",
     "outputItems": Bank {
       "bank": {
         "73030": 1,
@@ -25509,7 +25509,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Ancient energy",
+    "name": "Boon of ancient energy",
     "outputItems": Bank {
       "bank": {
         "73046": 1,
@@ -25526,7 +25526,7 @@ exports[`BSO Creatables 1`] = `
       "bank": {
         "1775": 50,
         "50021": 20,
-        "73013": 500,
+        "73016": 500,
       },
       "frozen": false,
     },
@@ -25566,7 +25566,7 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
-        "50021": 1020,
+        "50021": 520,
         "73045": 200,
       },
       "frozen": false,
@@ -25586,9 +25586,8 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
-        "20997": 1000,
         "50021": 20,
-        "73005": 512,
+        "73045": 512,
       },
       "frozen": false,
     },
@@ -25607,7 +25606,6 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
-        "20997": 1000,
         "50021": 20,
         "73011": 256,
       },
@@ -25628,9 +25626,8 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
-        "20997": 1000,
         "50021": 20,
-        "73005": 512,
+        "73045": 512,
       },
       "frozen": false,
     },
@@ -25649,9 +25646,8 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
-        "20997": 1000,
         "50021": 20,
-        "73012": 1200,
+        "73011": 1200,
       },
       "frozen": false,
     },
@@ -25670,7 +25666,7 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
-        "20997": 1000,
+        "50002": 30,
         "50021": 20,
         "73011": 1000,
       },

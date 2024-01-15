@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { divinationEnergies, portents } from '../../bso/divination';
+import { basePortentCost, divinationEnergies, portents } from '../../bso/divination';
 import { Createable } from '../createables';
 
 export const divinationCreatables: Createable[] = [];
@@ -12,7 +12,7 @@ for (let i = 0; i < divinationEnergies.length; i++) {
 	if (!previousEnergy) continue;
 
 	divinationCreatables.push({
-		name: `${energy.type} energy`,
+		name: energy.boon.name,
 		inputItems: new Bank().add(previousEnergy.item, energy.boonEnergyCost),
 		outputItems: new Bank().add(energy.boon),
 		requiredSkills: {
@@ -24,7 +24,7 @@ for (let i = 0; i < divinationEnergies.length; i++) {
 for (const portent of portents) {
 	divinationCreatables.push({
 		name: portent.item.name,
-		inputItems: portent.cost.clone().add('Elder rune', 20),
+		inputItems: portent.cost.clone().add(basePortentCost),
 		outputItems: new Bank().add(portent.item),
 		requiredSkills: {
 			divination: portent.divinationLevelToCreate

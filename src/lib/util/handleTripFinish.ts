@@ -406,7 +406,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (!charges) return;
 			let eggsReceived = 0;
 			for (let i = 0; i < fiveMinuteSegments; i++) {
-				perHourChance(Time.Minute * 5, 3, () => {
+				perHourChance(Time.Minute * 5, 2, () => {
 					eggsReceived += 1;
 				});
 			}

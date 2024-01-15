@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { EquipmentSlot, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { chargePortentIfHasCharges, PortentID } from '../../../lib/bso/divination';
-import { Events, MAX_LEVEL, PeakTier } from '../../../lib/constants';
+import { Events, GLOBAL_BSO_XP_MULTIPLIER, MAX_LEVEL, PeakTier } from '../../../lib/constants';
 import { globalDroprates } from '../../../lib/data/globalDroprates';
 import { UserFullGearSetup } from '../../../lib/gear';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
@@ -200,7 +200,7 @@ export function calculateHunterResult({
 		}
 		totalHunterXP += bonusXP;
 		messages.push(
-			`${toKMB(bonusXP)} bonus XP from your Pacifist Portent (${
+			`${toKMB(bonusXP * GLOBAL_BSO_XP_MULTIPLIER)} bonus XP from your Pacifist Portent (${
 				portentResult.portent.charges_remaining
 			} charges remaining)`
 		);

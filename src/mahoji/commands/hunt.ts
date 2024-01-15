@@ -151,17 +151,16 @@ export function calculateHunterInput({
 		timePerCatch = boostedActionTime;
 	}
 
+	let maxQuantity = Math.floor(maxTripLength / timePerCatch);
 	let quantity = quantityInput;
-	if (!quantity) quantity = Math.floor(maxTripLength / timePerCatch);
+	if (!quantity) quantity = maxQuantity;
 
 	let duration = Math.floor(quantity * timePerCatch);
 
 	if (duration > maxTripLength) {
 		return `You can't go on trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount of ${creature.name} you can hunt is ${Math.floor(
-			maxTripLength / ((catchTime * Time.Second) / traps)
-		)}.`;
+		)}, try a lower quantity. The highest amount of ${creature.name} you can hunt is ${maxQuantity}.`;
 	}
 
 	let totalCost = new Bank();
@@ -318,7 +317,7 @@ export const huntCommand: OSBMahojiCommand = {
 			allGear: user.gear,
 			QP: user.QP,
 			bank: user.bank,
-			isUsingQuickTrap: false,
+			isUsingQuickTrap: elligibleForQuickTrap,
 			quickTrapMessages: undefined
 		};
 
