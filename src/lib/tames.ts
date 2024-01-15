@@ -22,6 +22,7 @@ import { PHOSANI_NIGHTMARE_ID } from './constants';
 import { getSimilarItems } from './data/similarItems';
 import { trackLoot } from './lootTrack';
 import killableMonsters, { NightmareMonster } from './minions/data/killableMonsters';
+import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
 import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBosses';
 import { Planks } from './minions/data/planks';
 import { KillableMonster } from './minions/types';
@@ -169,8 +170,7 @@ export const specialLoot: SpecialLoot[] = [
 		]
 	},
 	{
-		// Vladimir Drakan
-		monster: [291_242],
+		monster: [BSOMonsters.VladimirDrakan.id],
 		specialItems: [
 			{
 				item: [
