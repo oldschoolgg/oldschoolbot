@@ -78,7 +78,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Frozen tablet')) return;
+			if (user.bank.has('Frozen tablet') && user.cl.has('Frozen tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -117,10 +117,6 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		notifyDrops: resolveItems(['Baron']),
 		qpRequired: 100,
 		equippedItemBoosts: [
-			{
-				items: [{ boostPercent: 3, itemID: itemID('Avernic defender') }],
-				gearSetup: 'melee'
-			},
 			{
 				items: [{ boostPercent: 3, itemID: itemID('Ferocious gloves') }],
 				gearSetup: 'melee'
@@ -166,7 +162,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Frozen tablet')) return;
+			if (user.bank.has('Frozen tablet') && user.cl.has('Frozen tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -268,7 +264,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Scarred tablet')) return;
+			if (user.bank.has('Scarred tablet') && user.cl.has('Scarred tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -357,7 +353,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Scarred tablet')) return;
+			if (user.bank.has('Scarred tablet') && user.cl.has('Scarred tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -447,7 +443,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Sirenic tablet')) return;
+			if (user.bank.has('Sirenic tablet') && user.cl.has('Sirenic tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -552,7 +548,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Sirenic tablet')) return;
+			if (user.bank.has('Sirenic tablet') && user.cl.has('Sirenic tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -645,7 +641,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Strangled tablet')) return;
+			if (user.bank.has('Strangled tablet') && user.cl.has('Strangled tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -684,10 +680,6 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		notifyDrops: resolveItems(['Baron']),
 		qpRequired: 100,
 		equippedItemBoosts: [
-			{
-				items: [{ boostPercent: 3, itemID: itemID('Avernic defender') }],
-				gearSetup: 'melee'
-			},
 			{
 				items: [{ boostPercent: 3, itemID: itemID('Ferocious gloves') }],
 				gearSetup: 'melee'
@@ -733,7 +725,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Strangled tablet')) return;
+			if (user.bank.has('Strangled tablet') && user.cl.has('Strangled tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {

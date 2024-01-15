@@ -18,6 +18,7 @@ import { ChambersOfXeric, TheatreOfBlood } from 'oldschooljs/dist/simulation/mis
 
 import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import { PHOSANI_NIGHTMARE_ID } from './constants';
 import { getSimilarItems } from './data/similarItems';
 import { trackLoot } from './lootTrack';
 import killableMonsters, { NightmareMonster } from './minions/data/killableMonsters';
@@ -110,6 +111,87 @@ export const seaMonkeySpells: SeaMonkeySpell[] = [
 		name: 'Superglass make',
 		description: 'Turns seaweed/sand into molten glass',
 		itemIDs: [itemID('Molten glass')]
+	}
+];
+
+export interface SpecialLoot {
+	monster: number[];
+	specialItems: {
+		item: number[];
+		chance: number[];
+	}[];
+}
+
+export const specialLoot: SpecialLoot[] = [
+	{
+		monster: [Monsters.PhantomMuspah.id],
+		specialItems: [
+			{
+				item: [itemID('Charged ice')],
+				chance: [20]
+			}
+		]
+	},
+	{
+		monster: [Monsters.DukeSucellus.id, Monsters.AwakenedDukeSucellus.id],
+		specialItems: [
+			{
+				item: [itemID('Frozen tablet')],
+				chance: [25]
+			}
+		]
+	},
+	{
+		monster: [Monsters.Vardorvis.id, Monsters.AwakenedVardorvis.id],
+		specialItems: [
+			{
+				item: [itemID('Strangled tablet')],
+				chance: [25]
+			}
+		]
+	},
+	{
+		monster: [Monsters.TheWhisperer.id, Monsters.AwakenedTheWhisperer.id],
+		specialItems: [
+			{
+				item: [itemID('Sirenic tablet')],
+				chance: [25]
+			}
+		]
+	},
+	{
+		monster: [Monsters.TheLeviathan.id, Monsters.AwakenedTheLeviathan.id],
+		specialItems: [
+			{
+				item: [itemID('Scarred tablet')],
+				chance: [25]
+			}
+		]
+	},
+	{
+		// Vladimir Drakan
+		monster: [291_242],
+		specialItems: [
+			{
+				item: [
+					itemID('Vampyre hunter boots'),
+					itemID('Vampyre hunter legs'),
+					itemID('Vampyre hunter top'),
+					itemID('Vampyre hunter cuffs'),
+					itemID('Vampyre hunter hat'),
+					itemID('Vampyre hunter hat')
+				],
+				chance: [32, 32, 32, 32, 32]
+			},
+			{
+				item: [itemID('Vampyric plushie')],
+				chance: [250]
+			},
+			{
+				item: [itemID('Echo')],
+				chance: [1000]
+			}
+		]
 	}
 ];
 
@@ -339,6 +421,39 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 			return armorObj.nightmareDeathChance;
 		},
 		healAmountNeeded: 900,
+		mustBeAdult: true,
+		oriWorks: false
+	},
+	{
+		id: PHOSANI_NIGHTMARE_ID,
+		name: 'Phosani Nightmare',
+		aliases: ['phosani', 'phosani nightmare'],
+		timeToFinish: Time.Minute * 35,
+		itemsRequired: resolveItems([]),
+		loot({ quantity }) {
+			let loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				const _loot = Misc.Nightmare.kill({
+					team: [
+						{
+							id: '1',
+							damageDone: 2400
+						}
+					],
+					isPhosani: true
+				});
+				loot.add(_loot['1']);
+			}
+
+			return loot;
+		},
+		deathChance: ({ tame }) => {
+			const armorEquipped = tame.equipped_armor;
+			if (!armorEquipped) return 80;
+			const armorObj = igneArmors.find(i => i.item.id === armorEquipped)!;
+			return armorObj.nightmareDeathChance;
+		},
+		healAmountNeeded: 1500,
 		mustBeAdult: true,
 		oriWorks: false
 	},
@@ -738,6 +853,42 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				}
 			}
 			const loot = mon.loot({ quantity: killQty, tame });
+
+			// Handle specialItems for tame
+			const previousTameCl = new Bank({ ...(tame.max_total_loot as ItemBank) });
+			const specialMon = specialLoot.find(i => Array.isArray(i.monster) && i.monster.includes(mon.id));
+			let currentItem = undefined;
+			let currentChance = 0;
+			if (specialMon) {
+				for (let i = 0; i < specialMon.specialItems.length; i++) {
+					for (let j = 0; j < specialMon.specialItems[i].item.length; j++) {
+						if (!previousTameCl.has(specialMon.specialItems[i].item[j])) {
+							currentItem = specialMon.specialItems[i].item[j];
+							currentChance = specialMon.specialItems[i].chance[j];
+							break;
+						}
+					}
+					for (let j = 0; j < killQty; j++) {
+						if (roll(currentChance)) {
+							loot.add(currentItem);
+							break;
+						}
+					}
+				}
+			}
+
+			// Special case for slepey tablet, works similar to minion
+			const tameHasTablet = previousTameCl.has('Slepey tablet');
+			if (mon.id === PHOSANI_NIGHTMARE_ID) {
+				const kcs = await getIgneTameKC(tame);
+				if (tameHasTablet && loot.has('Slepey tablet')) {
+					loot.remove('Slepey tablet');
+				}
+				if (!tameHasTablet && kcs.idBank[mon.id] >= 100) {
+					loot.add('Slepey tablet');
+				}
+			}
+
 			let str = `${user}, ${tameName(tame)} finished killing ${quantity}x ${mon.name}.${
 				activity.deaths > 0 ? ` ${tameName(tame)} died ${activity.deaths}x times.` : ''
 			}`;
