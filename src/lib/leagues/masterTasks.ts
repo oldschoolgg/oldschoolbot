@@ -1137,5 +1137,19 @@ export const masterTasks: Task[] = [
 				i => user.cl.amount(i) >= 100_000
 			);
 		}
+	},
+	{
+		id: 4156,
+		name: 'Receive 500m Divination',
+		has: async ({ skillsXP }) => {
+			return skillsXP.divination >= 500_000_000;
+		}
+	},
+	{
+		id: 4157,
+		name: 'Receive 1b Divination',
+		has: async ({ skillsXP }) => {
+			return skillsXP.divination >= 1_000_000_000;
+		}
 	}
 ];

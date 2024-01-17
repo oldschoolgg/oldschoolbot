@@ -8,6 +8,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MemoryHarvestOptions } from '../../../lib/types/minions';
 import { calculateAverageTimeForSuccess, formatDuration, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
 const SECONDS_TO_HARVEST = 60;
 const MEMORIES_PER_HARVEST = SECONDS_TO_HARVEST * 2;
@@ -56,7 +57,7 @@ export function memoryHarvestResult({
 }) {
 	const boosts: string[] = [];
 
-	const petChance = (200 - energy.level) * 20_000;
+	const petChance = (200 - energy.level) * 3714;
 	const totalSeconds = Math.round(duration / Time.Second);
 	let totalTimePerRound = SECONDS_TO_HARVEST + SECONDS_TO_CONVERT * MEMORIES_PER_HARVEST;
 
@@ -232,6 +233,7 @@ export const memoryHarvestTask: MinionTask = {
 Pet chance 1 in ${petChancePerMemory.toLocaleString()}, ${formatDuration(avgPetTime)} on average to get pet`;
 
 		if (loot.length > 0) {
+			await userStatsBankUpdate(user.id, 'divination_loot', loot);
 			await user.addItemsToBank({
 				items: loot,
 				collectionLog: true

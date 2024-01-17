@@ -526,6 +526,7 @@ model User {
 
   skills_divination                BigInt    @default(0) @map("skills.divination")
   guthixian_cache_boosts_available Int       @default(0)
+  disabled_portent_ids             Int[]
   portent                          Portent[]
 
   smokey_lottery_tickets          Json?     @db.Json
@@ -1016,6 +1017,7 @@ model UserStats {
   xp_from_mining_portent           BigInt @default(0)
   xp_from_hunter_portent           BigInt @default(0)
   loot_destroyed_by_hunter_portent Json   @default("{}") @db.Json
+  divination_loot                  Json   @default("{}") @db.Json
 
   @@map("user_stats")
 }

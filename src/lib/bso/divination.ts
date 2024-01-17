@@ -379,6 +379,9 @@ export async function chargePortentIfHasCharges({
 	portentID: PortentID;
 	charges: number;
 }): Promise<{ didCharge: false } | { didCharge: true; portent: Portent }> {
+	if (user.user.disabled_portent_ids.includes(portentID)) {
+		return { didCharge: false };
+	}
 	const portent = await prisma.portent.findFirst({
 		where: {
 			item_id: portentID,

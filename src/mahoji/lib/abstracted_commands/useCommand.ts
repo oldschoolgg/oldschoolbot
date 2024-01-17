@@ -4,14 +4,13 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { divinationEnergies, portents } from '../../../lib/bso/divination';
+import { divinationEnergies } from '../../../lib/bso/divination';
 import { BitField } from '../../../lib/constants';
 import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { allDyes, dyedItems } from '../../../lib/dyedItems';
 import { gearImages } from '../../../lib/gear/functions/generateGearImage';
 import { mysteriousStepData } from '../../../lib/mysteryTrail';
 import { makeScriptImage } from '../../../lib/scriptImages';
-import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { flowerTable } from './hotColdCommand';
@@ -536,42 +535,6 @@ usables.push({
 		return `You used a Guthixian cache boost, you now have ${user.user.guthixian_cache_boosts_available} boosts available.`;
 	}
 });
-
-for (const portent of portents) {
-	usables.push({
-		items: [portent.item],
-		run: async user => {
-			const cost = new Bank().add(portent.item.id);
-			if (!user.owns(cost)) {
-				return `You don't own ${cost}.`;
-			}
-			await user.removeItemsFromBank(cost);
-			const newPortent = await prisma.portent.upsert({
-				where: {
-					item_id_user_id: {
-						user_id: user.id,
-						item_id: portent.item.id
-					}
-				},
-				update: {
-					charges_remaining: {
-						increment: portent.chargesPerPortent
-					},
-					total_charges: {
-						increment: portent.chargesPerPortent
-					}
-				},
-				create: {
-					user_id: user.id,
-					item_id: portent.item.id,
-					charges_remaining: portent.chargesPerPortent,
-					total_charges: portent.chargesPerPortent
-				}
-			});
-			return portent.addChargeMessage(newPortent);
-		}
-	});
-}
 
 usables.push({
 	items: [getOSItem('Christmas cake recipe')],

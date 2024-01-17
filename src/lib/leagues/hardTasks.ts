@@ -1,7 +1,8 @@
-import { sumArr } from 'e';
+import { notEmpty, sumArr } from 'e';
 import { Bank, Monsters, Openables } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
+import { divinationEnergies } from '../bso/divination';
 import { circusBuyables } from '../data/buyables/circusBuyables';
 import { fistOfGuthixBuyables } from '../data/buyables/fistOfGuthixBuyables';
 import { stealingCreationBuyables } from '../data/buyables/stealingCreationBuyables';
@@ -1263,6 +1264,30 @@ export const hardTasks: Task[] = [
 		name: 'Fletch 1000 Dragon javelins',
 		has: async ({ fletchedItems }) => {
 			return fletchedItems.amount('Dragon javelin') >= 1000;
+		}
+	},
+	{
+		id: 2167,
+		name: 'Open 50 Divine eggs',
+		has: async ({ opens }) => {
+			return opens.amount('Divine egg') >= 50;
+		}
+	},
+	{
+		id: 2168,
+		name: 'Unlock every boon',
+		has: async ({ user }) => {
+			return divinationEnergies
+				.map(e => e.boonBitfield)
+				.filter(notEmpty)
+				.every(bit => user.bitfield.includes(bit));
+		}
+	},
+	{
+		id: 2169,
+		name: 'Achieve level 120 Divination',
+		has: async ({ skillsLevels }) => {
+			return skillsLevels.divination >= 120;
 		}
 	}
 ];
