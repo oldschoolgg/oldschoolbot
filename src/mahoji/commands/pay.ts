@@ -46,7 +46,7 @@ export const payCommand: OSBMahojiCommand = {
 		if (!amount) return "That's not a valid amount.";
 		const { GP } = user;
 		const isBlacklisted = BLACKLISTED_USERS.has(recipient.id);
-		if (isBlacklisted) return "Blacklisted players can't be paid.";
+		if (isBlacklisted) return "Blacklisted players can't receive money.";
 		if (recipient.id === user.id) return "You can't send money to yourself.";
 		if (user.isIronman) return "Iron players can't send money.";
 		if (recipient.isIronman) return "Iron players can't receive money.";
