@@ -451,7 +451,7 @@ export const Inventions: readonly Invention[] = [
 		itemCost: new Bank().add('Dwarven greataxe'),
 		flags: ['equipped'],
 		inventionLevelNeeded: 100,
-		usageCostMultiplier: 0.85
+		usageCostMultiplier: 0.65
 	}
 ] as const;
 
