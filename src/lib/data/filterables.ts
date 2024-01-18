@@ -349,7 +349,7 @@ const secondariesItems = allMixableItems.filter(
 );
 const secondaries = [...new Set(secondariesItems)];
 
-const herblore = resolveItems([...potions, ...herbs, ...unfPotions, ...secondaries]);
+const herblore = resolveItems(['Vial of water', ...potions, ...herbs, ...unfPotions, ...secondaries]);
 
 const bones = resolveItems([
 	'Bones',
