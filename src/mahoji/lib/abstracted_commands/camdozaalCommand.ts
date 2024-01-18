@@ -65,6 +65,7 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity: newQuantity,
+		iQty: quantity ? quantity : undefined,
 		duration,
 		type: 'CamdozaalMining'
 	});

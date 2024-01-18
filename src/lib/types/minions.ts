@@ -62,6 +62,8 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 		| 'CamdozaalMining'
 		| 'CamdozaalSmithing';
 	quantity: number;
+	// iQty is 'input quantity.' This is the number specified at command time, so we can accurately repeat such trips.
+	iQty?: number;
 }
 
 export interface ShootingStarsOptions extends ActivityTaskOptions {
@@ -154,6 +156,7 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	oreID: number;
 	quantity: number;
 	powermine: boolean;
+	iQty?: number;
 }
 
 export interface MotherlodeMiningActivityTaskOptions extends ActivityTaskOptions {
@@ -161,6 +164,7 @@ export interface MotherlodeMiningActivityTaskOptions extends ActivityTaskOptions
 	fakeDurationMax: number;
 	fakeDurationMin: number;
 	quantity: number;
+	iQty?: number;
 }
 
 export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
@@ -189,6 +193,7 @@ export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
 	powerchopping: boolean;
 	logID: number;
 	quantity: number;
+	iQty?: number;
 }
 
 export interface CraftingActivityTaskOptions extends ActivityTaskOptions {
