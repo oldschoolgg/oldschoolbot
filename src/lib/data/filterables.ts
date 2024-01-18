@@ -330,8 +330,6 @@ const seeds = resolveItems([
 	'Potato seed'
 ]);
 
-const allMixableItems = PotionsMixable.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
-
 const potions = Potions.flatMap(potion => potion.items);
 
 const grimyHerbs = Grimy.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
@@ -345,6 +343,7 @@ const unfPot = PotionsMixable.flatMap(item =>
 );
 const unfPotions = [...new Set(unfPot)];
 
+const allMixableItems = PotionsMixable.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
 const secondariesItems = allMixableItems.filter(
 	item => !potions.includes(item) && !unfPotions.includes(item) && !herbs.includes(item)
 );
