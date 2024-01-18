@@ -227,12 +227,14 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Redwood logs'), 'Redwood'],
 	...XPLamps.map(lamp => [lamp.itemID, toKMB(lamp.amount)] as const),
 
-	// Uncharged
+	// Uncharged & Inactive
 	[i('Holy sanguinesti staff (uncharged)'), 'Unch.'],
 	[i('Sanguinesti staff (uncharged)'), 'Unch.'],
 	[i('Scythe of vitur (uncharged)'), 'Unch.'],
 	[i('Holy scythe of vitur (uncharged)'), 'Unch.'],
-	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.']
+	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.'],
+	[i('23995'), 'Inact.'],
+	[i('25862'), 'Inact.']
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
