@@ -1,4 +1,5 @@
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { expect, test } from 'vitest';
 
 import { MemoryHarvestType } from '../../src/lib/bso/divination';
@@ -53,6 +54,8 @@ test('Memory Harvesting - Convert to Energy', async () => {
 	expect(activity.e).toEqual(itemID('Pale energy'));
 	expect(activity.wb).toEqual(false);
 	expect(activity.t).toEqual(1);
-	await user.statsMatch('divination_loot', new Bank().add('Pale energy', 960));
+	const stats = await user.fetchStats({ divination_loot: true });
+	const divinationLoot = new Bank(stats.divination_loot as ItemBank);
+	expect(divinationLoot.amount('Pale energy')).toEqual(960);
 	expect(user.bank.amount('Pale energy')).toEqual(960);
 });
