@@ -397,8 +397,7 @@ const Potions: Mixable[] = [
 		inputItems: new Bank({ 'Dwarf weed potion (unf)': 1, 'Lily of the sands': 1 }),
 		tickRate: 2,
 		bankTimePerPotion: 0.17
-
-	}
+	},
 	{
 		item: getOSItem('Super combat potion (4)'),
 		aliases: ['super combat potion (4)', 'super combat potion', 'super combat'],
