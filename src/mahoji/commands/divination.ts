@@ -210,7 +210,8 @@ export const divinationCommand: OSBMahojiCommand = {
 
 				str += `\n\nYou can get more charges by buying/creating a portent item, then using it with ${mentionCommand(
 					globalClient,
-					'use'
+					'divination',
+					'charge_portent'
 				)}.`;
 				return str;
 			}
