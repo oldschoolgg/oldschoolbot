@@ -94,6 +94,15 @@ export function makeBirdHouseTripButton() {
 		.setStyle(ButtonStyle.Secondary)
 		.setEmoji('692946556399124520');
 }
+
+export function makeAutoSlayButton() {
+	return new ButtonBuilder()
+		.setCustomId('AUTO_SLAY')
+		.setLabel('Auto Slay')
+		.setEmoji('630911040560824330')
+		.setStyle(ButtonStyle.Secondary);
+}
+
 const reactionTimeLimits = {
 	0: Time.Hour * 12,
 	[PerkTier.One]: Time.Hour * 12,
