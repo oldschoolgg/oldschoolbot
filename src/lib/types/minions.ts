@@ -125,6 +125,7 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	type: 'MonsterKilling';
 	monsterID: number;
 	quantity: number;
+	iQty?: number;
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
 	chinning?: boolean;
@@ -147,6 +148,7 @@ export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Fishing';
 	fishID: number;
 	quantity: number;
+	iQty?: number;
 }
 
 export interface MiningActivityTaskOptions extends ActivityTaskOptions {

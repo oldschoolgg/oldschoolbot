@@ -133,6 +133,7 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 	if (user.skillLevel(SkillsEnum.Fishing) < 7) {
 		return 'You need at least level 7 Fishing to fish in the Ruins of Camdozaal.';
 	}
+	const inputQuantity = quantity;
 
 	const maxTripLength = calcMaxTripLength(user, 'CamdozaalFishing');
 	const camdozaalfish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
@@ -155,6 +156,7 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
+		iQty: inputQuantity,
 		duration,
 		type: 'CamdozaalFishing'
 	});

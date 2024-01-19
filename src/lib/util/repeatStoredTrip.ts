@@ -177,7 +177,7 @@ export const tripHandlers = {
 	[activity_type_enum.CamdozaalFishing]: {
 		commandName: 'activities',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({
-			camdozaal: { action: 'fishing', quantity: data.quantity }
+			camdozaal: { action: 'fishing', quantity: data.iQty }
 		})
 	},
 	[activity_type_enum.BarbarianAssault]: {
@@ -295,7 +295,7 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.Fishing]: {
 		commandName: 'fish',
-		args: (data: FishingActivityTaskOptions) => ({ name: data.fishID, quantity: data.quantity })
+		args: (data: FishingActivityTaskOptions) => ({ name: data.fishID, quantity: data.iQty })
 	},
 	[activity_type_enum.FishingTrawler]: {
 		commandName: 'minigames',
@@ -400,7 +400,7 @@ export const tripHandlers = {
 			else if (data.burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
 			return {
 				name: autocompleteMonsters.find(i => i.id === data.monsterID)?.name ?? data.monsterID.toString(),
-				quantity: data.quantity,
+				quantity: data.iQty,
 				method
 			};
 		}
