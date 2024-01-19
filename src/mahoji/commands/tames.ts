@@ -437,8 +437,7 @@ export async function tameImage(user: MUser): CommandResponse {
 			const mtText = getTameStatus(activity);
 			ctx.textAlign = 'right';
 			for (let i = 0; i < mtText.length; i++) {
-				const mtTextNoPeriod = mtText[i].replace(/\./g, '');
-				drawText(ctx, mtTextNoPeriod, (10 + 256) * x + 256 - 5, (10 + 128) * y + 28 + i * 12);
+				drawText(ctx, mtText[i], (10 + 256) * x + 256 - 5, (10 + 128) * y + 28 + i * 12);
 			}
 		} else {
 			ctx.textAlign = 'right';
@@ -590,29 +589,29 @@ export async function removeRawFood({
 export function getTameStatus(tameActivity: TameActivity | null) {
 	if (tameActivity) {
 		const currentDate = new Date().valueOf();
-		const timeRemaining = `${formatDuration(tameActivity.finish_date.valueOf() - currentDate, true)} remaining.`;
+		const timeRemaining = `${formatDuration(tameActivity.finish_date.valueOf() - currentDate, true)} remaining`;
 		const activityData = tameActivity.data as any as TameTaskOptions;
 		switch (activityData.type) {
 			case TameType.Combat:
 				return [
 					`Killing ${activityData.quantity.toLocaleString()}x ${
 						tameKillableMonsters.find(m => m.id === activityData.monsterID)?.name
-					}.`,
+					}`,
 					timeRemaining
 				];
 			case TameType.Gatherer:
-				return [`Collecting ${itemNameFromID(activityData.itemID)?.toLowerCase()}.`, timeRemaining];
+				return [`Collecting ${itemNameFromID(activityData.itemID)?.toLowerCase()}`, timeRemaining];
 			case 'SpellCasting':
 				return [
 					`Casting ${seaMonkeySpells.find(i => i.id === activityData.spellID)!.name} ${
 						activityData.quantity
-					}x times.`,
+					}x times`,
 					timeRemaining
 				];
 			case 'Tempoross':
-				return ['Fighting the Tempoross.', timeRemaining];
+				return ['Fighting the Tempoross', timeRemaining];
 			case 'Wintertodt':
-				return ['Fighting the Wintertodt.', timeRemaining];
+				return ['Fighting the Wintertodt', timeRemaining];
 		}
 	}
 	return ['Idle'];
@@ -1398,7 +1397,7 @@ async function statusCommand(user: MUser) {
 	if (!tame) {
 		return 'You have no tame selected.';
 	}
-	return `${tameName(tame)} is currently: ${getTameStatus(activity).join(' ')}`;
+	return `${tameName(tame)} is currently: ${getTameStatus(activity).join('. ')}.`;
 }
 
 async function tameEquipCommand(user: MUser, itemName: string) {
