@@ -167,7 +167,7 @@ const ores: Ore[] = [
 		intercept: 10.04,
 		petChance: 211_886,
 		clueScrollChance: 211_886,
-		aliases: ['gems', 'gem']
+		aliases: ['gems', 'gem', 'gem rocks']
 	},
 	{
 		level: 40,
