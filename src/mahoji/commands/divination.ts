@@ -307,7 +307,8 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 				hasWispBuster,
 				hasGuthixianBoost,
 				hasDivineHand,
-				isUsingDivinationPotion
+				isUsingDivinationPotion,
+				hasMasterCape: false
 			});
 
 			if (

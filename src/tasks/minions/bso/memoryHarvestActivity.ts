@@ -44,7 +44,8 @@ export function memoryHarvestResult({
 	hasWispBuster,
 	hasDivineHand,
 	hasGuthixianBoost,
-	isUsingDivinationPotion
+	isUsingDivinationPotion,
+	hasMasterCape
 }: {
 	duration: number;
 	energy: (typeof divinationEnergies)[0];
@@ -54,6 +55,7 @@ export function memoryHarvestResult({
 	hasGuthixianBoost: boolean;
 	hasDivineHand: boolean;
 	isUsingDivinationPotion: boolean;
+	hasMasterCape: boolean;
 }) {
 	const boosts: string[] = [];
 
@@ -106,6 +108,9 @@ export function memoryHarvestResult({
 				if (isUsingDivinationPotion) {
 					energyAmount = increaseNumByPercent(energyAmount, 3);
 				}
+				if (hasMasterCape) {
+					energyAmount = increaseNumByPercent(energyAmount, 5);
+				}
 				loot.add(energy.item, Math.ceil(energyAmount));
 				break;
 			}
@@ -129,6 +134,7 @@ export function memoryHarvestResult({
 
 	if (hasGuthixianBoost) {
 		totalDivinationXP = increaseNumByPercent(totalDivinationXP, 20);
+		boosts.push('20% extra XP and energy for Guthixian Cache boost');
 	}
 
 	if (hasWispBuster) {
@@ -140,10 +146,6 @@ export function memoryHarvestResult({
 		boosts.push('10% extra XP for Boon');
 	}
 
-	if (hasGuthixianBoost) {
-		boosts.push('20% extra XP and energy for Guthixian Cache boost');
-	}
-
 	if (hasDivineHand) {
 		boosts.push(`${inventionBoosts.divineHand.memoryHarvestExtraYieldPercent}% extra energy for Divine hand`);
 	}
@@ -151,6 +153,10 @@ export function memoryHarvestResult({
 	if (isUsingDivinationPotion) {
 		totalDivinationXP = increaseNumByPercent(totalDivinationXP, 3);
 		boosts.push('3% extra XP/energy for Divination potion');
+	}
+
+	if (hasMasterCape) {
+		boosts.push('5% extra energy for Master cape');
 	}
 
 	return {
@@ -200,7 +206,8 @@ export const memoryHarvestTask: MinionTask = {
 				hasWispBuster,
 				hasGuthixianBoost: didGetGuthixianBoost,
 				hasDivineHand,
-				isUsingDivinationPotion
+				isUsingDivinationPotion,
+				hasMasterCape: user.hasEquipped('Divination master cape')
 			});
 
 		if (cost.length > 0) {

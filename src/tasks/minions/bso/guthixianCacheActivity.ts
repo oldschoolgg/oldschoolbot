@@ -1,3 +1,4 @@
+import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { chargePortentIfHasCharges, PortentID } from '../../../lib/bso/divination';
@@ -32,18 +33,33 @@ export const guthixianCacheTask: MinionTask = {
 
 		let str = `${user.minionName} finished completing the Guthixian Cache. ${xpRes}`;
 
-		const portentResult = await chargePortentIfHasCharges({ user, portentID: PortentID.CachePortent, charges: 1 });
+		let amountOfBoostsReceived = 1;
+		if (user.hasEquipped('Divination master cape') && roll(4)) {
+			amountOfBoostsReceived++;
+			str += ' You received an extra boost from your Divination master cape.';
+		}
+		const cacheBoostLoot = new Bank().add('Guthixian cache boost', amountOfBoostsReceived);
+
+		const portentResult = await chargePortentIfHasCharges({
+			user,
+			portentID: PortentID.CachePortent,
+			charges: amountOfBoostsReceived
+		});
 
 		if (portentResult.didCharge) {
-			loot.add('Guthixian cache boost');
-			str += `\nYour Cache portent gave you a Guthixian Cache boost item, your portent now has ${portentResult.portent.charges_remaining} charges remaining..`;
+			loot.add(cacheBoostLoot);
+			str += `\nYour Cache portent gave you ${cacheBoostLoot}, your portent now has ${portentResult.portent.charges_remaining} charges remaining.`;
 		} else {
 			await user.update({
 				guthixian_cache_boosts_available: {
-					increment: 1
+					increment: amountOfBoostsReceived
 				}
 			});
-			str += '\nYou received a Guthixian Cache boost, your next memory harvesting trip will be enhanced.';
+			str += `\nYou received ${
+				amountOfBoostsReceived === 1
+					? 'a Guthixian cache boost'
+					: `${amountOfBoostsReceived}x Guthixian cache boosts`
+			}, your next memory harvesting trip will be enhanced.`;
 		}
 		if (loot.length > 0) {
 			await user.addItemsToBank({

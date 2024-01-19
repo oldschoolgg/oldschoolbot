@@ -366,7 +366,8 @@ export const ratesCommand: OSBMahojiCommand = {
 										hasGuthixianBoost: hasCacheBoost,
 										hasDivineHand,
 										hasWispBuster,
-										isUsingDivinationPotion: hasPotAndBoon
+										isUsingDivinationPotion: hasPotAndBoon,
+										hasMasterCape: false
 									});
 
 									const energyPerHour = calcPerHour(res.loot.amount(energy.item.id), Time.Hour);

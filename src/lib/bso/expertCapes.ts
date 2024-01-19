@@ -20,7 +20,8 @@ export const expertCapesSource = [
 			'Fishing master cape',
 			'Hunter master cape',
 			'Mining master cape',
-			'Woodcutting master cape'
+			'Woodcutting master cape',
+			'Divination master cape'
 		]),
 		skills: [SkillsEnum.Farming, SkillsEnum.Fishing, SkillsEnum.Hunter, SkillsEnum.Mining, SkillsEnum.Woodcutting]
 	},
