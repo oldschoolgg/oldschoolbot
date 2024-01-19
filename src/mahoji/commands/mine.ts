@@ -188,6 +188,7 @@ export const mineCommand: OSBMahojiCommand = {
 			userID: userID.toString(),
 			channelID: channelID.toString(),
 			quantity: newQuantity,
+			iQty: options.quantity ? options.quantity : undefined,
 			powermine,
 			duration,
 			fakeDurationMax,

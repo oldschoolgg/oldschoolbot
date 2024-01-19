@@ -165,7 +165,7 @@ export const tripHandlers = {
 	[activity_type_enum.CamdozaalMining]: {
 		commandName: 'activities',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({
-			camdozaal: { action: 'mining', quantity: data.quantity }
+			camdozaal: { action: 'mining', quantity: data.iQty }
 		})
 	},
 	[activity_type_enum.CamdozaalSmithing]: {
@@ -379,7 +379,7 @@ export const tripHandlers = {
 		commandName: 'mine',
 		args: (data: MiningActivityTaskOptions) => ({
 			name: data.oreID,
-			quantity: data.quantity,
+			quantity: data.iQty,
 			powermine: data.powermine
 		})
 	},
@@ -387,7 +387,7 @@ export const tripHandlers = {
 		commandName: 'mine',
 		args: (data: MotherlodeMiningActivityTaskOptions) => ({
 			name: 'Motherlode mine',
-			quantity: data.quantity
+			quantity: data.iQty
 		})
 	},
 	[activity_type_enum.MonsterKilling]: {
@@ -549,7 +549,7 @@ export const tripHandlers = {
 		commandName: 'chop',
 		args: (data: WoodcuttingActivityTaskOptions) => ({
 			name: itemNameFromID(data.logID),
-			quantity: data.quantity,
+			quantity: data.iQty,
 			powerchop: data.powerchopping
 		})
 	},
