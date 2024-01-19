@@ -156,7 +156,7 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
-		iQty: inputQuantity ? inputQuantity : undefined,
+		iQty: inputQuantity,
 		duration,
 		type: 'CamdozaalFishing'
 	});
