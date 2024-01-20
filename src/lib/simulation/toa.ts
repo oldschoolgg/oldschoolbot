@@ -1036,7 +1036,7 @@ export async function checkTOAUser(
 	if (unmetReqs.length > 0) {
 		return [
 			true,
-			`${user.usernameOrMention} doesn't meet the requirements: ${unmetReqs.map(i => i.result).join(', ')}`
+			`${user.usernameOrMention} doesn't meet the requirements: ${unmetReqs.map(i => i.result).join(', ')}.`
 		];
 	}
 
