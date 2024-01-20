@@ -1,4 +1,4 @@
-import { uniqueArr } from 'e';
+import { isFunction, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BitField, discontinuedItems } from '../constants';
@@ -36,7 +36,7 @@ import { tameCreatables } from './tameCreatables';
 
 export interface Createable {
 	name: string;
-	outputItems: ItemBank | Bank;
+	outputItems: ItemBank | Bank | ((user: MUser) => Bank);
 	inputItems: ItemBank | Bank | ((user: MUser) => Bank);
 	cantHaveItems?: ItemBank;
 	requiredSkills?: Skills;
@@ -2403,7 +2403,7 @@ const Createables: Createable[] = [
 export default Createables;
 export const creatablesCL = uniqueArr(
 	Createables.filter(i => i.noCl !== true)
-		.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
+		.map(i => (isFunction(i.outputItems) ? [] : new Bank(i.outputItems).items().map(i => i[0].id)))
 		.flat()
 		.filter(i => !discontinuedItems.includes(i) && !allDyedItems.includes(i))
 );

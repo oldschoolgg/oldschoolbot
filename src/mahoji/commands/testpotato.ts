@@ -236,7 +236,7 @@ for (const group of DisassemblySourceGroups) {
 	}
 }
 const leaguesPreset = new Bank();
-for (const a of leaguesCreatables) leaguesPreset.add(a.outputItems);
+for (const a of leaguesCreatables) leaguesPreset.add(a.outputItems as Bank);
 
 const allStashUnitItems = new Bank();
 for (const unit of allStashUnitsFlat) {
