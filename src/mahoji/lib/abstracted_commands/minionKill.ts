@@ -164,6 +164,7 @@ export async function minionKillCommand(
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
+	const inputQuantity = quantity;
 	const { minionName } = user;
 	const wildyGear = user.gear.wildy;
 	const style = convertAttackStylesToSetup(user.user.attack_style);
@@ -869,7 +870,7 @@ export async function minionKillCommand(
 			);
 		}
 		if (monster.name === 'Yeti') {
-			return 'You send your minion off to fight Koschei with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
+			return 'You send your minion off to fight Yeti with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
 		}
 		usedDart = true;
 		await userStatsUpdate(user.id, () => ({
@@ -1047,6 +1048,7 @@ export async function minionKillCommand(
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
+		iQty: inputQuantity,
 		duration,
 		type: 'MonsterKilling',
 		usingCannon: !usingCannon ? undefined : usingCannon,

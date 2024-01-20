@@ -48,6 +48,7 @@ export interface Ore {
 	minerals?: number;
 	clueScrollChance?: number;
 	requiredPickaxes?: number[];
+	aliases?: string[];
 }
 
 export interface Log {

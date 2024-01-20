@@ -4295,7 +4295,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	1_000_000
+	1_000_000_000
 );
 
 setCustomItem(
@@ -9039,7 +9039,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	10_000
+	1_000_000_000
 );
 
 setCustomItem(

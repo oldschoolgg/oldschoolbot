@@ -357,3 +357,14 @@ export async function addToGPTaxBalance(userID: string | string, amount: number)
 		)
 	]);
 }
+
+export async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
+	const { openable_scores: newOpenableScores } = await userStatsUpdate(
+		mahojiUser.id,
+		({ openable_scores }) => ({
+			openable_scores: new Bank(openable_scores as ItemBank).add(kcBank).bank
+		}),
+		{ openable_scores: true }
+	);
+	return new Bank(newOpenableScores as ItemBank);
+}

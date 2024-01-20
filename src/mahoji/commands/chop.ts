@@ -228,6 +228,7 @@ export const chopCommand: OSBMahojiCommand = {
 			userID: user.id,
 			channelID: channelID.toString(),
 			quantity: newQuantity,
+			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop,
 			duration,
 			fakeDurationMin,

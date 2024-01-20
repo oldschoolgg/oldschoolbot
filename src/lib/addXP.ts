@@ -373,7 +373,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			}% bonus XP for First age outfit items.`;
 		}
 
-		if (params.duration && !params.minimal) {
+		if (params.duration) {
 			let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 			str += ` (${toKMB(rawXPHr)}/Hr)`;

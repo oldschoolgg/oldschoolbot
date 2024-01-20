@@ -232,7 +232,9 @@ export const mineCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		let { quantity, powermine } = options;
 
-		const motherlodeMine = Mining.MotherlodeMine.name === options.name;
+		const motherlodeMine =
+			stringMatches(Mining.MotherlodeMine.name, options.name) ||
+			Mining.MotherlodeMine.aliases!.some(a => stringMatches(a, options.name));
 
 		if (motherlodeMine) {
 			return motherlodeMineCommand({ user, channelID, quantity });
