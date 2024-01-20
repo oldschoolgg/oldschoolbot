@@ -277,6 +277,7 @@ const source: [string, (string | number)[]][] = [
 	['Hunter master cape', ["Gatherer's cape"]],
 	['Mining master cape', ["Gatherer's cape"]],
 	['Woodcutting master cape', ["Gatherer's cape"]],
+	['Divination master cape', ["Gatherer's cape"]],
 	['Attack master cape', ["Combatant's cape"]],
 	['Hitpoints master cape', ["Combatant's cape"]],
 	['Defence master cape', ["Combatant's cape"]],
