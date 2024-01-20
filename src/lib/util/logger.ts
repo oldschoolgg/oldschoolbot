@@ -24,7 +24,7 @@ interface LogContext {
 
 function _debugLog(str: string, context: LogContext = {}) {
 	if (process.env.TEST) return;
-	const o = { ...context, m: str };
+	const o = { ...context, m: str, t: new Date().toISOString() };
 	sonicBoom.write(`${JSON.stringify(o)}\n`);
 }
 declare global {
