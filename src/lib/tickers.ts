@@ -110,7 +110,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	{
 		name: 'minion_activities',
 		timer: null,
-		interval: Time.Second * 5,
+		interval: production ? Time.Second * 5 : 500,
 		cb: async () => {
 			await processPendingActivities();
 		}
