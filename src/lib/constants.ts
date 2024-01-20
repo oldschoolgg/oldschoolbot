@@ -826,3 +826,4 @@ export const christmasCakeIngredients = resolveItems([
 	'Pristine chocolate bar',
 	'Smokey egg'
 ]);
+export const gearValidationChecks = new Set();

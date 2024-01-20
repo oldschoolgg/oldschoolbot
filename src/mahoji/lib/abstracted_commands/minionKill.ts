@@ -164,6 +164,7 @@ export async function minionKillCommand(
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
+	const inputQuantity = quantity;
 	const { minionName } = user;
 	const wildyGear = user.gear.wildy;
 	const style = convertAttackStylesToSetup(user.user.attack_style);
@@ -1047,6 +1048,7 @@ export async function minionKillCommand(
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
+		iQty: inputQuantity,
 		duration,
 		type: 'MonsterKilling',
 		usingCannon: !usingCannon ? undefined : usingCannon,

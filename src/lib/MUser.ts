@@ -3,7 +3,7 @@ import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { calcWhatPercent, objectEntries, randArrItem, sumArr, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
@@ -17,7 +17,7 @@ import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { gearImages } from './gear/functions/generateGearImage';
-import { GearSetup, UserFullGearSetup } from './gear/types';
+import { GearSetup, GearSetupType, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
 import { IMaterialBank } from './invention';
 import { MaterialBank } from './invention/MaterialBank';
@@ -48,7 +48,8 @@ import {
 	getAllIDsOfUser,
 	itemNameFromID,
 	murMurSort,
-	percentChance
+	percentChance,
+	skillsMeetRequirements
 } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
@@ -922,6 +923,67 @@ GROUP BY data->>'clueID';`);
 
 	async fetchRobochimpUser() {
 		return roboChimpUserFetch(this.id);
+	}
+
+	async forceUnequip(setup: GearSetupType, slot: EquipmentSlot, reason: string) {
+		const gear = this.gear[setup].raw();
+		const equippedInSlot = gear[slot];
+		if (!equippedInSlot) {
+			return { refundBank: new Bank() };
+		}
+		gear[slot] = null;
+
+		const actualItem = getItem(equippedInSlot.item);
+		const refundBank = new Bank();
+		if (actualItem) {
+			refundBank.add(actualItem.id, equippedInSlot.quantity);
+		}
+
+		await this.update({
+			[`gear_${setup}`]: gear as any as Prisma.InputJsonObject
+		});
+		if (refundBank.length > 0) {
+			await this.addItemsToBank({
+				items: refundBank,
+				collectionLog: false
+			});
+		}
+
+		debugLog(
+			`ForceUnequip User[${this.id}] in ${setup} slot[${slot}] ${JSON.stringify(equippedInSlot)}: ${reason}`
+		);
+
+		return { refundBank };
+	}
+
+	async validateEquippedGear() {
+		let itemsUnequippedAndRefunded = new Bank();
+		for (const [gearSetupName, gearSetup] of Object.entries(this.gear) as [GearSetupType, GearSetup][]) {
+			for (const slot of Object.values(EquipmentSlot)) {
+				const item = gearSetup[slot];
+				if (!item) continue;
+				const osItem = getItem(item.item);
+				if (!osItem) {
+					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Invalid item');
+					itemsUnequippedAndRefunded.add(refundBank);
+					continue;
+				}
+				if (osItem.equipment?.slot !== slot) {
+					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Wrong slot');
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+				if (
+					osItem.equipment?.requirements &&
+					!skillsMeetRequirements(this.skillsAsLevels, osItem.equipment.requirements)
+				) {
+					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Doesnt meet requirements');
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+			}
+		}
+		return {
+			itemsUnequippedAndRefunded
+		};
 	}
 }
 declare global {

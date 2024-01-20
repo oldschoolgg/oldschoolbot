@@ -4,7 +4,6 @@ import './lib/data/itemAliases';
 import './lib/crons';
 import './lib/MUser';
 import './lib/util/transactItemsFromBank';
-import './lib/util/logger';
 import './lib/data/trophies';
 import './lib/itemMods';
 import './lib/geImage';
@@ -31,6 +30,7 @@ import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUser
 import { interactionHook } from './lib/util/globalInteractions';
 import { handleInteractionError } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
+import { sonicBoom } from './lib/util/logger';
 import { sendToChannelID } from './lib/util/webhook';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
@@ -233,6 +233,7 @@ process.on('unhandledRejection', err => {
 });
 
 process.on('exit', exitCode => {
+	sonicBoom.flushSync();
 	debugLog('Process Exit', { type: 'PROCESS_EXIT', exitCode });
 });
 

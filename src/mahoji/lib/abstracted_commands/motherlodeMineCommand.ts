@@ -81,6 +81,7 @@ export async function motherlodeMineCommand({
 		userID: user.id,
 		channelID,
 		quantity: newQuantity,
+		iQty: quantity ? quantity : undefined,
 		duration,
 		fakeDurationMax,
 		fakeDurationMin,

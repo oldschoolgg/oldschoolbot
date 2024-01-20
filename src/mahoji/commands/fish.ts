@@ -213,6 +213,7 @@ export const fishCommand: OSBMahojiCommand = {
 			userID: user.id,
 			channelID: channelID.toString(),
 			quantity,
+			iQty: options.quantity ? options.quantity : undefined,
 			duration,
 			type: 'Fishing'
 		});
