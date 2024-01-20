@@ -35,7 +35,7 @@ import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
 import { ItemBank, Skills } from './types';
-import { addItemToBank, assert, convertXPtoLVL, itemNameFromID, percentChance, skillsMeetRequirements } from './util';
+import { addItemToBank, assert, convertXPtoLVL, itemNameFromID, percentChance } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
@@ -837,10 +837,7 @@ GROUP BY data->>'clueID';`);
 					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Wrong slot');
 					itemsUnequippedAndRefunded.add(refundBank);
 				}
-				if (
-					osItem.equipment?.requirements &&
-					!skillsMeetRequirements(this.skillsAsLevels, osItem.equipment.requirements)
-				) {
+				if (osItem.equipment?.requirements && !this.hasSkillReqs(osItem.equipment.requirements)) {
 					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Doesnt meet requirements');
 					itemsUnequippedAndRefunded.add(refundBank);
 				}
