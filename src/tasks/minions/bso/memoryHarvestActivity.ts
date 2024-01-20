@@ -106,10 +106,12 @@ export function memoryHarvestResult({
 					);
 				}
 				if (isUsingDivinationPotion) {
-					energyAmount = increaseNumByPercent(energyAmount, 3);
+					const threePercentRoundedUp = Math.ceil(calcPercentOfNum(3, energyAmount));
+					energyAmount += threePercentRoundedUp;
 				}
 				if (hasMasterCape) {
-					energyAmount = increaseNumByPercent(energyAmount, 5);
+					const fivePercentRoundedUp = Math.ceil(calcPercentOfNum(5, energyAmount));
+					energyAmount += fivePercentRoundedUp;
 				}
 				loot.add(energy.item, Math.ceil(energyAmount));
 				break;

@@ -48,8 +48,7 @@ import {
 	getAllIDsOfUser,
 	itemNameFromID,
 	murMurSort,
-	percentChance,
-	skillsMeetRequirements
+	percentChance
 } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
@@ -973,10 +972,7 @@ GROUP BY data->>'clueID';`);
 					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Wrong slot');
 					itemsUnequippedAndRefunded.add(refundBank);
 				}
-				if (
-					osItem.equipment?.requirements &&
-					!skillsMeetRequirements(this.skillsAsLevels, osItem.equipment.requirements)
-				) {
+				if (osItem.equipment?.requirements && !this.hasSkillReqs(osItem.equipment.requirements)) {
 					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Doesnt meet requirements');
 					itemsUnequippedAndRefunded.add(refundBank);
 				}

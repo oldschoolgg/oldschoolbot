@@ -13,10 +13,10 @@ import './dwarven';
 import './moktang';
 import './leagues';
 
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, ItemRequirements } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from '../util/getOSItem';
-import { setCustomItem, UN_EQUIPPABLE } from './util';
+import { maxedRequirements, setCustomItem, UN_EQUIPPABLE } from './util';
 
 setCustomItem(1579, "Thieves' armband", 'Rune gloves', {}, 100_000);
 setCustomItem(
@@ -255,7 +255,24 @@ setCustomItem(40_024, 'Dungeoneering cape(t)', 'Fire cape', {}, 20_000);
 setCustomItem(40_025, 'Dungeoneering hood', 'Rune full helm', {}, 20_000);
 setCustomItem(40_053, 'Master quest cape', 'Abyssal cape', {}, 10_000_000);
 setCustomItem(40_054, 'Support cape', 'Abyssal cape', {}, 200_000_000);
-setCustomItem(40_055, "Gatherer's cape", 'Abyssal cape', {}, 200_000_000);
+setCustomItem(
+	40_055,
+	"Gatherer's cape",
+	'Abyssal cape',
+	{
+		equipment: {
+			requirements: {
+				farming: 120,
+				fishing: 120,
+				hunter: 120,
+				mining: 120,
+				woodcutting: 120,
+				divination: 120
+			} as Partial<ItemRequirements>
+		}
+	},
+	200_000_000
+);
 setCustomItem(40_056, "Combatant's cape", 'Abyssal cape', {}, 200_000_000);
 setCustomItem(40_057, "Artisan's cape", 'Abyssal cape', {}, 200_000_000);
 setCustomItem(
@@ -266,7 +283,8 @@ setCustomItem(
 		customItemData: {
 			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		equipment: maxedRequirements
 	},
 	100_000_000
 );
@@ -278,7 +296,8 @@ setCustomItem(
 		customItemData: {
 			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		equipment: maxedRequirements
 	},
 	250_000_000
 );
@@ -7411,7 +7430,8 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true,
 			cantBeSacrificed: true,
 			isSuperUntradeable: true
-		}
+		},
+		equipment: maxedRequirements
 	},
 	10_000
 );
@@ -9585,7 +9605,8 @@ setCustomItem(
 		customItemData: {
 			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		equipment: maxedRequirements
 	},
 	50_000_000
 );

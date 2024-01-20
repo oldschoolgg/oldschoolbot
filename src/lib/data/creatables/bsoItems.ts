@@ -2,7 +2,6 @@ import { Bank } from 'oldschooljs';
 import { resolveBank } from 'oldschooljs/dist/util';
 
 import { expertCapesSource } from '../../bso/expertCapes';
-import { MAX_LEVEL } from '../../constants';
 import { dyedItems } from '../../dyedItems';
 import { MaterialBank } from '../../invention/MaterialBank';
 import { nexBrokenArmorDetails } from '../../nex';
@@ -1346,8 +1345,8 @@ export const BsoCreateables: Createable[] = [
 		name: 'Revert completionist cape',
 		outputItems: user => {
 			const refundBank = new Bank();
-			for (const { skill, masterCape } of Skillcapes) {
-				if (user.skillsAsLevels[skill] >= 120) {
+			for (const { masterCape } of Skillcapes) {
+				if (user.cl.has(masterCape.id)) {
 					refundBank.add(masterCape);
 				}
 			}
@@ -1370,7 +1369,7 @@ for (const { cape, skills } of expertCapesSource) {
 			const refundLoot = new Bank();
 			for (const skill of skills) {
 				const skillCape = Skillcapes.find(c => c.skill === skill)!;
-				if (user.skillsAsLevels[skill] >= MAX_LEVEL) {
+				if (user.cl.has(skillCape.masterCape.id)) {
 					refundLoot.add(skillCape.masterCape);
 				}
 			}
