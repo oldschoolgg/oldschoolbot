@@ -597,3 +597,5 @@ export const patronFeatures = {
 		tier: PerkTier.Four
 	}
 };
+
+export const gearValidationChecks = new Set();
