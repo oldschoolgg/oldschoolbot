@@ -594,22 +594,24 @@ export function getTameStatus(tameActivity: TameActivity | null) {
 		switch (activityData.type) {
 			case TameType.Combat:
 				return [
-					`Killing ${activityData.quantity.toLocaleString()}x ${tameKillableMonsters
-						.find(m => m.id === activityData.monsterID)
-						?.name.toLowerCase()}. ${timeRemaining}.`
+					`Killing ${activityData.quantity.toLocaleString()}x ${
+						tameKillableMonsters.find(m => m.id === activityData.monsterID)?.name
+					}`,
+					timeRemaining
 				];
 			case TameType.Gatherer:
-				return [`Collecting ${itemNameFromID(activityData.itemID)?.toLowerCase()}. ${timeRemaining}.`];
+				return [`Collecting ${itemNameFromID(activityData.itemID)?.toLowerCase()}`, timeRemaining];
 			case 'SpellCasting':
 				return [
 					`Casting ${seaMonkeySpells.find(i => i.id === activityData.spellID)!.name} ${
 						activityData.quantity
-					}x times. ${timeRemaining}.`
+					}x times`,
+					timeRemaining
 				];
 			case 'Tempoross':
-				return [`Fighting the Tempoross. ${timeRemaining}.`];
+				return ['Fighting the Tempoross', timeRemaining];
 			case 'Wintertodt':
-				return [`Fighting the Wintertodt. ${timeRemaining}.`];
+				return ['Fighting the Wintertodt', timeRemaining];
 		}
 	}
 	return ['Idle'];
@@ -1395,7 +1397,7 @@ async function statusCommand(user: MUser) {
 	if (!tame) {
 		return 'You have no tame selected.';
 	}
-	return `${tameName(tame)} is currently: ${getTameStatus(activity)}`;
+	return `${tameName(tame)} is currently: ${getTameStatus(activity).join('. ')}.`;
 }
 
 async function tameEquipCommand(user: MUser, itemName: string) {
