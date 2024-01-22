@@ -14,7 +14,7 @@ declare global {
 }
 
 function makePrismaClient(): PrismaClient {
-	if (!isMainThread) return null as any;
+	if (!isMainThread && !process.env.TEST) return null as any;
 	if (!production && !process.env.TEST) console.log('Making prisma client...');
 	return new PrismaClient({
 		log: [

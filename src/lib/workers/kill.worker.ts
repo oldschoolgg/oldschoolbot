@@ -5,6 +5,7 @@ import { Bank, Misc, Monsters } from 'oldschooljs';
 
 import killableMonsters from '../minions/data/killableMonsters';
 import { handleNexKills } from '../simulation/nex';
+import { simulatedKillables } from '../simulation/simulatedKillables';
 import { calcDropRatesFromBank } from '../util/calcDropRatesFromBank';
 import resolveItems from '../util/resolveItems';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
@@ -44,6 +45,19 @@ export default async ({
 		}
 
 		return result;
+	}
+
+	const simulatedKillable = simulatedKillables.find(i => stringMatches(i.name, bossName));
+	if (simulatedKillable) {
+		if (quantity > limit) {
+			return {
+				error:
+					`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! ` +
+					'*You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>'
+			};
+		}
+
+		return { bank: simulatedKillable.loot(quantity) };
 	}
 
 	if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {
