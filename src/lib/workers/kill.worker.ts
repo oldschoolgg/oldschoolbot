@@ -8,6 +8,7 @@ import { production } from '../../config';
 import { YETI_ID } from '../constants';
 import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import killableMonsters from '../minions/data/killableMonsters/index';
+import { simulatedKillables } from '../simulation/simulatedKillables';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
 
 export default async ({
@@ -48,6 +49,19 @@ export default async ({
 		}
 
 		return result;
+	}
+
+	const simulatedKillable = simulatedKillables.find(i => stringMatches(i.name, bossName));
+	if (simulatedKillable) {
+		if (quantity > limit) {
+			return {
+				error:
+					`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! ` +
+					'*You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>'
+			};
+		}
+
+		return { bank: simulatedKillable.loot(quantity) };
 	}
 
 	if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {
