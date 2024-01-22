@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
+import { simulatedKillables } from '../../lib/simulation/simulatedKillables';
 import { stringMatches } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -51,11 +52,14 @@ export const killCommand: OSBMahojiCommand = {
 			autocomplete: async (value: string) => {
 				return [
 					...Monsters.map(i => ({ name: i.name, aliases: i.aliases })),
+					...simulatedKillables.map(i => ({ name: i.name, aliases: [i.name] })),
 					{ name: 'nex', aliases: ['nex'] },
 					{ name: 'nightmare', aliases: ['nightmare'] },
 					{ name: 'Moktang', aliases: ['moktang'] }
 				]
-					.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
+					.filter(i =>
+						!value ? true : i.aliases.some(alias => alias.toLowerCase().includes(value.toLowerCase()))
+					)
 					.map(i => ({
 						name: i.name,
 						value: i.name
