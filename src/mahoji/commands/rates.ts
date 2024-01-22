@@ -25,7 +25,7 @@ import itemID from '../../lib/util/itemID';
 import { calcPerHour, returnStringOrFile } from '../../lib/util/smallUtils';
 import { calculateAgilityResult } from '../../tasks/minions/agilityActivity';
 import { calculateDungeoneeringResult } from '../../tasks/minions/bso/dungeoneeringActivity';
-import { memoryHarvestResult } from '../../tasks/minions/bso/memoryHarvestActivity';
+import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
 import { calculateHunterResult } from '../../tasks/minions/HunterActivity/hunterActivity';
 import { calculateMiningResult } from '../../tasks/minions/miningActivity';
 import { OSBMahojiCommand } from '../lib/util';
@@ -358,8 +358,11 @@ export const ratesCommand: OSBMahojiCommand = {
 							for (const hasWispBuster of [true, false]) {
 								for (const hasDivineHand of [true, false]) {
 									if (hasDivineHand && hasWispBuster) continue;
+									const duration = Time.Hour;
+									const totalSeconds = Math.round(duration / Time.Second);
+									const rounds = Math.floor(totalSeconds / totalTimePerRound);
 									const res = memoryHarvestResult({
-										duration: Time.Hour,
+										duration,
 										energy,
 										hasBoon: hasPotAndBoon,
 										harvestMethod: harvestMethod.id,
@@ -367,7 +370,8 @@ export const ratesCommand: OSBMahojiCommand = {
 										hasDivineHand,
 										hasWispBuster,
 										isUsingDivinationPotion: hasPotAndBoon,
-										hasMasterCape: false
+										hasMasterCape: false,
+										rounds
 									});
 
 									const energyPerHour = calcPerHour(res.loot.amount(energy.item.id), Time.Hour);

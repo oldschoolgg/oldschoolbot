@@ -2,7 +2,7 @@ import { increaseNumByPercent, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { chargePortentIfHasCharges, PortentID } from '../../lib/bso/divination';
-import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { upgradedDragonstoneOutfit } from '../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { UserFullGearSetup } from '../../lib/gear';
@@ -207,7 +207,9 @@ export function calculateMiningResult({
 		totalMiningXPToAdd += spiritualMiningPortentXP;
 
 		messages.push(
-			`You received ${toKMB(spiritualMiningPortentXP)} bonus XP from your Spiritual mining portent (${
+			`You received ${toKMB(
+				spiritualMiningPortentXP * GLOBAL_BSO_XP_MULTIPLIER
+			)} bonus XP from your Spiritual mining portent (${
 				portentResult.portent.charges_remaining
 			} charges remaining).`
 		);

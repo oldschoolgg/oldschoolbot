@@ -1,4 +1,4 @@
-import { calcPercentOfNum, increaseNumByPercent, Time } from 'e';
+import { calcPercentOfNum, increaseNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { divinationEnergies, MemoryHarvestType } from '../../../lib/bso/divination';
@@ -11,8 +11,10 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
 const SECONDS_TO_HARVEST = 60;
-const MEMORIES_PER_HARVEST = SECONDS_TO_HARVEST * 2;
 const SECONDS_TO_CONVERT = 1;
+const MEMORIES_PER_HARVEST = SECONDS_TO_HARVEST * 2;
+
+export const totalTimePerRound = SECONDS_TO_HARVEST + SECONDS_TO_CONVERT * MEMORIES_PER_HARVEST;
 
 function calcConversionResult(hasBoon: boolean, method: MemoryHarvestType, energy: (typeof divinationEnergies)[0]) {
 	let convertToXPXP = hasBoon ? energy.convertBoon ?? energy.convertNormal : energy.convertNormal;
@@ -45,7 +47,8 @@ export function memoryHarvestResult({
 	hasDivineHand,
 	hasGuthixianBoost,
 	isUsingDivinationPotion,
-	hasMasterCape
+	hasMasterCape,
+	rounds
 }: {
 	duration: number;
 	energy: (typeof divinationEnergies)[0];
@@ -56,14 +59,11 @@ export function memoryHarvestResult({
 	hasDivineHand: boolean;
 	isUsingDivinationPotion: boolean;
 	hasMasterCape: boolean;
+	rounds: number;
 }) {
 	const boosts: string[] = [];
 
 	const petChance = (200 - energy.level) * 3714;
-	const totalSeconds = Math.round(duration / Time.Second);
-	let totalTimePerRound = SECONDS_TO_HARVEST + SECONDS_TO_CONVERT * MEMORIES_PER_HARVEST;
-
-	const rounds = Math.floor(totalSeconds / totalTimePerRound);
 
 	const loot = new Bank();
 	const cost = new Bank();
@@ -184,7 +184,8 @@ export const memoryHarvestTask: MinionTask = {
 			t: harvestMethodIndex,
 			wb: hasWispBuster,
 			dh: hasDivineHand,
-			dp: isUsingDivinationPotion
+			dp: isUsingDivinationPotion,
+			r: rounds
 		} = data;
 		const user = await mUserFetch(userID);
 		const energy = divinationEnergies.find(t => t.item.id === energyItemID)!;
@@ -209,7 +210,8 @@ export const memoryHarvestTask: MinionTask = {
 				hasGuthixianBoost: didGetGuthixianBoost,
 				hasDivineHand,
 				isUsingDivinationPotion,
-				hasMasterCape: user.hasEquipped('Divination master cape')
+				hasMasterCape: user.hasEquipped('Divination master cape'),
+				rounds
 			});
 
 		if (cost.length > 0) {

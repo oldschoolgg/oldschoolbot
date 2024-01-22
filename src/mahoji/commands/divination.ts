@@ -19,7 +19,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { formatDuration } from '../../lib/util/smallUtils';
-import { memoryHarvestResult } from '../../tasks/minions/bso/memoryHarvestActivity';
+import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const divinationCommand: OSBMahojiCommand = {
@@ -258,10 +258,10 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 			}
 			const boosts: string[] = [];
 
-			let duration = calcMaxTripLength(user, 'MemoryHarvest');
+			let maxTripLength = calcMaxTripLength(user, 'MemoryHarvest');
 
 			if (user.hasEquipped('Jar of memories')) {
-				duration += Time.Minute * 7;
+				maxTripLength += Time.Minute * 7;
 				boosts.push('7mins extra trip length for Jar of memories');
 			}
 
@@ -271,7 +271,7 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 				const boostResult = await inventionItemBoost({
 					user,
 					inventionID: InventionID.WispBuster,
-					duration
+					duration: maxTripLength
 				});
 				if (boostResult.success) {
 					boosts.push(
@@ -283,7 +283,7 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 				const boostResult = await inventionItemBoost({
 					user,
 					inventionID: InventionID.DivineHand,
-					duration
+					duration: maxTripLength
 				});
 				if (boostResult.success) {
 					boosts.push(
@@ -299,6 +299,10 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 				boosts.push('20% extra XP for Guthixian Cache boost');
 			}
 
+			const totalSeconds = Math.round(maxTripLength / Time.Second);
+			const rounds = Math.floor(totalSeconds / totalTimePerRound);
+			const duration = rounds * totalTimePerRound * Time.Second;
+
 			const preEmptiveResult = memoryHarvestResult({
 				duration,
 				energy,
@@ -308,7 +312,8 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 				hasGuthixianBoost,
 				hasDivineHand,
 				isUsingDivinationPotion,
-				hasMasterCape: false
+				hasMasterCape: false,
+				rounds
 			});
 
 			if (
@@ -331,7 +336,8 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 				t: memoryHarvestMethodIndex,
 				wb: hasWispBuster,
 				dh: hasDivineHand,
-				dp: isUsingDivinationPotion
+				dp: isUsingDivinationPotion,
+				r: rounds
 			});
 
 			let str = `${user.minionName} is now harvesting ${energy.type} memories (${
