@@ -13,7 +13,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
-const PointsTable = new SimpleTable<number>()
+export const PointsTable = new SimpleTable<number>()
 	.add(420)
 	.add(470)
 	.add(500)
