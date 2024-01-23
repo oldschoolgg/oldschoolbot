@@ -59,7 +59,9 @@ export const mineCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		let { quantity, powermine } = options;
 
-		const motherlodeMine = Mining.MotherlodeMine.name === options.name;
+		const motherlodeMine =
+			stringMatches(Mining.MotherlodeMine.name, options.name) ||
+			Mining.MotherlodeMine.aliases!.some(a => stringMatches(a, options.name));
 
 		if (motherlodeMine) {
 			return motherlodeMineCommand({ user, channelID, quantity });
@@ -69,7 +71,7 @@ export const mineCommand: OSBMahojiCommand = {
 			ore =>
 				stringMatches(ore.id, options.name) ||
 				stringMatches(ore.name, options.name) ||
-				stringMatches(ore.name.split(' ')[0], options.name)
+				(ore.aliases && ore.aliases.some(a => stringMatches(a, options.name)))
 		);
 		if (!ore) {
 			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${
@@ -188,6 +190,7 @@ export const mineCommand: OSBMahojiCommand = {
 			userID: userID.toString(),
 			channelID: channelID.toString(),
 			quantity: newQuantity,
+			iQty: options.quantity ? options.quantity : undefined,
 			powermine,
 			duration,
 			fakeDurationMax,
