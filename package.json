@@ -50,12 +50,11 @@
 		"node-fetch": "^2.6.7",
 		"oldschooljs": "^2.3.8",
 		"p-queue": "^6.6.2",
-		"pino": "^8.11.0",
 		"piscina": "^3.2.0",
 		"random-js": "^2.1.0",
 		"simple-statistics": "^7.8.3",
+		"sonic-boom": "^3.8.0",
 		"table": "^6.8.0",
-		"utf-8-validate": "^6.0.3",
 		"zlib-sync": "^0.1.9",
 		"zod": "^3.22.3"
 	},
