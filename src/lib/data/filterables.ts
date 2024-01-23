@@ -4,7 +4,7 @@ import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import Grimy from '../skilling/skills/herblore/mixables/grimy';
 import PotionsMixable from '../skilling/skills/herblore/mixables/potions';
-import getOSItem from '../util/getOSItem';
+import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
 import resolveItems from '../util/resolveItems';
 import { allCollectionLogs } from './Collections';
 import {
@@ -330,26 +330,22 @@ const seeds = resolveItems([
 	'Potato seed'
 ]);
 
-const potions = Potions.flatMap(potion => potion.items);
+const allPotions = Potions.flatMap(potion => potion.items);
+const potions = [...new Set(allPotions)];
 
-const grimyHerbs = Grimy.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
-const cleanHerbs = Grimy.flatMap(item => item.item.id);
+const grimyHerbs = Grimy.flatMap(grimy => Object.keys(grimy.inputItems.bank).map(key => parseInt(key)));
+const cleanHerbs = Grimy.flatMap(clean => clean.item.id);
 const herbs = [...new Set(grimyHerbs), ...new Set(cleanHerbs)];
 
-const unfPot = PotionsMixable.flatMap(item =>
-	Object.keys(item.inputItems.bank)
-		.filter(i => getOSItem(i).name.includes('(unf)'))
-		.map(key => parseInt(key))
-);
-const unfPotions = [...new Set(unfPot)];
+const unfPots = unfinishedPotions.flatMap(unf => unf.item.id);
+const unfPotions = resolveItems(['Vial of water', ...new Set(unfPots)]);
 
-const allMixableItems = PotionsMixable.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
-const secondariesItems = allMixableItems.filter(
-	item => !potions.includes(item) && !unfPotions.includes(item) && !herbs.includes(item)
-);
-const secondaries = [...new Set(secondariesItems)];
+const allSecondaries = PotionsMixable.flatMap(item =>
+	Object.keys(item.inputItems.bank).map(key => parseInt(key))
+).filter(item => !potions.includes(item) && !unfPotions.includes(item) && !herbs.includes(item));
+const secondaries = [...new Set(allSecondaries)];
 
-const herblore = resolveItems(['Vial of water', ...potions, ...herbs, ...unfPotions, ...secondaries]);
+const herblore = resolveItems([...potions, ...herbs, ...unfPotions, ...secondaries]);
 
 const bones = resolveItems([
 	'Bones',
@@ -817,24 +813,24 @@ export const baseFilters: Filterable[] = [
 		items: () => herblore
 	},
 	{
-		name: 'Potions',
-		aliases: ['potions', 'pots'],
-		items: () => potions
-	},
-	{
 		name: 'Herbs',
-		aliases: ['herbs'],
+		aliases: ['herbs', 'grimy', 'clean'],
 		items: () => herbs
 	},
 	{
 		name: 'Unfinished potions',
-		aliases: ['unf', 'Unfinished'],
+		aliases: ['unf', 'unfinished'],
 		items: () => unfPotions
 	},
 	{
 		name: 'Secondaries',
 		aliases: ['seconds', 'secondary', 'secondaries'],
 		items: () => secondaries
+	},
+	{
+		name: 'Potions',
+		aliases: ['potions', 'pots'],
+		items: () => potions
 	},
 	{
 		name: 'Food',
