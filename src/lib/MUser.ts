@@ -486,7 +486,8 @@ GROUP BY data->>'clueID';`);
 			hitpoints: Number(this.user.skills_hitpoints),
 			slayer: Number(this.user.skills_slayer),
 			dungeoneering: Number(this.user.skills_dungeoneering),
-			invention: Number(this.user.skills_invention)
+			invention: Number(this.user.skills_invention),
+			divination: Number(this.user.skills_divination)
 		};
 		if (levels) {
 			for (const [key, val] of Object.entries(skills) as [keyof Skills, number][]) {

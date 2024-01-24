@@ -1,7 +1,8 @@
-import { sumArr } from 'e';
+import { notEmpty, sumArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
+import { divinationEnergies } from '../bso/divination';
 import { barrowsChestCL, customPetsCL } from '../data/CollectionsExport';
 import {
 	ArdougneDiary,
@@ -775,6 +776,23 @@ export const easyTasks: Task[] = [
 		name: 'Complete a Tinkering Workshop trip',
 		has: async ({ minigames }) => {
 			return minigames.tinkering_workshop >= 1;
+		}
+	},
+	{
+		id: 106,
+		name: 'Unlock any boon',
+		has: async ({ user }) => {
+			return divinationEnergies
+				.map(e => e.boonBitfield)
+				.filter(notEmpty)
+				.some(bit => user.bitfield.includes(bit));
+		}
+	},
+	{
+		id: 107,
+		name: 'Complete a Guthixian cache',
+		has: async ({ activityCounts }) => {
+			return activityCounts.GuthixianCache >= 1;
 		}
 	}
 ];

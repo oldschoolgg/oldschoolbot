@@ -1,7 +1,8 @@
 import { cleanString as deepCleanString } from '@oldschoolgg/toolkit';
+import { DeepPartial } from '@sapphire/utilities';
 import deepMerge from 'deepmerge';
 import { Items } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { Item, ItemRequirements } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { cleanString } from 'oldschooljs/dist/util/cleanString';
 
@@ -27,7 +28,7 @@ export function isDeletedItemName(nameToTest: string) {
 	return false;
 }
 
-export function setCustomItem(id: number, name: string, baseItem: string, newItemData?: Partial<Item>, price = 0) {
+export function setCustomItem(id: number, name: string, baseItem: string, newItemData?: DeepPartial<Item>, price = 0) {
 	if (hasSet.some(i => i.id === id)) {
 		throw new Error(`Tried to add 2 custom items with same id ${id}, called ${name}`);
 	}
@@ -42,7 +43,7 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 	) {
 		throw new Error('Tried to add a custom item with superTradeableButTradeableOnGE, but not isSuperUntradeable');
 	}
-	const data = deepMerge({ ...getOSItem(baseItem) }, { ...newItemData, name, id });
+	const data: Item = deepMerge({ ...getOSItem(baseItem) }, { ...newItemData, name, id }) as Item;
 	data.price = price || 1;
 
 	// Track names of re-mapped items to break the link:
@@ -64,4 +65,35 @@ export const UN_EQUIPPABLE = {
 	equipable: undefined,
 	equipment: undefined,
 	equipable_by_player: undefined
+};
+
+export const maxedRequirements = {
+	requirements: {
+		agility: 120,
+		cooking: 120,
+		fishing: 120,
+		mining: 120,
+		smithing: 120,
+		woodcutting: 120,
+		firemaking: 120,
+		runecraft: 120,
+		crafting: 120,
+		prayer: 120,
+		fletching: 120,
+		farming: 120,
+		herblore: 120,
+		thieving: 120,
+		hunter: 120,
+		construction: 120,
+		magic: 120,
+		attack: 120,
+		strength: 120,
+		defence: 120,
+		ranged: 120,
+		hitpoints: 120,
+		dungeoneering: 120,
+		slayer: 120,
+		invention: 120,
+		divination: 120
+	} as Partial<ItemRequirements>
 };

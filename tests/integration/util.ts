@@ -9,6 +9,7 @@ import { MUserClass } from '../../src/lib/MUser';
 import { convertStoredActivityToFlatActivity, prisma } from '../../src/lib/settings/prisma';
 import { processPendingActivities } from '../../src/lib/Task';
 import { ItemBank } from '../../src/lib/types';
+import { ActivityTaskOptions } from '../../src/lib/types/minions';
 import { assert, cryptoRand } from '../../src/lib/util';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
@@ -89,7 +90,11 @@ export class TestUser extends MUserClass {
 	async statsMatch(key: keyof UserStats, value: any) {
 		await this.sync();
 		const stats = await this.fetchStats({ [key]: true });
-		if (stats[key] !== value) {
+		if (value instanceof Bank) {
+			if (!new Bank(stats[key]).equals(value)) {
+				throw new Error(`Expected ${key} to be ${value} but got ${new Bank(stats[key])}`);
+			}
+		} else if (stats[key] !== value) {
 			throw new Error(`Expected ${key} to be ${value} but got ${stats[key]}`);
 		}
 	}
@@ -99,7 +104,7 @@ export class TestUser extends MUserClass {
 		return this;
 	}
 
-	async runActivity() {
+	async runActivity<T extends ActivityTaskOptions>(): Promise<T> {
 		const [finishedActivity] = await processPendingActivities();
 		if (!finishedActivity) {
 			throw new Error('runActivity: No activity was ran');
@@ -108,7 +113,7 @@ export class TestUser extends MUserClass {
 			throw new Error('runActivity: Ran activity, but it didnt belong to this user');
 		}
 		const data = convertStoredActivityToFlatActivity(finishedActivity);
-		return data;
+		return data as any;
 	}
 }
 

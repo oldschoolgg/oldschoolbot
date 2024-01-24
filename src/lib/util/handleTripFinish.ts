@@ -9,6 +9,7 @@ import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { chargePortentIfHasCharges, getAllPortentCharges, PortentID } from '../bso/divination';
 import { gods } from '../bso/divineDominion';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
@@ -25,7 +26,7 @@ import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskData } from '../types/minions';
-import { channelIsSendable, makeComponents, toKMB } from '../util';
+import { channelIsSendable, makeComponents, perHourChance, toKMB } from '../util';
 import { mahojiChatHead } from './chatHeadImage';
 import {
 	makeAutoContractButton,
@@ -55,6 +56,7 @@ interface TripFinishEffectOptions {
 	user: MUser;
 	loot: Bank | null;
 	messages: string[];
+	portents?: Awaited<ReturnType<typeof getAllPortentCharges>>;
 }
 export interface TripFinishEffect {
 	name: string;
@@ -385,6 +387,45 @@ const tripFinishEffects: TripFinishEffect[] = [
 				messages.push(bold(message));
 			}
 		}
+	},
+	{
+		name: 'Divine eggs',
+		fn: async ({ data, user, portents, messages }) => {
+			const skillingTypes: activity_type_enum[] = [
+				activity_type_enum.Fishing,
+				activity_type_enum.Mining,
+				activity_type_enum.Woodcutting,
+				activity_type_enum.MemoryHarvest,
+				activity_type_enum.Farming,
+				activity_type_enum.Hunter
+			];
+			if (!skillingTypes.includes(data.type)) return;
+			const fiveMinuteSegments = Math.floor(data.duration / (Time.Minute * 5));
+			if (fiveMinuteSegments < 1) return;
+			if (!portents) return;
+			const charges = portents[PortentID.RebirthPortent];
+			if (!charges) return;
+			let eggsReceived = 0;
+			for (let i = 0; i < fiveMinuteSegments; i++) {
+				perHourChance(Time.Minute * 5, 2, () => {
+					eggsReceived += 1;
+				});
+			}
+			eggsReceived = Math.min(eggsReceived, charges);
+			if (eggsReceived === 0) return;
+			const loot = new Bank().add('Divine egg', eggsReceived);
+			const chargeResult = await chargePortentIfHasCharges({
+				user,
+				portentID: PortentID.RebirthPortent,
+				charges: eggsReceived
+			});
+			if (chargeResult.didCharge) {
+				await user.addItemsToBank({ items: loot, collectionLog: true });
+				messages.push(
+					`You received ${loot}, your Rebirth portent has ${chargeResult.portent.charges_remaining}x charges remaining.`
+				);
+			}
+		}
 	}
 ];
 
@@ -404,7 +445,10 @@ export async function handleTripFinish(
 	}
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
-	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
+
+	// TODO: This is called for *every* trip, even though it's used only for users with the rebirth portent.
+	const portents = await getAllPortentCharges(user);
+	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages, portents });
 
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 

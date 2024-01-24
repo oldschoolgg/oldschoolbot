@@ -32,6 +32,7 @@ import { implings } from '../implings';
 import { QueenBlackDragon } from '../minions/data/killableMonsters/custom/demiBosses';
 import { TormentedDemon } from '../minions/data/killableMonsters/custom/TormentedDemon';
 import { baseUserKourendFavour, UserKourendFavour } from '../minions/data/kourendFavour';
+import { prisma } from '../settings/prisma';
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
@@ -1104,6 +1105,33 @@ export const mediumTasks: Task[] = [
 			const uniques = [...chambersOfXericCL, ...theatreOfBLoodCL, ...toaCL];
 			const destroyedUniques = bank.items().filter(i => uniques.includes(i[0].id));
 			return destroyedUniques.length >= 5;
+		}
+	},
+	{
+		id: 1154,
+		name: 'Use any portent',
+		has: async ({ user }) => {
+			const portents = await prisma.portent.count({
+				where: {
+					user_id: user.id
+				}
+			});
+			return portents > 0;
+		}
+	},
+	{
+		id: 1155,
+		name: 'Open a Divine egg',
+		has: async ({ opens, cl }) => {
+			return cl.has('Divine egg') && opens.has('Divine egg');
+		}
+	},
+	{
+		id: 1156,
+		name: 'Receive a Grandmaster clue from divination',
+		has: async ({ userStats }) => {
+			const divLoot = new Bank(userStats.divination_loot as ItemBank);
+			return divLoot.has('Clue scroll (grandmaster)');
 		}
 	}
 ];

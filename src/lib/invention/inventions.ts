@@ -35,7 +35,10 @@ export enum InventionID {
 	MasterHammerAndChisel = 13,
 	AbyssalAmulet = 14,
 	RoboFlappy = 15,
-	ChinCannon = 16
+	ChinCannon = 16,
+	WispBuster = 17,
+	DivineHand = 18,
+	DrygoreAxe = 19
 }
 
 export type Invention = Readonly<{
@@ -129,6 +132,15 @@ export const inventionBoosts = {
 		coxPercentReduction: 60,
 		tobPercentReduction: 60,
 		toaPercentReduction: 60
+	},
+	wispBuster: {
+		xpIncreasePercent: 30
+	},
+	divineHand: {
+		memoryHarvestExtraYieldPercent: 30
+	},
+	drygoreAxe: {
+		woodcuttingSpeedBoostPercent: 30
 	}
 } as const;
 
@@ -395,6 +407,51 @@ export const Inventions: readonly Invention[] = [
 		flags: ['equipped'],
 		inventionLevelNeeded: 100,
 		usageCostMultiplier: 3
+	},
+	{
+		id: InventionID.WispBuster,
+		name: 'Wisp-buster',
+		description: `A device increases the speed of memory harvesting, giving ${inventionBoosts.wispBuster.xpIncreasePercent}% more xp.`,
+		item: getOSItem('Wisp-buster'),
+		materialTypeBank: new MaterialBank({
+			pious: 4,
+			powerful: 1,
+			magic: 4,
+			heavy: 1
+		}),
+		itemCost: null,
+		flags: ['equipped'],
+		inventionLevelNeeded: 100,
+		usageCostMultiplier: 1
+	},
+	{
+		id: InventionID.DivineHand,
+		name: 'Divine hand',
+		description: `A device that enhances the harvesting of divination memories, increasing energy yield by ${inventionBoosts.divineHand.memoryHarvestExtraYieldPercent}% and harvesting clue scrolls.`,
+		item: getOSItem('Divine hand'),
+		materialTypeBank: new MaterialBank({
+			pious: 2,
+			magic: 7,
+			strong: 1
+		}),
+		itemCost: null,
+		flags: ['equipped'],
+		inventionLevelNeeded: 100,
+		usageCostMultiplier: 1
+	},
+	{
+		id: InventionID.DrygoreAxe,
+		name: 'Drygore axe',
+		description: `Speeds up woodcutting by ${inventionBoosts.drygoreAxe.woodcuttingSpeedBoostPercent}%.`,
+		item: getOSItem('Drygore axe'),
+		materialTypeBank: new MaterialBank({
+			drygore: 7,
+			sharp: 3
+		}),
+		itemCost: new Bank().add('Dwarven greataxe'),
+		flags: ['equipped'],
+		inventionLevelNeeded: 100,
+		usageCostMultiplier: 0.65
 	}
 ] as const;
 

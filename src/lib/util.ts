@@ -3,7 +3,6 @@ import { gzip } from 'node:zlib';
 import { stripEmojis } from '@oldschoolgg/toolkit';
 import { PrismaClient } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
-import { createHash } from 'crypto';
 import {
 	BaseMessageOptions,
 	bold,
@@ -54,6 +53,7 @@ import {
 	usernameCache
 } from './constants';
 import { UserStatsDataNeededForCL } from './data/Collections';
+import { doaCL } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import type { Consumable } from './minions/types';
@@ -606,12 +606,13 @@ export function generateXPLevelQuestion() {
 }
 
 export function skillingPetDropRate(
-	user: MUserClass,
+	userOrSkillXP: MUserClass | number,
 	skill: SkillsEnum,
 	baseDropRate: number
 ): { petDropRate: number } {
-	const twoHundredMillXP = user.skillsAsXP[skill] >= 5_000_000_000;
-	const skillLevel = user.skillsAsLevels[skill];
+	const xp = typeof userOrSkillXP === 'number' ? userOrSkillXP : userOrSkillXP.skillsAsXP[skill];
+	const twoHundredMillXP = xp >= 5_000_000_000;
+	const skillLevel = convertXPtoLVL(xp);
 	const petRateDivisor = twoHundredMillXP ? 15 : 1;
 	const dropRate = Math.floor((baseDropRate - skillLevel * 25) / petRateDivisor);
 	return { petDropRate: dropRate };
@@ -742,10 +743,6 @@ export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededF
 	};
 }
 
-export function md5sum(str: string) {
-	return createHash('md5').update(str).digest('hex');
-}
-
 export { assert } from './util/logError';
 export * from './util/smallUtils';
 export { channelIsSendable } from '@oldschoolgg/toolkit';
@@ -773,4 +770,8 @@ export function checkRangeGearWeapon(gear: Gear) {
 		weapon,
 		ammo
 	};
+}
+
+export function hasUnlockedAtlantis(user: MUser) {
+	return doaCL.some(itemID => user.cl.has(itemID));
 }

@@ -95,6 +95,7 @@ import {
 	demonicGorillaCL,
 	diariesCL,
 	discontinuedCustomPetsCL,
+	divinersOutfit,
 	doaCL,
 	dukeSucellusCL,
 	dungeoneeringCL,
@@ -1155,6 +1156,11 @@ export const allCollectionLogs: ICollection = {
 				alias: ['fog', 'fist of guthix'],
 				items: fistOfGuthixCL,
 				fmtProg: mgProg('bax_baths')
+			},
+			'Guthixian Caches': {
+				alias: ['guthixian caches'],
+				items: [...divinersOutfit],
+				fmtProg: mgProg('guthixian_cache')
 			},
 			'Stealing Creation': {
 				alias: ['stealing creation', 'sc'],

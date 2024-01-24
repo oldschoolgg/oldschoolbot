@@ -2,6 +2,7 @@ import { randArrItem, roll } from 'e';
 import { Bank, Items, LootTable } from 'oldschooljs';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 
+import { divinationEnergies } from './bso/divination';
 import { Emoji, OSB_VIRTUS_IDS } from './constants';
 import {
 	allPetIDs,
@@ -755,6 +756,14 @@ const ChristmasBoxTable = new LootTable()
 	.add('Christmas dye', 1, 3)
 	.add('Coal', 1, 2);
 
+const DivineEggTable = new LootTable().tertiary(100, 'Jar of memories');
+
+for (const energy of divinationEnergies) {
+	let weight = divinationEnergies.length + 1 - (divinationEnergies.indexOf(energy) + 1);
+	weight *= weight;
+	DivineEggTable.add(energy.item.id, weight, weight);
+}
+
 export const bsoOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Tradeables Mystery box',
@@ -980,6 +989,15 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		allItems: PaintBoxTable.allItems,
 		excludeFromOpenAll: true,
 		smokeyApplies: false
+	},
+	{
+		name: 'Divine egg',
+		id: itemID('Divine egg'),
+		openedItem: getOSItem('Divine egg'),
+		aliases: ['divine egg'],
+		output: DivineEggTable,
+		allItems: DivineEggTable.allItems,
+		smokeyApplies: true
 	}
 ];
 

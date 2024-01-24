@@ -46,7 +46,8 @@ describe('MUser.test', () => {
 			thieving: 1,
 			woodcutting: 1,
 			invention: 1,
-			dungeoneering: 1
+			dungeoneering: 1,
+			divination: 1
 		});
 	});
 	test('bankWithGP', () => {

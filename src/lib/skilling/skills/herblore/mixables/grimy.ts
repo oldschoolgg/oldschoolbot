@@ -153,6 +153,16 @@ const Grimy: Mixable[] = [
 		tickRate: 0.5,
 		bankTimePerPotion: 0.15,
 		zahur: true
+	},
+	{
+		item: getOSItem('Spirit weed'),
+		aliases: ['grimy spirit weed'],
+		level: 105,
+		xp: 25,
+		inputItems: new Bank({ 'Grimy spirit weed': 1 }),
+		tickRate: 0.5,
+		bankTimePerPotion: 0.15,
+		zahur: true
 	}
 ];
 

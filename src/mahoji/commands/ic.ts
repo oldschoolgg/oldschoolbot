@@ -5,6 +5,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, LootTable } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { chargePortentIfHasCharges, PortentID } from '../../lib/bso/divination';
 import { allMbTables, MysteryBoxes, PMBTable } from '../../lib/bsoOpenables';
 import { BitField, Emoji } from '../../lib/constants';
 import { AbyssalDragonLootTable } from '../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
@@ -199,6 +200,16 @@ export async function handInContract(interaction: ChatInputCommandInteraction | 
 		}
 	}
 
+	const { didCharge } = await chargePortentIfHasCharges({
+		user,
+		portentID: PortentID.LuckyPortent,
+		charges: 1
+	});
+	if (didCharge) {
+		await userStatsBankUpdate(user.id, 'loot_from_lucky_portent', loot);
+		loot.multiply(2);
+	}
+
 	await user.update({
 		last_item_contract_date: Date.now(),
 		total_item_contracts: {
@@ -227,6 +238,9 @@ export async function handInContract(interaction: ChatInputCommandInteraction | 
 	} Item Contracts, and your streak is now at ${newStreak}.`;
 	if (gotBonus.length > 0) {
 		res += `\n\n${gotBonus}`;
+	}
+	if (didCharge) {
+		res += '\n\nYour Lucky Portent doubled your loot!';
 	}
 	return res;
 }

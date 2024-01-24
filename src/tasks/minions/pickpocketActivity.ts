@@ -1,6 +1,7 @@
 import { percentChance, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { chargePortentIfHasCharges, PortentID } from '../../lib/bso/divination';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
@@ -112,6 +113,19 @@ export const pickpocketTask: MinionTask = {
 				await forcefullyUnequipItem(user, getOSItem("Thieves' armband"));
 				boosts.push('Your thieves armband broke!');
 			});
+		} else {
+			const { didCharge } = await chargePortentIfHasCharges({
+				user,
+				portentID: PortentID.RoguesPortent,
+				charges: Math.ceil(duration / Time.Minute)
+			});
+			if (didCharge) {
+				boosts.push('3x loot for Rogues portent');
+				const before = loot.clone();
+				loot.multiply(3, notMultiplied);
+				const after = loot.clone();
+				await userStatsBankUpdate(user.id, 'loot_from_rogues_portent', after.difference(before));
+			}
 		}
 
 		let gotWil = false;

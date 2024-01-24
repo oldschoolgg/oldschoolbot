@@ -187,6 +187,8 @@ model ClientStorage {
 
   xmas_ironman_food_bank Json @default("{}") @db.Json
 
+  divination_is_released Boolean @default(false)
+
   @@map("clientStorage")
 }
 
@@ -524,6 +526,11 @@ model User {
   gift_boxes_owned   GiftBox[] @relation("gift_boxes_owned")
   gift_boxes_created GiftBox[] @relation("gift_boxes_created")
 
+  skills_divination                BigInt    @default(0) @map("skills.divination")
+  guthixian_cache_boosts_available Int       @default(0)
+  disabled_portent_ids             Int[]
+  portent                          Portent[]
+
   smokey_lottery_tickets          Json?     @db.Json
   grinchions_caught               Int       @default(0)
   last_giveaway_ticket_given_date DateTime? @db.Timestamp(6)
@@ -597,6 +604,8 @@ enum XpGainSource {
   CamdozaalMining
   CamdozaalSmithing
   CamdozaalFishing
+  MemoryHarvest
+  GuthixianCache
 }
 
 model XPGain {
@@ -687,6 +696,7 @@ model Minigame {
   balthazars_big_bonanza   Int @default(0)
   depths_of_atlantis       Int @default(0)
   depths_of_atlantis_cm    Int @default(0)
+  guthixian_cache          Int @default(0)
 
   new_user NewUser?
 
@@ -1002,6 +1012,15 @@ model UserStats {
   steal_cost_bank Json @default("{}") @db.Json
   steal_loot_bank Json @default("{}") @db.Json
 
+  xp_from_graceful_portent         BigInt @default(0)
+  xp_from_dungeon_portent          BigInt @default(0)
+  xp_from_mining_portent           BigInt @default(0)
+  xp_from_hunter_portent           BigInt @default(0)
+  loot_from_rogues_portent         Json   @default("{}") @db.JsonB
+  loot_from_lucky_portent          Json   @default("{}") @db.JsonB
+  loot_destroyed_by_hunter_portent Json   @default("{}") @db.JsonB
+  divination_loot                  Json   @default("{}") @db.JsonB
+
   @@map("user_stats")
 }
 
@@ -1209,6 +1228,8 @@ enum activity_type_enum {
   CamdozaalFishing
   CamdozaalMining
   CamdozaalSmithing
+  MemoryHarvest
+  GuthixianCache
 }
 
 enum xp_gains_skill_enum {
@@ -1237,6 +1258,7 @@ enum xp_gains_skill_enum {
   dungeoneering
   slayer
   invention
+  divination
 }
 
 enum tame_growth {
@@ -1391,4 +1413,18 @@ model GiftBox {
   is_grinch_box Boolean @default(false)
 
   @@map("gift_box")
+}
+
+model Portent {
+  item_id Int
+
+  user_id String @db.VarChar(19)
+  user    User   @relation(fields: [user_id], references: [id])
+
+  total_charges     Int
+  charges_remaining Int
+
+  @@unique([item_id, user_id])
+  @@index([user_id])
+  @@map("portent")
 }

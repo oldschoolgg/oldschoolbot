@@ -2,6 +2,7 @@ import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { IVY_MAX_TRIP_LENGTH_BOOST } from '../../lib/constants';
+import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
@@ -122,7 +123,7 @@ export const chopCommand: OSBMahojiCommand = {
 
 		if (!log) return "That's not a valid log to chop.";
 
-		let { quantity, powerchop } = options;
+		let { quantity, powerchop = false } = options;
 
 		const skills = user.skillsAsLevels;
 
@@ -164,14 +165,36 @@ export const chopCommand: OSBMahojiCommand = {
 
 		// Default bronze axe, last in the array
 		let axeMultiplier = 1;
-		boosts.push(`**${axeMultiplier}x** success multiplier for Bronze axe`);
 
-		for (const axe of axes) {
-			if (!user.hasEquippedOrInBank([axe.id]) || skills.woodcutting < axe.wcLvl) continue;
-			axeMultiplier = axe.multiplier;
-			boosts.pop();
-			boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
-			break;
+		if (user.hasEquipped(['Drygore axe'])) {
+			let [predeterminedTotalTime] = determineWoodcuttingTime({
+				quantity,
+				user,
+				log,
+				axeMultiplier: 10,
+				powerchopping: powerchop,
+				woodcuttingLvl: wcLvl
+			});
+			const boostRes = await inventionItemBoost({
+				user,
+				inventionID: InventionID.DrygoreAxe,
+				duration: predeterminedTotalTime
+			});
+			if (boostRes.success) {
+				axeMultiplier = 10;
+				boosts.push(`**10x** success multiplier for Drygore axe (${boostRes.messages})`);
+			} else {
+				axeMultiplier = 8;
+				boosts.push('**8x** success multiplier for Dwarven greataxe');
+			}
+		} else {
+			for (const axe of axes) {
+				if (!user.hasEquippedOrInBank([axe.id]) || skills.woodcutting < axe.wcLvl) continue;
+				axeMultiplier = axe.multiplier;
+				boosts.pop();
+				boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
+				break;
+			}
 		}
 
 		if (log.name === 'Ivy') {

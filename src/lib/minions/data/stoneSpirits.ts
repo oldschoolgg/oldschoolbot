@@ -2,7 +2,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from '../../util/getOSItem';
 
-interface StoneSpirit {
+export interface StoneSpirit {
 	spirit: Item;
 	ore: Item;
 }

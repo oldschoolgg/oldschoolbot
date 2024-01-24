@@ -120,5 +120,44 @@ export const bushes: Plant[] = [
 		timePerPatchTravel: 20,
 		timePerHarvest: 10,
 		additionalPatchesByFarmGuildAndLvl: []
+	},
+	{
+		id: itemID('Advax berry seed'),
+		level: 111,
+		plantXp: 290,
+		checkXp: 22_335,
+		harvestXp: 120,
+		name: 'Advax bush',
+		aliases: ['advax', 'advax bush'],
+		inputItems: new Bank({ 'Advax berry seed': 1 }),
+		outputCrop: itemID('Advax berry'),
+		petChance: 14_400,
+		seedType: 'bush',
+		growthTime: 600,
+		numOfStages: 6,
+		chance1: 88.6,
+		chance99: 154.9,
+		chanceOfDeath: 17,
+		protectionPayment: new Bank({ Lychee: 15 }),
+		treeWoodcuttingLevel: 55,
+		woodcuttingXp: 500,
+		needsChopForHarvest: true,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: true,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [
+			[99, 1],
+			[110, 2]
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10,
+		additionalPatchesByFarmGuildAndLvl: []
 	}
 ];

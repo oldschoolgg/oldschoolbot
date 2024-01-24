@@ -183,6 +183,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Grimy dwarf weed'), 'dwarf'],
 	[i('Grimy torstol'), 'torstol'],
 	[i('Grimy korulsi'), 'korulsi'],
+	[i('Grimy spirit weed'), 'spirit'],
 
 	[i('Compost'), 'compost'],
 	[i('Supercompost'), 'super'],
@@ -215,6 +216,9 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Mango seed'), 'mango'],
 	[i('Avocado seed'), 'avocado'],
 	[i('Lychee seed'), 'lychee'],
+	[i('Spirit weed seed'), 'spiritw'],
+	[i('Advax berry seed'), 'advax'],
+
 	// Unf pots
 	[i('Avantoe potion (unf)'), 'avan'],
 	[i('Cadantine potion (unf)'), 'cadan'],

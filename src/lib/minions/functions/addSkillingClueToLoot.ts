@@ -15,7 +15,7 @@ const clues = [
 ];
 
 export default function addSkillingClueToLoot(
-	user: MUser,
+	userOrLevel: MUser | number,
 	skill: SkillsEnum,
 	quantity: number,
 	clueChance: number,
@@ -23,7 +23,7 @@ export default function addSkillingClueToLoot(
 	clueNestsOnly?: boolean,
 	strungRabbitFoot?: boolean
 ) {
-	const userLevel = user.skillLevel(skill);
+	const userLevel = typeof userOrLevel === 'number' ? userOrLevel : userOrLevel.skillLevel(skill);
 	const chance = Math.floor(clueChance / (100 + userLevel));
 	let nests = 0;
 	const cluesTotalWeight = sumArr(clues.map(c => c[1]));

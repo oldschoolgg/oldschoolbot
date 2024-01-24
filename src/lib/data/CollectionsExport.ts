@@ -2195,7 +2195,8 @@ export const masterCapesCL = resolveItems([
 	'Ranged master cape',
 	'Slayer master cape',
 	'Dungeoneering master cape',
-	'Invention master cape'
+	'Invention master cape',
+	'Divination master cape'
 ]);
 
 export const expertCapesCL = resolveItems(["Combatant's cape", "Artisan's cape", 'Support cape', "Gatherer's cape"]);
@@ -2422,7 +2423,8 @@ export const customPetsCL = resolveItems([
 	'Gary',
 	'Crush',
 	'Herbert',
-	'Echo'
+	'Echo',
+	'Doopy'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([
@@ -2443,7 +2445,8 @@ export const discontinuedCustomPetsCL = resolveItems([
 	'Eggy',
 	'Buggy',
 	'Casper',
-	'Mini mortimer'
+	'Mini mortimer',
+	'Rudolph'
 ]);
 
 export const kingGoldemarCL = resolveItems([
@@ -3232,4 +3235,12 @@ export const vladDrakanCL = resolveItems([
 	'Blightbrand',
 	'Vampyric plushie',
 	'Echo'
+]);
+
+export const divinersOutfit = resolveItems([
+	"Diviner's headwear",
+	"Diviner's robe",
+	"Diviner's legwear",
+	"Diviner's handwear",
+	"Diviner's footwear"
 ]);

@@ -3720,6 +3720,7 @@ exports[`BSO Buyables 1`] = `
         "40008": 1,
         "40010": 1,
         "40015": 1,
+        "73000": 1,
       },
       "frozen": false,
     },
@@ -4441,6 +4442,7 @@ exports[`BSO Buyables 1`] = `
         "40053": 1,
         "40060": 1,
         "63205": 1,
+        "73000": 1,
       },
       "frozen": false,
     },
@@ -6155,6 +6157,37 @@ exports[`BSO Buyables 1`] = `
     "outputItems": Bank {
       "bank": {
         "63205": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 99000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Divination cape",
+    "outputItems": Bank {
+      "bank": {
+        "73001": 1,
+        "73002": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Divination master cape",
+    "outputItems": Bank {
+      "bank": {
+        "73000": 1,
       },
       "frozen": false,
     },
@@ -24407,36 +24440,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert completionist cape",
     "noCl": true,
     "outputItems": Bank {
-      "bank": {
-        "13069": 1,
-        "13222": 1,
-        "40000": 1,
-        "40001": 1,
-        "40002": 1,
-        "40003": 1,
-        "40004": 1,
-        "40005": 1,
-        "40006": 1,
-        "40007": 1,
-        "40008": 1,
-        "40009": 1,
-        "40010": 1,
-        "40011": 1,
-        "40012": 1,
-        "40013": 1,
-        "40014": 1,
-        "40015": 1,
-        "40016": 1,
-        "40017": 1,
-        "40018": 1,
-        "40019": 1,
-        "40020": 1,
-        "40021": 1,
-        "40022": 1,
-        "40053": 1,
-        "40060": 1,
-        "63205": 1,
-      },
+      "bank": {},
       "frozen": false,
     },
   },
@@ -25244,6 +25248,416 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "73010": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of flickering energy",
+    "outputItems": Bank {
+      "bank": {
+        "73029": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 10,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73006": 1000,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of bright energy",
+    "outputItems": Bank {
+      "bank": {
+        "73028": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 20,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73004": 1500,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of glowing energy",
+    "outputItems": Bank {
+      "bank": {
+        "73027": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 30,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73009": 2000,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of sparkling energy",
+    "outputItems": Bank {
+      "bank": {
+        "73026": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 40,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73015": 2500,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of gleaming energy",
+    "outputItems": Bank {
+      "bank": {
+        "73025": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 50,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73008": 3000,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of vibrant energy",
+    "outputItems": Bank {
+      "bank": {
+        "73024": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 60,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73014": 3500,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of lustrous energy",
+    "outputItems": Bank {
+      "bank": {
+        "73023": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 70,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73013": 3750,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of elder energy",
+    "outputItems": Bank {
+      "bank": {
+        "73022": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 75,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73007": 4000,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of brilliant energy",
+    "outputItems": Bank {
+      "bank": {
+        "73033": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73005": 4250,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of radiant energy",
+    "outputItems": Bank {
+      "bank": {
+        "73032": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 85,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73016": 4500,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of luminous energy",
+    "outputItems": Bank {
+      "bank": {
+        "73031": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73012": 4750,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of incandescent energy",
+    "outputItems": Bank {
+      "bank": {
+        "73030": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 95,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73011": 5500,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of ancient energy",
+    "outputItems": Bank {
+      "bank": {
+        "73046": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 110,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1775": 50,
+        "50021": 20,
+        "73016": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Cache portent",
+    "outputItems": Bank {
+      "bank": {
+        "73041": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "3016": 30,
+        "50021": 20,
+        "73012": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Graceful portent",
+    "outputItems": Bank {
+      "bank": {
+        "73043": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50021": 520,
+        "73045": 200,
+      },
+      "frozen": false,
+    },
+    "name": "Rogues portent",
+    "outputItems": Bank {
+      "bank": {
+        "73044": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 110,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50021": 20,
+        "73045": 512,
+      },
+      "frozen": false,
+    },
+    "name": "Dungeon portent",
+    "outputItems": Bank {
+      "bank": {
+        "73047": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 95,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50021": 20,
+        "73011": 256,
+      },
+      "frozen": false,
+    },
+    "name": "Lucky portent",
+    "outputItems": Bank {
+      "bank": {
+        "73048": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50021": 20,
+        "73045": 512,
+      },
+      "frozen": false,
+    },
+    "name": "Rebirth portent",
+    "outputItems": Bank {
+      "bank": {
+        "73052": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50021": 20,
+        "73011": 1200,
+      },
+      "frozen": false,
+    },
+    "name": "Spiritual mining portent",
+    "outputItems": Bank {
+      "bank": {
+        "73053": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50002": 30,
+        "50021": 20,
+        "73011": 1000,
+      },
+      "frozen": false,
+    },
+    "name": "Pacifist hunting portent",
+    "outputItems": Bank {
+      "bank": {
+        "73054": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 120,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "40054": 1,
       },
       "frozen": false,
@@ -25251,12 +25665,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Support cape",
     "noCl": true,
     "outputItems": Bank {
-      "bank": {
-        "40014": 1,
-        "40016": 1,
-        "40022": 1,
-        "40060": 1,
-      },
+      "bank": {},
       "frozen": false,
     },
   },
@@ -25271,13 +25680,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Gatherer's cape",
     "noCl": true,
     "outputItems": Bank {
-      "bank": {
-        "40003": 1,
-        "40005": 1,
-        "40008": 1,
-        "40010": 1,
-        "40015": 1,
-      },
+      "bank": {},
       "frozen": false,
     },
   },
@@ -25292,15 +25695,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Combatant's cape",
     "noCl": true,
     "outputItems": Bank {
-      "bank": {
-        "40009": 1,
-        "40011": 1,
-        "40017": 1,
-        "40018": 1,
-        "40019": 1,
-        "40020": 1,
-        "40021": 1,
-      },
+      "bank": {},
       "frozen": false,
     },
   },
@@ -25315,16 +25710,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Artisan's cape",
     "noCl": true,
     "outputItems": Bank {
-      "bank": {
-        "40000": 1,
-        "40001": 1,
-        "40002": 1,
-        "40004": 1,
-        "40006": 1,
-        "40007": 1,
-        "40012": 1,
-        "40013": 1,
-      },
+      "bank": {},
       "frozen": false,
     },
   },

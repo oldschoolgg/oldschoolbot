@@ -10,8 +10,10 @@ import {
 	baxtorianBathhousesStartCommand
 } from '../../lib/baxtorianBathhouses';
 import { allGodlyItems, divineDominionCheck, divineDominionSacrificeCommand } from '../../lib/bso/divineDominion';
+import { joinGuthixianCache } from '../../lib/bso/guthixianCache';
 import { fishingLocations } from '../../lib/fishingContest';
 import { MaterialType } from '../../lib/invention';
+import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { bonanzaCommand } from '../lib/abstracted_commands/bonanzaCommand';
 import {
 	fishingContestStartCommand,
@@ -252,6 +254,19 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'guthixian_cache',
+			description: 'The Guthixian cache divination minigame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'join',
+					description: 'Join the current guthixian cache, if one is open.',
+					options: []
+				}
+			]
 		}
 	],
 	run: async ({
@@ -297,6 +312,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 				quantity?: number;
 			};
 		};
+		guthixian_cache?: {
+			join?: {};
+		};
 	}>) => {
 		const klasaUser = await mUserFetch(userID);
 		const {
@@ -309,6 +327,13 @@ export const minigamesCommand: OSBMahojiCommand = {
 			divine_dominion
 		} = options;
 
+		if (options.guthixian_cache?.join) {
+			const { divination_is_released } = await mahojiClientSettingsFetch({ divination_is_released: true });
+			if (!divination_is_released) {
+				return 'Divination is not released yet!';
+			}
+			return joinGuthixianCache(klasaUser, channelID);
+		}
 		if (divine_dominion?.check) {
 			return divineDominionCheck(klasaUser);
 		}

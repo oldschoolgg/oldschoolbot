@@ -306,7 +306,21 @@ export enum BitField {
 	HasGuthixEngram = 210,
 	ScrollOfLongevityDisabled = 211,
 	HasUnlockedYeti = 212,
-	NoItemContractDonations = 213
+	NoItemContractDonations = 213,
+
+	HasFlickeringBoon = 214,
+	HasBrightBoon = 215,
+	HasGlowingBoon = 216,
+	HasSparklingBoon = 217,
+	HasGleamingBoon = 218,
+	HasLustrousBoon = 219,
+	HasElderBoon = 220,
+	HasBrilliantBoon = 221,
+	HasRadiantBoon = 222,
+	HasLuminousBoon = 223,
+	HasIncandescentBoon = 224,
+	HasVibrantBoon = 225,
+	HasAncientBoon = 226
 }
 
 interface BitFieldData {
@@ -378,6 +392,71 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.BothBotsMaxedFreeTierOnePerks]: {
 		name: 'Free T1 Perks for Maxed in OSB/BSO',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasFlickeringBoon]: {
+		name: 'Has Flickering Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasBrightBoon]: {
+		name: 'Has Bright Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasGlowingBoon]: {
+		name: 'Has Glowing Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasSparklingBoon]: {
+		name: 'Has Sparkling Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasGleamingBoon]: {
+		name: 'Has Gleaming Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasLustrousBoon]: {
+		name: 'Has Lustrous Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasElderBoon]: {
+		name: 'Has Elder Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasBrilliantBoon]: {
+		name: 'Has Brilliant Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasRadiantBoon]: {
+		name: 'Has Radiant Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasLuminousBoon]: {
+		name: 'Has Luminous Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasIncandescentBoon]: {
+		name: 'Has Incandescent Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasVibrantBoon]: {
+		name: 'Has Vibrant Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasAncientBoon]: {
+		name: 'Has Ancient Boon',
 		protected: false,
 		userConfigurable: false
 	},

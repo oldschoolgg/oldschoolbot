@@ -6,6 +6,7 @@ import { Bank, Items } from 'oldschooljs';
 
 import { tameFeedableItems } from '../mahoji/commands/tames';
 import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
+import { divinationEnergies } from './bso/divination';
 import { ClueTiers } from './clues/clueTiers';
 import { BitField } from './constants';
 import {
@@ -652,6 +653,14 @@ const unlockablesRequirements = new Requirements()
 			}
 		}
 	});
+
+for (const energy of divinationEnergies) {
+	if (!energy.boon || !energy.boonBitfield) continue;
+	unlockablesRequirements.add({
+		name: `Use a ${energy.boon.name}`,
+		bitfieldRequirement: energy.boonBitfield
+	});
+}
 
 const tameRequirements = new Requirements()
 	.add({

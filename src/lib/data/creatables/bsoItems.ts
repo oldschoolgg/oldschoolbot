@@ -5,7 +5,7 @@ import { expertCapesSource } from '../../bso/expertCapes';
 import { dyedItems } from '../../dyedItems';
 import { MaterialBank } from '../../invention/MaterialBank';
 import { nexBrokenArmorDetails } from '../../nex';
-import { allMasterCapesBank } from '../../skilling/skillcapes';
+import Skillcapes from '../../skilling/skillcapes';
 import { bones } from '../../skilling/skills/prayer';
 import { Bone } from '../../skilling/types';
 import { seaMonkeyStaves } from '../../tames';
@@ -15,6 +15,7 @@ import itemID from '../../util/itemID';
 import resolveItems from '../../util/resolveItems';
 import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit } from '../CollectionsExport';
 import { Createable } from '../createables';
+import { divinationCreatables } from './divinationCreatables';
 import { ghostCreatables } from './ghostweaveCreatables';
 import { slayerMaskCreatables } from './slayerMasks';
 
@@ -1342,22 +1343,38 @@ export const BsoCreateables: Createable[] = [
 	},
 	{
 		name: 'Revert completionist cape',
-		outputItems: allMasterCapesBank,
+		outputItems: user => {
+			const refundBank = new Bank();
+			for (const { masterCape } of Skillcapes) {
+				if (user.cl.has(masterCape.id)) {
+					refundBank.add(masterCape);
+				}
+			}
+			return refundBank;
+		},
 		inputItems: new Bank().add('Completionist cape').add('Completionist hood'),
 		noCl: true
 	},
-	...ghostCreatables
+	...ghostCreatables,
+	...divinationCreatables
 ];
 
-for (const { cape, requiredItems } of expertCapesSource) {
-	const itemCost = new Bank();
-	for (const i of requiredItems) itemCost.add(i);
+for (const { cape, skills } of expertCapesSource) {
 	const capeBank = new Bank().add(cape.id).freeze();
 
 	BsoCreateables.push({
 		name: `Revert ${cape.name}`,
 		inputItems: capeBank,
-		outputItems: itemCost,
+		outputItems: user => {
+			const refundLoot = new Bank();
+			for (const skill of skills) {
+				const skillCape = Skillcapes.find(c => c.skill === skill)!;
+				if (user.cl.has(skillCape.masterCape.id)) {
+					refundLoot.add(skillCape.masterCape);
+				}
+			}
+			return refundLoot;
+		},
 		noCl: true
 	});
 }

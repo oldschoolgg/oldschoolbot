@@ -3,6 +3,7 @@ import { ButtonBuilder, ButtonInteraction, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 
 import { autocompleteMonsters } from '../../mahoji/commands/k';
+import { divinationEnergies, memoryHarvestTypes } from '../bso/divination';
 import type { PvMMethod } from '../constants';
 import { kibbles } from '../data/kibble';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
@@ -43,6 +44,7 @@ import type {
 	KibbleOptions,
 	KourendFavourActivityTaskOptions,
 	MahoganyHomesActivityTaskOptions,
+	MemoryHarvestOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	MotherlodeMiningActivityTaskOptions,
@@ -89,7 +91,7 @@ export const taskCanBeRepeated = (activity: Activity) => {
 			activity_type_enum.BossEvent,
 			activity_type_enum.Birdhouse,
 			activity_type_enum.HalloweenMiniMinigame,
-			activity_type_enum.BalthazarsBigBonanza
+			activity_type_enum.GuthixianCache
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
@@ -104,6 +106,10 @@ export const tripHandlers = {
 		args: () => ({})
 	},
 	[activity_type_enum.BossEvent]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.GuthixianCache]: {
 		commandName: 'm',
 		args: () => ({})
 	},
@@ -795,6 +801,15 @@ export const tripHandlers = {
 					solo: data.users.length === 1 ? true : undefined,
 					quantity: data.quantity
 				}
+			}
+		})
+	},
+	[activity_type_enum.MemoryHarvest]: {
+		commandName: 'divination',
+		args: (data: MemoryHarvestOptions) => ({
+			harvest_memories: {
+				energy: divinationEnergies.find(i => i.item.id === data.e)!.type,
+				type: memoryHarvestTypes[data.t].id
 			}
 		})
 	}

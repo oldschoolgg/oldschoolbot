@@ -371,7 +371,8 @@ export interface MinigameActivityTaskOptionsWithNoChanges extends MinigameActivi
 		| 'StealingCreation'
 		| 'OuraniaDeliveryService'
 		| 'FistOfGuthix'
-		| 'BalthazarsBigBonanza';
+		| 'BalthazarsBigBonanza'
+		| 'GuthixianCache';
 }
 
 export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -674,6 +675,16 @@ export interface MortimerOptions extends ActivityTaskOptions {
 	type: 'Mortimer';
 }
 
+export interface MemoryHarvestOptions extends ActivityTaskOptions {
+	type: 'MemoryHarvest';
+	e: number;
+	t: number;
+	wb: boolean;
+	dh: boolean;
+	dp: boolean;
+	r: number;
+}
+
 export type ActivityTaskData =
 	| MonsterActivityTaskOptions
 	| WoodcuttingActivityTaskOptions
@@ -751,4 +762,5 @@ export type ActivityTaskData =
 	| BathhouseTaskOptions
 	| ResearchTaskOptions
 	| CutLeapingFishActivityTaskOptions
-	| MortimerOptions;
+	| MortimerOptions
+	| MemoryHarvestOptions;

@@ -1,4 +1,5 @@
 import { exec } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
 import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
@@ -14,6 +15,10 @@ import { MersenneTwister19937, shuffle } from 'random-js';
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
 import getOSItem from './getOSItem';
+
+export function md5sum(str: string) {
+	return createHash('md5').update(str).digest('hex');
+}
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
@@ -313,22 +318,27 @@ export function isValidDiscordSnowflake(snowflake: string): boolean {
 
 const TOO_LONG_STR = 'The result was too long (over 2000 characters), please read the attached file.';
 
-export function returnStringOrFile(string: string | InteractionReplyOptions): Awaited<CommandResponse> {
+export function returnStringOrFile(
+	string: string | InteractionReplyOptions,
+	forceFile = false
+): Awaited<CommandResponse> {
 	if (typeof string === 'string') {
-		if (string.length > 2000) {
+		const hash = md5sum(string).slice(0, 5);
+		if (string.length > 2000 || forceFile) {
 			return {
 				content: TOO_LONG_STR,
-				files: [{ attachment: Buffer.from(string), name: 'result.txt' }]
+				files: [{ attachment: Buffer.from(string), name: `result-${hash}.txt` }]
 			};
 		}
 		return string;
 	}
-	if (string.content && string.content.length > 2000) {
+	if (string.content && (string.content.length > 2000 || forceFile)) {
+		const hash = md5sum(string.content).slice(0, 5);
 		return deepmerge(
 			string,
 			{
 				content: TOO_LONG_STR,
-				files: [{ attachment: Buffer.from(string.content), name: 'result.txt' }]
+				files: [{ attachment: Buffer.from(string.content), name: `result-${hash}.txt` }]
 			},
 			{ clone: false }
 		);
@@ -350,4 +360,10 @@ export function containsBlacklistedWord(str: string): boolean {
 		}
 	}
 	return false;
+}
+
+export function calculateAverageTimeForSuccess(probabilityPercent: number, timeFrameMilliseconds: number): number {
+	let probabilityOfSuccess = probabilityPercent / 100;
+	let averageTimeUntilSuccessMilliseconds = timeFrameMilliseconds / probabilityOfSuccess;
+	return averageTimeUntilSuccessMilliseconds;
 }
