@@ -906,3 +906,5 @@ export const christmasCakeIngredients = resolveItems([
 	'Smokey egg'
 ]);
 export const gearValidationChecks = new Set();
+
+export const BSO_MAX_TOTAL_LEVEL = 3120;
