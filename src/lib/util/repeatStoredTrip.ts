@@ -8,7 +8,7 @@ import type { PvMMethod } from '../constants';
 import { kibbles } from '../data/kibble';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
-import { convertStoredActivityToFlatActivity, prisma } from '../settings/prisma';
+import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import type {
 	ActivityTaskOptionsWithQuantity,
@@ -75,10 +75,6 @@ import { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions 
 import { deferInteraction } from './interactionReply';
 
 export const taskCanBeRepeated = (activity: Activity) => {
-	if (activity.type === activity_type_enum.ClueCompletion) {
-		const realActivity = convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
-		return realActivity.implingID !== undefined;
-	}
 	return !(
 		[
 			activity_type_enum.TearsOfGuthix,
