@@ -11,7 +11,7 @@ import { GrimyHerbTable } from '../Treebeard';
 
 export const kalphiteKingLootTable = new LootTable()
 	.tertiary(18, 'Clue scroll (grandmaster)')
-	.tertiary(6000, 'Baby kalphite king')
+	.tertiary(3000, 'Baby kalphite king')
 	.tertiary(2500, 'Perfect chitin')
 	.tertiary(
 		150,
