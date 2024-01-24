@@ -25,6 +25,7 @@ import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { giftCountCache } from '../mahoji/commands/gift';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
+import { divinationEnergies } from './bso/divination';
 import { TOBUniques } from './data/tob';
 import { SkillsEnum } from './skilling/types';
 import { murMurSort } from './util';
@@ -256,6 +257,13 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Holy scythe of vitur (uncharged)'), 'Unch.'],
 	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.']
 ]);
+
+for (const energy of divinationEnergies) {
+	forcedShortNameMap.set(energy.item.id, energy.item.name.slice(0, 4));
+	if (energy.boon) {
+		forcedShortNameMap.set(energy.boon.id, energy.item.name.slice(0, 4));
+	}
+}
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
 	// Draw Bank Title
