@@ -17,6 +17,7 @@ import { MemoryHarvestOptions } from '../../lib/types/minions';
 import { assert } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { formatDuration } from '../../lib/util/smallUtils';
 import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
@@ -129,6 +130,10 @@ export const divinationCommand: OSBMahojiCommand = {
 		charge_portent?: { portent: string; quantity: number };
 		toggle_portent?: { portent: string };
 	}>) => {
+		const { divination_is_released } = await mahojiClientSettingsFetch({ divination_is_released: true });
+		if (!divination_is_released) {
+			return 'Divination is not released yet!';
+		}
 		const user = await mUserFetch(userID);
 
 		if (options.toggle_portent) {

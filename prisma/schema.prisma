@@ -187,6 +187,8 @@ model ClientStorage {
 
   xmas_ironman_food_bank Json @default("{}") @db.Json
 
+  divination_is_released Boolean @default(false)
+
   @@map("clientStorage")
 }
 
