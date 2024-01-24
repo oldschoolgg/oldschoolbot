@@ -1356,7 +1356,7 @@ export const BsoCreateables: Createable[] = [
 		noCl: true
 	},
 	{
-		name: 'Revert completionist cape(t)',
+		name: 'Revert completionist cape (t)',
 		inputItems: new Bank().add('Completionist cape (t)').add('Completionist hood (t)'),
 		outputItems: new Bank().add('Completionist cape').add('Completionist hood'),
 		noCl: true
