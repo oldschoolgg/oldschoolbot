@@ -47,7 +47,8 @@ import resolveItems from './util/resolveItems';
 
 export enum TameSpeciesID {
 	Igne = 1,
-	Monkey = 2
+	Monkey = 2,
+	Eagle = 3
 }
 
 export const seaMonkeyStaves = [
@@ -504,6 +505,31 @@ export const tameSpecies: Species[] = [
 		relevantLevelCategory: 'gatherer',
 		hatchTime: Time.Hour * 4.5,
 		egg: getOSItem('Monkey egg'),
+		emoji: '<:monkey_egg:883326001445224488>',
+		emojiID: '883326001445224488',
+		mergingCost: new Bank()
+			.add('Banana', 3000)
+			.add('Magic banana', 50)
+			.add('Chimpling jar')
+			.add('Soul rune', 2500)
+			.add('Elder rune', 100)
+			.add('Astral rune', 600)
+			.add('Coins', 10_000_000)
+	},
+	{
+		id: TameSpeciesID.Eagle,
+		type: TameType.Support,
+		name: 'Eagle',
+		variants: [1, 2, 3],
+		shinyVariant: 4,
+		shinyChance: 60,
+		combatLevelRange: [5, 25],
+		artisanLevelRange: [1, 10],
+		supportLevelRange: [50, 100],
+		gathererLevelRange: [20, 40],
+		relevantLevelCategory: 'support',
+		hatchTime: Time.Hour * 4.5,
+		egg: getOSItem('Eagle egg'),
 		emoji: '<:monkey_egg:883326001445224488>',
 		emojiID: '883326001445224488',
 		mergingCost: new Bank()

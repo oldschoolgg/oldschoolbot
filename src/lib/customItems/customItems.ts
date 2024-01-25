@@ -10901,3 +10901,15 @@ setCustomItem(
 );
 
 // 73_055 Drygore axe
+
+setCustomItem(
+	73_056,
+	'Eagle egg',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
