@@ -44,18 +44,19 @@ async function farmingLootBoosts(user: MUser, plant: Plant, loot: Bank, messages
 		bonusPercentage += 100;
 		messages.push('100% for Farming master cape');
 	}
-	if (plantsNotUsedForArcaneHarvester.includes(plant)) return;
-	if (user.hasEquippedOrInBank(['Arcane harvester'])) {
-		const boostRes = await inventionItemBoost({
-			user,
-			inventionID: InventionID.ArcaneHarvester,
-			duration: plant.level * Time.Second * 30
-		});
-		if (boostRes.success) {
-			bonusPercentage += inventionBoosts.arcaneHarvester.harvestBoostPercent;
-			messages.push(
-				`${inventionBoosts.arcaneHarvester.harvestBoostPercent}% bonus yield from Arcane Harvester (${boostRes.messages})`
-			);
+	if (!plantsNotUsedForArcaneHarvester.includes(plant)) {
+		if (user.hasEquippedOrInBank(['Arcane harvester'])) {
+			const boostRes = await inventionItemBoost({
+				user,
+				inventionID: InventionID.ArcaneHarvester,
+				duration: plant.level * Time.Second * 30
+			});
+			if (boostRes.success) {
+				bonusPercentage += inventionBoosts.arcaneHarvester.harvestBoostPercent;
+				messages.push(
+					`${inventionBoosts.arcaneHarvester.harvestBoostPercent}% bonus yield from Arcane Harvester (${boostRes.messages})`
+				);
+			}
 		}
 	}
 	increaseBankQuantitesByPercent(loot, bonusPercentage);
@@ -644,13 +645,19 @@ export const farmingTask: MinionTask = {
 
 			if (hasPlopper) infoStr.push(`\nYou received ${plopperBoostPercent}% bonus loot from Plopper`);
 
-			handleTripFinish(
+			const seedPackCount = loot.amount('Seed pack');
+
+			return handleTripFinish(
 				user,
 				channelID,
 				infoStr.join('\n'),
 				janeMessage
 					? await chatHeadImage({
-							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+							content: `You've completed your contract and I have rewarded you with ${seedPackCount} Seed pack${
+								seedPackCount > 1 ? 's' : ''
+							}. Please open ${
+								seedPackCount > 1 ? 'these Seed packs' : 'this Seed pack'
+							} before asking for a new contract!\nYou have completed ${
 								contractsCompleted + 1
 							} farming contracts.`,
 							head: 'jane'
