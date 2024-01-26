@@ -28,9 +28,6 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
-const plantsNotUsedForArcaneHarvester = ['Mysterious tree'].map(i => Farming.Plants.find(p => p.name === i)!);
-assert(!(plantsNotUsedForArcaneHarvester as any[]).includes(undefined));
-
 const plopperBoostPercent = 100;
 
 async function farmingLootBoosts(user: MUser, plant: Plant, loot: Bank, messages: string[]) {
@@ -44,19 +41,17 @@ async function farmingLootBoosts(user: MUser, plant: Plant, loot: Bank, messages
 		bonusPercentage += 100;
 		messages.push('100% for Farming master cape');
 	}
-	if (!plantsNotUsedForArcaneHarvester.includes(plant)) {
-		if (user.hasEquippedOrInBank(['Arcane harvester'])) {
-			const boostRes = await inventionItemBoost({
-				user,
-				inventionID: InventionID.ArcaneHarvester,
-				duration: plant.level * Time.Second * 30
-			});
-			if (boostRes.success) {
-				bonusPercentage += inventionBoosts.arcaneHarvester.harvestBoostPercent;
-				messages.push(
-					`${inventionBoosts.arcaneHarvester.harvestBoostPercent}% bonus yield from Arcane Harvester (${boostRes.messages})`
-				);
-			}
+	if (user.hasEquippedOrInBank(['Arcane harvester'])) {
+		const boostRes = await inventionItemBoost({
+			user,
+			inventionID: InventionID.ArcaneHarvester,
+			duration: plant.level * Time.Second * 30
+		});
+		if (boostRes.success) {
+			bonusPercentage += inventionBoosts.arcaneHarvester.harvestBoostPercent;
+			messages.push(
+				`${inventionBoosts.arcaneHarvester.harvestBoostPercent}% bonus yield from Arcane Harvester (${boostRes.messages})`
+			);
 		}
 	}
 	increaseBankQuantitesByPercent(loot, bonusPercentage);
