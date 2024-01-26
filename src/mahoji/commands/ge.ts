@@ -10,7 +10,7 @@ import { PerkTier } from '../../lib/constants';
 import { createGECancelButton, GrandExchange } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 import { prisma } from '../../lib/settings/prisma';
-import { formatDuration, itemNameFromID, makeComponents, toKMB } from '../../lib/util';
+import { formatDuration, itemNameFromID, makeComponents, returnStringOrFile, toKMB } from '../../lib/util';
 import { lineChart } from '../../lib/util/chart';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -361,7 +361,7 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 				activeListings
 			});
 
-			return {
+			const geResult = {
 				content: `**Active Listings**\n${(
 					await Promise.all(
 						activeListings.map(async listing => {
@@ -379,6 +379,8 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 					}
 				]
 			};
+
+			return returnStringOrFile(geResult);
 		}
 
 		if (options.view) {
@@ -391,21 +393,21 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 				}
 				let result = await prisma.$queryRawUnsafe<
 					{ quantity_bought: number; price_per_item_before_tax: number; created_at: Date }[]
-				>(`SELECT 
-  sellTransactions.created_at, 
+				>(`SELECT
+  sellTransactions.created_at,
   sellTransactions.price_per_item_before_tax,
   sellTransactions.quantity_bought
-FROM 
+FROM
   ge_listing
-INNER JOIN 
+INNER JOIN
   ge_transaction AS sellTransactions ON ge_listing.id = sellTransactions.sell_listing_id
-WHERE 
+WHERE
   ge_listing.item_id = ${item.id}
-AND 
+AND
   ge_listing.cancelled_at IS NULL
-AND 
+AND
   ge_listing.fulfilled_at IS NOT NULL
-ORDER BY 
+ORDER BY
   sellTransactions.created_at ASC;`);
 				if (result.length < 2) return 'No price history found for that item.';
 				if (result[0].price_per_item_before_tax <= 1_000_000) {
