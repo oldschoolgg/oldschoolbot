@@ -46,6 +46,11 @@ export async function handleInteractionError(err: unknown, interaction: Interact
 	// For silent errors, just return and do nothing. Users could see an error.
 	if (err instanceof Error && err.message === SILENT_ERROR) return;
 
+	// If DiscordAPIError #10008, that means someone deleted the message, we don't need to log this.
+	if (err instanceof DiscordAPIError && err.code === 10_008) {
+		return;
+	}
+
 	// If this isn't a UserError, its something we need to just log and know about to fix it.
 	// Or if its not repliable, we should never be erroring here.
 	if (!(err instanceof UserError) || !interaction.isRepliable()) {
