@@ -41,7 +41,7 @@ async function farmingLootBoosts(user: MUser, plant: Plant, loot: Bank, messages
 		bonusPercentage += 100;
 		messages.push('100% for Farming master cape');
 	}
-	if (user.hasEquippedOrInBank(['Arcane harvester'])) {
+	if (user.hasEquippedOrInBank(['Arcane harvester']) && !(plant.name === 'Mysterious tree')) {
 		const boostRes = await inventionItemBoost({
 			user,
 			inventionID: InventionID.ArcaneHarvester,
@@ -575,6 +575,13 @@ export const farmingTask: MinionTask = {
 			}
 
 			await farmingLootBoosts(user, plant, loot, infoStr);
+
+			if (plant.name === 'Mysterious tree') {
+				if (loot.has('Seed Pack')) {
+					loot.add('Seed Pack', 1);
+					infoStr.push('+1 Seed Pack for Mysterious tree farming contract');
+				}
+			}
 
 			if (loot.has('Plopper')) {
 				loot.bank[itemID('Plopper')] = 1;
