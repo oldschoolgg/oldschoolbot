@@ -248,8 +248,6 @@ export const farmingTask: MinionTask = {
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
-			if (hasPlopper) str += `\nYou received ${plopperBoostPercent}% bonus loot from Plopper`;
-
 			handleTripFinish(user, channelID, str, undefined, data, null);
 		} else if (patchType.patchPlanted) {
 			// If they do have something planted here, harvest it and possibly replant.
@@ -644,8 +642,6 @@ export const farmingTask: MinionTask = {
 					}
 				});
 			}
-
-			if (hasPlopper) infoStr.push(`\nYou received ${plopperBoostPercent}% bonus loot from Plopper`);
 
 			const seedPackCount = loot.amount('Seed pack');
 
