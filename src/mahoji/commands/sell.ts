@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
+import { castleWarsBuyables } from '../../lib/data/buyables/castleWars';
 import { prisma } from '../../lib/settings/prisma';
 import { NestBoxesTable } from '../../lib/simulation/misc';
 import { itemID, toKMB } from '../../lib/util';
@@ -100,6 +101,31 @@ export const sellCommand: OSBMahojiCommand = {
 			noDuplicateItems: true
 		});
 		if (bankToSell.length === 0) return 'No items provided.';
+
+		const castleWarsBank = new Bank();
+		const castleWarsLoot = new Bank();
+		for (const castleWarsBuyable of castleWarsBuyables) {
+			if (bankToSell.has(castleWarsBuyable.name)) {
+				const itemAmount = bankToSell.amount(castleWarsBuyable.name);
+				castleWarsBank.add(castleWarsBuyable.name, itemAmount);
+				castleWarsLoot.add(new Bank(castleWarsBuyable.itemCost).multiply(itemAmount));
+			}
+		}
+
+		if (castleWarsBank.length > 0) {
+			await handleMahojiConfirmation(
+				interaction,
+				`${user}, please confirm you want to sell ${castleWarsBank} for **${castleWarsLoot}**.`
+			);
+
+			await transactItems({
+				userID: user.id,
+				collectionLog: false,
+				itemsToAdd: castleWarsLoot,
+				itemsToRemove: castleWarsBank
+			});
+			return `You exchanged ${castleWarsBank} and received: ${castleWarsLoot}.`;
+		}
 
 		if (bankToSell.has('mole claw') || bankToSell.has('mole skin')) {
 			const moleBank = new Bank();
