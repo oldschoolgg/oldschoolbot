@@ -28,9 +28,6 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
-const plantsNotUsedForArcaneHarvester = ['Mysterious tree'].map(i => Farming.Plants.find(p => p.name === i)!);
-assert(!(plantsNotUsedForArcaneHarvester as any[]).includes(undefined));
-
 const plopperBoostPercent = 100;
 
 async function farmingLootBoosts(user: MUser, plant: Plant, loot: Bank, messages: string[]) {
@@ -44,8 +41,7 @@ async function farmingLootBoosts(user: MUser, plant: Plant, loot: Bank, messages
 		bonusPercentage += 100;
 		messages.push('100% for Farming master cape');
 	}
-	if (plantsNotUsedForArcaneHarvester.includes(plant)) return;
-	if (user.hasEquippedOrInBank(['Arcane harvester'])) {
+	if (user.hasEquippedOrInBank(['Arcane harvester']) && plant.name !== 'Mysterious tree') {
 		const boostRes = await inventionItemBoost({
 			user,
 			inventionID: InventionID.ArcaneHarvester,
@@ -251,8 +247,6 @@ export const farmingTask: MinionTask = {
 			});
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
-
-			if (hasPlopper) str += `\nYou received ${plopperBoostPercent}% bonus loot from Plopper`;
 
 			handleTripFinish(user, channelID, str, undefined, data, null);
 		} else if (patchType.patchPlanted) {
@@ -580,6 +574,13 @@ export const farmingTask: MinionTask = {
 
 			await farmingLootBoosts(user, plant, loot, infoStr);
 
+			if (plant.name === 'Mysterious tree') {
+				if (loot.has('Seed Pack')) {
+					loot.add('Seed Pack', 1);
+					infoStr.push('+1 Seed Pack for Mysterious tree farming contract');
+				}
+			}
+
 			if (loot.has('Plopper')) {
 				loot.bank[itemID('Plopper')] = 1;
 				infoStr.push(
@@ -642,15 +643,19 @@ export const farmingTask: MinionTask = {
 				});
 			}
 
-			if (hasPlopper) infoStr.push(`\nYou received ${plopperBoostPercent}% bonus loot from Plopper`);
+			const seedPackCount = loot.amount('Seed pack');
 
-			handleTripFinish(
+			return handleTripFinish(
 				user,
 				channelID,
 				infoStr.join('\n'),
 				janeMessage
 					? await chatHeadImage({
-							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+							content: `You've completed your contract and I have rewarded you with ${seedPackCount} Seed pack${
+								seedPackCount > 1 ? 's' : ''
+							}. Please open ${
+								seedPackCount > 1 ? 'these Seed packs' : 'this Seed pack'
+							} before asking for a new contract!\nYou have completed ${
 								contractsCompleted + 1
 							} farming contracts.`,
 							head: 'jane'
