@@ -149,6 +149,34 @@ LIMIT 10;`);
 		.map((e, i) => `${i + 1}. **${getUsername(e.user_id)}:** ${formatDuration(e.duration)}`)
 		.join('\n')}`;
 }
+// Leaderboard for BSO general boxSpawn.ts event
+async function bsoTrivia(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
+	const triviaCount: { id: string; triviascore: number }[] = await prisma.$queryRawUnsafe(
+		`SELECT u.user_id::text AS id, u.triviascore
+		FROM (
+			SELECT COALESCE(main_server_challenges_won, 0) AS triviascore, user_id
+			FROM user_stats
+		) AS u
+		ORDER BY u.triviascore DESC
+		LIMIT 10;`
+	);
+
+	doMenu(
+		interaction,
+		user,
+		channelID,
+		chunk(triviaCount, LB_PAGE_SIZE).map((subList, i) =>
+			subList
+				.map(
+					({ id, triviascore }, j) =>
+						`${getPos(i, j)}**${getUsername(id)}:** ${triviascore.toLocaleString()} Trivia Wins`
+				)
+				.join('\n')
+		),
+		'Top Trivia Leaderboard'
+	);
+	return lbMsg('Top Trivia');
+}
 
 async function sacrificeLb(
 	interaction: ChatInputCommandInteraction,
@@ -1126,6 +1154,11 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
+			name: 'trivia',
+			description: 'Check the BSO trivia leaderboard.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
 			name: 'sacrifice',
 			description: 'Check the sacrifice leaderboard.',
 			options: [
@@ -1387,6 +1420,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		kc?: { monster: string; ironmen_only?: boolean };
 		farming_contracts?: { ironmen_only?: boolean };
 		inferno?: {};
+		trivia?: {};
 		sacrifice?: { type: 'value' | 'unique'; ironmen_only?: boolean };
 		minigames?: { minigame: string; ironmen_only?: boolean };
 		hunter_catches?: { creature: string };
@@ -1413,6 +1447,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			kc,
 			farming_contracts,
 			inferno,
+			trivia,
 			sacrifice,
 			minigames,
 			hunter_catches,
@@ -1434,6 +1469,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			return farmingContractLb(interaction, user, channelID, Boolean(farming_contracts.ironmen_only));
 		}
 		if (inferno) return infernoLb();
+		if (trivia) return bsoTrivia(interaction, user, channelID);
 		if (sacrifice)
 			return sacrificeLb(interaction, user, channelID, sacrifice.type, Boolean(sacrifice.ironmen_only));
 		if (minigames) return minigamesLb(interaction, user, channelID, minigames.minigame);
