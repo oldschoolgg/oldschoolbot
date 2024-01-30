@@ -59,11 +59,13 @@ export const nightmareTask: MinionTask = {
 		const { newKC } = await user.incrementKC(monsterID, kc);
 
 		const ownsOrUsedTablet = user.bank.has('Slepey tablet') || user.bitfield.includes(BitField.HasSlepeyTablet);
-		if (ownsOrUsedTablet) {
-			userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));
-		}
-		if (!ownsOrUsedTablet && kc > 0 && newKC >= 100 && !userLoot.has('Slepey tablet')) {
-			userLoot.add('Slepey tablet');
+		if (isPhosani) {
+			if (ownsOrUsedTablet) {
+				userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));
+			}
+			if (!ownsOrUsedTablet && kc > 0 && newKC >= 100 && !userLoot.has('Slepey tablet')) {
+				userLoot.add('Slepey tablet');
+			}
 		}
 
 		// Fix purple items on solo kills

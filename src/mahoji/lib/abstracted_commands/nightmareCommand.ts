@@ -86,7 +86,7 @@ async function checkReqs(user: MUser, monster: KillableMonster, isPhosani: boole
 			hitpoints: 90
 		});
 		if (!requirements[0]) {
-			return `${user.usernameOrMention} doesn't meet the requirements: ${requirements[1]}`;
+			return `${user.usernameOrMention} doesn't meet the requirements: ${requirements[1]}.`;
 		}
 		if ((await user.getKC(NightmareMonster.id)) < 50) {
 			return "You need to have killed The Nightmare atleast 50 times before you can face the Phosani's Nightmare.";
@@ -319,7 +319,7 @@ ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
 					NightmareMonster.timeToFinish
 			  )} - the total trip will take ${formatDuration(duration)}.`;
 
-	str += `\n\nRemoved ${soloFoodUsage} from your bank.${
+	str += `\nRemoved ${soloFoodUsage} from your bank.${
 		isPhosani
 			? hasShadow
 				? ` Your minion is using ${shadowChargesPerKc * quantity} Tumeken's shadow charges. `
