@@ -21,10 +21,8 @@ import { ItemBank } from '../lib/types';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
-import { giftCountCache } from '../mahoji/commands/gift';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
 import { TOBUniques } from './data/tob';
-import { murMurSort } from './util';
 import resolveItems from './util/resolveItems';
 
 const fonts = {
@@ -278,7 +276,6 @@ class BankImageTask {
 	}
 
 	async init() {
-		this.treeImage = await loadImage('./src/lib/resources/images/xmastree.png');
 		const colors: Record<BGSpriteName, string> = {
 			default: '#655741',
 			dark: '#393939',
@@ -753,28 +750,6 @@ class BankImageTask {
 				wide ? canvas.width : actualBackground.width! * (resizeBg === -1 ? 1 : resizeBg),
 				wide ? canvas.height : actualBackground.height! * (resizeBg === -1 ? 1 : resizeBg)
 			);
-		}
-
-		ctx.drawImage(this.treeImage, 370, 170);
-		if (user) {
-			const giftsOwned = giftCountCache.get(user.id);
-
-			const boundingBoxX = 326;
-			const boundingBoxY = 295;
-			const boundingBoxWidth = 150;
-			const boundingBoxHeight = 25;
-
-			if (giftsOwned) {
-				const sorted = murMurSort(giftItemIDList, user.id);
-				for (let i = 0; i < giftsOwned; i++) {
-					const image = await this.getItemImage(sorted[i], user);
-
-					const x = boundingBoxX + (randInt(0, boundingBoxWidth) - image.width / 2);
-					const y = boundingBoxY + (randInt(0, boundingBoxHeight) - image.height / 2);
-
-					ctx.drawImage(image, x, y);
-				}
-			}
 		}
 
 		if (showValue) {

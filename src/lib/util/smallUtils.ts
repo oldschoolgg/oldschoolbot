@@ -92,6 +92,10 @@ export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null
 	return [true, null];
 }
 
+export function pluraliseItemName(name: string): string {
+	return name + (name.endsWith('s') ? '' : 's');
+}
+
 /**
  * Scale percentage exponentially
  *

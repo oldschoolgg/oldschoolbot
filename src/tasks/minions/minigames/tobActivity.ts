@@ -92,7 +92,7 @@ export const tobTask: MinionTask = {
 				team: tobUsers
 			});
 
-			resultMessage += `\n **Raid ${raidId} results: **`;
+			resultMessage += `\n **Raid${quantity < 2 ? '' : ` ${raidId}`} results:**`;
 
 			// Give them all +1 attempts
 			const diedToMaiden = wipedRoom !== null && wipedRoom === 0;
@@ -221,7 +221,8 @@ export const tobTask: MinionTask = {
 				duration
 			}))
 		});
-		const shouldShowImage = allUsers.length <= 3 && teamsLoot.entries().every(i => i[1].length <= 6);
+		const shouldShowImage =
+			allUsers.length <= 3 && teamsLoot.entries().every(i => i[1].length <= 6 && i[1].length > 0);
 
 		if (users.length === 1) {
 			return handleTripFinish(
