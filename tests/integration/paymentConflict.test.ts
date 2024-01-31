@@ -64,9 +64,6 @@ describe('Payment conflicts', async () => {
 			await Promise.all(payers.map(u => u.sync()));
 			totalGp += userPayee.GP;
 			for (const payer of payers) totalGp += payer.GP;
-			console.log(
-				`starting: ${startingBallCount} banked: ${userPayee.bank.amount('Cannonball')} - new: ${newBalls}`
-			);
 
 			expect(totalGp).toEqual(1_000_000_000 * (payerCount + 1));
 			expect(userPayee.bank.amount('Cannonball') - startingBallCount).toEqual(newBalls);
@@ -125,9 +122,6 @@ describe('Payment conflicts', async () => {
 			await Promise.all(payees.map(u => u.sync()));
 			totalGp += userPayer.GP;
 			for (const payee of payees) totalGp += payee.GP;
-			console.log(
-				`starting: ${startingBallCount} banked: ${userPayer.bank.amount('Cannonball')} - new: ${newBalls}`
-			);
 
 			expect(totalGp).toEqual(1_000_000_000 * (payerCount + 1));
 			expect(userPayer.bank.amount('Cannonball') - startingBallCount).toEqual(newBalls);
