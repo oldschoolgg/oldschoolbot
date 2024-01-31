@@ -19,6 +19,7 @@ vi.mock('../../src/lib/util/webhook', async () => {
 });
 
 // @ts-ignore mock
-globalClient.fetchUser = async () => ({
+globalClient.fetchUser = async (id: string | bigint) => ({
+	id: typeof id === 'string' ? id : String(id),
 	send: async () => {}
 });
