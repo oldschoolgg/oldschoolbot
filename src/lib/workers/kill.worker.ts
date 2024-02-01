@@ -2,11 +2,10 @@ import '../customItems/customItems';
 import '../data/itemAliases';
 
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { Bank, Misc, Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { production } from '../../config';
 import { YETI_ID } from '../constants';
-import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import killableMonsters from '../minions/data/killableMonsters/index';
 import { simulatedKillables } from '../simulation/simulatedKillables';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
@@ -62,21 +61,6 @@ export default async ({
 		}
 
 		return { bank: simulatedKillable.loot(quantity) };
-	}
-
-	if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {
-		let bank = new Bank();
-		if (quantity > 10_000) {
-			return { error: 'I can only kill a maximum of 10k nightmares a time!' };
-		}
-		for (let i = 0; i < quantity; i++) {
-			bank.add(Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }], isPhosani: false }).id);
-		}
-		return { bank };
-	}
-
-	if (stringMatches(bossName, 'moktang')) {
-		return { bank: MoktangLootTable.roll(quantity) };
 	}
 
 	return { error: "I don't have that monster!" };
