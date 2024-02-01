@@ -258,7 +258,8 @@ export enum BitField {
 	UsedFrozenTablet = 34,
 	CleanHerbsFarming = 35,
 	SelfGamblingLocked = 36,
-	DisabledFarmingReminders = 37
+	DisabledFarmingReminders = 37,
+	DisableAutoSlayButton = 38
 }
 
 interface BitFieldData {
@@ -315,6 +316,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },
 	[BitField.DisableBirdhouseRunButton]: {
 		name: 'Disable Birdhouse Run Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableAutoSlayButton]: {
+		name: 'Disable Auto Slay Button',
 		protected: false,
 		userConfigurable: true
 	},
