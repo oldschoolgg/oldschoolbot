@@ -150,32 +150,32 @@ LIMIT 10;`);
 		.join('\n')}`;
 }
 // Leaderboard for BSO general boxSpawn.ts event
-async function bsoTrivia(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
-	const triviaCount: { id: string; triviascore: number }[] = await prisma.$queryRawUnsafe(
-		`SELECT u.user_id::text AS id, u.triviascore
+async function bsoChallenge(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
+	const challengeCount: { id: string; challengescore: number }[] = await prisma.$queryRawUnsafe(
+		`SELECT u.user_id::text AS id, u.challengescore
 		FROM (
-			SELECT COALESCE(main_server_challenges_won, 0) AS triviascore, user_id
+			SELECT COALESCE(main_server_challenges_won, 0) AS challengescore, user_id
 			FROM user_stats
 		) AS u
-		ORDER BY u.triviascore DESC
-		LIMIT 10;`
+		ORDER BY u.challengescore DESC
+		LIMIT 100;`
 	);
 
 	doMenu(
 		interaction,
 		user,
 		channelID,
-		chunk(triviaCount, LB_PAGE_SIZE).map((subList, i) =>
+		chunk(challengeCount, LB_PAGE_SIZE).map((subList, i) =>
 			subList
 				.map(
-					({ id, triviascore }, j) =>
-						`${getPos(i, j)}**${getUsername(id)}:** ${triviascore.toLocaleString()} Trivia Wins`
+					({ id, challengescore }, j) =>
+						`${getPos(i, j)}**${getUsername(id)}:** ${challengescore.toLocaleString()} Challenges`
 				)
 				.join('\n')
 		),
-		'Top Trivia Leaderboard'
+		'Top Challenges Won Leaderboard'
 	);
-	return lbMsg('Top Trivia');
+	return lbMsg('Top Challenges Won');
 }
 
 async function sacrificeLb(
@@ -1154,8 +1154,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'trivia',
-			description: 'Check the BSO trivia leaderboard.'
+			name: 'challenges',
+			description: 'Check the BSO challenges won leaderboard.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -1420,7 +1420,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		kc?: { monster: string; ironmen_only?: boolean };
 		farming_contracts?: { ironmen_only?: boolean };
 		inferno?: {};
-		trivia?: {};
+		challenges?: {};
 		sacrifice?: { type: 'value' | 'unique'; ironmen_only?: boolean };
 		minigames?: { minigame: string; ironmen_only?: boolean };
 		hunter_catches?: { creature: string };
@@ -1447,7 +1447,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			kc,
 			farming_contracts,
 			inferno,
-			trivia,
+			challenges,
 			sacrifice,
 			minigames,
 			hunter_catches,
@@ -1469,7 +1469,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			return farmingContractLb(interaction, user, channelID, Boolean(farming_contracts.ironmen_only));
 		}
 		if (inferno) return infernoLb();
-		if (trivia) return bsoTrivia(interaction, user, channelID);
+		if (challenges) return bsoChallenge(interaction, user, channelID);
 		if (sacrifice)
 			return sacrificeLb(interaction, user, channelID, sacrifice.type, Boolean(sacrifice.ironmen_only));
 		if (minigames) return minigamesLb(interaction, user, channelID, minigames.minigame);
