@@ -16,6 +16,8 @@ import { KillableMonster } from './minions/types';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import { makeKillTable } from './util/setCustomMonster';
+import { Monsters } from 'oldschooljs';
+import setCustomMonster, { makeKillTable } from '../../../../../util/setCustomMonster';
 
 export const nexBrokenArmorDetails = [
 	[getOSItem('Armadylean components'), brokenPernixOutfit, pernixOutfit],
@@ -73,3 +75,9 @@ export const NexMonster: KillableMonster = {
 };
 
 export const NEX_UNIQUE_DROPRATE = (numPlayers: number) => 80 + numPlayers * 2;
+
+setCustomMonster(NexMonster.id, 'Nex', nexLootTable, Monsters.Kreearra, {
+    id: NexMonster.id,
+    name: 'Nex',
+    aliases: ['nex']
+});
