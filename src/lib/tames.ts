@@ -18,6 +18,7 @@ import { ChambersOfXeric, TheatreOfBlood } from 'oldschooljs/dist/simulation/mis
 
 import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import { ClueTiers } from './clues/clueTiers';
 import { getSimilarItems } from './data/similarItems';
 import { trackLoot } from './lootTrack';
 import killableMonsters, { NightmareMonster } from './minions/data/killableMonsters';
@@ -458,11 +459,18 @@ export interface TameTaskSpellCastingOptions {
 	loot: ItemBank;
 }
 
+export interface TameTaskClueOptions {
+	type: 'Clues';
+	clueID: number;
+	quantity: number;
+}
+
 export type TameTaskOptions =
 	| ArbitraryTameActivityData
 	| TameTaskCombatOptions
 	| TameTaskGathererOptions
-	| TameTaskSpellCastingOptions;
+	| TameTaskSpellCastingOptions
+	| TameTaskClueOptions;
 
 export const tameSpecies: Species[] = [
 	{
@@ -530,10 +538,10 @@ export const tameSpecies: Species[] = [
 		relevantLevelCategory: 'support',
 		hatchTime: Time.Hour * 4.5,
 		egg: getOSItem('Eagle egg'),
-		emoji: '<:monkey_egg:883326001445224488>',
-		emojiID: '883326001445224488',
+		emoji: '<:EagleEgg:1201712371371085894>',
+		emojiID: '1201712371371085894',
 		mergingCost: new Bank()
-			.add('Banana', 3000)
+			.add('Twisted bow', 3000)
 			.add('Magic banana', 50)
 			.add('Chimpling jar')
 			.add('Soul rune', 2500)
@@ -682,6 +690,9 @@ export function shortTameTripDesc(activity: TameActivity) {
 		}
 		case 'Tempoross': {
 			return 'Fighting Tempoross';
+		}
+		case 'Clues': {
+			return 'TODOTODOTODOTODOTODOTODOTODOTODO';
 		}
 	}
 }
@@ -837,6 +848,22 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			});
 			break;
 		}
+		case 'Clues': {
+			const clueTier = ClueTiers.find(c => c.scrollID === activityData.clueID)!;
+			const loot = new Bank().add(clueTier.id, activityData.quantity);
+			let str = `${user}, ${tameName(tame)} finished completing ${activityData.quantity}x ${itemNameFromID(
+				clueTier.scrollID
+			)} and received ${loot}. (${Math.floor(calcPerHour(activityData.quantity, activity.duration)).toFixed(
+				1
+			)}/hr)`;
+			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
+			handleFinish({
+				loot: itemsAdded,
+				message: str,
+				user
+			});
+			break;
+		}
 		case 'Tempoross':
 		case 'Wintertodt': {
 			const act = arbitraryTameActivities.find(i => i.id === activityData.type)!;
@@ -980,18 +1007,37 @@ export async function repeatTameTrip({
 				continueDeltaMillis
 			});
 		}
+		case 'Clues': {
+			const clueTier = ClueTiers.find(c => c.scrollID === data.clueID)!;
+			return runCommand({
+				commandName: 'tames',
+				args: {
+					clue: {
+						clue: clueTier.name
+					}
+				},
+				bypassInhibitors: true,
+				channelID,
+				guildID,
+				user,
+				member,
+				interaction,
+				continueDeltaMillis
+			});
+		}
 		default: {
 		}
 	}
 }
 
 export async function getUsersTame(
-	user: MUser | User
+	user: MUser | User | string
 ): Promise<
 	{ tame: null; activity: null; species: null } | { tame: Tame; species: Species; activity: TameActivity | null }
 > {
+	const userID = typeof user === 'string' ? user : user.id;
 	const selectedTame = (
-		await mahojiUsersSettingsFetch(user.id, {
+		await mahojiUsersSettingsFetch(userID, {
 			selected_tame: true
 		})
 	).selected_tame;
@@ -1007,7 +1053,7 @@ export async function getUsersTame(
 		throw new Error('No tame found for selected tame.');
 	}
 	const activity = await prisma.tameActivity.findFirst({
-		where: { user_id: user.id, tame_id: tame.id, completed: false }
+		where: { user_id: userID, tame_id: tame.id, completed: false }
 	});
 	const species = tameSpecies.find(i => i.id === tame.species_id)!;
 	return { tame, activity, species };

@@ -7,6 +7,16 @@ export const divinationCreatables: Createable[] = [];
 
 for (let i = 0; i < divinationEnergies.length; i++) {
 	const energy = divinationEnergies[i];
+
+	divinationCreatables.push({
+		name: `Revert ${energy.item.name}`,
+		inputItems: new Bank().add(energy.item, 1),
+		outputItems: new Bank().add('Atomic energy', energy.level),
+		requiredSkills: {
+			divination: energy.level
+		}
+	});
+
 	const previousEnergy = divinationEnergies[i - 1];
 	if (!energy.boon || !energy.boonEnergyCost) continue;
 	if (!previousEnergy) continue;

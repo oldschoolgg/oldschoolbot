@@ -10913,3 +10913,411 @@ setCustomItem(
 	},
 	1
 );
+
+setCustomItem(
+	73_057,
+	'Solite',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_058,
+	'Solite platelegs',
+	'Torva platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_059,
+	'Solite gloves',
+	'Torva gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_060,
+	'Solite helm',
+	'Torva full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_061,
+	'Solite chestplate',
+	'Torva platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_062,
+	'Solite cape',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_063,
+	'Solite boots',
+	'Torva boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_064,
+	'Solite shield',
+	'Rune kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_065,
+	'Solite blade',
+	'Dragon scimitar',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_066,
+	'Solervus helm',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_067,
+	'Solervus platebody',
+	'Rune platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_068,
+	'Solervus platelegs',
+	'Rune platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_069,
+	'Solervus gloves',
+	'Rune gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_070,
+	'Solervus boots',
+	'Rune boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_071,
+	'Solervus cape',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_072,
+	'Axe of the high sungod',
+	'Dragon axe',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_073,
+	'Sunlight sprouter',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_074,
+	'Axe of the high sungod (u)',
+	'Dragon axe',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_075,
+	'Lunite',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_076,
+	'Noom',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_077,
+	'Moonlight mutator',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_078,
+	'Lunite platelegs',
+	'Torva platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_079,
+	'Lunite gloves',
+	'Torva gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_080,
+	'Lunite helm',
+	'Torva full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_081,
+	'Lunite chestplate',
+	'Torva platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_082,
+	'Lunite cape',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_083,
+	'Lunite boots',
+	'Torva boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_084,
+	'Celestial helm',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_085,
+	'Celestial platebody',
+	'Rune platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_086,
+	'Celestial platelegs',
+	'Rune platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_087,
+	'Celestial gloves',
+	'Rune gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_088,
+	'Celestial boots',
+	'Rune boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_089,
+	'Celestial cape',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_090,
+	'Atomic energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);

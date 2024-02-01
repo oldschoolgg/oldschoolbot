@@ -21,6 +21,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { badges, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
@@ -53,6 +54,7 @@ import {
 	TameType
 } from '../../lib/tames';
 import {
+	assert,
 	exponentialPercentScale,
 	formatDuration,
 	formatSkillRequirements,
@@ -1473,6 +1475,137 @@ async function tameUnequipCommand(user: MUser, itemName: string) {
 	return `You unequipped a ${equippable.item.name} from your ${tameName(tame)}.`;
 }
 
+export function determineTameClueResult({
+	fedZak,
+	tameGrowthLevel,
+	clueTier,
+	extraTripLength,
+	maxSupportLevel
+}: {
+	extraTripLength: number;
+	clueTier: ClueTier;
+	fedZak: boolean;
+	tameGrowthLevel: number;
+	maxSupportLevel: number;
+}) {
+	const boosts: string[] = [];
+	let maxTripLength = Time.Minute * 20 * (4 - tameGrowthLevel);
+	if (fedZak) {
+		maxTripLength += Time.Minute * 35;
+		boosts.push('+35mins trip length (ate a Zak)');
+	}
+
+	maxTripLength += extraTripLength;
+
+	let timePerClue = clueTier.timeToFinish * 1.5;
+
+	const baseBoostPercent = 20;
+	const maxDifference = 100 - clueTier.eagleTameSupportLevelNeeded;
+	assert(maxDifference >= 0);
+	const theirDifference = maxSupportLevel - clueTier.eagleTameSupportLevelNeeded;
+	assert(theirDifference >= 0);
+
+	let boostPercent: number = -1;
+	if (maxSupportLevel === 100) {
+		boostPercent = baseBoostPercent;
+	} else {
+		const percentOfMaxDifference = calcWhatPercent(theirDifference, maxDifference);
+		boostPercent = (percentOfMaxDifference / 100) * baseBoostPercent;
+	}
+
+	assert(boostPercent >= 0 && boostPercent <= baseBoostPercent);
+	timePerClue = reduceNumByPercent(timePerClue, boostPercent);
+	boosts.push(`${boostPercent.toFixed(2)}% faster for support level`);
+
+	const quantity = Math.floor(maxTripLength / timePerClue);
+	const duration = quantity * timePerClue;
+
+	const baseCost = (ClueTiers.indexOf(clueTier) + 1) * quantity;
+	const kibbleNeeded = Math.ceil(baseCost / 1.5);
+	const cost = new Bank().add('Extraordinary kibble', kibbleNeeded);
+
+	return {
+		boosts,
+		quantity,
+		duration,
+		cost
+	};
+}
+
+async function tameClueCommand(user: MUser, channelID: string, inputName: string) {
+	const { tame, activity, species } = await getUsersTame(user);
+	if (activity) {
+		return `${tameName(tame)} is busy.`;
+	}
+	if (!tame || !species) {
+		return 'You have no selected tame.';
+	}
+	if (tame.species_id !== TameSpeciesID.Eagle) {
+		return `Only Eagle tames can do clue scrolls, switch to a different tame: ${mentionCommand(
+			globalClient,
+			'tames',
+			'select'
+		)}.`;
+	}
+
+	const clueTier = ClueTiers.find(c => stringMatches(c.name, inputName));
+	if (!clueTier) {
+		return 'Invalid clue tier.';
+	}
+
+	let { cost, quantity, duration, boosts } = determineTameClueResult({
+		tameGrowthLevel: tameGrowthLevel(tame),
+		clueTier,
+		fedZak: tameHasBeenFed(tame, itemID('Zak')),
+		extraTripLength: patronMaxTripBonus(user) * 2,
+		maxSupportLevel: tame.max_support_level
+	});
+
+	const units = await user.fetchStashUnits();
+	if (units.filter(u => u.tier.tier === clueTier.name).some(u => !u.isFull)) {
+		return `You need to have all your ${clueTier.name} STASH units built and full.`;
+	}
+
+	if (!user.owns(cost)) {
+		return `You need ${cost} to feed your Eagle for this trip.`;
+	}
+
+	await user.removeItemsFromBank(cost);
+	await prisma.tame.update({
+		where: {
+			id: tame.id
+		},
+		data: {
+			total_cost: new Bank(tame.total_cost as ItemBank).add(cost).bank
+		}
+	});
+
+	await updateBankSetting('economyStats_PVMCost', cost);
+
+	const task = await createTameTask({
+		user,
+		channelID,
+		selectedTame: tame,
+		data: {
+			type: 'Clues',
+			clueID: clueTier.scrollID,
+			quantity
+		},
+		type: 'Clues',
+		duration,
+		fakeDuration: undefined
+	});
+
+	let reply = `${tameName(tame)} is now doing completing ${quantity}x ${itemNameFromID(
+		clueTier.scrollID
+	)}. The trip will take ${formatDuration(task.duration)}.`;
+
+	if (boosts.length > 0) {
+		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+	}
+
+	return reply;
+}
 export type TamesCommandOptions = CommandRunOptions<{
 	set_name?: { name: string };
 	cancel?: {};
@@ -1494,6 +1627,9 @@ export type TamesCommandOptions = CommandRunOptions<{
 	};
 	activity?: {
 		name: string;
+	};
+	clue?: {
+		clue: string;
 	};
 }>;
 export const tamesCommand: OSBMahojiCommand = {
@@ -1725,6 +1861,28 @@ export const tamesCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'clue',
+			description: 'Send your eagle tame to do some clue scrolls.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'clue',
+					description: 'The clue tier to do.',
+					required: true,
+					autocomplete: async (input, rawUser) => {
+						const [tame, user] = await Promise.all([getUsersTame(rawUser.id), mUserFetch(rawUser.id)]);
+						const tameSupportLevel = tame.tame?.max_support_level ?? 50;
+						return ClueTiers.filter(t =>
+							!input ? true : t.name.toLowerCase().includes(input.toLowerCase())
+						)
+							.filter(t => user.bank.has(t.scrollID) && tameSupportLevel >= t.eagleTameSupportLevelNeeded)
+							.map(t => ({ name: `${t.name} (${user.bank.amount(t.scrollID)}x owned)`, value: t.name }));
+					}
+				}
+			]
 		}
 	],
 	run: async ({ options, userID, channelID, interaction }: TamesCommandOptions) => {
@@ -1745,6 +1903,9 @@ export const tamesCommand: OSBMahojiCommand = {
 		if (options.cast?.spin_flax) return spinFlaxCommand(user, channelID);
 		if (options.cast?.tan) return tanLeatherCommand(user, channelID, options.cast.tan);
 		if (options.cast?.superglass_make) return superGlassCommand(user, channelID);
+		if (options.clue?.clue) {
+			return tameClueCommand(user, channelID, options.clue.clue);
+		}
 		if (options.activity) {
 			const tameActivity = arbitraryTameActivities.find(i => stringMatches(i.name, options.activity!.name));
 			if (!tameActivity) {

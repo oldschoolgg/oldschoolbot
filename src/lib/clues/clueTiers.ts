@@ -43,6 +43,7 @@ export interface ClueTier {
 	implings?: number[];
 	qtyForGrandmasters: number;
 	trickableItems?: number[];
+	eagleTameSupportLevelNeeded: number;
 }
 
 export const ClueTiers: ClueTier[] = [
@@ -58,7 +59,8 @@ export const ClueTiers: ClueTier[] = [
 		stashUnits: beginnerStashes,
 		reqs: beginnerReqs,
 		implings: resolveItems(['Baby impling jar', 'Young impling jar']),
-		qtyForGrandmasters: 0
+		qtyForGrandmasters: 0,
+		eagleTameSupportLevelNeeded: 50
 	},
 	{
 		name: 'Easy',
@@ -76,7 +78,8 @@ export const ClueTiers: ClueTier[] = [
 		stashUnits: easyStashes,
 		reqs: beginnerReqs,
 		implings: resolveItems(['Baby impling jar', 'Young impling jar', 'Gourmet impling jar']),
-		qtyForGrandmasters: 300
+		qtyForGrandmasters: 300,
+		eagleTameSupportLevelNeeded: 50
 	},
 	{
 		name: 'Medium',
@@ -94,7 +97,8 @@ export const ClueTiers: ClueTier[] = [
 		stashUnits: mediumStashes,
 		reqs: beginnerReqs,
 		implings: resolveItems(['Earth impling jar', 'Essence impling jar', 'Eclectic impling jar']),
-		qtyForGrandmasters: 250
+		qtyForGrandmasters: 250,
+		eagleTameSupportLevelNeeded: 60
 	},
 	{
 		name: 'Hard',
@@ -108,7 +112,8 @@ export const ClueTiers: ClueTier[] = [
 		stashUnits: hardStashes,
 		reqs: beginnerReqs,
 		implings: resolveItems(['Nature impling jar', 'Magpie impling jar', 'Ninja impling jar']),
-		qtyForGrandmasters: 200
+		qtyForGrandmasters: 200,
+		eagleTameSupportLevelNeeded: 65
 	},
 	{
 		name: 'Elite',
@@ -126,7 +131,8 @@ export const ClueTiers: ClueTier[] = [
 		stashUnits: eliteStashes,
 		reqs: beginnerReqs,
 		implings: resolveItems(['Crystal impling jar', 'Dragon impling jar']),
-		qtyForGrandmasters: 150
+		qtyForGrandmasters: 150,
+		eagleTameSupportLevelNeeded: 70
 	},
 	{
 		name: 'Master',
@@ -143,7 +149,8 @@ export const ClueTiers: ClueTier[] = [
 		allItems: MasterClueTable.allItems,
 		stashUnits: masterStashes,
 		reqs: beginnerReqs,
-		qtyForGrandmasters: 100
+		qtyForGrandmasters: 100,
+		eagleTameSupportLevelNeeded: 80
 	},
 	{
 		name: 'Grandmaster',
@@ -163,6 +170,7 @@ export const ClueTiers: ClueTier[] = [
 			'First age cape',
 			'First age bracelet',
 			'First age ring'
-		])
+		]),
+		eagleTameSupportLevelNeeded: 90
 	}
 ];

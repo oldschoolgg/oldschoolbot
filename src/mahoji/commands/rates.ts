@@ -4,8 +4,10 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import { GLOBAL_BSO_XP_MULTIPLIER, PeakTier } from '../../lib/constants';
 import { inventionBoosts } from '../../lib/invention/inventions';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import Agility from '../../lib/skilling/skills/agility';
 import {
@@ -18,7 +20,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { HunterTechniqueEnum } from '../../lib/skilling/types';
 import { Gear } from '../../lib/structures/Gear';
-import { convertBankToPerHourStats } from '../../lib/util';
+import { convertBankToPerHourStats, stringMatches } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemID from '../../lib/util/itemID';
@@ -31,11 +33,25 @@ import { calculateMiningResult } from '../../tasks/minions/miningActivity';
 import { OSBMahojiCommand } from '../lib/util';
 import { calculateHunterInput } from './hunt';
 import { calculateMiningInput } from './mine';
+import { determineTameClueResult } from './tames';
 
 export const ratesCommand: OSBMahojiCommand = {
 	name: 'rates',
 	description: 'Check rates of various skills/activities.',
 	options: [
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'tames',
+			description: 'Check tames rates.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'eagle',
+					description: 'Eagle tame.',
+					options: []
+				}
+			]
+		},
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'xphr',
@@ -72,6 +88,26 @@ export const ratesCommand: OSBMahojiCommand = {
 					options: []
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'monster',
+			description: 'Check monster loot rates.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'monster',
+					description: 'Check monster.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'name',
+							description: 'The name of the monster.',
+							required: true
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -80,10 +116,57 @@ export const ratesCommand: OSBMahojiCommand = {
 		interaction
 	}: CommandRunOptions<{
 		xphr?: { divination_memory_harvesting?: {}; agility?: {}; dungeoneering?: {}; mining?: {}; hunter?: {} };
+		monster?: { monster?: { name: string } };
+		tames?: { eagle?: {} };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 
+		if (options.tames?.eagle) {
+			let results = `${['Support Level', 'Clue Tier', 'Clues/hr', 'Kibble/hr'].join('\t')}\n`;
+			for (const tameLevel of [50, 60, 70, 75, 80, 85, 90, 95, 100]) {
+				for (const clueTier of ClueTiers) {
+					if (tameLevel < clueTier.eagleTameSupportLevelNeeded) continue;
+					const res = determineTameClueResult({
+						fedZak: true,
+						tameGrowthLevel: 3,
+						clueTier,
+						extraTripLength: 0,
+						maxSupportLevel: tameLevel
+					});
+
+					results += [
+						tameLevel,
+						clueTier.name,
+						calcPerHour(res.quantity, res.duration).toLocaleString(),
+						calcPerHour(res.cost.amount('Extraordinary kibble'), res.duration).toLocaleString()
+					].join('\t');
+					results += '\n';
+				}
+			}
+
+			return {
+				...(returnStringOrFile(results, true) as InteractionReplyOptions)
+			};
+		}
+
+		if (options.monster?.monster) {
+			const monster = killableMonsters.find(m => stringMatches(m.name, options.monster!.monster!.name));
+			if (!monster) {
+				return 'HUH?';
+			}
+			const sampleSize = 100_000;
+			const loot = monster.table.kill(sampleSize, {});
+			let totalTime = monster.timeToFinish * sampleSize;
+
+			let str = "''";
+			for (const [item, qty] of loot.items()) {
+				const perHour = calcPerHour(qty, totalTime);
+				str += `${item.name}: ${perHour}/hr\n`;
+			}
+
+			return str;
+		}
 		if (options.xphr?.hunter) {
 			let results = `${[
 				'Creature',

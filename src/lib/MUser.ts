@@ -6,6 +6,7 @@ import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
+import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { GodFavourBank, GodName } from './bso/divineDominion';
@@ -954,6 +955,11 @@ GROUP BY data->>'clueID';`);
 		);
 
 		return { refundBank };
+	}
+
+	async fetchStashUnits() {
+		const units = await getParsedStashUnits(this.id);
+		return units;
 	}
 
 	async validateEquippedGear() {
