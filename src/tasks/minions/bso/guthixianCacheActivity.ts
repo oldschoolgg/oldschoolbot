@@ -31,7 +31,7 @@ export const guthixianCacheTask: MinionTask = {
 			}
 		}
 
-		let str = `${user.minionName} finished completing the Guthixian Cache. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished completing the Guthixian Cache. ${xpRes}`;
 
 		let amountOfBoostsReceived = 1;
 		if (user.hasEquipped('Divination master cape') && roll(4)) {
