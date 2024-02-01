@@ -1,9 +1,11 @@
 import { execSync } from 'child_process';
+import { sleep } from 'e';
 
 async function main() {
 	try {
 		execSync('docker compose up -d --wait', { stdio: 'inherit' });
 		execSync('wait-on tcp:5435 tcp:5436 --timeout=10s', { stdio: 'inherit' });
+		await sleep(2000);
 
 		execSync('dotenv -e .env.example -- prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit' });
 		execSync('dotenv -e .env.example -- prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit' });
