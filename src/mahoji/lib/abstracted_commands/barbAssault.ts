@@ -86,7 +86,7 @@ export const GambleTiers = [
 	},
 	{
 		name: 'High',
-		cost: 1,
+		cost: 500,
 		table: HighGambleTable
 	}
 ];
