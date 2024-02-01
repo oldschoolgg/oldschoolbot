@@ -17,15 +17,6 @@ export const sonicBoom = new SonicBoom({
 	sync: false
 });
 
-const sqlLogger = new SonicBoom({
-	fd: './logs/queries.sql',
-	mkdir: true,
-	minLength: 0,
-	sync: true
-});
-
-export const sqlLog = (str: string) => sqlLogger.write(`${str}\n`);
-
 interface LogContext {
 	type?: string;
 	[key: string]: unknown;
