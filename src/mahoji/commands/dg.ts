@@ -10,8 +10,8 @@ import {
 	requiredSkills
 } from '../../lib/skilling/skills/dung/dungData';
 import {
-	calcGorajanShardChance,
 	calcMaxFloorUserCanDo,
+	calcUserGorajanShardChance,
 	hasRequiredLevels,
 	numberOfGorajanOutfitsEquipped
 } from '../../lib/skilling/skills/dung/dungDbFunctions';
@@ -286,7 +286,7 @@ export const dgCommand: OSBMahojiCommand = {
 		if (options.buy) return buyCommand(user, options.buy.item, options.buy.quantity);
 		let str = `<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${user.user.dungeoneering_tokens.toLocaleString()}
 **Max floor:** ${calcMaxFloorUserCanDo(user)}`;
-		const { boosts } = calcGorajanShardChance(user);
+		const { boosts } = calcUserGorajanShardChance(user);
 		if (boosts.length > 0) {
 			str += `\n**Gorajan shard boosts:** ${boosts.join(', ')}`;
 		}

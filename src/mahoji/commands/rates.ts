@@ -24,7 +24,7 @@ import { convertBankToPerHourStats, stringMatches } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemID from '../../lib/util/itemID';
-import { calcPerHour, returnStringOrFile } from '../../lib/util/smallUtils';
+import { calcPerHour, formatDuration, returnStringOrFile } from '../../lib/util/smallUtils';
 import { calculateAgilityResult } from '../../tasks/minions/agilityActivity';
 import { calculateDungeoneeringResult } from '../../tasks/minions/bso/dungeoneeringActivity';
 import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
@@ -550,14 +550,18 @@ export const ratesCommand: OSBMahojiCommand = {
 		}
 
 		if (options.xphr?.dungeoneering) {
-			let results = `${['Floor', 'XP/Hr', 'Dung. Level', 'Tokens/hr', 'Portent'].join('\t')}\n`;
+			let results = `${['Floor', 'XP/Hr', 'Dung. Level', 'Tokens/hr', 'Portent', 'G. Shard Time'].join('\t')}\n`;
 			for (const floor of [1, 2, 3, 4, 5, 6, 7]) {
 				for (const hasPortent of [true, false]) {
 					const dungeonLength = Time.Minute * 5 * (floor / 2);
 					let quantity = Math.floor(calcMaxTripLength(user, 'Dungeoneering') / dungeonLength);
 					let duration = quantity * dungeonLength;
 					let dungeoneeringLevel = 120;
-					let goraShardChance = calcGorajanShardChance(user);
+					let goraShardChance = calcGorajanShardChance({
+						dungLevel: dungeoneeringLevel,
+						hasMasterCape: user.hasEquipped('Dungeoneering master cape'),
+						hasRingOfLuck: user.hasEquipped('Ring of luck')
+					});
 					const result = calculateDungeoneeringResult({
 						floor,
 						quantity,
@@ -575,12 +579,16 @@ export const ratesCommand: OSBMahojiCommand = {
 						Math.round(xpHr),
 						dungeoneeringLevel,
 						calcPerHour(result.tokens, duration),
-						hasPortent ? 'Has Portent' : 'No Portent'
+						hasPortent ? 'Has Portent' : 'No Portent',
+						floor >= 5 ? `${formatDuration(result.goraShardChanceX * duration)}` : 'N/A'
 					].join('\t');
 					results += '\n';
 				}
 			}
-			return returnStringOrFile(results, true);
+			return {
+				...(returnStringOrFile(results, true) as InteractionReplyOptions),
+				content: 'Assumes: 120 Dungeoneering, Ring of luck, master cape (For gora shard chance)'
+			};
 		}
 		return 'No option selected.';
 	}

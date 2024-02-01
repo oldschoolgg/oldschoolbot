@@ -2250,6 +2250,8 @@ export const capesCL = resolveItems([
 	'Slayer cape(t)',
 	'Dungeoneering hood',
 	'Dungeoneering cape(t)',
+	'Divination hood',
+	'Divination cape(t)',
 	'Quest point hood',
 	'Quest point cape',
 	'Quest point cape(t)',
