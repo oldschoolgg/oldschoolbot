@@ -314,6 +314,27 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 		pinned_setup: null
 	},
 	{
+		name: "diviner's",
+		user_id: '123',
+		head: itemID("Diviner's headwear"),
+		neck: null,
+		body: itemID("Diviner's robe"),
+		legs: itemID("Diviner's legwear"),
+		cape: null,
+		two_handed: null,
+		hands: itemID("Diviner's handwear"),
+		feet: itemID("Diviner's footwear"),
+		shield: null,
+		weapon: null,
+		ring: null,
+		ammo: null,
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
+	},
+	{
 		name: 'smith',
 		user_id: '123',
 		head: null,
