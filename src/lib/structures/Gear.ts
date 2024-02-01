@@ -314,7 +314,7 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 		pinned_setup: null
 	},
 	{
-		name: "diviner's",
+		name: 'diviner',
 		user_id: '123',
 		head: itemID("Diviner's headwear"),
 		neck: null,
