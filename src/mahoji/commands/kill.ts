@@ -53,7 +53,6 @@ export const killCommand: OSBMahojiCommand = {
 				return [
 					...Monsters.map(i => ({ name: i.name, aliases: i.aliases })),
 					...simulatedKillables.map(i => ({ name: i.name, aliases: [i.name] })),
-					{ name: 'nex', aliases: ['nex'] },
 					{ name: 'nightmare', aliases: ['nightmare'] },
 					{ name: 'Moktang', aliases: ['moktang'] }
 				]
