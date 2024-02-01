@@ -1,4 +1,5 @@
 import { Time } from 'e';
+import { Monsters } from 'oldschooljs';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
@@ -12,12 +13,11 @@ import {
 	virtusOutfit
 } from './data/CollectionsExport';
 import { GearStat } from './gear';
+import setCustomMonster, { makeKillTable } from '../../../../../util/setCustomMonster';
 import { KillableMonster } from './minions/types';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import { makeKillTable } from './util/setCustomMonster';
-import { Monsters } from 'oldschooljs';
-import setCustomMonster, { makeKillTable } from '../../../../../util/setCustomMonster';
 
 export const nexBrokenArmorDetails = [
 	[getOSItem('Armadylean components'), brokenPernixOutfit, pernixOutfit],
@@ -77,7 +77,7 @@ export const NexMonster: KillableMonster = {
 export const NEX_UNIQUE_DROPRATE = (numPlayers: number) => 80 + numPlayers * 2;
 
 setCustomMonster(NexMonster.id, 'Nex', nexLootTable, Monsters.Kreearra, {
-    id: NexMonster.id,
-    name: 'Nex',
-    aliases: ['nex']
+	id: NexMonster.id,
+	name: 'Nex',
+	aliases: ['nex']
 });
