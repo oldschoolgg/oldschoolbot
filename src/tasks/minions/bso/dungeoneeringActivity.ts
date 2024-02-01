@@ -77,7 +77,6 @@ export function calculateDungeoneeringResult({
 	if (floor === 7 && roll(Math.floor(20_000 / minutes))) {
 		loot.add('Gorajan bonecrusher (u)');
 	}
-
 	let portentXP = Math.ceil(tokens * 16.646);
 	if (hasDungeonPortent && tokens > 0) {
 		xp += portentXP;
@@ -103,7 +102,7 @@ export const dungeoneeringTask: MinionTask = {
 				portentID: PortentID.DungeonPortent,
 				charges: Math.floor(duration / Time.Minute)
 			});
-			const { xp, tokens, portentXP } = calculateDungeoneeringResult({
+			const { xp, tokens, loot, portentXP } = calculateDungeoneeringResult({
 				floor,
 				quantity,
 				dungeoneeringLevel: u.skillLevel('dungeoneering'),
@@ -121,6 +120,8 @@ export const dungeoneeringTask: MinionTask = {
 				duration,
 				minimal: false
 			});
+
+			await u.addItemsToBank({ items: loot, collectionLog: true });
 
 			if (tokens > 0) {
 				await u.update({
@@ -143,7 +144,9 @@ export const dungeoneeringTask: MinionTask = {
 					portentResult.portent.charges_remaining
 				} charges remaining)`;
 			} else {
-				str += `${u} received: ${xpStr} and <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens`;
+				str += `${u} received: ${xpStr} and <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens${
+					loot.length > 0 ? ` and **${loot}**.` : '.'
+				}`;
 			}
 
 			str += '\n';
