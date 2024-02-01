@@ -136,7 +136,7 @@ const Treebeard: CustomMonster = {
 export const QueenBlackDragon: CustomMonster = {
 	id: 192_195,
 	name: 'Queen Black Dragon',
-	aliases: ['Queen Black Dragon', 'qbd', 'qdb'],
+	aliases: ['queen black dragon', 'qbd', 'qdb'],
 	timeToFinish: Time.Minute * 45,
 	table: new LootTable()
 		.every('Royal dragon bones')
