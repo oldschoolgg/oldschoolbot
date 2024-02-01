@@ -1,7 +1,8 @@
 import { randArrItem, randInt, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { test } from 'vitest';
+import { expect, test } from 'vitest';
 
+import { prisma } from '../../src/lib/settings/prisma';
 import { tradeCommand } from '../../src/mahoji/commands/trade';
 import { createTestUser, mockClient, TestUser } from './util';
 
@@ -32,29 +33,35 @@ test('Trade consistency', async () => {
 
 		for (const user of shuffleArr(users)) {
 			const other = randArrItem(users);
+			const method = randArrItem(['send', 'receive', 'both']);
 			if (other === user) continue;
-
-			const method = i % 2 === 0 ? 'send' : 'receive';
-			let items = new Bank();
-			for (const [item, qty] of (method === 'send' ? user.bankWithGP : other.bankWithGP).items()) {
-				let amnt = randInt(1, qty);
-				if (i === 2) {
-					amnt = randArrItem([-1, 0, -100_000, 999_999, 999_999_999]);
-				}
-				items.add(item, randInt(1, amnt));
-			}
 
 			const options: any = {
 				userID: user.id,
 				guildID: '123',
 				user,
 				options: {
-					[method]: items.toString(),
 					user: {
 						user: other
 					}
 				}
 			};
+
+			switch (method) {
+				case 'both': {
+					options.options.send = user.randomBankSubset().toString();
+					options.options.receive = other.randomBankSubset().toString();
+					break;
+				}
+				case 'send': {
+					options.options.send = user.randomBankSubset().toString();
+					break;
+				}
+				case 'receive': {
+					options.options.receive = other.randomBankSubset().toString();
+					break;
+				}
+			}
 
 			promises.push(tradeCommand.run(options));
 		}
@@ -62,6 +69,15 @@ test('Trade consistency', async () => {
 		checkMatch();
 		await Promise.all(promises);
 		checkMatch();
+		expect(
+			await prisma.economyTransaction.count({
+				where: {
+					sender: {
+						in: users.map(u => BigInt(u.id))
+					}
+				}
+			})
+		).toBeGreaterThan(1);
 	}
 
 	checkMatch();
