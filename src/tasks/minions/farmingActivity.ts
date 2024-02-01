@@ -297,7 +297,7 @@ export const farmingTask: MinionTask = {
 			}
 
 			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
-			
+
 			const xpRes = await user.addXP({
 				skillName: SkillsEnum.Farming,
 				amount: Math.floor(farmingXpReceived + bonusXP),
