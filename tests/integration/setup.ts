@@ -5,6 +5,9 @@ import { vi } from 'vitest';
 vi.mock('../../src/lib/util/handleMahojiConfirmation', () => ({
 	handleMahojiConfirmation: vi.fn()
 }));
+vi.mock('../../src/lib/util/interactionReply', () => ({
+	deferInteraction: vi.fn()
+}));
 
 export function randomMock(random = 0.1) {
 	Math.random = () => random;
