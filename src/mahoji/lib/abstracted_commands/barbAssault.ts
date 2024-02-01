@@ -5,7 +5,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { Events } from '../../../lib/constants';
+import { BitField, Events } from '../../../lib/constants';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
@@ -86,7 +86,7 @@ export const GambleTiers = [
 	},
 	{
 		name: 'High',
-		cost: 500,
+		cost: 1,
 		table: HighGambleTable
 	}
 ];
@@ -242,7 +242,10 @@ export async function barbAssaultGambleCommand(
 				})
 			).file
 		],
-		components: components.length > 0 ? makeComponents(components) : undefined
+		components:
+			components.length > 0 && !user.bitfield.includes(BitField.DisableClueButtons)
+				? makeComponents(components)
+				: undefined
 	};
 	return response;
 }
