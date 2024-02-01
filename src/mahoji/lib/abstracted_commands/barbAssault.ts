@@ -5,7 +5,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { BitField, Events } from '../../../lib/constants';
+import { Events } from '../../../lib/constants';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
@@ -226,7 +226,7 @@ export async function barbAssaultGambleCommand(
 	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 	const perkTier = user.perkTier();
-	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier);
+	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
 	let response: Awaited<CommandResponse> = {
 		content: `You spent ${(
@@ -242,10 +242,7 @@ export async function barbAssaultGambleCommand(
 				})
 			).file
 		],
-		components:
-			components.length > 0 && !user.bitfield.includes(BitField.DisableClueButtons)
-				? makeComponents(components)
-				: undefined
+		components: components.length > 0 ? makeComponents(components) : undefined
 	};
 	return response;
 }

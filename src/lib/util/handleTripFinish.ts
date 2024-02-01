@@ -135,7 +135,7 @@ export async function handleTripFinish(
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
-		if (!user.bitfield.includes(BitField.DisableClueButtons)) components.push(...buildClueButtons(loot, perkTier));
+		components.push(...buildClueButtons(loot, perkTier, user));
 		const birdHousedetails = await calculateBirdhouseDetails(user.id);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());

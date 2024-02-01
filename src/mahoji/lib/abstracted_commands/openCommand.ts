@@ -5,7 +5,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { BitField, PerkTier } from '../../../lib/constants';
+import { PerkTier } from '../../../lib/constants';
 import { allOpenables, getOpenableLoot, UnifiedOpenable } from '../../../lib/openables';
 import { makeComponents } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
@@ -127,16 +127,13 @@ async function finalizeOpening({
 		.join(', ');
 
 	const perkTier = user.perkTier();
-	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier);
+	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
 	let response: Awaited<CommandResponse> = {
 		files: [image.file],
 		content: `You have now opened a total of ${openedStr}
 ${messages.join(', ')}`,
-		components:
-			components.length > 0 && !user.bitfield.includes(BitField.DisableClueButtons)
-				? makeComponents(components)
-				: undefined
+		components: components.length > 0 ? makeComponents(components) : undefined
 	};
 	if (response.content!.length > 1900) {
 		response.files!.push({ name: 'response.txt', attachment: Buffer.from(response.content!) });
