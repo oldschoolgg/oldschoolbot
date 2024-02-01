@@ -9290,7 +9290,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	1_000_000
+	100_000
 );
 
 setCustomItem(
@@ -9327,7 +9327,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1_000_000
+	100_000
 );
 
 setCustomItem(
