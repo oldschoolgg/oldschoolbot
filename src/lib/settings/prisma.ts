@@ -33,6 +33,7 @@ export const prismaQueries: Prisma.QueryEvent[] = [];
 export let queryCountStore = { value: 0 };
 
 if (isMainThread) {
+	// @ts-ignore ignore
 	prisma.$on('query' as any, (_query: any) => {
 		if (!production && globalClient.isReady()) {
 			const query = _query as Prisma.QueryEvent;
