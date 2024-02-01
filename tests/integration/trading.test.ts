@@ -38,7 +38,7 @@ test('Trade consistency', async () => {
 			let items = new Bank();
 			for (const [item, qty] of (method === 'send' ? user.bankWithGP : other.bankWithGP).items()) {
 				let amnt = randInt(1, qty);
-				if (i === 3) {
+				if (i === 2) {
 					amnt = randArrItem([-1, 0, -100_000, 999_999, 999_999_999]);
 				}
 				items.add(item, randInt(1, amnt));
