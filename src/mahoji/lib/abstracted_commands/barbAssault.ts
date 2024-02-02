@@ -226,7 +226,7 @@ export async function barbAssaultGambleCommand(
 	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 	const perkTier = user.perkTier();
-	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier);
+	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
 	let response: Awaited<CommandResponse> = {
 		content: `You spent ${(
