@@ -4831,7 +4831,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -4844,7 +4844,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
