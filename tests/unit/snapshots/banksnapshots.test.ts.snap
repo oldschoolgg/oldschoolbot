@@ -23791,6 +23791,23 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25898": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Tztok slayer helmet",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11864": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
     "customReq": [Function],
     "inputItems": Bank {
       "bank": {
@@ -23802,6 +23819,23 @@ exports[`OSB Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "25900": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25900": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Tztok slayer helmet (i)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11865": 1,
       },
       "frozen": false,
     },
@@ -23897,6 +23931,23 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25910": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Tzkal slayer helmet",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11864": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
     "customReq": [Function],
     "inputItems": Bank {
       "bank": {
@@ -23908,6 +23959,23 @@ exports[`OSB Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "25912": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25912": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Tzkal slayer helmet (i)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11865": 1,
       },
       "frozen": false,
     },
@@ -23931,6 +23999,23 @@ exports[`OSB Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25904": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Vampyric slayer helmet",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11864": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
     "customReq": [Function],
     "inputItems": Bank {
       "bank": {
@@ -23942,6 +24027,23 @@ exports[`OSB Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "25906": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25906": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Vampyric slayer helmet (i)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11865": 1,
       },
       "frozen": false,
     },
