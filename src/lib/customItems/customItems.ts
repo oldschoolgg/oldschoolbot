@@ -4844,7 +4844,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	1_000_000
+	1_000_00
 );
 
 setCustomItem(
