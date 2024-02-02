@@ -18,6 +18,7 @@ import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, makeComponents } from '../util';
 import {
 	makeAutoContractButton,
+	makeAutoSlayButton,
 	makeBirdHouseTripButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
@@ -148,6 +149,8 @@ export async function handleTripFinish(
 			['MonsterKilling', 'Inferno', 'FightCaves'].includes(data.type)
 		) {
 			components.push(makeNewSlayerTaskButton());
+		} else {
+			components.push(makeAutoSlayButton());
 		}
 		if (loot?.has('Seed pack')) {
 			components.push(makeOpenSeedPackButton());

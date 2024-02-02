@@ -1,3 +1,5 @@
+import { isMainThread } from 'node:worker_threads';
+
 import { Activity, activity_type_enum, Prisma, PrismaClient } from '@prisma/client';
 
 import { production } from '../../config';
@@ -12,6 +14,7 @@ declare global {
 }
 
 function makePrismaClient(): PrismaClient {
+	if (!isMainThread && !process.env.TEST) return null as any;
 	if (!production && !process.env.TEST) console.log('Making prisma client...');
 	return new PrismaClient({
 		log: [
@@ -28,13 +31,16 @@ global.prisma = prisma;
 
 export const prismaQueries: Prisma.QueryEvent[] = [];
 export let queryCountStore = { value: 0 };
-prisma.$on('query' as any, (_query: any) => {
-	if (!production && globalClient.isReady()) {
-		const query = _query as Prisma.QueryEvent;
-		prismaQueries.push(query);
-	}
-	queryCountStore.value++;
-});
+
+if (isMainThread) {
+	prisma.$on('query' as any, (_query: any) => {
+		if (!production && globalClient.isReady()) {
+			const query = _query as Prisma.QueryEvent;
+			prismaQueries.push(query);
+		}
+		queryCountStore.value++;
+	});
+}
 
 export function convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
 	return {

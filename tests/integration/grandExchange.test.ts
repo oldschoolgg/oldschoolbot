@@ -1,12 +1,11 @@
 import { calcPercentOfNum, randArrItem, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { afterAll, describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
 import { usernameCache } from '../../src/lib/constants';
 import { GrandExchange } from '../../src/lib/grandExchange';
 import { prisma } from '../../src/lib/settings/prisma';
 import { assert } from '../../src/lib/util';
-import { gePino } from '../../src/lib/util/logger';
 import resolveItems from '../../src/lib/util/resolveItems';
 import { geCommand } from '../../src/mahoji/commands/ge';
 import { createTestUser, mockClient, TestUser } from './util';
@@ -225,9 +224,5 @@ describe('Grand Exchange', async () => {
 		const data = await GrandExchange.fetchData();
 		expect(data.taxBank).toEqual(totalTax);
 		expect(data.totalTax).toEqual(totalTax);
-	});
-
-	afterAll(() => {
-		gePino.flush();
 	});
 });

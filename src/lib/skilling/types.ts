@@ -45,6 +45,7 @@ export interface Ore {
 	petChance?: number;
 	minerals?: number;
 	clueScrollChance?: number;
+	aliases?: string[];
 }
 
 export interface Log {
