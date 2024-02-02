@@ -1311,7 +1311,6 @@ export const allCollectionLogs: ICollection = {
 				fmtProg: skillProg(SkillsEnum.Invention)
 			},
 			Divination: {
-				counts: false,
 				alias: ['div'],
 				items: resolveItems([
 					...divinersOutfit,
@@ -1321,6 +1320,7 @@ export const allCollectionLogs: ICollection = {
 						.flat(1)
 						.filter(notEmpty),
 					'Divine egg',
+					'Jar of memories',
 					'Doopy'
 				]),
 				fmtProg: skillProg(SkillsEnum.Divination)
