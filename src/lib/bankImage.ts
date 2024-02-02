@@ -232,7 +232,11 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Sanguinesti staff (uncharged)'), 'Unch.'],
 	[i('Scythe of vitur (uncharged)'), 'Unch.'],
 	[i('Holy scythe of vitur (uncharged)'), 'Unch.'],
-	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.']
+	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.'],
+
+	// Ore Packs
+	[27_019, 'GF Pack'],
+	[27_693, 'VM Pack']
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {

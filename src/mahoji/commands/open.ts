@@ -32,7 +32,10 @@ export const openCommand: OSBMahojiCommand = {
 							val.toLowerCase().includes(value.toLowerCase())
 						);
 					})
-					.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name.toLowerCase() }))
+					.map(i => {
+						const openable = allOpenables.find(o => o.id === i[0].id);
+						return { name: `${openable!.name} (${i[1]}x Owned)`, value: openable!.name.toLowerCase() };
+					})
 					.concat([{ name: 'All (Open Everything)', value: 'all' }]);
 			}
 		},
