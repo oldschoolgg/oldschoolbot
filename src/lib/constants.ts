@@ -259,7 +259,8 @@ export enum BitField {
 	CleanHerbsFarming = 35,
 	SelfGamblingLocked = 36,
 	DisabledFarmingReminders = 37,
-	DisableAutoSlayButton = 38
+	DisableClueButtons = 38,
+	DisableAutoSlayButton = 39
 }
 
 interface BitFieldData {
@@ -319,11 +320,6 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
-	[BitField.DisableAutoSlayButton]: {
-		name: 'Disable Auto Slay Button',
-		protected: false,
-		userConfigurable: true
-	},
 	[BitField.DisableAshSanctifier]: { name: 'Disable Ash Sanctifier', protected: false, userConfigurable: true },
 	[BitField.DisableAutoFarmContractButton]: {
 		name: 'Disable Auto Farm Contract Button',
@@ -342,6 +338,16 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisabledFarmingReminders]: {
 		name: 'Disable Farming Reminders',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableClueButtons]: {
+		name: 'Disable Clue Buttons',
+		protected: false,
+		userConfigurable: true
+	},
+  [BitField.DisableAutoSlayButton]: {
+		name: 'Disable Auto Slay Button',
 		protected: false,
 		userConfigurable: true
 	}
