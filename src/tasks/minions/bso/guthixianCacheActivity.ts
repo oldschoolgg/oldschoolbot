@@ -31,7 +31,7 @@ export const guthixianCacheTask: MinionTask = {
 			}
 		}
 
-		let str = `${user.minionName} finished completing the Guthixian Cache. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished completing the Guthixian Cache. ${xpRes}`;
 
 		let amountOfBoostsReceived = 1;
 		if (user.hasEquipped('Divination master cape') && roll(4)) {
@@ -68,6 +68,8 @@ export const guthixianCacheTask: MinionTask = {
 			});
 			str += `\n${loot.has('Doopy') ? `${Emoji.Purple} ` : ''}You received: ${loot}.`;
 		}
+
+		await user.addToGodFavour(['Guthix'], data.duration);
 
 		return handleTripFinish(user, channelID, str, undefined, data, loot);
 	}

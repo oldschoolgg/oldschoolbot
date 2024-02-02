@@ -1350,6 +1350,9 @@ export const BsoCreateables: Createable[] = [
 					refundBank.add(masterCape);
 				}
 			}
+			refundBank.add('Master quest cape');
+			refundBank.add('Achievement diary cape(t)');
+			refundBank.add('Music cape (t)');
 			return refundBank;
 		},
 		inputItems: new Bank().add('Completionist cape').add('Completionist hood'),

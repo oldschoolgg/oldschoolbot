@@ -85,13 +85,13 @@ export function memoryHarvestResult({
 
 		switch (harvestMethod) {
 			case MemoryHarvestType.ConvertToXP: {
-				if (roll(75)) {
+				if (roll(175)) {
 					loot.add('Divine egg');
 				}
 				break;
 			}
 			case MemoryHarvestType.ConvertToEnergy: {
-				if (roll(30)) {
+				if (roll(50)) {
 					loot.add('Divine egg');
 				}
 				let energyAmount = energyPerMemory * memoriesHarvested;
