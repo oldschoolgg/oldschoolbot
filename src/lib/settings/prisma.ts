@@ -4,6 +4,7 @@ import { Activity, activity_type_enum, Prisma, PrismaClient } from '@prisma/clie
 
 import { production } from '../../config';
 import { ActivityTaskData } from '../types/minions';
+import { sqlLog } from '../util/logger';
 
 declare global {
 	namespace NodeJS {
@@ -29,15 +30,14 @@ function makePrismaClient(): PrismaClient {
 export const prisma = global.prisma || makePrismaClient();
 global.prisma = prisma;
 
-export const prismaQueries: Prisma.QueryEvent[] = [];
 export let queryCountStore = { value: 0 };
 
 if (isMainThread) {
 	// @ts-ignore ignore
 	prisma.$on('query' as any, (_query: any) => {
-		if (!production && globalClient.isReady()) {
-			const query = _query as Prisma.QueryEvent;
-			prismaQueries.push(query);
+		const query = _query as Prisma.QueryEvent;
+		if (!production) {
+			sqlLog(query.query);
 		}
 		queryCountStore.value++;
 	});
