@@ -8,7 +8,7 @@ import { globalDroprates } from '../../lib/data/globalDroprates';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import Agility from '../../lib/skilling/skills/agility';
-import { calcGorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
+import { calcUserGorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { Course, SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank, clAdjustedDroprate, randomVariation, skillingPetDropRate, toKMB } from '../../lib/util';
@@ -268,7 +268,7 @@ export const agilityTask: MinionTask = {
 			if (course.id === 30) {
 				if (
 					user.skillLevel(SkillsEnum.Dungeoneering) >= 80 &&
-					roll(Math.floor((calcGorajanShardChance(user).chance * 2.5) / minutes))
+					roll(Math.floor((calcUserGorajanShardChance(user).chance * 2.5) / minutes))
 				) {
 					const item = roll(30) ? getOSItem('Dungeoneering dye') : getOSItem('Gorajan shards');
 					let shardQty = 1;

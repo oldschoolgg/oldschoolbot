@@ -5,8 +5,8 @@ import { chargePortentIfHasCharges, PortentID } from '../../../lib/bso/divinatio
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import {
-	calcGorajanShardChance,
 	calcMaxFloorUserCanDo,
+	calcUserGorajanShardChance,
 	numberOfGorajanOutfitsEquipped
 } from '../../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -67,7 +67,8 @@ export function calculateDungeoneeringResult({
 		}
 	}
 
-	if (floor >= 5 && roll(Math.floor(gorajanShardChance / minutes))) {
+	const goraShardChanceX = Math.floor(gorajanShardChance / minutes);
+	if (floor >= 5 && roll(goraShardChanceX)) {
 		let qty = 1;
 		if (isDoubleLootActive(duration)) {
 			qty *= 2;
@@ -84,7 +85,7 @@ export function calculateDungeoneeringResult({
 		tokens = 0;
 	}
 
-	return { xp: xp / 5, tokens, loot, portentXP };
+	return { xp: xp / 5, tokens, loot, portentXP, goraShardChanceX };
 }
 
 export const dungeoneeringTask: MinionTask = {
@@ -103,13 +104,13 @@ export const dungeoneeringTask: MinionTask = {
 				portentID: PortentID.DungeonPortent,
 				charges: Math.floor(duration / Time.Minute)
 			});
-			const { xp, tokens, portentXP } = calculateDungeoneeringResult({
+			const { xp, tokens, loot, portentXP } = calculateDungeoneeringResult({
 				floor,
 				quantity,
 				dungeoneeringLevel: u.skillLevel('dungeoneering'),
 				gorajanEquipped,
 				hasScrollOfMystery: u.bank.has('Scroll of mystery'),
-				gorajanShardChance: calcGorajanShardChance(u).chance,
+				gorajanShardChance: calcUserGorajanShardChance(u).chance,
 				duration,
 				maxFloorUserCanDo: calcMaxFloorUserCanDo(u),
 				hasDungeonPortent: portentResult.didCharge
@@ -121,6 +122,8 @@ export const dungeoneeringTask: MinionTask = {
 				duration,
 				minimal: false
 			});
+
+			await u.addItemsToBank({ items: loot, collectionLog: true });
 
 			if (tokens > 0) {
 				await u.update({
@@ -143,7 +146,9 @@ export const dungeoneeringTask: MinionTask = {
 					portentResult.portent.charges_remaining
 				} charges remaining)`;
 			} else {
-				str += `${u} received: ${xpStr} and <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens`;
+				str += `${u} received: ${xpStr} and <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens${
+					loot.length > 0 ? ` and **${loot}**.` : '.'
+				}`;
 			}
 
 			str += '\n';

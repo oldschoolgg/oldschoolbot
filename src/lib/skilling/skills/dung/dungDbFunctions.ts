@@ -13,18 +13,34 @@ export function calcMaxFloorUserCanDo(user: MUser) {
 	return [7, 6, 5, 4, 3, 2, 1].find(floor => hasRequiredLevels(user, floor)) || 1;
 }
 
-export function calcGorajanShardChance(user: MUser) {
+export function calcUserGorajanShardChance(user: MUser) {
+	return calcGorajanShardChance({
+		hasMasterCape: user.hasEquipped('Dungeoneering master cape'),
+		dungLevel: user.skillLevel(SkillsEnum.Dungeoneering),
+		hasRingOfLuck: user.hasEquipped('Ring of luck')
+	});
+}
+
+export function calcGorajanShardChance({
+	hasMasterCape,
+	dungLevel,
+	hasRingOfLuck
+}: {
+	hasMasterCape: boolean;
+	dungLevel: number;
+	hasRingOfLuck: boolean;
+}) {
 	let goraShardBoosts = [];
 	let baseRate = 2000;
-	if (user.hasEquipped('Dungeoneering master cape')) {
+	if (hasMasterCape) {
 		baseRate /= 2;
 		goraShardBoosts.push('2x for Dung. mastery');
-	} else if (user.skillLevel(SkillsEnum.Dungeoneering) >= 99) {
+	} else if (dungLevel >= 99) {
 		baseRate = reduceNumByPercent(baseRate, 30);
 		goraShardBoosts.push('30% for 99+ Dungeoneering');
 	}
 
-	if (user.hasEquipped('Ring of luck')) {
+	if (hasRingOfLuck) {
 		baseRate = reduceNumByPercent(baseRate, 5);
 		goraShardBoosts.push('5% for Ring of Luck');
 	}
