@@ -1,6 +1,6 @@
 import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
-import { uniqueArr } from 'e';
+import { randInt, shuffleArr, uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
@@ -112,6 +112,15 @@ export class TestUser extends MUserClass {
 		}
 		const data = convertStoredActivityToFlatActivity(finishedActivity);
 		return data;
+	}
+
+	randomBankSubset() {
+		const bank = new Bank();
+		const items = shuffleArr(this.bankWithGP.items()).slice(0, randInt(0, this.bankWithGP.length));
+		for (const [item] of items) {
+			bank.add(item, randInt(1, this.bankWithGP.amount(item.id)));
+		}
+		return bank;
 	}
 }
 
