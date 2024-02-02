@@ -346,7 +346,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
-  [BitField.DisableAutoSlayButton]: {
+	[BitField.DisableAutoSlayButton]: {
 		name: 'Disable Auto Slay Button',
 		protected: false,
 		userConfigurable: true
