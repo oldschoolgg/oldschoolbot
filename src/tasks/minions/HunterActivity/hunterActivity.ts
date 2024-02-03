@@ -275,13 +275,14 @@ export const hunterTask: MinionTask = {
 
 		if (!creature) return;
 
-		const boostRes = user.allItemsOwned.has('Arcane harvester')
-			? await inventionItemBoost({
-					user,
-					inventionID: InventionID.ArcaneHarvester,
-					duration: quantity * Time.Minute * 4
-			  })
-			: null;
+		const boostRes =
+			creature.id === HERBIBOAR_ID && user.allItemsOwned.has('Arcane harvester')
+				? await inventionItemBoost({
+						user,
+						inventionID: InventionID.ArcaneHarvester,
+						duration: quantity * Time.Minute * 4
+				  })
+				: null;
 
 		const minutes = Math.ceil(duration / Time.Minute);
 		const portentResult = await chargePortentIfHasCharges({
