@@ -149,7 +149,7 @@ export async function handleTripFinish(
 			['MonsterKilling', 'Inferno', 'FightCaves'].includes(data.type)
 		) {
 			components.push(makeNewSlayerTaskButton());
-		} else {
+		} else if (!user.bitfield.includes(BitField.DisableAutoSlayButton)) {
 			components.push(makeAutoSlayButton());
 		}
 		if (loot?.has('Seed pack')) {

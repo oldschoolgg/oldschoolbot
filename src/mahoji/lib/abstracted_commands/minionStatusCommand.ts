@@ -103,7 +103,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 		);
 	}
 
-	if (!minionIsBusy) {
+	if (!minionIsBusy && !user.bitfield.includes(BitField.DisableAutoSlayButton)) {
 		buttons.push(makeAutoSlayButton());
 	}
 
