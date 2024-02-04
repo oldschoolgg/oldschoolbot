@@ -3247,31 +3247,6 @@ export const divinersOutfit = resolveItems([
 	"Diviner's footwear"
 ]);
 
-export const divinationCL = resolveItems([
-	'Pale energy',
-	'Flickering energy',
-	'Bright energy',
-	'Glowing energy',
-	'Sparkling energy',
-	'Gleaming energy',
-	'Vibrant energy',
-	'Lustrous energy',
-	'Elder energy',
-	'Brilliant energy',
-	'Radiant energy',
-	'Luminous energy',
-	'Incandescent energy',
-	'Ancient energy',
-    'Doopy',
-    'Jar of memories',
-    'Divine egg',
-    "Wisp-buster",
-    'Divine hand',
-    ...divinersOutfit,
-    ...divBoons,
-    ...divPortents
-]);
-
 export const divBoons = resolveItems([
     'Boon of pale energy',
     'Boon of flickering energy',
@@ -3298,4 +3273,29 @@ export const divPortents = resolveItems([
     'Rebirth portent',
     'Spiritual mining portent',
     'Pacifist hunting portent'
+]);
+
+export const divinationCL = resolveItems([
+	'Pale energy',
+	'Flickering energy',
+	'Bright energy',
+	'Glowing energy',
+	'Sparkling energy',
+	'Gleaming energy',
+	'Vibrant energy',
+	'Lustrous energy',
+	'Elder energy',
+	'Brilliant energy',
+	'Radiant energy',
+	'Luminous energy',
+	'Incandescent energy',
+	'Ancient energy',
+	'Doopy',
+	'Jar of memories',
+	'Divine egg',
+	'Wisp-buster',
+	'Divine hand',
+	...divinersOutfit,
+	...divBoons,
+	...divPortents
 ]);
