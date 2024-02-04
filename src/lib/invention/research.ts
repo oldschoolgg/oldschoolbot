@@ -44,7 +44,7 @@ export async function researchCommand({
 	if (!materialTypes.includes(material)) {
 		return "That's not a valid material.";
 	}
-	const maxTripLength = calcMaxTripLength(user);
+	const maxTripLength = calcMaxTripLength(user, 'Research');
 	let timePerResearchPerMaterial = Time.Second * 3.59;
 	const maxQuantity = Math.floor(maxTripLength / timePerResearchPerMaterial);
 	let quantity = inputQuantity ?? maxQuantity;

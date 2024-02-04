@@ -284,7 +284,7 @@ export async function baxtorianBathhousesStartCommand({
 		return 'Your minion is busy.';
 	}
 	const userBank = user.bank;
-	const maxTripLength = calcMaxTripLength(user);
+	const maxTripLength = calcMaxTripLength(user, 'BaxtorianBathhouses');
 	const durationPerPath = Time.Minute * 10;
 	const quantity = Math.floor(maxTripLength / durationPerPath);
 	const duration = quantity * durationPerPath;
