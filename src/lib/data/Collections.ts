@@ -6,7 +6,6 @@ import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeri
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { table } from 'table';
 
-import { divinationEnergies, portents } from '../bso/divination';
 import { ClueTier, ClueTiers } from '../clues/clueTiers';
 import { CollectionLogType } from '../collectionLogTask';
 import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
@@ -96,6 +95,7 @@ import {
 	demonicGorillaCL,
 	diariesCL,
 	discontinuedCustomPetsCL,
+	divinationCL,
 	divinersOutfit,
 	doaCL,
 	dukeSucellusCL,
@@ -1312,17 +1312,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			Divination: {
 				alias: ['div'],
-				items: resolveItems([
-					...divinersOutfit,
-					...portents.map(p => p.item.id),
-					...divinationEnergies
-						.map(i => [i.boon?.id, i.item.id])
-						.flat(1)
-						.filter(notEmpty),
-					'Divine egg',
-					'Jar of memories',
-					'Doopy'
-				]),
+				items: divinationCL,
 				fmtProg: skillProg(SkillsEnum.Divination)
 			}
 		}
