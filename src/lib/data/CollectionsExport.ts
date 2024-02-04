@@ -3,7 +3,6 @@ import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { divinationEnergies, portents } from '../bso/divination';
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
 import { stoneSpirits } from '../minions/data/stoneSpirits';
@@ -3249,12 +3248,54 @@ export const divinersOutfit = resolveItems([
 ]);
 
 export const divinationCL = resolveItems([
-	...divinersOutfit,
-	...divinationEnergies,
-	...portents,
-	'Doopy',
-	'Jar of memories',
-	'Divine egg',
-	'Wisp-buster',
-	'Divine hand'
+    'Pale energy',
+    'Flickering energy',
+    'Bright energy',
+    'Glowing energy',
+    'Sparkling energy',
+    'Gleaming energy',
+    'Vibrant energy',
+    'Lustrous energy',
+    'Elder energy',
+    'Brilliant energy',
+    'Radiant energy',
+    'Luminous energy',
+    'Incandescent energy',
+    'Ancient energy',
+    'Doopy',
+    'Jar of memories',
+    'Divine egg',
+    "Wisp-buster",
+    'Divine hand',
+    ...divinersOutfit,
+    ...divBoons,
+    ...divPortents
+]);
+
+export const divBoons = resolveItems([
+    'Boon of pale energy',
+    'Boon of flickering energy',
+    'Boon of bright energy',
+    'Boon of glowing energy',
+    'Boon of sparkling energy',
+    'Boon of gleaming energy',
+    'Boon of vibrant energy',
+    'Boon of lustrous energy',
+    'Boon of elder energy',
+    'Boon of brilliant energy',
+    'Boon of radiant energy',
+    'Boon of luminous energy',
+    'Boon of incandescent energy',
+    'Boon of ancient energy'
+]);
+
+export const divPortents = resolveItems([
+    'Cache portent',
+    'Graceful portent',
+    'Rogues portent',
+    'Dungeon portent',
+    'Lucky portent',
+    'Rebirth portent',
+    'Spiritual mining portent',
+    'Pacifist hunting portent'
 ]);
