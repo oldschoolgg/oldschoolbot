@@ -3,6 +3,7 @@ import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { divinationEnergies, portents } from '../bso/divination';
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
 import { stoneSpirits } from '../minions/data/stoneSpirits';
@@ -3245,4 +3246,15 @@ export const divinersOutfit = resolveItems([
 	"Diviner's legwear",
 	"Diviner's handwear",
 	"Diviner's footwear"
+]);
+
+export const divinationCL = resolveItems([
+	...divinersOutfit,
+	...divinationEnergies,
+	...portents,
+	'Doopy',
+	'Jar of memories',
+	'Divine egg',
+	'Wisp-buster',
+	'Divine hand'
 ]);
