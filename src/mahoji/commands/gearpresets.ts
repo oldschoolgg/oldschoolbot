@@ -125,6 +125,11 @@ export async function createOrEditGearSetup(
 		pinned_setup: !pinned_setup || pinned_setup === 'reset' ? undefined : pinned_setup
 	};
 
+	if (gearData.two_handed !== null) {
+		gearData.shield = null;
+		gearData.weapon = null;
+	}
+
 	const preset = await prisma.gearPreset.upsert({
 		where: {
 			user_id_name: {
