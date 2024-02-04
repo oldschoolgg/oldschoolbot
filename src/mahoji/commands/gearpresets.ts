@@ -1,3 +1,4 @@
+import { GearPreset } from '@prisma/client';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
@@ -5,9 +6,9 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { production } from '../../config';
 import { ParsedCustomEmojiWithGroups } from '../../lib/constants';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import { GearSetupType, GearSetupTypes } from '../../lib/gear/types';
+import { GearSetup, GearSetupType, GearSetupTypes } from '../../lib/gear/types';
 import { prisma } from '../../lib/settings/prisma';
-import { Gear, globalPresets } from '../../lib/structures/Gear';
+import { defaultGear, Gear, globalPresets } from '../../lib/structures/Gear';
 import { cleanString, isValidGearSetup, isValidNickname, stringMatches } from '../../lib/util';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
@@ -32,6 +33,28 @@ function parseInputGear(inputGear: InputGear) {
 	return gear;
 }
 
+export function gearPresetToGear(preset: GearPreset): GearSetup {
+	function gearItem(val: null | number) {
+		if (val === null) return null;
+		return {
+			item: val,
+			quantity: 1
+		};
+	}
+	const newGear = { ...defaultGear };
+	newGear.head = gearItem(preset.head);
+	newGear.neck = gearItem(preset.neck);
+	newGear.body = gearItem(preset.body);
+	newGear.legs = gearItem(preset.legs);
+	newGear.cape = gearItem(preset.cape);
+	newGear['2h'] = gearItem(preset.two_handed);
+	newGear.hands = gearItem(preset.hands);
+	newGear.feet = gearItem(preset.feet);
+	newGear.shield = gearItem(preset.shield);
+	newGear.weapon = gearItem(preset.weapon);
+	newGear.ring = gearItem(preset.ring);
+	return newGear;
+}
 export async function createOrEditGearSetup(
 	user: MUser,
 	setupToCopy: GearSetupType | undefined,
@@ -66,7 +89,12 @@ export async function createOrEditGearSetup(
 	}
 
 	const parsedInputGear = parseInputGear(gearInput);
-	let gearSetup = setupToCopy ? user.gear[setupToCopy] : null;
+	let gearSetup: Gear | GearSetup | null = null;
+	if (setupToCopy) {
+		gearSetup = user.gear[setupToCopy];
+	} else if (isUpdating) {
+		gearSetup = gearPresetToGear(userPresets.find(pre => pre.name === name)!);
+	}
 
 	if (emoji) {
 		const cachedEmoji = globalClient.emojis.cache.get(emoji);
@@ -80,18 +108,18 @@ export async function createOrEditGearSetup(
 	}
 
 	const gearData = {
-		head: gearSetup?.head?.item ?? parsedInputGear.head ?? null,
-		neck: gearSetup?.neck?.item ?? parsedInputGear.neck ?? null,
-		body: gearSetup?.body?.item ?? parsedInputGear.body ?? null,
-		legs: gearSetup?.legs?.item ?? parsedInputGear.legs ?? null,
-		cape: gearSetup?.cape?.item ?? parsedInputGear.cape ?? null,
-		two_handed: gearSetup?.['2h']?.item ?? parsedInputGear['2h'] ?? null,
-		hands: gearSetup?.hands?.item ?? parsedInputGear.hands ?? null,
-		feet: gearSetup?.feet?.item ?? parsedInputGear.feet ?? null,
-		shield: gearSetup?.shield?.item ?? parsedInputGear.shield ?? null,
-		weapon: gearSetup?.weapon?.item ?? parsedInputGear.weapon ?? null,
-		ring: gearSetup?.ring?.item ?? parsedInputGear.ring ?? null,
-		ammo: gearSetup?.ammo?.item ?? parsedInputGear.ammo ?? null,
+		head: parsedInputGear.head ?? gearSetup?.head?.item ?? null,
+		neck: parsedInputGear.neck ?? gearSetup?.neck?.item ?? null,
+		body: parsedInputGear.body ?? gearSetup?.body?.item ?? null,
+		legs: parsedInputGear.legs ?? gearSetup?.legs?.item ?? null,
+		cape: parsedInputGear.cape ?? gearSetup?.cape?.item ?? null,
+		two_handed: parsedInputGear['2h'] ?? gearSetup?.['2h']?.item ?? null,
+		hands: parsedInputGear.hands ?? gearSetup?.hands?.item ?? null,
+		feet: parsedInputGear.feet ?? gearSetup?.feet?.item ?? null,
+		shield: parsedInputGear.shield ?? gearSetup?.shield?.item ?? null,
+		weapon: parsedInputGear.weapon ?? gearSetup?.weapon?.item ?? null,
+		ring: parsedInputGear.ring ?? gearSetup?.ring?.item ?? null,
+		ammo: parsedInputGear.ammo ?? gearSetup?.ammo?.item ?? null,
 		ammo_qty: gearSetup?.ammo?.quantity ?? null,
 		emoji_id: emoji ?? undefined,
 		pinned_setup: !pinned_setup || pinned_setup === 'reset' ? undefined : pinned_setup
