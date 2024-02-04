@@ -11,7 +11,8 @@ import {
 	ChatInputCommandInteraction,
 	GuildMember
 } from 'discord.js';
-import { increaseNumByPercent, objectEntries, randArrItem, round, Time } from 'e';
+import { increaseNumByPercent, isFunction, objectEntries, percentChance, randArrItem, randInt, round, Time } from 'e';
+import { isEmpty } from 'lodash';
 import { Bank, Items, Misc, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric, TheatreOfBlood } from 'oldschooljs/dist/simulation/misc';
@@ -19,17 +20,22 @@ import { ChambersOfXeric, TheatreOfBlood } from 'oldschooljs/dist/simulation/mis
 import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import { ClueTiers } from './clues/clueTiers';
+import { BitField } from './constants';
 import { getSimilarItems } from './data/similarItems';
+import { handlePassiveImplings } from './implings';
 import { trackLoot } from './lootTrack';
 import killableMonsters, { NightmareMonster } from './minions/data/killableMonsters';
 import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBosses';
 import { Planks } from './minions/data/planks';
 import { KillableMonster } from './minions/types';
+import { allOpenables } from './openables';
 import { prisma } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { getTemporossLoot } from './simulation/tempoross';
 import { WintertodtCrate } from './simulation/wintertodt';
 import Tanning from './skilling/skills/crafting/craftables/tanning';
+import { MTame } from './structures/MTame';
+import { ActivityTaskData } from './types/minions';
 import {
 	assert,
 	calcPerHour,
@@ -692,7 +698,7 @@ export function shortTameTripDesc(activity: TameActivity) {
 			return 'Fighting Tempoross';
 		}
 		case 'Clues': {
-			return 'TODOTODOTODOTODOTODOTODOTODOTODO';
+			return `Completing ${ClueTiers.find(i => i.scrollID === data.clueID)!.name} clues`;
 		}
 	}
 }
@@ -849,13 +855,84 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			break;
 		}
 		case 'Clues': {
+			const mTame = new MTame(tame);
 			const clueTier = ClueTiers.find(c => c.scrollID === activityData.clueID)!;
-			const loot = new Bank().add(clueTier.id, activityData.quantity);
-			let str = `${user}, ${tameName(tame)} finished completing ${activityData.quantity}x ${itemNameFromID(
+			const messages: string[] = [];
+			const loot = new Bank();
+
+			let actualOpenQuantityWithBonus = 0;
+			for (let i = 0; i < activityData.quantity; i++) {
+				actualOpenQuantityWithBonus += randInt(1, 3);
+			}
+
+			if (user.bitfield.includes(BitField.DisabledTameClueOpening)) {
+				loot.add(clueTier.id, activityData.quantity);
+			} else {
+				const openingLoot = clueTier.table.open(actualOpenQuantityWithBonus);
+
+				if (mTame.hasEquipped('Abyssal jibwings') && clueTier !== ClueTiers[0]) {
+					const lowerTier = ClueTiers[ClueTiers.indexOf(clueTier) - 1];
+					const abysJwLoot = new Bank();
+					let bonusClues = 0;
+					for (let i = 0; i < activityData.quantity; i++) {
+						if (percentChance(5)) {
+							bonusClues++;
+							abysJwLoot.add(lowerTier.table.open(1));
+						}
+					}
+					if (abysJwLoot.length > 0) {
+						loot.add(abysJwLoot);
+						await mTame.addToStatsBank('abyssal_jibwings_loot', abysJwLoot);
+						messages.push(
+							`You received the loot from ${bonusClues}x ${lowerTier.name} caskets from your Abyssal jibwings.`
+						);
+					}
+				} else if (mTame.hasEquipped('3rd age jibwings') && openingLoot.has('Coins')) {
+					const thirdAgeJwLoot = new Bank().add('Coins', openingLoot.amount('Coins'));
+					loot.add(thirdAgeJwLoot);
+					messages.push(`You received ${thirdAgeJwLoot} from your 3rd age jibwings.`);
+					await mTame.addToStatsBank('third_age_jibwings_loot', thirdAgeJwLoot);
+				}
+
+				if (mTame.hasEquipped('Impling locator')) {
+					const result = await handlePassiveImplings(user, {
+						type: 'MonsterKilling',
+						duration: activity.duration
+					} as ActivityTaskData);
+					if (result && result.bank.length > 0) {
+						const actualImplingLoot = new Bank();
+						for (const [item, qty] of result.bank.items()) {
+							const openable = allOpenables.find(i => i.id === item.id)!;
+							assert(!isEmpty(openable));
+							actualImplingLoot.add(
+								isFunction(openable.output)
+									? (
+											await openable.output({
+												user,
+												quantity: qty,
+												self: openable,
+												totalLeaguesPoints: 0
+											})
+									  ).bank
+									: openable.output.roll(qty)
+							);
+						}
+						messages.push(`${mTame} caught ${result.bank} with their Impling locator!`);
+						await mTame.addToStatsBank('implings_loot', actualImplingLoot);
+					}
+				}
+
+				loot.add(openingLoot);
+			}
+
+			let str = `${user}, ${mTame} finished completing ${activityData.quantity}x ${itemNameFromID(
 				clueTier.scrollID
-			)} and received ${loot}. (${Math.floor(calcPerHour(activityData.quantity, activity.duration)).toFixed(
-				1
-			)}/hr)`;
+			)}. (${Math.floor(calcPerHour(activityData.quantity, activity.duration)).toFixed(1)} clues/hr)`;
+
+			if (messages) {
+				str += `\n\n${messages.join('\n')}`;
+			}
+
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
 				loot: itemsAdded,
@@ -1033,7 +1110,8 @@ export async function repeatTameTrip({
 export async function getUsersTame(
 	user: MUser | User | string
 ): Promise<
-	{ tame: null; activity: null; species: null } | { tame: Tame; species: Species; activity: TameActivity | null }
+	| { tame: null; activity: null; species: null; mTame: null }
+	| { tame: Tame; species: Species; activity: TameActivity | null; mTame: MTame }
 > {
 	const userID = typeof user === 'string' ? user : user.id;
 	const selectedTame = (
@@ -1045,7 +1123,8 @@ export async function getUsersTame(
 		return {
 			tame: null,
 			activity: null,
-			species: null
+			species: null,
+			mTame: null
 		};
 	}
 	const tame = await prisma.tame.findFirst({ where: { id: selectedTame } });
@@ -1056,7 +1135,7 @@ export async function getUsersTame(
 		where: { user_id: userID, tame_id: tame.id, completed: false }
 	});
 	const species = tameSpecies.find(i => i.id === tame.species_id)!;
-	return { tame, activity, species };
+	return { tame, activity, species, mTame: new MTame(tame) };
 }
 
 export async function createTameTask({

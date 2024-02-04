@@ -13,7 +13,6 @@ import { allGodlyItems, divineDominionCheck, divineDominionSacrificeCommand } fr
 import { joinGuthixianCache } from '../../lib/bso/guthixianCache';
 import { fishingLocations } from '../../lib/fishingContest';
 import { MaterialType } from '../../lib/invention';
-import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { bonanzaCommand } from '../lib/abstracted_commands/bonanzaCommand';
 import {
 	fishingContestStartCommand,
@@ -328,10 +327,6 @@ export const minigamesCommand: OSBMahojiCommand = {
 		} = options;
 
 		if (options.guthixian_cache?.join) {
-			const { divination_is_released } = await mahojiClientSettingsFetch({ divination_is_released: true });
-			if (!divination_is_released) {
-				return 'Divination is not released yet!';
-			}
 			return joinGuthixianCache(klasaUser, channelID);
 		}
 		if (divine_dominion?.check) {

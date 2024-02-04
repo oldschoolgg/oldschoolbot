@@ -132,7 +132,9 @@ export const ratesCommand: OSBMahojiCommand = {
 						tameGrowthLevel: 3,
 						clueTier,
 						extraTripLength: 0,
-						maxSupportLevel: tameLevel
+						supportLevel: tameLevel,
+						equippedArmor: null,
+						equippedPrimary: null
 					});
 
 					results += [

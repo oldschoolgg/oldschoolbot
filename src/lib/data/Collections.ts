@@ -809,6 +809,12 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.TzHaarXil.allItems
 				],
 				items: tzHaarCL
+			},
+			Solis: {
+				alias: ['solis'],
+				allItems: BSOMonsters.Solis.allItems,
+				items: BSOMonsters.Solis.allItems!,
+				fmtProg: kcProg(BSOMonsters.Solis.id)
 			}
 		}
 	},
@@ -1471,6 +1477,7 @@ export const allCollectionLogs: ICollection = {
 					'Seamonkey staff (t1)',
 					'Seamonkey staff (t2)',
 					'Seamonkey staff (t3)'
+					// TODOTODO
 				])
 			},
 			'Divine Dominion': {

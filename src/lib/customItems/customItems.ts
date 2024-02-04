@@ -11101,6 +11101,29 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
+		},
+		equipment: {
+			slot: EquipmentSlot.TwoHanded,
+			attack_stab: 30,
+			attack_slash: 130 + 45 + 20,
+			attack_crush: 36 + 5,
+			attack_magic: -10,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 145,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 3,
+			requirements: {
+				attack: 100,
+				strength: 100
+			}
 		}
 	},
 	1
@@ -11386,6 +11409,66 @@ setCustomItem(
 	73_096,
 	'Axe handle',
 	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_097,
+	'Demonic jibwings',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_098,
+	'Abyssal jibwings',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_099,
+	'3rd age jibwings',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_100,
+	'Impling locator',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_101,
+	'Divine ring',
+	'Ruby ring',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true

@@ -5,6 +5,42 @@ import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
 import { Createable } from './createables';
 
+const jibWingCreatables: Createable[] = [
+	{
+		name: 'Demonic jibwings',
+		materialCost: new MaterialBank().add('strong', 500),
+		inputItems: new Bank().add('Dark totem', 10),
+		outputItems: new Bank().add('Demonic jibwings'),
+		requiredSkills: {
+			invention: 90,
+			crafting: 90,
+			smithing: 90
+		}
+	},
+	{
+		name: 'Abyssal jibwings',
+		materialCost: new MaterialBank().add('abyssal', 30),
+		inputItems: new Bank().add('Ancient shard', 10).add('Magical artifact'),
+		outputItems: new Bank().add('Abyssal jibwings'),
+		requiredSkills: {
+			invention: 90,
+			crafting: 90,
+			smithing: 90
+		}
+	},
+	{
+		name: '3rd age jibwings',
+		materialCost: new MaterialBank().add('third-age', 6),
+		inputItems: new Bank().add('Gold bar', 1000),
+		outputItems: new Bank().add('3rd age jibwings'),
+		requiredSkills: {
+			invention: 90,
+			crafting: 90,
+			smithing: 90
+		}
+	}
+];
+
 export const tameCreatables: Createable[] = [
 	{
 		name: 'Runite igne claws',
@@ -310,7 +346,8 @@ export const tameCreatables: Createable[] = [
 			invention: 120,
 			crafting: 120
 		}
-	}
+	},
+	...jibWingCreatables
 ];
 
 for (const claw of resolveItems([

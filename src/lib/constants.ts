@@ -320,7 +320,8 @@ export enum BitField {
 	HasLuminousBoon = 223,
 	HasIncandescentBoon = 224,
 	HasVibrantBoon = 225,
-	HasAncientBoon = 226
+	HasAncientBoon = 226,
+	DisabledTameClueOpening = 227
 }
 
 interface BitFieldData {
@@ -501,6 +502,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.NoItemContractDonations]: {
 		name: 'Disable Item Contract donations',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisabledTameClueOpening]: {
+		name: 'Disable Eagle Tame Opening Caskets',
 		protected: false,
 		userConfigurable: true
 	}

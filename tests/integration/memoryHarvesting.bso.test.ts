@@ -3,7 +3,6 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { describe, expect, test } from 'vitest';
 
 import { MemoryHarvestType } from '../../src/lib/bso/divination';
-import { prisma } from '../../src/lib/settings/prisma';
 import { Gear } from '../../src/lib/structures/Gear';
 import { MemoryHarvestOptions } from '../../src/lib/types/minions';
 import itemID from '../../src/lib/util/itemID';
@@ -11,13 +10,8 @@ import { divinationCommand } from '../../src/mahoji/commands/divination';
 import { createTestUser, mockClient } from './util';
 
 describe('Divination', async () => {
-	const client = await mockClient();
-	await prisma.clientStorage.update({
-		where: { id: client.data.id },
-		data: {
-			divination_is_released: true
-		}
-	});
+	await mockClient();
+
 	test('Memory Harvesting - Convert to XP', async () => {
 		const user = await createTestUser();
 		const gear = new Gear();

@@ -66,7 +66,7 @@ import { tameImage } from './tames';
 export async function giveMaxStats(user: MUser) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
-		updates[`skills_${skill}`] = convertLVLtoXP(99);
+		updates[`skills_${skill}`] = convertLVLtoXP(120);
 	}
 	await user.update({
 		QP: MAX_QP,

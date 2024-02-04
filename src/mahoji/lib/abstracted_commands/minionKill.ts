@@ -974,7 +974,8 @@ export async function minionKillCommand(
 					? ['wildy']
 					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced,
-				isWilderness: monster.wildy
+				isWilderness: monster.wildy,
+				minimumHealAmount: monster.minimumFoodHealAmount
 			});
 
 			if (foodRemoved.length === 0) {

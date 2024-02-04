@@ -135,6 +135,34 @@ const igneClaws = [
 	}
 ].map(i => ({ ...i, tameSpecies: [TameSpeciesID.Igne], slot: 'equipped_primary' as const }));
 
+const eagleEquippables: TameEquippable[] = [
+	{
+		item: getOSItem('Demonic jibwings'),
+		slot: 'equipped_armor',
+		tameSpecies: [TameSpeciesID.Eagle]
+	},
+	{
+		item: getOSItem('Abyssal jibwings'),
+		slot: 'equipped_armor',
+		tameSpecies: [TameSpeciesID.Eagle]
+	},
+	{
+		item: getOSItem('3rd age jibwings'),
+		slot: 'equipped_armor',
+		tameSpecies: [TameSpeciesID.Eagle]
+	},
+	{
+		item: getOSItem('Impling locator'),
+		slot: 'equipped_primary',
+		tameSpecies: [TameSpeciesID.Eagle]
+	},
+	{
+		item: getOSItem('Divine ring'),
+		slot: 'equipped_primary',
+		tameSpecies: [TameSpeciesID.Eagle]
+	}
+];
+
 export const tameEquippables: TameEquippable[] = [
 	...igneClaws,
 	...igneArmors,
@@ -142,7 +170,8 @@ export const tameEquippables: TameEquippable[] = [
 		item: i.item,
 		tameSpecies: [TameSpeciesID.Monkey],
 		slot: 'equipped_primary' as const
-	}))
+	})),
+	...eagleEquippables
 ];
 
 interface FeedableItem {
@@ -1480,13 +1509,17 @@ export function determineTameClueResult({
 	tameGrowthLevel,
 	clueTier,
 	extraTripLength,
-	maxSupportLevel
+	supportLevel,
+	equippedArmor,
+	equippedPrimary
 }: {
 	extraTripLength: number;
 	clueTier: ClueTier;
 	fedZak: boolean;
 	tameGrowthLevel: number;
-	maxSupportLevel: number;
+	supportLevel: number;
+	equippedArmor: number | null;
+	equippedPrimary: number | null;
 }) {
 	const boosts: string[] = [];
 	let maxTripLength = Time.Minute * 20 * (4 - tameGrowthLevel);
@@ -1502,11 +1535,11 @@ export function determineTameClueResult({
 	const baseBoostPercent = 20;
 	const maxDifference = 100 - clueTier.eagleTameSupportLevelNeeded;
 	assert(maxDifference >= 0);
-	const theirDifference = maxSupportLevel - clueTier.eagleTameSupportLevelNeeded;
+	const theirDifference = Math.max(0, supportLevel - clueTier.eagleTameSupportLevelNeeded);
 	assert(theirDifference >= 0);
 
 	let boostPercent: number = -1;
-	if (maxSupportLevel === 100) {
+	if (supportLevel === 100) {
 		boostPercent = baseBoostPercent;
 	} else {
 		const percentOfMaxDifference = calcWhatPercent(theirDifference, maxDifference);
@@ -1517,30 +1550,43 @@ export function determineTameClueResult({
 	timePerClue = reduceNumByPercent(timePerClue, boostPercent);
 	boosts.push(`${boostPercent.toFixed(2)}% faster for support level`);
 
+	if (equippedPrimary === itemID('Divine ring')) {
+		boosts.push(`10% faster (${formatDuration(calcPercentOfNum(10, timePerClue))} per clue) for Divine ring`);
+		timePerClue = reduceNumByPercent(timePerClue, 10);
+	}
+
 	const quantity = Math.floor(maxTripLength / timePerClue);
 	const duration = quantity * timePerClue;
 
 	const baseCost = (ClueTiers.indexOf(clueTier) + 1) * quantity;
 	const kibbleNeeded = Math.ceil(baseCost / 1.5);
-	const cost = new Bank().add('Extraordinary kibble', kibbleNeeded);
+	const cost = new Bank().add('Extraordinary kibble', kibbleNeeded).add(clueTier.scrollID, quantity);
+
+	let costSavedByDemonicJibwings = null;
+	if (equippedArmor === itemID('Demonic jibwings') && percentChance(30)) {
+		costSavedByDemonicJibwings = new Bank().add('Extraordinary kibble', cost.amount('Extraordinary kibble'));
+		cost.remove(costSavedByDemonicJibwings);
+		boosts.push('No food used due to demonic jibwings');
+	}
 
 	return {
 		boosts,
 		quantity,
 		duration,
-		cost
+		cost,
+		costSavedByDemonicJibwings
 	};
 }
 
 async function tameClueCommand(user: MUser, channelID: string, inputName: string) {
-	const { tame, activity, species } = await getUsersTame(user);
+	const { mTame: tame, activity, species } = await getUsersTame(user);
 	if (activity) {
-		return `${tameName(tame)} is busy.`;
+		return `${tame} is busy.`;
 	}
 	if (!tame || !species) {
 		return 'You have no selected tame.';
 	}
-	if (tame.species_id !== TameSpeciesID.Eagle) {
+	if (tame.species.id !== TameSpeciesID.Eagle) {
 		return `Only Eagle tames can do clue scrolls, switch to a different tame: ${mentionCommand(
 			globalClient,
 			'tames',
@@ -1553,12 +1599,14 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 		return 'Invalid clue tier.';
 	}
 
-	let { cost, quantity, duration, boosts } = determineTameClueResult({
-		tameGrowthLevel: tameGrowthLevel(tame),
+	let { cost, quantity, duration, boosts, costSavedByDemonicJibwings } = determineTameClueResult({
+		tameGrowthLevel: tame.growthLevel,
 		clueTier,
-		fedZak: tameHasBeenFed(tame, itemID('Zak')),
+		fedZak: tame.hasBeenFed('Zak'),
 		extraTripLength: patronMaxTripBonus(user) * 2,
-		maxSupportLevel: tame.max_support_level
+		supportLevel: tame.currentSupportLevel,
+		equippedArmor: tame.equippedArmor?.id ?? null,
+		equippedPrimary: tame.equippedPrimary?.id ?? null
 	});
 
 	const units = await user.fetchStashUnits();
@@ -1571,21 +1619,16 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 	}
 
 	await user.removeItemsFromBank(cost);
-	await prisma.tame.update({
-		where: {
-			id: tame.id
-		},
-		data: {
-			total_cost: new Bank(tame.total_cost as ItemBank).add(cost).bank
-		}
-	});
-
+	await tame.addToStatsBank('total_cost', cost);
 	await updateBankSetting('economyStats_PVMCost', cost);
+	if (costSavedByDemonicJibwings) {
+		await tame.addToStatsBank('demonic_jibwings_saved_cost', costSavedByDemonicJibwings);
+	}
 
 	const task = await createTameTask({
 		user,
 		channelID,
-		selectedTame: tame,
+		selectedTame: tame.tame,
 		data: {
 			type: 'Clues',
 			clueID: clueTier.scrollID,
@@ -1596,7 +1639,7 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 		fakeDuration: undefined
 	});
 
-	let reply = `${tameName(tame)} is now doing completing ${quantity}x ${itemNameFromID(
+	let reply = `${tame} is now doing completing ${quantity}x ${itemNameFromID(
 		clueTier.scrollID
 	)}. The trip will take ${formatDuration(task.duration)}.`;
 
