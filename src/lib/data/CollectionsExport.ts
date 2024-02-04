@@ -3248,31 +3248,31 @@ export const divinersOutfit = resolveItems([
 ]);
 
 export const divBoons = resolveItems([
-    'Boon of pale energy',
-    'Boon of flickering energy',
-    'Boon of bright energy',
-    'Boon of glowing energy',
-    'Boon of sparkling energy',
-    'Boon of gleaming energy',
-    'Boon of vibrant energy',
-    'Boon of lustrous energy',
-    'Boon of elder energy',
-    'Boon of brilliant energy',
-    'Boon of radiant energy',
-    'Boon of luminous energy',
-    'Boon of incandescent energy',
-    'Boon of ancient energy'
+	'Boon of pale energy',
+	'Boon of flickering energy',
+	'Boon of bright energy',
+	'Boon of glowing energy',
+	'Boon of sparkling energy',
+	'Boon of gleaming energy',
+	'Boon of vibrant energy',
+	'Boon of lustrous energy',
+	'Boon of elder energy',
+	'Boon of brilliant energy',
+	'Boon of radiant energy',
+	'Boon of luminous energy',
+	'Boon of incandescent energy',
+	'Boon of ancient energy'
 ]);
 
 export const divPortents = resolveItems([
-    'Cache portent',
-    'Graceful portent',
-    'Rogues portent',
-    'Dungeon portent',
-    'Lucky portent',
-    'Rebirth portent',
-    'Spiritual mining portent',
-    'Pacifist hunting portent'
+	'Cache portent',
+	'Graceful portent',
+	'Rogues portent',
+	'Dungeon portent',
+	'Lucky portent',
+	'Rebirth portent',
+	'Spiritual mining portent',
+	'Pacifist hunting portent'
 ]);
 
 export const divinationCL = resolveItems([
