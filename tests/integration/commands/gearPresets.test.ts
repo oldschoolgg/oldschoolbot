@@ -59,7 +59,9 @@ describe('Gear Presets Command', async () => {
 		expect(gpResult).toBeTruthy();
 		if (!gpResult) return false;
 
-		await user.runCommand(gearPresetsCommand, { edit: { gear_preset: 'TestEdit', weapon: 'Ghrazi rapier' } });
+		await user.runCommand(gearPresetsCommand, {
+			edit: { gear_preset: 'TestEdit', weapon: 'Ghrazi rapier', feet: 'None' }
+		});
 
 		const gpEditResult = await prisma.gearPreset.findFirst({ where: { user_id: user.id, name: 'testedit' } });
 
@@ -69,7 +71,7 @@ describe('Gear Presets Command', async () => {
 
 		// Make sure row is as expected:
 		expect(gpEditResult.head).toEqual(itemID('Bronze full helm'));
-		expect(gpEditResult.feet).toEqual(itemID('Bronze boots'));
+		expect(gpEditResult.feet).toBeNull();
 		expect(gpEditResult.weapon).toEqual(itemID('Ghrazi rapier'));
 		expect(gpEditResult.shield).toEqual(itemID('Bronze kiteshield'));
 		expect(gpEditResult.hands).toBeNull();

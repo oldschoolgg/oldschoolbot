@@ -24,13 +24,18 @@ type InputGear = Partial<Record<EquipmentSlot, string | undefined>>;
 type ParsedInputGear = Partial<Record<EquipmentSlot, number>>;
 function parseInputGear(inputGear: InputGear) {
 	let gear: ParsedInputGear = {};
+	let remove: EquipmentSlot[] = [];
 	for (const [key, val] of Object.entries(inputGear)) {
+		if (val?.toLowerCase() === 'none') {
+			remove.push(key as EquipmentSlot);
+			continue;
+		}
 		const item = getItem(val);
 		if (item && item.equipment?.slot === key) {
 			gear[key as EquipmentSlot] = item.id;
 		}
 	}
-	return gear;
+	return { gear, remove };
 }
 
 export function gearPresetToGear(preset: GearPreset): GearSetup {
@@ -88,12 +93,17 @@ export async function createOrEditGearSetup(
 		return `The maximum amount of gear presets you can have is ${max}, you can unlock more slots by becoming a patron!`;
 	}
 
-	const parsedInputGear = parseInputGear(gearInput);
+	const { gear: parsedInputGear, remove: forceRemove } = parseInputGear(gearInput);
 	let gearSetup: Gear | GearSetup | null = null;
 	if (setupToCopy) {
 		gearSetup = user.gear[setupToCopy];
 	} else if (isUpdating) {
 		gearSetup = gearPresetToGear(userPresets.find(pre => pre.name === name)!);
+	}
+
+	// This is required to enable removal of items while editing
+	for (const slot of forceRemove) {
+		if (gearSetup !== null) gearSetup[slot] = null;
 	}
 
 	if (emoji) {
@@ -161,7 +171,7 @@ function makeSlotOption(slot: EquipmentSlot): CommandOption {
 		description: `The item you want to put in the ${slot} slot in this gear setup.`,
 		required: false,
 		autocomplete: async (value: string) => {
-			return (
+			const matchingItems = (
 				value
 					? allEquippableItems.filter(i => i.name.toLowerCase().includes(value.toLowerCase()))
 					: allEquippableItems
@@ -169,6 +179,11 @@ function makeSlotOption(slot: EquipmentSlot): CommandOption {
 				.filter(i => i.equipment?.slot === slot)
 				.slice(0, 20)
 				.map(i => ({ name: i.name, value: i.name }));
+			if (!value || 'none'.includes(value.toLowerCase())) {
+				matchingItems.unshift({ name: 'None', value: 'none' });
+				if (matchingItems.length > 20) matchingItems.pop();
+			}
+			return matchingItems;
 		}
 	};
 }
