@@ -206,7 +206,7 @@ function kcProg(mon: Monster | number): FormatProgressFunction {
 }
 
 function mgProg(minigameName: MinigameName): FormatProgressFunction {
-	return ({ minigames }) => `${minigames[minigameName]} KC`;
+	return ({ minigames }) => `${minigames[minigameName]} Completions`;
 }
 
 function skillProg(skillName: SkillsEnum): FormatProgressFunction {
@@ -1137,46 +1137,55 @@ export const allCollectionLogs: ICollection = {
 			'Ourania Delivery Service': {
 				alias: ['ods', 'ourania'],
 				items: odsCL,
+				isActivity: true,
 				fmtProg: mgProg('ourania_delivery_service')
 			},
 			"Mad Marimbo's Monkey Rumble": {
 				alias: ['mr', 'mmmr', 'mmr', 'monkey rumble', 'mad marimbos monkey rumble'],
 				items: monkeyRumbleCL,
+				isActivity: true,
 				fmtProg: mgProg('monkey_rumble')
 			},
 			'Fishing Contest': {
 				alias: ['fc'],
 				items: fishingContestCL,
+				isActivity: true,
 				fmtProg: mgProg('fishing_contest')
 			},
 			'Baxtorian Bathhouses': {
 				alias: ['bb', 'bax bath', 'baxtorian bathhouses', 'bath', 'baths'],
 				items: baxtorianBathhousesCL,
+				isActivity: true,
 				fmtProg: mgProg('bax_baths')
 			},
 			'Fist of Guthix': {
 				alias: ['fog', 'fist of guthix'],
 				items: fistOfGuthixCL,
+				isActivity: true,
 				fmtProg: mgProg('bax_baths')
 			},
 			'Guthixian Caches': {
 				alias: ['guthixian caches'],
 				items: [...divinersOutfit],
+				isActivity: true,
 				fmtProg: mgProg('guthixian_cache')
 			},
 			'Stealing Creation': {
 				alias: ['stealing creation', 'sc'],
 				items: stealingCreationCL,
+				isActivity: true,
 				fmtProg: mgProg('stealing_creation')
 			},
 			'Tinkering Workshop': {
 				alias: ['tw', 'tinkering workshop'],
 				items: tinkeringWorshopCL,
+				isActivity: true,
 				fmtProg: mgProg('tinkering_workshop')
 			},
 			"Balthazar's Big Bonanza": {
 				alias: ['bbb', 'balthazars big bananza', 'circus'],
 				items: balthazarsBigBonanzaCL,
+				isActivity: true,
 				fmtProg: mgProg('balthazars_big_bonanza')
 			}
 		}
