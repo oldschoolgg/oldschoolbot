@@ -409,18 +409,6 @@ export const farmingTask: MinionTask = {
 
 			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
 
-			if (bonusXP > 0) {
-				infoStr.push(
-					`\nYou received an additional ${bonusXP.toLocaleString()} bonus XP from your farmer's outfit.`
-				);
-			}
-
-			if (herbloreXp > 0) {
-				infoStr.push(
-					`\nYou received ${herbloreXp.toLocaleString()} Herblore XP for cleaning the herbs during your trip.`
-				);
-			}
-
 			const xpRes = await user.addXP({
 				skillName: SkillsEnum.Farming,
 				amount: Math.floor(farmingXpReceived + bonusXP),
@@ -447,6 +435,12 @@ export const farmingTask: MinionTask = {
 			if (bonusXP > 0) {
 				infoStr.push(
 					`\nYou received an additional ${bonusXP.toLocaleString()} bonus XP from your farmer's outfit.`
+				);
+			}
+
+			if (herbloreXp > 0) {
+				infoStr.push(
+					`\nYou received ${herbloreXp.toLocaleString()} Herblore XP for cleaning the herbs during your trip.`
 				);
 			}
 

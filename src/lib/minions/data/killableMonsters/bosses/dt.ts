@@ -118,10 +118,6 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
-				items: [{ boostPercent: 3, itemID: itemID('Avernic defender') }],
-				gearSetup: 'melee'
-			},
-			{
 				items: [{ boostPercent: 3, itemID: itemID('Ferocious gloves') }],
 				gearSetup: 'melee'
 			},
@@ -684,10 +680,6 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		notifyDrops: resolveItems(['Baron']),
 		qpRequired: 100,
 		equippedItemBoosts: [
-			{
-				items: [{ boostPercent: 3, itemID: itemID('Avernic defender') }],
-				gearSetup: 'melee'
-			},
 			{
 				items: [{ boostPercent: 3, itemID: itemID('Ferocious gloves') }],
 				gearSetup: 'melee'

@@ -140,6 +140,21 @@ export const nightmareZoneImbueables = [
 		output: getOSItem('Hydra slayer helmet (i)'),
 		points: 1_250_000
 	},
+	{
+		input: getOSItem('Tztok slayer helmet'),
+		output: getOSItem('Tztok slayer helmet (i)'),
+		points: 1_250_000
+	},
+	{
+		input: getOSItem('Vampyric slayer helmet'),
+		output: getOSItem('Vampyric slayer helmet (i)'),
+		points: 1_250_000
+	},
+	{
+		input: getOSItem('Tzkal slayer helmet'),
+		output: getOSItem('Tzkal slayer helmet (i)'),
+		points: 1_250_000
+	},
 	{ input: getOSItem('Salve amulet'), output: getOSItem('Salve amulet(i)'), points: 800_000 },
 	{ input: getOSItem('Salve amulet (e)'), output: getOSItem('Salve amulet(ei)'), points: 800_000 },
 	{

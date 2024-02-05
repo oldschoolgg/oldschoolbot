@@ -293,6 +293,8 @@ export enum BitField {
 	CleanHerbsFarming = 35,
 	SelfGamblingLocked = 36,
 	DisabledFarmingReminders = 37,
+	DisableClueButtons = 38,
+	DisableAutoSlayButton = 39,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -496,6 +498,16 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisabledFarmingReminders]: {
 		name: 'Disable Farming Reminders',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableClueButtons]: {
+		name: 'Disable Clue Buttons',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableAutoSlayButton]: {
+		name: 'Disable Auto Slay Button',
 		protected: false,
 		userConfigurable: true
 	},

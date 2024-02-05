@@ -220,7 +220,8 @@ function clueProg(tiers: ClueTier['name'][]): FormatProgressFunction {
 				const tier = ClueTiers.find(_tier => _tier.name === i)!;
 				return `${stats.openableScores.amount(tier.id)} ${tier.name} Opens`;
 			})
-			.filter(notEmpty);
+			.filter(notEmpty)
+			.join(', ');
 	};
 }
 

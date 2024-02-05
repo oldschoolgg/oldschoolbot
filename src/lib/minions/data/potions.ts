@@ -228,6 +228,15 @@ const Potions = [
 		items: resolveItems(['Anti-venom(1)', 'Anti-venom(2)', 'Anti-venom(3)', 'Anti-venom(4)'])
 	},
 	{
+		name: 'Menaphite remedy',
+		items: resolveItems([
+			'Menaphite remedy(1)',
+			'Menaphite remedy(2)',
+			'Menaphite remedy(3)',
+			'Menaphite remedy(4)'
+		])
+	},
+	{
 		name: 'Super combat potion',
 		items: resolveItems([
 			'Super combat potion(1)',

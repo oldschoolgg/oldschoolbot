@@ -212,7 +212,7 @@ async function finalizeOpening({
 		.join(', ');
 
 	const perkTier = user.perkTier();
-	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier);
+	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
 	let response: Awaited<CommandResponse> = {
 		files: [image.file],

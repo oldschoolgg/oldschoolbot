@@ -12,6 +12,7 @@ import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import resolveItems from '../../lib/util/resolveItems';
+import { pluraliseItemName } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -61,13 +62,15 @@ export const smithCommand: OSBMahojiCommand = {
 		}
 
 		if (user.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
-			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}s.`;
+			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${pluraliseItemName(
+				smithedItem.name
+			)}.`;
 		}
 
 		const userQP = user.QP;
 
 		if (smithedItem.qpRequired && userQP < smithedItem.qpRequired) {
-			return `${user.minionName} needs ${smithedItem.qpRequired} QP to smith ${smithedItem.name}`;
+			return `${user.minionName} needs ${smithedItem.qpRequired} QP to smith ${smithedItem.name}.`;
 		}
 		// If they have the entire Smiths' Uniform, give 100% chance save 1 tick each item
 		let setBonus = 0;
