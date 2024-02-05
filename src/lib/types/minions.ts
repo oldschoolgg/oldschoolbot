@@ -44,7 +44,8 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'TroubleBrewing'
 		| 'Easter'
 		| 'ShootingStars'
-		| 'HalloweenEvent'}
+		| 'HalloweenEvent';
+}
 
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 	type:
