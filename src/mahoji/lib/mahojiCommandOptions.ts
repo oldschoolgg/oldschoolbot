@@ -141,9 +141,9 @@ export const gearPresetOption: CommandOption = {
 			}
 		});
 		return presets
-			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 			.map(i => ({ name: i.name, value: i.name }))
-			.concat(globalPresets.map(i => ({ name: `${i.name} (Global)`, value: i.name })));
+			.concat(globalPresets.map(i => ({ name: `${i.name} (Global)`, value: i.name })))
+			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
 	}
 };
 
