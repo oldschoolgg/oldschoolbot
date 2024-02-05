@@ -26,6 +26,8 @@ import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
 import { divinationEnergies } from './bso/divination';
 import { TOBUniques } from './data/tob';
+import { SkillsEnum } from './skilling/types';
+import { applyCustomItemEffects } from './util/customItemEffects';
 import resolveItems from './util/resolveItems';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
 

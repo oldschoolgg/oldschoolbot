@@ -377,7 +377,8 @@ const unfPotions = resolveItems(['Vial of water', ...new Set(unfPots)]);
 const allSecondaries = PotionsMixable.flatMap(item =>
 	Object.keys(item.inputItems.bank).map(key => parseInt(key))
 ).filter(item => !potions.includes(item) && !unfPotions.includes(item) && !herbs.includes(item));
-const secondaries = [...new Set(allSecondaries)];
+
+export const secondaries = [...new Set(allSecondaries)];
 
 const herblore = resolveItems([...potions, ...herbs, ...unfPotions, ...secondaries]);
 
