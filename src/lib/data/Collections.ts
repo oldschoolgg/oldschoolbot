@@ -1162,7 +1162,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['fog', 'fist of guthix'],
 				items: fistOfGuthixCL,
 				isActivity: true,
-				fmtProg: mgProg('bax_baths')
+				fmtProg: mgProg('fist_of_guthix')
 			},
 			'Guthixian Caches': {
 				alias: ['guthixian caches'],
