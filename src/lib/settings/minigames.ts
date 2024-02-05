@@ -247,8 +247,8 @@ export const Minigames: readonly BotMinigame[] = [
 		column: 'depths_of_atlantis_cm'
 	},
 	{
-		name: 'Guthixian Cache',
-		aliases: ['guthixian cache'],
+		name: 'Guthixian Caches',
+		aliases: ['guthixian caches', 'cache'],
 		column: 'guthixian_cache'
 	}
 ];
