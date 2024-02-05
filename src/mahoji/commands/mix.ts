@@ -86,6 +86,8 @@ export const mixCommand: OSBMahojiCommand = {
 			zahur: mixableZahur
 		} = mixableItem;
 
+		const userBank = user.bankWithGP;
+
 		let timeToMixSingleItem = tickRate * Time.Second * 0.6 + bankTimePerPotion * Time.Second;
 		let cost = 'is now';
 
@@ -97,10 +99,14 @@ export const mixCommand: OSBMahojiCommand = {
 
 		const boosts: string[] = [];
 		const maxTripLength = calcMaxTripLength(user, 'Herblore');
-		let quantity = optionQuantity || Math.floor(maxTripLength / timeToMixSingleItem);
+		let quantity = optionQuantity;
 		const maxCanDo = user.bankWithGP.fits(baseCost);
+		const maxCanMix = Math.floor(maxTripLength / timeToMixSingleItem);
 
-		if (maxCanDo < quantity) quantity = maxCanDo;
+		if (!quantity) {
+			quantity = maxCanMix;
+			if (maxCanDo < quantity && maxCanDo !== 0) quantity = maxCanDo;
+		}
 
 		if (!options.wesley && !options.zahur) {
 			const boostedTimeToMixSingleItem = reduceNumByPercent(
@@ -129,14 +135,16 @@ export const mixCommand: OSBMahojiCommand = {
 		if (quantity * timeToMixSingleItem > maxTripLength)
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)}, try a lower quantity. The highest amount of ${itemName}s you can make is ${Math.floor(
-				maxTripLength / timeToMixSingleItem
-			)}.`;
+			)}, try a lower quantity. The highest amount of ${itemName} you can mix is ${maxCanMix}.`;
 
-		const finalCost = requiredItems.multiply(quantity);
-		if (!user.owns(finalCost)) return `You don't own: ${finalCost}.`;
+		const finalCost = requiredItems.clone().multiply(quantity);
+		if (!user.owns(finalCost))
+			return `You don't have enough items. For ${quantity}x ${itemName}, you're missing **${finalCost
+				.clone()
+				.remove(userBank)}**.`;
 
 		await user.removeItemsFromBank(finalCost);
+
 		updateBankSetting('herblore_cost_bank', finalCost);
 
 		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>({
@@ -152,7 +160,7 @@ export const mixCommand: OSBMahojiCommand = {
 
 		let str = `${user.minionName} ${cost} making ${quantity}x ${
 			mixableItem.outputMultiple ? 'batches of' : ''
-		} ${itemName}, it'll take around ${formatDuration(quantity * timeToMixSingleItem)} to finish.`;
+		}${itemName}, it'll take around ${formatDuration(quantity * timeToMixSingleItem)} to finish.`;
 		if (boosts.length > 0) {
 			str += `\n**Boosts:** ${boosts.join(', ')}`;
 		}

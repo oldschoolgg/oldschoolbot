@@ -8,7 +8,13 @@ import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache';
 import { Eatables } from '../../src/lib/data/eatables';
 import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank';
 import { SkillsEnum } from '../../src/lib/skilling/types';
-import { clAdjustedDroprate, sanitizeBank, skillingPetDropRate, stripEmojis } from '../../src/lib/util';
+import {
+	clAdjustedDroprate,
+	pluraliseItemName,
+	sanitizeBank,
+	skillingPetDropRate,
+	stripEmojis
+} from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell';
 import { mockMUser } from './utils';
@@ -165,5 +171,11 @@ describe('util', () => {
 		expect(baseModifyBusyCounter(cache, id, -1)).toEqual(0);
 		expect(cache.get(id)).toEqual(0);
 		// expect(() => baseModifyBusyCounter(cache, id, -1)).toThrow();
+	});
+
+	test('pluraliseItemName correctly pluralises items', async () => {
+		expect(pluraliseItemName('Steel Axe')).toEqual('Steel Axes');
+		expect(pluraliseItemName('Steel Arrowtips')).toEqual('Steel Arrowtips');
+		expect(pluraliseItemName('Adamantite nails')).toEqual('Adamantite nails');
 	});
 });

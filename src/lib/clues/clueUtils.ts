@@ -1,15 +1,16 @@
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import { BitField } from '../constants';
 import { ClueTiers } from './clueTiers';
 
 export function getClueScoresFromOpenables(openableScores: Bank, mutate = false) {
 	return openableScores.filter(item => Boolean(ClueTiers.find(ct => ct.id === item.id)), mutate);
 }
 
-export function buildClueButtons(loot: Bank | null, perkTier: number) {
+export function buildClueButtons(loot: Bank | null, perkTier: number, user: MUser) {
 	const components: ButtonBuilder[] = [];
-	if (loot && perkTier > 1) {
+	if (loot && perkTier > 1 && !user.bitfield.includes(BitField.DisableClueButtons)) {
 		const clueReceived = ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0);
 		components.push(
 			...clueReceived.map(clue =>

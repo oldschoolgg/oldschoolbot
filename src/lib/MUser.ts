@@ -959,6 +959,24 @@ GROUP BY data->>'clueID';`);
 	async validateEquippedGear() {
 		let itemsUnequippedAndRefunded = new Bank();
 		for (const [gearSetupName, gearSetup] of Object.entries(this.gear) as [GearSetupType, GearSetup][]) {
+			if (gearSetup['2h'] !== null) {
+				if (gearSetup.weapon?.item) {
+					const { refundBank } = await this.forceUnequip(
+						gearSetupName,
+						EquipmentSlot.Weapon,
+						'2h Already equipped'
+					);
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+				if (gearSetup.shield?.item) {
+					const { refundBank } = await this.forceUnequip(
+						gearSetupName,
+						EquipmentSlot.Shield,
+						'2h Already equipped'
+					);
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+			}
 			for (const slot of Object.values(EquipmentSlot)) {
 				const item = gearSetup[slot];
 				if (!item) continue;

@@ -220,7 +220,8 @@ function clueProg(tiers: ClueTier['name'][]): FormatProgressFunction {
 				const tier = ClueTiers.find(_tier => _tier.name === i)!;
 				return `${stats.openableScores.amount(tier.id)} ${tier.name} Opens`;
 			})
-			.filter(notEmpty);
+			.filter(notEmpty)
+			.join(', ');
 	};
 }
 
@@ -1156,7 +1157,7 @@ export const allCollectionLogs: ICollection = {
 			'Fist of Guthix': {
 				alias: ['fog', 'fist of guthix'],
 				items: fistOfGuthixCL,
-				fmtProg: mgProg('bax_baths')
+				fmtProg: mgProg('fist_of_guthix')
 			},
 			'Guthixian Caches': {
 				alias: ['guthixian caches'],

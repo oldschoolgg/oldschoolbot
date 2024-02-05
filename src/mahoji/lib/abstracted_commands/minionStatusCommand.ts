@@ -124,7 +124,7 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 		);
 	}
 
-	if (!minionIsBusy) {
+	if (!minionIsBusy && !user.bitfield.includes(BitField.DisableAutoSlayButton)) {
 		buttons.push(makeAutoSlayButton());
 	}
 
@@ -155,7 +155,7 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 
 	const { bank } = user;
 
-	if (!minionIsBusy) {
+	if (!minionIsBusy && !user.bitfield.includes(BitField.DisableClueButtons)) {
 		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))
 			.reverse()
 			.slice(0, 3)) {
