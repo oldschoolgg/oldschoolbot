@@ -39,6 +39,10 @@ export async function gearPresetEquipCommand(user: MUser, gearSetup: string, pre
 		return "You don't have a gear preset with that name.";
 	}
 	const preset = (userPreset ?? globalPreset) as GearPreset;
+	if (preset.two_handed !== null) {
+		preset.weapon = null;
+		preset.shield = null;
+	}
 
 	// Checks the preset to make sure the user has the required stats for every item in the preset
 	for (const gearItemId of Object.values(preset)) {
