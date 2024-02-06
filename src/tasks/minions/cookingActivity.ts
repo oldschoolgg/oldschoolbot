@@ -24,7 +24,7 @@ export const cookingTask: MinionTask = {
 
 		const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
 		const [hasFavour] = gotFavour(user, Favours.Hosidius, 100);
-		const hasGaunts = user.hasEquipped('Cooking gauntlets');
+		const hasGaunts = user.hasEquippedOrInBank('Cooking gauntlets');
 
 		if (hasFavour && cookable.burnKourendBonus) {
 			stopBurningLvl = cookable.burnKourendBonus[(hasEliteDiary ? 1 : 0) * 2 + (hasGaunts ? 1 : 0)];

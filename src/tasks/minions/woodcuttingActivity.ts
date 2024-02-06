@@ -88,7 +88,7 @@ export const woodcuttingTask: MinionTask = {
 			}
 		}
 
-		if (user.hasEquipped('Woodcutting master cape')) {
+		if (user.hasEquippedOrInBank('Woodcutting master cape')) {
 			loot.multiply(2);
 		}
 

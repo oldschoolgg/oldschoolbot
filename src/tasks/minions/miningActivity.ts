@@ -19,6 +19,7 @@ import resolveItems from '../../lib/util/resolveItems';
 import { mahojiUsersSettingsFetch, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 export function calculateMiningResult({
+	user,
 	ore,
 	allGear,
 	duration,
@@ -35,6 +36,7 @@ export function calculateMiningResult({
 	collectionLog,
 	miningXP
 }: {
+	user: MUser;
 	ore: Ore;
 	allGear: UserFullGearSetup;
 	duration: number;
@@ -64,9 +66,9 @@ export function calculateMiningResult({
 
 	// Prospector outfit
 	if (
-		allGear.skilling.hasEquipped(
+		user.hasEquippedOrInBank(
 			Object.keys(Mining.prospectorItems).map(i => parseInt(i)),
-			true
+			'every'
 		)
 	) {
 		const amountToAdd = Math.floor(totalMiningXPToAdd * (2.5 / 100));
@@ -276,6 +278,7 @@ export const miningTask: MinionTask = {
 			barsFromAdzeBank,
 			oresFromSpiritsBank
 		} = calculateMiningResult({
+			user,
 			duration,
 			isPowermining: powermine ?? false,
 			isUsingObsidianPickaxe: user.hasEquipped(['Offhand volcanic pickaxe'], false),

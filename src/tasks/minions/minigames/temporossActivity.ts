@@ -42,9 +42,9 @@ export const temporossTask: MinionTask = {
 
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
 		if (
-			user.gear.skilling.hasEquipped(
+			user.hasEquippedOrInBank(
 				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
-				true
+				'every'
 			)
 		) {
 			const amountToAdd = Math.floor(fXPtoGive * (2.5 / 100));
@@ -53,7 +53,7 @@ export const temporossTask: MinionTask = {
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasEquipped(parseInt(itemID))) {
+				if (user.hasEquippedOrInBank(parseInt(itemID))) {
 					const amountToAdd = Math.floor(fXPtoGive * (bonus / 100));
 					fXPtoGive += amountToAdd;
 					fBonusXP += amountToAdd;

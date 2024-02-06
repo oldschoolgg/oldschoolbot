@@ -89,7 +89,7 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 		}
 	}
 
-	if (user.hasEquipped('Zak')) {
+	if (user.usingPet('Zak')) {
 		max *= 1.4;
 	}
 

@@ -286,6 +286,7 @@ export const ratesCommand: OSBMahojiCommand = {
 									if (shouldTryUseSpirits && !spiritOre) continue;
 									const { totalMiningXPToAdd, smithingXPFromAdze, loot, totalCost } =
 										calculateMiningResult({
+											user,
 											duration,
 											isPowermining: result.isPowermining,
 											isUsingObsidianPickaxe: hasOffhandVolcPick,

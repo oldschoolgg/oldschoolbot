@@ -47,7 +47,7 @@ export const implings: Record<number, { level: number; customRequirements?: (use
 			return false;
 		}
 	},
-	[EternalImpling.id]: { level: 99, customRequirements: async user => user.hasEquipped('Vasa cloak') },
+	[EternalImpling.id]: { level: 99, customRequirements: async user => user.hasEquippedOrInBank('Vasa cloak') },
 	[MysteryImpling.id]: { level: 105 }
 };
 
