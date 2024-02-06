@@ -299,7 +299,11 @@ export async function autoSlayCommand({
 		const ehpKillable = killableMonsters.find(m => m.id === ehpMonster?.efficientMonster);
 
 		// If we don't have the requirements for the efficient monster, revert to default monster
-		if (ehpKillable?.levelRequirements !== undefined && !hasSkillReqs(user, ehpKillable.levelRequirements)[0]) {
+		if (
+			(ehpKillable?.levelRequirements !== undefined && !hasSkillReqs(user, ehpKillable.levelRequirements)[0]) ||
+			(usersTask.currentTask!.slayer_master_id === 8 &&
+				[Monsters.Jelly.id, Monsters.Bloodveld.id].includes(usersTask.assignedTask!.monster.id))
+		) {
 			runCommand({
 				commandName: 'k',
 				args: {
