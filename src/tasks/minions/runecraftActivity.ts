@@ -33,14 +33,14 @@ export const runecraftTask: MinionTask = {
 
 		let xpReceived = essenceQuantity * runeXP;
 
-		const hasMaster = user.hasEquipped(
+		const hasMaster = user.hasEquippedOrInBank(
 			[
 				'Master runecrafter hat',
 				'Master runecrafter robe',
 				'Master runecrafter skirt',
 				'Master runecrafter boots'
 			],
-			true
+			'every'
 		);
 		if (hasMaster) {
 			xpReceived = increaseNumByPercent(xpReceived, 10);
