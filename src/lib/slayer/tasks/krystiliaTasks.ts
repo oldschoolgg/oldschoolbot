@@ -85,6 +85,7 @@ export const krystiliaTasks: AssignableSlayerTask[] = [
 		monsters: [Monsters.Bloodveld.id],
 		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.BleedMeDry,
+		slayerLevel: 50,
 		unlocked: true,
 		wilderness: true
 	},
