@@ -3,7 +3,7 @@ import { sumArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { ItemBank, SkillsScore } from 'oldschooljs/dist/meta/types';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { toKMB } from 'oldschooljs/dist/util';
 
@@ -11,6 +11,7 @@ import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
+import { skillEmoji } from '../../../lib/data/emojis';
 import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { RandomEvents } from '../../../lib/randomEvents';
@@ -950,6 +951,26 @@ GROUP BY "bankBackground";`);
 			return `You've received **${Number(
 				stats.ash_sanctifier_prayer_xp
 			).toLocaleString()}** XP from using the Ash Sanctifier.`;
+		}
+	},
+	{
+		name: 'XP from Tears of Guthix',
+		perkTierNeeded: PerkTier.Four,
+		run: async () => {
+			const result = await prisma.$queryRawUnsafe<any>(
+				`SELECT skill,
+					SUM(xp) AS total_xp
+				 FROM xp_gains
+				 WHERE source = 'TearsOfGuthix'
+				 GROUP BY skill`
+			);
+
+			return `**XP From Tears of Guthix**\n${result
+				.map(
+					(i: any) =>
+						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(i.total_xp)}`
+				)
+				.join('\n')}`;
 		}
 	},
 	{
