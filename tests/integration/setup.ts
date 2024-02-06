@@ -5,6 +5,9 @@ import { vi } from 'vitest';
 vi.mock('../../src/lib/util/handleMahojiConfirmation', () => ({
 	handleMahojiConfirmation: vi.fn()
 }));
+vi.mock('../../src/lib/util/interactionReply', () => ({
+	deferInteraction: vi.fn()
+}));
 
 export function randomMock(random = 0.1) {
 	Math.random = () => random;
@@ -19,6 +22,7 @@ vi.mock('../../src/lib/util/webhook', async () => {
 });
 
 // @ts-ignore mock
-globalClient.fetchUser = async () => ({
+globalClient.fetchUser = async (id: string | bigint) => ({
+	id: typeof id === 'string' ? id : String(id),
 	send: async () => {}
 });

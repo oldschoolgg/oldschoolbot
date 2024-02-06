@@ -21,6 +21,8 @@ import { ItemBank } from '../lib/types';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
+import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
+import { TOBUniques } from './data/tob';
 import resolveItems from './util/resolveItems';
 
 const fonts = {
@@ -45,6 +47,12 @@ const CACHE_DIR = './icon_cache';
 const itemSize = 32;
 const distanceFromTop = 32;
 const distanceFromSide = 16;
+
+const sourceGiftItemIDs = [26_298, 26_300, 26_302, 26_308, 26_316, 26_318, 26_320, 26_322, 26_324];
+const giftItemIDList: number[] = [];
+for (let i = 0; i < 100; i++) {
+	giftItemIDList.push(...sourceGiftItemIDs);
+}
 
 const { floor, ceil } = Math;
 
@@ -214,7 +222,15 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Mahogany logs'), 'Mahog'],
 	[i('Yew logs'), 'Yew'],
 	[i('Magic logs'), 'Magic'],
-	[i('Redwood logs'), 'Redwood']
+	[i('Redwood logs'), 'Redwood'],
+	...XPLamps.map(lamp => [lamp.itemID, toKMB(lamp.amount)] as const),
+
+	// Uncharged
+	[i('Holy sanguinesti staff (uncharged)'), 'Unch.'],
+	[i('Sanguinesti staff (uncharged)'), 'Unch.'],
+	[i('Scythe of vitur (uncharged)'), 'Unch.'],
+	[i('Holy scythe of vitur (uncharged)'), 'Unch.'],
+	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.']
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
@@ -249,6 +265,7 @@ class BankImageTask {
 
 	public _bgSpriteData: Image = new Image();
 	public bgSpriteList: Record<string, IBgSprite> = {};
+	public treeImage!: Image;
 
 	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
@@ -780,6 +797,19 @@ const chestLootTypes = [
 		position: (canvas: Canvas, image: Image) => [
 			canvas.width - image.width + 25,
 			44 + canvas.height / 4 - image.height / 2
+		],
+		itemRect: [21, 50, 120, 160]
+	},
+	{
+		title: 'Theatre of Blood',
+		chestImage: loadImage('./src/lib/resources/images/tobChest.png'),
+		chestImagePurple: loadImage('./src/lib/resources/images/tobChestPurple.png'),
+		width: 260,
+		height: 180,
+		purpleItems: TOBUniques,
+		position: (canvas: Canvas, image: Image) => [
+			canvas.width - image.width,
+			55 + canvas.height / 4 - image.height / 2
 		],
 		itemRect: [21, 50, 120, 160]
 	},

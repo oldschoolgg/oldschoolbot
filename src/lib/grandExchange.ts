@@ -16,7 +16,6 @@ import { assert, generateGrandExchangeID, getInterval, itemNameFromID, makeCompo
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
-import { geLog } from './util/logger';
 import { sendToChannelID } from './util/webhook';
 
 interface CreateListingArgs {
@@ -387,7 +386,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				...makeTransactFromTableBankQueries({ bankToAdd: result.cost })
 			]);
 
-			geLog(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
+			debugLog(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
 
 			return {
 				createdListing: listing,
@@ -497,7 +496,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			buyerLoot.add('Coins', buyerRefund);
 			bankToRemoveFromGeBank.add('Coins', buyerRefund);
 
-			geLog(
+			debugLog(
 				`Buyer got refunded ${buyerRefund} GP due to price difference. Buyer was asking ${buyerListing.asking_price_per_item}GP for each of the ${quantityToBuy}x items, seller was asking ${sellerListing.asking_price_per_item}GP, and the post-tax price per item was ${pricePerItemAfterTax}`,
 				logContext
 			);
@@ -525,19 +524,19 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			const missingItems = bankGEShouldHave.clone().remove(geBank);
 			const str = `The GE did not have enough items to cover this transaction! We tried to remove ${bankGEShouldHave} missing: ${missingItems}. ${debug}`;
 			logError(str, logContext);
-			geLog(str, logContext);
+			debugLog(str, logContext);
 			throw new Error(str);
 		}
 
-		geLog(
+		debugLog(
+			`Completing a transaction, removing ${bankToRemoveFromGeBank} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${geBank.toString()}.`,
 			{
 				totalPriceAfterTax,
 				totalTaxPaid,
 				totalPriceBeforeTax,
 				bankToRemoveFromGeBank: bankToRemoveFromGeBank.toString(),
 				currentGEBank: geBank.toString()
-			},
-			`Completing a transaction, removing ${bankToRemoveFromGeBank} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${geBank.toString()}.`
+			}
 		);
 
 		await prisma.$transaction([
@@ -590,7 +589,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			...makeTransactFromTableBankQueries({ bankToRemove: bankToRemoveFromGeBank })
 		]);
 
-		geLog(`Transaction completed, the new G.E bank is ${await this.fetchOwnedBank()}.`);
+		debugLog(`Transaction completed, the new G.E bank is ${await this.fetchOwnedBank()}.`);
 
 		const buyerUser = await mUserFetch(buyerListing.user_id);
 		const sellerUser = await mUserFetch(sellerListing.user_id);
@@ -747,7 +746,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 		await this.checkGECanFullFilAllListings();
 
-		geLog('Validated GE and found no issues.');
+		debugLog('Validated GE and found no issues.');
 
 		return true;
 	}
@@ -765,13 +764,13 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			shouldHave.add(listing.item_id, listing.quantity_remaining);
 		}
 
-		geLog(`Expected G.E Bank: ${shouldHave}`);
+		debugLog(`Expected G.E Bank: ${shouldHave}`);
 		if (!currentBank.equals(shouldHave)) {
 			throw new Error(
 				`GE either has extra or insufficient items. Difference: ${shouldHave.difference(currentBank)}`
 			);
 		} else {
-			geLog(
+			debugLog(
 				`GE has ${currentBank}, which is enough to cover the ${
 					[...buyListings, ...sellListings].length
 				}x active listings! Difference: ${shouldHave.difference(currentBank)}`
@@ -787,7 +786,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				await this._tick();
 			} catch (err: any) {
 				logError(err.message);
-				geLog(err.message);
+				debugLog(err.message);
 				throw err;
 			} finally {
 				this.isTicking = false;
@@ -856,7 +855,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			} catch (err: any) {
 				await this.lockGE(err.message);
 				logError(err);
-				geLog(err);
+				debugLog(err);
 				break;
 			}
 
@@ -865,7 +864,6 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		}
 
 		stopwatch.stop();
-		geLog(`GE tick took ${stopwatch}`);
 	}
 
 	async totalReset() {

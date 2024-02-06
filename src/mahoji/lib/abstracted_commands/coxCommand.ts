@@ -21,6 +21,7 @@ import { channelIsSendable, formatDuration, randomVariation } from '../../../lib
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { mahojiParseNumber } from '../../mahojiSettings';
 
 const uniques = [
 	'Dexterous prayer scroll',
@@ -83,6 +84,7 @@ export async function coxCommand(
 	channelID: string,
 	user: MUser,
 	type: 'solo' | 'mass',
+	maxSizeInput: number | undefined,
 	isChallengeMode: boolean,
 	_quantity?: number
 ) {
@@ -102,10 +104,12 @@ export async function coxCommand(
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
+	let maxSize = mahojiParseNumber({ input: maxSizeInput, min: 2, max: 15 }) ?? 15;
+
 	const partyOptions: MakePartyOptions = {
 		leader: user,
 		minSize: 2,
-		maxSize: 15,
+		maxSize,
 		ironmanAllowed: true,
 		message: `${user.usernameOrMention} is hosting a ${
 			isChallengeMode ? '**Challenge mode** ' : ''

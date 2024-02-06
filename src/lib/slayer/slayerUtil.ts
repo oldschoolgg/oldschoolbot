@@ -373,7 +373,6 @@ export function hasSlayerUnlock(
 }
 
 const filterLootItems = resolveItems([
-	'Black mask (10)',
 	"Hydra's eye",
 	"Hydra's fang",
 	"Hydra's heart",
@@ -388,26 +387,18 @@ const bludgeonPieces = resolveItems(['Bludgeon claw', 'Bludgeon spine', 'Bludgeo
 
 export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	// Order: Fang, eye, heart.
-	const numBlackMask = myLoot.amount('Black mask (10)');
 	let numHydraEyes = myLoot.amount("Hydra's eye");
 	numHydraEyes += myLoot.amount("Hydra's fang");
 	numHydraEyes += myLoot.amount("Hydra's heart");
 	const numDarkTotemBases = myLoot.amount('Dark totem base');
 	const numBludgeonPieces = myLoot.amount('Bludgeon claw');
-	if (!numBludgeonPieces && !numDarkTotemBases && !numHydraEyes && !numBlackMask) {
+	if (!numBludgeonPieces && !numDarkTotemBases && !numHydraEyes) {
 		return { bankLoot: myLoot, clLoot: myLoot };
 	}
 
 	myLoot.filter(i => !filterLootItems.includes(i.id), true);
 
 	const myClLoot = new Bank(myLoot.bank);
-
-	if (numBlackMask) {
-		for (let x = 0; x < numBlackMask; x++) {
-			myLoot.add('Black mask');
-			myClLoot.add('Black mask (10)');
-		}
-	}
 
 	const combinedBank = new Bank(myBank).add(myLoot);
 	if (numBludgeonPieces) {

@@ -258,7 +258,9 @@ export enum BitField {
 	UsedFrozenTablet = 34,
 	CleanHerbsFarming = 35,
 	SelfGamblingLocked = 36,
-	DisabledFarmingReminders = 37
+	DisabledFarmingReminders = 37,
+	DisableClueButtons = 38,
+	DisableAutoSlayButton = 39
 }
 
 interface BitFieldData {
@@ -336,6 +338,16 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisabledFarmingReminders]: {
 		name: 'Disable Farming Reminders',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableClueButtons]: {
+		name: 'Disable Clue Buttons',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableAutoSlayButton]: {
+		name: 'Disable Auto Slay Button',
 		protected: false,
 		userConfigurable: true
 	}
@@ -581,54 +593,6 @@ META_CONSTANTS.RENDERED_STR = `**Date/Time:** ${dateFm(META_CONSTANTS.STARTUP_DA
 **Commit:** <${META_CONSTANTS.GITHUB_URL}>
 **Code Difference:** <${META_CONSTANTS.GIT_DIFF_URL}>`;
 
-export const hweenGiveableItems = resolveItems([
-	'Gravedigger mask',
-	'Gravedigger top',
-	'Gravedigger leggings',
-	'Gravedigger gloves',
-	'Gravedigger boots',
-	'Jack lantern mask',
-	'Scythe',
-	'Grim reaper hood',
-	'Jonas mask',
-	'Skeleton mask',
-	'Skeleton shirt',
-	'Skeleton leggings',
-	'Skeleton gloves',
-	'Skeleton boots',
-	'Anti-panties',
-	'Banshee mask',
-	'Banshee top',
-	'Banshee robe',
-	'Hunting knife',
-	'Eek',
-	'Clown mask',
-	'Clown bow tie',
-	'Clown gown',
-	'Clown trousers',
-	'Clown shoes',
-	'Pumpkin lantern',
-	'Skeleton lantern',
-	'Spooky hood',
-	'Spooky robe',
-	'Spooky skirt',
-	'Spooky gloves',
-	'Spooky boots',
-	'Headless head',
-	'Magical pumpkin',
-	'Haunted wine bottle',
-	'Ugly halloween jumper (black)',
-	'Ugly halloween jumper (orange)',
-	'Saucepan',
-	"Black h'ween mask",
-	'Witch hat',
-	'Witch top',
-	'Witch robes',
-	'Witch boots',
-	'Witch cape',
-	'Halloween wig'
-]);
-
 export const masteryKey = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
 
 export const ItemIconPacks = [
@@ -639,3 +603,13 @@ export const ItemIconPacks = [
 		icons: new Map<number, Image>()
 	}
 ];
+
+export const patronFeatures = {
+	ShowEnteredInGiveawayList: {
+		tier: PerkTier.Four
+	}
+};
+
+export const gearValidationChecks = new Set();
+
+export const BSO_MAX_TOTAL_LEVEL = 3120;

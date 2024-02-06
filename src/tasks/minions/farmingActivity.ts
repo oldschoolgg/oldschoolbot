@@ -36,7 +36,7 @@ export const farmingTask: MinionTask = {
 		let woodcuttingXp = 0;
 		let herbloreXp = 0;
 		let payStr = '';
-		let wcStr = '';
+		let wcBool = false;
 		let rakeStr = '';
 		let plantingStr = '';
 		const infoStr: string[] = [];
@@ -118,7 +118,8 @@ export const farmingTask: MinionTask = {
 
 			str += `\n${await user.addXP({
 				skillName: SkillsEnum.Farming,
-				amount: Math.floor(farmingXpReceived + bonusXP)
+				amount: Math.floor(farmingXpReceived + bonusXP),
+				duration: data.duration
 			})}`;
 
 			if (loot.length > 0) str += `\n\nYou received: ${loot}.`;
@@ -268,7 +269,7 @@ export const farmingTask: MinionTask = {
 					}
 
 					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp!;
-					wcStr = ` You also received ${woodcuttingXp.toLocaleString()} Woodcutting XP.`;
+					wcBool = true;
 
 					harvestXp = 0;
 				} else if (plantToHarvest.givesCrops && chopped) {
@@ -295,13 +296,30 @@ export const farmingTask: MinionTask = {
 				plantingStr = `${user}, ${user.minionName} finished `;
 			}
 
+			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
+
+			const xpRes = await user.addXP({
+				skillName: SkillsEnum.Farming,
+				amount: Math.floor(farmingXpReceived + bonusXP),
+				duration: data.duration
+			});
+			const wcXP = await user.addXP({
+				skillName: SkillsEnum.Woodcutting,
+				amount: Math.floor(woodcuttingXp)
+			});
+			await user.addXP({
+				skillName: SkillsEnum.Herblore,
+				amount: Math.floor(herbloreXp),
+				source: 'CleaningHerbsWhileFarming'
+			});
+
 			infoStr.push(
 				`${plantingStr}harvesting ${patchType.lastQuantity}x ${
 					plantToHarvest.name
-				}.${deathStr}${payStr}\n\nYou received ${plantXp.toLocaleString()} XP for planting, ${rakeStr}${harvestXp.toLocaleString()} XP for harvesting, and ${checkHealthXp.toLocaleString()} XP for checking health for a total of ${farmingXpReceived.toLocaleString()} Farming XP.${wcStr}`
+				}.${deathStr}${payStr}\n\nYou received ${plantXp.toLocaleString()} XP for planting, ${rakeStr}${harvestXp.toLocaleString()} XP for harvesting, and ${checkHealthXp.toLocaleString()} XP for checking health. In total: ${xpRes}. ${
+					wcBool ? wcXP : ''
+				}`
 			);
-
-			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
 
 			if (bonusXP > 0) {
 				infoStr.push(
@@ -313,31 +331,6 @@ export const farmingTask: MinionTask = {
 				infoStr.push(
 					`\nYou received ${herbloreXp.toLocaleString()} Herblore XP for cleaning the herbs during your trip.`
 				);
-			}
-
-			await user.addXP({
-				skillName: SkillsEnum.Farming,
-				amount: Math.floor(farmingXpReceived + bonusXP)
-			});
-			await user.addXP({
-				skillName: SkillsEnum.Woodcutting,
-				amount: Math.floor(woodcuttingXp)
-			});
-			await user.addXP({
-				skillName: SkillsEnum.Herblore,
-				amount: Math.floor(herbloreXp),
-				source: 'CleaningHerbsWhileFarming'
-			});
-
-			const newFarmingLevel = user.skillLevel(SkillsEnum.Farming);
-			const newWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
-
-			if (newFarmingLevel > currentFarmingLevel) {
-				infoStr.push(`\n${user.minionName}'s Farming level is now ${newFarmingLevel}!`);
-			}
-
-			if (newWoodcuttingLevel > currentWoodcuttingLevel) {
-				infoStr.push(`\n\n${user.minionName}'s Woodcutting level is now ${newWoodcuttingLevel}!`);
 			}
 
 			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, plantToHarvest.petChance);

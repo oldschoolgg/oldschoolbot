@@ -11,7 +11,6 @@ import {
 	Time,
 	uniqueArr
 } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
@@ -138,6 +137,7 @@ export async function minionKillCommand(
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
+	const inputQuantity = quantity;
 	const { minionName } = user;
 	const wildyGear = user.gear.wildy;
 	const style = convertAttackStylesToSetup(user.user.attack_style);
@@ -151,7 +151,7 @@ export async function minionKillCommand(
 	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID);
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
-	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name);
+	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name, quantity);
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID);
 
 	let monster = findMonster(name);
@@ -763,13 +763,7 @@ export async function minionKillCommand(
 		pkString += chanceString;
 	}
 
-	if (lootToRemove.length > 0) {
-		updateBankSetting('economyStats_PVMCost', lootToRemove);
-		await user.specialRemoveItems(lootToRemove, { wildy: monster.wildy ? true : false });
-		totalCost.add(lootToRemove);
-	}
-
-	// Check food last, so we can remove any pending loot (pk supplies-food costs) from the bank before removing food.
+	// Check food
 	let foodStr: string = '';
 	// Find best eatable boost and add 1% extra
 	const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
@@ -837,6 +831,13 @@ export async function minionKillCommand(
 		duration = reduceNumByPercent(duration, noFoodBoost);
 	}
 
+	// Remove items after food calc to prevent losing items if the user doesn't have the right amount of food. Example: Mossy key
+	if (lootToRemove.length > 0) {
+		updateBankSetting('economyStats_PVMCost', lootToRemove);
+		await user.specialRemoveItems(lootToRemove, { wildy: monster.wildy ? true : false });
+		totalCost.add(lootToRemove);
+	}
+
 	if (totalCost.length > 0) {
 		await trackLoot({
 			id: monster.name,
@@ -857,6 +858,7 @@ export async function minionKillCommand(
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
+		iQty: inputQuantity,
 		duration,
 		type: 'MonsterKilling',
 		usingCannon: !usingCannon ? undefined : usingCannon,
@@ -895,7 +897,7 @@ export async function minionKillCommand(
 	return response;
 }
 
-export async function monsterInfo(user: MUser, name: string): CommandResponse {
+export async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
 	const monster = findMonster(name);
 
 	if (stringMatches(name, 'nightmare')) {
@@ -1081,7 +1083,7 @@ export async function monsterInfo(user: MUser, name: string): CommandResponse {
 	str.push(
 		`Due to the random variation of an added 1-20% duration, ${maxCanKill}x kills can take between (${formatDuration(
 			min
-		)} and (${formatDuration(max)})\nIf the Weekend boost is active, it takes: (${formatDuration(
+		)}) and (${formatDuration(max)})\nIf the Weekend boost is active, it takes: (${formatDuration(
 			min * 0.9
 		)}) to (${formatDuration(max * 0.9)}) to finish.\n`
 	);

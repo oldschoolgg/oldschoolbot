@@ -1,15 +1,32 @@
-import { calcPercentOfNum, randArrItem, randInt, shuffleArr, Time } from 'e';
+import { calcPercentOfNum, randArrItem, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { afterAll, describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
 import { usernameCache } from '../../src/lib/constants';
 import { GrandExchange } from '../../src/lib/grandExchange';
 import { prisma } from '../../src/lib/settings/prisma';
 import { assert } from '../../src/lib/util';
-import { gePino } from '../../src/lib/util/logger';
 import resolveItems from '../../src/lib/util/resolveItems';
 import { geCommand } from '../../src/mahoji/commands/ge';
 import { createTestUser, mockClient, TestUser } from './util';
+
+const quantities = [-1, 0, 100_000_000_000_000_000, 1, 2, 38, 1_000_000_000_000, 500, '5*5'];
+const prices = [
+	-1,
+	0,
+	100_000_000_000_000_000,
+	1,
+	2,
+	1_000_000_000_000,
+	99,
+	100,
+	101,
+	1005,
+	4005,
+	5005,
+	100_000,
+	'5*9999999'
+];
 
 const sampleBank = new Bank()
 	.add('Coins', 1_000_000_000)
@@ -53,58 +70,22 @@ describe('Grand Exchange', async () => {
 
 			const currentOwnedBank = await GrandExchange.fetchOwnedBank();
 			expect(currentOwnedBank.toString()).toEqual(new Bank().toString());
+			let amountOfUsers = randInt(300, 400);
 
-			const totalExpectedBank = new Bank();
+			const totalExpectedBank = sampleBank.clone().multiply(amountOfUsers);
 			let users: TestUser[] = [];
-			let amountOfUsers = randInt(50, 100);
 
-			let initPromises = [];
 			for (let i = 0; i < amountOfUsers; i++) {
-				initPromises.push(
-					(async () => {
-						const user = await createTestUser();
-						await user.addItemsToBank({ items: sampleBank });
-						users.push(user);
-						totalExpectedBank.add(sampleBank);
-						assert(user.bankWithGP.equals(sampleBank), 'Test users bank should match sample bank');
-					})()
-				);
+				const user = await createTestUser();
+				await user.addItemsToBank({ items: sampleBank });
+				users.push(user);
 			}
-			await Promise.all(initPromises);
-
-			users = shuffleArr(users);
 
 			for (let i = 0; i < users.length; i++) {
 				for (const item of itemPool) {
 					const method = randArrItem(['buy', 'sell']);
-					let quantity = randArrItem([
-						-1,
-						0,
-						100_000_000_000_000_000,
-						1,
-						2,
-						38,
-						1_000_000_000_000,
-						500,
-						'5*5'
-					]);
-					let price = randArrItem([
-						-1,
-						0,
-						100_000_000_000_000_000,
-						1,
-						2,
-						1_000_000_000_000,
-						99,
-						100,
-						101,
-						1005,
-						4005,
-						5005,
-						100_000,
-						'5*9999999'
-					]);
-
+					let quantity = randArrItem(quantities);
+					let price = randArrItem(prices);
 					users[i].runCommand(geCommand, {
 						[method]: {
 							item,
@@ -115,7 +96,7 @@ describe('Grand Exchange', async () => {
 				}
 			}
 
-			for (let i = 0; i < 30; i++) {
+			for (let i = 0; i < 100; i++) {
 				await GrandExchange.tick();
 				await Promise.all([
 					GrandExchange.checkGECanFullFilAllListings(),
@@ -125,7 +106,7 @@ describe('Grand Exchange', async () => {
 
 			const testBank = new Bank();
 			const cancelPromises = [];
-			for (const user of shuffleArr(users)) {
+			for (const user of users) {
 				cancelPromises.push(cancelAllListings(user));
 			}
 
@@ -243,9 +224,5 @@ describe('Grand Exchange', async () => {
 		const data = await GrandExchange.fetchData();
 		expect(data.taxBank).toEqual(totalTax);
 		expect(data.totalTax).toEqual(totalTax);
-	});
-
-	afterAll(() => {
-		gePino.flush();
 	});
 });
