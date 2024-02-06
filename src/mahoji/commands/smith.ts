@@ -110,7 +110,7 @@ export const smithCommand: OSBMahojiCommand = {
 		let timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
 		if (user.usingPet('Takon')) {
 			timeToSmithSingleBar /= 4;
-		} else if (user.hasEquipped('Dwarven greathammer')) {
+		} else if (user.hasEquippedOrInBank('Dwarven greathammer')) {
 			timeToSmithSingleBar /= 2;
 		}
 
@@ -196,7 +196,7 @@ export const smithCommand: OSBMahojiCommand = {
 
 		if (user.usingPet('Takon')) {
 			str += ' Takon is Smithing for you, at incredible speeds and skill.';
-		} else if (user.hasEquipped('Dwarven greathammer')) {
+		} else if (user.hasEquippedOrInBank('Dwarven greathammer')) {
 			str += ' 2x faster for Dwarven greathammer.';
 		}
 		if (hasScroll) {
