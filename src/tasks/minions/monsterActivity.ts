@@ -206,6 +206,9 @@ export const monsterTask: MinionTask = {
 		if (!hasRingOfWealthI) {
 			hasRingOfWealthI = false;
 		}
+		if (hasRingOfWealthI) {
+			messages.push('\nYour clue scroll chance is doubled due to wearing a Ring of Wealth (i).');
+		}
 
 		const killOptions: MonsterKillOptions = {
 			onSlayerTask: isOnTaskResult.isOnTask,
@@ -225,7 +228,7 @@ export const monsterTask: MinionTask = {
 				let superiorDroprate = 200;
 				if (user.hasCompletedCATier('elite')) {
 					superiorDroprate = 150;
-					messages.push(`${Emoji.CombatAchievements} 25% more common superiors due to Elite CA tier`);
+					messages.push(`\n${Emoji.CombatAchievements} 25% more common superiors due to Elite CA tier.`);
 				}
 
 				for (let i = 0; i < quantity; i++) {
