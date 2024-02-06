@@ -176,7 +176,7 @@ export async function handlePassiveImplings(user: MUser, data: ActivityTaskData)
 	let baseChance = IMPLING_CHANCE_PER_MINUTE;
 	const hasScrollOfTheHunt = user.bitfield.includes(BitField.HasScrollOfTheHunt);
 	if (hasScrollOfTheHunt) baseChance = Math.floor(baseChance / 2);
-	if (user.hasEquipped('Hunter master cape')) baseChance = Math.floor(baseChance / 2);
+	if (user.hasEquippedOrInBank('Hunter master cape')) baseChance = Math.floor(baseChance / 2);
 
 	const impTable = implingTableByWorldLocation[activityInArea(data)](baseChance, user.usingPet('Mr. E'));
 

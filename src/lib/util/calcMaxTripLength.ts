@@ -65,7 +65,7 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 		case 'TinkeringWorkshop':
 		case 'Disassembling':
 		case 'Research': {
-			if (user.hasEquipped('Materials bag') || user.owns('Materials bag')) {
+			if (user.hasEquippedOrInBank('Materials bag')) {
 				max += Time.Minute * 7;
 			}
 			break;
