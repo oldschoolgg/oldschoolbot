@@ -742,7 +742,7 @@ GROUP BY data->>'clueID';`);
 		return this.caPoints() >= CombatAchievements[tier].rewardThreshold;
 	}
 
-	buildTertiaryItemChanges(hasRingOfWealthI: boolean) {
+	buildTertiaryItemChanges(hasRingOfWealthI: boolean = false) {
 		const changes = new Map();
 		const tiers = Object.keys(CombatAchievements) as Array<keyof typeof CombatAchievements>;
 		for (const tier of tiers) {

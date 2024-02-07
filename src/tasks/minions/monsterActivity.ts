@@ -203,9 +203,6 @@ export const monsterTask: MinionTask = {
 		const isInCatacombs = (!usingCannon ? monster.existsInCatacombs ?? undefined : undefined) && !isInWilderness;
 
 		let hasRingOfWealthI = user.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness;
-		if (!hasRingOfWealthI) {
-			hasRingOfWealthI = false;
-		}
 		if (hasRingOfWealthI) {
 			messages.push('\nYour clue scroll chance is doubled due to wearing a Ring of Wealth (i).');
 		}
