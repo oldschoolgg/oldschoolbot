@@ -20,7 +20,7 @@ export async function disassemblyTask(data: DisassembleTaskOptions) {
 	const messages: string[] = [];
 	const cost = new Bank().add(item.id, qty);
 	const materialLoot = new MaterialBank(data.mats);
-	if (user.hasEquipped('Invention master cape')) {
+	if (user.hasEquippedOrInBank('Invention master cape')) {
 		materialLoot.mutIncreaseAllValuesByPercent(inventionBoosts.inventionMasterCape.extraMaterialsPercent);
 		messages.push(`${inventionBoosts.inventionMasterCape.extraMaterialsPercent}% bonus materials for mastery`);
 	}

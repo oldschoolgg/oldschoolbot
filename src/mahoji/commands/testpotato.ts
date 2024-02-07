@@ -38,7 +38,6 @@ import { prisma } from '../../lib/settings/prisma';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
-import { SkillsEnum } from '../../lib/skilling/types';
 import { getUsersTame, tameSpecies } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
 import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
@@ -405,9 +404,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							name: 'skill',
 							description: 'The skill.',
 							required: true,
-							choices: Object.values(Skills)
-								.map(s => ({ name: s.name, value: s.id }))
-								.filter(i => i.value !== SkillsEnum.Woodcutting)
+							autocomplete: async value => {
+								return Object.values(Skills)
+									.map(s => ({ name: s.name, value: s.id }))
+									.filter(s => (!value ? true : s.name.toLowerCase().includes(value.toLowerCase())));
+							}
 						},
 						{
 							type: ApplicationCommandOptionType.Integer,

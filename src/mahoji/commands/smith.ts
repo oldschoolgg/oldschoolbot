@@ -75,16 +75,16 @@ export const smithCommand: OSBMahojiCommand = {
 		// If they have the entire Smiths' Uniform, give 100% chance save 1 tick each item
 		let setBonus = 0;
 		if (
-			user.gear.skilling.hasEquipped(
+			user.hasEquippedOrInBank(
 				Object.keys(Smithing.smithsUniformItems).map(i => parseInt(i)),
-				true
+				'every'
 			)
 		) {
 			setBonus += 100;
 		} else {
 			// For each Smiths' Uniform item, check if they have it, give % chance to save 1 tick each item
 			for (const [itemID, bonus] of Object.entries(Smithing.smithsUniformItems)) {
-				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
+				if (user.hasEquippedOrInBank(parseInt(itemID))) {
 					setBonus += bonus;
 				}
 			}
@@ -110,7 +110,7 @@ export const smithCommand: OSBMahojiCommand = {
 		let timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
 		if (user.usingPet('Takon')) {
 			timeToSmithSingleBar /= 4;
-		} else if (user.hasEquipped('Dwarven greathammer')) {
+		} else if (user.hasEquippedOrInBank('Dwarven greathammer')) {
 			timeToSmithSingleBar /= 2;
 		}
 
@@ -196,7 +196,7 @@ export const smithCommand: OSBMahojiCommand = {
 
 		if (user.usingPet('Takon')) {
 			str += ' Takon is Smithing for you, at incredible speeds and skill.';
-		} else if (user.hasEquipped('Dwarven greathammer')) {
+		} else if (user.hasEquippedOrInBank('Dwarven greathammer')) {
 			str += ' 2x faster for Dwarven greathammer.';
 		}
 		if (hasScroll) {
