@@ -253,7 +253,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Invention Effects',
 		fn: async ({ data, messages, user }) => {
-			if (user.hasEquipped('Silverhawk boots') && data.duration > Time.Minute) {
+			if (user.hasEquippedOrInBank('Silverhawk boots') && data.duration > Time.Minute) {
 				const costRes = await inventionItemBoost({
 					user,
 					inventionID: InventionID.SilverHawkBoots,

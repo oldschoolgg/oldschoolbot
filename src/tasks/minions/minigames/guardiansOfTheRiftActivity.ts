@@ -88,16 +88,16 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		// If they have the entire Raiments of the Eye outfit, give an extra 20% quantity bonus (NO bonus XP)
 		let setBonus = 1;
 		if (
-			user.gear.skilling.hasEquipped(
+			user.hasEquippedOrInBank(
 				Object.keys(Runecraft.raimentsOfTheEyeItems).map(i => parseInt(i)),
-				true
+				'every'
 			)
 		) {
 			setBonus += 60 / 100;
 		} else {
 			// For each Raiments of the Eye item, check if they have it, give its' quantity boost if so (NO bonus XP).
 			for (const [itemID, bonus] of Object.entries(Runecraft.raimentsOfTheEyeItems)) {
-				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
+				if (user.hasEquippedOrInBank(parseInt(itemID))) {
 					setBonus += bonus / 100;
 				}
 			}

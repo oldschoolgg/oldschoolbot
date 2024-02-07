@@ -78,11 +78,11 @@ export async function monkeyRumbleCommand(user: MUser, channelID: string): Comma
 	let duration = quantity * fightDuration;
 
 	let chanceOfSpecial = Math.floor(125 * (6 - monkeyTierOfUser(user) / 2));
-	if (user.hasEquipped('Big banana')) {
+	if (user.hasEquippedOrInBank('Big banana')) {
 		chanceOfSpecial = reduceNumByPercent(chanceOfSpecial, 12);
 		boosts.push('12% higher chance of purple monkeys from Big banana');
 	}
-	if (user.hasEquipped('Ring of luck')) {
+	if (user.hasEquippedOrInBank('Ring of luck')) {
 		chanceOfSpecial = reduceNumByPercent(chanceOfSpecial, 4);
 		boosts.push('4% higher chance of purple monkeys from ring of luck');
 	}
@@ -92,7 +92,7 @@ export async function monkeyRumbleCommand(user: MUser, channelID: string): Comma
 	}
 	monkeysToFight.sort((a, b) => (a.special === b.special ? 0 : a.special ? -1 : 1));
 	let foodRequired = Math.floor(duration / (Time.Minute * 1.34));
-	if (user.hasEquipped('Big banana')) {
+	if (user.hasEquippedOrInBank('Big banana')) {
 		foodRequired = reduceNumByPercent(foodRequired, 25);
 		foodRequired = Math.floor(foodRequired);
 		boosts.push('25% less food from Big banana');
