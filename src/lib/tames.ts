@@ -649,7 +649,7 @@ function doubleLootCheck(tame: Tame, loot: Bank) {
 }
 
 export interface Species {
-	id: number;
+	id: TameSpeciesID;
 	type: TameType;
 	name: string;
 	// Tame type within its specie
@@ -894,7 +894,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 					await mTame.addToStatsBank('third_age_jibwings_loot', thirdAgeJwLoot);
 				}
 
-				if (mTame.hasEquipped('Impling locator')) {
+				if (mTame.hasBeenFed('Impling locator')) {
 					const result = await handlePassiveImplings(user, {
 						type: 'MonsterKilling',
 						duration: activity.duration

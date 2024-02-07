@@ -152,8 +152,18 @@ const eagleEquippables: TameEquippable[] = [
 		tameSpecies: [TameSpeciesID.Eagle]
 	},
 	{
-		item: getOSItem('Impling locator'),
-		slot: 'equipped_primary',
+		item: getOSItem('Demonic jibwings (e)'),
+		slot: 'equipped_armor',
+		tameSpecies: [TameSpeciesID.Eagle]
+	},
+	{
+		item: getOSItem('Abyssal jibwings (e)'),
+		slot: 'equipped_armor',
+		tameSpecies: [TameSpeciesID.Eagle]
+	},
+	{
+		item: getOSItem('3rd age jibwings (e)'),
+		slot: 'equipped_armor',
 		tameSpecies: [TameSpeciesID.Eagle]
 	},
 	{
@@ -176,7 +186,7 @@ export const tameEquippables: TameEquippable[] = [
 
 interface FeedableItem {
 	item: Item;
-	tameSpeciesCanBeFedThis: TameType[];
+	tameSpeciesCanBeFedThis: TameSpeciesID[];
 	description: string;
 	announcementString: string;
 }
@@ -185,50 +195,50 @@ export const tameFeedableItems: FeedableItem[] = [
 	{
 		item: getOSItem('Ori'),
 		description: '25% extra loot',
-		tameSpeciesCanBeFedThis: [TameType.Combat],
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne],
 		announcementString: 'Your tame will now get 25% extra loot!'
 	},
 	{
 		item: getOSItem('Zak'),
 		description: '+35 minutes longer max trip length',
-		tameSpeciesCanBeFedThis: [TameType.Combat, TameType.Gatherer],
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne, TameSpeciesID.Monkey],
 		announcementString: 'Your tame now has a much longer max trip length!'
 	},
 	{
 		item: getOSItem('Abyssal cape'),
 		description: '20% food reduction',
-		tameSpeciesCanBeFedThis: [TameType.Combat],
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne],
 		announcementString: 'Your tame now has 20% food reduction!'
 	},
 	{
 		item: getOSItem('Voidling'),
 		description: '10% faster collecting',
-		tameSpeciesCanBeFedThis: [TameType.Gatherer],
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Monkey],
 		announcementString: 'Your tame can now collect items 10% faster thanks to the Voidling helping them teleport!'
 	},
 	{
 		item: getOSItem('Ring of endurance'),
 		description: '10% faster collecting',
-		tameSpeciesCanBeFedThis: [TameType.Gatherer],
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Monkey],
 		announcementString:
 			'Your tame can now collect items 10% faster thanks to the Ring of endurance helping them run for longer!'
 	},
 	{
 		item: getOSItem('Dwarven warhammer'),
 		description: '30% faster PvM',
-		tameSpeciesCanBeFedThis: [TameType.Combat],
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne],
 		announcementString: "Your tame can now kill 30% faster! It's holding the Dwarven warhammer in its claws..."
 	},
 	{
 		item: getOSItem('Mr. E'),
 		description: 'Chance to get 2x loot',
-		tameSpeciesCanBeFedThis: [TameType.Combat, TameType.Gatherer, TameType.Artisan, TameType.Support],
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne, TameSpeciesID.Monkey],
 		announcementString: "With Mr. E's energy absorbed, your tame now has a chance at 2x loot!"
 	},
 	{
 		item: getOSItem('Klik'),
 		description: 'Makes tanning spell faster',
-		tameSpeciesCanBeFedThis: [TameType.Gatherer],
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Monkey],
 		announcementString:
 			"Your tame uses a spell to infuse Klik's fire breathing ability into itself. It can now tan hides much faster."
 	}
@@ -478,7 +488,7 @@ export async function tameImage(user: MUser): CommandResponse {
 		// Draw tame boosts
 		let prevWidth = 0;
 		let feedQty = 0;
-		for (const { item } of tameFeedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species.type))) {
+		for (const { item } of tameFeedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species.id))) {
 			if (tameHasBeenFed(t, item.id)) {
 				const itemImage = await bankImageGenerator.getItemImage(item.id);
 				if (itemImage) {
@@ -804,9 +814,7 @@ async function feedCommand(interaction: ChatInputCommandInteraction, user: MUser
 		bankToAdd.add(item.id, qtyToUse);
 	}
 
-	const thisTameSpecialFeedableItems = tameFeedableItems.filter(f =>
-		f.tameSpeciesCanBeFedThis.includes(species!.type)
-	);
+	const thisTameSpecialFeedableItems = tameFeedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species!.id));
 
 	if (!str || bankToAdd.length === 0) {
 		const image = await makeBankImage({
@@ -830,7 +838,7 @@ async function feedCommand(interaction: ChatInputCommandInteraction, user: MUser
 	for (const { item, description, tameSpeciesCanBeFedThis } of thisTameSpecialFeedableItems) {
 		const similarItems = getSimilarItems(item.id);
 		if (similarItems.some(si => bankToAdd.has(si))) {
-			if (!tameSpeciesCanBeFedThis.includes(species!.type)) {
+			if (!tameSpeciesCanBeFedThis.includes(species!.id)) {
 				await handleMahojiConfirmation(
 					interaction,
 					`Feeding a '${item.name}' to your tame won't give it a perk, are you sure you want to?`
@@ -1505,7 +1513,6 @@ async function tameUnequipCommand(user: MUser, itemName: string) {
 }
 
 export function determineTameClueResult({
-	fedZak,
 	tameGrowthLevel,
 	clueTier,
 	extraTripLength,
@@ -1515,7 +1522,6 @@ export function determineTameClueResult({
 }: {
 	extraTripLength: number;
 	clueTier: ClueTier;
-	fedZak: boolean;
 	tameGrowthLevel: number;
 	supportLevel: number;
 	equippedArmor: number | null;
@@ -1523,9 +1529,12 @@ export function determineTameClueResult({
 }) {
 	const boosts: string[] = [];
 	let maxTripLength = Time.Minute * 20 * (4 - tameGrowthLevel);
-	if (fedZak) {
-		maxTripLength += Time.Minute * 35;
-		boosts.push('+35mins trip length (ate a Zak)');
+	if (
+		equippedArmor &&
+		resolveItems(['Abyssal jibwings (e)', 'Demonic jibwings (e)', '3rd age jibwings (e)']).includes(equippedArmor)
+	) {
+		maxTripLength += Time.Minute * 30;
+		boosts.push('+30mins trip length for enhanced jibwings');
 	}
 
 	maxTripLength += extraTripLength;
@@ -1551,12 +1560,12 @@ export function determineTameClueResult({
 	boosts.push(`${boostPercent.toFixed(2)}% faster for support level`);
 
 	if (equippedPrimary === itemID('Divine ring')) {
-		boosts.push(`10% faster (${formatDuration(calcPercentOfNum(10, timePerClue))} per clue) for Divine ring`);
-		timePerClue = reduceNumByPercent(timePerClue, 10);
+		boosts.push(`15% faster (${formatDuration(calcPercentOfNum(15, timePerClue))} per clue) for Divine ring`);
+		timePerClue = reduceNumByPercent(timePerClue, 15);
 	}
 
 	const quantity = Math.floor(maxTripLength / timePerClue);
-	const duration = quantity * timePerClue;
+	const duration = Math.floor(quantity * timePerClue);
 
 	const baseCost = (ClueTiers.indexOf(clueTier) + 1) * quantity;
 	const kibbleNeeded = Math.ceil(baseCost / 1.5);
@@ -1602,16 +1611,25 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 	let { cost, quantity, duration, boosts, costSavedByDemonicJibwings } = determineTameClueResult({
 		tameGrowthLevel: tame.growthLevel,
 		clueTier,
-		fedZak: tame.hasBeenFed('Zak'),
 		extraTripLength: patronMaxTripBonus(user) * 2,
 		supportLevel: tame.currentSupportLevel,
 		equippedArmor: tame.equippedArmor?.id ?? null,
 		equippedPrimary: tame.equippedPrimary?.id ?? null
 	});
 
+	if (quantity === 0) {
+		return "Your tame can't do this clue scroll fast enough.";
+	}
+
+	assert(quantity >= 1 && Number.isInteger(quantity), `${quantity} quantity should be an integer.`);
+	assert(duration >= 1 && Number.isInteger(duration), `${duration} duration should be an integer.`);
+
 	const units = await user.fetchStashUnits();
 	if (units.filter(u => u.tier.tier === clueTier.name).some(u => !u.isFull)) {
 		return `You need to have all your ${clueTier.name} STASH units built and full.`;
+	}
+	if (clueTier.name === 'Grandmaster' && units.some(u => !u.isFull)) {
+		return 'You need to have all your STASH units built and full for your tame to do Grandmaster clues.';
 	}
 
 	if (!user.owns(cost)) {
@@ -1641,7 +1659,7 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 
 	let reply = `${tame} is now doing completing ${quantity}x ${itemNameFromID(
 		clueTier.scrollID
-	)}. The trip will take ${formatDuration(task.duration)}.`;
+	)}. Removed ${cost} from your bank. The trip will take ${formatDuration(task.duration)}.`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;

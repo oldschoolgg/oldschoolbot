@@ -5,6 +5,7 @@ import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
+	notEmpty,
 	objectKeys,
 	reduceNumByPercent,
 	round,
@@ -22,7 +23,8 @@ import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem } from '../../../lib/degradeableItems';
 import { Diary, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
-import { GearSetupType } from '../../../lib/gear/types';
+import { readableStatName } from '../../../lib/gear';
+import { GearSetupType, GearStat } from '../../../lib/gear/types';
 import { canAffordInventionBoost, InventionID, inventionItemBoost } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import {
@@ -56,7 +58,7 @@ import { calcPOHBoosts } from '../../../lib/poh';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { maxOffenceStats } from '../../../lib/structures/Gear';
+import { addStatsOfItemsTogether, maxOffenceStats } from '../../../lib/structures/Gear';
 import { Peak } from '../../../lib/tickers';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
@@ -258,6 +260,24 @@ export async function minionKillCommand(
 		const [hasDiary] = await userhasDiaryTier(user, tier);
 		if (!hasDiary) {
 			return `${user.minionName} is missing the ${diary.name} ${tier.name} diary to kill ${monster.name}.`;
+		}
+	}
+
+	if (monster.minimumWeaponShieldStats) {
+		for (const [setup, minimum] of Object.entries(monster.minimumWeaponShieldStats)) {
+			const gear = user.gear[setup as GearSetupType];
+			const stats = addStatsOfItemsTogether(
+				[gear['2h']?.item, gear.weapon?.item, gear.shield?.item].filter(notEmpty)
+			);
+			for (const [key, requiredValue] of Object.entries(minimum)) {
+				if (requiredValue < 1) continue;
+				const theirValue = stats[key as GearStat] ?? 0;
+				if (theirValue < requiredValue) {
+					return `Your ${setup} weapons/shield need to have at least ${requiredValue} ${readableStatName(
+						key
+					)} to kill ${monster.name}, you have ${theirValue}.`;
+				}
+			}
 		}
 	}
 

@@ -23,6 +23,7 @@ import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { dyedItems } from '../../lib/dyedItems';
+import { GearSetupType, GearStat } from '../../lib/gear';
 import { materialTypes } from '../../lib/invention';
 import { DisassemblySourceGroups } from '../../lib/invention/groups';
 import { Inventions, transactMaterialsFromUser } from '../../lib/invention/inventions';
@@ -48,6 +49,7 @@ import {
 	getFarmingKeyFromName,
 	userGrowingProgressStr
 } from '../../lib/util/farmingHelpers';
+import { findBestGearSetups } from '../../lib/util/findBISGear';
 import getOSItem from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { logError } from '../../lib/util/logError';
@@ -57,6 +59,7 @@ import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { MAX_QP } from '../lib/abstracted_commands/questCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { BingoManager } from '../lib/bingo/BingoManager';
+import { gearSetupOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
@@ -100,11 +103,13 @@ async function givePatronLevel(user: MUser, tier: number) {
 const gearPresets = [
 	{
 		name: 'ToB',
-		melee: TOBMaxMeleeGear,
-		mage: TOBMaxMageGear,
-		range: TOBMaxRangeGear
+		gear: TOBMaxRangeGear
 	}
 ];
+
+for (const stat of Object.values(GearStat)) {
+	gearPresets.push({ name: `BIS ${stat}`, gear: findBestGearSetups(stat)[0] });
+}
 
 const thingsToReset = [
 	{
@@ -366,7 +371,13 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							type: ApplicationCommandOptionType.String,
 							name: 'preset',
 							description: 'Choose from some preset things to spawn.',
-							choices: spawnPresets.map(i => ({ name: i[0], value: i[0] }))
+							autocomplete: async value => {
+								return spawnPresets
+									.filter(preset =>
+										!value ? true : preset[0].toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i[0], value: i[0] }));
+							}
 						},
 						{
 							type: ApplicationCommandOptionType.Boolean,
@@ -474,11 +485,21 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					description: 'Spawn and equip gear for a particular thing',
 					options: [
 						{
+							...gearSetupOption,
+							required: true
+						},
+						{
 							type: ApplicationCommandOptionType.String,
-							name: 'thing',
-							description: 'The thing to spawn gear for.',
+							name: 'preset',
+							description: 'The preset to spawn and equip.',
 							required: true,
-							choices: gearPresets.map(i => ({ name: i.name, value: i.name }))
+							autocomplete: async value => {
+								return gearPresets
+									.filter(preset =>
+										!value ? true : preset.name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i.name, value: i.name }));
+							}
 						}
 					]
 				},
@@ -670,7 +691,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 			}: CommandRunOptions<{
 				max?: {};
 				patron?: { tier: string };
-				gear?: { thing: string };
+				gear?: { gear_setup: GearSetupType; preset: string };
 				reset?: { thing: string };
 				setminigamekc?: { minigame: string; kc: number };
 				setxp?: { skill: string; xp: number };
@@ -964,11 +985,9 @@ ${droprates.join('\n')}`),
 					return givePatronLevel(user, Number(options.patron.tier));
 				}
 				if (options.gear) {
-					const gear = gearPresets.find(i => stringMatches(i.name, options.gear?.thing))!;
+					const gear = gearPresets.find(i => stringMatches(i.name, options.gear!.preset))!;
 					await user.update({
-						gear_melee: gear.melee.raw() as any,
-						gear_range: gear.range.raw() as any,
-						gear_mage: gear.mage.raw() as any
+						[`gear_${options.gear.gear_setup}`]: gear.gear as any
 					});
 					return `Set your gear for ${gear.name}.`;
 				}

@@ -11144,7 +11144,7 @@ setCustomItem(
 setCustomItem(
 	73_074,
 	'Axe of the high sungod (u)',
-	'Dragon axe',
+	'Coal',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -11469,6 +11469,42 @@ setCustomItem(
 	73_101,
 	'Divine ring',
 	'Ruby ring',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_102,
+	'Demonic jibwings (e)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_103,
+	'Abyssal jibwings (e)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_104,
+	'3rd age jibwings (e)',
+	'Coal',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true

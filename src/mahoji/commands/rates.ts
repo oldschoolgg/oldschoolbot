@@ -128,13 +128,12 @@ export const ratesCommand: OSBMahojiCommand = {
 				for (const clueTier of ClueTiers) {
 					if (tameLevel < clueTier.eagleTameSupportLevelNeeded) continue;
 					const res = determineTameClueResult({
-						fedZak: true,
 						tameGrowthLevel: 3,
 						clueTier,
 						extraTripLength: 0,
 						supportLevel: tameLevel,
-						equippedArmor: null,
-						equippedPrimary: null
+						equippedArmor: itemID('Abyssal jibwings (e)'),
+						equippedPrimary: itemID('Divine ring')
 					});
 
 					results += [
@@ -148,6 +147,7 @@ export const ratesCommand: OSBMahojiCommand = {
 			}
 
 			return {
+				content: 'Assumes abyssal jibwings (e) and divine ring',
 				...(returnStringOrFile(results, true) as InteractionReplyOptions)
 			};
 		}

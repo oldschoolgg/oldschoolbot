@@ -40,7 +40,7 @@ import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
-import { TameSpeciesID, TameType } from '../tames';
+import { TameSpeciesID } from '../tames';
 import { ItemBank } from '../types';
 import { calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
@@ -357,7 +357,7 @@ export const eliteTasks: Task[] = [
 				.some(t => {
 					const fedItems = new Bank(t.fed_items as ItemBank);
 					return tameFeedableItems.some(
-						i => i.tameSpeciesCanBeFedThis.includes(TameType.Combat) && fedItems.has(i.item.id)
+						i => i.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Igne) && fedItems.has(i.item.id)
 					);
 				});
 		}
@@ -371,7 +371,7 @@ export const eliteTasks: Task[] = [
 				.some(t => {
 					const fedItems = new Bank(t.fed_items as ItemBank);
 					return tameFeedableItems.some(
-						i => i.tameSpeciesCanBeFedThis.includes(TameType.Gatherer) && fedItems.has(i.item.id)
+						i => i.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Monkey) && fedItems.has(i.item.id)
 					);
 				});
 		}
