@@ -83,7 +83,7 @@ export const cookCommand: OSBMahojiCommand = {
 		if (hasFavour) boosts.push('Using Hosidius Range');
 		if (hasFavour && hasEliteDiary) boosts.push('Kourend Elite Diary');
 		const hasGaunts = user.hasEquippedOrInBank('Cooking gauntlets');
-		if (hasGaunts) boosts.push('Cooking gauntlets equipped');
+		if (hasGaunts) boosts.push('Cooking gauntlets available');
 
 		let timeToCookSingleCookable = Time.Second * 2.4 + Time.Second * 0.45;
 
@@ -91,10 +91,13 @@ export const cookCommand: OSBMahojiCommand = {
 			timeToCookSingleCookable /= 1.6;
 			if (hasRemy) timeToCookSingleCookable /= 1.5;
 		} else if (user.hasEquippedOrInBank('Cooking master cape')) {
+			boosts.push('5x for Cooking master cape');
 			timeToCookSingleCookable /= 5;
 		} else if (user.hasEquippedOrInBank('Dwarven gauntlets')) {
+			boosts.push('3x for Dwarven gauntlets');
 			timeToCookSingleCookable /= 3;
 		} else if (hasRemy) {
+			boosts.push('2x for Remy');
 			timeToCookSingleCookable /= 2;
 		}
 
