@@ -954,7 +954,7 @@ GROUP BY "bankBackground";`);
 		}
 	},
 	{
-		name: 'XP from Tears of Guthix',
+		name: 'Personal XP gained from Tears of Guthix',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result = await prisma.$queryRawUnsafe<any>(
@@ -966,7 +966,7 @@ GROUP BY "bankBackground";`);
 				 GROUP BY skill`
 			);
 
-			return `**XP From Tears of Guthix**\n${result
+			return `**Personal XP gained from Tears of Guthix**\n${result
 				.map(
 					(i: any) =>
 						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(i.total_xp)}`
