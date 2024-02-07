@@ -132,7 +132,8 @@ export async function minionKillCommand(
 	channelID: string,
 	name: string,
 	quantity: number | undefined,
-	method: PvMMethod | undefined
+	method: PvMMethod | undefined,
+	wilderness: boolean | undefined
 ) {
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
@@ -177,10 +178,10 @@ export async function minionKillCommand(
 		return `You can't kill ${monster.name}, because you're not on a slayer task.`;
 	}
 
-	const isInWilderness = (isOnTask && usersTask.assignedTask?.wilderness) || monster.canBePked;
-	if (isInWilderness) {
-		monster.wildy = true;
-		monster.canBePked = true;
+	let isInWilderness = wilderness || (isOnTask && usersTask.assignedTask?.wilderness) || monster.canBePked;
+
+	if (!monster.wildy && isInWilderness) {
+		return `You can't kill ${monster.name} in the wilderness.`;
 	}
 
 	const wildyGearStat = wildyGear.getStats()[key];
@@ -245,7 +246,7 @@ export async function minionKillCommand(
 		}
 	}
 
-	for (const [itemID, boostAmount] of Object.entries(resolveAvailableItemBoosts(user, monster))) {
+	for (const [itemID, boostAmount] of Object.entries(resolveAvailableItemBoosts(user, monster, isInWilderness))) {
 		timeToFinish *= (100 - boostAmount) / 100;
 		boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 	}
@@ -699,7 +700,7 @@ export async function minionKillCommand(
 	let hasDied: boolean | undefined = undefined;
 	let hasWildySupplies = undefined;
 
-	if (monster.canBePked) {
+	if (isInWilderness) {
 		await increaseWildEvasionXp(user, duration);
 		thePkCount = 0;
 		hasDied = false;
@@ -780,11 +781,11 @@ export async function minionKillCommand(
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
 				activityName: monster.name,
-				attackStylesUsed: monster.wildy
+				attackStylesUsed: isInWilderness
 					? ['wildy']
 					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced,
-				isWilderness: monster.wildy
+				isWilderness: isInWilderness
 			});
 
 			if (foodRemoved.length === 0) {
@@ -834,7 +835,7 @@ export async function minionKillCommand(
 	// Remove items after food calc to prevent losing items if the user doesn't have the right amount of food. Example: Mossy key
 	if (lootToRemove.length > 0) {
 		updateBankSetting('economyStats_PVMCost', lootToRemove);
-		await user.specialRemoveItems(lootToRemove, { wildy: monster.wildy ? true : false });
+		await user.specialRemoveItems(lootToRemove, { wildy: isInWilderness ? true : false });
 		totalCost.add(lootToRemove);
 	}
 

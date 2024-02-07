@@ -37,7 +37,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 29,
 		table: Monsters.AbyssalDemon,
 
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 3,
 		notifyDrops: resolveItems(['Abyssal head', 'Abyssal dagger']),
@@ -213,7 +213,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 27,
 		table: Monsters.Bloodveld,
 
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 1,
 		qpRequired: 0,
@@ -423,7 +423,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 18,
 		table: Monsters.DustDevil,
 
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 2,
 		existsInCatacombs: true,
@@ -595,7 +595,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 37.2,
 		table: Monsters.GreaterNechryael,
 
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 5,
 		qpRequired: 0,
@@ -663,7 +663,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 39,
 		table: Monsters.Hellhound,
 
-		wildy: false,
+		wildy: true,
 
 		existsInCatacombs: true,
 		difficultyRating: 3,
@@ -786,7 +786,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 25,
 		table: Monsters.Jelly,
 
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 2,
 		qpRequired: 0,
@@ -1132,7 +1132,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 15,
 		table: Monsters.SpiritualMage,
 
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 4,
 		qpRequired: 0,
@@ -1153,7 +1153,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 18,
 		table: Monsters.SpiritualRanger,
 
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 3,
 		qpRequired: 0,
@@ -1174,7 +1174,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 19,
 		table: Monsters.SpiritualWarrior,
 
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 3,
 		qpRequired: 0,

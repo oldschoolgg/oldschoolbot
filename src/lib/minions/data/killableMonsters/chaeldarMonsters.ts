@@ -32,7 +32,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 60,
 		table: Monsters.Aviansie,
 
-		wildy: false,
+		wildy: true,
 		difficultyRating: 4,
 		qpRequired: 0,
 		defaultAttackStyles: [SkillsEnum.Ranged],
@@ -48,7 +48,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		aliases: Monsters.BlackDemon.aliases,
 		timeToFinish: Time.Second * 36,
 		table: Monsters.BlackDemon,
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 3,
 		existsInCatacombs: true,
@@ -215,7 +215,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 25,
 		table: Monsters.GreaterDemon,
 
-		wildy: false,
+		wildy: true,
 
 		existsInCatacombs: true,
 		difficultyRating: 2,

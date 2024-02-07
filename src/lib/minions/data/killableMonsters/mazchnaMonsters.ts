@@ -89,7 +89,8 @@ export const mazchnaMonsters: KillableMonster[] = [
 		canBarrage: false,
 		pkActivityRating: 4,
 		pkBaseDeathChance: 2,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		canBePked: true
 	},
 	{
 		id: Monsters.FeralVampyre.id,
@@ -154,7 +155,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		aliases: Monsters.HillGiant.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.HillGiant,
-		wildy: false,
+		wildy: true,
 
 		existsInCatacombs: true,
 		difficultyRating: 1,

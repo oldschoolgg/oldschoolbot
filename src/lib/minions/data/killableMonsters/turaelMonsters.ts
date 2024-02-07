@@ -845,7 +845,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 10,
 		table: Monsters.Scorpion,
 
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 1,
 		qpRequired: 0,
@@ -898,7 +898,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 10,
 		table: Monsters.Skeleton,
 
-		wildy: false,
+		wildy: true,
 
 		existsInCatacombs: true,
 		difficultyRating: 1,
@@ -982,7 +982,7 @@ export const turaelMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 5,
 		table: Monsters.Spider,
 
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 1,
 		qpRequired: 0,
@@ -1214,7 +1214,7 @@ export const turaelMonsters: KillableMonster[] = [
 		aliases: Monsters.Zombie.aliases,
 		timeToFinish: Time.Second * 10,
 		table: Monsters.Zombie,
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 1,
 		qpRequired: 0,

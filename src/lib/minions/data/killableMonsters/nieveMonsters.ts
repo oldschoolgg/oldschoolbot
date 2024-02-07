@@ -31,7 +31,7 @@ export const nieveMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 76,
 		table: Monsters.BlackDragon,
 
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
