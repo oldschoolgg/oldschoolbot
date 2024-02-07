@@ -151,7 +151,7 @@ export const lapsCommand: OSBMahojiCommand = {
 		let timePerLap = course.lapTime * Time.Second;
 
 		let boosts: string[] = [];
-		if (user.hasEquipped('Silverhawk boots')) {
+		if (user.hasEquippedOrInBank('Silverhawk boots')) {
 			const boostedTimePerLap = Math.floor(timePerLap / inventionBoosts.silverHawks.agilityBoostMultiplier);
 			const costRes = await inventionItemBoost({
 				user,

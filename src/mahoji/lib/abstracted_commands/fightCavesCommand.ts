@@ -47,7 +47,7 @@ function determineChanceOfDeathPreJad(user: MUser, attempts: number) {
 	let deathChance = Math.max(14 - attempts * 2, 5);
 
 	// -4% Chance of dying before Jad if you have SGS.
-	if (user.hasEquipped(itemID('Saradomin godsword'))) {
+	if (user.hasEquippedOrInBank(itemID('Saradomin godsword'))) {
 		deathChance -= 4;
 	}
 

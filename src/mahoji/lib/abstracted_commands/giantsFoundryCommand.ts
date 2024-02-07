@@ -200,7 +200,7 @@ export async function giantsFoundryStartCommand(
 		timePerSection = reduceNumByPercent(timePerSection, 15);
 		boosts.push('15% for Takon');
 	}
-	if (user.hasEquipped('Smithing master cape')) {
+	if (user.hasEquippedOrInBank('Smithing master cape')) {
 		timePerSection = reduceNumByPercent(timePerSection, 15);
 		boosts.push('15% for Smithing mastery');
 	}
