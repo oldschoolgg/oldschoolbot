@@ -66,17 +66,16 @@ export const dropCommand: OSBMahojiCommand = {
 		].flat(1);
 		const doubleCheckItems = itemsToDoubleCheck.filter(f => bank.has(f));
 
+		await handleMahojiConfirmation(
+			interaction,
+			`${user}, are you sure you want to drop ${bank}? This is irreversible, and you will lose the items permanently.`
+		);
 		if (doubleCheckItems.length > 0) {
 			await handleMahojiConfirmation(
 				interaction,
-				`${user}, some of the items you are dropping look valuable, are you *really* sure you want to drop them? **${doubleCheckItems
+				`${user}, some of the items you are dropping are on your **favorites** or look valuable, are you *really* sure you want to drop them? **${doubleCheckItems
 					.map(itemNameFromID)
-					.join(', ')}**`
-			);
-		} else {
-			await handleMahojiConfirmation(
-				interaction,
-				`${user}, are you sure you want to drop ${bank}? This is irreversible, and you will lose the items permanently.`
+					.join(', ')}**\n\nDropping: ${bank}`
 			);
 		}
 
