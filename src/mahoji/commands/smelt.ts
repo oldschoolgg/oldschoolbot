@@ -182,7 +182,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			type: 'Smelting'
 		});
 
-		if (bar.id === itemID('Gold bar') && user.hasEquipped('Goldsmith gauntlets')) {
+		if (bar.id === itemID('Gold bar') && user.hasEquippedOrInBank('Goldsmith gauntlets')) {
 			boosts.push('56.2 xp per gold bar for Goldsmith gauntlets');
 		}
 
