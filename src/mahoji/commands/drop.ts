@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { ellipsize, itemNameFromID } from '../../lib/util';
+import { ellipsize, itemNameFromID, returnStringOrFile } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -85,6 +85,6 @@ export const dropCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(bank);
 		updateBankSetting('dropped_items', bank);
 
-		return `Dropped ${bank}.`;
+		return returnStringOrFile(`Dropped ${bank}.`);
 	}
 };
