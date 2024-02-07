@@ -75,16 +75,16 @@ export const smithCommand: OSBMahojiCommand = {
 		// If they have the entire Smiths' Uniform, give 100% chance save 1 tick each item
 		let setBonus = 0;
 		if (
-			user.gear.skilling.hasEquipped(
+			user.hasEquippedOrInBank(
 				Object.keys(Smithing.smithsUniformItems).map(i => parseInt(i)),
-				true
+				'every'
 			)
 		) {
 			setBonus += 100;
 		} else {
 			// For each Smiths' Uniform item, check if they have it, give % chance to save 1 tick each item
 			for (const [itemID, bonus] of Object.entries(Smithing.smithsUniformItems)) {
-				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
+				if (user.hasEquippedOrInBank(parseInt(itemID))) {
 					setBonus += bonus;
 				}
 			}
