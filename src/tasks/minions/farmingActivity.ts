@@ -223,10 +223,6 @@ export const farmingTask: MinionTask = {
 				loot.bank[itemID('Plopper')] = 1;
 			}
 
-			if (loot.has('Tormented skull')) {
-				loot.bank[itemID('Tormented skull')] = 1;
-			}
-
 			if (loot.length > 0) {
 				str += `\n\nYou received: ${loot}.`;
 			}
