@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { itemNameFromID } from '../../lib/util';
+import { ellipsize, itemNameFromID } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -68,14 +68,17 @@ export const dropCommand: OSBMahojiCommand = {
 
 		await handleMahojiConfirmation(
 			interaction,
-			`${user}, are you sure you want to drop ${bank}? This is irreversible, and you will lose the items permanently.`
+			`${user}, are you sure you want to drop ${ellipsize(
+				bank.toString(),
+				1800
+			)}? This is irreversible, and you will lose the items permanently.`
 		);
 		if (doubleCheckItems.length > 0) {
 			await handleMahojiConfirmation(
 				interaction,
-				`${user}, some of the items you are dropping are on your **favorites** or look valuable, are you *really* sure you want to drop them? **${doubleCheckItems
+				`${user}, some of the items you are dropping are on your **favorites** or look valuable, are you *really* sure you want to drop them?\n**${doubleCheckItems
 					.map(itemNameFromID)
-					.join(', ')}**\n\nDropping: ${bank}`
+					.join(', ')}**\n\nDropping: ${ellipsize(bank.toString(), 1000)}`
 			);
 		}
 
