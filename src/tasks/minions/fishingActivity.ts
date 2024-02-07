@@ -93,28 +93,6 @@ export const fishingTask: MinionTask = {
 		} else {
 			xpReceived = quantity * fish.xp;
 		}
-		let bonusXP = 0;
-
-		// If they have the entire angler outfit, give an extra 0.5% xp bonus
-		if (
-			user.hasEquippedOrInBank(
-				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
-				'every'
-			)
-		) {
-			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
-			xpReceived += amountToAdd;
-			bonusXP += amountToAdd;
-		} else {
-			// For each angler item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasEquippedOrInBank(parseInt(itemID))) {
-					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
-					xpReceived += amountToAdd;
-					bonusXP += amountToAdd;
-				}
-			}
-		}
 
 		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Fishing,
@@ -190,6 +168,7 @@ export const fishingTask: MinionTask = {
 			loot.add('Leaping trout', leapingTrout);
 		}
 
+		let bonusXP = 0;
 		const xpBonusPercent = anglerBoostPercent(user);
 		if (xpBonusPercent > 0) {
 			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, xpReceived));

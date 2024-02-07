@@ -213,11 +213,10 @@ export function userHasGracefulEquipped(user: MUser) {
 }
 
 export function anglerBoostPercent(user: MUser) {
-	const skillingSetup = user.gear.skilling;
 	let amountEquipped = 0;
 	let boostPercent = 0;
 	for (const [id, percent] of anglerBoosts) {
-		if (skillingSetup.hasEquipped([id])) {
+		if (user.hasEquippedOrInBank(id)) {
 			boostPercent += percent;
 			amountEquipped++;
 		}
