@@ -184,8 +184,8 @@ export async function minionKillCommand(
 		return `You can't kill ${monster.name} in the wilderness.`;
 	}
 
-	if (monster.name === 'Jelly' && isInWilderness) {
-		monster.canBarrage = true;
+	if (monster.id === Monsters.Jelly.id) {
+		monster.canBarrage = isInWilderness;
 	}
 
 	const wildyGearStat = wildyGear.getStats()[key];
