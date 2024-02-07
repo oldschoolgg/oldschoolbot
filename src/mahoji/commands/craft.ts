@@ -94,7 +94,7 @@ export const craftCommand: OSBMahojiCommand = {
 			boosts.push('3x faster for Klik helping Tan');
 		}
 		if (!isTannable) {
-			if (user.hasEquipped('Dwarven greathammer')) {
+			if (user.hasEquippedOrInBank('Dwarven greathammer')) {
 				timeToCraftSingleItem /= 2;
 				boosts.push('2x faster for Dwarven greathammer');
 			}

@@ -646,7 +646,7 @@ export async function inventionItemBoost({
 	}
 
 	let messages: string[] = [`Removed ${materialCost}`];
-	if (user.hasEquipped('Invention master cape')) {
+	if (user.hasEquippedOrInBank('Invention master cape')) {
 		materialCost.mutReduceAllValuesByPercent(inventionBoosts.inventionMasterCape.materialCostReductionPercent);
 		messages.shift();
 		messages.unshift(`Removed ${materialCost}`);

@@ -73,7 +73,7 @@ export async function motherlodeMineCommand({
 		goldSilverBoost,
 		miningLvl: miningLevel,
 		maxTripLength: calcMaxTripLength(user, 'Mining'),
-		hasGlory: user.hasEquipped('Amulet of glory')
+		hasGlory: user.hasEquippedOrInBank('Amulet of glory')
 	});
 
 	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;

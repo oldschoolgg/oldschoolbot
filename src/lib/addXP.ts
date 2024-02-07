@@ -190,7 +190,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	const boosts = staticXPBoosts.get(params.skillName);
 	if (boosts && !params.artificial) {
 		for (const booster of boosts) {
-			if (user.hasEquipped(booster.item.id)) {
+			if (user.hasEquippedOrInBank(booster.item.id)) {
 				params.amount = increaseNumByPercent(params.amount, booster.boostPercent);
 			}
 		}
@@ -198,9 +198,9 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 
 	const skillOutfit = skillingOutfitBoosts.find(i => i.skill === params.skillName);
 	if (!params.artificial && skillOutfit) {
-		const amountBoost = user.hasEquipped(skillOutfit.outfit, true)
+		const amountBoost = user.hasEquippedOrInBank(skillOutfit.outfit, 'every')
 			? skillOutfit.totalBoost
-			: skillOutfit.outfit.filter(i => user.hasEquipped(i)).length * skillOutfit.individualBoost;
+			: skillOutfit.outfit.filter(i => user.hasEquippedOrInBank(i)).length * skillOutfit.individualBoost;
 		params.amount = increaseNumByPercent(params.amount, amountBoost);
 	}
 

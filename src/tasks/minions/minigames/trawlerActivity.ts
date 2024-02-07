@@ -55,7 +55,7 @@ export const trawlerTask: MinionTask = {
 
 		if (hasEliteArdy) str += '\n\n50% Extra fish for Ardougne Elite diary';
 
-		if (user.hasEquipped('Fishing master cape')) {
+		if (user.hasEquippedOrInBank('Fishing master cape')) {
 			loot.multiply(4);
 			for (let i = 0; i < quantity; i++) {
 				if (roll(2)) loot.add(MysteryBoxes.roll());

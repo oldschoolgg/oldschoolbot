@@ -304,7 +304,7 @@ export const hunterTask: MinionTask = {
 				creatureScores: (await user.fetchStats({ creature_scores: true })).creature_scores as ItemBank,
 				allGear: user.gear,
 				collectionLog: user.cl,
-				hasHunterMasterCape: user.hasEquipped('Hunter master cape'),
+				hasHunterMasterCape: user.hasEquippedOrInBank('Hunter master cape'),
 				equippedPet: user.user.minion_equippedPet,
 				wildyPeakTier: wildyPeak?.peakTier,
 				isUsingArcaneHarvester: boostRes?.success ?? false,
