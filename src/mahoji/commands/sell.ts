@@ -7,7 +7,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { NestBoxesTable } from '../../lib/simulation/misc';
-import { itemID, toKMB } from '../../lib/util';
+import { itemID, returnStringOrFile, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -234,8 +234,10 @@ export const sellCommand: OSBMahojiCommand = {
 			prisma.botItemSell.createMany({ data: botItemSellData })
 		]);
 
-		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
-			user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
-		}.`;
+		return returnStringOrFile(
+			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
+				user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
+			}.`
+		);
 	}
 };
