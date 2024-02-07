@@ -956,12 +956,13 @@ GROUP BY "bankBackground";`);
 	{
 		name: 'XP from Tears of Guthix',
 		perkTierNeeded: PerkTier.Four,
-		run: async () => {
+		run: async (user: MUser) => {
 			const result = await prisma.$queryRawUnsafe<any>(
 				`SELECT skill,
 					SUM(xp) AS total_xp
 				 FROM xp_gains
 				 WHERE source = 'TearsOfGuthix'
+				 AND user_id = ${BigInt(user.id)}
 				 GROUP BY skill`
 			);
 
