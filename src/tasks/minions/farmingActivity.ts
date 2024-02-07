@@ -30,7 +30,13 @@ import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 const plopperBoostPercent = 100;
 
-async function farmingLootBoosts(user: MUser, plant: Plant, loot: Bank, messages: string[]) {
+async function farmingLootBoosts(
+	user: MUser,
+	method: 'harvest' | 'plant',
+	plant: Plant,
+	loot: Bank,
+	messages: string[]
+) {
 	let bonusPercentage = 0;
 	if (user.allItemsOwned.has('Plopper')) {
 		bonusPercentage += plopperBoostPercent;
@@ -41,7 +47,7 @@ async function farmingLootBoosts(user: MUser, plant: Plant, loot: Bank, messages
 		bonusPercentage += 100;
 		messages.push('100% for Farming master cape');
 	}
-	if (user.hasEquippedOrInBank(['Arcane harvester']) && plant.name !== 'Mysterious tree') {
+	if (method === 'harvest' && user.hasEquippedOrInBank(['Arcane harvester']) && plant.name !== 'Mysterious tree') {
 		const boostRes = await inventionItemBoost({
 			user,
 			inventionID: InventionID.ArcaneHarvester,
@@ -211,7 +217,7 @@ export const farmingTask: MinionTask = {
 				duration: data.duration
 			})}`;
 
-			await farmingLootBoosts(user, plant, loot, infoStr);
+			await farmingLootBoosts(user, 'plant', plant, loot, infoStr);
 
 			if (loot.has('Plopper')) {
 				loot.bank[itemID('Plopper')] = 1;
@@ -566,9 +572,9 @@ export const farmingTask: MinionTask = {
 				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
 			}
 
-			await farmingLootBoosts(user, plant, loot, infoStr);
+			await farmingLootBoosts(user, 'harvest', plantToHarvest, loot, infoStr);
 
-			if (plant.name === 'Mysterious tree') {
+			if (plantToHarvest.name === 'Mysterious tree') {
 				if (loot.has('Seed Pack')) {
 					loot.add('Seed Pack', 1);
 					infoStr.push('+1 Seed Pack for Mysterious tree farming contract');
