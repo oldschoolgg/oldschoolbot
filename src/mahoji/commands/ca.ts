@@ -140,7 +140,7 @@ export const caCommand: OSBMahojiCommand = {
 
 			if (selectedMonster) {
 				const tasksForSelectedMonster = allCombatAchievementTasks.filter(
-					task => task.monster.toLocaleLowerCase() === selectedMonster
+					task => task.monster.toLowerCase() === selectedMonster!.toLowerCase()
 				);
 
 				if (tasksForSelectedMonster.length === 0)
