@@ -141,6 +141,11 @@ export const tobTask: MinionTask = {
 				// Refund initial 100k entry cost
 				userLoot.add('Coins', 100_000);
 
+				// OSB only: Remove elite clue scroll if user has one in bank
+				if (user.owns('Clue scroll (elite)')) {
+					userLoot.remove('Clue scroll (elite)', 1);
+				}
+
 				// Add this raids loot to the raid's total loot:
 				totalLoot.add(userLoot);
 

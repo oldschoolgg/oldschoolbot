@@ -96,6 +96,11 @@ export class TheatreOfBloodClass {
 		const loot = new Bank();
 		for (let i = 0; i < 3; i++) {
 			loot.add(NonUniqueTable.roll());
+
+			// OSB only: Remove dupe elite clue scrolls
+			if (loot.amount('Clue scroll (elite)') > 1) {
+				loot.remove('Clue scroll (elite)', 1);
+			}
 		}
 
 		if (isHardMode) {
@@ -106,6 +111,7 @@ export class TheatreOfBloodClass {
 			// Add HM Tertiary drops: dust / kits
 			loot.add(HardModeExtraTable.roll());
 		}
+
 		let petChance = isHardMode ? 500 : 650;
 		if (member.numDeaths > 0) {
 			petChance *= member.numDeaths;
