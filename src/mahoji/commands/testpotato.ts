@@ -21,6 +21,7 @@ import { allOpenables } from '../../lib/openables';
 import { tiers } from '../../lib/patreon';
 import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
+import { getNewUser } from '../../lib/settings/settings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
@@ -861,10 +862,12 @@ ${droprates.join('\n')}`),
 				}
 
 				if (options.setslayertask) {
+					const user = await mUserFetch(userID);
+					await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
+
 					const monsterName = options.setslayertask?.monster ?? '';
 					const masterName = options.setslayertask?.master;
-					let quantity = options.setslayertask?.quantity;
-					quantity = quantity < 1 ? 50 : quantity;
+					const quantity = options.setslayertask?.quantity ?? 50;
 
 					const monster = effectiveMonsters.find(m => stringMatches(m.name, monsterName));
 					const master = slayerMasters.find(
@@ -876,10 +879,12 @@ ${droprates.join('\n')}`),
 					if (!monster) return 'Invalid monster.';
 					if (!master) return 'Invalid slayer master.';
 
-					
+					const newUser = await getNewUser(user.id);
+
+					// Create a new slayer task for the user
 					await prisma.slayerTask.create({
 						data: {
-							user_id: user.id,
+							user_id: newUser.id,
 							quantity,
 							quantity_remaining: quantity,
 							slayer_master_id: master.id,
@@ -890,7 +895,6 @@ ${droprates.join('\n')}`),
 					await user.update({
 						slayer_last_task: monster.id
 					});
-				
 
 					return `You set your slayer task to ${monster.name} using ${master.name}.`;
 				}
