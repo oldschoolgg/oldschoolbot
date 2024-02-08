@@ -302,7 +302,9 @@ export async function autoSlayCommand({
 		if (
 			(ehpKillable?.levelRequirements !== undefined && !hasSkillReqs(user, ehpKillable.levelRequirements)[0]) ||
 			(usersTask.currentTask!.slayer_master_id === 8 &&
-				[Monsters.Jelly.id, Monsters.Bloodveld.id].includes(usersTask.assignedTask!.monster.id))
+				[Monsters.Jelly.id, Monsters.Bloodveld.id, Monsters.BlackDragon.id].includes(
+					usersTask.assignedTask!.monster.id
+				))
 		) {
 			runCommand({
 				commandName: 'k',

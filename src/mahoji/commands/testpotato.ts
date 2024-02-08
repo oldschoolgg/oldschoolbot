@@ -24,6 +24,8 @@ import { prisma } from '../../lib/settings/prisma';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
+import { slayerMasterChoices } from '../../lib/slayer/constants';
+import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { stringMatches } from '../../lib/util';
 import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
 import {
@@ -435,6 +437,47 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'setslayertask',
+					description: 'Set slayer task.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'master',
+							description: 'The master you wish to set your task.',
+							required: true,
+							choices: slayerMasterChoices
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'monster',
+							description: 'The monster you want to set your task as.',
+							required: true,
+							autocomplete: async value => {
+								return effectiveMonsters
+									.filter(i => {
+										if (!value) return true;
+										return [i.name.toLowerCase(), i.aliases].some(i =>
+											i.includes(value.toLowerCase())
+										);
+									})
+									.map(i => ({
+										name: i.name,
+										value: i.name
+									}));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The task quantity you want.',
+							required: false,
+							min_value: 0,
+							max_value: 1000
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'irontoggle',
 					description: 'Toggle being an ironman on/off.'
 				},
@@ -528,6 +571,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				setxp?: { skill: string; xp: number };
 				spawn?: { preset?: string; collectionlog?: boolean; item?: string; items?: string };
 				setmonsterkc?: { monster: string; kc: string };
+				setslayertask?: { master: string; monster: string; quantity: number };
 				irontoggle?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
 				wipe?: { thing: (typeof thingsToWipe)[number] };
@@ -815,6 +859,42 @@ ${droprates.join('\n')}`),
 					);
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
 				}
+
+				if (options.setslayertask) {
+					const monsterName = options.setslayertask?.monster ?? '';
+					const masterName = options.setslayertask?.master;
+					let quantity = options.setslayertask?.quantity;
+					quantity = quantity < 1 ? 50 : quantity;
+
+					const monster = effectiveMonsters.find(m => stringMatches(m.name, monsterName));
+					const master = slayerMasters.find(
+						sm =>
+							stringMatches(masterName, sm.name) ||
+							sm.aliases.some(alias => stringMatches(masterName, alias))
+					);
+
+					if (!monster) return 'Invalid monster.';
+					if (!master) return 'Invalid slayer master.';
+
+					
+					await prisma.slayerTask.create({
+						data: {
+							user_id: user.id,
+							quantity,
+							quantity_remaining: quantity,
+							slayer_master_id: master.id,
+							monster_id: monster.id,
+							skipped: false
+						}
+					});
+					await user.update({
+						slayer_last_task: monster.id
+					});
+				
+
+					return `You set your slayer task to ${monster.name} using ${master.name}.`;
+				}
+
 				if (options.forcegrow) {
 					const farmingDetails = await getFarmingInfo(userID);
 					const thisPlant = farmingDetails.patchesDetailed.find(
