@@ -372,15 +372,16 @@ export const grotesqueGuardiansCL = resolveItems([
 	'Granite dust'
 ]);
 export const hesporiCL = resolveItems(['Bottomless compost bucket', 'Iasor seed', 'Kronos seed', 'Attas seed']);
-export const theInfernoCL = resolveItems([
-	'Jal-nib-rek',
-	'Infernal cape',
-	'Tokkul',
-	'Infernal core',
-	"TzKal-Zuk's skin",
+
+export const theInfernoCL = resolveItems(['Jal-nib-rek', 'Infernal cape']);
+
+export const emergedZukInfernoCL = resolveItems([
+	'Jal-MejJak',
 	'Head of TzKal Zuk',
-	'Jal-MejJak'
+	"TzKal-Zuk's skin",
+	'Infernal core'
 ]);
+
 export const kalphiteQueenCL = resolveItems([
 	'Kalphite princess',
 	'Kq head',
@@ -3054,8 +3055,6 @@ export const odsCL = resolveItems([
 ]);
 
 export const tinkeringWorshopCL = resolveItems([...inventorOutfit, 'Materials bag']);
-
-export const emergedZukInfernoCL = resolveItems(['Head of TzKal Zuk', 'Infernal core', 'Tokkul']);
 
 export const polyporeDungeonCL = resolveItems([
 	'Mycelium leggings web',
