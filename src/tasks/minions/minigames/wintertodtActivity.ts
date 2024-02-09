@@ -117,7 +117,7 @@ export const wintertodtTask: MinionTask = {
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
-		if (user.hasEquipped('Firemaking master cape')) {
+		if (user.hasEquippedOrInBank('Firemaking master cape')) {
 			loot.multiply(2);
 		}
 
