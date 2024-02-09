@@ -1,4 +1,4 @@
-import { time } from '@discordjs/builders';
+import { bold, time } from '@discordjs/builders';
 import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import { Tame, tame_growth, TameActivity } from '@prisma/client';
@@ -34,6 +34,7 @@ import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
 	arbitraryTameActivities,
+	calculateMaximumTameFeedingLevelGain,
 	createTameTask,
 	getIgneTameKC,
 	getMainTameLevel,
@@ -83,6 +84,7 @@ async function tameAutocomplete(value: string, user: User) {
 		}
 	});
 	return tames
+		.sort(sortTames)
 		.map(t => {
 			const { relevantLevelCategory, name } = tameSpecies.find(i => i.id === t.species_id)!;
 			return {
@@ -347,15 +349,29 @@ function drawText(ctx: SKRSContext2D, text: string, x: number, y: number) {
 	fillTextXTimesInCtx(ctx, text, x, y);
 }
 
+function sortTames(tameA: Tame, tameB: Tame): number {
+	const species = tameSpecies.find(i => i.id === tameA.species_id)!;
+	if (tameA.species_variant === species.shinyVariant) return -1;
+	if (tameB.species_variant === species.shinyVariant) return 1;
+	if (tameA.last_activity_date && !tameB.last_activity_date) return -1;
+	if (!tameA.last_activity_date && tameB.last_activity_date) return 1;
+	if (tameA.last_activity_date && tameB.last_activity_date) {
+		return tameB.last_activity_date.valueOf() - tameA.last_activity_date.valueOf();
+	}
+	// Fallback to sorting by max_combat_level if no last_activity_date for both
+	return getMainTameLevel(tameB) - getMainTameLevel(tameA);
+}
 export async function tameImage(user: MUser): CommandResponse {
 	const userTames = await prisma.tame.findMany({
 		where: {
 			user_id: user.id
 		},
 		orderBy: {
-			id: 'asc'
+			last_activity_date: 'desc'
 		}
 	});
+
+	userTames.sort(sortTames);
 
 	if (userTames.length === 0) {
 		return "You don't have any tames.";
@@ -834,6 +850,59 @@ async function feedCommand(interaction: ChatInputCommandInteraction, user: MUser
 		return "You don't have enough items.";
 	}
 
+	// Egg feeding
+	const tameEggs = tameSpecies.map(t => t.egg.id);
+	const eggBeingFed = tameEggs.find(egg => bankToAdd.has(egg));
+	if (eggBeingFed && bankToAdd.has(eggBeingFed)) {
+		if (bankToAdd.length !== 1) {
+			return "Your tame can't eat anything else with the egg.";
+		}
+		if (tame.growth_stage !== tame_growth.adult) {
+			return 'Your tame is too young to eat the egg.';
+		}
+		if (typeof tame.levels_from_egg_feed === 'number') {
+			return `Your tame has already eaten an egg, it can't eat another one. It gained ${tame.levels_from_egg_feed} levels from the egg.`;
+		}
+
+		const levelsCanGain = calculateMaximumTameFeedingLevelGain(tame);
+		if (levelsCanGain < 1) {
+			return "Your tame isn't interested in eating the egg.";
+		}
+
+		const levelRange = [0, levelsCanGain];
+		await handleMahojiConfirmation(
+			interaction,
+			`Are you sure you want to feed the egg to your tame? You cannot get the egg back, and you cannot feed this tame an egg more than once.
+
+Your tame will gain between (inclusively) ${levelRange[0]} and ${levelRange[1]} levels from the egg.`
+		);
+		const gained = randInt(levelRange[0], levelRange[1]);
+		await user.removeItemsFromBank(bankToAdd);
+
+		await prisma.tame.update({
+			where: {
+				id: tame.id
+			},
+			data: {
+				levels_from_egg_feed: gained,
+				[`max_${species!.relevantLevelCategory}_level`]: {
+					increment: gained
+				}
+			}
+		});
+
+		await prisma.tame.update({
+			where: {
+				id: tame.id
+			},
+			data: {
+				fed_items: new Bank().add(tame.fed_items as ItemBank).add(bankToAdd).bank
+			}
+		});
+
+		return `You fed ${bankToAdd} to ${tameName(tame)}. It gained ${bold(gained.toString())} levels from the egg!`;
+	}
+
 	let specialStrArr = [];
 	for (const { item, description, tameSpeciesCanBeFedThis } of thisTameSpecialFeedableItems) {
 		const similarItems = getSimilarItems(item.id);
@@ -903,6 +972,9 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	const monster = tameKillableMonsters.find(
 		i => stringMatches(i.name, str) || i.aliases.some(alias => stringMatches(alias, str))
 	);
+	if (monster?.tameCantKill) {
+		return 'Tames cannot kill this monster.';
+	}
 	if (!monster) return "That's not a valid monster.";
 	if (monster.mustBeAdult && tame.growth_stage !== tame_growth.adult) {
 		return 'Only fully grown tames can kill this monster.';
@@ -1539,7 +1611,7 @@ export function determineTameClueResult({
 
 	maxTripLength += extraTripLength;
 
-	let timePerClue = clueTier.timeToFinish * 1.5;
+	let timePerClue = clueTier.timeToFinish * 1.3;
 
 	const baseBoostPercent = 20;
 	const maxDifference = 100 - clueTier.eagleTameSupportLevelNeeded;
@@ -1560,7 +1632,7 @@ export function determineTameClueResult({
 	boosts.push(`${boostPercent.toFixed(2)}% faster for support level`);
 
 	if (equippedPrimary === itemID('Divine ring')) {
-		boosts.push(`15% faster (${formatDuration(calcPercentOfNum(15, timePerClue))} per clue) for Divine ring`);
+		boosts.push(`20% faster (${formatDuration(calcPercentOfNum(20, timePerClue))} per clue) for Divine ring`);
 		timePerClue = reduceNumByPercent(timePerClue, 15);
 	}
 
@@ -1572,7 +1644,7 @@ export function determineTameClueResult({
 	const cost = new Bank().add('Extraordinary kibble', kibbleNeeded).add(clueTier.scrollID, quantity);
 
 	let costSavedByDemonicJibwings = null;
-	if (equippedArmor === itemID('Demonic jibwings') && percentChance(30)) {
+	if (equippedArmor && getSimilarItems(itemID('Demonic jibwings')).includes(equippedArmor) && percentChance(30)) {
 		costSavedByDemonicJibwings = new Bank().add('Extraordinary kibble', cost.amount('Extraordinary kibble'));
 		cost.remove(costSavedByDemonicJibwings);
 		boosts.push('No food used due to demonic jibwings');
@@ -1657,7 +1729,7 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 		fakeDuration: undefined
 	});
 
-	let reply = `${tame} is now doing completing ${quantity}x ${itemNameFromID(
+	let reply = `${tame} is now completing ${quantity}x ${itemNameFromID(
 		clueTier.scrollID
 	)}. Removed ${cost} from your bank. The trip will take ${formatDuration(task.duration)}.`;
 

@@ -256,7 +256,9 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Sanguinesti staff (uncharged)'), 'Unch.'],
 	[i('Scythe of vitur (uncharged)'), 'Unch.'],
 	[i('Holy scythe of vitur (uncharged)'), 'Unch.'],
-	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.']
+	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.'],
+
+	[i('Atomic energy'), 'Atomic']
 ]);
 
 for (const energy of divinationEnergies) {

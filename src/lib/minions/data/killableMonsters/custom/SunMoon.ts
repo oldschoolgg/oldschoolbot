@@ -23,7 +23,7 @@ export const Solis: CustomMonster = {
 	baseMonster: Monsters.AbyssalSire,
 	name: 'Solis',
 	aliases: ['solis'],
-	timeToFinish: Time.Minute * 45,
+	timeToFinish: Time.Minute * 120,
 	hp: 3330,
 	table: new LootTable().every('Solite', [10, 60]).tertiary(600, 'Eagle egg').tertiary(500, 'Sun-metal scraps'),
 	difficultyRating: 5,
@@ -66,7 +66,9 @@ export const Solis: CustomMonster = {
 	itemCost: {
 		itemCost: new Bank().add('Super combat potion(4)').add('Heat res. brew', 3).add('Heat res. restore'),
 		qtyPerKill: 1
-	}
+	},
+	tameCantKill: true,
+	itemsRequired: resolveItems(["Combatant's cape"])
 };
 
 export const Celestara: CustomMonster = {
@@ -96,7 +98,8 @@ export const Celestara: CustomMonster = {
 		lowestDeathChance: 0.01,
 		highestDeathChance: 70
 	},
-	allItems: []
+	allItems: [],
+	tameCantKill: true
 };
 
 export const SunMoonMonsters = {

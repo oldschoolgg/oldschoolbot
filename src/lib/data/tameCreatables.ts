@@ -40,28 +40,6 @@ const eagleTameCreatables: Createable[] = [
 		}
 	},
 	{
-		name: 'Demonic jibwings',
-		materialCost: new MaterialBank().add('strong', 500),
-		inputItems: new Bank().add('Dark totem', 10),
-		outputItems: new Bank().add('Demonic jibwings'),
-		requiredSkills: {
-			invention: 90,
-			crafting: 90,
-			smithing: 90
-		}
-	},
-	{
-		name: 'Abyssal jibwings',
-		materialCost: new MaterialBank().add('abyssal', 30),
-		inputItems: new Bank().add('Ancient shard', 10).add('Magical artifact'),
-		outputItems: new Bank().add('Abyssal jibwings'),
-		requiredSkills: {
-			invention: 90,
-			crafting: 90,
-			smithing: 90
-		}
-	},
-	{
 		name: '3rd age jibwings (e)',
 		inputItems: new Bank().add('3rd age jibwings').add('Ignecarus scales', 1000),
 		outputItems: new Bank().add('3rd age jibwings (e)'),
@@ -93,7 +71,7 @@ const eagleTameCreatables: Createable[] = [
 	},
 	{
 		name: 'Divine ring',
-		inputItems: new Bank().add('Atomic energy', 50_000),
+		inputItems: new Bank().add('Atomic energy', 1_000_000),
 		materialCost: new MaterialBank().add('precious', 10_000),
 		outputItems: new Bank().add('Divine ring'),
 		requiredSkills: {
@@ -104,7 +82,7 @@ const eagleTameCreatables: Createable[] = [
 	},
 	{
 		name: 'Impling locator',
-		inputItems: new Bank().add('Atomic energy', 4000).add('Elder rune', 1000),
+		inputItems: new Bank().add('Atomic energy', 200_000).add('Elder rune', 1000),
 		materialCost: new MaterialBank().add('orikalkum', 100),
 		outputItems: new Bank().add('Impling locator'),
 		requiredSkills: {

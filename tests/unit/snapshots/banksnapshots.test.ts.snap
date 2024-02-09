@@ -25267,6 +25267,44 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "73010": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Pale energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73006": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Flickering energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 10,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 10,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "73010": 500,
       },
       "frozen": false,
@@ -25280,6 +25318,25 @@ exports[`BSO Creatables 1`] = `
     },
     "requiredSkills": {
       "divination": 10,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73004": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Bright energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 20,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 20,
     },
   },
   {
@@ -25305,6 +25362,25 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "73009": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Glowing energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 30,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 30,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "73004": 1500,
       },
       "frozen": false,
@@ -25318,6 +25394,25 @@ exports[`BSO Creatables 1`] = `
     },
     "requiredSkills": {
       "divination": 30,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73015": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Sparkling energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 40,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 40,
     },
   },
   {
@@ -25343,6 +25438,25 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "73008": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Gleaming energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 50,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 50,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "73015": 2500,
       },
       "frozen": false,
@@ -25356,6 +25470,25 @@ exports[`BSO Creatables 1`] = `
     },
     "requiredSkills": {
       "divination": 50,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73014": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Vibrant energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 60,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 60,
     },
   },
   {
@@ -25381,6 +25514,25 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "73013": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Lustrous energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 70,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 70,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "73014": 3500,
       },
       "frozen": false,
@@ -25394,6 +25546,25 @@ exports[`BSO Creatables 1`] = `
     },
     "requiredSkills": {
       "divination": 70,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73007": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Elder energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 75,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 75,
     },
   },
   {
@@ -25419,6 +25590,25 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "73005": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Brilliant energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 80,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "73007": 4000,
       },
       "frozen": false,
@@ -25432,6 +25622,25 @@ exports[`BSO Creatables 1`] = `
     },
     "requiredSkills": {
       "divination": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73016": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Radiant energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 85,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 85,
     },
   },
   {
@@ -25457,6 +25666,25 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "73012": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Luminous energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 90,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "73016": 4500,
       },
       "frozen": false,
@@ -25476,6 +25704,25 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "73011": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Incandescent energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 95,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 95,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "73012": 4750,
       },
       "frozen": false,
@@ -25489,6 +25736,25 @@ exports[`BSO Creatables 1`] = `
     },
     "requiredSkills": {
       "divination": 95,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73045": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Ancient energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 110,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 110,
     },
   },
   {
@@ -31314,6 +31580,205 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "19685": 10,
+      },
+      "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "strong": 500,
+      },
+    },
+    "name": "Demonic jibwings",
+    "outputItems": Bank {
+      "bank": {
+        "73097": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 90,
+      "invention": 90,
+      "smithing": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "19677": 10,
+        "50024": 1,
+      },
+      "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "abyssal": 30,
+      },
+    },
+    "name": "Abyssal jibwings",
+    "outputItems": Bank {
+      "bank": {
+        "73098": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 90,
+      "invention": 90,
+      "smithing": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "2357": 1000,
+      },
+      "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "third-age": 6,
+      },
+    },
+    "name": "3rd age jibwings",
+    "outputItems": Bank {
+      "bank": {
+        "73099": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 90,
+      "invention": 90,
+      "smithing": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "48207": 1000,
+        "73099": 1,
+      },
+      "frozen": false,
+    },
+    "name": "3rd age jibwings (e)",
+    "outputItems": Bank {
+      "bank": {
+        "73104": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "invention": 105,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "48207": 1000,
+        "73097": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Demonic jibwings (e)",
+    "outputItems": Bank {
+      "bank": {
+        "73102": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "invention": 105,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "48207": 1000,
+        "73098": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Abyssal jibwings (e)",
+    "outputItems": Bank {
+      "bank": {
+        "73103": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "invention": 105,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73090": 1000000,
+      },
+      "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "precious": 10000,
+      },
+    },
+    "name": "Divine ring",
+    "outputItems": Bank {
+      "bank": {
+        "73101": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "invention": 105,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50021": 1000,
+        "73090": 200000,
+      },
+      "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "orikalkum": 100,
+      },
+    },
+    "name": "Impling locator",
+    "outputItems": Bank {
+      "bank": {
+        "73100": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "invention": 105,
+      "magic": 120,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "52662": 1,
       },
       "frozen": false,
@@ -33687,6 +34152,76 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "25644": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "506": 1,
+        "52671": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Axe handle base",
+    "outputItems": Bank {
+      "bank": {
+        "73093": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "47517": 1,
+        "50011": 10,
+        "50028": 30,
+        "73093": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Axe handle",
+    "outputItems": Bank {
+      "bank": {
+        "73096": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73095": 1,
+        "73096": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Axe of the high sungod (u)",
+    "outputItems": Bank {
+      "bank": {
+        "73074": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73074": 1,
+        "73090": 2000000,
+      },
+      "frozen": false,
+    },
+    "name": "Axe of the high sungod",
+    "outputItems": Bank {
+      "bank": {
+        "73072": 1,
       },
       "frozen": false,
     },

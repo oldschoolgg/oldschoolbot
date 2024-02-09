@@ -24,7 +24,7 @@ export const sunMoonCreatables: Createable[] = [
 	},
 	{
 		name: 'Axe of the high sungod',
-		inputItems: new Bank().add('Axe of the high sungod (u)').add('Atomic energy', 100_000),
+		inputItems: new Bank().add('Axe of the high sungod (u)').add('Atomic energy', 2_000_000),
 		outputItems: new Bank().add('Axe of the high sungod')
 	}
 ];

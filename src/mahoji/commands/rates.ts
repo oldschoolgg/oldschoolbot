@@ -434,7 +434,8 @@ export const ratesCommand: OSBMahojiCommand = {
 				'EnergyLoot/hr',
 				'EnergyCost/hr',
 				'Energy per memory',
-				'Hours for Boon'
+				'Hours for Boon',
+				'Atomic energy/hr'
 			].join('\t')}\n`;
 			for (const energy of divinationEnergies) {
 				for (const harvestMethod of memoryHarvestTypes) {
@@ -459,7 +460,8 @@ export const ratesCommand: OSBMahojiCommand = {
 										rounds
 									});
 
-									const energyPerHour = calcPerHour(res.loot.amount(energy.item.id), Time.Hour);
+									const energyReceived = res.loot.amount(energy.item.id);
+									const energyPerHour = calcPerHour(energyReceived, Time.Hour);
 
 									const nextEnergy = divinationEnergies[divinationEnergies.indexOf(energy) + 1];
 									let timeToGetBoon = 0;
@@ -471,6 +473,11 @@ export const ratesCommand: OSBMahojiCommand = {
 									) {
 										timeToGetBoon = nextEnergy.boonEnergyCost / energyPerHour;
 									}
+
+									const atomicEnergyPerHour =
+										energyReceived === 0
+											? '0'
+											: calcPerHour(energyReceived * energy.level, duration).toFixed(1);
 
 									results += [
 										energy.type,
@@ -488,7 +495,8 @@ export const ratesCommand: OSBMahojiCommand = {
 										energyPerHour,
 										calcPerHour(res.cost.amount(energy.item.id), Time.Hour),
 										res.energyPerMemory,
-										timeToGetBoon
+										timeToGetBoon,
+										atomicEnergyPerHour
 									].join('\t');
 									results += '\n';
 								}

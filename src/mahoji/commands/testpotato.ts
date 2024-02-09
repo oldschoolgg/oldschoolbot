@@ -10,7 +10,7 @@ import { production } from '../../config';
 import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
 import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { BitField, MAX_INT_JAVA } from '../../lib/constants';
+import { BitField, BitFieldData, MAX_INT_JAVA } from '../../lib/constants';
 import {
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
@@ -85,7 +85,7 @@ export async function giveMaxStats(user: MUser) {
 }
 
 async function givePatronLevel(user: MUser, tier: number) {
-	const tierToGive = tiers[tier];
+	const tierToGive = tiers[tiers.length - tier];
 	const currentBitfield = user.bitfield;
 	if (!tier || !tierToGive) {
 		await user.update({
@@ -97,7 +97,7 @@ async function givePatronLevel(user: MUser, tier: number) {
 	await user.update({
 		bitfield: uniqueArr(newBitField)
 	});
-	return `Gave you tier ${tierToGive[1] - 1} patron.`;
+	return `Gave you ${BitFieldData[tierToGive[1]].name}.`;
 }
 
 const gearPresets = [

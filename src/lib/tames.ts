@@ -547,9 +547,7 @@ export const tameSpecies: Species[] = [
 		emoji: '<:EagleEgg:1201712371371085894>',
 		emojiID: '1201712371371085894',
 		mergingCost: new Bank()
-			.add('Twisted bow', 3000)
-			.add('Magic banana', 50)
-			.add('Chimpling jar')
+			.add('Solite', 150)
 			.add('Soul rune', 2500)
 			.add('Elder rune', 100)
 			.add('Astral rune', 600)
@@ -588,6 +586,13 @@ export function tameGetLevel(tame: Tame, type: 'combat' | 'gatherer' | 'support'
 		case 'artisan':
 			return round(tame.max_artisan_level / growth, 2);
 	}
+}
+
+export function calculateMaximumTameFeedingLevelGain(tame: Tame) {
+	const mainLevel = getMainTameLevel(tame);
+	if (mainLevel >= 100) return 0;
+	const difference = 100 - mainLevel;
+	return Math.floor(difference / 2) - 1;
 }
 
 export function tameName(tame: Tame) {

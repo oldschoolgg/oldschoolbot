@@ -4,6 +4,7 @@ import { isFunction, objectEntries, round } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { globalConfig } from '../lib/constants';
+import { getSimilarItems } from '../lib/data/similarItems';
 import type { KillableMonster } from '../lib/minions/types';
 import type { SelectedUserStats } from '../lib/MUser';
 import { prisma } from '../lib/settings/prisma';
@@ -256,7 +257,7 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 				if (!item.some(itemReq => user.hasEquippedOrInBank(itemReq as number))) {
 					return [false, `You need these items to kill ${monster.name}: ${itemsRequiredStr}`];
 				}
-			} else if (!user.hasEquippedOrInBank(item)) {
+			} else if (!getSimilarItems(item).some(id => user.hasEquippedOrInBank(id))) {
 				return [
 					false,
 					`You need ${itemsRequiredStr} to kill ${monster.name}. You're missing ${itemNameFromID(item)}.`

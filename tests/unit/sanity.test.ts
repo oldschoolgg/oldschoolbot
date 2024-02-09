@@ -1,3 +1,4 @@
+import { Tame, tame_growth } from '@prisma/client';
 import { Items, Monsters } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { assert, describe, expect, test } from 'vitest';
@@ -15,6 +16,7 @@ import KingGoldemar from '../../src/lib/minions/data/killableMonsters/custom/bos
 import { VasaMagus } from '../../src/lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { allOpenables } from '../../src/lib/openables';
 import { Gear } from '../../src/lib/structures/Gear';
+import { calculateMaximumTameFeedingLevelGain } from '../../src/lib/tames';
 import { exponentialPercentScale, isSuperUntradeable, itemNameFromID } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 import itemID from '../../src/lib/util/itemID';
@@ -302,5 +304,14 @@ describe('Sanity', () => {
 		}
 		// @ts-ignore ignore
 		expect(getOSItem("Gatherer's cape").equipment!.requirements?.divination).toEqual(120);
+	});
+	test('calculateMaximumTameFeedingLevelGain', () => {
+		expect(
+			calculateMaximumTameFeedingLevelGain({
+				species_id: 1,
+				max_combat_level: 70,
+				growth_stage: tame_growth.adult
+			} as Tame)
+		).toEqual(14);
 	});
 });

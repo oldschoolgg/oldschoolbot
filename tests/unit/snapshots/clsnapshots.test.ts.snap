@@ -42,7 +42,7 @@ Cooking (29)
 Corporeal Beast (8)
 Crafting (175)
 Crazy archaeologist (3)
-Creatables (715)
+Creatables (728)
 Creature Creation (7)
 Creature Creation (7)
 Custom Pets (42)
@@ -51,6 +51,7 @@ Cyclopes (8)
 Dagannoth Kings (10)
 Daily (29)
 Depths of Atlantis (14)
+Divination (43)
 Divine Dominion (16)
 Duke Sucellus (8)
 Dungeoneering (45)
@@ -146,7 +147,8 @@ Skilling Pets (8)
 Skotizo (6)
 Slayer (75)
 Slayer Masks/Helms (32)
-Smithing (199)
+Smithing (200)
+Solis (3)
 Soul Wars (3)
 Spectator Clothes (22)
 Spooky crate (s3) (22)
@@ -302,6 +304,7 @@ Ancient d'hide boots
 Ancient d'hide shield
 Ancient effigy
 Ancient emblem
+Ancient energy
 Ancient essence
 Ancient full helm
 Ancient globe
@@ -564,6 +567,19 @@ Bob's green shirt
 Bob's purple shirt
 Bob's red shirt
 Bolt rack
+Boon of ancient energy
+Boon of bright energy
+Boon of brilliant energy
+Boon of elder energy
+Boon of flickering energy
+Boon of gleaming energy
+Boon of glowing energy
+Boon of incandescent energy
+Boon of luminous energy
+Boon of lustrous energy
+Boon of radiant energy
+Boon of sparkling energy
+Boon of vibrant energy
 Boots of darkness
 Boots of the eye
 Bottom of sceptre
@@ -576,6 +592,8 @@ Brassica halo
 Brawler's hook necklace
 Breach of the scarab
 Briefcase
+Bright energy
+Brilliant energy
 Brimhaven graceful boots
 Brimhaven graceful cape
 Brimhaven graceful gloves
@@ -617,6 +635,7 @@ Burnt page
 Butch
 Cabbage round shield
 Cache of runes
+Cache portent
 Callisto cub
 Camo bottoms
 Camo helmet
@@ -747,6 +766,7 @@ Dharok's platebody
 Dharok's platelegs
 Digsite teleport
 Dinh's bulwark
+Divine egg
 Divine hand
 Divine sigil
 Diviner's footwear
@@ -811,6 +831,7 @@ Drygore mace
 Drygore rapier
 Drygore saw
 Dual sai
+Dungeon portent
 Dungeoneering dye
 Dust battlestaff
 Dust devil mask
@@ -826,6 +847,7 @@ Dwarven knife
 Dwarven ore
 Dwarven pickaxe
 Dwarven toolkit
+Eagle egg
 Earth warrior champion scroll
 Echo
 Ectoplasmator
@@ -833,6 +855,7 @@ Ecumenical key
 Elder chaos hood
 Elder chaos robe
 Elder chaos top
+Elder energy
 Elder maul
 Elder pouch
 Elder rumble greegree
@@ -903,6 +926,7 @@ Fletcher's gloves
 Fletcher's hat
 Fletcher's legs
 Fletcher's top
+Flickering energy
 Flippers
 Forestry boots
 Forestry hat
@@ -959,8 +983,10 @@ Gilded smile flag
 Gilded spade
 Gilded spear
 Gilded sq shield
+Gleaming energy
 Gloves of darkness
 Gloves of silence
+Glowing energy
 Gnome goggles
 Gnome scarf
 Gnomish firelighter
@@ -1023,6 +1049,7 @@ Graceful cape
 Graceful gloves
 Graceful hood
 Graceful legs
+Graceful portent
 Graceful top
 Grand crystal acorn
 Grand seed pod
@@ -1165,6 +1192,7 @@ Imbued heart
 Imcando hammer
 Imp champion scroll
 Imp mask
+Incandescent energy
 Infernal cape
 Infernal core
 Inferno adze
@@ -1211,6 +1239,7 @@ Jar of dirt
 Jar of dreams
 Jar of eyes
 Jar of magic
+Jar of memories
 Jar of miasma
 Jar of sand
 Jar of smoke
@@ -1302,13 +1331,16 @@ Lost bag
 Lovakengj banner
 Lovakengj hood
 Lovakengj scarf
+Lucky portent
 Lucky shot flag
 Lumberjack boots
 Lumberjack hat
 Lumberjack legs
 Lumberjack top
 Lumberyard teleport
+Luminous energy
 Lunar isle teleport
+Lustrous energy
 Lychee seed
 Mage's book
 Magic cat
@@ -1468,6 +1500,8 @@ Ore pack
 Ori
 Ornate maul handle
 Osmumten's fang
+Pacifist hunting portent
+Pale energy
 Pantaloons
 Paragraph of text
 Parasitic egg
@@ -1549,6 +1583,7 @@ Pyromancer hood
 Pyromancer robe
 Queen black dragonling
 Quick trap
+Radiant energy
 Rain bow
 Ranger boots
 Ranger gloves
@@ -1556,6 +1591,7 @@ Ranger hat
 Rangers' tights
 Rangers' tunic
 Raven
+Rebirth portent
 Red beret
 Red boater
 Red cavalier
@@ -1616,6 +1652,7 @@ Rogue gloves
 Rogue mask
 Rogue top
 Rogue trousers
+Rogues portent
 Royal bolt stabiliser
 Royal crown
 Royal dragon kiteshield
@@ -1817,6 +1854,8 @@ Smoke quartz
 Smolcano
 Smouldering stone
 Soaked page
+Solite
+Sparkling energy
 Spectral sigil
 Spellbound ring
 Spiked manacles
@@ -1826,6 +1865,7 @@ Spirit angler top
 Spirit angler waders
 Spirit flakes
 Spirit shield
+Spiritual mining portent
 Spotted cape
 Spottier cape
 Squid dye
@@ -1860,6 +1900,7 @@ Studded body (g)
 Studded body (t)
 Studded chaps (g)
 Studded chaps (t)
+Sun-metal scraps
 Superior bonecrusher
 Superior dwarf multicannon
 Superior inferno adze
@@ -1949,6 +1990,7 @@ Verac's helm
 Verac's plateskirt
 Vet'ion jr.
 Vial of blood
+Vibrant energy
 Victor's cape (1)
 Victor's cape (10)
 Victor's cape (100)

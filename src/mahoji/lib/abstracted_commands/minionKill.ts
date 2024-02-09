@@ -658,6 +658,9 @@ export async function minionKillCommand(
 			quantity = floor(maxTripLength / timeToFinish);
 		}
 	}
+
+	quantity = Math.max(1, quantity);
+
 	if (isOnTask) {
 		let effectiveQtyRemaining = usersTask.currentTask!.quantity_remaining;
 		if (

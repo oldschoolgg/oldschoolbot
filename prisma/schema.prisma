@@ -760,6 +760,9 @@ model Tame {
   abyssal_jibwings_loot       Json @default("{}") @db.JsonB
   implings_loot               Json @default("{}") @db.JsonB
 
+  last_activity_date   DateTime? @db.Timestamp(6)
+  levels_from_egg_feed Int?
+
   tame_activity TameActivity[]
 
   @@index([user_id])
