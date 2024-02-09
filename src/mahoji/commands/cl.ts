@@ -40,7 +40,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 							];
 						})
 						.flat(3)
-				].filter(i => (!value ? true : i.name.toLowerCase().includes(value)));
+				].filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase)));
 			}
 		},
 		{
