@@ -4,6 +4,7 @@ import { Bank, LootTable } from 'oldschooljs';
 import { LootBank } from 'oldschooljs/dist/meta/types';
 import { convertLootBanksToItemBanks, JSONClone } from 'oldschooljs/dist/util';
 
+import { BOT_TYPE } from '../constants';
 import { TOBRooms } from '../data/tob';
 import { assert } from '../util/logError';
 
@@ -50,7 +51,6 @@ const HardModeUniqueTable = new LootTable()
 	.add('Avernic defender hilt', 1, 7);
 
 const NonUniqueTable = new LootTable()
-	.tertiary(25, 'Clue scroll (elite)')
 	.add('Vial of blood', [50, 60], 2)
 	.add('Death rune', [500, 600])
 	.add('Blood rune', [500, 600])
@@ -83,6 +83,10 @@ const NonUniqueTable = new LootTable()
 	.add('Yew seed', 3)
 	.add('Magic seed', 3);
 
+if (BOT_TYPE === 'BSO') {
+	NonUniqueTable.tertiary(25, 'Clue scroll (elite)');
+}
+
 const HardModeExtraTable = new LootTable()
 	.tertiary(275, 'Sanguine dust')
 	.tertiary(150, 'Sanguine ornament kit')
@@ -96,11 +100,6 @@ export class TheatreOfBloodClass {
 		const loot = new Bank();
 		for (let i = 0; i < 3; i++) {
 			loot.add(NonUniqueTable.roll());
-
-			// OSB only: Remove dupe elite clue scrolls
-			if (loot.amount('Clue scroll (elite)') > 1) {
-				loot.remove('Clue scroll (elite)', 1);
-			}
 		}
 
 		if (isHardMode) {
@@ -110,6 +109,12 @@ export class TheatreOfBloodClass {
 			}
 			// Add HM Tertiary drops: dust / kits
 			loot.add(HardModeExtraTable.roll());
+		}
+
+		if (BOT_TYPE === 'OSB') {
+			if (roll(25)) {
+				loot.add('Clue scroll (elite)');
+			}
 		}
 
 		let petChance = isHardMode ? 500 : 650;
