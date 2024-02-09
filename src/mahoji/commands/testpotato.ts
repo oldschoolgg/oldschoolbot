@@ -21,12 +21,13 @@ import { allOpenables } from '../../lib/openables';
 import { tiers } from '../../lib/patreon';
 import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
-import { getNewUser } from '../../lib/settings/settings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
 import { slayerMasterChoices } from '../../lib/slayer/constants';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
+import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import { allSlayerMonsters } from '../../lib/slayer/tasks';
 import { stringMatches } from '../../lib/util';
 import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
 import {
@@ -454,16 +455,16 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							description: 'The monster you want to set your task as.',
 							required: true,
 							autocomplete: async value => {
-								return effectiveMonsters
-									.filter(i => {
+								return allSlayerMonsters
+									.filter(monster => {
 										if (!value) return true;
-										return [i.name.toLowerCase(), i.aliases].some(i =>
-											i.includes(value.toLowerCase())
+										return [monster.name.toLowerCase(), monster.aliases].some(aliases =>
+											aliases.includes(value.toLowerCase())
 										);
 									})
-									.map(i => ({
-										name: i.name,
-										value: i.name
+									.map(monster => ({
+										name: monster.name,
+										value: monster.name
 									}));
 							}
 						},
@@ -863,40 +864,59 @@ ${droprates.join('\n')}`),
 
 				if (options.setslayertask) {
 					const user = await mUserFetch(userID);
-					await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
+					const usersTask = await getUsersCurrentSlayerInfo(user.id);
 
-					const monsterName = options.setslayertask?.monster ?? '';
-					const masterName = options.setslayertask?.master;
-					const quantity = options.setslayertask?.quantity ?? 50;
+					const { monster, master } = options.setslayertask;
 
-					const monster = effectiveMonsters.find(m => stringMatches(m.name, monsterName));
-					const master = slayerMasters.find(
-						sm =>
-							stringMatches(masterName, sm.name) ||
-							sm.aliases.some(alias => stringMatches(masterName, alias))
+					const selectedMonster = allSlayerMonsters.find(m => stringMatches(m.name, monster));
+					const selectedMaster = slayerMasters.find(
+						sm => stringMatches(master, sm.name) || sm.aliases.some(alias => stringMatches(master, alias))
 					);
 
-					if (!monster) return 'Invalid monster.';
-					if (!master) return 'Invalid slayer master.';
+					const quantity = options.setslayertask?.quantity ?? 50;
 
-					const newUser = await getNewUser(user.id);
+					const assignedTask = selectedMaster!.tasks.find(m => m.monster.id === selectedMonster?.id)!;
+
+					if (!selectedMonster || !selectedMaster || !assignedTask) {
+						return !selectedMonster
+							? 'Invalid monster.'
+							: !selectedMaster
+							? 'Invalid slayer master.'
+							: `${selectedMaster.name} does not assign ${selectedMonster.name}.`;
+					}
 
 					// Create a new slayer task for the user
-					await prisma.slayerTask.create({
-						data: {
-							user_id: newUser.id,
-							quantity,
-							quantity_remaining: quantity,
-							slayer_master_id: master.id,
-							monster_id: monster.id,
-							skipped: false
-						}
-					});
+					if (usersTask.currentTask?.id) {
+						await prisma.slayerTask.update({
+							where: {
+								id: usersTask.currentTask?.id
+							},
+							data: {
+								quantity,
+								quantity_remaining: quantity,
+								slayer_master_id: selectedMaster.id,
+								monster_id: selectedMonster.id,
+								skipped: false
+							}
+						});
+					} else {
+						await prisma.slayerTask.create({
+							data: {
+								user_id: user.id,
+								quantity,
+								quantity_remaining: quantity,
+								slayer_master_id: selectedMaster.id,
+								monster_id: selectedMonster.id,
+								skipped: false
+							}
+						});
+					}
+
 					await user.update({
-						slayer_last_task: monster.id
+						slayer_last_task: selectedMonster.id
 					});
 
-					return `You set your slayer task to ${monster.name} using ${master.name}.`;
+					return `You set your slayer task to ${selectedMonster.name} using ${selectedMaster.name}.`;
 				}
 
 				if (options.forcegrow) {
