@@ -83,10 +83,6 @@ const NonUniqueTable = new LootTable()
 	.add('Yew seed', 3)
 	.add('Magic seed', 3);
 
-if (BOT_TYPE === 'BSO') {
-	NonUniqueTable.tertiary(25, 'Clue scroll (elite)');
-}
-
 const HardModeExtraTable = new LootTable()
 	.tertiary(275, 'Sanguine dust')
 	.tertiary(150, 'Sanguine ornament kit')
@@ -96,6 +92,10 @@ export class TheatreOfBloodClass {
 	nonUniqueLoot(member: ParsedMember, isHardMode: boolean, deaths: number[]) {
 		if (deaths.length === TOBRooms.length) {
 			return new Bank().add('Cabbage');
+		}
+
+		if (BOT_TYPE === 'BSO') {
+			NonUniqueTable.tertiary(25, 'Clue scroll (elite)');
 		}
 		const loot = new Bank();
 		for (let i = 0; i < 3; i++) {
