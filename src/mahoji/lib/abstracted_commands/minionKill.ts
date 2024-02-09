@@ -178,6 +178,10 @@ export async function minionKillCommand(
 		return `You can't kill ${monster.name}, because you're not on a slayer task.`;
 	}
 
+	if (monster.canBePked && wilderness !== undefined && !wilderness) {
+		return `You can't kill ${monster.name} outside the wilderness.`;
+	}
+
 	const isInWilderness = wilderness || (isOnTask && usersTask.assignedTask?.wilderness) || monster.canBePked;
 
 	if (!monster.wildy && isInWilderness) {
