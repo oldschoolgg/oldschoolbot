@@ -30,16 +30,16 @@ export const collectionLogCommand: OSBMahojiCommand = {
 					{ name: 'Overall+', value: 'overall+' },
 					...Object.entries(allCollectionLogs)
 						.map(i => {
-						return [
-							{ name: `${i[0]} (Group)`, value: i[0] },
+							return [
+								{ name: `${i[0]} (Group)`, value: i[0] },
 								...Object.entries(i[1].activities).map(act => ({
-								name: `${act[0]} (${act[1].items.length} Items)`,
-								value: act[0]
-							}))
+									name: `${act[0]} (${act[1].items.length} Items)`,
+									value: act[0]
+								}))
 							];
-					})
+						})
 						.flat(3)
-				].filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
+				].filter(i => (!value ? true : i.name.toLowerCase().includes(value)));
 			}
 		},
 		{
@@ -73,15 +73,15 @@ export const collectionLogCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		userID
-	}: CommandRunOptions < {
+	}: CommandRunOptions<{
 		name: string;
-		type ? : CollectionLogType;
-		flag ? : string;
-		flag_extra ? : string;
-		all ? : boolean;
-	} > ) => {
+		type?: CollectionLogType;
+		flag?: string;
+		flag_extra?: string;
+		all?: boolean;
+	}>) => {
 		const user = await mUserFetch(userID);
-		let flags: Record < string, string > = {};
+		let flags: Record<string, string> = {};
 		if (options.flag) flags[options.flag] = options.flag;
 		if (options.flag_extra) flags[options.flag_extra] = options.flag_extra;
 		if (options.all) flags.all = 'all';
