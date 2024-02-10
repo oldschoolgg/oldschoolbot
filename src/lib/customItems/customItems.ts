@@ -4839,13 +4839,13 @@ setCustomItem(
 	'Baby yaga house',
 	'Herbi',
 	{
-			tradeable: true,
-			tradeable_on_ge: true,
-			customItemData: {
-				cantDropFromMysteryBoxes: true
-			}
-		},
-		1_000_000
+		tradeable: true,
+		tradeable_on_ge: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
 );
 
 setCustomItem(
@@ -9276,13 +9276,13 @@ setCustomItem(
 	'Mini mortimer',
 	'Herbi',
 	{
-			tradeable: true,
-			tradeable_on_ge: true,
-			customItemData: {
-				cantDropFromMysteryBoxes: true
-			}
-		},
-		1_000_000
+		tradeable: true,
+		tradeable_on_ge: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
 );
 
 setCustomItem(
@@ -9290,13 +9290,13 @@ setCustomItem(
 	'Doopy',
 	'Herbi',
 	{
-			isSuperUntradeable: true,
-			tradeable_on_ge: true,
-			customItemData: {
-				cantDropFromMysteryBoxes: true
-			}
-		},
-		1_000_000
+		isSuperUntradeable: true,
+		tradeable_on_ge: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
 );
 
 setCustomItem(
@@ -9329,13 +9329,13 @@ setCustomItem(
 	'Casper',
 	'Herbi',
 	{
-			tradeable: true,
-			tradeable_on_ge: true,
-			customItemData: {
-				cantDropFromMysteryBoxes: true
-			}
-		},
-		1_000_000
+		tradeable: true,
+		tradeable_on_ge: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
 );
 
 setCustomItem(
@@ -9430,13 +9430,13 @@ setCustomItem(
 	'Echo',
 	'Herbi',
 	{
-			tradeable: true,
-			tradeable_on_ge: true,
-			customItemData: {
-				cantDropFromMysteryBoxes: true
-			}
-		},
-		1_000_000
+		tradeable: true,
+		tradeable_on_ge: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
 );
 
 setCustomItem(
@@ -10159,13 +10159,13 @@ setCustomItem(
 	'Rudolph',
 	'Herbi',
 	{
-			tradeable: true,
-			tradeable_on_ge: true,
-			customItemData: {
-				cantDropFromMysteryBoxes: true
-			}
-		},
-		1_000_000
+		tradeable: true,
+		tradeable_on_ge: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
 );
 
 setCustomItem(
