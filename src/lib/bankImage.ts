@@ -70,6 +70,7 @@ export interface IBgSprite {
 
 const i = itemID;
 const forcedShortNameMap = new Map<number, string>([
+	// Seeds
 	[i('Guam seed'), 'guam'],
 	[i('Marrentill seed'), 'marren'],
 	[i('Tarromin seed'), 'tarro'],
@@ -180,19 +181,14 @@ const forcedShortNameMap = new Map<number, string>([
 	// Clues & Caskets
 	[i('Clue scroll (beginner)'), 'beginner'],
 	[i('Reward casket (beginner)'), 'beginner'],
-
 	[i('Clue scroll (easy)'), 'easy'],
 	[i('Reward casket (easy)'), 'easy'],
-
 	[i('Clue scroll (medium)'), 'medium'],
 	[i('Reward casket (medium)'), 'medium'],
-
 	[i('Clue scroll (hard)'), 'hard'],
 	[i('Reward casket (hard)'), 'hard'],
-
 	[i('Clue scroll (elite)'), 'elite'],
 	[i('Reward casket (elite)'), 'elite'],
-
 	[i('Clue scroll (master)'), 'master'],
 	[i('Reward casket (master)'), 'master'],
 
@@ -211,6 +207,8 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Tarromin potion (unf)'), 'tarro'],
 	[i('Toadflax potion (unf)'), 'toad'],
 	[i('Torstol potion (unf)'), 'torstol'],
+	[i('Cadantine potion (unf)'), 'cadan'],
+	[i('Cadantine blood potion (unf)'), 'cadan.b'],
 
 	// Logs
 	[i('Logs'), 'Logs'],
@@ -225,12 +223,14 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Redwood logs'), 'Redwood'],
 	...XPLamps.map(lamp => [lamp.itemID, toKMB(lamp.amount)] as const),
 
-	// Uncharged
+	// Uncharged & Inactive
 	[i('Holy sanguinesti staff (uncharged)'), 'Unch.'],
 	[i('Sanguinesti staff (uncharged)'), 'Unch.'],
 	[i('Scythe of vitur (uncharged)'), 'Unch.'],
 	[i('Holy scythe of vitur (uncharged)'), 'Unch.'],
-	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.']
+	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.'],
+	[i('23995'), 'Inact.'],
+	[i('25862'), 'Inact.']
 ]);
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
