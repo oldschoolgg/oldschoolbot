@@ -4831,7 +4831,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -4839,12 +4839,13 @@ setCustomItem(
 	'Baby yaga house',
 	'Herbi',
 	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
-		}
-	},
-	10_000
+			tradeable: true,
+			tradeable_on_ge: true,
+			customItemData: {
+				cantDropFromMysteryBoxes: true
+			}
+		},
+		1_000_000
 );
 
 setCustomItem(
@@ -6337,18 +6338,20 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	1_000_000
 );
 setCustomItem(
 	70_438,
 	'Crush',
 	'Herbi',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -6360,7 +6363,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -6372,7 +6375,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -7447,7 +7450,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -7461,7 +7464,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -7475,7 +7478,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -7489,7 +7492,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -7503,7 +7506,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -7517,7 +7520,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -7531,7 +7534,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -7545,7 +7548,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -7559,7 +7562,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -9273,11 +9276,13 @@ setCustomItem(
 	'Mini mortimer',
 	'Herbi',
 	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1_000_000
+			tradeable: true,
+			tradeable_on_ge: true,
+			customItemData: {
+				cantDropFromMysteryBoxes: true
+			}
+		},
+		1_000_000
 );
 
 setCustomItem(
@@ -9285,12 +9290,13 @@ setCustomItem(
 	'Doopy',
 	'Herbi',
 	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
-		}
-	},
-	1_000_000
+			isSuperUntradeable: true,
+			tradeable_on_ge: true,
+			customItemData: {
+				cantDropFromMysteryBoxes: true
+			}
+		},
+		1_000_000
 );
 
 setCustomItem(
@@ -9323,11 +9329,13 @@ setCustomItem(
 	'Casper',
 	'Herbi',
 	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1_000_000
+			tradeable: true,
+			tradeable_on_ge: true,
+			customItemData: {
+				cantDropFromMysteryBoxes: true
+			}
+		},
+		1_000_000
 );
 
 setCustomItem(
@@ -9422,11 +9430,13 @@ setCustomItem(
 	'Echo',
 	'Herbi',
 	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1_000_000
+			tradeable: true,
+			tradeable_on_ge: true,
+			customItemData: {
+				cantDropFromMysteryBoxes: true
+			}
+		},
+		1_000_000
 );
 
 setCustomItem(
@@ -10147,13 +10157,15 @@ setCustomItem(
 setCustomItem(
 	72_044,
 	'Rudolph',
-	'Coal',
+	'Herbi',
 	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1
+			tradeable: true,
+			tradeable_on_ge: true,
+			customItemData: {
+				cantDropFromMysteryBoxes: true
+			}
+		},
+		1_000_000
 );
 
 setCustomItem(
