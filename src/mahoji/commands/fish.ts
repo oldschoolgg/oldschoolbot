@@ -97,7 +97,7 @@ export const fishCommand: OSBMahojiCommand = {
 			boosts.push('2x faster for Shelldon');
 		}
 		// 2x boost for having Fishing master cape equipped
-		if (user.hasEquipped('Fishing master cape')) {
+		if (user.owns('Fishing master cape')) {
 			scaledTimePerFish = reduceNumByPercent(scaledTimePerFish, 50);
 			boosts.push('2x faster for being a master fisher');
 		}
