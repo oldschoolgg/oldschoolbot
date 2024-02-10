@@ -3,7 +3,7 @@ import { roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
-import { Emoji, Events } from '../../../lib/constants';
+import { BOT_TYPE, Emoji, Events } from '../../../lib/constants';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -140,6 +140,13 @@ export const tobTask: MinionTask = {
 				}
 				// Refund initial 100k entry cost
 				userLoot.add('Coins', 100_000);
+
+				// Remove elite clue scroll if OSB & user has one in bank
+				if (BOT_TYPE === 'OSB') {
+					if (user.owns('Clue scroll (elite)')) {
+						userLoot.remove('Clue scroll (elite)', 1);
+					}
+				}
 
 				// Add this raids loot to the raid's total loot:
 				totalLoot.add(userLoot);
