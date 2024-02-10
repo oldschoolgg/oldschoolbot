@@ -70,7 +70,6 @@ export interface IBgSprite {
 
 const i = itemID;
 const forcedShortNameMap = new Map<number, string>([
-	// Seeds
 	[i('Guam seed'), 'guam'],
 	[i('Marrentill seed'), 'marren'],
 	[i('Tarromin seed'), 'tarro'],
