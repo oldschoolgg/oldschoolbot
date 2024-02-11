@@ -877,13 +877,9 @@ ${droprates.join('\n')}`),
 
 					const assignedTask = selectedMaster!.tasks.find(m => m.monster.id === selectedMonster?.id)!;
 
-					if (!selectedMonster || !selectedMaster || !assignedTask) {
-						return !selectedMonster
-							? 'Invalid monster.'
-							: !selectedMaster
-							? 'Invalid slayer master.'
-							: `${selectedMaster.name} does not assign ${selectedMonster.name}.`;
-					}
+					if (!selectedMaster) return 'Invalid master.';
+					if (!selectedMonster) return 'Invalid monster.';
+					if (!assignedTask) return `${selectedMaster.name} can not assign ${selectedMonster.name}.`;
 
 					// Create a new slayer task for the user
 					if (usersTask.currentTask?.id) {
