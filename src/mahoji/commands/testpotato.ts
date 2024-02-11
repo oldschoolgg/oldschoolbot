@@ -888,6 +888,7 @@ ${droprates.join('\n')}`),
 						sm => stringMatches(master, sm.name) || sm.aliases.some(alias => stringMatches(master, alias))
 					);
 
+					// Set quantity to 50 if user doesn't assign a quantity
 					const quantity = options.setslayertask?.quantity ?? 50;
 
 					const assignedTask = selectedMaster!.tasks.find(m => m.monster.id === selectedMonster?.id)!;
@@ -896,7 +897,7 @@ ${droprates.join('\n')}`),
 					if (!selectedMonster) return 'Invalid monster.';
 					if (!assignedTask) return `${selectedMaster.name} can not assign ${selectedMonster.name}.`;
 
-					// Create a new slayer task for the user
+					// Update an existing slayer task for the user
 					if (usersTask.currentTask?.id) {
 						await prisma.slayerTask.update({
 							where: {
@@ -911,6 +912,7 @@ ${droprates.join('\n')}`),
 							}
 						});
 					} else {
+						// Create a new slayer task for the user
 						await prisma.slayerTask.create({
 							data: {
 								user_id: user.id,
