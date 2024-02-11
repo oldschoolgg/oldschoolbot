@@ -536,7 +536,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							name: 'monster',
 							description: 'The monster you want to set your task as.',
 							required: true,
-							autocomplete: async (value) => {
+							autocomplete: async value => {
 								const uniqueMonsters = new Set();
 								const filteredMonsters = allSlayerMonsters.filter(monster => {
 									if (!value) return true;
