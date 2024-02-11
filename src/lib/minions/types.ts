@@ -1,6 +1,6 @@
 import { Image } from '@napi-rs/canvas';
 import { StoreBitfield } from '@oldschoolgg/toolkit';
-import { XpGainSource } from '@prisma/client';
+import { Tame, XpGainSource } from '@prisma/client';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
@@ -113,8 +113,9 @@ export interface KillableMonster {
 	effect?: (opts: {
 		messages: string[];
 		user: MUser;
+		tame?: Tame;
 		quantity: number;
-		monster: KillableMonster;
+		monster?: KillableMonster;
 		loot: Bank;
 		data: MonsterActivityTaskOptions;
 	}) => Promise<unknown>;

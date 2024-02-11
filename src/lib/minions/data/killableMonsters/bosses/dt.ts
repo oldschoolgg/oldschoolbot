@@ -7,6 +7,7 @@ import { OSB_VIRTUS_IDS } from '../../../../constants';
 import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
+import { ItemBank } from '../../../../types';
 import { removeItemsFromLootTable } from '../../../../util';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
@@ -77,8 +78,10 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		healAmountNeeded: 45 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
-		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Frozen tablet') && user.cl.has('Frozen tablet')) return;
+		effect: async ({ quantity, user, loot, messages, tame }) => {
+			if (tame) {
+				if (new Bank(tame.max_total_loot as ItemBank).has('Frozen tablet')) return;
+			} else if (user.bank.has('Frozen tablet') && user.cl.has('Frozen tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -161,8 +164,10 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		healAmountNeeded: 45 * 20 * 2.5,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
-		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Frozen tablet') && user.cl.has('Frozen tablet')) return;
+		effect: async ({ quantity, user, loot, messages, tame }) => {
+			if (tame) {
+				if (new Bank(tame.max_total_loot as ItemBank).has('Frozen tablet')) return;
+			} else if (user.bank.has('Frozen tablet') && user.cl.has('Frozen tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -263,8 +268,10 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		healAmountNeeded: 45 * 20 * 2.5,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
-		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Scarred tablet') && user.cl.has('Scarred tablet')) return;
+		effect: async ({ quantity, user, loot, messages, tame }) => {
+			if (tame) {
+				if (new Bank(tame.max_total_loot as ItemBank).has('Scarred tablet')) return;
+			} else if (user.bank.has('Scarred tablet') && user.cl.has('Scarred tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -352,8 +359,10 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		healAmountNeeded: 45 * 20,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
-		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Scarred tablet') && user.cl.has('Scarred tablet')) return;
+		effect: async ({ quantity, user, loot, messages, tame }) => {
+			if (tame) {
+				if (new Bank(tame.max_total_loot as ItemBank).has('Scarred tablet')) return;
+			} else if (user.bank.has('Scarred tablet') && user.cl.has('Scarred tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -442,8 +451,10 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		healAmountNeeded: 55 * 20,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],
-		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Sirenic tablet') && user.cl.has('Sirenic tablet')) return;
+		effect: async ({ quantity, user, loot, messages, tame }) => {
+			if (tame) {
+				if (new Bank(tame.max_total_loot as ItemBank).has('Sirenic tablet')) return;
+			} else if (user.bank.has('Sirenic tablet') && user.cl.has('Sirenic tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -547,8 +558,10 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		healAmountNeeded: 45 * 20 * 2.5,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],
-		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Sirenic tablet') && user.cl.has('Sirenic tablet')) return;
+		effect: async ({ quantity, user, loot, messages, tame }) => {
+			if (tame) {
+				if (new Bank(tame.max_total_loot as ItemBank).has('Sirenic tablet')) return;
+			} else if (user.bank.has('Sirenic tablet') && user.cl.has('Sirenic tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -640,8 +653,10 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		healAmountNeeded: 45 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
-		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Strangled tablet') && user.cl.has('Strangled tablet')) return;
+		effect: async ({ quantity, user, loot, messages, tame }) => {
+			if (tame) {
+				if (new Bank(tame.max_total_loot as ItemBank).has('Strangled tablet')) return;
+			} else if (user.bank.has('Strangled tablet') && user.cl.has('Strangled tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -724,8 +739,10 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		healAmountNeeded: 45 * 20 * 2.5,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
-		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Strangled tablet') && user.cl.has('Strangled tablet')) return;
+		effect: async ({ quantity, user, loot, messages, tame }) => {
+			if (tame) {
+				if (new Bank(tame.max_total_loot as ItemBank).has('Strangled tablet')) return;
+			} else if (user.bank.has('Strangled tablet') && user.cl.has('Strangled tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {

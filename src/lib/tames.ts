@@ -29,6 +29,7 @@ import { runCommand } from './settings/settings';
 import { getTemporossLoot } from './simulation/tempoross';
 import { WintertodtCrate } from './simulation/wintertodt';
 import Tanning from './skilling/skills/crafting/craftables/tanning';
+import { MonsterActivityTaskOptions } from './types/minions';
 import {
 	assert,
 	calcPerHour,
@@ -738,6 +739,20 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				}
 			}
 			const loot = mon.loot({ quantity: killQty, tame });
+			const messages: string[] = [];
+			const effectTaskData: MonsterActivityTaskOptions = {
+				type: 'MonsterKilling',
+				monsterID,
+				quantity,
+				duration: activity.duration,
+				userID: user.id,
+				finishDate: activity.finish_date.getTime(),
+				channelID: activity.channel_id,
+				id: 0 // Unused. Don't use tame activity ID unless the Type is changed to differentiate.
+			};
+			if (mon.effect) {
+				await mon.effect({ user, loot, messages, quantity: killQty, data: effectTaskData, tame });
+			}
 			let str = `${user}, ${tameName(tame)} finished killing ${quantity}x ${mon.name}.${
 				activity.deaths > 0 ? ` ${tameName(tame)} died ${activity.deaths}x times.` : ''
 			}`;
@@ -747,6 +762,9 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			}
 			if (boosts.length > 0) {
 				str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+			}
+			if (messages.length > 0) {
+				str += `\n\n**Messages:** ${messages.join(' ')}`;
 			}
 			const { doubleLootMsg } = doubleLootCheck(tame, loot);
 			str += doubleLootMsg;

@@ -374,7 +374,7 @@ export const allCollectionLogs: ICollection = {
 				]
 			},
 			'The Leviathan': {
-				alias: ['the leviathan'],
+				alias: ['the leviathan', 'leviathan'],
 				kcActivity: {
 					Default: [Monsters.TheLeviathan.name, Monsters.AwakenedTheLeviathan.name],
 					Awakened: Monsters.AwakenedTheLeviathan.name
@@ -406,7 +406,7 @@ export const allCollectionLogs: ICollection = {
 				fmtProg: kcProg(BSOMonsters.VladimirDrakan.id)
 			},
 			'The Whisperer': {
-				alias: ['the whisperer'],
+				alias: ['the whisperer', 'whisperer'],
 				kcActivity: {
 					Default: [Monsters.TheWhisperer.name, Monsters.AwakenedTheWhisperer.name],
 					Awakened: Monsters.AwakenedTheWhisperer.name
