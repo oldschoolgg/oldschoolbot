@@ -537,17 +537,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							description: 'The monster you want to set your task as.',
 							required: true,
 							autocomplete: async value => {
-								const uniqueMonsters = new Set();
-								const filteredMonsters = allSlayerMonsters.filter(monster => {
+								const filteredMonsters = [...new Set(allSlayerMonsters)].filter(monster => {
 									if (!value) return true;
-									const isMatch = [monster.name.toLowerCase(), ...monster.aliases].some(aliases =>
+									return [monster.name.toLowerCase(), ...monster.aliases].some(aliases =>
 										aliases.includes(value.toLowerCase())
 									);
-									if (isMatch && !uniqueMonsters.has(monster.name)) {
-										uniqueMonsters.add(monster.name);
-										return true;
-									}
-									return false;
 								});
 								return filteredMonsters.map(monster => ({
 									name: monster.name,
