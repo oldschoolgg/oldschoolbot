@@ -552,7 +552,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						{
 							type: ApplicationCommandOptionType.Integer,
 							name: 'quantity',
-							description: 'The task quantity you want.',
+							description: 'The task quantity you want to assign.',
 							required: false,
 							min_value: 0,
 							max_value: 1000
