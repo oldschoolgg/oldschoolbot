@@ -54,7 +54,8 @@ const ores: Ore[] = [
 		slope: 1.06,
 		intercept: 49.33,
 		petChance: 741_600,
-		clueScrollChance: 741_600
+		clueScrollChance: 741_600,
+		aliases: ['copper']
 	},
 	{
 		level: 1,
@@ -66,7 +67,8 @@ const ores: Ore[] = [
 		slope: 1.06,
 		intercept: 49.33,
 		petChance: 741_600,
-		clueScrollChance: 741_600
+		clueScrollChance: 741_600,
+		aliases: ['tin']
 	},
 	{
 		level: 1,
@@ -89,7 +91,8 @@ const ores: Ore[] = [
 		intercept: 42.5,
 		petChance: 741_600,
 		minerals: 100,
-		clueScrollChance: 741_600
+		clueScrollChance: 741_600,
+		aliases: ['iron']
 	},
 	{
 		level: 20,
@@ -101,7 +104,8 @@ const ores: Ore[] = [
 		slope: 0.7,
 		intercept: 9,
 		petChance: 741_600,
-		clueScrollChance: 741_600
+		clueScrollChance: 741_600,
+		aliases: ['silver']
 	},
 	{
 		level: 22,
@@ -112,7 +116,8 @@ const ores: Ore[] = [
 		bankingTime: 0,
 		slope: 1.06,
 		intercept: 49.33,
-		petChance: 741_600
+		petChance: 741_600,
+		aliases: ['ash', 'volcanic']
 	},
 	{
 		level: 30,
@@ -122,7 +127,8 @@ const ores: Ore[] = [
 		respawnTime: 2.75,
 		bankingTime: 33,
 		slope: 0,
-		intercept: 100
+		intercept: 100,
+		aliases: ['pess', 'pure', 'essence', 'ess']
 	},
 	{
 		level: 30,
@@ -147,7 +153,8 @@ const ores: Ore[] = [
 		slope: 0.8,
 		intercept: 10.01,
 		petChance: 741_600,
-		clueScrollChance: 741_600
+		clueScrollChance: 741_600,
+		aliases: ['sand']
 	},
 	{
 		level: 40,
@@ -159,7 +166,8 @@ const ores: Ore[] = [
 		slope: 0.18,
 		intercept: 10.04,
 		petChance: 211_886,
-		clueScrollChance: 211_886
+		clueScrollChance: 211_886,
+		aliases: ['gems', 'gem', 'gem rocks']
 	},
 	{
 		level: 40,
@@ -171,8 +179,8 @@ const ores: Ore[] = [
 		slope: 0.28,
 		intercept: 2.15,
 		petChance: 296_640,
-		nuggets: true,
-		clueScrollChance: 296_640
+		clueScrollChance: 296_640,
+		aliases: ['gold']
 	},
 	{
 		level: 45,
@@ -196,8 +204,8 @@ const ores: Ore[] = [
 		slope: 0.2,
 		intercept: 0.59,
 		petChance: 148_320,
-		nuggets: true,
-		clueScrollChance: 148_320
+		clueScrollChance: 148_320,
+		aliases: ['mith', 'mith ore', 'mithril']
 	},
 	{
 		level: 60,
@@ -207,7 +215,8 @@ const ores: Ore[] = [
 		respawnTime: 3,
 		bankingTime: 0,
 		slope: 0,
-		intercept: 100
+		intercept: 100,
+		aliases: ['dae', 'daey', 'daeyalt', 'daeyalt essence']
 	},
 	{
 		level: 70,
@@ -219,8 +228,8 @@ const ores: Ore[] = [
 		slope: 0.11,
 		intercept: -0.53,
 		petChance: 59_328,
-		nuggets: true,
-		clueScrollChance: 59_328
+		clueScrollChance: 59_328,
+		aliases: ['addy', 'adamant', 'adamant ore', 'adamantite']
 	},
 	{
 		level: 85,
@@ -232,8 +241,8 @@ const ores: Ore[] = [
 		slope: 0.08,
 		intercept: -0.85,
 		petChance: 42_377,
-		nuggets: true,
-		clueScrollChance: 42_377
+		clueScrollChance: 42_377,
+		aliases: ['rune', 'rune ore', 'runite']
 	},
 	{
 		level: 92,
@@ -246,9 +255,38 @@ const ores: Ore[] = [
 		intercept: -1.35,
 		petChance: 46_350,
 		minerals: 20,
-		clueScrollChance: 46_350
+		clueScrollChance: 46_350,
+		aliases: ['amy', 'ame']
 	}
 ];
+
+// Uses determineMiningTime function, therefore Ore object and id -1
+const MotherlodeMine: Ore = {
+	level: 30,
+	xp: 60,
+	id: -1,
+	name: 'Motherlode mine',
+	aliases: ['mlm', 'ml', 'motherlode'],
+	respawnTime: 5.5,
+	bankingTime: 60,
+	slope: 0.181,
+	intercept: 23.48,
+	petChance: 247_200
+};
+
+// Uses determineMiningTime function, therefore Ore object and id -1
+const CamdozaalMine: Ore = {
+	level: 14,
+	xp: 16,
+	id: -1,
+	name: 'Barronite rocks',
+	respawnTime: 3,
+	bankingTime: 20,
+	slope: 0.082_71,
+	intercept: 30.872,
+	petChance: 741_600,
+	clueScrollChance: 741_600
+};
 
 const prospectorItems: { [key: number]: number } = {
 	[itemID('Prospector helmet')]: 0.4,
@@ -260,6 +298,8 @@ const prospectorItems: { [key: number]: number } = {
 const Mining = {
 	aliases: ['mining'],
 	Ores: ores,
+	MotherlodeMine,
+	CamdozaalMine,
 	GemRockTable,
 	GraniteRockTable,
 	SandstoneRockTable,

@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, reduceNumByPercent, round, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { MAX_QP, NMZStrategy } from '../../../lib/constants';
+import { NMZStrategy } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
@@ -15,6 +15,7 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
+import { MAX_QP } from './questCommand';
 
 const itemBoosts = [
 	// Special weapons
@@ -137,6 +138,21 @@ export const nightmareZoneImbueables = [
 	{
 		input: getOSItem('Hydra slayer helmet'),
 		output: getOSItem('Hydra slayer helmet (i)'),
+		points: 1_250_000
+	},
+	{
+		input: getOSItem('Tztok slayer helmet'),
+		output: getOSItem('Tztok slayer helmet (i)'),
+		points: 1_250_000
+	},
+	{
+		input: getOSItem('Vampyric slayer helmet'),
+		output: getOSItem('Vampyric slayer helmet (i)'),
+		points: 1_250_000
+	},
+	{
+		input: getOSItem('Tzkal slayer helmet'),
+		output: getOSItem('Tzkal slayer helmet (i)'),
 		points: 1_250_000
 	},
 	{ input: getOSItem('Salve amulet'), output: getOSItem('Salve amulet(i)'), points: 800_000 },
@@ -410,14 +426,15 @@ export async function nightmareZoneShopCommand(
 			.join(', ')}`;
 	}
 
-	const cost = quantity * shopItem.cost;
+	let costPerItem = shopItem.cost;
+	const cost = quantity * costPerItem;
 	if (cost > currentUserPoints) {
-		return `You don't have enough Nightmare Zone points to buy ${quantity.toLocaleString()}x ${shopItem.name} (${
-			shopItem.cost
-		} Nightmare Zone points each).\nYou have ${currentUserPoints} Nightmare Zone points.\n${
-			currentUserPoints < shopItem.cost
+		return `You don't have enough Nightmare Zone points to buy ${quantity.toLocaleString()}x ${
+			shopItem.name
+		} (${costPerItem} Nightmare Zone points each).\nYou have ${currentUserPoints} Nightmare Zone points.\n${
+			currentUserPoints < costPerItem
 				? "You don't have enough Nightmare Zone points for any of this item."
-				: `You only have enough for ${Math.floor(currentUserPoints / shopItem.cost).toLocaleString()}`
+				: `You only have enough for ${Math.floor(currentUserPoints / costPerItem).toLocaleString()}`
 		}`;
 	}
 
@@ -440,7 +457,7 @@ export async function nightmareZoneShopCommand(
 	});
 
 	return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(
-		shopItem.cost * quantity
+		costPerItem * quantity
 	).toLocaleString()} Nightmare Zone points.\nYou now have ${currentUserPoints - cost} Nightmare Zone points left.`;
 }
 
@@ -453,9 +470,13 @@ export async function nightmareZoneImbueCommand(user: MUser, input = '') {
 			.map(i => i.input.name)
 			.join(', ')}.`;
 	}
+	let imbueCost = item.points;
+	if (user.hasCompletedCATier('hard')) {
+		imbueCost /= 2;
+	}
 	const bal = user.user.nmz_points;
-	if (bal < item.points) {
-		return `You don't have enough Nightmare Zone points to imbue a ${item.input.name}. You have ${bal} but need ${item.points}.`;
+	if (bal < imbueCost) {
+		return `You don't have enough Nightmare Zone points to imbue a ${item.input.name}. You have ${bal} but need ${imbueCost}.`;
 	}
 	const { bank } = user;
 	if (!bank.has(item.input.id)) {
@@ -463,7 +484,7 @@ export async function nightmareZoneImbueCommand(user: MUser, input = '') {
 	}
 	await user.update({
 		nmz_points: {
-			decrement: item.points
+			decrement: imbueCost
 		}
 	});
 	const cost = new Bank().add(item.input.id);
@@ -474,5 +495,7 @@ export async function nightmareZoneImbueCommand(user: MUser, input = '') {
 		itemsToRemove: cost,
 		collectionLog: true
 	});
-	return `Added ${loot} to your bank, removed ${item.points}x Nightmare Zone points and ${cost}.`;
+	return `Added ${loot} to your bank, removed ${imbueCost}x Nightmare Zone points and ${cost}.${
+		user.hasCompletedCATier('hard') ? ' 50% off for having completed the Hard Tier of the Combat Achievement.' : ''
+	}`;
 }

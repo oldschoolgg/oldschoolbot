@@ -2,12 +2,12 @@ import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 
 import { prisma } from '../settings/prisma';
 import { activitySync } from '../settings/settings';
-import { ActivityTaskOptions } from '../types/minions';
+import { ActivityTaskData, ActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { logError } from './logError';
 import { getActivityOfUser } from './minionIsBusy';
 
-export default async function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
+export default async function addSubTaskToActivityTask<T extends ActivityTaskData>(
 	taskToAdd: Omit<T, 'finishDate' | 'id'>
 ) {
 	const usersTask = getActivityOfUser(taskToAdd.userID);
@@ -29,7 +29,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 
 	const finishDate = new Date(Date.now() + duration);
 
-	let __newData: Partial<ActivityTaskOptions> = { ...taskToAdd };
+	let __newData: Partial<ActivityTaskData> = { ...taskToAdd } as Partial<ActivityTaskData>;
 	delete __newData.type;
 	delete __newData.userID;
 	delete __newData.id;

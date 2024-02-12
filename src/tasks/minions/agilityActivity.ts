@@ -57,7 +57,7 @@ export const agilityTask: MinionTask = {
 				}
 			}
 		}
-		if (user.skillLevel(SkillsEnum.Agility) >= course.level + 20) {
+		if (course.id !== 5 && user.skillLevel(SkillsEnum.Agility) >= course.level + 20) {
 			totalMarks = Math.ceil(totalMarks / 5);
 		}
 

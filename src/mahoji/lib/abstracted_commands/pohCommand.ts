@@ -185,10 +185,8 @@ export async function pohMountItemCommand(user: MUser, name: string) {
 		return `You don't have all the required materials: ${costBank}\n\nYou're missing ${missingBank}`;
 	}
 
-	await user.removeItemsFromBank(costBank);
-	if (currItem) {
-		await user.addItemsToBank({ items: { [currItem]: 1 } });
-	}
+	const refundBank = currItem ? new Bank().add(currItem) : undefined;
+	await user.transactItems({ itemsToRemove: costBank, itemsToAdd: refundBank });
 
 	await prisma.playerOwnedHouse.update({
 		where: {

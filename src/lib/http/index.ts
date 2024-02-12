@@ -12,7 +12,7 @@ import { initRoutes } from './routes';
 
 export async function makeServer(port = globalConfig.httpPort) {
 	if (process.env.TEST) {
-		port = cryptoRand(1000, 9999);
+		port = cryptoRand(10_000, 19_999);
 	}
 	const server = fastify({
 		logger: false,
@@ -69,6 +69,6 @@ export async function makeServer(port = globalConfig.httpPort) {
 
 	initRoutes(server);
 
-	server.listen({ port });
+	await server.listen({ port });
 	return server;
 }

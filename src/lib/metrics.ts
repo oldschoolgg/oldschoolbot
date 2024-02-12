@@ -1,8 +1,13 @@
+import { miniID } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
+import { Time } from 'e';
+import { writeFile } from 'fs/promises';
 import os, { CpuInfo } from 'os';
 import { monitorEventLoopDelay } from 'perf_hooks';
 
 import { prisma } from './settings/prisma';
+import { LOG_FILE_NAME, sonicBoom } from './util/logger';
+import { formatDuration, tailFile } from './util/smallUtils';
 
 const h = monitorEventLoopDelay();
 h.enable();
@@ -71,5 +76,18 @@ export async function collectMetrics() {
 	};
 	h.reset();
 	debugLog('Collected metrics', { ...metrics, type: 'COLLECT_METRICS' });
+
+	const threshold = Time.Second * 5;
+	if (metrics.eventLoopDelayMax > threshold) {
+		sonicBoom.flush();
+		const last200Lines = await tailFile(LOG_FILE_NAME, 300);
+		const fileDescription = `This is a log snapshot taken when the event loop delay exceeded the threshold of ${formatDuration(
+			threshold
+		)}. 
+        It contains the last 300 lines of the log file: ${LOG_FILE_NAME} \n\n`;
+		const fileName = `event-loop-lag-dump-${miniID(5)}.txt`;
+		await writeFile(fileName, fileDescription + last200Lines);
+	}
+
 	return metrics;
 }

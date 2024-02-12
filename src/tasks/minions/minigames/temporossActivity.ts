@@ -61,7 +61,12 @@ export const temporossTask: MinionTask = {
 			}
 		}
 
-		const xpStr = await user.addXP({ skillName: SkillsEnum.Fishing, amount: fXPtoGive, duration });
+		const xpStr = await user.addXP({
+			skillName: SkillsEnum.Fishing,
+			amount: fXPtoGive,
+			duration,
+			source: 'Tempoross'
+		});
 
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,

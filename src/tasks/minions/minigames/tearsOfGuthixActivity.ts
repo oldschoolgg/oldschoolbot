@@ -56,7 +56,7 @@ export const togTask: MinionTask = {
 		const [hasDiary] = await userhasDiaryTier(user, LumbridgeDraynorDiary.hard);
 		if (hasDiary) xpToGive = increaseNumByPercent(xpToGive, 10);
 
-		const xpStr = await user.addXP({ skillName: lowestSkill, amount: xpToGive, duration });
+		const xpStr = await user.addXP({ skillName: lowestSkill, amount: xpToGive, duration, source: 'TearsOfGuthix' });
 
 		let output = `${user}, ${
 			user.minionName

@@ -2,11 +2,13 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
+import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { Events } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
+import { tradePlayerItems } from '../../lib/util/tradePlayerItems';
 import { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
 
@@ -43,6 +45,8 @@ export const payCommand: OSBMahojiCommand = {
 		// Ensure the recipient's users row exists:
 		if (!amount) return "That's not a valid amount.";
 		const { GP } = user;
+		const isBlacklisted = BLACKLISTED_USERS.has(recipient.id);
+		if (isBlacklisted) return "Blacklisted players can't receive money.";
 		if (recipient.id === user.id) return "You can't send money to yourself.";
 		if (user.isIronman) return "Iron players can't send money.";
 		if (recipient.isIronman) return "Iron players can't receive money.";
@@ -61,16 +65,10 @@ export const payCommand: OSBMahojiCommand = {
 
 		const bank = new Bank().add('Coins', amount);
 
-		await transactItems({
-			userID: user.id,
-			itemsToRemove: bank
-		});
-
-		await transactItems({
-			userID: recipient.id,
-			itemsToAdd: bank,
-			collectionLog: false
-		});
+		const { success, message } = await tradePlayerItems(user, recipient, bank);
+		if (!success) {
+			return message;
+		}
 
 		await prisma.economyTransaction.create({
 			data: {

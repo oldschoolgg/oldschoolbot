@@ -32,20 +32,30 @@ const greenItems = resolveItems(['Twisted ancestral colour kit']);
 const blueItems = resolveItems(['Metamorphic dust']);
 const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
 
-const purpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
+export const coxPurpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
 
 async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
+	let hitpointsXP = 12_000 * qty;
 	let rangeXP = 10_000 * qty;
 	let magicXP = 1500 * qty;
 	let meleeXP = 8000 * qty;
 
 	if (isCm) {
+		hitpointsXP *= 1.5;
 		rangeXP *= 1.5;
 		magicXP *= 1.5;
 		meleeXP *= 1.5;
 	}
 
 	const results = [];
+	results.push(
+		await user.addXP({
+			skillName: SkillsEnum.Hitpoints,
+			amount: hitpointsXP,
+			minimal: true,
+			source: 'ChambersOfXeric'
+		})
+	);
 	results.push(
 		await user.addXP({ skillName: SkillsEnum.Ranged, amount: rangeXP, minimal: true, source: 'ChambersOfXeric' })
 	);
@@ -165,13 +175,13 @@ export const raidsTask: MinionTask = {
 
 			const items = itemsAdded.items();
 
-			const isPurple = items.some(([item]) => purpleItems.includes(item.id));
+			const isPurple = items.some(([item]) => coxPurpleItems.includes(item.id));
 			const isGreen = items.some(([item]) => greenItems.includes(item.id));
 			const isBlue = items.some(([item]) => blueItems.includes(item.id));
 			const specialLoot = isPurple;
 			const emote = isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
-			if (items.some(([item]) => purpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
-				const itemsToAnnounce = itemsAdded.filter(item => purpleItems.includes(item.id), false);
+			if (items.some(([item]) => coxPurpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
+				const itemsToAnnounce = itemsAdded.filter(item => coxPurpleItems.includes(item.id), false);
 				globalClient.emit(
 					Events.ServerNotification,
 					`${emote} ${user.badgedUsername} just received **${itemsToAnnounce}** on their ${formatOrdinal(
@@ -204,31 +214,46 @@ export const raidsTask: MinionTask = {
 
 		const shouldShowImage = allUsers.length <= 3 && Array.from(raidResults.values()).every(i => i.loot.length <= 6);
 
-		let attachment = undefined;
 		if (users.length === 1) {
-			attachment = await drawChestLootImage({
-				entries: [
-					{
-						loot: totalLoot,
-						user: allUsers[0],
-						previousCL: previousCLs[0],
-						customTexts: []
-					}
-				],
-				type: 'Chambers of Xerician'
-			});
-		} else if (shouldShowImage) {
-			attachment = await drawChestLootImage({
-				entries: allUsers.map((u, index) => ({
-					loot: raidResults.get(u.id)!.loot,
-					user: u,
-					previousCL: previousCLs[index],
-					customTexts: []
-				})),
-				type: 'Tombs of Amascut'
-			});
+			return handleTripFinish(
+				allUsers[0],
+				channelID,
+				resultMessage,
+				shouldShowImage
+					? await drawChestLootImage({
+							entries: [
+								{
+									loot: totalLoot,
+									user: allUsers[0],
+									previousCL: previousCLs[0],
+									customTexts: []
+								}
+							],
+							type: 'Chambers of Xerician'
+					  })
+					: undefined,
+				data,
+				totalLoot
+			);
 		}
 
-		handleTripFinish(allUsers[0], channelID, resultMessage, attachment, data, null);
+		handleTripFinish(
+			allUsers[0],
+			channelID,
+			resultMessage,
+			shouldShowImage
+				? await drawChestLootImage({
+						entries: allUsers.map((u, index) => ({
+							loot: raidResults.get(u.id)!.loot,
+							user: u,
+							previousCL: previousCLs[index],
+							customTexts: []
+						})),
+						type: 'Chambers of Xerician'
+				  })
+				: undefined,
+			data,
+			null
+		);
 	}
 };

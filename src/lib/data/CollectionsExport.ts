@@ -213,7 +213,14 @@ export const barrowsChestCL = resolveItems([
 	'Bolt rack'
 ]);
 export const bryophytaCL = resolveItems(["Bryophyta's essence"]);
-export const callistoCL = resolveItems(['Callisto cub', 'Tyrannical ring', 'Dragon pickaxe', 'Dragon 2h sword']);
+export const callistoCL = resolveItems([
+	'Callisto cub',
+	'Tyrannical ring',
+	'Dragon pickaxe',
+	'Dragon 2h sword',
+	'Claws of callisto',
+	'Voidwaker hilt'
+]);
 export const cerberusCL = resolveItems([
 	'Hellpuppy',
 	'Eternal crystal',
@@ -268,6 +275,14 @@ export const corporealBeastCL = resolveItems([
 	'Holy elixir',
 	'Spirit shield',
 	'Jar of spirits'
+]);
+export const muspahCL = resolveItems([
+	'Muphin',
+	'Venator shard',
+	'Ancient icon',
+	'Charged ice',
+	'Frozen cache',
+	'Ancient essence'
 ]);
 export const crazyArchaeologistCL = resolveItems(['Odium shard 2', 'Malediction shard 2', 'Fedora']);
 export const dagannothKingsCL = resolveItems([
@@ -395,9 +410,18 @@ export const venenatisCL = resolveItems([
 	'Venenatis spiderling',
 	'Treasonous ring',
 	'Dragon pickaxe',
-	'Dragon 2h sword'
+	'Dragon 2h sword',
+	'Fangs of venenatis',
+	'Voidwaker gem'
 ]);
-export const vetionCL = resolveItems(["Vet'ion jr.", 'Ring of the gods', 'Dragon pickaxe', 'Dragon 2h sword']);
+export const vetionCL = resolveItems([
+	"Vet'ion jr.",
+	'Ring of the gods',
+	'Dragon pickaxe',
+	'Dragon 2h sword',
+	"Skull of vet'ion",
+	'Voidwaker blade'
+]);
 export const vorkathCL = resolveItems([
 	'Vorki',
 	"Vorkath's head",
@@ -1525,7 +1549,12 @@ export const allPetsCL = resolveItems([
 	'Tiny tempor',
 	'Nexling',
 	'Abyssal protector',
-	"Tumeken's guardian"
+	"Tumeken's guardian",
+	'Muphin',
+	'Wisp',
+	"Lil'viathan",
+	'Butch',
+	'Baron'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1594,6 +1623,21 @@ export const cyclopsCL = resolveItems([
 	'Rune defender',
 	'Dragon defender'
 ]);
+export const forestryCL = resolveItems([
+	'Lumberjack hat',
+	'Lumberjack top',
+	'Lumberjack legs',
+	'Lumberjack boots',
+	'Forestry hat',
+	'Forestry top',
+	'Forestry legs',
+	'Forestry boots',
+	'Funky shaped log',
+	'Log basket',
+	'Log brace',
+	'Clothes pouch blueprint'
+]);
+
 export const fossilIslandNotesCL = resolveItems([
 	'Scribbled note',
 	'Partial note',
@@ -2036,8 +2080,13 @@ export const capesCL = resolveItems([
 	'Slayer cape(t)',
 	'Quest point hood',
 	'Quest point cape',
+	'Quest point cape(t)',
 	'Achievement diary hood',
+	'Achievement diary cape',
 	'Achievement diary cape(t)',
+	'Music hood',
+	'Music cape',
+	'Music cape (t)',
 	'Max hood',
 	'Max cape',
 	'Ardougne max hood',
@@ -2046,6 +2095,8 @@ export const capesCL = resolveItems([
 	'Infernal max cape',
 	'Assembler max hood',
 	'Assembler max cape',
+	'Masori assembler max hood',
+	'Masori assembler max cape',
 	'Imbued guthix max hood',
 	'Imbued guthix max cape',
 	'Imbued saradomin max hood',
@@ -2117,7 +2168,13 @@ export const capesCL = resolveItems([
 	'Sinhaza shroud tier 2',
 	'Sinhaza shroud tier 3',
 	'Sinhaza shroud tier 4',
-	'Sinhaza shroud tier 5'
+	'Sinhaza shroud tier 5',
+	"Icthlarin's hood (tier 5)",
+	"Icthlarin's shroud (tier 1)",
+	"Icthlarin's shroud (tier 2)",
+	"Icthlarin's shroud (tier 3)",
+	"Icthlarin's shroud (tier 4)",
+	"Icthlarin's shroud (tier 5)"
 ]);
 export const questCL = resolveItems([
 	'Quest point hood',
@@ -2206,7 +2263,7 @@ export const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem("Deadman's cape"), cost: 160 },
 	{ item: getOSItem('Swift blade'), cost: 350 },
 	{ item: getOSItem('Guthixian icon'), cost: 500 },
-	{ item: getOSItem('Trouver parchment'), cost: 30 },
+	{ item: getOSItem('Trouver parchment'), cost: 18 },
 	{ item: getOSItem('Wilderness crabs teleport'), cost: 1 },
 	{ item: getOSItem('Blighted bind sack'), quantity: 300, cost: 1 },
 	{ item: getOSItem('Blighted snare sack'), quantity: 150, cost: 1 },
@@ -2255,7 +2312,7 @@ export const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem('Paddewwa teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Senntisten teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Annakarl teleport'), quantity: 2, cost: 1 },
-	{ item: getOSItem('Carrallangar teleport'), quantity: 2, cost: 1 },
+	{ item: getOSItem('Carrallanger teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Dareeyak teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Ghorrock teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Kharyrll teleport'), quantity: 2, cost: 1 },
@@ -2284,4 +2341,56 @@ export const NexCL = resolveItems([
 	'Torva platebody (damaged)',
 	'Torva platelegs (damaged)',
 	'Nihil shard'
+]);
+
+export const dukeSucellusCL = resolveItems([
+	'Baron',
+	'Eye of the duke',
+	'Virtus mask',
+	'Virtus robe top',
+	'Virtus robe bottom',
+	'Magus vestige',
+	'Chromium ingot',
+	"Awakener's orb",
+	'Ice quartz',
+	'Frozen tablet'
+]);
+
+export const theLeviathanCL = resolveItems([
+	"Lil'viathan",
+	"Leviathan's lure",
+	'Virtus mask',
+	'Virtus robe top',
+	'Virtus robe bottom',
+	'Venator vestige',
+	'Chromium ingot',
+	"Awakener's orb",
+	'Smoke quartz',
+	'Scarred tablet'
+]);
+
+export const theWhispererCL = resolveItems([
+	'Wisp',
+	"Siren's staff",
+	'Virtus mask',
+	'Virtus robe top',
+	'Virtus robe bottom',
+	'Bellator vestige',
+	'Chromium ingot',
+	"Awakener's orb",
+	'Shadow quartz',
+	'Sirenic tablet'
+]);
+
+export const vardorvisCL = resolveItems([
+	'Butch',
+	"Executioner's axe head",
+	'Virtus mask',
+	'Virtus robe top',
+	'Virtus robe bottom',
+	'Ultor vestige',
+	'Chromium ingot',
+	"Awakener's orb",
+	'Blood quartz',
+	'Strangled tablet'
 ]);

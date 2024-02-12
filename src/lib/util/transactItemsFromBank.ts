@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import { bingoIsActive, determineBingoProgress, onFinishTile } from '../../mahoji/lib/bingo';
+import { findBingosWithUserParticipating } from '../../mahoji/lib/bingo/BingoManager';
 import { deduplicateClueScrolls } from '../clues/clueUtils';
 import { handleNewCLItems } from '../handleNewCLItems';
 import { mahojiUserSettingsUpdate } from '../MUser';
@@ -10,13 +10,14 @@ import { ItemBank } from '../types';
 import { logError } from './logError';
 import { userQueueFn } from './userQueues';
 
-interface TransactItemsArgs {
+export interface TransactItemsArgs {
 	userID: string;
 	itemsToAdd?: Bank;
 	itemsToRemove?: Bank;
 	collectionLog?: boolean;
 	filterLoot?: boolean;
 	dontAddToTempCL?: boolean;
+	neverUpdateHistory?: boolean;
 	otherUpdates?: Prisma.UserUpdateArgs['data'];
 }
 
@@ -40,19 +41,15 @@ export async function transactItemsFromBank({
 }: TransactItemsArgs) {
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
 	let itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
+
 	return userQueueFn(userID, async () => {
-		debugLog('transactItemsFromBank', {
-			type: 'TRANSACT_ITEMS',
-			userID,
-			itemsToAdd: itemsToAdd?.bank,
-			itemsToRemove: itemsToRemove?.bank,
-			collectionLog,
-			filterLoot
-		});
 		const settings = await mUserFetch(userID);
+
 		const gpToRemove = (itemsToRemove?.amount('Coins') ?? 0) - (itemsToAdd?.amount('Coins') ?? 0);
 		if (itemsToRemove && settings.GP < gpToRemove) {
-			const errObj = new Error(`${settings.usernameOrMention} doesn't have enough coins!`);
+			const errObj = new Error(
+				`${settings.usernameOrMention} doesn't have enough coins! They need ${gpToRemove} GP, but only have ${settings.GP} GP.`
+			);
 			logError(errObj, undefined, {
 				userID: settings.id,
 				previousGP: settings.GP.toString(),
@@ -64,7 +61,6 @@ export async function transactItemsFromBank({
 		}
 		const currentBank = new Bank(settings.user.bank as ItemBank);
 		const previousCL = new Bank(settings.user.collectionLogBank as ItemBank);
-		const previousTempCL = new Bank(settings.user.temp_cl as ItemBank);
 
 		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
 		if (itemsToAdd) {
@@ -141,18 +137,19 @@ export async function transactItemsFromBank({
 		}
 
 		const newCL = new Bank(newUser.collectionLogBank as ItemBank);
-		const newTempCL = new Bank(newUser.temp_cl as ItemBank);
 
-		if (newUser.bingo_tickets_bought > 0 && bingoIsActive()) {
-			const before = determineBingoProgress(previousTempCL);
-			const after = determineBingoProgress(newTempCL);
-			// If they finished a tile, process it.
-			if (before.tilesCompletedCount !== after.tilesCompletedCount) {
-				onFinishTile(newUser, before, after);
+		if (!dontAddToTempCL && collectionLog) {
+			const activeBingos = await findBingosWithUserParticipating(userID);
+			for (const bingo of activeBingos) {
+				if (bingo.isActive()) {
+					bingo.handleNewItems(userID, itemsAdded);
+				}
 			}
 		}
 
-		await handleNewCLItems({ itemsAdded, user: settings, previousCL, newCL });
+		if (!options.neverUpdateHistory) {
+			await handleNewCLItems({ itemsAdded, user: settings, previousCL, newCL });
+		}
 
 		return {
 			previousCL,

@@ -32,6 +32,7 @@ export const bareMinStats: Skills = {
 };
 
 export const SANGUINESTI_CHARGES_PER_COX = 150;
+export const SHADOW_CHARGES_PER_COX = 130;
 export const TENTACLE_CHARGES_PER_COX = 200;
 
 export function hasMinRaidsRequirements(user: MUser) {
@@ -174,7 +175,7 @@ export const maxMageGear = constructGearSetup({
 	feet: 'Eternal boots',
 	weapon: 'Harmonised nightmare staff',
 	shield: 'Arcane spirit shield',
-	ring: 'Seers ring(i)'
+	ring: 'Magus ring'
 });
 const maxMage = new Gear(maxMageGear);
 
@@ -187,7 +188,7 @@ export const maxRangeGear = constructGearSetup({
 	legs: 'Armadyl chainskirt',
 	feet: 'Pegasian boots',
 	'2h': 'Twisted bow',
-	ring: 'Archers ring(i)',
+	ring: 'Venator ring',
 	ammo: 'Dragon arrow'
 });
 const maxRange = new Gear(maxRangeGear);
@@ -202,7 +203,7 @@ export const maxMeleeGear = constructGearSetup({
 	feet: 'Primordial boots',
 	weapon: "Inquisitor's mace",
 	shield: 'Avernic defender',
-	ring: 'Berserker ring(i)'
+	ring: 'Ultor ring'
 });
 const maxMelee = new Gear(maxMeleeGear);
 
@@ -305,6 +306,16 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity: number
 			});
 			if (!sangResult.hasEnough) {
 				return sangResult.userMessage;
+			}
+		}
+		if (user.gear.mage.hasEquipped("Tumeken's shadow")) {
+			const shadowResult = checkUserCanUseDegradeableItem({
+				item: getOSItem("Tumeken's shadow"),
+				chargesToDegrade: SHADOW_CHARGES_PER_COX,
+				user
+			});
+			if (!shadowResult.hasEnough) {
+				return shadowResult.userMessage;
 			}
 		}
 	}
@@ -410,6 +421,14 @@ const itemBoosts: ItemBoost[][] = [
 		}
 	],
 	[
+		{
+			item: getOSItem("Tumeken's shadow"),
+			boost: 9,
+			mustBeEquipped: false,
+			setup: 'mage',
+			mustBeCharged: true,
+			requiredCharges: SHADOW_CHARGES_PER_COX
+		},
 		{
 			item: getOSItem('Sanguinesti staff'),
 			boost: 6,

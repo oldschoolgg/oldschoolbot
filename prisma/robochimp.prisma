@@ -46,9 +46,16 @@ model User {
 
     osb_total_level Int?
     bso_total_level Int?
+    osb_total_xp    BigInt?
+    bso_total_xp    BigInt?
     osb_cl_percent  Float?
     bso_cl_percent  Float?
-    tag             Tag[]
+    osb_mastery     Float?
+    bso_mastery     Float?
+
+    tag Tag[]
+
+    store_bitfield Int[]
 
     @@map("user")
 }
@@ -69,4 +76,14 @@ model Tag {
     creator User   @relation(fields: [user_id], references: [id])
 
     @@map("tag")
+}
+
+model StoreCode {
+    product_id Int
+    code       String @id @unique
+
+    redeemed_at         DateTime?
+    redeemed_by_user_id String?   @db.VarChar(19)
+
+    @@map("store_code")
 }

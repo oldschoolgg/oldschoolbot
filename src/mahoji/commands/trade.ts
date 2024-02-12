@@ -1,4 +1,4 @@
-import { discrimName, truncateString } from '@oldschoolgg/toolkit';
+import { discrimName, mentionCommand, truncateString } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
@@ -10,6 +10,7 @@ import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmatio
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { tradePlayerItems } from '../../lib/util/tradePlayerItems';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
@@ -128,11 +129,10 @@ Both parties must click confirm to make the trade.`,
 		if (!recipientUser.owns(itemsReceived)) return "They don't own those items.";
 		if (!senderUser.owns(itemsSent)) return "You don't own those items.";
 
-		await senderUser.removeItemsFromBank(itemsSent);
-		await recipientUser.removeItemsFromBank(itemsReceived);
-		await senderUser.addItemsToBank({ items: itemsReceived, collectionLog: false, filterLoot: false });
-		await recipientUser.addItemsToBank({ items: itemsSent, collectionLog: false, filterLoot: false });
-
+		const { success, message } = await tradePlayerItems(senderUser, recipientUser, itemsSent, itemsReceived);
+		if (!success) {
+			return `Trade failed because: ${message}`;
+		}
 		await prisma.economyTransaction.create({
 			data: {
 				guild_id: BigInt(guildID),
@@ -156,6 +156,8 @@ Both parties must click confirm to make the trade.`,
 
 		return `${discrimName(senderAPIUser)} sold ${itemsSent} to ${discrimName(
 			recipientAPIUser
-		)} in return for ${itemsReceived}.`;
+		)} in return for ${itemsReceived}.
+
+You can now buy/sell items in the Grand Exchange: ${mentionCommand(globalClient, 'ge')}`;
 	}
 };

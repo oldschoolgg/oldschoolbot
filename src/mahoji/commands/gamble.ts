@@ -3,6 +3,8 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
+import { BitField } from '../../lib/constants';
+import { prisma } from '../../lib/settings/prisma';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
@@ -36,6 +38,12 @@ export const gambleCommand: OSBMahojiCommand = {
 						{ name: 'fire', value: 'fire' },
 						{ name: 'infernal', value: 'infernal' }
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'autoconfirm',
+					description: "Don't ask confirmation message",
+					required: false
 				}
 			]
 		},
@@ -164,9 +172,10 @@ export const gambleCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		interaction,
+		guildID,
 		userID
 	}: CommandRunOptions<{
-		cape?: { type?: string };
+		cape?: { type?: string; autoconfirm?: boolean };
 		dice?: { amount?: string };
 		duel?: { user: MahojiUserOption; amount?: string };
 		lucky_pick?: { amount: string };
@@ -178,23 +187,30 @@ export const gambleCommand: OSBMahojiCommand = {
 
 		if (options.cape) {
 			if (options.cape.type) {
-				return capeGambleCommand(user, options.cape.type, interaction);
+				return capeGambleCommand(user, options.cape.type, interaction, options.cape.autoconfirm);
 			}
 			return capeGambleStatsCommand(user);
 		}
 
+		if (options.duel) {
+			const targetUser = await mUserFetch(options.duel.user.user.id);
+			// Block duels when one user has the BitField set, but only when wagering an amount
+			if (options.duel.amount && [user, targetUser].some(u => u.bitfield.includes(BitField.SelfGamblingLocked))) {
+				return 'One of you has gambling disabled and cannot participate in this duel!';
+			}
+			return duelCommand(user, interaction, targetUser, options.duel.user, options.duel.amount);
+		}
+
 		if (options.dice) {
+			if (user.bitfield.includes(BitField.SelfGamblingLocked) && options.dice.amount) {
+				return 'You have gambling disabled and cannot gamble!';
+			}
 			return diceCommand(user, interaction, options.dice.amount);
 		}
 
-		if (options.duel) {
-			return duelCommand(
-				user,
-				interaction,
-				await mUserFetch(options.duel.user.user.id),
-				options.duel.user,
-				options.duel.amount
-			);
+		// Block GP Gambling from users with the BitField set:
+		if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
+			return 'You have gambling disabled and cannot gamble!';
 		}
 
 		if (options.lucky_pick) {
@@ -240,6 +256,16 @@ export const gambleCommand: OSBMahojiCommand = {
 				itemsToAdd: loot,
 				collectionLog: false,
 				filterLoot: false
+			});
+			await prisma.economyTransaction.create({
+				data: {
+					guild_id: guildID ? BigInt(guildID) : undefined,
+					sender: BigInt(senderUser.id),
+					recipient: BigInt(recipientuser.id),
+					items_sent: loot.bank,
+					items_received: undefined,
+					type: 'gri'
+				}
 			});
 			let debug = new Bank();
 			for (const t of bank) debug.add(t[0].id);

@@ -209,11 +209,15 @@ async function infernoRun({
 		return 'Your range gear is too bad! You die quickly.';
 	}
 
-	duration.add(
-		rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chainskirt'),
-		-3,
-		'Armadyl'
-	);
+	duration.add(rangeGear.hasEquipped('Masori body (f)') && rangeGear.hasEquipped('Masori chaps (f)'), -5, 'Masori');
+
+	if (!(rangeGear.hasEquipped('Masori body (f)') && rangeGear.hasEquipped('Masori chaps (f)'))) {
+		duration.add(
+			rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chainskirt'),
+			-3,
+			'Armadyl'
+		);
+	}
 
 	duration.add(
 		mageGear.hasEquipped('Ancestral robe top') && mageGear.hasEquipped('Ancestral robe bottom'),
@@ -263,7 +267,7 @@ async function infernoRun({
 		const weapon = setup.equippedWeapon();
 		const validWeapons = Object.keys(weapons)
 			.map(itemID)
-			.map(id => [...getSimilarItems(id), id])
+			.map(id => getSimilarItems(id))
 			.flat();
 		if (!weapon || !validWeapons.includes(weapon.id)) {
 			return `You need one of these weapons in your ${name} setup: ${Object.keys(weapons).join(', ')}.`;
@@ -278,15 +282,11 @@ async function infernoRun({
 	duration.add(getSimilarItems(itemID('Armadyl crossbow')).includes(rangeGear.equippedWeapon()!.id), 4.5, 'ACB');
 
 	zukDeathChance.add(
-		[...getSimilarItems(itemID('Twisted bow')), itemID('Twisted bow')].includes(rangeGear.equippedWeapon()!.id),
+		getSimilarItems(itemID('Twisted bow')).includes(rangeGear.equippedWeapon()!.id),
 		1.5,
 		'Zuk with TBow'
 	);
-	duration.add(
-		[...getSimilarItems(itemID('Twisted bow')), itemID('Twisted bow')].includes(rangeGear.equippedWeapon()!.id),
-		-7.5,
-		'TBow'
-	);
+	duration.add(getSimilarItems(itemID('Twisted bow')).includes(rangeGear.equippedWeapon()!.id), -7.5, 'TBow');
 
 	/**
 	 *
@@ -332,7 +332,7 @@ async function infernoRun({
 		return 'You have no projectiles equipped in your range setup.';
 	}
 	const projectileType: ProjectileType = rangeGear.equippedWeapon()!.name === 'Twisted bow' ? 'arrow' : 'bolt';
-	const projectilesForTheirType = projectiles[projectileType];
+	const projectilesForTheirType = projectiles[projectileType].items;
 	if (!projectilesForTheirType.includes(projectile.item)) {
 		return `You're using incorrect projectiles, you're using a ${
 			rangeGear.equippedWeapon()!.name

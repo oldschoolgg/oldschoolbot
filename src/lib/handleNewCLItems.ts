@@ -1,15 +1,34 @@
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
-import { Stopwatch } from '@sapphire/stopwatch';
-import { sumArr } from 'e';
+import { Prisma } from '@prisma/client';
+import { roll, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from './constants';
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections';
+import { calculateMastery } from './mastery';
+import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp';
 import { prisma } from './settings/prisma';
+import { MUserStats } from './structures/MUserStats';
 import { fetchStatsForCL } from './util';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
 
-async function clArrayUpdate(user: MUser, newCL: Bank) {
+export async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
+	const clStats = calcCLDetails(user);
+	const clRank = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
+	const { totalMastery } = await calculateMastery(user, await MUserStats.fromID(user.id));
+
+	return {
+		user_id: user.id,
+		GP: user.GP,
+		total_xp: sumArr(Object.values(user.skillsAsXP)),
+		cl_completion_percentage: clStats.percent,
+		cl_completion_count: clStats.owned.length,
+		cl_global_rank: Number(clRank[0].count),
+		mastery_percentage: totalMastery
+	};
+}
+
+export async function clArrayUpdate(user: MUser, newCL: Bank) {
 	const id = BigInt(user.id);
 	const newCLArray = Object.keys(newCL.bank).map(i => Number(i));
 	const updateObj = {
@@ -17,33 +36,22 @@ async function clArrayUpdate(user: MUser, newCL: Bank) {
 		cl_array_length: newCLArray.length
 	} as const;
 
-	const clStats = calcCLDetails(user);
-	const clRank = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
+	await prisma.userStats.upsert({
+		where: {
+			user_id: id
+		},
+		create: {
+			user_id: id,
+			...updateObj
+		},
+		update: {
+			...updateObj
+		}
+	});
 
-	await prisma.$transaction([
-		prisma.userStats.upsert({
-			where: {
-				user_id: id
-			},
-			create: {
-				user_id: id,
-				...updateObj
-			},
-			update: {
-				...updateObj
-			}
-		}),
-		prisma.historicalData.create({
-			data: {
-				user_id: user.id,
-				GP: user.GP,
-				total_xp: sumArr(Object.values(user.skillsAsXP)),
-				cl_completion_percentage: clStats.percent,
-				cl_completion_count: clStats.owned.length,
-				cl_global_rank: Number(clRank[0].count)
-			}
-		})
-	]);
+	return {
+		newCLArray
+	};
 }
 
 export async function handleNewCLItems({
@@ -60,11 +68,39 @@ export async function handleNewCLItems({
 	const newCLItems = itemsAdded
 		?.clone()
 		.filter(i => !previousCL.has(i.id) && newCL.has(i.id) && allCLItems.includes(i.id));
-	if (!newCLItems || newCLItems.length === 0) {
-		return;
+
+	const didGetNewCLItem = newCLItems && newCLItems.length > 0;
+	if (didGetNewCLItem || roll(30)) {
+		await prisma.historicalData.create({ data: await createHistoricalData(user) });
 	}
 
-	await clArrayUpdate(user, newCL);
+	if (!didGetNewCLItem) return;
+
+	const previousCLDetails = calcCLDetails(previousCL);
+	const previousCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
+
+	await Promise.all([roboChimpSyncData(user), clArrayUpdate(user, newCL)]);
+	const newCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
+
+	const newCLDetails = calcCLDetails(newCL);
+
+	let newCLPercentMessage: string | null = null;
+
+	const milestonePercentages = [25, 50, 70, 80, 90, 95, 100];
+	for (const milestone of milestonePercentages) {
+		if (previousCLDetails.percent < milestone && newCLDetails.percent >= milestone) {
+			newCLPercentMessage = `${user} just reached ${milestone}% Collection Log completion, after receiving ${newCLItems}!`;
+
+			if (previousCLRank !== newCLRank && newCLRank !== null && previousCLRank !== null) {
+				newCLPercentMessage += ` In the overall CL leaderboard, they went from rank ${previousCLRank} to rank ${newCLRank}.`;
+			}
+		}
+		break;
+	}
+
+	if (newCLPercentMessage) {
+		globalClient.emit(Events.ServerNotification, newCLPercentMessage);
+	}
 
 	const clsWithTheseItems = allCollectionLogsFlat.filter(
 		cl => cl.counts !== false && newCLItems.items().some(([newItem]) => cl.items.includes(newItem.id))
@@ -74,8 +110,6 @@ export async function handleNewCLItems({
 	const newlyCompletedCLs = clsWithTheseItems.filter(cl => {
 		return cl.items.some(item => !previousCL.has(item)) && cl.items.every(item => newCL.has(item));
 	});
-
-	if (newlyCompletedCLs.length === 0) return;
 
 	for (const finishedCL of newlyCompletedCLs) {
 		const kcString = finishedCL.fmtProg
@@ -87,7 +121,6 @@ export async function handleNewCLItems({
 			  })}!`
 			: '';
 
-		const stopwatch = new Stopwatch();
 		const nthUser = (
 			await fetchCLLeaderboard({
 				ironmenOnly: false,
@@ -96,7 +129,6 @@ export async function handleNewCLItems({
 				method: 'raw_cl'
 			})
 		).length;
-		debugLog(`Took ${stopwatch.stop()} to calc cl leaderboard for ${finishedCL.name}`);
 
 		const placeStr = nthUser > 100 ? '' : ` They are the ${formatOrdinal(nthUser)} user to finish this CL.`;
 

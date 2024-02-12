@@ -13,7 +13,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
-const PointsTable = new SimpleTable<number>()
+export const PointsTable = new SimpleTable<number>()
 	.add(420)
 	.add(470)
 	.add(500)
@@ -41,7 +41,6 @@ export const wintertodtTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity } = data;
 		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		let loot = new Bank();
 
@@ -94,7 +93,7 @@ export const wintertodtTask: MinionTask = {
 			numberOfBraziers += randInt(1, 7);
 		}
 		const conXP = numberOfBraziers * constructionXPPerBrazier;
-		let xpStr = await user.addXP({ skillName: SkillsEnum.Construction, amount: conXP });
+		let xpStr = await user.addXP({ skillName: SkillsEnum.Construction, amount: conXP, duration: data.duration });
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
@@ -117,9 +116,18 @@ export const wintertodtTask: MinionTask = {
 			}
 		}
 
-		xpStr += `, ${await user.addXP({ skillName: SkillsEnum.Woodcutting, amount: wcXpToGive })}`;
-		xpStr += `, ${await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive })}`;
-		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
+		xpStr += `, ${await user.addXP({
+			skillName: SkillsEnum.Woodcutting,
+			amount: wcXpToGive,
+			duration: data.duration,
+			source: 'Wintertodt'
+		})}`;
+		xpStr += `, ${await user.addXP({
+			skillName: SkillsEnum.Firemaking,
+			amount: fmXpToGive,
+			duration: data.duration,
+			source: 'Wintertodt'
+		})}`;
 
 		const { itemsAdded, previousCL } = await transactItems({
 			userID: user.id,
@@ -138,10 +146,6 @@ export const wintertodtTask: MinionTask = {
 
 		if (fmBonusXP > 0) {
 			output += `\n\n**Firemaking Bonus XP:** ${fmBonusXP.toLocaleString()}`;
-		}
-
-		if (newLevel > currentLevel) {
-			output += `\n\n${user.minionName}'s Firemaking level is now ${newLevel}!`;
 		}
 
 		await trackLoot({

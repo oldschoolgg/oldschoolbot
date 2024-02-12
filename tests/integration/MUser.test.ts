@@ -1,11 +1,14 @@
+import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { describe, expect, test } from 'vitest';
 
 import { prisma } from '../../src/lib/settings/prisma';
 import { SkillsEnum } from '../../src/lib/skilling/types';
 import { assert } from '../../src/lib/util/logError';
 import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings';
+import { createTestUser } from './util';
 
 async function stressTest(userID: string) {
 	const user = await mUserFetch(userID);
@@ -79,7 +82,9 @@ async function stressTest(userID: string) {
 
 describe('MUser', () => {
 	test('Should pass stress test', async () => {
-		await Promise.all([stressTest('1'), stressTest('2')]);
+		const firstUser = await createTestUser();
+		const secondUser = await createTestUser();
+		await Promise.all([stressTest(firstUser.id), stressTest(secondUser.id)]);
 	});
 
 	test('Should add XP', async () => {
@@ -99,5 +104,42 @@ describe('MUser', () => {
 		});
 		expect(xpAdded.length).toEqual(1);
 		expect(xpAdded[0].xp).toEqual(1000);
+	});
+
+	test('skillsAsLevels/skillsAsXP', async () => {
+		const user = await createTestUser();
+		for (const [key, val] of objectEntries(user.skillsAsLevels)) {
+			let expectedVal = key === 'hitpoints' ? 10 : 1;
+			expect(val).toEqual(expectedVal);
+		}
+		for (const [key, val] of objectEntries(user.skillsAsXP)) {
+			let expectedVal = key === 'hitpoints' ? convertLVLtoXP(10) : convertLVLtoXP(1);
+			expect(val).toEqual(expectedVal);
+		}
+		await user.addXP({ skillName: SkillsEnum.Agility, amount: convertLVLtoXP(50) });
+		await user.addXP({ skillName: SkillsEnum.Attack, amount: convertLVLtoXP(50) });
+
+		expect(user.skillsAsLevels.agility).toEqual(50);
+		expect(user.skillsAsLevels.attack).toEqual(50);
+		expect(user.skillsAsXP.agility).toEqual(convertLVLtoXP(50));
+		expect(user.skillsAsXP.attack).toEqual(convertLVLtoXP(50));
+	});
+
+	test('addItemsToCollectionLog', async () => {
+		const user = await createTestUser();
+		const loot = new Bank().add('Coal', 73);
+		{
+			const { newCL, itemsAdded, previousCL } = await user.addItemsToCollectionLog(loot);
+			expect(newCL.equals(loot)).toEqual(true);
+			expect(previousCL.equals(new Bank())).toEqual(true);
+			expect(itemsAdded).toEqual(loot);
+		}
+
+		{
+			const { newCL, itemsAdded, previousCL } = await user.addItemsToCollectionLog(loot);
+			expect(newCL.equals(loot.clone().multiply(2))).toEqual(true);
+			expect(previousCL.equals(loot)).toEqual(true);
+			expect(itemsAdded).toEqual(loot);
+		}
 	});
 });

@@ -1,6 +1,6 @@
+import { readFileSync } from 'fs';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { table } from 'table';
 
 import Createables from '../../lib/data/createables';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
@@ -13,30 +13,12 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate } from '../mahojiSettings';
 
-let content = 'Theses are the items that you can create:';
-const creatableTable = table([
-	['Item name', 'Input Items', 'Output Items', 'GP Cost', 'Skills Required', 'QP Required'],
-	...Createables.map(i => {
-		return [
-			i.name,
-			`${new Bank(i.inputItems)}`,
-			`${new Bank(i.outputItems)}`,
-			`${i.GPCost ?? 0}`,
-			`${
-				i.requiredSkills === undefined
-					? ''
-					: Object.entries(i.requiredSkills)
-							.map(entry => `${entry[0]}: ${entry[1]}`)
-							.join('\n')
-			}`,
-			`${i.QPRequired ?? ''}`
-		];
-	})
-]);
+const creatablesTable = readFileSync('./src/lib/data/creatablesTable.txt', 'utf8');
 
+let content = 'Theses are the items that you can create:';
 const allCreatablesTable = {
 	content,
-	files: [{ attachment: Buffer.from(creatableTable), name: 'Creatables.txt' }]
+	files: [{ attachment: Buffer.from(creatablesTable), name: 'Creatables.txt' }]
 };
 
 export const createCommand: OSBMahojiCommand = {

@@ -26,7 +26,8 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			required: true,
 			autocomplete: async (value: string) => {
 				return [
-					...['overall+', 'overall'].map(i => ({ name: toTitleCase(i), value: i })),
+					{ name: 'Overall (Main Collection Log)', value: 'overall' },
+					{ name: 'Overall+', value: 'overall+' },
 					...Object.entries(allCollectionLogs)
 						.map(i => {
 							return [
@@ -38,7 +39,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 							];
 						})
 						.flat(3)
-				].filter(i => (!value ? true : i.name.toLowerCase().includes(value)));
+				].filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
 			}
 		},
 		{

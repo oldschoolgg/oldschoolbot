@@ -8,7 +8,7 @@ import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache';
 import { deduplicateClueScrolls } from '../../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank';
 import { SkillsEnum } from '../../src/lib/skilling/types';
-import { sanitizeBank, skillingPetDropRate, stripEmojis } from '../../src/lib/util';
+import { pluraliseItemName, sanitizeBank, skillingPetDropRate, stripEmojis } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell';
 import { mockMUser } from './utils';
@@ -33,19 +33,29 @@ describe('util', () => {
 				bank: b,
 				skillLevel: () => 99
 			} as any as MUser);
-		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark')), 500, [])).toStrictEqual(false);
-		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark', 100)), 500, [])).toStrictEqual(
-			new Bank().add('Shark', 25)
-		);
-		expect(getUserFoodFromBank(fakeUser(new Bank().add('Shark', 30).add('Tuna', 20)), 750, [])).toStrictEqual(
-			new Bank().add('Shark', 28).add('Tuna', 20)
-		);
 		expect(
-			getUserFoodFromBank(
-				fakeUser(new Bank().add('Shark', 100).add('Lobster', 20).add('Shrimps', 50).add('Coal')),
-				1700,
-				[]
-			)
+			getUserFoodFromBank({ user: fakeUser(new Bank().add('Shark')), totalHealingNeeded: 500, favoriteFood: [] })
+		).toStrictEqual(false);
+		expect(
+			getUserFoodFromBank({
+				user: fakeUser(new Bank().add('Shark', 100)),
+				totalHealingNeeded: 500,
+				favoriteFood: []
+			})
+		).toStrictEqual(new Bank().add('Shark', 25));
+		expect(
+			getUserFoodFromBank({
+				user: fakeUser(new Bank().add('Shark', 30).add('Tuna', 20)),
+				totalHealingNeeded: 750,
+				favoriteFood: []
+			})
+		).toStrictEqual(new Bank().add('Shark', 28).add('Tuna', 20));
+		expect(
+			getUserFoodFromBank({
+				user: fakeUser(new Bank().add('Shark', 100).add('Lobster', 20).add('Shrimps', 50).add('Coal')),
+				totalHealingNeeded: 1700,
+				favoriteFood: []
+			})
 		).toStrictEqual(new Bank().add('Lobster', 20).add('Shark', 66).add('Shrimps', 50));
 	});
 
@@ -125,5 +135,11 @@ describe('util', () => {
 		expect(baseModifyBusyCounter(cache, id, -1)).toEqual(0);
 		expect(cache.get(id)).toEqual(0);
 		// expect(() => baseModifyBusyCounter(cache, id, -1)).toThrow();
+	});
+
+	test('pluraliseItemName correctly pluralises items', async () => {
+		expect(pluraliseItemName('Steel Axe')).toEqual('Steel Axes');
+		expect(pluraliseItemName('Steel Arrowtips')).toEqual('Steel Arrowtips');
+		expect(pluraliseItemName('Adamantite nails')).toEqual('Adamantite nails');
 	});
 });

@@ -2,16 +2,16 @@ import { stringMatches } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
+import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { PerkTier } from '../../../lib/constants';
-import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
-import { ItemBank } from '../../../lib/types';
-import { buildClueButtons, makeComponents } from '../../../lib/util';
+import { allOpenables, getOpenableLoot, UnifiedOpenable } from '../../../lib/openables';
+import { makeComponents } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { patronMsg, updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
+import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -22,23 +22,6 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 		if (a.name.includes('Clue')) return -1;
 		return 0;
 	});
-
-function getOpenableLoot({ openable, quantity, user }: { openable: UnifiedOpenable; quantity: number; user: MUser }) {
-	return openable.output instanceof LootTable
-		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity });
-}
-
-async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
-	const { openable_scores: newOpenableScores } = await userStatsUpdate(
-		mahojiUser.id,
-		({ openable_scores }) => ({
-			openable_scores: new Bank(openable_scores as ItemBank).add(kcBank).bank
-		}),
-		{ openable_scores: true }
-	);
-	return new Bank(newOpenableScores as ItemBank);
-}
 
 export async function abstractedOpenUntilCommand(
 	interaction: ChatInputCommandInteraction,
@@ -144,7 +127,7 @@ async function finalizeOpening({
 		.join(', ');
 
 	const perkTier = user.perkTier();
-	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier);
+	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
 	let response: Awaited<CommandResponse> = {
 		files: [image.file],

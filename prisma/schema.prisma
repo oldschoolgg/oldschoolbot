@@ -135,7 +135,25 @@ model ClientStorage {
   toa_cost                     Json     @default("{}") @db.Json
   toa_loot                     Json     @default("{}") @db.Json
 
+  grand_exchange_is_locked Boolean @default(false)
+  grand_exchange_total_tax BigInt  @default(0)
+  grand_exchange_tax_bank  BigInt  @default(0)
+
   @@map("clientStorage")
+}
+
+model BuyCommandTransaction {
+  id   String   @id @default(uuid()) @db.Uuid
+  date DateTime @default(now()) @db.Timestamp(6)
+
+  user_id BigInt
+
+  cost_gp                BigInt
+  cost_bank_excluding_gp Json?  @db.Json
+
+  loot_bank Json? @db.Json
+
+  @@map("buy_command_transaction")
 }
 
 enum GearSetupType {
@@ -301,9 +319,7 @@ model User {
   minion_equippedPet     Int?      @map("minion.equippedPet")
   minion_farmingContract Json?     @map("minion.farmingContract") @db.Json
   minion_birdhouseTraps  Json?     @map("minion.birdhouseTraps") @db.Json
-
-  bingo_tickets_bought Int    @default(0)
-  bingo_gp_contributed BigInt @default(0)
+  finished_quest_ids     Int[]
 
   // Relations
   farmedCrops    FarmedCrop[]
@@ -317,6 +333,7 @@ model User {
   favoriteItems              Int[]
   favorite_alchables         Int[]
   favorite_food              Int[]
+  favorite_bh_seeds          Int[]
   minion_defaultPay          Boolean            @default(false) @map("minion.defaultPay")
   minion_icon                String?            @map("minion.icon")
   minion_name                String?            @map("minion.name")
@@ -324,11 +341,12 @@ model User {
   bankBackground             Int                @default(1)
   attack_style               String[]
   combat_options             Int[]
-  farming_patch_reminders    Boolean            @default(true)
   slayer_remember_master     String?            @map("slayer.remember_master")
   slayer_autoslay_options    Int[]              @map("slayer.autoslay_options")
   bank_sort_method           String?            @db.VarChar(16)
   bank_sort_weightings       Json               @default("{}") @db.Json
+  gambling_lockout_expiry    DateTime?
+  icon_pack_id               String?
 
   // Skills
   skills_agility      BigInt @default(0) @map("skills.agility")
@@ -373,6 +391,10 @@ model User {
   serp_helm_charges      Int @default(0)
   blood_fury_charges     Int @default(0)
   tum_shadow_charges     Int @default(0)
+  blood_essence_charges  Int @default(0)
+  trident_charges        Int @default(0)
+
+  scythe_of_vitur_charges Int @default(0)
 
   // Balances
   lms_points           Int @default(0)
@@ -381,6 +403,10 @@ model User {
   carpenter_points     Int @default(0)
   zeal_tokens          Int @default(0)
   slayer_points        Int @default(0) @map("slayer.points")
+
+  completed_ca_task_ids Int[]
+
+  store_bitfield Int[]
 
   // Migrate
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
@@ -404,8 +430,30 @@ model User {
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
   kourend_favour            Json? @map("kourend_favour") @db.Json
 
+  geListings        GEListing[]
+  bingo_participant BingoParticipant[]
+  bingo             Bingo[]
+
+  gift_boxes_owned   GiftBox[] @relation("gift_boxes_owned")
+  gift_boxes_created GiftBox[] @relation("gift_boxes_created")
+
   @@index([id, last_command_date])
   @@map("users")
+}
+
+model ReclaimableItem {
+  user_id String @db.VarChar(19)
+  key     String
+
+  name        String
+  description String
+  date        DateTime @default(now()) @db.Timestamp(6)
+  item_id     Int
+  quantity    Int
+
+  @@id([user_id, key])
+  @@unique([user_id, key])
+  @@map("reclaimable_item")
 }
 
 model Webhook {
@@ -421,6 +469,29 @@ enum XpGainSource {
   UnderwaterAgilityThieving
   ChambersOfXeric
   TheatreOfBlood
+  NightmareZone
+  AshSanctifier
+  OfferingBones
+  TempleTrekking
+  DarkAltar
+  MotherlodeMine
+  Birdhouses
+  GuardiansOfTheRift
+  BuryingBones
+  ScatteringAshes
+  Zalcano
+  Wintertodt
+  FishingTrawler
+  Tempoross
+  TearsOfGuthix
+  ShadesOfMorton
+  PuroPuro
+  MahoganyHomes
+  AerialFishing
+  CleaningHerbsWhileFarming
+  CamdozaalMining
+  CamdozaalSmithing
+  CamdozaalFishing
 }
 
 model XPGain {
@@ -521,6 +592,8 @@ model CommandUsage {
   channel_id BigInt?
   guild_id   BigInt?
 
+  continue_delta_millis BigInt?
+
   @@map("command_usage")
 }
 
@@ -568,6 +641,9 @@ model LastManStandingGame {
 enum economy_transaction_type {
   trade
   giveaway
+  duel
+  gri
+  gift
 }
 
 model EconomyTransaction {
@@ -638,6 +714,7 @@ model UserStats {
   total_toa_duration_minutes Int  @default(0)
 
   deaths                   Int @default(0)
+  pk_evasion_exp           Int @default(0)
   dice_wins                Int @default(0)
   dice_losses              Int @default(0)
   duel_losses              Int @default(0)
@@ -680,17 +757,9 @@ model UserStats {
   last_daily_timestamp           BigInt @default(0)
   last_tears_of_guthix_timestamp BigInt @default(0)
 
+  herbs_cleaned_while_farming_bank Json @default("{}") @db.Json
+
   @@map("user_stats")
-}
-
-model BingoTeam {
-  id Int @id @unique @default(autoincrement())
-
-  first_user  String @unique @db.VarChar(19)
-  second_user String @unique @db.VarChar(19)
-  third_user  String @unique @db.VarChar(19)
-
-  @@map("bingo_team")
 }
 
 enum CropUpgradeType {
@@ -723,6 +792,8 @@ model FarmedCrop {
 model BotItemSell {
   id String @id @default(uuid()) @db.Uuid
 
+  date DateTime @default(now()) @db.Timestamp(6)
+
   item_id     Int
   quantity    Int
   gp_received BigInt
@@ -750,18 +821,20 @@ model PinnedTrip {
 }
 
 model HistoricalData {
-  id      String   @id @default(uuid()) @db.Uuid
   user_id String   @db.VarChar(19)
   date    DateTime @default(now())
 
-  cl_global_rank           Int
-  cl_completion_percentage Float
-  cl_completion_count      Int
-  GP                       BigInt
-  total_xp                 BigInt
+  cl_global_rank           Int     @db.SmallInt
+  cl_completion_percentage Decimal @db.Decimal(5, 2)
+  cl_completion_count      Int     @db.SmallInt
+  GP                       Decimal @db.Decimal(13, 0)
+  total_xp                 Decimal @db.Decimal(13, 0)
+
+  mastery_percentage Decimal? @db.Decimal(5, 2)
 
   user User @relation(fields: [user_id], references: [id])
 
+  @@id([user_id, date])
   @@map("historical_data")
 }
 
@@ -831,6 +904,8 @@ enum activity_type_enum {
   Raids
   Collecting
   MageTrainingArena
+  CutLeapingFish
+  MotherlodeMining
   BlastFurnace
   MageArena2
   BigChompyBirdHunting
@@ -858,6 +933,11 @@ enum activity_type_enum {
   ShadesOfMorton
   TombsOfAmascut
   UnderwaterAgilityThieving
+  StrongholdOfSecurity
+  SpecificQuest
+  CamdozaalFishing
+  CamdozaalMining
+  CamdozaalSmithing
 }
 
 enum xp_gains_skill_enum {
@@ -889,4 +969,145 @@ enum xp_gains_skill_enum {
 enum AutoFarmFilterEnum {
   AllFarm
   Replant
+}
+
+enum GEListingType {
+  Buy
+  Sell
+}
+
+model GEListing {
+  id   Int           @id @unique @default(autoincrement())
+  type GEListingType
+
+  userfacing_id String
+
+  user_id String? @db.VarChar(19)
+  user    User?   @relation(fields: [user_id], references: [id])
+
+  created_at   DateTime  @default(now())
+  cancelled_at DateTime?
+  fulfilled_at DateTime?
+
+  gp_refunded           BigInt @default(0)
+  item_id               Int
+  asking_price_per_item BigInt
+  total_quantity        Int
+  quantity_remaining    Int
+
+  buyTransactions  GETransaction[] @relation("buy_transactions")
+  sellTransactions GETransaction[] @relation("sell_transactions")
+
+  @@map("ge_listing")
+}
+
+model GETransaction {
+  id Int @id @unique @default(autoincrement())
+
+  created_at DateTime @default(now())
+
+  quantity_bought           Int
+  price_per_item_before_tax BigInt
+  price_per_item_after_tax  BigInt
+  tax_rate_percent          Int    @db.SmallInt
+
+  total_tax_paid BigInt
+
+  buy_listing    GEListing @relation("buy_transactions", fields: [buy_listing_id], references: [id])
+  buy_listing_id Int
+
+  sell_listing    GEListing @relation("sell_transactions", fields: [sell_listing_id], references: [id])
+  sell_listing_id Int
+
+  @@index([sell_listing_id])
+  @@map("ge_transaction")
+}
+
+model GEBank {
+  item_id  Int    @id
+  quantity BigInt
+
+  @@map("ge_bank")
+}
+
+model Bingo {
+  id Int @id @unique @default(autoincrement())
+
+  creator    User   @relation(fields: [creator_id], references: [id])
+  creator_id String @db.VarChar(19)
+
+  is_global Boolean @default(false)
+
+  organizers               String[]
+  start_date               DateTime @default(now()) @db.Timestamp(6)
+  duration_days            Int
+  team_size                Int
+  title                    String
+  notifications_channel_id String   @db.VarChar(19)
+  ticket_price             BigInt
+  bingo_tiles              Json[]
+  was_finalized            Boolean  @default(false)
+
+  guild_id String @db.VarChar(19)
+
+  extra_gp BigInt @default(0)
+
+  trophies_apply Boolean @default(false)
+
+  bingo_participant BingoParticipant[]
+  bingo_team        BingoTeam[]
+
+  @@map("bingo")
+}
+
+model BingoTeam {
+  id Int @id @unique @default(autoincrement())
+
+  bingo    Bingo @relation(fields: [bingo_id], references: [id])
+  bingo_id Int
+
+  users BingoParticipant[]
+
+  @@map("bingo_team")
+}
+
+model BingoParticipant {
+  tickets_bought Int
+
+  bingo    Bingo @relation(fields: [bingo_id], references: [id], onDelete: Cascade)
+  bingo_id Int
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String @db.VarChar(19)
+
+  team          BingoTeam @relation(fields: [bingo_team_id], references: [id], onDelete: Cascade)
+  bingo_team_id Int
+
+  cl Json @default("{}") @db.Json
+
+  @@unique([user_id, bingo_id])
+  @@map("bingo_participant")
+}
+
+enum GiftBoxStatus {
+  Created
+  Sent
+  Opened
+}
+
+model GiftBox {
+  id         String        @id
+  created_at DateTime      @default(now()) @db.Timestamp(6)
+  status     GiftBoxStatus
+  name       String?
+
+  creator_id String? @db.VarChar(19)
+  creator    User?   @relation("gift_boxes_created", fields: [creator_id], references: [id])
+
+  owner_id String? @db.VarChar(19)
+  owner    User?   @relation("gift_boxes_owned", fields: [owner_id], references: [id])
+
+  items Json @default("{}") @db.Json
+
+  @@map("gift_box")
 }

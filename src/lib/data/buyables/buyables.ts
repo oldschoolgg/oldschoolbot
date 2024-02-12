@@ -1,18 +1,19 @@
 import { Bank } from 'oldschooljs';
 
-import { soteSkillRequirements } from '../../../mahoji/lib/abstracted_commands/zalcanoCommand';
-import { chompyHats, MAX_QP } from '../../constants';
+import { QuestID } from '../../../mahoji/lib/abstracted_commands/questCommand';
+import { chompyHats } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
-import { getToaKCs } from '../../simulation/toa';
+import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
+import { MUserStats } from '../../structures/MUserStats';
 import { Skills } from '../../types';
-import itemID from '../../util/itemID';
 import { allTeamCapes } from '../misc';
 import { aerialFishBuyables } from './aerialFishBuyables';
 import { canifisClothes } from './canifisClothes';
 import { capeBuyables } from './capes';
 import { castleWarsBuyables } from './castleWars';
+import { forestryBuyables } from './forestryBuyables';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
 import { guardiansOfTheRiftBuyables } from './guardiansOfTheRifBuyables';
@@ -29,6 +30,7 @@ export interface Buyable {
 	name: string;
 	outputItems?: Bank | ((user: MUser) => Bank);
 	qpRequired?: number;
+	requiredQuests?: QuestID[];
 	gpCost?: number;
 	itemCost?: Bank;
 	aliases?: string[];
@@ -38,7 +40,8 @@ export interface Buyable {
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
 	collectionLogReqs?: number[];
-	customReq?: (user: MUser) => Promise<[true] | [false, string]>;
+	customReq?: (user: MUser, userStats: MUserStats) => Promise<[true] | [false, string]>;
+	maxQuantity?: number;
 }
 
 const randomEventBuyables: Buyable[] = [
@@ -96,8 +99,8 @@ for (const [capeName, kcReq] of ichCapes) {
 	toaCapes.push({
 		name: capeName,
 		gpCost: kcReq * 10,
-		customReq: async (user: MUser) => {
-			const toaKCs = await getToaKCs(user);
+		customReq: async (_, stats) => {
+			const toaKCs = stats.getToaKCs();
 			return toaKCs.normalKC + toaKCs.expertKC >= kcReq
 				? [true]
 				: [false, `You need a combined amount of ${kcReq} Normal/Expert Tombs of Amascut KCs to buy this.`];
@@ -712,6 +715,11 @@ const questBuyables: Buyable[] = [
 		gpCost: 2_500_000,
 		qpRequired: 175,
 		ironmanPrice: 2000
+	},
+	{
+		name: 'Ring of shadows',
+		gpCost: 75_000,
+		requiredQuests: [QuestID.DesertTreasureII]
 	}
 ];
 
@@ -732,14 +740,10 @@ const noveltyFood: Buyable[] = [
 
 const Buyables: Buyable[] = [
 	{
-		name: 'Quest point cape',
-		outputItems: new Bank({
-			[itemID('Quest point cape')]: 1,
-			[itemID('Quest point hood')]: 1
-		}),
-		aliases: ['quest cape'],
-		qpRequired: MAX_QP,
-		gpCost: 99_000
+		name: 'Rope',
+		aliases: ['rope'],
+		gpCost: 100,
+		ironmanPrice: 25
 	},
 	{
 		name: 'Fishing Bait',
@@ -850,6 +854,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Salve amulet',
 		gpCost: 200_000,
+		ironmanPrice: 20_000,
 		skillsNeeded: {
 			crafting: 35
 		},
@@ -903,15 +908,23 @@ const Buyables: Buyable[] = [
 		gpCost: 100_000,
 		ironmanPrice: 32_000
 	},
-	{
-		name: 'Flower crown',
+	...[
+		'Flower crown (bisexual)',
+		'Flower crown (asexual)',
+		'Flower crown (transgender)',
+		'Flower crown (pansexual)',
+		'Flower crown (non-binary)',
+		'Flower crown (genderqueer)',
+		'Flower crown (lesbian)',
+		'Flower crown (gay)',
+		'Flower crown'
+	].map(name => ({
+		name,
 		itemCost: new Bank({
 			Coins: 5000
 		}),
-		outputItems: new Bank({
-			'Flower crown': 1
-		})
-	},
+		outputItems: new Bank().add(name)
+	})),
 	{
 		name: 'Mithril seeds',
 		gpCost: 3000,
@@ -1054,8 +1067,8 @@ const Buyables: Buyable[] = [
 		gpCost: 100_000,
 		ironmanPrice: 10_000,
 		qpRequired: 172,
-		customReq: async (user: MUser) => {
-			const toaKCs = await getToaKCs(user);
+		customReq: async (_, stats) => {
+			const toaKCs = stats.getToaKCs();
 			return toaKCs.expertKC >= 25 ? [true] : [false, 'You need a 25 Expert KC in Tombs of Amascut to buy this.'];
 		}
 	},
@@ -1086,7 +1099,8 @@ const Buyables: Buyable[] = [
 	...shootingStarsBuyables,
 	...guardiansOfTheRiftBuyables,
 	...toaCapes,
-	...mairinsMarketBuyables
+	...mairinsMarketBuyables,
+	...forestryBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

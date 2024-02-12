@@ -6,14 +6,13 @@ import { Bank } from 'oldschooljs';
 
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
+import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
 import { Ore, SkillsEnum } from '../../../lib/skilling/types';
-import { ItemBank } from '../../../lib/types';
-import { ActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskData, ShootingStarsOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength, patronMaxTripBonus } from '../../../lib/util/calcMaxTripLength';
 import { minionName } from '../../../lib/util/minionUtils';
-import { pickaxes } from '../../commands/mine';
 import { MUserClass } from './../../../lib/MUser';
 
 interface Star extends Ore {
@@ -170,13 +169,6 @@ export const starSizes: Star[] = [
 	}
 ];
 
-export interface ShootingStarsData extends ActivityTaskOptions {
-	size: number;
-	usersWith: number;
-	totalXp: number;
-	lootItems: ItemBank;
-}
-
 export async function shootingStarsCommand(channelID: string, user: MUserClass, star: Star): Promise<string> {
 	const skills = user.skillsAsLevels;
 	const boosts = [];
@@ -250,7 +242,7 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 	loot.add('Stardust', dustReceived);
 	const lootItems = loot.bank;
 
-	await addSubTaskToActivityTask<ShootingStarsData>({
+	await addSubTaskToActivityTask<ShootingStarsOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		duration,
@@ -286,12 +278,15 @@ const activitiesCantGetStars: activity_type_enum[] = [
 	'Nex',
 	'TombsOfAmascut',
 	'TheatreOfBlood',
-	'Raids'
+	'Raids',
+	'CamdozaalMining',
+	'CamdozaalSmithing',
+	'CamdozaalFishing'
 ];
 
 export const starCache = new Map<string, Star & { expiry: number }>();
 
-export function handleTriggerShootingStar(user: MUserClass, data: ActivityTaskOptions, components: ButtonBuilder[]) {
+export function handleTriggerShootingStar(user: MUserClass, data: ActivityTaskData, components: ButtonBuilder[]) {
 	if (activitiesCantGetStars.includes(data.type)) return;
 	const miningLevel = user.skillLevel(SkillsEnum.Mining);
 	const elligibleStars = starSizes.filter(i => i.chance > 0 && i.level <= miningLevel);

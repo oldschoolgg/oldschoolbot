@@ -13,6 +13,7 @@ const arrayColumns = [
 	['users', 'favoriteItems'],
 	['users', 'favorite_alchables'],
 	['users', 'favorite_food'],
+	['users', 'favorite_bh_seeds'],
 	['users', 'attack_style'],
 	['users', 'combat_options'],
 	['users', 'ironman_alts'],
@@ -34,9 +35,9 @@ ALTER TABLE "${table}"
 }
 
 interface CheckConstraint {
-	table: 'users';
-	column: 'lms_points';
-	name: `${CheckConstraint['table']}_${CheckConstraint['column']}_${string}`;
+	table: string;
+	column: string;
+	name: string;
 	body: string;
 }
 const checkConstraints: CheckConstraint[] = [
@@ -45,6 +46,72 @@ const checkConstraints: CheckConstraint[] = [
 		column: 'lms_points',
 		name: 'users_lms_points_min',
 		body: 'lms_points >= 0'
+	},
+	{
+		table: 'users',
+		column: '"GP"',
+		name: 'users_gp',
+		body: '"GP" >= 0'
+	},
+	{
+		table: 'users',
+		column: '"QP"',
+		name: 'users_qp',
+		body: '"QP" >= 0'
+	},
+	{
+		table: 'ge_listing',
+		column: 'asking_price_per_item',
+		name: 'asking_price_per_item_min',
+		body: 'asking_price_per_item_min >= 1'
+	},
+	{
+		table: 'ge_listing',
+		column: 'total_quantity',
+		name: 'total_quantity_min',
+		body: 'total_quantity >= 1'
+	},
+	{
+		table: 'ge_listing',
+		column: 'quantity_remaining',
+		name: 'quantity_remaining_min',
+		body: 'quantity_remaining >= 0'
+	},
+	{
+		table: 'ge_transaction',
+		column: 'quantity_bought',
+		name: 'quantity_bought_min',
+		body: 'quantity_bought >= 0'
+	},
+	{
+		table: 'ge_transaction',
+		column: 'price_per_item_before_tax',
+		name: 'price_per_item_before_tax_min',
+		body: 'price_per_item_before_tax >= 1'
+	},
+	{
+		table: 'ge_transaction',
+		column: 'price_per_item_after_tax',
+		name: 'price_per_item_after_tax_min',
+		body: 'price_per_item_after_tax >= 1'
+	},
+	{
+		table: 'ge_transaction',
+		column: 'tax_rate_percent_min',
+		name: 'tax_rate_percent_min',
+		body: 'tax_rate_percent >= 1'
+	},
+	{
+		table: 'ge_transaction',
+		column: 'total_tax_paid',
+		name: 'total_tax_paid_min',
+		body: 'total_tax_paid >= 0'
+	},
+	{
+		table: 'ge_bank',
+		column: 'quantity',
+		name: 'ge_bank_quantity_min',
+		body: 'quantity >= 0'
 	}
 ];
 for (const { table, name, body } of checkConstraints) {
@@ -52,10 +119,6 @@ for (const { table, name, body } of checkConstraints) {
 }
 startupScripts.push({
 	sql: 'CREATE UNIQUE INDEX IF NOT EXISTS activity_only_one_task ON activity (user_id, completed) WHERE NOT completed;'
-});
-
-startupScripts.push({
-	sql: 'CREATE INDEX CONCURRENTLY IF NOT EXISTS bitfield_gin_index ON users USING GIN (bitfield gin__int_ops) WHERE farming_patch_reminders = true;'
 });
 
 export async function runStartupScripts() {

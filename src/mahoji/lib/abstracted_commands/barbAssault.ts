@@ -4,20 +4,14 @@ import { calcWhatPercent, clamp, reduceNumByPercent, roll, round, Time } from 'e
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
+import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { Events } from '../../../lib/constants';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
 import { maxOtherStats } from '../../../lib/structures/Gear';
-import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import {
-	buildClueButtons,
-	formatDuration,
-	itemID,
-	makeComponents,
-	randomVariation,
-	stringMatches
-} from '../../../lib/util';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import { formatDuration, itemID, makeComponents, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -232,7 +226,7 @@ export async function barbAssaultGambleCommand(
 	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 	const perkTier = user.perkTier();
-	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier);
+	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
 	let response: Awaited<CommandResponse> = {
 		content: `You spent ${(
@@ -290,7 +284,7 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	)} - the total trip will take ${formatDuration(duration)}. `;
 
 	str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
-	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,

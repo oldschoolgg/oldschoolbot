@@ -12,7 +12,7 @@ import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
 
-export const mineCommand: OSBMahojiCommand = {
+export const mixCommand: OSBMahojiCommand = {
 	name: 'mix',
 	description: 'Mix potions to train Herblore.',
 	attributes: {
@@ -27,12 +27,12 @@ export const mineCommand: OSBMahojiCommand = {
 			description: 'The potion you want to mix.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return Herblore.Mixables.filter(i =>
-					!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
-				).map(i => ({
-					name: i.name,
-					value: i.name
-				}));
+				return Herblore.Mixables.map(i => i.item.name)
+					.filter(name => (!value ? true : name.toLowerCase().includes(value.toLowerCase())))
+					.map(i => ({
+						name: i,
+						value: i
+					}));
 			}
 		},
 		{
@@ -62,89 +62,78 @@ export const mineCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ name: string; quantity?: number; wesley?: boolean; zahur?: boolean }>) => {
 		const user = await mUserFetch(userID);
 		const mixableItem = Herblore.Mixables.find(
-			item =>
-				stringMatches(item.name, options.name) || item.aliases.some(alias => stringMatches(alias, options.name))
+			i => stringMatches(i.item.name, options.name) || i.aliases.some(alias => stringMatches(alias, options.name))
 		);
-
 		if (!mixableItem) return 'That is not a valid mixable item.';
 
 		if (user.skillLevel(SkillsEnum.Herblore) < mixableItem.level) {
-			return `${user.minionName} needs ${mixableItem.level} Herblore to make ${mixableItem.name}.`;
+			return `${user.minionName} needs ${mixableItem.level} Herblore to make ${mixableItem.item.name}.`;
 		}
 
 		if (mixableItem.qpRequired && user.QP < mixableItem.qpRequired) {
-			return `You need atleast **${mixableItem.qpRequired}** QP to make ${mixableItem.name}.`;
+			return `You need atleast **${mixableItem.qpRequired}** QP to make ${mixableItem.item.name}.`;
 		}
 
-		let sets = 'x';
+		const requiredItems = new Bank(mixableItem.inputItems);
+		const baseCost = new Bank(mixableItem.inputItems);
+		const { zahur, wesley, quantity: optionQuantity } = options;
+		const {
+			tickRate,
+			bankTimePerPotion,
+			item: { name: itemName },
+			wesley: mixableWesley,
+			zahur: mixableZahur
+		} = mixableItem;
+
+		const userBank = user.bankWithGP;
+
+		let timeToMixSingleItem = tickRate * Time.Second * 0.6 + bankTimePerPotion * Time.Second;
 		let cost = 'is now';
-		if (mixableItem.outputMultiple) {
-			sets = 'batches of';
-		}
 
-		let requiredItems = new Bank(mixableItem.inputItems);
-
-		// Get the base time to mix the item then add on quarter of a second per item to account for banking/etc.
-		let timeToMixSingleItem =
-			mixableItem.tickRate * Time.Second * 0.6 + mixableItem.bankTimePerPotion * Time.Second;
-
-		const { zahur } = options;
-		if (zahur && mixableItem.zahur === true) {
+		if ((zahur && mixableZahur) || (wesley && mixableWesley)) {
 			timeToMixSingleItem = 0.000_001;
-			requiredItems.add('Coins', 200);
-			cost = "decided to pay Zahur 200 gp for each potion so they don't have to go";
-		}
-		if (options.wesley && mixableItem.wesley === true) {
-			timeToMixSingleItem = 0.000_001;
-			requiredItems.add('Coins', 50);
-			cost = "decided to pay Wesley 50 gp for each item so they don't have to go";
+			requiredItems.add('Coins', wesley ? 50 : 200);
+			cost = `decided to pay ${wesley ? 'Wesley 50' : 'Zahur 200'} gp for each item so they don't have to go`;
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Herblore');
-
-		let { quantity } = options;
-		if (!quantity) quantity = Math.floor(maxTripLength / timeToMixSingleItem);
-
-		const baseCost = new Bank(mixableItem.inputItems);
-
+		let quantity = optionQuantity;
 		const maxCanDo = user.bankWithGP.fits(baseCost);
-		if (maxCanDo === 0) {
-			return `You don't have enough supplies to mix even one of this item!\nTo mix/clean a ${mixableItem.name}, you need to have ${baseCost}.`;
-		}
-		if (maxCanDo < quantity) {
-			quantity = maxCanDo;
+		const maxCanMix = Math.floor(maxTripLength / timeToMixSingleItem);
+
+		if (!quantity) {
+			quantity = maxCanMix;
+			if (maxCanDo < quantity && maxCanDo !== 0) quantity = maxCanDo;
 		}
 
-		const duration = quantity * timeToMixSingleItem;
-
-		if (duration > maxTripLength) {
+		if (quantity * timeToMixSingleItem > maxTripLength)
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)}, try a lower quantity. The highest amount of ${mixableItem.name}s you can make is ${Math.floor(
-				maxTripLength / timeToMixSingleItem
-			)}.`;
-		}
+			)}, try a lower quantity. The highest amount of ${itemName} you can mix is ${maxCanMix}.`;
 
-		const finalCost = requiredItems.multiply(quantity);
-		if (!user.owns(finalCost)) {
-			return `You don't own: ${finalCost}.`;
-		}
+		const finalCost = requiredItems.clone().multiply(quantity);
+		if (!user.owns(finalCost))
+			return `You don't have enough items. For ${quantity}x ${itemName}, you're missing **${finalCost
+				.clone()
+				.remove(userBank)}**.`;
+
 		await user.removeItemsFromBank(finalCost);
 
 		updateBankSetting('herblore_cost_bank', finalCost);
 
 		await addSubTaskToActivityTask<HerbloreActivityTaskOptions>({
-			mixableID: mixableItem.id,
+			mixableID: mixableItem.item.id,
 			userID: user.id,
 			channelID: channelID.toString(),
-			zahur: Boolean(options.zahur),
+			zahur: Boolean(zahur),
+			wesley: Boolean(wesley),
 			quantity,
-			duration,
+			duration: quantity * timeToMixSingleItem,
 			type: 'Herblore'
 		});
 
-		return `${user.minionName} ${cost} making ${quantity} ${sets} ${
-			mixableItem.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+		return `${user.minionName} ${cost} making ${quantity}x ${
+			mixableItem.outputMultiple ? 'batches of' : ''
+		}${itemName}, it'll take around ${formatDuration(quantity * timeToMixSingleItem)} to finish.`;
 	}
 };

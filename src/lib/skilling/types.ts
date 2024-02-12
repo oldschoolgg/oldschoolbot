@@ -1,4 +1,5 @@
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Emoji } from '../constants';
@@ -42,9 +43,9 @@ export interface Ore {
 	slope: number;
 	intercept: number;
 	petChance?: number;
-	nuggets?: boolean;
 	minerals?: number;
 	clueScrollChance?: number;
+	aliases?: string[];
 }
 
 export interface Log {
@@ -108,6 +109,8 @@ export interface Cookable {
 	inputCookables: ItemBank;
 	stopBurnAt: number;
 	stopBurnAtCG?: number;
+	// Burn level with hosidius/diary: [ noGauntletsHosidius, noGauntletsElite, gauntletsHosidius, gauntletsElite ]
+	burnKourendBonus?: number[];
 	burntCookable: number;
 	alias?: string[];
 }
@@ -173,9 +176,8 @@ export interface Fletchable {
 }
 
 export interface Mixable {
-	name: string;
+	item: Item;
 	aliases: string[];
-	id: number;
 	level: number;
 	xp: number;
 	inputItems: Bank;
@@ -185,6 +187,12 @@ export interface Mixable {
 	zahur?: boolean;
 	wesley?: boolean;
 	qpRequired?: number;
+}
+
+export interface CutLeapingFish {
+	item: Item;
+	aliases: string[];
+	tickRate: number;
 }
 
 export interface Bone {
@@ -229,6 +237,9 @@ export interface Plant {
 	inputItems: Bank;
 	aliases: string[];
 	outputCrop?: number;
+	cleanHerbCrop?: number;
+	herbXp?: number;
+	herbLvl?: number;
 	outputLogs?: number;
 	outputRoots?: number;
 	treeWoodcuttingLevel?: number;

@@ -234,6 +234,15 @@ const Runes: Rune[] = [
 		tripLength: Time.Minute * 1.192
 	},
 	{
+		xp: 10.5,
+		id: itemID('Blood rune'),
+		name: 'Blood rune',
+		levels: [[77, 1]],
+		qpRequired: 125,
+		tripLength: Time.Minute * 1.028,
+		stams: true
+	},
+	{
 		xp: 8,
 		id: itemID('Wrath rune'),
 		name: 'Wrath rune',

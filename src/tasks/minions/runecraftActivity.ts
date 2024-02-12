@@ -1,10 +1,11 @@
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
+import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { roll, skillingPetDropRate } from '../../lib/util';
+import { itemID, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
 
@@ -41,25 +42,14 @@ export const runecraftTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished crafting ${runeQuantity} ${rune.name}. ${xpRes}`;
 
-		// If they have the entire Raiments of the Eye outfit, give an extra 20% quantity bonus (NO bonus XP)
-		if (
-			user.gear.skilling.hasEquipped(
-				Object.keys(Runecraft.raimentsOfTheEyeItems).map(i => parseInt(i)),
-				true
-			)
-		) {
-			const amountToAdd = Math.floor(runeQuantity * (60 / 100));
-			runeQuantity += amountToAdd;
-			bonusQuantity += amountToAdd;
-		} else {
-			// For each Raiments of the Eye item, check if they have it, give its' quantity boost if so (NO bonus XP).
-			for (const [itemID, bonus] of Object.entries(Runecraft.raimentsOfTheEyeItems)) {
-				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
-					const amountToAdd = Math.floor(runeQuantity * (bonus / 100));
-					bonusQuantity += amountToAdd;
-				}
-			}
-			runeQuantity += bonusQuantity;
+		const raimentQuantity = raimentBonus(user, runeQuantity);
+		runeQuantity += raimentQuantity;
+		bonusQuantity += raimentQuantity;
+
+		let bonusBlood = 0;
+		if (runeID === itemID('Blood rune')) {
+			bonusBlood = await bloodEssence(user, essenceQuantity);
+			runeQuantity += bonusBlood;
 		}
 
 		const loot = new Bank({
@@ -87,6 +77,10 @@ export const runecraftTask: MinionTask = {
 
 		if (bonusQuantity > 0) {
 			str += ` **Bonus Quantity:** ${bonusQuantity.toLocaleString()}`;
+		}
+
+		if (bonusBlood > 0) {
+			str += ` **Blood essence Quantity:** ${bonusBlood.toLocaleString()}`;
 		}
 
 		await transactItems({

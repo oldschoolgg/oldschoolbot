@@ -1,14 +1,15 @@
 # Set the version of docker compose to use
-version: '3.9'
+version: "3.9"
 
 # The containers that compose the project
 services:
   osb:
-    image: postgres:13
+    image: postgres:13-alpine
+    command: -c 'max_connections=100'
     restart: always
     container_name: osb_database
     ports:
-      - '5435:1234'
+      - "5435:1234"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -16,11 +17,12 @@ services:
       PGPORT: 1234
 
   robochimp:
-    image: postgres:13
+    image: postgres:13-alpine
+    command: -c 'max_connections=100'
     restart: always
     container_name: robochimp_database
     ports:
-      - '5436:1235'
+      - "5436:1235"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
