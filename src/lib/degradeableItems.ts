@@ -212,7 +212,7 @@ export const degradeableItems: DegradeableItem[] = [
 		setup: 'melee',
 		aliases: ['scythe of vitur'],
 		chargeInput: {
-			cost: new Bank().add('Blood rune', 300).add('Vial of blood').freeze(),
+			cost: new Bank().add('Blood rune', 200).add('Vial of blood').freeze(),
 			charges: 100
 		},
 		unchargedItem: getOSItem('Scythe of vitur (uncharged)'),
