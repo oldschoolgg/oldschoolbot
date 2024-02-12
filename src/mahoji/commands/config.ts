@@ -1,7 +1,7 @@
 import { EmbedBuilder, inlineCode } from '@discordjs/builders';
 import { hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import { ChatInputCommandInteraction, Guild, HexColorString, resolveColor, User } from 'discord.js';
+import { bold, ChatInputCommandInteraction, Guild, HexColorString, resolveColor, User } from 'discord.js';
 import { clamp, removeFromArr, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -9,10 +9,11 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
-import { BitField, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/constants';
+import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { prisma } from '../../lib/settings/prisma';
+import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
 import { BankSortMethods } from '../../lib/sorts';
@@ -47,6 +48,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable Birdhouse Run Button',
 		bit: BitField.DisableBirdhouseRunButton
+	},
+	{
+		name: 'Disable Auto Slay Button',
+		bit: BitField.DisableAutoSlayButton
 	},
 	{
 		name: 'Disable Ash Sanctifier',
@@ -118,6 +123,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable farming reminders',
 		bit: BitField.DisabledFarmingReminders
+	},
+	{
+		name: 'Disable Clue Buttons',
+		bit: BitField.DisableClueButtons
 	},
 	{
 		name: 'Disable wilderness high peak time warning',
@@ -264,6 +273,40 @@ async function favAlchConfig(
 		favorite_alchables: uniqueArr([...currentFavorites, item.id])
 	});
 	return `Added ${item.name} to your favorite alchable items.`;
+}
+
+async function favBhSeedsConfig(
+	user: MUser,
+	itemToAdd: string | undefined,
+	itemToRemove: string | undefined,
+	reset: boolean
+) {
+	if (reset) {
+		await user.update({ favorite_bh_seeds: [] });
+		return 'Cleared all favorite birdhouse seeds.';
+	}
+
+	const currentFavorites = user.user.favorite_bh_seeds;
+	if (itemToAdd || itemToRemove) {
+		const item = getItem(itemToAdd ?? itemToRemove);
+		if (!item) return "That item doesn't exist.";
+		if (!birdhouseSeeds.some(seed => seed.item.id === item.id)) return "That item can't be used in birdhouses.";
+		if (itemToAdd) {
+			if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
+			await user.update({ favorite_bh_seeds: [...currentFavorites, item.id] });
+			return `You favorited ${item.name}.`;
+		}
+		if (itemToRemove) {
+			if (!currentFavorites.includes(item.id)) return 'This item is not favorited.';
+			await user.update({ favorite_bh_seeds: removeFromArr(currentFavorites, item.id) });
+			return `You unfavorited ${item.name}.`;
+		}
+	}
+
+	const currentItems = `Your current favorite items are: ${
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
+	}.`;
+	return currentItems;
 }
 
 async function bankSortConfig(
@@ -611,7 +654,7 @@ async function handleRSN(user: MUser, newRSN: string) {
 function pinnedTripLimit(perkTier: number) {
 	return clamp(perkTier + 1, 1, 4);
 }
-async function pinTripCommand(
+export async function pinTripCommand(
 	user: MUser,
 	tripId: string | undefined,
 	emoji: string | undefined,
@@ -916,6 +959,51 @@ export const configCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'favorite_bh_seeds',
+					description: 'Manage your favorite birdhouse seeds.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'add',
+							description: 'Add an item to your favorite birdhouse seeds.',
+							required: false,
+							autocomplete: async (value: string) => {
+								return birdhouseSeeds
+									.filter(i => (!value ? true : stringMatches(i.item.name, value)))
+									.map(i => ({
+										name: `${i.item.name}`,
+										value: i.item.id.toString()
+									}));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'remove',
+							description: 'Remove an item from your favorite birdhouse seeds.',
+							required: false,
+							autocomplete: async (value: string, user: User) => {
+								const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_bh_seeds: true });
+								return birdhouseSeeds
+									.filter(i => {
+										if (!mUser.favorite_bh_seeds.includes(i.item.id)) return false;
+										return !value ? true : stringMatches(i.item.name, value);
+									})
+									.map(i => ({
+										name: `${i.item.name}`,
+										value: i.item.id.toString()
+									}));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'reset',
+							description: 'Reset all of your favorite birdhouse seeds.',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'favorite_food',
 					description: 'Manage your favorite food.',
 					options: [
@@ -1058,6 +1146,20 @@ LIMIT 20;
 							}
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'icon_pack',
+					description: 'Change your icon pack',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'name',
+							description: 'The icon pack you want to use.',
+							required: true,
+							choices: ['Default', ...ItemIconPacks.map(i => i.name)].map(i => ({ name: i, value: i }))
+						}
+					]
 				}
 			]
 		}
@@ -1084,8 +1186,10 @@ LIMIT 20;
 			favorite_alchs?: { add?: string; remove?: string; add_many?: string; reset?: boolean };
 			favorite_food?: { add?: string; remove?: string; reset?: boolean };
 			favorite_items?: { add?: string; remove?: string; reset?: boolean };
+			favorite_bh_seeds?: { add?: string; remove?: string; reset?: boolean };
 			slayer?: { master?: string; autoslay?: string };
 			pin_trip?: { trip?: string; unpin_trip?: string; emoji?: string; custom_name?: string };
+			icon_pack?: { name?: string };
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
@@ -1114,9 +1218,36 @@ LIMIT 20;
 				favorite_alchs,
 				favorite_food,
 				favorite_items,
+				favorite_bh_seeds,
 				slayer,
-				pin_trip
+				pin_trip,
+				icon_pack
 			} = options.user;
+			if (icon_pack) {
+				if (icon_pack.name) {
+					if (icon_pack.name === 'Default') {
+						if (user.user.icon_pack_id) {
+							await user.update({
+								icon_pack_id: null
+							});
+							return 'Your icon pack is now set to default.';
+						}
+						return 'Your icon pack is already set to default.';
+					}
+
+					const pack = ItemIconPacks.find(i => i.name === icon_pack.name);
+					if (!pack) return 'Invalid icon pack.';
+
+					if (!user.user.store_bitfield.includes(pack.storeBitfield)) {
+						return 'You do not own this icon pack.';
+					}
+					await user.update({
+						icon_pack_id: pack.id
+					});
+					return `Your icon pack is now set to ${bold(pack.name)}.`;
+				}
+			}
+
 			if (toggle) {
 				return handleToggle(user, toggle.name, interaction);
 			}
@@ -1151,6 +1282,14 @@ LIMIT 20;
 			}
 			if (favorite_items) {
 				return favItemConfig(user, favorite_items.add, favorite_items.remove, Boolean(favorite_items.reset));
+			}
+			if (favorite_bh_seeds) {
+				return favBhSeedsConfig(
+					user,
+					favorite_bh_seeds.add,
+					favorite_bh_seeds.remove,
+					Boolean(favorite_bh_seeds.reset)
+				);
 			}
 			if (slayer) {
 				if (slayer.autoslay) {

@@ -1,9 +1,9 @@
 import { userMention } from '@discordjs/builders';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
+import { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { calcWhatPercent, objectEntries, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
@@ -17,6 +17,7 @@ import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
+import backgroundImages from './minions/data/bankBackgrounds';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
 import { defaultFarmingContract } from './minions/farming';
@@ -25,6 +26,7 @@ import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
 import { getUsersPerkTier, syncPerkTierOfUser } from './perkTiers';
+import { roboChimpUserFetch } from './roboChimp';
 import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
 import { prisma } from './settings/prisma';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
@@ -331,19 +333,22 @@ GROUP BY data->>'clueID';`);
 		items,
 		collectionLog = false,
 		filterLoot = true,
-		dontAddToTempCL = false
+		dontAddToTempCL = false,
+		neverUpdateHistory = false
 	}: {
 		items: ItemBank | Bank;
 		collectionLog?: boolean;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
+		neverUpdateHistory?: boolean;
 	}) {
 		const res = await transactItems({
 			collectionLog,
 			itemsToAdd: new Bank(items),
 			filterLoot,
 			dontAddToTempCL,
-			userID: this.id
+			userID: this.id,
+			neverUpdateHistory
 		});
 		this.user = res.newUser;
 		this.updateProperties();
@@ -419,7 +424,7 @@ GROUP BY data->>'clueID';`);
 		const { bank } = this;
 		const items = resolveItems(_items);
 		for (const baseID of items) {
-			const similarItems = [...getSimilarItems(baseID), baseID];
+			const similarItems = getSimilarItems(baseID);
 			const hasOneEquipped = similarItems.some(id => this.hasEquipped(id, true));
 			const hasOneInBank = similarItems.some(id => bank.has(id));
 			// If only one needs to be equipped, return true now if it is equipped.
@@ -752,6 +757,113 @@ GROUP BY data->>'clueID';`);
 			changes.set('Clue scroll (elite)', 5);
 		}
 		return changes;
+	}
+
+	async checkBankBackground() {
+		if (this.bitfield.includes(BitField.isModerator)) {
+			return;
+		}
+		const resetBackground = async () => {
+			await this.update({ bankBackground: 1 });
+		};
+		const background = backgroundImages.find(i => i.id === this.user.bankBackground);
+		if (!background) {
+			return resetBackground();
+		}
+		if (background.id === 1) return;
+		if (background.storeBitField && this.user.store_bitfield.includes(background.storeBitField)) {
+			return;
+		}
+		if (background.perkTierNeeded && this.perkTier() >= background.perkTierNeeded) {
+			return;
+		}
+		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
+			return;
+		}
+		if (!background.storeBitField && !background.perkTierNeeded && !background.bitfield) {
+			return;
+		}
+		return resetBackground();
+	}
+
+	async fetchRobochimpUser() {
+		return roboChimpUserFetch(this.id);
+	}
+
+	async forceUnequip(setup: GearSetupType, slot: EquipmentSlot, reason: string) {
+		const gear = this.gear[setup].raw();
+		const equippedInSlot = gear[slot];
+		if (!equippedInSlot) {
+			return { refundBank: new Bank() };
+		}
+		gear[slot] = null;
+
+		const actualItem = getItem(equippedInSlot.item);
+		const refundBank = new Bank();
+		if (actualItem) {
+			refundBank.add(actualItem.id, equippedInSlot.quantity);
+		}
+
+		await this.update({
+			[`gear_${setup}`]: gear as any as Prisma.InputJsonObject
+		});
+		if (refundBank.length > 0) {
+			await this.addItemsToBank({
+				items: refundBank,
+				collectionLog: false
+			});
+		}
+
+		debugLog(
+			`ForceUnequip User[${this.id}] in ${setup} slot[${slot}] ${JSON.stringify(equippedInSlot)}: ${reason}`
+		);
+
+		return { refundBank };
+	}
+
+	async validateEquippedGear() {
+		let itemsUnequippedAndRefunded = new Bank();
+		for (const [gearSetupName, gearSetup] of Object.entries(this.gear) as [GearSetupType, GearSetup][]) {
+			if (gearSetup['2h'] !== null) {
+				if (gearSetup.weapon?.item) {
+					const { refundBank } = await this.forceUnequip(
+						gearSetupName,
+						EquipmentSlot.Weapon,
+						'2h Already equipped'
+					);
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+				if (gearSetup.shield?.item) {
+					const { refundBank } = await this.forceUnequip(
+						gearSetupName,
+						EquipmentSlot.Shield,
+						'2h Already equipped'
+					);
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+			}
+			for (const slot of Object.values(EquipmentSlot)) {
+				const item = gearSetup[slot];
+				if (!item) continue;
+				const osItem = getItem(item.item);
+				if (!osItem) {
+					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Invalid item');
+					itemsUnequippedAndRefunded.add(refundBank);
+					continue;
+				}
+				if (osItem.equipment?.slot !== slot) {
+					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Wrong slot');
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+				if (osItem.equipment?.requirements && !this.hasSkillReqs(osItem.equipment.requirements)) {
+					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Doesnt meet requirements');
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+			}
+		}
+		return {
+			itemsUnequippedAndRefunded
+		};
 	}
 }
 declare global {

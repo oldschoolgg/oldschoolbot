@@ -57,8 +57,13 @@ export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
 		| 'WealthCharging'
 		| 'GloryCharging'
 		| 'AerialFishing'
-		| 'FishingTrawler';
+		| 'FishingTrawler'
+		| 'CamdozaalFishing'
+		| 'CamdozaalMining'
+		| 'CamdozaalSmithing';
 	quantity: number;
+	// iQty is 'input quantity.' This is the number specified at command time, so we can accurately repeat such trips.
+	iQty?: number;
 }
 
 export interface ShootingStarsOptions extends ActivityTaskOptions {
@@ -120,6 +125,7 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	type: 'MonsterKilling';
 	monsterID: number;
 	quantity: number;
+	iQty?: number;
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
 	chinning?: boolean;
@@ -129,27 +135,20 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	hasWildySupplies?: boolean;
 }
 
-export interface RevenantOptions extends ActivityTaskOptions {
-	type: 'Revenants';
-	monsterID: number;
-	quantity: number;
-	died: boolean;
-	fakeDuration: number;
-	usingPrayerPots: boolean;
-	skulled: boolean;
-	style: 'melee' | 'range' | 'mage';
-}
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	type: 'ClueCompletion';
 
 	clueID: number;
 	quantity: number;
+	implingID?: number;
+	implingClues?: number;
 }
 
 export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Fishing';
 	fishID: number;
 	quantity: number;
+	iQty?: number;
 }
 
 export interface MiningActivityTaskOptions extends ActivityTaskOptions {
@@ -159,6 +158,7 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	oreID: number;
 	quantity: number;
 	powermine: boolean;
+	iQty?: number;
 }
 
 export interface MotherlodeMiningActivityTaskOptions extends ActivityTaskOptions {
@@ -166,6 +166,7 @@ export interface MotherlodeMiningActivityTaskOptions extends ActivityTaskOptions
 	fakeDurationMax: number;
 	fakeDurationMin: number;
 	quantity: number;
+	iQty?: number;
 }
 
 export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
@@ -194,6 +195,7 @@ export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
 	powerchopping: boolean;
 	logID: number;
 	quantity: number;
+	iQty?: number;
 }
 
 export interface CraftingActivityTaskOptions extends ActivityTaskOptions {
@@ -257,6 +259,7 @@ export interface HerbloreActivityTaskOptions extends ActivityTaskOptions {
 	mixableID: number;
 	quantity: number;
 	zahur: boolean;
+	wesley: boolean;
 }
 
 export interface CutLeapingFishActivityTaskOptions extends ActivityTaskOptions {
@@ -574,7 +577,6 @@ export type ActivityTaskData =
 	| MiningActivityTaskOptions
 	| MotherlodeMiningActivityTaskOptions
 	| PlunderActivityTaskOptions
-	| RevenantOptions
 	| SmithingActivityTaskOptions
 	| SmeltingActivityTaskOptions
 	| TiaraRunecraftActivityTaskOptions

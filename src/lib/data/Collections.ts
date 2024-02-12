@@ -157,7 +157,8 @@ function clueProg(tiers: ClueTier['name'][]): FormatProgressFunction {
 				const tier = ClueTiers.find(_tier => _tier.name === i)!;
 				return `${stats.openableScores.amount(tier.id)} ${tier.name} Opens`;
 			})
-			.filter(notEmpty);
+			.filter(notEmpty)
+			.join(', ');
 	};
 }
 
@@ -1235,7 +1236,7 @@ export interface UserStatsDataNeededForCL {
 export function getBank(
 	user: MUser,
 	type: 'sacrifice' | 'bank' | 'collection' | 'temp',
-	userStats: UserStatsDataNeededForCL | null
+	userStats: UserStatsDataNeededForCL | MUserStats | null
 ) {
 	switch (type) {
 		case 'collection':
@@ -1254,7 +1255,7 @@ export function getBank(
 export function getTotalCl(
 	user: MUser,
 	logType: 'sacrifice' | 'bank' | 'collection' | 'temp',
-	userStats: UserStatsDataNeededForCL | null
+	userStats: UserStatsDataNeededForCL | MUserStats | null
 ) {
 	return getUserClData(getBank(user, logType, userStats).bank, allCLItemsFiltered);
 }

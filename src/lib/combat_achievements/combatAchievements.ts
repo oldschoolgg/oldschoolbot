@@ -14,6 +14,25 @@ import { hardCombatAchievements } from './hard';
 import { masterCombatAchievements } from './master';
 import { mediumCombatAchievements } from './medium';
 
+const collectMonsterNames = (...achievements: CombatAchievement[][]) => {
+	const allMonsterNamesSet = new Set<string>();
+	for (const achievementGroup of achievements) {
+		for (const achievement of achievementGroup) {
+			allMonsterNamesSet.add(achievement.monster);
+		}
+	}
+	return Array.from(allMonsterNamesSet);
+};
+
+export const allCAMonsterNames = collectMonsterNames(
+	easyCombatAchievements,
+	mediumCombatAchievements,
+	hardCombatAchievements,
+	eliteCombatAchievements,
+	masterCombatAchievements,
+	grandmasterCombatAchievements
+);
+
 type CAType = 'kill_count' | 'mechanical' | 'perfection' | 'restriction' | 'speed' | 'stamina';
 
 export type CombatAchievement = {

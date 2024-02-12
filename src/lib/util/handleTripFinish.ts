@@ -18,6 +18,7 @@ import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, makeComponents } from '../util';
 import {
 	makeAutoContractButton,
+	makeAutoSlayButton,
 	makeBirdHouseTripButton,
 	makeNewSlayerTaskButton,
 	makeOpenCasketButton,
@@ -134,7 +135,7 @@ export async function handleTripFinish(
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
-		components.push(...buildClueButtons(loot, perkTier));
+		components.push(...buildClueButtons(loot, perkTier, user));
 		const birdHousedetails = await calculateBirdhouseDetails(user.id);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
@@ -148,6 +149,8 @@ export async function handleTripFinish(
 			['MonsterKilling', 'Inferno', 'FightCaves'].includes(data.type)
 		) {
 			components.push(makeNewSlayerTaskButton());
+		} else if (!user.bitfield.includes(BitField.DisableAutoSlayButton)) {
+			components.push(makeAutoSlayButton());
 		}
 		if (loot?.has('Seed pack')) {
 			components.push(makeOpenSeedPackButton());
@@ -158,11 +161,11 @@ export async function handleTripFinish(
 		components.push(..._components);
 	}
 
+	handleTriggerShootingStar(user, data, components);
+
 	if (components.length > 0) {
 		message.components = makeComponents(components);
 	}
-
-	handleTriggerShootingStar(user, data, components);
 
 	sendToChannelID(channelID, message);
 }
