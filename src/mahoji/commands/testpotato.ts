@@ -860,7 +860,6 @@ ${droprates.join('\n')}`),
 					);
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
 				}
-
 				if (options.forcegrow) {
 					const farmingDetails = await getFarmingInfo(userID);
 					const thisPlant = farmingDetails.patchesDetailed.find(
