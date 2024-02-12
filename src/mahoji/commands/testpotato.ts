@@ -439,47 +439,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'setslayertask',
-					description: 'Set slayer task.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'master',
-							description: 'The master you wish to set your task.',
-							required: true,
-							choices: slayerMasterChoices
-						},
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'monster',
-							description: 'The monster you want to set your task as.',
-							required: true,
-							autocomplete: async value => {
-								return allSlayerMonsters
-									.filter(monster => {
-										if (!value) return true;
-										return [monster.name.toLowerCase(), monster.aliases].some(aliases =>
-											aliases.includes(value.toLowerCase())
-										);
-									})
-									.map(monster => ({
-										name: monster.name,
-										value: monster.name
-									}));
-							}
-						},
-						{
-							type: ApplicationCommandOptionType.Integer,
-							name: 'quantity',
-							description: 'The task quantity you want.',
-							required: false,
-							min_value: 0,
-							max_value: 1000
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
 					name: 'irontoggle',
 					description: 'Toggle being an ironman on/off.'
 				},
@@ -613,7 +572,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				setxp?: { skill: string; xp: number };
 				spawn?: { preset?: string; collectionlog?: boolean; item?: string; items?: string };
 				setmonsterkc?: { monster: string; kc: string };
-				setslayertask?: { master: string; monster: string; quantity: number };
 				irontoggle?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
 				wipe?: { thing: (typeof thingsToWipe)[number] };
@@ -901,59 +859,6 @@ ${droprates.join('\n')}`),
 						{}
 					);
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
-				}
-
-				if (options.setslayertask) {
-					const user = await mUserFetch(userID);
-					const usersTask = await getUsersCurrentSlayerInfo(user.id);
-
-					const { monster, master } = options.setslayertask;
-
-					const selectedMonster = allSlayerMonsters.find(m => stringMatches(m.name, monster));
-					const selectedMaster = slayerMasters.find(
-						sm => stringMatches(master, sm.name) || sm.aliases.some(alias => stringMatches(master, alias))
-					);
-
-					const quantity = options.setslayertask?.quantity ?? 50;
-
-					const assignedTask = selectedMaster!.tasks.find(m => m.monster.id === selectedMonster?.id)!;
-
-					if (!selectedMaster) return 'Invalid master.';
-					if (!selectedMonster) return 'Invalid monster.';
-					if (!assignedTask) return `${selectedMaster.name} can not assign ${selectedMonster.name}.`;
-
-					// Create a new slayer task for the user
-					if (usersTask.currentTask?.id) {
-						await prisma.slayerTask.update({
-							where: {
-								id: usersTask.currentTask?.id
-							},
-							data: {
-								quantity,
-								quantity_remaining: quantity,
-								slayer_master_id: selectedMaster.id,
-								monster_id: selectedMonster.id,
-								skipped: false
-							}
-						});
-					} else {
-						await prisma.slayerTask.create({
-							data: {
-								user_id: user.id,
-								quantity,
-								quantity_remaining: quantity,
-								slayer_master_id: selectedMaster.id,
-								monster_id: selectedMonster.id,
-								skipped: false
-							}
-						});
-					}
-
-					await user.update({
-						slayer_last_task: selectedMonster.id
-					});
-
-					return `You set your slayer task to ${selectedMonster.name} using ${selectedMaster.name}.`;
 				}
 
 				if (options.forcegrow) {
