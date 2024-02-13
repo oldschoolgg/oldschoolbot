@@ -1,4 +1,4 @@
-import { roll } from 'e';
+import { percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -302,7 +302,7 @@ export async function degradeItem({
 	let pennyReduction = 0;
 	if (user.hasEquipped("Ghommal's lucky penny")) {
 		for (let i = 0; i < chargesToDegrade; i++) {
-			if (roll(20)) {
+			if (percentChance(5)) {
 				pennyReduction++;
 			}
 		}
