@@ -26,7 +26,7 @@ async function determineDuration(user: MUser): Promise<[number, string]> {
 	// Reduce time based on KC
 	const jadKC = await user.getKC(TzTokJad.id);
 	const zukKC = await getMinigameScore(user.id, 'inferno');
-	const experienceKC = jadKC + (zukKC * 3);
+	const experienceKC = jadKC + zukKC * 3;
 	const percentIncreaseFromKC = Math.min(50, experienceKC);
 	baseTime = reduceNumByPercent(baseTime, percentIncreaseFromKC);
 	debugStr += `${percentIncreaseFromKC}% from KC`;
