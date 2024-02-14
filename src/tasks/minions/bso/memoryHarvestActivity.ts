@@ -1,7 +1,12 @@
 import { calcPercentOfNum, increaseNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { divinationEnergies, MemoryHarvestType } from '../../../lib/bso/divination';
+import {
+	calcEnergyPerMemory,
+	divinationEnergies,
+	DivinationEnergy,
+	MemoryHarvestType
+} from '../../../lib/bso/divination';
 import { Emoji } from '../../../lib/constants';
 import { inventionBoosts } from '../../../lib/invention/inventions';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -16,7 +21,7 @@ const MEMORIES_PER_HARVEST = SECONDS_TO_HARVEST * 2;
 
 export const totalTimePerRound = SECONDS_TO_HARVEST + SECONDS_TO_CONVERT * MEMORIES_PER_HARVEST;
 
-function calcConversionResult(hasBoon: boolean, method: MemoryHarvestType, energy: (typeof divinationEnergies)[0]) {
+function calcConversionResult(hasBoon: boolean, method: MemoryHarvestType, energy: DivinationEnergy) {
 	let convertToXPXP = hasBoon ? energy.convertBoon ?? energy.convertNormal : energy.convertNormal;
 
 	switch (method) {
@@ -28,7 +33,9 @@ function calcConversionResult(hasBoon: boolean, method: MemoryHarvestType, energ
 			return { xp };
 		}
 		case MemoryHarvestType.ConvertWithEnergyToXP: {
-			let xp = hasBoon ? energy.convertWithEnergyAndBoon ?? energy.convertWithEnergy : energy.convertWithEnergy;
+			let xp: number = hasBoon
+				? energy.convertWithEnergyAndBoon ?? energy.convertWithEnergy
+				: energy.convertWithEnergy;
 			xp = increaseNumByPercent(xp, 15);
 			return { xp };
 		}
@@ -51,7 +58,7 @@ export function memoryHarvestResult({
 	rounds
 }: {
 	duration: number;
-	energy: (typeof divinationEnergies)[0];
+	energy: DivinationEnergy;
 	harvestMethod: MemoryHarvestType;
 	hasBoon: boolean;
 	hasWispBuster: boolean;
@@ -69,7 +76,7 @@ export function memoryHarvestResult({
 	const cost = new Bank();
 	let totalDivinationXP = 0;
 	let totalMemoriesHarvested = 0;
-	const energyPerMemory = (120 - energy.level) / 150;
+	const energyPerMemory = calcEnergyPerMemory(energy);
 
 	for (let i = 0; i < rounds; i++) {
 		// Step 1: Harvest memories

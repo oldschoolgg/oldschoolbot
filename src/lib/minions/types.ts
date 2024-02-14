@@ -140,6 +140,7 @@ export interface KillableMonster {
 	minimumFoodHealAmount?: number;
 	minimumWeaponShieldStats?: Partial<Record<GearSetupType, Required<GearRequirement>>>;
 	tameCantKill?: true;
+	customRequirement?: (user: MUser) => Promise<string | null>;
 }
 /*
  * Monsters will have an array of Consumables

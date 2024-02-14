@@ -44,6 +44,7 @@ import {
 	SeaMonkeySpell,
 	seaMonkeySpells,
 	seaMonkeyStaves,
+	tameFeedableItems,
 	tameGrowthLevel,
 	tameHasBeenFed,
 	TameKillableMonster,
@@ -184,66 +185,6 @@ export const tameEquippables: TameEquippable[] = [
 		slot: 'equipped_primary' as const
 	})),
 	...eagleEquippables
-];
-
-interface FeedableItem {
-	item: Item;
-	tameSpeciesCanBeFedThis: TameSpeciesID[];
-	description: string;
-	announcementString: string;
-}
-
-export const tameFeedableItems: FeedableItem[] = [
-	{
-		item: getOSItem('Ori'),
-		description: '25% extra loot',
-		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne],
-		announcementString: 'Your tame will now get 25% extra loot!'
-	},
-	{
-		item: getOSItem('Zak'),
-		description: '+35 minutes longer max trip length',
-		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne, TameSpeciesID.Monkey],
-		announcementString: 'Your tame now has a much longer max trip length!'
-	},
-	{
-		item: getOSItem('Abyssal cape'),
-		description: '20% food reduction',
-		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne],
-		announcementString: 'Your tame now has 20% food reduction!'
-	},
-	{
-		item: getOSItem('Voidling'),
-		description: '10% faster collecting',
-		tameSpeciesCanBeFedThis: [TameSpeciesID.Monkey],
-		announcementString: 'Your tame can now collect items 10% faster thanks to the Voidling helping them teleport!'
-	},
-	{
-		item: getOSItem('Ring of endurance'),
-		description: '10% faster collecting',
-		tameSpeciesCanBeFedThis: [TameSpeciesID.Monkey],
-		announcementString:
-			'Your tame can now collect items 10% faster thanks to the Ring of endurance helping them run for longer!'
-	},
-	{
-		item: getOSItem('Dwarven warhammer'),
-		description: '30% faster PvM',
-		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne],
-		announcementString: "Your tame can now kill 30% faster! It's holding the Dwarven warhammer in its claws..."
-	},
-	{
-		item: getOSItem('Mr. E'),
-		description: 'Chance to get 2x loot',
-		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne, TameSpeciesID.Monkey],
-		announcementString: "With Mr. E's energy absorbed, your tame now has a chance at 2x loot!"
-	},
-	{
-		item: getOSItem('Klik'),
-		description: 'Makes tanning spell faster',
-		tameSpeciesCanBeFedThis: [TameSpeciesID.Monkey],
-		announcementString:
-			"Your tame uses a spell to infuse Klik's fire breathing ability into itself. It can now tan hides much faster."
-	}
 ];
 
 const feedingEasterEggs: [Bank, number, tame_growth[], string][] = [
@@ -1613,22 +1554,10 @@ export function determineTameClueResult({
 
 	let timePerClue = clueTier.timeToFinish * 1.3;
 
-	const baseBoostPercent = 20;
-	const maxDifference = 100 - clueTier.eagleTameSupportLevelNeeded;
-	assert(maxDifference >= 0);
-	const theirDifference = Math.max(0, supportLevel - clueTier.eagleTameSupportLevelNeeded);
-	assert(theirDifference >= 0);
+	const s = exponentialPercentScale(supportLevel, 0.03);
+	const base = exponentialPercentScale(50, 0.03);
+	const boostPercent = Math.max(0, s / 1.5 - base / 1.5);
 
-	let boostPercent: number = -1;
-	if (supportLevel === 100) {
-		boostPercent = baseBoostPercent;
-	} else {
-		const percentOfMaxDifference = calcWhatPercent(theirDifference, maxDifference);
-		boostPercent = (percentOfMaxDifference / 100) * baseBoostPercent;
-	}
-
-	assert(boostPercent >= 0 && boostPercent <= baseBoostPercent);
-	timePerClue = reduceNumByPercent(timePerClue, boostPercent);
 	boosts.push(`${boostPercent.toFixed(2)}% faster for support level`);
 
 	if (equippedPrimary === itemID('Divine ring')) {
@@ -2006,12 +1935,11 @@ export const tamesCommand: OSBMahojiCommand = {
 					description: 'The clue tier to do.',
 					required: true,
 					autocomplete: async (input, rawUser) => {
-						const [tame, user] = await Promise.all([getUsersTame(rawUser.id), mUserFetch(rawUser.id)]);
-						const tameSupportLevel = tame.tame?.max_support_level ?? 50;
+						const user = await mUserFetch(rawUser.id);
 						return ClueTiers.filter(t =>
 							!input ? true : t.name.toLowerCase().includes(input.toLowerCase())
 						)
-							.filter(t => user.bank.has(t.scrollID) && tameSupportLevel >= t.eagleTameSupportLevelNeeded)
+							.filter(t => user.bank.has(t.scrollID))
 							.map(t => ({ name: `${t.name} (${user.bank.amount(t.scrollID)}x owned)`, value: t.name }));
 					}
 				}

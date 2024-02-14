@@ -5,7 +5,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { getSimilarItems } from '../data/similarItems';
 import { prisma } from '../settings/prisma';
-import { Species, tameSpecies } from '../tames';
+import { Species, tameFeedableItems, tameSpecies, TameSpeciesID } from '../tames';
 import type { ItemBank } from '../types';
 import getOSItem from '../util/getOSItem';
 
@@ -56,6 +56,19 @@ export class MTame {
 		const { id } = Items.get(item)!;
 		const items = getSimilarItems(id);
 		return items.some(i => this.equippedArmor?.id === i || this.equippedPrimary?.id === i);
+	}
+
+	isMaxedIgneTame() {
+		return (
+			this.species.id === TameSpeciesID.Igne &&
+			this.growthStage === 'adult' &&
+			this.equippedPrimary?.name === 'Gorajan igne claws' &&
+			this.equippedArmor?.name === 'Gorajan igne armor' &&
+			tameFeedableItems
+				.filter(t => t.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Igne))
+				.map(i => i.item.id)
+				.every(id => this.hasBeenFed(id))
+		);
 	}
 
 	async addToStatsBank(

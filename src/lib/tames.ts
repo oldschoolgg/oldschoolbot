@@ -58,6 +58,66 @@ export enum TameSpeciesID {
 	Eagle = 3
 }
 
+interface FeedableItem {
+	item: Item;
+	tameSpeciesCanBeFedThis: TameSpeciesID[];
+	description: string;
+	announcementString: string;
+}
+
+export const tameFeedableItems: FeedableItem[] = [
+	{
+		item: getOSItem('Ori'),
+		description: '25% extra loot',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne],
+		announcementString: 'Your tame will now get 25% extra loot!'
+	},
+	{
+		item: getOSItem('Zak'),
+		description: '+35 minutes longer max trip length',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne, TameSpeciesID.Monkey],
+		announcementString: 'Your tame now has a much longer max trip length!'
+	},
+	{
+		item: getOSItem('Abyssal cape'),
+		description: '20% food reduction',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne],
+		announcementString: 'Your tame now has 20% food reduction!'
+	},
+	{
+		item: getOSItem('Voidling'),
+		description: '10% faster collecting',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Monkey],
+		announcementString: 'Your tame can now collect items 10% faster thanks to the Voidling helping them teleport!'
+	},
+	{
+		item: getOSItem('Ring of endurance'),
+		description: '10% faster collecting',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Monkey],
+		announcementString:
+			'Your tame can now collect items 10% faster thanks to the Ring of endurance helping them run for longer!'
+	},
+	{
+		item: getOSItem('Dwarven warhammer'),
+		description: '30% faster PvM',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne],
+		announcementString: "Your tame can now kill 30% faster! It's holding the Dwarven warhammer in its claws..."
+	},
+	{
+		item: getOSItem('Mr. E'),
+		description: 'Chance to get 2x loot',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne, TameSpeciesID.Monkey],
+		announcementString: "With Mr. E's energy absorbed, your tame now has a chance at 2x loot!"
+	},
+	{
+		item: getOSItem('Klik'),
+		description: 'Makes tanning spell faster',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Monkey],
+		announcementString:
+			"Your tame uses a spell to infuse Klik's fire breathing ability into itself. It can now tan hides much faster."
+	}
+];
+
 export const seaMonkeyStaves = [
 	{
 		tier: 1,
@@ -718,7 +778,8 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 					id: tame.id
 				},
 				data: {
-					max_total_loot: previousTameCl.clone().add(res.loot.bank).bank
+					max_total_loot: previousTameCl.clone().add(res.loot.bank).bank,
+					last_activity_date: new Date()
 				}
 			});
 		}
@@ -870,6 +931,16 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				actualOpenQuantityWithBonus += randInt(1, 3);
 			}
 
+			if (clueTier.name === 'Master') {
+				const percentChanceOfGMC = mTame.hasEquipped('Divine ring') ? 3.5 : 1.5;
+				for (let i = 0; i < activityData.quantity; i++) {
+					if (percentChance(percentChanceOfGMC)) {
+						loot.add('Clue scroll (grandmaster)');
+					}
+				}
+				messages.push('2x GMC droprate for divine ring');
+			}
+
 			if (user.bitfield.includes(BitField.DisabledTameClueOpening)) {
 				loot.add(clueTier.id, activityData.quantity);
 			} else {
@@ -899,35 +970,36 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 					await mTame.addToStatsBank('third_age_jibwings_loot', thirdAgeJwLoot);
 				}
 
-				if (mTame.hasBeenFed('Impling locator')) {
-					const result = await handlePassiveImplings(user, {
-						type: 'MonsterKilling',
-						duration: activity.duration
-					} as ActivityTaskData);
-					if (result && result.bank.length > 0) {
-						const actualImplingLoot = new Bank();
-						for (const [item, qty] of result.bank.items()) {
-							const openable = allOpenables.find(i => i.id === item.id)!;
-							assert(!isEmpty(openable));
-							actualImplingLoot.add(
-								isFunction(openable.output)
-									? (
-											await openable.output({
-												user,
-												quantity: qty,
-												self: openable,
-												totalLeaguesPoints: 0
-											})
-									  ).bank
-									: openable.output.roll(qty)
-							);
-						}
-						messages.push(`${mTame} caught ${result.bank} with their Impling locator!`);
-						await mTame.addToStatsBank('implings_loot', actualImplingLoot);
-					}
-				}
-
 				loot.add(openingLoot);
+			}
+
+			if (mTame.hasBeenFed('Impling locator')) {
+				const result = await handlePassiveImplings(user, {
+					type: 'MonsterKilling',
+					duration: activity.duration
+				} as ActivityTaskData);
+				if (result && result.bank.length > 0) {
+					const actualImplingLoot = new Bank();
+					for (const [item, qty] of result.bank.items()) {
+						const openable = allOpenables.find(i => i.id === item.id)!;
+						assert(!isEmpty(openable));
+						actualImplingLoot.add(
+							isFunction(openable.output)
+								? (
+										await openable.output({
+											user,
+											quantity: qty,
+											self: openable,
+											totalLeaguesPoints: 0
+										})
+								  ).bank
+								: openable.output.roll(qty)
+						);
+					}
+					loot.add(actualImplingLoot);
+					messages.push(`${mTame} caught ${result.bank} with their Impling locator!`);
+					await mTame.addToStatsBank('implings_loot', actualImplingLoot);
+				}
 			}
 
 			let str = `${user}, ${mTame} finished completing ${activityData.quantity}x ${itemNameFromID(

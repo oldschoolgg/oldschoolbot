@@ -8,6 +8,10 @@ import { hasUnlockedAtlantis } from '../util';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 
+export function calcEnergyPerMemory(energy: DivinationEnergy) {
+	return (120 - energy.level) / 150;
+}
+
 export const divinationEnergies = [
 	{
 		level: 1,
@@ -230,9 +234,20 @@ export const divinationEnergies = [
 			return null;
 		}
 	}
-];
+] as const;
+
+export function calcAtomicEnergy(energy: DivinationEnergy): number {
+	let qty = Math.ceil(Math.pow(1 - calcEnergyPerMemory(energy), 3.5) * 250);
+	if (energy.type === 'Ancient') {
+		qty *= 2;
+	}
+	return qty;
+}
+
+export type DivinationEnergy = (typeof divinationEnergies)[number];
 
 for (const energy of divinationEnergies) {
+	// @ts-ignore Ignore
 	energy.boonEnergyCost = energy.level * 50;
 }
 

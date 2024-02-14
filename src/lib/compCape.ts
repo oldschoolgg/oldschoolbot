@@ -4,7 +4,6 @@ import { calcWhatPercent, objectEntries, sumArr } from 'e';
 import { writeFileSync } from 'fs';
 import { Bank, Items } from 'oldschooljs';
 
-import { tameFeedableItems } from '../mahoji/commands/tames';
 import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
 import { divinationEnergies } from './bso/divination';
 import { ClueTiers } from './clues/clueTiers';
@@ -166,7 +165,7 @@ import { herbloreCL } from './skilling/skills/herblore/mixables';
 import { smithingCL } from './skilling/skills/smithing/smithables';
 import { slayerUnlockableRewards } from './slayer/slayerUnlocks';
 import { RequirementFailure, Requirements } from './structures/Requirements';
-import { TameSpeciesID } from './tames';
+import { tameFeedableItems, TameSpeciesID } from './tames';
 import { ItemBank } from './types';
 import { itemID, itemNameFromID } from './util';
 import resolveItems from './util/resolveItems';

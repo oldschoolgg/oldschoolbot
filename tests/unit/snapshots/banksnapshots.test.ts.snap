@@ -25274,7 +25274,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Pale energy",
     "outputItems": Bank {
       "bank": {
-        "73090": 1,
+        "73090": 2,
       },
       "frozen": false,
     },
@@ -25293,7 +25293,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Flickering energy",
     "outputItems": Bank {
       "bank": {
-        "73090": 10,
+        "73090": 3,
       },
       "frozen": false,
     },
@@ -25331,7 +25331,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Bright energy",
     "outputItems": Bank {
       "bank": {
-        "73090": 20,
+        "73090": 6,
       },
       "frozen": false,
     },
@@ -25369,7 +25369,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Glowing energy",
     "outputItems": Bank {
       "bank": {
-        "73090": 30,
+        "73090": 11,
       },
       "frozen": false,
     },
@@ -25407,7 +25407,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Sparkling energy",
     "outputItems": Bank {
       "bank": {
-        "73090": 40,
+        "73090": 18,
       },
       "frozen": false,
     },
@@ -25445,7 +25445,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Gleaming energy",
     "outputItems": Bank {
       "bank": {
-        "73090": 50,
+        "73090": 28,
       },
       "frozen": false,
     },
@@ -25483,7 +25483,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Vibrant energy",
     "outputItems": Bank {
       "bank": {
-        "73090": 60,
+        "73090": 42,
       },
       "frozen": false,
     },
@@ -25521,7 +25521,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Lustrous energy",
     "outputItems": Bank {
       "bank": {
-        "73090": 70,
+        "73090": 61,
       },
       "frozen": false,
     },
@@ -25559,7 +25559,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Elder energy",
     "outputItems": Bank {
       "bank": {
-        "73090": 75,
+        "73090": 72,
       },
       "frozen": false,
     },
@@ -25597,7 +25597,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Brilliant energy",
     "outputItems": Bank {
       "bank": {
-        "73090": 80,
+        "73090": 85,
       },
       "frozen": false,
     },
@@ -25635,7 +25635,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Radiant energy",
     "outputItems": Bank {
       "bank": {
-        "73090": 85,
+        "73090": 99,
       },
       "frozen": false,
     },
@@ -25673,7 +25673,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Luminous energy",
     "outputItems": Bank {
       "bank": {
-        "73090": 90,
+        "73090": 115,
       },
       "frozen": false,
     },
@@ -25711,7 +25711,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Incandescent energy",
     "outputItems": Bank {
       "bank": {
-        "73090": 95,
+        "73090": 133,
       },
       "frozen": false,
     },
@@ -25749,7 +25749,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Ancient energy",
     "outputItems": Bank {
       "bank": {
-        "73090": 110,
+        "73090": 394,
       },
       "frozen": false,
     },

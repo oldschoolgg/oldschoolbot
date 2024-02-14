@@ -988,6 +988,15 @@ GROUP BY data->>'clueID';`);
 			itemsUnequippedAndRefunded
 		};
 	}
+
+	async fetchTames() {
+		const tames = await prisma.tame.findMany({
+			where: {
+				user_id: this.id
+			}
+		});
+		return tames.map(t => new MTame(t));
+	}
 }
 declare global {
 	export type MUser = MUserClass;

@@ -2,7 +2,6 @@ import { sumArr } from 'e';
 import { Bank, Monsters, Openables } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
-import { tameFeedableItems } from '../../mahoji/commands/tames';
 import { ZALCANO_ID } from '../constants';
 import {
 	abyssalDragonCL,
@@ -40,7 +39,7 @@ import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
-import { TameSpeciesID } from '../tames';
+import { tameFeedableItems, TameSpeciesID } from '../tames';
 import { ItemBank } from '../types';
 import { calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';

@@ -3,7 +3,7 @@ import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
+import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { GLOBAL_BSO_XP_MULTIPLIER, PeakTier } from '../../lib/constants';
 import { inventionBoosts } from '../../lib/invention/inventions';
@@ -123,14 +123,13 @@ export const ratesCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 
 		if (options.tames?.eagle) {
-			let results = `${['Support Level', 'Clue Tier', 'Clues/hr', 'Kibble/hr'].join('\t')}\n`;
+			let results = `${['Support Level', 'Clue Tier', 'Clues/hr', 'Kibble/hr', 'GMC/Hr'].join('\t')}\n`;
 			for (const tameLevel of [50, 60, 70, 75, 80, 85, 90, 95, 100]) {
 				for (const clueTier of ClueTiers) {
-					if (tameLevel < clueTier.eagleTameSupportLevelNeeded) continue;
 					const res = determineTameClueResult({
 						tameGrowthLevel: 3,
 						clueTier,
-						extraTripLength: 0,
+						extraTripLength: Time.Hour * 10,
 						supportLevel: tameLevel,
 						equippedArmor: itemID('Abyssal jibwings (e)'),
 						equippedPrimary: itemID('Divine ring')
@@ -140,7 +139,8 @@ export const ratesCommand: OSBMahojiCommand = {
 						tameLevel,
 						clueTier.name,
 						calcPerHour(res.quantity, res.duration).toLocaleString(),
-						calcPerHour(res.cost.amount('Extraordinary kibble'), res.duration).toLocaleString()
+						calcPerHour(res.cost.amount('Extraordinary kibble'), res.duration).toLocaleString(),
+						calcPerHour(res.cost.amount('Clue scroll (grandmaster)'), res.duration).toLocaleString()
 					].join('\t');
 					results += '\n';
 				}
@@ -477,7 +477,9 @@ export const ratesCommand: OSBMahojiCommand = {
 									const atomicEnergyPerHour =
 										energyReceived === 0
 											? '0'
-											: calcPerHour(energyReceived * energy.level, duration).toFixed(1);
+											: calcPerHour(energyReceived * calcAtomicEnergy(energy), duration).toFixed(
+													1
+											  );
 
 									results += [
 										energy.type,

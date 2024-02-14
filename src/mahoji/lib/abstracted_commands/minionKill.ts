@@ -281,7 +281,8 @@ export async function minionKillCommand(
 		}
 	}
 
-	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, await user.getKC(monster.id));
+	const kcForThisMonster = await user.getKC(monster.id);
+	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, kcForThisMonster);
 
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
 		monsterID: monster.id,
@@ -696,6 +697,10 @@ export async function minionKillCommand(
 		}
 	}
 
+	if (monster.customRequirement && kcForThisMonster === 0) {
+		const hasReq = await monster.customRequirement(user);
+		if (!hasReq) return `You don't meet the requirements to kill this monster: ${reason}.`;
+	}
 	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
 		return "You haven't unlocked this monster..";
 	}
@@ -892,6 +897,9 @@ export async function minionKillCommand(
 				' eyes with your minion and grabs the dart mid-air, and throws it back, killing your minion instantly.'
 			);
 		}
+		if (monster.name === 'Solis') {
+			return 'The dart melts into a crisp dust before coming into contact with Solis.';
+		}
 		if (monster.name === 'Yeti') {
 			return 'You send your minion off to fight Yeti with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
 		}
@@ -1043,6 +1051,11 @@ export async function minionKillCommand(
 	} else {
 		boosts.push(`${noFoodBoost}% for no food`);
 		duration = reduceNumByPercent(duration, noFoodBoost);
+	}
+
+	if (monster.deathProps) {
+		const deathChance = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC: kcForThisMonster });
+		messages.push(`${deathChance.toFixed(1)}% chance of death`);
 	}
 
 	// Remove items after food calc to prevent losing items if the user doesn't have the right amount of food. Example: Mossy key
