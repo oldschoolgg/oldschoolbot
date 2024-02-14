@@ -1,7 +1,7 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { Item, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
 import BrimstoneChest, { BrimstoneChestOpenable } from 'oldschooljs/dist/simulation/openables/BrimstoneChest';
 import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
@@ -257,7 +257,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		}> => {
 			const chest = new LarransChestOpenable(LarransChest);
 			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
-			const larransOptions: any = {
+			const larransOptions: OpenableOpenOptions = {
 				fishLvl,
 				chestSize: 'big'
 			};
