@@ -172,7 +172,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		}> => {
 			const chest = new BrimstoneChestOpenable(BrimstoneChest);
 			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
-			const brimstoneOptions = {
+			const brimstoneOptions: OpenableOpenOptions = {
 				fishLvl
 			};
 			const openLoot: Bank = chest.open(args.quantity, brimstoneOptions);
