@@ -15,8 +15,8 @@ solisMinGear.equip('Gorajan warrior boots');
 solisMinGear.equip('TzKal cape');
 solisMinGear.equip("Brawler's hook necklace");
 solisMinGear.equip('Ignis ring(i)');
-solisMinGear.equip("Osmumten's fang");
-solisMinGear.equip('Avernic defender');
+solisMinGear.equip('Drygore rapier');
+solisMinGear.equip('Offhand dragon claw');
 
 export const Solis: CustomMonster = {
 	id: 129_124,

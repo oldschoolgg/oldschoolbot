@@ -698,8 +698,10 @@ export async function minionKillCommand(
 	}
 
 	if (monster.customRequirement && kcForThisMonster === 0) {
-		const hasReq = await monster.customRequirement(user);
-		if (!hasReq) return `You don't meet the requirements to kill this monster: ${reason}.`;
+		const reasonDoesntHaveReq = await monster.customRequirement(user);
+		if (reasonDoesntHaveReq) {
+			return `You don't meet the requirements to kill this monster: ${reasonDoesntHaveReq}.`;
+		}
 	}
 	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
 		return "You haven't unlocked this monster..";
