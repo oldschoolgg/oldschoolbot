@@ -7562,7 +7562,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -7574,7 +7574,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -7586,7 +7586,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
