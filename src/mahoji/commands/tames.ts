@@ -33,23 +33,15 @@ import { prisma } from '../../lib/settings/prisma';
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
-	arbitraryTameActivities,
-	calculateMaximumTameFeedingLevelGain,
 	createTameTask,
 	getIgneTameKC,
-	getMainTameLevel,
-	getTameSpecies,
-	getUsersTame,
 	igneArmors,
 	SeaMonkeySpell,
 	seaMonkeySpells,
 	seaMonkeyStaves,
 	tameFeedableItems,
-	tameGrowthLevel,
-	tameHasBeenFed,
 	TameKillableMonster,
 	tameKillableMonsters,
-	tameName,
 	tameSpecies,
 	TameSpeciesID,
 	TameTaskOptions,
@@ -72,7 +64,17 @@ import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmatio
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';
+import {
+	calculateMaximumTameFeedingLevelGain,
+	getMainTameLevel,
+	getTameSpecies,
+	getUsersTame,
+	tameGrowthLevel,
+	tameHasBeenFed,
+	tameName
+} from '../../lib/util/tameUtil';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { arbitraryTameActivities } from '../../tasks/tames/tameTasks';
 import { collectables } from '../lib/abstracted_commands/collectCommand';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -1589,11 +1591,11 @@ export function determineTameClueResult({
 }
 
 async function tameClueCommand(user: MUser, channelID: string, inputName: string) {
-	const { mTame: tame, activity, species } = await getUsersTame(user);
+	const { tame, activity } = await user.fetchActiveTame();
 	if (activity) {
 		return `${tame} is busy.`;
 	}
-	if (!tame || !species) {
+	if (!tame) {
 		return 'You have no selected tame.';
 	}
 	if (tame.species.id !== TameSpeciesID.Eagle) {

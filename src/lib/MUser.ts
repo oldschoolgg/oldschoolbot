@@ -1,6 +1,6 @@
 import { userMention } from '@discordjs/builders';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
+import { Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { calcWhatPercent, objectEntries, randArrItem, sumArr, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
@@ -1014,6 +1014,23 @@ GROUP BY data->>'clueID';`);
 			}
 		});
 		return tames.map(t => new MTame(t));
+	}
+
+	async fetchActiveTame(): Promise<{ tame: null; activity: null } | { activity: TameActivity | null; tame: MTame }> {
+		if (!this.user.selected_tame) {
+			return {
+				tame: null,
+				activity: null
+			};
+		}
+		const tame = await prisma.tame.findFirst({ where: { id: this.user.selected_tame } });
+		if (!tame) {
+			throw new Error('No tame found for selected tame.');
+		}
+		const activity = await prisma.tameActivity.findFirst({
+			where: { user_id: this.id, tame_id: tame.id, completed: false }
+		});
+		return { activity, tame: new MTame(tame) };
 	}
 }
 declare global {
