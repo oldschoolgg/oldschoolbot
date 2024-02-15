@@ -12,6 +12,7 @@ import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import resolveItems from '../../lib/util/resolveItems';
+import { pluraliseItemName } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -61,27 +62,29 @@ export const smithCommand: OSBMahojiCommand = {
 		}
 
 		if (user.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
-			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}s.`;
+			return `${user.minionName} needs ${smithedItem.level} Smithing to smith ${pluraliseItemName(
+				smithedItem.name
+			)}.`;
 		}
 
 		const userQP = user.QP;
 
 		if (smithedItem.qpRequired && userQP < smithedItem.qpRequired) {
-			return `${user.minionName} needs ${smithedItem.qpRequired} QP to smith ${smithedItem.name}`;
+			return `${user.minionName} needs ${smithedItem.qpRequired} QP to smith ${smithedItem.name}.`;
 		}
 		// If they have the entire Smiths' Uniform, give 100% chance save 1 tick each item
 		let setBonus = 0;
 		if (
-			user.gear.skilling.hasEquipped(
+			user.hasEquippedOrInBank(
 				Object.keys(Smithing.smithsUniformItems).map(i => parseInt(i)),
-				true
+				'every'
 			)
 		) {
 			setBonus += 100;
 		} else {
 			// For each Smiths' Uniform item, check if they have it, give % chance to save 1 tick each item
 			for (const [itemID, bonus] of Object.entries(Smithing.smithsUniformItems)) {
-				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
+				if (user.hasEquippedOrInBank(parseInt(itemID))) {
 					setBonus += bonus;
 				}
 			}
@@ -107,7 +110,7 @@ export const smithCommand: OSBMahojiCommand = {
 		let timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
 		if (user.usingPet('Takon')) {
 			timeToSmithSingleBar /= 4;
-		} else if (user.hasEquipped('Dwarven greathammer')) {
+		} else if (user.hasEquippedOrInBank('Dwarven greathammer')) {
 			timeToSmithSingleBar /= 2;
 		}
 
@@ -193,7 +196,7 @@ export const smithCommand: OSBMahojiCommand = {
 
 		if (user.usingPet('Takon')) {
 			str += ' Takon is Smithing for you, at incredible speeds and skill.';
-		} else if (user.hasEquipped('Dwarven greathammer')) {
+		} else if (user.hasEquippedOrInBank('Dwarven greathammer')) {
 			str += ' 2x faster for Dwarven greathammer.';
 		}
 		if (hasScroll) {

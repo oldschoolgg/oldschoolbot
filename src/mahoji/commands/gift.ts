@@ -1,7 +1,5 @@
 import { mentionCommand, miniID, truncateString } from '@oldschoolgg/toolkit';
 import { GiftBoxStatus } from '@prisma/client';
-import { debounce, Time } from 'e';
-import { groupBy } from 'lodash';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
@@ -16,23 +14,6 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { OSBMahojiCommand } from '../lib/util';
-
-export const giftCountCache = new Map<string, number>();
-export const regenerateGiftCountCache = debounce(async () => {
-	const allGifts = await prisma.giftBox.findMany({
-		where: {
-			status: GiftBoxStatus.Sent,
-			owner_id: {
-				not: null
-			}
-		}
-	});
-	giftCountCache.clear();
-	const grouped = groupBy(allGifts, g => g.owner_id);
-	for (const [key, value] of Object.entries(grouped)) {
-		giftCountCache.set(key, value.length);
-	}
-}, Time.Second * 2);
 
 export const giftCommand: OSBMahojiCommand = {
 	name: 'gift',
@@ -305,7 +286,6 @@ ${items}`
 					type: 'gift'
 				}
 			});
-			regenerateGiftCountCache();
 			return `You sent the gift box to ${recipient.badgedUsername}!`;
 		}
 

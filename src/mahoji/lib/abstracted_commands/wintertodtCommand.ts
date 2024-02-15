@@ -47,7 +47,7 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 
 	const boosts: string[] = [];
 
-	if (user.hasEquipped('Dwarven greataxe')) {
+	if (user.hasEquippedOrInBank('Dwarven greataxe')) {
 		durationPerTodt /= 2;
 		boosts.push('2x faster for Dwarven greataxe.');
 	}

@@ -85,7 +85,7 @@ export const fletchCommand: OSBMahojiCommand = {
 				'<:scruffy:749945071146762301> To help out, Scruffy is fetching items from the bank for you - making your training much faster! Good boy! (+100% for Scruffy)'
 			);
 		}
-		if (user.hasEquipped('Dwarven knife')) {
+		if (user.hasEquippedOrInBank('Dwarven knife')) {
 			boostMsg.push('+100% for Dwarven knife');
 			boost += 1;
 		}

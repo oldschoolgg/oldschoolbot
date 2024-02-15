@@ -217,7 +217,7 @@ export const memoryHarvestTask: MinionTask = {
 				hasGuthixianBoost: didGetGuthixianBoost,
 				hasDivineHand,
 				isUsingDivinationPotion,
-				hasMasterCape: user.hasEquipped('Divination master cape'),
+				hasMasterCape: user.hasEquippedOrInBank('Divination master cape'),
 				rounds
 			});
 
@@ -247,7 +247,7 @@ export const memoryHarvestTask: MinionTask = {
 		} memories, and turning them into ${
 			harvestMethodIndex === MemoryHarvestType.ConvertToEnergy ? 'energies' : 'XP'
 		}. ${xpRes}.
-		
+
 Pet chance 1 in ${petChancePerMemory.toLocaleString()}, ${formatDuration(avgPetTime)} on average to get pet`;
 
 		if (loot.length > 0) {

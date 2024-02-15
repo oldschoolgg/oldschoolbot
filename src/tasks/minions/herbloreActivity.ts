@@ -12,7 +12,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 function BSOApplyExtraQuantity(user: MUser, quantity: number, mixableItem: Mixable, messages: string[]) {
 	const isMixingPotion = mixableItem.xp !== 0 && !mixableItem.wesley && !mixableItem.zahur;
-	const hasHerbMasterCape = user.hasEquipped('Herblore master cape');
+	const hasHerbMasterCape = user.hasEquippedOrInBank('Herblore master cape');
 	const herbCapePerk = isMixingPotion && hasHerbMasterCape;
 	let bonus = 0;
 	if (herbCapePerk) {

@@ -26,7 +26,7 @@ export async function driftNetCommand(
 
 	if (
 		!user.hasEquipped(['Graceful gloves', 'Graceful top', 'Graceful legs']) &&
-		!user.hasEquipped(['Agility master cape'])
+		!user.hasEquippedOrInBank(['Agility master cape'])
 	) {
 		return 'You need Graceful top, legs and gloves equipped to do Drift net fishing.';
 	}

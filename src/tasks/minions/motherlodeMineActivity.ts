@@ -24,9 +24,9 @@ export const motherlodeMiningTask: MinionTask = {
 
 		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
 		if (
-			user.gear.skilling.hasEquipped(
+			user.hasEquippedOrInBank(
 				Object.keys(Mining.prospectorItems).map(i => parseInt(i)),
-				true
+				'every'
 			)
 		) {
 			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
@@ -35,7 +35,7 @@ export const motherlodeMiningTask: MinionTask = {
 		} else {
 			// For each prospector item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Mining.prospectorItems)) {
-				if (user.hasEquipped(parseInt(itemID))) {
+				if (user.hasEquippedOrInBank(parseInt(itemID))) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -76,7 +76,7 @@ export const motherlodeMiningTask: MinionTask = {
 			.add('Gold ore', 1, goldWeight)
 			.add('Coal', 1, coalWeight);
 
-		if (user.hasEquipped('Mining master cape')) {
+		if (user.hasEquippedOrInBank('Mining master cape')) {
 			table = new LootTable()
 				.add('Golden nugget', 2, nuggetWeight)
 				.add('Runite ore', 1, runiteWeight)
@@ -143,7 +143,7 @@ export const motherlodeMiningTask: MinionTask = {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		if (user.hasEquipped('Mining master cape')) {
+		if (user.hasEquippedOrInBank('Mining master cape')) {
 			str += '\n2x nuggets for Mining master cape.';
 		}
 

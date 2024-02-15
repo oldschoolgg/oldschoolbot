@@ -61,7 +61,7 @@ Easter 2023 (13)
 Easy Treasure Trails (131)
 Elite Treasure Trail Rewards (Rare) (39)
 Elite Treasure Trails (59)
-Emerged Zuk Inferno (3)
+Emerged Zuk Inferno (4)
 Expert Capes (4)
 Farming (173)
 Festive crate (s4) (27)
@@ -91,7 +91,7 @@ Halloween 2022 (12)
 Halloween 2023 (23)
 Hard Treasure Trail Rewards (Rare) (24)
 Hard Treasure Trails (134)
-Herblore (128)
+Herblore (129)
 Hespori (4)
 Holiday Mystery box (128)
 Ignecarus (4)
@@ -154,14 +154,14 @@ Spectator Clothes (22)
 Spooky crate (s3) (22)
 Stealing Creation (6)
 Supply crate (s1) (19)
-Tame Gear (17)
+Tame Gear (25)
 Temple Trekking (4)
 Tempoross (12)
 Thanksgiving 2021 (5)
 The Fight Caves (2)
 The Forgotten Four (29)
 The Gauntlet (5)
-The Inferno (7)
+The Inferno (2)
 The Leviathan (7)
 The Nightmare (12)
 The Whisperer (7)
@@ -196,6 +196,8 @@ exports[`BSO Overall Collection Log Items 1`] = `
 3rd age druidic robe top
 3rd age druidic staff
 3rd age full helmet
+3rd age jibwings
+3rd age jibwings (e)
 3rd age kiteshield
 3rd age longsword
 3rd age mage hat
@@ -226,6 +228,8 @@ Abyssal dagger
 Abyssal gem
 Abyssal green dye
 Abyssal head
+Abyssal jibwings
+Abyssal jibwings (e)
 Abyssal lantern
 Abyssal mask
 Abyssal needle
@@ -759,6 +763,8 @@ Decorative ranged legs
 Decorative ranged top
 Deerstalker
 Demon feet
+Demonic jibwings
+Demonic jibwings (e)
 Dexterous prayer scroll
 Dharok's greataxe
 Dharok's helm
@@ -768,6 +774,7 @@ Digsite teleport
 Dinh's bulwark
 Divine egg
 Divine hand
+Divine ring
 Divine sigil
 Diviner's footwear
 Diviner's handwear
@@ -1192,6 +1199,7 @@ Imbued heart
 Imcando hammer
 Imp champion scroll
 Imp mask
+Impling locator
 Incandescent energy
 Infernal cape
 Infernal core
@@ -1929,7 +1937,6 @@ Thread of elidinis
 Tin stone spirit
 Tiny lamp
 Tiny tempor
-Tokkul
 Toktz-ket-xil
 Toktz-mej-tal
 Toktz-xil-ak

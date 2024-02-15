@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { chargePortentIfHasCharges, PortentID } from '../../../lib/bso/divination';
 import { Emoji } from '../../../lib/constants';
 import { divinersOutfit } from '../../../lib/data/CollectionsExport';
+import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { percentChance } from '../../../lib/util';
@@ -34,7 +35,7 @@ export const guthixianCacheTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished completing the Guthixian Cache. ${xpRes}`;
 
 		let amountOfBoostsReceived = 1;
-		if (user.hasEquipped('Divination master cape') && roll(4)) {
+		if (user.hasEquippedOrInBank('Divination master cape') && roll(4)) {
 			amountOfBoostsReceived++;
 			str += ' You received an extra boost from your Divination master cape.';
 		}
@@ -69,6 +70,7 @@ export const guthixianCacheTask: MinionTask = {
 			str += `\n${loot.has('Doopy') ? `${Emoji.Purple} ` : ''}You received: ${loot}.`;
 		}
 
+		await incrementMinigameScore(user.id, 'guthixian_cache');
 		await user.addToGodFavour(['Guthix'], data.duration);
 
 		return handleTripFinish(user, channelID, str, undefined, data, loot);

@@ -10,7 +10,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 export function zealOutfitBoost(user: MUser) {
 	let zealOutfitAmount = 0;
 	for (const piece of zealOutfit) {
-		if (user.gear.skilling.hasEquipped([piece])) {
+		if (user.hasEquippedOrInBank(piece)) {
 			zealOutfitAmount++;
 		}
 	}

@@ -23,21 +23,20 @@ export const vmTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
-		const userSkillingGear = user.gear.skilling;
 		const userMiningLevel = user.skillLevel(SkillsEnum.Mining);
 		let boost = 1;
 		// Activity boosts
-		if (userMiningLevel >= 99 && userSkillingGear.hasEquipped('Dwarven pickaxe')) {
+		if (userMiningLevel >= 99 && user.hasEquippedOrInBank('Dwarven pickaxe')) {
 			boost += 2;
-		} else if (userMiningLevel >= 71 && userSkillingGear.hasEquipped('Crystal pickaxe')) {
+		} else if (userMiningLevel >= 71 && user.hasEquippedOrInBank('Crystal pickaxe')) {
 			boost += 0.5;
-		} else if (userMiningLevel >= 61 && userSkillingGear.hasEquipped('Dragon pickaxe')) {
+		} else if (userMiningLevel >= 61 && user.hasEquippedOrInBank('Dragon pickaxe')) {
 			boost += 0.3;
 		}
 		if (
-			userSkillingGear.hasEquipped(
+			user.hasEquippedOrInBank(
 				['Prospector helmet', 'Prospector jacket', 'Prospector legs', 'Prospector boots'],
-				true
+				'every'
 			)
 		) {
 			boost += 0.025;

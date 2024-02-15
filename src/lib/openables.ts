@@ -137,7 +137,7 @@ for (const clueTier of ClueTiers) {
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
 			let loot = new Bank(clueTier.table.open(quantity));
 
-			const hasCHEquipped = user.hasEquipped(clueHunterOutfit, true);
+			const hasCHEquipped = user.hasEquippedOrInBank(clueHunterOutfit, 'every');
 			let extraClueRolls = 0;
 			for (let i = 0; i < quantity; i++) {
 				const roll = randInt(1, 3);

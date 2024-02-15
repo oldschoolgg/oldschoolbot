@@ -166,7 +166,7 @@ export const chopCommand: OSBMahojiCommand = {
 		// Default bronze axe, last in the array
 		let axeMultiplier = 1;
 
-		if (user.hasEquipped(['Drygore axe'])) {
+		if (user.hasEquippedOrInBank(['Drygore axe'])) {
 			let [predeterminedTotalTime] = determineWoodcuttingTime({
 				quantity,
 				user,

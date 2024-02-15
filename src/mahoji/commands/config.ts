@@ -53,8 +53,8 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisableBirdhouseRunButton
 	},
 	{
-		name: 'Disable Gorajan Bonecrusher',
-		bit: BitField.DisabledGorajanBoneCrusher
+		name: 'Disable Auto Slay Button',
+		bit: BitField.DisableAutoSlayButton
 	},
 	{
 		name: 'Disable Ash Sanctifier',
@@ -132,12 +132,20 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisabledFarmingReminders
 	},
 	{
+		name: 'Disable Gorajan Bonecrusher',
+		bit: BitField.DisabledGorajanBoneCrusher
+	},
+	{
 		name: 'Disable Item Contract Donations',
 		bit: BitField.NoItemContractDonations
 	},
 	{
 		name: 'Disable Eagle Tame Opening Clues',
 		bit: BitField.DisabledTameClueOpening
+	},
+	{
+		name: 'Disable Clue Buttons',
+		bit: BitField.DisableClueButtons
 	}
 ];
 

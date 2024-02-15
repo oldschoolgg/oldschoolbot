@@ -116,29 +116,29 @@ export const fishCommand: OSBMahojiCommand = {
 			case itemID('Fishing bait'):
 				if (fish.name === 'Infernal eel') {
 					scaledTimePerFish *= 1;
-				} else if (user.hasEquipped('Pearl fishing rod') && fish.name !== 'Infernal eel') {
+				} else if (user.hasEquippedOrInBank('Pearl fishing rod') && fish.name !== 'Infernal eel') {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl fishing rod');
 				}
 				break;
 			case itemID('Feather'):
-				if (fish.name === 'Barbarian fishing' && user.hasEquipped('Pearl barbarian rod')) {
+				if (fish.name === 'Barbarian fishing' && user.hasEquippedOrInBank('Pearl barbarian rod')) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl barbarian rod');
-				} else if (user.hasEquipped('Pearl fly fishing rod') && fish.name !== 'Barbarian fishing') {
+				} else if (user.hasEquippedOrInBank('Pearl fly fishing rod') && fish.name !== 'Barbarian fishing') {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl fly fishing rod');
 				}
 				break;
 			default:
-				if (user.hasEquipped('Crystal harpoon')) {
+				if (user.hasEquippedOrInBank('Crystal harpoon')) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Crystal harpoon');
 				}
 				break;
 		}
 
-		if (user.hasEquipped('Shark tooth necklace')) {
+		if (user.hasEquippedOrInBank('Shark tooth necklace')) {
 			scaledTimePerFish = reduceNumByPercent(scaledTimePerFish, 5);
 			boosts.push('5% for Shark tooth necklace');
 		}

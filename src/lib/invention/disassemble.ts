@@ -181,7 +181,7 @@ export async function handleDisassembly({
 
 	// The time it takes to disassemble 1 of this item.
 	let timePer = Time.Second * 0.33;
-	const maxTripLength = calcMaxTripLength(user);
+	const maxTripLength = calcMaxTripLength(user, 'Disassembling');
 
 	let messages: string[] = [];
 	if (bank.has('Dwarven toolkit')) {
@@ -202,7 +202,7 @@ export async function handleDisassembly({
 			);
 		}
 	}
-	if (user.hasEquipped('Invention master cape')) {
+	if (user.hasEquippedOrInBank('Invention master cape')) {
 		timePer = reduceNumByPercent(timePer, inventionBoosts.inventionMasterCape.disassemblySpeedBoostPercent);
 		messages.push(
 			`${inventionBoosts.inventionMasterCape.disassemblySpeedBoostPercent}% faster disassembly for mastery`

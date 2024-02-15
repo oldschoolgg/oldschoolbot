@@ -264,6 +264,12 @@ export const minigamesCommand: OSBMahojiCommand = {
 					name: 'join',
 					description: 'Join the current guthixian cache, if one is open.',
 					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'stats',
+					description: 'View your guthixian cache stats and boosts.',
+					options: []
 				}
 			]
 		}
@@ -313,6 +319,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		};
 		guthixian_cache?: {
 			join?: {};
+			stats?: {};
 		};
 	}>) => {
 		const klasaUser = await mUserFetch(userID);
@@ -329,6 +336,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 		if (options.guthixian_cache?.join) {
 			return joinGuthixianCache(klasaUser, channelID);
 		}
+		if (options.guthixian_cache?.stats) {
+			const boost = klasaUser.user.guthixian_cache_boosts_available;
+			return `You have ${boost} Guthixian cache boost${boost === 1 ? '' : 's'} available.`;
+		}
+
 		if (divine_dominion?.check) {
 			return divineDominionCheck(klasaUser);
 		}

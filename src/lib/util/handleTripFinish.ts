@@ -253,7 +253,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Invention Effects',
 		fn: async ({ data, messages, user }) => {
-			if (user.hasEquipped('Silverhawk boots') && data.duration > Time.Minute) {
+			if (user.hasEquippedOrInBank('Silverhawk boots') && data.duration > Time.Minute) {
 				const costRes = await inventionItemBoost({
 					user,
 					inventionID: InventionID.SilverHawkBoots,
@@ -478,7 +478,7 @@ export async function handleTripFinish(
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
-		components.push(...buildClueButtons(loot, perkTier));
+		components.push(...buildClueButtons(loot, perkTier, user));
 		const birdHousedetails = await calculateBirdhouseDetails(user.id);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
@@ -489,7 +489,7 @@ export async function handleTripFinish(
 		const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 		if ((currentTask === null || currentTask.quantity_remaining <= 0) && data.type === 'MonsterKilling') {
 			components.push(makeNewSlayerTaskButton());
-		} else {
+		} else if (!user.bitfield.includes(BitField.DisableAutoSlayButton)) {
 			components.push(makeAutoSlayButton());
 		}
 		if (loot?.has('Seed pack')) {

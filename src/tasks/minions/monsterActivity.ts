@@ -396,7 +396,7 @@ export const monsterTask: MinionTask = {
 			}
 		}
 
-		let masterCapeRolls = user.hasEquipped('Slayer master cape') ? newSuperiorCount : 0;
+		let masterCapeRolls = user.hasEquippedOrInBank('Slayer master cape') ? newSuperiorCount : 0;
 		newSuperiorCount += masterCapeRolls;
 
 		// Regular loot
