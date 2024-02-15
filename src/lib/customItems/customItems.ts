@@ -9278,10 +9278,10 @@ setCustomItem(
 	'Doopy',
 	'Herbi',
 	{
-		isSuperUntradeable: true,
 		tradeable_on_ge: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true 
 		}
 	},
 	1_000_000
