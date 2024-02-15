@@ -115,6 +115,12 @@ export const tameFeedableItems: FeedableItem[] = [
 		tameSpeciesCanBeFedThis: [TameSpeciesID.Monkey],
 		announcementString:
 			"Your tame uses a spell to infuse Klik's fire breathing ability into itself. It can now tan hides much faster."
+	},
+	{
+		item: getOSItem('Impling locator'),
+		description: 'Allows your tame to passively catch implings',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Eagle],
+		announcementString: 'Your tame now has the ability to find and catch implings.'
 	}
 ];
 

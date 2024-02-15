@@ -1476,8 +1476,15 @@ export const allCollectionLogs: ICollection = {
 					'Gorajan igne claws',
 					'Seamonkey staff (t1)',
 					'Seamonkey staff (t2)',
-					'Seamonkey staff (t3)'
-					// TODOTODO
+					'Seamonkey staff (t3)',
+					'Impling locator',
+					'Divine ring',
+					'Abyssal jibwings (e)',
+					'Demonic jibwings (e)',
+					'3rd age jibwings (e)',
+					'Abyssal jibwings',
+					'Demonic jibwings',
+					'3rd age jibwings'
 				])
 			},
 			'Divine Dominion': {
