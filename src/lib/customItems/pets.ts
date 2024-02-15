@@ -418,6 +418,19 @@ setCustomItem(
 	1_000_000
 );
 
+setCustomItem(
+	52_687,
+	'Balloon cat',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1_000_000
+);
+
 /**
  * Recolors
  */
@@ -587,21 +600,6 @@ setCustomItem(
 		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
-	},
-	1_000_000
-);
-
-setCustomItem(
-	52_687,
-	'Balloon cat',
-	'Herbi',
-	{
-		tradeable_on_ge: true,
-		tradeable: true,
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
 		}
 	},
 	1_000_000

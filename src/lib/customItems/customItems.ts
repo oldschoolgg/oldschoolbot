@@ -6340,6 +6340,7 @@ setCustomItem(
 	},
 	1_000_000
 );
+
 setCustomItem(
 	70_438,
 	'Crush',
@@ -7317,7 +7318,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true,
 			isDiscontinued: true
 		}
 	},
@@ -7446,7 +7446,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7460,7 +7459,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7474,7 +7472,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7488,7 +7485,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7502,7 +7498,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7516,7 +7511,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7530,7 +7524,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7544,7 +7537,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7558,7 +7550,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7572,7 +7563,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true
 		}
 	},
 	10_000
@@ -7585,7 +7575,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true
 		}
 	},
 	10_000
@@ -7598,7 +7587,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true
 		}
 	},
 	10_000
@@ -8401,7 +8389,7 @@ setCustomItem(
 setCustomItem(
 	71_572,
 	'Skip',
-	'Coal',
+	'Herbi',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
