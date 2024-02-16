@@ -1052,13 +1052,10 @@ for (const type of materialTypes) {
 				.flatMap(item => (Array.isArray(item.item) ? item.item.map(i => i.id) : [item.item.id]))
 		);
 	} else {
-		items = DisassemblySourceGroups.filter(group => Boolean(group.parts[type]))
-			.map(group =>
-				group.items.flatMap(item => (Array.isArray(item.item) ? item.item.map(i => i.id) : [item.item.id]))
-			)
-			.flat(5);
+		items = DisassemblySourceGroups.filter(group => Boolean(group.parts[type])).flatMap(group =>
+			group.items.flatMap(item => (Array.isArray(item.item) ? item.item.map(i => i.id) : [item.item.id]))
+		);
 	}
-
 	filterableTypes.push({
 		name: `${type}-material`,
 		aliases: [type],
