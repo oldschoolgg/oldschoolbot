@@ -7,7 +7,7 @@ import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
 import { tmbTable, umbTable } from '../bsoOpenables';
 import { customItems } from '../customItems/util';
-import { materialTypes } from '../invention';
+import { DisassembleFlag, disassembleFlagMaterials, materialTypes } from '../invention';
 import { DisassemblySourceGroups } from '../invention/groups';
 import Potions from '../minions/data/potions';
 import { monkeyEatables } from '../monkeyRumble';
@@ -1044,10 +1044,21 @@ for (const clGroup of Object.values(allCollectionLogs).map(c => c.activities)) {
 }
 
 for (const type of materialTypes) {
-	const items = DisassemblySourceGroups.filter(i => Boolean(i.parts[type]))
-		.map(i => i.items.map(i => (Array.isArray(i.item) ? i.item : [i.item])))
-		.flat(5)
-		.map(i => i.id);
+	let items: number[] = [];
+	if (disassembleFlagMaterials.includes(type as DisassembleFlag)) {
+		items = DisassemblySourceGroups.flatMap(group =>
+			group.items
+				.filter(item => item.flags && item.flags.has(type as DisassembleFlag))
+				.flatMap(item => (Array.isArray(item.item) ? item.item.map(i => i.id) : [item.item.id]))
+		);
+	} else {
+		items = DisassemblySourceGroups.filter(group => Boolean(group.parts[type]))
+			.map(group =>
+				group.items.flatMap(item => (Array.isArray(item.item) ? item.item.map(i => i.id) : [item.item.id]))
+			)
+			.flat(5);
+	}
+
 	filterableTypes.push({
 		name: `${type}-material`,
 		aliases: [type],
