@@ -635,7 +635,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
-		canCannon: true
+		canCannon: true,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.HarpieBugSwarm.id,
