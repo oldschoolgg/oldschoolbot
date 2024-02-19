@@ -1,4 +1,4 @@
-// Base custom items are referenced elsewhere in the custom items files and must be loaded first
+ // Base custom items are referenced elsewhere in the custom items files and must be loaded first
 import './baseCustomItems';
 import '../deletedItems';
 import './invention';
