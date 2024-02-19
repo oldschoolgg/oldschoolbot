@@ -1,7 +1,7 @@
 import { bold, time } from '@discordjs/builders';
 import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
 import { mentionCommand } from '@oldschoolgg/toolkit';
-import { Tame, tame_growth, TameActivity } from '@prisma/client';
+import { Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
 import { ChatInputCommandInteraction, User } from 'discord.js';
 import {
@@ -44,7 +44,6 @@ import {
 	tameKillableMonsters,
 	tameSpecies,
 	TameSpeciesID,
-	TameTaskOptions,
 	TameType
 } from '../../lib/tames';
 import {
