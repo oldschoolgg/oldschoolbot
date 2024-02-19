@@ -431,7 +431,10 @@ const source: [string, (string | number)[]][] = [
 	['Lumberjack hat', ['Forestry hat']],
 	['Lumberjack top', ['Forestry top']],
 	['Lumberjack legs', ['Forestry legs']],
-	['Lumberjack boots', ['Forestry boots']]
+	['Lumberjack boots', ['Forestry boots']],
+	['Abyssal jibwings', ['Abyssal jibwings (e)']],
+	['3rd age jibwings', ['3rd age jibwings (e)']],
+	['Demonic jibwings', ['Demonic jibwings (e)']]
 ];
 
 // Make max cape count as all master capes

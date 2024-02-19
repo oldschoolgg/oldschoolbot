@@ -7,6 +7,7 @@ import { KillableMonster } from '../../../types';
 import { customDemiBosses } from './demiBosses';
 import { MiscCustomMonsters } from './misc';
 import { resourceDungeonMonsters } from './resourceDungeons';
+import { SunMoonMonsters } from './SunMoon';
 
 declare module 'oldschooljs/dist/structures/Monster' {
 	export default interface Monster {
@@ -27,7 +28,8 @@ export const customKillableMonsters: KillableMonster[] = [];
 export const BSOMonsters = {
 	...customDemiBosses,
 	...resourceDungeonMonsters,
-	...MiscCustomMonsters
+	...MiscCustomMonsters,
+	...SunMoonMonsters
 };
 
 for (const monster of Object.values(BSOMonsters)) {

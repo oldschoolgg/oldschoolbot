@@ -187,8 +187,6 @@ model ClientStorage {
 
   xmas_ironman_food_bank Json @default("{}") @db.Json
 
-  divination_is_released Boolean @default(false)
-
   @@map("clientStorage")
 }
 
@@ -756,6 +754,14 @@ model Tame {
   equipped_armor   Int?
 
   total_cost Json @default("{}") @db.Json
+
+  demonic_jibwings_saved_cost Json @default("{}") @db.JsonB
+  third_age_jibwings_loot     Json @default("{}") @db.JsonB
+  abyssal_jibwings_loot       Json @default("{}") @db.JsonB
+  implings_loot               Json @default("{}") @db.JsonB
+
+  last_activity_date   DateTime? @db.Timestamp(6)
+  levels_from_egg_feed Int?
 
   tame_activity TameActivity[]
 

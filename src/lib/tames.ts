@@ -1,54 +1,93 @@
 /* eslint-disable no-case-declarations */
-import { userMention } from '@discordjs/builders';
-import { Tame, tame_growth, TameActivity, User } from '@prisma/client';
-import {
-	ActionRowBuilder,
-	APIInteractionGuildMember,
-	AttachmentBuilder,
-	ButtonBuilder,
-	ButtonInteraction,
-	ButtonStyle,
-	ChatInputCommandInteraction,
-	GuildMember
-} from 'discord.js';
-import { increaseNumByPercent, objectEntries, randArrItem, round, Time } from 'e';
-import { Bank, Items, Misc, Monsters } from 'oldschooljs';
+import { Tame, tame_growth } from '@prisma/client';
+import { objectEntries, Time } from 'e';
+import { Bank, Misc, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric, TheatreOfBlood } from 'oldschooljs/dist/simulation/misc';
 
-import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
-import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
-import { getSimilarItems } from './data/similarItems';
-import { trackLoot } from './lootTrack';
 import killableMonsters, { NightmareMonster } from './minions/data/killableMonsters';
 import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBosses';
 import { Planks } from './minions/data/planks';
 import { KillableMonster } from './minions/types';
 import { prisma } from './settings/prisma';
-import { runCommand } from './settings/settings';
-import { getTemporossLoot } from './simulation/tempoross';
-import { WintertodtCrate } from './simulation/wintertodt';
 import Tanning from './skilling/skills/crafting/craftables/tanning';
-import {
-	assert,
-	calcPerHour,
-	calculateSimpleMonsterDeathChance,
-	channelIsSendable,
-	formatDuration,
-	itemNameFromID,
-	roll
-} from './util';
+import { assert, calculateSimpleMonsterDeathChance } from './util';
 import getOSItem from './util/getOSItem';
-import { getUsersTamesCollectionLog } from './util/getUsersTameCL';
 import { handleSpecialCoxLoot } from './util/handleSpecialCoxLoot';
 import itemID from './util/itemID';
-import { makeBankImage } from './util/makeBankImage';
 import resolveItems from './util/resolveItems';
 
 export enum TameSpeciesID {
 	Igne = 1,
-	Monkey = 2
+	Monkey = 2,
+	Eagle = 3
 }
+
+interface FeedableItem {
+	item: Item;
+	tameSpeciesCanBeFedThis: TameSpeciesID[];
+	description: string;
+	announcementString: string;
+}
+
+export const tameFeedableItems: FeedableItem[] = [
+	{
+		item: getOSItem('Ori'),
+		description: '25% extra loot',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne],
+		announcementString: 'Your tame will now get 25% extra loot!'
+	},
+	{
+		item: getOSItem('Zak'),
+		description: '+35 minutes longer max trip length',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne, TameSpeciesID.Monkey],
+		announcementString: 'Your tame now has a much longer max trip length!'
+	},
+	{
+		item: getOSItem('Abyssal cape'),
+		description: '20% food reduction',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne],
+		announcementString: 'Your tame now has 20% food reduction!'
+	},
+	{
+		item: getOSItem('Voidling'),
+		description: '10% faster collecting',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Monkey],
+		announcementString: 'Your tame can now collect items 10% faster thanks to the Voidling helping them teleport!'
+	},
+	{
+		item: getOSItem('Ring of endurance'),
+		description: '10% faster collecting',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Monkey],
+		announcementString:
+			'Your tame can now collect items 10% faster thanks to the Ring of endurance helping them run for longer!'
+	},
+	{
+		item: getOSItem('Dwarven warhammer'),
+		description: '30% faster PvM',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne],
+		announcementString: "Your tame can now kill 30% faster! It's holding the Dwarven warhammer in its claws..."
+	},
+	{
+		item: getOSItem('Mr. E'),
+		description: 'Chance to get 2x loot',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Igne, TameSpeciesID.Monkey],
+		announcementString: "With Mr. E's energy absorbed, your tame now has a chance at 2x loot!"
+	},
+	{
+		item: getOSItem('Klik'),
+		description: 'Makes tanning spell faster',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Monkey],
+		announcementString:
+			"Your tame uses a spell to infuse Klik's fire breathing ability into itself. It can now tan hides much faster."
+	},
+	{
+		item: getOSItem('Impling locator'),
+		description: 'Allows your tame to passively catch implings',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Eagle],
+		announcementString: 'Your tame now has the ability to find and catch implings.'
+	}
+];
 
 export const seaMonkeyStaves = [
 	{
@@ -110,73 +149,6 @@ export const seaMonkeySpells: SeaMonkeySpell[] = [
 		name: 'Superglass make',
 		description: 'Turns seaweed/sand into molten glass',
 		itemIDs: [itemID('Molten glass')]
-	}
-];
-
-interface ArbitraryTameActivity {
-	name: string;
-	id: 'Tempoross' | 'Wintertodt';
-	run: (opts: {
-		handleFinish(res: { loot: Bank | null; message: string; user: MUser }): Promise<void>;
-		user: MUser;
-		tame: Tame;
-		duration: number;
-	}) => Promise<void>;
-	allowedTames: TameSpeciesID[];
-}
-
-interface ArbitraryTameActivityData {
-	type: ArbitraryTameActivity['id'];
-}
-
-export const arbitraryTameActivities: ArbitraryTameActivity[] = [
-	{
-		name: 'Tempoross',
-		id: 'Tempoross',
-		allowedTames: [TameSpeciesID.Monkey],
-		run: async ({ handleFinish, user, duration, tame }) => {
-			const quantity = Math.ceil(duration / (Time.Minute * 5));
-			const loot = getTemporossLoot(
-				quantity,
-				tame.max_gatherer_level + 15,
-				await getUsersTamesCollectionLog(user.id)
-			);
-			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
-			handleFinish({
-				loot: itemsAdded,
-				message: `${user}, ${tameName(
-					tame
-				)} finished defeating Tempoross ${quantity}x times, and received ${loot}.`,
-				user
-			});
-		}
-	},
-	{
-		name: 'Wintertodt',
-		id: 'Wintertodt',
-		allowedTames: [TameSpeciesID.Igne],
-		run: async ({ handleFinish, user, duration, tame }) => {
-			const quantity = Math.ceil(duration / (Time.Minute * 5));
-			const loot = new Bank();
-			for (let i = 0; i < quantity; i++) {
-				loot.add(
-					WintertodtCrate.open({
-						points: randArrItem([500, 500, 750, 1000]),
-						itemsOwned: user.bank.bank,
-						skills: user.skillsAsXP,
-						firemakingXP: user.skillsAsXP.firemaking
-					})
-				);
-			}
-			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
-			handleFinish({
-				loot: itemsAdded,
-				message: `${user}, ${tameName(
-					tame
-				)} finished defeating Wintertodt ${quantity}x times, and received ${loot}.`,
-				user
-			});
-		}
 	}
 ];
 
@@ -457,11 +429,34 @@ export interface TameTaskSpellCastingOptions {
 	loot: ItemBank;
 }
 
+export interface TameTaskClueOptions {
+	type: 'Clues';
+	clueID: number;
+	quantity: number;
+}
+
+export interface ArbitraryTameActivity {
+	name: string;
+	id: 'Tempoross' | 'Wintertodt';
+	run: (opts: {
+		handleFinish(res: { loot: Bank | null; message: string; user: MUser }): Promise<void>;
+		user: MUser;
+		tame: Tame;
+		duration: number;
+	}) => Promise<void>;
+	allowedTames: TameSpeciesID[];
+}
+
+interface ArbitraryTameActivityData {
+	type: ArbitraryTameActivity['id'];
+}
+
 export type TameTaskOptions =
 	| ArbitraryTameActivityData
 	| TameTaskCombatOptions
 	| TameTaskGathererOptions
-	| TameTaskSpellCastingOptions;
+	| TameTaskSpellCastingOptions
+	| TameTaskClueOptions;
 
 export const tameSpecies: Species[] = [
 	{
@@ -514,58 +509,31 @@ export const tameSpecies: Species[] = [
 			.add('Elder rune', 100)
 			.add('Astral rune', 600)
 			.add('Coins', 10_000_000)
+	},
+	{
+		id: TameSpeciesID.Eagle,
+		type: TameType.Support,
+		name: 'Eagle',
+		variants: [1, 2, 3],
+		shinyVariant: 4,
+		shinyChance: 60,
+		combatLevelRange: [5, 25],
+		artisanLevelRange: [1, 10],
+		supportLevelRange: [50, 100],
+		gathererLevelRange: [20, 40],
+		relevantLevelCategory: 'support',
+		hatchTime: Time.Hour * 4.5,
+		egg: getOSItem('Eagle egg'),
+		emoji: '<:EagleEgg:1201712371371085894>',
+		emojiID: '1201712371371085894',
+		mergingCost: new Bank()
+			.add('Solite', 150)
+			.add('Soul rune', 2500)
+			.add('Elder rune', 100)
+			.add('Astral rune', 600)
+			.add('Coins', 10_000_000)
 	}
 ];
-
-export function tameHasBeenFed(tame: Tame, item: string | number) {
-	const { id } = Items.get(item)!;
-	const items = getSimilarItems(id);
-	return items.some(i => Boolean((tame.fed_items as ItemBank)[i]));
-}
-
-export function tameGrowthLevel(tame: Tame) {
-	const growth = 3 - [tame_growth.baby, tame_growth.juvenile, tame_growth.adult].indexOf(tame.growth_stage);
-	return growth;
-}
-
-export function getTameSpecies(tame: Tame) {
-	return tameSpecies.find(s => s.id === tame.species_id)!;
-}
-
-export function getMainTameLevel(tame: Tame) {
-	return tameGetLevel(tame, getTameSpecies(tame).relevantLevelCategory);
-}
-
-export function tameGetLevel(tame: Tame, type: 'combat' | 'gatherer' | 'support' | 'artisan') {
-	const growth = tameGrowthLevel(tame);
-	switch (type) {
-		case 'combat':
-			return round(tame.max_combat_level / growth, 2);
-		case 'gatherer':
-			return round(tame.max_gatherer_level / growth, 2);
-		case 'support':
-			return round(tame.max_support_level / growth, 2);
-		case 'artisan':
-			return round(tame.max_artisan_level / growth, 2);
-	}
-}
-
-export function tameName(tame: Tame) {
-	return `${tame.nickname ?? getTameSpecies(tame).name}`;
-}
-
-export function tameToString(tame: Tame) {
-	let str = `${tameName(tame)} (`;
-	str += [
-		[tameGetLevel(tame, 'combat'), '<:combat:802136963956080650>'],
-		[tameGetLevel(tame, 'artisan'), '<:artisan:802136963611885569>'],
-		[tameGetLevel(tame, 'gatherer'), '<:gathering:802136963913613372>']
-	]
-		.map(([emoji, lvl]) => `${emoji}${lvl}`)
-		.join(' ');
-	str += ')';
-	return str;
-}
 
 export async function addDurationToTame(tame: Tame, duration: number) {
 	if (tame.growth_stage === tame_growth.adult) return null;
@@ -597,19 +565,8 @@ export async function addDurationToTame(tame: Tame, duration: number) {
 	return `Your tame has grown ${percentToAdd.toFixed(2)}%!`;
 }
 
-function doubleLootCheck(tame: Tame, loot: Bank) {
-	const hasMrE = tameHasBeenFed(tame, 'Mr. E');
-	let doubleLootMsg = '';
-	if (hasMrE && roll(12)) {
-		loot.multiply(2);
-		doubleLootMsg = '\n**2x Loot from Mr. E**';
-	}
-
-	return { loot, doubleLootMsg };
-}
-
 export interface Species {
-	id: number;
+	id: TameSpeciesID;
 	type: TameType;
 	name: string;
 	// Tame type within its specie
@@ -637,354 +594,6 @@ export interface Species {
 	mergingCost: Bank;
 	emoji: string;
 	emojiID: string;
-}
-
-export function shortTameTripDesc(activity: TameActivity) {
-	const data = activity.data as unknown as TameTaskOptions;
-	switch (data.type) {
-		case TameType.Combat: {
-			const mon = tameKillableMonsters.find(i => i.id === data.monsterID);
-			return `Killing ${mon!.name}`;
-		}
-		case TameType.Gatherer: {
-			return `Collecting ${itemNameFromID(data.itemID)}`;
-		}
-		case 'SpellCasting':
-			return `Casting ${seaMonkeySpells.find(i => i.id === data.spellID)!.name}`;
-		case 'Wintertodt': {
-			return 'Fighting Wintertodt';
-		}
-		case 'Tempoross': {
-			return 'Fighting Tempoross';
-		}
-	}
-}
-
-export async function runTameTask(activity: TameActivity, tame: Tame) {
-	async function handleFinish(res: { loot: Bank | null; message: string; user: MUser }) {
-		const previousTameCl = new Bank({ ...(tame.max_total_loot as ItemBank) });
-
-		if (res.loot) {
-			await prisma.tame.update({
-				where: {
-					id: tame.id
-				},
-				data: {
-					max_total_loot: previousTameCl.clone().add(res.loot.bank).bank
-				}
-			});
-		}
-		const addRes = await addDurationToTame(tame, activity.duration);
-		if (addRes) res.message += `\n${addRes}`;
-
-		const channel = globalClient.channels.cache.get(activity.channel_id);
-		if (!channelIsSendable(channel)) return;
-		channel.send({
-			content: res.message,
-			components: [
-				new ActionRowBuilder<ButtonBuilder>().addComponents(
-					new ButtonBuilder()
-						.setCustomId('REPEAT_TAME_TRIP')
-						.setLabel('Repeat Trip')
-						.setStyle(ButtonStyle.Secondary)
-				)
-			],
-			files: res.loot
-				? [
-						new AttachmentBuilder(
-							(
-								await makeBankImage({
-									bank: res.loot,
-									title: `${tameName(tame)}'s Loot`,
-									user: res.user,
-									previousCL: previousTameCl
-								})
-							).file.attachment
-						)
-				  ]
-				: undefined
-		});
-	}
-	const user = await mUserFetch(activity.user_id);
-
-	const activityData = activity.data as any as TameTaskOptions;
-	switch (activityData.type) {
-		case 'pvm': {
-			const { quantity, monsterID } = activityData;
-			const mon = tameKillableMonsters.find(i => i.id === monsterID)!;
-
-			let killQty = quantity - activity.deaths;
-			if (killQty < 1) {
-				handleFinish({
-					loot: null,
-					message: `${userMention(user.id)}, Your tame died in all their attempts to kill ${
-						mon.name
-					}. Get them some better armor!`,
-					user
-				});
-				return;
-			}
-			const hasOri = tameHasBeenFed(tame, 'Ori');
-
-			const oriIsApplying = hasOri && mon.oriWorks !== false;
-			// If less than 8 kills, roll 25% chance per kill
-			if (oriIsApplying) {
-				if (killQty >= 8) {
-					killQty = Math.ceil(increaseNumByPercent(killQty, 25));
-				} else {
-					for (let i = 0; i < quantity; i++) {
-						if (roll(4)) killQty++;
-					}
-				}
-			}
-			const loot = mon.loot({ quantity: killQty, tame });
-			let str = `${user}, ${tameName(tame)} finished killing ${quantity}x ${mon.name}.${
-				activity.deaths > 0 ? ` ${tameName(tame)} died ${activity.deaths}x times.` : ''
-			}`;
-			const boosts = [];
-			if (oriIsApplying) {
-				boosts.push('25% extra loot (ate an Ori)');
-			}
-			if (boosts.length > 0) {
-				str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
-			}
-			const { doubleLootMsg } = doubleLootCheck(tame, loot);
-			str += doubleLootMsg;
-			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
-			await trackLoot({
-				duration: activity.duration,
-				kc: activityData.quantity,
-				id: mon.name,
-				changeType: 'loot',
-				type: 'Monster',
-				totalLoot: loot,
-				suffix: 'tame',
-				users: [
-					{
-						id: user.id,
-						loot: itemsAdded,
-						duration: activity.duration
-					}
-				]
-			});
-			handleFinish({
-				loot: itemsAdded,
-				message: str,
-				user
-			});
-			break;
-		}
-		case 'collect': {
-			const { quantity, itemID } = activityData;
-			const collectable = collectables.find(c => c.item.id === itemID)!;
-			const totalQuantity = quantity * collectable.quantity;
-			const loot = new Bank().add(collectable.item.id, totalQuantity);
-			let str = `${user}, ${tameName(tame)} finished collecting ${totalQuantity}x ${
-				collectable.item.name
-			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
-			const { doubleLootMsg } = doubleLootCheck(tame, loot);
-			str += doubleLootMsg;
-			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
-			handleFinish({
-				loot: itemsAdded,
-				message: str,
-				user
-			});
-			break;
-		}
-		case 'SpellCasting': {
-			const spell = seaMonkeySpells.find(s => s.id === activityData.spellID)!;
-			const loot = new Bank(activityData.loot);
-			let str = `${user}, ${tameName(tame)} finished casting the ${spell.name} spell for ${formatDuration(
-				activity.duration
-			)}. ${loot
-				.items()
-				.map(([item, qty]) => `${Math.floor(calcPerHour(qty, activity.duration)).toFixed(1)}/hr ${item.name}`)
-				.join(', ')}`;
-			const { doubleLootMsg } = doubleLootCheck(tame, loot);
-			str += doubleLootMsg;
-			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
-			handleFinish({
-				loot: itemsAdded,
-				message: str,
-				user
-			});
-			break;
-		}
-		case 'Tempoross':
-		case 'Wintertodt': {
-			const act = arbitraryTameActivities.find(i => i.id === activityData.type)!;
-			await act.run({ handleFinish, user, tame, duration: activity.duration });
-			break;
-		}
-		default: {
-			console.error('Unmatched tame activity type', activity.type);
-			break;
-		}
-	}
-}
-
-export async function tameLastFinishedActivity(user: MUser) {
-	const tameID = user.user.selected_tame;
-	if (!tameID) return null;
-	return prisma.tameActivity.findFirst({
-		where: {
-			user_id: user.id,
-			tame_id: tameID
-		},
-		orderBy: {
-			start_date: 'desc'
-		}
-	});
-}
-
-export async function repeatTameTrip({
-	channelID,
-	guildID,
-	user,
-	member,
-	interaction,
-	continueDeltaMillis
-}: {
-	channelID: string;
-	guildID: string | null;
-	user: MUser;
-	member: APIInteractionGuildMember | GuildMember | null;
-	interaction: ButtonInteraction | ChatInputCommandInteraction;
-	continueDeltaMillis: number | null;
-}) {
-	const activity = await tameLastFinishedActivity(user);
-	if (!activity) {
-		return;
-	}
-	const data = activity.data as unknown as TameTaskOptions;
-	switch (data.type) {
-		case TameType.Combat: {
-			const mon = tameKillableMonsters.find(i => i.id === data.monsterID);
-			return runCommand({
-				commandName: 'tames',
-				args: {
-					kill: {
-						name: mon!.name
-					}
-				},
-				bypassInhibitors: true,
-				channelID,
-				guildID,
-				user,
-				member,
-				interaction,
-				continueDeltaMillis
-			});
-		}
-		case TameType.Gatherer: {
-			return runCommand({
-				commandName: 'tames',
-				args: {
-					collect: {
-						name: getOSItem(data.itemID).name
-					}
-				},
-				bypassInhibitors: true,
-				channelID,
-				guildID,
-				user,
-				member,
-				interaction,
-				continueDeltaMillis
-			});
-		}
-		case 'SpellCasting': {
-			let args = {};
-			switch (data.spellID) {
-				case 1: {
-					args = {
-						tan: getOSItem(data.itemID).name
-					};
-					break;
-				}
-				case 2: {
-					args = {
-						plank_make: getOSItem(data.itemID).name
-					};
-					break;
-				}
-				case 3: {
-					args = {
-						spin_flax: 'flax'
-					};
-					break;
-				}
-				case 4: {
-					args = {
-						superglass_make: 'molten glass'
-					};
-					break;
-				}
-			}
-			return runCommand({
-				commandName: 'tames',
-				args: {
-					cast: args
-				},
-				bypassInhibitors: true,
-				channelID,
-				guildID,
-				user,
-				member,
-				interaction,
-				continueDeltaMillis
-			});
-		}
-		case 'Tempoross':
-		case 'Wintertodt': {
-			return runCommand({
-				commandName: 'tames',
-				args: {
-					activity: {
-						name: data.type
-					}
-				},
-				bypassInhibitors: true,
-				channelID,
-				guildID,
-				user,
-				member,
-				interaction,
-				continueDeltaMillis
-			});
-		}
-		default: {
-		}
-	}
-}
-
-export async function getUsersTame(
-	user: MUser | User
-): Promise<
-	{ tame: null; activity: null; species: null } | { tame: Tame; species: Species; activity: TameActivity | null }
-> {
-	const selectedTame = (
-		await mahojiUsersSettingsFetch(user.id, {
-			selected_tame: true
-		})
-	).selected_tame;
-	if (!selectedTame) {
-		return {
-			tame: null,
-			activity: null,
-			species: null
-		};
-	}
-	const tame = await prisma.tame.findFirst({ where: { id: selectedTame } });
-	if (!tame) {
-		throw new Error('No tame found for selected tame.');
-	}
-	const activity = await prisma.tameActivity.findFirst({
-		where: { user_id: user.id, tame_id: tame.id, completed: false }
-	});
-	const species = tameSpecies.find(i => i.id === tame.species_id)!;
-	return { tame, activity, species };
 }
 
 export async function createTameTask({

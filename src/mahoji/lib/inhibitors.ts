@@ -8,10 +8,19 @@ import {
 	TextChannel,
 	User
 } from 'discord.js';
+import { roll } from 'e';
 
 import { OWNER_IDS, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
-import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, minionBuyButton, PerkTier } from '../../lib/constants';
+import {
+	BadgesEnum,
+	BitField,
+	Channel,
+	DISABLED_COMMANDS,
+	gearValidationChecks,
+	minionBuyButton,
+	PerkTier
+} from '../../lib/constants';
 import { perkTierCache, syncPerkTierOfUser } from '../../lib/perkTiers';
 import { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
@@ -263,6 +272,18 @@ export async function runInhibitors({
 	guild: Guild | null;
 	bypassInhibitors: boolean;
 }): Promise<undefined | { reason: InteractionReplyOptions; silent: boolean }> {
+	if (!gearValidationChecks.has(user.id) && roll(3)) {
+		const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();
+		if (itemsUnequippedAndRefunded.length > 0) {
+			return {
+				reason: {
+					content: `You had some items equipped that you didn't have the requirements to use, so they were unequipped and refunded to your bank: ${itemsUnequippedAndRefunded}`
+				},
+				silent: false
+			};
+		}
+	}
+
 	for (const { run, canBeDisabled, silent } of inhibitors) {
 		if (bypassInhibitors && canBeDisabled) continue;
 		const result = await run({ user, channel, member, command, guild, APIUser });

@@ -250,6 +250,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Elder logs'), 'Elder'],
 	[i('Clue scroll (grandmaster)'), 'grandmaster'],
 	[i('Reward casket (grandmaster)'), 'grandmaster']
+	[i('Atomic energy'), 'Atomic']
 ]);
 
 for (const energy of divinationEnergies) {

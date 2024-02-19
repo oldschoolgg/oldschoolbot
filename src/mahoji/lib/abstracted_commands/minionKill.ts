@@ -5,6 +5,7 @@ import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
+	notEmpty,
 	objectKeys,
 	reduceNumByPercent,
 	round,
@@ -22,7 +23,8 @@ import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem } from '../../../lib/degradeableItems';
 import { Diary, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
-import { GearSetupType } from '../../../lib/gear/types';
+import { readableStatName } from '../../../lib/gear';
+import { GearSetupType, GearStat } from '../../../lib/gear/types';
 import { canAffordInventionBoost, InventionID, inventionItemBoost } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import {
@@ -56,7 +58,7 @@ import { calcPOHBoosts } from '../../../lib/poh';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { maxOffenceStats } from '../../../lib/structures/Gear';
+import { addStatsOfItemsTogether, maxOffenceStats } from '../../../lib/structures/Gear';
 import { Peak } from '../../../lib/tickers';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
@@ -261,7 +263,26 @@ export async function minionKillCommand(
 		}
 	}
 
-	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, await user.getKC(monster.id));
+	if (monster.minimumWeaponShieldStats) {
+		for (const [setup, minimum] of Object.entries(monster.minimumWeaponShieldStats)) {
+			const gear = user.gear[setup as GearSetupType];
+			const stats = addStatsOfItemsTogether(
+				[gear['2h']?.item, gear.weapon?.item, gear.shield?.item].filter(notEmpty)
+			);
+			for (const [key, requiredValue] of Object.entries(minimum)) {
+				if (requiredValue < 1) continue;
+				const theirValue = stats[key as GearStat] ?? 0;
+				if (theirValue < requiredValue) {
+					return `Your ${setup} weapons/shield need to have at least ${requiredValue} ${readableStatName(
+						key
+					)} to kill ${monster.name}, you have ${theirValue}.`;
+				}
+			}
+		}
+	}
+
+	const kcForThisMonster = await user.getKC(monster.id);
+	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, kcForThisMonster);
 
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
 		monsterID: monster.id,
@@ -606,7 +627,8 @@ export async function minionKillCommand(
 		for (const degItem of degradeablePvmBoostItems) {
 			const isUsing =
 				convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
-				user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
+				user.gear[degItem.attackStyle].hasEquipped(degItem.item.id) &&
+				(monster.setupsUsed ? monster.setupsUsed.includes(degItem.attackStyle) : true);
 			if (isUsing) {
 				// We assume they have enough charges, add the boost, and degrade at the end to avoid doing it twice.
 				degItemBeingUsed.push(degItem);
@@ -638,6 +660,9 @@ export async function minionKillCommand(
 			quantity = floor(maxTripLength / timeToFinish);
 		}
 	}
+
+	quantity = Math.max(1, quantity);
+
 	if (isOnTask) {
 		let effectiveQtyRemaining = usersTask.currentTask!.quantity_remaining;
 		if (
@@ -673,6 +698,12 @@ export async function minionKillCommand(
 		}
 	}
 
+	if (monster.customRequirement && kcForThisMonster === 0) {
+		const reasonDoesntHaveReq = await monster.customRequirement(user);
+		if (reasonDoesntHaveReq) {
+			return `You don't meet the requirements to kill this monster: ${reasonDoesntHaveReq}.`;
+		}
+	}
 	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
 		return "You haven't unlocked this monster..";
 	}
@@ -869,6 +900,9 @@ export async function minionKillCommand(
 				' eyes with your minion and grabs the dart mid-air, and throws it back, killing your minion instantly.'
 			);
 		}
+		if (monster.name === 'Solis') {
+			return 'The dart melts into a crisp dust before coming into contact with Solis.';
+		}
 		if (monster.name === 'Yeti') {
 			return 'You send your minion off to fight Yeti with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
 		}
@@ -974,7 +1008,8 @@ export async function minionKillCommand(
 					? ['wildy']
 					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced,
-				isWilderness: monster.wildy
+				isWilderness: monster.wildy,
+				minimumHealAmount: monster.minimumFoodHealAmount
 			});
 
 			if (foodRemoved.length === 0) {
@@ -1019,6 +1054,11 @@ export async function minionKillCommand(
 	} else {
 		boosts.push(`${noFoodBoost}% for no food`);
 		duration = reduceNumByPercent(duration, noFoodBoost);
+	}
+
+	if (monster.deathProps) {
+		const deathChance = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC: kcForThisMonster });
+		messages.push(`${deathChance.toFixed(1)}% chance of death`);
 	}
 
 	// Remove items after food calc to prevent losing items if the user doesn't have the right amount of food. Example: Mossy key

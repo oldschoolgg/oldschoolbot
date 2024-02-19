@@ -30,6 +30,7 @@ import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
 import { shadesOfMortonCreatables } from './creatables/shadesOfMorton';
 import { slayerCreatables } from './creatables/slayer';
+import { sunMoonCreatables } from './creatables/sunMoonCreatables';
 import { toaCreatables } from './creatables/toa';
 import { tobCreatables } from './creatables/tob';
 import { tameCreatables } from './tameCreatables';
@@ -2397,7 +2398,8 @@ const Createables: Createable[] = [
 	...dtCreatables,
 	...caCreatables,
 	...forestryCreatables,
-	...camdozaalItems
+	...camdozaalItems,
+	...sunMoonCreatables
 ];
 
 export default Createables;

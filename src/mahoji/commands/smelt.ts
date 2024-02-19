@@ -139,7 +139,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 
 		const maxCanDo = user.bank.fits(itemsNeeded);
 		if (maxCanDo === 0) {
-			return "You don't have enough supplies to smelt even one of this item!";
+			return `You don't have enough supplies to smelt even one of this item! You need: ${itemsNeeded}.`;
 		}
 		if (maxCanDo < quantity) {
 			quantity = maxCanDo;
