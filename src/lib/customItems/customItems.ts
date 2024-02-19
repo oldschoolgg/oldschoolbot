@@ -7318,6 +7318,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
 			isDiscontinued: true
 		}
 	},
@@ -7446,6 +7447,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7459,6 +7461,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7472,6 +7475,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7485,6 +7489,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7498,6 +7503,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7511,6 +7517,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7524,6 +7531,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7537,6 +7545,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7550,6 +7559,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
 			isSuperUntradeable: true
 		}
 	},
@@ -7562,7 +7572,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
 		}
 	},
 	10_000
@@ -7574,7 +7585,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
 		}
 	},
 	10_000
@@ -7586,7 +7598,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true
 		}
 	},
 	10_000
@@ -9267,7 +9280,8 @@ setCustomItem(
 		tradeable: true,
 		tradeable_on_ge: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1_000_000
@@ -9278,10 +9292,11 @@ setCustomItem(
 	'Doopy',
 	'Herbi',
 	{
+		tradeable: true,
 		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			isDiscontinued: true
 		}
 	},
 	1_000_000
@@ -9320,7 +9335,8 @@ setCustomItem(
 		tradeable: true,
 		tradeable_on_ge: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1_000_000
@@ -10150,7 +10166,8 @@ setCustomItem(
 		tradeable: true,
 		tradeable_on_ge: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1_000_000
