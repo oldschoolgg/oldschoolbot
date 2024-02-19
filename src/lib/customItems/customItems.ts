@@ -4841,7 +4841,7 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			IsSuperUntradeable: true
+			isSuperUntradeable: true
 		}
 	},
 	10_000
@@ -6339,7 +6339,6 @@ setCustomItem(
 	},
 	10_000
 );
-
 setCustomItem(
 	70_438,
 	'Crush',
