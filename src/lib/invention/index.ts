@@ -48,17 +48,20 @@ export interface SingleMaterial {
 	quantity: number;
 }
 
-export type DisassembleFlag =
-	| 'third_age'
-	| 'dyed'
-	| 'dwarven'
-	| 'barrows'
-	| 'abyssal'
-	| 'corporeal'
-	| 'treasure_trails'
-	| 'mystery_box'
-	| 'orikalkum'
-	| 'justiciar';
+export const disassembleFlagMaterials = [
+	'third_age',
+	'dyed',
+	'dwarven',
+	'barrows',
+	'abyssal',
+	'corporeal',
+	'treasure_trails',
+	'mystery_box',
+	'orikalkum',
+	'justiciar'
+] as const;
+
+export type DisassembleFlag = (typeof disassembleFlagMaterials)[number];
 
 interface IDisassembleFlag {
 	name: string;
