@@ -16,12 +16,12 @@ import KingGoldemar from '../../src/lib/minions/data/killableMonsters/custom/bos
 import { VasaMagus } from '../../src/lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { allOpenables } from '../../src/lib/openables';
 import { Gear } from '../../src/lib/structures/Gear';
-import { calculateMaximumTameFeedingLevelGain } from '../../src/lib/tames';
 import { exponentialPercentScale, isSuperUntradeable, itemNameFromID } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 import itemID from '../../src/lib/util/itemID';
 import itemIsTradeable from '../../src/lib/util/itemIsTradeable';
 import resolveItems from '../../src/lib/util/resolveItems';
+import { calculateMaximumTameFeedingLevelGain } from '../../src/lib/util/tameUtil';
 import { BingoTrophies } from '../../src/mahoji/lib/bingo/BingoManager';
 
 describe('Sanity', () => {
