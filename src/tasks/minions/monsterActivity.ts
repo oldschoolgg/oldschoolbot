@@ -250,7 +250,7 @@ export const monsterTask: MinionTask = {
 		}
 
 		if (isInWilderness && monster.wildySlayerCave) {
-			//Add loot table once merged
+			// Add loot table once merged
 			// loot.add(wildySlayerCaveTable!.kill(finalQuantity))
 		}
 

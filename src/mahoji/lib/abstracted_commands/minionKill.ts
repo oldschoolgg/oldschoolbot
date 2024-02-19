@@ -297,7 +297,7 @@ export async function minionKillCommand(
 			revBoost = 17.5;
 			timeToFinish = reduceNumByPercent(timeToFinish, revBoost);
 			revBoostMsg = `${revBoost}% for ${upgradedWeapon.name}`;
-		} 
+		}
 	}
 
 	function applyDragonBoost() {
