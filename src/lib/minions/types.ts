@@ -141,6 +141,7 @@ export interface KillableMonster {
 	minimumWeaponShieldStats?: Partial<Record<GearSetupType, Required<GearRequirement>>>;
 	tameCantKill?: true;
 	customRequirement?: (user: MUser) => Promise<string | null>;
+	setupsUsed?: GearSetupType[];
 }
 /*
  * Monsters will have an array of Consumables

@@ -74,7 +74,8 @@ export const Solis: CustomMonster = {
 		const hasMaxedIgne = tames.some(tame => tame.isMaxedIgneTame());
 		if (hasMaxedIgne) return null;
 		return 'You need to have a maxed Igne Tame (best gear, all fed items) to fight Solis.';
-	}
+	},
+	setupsUsed: ['melee']
 };
 
 // export const Celestara: CustomMonster = {

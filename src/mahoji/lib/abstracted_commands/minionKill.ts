@@ -627,7 +627,8 @@ export async function minionKillCommand(
 		for (const degItem of degradeablePvmBoostItems) {
 			const isUsing =
 				convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
-				user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
+				user.gear[degItem.attackStyle].hasEquipped(degItem.item.id) &&
+				(monster.setupsUsed ? monster.setupsUsed.includes(degItem.attackStyle) : true);
 			if (isUsing) {
 				// We assume they have enough charges, add the boost, and degrade at the end to avoid doing it twice.
 				degItemBeingUsed.push(degItem);
