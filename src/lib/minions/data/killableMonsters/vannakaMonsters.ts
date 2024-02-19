@@ -61,7 +61,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		canBarrage: true,
 		pkActivityRating: 7,
 		pkBaseDeathChance: 10,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.AbyssalSire.id,
@@ -124,7 +125,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		],
 		pkActivityRating: 4,
 		pkBaseDeathChance: 3,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.BabyBlueDragon.id,
@@ -447,7 +449,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackCrush],
 		pkActivityRating: 6,
 		pkBaseDeathChance: 8,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.ElfArcher.id,
@@ -618,7 +621,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		canCannon: true,
 		pkActivityRating: 8,
 		pkBaseDeathChance: 9,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.GreenDragon.id,
@@ -636,7 +640,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.HarpieBugSwarm.id,
@@ -684,7 +689,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		canBarrage: false,
 		pkActivityRating: 5,
 		pkBaseDeathChance: 8,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.IceGiant.id,
@@ -701,11 +707,12 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
-		cannonMulti: false,
+		cannonMulti: true,
 		canBarrage: false,
 		pkActivityRating: 2,
 		pkBaseDeathChance: 6,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.IceTroll.id,
@@ -800,7 +807,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackMagic],
 		pkActivityRating: 6,
 		pkBaseDeathChance: 8,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.JungleHorror.id,
@@ -871,7 +879,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		canBarrage: false,
 		pkActivityRating: 7,
 		pkBaseDeathChance: 9,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.Molanisk.id,
@@ -908,7 +917,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		pkActivityRating: 4,
-		pkBaseDeathChance: 3
+		pkBaseDeathChance: 3,
+		revsWeaponBoost: true
 	},
 	{
 		id: Monsters.Bryophyta.id,

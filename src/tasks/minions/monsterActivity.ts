@@ -249,6 +249,11 @@ export const monsterTask: MinionTask = {
 			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
 		}
 
+		if (isInWilderness && monster.wildySlayerCave) {
+			//Add loot table once merged
+			// loot.add(wildySlayerCaveTable!.kill(finalQuantity))
+		}
+
 		const xpRes: string[] = [];
 		xpRes.push(
 			await addMonsterXP(user, {

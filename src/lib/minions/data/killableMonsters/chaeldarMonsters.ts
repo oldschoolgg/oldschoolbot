@@ -70,7 +70,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBarrage: false,
 		pkActivityRating: 7,
 		pkBaseDeathChance: 9,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.CaveHorror.id,
@@ -236,7 +237,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		canBarrage: false,
 		pkActivityRating: 7,
 		pkBaseDeathChance: 9,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.IronDragon.id,
