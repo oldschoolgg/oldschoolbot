@@ -94,6 +94,12 @@ const revSpecialWeapons = {
 	mage: getOSItem("Thammaron's sceptre")
 } as const;
 
+const revUpgradedWeapons = {
+	melee: getOSItem('Ursine chainmace'),
+	range: getOSItem('Webweaver bow'),
+	mage: getOSItem('Accursed sceptre')
+} as const;
+
 function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
 	const str = [];
 
@@ -268,7 +274,10 @@ export async function minionKillCommand(
 	let salveAmuletBoost = 0;
 	let salveAmuletBoostMsg = '';
 
-	const dragonBoost = 15; // Common boost percentage for dragon-related gear
+	let dragonBoost = 0;
+	let dragonBoostMsg = '';
+	let revBoost = 0;
+	let revBoostMsg = '';
 
 	const isUndead = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
 	const isDragon = osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon);
@@ -276,10 +285,19 @@ export async function minionKillCommand(
 	function applyRevWeaponBoost() {
 		const style = convertAttackStylesToSetup(user.user.attack_style);
 		const specialWeapon = revSpecialWeapons[style];
+		const upgradedWeapon = revUpgradedWeapons[style];
+
 		if (wildyGear.hasEquipped(specialWeapon.name)) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push(`${15}% for ${specialWeapon.name}`);
+			revBoost = 12.5;
+			timeToFinish = reduceNumByPercent(timeToFinish, revBoost);
+			revBoostMsg = `${revBoost}% for ${specialWeapon.name}`;
 		}
+
+		if (wildyGear.hasEquipped(upgradedWeapon.name)) {
+			revBoost = 17.5;
+			timeToFinish = reduceNumByPercent(timeToFinish, revBoost);
+			revBoostMsg = `${revBoost}% for ${upgradedWeapon.name}`;
+		} 
 	}
 
 	function applyDragonBoost() {
@@ -294,11 +312,11 @@ export async function minionKillCommand(
 			(hasDragonLance && !attackStyles.includes(SkillsEnum.Ranged) && !attackStyles.includes(SkillsEnum.Magic)) ||
 			(hasDragonCrossbow && attackStyles.includes(SkillsEnum.Ranged))
 		) {
-			const boostMessage = hasDragonLance
+			dragonBoost = 15; // Common boost percentage for dragon-related gear
+			dragonBoostMsg = hasDragonLance
 				? `${dragonBoost}% for Dragon hunter lance`
 				: `${dragonBoost}% for Dragon hunter crossbow`;
 			timeToFinish = reduceNumByPercent(timeToFinish, dragonBoost);
-			boosts.push(boostMessage);
 		}
 	}
 
@@ -378,6 +396,17 @@ export async function minionKillCommand(
 		} else {
 			timeToFinish = reduceNumByPercent(timeToFinish, blackMaskBoost);
 			boosts.push(blackMaskBoostMsg);
+		}
+	}
+
+	// Only choose greater boost:
+	if (dragonBoost || revBoost) {
+		if (revBoost > dragonBoost) {
+			timeToFinish = reduceNumByPercent(timeToFinish, revBoost);
+			boosts.push(revBoostMsg);
+		} else {
+			timeToFinish = reduceNumByPercent(timeToFinish, dragonBoost);
+			boosts.push(dragonBoostMsg);
 		}
 	}
 
