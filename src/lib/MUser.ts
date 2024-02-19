@@ -1,11 +1,12 @@
 import { userMention } from '@discordjs/builders';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
+import { Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { calcWhatPercent, objectEntries, randArrItem, sumArr, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
+import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { GodFavourBank, GodName } from './bso/divineDominion';
@@ -956,6 +957,11 @@ GROUP BY data->>'clueID';`);
 		return { refundBank };
 	}
 
+	async fetchStashUnits() {
+		const units = await getParsedStashUnits(this.id);
+		return units;
+	}
+
 	async validateEquippedGear() {
 		let itemsUnequippedAndRefunded = new Bank();
 		for (const [gearSetupName, gearSetup] of Object.entries(this.gear) as [GearSetupType, GearSetup][]) {
@@ -999,6 +1005,32 @@ GROUP BY data->>'clueID';`);
 		return {
 			itemsUnequippedAndRefunded
 		};
+	}
+
+	async fetchTames() {
+		const tames = await prisma.tame.findMany({
+			where: {
+				user_id: this.id
+			}
+		});
+		return tames.map(t => new MTame(t));
+	}
+
+	async fetchActiveTame(): Promise<{ tame: null; activity: null } | { activity: TameActivity | null; tame: MTame }> {
+		if (!this.user.selected_tame) {
+			return {
+				tame: null,
+				activity: null
+			};
+		}
+		const tame = await prisma.tame.findFirst({ where: { id: this.user.selected_tame } });
+		if (!tame) {
+			throw new Error('No tame found for selected tame.');
+		}
+		const activity = await prisma.tameActivity.findFirst({
+			where: { user_id: this.id, tame_id: tame.id, completed: false }
+		});
+		return { activity, tame: new MTame(tame) };
 	}
 }
 declare global {

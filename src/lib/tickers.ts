@@ -4,6 +4,7 @@ import { noOp, randInt, removeFromArr, shuffleArr, Time } from 'e';
 
 import { production } from '../config';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
+import { runTameTask } from '../tasks/tames/tameTasks';
 import { bossEvents, startBossEvent } from './bossEvents';
 import { BitField, Channel, informationalButtons, PeakTier } from './constants';
 import { GrandExchange } from './grandExchange';
@@ -14,7 +15,6 @@ import { prisma, queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
-import { runTameTask } from './tames';
 import { processPendingActivities } from './Task';
 import { awaitMessageComponentInteraction, getSupportGuild, makeComponents, stringMatches } from './util';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';

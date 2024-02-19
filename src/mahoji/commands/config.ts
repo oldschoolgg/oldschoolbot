@@ -140,6 +140,10 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.NoItemContractDonations
 	},
 	{
+		name: 'Disable Eagle Tame Opening Clues',
+		bit: BitField.DisabledTameClueOpening
+	},
+	{
 		name: 'Disable Clue Buttons',
 		bit: BitField.DisableClueButtons
 	}

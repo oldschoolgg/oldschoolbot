@@ -8,7 +8,6 @@ import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
 import { clArrayUpdate } from '../../../lib/handleNewCLItems';
 import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
-import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/tames';
 import { makeComponents } from '../../../lib/util';
 import {
 	makeAutoContractButton,
@@ -17,6 +16,7 @@ import {
 } from '../../../lib/util/globalInteractions';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
+import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/util/tameUtil';
 import { getItemContractDetails } from '../../commands/ic';
 import { spawnLampIsReady } from '../../commands/tools';
 import { calculateBirdhouseDetails } from './birdhousesCommand';

@@ -24,6 +24,21 @@ export type PartialGearSetup = Partial<{
 	[key in EquipmentSlot]: string;
 }>;
 
+export function addStatsOfItemsTogether(items: number[], statWhitelist = Object.values(GearStat)) {
+	const osItems = items.map(i => getOSItem(i));
+	let base: Required<GearRequirement> = {} as Required<GearRequirement>;
+	for (const item of osItems) {
+		for (const stat of Object.values(GearStat)) {
+			let thisStat = item.equipment?.[stat] ?? 0;
+			if (!base[stat]) base[stat] = 0;
+			if (statWhitelist.includes(stat)) {
+				base[stat] += thisStat;
+			}
+		}
+	}
+	return base;
+}
+
 export function hasGracefulEquipped(setup: Gear) {
 	return (
 		setup.hasEquipped('Agility master cape') ||
@@ -357,7 +372,7 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 	}
 ];
 
-const baseStats: GearStats = {
+export const baseStats: GearStats = {
 	attack_stab: 0,
 	attack_slash: 0,
 	attack_crush: 0,

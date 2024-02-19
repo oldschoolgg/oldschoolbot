@@ -17,7 +17,7 @@ export const kibbles: Kibble[] = [
 		item: getOSItem('Simple kibble'),
 		type: 'simple',
 		minimumFishHeal: 1,
-		cropComponent: ['Cabbage', 'Potato'].map(getOSItem),
+		cropComponent: ['Cabbage', 'Potato', 'Avocado'].map(getOSItem),
 		herbComponent: ['Marrentill', 'Tarromin'].map(getOSItem),
 		xp: 600,
 		level: 105
@@ -26,7 +26,7 @@ export const kibbles: Kibble[] = [
 		item: getOSItem('Delicious kibble'),
 		type: 'delicious',
 		minimumFishHeal: 19,
-		cropComponent: ['Strawberry', 'Papaya fruit'].map(getOSItem),
+		cropComponent: ['Strawberry', 'Papaya fruit', 'Mango'].map(getOSItem),
 		herbComponent: ['Cadantine', 'Kwuarm'].map(getOSItem),
 		xp: 900,
 		level: 110
@@ -35,7 +35,7 @@ export const kibbles: Kibble[] = [
 		item: getOSItem('Extraordinary kibble'),
 		type: 'extraordinary',
 		minimumFishHeal: 26,
-		cropComponent: ['Orange', 'Pineapple'].map(getOSItem),
+		cropComponent: ['Orange', 'Pineapple', 'Lychee'].map(getOSItem),
 		herbComponent: ['Torstol', 'Dwarf weed'].map(getOSItem),
 		xp: 1100,
 		level: 120

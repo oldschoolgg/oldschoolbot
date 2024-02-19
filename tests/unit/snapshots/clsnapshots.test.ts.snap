@@ -42,7 +42,7 @@ Cooking (29)
 Corporeal Beast (8)
 Crafting (175)
 Crazy archaeologist (3)
-Creatables (715)
+Creatables (728)
 Creature Creation (7)
 Creature Creation (7)
 Custom Pets (42)
@@ -147,13 +147,14 @@ Skilling Pets (8)
 Skotizo (6)
 Slayer (75)
 Slayer Masks/Helms (32)
-Smithing (199)
+Smithing (200)
+Solis (3)
 Soul Wars (3)
 Spectator Clothes (22)
 Spooky crate (s3) (22)
 Stealing Creation (6)
 Supply crate (s1) (19)
-Tame Gear (17)
+Tame Gear (25)
 Temple Trekking (4)
 Tempoross (12)
 Thanksgiving 2021 (5)
@@ -195,6 +196,8 @@ exports[`BSO Overall Collection Log Items 1`] = `
 3rd age druidic robe top
 3rd age druidic staff
 3rd age full helmet
+3rd age jibwings
+3rd age jibwings (e)
 3rd age kiteshield
 3rd age longsword
 3rd age mage hat
@@ -225,6 +228,8 @@ Abyssal dagger
 Abyssal gem
 Abyssal green dye
 Abyssal head
+Abyssal jibwings
+Abyssal jibwings (e)
 Abyssal lantern
 Abyssal mask
 Abyssal needle
@@ -758,6 +763,8 @@ Decorative ranged legs
 Decorative ranged top
 Deerstalker
 Demon feet
+Demonic jibwings
+Demonic jibwings (e)
 Dexterous prayer scroll
 Dharok's greataxe
 Dharok's helm
@@ -767,6 +774,7 @@ Digsite teleport
 Dinh's bulwark
 Divine egg
 Divine hand
+Divine ring
 Divine sigil
 Diviner's footwear
 Diviner's handwear
@@ -846,6 +854,7 @@ Dwarven knife
 Dwarven ore
 Dwarven pickaxe
 Dwarven toolkit
+Eagle egg
 Earth warrior champion scroll
 Echo
 Ectoplasmator
@@ -1190,6 +1199,7 @@ Imbued heart
 Imcando hammer
 Imp champion scroll
 Imp mask
+Impling locator
 Incandescent energy
 Infernal cape
 Infernal core
@@ -1852,6 +1862,7 @@ Smoke quartz
 Smolcano
 Smouldering stone
 Soaked page
+Solite
 Sparkling energy
 Spectral sigil
 Spellbound ring
@@ -1897,6 +1908,7 @@ Studded body (g)
 Studded body (t)
 Studded chaps (g)
 Studded chaps (t)
+Sun-metal scraps
 Superior bonecrusher
 Superior dwarf multicannon
 Superior inferno adze

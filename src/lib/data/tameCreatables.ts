@@ -5,6 +5,95 @@ import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
 import { Createable } from './createables';
 
+const eagleTameCreatables: Createable[] = [
+	{
+		name: 'Demonic jibwings',
+		materialCost: new MaterialBank().add('strong', 500),
+		inputItems: new Bank().add('Dark totem', 10),
+		outputItems: new Bank().add('Demonic jibwings'),
+		requiredSkills: {
+			invention: 90,
+			crafting: 90,
+			smithing: 90
+		}
+	},
+	{
+		name: 'Abyssal jibwings',
+		materialCost: new MaterialBank().add('abyssal', 30),
+		inputItems: new Bank().add('Ancient shard', 10).add('Magical artifact'),
+		outputItems: new Bank().add('Abyssal jibwings'),
+		requiredSkills: {
+			invention: 90,
+			crafting: 90,
+			smithing: 90
+		}
+	},
+	{
+		name: '3rd age jibwings',
+		materialCost: new MaterialBank().add('third-age', 6),
+		inputItems: new Bank().add('Gold bar', 1000),
+		outputItems: new Bank().add('3rd age jibwings'),
+		requiredSkills: {
+			invention: 90,
+			crafting: 90,
+			smithing: 90
+		}
+	},
+	{
+		name: '3rd age jibwings (e)',
+		inputItems: new Bank().add('3rd age jibwings').add('Ignecarus scales', 1000),
+		outputItems: new Bank().add('3rd age jibwings (e)'),
+		requiredSkills: {
+			invention: 105,
+			crafting: 105,
+			smithing: 105
+		}
+	},
+	{
+		name: 'Demonic jibwings (e)',
+		inputItems: new Bank().add('Demonic jibwings').add('Ignecarus scales', 1000),
+		outputItems: new Bank().add('Demonic jibwings (e)'),
+		requiredSkills: {
+			invention: 105,
+			crafting: 105,
+			smithing: 105
+		}
+	},
+	{
+		name: 'Abyssal jibwings (e)',
+		inputItems: new Bank().add('Abyssal jibwings').add('Ignecarus scales', 1000),
+		outputItems: new Bank().add('Abyssal jibwings (e)'),
+		requiredSkills: {
+			invention: 105,
+			crafting: 105,
+			smithing: 105
+		}
+	},
+	{
+		name: 'Divine ring',
+		inputItems: new Bank().add('Atomic energy', 1_000_000),
+		materialCost: new MaterialBank().add('precious', 10_000),
+		outputItems: new Bank().add('Divine ring'),
+		requiredSkills: {
+			invention: 105,
+			crafting: 105,
+			smithing: 105
+		}
+	},
+	{
+		name: 'Impling locator',
+		inputItems: new Bank().add('Atomic energy', 200_000).add('Elder rune', 1000),
+		materialCost: new MaterialBank().add('orikalkum', 100),
+		outputItems: new Bank().add('Impling locator'),
+		requiredSkills: {
+			invention: 105,
+			crafting: 105,
+			smithing: 105,
+			magic: 120
+		}
+	}
+];
+
 export const tameCreatables: Createable[] = [
 	{
 		name: 'Runite igne claws',
@@ -310,7 +399,8 @@ export const tameCreatables: Createable[] = [
 			invention: 120,
 			crafting: 120
 		}
-	}
+	},
+	...eagleTameCreatables
 ];
 
 for (const claw of resolveItems([
