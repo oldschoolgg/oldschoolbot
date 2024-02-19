@@ -9458,8 +9458,6 @@ setCustomItem(
 	'Echo',
 	'Herbi',
 	{
-		tradeable: true,
-		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
