@@ -8,7 +8,7 @@ import { getSimilarItems } from '../data/similarItems';
 import { prisma } from '../settings/prisma';
 import { seaMonkeySpells, Species, tameKillableMonsters, tameSpecies, TameTaskOptions, TameType } from '../tames';
 import { ItemBank } from '../types';
-import { itemNameFromID } from './smallUtils';
+import { formatDuration, itemNameFromID } from './smallUtils';
 
 export async function tameLastFinishedActivity(user: MUser) {
 	const tameID = user.user.selected_tame;
@@ -132,4 +132,39 @@ export async function getUsersTame(
 	});
 	const species = tameSpecies.find(i => i.id === tame.species_id)!;
 	return { tame, activity, species };
+}
+
+export function getTameStatus(tameActivity: TameActivity | null) {
+	if (tameActivity) {
+		const currentDate = new Date().valueOf();
+		const timeRemaining = `${formatDuration(tameActivity.finish_date.valueOf() - currentDate, true)} remaining`;
+		const activityData = tameActivity.data as any as TameTaskOptions;
+		switch (activityData.type) {
+			case TameType.Combat:
+				return [
+					`Killing ${activityData.quantity.toLocaleString()}x ${
+						tameKillableMonsters.find(m => m.id === activityData.monsterID)?.name
+					}`,
+					timeRemaining
+				];
+			case TameType.Gatherer:
+				return [`Collecting ${itemNameFromID(activityData.itemID)?.toLowerCase()}`, timeRemaining];
+			case 'SpellCasting':
+				return [
+					`Casting ${seaMonkeySpells.find(i => i.id === activityData.spellID)!.name} ${
+						activityData.quantity
+					}x times`,
+					timeRemaining
+				];
+			case 'Tempoross':
+				return ['Fighting the Tempoross', timeRemaining];
+			case 'Wintertodt':
+				return ['Fighting the Wintertodt', timeRemaining];
+			case 'Clues': {
+				const tier = ClueTiers.find(i => i.scrollID === activityData.clueID);
+				return [`Completing ${tier!.name} clues`, timeRemaining];
+			}
+		}
+	}
+	return ['Idle'];
 }

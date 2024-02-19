@@ -68,6 +68,7 @@ import {
 	calculateMaximumTameFeedingLevelGain,
 	getMainTameLevel,
 	getTameSpecies,
+	getTameStatus,
 	getUsersTame,
 	tameGrowthLevel,
 	tameHasBeenFed,
@@ -584,37 +585,6 @@ export async function removeRawFood({
 		str: `${itemCost} from ${user.usernameOrMention}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
 		removed: itemCost
 	};
-}
-
-export function getTameStatus(tameActivity: TameActivity | null) {
-	if (tameActivity) {
-		const currentDate = new Date().valueOf();
-		const timeRemaining = `${formatDuration(tameActivity.finish_date.valueOf() - currentDate, true)} remaining`;
-		const activityData = tameActivity.data as any as TameTaskOptions;
-		switch (activityData.type) {
-			case TameType.Combat:
-				return [
-					`Killing ${activityData.quantity.toLocaleString()}x ${
-						tameKillableMonsters.find(m => m.id === activityData.monsterID)?.name
-					}`,
-					timeRemaining
-				];
-			case TameType.Gatherer:
-				return [`Collecting ${itemNameFromID(activityData.itemID)?.toLowerCase()}`, timeRemaining];
-			case 'SpellCasting':
-				return [
-					`Casting ${seaMonkeySpells.find(i => i.id === activityData.spellID)!.name} ${
-						activityData.quantity
-					}x times`,
-					timeRemaining
-				];
-			case 'Tempoross':
-				return ['Fighting the Tempoross', timeRemaining];
-			case 'Wintertodt':
-				return ['Fighting the Wintertodt', timeRemaining];
-		}
-	}
-	return ['Idle'];
 }
 
 async function setNameCommand(user: MUser, name: string) {
