@@ -10228,15 +10228,13 @@ setCustomItem(
 setCustomItem(
 	72_044,
 	'Rudolph',
-	'Herbi',
+	'Coal',
 	{
-		tradeable: true,
-		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1_000_000
+	1
 );
 
 setCustomItem(
