@@ -89,14 +89,6 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.Lizard,
-		amount: [40, 70],
-		weight: 8,
-		monsters: [Monsters.Lizard.id, Monsters.SmallLizard.id, Monsters.DesertLizard.id, Monsters.SulphurLizard.id],
-		slayerLevel: 22,
-		unlocked: true
-	},
-	{
 		monster: Monsters.GuardDog,
 		amount: [40, 70],
 		weight: 7,
@@ -183,6 +175,14 @@ export const mazchnaTasks: AssignableSlayerTask[] = [
 		combatLevel: 50,
 		slayerLevel: 37,
 		questPoints: 4,
+		unlocked: true
+	},
+	{
+		monster: Monsters.Lizard,
+		amount: [40, 70],
+		weight: 8,
+		monsters: [Monsters.Lizard.id, Monsters.SmallLizard.id, Monsters.DesertLizard.id, Monsters.SulphurLizard.id],
+		slayerLevel: 22,
 		unlocked: true
 	},
 	{

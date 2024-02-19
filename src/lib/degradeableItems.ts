@@ -1,3 +1,4 @@
+import { percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -211,7 +212,7 @@ export const degradeableItems: DegradeableItem[] = [
 		setup: 'melee',
 		aliases: ['scythe of vitur'],
 		chargeInput: {
-			cost: new Bank().add('Blood rune', 300).add('Vial of blood').freeze(),
+			cost: new Bank().add('Blood rune', 200).add('Vial of blood').freeze(),
 			charges: 100
 		},
 		unchargedItem: getOSItem('Scythe of vitur (uncharged)'),
@@ -297,6 +298,17 @@ export async function degradeItem({
 	const degItem = degradeableItems.find(i => i.item === item);
 	if (!degItem) throw new Error('Invalid degradeable item');
 
+	// 5% chance to not consume a charge when Ghommal's lucky penny is equipped
+	let pennyReduction = 0;
+	if (user.hasEquipped("Ghommal's lucky penny")) {
+		for (let i = 0; i < chargesToDegrade; i++) {
+			if (percentChance(5)) {
+				pennyReduction++;
+			}
+		}
+	}
+	chargesToDegrade -= pennyReduction;
+
 	const currentCharges = user.user[degItem.settingsKey];
 	assert(typeof currentCharges === 'number');
 	const newCharges = Math.floor(currentCharges - chargesToDegrade);
@@ -353,7 +365,11 @@ export async function degradeItem({
 	const chargesAfter = user.user[degItem.settingsKey];
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
-		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining.`
+		userMessage: `Your ${
+			item.name
+		} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining.${
+			pennyReduction > 0 ? ` Your Ghommal's lucky penny saved ${pennyReduction} charges` : ''
+		}`
 	};
 }
 
