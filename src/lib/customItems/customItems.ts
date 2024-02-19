@@ -9292,8 +9292,6 @@ setCustomItem(
 	'Mini mortimer',
 	'Herbi',
 	{
-		tradeable: true,
-		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -9306,7 +9304,6 @@ setCustomItem(
 	'Doopy',
 	'Herbi',
 	{
-		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true
@@ -9346,8 +9343,6 @@ setCustomItem(
 	'Casper',
 	'Herbi',
 	{
-		tradeable: true,
-		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
