@@ -904,6 +904,20 @@ exports[`OSB Buyables 1`] = `
     "qpRequired": 172,
   },
   {
+    "gpCost": 2000,
+    "ironmanPrice": 200,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Lockpick",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "agility": 50,
+      "thieving": 50,
+    },
+  },
+  {
     "itemCost": Bank {
       "bank": {
         "24711": 1,

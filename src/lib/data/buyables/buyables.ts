@@ -1074,8 +1074,8 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Lockpick',
-		gpCost: 200,
-		ironmanPrice: 20,
+		gpCost: 2000,
+		ironmanPrice: 200,
 		skillsNeeded: {
 			agility: 50,
 			thieving: 50
