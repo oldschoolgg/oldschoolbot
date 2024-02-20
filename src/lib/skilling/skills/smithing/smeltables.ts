@@ -85,6 +85,15 @@ const Bars: Bar[] = [
 		inputOres: new Bank({ 'Dwarven ore': 1, Coal: 20 }),
 		chanceOfFail: 35,
 		timeToUse: Time.Second * 2.4
+	},
+	{
+		name: 'Sun-metal bar',
+		level: 110,
+		xp: 150,
+		id: itemID('Sun-metal bar'),
+		inputOres: new Bank({ 'Sun-metal scraps': 1, Coal: 12 }),
+		chanceOfFail: 1,
+		timeToUse: Time.Second * 2.4
 	}
 ];
 

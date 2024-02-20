@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import { Eatables } from '../../data/eatables';
 
-function getRealHealAmount(user: MUser, healAmount: ((user: MUser) => number) | number) {
+export function getRealHealAmount(user: MUser, healAmount: ((user: MUser) => number) | number) {
 	if (typeof healAmount === 'number') {
 		return healAmount;
 	}
@@ -54,9 +54,7 @@ export default function getUserFoodFromBank({
 		});
 
 	if (minimumHealAmount) {
-		sorted = sorted.filter(i =>
-			typeof i.healAmount === 'number' ? i.healAmount : i.healAmount(user) >= minimumHealAmount
-		);
+		sorted = sorted.filter(i => getRealHealAmount(user, i.healAmount) >= minimumHealAmount);
 	}
 
 	// Gets all the eatables in the user bank

@@ -23,10 +23,10 @@ import { dungBuyables } from '../skilling/skills/dung/dungData';
 import { ashes } from '../skilling/skills/prayer';
 import Dwarven from '../skilling/skills/smithing/smithables/dwarven';
 import { slayerUnlockableRewards } from '../slayer/slayerUnlocks';
-import { getTameSpecies } from '../tames';
 import { ItemBank } from '../types';
 import { calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
+import { getTameSpecies } from '../util/tameUtil';
 import { Task } from './leaguesUtils';
 
 export const masterTasks: Task[] = [

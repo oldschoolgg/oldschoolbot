@@ -9,13 +9,13 @@ import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContra
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { repeatTameTrip } from '../../tasks/tames/tameTasks';
 import { modifyBusyCounter } from '../busyCounterCache';
 import { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
-import { repeatTameTrip } from '../tames';
 import { ItemBank } from '../types';
 import { formatDuration, stringMatches } from '../util';
 import { CACHED_ACTIVE_USER_IDS } from './cachedUserIDs';

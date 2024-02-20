@@ -178,7 +178,8 @@ export async function handlePassiveImplings(user: MUser, data: ActivityTaskData)
 	if (hasScrollOfTheHunt) baseChance = Math.floor(baseChance / 2);
 	if (user.hasEquippedOrInBank('Hunter master cape')) baseChance = Math.floor(baseChance / 2);
 
-	const impTable = implingTableByWorldLocation[activityInArea(data)](baseChance, user.usingPet('Mr. E'));
+	const area = activityInArea(data);
+	const impTable = implingTableByWorldLocation[area](baseChance, user.usingPet('Mr. E'));
 
 	for (let i = 0; i < minutes; i++) {
 		const loot = impTable.roll();

@@ -1,5 +1,6 @@
 import Adamant from './adamant';
 import Bronze from './bronze';
+import BSOSmithables from './bsoSmithables';
 import Dwarven from './dwarven';
 import Gold from './gold';
 import Gorajan from './gorajan';
@@ -19,7 +20,8 @@ const smithables = [
 	...Adamant,
 	...Rune,
 	...Dwarven,
-	...Gorajan
+	...Gorajan,
+	...BSOSmithables
 ];
 
 export default smithables;

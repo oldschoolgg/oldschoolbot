@@ -1,5 +1,14 @@
 import { Prisma } from '@prisma/client';
-import { calcWhatPercent, deepClone, increaseNumByPercent, percentChance, reduceNumByPercent, sumArr, Time } from 'e';
+import {
+	calcWhatPercent,
+	deepClone,
+	increaseNumByPercent,
+	percentChance,
+	randArrItem,
+	reduceNumByPercent,
+	sumArr,
+	Time
+} from 'e';
 import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -402,27 +411,39 @@ export const monsterTask: MinionTask = {
 		}
 
 		const xpRes: string[] = [];
-		xpRes.push(
-			await addMonsterXP(user, {
-				monsterID,
-				quantity,
-				duration,
-				isOnTask: isOnTaskResult.isOnTask,
-				taskQuantity: isOnTaskResult.isOnTask ? isOnTaskResult.quantitySlayed : null,
-				minimal: true,
-				usingCannon,
-				cannonMulti,
-				burstOrBarrage,
-				superiorCount: newSuperiorCount
-			})
-		);
+		if (quantity >= 1) {
+			xpRes.push(
+				await addMonsterXP(user, {
+					monsterID,
+					quantity,
+					duration,
+					isOnTask: isOnTaskResult.isOnTask,
+					taskQuantity: isOnTaskResult.isOnTask ? isOnTaskResult.quantitySlayed : null,
+					minimal: true,
+					usingCannon,
+					cannonMulti,
+					burstOrBarrage,
+					superiorCount: newSuperiorCount
+				})
+			);
+		}
 
 		if (hasKourendHard) await ashSanctifierEffect(user, loot, duration, xpRes);
 
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
+		const sorryMessages = [
+			'They apologized for dying so much.',
+			"They're sorry for dying so much.",
+			"They're sorry.",
+			'They said they will do better.'
+		];
 		let str =
-			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
-			` Your ${monster.name} KC is now ${newKC}.\n${xpRes}\n`;
+			quantity === 0
+				? `${user}, ${user.minionName} died in ALL their kill attempts!${
+						roll(10) ? ` ${randArrItem(sorryMessages)}` : ''
+				  }`
+				: `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
+				  ` Your ${monster.name} KC is now ${newKC}.\n${xpRes}\n`;
 
 		if (masterCapeRolls > 0) {
 			messages.push(`${Emoji.SlayerMasterCape} You received ${masterCapeRolls}x bonus superior rolls`);
