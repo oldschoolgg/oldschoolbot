@@ -1,5 +1,6 @@
 import { CommandRunOptions } from 'mahoji';
 
+import { channelIsSendable } from '../../lib/util';
 import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -24,8 +25,16 @@ export const mahojiUseCommand: OSBMahojiCommand = {
 			description: 'Optional second item to use the first one on.'
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ item: string; secondary_item?: string }>) => {
+	run: async ({
+		options,
+		userID,
+		channelID,
+		interaction
+	}: CommandRunOptions<{ item: string; secondary_item?: string }>) => {
 		const user = await mUserFetch(userID);
-		return useCommand(user, options.item, options.secondary_item);
+		const channel = globalClient.channels.cache.get(channelID.toString());
+		if (!channelIsSendable(channel)) return { ephemeral: true, content: 'Invalid channel.' };
+
+		return useCommand(user, channel, interaction, options.item, options.secondary_item);
 	}
 };

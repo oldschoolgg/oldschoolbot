@@ -121,6 +121,7 @@ export const enum Emoji {
 	Purple = '🟪',
 	Green = '🟩',
 	Blue = '🟦',
+	Red = '🟥',
 	Thieving = '<:thieving:630910829352452123>',
 	Hunter = '<:hunter:630911040166559784>',
 	Ely = '<:ely:784453586033049630>',
