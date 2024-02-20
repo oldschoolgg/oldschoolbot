@@ -39,18 +39,36 @@ export const zombieOutfit = resolveItems([
 
 export const mimeOutfit = resolveItems(['Mime mask', 'Mime top', 'Mime legs', 'Mime gloves', 'Mime boots']);
 
+// Used by Mysterious Old man, Pillory, Rick Turpentine
+const randomEventTable = new LootTable()
+	.add('Uncut sapphire', 1, 32)
+	.add('Uncut emerald', 1, 16)
+	.add('Coins', 80, 10)
+	.add('Coins', 160, 10)
+	.add('Coins', 320, 10)
+	.add('Coins', 480, 10)
+	.add('Coins', 640, 10)
+	.add('Uncut ruby', 1, 8)
+	.add('Coins', 240, 6)
+	.add('Cosmic talisman', 1, 4)
+	.add('Uncut diamond', 2, 2)
+	.add('Tooth half of key', 1, 1)
+	.add('Tooth half of key', 1, 1);
+
+// https://oldschool.runescape.wiki/w/Random_events#List_of_random_events
+// Missing: Evil Bob, Jekyll and Hyde, Maze, Prison Pete
 export const RandomEvents: RandomEvent[] = [
 	{
 		id: 1,
 		name: 'Bee keeper',
 		outfit: beekeeperOutfit,
-		loot: new LootTable().add('Coins', [20, 60]).add('Flax', [1, 27])
+		loot: new LootTable().add('Coins', [16, 36]).add('Flax', [1, 27])
 	},
 	{
 		id: 2,
 		name: 'Drill Demon',
 		outfit: camoOutfit,
-		loot: new LootTable().every('Coins', 500)
+		loot: new LootTable().every('Genie lamp')
 	},
 	{
 		id: 3,
@@ -60,8 +78,8 @@ export const RandomEvents: RandomEvent[] = [
 	{
 		id: 4,
 		name: 'Freaky Forester',
-		loot: new LootTable().every('Coins', 500),
-		outfit: lederhosenOutfit
+		outfit: lederhosenOutfit,
+		loot: new LootTable().every('Genie lamp')
 	},
 	{
 		id: 5,
@@ -71,8 +89,8 @@ export const RandomEvents: RandomEvent[] = [
 	{
 		id: 6,
 		name: 'Gravedigger',
-		loot: new LootTable().every('Coins', 500),
-		outfit: zombieOutfit
+		outfit: zombieOutfit,
+		loot: new LootTable().every('Genie lamp')
 	},
 	{
 		id: 7,
@@ -82,8 +100,8 @@ export const RandomEvents: RandomEvent[] = [
 	{
 		id: 8,
 		name: 'Mime',
-		loot: new LootTable().every('Coins', 500),
-		outfit: mimeOutfit
+		outfit: mimeOutfit,
+		loot: new LootTable().every('Genie lamp')
 	},
 	{
 		id: 9,
@@ -129,6 +147,45 @@ export const RandomEvents: RandomEvent[] = [
 			.add('Spinach roll')
 			.add('Tooth half of key')
 			.add('Loop half of key')
+	},
+	{
+		id: 14,
+		name: 'Count Check',
+		loot: new LootTable().every('Genie lamp')
+	},
+	{
+		id: 15,
+		name: 'Evil twin',
+		loot: new LootTable()
+			.add('Uncut sapphire', [2, 4])
+			.add('Uncut emerald', [2, 4])
+			.add('Uncut ruby', [2, 4])
+			.add('Uncut diamond', [2, 4])
+	},
+	{
+		id: 16,
+		name: 'Mysterious Old Man',
+		loot: randomEventTable.add('Kebab', 1, 16).add('Spinach roll', 1, 14)
+	},
+	{
+		id: 17,
+		name: 'Pillory',
+		loot: randomEventTable
+	},
+	{
+		id: 18,
+		name: 'Pinball',
+		loot: new LootTable().add('Sapphire', 5, 3).add('Emerald', 5, 3).add('Ruby', 5, 3).add('Diamond', 2, 1)
+	},
+	{
+		id: 19,
+		name: 'Rick Turpentine',
+		loot: randomEventTable.add('Kebab', 1, 16).add('Spinach roll', 1, 14)
+	},
+	{
+		id: 20,
+		name: 'Strange plant',
+		loot: new LootTable().every('Strange fruit')
 	}
 ];
 
