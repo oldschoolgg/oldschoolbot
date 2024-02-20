@@ -4251,7 +4251,7 @@ setCustomItem(
 	'Amulet of strength',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: ,
+			cantDropFromMysteryBoxes: true,
 			isDiscontinued: true
 		}
 	},
