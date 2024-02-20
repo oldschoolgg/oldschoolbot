@@ -36,6 +36,7 @@ import {
 } from '../diaries';
 import { implings } from '../implings';
 import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
+import { SunMoonMonsters } from '../minions/data/killableMonsters/custom/SunMoon';
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
@@ -789,6 +790,69 @@ export const eliteTasks: Task[] = [
 		name: 'Obtain all Custom Slayer masks',
 		has: async ({ user }) => {
 			return slayerMaskHelms.every(mask => user.cl.has(mask.mask.id));
+		}
+	},
+	{
+		id: 3105,
+		name: 'Receive a eagle egg and hatch it',
+		has: async ({ tames, cl }) => {
+			return cl.has('Eagle egg') && tames.some(t => t.species_id === TameSpeciesID.Eagle);
+		}
+	},
+	{
+		id: 3106,
+		name: 'Feed a perk-item to your Eagle tame',
+		has: async ({ tames }) => {
+			return tames
+				.filter(t => t.species_id === TameSpeciesID.Eagle)
+				.some(t => {
+					const fedItems = new Bank(t.fed_items as ItemBank);
+					return tameFeedableItems.some(
+						i => i.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Eagle) && fedItems.has(i.item.id)
+					);
+				});
+		}
+	},
+	{
+		id: 3107,
+		name: 'Create a Divine ring',
+		has: async ({ cl }) => {
+			return cl.has('Divine ring');
+		}
+	},
+	{
+		id: 3108,
+		name: 'Create any set of eagle jibwings',
+		has: async ({ cl }) => {
+			return [
+				'Abyssal jibwings (e)',
+				'Demonic jibwings (e)',
+				'3rd age jibwings (e)',
+				'Abyssal jibwings',
+				'Demonic jibwings',
+				'3rd age jibwings'
+			].some(i => cl.has(i));
+		}
+	},
+	{
+		id: 3109,
+		name: 'Create any set of enhanced eagle jibwings',
+		has: async ({ cl }) => {
+			return ['Abyssal jibwings (e)', 'Demonic jibwings (e)', '3rd age jibwings (e)'].some(i => cl.has(i));
+		}
+	},
+	{
+		id: 3110,
+		name: 'Kill Solis',
+		has: async ({ monsterScores }) => {
+			return Boolean(monsterScores[SunMoonMonsters.Solis.id]);
+		}
+	},
+	{
+		id: 3111,
+		name: 'Create an Axe of the high sungod',
+		has: async ({ cl }) => {
+			return cl.has('Axe of the high sungod');
 		}
 	}
 ];
