@@ -75,16 +75,17 @@ export const kibbleCommand: OSBMahojiCommand = {
 		const calcFish = (fish: Eatable) =>
 			Math.ceil(
 				(healAmountNeeded * options.quantity) /
-					(typeof fish.healAmount === 'number' ? fish.healAmount : fish.healAmount(user))
+					(typeof fish.healAmount === 'number' ? fish.healAmount : fish.healAmount(user.skillsAsLevels))
 			);
 		let suitableFish = Eatables.filter(
 			i =>
 				i.raw &&
-				(typeof i.healAmount === 'number' ? i.healAmount : i.healAmount(user)) >= kibble.minimumFishHeal
+				(typeof i.healAmount === 'number' ? i.healAmount : i.healAmount(user.skillsAsLevels)) >=
+					kibble.minimumFishHeal
 		).sort(
 			(a, b) =>
-				(typeof a.healAmount === 'number' ? a.healAmount : a.healAmount(user)) -
-				(typeof b.healAmount === 'number' ? b.healAmount : b.healAmount(user))
+				(typeof a.healAmount === 'number' ? a.healAmount : a.healAmount(user.skillsAsLevels)) -
+				(typeof b.healAmount === 'number' ? b.healAmount : b.healAmount(user.skillsAsLevels))
 		);
 
 		const rawFishComponent = suitableFish.find(i => userBank.amount(i.raw!) >= calcFish(i));

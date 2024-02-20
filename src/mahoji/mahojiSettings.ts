@@ -10,6 +10,7 @@ import type { SelectedUserStats } from '../lib/MUser';
 import { prisma } from '../lib/settings/prisma';
 import { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
+import { LiteUser } from '../lib/structures/LiteUser';
 import type { ItemBank } from '../lib/types';
 import { anglerBoosts, formatItemReqs, hasSkillReqs, itemNameFromID, readableStatName } from '../lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../lib/util/clientSettings';
@@ -293,7 +294,7 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 	return [true];
 }
 
-export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster) {
+export function resolveAvailableItemBoosts(user: MUser | LiteUser, monster: KillableMonster) {
 	const boosts = new Bank();
 	if (monster.itemInBankBoosts) {
 		for (const boostSet of monster.itemInBankBoosts) {

@@ -21,7 +21,6 @@ import { BitField, PeakTier, PvMMethod, YETI_ID } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
-import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem } from '../../../lib/degradeableItems';
 import { Diary, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
 import { readableStatName, UserFullGearSetup } from '../../../lib/gear';
 import { GearSetupType, GearStat } from '../../../lib/gear/types';
@@ -68,7 +67,6 @@ import {
 	calculateTripConsumableCost,
 	checkRangeGearWeapon,
 	convertAttackStyleToGearSetup,
-	convertPvmStylesToGearSetup,
 	formatDuration,
 	formatItemBoosts,
 	formatItemCosts,
@@ -159,7 +157,7 @@ function applySkillBoost(
 	return [newDuration, str];
 }
 
-async function minionKillWrapper({
+export async function minionKillWrapper({
 	user,
 	interaction,
 	channelID,
@@ -251,6 +249,37 @@ async function minionKillWrapper({
 		}
 	}
 
+	// DDart
+	let usedDart = false;
+	const rangeSetup = { ...user.gear.range.raw() };
+	if (rangeSetup.weapon?.item === itemID('Deathtouched dart')) {
+		const bingos = await findBingosWithUserParticipating(user.id);
+		if (bingos.some(bingo => bingo.isActive())) {
+			return 'You cannot use Deathtouched darts while in an active Bingo.';
+		}
+		if (rangeSetup.weapon.quantity > 1) {
+			rangeSetup.weapon.quantity--;
+		} else {
+			rangeSetup.weapon = null;
+		}
+		await user.update({
+			gear_range: rangeSetup as Prisma.InputJsonObject
+		});
+		if (monster.name === 'Koschei the deathless') {
+			return (
+				'You send your minion off to fight Koschei with a Deathtouched dart, they stand a safe distance and throw the dart - Koschei immediately locks' +
+				' eyes with your minion and grabs the dart mid-air, and throws it back, killing your minion instantly.'
+			);
+		}
+		if (monster.name === 'Solis') {
+			return 'The dart melts into a crisp dust before coming into contact with Solis.';
+		}
+		if (monster.name === 'Yeti') {
+			return 'You send your minion off to fight Yeti with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
+		}
+		usedDart = true;
+	}
+
 	const currentSlayerTask = await getUsersCurrentSlayerInfo(user.id);
 
 	const isOnTask =
@@ -287,10 +316,85 @@ async function minionKillWrapper({
 	if (boostChoice === 'burst' && user.skillsAsLevels.magic < 70) {
 		return `You need 70 Magic to use Ice Burst. You have ${user.skillsAsLevels.magic}`;
 	}
-
 	const userStats = await user.fetchStats({ pk_evasion_exp: true });
+	// /////////
+	/**
+	 *
+	 * Degradeable Items
+	 *
+	 */
+	// const degItemBeingUsed = [];
+	// if (monster.degradeableItemUsage) {
+	// 	for (const set of monster.degradeableItemUsage) {
+	// 		const equippedInThisSet = set.items.find(item => gear[set.gearSetup].hasEquipped(item.itemID));
+	// 		if (set.required && !equippedInThisSet) {
+	// 			return `You need one of these items equipped in your ${set.gearSetup} setup to kill ${
+	// 				monster.name
+	// 			}: ${set.items
+	// 				.map(i => i.itemID)
+	// 				.map(itemNameFromID)
+	// 				.join(', ')}.`;
+	// 		}
+	// 		if (equippedInThisSet) {
+	// 			const degItem = degradeablePvmBoostItems.find(i => i.item.id === equippedInThisSet.itemID)!;
+	// 			boosts.push(`${equippedInThisSet.boostPercent}% for ${itemNameFromID(equippedInThisSet.itemID)}`);
+	// 			timeToFinish = reduceNumByPercent(timeToFinish, equippedInThisSet.boostPercent);
+	// 			degItemBeingUsed.push(degItem);
+	// 		}
+	// 	}
+	// } else {
+	// 	for (const degItem of degradeablePvmBoostItems) {
+	// 		const isUsing =
+	// 			convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
+	// 			gear[degItem.attackStyle].hasEquipped(degItem.item.id) &&
+	// 			(monster.setupsUsed ? monster.setupsUsed.includes(degItem.attackStyle) : true);
+	// 		if (isUsing) {
+	// 			// We assume they have enough charges, add the boost, and degrade at the end to avoid doing it twice.
+	// 			degItemBeingUsed.push(degItem);
+	// 		}
+	// 	}
+	// 	for (const degItem of degItemBeingUsed) {
+	// 		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
+	// 		timeToFinish = reduceNumByPercent(timeToFinish, degItem.boost);
+	// 	}
+	// }
+	// const osjsMon = Monsters.get(monster.id);
+	// const monsterHP = osjsMon?.data.hitpoints ?? 100;
+	// const degradeablesWithEnoughCharges = [];
+	// for (const degItem of degItemBeingUsed) {
+	// 	const chargesNeeded = Math.ceil(
+	// 		degItem.charges({
+	// 			killableMon: monster,
+	// 			osjsMonster: osjsMon!,
+	// 			totalHP: monsterHP * quantity,
+	// 			user,
+	// 			duration
+	// 		})
+	// 	);
+	// 	const result = await checkUserCanUseDegradeableItem({
+	// 		item: degItem.item,
+	// 		chargesToDegrade: chargesNeeded,
+	// 		user
+	// 	});
+	// 	if (!result.hasEnough) {
+	// 		return result.userMessage;
+	// 	}
+	// 	degradeablesWithEnoughCharges.push({ degItem, chargesNeeded });
+	// }
+	// for (const { degItem, chargesNeeded } of degradeablesWithEnoughCharges) {
+	// 	const degradeResult = await degradeItem({
+	// 		item: degItem.item,
+	// 		chargesToDegrade: chargesNeeded,
+	// 		user
+	// 	});
+	// 	boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
+	// 	messages.push(degradeResult.userMessage);
+	// 	duration = reduceNumByPercent(duration, degItem.boost);
+	// }
 
-	const { usedDart } = minionKillCommand({
+	// ///////////
+
+	let minionKillOptions: Parameters<typeof minionKillCommand>['0'] = {
 		nameInput,
 		equippedPet: user.user.minion_equippedPet,
 		quantityInput,
@@ -302,7 +406,6 @@ async function minionKillWrapper({
 		favoriteFood: user.user.favorite_food,
 		method,
 		gear: user.gear,
-		disabledInventions: user.user.disabled_inventions,
 		currentSlayerTask,
 		skillsAsLevels: user.skillsAsLevels,
 		bitfield: user.user.bitfield,
@@ -315,13 +418,57 @@ async function minionKillWrapper({
 		boostChoice,
 		slayerUnlocks: user.user.slayer_unlocks,
 		attackStyle: user.user.attack_style,
-		pkEvasionExp: userStats.pk_evasion_exp
-	});
+		pkEvasionExp: userStats.pk_evasion_exp,
+		usedDart,
+		inputAttackStyles: user.getAttackStyles(),
+		isUsingSuperiorDwarfMultiCannon: false,
+		superiorDwarfMultiCannonMessages: null
+	};
 
-	if (lootToRemove.length > 0) {
-		updateBankSetting('economyStats_PVMCost', lootToRemove);
-		await user.specialRemoveItems(lootToRemove, { wildy: monster.wildy ? true : false });
-		totalCost.add(lootToRemove);
+	const minionKillCommandPreResult = minionKillCommand(minionKillOptions);
+	if (typeof minionKillCommandPreResult === 'string') return minionKillCommandPreResult;
+
+	const { canAfford } = await canAffordInventionBoost(
+		user,
+		InventionID.SuperiorDwarfMultiCannon,
+		minionKillCommandPreResult.duration
+	);
+	const canAffordSuperiorCannonBoost = hasSuperiorCannon ? canAfford : false;
+	if (
+		boostChoice === 'cannon' &&
+		!user.user.disabled_inventions.includes(InventionID.SuperiorDwarfMultiCannon) &&
+		canAffordSuperiorCannonBoost &&
+		(monster.canCannon || monster.cannonMulti)
+	) {
+		const res = await inventionItemBoost({
+			user,
+			inventionID: InventionID.SuperiorDwarfMultiCannon,
+			duration: minionKillCommandPreResult.duration
+		});
+		if (res.success) {
+			minionKillOptions.isUsingSuperiorDwarfMultiCannon = true;
+			minionKillOptions.superiorDwarfMultiCannonMessages = res.messages;
+		}
+	}
+
+	const result = minionKillCommand(minionKillOptions);
+	if (typeof result === 'string') return result;
+	const {
+		quantity,
+		hasWildySupplies,
+		chinning,
+		totalCost,
+		duration,
+		usingCannon,
+		burstOrBarrage,
+		cannonMulti,
+		hasDied,
+		thePkCount
+	} = result;
+
+	if (totalCost.length > 0) {
+		await updateBankSetting('economyStats_PVMCost', totalCost);
+		await user.specialRemoveItems(totalCost, { wildy: monster.wildy ? true : false });
 	}
 
 	if (totalCost.length > 0) {
@@ -346,12 +493,13 @@ async function minionKillWrapper({
 			}
 		}));
 	}
+
 	await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
 		monsterID: monster.id,
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		quantity,
-		iQty: inputQuantity,
+		iQty: quantityInput,
 		duration,
 		type: 'MonsterKilling',
 		usingCannon: !usingCannon ? undefined : usingCannon,
@@ -377,7 +525,6 @@ export function minionKillCommand({
 	attackStyle,
 	currentSlayerTask,
 	playerOwnedHouse,
-	disabledInventions,
 	skillsAsLevels,
 	gearBankCollection,
 	slayerUnlocks,
@@ -385,7 +532,11 @@ export function minionKillCommand({
 	pkEvasionExp,
 	favoriteFood,
 	boostChoice,
-	hasCannon
+	hasCannon,
+	inputAttackStyles,
+	isUsingSuperiorDwarfMultiCannon,
+	superiorDwarfMultiCannonMessages,
+	usedDart
 }: {
 	kcForThisMonster: number;
 	nameInput: string;
@@ -399,7 +550,6 @@ export function minionKillCommand({
 	attackStyle: User['attack_style'];
 	currentSlayerTask: Awaited<ReturnType<typeof getUsersCurrentSlayerInfo>>;
 	playerOwnedHouse: PlayerOwnedHouse;
-	disabledInventions: User['disabled_inventions'];
 	skillsAsLevels: MUser['skillsAsLevels'];
 	gearBankCollection: LiteUser;
 	slayerUnlocks: SlayerTaskUnlocksEnum[];
@@ -408,6 +558,10 @@ export function minionKillCommand({
 	favoriteFood: number[];
 	boostChoice: string;
 	hasCannon: boolean;
+	inputAttackStyles: AttackStyles[];
+	isUsingSuperiorDwarfMultiCannon: boolean;
+	superiorDwarfMultiCannonMessages: string | null;
+	usedDart: boolean;
 }) {
 	const style = convertAttackStylesToSetup(attackStyle);
 	const key = ({ melee: 'attack_crush', mage: 'attack_magic', range: 'attack_ranged' } as const)[style];
@@ -456,7 +610,7 @@ export function minionKillCommand({
 
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, kcForThisMonster);
 
-	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
+	const [, osjsMon, attackStyles] = resolveAttackStyles(inputAttackStyles, {
 		monsterID: monster.id,
 		boostMethod: boostChoice
 	});
@@ -478,7 +632,7 @@ export function minionKillCommand({
 		}
 	}
 
-	for (const [itemID, boostAmount] of Object.entries(resolveAvailableItemBoosts(user, monster))) {
+	for (const [itemID, boostAmount] of Object.entries(resolveAvailableItemBoosts(gearBankCollection, monster))) {
 		timeToFinish *= (100 - boostAmount) / 100;
 		boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 	}
@@ -498,8 +652,6 @@ export function minionKillCommand({
 		timeToFinish /= 3;
 		boosts.push('3x boost for Hellfire bow');
 	}
-
-	const monsterHP = osjsMon?.data.hitpoints ?? 100;
 
 	// Black mask and salve don't stack.
 	const oneSixthBoost = 16.67;
@@ -641,31 +793,16 @@ export function minionKillCommand({
 	let chinning = false;
 	let burstOrBarrage = 0;
 
-	const { canAfford } = await canAffordInventionBoost(user, InventionID.SuperiorDwarfMultiCannon, timeToFinish);
-	const canAffordSuperiorCannonBoost = hasSuperiorCannon ? canAfford : false;
 	if (boostChoice === 'chinning' && skillsAsLevels.ranged < 65) {
 		return `You need 65 Ranged to use Chinning method. You have ${skillsAsLevels.ranged}`;
 	}
 
-	if (
-		boostChoice === 'cannon' &&
-		!disabledInventions.includes(InventionID.SuperiorDwarfMultiCannon) &&
-		canAffordSuperiorCannonBoost &&
-		(monster.canCannon || monster.cannonMulti)
-	) {
-		let qty = quantityInput || floor(maxTripLength / timeToFinish);
-		const res = await inventionItemBoost({
-			user,
-			inventionID: InventionID.SuperiorDwarfMultiCannon,
-			duration: timeToFinish * qty
-		});
-		if (res.success) {
-			usingCannon = true;
-			consumableCosts.push(superiorCannonSingleConsumables);
-			let boost = monster.cannonMulti ? boostSuperiorCannonMulti : boostSuperiorCannon;
-			timeToFinish = reduceNumByPercent(timeToFinish, boost);
-			boosts.push(`${boost}% for Superior Cannon (${res.messages})`);
-		}
+	if (isUsingSuperiorDwarfMultiCannon) {
+		usingCannon = true;
+		consumableCosts.push(superiorCannonSingleConsumables);
+		let boost = monster.cannonMulti ? boostSuperiorCannonMulti : boostSuperiorCannon;
+		timeToFinish = reduceNumByPercent(timeToFinish, boost);
+		boosts.push(`${boost}% for Superior Cannon (${superiorDwarfMultiCannonMessages})`);
 	} else if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 		consumableCosts.push(iceBarrageConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
@@ -754,47 +891,6 @@ export function minionKillCommand({
 		boosts.push('15% for Attack master cape');
 	}
 
-	/**
-	 *
-	 * Degradeable Items
-	 *
-	 */
-	const degItemBeingUsed = [];
-	if (monster.degradeableItemUsage) {
-		for (const set of monster.degradeableItemUsage) {
-			const equippedInThisSet = set.items.find(item => gear[set.gearSetup].hasEquipped(item.itemID));
-			if (set.required && !equippedInThisSet) {
-				return `You need one of these items equipped in your ${set.gearSetup} setup to kill ${
-					monster.name
-				}: ${set.items
-					.map(i => i.itemID)
-					.map(itemNameFromID)
-					.join(', ')}.`;
-			}
-			if (equippedInThisSet) {
-				const degItem = degradeablePvmBoostItems.find(i => i.item.id === equippedInThisSet.itemID)!;
-				boosts.push(`${equippedInThisSet.boostPercent}% for ${itemNameFromID(equippedInThisSet.itemID)}`);
-				timeToFinish = reduceNumByPercent(timeToFinish, equippedInThisSet.boostPercent);
-				degItemBeingUsed.push(degItem);
-			}
-		}
-	} else {
-		for (const degItem of degradeablePvmBoostItems) {
-			const isUsing =
-				convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
-				gear[degItem.attackStyle].hasEquipped(degItem.item.id) &&
-				(monster.setupsUsed ? monster.setupsUsed.includes(degItem.attackStyle) : true);
-			if (isUsing) {
-				// We assume they have enough charges, add the boost, and degrade at the end to avoid doing it twice.
-				degItemBeingUsed.push(degItem);
-			}
-		}
-		for (const degItem of degItemBeingUsed) {
-			boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
-			timeToFinish = reduceNumByPercent(timeToFinish, degItem.boost);
-		}
-	}
-
 	if (monster.equippedItemBoosts) {
 		for (const boostSet of monster.equippedItemBoosts) {
 			const equippedInThisSet = boostSet.items.find(item => gear[boostSet.gearSetup].hasEquipped(item.itemID));
@@ -815,6 +911,9 @@ export function minionKillCommand({
 	}
 
 	let quantity = Math.max(1, quantityInput);
+	if (usedDart) {
+		quantity = 1;
+	}
 
 	if (isOnTask) {
 		let effectiveQtyRemaining = currentSlayerTask.currentTask!.quantity_remaining;
@@ -978,38 +1077,6 @@ export function minionKillCommand({
 
 	duration = randomVariation(duration, 3);
 
-	const degradeablesWithEnoughCharges = [];
-	for (const degItem of degItemBeingUsed) {
-		const chargesNeeded = Math.ceil(
-			degItem.charges({
-				killableMon: monster,
-				osjsMonster: osjsMon!,
-				totalHP: monsterHP * quantity,
-				user,
-				duration
-			})
-		);
-		const result = await checkUserCanUseDegradeableItem({
-			item: degItem.item,
-			chargesToDegrade: chargesNeeded,
-			user
-		});
-		if (!result.hasEnough) {
-			return result.userMessage;
-		}
-		degradeablesWithEnoughCharges.push({ degItem, chargesNeeded });
-	}
-	for (const { degItem, chargesNeeded } of degradeablesWithEnoughCharges) {
-		const degradeResult = await degradeItem({
-			item: degItem.item,
-			chargesToDegrade: chargesNeeded,
-			user
-		});
-		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
-		messages.push(degradeResult.userMessage);
-		duration = reduceNumByPercent(duration, degItem.boost);
-	}
-
 	if (isWeekend()) {
 		boosts.push('10% for Weekend');
 		duration *= 0.9;
@@ -1019,36 +1086,7 @@ export function minionKillCommand({
 		const prayerPotsBank = new Bank().add('Prayer potion(4)', prayerPotsNeeded);
 		lootToRemove.add(prayerPotsBank);
 	}
-	const rangeSetup = { ...gear.range.raw() };
-	let usedDart = false;
-	if (rangeSetup.weapon?.item === itemID('Deathtouched dart')) {
-		const bingos = await findBingosWithUserParticipating(user.id);
-		if (bingos.some(bingo => bingo.isActive())) {
-			return 'You cannot use Deathtouched darts while in an active Bingo.';
-		}
-		duration = 1;
-		if (rangeSetup.weapon.quantity > 1) {
-			rangeSetup.weapon.quantity--;
-		} else {
-			rangeSetup.weapon = null;
-		}
-		await user.update({
-			gear_range: rangeSetup as Prisma.InputJsonObject
-		});
-		if (monster.name === 'Koschei the deathless') {
-			return (
-				'You send your minion off to fight Koschei with a Deathtouched dart, they stand a safe distance and throw the dart - Koschei immediately locks' +
-				' eyes with your minion and grabs the dart mid-air, and throws it back, killing your minion instantly.'
-			);
-		}
-		if (monster.name === 'Solis') {
-			return 'The dart melts into a crisp dust before coming into contact with Solis.';
-		}
-		if (monster.name === 'Yeti') {
-			return 'You send your minion off to fight Yeti with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
-		}
-		usedDart = true;
-	}
+
 	if (monster.name === 'Koschei the deathless') {
 		return 'You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.';
 	}
@@ -1131,66 +1169,55 @@ export function minionKillCommand({
 		let gearToCheck: GearSetupType = convertAttackStyleToGearSetup(monster.attackStyleToUse);
 		if (monster.wildy) gearToCheck = 'wildy';
 
-		try {
-			const { foodToRemove, reductionRatio, reductions } = calcFoodToRemoveFoodFromUser({
-				gear,
-				favoriteFood,
-				bank: userBank,
-				skillsAsLevels,
-				totalHealingNeeded: healAmountNeeded * quantity,
-				attackStylesUsed: monster.wildy
-					? ['wildy']
-					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
-				learningPercentage: percentReduced,
-				isWilderness: monster.wildy,
-				minimumHealAmount: monster.minimumFoodHealAmount
-			});
+		const { foodToRemove, reductionRatio, reductions } = calcFoodToRemoveFoodFromUser({
+			gear,
+			favoriteFood,
+			bank: userBank,
+			skillsAsLevels,
+			totalHealingNeeded: healAmountNeeded * quantity,
+			attackStylesUsed: monster.wildy
+				? ['wildy']
+				: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
+			learningPercentage: percentReduced,
+			isWilderness: monster.wildy,
+			minimumHealAmount: monster.minimumFoodHealAmount
+		});
 
-			if (!foodToRemove) {
-				return `You don't have enough food to kill ${monster.name}.`;
-			}
+		if (!foodToRemove) {
+			return `You don't have enough food to kill ${monster.name}.`;
+		}
 
-			if (foodToRemove.length === 0) {
-				boosts.push(`${noFoodBoost}% for no food`);
-				duration = reduceNumByPercent(duration, noFoodBoost);
-			} else {
-				for (const [item, qty] of foodToRemove.items()) {
-					const eatable = Eatables.find(e => e.id === item.id);
-					if (!eatable) continue;
+		if (foodToRemove.length === 0) {
+			boosts.push(`${noFoodBoost}% for no food`);
+			duration = reduceNumByPercent(duration, noFoodBoost);
+		} else {
+			for (const [item, qty] of foodToRemove.items()) {
+				const eatable = Eatables.find(e => e.id === item.id);
+				if (!eatable) continue;
 
-					const healAmount =
-						typeof eatable.healAmount === 'number'
-							? eatable.healAmount
-							: eatable.healAmount(skillsAsLevels);
-					const amountHealed = qty * healAmount;
-					if (amountHealed < calcPercentOfNum(75 * reductionRatio, healAmountNeeded * quantity)) continue;
-					const boost = eatable.pvmBoost;
-					if (boost) {
-						if (boost < 0) {
-							boosts.push(`${boost}% for ${eatable.name}`);
-							duration = increaseNumByPercent(duration, Math.abs(boost));
-						} else {
-							boosts.push(`${boost}% for ${eatable.name}`);
-							duration = reduceNumByPercent(duration, boost);
-						}
+				const healAmount =
+					typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(skillsAsLevels);
+				const amountHealed = qty * healAmount;
+				if (amountHealed < calcPercentOfNum(75 * reductionRatio, healAmountNeeded * quantity)) continue;
+				const boost = eatable.pvmBoost;
+				if (boost) {
+					if (boost < 0) {
+						boosts.push(`${boost}% for ${eatable.name}`);
+						duration = increaseNumByPercent(duration, Math.abs(boost));
+					} else {
+						boosts.push(`${boost}% for ${eatable.name}`);
+						duration = reduceNumByPercent(duration, boost);
 					}
-					break;
 				}
-			}
-
-			totalCost.add(foodToRemove);
-			if (reductions.length > 0) {
-				foodStr += `, ${reductions.join(', ')}`;
-			}
-			foodStr += `, **Removed ${foodToRemove}**`;
-		} catch (e: any) {
-			if (typeof e === 'string') {
-				return e;
-			}
-			if (e.message) {
-				return e.message;
+				break;
 			}
 		}
+
+		totalCost.add(foodToRemove);
+		if (reductions.length > 0) {
+			foodStr += `, ${reductions.join(', ')}`;
+		}
+		foodStr += `, **Removed ${foodToRemove}**`;
 	} else {
 		boosts.push(`${noFoodBoost}% for no food`);
 		duration = reduceNumByPercent(duration, noFoodBoost);
@@ -1202,6 +1229,7 @@ export function minionKillCommand({
 	}
 
 	if (usedDart) {
+		duration = 1;
 		return `<:deathtouched_dart:822674661967265843> ${minionName} used a **Deathtouched dart**.`;
 	}
 
@@ -1238,7 +1266,11 @@ export function minionKillCommand({
 		chinning,
 		thePkCount,
 		hasDied,
-		burstOrBarrage
+		burstOrBarrage,
+		duration,
+		totalCost,
+		quantity,
+		hasWildySupplies
 	};
 }
 
@@ -1253,7 +1285,7 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 		return "That's not a valid monster";
 	}
 	const osjsMon = Monsters.get(monster.id);
-	const [, , attackStyles] = resolveAttackStyles(user, {
+	const [, , attackStyles] = resolveAttackStyles(user.getAttackStyles(), {
 		monsterID: monster.id
 	});
 

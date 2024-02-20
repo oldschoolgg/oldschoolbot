@@ -121,7 +121,8 @@ export default async function removeFoodFromUser({
 
 		return {
 			foodRemoved: res.foodToRemove,
-			reductions: res.reductions
+			reductions: res.reductions,
+			reductionRatio: res.reductionRatio
 		};
 	}
 }

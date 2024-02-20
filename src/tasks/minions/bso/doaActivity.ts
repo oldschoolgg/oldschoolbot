@@ -77,7 +77,7 @@ async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 	results.push(
 		user.addXP({ skillName: SkillsEnum.Magic, amount: magicXP, minimal: true, source: 'DepthsOfAtlantis' })
 	);
-	let [, , styles] = resolveAttackStyles(user, {
+	let [, , styles] = resolveAttackStyles(user.getAttackStyles(), {
 		monsterID: -1
 	});
 	if (([SkillsEnum.Magic, SkillsEnum.Ranged] as const).some(style => styles.includes(style))) {

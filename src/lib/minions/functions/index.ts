@@ -40,21 +40,20 @@ const miscHpMap: Record<number, number> = {
 	[Naxxus.id]: NAXXUS_HP
 };
 
-function meleeOnly(user: MUser): AttackStyles[] {
-	const skills = user.getAttackStyles();
-	if (skills.some(skill => skill === SkillsEnum.Ranged || skill === SkillsEnum.Magic)) {
+function meleeOnly(attackStyles: AttackStyles[]): AttackStyles[] {
+	if (attackStyles.some(skill => skill === SkillsEnum.Ranged || skill === SkillsEnum.Magic)) {
 		return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
 	}
-	return skills;
+	return attackStyles;
 }
 export function resolveAttackStyles(
-	user: MUser,
+	attackStyles: AttackStyles[],
 	params: ResolveAttackStylesParams
 ): [KillableMonster | undefined, Monster | undefined, AttackStyles[]] {
-	if (params.monsterID === KingGoldemar.id) return [undefined, undefined, meleeOnly(user)];
+	if (params.monsterID === KingGoldemar.id) return [undefined, undefined, meleeOnly(attackStyles)];
 	if (params.monsterID === VasaMagus.id) return [undefined, undefined, [SkillsEnum.Magic]];
 	if (params.monsterID === NexMonster.id) return [undefined, undefined, [SkillsEnum.Ranged]];
-	if (params.monsterID === KalphiteKingMonster.id) return [undefined, undefined, meleeOnly(user)];
+	if (params.monsterID === KalphiteKingMonster.id) return [undefined, undefined, meleeOnly(attackStyles)];
 	if (params.monsterID === Naxxus.id) {
 		return [undefined, undefined, [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Magic]];
 	}
@@ -66,9 +65,6 @@ export function resolveAttackStyles(
 	}
 
 	const osjsMon = params.monsterID ? Monsters.get(params.monsterID) : undefined;
-
-	// The styles chosen by this user to use.
-	let attackStyles = user.getAttackStyles();
 
 	// The default attack styles to use for this monster, defaults to shared (melee)
 	const monsterStyles =
@@ -96,10 +92,22 @@ export function resolveAttackStyles(
 	return [killableMon, osjsMon, attackStyles];
 }
 
-export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
+export function determineMonsterXPToAdd(params: {
+	monsterID: number;
+	quantity: number;
+	duration: number;
+	isOnTask: boolean;
+	taskQuantity: number | null;
+	minimal?: boolean;
+	usingCannon?: boolean;
+	cannonMulti?: boolean;
+	burstOrBarrage?: number;
+	superiorCount?: number;
+	attackStyles: AttackStyles[];
+}) {
 	const boostMethod = params.burstOrBarrage ? 'barrage' : 'none';
 
-	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
+	const [, osjsMon, attackStyles] = resolveAttackStyles(params.attackStyles, {
 		monsterID: params.monsterID,
 		boostMethod
 	});
@@ -149,17 +157,15 @@ export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
 	const totalXP = hp * 4 * normalQty * xpMultiplier + superiorXp;
 	const xpPerSkill = totalXP / attackStyles.length;
 
-	let res: string[] = [];
+	let res: Parameters<MUser['addXP']>['0'][] = [];
 
 	for (const style of attackStyles) {
-		res.push(
-			await user.addXP({
-				skillName: style,
-				amount: Math.floor(xpPerSkill),
-				duration: params.duration,
-				minimal: params.minimal ?? true
-			})
-		);
+		res.push({
+			skillName: style,
+			amount: Math.floor(xpPerSkill),
+			duration: params.duration,
+			minimal: params.minimal ?? true
+		});
 	}
 
 	if (params.isOnTask) {
@@ -181,38 +187,41 @@ export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
 		if (params.monsterID === Monsters.AbyssalSire.id) {
 			newSlayerXP += params.taskQuantity! * 200;
 		}
-		res.push(
-			await user.addXP({
-				skillName: SkillsEnum.Slayer,
-				amount: newSlayerXP + superiorSlayXp,
-				duration: params.duration,
-				minimal: params.minimal ?? true
-			})
-		);
-	}
-
-	res.push(
-		await user.addXP({
-			skillName: SkillsEnum.Hitpoints,
-			amount: Math.floor(hp * normalQty * 1.33 * xpMultiplier + superiorXp / 3),
+		res.push({
+			skillName: SkillsEnum.Slayer,
+			amount: newSlayerXP + superiorSlayXp,
 			duration: params.duration,
 			minimal: params.minimal ?? true
-		})
-	);
+		});
+	}
+
+	res.push({
+		skillName: SkillsEnum.Hitpoints,
+		amount: Math.floor(hp * normalQty * 1.33 * xpMultiplier + superiorXp / 3),
+		duration: params.duration,
+		minimal: params.minimal ?? true
+	});
 
 	// Add cannon xp last so it's easy to distinguish
 	if (params.usingCannon) {
-		res.push(
-			await user.addXP({
-				skillName: SkillsEnum.Ranged,
-				amount: Math.floor(hp * 2 * cannonQty),
-				duration: params.duration,
-				minimal: params.minimal ?? true
-			})
-		);
+		res.push({
+			skillName: SkillsEnum.Ranged,
+			amount: Math.floor(hp * 2 * cannonQty),
+			duration: params.duration,
+			minimal: params.minimal ?? true
+		});
 	}
 
-	return `**XP Gains:** ${res.join(' ')}`;
+	return {
+		message: `**XP Gains:** ${res.join(' ')}`,
+		res
+	};
+}
+
+export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
+	const { res, message } = determineMonsterXPToAdd({ ...params, attackStyles: user.getAttackStyles() });
+	await Promise.all(res.map(r => user.addXP(r)));
+	return message;
 }
 
 export function convertAttackStylesToSetup(styles: AttackStyles | User['attack_style']): 'melee' | 'range' | 'mage' {
