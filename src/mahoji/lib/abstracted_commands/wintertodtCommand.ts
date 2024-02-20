@@ -64,7 +64,7 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 	const quantity = Math.floor(calcMaxTripLength(user, 'Wintertodt') / durationPerTodt);
 
 	for (const food of Eatables) {
-		const healAmount = typeof food.healAmount === 'number' ? food.healAmount : food.healAmount(user);
+		const healAmount = typeof food.healAmount === 'number' ? food.healAmount : food.healAmount(user.skillsAsLevels);
 		const amountNeeded = Math.ceil(healAmountNeeded / healAmount) * quantity;
 		if (user.bank.amount(food.id) < amountNeeded) {
 			if (Eatables.indexOf(food) === Eatables.length - 1) {

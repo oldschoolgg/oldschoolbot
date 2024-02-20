@@ -66,7 +66,8 @@ export async function calcTOBInput(u: MUser) {
 
 	items.add(
 		getUserFoodFromBank({
-			user: u,
+			bank: u.bank,
+			skillsAsLevels: u.skillsAsLevels,
 			totalHealingNeeded: healingNeeded,
 			favoriteFood: u.user.favorite_food,
 			minimumHealAmount: 20

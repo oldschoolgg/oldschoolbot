@@ -34,6 +34,7 @@ import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { assert, calculateSimpleMonsterDeathChance, clAdjustedDroprate, hasSkillReqs, roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
+import { increaseWildEvasionXp } from '../../lib/util/calcWildyPkChance';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -637,6 +638,10 @@ export const monsterTask: MinionTask = {
 					quantity_remaining: quantityLeft
 				}
 			});
+		}
+
+		if (monster.canBePked) {
+			await increaseWildEvasionXp(user, duration);
 		}
 
 		if (deaths > 0) {

@@ -4,7 +4,7 @@ export interface Eatable {
 	name: string;
 	id: number;
 	raw: number | null;
-	healAmount: ((user: MUser) => number) | number;
+	healAmount: ((skillsAsLevels: MUser['skillsAsLevels']) => number) | number;
 	pvmBoost?: number;
 	wildyOnly?: boolean;
 }
@@ -269,8 +269,8 @@ export const Eatables: readonly Eatable[] = [
 		name: 'Anglerfish',
 		id: itemID('Anglerfish'),
 		raw: itemID('Raw anglerfish'),
-		healAmount: (user: MUser) => {
-			const hp = user.skillLevel('hitpoints');
+		healAmount: skillsAsLevels => {
+			const hp = skillsAsLevels.hitpoints;
 			let c = 2;
 			if (hp > 10) c = 2;
 			if (hp > 25) c = 4;
@@ -285,8 +285,8 @@ export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Blighted anglerfish',
 		id: itemID('Blighted anglerfish'),
-		healAmount: (user: MUser) => {
-			const hp = user.skillLevel('hitpoints');
+		healAmount: skillsAsLevels => {
+			const hp = skillsAsLevels.hitpoints;
 			let c = 2;
 			if (hp > 10) c = 2;
 			if (hp > 25) c = 4;
