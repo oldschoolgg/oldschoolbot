@@ -193,7 +193,7 @@ for (const dye of dyeUsables) {
 					break;
 				}
 			}
-			const str = `Select the abyssal dye you would like swap ${dye.name} with.`;
+			const str = `Select the Abyssal dye you would like to swap ${dye.name} with.`;
 			const sentMessage = await channel.send({
 				content: str,
 				components: makeComponents(components)
