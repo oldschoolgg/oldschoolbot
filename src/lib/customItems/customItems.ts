@@ -8494,6 +8494,11 @@ setCustomItem(
 	10_000
 );
 
+/*
+ * START Halloween 2023
+ *
+ */
+
 setCustomItem(
 	71_580,
 	'Spooky crate (s3)',
@@ -9096,7 +9101,8 @@ setCustomItem(
 	'Rune full helm',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9108,7 +9114,8 @@ setCustomItem(
 	'Rune platebody',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9120,7 +9127,8 @@ setCustomItem(
 	'Rune platelegs',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9132,7 +9140,8 @@ setCustomItem(
 	'Fire cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9144,7 +9153,8 @@ setCustomItem(
 	'Rune boots',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9156,7 +9166,8 @@ setCustomItem(
 	'Amulet of strength',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9168,7 +9179,8 @@ setCustomItem(
 	'Diamond ring',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9180,7 +9192,8 @@ setCustomItem(
 	'Rune gloves',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9192,7 +9205,8 @@ setCustomItem(
 	'Rune kiteshield',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9204,7 +9218,8 @@ setCustomItem(
 	'Rune dagger',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9216,7 +9231,8 @@ setCustomItem(
 	'Rune dagger',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9228,7 +9244,8 @@ setCustomItem(
 	'Rune dagger',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9240,7 +9257,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9253,7 +9271,8 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			isSuperUntradeable: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9306,7 +9325,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9345,7 +9365,8 @@ setCustomItem(
 	'Bronze kiteshield',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9357,7 +9378,8 @@ setCustomItem(
 	'Red partyhat',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9370,7 +9392,8 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			isSuperUntradeable: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9383,7 +9406,8 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			isSuperUntradeable: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9395,7 +9419,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
@@ -9407,11 +9432,17 @@ setCustomItem(
 	'Rune full helm',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	100_000
 );
+
+/*
+ * END Halloween 2023
+ *
+ */
 
 setCustomItem(
 	71_930,
@@ -9620,7 +9651,8 @@ setCustomItem(
 	'Bronze full helm',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9632,7 +9664,8 @@ setCustomItem(
 	'Bronze platebody',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9644,7 +9677,8 @@ setCustomItem(
 	'Bronze platelegs',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9656,7 +9690,8 @@ setCustomItem(
 	'Bronze boots',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9668,7 +9703,8 @@ setCustomItem(
 	'Bronze gloves',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9680,7 +9716,8 @@ setCustomItem(
 	'Santa hat',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9692,7 +9729,8 @@ setCustomItem(
 	'Red partyhat',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9704,7 +9742,8 @@ setCustomItem(
 	'Rune platebody',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9716,7 +9755,8 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9728,7 +9768,8 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9740,7 +9781,8 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9752,7 +9794,8 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9764,7 +9807,8 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9776,7 +9820,8 @@ setCustomItem(
 	'Bronze platebody',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9788,7 +9833,8 @@ setCustomItem(
 	'Bronze platebody',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9813,7 +9859,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9825,7 +9872,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9837,7 +9885,8 @@ setCustomItem(
 	'Rune platebody',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9849,7 +9898,8 @@ setCustomItem(
 	'Rune platebody',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9861,7 +9911,8 @@ setCustomItem(
 	'Rune platelegs',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9873,7 +9924,8 @@ setCustomItem(
 	'Rune platelegs',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9885,7 +9937,8 @@ setCustomItem(
 	'Rune gloves',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9897,7 +9950,8 @@ setCustomItem(
 	'Rune boots',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9909,7 +9963,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9921,7 +9976,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9933,7 +9989,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9945,7 +10002,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9957,7 +10015,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9969,7 +10028,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9981,7 +10041,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -9993,7 +10054,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10005,7 +10067,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10017,7 +10080,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10029,7 +10093,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10041,7 +10106,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10053,7 +10119,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10065,7 +10132,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10077,7 +10145,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10089,7 +10158,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10101,7 +10171,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10113,7 +10184,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10125,7 +10197,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10136,7 +10209,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10162,7 +10236,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10174,7 +10249,8 @@ setCustomItem(
 	'Bronze dagger',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10186,7 +10262,8 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10198,7 +10275,8 @@ setCustomItem(
 	'Red cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10210,7 +10288,8 @@ setCustomItem(
 	'Bronze dagger',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10222,7 +10301,8 @@ setCustomItem(
 	'Bronze dagger',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -10234,7 +10314,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
