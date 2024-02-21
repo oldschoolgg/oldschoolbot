@@ -35,11 +35,12 @@ export const collectionLogCommand: OSBMahojiCommand = {
 								...Object.entries(i[1].activities).map(act => ({
 									name: `${act[0]} (${act[1].items.length} Items)`,
 									value: act[0]
+						.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 								}))
 							];
 						})
 						.flat(3)
-				].filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
+				];
 			}
 		},
 		{
