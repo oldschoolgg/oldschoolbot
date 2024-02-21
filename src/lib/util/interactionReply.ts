@@ -2,22 +2,36 @@ import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import {
 	ButtonInteraction,
 	ChatInputCommandInteraction,
+	DiscordAPIError,
 	Interaction,
 	InteractionReplyOptions,
+	InteractionResponse,
+	Message,
 	RepliableInteraction
 } from 'discord.js';
 
 import { SILENT_ERROR } from '../constants';
 import { logErrorForInteraction } from './logError';
 
-export function interactionReply(interaction: RepliableInteraction, response: string | InteractionReplyOptions) {
+export async function interactionReply(interaction: RepliableInteraction, response: string | InteractionReplyOptions) {
+	let i: Promise<InteractionResponse> | Promise<Message> | undefined = undefined;
 	if (interaction.replied) {
-		return interaction.followUp(response);
+		i = interaction.followUp(response);
+	} else if (interaction.deferred) {
+		i = interaction.editReply(response);
+	} else {
+		i = interaction.reply(response);
 	}
-	if (interaction.deferred) {
-		return interaction.editReply(response);
+	try {
+		await i;
+		return i;
+	} catch (e: any) {
+		if (e instanceof DiscordAPIError && e.code !== 10_008) {
+			// 10_008 is unknown message, e.g. if someone deletes the message before it's replied to.
+			logErrorForInteraction(e, interaction);
+		}
+		return undefined;
 	}
-	return interaction.reply(response);
 }
 
 export function deferInteraction(interaction: ButtonInteraction | ChatInputCommandInteraction) {
@@ -32,19 +46,15 @@ export async function handleInteractionError(err: unknown, interaction: Interact
 	// For silent errors, just return and do nothing. Users could see an error.
 	if (err instanceof Error && err.message === SILENT_ERROR) return;
 
+	// If DiscordAPIError #10008, that means someone deleted the message, we don't need to log this.
+	if (err instanceof DiscordAPIError && err.code === 10_008) {
+		return;
+	}
+
 	// If this isn't a UserError, its something we need to just log and know about to fix it.
 	// Or if its not repliable, we should never be erroring here.
 	if (!(err instanceof UserError) || !interaction.isRepliable()) {
 		return logErrorForInteraction(err, interaction);
-	}
-
-	// If it can be replied too, and hasn't been replied too, reply with the error.
-	// If it has already been replied too, log the UserError so we can know where this mix-up is coming from.
-	if (interaction.replied) {
-		return logErrorForInteraction(
-			new Error(`Tried to respond with '${err.message}' to this interaction, but it was already replied too.`),
-			interaction
-		);
 	}
 
 	await interactionReply(interaction, err.message);

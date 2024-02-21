@@ -92,6 +92,10 @@ export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null
 	return [true, null];
 }
 
+export function pluraliseItemName(name: string): string {
+	return name + (name.endsWith('s') ? '' : 's');
+}
+
 /**
  * Scale percentage exponentially
  *
@@ -327,4 +331,11 @@ export function containsBlacklistedWord(str: string): boolean {
 		}
 	}
 	return false;
+}
+
+export function ellipsize(str: string, maxLen: number = 2000) {
+	if (str.length > maxLen) {
+		return `${str.substring(0, maxLen - 3)}...`;
+	}
+	return str;
 }
