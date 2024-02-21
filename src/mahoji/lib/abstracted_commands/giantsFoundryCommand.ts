@@ -103,10 +103,10 @@ export const giantsFoundryBuyables: { name: string; output: Bank; cost: number; 
 		aliases: []
 	},
 	{
-		name: 'Ore pack',
+		name: "Ore pack (Giant's Foundry)",
 		output: new Bank().add("Ore pack (Giant's Foundry)", 1),
 		cost: 200,
-		aliases: ["Ore pack (Giant's Foundry)"]
+		aliases: []
 	},
 	{
 		name: 'Smiths tunic',
