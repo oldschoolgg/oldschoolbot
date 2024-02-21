@@ -1,14 +1,14 @@
 import { calcWhatPercent, reduceNumByPercent } from 'e';
 
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
-import { GearSetupType, GearStat } from '../../gear/types';
+import { GearSetupType, GearStat, UserFullGearSetup } from '../../gear/types';
 import { maxDefenceStats, maxOffenceStats } from '../../structures/Gear';
 import { readableStatName } from '../../util/smallUtils';
 import { KillableMonster } from '../types';
 
 const { floor, max } = Math;
 
-export default function calculateMonsterFood(monster: Readonly<KillableMonster>, user: MUser): [number, string] {
+export function calculateMonsterFoodRaw(monster: Readonly<KillableMonster>, gear: UserFullGearSetup): [number, string] {
 	let { healAmountNeeded, attackStyleToUse, attackStylesUsed } = monster;
 
 	if (!healAmountNeeded || !attackStyleToUse || !attackStylesUsed) {
@@ -33,7 +33,7 @@ export default function calculateMonsterFood(monster: Readonly<KillableMonster>,
 	}
 
 	if (monster.wildy) gearToCheck = 'wildy';
-	const gearStats = user.gear[gearToCheck].stats;
+	const gearStats = gear[gearToCheck].stats;
 
 	let totalPercentOfGearLevel = 0;
 	let totalOffensivePercent = 0;
@@ -57,7 +57,7 @@ export default function calculateMonsterFood(monster: Readonly<KillableMonster>,
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel));
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalOffensivePercent));
 
-	const hasAbyssalCape = user.hasEquipped('Abyssal cape');
+	const hasAbyssalCape = Object.values(gear).some(g => g.hasEquipped('Abyssal cape'));
 	if (hasAbyssalCape) {
 		healAmountNeeded = Math.floor(healAmountNeeded * 0.5);
 	}
@@ -72,4 +72,8 @@ export default function calculateMonsterFood(monster: Readonly<KillableMonster>,
 			hasAbyssalCape ? ', -50% for Abyssal cape' : ''
 		}`
 	];
+}
+
+export default function calculateMonsterFood(monster: Readonly<KillableMonster>, user: MUser): [number, string] {
+	return calculateMonsterFoodRaw(monster, user.gear);
 }

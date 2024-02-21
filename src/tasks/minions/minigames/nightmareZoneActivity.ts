@@ -10,7 +10,7 @@ export const nightmareZoneTask: MinionTask = {
 		const { quantity, userID, channelID, duration, strategy } = data;
 		const user = await mUserFetch(userID);
 
-		const [, , attackStyles] = resolveAttackStyles(user, { monsterID: undefined });
+		const [, , attackStyles] = resolveAttackStyles(user.getAttackStyles(), { monsterID: undefined });
 
 		const monsterHP = 227;
 		const monsterPoints = 3500;

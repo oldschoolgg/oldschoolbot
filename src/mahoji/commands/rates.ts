@@ -5,10 +5,11 @@ import { Bank } from 'oldschooljs';
 
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { GLOBAL_BSO_XP_MULTIPLIER, PeakTier } from '../../lib/constants';
+import { GLOBAL_BSO_XP_MULTIPLIER, PeakTier, PVM_METHODS } from '../../lib/constants';
 import { inventionBoosts } from '../../lib/invention/inventions';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
+import { determineMonsterXPToAdd } from '../../lib/minions/functions';
 import Agility from '../../lib/skilling/skills/agility';
 import {
 	calcGorajanShardChance,
@@ -18,8 +19,9 @@ import {
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
-import { HunterTechniqueEnum } from '../../lib/skilling/types';
+import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
 import { Gear } from '../../lib/structures/Gear';
+import { LiteUser } from '../../lib/structures/LiteUser';
 import { convertBankToPerHourStats, stringMatches } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -30,6 +32,7 @@ import { calculateDungeoneeringResult } from '../../tasks/minions/bso/dungeoneer
 import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
 import { calculateHunterResult } from '../../tasks/minions/HunterActivity/hunterActivity';
 import { calculateMiningResult } from '../../tasks/minions/miningActivity';
+import { minionKillCommand } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
 import { calculateHunterInput } from './hunt';
 import { calculateMiningInput } from './mine';
@@ -91,21 +94,14 @@ export const ratesCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
-			name: 'monster',
+			name: 'monsters',
 			description: 'Check monster loot rates.',
 			options: [
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'monster',
-					description: 'Check monster.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'name',
-							description: 'The name of the monster.',
-							required: true
-						}
-					]
+					name: 'all',
+					description: 'Check monsters.',
+					options: []
 				}
 			]
 		}
@@ -118,9 +114,124 @@ export const ratesCommand: OSBMahojiCommand = {
 		xphr?: { divination_memory_harvesting?: {}; agility?: {}; dungeoneering?: {}; mining?: {}; hunter?: {} };
 		monster?: { monster?: { name: string } };
 		tames?: { eagle?: {} };
+		monsters?: { all?: {} };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
+
+		if (options.monsters?.all) {
+			let results = `${['Monster', 'Atk xp/hr', 'Str xp/hr', 'Def xp/hr', 'Rng xp/hr', 'Magic xp/hr'].join(
+				'\t'
+			)}\n`;
+
+			for (const monster of killableMonsters) {
+				for (const method of PVM_METHODS) {
+					for (const boostChoice of ['burst', 'chinning', 'barrage', 'cannon', 'none']) {
+						for (const attackStyles of [
+							[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence],
+							[SkillsEnum.Attack],
+							[SkillsEnum.Strength],
+							[SkillsEnum.Defence],
+							[SkillsEnum.Magic],
+							[SkillsEnum.Ranged],
+							[SkillsEnum.Magic, SkillsEnum.Defence],
+							[SkillsEnum.Ranged, SkillsEnum.Defence]
+						]) {
+							const res = minionKillCommand({
+								nameInput: monster.name,
+								equippedPet: user.user.minion_equippedPet,
+								quantityInput: undefined,
+								maxTripLength: Time.Hour * 500,
+								minionName: user.minionName,
+								kcForThisMonster: 1_000_000,
+								userBank: user.bankWithGP,
+								playerOwnedHouse: {
+									user_id: '123',
+									background_id: 1,
+									altar: null,
+									throne: null,
+									mounted_cape: null,
+									mounted_fish: null,
+									mounted_head: null,
+									mounted_item: null,
+									jewellery_box: null,
+									prayer_altar: null,
+									spellbook_altar: null,
+									guard: null,
+									torch: null,
+									dungeon_decoration: null,
+									prison: null,
+									pool: 99_950,
+									teleport: null,
+									amulet: null,
+									garden_decoration: null
+								},
+								favoriteFood: user.user.favorite_food,
+								method,
+								gear: user.gear,
+								currentSlayerTask: {
+									currentTask: null,
+									assignedTask: null,
+									slayerMaster: null
+								},
+								skillsAsLevels: user.skillsAsLevels,
+								bitfield: user.user.bitfield,
+								hasCannon: false,
+								gearBankCollection: new LiteUser({
+									gear: Object.values(user.gear),
+									bank: user.bankWithGP,
+									skillsAsXP: user.skillsAsXP
+								}),
+								boostChoice,
+								slayerUnlocks: user.user.slayer_unlocks,
+								attackStyle: user.user.attack_style,
+								pkEvasionExp: 1000,
+								usedDart: false,
+								inputAttackStyles: user.getAttackStyles(),
+								isUsingSuperiorDwarfMultiCannon: false,
+								superiorDwarfMultiCannonMessages: null
+							});
+							if (typeof res === 'string') continue;
+							const xp = determineMonsterXPToAdd({
+								monsterID: monster.id,
+								quantity: res.quantity,
+								duration: res.duration,
+								isOnTask: false,
+								taskQuantity: null,
+								minimal: true,
+								usingCannon: false,
+								cannonMulti: false,
+								burstOrBarrage: 0,
+								superiorCount: 0,
+								attackStyles: attackStyles as any
+							});
+							function getXPHr(name: string) {
+								const xpRes = xp.res.find(x => x.skillName === name);
+								if (!xpRes) return '0';
+								return calcPerHour(
+									xpRes.amount * GLOBAL_BSO_XP_MULTIPLIER,
+									(res as any).duration
+								).toLocaleString();
+							}
+							results += [
+								monster.name,
+								getXPHr('attack'),
+								getXPHr('strength'),
+								getXPHr('defence'),
+								getXPHr('ranged'),
+								getXPHr('magic')
+							].join('\t');
+							results += '\n';
+						}
+					}
+				}
+			}
+
+			return {
+				content: 'Assumes abyssal jibwings (e) and divine ring',
+				...(returnStringOrFile(results, true) as InteractionReplyOptions)
+			};
+		}
 
 		if (options.tames?.eagle) {
 			let results = `${['Support Level', 'Clue Tier', 'Clues/hr', 'Kibble/hr', 'GMC/Hr'].join('\t')}\n`;

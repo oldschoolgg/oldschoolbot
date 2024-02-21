@@ -11,7 +11,7 @@ import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses
 import { NexMonster } from '../../lib/nex';
 import { prisma } from '../../lib/settings/prisma';
 import { returnStringOrFile } from '../../lib/util/smallUtils';
-import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
+import { minionKillWrapper, monsterInfo } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const autocompleteMonsters = [
@@ -161,6 +161,13 @@ export const killCommand: OSBMahojiCommand = {
 		if (options.show_info) {
 			return returnStringOrFile(await monsterInfo(user, options.name));
 		}
-		return minionKillCommand(user, interaction, channelID, options.name, options.quantity, options.method);
+		return minionKillWrapper({
+			user,
+			interaction,
+			channelID,
+			nameInput: options.name,
+			quantityInput: options.quantity,
+			method: options.method
+		});
 	}
 };
