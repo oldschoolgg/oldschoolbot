@@ -1,8 +1,10 @@
+import { Canvas, loadImage } from '@napi-rs/canvas';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { gearValidationChecks } from '../../lib/constants';
 import { allPetIDs } from '../../lib/data/CollectionsExport';
+import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetupType, GearSetupTypes, GearStat } from '../../lib/gear/types';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
@@ -209,7 +211,14 @@ export const gearCommand: OSBMahojiCommand = {
 
 		if (options.best_in_slot?.stat) {
 			const res = findBestGearSetups(options.best_in_slot.stat);
-			return `These are the best in slot items for ${options.best_in_slot.stat}.
+			const totalCanvas = new Canvas(5 * 175, 240);
+			const ctx = totalCanvas.getContext('2d');
+			for (let i = 0; i < 5; i++) {
+				const gearImage = await generateGearImage(user, res[i], 'melee', null, `${i + 1}`);
+				ctx.drawImage(await loadImage(gearImage), i * 175, 0);
+			}
+			return {
+				content: `These are the best in slot items for ${options.best_in_slot.stat}.
 
 ${res
 	.slice(0, 10)
@@ -219,7 +228,9 @@ ${res
 				options.best_in_slot!.stat
 			}`
 	)
-	.join('\n')}`;
+	.join('\n')}`,
+				files: [await totalCanvas.encode('png')]
+			};
 		}
 		if ((options.equip || options.unequip) && !gearValidationChecks.has(userID)) {
 			const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();

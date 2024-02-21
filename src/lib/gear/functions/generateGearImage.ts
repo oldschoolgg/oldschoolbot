@@ -243,7 +243,8 @@ export async function generateGearImage(
 	user: MUser,
 	gearSetup: Gear | GearSetup,
 	gearType: GearSetupType | null,
-	petID: number | null
+	petID: number | null,
+	titleOverride?: string
 ) {
 	debugLog('Generating gear image', { user_id: user.id });
 	const transmogItem = (gearType && transmogItems.find(t => user.gear[gearType].hasEquipped(t.item.name))) ?? null;
@@ -301,8 +302,13 @@ export async function generateGearImage(
 
 	ctx.font = '16px OSRSFontCompact';
 	// Draw preset title
-	if (gearType) {
-		drawTitleText(ctx, toTitleCase(gearType), Math.floor(176 / 2) + (transMogImage ? 200 : 0), 25);
+	if (titleOverride || gearType) {
+		drawTitleText(
+			ctx,
+			toTitleCase(titleOverride ?? gearType ?? ''),
+			Math.floor(176 / 2) + (transMogImage ? 200 : 0),
+			25
+		);
 	}
 
 	// Draw items

@@ -42,7 +42,8 @@ export function findBestGearSetups(stat: GearStat): Gear[] {
 			EquipmentSlot.Hands,
 			EquipmentSlot.Legs,
 			EquipmentSlot.Neck,
-			EquipmentSlot.Ring
+			EquipmentSlot.Ring,
+			EquipmentSlot.Body
 		]) {
 			const item = findItem([slot]);
 			if (item) {
