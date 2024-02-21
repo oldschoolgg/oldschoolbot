@@ -21,6 +21,7 @@ import { BitField, PeakTier, PvMMethod, YETI_ID } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
+import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems } from '../../../lib/degradeableItems';
 import { Diary, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
 import { readableStatName, UserFullGearSetup } from '../../../lib/gear';
 import { GearSetupType, GearStat } from '../../../lib/gear/types';
@@ -67,6 +68,7 @@ import {
 	calculateTripConsumableCost,
 	checkRangeGearWeapon,
 	convertAttackStyleToGearSetup,
+	convertPvmStylesToGearSetup,
 	formatDuration,
 	formatItemBoosts,
 	formatItemCosts,
@@ -298,99 +300,81 @@ export async function minionKillWrapper({
 	const hasSuperiorCannon = user.bank.has('Superior dwarf multicannon');
 	const hasCannon = cannonBanks.some(i => user.bank.has(i)) || hasSuperiorCannon;
 
-	if (!isOnTask && method && method !== 'none') {
-		return 'You can only burst/barrage/cannon while on task in BSO.';
-	}
-	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
-		return `${monster!.name} cannot be barraged or burst.`;
-	}
-	if (method === 'cannon' && !hasCannon) {
-		return "You don't own a Dwarf multicannon, so how could you use one?";
-	}
-	if (method === 'cannon' && !monster!.canCannon) {
-		return `${monster!.name} cannot be killed with a cannon.`;
-	}
-	if (boostChoice === 'barrage' && user.skillsAsLevels.magic < 94) {
-		return `You need 94 Magic to use Ice Barrage. You have ${user.skillsAsLevels.magic}`;
-	}
-	if (boostChoice === 'burst' && user.skillsAsLevels.magic < 70) {
-		return `You need 70 Magic to use Ice Burst. You have ${user.skillsAsLevels.magic}`;
-	}
 	const userStats = await user.fetchStats({ pk_evasion_exp: true });
-	// /////////
+
 	/**
 	 *
 	 * Degradeable Items
 	 *
 	 */
-	// const degItemBeingUsed = [];
-	// if (monster.degradeableItemUsage) {
-	// 	for (const set of monster.degradeableItemUsage) {
-	// 		const equippedInThisSet = set.items.find(item => gear[set.gearSetup].hasEquipped(item.itemID));
-	// 		if (set.required && !equippedInThisSet) {
-	// 			return `You need one of these items equipped in your ${set.gearSetup} setup to kill ${
-	// 				monster.name
-	// 			}: ${set.items
-	// 				.map(i => i.itemID)
-	// 				.map(itemNameFromID)
-	// 				.join(', ')}.`;
-	// 		}
-	// 		if (equippedInThisSet) {
-	// 			const degItem = degradeablePvmBoostItems.find(i => i.item.id === equippedInThisSet.itemID)!;
-	// 			boosts.push(`${equippedInThisSet.boostPercent}% for ${itemNameFromID(equippedInThisSet.itemID)}`);
-	// 			timeToFinish = reduceNumByPercent(timeToFinish, equippedInThisSet.boostPercent);
-	// 			degItemBeingUsed.push(degItem);
-	// 		}
-	// 	}
-	// } else {
-	// 	for (const degItem of degradeablePvmBoostItems) {
-	// 		const isUsing =
-	// 			convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
-	// 			gear[degItem.attackStyle].hasEquipped(degItem.item.id) &&
-	// 			(monster.setupsUsed ? monster.setupsUsed.includes(degItem.attackStyle) : true);
-	// 		if (isUsing) {
-	// 			// We assume they have enough charges, add the boost, and degrade at the end to avoid doing it twice.
-	// 			degItemBeingUsed.push(degItem);
-	// 		}
-	// 	}
-	// 	for (const degItem of degItemBeingUsed) {
-	// 		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
-	// 		timeToFinish = reduceNumByPercent(timeToFinish, degItem.boost);
-	// 	}
-	// }
-	// const osjsMon = Monsters.get(monster.id);
-	// const monsterHP = osjsMon?.data.hitpoints ?? 100;
-	// const degradeablesWithEnoughCharges = [];
-	// for (const degItem of degItemBeingUsed) {
-	// 	const chargesNeeded = Math.ceil(
-	// 		degItem.charges({
-	// 			killableMon: monster,
-	// 			osjsMonster: osjsMon!,
-	// 			totalHP: monsterHP * quantity,
-	// 			user,
-	// 			duration
-	// 		})
-	// 	);
-	// 	const result = await checkUserCanUseDegradeableItem({
-	// 		item: degItem.item,
-	// 		chargesToDegrade: chargesNeeded,
-	// 		user
-	// 	});
-	// 	if (!result.hasEnough) {
-	// 		return result.userMessage;
-	// 	}
-	// 	degradeablesWithEnoughCharges.push({ degItem, chargesNeeded });
-	// }
-	// for (const { degItem, chargesNeeded } of degradeablesWithEnoughCharges) {
-	// 	const degradeResult = await degradeItem({
-	// 		item: degItem.item,
-	// 		chargesToDegrade: chargesNeeded,
-	// 		user
-	// 	});
-	// 	boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
-	// 	messages.push(degradeResult.userMessage);
-	// 	duration = reduceNumByPercent(duration, degItem.boost);
-	// }
+	const degItemBeingUsed = [];
+	if (monster.degradeableItemUsage) {
+		for (const set of monster.degradeableItemUsage) {
+			const equippedInThisSet = set.items.find(item => gear[set.gearSetup].hasEquipped(item.itemID));
+			if (set.required && !equippedInThisSet) {
+				return `You need one of these items equipped in your ${set.gearSetup} setup to kill ${
+					monster.name
+				}: ${set.items
+					.map(i => i.itemID)
+					.map(itemNameFromID)
+					.join(', ')}.`;
+			}
+			if (equippedInThisSet) {
+				const degItem = degradeablePvmBoostItems.find(i => i.item.id === equippedInThisSet.itemID)!;
+				boosts.push(`${equippedInThisSet.boostPercent}% for ${itemNameFromID(equippedInThisSet.itemID)}`);
+				timeToFinish = reduceNumByPercent(timeToFinish, equippedInThisSet.boostPercent);
+				degItemBeingUsed.push(degItem);
+			}
+		}
+	} else {
+		for (const degItem of degradeablePvmBoostItems) {
+			const isUsing =
+				convertPvmStylesToGearSetup(user.getAttackStyles()).includes(degItem.attackStyle) &&
+				user.gear[degItem.attackStyle].hasEquipped(degItem.item.id) &&
+				(monster.setupsUsed ? monster.setupsUsed.includes(degItem.attackStyle) : true);
+			if (isUsing) {
+				// We assume they have enough charges, add the boost, and degrade at the end to avoid doing it twice.
+				degItemBeingUsed.push(degItem);
+			}
+		}
+		for (const degItem of degItemBeingUsed) {
+			boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
+			timeToFinish = reduceNumByPercent(timeToFinish, degItem.boost);
+		}
+	}
+	const osjsMon = Monsters.get(monster.id);
+	const monsterHP = osjsMon?.data.hitpoints ?? 100;
+	const degradeablesWithEnoughCharges = [];
+	for (const degItem of degItemBeingUsed) {
+		const chargesNeeded = Math.ceil(
+			degItem.charges({
+				killableMon: monster,
+				osjsMonster: osjsMon!,
+				totalHP: monsterHP * quantity,
+				user,
+				duration
+			})
+		);
+		const result = await checkUserCanUseDegradeableItem({
+			item: degItem.item,
+			chargesToDegrade: chargesNeeded,
+			user
+		});
+		if (!result.hasEnough) {
+			return result.userMessage;
+		}
+		degradeablesWithEnoughCharges.push({ degItem, chargesNeeded });
+	}
+	for (const { degItem, chargesNeeded } of degradeablesWithEnoughCharges) {
+		const degradeResult = await degradeItem({
+			item: degItem.item,
+			chargesToDegrade: chargesNeeded,
+			user
+		});
+		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
+		messages.push(degradeResult.userMessage);
+		duration = reduceNumByPercent(duration, degItem.boost);
+	}
 
 	// ///////////
 
@@ -592,6 +576,25 @@ export function minionKillCommand({
 
 	if (monster.slayerOnly && !isOnTask) {
 		return `You can't kill ${monster.name}, because you're not on a slayer task.`;
+	}
+
+	if (!isOnTask && method && method !== 'none') {
+		return 'You can only burst/barrage/cannon while on task in BSO.';
+	}
+	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
+		return `${monster!.name} cannot be barraged or burst.`;
+	}
+	if (method === 'cannon' && !hasCannon) {
+		return "You don't own a Dwarf multicannon, so how could you use one?";
+	}
+	if (method === 'cannon' && !monster!.canCannon) {
+		return `${monster!.name} cannot be killed with a cannon.`;
+	}
+	if (boostChoice === 'barrage' && skillsAsLevels.magic < 94) {
+		return `You need 94 Magic to use Ice Barrage. You have ${skillsAsLevels.magic}`;
+	}
+	if (boostChoice === 'burst' && skillsAsLevels.magic < 70) {
+		return `You need 70 Magic to use Ice Burst. You have ${skillsAsLevels.magic}`;
 	}
 
 	const wildyGearStat = gear.wildy.getStats()[key];
