@@ -1,4 +1,3 @@
-import type { FSWatcher } from 'chokidar';
 import { Client, ClientOptions, User } from 'discord.js';
 import { FastifyInstance } from 'fastify';
 import { MahojiClient } from 'mahoji';
@@ -16,7 +15,6 @@ export class OldSchoolBotClient extends Client<true> {
 	public mahojiClient!: MahojiClient;
 	public isShuttingDown = false;
 
-	_fileChangeWatcher?: FSWatcher;
 	_badgeCache: Map<string, string> = new Map();
 	_peakIntervalCache!: Peak[];
 	fastifyServer!: FastifyInstance;
