@@ -10,7 +10,7 @@ import { divinationEnergies, portents } from '../bso/divination';
 import { ClueTier, ClueTiers } from '../clues/clueTiers';
 import { CollectionLogType } from '../collectionLogTask';
 import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
-import { dyedItems } from '../dyedItems';
+import { discontinuedDyes, dyedItems } from '../dyedItems';
 import { growablePetsCL } from '../growablePets';
 import { inventionCL } from '../invention/inventions';
 import { keyCrates } from '../keyCrates';
@@ -45,7 +45,7 @@ import smithables from '../skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../skilling/types';
 import { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
-import { fetchStatsForCL, itemID, stringMatches } from '../util';
+import { fetchStatsForCL, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import { shuffleRandom } from '../util/smallUtils';
 import {
@@ -1411,7 +1411,7 @@ export const allCollectionLogs: ICollection = {
 			'Dyed Items': {
 				counts: false,
 				items: dyedItems
-					.map(i => i.dyedVersions.filter(i => i.dye.id !== itemID('Christmas dye')).map(i => i.item.id))
+					.map(i => i.dyedVersions.filter(i => !discontinuedDyes.includes(i.dye.id)).map(i => i.item.id))
 					.flat(2)
 			},
 			'Clothing Mystery Box': {
@@ -1761,6 +1761,12 @@ export const allCollectionLogs: ICollection = {
 					'Rudolph'
 				]),
 				counts: false
+			},
+			'Dyed Items (Discontinued)': {
+				counts: false,
+				items: dyedItems
+					.map(i => i.dyedVersions.filter(i => discontinuedDyes.includes(i.dye.id)).map(i => i.item.id))
+					.flat(2)
 			},
 			'Miscelleanous (Discontinued)': {
 				alias: ['discontinued misc'],
