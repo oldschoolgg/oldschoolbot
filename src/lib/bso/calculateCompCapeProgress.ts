@@ -1,5 +1,6 @@
 import { calcWhatPercent } from 'e';
 
+import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { compCapeCategories, compCapeTrimmedRequirements } from '../compCape';
 
 export async function calculateCompCapeProgress(user: MUser) {
@@ -39,6 +40,11 @@ export async function calculateCompCapeProgress(user: MUser) {
 	const untrimmedStr = ` ${totalCompletedUntrimmed}/${totalRequirementsUntrimmed} (${totalPercentUntrimmed.toFixed(
 		2
 	)}%)`;
+
+	await userStatsUpdate(user.id, {
+		comp_cape_percent: totalPercentTrimmed,
+		untrimmed_comp_cape_percent: totalPercentUntrimmed
+	});
 
 	return {
 		resultStr: `Completionist Cape Progress

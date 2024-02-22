@@ -9,6 +9,7 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
+import { calculateCompCapeProgress } from '../../lib/bso/calculateCompCapeProgress';
 import { BitField, Channel } from '../../lib/constants';
 import { GearSetupType } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
@@ -71,6 +72,12 @@ export const rpCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'patreon_reset',
 					description: 'Reset all patreon data.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'force_comp_update',
+					description: 'Force the top 100 completionist users to update their completion percentage.',
 					options: []
 				}
 			]
@@ -315,6 +322,7 @@ export const rpCommand: OSBMahojiCommand = {
 		action?: {
 			validate_ge?: {};
 			patreon_reset?: {};
+			force_comp_update?: {};
 		};
 		player?: {
 			givetgb?: { user: MahojiUserOption };
@@ -374,6 +382,23 @@ export const rpCommand: OSBMahojiCommand = {
 				return 'No issues found.';
 			}
 			return 'Something was invalid. Check logs!';
+		}
+		if (options.action?.force_comp_update) {
+			const usersToUpdate = await prisma.userStats.findMany({
+				where: {
+					untrimmed_comp_cape_percent: {
+						not: null
+					}
+				},
+				orderBy: {
+					untrimmed_comp_cape_percent: 'desc'
+				},
+				take: 100
+			});
+			for (const user of usersToUpdate) {
+				await calculateCompCapeProgress(await mUserFetch(user.user_id.toString()));
+			}
+			return 'Done.';
 		}
 
 		if (options.action?.patreon_reset) {
