@@ -60,7 +60,7 @@
 	"devDependencies": {
 		"@oldschoolgg/eslint-config": "^2.0.13",
 		"@oldschoolgg/ts-config": "^0.0.1",
-		"@types/deep-equal": "^1.0.4",
+		"@types/deep-equal": "^1.0.3",
 		"@types/he": "^1.1.2",
 		"@types/jest-image-snapshot": "^6.1.0",
 		"@types/lodash": "^4.14.195",
