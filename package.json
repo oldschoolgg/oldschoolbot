@@ -12,7 +12,7 @@
 		"dev": "yarn wipedist && tsc -w -p src",
 		"test:watch": "vitest --config vitest.unit.config.ts --coverage",
 		"test:integration": "tsx ./src/scripts/integration-tests.ts",
-		"prebuild:scripts": "tsx -T ./src/scripts/render-creatables-file.ts",
+		"prebuild:scripts": "tsx ./src/scripts/render-creatables-file.ts",
 		"build:esbuild": "esbuild --bundle src/index.ts --outdir=dist --platform=node --loader:.node=file --external:canvas"
 	},
 	"dependencies": {
@@ -47,7 +47,7 @@
 		"node-cron": "^3.0.3",
 		"node-fetch": "^2.6.7",
 		"oldschooljs": "^2.3.8",
-		"p-queue": "^8.0.1",
+		"p-queue": "^6.6.2",
 		"piscina": "^4.3.2",
 		"random-js": "^2.1.0",
 		"simple-statistics": "^7.8.3",
