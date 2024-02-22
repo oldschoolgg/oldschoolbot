@@ -15,9 +15,9 @@ export function calcMaxFloorUserCanDo(user: MUser) {
 
 export function calcUserGorajanShardChance(user: MUser) {
 	return calcGorajanShardChance({
-		hasMasterCape: user.hasEquipped('Dungeoneering master cape'),
+		hasMasterCape: user.hasEquippedOrInBank('Dungeoneering master cape'),
 		dungLevel: user.skillLevel(SkillsEnum.Dungeoneering),
-		hasRingOfLuck: user.hasEquipped('Ring of luck')
+		hasRingOfLuck: user.hasEquippedOrInBank('Ring of luck')
 	});
 }
 

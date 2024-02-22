@@ -140,7 +140,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			tripLength /= 2;
 			boosts.push('2x from Obis (3x more essence)');
 		}
-		if (user.hasEquipped('Runecraft master cape')) {
+		if (user.hasEquippedOrInBank('Runecraft master cape')) {
 			tripLength /= 2;
 			boosts.push(`${Emoji.RunecraftMasterCape} 2x faster`);
 		}
@@ -254,8 +254,8 @@ export const runecraftCommand: OSBMahojiCommand = {
 		let removeTalismanAndOrRunes = new Bank();
 		let hasRingOfTheElements = false;
 		if (runeObj.inputTalisman) {
-			const tomeOfFire = user.hasEquipped(['Tome of fire', 'Tome of fire (empty)']) ? 0 : 7;
-			const tomeOfWater = user.hasEquipped(['Tome of water', 'Tome of water (empty)']) ? 0 : 7;
+			const tomeOfFire = user.hasEquippedOrInBank(['Tome of fire', 'Tome of fire (empty)']) ? 0 : 7;
+			const tomeOfWater = user.hasEquippedOrInBank(['Tome of water', 'Tome of water (empty)']) ? 0 : 7;
 			const magicImbueRuneCost = determineRunes(
 				user,
 				new Bank({ 'Astral rune': 2, 'Fire rune': tomeOfFire, 'Water rune': tomeOfWater })
