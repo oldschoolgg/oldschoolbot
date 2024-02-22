@@ -76,7 +76,8 @@ export const taskCanBeRepeated = (activity: Activity) => {
 			activity_type_enum.BlastFurnace,
 			activity_type_enum.Easter,
 			activity_type_enum.TokkulShop,
-			activity_type_enum.Birdhouse
+			activity_type_enum.Birdhouse,
+			activity_type_enum.StrongholdOfSecurity
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
@@ -141,10 +142,6 @@ export const tripHandlers = {
 			quantity: data.quantity,
 			alch: Boolean(data.alch)
 		})
-	},
-	[activity_type_enum.AgilityArena]: {
-		commandName: 'minigames',
-		args: () => ({ agility_arena: { start: {} } })
 	},
 	[activity_type_enum.AgilityArena]: {
 		commandName: 'minigames',

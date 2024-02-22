@@ -4,7 +4,7 @@ import { sleep } from 'e';
 async function main() {
 	try {
 		execSync('docker compose up -d --wait', { stdio: 'inherit' });
-		await sleep(1000);
+		await sleep(2000);
 
 		execSync('dotenv -e .env.example -- prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit' });
 		execSync('dotenv -e .env.example -- prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit' });

@@ -198,16 +198,18 @@ export async function processPendingActivities() {
 		}
 	});
 
-	await prisma.activity.updateMany({
-		where: {
-			id: {
-				in: activities.map(i => i.id)
+	if (activities.length > 0) {
+		await prisma.activity.updateMany({
+			where: {
+				id: {
+					in: activities.map(i => i.id)
+				}
+			},
+			data: {
+				completed: true
 			}
-		},
-		data: {
-			completed: true
-		}
-	});
+		});
+	}
 
 	await Promise.all(activities.map(completeActivity));
 	return activities;

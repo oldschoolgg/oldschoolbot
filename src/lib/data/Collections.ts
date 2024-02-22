@@ -502,7 +502,7 @@ export const allCollectionLogs: ICollection = {
 	},
 	Raids: {
 		activities: {
-			"Chamber's of Xeric": {
+			'Chambers of Xeric': {
 				alias: ChambersOfXeric.aliases,
 				kcActivity: {
 					Default: async (_, minigameScores) =>
