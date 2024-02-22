@@ -76,7 +76,8 @@ export const taskCanBeRepeated = (activity: Activity) => {
 			activity_type_enum.BlastFurnace,
 			activity_type_enum.Easter,
 			activity_type_enum.TokkulShop,
-			activity_type_enum.Birdhouse
+			activity_type_enum.Birdhouse,
+			activity_type_enum.StrongholdOfSecurity
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
