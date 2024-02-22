@@ -93,8 +93,10 @@ export const mixCommand: OSBMahojiCommand = {
 
 		if ((zahur && mixableZahur) || (wesley && mixableWesley)) {
 			timeToMixSingleItem = 0.000_001;
-			requiredItems.add('Coins', wesley ? 50 : 200);
-			cost = `decided to pay ${wesley ? 'Wesley 50' : 'Zahur 200'} gp for each item so they don't have to go`;
+			requiredItems.add('Coins', mixableWesley ? 50 : 200);
+			cost = `decided to pay ${
+				mixableWesley ? 'Wesley 50' : 'Zahur 200'
+			} gp for each item so they don't have to go.`;
 		}
 
 		const boosts: string[] = [];

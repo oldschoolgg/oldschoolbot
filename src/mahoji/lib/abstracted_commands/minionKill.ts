@@ -935,7 +935,7 @@ export async function minionKillCommand(
 				break;
 			}
 		}
-		if (wildyPeak?.peakTier === PeakTier.High) {
+		if (wildyPeak?.peakTier === PeakTier.High && !user.bitfield.includes(BitField.DisableHighPeakTimeWarning)) {
 			if (interaction) {
 				await handleMahojiConfirmation(
 					interaction,

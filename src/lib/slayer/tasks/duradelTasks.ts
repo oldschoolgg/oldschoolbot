@@ -385,7 +385,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.SpiritualMage,
 		amount: [110, 170],
 
-		weight: 12,
+		weight: 7,
 		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
 		extendedAmount: [180, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.SpiritualFervour,
@@ -397,21 +397,6 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		questPoints: 3,
 		unlocked: true,
 		dontAssign: true
-	},
-	{
-		monster: Monsters.SpiritualRanger,
-		amount: [130, 200],
-		weight: 7,
-		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
-		extendedAmount: [180, 250],
-		extendedUnlockId: SlayerTaskUnlocksEnum.SpiritualFervour,
-		levelRequirements: {
-			slayer: 60
-		},
-		combatLevel: 60,
-		slayerLevel: 63,
-		questPoints: 3,
-		unlocked: true
 	},
 	{
 		monster: Monsters.SteelDragon,

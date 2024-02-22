@@ -8,7 +8,7 @@ import { MAX_INT_JAVA } from '../../lib/constants';
 import { customPrices } from '../../lib/customItems/util';
 import { prisma } from '../../lib/settings/prisma';
 import { NestBoxesTable } from '../../lib/simulation/misc';
-import { itemID, toKMB } from '../../lib/util';
+import { itemID, returnStringOrFile, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -244,12 +244,14 @@ export const sellCommand: OSBMahojiCommand = {
 		if (user.isIronman) {
 			return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**`;
 		}
-		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(
-			totalPrice
-		)})** (${taxRatePercent}% below market price). ${
-			hasSkipper
-				? '\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you were charged less tax on the sale!'
-				: ''
-		}`;
+		return returnStringOrFile(
+			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(
+				totalPrice
+			)})** (${taxRatePercent}% below market price). ${
+				hasSkipper
+					? '\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you were charged less tax on the sale!'
+					: ''
+			}`
+		);
 	}
 };

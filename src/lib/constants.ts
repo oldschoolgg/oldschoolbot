@@ -295,6 +295,8 @@ export enum BitField {
 	DisabledFarmingReminders = 37,
 	DisableClueButtons = 38,
 	DisableAutoSlayButton = 39,
+	DisableHighPeakTimeWarning = 40,
+
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -519,6 +521,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisabledTameClueOpening]: {
 		name: 'Disable Eagle Tame Opening Caskets',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableHighPeakTimeWarning]: {
+		name: 'Disable Wilderness High Peak Time Warning',
 		protected: false,
 		userConfigurable: true
 	}

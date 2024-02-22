@@ -146,6 +146,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable Clue Buttons',
 		bit: BitField.DisableClueButtons
+	},
+	{
+		name: 'Disable wilderness high peak time warning',
+		bit: BitField.DisableHighPeakTimeWarning
 	}
 ];
 

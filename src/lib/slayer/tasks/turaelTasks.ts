@@ -23,6 +23,20 @@ export const turaelTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
+		monster: Monsters.BlackBear,
+		amount: [15, 50],
+		weight: 7,
+		monsters: [
+			Monsters.BlackBear.id,
+			Monsters.GrizzlyBearCub.id,
+			Monsters.BearCub.id,
+			Monsters.GrizzlyBear.id,
+			Monsters.Callisto.id
+		],
+		combatLevel: 13,
+		unlocked: true
+	},
+	{
 		monster: Monsters.Bird,
 		amount: [15, 50],
 		weight: 6,
@@ -37,20 +51,6 @@ export const turaelTasks: AssignableSlayerTask[] = [
 			Monsters.Duckling.id,
 			Monsters.Bird.id
 		],
-		unlocked: true
-	},
-	{
-		monster: Monsters.BlackBear,
-		amount: [15, 50],
-		weight: 7,
-		monsters: [
-			Monsters.BlackBear.id,
-			Monsters.GrizzlyBearCub.id,
-			Monsters.BearCub.id,
-			Monsters.GrizzlyBear.id,
-			Monsters.Callisto.id
-		],
-		combatLevel: 13,
 		unlocked: true
 	},
 	{

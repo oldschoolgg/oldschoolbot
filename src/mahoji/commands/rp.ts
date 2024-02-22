@@ -22,7 +22,7 @@ import { allPerkBitfields } from '../../lib/perkTiers';
 import { prisma } from '../../lib/settings/prisma';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import { ItemBank } from '../../lib/types';
-import { dateFm, formatDuration } from '../../lib/util';
+import { dateFm, formatDuration, returnStringOrFile } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -78,6 +78,12 @@ export const rpCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'force_comp_update',
 					description: 'Force the top 100 completionist users to update their completion percentage.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'view_all_items',
+					description: 'View all item IDs present in banks/cls.',
 					options: []
 				}
 			]
@@ -323,6 +329,7 @@ export const rpCommand: OSBMahojiCommand = {
 			validate_ge?: {};
 			patreon_reset?: {};
 			force_comp_update?: {};
+			view_all_items?: {};
 		};
 		player?: {
 			givetgb?: { user: MahojiUserOption };
@@ -399,6 +406,18 @@ export const rpCommand: OSBMahojiCommand = {
 				await calculateCompCapeProgress(await mUserFetch(user.user_id.toString()));
 			}
 			return 'Done.';
+		}
+
+		if (options.action?.view_all_items) {
+			const result = await prisma.$queryRawUnsafe<
+				{ item_id: number }[]
+			>(`SELECT DISTINCT json_object_keys(bank)::int AS item_id
+FROM users
+UNION
+SELECT DISTINCT jsonb_object_keys("collectionLogBank")::int AS item_id
+FROM users
+ORDER BY item_id ASC;`);
+			return returnStringOrFile(`[${result.map(i => i.item_id).join(',')}]`);
 		}
 
 		if (options.action?.patreon_reset) {

@@ -371,3 +371,10 @@ export function calculateAverageTimeForSuccess(probabilityPercent: number, timeF
 	let averageTimeUntilSuccessMilliseconds = timeFrameMilliseconds / probabilityOfSuccess;
 	return averageTimeUntilSuccessMilliseconds;
 }
+
+export function ellipsize(str: string, maxLen: number = 2000) {
+	if (str.length > maxLen) {
+		return `${str.substring(0, maxLen - 3)}...`;
+	}
+	return str;
+}

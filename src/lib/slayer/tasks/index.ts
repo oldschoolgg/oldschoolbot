@@ -18,3 +18,5 @@ export const allSlayerTasks: AssignableSlayerTask[] = [
 	...vannakaTasks,
 	...duradelTasks
 ];
+
+export const allSlayerMonsters = allSlayerTasks.map(m => m.monster);
