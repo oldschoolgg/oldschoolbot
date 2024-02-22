@@ -21,7 +21,7 @@ import { allPerkBitfields } from '../../lib/perkTiers';
 import { prisma } from '../../lib/settings/prisma';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import { ItemBank } from '../../lib/types';
-import { dateFm, formatDuration } from '../../lib/util';
+import { dateFm, formatDuration, returnStringOrFile } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -71,6 +71,12 @@ export const rpCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'patreon_reset',
 					description: 'Reset all patreon data.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'view_all_items',
+					description: 'View all item IDs present in banks/cls.',
 					options: []
 				}
 			]
@@ -302,6 +308,7 @@ export const rpCommand: OSBMahojiCommand = {
 		action?: {
 			validate_ge?: {};
 			patreon_reset?: {};
+			view_all_items?: {};
 		};
 		player?: {
 			viewbank?: { user: MahojiUserOption; json?: boolean };
@@ -347,6 +354,18 @@ export const rpCommand: OSBMahojiCommand = {
 				return 'No issues found.';
 			}
 			return 'Something was invalid. Check logs!';
+		}
+
+		if (options.action?.view_all_items) {
+			const result = await prisma.$queryRawUnsafe<
+				{ item_id: number }[]
+			>(`SELECT DISTINCT json_object_keys(bank)::int AS item_id
+FROM users
+UNION
+SELECT DISTINCT jsonb_object_keys("collectionLogBank")::int AS item_id
+FROM users
+ORDER BY item_id ASC;`);
+			return returnStringOrFile(`[${result.map(i => i.item_id).join(',')}]`);
 		}
 
 		if (options.action?.patreon_reset) {
