@@ -115,7 +115,8 @@ async function finalizeOpening({
 				? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
 				: 'Loot From Opening',
 		user,
-		previousCL
+		previousCL,
+		mahojiFlags: ['show_names']
 	});
 
 	if (loot.has('Coins')) {
@@ -127,7 +128,7 @@ async function finalizeOpening({
 		.join(', ');
 
 	const perkTier = user.perkTier();
-	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier);
+	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
 	let response: Awaited<CommandResponse> = {
 		files: [image.file],

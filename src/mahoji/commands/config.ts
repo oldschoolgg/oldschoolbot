@@ -50,6 +50,10 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisableBirdhouseRunButton
 	},
 	{
+		name: 'Disable Auto Slay Button',
+		bit: BitField.DisableAutoSlayButton
+	},
+	{
 		name: 'Disable Ash Sanctifier',
 		bit: BitField.DisableAshSanctifier
 	},
@@ -119,6 +123,14 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable farming reminders',
 		bit: BitField.DisabledFarmingReminders
+	},
+	{
+		name: 'Disable Clue Buttons',
+		bit: BitField.DisableClueButtons
+	},
+	{
+		name: 'Disable wilderness high peak time warning',
+		bit: BitField.DisableHighPeakTimeWarning
 	}
 ];
 

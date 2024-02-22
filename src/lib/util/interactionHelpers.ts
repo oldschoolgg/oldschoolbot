@@ -21,6 +21,7 @@ export async function interactionReplyGetDuration(
 
 	const response = await interactionReply(interaction, { content: prompt, components });
 
+	if (response === undefined) return false;
 	try {
 		const selection = await response.awaitMessageComponent({
 			filter: i => i.user.id === interaction.user.id,

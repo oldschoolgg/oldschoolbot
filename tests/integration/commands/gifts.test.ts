@@ -2,7 +2,6 @@ import { Bank } from 'oldschooljs';
 import { beforeEach, describe, test } from 'vitest';
 
 import { giftCommand } from '../../../src/mahoji/commands/gift';
-import { minigamesCommand } from '../../../src/mahoji/commands/minigames';
 import { createTestUser, mockClient } from '../util';
 
 describe('Gift Command', async () => {

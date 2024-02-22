@@ -143,7 +143,7 @@ function kcProg(mon: Monster): FormatProgressFunction {
 }
 
 function mgProg(minigameName: MinigameName): FormatProgressFunction {
-	return ({ minigames }) => `${minigames[minigameName]} KC`;
+	return ({ minigames }) => `${minigames[minigameName]} Completions`;
 }
 
 function skillProg(skillName: SkillsEnum): FormatProgressFunction {
@@ -502,7 +502,7 @@ export const allCollectionLogs: ICollection = {
 	},
 	Raids: {
 		activities: {
-			"Chamber's of Xeric": {
+			'Chambers of Xeric': {
 				alias: ChambersOfXeric.aliases,
 				kcActivity: {
 					Default: async (_, minigameScores) =>
@@ -807,7 +807,7 @@ export const allCollectionLogs: ICollection = {
 			"Shades of Mort'ton": {
 				items: shadesOfMorttonCL,
 				isActivity: true,
-				fmtProg: () => '0 KC'
+				fmtProg: mgProg('shades_of_morton')
 			},
 			'Soul Wars': {
 				alias: ['soul wars', 'sw'],
