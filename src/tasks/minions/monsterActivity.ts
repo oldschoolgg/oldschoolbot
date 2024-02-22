@@ -213,7 +213,7 @@ export const monsterTask: MinionTask = {
 			hasSuperiors: superiorTable,
 			inCatacombs: isInCatacombs,
 			lootTableOptions: {
-				tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(hasRingOfWealthI)
+				tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(hasRingOfWealthI, isInWilderness, isOnTaskResult.isOnTask)
 			}
 		};
 
