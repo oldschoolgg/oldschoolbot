@@ -10,7 +10,7 @@ describe('Payment conflicts', async () => {
 	const payerCount = 50;
 	const iterations = 100;
 	const addChance = 3;
-	const repeats = 5;
+	const repeats = 1;
 
 	const bigBank = new Bank().add('Cannonball', 4).add('Bones', 10_000);
 

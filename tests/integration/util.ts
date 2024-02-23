@@ -193,4 +193,6 @@ export async function mockClient() {
 	return new TestClient(client);
 }
 
-assert(uniqueArr([randomSnowflake(), randomSnowflake(), randomSnowflake()]).length === 3);
+if (uniqueArr([randomSnowflake(), randomSnowflake(), randomSnowflake()]).length !== 3) {
+	throw new Error('uniqueArr is broken');
+}

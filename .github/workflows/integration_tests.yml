@@ -37,6 +37,6 @@ jobs:
           cp config.example.ts config.ts &&
           popd
       - name: Copy env
-        run: cp .env.example .env
+        run: cp .env.test .env
       - name: Test
         run: yarn test:integration
