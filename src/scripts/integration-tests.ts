@@ -14,11 +14,10 @@ async function main() {
 		execSync('yarn prebuild:scripts', { stdio: 'inherit' });
 		execSync('yarn build:esbuild', { stdio: 'inherit' });
 
-		const result = execSync('vitest run --config vitest.integration.config.ts', {
+		execSync('vitest run --config vitest.integration.config.ts', {
 			stdio: 'inherit',
 			encoding: 'utf-8'
 		});
-		console.log(result.toString());
 	} catch (err) {
 		throw new Error(err as any);
 	} finally {
