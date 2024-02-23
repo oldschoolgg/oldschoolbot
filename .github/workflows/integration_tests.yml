@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Install System Packages
-        run: apt-get install -y build-essential libpq-dev
+        run: sudo apt-get install -y build-essential libpq-dev
 
       - name: Checkout Project
         uses: actions/checkout@v3
