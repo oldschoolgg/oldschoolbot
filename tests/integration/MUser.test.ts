@@ -88,8 +88,7 @@ describe('MUser', () => {
 	});
 
 	test('Should add XP', async () => {
-		const userId = '123456789';
-		const user = await mUserFetch(userId);
+		const user = await createTestUser();
 		expect(user.skillsAsLevels.agility).toEqual(1);
 		const result = await user.addXP({ skillName: SkillsEnum.Agility, amount: 1000 });
 		expect(user.skillsAsLevels.agility).toEqual(9);
@@ -97,7 +96,7 @@ describe('MUser', () => {
 **Congratulations! Your Agility level is now 9** 🎉`);
 		const xpAdded = await prisma.xPGain.findMany({
 			where: {
-				user_id: BigInt(userId),
+				user_id: BigInt(user.id),
 				skill: 'agility',
 				xp: 1000
 			}

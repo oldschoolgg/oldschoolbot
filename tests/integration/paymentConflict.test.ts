@@ -1,4 +1,3 @@
-import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { randArrItem, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
@@ -20,7 +19,7 @@ describe('Payment conflicts', async () => {
 			await mockClient();
 
 			// Payee is currently the primary target of the test.
-			const userPayee = await createTestUser(randomSnowflake(), new Bank(bigBank), { GP: 1_000_000_000 });
+			const userPayee = await createTestUser(new Bank(bigBank), { GP: 1_000_000_000 });
 
 			const payeeTarget = await globalClient.fetchUser(userPayee.id);
 
@@ -28,7 +27,7 @@ describe('Payment conflicts', async () => {
 
 			const payers: TestUser[] = [];
 			for (let i = 0; i < payerCount; i++) {
-				payers.push(await createTestUser(randomSnowflake(), new Bank(), { GP: 1_000_000_000 }));
+				payers.push(await createTestUser(new Bank(), { GP: 1_000_000_000 }));
 			}
 
 			const promisePay = async () => {
@@ -79,13 +78,13 @@ describe('Payment conflicts', async () => {
 		async () => {
 			await mockClient();
 			// May as well test for the Payer also, even though so far we're solid here.
-			const userPayer = await createTestUser(randomSnowflake(), new Bank(bigBank), { GP: 1_000_000_000 });
+			const userPayer = await createTestUser(new Bank(bigBank), { GP: 1_000_000_000 });
 
 			const startingBallCount = userPayer.bank.amount('Cannonball');
 
 			const payees: TestUser[] = [];
 			for (let i = 0; i < payerCount; i++) {
-				payees.push(await createTestUser(randomSnowflake(), new Bank(), { GP: 1_000_000_000 }));
+				payees.push(await createTestUser(new Bank(), { GP: 1_000_000_000 }));
 			}
 
 			const promisePay = async () => {

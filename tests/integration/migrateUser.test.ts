@@ -1,4 +1,3 @@
-import { randomSnowflake } from '@oldschoolgg/toolkit';
 import {
 	Activity,
 	activity_type_enum,
@@ -59,7 +58,7 @@ import { syncNewUserUsername } from '../../src/mahoji/lib/preCommand';
 import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings';
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity';
-import { createTestUser, mockClient, TestUser } from './util';
+import { createTestUser, mockClient, mockedId, TestUser } from './util';
 import { BotItemSell, GEListing, StashUnit } from '.prisma/client';
 
 interface TestCommand {
@@ -637,7 +636,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Group Activity',
 		cmd: async user => {
-			const users = shuffleArr([user.id, randomSnowflake(), randomSnowflake()]);
+			const users = shuffleArr([user.id, mockedId(), mockedId()]);
 			const data = {
 				leader: user.id,
 				users,
@@ -710,7 +709,7 @@ const allTableCommands: TestCommand[] = [
 		cmd: async user => {
 			const randomItems = ['Cannonball', 'Blood rune', 'Twisted bow', 'Kodai wand', 'Bandos tassets'];
 			const recvBank = new Bank().add(randArrItem(randomItems), randInt(10, 99)).add(randArrItem(randomItems));
-			const partner = await createTestUser(randomSnowflake(), recvBank);
+			const partner = await createTestUser(recvBank);
 			await tradePlayerItems(user, partner, undefined, recvBank);
 		}
 	},
@@ -719,7 +718,7 @@ const allTableCommands: TestCommand[] = [
 		cmd: async user => {
 			const randomItems = ['Feather', 'Soul rune', 'Dragon claws', 'Ghrazi rapier', 'Bandos boots'];
 			const recvBank = new Bank().add(randArrItem(randomItems), randInt(10, 99)).add(randArrItem(randomItems));
-			const partner = await createTestUser(randomSnowflake(), recvBank);
+			const partner = await createTestUser(recvBank);
 			await tradePlayerItems(partner, user, recvBank, undefined);
 		}
 	},
@@ -1154,6 +1153,7 @@ async function buildBaseUser(userId: string) {
 		.add('Ghrazi rapier');
 
 	const userData: Partial<Prisma.UserCreateInput> = {
+		id: userId,
 		skills_runecraft: 13_034_431,
 		skills_woodcutting: 13_034_431,
 		skills_mining: 13_034_431,
@@ -1168,7 +1168,7 @@ async function buildBaseUser(userId: string) {
 		kourend_favour: { Hosidius: 100, Arceuus: 0, Shayzien: 0, Lovakengj: 0 },
 		GP: 100_000_000
 	};
-	const user = await createTestUser(userId, startBank, userData);
+	const user = await createTestUser(startBank, userData);
 	return user;
 }
 describe('migrate user test', async () => {
@@ -1208,10 +1208,10 @@ describe('migrate user test', async () => {
 	await GrandExchange.init();
 
 	test('test migrating existing user to target with no records', async () => {
-		const sourceUser = await buildBaseUser(randomSnowflake());
+		const sourceUser = await buildBaseUser(mockedId());
 		await runAllTestCommandsOnUser(sourceUser);
 
-		const destUserId = randomSnowflake();
+		const destUserId = mockedId();
 
 		const sourceData = new UserData(sourceUser);
 		await sourceData.sync();
@@ -1229,8 +1229,8 @@ describe('migrate user test', async () => {
 	});
 
 	test('test migrating full user on top of full profile', async () => {
-		const sourceUser = await buildBaseUser(randomSnowflake());
-		const destUser = await buildBaseUser(randomSnowflake());
+		const sourceUser = await buildBaseUser(mockedId());
+		const destUser = await buildBaseUser(mockedId());
 		await runAllTestCommandsOnUser(sourceUser);
 		await runAllTestCommandsOnUser(destUser);
 
@@ -1271,8 +1271,8 @@ describe('migrate user test', async () => {
 	test(
 		'test migrating random user on top of empty profile',
 		async () => {
-			const sourceUser = await buildBaseUser(randomSnowflake());
-			const destUserId = randomSnowflake();
+			const sourceUser = await buildBaseUser(mockedId());
+			const destUserId = mockedId();
 
 			const sourceRolls = randInt(6, 11);
 			const cmdHistory = await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
@@ -1299,8 +1299,8 @@ describe('migrate user test', async () => {
 	test(
 		'test migrating random user on top of random profile',
 		async () => {
-			const sourceUser = await buildBaseUser(randomSnowflake());
-			const destUser = await buildBaseUser(randomSnowflake());
+			const sourceUser = await buildBaseUser(mockedId());
+			const destUser = await buildBaseUser(mockedId());
 
 			const sourceRolls = randInt(5, 12);
 			const destRolls = randInt(5, 12);
@@ -1328,8 +1328,8 @@ describe('migrate user test', async () => {
 	test(
 		'test migrating random user on top of full profile',
 		async () => {
-			const sourceUser = await buildBaseUser(randomSnowflake());
-			const destUser = await buildBaseUser(randomSnowflake());
+			const sourceUser = await buildBaseUser(mockedId());
+			const destUser = await buildBaseUser(mockedId());
 
 			const cmdHistory = await runRandomTestCommandsOnUser(sourceUser);
 			await runAllTestCommandsOnUser(destUser);

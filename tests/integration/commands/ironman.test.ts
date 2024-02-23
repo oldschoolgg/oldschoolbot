@@ -1,4 +1,4 @@
-import { miniID, randomSnowflake } from '@oldschoolgg/toolkit';
+import { miniID } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -6,6 +6,7 @@ import { describe, expect, test } from 'vitest';
 
 import { prisma } from '../../../src/lib/settings/prisma';
 import { ironmanCommand } from '../../../src/mahoji/lib/abstracted_commands/ironmanCommand';
+import { mockedId } from '../util';
 
 describe('Ironman Command', () => {
 	async function createUserWithEverything(userId: string, userData: Partial<Prisma.UserCreateInput> = {}) {
@@ -70,7 +71,7 @@ describe('Ironman Command', () => {
 	}
 
 	test('Should reset everything', async () => {
-		const userId = randomSnowflake();
+		const userId = mockedId();
 		await createUserWithEverything(userId);
 
 		const result = await ironmanCommand(await mUserFetch(userId), null, false);
@@ -99,7 +100,7 @@ describe('Ironman Command', () => {
 	});
 
 	test('Should de-iron', async () => {
-		const userId = randomSnowflake();
+		const userId = mockedId();
 		await createUserWithEverything(userId, { minion_ironman: true });
 		const initialUser = await mUserFetch(userId);
 		expect(initialUser.isIronman).toEqual(true);

@@ -1,4 +1,3 @@
-import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
@@ -8,7 +7,7 @@ import { MinigameName, Minigames } from '../../src/lib/settings/minigames';
 import { prisma } from '../../src/lib/settings/prisma';
 import { cryptoRand } from '../../src/lib/util';
 import { userStatsBankUpdate } from '../../src/mahoji/mahojiSettings';
-import { createTestUser } from './util';
+import { createTestUser, mockedId } from './util';
 
 describe('Roles Task', async () => {
 	test('Should not throw', async () => {
@@ -37,8 +36,8 @@ describe('Roles Task', async () => {
 				start_date: new Date(),
 				finish_date: new Date(Date.now() + Time.Hour),
 				channel_id: '792691343284764693',
-				message_id: randomSnowflake(),
-				reaction_id: randomSnowflake(),
+				message_id: mockedId(),
+				reaction_id: mockedId(),
 				users_entered: [],
 				id: cryptoRand(1, 100),
 				completed: false,

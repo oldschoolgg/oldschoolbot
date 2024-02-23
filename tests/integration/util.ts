@@ -1,4 +1,3 @@
-import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { randInt, shuffleArr, uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
@@ -9,7 +8,7 @@ import { MUserClass } from '../../src/lib/MUser';
 import { convertStoredActivityToFlatActivity, prisma } from '../../src/lib/settings/prisma';
 import { processPendingActivities } from '../../src/lib/Task';
 import { ItemBank } from '../../src/lib/types';
-import { assert, cryptoRand } from '../../src/lib/util';
+import { cryptoRand } from '../../src/lib/util';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
@@ -124,20 +123,21 @@ export class TestUser extends MUserClass {
 	}
 }
 
-export async function createTestUser(
-	id = cryptoRand(1_000_000_000, 5_000_000_000).toString(),
-	bank?: Bank,
-	userData: Partial<Prisma.UserCreateInput> = {}
-) {
+export function mockedId() {
+	return cryptoRand(1_000_000_000, 5_000_000_000).toString();
+}
+
+export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
+	const id = userData?.id ?? mockedId();
 	const user = await prisma.user.upsert({
 		create: {
 			id,
-			bank: bank?.bank,
-			...userData
+			...userData,
+			bank: bank?.bank
 		},
 		update: {
-			bank: bank?.bank,
-			...userData
+			...userData,
+			bank: bank?.bank
 		},
 		where: {
 			id
@@ -182,7 +182,7 @@ class TestClient {
 }
 
 export async function mockClient() {
-	const clientId = randomSnowflake();
+	const clientId = mockedId();
 	const client = await prisma.clientStorage.create({
 		data: {
 			id: clientId
@@ -193,6 +193,6 @@ export async function mockClient() {
 	return new TestClient(client);
 }
 
-if (uniqueArr([randomSnowflake(), randomSnowflake(), randomSnowflake()]).length !== 3) {
-	throw new Error('uniqueArr is broken');
+if (uniqueArr([mockedId(), mockedId(), mockedId()]).length !== 3) {
+	throw new Error('mockedId is broken');
 }

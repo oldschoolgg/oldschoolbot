@@ -14,7 +14,7 @@ test('Trade consistency', async () => {
 
 	const users: TestUser[] = [];
 	for (let i = 0; i < NUMBER_OF_USERS; i++) {
-		users.push(await createTestUser(undefined, bank));
+		users.push(await createTestUser(bank));
 	}
 
 	function checkMatch() {
