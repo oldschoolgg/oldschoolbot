@@ -1,8 +1,6 @@
 import '../globalSetup';
 
-import { beforeAll, beforeEach, vi } from 'vitest';
-
-import { prisma } from '../../src/lib/settings/prisma';
+import { beforeAll, vi } from 'vitest';
 
 vi.mock('../../src/lib/util/handleMahojiConfirmation', () => ({
 	handleMahojiConfirmation: vi.fn()
@@ -31,13 +29,9 @@ globalClient.fetchUser = async (id: string | bigint) => ({
 
 beforeAll(async () => {
 	console.log(
-		await prisma.$queryRawUnsafe(`SELECT pg_terminate_backend(pid)
-FROM pg_stat_activity
-WHERE state = 'idle'
-  AND pid <> pg_backend_pid();`)
+		await global.prisma!.$queryRawUnsafe(`SELECT pg_terminate_backend(pid)
+	FROM pg_stat_activity
+	WHERE state = 'idle'
+	  AND pid <> pg_backend_pid();`)
 	);
-});
-
-beforeEach(async () => {
-	console.log(await prisma.$queryRawUnsafe('SELECT COUNT(*) FROM pg_stat_activity;'));
 });

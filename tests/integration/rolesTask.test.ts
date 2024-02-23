@@ -4,7 +4,6 @@ import { describe, expect, test } from 'vitest';
 
 import { runRolesTask } from '../../src/lib/rolesTask';
 import { MinigameName, Minigames } from '../../src/lib/settings/minigames';
-import { prisma } from '../../src/lib/settings/prisma';
 import { cryptoRand } from '../../src/lib/util';
 import { userStatsBankUpdate } from '../../src/mahoji/mahojiSettings';
 import { createTestUser, mockedId } from './util';
@@ -23,13 +22,13 @@ describe('Roles Task', async () => {
 		for (const minigame of minigames) {
 			minigameUpdate[minigame] = 1000;
 		}
-		await prisma.minigame.upsert({
+		await global.prisma!.minigame.upsert({
 			where: { user_id: ironUser.id },
 			update: minigameUpdate,
 			create: { user_id: ironUser.id, ...minigameUpdate }
 		});
 
-		await prisma.giveaway.create({
+		await global.prisma!.giveaway.create({
 			data: {
 				user_id: user.id,
 				loot: { 995: 10_000 },

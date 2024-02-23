@@ -4,7 +4,6 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { describe, expect, test } from 'vitest';
 
-import { prisma } from '../../src/lib/settings/prisma';
 import { SkillsEnum } from '../../src/lib/skilling/types';
 import { assert } from '../../src/lib/util/logError';
 import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings';
@@ -94,7 +93,7 @@ describe('MUser', () => {
 		expect(user.skillsAsLevels.agility).toEqual(9);
 		expect(result).toEqual(`You received 1,000 <:agility:630911040355565568> XP
 **Congratulations! Your Agility level is now 9** 🎉`);
-		const xpAdded = await prisma.xPGain.findMany({
+		const xpAdded = await global.prisma!.xPGain.findMany({
 			where: {
 				user_id: BigInt(user.id),
 				skill: 'agility',

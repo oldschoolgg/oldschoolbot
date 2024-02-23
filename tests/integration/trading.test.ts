@@ -2,7 +2,6 @@ import { randArrItem, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
-import { prisma } from '../../src/lib/settings/prisma';
 import { tradeCommand } from '../../src/mahoji/commands/trade';
 import { createTestUser, mockClient, TestUser } from './util';
 
@@ -70,7 +69,7 @@ test('Trade consistency', async () => {
 		await Promise.all(promises);
 		checkMatch();
 		expect(
-			await prisma.economyTransaction.count({
+			await global.prisma!.economyTransaction.count({
 				where: {
 					sender: {
 						in: users.map(u => BigInt(u.id))

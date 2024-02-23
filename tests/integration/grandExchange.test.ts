@@ -4,7 +4,6 @@ import { describe, expect, test } from 'vitest';
 
 import { usernameCache } from '../../src/lib/constants';
 import { GrandExchange } from '../../src/lib/grandExchange';
-import { prisma } from '../../src/lib/settings/prisma';
 import { assert } from '../../src/lib/util';
 import resolveItems from '../../src/lib/util/resolveItems';
 import { geCommand } from '../../src/mahoji/commands/ge';
@@ -37,7 +36,7 @@ const sampleBank = new Bank()
 
 async function cancelAllListings(user: TestUser) {
 	const results: string[] = [];
-	const activeListings = await prisma.gEListing.findMany({
+	const activeListings = await global.prisma!.gEListing.findMany({
 		where: {
 			user_id: user.id
 		}
@@ -58,12 +57,12 @@ async function cancelAllListings(user: TestUser) {
 describe('Grand Exchange', async () => {
 	const itemPool = resolveItems(['Egg', 'Trout', 'Coal']);
 	GrandExchange.calculateSlotsOfUser = async () => ({ slots: 500 } as any);
+	await mockClient();
 
 	test(
 		'Fuzz',
 		async () => {
 			assert(randInt(1, 100_000) !== randInt(1, 100_000));
-			await mockClient();
 
 			await GrandExchange.totalReset();
 			await GrandExchange.init();
@@ -125,7 +124,7 @@ describe('Grand Exchange', async () => {
 			expect(data.taxBank).toBeGreaterThan(0);
 			expect(data.totalTax).toBeGreaterThan(0);
 
-			const totalTaxed = await prisma.gETransaction.aggregate({
+			const totalTaxed = await global.prisma!.gETransaction.aggregate({
 				_sum: {
 					total_tax_paid: true
 				}

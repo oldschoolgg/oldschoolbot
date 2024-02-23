@@ -4,7 +4,6 @@ import { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { prisma } from '../../src/lib/settings/prisma';
 import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems';
 import { mockedId } from './util';
 
@@ -14,7 +13,7 @@ describe('Transactionalized Trade Test', async () => {
 		const GP = bank.amount('Coins');
 		delete bank.bank[995];
 
-		await prisma.user.create({
+		await global.prisma!.user.create({
 			data: { id: userId, GP, bank: bank.bank, ...userData }
 		});
 

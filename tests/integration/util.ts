@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 
 import { globalConfig } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
-import { convertStoredActivityToFlatActivity, prisma } from '../../src/lib/settings/prisma';
+import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/prisma';
 import { processPendingActivities } from '../../src/lib/Task';
 import { ItemBank } from '../../src/lib/types';
 import { cryptoRand } from '../../src/lib/util';
@@ -62,9 +62,9 @@ export class TestUser extends MUserClass {
 		if (res !== 'You are now an ironman.') {
 			throw new Error(`Failed to reset: ${res}`);
 		}
-		await prisma.userStats.deleteMany({ where: { user_id: BigInt(this.id) } });
-		await prisma.user.delete({ where: { id: this.id } });
-		const user = await prisma.user.create({ data: { id: this.id } });
+		await global.prisma!.userStats.deleteMany({ where: { user_id: BigInt(this.id) } });
+		await global.prisma!.user.delete({ where: { id: this.id } });
+		const user = await global.prisma!.user.create({ data: { id: this.id } });
 		this.user = user;
 	}
 
@@ -129,7 +129,7 @@ export function mockedId() {
 
 export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 	const id = userData?.id ?? mockedId();
-	const user = await prisma.user.upsert({
+	const user = await global.prisma!.user.upsert({
 		create: {
 			id,
 			...userData,
@@ -145,7 +145,7 @@ export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserC
 	});
 
 	try {
-		await prisma.userStats.create({
+		await global.prisma!.userStats.create({
 			data: {
 				user_id: BigInt(user.id)
 			}
@@ -165,12 +165,12 @@ class TestClient {
 	}
 
 	async reset() {
-		await prisma.clientStorage.delete({ where: { id: this.data.id } });
-		this.data = (await prisma.clientStorage.create({ data: { id: this.data.id } }))!;
+		await global.prisma!.clientStorage.delete({ where: { id: this.data.id } });
+		this.data = (await global.prisma!.clientStorage.create({ data: { id: this.data.id } }))!;
 	}
 
 	async sync() {
-		this.data = (await prisma.clientStorage.findFirst({ where: { id: this.data.id } }))!;
+		this.data = (await global.prisma!.clientStorage.findFirst({ where: { id: this.data.id } }))!;
 	}
 
 	async expectValueMatch(key: keyof ClientStorage, value: any) {
@@ -183,7 +183,7 @@ class TestClient {
 
 export async function mockClient() {
 	const clientId = mockedId();
-	const client = await prisma.clientStorage.create({
+	const client = await global.prisma!.clientStorage.create({
 		data: {
 			id: clientId
 		}
