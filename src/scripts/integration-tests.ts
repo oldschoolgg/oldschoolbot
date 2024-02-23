@@ -6,11 +6,11 @@ async function main() {
 		execSync('docker compose up -d --wait', { stdio: 'inherit' });
 
 		console.log('Waiting...');
-		await sleep(5000);
+		await sleep(2000);
 
 		console.log('Starting...');
-		execSync('dotenv -e .env.test -- prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit' });
-		execSync('dotenv -e .env.test -- prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit' });
+		execSync('dotenv -e .env.example -- prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit' });
+		execSync('dotenv -e .env.example -- prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit' });
 		execSync('yarn prebuild:scripts', { stdio: 'inherit' });
 		execSync('yarn build:esbuild', { stdio: 'inherit' });
 
