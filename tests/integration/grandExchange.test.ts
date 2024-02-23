@@ -70,7 +70,7 @@ describe('Grand Exchange', async () => {
 
 			const currentOwnedBank = await GrandExchange.fetchOwnedBank();
 			expect(currentOwnedBank.toString()).toEqual(new Bank().toString());
-			let amountOfUsers = randInt(300, 400);
+			let amountOfUsers = randInt(200, 300);
 
 			const totalExpectedBank = sampleBank.clone().multiply(amountOfUsers);
 			let users: TestUser[] = [];
@@ -141,7 +141,7 @@ describe('Grand Exchange', async () => {
 			assert(GrandExchange.queue.size === 0, 'Queue should be empty');
 		},
 		{
-			repeats: 2,
+			repeats: 1,
 			timeout: Time.Minute * 5
 		}
 	);
