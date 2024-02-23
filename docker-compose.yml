@@ -5,7 +5,7 @@ version: "3.9"
 services:
   osb:
     image: postgres:13-alpine
-    command: -c 'max_connections=100'
+    command: -c 'max_connections=5000'
     restart: always
     container_name: osb_database
     ports:
@@ -18,7 +18,7 @@ services:
 
   robochimp:
     image: postgres:13-alpine
-    command: -c 'max_connections=100'
+    command: -c 'max_connections=5000'
     restart: always
     container_name: robochimp_database
     ports:
