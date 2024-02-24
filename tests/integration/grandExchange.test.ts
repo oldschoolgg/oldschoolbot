@@ -98,7 +98,7 @@ describe('Grand Exchange', async () => {
 				}
 			}
 
-			await Promise.all(commandPromises);
+			// await Promise.all(commandPromises);
 
 			for (let i = 0; i < 100; i++) {
 				await GrandExchange.tick();
