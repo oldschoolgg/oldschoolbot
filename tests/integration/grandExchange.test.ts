@@ -1,4 +1,4 @@
-import { calcPercentOfNum, randArrItem, randInt, Time } from 'e';
+import { calcPercentOfNum, randArrItem, randInt, shuffleArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
@@ -80,20 +80,25 @@ describe('Grand Exchange', async () => {
 				users.push(user);
 			}
 
-			for (let i = 0; i < users.length; i++) {
+			const commandPromises = [];
+			for (const user of shuffleArr(users)) {
 				for (const item of itemPool) {
 					const method = randArrItem(['buy', 'sell']);
 					let quantity = randArrItem(quantities);
 					let price = randArrItem(prices);
-					users[i].runCommand(geCommand, {
-						[method]: {
-							item,
-							quantity,
-							price
-						}
-					});
+					commandPromises.push(
+						user.runCommand(geCommand, {
+							[method]: {
+								item,
+								quantity,
+								price
+							}
+						})
+					);
 				}
 			}
+
+			await Promise.all(commandPromises);
 
 			for (let i = 0; i < 100; i++) {
 				await GrandExchange.tick();
