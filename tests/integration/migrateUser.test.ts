@@ -149,16 +149,25 @@ class UserData {
 		});
 		if (activities.length > 0) this.activities = activities;
 
-		const slayerTasks = await global.prisma!.slayerTask.findMany({ where: { user_id: this.id }, orderBy: { id: 'asc' } });
+		const slayerTasks = await global.prisma!.slayerTask.findMany({
+			where: { user_id: this.id },
+			orderBy: { id: 'asc' }
+		});
 		if (slayerTasks.length > 0) this.slayerTasks = slayerTasks;
 
 		const poh = await global.prisma!.playerOwnedHouse.findFirst({ where: { user_id: this.id } });
 		if (poh) this.poh = poh;
 
-		const giveaways = await global.prisma!.giveaway.findMany({ where: { user_id: this.id }, orderBy: { id: 'asc' } });
+		const giveaways = await global.prisma!.giveaway.findMany({
+			where: { user_id: this.id },
+			orderBy: { id: 'asc' }
+		});
 		if (giveaways.length > 0) this.giveaways = giveaways;
 
-		const farmedCrops = await global.prisma!.farmedCrop.findMany({ where: { user_id: this.id }, orderBy: { id: 'asc' } });
+		const farmedCrops = await global.prisma!.farmedCrop.findMany({
+			where: { user_id: this.id },
+			orderBy: { id: 'asc' }
+		});
 		if (farmedCrops.length > 0) this.farmedCrops = farmedCrops;
 
 		const minigames = await global.prisma!.minigame.findFirst({ where: { user_id: this.id } });
@@ -920,7 +929,7 @@ const allTableCommands: TestCommand[] = [
 			const totalPrice = itemPrice * qty;
 
 			bankToSell.add(item, qty);
-			const botItemSellData: global.prisma!.BotItemSellCreateManyInput[] = [];
+			const botItemSellData: Prisma.BotItemSellCreateManyInput[] = [];
 			botItemSellData.push({
 				item_id: item.id,
 				quantity: qty,
@@ -1151,7 +1160,7 @@ async function buildBaseUser(userId: string) {
 		.add('Berserker ring')
 		.add('Ghrazi rapier');
 
-	const userData: Partial<global.prisma!.UserCreateInput> = {
+	const userData: Partial<Prisma.UserCreateInput> = {
 		id: userId,
 		skills_runecraft: 13_034_431,
 		skills_woodcutting: 13_034_431,
