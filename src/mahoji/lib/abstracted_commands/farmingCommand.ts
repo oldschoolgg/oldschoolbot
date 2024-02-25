@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 
 import { superCompostables } from '../../../lib/data/filterables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { prisma } from '../../../lib/settings/prisma';
 import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
@@ -165,11 +164,6 @@ export async function farmingPlantCommand({
 		return `${user.minionName} needs ${plant.level} Farming to plant ${plant.name}.`;
 	}
 
-	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 65);
-	if (!hasFavour && plant.name === 'Grape') {
-		return `${user.minionName} needs ${requiredPoints}% Hosidius Favour to plant Grapes.`;
-	}
-
 	const { patchesDetailed } = await getFarmingInfo(user.id);
 	const patchType = patchesDetailed.find(i => i.patchName === plant.seedType)!;
 
@@ -188,7 +182,7 @@ export async function farmingPlantCommand({
 
 	const [numOfPatches, noFarmGuild] = calcNumOfPatches(plant, user, questPoints);
 	if (numOfPatches === 0) {
-		return 'There are no available patches to you. Note: 60% Hosidius favour is required for farming guild.';
+		return 'There are no available patches to you.';
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'Farming');

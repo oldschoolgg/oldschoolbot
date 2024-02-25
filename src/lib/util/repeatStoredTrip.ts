@@ -131,6 +131,10 @@ export const tripHandlers = {
 		commandName: 'm',
 		args: () => ({})
 	},
+	[activity_type_enum.KourendFavour]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.AerialFishing]: {
 		commandName: 'activities',
 		args: () => ({ aerial_fishing: {} })
@@ -347,10 +351,6 @@ export const tripHandlers = {
 	[activity_type_enum.Inferno]: {
 		commandName: 'activities',
 		args: () => ({ inferno: { action: 'start' } })
-	},
-	[activity_type_enum.KourendFavour]: {
-		commandName: 'activities',
-		args: (data: KourendFavourActivityTaskOptions) => ({ favour: { name: data.favour } })
 	},
 	[activity_type_enum.LastManStanding]: {
 		commandName: 'minigames',
