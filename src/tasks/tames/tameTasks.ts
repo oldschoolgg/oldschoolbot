@@ -269,13 +269,14 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			}
 
 			if (clueTier.name === 'Master') {
-				const percentChanceOfGMC = mTame.hasEquipped('Divine ring') ? 3.5 : 1.5;
+				const hasDivineRing = mTame.hasEquipped('Divine ring');
+				const percentChanceOfGMC = hasDivineRing ? 3.5 : 1.5;
 				for (let i = 0; i < activityData.quantity; i++) {
 					if (percentChance(percentChanceOfGMC)) {
 						loot.add('Clue scroll (grandmaster)');
 					}
 				}
-				messages.push('2x GMC droprate for divine ring');
+				if (hasDivineRing) messages.push('2x GMC droprate for divine ring');
 			}
 
 			if (user.bitfield.includes(BitField.DisabledTameClueOpening)) {

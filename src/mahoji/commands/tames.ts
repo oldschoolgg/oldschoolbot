@@ -1604,7 +1604,8 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 		return 'You need to have all your STASH units built and full for your tame to do Grandmaster clues.';
 	}
 
-	if (!user.owns(cost)) {
+	if (!user.owns(cost) || (costSavedByDemonicJibwings !== null && !user.owns(costSavedByDemonicJibwings))) {
+		if (costSavedByDemonicJibwings) cost.add(costSavedByDemonicJibwings);
 		return `You need ${cost} to feed your Eagle for this trip.`;
 	}
 
