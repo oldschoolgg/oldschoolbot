@@ -111,7 +111,6 @@ describe('Grand Exchange', async () => {
 			}
 			await commandPromises.onEmpty();
 			await waitForGEToBeEmpty();
-
 			console.log('Finished running all commands');
 
 			// Tick the g.e to make some transactions
@@ -176,6 +175,8 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 
 			await GrandExchange.queue.onEmpty();
 			assert(GrandExchange.queue.size === 0, 'Queue should be empty');
+			const geBank = await GrandExchange.fetchOwnedBank();
+			console.log('Finished G.E tests, final bank: ', geBank);
 		},
 		{
 			repeats: 1,
