@@ -131,6 +131,14 @@ describe('Grand Exchange', async () => {
 			}
 			await Promise.all(cancelPromises);
 			await waitForGEToBeEmpty();
+			const { buyListings, sellListings } = await GrandExchange.fetchActiveListings();
+			if (buyListings.length > 0 || sellListings.length > 0) {
+				throw new Error('There should be no active listings!');
+			}
+			const newCurrentOwnedBank = await GrandExchange.fetchOwnedBank();
+			if (newCurrentOwnedBank.length !== 0) {
+				throw new Error('There should be no items in the G.E bank!');
+			}
 			console.log('Finished cancelling');
 
 			await Promise.all(users.map(u => u.sync()));
