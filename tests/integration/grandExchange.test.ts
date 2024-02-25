@@ -62,6 +62,12 @@ describe('Grand Exchange', async () => {
 	GrandExchange.calculateSlotsOfUser = async () => ({ slots: 500 } as any);
 	await mockClient();
 
+	async function waitForGEToBeEmpty() {
+		await GrandExchange.queue.onEmpty();
+		assert(GrandExchange.queue.size === 0, 'G.E Queue should be empty');
+		assert(!GrandExchange.locked, 'G.E should not be locked');
+	}
+
 	test(
 		'Fuzz',
 		async () => {
@@ -84,6 +90,7 @@ describe('Grand Exchange', async () => {
 			}
 			console.log(`Finished initializing ${amountOfUsers} users`);
 
+			// Run a bunch of commands to buy/sell
 			const commandPromises = new PQueue({ concurrency: 10 });
 			for (const user of shuffleArr(users)) {
 				const method = randArrItem(['buy', 'sell']);
@@ -101,12 +108,12 @@ describe('Grand Exchange', async () => {
 					}
 				});
 			}
-
 			await commandPromises.onEmpty();
-			await GrandExchange.queue.onEmpty();
+			await waitForGEToBeEmpty();
 
 			console.log('Finished running all commands');
 
+			// Tick the g.e to make some transactions
 			for (let i = 0; i < 100; i++) {
 				await GrandExchange.tick();
 				await Promise.all([
@@ -114,20 +121,21 @@ describe('Grand Exchange', async () => {
 					GrandExchange.extensiveVerification()
 				]);
 			}
+			await waitForGEToBeEmpty();
 			console.log('Finished ticking 100 times');
 
-			const testBank = new Bank();
+			// Cancel all remaining listings
 			const cancelPromises = [];
 			for (const user of users) {
 				cancelPromises.push(cancelAllListings(user));
 			}
-
 			await Promise.all(cancelPromises);
-			await GrandExchange.queue.onEmpty();
+			await waitForGEToBeEmpty();
 			console.log('Finished cancelling');
 
 			await Promise.all(users.map(u => u.sync()));
 
+			const testBank = new Bank();
 			for (const user of users) {
 				testBank.add(user.bankWithGP);
 			}

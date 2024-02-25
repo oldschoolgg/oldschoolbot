@@ -766,9 +766,14 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 		debugLog(`Expected G.E Bank: ${shouldHave}`);
 		if (!currentBank.equals(shouldHave)) {
-			throw new Error(
-				`GE either has extra or insufficient items. Difference: ${shouldHave.difference(currentBank)}`
-			);
+			if (!currentBank.has(shouldHave)) {
+				throw new Error(
+					`GE is MISSING items to cover the ${
+						[...buyListings, ...sellListings].length
+					}x active listings. Difference: ${shouldHave.difference(currentBank)}`
+				);
+			}
+			throw new Error(`GE has EXTRA items. Difference: ${shouldHave.difference(currentBank)}`);
 		} else {
 			debugLog(
 				`GE has ${currentBank}, which is enough to cover the ${
