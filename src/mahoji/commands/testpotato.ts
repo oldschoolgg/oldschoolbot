@@ -14,7 +14,6 @@ import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { UserKourendFavour } from '../../lib/minions/data/kourendFavour';
 import potions from '../../lib/minions/data/potions';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
@@ -54,14 +53,7 @@ export async function giveMaxStats(user: MUser) {
 	}
 	await user.update({
 		QP: MAX_QP,
-		...updates,
-		kourend_favour: {
-			Arceuus: 100,
-			Hosidius: 100,
-			Lovakengj: 100,
-			Piscarilius: 100,
-			Shayzien: 100
-		} as UserKourendFavour as any
+		...updates
 	});
 }
 

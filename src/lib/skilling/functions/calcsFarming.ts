@@ -1,9 +1,8 @@
 import { randInt } from 'e';
 
-import { Favours, gotFavour } from '../../minions/data/kourendFavour';
 import { Plant, SkillsEnum } from '../types';
 
-export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number, string | undefined] {
+export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number] {
 	let numOfPatches = plant.defaultNumOfPatches;
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
 	const questPoints = qp;
@@ -14,13 +13,7 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 			break;
 		}
 	}
-	let errorMessage: string | undefined = undefined;
 	for (let i = plant.additionalPatchesByFarmGuildAndLvl.length; i > 0; i--) {
-		const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 60);
-		if (!hasFavour) {
-			errorMessage = `${user.minionName} needs ${requiredPoints}% Hosidius Favour to use Farming guild patches.`;
-			break;
-		}
 		const [farmingLevelReq, additionalPatches] = plant.additionalPatchesByFarmGuildAndLvl[i - 1];
 		if (farmingLevel >= farmingLevelReq) {
 			numOfPatches += additionalPatches;
@@ -34,7 +27,7 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 			break;
 		}
 	}
-	return [numOfPatches, errorMessage];
+	return [numOfPatches];
 }
 
 export function calcVariableYield(

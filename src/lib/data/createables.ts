@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../constants';
-import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank, Skills } from '../types';
@@ -40,7 +39,6 @@ export interface Createable {
 	GPCost?: number;
 	cantBeInCL?: boolean;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
-	requiredFavour?: Favours;
 	maxCanOwn?: number;
 	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
 	type?: 'pack' | 'unpack';
