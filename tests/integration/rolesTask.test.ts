@@ -38,7 +38,7 @@ describe('Roles Task', async () => {
 				message_id: mockedId(),
 				reaction_id: mockedId(),
 				users_entered: [],
-				id: cryptoRand(1, 100),
+				id: cryptoRand(1, 10_000_000),
 				completed: false,
 				duration: 10_000
 			}

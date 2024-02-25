@@ -1,5 +1,8 @@
+import 'source-map-support/register';
+
 import { calcPercentOfNum, randArrItem, randInt, shuffleArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
+import PQueue from 'p-queue';
 import { describe, expect, test } from 'vitest';
 
 import { usernameCache } from '../../src/lib/constants';
@@ -69,7 +72,7 @@ describe('Grand Exchange', async () => {
 
 			const currentOwnedBank = await GrandExchange.fetchOwnedBank();
 			expect(currentOwnedBank.toString()).toEqual(new Bank().toString());
-			let amountOfUsers = randInt(200, 300);
+			let amountOfUsers = randInt(433, 533);
 
 			const totalExpectedBank = sampleBank.clone().multiply(amountOfUsers);
 			let users: TestUser[] = [];
@@ -79,26 +82,28 @@ describe('Grand Exchange', async () => {
 				await user.addItemsToBank({ items: sampleBank });
 				users.push(user);
 			}
+			console.log(`Finished initializing ${amountOfUsers} users`);
 
-			const commandPromises = [];
+			const commandPromises = new PQueue({ concurrency: 10 });
 			for (const user of shuffleArr(users)) {
-				for (const item of itemPool) {
-					const method = randArrItem(['buy', 'sell']);
-					let quantity = randArrItem(quantities);
-					let price = randArrItem(prices);
-					commandPromises.push(
-						user.runCommand(geCommand, {
-							[method]: {
-								item,
-								quantity,
-								price
-							}
-						})
-					);
-				}
+				const item = randArrItem(itemPool);
+				const method = randArrItem(['buy', 'sell']);
+				let quantity = randArrItem(quantities);
+				let price = randArrItem(prices);
+				commandPromises.add(() =>
+					user.runCommand(geCommand, {
+						[method]: {
+							item,
+							quantity,
+							price
+						}
+					})
+				);
 			}
 
-			// await Promise.all(commandPromises);
+			await commandPromises.onEmpty();
+
+			console.log('Finished running all commands');
 
 			for (let i = 0; i < 100; i++) {
 				await GrandExchange.tick();
@@ -107,6 +112,7 @@ describe('Grand Exchange', async () => {
 					GrandExchange.extensiveVerification()
 				]);
 			}
+			console.log('Finished ticking 100 times');
 
 			const testBank = new Bank();
 			const cancelPromises = [];
@@ -115,6 +121,8 @@ describe('Grand Exchange', async () => {
 			}
 
 			await Promise.all(cancelPromises);
+			console.log('Finished cancelling');
+
 			await Promise.all(users.map(u => u.sync()));
 
 			for (const user of users) {

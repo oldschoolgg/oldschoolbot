@@ -15,6 +15,6 @@ export default defineConfig({
 		threads: true,
 		maxConcurrency: 1,
 		minThreads: 1,
-		maxThreads: 1
+		maxThreads: 3
 	}
 });

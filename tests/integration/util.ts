@@ -152,7 +152,7 @@ export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserC
 		});
 	} catch (err) {
 		console.error(`Failed to make userStats for ${user.id}`);
-		throw new Error(`Failed to make userStats for ${user.id}`);
+		throw new Error(err as any);
 	}
 
 	return new TestUser(user);
