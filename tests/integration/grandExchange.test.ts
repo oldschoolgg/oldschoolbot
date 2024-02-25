@@ -155,8 +155,8 @@ describe('Grand Exchange', async () => {
 
 			const data = await GrandExchange.fetchData();
 			expect(data.isLocked).toEqual(false);
-			expect(data.taxBank).toBeGreaterThan(0);
-			expect(data.totalTax).toBeGreaterThan(0);
+			expect(data.taxBank, '1MS').toBeGreaterThan(0);
+			expect(data.totalTax, 'L1M').toBeGreaterThan(0);
 
 			const totalTaxed = await global.prisma!.gETransaction.aggregate({
 				_sum: {
@@ -168,9 +168,11 @@ describe('Grand Exchange', async () => {
 Based on G.E data, we should have received ${data.totalTax} tax`;
 			expect(totalTaxGP, taxDebugStr).toEqual(data.taxBank);
 			expect(totalTaxGP, taxDebugStr).toEqual(data.totalTax);
-			expect(testBank.amount('Coins')).toBeLessThanOrEqual(totalExpectedBank.amount('Coins'));
-			expect(testBank.amount('Coins') + totalTaxGP).toEqual(totalExpectedBank.amount('Coins'));
-			expect(testBank.toString()).toEqual(totalExpectedBank.clone().remove('Coins', totalTaxGP).toString());
+			expect(testBank.amount('Coins'), 'A5D').toBeLessThanOrEqual(totalExpectedBank.amount('Coins'));
+			expect(testBank.amount('Coins') + totalTaxGP, 'M3S').toEqual(totalExpectedBank.amount('Coins'));
+			expect(testBank.toString(), '9N3').toEqual(
+				totalExpectedBank.clone().remove('Coins', totalTaxGP).toString()
+			);
 
 			await GrandExchange.queue.onEmpty();
 			assert(GrandExchange.queue.size === 0, 'Queue should be empty');
@@ -257,7 +259,7 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 		expect(bank.length).toEqual(0);
 
 		const data = await GrandExchange.fetchData();
-		expect(data.taxBank).toEqual(totalTax);
-		expect(data.totalTax).toEqual(totalTax);
+		expect(data.taxBank, 'LZ9').toEqual(totalTax);
+		expect(data.totalTax, 'M39').toEqual(totalTax);
 	});
 });
