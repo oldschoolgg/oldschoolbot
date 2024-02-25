@@ -38,23 +38,25 @@ const sampleBank = new Bank()
 	.freeze();
 
 async function cancelAllListings(user: TestUser) {
-	const results: string[] = [];
 	const activeListings = await global.prisma!.gEListing.findMany({
 		where: {
 			user_id: user.id
 		}
 	});
 	for (const listing of activeListings) {
-		results.push(
-			(await user.runCommand(geCommand, {
-				cancel: {
-					listing: listing.userfacing_id
-				}
-			})) as string
-		);
-	}
+		const result = (await user.runCommand(geCommand, {
+			cancel: {
+				listing: listing.userfacing_id
+			}
+		})) as string;
 
-	return results.join('\n');
+		if (
+			result !== 'You cannot cancel a listing that has already been fulfilled.' &&
+			!result.startsWith('Successfully cancelled your listing,')
+		) {
+			throw new Error(`Unexpected result from cancelling listing: ${result}`);
+		}
+	}
 }
 
 describe('Grand Exchange', async () => {
