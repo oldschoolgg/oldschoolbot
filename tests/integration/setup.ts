@@ -1,6 +1,8 @@
 import '../globalSetup';
 
-import { vi } from 'vitest';
+import { afterEach, beforeEach, vi } from 'vitest';
+
+import { prisma } from '../../src/lib/settings/prisma';
 
 vi.mock('../../src/lib/util/handleMahojiConfirmation', () => ({
 	handleMahojiConfirmation: vi.fn()
@@ -25,4 +27,13 @@ vi.mock('../../src/lib/util/webhook', async () => {
 globalClient.fetchUser = async (id: string | bigint) => ({
 	id: typeof id === 'string' ? id : String(id),
 	send: async () => {}
+});
+
+beforeEach(async () => {
+	await prisma.$connect();
+	console.log(await prisma.$queryRawUnsafe('select count(*) from pg_stat_activity;'));
+});
+
+afterEach(async () => {
+	await prisma.$disconnect();
 });

@@ -37,7 +37,7 @@ jobs:
           cp config.example.ts config.ts &&
           popd
       - name: Copy env
-        run: cp .env.example .env
+        run: cp .env.test .env
       - name: Generate Prisma Client
         run: yarn gen
       - name: Run ESLint on changed files
