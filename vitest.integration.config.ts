@@ -11,6 +11,10 @@ export default defineConfig({
 			include: ['src/lib/MUser.ts']
 		},
 		testTimeout: 30_000,
-		bail: 1
+		bail: 1,
+		threads: true,
+		maxConcurrency: 1,
+		minThreads: 1,
+		maxThreads: 3
 	}
 });
