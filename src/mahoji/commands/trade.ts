@@ -148,10 +148,10 @@ Both parties must click confirm to make the trade.`,
 			`${senderUser.mention} sold ${itemsSent} to ${recipientUser.mention} for ${itemsReceived}.`
 		);
 		if (itemsReceived.has('Coins')) {
-			addToGPTaxBalance(recipientUser.id, itemsReceived.amount('Coins'));
+			await addToGPTaxBalance(recipientUser.id, itemsReceived.amount('Coins'));
 		}
 		if (itemsSent.has('Coins')) {
-			addToGPTaxBalance(senderUser.id, itemsSent.amount('Coins'));
+			await addToGPTaxBalance(senderUser.id, itemsSent.amount('Coins'));
 		}
 
 		return `${discrimName(senderAPIUser)} sold ${itemsSent} to ${discrimName(

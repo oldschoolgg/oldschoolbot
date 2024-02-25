@@ -1,14 +1,12 @@
-import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { runRolesTask } from '../../src/lib/rolesTask';
 import { MinigameName, Minigames } from '../../src/lib/settings/minigames';
-import { prisma } from '../../src/lib/settings/prisma';
 import { cryptoRand } from '../../src/lib/util';
 import { userStatsBankUpdate } from '../../src/mahoji/mahojiSettings';
-import { createTestUser } from './util';
+import { createTestUser, mockedId } from './util';
 
 describe('Roles Task', async () => {
 	test('Should not throw', async () => {
@@ -30,23 +28,23 @@ describe('Roles Task', async () => {
 		for (const minigame of minigames) {
 			minigameUpdate[minigame] = 1000;
 		}
-		await prisma.minigame.upsert({
+		await global.prisma!.minigame.upsert({
 			where: { user_id: ironUser.id },
 			update: minigameUpdate,
 			create: { user_id: ironUser.id, ...minigameUpdate }
 		});
 
-		await prisma.giveaway.create({
+		await global.prisma!.giveaway.create({
 			data: {
 				user_id: user.id,
 				loot: { 995: 10_000 },
 				start_date: new Date(),
 				finish_date: new Date(Date.now() + Time.Hour),
 				channel_id: '792691343284764693',
-				message_id: randomSnowflake(),
-				reaction_id: randomSnowflake(),
+				message_id: mockedId(),
+				reaction_id: mockedId(),
 				users_entered: [],
-				id: cryptoRand(1, 100),
+				id: cryptoRand(1, 10_000_000),
 				completed: false,
 				duration: 10_000
 			}

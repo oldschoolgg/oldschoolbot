@@ -16,7 +16,7 @@ import { isObject } from 'e';
 import { MahojiClient } from 'mahoji';
 import { join } from 'path';
 
-import { botToken, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
+import { botToken, DEV_SERVER_ID, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
 import { Channel, Events, globalConfig, META_CONSTANTS } from './lib/constants';
 import { onMessage } from './lib/events';
@@ -38,10 +38,6 @@ import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
 debugLog(`Starting... Git Hash ${META_CONSTANTS.GIT_HASH}`);
-
-if (!production) {
-	import('./lib/devHotReload');
-}
 
 Chart.register(ChartDataLabels);
 

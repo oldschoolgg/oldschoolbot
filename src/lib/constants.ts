@@ -841,7 +841,7 @@ const globalConfigSchema = z.object({
 	clientID: z.string().min(15).max(25),
 	geAdminChannelID: z.string().default('')
 });
-dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.example' : '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
 export const globalConfig = globalConfigSchema.parse({
 	patreonToken: process.env.PATREON_TOKEN,

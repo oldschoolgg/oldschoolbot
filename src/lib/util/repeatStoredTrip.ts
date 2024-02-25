@@ -185,10 +185,6 @@ export const tripHandlers = {
 		commandName: 'minigames',
 		args: () => ({ agility_arena: { start: {} } })
 	},
-	[activity_type_enum.AgilityArena]: {
-		commandName: 'minigames',
-		args: () => ({ agility_arena: { start: {} } })
-	},
 	[activity_type_enum.Alching]: {
 		commandName: 'activities',
 		args: (data: AlchingActivityTaskOptions) => ({

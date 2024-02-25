@@ -12,7 +12,9 @@ export default defineConfig({
 		},
 		testTimeout: 30_000,
 		bail: 1,
-		minThreads: 2,
-		maxThreads: 2
+		threads: true,
+		maxConcurrency: 1,
+		minThreads: 1,
+		maxThreads: 3
 	}
 });

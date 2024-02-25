@@ -36,7 +36,7 @@ interface CreateListingArgs {
 }
 
 function validateNumber(num: number) {
-	if (num < 0 || isNaN(num) || !Number.isInteger(num) || num > Number.MAX_SAFE_INTEGER) {
+	if (num < 0 || isNaN(num) || !Number.isInteger(num) || num >= Number.MAX_SAFE_INTEGER) {
 		throw new Error(`Invalid number: ${num}.`);
 	}
 }
@@ -797,17 +797,21 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	}
 
 	async tick() {
-		await this.queue.add(async () => {
-			if (this.isTicking) throw new Error('Already ticking.');
-			try {
-				await this._tick();
-			} catch (err: any) {
-				logError(err.message);
-				debugLog(err.message);
-				throw err;
-			} finally {
-				this.isTicking = false;
-			}
+		return new Promise<void>((resolve, reject) => {
+			this.queue.add(async () => {
+				if (this.isTicking) return reject(new Error('Already ticking.'));
+				this.isTicking = true;
+				try {
+					await this._tick();
+				} catch (err: any) {
+					logError(err.message);
+					debugLog(err.message);
+					return reject(err);
+				} finally {
+					this.isTicking = false;
+					resolve();
+				}
+			});
 		});
 	}
 

@@ -1,10 +1,13 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { randInt } from 'e';
 import { Bank, LootTable, Openables } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Item, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
+import BrimstoneChest, { BrimstoneChestOpenable } from 'oldschooljs/dist/simulation/openables/BrimstoneChest';
 import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
+import LarransChest, { LarransChestOpenable } from 'oldschooljs/dist/simulation/openables/LarransChest';
 
 import { bsoOpenables } from './bsoOpenables';
 import { ClueTiers } from './clues/clueTiers';
@@ -223,7 +226,20 @@ const osjsOpenables: UnifiedOpenable[] = [
 		id: 23_083,
 		openedItem: getOSItem(23_083),
 		aliases: ['brimstone chest', 'brimstone'],
-		output: Openables.BrimstoneChest.table,
+		output: async (
+			args: OpenArgs
+		): Promise<{
+			bank: Bank;
+		}> => {
+			const chest = new BrimstoneChestOpenable(BrimstoneChest);
+			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
+			const brimstoneOptions: OpenableOpenOptions = {
+				fishLvl
+			};
+			const openLoot: Bank = chest.open(args.quantity, brimstoneOptions);
+
+			return { bank: openLoot };
+		},
 		allItems: Openables.BrimstoneChest.table.allItems
 	},
 	{
@@ -295,7 +311,21 @@ const osjsOpenables: UnifiedOpenable[] = [
 			'larrans small chest',
 			"larran's small chest"
 		],
-		output: Openables.LarransChest.table,
+		output: async (
+			args: OpenArgs
+		): Promise<{
+			bank: Bank;
+		}> => {
+			const chest = new LarransChestOpenable(LarransChest);
+			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
+			const larransOptions: OpenableOpenOptions = {
+				fishLvl,
+				chestSize: 'big'
+			};
+			const openLoot: Bank = chest.open(args.quantity, larransOptions);
+
+			return { bank: openLoot };
+		},
 		allItems: Openables.LarransChest.table.allItems
 	},
 	{

@@ -734,7 +734,7 @@ GROUP BY data->>'clueID';`);
 			select: keysToSelect
 		});
 
-		return result as SelectedUserStats<T>;
+		return result as unknown as SelectedUserStats<T>;
 	}
 
 	get logName() {

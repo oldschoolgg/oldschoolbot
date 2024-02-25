@@ -706,9 +706,9 @@ GROUP BY 1;`;
 				await Promise.all(
 					Object.values(SkillsEnum).map(
 						skillName =>
-							prisma.$queryRawUnsafe(`SELECT '${skillName}' as skill_name, COUNT(id) AS qty
+							prisma.$queryRawUnsafe(`SELECT '${skillName}' as skill_name, COUNT(id)::int AS qty
 FROM users
-WHERE "skills.${skillName}" = 200000000;`) as Promise<{ qty: number; skill_name: string }[]>
+WHERE "skills.${skillName}" = 200000000::int;`) as Promise<{ qty: number; skill_name: string }[]>
 					)
 				)
 			)

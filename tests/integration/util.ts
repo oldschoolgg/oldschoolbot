@@ -1,4 +1,3 @@
-import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { randInt, shuffleArr, Time, uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
@@ -10,7 +9,7 @@ import { convertStoredActivityToFlatActivity, prisma } from '../../src/lib/setti
 import { processPendingActivities } from '../../src/lib/Task';
 import { ItemBank } from '../../src/lib/types';
 import { ActivityTaskOptions } from '../../src/lib/types/minions';
-import { assert, cryptoRand } from '../../src/lib/util';
+import { cryptoRand } from '../../src/lib/util';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
@@ -126,20 +125,21 @@ export class TestUser extends MUserClass {
 	}
 }
 
-export async function createTestUser(
-	id = cryptoRand(1_000_000_000, 5_000_000_000).toString(),
-	bank?: Bank,
-	userData: Partial<Prisma.UserCreateInput> = {}
-) {
-	const user = await prisma.user.upsert({
+export function mockedId() {
+	return cryptoRand(1_000_000_000, 5_000_000_000_000).toString();
+}
+
+export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
+	const id = userData?.id ?? mockedId();
+	const user = await global.prisma!.user.upsert({
 		create: {
 			id,
-			bank: bank?.bank,
-			...userData
+			...userData,
+			bank: bank?.bank
 		},
 		update: {
-			bank: bank?.bank,
-			...userData
+			...userData,
+			bank: bank?.bank
 		},
 		where: {
 			id
@@ -147,14 +147,14 @@ export async function createTestUser(
 	});
 
 	try {
-		await prisma.userStats.create({
+		await global.prisma!.userStats.create({
 			data: {
 				user_id: BigInt(user.id)
 			}
 		});
 	} catch (err) {
 		console.error(`Failed to make userStats for ${user.id}`);
-		throw new Error(`Failed to make userStats for ${user.id}`);
+		throw new Error(err as any);
 	}
 
 	return new TestUser(user);
@@ -167,12 +167,12 @@ class TestClient {
 	}
 
 	async reset() {
-		await prisma.clientStorage.delete({ where: { id: this.data.id } });
-		this.data = (await prisma.clientStorage.create({ data: { id: this.data.id } }))!;
+		await global.prisma!.clientStorage.delete({ where: { id: this.data.id } });
+		this.data = (await global.prisma!.clientStorage.create({ data: { id: this.data.id } }))!;
 	}
 
 	async sync() {
-		this.data = (await prisma.clientStorage.findFirst({ where: { id: this.data.id } }))!;
+		this.data = (await global.prisma!.clientStorage.findFirst({ where: { id: this.data.id } }))!;
 	}
 
 	async expectValueMatch(key: keyof ClientStorage, value: any) {
@@ -184,8 +184,8 @@ class TestClient {
 }
 
 export async function mockClient() {
-	const clientId = randomSnowflake();
-	const client = await prisma.clientStorage.create({
+	const clientId = mockedId();
+	const client = await global.prisma!.clientStorage.create({
 		data: {
 			id: clientId
 		}
@@ -195,4 +195,6 @@ export async function mockClient() {
 	return new TestClient(client);
 }
 
-assert(uniqueArr([randomSnowflake(), randomSnowflake(), randomSnowflake()]).length === 3);
+if (uniqueArr([mockedId(), mockedId(), mockedId()]).length !== 3) {
+	throw new Error('mockedId is broken');
+}

@@ -684,6 +684,6 @@ export const monsterTask: MinionTask = {
 						previousCL
 				  });
 
-		handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded, messages);
+		return handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded, messages);
 	}
 };

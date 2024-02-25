@@ -5,7 +5,6 @@ import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { describe, expect, test } from 'vitest';
 
 import { GLOBAL_BSO_XP_MULTIPLIER } from '../../src/lib/constants';
-import { prisma } from '../../src/lib/settings/prisma';
 import { SkillsEnum } from '../../src/lib/skilling/types';
 import { assert } from '../../src/lib/util/logError';
 import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings';
@@ -96,7 +95,7 @@ describe('MUser', () => {
 		expect(user.skillsAsLevels.agility).toEqual(20);
 		expect(result).toEqual(`You received ${xpMultiplied.toLocaleString()} <:agility:630911040355565568> XP
 **Congratulations! Your Agility level is now 20** 🎉`);
-		const xpAdded = await prisma.xPGain.findMany({
+		const xpAdded = await global.prisma!.xPGain.findMany({
 			where: {
 				user_id: BigInt(user.id),
 				skill: 'agility',
