@@ -153,7 +153,6 @@ describe('Grand Exchange', async () => {
 					total_tax_paid: true
 				}
 			});
-			totalTaxed._sum.total_tax_paid = BigInt(Number(totalTaxed._sum.total_tax_paid!) + 1);
 			const totalTaxGP = Number(totalTaxed._sum.total_tax_paid!);
 			const taxDebugStr = `Based on transactions, received ${totalTaxGP} tax
 Based on G.E data, we should have received ${data.totalTax} tax`;
