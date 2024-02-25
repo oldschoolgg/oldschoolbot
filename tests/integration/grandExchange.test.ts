@@ -123,6 +123,7 @@ describe('Grand Exchange', async () => {
 			}
 
 			await Promise.all(cancelPromises);
+			await GrandExchange.queue.onEmpty();
 			console.log('Finished cancelling');
 
 			await Promise.all(users.map(u => u.sync()));
