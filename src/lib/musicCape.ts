@@ -237,20 +237,6 @@ AND data->>'runeID' IS NOT NULL;`;
 		}
 	})
 	.add({
-		name: 'Must have atleast 25% in each house favour',
-		has: async ({ user }) => {
-			const results: RequirementFailure[] = [];
-			const favour = user.kourendFavour;
-
-			const notDoneFavours = Object.entries(favour).filter(([_, value]) => value < 25);
-
-			if (notDoneFavours.length > 0) {
-				results.push({ reason: `You need atleast 25% favour in ${notDoneFavours.map(i => i[0]).join(', ')}.` });
-			}
-			return results;
-		}
-	})
-	.add({
 		name: 'Champions Challenge',
 		has: async ({ user }) => {
 			for (const scroll of championScrolls) {

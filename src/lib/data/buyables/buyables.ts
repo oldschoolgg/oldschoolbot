@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 import { QuestID } from '../../../mahoji/lib/abstracted_commands/questCommand';
 import { chompyHats } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
-import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
 import { MUserStats } from '../../structures/MUserStats';
@@ -35,7 +34,6 @@ export interface Buyable {
 	itemCost?: Bank;
 	aliases?: string[];
 	skillsNeeded?: Skills;
-	requiredFavour?: Favours;
 	restockTime?: number;
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
@@ -203,8 +201,7 @@ const constructionBuyables: Buyable[] = [
 	},
 	{
 		name: 'Arceuus signet',
-		gpCost: 100_000,
-		requiredFavour: Favours.Arceuus
+		gpCost: 100_000
 	},
 	{
 		name: 'Ancient signet',
