@@ -1,6 +1,6 @@
 import '../globalSetup';
 
-import { afterEach, beforeAll, beforeEach, vi } from 'vitest';
+import { afterEach, beforeEach, vi } from 'vitest';
 
 import { prisma } from '../../src/lib/settings/prisma';
 
@@ -28,15 +28,6 @@ globalClient.fetchUser = async (id: string | bigint) => ({
 	id: typeof id === 'string' ? id : String(id),
 	send: async () => {}
 });
-
-// beforeAll(async () => {
-// 	console.log(
-// 		await global.prisma!.$queryRawUnsafe(`SELECT pg_terminate_backend(pid)
-// 	FROM pg_stat_activity
-// 	WHERE state = 'idle'
-// 	  AND pid <> pg_backend_pid();`)
-// 	);
-// });
 
 beforeEach(async () => {
 	await prisma.$connect();
