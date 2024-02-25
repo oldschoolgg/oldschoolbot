@@ -180,7 +180,7 @@ export async function farmingPlantCommand({
 	const treeStr = !planted ? null : treeCheck(planted, currentWoodcuttingLevel, GP, patchType.lastQuantity);
 	if (treeStr) return treeStr;
 
-	const [numOfPatches, noFarmGuild] = calcNumOfPatches(plant, user, questPoints);
+	const [numOfPatches] = calcNumOfPatches(plant, user, questPoints);
 	if (numOfPatches === 0) {
 		return 'There are no available patches to you.';
 	}
@@ -285,8 +285,6 @@ export async function farmingPlantCommand({
 			`${user.minionName} is now harvesting ${patchType.lastQuantity}x ${patchType.lastPlanted}, and then planting ${quantity}x ${plant.name}.`
 		);
 	}
-
-	if (noFarmGuild) boostStr.push(noFarmGuild);
 
 	const inserted = await prisma.farmedCrop.create({
 		data: {
