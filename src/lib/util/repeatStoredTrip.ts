@@ -34,7 +34,6 @@ import {
 	GuardiansOfTheRiftActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
-	KourendFavourActivityTaskOptions,
 	MahoganyHomesActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
