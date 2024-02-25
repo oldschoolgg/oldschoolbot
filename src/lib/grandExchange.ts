@@ -768,12 +768,16 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		if (!currentBank.equals(shouldHave)) {
 			if (!currentBank.has(shouldHave)) {
 				throw new Error(
-					`GE is MISSING items to cover the ${
-						[...buyListings, ...sellListings].length
-					}x active listings. Difference: ${shouldHave.difference(currentBank)}`
+					`GE is MISSING items to cover the ${[...buyListings, ...sellListings].length}x active listings.
+G.E Bank Has: ${currentBank}
+G.E Bank Should Have: ${shouldHave}
+Difference: ${shouldHave.difference(currentBank)}`
 				);
 			}
-			throw new Error(`GE has EXTRA items. Difference: ${shouldHave.difference(currentBank)}`);
+			throw new Error(`GE has EXTRA items.
+G.E Bank Has: ${currentBank}
+G.E Bank Should Have: ${shouldHave}
+Difference: ${shouldHave.difference(currentBank)}`);
 		} else {
 			debugLog(
 				`GE has ${currentBank}, which is enough to cover the ${
