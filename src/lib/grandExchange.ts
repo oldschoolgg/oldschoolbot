@@ -371,25 +371,20 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 			await user.removeItemsFromBank(result.cost);
 
-			const [listing] = await prisma.$transaction(
-				[
-					prisma.gEListing.create({
-						data: {
-							user_id: user.id,
-							item_id: result.item.id,
-							asking_price_per_item: price,
-							total_quantity: quantity,
-							type,
-							quantity_remaining: quantity,
-							userfacing_id: generateGrandExchangeID()
-						}
-					}),
-					...makeTransactFromTableBankQueries({ bankToAdd: result.cost })
-				],
-				{
-					isolationLevel: 'Serializable'
-				}
-			);
+			const [listing] = await prisma.$transaction([
+				prisma.gEListing.create({
+					data: {
+						user_id: user.id,
+						item_id: result.item.id,
+						asking_price_per_item: price,
+						total_quantity: quantity,
+						type,
+						quantity_remaining: quantity,
+						userfacing_id: generateGrandExchangeID()
+					}
+				}),
+				...makeTransactFromTableBankQueries({ bankToAdd: result.cost })
+			]);
 
 			debugLog(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
 

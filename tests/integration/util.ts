@@ -124,7 +124,7 @@ export class TestUser extends MUserClass {
 }
 
 export function mockedId() {
-	return cryptoRand(1_000_000_000, 5_000_000_000).toString();
+	return cryptoRand(1_000_000_000, 5_000_000_000_000).toString();
 }
 
 export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
