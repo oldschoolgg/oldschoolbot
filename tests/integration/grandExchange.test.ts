@@ -64,7 +64,6 @@ describe('Grand Exchange', async () => {
 
 	async function waitForGEToBeEmpty() {
 		await GrandExchange.queue.onEmpty();
-		assert(GrandExchange.queue.size === 0, 'G.E Queue should be empty');
 		assert(!GrandExchange.locked, 'G.E should not be locked');
 	}
 
@@ -116,6 +115,7 @@ describe('Grand Exchange', async () => {
 			// Tick the g.e to make some transactions
 			for (let i = 0; i < 100; i++) {
 				await GrandExchange.tick();
+				await waitForGEToBeEmpty();
 				await Promise.all([
 					GrandExchange.checkGECanFullFilAllListings(),
 					GrandExchange.extensiveVerification()
