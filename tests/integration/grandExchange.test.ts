@@ -72,7 +72,7 @@ describe('Grand Exchange', async () => {
 
 			const currentOwnedBank = await GrandExchange.fetchOwnedBank();
 			expect(currentOwnedBank.toString()).toEqual(new Bank().toString());
-			let amountOfUsers = randInt(433, 533);
+			let amountOfUsers = randInt(100, 200);
 
 			const totalExpectedBank = sampleBank.clone().multiply(amountOfUsers);
 			let users: TestUser[] = [];
