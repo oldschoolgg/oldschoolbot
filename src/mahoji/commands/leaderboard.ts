@@ -186,7 +186,7 @@ async function sacrificeLb(
 	const mostUniques: { id: string; sacbanklength: number }[] = await prisma.$queryRawUnsafe(
 		`SELECT u.user_id::text AS id, u.sacbanklength
 				FROM (
-  					SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS(sacrificed_bank)) sacbanklength, user_id FROM user_stats
+  					SELECT (SELECT COUNT(*)::int FROM JSONB_OBJECT_KEYS(sacrificed_bank)) sacbanklength, user_id FROM user_stats
   						${ironmanOnly ? 'INNER JOIN users ON users.id::bigint = user_stats.user_id WHERE "minion.ironman" = true' : ''}
 				) u
 				ORDER BY u.sacbanklength DESC LIMIT 10;

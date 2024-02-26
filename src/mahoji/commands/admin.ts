@@ -131,7 +131,7 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 async function allEquippedPets() {
 	const pets = await prisma.$queryRawUnsafe<
 		{ pet: number; qty: number }[]
-	>(`SELECT "minion.equippedPet" AS pet, COUNT("minion.equippedPet") AS qty
+	>(`SELECT "minion.equippedPet" AS pet, COUNT("minion.equippedPet")::int AS qty
 FROM users
 WHERE "minion.equippedPet" IS NOT NULL
 GROUP BY "minion.equippedPet"
@@ -289,7 +289,7 @@ AND ("gear.melee" IS NOT NULL OR
 				>(`SELECT (blowpipe->>'scales')::int AS scales, (blowpipe->>'dartID')::int AS dart, (blowpipe->>'dartQuantity')::int AS qty
 FROM users
 WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
-				prisma.$queryRawUnsafe<{ sum: number }[]>('SELECT SUM("GP") FROM users;'),
+				prisma.$queryRawUnsafe<{ sum: number }[]>('SELECT SUM("GP")::int FROM users;'),
 				prisma.$queryRawUnsafe<{ banks: ItemBank }[]>(`SELECT
 				json_object_agg(itemID, itemQTY)::jsonb as banks
 			 from (
@@ -329,7 +329,7 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 		name: 'Most Active',
 		run: async () => {
 			const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
-SELECT sum(duration) as num, "new_user"."username", user_id
+SELECT sum(duration)::int as num, "new_user"."username", user_id
 FROM activity
 INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
 WHERE start_date > now() - interval '2 days'
@@ -409,11 +409,11 @@ The next buy limit reset is at: ${buyLimitInterval.nextResetStr}, it resets ever
 		run: async () => {
 			const result = await prisma.$queryRawUnsafe<{ item_id: string; total_gp_spent: number }[]>(`SELECT
   key AS item_id,
-  sum((cost_gp / total_items) * value::integer) AS total_gp_spent
+  sum((cost_gp / total_items) * value::integer)::int AS total_gp_spent
 FROM
   buy_command_transaction,
   json_each_text(loot_bank),
-  (SELECT id, sum(value::integer) as total_items FROM buy_command_transaction, json_each_text(loot_bank) GROUP BY id) subquery
+  (SELECT id, sum(value::integer)::int as total_items FROM buy_command_transaction, json_each_text(loot_bank) GROUP BY id) subquery
 WHERE
   buy_command_transaction.id = subquery.id
 GROUP BY
@@ -441,7 +441,7 @@ LIMIT
 		run: async () => {
 			const result = await prisma.$queryRawUnsafe<
 				{ item_id: number; gp: number }[]
-			>(`select item_id, sum(gp_received) as gp
+			>(`select item_id, sum(gp_received)::int as gp
 from bot_item_sell
 group by item_id
 order by gp desc
@@ -450,7 +450,7 @@ limit 80;
 
 			const totalGPGivenOut = await prisma.$queryRawUnsafe<
 				{ total_gp_given_out: number }[]
-			>(`select sum(gp_received) as total_gp_given_out
+			>(`select sum(gp_received)::int as total_gp_given_out
 from bot_item_sell;`);
 
 			return {
@@ -479,7 +479,7 @@ from bot_item_sell;`);
 		name: 'Max G.E Slot users',
 		run: async () => {
 			const res = await prisma.$queryRawUnsafe<{ user_id: string; slots_used: number }[]>(`
-SELECT user_id, COUNT(*) AS slots_used
+SELECT user_id, COUNT(*)::int AS slots_used
 FROM ge_listing
 WHERE cancelled_at IS NULL AND fulfilled_at IS NULL
 GROUP BY user_id
