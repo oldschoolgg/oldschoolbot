@@ -11,7 +11,7 @@ jobs:
   test:
     name: Node v${{ matrix.node_version }} - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 5
+    timeout-minutes: 10
     strategy:
       matrix:
         node_version: [18.12.0, 20]
