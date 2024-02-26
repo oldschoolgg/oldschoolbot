@@ -42,7 +42,7 @@ export async function analyticsTick() {
 				'SELECT COUNT(*)::int FROM users WHERE "minion.hasBought" = true;',
 				'SELECT SUM("sacrificedValue")::int AS count FROM users;',
 				'SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true;',
-				'SELECT SUM("GP")::int AS count FROM users;'
+				'SELECT SUM("GP") AS count FROM users;'
 			].map(query => prisma.$queryRawUnsafe(query))
 		)
 	).map((result: any) => parseInt(result[0].count)) as number[];
