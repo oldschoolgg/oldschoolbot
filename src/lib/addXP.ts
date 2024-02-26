@@ -12,7 +12,7 @@ import { sendToChannelID } from './util/webhook';
 
 const skillsVals = Object.values(Skills);
 const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${LEVEL_99_XP}`).join(' AND ');
-const makeQuery = (ironman: boolean) => `SELECT count(id)
+const makeQuery = (ironman: boolean) => `SELECT count(id)::int
 FROM users
 WHERE ${maxFilter}
 ${ironman ? 'AND "minion.ironman" = true' : ''};`;
@@ -111,7 +111,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			{
 				count: string;
 			}[]
-		>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${LEVEL_99_XP};`);
+		>(`SELECT COUNT(*)::int FROM users WHERE "skills.${params.skillName}" >= ${LEVEL_99_XP};`);
 
 		let str = `${skill.emoji} **${user.badgedUsername}'s** minion, ${
 			user.minionName
@@ -125,7 +125,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 					count: string;
 				}[]
 			>(
-				`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${LEVEL_99_XP};`
+				`SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${LEVEL_99_XP};`
 			);
 			str += ` They are the ${formatOrdinal(parseInt(ironmenWith.count) + 1)} Ironman to get 99.`;
 		}
