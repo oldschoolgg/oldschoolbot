@@ -254,7 +254,7 @@ const tameImageReplacementEasterEggs = [
 		shouldActivate: (t: Tame) =>
 			t.nickname !== null &&
 			['meneldor', 'gwaihir', 'landroval'].includes(t.nickname.toLowerCase()) &&
-			t.species_id === TameSpeciesID.Monkey,
+			t.species_id === TameSpeciesID.Eagle,
 		image: readFileSync('./src/lib/resources/images/tames/3_replace_1.png')
 	},
 	...tameImageReplacementChoices.map(tameImage => ({
@@ -2072,7 +2072,7 @@ export const tamesCommand: OSBMahojiCommand = {
 		}
 		if (options.set_custom_image) {
 			if (user.perkTier() < PerkTier.Four) {
-				return 'You need to be a Tier 4 patron to set a custom image for your tame.';
+				return 'You need to be a Tier 3 patron to set a custom image for your tame.';
 			}
 			const replacement = tameImageReplacementChoices.find(i => i.name === options.set_custom_image?.image);
 			if (!replacement) {
