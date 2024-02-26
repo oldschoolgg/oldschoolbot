@@ -26,7 +26,7 @@ import { sendToChannelID } from './util/webhook';
 
 const skillsVals = Object.values(Skills);
 const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${LEVEL_120_XP}`).join(' AND ');
-const makeQuery = (ironman: boolean) => `SELECT count(id)
+const makeQuery = (ironman: boolean) => `SELECT count(id)::int
 FROM users
 WHERE ${maxFilter}
 ${ironman ? 'AND "minion.ironman" = true' : ''};`;
@@ -323,7 +323,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			{
 				count: string;
 			}[]
-		>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${queryValue};`);
+		>(`SELECT COUNT(*)::int FROM users WHERE "skills.${params.skillName}" >= ${queryValue};`);
 		resultStr = resultStr.replace('{nthUser}', formatOrdinal(Number(nthUser.count) + 1));
 		if (user.isIronman) {
 			const [nthIron] = await prisma.$queryRawUnsafe<
@@ -331,7 +331,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 					count: string;
 				}[]
 			>(
-				`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${queryValue};`
+				`SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${queryValue};`
 			);
 			resultStr = resultStr.replace('{nthIron}', formatOrdinal(Number(nthIron.count) + 1));
 		}
