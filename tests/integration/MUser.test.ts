@@ -1,10 +1,13 @@
-import { objectEntries } from 'e';
+import { activity_type_enum } from '@prisma/client';
+import { objectEntries, randArrItem, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { describe, expect, test } from 'vitest';
 
+import { ClueTiers } from '../../src/lib/clues/clueTiers';
 import { GLOBAL_BSO_XP_MULTIPLIER } from '../../src/lib/constants';
+import { prisma } from '../../src/lib/settings/prisma';
 import { SkillsEnum } from '../../src/lib/skilling/types';
 import { assert } from '../../src/lib/util/logError';
 import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings';
@@ -144,5 +147,33 @@ describe('MUser', () => {
 			expect(previousCL.equals(loot)).toEqual(true);
 			expect(itemsAdded).toEqual(loot);
 		}
+	});
+
+	test('calcActualClues', async () => {
+		const user = await createTestUser();
+		const clues = [];
+		for (let i = 0; i < 100; i++) {
+			const tier = randArrItem(ClueTiers);
+			clues.push({
+				id: randInt(1, 100_000_000),
+				user_id: BigInt(user.id),
+				start_date: new Date(Date.now() - Time.Hour),
+				duration: Time.Hour,
+				finish_date: new Date(),
+				completed: true,
+				type: activity_type_enum.ClueCompletion,
+				channel_id: BigInt(1),
+				group_activity: false,
+				data: {
+					userID: user.id,
+					clueID: tier.id,
+					quantity: randInt(1, 10)
+				}
+			});
+		}
+		await prisma.activity.createMany({
+			data: clues
+		});
+		await user.calcActualClues();
 	});
 });
