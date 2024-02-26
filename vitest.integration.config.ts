@@ -6,15 +6,14 @@ export default defineConfig({
 		include: ['tests/integration/**/*.test.ts'],
 		setupFiles: 'tests/integration/setup.ts',
 		coverage: {
-			provider: 'c8',
+			provider: 'v8',
 			reporter: 'text',
 			include: ['src/lib/MUser.ts']
 		},
 		testTimeout: 30_000,
 		bail: 1,
-		threads: true,
 		maxConcurrency: 1,
-		minThreads: 1,
-		maxThreads: 1
+		maxWorkers: 1,
+		minWorkers: 1
 	}
 });
