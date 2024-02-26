@@ -19,6 +19,7 @@ async function main() {
 		console.log('Starting tests...');
 		let runs = 1;
 		for (let i = 0; i < runs; i++) {
+			console.log(`Starting run ${i + 1}/${runs}`);
 			execSync('vitest run --config vitest.integration.config.ts', {
 				stdio: 'inherit',
 				encoding: 'utf-8'
