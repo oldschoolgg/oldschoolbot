@@ -213,6 +213,57 @@ const tameForegrounds = [
 	}
 ];
 
+const tameImageReplacementChoices = [
+	{
+		name: 'Elvarg',
+		species: TameSpeciesID.Igne,
+		image: readFileSync('./src/lib/resources/images/tames/1_replace_1.png')
+	},
+	{
+		name: 'King Black Dragon',
+		species: TameSpeciesID.Igne,
+		image: readFileSync('./src/lib/resources/images/tames/1_replace_2.png')
+	},
+	{
+		name: 'Lava Dragon',
+		species: TameSpeciesID.Igne,
+		image: readFileSync('./src/lib/resources/images/tames/1_replace_3.png')
+	},
+	{
+		name: 'Revenant Dragon',
+		species: TameSpeciesID.Igne,
+		image: readFileSync('./src/lib/resources/images/tames/1_replace_4.png')
+	},
+	{
+		name: 'Rune Dragon',
+		species: TameSpeciesID.Igne,
+		image: readFileSync('./src/lib/resources/images/tames/1_replace_5.png')
+	}
+];
+
+const tameImageReplacementEasterEggs = [
+	{
+		shouldActivate: (t: Tame) => t.nickname?.toLowerCase() === 'robochimp' && t.species_id === TameSpeciesID.Monkey,
+		image: readFileSync('./src/lib/resources/images/tames/2_replace_1.png')
+	},
+	{
+		shouldActivate: (t: Tame) => t.nickname?.toLowerCase() === 'magnaboy' && t.species_id === TameSpeciesID.Monkey,
+		image: readFileSync('./src/lib/resources/images/tames/2_replace_2.png')
+	},
+	{
+		shouldActivate: (t: Tame) =>
+			t.nickname !== null &&
+			['meneldor', 'gwaihir', 'landroval'].includes(t.nickname.toLowerCase()) &&
+			t.species_id === TameSpeciesID.Monkey,
+		image: readFileSync('./src/lib/resources/images/tames/3_replace_1.png')
+	},
+	...tameImageReplacementChoices.map(tameImage => ({
+		shouldActivate: (t: Tame, user: MUser) =>
+			t.custom_icon_id === tameImage.name && user.perkTier() >= PerkTier.Four,
+		image: tameImage.image
+	}))
+];
+
 // eslint-disable-next-line @typescript-eslint/init-declarations
 let sprites: {
 	base: {
@@ -255,20 +306,26 @@ async function initSprites() {
 							return {
 								type: v,
 								growthStage: {
-									[tame_growth.baby]: await getClippedRegionImage(tameImage, (v - 1) * 96, 0, 96, 96),
+									[tame_growth.baby]: await getClippedRegionImage(
+										tameImage,
+										(v - 1) * tameImageSize,
+										0,
+										tameImageSize,
+										tameImageSize
+									),
 									[tame_growth.juvenile]: await getClippedRegionImage(
 										tameImage,
-										(v - 1) * 96,
-										96,
-										96,
-										96
+										(v - 1) * tameImageSize,
+										tameImageSize,
+										tameImageSize,
+										tameImageSize
 									),
 									[tame_growth.adult]: await getClippedRegionImage(
 										tameImage,
-										(v - 1) * 96,
-										96 * 2,
-										96,
-										96
+										(v - 1) * tameImageSize,
+										tameImageSize * 2,
+										tameImageSize,
+										tameImageSize
 									)
 								}
 							};
@@ -387,12 +444,16 @@ export async function tameImage(user: MUser): CommandResponse {
 			128
 		);
 
-		const tameX = (10 + 256) * x + (isTameActive ? 96 : 256 - 96) / 2;
+		const tameX = (10 + 256) * x + (isTameActive ? tameImageSize : 256 - tameImageSize) / 2;
 		const tameY = (10 + 128) * y + 10;
 
-		const tameImage = sprites
-			.tames!.find(t => t.id === species.id)!
-			.sprites.find(f => f.type === t.species_variant)!.growthStage[t.growth_stage];
+		const imageReplacement = tameImageReplacementEasterEggs.find(i => i.shouldActivate(t, user));
+
+		const tameImage = imageReplacement
+			? await loadImage(imageReplacement.image)
+			: sprites.tames!.find(t => t.id === species.id)!.sprites.find(f => f.type === t.species_variant)!
+					.growthStage[t.growth_stage];
+
 		// Draw tame
 		ctx.drawImage(tameImage, tameX, tameY, tameImageSize, tameImageSize);
 		const foreground = tameForegrounds.find(i => i.shouldActivate(t));
@@ -1665,6 +1726,9 @@ export type TamesCommandOptions = CommandRunOptions<{
 	clue?: {
 		clue: string;
 	};
+	set_custom_image?: {
+		image: string;
+	};
 }>;
 export const tamesCommand: OSBMahojiCommand = {
 	name: 'tames',
@@ -1916,6 +1980,25 @@ export const tamesCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'set_custom_image',
+			description: 'Set a custom image for your tame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'image',
+					description: 'The image to pick.',
+					required: true,
+					autocomplete: async () => {
+						return tameImageReplacementChoices.map(t => ({
+							name: `${t.name} (${tameSpecies.find(s => s.id === t.species)!.name})`,
+							value: t.name
+						}));
+					}
+				}
+			]
 		}
 	],
 	run: async ({ options, userID, channelID, interaction }: TamesCommandOptions) => {
@@ -1986,6 +2069,31 @@ export const tamesCommand: OSBMahojiCommand = {
 			}
 
 			return reply;
+		}
+		if (options.set_custom_image) {
+			if (user.perkTier() < PerkTier.Four) {
+				return 'You need to be a Tier 4 patron to set a custom image for your tame.';
+			}
+			const replacement = tameImageReplacementChoices.find(i => i.name === options.set_custom_image?.image);
+			if (!replacement) {
+				return 'Invalid image.';
+			}
+			const { tame } = await getUsersTame(user);
+			if (!tame) {
+				return "You don't have a tame selected, select the tame you want to give this icon.";
+			}
+			if (tame.species_id !== replacement.species) {
+				return `This image is for the ${tameSpecies.find(s => s.id === replacement.species)!.name} species.`;
+			}
+			await prisma.tame.update({
+				where: {
+					id: tame.id
+				},
+				data: {
+					custom_icon_id: replacement.name
+				}
+			});
+			return `You set the '${replacement.name}' custom image for your ${tameName(tame)}.`;
 		}
 		return 'Invalid command.';
 	}
