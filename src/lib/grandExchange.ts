@@ -496,7 +496,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			buyerLoot.add('Coins', buyerRefund);
 			bankToRemoveFromGeBank.add('Coins', buyerRefund);
 
-			console.log(
+			debugLog(
 				`Buyer got refunded ${buyerRefund} GP due to price difference. Buyer was asking ${buyerListing.asking_price_per_item}GP for each of the ${quantityToBuy}x items, seller was asking ${sellerListing.asking_price_per_item}GP, and the post-tax price per item was ${pricePerItemAfterTax}`,
 				logContext
 			);
@@ -528,7 +528,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			throw new Error(str);
 		}
 
-		console.log(
+		debugLog(
 			`Completing a transaction, removing ${bankToRemoveFromGeBank} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${geBank.toString()}. ${debug}`,
 			{
 				totalPriceAfterTax,
@@ -589,7 +589,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			...makeTransactFromTableBankQueries({ bankToRemove: bankToRemoveFromGeBank })
 		]);
 
-		console.log(`Transaction completed, the new G.E bank is ${await this.fetchOwnedBank()}.`);
+		debugLog(`Transaction completed, the new G.E bank is ${await this.fetchOwnedBank()}.`);
 
 		const buyerUser = await mUserFetch(buyerListing.user_id);
 		const sellerUser = await mUserFetch(sellerListing.user_id);
