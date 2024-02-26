@@ -22,7 +22,7 @@ export async function calcLeaguesRanking(user: RoboChimpUser) {
 				}
 			}
 		}),
-		roboChimpClient.$queryRaw<any>`SELECT COUNT(*) AS count
+		roboChimpClient.$queryRaw<any>`SELECT COUNT(*)::int AS count
 FROM public.user
 WHERE COALESCE(cardinality(leagues_completed_tasks_ids), 0) > ${user.leagues_completed_tasks_ids.length};`
 	]);
