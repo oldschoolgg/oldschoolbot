@@ -8,12 +8,15 @@ async function main() {
 		console.log('Waiting...');
 		await sleep(2000);
 
-		console.log('Starting...');
+		console.log('Getting ready...');
 		execSync('dotenv -e .env.test -- prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit' });
 		execSync('dotenv -e .env.test -- prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit' });
+
+		console.log('Building...');
 		execSync('yarn prebuild:scripts', { stdio: 'inherit' });
 		execSync('yarn build:esbuild', { stdio: 'inherit' });
 
+		console.log('Starting tests...');
 		let runs = 1;
 		for (let i = 0; i < runs; i++) {
 			execSync('vitest run --config vitest.integration.config.ts', {
@@ -23,9 +26,9 @@ async function main() {
 			console.log(`Finished run ${i + 1}/${runs}`);
 		}
 	} catch (err) {
+		console.error(err);
 		throw new Error(err as any);
 	} finally {
-		await sleep(5000);
 		console.log('Shutting down containers...');
 		execSync('docker-compose down', { stdio: 'inherit' });
 	}
