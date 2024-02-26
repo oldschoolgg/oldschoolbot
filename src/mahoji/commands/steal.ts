@@ -4,7 +4,6 @@ import { randInt, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
-import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -86,11 +85,6 @@ export const stealCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${stealable.level} Thieving to ${
 				stealable.type === 'pickpockable' ? 'pickpocket' : 'steal from'
 			} a ${stealable.name}.`;
-		}
-
-		const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 15);
-		if (!hasFavour && stealable.name === 'Fruit stall') {
-			return `${user.minionName} needs ${requiredPoints}% Hosidius Favour to steal fruit from the Fruit stalls!`;
 		}
 
 		let timeToTheft =

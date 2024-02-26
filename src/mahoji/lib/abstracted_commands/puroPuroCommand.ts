@@ -73,11 +73,6 @@ export async function puroPuroStartCommand(
 	if (darkLure) {
 		if (user.QP < 9) return 'To use Dark Lure, you need 9 QP.';
 		if (!hasDarkLureSkillReqs) return `To use Dark Lure, you need: ${lureReason}.`;
-		const currentUserFavour = user.kourendFavour;
-		for (const [key, value] of Object.entries(currentUserFavour)) {
-			if (value < 100)
-				return `You don't have the required amount of Favour to cast Dark Lure.\n\nRequired: 100% ${key} Favour.`;
-		}
 		const { bank } = user;
 		const natureRuneID = itemID('Nature rune');
 		const deathRuneID = itemID('Death rune');

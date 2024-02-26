@@ -1209,7 +1209,6 @@ exports[`BSO Buyables 1`] = `
     },
     "name": "Arceuus signet",
     "outputItems": undefined,
-    "requiredFavour": "arceuus",
   },
   {
     "gpCost": 100000,
@@ -26388,7 +26387,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -26406,7 +26404,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -26424,7 +26421,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -26442,7 +26438,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -26460,7 +26455,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -26478,7 +26472,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -26496,7 +26489,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -26524,7 +26516,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -26542,7 +26533,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -26560,7 +26550,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -26578,7 +26567,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -26596,7 +26584,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -26614,7 +26601,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -26632,7 +26618,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -26660,7 +26645,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26678,7 +26662,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26696,7 +26679,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26714,7 +26696,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26732,7 +26713,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26750,7 +26730,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26768,7 +26747,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26796,7 +26774,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26814,7 +26791,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26832,7 +26808,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26850,7 +26825,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26868,7 +26842,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26886,7 +26859,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26904,7 +26876,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26932,7 +26903,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26950,7 +26920,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26968,7 +26937,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26986,7 +26954,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -27004,7 +26971,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -27022,7 +26988,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -27040,7 +27005,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -27068,7 +27032,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -27086,7 +27049,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -27104,7 +27066,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -27122,7 +27083,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -27140,7 +27100,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -27158,7 +27117,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -27176,7 +27134,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -27204,7 +27161,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -27222,7 +27178,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -27240,7 +27195,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -27258,7 +27212,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -27276,7 +27229,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -27294,7 +27246,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -27312,7 +27263,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -27340,7 +27290,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -27358,7 +27307,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -27376,7 +27324,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -27394,7 +27341,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -27412,7 +27358,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -27430,7 +27375,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -27448,7 +27392,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -27476,7 +27419,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -27494,7 +27436,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -27512,7 +27453,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -27530,7 +27470,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -27548,7 +27487,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -27566,7 +27504,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -27584,7 +27521,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -27612,7 +27548,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -27630,7 +27565,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -27648,7 +27582,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -27666,7 +27599,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -27684,7 +27616,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -27702,7 +27633,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -27720,7 +27650,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,

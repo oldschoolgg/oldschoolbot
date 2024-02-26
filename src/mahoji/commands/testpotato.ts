@@ -29,7 +29,6 @@ import { DisassemblySourceGroups } from '../../lib/invention/groups';
 import { Inventions, transactMaterialsFromUser } from '../../lib/invention/inventions';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { UserKourendFavour } from '../../lib/minions/data/kourendFavour';
 import potions from '../../lib/minions/data/potions';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
@@ -77,14 +76,7 @@ export async function giveMaxStats(user: MUser) {
 	}
 	await user.update({
 		QP: MAX_QP,
-		...updates,
-		kourend_favour: {
-			Arceuus: 100,
-			Hosidius: 100,
-			Lovakengj: 100,
-			Piscarilius: 100,
-			Shayzien: 100
-		} as UserKourendFavour as any
+		...updates
 	});
 }
 

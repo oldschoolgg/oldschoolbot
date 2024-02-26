@@ -1,7 +1,6 @@
 import { clamp, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { Planks } from '../../../lib/minions/data/planks';
 import { SawmillActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
@@ -35,9 +34,8 @@ export async function sawmillCommand(
 		timePerPlank *= 0.9;
 		boosts.push('10% for Graceful');
 	}
-	const [hasFavour] = gotFavour(user, Favours.Hosidius, 75);
 	const skills = user.skillsAsLevels;
-	if (skills.woodcutting >= 60 && user.QP >= 50 && hasFavour) {
+	if (skills.woodcutting >= 60 && user.QP >= 50) {
 		timePerPlank *= 0.9;
 		boosts.push('10% for Woodcutting Guild unlocked');
 	}

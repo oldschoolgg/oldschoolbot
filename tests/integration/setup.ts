@@ -42,7 +42,6 @@ globalClient.fetchUser = async (id: string | bigint) => ({
 
 beforeEach(async () => {
 	await prisma.$connect();
-	console.log(await prisma.$queryRawUnsafe('select count(*) from pg_stat_activity;'));
 });
 
 afterEach(async () => {

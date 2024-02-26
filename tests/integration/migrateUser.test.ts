@@ -1366,7 +1366,6 @@ async function buildBaseUser(userId: string) {
 		skills_strength: 13_034_431,
 		skills_agility: randInt(1_000_000, 5_000_000),
 		bitfield: [BitField.HasHosidiusWallkit],
-		kourend_favour: { Hosidius: 100, Arceuus: 0, Shayzien: 0, Lovakengj: 0 },
 		GP: 100_000_000
 	};
 	const user = await createTestUser(startBank, userData);

@@ -125,12 +125,18 @@ export class TestUser extends MUserClass {
 	}
 }
 
+const idsUsed = new Set<string>();
+
 export function mockedId() {
 	return cryptoRand(1_000_000_000, 5_000_000_000_000).toString();
 }
 
 export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 	const id = userData?.id ?? mockedId();
+	if (idsUsed.has(id)) {
+		throw new Error(`ID ${id} has already been used`);
+	}
+	idsUsed.add(id);
 	const user = await global.prisma!.user.upsert({
 		create: {
 			id,

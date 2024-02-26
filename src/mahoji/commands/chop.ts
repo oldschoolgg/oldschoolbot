@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { IVY_MAX_TRIP_LENGTH_BOOST } from '../../lib/constants';
 import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
-import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
@@ -136,13 +135,6 @@ export const chopCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`;
 		}
 
-		const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 75);
-		if (!hasFavour && log.name === 'Redwood Logs') {
-			return `${minionName(
-				user
-			)} needs ${requiredPoints}% Hosidius Favour to chop Redwood at the Woodcutting Guild!`;
-		}
-
 		if (log.customReq) {
 			const res = await log.customReq(user);
 			if (typeof res === 'string') return res;
@@ -153,7 +145,7 @@ export const chopCommand: OSBMahojiCommand = {
 		let wcLvl = skills.woodcutting;
 
 		// Invisible wc boost for woodcutting guild
-		if (skills.woodcutting >= 60 && log.wcGuild && hasFavour) {
+		if (skills.woodcutting >= 60 && log.wcGuild) {
 			boosts.push('+7 invisible WC lvls at the Woodcutting guild');
 			wcLvl += 7;
 		}

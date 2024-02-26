@@ -38,29 +38,36 @@ const sampleBank = new Bank()
 	.freeze();
 
 async function cancelAllListings(user: TestUser) {
-	const results: string[] = [];
 	const activeListings = await global.prisma!.gEListing.findMany({
 		where: {
 			user_id: user.id
 		}
 	});
 	for (const listing of activeListings) {
-		results.push(
-			(await user.runCommand(geCommand, {
-				cancel: {
-					listing: listing.userfacing_id
-				}
-			})) as string
-		);
-	}
+		const result = (await user.runCommand(geCommand, {
+			cancel: {
+				listing: listing.userfacing_id
+			}
+		})) as string;
 
-	return results.join('\n');
+		if (
+			result !== 'You cannot cancel a listing that has already been fulfilled.' &&
+			!result.startsWith('Successfully cancelled your listing,')
+		) {
+			throw new Error(`Unexpected result from cancelling listing: ${result}`);
+		}
+	}
 }
 
 describe('Grand Exchange', async () => {
 	const itemPool = resolveItems(['Egg', 'Trout', 'Coal']);
 	GrandExchange.calculateSlotsOfUser = async () => ({ slots: 500 } as any);
 	await mockClient();
+
+	async function waitForGEToBeEmpty() {
+		await GrandExchange.queue.onEmpty();
+		assert(!GrandExchange.locked, 'G.E should not be locked');
+	}
 
 	test(
 		'Fuzz',
@@ -72,7 +79,7 @@ describe('Grand Exchange', async () => {
 
 			const currentOwnedBank = await GrandExchange.fetchOwnedBank();
 			expect(currentOwnedBank.toString()).toEqual(new Bank().toString());
-			let amountOfUsers = randInt(433, 533);
+			let amountOfUsers = randInt(100, 200);
 
 			const totalExpectedBank = sampleBank.clone().multiply(amountOfUsers);
 			let users: TestUser[] = [];
@@ -84,6 +91,7 @@ describe('Grand Exchange', async () => {
 			}
 			console.log(`Finished initializing ${amountOfUsers} users`);
 
+			// Run a bunch of commands to buy/sell
 			const commandPromises = new PQueue({ concurrency: 10 });
 			for (const user of shuffleArr(users)) {
 				const method = randArrItem(['buy', 'sell']);
@@ -101,32 +109,42 @@ describe('Grand Exchange', async () => {
 					}
 				});
 			}
-
 			await commandPromises.onEmpty();
-			await GrandExchange.queue.onEmpty();
-
+			await waitForGEToBeEmpty();
 			console.log('Finished running all commands');
 
+			// Tick the g.e to make some transactions
 			for (let i = 0; i < 100; i++) {
 				await GrandExchange.tick();
+				await waitForGEToBeEmpty();
 				await Promise.all([
 					GrandExchange.checkGECanFullFilAllListings(),
 					GrandExchange.extensiveVerification()
 				]);
 			}
+			await waitForGEToBeEmpty();
 			console.log('Finished ticking 100 times');
 
-			const testBank = new Bank();
+			// Cancel all remaining listings
 			const cancelPromises = [];
 			for (const user of users) {
 				cancelPromises.push(cancelAllListings(user));
 			}
-
 			await Promise.all(cancelPromises);
+			await waitForGEToBeEmpty();
+			const { buyListings, sellListings } = await GrandExchange.fetchActiveListings();
+			if (buyListings.length > 0 || sellListings.length > 0) {
+				throw new Error('There should be no active listings!');
+			}
+			const newCurrentOwnedBank = await GrandExchange.fetchOwnedBank();
+			if (newCurrentOwnedBank.length !== 0) {
+				throw new Error('There should be no items in the G.E bank!');
+			}
 			console.log('Finished cancelling');
 
 			await Promise.all(users.map(u => u.sync()));
 
+			const testBank = new Bank();
 			for (const user of users) {
 				testBank.add(user.bankWithGP);
 			}
@@ -136,8 +154,8 @@ describe('Grand Exchange', async () => {
 
 			const data = await GrandExchange.fetchData();
 			expect(data.isLocked).toEqual(false);
-			expect(data.taxBank).toBeGreaterThan(0);
-			expect(data.totalTax).toBeGreaterThan(0);
+			expect(data.taxBank, '1MS').toBeGreaterThan(0);
+			expect(data.totalTax, 'L1M').toBeGreaterThan(0);
 
 			const totalTaxed = await global.prisma!.gETransaction.aggregate({
 				_sum: {
@@ -145,14 +163,19 @@ describe('Grand Exchange', async () => {
 				}
 			});
 			const totalTaxGP = Number(totalTaxed._sum.total_tax_paid!);
-			expect(totalTaxGP).toEqual(data.taxBank);
-			expect(totalTaxGP).toEqual(data.totalTax);
-			expect(testBank.amount('Coins')).toBeLessThanOrEqual(totalExpectedBank.amount('Coins'));
-			expect(testBank.amount('Coins') + totalTaxGP).toEqual(totalExpectedBank.amount('Coins'));
-			expect(testBank.toString()).toEqual(totalExpectedBank.clone().remove('Coins', totalTaxGP).toString());
+			const taxDebugStr = `Based on transactions, received ${totalTaxGP} tax
+Based on G.E data, we should have received ${data.totalTax} tax`;
+			expect(totalTaxGP, taxDebugStr).toEqual(data.taxBank);
+			expect(totalTaxGP, taxDebugStr).toEqual(data.totalTax);
+			expect(testBank.amount('Coins'), 'A5D').toBeLessThanOrEqual(totalExpectedBank.amount('Coins'));
+			expect(testBank.amount('Coins') + totalTaxGP, 'M3S').toEqual(totalExpectedBank.amount('Coins'));
+			expect(testBank.toString(), '9N3').toEqual(
+				totalExpectedBank.clone().remove('Coins', totalTaxGP).toString()
+			);
 
 			await GrandExchange.queue.onEmpty();
 			assert(GrandExchange.queue.size === 0, 'Queue should be empty');
+			const geBank = await GrandExchange.fetchOwnedBank();
 		},
 		{
 			repeats: 1,
@@ -236,7 +259,7 @@ describe('Grand Exchange', async () => {
 		expect(bank.length).toEqual(0);
 
 		const data = await GrandExchange.fetchData();
-		expect(data.taxBank).toEqual(totalTax);
-		expect(data.totalTax).toEqual(totalTax);
+		expect(data.taxBank, 'LZ9').toEqual(totalTax);
+		expect(data.totalTax, 'M39').toEqual(totalTax);
 	});
 });

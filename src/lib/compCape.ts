@@ -564,16 +564,6 @@ miscRequirements
 			}
 			return failures;
 		}
-	})
-	.add({
-		name: 'Achieve 100% Favour in all Kourend Houses',
-		favour: {
-			Arceuus: 100,
-			Hosidius: 100,
-			Lovakengj: 100,
-			Piscarilius: 100,
-			Shayzien: 100
-		}
 	});
 
 const unlockablesRequirements = new Requirements()

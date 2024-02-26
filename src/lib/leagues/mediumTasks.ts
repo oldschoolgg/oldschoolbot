@@ -31,7 +31,6 @@ import {
 import { implings } from '../implings';
 import { QueenBlackDragon } from '../minions/data/killableMonsters/custom/demiBosses';
 import { TormentedDemon } from '../minions/data/killableMonsters/custom/TormentedDemon';
-import { baseUserKourendFavour, UserKourendFavour } from '../minions/data/kourendFavour';
 import { prisma } from '../settings/prisma';
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
@@ -473,9 +472,8 @@ export const mediumTasks: Task[] = [
 	{
 		id: 1066,
 		name: 'Achieve maximum Kourend favour',
-		has: async ({ mahojiUser }) => {
-			const currentUserFavour = (mahojiUser.kourend_favour ?? baseUserKourendFavour) as any as UserKourendFavour;
-			return Object.values(currentUserFavour).every(val => val >= 100);
+		has: async () => {
+			return true;
 		}
 	},
 	{

@@ -42,7 +42,6 @@ import type {
 	HunterActivityTaskOptions,
 	InfernoOptions,
 	KibbleOptions,
-	KourendFavourActivityTaskOptions,
 	MahoganyHomesActivityTaskOptions,
 	MemoryHarvestOptions,
 	MiningActivityTaskOptions,
@@ -166,6 +165,10 @@ export const tripHandlers = {
 		args: () => ({})
 	},
 	[activity_type_enum.Revenants]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.KourendFavour]: {
 		commandName: 'm',
 		args: () => ({})
 	},
@@ -385,10 +388,6 @@ export const tripHandlers = {
 	[activity_type_enum.Inferno]: {
 		commandName: 'activities',
 		args: (data: InfernoOptions) => ({ inferno: { action: 'start', emerged: data.isEmergedZuk } })
-	},
-	[activity_type_enum.KourendFavour]: {
-		commandName: 'activities',
-		args: (data: KourendFavourActivityTaskOptions) => ({ favour: { name: data.favour } })
 	},
 	[activity_type_enum.LastManStanding]: {
 		commandName: 'minigames',
