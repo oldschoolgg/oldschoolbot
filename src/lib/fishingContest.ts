@@ -276,7 +276,7 @@ LIMIT 10;`);
 			user_id: BigInt(user.id)
 		}
 	});
-	const totalLength: [{ sum: number }] = await prisma.$queryRawUnsafe(`SELECT SUM(COALESCE(length_cm, 0)) as sum
+	const totalLength: [{ sum: number }] = await prisma.$queryRawUnsafe(`SELECT SUM(COALESCE(length_cm, 0))::int as sum
 FROM fishing_contest_catch
 WHERE user_id = ${user.id}::bigint;`);
 	const totalUniqueCatches: [{ uniq: number }] = await prisma.$queryRawUnsafe(`SELECT COUNT(DISTINCT(name)) AS uniq
