@@ -71,7 +71,8 @@ export function generateLeaguesTasksTextFile(finishedTasksIDs: number[], exclude
 }
 
 async function getActivityCounts(user: User) {
-	const result: { type: activity_type_enum; count: bigint }[] = await prisma.$queryRawUnsafe(`SELECT type, COUNT(type)
+	const result: { type: activity_type_enum; count: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT type, COUNT(type)::int
 FROM activity
 WHERE user_id = ${user.id}
 GROUP BY type;`);
