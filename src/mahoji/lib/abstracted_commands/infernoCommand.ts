@@ -144,7 +144,7 @@ function baseDuration(_attempts: number, isEmergedZuk: boolean) {
 async function timesMadeToZuk(userID: string) {
 	const timesMadeToZuk = Number(
 		(
-			await prisma.$queryRawUnsafe<any>(`SELECT COUNT(*)
+			await prisma.$queryRawUnsafe<any>(`SELECT COUNT(*)::int
 FROM activity
 WHERE type = 'Inferno'
 AND user_id = ${userID}
