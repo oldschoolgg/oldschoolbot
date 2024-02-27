@@ -904,8 +904,8 @@ exports[`OSB Buyables 1`] = `
     "qpRequired": 172,
   },
   {
-    "gpCost": 2000,
-    "ironmanPrice": 200,
+    "gpCost": 5000,
+    "ironmanPrice": 500,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
