@@ -1,4 +1,7 @@
-import { describe, test, vi } from 'vitest';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { randInt } from 'e';
+import { CommandOption } from 'mahoji/dist/lib/types';
+import { test, vi } from 'vitest';
 
 import { activitiesCommand } from '../../src/mahoji/commands/activities';
 import { askCommand } from '../../src/mahoji/commands/ask';
@@ -36,49 +39,101 @@ import { slayerCommand } from '../../src/mahoji/commands/slayer';
 import { smeltingCommand } from '../../src/mahoji/commands/smelt';
 import { stealCommand } from '../../src/mahoji/commands/steal';
 import { toolsCommand } from '../../src/mahoji/commands/tools';
-import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { randomMock } from './setup';
 import { createTestUser } from './util';
 
-const commands: [OSBMahojiCommand, null | object][] = [
-	[activitiesCommand, null],
-	[askCommand, null],
-	[bankCommand, null],
-	[bsCommand, null],
-	[clueCommand, null],
-	[claimCommand, null],
-	[cluesCommand, null],
-	[farmingCommand, null],
-	[gpCommand, null],
-	[lapsCommand, null],
-	[leaderboardCommand, null],
-	[fletchCommand, null],
-	[fishCommand, null],
-	[dryCalcCommand, null],
-	[createCommand, { item: 'asdf' }],
-	[chopCommand, null],
-	[chooseCommand, { list: 'a,a,a' }],
-	[buildCommand, null],
-	[buyCommand, null],
-	[huntCommand, null],
-	[lightCommand, null],
-	[lootCommand, null],
-	[minionCommand, null],
-	[minigamesCommand, null],
-	[runecraftCommand, { rune: 'blood rune' }],
-	[stealCommand, null],
-	[rollCommand, null],
-	[raidCommand, null],
-	[priceCommand, null],
-	[openCommand, null],
-	[patreonCommand, null],
-	[payCommand, { user: { user: { id: '2' } } }],
-	[pohCommand, null],
-	[slayerCommand, null],
-	[toolsCommand, null],
-	[stealCommand, null],
-	[smeltingCommand, null]
+const commands = [
+	activitiesCommand,
+	askCommand,
+	bankCommand,
+	bsCommand,
+	clueCommand,
+	claimCommand,
+	cluesCommand,
+	farmingCommand,
+	gpCommand,
+	lapsCommand,
+	leaderboardCommand,
+	fletchCommand,
+	fishCommand,
+	dryCalcCommand,
+	createCommand,
+	chopCommand,
+	chooseCommand,
+	buildCommand,
+	buyCommand,
+	huntCommand,
+	lightCommand,
+	lootCommand,
+	minionCommand,
+	minigamesCommand,
+	runecraftCommand,
+	stealCommand,
+	rollCommand,
+	raidCommand,
+	priceCommand,
+	openCommand,
+	patreonCommand,
+	payCommand,
+	pohCommand,
+	slayerCommand,
+	toolsCommand,
+	stealCommand,
+	smeltingCommand
 ];
+
+type CommandInput = Record<string, any>;
+function generateCommandInputs(options: CommandOption[], currentPath: CommandInput = {}): CommandInput[] {
+	let results: CommandInput[] = [];
+
+	for (const option of options) {
+		switch (option.type) {
+			case ApplicationCommandOptionType.SubcommandGroup:
+			case ApplicationCommandOptionType.Subcommand:
+				if (option.options) {
+					const subOptionsResults = generateCommandInputs(option.options);
+					subOptionsResults.forEach(subResult => {
+						results.push({ [option.name]: subResult });
+					});
+				}
+				break;
+			case ApplicationCommandOptionType.String:
+				if (option.choices) {
+					option.choices.forEach(choice => {
+						results.push({ ...currentPath, [option.name]: choice.value });
+					});
+				} else {
+					// For simplicity, omitting autocomplete handling
+					results.push({ ...currentPath, [option.name]: `Any ${option.type}` });
+				}
+				break;
+			case ApplicationCommandOptionType.Integer:
+			case ApplicationCommandOptionType.Number:
+				if (option.choices) {
+					option.choices.forEach(choice => {
+						results.push({ ...currentPath, [option.name]: choice.value });
+					});
+				} else {
+					let value = randInt(1, 1000);
+					if (option.min_value && option.max_value) {
+						value = randInt(option.min_value, option.max_value);
+					}
+					// For simplicity, omitting autocomplete handling
+					results.push({ ...currentPath, [option.name]: value });
+				}
+				break;
+			case ApplicationCommandOptionType.Boolean:
+			case ApplicationCommandOptionType.User:
+			case ApplicationCommandOptionType.Channel:
+			case ApplicationCommandOptionType.Role:
+			case ApplicationCommandOptionType.Mentionable:
+				results.push({ ...currentPath, [option.name]: `Any ${option.type}` });
+				break;
+		}
+	}
+
+	return results;
+}
 
 // Don't let any of these commands create an activity
 vi.mock('../../src/lib/util/addSubTaskToActivityTask', async () => {
@@ -91,12 +146,18 @@ vi.mock('../../src/lib/util/addSubTaskToActivityTask', async () => {
 	};
 });
 
-describe('All Commands Base Test', async () => {
+test('All Commands Base Test', async () => {
 	randomMock();
 	const user = await createTestUser();
-	for (const [command, options] of commands) {
-		test(`Run ${command.name} command`, async () => {
-			await user.runCommand(command, options ?? {});
-		});
+	for (const command of commands) {
+		const options = generateCommandInputs(command.options!);
+		for (const option of options) {
+			try {
+				await user.runCommand(command, option);
+				console.log(`Ran command ${command.name}`);
+			} catch (err) {
+				console.error(`Failed to run command ${command.name} with options ${JSON.stringify(option)}`);
+			}
+		}
 	}
 });

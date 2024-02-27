@@ -8,7 +8,8 @@ vi.mock('../../src/lib/util/handleMahojiConfirmation', () => ({
 	handleMahojiConfirmation: vi.fn()
 }));
 vi.mock('../../src/lib/util/interactionReply', () => ({
-	deferInteraction: vi.fn()
+	deferInteraction: vi.fn(),
+	interactionReply: vi.fn()
 }));
 
 export function randomMock(random = 0.1) {
