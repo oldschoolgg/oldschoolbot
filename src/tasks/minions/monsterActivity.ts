@@ -9,6 +9,7 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { prisma } from '../../lib/settings/prisma';
+import WildySlayerCaveTable from '../../lib/simulation/wildySlayerCave';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, isOnSlayerTask } from '../../lib/slayer/slayerUtil';
@@ -19,7 +20,6 @@ import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLost
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
-import WildySlayerCaveTable from '../../lib/simulation/wildySlayerCave';
 
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
@@ -256,11 +256,10 @@ export const monsterTask: MinionTask = {
 
 		if (isInWilderness && monster.wildySlayerCave) {
 			for (let i = 0; i < quantity; i++) {
-				if (roll()) {
-				loot.add(WildySlayerCaveTable.roll())
+				if (roll(2)) {
+					loot.add(WildySlayerCaveTable.roll());
+				}
 			}
-		}
-			
 		}
 
 		const xpRes: string[] = [];
