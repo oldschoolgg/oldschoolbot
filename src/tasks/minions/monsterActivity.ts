@@ -19,6 +19,7 @@ import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLost
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
+import WildySlayerCaveTable from '../../lib/simulation/wildySlayerCave';
 
 export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
@@ -250,8 +251,12 @@ export const monsterTask: MinionTask = {
 		}
 
 		if (isInWilderness && monster.wildySlayerCave) {
-			// Add loot table once merged
-			// loot.add(wildySlayerCaveTable!.kill(finalQuantity))
+			for (let i = 0; i < quantity; i++) {
+				if (roll()) {
+				loot.add(WildySlayerCaveTable.roll())
+			}
+		}
+			
 		}
 
 		const xpRes: string[] = [];
