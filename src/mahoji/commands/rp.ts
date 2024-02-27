@@ -9,6 +9,7 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
+import { analyticsTick } from '../../lib/analytics';
 import { BitField, Channel } from '../../lib/constants';
 import { GearSetupType } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
@@ -77,6 +78,12 @@ export const rpCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'view_all_items',
 					description: 'View all item IDs present in banks/cls.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'analytics_tick',
+					description: 'analyticsTick.',
 					options: []
 				}
 			]
@@ -309,6 +316,7 @@ export const rpCommand: OSBMahojiCommand = {
 			validate_ge?: {};
 			patreon_reset?: {};
 			view_all_items?: {};
+			analytics_tick?: {};
 		};
 		player?: {
 			viewbank?: { user: MahojiUserOption; json?: boolean };
@@ -354,6 +362,10 @@ export const rpCommand: OSBMahojiCommand = {
 				return 'No issues found.';
 			}
 			return 'Something was invalid. Check logs!';
+		}
+		if (options.action?.analytics_tick) {
+			await analyticsTick();
+			return 'Finished.';
 		}
 
 		if (options.action?.view_all_items) {
