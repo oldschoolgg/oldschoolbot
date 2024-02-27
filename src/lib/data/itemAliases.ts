@@ -164,6 +164,10 @@ setItemAlias(11_901, 'Decorative quiver');
 // Lamp (Genie event)
 setItemAlias(2528, 'Genie lamp');
 
+// Ore Sack
+setItemAlias(27_019, "Ore pack (Giant's Foundry)");
+setItemAlias(27_693, 'Ore pack (Volcanic Mine)');
+
 // Birds eggs
 setItemAlias(5076, 'Red bird egg');
 setItemAlias(5077, 'Blue bird egg');
