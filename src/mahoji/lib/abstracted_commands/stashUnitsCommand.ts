@@ -90,14 +90,15 @@ export async function stashUnitBuildAllCommand(user: MUser) {
 	const parsedUnits = await getParsedStashUnits(user.id);
 	const notBuilt = parsedUnits.filter(i => i.builtUnit === undefined);
 	if (notBuilt.length === 0) return 'You have already built all STASH units.';
-	const stats = user.skillsAsLevels;
+	const hasCrystalSaw = user.owns('Crystal saw');
+	const conLevel = user.skillLevel('construction') + (hasCrystalSaw ? 3 : 0);
 	const checkBank = user.bank.clone();
 	const costBank = new Bank();
 
 	const toBuild: ParsedUnit[] = [];
 
 	for (const parsedUnit of notBuilt) {
-		if (parsedUnit.tier.constructionLevel > stats.construction) continue;
+		if (parsedUnit.tier.constructionLevel > conLevel) continue;
 		if (!checkBank.has(parsedUnit.tier.cost)) continue;
 		checkBank.remove(parsedUnit.tier.cost);
 		costBank.add(parsedUnit.tier.cost);
@@ -119,7 +120,13 @@ export async function stashUnitBuildAllCommand(user: MUser) {
 		}))
 	});
 
-	return `You created ${toBuild.length} STASH units, using ${costBank}.`;
+	let str = `You created ${toBuild.length} STASH units, using ${costBank}.`;
+
+	if (hasCrystalSaw) {
+		str += '\nYour crystal saw is boosting your construction level by 3.';
+	}
+
+	return str;
 }
 
 export async function stashUnitFillAllCommand(user: MUser, mahojiUser: User): CommandResponse {

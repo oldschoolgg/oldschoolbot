@@ -1960,6 +1960,21 @@ exports[`OSB Buyables 1`] = `
     ],
   },
   {
+    "gpCost": 75000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Crystal saw",
+    "outputItems": undefined,
+    "qpRequired": 7,
+    "skillsNeeded": {
+      "agility": 25,
+      "construction": 5,
+      "magic": 46,
+    },
+  },
+  {
     "gpCost": 1000000,
     "itemCost": Bank {
       "bank": {},

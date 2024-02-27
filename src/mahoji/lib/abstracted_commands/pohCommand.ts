@@ -6,7 +6,6 @@ import { BitField } from '../../../lib/constants';
 import { getPOHObject, GroupedPohObjects, itemsNotRefundable, PoHObjects } from '../../../lib/poh';
 import { pohImageGenerator } from '../../../lib/pohImage';
 import { prisma } from '../../../lib/settings/prisma';
-import { SkillsEnum } from '../../../lib/skilling/types';
 import { formatSkillRequirements, itemNameFromID } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -87,10 +86,10 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 	if (!obj) {
 		return "That's not a valid thing to build in your PoH.";
 	}
-
-	const level = user.skillLevel(SkillsEnum.Construction);
+	const hasCrystalSaw = user.owns('Crystal saw');
+	const conLevel = user.skillLevel('construction') + (hasCrystalSaw ? 3 : 0);
 	if (typeof obj.level === 'number') {
-		if (level < obj.level) {
+		if (conLevel < obj.level) {
 			return `You need level ${obj.level} Construction to build a ${obj.name} in your house.`;
 		}
 	} else if (!user.hasSkillReqs(obj.level)) {
@@ -143,8 +142,13 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 	});
 
 	let str = `You built a ${obj.name} in your house, using ${obj.itemCost}.`;
+
+	if (hasCrystalSaw) {
+		str += '\nYour crystal saw is boosting your construction level by 3.';
+	}
+
 	if (refunded !== null && inPlace) {
-		str += ` You were refunded: ${refunded}, from the ${getPOHObject(inPlace).name} you already had built here.`;
+		str += `\nYou were refunded: ${refunded}, from the ${getPOHObject(inPlace).name} you already had built here.`;
 	}
 
 	return {
