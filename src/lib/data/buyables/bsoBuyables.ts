@@ -145,7 +145,7 @@ export const bsoBuyables: Buyable[] = [
 	},
 	{
 		name: 'Wooden spoon',
-		gpCost: 1000,
+		gpCost: 2000,
 		outputItems: new Bank().add('Wooden spoon')
 	}
 ];
