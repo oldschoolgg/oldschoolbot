@@ -1,6 +1,5 @@
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
-import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { defaultFarmingContract } from '../../../lib/minions/farming';
 import { ContractOption, FarmingContract, FarmingContractDifficultyLevel } from '../../../lib/minions/farming/types';
 import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
@@ -43,11 +42,6 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 
 	if (!currentContract.hasContract && input === 'easier') {
 		return janeImage("You currently don't have a contract, so you can't ask for something easier!");
-	}
-
-	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 60);
-	if (!hasFavour) {
-		return `${user.minionName} needs ${requiredPoints}% Hosidius Favour to enter the Farming Guild!`;
 	}
 
 	if (input !== 'easier' && farmingLevel < contractToFarmingLevel[input]) {

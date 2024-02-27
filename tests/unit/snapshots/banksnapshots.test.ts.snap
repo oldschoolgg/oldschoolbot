@@ -123,7 +123,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 30,
-    "ironmanPrice": 5,
+    "ironmanPrice": 10,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -323,7 +323,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 2000,
-    "ironmanPrice": 500,
+    "ironmanPrice": 600,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -563,7 +563,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 9600,
+    "ironmanPrice": 50000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -1125,7 +1125,6 @@ exports[`OSB Buyables 1`] = `
     },
     "name": "Arceuus signet",
     "outputItems": undefined,
-    "requiredFavour": "arceuus",
   },
   {
     "gpCost": 100000,
@@ -1721,7 +1720,7 @@ exports[`OSB Buyables 1`] = `
   },
   {
     "gpCost": 780000,
-    "ironmanPrice": 78000,
+    "ironmanPrice": 98000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6289,7 +6288,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6303,7 +6302,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6317,7 +6316,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6331,7 +6330,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6345,7 +6344,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6359,7 +6358,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6373,7 +6372,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6387,7 +6386,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6401,7 +6400,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6415,7 +6414,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6429,7 +6428,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6443,7 +6442,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6457,7 +6456,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6471,7 +6470,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6485,7 +6484,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6499,7 +6498,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6513,7 +6512,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6527,7 +6526,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6541,7 +6540,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6555,7 +6554,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6569,7 +6568,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6583,7 +6582,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6597,7 +6596,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6611,7 +6610,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6625,7 +6624,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6639,7 +6638,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6653,7 +6652,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6667,7 +6666,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6681,7 +6680,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6695,7 +6694,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6709,7 +6708,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6723,7 +6722,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6737,7 +6736,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6751,7 +6750,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6765,7 +6764,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6779,7 +6778,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6793,7 +6792,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6807,7 +6806,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6821,7 +6820,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6835,7 +6834,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6849,7 +6848,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6863,7 +6862,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6877,7 +6876,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6891,7 +6890,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6905,7 +6904,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6919,7 +6918,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6933,7 +6932,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6947,7 +6946,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6961,7 +6960,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -6975,7 +6974,7 @@ exports[`OSB Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -17856,7 +17855,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17874,7 +17872,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17892,7 +17889,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17910,7 +17906,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17928,7 +17923,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17946,7 +17940,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17964,7 +17957,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -17992,7 +17984,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -18010,7 +18001,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -18028,7 +18018,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -18046,7 +18035,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -18064,7 +18052,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -18082,7 +18069,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -18100,7 +18086,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -18128,7 +18113,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18146,7 +18130,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18164,7 +18147,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18182,7 +18164,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18200,7 +18181,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18218,7 +18198,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18236,7 +18215,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18264,7 +18242,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18282,7 +18259,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18300,7 +18276,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18318,7 +18293,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18336,7 +18310,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18354,7 +18327,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18372,7 +18344,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -18400,7 +18371,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18418,7 +18388,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18436,7 +18405,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18454,7 +18422,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18472,7 +18439,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18490,7 +18456,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18508,7 +18473,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18536,7 +18500,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18554,7 +18517,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18572,7 +18534,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18590,7 +18551,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18608,7 +18568,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18626,7 +18585,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18644,7 +18602,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -18672,7 +18629,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18690,7 +18646,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18708,7 +18663,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18726,7 +18680,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18744,7 +18697,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18762,7 +18714,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18780,7 +18731,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18808,7 +18758,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18826,7 +18775,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18844,7 +18792,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18862,7 +18809,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18880,7 +18826,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18898,7 +18843,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18916,7 +18860,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -18944,7 +18887,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -18962,7 +18904,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -18980,7 +18921,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -18998,7 +18938,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19016,7 +18955,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19034,7 +18972,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19052,7 +18989,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19080,7 +19016,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19098,7 +19033,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19116,7 +19050,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19134,7 +19067,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19152,7 +19084,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19170,7 +19101,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -19188,7 +19118,6 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,

@@ -396,7 +396,7 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 				>(`SELECT
   DATE_TRUNC('week', sellTransactions.created_at) AS week,
   AVG(sellTransactions.price_per_item_before_tax) AS average_price_per_item_before_tax,
-  SUM(sellTransactions.quantity_bought) AS total_quantity_bought
+  SUM(sellTransactions.quantity_bought)::int AS total_quantity_bought
 FROM
   ge_listing
 INNER JOIN

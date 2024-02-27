@@ -666,14 +666,15 @@ export async function pinTripCommand(
 	if (!trip) return 'Invalid trip.';
 
 	if (emoji) {
-		const cachedEmoji = globalClient.emojis.cache.get(emoji);
-		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && production) {
-			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
-		}
 		const res = ParsedCustomEmojiWithGroups.exec(emoji);
 		if (!res || !res[3]) return "That's not a valid emoji.";
 		// eslint-disable-next-line prefer-destructuring
 		emoji = res[3];
+
+		const cachedEmoji = globalClient.emojis.cache.get(emoji);
+		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && production) {
+			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
+		}
 	}
 
 	if (customName) {

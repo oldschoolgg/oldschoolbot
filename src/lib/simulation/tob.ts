@@ -4,7 +4,6 @@ import { Bank, LootTable } from 'oldschooljs';
 import { LootBank } from 'oldschooljs/dist/meta/types';
 import { convertLootBanksToItemBanks, JSONClone } from 'oldschooljs/dist/util';
 
-import { BOT_TYPE } from '../constants';
 import { TOBRooms } from '../data/tob';
 import { assert } from '../util/logError';
 
@@ -94,9 +93,6 @@ export class TheatreOfBloodClass {
 			return new Bank().add('Cabbage');
 		}
 
-		if (BOT_TYPE === 'BSO') {
-			NonUniqueTable.tertiary(25, 'Clue scroll (elite)');
-		}
 		const loot = new Bank();
 		for (let i = 0; i < 3; i++) {
 			loot.add(NonUniqueTable.roll());
@@ -111,10 +107,8 @@ export class TheatreOfBloodClass {
 			loot.add(HardModeExtraTable.roll());
 		}
 
-		if (BOT_TYPE === 'OSB') {
-			if (roll(25)) {
-				loot.add('Clue scroll (elite)');
-			}
+		if (roll(25)) {
+			loot.add('Clue scroll (elite)');
 		}
 
 		let petChance = isHardMode ? 500 : 650;

@@ -28,7 +28,6 @@ import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishing
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
 import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
 import { hunterTask } from '../tasks/minions/HunterActivity/hunterActivity';
-import { kourendTask } from '../tasks/minions/kourendFavourActivity';
 import { mageArenaTwoTask } from '../tasks/minions/mageArena2Activity';
 import { mageArenaTask } from '../tasks/minions/mageArenaActivity';
 import { agilityArenaTask } from '../tasks/minions/minigames/agilityArenaActivity';
@@ -161,7 +160,6 @@ export const tasks: MinionTask[] = [
 	pickpocketTask,
 	questingTask,
 	monsterTask,
-	kourendTask,
 	vmTask,
 	templeTrekkingTask,
 	mageTrainingTask,
@@ -198,16 +196,18 @@ export async function processPendingActivities() {
 		}
 	});
 
-	await prisma.activity.updateMany({
-		where: {
-			id: {
-				in: activities.map(i => i.id)
+	if (activities.length > 0) {
+		await prisma.activity.updateMany({
+			where: {
+				id: {
+					in: activities.map(i => i.id)
+				}
+			},
+			data: {
+				completed: true
 			}
-		},
-		data: {
-			completed: true
-		}
-	});
+		});
+	}
 
 	await Promise.all(activities.map(completeActivity));
 	return activities;
@@ -275,7 +275,8 @@ const ignored: activity_type_enum[] = [
 	activity_type_enum.BlastFurnace,
 	activity_type_enum.Easter,
 	activity_type_enum.HalloweenEvent,
-	activity_type_enum.Revenants
+	activity_type_enum.Revenants,
+	activity_type_enum.KourendFavour
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {

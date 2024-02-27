@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 import { QuestID } from '../../../mahoji/lib/abstracted_commands/questCommand';
 import { chompyHats } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
-import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
 import { MUserStats } from '../../structures/MUserStats';
@@ -35,7 +34,6 @@ export interface Buyable {
 	itemCost?: Bank;
 	aliases?: string[];
 	skillsNeeded?: Skills;
-	requiredFavour?: Favours;
 	restockTime?: number;
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
@@ -203,8 +201,7 @@ const constructionBuyables: Buyable[] = [
 	},
 	{
 		name: 'Arceuus signet',
-		gpCost: 100_000,
-		requiredFavour: Favours.Arceuus
+		gpCost: 100_000
 	},
 	{
 		name: 'Ancient signet',
@@ -593,7 +590,7 @@ const questBuyables: Buyable[] = [
 		name: 'Berserker helm',
 		gpCost: 780_000,
 		qpRequired: 60,
-		ironmanPrice: 78_000
+		ironmanPrice: 98_000
 	},
 	{
 		name: 'Archer helm',
@@ -795,7 +792,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Bucket',
 		gpCost: 30,
-		ironmanPrice: 5
+		ironmanPrice: 10
 	},
 	{
 		name: 'Cup of hot water',
@@ -891,7 +888,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Steel pickaxe',
 		gpCost: 2000,
-		ironmanPrice: 500
+		ironmanPrice: 600
 	},
 	{
 		name: 'Mithril pickaxe',
@@ -961,7 +958,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Adamant halberd',
 		gpCost: 100_000,
-		ironmanPrice: 9600,
+		ironmanPrice: 50_000,
 		qpRequired: 150,
 		skillsNeeded: soteSkillRequirements
 	},
@@ -1125,7 +1122,7 @@ for (const cape of allTeamCapes) {
 	Buyables.push({
 		name: cape.name,
 		outputItems: new Bank().add(cape.id),
-		gpCost: 5000
+		gpCost: 15_000
 	});
 }
 

@@ -36,7 +36,6 @@ import {
 	SlayerActivityConstants
 } from '../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
-import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import {
 	AttackStyles,
 	calculateMonsterFood,
@@ -225,11 +224,6 @@ export async function minionKillCommand(
 	// Check requirements
 	const [hasReqs, reason] = hasMonsterRequirements(user, monster);
 	if (!hasReqs) return reason ?? "You don't have the requirements to fight this monster";
-
-	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Shayzien, 100);
-	if (!hasFavour && monster.id === Monsters.LizardmanShaman.id) {
-		return `${user.minionName} needs ${requiredPoints}% Shayzien Favour to kill Lizardman shamans.`;
-	}
 
 	if (monster.diaryRequirement) {
 		const [diary, tier]: [Diary, DiaryTier] = monster.diaryRequirement;
@@ -1030,14 +1024,7 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 	if (monster.qpRequired) {
 		str.push(`${monster.name} requires **${monster.qpRequired}qp** to kill, and you have ${QP}qp.\n`);
 	}
-	if (stringMatches(name, 'shaman') || stringMatches(name, 'lizardman shaman')) {
-		const [hasFavour] = gotFavour(user, Favours.Shayzien, 100);
-		if (!hasFavour) {
-			str.push('You require 100% Shayzien favour\n');
-		} else {
-			str.push('You meet the required 100% Shayzien favour\n');
-		}
-	}
+
 	let itemRequirements = [];
 	if (monster.itemsRequired && monster.itemsRequired.length > 0) {
 		itemRequirements.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}\n`);

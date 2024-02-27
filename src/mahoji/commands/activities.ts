@@ -4,7 +4,6 @@ import {
 	UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL,
 	UnderwaterAgilityThievingTrainingSkill
 } from '../../lib/constants';
-import { KourendFavours } from '../../lib/minions/data/kourendFavour';
 import { Planks } from '../../lib/minions/data/planks';
 import Potions from '../../lib/minions/data/potions';
 import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
@@ -26,7 +25,6 @@ import { collectables, collectCommand } from '../lib/abstracted_commands/collect
 import { decantCommand } from '../lib/abstracted_commands/decantCommand';
 import { driftNetCommand } from '../lib/abstracted_commands/driftNetCommand';
 import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
-import { favourCommand } from '../lib/abstracted_commands/favourCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
 import { otherActivities, otherActivitiesCommand } from '../lib/abstracted_commands/otherActivitiesCommand';
@@ -176,26 +174,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 					name: 'name',
 					description: 'The name of the quest (optional).',
 					choices: quests.map(i => ({ name: i.name, value: i.name })),
-					required: false
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'favour',
-			description: 'Allows you to get Kourend Favour.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'name',
-					description: 'The Kourend house.',
-					choices: KourendFavours.map(i => ({ name: i.name, value: i.name })),
-					required: false
-				},
-				{
-					type: ApplicationCommandOptionType.Boolean,
-					name: 'no_stams',
-					description: "Don't use stamina potions when getting favour.",
 					required: false
 				}
 			]
@@ -528,7 +506,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 		quest?: {
 			name?: string;
 		};
-		favour?: { name?: string; no_stams?: boolean };
 		decant?: { potion_name: string; dose?: number };
 		charge?: { item: string; quantity?: number };
 		fight_caves?: {};
@@ -610,9 +587,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.quest) {
 			return questCommand(user, channelID, options.quest.name);
-		}
-		if (options.favour) {
-			return favourCommand(user, options.favour.name, channelID, options.favour.no_stams);
 		}
 		if (options.charge?.item === 'glory') {
 			return chargeGloriesCommand(user, channelID, options.charge.quantity);
