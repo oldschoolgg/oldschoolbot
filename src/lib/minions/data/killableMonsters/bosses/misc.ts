@@ -452,19 +452,14 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.Scurrius.id,
 		name: Monsters.Scurrius.name,
 		aliases: Monsters.Scurrius.aliases,
-		timeToFinish: Time.Minute * 13.6,
+		timeToFinish: Time.Minute * 2,
 		table: Monsters.Scurrius,
 		notifyDrops: resolveItems(['Scurry']),
 		qpRequired: 0,
 		levelRequirements: {
 			prayer: 43
 		},
-		defaultAttackStyles: [SkillsEnum.Attack],
-		combatXpMultiplier: 1.075,
-		itemCost: {
-			itemCost: new Bank().add('Prayer potion(4)'),
-			qtyPerKill: 0.1
-		}
+		defaultAttackStyles: [SkillsEnum.Attack]
 	}
 ];
 
