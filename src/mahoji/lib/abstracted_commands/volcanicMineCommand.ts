@@ -70,6 +70,12 @@ export const VolcanicMineShop: { name: string; output: Bank; cost: number; clOnl
 		cost: 70
 	},
 	{
+		name: 'Ore pack (Volcanic Mine)',
+		output: new Bank({ 'Ore pack (Volcanic Mine)': 1 }),
+		cost: 4000,
+		addToCl: true
+	},
+	{
 		name: 'Volcanic mine teleport',
 		output: new Bank({ 'Volcanic mine teleport': 1 }),
 		cost: 200,

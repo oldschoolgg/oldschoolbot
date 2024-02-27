@@ -535,6 +535,12 @@ export const allCollectionLogs: ICollection = {
 				items: scorpiaCL,
 				fmtProg: kcProg(Monsters.Scorpia)
 			},
+			Scurrius: {
+				alias: Monsters.Scurrius.aliases,
+				allItems: Monsters.Scurrius.allItems,
+				items: resolveItems(['Scurry', "Scurrius' spine"]),
+				fmtProg: kcProg(Monsters.Scurrius)
+			},
 			Skotizo: {
 				alias: Monsters.Skotizo.aliases,
 				allItems: Monsters.Skotizo.allItems,

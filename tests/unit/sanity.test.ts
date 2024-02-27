@@ -137,7 +137,15 @@ describe('Sanity', () => {
 			27_499,
 			27_828,
 			'Paint box',
-			'Ruby Red paint can'
+			'Ruby Red paint can',
+			'Scurry',
+			'Trailblazer reloaded dragon trophy',
+			'Trailblazer reloaded rune trophy',
+			'Trailblazer reloaded adamant trophy',
+			'Trailblazer reloaded mithril trophy',
+			'Trailblazer reloaded steel trophy',
+			'Trailblazer reloaded iron trophy',
+			'Trailblazer reloaded bronze trophy'
 		]);
 		for (const i of shouldntBeIn) {
 			if (allMbTables.includes(i)) {

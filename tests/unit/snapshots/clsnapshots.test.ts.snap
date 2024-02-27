@@ -5,8 +5,8 @@ exports[`BSO Collection Log Groups/Categories 1`] = `
 Achievement Diary (48)
 Aerial Fishing (9)
 Alchemical Hydra (11)
-All Pets (56)
-All Pets (56)
+All Pets (57)
+All Pets (57)
 Balthazar's Big Bonanza (26)
 Barbarian Assault (11)
 Barrows Chests (25)
@@ -42,7 +42,7 @@ Cooking (28)
 Corporeal Beast (8)
 Crafting (175)
 Crazy archaeologist (3)
-Creatables (728)
+Creatables (731)
 Creature Creation (7)
 Creature Creation (7)
 Custom Pets (42)
@@ -138,6 +138,7 @@ Rogues' Den (5)
 Rooftop Agility (10)
 Sarachnis (4)
 Scorpia (3)
+Scurrius (2)
 Sea Kraken (3)
 Shades of Mort'ton (15)
 Shared Treasure Trail Rewards (49)
@@ -180,7 +181,7 @@ Vasa Magus (5)
 Venenatis and Spindel (6)
 Vet'ion and Calvar'ion (6)
 Vladimir Drakan (8)
-Volcanic Mine (3)
+Volcanic Mine (4)
 Vorkath (6)
 Wintertodt (11)
 Zalcano (4)
@@ -812,6 +813,7 @@ Dragon limbs
 Dragon metal lump
 Dragon metal slice
 Dragon pickaxe
+Dragon pickaxe (broken)
 Dragon pickaxe upgrade kit
 Dragon platebody ornament kit
 Dragon scimitar ornament kit
@@ -1505,7 +1507,7 @@ Olmlet
 Onyx
 Orange boater
 Orange egg sac
-Ore pack
+Ore pack (Giant's Foundry)
 Ori
 Ornate maul handle
 Osmumten's fang
@@ -1774,6 +1776,8 @@ Scroll of proficiency
 Scroll of teleportation
 Scroll of the hunt
 Scruffy
+Scurrius' spine
+Scurry
 Scythe of vitur (uncharged)
 Seamonkey staff (t1)
 Seamonkey staff (t2)

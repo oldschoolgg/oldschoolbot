@@ -672,7 +672,15 @@ const cantBeDropped = resolveItems([
 	27_785,
 	27_788,
 	27_790,
-	...OSB_VIRTUS_IDS
+	...OSB_VIRTUS_IDS,
+	'Scurry',
+	'Trailblazer reloaded dragon trophy',
+	'Trailblazer reloaded rune trophy',
+	'Trailblazer reloaded adamant trophy',
+	'Trailblazer reloaded mithril trophy',
+	'Trailblazer reloaded steel trophy',
+	'Trailblazer reloaded iron trophy',
+	'Trailblazer reloaded bronze trophy'
 ]);
 
 export const tmbTable: number[] = [];
