@@ -56,3 +56,23 @@ export const gloryChargingTask: MinionTask = {
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };
+
+export const gloryUnchargingTask: MinionTask = {
+	type: 'GloryUncharging',
+	async run(data: ActivityTaskOptionsWithQuantity) {
+		const { quantity, userID, channelID } = data;
+		const user = await mUserFetch(userID);
+		let loot = new Bank().add('Amulet of glory', quantity);
+
+		const amnt = loot.amount('Amulet of glory');
+
+		const str = `${user}, ${user.minionName} finished uncharging ${amnt} Amulets of glory (6).`;
+
+		await transactItems({
+			userID: user.id,
+			collectionLog: false,
+			itemsToAdd: loot
+		});
+		handleTripFinish(user, channelID, str, undefined, data, loot);
+	}
+};

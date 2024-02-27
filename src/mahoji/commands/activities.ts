@@ -18,7 +18,7 @@ import { butlerCommand } from '../lib/abstracted_commands/butlerCommand';
 import { camdozaalCommand } from '../lib/abstracted_commands/camdozaalCommand';
 import { castCommand } from '../lib/abstracted_commands/castCommand';
 import { championsChallengeCommand } from '../lib/abstracted_commands/championsChallenge';
-import { chargeGloriesCommand } from '../lib/abstracted_commands/chargeGloriesCommand';
+import { chargeGloriesCommand, unchargeGloriesCommand } from '../lib/abstracted_commands/chargeGloriesCommand';
 import { chargeWealthCommand } from '../lib/abstracted_commands/chargeWealthCommand';
 import { chompyHuntClaimCommand, chompyHuntCommand } from '../lib/abstracted_commands/chompyHuntCommand';
 import { collectables, collectCommand } from '../lib/abstracted_commands/collectCommand';
@@ -222,6 +222,10 @@ export const activitiesCommand: OSBMahojiCommand = {
 						{
 							name: 'Ring of wealth',
 							value: 'wealth'
+						},
+						{
+							name: 'Uncharge amulet of glory',
+							value: 'unchargeglory'
 						}
 					]
 				},
@@ -593,6 +597,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.charge?.item === 'wealth') {
 			return chargeWealthCommand(user, channelID, options.charge.quantity);
+		}
+		if (options.charge?.item === 'unchargeglory') {
+			return unchargeGloriesCommand(user, channelID, options.charge.quantity);
 		}
 		if (options.fight_caves) {
 			return fightCavesCommand(user, channelID);

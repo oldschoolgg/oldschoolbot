@@ -65,3 +65,51 @@ export async function chargeGloriesCommand(user: MUser, channelID: string, quant
 		hasDiary ? ' 3x Boost for Wilderness Elite diary.' : ''
 	}`;
 }
+
+export async function unchargeGloriesCommand(user: MUser, channelID: string, quantity: number | undefined) {
+	const userBank = user.bank;
+
+	const unchargeGloriesTime = Time.Second * 2;
+
+	const maxTripLength = calcMaxTripLength(user, 'GloryUncharging');
+
+	const amountHas = userBank.amount('Amulet of glory(6)');
+
+	const max = Math.min(amountHas, Math.floor(maxTripLength / unchargeGloriesTime));
+
+	if (!quantity) {
+		quantity = Math.floor(max);
+	}
+
+	if (quantity > max) quantity = max;
+
+	if ((quantity = 0)) return 'You have no amulet of glory (6) to uncharge.';
+
+	const duration = quantity * unchargeGloriesTime;
+
+	if (duration > maxTripLength) {
+		return `${user.minionName} can't go on trips longer than ${formatDuration(
+			maxTripLength
+		)}, try a lower quantity. The highest amount of inventories of glories you can uncharge is ${Math.floor(
+			maxTripLength / unchargeGloriesTime
+		)}.`;
+	}
+
+	if (userBank.amount('Amulet of glory (6)') < quantity) {
+		return `You don't have enough ${quantity}x Amulet of glory (6).`;
+	}
+
+	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
+		userID: user.id,
+		channelID: channelID.toString(),
+		quantity,
+		duration,
+		type: 'GloryUncharging'
+	});
+
+	await user.removeItemsFromBank(new Bank().add('Amulet of glory (6)', quantity));
+
+	return `${user.minionName} is now uncharging ${quantity} Amulets of glory (6), it'll take around ${formatDuration(
+		duration
+	)} to finish. Removed ${quantity}x Amulet of glory (6) from your bank.`;
+}

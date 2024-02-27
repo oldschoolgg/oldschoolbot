@@ -888,6 +888,7 @@ enum activity_type_enum {
   Casting
   GloryCharging
   WealthCharging
+  GloryUncharging
   BarbarianAssault
   AgilityArena
   ChampionsChallenge
