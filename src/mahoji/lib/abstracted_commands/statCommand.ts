@@ -338,7 +338,7 @@ GROUP BY type;`);
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { type: activity_type_enum; hours: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT type, sum(duration) / ${Time.Hour} AS hours
+				await prisma.$queryRawUnsafe(`SELECT type, sum(duration)::int / ${Time.Hour} AS hours
 FROM activity
 WHERE completed = true
 AND user_id = ${BigInt(user.id)}
@@ -357,7 +357,7 @@ GROUP BY type;`);
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { id: number; kc: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT (data->>'monsterID')::int as id, SUM((data->>'quantity')::int) AS kc
+				await prisma.$queryRawUnsafe(`SELECT (data->>'monsterID')::int as id, SUM((data->>'quantity')::int)::int AS kc
 FROM activity
 WHERE completed = true
 AND user_id = ${BigInt(user.id)}
