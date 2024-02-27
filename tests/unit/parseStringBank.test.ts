@@ -394,21 +394,21 @@ describe('Bank Parsers', () => {
 		expect(
 			parseBank({
 				inputBank: usersBank,
-				inputStr: 'snakeweed mixture, 1 an indigo pentagon, an indigo square, tmb'
+				inputStr: 'snakeweed mixture, 1 indigo pentagon, indigo square, tmb'
 			}).toString()
 		).toEqual('6x Tradeable Mystery Box');
 
 		expect(
 			parseBank({
 				inputBank: usersBank,
-				inputStr: 'snakeweed mixture, 1 an indigo pentagon, an indigo square, mystery box'
+				inputStr: 'snakeweed mixture, 1 indigo pentagon, indigo square, mystery box'
 			}).toString()
 		).toEqual('No items');
 
 		expect(
 			parseBank({
 				inputBank: usersBank,
-				inputStr: 'snake@w-eed miXture, 0 doug, 1 lil lamb, 1 an indigo pentagon, an indigo square, mystery box'
+				inputStr: 'snake@w-eed miXture, 0 doug, 1 lil lamb, 1 indigo pentagon, indigo square, mystery box'
 			}).toString()
 		).toEqual('3x Doug, 1x Lil Lamb');
 

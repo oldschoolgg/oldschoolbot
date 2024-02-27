@@ -235,6 +235,10 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Holy scythe of vitur (uncharged)'), 'Unch.'],
 	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.'],
 
+	// Ore Packs
+	[27_019, 'GF Pack'],
+	[27_693, 'VM Pack'],
+
 	// BSO exclusive misc
 	[i('Athelas'), 'athelas'],
 	[i('Athelas seed'), 'athelas'],

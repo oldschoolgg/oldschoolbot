@@ -1529,6 +1529,7 @@ export function determineTameClueResult({
 	const base = exponentialPercentScale(50, 0.03);
 	const boostPercent = Math.max(0, s / 1.5 - base / 1.5);
 
+	timePerClue = reduceNumByPercent(timePerClue, boostPercent);
 	boosts.push(`${boostPercent.toFixed(2)}% faster for support level`);
 
 	if (equippedPrimary === itemID('Divine ring')) {
@@ -1540,7 +1541,7 @@ export function determineTameClueResult({
 	const duration = Math.floor(quantity * timePerClue);
 
 	const baseCost = (ClueTiers.indexOf(clueTier) + 1) * quantity;
-	const kibbleNeeded = Math.ceil(baseCost / 1.5);
+	const kibbleNeeded = Math.ceil(baseCost / 2);
 	const cost = new Bank().add('Extraordinary kibble', kibbleNeeded).add(clueTier.scrollID, quantity);
 
 	let costSavedByDemonicJibwings = null;
