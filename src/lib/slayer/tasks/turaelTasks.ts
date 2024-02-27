@@ -189,7 +189,8 @@ export const turaelTasks: AssignableSlayerTask[] = [
 			Monsters.DungeonRat.id,
 			Monsters.CryptRat.id,
 			Monsters.ZombieRat.id,
-			Monsters.BrineRat.id
+			Monsters.BrineRat.id,
+			Monsters.Scurrius.id
 		],
 		unlocked: true
 	},
