@@ -11,12 +11,16 @@ jobs:
   test:
     name: Node v${{ matrix.node_version }} - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     strategy:
       matrix:
         node_version: [18.12.0, 20]
         os: [ubuntu-latest]
 
     steps:
+      - name: Install System Packages
+        run: sudo apt-get install -y build-essential libpq-dev
+
       - name: Checkout Project
         uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node_version }}
@@ -37,6 +41,6 @@ jobs:
           cp config.example.ts config.ts &&
           popd
       - name: Copy env
-        run: cp .env.example .env
+        run: cp .env.test .env
       - name: Test
         run: yarn test:integration

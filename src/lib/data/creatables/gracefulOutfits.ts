@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { Favours } from '../../minions/data/kourendFavour';
 import itemID from '../../util/itemID';
 import { Createable } from '../createables';
 
@@ -242,8 +241,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 			[itemID('Arceuus graceful gloves')]: 1,
 			[itemID('Arceuus graceful boots')]: 1,
 			[itemID('Arceuus graceful cape')]: 1
-		},
-		requiredFavour: Favours.Arceuus
+		}
 	},
 	{
 		name: 'Arceuus graceful hood',
@@ -253,8 +251,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Arceuus graceful hood')]: 1
-		},
-		requiredFavour: Favours.Arceuus
+		}
 	},
 	{
 		name: 'Arceuus graceful top',
@@ -264,8 +261,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Arceuus graceful top')]: 1
-		},
-		requiredFavour: Favours.Arceuus
+		}
 	},
 	{
 		name: 'Arceuus graceful legs',
@@ -275,8 +271,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Arceuus graceful legs')]: 1
-		},
-		requiredFavour: Favours.Arceuus
+		}
 	},
 	{
 		name: 'Arceuus graceful gloves',
@@ -286,8 +281,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Arceuus graceful gloves')]: 1
-		},
-		requiredFavour: Favours.Arceuus
+		}
 	},
 	{
 		name: 'Arceuus graceful boots',
@@ -297,8 +291,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Arceuus graceful boots')]: 1
-		},
-		requiredFavour: Favours.Arceuus
+		}
 	},
 	{
 		name: 'Arceuus graceful cape',
@@ -308,8 +301,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Arceuus graceful cape')]: 1
-		},
-		requiredFavour: Favours.Arceuus
+		}
 	},
 	{
 		name: 'Revert arceuus graceful',
@@ -329,7 +321,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 			[itemID('Graceful boots')]: 1,
 			[itemID('Graceful cape')]: 1
 		},
-		requiredFavour: Favours.Arceuus,
+
 		noCl: true
 	},
 	{
@@ -340,7 +332,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful hood')]: 1
 		},
-		requiredFavour: Favours.Arceuus,
+
 		noCl: true
 	},
 	{
@@ -351,7 +343,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful top')]: 1
 		},
-		requiredFavour: Favours.Arceuus,
+
 		noCl: true
 	},
 	{
@@ -362,7 +354,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful legs')]: 1
 		},
-		requiredFavour: Favours.Arceuus,
+
 		noCl: true
 	},
 	{
@@ -373,7 +365,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful gloves')]: 1
 		},
-		requiredFavour: Favours.Arceuus,
+
 		noCl: true
 	},
 	{
@@ -384,7 +376,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful boots')]: 1
 		},
-		requiredFavour: Favours.Arceuus,
+
 		noCl: true
 	},
 	{
@@ -395,7 +387,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful cape')]: 1
 		},
-		requiredFavour: Favours.Arceuus,
+
 		noCl: true
 	},
 	// Piscarilius
@@ -417,8 +409,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 			[itemID('Piscarilius graceful gloves')]: 1,
 			[itemID('Piscarilius graceful boots')]: 1,
 			[itemID('Piscarilius graceful cape')]: 1
-		},
-		requiredFavour: Favours.Piscarilius
+		}
 	},
 	{
 		name: 'Piscarilius graceful hood',
@@ -428,8 +419,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Piscarilius graceful hood')]: 1
-		},
-		requiredFavour: Favours.Piscarilius
+		}
 	},
 	{
 		name: 'Piscarilius graceful top',
@@ -439,8 +429,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Piscarilius graceful top')]: 1
-		},
-		requiredFavour: Favours.Piscarilius
+		}
 	},
 	{
 		name: 'Piscarilius graceful legs',
@@ -450,8 +439,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Piscarilius graceful legs')]: 1
-		},
-		requiredFavour: Favours.Piscarilius
+		}
 	},
 	{
 		name: 'Piscarilius graceful gloves',
@@ -461,8 +449,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Piscarilius graceful gloves')]: 1
-		},
-		requiredFavour: Favours.Piscarilius
+		}
 	},
 	{
 		name: 'Piscarilius graceful boots',
@@ -472,8 +459,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Piscarilius graceful boots')]: 1
-		},
-		requiredFavour: Favours.Piscarilius
+		}
 	},
 	{
 		name: 'Piscarilius graceful cape',
@@ -483,8 +469,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Piscarilius graceful cape')]: 1
-		},
-		requiredFavour: Favours.Piscarilius
+		}
 	},
 	{
 		name: 'Revert Piscarilius graceful',
@@ -504,7 +489,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 			[itemID('Graceful boots')]: 1,
 			[itemID('Graceful cape')]: 1
 		},
-		requiredFavour: Favours.Piscarilius,
+
 		noCl: true
 	},
 	{
@@ -515,7 +500,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful hood')]: 1
 		},
-		requiredFavour: Favours.Piscarilius,
+
 		noCl: true
 	},
 	{
@@ -526,7 +511,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful top')]: 1
 		},
-		requiredFavour: Favours.Piscarilius,
+
 		noCl: true
 	},
 	{
@@ -537,7 +522,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful legs')]: 1
 		},
-		requiredFavour: Favours.Piscarilius,
+
 		noCl: true
 	},
 	{
@@ -548,7 +533,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful gloves')]: 1
 		},
-		requiredFavour: Favours.Piscarilius,
+
 		noCl: true
 	},
 	{
@@ -559,7 +544,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful boots')]: 1
 		},
-		requiredFavour: Favours.Piscarilius,
+
 		noCl: true
 	},
 	{
@@ -570,7 +555,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful cape')]: 1
 		},
-		requiredFavour: Favours.Piscarilius,
+
 		noCl: true
 	},
 	// Lovakengj
@@ -592,8 +577,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 			[itemID('Lovakengj graceful gloves')]: 1,
 			[itemID('Lovakengj graceful boots')]: 1,
 			[itemID('Lovakengj graceful cape')]: 1
-		},
-		requiredFavour: Favours.Lovakengj
+		}
 	},
 	{
 		name: 'Lovakengj graceful hood',
@@ -603,8 +587,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Lovakengj graceful hood')]: 1
-		},
-		requiredFavour: Favours.Lovakengj
+		}
 	},
 	{
 		name: 'Lovakengj graceful top',
@@ -614,8 +597,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Lovakengj graceful top')]: 1
-		},
-		requiredFavour: Favours.Lovakengj
+		}
 	},
 	{
 		name: 'Lovakengj graceful legs',
@@ -625,8 +607,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Lovakengj graceful legs')]: 1
-		},
-		requiredFavour: Favours.Lovakengj
+		}
 	},
 	{
 		name: 'Lovakengj graceful gloves',
@@ -636,8 +617,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Lovakengj graceful gloves')]: 1
-		},
-		requiredFavour: Favours.Lovakengj
+		}
 	},
 	{
 		name: 'Lovakengj graceful boots',
@@ -647,8 +627,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Lovakengj graceful boots')]: 1
-		},
-		requiredFavour: Favours.Lovakengj
+		}
 	},
 	{
 		name: 'Lovakengj graceful cape',
@@ -658,8 +637,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Lovakengj graceful cape')]: 1
-		},
-		requiredFavour: Favours.Lovakengj
+		}
 	},
 	{
 		name: 'Revert Lovakengj graceful',
@@ -679,7 +657,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 			[itemID('Graceful boots')]: 1,
 			[itemID('Graceful cape')]: 1
 		},
-		requiredFavour: Favours.Lovakengj,
+
 		noCl: true
 	},
 	{
@@ -690,7 +668,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful hood')]: 1
 		},
-		requiredFavour: Favours.Lovakengj,
+
 		noCl: true
 	},
 	{
@@ -701,7 +679,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful top')]: 1
 		},
-		requiredFavour: Favours.Lovakengj,
+
 		noCl: true
 	},
 	{
@@ -712,7 +690,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful legs')]: 1
 		},
-		requiredFavour: Favours.Lovakengj,
+
 		noCl: true
 	},
 	{
@@ -723,7 +701,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful gloves')]: 1
 		},
-		requiredFavour: Favours.Lovakengj,
+
 		noCl: true
 	},
 	{
@@ -734,7 +712,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful boots')]: 1
 		},
-		requiredFavour: Favours.Lovakengj,
+
 		noCl: true
 	},
 	{
@@ -745,7 +723,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful cape')]: 1
 		},
-		requiredFavour: Favours.Lovakengj,
+
 		noCl: true
 	},
 	// Shayzien
@@ -767,8 +745,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 			[itemID('Shayzien graceful gloves')]: 1,
 			[itemID('Shayzien graceful boots')]: 1,
 			[itemID('Shayzien graceful cape')]: 1
-		},
-		requiredFavour: Favours.Shayzien
+		}
 	},
 	{
 		name: 'Shayzien graceful hood',
@@ -778,8 +755,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Shayzien graceful hood')]: 1
-		},
-		requiredFavour: Favours.Shayzien
+		}
 	},
 	{
 		name: 'Shayzien graceful top',
@@ -789,8 +765,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Shayzien graceful top')]: 1
-		},
-		requiredFavour: Favours.Shayzien
+		}
 	},
 	{
 		name: 'Shayzien graceful legs',
@@ -800,8 +775,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Shayzien graceful legs')]: 1
-		},
-		requiredFavour: Favours.Shayzien
+		}
 	},
 	{
 		name: 'Shayzien graceful gloves',
@@ -811,8 +785,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Shayzien graceful gloves')]: 1
-		},
-		requiredFavour: Favours.Shayzien
+		}
 	},
 	{
 		name: 'Shayzien graceful boots',
@@ -822,8 +795,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Shayzien graceful boots')]: 1
-		},
-		requiredFavour: Favours.Shayzien
+		}
 	},
 	{
 		name: 'Shayzien graceful cape',
@@ -833,8 +805,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Shayzien graceful cape')]: 1
-		},
-		requiredFavour: Favours.Shayzien
+		}
 	},
 	{
 		name: 'Revert Shayzien graceful',
@@ -854,7 +825,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 			[itemID('Graceful boots')]: 1,
 			[itemID('Graceful cape')]: 1
 		},
-		requiredFavour: Favours.Shayzien,
+
 		noCl: true
 	},
 	{
@@ -865,7 +836,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful hood')]: 1
 		},
-		requiredFavour: Favours.Shayzien,
+
 		noCl: true
 	},
 	{
@@ -876,7 +847,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful top')]: 1
 		},
-		requiredFavour: Favours.Shayzien,
+
 		noCl: true
 	},
 	{
@@ -887,7 +858,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful legs')]: 1
 		},
-		requiredFavour: Favours.Shayzien,
+
 		noCl: true
 	},
 	{
@@ -898,7 +869,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful gloves')]: 1
 		},
-		requiredFavour: Favours.Shayzien,
+
 		noCl: true
 	},
 	{
@@ -909,7 +880,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful boots')]: 1
 		},
-		requiredFavour: Favours.Shayzien,
+
 		noCl: true
 	},
 	{
@@ -920,7 +891,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful cape')]: 1
 		},
-		requiredFavour: Favours.Shayzien,
+
 		noCl: true
 	},
 	// Hosidius
@@ -942,8 +913,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 			[itemID('Hosidius graceful gloves')]: 1,
 			[itemID('Hosidius graceful boots')]: 1,
 			[itemID('Hosidius graceful cape')]: 1
-		},
-		requiredFavour: Favours.Hosidius
+		}
 	},
 	{
 		name: 'Hosidius graceful hood',
@@ -953,8 +923,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Hosidius graceful hood')]: 1
-		},
-		requiredFavour: Favours.Hosidius
+		}
 	},
 	{
 		name: 'Hosidius graceful top',
@@ -964,8 +933,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Hosidius graceful top')]: 1
-		},
-		requiredFavour: Favours.Hosidius
+		}
 	},
 	{
 		name: 'Hosidius graceful legs',
@@ -975,8 +943,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Hosidius graceful legs')]: 1
-		},
-		requiredFavour: Favours.Hosidius
+		}
 	},
 	{
 		name: 'Hosidius graceful gloves',
@@ -986,8 +953,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Hosidius graceful gloves')]: 1
-		},
-		requiredFavour: Favours.Hosidius
+		}
 	},
 	{
 		name: 'Hosidius graceful boots',
@@ -997,8 +963,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Hosidius graceful boots')]: 1
-		},
-		requiredFavour: Favours.Hosidius
+		}
 	},
 	{
 		name: 'Hosidius graceful cape',
@@ -1008,8 +973,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Hosidius graceful cape')]: 1
-		},
-		requiredFavour: Favours.Hosidius
+		}
 	},
 	{
 		name: 'Revert Hosidius graceful',
@@ -1029,7 +993,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 			[itemID('Graceful boots')]: 1,
 			[itemID('Graceful cape')]: 1
 		},
-		requiredFavour: Favours.Hosidius,
+
 		noCl: true
 	},
 	{
@@ -1040,7 +1004,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful hood')]: 1
 		},
-		requiredFavour: Favours.Hosidius,
+
 		noCl: true
 	},
 	{
@@ -1051,7 +1015,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful top')]: 1
 		},
-		requiredFavour: Favours.Hosidius,
+
 		noCl: true
 	},
 	{
@@ -1062,7 +1026,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful legs')]: 1
 		},
-		requiredFavour: Favours.Hosidius,
+
 		noCl: true
 	},
 	{
@@ -1073,7 +1037,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful gloves')]: 1
 		},
-		requiredFavour: Favours.Hosidius,
+
 		noCl: true
 	},
 	{
@@ -1084,7 +1048,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful boots')]: 1
 		},
-		requiredFavour: Favours.Hosidius,
+
 		noCl: true
 	},
 	{
@@ -1095,7 +1059,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 		outputItems: {
 			[itemID('Graceful cape')]: 1
 		},
-		requiredFavour: Favours.Hosidius,
+
 		noCl: true
 	},
 	// Great Kourend

@@ -434,6 +434,12 @@ export const allCollectionLogs: ICollection = {
 				items: scorpiaCL,
 				fmtProg: kcProg(Monsters.Scorpia)
 			},
+			Scurrius: {
+				alias: Monsters.Scurrius.aliases,
+				allItems: Monsters.Scurrius.allItems,
+				items: resolveItems(['Scurry', "Scurrius' spine"]),
+				fmtProg: kcProg(Monsters.Scurrius)
+			},
 			Skotizo: {
 				alias: Monsters.Skotizo.aliases,
 				allItems: Monsters.Skotizo.allItems,
@@ -502,7 +508,7 @@ export const allCollectionLogs: ICollection = {
 	},
 	Raids: {
 		activities: {
-			"Chamber's of Xeric": {
+			'Chambers of Xeric': {
 				alias: ChambersOfXeric.aliases,
 				kcActivity: {
 					Default: async (_, minigameScores) =>

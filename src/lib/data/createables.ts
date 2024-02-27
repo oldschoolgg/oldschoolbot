@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../constants';
-import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank, Skills } from '../types';
@@ -40,7 +39,6 @@ export interface Createable {
 	GPCost?: number;
 	cantBeInCL?: boolean;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
-	requiredFavour?: Favours;
 	maxCanOwn?: number;
 	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
 	type?: 'pack' | 'unpack';
@@ -2344,6 +2342,30 @@ const Createables: Createable[] = [
 		outputItems: new Bank({
 			'Webweaver bow (u)	': 1
 		})
+	},
+	{
+		name: 'Bone mace',
+		inputItems: new Bank().add('Rune mace').add("Scurrius' spine"),
+		outputItems: new Bank().add('Bone mace'),
+		requiredSkills: {
+			smithing: 35
+		}
+	},
+	{
+		name: 'Bone shortbow',
+		inputItems: new Bank().add('Yew shortbow').add("Scurrius' spine"),
+		outputItems: new Bank().add('Bone shortbow'),
+		requiredSkills: {
+			fletching: 35
+		}
+	},
+	{
+		name: 'Bone staff',
+		inputItems: new Bank().add('Battlestaff').add('Chaos rune', 1000).add("Scurrius' spine"),
+		outputItems: new Bank().add('Bone staff'),
+		requiredSkills: {
+			crafting: 35
+		}
 	},
 	...Reverteables,
 	...crystalTools,
