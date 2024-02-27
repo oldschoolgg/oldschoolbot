@@ -51,7 +51,8 @@ export const buildCommand: OSBMahojiCommand = {
 			required: true,
 			autocomplete: async (value: string, user: User) => {
 				const mUser = await mUserFetch(user.id);
-				const conLevel = mUser.skillLevel('construction');
+				const hasCrystalSaw = mUser.owns('Crystal saw');
+				const conLevel = mUser.skillLevel('construction') + (hasCrystalSaw ? 3 : 0);
 				return Constructables.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.filter(c => c.level <= conLevel)
 					.map(i => ({
