@@ -4474,7 +4474,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 1000,
+    "gpCost": 2000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
