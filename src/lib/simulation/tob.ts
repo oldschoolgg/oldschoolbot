@@ -4,7 +4,6 @@ import { Bank, LootTable } from 'oldschooljs';
 import { LootBank } from 'oldschooljs/dist/meta/types';
 import { convertLootBanksToItemBanks, JSONClone } from 'oldschooljs/dist/util';
 
-import { BOT_TYPE } from '../constants';
 import { TOBRooms } from '../data/tob';
 import { assert } from '../util/logError';
 
