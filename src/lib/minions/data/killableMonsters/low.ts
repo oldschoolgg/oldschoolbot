@@ -146,7 +146,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.BloodReaver.id,
 		name: Monsters.BloodReaver.name,
 		aliases: Monsters.BloodReaver.aliases,
-		timeToFinish: Time.Second * 36,
+		timeToFinish: Time.Second * 25,
 		table: Monsters.BloodReaver,
 		wildy: false,
 		difficultyRating: 3,
