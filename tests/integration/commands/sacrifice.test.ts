@@ -18,7 +18,7 @@ describe('Sacrifice Command', async () => {
 		expect(result).toEqual(
 			`${Emoji.Incinerator} **Your Sacrifice Stats** ${Emoji.Incinerator}\n\n` +
 				`**Current Minion Icon:** ${Emoji.Minion}\n` +
-				'**Sacrificed Value:** 1,922 GP\n' +
+				'**Sacrificed Value:** 1,909 GP\n' +
 				'**Unique Items Sacrificed:** 2 items'
 		);
 	});
