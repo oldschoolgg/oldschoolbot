@@ -9,6 +9,7 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
+import { analyticsTick } from '../../lib/analytics';
 import { calculateCompCapeProgress } from '../../lib/bso/calculateCompCapeProgress';
 import { BitField, Channel } from '../../lib/constants';
 import { GearSetupType } from '../../lib/gear/types';
@@ -84,6 +85,12 @@ export const rpCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'view_all_items',
 					description: 'View all item IDs present in banks/cls.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'analytics_tick',
+					description: 'analyticsTick.',
 					options: []
 				}
 			]
@@ -330,6 +337,7 @@ export const rpCommand: OSBMahojiCommand = {
 			patreon_reset?: {};
 			force_comp_update?: {};
 			view_all_items?: {};
+			analytics_tick?: {};
 		};
 		player?: {
 			givetgb?: { user: MahojiUserOption };
@@ -406,6 +414,11 @@ export const rpCommand: OSBMahojiCommand = {
 				await calculateCompCapeProgress(await mUserFetch(user.user_id.toString()));
 			}
 			return 'Done.';
+		}
+
+		if (options.action?.analytics_tick) {
+			await analyticsTick();
+			return 'Finished.';
 		}
 
 		if (options.action?.view_all_items) {
