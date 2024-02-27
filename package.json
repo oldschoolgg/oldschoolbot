@@ -23,7 +23,7 @@
 		"@fastify/sensible": "^5.2.0",
 		"@napi-rs/canvas": "0.1.38",
 		"@octokit/graphql": "^4.8.0",
-		"@oldschoolgg/toolkit": "^0.0.23",
+		"@oldschoolgg/toolkit": "^0.0.24",
 		"@prisma/client": "^5.10.2",
 		"@sapphire/stopwatch": "^1.4.0",
 		"@sapphire/time-utilities": "^1.6.0",
