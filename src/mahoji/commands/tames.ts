@@ -1541,7 +1541,7 @@ export function determineTameClueResult({
 	const duration = Math.floor(quantity * timePerClue);
 
 	const baseCost = (ClueTiers.indexOf(clueTier) + 1) * quantity;
-	const kibbleNeeded = Math.ceil(baseCost / 1.5);
+	const kibbleNeeded = Math.ceil(baseCost / 2);
 	const cost = new Bank().add('Extraordinary kibble', kibbleNeeded).add(clueTier.scrollID, quantity);
 
 	let costSavedByDemonicJibwings = null;
