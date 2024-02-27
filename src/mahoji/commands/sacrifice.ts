@@ -42,7 +42,12 @@ const noSacPrice = resolveItems([
 	'Helm of neitiznot',
 	'Cannon barrels',
 	'Broad arrowheads',
-	'Rope'
+	'Rope',
+	'Eye of newt',
+	'Bronze pickaxe',
+	'Iron pickaxe',
+	'Red dye',
+	'Cannon furnace'
 ]);
 
 export function sacrificePriceOfItem(item: Item, qty: number) {
