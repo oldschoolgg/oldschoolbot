@@ -79,7 +79,7 @@ export async function unchargeGloriesCommand(user: MUser, channelID: string, qua
 
 	if (!quantity) quantity = Math.floor(max);
 	if (quantity > max) quantity = max;
-	if (quantity === 0) return `You don't have any Amulet of glory (6) to uncharge.`;
+	if (quantity === 0) return "You don't have any Amulet of glory (6) to uncharge.";
 
 	const duration = quantity * unchargeGloriesTime;
 
