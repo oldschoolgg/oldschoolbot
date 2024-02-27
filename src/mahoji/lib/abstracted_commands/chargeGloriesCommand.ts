@@ -77,13 +77,9 @@ export async function unchargeGloriesCommand(user: MUser, channelID: string, qua
 
 	const max = Math.min(amountHas, Math.floor(maxTripLength / unchargeGloriesTime));
 
-	if (!quantity) {
-		quantity = Math.floor(max);
-	}
-
+	if (!quantity) quantity = Math.floor(max);
 	if (quantity > max) quantity = max;
-
-	if ((quantity = 0)) return 'You have no amulet of glory (6) to uncharge.';
+	if (quantity === 0) return `You don't have any Amulet of glory (6) to uncharge.`;
 
 	const duration = quantity * unchargeGloriesTime;
 
@@ -109,7 +105,7 @@ export async function unchargeGloriesCommand(user: MUser, channelID: string, qua
 
 	await user.removeItemsFromBank(new Bank().add('Amulet of glory (6)', quantity));
 
-	return `${user.minionName} is now uncharging ${quantity} Amulets of glory (6), it'll take around ${formatDuration(
+	return `${user.minionName} is now uncharging ${quantity} Amulet of glory (6), it'll take around ${formatDuration(
 		duration
 	)} to finish. Removed ${quantity}x Amulet of glory (6) from your bank.`;
 }
