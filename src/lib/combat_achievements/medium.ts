@@ -491,5 +491,39 @@ export const mediumCombatAchievements: CombatAchievement[] = [
 				wintertodt: 10
 			}
 		})
+	},
+	{
+		id: 141,
+		name: 'Scurrius Champion',
+		type: 'kill_count',
+		monster: 'Scurrius',
+		desc: 'Kill Scurrius 10 times.',
+		requirements: new Requirements().add({
+			kcRequirement: {
+				[Monsters.Scurrius.id]: 10
+			}
+		})
+	},
+	{
+		id: 142,
+		name: 'Perfect Scurrius',
+		type: 'perfection',
+		monster: 'Scurrius',
+		desc: 'Kill Scurrius in a private instance without taking damage from the following attacks: Tail Swipe and Falling Bricks. Pray correctly against the following attacks: Flying Fur and Bolts of Electricity.',
+		rng: {
+			chancePerKill: 10,
+			hasChance: isCertainMonsterTrip(Monsters.Scurrius.id)
+		}
+	},
+	{
+		id: 143,
+		name: 'Efficient Pest Control',
+		type: 'mechanical',
+		monster: 'Scurrius',
+		desc: "Kill 6 Giant Rats within Scurrius' lair in 3 seconds.",
+		rng: {
+			chancePerKill: 10,
+			hasChance: isCertainMonsterTrip(Monsters.Scurrius.id)
+		}
 	}
 ];
