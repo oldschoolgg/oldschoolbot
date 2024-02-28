@@ -36,6 +36,7 @@ export enum SlayerTaskUnlocksEnum {
 	StopTheWyvern,
 	Basilocked,
 	ActualVampyreSlayer,
+	IWildyMoreSlayer,
 	// Extension Unlocks
 	NeedMoreDarkness,
 	AnkouVeryMuch,
@@ -62,6 +63,7 @@ export enum SlayerTaskUnlocksEnum {
 	WyverNotherTwo,
 	Basilonger,
 	MoreAtStake,
+	Revenenenenenants,
 	// Item Purchases:
 	SlayerRing,
 	HerbSack,
@@ -221,6 +223,14 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 80,
 		canBeRemoved: true,
 		aliases: ['vampyre slayer', 'vampire slayer', 'actual vampire slayer', 'vampyres', 'vampires']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.IWildyMoreSlayer,
+		name: 'I Wildy More Slayer',
+		desc: 'Krystilia will be able to assign Jellies, Dust Devils, Nechryaels and Abyssal Demons as your task.',
+		slayerPointCost: 0,
+		canBeRemoved: true,
+		aliases: ['wildy slayer']
 	},
 	{
 		id: SlayerTaskUnlocksEnum.SlayerRing,
@@ -514,5 +524,15 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 300,
 		canBeRemoved: false,
 		aliases: ['broad bolts', 'broads', 'broad arrows', 'fletching', 'broad fletching']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.Revenenenenenants,
+		name: 'Revenenenenenants',
+		desc: 'Extends Revenants tasks',
+		slayerPointCost: 100,
+		extendID: [Monsters.RevenantImp.id],
+		extendMult: 1.5,
+		canBeRemoved: true,
+		aliases: ['extend revenants', 'extend revs']
 	}
 ];

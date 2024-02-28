@@ -17,7 +17,7 @@ import resolveItems from '../util/resolveItems';
 import { autoslayModes } from './constants';
 import { slayerMasters } from './slayerMasters';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
-import { bossTasks } from './tasks/bossTasks';
+import { bossTasks, wildernessBossTasks } from './tasks/bossTasks';
 import { AssignableSlayerTask, SlayerMaster } from './types';
 
 export enum SlayerMasterEnum {
@@ -161,6 +161,12 @@ export function userCanUseTask(
 		!myUnlocks.includes(SlayerTaskUnlocksEnum.Basilocked)
 	)
 		return false;
+	if (
+		(lmon === 'dust devil' || lmon === 'greater nechryael' || lmon === 'abyssal demon' || lmon === 'jelly') &&
+		lmast === 'krystilia' &&
+		!myUnlocks.includes(SlayerTaskUnlocksEnum.IWildyMoreSlayer)
+	)
+		return false;
 	return true;
 }
 
@@ -168,6 +174,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 	// assignedTask is the task object, currentTask is the database row.
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master, false));
 	let bossTask = false;
+	let wildyBossTask = false;
 	if (
 		_user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) &&
 		(master.name.toLowerCase() === 'konar quo maten' ||
@@ -179,15 +186,31 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		bossTask = true;
 	}
 
+	if (
+		_user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) &&
+		master.name.toLowerCase() === 'krystilia' &&
+		roll(25)
+	) {
+		wildyBossTask = true;
+	}
+
 	let assignedTask: AssignableSlayerTask | null = null;
+
 	if (bossTask) {
 		const baseBossTasks = bossTasks.filter(t => userCanUseTask(_user, t, master, true));
 		if (baseBossTasks.length > 0) {
 			assignedTask = weightedPick(baseBossTasks);
-		} else {
-			assignedTask = weightedPick(baseTasks);
 		}
-	} else {
+	}
+
+	if (wildyBossTask) {
+		const baseWildyBossTasks = wildernessBossTasks.filter(t => userCanUseTask(_user, t, master, true));
+		if (baseWildyBossTasks.length > 0) {
+			assignedTask = weightedPick(baseWildyBossTasks);
+		}
+	}
+
+	if (assignedTask === null) {
 		assignedTask = weightedPick(baseTasks);
 	}
 
@@ -256,6 +279,9 @@ export function getCommonTaskName(task: Monster) {
 			break;
 		case Monsters.TzHaarKet.id:
 			commonName = 'TzHaar';
+			break;
+		case Monsters.RevenantImp.id:
+			commonName = 'Revenant';
 			break;
 		default:
 	}

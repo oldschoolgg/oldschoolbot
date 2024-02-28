@@ -12,7 +12,8 @@ export const slayerMasterChoices = [
 	'Nieve',
 	'Chaeldar',
 	'Mazchna',
-	'Turael'
+	'Turael',
+	'Krystilia'
 ].map(smc => {
 	return { name: smc, value: smc };
 });

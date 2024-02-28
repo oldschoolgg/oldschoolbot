@@ -93,6 +93,12 @@ const revSpecialWeapons = {
 	mage: getOSItem("Thammaron's sceptre")
 } as const;
 
+const revUpgradedWeapons = {
+	melee: getOSItem('Ursine chainmace'),
+	range: getOSItem('Webweaver bow'),
+	mage: getOSItem('Accursed sceptre')
+} as const;
+
 function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
 	const str = [];
 
@@ -131,7 +137,8 @@ export async function minionKillCommand(
 	channelID: string,
 	name: string,
 	quantity: number | undefined,
-	method: PvMMethod | undefined
+	method: PvMMethod | undefined,
+	wilderness: boolean | undefined
 ) {
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
@@ -174,6 +181,20 @@ export async function minionKillCommand(
 
 	if (monster.slayerOnly && !isOnTask) {
 		return `You can't kill ${monster.name}, because you're not on a slayer task.`;
+	}
+
+	if (monster.canBePked && wilderness === false) {
+		return `You can't kill ${monster.name} outside the wilderness.`;
+	}
+
+	const isInWilderness = wilderness || (isOnTask && usersTask.assignedTask?.wilderness) || monster.canBePked;
+
+	if (!monster.wildy && isInWilderness) {
+		return `You can't kill ${monster.name} in the wilderness.`;
+	}
+
+	if (monster.id === Monsters.Jelly.id) {
+		monster.canBarrage = isInWilderness;
 	}
 
 	const wildyGearStat = wildyGear.getStats()[key];
@@ -233,7 +254,7 @@ export async function minionKillCommand(
 		}
 	}
 
-	for (const [itemID, boostAmount] of Object.entries(resolveAvailableItemBoosts(user, monster))) {
+	for (const [itemID, boostAmount] of Object.entries(resolveAvailableItemBoosts(user, monster, isInWilderness))) {
 		timeToFinish *= (100 - boostAmount) / 100;
 		boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 	}
@@ -247,10 +268,31 @@ export async function minionKillCommand(
 	let salveAmuletBoost = 0;
 	let salveAmuletBoostMsg = '';
 
-	const dragonBoost = 15; // Common boost percentage for dragon-related gear
+	let dragonBoost = 0;
+	let dragonBoostMsg = '';
+	let revBoost = 0;
+	let revBoostMsg = '';
 
 	const isUndead = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
 	const isDragon = osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon);
+
+	function applyRevWeaponBoost() {
+		const style = convertAttackStylesToSetup(user.user.attack_style);
+		const specialWeapon = revSpecialWeapons[style];
+		const upgradedWeapon = revUpgradedWeapons[style];
+
+		if (wildyGear.hasEquipped(specialWeapon.name)) {
+			revBoost = 12.5;
+			timeToFinish = reduceNumByPercent(timeToFinish, revBoost);
+			revBoostMsg = `${revBoost}% for ${specialWeapon.name}`;
+		}
+
+		if (wildyGear.hasEquipped(upgradedWeapon.name)) {
+			revBoost = 17.5;
+			timeToFinish = reduceNumByPercent(timeToFinish, revBoost);
+			revBoostMsg = `${revBoost}% for ${upgradedWeapon.name}`;
+		}
+	}
 
 	function applyDragonBoost() {
 		const hasDragonLance = monster?.canBePked
@@ -264,9 +306,11 @@ export async function minionKillCommand(
 			(hasDragonLance && !attackStyles.includes(SkillsEnum.Ranged) && !attackStyles.includes(SkillsEnum.Magic)) ||
 			(hasDragonCrossbow && attackStyles.includes(SkillsEnum.Ranged))
 		) {
-			const boostMessage = hasDragonLance ? '15% for Dragon hunter lance' : '15% for Dragon hunter crossbow';
+			dragonBoost = 15; // Common boost percentage for dragon-related gear
+			dragonBoostMsg = hasDragonLance
+				? `${dragonBoost}% for Dragon hunter lance`
+				: `${dragonBoost}% for Dragon hunter crossbow`;
 			timeToFinish = reduceNumByPercent(timeToFinish, dragonBoost);
-			boosts.push(boostMessage);
 		}
 	}
 
@@ -321,6 +365,11 @@ export async function minionKillCommand(
 			}
 		}
 	}
+
+	if (isInWilderness && monster.revsWeaponBoost) {
+		applyRevWeaponBoost();
+	}
+
 	if (isDragon && monster.name.toLowerCase() !== 'vorkath') {
 		applyDragonBoost();
 	}
@@ -341,6 +390,17 @@ export async function minionKillCommand(
 		} else {
 			timeToFinish = reduceNumByPercent(timeToFinish, blackMaskBoost);
 			boosts.push(blackMaskBoostMsg);
+		}
+	}
+
+	// Only choose greater boost:
+	if (dragonBoost || revBoost) {
+		if (revBoost > dragonBoost) {
+			timeToFinish = reduceNumByPercent(timeToFinish, revBoost);
+			boosts.push(revBoostMsg);
+		} else {
+			timeToFinish = reduceNumByPercent(timeToFinish, dragonBoost);
+			boosts.push(dragonBoostMsg);
 		}
 	}
 
@@ -671,7 +731,7 @@ export async function minionKillCommand(
 	let hasDied: boolean | undefined = undefined;
 	let hasWildySupplies = undefined;
 
-	if (monster.canBePked) {
+	if (isInWilderness) {
 		await increaseWildEvasionXp(user, duration);
 		thePkCount = 0;
 		hasDied = false;
@@ -744,7 +804,7 @@ export async function minionKillCommand(
 		foodStr += foodMessages;
 
 		let gearToCheck: GearSetupType = convertAttackStyleToGearSetup(monster.attackStyleToUse);
-		if (monster.wildy) gearToCheck = 'wildy';
+		if (isInWilderness) gearToCheck = 'wildy';
 
 		try {
 			const { foodRemoved, reductions, reductionRatio } = await removeFoodFromUser({
@@ -752,11 +812,11 @@ export async function minionKillCommand(
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
 				activityName: monster.name,
-				attackStylesUsed: monster.wildy
+				attackStylesUsed: isInWilderness
 					? ['wildy']
 					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced,
-				isWilderness: monster.wildy
+				isWilderness: isInWilderness
 			});
 
 			if (foodRemoved.length === 0) {
@@ -806,7 +866,7 @@ export async function minionKillCommand(
 	// Remove items after food calc to prevent losing items if the user doesn't have the right amount of food. Example: Mossy key
 	if (lootToRemove.length > 0) {
 		updateBankSetting('economyStats_PVMCost', lootToRemove);
-		await user.specialRemoveItems(lootToRemove, { wildy: monster.wildy ? true : false });
+		await user.specialRemoveItems(lootToRemove, { wildy: isInWilderness ? true : false });
 		totalCost.add(lootToRemove);
 	}
 
@@ -839,7 +899,8 @@ export async function minionKillCommand(
 		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage,
 		died: hasDied,
 		pkEncounters: thePkCount,
-		hasWildySupplies
+		hasWildySupplies,
+		isInWilderness
 	});
 	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 		duration

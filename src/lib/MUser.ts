@@ -734,20 +734,37 @@ GROUP BY data->>'clueID';`);
 		return this.caPoints() >= CombatAchievements[tier].rewardThreshold;
 	}
 
-	buildCATertiaryItemChanges() {
+	buildTertiaryItemChanges(
+		hasRingOfWealthI: boolean = false,
+		isInWilderness: boolean = false,
+		isOnSlayerTask: boolean = false
+	) {
 		const changes = new Map();
-		if (this.hasCompletedCATier('easy')) {
-			changes.set('Clue scroll (easy)', 5);
+
+		const tiers = Object.keys(CombatAchievements) as Array<keyof typeof CombatAchievements>;
+		for (const tier of tiers) {
+			let change = hasRingOfWealthI ? 50 : 0;
+			if (this.hasCompletedCATier(tier)) {
+				change += 5;
+			}
+			changes.set(`Clue scroll (${tier})`, change);
 		}
-		if (this.hasCompletedCATier('medium')) {
-			changes.set('Clue scroll (medium)', 5);
+
+		if (isInWilderness) changes.set('Giant key', 50);
+
+		let mossGiantType: string = `${isInWilderness}_${isOnSlayerTask}`;
+		switch (mossGiantType) {
+			case 'true_false':
+				changes.set('Mossy key', 60);
+				break;
+			case 'false_true':
+				changes.set('Mossy key', 66.67);
+				break;
+			case 'true_true':
+				changes.set('Mossy key', 77.6);
+				break;
 		}
-		if (this.hasCompletedCATier('hard')) {
-			changes.set('Clue scroll (hard)', 5);
-		}
-		if (this.hasCompletedCATier('elite')) {
-			changes.set('Clue scroll (elite)', 5);
-		}
+
 		return changes;
 	}
 

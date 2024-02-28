@@ -3,6 +3,7 @@ import { MonsterSlayerMaster } from 'oldschooljs';
 import { chaeldarTasks } from './tasks/chaeldarTasks';
 import { duradelTasks } from './tasks/duradelTasks';
 import { konarTasks } from './tasks/konarTasks';
+import { krystiliaTasks } from './tasks/krystiliaTasks';
 import { mazchnaTasks } from './tasks/mazchnaTasks';
 import { nieveTasks } from './tasks/nieveTasks';
 import { turaelTasks } from './tasks/turaelTasks';
@@ -77,5 +78,13 @@ export const slayerMasters: SlayerMaster[] = [
 		combatLvl: 100,
 		slayerLvl: 50,
 		osjsEnum: MonsterSlayerMaster.Duradel
+	},
+	{
+		id: 8,
+		name: 'Krystilia',
+		aliases: ['krystilia', 'wildy slayer', 'wilderness slayer'],
+		tasks: krystiliaTasks,
+		basePoints: 25,
+		osjsEnum: MonsterSlayerMaster.Krystilia
 	}
 ];
