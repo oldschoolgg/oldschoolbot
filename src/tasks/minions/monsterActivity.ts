@@ -254,6 +254,16 @@ export const monsterTask: MinionTask = {
 			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
 		}
 
+		// Hill giant key wildy buff
+		if (isInWilderness && monster.name === 'Hill giant') {
+			for (let i = 0; i < quantity; i++) {
+				if (roll(128)) {
+					loot.add('Giant key');
+				}
+			}
+		}
+
+		// Wilderness Slayer Cave table
 		if (isInWilderness && monster.wildySlayerCave) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(2)) {
