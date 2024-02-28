@@ -44,27 +44,35 @@ export async function abstractedOpenUntilCommand(userID: string, name: string, o
 		return `${openable.openedItem.name} doesn't drop ${openUntil.name}.`;
 	}
 
-	const amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
+	let amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
 	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
+
+	// Calculate how many we have keys to open:
+	if (openable.extraCostPerOpen) {
+		const howManyCanOpen = user.bank.fits(openable.extraCostPerOpen);
+		if (howManyCanOpen === 0) return `You need ${openable.extraCostPerOpen} per crate.`;
+		amountOfThisOpenableOwned = Math.min(amountOfThisOpenableOwned, howManyCanOpen);
+	}
 
 	const cost = new Bank();
 	const loot = new Bank();
 	let amountOpened = 0;
 	let max = Math.min(100, amountOfThisOpenableOwned);
+	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({
 			openable,
 			quantity: 1,
 			user,
-			// TODO: this is bad
-			totalLeaguesPoints: (await roboChimpUserFetch(user.id)).leagues_points_total
+			totalLeaguesPoints
 		});
 		loot.add(thisLoot.bank);
 		amountOpened++;
 		if (loot.has(openUntil.id)) break;
 	}
 
+	// Now that we have the final total, we add the key cost:
 	if (openable.extraCostPerOpen) {
 		cost.add(openable.extraCostPerOpen.clone().multiply(amountOpened));
 	}
