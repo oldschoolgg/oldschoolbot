@@ -57,6 +57,9 @@ model User {
 
     store_bitfield Int[]
 
+    testing_points         Float @default(0)
+    testing_points_balance Float @default(0)
+
     @@map("user")
 }
 
