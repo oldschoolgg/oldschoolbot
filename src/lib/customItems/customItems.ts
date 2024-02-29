@@ -11521,3 +11521,15 @@ setCustomItem(
 	},
 	1
 );
+
+setCustomItem(
+	73_105,
+	'Moondash charm',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
