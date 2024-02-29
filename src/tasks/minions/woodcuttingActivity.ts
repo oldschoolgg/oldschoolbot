@@ -59,9 +59,7 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 			case 6: // Friendly Ent
 				case6++;
 				loot.add(leafTable.roll());
-				if (percentChance(95)) {
-					loot.add(eggNest.roll());
-				}
+				loot.add(eggNest.roll());
 				break;
 			case 7: // Poachers
 				case7++;
@@ -281,7 +279,7 @@ export const woodcuttingTask: MinionTask = {
 
 		// Loot received, items used, and logs lost message
 		str += `\nYou received ${loot}. `;
-		str += `${itemsToRemove !== null ? `You used ${itemsToRemove}. ` : ''}`;
+		str += `${itemsToRemove.length > 0 ? `You used ${itemsToRemove}. ` : ''}`;
 		str += `${lostLogs > 0 ? `You lost ${lostLogs}x ${log.name} due to using a felling axe.` : ''}`;
 
 		// Update cl, give loot, and remove items used
