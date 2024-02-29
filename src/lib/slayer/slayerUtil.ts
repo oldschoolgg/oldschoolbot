@@ -283,7 +283,7 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 	}
 
 	const slayerMaster = slayerMasters.find(master => master.id === currentTask.slayer_master_id);
-	const assignedTask = slayerMaster!.tasks.find(m => m.monster.id === currentTask.monster_id)!;
+	const assignedTask = slayerMaster?.tasks.find(m => m.monster.id === currentTask.monster_id);
 
 	if (!assignedTask || !slayerMaster) {
 		logError(
@@ -453,7 +453,7 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 
 export async function getSlayerTaskStats(userID: string) {
 	const result: { monster_id: number; total_quantity: number; qty: number }[] =
-		await prisma.$queryRaw`SELECT monster_id, SUM(quantity) AS total_quantity, COUNT(monster_id) AS qty
+		await prisma.$queryRaw`SELECT monster_id, SUM(quantity)::int AS total_quantity, COUNT(monster_id)::int AS qty
 FROM slayer_tasks
 WHERE user_id = ${userID}
 AND quantity_remaining = 0

@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
 import TitheFarmBuyables from '../../../lib/data/buyables/titheFarmBuyables';
-import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -44,10 +43,6 @@ export async function titheFarmCommand(user: MUser, channelID: string) {
 	const skills = user.skillsAsLevels;
 	if (skills.farming < 34) {
 		return `${user} needs 34 Farming to use the Tithe Farm!`;
-	}
-	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 100);
-	if (!hasFavour) {
-		return `${user.minionName} needs ${requiredPoints}% Hosidius Favour to use the Tithe Farm!`;
 	}
 
 	const [duration, boostStr] = await determineDuration(user);

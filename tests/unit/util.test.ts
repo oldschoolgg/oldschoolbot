@@ -84,7 +84,7 @@ describe('util', () => {
 		const { price } = item;
 		let expected = reduceNumByPercent(price, 20);
 		expect(sellPriceOfItem(item)).toEqual({ price: expected, basePrice: price });
-		expect(sellPriceOfItem(getOSItem('A yellow square'))).toEqual({ price: 0, basePrice: 0 });
+		expect(sellPriceOfItem(getOSItem('Yellow square'))).toEqual({ price: 0, basePrice: 0 });
 	});
 
 	test('sellStorePriceOfItem', () => {
@@ -97,7 +97,7 @@ describe('util', () => {
 			(((0.4 - 0.015 * Math.min(22 - 1, 10)) * Math.min(22, 11) + Math.max(22 - 11, 0) * 0.1) * cost) / 22;
 		expect(sellStorePriceOfItem(item, 1)).toEqual({ price: expectedOneQty, basePrice: cost });
 		expect(sellStorePriceOfItem(item, 22)).toEqual({ price: expectedTwentytwoQty, basePrice: cost });
-		expect(sellStorePriceOfItem(getOSItem('A yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
+		expect(sellStorePriceOfItem(getOSItem('Yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
 	});
 
 	test('skillingPetRateFunction', () => {

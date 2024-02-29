@@ -39,10 +39,10 @@ export async function analyticsTick() {
 	const [numberOfMinions, totalSacrificed, numberOfIronmen, totalGP] = (
 		await Promise.all(
 			[
-				'SELECT COUNT(*) FROM users WHERE "minion.hasBought" = true;',
-				'SELECT SUM ("sacrificedValue") AS count FROM users;',
-				'SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;',
-				'SELECT SUM ("GP") AS count FROM users;'
+				'SELECT COUNT(*)::int FROM users WHERE "minion.hasBought" = true;',
+				'SELECT SUM("sacrificedValue") AS count FROM users;',
+				'SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true;',
+				'SELECT SUM("GP") AS count FROM users;'
 			].map(query => prisma.$queryRawUnsafe(query))
 		)
 	).map((result: any) => parseInt(result[0].count)) as number[];

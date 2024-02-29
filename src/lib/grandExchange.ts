@@ -27,7 +27,7 @@ interface CreateListingArgs {
 }
 
 function validateNumber(num: number) {
-	if (num < 0 || isNaN(num) || !Number.isInteger(num) || num > Number.MAX_SAFE_INTEGER) {
+	if (num < 0 || isNaN(num) || !Number.isInteger(num) || num >= Number.MAX_SAFE_INTEGER) {
 		throw new Error(`Invalid number: ${num}.`);
 	}
 }
@@ -529,7 +529,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		}
 
 		debugLog(
-			`Completing a transaction, removing ${bankToRemoveFromGeBank} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${geBank.toString()}.`,
+			`Completing a transaction, removing ${bankToRemoveFromGeBank} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${geBank.toString()}. ${debug}`,
 			{
 				totalPriceAfterTax,
 				totalTaxPaid,
@@ -766,9 +766,18 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 		debugLog(`Expected G.E Bank: ${shouldHave}`);
 		if (!currentBank.equals(shouldHave)) {
-			throw new Error(
-				`GE either has extra or insufficient items. Difference: ${shouldHave.difference(currentBank)}`
-			);
+			if (!currentBank.has(shouldHave)) {
+				throw new Error(
+					`GE is MISSING items to cover the ${[...buyListings, ...sellListings].length}x active listings.
+G.E Bank Has: ${currentBank}
+G.E Bank Should Have: ${shouldHave}
+Difference: ${shouldHave.difference(currentBank)}`
+				);
+			}
+			throw new Error(`GE has EXTRA items.
+G.E Bank Has: ${currentBank}
+G.E Bank Should Have: ${shouldHave}
+Difference: ${shouldHave.difference(currentBank)}`);
 		} else {
 			debugLog(
 				`GE has ${currentBank}, which is enough to cover the ${

@@ -19,7 +19,6 @@ import { GearSetup, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
 import backgroundImages from './minions/data/bankBackgrounds';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
-import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
 import { defaultFarmingContract } from './minions/farming';
 import { FarmingContract } from './minions/farming/types';
 import { AttackStyles } from './minions/functions';
@@ -35,7 +34,7 @@ import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
 import { ItemBank, Skills } from './types';
-import { addItemToBank, assert, convertXPtoLVL, itemNameFromID, percentChance } from './util';
+import { addItemToBank, convertXPtoLVL, itemNameFromID, percentChance } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
@@ -163,13 +162,6 @@ export class MUserClass {
 		});
 	}
 
-	get kourendFavour() {
-		const favour = this.user.kourend_favour as any as UserKourendFavour | null;
-		if (favour === null) return { ...baseUserKourendFavour };
-		assert(typeof favour.Arceuus === 'number', `kourendFavour should return valid data for ${this.id}`);
-		return favour;
-	}
-
 	get isBusy() {
 		return userIsBusy(this.id);
 	}
@@ -277,7 +269,7 @@ export class MUserClass {
 
 	async calcActualClues() {
 		const result: { id: number; qty: number }[] =
-			await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int) AS qty
+			await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'ClueCompletion'
 AND user_id = '${this.id}'::bigint
@@ -699,7 +691,7 @@ GROUP BY data->>'clueID';`);
 			select: keysToSelect
 		});
 
-		return result as SelectedUserStats<T>;
+		return result as unknown as SelectedUserStats<T>;
 	}
 
 	get logName() {

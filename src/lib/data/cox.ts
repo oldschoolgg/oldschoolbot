@@ -263,10 +263,10 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity: number
 	for (const user of users) {
 		const { total } = calculateUserGearPercents(user);
 		if (total < 20) {
-			return "Your gear is terrible! You do not stand a chance in the Chamber's of Xeric.";
+			return 'Your gear is terrible! You do not stand a chance in the Chambers of Xeric.';
 		}
 		if (!hasMinRaidsRequirements(user)) {
-			return `${user.usernameOrMention} doesn't meet the stat requirements to do the Chamber's of Xeric.`;
+			return `${user.usernameOrMention} doesn't meet the stat requirements to do the Chambers of Xeric.`;
 		}
 		if (cm) {
 			if (users.length === 1 && !user.hasEquippedOrInBank('Twisted bow')) {

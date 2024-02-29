@@ -428,7 +428,6 @@ model User {
   farmingPatches_flower     Json? @map("farmingPatches.flower") @db.Json
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
-  kourend_favour            Json? @map("kourend_favour") @db.Json
 
   geListings        GEListing[]
   bingo_participant BingoParticipant[]
@@ -1013,10 +1012,10 @@ model GETransaction {
 
   total_tax_paid BigInt
 
-  buy_listing    GEListing @relation("buy_transactions", fields: [buy_listing_id], references: [id])
+  buy_listing    GEListing @relation("buy_transactions", fields: [buy_listing_id], references: [id], onDelete: Cascade)
   buy_listing_id Int
 
-  sell_listing    GEListing @relation("sell_transactions", fields: [sell_listing_id], references: [id])
+  sell_listing    GEListing @relation("sell_transactions", fields: [sell_listing_id], references: [id], onDelete: Cascade)
   sell_listing_id Int
 
   @@index([sell_listing_id])

@@ -7,13 +7,12 @@ export default defineConfig({
 		name: 'Old School Bot - Unit',
 		include: ['tests/unit/**/*.test.ts'],
 		coverage: {
-			provider: 'c8',
+			provider: 'v8',
 			reporter: 'html',
 			include: ['src/lib/structures/Gear.ts', 'src/lib/util/parseStringBank.ts', 'src/lib/util/equipMulti.ts']
 		},
 		setupFiles: 'tests/unit/setup.ts',
 		resolveSnapshotPath: (testPath, extension) =>
-			join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`),
-		threads: false
+			join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`)
 	}
 });

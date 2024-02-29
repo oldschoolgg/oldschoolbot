@@ -697,7 +697,7 @@ export const bingoCommand: OSBMahojiCommand = {
 				bingo_tiles: [],
 				creator_id: user.id,
 				guild_id: channel.guildId
-			} as const;
+			};
 
 			if (createOptions.team_size < 1 || createOptions.team_size > 5) {
 				return 'Team size must be between 1 and 5.';

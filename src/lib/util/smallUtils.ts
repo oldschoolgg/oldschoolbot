@@ -170,7 +170,7 @@ export function makeAutoFarmButton() {
 export const SQL_sumOfAllCLItems = (clItems: number[]) =>
 	`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`;
 
-export const generateGrandExchangeID = () => miniID(5).toLowerCase();
+export const generateGrandExchangeID = () => miniID(6).toLowerCase();
 
 export function tailFile(fileName: string, numLines: number): Promise<string> {
 	return new Promise((resolve, reject) => {
