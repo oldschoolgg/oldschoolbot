@@ -1993,10 +1993,12 @@ export const tamesCommand: OSBMahojiCommand = {
 					description: 'The image to pick.',
 					required: true,
 					autocomplete: async () => {
-						return tameImageReplacementChoices.map(t => ({
+						const options = tameImageReplacementChoices.map(t => ({
 							name: `${t.name} (${tameSpecies.find(s => s.id === t.species)!.name})`,
 							value: t.name
 						}));
+						options.unshift({ name: 'None', value: 'none' });
+						return options;
 					}
 				}
 			]
@@ -2075,12 +2077,31 @@ export const tamesCommand: OSBMahojiCommand = {
 			if (user.perkTier() < PerkTier.Four) {
 				return 'You need to be a Tier 3 patron to set a custom image for your tame.';
 			}
+
+			// Handle resetting the custom image:
+			if (options.set_custom_image?.image.toLowerCase() === 'none') {
+				const { tame } = await getUsersTame(user);
+				if (tame === null) {
+					return "You don't have a tame selected, select the tame who's icon should be reset.";
+				}
+				await prisma.tame.update({
+					where: {
+						id: tame.id
+					},
+					data: {
+						custom_icon_id: null
+					}
+				});
+				return 'Successfully removed the custom tame icon!';
+			}
+
+			// Handle updating the image:
 			const replacement = tameImageReplacementChoices.find(i => i.name === options.set_custom_image?.image);
 			if (!replacement) {
 				return 'Invalid image.';
 			}
 			const { tame } = await getUsersTame(user);
-			if (!tame) {
+			if (tame === null) {
 				return "You don't have a tame selected, select the tame you want to give this icon.";
 			}
 			if (tame.species_id !== replacement.species) {
