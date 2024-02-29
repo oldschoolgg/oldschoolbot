@@ -546,7 +546,8 @@ export const tripHandlers = {
 		args: (data: WoodcuttingActivityTaskOptions) => ({
 			name: itemNameFromID(data.logID),
 			quantity: data.iQty,
-			powerchop: data.powerchopping
+			powerchop: data.powerchopping,
+			twitchers: data.twitchers
 		})
 	},
 	[activity_type_enum.GiantsFoundry]: {

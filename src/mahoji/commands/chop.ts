@@ -98,13 +98,26 @@ export const chopCommand: OSBMahojiCommand = {
 			name: 'powerchop',
 			description: 'Set this to true to powerchop. Higher xp/hour, No loot (default false, optional).',
 			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'twitchers_gloves',
+			description: "Change the settings of your Twitcher's gloves. (default egg nests)",
+			required: false,
+			// choices: ['egg', 'ring', 'seed', 'clue'].map(i => ({ name: i, value: i }))
+			choices: [
+				{ name: 'Egg nest (Default)', value: 'egg' },
+				{ name: 'Ring nest', value: 'ring' },
+				{ name: 'Seed nest', value: 'seed' },
+				{ name: 'Clue nest', value: 'clue' }
+			]
 		}
 	],
 	run: async ({
 		options,
 		userID,
 		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; powerchop?: boolean }>) => {
+	}: CommandRunOptions<{ name: string; quantity?: number; powerchop?: boolean; twitchers_gloves?: string }>) => {
 		const user = await mUserFetch(userID);
 		const log = Woodcutting.Logs.find(
 			log =>
@@ -115,7 +128,7 @@ export const chopCommand: OSBMahojiCommand = {
 
 		if (!log) return "That's not a valid log to chop.";
 
-		let { quantity, powerchop } = options;
+		let { quantity, powerchop, twitchers_gloves } = options;
 
 		const skills = user.skillsAsLevels;
 
@@ -126,6 +139,12 @@ export const chopCommand: OSBMahojiCommand = {
 		const { QP } = user;
 		if (QP < log.qpRequired) {
 			return `${user.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`;
+		}
+
+		if (user.hasEquipped("twitcher's gloves") && twitchers_gloves === undefined) {
+			twitchers_gloves = 'egg';
+		} else if (!user.hasEquipped("twitcher's gloves")) {
+			twitchers_gloves = undefined;
 		}
 
 		const boosts = [];
@@ -157,6 +176,21 @@ export const chopCommand: OSBMahojiCommand = {
 
 		if (!powerchop) {
 			powerchop = false;
+			if (user.hasEquippedOrInBank('Forestry basket') || user.hasEquippedOrInBank('Log basket')) {
+				if (log.name === 'Redwood Logs') {
+					boosts.push(
+						`+10 trip minutes for having a ${
+							user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
+						}`
+					);
+				} else {
+					boosts.push(
+						`+5 trip minutes for having a ${
+							user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
+						}`
+					);
+				}
+			}
 		} else {
 			boosts.push('**Powerchopping**');
 		}
@@ -183,6 +217,7 @@ export const chopCommand: OSBMahojiCommand = {
 			quantity: newQuantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop,
+			twitchers: twitchers_gloves!,
 			duration,
 			fakeDurationMin,
 			fakeDurationMax,
