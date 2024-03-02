@@ -104,7 +104,6 @@ export const chopCommand: OSBMahojiCommand = {
 			name: 'twitchers_gloves',
 			description: "Change the settings of your Twitcher's gloves. (default egg nests)",
 			required: false,
-			// choices: ['egg', 'ring', 'seed', 'clue'].map(i => ({ name: i, value: i }))
 			choices: [
 				{ name: 'Egg nest (Default)', value: 'egg' },
 				{ name: 'Ring nest', value: 'ring' },
@@ -139,12 +138,6 @@ export const chopCommand: OSBMahojiCommand = {
 		const { QP } = user;
 		if (QP < log.qpRequired) {
 			return `${user.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`;
-		}
-
-		if (user.hasEquipped("twitcher's gloves") && twitchers_gloves === undefined) {
-			twitchers_gloves = 'egg';
-		} else if (!user.hasEquipped("twitcher's gloves")) {
-			twitchers_gloves = undefined;
 		}
 
 		const boosts = [];
@@ -217,7 +210,7 @@ export const chopCommand: OSBMahojiCommand = {
 			quantity: newQuantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop,
-			twitchers: twitchers_gloves!,
+			twitchers: twitchers_gloves || 'egg',
 			duration,
 			fakeDurationMin,
 			fakeDurationMax,

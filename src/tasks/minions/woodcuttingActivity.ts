@@ -15,8 +15,8 @@ import resolveItems from '../../lib/util/resolveItems';
 async function handleForestry({ user, log, duration, loot }: { user: MUser; log: Log; duration: number; loot: Bank }) {
 	if (resolveItems(['Redwood logs', 'Logs']).includes(log.id)) return '';
 
-	let [case1, case2, case3, case4, case5, case6, case7, case8, case9, totalEvents, eggsDelivered] = [
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	let [case1, case2, case3, case4, case5, case6, case7, case8, case9, totalEvents, eggsDelivered, totalEggs] = [
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	];
 	let strForestry = '';
 	let defaultAmount = randInt(400, 600);
@@ -84,6 +84,7 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 						loot.add('Golden pheasant egg', 1);
 					}
 					i++;
+					totalEggs++;
 				}
 				break;
 		}
@@ -104,7 +105,7 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 			event: 'Pheasant Control',
 			value: case9,
 			uniqueXP: SkillsEnum.Thieving,
-			amount: eggsDelivered * 100
+			amount: totalEggs * 100
 		}
 	];
 	events.forEach(eventObj => (totalEvents += eventObj.value));
@@ -231,7 +232,7 @@ export const woodcuttingTask: MinionTask = {
 			}
 		}
 
-		// Add clue scrolls
+		// Add clue scrolls & nests
 		if (log.clueScrollChance) {
 			addSkillingClueToLoot(
 				user,
