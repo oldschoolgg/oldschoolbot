@@ -108,7 +108,7 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 			amount: totalEggs * 100
 		}
 	];
-	events.forEach(eventObj => (totalEvents += eventObj.value));
+	events.forEach(e => (totalEvents += e.value));
 
 	// Give user woodcutting xp for each event completed
 	let xpRes = await user.addXP({
@@ -118,20 +118,18 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 	xpRes += ' ';
 
 	// Give user unique xp per event
-	for (const eventObj of events) {
-		if (eventObj.uniqueXP !== undefined) {
+	for (const event of events) {
+		if (event.uniqueXP !== undefined) {
 			xpRes += await user.addXP({
-				skillName: eventObj.uniqueXP,
-				amount: eventObj.value * eventObj.amount * wcMultiplier,
+				skillName: event.uniqueXP,
+				amount: event.value * event.amount * wcMultiplier,
 				minimal: true
 			});
 		}
 	}
 
 	// Generate forestry message
-	const eventCounts = events
-		.filter(eventObj => eventObj.value > 0)
-		.map(eventObj => `${eventObj.value} ${eventObj.event}`);
+	const eventCounts = events.filter(e => e.value > 0).map(e => `${e.value} ${e.event}`);
 	const completedEvents = eventCounts.join(' & ');
 	strForestry += `${
 		completedEvents.length > 0
@@ -167,24 +165,24 @@ export const woodcuttingTask: MinionTask = {
 		let strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
 		let twitchersEquipped = user.hasEquipped("twitcher's gloves");
 		let twitcherSetting = '';
-		let itemsToRemove = new Bank();
 		let xpReceived = quantity * log.xp;
 		let bonusXP = 0;
 		let rationUsed = 0;
 		let lostLogs = 0;
 		let loot = new Bank();
+		let itemsToRemove = new Bank();
 
 		// Felling axe +10% xp bonus & 20% logs lost
 		if (user.gear.skilling.hasEquipped('Bronze felling axe') && !log.lootTable) {
 			for (let i = 0; i < quantity && i < forestersRations; i++) {
 				rationUsed++;
-				if (roll(5)) {
+				if (percentChance(20)) {
 					lostLogs++;
 				}
 			}
 			const fellingXP = rationUsed * log.xp * 0.1;
-			bonusXP += fellingXP;
 			xpReceived += fellingXP;
+			bonusXP += fellingXP;
 			itemsToRemove.add("Forester's ration", rationUsed);
 		}
 
@@ -228,7 +226,7 @@ export const woodcuttingTask: MinionTask = {
 		// Add leaves
 		if (log.leaf && user.hasEquippedOrInBank('Forestry kit')) {
 			for (let i = 0; i < quantity; i++) {
-				if (roll(4)) {
+				if (percentChance(25)) {
 					loot.add(log.leaf, 1);
 				}
 			}
