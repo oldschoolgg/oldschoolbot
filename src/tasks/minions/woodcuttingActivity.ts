@@ -52,7 +52,11 @@ async function handleForestry({ user, duration, loot }: { user: MUser; log: Log;
 				break;
 			case 5: // Beehive
 				case5++;
-				loot.add('Sturdy beehive parts', randInt(2, 6));
+				for (let i = 0; i < randInt(4, 6); i++) {
+					if (percentChance(2 / 3)) {
+						loot.add('Sturdy beehive parts', 1);
+					}
+				}
 				break;
 			case 6: // Friendly Ent
 				case6++;
@@ -174,11 +178,6 @@ async function handleForestry({ user, duration, loot }: { user: MUser; log: Log;
 	strForestry += `${
 		completedEvents.length > 0
 			? `Completed Forestry event${totalEvents > 1 ? 's:' : ':'} ${completedEvents}. ${xpRes}\n`
-			: ''
-	}`;
-	strForestry += `${
-		loot.has('Sturdy beehive parts')
-			? '- The temporary beehive was made so well you could repurpose parts of it to build a permanent hive.\n'
 			: ''
 	}`;
 	strForestry += `${
