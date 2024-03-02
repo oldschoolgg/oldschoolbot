@@ -20,6 +20,7 @@ const logs: Log[] = [
 		xp: 25,
 		id: itemID('Logs'),
 		name: 'Logs',
+		leaf: itemID('Leaves'),
 		aliases: ['normal'],
 		findNewTreeTime: 9,
 		bankingTime: 20,
