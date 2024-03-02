@@ -325,7 +325,8 @@ export enum BitField {
 	HasIncandescentBoon = 224,
 	HasVibrantBoon = 225,
 	HasAncientBoon = 226,
-	DisabledTameClueOpening = 227
+	DisabledTameClueOpening = 227,
+	HasMoondashCharm = 228
 }
 
 interface BitFieldData {
@@ -526,6 +527,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisableHighPeakTimeWarning]: {
 		name: 'Disable Wilderness High Peak Time Warning',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.HasMoondashCharm]: {
+		name: 'Used Moondash Charm',
 		protected: false,
 		userConfigurable: true
 	}

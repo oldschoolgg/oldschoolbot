@@ -38,7 +38,8 @@ export enum InventionID {
 	ChinCannon = 16,
 	WispBuster = 17,
 	DivineHand = 18,
-	DrygoreAxe = 19
+	DrygoreAxe = 19,
+	MoonlightMutator = 20
 }
 
 export type Invention = Readonly<{
@@ -452,6 +453,20 @@ export const Inventions: readonly Invention[] = [
 		flags: ['equipped'],
 		inventionLevelNeeded: 100,
 		usageCostMultiplier: 0.65
+	},
+	{
+		id: InventionID.MoonlightMutator,
+		name: 'Moonlight mutator',
+		description: 'Mutates seeds from your bank into zygomite spores.',
+		item: getOSItem('Moonlight mutator'),
+		materialTypeBank: new MaterialBank({
+			organic: 5,
+			magic: 5
+		}),
+		itemCost: new Bank().add('Moonlight essence').add('Lunite', 250),
+		flags: ['bank'],
+		inventionLevelNeeded: 100,
+		usageCostMultiplier: 0.1
 	}
 ] as const;
 

@@ -1,7 +1,7 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, bold, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { notEmpty, randArrItem, randInt, reduceNumByPercent, roll, Time } from 'e';
+import { notEmpty, randArrItem, randInt, reduceNumByPercent, roll, shuffleArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -23,6 +23,7 @@ import { mysteriousStepData } from '../mysteryTrail';
 import { triggerRandomEvent } from '../randomEvents';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
+import { zygomiteFarmingSource } from '../skilling/skills/farming/zygomites';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskData } from '../types/minions';
@@ -424,6 +425,46 @@ const tripFinishEffects: TripFinishEffect[] = [
 				messages.push(
 					`You received ${loot}, your Rebirth portent has ${chargeResult.portent.charges_remaining}x charges remaining.`
 				);
+			}
+		}
+	},
+	{
+		name: 'Moonlight mutator',
+		fn: async ({ data, user, messages }) => {
+			if (!user.bank.has('Moonlight mutator')) return;
+			if (user.user.disabled_inventions.includes(InventionID.MoonlightMutator)) return;
+			const randomZyg = randArrItem(zygomiteFarmingSource);
+			const loot = new Bank();
+			const cost = new Bank();
+
+			const minutes = Math.floor(data.duration / Time.Minute);
+			if (minutes < 1) return;
+			for (let i = 0; i < minutes; i++) {
+				if (roll(766)) {
+					loot.add(randomZyg.seedItem);
+				}
+				if (roll(10)) {
+					const ownedSeed = shuffleArr(randomZyg.mutatedFromItems).find(seed => user.bank.has(seed));
+					cost.add(ownedSeed);
+				}
+			}
+
+			if (cost.length > 0 || loot.length > 0) {
+				if (cost.length > 0 && !user.bank.has(cost)) {
+					console.error(`User ${user.id} doesn't ML ${cost.toString()}`);
+					return;
+				}
+				await user.transactItems({
+					itemsToRemove: cost,
+					itemsToAdd: loot,
+					collectionLog: true
+				});
+
+				if (cost.length > 0 && loot.length === 0) {
+					messages.push(`<:moonlightMutator:1212761364372783176> Mutated ${cost} seeds, but all died`);
+				} else if (loot.length > 0) {
+					messages.push(`<:moonlightMutator:1212761364372783176> Mutated ${cost} seeds, ${loot} survived`);
+				}
 			}
 		}
 	}

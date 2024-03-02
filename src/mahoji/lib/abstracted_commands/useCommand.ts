@@ -133,6 +133,11 @@ const usableUnlocks: UsableUnlock[] = [
 		bitfield: BitField.UsedStrangledTablet,
 		resultMessage: 'You used your Strangled tablet.'
 	},
+	{
+		item: getOSItem('Moondash charm'),
+		bitfield: BitField.HasMoondashCharm,
+		resultMessage: 'You used your Moondash charm, the power of the moon now boosts your farming trips.'
+	},
 	...divinationEnergies
 		.filter(e => e.boonBitfield !== null)
 		.map(e => ({

@@ -12,6 +12,7 @@ import herbPlants from './herbPlants';
 import hopsPlants from './hops';
 import specialPlants from './specialPlants';
 import trees from './trees';
+import { zygomitePlants } from './zygomites';
 
 export const plants: Plant[] = [
 	...herbPlants,
@@ -20,7 +21,8 @@ export const plants: Plant[] = [
 	...fruitTrees,
 	...hopsPlants,
 	...specialPlants,
-	...bushes
+	...bushes,
+	...zygomitePlants
 ];
 
 const maleFarmerItems: { [key: number]: number } = {
