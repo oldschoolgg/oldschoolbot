@@ -193,6 +193,7 @@ export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
 	fakeDurationMax: number;
 	fakeDurationMin: number;
 	powerchopping: boolean;
+	forestry: boolean;
 	twitchers: string;
 	logID: number;
 	quantity: number;

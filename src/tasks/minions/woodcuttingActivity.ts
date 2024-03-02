@@ -159,12 +159,14 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 export const woodcuttingTask: MinionTask = {
 	type: 'Woodcutting',
 	async run(data: WoodcuttingActivityTaskOptions) {
-		const { logID, quantity, userID, channelID, duration, powerchopping, twitchers } = data;
+		const { logID, quantity, userID, channelID, duration, powerchopping, forestry, twitchers } = data;
 		const user = await mUserFetch(userID);
 		const log = Woodcutting.Logs.find(i => i.id === logID)!;
 		const forestersRations = user.bank.amount("Forester's ration");
 
 		let strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
+		let twitchersEquipped = user.hasEquipped("twitcher's gloves");
+		let twitcherSetting = '';
 		let itemsToRemove = new Bank();
 		let xpReceived = quantity * log.xp;
 		let bonusXP = 0;
@@ -232,6 +234,11 @@ export const woodcuttingTask: MinionTask = {
 			}
 		}
 
+		// Check for twitcher gloves
+		if (twitchersEquipped) {
+			twitcherSetting = twitchers;
+		}
+
 		// Add clue scrolls & nests
 		if (log.clueScrollChance) {
 			addSkillingClueToLoot(
@@ -242,7 +249,7 @@ export const woodcuttingTask: MinionTask = {
 				loot,
 				log.clueNestsOnly,
 				strungRabbitFoot,
-				twitchers
+				twitcherSetting
 			);
 		}
 
@@ -254,12 +261,14 @@ export const woodcuttingTask: MinionTask = {
 		if (strungRabbitFoot && !log.clueNestsOnly) {
 			str += "Your strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.\n";
 		}
-		if (user.hasEquipped("twitcher's gloves") && !log.clueNestsOnly) {
-			str += `Your twitcher's gloves increases the chance of receiving ${twitchers} nests.\n`;
+		if (twitchersEquipped && !log.clueNestsOnly) {
+			str += `Your twitcher's gloves increases the chance of receiving ${twitcherSetting} nests.\n`;
 		}
 
 		// Forestry events
-		str += await handleForestry({ user, log, duration, loot });
+		if (forestry) {
+			str += await handleForestry({ user, log, duration, loot });
+		}
 
 		// Roll for pet
 		if (log.petChance) {

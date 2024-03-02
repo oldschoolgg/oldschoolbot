@@ -100,6 +100,12 @@ export const chopCommand: OSBMahojiCommand = {
 			required: false
 		},
 		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'forestry_events',
+			description: 'Set this to true to participate in forestry events. (default false, optional).',
+			required: false
+		},
+		{
 			type: ApplicationCommandOptionType.String,
 			name: 'twitchers_gloves',
 			description: "Change the settings of your Twitcher's gloves. (default egg nests)",
@@ -116,7 +122,13 @@ export const chopCommand: OSBMahojiCommand = {
 		options,
 		userID,
 		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; powerchop?: boolean; twitchers_gloves?: string }>) => {
+	}: CommandRunOptions<{
+		name: string;
+		quantity?: number;
+		powerchop?: boolean;
+		forestry_events?: boolean;
+		twitchers_gloves?: string;
+	}>) => {
 		const user = await mUserFetch(userID);
 		const log = Woodcutting.Logs.find(
 			log =>
@@ -127,7 +139,7 @@ export const chopCommand: OSBMahojiCommand = {
 
 		if (!log) return "That's not a valid log to chop.";
 
-		let { quantity, powerchop, twitchers_gloves } = options;
+		let { quantity, powerchop, forestry_events, twitchers_gloves } = options;
 
 		const skills = user.skillsAsLevels;
 
@@ -144,10 +156,15 @@ export const chopCommand: OSBMahojiCommand = {
 
 		let wcLvl = skills.woodcutting;
 
-		// Invisible wc boost for woodcutting guild
-		if (skills.woodcutting >= 60 && log.wcGuild) {
-			boosts.push('+7 invisible WC lvls at the Woodcutting guild');
-			wcLvl += 7;
+		// Invisible wc boost for woodcutting guild, forestry events don't happen in woodcutting guild
+		if (!forestry_events) {
+			forestry_events = false;
+			if (skills.woodcutting >= 60 && log.wcGuild) {
+				boosts.push('+7 invisible WC lvls at the Woodcutting guild');
+				wcLvl += 7;
+			}
+		} else {
+			boosts.push('Participating in Forestry events');
 		}
 
 		// Enable 1.5 tick teaks half way to 99
@@ -210,6 +227,7 @@ export const chopCommand: OSBMahojiCommand = {
 			quantity: newQuantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop,
+			forestry: forestry_events,
 			twitchers: twitchers_gloves || 'egg',
 			duration,
 			fakeDurationMin,

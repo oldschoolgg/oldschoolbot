@@ -547,7 +547,8 @@ export const tripHandlers = {
 			name: itemNameFromID(data.logID),
 			quantity: data.iQty,
 			powerchop: data.powerchopping,
-			twitchers: data.twitchers
+			forestry_events: data.forestry,
+			twitchers_gloves: data.twitchers
 		})
 	},
 	[activity_type_enum.GiantsFoundry]: {

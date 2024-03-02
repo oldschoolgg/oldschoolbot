@@ -29,7 +29,7 @@ export default function addSkillingClueToLoot(
 	loot: Bank,
 	clueNestsOnly?: boolean,
 	strungRabbitFoot?: boolean,
-	twitchers?: string
+	twitcherSetting?: string
 ) {
 	const userLevel = user.skillLevel(skill);
 	let chance = Math.floor(clueChance / (100 + userLevel));
@@ -39,8 +39,8 @@ export default function addSkillingClueToLoot(
 	for (let i = 0; i < quantity; i++) {
 		let twitcherClueNest = false;
 		if (skill === SkillsEnum.Woodcutting && !clueNestsOnly && roll(256)) {
-			if (twitchers && percentChance(20)) {
-				switch (twitchers) {
+			if (twitcherSetting && percentChance(20)) {
+				switch (twitcherSetting) {
 					case 'egg':
 						loot.add(eggNest.roll());
 						nests++;
