@@ -8,6 +8,7 @@ import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
+import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const axes = [
@@ -157,7 +158,7 @@ export const chopCommand: OSBMahojiCommand = {
 		let wcLvl = skills.woodcutting;
 
 		// Invisible wc boost for woodcutting guild, forestry events don't happen in woodcutting guild
-		if (!forestry_events) {
+		if (!forestry_events || resolveItems(['Redwood logs', 'Logs']).includes(log.id)) {
 			forestry_events = false;
 			if (skills.woodcutting >= 60 && log.wcGuild) {
 				boosts.push('+7 invisible WC lvls at the Woodcutting guild');
