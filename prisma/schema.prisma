@@ -491,6 +491,16 @@ enum XpGainSource {
   CamdozaalMining
   CamdozaalSmithing
   CamdozaalFishing
+  ForesteryEvents
+  RisingRoots
+  StrugglingSapling
+  FloweringBush
+  WoodcuttingLeprechaun
+  Beehive
+  FriendlyEnt
+  Poachers
+  EnchantmentRitual
+  PheasantControl
 }
 
 model XPGain {

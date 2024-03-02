@@ -1,3 +1,4 @@
+import { XpGainSource } from '@prisma/client';
 import { percentChance, randInt, Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
@@ -21,7 +22,6 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 	let strForestry = '';
 	let defaultAmount = randInt(400, 600);
 	let userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
-	let wcMultiplier = userWcLevel / 100;
 	let eggChance = Math.ceil(2700 - ((userWcLevel - 1) * (2700 - 1350)) / 98);
 	let whistleChance = Math.ceil(90 - ((userWcLevel - 1) * (90 - 45)) / 98);
 
@@ -93,14 +93,14 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 	});
 
 	const events = [
-		{ event: 'Rising Roots', value: case1, uniqueXP: undefined, amount: defaultAmount },
+		{ event: 'Rising Roots', value: case1, uniqueXP: SkillsEnum.Woodcutting, amount: defaultAmount },
 		{ event: 'Struggling Sapling', value: case2, uniqueXP: SkillsEnum.Farming, amount: defaultAmount },
-		{ event: 'Flowering Bush', value: case3, uniqueXP: undefined, amount: defaultAmount },
-		{ event: 'Woodcutting Leprechaun', value: case4, uniqueXP: undefined, amount: defaultAmount },
+		{ event: 'Flowering Bush', value: case3, uniqueXP: SkillsEnum.Woodcutting, amount: defaultAmount },
+		{ event: 'Woodcutting Leprechaun', value: case4, uniqueXP: SkillsEnum.Woodcutting, amount: defaultAmount },
 		{ event: 'Beehive', value: case5, uniqueXP: SkillsEnum.Construction, amount: defaultAmount },
 		{ event: 'Friendly Ent', value: case6, uniqueXP: SkillsEnum.Fletching, amount: defaultAmount },
 		{ event: 'Poachers', value: case7, uniqueXP: SkillsEnum.Hunter, amount: defaultAmount },
-		{ event: 'Enchantment Ritual', value: case8, uniqueXP: undefined, amount: defaultAmount },
+		{ event: 'Enchantment Ritual', value: case8, uniqueXP: SkillsEnum.Woodcutting, amount: defaultAmount },
 		{
 			event: 'Pheasant Control',
 			value: case9,
@@ -113,19 +113,19 @@ async function handleForestry({ user, log, duration, loot }: { user: MUser; log:
 	// Give user woodcutting xp for each event completed
 	let xpRes = await user.addXP({
 		skillName: SkillsEnum.Woodcutting,
-		amount: totalEvents * randInt(1800, 2000) * wcMultiplier
+		amount: Math.ceil(totalEvents * randInt(800, 1200) * (userWcLevel / 99)),
+		source: 'ForesteryEvents'
 	});
 	xpRes += ' ';
 
 	// Give user unique xp per event
 	for (const event of events) {
-		if (event.uniqueXP !== undefined) {
-			xpRes += await user.addXP({
-				skillName: event.uniqueXP,
-				amount: event.value * event.amount * wcMultiplier,
-				minimal: true
-			});
-		}
+		xpRes += await user.addXP({
+			skillName: event.uniqueXP,
+			amount: Math.ceil(event.value * event.amount * (user.skillLevel(event.uniqueXP) / 99)),
+			minimal: true,
+			source: event.event.replace(/\s/g, '') as XpGainSource
+		});
 	}
 
 	// Generate forestry message
@@ -210,7 +210,7 @@ export const woodcuttingTask: MinionTask = {
 		// Give the user xp
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Woodcutting,
-			amount: xpReceived,
+			amount: Math.ceil(xpReceived),
 			duration
 		});
 
