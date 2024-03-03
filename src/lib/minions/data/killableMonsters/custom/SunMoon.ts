@@ -122,13 +122,13 @@ export const Celestara: CustomMonster = {
 		}
 	},
 	deathProps: {
-		hardness: 0.8,
+		hardness: 0.5,
 		steepness: 0.999,
-		lowestDeathChance: 10,
-		highestDeathChance: 80
+		lowestDeathChance: 5,
+		highestDeathChance: 65
 	},
 	minimumFoodHealAmount: 22,
-	allItems: resolveItems(['Solite', 'Eagle egg', 'Sun-metal scraps']),
+	allItems: resolveItems(['Lunite', 'Moonlight essence', 'Moondash charm', 'Noom']),
 	minimumGearRequirements: {
 		melee: {
 			...solisMinGear.stats,

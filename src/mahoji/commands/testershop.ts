@@ -12,7 +12,7 @@ const shop = [
 		cost: 30
 	},
 	{
-		name: '1 Month T3',
+		name: '1 Month T1',
 		cost: 300
 	},
 	{
@@ -71,7 +71,7 @@ export const testerShopCommand: OSBMahojiCommand = {
 				await user.addItemsToBank({ items: loot, collectionLog: true });
 				return `You bought ${loot}!`;
 			}
-			case '1 Month T3': {
+			case '1 Month T1': {
 				const res = await premiumPatronTime(Time.Day * 31, 3, user, null);
 				return res;
 			}

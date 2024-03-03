@@ -223,14 +223,16 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			if (oriIsApplying) {
 				messages.push('25% extra loot (ate an Ori)');
 			}
-			if (messages.length > 0) {
-				str += `\n\n**Messages:** ${messages.join(', ')}.`;
-			}
+
 			const { doubleLootMsg } = doubleLootCheck(tame, loot);
 			str += doubleLootMsg;
 
 			const mTame = new MTame(tame);
 			await handleImplingLocator(user, mTame, activity.duration, loot, messages);
+
+			if (messages.length > 0) {
+				str += `\n\n**Messages:** ${messages.join(', ')}.`;
+			}
 
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			await trackLoot({

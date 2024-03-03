@@ -75,7 +75,8 @@ allFarmingItems.push(
 		'Master farmer boots',
 		'Tangleroot',
 		'Plopper',
-		'Shiny mango'
+		'Shiny mango',
+		'Fungo'
 	])
 );
 
