@@ -15,6 +15,7 @@ import {
 	calcMaxFloorUserCanDo,
 	numberOfGorajanOutfitsEquipped
 } from '../../lib/skilling/skills/dung/dungDbFunctions';
+import { zygomiteMutSurvivalChance, zygomiteSeedMutChance } from '../../lib/skilling/skills/farming/zygomites';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -108,6 +109,18 @@ export const ratesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'misc',
+			description: 'Miscelleanous rates.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'zygomite_seeds',
+					description: 'Check zygomite seeds.'
+				}
+			]
 		}
 	],
 	run: async ({
@@ -118,10 +131,18 @@ export const ratesCommand: OSBMahojiCommand = {
 		xphr?: { divination_memory_harvesting?: {}; agility?: {}; dungeoneering?: {}; mining?: {}; hunter?: {} };
 		monster?: { monster?: { name: string } };
 		tames?: { eagle?: {} };
+		misc?: { zygomite_seeds?: {} };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
-
+		if (options.misc?.zygomite_seeds) {
+			const mutationChancePerMinute = 1 / zygomiteSeedMutChance;
+			const survivalChancePerMutation = 1 / zygomiteMutSurvivalChance;
+			const chancePerMinuteBoth = mutationChancePerMinute * survivalChancePerMutation;
+			const averageMinutesToGetBoth = 1 / chancePerMinuteBoth;
+			const averageHoursToGetBoth = averageMinutesToGetBoth / 60;
+			return `For every minute in any trip, a random, valid seed from your bank has a 1 in ${zygomiteSeedMutChance} chance of mutating, and then that mutated seed has a 1 in ${zygomiteMutSurvivalChance} chance of surviving. ${averageHoursToGetBoth} hours on average to get a zygomite seed.`;
+		}
 		if (options.tames?.eagle) {
 			let results = `${['Support Level', 'Clue Tier', 'Clues/hr', 'Kibble/hr', 'GMC/Hr'].join('\t')}\n`;
 			for (const tameLevel of [50, 60, 70, 75, 80, 85, 90, 95, 100]) {

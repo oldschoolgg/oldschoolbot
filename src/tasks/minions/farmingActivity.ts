@@ -219,7 +219,7 @@ export const farmingTask: MinionTask = {
 
 			await farmingLootBoosts(user, 'plant', plant, loot, infoStr);
 			if ('onHarvest' in plant && plant.onHarvest) {
-				plant.onHarvest({ user, loot });
+				plant.onHarvest({ user, loot, quantity });
 			}
 
 			if (loot.has('Plopper')) {
@@ -573,7 +573,7 @@ export const farmingTask: MinionTask = {
 
 			await farmingLootBoosts(user, 'harvest', plantToHarvest, loot, infoStr);
 			if ('onHarvest' in plant && plant.onHarvest) {
-				plant.onHarvest({ user, loot });
+				plant.onHarvest({ user, loot, quantity });
 			}
 
 			if (plantToHarvest.name === 'Mysterious tree') {

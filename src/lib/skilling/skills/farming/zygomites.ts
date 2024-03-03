@@ -2,9 +2,14 @@ import { roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../../bsoOpenables';
+import { globalDroprates } from '../../../data/globalDroprates';
+import { clAdjustedDroprate } from '../../../util';
 import getOSItem from '../../../util/getOSItem';
 import resolveItems from '../../../util/resolveItems';
 import { Plant } from '../../types';
+
+export const zygomiteSeedMutChance = 10;
+export const zygomiteMutSurvivalChance = 19;
 
 export const zygomiteFarmingSource = [
 	{
@@ -75,10 +80,18 @@ export const zygomitePlants: Plant[] = zygomiteFarmingSource.map(src => ({
 	additionalPatchesByFarmGuildAndLvl: [],
 	timePerPatchTravel: 10,
 	timePerHarvest: 5,
-	onHarvest: ({ loot }) => {
-		loot.add(src.lootTable.roll());
-		if (roll(1000)) {
-			loot.add('Fungo');
+	onHarvest: ({ loot, user, quantity }) => {
+		const dropRate = clAdjustedDroprate(
+			user,
+			'Fungo',
+			globalDroprates.fungo.baseRate,
+			globalDroprates.fungo.clIncrease
+		);
+		for (let i = 0; i < quantity; i++) {
+			loot.add(src.lootTable.roll());
+			if (roll(dropRate)) {
+				loot.add('Fungo');
+			}
 		}
 	}
 }));

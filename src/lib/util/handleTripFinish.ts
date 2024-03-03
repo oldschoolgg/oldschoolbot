@@ -23,7 +23,11 @@ import { mysteriousStepData } from '../mysteryTrail';
 import { triggerRandomEvent } from '../randomEvents';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
-import { zygomiteFarmingSource } from '../skilling/skills/farming/zygomites';
+import {
+	zygomiteFarmingSource,
+	zygomiteMutSurvivalChance,
+	zygomiteSeedMutChance
+} from '../skilling/skills/farming/zygomites';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskData } from '../types/minions';
@@ -440,12 +444,13 @@ const tripFinishEffects: TripFinishEffect[] = [
 			const minutes = Math.floor(data.duration / Time.Minute);
 			if (minutes < 1) return;
 			for (let i = 0; i < minutes; i++) {
-				if (roll(766)) {
-					loot.add(randomZyg.seedItem);
-				}
-				if (roll(10)) {
+				if (roll(zygomiteSeedMutChance)) {
 					const ownedSeed = shuffleArr(randomZyg.mutatedFromItems).find(seed => user.bank.has(seed));
 					cost.add(ownedSeed);
+
+					if (roll(zygomiteMutSurvivalChance)) {
+						loot.add(randomZyg.seedItem);
+					}
 				}
 			}
 

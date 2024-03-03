@@ -97,7 +97,11 @@ export const Celestara: CustomMonster = {
 	aliases: ['celestara'],
 	timeToFinish: Time.Minute * 100,
 	hp: 3330,
-	table: new LootTable().every('Lunite', [10, 60]).tertiary(300, 'Moonlight essence').tertiary(300, 'Noom'),
+	table: new LootTable()
+		.every('Lunite', [10, 60])
+		.tertiary(300, 'Moonlight essence')
+		.tertiary(300, 'Moondash charm')
+		.tertiary(300, 'Noom'),
 	difficultyRating: 5,
 	qpRequired: 1500,
 	healAmountNeeded: 250 * 200,
