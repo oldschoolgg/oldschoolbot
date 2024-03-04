@@ -1,7 +1,6 @@
 import { AttachmentBuilder, BaseMessageOptions, TextChannel } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { table } from 'table';
 
 import { GearSetupType, GearStats } from '../gear';
 import { trackLoot } from '../lootTrack';
@@ -9,7 +8,7 @@ import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { setupParty } from '../party';
 import { Skills } from '../types';
 import { NewBossOptions } from '../types/minions';
-import { formatDuration, formatSkillRequirements, hasSkillReqs, isWeekend } from '../util';
+import { formatDuration, formatSkillRequirements, hasSkillReqs, isWeekend, makeTable } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { ClientBankKey, updateBankSetting } from '../util/updateBankSetting';
@@ -514,10 +513,10 @@ export class BossInstance {
 				bossUsers[0].itemsToRemove.multiply(bossUsers.length).multiply(dwwhChance)
 			]);
 		}
-		const normalTable = table([
+		const normalTable = makeTable(
 			['Team Size', '%', 'Duration', 'Death Chance', 'DWWH Chance', 'DWWH Hours', 'Item Cost For DWWH'],
-			...results
-		]);
+			results
+		);
 		return new AttachmentBuilder(Buffer.from(normalTable), { name: 'boss-sim.txt' });
 	}
 }

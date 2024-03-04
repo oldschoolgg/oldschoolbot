@@ -859,8 +859,8 @@ exports[`BSO Buyables 1`] = `
     "qpRequired": 10,
   },
   {
-    "gpCost": 5000,
-    "ironmanPrice": 600,
+    "gpCost": 25000,
+    "ironmanPrice": 10000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -877,8 +877,8 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
-    "ironmanPrice": 600,
+    "gpCost": 25000,
+    "ironmanPrice": 10000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,

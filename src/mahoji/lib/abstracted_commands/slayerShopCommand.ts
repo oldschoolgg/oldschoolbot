@@ -1,11 +1,10 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 import { removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { table } from 'table';
 
 import { BitField } from '../../../lib/constants';
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
-import { stringMatches } from '../../../lib/util';
+import { makeTable, stringMatches } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { logError } from '../../../lib/util/logError';
 
@@ -129,15 +128,10 @@ export function slayerShopListRewards(type: 'all' | 'unlocks' | 'buyables') {
 		type === 'all' ? true : type === 'unlocks' ? !srs.item : Boolean(srs.item)
 	);
 
-	const unlockTable = table([
+	const unlockTable = makeTable(
 		['Slayer Points', 'name: ', 'Description', 'Type'],
-		...availableUnlocks.map(i => [
-			i.slayerPointCost,
-			i.name,
-			i.desc,
-			i.extendMult === undefined ? 'unlock' : 'extend'
-		])
-	]);
+		availableUnlocks.map(i => [i.slayerPointCost, i.name, i.desc, i.extendMult === undefined ? 'unlock' : 'extend'])
+	);
 
 	const content = type === 'all' ? 'List of all slayer rewards' : `List sof slayer ${type}`;
 	return {

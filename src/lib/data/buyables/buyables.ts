@@ -1096,8 +1096,8 @@ const Buyables: Buyable[] = [
 	})),
 	{
 		name: 'Menaphite purple outfit',
-		gpCost: 5000,
-		ironmanPrice: 600,
+		gpCost: 25_000,
+		ironmanPrice: 10_000,
 		outputItems: new Bank({
 			'Menaphite purple hat': 1,
 			'Menaphite purple top': 1,
@@ -1107,8 +1107,8 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Menaphite red outfit',
-		gpCost: 5000,
-		ironmanPrice: 600,
+		gpCost: 25_000,
+		ironmanPrice: 10_000,
 		outputItems: new Bank({
 			'Menaphite red hat': 1,
 			'Menaphite red top': 1,
