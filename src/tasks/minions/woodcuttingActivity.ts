@@ -17,7 +17,6 @@ async function handleForestry({ user, duration, loot }: { user: MUser; log: Log;
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	];
 	let strForestry = '';
-	let defaultEventXP = 5;
 	let userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 	let chanceWcLevel = Math.min(user.skillLevel(SkillsEnum.Woodcutting), 99);
 	let eggChance = Math.ceil(2700 - ((chanceWcLevel - 1) * (2700 - 1350)) / 98);
@@ -94,60 +93,53 @@ async function handleForestry({ user, duration, loot }: { user: MUser; log: Log;
 		loot.add('Anima-infused bark', randInt(500, 1000));
 	});
 
+	// verifiedXPRate is used for events that have verified xp rates on the wiki
 	const events = [
 		{
 			event: 'Rising Roots',
 			value: case1,
-			uniqueXP: SkillsEnum.Woodcutting,
-			amount: defaultEventXP * userWcLevel
+			uniqueXP: SkillsEnum.Woodcutting
 		},
 		{
 			event: 'Struggling Sapling',
 			value: case2,
-			uniqueXP: SkillsEnum.Farming,
-			amount: defaultEventXP * user.skillLevel(SkillsEnum.Farming)
+			uniqueXP: SkillsEnum.Farming
 		},
 		{
 			event: 'Flowering Bush',
 			value: case3,
-			uniqueXP: SkillsEnum.Woodcutting,
-			amount: defaultEventXP * userWcLevel
+			uniqueXP: SkillsEnum.Woodcutting
 		},
 		{
 			event: 'Woodcutting Leprechaun',
 			value: case4,
-			uniqueXP: SkillsEnum.Woodcutting,
-			amount: defaultEventXP * userWcLevel
+			uniqueXP: SkillsEnum.Woodcutting
 		},
 		{
 			event: 'Beehive',
 			value: case5,
-			uniqueXP: SkillsEnum.Construction,
-			amount: defaultEventXP * user.skillLevel(SkillsEnum.Construction)
+			uniqueXP: SkillsEnum.Construction
 		},
 		{
 			event: 'Friendly Ent',
 			value: case6,
-			uniqueXP: SkillsEnum.Fletching,
-			amount: defaultEventXP * user.skillLevel(SkillsEnum.Fletching)
+			uniqueXP: SkillsEnum.Fletching
 		},
 		{
 			event: 'Poachers',
 			value: case7,
-			uniqueXP: SkillsEnum.Hunter,
-			amount: defaultEventXP * user.skillLevel(SkillsEnum.Hunter)
+			uniqueXP: SkillsEnum.Hunter
 		},
 		{
 			event: 'Enchantment Ritual',
 			value: case8,
-			uniqueXP: SkillsEnum.Woodcutting,
-			amount: defaultEventXP * userWcLevel
+			uniqueXP: SkillsEnum.Woodcutting
 		},
 		{
 			event: 'Pheasant Control',
 			value: case9,
 			uniqueXP: SkillsEnum.Thieving,
-			amount: Math.ceil(totalEggs / case9) * Math.ceil(user.skillLevel(SkillsEnum.Thieving) / 2)
+			verifiedXPRate: Math.ceil(totalEggs / case9) * Math.ceil(user.skillLevel(SkillsEnum.Thieving) / 2)
 		}
 	];
 	events.forEach(e => (totalEvents += e.value));
@@ -161,11 +153,14 @@ async function handleForestry({ user, duration, loot }: { user: MUser; log: Log;
 	xpRes += ' ';
 
 	// Give user unique xp per event
+	let defaultEventXP = 5;
 	for (const event of events) {
 		for (let i = 0; i < event.value; i++) {
 			xpRes += await user.addXP({
 				skillName: event.uniqueXP,
-				amount: Math.ceil(event.amount * (randInt(85, 115) / 100)),
+				amount: event.verifiedXPRate
+					? Math.ceil(event.verifiedXPRate)
+					: Math.ceil(user.skillLevel(event.uniqueXP) * defaultEventXP * (randInt(85, 115) / 100)),
 				minimal: true,
 				source: event.event.replace(/\s/g, '') as XpGainSource
 			});
