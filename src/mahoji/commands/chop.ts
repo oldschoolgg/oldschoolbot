@@ -109,7 +109,7 @@ export const chopCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.String,
 			name: 'twitchers_gloves',
-			description: "Change the settings of your Twitcher's gloves. (default egg nests)",
+			description: "Change the settings of your Twitcher's gloves. (default egg nests, optional)",
 			required: false,
 			choices: [
 				{ name: 'Egg nest (Default)', value: 'egg' },

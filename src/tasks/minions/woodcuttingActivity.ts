@@ -53,7 +53,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; log: Log;
 			case 5: // Beehive
 				case5++;
 				for (let i = 0; i < randInt(4, 6); i++) {
-					if (percentChance(2 / 3)) {
+					if (percentChance(200 / 300)) {
 						loot.add('Sturdy beehive parts', 1);
 					}
 				}
@@ -77,7 +77,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; log: Log;
 				break;
 			case 9: // Pheasant Control
 				case9++;
-				eggsDelivered = randInt(15, 60);
+				eggsDelivered = randInt(15, 45);
 				for (let i = 0; i < eggsDelivered; i++) {
 					if (percentChance(50)) {
 						loot.add('Pheasant tail feathers', 1);
@@ -178,6 +178,11 @@ async function handleForestry({ user, duration, loot }: { user: MUser; log: Log;
 	strForestry += `${
 		completedEvents.length > 0
 			? `Completed Forestry event${totalEvents > 1 ? 's:' : ':'} ${completedEvents}. ${xpRes}\n`
+			: ''
+	}`;
+	strForestry += `${
+		loot.has('Sturdy beehive parts') && !user.cl.has('Sturdy beehive parts') // only show this message once to reduce spam
+			? '- The temporary beehive was made so well you could repurpose parts of it to build a permanent hive.\n'
 			: ''
 	}`;
 	strForestry += `${
