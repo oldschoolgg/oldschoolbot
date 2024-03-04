@@ -10,6 +10,7 @@ import { GrandExchange } from '../../src/lib/grandExchange';
 import { assert } from '../../src/lib/util';
 import resolveItems from '../../src/lib/util/resolveItems';
 import { geCommand } from '../../src/mahoji/commands/ge';
+import { cancelUsersListings } from '../../src/mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import { createTestUser, mockClient, TestUser } from './util';
 
 const quantities = [-1, 0, 100_000_000_000_000_000, 1, 2, 38, 1_000_000_000_000, 500, '5*5'];
@@ -36,28 +37,6 @@ const sampleBank = new Bank()
 	.add('Coal', 1000)
 	.add('Trout', 1000)
 	.freeze();
-
-async function cancelAllListings(user: TestUser) {
-	const activeListings = await global.prisma!.gEListing.findMany({
-		where: {
-			user_id: user.id
-		}
-	});
-	for (const listing of activeListings) {
-		const result = (await user.runCommand(geCommand, {
-			cancel: {
-				listing: listing.userfacing_id
-			}
-		})) as string;
-
-		if (
-			result !== 'You cannot cancel a listing that has already been fulfilled.' &&
-			!result.startsWith('Successfully cancelled your listing,')
-		) {
-			throw new Error(`Unexpected result from cancelling listing: ${result}`);
-		}
-	}
-}
 
 describe('Grand Exchange', async () => {
 	const itemPool = resolveItems(['Egg', 'Trout', 'Coal']);
@@ -128,7 +107,7 @@ describe('Grand Exchange', async () => {
 			// Cancel all remaining listings
 			const cancelPromises = [];
 			for (const user of users) {
-				cancelPromises.push(cancelAllListings(user));
+				cancelPromises.push(cancelUsersListings(user));
 			}
 			await Promise.all(cancelPromises);
 			await waitForGEToBeEmpty();
@@ -175,7 +154,6 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 
 			await GrandExchange.queue.onEmpty();
 			assert(GrandExchange.queue.size === 0, 'Queue should be empty');
-			const geBank = await GrandExchange.fetchOwnedBank();
 		},
 		{
 			repeats: 1,
@@ -230,8 +208,8 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 		const gpShouldBeReceivedAfterTax = totalGPBeforeTax - totalTax;
 		expect(gpShouldBeReceivedAfterTax).toEqual(4950);
 
-		await cancelAllListings(wes);
-		await cancelAllListings(magnaboy);
+		await cancelUsersListings(wes);
+		await cancelUsersListings(magnaboy);
 
 		expect(wes.bankWithGP.toString()).toEqual(
 			new Bank()

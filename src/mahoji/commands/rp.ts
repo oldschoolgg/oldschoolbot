@@ -33,6 +33,7 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { migrateUser } from '../../lib/util/migrateUser';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { sendToChannelID } from '../../lib/util/webhook';
+import { cancelUsersListings } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { gearSetupOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -303,6 +304,19 @@ export const rpCommand: OSBMahojiCommand = {
 							required: false
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'cancel_ge',
+					description: 'Cancel GE Listings',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user',
+							required: true
+						}
+					]
 				}
 			]
 		}
@@ -347,6 +361,7 @@ export const rpCommand: OSBMahojiCommand = {
 				partner?: MahojiUserOption;
 				guild_id?: string;
 			};
+			cancel_ge?: { user: MahojiUserOption };
 		};
 	}>) => {
 		await deferInteraction(interaction);
@@ -725,6 +740,12 @@ ORDER BY item_id ASC;`);
 			}
 
 			return { files: [{ attachment: Buffer.from(report), name: 'trade_report.txt' }] };
+		}
+
+		if (options.player?.cancel_ge) {
+			const targetUser = await mUserFetch(options.player.cancel_ge.user.user.id);
+			await cancelUsersListings(targetUser);
+			return `Cancelled listings for ${targetUser}`;
 		}
 
 		return 'Invalid command.';
