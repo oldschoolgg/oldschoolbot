@@ -332,7 +332,9 @@ export const woodcuttingTask: MinionTask = {
 		// Loot received, items used, and logs lost message
 		str += `\nYou received ${loot}. `;
 		str += `${itemsToRemove.length > 0 ? `You used ${itemsToRemove}. ` : ''}`;
-		str += `${lostLogs > 0 ? `You lost ${lostLogs}x ${log.name} due to using a felling axe.` : ''}`;
+		str += `${
+			lostLogs > 0 && !powerchopping ? `You lost ${lostLogs}x ${log.name} due to using a felling axe.` : ''
+		}`;
 
 		// Update cl, give loot, and remove items used
 		await transactItems({
