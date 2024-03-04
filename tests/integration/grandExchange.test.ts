@@ -198,13 +198,17 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 		await GrandExchange.tick();
 		await GrandExchange.tick();
 
+		// The user object isn't updated by the GE tick, since that uses completely separate user objects.
+		await wes.sync();
+		await magnaboy.sync();
+
 		const amountSold = 50;
 		const priceSoldAt = 100;
 		const totalGPBeforeTax = amountSold * priceSoldAt;
 		const taxPerItem = calcPercentOfNum(1, priceSoldAt);
 		expect(taxPerItem).toEqual(1);
 		const totalTax = taxPerItem * amountSold;
-		expect(taxPerItem).toEqual(1);
+		expect(totalTax).toEqual(50);
 		const gpShouldBeReceivedAfterTax = totalGPBeforeTax - totalTax;
 		expect(gpShouldBeReceivedAfterTax).toEqual(4950);
 
