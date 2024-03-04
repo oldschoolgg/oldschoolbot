@@ -105,6 +105,10 @@ export const mixCommand: OSBMahojiCommand = {
 		const maxCanDo = user.bankWithGP.fits(baseCost);
 		const maxCanMix = Math.floor(maxTripLength / timeToMixSingleItem);
 
+		if (!user.owns(requiredItems)) {
+			return `You don't have the required items for ${mixableItem.item.name}: ${requiredItems}.`;
+		}
+
 		if (!quantity) {
 			quantity = maxCanMix;
 			if (maxCanDo < quantity && maxCanDo !== 0) quantity = maxCanDo;
@@ -134,6 +138,7 @@ export const mixCommand: OSBMahojiCommand = {
 		}
 
 		quantity = clamp(quantity, 1, maxCanDo);
+
 		if (quantity * timeToMixSingleItem > maxTripLength)
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength

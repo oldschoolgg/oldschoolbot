@@ -44,27 +44,35 @@ export async function abstractedOpenUntilCommand(userID: string, name: string, o
 		return `${openable.openedItem.name} doesn't drop ${openUntil.name}.`;
 	}
 
-	const amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
+	let amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
 	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
+
+	// Calculate how many we have keys to open:
+	if (openable.extraCostPerOpen) {
+		const howManyCanOpen = user.bank.fits(openable.extraCostPerOpen);
+		if (howManyCanOpen === 0) return `You need ${openable.extraCostPerOpen} per crate.`;
+		amountOfThisOpenableOwned = Math.min(amountOfThisOpenableOwned, howManyCanOpen);
+	}
 
 	const cost = new Bank();
 	const loot = new Bank();
 	let amountOpened = 0;
 	let max = Math.min(100, amountOfThisOpenableOwned);
+	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({
 			openable,
 			quantity: 1,
 			user,
-			// TODO: this is bad
-			totalLeaguesPoints: (await roboChimpUserFetch(user.id)).leagues_points_total
+			totalLeaguesPoints
 		});
 		loot.add(thisLoot.bank);
 		amountOpened++;
 		if (loot.has(openUntil.id)) break;
 	}
 
+	// Now that we have the final total, we add the key cost:
 	if (openable.extraCostPerOpen) {
 		cost.add(openable.extraCostPerOpen.clone().multiply(amountOpened));
 	}
@@ -122,6 +130,7 @@ async function finalizeOpening({
 
 	if (hasSmokey) {
 		let bonuses = [];
+		const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 		for (const openable of openables) {
 			if (!openable.smokeyApplies) continue;
 			let smokeyBonus = 0;
@@ -137,7 +146,7 @@ async function finalizeOpening({
 						user,
 						openable,
 						quantity: smokeyBonus,
-						totalLeaguesPoints: (await roboChimpUserFetch(user.id)).leagues_points_total
+						totalLeaguesPoints
 					})
 				).bank
 			);
@@ -267,6 +276,8 @@ export async function abstractedOpenCommand(
 	const loot = new Bank();
 	const messages: string[] = [];
 
+	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
+
 	for (const openable of openables) {
 		const { openedItem } = openable;
 		const quantity = typeof _quantity === 'string' ? user.bank.amount(openedItem.id) : _quantity;
@@ -281,7 +292,7 @@ export async function abstractedOpenCommand(
 			openable,
 			quantity,
 			user,
-			totalLeaguesPoints: process.env.TEST ? 0 : (await roboChimpUserFetch(user.id)).leagues_points_total
+			totalLeaguesPoints
 		});
 		loot.add(thisLoot.bank);
 		if (thisLoot.message) messages.push(thisLoot.message);

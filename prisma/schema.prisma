@@ -1435,3 +1435,11 @@ model Portent {
   @@index([user_id])
   @@map("portent")
 }
+
+model ItemMetadata {
+  id Int @id
+
+  name String?
+
+  @@map("item_metadata")
+}
