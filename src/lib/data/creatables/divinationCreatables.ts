@@ -14,7 +14,8 @@ for (let i = 0; i < divinationEnergies.length; i++) {
 		outputItems: new Bank().add('Atomic energy', calcAtomicEnergy(energy)),
 		requiredSkills: {
 			divination: energy.level
-		}
+		},
+		forceAddToCl: true
 	});
 
 	const previousEnergy = divinationEnergies[i - 1];
