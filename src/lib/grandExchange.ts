@@ -830,9 +830,8 @@ Difference: ${shouldHave.difference(currentBank)}`);
 		const { buyListings: _buyListings, sellListings: _sellListings } = await this.fetchActiveListings();
 
 		// Filter out listings from Blacklisted users:
-		const blacklist = [...BLACKLISTED_USERS];
-		const buyListings = _buyListings.filter(l => !blacklist.includes(l.user_id!));
-		const sellListings = _sellListings.filter(l => !blacklist.includes(l.user_id!));
+		const buyListings = _buyListings.filter(l => !BLACKLISTED_USERS.has(l.user_id!));
+		const sellListings = _sellListings.filter(l => !BLACKLISTED_USERS.has(l.user_id!));
 
 		for (const buyListing of buyListings) {
 			// These are all valid, matching sell listings we can match with this buy listing.
