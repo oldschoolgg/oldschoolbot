@@ -198,8 +198,14 @@ export const woodcuttingTask: MinionTask = {
 	async run(data: WoodcuttingActivityTaskOptions) {
 		const { logID, quantity, userID, channelID, duration, powerchopping, forestry, twitchers } = data;
 		const user = await mUserFetch(userID);
+		let userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 		const log = Woodcutting.Logs.find(i => i.id === logID)!;
 		const forestersRations = user.bank.amount("Forester's ration");
+		const wcCapeNestBoost =
+			user.hasEquipped('Woodcutting cape') ||
+			(user.hasEquipped('Forestry basket') &&
+				user.bank.has(['Woodcutting cape', 'Cape pouch']) &&
+				userWcLevel >= 99);
 
 		let strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
 		let twitchersEquipped = user.hasEquipped("twitcher's gloves");
@@ -286,7 +292,8 @@ export const woodcuttingTask: MinionTask = {
 				loot,
 				log.clueNestsOnly,
 				strungRabbitFoot,
-				twitcherSetting
+				twitcherSetting,
+				wcCapeNestBoost
 			);
 		}
 
@@ -295,11 +302,19 @@ export const woodcuttingTask: MinionTask = {
 			bonusXP > 0 ? ` **Bonus XP:** ${bonusXP.toLocaleString()}` : ''
 		}\n`;
 
-		if (strungRabbitFoot && !log.clueNestsOnly) {
-			str += "Your strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.\n";
-		}
-		if (twitchersEquipped && !log.clueNestsOnly) {
-			str += `Your twitcher's gloves increases the chance of receiving ${twitcherSetting} nests.\n`;
+		if (!log.clueNestsOnly) {
+			if (wcCapeNestBoost) {
+				str += `Your ${
+					user.hasEquipped('Woodcutting cape') ? 'Woodcutting cape' : 'Forestry basket'
+				} increases the chance of receiving bird nests.\n`;
+			}
+			if (strungRabbitFoot) {
+				str +=
+					'Your Strung rabbit foot necklace increases the chance of receiving bird egg nests and ring nests.\n';
+			}
+			if (twitchersEquipped) {
+				str += `Your Twitcher's gloves increases the chance of receiving ${twitcherSetting} nests.\n`;
+			}
 		}
 
 		// Forestry events
