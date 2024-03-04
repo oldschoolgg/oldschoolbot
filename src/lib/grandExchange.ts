@@ -7,6 +7,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
+import { BLACKLISTED_USERS } from './blacklists';
 import { BitField, globalConfig, ONE_TRILLION, PerkTier } from './constants';
 import { marketPricemap } from './marketPrices';
 import { RobochimpUser, roboChimpUserFetch } from './roboChimp';
@@ -598,13 +599,15 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			items: buyerLoot,
 			collectionLog: false,
 			dontAddToTempCL: true,
-			filterLoot: false
+			filterLoot: false,
+			neverUpdateHistory: true
 		});
 		await sellerUser.addItemsToBank({
 			items: sellerLoot,
 			collectionLog: false,
 			dontAddToTempCL: true,
-			filterLoot: false
+			filterLoot: false,
+			neverUpdateHistory: true
 		});
 
 		const itemName = itemNameFromID(buyerListing.item_id)!;
@@ -678,9 +681,8 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					type: GEListingType.Buy,
 					fulfilled_at: null,
 					cancelled_at: null,
-					user_id: {
-						not: null
-					}
+					// Using NOT IN doesn't match null values.
+					user_id: { notIn: [...BLACKLISTED_USERS] }
 				},
 				orderBy: [
 					{
@@ -696,9 +698,8 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					type: GEListingType.Sell,
 					fulfilled_at: null,
 					cancelled_at: null,
-					user_id: {
-						not: null
-					}
+					// Using NOT IN doesn't match null values.
+					user_id: { notIn: [...BLACKLISTED_USERS] }
 				},
 				orderBy: [
 					{
