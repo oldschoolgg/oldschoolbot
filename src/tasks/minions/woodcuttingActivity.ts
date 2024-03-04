@@ -218,14 +218,14 @@ export const woodcuttingTask: MinionTask = {
 		let itemsToRemove = new Bank();
 
 		// Felling axe +10% xp bonus & 20% logs lost
-		if (user.gear.skilling.hasEquipped('Bronze felling axe') && !log.lootTable) {
+		if (user.gear.skilling.hasEquipped('Bronze felling axe')) {
 			for (let i = 0; i < quantity && i < forestersRations; i++) {
 				rationUsed++;
 				if (percentChance(20)) {
 					lostLogs++;
 				}
 			}
-			const fellingXP = rationUsed * log.xp * 0.1;
+			const fellingXP = Math.floor(rationUsed * log.xp * 0.1);
 			xpReceived += fellingXP;
 			bonusXP += fellingXP;
 			itemsToRemove.add("Forester's ration", rationUsed);
@@ -262,7 +262,7 @@ export const woodcuttingTask: MinionTask = {
 		// Add Logs or loot
 		if (!powerchopping) {
 			if (log.lootTable) {
-				loot.add(log.lootTable.roll(quantity));
+				loot.add(log.lootTable.roll(quantity - lostLogs));
 			} else {
 				loot.add(log.id, quantity - lostLogs);
 			}
@@ -339,11 +339,15 @@ export const woodcuttingTask: MinionTask = {
 			}
 		}
 
-		// Loot received, items used, and logs lost message
+		// Loot received, items used, and logs/loot rolls lost message
 		str += `\nYou received ${loot}. `;
 		str += `${itemsToRemove.length > 0 ? `You used ${itemsToRemove}. ` : ''}`;
 		str += `${
-			lostLogs > 0 && !powerchopping ? `You lost ${lostLogs}x ${log.name} due to using a felling axe.` : ''
+			lostLogs > 0 && !powerchopping
+				? `You lost ${
+						log.lootTable ? `${lostLogs}x ${log.name} loot rolls` : `${lostLogs}x ${log.name}`
+				  } due to using a felling axe.`
+				: ''
 		}`;
 
 		// Update cl, give loot, and remove items used
