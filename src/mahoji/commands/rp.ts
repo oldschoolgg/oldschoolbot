@@ -307,7 +307,7 @@ export const rpCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'cancel_ge',
+					name: 'ge_cancel',
 					description: 'Cancel GE Listings',
 					options: [
 						{
@@ -361,7 +361,7 @@ export const rpCommand: OSBMahojiCommand = {
 				partner?: MahojiUserOption;
 				guild_id?: string;
 			};
-			cancel_ge?: { user: MahojiUserOption };
+			ge_cancel?: { user: MahojiUserOption };
 		};
 	}>) => {
 		await deferInteraction(interaction);
@@ -742,8 +742,8 @@ ORDER BY item_id ASC;`);
 			return { files: [{ attachment: Buffer.from(report), name: 'trade_report.txt' }] };
 		}
 
-		if (options.player?.cancel_ge) {
-			const targetUser = await mUserFetch(options.player.cancel_ge.user.user.id);
+		if (options.player?.ge_cancel) {
+			const targetUser = await mUserFetch(options.player.ge_cancel.user.user.id);
 			await cancelUsersListings(targetUser);
 			return `Cancelled listings for ${targetUser}`;
 		}
