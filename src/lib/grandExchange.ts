@@ -681,8 +681,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					type: GEListingType.Buy,
 					fulfilled_at: null,
 					cancelled_at: null,
-					// Using NOT IN doesn't match null values.
-					user_id: { notIn: [...BLACKLISTED_USERS] }
+					user_id: { not: null }
 				},
 				orderBy: [
 					{
@@ -698,8 +697,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					type: GEListingType.Sell,
 					fulfilled_at: null,
 					cancelled_at: null,
-					// Using NOT IN doesn't match null values.
-					user_id: { notIn: [...BLACKLISTED_USERS] }
+					user_id: { not: null }
 				},
 				orderBy: [
 					{
@@ -829,7 +827,12 @@ Difference: ${shouldHave.difference(currentBank)}`);
 		if (this.locked) return;
 		const stopwatch = new Stopwatch();
 		stopwatch.start();
-		const { buyListings, sellListings } = await this.fetchActiveListings();
+		const { buyListings: _buyListings, sellListings: _sellListings } = await this.fetchActiveListings();
+
+		// Filter out listings from Blacklisted users:
+		const blacklist = [...BLACKLISTED_USERS];
+		const buyListings = _buyListings.filter(l => !blacklist.includes(l.user_id!));
+		const sellListings = _sellListings.filter(l => !blacklist.includes(l.user_id!));
 
 		for (const buyListing of buyListings) {
 			// These are all valid, matching sell listings we can match with this buy listing.
