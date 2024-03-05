@@ -1,3 +1,4 @@
+import './no-prisma';
 import '../lib/data/itemAliases';
 
 import { isFunction } from 'e';
