@@ -33,9 +33,9 @@ export default function addSkillingClueToLoot(
 	wcCapeNestBoost?: boolean
 ) {
 	const userLevel = user.skillLevel(skill);
-	let chance = Math.floor(clueChance / (100 + userLevel));
+	const chance = Math.floor(clueChance / (100 + userLevel));
 	let nests = 0;
-	let nestChance = wcCapeNestBoost ? Math.floor(256 * 0.9) : 256;
+	const nestChance = wcCapeNestBoost ? Math.floor(256 * 0.9) : 256;
 	const cluesTotalWeight = sumArr(clues.map(c => c[1]));
 
 	for (let i = 0; i < quantity; i++) {
