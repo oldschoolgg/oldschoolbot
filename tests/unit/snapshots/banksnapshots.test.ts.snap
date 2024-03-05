@@ -25325,6 +25325,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "73010": 1,
@@ -25344,6 +25345,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "73006": 1,
@@ -25382,6 +25384,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "73004": 1,
@@ -25420,6 +25423,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "73009": 1,
@@ -25458,6 +25462,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "73015": 1,
@@ -25496,6 +25501,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "73008": 1,
@@ -25534,6 +25540,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "73014": 1,
@@ -25572,6 +25579,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "73013": 1,
@@ -25610,6 +25618,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "73007": 1,
@@ -25648,6 +25657,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "73005": 1,
@@ -25686,6 +25696,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "73016": 1,
@@ -25724,6 +25735,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "73012": 1,
@@ -25762,6 +25774,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "73011": 1,
@@ -25800,6 +25813,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
     "inputItems": Bank {
       "bank": {
         "73045": 1,
