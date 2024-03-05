@@ -83,16 +83,16 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 	});
 
 	let strForestry = '';
-	let userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
-	let chanceWcLevel = Math.min(userWcLevel, 99);
-	let eggChance = Math.ceil(2700 - ((chanceWcLevel - 1) * (2700 - 1350)) / 98);
-	let whistleChance = Math.ceil(90 - ((chanceWcLevel - 1) * (90 - 45)) / 98);
+	const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
+	const chanceWcLevel = Math.min(userWcLevel, 99);
+	const eggChance = Math.ceil(2700 - ((chanceWcLevel - 1) * (2700 - 1350)) / 98);
+	const whistleChance = Math.ceil(90 - ((chanceWcLevel - 1) * (90 - 45)) / 98);
 
 	perTimeUnitChance(duration, 20, Time.Minute, async () => {
-		let eventIndex = randInt(0, ForestryEvents.length - 1);
-		let event = ForestryEvents[eventIndex];
-		let eggsDelivered = 0;
+		const eventIndex = randInt(0, ForestryEvents.length - 1);
+		const event = ForestryEvents[eventIndex];
 		const defaultEventXP = 5 * (randInt(85, 115) / 100); // used for unverified xp rates
+		let eggsDelivered = 0;
 
 		switch (event.id) {
 			case 1: // Rising Roots
