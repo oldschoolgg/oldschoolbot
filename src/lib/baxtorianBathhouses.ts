@@ -3,7 +3,6 @@ import { User } from '@prisma/client';
 import { randArrItem, reduceNumByPercent, roll, Time, uniqueArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { table } from 'table';
 
 import { MysteryBoxes } from './bsoOpenables';
 import { Emoji, GLOBAL_BSO_XP_MULTIPLIER } from './constants';
@@ -13,7 +12,7 @@ import { SkillsEnum } from './skilling/types';
 import { getAllUserTames, TameSpeciesID } from './tames';
 import { Skills } from './types';
 import { BathhouseTaskOptions } from './types/minions';
-import { formatDuration, formatSkillRequirements, skillsMeetRequirements, stringMatches } from './util';
+import { formatDuration, formatSkillRequirements, makeTable, skillsMeetRequirements, stringMatches } from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
 import getOSItem from './util/getOSItem';
@@ -441,7 +440,6 @@ export function baxBathSim() {
 
 	results.sort((a, b) => b.firemakingXP * GLOBAL_BSO_XP_MULTIPLIER - a.firemakingXP * GLOBAL_BSO_XP_MULTIPLIER);
 	let tableArr = [];
-	tableArr.push(['Combo', 'FM XP', 'Herb XP']);
 	for (const { tier, ore, mixture, firemakingXP, herbXP } of results) {
 		tableArr.push([
 			`${tier.name} ${ore.item.name} ${mixture.name}`,
@@ -449,7 +447,7 @@ export function baxBathSim() {
 			(herbXP * GLOBAL_BSO_XP_MULTIPLIER).toLocaleString()
 		]);
 	}
-	return table(tableArr);
+	return makeTable(['Combo', 'FM XP', 'Herb XP'], tableArr);
 }
 
 export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {

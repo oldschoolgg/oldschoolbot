@@ -2,12 +2,11 @@ import { calcWhatPercent, clamp, percentChance, reduceNumByPercent, Time, unique
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { table } from 'table';
 
 import Skillcapes from '../skilling/skillcapes';
 import { SkillsEnum } from '../skilling/types';
 import { DisassembleTaskOptions } from '../types/minions';
-import { calcPerHour, formatDuration, toKMB } from '../util';
+import { calcPerHour, formatDuration, makeTable, toKMB } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { getItem } from '../util/getOSItem';
@@ -323,10 +322,10 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 	}
 	// @ts-ignore ignore
 	results.sort((a, b) => b.xp - a.xp);
-	const normalTable = table([
+	const normalTable = makeTable(
 		['Item', 'XP', 'Time'],
-		...results.map(r => (r.error === null ? [r.item.name, r.xp, formatDuration(r.duration)] : []))
-	]);
+		results.map(r => (r.error === null ? [r.item.name, r.xp, formatDuration(r.duration)] : []))
+	);
 
 	return {
 		content: `

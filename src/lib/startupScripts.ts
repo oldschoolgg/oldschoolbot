@@ -1,3 +1,5 @@
+import { Items } from 'oldschooljs';
+
 import { prisma } from './settings/prisma';
 import { logError } from './util/logError';
 
@@ -127,6 +129,18 @@ startupScripts.push({
 startupScripts.push({
 	sql: 'CREATE UNIQUE INDEX IF NOT EXISTS tame_only_one_task ON tame_activity (user_id, completed) WHERE NOT completed;'
 });
+
+const itemMetaDataNames = Items.map(item => `(${item.id}, '${item.name.replace(/'/g, "''")}')`).join(', ');
+const itemMetaDataQuery = `
+INSERT INTO item_metadata (id, name)
+VALUES ${itemMetaDataNames}
+ON CONFLICT (id) 
+DO 
+  UPDATE SET name = EXCLUDED.name
+WHERE item_metadata.name IS DISTINCT FROM EXCLUDED.name;
+`;
+
+startupScripts.push({ sql: itemMetaDataQuery });
 
 export async function runStartupScripts() {
 	for (const query of startupScripts) {

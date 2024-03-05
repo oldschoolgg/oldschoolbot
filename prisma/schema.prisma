@@ -762,6 +762,8 @@ model Tame {
   last_activity_date   DateTime? @db.Timestamp(6)
   levels_from_egg_feed Int?
 
+  custom_icon_id String? @db.VarChar(19)
+
   tame_activity TameActivity[]
 
   @@index([user_id])
@@ -1432,4 +1434,12 @@ model Portent {
   @@unique([item_id, user_id])
   @@index([user_id])
   @@map("portent")
+}
+
+model ItemMetadata {
+  id Int @id
+
+  name String?
+
+  @@map("item_metadata")
 }

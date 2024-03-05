@@ -4,7 +4,6 @@ import { Bank, Clues, Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import Monster from 'oldschooljs/dist/structures/Monster';
-import { table } from 'table';
 
 import { divinationEnergies, portents } from '../bso/divination';
 import { ClueTier, ClueTiers } from '../clues/clueTiers';
@@ -47,7 +46,7 @@ import { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
 import { fetchStatsForCL, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
-import { shuffleRandom } from '../util/smallUtils';
+import { makeTable, shuffleRandom } from '../util/smallUtils';
 import {
 	abyssalDragonCL,
 	abyssalSireCL,
@@ -1949,7 +1948,7 @@ export function getPossibleOptions() {
 	for (const monster of effectiveMonsters) {
 		categories.push(['Monsters', monster.name, monster.aliases ? monster.aliases.join(', ') : '']);
 	}
-	const normalTable = table([['Type', 'name: ', 'Alias'], ...[...categories, ...activities, ...roles]]);
+	const normalTable = makeTable(['Type', 'name: ', 'Alias'], [...categories, ...activities, ...roles]);
 	return new AttachmentBuilder(Buffer.from(normalTable), { name: 'possible_logs.txt' });
 }
 

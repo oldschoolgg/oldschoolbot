@@ -1,19 +1,20 @@
 import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { table } from 'table';
 
 import { herbertDroprate, MAX_XP, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import Potions from '../../lib/skilling/skills/herblore/mixables/potions';
-import { calcBabyYagaHouseDroprate, clAdjustedDroprate, formatDuration, stringMatches } from '../../lib/util';
+import {
+	calcBabyYagaHouseDroprate,
+	clAdjustedDroprate,
+	formatDuration,
+	makeTable,
+	stringMatches
+} from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
-
-function makeTable(headers: string[], rows: (string | number)[][]) {
-	return table([headers, ...rows]);
-}
 
 interface GlobalDroprate {
 	name: string;

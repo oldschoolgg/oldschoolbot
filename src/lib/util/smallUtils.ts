@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 
 import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
+import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
 import deepmerge from 'deepmerge';
 import { ButtonBuilder, ButtonStyle, InteractionReplyOptions, time } from 'discord.js';
 import { clamp, objectEntries, roll, Time } from 'e';
@@ -377,4 +378,14 @@ export function ellipsize(str: string, maxLen: number = 2000) {
 		return `${str.substring(0, maxLen - 3)}...`;
 	}
 	return str;
+}
+
+export function makeTable(headers: string[], rows: unknown[][]) {
+	return new AsciiTable3()
+		.setHeading(...headers)
+		.setAlign(1, AlignmentEnum.RIGHT)
+		.setAlign(2, AlignmentEnum.CENTER)
+		.setAlign(3, AlignmentEnum.LEFT)
+		.addRowMatrix(rows)
+		.toString();
 }
