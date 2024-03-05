@@ -191,18 +191,6 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 		}
 	}
 
-	// // track events completed
-	// for (const eventId in eventCounts) {
-	// 	if (eventCounts.hasOwnProperty(eventId)) {
-	// 		const count = eventCounts[eventId];
-	// 		await userStatsBankUpdate(
-	// 			user.id,
-	// 			'forestry_event_completions_bank',
-	// 			new Bank().add(parseInt(eventId), count)
-	// 		);
-	// 	}
-	// }
-
 	// Generate forestry message
 	const completedEvents = Object.entries(eventCounts)
 		.map(([eventId, count]) => {
