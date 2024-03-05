@@ -1,4 +1,3 @@
-import { XpGainSource } from '@prisma/client';
 import { percentChance, randInt, Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
@@ -7,173 +6,213 @@ import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
-import { Log, SkillsEnum } from '../../lib/skilling/types';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { perTimeUnitChance, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
-async function handleForestry({ user, duration, loot }: { user: MUser; log: Log; duration: number; loot: Bank }) {
-	let [case1, case2, case3, case4, case5, case6, case7, case8, case9, totalEvents, eggsDelivered, totalEggs] = [
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-	];
+interface ForestryEvent {
+	id: number;
+	name: string;
+	uniqueXP: SkillsEnum;
+}
+
+const ForestryEvents: ForestryEvent[] = [
+	{
+		id: 1,
+		name: 'Rising Roots',
+		uniqueXP: SkillsEnum.Woodcutting
+	},
+	{
+		id: 2,
+		name: 'Struggling Sapling',
+		uniqueXP: SkillsEnum.Farming
+	},
+	{
+		id: 3,
+		name: 'Flowering Bush',
+		uniqueXP: SkillsEnum.Woodcutting
+	},
+	{
+		id: 4,
+		name: 'Woodcutting Leprechaun',
+		uniqueXP: SkillsEnum.Woodcutting
+	},
+	{
+		id: 5,
+		name: 'Beehive',
+		uniqueXP: SkillsEnum.Construction
+	},
+	{
+		id: 6,
+		name: 'Friendly Ent',
+		uniqueXP: SkillsEnum.Fletching
+	},
+	{
+		id: 7,
+		name: 'Poachers',
+		uniqueXP: SkillsEnum.Hunter
+	},
+	{
+		id: 8,
+		name: 'Enchantment Ritual',
+		uniqueXP: SkillsEnum.Woodcutting
+	},
+	{
+		id: 9,
+		name: 'Pheasant Control',
+		uniqueXP: SkillsEnum.Thieving
+	}
+];
+
+const leafTable = new LootTable()
+	.add('Leaves', 20)
+	.add('Oak Leaves', 20)
+	.add('Willow Leaves', 20)
+	.add('Maple Leaves', 20)
+	.add('Yew Leaves', 20)
+	.add('Magic Leaves', 20);
+
+async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
+	let eventCounts: { [key: number]: number } = {};
+	let eventXP = {} as { [key in SkillsEnum]: number };
+	ForestryEvents.forEach(event => {
+		eventCounts[event.id] = 0;
+		eventXP[event.uniqueXP] = 0;
+	});
+
 	let strForestry = '';
 	let userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
-	let chanceWcLevel = Math.min(user.skillLevel(SkillsEnum.Woodcutting), 99);
+	let chanceWcLevel = Math.min(userWcLevel, 99);
 	let eggChance = Math.ceil(2700 - ((chanceWcLevel - 1) * (2700 - 1350)) / 98);
 	let whistleChance = Math.ceil(90 - ((chanceWcLevel - 1) * (90 - 45)) / 98);
 
-	const leafTable = new LootTable()
-		.add('Leaves', 20)
-		.add('Oak Leaves', 20)
-		.add('Willow Leaves', 20)
-		.add('Maple Leaves', 20)
-		.add('Yew Leaves', 20)
-		.add('Magic Leaves', 20);
-
 	perTimeUnitChance(duration, 20, Time.Minute, async () => {
-		let event = randInt(1, 9);
+		let eventIndex = randInt(0, ForestryEvents.length - 1);
+		let event = ForestryEvents[eventIndex];
+		let eggsDelivered = 0;
+		const defaultEventXP = 5 * (randInt(85, 115) / 100); // used for unverified xp rates
 
-		// Forestry events
-		switch (event) {
+		switch (event.id) {
 			case 1: // Rising Roots
-				case1++;
+				eventCounts[event.id]++;
+				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
 				break;
 			case 2: // Struggling Sapling
-				case2++;
 				loot.add(leafTable.roll());
+				eventCounts[event.id]++;
+				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
 				break;
 			case 3: // Flowering Bush
-				case3++;
 				loot.add('Strange fruit', randInt(4, 8)).add(MediumSeedPackTable.roll());
+				eventCounts[event.id]++;
+				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
 				break;
 			case 4: // Woodcutting Leprechaun
-				case4++;
+				eventCounts[event.id]++;
+				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
 				break;
 			case 5: // Beehive
-				case5++;
 				for (let i = 0; i < randInt(4, 6); i++) {
 					if (percentChance(200 / 300)) {
-						loot.add('Sturdy beehive parts', 1);
+						loot.add('Sturdy beehive parts');
 					}
 				}
+				eventCounts[event.id]++;
+				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
 				break;
 			case 6: // Friendly Ent
-				case6++;
 				loot.add(leafTable.roll());
 				loot.add(eggNest.roll());
+				eventCounts[event.id]++;
+				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
 				break;
 			case 7: // Poachers
-				case7++;
 				if (roll(whistleChance)) {
-					loot.add('Fox whistle', 1);
+					loot.add('Fox whistle');
 				}
+				eventCounts[event.id]++;
+				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
 				break;
 			case 8: // Enchantment Ritual
-				case8++;
 				if (roll(50)) {
-					loot.add('Petal garland', 1);
+					loot.add('Petal garland');
 				}
+				eventCounts[event.id]++;
+				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
 				break;
 			case 9: // Pheasant Control
-				case9++;
 				eggsDelivered = randInt(15, 45);
 				for (let i = 0; i < eggsDelivered; i++) {
 					if (percentChance(50)) {
-						loot.add('Pheasant tail feathers', 1);
+						loot.add('Pheasant tail feathers');
 					}
 					if (roll(eggChance)) {
-						loot.add('Golden pheasant egg', 1);
+						loot.add('Golden pheasant egg');
 					}
-					i++;
-					totalEggs++;
 				}
+				eventCounts[event.id]++;
+				eventXP[event.uniqueXP] += eggsDelivered * Math.ceil(user.skillLevel(SkillsEnum.Thieving) / 2);
 				break;
 		}
 		// Give user Anima-infused bark
 		loot.add('Anima-infused bark', randInt(500, 1000));
 	});
 
-	// verifiedXPRate is used for events that have verified xp rates on the wiki
-	const events = [
-		{
-			event: 'Rising Roots',
-			value: case1,
-			uniqueXP: SkillsEnum.Woodcutting
-		},
-		{
-			event: 'Struggling Sapling',
-			value: case2,
-			uniqueXP: SkillsEnum.Farming
-		},
-		{
-			event: 'Flowering Bush',
-			value: case3,
-			uniqueXP: SkillsEnum.Woodcutting
-		},
-		{
-			event: 'Woodcutting Leprechaun',
-			value: case4,
-			uniqueXP: SkillsEnum.Woodcutting
-		},
-		{
-			event: 'Beehive',
-			value: case5,
-			uniqueXP: SkillsEnum.Construction
-		},
-		{
-			event: 'Friendly Ent',
-			value: case6,
-			uniqueXP: SkillsEnum.Fletching
-		},
-		{
-			event: 'Poachers',
-			value: case7,
-			uniqueXP: SkillsEnum.Hunter
-		},
-		{
-			event: 'Enchantment Ritual',
-			value: case8,
-			uniqueXP: SkillsEnum.Woodcutting
-		},
-		{
-			event: 'Pheasant Control',
-			value: case9,
-			uniqueXP: SkillsEnum.Thieving,
-			verifiedXPRate: Math.ceil(totalEggs / case9) * Math.ceil(user.skillLevel(SkillsEnum.Thieving) / 2)
+	let totalEvents = 0;
+	for (const event in eventCounts) {
+		if (eventCounts.hasOwnProperty(event)) {
+			const count = eventCounts[event];
+			totalEvents += count;
+			await userStatsBankUpdate(
+				user.id,
+				'forestry_event_completions_bank',
+				new Bank().add(parseInt(event), count)
+			);
 		}
-	];
-	events.forEach(e => (totalEvents += e.value));
+	}
 
 	// Give user woodcutting xp for each event completed
-	let xpRes = await user.addXP({
-		skillName: SkillsEnum.Woodcutting,
-		amount: Math.ceil(totalEvents * randInt(500, 800) * (userWcLevel / 99)),
-		source: 'ForesteryEvents'
-	});
-	xpRes += ' ';
+	for (let i = 0; i < totalEvents; i++) {
+		eventXP[SkillsEnum.Woodcutting] += randInt(500, 800) * (userWcLevel / 99);
+	}
 
 	// Give user unique xp per event
-	let defaultEventXP = 5;
-	for (const event of events) {
-		for (let i = 0; i < event.value; i++) {
+	let xpRes = '';
+	for (const skill in eventXP) {
+		if (eventXP.hasOwnProperty(skill)) {
 			xpRes += await user.addXP({
-				skillName: event.uniqueXP,
-				amount: event.verifiedXPRate
-					? Math.ceil(event.verifiedXPRate)
-					: Math.ceil(user.skillLevel(event.uniqueXP) * defaultEventXP * (randInt(85, 115) / 100)),
+				skillName: skill as SkillsEnum,
+				amount: Math.ceil(eventXP[skill as SkillsEnum]),
 				minimal: true,
-				source: event.event.replace(/\s/g, '') as XpGainSource
+				source: 'ForestryEvents'
 			});
 		}
 	}
 
+	// // track events completed
+	// for (const eventId in eventCounts) {
+	// 	if (eventCounts.hasOwnProperty(eventId)) {
+	// 		const count = eventCounts[eventId];
+	// 		await userStatsBankUpdate(
+	// 			user.id,
+	// 			'forestry_event_completions_bank',
+	// 			new Bank().add(parseInt(eventId), count)
+	// 		);
+	// 	}
+	// }
+
 	// Generate forestry message
-	const eventCounts = events.filter(e => e.value > 0).map(e => `${e.value} ${e.event}`);
-	const completedEvents = eventCounts.join(' & ');
+	const completedEvents = Object.entries(eventCounts)
+		.map(([eventId, count]) => {
+			const event = ForestryEvents.find(e => e.id === parseInt(eventId));
+			return count > 0 ? `${count} ${event!.name}` : null;
+		})
+		.filter(Boolean)
+		.join(' & ');
 	strForestry += `${
-		completedEvents.length > 0
-			? `Completed Forestry event${totalEvents > 1 ? 's:' : ':'} ${completedEvents}. ${xpRes}\n`
-			: ''
+		totalEvents > 0 ? `Completed Forestry event${totalEvents > 1 ? 's:' : ':'} ${completedEvents}. ${xpRes}\n` : ''
 	}`;
 	strForestry += `${
 		loot.has('Sturdy beehive parts') && !user.cl.has('Sturdy beehive parts') // only show this message once to reduce spam
@@ -319,7 +358,7 @@ export const woodcuttingTask: MinionTask = {
 
 		// Forestry events
 		if (forestry) {
-			str += await handleForestry({ user, log, duration, loot });
+			str += await handleForestry({ user, duration, loot });
 		}
 
 		// Roll for pet
