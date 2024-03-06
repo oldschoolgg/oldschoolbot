@@ -1,3 +1,4 @@
+import { bold } from '@discordjs/builders';
 import { InteractionReplyOptions } from 'discord.js';
 import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -15,6 +16,11 @@ import {
 	calcMaxFloorUserCanDo,
 	numberOfGorajanOutfitsEquipped
 } from '../../lib/skilling/skills/dung/dungDbFunctions';
+import {
+	zygomiteFarmingSource,
+	zygomiteMutSurvivalChance,
+	zygomiteSeedMutChance
+} from '../../lib/skilling/skills/farming/zygomites';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -24,7 +30,7 @@ import { convertBankToPerHourStats, stringMatches } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemID from '../../lib/util/itemID';
-import { calcPerHour, formatDuration, returnStringOrFile } from '../../lib/util/smallUtils';
+import { calcPerHour, formatDuration, itemNameFromID, returnStringOrFile } from '../../lib/util/smallUtils';
 import { calculateAgilityResult } from '../../tasks/minions/agilityActivity';
 import { calculateDungeoneeringResult } from '../../tasks/minions/bso/dungeoneeringActivity';
 import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
@@ -108,6 +114,18 @@ export const ratesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'misc',
+			description: 'Miscelleanous rates.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'zygomite_seeds',
+					description: 'Check zygomite seeds.'
+				}
+			]
 		}
 	],
 	run: async ({
@@ -118,10 +136,29 @@ export const ratesCommand: OSBMahojiCommand = {
 		xphr?: { divination_memory_harvesting?: {}; agility?: {}; dungeoneering?: {}; mining?: {}; hunter?: {} };
 		monster?: { monster?: { name: string } };
 		tames?: { eagle?: {} };
+		misc?: { zygomite_seeds?: {} };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
+		if (options.misc?.zygomite_seeds) {
+			const mutationChancePerMinute = 1 / zygomiteSeedMutChance;
+			const survivalChancePerMutation = 1 / zygomiteMutSurvivalChance;
+			const chancePerMinuteBoth = mutationChancePerMinute * survivalChancePerMutation;
+			const averageMinutesToGetBoth = 1 / chancePerMinuteBoth;
+			const averageHoursToGetBoth = averageMinutesToGetBoth / 60;
+			return `For every minute in any trip, a random, valid seed from your bank has a 1 in ${zygomiteSeedMutChance} chance of mutating, and then that mutated seed has a 1 in ${zygomiteMutSurvivalChance} chance of surviving. ${averageHoursToGetBoth.toFixed(
+				1
+			)} hours on average to get a zygomite seed.
 
+${zygomiteFarmingSource
+	.map(
+		z =>
+			`${bold(z.seedItem.name)} evolves from: ${z.mutatedFromItems
+				.map(itemNameFromID)
+				.join(', ')}, drops these items: ${z.lootTable.allItems.map(itemNameFromID).join(', ')}.`
+	)
+	.join('\n\n')}`;
+		}
 		if (options.tames?.eagle) {
 			let results = `${['Support Level', 'Clue Tier', 'Clues/hr', 'Kibble/hr', 'GMC/Hr'].join('\t')}\n`;
 			for (const tameLevel of [50, 60, 70, 75, 80, 85, 90, 95, 100]) {

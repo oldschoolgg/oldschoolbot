@@ -267,7 +267,13 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 
 			let hasWispBuster = false;
 			let hasDivineHand = false;
-			if (user.hasEquipped('Wisp-buster')) {
+
+			const shouldAttemptToUseDivineHand =
+				user.hasEquipped('Divine hand') ||
+				(user.bank.has('Divine hand') && method.id === MemoryHarvestType.ConvertToEnergy);
+			const shouldAttemptToUseWispBuster = user.hasEquipped('Wisp-buster') || !shouldAttemptToUseDivineHand;
+
+			if (shouldAttemptToUseWispBuster) {
 				const boostResult = await inventionItemBoost({
 					user,
 					inventionID: InventionID.WispBuster,
@@ -279,7 +285,7 @@ You have ${portentCharges[portent.id]} charges left, and you receive ${
 					);
 					hasWispBuster = true;
 				}
-			} else if (user.hasEquipped('Divine hand')) {
+			} else if (shouldAttemptToUseDivineHand) {
 				const boostResult = await inventionItemBoost({
 					user,
 					inventionID: InventionID.DivineHand,

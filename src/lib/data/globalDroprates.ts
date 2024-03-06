@@ -116,5 +116,14 @@ export const globalDroprates = {
 		rolledPer: 'kill',
 		notes: ['Received from killing Vladimir Drakan'],
 		item: getOSItem('Echo')
+	},
+	fungo: {
+		name: 'Fungo (pet)',
+		baseRate: 50,
+		clIncrease: 1.5,
+		minLength: false,
+		rolledPer: 'harvest',
+		notes: ['Received from harvesting any planted zygomite'],
+		item: getOSItem('Fungo')
 	}
 };

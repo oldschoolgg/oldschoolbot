@@ -1,9 +1,10 @@
 import { CropUpgradeType } from '@prisma/client';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { percentChance, Time } from 'e';
+import { percentChance, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { BitField } from '../../../lib/constants';
 import { superCompostables } from '../../../lib/data/filterables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { prisma } from '../../../lib/settings/prisma';
@@ -82,6 +83,11 @@ export async function harvestCommand({
 	if (user.hasEquippedOrInBank(['Ring of endurance'])) {
 		boostStr.push('10% time for Ring of Endurance');
 		duration *= 0.9;
+	}
+
+	if (user.bitfield.includes(BitField.HasMoondashCharm)) {
+		boostStr.push('25% faster for Moondash charm');
+		duration = reduceNumByPercent(duration, 25);
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'Farming');
@@ -218,6 +224,11 @@ export async function farmingPlantCommand({
 	if (user.hasEquipped('Ring of endurance')) {
 		boostStr.push('10% time for Ring of Endurance');
 		duration *= 0.9;
+	}
+
+	if (user.bitfield.includes(BitField.HasMoondashCharm)) {
+		boostStr.push('25% faster for Moondash charm');
+		duration = reduceNumByPercent(duration, 25);
 	}
 
 	for (const [diary, tier] of [[ArdougneDiary, ArdougneDiary.elite]] as const) {

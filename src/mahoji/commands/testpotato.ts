@@ -42,7 +42,7 @@ import { slayerMasterChoices } from '../../lib/slayer/constants';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { allSlayerMonsters } from '../../lib/slayer/tasks';
-import { tameSpecies } from '../../lib/tames';
+import { tameFeedableItems, tameSpecies } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
 import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
 import {
@@ -67,7 +67,7 @@ import { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 import { generateNewTame } from './nursery';
-import { tameImage } from './tames';
+import { tameEquippables, tameImage } from './tames';
 
 export async function giveMaxStats(user: MUser) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
@@ -586,11 +586,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'spawntames',
-					description: 'Spawns you adult tames.'
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
 					name: 'forcegrow',
 					description: 'Force a plant to grow.',
 					options: [
@@ -747,7 +742,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				naxxus?: {};
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
-				spawntames?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
 				wipe?: { thing: (typeof thingsToWipe)[number] };
 				refreshic?: {};
@@ -942,6 +936,24 @@ ${droprates.join('\n')}`),
 					return 'Invalid thing to reset.';
 				}
 				if (options.max) {
+					for (const specie of tameSpecies) {
+						const fedItems = new Bank();
+						for (const food of tameFeedableItems.filter(t =>
+							t.tameSpeciesCanBeFedThis.includes(specie.id)
+						)) {
+							fedItems.add(food.item.id);
+						}
+						await generateNewTame(user, specie);
+
+						await prisma.tame.updateMany({
+							where: {
+								user_id: user.id
+							},
+							data: {
+								growth_stage: tame_growth.adult
+							}
+						});
+					}
 					await getPOH(user.id);
 					await prisma.playerOwnedHouse.update({
 						where: {
@@ -965,32 +977,38 @@ ${droprates.join('\n')}`),
 							}
 						}
 					});
+					const loot = new Bank()
+						.add('Rune pouch')
+						.add('Blood rune', 100_000_000)
+						.add('Death rune', 100_000_000)
+						.add('Blood rune', 100_000_000)
+						.add('Water rune', 100_000_000)
+						.add('Saradomin brew(4)', 100_000_000)
+						.add('Super restore(4)', 100_000_000)
+						.add('Stamina potion(4)', 100_000_000)
+						.add('Super combat potion(4)', 100_000_000)
+						.add('Cooked karambwan', 100_000_000)
+						.add('Ranging potion(4)', 100_000_000)
+						.add('Coins', 100_000_000)
+						.add('Shark', 100_000_000)
+						.add('Vial of blood', 100_000_000)
+						.add('Rune pouch')
+						.add('Zamorakian spear')
+						.add('Dragon warhammer')
+						.add('Bandos godsword')
+						.add('Toxic blowpipe')
+						.add(runePreset)
+						.add(foodPreset)
+						.add(potionsPreset)
+						.add(usables)
+						.add(doaSupplies);
+
+					for (const gear of tameEquippables) {
+						loot.add(gear.item.id, 100);
+					}
+
 					await user.addItemsToBank({
-						items: new Bank()
-							.add('Rune pouch')
-							.add('Blood rune', 100_000_000)
-							.add('Death rune', 100_000_000)
-							.add('Blood rune', 100_000_000)
-							.add('Water rune', 100_000_000)
-							.add('Saradomin brew(4)', 100_000_000)
-							.add('Super restore(4)', 100_000_000)
-							.add('Stamina potion(4)', 100_000_000)
-							.add('Super combat potion(4)', 100_000_000)
-							.add('Cooked karambwan', 100_000_000)
-							.add('Ranging potion(4)', 100_000_000)
-							.add('Coins', 100_000_000)
-							.add('Shark', 100_000_000)
-							.add('Vial of blood', 100_000_000)
-							.add('Rune pouch')
-							.add('Zamorakian spear')
-							.add('Dragon warhammer')
-							.add('Bandos godsword')
-							.add('Toxic blowpipe')
-							.add(runePreset)
-							.add(foodPreset)
-							.add(potionsPreset)
-							.add(usables)
-							.add(doaSupplies)
+						items: loot
 					});
 					await user.update({
 						GP: 5_000_000_000,
@@ -1018,7 +1036,9 @@ ${droprates.join('\n')}`),
 						}
 					});
 					await giveMaxStats(user);
-					return 'Fully maxed your account, stocked your bank, charged all chargeable items.';
+					return `Fully maxed your account, stocked your bank, charged all chargeable items.
+					
+Spawned an adult of each tame, fed them all applicable items, and spawned ALL their equippable items into your bank (but not equipped).`;
 				}
 				if (options.patron) {
 					return givePatronLevel(user, Number(options.patron.tier));
@@ -1108,20 +1128,6 @@ ${droprates.join('\n')}`),
 						{}
 					);
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
-				}
-				if (options.spawntames) {
-					for (const specie of tameSpecies) {
-						await generateNewTame(user, specie);
-						await prisma.tame.updateMany({
-							where: {
-								user_id: user.id
-							},
-							data: {
-								growth_stage: tame_growth.adult
-							}
-						});
-					}
-					return 'Gave you an adult of each tame.';
 				}
 				if (options.forcegrow) {
 					const farmingDetails = await getFarmingInfo(userID);

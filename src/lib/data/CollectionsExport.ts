@@ -2433,7 +2433,8 @@ export const customPetsCL = resolveItems([
 	'Crush',
 	'Herbert',
 	'Echo',
-	'Doopy'
+	'Doopy',
+	'Fungo'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([

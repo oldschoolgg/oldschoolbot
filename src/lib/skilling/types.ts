@@ -277,6 +277,7 @@ export interface Plant {
 	additionalPatchesByFarmGuildAndLvl: number[][];
 	timePerPatchTravel: number;
 	timePerHarvest: number;
+	onHarvest?: (options: { user: MUser; loot: Bank; quantity: number }) => unknown;
 }
 
 export enum HunterTechniqueEnum {

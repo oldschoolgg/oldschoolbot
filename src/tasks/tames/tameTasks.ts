@@ -105,6 +105,37 @@ function doubleLootCheck(tame: Tame, loot: Bank) {
 	return { loot, doubleLootMsg };
 }
 
+async function handleImplingLocator(user: MUser, tame: MTame, duration: number, loot: Bank, messages: string[]) {
+	if (tame.hasBeenFed('Impling locator')) {
+		const result = await handlePassiveImplings(user, {
+			type: 'MonsterKilling',
+			duration
+		} as ActivityTaskData);
+		if (result && result.bank.length > 0) {
+			const actualImplingLoot = new Bank();
+			for (const [item, qty] of result.bank.items()) {
+				const openable = allOpenables.find(i => i.id === item.id)!;
+				assert(!isEmpty(openable));
+				actualImplingLoot.add(
+					isFunction(openable.output)
+						? (
+								await openable.output({
+									user,
+									quantity: qty,
+									self: openable,
+									totalLeaguesPoints: 0
+								})
+						  ).bank
+						: openable.output.roll(qty)
+				);
+			}
+			loot.add(actualImplingLoot);
+			messages.push(`${tame} caught ${result.bank} with their Impling locator!`);
+			await tame.addToStatsBank('implings_loot', actualImplingLoot);
+		}
+	}
+}
+
 export async function runTameTask(activity: TameActivity, tame: Tame) {
 	async function handleFinish(res: { loot: Bank | null; message: string; user: MUser }) {
 		const previousTameCl = new Bank({ ...(tame.max_total_loot as ItemBank) });
@@ -184,18 +215,25 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				}
 			}
 			const loot = mon.loot({ quantity: killQty, tame });
+			const messages: string[] = [];
+
 			let str = `${user}, ${tameName(tame)} finished killing ${quantity}x ${mon.name}.${
 				activity.deaths > 0 ? ` ${tameName(tame)} died ${activity.deaths}x times.` : ''
 			}`;
-			const boosts = [];
 			if (oriIsApplying) {
-				boosts.push('25% extra loot (ate an Ori)');
+				messages.push('25% extra loot (ate an Ori)');
 			}
-			if (boosts.length > 0) {
-				str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
-			}
+
 			const { doubleLootMsg } = doubleLootCheck(tame, loot);
 			str += doubleLootMsg;
+
+			const mTame = new MTame(tame);
+			await handleImplingLocator(user, mTame, activity.duration, loot, messages);
+
+			if (messages.length > 0) {
+				str += `\n\n**Messages:** ${messages.join(', ')}.`;
+			}
+
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			await trackLoot({
 				duration: activity.duration,
@@ -263,6 +301,8 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			const messages: string[] = [];
 			const loot = new Bank();
 
+			await handleImplingLocator(user, mTame, activity.duration, loot, messages);
+
 			let actualOpenQuantityWithBonus = 0;
 			for (let i = 0; i < activityData.quantity; i++) {
 				actualOpenQuantityWithBonus += randInt(1, 3);
@@ -309,35 +349,6 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				}
 
 				loot.add(openingLoot);
-			}
-
-			if (mTame.hasBeenFed('Impling locator')) {
-				const result = await handlePassiveImplings(user, {
-					type: 'MonsterKilling',
-					duration: activity.duration
-				} as ActivityTaskData);
-				if (result && result.bank.length > 0) {
-					const actualImplingLoot = new Bank();
-					for (const [item, qty] of result.bank.items()) {
-						const openable = allOpenables.find(i => i.id === item.id)!;
-						assert(!isEmpty(openable));
-						actualImplingLoot.add(
-							isFunction(openable.output)
-								? (
-										await openable.output({
-											user,
-											quantity: qty,
-											self: openable,
-											totalLeaguesPoints: 0
-										})
-								  ).bank
-								: openable.output.roll(qty)
-						);
-					}
-					loot.add(actualImplingLoot);
-					messages.push(`${mTame} caught ${result.bank} with their Impling locator!`);
-					await mTame.addToStatsBank('implings_loot', actualImplingLoot);
-				}
 			}
 
 			let str = `${user}, ${mTame} finished completing ${activityData.quantity}x ${itemNameFromID(

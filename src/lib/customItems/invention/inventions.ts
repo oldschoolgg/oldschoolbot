@@ -33,3 +33,4 @@ addInvention(63_326, 'RoboFlappy');
 addInvention(73_039, 'Wisp-buster', 'Bronze dagger');
 addInvention(73_042, 'Divine hand', 'Bronze dagger');
 addInvention(73_055, 'Drygore axe', 'Bronze dagger');
+addInvention(73_077, 'Moonlight mutator');

@@ -74,7 +74,7 @@ for (const droprate of Object.values(globalDroprates)) {
 		output: ({ user }) => {
 			let str = `**${droprate.name}**\n\n`;
 			str += `${droprate.name} drops at a rate of **1/${droprate.baseRate}** per ${droprate.rolledPer}.\n`;
-			if ('minLength' in droprate) {
+			if ('minLength' in droprate && droprate.minLength) {
 				str += `Requires a minimum trip length of **${formatDuration(MIN_LENGTH_FOR_PET)}** to receive.\n`;
 			}
 			if ('tameBaseRate' in droprate) {

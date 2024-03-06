@@ -11186,17 +11186,7 @@ setCustomItem(
 	1
 );
 
-setCustomItem(
-	73_077,
-	'Moonlight mutator',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1
-);
+// 73_077 Moonlight mutator
 
 setCustomItem(
 	73_078,
@@ -11514,6 +11504,78 @@ setCustomItem(
 	73_104,
 	'3rd age jibwings (e)',
 	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_105,
+	'Moondash charm',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_106,
+	'Herbal zygomite spores',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_107,
+	'Barky zygomite spores',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_109,
+	'Fruity zygomite spores',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_110,
+	'Moonlight essence',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_111,
+	'Fungo',
+	'Herbi',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true

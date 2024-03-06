@@ -821,6 +821,12 @@ export const allCollectionLogs: ICollection = {
 				allItems: BSOMonsters.Solis.allItems,
 				items: BSOMonsters.Solis.allItems!,
 				fmtProg: kcProg(BSOMonsters.Solis.id)
+			},
+			Celestara: {
+				alias: ['celestara'],
+				allItems: BSOMonsters.Celestara.allItems,
+				items: BSOMonsters.Celestara.allItems!,
+				fmtProg: kcProg(BSOMonsters.Celestara.id)
 			}
 		}
 	},

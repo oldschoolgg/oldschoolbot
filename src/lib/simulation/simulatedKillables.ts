@@ -6,6 +6,7 @@ import { nexUniqueDrops } from '../data/CollectionsExport';
 import { chanceOfDOAUnique, pickUniqueToGiveUser } from '../depthsOfAtlantis';
 import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import { NEX_UNIQUE_DROPRATE, nexLootTable } from '../nex';
+import { zygomiteFarmingSource } from '../skilling/skills/farming/zygomites';
 import { roll } from '../util';
 import { WintertodtCrate } from './wintertodt';
 
@@ -102,5 +103,16 @@ export const simulatedKillables: SimulatedKillable[] = [
 		loot: (quantity: number) => {
 			return MoktangLootTable.roll(quantity);
 		}
-	}
+	},
+	...zygomiteFarmingSource.map(src => ({
+		name: src.name,
+		isCustom: true,
+		loot: (quantity: number) => {
+			let loot = new Bank();
+			for (let i = 0; i < quantity; i++) {
+				loot.add(src.lootTable.roll());
+			}
+			return loot;
+		}
+	}))
 ];
