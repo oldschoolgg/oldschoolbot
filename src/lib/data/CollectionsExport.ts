@@ -1837,7 +1837,12 @@ export const slayerCL = resolveItems([
 	// "Dagon'hai hat",
 	// "Dagon'hai robe top",
 	// "Dagon'hai robe bottom",
-	'Blood shard'
+	'Blood shard',
+	'Ancient ceremonial mask',
+	'Ancient ceremonial top',
+	'Ancient ceremonial legs',
+	'Ancient ceremonial gloves',
+	'Ancient ceremonial boots'
 ]);
 export const tzHaarCL = resolveItems([
 	'Obsidian cape',
