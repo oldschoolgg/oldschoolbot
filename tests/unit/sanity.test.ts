@@ -1,3 +1,4 @@
+import { Tame, tame_growth } from '@prisma/client';
 import { Items, Monsters } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { assert, describe, expect, test } from 'vitest';
@@ -20,6 +21,7 @@ import getOSItem from '../../src/lib/util/getOSItem';
 import itemID from '../../src/lib/util/itemID';
 import itemIsTradeable from '../../src/lib/util/itemIsTradeable';
 import resolveItems from '../../src/lib/util/resolveItems';
+import { calculateMaximumTameFeedingLevelGain } from '../../src/lib/util/tameUtil';
 import { BingoTrophies } from '../../src/mahoji/lib/bingo/BingoManager';
 
 describe('Sanity', () => {
@@ -135,7 +137,15 @@ describe('Sanity', () => {
 			27_499,
 			27_828,
 			'Paint box',
-			'Ruby Red paint can'
+			'Ruby Red paint can',
+			'Scurry',
+			'Trailblazer reloaded dragon trophy',
+			'Trailblazer reloaded rune trophy',
+			'Trailblazer reloaded adamant trophy',
+			'Trailblazer reloaded mithril trophy',
+			'Trailblazer reloaded steel trophy',
+			'Trailblazer reloaded iron trophy',
+			'Trailblazer reloaded bronze trophy'
 		]);
 		for (const i of shouldntBeIn) {
 			if (allMbTables.includes(i)) {
@@ -287,5 +297,29 @@ describe('Sanity', () => {
 				throw new Error(`${trophy.item.name} is tradeable`);
 			}
 		}
+	});
+	test('comp cape reqs', () => {
+		const items = [
+			getOSItem('Completionist cape'),
+			getOSItem('Completionist cape (t)'),
+			getOSItem('Completionist hood')
+		];
+		for (const item of items) {
+			expect(item.equipment!.requirements?.agility).toEqual(120);
+			expect(item.equipment!.requirements?.attack).toEqual(120);
+			// @ts-ignore ignore
+			expect(item.equipment!.requirements?.divination).toEqual(120);
+		}
+		// @ts-ignore ignore
+		expect(getOSItem("Gatherer's cape").equipment!.requirements?.divination).toEqual(120);
+	});
+	test('calculateMaximumTameFeedingLevelGain', () => {
+		expect(
+			calculateMaximumTameFeedingLevelGain({
+				species_id: 1,
+				max_combat_level: 70,
+				growth_stage: tame_growth.adult
+			} as Tame)
+		).toEqual(14);
 	});
 });

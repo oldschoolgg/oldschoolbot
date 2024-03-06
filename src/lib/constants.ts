@@ -80,7 +80,8 @@ export const Roles = {
 	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '848967350120218636',
 	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '867967551819358219',
 	TopInventor: '992799099801833582',
-	TopLeagues: '1005417171112972349'
+	TopLeagues: '1005417171112972349',
+	EventOrganizer: '1149907536749801542'
 };
 
 export const enum DefaultPingableRoles {
@@ -292,6 +293,10 @@ export enum BitField {
 	CleanHerbsFarming = 35,
 	SelfGamblingLocked = 36,
 	DisabledFarmingReminders = 37,
+	DisableClueButtons = 38,
+	DisableAutoSlayButton = 39,
+	DisableHighPeakTimeWarning = 40,
+
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -305,7 +310,22 @@ export enum BitField {
 	HasGuthixEngram = 210,
 	ScrollOfLongevityDisabled = 211,
 	HasUnlockedYeti = 212,
-	NoItemContractDonations = 213
+	NoItemContractDonations = 213,
+
+	HasFlickeringBoon = 214,
+	HasBrightBoon = 215,
+	HasGlowingBoon = 216,
+	HasSparklingBoon = 217,
+	HasGleamingBoon = 218,
+	HasLustrousBoon = 219,
+	HasElderBoon = 220,
+	HasBrilliantBoon = 221,
+	HasRadiantBoon = 222,
+	HasLuminousBoon = 223,
+	HasIncandescentBoon = 224,
+	HasVibrantBoon = 225,
+	HasAncientBoon = 226,
+	DisabledTameClueOpening = 227
 }
 
 interface BitFieldData {
@@ -380,6 +400,71 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: false
 	},
+	[BitField.HasFlickeringBoon]: {
+		name: 'Has Flickering Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasBrightBoon]: {
+		name: 'Has Bright Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasGlowingBoon]: {
+		name: 'Has Glowing Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasSparklingBoon]: {
+		name: 'Has Sparkling Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasGleamingBoon]: {
+		name: 'Has Gleaming Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasLustrousBoon]: {
+		name: 'Has Lustrous Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasElderBoon]: {
+		name: 'Has Elder Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasBrilliantBoon]: {
+		name: 'Has Brilliant Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasRadiantBoon]: {
+		name: 'Has Radiant Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasLuminousBoon]: {
+		name: 'Has Luminous Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasIncandescentBoon]: {
+		name: 'Has Incandescent Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasVibrantBoon]: {
+		name: 'Has Vibrant Boon',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasAncientBoon]: {
+		name: 'Has Ancient Boon',
+		protected: false,
+		userConfigurable: false
+	},
 
 	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
 	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },
@@ -419,8 +504,28 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.DisableClueButtons]: {
+		name: 'Disable Clue Buttons',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableAutoSlayButton]: {
+		name: 'Disable Auto Slay Button',
+		protected: false,
+		userConfigurable: true
+	},
 	[BitField.NoItemContractDonations]: {
 		name: 'Disable Item Contract donations',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisabledTameClueOpening]: {
+		name: 'Disable Eagle Tame Opening Caskets',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableHighPeakTimeWarning]: {
+		name: 'Disable Wilderness High Peak Time Warning',
 		protected: false,
 		userConfigurable: true
 	}
@@ -736,7 +841,7 @@ const globalConfigSchema = z.object({
 	clientID: z.string().min(15).max(25),
 	geAdminChannelID: z.string().default('')
 });
-dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.example' : '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
 export const globalConfig = globalConfigSchema.parse({
 	patreonToken: process.env.PATREON_TOKEN,
@@ -797,53 +902,6 @@ export const CHINCANNON_MESSAGES = [
 	'Your Chincannon blew up all the loot!',
 	'Your Chincannon turned the loot into dust.'
 ];
-export const hweenGiveableItems = resolveItems([
-	'Gravedigger mask',
-	'Gravedigger top',
-	'Gravedigger leggings',
-	'Gravedigger gloves',
-	'Gravedigger boots',
-	'Jack lantern mask',
-	'Scythe',
-	'Grim reaper hood',
-	'Jonas mask',
-	'Skeleton mask',
-	'Skeleton shirt',
-	'Skeleton leggings',
-	'Skeleton gloves',
-	'Skeleton boots',
-	'Anti-panties',
-	'Banshee mask',
-	'Banshee top',
-	'Banshee robe',
-	'Hunting knife',
-	'Eek',
-	'Clown mask',
-	'Clown bow tie',
-	'Clown gown',
-	'Clown trousers',
-	'Clown shoes',
-	'Pumpkin lantern',
-	'Skeleton lantern',
-	'Spooky hood',
-	'Spooky robe',
-	'Spooky skirt',
-	'Spooky gloves',
-	'Spooky boots',
-	'Headless head',
-	'Magical pumpkin',
-	'Haunted wine bottle',
-	'Ugly halloween jumper (black)',
-	'Ugly halloween jumper (orange)',
-	'Saucepan',
-	"Black h'ween mask",
-	'Witch hat',
-	'Witch top',
-	'Witch robes',
-	'Witch boots',
-	'Witch cape',
-	'Halloween wig'
-]);
 
 export const masteryKey = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
 
@@ -855,3 +913,23 @@ export const ItemIconPacks = [
 		icons: new Map<number, Image>()
 	}
 ];
+
+export const patronFeatures = {
+	ShowEnteredInGiveawayList: {
+		tier: PerkTier.Four
+	}
+};
+
+export const christmasCakeIngredients = resolveItems([
+	'Gingerbread',
+	'Grimy salt',
+	'Snail oil',
+	'Ashy flour',
+	'Banana-butter',
+	'Fresh rat milk',
+	'Pristine chocolate bar',
+	'Smokey egg'
+]);
+export const gearValidationChecks = new Set();
+
+export const BSO_MAX_TOTAL_LEVEL = 3120;

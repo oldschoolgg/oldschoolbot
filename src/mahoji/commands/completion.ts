@@ -4,7 +4,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { calculateCompCapeProgress } from '../../lib/bso/calculateCompCapeProgress';
 import { generateAllCompCapeTasksList } from '../../lib/compCape';
 import { OSBMahojiCommand } from '../lib/util';
-import { userStatsUpdate } from '../mahojiSettings';
 
 export const completionCommand: OSBMahojiCommand = {
 	name: 'completion',
@@ -29,11 +28,8 @@ export const completionCommand: OSBMahojiCommand = {
 	run: async ({ options, userID }: CommandRunOptions<{ check?: {}; view_all_tasks?: {} }>) => {
 		const user = await mUserFetch(userID);
 		if (options.check) {
-			const { resultStr, totalPercentTrimmed, totalPercentUntrimmed } = await calculateCompCapeProgress(user);
-			await userStatsUpdate(user.id, {
-				comp_cape_percent: totalPercentTrimmed,
-				untrimmed_comp_cape_percent: totalPercentUntrimmed
-			});
+			const { resultStr } = await calculateCompCapeProgress(user);
+
 			return {
 				files: [new AttachmentBuilder(Buffer.from(resultStr), { name: 'compcape.txt' })]
 			};

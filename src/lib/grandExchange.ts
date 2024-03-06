@@ -7,6 +7,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
+import { BLACKLISTED_USERS } from './blacklists';
 import { BitField, globalConfig, ONE_TRILLION, PerkTier } from './constants';
 import { isCustomItem } from './customItems/util';
 import { marketPricemap } from './marketPrices';
@@ -25,7 +26,6 @@ import {
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
-import { geLog } from './util/logger';
 import { sendToChannelID } from './util/webhook';
 
 interface CreateListingArgs {
@@ -37,7 +37,7 @@ interface CreateListingArgs {
 }
 
 function validateNumber(num: number) {
-	if (num < 0 || isNaN(num) || !Number.isInteger(num) || num > Number.MAX_SAFE_INTEGER) {
+	if (num < 0 || isNaN(num) || !Number.isInteger(num) || num >= Number.MAX_SAFE_INTEGER) {
 		throw new Error(`Invalid number: ${num}.`);
 	}
 }
@@ -404,7 +404,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				...makeTransactFromTableBankQueries({ bankToAdd: result.cost })
 			]);
 
-			geLog(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
+			debugLog(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
 
 			return {
 				createdListing: listing,
@@ -514,7 +514,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			buyerLoot.add('Coins', buyerRefund);
 			bankToRemoveFromGeBank.add('Coins', buyerRefund);
 
-			geLog(
+			debugLog(
 				`Buyer got refunded ${buyerRefund} GP due to price difference. Buyer was asking ${buyerListing.asking_price_per_item}GP for each of the ${quantityToBuy}x items, seller was asking ${sellerListing.asking_price_per_item}GP, and the post-tax price per item was ${pricePerItemAfterTax}`,
 				logContext
 			);
@@ -542,19 +542,19 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			const missingItems = bankGEShouldHave.clone().remove(geBank);
 			const str = `The GE did not have enough items to cover this transaction! We tried to remove ${bankGEShouldHave} missing: ${missingItems}. ${debug}`;
 			logError(str, logContext);
-			geLog(str, logContext);
+			debugLog(str, logContext);
 			throw new Error(str);
 		}
 
-		geLog(
+		debugLog(
+			`Completing a transaction, removing ${bankToRemoveFromGeBank} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${geBank.toString()}. ${debug}`,
 			{
 				totalPriceAfterTax,
 				totalTaxPaid,
 				totalPriceBeforeTax,
 				bankToRemoveFromGeBank: bankToRemoveFromGeBank.toString(),
 				currentGEBank: geBank.toString()
-			},
-			`Completing a transaction, removing ${bankToRemoveFromGeBank} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${geBank.toString()}.`
+			}
 		);
 
 		await prisma.$transaction([
@@ -607,7 +607,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			...makeTransactFromTableBankQueries({ bankToRemove: bankToRemoveFromGeBank })
 		]);
 
-		geLog(`Transaction completed, the new G.E bank is ${await this.fetchOwnedBank()}.`);
+		debugLog(`Transaction completed, the new G.E bank is ${await this.fetchOwnedBank()}.`);
 
 		const buyerUser = await mUserFetch(buyerListing.user_id);
 		const sellerUser = await mUserFetch(sellerListing.user_id);
@@ -616,13 +616,15 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			items: buyerLoot,
 			collectionLog: false,
 			dontAddToTempCL: true,
-			filterLoot: false
+			filterLoot: false,
+			neverUpdateHistory: true
 		});
 		await sellerUser.addItemsToBank({
 			items: sellerLoot,
 			collectionLog: false,
 			dontAddToTempCL: true,
-			filterLoot: false
+			filterLoot: false,
+			neverUpdateHistory: true
 		});
 
 		const itemName = itemNameFromID(buyerListing.item_id)!;
@@ -696,9 +698,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					type: GEListingType.Buy,
 					fulfilled_at: null,
 					cancelled_at: null,
-					user_id: {
-						not: null
-					}
+					user_id: { not: null }
 				},
 				orderBy: [
 					{
@@ -714,9 +714,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					type: GEListingType.Sell,
 					fulfilled_at: null,
 					cancelled_at: null,
-					user_id: {
-						not: null
-					}
+					user_id: { not: null }
 				},
 				orderBy: [
 					{
@@ -764,7 +762,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 		await this.checkGECanFullFilAllListings();
 
-		geLog('Validated GE and found no issues.');
+		debugLog('Validated GE and found no issues.');
 
 		return true;
 	}
@@ -782,13 +780,22 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			shouldHave.add(listing.item_id, listing.quantity_remaining);
 		}
 
-		geLog(`Expected G.E Bank: ${shouldHave}`);
+		debugLog(`Expected G.E Bank: ${shouldHave}`);
 		if (!currentBank.equals(shouldHave)) {
-			throw new Error(
-				`GE either has extra or insufficient items. Difference: ${shouldHave.difference(currentBank)}`
-			);
+			if (!currentBank.has(shouldHave)) {
+				throw new Error(
+					`GE is MISSING items to cover the ${[...buyListings, ...sellListings].length}x active listings.
+G.E Bank Has: ${currentBank}
+G.E Bank Should Have: ${shouldHave}
+Difference: ${shouldHave.difference(currentBank)}`
+				);
+			}
+			throw new Error(`GE has EXTRA items.
+G.E Bank Has: ${currentBank}
+G.E Bank Should Have: ${shouldHave}
+Difference: ${shouldHave.difference(currentBank)}`);
 		} else {
-			geLog(
+			debugLog(
 				`GE has ${currentBank}, which is enough to cover the ${
 					[...buyListings, ...sellListings].length
 				}x active listings! Difference: ${shouldHave.difference(currentBank)}`
@@ -798,17 +805,21 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	}
 
 	async tick() {
-		await this.queue.add(async () => {
-			if (this.isTicking) throw new Error('Already ticking.');
-			try {
-				await this._tick();
-			} catch (err: any) {
-				logError(err.message);
-				geLog(err.message);
-				throw err;
-			} finally {
-				this.isTicking = false;
-			}
+		return new Promise<void>((resolve, reject) => {
+			this.queue.add(async () => {
+				if (this.isTicking) return reject(new Error('Already ticking.'));
+				this.isTicking = true;
+				try {
+					await this._tick();
+				} catch (err: any) {
+					logError(err.message);
+					debugLog(err.message);
+					return reject(err);
+				} finally {
+					this.isTicking = false;
+					resolve();
+				}
+			});
 		});
 	}
 
@@ -837,7 +848,11 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		if (this.locked) return;
 		const stopwatch = new Stopwatch();
 		stopwatch.start();
-		const { buyListings, sellListings } = await this.fetchActiveListings();
+		const { buyListings: _buyListings, sellListings: _sellListings } = await this.fetchActiveListings();
+
+		// Filter out listings from Blacklisted users:
+		const buyListings = _buyListings.filter(l => !BLACKLISTED_USERS.has(l.user_id!));
+		const sellListings = _sellListings.filter(l => !BLACKLISTED_USERS.has(l.user_id!));
 
 		for (const buyListing of buyListings) {
 			// These are all valid, matching sell listings we can match with this buy listing.
@@ -873,7 +888,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			} catch (err: any) {
 				await this.lockGE(err.message);
 				logError(err);
-				geLog(err);
+				debugLog(err);
 				break;
 			}
 
@@ -882,7 +897,6 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		}
 
 		stopwatch.stop();
-		geLog(`GE tick took ${stopwatch}`);
 	}
 
 	async totalReset() {

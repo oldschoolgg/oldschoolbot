@@ -10,6 +10,7 @@ import {
 	baxtorianBathhousesStartCommand
 } from '../../lib/baxtorianBathhouses';
 import { allGodlyItems, divineDominionCheck, divineDominionSacrificeCommand } from '../../lib/bso/divineDominion';
+import { joinGuthixianCache } from '../../lib/bso/guthixianCache';
 import { fishingLocations } from '../../lib/fishingContest';
 import { MaterialType } from '../../lib/invention';
 import { bonanzaCommand } from '../lib/abstracted_commands/bonanzaCommand';
@@ -252,6 +253,25 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'guthixian_cache',
+			description: 'The Guthixian cache divination minigame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'join',
+					description: 'Join the current guthixian cache, if one is open.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'stats',
+					description: 'View your guthixian cache stats and boosts.',
+					options: []
+				}
+			]
 		}
 	],
 	run: async ({
@@ -297,6 +317,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 				quantity?: number;
 			};
 		};
+		guthixian_cache?: {
+			join?: {};
+			stats?: {};
+		};
 	}>) => {
 		const klasaUser = await mUserFetch(userID);
 		const {
@@ -308,6 +332,14 @@ export const minigamesCommand: OSBMahojiCommand = {
 			stealing_creation,
 			divine_dominion
 		} = options;
+
+		if (options.guthixian_cache?.join) {
+			return joinGuthixianCache(klasaUser, channelID);
+		}
+		if (options.guthixian_cache?.stats) {
+			const boost = klasaUser.user.guthixian_cache_boosts_available;
+			return `You have ${boost} Guthixian cache boost${boost === 1 ? '' : 's'} available.`;
+		}
 
 		if (divine_dominion?.check) {
 			return divineDominionCheck(klasaUser);

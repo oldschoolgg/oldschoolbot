@@ -79,17 +79,11 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		bitfield: overrides?.bitfield ?? [],
 		username: 'Magnaboy',
 		QP: overrides?.QP ?? 0,
-		kourend_favour: {
-			Arceuus: 0,
-			Hosidius: 0,
-			Lovakengj: 0,
-			Piscarilius: 0,
-			Shayzien: 0
-		},
 		sacrificedValue: 0,
 		id: overrides?.id ?? '',
 		disabled_inventions: [],
-		monsterScores: {}
+		monsterScores: {},
+		skills_divination: 0
 	} as unknown as User;
 };
 

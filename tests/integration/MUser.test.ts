@@ -1,9 +1,11 @@
-import { objectEntries } from 'e';
+import { activity_type_enum } from '@prisma/client';
+import { objectEntries, randArrItem, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { describe, expect, test } from 'vitest';
 
+import { ClueTiers } from '../../src/lib/clues/clueTiers';
 import { GLOBAL_BSO_XP_MULTIPLIER } from '../../src/lib/constants';
 import { prisma } from '../../src/lib/settings/prisma';
 import { SkillsEnum } from '../../src/lib/skilling/types';
@@ -96,7 +98,7 @@ describe('MUser', () => {
 		expect(user.skillsAsLevels.agility).toEqual(20);
 		expect(result).toEqual(`You received ${xpMultiplied.toLocaleString()} <:agility:630911040355565568> XP
 **Congratulations! Your Agility level is now 20** 🎉`);
-		const xpAdded = await prisma.xPGain.findMany({
+		const xpAdded = await global.prisma!.xPGain.findMany({
 			where: {
 				user_id: BigInt(user.id),
 				skill: 'agility',
@@ -145,5 +147,33 @@ describe('MUser', () => {
 			expect(previousCL.equals(loot)).toEqual(true);
 			expect(itemsAdded).toEqual(loot);
 		}
+	});
+
+	test('calcActualClues', async () => {
+		const user = await createTestUser();
+		const clues = [];
+		for (let i = 0; i < 100; i++) {
+			const tier = randArrItem(ClueTiers);
+			clues.push({
+				id: randInt(1, 100_000_000),
+				user_id: BigInt(user.id),
+				start_date: new Date(Date.now() - Time.Hour),
+				duration: Time.Hour,
+				finish_date: new Date(),
+				completed: true,
+				type: activity_type_enum.ClueCompletion,
+				channel_id: BigInt(1),
+				group_activity: false,
+				data: {
+					userID: user.id,
+					clueID: tier.id,
+					quantity: randInt(1, 10)
+				}
+			});
+		}
+		await prisma.activity.createMany({
+			data: clues
+		});
+		await user.calcActualClues();
 	});
 });

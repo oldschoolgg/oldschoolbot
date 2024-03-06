@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
+import { simulatedKillables } from '../../lib/simulation/simulatedKillables';
 import { stringMatches } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -51,11 +52,11 @@ export const killCommand: OSBMahojiCommand = {
 			autocomplete: async (value: string) => {
 				return [
 					...Monsters.map(i => ({ name: i.name, aliases: i.aliases })),
-					{ name: 'nex', aliases: ['nex'] },
-					{ name: 'nightmare', aliases: ['nightmare'] },
-					{ name: 'Moktang', aliases: ['moktang'] }
+					...simulatedKillables.map(i => ({ name: i.name, aliases: [i.name] }))
 				]
-					.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
+					.filter(i =>
+						!value ? true : i.aliases.some(alias => alias.toLowerCase().includes(value.toLowerCase()))
+					)
 					.map(i => ({
 						name: i.name,
 						value: i.name
@@ -74,11 +75,19 @@ export const killCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 		deferInteraction(interaction);
 		const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, options.name)));
+		const simulatedKillable = simulatedKillables.find(i => stringMatches(i.name, options.name));
 
 		let limit = determineKillLimit(user);
 		if (osjsMonster?.isCustom) {
 			if (user.perkTier() < PerkTier.Four) {
 				return 'Simulating kills of custom monsters is a T3 perk!';
+			}
+			limit /= 4;
+		}
+
+		if (simulatedKillable?.isCustom) {
+			if (user.perkTier() < PerkTier.Four) {
+				return 'Simulating kills of custom monsters or raids is a T3 perk!';
 			}
 			limit /= 4;
 		}

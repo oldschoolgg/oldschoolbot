@@ -117,6 +117,10 @@ setItemAlias(47_509, ['emb'], false);
 setItemAlias(19_837, ['gmc'], false);
 setItemAlias(19_838, ['gm'], false);
 setItemAlias(50_421, ['cmb'], false);
+setItemAlias(40_058, ['ccu'], false);
+setItemAlias(40_059, ['cct'], false);
+setItemAlias(13_345, ['tgb'], false);
+
 // Castle wars
 setItemAlias(25_165, 'Red decorative full helm');
 setItemAlias(4071, 'Red decorative helm');
@@ -159,6 +163,10 @@ setItemAlias(11_901, 'Decorative quiver');
 
 // Lamp (Genie event)
 setItemAlias(2528, 'Genie lamp');
+
+// Ore Sack
+setItemAlias(27_019, "Ore pack (Giant's Foundry)");
+setItemAlias(27_693, 'Ore pack (Volcanic Mine)');
 
 // Birds eggs
 setItemAlias(5076, 'Red bird egg');

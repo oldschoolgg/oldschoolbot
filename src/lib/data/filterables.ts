@@ -7,14 +7,19 @@ import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
 import { tmbTable, umbTable } from '../bsoOpenables';
 import { customItems } from '../customItems/util';
-import { materialTypes } from '../invention';
+import { DisassembleFlag, disassembleFlagMaterials, materialTypes } from '../invention';
 import { DisassemblySourceGroups } from '../invention/groups';
+import Potions from '../minions/data/potions';
 import { monkeyEatables } from '../monkeyRumble';
 import { allOpenables } from '../openables';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
+import Grimy from '../skilling/skills/herblore/mixables/grimy';
+import PotionsMixable from '../skilling/skills/herblore/mixables/potions';
+import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
+import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { XPLamps } from '../xpLamps';
 import { allCollectionLogs } from './Collections';
@@ -357,71 +362,25 @@ export const seedsFilter = resolveItems([
 	'Grand crystal acorn'
 ]);
 
-const herbs = resolveItems([
-	'Grimy guam leaf',
-	'Grimy marrentill',
-	'Grimy tarromin',
-	'Grimy harralander',
-	'Grimy ranarr weed',
-	'Grimy irit leaf',
-	'Grimy avantoe',
-	'Grimy kwuarm',
-	'Grimy cadantine',
-	'Grimy dwarf weed',
-	'Grimy torstol',
-	'Grimy lantadyme',
-	'Grimy toadflax',
-	'Grimy snapdragon',
-	'Guam leaf',
-	'Marrentill',
-	'Tarromin',
-	'Harralander',
-	'Ranarr weed',
-	'Toadflax',
-	'Irit leaf',
-	'Avantoe',
-	'Kwuarm',
-	'Snapdragon',
-	'Cadantine',
-	'Lantadyme',
-	'Dwarf weed',
-	'Torstol',
-	'Athelas',
-	'Grimy korulsi',
-	'Korulsi'
-]);
+const allPotions = Potions.flatMap(potion => potion.items);
+const potions = [...new Set(allPotions)];
 
-export const secondaries = resolveItems([
-	'Eye of newt',
-	'Unicorn horn dust',
-	'Snake weed',
-	'Limpwurt root',
-	'Ashes',
-	'Volcanic Ash',
-	"Red spiders' eggs",
-	'Chocolate dust',
-	'White berries',
-	"Toad's legs",
-	'Goat horn dust',
-	'Snape grass',
-	'Mort myre fungus',
-	'Kebbit teeth dust',
-	'Gorak claw powder',
-	'Dragon scale dust',
-	'Yew roots',
-	'Wine of zamorak',
-	'Potato cactus',
-	'Jangerberries',
-	'Magic roots',
-	'Crushed nest',
-	'Poison ivy berries',
-	"Zulrah's scales",
-	'Torstol',
-	'Cave nightshade',
-	'Crushed superior dragon bones',
-	'Amylase crystal',
-	'Crystal dust'
-]);
+const grimyHerbs = Grimy.flatMap(grimy => Object.keys(grimy.inputItems.bank).map(key => parseInt(key)));
+const cleanHerbs = Grimy.flatMap(clean => clean.item.id);
+cleanHerbs.push(itemID('Athelas'));
+
+const herbs = [...new Set(grimyHerbs), ...new Set(cleanHerbs)];
+
+const unfPots = unfinishedPotions.flatMap(unf => unf.item.id);
+const unfPotions = resolveItems(['Vial of water', ...new Set(unfPots)]);
+
+const allSecondaries = PotionsMixable.flatMap(item =>
+	Object.keys(item.inputItems.bank).map(key => parseInt(key))
+).filter(item => !potions.includes(item) && !unfPotions.includes(item) && !herbs.includes(item));
+
+export const secondaries = [...new Set(allSecondaries)];
+
+const herblore = resolveItems([...potions, ...herbs, ...unfPotions, ...secondaries]);
 
 const bones = resolveItems([
 	'Bones',
@@ -666,190 +625,6 @@ const vorkath = resolveItems([
 	'Skeletal visage'
 ]);
 
-const potions = resolveItems([
-	'Attack potion(1)',
-	'Attack potion(2)',
-	'Attack potion(3)',
-	'Attack potion(4)',
-	'Antipoison(1)',
-	'Antipoison(2)',
-	'Antipoison(3)',
-	'Antipoison(4)',
-	'Strength potion(1)',
-	'Strength potion(2)',
-	'Strength potion(3)',
-	'Strength potion(4)',
-	'Compost potion(1)',
-	'Compost potion(2)',
-	'Compost potion(3)',
-	'Compost potion(4)',
-	'Restore potion(1)',
-	'Restore potion(2)',
-	'Restore potion(3)',
-	'Restore potion(4)',
-	'Energy potion(1)',
-	'Energy potion(2)',
-	'Energy potion(3)',
-	'Energy potion(4)',
-	'Defence potion(1)',
-	'Defence potion(2)',
-	'Defence potion(3)',
-	'Defence potion(4)',
-	'Agility potion(1)',
-	'Agility potion(2)',
-	'Agility potion(3)',
-	'Agility potion(4)',
-	'Combat potion(1)',
-	'Combat potion(2)',
-	'Combat potion(3)',
-	'Combat potion(4)',
-	'Prayer potion(1)',
-	'Prayer potion(2)',
-	'Prayer potion(3)',
-	'Prayer potion(4)',
-	'Super attack(1)',
-	'Super attack(2)',
-	'Super attack(3)',
-	'Super attack(4)',
-	'Superantipoison(1)',
-	'Superantipoison(2)',
-	'Superantipoison(3)',
-	'Superantipoison(4)',
-	'Fishing potion(1)',
-	'Fishing potion(2)',
-	'Fishing potion(3)',
-	'Fishing potion(4)',
-	'Super energy(1)',
-	'Super energy(2)',
-	'Super energy(3)',
-	'Super energy(4)',
-	'Hunter potion(1)',
-	'Hunter potion(2)',
-	'Hunter potion(3)',
-	'Hunter potion(4)',
-	'Super strength(1)',
-	'Super strength(2)',
-	'Super strength(3)',
-	'Super strength(4)',
-	'Super restore (1)',
-	'Super restore (2)',
-	'Super restore (3)',
-	'Super restore(4)',
-	'Sanfew serum(1)',
-	'Sanfew serum(2)',
-	'Sanfew serum(3)',
-	'Sanfew serum(4)',
-	'Super defence(1)',
-	'Super defence(2)',
-	'Super defence(3)',
-	'Super defence(4)',
-	'Antidote+(1)',
-	'Antidote+(2)',
-	'Antidote+(3)',
-	'Antidote+(4)',
-	'Antifire potion(1)',
-	'Antifire potion(2)',
-	'Antifire potion(3)',
-	'Antifire potion(4)',
-	'Ranging potion(1)',
-	'Ranging potion(2)',
-	'Ranging potion(3)',
-	'Ranging potion(4)',
-	'Magic potion(1)',
-	'Magic potion(2)',
-	'Magic potion(3)',
-	'Magic potion(4)',
-	'Stamina potion(1)',
-	'Stamina potion(2)',
-	'Stamina potion(3)',
-	'Stamina potion(4)',
-	'Zamorak brew(1)',
-	'Zamorak brew(2)',
-	'Zamorak brew(3)',
-	'Zamorak brew(4)',
-	'Antidote++(1)',
-	'Antidote++(2)',
-	'Antidote++(3)',
-	'Antidote++(4)',
-	'Saradomin brew(1)',
-	'Saradomin brew(2)',
-	'Saradomin brew(3)',
-	'Saradomin brew(4)',
-	'Extended antifire(1)',
-	'Extended antifire(2)',
-	'Extended antifire(3)',
-	'Extended antifire(4)',
-	'Anti-venom(1)',
-	'Anti-venom(2)',
-	'Anti-venom(3)',
-	'Anti-venom(4)',
-	'Super combat potion(1)',
-	'Super combat potion(2)',
-	'Super combat potion(3)',
-	'Super combat potion(4)',
-	'Super antifire potion(1)',
-	'Super antifire potion(2)',
-	'Super antifire potion(3)',
-	'Super antifire potion(4)',
-	'Anti-venom+(1)',
-	'Anti-venom+(2)',
-	'Anti-venom+(3)',
-	'Anti-venom+(4)',
-	'Extended super antifire(1)',
-	'Extended super antifire(2)',
-	'Extended super antifire(3)',
-	'Extended super antifire(4)',
-	'Enhanced saradomin brew',
-	'Enhanced super restore',
-	'Enhanced stamina potion',
-	'Enhanced divine water',
-	'Heat res. brew',
-	'Heat res. restore'
-]);
-
-const herblore = resolveItems([
-	'Ashes',
-	'Cactus spine',
-	'Crushed nest',
-	'Desert goat horn',
-	'Limpwurt root',
-	'Mort myre fungus',
-	'Potato cactus',
-	"Red spiders' eggs",
-	'Snape grass',
-	'White berries',
-	'Avantoe potion (unf)',
-	'Cadantine potion (unf)',
-	'Dwarf weed potion (unf)',
-	'Guam potion (unf)',
-	'Harralander potion (unf)',
-	'Irit potion (unf)',
-	'Kwuarm potion (unf)',
-	'Lantadyme potion (unf)',
-	'Marrentill potion (unf)',
-	'Ranarr potion (unf)',
-	'Snapdragon potion (unf)',
-	'Tarromin potion (unf)',
-	'Toadflax potion (unf)',
-	'Torstol potion (unf)',
-	'Vial of water',
-	'Eye of newt',
-	'Unicorn horn dust',
-	'Volcanic ash',
-	'Chocolate dust',
-	"Toad's legs",
-	'Dragon scale dust',
-	'Wine of zamorak',
-	'Amylase crystal',
-	'Jangerberries',
-	'Poison ivy berries',
-	"Zulrah's scales",
-	'Crushed superior dragon bones',
-	'Crystal dust',
-	...potions,
-	...herbs
-]);
-
 const agility = resolveItems([...gracefulItems, 'Mark of grace', 'Amylase crystal']);
 
 const prayer = resolveItems([
@@ -1067,11 +842,6 @@ export const baseFilters: Filterable[] = [
 		items: () => [...resolveItems(['Compost', 'Supercompost', 'Ultracompost']), ...resolveItems(superCompostables)]
 	},
 	{
-		name: 'Herblore',
-		aliases: ['herblore'],
-		items: () => herblore
-	},
-	{
 		name: 'Fletching',
 		aliases: ['fletching', 'fletch'],
 		items: () => fletchingItemsSet
@@ -1087,19 +857,29 @@ export const baseFilters: Filterable[] = [
 		items: () => prayer
 	},
 	{
-		name: 'Potions',
-		aliases: ['potions', 'pots'],
-		items: () => potions
+		name: 'Herblore',
+		aliases: ['herblore'],
+		items: () => herblore
 	},
 	{
 		name: 'Herbs',
-		aliases: ['herbs'],
+		aliases: ['herbs', 'grimy', 'clean'],
 		items: () => herbs
+	},
+	{
+		name: 'Unfinished potions',
+		aliases: ['unf', 'unfinished'],
+		items: () => unfPotions
 	},
 	{
 		name: 'Secondaries',
 		aliases: ['seconds', 'secondary', 'secondaries'],
 		items: () => secondaries
+	},
+	{
+		name: 'Potions',
+		aliases: ['potions', 'pots'],
+		items: () => potions
 	},
 	{
 		name: 'Food',
@@ -1264,10 +1044,18 @@ for (const clGroup of Object.values(allCollectionLogs).map(c => c.activities)) {
 }
 
 for (const type of materialTypes) {
-	const items = DisassemblySourceGroups.filter(i => Boolean(i.parts[type]))
-		.map(i => i.items.map(i => (Array.isArray(i.item) ? i.item : [i.item])))
-		.flat(5)
-		.map(i => i.id);
+	let items: number[] = [];
+	if (disassembleFlagMaterials.includes(type as DisassembleFlag)) {
+		items = DisassemblySourceGroups.flatMap(group =>
+			group.items
+				.filter(item => item.flags && item.flags.has(type as DisassembleFlag))
+				.flatMap(item => (Array.isArray(item.item) ? item.item.map(i => i.id) : [item.item.id]))
+		);
+	} else {
+		items = DisassemblySourceGroups.filter(group => Boolean(group.parts[type])).flatMap(group =>
+			group.items.flatMap(item => (Array.isArray(item.item) ? item.item.map(i => i.id) : [item.item.id]))
+		);
+	}
 	filterableTypes.push({
 		name: `${type}-material`,
 		aliases: [type],

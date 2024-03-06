@@ -16,6 +16,7 @@ import { Inventions } from '../../lib/invention/inventions';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { prisma } from '../../lib/settings/prisma';
+import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
 import { BankSortMethods } from '../../lib/sorts';
@@ -52,8 +53,8 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisableBirdhouseRunButton
 	},
 	{
-		name: 'Disable Gorajan Bonecrusher',
-		bit: BitField.DisabledGorajanBoneCrusher
+		name: 'Disable Auto Slay Button',
+		bit: BitField.DisableAutoSlayButton
 	},
 	{
 		name: 'Disable Ash Sanctifier',
@@ -131,8 +132,24 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisabledFarmingReminders
 	},
 	{
+		name: 'Disable Gorajan Bonecrusher',
+		bit: BitField.DisabledGorajanBoneCrusher
+	},
+	{
 		name: 'Disable Item Contract Donations',
 		bit: BitField.NoItemContractDonations
+	},
+	{
+		name: 'Disable Eagle Tame Opening Clues',
+		bit: BitField.DisabledTameClueOpening
+	},
+	{
+		name: 'Disable Clue Buttons',
+		bit: BitField.DisableClueButtons
+	},
+	{
+		name: 'Disable wilderness high peak time warning',
+		bit: BitField.DisableHighPeakTimeWarning
 	}
 ];
 
@@ -277,11 +294,46 @@ async function favAlchConfig(
 	return `Added ${item.name} to your favorite alchable items.`;
 }
 
+async function favBhSeedsConfig(
+	user: MUser,
+	itemToAdd: string | undefined,
+	itemToRemove: string | undefined,
+	reset: boolean
+) {
+	if (reset) {
+		await user.update({ favorite_bh_seeds: [] });
+		return 'Cleared all favorite birdhouse seeds.';
+	}
+
+	const currentFavorites = user.user.favorite_bh_seeds;
+	if (itemToAdd || itemToRemove) {
+		const item = getItem(itemToAdd ?? itemToRemove);
+		if (!item) return "That item doesn't exist.";
+		if (!birdhouseSeeds.some(seed => seed.item.id === item.id)) return "That item can't be used in birdhouses.";
+		if (itemToAdd) {
+			if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
+			await user.update({ favorite_bh_seeds: [...currentFavorites, item.id] });
+			return `You favorited ${item.name}.`;
+		}
+		if (itemToRemove) {
+			if (!currentFavorites.includes(item.id)) return 'This item is not favorited.';
+			await user.update({ favorite_bh_seeds: removeFromArr(currentFavorites, item.id) });
+			return `You unfavorited ${item.name}.`;
+		}
+	}
+
+	const currentItems = `Your current favorite items are: ${
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
+	}.`;
+	return currentItems;
+}
+
 async function bankSortConfig(
 	user: MUser,
 	sortMethod: string | undefined,
 	addWeightingBank: string | undefined,
-	removeWeightingBank: string | undefined
+	removeWeightingBank: string | undefined,
+	resetWeightingBank: string | undefined
 ): CommandResponse {
 	const currentMethod = user.user.bank_sort_method;
 	const currentWeightingBank = new Bank(user.user.bank_sort_weightings as ItemBank);
@@ -291,7 +343,7 @@ async function bankSortConfig(
 		return patronMsg(PerkTier.Two);
 	}
 
-	if (!sortMethod && !addWeightingBank && !removeWeightingBank) {
+	if (!sortMethod && !addWeightingBank && !removeWeightingBank && !resetWeightingBank) {
 		const sortStr = currentMethod
 			? `Your current bank sort method is ${inlineCode(currentMethod)}.`
 			: 'You have not set a bank sort method.';
@@ -335,12 +387,13 @@ async function bankSortConfig(
 
 	if (addWeightingBank) newBank.add(inputBank);
 	else if (removeWeightingBank) newBank.remove(inputBank);
+	else if (resetWeightingBank && resetWeightingBank === 'reset') newBank.bank = {};
 
 	await user.update({
 		bank_sort_weightings: newBank.bank
 	});
 
-	return bankSortConfig(await mUserFetch(user.id), undefined, undefined, undefined);
+	return bankSortConfig(await mUserFetch(user.id), undefined, undefined, undefined, undefined);
 }
 
 async function bgColorConfig(user: MUser, hex?: string) {
@@ -570,14 +623,15 @@ export async function pinTripCommand(
 	if (!trip) return 'Invalid trip.';
 
 	if (emoji) {
-		const cachedEmoji = globalClient.emojis.cache.get(emoji);
-		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && production) {
-			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
-		}
 		const res = ParsedCustomEmojiWithGroups.exec(emoji);
 		if (!res || !res[3]) return "That's not a valid emoji.";
 		// eslint-disable-next-line prefer-destructuring
 		emoji = res[3];
+
+		const cachedEmoji = globalClient.emojis.cache.get(emoji);
+		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && production) {
+			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
+		}
 	}
 
 	if (customName) {
@@ -797,6 +851,12 @@ export const configCommand: OSBMahojiCommand = {
 							name: 'remove_weightings',
 							description: "Remove weightings for extra bank sorting (e.g. '1 trout, 5 coal')",
 							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'reset_weightings',
+							description: "Type 'reset' to confirm you want to delete ALL of your bank weightings.",
+							required: false
 						}
 					]
 				},
@@ -827,6 +887,51 @@ export const configCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.Boolean,
 							name: 'reset',
 							description: 'Reset all of your favorite alchs',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'favorite_bh_seeds',
+					description: 'Manage your favorite birdhouse seeds.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'add',
+							description: 'Add an item to your favorite birdhouse seeds.',
+							required: false,
+							autocomplete: async (value: string) => {
+								return birdhouseSeeds
+									.filter(i => (!value ? true : stringMatches(i.item.name, value)))
+									.map(i => ({
+										name: `${i.item.name}`,
+										value: i.item.id.toString()
+									}));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'remove',
+							description: 'Remove an item from your favorite birdhouse seeds.',
+							required: false,
+							autocomplete: async (value: string, user: User) => {
+								const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_bh_seeds: true });
+								return birdhouseSeeds
+									.filter(i => {
+										if (!mUser.favorite_bh_seeds.includes(i.item.id)) return false;
+										return !value ? true : stringMatches(i.item.name, value);
+									})
+									.map(i => ({
+										name: `${i.item.name}`,
+										value: i.item.id.toString()
+									}));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'reset',
+							description: 'Reset all of your favorite birdhouse seeds.',
 							required: false
 						}
 					]
@@ -1076,10 +1181,16 @@ LIMIT 20;
 			combat_options?: { action: 'add' | 'remove' | 'list' | 'help'; input: string };
 			set_rsn?: { username: string };
 			bg_color?: { color?: string };
-			bank_sort?: { sort_method?: string; add_weightings?: string; remove_weightings?: string };
+			bank_sort?: {
+				sort_method?: string;
+				add_weightings?: string;
+				remove_weightings?: string;
+				reset_weightings?: string;
+			};
 			favorite_alchs?: { add?: string; remove?: string; add_many?: string; reset?: boolean };
 			favorite_food?: { add?: string; remove?: string; reset?: boolean };
 			favorite_items?: { add?: string; remove?: string; reset?: boolean };
+			favorite_bh_seeds?: { add?: string; remove?: string; reset?: boolean };
 			slayer?: { master?: string; autoslay?: string };
 			toggle_invention?: { invention: string };
 			gearframe?: { name: string };
@@ -1109,6 +1220,7 @@ LIMIT 20;
 				favorite_alchs,
 				favorite_food,
 				favorite_items,
+				favorite_bh_seeds,
 				slayer,
 				pin_trip,
 				icon_pack
@@ -1152,7 +1264,8 @@ LIMIT 20;
 					user,
 					bank_sort.sort_method,
 					bank_sort.add_weightings,
-					bank_sort.remove_weightings
+					bank_sort.remove_weightings,
+					bank_sort.reset_weightings
 				);
 			}
 			if (favorite_alchs) {
@@ -1169,6 +1282,14 @@ LIMIT 20;
 			}
 			if (favorite_items) {
 				return favItemConfig(user, favorite_items.add, favorite_items.remove, Boolean(favorite_items.reset));
+			}
+			if (favorite_bh_seeds) {
+				return favBhSeedsConfig(
+					user,
+					favorite_bh_seeds.add,
+					favorite_bh_seeds.remove,
+					Boolean(favorite_bh_seeds.reset)
+				);
 			}
 			if (slayer) {
 				if (slayer.autoslay) {

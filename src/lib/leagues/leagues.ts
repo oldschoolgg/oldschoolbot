@@ -71,7 +71,8 @@ export function generateLeaguesTasksTextFile(finishedTasksIDs: number[], exclude
 }
 
 async function getActivityCounts(user: User) {
-	const result: { type: activity_type_enum; count: bigint }[] = await prisma.$queryRawUnsafe(`SELECT type, COUNT(type)
+	const result: { type: activity_type_enum; count: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT type, COUNT(type)::int
 FROM activity
 WHERE user_id = ${user.id}
 GROUP BY type;`);
@@ -89,7 +90,7 @@ GROUP BY type;`);
 
 export async function personalHerbloreStatsWithoutZahur(user: User) {
 	const result: { id: number; qty: number }[] =
-		await prisma.$queryRawUnsafe(`SELECT (data->>'mixableID')::int AS id, SUM((data->>'quantity')::int) AS qty
+		await prisma.$queryRawUnsafe(`SELECT (data->>'mixableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Herblore'
 AND user_id = '${user.id}'::bigint

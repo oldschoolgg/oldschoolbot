@@ -5,6 +5,7 @@ import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
+	notEmpty,
 	objectKeys,
 	reduceNumByPercent,
 	round,
@@ -12,7 +13,6 @@ import {
 	Time,
 	uniqueArr
 } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
@@ -23,7 +23,8 @@ import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem } from '../../../lib/degradeableItems';
 import { Diary, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
-import { GearSetupType } from '../../../lib/gear/types';
+import { readableStatName } from '../../../lib/gear';
+import { GearSetupType, GearStat } from '../../../lib/gear/types';
 import { canAffordInventionBoost, InventionID, inventionItemBoost } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import {
@@ -43,7 +44,6 @@ import {
 	superiorCannonSingleConsumables
 } from '../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
-import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import {
 	AttackStyles,
 	calculateMonsterFood,
@@ -57,7 +57,7 @@ import { calcPOHBoosts } from '../../../lib/poh';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { maxOffenceStats } from '../../../lib/structures/Gear';
+import { addStatsOfItemsTogether, maxOffenceStats } from '../../../lib/structures/Gear';
 import { Peak } from '../../../lib/tickers';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
@@ -165,6 +165,7 @@ export async function minionKillCommand(
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
+	const inputQuantity = quantity;
 	const { minionName } = user;
 	const wildyGear = user.gear.wildy;
 	const style = convertAttackStylesToSetup(user.user.attack_style);
@@ -184,7 +185,7 @@ export async function minionKillCommand(
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
 	if (['vasa', 'vasa magus'].some(i => stringMatches(i, name))) return vasaCommand(user, channelID, quantity);
-	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name);
+	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name, quantity);
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID);
 	if (['igne ', 'ignecarus'].some(i => name.toLowerCase().includes(i)))
 		return igneCommand(interaction, user, channelID, name, quantity);
@@ -248,11 +249,6 @@ export async function minionKillCommand(
 	const [hasReqs, reason] = hasMonsterRequirements(user, monster);
 	if (!hasReqs) return reason ?? "You don't have the requirements to fight this monster";
 
-	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Shayzien, 100);
-	if (!hasFavour && monster.id === Monsters.LizardmanShaman.id) {
-		return `${user.minionName} needs ${requiredPoints}% Shayzien Favour to kill Lizardman shamans.`;
-	}
-
 	if (monster.diaryRequirement) {
 		const [diary, tier]: [Diary, DiaryTier] = monster.diaryRequirement;
 		const [hasDiary] = await userhasDiaryTier(user, tier);
@@ -261,7 +257,26 @@ export async function minionKillCommand(
 		}
 	}
 
-	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, await user.getKC(monster.id));
+	if (monster.minimumWeaponShieldStats) {
+		for (const [setup, minimum] of Object.entries(monster.minimumWeaponShieldStats)) {
+			const gear = user.gear[setup as GearSetupType];
+			const stats = addStatsOfItemsTogether(
+				[gear['2h']?.item, gear.weapon?.item, gear.shield?.item].filter(notEmpty)
+			);
+			for (const [key, requiredValue] of Object.entries(minimum)) {
+				if (requiredValue < 1) continue;
+				const theirValue = stats[key as GearStat] ?? 0;
+				if (theirValue < requiredValue) {
+					return `Your ${setup} weapons/shield need to have at least ${requiredValue} ${readableStatName(
+						key
+					)} to kill ${monster.name}, you have ${theirValue}.`;
+				}
+			}
+		}
+	}
+
+	const kcForThisMonster = await user.getKC(monster.id);
+	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, kcForThisMonster);
 
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
 		monsterID: monster.id,
@@ -539,7 +554,7 @@ export async function minionKillCommand(
 	}
 
 	const hasBlessing = user.hasEquipped('Dwarven blessing');
-	const hasZealotsAmulet = user.hasEquipped('Amulet of zealots');
+	const hasZealotsAmulet = user.hasEquippedOrInBank('Amulet of zealots');
 	if (hasZealotsAmulet && hasBlessing) {
 		timeToFinish *= 0.75;
 		boosts.push('25% for Dwarven blessing & Amulet of zealots');
@@ -606,7 +621,8 @@ export async function minionKillCommand(
 		for (const degItem of degradeablePvmBoostItems) {
 			const isUsing =
 				convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
-				user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
+				user.gear[degItem.attackStyle].hasEquipped(degItem.item.id) &&
+				(monster.setupsUsed ? monster.setupsUsed.includes(degItem.attackStyle) : true);
 			if (isUsing) {
 				// We assume they have enough charges, add the boost, and degrade at the end to avoid doing it twice.
 				degItemBeingUsed.push(degItem);
@@ -638,6 +654,9 @@ export async function minionKillCommand(
 			quantity = floor(maxTripLength / timeToFinish);
 		}
 	}
+
+	quantity = Math.max(1, quantity);
+
 	if (isOnTask) {
 		let effectiveQtyRemaining = usersTask.currentTask!.quantity_remaining;
 		if (
@@ -673,6 +692,12 @@ export async function minionKillCommand(
 		}
 	}
 
+	if (monster.customRequirement && kcForThisMonster === 0) {
+		const reasonDoesntHaveReq = await monster.customRequirement(user);
+		if (reasonDoesntHaveReq) {
+			return `You don't meet the requirements to kill this monster: ${reasonDoesntHaveReq}.`;
+		}
+	}
 	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
 		return "You haven't unlocked this monster..";
 	}
@@ -869,8 +894,11 @@ export async function minionKillCommand(
 				' eyes with your minion and grabs the dart mid-air, and throws it back, killing your minion instantly.'
 			);
 		}
+		if (monster.name === 'Solis') {
+			return 'The dart melts into a crisp dust before coming into contact with Solis.';
+		}
 		if (monster.name === 'Yeti') {
-			return 'You send your minion off to fight Koschei with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
+			return 'You send your minion off to fight Yeti with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
 		}
 		usedDart = true;
 		await userStatsUpdate(user.id, () => ({
@@ -901,7 +929,7 @@ export async function minionKillCommand(
 				break;
 			}
 		}
-		if (wildyPeak?.peakTier === PeakTier.High) {
+		if (wildyPeak?.peakTier === PeakTier.High && !user.bitfield.includes(BitField.DisableHighPeakTimeWarning)) {
 			if (interaction) {
 				await handleMahojiConfirmation(
 					interaction,
@@ -953,13 +981,7 @@ export async function minionKillCommand(
 		pkString += chanceString;
 	}
 
-	if (lootToRemove.length > 0) {
-		updateBankSetting('economyStats_PVMCost', lootToRemove);
-		await user.specialRemoveItems(lootToRemove, { wildy: monster.wildy ? true : false });
-		totalCost.add(lootToRemove);
-	}
-
-	// Check food last, so we can remove any pending loot (pk supplies-food costs) from the bank before removing food.
+	// Check food
 	let foodStr: string = '';
 	// Find best eatable boost and add 1% extra
 	const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
@@ -980,7 +1002,8 @@ export async function minionKillCommand(
 					? ['wildy']
 					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced,
-				isWilderness: monster.wildy
+				isWilderness: monster.wildy,
+				minimumHealAmount: monster.minimumFoodHealAmount
 			});
 
 			if (foodRemoved.length === 0) {
@@ -1027,6 +1050,18 @@ export async function minionKillCommand(
 		duration = reduceNumByPercent(duration, noFoodBoost);
 	}
 
+	if (monster.deathProps) {
+		const deathChance = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC: kcForThisMonster });
+		messages.push(`${deathChance.toFixed(1)}% chance of death`);
+	}
+
+	// Remove items after food calc to prevent losing items if the user doesn't have the right amount of food. Example: Mossy key
+	if (lootToRemove.length > 0) {
+		updateBankSetting('economyStats_PVMCost', lootToRemove);
+		await user.specialRemoveItems(lootToRemove, { wildy: monster.wildy ? true : false });
+		totalCost.add(lootToRemove);
+	}
+
 	if (totalCost.length > 0) {
 		await trackLoot({
 			id: monster.name,
@@ -1047,6 +1082,7 @@ export async function minionKillCommand(
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
+		iQty: inputQuantity,
 		duration,
 		type: 'MonsterKilling',
 		usingCannon: !usingCannon ? undefined : usingCannon,
@@ -1089,7 +1125,7 @@ export async function minionKillCommand(
 	return response;
 }
 
-export async function monsterInfo(user: MUser, name: string): CommandResponse {
+export async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
 	const monster = findMonster(name);
 
 	if (stringMatches(name, 'nightmare')) {
@@ -1184,14 +1220,7 @@ export async function monsterInfo(user: MUser, name: string): CommandResponse {
 	if (monster.qpRequired) {
 		str.push(`${monster.name} requires **${monster.qpRequired}qp** to kill, and you have ${QP}qp.\n`);
 	}
-	if (stringMatches(name, 'shaman') || stringMatches(name, 'lizardman shaman')) {
-		const [hasFavour] = gotFavour(user, Favours.Shayzien, 100);
-		if (!hasFavour) {
-			str.push('You require 100% Shayzien favour\n');
-		} else {
-			str.push('You meet the required 100% Shayzien favour\n');
-		}
-	}
+
 	let itemRequirements = [];
 	if (monster.itemsRequired && monster.itemsRequired.length > 0) {
 		itemRequirements.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}\n`);
@@ -1275,7 +1304,7 @@ export async function monsterInfo(user: MUser, name: string): CommandResponse {
 	str.push(
 		`Due to the random variation of an added 1-20% duration, ${maxCanKill}x kills can take between (${formatDuration(
 			min
-		)} and (${formatDuration(max)})\nIf the Weekend boost is active, it takes: (${formatDuration(
+		)}) and (${formatDuration(max)})\nIf the Weekend boost is active, it takes: (${formatDuration(
 			min * 0.9
 		)}) to (${formatDuration(max * 0.9)}) to finish.\n`
 	);

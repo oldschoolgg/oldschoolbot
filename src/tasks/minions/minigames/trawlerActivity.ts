@@ -43,9 +43,10 @@ export const trawlerTask: MinionTask = {
 
 		let str = `${user}, ${
 			user.minionName
-		} finished completing the Fishing Trawler ${quantity}x times. You received ${await user.addXP({
+		} finished completing the Fishing Trawler ${quantity}x times. ${await user.addXP({
 			skillName: SkillsEnum.Fishing,
-			amount: totalXP
+			amount: totalXP,
+			duration: data.duration
 		})}`;
 
 		if (xpBonusPercent > 0) {
@@ -54,7 +55,7 @@ export const trawlerTask: MinionTask = {
 
 		if (hasEliteArdy) str += '\n\n50% Extra fish for Ardougne Elite diary';
 
-		if (user.hasEquipped('Fishing master cape')) {
+		if (user.hasEquippedOrInBank('Fishing master cape')) {
 			loot.multiply(4);
 			for (let i = 0; i < quantity; i++) {
 				if (roll(2)) loot.add(MysteryBoxes.roll());
@@ -73,14 +74,6 @@ export const trawlerTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-
-		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		await user.addXP({ skillName: SkillsEnum.Fishing, amount: totalXP, source: 'FishingTrawler' });
-		const newLevel = user.skillLevel(SkillsEnum.Fishing);
-
-		if (currentLevel !== newLevel) {
-			str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
-		}
 
 		const image = await makeBankImage({
 			bank: itemsAdded,

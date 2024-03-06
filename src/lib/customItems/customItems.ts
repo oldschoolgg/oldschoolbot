@@ -13,10 +13,10 @@ import './dwarven';
 import './moktang';
 import './leagues';
 
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, ItemRequirements } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from '../util/getOSItem';
-import { setCustomItem, UN_EQUIPPABLE } from './util';
+import { maxedRequirements, setCustomItem, UN_EQUIPPABLE } from './util';
 
 setCustomItem(1579, "Thieves' armband", 'Rune gloves', {}, 100_000);
 setCustomItem(
@@ -255,7 +255,24 @@ setCustomItem(40_024, 'Dungeoneering cape(t)', 'Fire cape', {}, 20_000);
 setCustomItem(40_025, 'Dungeoneering hood', 'Rune full helm', {}, 20_000);
 setCustomItem(40_053, 'Master quest cape', 'Abyssal cape', {}, 10_000_000);
 setCustomItem(40_054, 'Support cape', 'Abyssal cape', {}, 200_000_000);
-setCustomItem(40_055, "Gatherer's cape", 'Abyssal cape', {}, 200_000_000);
+setCustomItem(
+	40_055,
+	"Gatherer's cape",
+	'Abyssal cape',
+	{
+		equipment: {
+			requirements: {
+				farming: 120,
+				fishing: 120,
+				hunter: 120,
+				mining: 120,
+				woodcutting: 120,
+				divination: 120
+			} as Partial<ItemRequirements>
+		}
+	},
+	200_000_000
+);
 setCustomItem(40_056, "Combatant's cape", 'Abyssal cape', {}, 200_000_000);
 setCustomItem(40_057, "Artisan's cape", 'Abyssal cape', {}, 200_000_000);
 setCustomItem(
@@ -266,9 +283,10 @@ setCustomItem(
 		customItemData: {
 			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		equipment: maxedRequirements
 	},
-	50_000_000
+	100_000_000
 );
 setCustomItem(
 	40_059,
@@ -278,9 +296,10 @@ setCustomItem(
 		customItemData: {
 			isSuperUntradeable: true,
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		equipment: maxedRequirements
 	},
-	50_000_000
+	250_000_000
 );
 
 setCustomItem(40_026, 'Scroll of life', 'Coal', {}, 1_000_000);
@@ -2041,7 +2060,7 @@ setCustomItem(
 	},
 	1000
 );
-setCustomItem(50_067, 'Grifolic flake ', 'Coal', {}, 1000);
+setCustomItem(50_067, 'Grifolic flake', 'Coal', {}, 1000);
 setCustomItem(
 	50_068,
 	'Grifolic shield',
@@ -4295,7 +4314,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	1_000_000
+	1_000_000_000
 );
 
 setCustomItem(
@@ -7411,7 +7430,8 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true,
 			cantBeSacrificed: true,
 			isSuperUntradeable: true
-		}
+		},
+		equipment: maxedRequirements
 	},
 	10_000
 );
@@ -9039,7 +9059,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	10_000
+	1_000_000_000
 );
 
 setCustomItem(
@@ -9257,7 +9277,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	100_000
+	1_000_000
 );
 
 setCustomItem(
@@ -9270,7 +9290,7 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
-	100_000
+	1_000_000
 );
 
 setCustomItem(
@@ -9307,7 +9327,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	100_000
+	1_000_000
 );
 
 setCustomItem(
@@ -9406,7 +9426,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	100_000
+	1_000_000
 );
 
 setCustomItem(
@@ -9575,4 +9595,1929 @@ setCustomItem(
 		}
 	},
 	100_000
+);
+
+setCustomItem(
+	71_946,
+	'Completionist hood (t)',
+	'Dragon full helm',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		},
+		equipment: maxedRequirements
+	},
+	50_000_000
+);
+
+/*
+ * START Christmas 2023
+ *
+ */
+
+setCustomItem(
+	72_000,
+	'Grinch head',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_001,
+	'Grinch top',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_002,
+	'Grinch legs',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_003,
+	'Grinch feet',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_004,
+	'Grinch hands',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_005,
+	'Grinch santa hat',
+	'Santa hat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_006,
+	'Festive partyhat',
+	'Red partyhat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_007,
+	'Christmas jumper (frosty)',
+	'Rune platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_008,
+	'Christmas cape (wintertodt blue)',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_009,
+	'Christmas cape (jolly red)',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_010,
+	'Christmas cape (snowy tree)',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_011,
+	'Christmas cape (rainbow)',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_012,
+	'Christmas cape (classic)',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_013,
+	'Christmas jumper (jolly red)',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_014,
+	'Christmas jumper (green)',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_015,
+	'Infernal slayer helmet(i) (xmas)',
+	'Infernal slayer helmet(i)',
+	{
+		customItemData: {
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_016,
+	'Festive crate (s4)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_017,
+	'Festive crate key (s4)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_018,
+	'Santa costume top (male)',
+	'Rune platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_019,
+	'Santa costume top (female)',
+	'Rune platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_020,
+	'Santa costume skirt',
+	'Rune platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_021,
+	'Santa costume pants',
+	'Rune platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_022,
+	'Santa costume gloves',
+	'Rune gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_023,
+	'Santa costume boots',
+	'Rune boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_024,
+	'Raw rat milk',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_025,
+	'Scorched rat milk',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_026,
+	'Fresh rat milk',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_027,
+	'Pristine chocolate bar',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_028,
+	'Cocoa bean',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_029,
+	'Chomped chocolate bits',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_030,
+	'Ashy flour',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_031,
+	'Snail oil',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_032,
+	'Grimy salt',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_033,
+	'Milk with spoon',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_034,
+	'Banana-butter',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_035,
+	'Smokey egg',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_036,
+	'Hairy banana-butter',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_037,
+	'Christmas cake recipe',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_038,
+	'Ginger root',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_039,
+	'Dodgy bread',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_040,
+	'Gingerbread',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_041,
+	'Christmas cake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_042,
+	'Burnt christmas cake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1
+);
+setCustomItem(
+	72_043,
+	'Mistle-bow-tie',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_044,
+	'Rudolph',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_045,
+	'Note from pets',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_050,
+	'Frosty parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_051,
+	'Frosty wings',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_052,
+	'Frosty cape',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_053,
+	'Frosty staff',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_054,
+	'Tinsel twirler',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	72_055,
+	'Metallic chocolate dust',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1
+);
+
+/**
+ *
+ * END Christmas 2023
+ *
+ */
+
+/**
+ *
+ * Divination
+ *
+ */
+setCustomItem(
+	73_000,
+	'Divination master cape',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	200_000
+);
+
+setCustomItem(
+	73_001,
+	'Divination hood',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	20_000
+);
+
+setCustomItem(
+	73_002,
+	'Divination cape',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	20_000
+);
+
+setCustomItem(
+	73_003,
+	'Divination cape(t)',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	20_000
+);
+
+setCustomItem(
+	73_004,
+	'Bright energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_005,
+	'Brilliant energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_006,
+	'Flickering energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_007,
+	'Elder energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_008,
+	'Gleaming energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_009,
+	'Glowing energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_010,
+	'Pale energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_011,
+	'Incandescent energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_012,
+	'Luminous energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_013,
+	'Lustrous energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_014,
+	'Vibrant energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_015,
+	'Sparkling energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_016,
+	'Radiant energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_017,
+	'Advax berry seed',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_018,
+	'Advax berry',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_019,
+	'Spirit weed seed',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_020,
+	'Grimy spirit weed',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_021,
+	'Spirit weed',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_022,
+	'Boon of elder energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_023,
+	'Boon of lustrous energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_024,
+	'Boon of vibrant energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_025,
+	'Boon of gleaming energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_026,
+	'Boon of sparkling energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_027,
+	'Boon of glowing energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_028,
+	'Boon of bright energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_029,
+	'Boon of flickering energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_030,
+	'Boon of incandescent energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_031,
+	'Boon of luminous energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_032,
+	'Boon of radiant energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_033,
+	'Boon of brilliant energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_034,
+	"Diviner's headwear",
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_035,
+	"Diviner's robe",
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_036,
+	"Diviner's legwear",
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_037,
+	"Diviner's handwear",
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_038,
+	"Diviner's footwear",
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+// 73_039 Wisp-buster
+
+setCustomItem(
+	73_040,
+	'Guthixian cache boost',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_041,
+	'Cache portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+// 73_042 Divine hand
+
+setCustomItem(
+	73_043,
+	'Graceful portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_044,
+	'Rogues portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_045,
+	'Ancient energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_046,
+	'Boon of ancient energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_047,
+	'Dungeon portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_048,
+	'Lucky portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_049,
+	'Divination potion',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_050,
+	'Divine egg',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_051,
+	'Jar of memories',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_052,
+	'Rebirth portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_053,
+	'Spiritual mining portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_054,
+	'Pacifist hunting portent',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+// 73_055 Drygore axe
+
+setCustomItem(
+	73_056,
+	'Eagle egg',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_057,
+	'Solite',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_058,
+	'Solite platelegs',
+	'Torva platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_059,
+	'Solite gloves',
+	'Torva gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_060,
+	'Solite helm',
+	'Torva full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_061,
+	'Solite chestplate',
+	'Torva platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_062,
+	'Solite cape',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_063,
+	'Solite boots',
+	'Torva boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_064,
+	'Solite shield',
+	'Rune kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_065,
+	'Solite blade',
+	'Dragon scimitar',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_066,
+	'Solervus helm',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_067,
+	'Solervus platebody',
+	'Rune platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_068,
+	'Solervus platelegs',
+	'Rune platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_069,
+	'Solervus gloves',
+	'Rune gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_070,
+	'Solervus boots',
+	'Rune boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_071,
+	'Solervus cape',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_072,
+	'Axe of the high sungod',
+	'Dragon axe',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		},
+		equipment: {
+			slot: EquipmentSlot.TwoHanded,
+			attack_stab: 30,
+			attack_slash: 130 + 45 + 20,
+			attack_crush: 36 + 5,
+			attack_magic: -10,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 145,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 3,
+			requirements: {
+				attack: 100,
+				strength: 100
+			}
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_073,
+	'Sunlight sprouter',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_074,
+	'Axe of the high sungod (u)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_075,
+	'Lunite',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_076,
+	'Noom',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_077,
+	'Moonlight mutator',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_078,
+	'Lunite platelegs',
+	'Torva platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_079,
+	'Lunite gloves',
+	'Torva gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_080,
+	'Lunite helm',
+	'Torva full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_081,
+	'Lunite chestplate',
+	'Torva platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_082,
+	'Lunite cape',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_083,
+	'Lunite boots',
+	'Torva boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_084,
+	'Celestial helm',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_085,
+	'Celestial platebody',
+	'Rune platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_086,
+	'Celestial platelegs',
+	'Rune platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_087,
+	'Celestial gloves',
+	'Rune gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_088,
+	'Celestial boots',
+	'Rune boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_089,
+	'Celestial cape',
+	'Fire cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_090,
+	'Atomic energy',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_091,
+	'Sun-metal scraps',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_092,
+	'Sun-metal bar',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_093,
+	'Axe handle base',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_094,
+	'Sundial scimitar',
+	'Dragon scimitar',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_095,
+	'Sun-god axe head',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_096,
+	'Axe handle',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_097,
+	'Demonic jibwings',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_098,
+	'Abyssal jibwings',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_099,
+	'3rd age jibwings',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_100,
+	'Impling locator',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_101,
+	'Divine ring',
+	'Ruby ring',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_102,
+	'Demonic jibwings (e)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_103,
+	'Abyssal jibwings (e)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_104,
+	'3rd age jibwings (e)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
 );

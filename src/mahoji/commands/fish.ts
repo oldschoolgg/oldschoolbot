@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
-import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
@@ -63,10 +62,6 @@ export const fishCommand: OSBMahojiCommand = {
 				return `You need ${fish.qpRequired} qp to catch those!`;
 			}
 		}
-		const [hasFavour, requiredPoints] = gotFavour(user, Favours.Piscarilius, 100);
-		if (!hasFavour && fish.name === 'Anglerfish') {
-			return `${user.minionName} needs ${requiredPoints}% Piscarilius Favour to fish Anglerfish!`;
-		}
 
 		if (
 			fish.name === 'Barbarian fishing' &&
@@ -116,29 +111,29 @@ export const fishCommand: OSBMahojiCommand = {
 			case itemID('Fishing bait'):
 				if (fish.name === 'Infernal eel') {
 					scaledTimePerFish *= 1;
-				} else if (user.hasEquipped('Pearl fishing rod') && fish.name !== 'Infernal eel') {
+				} else if (user.hasEquippedOrInBank('Pearl fishing rod') && fish.name !== 'Infernal eel') {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl fishing rod');
 				}
 				break;
 			case itemID('Feather'):
-				if (fish.name === 'Barbarian fishing' && user.hasEquipped('Pearl barbarian rod')) {
+				if (fish.name === 'Barbarian fishing' && user.hasEquippedOrInBank('Pearl barbarian rod')) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl barbarian rod');
-				} else if (user.hasEquipped('Pearl fly fishing rod') && fish.name !== 'Barbarian fishing') {
+				} else if (user.hasEquippedOrInBank('Pearl fly fishing rod') && fish.name !== 'Barbarian fishing') {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Pearl fly fishing rod');
 				}
 				break;
 			default:
-				if (user.hasEquipped('Crystal harpoon')) {
+				if (user.hasEquippedOrInBank('Crystal harpoon')) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Crystal harpoon');
 				}
 				break;
 		}
 
-		if (user.hasEquipped('Shark tooth necklace')) {
+		if (user.hasEquippedOrInBank('Shark tooth necklace')) {
 			scaledTimePerFish = reduceNumByPercent(scaledTimePerFish, 5);
 			boosts.push('5% for Shark tooth necklace');
 		}
@@ -213,6 +208,7 @@ export const fishCommand: OSBMahojiCommand = {
 			userID: user.id,
 			channelID: channelID.toString(),
 			quantity,
+			iQty: options.quantity ? options.quantity : undefined,
 			duration,
 			type: 'Fishing'
 		});

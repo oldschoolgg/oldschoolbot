@@ -103,8 +103,8 @@ export const giantsFoundryBuyables: { name: string; output: Bank; cost: number; 
 		aliases: []
 	},
 	{
-		name: 'Ore pack',
-		output: new Bank().add('Ore pack', 1),
+		name: "Ore pack (Giant's Foundry)",
+		output: new Bank().add("Ore pack (Giant's Foundry)", 1),
 		cost: 200,
 		aliases: []
 	},
@@ -178,16 +178,16 @@ export async function giantsFoundryStartCommand(
 	// If they have the entire Smiths' Uniform, give an extra 15% speed bonus
 	let setBonus = 0;
 	if (
-		user.gear.skilling.hasEquipped(
+		user.hasEquippedOrInBank(
 			Object.keys(Smithing.smithsUniformItems).map(i => parseInt(i)),
-			true
+			'every'
 		)
 	) {
 		setBonus += 15;
 	} else {
 		// For each Smiths' Uniform item, check if they have it, give its' set boost and covert to 15% speed bonus later.
 		for (const [itemID] of Object.entries(Smithing.smithsUniformItems)) {
-			if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
+			if (user.hasEquippedOrInBank(parseInt(itemID))) {
 				setBonus += 3;
 			}
 		}
@@ -200,7 +200,7 @@ export async function giantsFoundryStartCommand(
 		timePerSection = reduceNumByPercent(timePerSection, 15);
 		boosts.push('15% for Takon');
 	}
-	if (user.hasEquipped('Smithing master cape')) {
+	if (user.hasEquippedOrInBank('Smithing master cape')) {
 		timePerSection = reduceNumByPercent(timePerSection, 15);
 		boosts.push('15% for Smithing mastery');
 	}

@@ -1,11 +1,12 @@
 import { userMention } from '@discordjs/builders';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
+import { Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { calcWhatPercent, objectEntries, randArrItem, sumArr, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
+import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { GodFavourBank, GodName } from './bso/divineDominion';
@@ -17,13 +18,12 @@ import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { gearImages } from './gear/functions/generateGearImage';
-import { GearSetup, UserFullGearSetup } from './gear/types';
+import { GearSetup, GearSetupType, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
 import { IMaterialBank } from './invention';
 import { MaterialBank } from './invention/MaterialBank';
 import backgroundImages from './minions/data/bankBackgrounds';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
-import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
 import { defaultFarmingContract } from './minions/farming';
 import { FarmingContract } from './minions/farming/types';
 import { AttackStyles } from './minions/functions';
@@ -41,15 +41,7 @@ import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
 import { MTame } from './structures/MTame';
 import { ItemBank, Skills } from './types';
-import {
-	addItemToBank,
-	assert,
-	convertXPtoLVL,
-	getAllIDsOfUser,
-	itemNameFromID,
-	murMurSort,
-	percentChance
-} from './util';
+import { addItemToBank, convertXPtoLVL, getAllIDsOfUser, itemNameFromID, murMurSort, percentChance } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
@@ -186,13 +178,6 @@ export class MUserClass {
 		});
 	}
 
-	get kourendFavour() {
-		const favour = this.user.kourend_favour as any as UserKourendFavour | null;
-		if (favour === null) return { ...baseUserKourendFavour };
-		assert(typeof favour.Arceuus === 'number', `kourendFavour should return valid data for ${this.id}`);
-		return favour;
-	}
-
 	get isBusy() {
 		return userIsBusy(this.id);
 	}
@@ -300,7 +285,7 @@ export class MUserClass {
 
 	async calcActualClues() {
 		const result: { id: number; qty: number }[] =
-			await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int) AS qty
+			await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'ClueCompletion'
 AND user_id = '${this.id}'::bigint
@@ -486,7 +471,8 @@ GROUP BY data->>'clueID';`);
 			hitpoints: Number(this.user.skills_hitpoints),
 			slayer: Number(this.user.skills_slayer),
 			dungeoneering: Number(this.user.skills_dungeoneering),
-			invention: Number(this.user.skills_invention)
+			invention: Number(this.user.skills_invention),
+			divination: Number(this.user.skills_divination)
 		};
 		if (levels) {
 			for (const [key, val] of Object.entries(skills) as [keyof Skills, number][]) {
@@ -732,7 +718,7 @@ GROUP BY data->>'clueID';`);
 			select: keysToSelect
 		});
 
-		return result as SelectedUserStats<T>;
+		return result as unknown as SelectedUserStats<T>;
 	}
 
 	get logName() {
@@ -922,6 +908,113 @@ GROUP BY data->>'clueID';`);
 
 	async fetchRobochimpUser() {
 		return roboChimpUserFetch(this.id);
+	}
+
+	async forceUnequip(setup: GearSetupType, slot: EquipmentSlot, reason: string) {
+		const gear = this.gear[setup].raw();
+		const equippedInSlot = gear[slot];
+		if (!equippedInSlot) {
+			return { refundBank: new Bank() };
+		}
+		gear[slot] = null;
+
+		const actualItem = getItem(equippedInSlot.item);
+		const refundBank = new Bank();
+		if (actualItem) {
+			refundBank.add(actualItem.id, equippedInSlot.quantity);
+		}
+
+		await this.update({
+			[`gear_${setup}`]: gear as any as Prisma.InputJsonObject
+		});
+		if (refundBank.length > 0) {
+			await this.addItemsToBank({
+				items: refundBank,
+				collectionLog: false
+			});
+		}
+
+		debugLog(
+			`ForceUnequip User[${this.id}] in ${setup} slot[${slot}] ${JSON.stringify(equippedInSlot)}: ${reason}`
+		);
+
+		return { refundBank };
+	}
+
+	async fetchStashUnits() {
+		const units = await getParsedStashUnits(this.id);
+		return units;
+	}
+
+	async validateEquippedGear() {
+		let itemsUnequippedAndRefunded = new Bank();
+		for (const [gearSetupName, gearSetup] of Object.entries(this.gear) as [GearSetupType, GearSetup][]) {
+			if (gearSetup['2h'] !== null) {
+				if (gearSetup.weapon?.item) {
+					const { refundBank } = await this.forceUnequip(
+						gearSetupName,
+						EquipmentSlot.Weapon,
+						'2h Already equipped'
+					);
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+				if (gearSetup.shield?.item) {
+					const { refundBank } = await this.forceUnequip(
+						gearSetupName,
+						EquipmentSlot.Shield,
+						'2h Already equipped'
+					);
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+			}
+			for (const slot of Object.values(EquipmentSlot)) {
+				const item = gearSetup[slot];
+				if (!item) continue;
+				const osItem = getItem(item.item);
+				if (!osItem) {
+					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Invalid item');
+					itemsUnequippedAndRefunded.add(refundBank);
+					continue;
+				}
+				if (osItem.equipment?.slot !== slot) {
+					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Wrong slot');
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+				if (osItem.equipment?.requirements && !this.hasSkillReqs(osItem.equipment.requirements)) {
+					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Doesnt meet requirements');
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+			}
+		}
+		return {
+			itemsUnequippedAndRefunded
+		};
+	}
+
+	async fetchTames() {
+		const tames = await prisma.tame.findMany({
+			where: {
+				user_id: this.id
+			}
+		});
+		return tames.map(t => new MTame(t));
+	}
+
+	async fetchActiveTame(): Promise<{ tame: null; activity: null } | { activity: TameActivity | null; tame: MTame }> {
+		if (!this.user.selected_tame) {
+			return {
+				tame: null,
+				activity: null
+			};
+		}
+		const tame = await prisma.tame.findFirst({ where: { id: this.user.selected_tame } });
+		if (!tame) {
+			throw new Error('No tame found for selected tame.');
+		}
+		const activity = await prisma.tameActivity.findFirst({
+			where: { user_id: this.id, tame_id: tame.id, completed: false }
+		});
+		return { activity, tame: new MTame(tame) };
 	}
 }
 declare global {

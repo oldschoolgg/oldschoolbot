@@ -2,12 +2,12 @@ import '../customItems/customItems';
 import '../data/itemAliases';
 
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { Bank, Misc, Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { production } from '../../config';
 import { YETI_ID } from '../constants';
-import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import killableMonsters from '../minions/data/killableMonsters/index';
+import { simulatedKillables } from '../simulation/simulatedKillables';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
 
 export default async ({
@@ -50,19 +50,17 @@ export default async ({
 		return result;
 	}
 
-	if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {
-		let bank = new Bank();
-		if (quantity > 10_000) {
-			return { error: 'I can only kill a maximum of 10k nightmares a time!' };
+	const simulatedKillable = simulatedKillables.find(i => stringMatches(i.name, bossName));
+	if (simulatedKillable) {
+		if (quantity > limit) {
+			return {
+				error:
+					`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! ` +
+					'*You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>'
+			};
 		}
-		for (let i = 0; i < quantity; i++) {
-			bank.add(Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }], isPhosani: false }).id);
-		}
-		return { bank };
-	}
 
-	if (stringMatches(bossName, 'moktang')) {
-		return { bank: MoktangLootTable.roll(quantity) };
+		return { bank: simulatedKillable.loot(quantity) };
 	}
 
 	return { error: "I don't have that monster!" };

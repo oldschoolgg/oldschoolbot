@@ -27,6 +27,11 @@ function makeTameNickname(species: Species) {
 			const suffixs = ['Tail', 'Foot', 'Heart', 'Monkey', 'Paw'];
 			return `${randArrItem(prefixs)} ${randArrItem(suffixs)}`;
 		}
+		case TameSpeciesID.Eagle: {
+			const prefixs = ['Great', 'Noble', 'Sky', 'Soaring', 'Storm'];
+			const suffixs = ['Claw', 'Wing', 'Feather', 'Talon', 'Beak'];
+			return `${randArrItem(prefixs)} ${randArrItem(suffixs)}`;
+		}
 	}
 }
 

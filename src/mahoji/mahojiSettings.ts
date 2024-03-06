@@ -4,6 +4,7 @@ import { isFunction, objectEntries, round } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { globalConfig } from '../lib/constants';
+import { getSimilarItems } from '../lib/data/similarItems';
 import type { KillableMonster } from '../lib/minions/types';
 import type { SelectedUserStats } from '../lib/MUser';
 import { prisma } from '../lib/settings/prisma';
@@ -213,11 +214,10 @@ export function userHasGracefulEquipped(user: MUser) {
 }
 
 export function anglerBoostPercent(user: MUser) {
-	const skillingSetup = user.gear.skilling;
 	let amountEquipped = 0;
 	let boostPercent = 0;
 	for (const [id, percent] of anglerBoosts) {
-		if (skillingSetup.hasEquipped([id])) {
+		if (user.hasEquippedOrInBank(id)) {
 			boostPercent += percent;
 			amountEquipped++;
 		}
@@ -231,10 +231,9 @@ export function anglerBoostPercent(user: MUser) {
 const rogueOutfit = resolveItems(['Rogue mask', 'Rogue top', 'Rogue trousers', 'Rogue gloves', 'Rogue boots']);
 
 export function rogueOutfitPercentBonus(user: MUser): number {
-	const skillingSetup = user.gear.skilling;
 	let amountEquipped = 0;
 	for (const id of rogueOutfit) {
-		if (skillingSetup.hasEquipped([id])) {
+		if (user.hasEquippedOrInBank(id)) {
 			amountEquipped++;
 		}
 	}
@@ -256,7 +255,7 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 				if (!item.some(itemReq => user.hasEquippedOrInBank(itemReq as number))) {
 					return [false, `You need these items to kill ${monster.name}: ${itemsRequiredStr}`];
 				}
-			} else if (!user.hasEquippedOrInBank(item)) {
+			} else if (!getSimilarItems(item).some(id => user.hasEquippedOrInBank(id))) {
 				return [
 					false,
 					`You need ${itemsRequiredStr} to kill ${monster.name}. You're missing ${itemNameFromID(item)}.`
@@ -356,4 +355,15 @@ export async function addToGPTaxBalance(userID: string | string, amount: number)
 			{}
 		)
 	]);
+}
+
+export async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
+	const { openable_scores: newOpenableScores } = await userStatsUpdate(
+		mahojiUser.id,
+		({ openable_scores }) => ({
+			openable_scores: new Bank(openable_scores as ItemBank).add(kcBank).bank
+		}),
+		{ openable_scores: true }
+	);
+	return new Bank(newOpenableScores as ItemBank);
 }

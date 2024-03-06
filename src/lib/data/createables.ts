@@ -1,10 +1,9 @@
-import { uniqueArr } from 'e';
+import { isFunction, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BitField, discontinuedItems } from '../constants';
 import { allDyedItems } from '../dyedItems';
 import { MaterialBank } from '../invention/MaterialBank';
-import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank, Skills } from '../types';
@@ -30,13 +29,14 @@ import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
 import { shadesOfMortonCreatables } from './creatables/shadesOfMorton';
 import { slayerCreatables } from './creatables/slayer';
+import { sunMoonCreatables } from './creatables/sunMoonCreatables';
 import { toaCreatables } from './creatables/toa';
 import { tobCreatables } from './creatables/tob';
 import { tameCreatables } from './tameCreatables';
 
 export interface Createable {
 	name: string;
-	outputItems: ItemBank | Bank;
+	outputItems: ItemBank | Bank | ((user: MUser) => Bank);
 	inputItems: ItemBank | Bank | ((user: MUser) => Bank);
 	cantHaveItems?: ItemBank;
 	requiredSkills?: Skills;
@@ -46,7 +46,6 @@ export interface Createable {
 	GPCost?: number;
 	cantBeInCL?: boolean;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
-	requiredFavour?: Favours;
 	maxCanOwn?: number;
 	materialCost?: MaterialBank;
 	onCreate?: (qty: number, user: MUser) => Promise<{ result: boolean; message: string }>;
@@ -606,6 +605,26 @@ const hunterClothing: Createable[] = [
 		inputItems: new Bank({ 'Dark kebbit fur': 2 }),
 		outputItems: new Bank({ 'Gloves of silence': 1 }),
 		GPCost: 600
+	}
+];
+
+const camdozaalItems: Createable[] = [
+	{
+		name: 'Barronite mace',
+		inputItems: new Bank({
+			'Barronite handle': 1,
+			'Barronite guard': 1,
+			'Barronite head': 1,
+			'Barronite shards': 1500
+		}),
+		outputItems: new Bank({ 'Barronite mace	': 1 }),
+		noCl: false
+	},
+	{
+		name: 'Imcando hammer',
+		inputItems: new Bank({ 'Imcando hammer (broken)': 1, 'Barronite shards': 1500 }),
+		outputItems: new Bank({ 'Imcando hammer': 1 }),
+		noCl: false
 	}
 ];
 
@@ -2345,6 +2364,30 @@ const Createables: Createable[] = [
 			'Webweaver bow (u)	': 1
 		})
 	},
+	{
+		name: 'Bone mace',
+		inputItems: new Bank().add('Rune mace').add("Scurrius' spine"),
+		outputItems: new Bank().add('Bone mace'),
+		requiredSkills: {
+			smithing: 35
+		}
+	},
+	{
+		name: 'Bone shortbow',
+		inputItems: new Bank().add('Yew shortbow').add("Scurrius' spine"),
+		outputItems: new Bank().add('Bone shortbow'),
+		requiredSkills: {
+			fletching: 35
+		}
+	},
+	{
+		name: 'Bone staff',
+		inputItems: new Bank().add('Battlestaff').add('Chaos rune', 1000).add("Scurrius' spine"),
+		outputItems: new Bank().add('Bone staff'),
+		requiredSkills: {
+			crafting: 35
+		}
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
@@ -2376,13 +2419,15 @@ const Createables: Createable[] = [
 	...swampBarkCreatables,
 	...dtCreatables,
 	...caCreatables,
-	...forestryCreatables
+	...forestryCreatables,
+	...camdozaalItems,
+	...sunMoonCreatables
 ];
 
 export default Createables;
 export const creatablesCL = uniqueArr(
 	Createables.filter(i => i.noCl !== true)
-		.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
+		.map(i => (isFunction(i.outputItems) ? [] : new Bank(i.outputItems).items().map(i => i[0].id)))
 		.flat()
 		.filter(i => !discontinuedItems.includes(i) && !allDyedItems.includes(i))
 );

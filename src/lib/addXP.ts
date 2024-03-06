@@ -6,6 +6,7 @@ import { convertLVLtoXP, convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/uti
 import { MAXING_MESSAGE } from '../config';
 import { Channel, Events, GLOBAL_BSO_XP_MULTIPLIER, LEVEL_120_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants';
 import {
+	divinersOutfit,
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
 	gorajanWarriorOutfit,
@@ -25,7 +26,7 @@ import { sendToChannelID } from './util/webhook';
 
 const skillsVals = Object.values(Skills);
 const maxFilter = skillsVals.map(s => `"skills.${s.id}" >= ${LEVEL_120_XP}`).join(' AND ');
-const makeQuery = (ironman: boolean) => `SELECT count(id)
+const makeQuery = (ironman: boolean) => `SELECT count(id)::int
 FROM users
 WHERE ${maxFilter}
 ${ironman ? 'AND "minion.ironman" = true' : ''};`;
@@ -92,6 +93,12 @@ const skillingOutfitBoosts = [
 	{
 		skill: SkillsEnum.Invention,
 		outfit: inventorOutfit,
+		individualBoost: 0.5,
+		totalBoost: 4
+	},
+	{
+		skill: SkillsEnum.Divination,
+		outfit: divinersOutfit,
 		individualBoost: 0.5,
 		totalBoost: 4
 	}
@@ -183,7 +190,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	const boosts = staticXPBoosts.get(params.skillName);
 	if (boosts && !params.artificial) {
 		for (const booster of boosts) {
-			if (user.hasEquipped(booster.item.id)) {
+			if (user.hasEquippedOrInBank(booster.item.id)) {
 				params.amount = increaseNumByPercent(params.amount, booster.boostPercent);
 			}
 		}
@@ -191,9 +198,9 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 
 	const skillOutfit = skillingOutfitBoosts.find(i => i.skill === params.skillName);
 	if (!params.artificial && skillOutfit) {
-		const amountBoost = user.hasEquipped(skillOutfit.outfit, true)
+		const amountBoost = user.hasEquippedOrInBank(skillOutfit.outfit, 'every')
 			? skillOutfit.totalBoost
-			: skillOutfit.outfit.filter(i => user.hasEquipped(i)).length * skillOutfit.individualBoost;
+			: skillOutfit.outfit.filter(i => user.hasEquippedOrInBank(i)).length * skillOutfit.individualBoost;
 		params.amount = increaseNumByPercent(params.amount, amountBoost);
 	}
 
@@ -316,7 +323,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			{
 				count: string;
 			}[]
-		>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${queryValue};`);
+		>(`SELECT COUNT(*)::int FROM users WHERE "skills.${params.skillName}" >= ${queryValue};`);
 		resultStr = resultStr.replace('{nthUser}', formatOrdinal(Number(nthUser.count) + 1));
 		if (user.isIronman) {
 			const [nthIron] = await prisma.$queryRawUnsafe<
@@ -324,7 +331,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 					count: string;
 				}[]
 			>(
-				`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${queryValue};`
+				`SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${queryValue};`
 			);
 			resultStr = resultStr.replace('{nthIron}', formatOrdinal(Number(nthIron.count) + 1));
 		}
@@ -366,7 +373,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			}% bonus XP for First age outfit items.`;
 		}
 
-		if (params.duration && !params.minimal) {
+		if (params.duration) {
 			let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 			str += ` (${toKMB(rawXPHr)}/Hr)`;

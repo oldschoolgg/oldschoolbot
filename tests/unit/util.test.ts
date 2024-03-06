@@ -8,7 +8,13 @@ import { baseModifyBusyCounter } from '../../src/lib/busyCounterCache';
 import { Eatables } from '../../src/lib/data/eatables';
 import getUserFoodFromBank from '../../src/lib/minions/functions/getUserFoodFromBank';
 import { SkillsEnum } from '../../src/lib/skilling/types';
-import { clAdjustedDroprate, sanitizeBank, skillingPetDropRate, stripEmojis } from '../../src/lib/util';
+import {
+	clAdjustedDroprate,
+	pluraliseItemName,
+	sanitizeBank,
+	skillingPetDropRate,
+	stripEmojis
+} from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 import { sellPriceOfItem, sellStorePriceOfItem } from '../../src/mahoji/commands/sell';
 import { mockMUser } from './utils';
@@ -90,7 +96,7 @@ describe('util', () => {
 		const { price } = item;
 		let expected = reduceNumByPercent(price, 25);
 		expect(sellPriceOfItem(item)).toEqual({ price: expected, basePrice: price });
-		expect(sellPriceOfItem(getOSItem('A yellow square'))).toEqual({ price: 0, basePrice: 0 });
+		expect(sellPriceOfItem(getOSItem('Yellow square'))).toEqual({ price: 0, basePrice: 0 });
 
 		expect(sellPriceOfItem(getOSItem('Rune pickaxe'))).toEqual({
 			price: calcPercentOfNum(30, getOSItem('Rune pickaxe').highalch!),
@@ -108,7 +114,7 @@ describe('util', () => {
 			(((0.4 - 0.015 * Math.min(22 - 1, 10)) * Math.min(22, 11) + Math.max(22 - 11, 0) * 0.1) * cost) / 22;
 		expect(sellStorePriceOfItem(item, 1)).toEqual({ price: expectedOneQty, basePrice: cost });
 		expect(sellStorePriceOfItem(item, 22)).toEqual({ price: expectedTwentytwoQty, basePrice: cost });
-		expect(sellStorePriceOfItem(getOSItem('A yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
+		expect(sellStorePriceOfItem(getOSItem('Yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
 	});
 
 	test('sellStorePriceOfItem', () => {
@@ -121,7 +127,7 @@ describe('util', () => {
 			(((0.4 - 0.015 * Math.min(22 - 1, 10)) * Math.min(22, 11) + Math.max(22 - 11, 0) * 0.1) * cost) / 22;
 		expect(sellStorePriceOfItem(item, 1)).toEqual({ price: expectedOneQty, basePrice: cost });
 		expect(sellStorePriceOfItem(item, 22)).toEqual({ price: expectedTwentytwoQty, basePrice: cost });
-		expect(sellStorePriceOfItem(getOSItem('A yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
+		expect(sellStorePriceOfItem(getOSItem('Yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
 	});
 
 	test('clAdjustedDroprate', () => {
@@ -165,5 +171,11 @@ describe('util', () => {
 		expect(baseModifyBusyCounter(cache, id, -1)).toEqual(0);
 		expect(cache.get(id)).toEqual(0);
 		// expect(() => baseModifyBusyCounter(cache, id, -1)).toThrow();
+	});
+
+	test('pluraliseItemName correctly pluralises items', async () => {
+		expect(pluraliseItemName('Steel Axe')).toEqual('Steel Axes');
+		expect(pluraliseItemName('Steel Arrowtips')).toEqual('Steel Arrowtips');
+		expect(pluraliseItemName('Adamantite nails')).toEqual('Adamantite nails');
 	});
 });

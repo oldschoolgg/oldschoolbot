@@ -2,21 +2,20 @@ import { stringMatches } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { noOp, notEmpty, randArrItem, roll, shuffleArr, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { Emoji, PerkTier } from '../../../lib/constants';
-import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
+import { allOpenables, getOpenableLoot, UnifiedOpenable } from '../../../lib/openables';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
-import { ItemBank } from '../../../lib/types';
 import { assert, itemNameFromID, makeComponents } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
-import { patronMsg, updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahojiSettings';
+import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -27,33 +26,6 @@ export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2
 		if (a.name.includes('Clue')) return -1;
 		return 0;
 	});
-
-function getOpenableLoot({
-	openable,
-	quantity,
-	user,
-	totalLeaguesPoints
-}: {
-	openable: UnifiedOpenable;
-	quantity: number;
-	user: MUser;
-	totalLeaguesPoints: number;
-}) {
-	return openable.output instanceof LootTable
-		? { bank: openable.output.roll(quantity), message: null }
-		: openable.output({ user, self: openable, quantity, totalLeaguesPoints });
-}
-
-async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
-	const { openable_scores: newOpenableScores } = await userStatsUpdate(
-		mahojiUser.id,
-		({ openable_scores }) => ({
-			openable_scores: new Bank(openable_scores as ItemBank).add(kcBank).bank
-		}),
-		{ openable_scores: true }
-	);
-	return new Bank(newOpenableScores as ItemBank);
-}
 
 export async function abstractedOpenUntilCommand(userID: string, name: string, openUntilItem: string) {
 	const user = await mUserFetch(userID);
@@ -72,27 +44,35 @@ export async function abstractedOpenUntilCommand(userID: string, name: string, o
 		return `${openable.openedItem.name} doesn't drop ${openUntil.name}.`;
 	}
 
-	const amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
+	let amountOfThisOpenableOwned = user.bank.amount(openableItem.id);
 	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
+
+	// Calculate how many we have keys to open:
+	if (openable.extraCostPerOpen) {
+		const howManyCanOpen = user.bank.fits(openable.extraCostPerOpen);
+		if (howManyCanOpen === 0) return `You need ${openable.extraCostPerOpen} per crate.`;
+		amountOfThisOpenableOwned = Math.min(amountOfThisOpenableOwned, howManyCanOpen);
+	}
 
 	const cost = new Bank();
 	const loot = new Bank();
 	let amountOpened = 0;
 	let max = Math.min(100, amountOfThisOpenableOwned);
+	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({
 			openable,
 			quantity: 1,
 			user,
-			// TODO: this is bad
-			totalLeaguesPoints: (await roboChimpUserFetch(user.id)).leagues_points_total
+			totalLeaguesPoints
 		});
 		loot.add(thisLoot.bank);
 		amountOpened++;
 		if (loot.has(openUntil.id)) break;
 	}
 
+	// Now that we have the final total, we add the key cost:
 	if (openable.extraCostPerOpen) {
 		cost.add(openable.extraCostPerOpen.clone().multiply(amountOpened));
 	}
@@ -150,6 +130,7 @@ async function finalizeOpening({
 
 	if (hasSmokey) {
 		let bonuses = [];
+		const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 		for (const openable of openables) {
 			if (!openable.smokeyApplies) continue;
 			let smokeyBonus = 0;
@@ -165,7 +146,7 @@ async function finalizeOpening({
 						user,
 						openable,
 						quantity: smokeyBonus,
-						totalLeaguesPoints: (await roboChimpUserFetch(user.id)).leagues_points_total
+						totalLeaguesPoints
 					})
 				).bank
 			);
@@ -228,7 +209,8 @@ async function finalizeOpening({
 				? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
 				: 'Loot From Opening',
 		user,
-		previousCL
+		previousCL,
+		mahojiFlags: ['show_names']
 	});
 
 	if (loot.has('Coins')) {
@@ -240,7 +222,7 @@ async function finalizeOpening({
 		.join(', ');
 
 	const perkTier = user.perkTier();
-	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier);
+	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
 	let response: Awaited<CommandResponse> = {
 		files: [image.file],
@@ -294,6 +276,8 @@ export async function abstractedOpenCommand(
 	const loot = new Bank();
 	const messages: string[] = [];
 
+	const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
+
 	for (const openable of openables) {
 		const { openedItem } = openable;
 		const quantity = typeof _quantity === 'string' ? user.bank.amount(openedItem.id) : _quantity;
@@ -308,7 +292,7 @@ export async function abstractedOpenCommand(
 			openable,
 			quantity,
 			user,
-			totalLeaguesPoints: process.env.TEST ? 0 : (await roboChimpUserFetch(user.id)).leagues_points_total
+			totalLeaguesPoints
 		});
 		loot.add(thisLoot.bank);
 		if (thisLoot.message) messages.push(thisLoot.message);

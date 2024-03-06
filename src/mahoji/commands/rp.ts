@@ -9,16 +9,23 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
+import { analyticsTick } from '../../lib/analytics';
+import { calculateCompCapeProgress } from '../../lib/bso/calculateCompCapeProgress';
 import { BitField, Channel } from '../../lib/constants';
 import { GearSetupType } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
+import { marketPricemap } from '../../lib/marketPrices';
 import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { patreonTask } from '../../lib/patreon';
 import { allPerkBitfields } from '../../lib/perkTiers';
+import { premiumPatronTime } from '../../lib/premiumPatronTime';
 import { prisma } from '../../lib/settings/prisma';
-import { dateFm, formatDuration } from '../../lib/util';
+import { TeamLoot } from '../../lib/simulation/TeamLoot';
+import { ItemBank } from '../../lib/types';
+import { dateFm, returnStringOrFile } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
@@ -27,11 +34,13 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { migrateUser } from '../../lib/util/migrateUser';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { sendToChannelID } from '../../lib/util/webhook';
+import { cancelUsersListings } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { gearSetupOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { gifs } from './admin';
 import { getUserInfo } from './minion';
+import { sellPriceOfItem } from './sell';
 
 const itemFilters = [
 	{
@@ -66,6 +75,24 @@ export const rpCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'patreon_reset',
 					description: 'Reset all patreon data.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'force_comp_update',
+					description: 'Force the top 100 completionist users to update their completion percentage.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'view_all_items',
+					description: 'View all item IDs present in banks/cls.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'analytics_tick',
+					description: 'analyticsTick.',
 					options: []
 				}
 			]
@@ -272,6 +299,44 @@ export const rpCommand: OSBMahojiCommand = {
 							description: 'The reason'
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'list_trades',
+					description: 'Show trades between users',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user',
+							required: true
+						},
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'partner',
+							description: 'Optional second user, will only show trades between the users',
+							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'guild_id',
+							description: 'Optional - Restrict search to this guild.',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'ge_cancel',
+					description: 'Cancel GE Listings',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user',
+							required: true
+						}
+					]
 				}
 			]
 		}
@@ -285,6 +350,9 @@ export const rpCommand: OSBMahojiCommand = {
 		action?: {
 			validate_ge?: {};
 			patreon_reset?: {};
+			force_comp_update?: {};
+			view_all_items?: {};
+			analytics_tick?: {};
 		};
 		player?: {
 			givetgb?: { user: MahojiUserOption };
@@ -310,6 +378,12 @@ export const rpCommand: OSBMahojiCommand = {
 			add_ironman_alt?: { main: MahojiUserOption; ironman_alt: MahojiUserOption };
 			view_user?: { user: MahojiUserOption };
 			migrate_user?: { source: MahojiUserOption; dest: MahojiUserOption; reason?: string };
+			list_trades?: {
+				user: MahojiUserOption;
+				partner?: MahojiUserOption;
+				guild_id?: string;
+			};
+			ge_cancel?: { user: MahojiUserOption };
 		};
 	}>) => {
 		await deferInteraction(interaction);
@@ -339,6 +413,40 @@ export const rpCommand: OSBMahojiCommand = {
 				return 'No issues found.';
 			}
 			return 'Something was invalid. Check logs!';
+		}
+		if (options.action?.force_comp_update) {
+			const usersToUpdate = await prisma.userStats.findMany({
+				where: {
+					untrimmed_comp_cape_percent: {
+						not: null
+					}
+				},
+				orderBy: {
+					untrimmed_comp_cape_percent: 'desc'
+				},
+				take: 100
+			});
+			for (const user of usersToUpdate) {
+				await calculateCompCapeProgress(await mUserFetch(user.user_id.toString()));
+			}
+			return 'Done.';
+		}
+
+		if (options.action?.analytics_tick) {
+			await analyticsTick();
+			return 'Finished.';
+		}
+
+		if (options.action?.view_all_items) {
+			const result = await prisma.$queryRawUnsafe<
+				{ item_id: number }[]
+			>(`SELECT DISTINCT json_object_keys(bank)::int AS item_id
+FROM users
+UNION
+SELECT DISTINCT jsonb_object_keys("collectionLogBank")::int AS item_id
+FROM users
+ORDER BY item_id ASC;`);
+			return returnStringOrFile(`[${result.map(i => i.item_id).join(',')}]`);
 		}
 
 		if (options.action?.patreon_reset) {
@@ -387,50 +495,12 @@ export const rpCommand: OSBMahojiCommand = {
 
 		if (options.player?.add_patron_time) {
 			const { tier, time, user: userToGive } = options.player.add_patron_time;
-			if (![1, 2, 3, 4, 5, 6].includes(tier)) return 'Invalid input.';
 			const duration = new Duration(time);
+			if (![1, 2, 3, 4, 5, 6].includes(tier)) return 'Invalid input.';
 			const ms = duration.offset;
 			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
-			const input = await mahojiUsersSettingsFetch(userToGive.user.id, {
-				premium_balance_tier: true,
-				premium_balance_expiry_date: true,
-				id: true
-			});
-
-			const currentBalanceTier = input.premium_balance_tier;
-
-			if (currentBalanceTier !== null && currentBalanceTier !== tier) {
-				await handleMahojiConfirmation(
-					interaction,
-					`They already have Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
-				);
-			}
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure you want to add ${formatDuration(ms)} of Tier ${tier} patron to ${
-					userToGive.user.username
-				}?`
-			);
-			await mahojiUserSettingsUpdate(input.id, {
-				premium_balance_tier: tier
-			});
-
-			const currentBalanceTime =
-				input.premium_balance_expiry_date === null ? null : Number(input.premium_balance_expiry_date);
-
-			let newBalanceExpiryTime = 0;
-			if (currentBalanceTime !== null && tier === currentBalanceTier) {
-				newBalanceExpiryTime = currentBalanceTime + ms;
-			} else {
-				newBalanceExpiryTime = Date.now() + ms;
-			}
-			await mahojiUserSettingsUpdate(input.id, {
-				premium_balance_expiry_date: newBalanceExpiryTime
-			});
-
-			return `Gave ${formatDuration(ms)} of Tier ${tier} patron to ${
-				userToGive.user.username
-			}. They have ${formatDuration(newBalanceExpiryTime - Date.now())} remaining.`;
+			const res = await premiumPatronTime(ms, tier, await mUserFetch(userToGive.user.id), interaction);
+			return res;
 		}
 
 		// Unequip Items
@@ -496,7 +566,7 @@ export const rpCommand: OSBMahojiCommand = {
 					parseBank({
 						inputStr: options.player.steal_items.items,
 						noDuplicateItems: true,
-						inputBank: userToStealFrom.bank
+						inputBank: userToStealFrom.bankWithGP
 					})
 				);
 			}
@@ -508,7 +578,7 @@ export const rpCommand: OSBMahojiCommand = {
 			);
 			let missing = new Bank();
 			if (!userToStealFrom.owns(items)) {
-				missing = items.clone().remove(userToStealFrom.bank);
+				missing = items.clone().remove(userToStealFrom.bankWithGP);
 				return `${userToStealFrom.mention} doesn't have all items. Missing: ${missing
 					.toString()
 					.slice(0, 500)}`;
@@ -621,6 +691,111 @@ export const rpCommand: OSBMahojiCommand = {
 				return 'Done';
 			}
 			return result;
+		}
+		if (options.player?.list_trades) {
+			const baseSql =
+				'SELECT date, sender::text as sender_id, recipient::text as recipient_id, s.username as sender, r.username as recipient, items_sent, items_received, type, guild_id::text from economy_transaction e inner join new_users s on sender = s.id::bigint inner join new_users r on recipient = r.id::bigint';
+			const where: string[] = [];
+			if (options.player.list_trades.partner) {
+				const inUsers = `(${options.player.list_trades.partner.user.id}, ${options.player.list_trades.user.user.id})`;
+				where.push(`(sender IN ${inUsers} AND recipient IN ${inUsers})`);
+			} else {
+				where.push(
+					`(sender = ${options.player.list_trades.user.user.id} OR recipient = ${options.player.list_trades.user.user.id})`
+				);
+			}
+			if (options.player.list_trades.guild_id) {
+				where.push(`guild_id = ${options.player.list_trades.guild_id}`);
+			}
+
+			const sql = `${`${baseSql} WHERE ${where.join(' AND ')}`} ORDER BY date DESC`;
+
+			let report =
+				'date\tguild_id\tsender_id\trecipient_id\tsender\trecipient\tsent_bank\trcvd_bank\tsent_value\trcvd_value\tsent_value_last_100\trcvd_value_last_100\n';
+
+			const totalsSent = new TeamLoot();
+			const totalsRcvd = new TeamLoot();
+			const result: {
+				date: Date;
+				sender_id: string;
+				recipient_id: string;
+				sender: string;
+				recipient: string;
+				items_sent: ItemBank;
+				items_received: ItemBank;
+				type: 'gri' | 'trade' | 'giveaway';
+				guild_id: string;
+			}[] = await prisma.$queryRawUnsafe(sql);
+			for (const row of result) {
+				const sentBank = new Bank(row.items_sent);
+				const recvBank = new Bank(row.items_received);
+
+				// Calculate values of the traded banks:
+				let sentValueGuide = 0;
+				let sentValueLast100 = 0;
+				let recvValueGuide = 0;
+				let recvValueLast100 = 0;
+
+				// We use Object.entries(bank) instead of bank.items() so we can filter out deleted/broken items:
+				for (const [itemId, qty] of Object.entries(sentBank.bank)) {
+					try {
+						const item = getOSItem(Number(itemId));
+						const marketData = marketPricemap.get(item.id);
+						if (marketData) {
+							sentValueGuide += marketData.guidePrice * qty;
+							sentValueLast100 += marketData.averagePriceLast100 * qty;
+						} else {
+							const { price } = sellPriceOfItem(item, 0);
+							sentValueGuide += price * qty;
+							sentValueLast100 += price * qty;
+						}
+					} catch (e) {
+						// This means item doesn't exist at this point in time.
+						delete sentBank.bank[itemId];
+					}
+				}
+				for (const [itemId, qty] of Object.entries(recvBank.bank)) {
+					try {
+						const item = getOSItem(Number(itemId));
+						const marketData = marketPricemap.get(item.id);
+						if (marketData) {
+							recvValueGuide += marketData.guidePrice * qty;
+							recvValueLast100 += marketData.averagePriceLast100 * qty;
+						} else {
+							const { price } = sellPriceOfItem(item, 0);
+							recvValueGuide += price * qty;
+							recvValueLast100 += price * qty;
+						}
+					} catch (e) {
+						// This means item doesn't exist at this point in time.
+						delete recvBank.bank[itemId];
+					}
+				}
+				totalsSent.add(row.sender_id, 'Coins', sentValueLast100);
+				totalsRcvd.add(row.sender_id, 'Coins', recvValueLast100);
+				totalsSent.add(row.recipient_id, 'Coins', recvValueLast100);
+				totalsRcvd.add(row.recipient_id, 'Coins', sentValueLast100);
+
+				// Add report row:
+				report += `${row.date.toLocaleString('en-us')}\t${row.guild_id}\t${row.sender_id}\t${
+					row.recipient_id
+				}\t${row.sender}\t${
+					row.recipient
+				}\t${sentBank}\t${recvBank}\t${sentValueGuide}\t${recvValueGuide}\t${sentValueLast100}\t${recvValueLast100}\n`;
+			}
+			report += '\n\n';
+			report += 'User ID\tTotal Sent\tTotal Received\n';
+			for (const [userId, bank] of totalsSent.entries()) {
+				report += `${userId}\t${bank}\t${totalsRcvd.get(userId)}\n`;
+			}
+
+			return { files: [{ attachment: Buffer.from(report), name: 'trade_report.txt' }] };
+		}
+
+		if (options.player?.ge_cancel) {
+			const targetUser = await mUserFetch(options.player.ge_cancel.user.user.id);
+			await cancelUsersListings(targetUser);
+			return `Cancelled listings for ${targetUser}`;
 		}
 
 		return 'Invalid command.';

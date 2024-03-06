@@ -20,7 +20,7 @@ export const smeltingTask: MinionTask = {
 		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
 
 		// If this bar has a chance of failing to smelt, calculate that here.
-		const masterCapeInEffect = bar.chanceOfFail > 0 && user.hasEquipped('Smithing master cape');
+		const masterCapeInEffect = bar.chanceOfFail > 0 && user.hasEquippedOrInBank('Smithing master cape');
 		const hasBS = user.hasEquippedOrInBank(BlacksmithOutfit, 'every');
 		const oldQuantity = quantity;
 		if ((bar.chanceOfFail > 0 && bar.name !== 'Iron bar') || (!blastf && bar.name === 'Iron bar')) {
@@ -36,7 +36,7 @@ export const smeltingTask: MinionTask = {
 
 		let xpReceived = quantity * bar.xp;
 
-		if (bar.id === itemID('Gold bar') && user.hasEquipped('Goldsmith gauntlets')) {
+		if (bar.id === itemID('Gold bar') && user.hasEquippedOrInBank('Goldsmith gauntlets')) {
 			xpReceived = quantity * 56.2;
 		}
 

@@ -2,7 +2,6 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Emoji } from '../constants';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank, Skills } from '../types';
 import { FarmingPatchName } from '../util/farmingHelpers';
@@ -32,7 +31,8 @@ export enum SkillsEnum {
 	Hitpoints = 'hitpoints',
 	Dungeoneering = 'dungeoneering',
 	Slayer = 'slayer',
-	Invention = 'invention'
+	Invention = 'invention',
+	Divination = 'divination'
 }
 
 export interface Ore {
@@ -48,6 +48,7 @@ export interface Ore {
 	minerals?: number;
 	clueScrollChance?: number;
 	requiredPickaxes?: number[];
+	aliases?: string[];
 }
 
 export interface Log {
@@ -224,7 +225,7 @@ export type LevelRequirements = Partial<{
 export interface Skill {
 	aliases: string[];
 	id: SkillsEnum;
-	emoji: Emoji;
+	emoji: string;
 	name: string;
 }
 
@@ -313,5 +314,5 @@ export interface Creature {
 	qpRequired?: number;
 	slope: number;
 	intercept: number;
-	bait?: (quantity: number, user: MUser) => Bank;
+	bait?: (quantity: number) => Bank;
 }

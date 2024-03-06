@@ -1,7 +1,10 @@
+import { isMainThread } from 'node:worker_threads';
+
 import { Activity, activity_type_enum, Prisma, PrismaClient } from '@prisma/client';
 
 import { production } from '../../config';
 import { ActivityTaskData } from '../types/minions';
+import { sqlLog } from '../util/logger';
 
 declare global {
 	namespace NodeJS {
@@ -12,6 +15,7 @@ declare global {
 }
 
 function makePrismaClient(): PrismaClient {
+	if (!isMainThread && !process.env.TEST) return null as any;
 	if (!production && !process.env.TEST) console.log('Making prisma client...');
 	return new PrismaClient({
 		log: [
@@ -26,15 +30,18 @@ function makePrismaClient(): PrismaClient {
 export const prisma = global.prisma || makePrismaClient();
 global.prisma = prisma;
 
-export const prismaQueries: Prisma.QueryEvent[] = [];
 export let queryCountStore = { value: 0 };
-prisma.$on('query' as any, (_query: any) => {
-	if (!production && globalClient.isReady()) {
+
+if (isMainThread) {
+	// @ts-ignore ignore
+	prisma.$on('query' as any, (_query: any) => {
 		const query = _query as Prisma.QueryEvent;
-		prismaQueries.push(query);
-	}
-	queryCountStore.value++;
-});
+		if (!production) {
+			sqlLog(query.query);
+		}
+		queryCountStore.value++;
+	});
+}
 
 export function convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
 	return {
@@ -52,7 +59,7 @@ export function convertStoredActivityToFlatActivity(activity: Activity): Activit
  * ⚠️ Uses queryRawUnsafe
  */
 export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolean) {
-	const query = `SELECT COUNT(id)
+	const query = `SELECT COUNT(id)::int
 				   FROM users
 				   WHERE ("collectionLogBank"->>'${itemID}') IS NOT NULL 
 				   AND ("collectionLogBank"->>'${itemID}')::int >= 1

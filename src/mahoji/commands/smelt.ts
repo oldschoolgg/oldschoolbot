@@ -111,18 +111,18 @@ export const smeltingCommand: OSBMahojiCommand = {
 				timeToSmithSingleBar *= 1.075;
 				boosts.push('-7.5% penalty for not having graceful equipped');
 			}
-			if (user.hasEquipped('Smithing master cape')) {
+			if (user.hasEquippedOrInBank('Smithing master cape')) {
 				timeToSmithSingleBar /= 2;
 				boosts.push('2x boost for Smithing master cape');
 			}
-			if (user.hasEquipped('Dwarven gauntlets') && bar.id !== itemID('Gold bar')) {
+			if (user.hasEquippedOrInBank('Dwarven gauntlets') && bar.id !== itemID('Gold bar')) {
 				boosts.push('2x boost for having Dwarven gauntlets equipped');
 				timeToSmithSingleBar /= 2;
 			}
 		}
 
 		if (!blast_furnace) {
-			if (user.hasEquipped('Dwarven gauntlets')) {
+			if (user.hasEquippedOrInBank('Dwarven gauntlets')) {
 				boosts.push('2x boost for having a Dwarven gauntlets equipped');
 				timeToSmithSingleBar /= 2;
 			}
@@ -139,7 +139,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 
 		const maxCanDo = user.bank.fits(itemsNeeded);
 		if (maxCanDo === 0) {
-			return "You don't have enough supplies to smelt even one of this item!";
+			return `You don't have enough supplies to smelt even one of this item! You need: ${itemsNeeded}.`;
 		}
 		if (maxCanDo < quantity) {
 			quantity = maxCanDo;
@@ -182,7 +182,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			type: 'Smelting'
 		});
 
-		if (bar.id === itemID('Gold bar') && user.hasEquipped('Goldsmith gauntlets')) {
+		if (bar.id === itemID('Gold bar') && user.hasEquippedOrInBank('Goldsmith gauntlets')) {
 			boosts.push('56.2 xp per gold bar for Goldsmith gauntlets');
 		}
 

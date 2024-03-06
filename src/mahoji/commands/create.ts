@@ -7,7 +7,6 @@ import Createables from '../../lib/data/createables';
 import { IMaterialBank } from '../../lib/invention';
 import { transactMaterialsFromUser } from '../../lib/invention/inventions';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
-import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
@@ -107,21 +106,6 @@ export const createCommand: OSBMahojiCommand = {
 				return `You don't have the required Slayer Unlocks to ${action} this item.\n\nRequired: ${errors}`;
 			}
 		}
-		if (createableItem.requiredFavour) {
-			const [success, points] = gotFavour(user, createableItem.requiredFavour, 100);
-			if (!success) {
-				return `You don't have the required amount of Favour to ${action} this item.\n\nRequired: ${points}% ${createableItem.requiredFavour.toString()} Favour.`;
-			}
-		}
-
-		if (createableItem.name.toLowerCase().includes('kourend')) {
-			const currentUserFavour = user.kourendFavour;
-			for (const [key, value] of Object.entries(currentUserFavour)) {
-				if (value < 100) {
-					return `You don't have the required amount of Favour to ${action} this item.\n\nRequired: 100% ${key} Favour.`;
-				}
-			}
-		}
 
 		if (createableItem.GPCost && user.GP < createableItem.GPCost * quantity) {
 			return `You need ${createableItem.GPCost.toLocaleString()} coins to ${action} this item.`;
@@ -142,7 +126,9 @@ export const createCommand: OSBMahojiCommand = {
 			quantity = createableItem.maxCanOwn - amountOwned;
 		}
 
-		const outItems = new Bank(createableItem.outputItems).multiply(quantity);
+		const outItems = new Bank(
+			isFunction(createableItem.outputItems) ? createableItem.outputItems(user) : createableItem.outputItems
+		).multiply(quantity);
 		const inItems = (
 			isFunction(createableItem.inputItems)
 				? createableItem.inputItems(user)

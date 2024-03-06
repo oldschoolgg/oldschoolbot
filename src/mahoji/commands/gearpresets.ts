@@ -1,3 +1,4 @@
+import { GearPreset } from '@prisma/client';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
@@ -5,9 +6,9 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { production } from '../../config';
 import { ParsedCustomEmojiWithGroups } from '../../lib/constants';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import { GearSetupType, GearSetupTypes } from '../../lib/gear/types';
+import { GearSetup, GearSetupType, GearSetupTypes } from '../../lib/gear/types';
 import { prisma } from '../../lib/settings/prisma';
-import { Gear, globalPresets } from '../../lib/structures/Gear';
+import { defaultGear, Gear, globalPresets } from '../../lib/structures/Gear';
 import { cleanString, isValidGearSetup, isValidNickname, stringMatches } from '../../lib/util';
 import { emojiServers } from '../../lib/util/cachedUserIDs';
 import { getItem } from '../../lib/util/getOSItem';
@@ -23,15 +24,42 @@ type InputGear = Partial<Record<EquipmentSlot, string | undefined>>;
 type ParsedInputGear = Partial<Record<EquipmentSlot, number>>;
 function parseInputGear(inputGear: InputGear) {
 	let gear: ParsedInputGear = {};
+	let remove: EquipmentSlot[] = [];
 	for (const [key, val] of Object.entries(inputGear)) {
+		if (val?.toLowerCase() === 'none') {
+			remove.push(key as EquipmentSlot);
+			continue;
+		}
 		const item = getItem(val);
 		if (item && item.equipment?.slot === key) {
 			gear[key as EquipmentSlot] = item.id;
 		}
 	}
-	return gear;
+	return { gear, remove };
 }
 
+export function gearPresetToGear(preset: GearPreset): GearSetup {
+	function gearItem(val: null | number) {
+		if (val === null) return null;
+		return {
+			item: val,
+			quantity: 1
+		};
+	}
+	const newGear = { ...defaultGear };
+	newGear.head = gearItem(preset.head);
+	newGear.neck = gearItem(preset.neck);
+	newGear.body = gearItem(preset.body);
+	newGear.legs = gearItem(preset.legs);
+	newGear.cape = gearItem(preset.cape);
+	newGear['2h'] = gearItem(preset.two_handed);
+	newGear.hands = gearItem(preset.hands);
+	newGear.feet = gearItem(preset.feet);
+	newGear.shield = gearItem(preset.shield);
+	newGear.weapon = gearItem(preset.weapon);
+	newGear.ring = gearItem(preset.ring);
+	return newGear;
+}
 export async function createOrEditGearSetup(
 	user: MUser,
 	setupToCopy: GearSetupType | undefined,
@@ -65,37 +93,53 @@ export async function createOrEditGearSetup(
 		return `The maximum amount of gear presets you can have is ${max}, you can unlock more slots by becoming a patron!`;
 	}
 
-	const parsedInputGear = parseInputGear(gearInput);
-	let gearSetup = setupToCopy ? user.gear[setupToCopy] : null;
+	const { gear: parsedInputGear, remove: forceRemove } = parseInputGear(gearInput);
+	let gearSetup: Gear | GearSetup | null = null;
+	if (setupToCopy) {
+		gearSetup = user.gear[setupToCopy];
+	} else if (isUpdating) {
+		gearSetup = gearPresetToGear(userPresets.find(pre => pre.name === name)!);
+	}
+
+	// This is required to enable removal of items while editing
+	for (const slot of forceRemove) {
+		if (gearSetup !== null) gearSetup[slot] = null;
+	}
 
 	if (emoji) {
-		const cachedEmoji = globalClient.emojis.cache.get(emoji);
-		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && production) {
-			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
-		}
 		const res = ParsedCustomEmojiWithGroups.exec(emoji);
 		if (!res || !res[3]) return "That's not a valid emoji.";
 		// eslint-disable-next-line prefer-destructuring
 		emoji = res[3];
+
+		const cachedEmoji = globalClient.emojis.cache.get(emoji);
+		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && production) {
+			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
+		}
 	}
 
 	const gearData = {
-		head: gearSetup?.head?.item ?? parsedInputGear.head ?? null,
-		neck: gearSetup?.neck?.item ?? parsedInputGear.neck ?? null,
-		body: gearSetup?.body?.item ?? parsedInputGear.body ?? null,
-		legs: gearSetup?.legs?.item ?? parsedInputGear.legs ?? null,
-		cape: gearSetup?.cape?.item ?? parsedInputGear.cape ?? null,
-		two_handed: gearSetup?.['2h']?.item ?? parsedInputGear['2h'] ?? null,
-		hands: gearSetup?.hands?.item ?? parsedInputGear.hands ?? null,
-		feet: gearSetup?.feet?.item ?? parsedInputGear.feet ?? null,
-		shield: gearSetup?.shield?.item ?? parsedInputGear.shield ?? null,
-		weapon: gearSetup?.weapon?.item ?? parsedInputGear.weapon ?? null,
-		ring: gearSetup?.ring?.item ?? parsedInputGear.ring ?? null,
-		ammo: gearSetup?.ammo?.item ?? parsedInputGear.ammo ?? null,
+		head: parsedInputGear.head ?? gearSetup?.head?.item ?? null,
+		neck: parsedInputGear.neck ?? gearSetup?.neck?.item ?? null,
+		body: parsedInputGear.body ?? gearSetup?.body?.item ?? null,
+		legs: parsedInputGear.legs ?? gearSetup?.legs?.item ?? null,
+		cape: parsedInputGear.cape ?? gearSetup?.cape?.item ?? null,
+		two_handed: parsedInputGear['2h'] ?? gearSetup?.['2h']?.item ?? null,
+		hands: parsedInputGear.hands ?? gearSetup?.hands?.item ?? null,
+		feet: parsedInputGear.feet ?? gearSetup?.feet?.item ?? null,
+		shield: parsedInputGear.shield ?? gearSetup?.shield?.item ?? null,
+		weapon: parsedInputGear.weapon ?? gearSetup?.weapon?.item ?? null,
+		ring: parsedInputGear.ring ?? gearSetup?.ring?.item ?? null,
+		ammo: parsedInputGear.ammo ?? gearSetup?.ammo?.item ?? null,
 		ammo_qty: gearSetup?.ammo?.quantity ?? null,
 		emoji_id: emoji ?? undefined,
 		pinned_setup: !pinned_setup || pinned_setup === 'reset' ? undefined : pinned_setup
 	};
+
+	if (gearData.two_handed !== null) {
+		gearData.shield = null;
+		gearData.weapon = null;
+	}
 
 	const preset = await prisma.gearPreset.upsert({
 		where: {
@@ -128,7 +172,7 @@ function makeSlotOption(slot: EquipmentSlot): CommandOption {
 		description: `The item you want to put in the ${slot} slot in this gear setup.`,
 		required: false,
 		autocomplete: async (value: string) => {
-			return (
+			const matchingItems = (
 				value
 					? allEquippableItems.filter(i => i.name.toLowerCase().includes(value.toLowerCase()))
 					: allEquippableItems
@@ -136,6 +180,11 @@ function makeSlotOption(slot: EquipmentSlot): CommandOption {
 				.filter(i => i.equipment?.slot === slot)
 				.slice(0, 20)
 				.map(i => ({ name: i.name, value: i.name }));
+			if (!value || 'none'.includes(value.toLowerCase())) {
+				matchingItems.unshift({ name: 'None', value: 'none' });
+				if (matchingItems.length > 20) matchingItems.pop();
+			}
+			return matchingItems;
 		}
 	};
 }

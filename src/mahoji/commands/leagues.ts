@@ -16,7 +16,7 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import { Cooldowns } from '../lib/Cooldowns';
 import { OSBMahojiCommand } from '../lib/util';
 
-export const leaguesCommand: OSBMahojiCommand = {
+export const leaguesOSRSCommand: OSBMahojiCommand = {
 	name: 'leagues',
 	description: 'Manage your Leagues progress.',
 	options: [

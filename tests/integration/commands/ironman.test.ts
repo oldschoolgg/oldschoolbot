@@ -1,4 +1,4 @@
-import { miniID, randomSnowflake } from '@oldschoolgg/toolkit';
+import { miniID } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -6,14 +6,15 @@ import { describe, expect, test } from 'vitest';
 
 import { prisma } from '../../../src/lib/settings/prisma';
 import { ironmanCommand } from '../../../src/mahoji/lib/abstracted_commands/ironmanCommand';
+import { mockedId } from '../util';
 
 describe('Ironman Command', () => {
 	async function createUserWithEverything(userId: string, userData: Partial<Prisma.UserCreateInput> = {}) {
-		await prisma.user.create({
+		await global.prisma!.user.create({
 			data: { id: userId, skills_agility: 100_000_000, skills_attack: 100_000_000, ...userData }
 		});
-		await prisma.newUser.create({ data: { id: userId } });
-		const activity = await prisma.activity.create({
+		await global.prisma!.newUser.create({ data: { id: userId } });
+		const activity = await global.prisma!.activity.create({
 			data: {
 				user_id: BigInt(userId),
 				start_date: new Date(),
@@ -39,11 +40,11 @@ describe('Ironman Command', () => {
 			}
 		});
 		await Promise.all([
-			prisma.botItemSell.create({ data: { user_id: userId, item_id: 1, quantity: 1, gp_received: 1 } }),
-			prisma.pinnedTrip.create({
+			global.prisma!.botItemSell.create({ data: { user_id: userId, item_id: 1, quantity: 1, gp_received: 1 } }),
+			global.prisma!.pinnedTrip.create({
 				data: { user_id: userId, id: miniID(10), activity_id: activity.id, activity_type: 'Mining' }
 			}),
-			prisma.farmedCrop.create({
+			global.prisma!.farmedCrop.create({
 				data: {
 					user_id: userId,
 					date_planted: new Date(),
@@ -53,7 +54,7 @@ describe('Ironman Command', () => {
 					paid_for_protection: false
 				}
 			}),
-			prisma.slayerTask.create({
+			global.prisma!.slayerTask.create({
 				data: {
 					user_id: userId,
 					monster_id: 1,
@@ -96,7 +97,7 @@ describe('Ironman Command', () => {
 	}
 
 	test('Should reset everything', async () => {
-		const userId = randomSnowflake();
+		const userId = mockedId();
 		await createUserWithEverything(userId);
 
 		const result = await ironmanCommand(await mUserFetch(userId), null);
@@ -104,7 +105,7 @@ describe('Ironman Command', () => {
 		const user = await mUserFetch(userId);
 		expect(user.GP).toEqual(0);
 		expect(user.isIronman).toEqual(true);
-		expect(user.totalLevel).toEqual(34);
+		expect(user.totalLevel).toEqual(35);
 		expect(user.QP).toEqual(0);
 		expect(user.bank.equals(new Bank())).toEqual(true);
 		expect(user.cl.equals(new Bank())).toEqual(true);
@@ -129,7 +130,7 @@ describe('Ironman Command', () => {
 	});
 
 	test('Should de-iron', async () => {
-		const userId = randomSnowflake();
+		const userId = mockedId();
 		await createUserWithEverything(userId, { minion_ironman: true });
 		const initialUser = await mUserFetch(userId);
 		expect(initialUser.isIronman).toEqual(true);

@@ -98,6 +98,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 				'woodcutting',
 				'farming',
 				'dungeoneering',
+				'divination',
 				'overall'
 			]
 				.map(skillCell)

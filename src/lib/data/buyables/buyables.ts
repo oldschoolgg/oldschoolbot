@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 import { MAX_QP, QuestID } from '../../../mahoji/lib/abstracted_commands/questCommand';
 import { chompyHats } from '../../constants';
 import { diaries, userhasDiaryTier } from '../../diaries';
-import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
 import { MUserStats } from '../../structures/MUserStats';
@@ -37,7 +36,6 @@ export interface Buyable {
 	itemCost?: Bank;
 	aliases?: string[];
 	skillsNeeded?: Skills;
-	requiredFavour?: Favours;
 	restockTime?: number;
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
@@ -229,8 +227,7 @@ const constructionBuyables: Buyable[] = [
 	},
 	{
 		name: 'Arceuus signet',
-		gpCost: 100_000,
-		requiredFavour: Favours.Arceuus
+		gpCost: 100_000
 	},
 	{
 		name: 'Ancient signet',
@@ -619,7 +616,7 @@ const questBuyables: Buyable[] = [
 		name: 'Berserker helm',
 		gpCost: 780_000,
 		qpRequired: 60,
-		ironmanPrice: 78_000
+		ironmanPrice: 98_000
 	},
 	{
 		name: 'Archer helm',
@@ -793,6 +790,18 @@ const Buyables: Buyable[] = [
 		gpCost: 99_000
 	},
 	{
+		name: 'Rope',
+		aliases: ['rope'],
+		gpCost: 100,
+		ironmanPrice: 25
+	},
+	{
+		name: 'Rope',
+		aliases: ['rope'],
+		gpCost: 100,
+		ironmanPrice: 25
+	},
+	{
 		name: 'Fishing Bait',
 		aliases: ['fishing bait'],
 		gpCost: 20,
@@ -842,7 +851,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Bucket',
 		gpCost: 30,
-		ironmanPrice: 5
+		ironmanPrice: 10
 	},
 	{
 		name: 'Cup of hot water',
@@ -981,7 +990,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Steel pickaxe',
 		gpCost: 2000,
-		ironmanPrice: 500
+		ironmanPrice: 600
 	},
 	{
 		name: 'Mithril pickaxe',
@@ -1051,7 +1060,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Adamant halberd',
 		gpCost: 100_000,
-		ironmanPrice: 9600,
+		ironmanPrice: 50_000,
 		qpRequired: 150,
 		skillsNeeded: soteSkillRequirements
 	},
@@ -1087,8 +1096,8 @@ const Buyables: Buyable[] = [
 	})),
 	{
 		name: 'Menaphite purple outfit',
-		gpCost: 5000,
-		ironmanPrice: 600,
+		gpCost: 25_000,
+		ironmanPrice: 10_000,
 		outputItems: new Bank({
 			'Menaphite purple hat': 1,
 			'Menaphite purple top': 1,
@@ -1098,8 +1107,8 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Menaphite red outfit',
-		gpCost: 5000,
-		ironmanPrice: 600,
+		gpCost: 25_000,
+		ironmanPrice: 10_000,
 		outputItems: new Bank({
 			'Menaphite red hat': 1,
 			'Menaphite red top': 1,
@@ -1209,7 +1218,7 @@ for (const cape of allTeamCapes) {
 	Buyables.push({
 		name: cape.name,
 		outputItems: new Bank().add(cape.id),
-		gpCost: 5000
+		gpCost: 15_000
 	});
 }
 

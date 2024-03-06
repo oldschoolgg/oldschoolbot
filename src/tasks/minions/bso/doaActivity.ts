@@ -44,7 +44,7 @@ const BaseNonUniqueTable = new LootTable()
 	.add(runeAlchablesTable, [25, 30], undefined, { multiply: true })
 	.add(RareOreTable, [11, 15], undefined, { multiply: true })
 	.add(DragonTable, [11, 18], undefined, { multiply: true })
-	.add(StoneSpiritTable, [10, 15], undefined, { multiply: true });
+	.add(StoneSpiritTable, [30, 60], undefined, { multiply: true });
 
 const DOAClueTable = new LootTable()
 	.add('Clue scroll (medium)', 1, 5)

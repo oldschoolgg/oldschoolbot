@@ -4,9 +4,9 @@ import './lib/data/itemAliases';
 import './lib/crons';
 import './lib/MUser';
 import './lib/util/transactItemsFromBank';
-import './lib/util/logger';
 import './lib/data/trophies';
 import './lib/itemMods';
+import './lib/geImage';
 
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
@@ -15,9 +15,8 @@ import { GatewayIntentBits, Options, Partials, TextChannel } from 'discord.js';
 import { isObject } from 'e';
 import { MahojiClient } from 'mahoji';
 import { join } from 'path';
-import { isMainThread } from 'worker_threads';
 
-import { botToken, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
+import { botToken, DEV_SERVER_ID, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
 import { Channel, Events, globalConfig, META_CONSTANTS } from './lib/constants';
 import { onMessage } from './lib/events';
@@ -31,6 +30,7 @@ import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUser
 import { interactionHook } from './lib/util/globalInteractions';
 import { handleInteractionError } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
+import { sonicBoom } from './lib/util/logger';
 import { sendToChannelID } from './lib/util/webhook';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
@@ -38,15 +38,6 @@ import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
 debugLog(`Starting... Git Hash ${META_CONSTANTS.GIT_HASH}`);
-
-if (production && !process.env.TEST && isMainThread) {
-	// eslint-disable-next-line @typescript-eslint/no-var-requires
-	require('segfault-handler').registerHandler('crash.log');
-}
-
-if (!production) {
-	import('./lib/devHotReload');
-}
 
 Chart.register(ChartDataLabels);
 
@@ -238,6 +229,7 @@ process.on('unhandledRejection', err => {
 });
 
 process.on('exit', exitCode => {
+	sonicBoom.flushSync();
 	debugLog('Process Exit', { type: 'PROCESS_EXIT', exitCode });
 });
 

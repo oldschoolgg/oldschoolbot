@@ -1,10 +1,13 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { randInt } from 'e';
 import { Bank, LootTable, Openables } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Item, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
+import BrimstoneChest, { BrimstoneChestOpenable } from 'oldschooljs/dist/simulation/openables/BrimstoneChest';
 import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
+import LarransChest, { LarransChestOpenable } from 'oldschooljs/dist/simulation/openables/LarransChest';
 
 import { bsoOpenables } from './bsoOpenables';
 import { ClueTiers } from './clues/clueTiers';
@@ -137,7 +140,7 @@ for (const clueTier of ClueTiers) {
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
 			let loot = new Bank(clueTier.table.open(quantity));
 
-			const hasCHEquipped = user.hasEquipped(clueHunterOutfit, true);
+			const hasCHEquipped = user.hasEquippedOrInBank(clueHunterOutfit, 'every');
 			let extraClueRolls = 0;
 			for (let i = 0; i < quantity; i++) {
 				const roll = randInt(1, 3);
@@ -223,7 +226,20 @@ const osjsOpenables: UnifiedOpenable[] = [
 		id: 23_083,
 		openedItem: getOSItem(23_083),
 		aliases: ['brimstone chest', 'brimstone'],
-		output: Openables.BrimstoneChest.table,
+		output: async (
+			args: OpenArgs
+		): Promise<{
+			bank: Bank;
+		}> => {
+			const chest = new BrimstoneChestOpenable(BrimstoneChest);
+			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
+			const brimstoneOptions: OpenableOpenOptions = {
+				fishLvl
+			};
+			const openLoot: Bank = chest.open(args.quantity, brimstoneOptions);
+
+			return { bank: openLoot };
+		},
 		allItems: Openables.BrimstoneChest.table.allItems
 	},
 	{
@@ -295,7 +311,21 @@ const osjsOpenables: UnifiedOpenable[] = [
 			'larrans small chest',
 			"larran's small chest"
 		],
-		output: Openables.LarransChest.table,
+		output: async (
+			args: OpenArgs
+		): Promise<{
+			bank: Bank;
+		}> => {
+			const chest = new LarransChestOpenable(LarransChest);
+			const fishLvl = args.user.skillLevel(SkillsEnum.Fishing);
+			const larransOptions: OpenableOpenOptions = {
+				fishLvl,
+				chestSize: 'big'
+			};
+			const openLoot: Bank = chest.open(args.quantity, larransOptions);
+
+			return { bank: openLoot };
+		},
 		allItems: Openables.LarransChest.table.allItems
 	},
 	{
@@ -368,12 +398,20 @@ const osjsOpenables: UnifiedOpenable[] = [
 		allItems: Openables.SinisterChest.table.allItems
 	},
 	{
-		name: 'Ore pack',
+		name: "Ore pack (Giant's Foundry)",
 		id: 27_019,
 		openedItem: getOSItem(27_019),
-		aliases: ['ore pack'],
-		output: Openables.OrePack.table,
-		allItems: Openables.OrePack.table.allItems
+		aliases: ["ore pack (giant's foundry)", 'giants', 'foundry', 'giants foundry'],
+		output: Openables.GiantsFoundryOrePack.table,
+		allItems: Openables.GiantsFoundryOrePack.table.allItems
+	},
+	{
+		name: 'Ore pack (Volcanic Mine)',
+		id: 27_693,
+		openedItem: getOSItem(27_693),
+		aliases: ['ore pack (volcanic mine)', 'volcanic', 'volcanic mine'],
+		output: Openables.VolcanicMineOrePack.table,
+		allItems: Openables.VolcanicMineOrePack.table.allItems
 	},
 	{
 		name: 'Intricate pouch',
@@ -504,3 +542,19 @@ for (const openable of allOpenables) {
 }
 
 export const allOpenablesIDs = new Set(allOpenables.map(i => i.id));
+
+export function getOpenableLoot({
+	openable,
+	quantity,
+	user,
+	totalLeaguesPoints
+}: {
+	openable: UnifiedOpenable;
+	quantity: number;
+	user: MUser;
+	totalLeaguesPoints: number;
+}) {
+	return openable.output instanceof LootTable
+		? { bank: openable.output.roll(quantity), message: null }
+		: openable.output({ user, self: openable, quantity, totalLeaguesPoints });
+}

@@ -10,6 +10,15 @@ const Potions = [
 		items: resolveItems(['Super restore(1)', 'Super restore(2)', 'Super restore(3)', 'Super restore(4)'])
 	},
 	{
+		name: 'Blighted super restore',
+		items: resolveItems([
+			'Blighted super restore(1)',
+			'Blighted super restore(2)',
+			'Blighted super restore(3)',
+			'Blighted super restore(4)'
+		])
+	},
+	{
 		name: 'Prayer potion',
 		items: resolveItems(['Prayer potion(1)', 'Prayer potion(2)', 'Prayer potion(3)', 'Prayer potion(4)'])
 	},
@@ -219,6 +228,15 @@ const Potions = [
 		items: resolveItems(['Anti-venom(1)', 'Anti-venom(2)', 'Anti-venom(3)', 'Anti-venom(4)'])
 	},
 	{
+		name: 'Menaphite remedy',
+		items: resolveItems([
+			'Menaphite remedy(1)',
+			'Menaphite remedy(2)',
+			'Menaphite remedy(3)',
+			'Menaphite remedy(4)'
+		])
+	},
+	{
 		name: 'Super combat potion',
 		items: resolveItems([
 			'Super combat potion(1)',
@@ -381,6 +399,30 @@ const Potions = [
 	{
 		name: 'Extended super antifire mix',
 		items: resolveItems(['Extended super antifire mix(1)', 'Extended super antifire mix(2)'])
+	},
+	{
+		name: 'Enhanced saradomin brew',
+		items: resolveItems('Enhanced saradomin brew')
+	},
+	{
+		name: 'Enhanced super restore',
+		items: resolveItems('Enhanced super restore')
+	},
+	{
+		name: 'Enhanced stamina potion',
+		items: resolveItems('Enhanced stamina potion')
+	},
+	{
+		name: 'Enhanced divine water',
+		items: resolveItems('Enhanced divine water')
+	},
+	{
+		name: 'Heat res. brew',
+		items: resolveItems('Heat res. brew')
+	},
+	{
+		name: 'Heat res. restore',
+		items: resolveItems('Heat res. restore')
 	}
 ];
 

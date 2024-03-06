@@ -185,6 +185,8 @@ model ClientStorage {
   last_bso_giveaways_ping  DateTime? @db.Timestamp(6)
   last_giveaway_doubleloot DateTime? @db.Timestamp(6)
 
+  xmas_ironman_food_bank Json @default("{}") @db.Json
+
   @@map("clientStorage")
 }
 
@@ -382,6 +384,7 @@ model User {
   favoriteItems              Int[]
   favorite_alchables         Int[]
   favorite_food              Int[]
+  favorite_bh_seeds          Int[]
   minion_defaultPay          Boolean            @default(false) @map("minion.defaultPay")
   minion_icon                String?            @map("minion.icon")
   minion_name                String?            @map("minion.name")
@@ -510,13 +513,24 @@ model User {
   farmingPatches_flower     Json? @map("farmingPatches.flower") @db.Json
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
-  kourend_favour            Json? @map("kourend_favour") @db.Json
 
   last_mortimer_kill_date DateTime? @db.Timestamp(6)
 
   geListings        GEListing[]
   bingo_participant BingoParticipant[]
   bingo             Bingo[]
+
+  gift_boxes_owned   GiftBox[] @relation("gift_boxes_owned")
+  gift_boxes_created GiftBox[] @relation("gift_boxes_created")
+
+  skills_divination                BigInt    @default(0) @map("skills.divination")
+  guthixian_cache_boosts_available Int       @default(0)
+  disabled_portent_ids             Int[]
+  portent                          Portent[]
+
+  smokey_lottery_tickets          Json?     @db.Json
+  grinchions_caught               Int       @default(0)
+  last_giveaway_ticket_given_date DateTime? @db.Timestamp(6)
 
   @@index([id, last_command_date])
   @@map("users")
@@ -584,6 +598,11 @@ enum XpGainSource {
   MahoganyHomes
   AerialFishing
   CleaningHerbsWhileFarming
+  CamdozaalMining
+  CamdozaalSmithing
+  CamdozaalFishing
+  MemoryHarvest
+  GuthixianCache
 }
 
 model XPGain {
@@ -674,6 +693,7 @@ model Minigame {
   balthazars_big_bonanza   Int @default(0)
   depths_of_atlantis       Int @default(0)
   depths_of_atlantis_cm    Int @default(0)
+  guthixian_cache          Int @default(0)
 
   new_user NewUser?
 
@@ -733,6 +753,16 @@ model Tame {
   equipped_armor   Int?
 
   total_cost Json @default("{}") @db.Json
+
+  demonic_jibwings_saved_cost Json @default("{}") @db.JsonB
+  third_age_jibwings_loot     Json @default("{}") @db.JsonB
+  abyssal_jibwings_loot       Json @default("{}") @db.JsonB
+  implings_loot               Json @default("{}") @db.JsonB
+
+  last_activity_date   DateTime? @db.Timestamp(6)
+  levels_from_egg_feed Int?
+
+  custom_icon_id String? @db.VarChar(19)
 
   tame_activity TameActivity[]
 
@@ -817,6 +847,7 @@ enum economy_transaction_type {
   giveaway
   duel
   gri
+  gift
 }
 
 model EconomyTransaction {
@@ -987,6 +1018,15 @@ model UserStats {
 
   steal_cost_bank Json @default("{}") @db.Json
   steal_loot_bank Json @default("{}") @db.Json
+
+  xp_from_graceful_portent         BigInt @default(0)
+  xp_from_dungeon_portent          BigInt @default(0)
+  xp_from_mining_portent           BigInt @default(0)
+  xp_from_hunter_portent           BigInt @default(0)
+  loot_from_rogues_portent         Json   @default("{}") @db.JsonB
+  loot_from_lucky_portent          Json   @default("{}") @db.JsonB
+  loot_destroyed_by_hunter_portent Json   @default("{}") @db.JsonB
+  divination_loot                  Json   @default("{}") @db.JsonB
 
   @@map("user_stats")
 }
@@ -1192,6 +1232,11 @@ enum activity_type_enum {
   BirthdayCollectIngredients
   SpecificQuest
   Mortimer
+  CamdozaalFishing
+  CamdozaalMining
+  CamdozaalSmithing
+  MemoryHarvest
+  GuthixianCache
 }
 
 enum xp_gains_skill_enum {
@@ -1220,6 +1265,7 @@ enum xp_gains_skill_enum {
   dungeoneering
   slayer
   invention
+  divination
 }
 
 enum tame_growth {
@@ -1275,10 +1321,10 @@ model GETransaction {
 
   total_tax_paid BigInt
 
-  buy_listing    GEListing @relation("buy_transactions", fields: [buy_listing_id], references: [id])
+  buy_listing    GEListing @relation("buy_transactions", fields: [buy_listing_id], references: [id], onDelete: Cascade)
   buy_listing_id Int
 
-  sell_listing    GEListing @relation("sell_transactions", fields: [sell_listing_id], references: [id])
+  sell_listing    GEListing @relation("sell_transactions", fields: [sell_listing_id], references: [id], onDelete: Cascade)
   sell_listing_id Int
 
   @@index([sell_listing_id])
@@ -1349,4 +1395,51 @@ model BingoParticipant {
 
   @@unique([user_id, bingo_id])
   @@map("bingo_participant")
+}
+
+enum GiftBoxStatus {
+  Created
+  Sent
+  Opened
+}
+
+model GiftBox {
+  id         String        @id
+  created_at DateTime      @default(now()) @db.Timestamp(6)
+  status     GiftBoxStatus
+  name       String?
+
+  creator_id String? @db.VarChar(19)
+  creator    User?   @relation("gift_boxes_created", fields: [creator_id], references: [id])
+
+  owner_id String? @db.VarChar(19)
+  owner    User?   @relation("gift_boxes_owned", fields: [owner_id], references: [id])
+
+  items Json @default("{}") @db.Json
+
+  is_grinch_box Boolean @default(false)
+
+  @@map("gift_box")
+}
+
+model Portent {
+  item_id Int
+
+  user_id String @db.VarChar(19)
+  user    User   @relation(fields: [user_id], references: [id])
+
+  total_charges     Int
+  charges_remaining Int
+
+  @@unique([item_id, user_id])
+  @@index([user_id])
+  @@map("portent")
+}
+
+model ItemMetadata {
+  id Int @id
+
+  name String?
+
+  @@map("item_metadata")
 }

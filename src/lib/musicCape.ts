@@ -56,10 +56,10 @@ export const musicCapeRequirements = new Requirements()
 			.add('Brittle key')
 			.add('Revenant ether')
 	})
-	// .add({
-	// 	name: '750 Barronite shards to unlock Race Against the Clock inside the Camdozaal Vault',
-	// 	clRequirement: new Bank().add('Barronite shards', 750)
-	// })
+	.add({
+		name: '750 Barronite shards to access the Camdozaal Vault',
+		clRequirement: new Bank().add('Barronite shards', 750)
+	})
 	.add({
 		kcRequirement: {
 			[MIMIC_MONSTER_ID]: 1,
@@ -239,20 +239,6 @@ AND data->>'runeID' IS NOT NULL;`;
 				}
 			}
 			return [{ reason: 'You need to build something in your POH' }];
-		}
-	})
-	.add({
-		name: 'Must have atleast 25% in each house favour',
-		has: async ({ user }) => {
-			const results: RequirementFailure[] = [];
-			const favour = user.kourendFavour;
-
-			const notDoneFavours = Object.entries(favour).filter(([_, value]) => value < 25);
-
-			if (notDoneFavours.length > 0) {
-				results.push({ reason: `You need atleast 25% favour in ${notDoneFavours.map(i => i[0]).join(', ')}.` });
-			}
-			return results;
 		}
 	})
 	.add({

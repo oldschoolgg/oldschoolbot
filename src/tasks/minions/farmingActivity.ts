@@ -28,12 +28,15 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
-const plantsNotUsedForArcaneHarvester = ['Mysterious tree'].map(i => Farming.Plants.find(p => p.name === i)!);
-assert(!(plantsNotUsedForArcaneHarvester as any[]).includes(undefined));
-
 const plopperBoostPercent = 100;
 
-async function farmingLootBoosts(user: MUser, plant: Plant, loot: Bank, messages: string[]) {
+async function farmingLootBoosts(
+	user: MUser,
+	method: 'harvest' | 'plant',
+	plant: Plant,
+	loot: Bank,
+	messages: string[]
+) {
 	let bonusPercentage = 0;
 	if (user.allItemsOwned.has('Plopper')) {
 		bonusPercentage += plopperBoostPercent;
@@ -44,8 +47,7 @@ async function farmingLootBoosts(user: MUser, plant: Plant, loot: Bank, messages
 		bonusPercentage += 100;
 		messages.push('100% for Farming master cape');
 	}
-	if (plantsNotUsedForArcaneHarvester.includes(plant)) return;
-	if (user.hasEquippedOrInBank(['Arcane harvester'])) {
+	if (method === 'harvest' && user.hasEquippedOrInBank(['Arcane harvester']) && plant.name !== 'Mysterious tree') {
 		const boostRes = await inventionItemBoost({
 			user,
 			inventionID: InventionID.ArcaneHarvester,
@@ -127,7 +129,7 @@ export const farmingTask: MinionTask = {
 		let woodcuttingXp = 0;
 		let herbloreXp = 0;
 		let payStr = '';
-		let wcStr = '';
+		let wcBool = false;
 		let rakeStr = '';
 		let plantingStr = '';
 		const infoStr: string[] = [];
@@ -211,17 +213,14 @@ export const farmingTask: MinionTask = {
 
 			str += `\n${await user.addXP({
 				skillName: SkillsEnum.Farming,
-				amount: Math.floor(farmingXpReceived + bonusXP)
+				amount: Math.floor(farmingXpReceived + bonusXP),
+				duration: data.duration
 			})}`;
 
-			await farmingLootBoosts(user, plant, loot, infoStr);
+			await farmingLootBoosts(user, 'plant', plant, loot, infoStr);
 
 			if (loot.has('Plopper')) {
 				loot.bank[itemID('Plopper')] = 1;
-			}
-
-			if (loot.has('Tormented skull')) {
-				loot.bank[itemID('Tormented skull')] = 1;
 			}
 
 			if (loot.length > 0) {
@@ -250,8 +249,6 @@ export const farmingTask: MinionTask = {
 			});
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
-
-			if (hasPlopper) str += `\nYou received ${plopperBoostPercent}% bonus loot from Plopper`;
 
 			handleTripFinish(user, channelID, str, undefined, data, null);
 		} else if (patchType.patchPlanted) {
@@ -377,7 +374,7 @@ export const farmingTask: MinionTask = {
 					}
 
 					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp!;
-					wcStr = ` You also received ${woodcuttingXp.toLocaleString()} Woodcutting XP.`;
+					wcBool = true;
 
 					harvestXp = 0;
 				} else if (plantToHarvest.givesCrops && chopped) {
@@ -412,13 +409,30 @@ export const farmingTask: MinionTask = {
 				plantingStr = `${user}, ${user.minionName} finished `;
 			}
 
+			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
+
+			const xpRes = await user.addXP({
+				skillName: SkillsEnum.Farming,
+				amount: Math.floor(farmingXpReceived + bonusXP),
+				duration: data.duration
+			});
+			const wcXP = await user.addXP({
+				skillName: SkillsEnum.Woodcutting,
+				amount: Math.floor(woodcuttingXp)
+			});
+			await user.addXP({
+				skillName: SkillsEnum.Herblore,
+				amount: Math.floor(herbloreXp),
+				source: 'CleaningHerbsWhileFarming'
+			});
+
 			infoStr.push(
 				`${plantingStr}harvesting ${patchType.lastQuantity}x ${
 					plantToHarvest.name
-				}.${deathStr}${payStr}\n\nYou received ${plantXp.toLocaleString()} XP for planting, ${rakeStr}${harvestXp.toLocaleString()} XP for harvesting, and ${checkHealthXp.toLocaleString()} XP for checking health for a total of ${farmingXpReceived.toLocaleString()} Farming XP.${wcStr}`
+				}.${deathStr}${payStr}\n\nYou received ${plantXp.toLocaleString()} XP for planting, ${rakeStr}${harvestXp.toLocaleString()} XP for harvesting, and ${checkHealthXp.toLocaleString()} XP for checking health. In total: ${xpRes}. ${
+					wcBool ? wcXP : ''
+				}`
 			);
-
-			bonusXP += Math.floor(farmingXpReceived * bonusXpMultiplier);
 
 			if (bonusXP > 0) {
 				infoStr.push(
@@ -430,31 +444,6 @@ export const farmingTask: MinionTask = {
 				infoStr.push(
 					`\nYou received ${herbloreXp.toLocaleString()} Herblore XP for cleaning the herbs during your trip.`
 				);
-			}
-
-			await user.addXP({
-				skillName: SkillsEnum.Farming,
-				amount: Math.floor(farmingXpReceived + bonusXP)
-			});
-			await user.addXP({
-				skillName: SkillsEnum.Woodcutting,
-				amount: Math.floor(woodcuttingXp)
-			});
-			await user.addXP({
-				skillName: SkillsEnum.Herblore,
-				amount: Math.floor(herbloreXp),
-				source: 'CleaningHerbsWhileFarming'
-			});
-
-			const newFarmingLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
-			const newWoodcuttingLevel = Math.min(99, user.skillLevel(SkillsEnum.Woodcutting));
-
-			if (newFarmingLevel > currentFarmingLevel) {
-				infoStr.push(`\n${user.minionName}'s Farming level is now ${newFarmingLevel}!`);
-			}
-
-			if (newWoodcuttingLevel > currentWoodcuttingLevel) {
-				infoStr.push(`\n\n${user.minionName}'s Woodcutting level is now ${newWoodcuttingLevel}!`);
 			}
 
 			if (duration > Time.Minute * 20 && roll(10)) {
@@ -579,7 +568,14 @@ export const farmingTask: MinionTask = {
 				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
 			}
 
-			await farmingLootBoosts(user, plant, loot, infoStr);
+			await farmingLootBoosts(user, 'harvest', plantToHarvest, loot, infoStr);
+
+			if (plantToHarvest.name === 'Mysterious tree') {
+				if (loot.has('Seed Pack')) {
+					loot.add('Seed Pack', 1);
+					infoStr.push('+1 Seed Pack for Mysterious tree farming contract');
+				}
+			}
 
 			if (loot.has('Plopper')) {
 				loot.bank[itemID('Plopper')] = 1;
@@ -643,15 +639,19 @@ export const farmingTask: MinionTask = {
 				});
 			}
 
-			if (hasPlopper) infoStr.push(`\nYou received ${plopperBoostPercent}% bonus loot from Plopper`);
+			const seedPackCount = loot.amount('Seed pack');
 
-			handleTripFinish(
+			return handleTripFinish(
 				user,
 				channelID,
 				infoStr.join('\n'),
 				janeMessage
 					? await chatHeadImage({
-							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+							content: `You've completed your contract and I have rewarded you with ${seedPackCount} Seed pack${
+								seedPackCount > 1 ? 's' : ''
+							}. Please open ${
+								seedPackCount > 1 ? 'these Seed packs' : 'this Seed pack'
+							} before asking for a new contract!\nYou have completed ${
 								contractsCompleted + 1
 							} farming contracts.`,
 							head: 'jane'

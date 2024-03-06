@@ -10,7 +10,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 export function zealOutfitBoost(user: MUser) {
 	let zealOutfitAmount = 0;
 	for (const piece of zealOutfit) {
-		if (user.gear.skilling.hasEquipped([piece])) {
+		if (user.hasEquippedOrInBank(piece)) {
 			zealOutfitAmount++;
 		}
 	}
@@ -25,7 +25,6 @@ export const offeringTask: MinionTask = {
 	async run(data: OfferingActivityTaskOptions) {
 		const { boneID, quantity, userID, channelID } = data;
 		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
 		const { zealOutfitAmount, zealOutfitChance } = zealOutfitBoost(user);
 
 		const bone = Prayer.Bones.find(bone => bone.inputId === boneID);
@@ -71,23 +70,23 @@ export const offeringTask: MinionTask = {
 			xpReceived += bonusXP;
 		}
 
-		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived, source: 'OfferingBones' });
-		const newLevel = user.skillLevel('prayer');
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Prayer,
+			amount: xpReceived,
+			duration: data.duration,
+			source: 'OfferingBones'
+		});
 
 		let str = `${user}, ${user.minionName} finished offering ${newQuantity} ${
 			bone.name
-		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers, you also received ${xpReceived.toLocaleString()} XP. ${
+		}, you managed to offer ${bonesSaved} extra bones because of the effects the Chaos altar and you lost ${bonesLost} to pkers, ${xpRes}.${
 			user.usingPet('Lil Lamb')
-				? `The RuneScape gods bless you with ${bonusXP.toLocaleString()} extra XP for you raising the young lamb.`
+				? `The RuneScape gods blessed you with ${bonusXP.toLocaleString()} extra XP for you raising the young lamb.`
 				: ''
 		}`;
 
 		if (zealOutfitAmount > 0) {
 			str += `\nYour ${zealOutfitAmount} pieces of Zealot's robes helped you offer an extra ${zealBonesSaved} bones.`;
-		}
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;
 		}
 
 		handleTripFinish(user, channelID, str, undefined, data, null);

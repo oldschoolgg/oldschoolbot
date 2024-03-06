@@ -1,9 +1,14 @@
 import '../globalSetup';
 
-import { vi } from 'vitest';
+import { afterEach, beforeEach, vi } from 'vitest';
+
+import { prisma } from '../../src/lib/settings/prisma';
 
 vi.mock('../../src/lib/util/handleMahojiConfirmation', () => ({
 	handleMahojiConfirmation: vi.fn()
+}));
+vi.mock('../../src/lib/util/interactionReply', () => ({
+	deferInteraction: vi.fn()
 }));
 
 export function randomMock(random = 0.1) {
@@ -30,6 +35,15 @@ vi.mock('../../src/lib/leagues/stats', async () => {
 });
 
 // @ts-ignore mock
-globalClient.fetchUser = async () => ({
+globalClient.fetchUser = async (id: string | bigint) => ({
+	id: typeof id === 'string' ? id : String(id),
 	send: async () => {}
+});
+
+beforeEach(async () => {
+	await prisma.$connect();
+});
+
+afterEach(async () => {
+	await prisma.$disconnect();
 });

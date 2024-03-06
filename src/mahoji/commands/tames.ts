@@ -1,7 +1,7 @@
-import { time } from '@discordjs/builders';
+import { bold, time } from '@discordjs/builders';
 import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
 import { mentionCommand } from '@oldschoolgg/toolkit';
-import { Tame, tame_growth, TameActivity } from '@prisma/client';
+import { Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
 import { ChatInputCommandInteraction, User } from 'discord.js';
 import {
@@ -21,6 +21,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { badges, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
@@ -32,27 +33,21 @@ import { prisma } from '../../lib/settings/prisma';
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
-	arbitraryTameActivities,
 	createTameTask,
 	getIgneTameKC,
-	getMainTameLevel,
-	getTameSpecies,
-	getUsersTame,
 	igneArmors,
 	SeaMonkeySpell,
 	seaMonkeySpells,
 	seaMonkeyStaves,
-	tameGrowthLevel,
-	tameHasBeenFed,
+	tameFeedableItems,
 	TameKillableMonster,
 	tameKillableMonsters,
-	tameName,
 	tameSpecies,
 	TameSpeciesID,
-	TameTaskOptions,
 	TameType
 } from '../../lib/tames';
 import {
+	assert,
 	exponentialPercentScale,
 	formatDuration,
 	formatSkillRequirements,
@@ -68,7 +63,18 @@ import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmatio
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';
+import {
+	calculateMaximumTameFeedingLevelGain,
+	getMainTameLevel,
+	getTameSpecies,
+	getTameStatus,
+	getUsersTame,
+	tameGrowthLevel,
+	tameHasBeenFed,
+	tameName
+} from '../../lib/util/tameUtil';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { arbitraryTameActivities } from '../../tasks/tames/tameTasks';
 import { collectables } from '../lib/abstracted_commands/collectCommand';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -81,6 +87,7 @@ async function tameAutocomplete(value: string, user: User) {
 		}
 	});
 	return tames
+		.sort(sortTames)
 		.map(t => {
 			const { relevantLevelCategory, name } = tameSpecies.find(i => i.id === t.species_id)!;
 			return {
@@ -133,6 +140,44 @@ const igneClaws = [
 	}
 ].map(i => ({ ...i, tameSpecies: [TameSpeciesID.Igne], slot: 'equipped_primary' as const }));
 
+const eagleEquippables: TameEquippable[] = [
+	{
+		item: getOSItem('Demonic jibwings'),
+		slot: 'equipped_armor',
+		tameSpecies: [TameSpeciesID.Eagle]
+	},
+	{
+		item: getOSItem('Abyssal jibwings'),
+		slot: 'equipped_armor',
+		tameSpecies: [TameSpeciesID.Eagle]
+	},
+	{
+		item: getOSItem('3rd age jibwings'),
+		slot: 'equipped_armor',
+		tameSpecies: [TameSpeciesID.Eagle]
+	},
+	{
+		item: getOSItem('Demonic jibwings (e)'),
+		slot: 'equipped_armor',
+		tameSpecies: [TameSpeciesID.Eagle]
+	},
+	{
+		item: getOSItem('Abyssal jibwings (e)'),
+		slot: 'equipped_armor',
+		tameSpecies: [TameSpeciesID.Eagle]
+	},
+	{
+		item: getOSItem('3rd age jibwings (e)'),
+		slot: 'equipped_armor',
+		tameSpecies: [TameSpeciesID.Eagle]
+	},
+	{
+		item: getOSItem('Divine ring'),
+		slot: 'equipped_primary',
+		tameSpecies: [TameSpeciesID.Eagle]
+	}
+];
+
 export const tameEquippables: TameEquippable[] = [
 	...igneClaws,
 	...igneArmors,
@@ -140,67 +185,8 @@ export const tameEquippables: TameEquippable[] = [
 		item: i.item,
 		tameSpecies: [TameSpeciesID.Monkey],
 		slot: 'equipped_primary' as const
-	}))
-];
-
-interface FeedableItem {
-	item: Item;
-	tameSpeciesCanBeFedThis: TameType[];
-	description: string;
-	announcementString: string;
-}
-
-export const tameFeedableItems: FeedableItem[] = [
-	{
-		item: getOSItem('Ori'),
-		description: '25% extra loot',
-		tameSpeciesCanBeFedThis: [TameType.Combat],
-		announcementString: 'Your tame will now get 25% extra loot!'
-	},
-	{
-		item: getOSItem('Zak'),
-		description: '+35 minutes longer max trip length',
-		tameSpeciesCanBeFedThis: [TameType.Combat, TameType.Gatherer],
-		announcementString: 'Your tame now has a much longer max trip length!'
-	},
-	{
-		item: getOSItem('Abyssal cape'),
-		description: '20% food reduction',
-		tameSpeciesCanBeFedThis: [TameType.Combat],
-		announcementString: 'Your tame now has 20% food reduction!'
-	},
-	{
-		item: getOSItem('Voidling'),
-		description: '10% faster collecting',
-		tameSpeciesCanBeFedThis: [TameType.Gatherer],
-		announcementString: 'Your tame can now collect items 10% faster thanks to the Voidling helping them teleport!'
-	},
-	{
-		item: getOSItem('Ring of endurance'),
-		description: '10% faster collecting',
-		tameSpeciesCanBeFedThis: [TameType.Gatherer],
-		announcementString:
-			'Your tame can now collect items 10% faster thanks to the Ring of endurance helping them run for longer!'
-	},
-	{
-		item: getOSItem('Dwarven warhammer'),
-		description: '30% faster PvM',
-		tameSpeciesCanBeFedThis: [TameType.Combat],
-		announcementString: "Your tame can now kill 30% faster! It's holding the Dwarven warhammer in its claws..."
-	},
-	{
-		item: getOSItem('Mr. E'),
-		description: 'Chance to get 2x loot',
-		tameSpeciesCanBeFedThis: [TameType.Combat, TameType.Gatherer, TameType.Artisan, TameType.Support],
-		announcementString: "With Mr. E's energy absorbed, your tame now has a chance at 2x loot!"
-	},
-	{
-		item: getOSItem('Klik'),
-		description: 'Makes tanning spell faster',
-		tameSpeciesCanBeFedThis: [TameType.Gatherer],
-		announcementString:
-			"Your tame uses a spell to infuse Klik's fire breathing ability into itself. It can now tan hides much faster."
-	}
+	})),
+	...eagleEquippables
 ];
 
 const feedingEasterEggs: [Bank, number, tame_growth[], string][] = [
@@ -225,6 +211,57 @@ const tameForegrounds = [
 		shouldActivate: (t: Tame) => t.nickname?.toLowerCase() === 'smaug' && t.species_id === TameSpeciesID.Igne,
 		image: readFileSync('./src/lib/resources/images/tames/foreground_1.png')
 	}
+];
+
+const tameImageReplacementChoices = [
+	{
+		name: 'Elvarg',
+		species: TameSpeciesID.Igne,
+		image: readFileSync('./src/lib/resources/images/tames/1_replace_1.png')
+	},
+	{
+		name: 'King Black Dragon',
+		species: TameSpeciesID.Igne,
+		image: readFileSync('./src/lib/resources/images/tames/1_replace_2.png')
+	},
+	{
+		name: 'Lava Dragon',
+		species: TameSpeciesID.Igne,
+		image: readFileSync('./src/lib/resources/images/tames/1_replace_3.png')
+	},
+	{
+		name: 'Revenant Dragon',
+		species: TameSpeciesID.Igne,
+		image: readFileSync('./src/lib/resources/images/tames/1_replace_4.png')
+	},
+	{
+		name: 'Rune Dragon',
+		species: TameSpeciesID.Igne,
+		image: readFileSync('./src/lib/resources/images/tames/1_replace_5.png')
+	}
+];
+
+const tameImageReplacementEasterEggs = [
+	{
+		shouldActivate: (t: Tame) => t.nickname?.toLowerCase() === 'robochimp' && t.species_id === TameSpeciesID.Monkey,
+		image: readFileSync('./src/lib/resources/images/tames/2_replace_1.png')
+	},
+	{
+		shouldActivate: (t: Tame) => t.nickname?.toLowerCase() === 'magnaboy' && t.species_id === TameSpeciesID.Monkey,
+		image: readFileSync('./src/lib/resources/images/tames/2_replace_2.png')
+	},
+	{
+		shouldActivate: (t: Tame) =>
+			t.nickname !== null &&
+			['meneldor', 'gwaihir', 'landroval'].includes(t.nickname.toLowerCase()) &&
+			t.species_id === TameSpeciesID.Eagle,
+		image: readFileSync('./src/lib/resources/images/tames/3_replace_1.png')
+	},
+	...tameImageReplacementChoices.map(tameImage => ({
+		shouldActivate: (t: Tame, user: MUser) =>
+			t.custom_icon_id === tameImage.name && user.perkTier() >= PerkTier.Four,
+		image: tameImage.image
+	}))
 ];
 
 // eslint-disable-next-line @typescript-eslint/init-declarations
@@ -269,20 +306,26 @@ async function initSprites() {
 							return {
 								type: v,
 								growthStage: {
-									[tame_growth.baby]: await getClippedRegionImage(tameImage, (v - 1) * 96, 0, 96, 96),
+									[tame_growth.baby]: await getClippedRegionImage(
+										tameImage,
+										(v - 1) * tameImageSize,
+										0,
+										tameImageSize,
+										tameImageSize
+									),
 									[tame_growth.juvenile]: await getClippedRegionImage(
 										tameImage,
-										(v - 1) * 96,
-										96,
-										96,
-										96
+										(v - 1) * tameImageSize,
+										tameImageSize,
+										tameImageSize,
+										tameImageSize
 									),
 									[tame_growth.adult]: await getClippedRegionImage(
 										tameImage,
-										(v - 1) * 96,
-										96 * 2,
-										96,
-										96
+										(v - 1) * tameImageSize,
+										tameImageSize * 2,
+										tameImageSize,
+										tameImageSize
 									)
 								}
 							};
@@ -306,15 +349,29 @@ function drawText(ctx: SKRSContext2D, text: string, x: number, y: number) {
 	fillTextXTimesInCtx(ctx, text, x, y);
 }
 
+function sortTames(tameA: Tame, tameB: Tame): number {
+	const species = tameSpecies.find(i => i.id === tameA.species_id)!;
+	if (tameA.species_variant === species.shinyVariant) return -1;
+	if (tameB.species_variant === species.shinyVariant) return 1;
+	if (tameA.last_activity_date && !tameB.last_activity_date) return -1;
+	if (!tameA.last_activity_date && tameB.last_activity_date) return 1;
+	if (tameA.last_activity_date && tameB.last_activity_date) {
+		return tameB.last_activity_date.valueOf() - tameA.last_activity_date.valueOf();
+	}
+	// Fallback to sorting by max_combat_level if no last_activity_date for both
+	return getMainTameLevel(tameB) - getMainTameLevel(tameA);
+}
 export async function tameImage(user: MUser): CommandResponse {
 	const userTames = await prisma.tame.findMany({
 		where: {
 			user_id: user.id
 		},
 		orderBy: {
-			id: 'asc'
+			last_activity_date: 'desc'
 		}
 	});
+
+	userTames.sort(sortTames);
 
 	if (userTames.length === 0) {
 		return "You don't have any tames.";
@@ -387,12 +444,16 @@ export async function tameImage(user: MUser): CommandResponse {
 			128
 		);
 
-		const tameX = (10 + 256) * x + (isTameActive ? 96 : 256 - 96) / 2;
+		const tameX = (10 + 256) * x + (isTameActive ? tameImageSize : 256 - tameImageSize) / 2;
 		const tameY = (10 + 128) * y + 10;
 
-		const tameImage = sprites
-			.tames!.find(t => t.id === species.id)!
-			.sprites.find(f => f.type === t.species_variant)!.growthStage[t.growth_stage];
+		const imageReplacement = tameImageReplacementEasterEggs.find(i => i.shouldActivate(t, user));
+
+		const tameImage = imageReplacement
+			? await loadImage(imageReplacement.image)
+			: sprites.tames!.find(t => t.id === species.id)!.sprites.find(f => f.type === t.species_variant)!
+					.growthStage[t.growth_stage];
+
 		// Draw tame
 		ctx.drawImage(tameImage, tameX, tameY, tameImageSize, tameImageSize);
 		const foreground = tameForegrounds.find(i => i.shouldActivate(t));
@@ -447,7 +508,7 @@ export async function tameImage(user: MUser): CommandResponse {
 		// Draw tame boosts
 		let prevWidth = 0;
 		let feedQty = 0;
-		for (const { item } of tameFeedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species.type))) {
+		for (const { item } of tameFeedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species.id))) {
 			if (tameHasBeenFed(t, item.id)) {
 				const itemImage = await bankImageGenerator.getItemImage(item.id);
 				if (itemImage) {
@@ -584,37 +645,6 @@ export async function removeRawFood({
 		str: `${itemCost} from ${user.usernameOrMention}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
 		removed: itemCost
 	};
-}
-
-export function getTameStatus(tameActivity: TameActivity | null) {
-	if (tameActivity) {
-		const currentDate = new Date().valueOf();
-		const timeRemaining = `${formatDuration(tameActivity.finish_date.valueOf() - currentDate, true)} remaining`;
-		const activityData = tameActivity.data as any as TameTaskOptions;
-		switch (activityData.type) {
-			case TameType.Combat:
-				return [
-					`Killing ${activityData.quantity.toLocaleString()}x ${tameKillableMonsters
-						.find(m => m.id === activityData.monsterID)
-						?.name.toLowerCase()}`,
-					timeRemaining
-				];
-			case TameType.Gatherer:
-				return [`Collecting ${itemNameFromID(activityData.itemID)?.toLowerCase()}`, timeRemaining];
-			case 'SpellCasting':
-				return [
-					`Casting ${seaMonkeySpells.find(i => i.id === activityData.itemID)!.name} ${
-						activityData.quantity
-					}x times`,
-					timeRemaining
-				];
-			case 'Tempoross':
-				return [`Fighting the Tempoross. ${timeRemaining}`];
-			case 'Wintertodt':
-				return [`Fighting the Wintertodt. ${timeRemaining}`];
-		}
-	}
-	return ['Idle'];
 }
 
 async function setNameCommand(user: MUser, name: string) {
@@ -773,9 +803,7 @@ async function feedCommand(interaction: ChatInputCommandInteraction, user: MUser
 		bankToAdd.add(item.id, qtyToUse);
 	}
 
-	const thisTameSpecialFeedableItems = tameFeedableItems.filter(f =>
-		f.tameSpeciesCanBeFedThis.includes(species!.type)
-	);
+	const thisTameSpecialFeedableItems = tameFeedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species!.id));
 
 	if (!str || bankToAdd.length === 0) {
 		const image = await makeBankImage({
@@ -795,11 +823,64 @@ async function feedCommand(interaction: ChatInputCommandInteraction, user: MUser
 		return "You don't have enough items.";
 	}
 
+	// Egg feeding
+	const tameEggs = tameSpecies.map(t => t.egg.id);
+	const eggBeingFed = tameEggs.find(egg => bankToAdd.has(egg));
+	if (eggBeingFed && bankToAdd.has(eggBeingFed)) {
+		if (bankToAdd.length !== 1) {
+			return "Your tame can't eat anything else with the egg.";
+		}
+		if (tame.growth_stage !== tame_growth.adult) {
+			return 'Your tame is too young to eat the egg.';
+		}
+		if (typeof tame.levels_from_egg_feed === 'number') {
+			return `Your tame has already eaten an egg, it can't eat another one. It gained ${tame.levels_from_egg_feed} levels from the egg.`;
+		}
+
+		const levelsCanGain = calculateMaximumTameFeedingLevelGain(tame);
+		if (levelsCanGain < 1) {
+			return "Your tame isn't interested in eating the egg.";
+		}
+
+		const levelRange = [0, levelsCanGain];
+		await handleMahojiConfirmation(
+			interaction,
+			`Are you sure you want to feed the egg to your tame? You cannot get the egg back, and you cannot feed this tame an egg more than once.
+
+Your tame will gain between (inclusively) ${levelRange[0]} and ${levelRange[1]} levels from the egg.`
+		);
+		const gained = randInt(levelRange[0], levelRange[1]);
+		await user.removeItemsFromBank(bankToAdd);
+
+		await prisma.tame.update({
+			where: {
+				id: tame.id
+			},
+			data: {
+				levels_from_egg_feed: gained,
+				[`max_${species!.relevantLevelCategory}_level`]: {
+					increment: gained
+				}
+			}
+		});
+
+		await prisma.tame.update({
+			where: {
+				id: tame.id
+			},
+			data: {
+				fed_items: new Bank().add(tame.fed_items as ItemBank).add(bankToAdd).bank
+			}
+		});
+
+		return `You fed ${bankToAdd} to ${tameName(tame)}. It gained ${bold(gained.toString())} levels from the egg!`;
+	}
+
 	let specialStrArr = [];
 	for (const { item, description, tameSpeciesCanBeFedThis } of thisTameSpecialFeedableItems) {
 		const similarItems = getSimilarItems(item.id);
 		if (similarItems.some(si => bankToAdd.has(si))) {
-			if (!tameSpeciesCanBeFedThis.includes(species!.type)) {
+			if (!tameSpeciesCanBeFedThis.includes(species!.id)) {
 				await handleMahojiConfirmation(
 					interaction,
 					`Feeding a '${item.name}' to your tame won't give it a perk, are you sure you want to?`
@@ -864,6 +945,9 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	const monster = tameKillableMonsters.find(
 		i => stringMatches(i.name, str) || i.aliases.some(alias => stringMatches(alias, str))
 	);
+	if (monster?.tameCantKill) {
+		return 'Tames cannot kill this monster.';
+	}
 	if (!monster) return "That's not a valid monster.";
 	if (monster.mustBeAdult && tame.growth_stage !== tame_growth.adult) {
 		return 'Only fully grown tames can kill this monster.';
@@ -1397,7 +1481,7 @@ async function statusCommand(user: MUser) {
 	if (!tame) {
 		return 'You have no tame selected.';
 	}
-	return `${tameName(tame)} is currently: ${getTameStatus(activity)}`;
+	return `${tameName(tame)} is currently: ${getTameStatus(activity).join('. ')}.`;
 }
 
 async function tameEquipCommand(user: MUser, itemName: string) {
@@ -1473,6 +1557,151 @@ async function tameUnequipCommand(user: MUser, itemName: string) {
 	return `You unequipped a ${equippable.item.name} from your ${tameName(tame)}.`;
 }
 
+export function determineTameClueResult({
+	tameGrowthLevel,
+	clueTier,
+	extraTripLength,
+	supportLevel,
+	equippedArmor,
+	equippedPrimary
+}: {
+	extraTripLength: number;
+	clueTier: ClueTier;
+	tameGrowthLevel: number;
+	supportLevel: number;
+	equippedArmor: number | null;
+	equippedPrimary: number | null;
+}) {
+	const boosts: string[] = [];
+	let maxTripLength = Time.Minute * 20 * (4 - tameGrowthLevel);
+	if (
+		equippedArmor &&
+		resolveItems(['Abyssal jibwings (e)', 'Demonic jibwings (e)', '3rd age jibwings (e)']).includes(equippedArmor)
+	) {
+		maxTripLength += Time.Minute * 30;
+		boosts.push('+30mins trip length for enhanced jibwings');
+	}
+
+	maxTripLength += extraTripLength;
+
+	let timePerClue = clueTier.timeToFinish * 1.3;
+
+	const s = exponentialPercentScale(supportLevel, 0.03);
+	const base = exponentialPercentScale(50, 0.03);
+	const boostPercent = Math.max(0, s / 1.5 - base / 1.5);
+
+	timePerClue = reduceNumByPercent(timePerClue, boostPercent);
+	boosts.push(`${boostPercent.toFixed(2)}% faster for support level`);
+
+	if (equippedPrimary === itemID('Divine ring')) {
+		boosts.push(`20% faster (${formatDuration(calcPercentOfNum(20, timePerClue))} per clue) for Divine ring`);
+		timePerClue = reduceNumByPercent(timePerClue, 15);
+	}
+
+	const quantity = Math.floor(maxTripLength / timePerClue);
+	const duration = Math.floor(quantity * timePerClue);
+
+	const baseCost = (ClueTiers.indexOf(clueTier) + 1) * quantity;
+	const kibbleNeeded = Math.ceil(baseCost / 2);
+	const cost = new Bank().add('Extraordinary kibble', kibbleNeeded).add(clueTier.scrollID, quantity);
+
+	let costSavedByDemonicJibwings = null;
+	if (equippedArmor && getSimilarItems(itemID('Demonic jibwings')).includes(equippedArmor) && percentChance(30)) {
+		costSavedByDemonicJibwings = new Bank().add('Extraordinary kibble', cost.amount('Extraordinary kibble'));
+		cost.remove(costSavedByDemonicJibwings);
+		boosts.push('No food used due to demonic jibwings');
+	}
+
+	return {
+		boosts,
+		quantity,
+		duration,
+		cost,
+		costSavedByDemonicJibwings
+	};
+}
+
+async function tameClueCommand(user: MUser, channelID: string, inputName: string) {
+	const { tame, activity } = await user.fetchActiveTame();
+	if (activity) {
+		return `${tame} is busy.`;
+	}
+	if (!tame) {
+		return 'You have no selected tame.';
+	}
+	if (tame.species.id !== TameSpeciesID.Eagle) {
+		return `Only Eagle tames can do clue scrolls, switch to a different tame: ${mentionCommand(
+			globalClient,
+			'tames',
+			'select'
+		)}.`;
+	}
+
+	const clueTier = ClueTiers.find(c => stringMatches(c.name, inputName));
+	if (!clueTier) {
+		return 'Invalid clue tier.';
+	}
+
+	let { cost, quantity, duration, boosts, costSavedByDemonicJibwings } = determineTameClueResult({
+		tameGrowthLevel: tame.growthLevel,
+		clueTier,
+		extraTripLength: patronMaxTripBonus(user) * 2,
+		supportLevel: tame.currentSupportLevel,
+		equippedArmor: tame.equippedArmor?.id ?? null,
+		equippedPrimary: tame.equippedPrimary?.id ?? null
+	});
+
+	if (quantity === 0) {
+		return "Your tame can't do this clue scroll fast enough.";
+	}
+
+	assert(quantity >= 1 && Number.isInteger(quantity), `${quantity} quantity should be an integer.`);
+	assert(duration >= 1 && Number.isInteger(duration), `${duration} duration should be an integer.`);
+
+	const units = await user.fetchStashUnits();
+	if (units.filter(u => u.tier.tier === clueTier.name).some(u => !u.isFull)) {
+		return `You need to have all your ${clueTier.name} STASH units built and full.`;
+	}
+	if (clueTier.name === 'Grandmaster' && units.some(u => !u.isFull)) {
+		return 'You need to have all your STASH units built and full for your tame to do Grandmaster clues.';
+	}
+
+	if (!user.owns(cost) || (costSavedByDemonicJibwings !== null && !user.owns(costSavedByDemonicJibwings))) {
+		if (costSavedByDemonicJibwings) cost.add(costSavedByDemonicJibwings);
+		return `You need ${cost} to feed your Eagle for this trip.`;
+	}
+
+	await user.removeItemsFromBank(cost);
+	await tame.addToStatsBank('total_cost', cost);
+	await updateBankSetting('economyStats_PVMCost', cost);
+	if (costSavedByDemonicJibwings) {
+		await tame.addToStatsBank('demonic_jibwings_saved_cost', costSavedByDemonicJibwings);
+	}
+
+	const task = await createTameTask({
+		user,
+		channelID,
+		selectedTame: tame.tame,
+		data: {
+			type: 'Clues',
+			clueID: clueTier.scrollID,
+			quantity
+		},
+		type: 'Clues',
+		duration,
+		fakeDuration: undefined
+	});
+
+	let reply = `${tame} is now completing ${quantity}x ${itemNameFromID(
+		clueTier.scrollID
+	)}. Removed ${cost} from your bank. The trip will take ${formatDuration(task.duration)}.`;
+
+	if (boosts.length > 0) {
+		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+	}
+
+	return reply;
+}
 export type TamesCommandOptions = CommandRunOptions<{
 	set_name?: { name: string };
 	cancel?: {};
@@ -1494,6 +1723,12 @@ export type TamesCommandOptions = CommandRunOptions<{
 	};
 	activity?: {
 		name: string;
+	};
+	clue?: {
+		clue: string;
+	};
+	set_custom_image?: {
+		image: string;
 	};
 }>;
 export const tamesCommand: OSBMahojiCommand = {
@@ -1725,6 +1960,48 @@ export const tamesCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'clue',
+			description: 'Send your eagle tame to do some clue scrolls.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'clue',
+					description: 'The clue tier to do.',
+					required: true,
+					autocomplete: async (input, rawUser) => {
+						const user = await mUserFetch(rawUser.id);
+						return ClueTiers.filter(t =>
+							!input ? true : t.name.toLowerCase().includes(input.toLowerCase())
+						)
+							.filter(t => user.bank.has(t.scrollID))
+							.map(t => ({ name: `${t.name} (${user.bank.amount(t.scrollID)}x owned)`, value: t.name }));
+					}
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'set_custom_image',
+			description: 'Set a custom image for your tame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'image',
+					description: 'The image to pick.',
+					required: true,
+					autocomplete: async () => {
+						const options = tameImageReplacementChoices.map(t => ({
+							name: `${t.name} (${tameSpecies.find(s => s.id === t.species)!.name})`,
+							value: t.name
+						}));
+						options.unshift({ name: 'None', value: 'none' });
+						return options;
+					}
+				}
+			]
 		}
 	],
 	run: async ({ options, userID, channelID, interaction }: TamesCommandOptions) => {
@@ -1745,6 +2022,9 @@ export const tamesCommand: OSBMahojiCommand = {
 		if (options.cast?.spin_flax) return spinFlaxCommand(user, channelID);
 		if (options.cast?.tan) return tanLeatherCommand(user, channelID, options.cast.tan);
 		if (options.cast?.superglass_make) return superGlassCommand(user, channelID);
+		if (options.clue?.clue) {
+			return tameClueCommand(user, channelID, options.clue.clue);
+		}
 		if (options.activity) {
 			const tameActivity = arbitraryTameActivities.find(i => stringMatches(i.name, options.activity!.name));
 			if (!tameActivity) {
@@ -1792,6 +2072,50 @@ export const tamesCommand: OSBMahojiCommand = {
 			}
 
 			return reply;
+		}
+		if (options.set_custom_image) {
+			if (user.perkTier() < PerkTier.Four) {
+				return 'You need to be a Tier 3 patron to set a custom image for your tame.';
+			}
+
+			// Handle resetting the custom image:
+			if (options.set_custom_image?.image.toLowerCase() === 'none') {
+				const { tame } = await getUsersTame(user);
+				if (tame === null) {
+					return "You don't have a tame selected, select the tame who's icon should be reset.";
+				}
+				await prisma.tame.update({
+					where: {
+						id: tame.id
+					},
+					data: {
+						custom_icon_id: null
+					}
+				});
+				return 'Successfully removed the custom tame icon!';
+			}
+
+			// Handle updating the image:
+			const replacement = tameImageReplacementChoices.find(i => i.name === options.set_custom_image?.image);
+			if (!replacement) {
+				return 'Invalid image.';
+			}
+			const { tame } = await getUsersTame(user);
+			if (tame === null) {
+				return "You don't have a tame selected, select the tame you want to give this icon.";
+			}
+			if (tame.species_id !== replacement.species) {
+				return `This image is for the ${tameSpecies.find(s => s.id === replacement.species)!.name} species.`;
+			}
+			await prisma.tame.update({
+				where: {
+					id: tame.id
+				},
+				data: {
+					custom_icon_id: replacement.name
+				}
+			});
+			return `You set the '${replacement.name}' custom image for your ${tameName(tame)}.`;
 		}
 		return 'Invalid command.';
 	}

@@ -50,7 +50,6 @@ const HardModeUniqueTable = new LootTable()
 	.add('Avernic defender hilt', 1, 7);
 
 const NonUniqueTable = new LootTable()
-	.tertiary(25, 'Clue scroll (elite)')
 	.add('Vial of blood', [50, 60], 2)
 	.add('Death rune', [500, 600])
 	.add('Blood rune', [500, 600])
@@ -93,6 +92,7 @@ export class TheatreOfBloodClass {
 		if (deaths.length === TOBRooms.length) {
 			return new Bank().add('Cabbage');
 		}
+
 		const loot = new Bank();
 		for (let i = 0; i < 3; i++) {
 			loot.add(NonUniqueTable.roll());
@@ -106,6 +106,11 @@ export class TheatreOfBloodClass {
 			// Add HM Tertiary drops: dust / kits
 			loot.add(HardModeExtraTable.roll());
 		}
+
+		if (roll(25)) {
+			loot.add('Clue scroll (elite)');
+		}
+
 		let petChance = isHardMode ? 500 : 650;
 		if (member.numDeaths > 0) {
 			petChance *= member.numDeaths;

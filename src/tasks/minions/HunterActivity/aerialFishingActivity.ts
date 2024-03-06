@@ -82,9 +82,9 @@ export const aerialFishingTask: MinionTask = {
 
 		// If they have the entire angler outfit, give an extra 2.5% xp bonus
 		if (
-			user.gear.skilling.hasEquipped(
+			user.hasEquippedOrInBank(
 				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
-				true
+				'every'
 			)
 		) {
 			const amountToAdd = Math.floor(fishXpReceived * (2.5 / 100));
@@ -93,7 +93,7 @@ export const aerialFishingTask: MinionTask = {
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasEquipped(parseInt(itemID))) {
+				if (user.hasEquippedOrInBank(parseInt(itemID))) {
 					const amountToAdd = Math.floor(fishXpReceived * (bonus / 100));
 					fishXpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -101,39 +101,32 @@ export const aerialFishingTask: MinionTask = {
 			}
 		}
 
-		await user.addXP({ skillName: SkillsEnum.Fishing, amount: fishXpReceived, source: 'AerialFishing' });
-		await user.addXP({ skillName: SkillsEnum.Hunter, amount: huntXpReceived, source: 'AerialFishing' });
+		const fishXP = await user.addXP({
+			skillName: SkillsEnum.Fishing,
+			amount: fishXpReceived,
+			duration: data.duration,
+			source: 'AerialFishing'
+		});
+		const huntXP = await user.addXP({
+			skillName: SkillsEnum.Hunter,
+			amount: huntXpReceived,
+			duration: data.duration,
+			source: 'AerialFishing'
+		});
 		await user.incrementCreatureScore(bluegill.id, bluegillCaught);
 		await user.incrementCreatureScore(commonTench.id, commonTenchCaught);
 		await user.incrementCreatureScore(mottledEel.id, mottledEelCaught);
 		await user.incrementCreatureScore(greaterSiren.id, greaterSirenCaught);
-
-		const newHuntLevel = user.skillLevel(SkillsEnum.Hunter);
-		const newFishLevel = user.skillLevel(SkillsEnum.Fishing);
 
 		const xpBonusPercent = anglerBoostPercent(user);
 		if (xpBonusPercent > 0) {
 			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, fishXpReceived));
 		}
 
-		let str = `${user}, ${user.minionName} finished aerial fishing and caught ${greaterSirenCaught}x ${
-			greaterSiren.name
-		}, ${mottledEelCaught}x ${mottledEel.name}, ${commonTenchCaught}x ${commonTench.name}, ${bluegillCaught}x ${
-			bluegill.name
-		}, you also received ${huntXpReceived.toLocaleString()} Hunter XP and ${fishXpReceived.toLocaleString()} Fishing XP. ${
-			user.minionName
-		} asks if you'd like them to do another of the same trip.`;
+		let str = `${user}, ${user.minionName} finished aerial fishing and caught ${greaterSirenCaught}x ${greaterSiren.name}, ${mottledEelCaught}x ${mottledEel.name}, ${commonTenchCaught}x ${commonTench.name}, ${bluegillCaught}x ${bluegill.name}, ${huntXP}, ${fishXP}. ${user.minionName} asks if you'd like them to do another of the same trip.`;
 
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
-		}
-
-		if (newHuntLevel > currentHuntLevel) {
-			str += `\n\n${user.minionName}'s Hunter level is now ${newHuntLevel}!`;
-		}
-
-		if (newFishLevel > currentFishLevel) {
-			str += `\n\n${user.minionName}'s Fishing level is now ${newFishLevel}!`;
 		}
 
 		// Add clue scrolls

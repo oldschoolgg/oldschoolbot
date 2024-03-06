@@ -135,7 +135,7 @@ export const clueCommand: OSBMahojiCommand = {
 				durationMultiplier: 0.5
 			},
 			{
-				condition: () => user.hasEquipped(clueHunterOutfit, true),
+				condition: () => user.hasEquippedOrInBank(clueHunterOutfit, 'every'),
 				boost: '2x Boost for Clue hunter outfit',
 				durationMultiplier: 0.5
 			},

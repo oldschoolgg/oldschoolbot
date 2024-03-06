@@ -372,15 +372,16 @@ export const grotesqueGuardiansCL = resolveItems([
 	'Granite dust'
 ]);
 export const hesporiCL = resolveItems(['Bottomless compost bucket', 'Iasor seed', 'Kronos seed', 'Attas seed']);
-export const theInfernoCL = resolveItems([
-	'Jal-nib-rek',
-	'Infernal cape',
-	'Tokkul',
-	'Infernal core',
-	"TzKal-Zuk's skin",
+
+export const theInfernoCL = resolveItems(['Jal-nib-rek', 'Infernal cape']);
+
+export const emergedZukInfernoCL = resolveItems([
+	'Jal-MejJak',
 	'Head of TzKal Zuk',
-	'Jal-MejJak'
+	"TzKal-Zuk's skin",
+	'Infernal core'
 ]);
+
 export const kalphiteQueenCL = resolveItems([
 	'Kalphite princess',
 	'Kq head',
@@ -1577,7 +1578,8 @@ export const shadesOfMorttonCL = resolveItems([
 	"Zealot's robe bottom",
 	"Zealot's boots",
 	"Tree wizards' journal",
-	'Bloody notes'
+	'Bloody notes',
+	'Gary'
 ]);
 export const soulWarsCL = resolveItems(["Lil' creator", 'Red soul cape', 'Ectoplasmator']);
 
@@ -1660,7 +1662,12 @@ export const troubleBrewingCL = resolveItems([
 	'Blue rum (trouble brewing)',
 	'Jolly roger cape'
 ]);
-export const volcanicMineCL = resolveItems(['Ash covered tome', 'Large water container', 'Volcanic mine teleport']);
+export const volcanicMineCL = resolveItems([
+	'Ash covered tome',
+	'Large water container',
+	'Volcanic mine teleport',
+	'Dragon pickaxe (broken)'
+]);
 export const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 export const aerialFishingCL = resolveItems([
 	'Golden tench',
@@ -1726,7 +1733,8 @@ export const allPetsCL = resolveItems([
 	'Wisp',
 	"Lil'viathan",
 	'Butch',
-	'Baron'
+	'Baron',
+	'Scurry'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -2194,7 +2202,8 @@ export const masterCapesCL = resolveItems([
 	'Ranged master cape',
 	'Slayer master cape',
 	'Dungeoneering master cape',
-	'Invention master cape'
+	'Invention master cape',
+	'Divination master cape'
 ]);
 
 export const expertCapesCL = resolveItems(["Combatant's cape", "Artisan's cape", 'Support cape', "Gatherer's cape"]);
@@ -2248,10 +2257,17 @@ export const capesCL = resolveItems([
 	'Slayer cape(t)',
 	'Dungeoneering hood',
 	'Dungeoneering cape(t)',
+	'Divination hood',
+	'Divination cape(t)',
 	'Quest point hood',
 	'Quest point cape',
+	'Quest point cape(t)',
 	'Achievement diary hood',
+	'Achievement diary cape',
 	'Achievement diary cape(t)',
+	'Music hood',
+	'Music cape',
+	'Music cape (t)',
 	'Max hood',
 	'Max cape',
 	'Ardougne max hood',
@@ -2260,6 +2276,8 @@ export const capesCL = resolveItems([
 	'Infernal max cape',
 	'Assembler max hood',
 	'Assembler max cape',
+	'Masori assembler max hood',
+	'Masori assembler max cape',
 	'Imbued guthix max hood',
 	'Imbued guthix max cape',
 	'Imbued saradomin max hood',
@@ -2345,7 +2363,13 @@ export const capesCL = resolveItems([
 	"Xeric's warrior",
 	"Xeric's sentinel",
 	"Xeric's general",
-	"Xeric's champion"
+	"Xeric's champion",
+	"Icthlarin's hood (tier 5)",
+	"Icthlarin's shroud (tier 1)",
+	"Icthlarin's shroud (tier 2)",
+	"Icthlarin's shroud (tier 3)",
+	"Icthlarin's shroud (tier 4)",
+	"Icthlarin's shroud (tier 5)"
 ]);
 export const questCL = resolveItems([
 	'Quest point hood',
@@ -2408,7 +2432,8 @@ export const customPetsCL = resolveItems([
 	'Gary',
 	'Crush',
 	'Herbert',
-	'Echo'
+	'Echo',
+	'Doopy'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([
@@ -2429,7 +2454,8 @@ export const discontinuedCustomPetsCL = resolveItems([
 	'Eggy',
 	'Buggy',
 	'Casper',
-	'Mini mortimer'
+	'Mini mortimer',
+	'Rudolph'
 ]);
 
 export const kingGoldemarCL = resolveItems([
@@ -2873,8 +2899,6 @@ export const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem('Guthixian icon'), cost: 500 },
 	{ item: getOSItem('Trouver parchment'), cost: 18 },
 	{ item: getOSItem('Wilderness crabs teleport'), cost: 1 },
-	{ item: getOSItem('Blighted bind sack'), quantity: 300, cost: 1 },
-	{ item: getOSItem('Blighted snare sack'), quantity: 150, cost: 1 },
 	{ item: getOSItem('Blighted entangle sack'), quantity: 70, cost: 1 },
 	{ item: getOSItem('Blighted teleport spell sack'), quantity: 50, cost: 1 },
 	{ item: getOSItem('Blighted vengeance sack'), quantity: 50, cost: 1 },
@@ -3035,8 +3059,6 @@ export const odsCL = resolveItems([
 ]);
 
 export const tinkeringWorshopCL = resolveItems([...inventorOutfit, 'Materials bag']);
-
-export const emergedZukInfernoCL = resolveItems(['Head of TzKal Zuk', 'Infernal core', 'Tokkul']);
 
 export const polyporeDungeonCL = resolveItems([
 	'Mycelium leggings web',
@@ -3218,4 +3240,12 @@ export const vladDrakanCL = resolveItems([
 	'Blightbrand',
 	'Vampyric plushie',
 	'Echo'
+]);
+
+export const divinersOutfit = resolveItems([
+	"Diviner's headwear",
+	"Diviner's robe",
+	"Diviner's legwear",
+	"Diviner's handwear",
+	"Diviner's footwear"
 ]);

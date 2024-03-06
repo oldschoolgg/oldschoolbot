@@ -470,6 +470,19 @@ const killableBosses: KillableMonster[] = [
 			messages.push('You got a Charged ice for killing the Phantom Muspah in under 3 minutes!');
 		},
 		healAmountNeeded: 150
+	},
+	{
+		id: Monsters.Scurrius.id,
+		name: Monsters.Scurrius.name,
+		aliases: Monsters.Scurrius.aliases,
+		timeToFinish: Time.Minute * 2,
+		table: Monsters.Scurrius,
+		notifyDrops: resolveItems(['Scurry']),
+		qpRequired: 0,
+		levelRequirements: {
+			prayer: 43
+		},
+		defaultAttackStyles: [SkillsEnum.Attack]
 	}
 ];
 

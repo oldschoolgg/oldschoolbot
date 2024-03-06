@@ -47,7 +47,7 @@ export const implings: Record<number, { level: number; customRequirements?: (use
 			return false;
 		}
 	},
-	[EternalImpling.id]: { level: 99, customRequirements: async user => user.hasEquipped('Vasa cloak') },
+	[EternalImpling.id]: { level: 99, customRequirements: async user => user.hasEquippedOrInBank('Vasa cloak') },
 	[MysteryImpling.id]: { level: 105 }
 };
 
@@ -176,9 +176,10 @@ export async function handlePassiveImplings(user: MUser, data: ActivityTaskData)
 	let baseChance = IMPLING_CHANCE_PER_MINUTE;
 	const hasScrollOfTheHunt = user.bitfield.includes(BitField.HasScrollOfTheHunt);
 	if (hasScrollOfTheHunt) baseChance = Math.floor(baseChance / 2);
-	if (user.hasEquipped('Hunter master cape')) baseChance = Math.floor(baseChance / 2);
+	if (user.hasEquippedOrInBank('Hunter master cape')) baseChance = Math.floor(baseChance / 2);
 
-	const impTable = implingTableByWorldLocation[activityInArea(data)](baseChance, user.usingPet('Mr. E'));
+	const area = activityInArea(data);
+	const impTable = implingTableByWorldLocation[area](baseChance, user.usingPet('Mr. E'));
 
 	for (let i = 0; i < minutes; i++) {
 		const loot = impTable.roll();

@@ -83,7 +83,7 @@ export async function roboChimpUserFetch(userID: string) {
 
 export async function calculateOwnCLRanking(userID: string) {
 	const clPercentRank = (
-		await roboChimpClient.$queryRaw<{ count: number }[]>`SELECT COUNT(*)
+		await roboChimpClient.$queryRaw<{ count: number }[]>`SELECT COUNT(*)::int
 FROM public.user
 WHERE osb_cl_percent >= (SELECT osb_cl_percent FROM public.user WHERE id = ${BigInt(userID)});`
 	)[0].count;

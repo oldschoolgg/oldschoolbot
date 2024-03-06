@@ -5,22 +5,22 @@ exports[`BSO Collection Log Groups/Categories 1`] = `
 Achievement Diary (48)
 Aerial Fishing (9)
 Alchemical Hydra (11)
-All Pets (56)
-All Pets (56)
+All Pets (57)
+All Pets (57)
 Balthazar's Big Bonanza (26)
 Barbarian Assault (11)
 Barrows Chests (25)
 Baxtorian Bathhouses (4)
 Beginner Treasure Trails (16)
+Birthday crate (s2) (20)
 Brimhaven Agility Arena (8)
 Bryophyta (1)
 BSO Birthday 2022 (4)
 BSO Birthday 2023 (5)
-BSO Birthday Crate 2023 (18)
 Callisto and Artio (6)
 Camdozaal (10)
 Camdozaal (10)
-Capes (173)
+Capes (189)
 Castle Wars (44)
 Cerberus (7)
 Chamber's of Xeric (23)
@@ -34,6 +34,7 @@ Chompy Birds (19)
 Chompy Birds (19)
 Christmas 2021 (27)
 Christmas 2022 (15)
+Christmas 2023 (15)
 Christmas Cracker (10)
 Clothing Mystery Box (195)
 Commander Zilyana (8)
@@ -41,27 +42,30 @@ Cooking (28)
 Corporeal Beast (8)
 Crafting (175)
 Crazy archaeologist (3)
-Creatables (692)
+Creatables (731)
 Creature Creation (7)
 Creature Creation (7)
-Custom Pets (41)
-Custom Pets (Discontinued) (18)
+Custom Pets (42)
+Custom Pets (Discontinued) (19)
 Cyclopes (8)
 Dagannoth Kings (10)
 Daily (29)
 Depths of Atlantis (14)
+Divination (43)
 Divine Dominion (16)
 Duke Sucellus (8)
 Dungeoneering (45)
-Dyed Items (88)
+Dyed Items (83)
+Dyed Items (Discontinued) (18)
 Easter 2022 (3)
 Easter 2023 (13)
 Easy Treasure Trails (131)
 Elite Treasure Trail Rewards (Rare) (39)
 Elite Treasure Trails (59)
-Emerged Zuk Inferno (3)
+Emerged Zuk Inferno (4)
 Expert Capes (4)
-Farming (169)
+Farming (173)
+Festive crate (s4) (27)
 Fishing Contest (11)
 Fishing Trawler (4)
 Fist of Guthix (6)
@@ -81,18 +85,19 @@ Grandmaster Treasure Trails (Rare) (9)
 Grotesque Guardians (7)
 Growable Pets (28)
 Guardians of the Rift (17)
+Guthixian Caches (5)
 Hallowed Sepulchre (16)
 Halloween 2021 (22)
 Halloween 2022 (12)
 Halloween 2023 (23)
 Hard Treasure Trail Rewards (Rare) (24)
 Hard Treasure Trails (134)
-Herblore (125)
+Herblore (129)
 Hespori (4)
 Holiday Mystery box (128)
 Ignecarus (4)
 Implings (16)
-Invention (17)
+Invention (20)
 K'ril Tsutsaroth (8)
 Kalphite King (8)
 Kalphite Queen (5)
@@ -107,7 +112,7 @@ Mad Marimbo's Monkey Rumble (13)
 Magic Training Arena (10)
 Mahogany Homes (8)
 Malygos (4)
-Master Capes (25)
+Master Capes (26)
 Master Treasure Trail Rewards (Rare) (45)
 Master Treasure Trails (49)
 Medium Treasure Trails (115)
@@ -133,8 +138,9 @@ Rogues' Den (5)
 Rooftop Agility (10)
 Sarachnis (4)
 Scorpia (3)
+Scurrius (2)
 Sea Kraken (3)
-Shades of Mort'ton (14)
+Shades of Mort'ton (15)
 Shared Treasure Trail Rewards (49)
 Shayzien Armour (25)
 Shooting Stars (2)
@@ -143,18 +149,21 @@ Skilling Pets (8)
 Skotizo (6)
 Slayer (75)
 Slayer Masks/Helms (32)
-Smithing (199)
+Smithing (200)
+Solis (3)
 Soul Wars (3)
 Spectator Clothes (22)
+Spooky crate (s3) (22)
 Stealing Creation (6)
-Tame Gear (17)
+Supply crate (s1) (19)
+Tame Gear (25)
 Temple Trekking (4)
 Tempoross (12)
 Thanksgiving 2021 (5)
 The Fight Caves (2)
 The Forgotten Four (29)
 The Gauntlet (5)
-The Inferno (7)
+The Inferno (2)
 The Leviathan (7)
 The Nightmare (12)
 The Whisperer (7)
@@ -172,7 +181,7 @@ Vasa Magus (5)
 Venenatis and Spindel (6)
 Vet'ion and Calvar'ion (6)
 Vladimir Drakan (8)
-Volcanic Mine (3)
+Volcanic Mine (4)
 Vorkath (6)
 Wintertodt (11)
 Zalcano (4)
@@ -189,6 +198,8 @@ exports[`BSO Overall Collection Log Items 1`] = `
 3rd age druidic robe top
 3rd age druidic staff
 3rd age full helmet
+3rd age jibwings
+3rd age jibwings (e)
 3rd age kiteshield
 3rd age longsword
 3rd age mage hat
@@ -219,6 +230,8 @@ Abyssal dagger
 Abyssal gem
 Abyssal green dye
 Abyssal head
+Abyssal jibwings
+Abyssal jibwings (e)
 Abyssal lantern
 Abyssal mask
 Abyssal needle
@@ -297,6 +310,7 @@ Ancient d'hide boots
 Ancient d'hide shield
 Ancient effigy
 Ancient emblem
+Ancient energy
 Ancient essence
 Ancient full helm
 Ancient globe
@@ -559,6 +573,19 @@ Bob's green shirt
 Bob's purple shirt
 Bob's red shirt
 Bolt rack
+Boon of ancient energy
+Boon of bright energy
+Boon of brilliant energy
+Boon of elder energy
+Boon of flickering energy
+Boon of gleaming energy
+Boon of glowing energy
+Boon of incandescent energy
+Boon of luminous energy
+Boon of lustrous energy
+Boon of radiant energy
+Boon of sparkling energy
+Boon of vibrant energy
 Boots of darkness
 Boots of the eye
 Bottom of sceptre
@@ -571,6 +598,8 @@ Brassica halo
 Brawler's hook necklace
 Breach of the scarab
 Briefcase
+Bright energy
+Brilliant energy
 Brimhaven graceful boots
 Brimhaven graceful cape
 Brimhaven graceful gloves
@@ -612,6 +641,7 @@ Burnt page
 Butch
 Cabbage round shield
 Cache of runes
+Cache portent
 Callisto cub
 Camo bottoms
 Camo helmet
@@ -735,6 +765,8 @@ Decorative ranged legs
 Decorative ranged top
 Deerstalker
 Demon feet
+Demonic jibwings
+Demonic jibwings (e)
 Dexterous prayer scroll
 Dharok's greataxe
 Dharok's helm
@@ -742,7 +774,16 @@ Dharok's platebody
 Dharok's platelegs
 Digsite teleport
 Dinh's bulwark
+Divine egg
+Divine hand
+Divine ring
 Divine sigil
+Diviner's footwear
+Diviner's handwear
+Diviner's headwear
+Diviner's legwear
+Diviner's robe
+Doopy
 Double ammo mould
 Doug
 Draconic visage
@@ -772,6 +813,7 @@ Dragon limbs
 Dragon metal lump
 Dragon metal slice
 Dragon pickaxe
+Dragon pickaxe (broken)
 Dragon pickaxe upgrade kit
 Dragon platebody ornament kit
 Dragon scimitar ornament kit
@@ -791,6 +833,7 @@ Dragonstone platelegs
 Dragonstone upgrade kit
 Drake's claw
 Drake's tooth
+Drygore axe
 Drygore igne armor
 Drygore igne claws
 Drygore longsword
@@ -798,6 +841,7 @@ Drygore mace
 Drygore rapier
 Drygore saw
 Dual sai
+Dungeon portent
 Dungeoneering dye
 Dust battlestaff
 Dust devil mask
@@ -813,6 +857,7 @@ Dwarven knife
 Dwarven ore
 Dwarven pickaxe
 Dwarven toolkit
+Eagle egg
 Earth warrior champion scroll
 Echo
 Ectoplasmator
@@ -820,6 +865,7 @@ Ecumenical key
 Elder chaos hood
 Elder chaos robe
 Elder chaos top
+Elder energy
 Elder maul
 Elder pouch
 Elder rumble greegree
@@ -890,6 +936,7 @@ Fletcher's gloves
 Fletcher's hat
 Fletcher's legs
 Fletcher's top
+Flickering energy
 Flippers
 Forestry boots
 Forestry hat
@@ -946,8 +993,10 @@ Gilded smile flag
 Gilded spade
 Gilded spear
 Gilded sq shield
+Gleaming energy
 Gloves of darkness
 Gloves of silence
+Glowing energy
 Gnome goggles
 Gnome scarf
 Gnomish firelighter
@@ -1010,6 +1059,7 @@ Graceful cape
 Graceful gloves
 Graceful hood
 Graceful legs
+Graceful portent
 Graceful top
 Grand crystal acorn
 Grand seed pod
@@ -1052,7 +1102,7 @@ Grey naval shirt
 Grey navy slacks
 Grey tricorn hat
 Gricoller's can
-Grifolic flake 
+Grifolic flake
 Grifolic gloves
 Grifolic orb
 Guardian's eye
@@ -1152,6 +1202,8 @@ Imbued heart
 Imcando hammer
 Imp champion scroll
 Imp mask
+Impling locator
+Incandescent energy
 Infernal cape
 Infernal core
 Inferno adze
@@ -1198,6 +1250,7 @@ Jar of dirt
 Jar of dreams
 Jar of eyes
 Jar of magic
+Jar of memories
 Jar of miasma
 Jar of sand
 Jar of smoke
@@ -1289,13 +1342,16 @@ Lost bag
 Lovakengj banner
 Lovakengj hood
 Lovakengj scarf
+Lucky portent
 Lucky shot flag
 Lumberjack boots
 Lumberjack hat
 Lumberjack legs
 Lumberjack top
 Lumberyard teleport
+Luminous energy
 Lunar isle teleport
+Lustrous energy
 Lychee seed
 Mage's book
 Magic cat
@@ -1451,10 +1507,12 @@ Olmlet
 Onyx
 Orange boater
 Orange egg sac
-Ore pack
+Ore pack (Giant's Foundry)
 Ori
 Ornate maul handle
 Osmumten's fang
+Pacifist hunting portent
+Pale energy
 Pantaloons
 Paragraph of text
 Parasitic egg
@@ -1536,6 +1594,7 @@ Pyromancer hood
 Pyromancer robe
 Queen black dragonling
 Quick trap
+Radiant energy
 Rain bow
 Ranger boots
 Ranger gloves
@@ -1543,6 +1602,7 @@ Ranger hat
 Rangers' tights
 Rangers' tunic
 Raven
+Rebirth portent
 Red beret
 Red boater
 Red cavalier
@@ -1603,6 +1663,7 @@ Rogue gloves
 Rogue mask
 Rogue top
 Rogue trousers
+Rogues portent
 Royal bolt stabiliser
 Royal crown
 Royal dragon kiteshield
@@ -1715,6 +1776,8 @@ Scroll of proficiency
 Scroll of teleportation
 Scroll of the hunt
 Scruffy
+Scurrius' spine
+Scurry
 Scythe of vitur (uncharged)
 Seamonkey staff (t1)
 Seamonkey staff (t2)
@@ -1804,6 +1867,8 @@ Smoke quartz
 Smolcano
 Smouldering stone
 Soaked page
+Solite
+Sparkling energy
 Spectral sigil
 Spellbound ring
 Spiked manacles
@@ -1813,6 +1878,7 @@ Spirit angler top
 Spirit angler waders
 Spirit flakes
 Spirit shield
+Spiritual mining portent
 Spotted cape
 Spottier cape
 Squid dye
@@ -1847,6 +1913,7 @@ Studded body (g)
 Studded body (t)
 Studded chaps (g)
 Studded chaps (t)
+Sun-metal scraps
 Superior bonecrusher
 Superior dwarf multicannon
 Superior inferno adze
@@ -1875,7 +1942,6 @@ Thread of elidinis
 Tin stone spirit
 Tiny lamp
 Tiny tempor
-Tokkul
 Toktz-ket-xil
 Toktz-mej-tal
 Toktz-xil-ak
@@ -1936,6 +2002,7 @@ Verac's helm
 Verac's plateskirt
 Vet'ion jr.
 Vial of blood
+Vibrant energy
 Victor's cape (1)
 Victor's cape (10)
 Victor's cape (100)
@@ -2002,6 +2069,7 @@ Willow comp bow
 Wilvus
 Wintertoad
 Wisp
+Wisp-buster
 Wizard boots
 Wolf cloak
 Wolf mask

@@ -1,6 +1,7 @@
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from './util/getOSItem';
+import resolveItems from './util/resolveItems';
 
 interface DyedItem {
 	baseItem: Item;
@@ -278,6 +279,8 @@ export const allDyes = [
 	'Zamorak egg',
 	'Spooky dye'
 ].map(getOSItem);
+
+export const discontinuedDyes = resolveItems(['Spooky dye', 'Christmas dye']);
 
 export const dyedItems: DyedItem[] = [
 	{
@@ -602,6 +605,10 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Infernal slayer helmet(i) (ice)'),
 				dye: getOSItem('Ice dye')
+			},
+			{
+				item: getOSItem('Infernal slayer helmet(i) (xmas)'),
+				dye: getOSItem('Christmas dye')
 			}
 		]
 	},

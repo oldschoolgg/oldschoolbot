@@ -23,6 +23,32 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "aliases": [
+      "rope",
+    ],
+    "gpCost": 100,
+    "ironmanPrice": 25,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Rope",
+    "outputItems": undefined,
+  },
+  {
+    "aliases": [
+      "rope",
+    ],
+    "gpCost": 100,
+    "ironmanPrice": 25,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Rope",
+    "outputItems": undefined,
+  },
+  {
+    "aliases": [
       "fishing bait",
     ],
     "gpCost": 20,
@@ -129,7 +155,7 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "gpCost": 30,
-    "ironmanPrice": 5,
+    "ironmanPrice": 10,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -395,7 +421,7 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "gpCost": 2000,
-    "ironmanPrice": 500,
+    "ironmanPrice": 600,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -635,7 +661,7 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "gpCost": 100000,
-    "ironmanPrice": 9600,
+    "ironmanPrice": 50000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -833,8 +859,8 @@ exports[`BSO Buyables 1`] = `
     "qpRequired": 10,
   },
   {
-    "gpCost": 5000,
-    "ironmanPrice": 600,
+    "gpCost": 25000,
+    "ironmanPrice": 10000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -851,8 +877,8 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
-    "ironmanPrice": 600,
+    "gpCost": 25000,
+    "ironmanPrice": 10000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -1183,7 +1209,6 @@ exports[`BSO Buyables 1`] = `
     },
     "name": "Arceuus signet",
     "outputItems": undefined,
-    "requiredFavour": "arceuus",
   },
   {
     "gpCost": 100000,
@@ -1779,7 +1804,7 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "gpCost": 780000,
-    "ironmanPrice": 78000,
+    "ironmanPrice": 98000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -3529,8 +3554,49 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
+    "aliases": [
+      "quest cape",
+    ],
+    "gpCost": 99000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Quest point cape",
+    "outputItems": Bank {
+      "bank": {
+        "9813": 1,
+        "9814": 1,
+      },
+      "frozen": false,
+    },
+    "qpRequired": 5005,
+  },
+  {
+    "aliases": [
+      "quest cape(t)",
+    ],
     "customReq": [Function],
-    "gpCost": 1000000,
+    "gpCost": 99000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Quest point cape(t)",
+    "outputItems": Bank {
+      "bank": {
+        "13068": 1,
+      },
+      "frozen": false,
+    },
+    "qpRequired": 5005,
+  },
+  {
+    "aliases": [
+      "achievement cape",
+    ],
+    "customReq": [Function],
+    "gpCost": 99000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -3538,7 +3604,6 @@ exports[`BSO Buyables 1`] = `
     "name": "Achievement diary cape",
     "outputItems": Bank {
       "bank": {
-        "13069": 1,
         "13070": 1,
         "19476": 1,
       },
@@ -3546,20 +3611,23 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
+    "aliases": [
+      "achievement cape(t)",
+    ],
     "customReq": [Function],
-    "gpCost": 2277000,
+    "gpCost": 99000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
     },
-    "name": "Max cape",
+    "name": "Achievement diary cape(t)",
     "outputItems": Bank {
       "bank": {
-        "13280": 1,
-        "13281": 1,
+        "13069": 1,
       },
       "frozen": false,
     },
+    "qpRequired": 5005,
   },
   {
     "gpCost": 1000000000,
@@ -3609,6 +3677,22 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "customReq": [Function],
+    "gpCost": 2277000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Max cape",
+    "outputItems": Bank {
+      "bank": {
+        "13280": 1,
+        "13281": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
     "itemCost": Bank {
       "bank": {
         "40014": 1,
@@ -3635,6 +3719,7 @@ exports[`BSO Buyables 1`] = `
         "40008": 1,
         "40010": 1,
         "40015": 1,
+        "73000": 1,
       },
       "frozen": false,
     },
@@ -4235,6 +4320,16 @@ exports[`BSO Buyables 1`] = `
     "outputItems": undefined,
   },
   {
+    "gpCost": 20000000,
+    "ironmanPrice": 2000000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Festive crate key (s4)",
+    "outputItems": undefined,
+  },
+  {
     "customReq": [Function],
     "gpCost": 1000000,
     "itemCost": Bank {
@@ -4346,6 +4441,7 @@ exports[`BSO Buyables 1`] = `
         "40053": 1,
         "40060": 1,
         "63205": 1,
+        "73000": 1,
       },
       "frozen": false,
     },
@@ -4354,6 +4450,39 @@ exports[`BSO Buyables 1`] = `
       "bank": {
         "40058": 1,
         "71479": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "globalAnnouncementOnFirstBuy": true,
+    "itemCost": Bank {
+      "bank": {
+        "40058": 1,
+        "71479": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Completionist cape (t)",
+    "outputItems": Bank {
+      "bank": {
+        "40059": 1,
+        "71946": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "gpCost": 2000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Wooden spoon",
+    "outputItems": Bank {
+      "bank": {
+        "7433": 1,
       },
       "frozen": false,
     },
@@ -6032,6 +6161,37 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
+    "customReq": [Function],
+    "gpCost": 99000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Divination cape",
+    "outputItems": Bank {
+      "bank": {
+        "73001": 1,
+        "73002": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "customReq": [Function],
+    "gpCost": 1000000000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Divination master cape",
+    "outputItems": Bank {
+      "bank": {
+        "73000": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
     "itemCost": Bank {
       "bank": {
         "22820": 100,
@@ -7587,7 +7747,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7601,7 +7761,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7615,7 +7775,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7629,7 +7789,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7643,7 +7803,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7657,7 +7817,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7671,7 +7831,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7685,7 +7845,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7699,7 +7859,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7713,7 +7873,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7727,7 +7887,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7741,7 +7901,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7755,7 +7915,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7769,7 +7929,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7783,7 +7943,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7797,7 +7957,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7811,7 +7971,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7825,7 +7985,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7839,7 +7999,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7853,7 +8013,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7867,7 +8027,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7881,7 +8041,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7895,7 +8055,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7909,7 +8069,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7923,7 +8083,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7937,7 +8097,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7951,7 +8111,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7965,7 +8125,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7979,7 +8139,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7993,7 +8153,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8007,7 +8167,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8021,7 +8181,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8035,7 +8195,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8049,7 +8209,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8063,7 +8223,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8077,7 +8237,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8091,7 +8251,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8105,7 +8265,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8119,7 +8279,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8133,7 +8293,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8147,7 +8307,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8161,7 +8321,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8175,7 +8335,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8189,7 +8349,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8203,7 +8363,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8217,7 +8377,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8231,7 +8391,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8245,7 +8405,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8259,7 +8419,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8273,7 +8433,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 5000,
+    "gpCost": 15000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -9995,6 +10155,67 @@ exports[`BSO Creatables 1`] = `
         "27652": 1,
       },
       "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1432": 1,
+        "28798": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Bone mace",
+    "outputItems": Bank {
+      "bank": {
+        "28792": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "smithing": 35,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "28798": 1,
+        "857": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Bone shortbow",
+    "outputItems": Bank {
+      "bank": {
+        "28794": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "fletching": 35,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1391": 1,
+        "28798": 1,
+        "562": 1000,
+      },
+      "frozen": false,
+    },
+    "name": "Bone staff",
+    "outputItems": Bank {
+      "bank": {
+        "28796": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 35,
     },
   },
   {
@@ -22392,6 +22613,23 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "48327": 1,
+        "70235": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Infernal slayer helmet(i) (xmas)",
+    "outputItems": Bank {
+      "bank": {
+        "72015": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "22325": 1,
         "71620": 1,
       },
@@ -24262,35 +24500,25 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert completionist cape",
     "noCl": true,
     "outputItems": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
       "bank": {
-        "13069": 1,
-        "13222": 1,
-        "40000": 1,
-        "40001": 1,
-        "40002": 1,
-        "40003": 1,
-        "40004": 1,
-        "40005": 1,
-        "40006": 1,
-        "40007": 1,
-        "40008": 1,
-        "40009": 1,
-        "40010": 1,
-        "40011": 1,
-        "40012": 1,
-        "40013": 1,
-        "40014": 1,
-        "40015": 1,
-        "40016": 1,
-        "40017": 1,
-        "40018": 1,
-        "40019": 1,
-        "40020": 1,
-        "40021": 1,
-        "40022": 1,
-        "40053": 1,
-        "40060": 1,
-        "63205": 1,
+        "40059": 1,
+        "71946": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert completionist cape (t)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "40058": 1,
+        "71479": 1,
       },
       "frozen": false,
     },
@@ -25097,6 +25325,696 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": Bank {
+      "bank": {
+        "73010": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Pale energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 2,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 1,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": Bank {
+      "bank": {
+        "73006": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Flickering energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 3,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 10,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73010": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of flickering energy",
+    "outputItems": Bank {
+      "bank": {
+        "73029": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 10,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": Bank {
+      "bank": {
+        "73004": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Bright energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 6,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 20,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73006": 1000,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of bright energy",
+    "outputItems": Bank {
+      "bank": {
+        "73028": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 20,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": Bank {
+      "bank": {
+        "73009": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Glowing energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 11,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 30,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73004": 1500,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of glowing energy",
+    "outputItems": Bank {
+      "bank": {
+        "73027": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 30,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": Bank {
+      "bank": {
+        "73015": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Sparkling energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 18,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 40,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73009": 2000,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of sparkling energy",
+    "outputItems": Bank {
+      "bank": {
+        "73026": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 40,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": Bank {
+      "bank": {
+        "73008": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Gleaming energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 28,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 50,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73015": 2500,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of gleaming energy",
+    "outputItems": Bank {
+      "bank": {
+        "73025": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 50,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": Bank {
+      "bank": {
+        "73014": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Vibrant energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 42,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 60,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73008": 3000,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of vibrant energy",
+    "outputItems": Bank {
+      "bank": {
+        "73024": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 60,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": Bank {
+      "bank": {
+        "73013": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Lustrous energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 61,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 70,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73014": 3500,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of lustrous energy",
+    "outputItems": Bank {
+      "bank": {
+        "73023": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 70,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": Bank {
+      "bank": {
+        "73007": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Elder energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 72,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 75,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73013": 3750,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of elder energy",
+    "outputItems": Bank {
+      "bank": {
+        "73022": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 75,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": Bank {
+      "bank": {
+        "73005": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Brilliant energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 85,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73007": 4000,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of brilliant energy",
+    "outputItems": Bank {
+      "bank": {
+        "73033": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": Bank {
+      "bank": {
+        "73016": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Radiant energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 99,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 85,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73005": 4250,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of radiant energy",
+    "outputItems": Bank {
+      "bank": {
+        "73032": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 85,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": Bank {
+      "bank": {
+        "73012": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Luminous energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 115,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73016": 4500,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of luminous energy",
+    "outputItems": Bank {
+      "bank": {
+        "73031": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": Bank {
+      "bank": {
+        "73011": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Incandescent energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 133,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 95,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73012": 4750,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of incandescent energy",
+    "outputItems": Bank {
+      "bank": {
+        "73030": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 95,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "forceAddToCl": true,
+    "inputItems": Bank {
+      "bank": {
+        "73045": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Ancient energy",
+    "outputItems": Bank {
+      "bank": {
+        "73090": 394,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 110,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73011": 5500,
+      },
+      "frozen": false,
+    },
+    "name": "Boon of ancient energy",
+    "outputItems": Bank {
+      "bank": {
+        "73046": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 110,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1775": 50,
+        "50021": 20,
+        "73016": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Cache portent",
+    "outputItems": Bank {
+      "bank": {
+        "73041": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "3016": 30,
+        "50021": 20,
+        "73012": 500,
+      },
+      "frozen": false,
+    },
+    "name": "Graceful portent",
+    "outputItems": Bank {
+      "bank": {
+        "73043": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 80,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50021": 520,
+        "73045": 200,
+      },
+      "frozen": false,
+    },
+    "name": "Rogues portent",
+    "outputItems": Bank {
+      "bank": {
+        "73044": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 110,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50021": 20,
+        "73045": 512,
+      },
+      "frozen": false,
+    },
+    "name": "Dungeon portent",
+    "outputItems": Bank {
+      "bank": {
+        "73047": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 95,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50021": 20,
+        "73011": 256,
+      },
+      "frozen": false,
+    },
+    "name": "Lucky portent",
+    "outputItems": Bank {
+      "bank": {
+        "73048": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50021": 20,
+        "73045": 512,
+      },
+      "frozen": false,
+    },
+    "name": "Rebirth portent",
+    "outputItems": Bank {
+      "bank": {
+        "73052": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50021": 20,
+        "73011": 1200,
+      },
+      "frozen": false,
+    },
+    "name": "Spiritual mining portent",
+    "outputItems": Bank {
+      "bank": {
+        "73053": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50002": 30,
+        "50021": 20,
+        "73011": 1000,
+      },
+      "frozen": false,
+    },
+    "name": "Pacifist hunting portent",
+    "outputItems": Bank {
+      "bank": {
+        "73054": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "divination": 120,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
         "40054": 1,
@@ -25106,12 +26024,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Support cape",
     "noCl": true,
     "outputItems": Bank {
-      "bank": {
-        "40014": 1,
-        "40016": 1,
-        "40022": 1,
-        "40060": 1,
-      },
+      "bank": {},
       "frozen": false,
     },
   },
@@ -25126,13 +26039,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Gatherer's cape",
     "noCl": true,
     "outputItems": Bank {
-      "bank": {
-        "40003": 1,
-        "40005": 1,
-        "40008": 1,
-        "40010": 1,
-        "40015": 1,
-      },
+      "bank": {},
       "frozen": false,
     },
   },
@@ -25147,15 +26054,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Combatant's cape",
     "noCl": true,
     "outputItems": Bank {
-      "bank": {
-        "40009": 1,
-        "40011": 1,
-        "40017": 1,
-        "40018": 1,
-        "40019": 1,
-        "40020": 1,
-        "40021": 1,
-      },
+      "bank": {},
       "frozen": false,
     },
   },
@@ -25170,16 +26069,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Revert Artisan's cape",
     "noCl": true,
     "outputItems": Bank {
-      "bank": {
-        "40000": 1,
-        "40001": 1,
-        "40002": 1,
-        "40004": 1,
-        "40006": 1,
-        "40007": 1,
-        "40012": 1,
-        "40013": 1,
-      },
+      "bank": {},
       "frozen": false,
     },
   },
@@ -25572,7 +26462,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -25590,7 +26479,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -25608,7 +26496,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -25626,7 +26513,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -25644,7 +26530,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -25662,7 +26547,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -25680,7 +26564,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -25708,7 +26591,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -25726,7 +26608,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -25744,7 +26625,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -25762,7 +26642,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -25780,7 +26659,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -25798,7 +26676,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -25816,7 +26693,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "arceuus",
   },
   {
     "cantHaveItems": undefined,
@@ -25844,7 +26720,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -25862,7 +26737,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -25880,7 +26754,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -25898,7 +26771,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -25916,7 +26788,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -25934,7 +26805,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -25952,7 +26822,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -25980,7 +26849,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -25998,7 +26866,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26016,7 +26883,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26034,7 +26900,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26052,7 +26917,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26070,7 +26934,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26088,7 +26951,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "piscarilius",
   },
   {
     "cantHaveItems": undefined,
@@ -26116,7 +26978,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26134,7 +26995,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26152,7 +27012,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26170,7 +27029,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26188,7 +27046,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26206,7 +27063,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26224,7 +27080,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26252,7 +27107,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26270,7 +27124,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26288,7 +27141,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26306,7 +27158,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26324,7 +27175,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26342,7 +27192,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26360,7 +27209,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "lovakengj",
   },
   {
     "cantHaveItems": undefined,
@@ -26388,7 +27236,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -26406,7 +27253,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -26424,7 +27270,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -26442,7 +27287,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -26460,7 +27304,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -26478,7 +27321,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -26496,7 +27338,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -26524,7 +27365,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -26542,7 +27382,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -26560,7 +27399,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -26578,7 +27416,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -26596,7 +27433,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -26614,7 +27450,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -26632,7 +27467,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "shayzien",
   },
   {
     "cantHaveItems": undefined,
@@ -26660,7 +27494,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -26678,7 +27511,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -26696,7 +27528,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -26714,7 +27545,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -26732,7 +27562,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -26750,7 +27579,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -26768,7 +27596,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -26796,7 +27623,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -26814,7 +27640,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -26832,7 +27657,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -26850,7 +27674,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -26868,7 +27691,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -26886,7 +27708,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -26904,7 +27725,6 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "requiredFavour": "hosidius",
   },
   {
     "cantHaveItems": undefined,
@@ -30764,6 +31584,205 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "19685": 10,
+      },
+      "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "strong": 500,
+      },
+    },
+    "name": "Demonic jibwings",
+    "outputItems": Bank {
+      "bank": {
+        "73097": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 90,
+      "invention": 90,
+      "smithing": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "19677": 10,
+        "50024": 1,
+      },
+      "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "abyssal": 30,
+      },
+    },
+    "name": "Abyssal jibwings",
+    "outputItems": Bank {
+      "bank": {
+        "73098": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 90,
+      "invention": 90,
+      "smithing": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "2357": 1000,
+      },
+      "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "third-age": 6,
+      },
+    },
+    "name": "3rd age jibwings",
+    "outputItems": Bank {
+      "bank": {
+        "73099": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 90,
+      "invention": 90,
+      "smithing": 90,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "48207": 1000,
+        "73099": 1,
+      },
+      "frozen": false,
+    },
+    "name": "3rd age jibwings (e)",
+    "outputItems": Bank {
+      "bank": {
+        "73104": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "invention": 105,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "48207": 1000,
+        "73097": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Demonic jibwings (e)",
+    "outputItems": Bank {
+      "bank": {
+        "73102": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "invention": 105,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "48207": 1000,
+        "73098": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Abyssal jibwings (e)",
+    "outputItems": Bank {
+      "bank": {
+        "73103": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "invention": 105,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73090": 1000000,
+      },
+      "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "precious": 10000,
+      },
+    },
+    "name": "Divine ring",
+    "outputItems": Bank {
+      "bank": {
+        "73101": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "invention": 105,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50021": 1000,
+        "73090": 200000,
+      },
+      "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "orikalkum": 100,
+      },
+    },
+    "name": "Impling locator",
+    "outputItems": Bank {
+      "bank": {
+        "73100": 1,
+      },
+      "frozen": false,
+    },
+    "requiredSkills": {
+      "crafting": 105,
+      "invention": 105,
+      "magic": 120,
+      "smithing": 105,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "52662": 1,
       },
       "frozen": false,
@@ -32752,6 +33771,23 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25898": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Tztok slayer helmet",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11864": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
     "customReq": [Function],
     "inputItems": Bank {
       "bank": {
@@ -32763,6 +33799,23 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "25900": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25900": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Tztok slayer helmet (i)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11865": 1,
       },
       "frozen": false,
     },
@@ -32858,6 +33911,23 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25910": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Tzkal slayer helmet",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11864": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
     "customReq": [Function],
     "inputItems": Bank {
       "bank": {
@@ -32869,6 +33939,23 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "25912": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25912": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Tzkal slayer helmet (i)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11865": 1,
       },
       "frozen": false,
     },
@@ -32892,6 +33979,23 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25904": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Vampyric slayer helmet",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11864": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
     "customReq": [Function],
     "inputItems": Bank {
       "bank": {
@@ -32903,6 +34007,23 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "25906": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25906": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Revert Vampyric slayer helmet (i)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "11865": 1,
       },
       "frozen": false,
     },
@@ -33101,6 +34222,114 @@ exports[`BSO Creatables 1`] = `
     "requiredSkills": {
       "crafting": 50,
       "woodcutting": 50,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25635": 1,
+        "25637": 1,
+        "25639": 1,
+        "25676": 1500,
+      },
+      "frozen": false,
+    },
+    "name": "Barronite mace",
+    "noCl": false,
+    "outputItems": Bank {
+      "bank": {
+        "25641": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "25633": 1,
+        "25676": 1500,
+      },
+      "frozen": false,
+    },
+    "name": "Imcando hammer",
+    "noCl": false,
+    "outputItems": Bank {
+      "bank": {
+        "25644": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "506": 1,
+        "52671": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Axe handle base",
+    "outputItems": Bank {
+      "bank": {
+        "73093": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "47517": 1,
+        "50011": 10,
+        "50028": 30,
+        "73093": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Axe handle",
+    "outputItems": Bank {
+      "bank": {
+        "73096": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73095": 1,
+        "73096": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Axe of the high sungod (u)",
+    "outputItems": Bank {
+      "bank": {
+        "73074": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73074": 1,
+        "73090": 2000000,
+      },
+      "frozen": false,
+    },
+    "name": "Axe of the high sungod",
+    "outputItems": Bank {
+      "bank": {
+        "73072": 1,
+      },
+      "frozen": false,
     },
   },
 ]

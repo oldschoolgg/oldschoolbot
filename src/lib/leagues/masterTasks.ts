@@ -1,5 +1,6 @@
 import { sumArr } from 'e';
-import { Bank, Openables } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
+import { LuckyImpling } from 'oldschooljs/dist/simulation/openables/Implings';
 
 import { BitField } from '../constants';
 import {
@@ -17,14 +18,15 @@ import {
 import { slayerMaskHelms } from '../data/slayerMaskHelms';
 import { implings } from '../implings';
 import { Inventions } from '../invention/inventions';
+import { MysteryImpling } from '../simulation/customImplings';
 import { dungBuyables } from '../skilling/skills/dung/dungData';
 import { ashes } from '../skilling/skills/prayer';
 import Dwarven from '../skilling/skills/smithing/smithables/dwarven';
 import { slayerUnlockableRewards } from '../slayer/slayerUnlocks';
-import { getTameSpecies } from '../tames';
 import { ItemBank } from '../types';
 import { calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
+import { getTameSpecies } from '../util/tameUtil';
 import { Task } from './leaguesUtils';
 
 export const masterTasks: Task[] = [
@@ -1091,11 +1093,15 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4151,
-		name: 'Catch 100 of every impling passively (excluding Lucky implings)',
+		name: 'Catch 50 mystery implings, and 100 of every other imping passively (excluding Lucky implings)',
 		has: async ({ userStats }) => {
 			let loot = new Bank(userStats.passive_implings_bank as ItemBank);
+			const excludedImplings = [LuckyImpling.id, MysteryImpling.id];
 			for (const implingId of Object.keys(implings)) {
-				if (Number(implingId) !== Openables.LuckyImpling.id && loot.amount(Number(implingId)) < 100) {
+				if (
+					loot.amount(Number(MysteryImpling.id)) < 50 ||
+					(!excludedImplings.includes(Number(implingId)) && loot.amount(Number(implingId)) < 100)
+				) {
 					return false;
 				}
 			}
@@ -1130,6 +1136,20 @@ export const masterTasks: Task[] = [
 			return ['Elder bow (u)', 'Elder bow', 'Flax', 'Elder logs', 'Bow string'].every(
 				i => user.cl.amount(i) >= 100_000
 			);
+		}
+	},
+	{
+		id: 4156,
+		name: 'Receive 500m Divination',
+		has: async ({ skillsXP }) => {
+			return skillsXP.divination >= 500_000_000;
+		}
+	},
+	{
+		id: 4157,
+		name: 'Receive 1b Divination',
+		has: async ({ skillsXP }) => {
+			return skillsXP.divination >= 1_000_000_000;
 		}
 	}
 ];

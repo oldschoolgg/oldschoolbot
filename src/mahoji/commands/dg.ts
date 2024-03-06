@@ -10,9 +10,9 @@ import {
 	requiredSkills
 } from '../../lib/skilling/skills/dung/dungData';
 import {
-	gorajanShardChance,
+	calcMaxFloorUserCanDo,
+	calcUserGorajanShardChance,
 	hasRequiredLevels,
-	maxFloorUserCanDo,
 	numberOfGorajanOutfitsEquipped
 } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -33,7 +33,7 @@ const boostPerPlayer = 5;
 async function startCommand(channelID: string, user: MUser, floor: string | undefined, solo: boolean | undefined) {
 	const isSolo = Boolean(solo);
 
-	let floorToDo = Boolean(floor) ? Number(floor) : maxFloorUserCanDo(user);
+	let floorToDo = Boolean(floor) ? Number(floor) : calcMaxFloorUserCanDo(user);
 
 	if (!isValidFloor(floorToDo)) {
 		return "That's an invalid floor.";
@@ -67,7 +67,7 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 				return [true, 'your minion is busy.'];
 			}
 
-			const max = maxFloorUserCanDo(user);
+			const max = calcMaxFloorUserCanDo(user);
 			if (max < floorToDo) {
 				return [
 					true,
@@ -285,8 +285,8 @@ export const dgCommand: OSBMahojiCommand = {
 		if (options.start) return startCommand(channelID, user, options.start.floor, options.start.solo);
 		if (options.buy) return buyCommand(user, options.buy.item, options.buy.quantity);
 		let str = `<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${user.user.dungeoneering_tokens.toLocaleString()}
-**Max floor:** ${maxFloorUserCanDo(user)}`;
-		const { boosts } = gorajanShardChance(user);
+**Max floor:** ${calcMaxFloorUserCanDo(user)}`;
+		const { boosts } = calcUserGorajanShardChance(user);
 		if (boosts.length > 0) {
 			str += `\n**Gorajan shard boosts:** ${boosts.join(', ')}`;
 		}

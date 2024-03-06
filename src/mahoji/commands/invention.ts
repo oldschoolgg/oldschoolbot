@@ -2,7 +2,6 @@ import { reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { table } from 'table';
 
 import { allItemsThatCanBeDisassembledIDs, IMaterialBank, MaterialType } from '../../lib/invention';
 import {
@@ -16,7 +15,7 @@ import { inventCommand, inventingCost, inventionBoosts, Inventions } from '../..
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { researchCommand } from '../../lib/invention/research';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { calcPerHour, stringMatches, toKMB } from '../../lib/util';
+import { calcPerHour, makeTable, stringMatches, toKMB } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { ownedMaterialOption } from '../lib/mahojiCommandOptions';
@@ -290,14 +289,6 @@ These Inventions are still not unlocked: ${locked
 				}
 				case 'xp': {
 					let xpTable = [];
-					xpTable.push([
-						'Invention Level(1-120)',
-						'Item Weighting(1-120)',
-						'XP Per',
-						'XP/Hr',
-						'XP/Hr With Toolkit',
-						'XP/Hr With Toolkit&Cape'
-					]);
 
 					const lvls = [1, 10, 30, 60, 80, 90, 99, 110, 120];
 					const weightings = [1, 10, 30, 60, 80, 90, 99];
@@ -329,7 +320,24 @@ These Inventions are still not unlocked: ${locked
 					}
 
 					return {
-						files: [{ attachment: Buffer.from(table(xpTable)), name: 'invention-xp.txt' }]
+						files: [
+							{
+								attachment: Buffer.from(
+									makeTable(
+										[
+											'Invention Level(1-120)',
+											'Item Weighting(1-120)',
+											'XP Per',
+											'XP/Hr',
+											'XP/Hr With Toolkit',
+											'XP/Hr With Toolkit&Cape'
+										],
+										xpTable
+									)
+								),
+								name: 'invention-xp.txt'
+							}
+						]
 					};
 				}
 				case 'groups': {

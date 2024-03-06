@@ -4,12 +4,12 @@ import { Bank, Clues, Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import Monster from 'oldschooljs/dist/structures/Monster';
-import { table } from 'table';
 
+import { divinationEnergies, portents } from '../bso/divination';
 import { ClueTier, ClueTiers } from '../clues/clueTiers';
 import { CollectionLogType } from '../collectionLogTask';
 import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
-import { dyedItems } from '../dyedItems';
+import { discontinuedDyes, dyedItems } from '../dyedItems';
 import { growablePetsCL } from '../growablePets';
 import { inventionCL } from '../invention/inventions';
 import { keyCrates } from '../keyCrates';
@@ -44,9 +44,9 @@ import smithables from '../skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../skilling/types';
 import { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
-import { fetchStatsForCL, itemID, stringMatches } from '../util';
+import { fetchStatsForCL, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
-import { shuffleRandom } from '../util/smallUtils';
+import { makeTable, shuffleRandom } from '../util/smallUtils';
 import {
 	abyssalDragonCL,
 	abyssalSireCL,
@@ -95,6 +95,7 @@ import {
 	demonicGorillaCL,
 	diariesCL,
 	discontinuedCustomPetsCL,
+	divinersOutfit,
 	doaCL,
 	dukeSucellusCL,
 	dungeoneeringCL,
@@ -204,7 +205,7 @@ function kcProg(mon: Monster | number): FormatProgressFunction {
 }
 
 function mgProg(minigameName: MinigameName): FormatProgressFunction {
-	return ({ minigames }) => `${minigames[minigameName]} KC`;
+	return ({ minigames }) => `${minigames[minigameName]} Completions`;
 }
 
 function skillProg(skillName: SkillsEnum): FormatProgressFunction {
@@ -218,7 +219,8 @@ function clueProg(tiers: ClueTier['name'][]): FormatProgressFunction {
 				const tier = ClueTiers.find(_tier => _tier.name === i)!;
 				return `${stats.openableScores.amount(tier.id)} ${tier.name} Opens`;
 			})
-			.filter(notEmpty);
+			.filter(notEmpty)
+			.join(', ');
 	};
 }
 
@@ -532,6 +534,12 @@ export const allCollectionLogs: ICollection = {
 				items: scorpiaCL,
 				fmtProg: kcProg(Monsters.Scorpia)
 			},
+			Scurrius: {
+				alias: Monsters.Scurrius.aliases,
+				allItems: Monsters.Scurrius.allItems,
+				items: resolveItems(['Scurry', "Scurrius' spine"]),
+				fmtProg: kcProg(Monsters.Scurrius)
+			},
 			Skotizo: {
 				alias: Monsters.Skotizo.aliases,
 				allItems: Monsters.Skotizo.allItems,
@@ -807,6 +815,12 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.TzHaarXil.allItems
 				],
 				items: tzHaarCL
+			},
+			Solis: {
+				alias: ['solis'],
+				allItems: BSOMonsters.Solis.allItems,
+				items: BSOMonsters.Solis.allItems!,
+				fmtProg: kcProg(BSOMonsters.Solis.id)
 			}
 		}
 	},
@@ -1091,7 +1105,7 @@ export const allCollectionLogs: ICollection = {
 			"Shades of Mort'ton": {
 				items: shadesOfMorttonCL,
 				isActivity: true,
-				fmtProg: () => '0 KC'
+				fmtProg: mgProg('shades_of_morton')
 			},
 			'Soul Wars': {
 				alias: ['soul wars', 'sw'],
@@ -1134,41 +1148,55 @@ export const allCollectionLogs: ICollection = {
 			'Ourania Delivery Service': {
 				alias: ['ods', 'ourania'],
 				items: odsCL,
+				isActivity: true,
 				fmtProg: mgProg('ourania_delivery_service')
 			},
 			"Mad Marimbo's Monkey Rumble": {
 				alias: ['mr', 'mmmr', 'mmr', 'monkey rumble', 'mad marimbos monkey rumble'],
 				items: monkeyRumbleCL,
+				isActivity: true,
 				fmtProg: mgProg('monkey_rumble')
 			},
 			'Fishing Contest': {
 				alias: ['fc'],
 				items: fishingContestCL,
+				isActivity: true,
 				fmtProg: mgProg('fishing_contest')
 			},
 			'Baxtorian Bathhouses': {
 				alias: ['bb', 'bax bath', 'baxtorian bathhouses', 'bath', 'baths'],
 				items: baxtorianBathhousesCL,
+				isActivity: true,
 				fmtProg: mgProg('bax_baths')
 			},
 			'Fist of Guthix': {
 				alias: ['fog', 'fist of guthix'],
 				items: fistOfGuthixCL,
-				fmtProg: mgProg('bax_baths')
+				isActivity: true,
+				fmtProg: mgProg('fist_of_guthix')
+			},
+			'Guthixian Caches': {
+				alias: ['guthixian caches'],
+				items: [...divinersOutfit],
+				isActivity: true,
+				fmtProg: mgProg('guthixian_cache')
 			},
 			'Stealing Creation': {
 				alias: ['stealing creation', 'sc'],
 				items: stealingCreationCL,
+				isActivity: true,
 				fmtProg: mgProg('stealing_creation')
 			},
 			'Tinkering Workshop': {
 				alias: ['tw', 'tinkering workshop'],
 				items: tinkeringWorshopCL,
+				isActivity: true,
 				fmtProg: mgProg('tinkering_workshop')
 			},
 			"Balthazar's Big Bonanza": {
 				alias: ['bbb', 'balthazars big bananza', 'circus'],
 				items: balthazarsBigBonanzaCL,
+				isActivity: true,
 				fmtProg: mgProg('balthazars_big_bonanza')
 			}
 		}
@@ -1302,6 +1330,21 @@ export const allCollectionLogs: ICollection = {
 				alias: ['inv'],
 				items: inventionCL,
 				fmtProg: skillProg(SkillsEnum.Invention)
+			},
+			Divination: {
+				alias: ['div'],
+				items: resolveItems([
+					...divinersOutfit,
+					...portents.map(p => p.item.id),
+					...divinationEnergies
+						.map(i => [i.boon?.id, i.item.id])
+						.flat(1)
+						.filter(notEmpty),
+					'Divine egg',
+					'Jar of memories',
+					'Doopy'
+				]),
+				fmtProg: skillProg(SkillsEnum.Divination)
 			}
 		}
 	},
@@ -1373,7 +1416,7 @@ export const allCollectionLogs: ICollection = {
 			'Dyed Items': {
 				counts: false,
 				items: dyedItems
-					.map(i => i.dyedVersions.filter(i => i.dye.id !== itemID('Christmas dye')).map(i => i.item.id))
+					.map(i => i.dyedVersions.filter(i => !discontinuedDyes.includes(i.dye.id)).map(i => i.item.id))
 					.flat(2)
 			},
 			'Clothing Mystery Box': {
@@ -1448,7 +1491,15 @@ export const allCollectionLogs: ICollection = {
 					'Gorajan igne claws',
 					'Seamonkey staff (t1)',
 					'Seamonkey staff (t2)',
-					'Seamonkey staff (t3)'
+					'Seamonkey staff (t3)',
+					'Impling locator',
+					'Divine ring',
+					'Abyssal jibwings (e)',
+					'Demonic jibwings (e)',
+					'3rd age jibwings (e)',
+					'Abyssal jibwings',
+					'Demonic jibwings',
+					'3rd age jibwings'
 				])
 			},
 			'Divine Dominion': {
@@ -1695,10 +1746,32 @@ export const allCollectionLogs: ICollection = {
 				items: resolveItems(['Buggy', 'Ban hammer', 'The Interrogator', 'Acrylic set', 'Golden cape shard']),
 				counts: false
 			},
-			'BSO Birthday Crate 2023': {
-				alias: ['birthday crate 2023'],
-				items: keyCrates[1].table.allItems,
+			'Christmas 2023': {
+				alias: ['xmas 2023', 'christmas 2023'],
+				items: resolveItems([
+					'Santa costume top (male)',
+					'Santa costume top (female)',
+					'Santa costume skirt',
+					'Santa costume pants',
+					'Santa costume gloves',
+					'Santa costume boots',
+					'Tinsel twirler',
+					'Grinch head',
+					'Grinch top',
+					'Grinch legs',
+					'Grinch feet',
+					'Grinch hands',
+					'Grinch santa hat',
+					'Christmas cake',
+					'Rudolph'
+				]),
 				counts: false
+			},
+			'Dyed Items (Discontinued)': {
+				counts: false,
+				items: dyedItems
+					.map(i => i.dyedVersions.filter(i => discontinuedDyes.includes(i.dye.id)).map(i => i.item.id))
+					.flat(2)
 			},
 			'Miscelleanous (Discontinued)': {
 				alias: ['discontinued misc'],
@@ -1708,6 +1781,14 @@ export const allCollectionLogs: ICollection = {
 		}
 	}
 };
+
+for (const crate of keyCrates) {
+	allCollectionLogs.Discontinued.activities[crate.item.name] = {
+		alias: [crate.item.name.toLowerCase()],
+		items: resolveItems([crate.item.id, crate.key.id, ...crate.table.allItems]),
+		counts: false
+	};
+}
 // Get all items, from all monsters and all CLs into a variable, for uses like mostdrops
 export const allDroppedItems = uniqueArr([
 	...Object.values(allCollectionLogs)
@@ -1861,7 +1942,7 @@ export function getPossibleOptions() {
 	for (const monster of effectiveMonsters) {
 		categories.push(['Monsters', monster.name, monster.aliases ? monster.aliases.join(', ') : '']);
 	}
-	const normalTable = table([['Type', 'name: ', 'Alias'], ...[...categories, ...activities, ...roles]]);
+	const normalTable = makeTable(['Type', 'name: ', 'Alias'], [...categories, ...activities, ...roles]);
 	return new AttachmentBuilder(Buffer.from(normalTable), { name: 'possible_logs.txt' });
 }
 

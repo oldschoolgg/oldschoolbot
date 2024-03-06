@@ -11,9 +11,10 @@ jobs:
   test:
     name: Node v${{ matrix.node_version }} - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     strategy:
       matrix:
-        node_version: [18.12.0]
+        node_version: [18.12.0, 20]
         os: [ubuntu-latest]
 
     steps:
@@ -37,9 +38,18 @@ jobs:
           cp config.example.ts config.ts &&
           popd
       - name: Copy env
-        run: cp .env.example .env
+        run: cp .env.test .env
       - name: Generate Prisma Client
         run: yarn gen
+      - name: Run ESLint on changed files
+        uses: tj-actions/eslint-changed-files@v21
+        with:
+          skip_annotations: true
+          config_path: ".eslintrc.json"
+          ignore_path: ".eslintignore"
+          file_extensions: |
+            **/*.ts
+            **/*.tsx
       - name: Build
         run: yarn build
       - name: Test

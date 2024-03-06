@@ -644,6 +644,42 @@ const herbPlants: Plant[] = [
 		additionalPatchesByFarmGuildAndLvl: []
 	},
 	{
+		id: itemID('Spirit weed seed'),
+		level: 99,
+		plantXp: 0,
+		checkXp: 6199.5,
+		harvestXp: 15_024.5,
+		name: 'Spirit weed',
+		aliases: ['spirit weed', 'spirit weed seed'],
+		inputItems: new Bank({ 'Spirit weed seed': 1 }),
+		outputCrop: itemID('Spirit weed'),
+		petChance: 98_364,
+		seedType: 'herb',
+		growthTime: 80,
+		numOfStages: 4,
+		chance1: 71,
+		chance99: 80,
+		chanceOfDeath: 28,
+		needsChopForHarvest: false,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[900, 1],
+			[1500, 2]
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10,
+		additionalPatchesByFarmGuildAndLvl: []
+	},
+	{
 		id: itemID('Korulsi seed'),
 		level: 110,
 		plantXp: 0,

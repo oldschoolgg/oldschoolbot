@@ -136,6 +136,12 @@ export interface KillableMonster {
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
 	diaryRequirement?: [Diary, DiaryTier];
 	requiredBitfield?: BitField;
+
+	minimumFoodHealAmount?: number;
+	minimumWeaponShieldStats?: Partial<Record<GearSetupType, Required<GearRequirement>>>;
+	tameCantKill?: true;
+	customRequirement?: (user: MUser) => Promise<string | null>;
+	setupsUsed?: GearSetupType[];
 }
 /*
  * Monsters will have an array of Consumables

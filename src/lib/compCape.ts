@@ -4,8 +4,8 @@ import { calcWhatPercent, objectEntries, sumArr } from 'e';
 import { writeFileSync } from 'fs';
 import { Bank, Items } from 'oldschooljs';
 
-import { tameFeedableItems } from '../mahoji/commands/tames';
 import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
+import { divinationEnergies } from './bso/divination';
 import { ClueTiers } from './clues/clueTiers';
 import { BitField } from './constants';
 import {
@@ -165,7 +165,7 @@ import { herbloreCL } from './skilling/skills/herblore/mixables';
 import { smithingCL } from './skilling/skills/smithing/smithables';
 import { slayerUnlockableRewards } from './slayer/slayerUnlocks';
 import { RequirementFailure, Requirements } from './structures/Requirements';
-import { TameSpeciesID, TameType } from './tames';
+import { tameFeedableItems, TameSpeciesID } from './tames';
 import { ItemBank } from './types';
 import { itemID, itemNameFromID } from './util';
 import resolveItems from './util/resolveItems';
@@ -564,16 +564,6 @@ miscRequirements
 			}
 			return failures;
 		}
-	})
-	.add({
-		name: 'Achieve 100% Favour in all Kourend Houses',
-		favour: {
-			Arceuus: 100,
-			Hosidius: 100,
-			Lovakengj: 100,
-			Piscarilius: 100,
-			Shayzien: 100
-		}
 	});
 
 const unlockablesRequirements = new Requirements()
@@ -653,6 +643,14 @@ const unlockablesRequirements = new Requirements()
 		}
 	});
 
+for (const energy of divinationEnergies) {
+	if (!energy.boon || !energy.boonBitfield) continue;
+	unlockablesRequirements.add({
+		name: `Use a ${energy.boon.name}`,
+		bitfieldRequirement: energy.boonBitfield
+	});
+}
+
 const tameRequirements = new Requirements()
 	.add({
 		name: 'Build a Nursery',
@@ -686,7 +684,9 @@ const tameRequirements = new Requirements()
 		name: 'Feed a Monkey tame all items that provide a boost',
 		has: async ({ user }) => {
 			const tames = await user.getTames();
-			const itemsToBeFed = tameFeedableItems.filter(i => i.tameSpeciesCanBeFedThis.includes(TameType.Gatherer));
+			const itemsToBeFed = tameFeedableItems.filter(i =>
+				i.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Monkey)
+			);
 
 			const oneTameHasAll = tames
 				.filter(t => t.species.id === TameSpeciesID.Monkey)
@@ -706,7 +706,7 @@ const tameRequirements = new Requirements()
 		name: 'Feed a Igne tame all items that provide a boost',
 		has: async ({ user }) => {
 			const tames = await user.getTames();
-			const itemsToBeFed = tameFeedableItems.filter(i => i.tameSpeciesCanBeFedThis.includes(TameType.Combat));
+			const itemsToBeFed = tameFeedableItems.filter(i => i.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Igne));
 
 			const oneTameHasAll = tames
 				.filter(t => t.species.id === TameSpeciesID.Igne)

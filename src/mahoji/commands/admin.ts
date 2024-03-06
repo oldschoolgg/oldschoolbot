@@ -139,7 +139,7 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 async function allEquippedPets() {
 	const pets = await prisma.$queryRawUnsafe<
 		{ pet: number; qty: number }[]
-	>(`SELECT "minion.equippedPet" AS pet, COUNT("minion.equippedPet") AS qty
+	>(`SELECT "minion.equippedPet" AS pet, COUNT("minion.equippedPet")::int AS qty
 FROM users
 WHERE "minion.equippedPet" IS NOT NULL
 GROUP BY "minion.equippedPet"
@@ -362,7 +362,7 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 		name: 'Most Active',
 		run: async () => {
 			const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
-SELECT sum(duration) as num, "new_user"."username", user_id
+SELECT sum(duration)::int as num, "new_user"."username", user_id
 FROM activity
 INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
 WHERE start_date > now() - interval '2 days'
@@ -440,7 +440,7 @@ The next buy limit reset is at: ${buyLimitInterval.nextResetStr}, it resets ever
 	{
 		name: 'Buy GP Sinks',
 		run: async () => {
-			const result = await prisma.$queryRawUnsafe<{ item_id: string; total_gp_spent: number }[]>(`SELECT
+			const result = await prisma.$queryRawUnsafe<{ item_id: string; total_gp_spent: bigint }[]>(`SELECT
   key AS item_id,
   sum((cost_gp / total_items) * value::integer) AS total_gp_spent
 FROM
@@ -505,6 +505,28 @@ from bot_item_sell;`);
 						{ name: 'output.txt' }
 					)
 				]
+			};
+		}
+	},
+	{
+		name: 'Max G.E Slot users',
+		run: async () => {
+			const res = await prisma.$queryRawUnsafe<{ user_id: string; slots_used: number }[]>(`
+SELECT user_id, COUNT(*)::int AS slots_used
+FROM ge_listing
+WHERE cancelled_at IS NULL AND fulfilled_at IS NULL
+GROUP BY user_id
+HAVING COUNT(*) >= 3
+ORDER BY slots_used DESC;
+`);
+			let usersUsingAllSlots = 0;
+			for (const row of res) {
+				const user = await mUserFetch(row.user_id);
+				const { slots } = await GrandExchange.calculateSlotsOfUser(user);
+				if (row.slots_used >= slots) usersUsingAllSlots++;
+			}
+			return {
+				content: `There are ${usersUsingAllSlots}x users using all their G.E slots.`
 			};
 		}
 	}

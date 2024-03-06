@@ -390,6 +390,15 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.17
 	},
 	{
+		item: getOSItem('Menaphite remedy (3)'),
+		aliases: ['menaphite', 'remedy'],
+		level: 88,
+		xp: 200,
+		inputItems: new Bank({ 'Dwarf weed potion (unf)': 1, 'Lily of the sands': 1 }),
+		tickRate: 2,
+		bankTimePerPotion: 0.17
+	},
+	{
 		item: getOSItem('Super combat potion (4)'),
 		aliases: ['super combat potion (4)', 'super combat potion', 'super combat'],
 		level: 90,
@@ -557,6 +566,15 @@ const Potions: Mixable[] = [
 			'Crystal dust': 10,
 			'Divine water': 1
 		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
+		item: getOSItem('Divination potion'),
+		aliases: ['divination potion'],
+		level: 105,
+		xp: 115,
+		inputItems: new Bank().add('Spirit weed').add('Advax berry'),
 		tickRate: 2,
 		bankTimePerPotion: 0.3
 	}

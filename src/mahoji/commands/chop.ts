@@ -2,7 +2,7 @@ import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { IVY_MAX_TRIP_LENGTH_BOOST } from '../../lib/constants';
-import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
+import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
@@ -122,7 +122,7 @@ export const chopCommand: OSBMahojiCommand = {
 
 		if (!log) return "That's not a valid log to chop.";
 
-		let { quantity, powerchop } = options;
+		let { quantity, powerchop = false } = options;
 
 		const skills = user.skillsAsLevels;
 
@@ -135,13 +135,6 @@ export const chopCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`;
 		}
 
-		const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 75);
-		if (!hasFavour && log.name === 'Redwood Logs') {
-			return `${minionName(
-				user
-			)} needs ${requiredPoints}% Hosidius Favour to chop Redwood at the Woodcutting Guild!`;
-		}
-
 		if (log.customReq) {
 			const res = await log.customReq(user);
 			if (typeof res === 'string') return res;
@@ -152,7 +145,7 @@ export const chopCommand: OSBMahojiCommand = {
 		let wcLvl = skills.woodcutting;
 
 		// Invisible wc boost for woodcutting guild
-		if (skills.woodcutting >= 60 && log.wcGuild && hasFavour) {
+		if (skills.woodcutting >= 60 && log.wcGuild) {
 			boosts.push('+7 invisible WC lvls at the Woodcutting guild');
 			wcLvl += 7;
 		}
@@ -164,14 +157,36 @@ export const chopCommand: OSBMahojiCommand = {
 
 		// Default bronze axe, last in the array
 		let axeMultiplier = 1;
-		boosts.push(`**${axeMultiplier}x** success multiplier for Bronze axe`);
 
-		for (const axe of axes) {
-			if (!user.hasEquippedOrInBank([axe.id]) || skills.woodcutting < axe.wcLvl) continue;
-			axeMultiplier = axe.multiplier;
-			boosts.pop();
-			boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
-			break;
+		if (user.hasEquippedOrInBank(['Drygore axe'])) {
+			let [predeterminedTotalTime] = determineWoodcuttingTime({
+				quantity,
+				user,
+				log,
+				axeMultiplier: 10,
+				powerchopping: powerchop,
+				woodcuttingLvl: wcLvl
+			});
+			const boostRes = await inventionItemBoost({
+				user,
+				inventionID: InventionID.DrygoreAxe,
+				duration: predeterminedTotalTime
+			});
+			if (boostRes.success) {
+				axeMultiplier = 10;
+				boosts.push(`**10x** success multiplier for Drygore axe (${boostRes.messages})`);
+			} else {
+				axeMultiplier = 8;
+				boosts.push('**8x** success multiplier for Dwarven greataxe');
+			}
+		} else {
+			for (const axe of axes) {
+				if (!user.hasEquippedOrInBank([axe.id]) || skills.woodcutting < axe.wcLvl) continue;
+				axeMultiplier = axe.multiplier;
+				boosts.pop();
+				boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
+				break;
+			}
 		}
 
 		if (log.name === 'Ivy') {
@@ -205,6 +220,7 @@ export const chopCommand: OSBMahojiCommand = {
 			userID: user.id,
 			channelID: channelID.toString(),
 			quantity: newQuantity,
+			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop,
 			duration,
 			fakeDurationMin,

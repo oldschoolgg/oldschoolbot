@@ -23,6 +23,9 @@ import { ItemBank } from '../lib/types';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
+import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
+import { divinationEnergies } from './bso/divination';
+import { TOBUniques } from './data/tob';
 import { SkillsEnum } from './skilling/types';
 import { applyCustomItemEffects } from './util/customItemEffects';
 import resolveItems from './util/resolveItems';
@@ -50,6 +53,12 @@ const CACHE_DIR = './icon_cache';
 const itemSize = 32;
 const distanceFromTop = 32;
 const distanceFromSide = 16;
+
+const sourceGiftItemIDs = [26_298, 26_300, 26_302, 26_308, 26_316, 26_318, 26_320, 26_322, 26_324];
+const giftItemIDList: number[] = [];
+for (let i = 0; i < 100; i++) {
+	giftItemIDList.push(...sourceGiftItemIDs);
+}
 
 const { floor, ceil } = Math;
 
@@ -156,7 +165,6 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Lantadyme'), 'lanta'],
 	[i('Dwarf weed'), 'dwarf'],
 	[i('Torstol'), 'torstol'],
-	[i('Korulsi'), 'korulsi'],
 
 	[i('Grimy guam leaf'), 'guam'],
 	[i('Grimy marrentill'), 'marren'],
@@ -172,7 +180,6 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Grimy lantadyme'), 'lanta'],
 	[i('Grimy dwarf weed'), 'dwarf'],
 	[i('Grimy torstol'), 'torstol'],
-	[i('Grimy korulsi'), 'korulsi'],
 
 	[i('Compost'), 'compost'],
 	[i('Supercompost'), 'super'],
@@ -181,30 +188,17 @@ const forcedShortNameMap = new Map<number, string>([
 	// Clues & Caskets
 	[i('Clue scroll (beginner)'), 'beginner'],
 	[i('Reward casket (beginner)'), 'beginner'],
-
 	[i('Clue scroll (easy)'), 'easy'],
 	[i('Reward casket (easy)'), 'easy'],
-
 	[i('Clue scroll (medium)'), 'medium'],
 	[i('Reward casket (medium)'), 'medium'],
-
 	[i('Clue scroll (hard)'), 'hard'],
 	[i('Reward casket (hard)'), 'hard'],
-
 	[i('Clue scroll (elite)'), 'elite'],
 	[i('Reward casket (elite)'), 'elite'],
-
 	[i('Clue scroll (master)'), 'master'],
 	[i('Reward casket (master)'), 'master'],
 
-	[i('Clue scroll (grandmaster)'), 'grandmaster'],
-	[i('Reward casket (grandmaster)'), 'grandmaster'],
-	[i('Athelas'), 'athelas'],
-	[i('Athelas seed'), 'athelas'],
-	[i('Mysterious seed'), 'mysterious'],
-	[i('Mango seed'), 'mango'],
-	[i('Avocado seed'), 'avocado'],
-	[i('Lychee seed'), 'lychee'],
 	// Unf pots
 	[i('Avantoe potion (unf)'), 'avan'],
 	[i('Cadantine potion (unf)'), 'cadan'],
@@ -232,8 +226,43 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Yew logs'), 'Yew'],
 	[i('Magic logs'), 'Magic'],
 	[i('Redwood logs'), 'Redwood'],
-	[i('Elder logs'), 'Elder']
+	...XPLamps.map(lamp => [lamp.itemID, toKMB(lamp.amount)] as const),
+
+	// Uncharged
+	[i('Holy sanguinesti staff (uncharged)'), 'Unch.'],
+	[i('Sanguinesti staff (uncharged)'), 'Unch.'],
+	[i('Scythe of vitur (uncharged)'), 'Unch.'],
+	[i('Holy scythe of vitur (uncharged)'), 'Unch.'],
+	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.'],
+
+	// Ore Packs
+	[27_019, 'GF Pack'],
+	[27_693, 'VM Pack'],
+
+	// BSO exclusive misc
+	[i('Athelas'), 'athelas'],
+	[i('Athelas seed'), 'athelas'],
+	[i('Mysterious seed'), 'mysterious'],
+	[i('Mango seed'), 'mango'],
+	[i('Avocado seed'), 'avocado'],
+	[i('Lychee seed'), 'lychee'],
+	[i('Spirit weed seed'), 'spirit.w'],
+	[i('Spirit weed'), 'spirit.w'],
+	[i('Advax berry seed'), 'advax'],
+	[i('Advax berry'), 'advax'],
+	[i('Divination Potion'), 'div'],
+	[i('Elder logs'), 'Elder'],
+	[i('Clue scroll (grandmaster)'), 'grandmaster'],
+	[i('Reward casket (grandmaster)'), 'grandmaster'],
+	[i('Atomic energy'), 'Atomic']
 ]);
+
+for (const energy of divinationEnergies) {
+	forcedShortNameMap.set(energy.item.id, energy.item.name.slice(0, 4));
+	if (energy.boon) {
+		forcedShortNameMap.set(energy.boon.id, energy.item.name.slice(0, 4));
+	}
+}
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
 	// Draw Bank Title
@@ -272,6 +301,8 @@ class BankImageTask {
 	public redGlow: Image | null = null;
 	public bananaGlow: Image | null = null;
 	public glows: Map<number, Image>;
+	public treeImage!: Image;
+
 	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
 		this.itemIconsList = new Set();
@@ -848,6 +879,19 @@ const chestLootTypes = [
 		position: (canvas: Canvas, image: Image) => [
 			canvas.width - image.width + 25,
 			44 + canvas.height / 4 - image.height / 2
+		],
+		itemRect: [21, 50, 120, 160]
+	},
+	{
+		title: 'Theatre of Blood',
+		chestImage: loadImage('./src/lib/resources/images/tobChest.png'),
+		chestImagePurple: loadImage('./src/lib/resources/images/tobChestPurple.png'),
+		width: 260,
+		height: 180,
+		purpleItems: TOBUniques,
+		position: (canvas: Canvas, image: Image) => [
+			canvas.width - image.width,
+			55 + canvas.height / 4 - image.height / 2
 		],
 		itemRect: [21, 50, 120, 160]
 	},

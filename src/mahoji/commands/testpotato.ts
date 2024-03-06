@@ -10,7 +10,7 @@ import { production } from '../../config';
 import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
 import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { BitField, MAX_INT_JAVA } from '../../lib/constants';
+import { BitField, BitFieldData, MAX_INT_JAVA } from '../../lib/constants';
 import {
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
@@ -23,12 +23,12 @@ import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { dyedItems } from '../../lib/dyedItems';
+import { GearSetupType, GearStat } from '../../lib/gear';
 import { materialTypes } from '../../lib/invention';
 import { DisassemblySourceGroups } from '../../lib/invention/groups';
 import { Inventions, transactMaterialsFromUser } from '../../lib/invention/inventions';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { UserKourendFavour } from '../../lib/minions/data/kourendFavour';
 import potions from '../../lib/minions/data/potions';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
@@ -38,7 +38,11 @@ import { prisma } from '../../lib/settings/prisma';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
-import { getUsersTame, tameSpecies } from '../../lib/tames';
+import { slayerMasterChoices } from '../../lib/slayer/constants';
+import { slayerMasters } from '../../lib/slayer/slayerMasters';
+import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import { allSlayerMonsters } from '../../lib/slayer/tasks';
+import { tameSpecies } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
 import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
 import {
@@ -47,41 +51,37 @@ import {
 	getFarmingKeyFromName,
 	userGrowingProgressStr
 } from '../../lib/util/farmingHelpers';
+import { findBestGearSetups } from '../../lib/util/findBISGear';
 import getOSItem from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';
+import { getUsersTame } from '../../lib/util/tameUtil';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { MAX_QP } from '../lib/abstracted_commands/questCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { BingoManager } from '../lib/bingo/BingoManager';
+import { gearSetupOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 import { generateNewTame } from './nursery';
 import { tameImage } from './tames';
 
-async function giveMaxStats(user: MUser) {
+export async function giveMaxStats(user: MUser) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
-		updates[`skills_${skill}`] = convertLVLtoXP(99);
+		updates[`skills_${skill}`] = convertLVLtoXP(120);
 	}
 	await user.update({
 		QP: MAX_QP,
-		...updates,
-		kourend_favour: {
-			Arceuus: 100,
-			Hosidius: 100,
-			Lovakengj: 100,
-			Piscarilius: 100,
-			Shayzien: 100
-		} as UserKourendFavour as any
+		...updates
 	});
 }
 
 async function givePatronLevel(user: MUser, tier: number) {
-	const tierToGive = tiers[tier];
+	const tierToGive = tiers[tiers.length - tier];
 	const currentBitfield = user.bitfield;
 	if (!tier || !tierToGive) {
 		await user.update({
@@ -93,17 +93,19 @@ async function givePatronLevel(user: MUser, tier: number) {
 	await user.update({
 		bitfield: uniqueArr(newBitField)
 	});
-	return `Gave you tier ${tierToGive[1] - 1} patron.`;
+	return `Gave you ${BitFieldData[tierToGive[1]].name}.`;
 }
 
 const gearPresets = [
 	{
 		name: 'ToB',
-		melee: TOBMaxMeleeGear,
-		mage: TOBMaxMageGear,
-		range: TOBMaxRangeGear
+		gear: TOBMaxRangeGear
 	}
 ];
+
+for (const stat of Object.values(GearStat)) {
+	gearPresets.push({ name: `BIS ${stat}`, gear: findBestGearSetups(stat)[0] });
+}
 
 const thingsToReset = [
 	{
@@ -235,7 +237,7 @@ for (const group of DisassemblySourceGroups) {
 	}
 }
 const leaguesPreset = new Bank();
-for (const a of leaguesCreatables) leaguesPreset.add(a.outputItems);
+for (const a of leaguesCreatables) leaguesPreset.add(a.outputItems as Bank);
 
 const allStashUnitItems = new Bank();
 for (const unit of allStashUnitsFlat) {
@@ -322,7 +324,8 @@ const thingsToWipe = [
 	'kc',
 	'materials',
 	'mt',
-	'mortimer_cooldown'
+	'mortimer_cooldown',
+	'trips'
 ] as const;
 
 export const testPotatoCommand: OSBMahojiCommand | null = production
@@ -364,7 +367,13 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							type: ApplicationCommandOptionType.String,
 							name: 'preset',
 							description: 'Choose from some preset things to spawn.',
-							choices: spawnPresets.map(i => ({ name: i[0], value: i[0] }))
+							autocomplete: async value => {
+								return spawnPresets
+									.filter(preset =>
+										!value ? true : preset[0].toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i[0], value: i[0] }));
+							}
 						},
 						{
 							type: ApplicationCommandOptionType.Boolean,
@@ -403,7 +412,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							name: 'skill',
 							description: 'The skill.',
 							required: true,
-							choices: Object.values(Skills).map(s => ({ name: s.name, value: s.id }))
+							autocomplete: async value => {
+								return Object.values(Skills)
+									.map(s => ({ name: s.name, value: s.id }))
+									.filter(s => (!value ? true : s.name.toLowerCase().includes(value.toLowerCase())));
+							}
 						},
 						{
 							type: ApplicationCommandOptionType.Integer,
@@ -470,11 +483,21 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					description: 'Spawn and equip gear for a particular thing',
 					options: [
 						{
+							...gearSetupOption,
+							required: true
+						},
+						{
 							type: ApplicationCommandOptionType.String,
-							name: 'thing',
-							description: 'The thing to spawn gear for.',
+							name: 'preset',
+							description: 'The preset to spawn and equip.',
 							required: true,
-							choices: gearPresets.map(i => ({ name: i.name, value: i.name }))
+							autocomplete: async value => {
+								return gearPresets
+									.filter(preset =>
+										!value ? true : preset.name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i.name, value: i.name }));
+							}
 						}
 					]
 				},
@@ -657,6 +680,46 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							}
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'setslayertask',
+					description: 'Set slayer task.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'master',
+							description: 'The master you wish to set your task.',
+							required: true,
+							choices: slayerMasterChoices
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'monster',
+							description: 'The monster you want to set your task as.',
+							required: true,
+							autocomplete: async value => {
+								const filteredMonsters = [...new Set(allSlayerMonsters)].filter(monster => {
+									if (!value) return true;
+									return [monster.name.toLowerCase(), ...monster.aliases].some(aliases =>
+										aliases.includes(value.toLowerCase())
+									);
+								});
+								return filteredMonsters.map(monster => ({
+									name: monster.name,
+									value: monster.name
+								}));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The task quantity you want to assign.',
+							required: false,
+							min_value: 0,
+							max_value: 1000
+						}
+					]
 				}
 			],
 			run: async ({
@@ -666,7 +729,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 			}: CommandRunOptions<{
 				max?: {};
 				patron?: { tier: string };
-				gear?: { thing: string };
+				gear?: { gear_setup: GearSetupType; preset: string };
 				reset?: { thing: string };
 				setminigamekc?: { minigame: string; kc: number };
 				setxp?: { skill: string; xp: number };
@@ -691,6 +754,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				set?: { qp?: number; all_ca_tasks?: boolean };
 				check?: { monster_droprates?: string };
 				bingo_tools?: { start_bingo: string };
+				setslayertask?: { master: string; monster: string; quantity: number };
 			}>) => {
 				await deferInteraction(interaction);
 				if (production) {
@@ -792,6 +856,14 @@ ${droprates.join('\n')}`),
 				}
 				if (options.wipe) {
 					let { thing } = options.wipe;
+					if (thing === 'trips') {
+						await prisma.activity.deleteMany({
+							where: {
+								user_id: BigInt(user.id)
+							}
+						});
+						return 'Deleted all your trips.';
+					}
 					if (thing === 'mortimer_cooldown') {
 						await user.update({
 							last_mortimer_kill_date: null
@@ -952,11 +1024,9 @@ ${droprates.join('\n')}`),
 					return givePatronLevel(user, Number(options.patron.tier));
 				}
 				if (options.gear) {
-					const gear = gearPresets.find(i => stringMatches(i.name, options.gear?.thing))!;
+					const gear = gearPresets.find(i => stringMatches(i.name, options.gear!.preset))!;
 					await user.update({
-						gear_melee: gear.melee.raw() as any,
-						gear_range: gear.range.raw() as any,
-						gear_mage: gear.mage.raw() as any
+						[`gear_${options.gear.gear_setup}`]: gear.gear as any
 					});
 					return `Set your gear for ${gear.name}.`;
 				}
@@ -1068,6 +1138,61 @@ ${droprates.join('\n')}`),
 						}
 					});
 					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
+				}
+
+				if (options.setslayertask) {
+					const user = await mUserFetch(userID);
+					const usersTask = await getUsersCurrentSlayerInfo(user.id);
+
+					const { monster, master } = options.setslayertask;
+
+					const selectedMonster = allSlayerMonsters.find(m => stringMatches(m.name, monster));
+					const selectedMaster = slayerMasters.find(
+						sm => stringMatches(master, sm.name) || sm.aliases.some(alias => stringMatches(master, alias))
+					);
+
+					// Set quantity to 50 if user doesn't assign a quantity
+					const quantity = options.setslayertask?.quantity ?? 50;
+
+					const assignedTask = selectedMaster!.tasks.find(m => m.monster.id === selectedMonster?.id)!;
+
+					if (!selectedMaster) return 'Invalid slayer master.';
+					if (!selectedMonster) return 'Invalid monster.';
+					if (!assignedTask) return `${selectedMaster.name} can not assign ${selectedMonster.name}.`;
+
+					// Update an existing slayer task for the user
+					if (usersTask.currentTask?.id) {
+						await prisma.slayerTask.update({
+							where: {
+								id: usersTask.currentTask?.id
+							},
+							data: {
+								quantity,
+								quantity_remaining: quantity,
+								slayer_master_id: selectedMaster.id,
+								monster_id: selectedMonster.id,
+								skipped: false
+							}
+						});
+					} else {
+						// Create a new slayer task for the user
+						await prisma.slayerTask.create({
+							data: {
+								user_id: user.id,
+								quantity,
+								quantity_remaining: quantity,
+								slayer_master_id: selectedMaster.id,
+								monster_id: selectedMonster.id,
+								skipped: false
+							}
+						});
+					}
+
+					await user.update({
+						slayer_last_task: selectedMonster.id
+					});
+
+					return `You set your slayer task to ${selectedMonster.name} using ${selectedMaster.name}.`;
 				}
 
 				return 'Nothin!';

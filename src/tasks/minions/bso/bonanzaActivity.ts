@@ -5,9 +5,10 @@ import { MAX_LEVEL } from '../../../lib/constants';
 import { spectatorClothes } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { getAllUserTames, tameName, TameSpeciesID } from '../../../lib/tames';
+import { getAllUserTames, TameSpeciesID } from '../../../lib/tames';
 import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { tameName } from '../../../lib/util/tameUtil';
 
 function calcXP(user: MUser, duration: number, skill: SkillsEnum) {
 	return calcPercentOfNum(calcWhatPercent(user.skillLevel(skill), MAX_LEVEL), duration / 80);

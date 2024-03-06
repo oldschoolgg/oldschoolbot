@@ -6,6 +6,7 @@ import { collectables } from '../../mahoji/lib/abstracted_commands/collectComman
 import { quests } from '../../mahoji/lib/abstracted_commands/questCommand';
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { bossEvents } from '../bossEvents';
+import { divinationEnergies, memoryHarvestTypes } from '../bso/divination';
 import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
 import { fishingLocations } from '../fishingContest';
@@ -60,6 +61,7 @@ import {
 	HunterActivityTaskOptions,
 	InfernoOptions,
 	KourendFavourActivityTaskOptions,
+	MemoryHarvestOptions,
 	MinigameActivityTaskOptionsWithNoChanges,
 	MiningActivityTaskOptions,
 	MoktangTaskOptions,
@@ -379,6 +381,18 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently fighting cyclopes in the Warriors' Guild. ${formattedDuration}`;
 		}
 
+		case 'CamdozaalFishing': {
+			return `${name} is currently Fishing in the Ruins of Camdozaal. ${formattedDuration}`;
+		}
+
+		case 'CamdozaalMining': {
+			return `${name} is currently Mining in the Ruins of Camdozaal. ${formattedDuration}`;
+		}
+
+		case 'CamdozaalSmithing': {
+			return `${name} is currently Smithing in the Ruins of Camdozaal. ${formattedDuration}`;
+		}
+
 		case 'Sepulchre': {
 			const data = currentTask as SepulchreActivityTaskOptions;
 
@@ -518,7 +532,7 @@ export function minionStatus(user: MUser) {
 
 		case 'Raids': {
 			const data = currentTask as RaidsOptions;
-			return `${name} is currently doing the Chamber's of Xeric${
+			return `${name} is currently doing the Chambers of Xeric${
 				data.challengeMode ? ' in Challenge Mode' : ''
 			}, ${
 				data.users.length === 1 ? 'as a solo.' : `with a team of ${data.users.length} minions.`
@@ -781,6 +795,19 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently fighting Maledict Mortimer! The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
+		}
+		case 'GuthixianCache': {
+			return `${name} is currently participating in a Guthixian cache. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
+		case 'MemoryHarvest': {
+			const data = currentTask as MemoryHarvestOptions;
+			const energy = divinationEnergies.find(e => e.item.id === data.e)!;
+			const method = memoryHarvestTypes.find(t => t.id === data.t)!;
+			return `${name} is currently harvesting ${energy.type} memories using ${
+				method.name
+			}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'HalloweenMiniMinigame':
 		case 'Easter':

@@ -115,7 +115,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.BlueDragon,
 		amount: [120, 170],
-		weight: 8,
+		weight: 4,
 		monsters: [Monsters.BlueDragon.id, Monsters.BabyBlueDragon.id, Monsters.BrutalBlueDragon.id],
 		combatLevel: 65,
 		questPoints: 34,
@@ -214,7 +214,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.FossilIslandWyvernSpitting,
 		amount: [15, 30],
 
-		weight: 9,
+		weight: 5,
 		monsters: [
 			Monsters.FossilIslandWyvernAncient.id,
 			Monsters.FossilIslandWyvernLongTailed.id,
@@ -392,7 +392,7 @@ export const konarTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.SteelDragon,
 		amount: [30, 50],
-		weight: 7,
+		weight: 5,
 		monsters: [Monsters.SteelDragon.id],
 		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)!.levelRequirements,
 		extendedAmount: [40, 60],

@@ -36,7 +36,6 @@ export const itemsToDelete = [
 	[26_701, "Saika's hood (broken)"],
 	[26_702, "Saika's veil (broken)"],
 	[26_703, "Saika's shroud (broken)"],
-	[26_704, 'Blighted wave sack'],
 	[26_705, 'Blighted surge sack'],
 	[26_706, 'Scroll of imbuing'],
 	[26_707, 'Dragon claws ornament kit'],
