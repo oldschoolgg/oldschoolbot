@@ -1,7 +1,7 @@
 import { percentChance, randInt, Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Emoji, Events, TwitcherGloves } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
@@ -236,7 +236,7 @@ export const woodcuttingTask: MinionTask = {
 
 		let strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
 		let twitchersEquipped = user.hasEquipped("twitcher's gloves");
-		let twitcherSetting = undefined;
+		let twitcherSetting: TwitcherGloves | undefined = 'egg';
 		let xpReceived = quantity * log.xp;
 		let bonusXP = 0;
 		let rationUsed = 0;
@@ -306,7 +306,11 @@ export const woodcuttingTask: MinionTask = {
 
 		// Check for twitcher gloves
 		if (twitchersEquipped) {
-			twitcherSetting = twitchers;
+			if (twitchers !== undefined) {
+				twitcherSetting = twitchers;
+			}
+		} else {
+			twitcherSetting = undefined;
 		}
 
 		// Add clue scrolls & nests

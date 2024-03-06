@@ -110,7 +110,7 @@ export const chopCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.String,
 			name: 'twitchers_gloves',
-			description: "Change the settings of your Twitcher's gloves. (default off, optional)",
+			description: "Change the settings of your Twitcher's gloves. (default egg, optional)",
 			required: false,
 			choices: TWITCHERS_GLOVES.map(i => ({ name: `${i} nest`, value: i }))
 		}
