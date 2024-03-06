@@ -1511,7 +1511,8 @@ const Createables: Createable[] = [
 		},
 		cantHaveItems: {
 			[itemID('Hell cat ears')]: 1
-		}
+		},
+		noCl: true
 	},
 	// Runecrafting Pouches
 	{
