@@ -570,7 +570,7 @@ export const farmingTask: MinionTask = {
 
 			await farmingLootBoosts(user, 'harvest', plantToHarvest, loot, infoStr);
 			if ('onHarvest' in plantToHarvest && plantToHarvest.onHarvest) {
-				plantToHarvest.onHarvest({ user, loot, quantity });
+				plantToHarvest.onHarvest({ user, loot, quantity: patchType.lastQuantity });
 			}
 
 			if (plantToHarvest.name === 'Mysterious tree') {
