@@ -33,13 +33,16 @@ export default function addSkillingClueToLoot(
 	wcCapeNestBoost?: boolean
 ) {
 	const userLevel = user.skillLevel(skill);
-	const chance = Math.floor(clueChance / (100 + userLevel));
 	const nestChance = wcCapeNestBoost ? Math.floor(256 * 0.9) : 256;
 	const cluesTotalWeight = sumArr(clues.map(c => c[1]));
+	let chance = Math.floor(clueChance / (100 + userLevel));
 	let nests = 0;
 
+	if (skill === SkillsEnum.Woodcutting && twitcherSetting === 'clue') {
+		chance = Math.floor((clueChance * 0.8) / (100 + userLevel));
+	}
+
 	for (let i = 0; i < quantity; i++) {
-		let twitcherClueNest = false;
 		if (skill === SkillsEnum.Woodcutting && !clueNestsOnly && roll(nestChance)) {
 			if (twitcherSetting && percentChance(20)) {
 				switch (twitcherSetting) {
@@ -55,9 +58,6 @@ export default function addSkillingClueToLoot(
 						loot.add(ringNests.roll());
 						nests++;
 						continue;
-					case 'clue':
-						twitcherClueNest = true;
-						break;
 				}
 			} else if (strungRabbitFoot) {
 				loot.add(strungRabbitFootNestTable.roll());
@@ -68,7 +68,7 @@ export default function addSkillingClueToLoot(
 			}
 		}
 
-		if (!roll(chance) && !twitcherClueNest) continue;
+		if (!roll(chance)) continue;
 		let nextTier = false;
 		let gotClue = false;
 		let clueRoll = randFloat(0, cluesTotalWeight);
@@ -90,15 +90,6 @@ export default function addSkillingClueToLoot(
 		if (!gotClue && roll(1000)) {
 			loot.add('Clue scroll (beginner)');
 			gotClue = true;
-		}
-		if (twitcherClueNest && !gotClue) {
-			if (strungRabbitFoot) {
-				loot.add(strungRabbitFootNestTable.roll());
-				continue;
-			} else {
-				loot.add(nestTable.roll());
-				continue;
-			}
 		}
 	}
 	if (skill === SkillsEnum.Woodcutting) {
