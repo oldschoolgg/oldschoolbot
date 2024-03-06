@@ -379,9 +379,10 @@ export const monsterTask: MinionTask = {
 				tertiaryItemPercentageChanges: user.buildCATertiaryItemChanges()
 			}
 		};
-		const finalQuantity = isDoubleLootActive(duration) ? quantity * 2 : boostedQuantity;
-		// Regular loot
-		const loot = (monster as KillableMonster).table.kill(finalQuantity, killOptions);
+
+		const loot = (monster as KillableMonster).table.kill(boostedQuantity, killOptions);
+
+		if (isDoubleLootActive(duration)) loot.multiply(2);
 
 		// Calculate superiors and assign loot.
 		let newSuperiorCount = 0;
@@ -401,7 +402,7 @@ export const monsterTask: MinionTask = {
 
 		// Regular loot
 		if (monster.specialLoot) {
-			monster.specialLoot({ loot, ownedItems: user.allItemsOwned, quantity: finalQuantity, cl: user.cl });
+			monster.specialLoot({ loot, ownedItems: user.allItemsOwned, quantity: boostedQuantity, cl: user.cl });
 		}
 
 		if (newSuperiorCount) {
@@ -498,10 +499,11 @@ export const monsterTask: MinionTask = {
 			);
 		}
 
+		if (oriBoost) {
+			messages.push('Ori has used the abyss to transmute you +25% bonus loot!');
+		}
 		if (isDoubleLootActive(duration)) {
 			messages.push('**Double Loot!**');
-		} else if (oriBoost) {
-			messages.push('Ori has used the abyss to transmute you +25% bonus loot!');
 		}
 
 		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
