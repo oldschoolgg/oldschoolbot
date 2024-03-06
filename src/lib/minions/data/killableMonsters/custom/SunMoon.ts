@@ -140,7 +140,10 @@ export const Celestara: CustomMonster = {
 		melee: addStatsOfItemsTogether(resolveItems(['Soulreaper axe']), [GearStat.AttackSlash])
 	},
 	itemCost: {
-		itemCost: new Bank().add('Super combat potion(4)').add('Heat res. brew', 3).add('Heat res. restore'),
+		itemCost: new Bank()
+			.add('Super combat potion(4)')
+			.add('Enhanced saradomin brew', 3)
+			.add('Enhanced super restore'),
 		qtyPerKill: 1
 	},
 	tameCantKill: true,

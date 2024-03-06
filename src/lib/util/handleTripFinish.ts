@@ -446,6 +446,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			for (let i = 0; i < minutes; i++) {
 				if (roll(zygomiteSeedMutChance)) {
 					const ownedSeed = shuffleArr(randomZyg.mutatedFromItems).find(seed => user.bank.has(seed));
+					if (!ownedSeed) continue;
 					cost.add(ownedSeed);
 
 					if (roll(zygomiteMutSurvivalChance)) {
