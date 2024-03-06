@@ -7,6 +7,7 @@ import { makeTransactFromTableBankQueries } from '../../../lib/tableBank';
 import { logError } from '../../../lib/util/logError';
 
 export async function cancelUsersListings(user: MUser) {
+	await user.sync();
 	const activeListings = await prisma.gEListing.findMany({
 		where: {
 			user_id: user.id,
