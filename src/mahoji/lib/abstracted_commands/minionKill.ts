@@ -897,6 +897,9 @@ export async function minionKillCommand(
 		if (monster.name === 'Solis') {
 			return 'The dart melts into a crisp dust before coming into contact with Solis.';
 		}
+		if (monster.name === 'Celestara') {
+			return 'Your minion threw the dart at the moon, it did not reach.';
+		}
 		if (monster.name === 'Yeti') {
 			return 'You send your minion off to fight Yeti with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
 		}
