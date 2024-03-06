@@ -1,6 +1,7 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { TwitcherGloves, TWITCHERS_GLOVES } from '../../lib/constants';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
@@ -109,14 +110,9 @@ export const chopCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.String,
 			name: 'twitchers_gloves',
-			description: "Change the settings of your Twitcher's gloves. (default egg nests, optional)",
+			description: "Change the settings of your Twitcher's gloves. (default off, optional)",
 			required: false,
-			choices: [
-				{ name: 'Egg nest (Default)', value: 'egg' },
-				{ name: 'Ring nest', value: 'ring' },
-				{ name: 'Seed nest', value: 'seed' },
-				{ name: 'Clue nest', value: 'clue' }
-			]
+			choices: TWITCHERS_GLOVES.map(i => ({ name: `${i} nest`, value: i }))
 		}
 	],
 	run: async ({
@@ -229,7 +225,7 @@ export const chopCommand: OSBMahojiCommand = {
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop,
 			forestry: forestry_events,
-			twitchers: twitchers_gloves || 'egg',
+			twitchers: twitchers_gloves as TwitcherGloves,
 			duration,
 			fakeDurationMin,
 			fakeDurationMax,

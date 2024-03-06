@@ -1,6 +1,6 @@
 import type { CropUpgradeType } from '@prisma/client';
 
-import { NMZStrategy, UnderwaterAgilityThievingTrainingSkill } from '../constants';
+import { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
 import type { IPatchData } from '../minions/farming/types';
 import type { MinigameName } from '../settings/minigames';
 import { RaidLevel } from '../simulation/toa';
@@ -193,8 +193,8 @@ export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
 	fakeDurationMax: number;
 	fakeDurationMin: number;
 	powerchopping: boolean;
-	forestry: boolean;
-	twitchers: string;
+	forestry?: boolean;
+	twitchers?: TwitcherGloves;
 	logID: number;
 	quantity: number;
 	iQty?: number;

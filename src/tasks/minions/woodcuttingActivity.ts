@@ -1,7 +1,7 @@
 import { percentChance, randInt, Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Emoji, Events, TwitcherGloves } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
@@ -66,13 +66,13 @@ const ForestryEvents: ForestryEvent[] = [
 	}
 ];
 
-const leafTable = new LootTable()
+const LeafTable = new LootTable()
 	.add('Leaves', 20)
-	.add('Oak Leaves', 20)
-	.add('Willow Leaves', 20)
-	.add('Maple Leaves', 20)
-	.add('Yew Leaves', 20)
-	.add('Magic Leaves', 20);
+	.add('Oak leaves', 20)
+	.add('Willow leaves', 20)
+	.add('Maple leaves', 20)
+	.add('Yew leaves', 20)
+	.add('Magic leaves', 20);
 
 async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
 	let eventCounts: { [key: number]: number } = {};
@@ -100,7 +100,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
 				break;
 			case 2: // Struggling Sapling
-				loot.add(leafTable.roll());
+				loot.add(LeafTable.roll());
 				eventCounts[event.id]++;
 				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
 				break;
@@ -123,7 +123,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
 				break;
 			case 6: // Friendly Ent
-				loot.add(leafTable.roll());
+				loot.add(LeafTable.roll());
 				loot.add(eggNest.roll());
 				eventCounts[event.id]++;
 				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
@@ -156,7 +156,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				eventXP[event.uniqueXP] += eggsDelivered * Math.ceil(user.skillLevel(SkillsEnum.Thieving) / 2);
 				break;
 		}
-		// Give user Anima-infused bark
+		// Give user Anima-infused bark per event
 		loot.add('Anima-infused bark', randInt(500, 1000));
 	});
 
@@ -178,7 +178,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 		eventXP[SkillsEnum.Woodcutting] += randInt(500, 800) * (userWcLevel / 99);
 	}
 
-	// Give user unique xp per event
+	// Give user xp from events
 	let xpRes = '';
 	for (const skill in eventXP) {
 		if (eventXP.hasOwnProperty(skill)) {
@@ -236,7 +236,7 @@ export const woodcuttingTask: MinionTask = {
 
 		let strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
 		let twitchersEquipped = user.hasEquipped("twitcher's gloves");
-		let twitcherSetting = '';
+		let twitcherSetting: TwitcherGloves | undefined = undefined;
 		let xpReceived = quantity * log.xp;
 		let bonusXP = 0;
 		let rationUsed = 0;
@@ -306,7 +306,7 @@ export const woodcuttingTask: MinionTask = {
 
 		// Check for twitcher gloves
 		if (twitchersEquipped) {
-			twitcherSetting = twitchers;
+			twitcherSetting = twitchers as TwitcherGloves;
 		}
 
 		// Add clue scrolls & nests
@@ -339,7 +339,7 @@ export const woodcuttingTask: MinionTask = {
 				str +=
 					'Your Strung rabbit foot necklace increases the chance of receiving bird egg nests and ring nests.\n';
 			}
-			if (twitchersEquipped) {
+			if (twitcherSetting !== undefined) {
 				str += `Your Twitcher's gloves increases the chance of receiving ${twitcherSetting} nests.\n`;
 			}
 		}
