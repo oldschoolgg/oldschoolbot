@@ -124,7 +124,7 @@ export const chopCommand: OSBMahojiCommand = {
 		quantity?: number;
 		powerchop?: boolean;
 		forestry_events?: boolean;
-		twitchers_gloves?: string;
+		twitchers_gloves?: TwitcherGloves;
 	}>) => {
 		const user = await mUserFetch(userID);
 		const log = Woodcutting.Logs.find(
@@ -225,7 +225,7 @@ export const chopCommand: OSBMahojiCommand = {
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop,
 			forestry: forestry_events,
-			twitchers: twitchers_gloves as TwitcherGloves,
+			twitchers: twitchers_gloves,
 			duration,
 			fakeDurationMin,
 			fakeDurationMax,

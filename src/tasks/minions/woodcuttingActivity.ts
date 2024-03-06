@@ -306,7 +306,7 @@ export const woodcuttingTask: MinionTask = {
 
 		// Check for twitcher gloves
 		if (twitchersEquipped) {
-			twitcherSetting = twitchers as TwitcherGloves;
+			twitcherSetting = twitchers;
 		}
 
 		// Add clue scrolls & nests
