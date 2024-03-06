@@ -218,9 +218,6 @@ export const farmingTask: MinionTask = {
 			})}`;
 
 			await farmingLootBoosts(user, 'plant', plant, loot, infoStr);
-			if ('onHarvest' in plant && plant.onHarvest) {
-				plant.onHarvest({ user, loot, quantity });
-			}
 
 			if (loot.has('Plopper')) {
 				loot.bank[itemID('Plopper')] = 1;
