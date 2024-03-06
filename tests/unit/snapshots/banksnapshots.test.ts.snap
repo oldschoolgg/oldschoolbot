@@ -7220,6 +7220,7 @@ exports[`OSB Creatables 1`] = `
       "frozen": false,
     },
     "name": "Hell cat ears",
+    "noCl": true,
     "outputItems": Bank {
       "bank": {
         "24527": 1,
