@@ -11337,6 +11337,7 @@ setCustomItem(
 	'Atomic energy',
 	'Coal',
 	{
+		buy_limit: 4_000_000,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
