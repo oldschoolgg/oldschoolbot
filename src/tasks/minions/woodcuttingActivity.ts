@@ -236,7 +236,7 @@ export const woodcuttingTask: MinionTask = {
 
 		let strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
 		let twitchersEquipped = user.hasEquipped("twitcher's gloves");
-		let twitcherSetting: TwitcherGloves | undefined = undefined;
+		let twitcherSetting = undefined;
 		let xpReceived = quantity * log.xp;
 		let bonusXP = 0;
 		let rationUsed = 0;
