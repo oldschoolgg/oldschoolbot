@@ -1,7 +1,7 @@
 import { percentChance, randInt, Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji, Events, TwitcherGloves } from '../../lib/constants';
+import { Emoji, Events } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
