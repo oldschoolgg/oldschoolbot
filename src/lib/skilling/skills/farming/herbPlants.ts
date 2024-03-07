@@ -690,6 +690,8 @@ const herbPlants: Plant[] = [
 		inputItems: new Bank({ 'Korulsi seed': 1 }),
 		outputCrop: itemID('Grimy korulsi'),
 		cleanHerbCrop: itemID('Korulsi'),
+		herbXp: 25,
+		herbLvl: 110,
 		petChance: 97_364,
 		seedType: 'herb',
 		growthTime: 85,
