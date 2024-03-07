@@ -584,16 +584,16 @@ export async function minionKillCommand(
 		}
 	}
 
-	if (attackStyles.includes(SkillsEnum.Ranged) && user.hasEquipped('Ranged master cape')) {
+	if (attackStyles.includes(SkillsEnum.Ranged) && user.hasEquippedOrInBank('Ranged master cape')) {
 		timeToFinish *= 0.85;
 		boosts.push('15% for Ranged master cape');
-	} else if (attackStyles.includes(SkillsEnum.Magic) && user.hasEquipped('Magic master cape')) {
+	} else if (attackStyles.includes(SkillsEnum.Magic) && user.hasEquippedOrInBank('Magic master cape')) {
 		timeToFinish *= 0.85;
 		boosts.push('15% for Magic master cape');
 	} else if (
 		!attackStyles.includes(SkillsEnum.Magic) &&
 		!attackStyles.includes(SkillsEnum.Ranged) &&
-		user.hasEquipped('Attack master cape')
+		user.hasEquippedOrInBank('Attack master cape')
 	) {
 		timeToFinish *= 0.85;
 		boosts.push('15% for Attack master cape');
@@ -686,7 +686,7 @@ export async function minionKillCommand(
 	const prayerPots = user.bank.amount('Prayer potion(4)');
 	const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
 	let prayerPotsNeeded = Math.max(1, fiveMinIncrements);
-	const hasPrayerMasterCape = user.hasEquipped('Prayer master cape');
+	const hasPrayerMasterCape = user.hasEquippedOrInBank('Prayer master cape');
 	if (hasPrayerMasterCape && hasBlessing) {
 		boosts.push('40% less prayer pots');
 		prayerPotsNeeded = Math.floor(0.6 * prayerPotsNeeded);
