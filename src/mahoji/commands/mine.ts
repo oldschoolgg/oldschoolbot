@@ -131,7 +131,7 @@ export function calculateMiningInput({
 	}
 
 	let miningCapeEffect = 0;
-	if (gearValues.some(g => g.hasEquippedOrInBank('Mining cape')) && miningCapeOreEffect.has(ore.id)) {
+	if (gearValues.some(g => g.hasEquipped('Mining cape')) && miningCapeOreEffect.has(ore.id)) {
 		miningCapeEffect = miningCapeOreEffect.amount(ore.id);
 		if (miningCapeEffect !== 0) {
 			messages.push(`**${miningCapeEffect}%** chance to mine an extra ore using Mining cape`);
