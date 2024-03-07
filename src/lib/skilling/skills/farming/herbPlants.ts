@@ -654,6 +654,8 @@ const herbPlants: Plant[] = [
 		inputItems: new Bank({ 'Spirit weed seed': 1 }),
 		outputCrop: itemID('Grimy spirit weed'),
 		cleanHerbCrop: itemID('Spirit weed'),
+		herbXp: 25,
+		herbLvl: 105,
 		petChance: 98_364,
 		seedType: 'herb',
 		growthTime: 80,
