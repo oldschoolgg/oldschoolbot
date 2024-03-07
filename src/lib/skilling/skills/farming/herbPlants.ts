@@ -689,6 +689,7 @@ const herbPlants: Plant[] = [
 		aliases: ['korulsi seed'],
 		inputItems: new Bank({ 'Korulsi seed': 1 }),
 		outputCrop: itemID('Grimy korulsi'),
+		cleanHerbCrop: itemID('Korulsi'),
 		petChance: 97_364,
 		seedType: 'herb',
 		growthTime: 85,
