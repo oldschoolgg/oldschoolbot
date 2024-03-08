@@ -26,7 +26,7 @@ export const musicCapeRequirements = new Requirements()
 			}
 			return [
 				{
-					reason: 'You need to complete 20 slayer tasks'
+					reason: 'You need to complete 20 slayer tasks.'
 				}
 			];
 		}
@@ -230,7 +230,7 @@ AND data->>'runeID' IS NOT NULL;`;
 					return [];
 				}
 			}
-			return [{ reason: 'You need to build something in your POH' }];
+			return [{ reason: 'You need to build something in your POH.' }];
 		}
 	})
 	.add({
@@ -239,6 +239,6 @@ AND data->>'runeID' IS NOT NULL;`;
 			for (const scroll of championScrolls) {
 				if (user.cl.has(scroll)) return [];
 			}
-			return [{ reason: 'You need to have a Champion Scroll in your CL' }];
+			return [{ reason: 'You need to have a Champion Scroll in your CL.' }];
 		}
 	});
