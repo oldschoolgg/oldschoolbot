@@ -44,8 +44,9 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 			if (user.bank.amount(location.bait.id) >= quantity) {
 				loc = location.name;
 			}
-		}
-		if (!loc) loc = validLocs[0].name;
+	}
+	if (!loc) loc = validLocs[0].name;
+		const fishingLocation = fishingLocations.find(i => stringMatches(i.name, loc!));
 	}
 	if (!fishingLocation) {
 		return `That's not a valid location to fish at, you can fish at these locations: ${fishingLocations
