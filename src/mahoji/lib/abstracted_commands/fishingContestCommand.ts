@@ -36,8 +36,6 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 		quantity++;
 		quantityBoosts.push('1 for Crystal fishing rod');
 	}
-	if (true) {
-	}
 
 	if (!loc) {
 		for (const location of validLocs) {
