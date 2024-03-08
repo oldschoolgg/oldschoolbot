@@ -205,19 +205,16 @@ AND data->>'runeID' IS NOT NULL;`;
 		}
 	})
 	.add({
-		name: 'One of Every Random Event',
-		has: async ({ stats, user }) => {
+		name: 'One Random Event with a unique music track',
+		has: async ({ stats }) => {
 			const results: RequirementFailure[] = [];
 			const eventBank = stats.randomEventCompletionsBank();
+			const uniqueTracks = RandomEvents.filter(i => i.uniqueMusic);
 
-			const notDoneRandomEvents = RandomEvents.filter(i => {
-				if (i.outfit && i.outfit.every(id => user.cl.has(id))) return false;
-				return !eventBank[i.id];
-			}).map(i => i.name);
-
-			if (notDoneRandomEvents.length > 0) {
+			if (!uniqueTracks.some(i => eventBank[i.id])) {
+				const tracksNeeded = RandomEvents.filter(i => i.uniqueMusic).map(i => i.name);
 				results.push({
-					reason: `You need to do these random events at least once: ${notDoneRandomEvents.join(', ')}.`
+					reason: `You need to do one of these random events: ${tracksNeeded.join(', ')}.`
 				});
 			}
 			return results;
