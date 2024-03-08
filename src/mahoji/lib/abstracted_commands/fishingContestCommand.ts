@@ -35,7 +35,8 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 	if (user.hasEquippedOrInBank('Crystal fishing rod')) {
 		quantity++;
 		quantityBoosts.push('1 for Crystal fishing rod');
-	}
+	}if (!loc) loc = validLocs[0].name;
+	const fishingLocation = fishingLocations.find(i => stringMatches(i.name, loc!));
 
 	if (!loc) {
 		for (const location of validLocs) {
@@ -44,7 +45,7 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 			}
 	}
 	if (!loc) loc = validLocs[0].name;
-		const fishingLocation = fishingLocations.find(i => stringMatches(i.name, loc!));
+	const fishingLocation = fishingLocations.find(i => stringMatches(i.name, loc!));
 	}
 	if (!fishingLocation) {
 		return `That's not a valid location to fish at, you can fish at these locations: ${fishingLocations
