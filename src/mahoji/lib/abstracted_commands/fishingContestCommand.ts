@@ -41,7 +41,7 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 
 	if (!loc) {
 		for (const location of validLocs) {
-			if (user.bank.amount(location.bait.id) >= quanity) {
+			if (user.bank.amount(location.bait.id) >= quantity) {
 				loc = location.name;
 			}
 		}
