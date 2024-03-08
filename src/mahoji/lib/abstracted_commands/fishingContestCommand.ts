@@ -35,6 +35,7 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 	if (user.hasEquippedOrInBank('Crystal fishing rod')) {
 		quantity++;
 		quantityBoosts.push('1 for Crystal fishing rod');
+	} 
 		
 	}
 
