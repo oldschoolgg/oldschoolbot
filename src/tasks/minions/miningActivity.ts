@@ -256,7 +256,7 @@ export const miningTask: MinionTask = {
 		const spiritOre = stoneSpirits.find(t => t.ore.id === ore.id);
 		const amountOfSpiritsToUse =
 			spiritOre !== undefined ? Math.min(quantity, user.bank.amount(spiritOre.spirit.id)) : 0;
-		const hasMiningMasterCape = user.hasEquippedhasEquipped('Mining master cape');
+		const hasMiningMasterCape = User.hasEquippedOrInBank('Mining master cape');
 		const portentResult =
 			amountOfSpiritsToUse > 0
 				? await chargePortentIfHasCharges({
