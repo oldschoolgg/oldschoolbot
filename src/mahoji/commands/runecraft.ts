@@ -254,8 +254,8 @@ export const runecraftCommand: OSBMahojiCommand = {
 		let removeTalismanAndOrRunes = new Bank();
 		let hasRingOfTheElements = false;
 		if (runeObj.inputTalisman) {
-			const tomeOfFire = user.hasEquippedOrInBank(['Tome of fire', 'Tome of fire (empty)']) ? 0 : 7;
-			const tomeOfWater = user.hasEquippedOrInBank(['Tome of water', 'Tome of water (empty)']) ? 0 : 7;
+			const tomeOfFire = user.hasEquipped(['Tome of fire', 'Tome of fire (empty)']) ? 0 : 7;
+			const tomeOfWater = user.hasEquipped(['Tome of water', 'Tome of water (empty)']) ? 0 : 7;
 			const magicImbueRuneCost = determineRunes(
 				user,
 				new Bank({ 'Astral rune': 2, 'Fire rune': tomeOfFire, 'Water rune': tomeOfWater })

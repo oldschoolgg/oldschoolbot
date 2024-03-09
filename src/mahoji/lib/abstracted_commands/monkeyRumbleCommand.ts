@@ -66,7 +66,7 @@ export async function monkeyRumbleCommand(user: MUser, channelID: string): Comma
 	const boosts = [];
 
 	let fightDuration = Time.Minute * 9;
-	if (user.hasEquippedOrInBank('Strength master cape')) {
+	if (user.hasEquipped('Strength master cape')) {
 		fightDuration = reduceNumByPercent(fightDuration, 17);
 		boosts.push('17% faster fights for strength master cape');
 	}

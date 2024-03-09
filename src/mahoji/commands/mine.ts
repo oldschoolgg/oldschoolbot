@@ -83,7 +83,7 @@ export function calculateMiningInput({
 		effectiveMiningLevel += 7;
 	}
 	// Checks if user own Celestial ring or Celestial signet
-	if (gearValues.some(g => g.hasEquipped(['Celestial ring (uncharged)']))) {
+	if (gearValues.some(g => g.hasEquippedOrInBank(['Celestial ring (uncharged)']))) {
 		messages.push('+4 invisible Mining lvls for Celestial ring');
 		effectiveMiningLevel += 4;
 	}
@@ -105,7 +105,7 @@ export function calculateMiningInput({
 	let glovesRate = 0;
 	if (miningLevel >= 60) {
 		for (const glove of miningGloves) {
-			if (!gearValues.some(g => g.hasEquipped(glove.id)) || !glove.Percentages.has(ore.id)) continue;
+			if (!gearValues.some(g => g.hasEquippedOrInBank(glove.id)) || !glove.Percentages.has(ore.id)) continue;
 			glovesRate = glove.Percentages.amount(ore.id);
 			if (glovesRate !== 0) {
 				messages.push(`Lowered rock depletion rate by **${glovesRate}%** for ${itemNameFromID(glove.id)}`);
@@ -116,7 +116,7 @@ export function calculateMiningInput({
 
 	let armourEffect = 0;
 	for (const armour of varrockArmours) {
-		if (!gearValues.some(g => g.hasEquipped(armour.id)) || !armour.Percentages.has(ore.id)) continue;
+		if (!gearValues.some(g => g.hasEquippedOrInBank(armour.id)) || !armour.Percentages.has(ore.id)) continue;
 		armourEffect = armour.Percentages.amount(ore.id);
 		if (armourEffect !== 0) {
 			messages.push(`**${armourEffect}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
@@ -131,7 +131,7 @@ export function calculateMiningInput({
 	}
 
 	let miningCapeEffect = 0;
-	if (gearValues.some(g => g.hasEquipped('Mining cape')) && miningCapeOreEffect.has(ore.id)) {
+	if (gearValues.some(g => g.hasEquippedOrInBank('Mining cape')) && miningCapeOreEffect.has(ore.id)) {
 		miningCapeEffect = miningCapeOreEffect.amount(ore.id);
 		if (miningCapeEffect !== 0) {
 			messages.push(`**${miningCapeEffect}%** chance to mine an extra ore using Mining cape`);

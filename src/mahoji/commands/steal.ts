@@ -157,7 +157,7 @@ export const stealCommand: OSBMahojiCommand = {
 				quantity,
 				user.hasEquipped(['Thieving cape', 'Thieving cape(t)']),
 				hasArdyHard,
-				user.hasEquippedOrInBank(["Thieves' armband"])
+				user.hasEquipped(["Thieves' armband"])
 			);
 
 			if (user.hasEquipped(['Thieving cape', 'Thieving cape(t)', 'Thieving master cape'])) {

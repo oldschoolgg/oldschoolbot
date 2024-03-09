@@ -77,7 +77,7 @@ async function tokensCommand(user: MUser, channelID: string, quantity: number | 
 
 async function cyclopsCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	const userBank = user.bank;
-	const hasAttackCape = user.gear.melee.hasEquipped('Attack cape');
+	const hasAttackCape = user.gear.melee.hasEquippedOrInBank('Attack cape');
 	const maxTripLength = calcMaxTripLength(user, 'Cyclops');
 	// Check if either 100 warrior guild tokens or attack cape (similar items in future)
 	const amountTokens = userBank.amount('Warrior guild token');
