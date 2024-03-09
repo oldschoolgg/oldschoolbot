@@ -154,7 +154,7 @@ export const chopCommand: OSBMahojiCommand = {
 		let wcLvl = skills.woodcutting;
 
 		// Invisible wc boost for woodcutting guild, forestry events don't happen in woodcutting guild
-		if (!forestry_events || resolveItems(['Redwood logs', 'Logs']).includes(log.id)) {
+		if (!forestry_events || resolveItems(['Redwood logs', 'Logs']).includes(log.id) || log.lootTable) {
 			forestry_events = false;
 			if (skills.woodcutting >= 60 && log.wcGuild) {
 				boosts.push('+7 invisible WC lvls at the Woodcutting guild');

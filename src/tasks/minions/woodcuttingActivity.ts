@@ -93,6 +93,7 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 		const event = ForestryEvents[eventIndex];
 		const defaultEventXP = 5 * (randInt(85, 115) / 100); // used for unverified xp rates
 		let eggsDelivered = 0;
+		let beeHive = 0;
 
 		switch (event.id) {
 			case 1: // Rising Roots
@@ -114,13 +115,14 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
 				break;
 			case 5: // Beehive
-				for (let i = 0; i < randInt(4, 6); i++) {
-					if (percentChance(200 / 300)) {
+				for (let i = 0; i < randInt(5, 7); i++) {
+					if (percentChance(66)) {
 						loot.add('Sturdy beehive parts');
 					}
+					beeHive += randInt(5, 10);
 				}
 				eventCounts[event.id]++;
-				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
+				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * 0.3 * beeHive;
 				break;
 			case 6: // Friendly Ent
 				loot.add(LeafTable.roll());
