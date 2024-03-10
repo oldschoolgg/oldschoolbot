@@ -143,6 +143,9 @@ export function handleNexKills({ quantity, team }: NexContext) {
 
 	for (let i = 0; i < quantity; i++) {
 		const survivors = team.filter(usr => !usr.deaths.includes(i));
+		if (survivors.length === 0) {
+			continue;
+		}
 
 		const uniqueRecipient = roll(43) ? randArrItem(survivors).id : null;
 		const nonUniqueDrop = NexNonUniqueTable.roll();
