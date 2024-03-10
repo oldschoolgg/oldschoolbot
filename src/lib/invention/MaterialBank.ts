@@ -87,11 +87,11 @@ export class MaterialBank {
 			return 'No materials';
 		}
 		const res = [];
-		for (const [type, qty] of entries.sort((a, b) => b[1] - a[1])) {
-			res.push(`${qty.toLocaleString()}x ${toTitleCase(type)}`);
+		for (const [type, qty] of entries.sort((a, b) => a[0].localeCompare(b[0]))) {
+			res.push(`${toTitleCase(type)}: ${qty.toLocaleString()}`);
 		}
 
-		return res.join(', ');
+		return `${res.join('\n')}`;
 	}
 
 	public values() {
