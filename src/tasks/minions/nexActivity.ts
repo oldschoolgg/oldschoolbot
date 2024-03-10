@@ -6,6 +6,7 @@ import { trackLoot } from '../../lib/lootTrack';
 import { handleNexKills } from '../../lib/simulation/nex';
 import { NexTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 
 export const nexTask: MinionTask = {
@@ -52,13 +53,25 @@ export const nexTask: MinionTask = {
 			allMUsers[0],
 			channelID,
 			{
-				content: `${allMention} Your team finished killing ${quantity}x Nex.${
-					wipedKill ? ` Your team wiped on the ${formatOrdinal(wipedKill)} kill.` : ''
-				}
+				content:
+					survivedQuantity === 0
+						? `${allMention} your minion${users.length === 1 ? '' : 's'} died in all kill attempts.`
+						: `${allMention} Your team finished killing ${quantity}x Nex.${
+								wipedKill ? ` Your team wiped on the ${formatOrdinal(wipedKill)} kill.` : ''
+						  }
 				
 ${loot.formatLoot()}`
 			},
-			undefined,
+			users.length === 1 && loot.totalLoot().length > 0
+				? (
+						await makeBankImage({
+							bank: loot.totalLoot(),
+							title: `Loot From ${survivedQuantity}x Nex`,
+							user: allMUsers[0],
+							previousCL: undefined
+						})
+				  ).file.attachment
+				: undefined,
 			data,
 			loot.totalLoot()
 		);
