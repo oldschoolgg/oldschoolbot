@@ -9295,8 +9295,7 @@ setCustomItem(
 		tradeable: true,
 		tradeable_on_ge: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isDiscontinued: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	1_000_000
