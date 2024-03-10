@@ -406,7 +406,8 @@ export const tripHandlers = {
 		args: (data: NexTaskOptions) => {
 			return {
 				name: 'nex',
-				quantity: data.quantity
+				quantity: data.quantity,
+				solo: data.userDetails.length === 1
 			};
 		}
 	},
