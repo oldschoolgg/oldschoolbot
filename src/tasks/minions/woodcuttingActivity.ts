@@ -12,13 +12,13 @@ import { perTimeUnitChance, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
-interface ForestryEvent {
+export interface ForestryEvent {
 	id: number;
 	name: string;
 	uniqueXP: SkillsEnum;
 }
 
-const ForestryEvents: ForestryEvent[] = [
+export const ForestryEvents: ForestryEvent[] = [
 	{
 		id: 1,
 		name: 'Rising Roots',
@@ -91,62 +91,80 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 	perTimeUnitChance(duration, 20, Time.Minute, async () => {
 		const eventIndex = randInt(0, ForestryEvents.length - 1);
 		const event = ForestryEvents[eventIndex];
-		const defaultEventXP = 5 * (randInt(85, 115) / 100); // used for unverified xp rates
-		let eggsDelivered = 0;
-		let beeHiveRepairs = 0;
+		let eventRounds = 0;
+		let eventInteraction = 0;
 
 		switch (event.id) {
 			case 1: // Rising Roots
+				eventRounds = randInt(5, 7); // anima-infused roots spawned
+				for (let i = 0; i < eventRounds; i++) {
+					eventInteraction += randInt(5, 6); // anima-infused roots chopped
+				}
 				eventCounts[event.id]++;
-				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
+				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * 1.4 * eventInteraction;
 				break;
 			case 2: // Struggling Sapling
+				eventInteraction = randInt(12, 15); // mulch added to sapling
 				loot.add(LeafTable.roll());
 				eventCounts[event.id]++;
-				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
+				eventXP[event.uniqueXP] += eventInteraction * (user.skillLevel(event.uniqueXP) * 0.6);
+				eventXP[SkillsEnum.Woodcutting] += eventInteraction * (userWcLevel * 1.95) * 2;
 				break;
 			case 3: // Flowering Bush
+				eventRounds = randInt(5, 7); // bush pairs spawned
+				for (let i = 0; i < eventRounds; i++) {
+					eventInteraction += randInt(12, 20); // bushes pollinated
+				}
 				loot.add('Strange fruit', randInt(4, 8)).add(MediumSeedPackTable.roll());
 				eventCounts[event.id]++;
-				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
+				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * 0.25 * eventInteraction * 3;
 				break;
 			case 4: // Woodcutting Leprechaun
+				eventInteraction = randInt(6, 8); // rainbows entered
 				eventCounts[event.id]++;
-				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
+				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * 2 * eventInteraction;
 				break;
 			case 5: // Beehive
-				for (let i = 0; i < randInt(5, 7); i++) {
+				eventRounds = randInt(5, 7); // beehives spawned
+				for (let i = 0; i < eventRounds; i++) {
 					if (percentChance(66)) {
 						loot.add('Sturdy beehive parts');
 					}
-					beeHiveRepairs += randInt(5, 10);
+					eventInteraction += randInt(5, 10); // repairs per beehive
 				}
 				eventCounts[event.id]++;
-				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * 0.3 * beeHiveRepairs;
+				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * 0.3 * eventInteraction;
+				eventXP[SkillsEnum.Woodcutting] +=
+					eventInteraction * (userWcLevel * 0.6) + userWcLevel * 3.8 * eventRounds;
 				break;
 			case 6: // Friendly Ent
+				eventInteraction = randInt(40, 60); // ents pruned
 				loot.add(LeafTable.roll());
 				loot.add(eggNest.roll());
 				eventCounts[event.id]++;
-				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
+				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * 0.2 * eventInteraction;
+				eventXP[SkillsEnum.Woodcutting] += eventInteraction * (userWcLevel * 0.55);
 				break;
 			case 7: // Poachers
+				eventInteraction = randInt(12, 15); // traps disarmed
 				if (roll(whistleChance)) {
 					loot.add('Fox whistle');
 				}
 				eventCounts[event.id]++;
-				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
+				eventXP[event.uniqueXP] += eventInteraction * (user.skillLevel(event.uniqueXP) / 2);
+				eventXP[SkillsEnum.Woodcutting] += eventInteraction * (userWcLevel * 1.35);
 				break;
 			case 8: // Enchantment Ritual
+				eventInteraction = randInt(6, 8); // ritual circles
 				if (roll(50)) {
 					loot.add('Petal garland');
 				}
 				eventCounts[event.id]++;
-				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * defaultEventXP;
+				eventXP[event.uniqueXP] += user.skillLevel(event.uniqueXP) * eventInteraction * 5.5;
 				break;
 			case 9: // Pheasant Control
-				eggsDelivered = randInt(15, 45);
-				for (let i = 0; i < eggsDelivered; i++) {
+				eventInteraction = randInt(15, 45); // eggs delivered
+				for (let i = 0; i < eventInteraction; i++) {
 					if (percentChance(50)) {
 						loot.add('Pheasant tail feathers');
 					}
@@ -155,11 +173,12 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 					}
 				}
 				eventCounts[event.id]++;
-				eventXP[event.uniqueXP] += eggsDelivered * Math.ceil(user.skillLevel(SkillsEnum.Thieving) / 2);
+				eventXP[event.uniqueXP] += eventInteraction * (user.skillLevel(event.uniqueXP) / 2);
+				eventXP[SkillsEnum.Woodcutting] += eventInteraction * (userWcLevel * 1.1);
 				break;
 		}
 		// Give user Anima-infused bark per event
-		loot.add('Anima-infused bark', randInt(500, 1000));
+		loot.add('Anima-infused bark', randInt(250, 500));
 	});
 
 	let totalEvents = 0;
@@ -173,11 +192,6 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 				new Bank().add(parseInt(event), count)
 			);
 		}
-	}
-
-	// Give user woodcutting xp for each event completed
-	for (let i = 0; i < totalEvents; i++) {
-		eventXP[SkillsEnum.Woodcutting] += randInt(500, 800) * (userWcLevel / 99);
 	}
 
 	// Give user xp from events
