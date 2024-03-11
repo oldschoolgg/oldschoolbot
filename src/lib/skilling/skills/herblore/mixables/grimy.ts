@@ -156,7 +156,7 @@ const Grimy: Mixable[] = [
 	},
 	{
 		item: getOSItem('Spirit weed'),
-		aliases: ['grimy spirit weed'],
+		aliases: ['grimy spirit weed', 'spirit weed'],
 		level: 105,
 		xp: 25,
 		inputItems: new Bank({ 'Grimy spirit weed': 1 }),
