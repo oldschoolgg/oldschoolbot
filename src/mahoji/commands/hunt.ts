@@ -119,7 +119,7 @@ export const huntCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (creature?.name === 'Crystal impling') {
+		if (creature.name === 'Crystal impling') {
 			return crystalImplingCommand({
 				user,
 				quantity: options.quantity,
