@@ -279,6 +279,14 @@ export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 	usingStaminaPotion: boolean;
 }
 
+export interface CrystalImplingActivityTaskOptions extends ActivityTaskOptions {
+	type: 'CrystalImpling';
+	creatureName: string;
+	quantity: number;
+	usingHuntPotion: boolean;
+	usingStaminaPotion: boolean;
+}
+
 export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Alching';
 	itemID: number;
@@ -598,4 +606,5 @@ export type ActivityTaskData =
 	| FightCavesActivityTaskOptions
 	| ActivityTaskOptionsWithQuantity
 	| MinigameActivityTaskOptionsWithNoChanges
-	| CutLeapingFishActivityTaskOptions;
+	| CutLeapingFishActivityTaskOptions
+	| CrystalImplingActivityTaskOptions;

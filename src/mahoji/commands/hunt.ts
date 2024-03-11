@@ -15,6 +15,7 @@ import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { crystalImplingCommand } from '../lib/abstracted_commands/crystalImplingCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { userHasGracefulEquipped } from '../mahojiSettings';
 
@@ -116,6 +117,16 @@ export const huntCommand: OSBMahojiCommand = {
 					return `You don't have ${traps}x ${item.name}, hunter tools can be bought using the buy command.`;
 				}
 			}
+		}
+
+		if (creature?.name === 'Crystal impling') {
+			return crystalImplingCommand({
+				user,
+				quantity: options.quantity,
+				stamina_potions: options.stamina_potions,
+				hunter_potions: options.hunter_potion,
+				channelID: channelID.toString()
+			});
 		}
 
 		// Reduce time if user is experienced hunting the creature, every hour become 1% better to a cap of 10% or 20% if tracking technique.

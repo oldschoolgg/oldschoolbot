@@ -1,4 +1,4 @@
-import { Bank } from 'oldschooljs';
+import { Bank, Openables } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Creature, HunterTechniqueEnum } from '../../../types';
@@ -55,6 +55,18 @@ const butterflyNettingCreatures: Creature[] = [
 		catchTime: 5,
 		slope: 1.35,
 		intercept: 35
+	},
+	{
+		name: 'Crystal impling',
+		id: 37,
+		aliases: ['cimp', 'crystal imp', 'c imp', 'crystal impling'],
+		level: 90,
+		hunterXP: 280,
+		table: Openables.CrystalImpling.table,
+		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
+		catchTime: 600,
+		slope: 0,
+		intercept: 0
 	}
 ];
 

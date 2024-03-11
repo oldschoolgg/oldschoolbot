@@ -435,6 +435,10 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently hunting ${data.quantity}x ${creature!.name}. ${formattedDuration}`;
 		}
 
+		case 'CrystalImpling': {
+			return `${name} is currently hunting crystal implings. ${formattedDuration}`;
+		}
+
 		case 'Birdhouse': {
 			return `${name} is currently doing a bird house run. ${formattedDuration}`;
 		}

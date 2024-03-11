@@ -21,6 +21,7 @@ import {
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
+	CrystalImplingActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
 	DarkAltarOptions,
 	EnchantingActivityTaskOptions,
@@ -341,6 +342,15 @@ export const tripHandlers = {
 	[activity_type_enum.Hunter]: {
 		commandName: 'hunt',
 		args: (data: HunterActivityTaskOptions) => ({
+			name: data.creatureName,
+			quantity: data.quantity,
+			hunter_potion: data.usingHuntPotion,
+			stamina_potions: data.usingStaminaPotion
+		})
+	},
+	[activity_type_enum.CrystalImpling]: {
+		commandName: 'hunt',
+		args: (data: CrystalImplingActivityTaskOptions) => ({
 			name: data.creatureName,
 			quantity: data.quantity,
 			hunter_potion: data.usingHuntPotion,

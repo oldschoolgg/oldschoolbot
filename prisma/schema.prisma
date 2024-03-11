@@ -895,6 +895,7 @@ enum activity_type_enum {
   AgilityArena
   ChampionsChallenge
   AerialFishing
+  CrystalImpling
   DriftNet
   MahoganyHomes
   GnomeRestaurant
