@@ -66,6 +66,7 @@ import { zalcanoTask } from '../tasks/minions/minigames/zalcanoActivity';
 import { miningTask } from '../tasks/minions/miningActivity';
 import { monsterTask } from '../tasks/minions/monsterActivity';
 import { motherlodeMiningTask } from '../tasks/minions/motherlodeMineActivity';
+import { myNotesTask } from '../tasks/minions/myNotesActivity';
 import { nexTask } from '../tasks/minions/nexActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
 import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
@@ -181,7 +182,8 @@ export const tasks: MinionTask[] = [
 	specificQuestTask,
 	camdozaalMiningTask,
 	camdozaalSmithingTask,
-	camdozaalFishingTask
+	camdozaalFishingTask,
+	myNotesTask
 ];
 
 export async function processPendingActivities() {
