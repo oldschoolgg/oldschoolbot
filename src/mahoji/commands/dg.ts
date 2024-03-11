@@ -5,7 +5,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { setupParty } from '../../lib/party';
 import {
 	determineDgLevelForFloor,
-	dungBuyables,
+	dungCombinedBuyables,
 	isValidFloor,
 	requiredSkills
 } from '../../lib/skilling/skills/dung/dungData';
@@ -177,9 +177,9 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 }
 
 async function buyCommand(user: MUser, name: string, quantity?: number) {
-	const buyable = dungBuyables.find(i => stringMatches(name, i.item.name));
+	const buyable = dungCombinedBuyables.find(i => stringMatches(name, i.item.name));
 	if (!buyable) {
-		return `That isn't a buyable item. Here are the items you can buy: \n\n${dungBuyables
+		return `That isn't a buyable item. Here are the items you can buy: \n\n${dungCombinedBuyables
 			.map(i => `**${i.item.name}:** ${i.cost.toLocaleString()} tokens`)
 			.join('\n')}.`;
 	}
@@ -254,7 +254,7 @@ export const dgCommand: OSBMahojiCommand = {
 					name: 'item',
 					description: 'The item you want to buy.',
 					autocomplete: async value => {
-						return dungBuyables
+						return dungCombinedBuyables
 							.filter(i => (!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.item.name, value: i.item.name }));
 					},
