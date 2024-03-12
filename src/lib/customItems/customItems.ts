@@ -1711,7 +1711,8 @@ setCustomItem(
 		tradeable: true,
 		tradeable_on_ge: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true,
 		}
 	},
 	1_000_000
@@ -3581,7 +3582,8 @@ setCustomItem(
 		tradeable: true,
 		tradeable_on_ge: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1_000_000
@@ -4298,7 +4300,8 @@ setCustomItem(
 		tradeable: true,
 		tradeable_on_ge: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1_000_000
@@ -4831,7 +4834,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -4839,12 +4842,13 @@ setCustomItem(
 	'Baby yaga house',
 	'Herbi',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -6036,7 +6040,8 @@ setCustomItem(
 		tradeable: true,
 		tradeable_on_ge: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1_000_000
@@ -6339,16 +6344,19 @@ setCustomItem(
 	},
 	10_000
 );
+
 setCustomItem(
 	70_438,
 	'Crush',
 	'Herbi',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	1_000_000
 );
 
 setCustomItem(
@@ -8398,7 +8406,7 @@ setCustomItem(
 setCustomItem(
 	71_572,
 	'Skip',
-	'Coal',
+	'Herbi',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -9273,8 +9281,11 @@ setCustomItem(
 	'Mini mortimer',
 	'Herbi',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1_000_000
@@ -9285,9 +9296,10 @@ setCustomItem(
 	'Doopy',
 	'Herbi',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	1_000_000
@@ -9323,8 +9335,11 @@ setCustomItem(
 	'Casper',
 	'Herbi',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1_000_000
@@ -9422,6 +9437,8 @@ setCustomItem(
 	'Echo',
 	'Herbi',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -10149,14 +10166,16 @@ setCustomItem(
 setCustomItem(
 	72_044,
 	'Rudolph',
-	'Coal',
+	'Herbi',
 	{
+		tradeable: true,
+		tradeable_on_ge: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isDiscontinued: true
 		}
 	},
-	1
+	1_000_000
 );
 
 setCustomItem(
@@ -11183,7 +11202,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1
+	1_000_000
 );
 
 // 73_077 Moonlight mutator
@@ -11582,5 +11601,5 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1
+	1_000_000
 );
