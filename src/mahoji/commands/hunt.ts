@@ -172,13 +172,12 @@ export const huntCommand: OSBMahojiCommand = {
 			}
 		}
 
-		let duration = 0;
+		let duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
 
 		if (crystalImpling) {
 			duration = Math.floor(quantity * Time.Minute);
-		} else {
-			duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
 		}
+
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
