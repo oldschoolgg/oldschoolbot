@@ -61,11 +61,24 @@ export const hunterTask: MinionTask = {
 			crystalImpling = true;
 		}
 
+		let graceful = false;
+		if (userHasGracefulEquipped(user)) {
+			graceful = true;
+		}
+
 		let [successfulQuantity, xpReceived] = calcLootXPHunting(
 			Math.min(Math.floor(currentLevel + (usingHuntPotion ? 2 : 0)), MAX_LEVEL),
 			creature,
-			quantity
+			quantity,
+			usingStaminaPotion,
+			graceful
 		);
+
+		if (crystalImpling) {
+			const maxImplingsPer60 = 21;
+			const maxImplings = Math.round((maxImplingsPer60 / 60) * duration) + 1;
+			successfulQuantity = Math.min(successfulQuantity, maxImplings);
+		}
 
 		if (creature.wildy) {
 			let riskPkChance = creature.id === BLACK_CHIN_ID ? 100 : 200;

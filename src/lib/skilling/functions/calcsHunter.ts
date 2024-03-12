@@ -6,12 +6,26 @@ import { Creature } from '../types';
 export function calcLootXPHunting(
 	currentLevel: number,
 	creature: Creature,
-	quantity: number
+	quantity: number,
+	usingStaminaPotion: boolean,
+	graceful: boolean
 ): [number, number, number] {
 	let xpReceived = 0;
 	let successful = 0;
 
-	const chanceOfSuccess = creature.slope * currentLevel + creature.intercept;
+	let chanceOfSuccess = creature.slope * currentLevel + creature.intercept;
+
+	if (creature.name === 'Crystal impling') {
+		chanceOfSuccess = 20;
+		if (graceful) {
+			chanceOfSuccess *= 1.05;
+		}
+		if (usingStaminaPotion) {
+			chanceOfSuccess *= 1.2;
+		}
+
+		chanceOfSuccess = Math.round(chanceOfSuccess);
+	}
 
 	for (let i = 0; i < quantity; i++) {
 		if (!percentChance(chanceOfSuccess)) {
