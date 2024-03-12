@@ -22,7 +22,7 @@ export const crystalImplingTask: MinionTask = {
 		let creatureTable = creature.table;
 		let successfulQuantity = 0;
 
-		const maxImplingsPer60 = 19;
+		const maxImplingsPer60 = 21;
 		const maxImplings = Math.round((maxImplingsPer60 / 60) * duration) + 1;
 
 		let catchChance = 20;
