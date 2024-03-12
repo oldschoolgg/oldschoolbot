@@ -748,6 +748,7 @@ model Tame {
   max_total_loot     Json        @default("{}") @db.Json
   fed_items          Json        @default("{}") @db.Json
   species_variant    Int         @default(1)
+  hidden             Boolean     @default(false)
 
   equipped_primary Int?
   equipped_armor   Int?

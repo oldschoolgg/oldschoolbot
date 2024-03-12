@@ -361,10 +361,11 @@ function sortTames(tameA: Tame, tameB: Tame): number {
 	// Fallback to sorting by max_combat_level if no last_activity_date for both
 	return getMainTameLevel(tameB) - getMainTameLevel(tameA);
 }
-export async function tameImage(user: MUser): CommandResponse {
+export async function tameImage(user: MUser, show_hidden?: boolean): CommandResponse {
 	const userTames = await prisma.tame.findMany({
 		where: {
-			user_id: user.id
+			user_id: user.id,
+			hidden: show_hidden ? undefined : false
 		},
 		orderBy: {
 			last_activity_date: 'desc'
@@ -1410,6 +1411,22 @@ async function selectCommand(user: MUser, tameID: number) {
 	return `You selected your ${tameName(toSelect)}.`;
 }
 
+async function hideTameCommand(user: MUser, tameID: number, hidden?: boolean) {
+	const tame = await prisma.tame.findFirst({ where: { user_id: user.id, id: tameID } });
+	if (!tame) {
+		return "Couldn't find that tame.";
+	}
+	const newStatus = hidden === undefined ? !tame.hidden : hidden;
+	await prisma.tame.update({
+		where: { id: tame.id },
+		data: {
+			hidden: newStatus
+		}
+	});
+	const context = newStatus ? 'hidden' : 'unhidden';
+	return `We have now **${context}** your tame, ${tame.nickname}.`;
+}
+
 async function viewCommand(user: MUser, tameID: number): CommandResponse {
 	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
 	const tame = tames.find(t => t.id === tameID);
@@ -1705,7 +1722,7 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 export type TamesCommandOptions = CommandRunOptions<{
 	set_name?: { name: string };
 	cancel?: {};
-	list?: {};
+	list?: { hidden?: boolean };
 	merge?: { tame: string };
 	feed?: { items: string };
 	kill?: { name: string };
@@ -1730,6 +1747,7 @@ export type TamesCommandOptions = CommandRunOptions<{
 	set_custom_image?: {
 		image: string;
 	};
+	hide?: { tame: string; hidden?: boolean };
 }>;
 export const tamesCommand: OSBMahojiCommand = {
 	name: 'tames',
@@ -1747,7 +1765,15 @@ export const tamesCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'list',
-			description: 'List your tames.'
+			description: 'List your tames.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'hidden',
+					description: 'Include hidden tames?',
+					required: false
+				}
+			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -2002,19 +2028,40 @@ export const tamesCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'hide',
+			description: 'Hide a tame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'tame',
+					description: 'The tame you want to hide.',
+					required: true,
+					autocomplete: tameAutocomplete
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'hidden',
+					description: 'Set hidden value.',
+					required: false
+				}
+			]
 		}
 	],
 	run: async ({ options, userID, channelID, interaction }: TamesCommandOptions) => {
 		const user = await mUserFetch(userID);
 		if (options.set_name) return setNameCommand(user, options.set_name.name);
 		if (options.cancel) return cancelCommand(user);
-		if (options.list) return tameImage(user);
+		if (options.list) return tameImage(user, options.list.hidden);
 		if (options.merge) return mergeCommand(user, interaction, Number(options.merge.tame));
 		if (options.feed) return feedCommand(interaction, user, options.feed.items);
 		if (options.kill) return killCommand(user, channelID, options.kill.name);
 		if (options.collect) return collectCommand(user, channelID, options.collect.name);
 		if (options.select) return selectCommand(user, Number(options.select.tame));
 		if (options.view) return viewCommand(user, Number(options.view.tame));
+		if (options.hide) return hideTameCommand(user, Number(options.hide.tame), options.hide.hidden);
 		if (options.status) return statusCommand(user);
 		if (options.equip) return tameEquipCommand(user, options.equip.item);
 		if (options.unequip) return tameUnequipCommand(user, options.unequip.item);
