@@ -15,7 +15,6 @@ import { formatDuration, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { crystalImplingCommand } from '../lib/abstracted_commands/crystalImplingCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { userHasGracefulEquipped } from '../mahojiSettings';
 
@@ -119,14 +118,10 @@ export const huntCommand: OSBMahojiCommand = {
 			}
 		}
 
+		let crystalImpling = false;
+
 		if (creature.name === 'Crystal impling') {
-			return crystalImplingCommand({
-				user,
-				quantity: options.quantity,
-				stamina_potions: options.stamina_potions,
-				hunter_potions: options.hunter_potion,
-				channelID: channelID.toString()
-			});
+			crystalImpling = true;
 		}
 
 		// Reduce time if user is experienced hunting the creature, every hour become 1% better to a cap of 10% or 20% if tracking technique.
@@ -169,7 +164,13 @@ export const huntCommand: OSBMahojiCommand = {
 		const maxTripLength = calcMaxTripLength(user, 'Hunter');
 
 		let { quantity } = options;
-		if (!quantity) quantity = Math.floor(maxTripLength / ((catchTime * Time.Second) / traps));
+		if (!quantity) {
+			if (crystalImpling) {
+				quantity = Math.floor(maxTripLength / Time.Minute);
+			} else {
+				quantity = Math.floor(maxTripLength / ((catchTime * Time.Second) / traps));
+			}
+		}
 
 		let duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
 
@@ -267,9 +268,9 @@ export const huntCommand: OSBMahojiCommand = {
 			type: 'Hunter'
 		});
 
-		let response = `${user.minionName} is now ${creature.huntTechnique} ${quantity}x ${
-			creature.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`} ${
+			crystalImpling ? '' : `${quantity}x `
+		}${creature.name}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

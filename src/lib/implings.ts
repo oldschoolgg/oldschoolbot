@@ -117,8 +117,7 @@ export function handlePassiveImplings(user: MUser, data: ActivityTaskData) {
 			activity_type_enum.Construction,
 			activity_type_enum.TombsOfAmascut,
 			activity_type_enum.DriftNet,
-			activity_type_enum.UnderwaterAgilityThieving,
-			activity_type_enum.CrystalImpling
+			activity_type_enum.UnderwaterAgilityThieving
 		].includes(data.type)
 	)
 		return null;

@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 import {
 	ActivityTaskData,
 	AgilityActivityTaskOptions,
+	HunterActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	PickpocketActivityTaskOptions
 } from '../types/minions';
@@ -34,6 +35,12 @@ const WorldLocationsChecker = [
 			if (
 				activity.type === 'Agility' &&
 				(activity as AgilityActivityTaskOptions).courseID === 'Prifddinas Rooftop Course'
+			) {
+				return true;
+			}
+			if (
+				activity.type === 'Hunter' &&
+				(activity as HunterActivityTaskOptions).creatureName === 'Crystal impling'
 			) {
 				return true;
 			}

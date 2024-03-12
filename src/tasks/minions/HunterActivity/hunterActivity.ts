@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { randInt, Time } from 'e';
+import { percentChance, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
@@ -13,7 +13,9 @@ import { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
+import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
 
 const riskDeathNumbers = [
@@ -34,7 +36,8 @@ const riskDeathNumbers = [
 export const hunterTask: MinionTask = {
 	type: 'Hunter',
 	async run(data: HunterActivityTaskOptions) {
-		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration } = data;
+		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } =
+			data;
 		const user = await mUserFetch(userID);
 		const userBank = user.bank;
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
@@ -52,6 +55,11 @@ export const hunterTask: MinionTask = {
 		);
 
 		if (!creature) return;
+
+		let crystalImpling = false;
+		if (creature.name === 'Crystal impling') {
+			crystalImpling = true;
+		}
 
 		let [successfulQuantity, xpReceived] = calcLootXPHunting(
 			Math.min(Math.floor(currentLevel + (usingHuntPotion ? 2 : 0)), MAX_LEVEL),
@@ -136,6 +144,32 @@ export const hunterTask: MinionTask = {
 				});
 			}
 		}
+		if (crystalImpling) {
+			let successfulQuantity = 0;
+
+			const maxImplingsPer60 = 21;
+			const maxImplings = Math.round((maxImplingsPer60 / 60) * duration) + 1;
+
+			let catchChance = 20;
+
+			if (userHasGracefulEquipped(user)) {
+				catchChance *= 1.05;
+			}
+			if (usingStaminaPotion) {
+				catchChance *= 1.2;
+			}
+
+			catchChance = Math.round(catchChance);
+
+			for (let i = 0; i < quantity; i++) {
+				if (percentChance(catchChance)) {
+					successfulQuantity++;
+				}
+			}
+
+			successfulQuantity = Math.min(successfulQuantity, maxImplings);
+		}
+
 		const loot = new Bank();
 		for (let i = 0; i < successfulQuantity - pkedQuantity; i++) {
 			loot.add(creatureTable.roll());
@@ -145,7 +179,7 @@ export const hunterTask: MinionTask = {
 		}
 
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
-		await transactItems({
+		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
@@ -162,7 +196,7 @@ export const hunterTask: MinionTask = {
 			quantity - successfulQuantity
 		}x catches. ${xpStr}`;
 
-		str += `\n\nYou received: ${loot}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
+		str += `\n\nYou received: ${itemsAdded}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
 
 		if (gotPked && !died) {
 			str += `\n${pkStr}`;
@@ -172,25 +206,35 @@ export const hunterTask: MinionTask = {
 			str += `\n${diedStr}`;
 		}
 
-		if (loot.amount('Baby chinchompa') > 0 || loot.amount('Herbi') > 0) {
+		if (itemsAdded.amount('Baby chinchompa') > 0 || itemsAdded.amount('Herbi') > 0) {
 			str += "\n\n**You have a funny feeling like you're being followed....**";
 			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.usernameOrMention}'s** minion, ${user.minionName}, just received a ${
-					loot.amount('Baby chinchompa') > 0
+					itemsAdded.amount('Baby chinchompa') > 0
 						? '**Baby chinchompa** <:Baby_chinchompa_red:324127375539306497>'
 						: '**Herbi** <:Herbi:357773175318249472>'
 				} while hunting a ${creature.name}, their Hunter level is ${currentLevel}!`
 			);
 		}
 
-		updateBankSetting('hunter_loot', loot);
+		const image =
+			itemsAdded.length === 0
+				? undefined
+				: await makeBankImage({
+						bank: itemsAdded,
+						title: `Loot From ${successfulQuantity} ${creature.name}:`,
+						user,
+						previousCL
+				  });
+
+		updateBankSetting('hunter_loot', itemsAdded);
 		await trackLoot({
 			id: creature.name,
 			changeType: 'loot',
 			duration,
 			kc: quantity,
-			totalLoot: loot,
+			totalLoot: itemsAdded,
 			type: 'Skilling',
 			users: [
 				{
@@ -200,7 +244,9 @@ export const hunterTask: MinionTask = {
 				}
 			]
 		});
-
+		if (crystalImpling) {
+			return handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded);
+		}
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

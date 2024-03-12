@@ -26,7 +26,6 @@ import { groupoMonsterTask } from '../tasks/minions/groupMonsterActivity';
 import { herbloreTask } from '../tasks/minions/herbloreActivity';
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
-import { crystalImplingTask } from '../tasks/minions/HunterActivity/crystalImplingActivity';
 import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
 import { hunterTask } from '../tasks/minions/HunterActivity/hunterActivity';
 import { mageArenaTwoTask } from '../tasks/minions/mageArena2Activity';
@@ -182,8 +181,7 @@ export const tasks: MinionTask[] = [
 	specificQuestTask,
 	camdozaalMiningTask,
 	camdozaalSmithingTask,
-	camdozaalFishingTask,
-	crystalImplingTask
+	camdozaalFishingTask
 ];
 
 export async function processPendingActivities() {
