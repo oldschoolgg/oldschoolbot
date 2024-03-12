@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { percentChance, randInt, Time } from 'e';
+import { randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
@@ -156,31 +156,6 @@ export const hunterTask: MinionTask = {
 					duration
 				});
 			}
-		}
-		if (crystalImpling) {
-			let successfulQuantity = 0;
-
-			const maxImplingsPer60 = 21;
-			const maxImplings = Math.round((maxImplingsPer60 / 60) * duration) + 1;
-
-			let catchChance = 20;
-
-			if (userHasGracefulEquipped(user)) {
-				catchChance *= 1.05;
-			}
-			if (usingStaminaPotion) {
-				catchChance *= 1.2;
-			}
-
-			catchChance = Math.round(catchChance);
-
-			for (let i = 0; i < quantity; i++) {
-				if (percentChance(catchChance)) {
-					successfulQuantity++;
-				}
-			}
-
-			successfulQuantity = Math.min(successfulQuantity, maxImplings);
 		}
 
 		const loot = new Bank();
