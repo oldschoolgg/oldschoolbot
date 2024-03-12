@@ -128,7 +128,7 @@ export async function handleNewCLItems({
 				resultLimit: 100_000,
 				method: 'raw_cl'
 			})
-		).length;
+		).filter(u => u.qty === finishedCL.items.length).length;
 
 		const placeStr = nthUser > 100 ? '' : ` They are the ${formatOrdinal(nthUser)} user to finish this CL.`;
 

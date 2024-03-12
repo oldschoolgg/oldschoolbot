@@ -51,7 +51,7 @@ export const wysonSeedsNest = new LootTable()
 	.add('Celastrus seed', 1, 1)
 	.add('Redwood tree seed', 1, 1);
 
-const ringNests = new LootTable()
+export const ringNests = new LootTable()
 	.add('Sapphire ring', 1, 40)
 	.add('Gold ring', 1, 35)
 	.add('Emerald ring', 1, 15)

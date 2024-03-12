@@ -24,7 +24,8 @@ export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB' as 'BSO' | 'OSB';
 
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
-	Notifications: production ? '469523207691436042' : '1042760447830536212',
+	Notifications:
+		DISCORD_SETTINGS.Channels?.Notifications ?? (production ? '469523207691436042' : '1042760447830536212'),
 	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '682996313209831435',
 	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
 	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
@@ -508,6 +509,9 @@ export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 
 export const UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL = ['agility', 'thieving', 'agility+thieving'] as const;
 export type UnderwaterAgilityThievingTrainingSkill = (typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL)[number];
+
+export const TWITCHERS_GLOVES = ['egg', 'ring', 'seed', 'clue'] as const;
+export type TwitcherGloves = (typeof TWITCHERS_GLOVES)[number];
 
 export const busyImmuneCommands = ['admin', 'rp'];
 export const usernameCache = new Map<string, string>();

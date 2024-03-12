@@ -49,7 +49,7 @@ export async function harvestCommand({
 			', '
 		)}. *Don't include numbers, this command harvests all crops available of the specified patch type.*`;
 	}
-	const { patchesDetailed } = await getFarmingInfo(user.id);
+	const { patchesDetailed, patches } = await getFarmingInfo(user.id);
 	const patch = patchesDetailed.find(i => i.patchName === seedType)!;
 	if (patch.ready === null) return 'You have nothing planted in those patches.';
 
@@ -106,9 +106,9 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 
 	await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 		plantsName: patch.lastPlanted,
-		patchType: patch,
+		patchType: patches[patch.patchName],
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		upgradeType,
 		duration,
 		quantity: patch.lastQuantity,
@@ -164,7 +164,7 @@ export async function farmingPlantCommand({
 		return `${user.minionName} needs ${plant.level} Farming to plant ${plant.name}.`;
 	}
 
-	const { patchesDetailed } = await getFarmingInfo(user.id);
+	const { patchesDetailed, patches } = await getFarmingInfo(user.id);
 	const patchType = patchesDetailed.find(i => i.patchName === plant.seedType)!;
 
 	const timePerPatchTravel = Time.Second * plant.timePerPatchTravel;
@@ -302,7 +302,7 @@ export async function farmingPlantCommand({
 
 	await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 		plantsName: plant.name,
-		patchType,
+		patchType: patches[plant.seedType],
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,

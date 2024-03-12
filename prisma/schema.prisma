@@ -491,6 +491,7 @@ enum XpGainSource {
   CamdozaalMining
   CamdozaalSmithing
   CamdozaalFishing
+  ForestryEvents
 }
 
 model XPGain {
@@ -757,6 +758,8 @@ model UserStats {
   last_tears_of_guthix_timestamp BigInt @default(0)
 
   herbs_cleaned_while_farming_bank Json @default("{}") @db.Json
+
+  forestry_event_completions_bank Json @default("{}") @db.Json
 
   @@map("user_stats")
 }
@@ -1109,4 +1112,12 @@ model GiftBox {
   items Json @default("{}") @db.Json
 
   @@map("gift_box")
+}
+
+model ItemMetadata {
+  id Int @id
+
+  name String?
+
+  @@map("item_metadata")
 }

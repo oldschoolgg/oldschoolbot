@@ -16,6 +16,7 @@
 		"@typescript-eslint/no-base-to-string": "error",
 		"eqeqeq": "error",
 		"no-shadow": "warn",
-		"@typescript-eslint/no-floating-promises": "warn"
+		"@typescript-eslint/no-floating-promises": "warn",
+		"@typescript-eslint/ban-ts-comment": "off"
 	}
 }
