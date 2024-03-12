@@ -247,6 +247,6 @@ export const hunterTask: MinionTask = {
 		if (crystalImpling) {
 			return handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded);
 		}
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
 	}
 };
