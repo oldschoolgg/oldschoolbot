@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`BSO Collection Log Groups/Categories 1`] = `
+exports[`BSO Collection Log Groups/Categories`] = `
 "Abyssal Sire (9)
 Achievement Diary (48)
 Aerial Fishing (9)
@@ -43,7 +43,7 @@ Cooking (28)
 Corporeal Beast (8)
 Crafting (175)
 Crazy archaeologist (3)
-Creatables (731)
+Creatables (730)
 Creature Creation (7)
 Creature Creation (7)
 Custom Pets (43)
