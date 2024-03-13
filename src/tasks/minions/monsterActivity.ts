@@ -84,12 +84,12 @@ async function bonecrusherEffect(user: MUser, loot: Bank, duration: number, mess
 		multiplier: false
 	});
 	messages.push(
-		`${xpStr} Prayer XP${
+		`${xpStr} Prayer XP ${
 			hasSuperior
-				? `(${inventionBoosts.superiorBonecrusher.xpBoostPercent}% more from Superior bonecrusher, ${
-						boostMsg ? `, ${boostMsg}` : ''
-				  })`
-				: ''
+				? `+${inventionBoosts.superiorBonecrusher.xpBoostPercent}% more from Superior bonecrusher${
+						boostMsg ? ` (${boostMsg})` : ''
+				  }`
+				: ' from Gorajan bonecrusher'
 		}`
 	);
 }

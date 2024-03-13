@@ -215,7 +215,8 @@ export const inventionCommand: OSBMahojiCommand = {
 			return str;
 		}
 		if (options.materials) {
-			return { content: `You own:\n${user.materialsOwned()}`, ephemeral: true };
+			const materialsOwned = user.materialsOwned().toString().split(', ').join('\n');
+			return { content: `You own:\n${materialsOwned}`, ephemeral: true };
 		}
 
 		if (options.group) {
