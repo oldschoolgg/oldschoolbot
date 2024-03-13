@@ -316,13 +316,15 @@ const tripFinishEffects: TripFinishEffect[] = [
 				dropratePerMinute = Math.ceil(dropratePerMinute / 3);
 			}
 			const minutes = Math.floor(data.duration / Time.Minute);
+			const loot = new Bank();
 			for (let i = 0; i < minutes; i++) {
 				if (roll(dropratePerMinute)) {
-					const loot = new Bank().add('Easter crate (s5)');
-					await user.addItemsToBank({ items: loot, collectionLog: true });
-					messages.push(bold(`You found ${loot}!`));
-					break;
+					loot.add('Easter crate (s5)');
 				}
+			}
+			if (loot.length > 0) {
+				await user.addItemsToBank({ items: loot, collectionLog: true });
+				messages.push(bold(`You found ${loot}!`));
 			}
 		}
 	},
