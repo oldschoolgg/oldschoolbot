@@ -118,11 +118,7 @@ export const huntCommand: OSBMahojiCommand = {
 			}
 		}
 
-		let crystalImpling = false;
-
-		if (creature.name === 'Crystal impling') {
-			crystalImpling = true;
-		}
+		let crystalImpling = creature.name === 'Crystal impling';
 
 		// Reduce time if user is experienced hunting the creature, every hour become 1% better to a cap of 10% or 20% if tracking technique.
 		let [percentReduced, catchTime] = [

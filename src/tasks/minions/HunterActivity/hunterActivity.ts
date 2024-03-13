@@ -55,10 +55,7 @@ export const hunterTask: MinionTask = {
 
 		if (!creature) return;
 
-		let crystalImpling = false;
-		if (creature.name === 'Crystal impling') {
-			crystalImpling = true;
-		}
+		let crystalImpling = creature.name === 'Crystal impling';
 
 		let graceful = false;
 		if (userHasGracefulEquipped(user)) {
@@ -74,9 +71,8 @@ export const hunterTask: MinionTask = {
 		);
 
 		if (crystalImpling) {
-			const maxImplingsPer60 = 21;
-			const maxImplings = Math.round((maxImplingsPer60 / 60) * duration) + 1;
-			successfulQuantity = Math.min(successfulQuantity, maxImplings);
+			// Limit it to a max of 22 crystal implings per hour
+			successfulQuantity = Math.min(successfulQuantity, Math.round((21 / 60) * duration) + 1);
 		}
 
 		if (creature.wildy) {
