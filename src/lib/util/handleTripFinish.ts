@@ -311,7 +311,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 				}
 			}
 			dropratePerMinute = Math.ceil(dropratePerMinute / 3);
-			dropratePerMinute = Math.ceil(dropratePerMinute / 3);
+			dropratePerMinute = Math.ceil(dropratePerMinute / 5.5);
 			if (user.isIronman) {
 				dropratePerMinute = Math.ceil(dropratePerMinute / 3);
 			}
