@@ -133,5 +133,25 @@ export const keyCrates: Crate[] = [
 				1,
 				89
 			)
+	},
+	{
+		item: getOSItem('Easter crate (s5)'),
+		key: getOSItem('Easter crate key (s5)'),
+		keyCostGP: 10_000_000,
+		table: new LootTable()
+			.tertiary(5000, 'Golden bunny ears')
+			.tertiary(750, new LootTable().add('Cute bunny cape').add('Bunny plushie'))
+			.add(
+				new LootTable()
+					.add('Easter jumper')
+					.add('Easter-egg delight')
+					.add('Easter-egg salad')
+					.add('Easter tunic')
+					.add('Easter breeches')
+					.add('Easter shoes'),
+				1,
+				1
+			)
+			.add(new LootTable().add('Carrot').add('Egg').add('Easter egg'), [2, 3], 99)
 	}
 ];
