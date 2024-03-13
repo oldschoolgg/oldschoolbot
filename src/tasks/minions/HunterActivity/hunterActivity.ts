@@ -13,7 +13,6 @@ import { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
-import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
@@ -167,7 +166,7 @@ export const hunterTask: MinionTask = {
 		}
 
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
-		const { previousCL, itemsAdded } = await transactItems({
+		await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
@@ -184,11 +183,7 @@ export const hunterTask: MinionTask = {
 				: `${quantity}x times, due to clever creatures you missed out on ${
 						quantity - successfulQuantity
 				  }x catches. `
-		}${xpStr}`;
-
-		if (!crystalImpling) {
-			str += `\n\nYou received: ${itemsAdded}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
-		}
+		}${xpStr}\n\nYou received: ${loot}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
 
 		if (gotPked && !died) {
 			str += `\n${pkStr}`;
@@ -198,35 +193,25 @@ export const hunterTask: MinionTask = {
 			str += `\n${diedStr}`;
 		}
 
-		if (itemsAdded.amount('Baby chinchompa') > 0 || itemsAdded.amount('Herbi') > 0) {
+		if (loot.amount('Baby chinchompa') > 0 || loot.amount('Herbi') > 0) {
 			str += "\n\n**You have a funny feeling like you're being followed....**";
 			globalClient.emit(
 				Events.ServerNotification,
 				`**${user.usernameOrMention}'s** minion, ${user.minionName}, just received a ${
-					itemsAdded.amount('Baby chinchompa') > 0
+					loot.amount('Baby chinchompa') > 0
 						? '**Baby chinchompa** <:Baby_chinchompa_red:324127375539306497>'
 						: '**Herbi** <:Herbi:357773175318249472>'
 				} while hunting a ${creature.name}, their Hunter level is ${currentLevel}!`
 			);
 		}
 
-		const image =
-			itemsAdded.length === 0
-				? undefined
-				: await makeBankImage({
-						bank: itemsAdded,
-						title: `Loot From ${successfulQuantity} ${creature.name}:`,
-						user,
-						previousCL
-				  });
-
-		updateBankSetting('hunter_loot', itemsAdded);
+		updateBankSetting('hunter_loot', loot);
 		await trackLoot({
 			id: creature.name,
 			changeType: 'loot',
 			duration,
 			kc: quantity,
-			totalLoot: itemsAdded,
+			totalLoot: loot,
 			type: 'Skilling',
 			users: [
 				{
@@ -236,9 +221,7 @@ export const hunterTask: MinionTask = {
 				}
 			]
 		});
-		if (crystalImpling) {
-			return handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded);
-		}
-		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
+
+		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };
