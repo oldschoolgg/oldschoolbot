@@ -91,7 +91,7 @@ export class MaterialBank {
 			res.push(`${toTitleCase(type)}: ${qty.toLocaleString()}`);
 		}
 
-		return `${res.join('\n')}`;
+		return res.join(', ');
 	}
 
 	public values() {
