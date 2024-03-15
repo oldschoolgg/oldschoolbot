@@ -60,11 +60,11 @@ const butterflyNettingCreatures: Creature[] = [
 		name: 'Crystal impling',
 		id: 37,
 		aliases: ['cimp', 'crystal imp', 'c imp', 'crystal impling'],
-		level: 90,
+		level: 80,
 		hunterXP: 280,
 		table: new LootTable().every('Crystal impling jar'),
 		huntTechnique: HunterTechniqueEnum.ButterflyNetting,
-		catchTime: 600,
+		catchTime: 180,
 		slope: 0,
 		intercept: 0
 	}

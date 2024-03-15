@@ -62,12 +62,15 @@ export const hunterTask: MinionTask = {
 			graceful = true;
 		}
 
+		const experienceScore = await user.getCreatureScore(creature.id);
+
 		let [successfulQuantity, xpReceived] = calcLootXPHunting(
 			Math.min(Math.floor(currentLevel + (usingHuntPotion ? 2 : 0)), MAX_LEVEL),
 			creature,
 			quantity,
 			usingStaminaPotion,
-			graceful
+			graceful,
+			experienceScore
 		);
 
 		if (crystalImpling) {

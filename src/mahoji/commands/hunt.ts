@@ -6,12 +6,13 @@ import { Bank } from 'oldschooljs';
 import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../lib/lootTrack';
+import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
 import { Peak } from '../../lib/tickers';
 import { HunterActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID } from '../../lib/util';
+import { formatDuration, hasSkillReqs, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -120,6 +121,16 @@ export const huntCommand: OSBMahojiCommand = {
 
 		let crystalImpling = creature.name === 'Crystal impling';
 
+		if (crystalImpling) {
+			const [hasReqs, reason] = hasSkillReqs(user, soteSkillRequirements);
+			if (!hasReqs) {
+				return `To hunt ${creature.name}, you need: ${reason}.`;
+			}
+			if (user.QP < 150) {
+				return `To hunt ${creature.name}, you need 150 QP.`;
+			}
+		}
+
 		// Reduce time if user is experienced hunting the creature, every hour become 1% better to a cap of 10% or 20% if tracking technique.
 		let [percentReduced, catchTime] = [
 			Math.min(
@@ -202,7 +213,7 @@ export const huntCommand: OSBMahojiCommand = {
 		if (usingStaminaPotion) {
 			if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID || crystalImpling) {
 				let staminaPotionQuantity =
-					creature.id === HERBIBOAR_ID
+					creature.id === HERBIBOAR_ID || crystalImpling
 						? Math.round(duration / (9 * Time.Minute))
 						: Math.round(duration / (18 * Time.Minute));
 
@@ -269,7 +280,7 @@ export const huntCommand: OSBMahojiCommand = {
 		});
 
 		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`} ${
-			crystalImpling ? '' : `${quantity}x `
+			crystalImpling ? '' : ` ${quantity}x `
 		}${creature.name}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (boosts.length > 0) {
