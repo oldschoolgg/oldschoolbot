@@ -3,7 +3,7 @@ import { formatOrdinal } from '@oldschoolgg/toolkit';
 
 import { NEX_ID } from '../../lib/constants';
 import { trackLoot } from '../../lib/lootTrack';
-import { handleNexKills } from '../../lib/simulation/nex';
+import { handleNexKills, NexContext } from '../../lib/simulation/nex';
 import { NexTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -17,11 +17,34 @@ export const nexTask: MinionTask = {
 		const allMUsers = await Promise.all(users.map(id => mUserFetch(id)));
 
 		const survivedQuantity = wipedKill ? wipedKill - 1 : quantity;
-		const teamResult = userDetails.map(u => ({
+		let teamResult: NexContext['team'] = userDetails.map(u => ({
 			id: u[0],
 			contribution: u[1],
 			deaths: u[2]
 		}));
+
+		if (allMUsers.length === 1) {
+			teamResult = teamResult.concat(
+				{
+					id: '2',
+					contribution: teamResult[0].contribution,
+					deaths: [],
+					ghost: true
+				},
+				{
+					id: '3',
+					contribution: teamResult[0].contribution,
+					deaths: [],
+					ghost: true
+				},
+				{
+					id: '4',
+					contribution: teamResult[0].contribution,
+					deaths: [],
+					ghost: true
+				}
+			);
+		}
 
 		const loot = handleNexKills({
 			quantity: survivedQuantity,

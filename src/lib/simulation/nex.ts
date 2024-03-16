@@ -123,9 +123,9 @@ interface TeamMember {
 	totalDefensivePercent: number;
 }
 
-interface NexContext {
+export interface NexContext {
 	quantity: number;
-	team: { id: string; contribution: number; deaths: number[] }[];
+	team: { id: string; contribution: number; deaths: number[]; ghost?: true }[];
 }
 
 export const purpleNexItems = resolveItems([
@@ -166,6 +166,11 @@ export function handleNexKills({ quantity, team }: NexContext) {
 		}
 	}
 
+	for (const member of team) {
+		if (member.ghost) {
+			teamLoot.map.delete(member.id);
+		}
+	}
 	return teamLoot;
 }
 
