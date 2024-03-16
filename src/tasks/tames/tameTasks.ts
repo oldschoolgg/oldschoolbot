@@ -308,7 +308,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				actualOpenQuantityWithBonus += randInt(1, 3);
 			}
 
-			if (clueTier.name === 'Master') {
+			if (clueTier.name === 'Master' && !user.bitfield.includes(BitField.DisabledTameClueOpening)) {
 				const hasDivineRing = mTame.hasEquipped('Divine ring');
 				const percentChanceOfGMC = hasDivineRing ? 3.5 : 1.5;
 				for (let i = 0; i < activityData.quantity; i++) {
