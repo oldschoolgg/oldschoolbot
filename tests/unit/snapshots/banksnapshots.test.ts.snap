@@ -22696,6 +22696,108 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "26807": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Abyssal green dye (using Abyssal blue dye)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "26809": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "26807": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Abyssal green dye (using Abyssal red dye)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "26811": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "26809": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Abyssal blue dye (using Abyssal green dye)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "26807": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "26809": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Abyssal blue dye (using Abyssal red dye)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "26811": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "26811": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Abyssal red dye (using Abyssal green dye)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "26807": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "26811": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Abyssal red dye (using Abyssal blue dye)",
+    "noCl": true,
+    "outputItems": Bank {
+      "bank": {
+        "26809": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "25442": 1,
         "25457": 1,
       },
@@ -22841,7 +22943,7 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Revert Elidinis' ward (f))",
+    "name": "Revert Elidinis' ward (f)",
     "noCl": true,
     "outputItems": Bank {
       "bank": {

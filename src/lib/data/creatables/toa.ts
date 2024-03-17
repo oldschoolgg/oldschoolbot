@@ -34,7 +34,7 @@ export const toaCreatables: Createable[] = [
 		}
 	},
 	{
-		name: "Revert Elidinis' ward (f))",
+		name: "Revert Elidinis' ward (f)",
 		inputItems: new Bank({ "Elidinis' ward (f)": 1 }),
 		outputItems: new Bank({
 			"Elidinis' ward": 1,
