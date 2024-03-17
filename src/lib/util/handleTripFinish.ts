@@ -1,7 +1,7 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, bold, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { notEmpty, randArrItem, randInt, reduceNumByPercent, roll, shuffleArr, Time } from 'e';
+import { notEmpty, randArrItem, randInt, roll, shuffleArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -42,6 +42,7 @@ import {
 	makeOpenSeedPackButton,
 	makeRepeatTripButton
 } from './globalInteractions';
+import { handleCrateSpawns } from './handleCrateSpawns';
 import itemID from './itemID';
 import { logError } from './logError';
 import { updateBankSetting } from './updateBankSetting';
@@ -302,30 +303,9 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Crate Spawns',
 		fn: async ({ data, messages, user }) => {
-			const accountAge = user.accountAgeInDays();
-			let dropratePerMinute = 50 * 60;
-			if (accountAge) {
-				if (accountAge < 31) return;
-				if (user.isIronman) {
-					dropratePerMinute = reduceNumByPercent(dropratePerMinute, 15);
-				}
-			}
-			dropratePerMinute = Math.ceil(dropratePerMinute / 3);
-			dropratePerMinute = Math.ceil(dropratePerMinute / 5.5);
-			dropratePerMinute = Math.ceil(dropratePerMinute / 2);
-			if (user.isIronman) {
-				dropratePerMinute = Math.ceil(dropratePerMinute / 3);
-			}
-			const minutes = Math.floor(data.duration / Time.Minute);
-			const loot = new Bank();
-			for (let i = 0; i < minutes; i++) {
-				if (roll(dropratePerMinute)) {
-					loot.add('Easter crate (s5)');
-				}
-			}
-			if (loot.length > 0) {
-				await user.addItemsToBank({ items: loot, collectionLog: true });
-				messages.push(bold(`You found ${loot}!`));
+			const crateRes = await handleCrateSpawns(user, data.duration);
+			if (crateRes !== null) {
+				messages.push(crateRes);
 			}
 		}
 	},
