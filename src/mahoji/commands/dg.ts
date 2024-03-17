@@ -179,9 +179,7 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 async function buyCommand(user: MUser, name: string, quantity?: number) {
 	const buyable = dungBuyables.find(i => stringMatches(name, i.item.name));
 	if (!buyable) {
-		return `That isn't a buyable item. Here are the items you can buy: \n\n${dungBuyables
-			.map(i => `**${i.item.name}:** ${i.cost.toLocaleString()} tokens`)
-			.join('\n')}.`;
+		return `${dungBuyables.map(i => `**${i.item.name}:** ${i.cost.toLocaleString()} tokens`).join('\n')}.`;
 	}
 
 	if (!quantity) {
@@ -258,7 +256,7 @@ export const dgCommand: OSBMahojiCommand = {
 							.filter(i => (!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.item.name, value: i.item.name }));
 					},
-					required: true
+					required: false
 				},
 				{
 					type: ApplicationCommandOptionType.Integer,
