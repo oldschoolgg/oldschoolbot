@@ -1,4 +1,5 @@
 import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
+import { bold } from 'discord.js';
 import { noOp, Time } from 'e';
 import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/util';
 
@@ -135,6 +136,15 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	await user.update({
 		[`skills_${params.skillName}`]: Math.floor(newXP)
 	});
+
+	if (currentXP < MAX_XP && newXP === MAX_XP && Object.values(user.skillsAsXP).every(xp => xp === MAX_XP)) {
+		globalClient.emit(
+			Events.ServerNotification,
+			bold(
+				`🎉 ${skill.emoji} **${user.badgedUsername}'s** minion, ${user.minionName}, just achieved the maximum possible total XP!`
+			)
+		);
+	}
 
 	let str = '';
 	if (preMax !== -1) {
