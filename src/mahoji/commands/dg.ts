@@ -179,9 +179,7 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 async function buyCommand(user: MUser, name: string, quantity?: number) {
 	const buyable = dungBuyables.find(i => stringMatches(name, i.item.name));
 	if (!options.item) {
-		return `${dungBuyables
-			.map(i => `**${i.item.name}:** ${i.cost.toLocaleString()} tokens`)
-			.join('\n')}.`;
+		return `${dungBuyables.map(i => `**${i.item.name}:** ${i.cost.toLocaleString()} tokens`).join('\n')}.`;
 	}
 
 	if (!quantity) {
