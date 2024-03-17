@@ -194,8 +194,13 @@ ${zygomiteFarmingSource
 		if (options.monster?.monster) {
 			const monster = killableMonsters.find(m => stringMatches(m.name, options.monster!.monster!.name));
 			if (!monster) {
-				return 'HUH?';
+				return 'Invalid monster.';
 			}
+
+			if (user.id !== '157797566833098752') {
+				return 'This command is currently disabled.';
+			}
+
 			let { timeToFinish } = monster;
 			// 10% for learning
 			timeToFinish = reduceNumByPercent(timeToFinish, 10);
