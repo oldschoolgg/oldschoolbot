@@ -668,6 +668,9 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			const components = [disableDMsButton];
 			if (newSellerListingQuantityRemaining > 0) {
 				components.push(createGECancelButton(sellerListing));
+				str += `\n\nYou have ${newSellerListingQuantityRemaining}x remaining to sell in your listing.`;
+			} else {
+				str += '\n\nThis listing has now been fully fulfilled.';
 			}
 
 			await sellerDJSUser.send({ content: str, components: makeComponents(components) }).catch(noOp);
