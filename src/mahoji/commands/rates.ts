@@ -1,8 +1,9 @@
 import { bold } from '@discordjs/builders';
 import { InteractionReplyOptions } from 'discord.js';
-import { reduceNumByPercent, sumArr, Time } from 'e';
+import { increaseNumByPercent, reduceNumByPercent, sumArr, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
 import { ClueTiers } from '../../lib/clues/clueTiers';
@@ -232,21 +233,32 @@ ${zygomiteFarmingSource
 			}
 
 			const sampleSize = 100_000;
-			const loot = monster.table.kill(sampleSize, {});
+			let boostedSize = increaseNumByPercent(sampleSize, 25);
+
+			const loot = monster.table.kill(boostedSize, {});
 			let totalTime = timeToFinish * sampleSize;
 
 			let str = `${monster.name}\n`;
 
+			const results: { item: Item; qty: number; perHour: number; valuePerHour: number }[] = [];
 			for (const [item, qty] of loot.items()) {
 				const perHour = calcPerHour(qty, totalTime);
-				str += `${item.name}: ${perHour}/hr\n`;
+				const valuePerHour = calcPerHour(marketPriceOfBank(new Bank().add(item, qty)), totalTime);
+				results.push({ item, qty, perHour, valuePerHour });
+			}
+			results.sort((a, b) => b.valuePerHour - a.valuePerHour);
+			str += '\nTop 10 most valuable item drops:\n';
+			for (const { item, perHour, valuePerHour } of results.slice(0, 10)) {
+				str += `${item.name}: ${perHour.toFixed(2)}/hr ${toKMB(valuePerHour)} GP/hr\n`;
 			}
 
 			str += '\n';
 
-			str += `${toKMB(marketPriceOfBank(loot))}/hr`;
+			str += `Based on market/bot prices, this monster produces ${toKMB(
+				calcPerHour(marketPriceOfBank(loot), totalTime)
+			)}/hr in GP.`;
 
-			str += '\n\nAssumes max learning, poh boosts, all item boosts, DWWH/HFB.';
+			str += '\n\nAssumes max learning, poh boosts, all item boosts, DWWH/HFB, Ori.';
 			return str;
 		}
 		if (options.xphr?.hunter) {
