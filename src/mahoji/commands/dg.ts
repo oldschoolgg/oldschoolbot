@@ -258,7 +258,7 @@ export const dgCommand: OSBMahojiCommand = {
 							.filter(i => (!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.item.name, value: i.item.name }));
 					},
-					required: true
+					required: false
 				},
 				{
 					type: ApplicationCommandOptionType.Integer,
