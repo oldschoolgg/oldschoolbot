@@ -8,7 +8,7 @@ import { Bank } from 'oldschooljs';
 import { Events } from '../../lib/constants';
 import { defaultMegaDuckLocation, MegaDuckLocation } from '../../lib/minions/types';
 import { prisma } from '../../lib/settings/prisma';
-import { getUsername } from '../../lib/util';
+import { getUsername, resetCooldown } from '../../lib/util';
 import { canvasImageFromBuffer } from '../../lib/util/canvasUtil';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { mahojiGuildSettingsUpdate } from '../guildSettings';
@@ -127,7 +127,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 	description: 'Mega duck!.',
 	attributes: {
 		requiresMinion: true,
-		cooldown: 2 * Time.Minute
+		cooldown: 30 * Time.Second
 	},
 	options: [
 		{
@@ -151,8 +151,13 @@ export const megaDuckCommand: OSBMahojiCommand = {
 		interaction
 	}: CommandRunOptions<{ move?: MegaduckDirection; reset?: boolean }>) => {
 		const user = await mUserFetch(userID);
+		const withoutCooldown = (message: string) => {
+			resetCooldown(user, 'megaduck');
+			return message;
+		};
+
 		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
-		if (!guild) return 'You can only run this in a guild.';
+		if (!guild) return withoutCooldown('You can only run this in a guild.');
 
 		const settings = await prisma.guild.upsert({
 			where: {
@@ -199,7 +204,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 
 		const cost = new Bank().add('Breadcrumbs');
 		if (!user.owns(cost)) {
-			return `${user} The Mega Duck won't move for you, it wants some food.`;
+			return withoutCooldown(`${user} The Mega Duck won't move for you, it wants some food.`);
 		}
 
 		let newLocation = applyDirection(location, direction);
