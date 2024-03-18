@@ -25,6 +25,7 @@
 		"@octokit/graphql": "^4.8.0",
 		"@oldschoolgg/toolkit": "^0.0.24",
 		"@prisma/client": "^5.10.2",
+		"@sapphire/snowflake": "^3.5.3",
 		"@sapphire/stopwatch": "^1.4.0",
 		"@sapphire/time-utilities": "^1.6.0",
 		"@sentry/node": "^7.102.0",

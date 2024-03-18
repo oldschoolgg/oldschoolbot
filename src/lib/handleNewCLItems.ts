@@ -1,5 +1,5 @@
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
-import { Prisma } from '@prisma/client';
+import { Prisma, UserEventType } from '@prisma/client';
 import { roll, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -11,6 +11,7 @@ import { prisma } from './settings/prisma';
 import { MUserStats } from './structures/MUserStats';
 import { fetchStatsForCL } from './util';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
+import { insertUserEvent } from './util/userEvents';
 
 export async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
 	const clStats = calcCLDetails(user);
@@ -112,6 +113,11 @@ export async function handleNewCLItems({
 	});
 
 	for (const finishedCL of newlyCompletedCLs) {
+		await insertUserEvent({
+			userID: user.id,
+			type: UserEventType.CLCompletion,
+			collectionLogName: finishedCL.name
+		});
 		const kcString = finishedCL.fmtProg
 			? `They finished after... ${await finishedCL.fmtProg({
 					getKC: (id: number) => user.getKC(id),
@@ -126,7 +132,8 @@ export async function handleNewCLItems({
 				ironmenOnly: false,
 				items: finishedCL.items,
 				resultLimit: 100_000,
-				method: 'raw_cl'
+				method: 'raw_cl',
+				userEvents: null
 			})
 		).filter(u => u.qty === finishedCL.items.length).length;
 
