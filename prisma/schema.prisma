@@ -1121,3 +1121,23 @@ model ItemMetadata {
 
   @@map("item_metadata")
 }
+
+enum UserEventType {
+  MaxXP
+  MaxTotalXP
+  MaxLevel
+  MaxTotalLevel
+  CLCompletion
+}
+
+model UserEvent {
+  id   String   @id @default(uuid()) @db.Uuid
+  date DateTime @default(now()) @db.Timestamp(6)
+
+  user_id             String               @db.VarChar(19)
+  type                UserEventType
+  skill               xp_gains_skill_enum?
+  collection_log_name String?              @db.VarChar(19)
+
+  @@map("user_event")
+}

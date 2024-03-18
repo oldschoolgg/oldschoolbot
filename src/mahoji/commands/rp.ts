@@ -1,5 +1,7 @@
 import { codeBlock } from '@discordjs/builders';
 import { toTitleCase } from '@oldschoolgg/toolkit';
+import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
 import { SnowflakeUtil } from 'discord.js';
 import { randArrItem, sumArr, Time } from 'e';
@@ -11,6 +13,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { analyticsTick } from '../../lib/analytics';
 import { BitField, Channel } from '../../lib/constants';
+import { allCollectionLogsFlat } from '../../lib/data/Collections';
 import { GearSetupType } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
@@ -23,7 +26,7 @@ import { premiumPatronTime } from '../../lib/premiumPatronTime';
 import { prisma } from '../../lib/settings/prisma';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import { ItemBank } from '../../lib/types';
-import { dateFm, returnStringOrFile } from '../../lib/util';
+import { dateFm, isValidDiscordSnowflake, returnStringOrFile } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -32,6 +35,7 @@ import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { migrateUser } from '../../lib/util/migrateUser';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { insertUserEvent } from '../../lib/util/userEvents';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { cancelUsersListings } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { gearSetupOption } from '../lib/mahojiCommandOptions';
@@ -319,6 +323,113 @@ export const rpCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'user_event',
+			description: 'Manage user events.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'cl_completion',
+					description: 'CL Completion',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user that completed the cl.',
+							required: true
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'cl_name',
+							description: 'The cl the user completed',
+							required: true,
+							autocomplete: async val => {
+								return allCollectionLogsFlat
+									.map(c => c.name)
+									.filter(c => (!val ? true : c.toLowerCase().includes(val.toLowerCase())))
+									.map(val => ({ name: val, value: val }));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'message_id',
+							description: 'The message id of when they got it',
+							required: true
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'max_total',
+					description: 'Set max total level or total xp',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user that reached max total xp or level',
+							required: true
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'type',
+							description: 'Did they reach max total level or max total xp',
+							required: true,
+							choices: [
+								{ name: UserEventType.MaxTotalLevel, value: UserEventType.MaxTotalLevel },
+								{ name: UserEventType.MaxTotalXP, value: UserEventType.MaxTotalXP }
+							]
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'message_id',
+							description: 'The message id of when they got it',
+							required: true
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'max',
+					description: 'Set max level/xp, e.g. lvl 99 or 200m in one skill',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user that reached max total xp or level',
+							required: true
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'type',
+							description: 'Did they reach max level or max xp',
+							required: true,
+							choices: [
+								{ name: UserEventType.MaxXP, value: UserEventType.MaxXP },
+								{ name: UserEventType.MaxLevel, value: UserEventType.MaxLevel }
+							]
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'skill',
+							description: 'What skill?',
+							required: true,
+							autocomplete: async val => {
+								return Object.values(xp_gains_skill_enum)
+									.filter(s => (!val ? true : s.includes(val.toLowerCase())))
+									.map(s => ({ name: s, value: s }));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'message_id',
+							description: 'The message id of when they got it',
+							required: true
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -327,6 +438,11 @@ export const rpCommand: OSBMahojiCommand = {
 		interaction,
 		guildID
 	}: CommandRunOptions<{
+		user_event?: {
+			cl_completion?: { user: MahojiUserOption; cl_name: string; message_id: string };
+			max_total?: { user: MahojiUserOption; type: UserEventType; message_id: string };
+			max?: { user: MahojiUserOption; type: UserEventType; skill: xp_gains_skill_enum; message_id: string };
+		};
 		action?: {
 			validate_ge?: {};
 			patreon_reset?: {};
@@ -370,7 +486,64 @@ export const rpCommand: OSBMahojiCommand = {
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isAdmin = ADMIN_IDS.includes(userID);
 		const isMod = isOwner || isAdmin || adminUser.bitfield.includes(BitField.isModerator);
-		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
+		const isTrusted = [BitField.IsWikiContributor, BitField.isContributor].some(bit =>
+			adminUser.bitfield.includes(bit)
+		);
+		if (!guildID || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
+		if (!isAdmin && !isMod && !isTrusted) return randArrItem(gifs);
+
+		if (options.user_event) {
+			const messageId =
+				options.user_event.cl_completion?.message_id ??
+				options.user_event.max?.message_id ??
+				options.user_event.max_total?.message_id;
+			if (!messageId || !isValidDiscordSnowflake(messageId)) return null;
+
+			const snowflake = DiscordSnowflake.timestampFrom(messageId);
+			const date = new Date(snowflake);
+			const userId =
+				options.user_event.cl_completion?.user.user.id ??
+				options.user_event.max?.user.user.id ??
+				options.user_event.max_total?.user.user.id;
+			if (!userId) return null;
+			const targetUser = await mUserFetch(userId);
+			let type: UserEventType = UserEventType.CLCompletion;
+			let skill = undefined;
+			let collectionLogName = undefined;
+
+			let confirmationStr = `Please confirm:
+User: ${targetUser.rawUsername}
+Date: ${dateFm(date)}`;
+			if (options.user_event.cl_completion) {
+				confirmationStr += `\nCollection log: ${options.user_event.cl_completion.cl_name}`;
+				type = UserEventType.CLCompletion;
+				collectionLogName = options.user_event.cl_completion.cl_name;
+			}
+			if (options.user_event.max) {
+				confirmationStr += `\nSkill: ${options.user_event.max.skill}`;
+				type = options.user_event.max.type;
+				skill = options.user_event.max.skill;
+			}
+			if (options.user_event.max_total) {
+				type = options.user_event.max_total.type;
+			}
+			await handleMahojiConfirmation(interaction, confirmationStr);
+			await insertUserEvent({
+				userID: targetUser.id,
+				type,
+				skill,
+				collectionLogName,
+				date
+			});
+			await sendToChannelID(Channel.BotLogs, {
+				content: `${adminUser.logName} created userevent for ${targetUser.logName}: ${type} ${dateFm(date)} ${
+					skill ?? ''
+				}`
+			});
+			return `Done: ${confirmationStr.replace('Please confirm:', '')}`;
+		}
+
+		if (!isMod) return randArrItem(gifs);
 
 		if (options.action?.validate_ge) {
 			const isValid = await GrandExchange.extensiveVerification();
