@@ -19,15 +19,18 @@ export async function fetchCLLeaderboard({
 	const userEventMap = userEventsToMap(userEvents);
 	const userIds = Array.from(userEventMap.keys());
 	if (method === 'cl_array') {
-		const [specificUsers, generalUsers] = await prisma.$transaction([
-			prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
+		const userIdsList = userIds.length > 0 ? userIds.map(i => `'${i}'`).join(', ') : 'NULL';
+		const specificUsers =
+			userIds.length > 0
+				? await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
     SELECT user_id::text AS id, CARDINALITY(cl_array) - CARDINALITY(cl_array - array[${items
 		.map(i => `${i}`)
 		.join(', ')}]) AS qty
     FROM user_stats
-    WHERE user_id::text in (${userIds.map(i => `'${i}'`).join(', ')})
-`),
-			prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
+    WHERE user_id::text IN (${userIdsList})
+`)
+				: [];
+		const generalUsers = await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
     SELECT user_id::text AS id, CARDINALITY(cl_array) - CARDINALITY(cl_array - array[${items
 		.map(i => `${i}`)
 		.join(', ')}]) AS qty
@@ -35,11 +38,10 @@ export async function fetchCLLeaderboard({
     ${ironmenOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
     WHERE (cl_array && array[${items.map(i => `${i}`).join(', ')}]
     ${ironmenOnly ? 'AND "users"."minion.ironman" = true' : ''})
-    AND user_id::text NOT IN (${userIds.map(i => `'${i}'`).join(', ')})
+    ${userIds.length > 0 ? `AND user_id::text NOT IN (${userIdsList})` : ''}
     ORDER BY qty DESC
     LIMIT ${resultLimit}
-`)
-		]);
+`);
 
 		const users = [...specificUsers, ...generalUsers]
 			.sort((a, b) => {
@@ -75,7 +77,7 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
   FROM users
   WHERE ("collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
   ${ironmenOnly ? 'AND "minion.ironman" = true' : ''})
-  OR user_id::text in (${userIds.map(i => `'${i}'`).join(', ')})
+  ${userIds.length > 0 ? `OR id in (${userIds.map(i => `'${i}'`).join(', ')})` : ''}
 ) u
 ORDER BY qty DESC
 LIMIT ${resultLimit};
