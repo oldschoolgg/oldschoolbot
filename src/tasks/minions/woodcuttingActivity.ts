@@ -5,11 +5,13 @@ import { Emoji, Events, TwitcherGloves } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
+import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { perTimeUnitChance, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import resolveItems from '../../lib/util/resolveItems';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 export interface ForestryEvent {
@@ -259,6 +261,7 @@ export const woodcuttingTask: MinionTask = {
 		let lostLogs = 0;
 		let loot = new Bank();
 		let itemsToRemove = new Bank();
+		let priffUnlocked = user.hasSkillReqs(soteSkillRequirements) && user.QP >= 150;
 
 		// Felling axe +10% xp bonus & 20% logs lost
 		if (user.gear.skilling.hasEquipped('Bronze felling axe')) {
@@ -318,6 +321,12 @@ export const woodcuttingTask: MinionTask = {
 					loot.add(log.leaf, 1);
 				}
 			}
+		}
+
+		// Add crystal shards for chopping teaks/mahogany in priff
+		if (forestry && priffUnlocked && resolveItems(['Teak logs', 'Mahogany logs']).includes(log.id)) {
+			// 15 Shards per hour
+			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
 		}
 
 		// Check for twitcher gloves
