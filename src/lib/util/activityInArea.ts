@@ -45,7 +45,8 @@ const WorldLocationsChecker = [
 					activity.type === 'Woodcutting' &&
 					resolveItems(['Teak logs', 'Mahogany logs']).includes(
 						(activity as WoodcuttingActivityTaskOptions).logID
-					)
+					) &&
+					(activity as WoodcuttingActivityTaskOptions).forestry === true
 				) {
 					return true;
 				}
