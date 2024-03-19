@@ -1,4 +1,6 @@
 import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
+import { UserEventType } from '@prisma/client';
+import { bold } from 'discord.js';
 import { increaseNumByPercent, noOp, notEmpty, objectValues, Time } from 'e';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/util';
@@ -22,6 +24,7 @@ import { SkillsEnum } from './skilling/types';
 import { itemNameFromID } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
+import { insertUserEvent } from './util/userEvents';
 import { sendToChannelID } from './util/webhook';
 
 const skillsVals = Object.values(Skills);
@@ -287,6 +290,10 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	// 	globalClient.emit(Events.ServerNotification, str);
 	// }
 
+	if (currentXP < MAX_XP && newXP >= MAX_XP) {
+		await insertUserEvent({ userID: user.id, type: UserEventType.MaxXP, skill: skill.id });
+	}
+
 	// Announcements with nthUser
 	for (const { type, value } of [
 		{ type: 'lvl', value: 120 },
@@ -302,6 +309,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		let queryValue = 0;
 		// Prepare the message to be sent
 		if (type === 'lvl') {
+			await insertUserEvent({ userID: user.id, type: UserEventType.MaxLevel, skill: skill.id });
 			queryValue = convertLVLtoXP(value);
 			resultStr += `${skill.emoji} **${user.usernameOrMention}'s** minion, ${
 				user.minionName
@@ -355,6 +363,16 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	await user.update({
 		[`skills_${params.skillName}`]: Math.floor(newXP)
 	});
+
+	if (currentXP < MAX_XP && newXP === MAX_XP && Object.values(user.skillsAsXP).every(xp => xp === MAX_XP)) {
+		globalClient.emit(
+			Events.ServerNotification,
+			bold(
+				`🎉 ${skill.emoji} **${user.badgedUsername}'s** minion, ${user.minionName}, just achieved the maximum possible total XP!`
+			)
+		);
+		await insertUserEvent({ userID: user.id, type: UserEventType.MaxTotalXP });
+	}
 
 	let str = '';
 	if (preMax !== -1) {

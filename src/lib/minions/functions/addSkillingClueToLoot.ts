@@ -21,19 +21,23 @@ export default function addSkillingClueToLoot(
 	clueChance: number,
 	loot: Bank,
 	clueNestsOnly?: boolean,
-	strungRabbitFoot?: boolean
+	strungRabbitFoot?: boolean,
+	wcCapeNestBoost?: boolean
 ) {
 	const userLevel = typeof userOrLevel === 'number' ? userOrLevel : userOrLevel.skillLevel(skill);
 	const chance = Math.floor(clueChance / (100 + userLevel));
-	let nests = 0;
+	const nestChance = wcCapeNestBoost ? Math.floor(256 * 0.9) : 256;
 	const cluesTotalWeight = sumArr(clues.map(c => c[1]));
+	let nests = 0;
 
 	for (let i = 0; i < quantity; i++) {
-		if (skill === SkillsEnum.Woodcutting && !clueNestsOnly && roll(256)) {
+		if (skill === SkillsEnum.Woodcutting && !clueNestsOnly && roll(nestChance)) {
 			if (strungRabbitFoot) {
 				loot.add(strungRabbitFootNestTable.roll());
+				continue;
 			} else {
 				loot.add(nestTable.roll());
+				continue;
 			}
 		}
 
@@ -53,6 +57,7 @@ export default function addSkillingClueToLoot(
 		}
 		if (!gotClue && roll(1000)) {
 			loot.add('Clue scroll (beginner)');
+			gotClue = true;
 		}
 	}
 	if (skill === SkillsEnum.Woodcutting) {

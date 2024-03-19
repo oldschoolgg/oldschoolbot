@@ -43,7 +43,7 @@ Cooking (28)
 Corporeal Beast (8)
 Crafting (175)
 Crazy archaeologist (3)
-Creatables (731)
+Creatables (745)
 Creature Creation (7)
 Creature Creation (7)
 Custom Pets (43)
@@ -72,7 +72,7 @@ Fishing Contest (11)
 Fishing Trawler (4)
 Fist of Guthix (6)
 Fletching (145)
-Forestry (12)
+Forestry (23)
 Fossil Island Notes (10)
 Fossil Island Notes (10)
 General Graardor (8)
@@ -149,7 +149,7 @@ Shooting Stars (2)
 Skilling Misc (41)
 Skilling Pets (8)
 Skotizo (6)
-Slayer (75)
+Slayer (80)
 Slayer Masks/Helms (32)
 Smithing (200)
 Solis (3)
@@ -302,6 +302,11 @@ Ancient astroscope
 Ancient blessing
 Ancient bracers
 Ancient carcanet
+Ancient ceremonial boots
+Ancient ceremonial gloves
+Ancient ceremonial legs
+Ancient ceremonial mask
+Ancient ceremonial top
 Ancient chaps
 Ancient cloak
 Ancient coif
@@ -649,6 +654,7 @@ Camo bottoms
 Camo helmet
 Camo top
 Cape of skulls
+Cape pouch
 Carpenter's boots
 Carpenter's helmet
 Carpenter's shirt
@@ -914,6 +920,7 @@ Farseer kiteshield
 Farsight snapshot necklace
 Fedora
 Feldip hills teleport
+Felling axe handle
 Fighter hat
 Fighter torso
 Fine cloth
@@ -944,6 +951,7 @@ Forestry boots
 Forestry hat
 Forestry legs
 Forestry top
+Fox whistle
 Fremennik kilt
 Frog slippers
 Frog token
@@ -1032,6 +1040,7 @@ Golden fishing trophy
 Golden naval shirt
 Golden navy slacks
 Golden nugget
+Golden pheasant egg
 Golden saradomin special attack
 Golden tench
 Golden tricorn hat
@@ -1555,8 +1564,13 @@ Pet penance queen
 Pet smoke devil
 Pet snakeling
 Pet zilyana
+Petal garland
 Pharaoh's sceptre
 Phasmatys flag
+Pheasant boots
+Pheasant cape
+Pheasant hat
+Pheasant legs
 Phoenix
 Phoenix eggling
 Pink boater
@@ -1921,6 +1935,7 @@ Studded body (g)
 Studded body (t)
 Studded chaps (g)
 Studded chaps (t)
+Sturdy beehive parts
 Sun-metal scraps
 Superior bonecrusher
 Superior dwarf multicannon
@@ -1983,6 +1998,7 @@ Tumeken's shadow (uncharged)
 Twisted ancestral colour kit
 Twisted bow
 Twisted buckler
+Twitcher's gloves
 Tyrannical ring
 Tzhaar-ket-om
 Tzhaar-ket-om ornament kit

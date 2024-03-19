@@ -148,7 +148,7 @@ GROUP BY type
 ORDER BY qty DESC
 LIMIT 15;`),
 		prisma.$queryRawUnsafe(`
-SELECT sum(duration)::int
+SELECT sum(duration)
 FROM activity
 WHERE user_id = ${id}
 ${whereInMassClause(id)};`)

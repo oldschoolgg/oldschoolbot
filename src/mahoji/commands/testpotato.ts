@@ -424,7 +424,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							description: 'The xp you want.',
 							required: true,
 							min_value: 1,
-							max_value: 500_000_000
+							max_value: 5_000_000_000
 						}
 					]
 				},

@@ -1,23 +1,14 @@
-import { randInt, Time } from 'e';
+import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, MAX_LEVEL, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
-import { Log, SkillsEnum } from '../../lib/skilling/types';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { clAdjustedDroprate, itemID, perTimeUnitChance, roll, skillingPetDropRate } from '../../lib/util';
+import { clAdjustedDroprate, itemID, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import resolveItems from '../../lib/util/resolveItems';
-
-function handleForestry({ log, duration, loot }: { log: Log; duration: number; loot: Bank }) {
-	if (resolveItems(['Redwood logs', 'Logs']).includes(log.id)) return;
-
-	perTimeUnitChance(duration, 20, Time.Minute, () => {
-		loot.add('Anima-infused bark', randInt(500, 1000));
-	});
-}
 
 export const woodcuttingTask: MinionTask = {
 	type: 'Woodcutting',
@@ -29,7 +20,6 @@ export const woodcuttingTask: MinionTask = {
 		let clueChance = log.clueScrollChance;
 
 		let strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
-
 		let xpReceived = quantity * log.xp;
 		if (logID === itemID('Elder logs')) {
 			const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
@@ -37,6 +27,9 @@ export const woodcuttingTask: MinionTask = {
 			if (userWcLevel >= MAX_LEVEL) clueChance = 13_011;
 		}
 		let bonusXP = 0;
+		let lostLogs = 0;
+		let loot = new Bank();
+		let itemsToRemove = new Bank();
 
 		// If they have the entire lumberjack outfit, give an extra 0.5% xp bonus
 		if (
@@ -49,7 +42,7 @@ export const woodcuttingTask: MinionTask = {
 			xpReceived += amountToAdd;
 			bonusXP += amountToAdd;
 		} else {
-			// For each lumberjack item, check if they have it, give its XP boost if so.
+			// For each lumberjack item, check if they have it, give its XP boost if so
 			for (const [itemID, bonus] of Object.entries(Woodcutting.lumberjackItems)) {
 				if (user.hasEquippedOrInBank(parseInt(itemID))) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
@@ -61,14 +54,11 @@ export const woodcuttingTask: MinionTask = {
 
 		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Woodcutting,
-			amount: xpReceived,
+			amount: Math.ceil(xpReceived),
 			duration
 		});
 
-		let loot = new Bank();
-
-		handleForestry({ log, duration, loot });
-
+		// Add Logs or loot
 		if (!powerchopping) {
 			if (log.lootTable) {
 				loot.add(log.lootTable.roll(quantity));
@@ -105,7 +95,10 @@ export const woodcuttingTask: MinionTask = {
 			);
 		}
 
-		let str = `${user}, ${user.minionName} finished woodcutting. ${xpRes}`;
+		// End of trip message
+		let str = `${user}, ${user.minionName} finished woodcutting. ${xpRes}${
+			bonusXP > 0 ? ` **Bonus XP:** ${bonusXP.toLocaleString()}` : ''
+		}\n`;
 
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutes = duration / Time.Minute;
@@ -116,11 +109,6 @@ export const woodcuttingTask: MinionTask = {
 					'\n<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.';
 			}
 		}
-
-		if (strungRabbitFoot && !log.clueNestsOnly) {
-			str += "\nYour strung rabbit foot necklace increases the chance of receiving bird's eggs and rings.";
-		}
-
 		// Roll for pet
 		if (log.petChance) {
 			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Woodcutting, log.petChance);
@@ -141,14 +129,25 @@ export const woodcuttingTask: MinionTask = {
 			str += `. **Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		str += `\nYou received ${loot}.`;
+		// Loot received, items used, and logs/loot rolls lost message
+		str += `\nYou received ${loot}. `;
+		str += `${itemsToRemove.length > 0 ? `You used ${itemsToRemove}. ` : ''}`;
+		str += `${
+			lostLogs > 0 && !powerchopping
+				? `You lost ${
+						log.lootTable ? `${lostLogs}x ${log.name} loot rolls` : `${lostLogs}x ${log.name}`
+				  } due to using a felling axe.`
+				: ''
+		}`;
 
+		// Update cl, give loot, and remove items used
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,
-			itemsToAdd: loot
+			itemsToAdd: loot,
+			itemsToRemove
 		});
 
-		handleTripFinish(user, channelID, str, undefined, data, loot);
+		return handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
 };

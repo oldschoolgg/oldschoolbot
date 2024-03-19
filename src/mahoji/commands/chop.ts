@@ -10,6 +10,7 @@ import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
+import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const axes = [
@@ -111,7 +112,11 @@ export const chopCommand: OSBMahojiCommand = {
 		options,
 		userID,
 		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; powerchop?: boolean }>) => {
+	}: CommandRunOptions<{
+		name: string;
+		quantity?: number;
+		powerchop?: boolean;
+	}>) => {
 		const user = await mUserFetch(userID);
 		const log = Woodcutting.Logs.find(
 			log =>
@@ -122,7 +127,7 @@ export const chopCommand: OSBMahojiCommand = {
 
 		if (!log) return "That's not a valid log to chop.";
 
-		let { quantity, powerchop = false } = options;
+		let { quantity, powerchop } = options;
 
 		const skills = user.skillsAsLevels;
 
@@ -144,10 +149,12 @@ export const chopCommand: OSBMahojiCommand = {
 
 		let wcLvl = skills.woodcutting;
 
-		// Invisible wc boost for woodcutting guild
-		if (skills.woodcutting >= 60 && log.wcGuild) {
-			boosts.push('+7 invisible WC lvls at the Woodcutting guild');
-			wcLvl += 7;
+		// Invisible wc boost for woodcutting guild, forestry events don't happen in woodcutting guild
+		if (resolveItems(['Redwood logs', 'Logs']).includes(log.id) || log.lootTable) {
+			if (skills.woodcutting >= 60 && log.wcGuild) {
+				boosts.push('+7 invisible WC lvls at the Woodcutting guild');
+				wcLvl += 7;
+			}
 		}
 
 		// Enable 1.5 tick teaks half way to 99
@@ -164,7 +171,7 @@ export const chopCommand: OSBMahojiCommand = {
 				user,
 				log,
 				axeMultiplier: 10,
-				powerchopping: powerchop,
+				powerchopping: Boolean(powerchop),
 				woodcuttingLvl: wcLvl
 			});
 			const boostRes = await inventionItemBoost({
@@ -196,6 +203,21 @@ export const chopCommand: OSBMahojiCommand = {
 
 		if (!powerchop) {
 			powerchop = false;
+			if (user.hasEquippedOrInBank('Forestry basket') || user.hasEquippedOrInBank('Log basket')) {
+				if (log.name === 'Redwood Logs') {
+					boosts.push(
+						`+10 trip minutes for having a ${
+							user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
+						}`
+					);
+				} else {
+					boosts.push(
+						`+5 trip minutes for having a ${
+							user.hasEquippedOrInBank('Forestry basket') ? 'Forestry basket' : 'Log basket'
+						}`
+					);
+				}
+			}
 		} else {
 			boosts.push('**Powerchopping**');
 		}
