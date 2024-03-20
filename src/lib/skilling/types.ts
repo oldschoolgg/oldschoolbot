@@ -54,6 +54,7 @@ export interface Log {
 	id: number;
 	lootTable?: LootTable;
 	name: string;
+	leaf?: number;
 	aliases?: string[];
 	findNewTreeTime: number;
 	bankingTime: number;

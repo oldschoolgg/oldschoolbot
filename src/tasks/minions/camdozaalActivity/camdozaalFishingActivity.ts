@@ -24,17 +24,17 @@ export const camdozaalFishingTask: MinionTask = {
 
 		// Loot table based on users fishing level
 		const camdozaalFishTable = new LootTable()
-			.add(guppy.id)
 			.oneIn(256, 'Barronite handle')
-			.oneIn(5, 'Barronite shards', 3);
+			.oneIn(5, 'Barronite shards', 3)
+			.add(guppy.id, 1, 4);
 		if (currentFishLevel >= cavefish.level) {
-			camdozaalFishTable.add(cavefish.id);
+			camdozaalFishTable.add(cavefish.id, 1, 3);
 		}
 		if (currentFishLevel >= tetra.level) {
-			camdozaalFishTable.add(tetra.id);
+			camdozaalFishTable.add(tetra.id, 1, 2);
 		}
 		if (currentFishLevel >= catfish.level) {
-			camdozaalFishTable.add(catfish.id);
+			camdozaalFishTable.add(catfish.id, 1, 1);
 		}
 
 		let guppyCaught = 0;
@@ -58,7 +58,7 @@ export const camdozaalFishingTask: MinionTask = {
 				loot.add(tetra.id);
 			} else if (fishCaught.has(catfish.id)) {
 				catfishCaught++;
-				loot.add(cavefish.id);
+				loot.add(catfish.id);
 			} else {
 				loot.add(fishCaught);
 			}

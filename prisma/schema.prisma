@@ -491,6 +491,7 @@ enum XpGainSource {
   CamdozaalMining
   CamdozaalSmithing
   CamdozaalFishing
+  ForestryEvents
 }
 
 model XPGain {
@@ -757,6 +758,8 @@ model UserStats {
   last_tears_of_guthix_timestamp BigInt @default(0)
 
   herbs_cleaned_while_farming_bank Json @default("{}") @db.Json
+
+  forestry_event_completions_bank Json @default("{}") @db.Json
 
   @@map("user_stats")
 }
@@ -1117,4 +1120,24 @@ model ItemMetadata {
   name String?
 
   @@map("item_metadata")
+}
+
+enum UserEventType {
+  MaxXP
+  MaxTotalXP
+  MaxLevel
+  MaxTotalLevel
+  CLCompletion
+}
+
+model UserEvent {
+  id   String   @id @default(uuid()) @db.Uuid
+  date DateTime @default(now()) @db.Timestamp(6)
+
+  user_id             String               @db.VarChar(19)
+  type                UserEventType
+  skill               xp_gains_skill_enum?
+  collection_log_name String?              @db.VarChar(19)
+
+  @@map("user_event")
 }
