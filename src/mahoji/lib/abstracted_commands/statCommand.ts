@@ -37,9 +37,9 @@ import { barChart, lineChart, pieChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
+import { ForestryEvents } from '../../../tasks/minions/woodcuttingActivity';
 import { Cooldowns } from '../Cooldowns';
 import { collectables } from './collectCommand';
-import { ForestryEvents } from '../../../tasks/minions/woodcuttingActivity';
 
 interface DataPiece {
 	name: string;
