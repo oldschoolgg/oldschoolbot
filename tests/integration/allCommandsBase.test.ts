@@ -1,5 +1,8 @@
+import { writeFileSync } from 'node:fs';
+
+import { ObjectEnumValue } from '@prisma/client/runtime/library';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { notEmpty, randInt, shuffleArr, Time } from 'e';
+import { notEmpty, randArrItem, randInt, shuffleArr, Time } from 'e';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank, Items } from 'oldschooljs';
 import { test, vi } from 'vitest';
@@ -84,12 +87,9 @@ const commands = [
 ];
 
 type CommandInput = Record<string, any>;
-async function generateCommandInputs(
-	user: TestUser,
-	options: readonly CommandOption[],
-	currentPath: CommandInput = {}
-): Promise<CommandInput[]> {
+async function generateCommandInputs(user: TestUser, options: readonly CommandOption[]): Promise<CommandInput[]> {
 	let results: CommandInput[] = [];
+	const allPossibleOptions: Record<string, any[]> = {};
 
 	for (const option of options) {
 		switch (option.type) {
@@ -97,48 +97,38 @@ async function generateCommandInputs(
 			case ApplicationCommandOptionType.Subcommand:
 				if (option.options) {
 					const subOptionsResults = await generateCommandInputs(user, option.options);
-					for (const subResult of subOptionsResults) {
-						results.push({ [option.name]: subResult });
-					}
+					allPossibleOptions[option.name] = subOptionsResults;
 				}
 				break;
 			case ApplicationCommandOptionType.String:
 				if ('autocomplete' in option && option.autocomplete) {
 					const autoCompleteResults = await option.autocomplete('', { id: user.id } as any, {} as any);
-					for (const result of shuffleArr(autoCompleteResults).filter(notEmpty).slice(0, 5)) {
-						results.push({ ...currentPath, [option.name]: result.value as string });
-					}
+					allPossibleOptions[option.name] = autoCompleteResults.map(c => c.value);
 				} else if (option.choices) {
-					for (const choice of option.choices) {
-						results.push({ ...currentPath, [option.name]: choice.value });
-					}
+					allPossibleOptions[option.name] = option.choices.map(c => c.value);
 				} else {
-					results.push({ ...currentPath, [option.name]: `Any ${option.type}` });
+					allPossibleOptions[option.name] = ['plain string'];
 				}
 				break;
 			case ApplicationCommandOptionType.Integer:
 			case ApplicationCommandOptionType.Number:
 				if (option.choices) {
-					for (const choice of option.choices) {
-						results.push({ ...currentPath, [option.name]: choice.value });
-					}
+					allPossibleOptions[option.name] = option.choices.map(c => c.value);
 				} else {
 					let value = randInt(1, 1000);
 					if (option.min_value && option.max_value) {
 						value = randInt(option.min_value, option.max_value);
 					}
-					// For simplicity, omitting autocomplete handling
-					results.push({ ...currentPath, [option.name]: value });
+					allPossibleOptions[option.name] = [option.min_value, option.max_value, value];
 				}
 				break;
 			case ApplicationCommandOptionType.Boolean: {
-				for (const boolean of [true, false]) results.push({ ...currentPath, [option.name]: boolean });
+				allPossibleOptions[option.name] = [true, false];
 				break;
 			}
 			case ApplicationCommandOptionType.User: {
-				results.push({
-					...currentPath,
-					[option.name]: {
+				allPossibleOptions[option.name] = [
+					{
 						user: {
 							id: '123',
 							username: 'username',
@@ -146,17 +136,25 @@ async function generateCommandInputs(
 						},
 						member: undefined
 					}
-				});
+				];
 				break;
 			}
 			case ApplicationCommandOptionType.Channel:
 			case ApplicationCommandOptionType.Role:
 			case ApplicationCommandOptionType.Mentionable:
-				results.push({ ...currentPath, [option.name]: `Any ${option.type}` });
+				// results.push({ ...currentPath, [option.name]: `Any ${option.type}` });
 				break;
 		}
 	}
 
+	const longestOptions = Object.values(allPossibleOptions).sort((a, b) => b.length - a.length)[0].length;
+	for (let i = 0; i < longestOptions; i++) {
+		let obj: Record<string, any> = {};
+		for (const [key, val] of Object.entries(allPossibleOptions)) {
+			obj[key] = val[i] ?? randArrItem(val);
+		}
+		results.push(obj);
+	}
 	return results;
 }
 
@@ -175,10 +173,10 @@ test(
 		await maxUser.addItemsToBank({ items: bank });
 		const client = await mockClient();
 		for (const command of commands) {
-			if (command.name !== 'runecraft') continue;
+			if (command.name === 'bank') continue;
 			const options = await generateCommandInputs(user, command.options!);
+			// writeFileSync(`${command.name}.txt`, JSON.stringify(options, null, 4));
 			for (const option of options) {
-				console.log(option);
 				try {
 					console.log(`Running command ${command.name}
 Options: ${JSON.stringify(option)}`);
@@ -186,9 +184,10 @@ Options: ${JSON.stringify(option)}`);
 					await client.processActivities();
 					console.log(`Result: ${JSON.stringify(res)}`);
 				} catch (err) {
-					throw new Error(
+					console.error(
 						`Failed to run command ${command.name} with options ${JSON.stringify(option)}: ${err}`
 					);
+					throw err;
 				}
 			}
 		}
