@@ -8,7 +8,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export const MAX_GLOBAL_QP = 298;
+export const MAX_GLOBAL_QP = 303;
 
 interface Quest {
 	id: QuestID;
