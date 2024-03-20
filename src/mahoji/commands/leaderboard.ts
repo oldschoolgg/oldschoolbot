@@ -539,7 +539,7 @@ async function skillsLb(
 
 		const events = await prisma.userEvent.findMany({
 			where: {
-				type: 'MaxLevel',
+				type: 'MaxXP',
 				skill: skill.id
 			},
 			orderBy: {
