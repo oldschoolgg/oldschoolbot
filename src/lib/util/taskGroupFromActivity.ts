@@ -33,6 +33,7 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 		case 'Enchanting':
 		case 'Casting':
 		case 'GloryCharging':
+		case 'GloryUncharging':
 		case 'WealthCharging':
 		case 'Collecting':
 		case 'BlastFurnace':
