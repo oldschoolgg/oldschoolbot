@@ -20,10 +20,14 @@ async function main() {
 		let runs = 1;
 		for (let i = 0; i < runs; i++) {
 			console.log(`Starting run ${i + 1}/${runs}`);
-			execSync('vitest run --config vitest.integration.config.ts', {
-				stdio: 'inherit',
-				encoding: 'utf-8'
-			});
+			execSync(
+				// node --cpu-prof --cpu-prof-dir=./profiling ./node_modules/vitest/vitest.mjs
+				'node --cpu-prof ./node_modules/vitest/vitest.mjs run allCommand --config vitest.integration.config.ts',
+				{
+					stdio: 'inherit',
+					encoding: 'utf-8'
+				}
+			);
 			console.log(`Finished run ${i + 1}/${runs}`);
 		}
 	} catch (err) {

@@ -185,6 +185,10 @@ class TestClient {
 			throw new Error(`Expected ${key} to be ${value} but got ${this.data[key]}`);
 		}
 	}
+
+	async processActivities() {
+		await processPendingActivities();
+	}
 }
 
 export async function mockClient() {

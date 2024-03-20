@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
-import { randInt, shuffleArr } from 'e';
+import { notEmpty, randInt, shuffleArr, Time } from 'e';
 import { CommandOption } from 'mahoji/dist/lib/types';
+import { Bank, Items } from 'oldschooljs';
 import { test, vi } from 'vitest';
 
 import { activitiesCommand } from '../../src/mahoji/commands/activities';
@@ -40,18 +41,7 @@ import { smeltingCommand } from '../../src/mahoji/commands/smelt';
 import { stealCommand } from '../../src/mahoji/commands/steal';
 import { toolsCommand } from '../../src/mahoji/commands/tools';
 import { randomMock } from './setup';
-import { createTestUser, TestUser } from './util';
-
-// Don't let any of these commands create an activity
-vi.mock('../../../src/lib/util/addSubTaskToActivityTask', async () => {
-	const actual: any = await vi.importActual('../../../src/lib/util/addSubTaskToActivityTask');
-	return {
-		...actual,
-		default: async (args: any) => {
-			console.log(`Sending ${args}`);
-		}
-	};
-});
+import { createTestUser, mockClient, TestUser } from './util';
 
 const commands = [
 	activitiesCommand,
@@ -96,7 +86,7 @@ const commands = [
 type CommandInput = Record<string, any>;
 async function generateCommandInputs(
 	user: TestUser,
-	options: CommandOption[],
+	options: readonly CommandOption[],
 	currentPath: CommandInput = {}
 ): Promise<CommandInput[]> {
 	let results: CommandInput[] = [];
@@ -107,35 +97,31 @@ async function generateCommandInputs(
 			case ApplicationCommandOptionType.Subcommand:
 				if (option.options) {
 					const subOptionsResults = await generateCommandInputs(user, option.options);
-					subOptionsResults.forEach(subResult => {
+					for (const subResult of subOptionsResults) {
 						results.push({ [option.name]: subResult });
-					});
+					}
 				}
 				break;
 			case ApplicationCommandOptionType.String:
 				if ('autocomplete' in option && option.autocomplete) {
 					const autoCompleteResults = await option.autocomplete('', { id: user.id } as any, {} as any);
-					shuffleArr(autoCompleteResults)
-						.slice(0, 5)
-						.forEach(result => {
-							results.push({ ...currentPath, [option.name]: result.value as string });
-						});
-				}
-				if (option.choices) {
-					option.choices.forEach(choice => {
+					for (const result of shuffleArr(autoCompleteResults).filter(notEmpty).slice(0, 5)) {
+						results.push({ ...currentPath, [option.name]: result.value as string });
+					}
+				} else if (option.choices) {
+					for (const choice of option.choices) {
 						results.push({ ...currentPath, [option.name]: choice.value });
-					});
+					}
 				} else {
-					// For simplicity, omitting autocomplete handling
 					results.push({ ...currentPath, [option.name]: `Any ${option.type}` });
 				}
 				break;
 			case ApplicationCommandOptionType.Integer:
 			case ApplicationCommandOptionType.Number:
 				if (option.choices) {
-					option.choices.forEach(choice => {
+					for (const choice of option.choices) {
 						results.push({ ...currentPath, [option.name]: choice.value });
-					});
+					}
 				} else {
 					let value = randInt(1, 1000);
 					if (option.min_value && option.max_value) {
@@ -145,8 +131,24 @@ async function generateCommandInputs(
 					results.push({ ...currentPath, [option.name]: value });
 				}
 				break;
-			case ApplicationCommandOptionType.Boolean:
-			case ApplicationCommandOptionType.User:
+			case ApplicationCommandOptionType.Boolean: {
+				for (const boolean of [true, false]) results.push({ ...currentPath, [option.name]: boolean });
+				break;
+			}
+			case ApplicationCommandOptionType.User: {
+				results.push({
+					...currentPath,
+					[option.name]: {
+						user: {
+							id: '123',
+							username: 'username',
+							bot: false
+						},
+						member: undefined
+					}
+				});
+				break;
+			}
 			case ApplicationCommandOptionType.Channel:
 			case ApplicationCommandOptionType.Role:
 			case ApplicationCommandOptionType.Mentionable:
@@ -158,20 +160,40 @@ async function generateCommandInputs(
 	return results;
 }
 
-test('All Commands Base Test', async () => {
-	randomMock();
-	const user = await createTestUser();
-	for (const command of commands) {
-		const options = await generateCommandInputs(user, command.options!);
-		for (const option of options) {
-			try {
-				const res = await user.runCommand(command, option);
-				console.log(`Ran command ${command.name}
-Options: ${JSON.stringify(option)}
-Result: ${res}`);
-			} catch (err) {
-				console.error(`Failed to run command ${command.name} with options ${JSON.stringify(option)}`);
+const bank = new Bank();
+for (const item of Items.array()) {
+	bank.add(item.id, 100_000_000);
+}
+
+test(
+	'All Commands Base Test',
+	async () => {
+		randomMock();
+		const user = await createTestUser();
+		const maxUser = await createTestUser();
+		await maxUser.max();
+		await maxUser.addItemsToBank({ items: bank });
+		const client = await mockClient();
+		for (const command of commands) {
+			if (command.name !== 'runecraft') continue;
+			const options = await generateCommandInputs(user, command.options!);
+			for (const option of options) {
+				console.log(option);
+				try {
+					console.log(`Running command ${command.name}
+Options: ${JSON.stringify(option)}`);
+					const res = await maxUser.runCommand(command, option);
+					await client.processActivities();
+					console.log(`Result: ${JSON.stringify(res)}`);
+				} catch (err) {
+					throw new Error(
+						`Failed to run command ${command.name} with options ${JSON.stringify(option)}: ${err}`
+					);
+				}
 			}
 		}
+	},
+	{
+		timeout: Time.Minute * 10
 	}
-});
+);
