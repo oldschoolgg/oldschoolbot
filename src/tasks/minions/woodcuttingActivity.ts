@@ -371,6 +371,8 @@ export const woodcuttingTask: MinionTask = {
 			if (twitcherSetting !== undefined) {
 				str += `Your Twitcher's gloves increases the chance of receiving ${twitcherSetting} nests.\n`;
 			}
+		} else if (twitcherSetting === 'clue') {
+			str += `Your Twitcher's gloves increases the chance of receiving ${twitcherSetting} nests.\n`;
 		}
 
 		// Forestry events
