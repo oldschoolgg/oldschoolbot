@@ -23,7 +23,7 @@ export const AkumuLootTable = new LootTable()
 		new LootTable().add(UncutGemTable).add('Royal dragonhide', [10, 20]).add(runeAlchablesTable).add(DragonTable),
 		[3, 5]
 	)
-	.tertiary(20, 'Clue scroll (grandmaster)')
+	.tertiary(120, 'Elder clue scroll')
 	.tertiary(100, MysteryBoxes);
 
 export const Akumu: CustomMonster = {

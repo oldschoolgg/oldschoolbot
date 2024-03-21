@@ -30,7 +30,7 @@ export async function kgCommand(
 			defence: 105
 		},
 		itemBoosts: [
-			['Axe of the high sungod', 10],
+			['Axe of the high sungod', 20],
 			['Drygore longsword', 10],
 			['Offhand drygore longsword', 5],
 			['Gorajan warrior helmet', 2],

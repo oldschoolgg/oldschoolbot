@@ -24,7 +24,7 @@ export default async ({
 		if (osjsMonster.id === YETI_ID && production) {
 			return { error: 'The bot is too scared to simulate fighting the yeti.' };
 		}
-		if (quantity > limit && 5 > 10) {
+		if (quantity > limit) {
 			return {
 				error:
 					`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! ` +

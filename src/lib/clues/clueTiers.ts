@@ -7,6 +7,7 @@ import { HardCasket, HardClueTable } from 'oldschooljs/dist/simulation/clues/Har
 import { MasterCasket, MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumCasket, MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
+import { ElderClueTable } from '../simulation/elderClue';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
@@ -29,7 +30,7 @@ interface ClueMilestoneReward {
 }
 
 export interface ClueTier {
-	name: 'Beginner' | 'Easy' | 'Medium' | 'Hard' | 'Elite' | 'Master' | 'Grandmaster';
+	name: 'Beginner' | 'Easy' | 'Medium' | 'Hard' | 'Elite' | 'Master' | 'Grandmaster' | 'Elder';
 	table: BeginnerCasket | EasyCasket | MediumCasket | HardCasket | EliteCasket | MasterCasket;
 	id: number;
 	scrollID: number;
@@ -164,5 +165,18 @@ export const ClueTiers: ClueTier[] = [
 			'First age bracelet',
 			'First age ring'
 		])
+	},
+	{
+		name: 'Elder',
+		aliases: ['elder', 'emc'],
+		table: ElderClueTable,
+		id: 73_124,
+		scrollID: 73_123,
+		timeToFinish: Time.Minute * 42.23,
+		mimicChance: false,
+		allItems: ElderClueTable.allItems,
+		stashUnits: masterStashes,
+		reqs: beginnerReqs,
+		qtyForGrandmasters: 0
 	}
 ];

@@ -304,7 +304,8 @@ export const clueCommand: OSBMahojiCommand = {
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				}
-			]
+			],
+			Elder: []
 		};
 
 		const clueTierName = clueTier.name;
