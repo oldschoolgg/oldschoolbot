@@ -229,7 +229,7 @@ export const Cookables: Cookable[] = [
 		name: 'Wine of zamorak',
 		alias: ['zammy wine'],
 		inputCookables: { [itemID("Zamorak's grapes")]: 1, [itemID('Jug of water')]: 1 },
-		stopBurnAt: 125,
+		stopBurnAt: 98,
 		burntCookable: itemID('Jug of bad wine')
 	},
 	{

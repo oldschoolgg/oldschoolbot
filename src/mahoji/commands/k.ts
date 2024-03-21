@@ -156,7 +156,12 @@ export const killCommand: OSBMahojiCommand = {
 		userID,
 		channelID,
 		interaction
-	}: CommandRunOptions<{ name: string; quantity?: number; method?: PvMMethod; show_info?: boolean }>) => {
+	}: CommandRunOptions<{
+		name: string;
+		quantity?: number;
+		method?: PvMMethod;
+		show_info?: boolean;
+	}>) => {
 		const user = await mUserFetch(userID);
 		if (options.show_info) {
 			return returnStringOrFile(await monsterInfo(user, options.name));

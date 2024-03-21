@@ -8,7 +8,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { badges, badgesCache, Emoji, masteryKey, usernameCache } from '../../lib/constants';
-import { allClNames, getCollectionItems } from '../../lib/data/Collections';
+import { allClNames, allCollectionLogsFlat, getCollectionItems } from '../../lib/data/Collections';
 import { allLeagueTasks } from '../../lib/leagues/leagues';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
@@ -29,6 +29,7 @@ import {
 } from '../../lib/util';
 import { fetchCLLeaderboard, fetchTameCLLeaderboard } from '../../lib/util/clLeaderboard';
 import { deferInteraction } from '../../lib/util/interactionReply';
+import { userEventsToMap } from '../../lib/util/userEvents';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -321,8 +322,20 @@ async function clLb(
 		return lbMsg(`${inputType} Tame Collection Log Leaderboard`);
 	}
 
-	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200 });
+	const clName = allCollectionLogsFlat.find(c => stringMatches(c.name, inputType))?.name;
+	const userEventOrders = clName
+		? await prisma.userEvent.findMany({
+				where: {
+					type: 'CLCompletion',
+					collection_log_name: clName.toLowerCase()
+				},
+				orderBy: {
+					date: 'asc'
+				}
+		  })
+		: null;
 
+	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200, userEvents: userEventOrders });
 	doMenu(
 		interaction,
 		user,
@@ -492,6 +505,15 @@ async function skillsLb(
 	const skill = skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, inputSkill)));
 
 	if (inputSkill === 'overall') {
+		const events = await prisma.userEvent.findMany({
+			where: {
+				type: 'MaxTotalLevel'
+			},
+			orderBy: {
+				date: 'asc'
+			}
+		});
+		const userEventMap = userEventsToMap(events);
 		const query = `SELECT
 								u.id,
 								${skillsVals.map(s => `"skills.${s.id}"`)},
@@ -516,7 +538,24 @@ async function skillsLb(
 			};
 		});
 		if (type !== 'xp') {
-			overallUsers.sort((a, b) => b.totalLevel - a.totalLevel);
+			overallUsers.sort((a, b) => {
+				const valueDifference = b.totalLevel - a.totalLevel;
+				if (valueDifference !== 0) {
+					return valueDifference;
+				}
+				const dateA = userEventMap.get(a.id);
+				const dateB = userEventMap.get(b.id);
+				if (dateA && dateB) {
+					return dateA - dateB;
+				}
+				if (dateA) {
+					return -1;
+				}
+				if (dateB) {
+					return 1;
+				}
+				return 0;
+			});
 		}
 		overallUsers.slice(0, 100);
 	} else {
@@ -531,6 +570,37 @@ async function skillsLb(
 								1 DESC
 							LIMIT 2000;`;
 		res = await prisma.$queryRawUnsafe<Record<string, any>[]>(query);
+
+		const events = await prisma.userEvent.findMany({
+			where: {
+				type: 'MaxLevel',
+				skill: skill.id
+			},
+			orderBy: {
+				date: 'asc'
+			}
+		});
+		const userEventMap = userEventsToMap(events);
+		res.sort((a, b) => {
+			const aXP = Number(a[`skills.${skill.id}`]);
+			const bXP = Number(b[`skills.${skill.id}`]);
+			const valueDifference = bXP - aXP;
+			if (valueDifference !== 0) {
+				return valueDifference;
+			}
+			const dateA = userEventMap.get(a.id);
+			const dateB = userEventMap.get(b.id);
+			if (dateA && dateB) {
+				return dateA - dateB;
+			}
+			if (dateA) {
+				return -1;
+			}
+			if (dateB) {
+				return 1;
+			}
+			return 0;
+		});
 	}
 
 	if (inputSkill === 'overall') {

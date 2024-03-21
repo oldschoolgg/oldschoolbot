@@ -1804,6 +1804,8 @@ export const cyclopsCL = resolveItems([
 	'Dragon defender'
 ]);
 export const forestryCL = resolveItems([
+	'Fox whistle',
+	'Golden pheasant egg',
 	'Lumberjack hat',
 	'Lumberjack top',
 	'Lumberjack legs',
@@ -1812,10 +1814,19 @@ export const forestryCL = resolveItems([
 	'Forestry top',
 	'Forestry legs',
 	'Forestry boots',
+	"Twitcher's gloves",
 	'Funky shaped log',
 	'Log basket',
 	'Log brace',
-	'Clothes pouch blueprint'
+	'Clothes pouch blueprint',
+	'Cape pouch',
+	'Felling axe handle',
+	'Pheasant hat',
+	'Pheasant legs',
+	'Pheasant boots',
+	'Pheasant cape',
+	'Petal garland',
+	'Sturdy beehive parts'
 ]);
 
 export const fossilIslandNotesCL = resolveItems([
@@ -2016,7 +2027,12 @@ export const slayerCL = resolveItems([
 	// "Dagon'hai robe bottom",
 	'Blood shard',
 	...stoneSpirits.map(i => i.spirit.id),
-	'Brackish blade'
+	'Brackish blade',
+	'Ancient ceremonial mask',
+	'Ancient ceremonial top',
+	'Ancient ceremonial legs',
+	'Ancient ceremonial gloves',
+	'Ancient ceremonial boots'
 ]);
 export const tzHaarCL = resolveItems([
 	'Obsidian cape',

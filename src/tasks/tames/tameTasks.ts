@@ -39,6 +39,7 @@ import { ActivityTaskData } from '../../lib/types/minions';
 import { assert, calcPerHour, formatDuration, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { getUsersTamesCollectionLog } from '../../lib/util/getUsersTameCL';
+import { handleCrateSpawns } from '../../lib/util/handleCrateSpawns';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { tameHasBeenFed, tameLastFinishedActivity, tameName } from '../../lib/util/tameUtil';
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
@@ -137,6 +138,8 @@ async function handleImplingLocator(user: MUser, tame: MTame, duration: number, 
 }
 
 export async function runTameTask(activity: TameActivity, tame: Tame) {
+	const user = await mUserFetch(activity.user_id);
+
 	async function handleFinish(res: { loot: Bank | null; message: string; user: MUser }) {
 		const previousTameCl = new Bank({ ...(tame.max_total_loot as ItemBank) });
 
@@ -153,6 +156,9 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 		}
 		const addRes = await addDurationToTame(tame, activity.duration);
 		if (addRes) res.message += `\n${addRes}`;
+
+		const crateRes = await handleCrateSpawns(user, activity.duration);
+		if (crateRes !== null) res.message += `\n${crateRes}`;
 
 		const channel = globalClient.channels.cache.get(activity.channel_id);
 		if (!channelIsSendable(channel)) return;
@@ -182,7 +188,6 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				: undefined
 		});
 	}
-	const user = await mUserFetch(activity.user_id);
 
 	const activityData = activity.data as any as TameTaskOptions;
 	switch (activityData.type) {
