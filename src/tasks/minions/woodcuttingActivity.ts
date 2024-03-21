@@ -242,7 +242,7 @@ export const woodcuttingTask: MinionTask = {
 	async run(data: WoodcuttingActivityTaskOptions) {
 		const { logID, quantity, userID, channelID, duration, powerchopping, forestry, twitchers } = data;
 		const user = await mUserFetch(userID);
-		let userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
+		const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 		const log = Woodcutting.Logs.find(i => i.id === logID)!;
 		const forestersRations = user.bank.amount("Forester's ration");
 		const wcCapeNestBoost =
@@ -264,7 +264,6 @@ export const woodcuttingTask: MinionTask = {
 		// GMC for elder logs
 		let clueChance = log.clueScrollChance;
 		if (logID === itemID('Elder logs')) {
-			const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 			// Bring it as close as possible to Rocktails
 			if (userWcLevel >= MAX_LEVEL) clueChance = 13_011;
 		}
