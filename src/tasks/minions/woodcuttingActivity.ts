@@ -243,7 +243,7 @@ export const woodcuttingTask: MinionTask = {
 	async run(data: WoodcuttingActivityTaskOptions) {
 		const { logID, quantity, userID, channelID, duration, powerchopping, forestry, twitchers } = data;
 		const user = await mUserFetch(userID);
-		let userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
+		const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 		const log = Woodcutting.Logs.find(i => i.id === logID)!;
 		const forestersRations = user.bank.amount("Forester's ration");
 		const wcCapeNestBoost =
