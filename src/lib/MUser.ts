@@ -22,6 +22,7 @@ import { GearSetup, GearSetupType, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
 import { IMaterialBank } from './invention';
 import { MaterialBank } from './invention/MaterialBank';
+import { marketPriceOfBank } from './marketPrices';
 import backgroundImages from './minions/data/bankBackgrounds';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { defaultFarmingContract } from './minions/farming';
@@ -1015,6 +1016,52 @@ GROUP BY data->>'clueID';`);
 			where: { user_id: this.id, tame_id: tame.id, completed: false }
 		});
 		return { activity, tame: new MTame(tame) };
+	}
+
+	async calculateNetWorth() {
+		const bank = this.allItemsOwned.clone();
+		const activeListings = await prisma.gEListing.findMany({
+			where: {
+				user_id: this.id,
+				quantity_remaining: {
+					gt: 0
+				},
+				fulfilled_at: null,
+				cancelled_at: null
+			},
+			include: {
+				buyTransactions: true,
+				sellTransactions: true
+			}
+		});
+		for (const listing of activeListings) {
+			if (listing.type === 'Sell') {
+				bank.add(listing.item_id, listing.quantity_remaining);
+			} else {
+				bank.add('Coins', Number(listing.asking_price_per_item) * listing.quantity_remaining);
+			}
+		}
+		const activeGiveaways = await prisma.giveaway.findMany({
+			where: {
+				completed: false,
+				user_id: this.id
+			}
+		});
+		for (const giveaway of activeGiveaways) {
+			bank.add(giveaway.loot as ItemBank);
+		}
+		const gifts = await prisma.giftBox.findMany({
+			where: {
+				owner_id: this.id
+			}
+		});
+		for (const gift of gifts) {
+			bank.add(gift.items as ItemBank);
+		}
+		return {
+			bank,
+			value: marketPriceOfBank(bank)
+		};
 	}
 }
 declare global {
