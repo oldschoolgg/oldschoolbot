@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import * as ss from 'simple-statistics';
 
 import { prisma } from './settings/prisma';
-import getOSItem from './util/getOSItem';
+import { getItem } from './util/getOSItem';
 
 interface MarketPriceData {
 	totalSold: number;
@@ -96,13 +96,15 @@ export const cacheGEPrices = async () => {
 export function marketPriceOfBank(bank: Bank) {
 	let value = 0;
 	for (const [item, qty] of bank.items()) {
+		if (!item) continue;
 		value += marketPriceOrBotPrice(item.id) * qty;
 	}
-	return value;
+	return Math.ceil(value);
 }
 
 export function marketPriceOrBotPrice(itemID: number) {
-	const item = getOSItem(itemID);
+	const item = getItem(itemID);
+	if (!item) return 0;
 	const data = marketPricemap.get(item.id);
 	if (data) {
 		return data.guidePrice;
