@@ -1,5 +1,5 @@
 import { Tame, tame_growth } from '@prisma/client';
-import { Items, Monsters } from 'oldschooljs';
+import { Bank, Items, Monsters } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { assert, describe, expect, test } from 'vitest';
 
@@ -9,6 +9,7 @@ import { allPetIDs, masterCapesCL, toaCL } from '../../src/lib/data/CollectionsE
 import { itemsToDelete } from '../../src/lib/deletedItems';
 import { dyedItems } from '../../src/lib/dyedItems';
 import { growablePets } from '../../src/lib/growablePets';
+import { marketPriceOfBank } from '../../src/lib/marketPrices';
 import killableMonsters from '../../src/lib/minions/data/killableMonsters';
 import { Ignecarus } from '../../src/lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { KalphiteKingMonster } from '../../src/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
@@ -333,5 +334,9 @@ describe('Sanity', () => {
 
 		expect(gear2.hasEquipped("Combatant's cape")).toEqual(true);
 		expect(gear2.hasEquipped('Support cape')).toEqual(true);
+	});
+	test('market price of coins', () => {
+		const b = new Bank().add('Coins', 66);
+		expect(marketPriceOfBank(b)).toEqual(66);
 	});
 });

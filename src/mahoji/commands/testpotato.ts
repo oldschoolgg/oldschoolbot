@@ -58,6 +58,7 @@ import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';
 import { getUsersTame } from '../../lib/util/tameUtil';
+import { userEventToStr } from '../../lib/util/userEvents';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { MAX_QP } from '../lib/abstracted_commands/questCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
@@ -715,6 +716,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							max_value: 1000
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'events',
+					description: 'See events',
+					options: []
 				}
 			],
 			run: async ({
@@ -749,6 +756,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				check?: { monster_droprates?: string };
 				bingo_tools?: { start_bingo: string };
 				setslayertask?: { master: string; monster: string; quantity: number };
+				events?: {};
 			}>) => {
 				await deferInteraction(interaction);
 				if (production) {
@@ -778,6 +786,17 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					return 'reset your last contract date';
 				}
 
+				if (options.events) {
+					const events = await prisma.userEvent.findMany({
+						where: {
+							user_id: user.id
+						},
+						orderBy: {
+							date: 'desc'
+						}
+					});
+					return events.map(userEventToStr).join('\n');
+				}
 				if (options.bingo_tools) {
 					if (options.bingo_tools.start_bingo) {
 						const bingo = await prisma.bingo.findFirst({
@@ -857,12 +876,6 @@ ${droprates.join('\n')}`),
 							}
 						});
 						return 'Deleted all your trips.';
-					}
-					if (thing === 'mortimer_cooldown') {
-						await user.update({
-							last_mortimer_kill_date: null
-						});
-						return 'Reset your mortimer cooldown.';
 					}
 					if (thing === 'mt') {
 						await user.update({
