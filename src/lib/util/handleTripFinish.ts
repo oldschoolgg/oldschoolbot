@@ -451,9 +451,9 @@ const tripFinishEffects: TripFinishEffect[] = [
 				});
 
 				if (cost.length > 0 && loot.length === 0) {
-					messages.push(`<:moonlightMutator:1212761364372783176> Mutated ${cost} seeds, but all died`);
+					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost} seeds, but all died`);
 				} else if (loot.length > 0) {
-					messages.push(`<:moonlightMutator:1212761364372783176> Mutated ${cost} seeds, ${loot} survived`);
+					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost} seeds, ${loot} survived`);
 				}
 			}
 		}
