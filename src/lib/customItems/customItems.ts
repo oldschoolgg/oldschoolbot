@@ -11933,3 +11933,99 @@ setCustomItem(
 	},
 	1
 );
+
+setCustomItem(
+	73_141,
+	'2nd age range coif',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	2_500_000
+);
+
+setCustomItem(
+	73_142,
+	'2nd age range top',
+	'Rune platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	2_500_000
+);
+
+setCustomItem(
+	73_143,
+	'2nd age range legs',
+	'Rune platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	2_500_000
+);
+
+setCustomItem(
+	73_144,
+	'2nd age bow',
+	'Rune 2h sword',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	2_500_000
+);
+
+setCustomItem(
+	73_145,
+	'2nd age mage mask',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	2_500_000
+);
+
+setCustomItem(
+	73_146,
+	'2nd age mage top',
+	'Rune platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	2_500_000
+);
+
+setCustomItem(
+	73_147,
+	'2nd age mage bottom',
+	'Rune platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	2_500_000
+);
+
+setCustomItem(
+	73_148,
+	'2nd age staff',
+	'Rune 2h sword',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	2_500_000
+);

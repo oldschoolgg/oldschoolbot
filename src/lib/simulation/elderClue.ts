@@ -50,9 +50,35 @@ const LogsTable = new LootTable()
 const table = new LootTable()
 	.every(runeAlchablesTable, [1, 4])
 	.tertiary(47, LampTable)
+	.tertiary(
+		15_000,
+		new LootTable()
+			.add('2nd age range legs')
+			.add('2nd age range top')
+			.add('2nd age range coif')
+			.add('2nd age bow')
+			.add('2nd age mage top')
+			.add('2nd age mage bottom')
+			.add('2nd age mage mask')
+			.add('2nd age staff')
+	)
 	.tertiary(50_000, new LootTable().add('First age robe top').add('First age robe bottom'))
 	.tertiary(30, boxTable, [1, 3])
-	.oneIn(125, new LootTable().add('Akumu mask'))
+	.oneIn(
+		125,
+		new LootTable()
+			.add('Lord marshal boots')
+			.add('Lord marshal gloves')
+			.add('Lord marshal trousers')
+			.add('Lord marshal top')
+			.add('Lord marshal cap')
+			.add('Akumu mask')
+			.add('Commander boots')
+			.add('Commander gloves')
+			.add('Commander trousers')
+			.add('Commander top')
+			.add('Commander cap')
+	)
 	.add(DragonTable, [10, 15], 2)
 	.add(runeAlchablesTable, 12, 2)
 	.add(BattlestaffTable, 20, 2)
@@ -65,9 +91,9 @@ class ElderClue extends Clue {
 		const loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
-			const numberOfRolls = randInt(5, 11);
+			const numberOfRolls = randInt(5, 10);
 
-			for (let i = 0; i < numberOfRolls; i++) {
+			for (let t = 0; t < numberOfRolls; t++) {
 				loot.add(table.roll());
 			}
 		}
