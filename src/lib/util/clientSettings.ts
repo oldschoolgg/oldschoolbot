@@ -11,6 +11,9 @@ export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSele
 		},
 		select
 	});
+	if (!clientSettings) {
+		throw new Error(`No client settings?!?! ${globalConfig.clientID}`);
+	}
 	return clientSettings as ClientStorage;
 }
 

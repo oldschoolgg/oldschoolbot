@@ -21,6 +21,7 @@ export const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'opti
 	user: { id: userID } as any,
 	channelID: '111111111',
 	interaction: {
+		channelId: '1',
 		deferReply: () => Promise.resolve(),
 		editReply: () => Promise.resolve(),
 		followUp: () => Promise.resolve()
@@ -126,7 +127,7 @@ export class TestUser extends MUserClass {
 const idsUsed = new Set<string>();
 
 export function mockedId() {
-	return cryptoRand(1_000_000_000, 5_000_000_000_000).toString();
+	return cryptoRand(1_000_000_000_000, 5_000_000_000_000).toString();
 }
 
 export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {

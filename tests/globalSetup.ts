@@ -5,7 +5,15 @@ import { Collection } from 'discord.js';
 import { vi } from 'vitest';
 
 vi.mock('@oldschoolgg/toolkit', async () => {
-	const actualToolkit = await vi.importActual('@oldschoolgg/toolkit'); // Import all actual exports
+	const actual: any = await vi.importActual('@oldschoolgg/toolkit');
+	return {
+		...actual,
+		mentionCommand: async (_args: any) => 'hi'
+	};
+});
+
+vi.mock('../node_modules/@oldschoolgg/toolkit/src/util/discord.ts', async () => {
+	const actualToolkit = await vi.importActual('../node_modules/@oldschoolgg/toolkit/src/util/discord.ts'); // Import all actual exports
 	return {
 		...actualToolkit, // Include all actual exports in the mock
 		mentionCommand: vi.fn().mockReturnValue('') // Mock mentionCommand to return a blank string
@@ -18,21 +26,19 @@ global.globalClient = {
 	guilds: { cache: new Collection() },
 	mahojiClient: {
 		commands: {
-			values: [
-				{
-					name: 'test',
-					description: 'test description',
-					attributes: { description: 'test description' },
-					options: []
-				}
-			]
+			values: ['ca'].map(n => ({
+				name: n,
+				description: 'test description',
+				attributes: { description: 'test description' },
+				options: [{ name: 'claim' }]
+			}))
 		}
 	},
 	users: {
 		cache: new Collection()
 	},
 	channels: {
-		cache: new Collection()
+		cache: new Collection().set('1', { id: '1' })
 	},
 	busyCounterCache: new Map<string, number>()
 } as any;

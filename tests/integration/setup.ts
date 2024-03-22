@@ -1,10 +1,11 @@
 import '../globalSetup';
 
+import mitm from 'mitm';
 import { afterEach, beforeEach, vi } from 'vitest';
 
 import { prisma } from '../../src/lib/settings/prisma';
 
-vi.mock('../../src/lib/util/handleMahojiConfirmation', () => ({
+vi.mock('../../src/lib/util/handleMahojiConfirmation.ts', () => ({
 	handleMahojiConfirmation: vi.fn()
 }));
 vi.mock('../../src/lib/util/interactionReply', () => ({
@@ -43,3 +44,16 @@ async function init() {
 }
 
 init();
+
+function setupRequestLogging() {
+	const mitmInstance = mitm();
+
+	mitmInstance.on('connect', (socket, opts) => {
+		if (opts?.host) {
+			console.trace(`Sending request to ${opts.host}`);
+			socket.bypass();
+		}
+	});
+}
+
+setupRequestLogging();

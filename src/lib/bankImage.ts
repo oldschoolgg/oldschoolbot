@@ -608,6 +608,12 @@ class BankImageTask {
 		collectionLog?: Bank;
 		mahojiFlags?: BankFlag[];
 	}): Promise<BankImageResult> {
+		if (process.env.TEST) {
+			return {
+				image: Buffer.from(''),
+				isTransparent: false
+			};
+		}
 		let { user, collectionLog, title = '', showValue = true } = opts;
 		const bank = opts.bank.clone();
 		const flags = new Map(Object.entries(opts.flags ?? {}));
