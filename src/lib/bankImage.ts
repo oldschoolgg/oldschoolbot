@@ -581,7 +581,7 @@ class BankImageTask {
 				bottomItemText = item.name;
 			} else if (mahojiFlags?.includes('show_weights') && weightings && weightings[item.id]) {
 				bottomItemText = weightings[item.id];
-			} else if (mahojiFlags?.includes('show_market_price') && weightings && weightings[item.id]) {
+			} else if (mahojiFlags?.includes('show_market_price')) {
 				bottomItemText = marketPriceOrBotPrice(item.id) * quantity;
 			}
 
