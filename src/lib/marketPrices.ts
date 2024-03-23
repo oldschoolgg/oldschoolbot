@@ -1,8 +1,10 @@
+import { notEmpty } from 'e';
 import _ from 'lodash';
 import { Bank } from 'oldschooljs';
 import * as ss from 'simple-statistics';
 
 import { prisma } from './settings/prisma';
+import { getItem } from './util/getOSItem';
 
 interface MarketPriceData {
 	totalSold: number;
@@ -20,20 +22,20 @@ interface MarketPriceData {
 export const marketPricemap = new Map<number, MarketPriceData>();
 
 export const cacheGEPrices = async () => {
-	// Fetch all sell transactions from the past 10 days.
-	const twoWeeksAgo = new Date();
-	twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 10);
+	const transactionAge = new Date();
+	transactionAge.setDate(transactionAge.getDate() - 60);
 
 	const rawTransactions = await prisma.gETransaction.findMany({
 		where: {
 			created_at: {
-				gte: twoWeeksAgo
+				gte: transactionAge
 			}
 		},
 		include: {
 			sell_listing: {
 				select: {
-					item_id: true
+					item_id: true,
+					user_id: true
 				}
 			},
 			buy_listing: {
@@ -48,9 +50,11 @@ export const cacheGEPrices = async () => {
 	const groupedByItem = _.groupBy(rawTransactions, transaction => transaction.sell_listing.item_id);
 
 	// Pick items that have at least 5 transactions from 4 different buyers
-	const filtered = _.pickBy(groupedByItem, group => {
-		const uniqueBuyers = _.uniqBy(group, transaction => transaction.buy_listing.user_id);
-		return uniqueBuyers.length >= 4 && group.length >= 5;
+	const filtered = _.pickBy(groupedByItem, transactions => {
+		const totalUniqueTraders = new Set(
+			...transactions.map(t => [t.buy_listing.user_id, t.sell_listing.user_id].filter(notEmpty))
+		);
+		return totalUniqueTraders.size >= 4 && transactions.length >= 5;
 	});
 
 	// For each group, calculate necessary metrics.
@@ -76,6 +80,10 @@ export const cacheGEPrices = async () => {
 		const latest100Transactions = sortedTransactions.slice(0, 100);
 		const averagePriceLast100 = ss.mean(latest100Transactions.map(t => Number(t.price_per_item_before_tax)));
 
+		const totalUniqueTraders = new Set(
+			...transactions.map(t => [t.buy_listing.user_id, t.sell_listing.user_id].filter(notEmpty))
+		);
+
 		const data = {
 			totalSold: _.sumBy(transactions, 'quantity_bought'),
 			transactionCount: transactions.length,
@@ -86,7 +94,8 @@ export const cacheGEPrices = async () => {
 			avgSalePriceWithoutOutliers,
 			itemID: transactions[0].sell_listing.item_id,
 			guidePrice,
-			averagePriceLast100
+			averagePriceLast100,
+			totalUniqueTraders
 		};
 		marketPricemap.set(data.itemID, data);
 	});
@@ -95,12 +104,18 @@ export const cacheGEPrices = async () => {
 export function marketPriceOfBank(bank: Bank) {
 	let value = 0;
 	for (const [item, qty] of bank.items()) {
-		const data = marketPricemap.get(item.id);
-		if (data) {
-			value += data.guidePrice * qty;
-		} else {
-			value += item.price * qty;
-		}
+		if (!item) continue;
+		value += marketPriceOrBotPrice(item.id) * qty;
 	}
-	return value;
+	return Math.ceil(value);
+}
+
+export function marketPriceOrBotPrice(itemID: number) {
+	const item = getItem(itemID);
+	if (!item) return 0;
+	const data = marketPricemap.get(item.id);
+	if (data) {
+		return data.guidePrice;
+	}
+	return item.price;
 }

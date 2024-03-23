@@ -429,6 +429,8 @@ model User {
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
 
+  cached_networth_value BigInt?
+
   geListings        GEListing[]
   bingo_participant BingoParticipant[]
   bingo             Bingo[]
