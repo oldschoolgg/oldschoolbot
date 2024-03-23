@@ -1,4 +1,4 @@
-import { clamp, randInt, Time } from 'e';
+import { clamp, randInt, reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
@@ -111,9 +111,16 @@ export const clueCommand: OSBMahojiCommand = {
 			}
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
+		let maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
 
 		const boosts = [];
+
+		if (user.hasEquippedOrInBank('Clue bag')) {
+			let boostPercent = 20;
+			maxTripLength = reduceNumByPercent(maxTripLength, boostPercent);
+			boosts.push(`${boostPercent}% longer trip length for Clue bag`);
+		}
+
 		const stats = await user.fetchStats({ openable_scores: true });
 
 		let [timeToFinish, percentReduced] = reducedClueTime(

@@ -174,7 +174,7 @@ export const ClueTiers: ClueTier[] = [
 		scrollID: 73_123,
 		timeToFinish: Time.Minute * 42.23,
 		mimicChance: false,
-		allItems: ElderClueTable.allItems,
+		allItems: resolveItems([...ElderClueTable.allItems, 'Clue bag', 'Inventors tools', 'Octo']),
 		stashUnits: masterStashes,
 		reqs: beginnerReqs,
 		qtyForGrandmasters: 0

@@ -11943,7 +11943,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	2_500_000
+	150_000_000
 );
 
 setCustomItem(
@@ -11955,7 +11955,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	2_500_000
+	150_000_000
 );
 
 setCustomItem(
@@ -11967,7 +11967,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	2_500_000
+	150_000_000
 );
 
 setCustomItem(
@@ -11979,7 +11979,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	2_500_000
+	150_000_000
 );
 
 setCustomItem(
@@ -11991,7 +11991,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	2_500_000
+	150_000_000
 );
 
 setCustomItem(
@@ -12003,7 +12003,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	2_500_000
+	150_000_000
 );
 
 setCustomItem(
@@ -12015,7 +12015,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	2_500_000
+	150_000_000
 );
 
 setCustomItem(
@@ -12027,5 +12027,163 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
+	150_000_000
+);
+
+setCustomItem(
+	73_149,
+	'Clue bag',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
 	2_500_000
+);
+
+setCustomItem(
+	73_150,
+	'Apple parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_151,
+	'Watermelon parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_152,
+	'Lime parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_153,
+	'Lemon parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_154,
+	'Strawberry parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_155,
+	'Blueberry parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_156,
+	'Grape parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_157,
+	'Coconut parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_158,
+	'Detective hat',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_159,
+	'Detective trenchcoat',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_160,
+	'Detective pants',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_161,
+	'Inventors tools',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	500_000
 );
