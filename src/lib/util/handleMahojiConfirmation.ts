@@ -27,6 +27,9 @@ export async function handleMahojiConfirmation(
 	str: string,
 	_users?: string[]
 ) {
+	if (process.env.TEST) {
+		return;
+	}
 	const channel = globalClient.channels.cache.get(interaction.channelId.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	await deferInteraction(interaction);

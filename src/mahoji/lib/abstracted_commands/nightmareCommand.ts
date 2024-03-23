@@ -1,4 +1,3 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
 import { reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -16,6 +15,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import getOSItem from '../../../lib/util/getOSItem';
+import { mentionCommand } from '../../../lib/util/mentionCommand';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements } from '../../mahojiSettings';
@@ -101,13 +101,11 @@ function perUserCost(user: MUser, quantity: number, isPhosani: boolean, hasShado
 	if (isPhosani) {
 		if (hasShadow && user.user.tum_shadow_charges < tumCharges) {
 			return `You need atleast ${tumCharges} Tumeken's shadow charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-				globalClient,
 				'minion',
 				'charge'
 			)}`;
 		} else if (hasSang && user.user.sang_charges < sangCharges) {
 			return `You need atleast ${sangCharges} Sanguinesti staff charges to use it, otherwise it has to be unequipped: ${mentionCommand(
-				globalClient,
 				'minion',
 				'charge'
 			)}`;

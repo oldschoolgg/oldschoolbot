@@ -65,6 +65,7 @@ export async function sendToChannelID(
 		allowedMentions?: BaseMessageOptions['allowedMentions'];
 	}
 ) {
+	if (process.env.TEST) return;
 	const allowedMentions = data.allowedMentions ?? {
 		parse: ['users']
 	};
