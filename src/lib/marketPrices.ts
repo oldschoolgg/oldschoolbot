@@ -50,11 +50,9 @@ export const cacheGEPrices = async () => {
 	const groupedByItem = _.groupBy(rawTransactions, transaction => transaction.sell_listing.item_id);
 
 	// Pick items that have at least 5 transactions from 4 different buyers
-	const filtered = _.pickBy(groupedByItem, transactions => {
-		const totalUniqueTraders = new Set(
-			...transactions.map(t => [t.buy_listing.user_id, t.sell_listing.user_id].filter(notEmpty))
-		);
-		return totalUniqueTraders.size >= 4 && transactions.length >= 5;
+	const filtered = _.pickBy(groupedByItem, group => {
+		const uniqueBuyers = _.uniqBy(group, transaction => transaction.buy_listing.user_id);
+		return uniqueBuyers.length >= 4 && group.length >= 5;
 	});
 
 	// For each group, calculate necessary metrics.
