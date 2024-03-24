@@ -832,7 +832,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.Boolean,
 							name: 'ironman',
 							description: 'Only check ironmen accounts.',
-							required: false							
+							required: false
 						}
 					]
 				},
