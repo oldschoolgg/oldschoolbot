@@ -647,11 +647,11 @@ async function dryStreakCommand(monsterName: string, itemName: string, ironmanOn
 async function mostDrops(user: MUser, itemName: string, filter: string) {
 	const item = getItem(itemName);
 	const ironmanPart =
-		filter === 'Both'
-			? ''
-			: filter === 'Irons Only'
+		filter === 'Irons Only'
 			? 'AND "minion.ironman" = true'
-			: 'AND "minion.ironman" = false';
+			: filter === 'Mains Only'
+			? 'AND "minion.ironman" = false'
+			: '';
 	if (!item) return "That's not a valid item.";
 	if (!allDroppedItems.includes(item.id) && !user.bitfield.includes(BitField.isModerator)) {
 		return "You can't check this item, because it's not on any collection log.";
