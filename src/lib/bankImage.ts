@@ -255,6 +255,8 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Elder logs'), 'Elder'],
 	[i('Clue scroll (grandmaster)'), 'grandmaster'],
 	[i('Reward casket (grandmaster)'), 'grandmaster'],
+	[i('Clue scroll (elder)'), 'elder'],
+	[i('Reward casket (elder)'), 'elder'],
 	[i('Atomic energy'), 'Atomic']
 ]);
 

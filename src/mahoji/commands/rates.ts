@@ -8,6 +8,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { GLOBAL_BSO_XP_MULTIPLIER, PeakTier } from '../../lib/constants';
+import { Eatables } from '../../lib/data/eatables';
 import { inventionBoosts } from '../../lib/invention/inventions';
 import { marketPriceOfBank } from '../../lib/marketPrices';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -38,6 +39,7 @@ import { calculateDungeoneeringResult } from '../../tasks/minions/bso/dungeoneer
 import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
 import { calculateHunterResult } from '../../tasks/minions/HunterActivity/hunterActivity';
 import { calculateMiningResult } from '../../tasks/minions/miningActivity';
+import { gearstatToSetup, gorajanBoosts } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
 import { calculateHunterInput } from './hunt';
 import { calculateMiningInput } from './mine';
@@ -197,15 +199,10 @@ ${zygomiteFarmingSource
 				return 'Invalid monster.';
 			}
 
-			if (user.id !== '157797566833098752') {
-				return 'This command is currently disabled.';
-			}
-
 			let { timeToFinish } = monster;
 			// 10% for learning
 			timeToFinish = reduceNumByPercent(timeToFinish, 10);
 
-			// 2x for BSO
 			timeToFinish /= 2;
 
 			if (monster.pohBoosts) {
@@ -219,11 +216,9 @@ ${zygomiteFarmingSource
 			}
 
 			if (!monster.wildy) {
-				// boosts.push('40% boost for Dwarven warhammer');
 				timeToFinish = reduceNumByPercent(timeToFinish, 40);
 			} else if (monster.wildy) {
 				timeToFinish /= 3;
-				// boosts.push('3x boost for Hellfire bow');
 			}
 
 			timeToFinish = reduceNumByPercent(timeToFinish, 15);
@@ -236,6 +231,37 @@ ${zygomiteFarmingSource
 					}
 				}
 			}
+
+			const hasBlessing = true;
+			const hasZealotsAmulet = true;
+			if (hasZealotsAmulet && hasBlessing) {
+				timeToFinish *= 0.75;
+			} else if (hasBlessing) {
+				timeToFinish *= 0.8;
+			}
+			if (monster.wildy && hasZealotsAmulet) {
+				timeToFinish *= 0.95;
+			}
+
+			const allGorajan = gorajanBoosts.every(e => user.gear[e[1]].hasEquipped(e[0], true));
+			for (const [outfit, setup] of gorajanBoosts) {
+				if (
+					allGorajan ||
+					(gearstatToSetup.get(monster.attackStyleToUse) === setup &&
+						user.gear[setup].hasEquipped(outfit, true))
+				) {
+					timeToFinish *= 0.9;
+					break;
+				}
+			}
+
+			timeToFinish *= 0.85;
+
+			timeToFinish *= 0.9;
+
+			const bestFood = Eatables.filter(e => e.pvmBoost !== undefined).sort((a, b) => b.pvmBoost! - a.pvmBoost!)[0]
+				.pvmBoost;
+			timeToFinish = reduceNumByPercent(timeToFinish, bestFood!);
 
 			const sampleSize = 100_000;
 			let boostedSize = increaseNumByPercent(sampleSize, 25);
@@ -259,12 +285,23 @@ ${zygomiteFarmingSource
 
 			str += '\n';
 
+			str += `Each kill takes ${formatDuration(timeToFinish)}, killing ${calcPerHour(sampleSize, totalTime)}/hr.`;
+			str += '\n';
+
 			str += `Based on market/bot prices, this monster produces ${toKMB(
 				calcPerHour(marketPriceOfBank(loot), totalTime)
 			)}/hr in GP.`;
 
 			str += '\n\nAssumes max learning, poh boosts, all item boosts, DWWH/HFB, Ori.';
-			return str;
+			return {
+				content: str,
+				files: [
+					{
+						attachment: Buffer.from(`${results.map(i => [i.item.name, i.qty, i.perHour]).join('\n')}`),
+						name: `result-${monster.name}.txt`
+					}
+				]
+			};
 		}
 		if (options.xphr?.hunter) {
 			let results = `${[

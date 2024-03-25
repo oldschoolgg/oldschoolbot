@@ -403,6 +403,15 @@ const cluesRequirements = new Requirements()
 		}
 	})
 	.add({
+		name: 'Collect/Complete/Open a Elder clue',
+		has: async ({ user }) => {
+			const { clueCounts } = await user.calcActualClues();
+			if (clueCounts.Elder === 0) {
+				return 'You need to Collect/Complete/Open a Elder clue';
+			}
+		}
+	})
+	.add({
 		name: 'Complete 600 Beginner Treasure Trails',
 		clueCompletions: {
 			Beginner: 600
@@ -442,6 +451,12 @@ const cluesRequirements = new Requirements()
 		name: 'Complete 50 Grandmaster Treasure Trails',
 		clueCompletions: {
 			Grandmaster: 50
+		}
+	})
+	.add({
+		name: 'Complete 30 Elder Treasure Trails',
+		clueCompletions: {
+			Elder: 30
 		}
 	})
 	.add({
@@ -518,9 +533,9 @@ miscRequirements
 		clRequirement: dungBuyables.map(i => i.item.id)
 	})
 	.add({
-		name: 'Receive a casket of every tier from Zippy (excluding Grandmaster)',
+		name: 'Receive a casket of every tier from Zippy (excluding Grandmaster and Elder)',
 		has: ({ stats }) => {
-			const tiersNotReceived = ClueTiers.filter(i => i.name !== 'Grandmaster').filter(
+			const tiersNotReceived = ClueTiers.filter(i => !['Grandmaster', 'Elder'].includes(i.name)).filter(
 				tier => !stats.lootFromZippyBank.has(tier.id)
 			);
 			if (tiersNotReceived.length > 0) {

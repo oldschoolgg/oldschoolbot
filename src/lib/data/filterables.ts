@@ -493,13 +493,15 @@ const cluesAndCaskets = resolveItems([
 	'Clue scroll (elite)',
 	'Clue scroll (master)',
 	'Clue scroll (grandmaster)',
+	'Clue scroll (elder)',
 	'Reward casket (beginner)',
 	'Reward casket (easy)',
 	'Reward casket (medium)',
 	'Reward casket (hard)',
 	'Reward casket (elite)',
 	'Reward casket (master)',
-	'Reward casket (grandmaster)'
+	'Reward casket (grandmaster)',
+	'Reward casket (elder)'
 ]);
 
 const godwars = resolveItems([

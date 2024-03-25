@@ -121,13 +121,13 @@ function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
 
 const { floor } = Math;
 
-const gorajanBoosts = [
+export const gorajanBoosts = [
 	[gorajanArcherOutfit, 'range'],
 	[gorajanWarriorOutfit, 'melee'],
 	[gorajanOccultOutfit, 'mage']
 ] as const;
 
-const gearstatToSetup = new Map()
+export const gearstatToSetup = new Map()
 	.set('attack_stab', 'melee')
 	.set('attack_slash', 'melee')
 	.set('attack_crush', 'melee')

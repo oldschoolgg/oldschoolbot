@@ -1289,5 +1289,12 @@ export const hardTasks: Task[] = [
 		has: async ({ skillsLevels }) => {
 			return skillsLevels.divination >= 120;
 		}
+	},
+	{
+		id: 2170,
+		name: 'Acquire, complete and open a Elder clue/casket',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (elder)') >= 1;
+		}
 	}
 ];

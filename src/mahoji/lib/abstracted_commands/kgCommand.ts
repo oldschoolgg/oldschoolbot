@@ -30,6 +30,7 @@ export async function kgCommand(
 			defence: 105
 		},
 		itemBoosts: [
+			['Axe of the high sungod', 20],
 			['Drygore longsword', 10],
 			['Offhand drygore longsword', 5],
 			['Gorajan warrior helmet', 2],
@@ -51,8 +52,7 @@ export async function kgCommand(
 			feet: 'Gorajan warrior boots',
 			cape: 'TzKal cape',
 			ring: 'Warrior ring(i)',
-			weapon: 'Drygore longsword',
-			shield: 'Offhand drygore longsword',
+			'2h': 'Axe of the high sungod',
 			neck: "Brawler's hook necklace"
 		}),
 		gearSetup: 'melee',
