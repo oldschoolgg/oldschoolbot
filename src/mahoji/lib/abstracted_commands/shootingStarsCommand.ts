@@ -5,6 +5,7 @@ import { percentChance, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
+import { MUserClass } from '../../../lib/MUser';
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
 import { Ore, SkillsEnum } from '../../../lib/skilling/types';
@@ -13,7 +14,6 @@ import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength, patronMaxTripBonus } from '../../../lib/util/calcMaxTripLength';
 import { minionName } from '../../../lib/util/minionUtils';
-import { MUserClass } from './../../../lib/MUser';
 
 interface Star extends Ore {
 	size: number;

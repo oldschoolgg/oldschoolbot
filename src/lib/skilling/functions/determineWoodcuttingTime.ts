@@ -1,8 +1,8 @@
 import { percentChance, Time } from 'e';
 
+import { MUserClass } from '../../MUser';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import { MUserClass } from './../../MUser';
-import { Log } from './../types';
+import { Log } from '../types';
 
 interface WoodcuttingTimeOptions {
 	quantity: number | undefined;
