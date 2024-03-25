@@ -11,19 +11,19 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
-import { BitField, BOT_TYPE, ItemIconPacks, PerkTier, toaPurpleItems } from '../lib/constants';
-import { allCLItems } from '../lib/data/Collections';
-import { filterableTypes } from '../lib/data/filterables';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
-import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
-import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
-import { ItemBank } from '../lib/types';
-import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
-import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
+import { BitField, BOT_TYPE, ItemIconPacks, PerkTier, toaPurpleItems } from './constants';
+import { allCLItems } from './data/Collections';
+import { filterableTypes } from './data/filterables';
 import { TOBUniques } from './data/tob';
 import { marketPriceOfBank, marketPriceOrBotPrice } from './marketPrices';
+import { BankBackground, FlagMap, Flags } from './minions/types';
+import { BankSortMethod, BankSortMethods, sorts } from './sorts';
+import { ItemBank } from './types';
+import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from './util/canvasUtil';
+import { logError } from './util/logError';
 import resolveItems from './util/resolveItems';
 
 const fonts = {

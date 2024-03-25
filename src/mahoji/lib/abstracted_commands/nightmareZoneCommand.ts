@@ -8,13 +8,13 @@ import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { Skills } from '../../../lib/types';
+import { NightmareZoneActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
 import { MAX_QP } from './questCommand';
 
 const itemBoosts = [

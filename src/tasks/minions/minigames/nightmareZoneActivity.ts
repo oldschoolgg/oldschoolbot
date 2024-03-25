@@ -1,8 +1,8 @@
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { NightmareZoneActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
 
 export const nightmareZoneTask: MinionTask = {
 	type: 'NightmareZone',

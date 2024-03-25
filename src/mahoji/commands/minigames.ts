@@ -1,5 +1,6 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { NMZ_STRATEGY, NMZStrategy } from '../../lib/constants';
 import TrekShopItems from '../../lib/data/buyables/trekBuyables';
 import { LMSBuyables } from '../../lib/data/CollectionsExport';
 import {
@@ -22,6 +23,8 @@ import { castleWarsStartCommand, castleWarsStatsCommand } from '../lib/abstracte
 import { fishingTrawlerCommand } from '../lib/abstracted_commands/fishingTrawler';
 import { gauntletCommand } from '../lib/abstracted_commands/gauntletCommand';
 import {
+	giantsFoundryAlloys,
+	giantsFoundryBuyables,
 	giantsFoundryShopCommand,
 	giantsFoundryStartCommand,
 	giantsFoundryStatsCommand
@@ -44,6 +47,9 @@ import {
 	mahoganyHomesBuyCommand
 } from '../lib/abstracted_commands/mahoganyHomesCommand';
 import {
+	nightmareZoneBuyables,
+	nightmareZoneImbueables,
+	nightmareZoneImbueCommand,
 	nightmareZoneShopCommand,
 	nightmareZoneStartCommand,
 	nightmareZoneStatsCommand
@@ -77,13 +83,6 @@ import {
 	volcanicMineStatsCommand
 } from '../lib/abstracted_commands/volcanicMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { NMZ_STRATEGY, NMZStrategy } from './../../lib/constants';
-import { giantsFoundryAlloys, giantsFoundryBuyables } from './../lib/abstracted_commands/giantsFoundryCommand';
-import {
-	nightmareZoneBuyables,
-	nightmareZoneImbueables,
-	nightmareZoneImbueCommand
-} from './../lib/abstracted_commands/nightmareZoneCommand';
 
 export const minigamesCommand: OSBMahojiCommand = {
 	name: 'minigames',

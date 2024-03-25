@@ -2,9 +2,9 @@ import { notEmpty, objectKeys, randFloat, randInt } from 'e';
 import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
-import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
 import { PvMMethod } from '../constants';
+import { KourendKebosDiary, userhasDiaryTier } from '../diaries';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { KillableMonster } from '../minions/types';
 import { prisma } from '../settings/prisma';

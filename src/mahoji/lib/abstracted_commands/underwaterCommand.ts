@@ -2,10 +2,10 @@ import { randFloat, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { UnderwaterAgilityThievingTrainingSkill } from '../../../lib/constants';
+import { UnderwaterAgilityThievingTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { UnderwaterAgilityThievingTaskOptions } from './../../../lib/types/minions';
 
 export async function underwaterAgilityThievingCommand(
 	channelID: string,

@@ -5,7 +5,7 @@ import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
 
 import { Emoji } from '../constants';
 import { SkillsEnum } from '../skilling/types';
-import { Peak } from './../tickers';
+import { Peak } from '../tickers';
 import resolveItems from './resolveItems';
 
 export function skillLevel(user: MUser, skill: SkillsEnum) {

@@ -3,8 +3,8 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { farmingPlantCommand } from '../../../mahoji/lib/abstracted_commands/farmingCommand';
 import { plants } from '../../skilling/skills/farming';
+import { Plant } from '../../skilling/types';
 import { IPatchDataDetailed } from '../farming/types';
-import { Plant } from './../../skilling/types';
 import { allFarm, replant } from './autoFarmFilters';
 
 export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[], channelID: string) {
