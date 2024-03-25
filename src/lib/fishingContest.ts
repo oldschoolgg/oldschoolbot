@@ -296,12 +296,12 @@ export async function catchFishAtLocation({ user, location }: { user: MUser; loc
 
 	const boosts: string[] = [];
 
-	if (user.hasEquipped('Ring of luck')) {
+	if (user.hasEquippedOrInBank('Ring of luck')) {
 		maxLength += 1;
 		boosts.push('+1cm max len for RoL');
 	}
 
-	if (user.hasEquipped('Crystal fishing rod')) {
+	if (user.hasEquippedOrInBank('Crystal fishing rod')) {
 		maxLength += 5;
 		boosts.push('+5cm max len for Crystal fishing rod');
 	}

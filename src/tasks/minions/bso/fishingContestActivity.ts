@@ -44,7 +44,7 @@ export const fishingContestTask: MinionTask = {
 		});
 
 		const loot = new Bank();
-		let tackleBoxChance = user.hasEquipped('Fishing master cape') ? 2 : 3;
+		let tackleBoxChance = user.hasEquippedOrInBank('Fishing master cape') ? 2 : 3;
 		if (roll(tackleBoxChance)) {
 			for (const [tackleBox, fishLevel] of [
 				['Basic tackle box', 75],

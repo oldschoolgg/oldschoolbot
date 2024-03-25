@@ -306,7 +306,7 @@ export const huntCommand: OSBMahojiCommand = {
 
 		const hunterInputArgs: Parameters<typeof calculateHunterInput>['0'] = {
 			creature,
-			hasHunterMasterCape: user.hasEquipped('Hunter master cape'),
+			hasHunterMasterCape: user.hasEquippedOrInBank('Hunter master cape'),
 			hasGraceful: userHasGracefulEquipped(user),
 			maxTripLength,
 			quantityInput: options.quantity,

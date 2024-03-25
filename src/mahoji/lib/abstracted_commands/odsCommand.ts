@@ -76,7 +76,7 @@ export async function odsStartCommand(klasaUser: MUser, channelID: string) {
 
 	let waveTime = randomVariation(Time.Minute * 4, 10);
 
-	if (klasaUser.hasEquipped('Runecraft master cape')) {
+	if (klasaUser.hasEquippedOrInBank('Runecraft master cape')) {
 		waveTime /= 2;
 		boosts.push(`${Emoji.RunecraftMasterCape} 2x faster`);
 	}
