@@ -8,7 +8,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { badges, badgesCache, Emoji, masteryKey, usernameCache } from '../../lib/constants';
-import { allClNames, allCollectionLogsFlat, getCollectionItems } from '../../lib/data/Collections';
+import { allClNames, getCollectionItems } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
@@ -270,23 +270,20 @@ async function clLb(
 	inputType: string,
 	ironmenOnly: boolean
 ) {
-	const items = getCollectionItems(inputType, false);
+	const { resolvedCl, items } = getCollectionItems(inputType, false, false, true);
 	if (!items || items.length === 0) {
 		return "That's not a valid collection log category. Check +cl for all possible logs.";
 	}
 
-	const clName = allCollectionLogsFlat.find(c => stringMatches(c.name, inputType))?.name;
-	const userEventOrders = clName
-		? await prisma.userEvent.findMany({
-				where: {
-					type: 'CLCompletion',
-					collection_log_name: clName.toLowerCase()
-				},
-				orderBy: {
-					date: 'asc'
-				}
-		  })
-		: null;
+	const userEventOrders = await prisma.userEvent.findMany({
+		where: {
+			type: 'CLCompletion',
+			collection_log_name: resolvedCl.toLowerCase()
+		},
+		orderBy: {
+			date: 'asc'
+		}
+	});
 
 	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200, userEvents: userEventOrders });
 	inputType = toTitleCase(inputType.toLowerCase());
