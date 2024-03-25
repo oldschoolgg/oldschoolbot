@@ -1151,5 +1151,12 @@ export const masterTasks: Task[] = [
 		has: async ({ skillsXP }) => {
 			return skillsXP.divination >= 1_000_000_000;
 		}
+	},
+	{
+		id: 4158,
+		name: 'Acquire, complete and open 500 Elder clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (elder)') >= 500;
+		}
 	}
 ];

@@ -33,6 +33,7 @@ import {
 } from '../minions/data/templeTrekking';
 import { nexLootTable, NexMonster } from '../nex';
 import type { MinigameName } from '../settings/minigames';
+import { ElderClueTable } from '../simulation/elderClue';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { pumpkinHeadUniqueTable } from '../simulation/pumpkinHead';
 import { cookingCL } from '../skilling/skills/cooking/cooking';
@@ -891,6 +892,16 @@ export const allCollectionLogs: ICollection = {
 				items: cluesMasterCL,
 				isActivity: true,
 				fmtProg: clueProg(['Master'])
+			},
+			'Elder Treasure Trails': {
+				alias: ['elder'],
+				allItems: resolveItems([...ElderClueTable.allItems, 'Clue bag', 'Inventors tools', 'Octo']),
+				kcActivity: {
+					Default: async (_, __, { openableScores }) => openableScores.amount(73_124)
+				},
+				items: resolveItems([...ElderClueTable.allItems, 'Clue bag', 'Inventors tools', 'Octo']),
+				isActivity: true,
+				fmtProg: clueProg(['Elder'])
 			},
 			'Grandmaster Treasure Trails': {
 				alias: ['grandmaster', 'clues grandmaster', 'clue grandmaster', 'clue gm', 'gm'],

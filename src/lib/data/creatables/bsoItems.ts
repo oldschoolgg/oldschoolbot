@@ -1365,7 +1365,17 @@ export const BsoCreateables: Createable[] = [
 		noCl: true
 	},
 	...ghostCreatables,
-	...divinationCreatables
+	...divinationCreatables,
+	{
+		name: 'Sundial scimitar',
+		inputItems: new Bank().add('Solite', 7500).add('Atomic energy', 30_000).add('Dragon scimitar'),
+		outputItems: new Bank().add('Sundial scimitar')
+	},
+	{
+		name: 'Offhand spidergore rapier',
+		inputItems: new Bank().add('Offhand drygore rapier').add('Spiders leg bottom'),
+		outputItems: new Bank().add('Offhand spidergore rapier')
+	}
 ];
 
 for (const { cape, skills } of expertCapesSource) {

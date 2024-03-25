@@ -11720,11 +11720,12 @@ setCustomItem(
 
 setCustomItem(
 	73_123,
-	'Elder clue scroll',
+	'Clue scroll (elder)',
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	1
@@ -11732,7 +11733,7 @@ setCustomItem(
 
 setCustomItem(
 	73_124,
-	'Elder casket',
+	'Reward casket (elder)',
 	'Coal',
 	{
 		customItemData: {
@@ -11787,7 +11788,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1
+	1_000_000
 );
 
 setCustomItem(
@@ -12186,4 +12187,52 @@ setCustomItem(
 		}
 	},
 	500_000
+);
+
+setCustomItem(
+	73_162,
+	'Spiders leg bottom',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_163,
+	'Baby araxxor',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_164,
+	'Offhand spidergore rapier',
+	'Offhand drygore longsword',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000_000
+);
+
+setCustomItem(
+	73_165,
+	'Nightmarish ashes',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
 );

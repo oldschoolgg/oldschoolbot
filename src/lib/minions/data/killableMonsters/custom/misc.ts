@@ -7,6 +7,7 @@ import { GearStat } from '../../../../gear';
 import { BattlestaffTable, runeAlchablesTable, StoneSpiritTable } from '../../../../simulation/sharedTables';
 import resolveItems from '../../../../util/resolveItems';
 import { Akumu } from './bosses/Akumu';
+import { Araxxor } from './bosses/Araxxor';
 import { CustomMonster } from './customMonsters';
 import { TormentedDemon } from './TormentedDemon';
 import { VladimirDrakan } from './VladimirDrakan';
@@ -72,5 +73,6 @@ export const MiscCustomMonsters = {
 	EliteBlackKnight,
 	Yeti,
 	VladimirDrakan,
-	Akumu
+	Akumu,
+	Araxxor
 };
