@@ -1292,7 +1292,7 @@ export function getCollectionItems(
 	removeCoins: boolean,
 	returnResolvedCl: boolean
 ): { resolvedCl: string; items: number[] };
-export function getCollectionItems(collection: string, allItems: boolean, removeCoins: boolean): number[];
+export function getCollectionItems(collection: string, allItems?: boolean, removeCoins?: boolean): number[];
 export function getCollectionItems(
 	collection: string,
 	allItems = false,
