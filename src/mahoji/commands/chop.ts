@@ -1,5 +1,6 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { IVY_MAX_TRIP_LENGTH_BOOST, TwitcherGloves, TWITCHERS_GLOVES } from '../../lib/constants';
 import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
@@ -68,6 +69,60 @@ export const axes = [
 		id: itemID('Bronze axe'),
 		multiplier: 1,
 		wcLvl: 1
+	}
+];
+
+export interface ForestryEvent {
+	id: number;
+	name: string;
+	uniqueXP: SkillsEnum;
+}
+
+export const ForestryEvents: ForestryEvent[] = [
+	{
+		id: 1,
+		name: 'Rising Roots',
+		uniqueXP: SkillsEnum.Woodcutting
+	},
+	{
+		id: 2,
+		name: 'Struggling Sapling',
+		uniqueXP: SkillsEnum.Farming
+	},
+	{
+		id: 3,
+		name: 'Flowering Bush',
+		uniqueXP: SkillsEnum.Woodcutting
+	},
+	{
+		id: 4,
+		name: 'Woodcutting Leprechaun',
+		uniqueXP: SkillsEnum.Woodcutting
+	},
+	{
+		id: 5,
+		name: 'Beehive',
+		uniqueXP: SkillsEnum.Construction
+	},
+	{
+		id: 6,
+		name: 'Friendly Ent',
+		uniqueXP: SkillsEnum.Fletching
+	},
+	{
+		id: 7,
+		name: 'Poachers',
+		uniqueXP: SkillsEnum.Hunter
+	},
+	{
+		id: 8,
+		name: 'Enchantment Ritual',
+		uniqueXP: SkillsEnum.Woodcutting
+	},
+	{
+		id: 9,
+		name: 'Pheasant Control',
+		uniqueXP: SkillsEnum.Thieving
 	}
 ];
 
