@@ -452,22 +452,28 @@ async function skillsLb(
 	ironmanOnly: boolean
 ) {
 	let res = [];
-	let overallUsers: Record<string, any>[] = [];
+	let overallUsers: {
+		id: string;
+		totalLevel: number;
+		ironman: boolean;
+		totalXP: number;
+	}[] = [];
 
 	const skillsVals = Object.values(Skills);
 
 	const skill = skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, inputSkill)));
 
 	if (inputSkill === 'overall') {
-		const events = await prisma.userEvent.findMany({
-			where: {
-				type: 'MaxTotalLevel'
-			},
-			orderBy: {
-				date: 'asc'
-			}
-		});
-		const userEventMap = userEventsToMap(events);
+		const maxTotalLevelEventMap = await prisma.userEvent
+			.findMany({
+				where: {
+					type: 'MaxTotalLevel'
+				},
+				orderBy: {
+					date: 'asc'
+				}
+			})
+			.then(res => userEventsToMap(res));
 		const query = `SELECT
 								u.id,
 								${skillsVals.map(s => `"skills.${s.id}"`)},
@@ -491,14 +497,18 @@ async function skillsLb(
 				totalXP: Number(user.totalxp!)
 			};
 		});
-		if (type !== 'xp') {
+		if (type === 'level') {
 			overallUsers.sort((a, b) => {
 				const valueDifference = b.totalLevel - a.totalLevel;
 				if (valueDifference !== 0) {
 					return valueDifference;
 				}
-				const dateA = userEventMap.get(a.id);
-				const dateB = userEventMap.get(b.id);
+				const xpDiff = b.totalXP - a.totalXP;
+				if (xpDiff !== 0) {
+					return xpDiff;
+				}
+				const dateA = maxTotalLevelEventMap.get(a.id);
+				const dateB = maxTotalLevelEventMap.get(b.id);
 				if (dateA && dateB) {
 					return dateA - dateB;
 				}
@@ -527,7 +537,7 @@ async function skillsLb(
 
 		const events = await prisma.userEvent.findMany({
 			where: {
-				type: 'MaxLevel',
+				type: 'MaxXP',
 				skill: skill.id
 			},
 			orderBy: {
