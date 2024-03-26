@@ -1,7 +1,7 @@
 import type { CropUpgradeType } from '@prisma/client';
 
 import { BathhouseTierName } from '../baxtorianBathhouses';
-import { NMZStrategy, UnderwaterAgilityThievingTrainingSkill } from '../constants';
+import { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
 import { Kibble } from '../data/kibble';
 import { IMaterialBank, MaterialType } from '../invention';
 import type { IPatchData } from '../minions/farming/types';
@@ -211,6 +211,8 @@ export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
 	fakeDurationMax: number;
 	fakeDurationMin: number;
 	powerchopping: boolean;
+	forestry?: boolean;
+	twitchers?: TwitcherGloves;
 	logID: number;
 	quantity: number;
 	iQty?: number;

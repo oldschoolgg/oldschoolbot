@@ -1,7 +1,8 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { IVY_MAX_TRIP_LENGTH_BOOST } from '../../lib/constants';
+import { IVY_MAX_TRIP_LENGTH_BOOST, TwitcherGloves, TWITCHERS_GLOVES } from '../../lib/constants';
 import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
@@ -71,6 +72,60 @@ export const axes = [
 	}
 ];
 
+export interface ForestryEvent {
+	id: number;
+	name: string;
+	uniqueXP: SkillsEnum;
+}
+
+export const ForestryEvents: ForestryEvent[] = [
+	{
+		id: 1,
+		name: 'Rising Roots',
+		uniqueXP: SkillsEnum.Woodcutting
+	},
+	{
+		id: 2,
+		name: 'Struggling Sapling',
+		uniqueXP: SkillsEnum.Farming
+	},
+	{
+		id: 3,
+		name: 'Flowering Bush',
+		uniqueXP: SkillsEnum.Woodcutting
+	},
+	{
+		id: 4,
+		name: 'Woodcutting Leprechaun',
+		uniqueXP: SkillsEnum.Woodcutting
+	},
+	{
+		id: 5,
+		name: 'Beehive',
+		uniqueXP: SkillsEnum.Construction
+	},
+	{
+		id: 6,
+		name: 'Friendly Ent',
+		uniqueXP: SkillsEnum.Fletching
+	},
+	{
+		id: 7,
+		name: 'Poachers',
+		uniqueXP: SkillsEnum.Hunter
+	},
+	{
+		id: 8,
+		name: 'Enchantment Ritual',
+		uniqueXP: SkillsEnum.Woodcutting
+	},
+	{
+		id: 9,
+		name: 'Pheasant Control',
+		uniqueXP: SkillsEnum.Thieving
+	}
+];
+
 export const chopCommand: OSBMahojiCommand = {
 	name: 'chop',
 	description: 'Chop logs using the Woodcutting skill.',
@@ -106,6 +161,19 @@ export const chopCommand: OSBMahojiCommand = {
 			name: 'powerchop',
 			description: 'Set this to true to powerchop. Higher xp/hour, No loot (default false, optional).',
 			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'forestry_events',
+			description: 'Set this to true to participate in forestry events. (default false, optional).',
+			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'twitchers_gloves',
+			description: "Change the settings of your Twitcher's gloves. (default egg, optional)",
+			required: false,
+			choices: TWITCHERS_GLOVES.map(i => ({ name: `${i} nest`, value: i }))
 		}
 	],
 	run: async ({
@@ -116,6 +184,8 @@ export const chopCommand: OSBMahojiCommand = {
 		name: string;
 		quantity?: number;
 		powerchop?: boolean;
+		forestry_events?: boolean;
+		twitchers_gloves?: TwitcherGloves;
 	}>) => {
 		const user = await mUserFetch(userID);
 		const log = Woodcutting.Logs.find(
@@ -127,7 +197,7 @@ export const chopCommand: OSBMahojiCommand = {
 
 		if (!log) return "That's not a valid log to chop.";
 
-		let { quantity, powerchop } = options;
+		let { quantity, powerchop, forestry_events, twitchers_gloves } = options;
 
 		const skills = user.skillsAsLevels;
 
@@ -150,11 +220,19 @@ export const chopCommand: OSBMahojiCommand = {
 		let wcLvl = skills.woodcutting;
 
 		// Invisible wc boost for woodcutting guild, forestry events don't happen in woodcutting guild
-		if (resolveItems(['Redwood logs', 'Logs']).includes(log.id) || log.lootTable) {
+		if (
+			!forestry_events ||
+			resolveItems(['Redwood logs', 'Logs']).includes(log.id) ||
+			log.lootTable ||
+			log.name === 'Ivy'
+		) {
+			forestry_events = false;
 			if (skills.woodcutting >= 60 && log.wcGuild) {
 				boosts.push('+7 invisible WC lvls at the Woodcutting guild');
 				wcLvl += 7;
 			}
+		} else {
+			boosts.push('Participating in Forestry events');
 		}
 
 		// Enable 1.5 tick teaks half way to 99
@@ -164,6 +242,7 @@ export const chopCommand: OSBMahojiCommand = {
 
 		// Default bronze axe, last in the array
 		let axeMultiplier = 1;
+		boosts.push(`**${axeMultiplier}x** success multiplier for Bronze axe`);
 
 		if (user.hasEquippedOrInBank(['Drygore axe'])) {
 			let [predeterminedTotalTime] = determineWoodcuttingTime({
@@ -181,9 +260,11 @@ export const chopCommand: OSBMahojiCommand = {
 			});
 			if (boostRes.success) {
 				axeMultiplier = 10;
+				boosts.pop();
 				boosts.push(`**10x** success multiplier for Drygore axe (${boostRes.messages})`);
 			} else {
 				axeMultiplier = 8;
+				boosts.pop();
 				boosts.push('**8x** success multiplier for Dwarven greataxe');
 			}
 		} else {
@@ -196,7 +277,8 @@ export const chopCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (log.name === 'Ivy') {
+		// Ivy choping
+		if (!forestry_events && log.name === 'Ivy') {
 			boosts.push(`+${formatDuration(IVY_MAX_TRIP_LENGTH_BOOST, true)} max trip length for Ivy`);
 			powerchop = false;
 		}
@@ -244,6 +326,8 @@ export const chopCommand: OSBMahojiCommand = {
 			quantity: newQuantity,
 			iQty: options.quantity ? options.quantity : undefined,
 			powerchopping: powerchop,
+			forestry: forestry_events,
+			twitchers: twitchers_gloves,
 			duration,
 			fakeDurationMin,
 			fakeDurationMax,
