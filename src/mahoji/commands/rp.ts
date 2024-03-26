@@ -91,6 +91,12 @@ export const rpCommand: OSBMahojiCommand = {
 					name: 'analytics_tick',
 					description: 'analyticsTick.',
 					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'networth_sync',
+					description: 'networth_sync.',
+					options: []
 				}
 			]
 		},
@@ -448,6 +454,7 @@ export const rpCommand: OSBMahojiCommand = {
 			patreon_reset?: {};
 			view_all_items?: {};
 			analytics_tick?: {};
+			networth_sync?: {};
 		};
 		player?: {
 			viewbank?: { user: MahojiUserOption; json?: boolean };
@@ -556,7 +563,29 @@ Date: ${dateFm(date)}`;
 			await analyticsTick();
 			return 'Finished.';
 		}
-
+		if (options.action?.networth_sync) {
+			const users = await prisma.user.findMany({
+				where: {
+					GP: {
+						gt: 10_000_000_000
+					}
+				},
+				take: 20,
+				orderBy: {
+					GP: 'desc'
+				},
+				select: {
+					id: true
+				}
+			});
+			for (const { id } of users) {
+				const user = await mUserFetch(id);
+				await user.update({
+					cached_networth_value: (await user.calculateNetWorth()).value
+				});
+			}
+			return 'Done.';
+		}
 		if (options.action?.view_all_items) {
 			const result = await prisma.$queryRawUnsafe<
 				{ item_id: number }[]
