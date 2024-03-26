@@ -26,6 +26,7 @@ import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
 import { divinationEnergies } from './bso/divination';
 import { TOBUniques } from './data/tob';
+import { marketPriceOfBank, marketPriceOrBotPrice } from './marketPrices';
 import { SkillsEnum } from './skilling/types';
 import { applyCustomItemEffects } from './util/customItemEffects';
 import resolveItems from './util/resolveItems';
@@ -279,6 +280,7 @@ function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
 
 export const bankFlags = [
 	'show_price',
+	'show_market_price',
 	'show_alch',
 	'show_id',
 	'show_names',
@@ -649,6 +651,8 @@ class BankImageTask {
 				}
 			} else if (mahojiFlags?.includes('show_weights') && weightings && weightings[item.id]) {
 				bottomItemText = weightings[item.id];
+			} else if (mahojiFlags?.includes('show_market_price')) {
+				bottomItemText = marketPriceOrBotPrice(item.id) * quantity;
 			}
 
 			const forcedShortName = forcedShortNameMap.get(item.id);
@@ -835,7 +839,7 @@ class BankImageTask {
 		}
 
 		if (showValue) {
-			title += ` (Value: ${toKMB(totalValue)})`;
+			title += ` (V: ${toKMB(totalValue)} / MV: ${toKMB(marketPriceOfBank(bank))}) `;
 		}
 
 		drawTitle(ctx, title, canvas);

@@ -514,7 +514,7 @@ model User {
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
 
-  last_mortimer_kill_date DateTime? @db.Timestamp(6)
+  cached_networth_value BigInt?
 
   geListings        GEListing[]
   bingo_participant BingoParticipant[]
