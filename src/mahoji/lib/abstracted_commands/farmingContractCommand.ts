@@ -1,3 +1,4 @@
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { defaultFarmingContract } from '../../../lib/minions/farming';
@@ -23,6 +24,12 @@ const contractToFarmingLevel = {
 	medium: 65,
 	hard: 85
 };
+
+const autoContractButton = new ButtonBuilder()
+	.setCustomId('AUTO_FARMING_CONTRACT')
+	.setLabel('Auto Farming Contract')
+	.setStyle(ButtonStyle.Secondary)
+	.setEmoji('977410792754413668');
 
 export async function farmingContractCommand(userID: string, input?: ContractOption): CommandResponse {
 	const user = await mUserFetch(userID);
@@ -81,7 +88,9 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 					)
 				).files,
 				components:
-					newContractLevel !== 'easy' ? makeComponents([makeEasierFarmingContractButton()]) : undefined
+					newContractLevel !== 'easy'
+						? makeComponents([makeEasierFarmingContractButton(), autoContractButton])
+						: makeComponents([autoContractButton])
 			};
 		}
 
@@ -98,8 +107,8 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 			).files,
 			components:
 				currentContract.difficultyLevel !== 'easy'
-					? makeComponents([makeEasierFarmingContractButton()])
-					: undefined
+					? makeComponents([makeEasierFarmingContractButton(), autoContractButton])
+					: makeComponents([autoContractButton])
 		};
 	}
 
@@ -134,7 +143,10 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 				`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
 			)
 		).files,
-		components: input !== 'easy' ? makeComponents([makeEasierFarmingContractButton()]) : undefined
+		components:
+			input !== 'easy'
+				? makeComponents([makeEasierFarmingContractButton(), autoContractButton])
+				: makeComponents([autoContractButton])
 	};
 }
 
