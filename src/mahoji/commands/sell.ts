@@ -163,7 +163,8 @@ export const sellCommand: OSBMahojiCommand = {
 			bankToSell.has('Golden pheasant egg') ||
 			bankToSell.has('Fox whistle') ||
 			bankToSell.has('Petal garland') ||
-			bankToSell.has('Pheasant tail feathers')
+			bankToSell.has('Pheasant tail feathers') ||
+			bankToSell.has('Sturdy beehive parts')
 		) {
 			const forestryBank = new Bank();
 			const loot = new Bank();
@@ -182,6 +183,10 @@ export const sellCommand: OSBMahojiCommand = {
 			if (bankToSell.has('Pheasant tail feathers')) {
 				forestryBank.add('Pheasant tail feathers', bankToSell.amount('Pheasant tail feathers'));
 				loot.add('Anima-infused bark', bankToSell.amount('Pheasant tail feathers') * 5);
+			}
+			if (bankToSell.has('Sturdy beehive parts')) {
+				forestryBank.add('Sturdy beehive parts', bankToSell.amount('Sturdy beehive parts'));
+				loot.add('Anima-infused bark', bankToSell.amount('Sturdy beehive parts') * 25);
 			}
 
 			await handleMahojiConfirmation(

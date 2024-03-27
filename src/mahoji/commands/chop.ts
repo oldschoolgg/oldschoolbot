@@ -152,21 +152,27 @@ export const chopCommand: OSBMahojiCommand = {
 		const boosts = [];
 
 		let wcLvl = skills.woodcutting;
+		const farmingLvl = user.skillsAsLevels.farming;
 
-		// Invisible wc boost for woodcutting guild, forestry events don't happen in woodcutting guild
+		// Redwood logs, logs, sulliuscep, farming patches, woodcutting guild don't spawn forestry events
 		if (!forestry_events || resolveItems(['Redwood logs', 'Logs']).includes(log.id) || log.lootTable) {
 			forestry_events = false;
+			// Invisible wc boost for woodcutting guild
 			if (skills.woodcutting >= 60 && log.wcGuild) {
 				boosts.push('+7 invisible WC lvls at the Woodcutting guild');
 				wcLvl += 7;
 			}
+			// 1.5 tick hardwood at 92 wc, 1.5t is only possible at farming patches
+			if (skills.woodcutting >= 92) {
+				if (resolveItems('Teak logs').includes(log.id) && farmingLvl >= 35) {
+					boosts.push('1.5t woodcutting teak trees with 92+ wc & 35+ farming');
+				}
+				if (resolveItems('Mahogany logs').includes(log.id) && farmingLvl >= 55) {
+					boosts.push('1.5t woodcutting mahogany trees with 92+ wc & 55+ farming');
+				}
+			}
 		} else {
 			boosts.push('Participating in Forestry events');
-		}
-
-		// Enable 1.5 tick teaks half way to 99
-		if (skills.woodcutting >= 92 && (log.name === 'Teak Logs' || log.name === 'Mahogany Logs')) {
-			boosts.push('1.5t teak/mahogany chopping with 92+ wc');
 		}
 
 		// Default bronze axe, last in the array
@@ -209,6 +215,7 @@ export const chopCommand: OSBMahojiCommand = {
 			log,
 			axeMultiplier,
 			powerchopping: powerchop,
+			forestry: forestry_events,
 			woodcuttingLvl: wcLvl
 		});
 
