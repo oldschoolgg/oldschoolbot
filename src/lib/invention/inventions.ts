@@ -421,7 +421,7 @@ export const Inventions: readonly Invention[] = [
 			heavy: 1
 		}),
 		itemCost: null,
-		flags: ['equipped'],
+		flags: ['bank'],
 		inventionLevelNeeded: 100,
 		usageCostMultiplier: 1
 	},
@@ -436,7 +436,7 @@ export const Inventions: readonly Invention[] = [
 			strong: 1
 		}),
 		itemCost: null,
-		flags: ['equipped'],
+		flags: ['bank'],
 		inventionLevelNeeded: 100,
 		usageCostMultiplier: 1
 	},
@@ -450,7 +450,7 @@ export const Inventions: readonly Invention[] = [
 			sharp: 3
 		}),
 		itemCost: new Bank().add('Dwarven greataxe'),
-		flags: ['equipped'],
+		flags: ['bank'],
 		inventionLevelNeeded: 100,
 		usageCostMultiplier: 0.65
 	},
