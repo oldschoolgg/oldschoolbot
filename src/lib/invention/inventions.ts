@@ -713,3 +713,4 @@ export async function userHasFlappy({
 }
 
 export const inventionCL = [...Inventions.map(i => i.item.id), ...resolveItems('Cogsworth')];
+ 
