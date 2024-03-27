@@ -290,6 +290,11 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 			`Could not find task or slayer master for user ${id} task ${currentTask.monster_id} master ${currentTask.slayer_master_id}`,
 			{ userID: id }
 		);
+		// 'Skip' broken task:
+		await prisma.slayerTask.update({
+			data: { skipped: true, quantity_remaining: 0 },
+			where: { id: currentTask.id }
+		});
 		return {
 			currentTask: null,
 			assignedTask: null,
