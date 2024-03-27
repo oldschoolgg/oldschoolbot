@@ -1286,20 +1286,37 @@ export function getPossibleOptions() {
 	return new AttachmentBuilder(Buffer.from(normalTable), { name: 'possible_logs.txt' });
 }
 
-export function getCollectionItems(collection: string, allItems = false, removeCoins = false): number[] {
+export function getCollectionItems(
+	collection: string,
+	allItems: boolean,
+	removeCoins: boolean,
+	returnResolvedCl: boolean
+): { resolvedCl: string; items: number[] };
+export function getCollectionItems(collection: string, allItems?: boolean, removeCoins?: boolean): number[];
+export function getCollectionItems(
+	collection: string,
+	allItems = false,
+	removeCoins = false,
+	returnResolvedCl?: boolean
+): { resolvedCl: string; items: number[] } | number[] {
+	const returnValue = (clName: string, items: number[]) => {
+		return returnResolvedCl !== undefined ? { resolvedCl: clName.toLowerCase(), items } : items;
+	};
 	if (collection === 'overall+') {
-		return overallPlusItems;
+		return returnValue(collection, overallPlusItems);
 	}
 	if (['overall', 'all'].some(s => stringMatches(collection, s))) {
-		return allCLItemsFiltered;
+		return returnValue('overall', allCLItemsFiltered);
 	}
 
 	let _items: number[] = [];
+	let _clName: string = '';
 	loop: for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (
 			stringMatches(category, collection) ||
 			(entries.alias && entries.alias.some(a => stringMatches(a, collection)))
 		) {
+			_clName = category;
 			_items = uniqueArr(
 				Object.values(entries.activities)
 					.map(e => [...new Set([...e.items, ...(allItems ? e.allItems ?? [] : [])])])
@@ -1313,6 +1330,7 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 				stringMatches(activityName, collection) ||
 				(attributes.alias && attributes.alias.find(a => stringMatches(a, collection)))
 			) {
+				_clName = activityName;
 				_items = [
 					...new Set([...attributes.items, ...(allItems && attributes.allItems ? attributes.allItems : [])])
 				];
@@ -1326,11 +1344,12 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 			[m.name, ...m.aliases].some(name => stringMatches(name, collection))
 		);
 		if (_monster) {
+			_clName = _monster.name;
 			_items = uniqueArr(Monsters.get(_monster!.id)!.allItems);
 		}
 	}
 	if (removeCoins && _items.includes(995)) _items = removeFromArr(_items, 995);
-	return _items;
+	return returnValue(_clName, _items);
 }
 
 function getUserClData(usarBank: ItemBank, clItems: number[]): [number, number] {
