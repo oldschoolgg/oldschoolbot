@@ -355,9 +355,8 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.SpiritualMage,
-		amount: [110, 170],
-
+		monster: Monsters.SpiritualRanger,
+		amount: [120, 185],
 		weight: 6,
 		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
 		levelRequirements: {
@@ -366,8 +365,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		combatLevel: 60,
 		slayerLevel: 63,
 		questPoints: 3,
-		unlocked: true,
-		dontAssign: true
+		unlocked: true
 	},
 	{
 		monster: Monsters.SteelDragon,
