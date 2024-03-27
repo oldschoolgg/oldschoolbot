@@ -42,6 +42,7 @@ import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../config';
+import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { ClueTiers } from './clues/clueTiers';
 import {
 	badgesCache,
@@ -774,4 +775,8 @@ export function checkRangeGearWeapon(gear: Gear) {
 
 export function hasUnlockedAtlantis(user: MUser) {
 	return doaCL.some(itemID => user.cl.has(itemID));
+}
+
+export function resetCooldown(user: MUser, key?: string) {
+	return Cooldowns.delete(user.id, key);
 }
