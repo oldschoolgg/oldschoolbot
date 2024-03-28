@@ -188,7 +188,7 @@ export const mixCommand: OSBMahojiCommand = {
 			str += `\n**Boosts:** ${boosts.join(', ')}`;
 		}
 		if (hasScroll) {
-			str += ' Your scroll of cleansing enables you to save 10% of your secondaries: ';
+			str += ' Your scroll of cleansing enables you to save 10% of your secondaries.';
 		}
 
 		return str;
