@@ -157,9 +157,9 @@ export const ratesCommand: OSBMahojiCommand = {
 ${zygomiteFarmingSource
 	.map(
 		z =>
-			`${bold(z.seedItem.name)} evolves from: ${z.mutatedFromItems
-				.map(itemNameFromID)
-				.join(', ')}, drops these items: ${z.lootTable.allItems.map(itemNameFromID).join(', ')}.`
+			`${bold(z.seedItem.name)} evolves from: ${
+				!z.mutatedFromItems ? 'No items' : z.mutatedFromItems.map(itemNameFromID).join(', ')
+			}, drops these items: ${!z.lootTable ? 'Nothing' : z.lootTable.allItems.map(itemNameFromID).join(', ')}.`
 	)
 	.join('\n\n')}`;
 		}

@@ -430,5 +430,17 @@ export const Castables: Castable[] = [
 		output: null,
 		ticks: 8,
 		prayerXp: 990
+	},
+	{
+		id: itemID('Cursed onyx'),
+		name: 'Exorcise cursed onyx',
+		input: new Bank().add('Cursed onyx'),
+		output: new Bank().add('Uncut onyx'),
+		xp: 7583,
+		level: 90,
+		ticks: 2,
+		qpRequired: 50,
+		craftXp: 154,
+		craftLevel: 90
 	}
 ];

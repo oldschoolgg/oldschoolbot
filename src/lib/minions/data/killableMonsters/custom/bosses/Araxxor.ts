@@ -1,29 +1,16 @@
-/**
- * - Enrage mechanic
- * - Food/pots ?
- *
- *
- *
- */
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { GearStat } from '../../../../../gear';
-import { DragonTable } from '../../../../../simulation/grandmasterClue';
-import { runeAlchablesTable, UncutGemTable } from '../../../../../simulation/sharedTables';
 import { addStatsOfItemsTogether } from '../../../../../structures/Gear';
 import itemID from '../../../../../util/itemID';
 import resolveItems from '../../../../../util/resolveItems';
 import { CustomMonster } from '../customMonsters';
 
 export const AraxxorLootTable = new LootTable()
-	.every(
-		new LootTable().add(UncutGemTable).add('Royal dragonhide', [10, 20]).add(runeAlchablesTable).add(DragonTable),
-		[3, 5]
-	)
-	.tertiary(100, 'Baby araxxor')
-	.tertiary(100, 'Spiders leg bottom')
+	.tertiary(1000, 'Baby araxxor')
+	.tertiary(300, 'Spiders leg bottom')
 	.tertiary(100, 'Elder scroll piece');
 
 export const Araxxor: CustomMonster = {
@@ -40,13 +27,11 @@ export const Araxxor: CustomMonster = {
 	attackStyleToUse: GearStat.AttackSlash,
 	attackStylesUsed: [GearStat.AttackSlash],
 	levelRequirements: {
-		hitpoints: 100,
-		attack: 100,
-		strength: 100,
-		defence: 100,
-		magic: 100,
-		ranged: 100,
-		slayer: 100
+		hitpoints: 120,
+		attack: 120,
+		strength: 120,
+		defence: 120,
+		slayer: 120
 	},
 	pohBoosts: {
 		pool: {

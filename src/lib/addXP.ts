@@ -171,7 +171,9 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		params.amount *= 2;
 		gorajanBoost = true;
 	}
-	let firstAgeEquipped = 0;
+
+	let totalFirstAgeBonus = 0;
+	let originalFirstAgeEquipped = 0;
 	for (const item of resolveItems([
 		'First age tiara',
 		'First age amulet',
@@ -180,16 +182,24 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		'First age ring'
 	])) {
 		if (user.hasEquipped(item)) {
-			firstAgeEquipped += 1;
+			originalFirstAgeEquipped += 1;
+			totalFirstAgeBonus += 1;
 		}
 	}
-	if (firstAgeEquipped > 0) {
-		if (firstAgeEquipped === 5) {
-			params.amount = increaseNumByPercent(params.amount, 6);
-		} else {
-			params.amount = increaseNumByPercent(params.amount, firstAgeEquipped);
+	if (originalFirstAgeEquipped === 5) {
+		totalFirstAgeBonus += 1;
+	}
+	let newFirstAgeEquipped = 0;
+	for (const item of resolveItems(['First age robe bottom', 'First age robe top'])) {
+		if (user.hasEquipped(item)) {
+			newFirstAgeEquipped += 1.5;
+			totalFirstAgeBonus += 1.5;
 		}
 	}
+	if (newFirstAgeEquipped === 3) {
+		totalFirstAgeBonus += 1;
+	}
+
 	const boosts = staticXPBoosts.get(params.skillName);
 	if (boosts && !params.artificial) {
 		for (const booster of boosts) {
@@ -385,10 +395,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		if (gorajanBoost && !params.minimal) {
 			str += ' (2x boost from Gorajan armor)';
 		}
-		if (firstAgeEquipped && !params.minimal) {
-			str += ` You received ${
-				firstAgeEquipped === 5 ? 6 : firstAgeEquipped
-			}% bonus XP for First age outfit items.`;
+		if (totalFirstAgeBonus > 0 && !params.minimal) {
+			str += ` You received ${totalFirstAgeBonus}% bonus XP for First age outfit items.`;
 		}
 
 		if (params.duration) {

@@ -421,7 +421,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: async ({ data, user, messages }) => {
 			if (!user.bank.has('Moonlight mutator')) return;
 			if (user.user.disabled_inventions.includes(InventionID.MoonlightMutator)) return;
-			const randomZyg = randArrItem(zygomiteFarmingSource);
+			const randomZyg = randArrItem(zygomiteFarmingSource.filter(z => z.lootTable !== null));
 			const loot = new Bank();
 			const cost = new Bank();
 
@@ -429,7 +429,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (minutes < 1) return;
 			for (let i = 0; i < minutes; i++) {
 				if (roll(zygomiteSeedMutChance)) {
-					const ownedSeed = shuffleArr(randomZyg.mutatedFromItems).find(seed => user.bank.has(seed));
+					const ownedSeed = shuffleArr(randomZyg.mutatedFromItems!).find(seed => user.bank.has(seed));
 					if (!ownedSeed) continue;
 					cost.add(ownedSeed);
 

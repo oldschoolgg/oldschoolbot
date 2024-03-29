@@ -11785,7 +11785,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	1_000_000
@@ -11932,7 +11933,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1
+	100_000_000
 );
 
 setCustomItem(
@@ -12235,4 +12236,64 @@ setCustomItem(
 		}
 	},
 	1000
+);
+
+setCustomItem(
+	73_166,
+	'Cursed onyx',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	73_167,
+	'Potion of light',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	73_168,
+	'Mini akumu',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	73_169,
+	'Deathly toxic potion',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_170,
+	'Toxic zygomite spores',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
 );

@@ -177,7 +177,7 @@ export const ashes: Ash[] = [
 	{
 		name: 'Nightmarish ashes',
 		level: 1,
-		xp: 365,
+		xp: 965,
 		inputId: itemID('Nightmarish ashes')
 	}
 ];

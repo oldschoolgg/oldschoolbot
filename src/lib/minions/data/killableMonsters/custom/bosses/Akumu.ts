@@ -4,14 +4,17 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { GearStat } from '../../../../../gear';
 import { DragonTable } from '../../../../../simulation/grandmasterClue';
-import { runeAlchablesTable, UncutGemTable } from '../../../../../simulation/sharedTables';
-import { addStatsOfItemsTogether } from '../../../../../structures/Gear';
+import { runeAlchablesTable } from '../../../../../simulation/sharedTables';
 import itemID from '../../../../../util/itemID';
 import resolveItems from '../../../../../util/resolveItems';
 import { CustomMonster } from '../customMonsters';
 
 export const AkumuLootTable = new LootTable()
-	.every(new LootTable().add(UncutGemTable).add(runeAlchablesTable).add(DragonTable), [3, 5])
+	.tertiary(1000, 'Mini akumu')
+	.every('Nightmarish ashes', [5, 10])
+	.every('Cursed onyx')
+	.tertiary(10, 'Demon statuette')
+	.every(new LootTable().add(runeAlchablesTable).add(DragonTable), [3, 5])
 	.tertiary(100, 'Elder scroll piece');
 
 export const Akumu: CustomMonster = {
@@ -28,13 +31,11 @@ export const Akumu: CustomMonster = {
 	attackStyleToUse: GearStat.AttackSlash,
 	attackStylesUsed: [GearStat.AttackSlash],
 	levelRequirements: {
-		hitpoints: 100,
-		attack: 100,
-		strength: 100,
-		defence: 100,
-		magic: 100,
-		ranged: 100,
-		slayer: 100
+		hitpoints: 120,
+		attack: 120,
+		strength: 120,
+		defence: 120,
+		slayer: 120
 	},
 	pohBoosts: {
 		pool: {
@@ -48,18 +49,12 @@ export const Akumu: CustomMonster = {
 		highestDeathChance: 65
 	},
 	minimumFoodHealAmount: 22,
-	allItems: resolveItems(['Lunite', 'Moonlight essence', 'Moondash charm', 'Noom']),
+	allItems: resolveItems([]),
 	minimumGearRequirements: {
 		melee: {}
 	},
-	minimumWeaponShieldStats: {
-		melee: addStatsOfItemsTogether(resolveItems(['Soulreaper axe']), [GearStat.AttackSlash])
-	},
 	itemCost: {
-		itemCost: new Bank()
-			.add('Super combat potion(4)')
-			.add('Enhanced saradomin brew', 3)
-			.add('Enhanced super restore'),
+		itemCost: new Bank().add('Super combat potion(4)').add('Potion of light'),
 		qtyPerKill: 1
 	},
 	tameCantKill: true,
@@ -70,7 +65,7 @@ export const Akumu: CustomMonster = {
 			gearSetup: 'melee',
 			items: [
 				{
-					boostPercent: 25,
+					boostPercent: 20,
 					itemID: itemID('Axe of the high sungod')
 				}
 			]

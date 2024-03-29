@@ -1375,6 +1375,14 @@ export const BsoCreateables: Createable[] = [
 		name: 'Offhand spidergore rapier',
 		inputItems: new Bank().add('Offhand drygore rapier').add('Spiders leg bottom'),
 		outputItems: new Bank().add('Offhand spidergore rapier')
+	},
+	{
+		name: 'Potion of light',
+		inputItems: new Bank().add('Elder rune', 30).add('Solite', 2),
+		outputItems: new Bank().add('Potion of light'),
+		materialCost: new MaterialBank({
+			wooden: 100
+		})
 	}
 ];
 

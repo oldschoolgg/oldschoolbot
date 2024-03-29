@@ -47,6 +47,12 @@ export const zygomiteFarmingSource = [
 			)
 			.every(new LootTable().add('Avocado').add('Mango').add('Papaya fruit').add('Lychee'), [50, 150])
 			.every(MysteryBoxes)
+	},
+	{
+		name: 'Toxic zygomite',
+		mutatedFromItems: null,
+		seedItem: getOSItem('Toxic zygomite spores'),
+		lootTable: null
 	}
 ];
 
@@ -87,10 +93,12 @@ export const zygomitePlants: Plant[] = zygomiteFarmingSource.map(src => ({
 			globalDroprates.fungo.baseRate,
 			globalDroprates.fungo.clIncrease
 		);
-		for (let i = 0; i < quantity; i++) {
-			loot.add(src.lootTable.roll());
-			if (roll(dropRate)) {
-				loot.add('Fungo');
+		if (src.lootTable) {
+			for (let i = 0; i < quantity; i++) {
+				loot.add(src.lootTable.roll());
+				if (roll(dropRate)) {
+					loot.add('Fungo');
+				}
 			}
 		}
 	}

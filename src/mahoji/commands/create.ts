@@ -1,4 +1,4 @@
-import { isFunction } from 'e';
+import { isFunction, reduceNumByPercent } from 'e';
 import { readFileSync } from 'fs';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
@@ -146,6 +146,15 @@ export const createCommand: OSBMahojiCommand = {
 			: null;
 		if (materialCost && !materialsOwned.has(materialCost)) {
 			return `You don't own the materials needed to create this, you need: ${materialCost}.`;
+		}
+
+		if (
+			materialCost &&
+			materialCost.has('wooden') &&
+			createableItem.name === 'Potion of light' &&
+			user.skillsAsXP.firemaking >= 500_000_000
+		) {
+			materialCost.bank.wooden = reduceNumByPercent(materialCost.bank.wooden!, 20);
 		}
 
 		// Check for any items they cant have 2 of.
