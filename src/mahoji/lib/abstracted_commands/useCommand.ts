@@ -610,7 +610,7 @@ usables.push({
 	}
 });
 
-for (const zygomite of resolveItems(['Herbal zygomite', 'Barky zygomite', 'Fruity zygomite'])) {
+for (const zygomite of resolveItems(['Herbal zygomite spores', 'Barky zygomite spores', 'Fruity zygomite spores'])) {
 	usables.push({
 		items: [getOSItem(zygomite), getOSItem('Deathly toxic potion')],
 		run: async (user: MUser) => {
