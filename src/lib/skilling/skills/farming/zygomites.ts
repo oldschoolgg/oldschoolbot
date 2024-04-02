@@ -2,6 +2,7 @@ import { roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../../bsoOpenables';
+import { BitField } from '../../../constants';
 import { globalDroprates } from '../../../data/globalDroprates';
 import { clAdjustedDroprate } from '../../../util';
 import getOSItem from '../../../util/getOSItem';
@@ -86,7 +87,7 @@ export const zygomitePlants: Plant[] = zygomiteFarmingSource.map(src => ({
 	additionalPatchesByFarmGuildAndLvl: [],
 	timePerPatchTravel: 10,
 	timePerHarvest: 5,
-	onHarvest: ({ loot, user, quantity }) => {
+	onHarvest: async ({ loot, user, quantity, messages }) => {
 		const dropRate = clAdjustedDroprate(
 			user,
 			'Fungo',
@@ -100,6 +101,16 @@ export const zygomitePlants: Plant[] = zygomiteFarmingSource.map(src => ({
 					loot.add('Fungo');
 				}
 			}
+		}
+		if (src.name === 'Toxic zygomite') {
+			await user.update({
+				bitfield: {
+					push: BitField.HasUnlockedAraxxor
+				}
+			});
+			messages.push(
+				'The toxic zygomite has infected a nearby spider nest, causing them to glow green and run away. Your minion has a bad feeling something bad happened to them.'
+			);
 		}
 	}
 }));

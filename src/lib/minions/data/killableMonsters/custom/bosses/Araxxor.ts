@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { BitField } from '../../../../../constants';
 import { GearStat } from '../../../../../gear';
 import { addStatsOfItemsTogether } from '../../../../../structures/Gear';
 import itemID from '../../../../../util/itemID';
@@ -9,7 +10,9 @@ import resolveItems from '../../../../../util/resolveItems';
 import { CustomMonster } from '../customMonsters';
 
 export const AraxxorLootTable = new LootTable()
-	.tertiary(1000, 'Baby araxxor')
+	.every('Araxxor eggs')
+	.add("Red spiders' eggs", [2000, 3500])
+	.tertiary(300, 'Araxxor webbing')
 	.tertiary(300, 'Spiders leg bottom')
 	.tertiary(100, 'Elder scroll piece');
 
@@ -57,7 +60,7 @@ export const Araxxor: CustomMonster = {
 		qtyPerKill: 1
 	},
 	tameCantKill: true,
-	itemsRequired: resolveItems(['Sundial scimitar']),
+	itemsRequired: resolveItems([]),
 	setupsUsed: ['melee'],
 	equippedItemBoosts: [
 		{
@@ -69,5 +72,6 @@ export const Araxxor: CustomMonster = {
 				}
 			]
 		}
-	]
+	],
+	requiredBitfield: BitField.HasUnlockedAraxxor
 };

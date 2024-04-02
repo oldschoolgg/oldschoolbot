@@ -9286,8 +9286,7 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	1_000_000
@@ -12289,6 +12288,32 @@ setCustomItem(
 setCustomItem(
 	73_170,
 	'Toxic zygomite spores',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+// addInvention(73_179, 'Webshooter');
+
+setCustomItem(
+	73_180,
+	'Araxxor webbing',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_181,
+	'Araxxor eggs',
 	'Coal',
 	{
 		customItemData: {

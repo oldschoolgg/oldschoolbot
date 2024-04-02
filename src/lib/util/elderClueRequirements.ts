@@ -16,6 +16,39 @@ import { getSimilarItems } from '../data/similarItems';
 import resolveItems from './resolveItems';
 import { itemNameFromID } from './smallUtils';
 
+export const elderRequiredClueCLItems = uniqueArr([
+	...cluesGrandmasterCL,
+	...cluesEliteCL,
+	...cluesBeginnerCL,
+	...cluesEasyCL,
+	...cluesMediumCL,
+	...cluesHardCL,
+	...cluesMasterCL,
+	...cluesSharedCL
+]);
+
+export const elderSherlockItems = resolveItems([
+	'Tzkal cape',
+	'Axe of the high sungod',
+	'Hellfire bow',
+	'Ignis ring(i)',
+	'Infernal bulwark',
+	'Royal crossbow',
+	'Spellbound ring(i)',
+	'Titan ballista',
+	'Ring of piercing (i)',
+	'Drygore axe',
+	'Dwarven warhammer',
+	'Deathtouched dart'
+]);
+
+export const elderSherlockCLItems = resolveItems([
+	'Ganodermic slayer helm',
+	'Farseer kiteshield',
+	'Elder rumble greegree',
+	'Karambinana'
+]);
+
 export async function checkElderClueRequirements(user: MUser) {
 	let unmetRequirements: string[] = [];
 
@@ -27,11 +60,13 @@ export async function checkElderClueRequirements(user: MUser) {
 	}
 
 	// Atleast 1 5b XP skill
-	const highestSkill = Object.entries(user.skillsAsXP).sort((a, b) => a[1] - b[1])[0];
+	const highestSkill = Object.entries(user.skillsAsXP).sort((a, b) => b[1] - a[1])[0];
 	if (highestSkill[1] < MAX_XP) {
-		return `You need atleast 1 skill with the max (5b) XP, your highest skill is ${
-			highestSkill[0]
-		} with ${highestSkill[1].toLocaleString()} XP.`;
+		unmetRequirements.push(
+			`You need atleast 1 skill with the max (5b) XP, your highest skill is ${
+				highestSkill[0]
+			} with ${highestSkill[1].toLocaleString()} XP.`
+		);
 	}
 
 	// Atleast 2 expert capes
@@ -40,21 +75,12 @@ export async function checkElderClueRequirements(user: MUser) {
 		if (user.cl.has(cape)) count++;
 	}
 	if (count < 2) {
-		return 'You need to have bought atleast 2 Expert capes.';
+		unmetRequirements.push('You need to have bought atleast 2 Expert capes.');
 	}
 
 	// All clue cls excluding the ('Rare' ones)
-	const requiredItems = uniqueArr([
-		...cluesGrandmasterCL,
-		...cluesEliteCL,
-		...cluesBeginnerCL,
-		...cluesEasyCL,
-		...cluesMediumCL,
-		...cluesHardCL,
-		...cluesMasterCL,
-		...cluesSharedCL
-	]);
-	const doesntHave = requiredItems.filter(id => !user.cl.has(id));
+
+	const doesntHave = elderRequiredClueCLItems.filter(id => !user.cl.has(id));
 	if (doesntHave.length > 0) {
 		unmetRequirements.push(
 			`You need the following clue items in your collection log: ${doesntHave
@@ -65,21 +91,7 @@ export async function checkElderClueRequirements(user: MUser) {
 	}
 
 	// Sherlock items (must OWN)
-	const sherlockItems = resolveItems([
-		'Tzkal cape',
-		'Axe of the high sungod',
-		'Hellfire bow',
-		'Ignis ring(i)',
-		'Infernal bulwark',
-		'Royal crossbow',
-		'Spellbound ring(i)',
-		'Titan ballista',
-		'Ring of piercing (i)',
-		'Drygore axe',
-		'Dwarven warhammer',
-		'Deathtouched dart'
-	]);
-	const sherlockDoesntHave = sherlockItems.filter(
+	const sherlockDoesntHave = elderSherlockItems.filter(
 		id => !getSimilarItems(id).some(similarId => !user.bank.has(similarId))
 	);
 	if (sherlockDoesntHave.length > 0) {
@@ -92,13 +104,8 @@ export async function checkElderClueRequirements(user: MUser) {
 	}
 
 	// Sherlock CL items (must be in CL)
-	const sherlockCLItems = resolveItems([
-		'Ganodermic slayer helm',
-		'Farseer kiteshield',
-		'Elder rumble greegree',
-		'Karambinana'
-	]);
-	const sherlockCLDoesntHave = sherlockCLItems.filter(
+
+	const sherlockCLDoesntHave = elderSherlockCLItems.filter(
 		id => !getSimilarItems(id).some(similarId => !user.cl.has(similarId))
 	);
 	if (sherlockCLDoesntHave.length > 0) {

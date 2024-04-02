@@ -4,14 +4,16 @@ import { User } from 'discord.js';
 import { noOp, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
 import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
 import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { BitField, BitFieldData, MAX_INT_JAVA } from '../../lib/constants';
+import { BitField, BitFieldData, MAX_INT_JAVA, MAX_XP } from '../../lib/constants';
 import {
+	expertCapesCL,
 	gorajanArcherOutfit,
 	gorajanOccultOutfit,
 	gorajanWarriorOutfit,
@@ -45,6 +47,11 @@ import { allSlayerMonsters } from '../../lib/slayer/tasks';
 import { tameFeedableItems, tameSpecies } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
 import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
+import {
+	elderRequiredClueCLItems,
+	elderSherlockCLItems,
+	elderSherlockItems
+} from '../../lib/util/elderClueRequirements';
 import {
 	FarmingPatchName,
 	farmingPatchNames,
@@ -1020,10 +1027,15 @@ ${droprates.join('\n')}`),
 						loot.add(gear.item.id, 100);
 					}
 
-					await user.addItemsToBank({
-						items: loot
-					});
-					await user.update({
+					for (const cape of expertCapesCL) {
+						loot.add(cape);
+					}
+
+					for (const item of [...elderSherlockItems, ...elderSherlockCLItems, ...elderRequiredClueCLItems]) {
+						loot.add(item);
+					}
+
+					let options = {
 						GP: 5_000_000_000,
 						slayer_points: 100_000,
 						tentacle_charges: 10_000,
@@ -1047,8 +1059,16 @@ ${droprates.join('\n')}`),
 						bitfield: {
 							push: BitField.HasUnlockedYeti
 						}
+					};
+					for (const skill of Object.values(SkillsEnum)) {
+						// @ts-expect-error
+						options[`skills_${skill}`] = 500_000_000;
+					}
+					await user.update({ ...options, skills_prayer: MAX_XP });
+					await user.addItemsToBank({
+						items: loot,
+						collectionLog: true
 					});
-					await giveMaxStats(user);
 					return `Fully maxed your account, stocked your bank, charged all chargeable items.
 					
 Spawned an adult of each tame, fed them all applicable items, and spawned ALL their equippable items into your bank (but not equipped).`;

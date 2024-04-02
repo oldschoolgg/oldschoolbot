@@ -326,7 +326,8 @@ export enum BitField {
 	HasVibrantBoon = 225,
 	HasAncientBoon = 226,
 	DisabledTameClueOpening = 227,
-	HasMoondashCharm = 228
+	HasMoondashCharm = 228,
+	HasUnlockedAraxxor = 229
 }
 
 interface BitFieldData {
@@ -533,7 +534,12 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.HasMoondashCharm]: {
 		name: 'Used Moondash Charm',
 		protected: false,
-		userConfigurable: true
+		userConfigurable: false
+	},
+	[BitField.HasUnlockedAraxxor]: {
+		name: 'Has Unlocked Araxxor',
+		protected: false,
+		userConfigurable: false
 	}
 } as const;
 

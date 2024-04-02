@@ -1,4 +1,4 @@
-import { clamp, randInt, reduceNumByPercent, Time } from 'e';
+import { clamp, increaseNumByPercent, randInt, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
@@ -10,6 +10,7 @@ import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { calcClueScores, formatDuration, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { checkElderClueRequirements } from '../../lib/util/elderClueRequirements';
 import getOSItem from '../../lib/util/getOSItem';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { OSBMahojiCommand } from '../lib/util';
@@ -110,6 +111,12 @@ export const clueCommand: OSBMahojiCommand = {
 				}
 			}
 		}
+		if (clueTier.name === 'Elder') {
+			const result = await checkElderClueRequirements(user);
+			if (result.unmetRequirements.length > 0) {
+				return `You don't have the requirements to do Elder clues: ${result.unmetRequirements.join(', ')}.`;
+			}
+		}
 
 		let maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
 
@@ -117,7 +124,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		if (user.hasEquippedOrInBank('Clue bag')) {
 			let boostPercent = 20;
-			maxTripLength = reduceNumByPercent(maxTripLength, boostPercent);
+			maxTripLength = increaseNumByPercent(maxTripLength, boostPercent);
 			boosts.push(`${boostPercent}% longer trip length for Clue bag`);
 		}
 

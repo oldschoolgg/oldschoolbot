@@ -76,7 +76,6 @@ import {
 	hesporiCL,
 	holidayCL,
 	ignecarusCL,
-	implingsCL,
 	kalphiteKingCL,
 	kalphiteQueenCL,
 	kingBlackDragonCL,
@@ -149,6 +148,7 @@ import { getSimilarItems } from './data/similarItems';
 import { slayerMasksHelmsCL } from './data/slayerMaskHelms';
 import { diariesObject, diaryTiers } from './diaries';
 import { growablePetsCL } from './growablePets';
+import { implingsCL } from './implings';
 import { inventionCL } from './invention/inventions';
 import { allLeagueTasks, leagueTasks } from './leagues/leagues';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';

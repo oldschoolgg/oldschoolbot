@@ -1,10 +1,8 @@
 import { Minigame } from '@prisma/client';
-import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { growablePets } from '../growablePets';
-import { implings } from '../implings';
 import { stoneSpirits } from '../minions/data/stoneSpirits';
 import { MinigameScore } from '../settings/minigames';
 import getOSItem from '../util/getOSItem';
@@ -2451,6 +2449,7 @@ export const customPetsCL = resolveItems([
 	'Echo',
 	'Doopy',
 	'Fungo',
+	'Noom',
 	'Baby araxxor',
 	'Mini akumu'
 ]);
@@ -2613,7 +2612,6 @@ export const customBossesDropsThatCantBeDroppedInMBs = [
 	...kalphiteKingCL,
 	...ignecarusCL
 ];
-export const implingsCL = objectEntries(implings).map(m => Number(m[0]));
 
 export const holidayCL = allHolidayItems;
 

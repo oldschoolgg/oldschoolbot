@@ -1383,6 +1383,11 @@ export const BsoCreateables: Createable[] = [
 		materialCost: new MaterialBank({
 			wooden: 100
 		})
+	},
+	{
+		name: 'Clue scroll (elder)',
+		inputItems: new Bank().add('Elder scroll piece', 3),
+		outputItems: new Bank().add('Clue scroll (elder)')
 	}
 ];
 

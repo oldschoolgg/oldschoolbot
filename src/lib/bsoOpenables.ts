@@ -772,6 +772,8 @@ for (const energy of divinationEnergies) {
 	DivineEggTable.add(energy.item.id, weight, weight);
 }
 
+const AraxxorEggTable = new LootTable().tertiary(1000, 'Baby araxxor');
+
 export const bsoOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Tradeables Mystery box',
@@ -1006,6 +1008,15 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		output: DivineEggTable,
 		allItems: DivineEggTable.allItems,
 		smokeyApplies: true
+	},
+	{
+		name: 'Araxxor eggs',
+		id: itemID('Araxxor eggs'),
+		openedItem: getOSItem('Araxxor eggs'),
+		aliases: ['araxxor eggs'],
+		output: AraxxorEggTable,
+		allItems: AraxxorEggTable.allItems,
+		smokeyApplies: false
 	}
 ];
 

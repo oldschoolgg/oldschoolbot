@@ -39,7 +39,8 @@ export enum InventionID {
 	WispBuster = 17,
 	DivineHand = 18,
 	DrygoreAxe = 19,
-	MoonlightMutator = 20
+	MoonlightMutator = 20,
+	Webshooter = 21
 }
 
 export type Invention = Readonly<{
@@ -142,6 +143,10 @@ export const inventionBoosts = {
 	},
 	drygoreAxe: {
 		woodcuttingSpeedBoostPercent: 30
+	},
+	webshooter: {
+		passiveImplingBoostPercent: 30,
+		hunterBoostPercent: 20
 	}
 } as const;
 
@@ -467,6 +472,21 @@ export const Inventions: readonly Invention[] = [
 		flags: ['bank'],
 		inventionLevelNeeded: 100,
 		usageCostMultiplier: 0.1
+	},
+	{
+		id: InventionID.Webshooter,
+		name: 'Webshooter',
+		description: `A handheld webshooter that helps catch implings by ${inventionBoosts.webshooter.passiveImplingBoostPercent}% and hunter creatures by ${inventionBoosts.webshooter.hunterBoostPercent}%.`,
+		item: getOSItem('Webshooter'),
+		materialTypeBank: new MaterialBank({
+			strong: 4,
+			flexible: 4,
+			organic: 2
+		}),
+		itemCost: new Bank().add('Araxxor webbing'),
+		flags: ['bank'],
+		inventionLevelNeeded: 100,
+		usageCostMultiplier: 0.4
 	}
 ] as const;
 

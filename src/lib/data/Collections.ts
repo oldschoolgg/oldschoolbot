@@ -11,6 +11,7 @@ import { CollectionLogType } from '../collectionLogTask';
 import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
 import { discontinuedDyes, dyedItems } from '../dyedItems';
 import { growablePetsCL } from '../growablePets';
+import { implingsCL } from '../implings';
 import { inventionCL } from '../invention/inventions';
 import { keyCrates } from '../keyCrates';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
@@ -123,7 +124,6 @@ import {
 	ICollection,
 	ignecarusCL,
 	ILeftListStatus,
-	implingsCL,
 	IToReturnCollection,
 	kalphiteKingCL,
 	kalphiteQueenCL,

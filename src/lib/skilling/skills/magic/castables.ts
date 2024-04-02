@@ -434,7 +434,7 @@ export const Castables: Castable[] = [
 	{
 		id: itemID('Cursed onyx'),
 		name: 'Exorcise cursed onyx',
-		input: new Bank().add('Cursed onyx'),
+		input: new Bank().add('Cursed onyx').add('Elder rune', 20).add('Death rune', 500).add('Blood rune', 20),
 		output: new Bank().add('Uncut onyx'),
 		xp: 7583,
 		level: 90,
