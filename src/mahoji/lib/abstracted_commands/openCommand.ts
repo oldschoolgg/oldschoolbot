@@ -11,8 +11,10 @@ import { allOpenables, getOpenableLoot, UnifiedOpenable } from '../../../lib/ope
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { assert, itemNameFromID, makeComponents } from '../../../lib/util';
+import { checkElderClueRequirements } from '../../../lib/util/elderClueRequirements';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import itemID from '../../../lib/util/itemID';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
 import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahojiSettings';
@@ -271,6 +273,14 @@ export async function abstractedOpenCommand(
 			if (!user.owns(tmpCost)) return `You don't own ${tmpCost}`;
 		}
 	}
+
+	if (openables.some(o => o.openedItem.id === itemID('Reward casket (elder)'))) {
+		const result = await checkElderClueRequirements(user);
+		if (result.unmetRequirements.length > 0) {
+			return `You don't have the requirements to open Elder caskets: ${result.unmetRequirements.join(', ')}`;
+		}
+	}
+
 	const cost = new Bank();
 	const kcBank = new Bank();
 	const loot = new Bank();

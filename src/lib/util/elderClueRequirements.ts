@@ -91,8 +91,8 @@ export async function checkElderClueRequirements(user: MUser) {
 	}
 
 	// Sherlock items (must OWN)
-	const sherlockDoesntHave = elderSherlockItems.filter(
-		id => !getSimilarItems(id).some(similarId => !user.bank.has(similarId))
+	const sherlockDoesntHave = elderSherlockItems.filter(id =>
+		getSimilarItems(id).every(similarId => !user.allItemsOwned.has(similarId))
 	);
 	if (sherlockDoesntHave.length > 0) {
 		unmetRequirements.push(
@@ -104,9 +104,8 @@ export async function checkElderClueRequirements(user: MUser) {
 	}
 
 	// Sherlock CL items (must be in CL)
-
-	const sherlockCLDoesntHave = elderSherlockCLItems.filter(
-		id => !getSimilarItems(id).some(similarId => !user.cl.has(similarId))
+	const sherlockCLDoesntHave = elderSherlockCLItems.filter(id =>
+		getSimilarItems(id).every(similarId => !user.cl.has(similarId))
 	);
 	if (sherlockCLDoesntHave.length > 0) {
 		unmetRequirements.push(

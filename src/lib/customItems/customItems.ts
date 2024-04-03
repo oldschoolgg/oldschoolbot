@@ -12322,3 +12322,16 @@ setCustomItem(
 	},
 	100_000
 );
+
+setCustomItem(
+	73_182,
+	'Elder knowledge',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);

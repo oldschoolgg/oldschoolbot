@@ -12,7 +12,7 @@ import { CustomMonster } from '../customMonsters';
 export const AkumuLootTable = new LootTable()
 	.tertiary(1000, 'Mini akumu')
 	.every('Nightmarish ashes', [5, 10])
-	.every('Cursed onyx')
+	.tertiary(3, 'Cursed onyx')
 	.tertiary(10, 'Demon statuette')
 	.every(new LootTable().add(runeAlchablesTable).add(DragonTable), [3, 5])
 	.tertiary(100, 'Elder scroll piece');

@@ -699,7 +699,7 @@ export async function minionKillCommand(
 		}
 	}
 	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
-		return "You haven't unlocked this monster..";
+		return "You haven't unlocked this monster.";
 	}
 
 	quantity = Math.max(1, quantity);

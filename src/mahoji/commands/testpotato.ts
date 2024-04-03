@@ -1057,7 +1057,7 @@ ${droprates.join('\n')}`),
 							dartID: itemID('Dragon dart')
 						},
 						bitfield: {
-							push: BitField.HasUnlockedYeti
+							push: [BitField.HasUnlockedYeti, BitField.HasPlantedIvy]
 						}
 					};
 					for (const skill of Object.values(SkillsEnum)) {

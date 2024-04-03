@@ -7,7 +7,7 @@ import { HardCasket, HardClueTable } from 'oldschooljs/dist/simulation/clues/Har
 import { MasterCasket, MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumCasket, MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
-import { ElderClueTable } from '../simulation/elderClue';
+import { ElderClue, ElderClueTable } from '../simulation/elderClue';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
@@ -31,7 +31,7 @@ interface ClueMilestoneReward {
 
 export interface ClueTier {
 	name: 'Beginner' | 'Easy' | 'Medium' | 'Hard' | 'Elite' | 'Master' | 'Grandmaster' | 'Elder';
-	table: BeginnerCasket | EasyCasket | MediumCasket | HardCasket | EliteCasket | MasterCasket;
+	table: BeginnerCasket | EasyCasket | MediumCasket | HardCasket | EliteCasket | MasterCasket | ElderClue;
 	id: number;
 	scrollID: number;
 	timeToFinish: number;

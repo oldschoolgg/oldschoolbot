@@ -953,7 +953,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		return 'Only fully grown tames can kill this monster.';
 	}
 	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
-		return "You haven't unlocked this monster..";
+		return "You haven't unlocked this monster.";
 	}
 	// Get the amount stronger than minimum, and set boost accordingly:
 	const [speciesMinCombat, speciesMaxCombat] = species.combatLevelRange;
@@ -1448,6 +1448,16 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 				})
 			).file.attachment
 		);
+
+		files.push(
+			(
+				await makeBankImage({
+					bank: new Bank(tame.elder_knowledge_loot_bank as ItemBank),
+					title: 'Total Loot From Elder Knowledge',
+					user
+				})
+			).file.attachment
+		);
 	}
 
 	let content = `**Name:** ${tame.nickname ?? 'No name'}
@@ -1640,6 +1650,10 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 	const clueTier = ClueTiers.find(c => stringMatches(c.name, inputName));
 	if (!clueTier) {
 		return 'Invalid clue tier.';
+	}
+
+	if (clueTier.name === 'Elder' && !tame.hasBeenFed('Elder knowledge')) {
+		return 'Your tame lacks the *knowledge* required to complete elder clues.';
 	}
 
 	let { cost, quantity, duration, boosts, costSavedByDemonicJibwings } = determineTameClueResult({

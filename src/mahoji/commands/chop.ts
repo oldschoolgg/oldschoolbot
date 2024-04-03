@@ -199,6 +199,10 @@ export const chopCommand: OSBMahojiCommand = {
 		if (log.name === 'Ivy') {
 			boosts.push(`+${formatDuration(IVY_MAX_TRIP_LENGTH_BOOST, true)} max trip length for Ivy`);
 			powerchop = false;
+			if (user.owns('Herbicide')) {
+				axeMultiplier = Math.ceil(axeMultiplier * 2.7);
+				boosts.push('3x faster Ivy chopping for using Herbicide');
+			}
 		}
 
 		if (!powerchop) {

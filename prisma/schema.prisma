@@ -759,6 +759,7 @@ model Tame {
   third_age_jibwings_loot     Json @default("{}") @db.JsonB
   abyssal_jibwings_loot       Json @default("{}") @db.JsonB
   implings_loot               Json @default("{}") @db.JsonB
+  elder_knowledge_loot_bank   Json @default("{}") @db.JsonB
 
   last_activity_date   DateTime? @db.Timestamp(6)
   levels_from_egg_feed Int?

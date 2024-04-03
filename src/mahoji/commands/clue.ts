@@ -114,7 +114,7 @@ export const clueCommand: OSBMahojiCommand = {
 		if (clueTier.name === 'Elder') {
 			const result = await checkElderClueRequirements(user);
 			if (result.unmetRequirements.length > 0) {
-				return `You don't have the requirements to do Elder clues: ${result.unmetRequirements.join(', ')}.`;
+				return `You don't have the requirements to do Elder clues: ${result.unmetRequirements.join(', ')}`;
 			}
 		}
 

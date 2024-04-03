@@ -494,6 +494,7 @@ const cluesAndCaskets = resolveItems([
 	'Clue scroll (master)',
 	'Clue scroll (grandmaster)',
 	'Clue scroll (elder)',
+	'Elder scroll piece',
 	'Reward casket (beginner)',
 	'Reward casket (easy)',
 	'Reward casket (medium)',

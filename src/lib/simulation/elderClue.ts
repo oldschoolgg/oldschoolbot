@@ -1,8 +1,9 @@
-import { randInt, roll } from 'e';
+import { randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import Clue from 'oldschooljs/dist/structures/Clue';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
 
 const boxTable = new LootTable()
@@ -72,8 +73,8 @@ const table = new LootTable()
 	)
 	.add('Coins', [20_500_000, 50_200_000]);
 
-class ElderClue extends Clue {
-	open(quantity: number) {
+export class ElderClue extends Clue {
+	open(quantity: number, user: MUser) {
 		const loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
@@ -83,11 +84,14 @@ class ElderClue extends Clue {
 				loot.add(table.roll());
 			}
 
-			if (roll(400)) {
-				loot.add('Clue bag');
-			}
-			if (roll(400)) {
-				loot.add('Inventors tools');
+			const untradeableUniques = resolveItems(['Clue bag', 'Inventors tools', 'Elder knowledge']);
+			if (roll(100)) {
+				const unowned = untradeableUniques.filter(id => !user.cl.has(id));
+				if (unowned.length > 0) {
+					loot.add(randArrItem(unowned));
+				} else {
+					loot.add(randArrItem(untradeableUniques));
+				}
 			}
 			if (roll(700)) {
 				loot.add('Octo');

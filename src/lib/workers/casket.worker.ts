@@ -10,11 +10,11 @@ import type { CasketWorkerArgs } from '.';
 export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Bank, string]> => {
 	const clueTier = ClueTiers.find(tier => tier.id === clueTierID)!;
 
-	let loot = clueTier.table.open(quantity);
+	let loot = clueTier.table.open(quantity, { cl: new Bank() } as MUser);
 
 	for (let i = 0; i < quantity; i++) {
 		const qty = randInt(1, 3);
-		loot.add(clueTier.table.open(qty));
+		loot.add(clueTier.table.open(qty, { cl: loot } as MUser));
 	}
 
 	let mimicNumber = 0;

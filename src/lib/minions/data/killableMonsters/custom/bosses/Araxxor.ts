@@ -11,7 +11,7 @@ import { CustomMonster } from '../customMonsters';
 
 export const AraxxorLootTable = new LootTable()
 	.every('Araxxor eggs')
-	.add("Red spiders' eggs", [2000, 3500])
+	.tertiary(2, "Red spiders' eggs", [200, 1000])
 	.tertiary(300, 'Araxxor webbing')
 	.tertiary(300, 'Spiders leg bottom')
 	.tertiary(100, 'Elder scroll piece');
