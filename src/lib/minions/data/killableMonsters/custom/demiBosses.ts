@@ -4,6 +4,7 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { BitField } from '../../../../constants';
 import { HighSeedPackTable } from '../../../../data/seedPackTables';
 import { GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
@@ -307,7 +308,7 @@ const QueenGoldemar: CustomMonster = {
 	hp: 800,
 	respawnTime: Time.Second * 10,
 	levelRequirements: {
-		prayer: 95,
+		prayer: 121,
 		attack: 99,
 		strength: 105,
 		magic: 105,
@@ -319,7 +320,8 @@ const QueenGoldemar: CustomMonster = {
 		}
 	},
 	baseMonster: Monsters.Hespori,
-	tameCantKill: true
+	tameCantKill: true,
+	requiredBitfield: BitField.isModerator
 };
 
 export const customDemiBosses = {
