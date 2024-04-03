@@ -11183,7 +11183,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1
+	1_000_000
 );
 
 // 73_077 Moonlight mutator
