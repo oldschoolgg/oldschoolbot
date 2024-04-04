@@ -189,7 +189,7 @@ export async function minionKillCommand(
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID);
 	if (['igne ', 'ignecarus'].some(i => name.toLowerCase().includes(i)))
 		return igneCommand(interaction, user, channelID, name, quantity);
-	if (['kg', 'goldemar'].some(i => name.toLowerCase().includes(i)))
+	if (['kg', 'king goldemar'].some(i => name.toLowerCase().includes(i)))
 		return kgCommand(interaction, user, channelID, name, quantity);
 	if (['kk', 'kalphite king'].some(i => name.toLowerCase().includes(i)))
 		return kkCommand(interaction, user, channelID, name, quantity);

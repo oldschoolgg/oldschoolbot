@@ -15,6 +15,7 @@ import {
 } from './data/CollectionsExport';
 import { baseHolidayItems, PartyhatTable } from './data/holidayItems';
 import { allTrophyItems } from './data/trophies';
+import { chickenChanceFromEgg } from './easter2024';
 import { keyCrates } from './keyCrates';
 import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
 import { UnifiedOpenable } from './openables';
@@ -1016,6 +1017,15 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		aliases: ['araxxor eggs'],
 		output: AraxxorEggTable,
 		allItems: AraxxorEggTable.allItems,
+		smokeyApplies: false
+	},
+	{
+		name: 'Large egg',
+		id: itemID('Large egg'),
+		openedItem: getOSItem('Large egg'),
+		aliases: ['large egg'],
+		output: new LootTable().tertiary(chickenChanceFromEgg, 'Cluckers'),
+		allItems: [],
 		smokeyApplies: false
 	}
 ];

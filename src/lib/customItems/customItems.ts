@@ -12333,5 +12333,117 @@ setCustomItem(
 			isSuperUntradeable: true
 		}
 	},
+	1
+);
+
+setCustomItem(
+	73_171,
+	'Cluckers',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			superTradeableButTradeableOnGE: true,
+			isDiscontinued: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_172,
+	'Queen goldemar blouse',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_173,
+	'Queen goldemar skirt',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_174,
+	'Queen goldemar beard',
+	'Amulet of strength',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_175,
+	'Dwarven frying pan',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_176,
+	'Offhand dwarven spatula',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_177,
+	'Dwarfqueen tiara',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_178,
+	'Large egg',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
 	100_000
 );
