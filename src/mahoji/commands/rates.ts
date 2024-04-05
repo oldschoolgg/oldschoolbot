@@ -440,7 +440,9 @@ ${zygomiteFarmingSource
 									isUsingQuickTrap: hasQuickTrap,
 									quickTrapMessages: '',
 									QP: 5000,
-									hasGraceful: true
+									hasGraceful: true,
+									isUsingWebshooter: hasQuickTrap,
+									webshooterMessages: ''
 								});
 
 								if (typeof inputResult === 'string') {
@@ -476,11 +478,7 @@ ${zygomiteFarmingSource
 										calcPerHour(result.totalHunterXP * GLOBAL_BSO_XP_MULTIPLIER, duration)
 									).toLocaleString(),
 									hasPortent ? 'Has Portent' : 'No Portent',
-									hasQuickTrap
-										? 'Has Quick Trap'
-										: creature.huntTechnique === HunterTechniqueEnum.BoxTrapping
-										? 'No Quick Trap'
-										: 'Not Applicable',
+									hasQuickTrap ? 'Has QT/WS' : 'No QT/WS',
 									hasMaxLearning ? 'Max Learning' : 'No Max Learning',
 									usingStamAndHunterPotions ? 'Has Pots' : 'No Pots',
 									calcPerHour(result.successfulQuantity, duration).toLocaleString(),

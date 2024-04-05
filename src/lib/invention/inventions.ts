@@ -484,7 +484,7 @@ export const Inventions: readonly Invention[] = [
 			organic: 2
 		}),
 		itemCost: new Bank().add('Araxxor webbing'),
-		flags: ['bank'],
+		flags: ['bank', 'equipped'],
 		inventionLevelNeeded: 100,
 		usageCostMultiplier: 0.4
 	}
