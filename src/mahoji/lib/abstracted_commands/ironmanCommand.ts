@@ -115,6 +115,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 	await prisma.botItemSell.deleteMany({ where: { user_id: user.id } });
 	await prisma.pinnedTrip.deleteMany({ where: { user_id: user.id } });
 	await prisma.farmedCrop.deleteMany({ where: { user_id: user.id } });
+	await prisma.portent.deleteMany({ where: { user_id: user.id } });
 	// Now we can delete the user
 	await prisma.user.deleteMany({
 		where: { id: user.id }
