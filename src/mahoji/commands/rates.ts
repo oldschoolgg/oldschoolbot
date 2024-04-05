@@ -5,6 +5,13 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import {
+	BathhouseOres,
+	bathHouseTiers,
+	BathwaterMixtures,
+	calculateBathouseResult,
+	durationPerBaxBath
+} from '../../lib/baxtorianBathhouses';
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { GLOBAL_BSO_XP_MULTIPLIER, PeakTier } from '../../lib/constants';
@@ -29,6 +36,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { HunterTechniqueEnum } from '../../lib/skilling/types';
 import { Gear } from '../../lib/structures/Gear';
+import { BathhouseTaskOptions } from '../../lib/types/minions';
 import { convertBankToPerHourStats, stringMatches, toKMB } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -49,6 +57,19 @@ export const ratesCommand: OSBMahojiCommand = {
 	name: 'rates',
 	description: 'Check rates of various skills/activities.',
 	options: [
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'minigames',
+			description: 'Check minigames rates.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'baxtorian_bathhouses',
+					description: 'baxtorian bathhouses',
+					options: []
+				}
+			]
+		},
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'tames',
@@ -141,9 +162,52 @@ export const ratesCommand: OSBMahojiCommand = {
 		monster?: { monster?: { name: string } };
 		tames?: { eagle?: {} };
 		misc?: { zygomite_seeds?: {} };
+		minigames?: { baxtorian_bathhouses?: {} };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
+
+		if (options.minigames?.baxtorian_bathhouses) {
+			let results = [];
+			for (const tier of bathHouseTiers) {
+				for (const ore of BathhouseOres) {
+					for (const mixture of BathwaterMixtures) {
+						results.push({
+							...calculateBathouseResult({
+								mixture: mixture.name,
+								ore: ore.item.id,
+								tier: tier.name,
+								minigameID: 'bax_baths',
+								quantity: 4
+							} as BathhouseTaskOptions),
+							tier,
+							ore,
+							mixture
+						});
+					}
+				}
+			}
+
+			results.sort(
+				(a, b) => b.firemakingXP * GLOBAL_BSO_XP_MULTIPLIER - a.firemakingXP * GLOBAL_BSO_XP_MULTIPLIER
+			);
+			let tableArr = [['Combo', 'FM XP/hr', 'Herb XP/hr'].join('\t')];
+			for (const { tier, ore, mixture, firemakingXP, herbXP } of results) {
+				const duration = durationPerBaxBath * 4;
+				const totalFiremakingXP = firemakingXP * GLOBAL_BSO_XP_MULTIPLIER;
+				const totalHerbloreXP = herbXP * GLOBAL_BSO_XP_MULTIPLIER;
+				tableArr.push(
+					[
+						`${tier.name} ${ore.item.name} ${mixture.name}`,
+						toKMB(calcPerHour(totalFiremakingXP, duration)),
+						toKMB(calcPerHour(totalHerbloreXP, duration))
+					].join('\t')
+				);
+			}
+			return {
+				...(returnStringOrFile(tableArr.join('\n'), true) as InteractionReplyOptions)
+			};
+		}
 		if (options.misc?.zygomite_seeds) {
 			const mutationChancePerMinute = 1 / zygomiteSeedMutChance;
 			const survivalChancePerMutation = 1 / zygomiteMutSurvivalChance;
