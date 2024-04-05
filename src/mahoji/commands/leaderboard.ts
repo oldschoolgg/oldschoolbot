@@ -8,7 +8,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { badges, badgesCache, Emoji, masteryKey, usernameCache } from '../../lib/constants';
-import { allClNames, allCollectionLogsFlat, getCollectionItems } from '../../lib/data/Collections';
+import { allClNames, getCollectionItems } from '../../lib/data/Collections';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
@@ -270,23 +270,20 @@ async function clLb(
 	inputType: string,
 	ironmenOnly: boolean
 ) {
-	const items = getCollectionItems(inputType, false);
+	const { resolvedCl, items } = getCollectionItems(inputType, false, false, true);
 	if (!items || items.length === 0) {
 		return "That's not a valid collection log category. Check +cl for all possible logs.";
 	}
 
-	const clName = allCollectionLogsFlat.find(c => stringMatches(c.name, inputType))?.name;
-	const userEventOrders = clName
-		? await prisma.userEvent.findMany({
-				where: {
-					type: 'CLCompletion',
-					collection_log_name: clName.toLowerCase()
-				},
-				orderBy: {
-					date: 'asc'
-				}
-		  })
-		: null;
+	const userEventOrders = await prisma.userEvent.findMany({
+		where: {
+			type: 'CLCompletion',
+			collection_log_name: resolvedCl.toLowerCase()
+		},
+		orderBy: {
+			date: 'asc'
+		}
+	});
 
 	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200, userEvents: userEventOrders });
 	inputType = toTitleCase(inputType.toLowerCase());
@@ -452,22 +449,28 @@ async function skillsLb(
 	ironmanOnly: boolean
 ) {
 	let res = [];
-	let overallUsers: Record<string, any>[] = [];
+	let overallUsers: {
+		id: string;
+		totalLevel: number;
+		ironman: boolean;
+		totalXP: number;
+	}[] = [];
 
 	const skillsVals = Object.values(Skills);
 
 	const skill = skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, inputSkill)));
 
 	if (inputSkill === 'overall') {
-		const events = await prisma.userEvent.findMany({
-			where: {
-				type: 'MaxTotalLevel'
-			},
-			orderBy: {
-				date: 'asc'
-			}
-		});
-		const userEventMap = userEventsToMap(events);
+		const maxTotalLevelEventMap = await prisma.userEvent
+			.findMany({
+				where: {
+					type: 'MaxTotalLevel'
+				},
+				orderBy: {
+					date: 'asc'
+				}
+			})
+			.then(res => userEventsToMap(res));
 		const query = `SELECT
 								u.id,
 								${skillsVals.map(s => `"skills.${s.id}"`)},
@@ -491,14 +494,18 @@ async function skillsLb(
 				totalXP: Number(user.totalxp!)
 			};
 		});
-		if (type !== 'xp') {
+		if (type === 'level') {
 			overallUsers.sort((a, b) => {
 				const valueDifference = b.totalLevel - a.totalLevel;
 				if (valueDifference !== 0) {
 					return valueDifference;
 				}
-				const dateA = userEventMap.get(a.id);
-				const dateB = userEventMap.get(b.id);
+				const xpDiff = b.totalXP - a.totalXP;
+				if (xpDiff !== 0) {
+					return xpDiff;
+				}
+				const dateA = maxTotalLevelEventMap.get(a.id);
+				const dateB = maxTotalLevelEventMap.get(b.id);
 				if (dateA && dateB) {
 					return dateA - dateB;
 				}
@@ -527,7 +534,7 @@ async function skillsLb(
 
 		const events = await prisma.userEvent.findMany({
 			where: {
-				type: 'MaxLevel',
+				type: 'MaxXP',
 				skill: skill.id
 			},
 			orderBy: {

@@ -429,6 +429,8 @@ model User {
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
 
+  cached_networth_value BigInt?
+
   geListings        GEListing[]
   bingo_participant BingoParticipant[]
   bingo             Bingo[]
@@ -1137,7 +1139,7 @@ model UserEvent {
   user_id             String               @db.VarChar(19)
   type                UserEventType
   skill               xp_gains_skill_enum?
-  collection_log_name String?              @db.VarChar(19)
+  collection_log_name String?
 
   @@map("user_event")
 }
