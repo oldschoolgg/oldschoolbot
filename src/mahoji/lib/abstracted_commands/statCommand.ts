@@ -339,7 +339,7 @@ GROUP BY type;`);
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { type: activity_type_enum; hours: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT type, sum(duration)::int / ${Time.Hour} AS hours
+				await prisma.$queryRawUnsafe(`SELECT type, sum(duration::bigint)::bigint / ${Time.Hour} AS hours
 FROM activity
 WHERE completed = true
 AND user_id = ${BigInt(user.id)}
@@ -960,7 +960,7 @@ GROUP BY "bankBackground";`);
 		run: async (user: MUser) => {
 			const result = await prisma.$queryRawUnsafe<any>(
 				`SELECT skill,
-					SUM(xp)::int AS total_xp
+					SUM(xp)::bigint AS total_xp
 				 FROM xp_gains
 				 WHERE source = 'TearsOfGuthix'
 				 AND user_id = ${BigInt(user.id)}
@@ -981,12 +981,12 @@ GROUP BY "bankBackground";`);
 		run: async (user: MUser) => {
 			const result = await prisma.$queryRawUnsafe<any>(
 				`SELECT skill,
-					SUM(xp)::int AS total_xp
+					SUM(xp)::bigint AS total_xp
 				 FROM xp_gains
 				 WHERE source = 'ForestryEvents'
 				 AND user_id = ${BigInt(user.id)}
 				 GROUP BY skill
-				 ORDER BY CASE 
+				 ORDER BY CASE
 					 WHEN skill = 'woodcutting' THEN 0
 					 ELSE 1
 				 END`
