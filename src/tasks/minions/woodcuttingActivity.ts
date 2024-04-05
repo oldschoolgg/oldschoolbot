@@ -1,80 +1,19 @@
 import { percentChance, randInt, Time } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, TwitcherGloves } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
 import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
-import Woodcutting from '../../lib/skilling/skills/woodcutting';
+import { ForestryEvents, LeafTable } from '../../lib/skilling/skills/Woodcutting/forestry';
+import Woodcutting from '../../lib/skilling/skills/Woodcutting/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { perTimeUnitChance, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-
-export interface ForestryEvent {
-	id: number;
-	name: string;
-	uniqueXP: SkillsEnum;
-}
-
-export const ForestryEvents: ForestryEvent[] = [
-	{
-		id: 1,
-		name: 'Rising Roots',
-		uniqueXP: SkillsEnum.Woodcutting
-	},
-	{
-		id: 2,
-		name: 'Struggling Sapling',
-		uniqueXP: SkillsEnum.Farming
-	},
-	{
-		id: 3,
-		name: 'Flowering Bush',
-		uniqueXP: SkillsEnum.Woodcutting
-	},
-	{
-		id: 4,
-		name: 'Woodcutting Leprechaun',
-		uniqueXP: SkillsEnum.Woodcutting
-	},
-	{
-		id: 5,
-		name: 'Beehive',
-		uniqueXP: SkillsEnum.Construction
-	},
-	{
-		id: 6,
-		name: 'Friendly Ent',
-		uniqueXP: SkillsEnum.Fletching
-	},
-	{
-		id: 7,
-		name: 'Poachers',
-		uniqueXP: SkillsEnum.Hunter
-	},
-	{
-		id: 8,
-		name: 'Enchantment Ritual',
-		uniqueXP: SkillsEnum.Woodcutting
-	},
-	{
-		id: 9,
-		name: 'Pheasant Control',
-		uniqueXP: SkillsEnum.Thieving
-	}
-];
-
-const LeafTable = new LootTable()
-	.add('Leaves', 20)
-	.add('Oak leaves', 20)
-	.add('Willow leaves', 20)
-	.add('Maple leaves', 20)
-	.add('Yew leaves', 20)
-	.add('Magic leaves', 20);
 
 async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
 	let eventCounts: { [key: number]: number } = {};

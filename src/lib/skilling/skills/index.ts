@@ -16,7 +16,7 @@ import Prayer from './prayer';
 import Runecraft from './runecraft';
 import Smithing from './smithing';
 import Thieving from './thieving';
-import Woodcutting from './woodcutting';
+import Woodcutting from './Woodcutting/woodcutting';
 
 export const Skills: Record<string, Skill> = {
 	Crafting,
