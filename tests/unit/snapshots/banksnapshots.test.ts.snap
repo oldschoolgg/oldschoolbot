@@ -3402,7 +3402,7 @@ exports[`OSB Buyables 1`] = `
       },
       "frozen": false,
     },
-    "qpRequired": 303,
+    "qpRequired": 308,
   },
   {
     "aliases": [
@@ -3421,7 +3421,7 @@ exports[`OSB Buyables 1`] = `
       },
       "frozen": false,
     },
-    "qpRequired": 303,
+    "qpRequired": 308,
   },
   {
     "aliases": [
@@ -3459,7 +3459,7 @@ exports[`OSB Buyables 1`] = `
       },
       "frozen": false,
     },
-    "qpRequired": 303,
+    "qpRequired": 308,
   },
   {
     "customReq": [Function],
