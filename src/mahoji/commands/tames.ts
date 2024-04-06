@@ -1676,8 +1676,8 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 	if (units.filter(u => u.tier.tier === clueTier.name).some(u => !u.isFull)) {
 		return `You need to have all your ${clueTier.name} STASH units built and full.`;
 	}
-	if (clueTier.name === 'Grandmaster' && units.some(u => !u.isFull)) {
-		return 'You need to have all your STASH units built and full for your tame to do Grandmaster clues.';
+	if (['Grandmaster', 'Elder'].includes(clueTier.name) && units.some(u => !u.isFull)) {
+		return 'You need to have all your STASH units built and full for your tame to do Grandmaster/Elder clues.';
 	}
 
 	if (!user.owns(cost) || (costSavedByDemonicJibwings !== null && !user.owns(costSavedByDemonicJibwings))) {
