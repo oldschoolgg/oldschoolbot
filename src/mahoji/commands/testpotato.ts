@@ -47,11 +47,7 @@ import { allSlayerMonsters } from '../../lib/slayer/tasks';
 import { tameFeedableItems, tameSpecies } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
 import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
-import {
-	elderRequiredClueCLItems,
-	elderSherlockCLItems,
-	elderSherlockItems
-} from '../../lib/util/elderClueRequirements';
+import { elderRequiredClueCLItems, elderSherlockItems } from '../../lib/util/elderClueRequirements';
 import {
 	FarmingPatchName,
 	farmingPatchNames,
@@ -1031,8 +1027,8 @@ ${droprates.join('\n')}`),
 						loot.add(cape);
 					}
 
-					for (const item of [...elderSherlockItems, ...elderSherlockCLItems, ...elderRequiredClueCLItems]) {
-						loot.add(item);
+					for (const item of [...elderSherlockItems, ...elderRequiredClueCLItems]) {
+						loot.add(Array.isArray(item) ? item[0] : item);
 					}
 
 					let options = {

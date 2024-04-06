@@ -1,6 +1,7 @@
-import { uniqueArr } from 'e';
+import { notEmpty, uniqueArr } from 'e';
 
-import { MAX_XP } from '../constants';
+import { gods } from '../bso/divineDominion';
+import { BitField, BitFieldData, MAX_XP } from '../constants';
 import {
 	cluesBeginnerCL,
 	cluesEasyCL,
@@ -13,7 +14,8 @@ import {
 	expertCapesCL
 } from '../data/CollectionsExport';
 import { getSimilarItems } from '../data/similarItems';
-import resolveItems from './resolveItems';
+import { slayerMaskHelms } from '../data/slayerMaskHelms';
+import resolveItems, { deepResolveItems } from './resolveItems';
 import { itemNameFromID } from './smallUtils';
 
 export const elderRequiredClueCLItems = uniqueArr([
@@ -27,7 +29,7 @@ export const elderRequiredClueCLItems = uniqueArr([
 	...cluesSharedCL
 ]);
 
-export const elderSherlockItems = resolveItems([
+export const elderSherlockItems = deepResolveItems([
 	'Tzkal cape',
 	'Axe of the high sungod',
 	'Hellfire bow',
@@ -39,14 +41,13 @@ export const elderSherlockItems = resolveItems([
 	'Ring of piercing (i)',
 	'Drygore axe',
 	'Dwarven warhammer',
-	'Deathtouched dart'
-]);
-
-export const elderSherlockCLItems = resolveItems([
-	'Ganodermic slayer helm',
-	'Farseer kiteshield',
-	'Elder rumble greegree',
-	'Karambinana'
+	'Deathtouched dart',
+	'Tidal collector',
+	'Atlantean trident',
+	resolveItems(['Brackish blade', 'Ganodermic gloves', 'Ganodermic boots']),
+	gods.map(g => ('pets' in g ? g.pets[g.pets.length - 1] : undefined)).filter(notEmpty),
+	slayerMaskHelms.map(h => h.helm.id),
+	resolveItems(['Elder rumble greegree', 'Gorilla rumble greegree'])
 ]);
 
 export async function checkElderClueRequirements(user: MUser) {
@@ -79,7 +80,6 @@ export async function checkElderClueRequirements(user: MUser) {
 	}
 
 	// All clue cls excluding the ('Rare' ones)
-
 	const doesntHave = elderRequiredClueCLItems.filter(id => !user.cl.has(id));
 	if (doesntHave.length > 0) {
 		unmetRequirements.push(
@@ -92,27 +92,37 @@ export async function checkElderClueRequirements(user: MUser) {
 
 	// Sherlock items (must OWN)
 	const sherlockDoesntHave = elderSherlockItems.filter(id =>
-		getSimilarItems(id).every(similarId => !user.allItemsOwned.has(similarId))
+		(Array.isArray(id) ? id : getSimilarItems(id)).every(similarId => !user.allItemsOwned.has(similarId))
 	);
 	if (sherlockDoesntHave.length > 0) {
 		unmetRequirements.push(
 			`You need the following sherlock items in your bank: ${sherlockDoesntHave
 				.slice(0, 20)
-				.map(itemNameFromID)
+				.map(itemOrItems =>
+					Array.isArray(itemOrItems)
+						? itemOrItems.map(itemNameFromID).join(' OR ')
+						: itemNameFromID(itemOrItems)
+				)
 				.join(', ')}.`
 		);
 	}
 
-	// Sherlock CL items (must be in CL)
-	const sherlockCLDoesntHave = elderSherlockCLItems.filter(id =>
-		getSimilarItems(id).every(similarId => !user.cl.has(similarId))
-	);
-	if (sherlockCLDoesntHave.length > 0) {
+	// Bitfields
+	const requiredBitfields = [
+		BitField.HasScrollOfFarming,
+		BitField.HasScrollOfLongevity,
+		BitField.HasScrollOfTheHunt,
+		BitField.HasMoondashCharm,
+		BitField.HasUnlockedAraxxor,
+		BitField.HasDaemonheimAgilityPass,
+		BitField.HasGuthixEngram,
+		BitField.HasPlantedIvy,
+		BitField.HasArcaneScroll
+	];
+	const bitfieldsDoesntHave = requiredBitfields.filter(bit => !user.bitfield.includes(bit));
+	if (bitfieldsDoesntHave.length > 0) {
 		unmetRequirements.push(
-			`You need the following sherlock items in your collection log: ${sherlockCLDoesntHave
-				.slice(0, 20)
-				.map(itemNameFromID)
-				.join(', ')}.`
+			`You need the following bitfields: ${bitfieldsDoesntHave.map(bit => BitFieldData[bit].name).join(', ')}.`
 		);
 	}
 
