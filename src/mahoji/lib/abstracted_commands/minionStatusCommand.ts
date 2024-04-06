@@ -1,6 +1,6 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
-import { stripNonAlphanumeric } from 'e';
+import { roll, stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, minionBuyButton } from '../../../lib/constants';
@@ -66,6 +66,11 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 
 	roboChimpSyncData(user);
 	await clArrayUpdate(user, user.cl);
+	if (user.user.cached_networth_value === null || roll(100)) {
+		await user.update({
+			cached_networth_value: (await user.calculateNetWorth()).value
+		});
+	}
 
 	if (!user.user.minion_hasBought) {
 		return {

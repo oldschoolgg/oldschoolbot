@@ -429,6 +429,8 @@ model User {
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
 
+  cached_networth_value BigInt?
+
   geListings        GEListing[]
   bingo_participant BingoParticipant[]
   bingo             Bingo[]
@@ -1120,4 +1122,24 @@ model ItemMetadata {
   name String?
 
   @@map("item_metadata")
+}
+
+enum UserEventType {
+  MaxXP
+  MaxTotalXP
+  MaxLevel
+  MaxTotalLevel
+  CLCompletion
+}
+
+model UserEvent {
+  id   String   @id @default(uuid()) @db.Uuid
+  date DateTime @default(now()) @db.Timestamp(6)
+
+  user_id             String               @db.VarChar(19)
+  type                UserEventType
+  skill               xp_gains_skill_enum?
+  collection_log_name String?
+
+  @@map("user_event")
 }

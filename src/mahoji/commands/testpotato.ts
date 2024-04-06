@@ -38,6 +38,7 @@ import {
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
+import { userEventToStr } from '../../lib/util/userEvents';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { MAX_QP } from '../lib/abstracted_commands/questCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
@@ -550,6 +551,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							max_value: 1000
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'events',
+					description: 'See events',
+					options: []
 				}
 			],
 			run: async ({
@@ -571,13 +578,24 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				check?: { monster_droprates?: string };
 				bingo_tools?: { start_bingo: string };
 				setslayertask?: { master: string; monster: string; quantity: number };
+				events?: {};
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
 				const user = await mUserFetch(userID.toString());
-
+				if (options.events) {
+					const events = await prisma.userEvent.findMany({
+						where: {
+							user_id: user.id
+						},
+						orderBy: {
+							date: 'desc'
+						}
+					});
+					return events.map(userEventToStr).join('\n');
+				}
 				if (options.bingo_tools) {
 					if (options.bingo_tools.start_bingo) {
 						const bingo = await prisma.bingo.findFirst({
