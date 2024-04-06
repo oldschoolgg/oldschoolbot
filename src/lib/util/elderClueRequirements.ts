@@ -90,13 +90,13 @@ export async function checkElderClueRequirements(user: MUser) {
 		);
 	}
 
-	// Sherlock items (must OWN)
+	// Falo the Bard items (must OWN)
 	const sherlockDoesntHave = elderSherlockItems.filter(id =>
 		(Array.isArray(id) ? id : getSimilarItems(id)).every(similarId => !user.allItemsOwned.has(similarId))
 	);
 	if (sherlockDoesntHave.length > 0) {
 		unmetRequirements.push(
-			`You need the following sherlock items in your bank: ${sherlockDoesntHave
+			`You need the following Falo the Bard items in your bank: ${sherlockDoesntHave
 				.slice(0, 20)
 				.map(itemOrItems =>
 					Array.isArray(itemOrItems)
