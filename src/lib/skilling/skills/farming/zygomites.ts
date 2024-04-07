@@ -105,7 +105,7 @@ export const zygomitePlants: Plant[] = zygomiteFarmingSource.map(src => ({
 		if (src.name === 'Toxic zygomite') {
 			await user.update({
 				bitfield: {
-					push: BitField.HasUnlockedAraxxor
+					push: BitField.HasUnlockedVenatrix
 				}
 			});
 			messages.push(

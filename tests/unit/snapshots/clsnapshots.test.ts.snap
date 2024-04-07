@@ -4,6 +4,7 @@ exports[`BSO Collection Log Groups/Categories 1`] = `
 "Abyssal Sire (9)
 Achievement Diary (48)
 Aerial Fishing (9)
+Akumu (4)
 Alchemical Hydra (11)
 All Pets (57)
 All Pets (57)
@@ -43,10 +44,10 @@ Cooking (28)
 Corporeal Beast (8)
 Crafting (175)
 Crazy archaeologist (3)
-Creatables (745)
+Creatables (749)
 Creature Creation (7)
 Creature Creation (7)
-Custom Pets (43)
+Custom Pets (46)
 Custom Pets (Discontinued) (19)
 Cyclopes (8)
 Dagannoth Kings (10)
@@ -62,11 +63,12 @@ Easter 2022 (3)
 Easter 2023 (13)
 Easter crate (s5) (14)
 Easy Treasure Trails (131)
+Elder Treasure Trails (59)
 Elite Treasure Trail Rewards (Rare) (39)
 Elite Treasure Trails (59)
 Emerged Zuk Inferno (4)
 Expert Capes (4)
-Farming (177)
+Farming (178)
 Festive crate (s4) (27)
 Fishing Contest (11)
 Fishing Trawler (4)
@@ -94,12 +96,12 @@ Halloween 2022 (12)
 Halloween 2023 (23)
 Hard Treasure Trail Rewards (Rare) (24)
 Hard Treasure Trails (134)
-Herblore (129)
+Herblore (130)
 Hespori (4)
 Holiday Mystery box (128)
 Ignecarus (4)
 Implings (16)
-Invention (21)
+Invention (22)
 K'ril Tsutsaroth (8)
 Kalphite King (8)
 Kalphite Queen (5)
@@ -191,7 +193,15 @@ Zulrah (11)"
 `;
 
 exports[`BSO Overall Collection Log Items 1`] = `
-"3rd age amulet
+"2nd age bow
+2nd age mage bottom
+2nd age mage mask
+2nd age mage top
+2nd age range coif
+2nd age range legs
+2nd age range top
+2nd age staff
+3rd age amulet
 3rd age axe
 3rd age bow
 3rd age cloak
@@ -284,6 +294,7 @@ Ahrim's hood
 Ahrim's robeskirt
 Ahrim's robetop
 Ahrim's staff
+Akumu mask
 Alchemical hydra heads
 Ale of the gods
 Amulet of avarice
@@ -356,6 +367,7 @@ Ankou mask
 Ankou socks
 Ankou top
 Ankou's leggings
+Apple parasol
 Apprentice wand
 Aquifer aegis
 Arcane blast necklace
@@ -408,6 +420,7 @@ Baby kalphite king
 Baby mole
 Baby raven
 Baby saradomin owl
+Baby venatrix
 Baby yaga house
 Baby zamorak hawk
 Ballista limbs
@@ -455,6 +468,7 @@ Basilisk head
 Basilisk jaw
 Basilisk mask
 Basilisk slayer helm
+Battlestaff
 Beanie
 Bear feet
 Beaver
@@ -573,6 +587,7 @@ Blue wizard hat (g)
 Blue wizard hat (t)
 Blue wizard robe (g)
 Blue wizard robe (t)
+Blueberry parasol
 Bluey
 Bob's black shirt
 Bob's blue shirt
@@ -702,20 +717,30 @@ Chromium ingot
 Claws of callisto
 Climbing boots (g)
 Clothes pouch blueprint
+Clothing Mystery Box
 Clown set
+Clue bag
 Clue hunter boots
 Clue hunter cloak
 Clue hunter garb
 Clue hunter gloves
 Clue hunter trousers
 Clue upgrader
+Coal
 Coal bag
 Coal stone spirit
 Cockatrice head
 Cockatrice mask
 Cockatrice slayer helm
+Coconut parasol
 Cogsworth
+Coins
 Colossal blade
+Commander boots
+Commander cap
+Commander gloves
+Commander top
+Commander trousers
 Contest rod
 Copper stone spirit
 Craw's bow (u)
@@ -734,6 +759,7 @@ Crystal pickaxe
 Crystal tangleroot
 Crystal tool seed
 Crystal weapon seed
+Cursed onyx
 Cursed phalanx
 Curved bone
 Cutthroat flag
@@ -773,8 +799,12 @@ Decorative ranged legs
 Decorative ranged top
 Deerstalker
 Demon feet
+Demon statuette
 Demonic jibwings
 Demonic jibwings (e)
+Detective hat
+Detective pants
+Detective trenchcoat
 Dexterous prayer scroll
 Dharok's greataxe
 Dharok's helm
@@ -797,6 +827,7 @@ Doug
 Draconic visage
 Dragon 2h sword
 Dragon axe
+Dragon bones
 Dragon boots
 Dragon boots ornament kit
 Dragon cane
@@ -896,6 +927,7 @@ Enchanted top
 Enhanced crystal teleport seed
 Enhanced crystal weapon seed
 Ent hide
+Equippable mystery box
 Eternal crystal
 Eternal gem
 Evil chicken feet
@@ -929,6 +961,8 @@ First age amulet
 First age bracelet
 First age cape
 First age ring
+First age robe bottom
+First age robe top
 First age tiara
 Fish barrel
 Fish sack
@@ -1030,6 +1064,7 @@ Gold elegant shirt
 Gold elegant skirt
 Gold headband
 Gold locks
+Gold ore
 Gold satchel
 Gold stone spirit
 Golden apron
@@ -1086,6 +1121,7 @@ Granite legs
 Granite longsword
 Granite maul
 Granite ring
+Grape parasol
 Greater demon mask
 Green boater
 Green d'hide body (g)
@@ -1230,6 +1266,7 @@ Inquisitor's mace
 Inquisitor's plateskirt
 Intermediate rumble greegree
 Intricate pouch
+Inventors tools
 Inventors' backpack
 Inventors' boots
 Inventors' gloves
@@ -1325,6 +1362,7 @@ Left skull half
 Leggings (green)
 Leggings (maroon)
 Leggings (yellow)
+Lemon parasol
 Leprechaun hat
 Lesser demon champion scroll
 Lesser demon mask
@@ -1350,6 +1388,11 @@ Little nightmare
 Log basket
 Log brace
 Long bone
+Lord marshal boots
+Lord marshal cap
+Lord marshal gloves
+Lord marshal top
+Lord marshal trousers
 Lost bag
 Lovakengj banner
 Lovakengj hood
@@ -1408,6 +1451,7 @@ Mime gloves
 Mime legs
 Mime mask
 Mime top
+Mini akumu
 Mini moktang
 Mining gloves
 Mint cake
@@ -1487,6 +1531,7 @@ Neem drupe
 Nexling
 Nexterminator
 Nightmare staff
+Nightmarish ashes
 Nihil horn
 Nihil shard
 Ninja rumble greegree
@@ -1508,6 +1553,7 @@ Oceanic shroud (tier 2)
 Oceanic shroud (tier 3)
 Oceanic shroud (tier 4)
 Oceanic shroud (tier 5)
+Octo
 Odium shard 1
 Odium shard 2
 Odium shard 3
@@ -1560,6 +1606,7 @@ Pet general graardor
 Pet k'ril tsutsaroth
 Pet kraken
 Pet kree'arra
+Pet Mystery Box
 Pet penance queen
 Pet smoke devil
 Pet snakeling
@@ -1689,6 +1736,7 @@ Rogues portent
 Royal bolt stabiliser
 Royal crown
 Royal dragon kiteshield
+Royal dragonhide
 Royal frame
 Royal gown bottom
 Royal gown top
@@ -1736,6 +1784,7 @@ Rune shield (h4)
 Rune shield (h5)
 Rune spikeshield
 Runite igne claws
+Runite ore
 Runite stone spirit
 Runner boots
 Runner hat
@@ -1930,6 +1979,7 @@ Steel plateskirt (t)
 Steve
 Strange old lockpick
 Strangled tablet
+Strawberry parasol
 Strength amulet (t)
 Studded body (g)
 Studded body (t)
@@ -1987,6 +2037,7 @@ Torva full helm (broken)
 Torva gloves (broken)
 Torva platebody (broken)
 Torva platelegs (broken)
+Tradeable Mystery Box
 Treasonous ring
 Treasure flag
 Tree wizards' journal
@@ -2006,10 +2057,13 @@ TzKal-Zuk's skin
 Tzrek-jad
 Ultor vestige
 Uncharged trident
+Uncut dragonstone
 Uncut onyx
+Uncut zenyte
 Unholy blessing
 Unidentified minerals
 Unsired
+Untradeable Mystery Box
 Uri's hat
 Vampyre hunter boots
 Vampyre hunter cuffs
@@ -2069,6 +2123,8 @@ Warpriest of Bandos set
 Warpriest of Saradomin set
 Warpriest of Zamorak set
 Warrior ring
+Watermelon parasol
+Webshooter
 White beret
 White boater
 White cat

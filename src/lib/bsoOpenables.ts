@@ -773,7 +773,7 @@ for (const energy of divinationEnergies) {
 	DivineEggTable.add(energy.item.id, weight, weight);
 }
 
-const AraxxorEggTable = new LootTable().tertiary(1000, 'Baby araxxor');
+const VenatrixEggTable = new LootTable().tertiary(1000, 'Baby venatrix');
 
 export const bsoOpenables: UnifiedOpenable[] = [
 	{
@@ -1011,12 +1011,12 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		smokeyApplies: true
 	},
 	{
-		name: 'Araxxor eggs',
-		id: itemID('Araxxor eggs'),
-		openedItem: getOSItem('Araxxor eggs'),
-		aliases: ['araxxor eggs'],
-		output: AraxxorEggTable,
-		allItems: AraxxorEggTable.allItems,
+		name: 'Venatrix eggs',
+		id: itemID('Venatrix eggs'),
+		openedItem: getOSItem('Venatrix eggs'),
+		aliases: ['venatrix eggs'],
+		output: VenatrixEggTable,
+		allItems: VenatrixEggTable.allItems,
 		smokeyApplies: false
 	},
 	{

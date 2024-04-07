@@ -83,10 +83,9 @@ export async function checkElderClueRequirements(user: MUser) {
 	const doesntHave = elderRequiredClueCLItems.filter(id => !user.cl.has(id));
 	if (doesntHave.length > 0) {
 		unmetRequirements.push(
-			`You need the following clue items in your collection log: ${doesntHave
-				.slice(0, 20)
-				.map(itemNameFromID)
-				.join(', ')}.`
+			`You have ${elderRequiredClueCLItems.length - doesntHave.length}/${
+				elderRequiredClueCLItems.length
+			} required clue items in your collection log: ${doesntHave.slice(0, 20).map(itemNameFromID).join(', ')}.`
 		);
 	}
 
@@ -113,7 +112,7 @@ export async function checkElderClueRequirements(user: MUser) {
 		BitField.HasScrollOfLongevity,
 		BitField.HasScrollOfTheHunt,
 		BitField.HasMoondashCharm,
-		BitField.HasUnlockedAraxxor,
+		BitField.HasUnlockedVenatrix,
 		BitField.HasDaemonheimAgilityPass,
 		BitField.HasGuthixEngram,
 		BitField.HasPlantedIvy,

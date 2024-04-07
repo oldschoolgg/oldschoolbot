@@ -2450,7 +2450,7 @@ export const customPetsCL = resolveItems([
 	'Doopy',
 	'Fungo',
 	'Noom',
-	'Baby araxxor',
+	'Baby venatrix',
 	'Mini akumu'
 ]);
 
@@ -2603,6 +2603,9 @@ export const queenBlackDragonCL = resolveItems([
 	'Royal frame',
 	'Royal bolt stabiliser'
 ]);
+
+export const akumuCL = resolveItems(['Mini akumu', 'Nightmarish ashes', 'Cursed onyx', 'Demon statuette']);
+export const venatrixCL = resolveItems(['Venatrix eggs', 'Venatrix webbing', 'Spiders leg bottom']);
 
 export const customBossesDropsThatCantBeDroppedInMBs = [
 	...kingGoldemarCL,

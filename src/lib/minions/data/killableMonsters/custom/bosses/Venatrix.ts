@@ -9,21 +9,21 @@ import itemID from '../../../../../util/itemID';
 import resolveItems from '../../../../../util/resolveItems';
 import { CustomMonster } from '../customMonsters';
 
-export const AraxxorLootTable = new LootTable()
-	.every('Araxxor eggs')
+export const VenatrixLootTable = new LootTable()
+	.every('Venatrix eggs')
 	.tertiary(2, "Red spiders' eggs", [200, 1000])
-	.tertiary(300, 'Araxxor webbing')
+	.tertiary(300, 'Venatrix webbing')
 	.tertiary(300, 'Spiders leg bottom')
 	.tertiary(100, 'Elder scroll piece');
 
-export const Araxxor: CustomMonster = {
+export const Venatrix: CustomMonster = {
 	id: 93_183,
 	baseMonster: Monsters.AbyssalSire,
-	name: 'Araxxor',
-	aliases: ['araxxor'],
+	name: 'Venatrix',
+	aliases: ['venatrix'],
 	timeToFinish: Time.Minute * 20,
 	hp: 3330,
-	table: AraxxorLootTable,
+	table: VenatrixLootTable,
 	difficultyRating: 5,
 	qpRequired: 500,
 	healAmountNeeded: 250 * 200,
@@ -73,5 +73,5 @@ export const Araxxor: CustomMonster = {
 			]
 		}
 	],
-	requiredBitfield: BitField.HasUnlockedAraxxor
+	requiredBitfield: BitField.HasUnlockedVenatrix
 };

@@ -26053,6 +26053,79 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "4587": 1,
+        "73057": 7500,
+        "73090": 30000,
+      },
+      "frozen": false,
+    },
+    "name": "Sundial scimitar",
+    "outputItems": Bank {
+      "bank": {
+        "73094": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "47516": 1,
+        "73162": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Offhand spidergore rapier",
+    "outputItems": Bank {
+      "bank": {
+        "73164": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50021": 30,
+        "73057": 2,
+      },
+      "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "wooden": 100,
+      },
+    },
+    "name": "Potion of light",
+    "outputItems": Bank {
+      "bank": {
+        "73167": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73128": 3,
+      },
+      "frozen": false,
+    },
+    "name": "Clue scroll (elder)",
+    "outputItems": Bank {
+      "bank": {
+        "73123": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "40054": 1,
       },
       "frozen": false,

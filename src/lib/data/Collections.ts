@@ -53,6 +53,7 @@ import {
 	abyssalDragonCL,
 	abyssalSireCL,
 	aerialFishingCL,
+	akumuCL,
 	alchemicalHydraCL,
 	allPetsCL,
 	balthazarsBigBonanzaCL,
@@ -188,6 +189,7 @@ import {
 	tzHaarCL,
 	vardorvisCL,
 	vasaMagusCL,
+	venatrixCL,
 	venenatisCL,
 	vetionCL,
 	vladDrakanCL,
@@ -676,6 +678,18 @@ export const allCollectionLogs: ICollection = {
 				allItems: BSOMonsters.QueenBlackDragon.table.allItems,
 				items: queenBlackDragonCL,
 				fmtProg: kcProg(BSOMonsters.QueenBlackDragon.id)
+			},
+			Akumu: {
+				alias: ['akumu'],
+				allItems: akumuCL,
+				items: akumuCL,
+				fmtProg: kcProg(BSOMonsters.Akumu.id)
+			},
+			Venatrix: {
+				alias: ['venatrix'],
+				allItems: venatrixCL,
+				items: venatrixCL,
+				fmtProg: kcProg(BSOMonsters.Venatrix.id)
 			},
 			"Chamber's of Xeric": {
 				alias: ChambersOfXeric.aliases,

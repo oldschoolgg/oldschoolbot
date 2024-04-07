@@ -7,7 +7,7 @@ import { GearStat } from '../../../../gear';
 import { BattlestaffTable, runeAlchablesTable, StoneSpiritTable } from '../../../../simulation/sharedTables';
 import resolveItems from '../../../../util/resolveItems';
 import { Akumu } from './bosses/Akumu';
-import { Araxxor } from './bosses/Araxxor';
+import { Venatrix } from './bosses/Venatrix';
 import { CustomMonster } from './customMonsters';
 import { TormentedDemon } from './TormentedDemon';
 import { VladimirDrakan } from './VladimirDrakan';
@@ -74,5 +74,5 @@ export const MiscCustomMonsters = {
 	Yeti,
 	VladimirDrakan,
 	Akumu,
-	Araxxor
+	Venatrix
 };

@@ -1922,7 +1922,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_051,
@@ -1933,7 +1933,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_052,
@@ -1944,7 +1944,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_053,
@@ -1955,7 +1955,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_054,
@@ -1966,7 +1966,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_055,
@@ -1977,7 +1977,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_056,
@@ -1988,7 +1988,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_057,
@@ -1999,7 +1999,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_058,
@@ -2010,7 +2010,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_059,
@@ -11945,7 +11945,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	150_000_000
+	1_500_000_000
 );
 
 setCustomItem(
@@ -11957,7 +11957,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	150_000_000
+	1_500_000_000
 );
 
 setCustomItem(
@@ -11969,7 +11969,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	150_000_000
+	1_500_000_000
 );
 
 setCustomItem(
@@ -11981,7 +11981,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	150_000_000
+	1_500_000_000
 );
 
 setCustomItem(
@@ -11993,7 +11993,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	150_000_000
+	1_500_000_000
 );
 
 setCustomItem(
@@ -12005,7 +12005,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	150_000_000
+	1_500_000_000
 );
 
 setCustomItem(
@@ -12017,7 +12017,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	150_000_000
+	1_500_000_000
 );
 
 setCustomItem(
@@ -12029,7 +12029,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	150_000_000
+	1_500_000_000
 );
 
 setCustomItem(
@@ -12204,7 +12204,7 @@ setCustomItem(
 
 setCustomItem(
 	73_163,
-	'Baby araxxor',
+	'Baby venatrix',
 	'Herbi',
 	{
 		customItemData: {
@@ -12302,7 +12302,7 @@ setCustomItem(
 
 setCustomItem(
 	73_180,
-	'Araxxor webbing',
+	'Venatrix webbing',
 	'Coal',
 	{
 		customItemData: {
@@ -12314,7 +12314,7 @@ setCustomItem(
 
 setCustomItem(
 	73_181,
-	'Araxxor eggs',
+	'Venatrix eggs',
 	'Coal',
 	{
 		customItemData: {

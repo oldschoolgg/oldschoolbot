@@ -1154,9 +1154,9 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4158,
-		name: 'Acquire, complete and open 500 Elder clues/caskets',
+		name: 'Acquire, complete and open 200 Elder clues/caskets',
 		has: async ({ actualClues }) => {
-			return actualClues.amount('Clue scroll (elder)') >= 500;
+			return actualClues.amount('Clue scroll (elder)') >= 200;
 		}
 	}
 ];
