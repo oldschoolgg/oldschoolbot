@@ -8747,6 +8747,22 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "27614": 5,
+      },
+      "frozen": false,
+    },
+    "name": "Venator bow (uncharged)",
+    "outputItems": Bank {
+      "bank": {
+        "27612": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "12922": 1,
       },
       "frozen": false,
