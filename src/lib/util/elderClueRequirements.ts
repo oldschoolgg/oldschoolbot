@@ -54,10 +54,11 @@ export async function checkElderClueRequirements(user: MUser) {
 	let unmetRequirements: string[] = [];
 
 	// 120 all
-	for (const [skill, lvl] of Object.entries(user.skillsAsLevels)) {
-		if (lvl < 120) {
-			unmetRequirements.push(`You need level 120 ${skill}.`);
-		}
+	const skillsNot120 = Object.entries(user.skillsAsLevels)
+		.filter(([_, lvl]) => lvl < 120)
+		.map(([skill]) => skill);
+	if (skillsNot120.length > 0) {
+		unmetRequirements.push(`You need level 120 in the following skills: ${skillsNot120.join(', ')}.`);
 	}
 
 	// Atleast 1 5b XP skill
@@ -85,7 +86,7 @@ export async function checkElderClueRequirements(user: MUser) {
 		unmetRequirements.push(
 			`You have ${elderRequiredClueCLItems.length - doesntHave.length}/${
 				elderRequiredClueCLItems.length
-			} required clue items in your collection log: ${doesntHave.slice(0, 20).map(itemNameFromID).join(', ')}.`
+			} required clue items in your collection log: ${doesntHave.slice(0, 10).map(itemNameFromID).join(', ')}.`
 		);
 	}
 
@@ -96,7 +97,7 @@ export async function checkElderClueRequirements(user: MUser) {
 	if (sherlockDoesntHave.length > 0) {
 		unmetRequirements.push(
 			`You need the following Falo the Bard items in your bank: ${sherlockDoesntHave
-				.slice(0, 20)
+				.slice(0, 10)
 				.map(itemOrItems =>
 					Array.isArray(itemOrItems)
 						? itemOrItems.map(itemNameFromID).join(' OR ')
