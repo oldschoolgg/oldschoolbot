@@ -484,7 +484,7 @@ export const Inventions: readonly Invention[] = [
 			organic: 2
 		}),
 		itemCost: new Bank().add('Venatrix webbing'),
-		flags: ['bank', 'equipped'],
+		flags: ['bank'],
 		inventionLevelNeeded: 100,
 		usageCostMultiplier: 0.4
 	}

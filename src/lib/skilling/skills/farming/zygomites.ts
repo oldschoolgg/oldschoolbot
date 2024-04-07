@@ -109,7 +109,7 @@ export const zygomitePlants: Plant[] = zygomiteFarmingSource.map(src => ({
 				}
 			});
 			messages.push(
-				'The toxic zygomite has infected a nearby spider nest, causing them to glow green and run away. Your minion has a bad feeling something bad happened to them.'
+				'The toxic zygomite has infected a nearby spider nest, causing them to glow green and run away. Your minion has feeling something bad happened to them.'
 			);
 		}
 	}

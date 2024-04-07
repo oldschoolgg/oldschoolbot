@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { LootTable, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import { itemID } from 'oldschooljs/dist/util';
+import { itemID, resolveNameBank } from 'oldschooljs/dist/util';
 
 import { BitField } from '../../../../constants';
 import { HighSeedPackTable } from '../../../../data/seedPackTables';
@@ -81,6 +81,9 @@ const Malygos: CustomMonster = {
 		},
 		{
 			[itemID('Bandos godsword')]: 5
+		},
+		{
+			[itemID('Axe of the high sungod')]: 10
 		}
 	],
 	itemsRequired: deepResolveItems([['Anti-dragon shield', 'Abyssal cape']]),
@@ -131,7 +134,12 @@ const Treebeard: CustomMonster = {
 			'Ancient rejuvenation pool': 10
 		}
 	},
-	baseMonster: Monsters.Hespori
+	baseMonster: Monsters.Hespori,
+	itemInBankBoosts: [
+		resolveNameBank({
+			'Axe of the high sungod': 10
+		})
+	]
 };
 
 export const QueenBlackDragon: CustomMonster = {

@@ -5,7 +5,6 @@ import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { GearStat } from '../../../../gear';
 import { GrimyHerbTable, lowRuneHighAdamantTable, runeAlchablesTable } from '../../../../simulation/sharedTables';
-import itemID from '../../../../util/itemID';
 import { CustomMonster } from './customMonsters';
 
 export const TormentedDemon: CustomMonster = {
@@ -71,12 +70,9 @@ export const TormentedDemon: CustomMonster = {
 	itemInBankBoosts: [
 		resolveNameBank({
 			'TzKal cape': 5
+		}),
+		resolveNameBank({
+			'Axe of the high sungod': 10
 		})
-	],
-	equippedItemBoosts: [
-		{
-			items: [{ boostPercent: 10, itemID: itemID('Axe of the high sungod') }],
-			gearSetup: 'melee'
-		}
 	]
 };
