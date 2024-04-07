@@ -35,7 +35,6 @@ export const gods = [
 			"Zamorak d'hide boots",
 			"Zamorak d'hide shield",
 			'Zamorak godsword',
-			'Zamorak bracers',
 			'Zamorakian spear',
 			'Zamorakian hasta',
 			'Unholy blessing',
@@ -124,7 +123,6 @@ export const gods = [
 			'Saradomin godsword',
 			'Saradomin sword',
 			'Staff of light',
-			'Saradomin bracers',
 			'Holy blessing'
 		]),
 		friendlyMonsters: [Monsters.Barrows.id, Monsters.Paladin.id, Monsters.CommanderZilyana.id, Monsters.Unicorn.id]
@@ -155,7 +153,6 @@ export const gods = [
 			"Bandos d'hide boots",
 			"Bandos d'hide shield",
 			'Bandos godsword',
-			'Bandos bracers',
 			'Bandos boots',
 			'Bandos tassets',
 			'Bandos chestplate',
@@ -184,7 +181,6 @@ export const gods = [
 			'Armadyl page 2',
 			'Armadyl page 3',
 			'Armadyl page 4',
-			'Armadyl bracers',
 			"Armadyl d'hide body",
 			'Armadyl chaps',
 			'Armadyl coif',
