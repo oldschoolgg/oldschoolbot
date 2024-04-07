@@ -175,7 +175,7 @@ export const gods = [
 		name: 'Armadyl',
 		warpriestSet: getOSItem('Warpriest of Armadyl set'),
 		godItems: resolveItems([
-			'Zamorak platebody',
+			'Armadyl platebody',
 			'Armadyl platelegs',
 			'Armadyl full helm',
 			'Armadyl kiteshield',
