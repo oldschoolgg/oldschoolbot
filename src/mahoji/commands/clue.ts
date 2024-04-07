@@ -10,6 +10,7 @@ import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { calcClueScores, formatDuration, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
+import { checkElderClueRequirements } from '../../lib/util/elderClueRequirements';
 import getOSItem from '../../lib/util/getOSItem';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { OSBMahojiCommand } from '../lib/util';
@@ -75,7 +76,10 @@ export const clueCommand: OSBMahojiCommand = {
 			required: true,
 			autocomplete: async (_, user) => {
 				const bank = getMahojiBank(await mahojiUsersSettingsFetch(user.id, { bank: true }));
-				return ClueTiers.map(i => ({ name: `${i.name} (${bank.amount(i.scrollID)}x Owned)`, value: i.name }));
+				return ClueTiers.map(i => ({
+					name: `${i.name} (${bank.amount(i.scrollID)}x Owned)`,
+					value: i.name as string
+				})).concat([{ name: 'Elder', value: 'Elder' }]);
 			}
 		},
 		{
@@ -88,6 +92,15 @@ export const clueCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ tier: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
+		if (options.tier === 'Elder') {
+			const reqs = await checkElderClueRequirements(user);
+			if (reqs.unmetRequirements.length > 0) {
+				return `You do not have the requirements to do Elder clues.
+
+${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
+			}
+			return 'You meet all the requirements to do Elder clues.';
+		}
 
 		const clueTier = ClueTiers.find(
 			tier => stringMatches(tier.id.toString(), options.tier) || stringMatches(tier.name, options.tier)
