@@ -65,7 +65,6 @@ export const clueCommand: OSBMahojiCommand = {
 	description: 'Send your minion to complete clue scrolls.',
 	attributes: {
 		requiresMinion: true,
-		requiresMinionNotBusy: true,
 		examples: ['/clue tier:easy']
 	},
 	options: [
@@ -100,6 +99,10 @@ export const clueCommand: OSBMahojiCommand = {
 ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 			}
 			return 'You meet all the requirements to do Elder clues.';
+		}
+
+		if (user.minionIsBusy) {
+			return 'Your minion is busy.';
 		}
 
 		const clueTier = ClueTiers.find(
