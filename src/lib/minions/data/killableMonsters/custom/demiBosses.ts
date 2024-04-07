@@ -245,6 +245,7 @@ const Nihiliz: CustomMonster = {
 			[itemID('Drygore rapier')]: 15
 		},
 		{
+			[itemID('Offhand spidergore rapier')]: 14,
 			[itemID('Offhand drygore rapier')]: 10
 		},
 		{

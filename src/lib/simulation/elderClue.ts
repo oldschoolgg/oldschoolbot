@@ -70,6 +70,7 @@ const table = new LootTable()
 			.add('Runite stone spirit', 1000)
 			.add('Adamantite stone spirit', 2000)
 			.add('Mithril stone spirit', 3000)
+			.add('Gold stone spirit', 4000)
 	)
 	.add('Coins', [20_500_000, 50_200_000]);
 
