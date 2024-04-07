@@ -73,6 +73,7 @@ class UserData {
 
 	// Robochimp:
 	githubId: number | null;
+	migratedUserId: bigint | null;
 
 	// User info
 	id: string;
@@ -109,6 +110,7 @@ class UserData {
 	constructor(_user: string | MUser) {
 		this.id = typeof _user === 'string' ? _user : _user.id;
 		this.githubId = null;
+		this.migratedUserId = null;
 	}
 
 	async sync() {
@@ -127,9 +129,12 @@ class UserData {
 
 		const robochimpUser = await roboChimpClient.user.findFirst({
 			where: { id: BigInt(this.id) },
-			select: { github_id: true }
+			select: { github_id: true, migrated_user_id: true }
 		});
-		if (robochimpUser) this.githubId = robochimpUser.github_id;
+		if (robochimpUser) {
+			this.githubId = robochimpUser.github_id;
+			this.migratedUserId = robochimpUser.migrated_user_id;
+		}
 
 		const stashUnits = await global.prisma!.stashUnit.findMany({
 			where: { user_id: BigInt(this.id) },
@@ -255,7 +260,7 @@ class UserData {
 		this.loaded = true;
 	}
 
-	equals(target: UserData): { result: boolean; errors: string[] } {
+	equals(target: UserData, ignoreRoboChimp: boolean = false): { result: boolean; errors: string[] } {
 		const errors: string[] = [];
 		if (!this.loaded || !target.loaded) {
 			errors.push('Both UserData object must be loaded. Try .sync()');
@@ -266,7 +271,8 @@ class UserData {
 			errors.push(`Usernames don't match (new_users) - ${this.username}:${target.username}`);
 		}
 
-		if (this.githubId !== target.githubId) {
+		if (!ignoreRoboChimp && this.githubId !== target.githubId) {
+			// RoboChimp can be ignored ONLY when it's the second migration (both bots)
 			errors.push("Robochimp user doesn't match");
 		}
 
@@ -1020,7 +1026,7 @@ const allTableCommands: TestCommand[] = [
 	{
 		name: 'Create robochimp user',
 		cmd: async user => {
-			const updateObj = { github_id: 123_456 };
+			const updateObj = { github_id: randInt(100_000, 999_999) };
 			await roboChimpClient.user.upsert({
 				where: {
 					id: BigInt(user.id)
@@ -1109,7 +1115,7 @@ async function runAllTestCommandsOnUser(user: TestUser) {
 	return user;
 }
 
-async function runRandomTestCommandsOnUser(user: TestUser, numCommands: number = 6) {
+async function runRandomTestCommandsOnUser(user: TestUser, numCommands: number = 6, forceRoboChimp: boolean = false) {
 	const commandHistory: string[] = [];
 	const priorityCommands = allTableCommands.filter(c => c.priority);
 	const otherCommands = allTableCommands.filter(c => !c.priority);
@@ -1119,6 +1125,11 @@ async function runRandomTestCommandsOnUser(user: TestUser, numCommands: number =
 	}
 	for (let i = 0; i < numCommands; i++) {
 		const command = randArrItem(otherCommands);
+		commandHistory.push(`${new Date().toISOString()}:${command.name}`);
+		await runTestCommand(user, command);
+	}
+	if (forceRoboChimp) {
+		const command = allTableCommands.filter(c => c.name.toLowerCase().includes('robochimp'))![0];
 		commandHistory.push(`${new Date().toISOString()}:${command.name}`);
 		await runTestCommand(user, command);
 	}
@@ -1214,6 +1225,52 @@ describe('migrate user test', async () => {
 	await GrandExchange.totalReset();
 	await GrandExchange.init();
 
+	test('test preventing a double (clobber) robochimp migration (two bot-migration)', async () => {
+		const sourceUserId = mockedId();
+		const destUserId = mockedId();
+
+		// Create source user, and populate data:
+		const sourceUser = await buildBaseUser(sourceUserId);
+		const srcHistory = await runRandomTestCommandsOnUser(sourceUser, 5, true);
+
+		const sourceData = new UserData(sourceUser);
+		await sourceData.sync();
+
+		const migrateResult = await migrateUser(sourceUser.id, destUserId);
+		expect(migrateResult).toEqual(true);
+
+		const destData = new UserData(destUserId);
+		await destData.sync();
+
+		const compareResult = sourceData.equals(destData);
+		logResult(compareResult, sourceData, destData, srcHistory, []);
+		expect(compareResult.result).toBe(true);
+
+		// Now the actual test, everything above has to happen first...
+		await runAllTestCommandsOnUser(sourceUser);
+
+		const newSourceData = new UserData(sourceUser);
+		await newSourceData.sync();
+
+		const secondMigrateResult = await migrateUser(sourceUser.id, destUserId);
+		expect(secondMigrateResult).toEqual(true);
+
+		const newDestData = new UserData(destUserId);
+		await newDestData.sync();
+
+		const newCompareResult = sourceData.equals(destData);
+		logResult(newCompareResult, newSourceData, newDestData);
+		expect(newCompareResult.result).toBe(true);
+
+		expect(newDestData.githubId).toEqual(sourceData.githubId);
+		expect(newDestData.githubId).toEqual(destData.githubId);
+
+		// Make sure the 2nd transfer didn't overwrite robochimp:
+		expect(newDestData.githubId !== newSourceData.githubId).toBeTruthy();
+
+		// Verify migrated id is correct
+		expect(newDestData.migratedUserId).toEqual(BigInt(sourceData.id));
+	});
 	test('test migrating existing user to target with no records', async () => {
 		const sourceUser = await buildBaseUser(mockedId());
 		await runAllTestCommandsOnUser(sourceUser);
