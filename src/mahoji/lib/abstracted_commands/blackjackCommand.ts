@@ -105,7 +105,7 @@ export async function blackjackCommand(
 
 	await handleMahojiConfirmation(
 		interaction,
-		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
+		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might double it.`
 	);
 	await user.sync();
 	const currentBalance = user.GP;
@@ -128,7 +128,7 @@ export async function blackjackCommand(
 	if (calculateHandValue(playerHand) === 21) {
 		await user.addItemsToBank({ items: new Bank().add('Coins', amount * 2), collectionLog: false });
 		const playerCards = `**Your Hand**: ${playerHand.map(card => `${card.value} of ${card.suit}`).join(', ')}`;
-		return `Blackjack! Player wins ${toKMB(winnings)}gp!\n${playerCards}`;
+		return `Blackjack! Player wins ${toKMB(winnings)}!\n${playerCards}`;
 	}
 
 	// Send initial message with player's hand and hit/stand buttons
@@ -165,7 +165,7 @@ export async function blackjackCommand(
 							dealerCard.suit
 						}\n**Your Final Hand**: ${playerHand.map(card => `${card.value} of ${card.suit}`).join(', ')}`;
 						await sentMessage.edit({ content, components: [] });
-						return `Dealer wins! Player went bust and lost ${toKMB(amount)}gp.`;
+						return `Dealer wins! Player went bust and lost ${toKMB(amount)}.`;
 					}
 					// Player hasn't bust yet, update message content with the new full hand
 					content = `Dealer Card: ${dealerCard.value} of ${dealerCard.suit}\n**Your Hand**: ${playerHand
@@ -192,14 +192,14 @@ export async function blackjackCommand(
 					// Determine the winner
 					const playerHandValue = calculateHandValue(playerHand);
 					if (playerHandValue > 21) {
-						return `Dealer wins! Player went bust and lost ${toKMB(amount)}gp.`;
+						return `Dealer wins! Player went bust and lost ${toKMB(amount)}.`;
 					}
 					const dealerHandValue = calculateHandValue(dealerHand);
 					if (dealerHandValue > 21 || playerHandValue > dealerHandValue) {
 						await user.addItemsToBank({ items: new Bank().add('Coins', amount * 2), collectionLog: false });
-						return `Player wins ${toKMB(winnings)}gp!`;
+						return `Player wins ${toKMB(winnings)}!`;
 					}
-					return `Dealer wins! Player lost ${toKMB(amount)}gp.`;
+					return `Dealer wins! Player lost ${toKMB(amount)}.`;
 				}
 			}
 		}
@@ -208,5 +208,5 @@ export async function blackjackCommand(
 	} finally {
 		await sentMessage.edit({ components: [] });
 	}
-	return `Timed out, Dealer wins! Player lost ${toKMB(amount)}gp.`;
+	return `Timed out, Dealer wins! Player lost ${toKMB(amount)}.`;
 }
