@@ -114,6 +114,8 @@ export async function blackjackCommand(
 	}
 	await user.removeItemsFromBank(new Bank().add('Coins', amount));
 
+	const winnings = amount * 2;
+
 	// Create and shuffle the deck
 	const deck = createDeck();
 	shuffleDeck(deck);
@@ -126,7 +128,7 @@ export async function blackjackCommand(
 	if (calculateHandValue(playerHand) === 21) {
 		await user.addItemsToBank({ items: new Bank().add('Coins', amount * 2), collectionLog: false });
 		const playerCards = `**Your Hand**: ${playerHand.map(card => `${card.value} of ${card.suit}`).join(', ')}`;
-		return `Blackjack! Player wins!\n${playerCards}`;
+		return `Blackjack! Player wins ${toKMB(winnings)}gp!\n${playerCards}`;
 	}
 
 	// Send initial message with player's hand and hit/stand buttons
@@ -163,7 +165,7 @@ export async function blackjackCommand(
 							dealerCard.suit
 						}\n**Your Final Hand**: ${playerHand.map(card => `${card.value} of ${card.suit}`).join(', ')}`;
 						await sentMessage.edit({ content, components: [] });
-						return 'Player busts! Dealer wins!';
+						return `Dealer wins! Player went bust and lost ${toKMB(amount)}gp.`;
 					}
 					// Player hasn't bust yet, update message content with the new full hand
 					content = `Dealer Card: ${dealerCard.value} of ${dealerCard.suit}\n**Your Hand**: ${playerHand
@@ -190,14 +192,14 @@ export async function blackjackCommand(
 					// Determine the winner
 					const playerHandValue = calculateHandValue(playerHand);
 					if (playerHandValue > 21) {
-						return 'Player busts! Dealer wins!';
+						return `Dealer wins! Player went bust and lost ${toKMB(amount)}gp.`;
 					}
 					const dealerHandValue = calculateHandValue(dealerHand);
 					if (dealerHandValue > 21 || playerHandValue > dealerHandValue) {
 						await user.addItemsToBank({ items: new Bank().add('Coins', amount * 2), collectionLog: false });
-						return 'Player wins!';
+						return `Player wins ${toKMB(winnings)}gp!`;
 					}
-					return 'Dealer wins!';
+					return `Dealer wins! Player lost ${toKMB(amount)}gp.`;
 				}
 			}
 		}
@@ -206,5 +208,5 @@ export async function blackjackCommand(
 	} finally {
 		await sentMessage.edit({ components: [] });
 	}
-	return 'Timed out, Dealer wins!';
+	return `Timed out, Dealer wins! Player lost ${toKMB(amount)}gp.`;
 }
