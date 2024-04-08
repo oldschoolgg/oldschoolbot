@@ -181,7 +181,7 @@ export async function blackjackCommand(
 					}
 
 					// Update message content to show dealer's hand and player's final hand
-					const content = `**Dealer's Hand**: ${dealerHand
+					content = `**Dealer's Hand**: ${dealerHand
 						.map(card => `${card.value} of ${card.suit}`)
 						.join(', ')}\n**Your Final Hand**: ${playerHand
 						.map(card => `${card.value} of ${card.suit}`)
