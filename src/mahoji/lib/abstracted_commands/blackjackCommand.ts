@@ -132,7 +132,6 @@ export async function blackjackCommand(
 	}
 
 	// Send initial message with player's hand and hit/stand buttons
-	let playerHandValue = calculateHandValue(playerHand);
 	const dealerCard = dealerHand[0];
 	let content = `**Dealer Card**: ${dealerCard.value} of ${dealerCard.suit}\n**Your Hand**: ${playerHand
 		.map(card => `${card.value} of ${card.suit}`)
@@ -158,7 +157,7 @@ export async function blackjackCommand(
 				case 'hit': {
 					// Player hits
 					playerHand.push(dealCard(deck));
-					playerHandValue = calculateHandValue(playerHand);
+					let playerHandValue = calculateHandValue(playerHand);
 					if (playerHandValue > 21) {
 						// Player busts, update message content to show full hand
 						content = `**Dealer Card**: ${dealerCard.value} of ${
