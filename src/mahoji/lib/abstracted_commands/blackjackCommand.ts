@@ -126,9 +126,9 @@ export async function blackjackCommand(
 
 	// Check for player blackjack
 	if (calculateHandValue(playerHand) === 21) {
-		await user.addItemsToBank({ items: new Bank().add('Coins', amount * 2), collectionLog: false });
+		await user.addItemsToBank({ items: new Bank().add('Coins', winnings), collectionLog: false });
 		const playerCards = `**Your Hand**: ${playerHand.map(card => `${card.value} of ${card.suit}`).join(', ')}`;
-		return `Blackjack! Player wins ${toKMB(winnings)}!\n${playerCards}`;
+		return `Blackjack! Player wins ${toKMB(amount)}!\n${playerCards}`;
 	}
 
 	// Send initial message with player's hand and hit/stand buttons
@@ -196,8 +196,8 @@ export async function blackjackCommand(
 					}
 					const dealerHandValue = calculateHandValue(dealerHand);
 					if (dealerHandValue > 21 || playerHandValue > dealerHandValue) {
-						await user.addItemsToBank({ items: new Bank().add('Coins', amount * 2), collectionLog: false });
-						return `Player wins ${toKMB(winnings)}!`;
+						await user.addItemsToBank({ items: new Bank().add('Coins', winnings), collectionLog: false });
+						return `Player wins ${toKMB(amount)}!`;
 					}
 					return `Dealer wins! Player lost ${toKMB(amount)}.`;
 				}
