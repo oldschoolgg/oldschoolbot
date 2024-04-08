@@ -28,7 +28,7 @@ import {
 	globalConfig,
 	META_CONSTANTS
 } from '../../lib/constants';
-import { economyLogPush } from '../../lib/economyLogs';
+import { economyLog } from '../../lib/economyLogs';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetup } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
@@ -1005,7 +1005,7 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 		if (options.reboot) {
 			globalClient.isShuttingDown = true;
-			await economyLogPush('Flushing economy log due to reboot', true);
+			await economyLog('Flushing economy log due to reboot', true);
 			await interactionReply(interaction, {
 				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
 			});
@@ -1023,7 +1023,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			await interactionReply(interaction, {
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
-			await economyLogPush('Flushing economy log due to shutdown', true);
+			await economyLog('Flushing economy log due to shutdown', true);
 			await Promise.all([sleep(timer), GrandExchange.queue.onEmpty()]);
 			await sendToChannelID(Channel.GeneralChannel, {
 				content: `I am shutting down! Goodbye :(
