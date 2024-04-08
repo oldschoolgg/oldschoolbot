@@ -1,4 +1,3 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit';
 import { Tame, TameActivity } from '@prisma/client';
 import {
 	ActionRowBuilder,
