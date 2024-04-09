@@ -1377,11 +1377,11 @@ export const BsoCreateables: Createable[] = [
 		outputItems: new Bank().add('Offhand spidergore rapier')
 	},
 	{
-		name: 'Potion of light',
-		inputItems: new Bank().add('Elder rune', 30).add('Solite', 2),
+		name: 'Potion of light (Materials)',
+		inputItems: new Bank().add('Elder rune', 30),
 		outputItems: new Bank().add('Potion of light'),
 		materialCost: new MaterialBank({
-			wooden: 100
+			wooden: 15
 		})
 	},
 	{
@@ -1390,6 +1390,33 @@ export const BsoCreateables: Createable[] = [
 		outputItems: new Bank().add('Clue scroll (elder)')
 	}
 ];
+
+const potionOfLightLogs = [
+	{
+		item: getOSItem('Elder logs'),
+		qty: 5
+	},
+	{
+		item: getOSItem('Redwood logs'),
+		qty: 10
+	},
+	{
+		item: getOSItem('Magic logs'),
+		qty: 30
+	},
+	{
+		item: getOSItem('Yew logs'),
+		qty: 50
+	}
+];
+
+for (const { item, qty } of potionOfLightLogs) {
+	BsoCreateables.push({
+		name: `Potion of light (${item.name})`,
+		inputItems: new Bank().add('Elder rune', 30).add(item, qty),
+		outputItems: new Bank().add('Potion of light')
+	});
+}
 
 for (const { cape, skills } of expertCapesSource) {
 	const capeBank = new Bank().add(cape.id).freeze();

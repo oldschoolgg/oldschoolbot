@@ -144,9 +144,6 @@ export const createCommand: OSBMahojiCommand = {
 		const materialCost = createableItem.materialCost
 			? createableItem.materialCost.clone().multiply(quantity)
 			: null;
-		if (materialCost && !materialsOwned.has(materialCost)) {
-			return `You don't own the materials needed to create this, you need: ${materialCost}.`;
-		}
 
 		if (
 			materialCost &&
@@ -154,7 +151,11 @@ export const createCommand: OSBMahojiCommand = {
 			createableItem.name === 'Potion of light' &&
 			user.skillsAsXP.firemaking >= 500_000_000
 		) {
-			materialCost.bank.wooden = reduceNumByPercent(materialCost.bank.wooden!, 20);
+			materialCost.bank.wooden = Math.ceil(reduceNumByPercent(materialCost.bank.wooden!, 20));
+		}
+
+		if (materialCost && !materialsOwned.has(materialCost)) {
+			return `You don't own the materials needed to create this, you need: ${materialCost}.`;
 		}
 
 		// Check for any items they cant have 2 of.

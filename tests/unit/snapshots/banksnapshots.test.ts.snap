@@ -26089,16 +26089,15 @@ exports[`BSO Creatables 1`] = `
     "inputItems": Bank {
       "bank": {
         "50021": 30,
-        "73057": 2,
       },
       "frozen": false,
     },
     "materialCost": MaterialBank {
       "bank": {
-        "wooden": 100,
+        "wooden": 15,
       },
     },
-    "name": "Potion of light",
+    "name": "Potion of light (Materials)",
     "outputItems": Bank {
       "bank": {
         "73167": 1,
@@ -26118,6 +26117,74 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "73123": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50017": 5,
+        "50021": 30,
+      },
+      "frozen": false,
+    },
+    "name": "Potion of light (Elder logs)",
+    "outputItems": Bank {
+      "bank": {
+        "73167": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "19669": 10,
+        "50021": 30,
+      },
+      "frozen": false,
+    },
+    "name": "Potion of light (Redwood logs)",
+    "outputItems": Bank {
+      "bank": {
+        "73167": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1513": 30,
+        "50021": 30,
+      },
+      "frozen": false,
+    },
+    "name": "Potion of light (Magic logs)",
+    "outputItems": Bank {
+      "bank": {
+        "73167": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1515": 50,
+        "50021": 30,
+      },
+      "frozen": false,
+    },
+    "name": "Potion of light (Yew logs)",
+    "outputItems": Bank {
+      "bank": {
+        "73167": 1,
       },
       "frozen": false,
     },
