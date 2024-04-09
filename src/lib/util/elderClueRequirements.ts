@@ -41,7 +41,6 @@ export const elderSherlockItems = deepResolveItems([
 	'Ring of piercing (i)',
 	'Drygore axe',
 	'Dwarven warhammer',
-	'Deathtouched dart',
 	'Tidal collector',
 	'Atlantean trident',
 	resolveItems(['Brackish blade', 'Ganodermic gloves', 'Ganodermic boots']),

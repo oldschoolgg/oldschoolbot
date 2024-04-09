@@ -12252,7 +12252,7 @@ setCustomItem(
 
 setCustomItem(
 	73_167,
-	'Potion of light',
+	'Lumina',
 	'Coal',
 	{
 		customItemData: {

@@ -26097,7 +26097,7 @@ exports[`BSO Creatables 1`] = `
         "wooden": 15,
       },
     },
-    "name": "Potion of light (Materials)",
+    "name": "Lumina (Materials)",
     "outputItems": Bank {
       "bank": {
         "73167": 1,
@@ -26130,7 +26130,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Potion of light (Elder logs)",
+    "name": "Lumina (Elder logs)",
     "outputItems": Bank {
       "bank": {
         "73167": 1,
@@ -26147,7 +26147,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Potion of light (Redwood logs)",
+    "name": "Lumina (Redwood logs)",
     "outputItems": Bank {
       "bank": {
         "73167": 1,
@@ -26164,7 +26164,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Potion of light (Magic logs)",
+    "name": "Lumina (Magic logs)",
     "outputItems": Bank {
       "bank": {
         "73167": 1,
@@ -26181,7 +26181,7 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Potion of light (Yew logs)",
+    "name": "Lumina (Yew logs)",
     "outputItems": Bank {
       "bank": {
         "73167": 1,

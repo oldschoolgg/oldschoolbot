@@ -1377,9 +1377,9 @@ export const BsoCreateables: Createable[] = [
 		outputItems: new Bank().add('Offhand spidergore rapier')
 	},
 	{
-		name: 'Potion of light (Materials)',
+		name: 'Lumina (Materials)',
 		inputItems: new Bank().add('Elder rune', 30),
-		outputItems: new Bank().add('Potion of light'),
+		outputItems: new Bank().add('Lumina'),
 		materialCost: new MaterialBank({
 			wooden: 15
 		})
@@ -1412,9 +1412,9 @@ const potionOfLightLogs = [
 
 for (const { item, qty } of potionOfLightLogs) {
 	BsoCreateables.push({
-		name: `Potion of light (${item.name})`,
+		name: `Lumina (${item.name})`,
 		inputItems: new Bank().add('Elder rune', 30).add(item, qty),
-		outputItems: new Bank().add('Potion of light')
+		outputItems: new Bank().add('Lumina')
 	});
 }
 

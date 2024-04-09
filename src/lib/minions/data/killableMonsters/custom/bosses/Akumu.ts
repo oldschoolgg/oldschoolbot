@@ -54,7 +54,7 @@ export const Akumu: CustomMonster = {
 		melee: {}
 	},
 	itemCost: {
-		itemCost: new Bank().add('Super combat potion(4)').add('Potion of light'),
+		itemCost: new Bank().add('Super combat potion(4)').add('Lumina'),
 		qtyPerKill: 1
 	},
 	tameCantKill: true,
