@@ -6,6 +6,7 @@ import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { PerkTier } from '../../../lib/constants';
+import { BitField } from '../../../lib/constants';
 import { allOpenables, getOpenableLoot, UnifiedOpenable } from '../../../lib/openables';
 import { makeComponents } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
@@ -108,6 +109,8 @@ async function finalizeOpening({
 		collectionLog: true,
 		filterLoot: false
 	});
+	
+
 	const image = await makeBankImage({
 		bank: loot,
 		title:
@@ -116,8 +119,10 @@ async function finalizeOpening({
 				: 'Loot From Opening',
 		user,
 		previousCL,
-		mahojiFlags: ['show_names']
+		mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
 	});
+	
+	
 
 	if (loot.has('Coins')) {
 		await updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
