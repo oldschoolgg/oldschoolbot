@@ -230,7 +230,7 @@ export const monsterTask: MinionTask = {
 				let superiorDroprate = 200;
 				if (isInWilderness) {
 					superiorDroprate *= 0.9;
-					messages.push(`\n10% more common superiors due to Wilderness Slayer.`);
+					messages.push('\n10% more common superiors due to Wilderness Slayer.');
 				}
 				if (user.hasCompletedCATier('elite')) {
 					superiorDroprate *= 0.75;
