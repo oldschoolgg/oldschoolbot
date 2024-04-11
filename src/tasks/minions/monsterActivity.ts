@@ -228,8 +228,12 @@ export const monsterTask: MinionTask = {
 		if (superiorTable && isOnTaskResult.isOnTask) {
 			if (!(isInWilderness && monster.name === 'Bloodveld')) {
 				let superiorDroprate = 200;
+				if (isInWilderness) {
+					superiorDroprate *= 0.9;
+					messages.push(`\n10% more common superiors due to Wilderness Slayer.`);
+				}
 				if (user.hasCompletedCATier('elite')) {
-					superiorDroprate = 150;
+					superiorDroprate *= 0.75;
 					messages.push(`\n${Emoji.CombatAchievements} 25% more common superiors due to Elite CA tier.`);
 				}
 
