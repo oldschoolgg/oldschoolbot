@@ -186,11 +186,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		bossTask = true;
 	}
 
-	if (
-		_user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) &&
-		master.name.toLowerCase() === 'krystilia' &&
-		roll(25)
-	) {
+	if (_user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss) && master.id == 8 && roll(25)) {
 		wildyBossTask = true;
 	}
 
