@@ -87,7 +87,18 @@ export const Solis: CustomMonster = {
 		if (hasMaxedIgne) return null;
 		return 'You need to have a maxed Igne Tame (best gear, all fed items) to fight Solis.';
 	},
-	setupsUsed: ['melee']
+	setupsUsed: ['melee'],
+	equippedItemBoosts: [
+		{
+			gearSetup: 'melee',
+			items: [
+				{
+					boostPercent: 7,
+					itemID: itemID('Offhand spidergore rapier')
+				}
+			]
+		}
+	]
 };
 
 export const Celestara: CustomMonster = {

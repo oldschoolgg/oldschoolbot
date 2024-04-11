@@ -197,6 +197,7 @@ export interface Mixable {
 	zahur?: boolean;
 	wesley?: boolean;
 	qpRequired?: number;
+	defaultQuantity?: number;
 }
 
 export interface CutLeapingFish {

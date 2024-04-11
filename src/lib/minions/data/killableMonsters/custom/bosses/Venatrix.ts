@@ -11,6 +11,9 @@ import { CustomMonster } from '../customMonsters';
 
 export const VenatrixLootTable = new LootTable()
 	.every('Venatrix eggs')
+	.every(
+		new LootTable().add('Magic logs', 250).add('Mahogany logs', 100).add('Dragon bones', 20).add('Runite ore', 10)
+	)
 	.tertiary(2, "Red spiders' eggs", [200, 1000])
 	.tertiary(300, 'Venatrix webbing')
 	.tertiary(300, 'Spiders leg bottom')
@@ -73,5 +76,8 @@ export const Venatrix: CustomMonster = {
 			]
 		}
 	],
-	requiredBitfield: BitField.HasUnlockedVenatrix
+	requiredBitfield: BitField.HasUnlockedVenatrix,
+	kcRequirements: {
+		Celestara: 1
+	}
 };

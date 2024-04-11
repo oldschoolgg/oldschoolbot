@@ -27,6 +27,7 @@ export const bsoMixables: Mixable[] = [
 			.add('Cave nightshade', 100)
 			.add('Poison ivy berries', 100),
 		tickRate: 2,
-		bankTimePerPotion: 0.3
+		bankTimePerPotion: 0.3,
+		defaultQuantity: 1
 	}
 ];

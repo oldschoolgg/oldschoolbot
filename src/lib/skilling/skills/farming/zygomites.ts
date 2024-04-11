@@ -102,7 +102,7 @@ export const zygomitePlants: Plant[] = zygomiteFarmingSource.map(src => ({
 				}
 			}
 		}
-		if (src.name === 'Toxic zygomite') {
+		if (src.name === 'Toxic zygomite' && !user.bitfield.includes(BitField.HasUnlockedVenatrix)) {
 			await user.update({
 				bitfield: {
 					push: BitField.HasUnlockedVenatrix

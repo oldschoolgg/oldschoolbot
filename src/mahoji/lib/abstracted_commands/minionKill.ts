@@ -258,6 +258,18 @@ export async function minionKillCommand(
 		}
 	}
 
+	const monsterScores = await user.fetchMonsterScores();
+
+	if (monster.kcRequirements) {
+		for (const [key, val] of Object.entries(monster.kcRequirements)) {
+			const { id } = BSOMonsters[key as keyof typeof BSOMonsters];
+			const kc = monsterScores[id] ?? 0;
+			if (kc < val) {
+				return `You need at least ${val} ${key} KC to kill ${monster.name}, you have ${kc}.`;
+			}
+		}
+	}
+
 	if (monster.minimumWeaponShieldStats) {
 		for (const [setup, minimum] of Object.entries(monster.minimumWeaponShieldStats)) {
 			const gear = user.gear[setup as GearSetupType];
@@ -276,7 +288,7 @@ export async function minionKillCommand(
 		}
 	}
 
-	const kcForThisMonster = await user.getKC(monster.id);
+	const kcForThisMonster = monsterScores[monster.id ?? 0];
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, kcForThisMonster);
 
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {

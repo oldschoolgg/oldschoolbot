@@ -2,9 +2,9 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { MysteryBoxes } from '../../../../../bsoOpenables';
 import { GearStat } from '../../../../../gear';
-import { DragonTable } from '../../../../../simulation/grandmasterClue';
-import { runeAlchablesTable } from '../../../../../simulation/sharedTables';
+import { UncutGemTable } from '../../../../../simulation/sharedTables';
 import itemID from '../../../../../util/itemID';
 import resolveItems from '../../../../../util/resolveItems';
 import { CustomMonster } from '../customMonsters';
@@ -12,10 +12,17 @@ import { CustomMonster } from '../customMonsters';
 export const AkumuLootTable = new LootTable()
 	.tertiary(1000, 'Mini akumu')
 	.every('Nightmarish ashes', [5, 10])
-	.tertiary(3, 'Cursed onyx')
-	.tertiary(15, 'Demon statuette')
-	.every(new LootTable().add(runeAlchablesTable).add(DragonTable), [3, 5])
-	.tertiary(100, 'Elder scroll piece');
+	.tertiary(4, 'Cursed onyx')
+	.tertiary(18, 'Demon statuette')
+	.tertiary(100, 'Elder scroll piece')
+	.add(
+		new LootTable()
+			.add(MysteryBoxes, [2, 5])
+			.add('Battlestaff', [500, 1500])
+			.add('Black dragonhide', [500, 1500])
+			.add('Cannonball', [500, 1500])
+			.add(UncutGemTable, [2, 5])
+	);
 
 export const Akumu: CustomMonster = {
 	id: 93_135,
@@ -26,7 +33,6 @@ export const Akumu: CustomMonster = {
 	hp: 3330,
 	table: AkumuLootTable,
 	difficultyRating: 5,
-	qpRequired: 1500,
 	healAmountNeeded: 250 * 200,
 	attackStyleToUse: GearStat.AttackSlash,
 	attackStylesUsed: [GearStat.AttackSlash],
@@ -70,5 +76,8 @@ export const Akumu: CustomMonster = {
 				}
 			]
 		}
-	]
+	],
+	kcRequirements: {
+		Solis: 1
+	}
 };
