@@ -43,6 +43,7 @@ import {
 	SlayerActivityConstants,
 	superiorCannonSingleConsumables
 } from '../../../lib/minions/data/combatConstants';
+import { BSOMonsters } from '../../../lib/minions/data/killableMonsters/custom/customMonsters';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import {
 	AttackStyles,
@@ -902,6 +903,9 @@ export async function minionKillCommand(
 		}
 		if (monster.name === 'Yeti') {
 			return 'You send your minion off to fight Yeti with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
+		}
+		if ([BSOMonsters.Akumu.id, BSOMonsters.Venatrix.id].includes(monster.id)) {
+			return 'This monster is temporarily unable to be killed with a Deathtouched dart.';
 		}
 		usedDart = true;
 		await userStatsUpdate(user.id, () => ({

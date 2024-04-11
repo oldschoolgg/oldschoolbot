@@ -12217,10 +12217,30 @@ setCustomItem(
 setCustomItem(
 	73_164,
 	'Offhand spidergore rapier',
-	'Offhand drygore longsword',
+	'Offhand drygore rapier',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
+		},
+		equipment: {
+			attack_stab: 44,
+			attack_slash: 9,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 11,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Shield,
+			requirements: null
 		}
 	},
 	100_000_000

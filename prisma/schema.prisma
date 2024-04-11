@@ -1032,6 +1032,8 @@ model UserStats {
   loot_destroyed_by_hunter_portent Json   @default("{}") @db.JsonB
   divination_loot                  Json   @default("{}") @db.JsonB
 
+  octo_loot_bank Json @default("{}") @db.Json
+
   @@map("user_stats")
 }
 

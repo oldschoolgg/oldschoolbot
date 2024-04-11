@@ -13,7 +13,7 @@ export const AkumuLootTable = new LootTable()
 	.tertiary(1000, 'Mini akumu')
 	.every('Nightmarish ashes', [5, 10])
 	.tertiary(3, 'Cursed onyx')
-	.tertiary(10, 'Demon statuette')
+	.tertiary(15, 'Demon statuette')
 	.every(new LootTable().add(runeAlchablesTable).add(DragonTable), [3, 5])
 	.tertiary(100, 'Elder scroll piece');
 

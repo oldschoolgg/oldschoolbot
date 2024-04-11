@@ -1,6 +1,6 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { noOp, notEmpty, randArrItem, roll, shuffleArr, uniqueArr } from 'e';
+import { noOp, notEmpty, percentChance, randArrItem, shuffleArr, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
@@ -128,20 +128,27 @@ async function finalizeOpening({
 	const newOpenableScores = await addToOpenablesScores(user, kcBank);
 
 	const hasSmokey = user.allItemsOwned.has('Smokey');
+	const hasOcto = user.allItemsOwned.has('Octo');
 	let smokeyMsg: string | null = null;
 
-	if (hasSmokey) {
+	if (hasSmokey || hasOcto) {
 		let bonuses = [];
 		const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 		for (const openable of openables) {
 			if (!openable.smokeyApplies) continue;
+			const bonusChancePercent = hasSmokey ? 10 : 8;
+
 			let smokeyBonus = 0;
 			const amountOfThisOpenable = cost.amount(openable.openedItem.id);
 			assert(amountOfThisOpenable > 0, `>0 ${openable.name}`);
 			for (let i = 0; i < amountOfThisOpenable; i++) {
-				if (roll(10)) smokeyBonus++;
+				if (percentChance(bonusChancePercent)) smokeyBonus++;
 			}
-			userStatsBankUpdate(user.id, 'smokey_loot_bank', new Bank().add(openable.openedItem.id, smokeyBonus));
+			await userStatsBankUpdate(
+				user.id,
+				hasSmokey ? 'smokey_loot_bank' : 'octo_loot_bank',
+				new Bank().add(openable.openedItem.id, smokeyBonus)
+			);
 			loot.add(
 				(
 					await getOpenableLoot({
@@ -154,7 +161,10 @@ async function finalizeOpening({
 			);
 			bonuses.push(`${smokeyBonus}x ${openable.name}`);
 		}
-		smokeyMsg = bonuses.length > 0 ? `${Emoji.Smokey} Bonus Rolls: ${bonuses.join(', ')}` : null;
+		smokeyMsg =
+			bonuses.length > 0
+				? `${hasOcto ? '<:Octo:1227526833776492554>' : Emoji.Smokey} Bonus Rolls: ${bonuses.join(', ')}`
+				: null;
 	}
 	if (smokeyMsg) messages.push(smokeyMsg);
 
