@@ -355,6 +355,10 @@ export const monsterTask: MinionTask = {
 					}
 				});
 				str += `\n**You've completed ${currentStreak} wilderness tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
+				if (isOnTaskResult.assignedTask.isBoss) {
+					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5000, minimal: true })}`;
+					str += ' for completing your boss task.';
+				}
 			} else if (thisTripFinishesTask) {
 				const newStats = await userStatsUpdate(
 					user.id,
