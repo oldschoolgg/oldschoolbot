@@ -267,15 +267,6 @@ export const monsterTask: MinionTask = {
 			}
 		}
 
-		// Wilderness Slayer Cave table
-		if (isInWilderness && monster.wildySlayerCave) {
-			for (let i = 0; i < quantity; i++) {
-				if (roll(2)) {
-					loot.add(WildySlayerCaveTable.roll());
-				}
-			}
-		}
-
 		const xpRes: string[] = [];
 		xpRes.push(
 			await addMonsterXP(user, {
