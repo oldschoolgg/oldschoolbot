@@ -12,9 +12,13 @@ import { CustomMonster } from '../customMonsters';
 export const VenatrixLootTable = new LootTable()
 	.every('Venatrix eggs')
 	.every(
-		new LootTable().add('Magic logs', 250).add('Mahogany logs', 100).add('Dragon bones', 20).add('Runite ore', 10)
+		new LootTable()
+			.add('Magic logs', [200, 250])
+			.add('Mahogany logs', 80)
+			.add('Dragon bones', [15, 20])
+			.add('Runite ore', [8, 10])
 	)
-	.tertiary(2, "Red spiders' eggs", [200, 1000])
+	.tertiary(2, "Red spiders' eggs", [200, 600])
 	.tertiary(300, 'Venatrix webbing')
 	.tertiary(300, 'Spiders leg bottom')
 	.tertiary(100, 'Elder scroll piece');
