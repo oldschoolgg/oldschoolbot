@@ -1,4 +1,6 @@
 import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
+import { UserEventType } from '@prisma/client';
+import { bold } from 'discord.js';
 import { noOp, Time } from 'e';
 import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/util';
 
@@ -8,6 +10,7 @@ import { skillEmoji } from './data/emojis';
 import { AddXpParams } from './minions/types';
 import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';
+import { insertUserEvent } from './util/userEvents';
 import { sendToChannelID } from './util/webhook';
 
 const skillsVals = Object.values(Skills);
@@ -104,8 +107,13 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		}
 	}
 
+	if (currentXP < MAX_XP && newXP >= MAX_XP) {
+		await insertUserEvent({ userID: user.id, type: UserEventType.MaxXP, skill: skill.id });
+	}
+
 	// If they just reached 99, send a server notification.
 	if (currentLevel < 99 && newLevel >= 99) {
+		await insertUserEvent({ userID: user.id, type: UserEventType.MaxLevel, skill: skill.id });
 		const skillNameCased = toTitleCase(params.skillName);
 		const [usersWith] = await prisma.$queryRawUnsafe<
 			{
@@ -135,6 +143,16 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	await user.update({
 		[`skills_${params.skillName}`]: Math.floor(newXP)
 	});
+
+	if (currentXP < MAX_XP && newXP === MAX_XP && Object.values(user.skillsAsXP).every(xp => xp === MAX_XP)) {
+		globalClient.emit(
+			Events.ServerNotification,
+			bold(
+				`🎉 ${skill.emoji} **${user.badgedUsername}'s** minion, ${user.minionName}, just achieved the maximum possible total XP!`
+			)
+		);
+		await insertUserEvent({ userID: user.id, type: UserEventType.MaxTotalXP });
+	}
 
 	let str = '';
 	if (preMax !== -1) {

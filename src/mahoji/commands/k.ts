@@ -111,6 +111,12 @@ export const killCommand: OSBMahojiCommand = {
 			name: 'wilderness',
 			description: 'If you want to kill the monster in the wilderness.',
 			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'solo',
+			description: 'Solo (if its a group boss)',
+			required: false
 		}
 	],
 	run: async ({
@@ -124,6 +130,7 @@ export const killCommand: OSBMahojiCommand = {
 		method?: PvMMethod;
 		show_info?: boolean;
 		wilderness?: boolean;
+		solo?: boolean;
 	}>) => {
 		const user = await mUserFetch(userID);
 		if (options.show_info) {
@@ -136,7 +143,8 @@ export const killCommand: OSBMahojiCommand = {
 			options.name,
 			options.quantity,
 			options.method,
-			options.wilderness
+			options.wilderness,
+			options.solo
 		);
 	}
 };

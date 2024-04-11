@@ -7,6 +7,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
+import { BLACKLISTED_USERS } from './blacklists';
 import { BitField, globalConfig, ONE_TRILLION, PerkTier } from './constants';
 import { marketPricemap } from './marketPrices';
 import { RobochimpUser, roboChimpUserFetch } from './roboChimp';
@@ -598,13 +599,15 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			items: buyerLoot,
 			collectionLog: false,
 			dontAddToTempCL: true,
-			filterLoot: false
+			filterLoot: false,
+			neverUpdateHistory: true
 		});
 		await sellerUser.addItemsToBank({
 			items: sellerLoot,
 			collectionLog: false,
 			dontAddToTempCL: true,
-			filterLoot: false
+			filterLoot: false,
+			neverUpdateHistory: true
 		});
 
 		const itemName = itemNameFromID(buyerListing.item_id)!;
@@ -665,6 +668,9 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			const components = [disableDMsButton];
 			if (newSellerListingQuantityRemaining > 0) {
 				components.push(createGECancelButton(sellerListing));
+				str += `\n\nYou have ${newSellerListingQuantityRemaining}x remaining to sell in your listing.`;
+			} else {
+				str += '\n\nThis listing has now been fully fulfilled.';
 			}
 
 			await sellerDJSUser.send({ content: str, components: makeComponents(components) }).catch(noOp);
@@ -678,9 +684,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					type: GEListingType.Buy,
 					fulfilled_at: null,
 					cancelled_at: null,
-					user_id: {
-						not: null
-					}
+					user_id: { not: null }
 				},
 				orderBy: [
 					{
@@ -696,9 +700,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					type: GEListingType.Sell,
 					fulfilled_at: null,
 					cancelled_at: null,
-					user_id: {
-						not: null
-					}
+					user_id: { not: null }
 				},
 				orderBy: [
 					{
@@ -828,7 +830,11 @@ Difference: ${shouldHave.difference(currentBank)}`);
 		if (this.locked) return;
 		const stopwatch = new Stopwatch();
 		stopwatch.start();
-		const { buyListings, sellListings } = await this.fetchActiveListings();
+		const { buyListings: _buyListings, sellListings: _sellListings } = await this.fetchActiveListings();
+
+		// Filter out listings from Blacklisted users:
+		const buyListings = _buyListings.filter(l => !BLACKLISTED_USERS.has(l.user_id!));
+		const sellListings = _sellListings.filter(l => !BLACKLISTED_USERS.has(l.user_id!));
 
 		for (const buyListing of buyListings) {
 			// These are all valid, matching sell listings we can match with this buy listing.

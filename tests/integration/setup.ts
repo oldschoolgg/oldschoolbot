@@ -36,3 +36,9 @@ beforeEach(async () => {
 afterEach(async () => {
 	await prisma.$disconnect();
 });
+
+async function init() {
+	await prisma.$queryRaw`CREATE EXTENSION IF NOT EXISTS intarray;`;
+}
+
+init();

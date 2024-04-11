@@ -27,6 +27,7 @@ import { barChart, lineChart, pieChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
+import { ForestryEvents } from '../../../tasks/minions/woodcuttingActivity';
 import { Cooldowns } from '../Cooldowns';
 import { collectables } from './collectCommand';
 
@@ -338,7 +339,7 @@ GROUP BY type;`);
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { type: activity_type_enum; hours: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT type, sum(duration)::int / ${Time.Hour} AS hours
+				await prisma.$queryRawUnsafe(`SELECT type, sum(duration::bigint)::bigint / ${Time.Hour} AS hours
 FROM activity
 WHERE completed = true
 AND user_id = ${BigInt(user.id)}
@@ -959,7 +960,7 @@ GROUP BY "bankBackground";`);
 		run: async (user: MUser) => {
 			const result = await prisma.$queryRawUnsafe<any>(
 				`SELECT skill,
-					SUM(xp)::int AS total_xp
+					SUM(xp)::bigint AS total_xp
 				 FROM xp_gains
 				 WHERE source = 'TearsOfGuthix'
 				 AND user_id = ${BigInt(user.id)}
@@ -972,6 +973,43 @@ GROUP BY "bankBackground";`);
 						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(i.total_xp)}`
 				)
 				.join('\n')}`;
+		}
+	},
+	{
+		name: 'Personal XP gained from Forestry events',
+		perkTierNeeded: PerkTier.Four,
+		run: async (user: MUser) => {
+			const result = await prisma.$queryRawUnsafe<any>(
+				`SELECT skill,
+					SUM(xp)::bigint AS total_xp
+				 FROM xp_gains
+				 WHERE source = 'ForestryEvents'
+				 AND user_id = ${BigInt(user.id)}
+				 GROUP BY skill
+				 ORDER BY CASE
+					 WHEN skill = 'woodcutting' THEN 0
+					 ELSE 1
+				 END`
+			);
+
+			return `**Personal XP gained from Forestry events**\n${result
+				.map(
+					(i: any) =>
+						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(i.total_xp)}`
+				)
+				.join('\n')}`;
+		}
+	},
+	{
+		name: 'Forestry events completed',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, userStats) => {
+			let str = 'You have completed...\n\n';
+			for (const event of ForestryEvents) {
+				const qty = (userStats.forestry_event_completions_bank as ItemBank)[event.id] ?? 0;
+				str += `${event.name}: ${qty}\n`;
+			}
+			return str;
 		}
 	},
 	{

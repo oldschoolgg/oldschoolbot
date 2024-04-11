@@ -28,6 +28,7 @@ import {
 } from '../../lib/util';
 import { fetchCLLeaderboard } from '../../lib/util/clLeaderboard';
 import { deferInteraction } from '../../lib/util/interactionReply';
+import { userEventsToMap } from '../../lib/util/userEvents';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -269,12 +270,22 @@ async function clLb(
 	inputType: string,
 	ironmenOnly: boolean
 ) {
-	const items = getCollectionItems(inputType, false);
+	const { resolvedCl, items } = getCollectionItems(inputType, false, false, true);
 	if (!items || items.length === 0) {
 		return "That's not a valid collection log category. Check +cl for all possible logs.";
 	}
-	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200 });
 
+	const userEventOrders = await prisma.userEvent.findMany({
+		where: {
+			type: 'CLCompletion',
+			collection_log_name: resolvedCl.toLowerCase()
+		},
+		orderBy: {
+			date: 'asc'
+		}
+	});
+
+	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200, userEvents: userEventOrders });
 	inputType = toTitleCase(inputType.toLowerCase());
 	doMenu(
 		interaction,
@@ -438,13 +449,28 @@ async function skillsLb(
 	ironmanOnly: boolean
 ) {
 	let res = [];
-	let overallUsers: Record<string, any>[] = [];
+	let overallUsers: {
+		id: string;
+		totalLevel: number;
+		ironman: boolean;
+		totalXP: number;
+	}[] = [];
 
 	const skillsVals = Object.values(Skills);
 
 	const skill = skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, inputSkill)));
 
 	if (inputSkill === 'overall') {
+		const maxTotalLevelEventMap = await prisma.userEvent
+			.findMany({
+				where: {
+					type: 'MaxTotalLevel'
+				},
+				orderBy: {
+					date: 'asc'
+				}
+			})
+			.then(res => userEventsToMap(res));
 		const query = `SELECT
 								u.id,
 								${skillsVals.map(s => `"skills.${s.id}"`)},
@@ -468,8 +494,29 @@ async function skillsLb(
 				totalXP: Number(user.totalxp!)
 			};
 		});
-		if (type !== 'xp') {
-			overallUsers.sort((a, b) => b.totalLevel - a.totalLevel);
+		if (type === 'level') {
+			overallUsers.sort((a, b) => {
+				const valueDifference = b.totalLevel - a.totalLevel;
+				if (valueDifference !== 0) {
+					return valueDifference;
+				}
+				const xpDiff = b.totalXP - a.totalXP;
+				if (xpDiff !== 0) {
+					return xpDiff;
+				}
+				const dateA = maxTotalLevelEventMap.get(a.id);
+				const dateB = maxTotalLevelEventMap.get(b.id);
+				if (dateA && dateB) {
+					return dateA - dateB;
+				}
+				if (dateA) {
+					return -1;
+				}
+				if (dateB) {
+					return 1;
+				}
+				return 0;
+			});
 		}
 		overallUsers.slice(0, 100);
 	} else {
@@ -484,6 +531,37 @@ async function skillsLb(
 								1 DESC
 							LIMIT 2000;`;
 		res = await prisma.$queryRawUnsafe<Record<string, any>[]>(query);
+
+		const events = await prisma.userEvent.findMany({
+			where: {
+				type: 'MaxXP',
+				skill: skill.id
+			},
+			orderBy: {
+				date: 'asc'
+			}
+		});
+		const userEventMap = userEventsToMap(events);
+		res.sort((a, b) => {
+			const aXP = Number(a[`skills.${skill.id}`]);
+			const bXP = Number(b[`skills.${skill.id}`]);
+			const valueDifference = bXP - aXP;
+			if (valueDifference !== 0) {
+				return valueDifference;
+			}
+			const dateA = userEventMap.get(a.id);
+			const dateB = userEventMap.get(b.id);
+			if (dateA && dateB) {
+				return dateA - dateB;
+			}
+			if (dateA) {
+				return -1;
+			}
+			if (dateB) {
+				return 1;
+			}
+			return 0;
+		});
 	}
 
 	if (inputSkill === 'overall') {

@@ -138,7 +138,8 @@ export async function minionKillCommand(
 	name: string,
 	quantity: number | undefined,
 	method: PvMMethod | undefined,
-	wilderness: boolean | undefined
+	wilderness: boolean | undefined,
+	solo: boolean | undefined
 ) {
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
@@ -154,7 +155,7 @@ export async function minionKillCommand(
 
 	if (!name) return invalidMonsterMsg;
 
-	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID);
+	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID, solo);
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
 	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name, quantity);

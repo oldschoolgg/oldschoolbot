@@ -429,6 +429,8 @@ model User {
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
 
+  cached_networth_value BigInt?
+
   geListings        GEListing[]
   bingo_participant BingoParticipant[]
   bingo             Bingo[]
@@ -491,6 +493,7 @@ enum XpGainSource {
   CamdozaalMining
   CamdozaalSmithing
   CamdozaalFishing
+  ForestryEvents
 }
 
 model XPGain {
@@ -758,6 +761,8 @@ model UserStats {
   last_tears_of_guthix_timestamp BigInt @default(0)
 
   herbs_cleaned_while_farming_bank Json @default("{}") @db.Json
+
+  forestry_event_completions_bank Json @default("{}") @db.Json
 
   @@map("user_stats")
 }
@@ -1110,4 +1115,32 @@ model GiftBox {
   items Json @default("{}") @db.Json
 
   @@map("gift_box")
+}
+
+model ItemMetadata {
+  id Int @id
+
+  name String?
+
+  @@map("item_metadata")
+}
+
+enum UserEventType {
+  MaxXP
+  MaxTotalXP
+  MaxLevel
+  MaxTotalLevel
+  CLCompletion
+}
+
+model UserEvent {
+  id   String   @id @default(uuid()) @db.Uuid
+  date DateTime @default(now()) @db.Timestamp(6)
+
+  user_id             String               @db.VarChar(19)
+  type                UserEventType
+  skill               xp_gains_skill_enum?
+  collection_log_name String?
+
+  @@map("user_event")
 }
