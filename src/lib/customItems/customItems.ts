@@ -11931,7 +11931,8 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 80_000_000
 	},
 	100_000_000
 );

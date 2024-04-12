@@ -909,11 +909,23 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Elder Treasure Trails': {
 				alias: ['elder'],
-				allItems: resolveItems([...ElderClueTable.allItems, 'Clue bag', 'Inventors tools', 'Octo']),
+				allItems: resolveItems([
+					...ElderClueTable.allItems,
+					'Clue bag',
+					'Inventors tools',
+					'Elder knowledge',
+					'Octo'
+				]),
 				kcActivity: {
 					Default: async (_, __, { openableScores }) => openableScores.amount(73_124)
 				},
-				items: resolveItems([...ElderClueTable.allItems, 'Clue bag', 'Inventors tools', 'Octo']),
+				items: resolveItems([
+					...ElderClueTable.allItems,
+					'Clue bag',
+					'Inventors tools',
+					'Elder knowledge',
+					'Octo'
+				]),
 				isActivity: true,
 				fmtProg: clueProg(['Elder'])
 			},

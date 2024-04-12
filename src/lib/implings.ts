@@ -145,7 +145,7 @@ const implingTableByWorldLocation: TWorldLocationImplingTable = {
 		new LootTable().oneIn(caughtChance, hasMrE ? mrETable : defaultImpTable)
 };
 
-export async function handlePassiveImplings(user: MUser, data: ActivityTaskData) {
+export async function handlePassiveImplings(user: MUser, data: ActivityTaskData, messages: string[]) {
 	if (
 		[
 			'FightCaves',
@@ -189,6 +189,7 @@ export async function handlePassiveImplings(user: MUser, data: ActivityTaskData)
 		});
 		if (costRes.success) {
 			baseChance = reduceNumByPercent(baseChance, inventionBoosts.webshooter.passiveImplingBoostPercent);
+			messages.push(costRes.messages);
 		}
 	}
 

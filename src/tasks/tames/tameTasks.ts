@@ -108,10 +108,14 @@ function doubleLootCheck(tame: Tame, loot: Bank) {
 
 async function handleImplingLocator(user: MUser, tame: MTame, duration: number, loot: Bank, messages: string[]) {
 	if (tame.hasBeenFed('Impling locator')) {
-		const result = await handlePassiveImplings(user, {
-			type: 'MonsterKilling',
-			duration
-		} as ActivityTaskData);
+		const result = await handlePassiveImplings(
+			user,
+			{
+				type: 'MonsterKilling',
+				duration
+			} as ActivityTaskData,
+			messages
+		);
 		if (result && result.bank.length > 0) {
 			const actualImplingLoot = new Bank();
 			for (const [item, qty] of result.bank.items()) {

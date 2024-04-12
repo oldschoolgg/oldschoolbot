@@ -85,7 +85,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Implings',
 		fn: async ({ data, messages, user }) => {
-			const imp = await handlePassiveImplings(user, data);
+			const imp = await handlePassiveImplings(user, data, messages);
 			if (imp && imp.bank.length > 0) {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
