@@ -13,15 +13,15 @@ export const AkumuLootTable = new LootTable()
 	.tertiary(1000, 'Mini akumu')
 	.every('Nightmarish ashes', [5, 10])
 	.tertiary(4, 'Cursed onyx')
-	.tertiary(18, 'Demon statuette')
+	.tertiary(22, 'Demon statuette')
 	.tertiary(100, 'Elder scroll piece')
 	.add(
 		new LootTable()
-			.add(MysteryBoxes, [2, 5])
-			.add('Battlestaff', [500, 1500])
-			.add('Black dragonhide', [500, 1500])
-			.add('Cannonball', [500, 1500])
-			.add(UncutGemTable, [2, 5])
+			.add(MysteryBoxes)
+			.add('Battlestaff', [150, 350], 2)
+			.add('Black dragonhide', [100, 400], 2)
+			.add('Cannonball', [200, 400], 2)
+			.add(UncutGemTable, [2, 4], 2)
 	);
 
 export const Akumu: CustomMonster = {
@@ -33,7 +33,7 @@ export const Akumu: CustomMonster = {
 	hp: 3330,
 	table: AkumuLootTable,
 	difficultyRating: 5,
-	healAmountNeeded: 250 * 200,
+	healAmountNeeded: 250 * 22,
 	attackStyleToUse: GearStat.AttackSlash,
 	attackStylesUsed: [GearStat.AttackSlash],
 	levelRequirements: {
@@ -60,7 +60,11 @@ export const Akumu: CustomMonster = {
 		melee: {}
 	},
 	itemCost: {
-		itemCost: new Bank().add('Super combat potion(4)').add('Lumina'),
+		itemCost: new Bank()
+			.add('Super combat potion(4)')
+			.add('Lumina')
+			.add('Saradomin brew (4)', 3)
+			.add('Super restore (4)', 1),
 		qtyPerKill: 1
 	},
 	tameCantKill: true,

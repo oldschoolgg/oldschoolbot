@@ -33,7 +33,7 @@ export const Venatrix: CustomMonster = {
 	table: VenatrixLootTable,
 	difficultyRating: 5,
 	qpRequired: 500,
-	healAmountNeeded: 250 * 200,
+	healAmountNeeded: 200 * 10,
 	attackStyleToUse: GearStat.AttackSlash,
 	attackStylesUsed: [GearStat.AttackSlash],
 	levelRequirements: {
@@ -63,7 +63,7 @@ export const Venatrix: CustomMonster = {
 		melee: addStatsOfItemsTogether(resolveItems(['Soulreaper axe']), [GearStat.AttackSlash])
 	},
 	itemCost: {
-		itemCost: new Bank().add('Anti-venom+(4)').add('Sanfew serum(4)').add('Enhanced saradomin brew', 1),
+		itemCost: new Bank().add('Anti-venom+(4)').add('Sanfew serum(4)').add('Saradomin brew (4)', 1),
 		qtyPerKill: 1
 	},
 	tameCantKill: true,
