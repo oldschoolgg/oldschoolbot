@@ -1,7 +1,7 @@
-import { ActivityGroup, globalConfig } from '../lib/constants';
-import { prisma } from '../lib/settings/prisma';
-import { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
-import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
+import { ActivityGroup, globalConfig } from './constants';
+import { prisma } from './settings/prisma';
+import { GroupMonsterActivityTaskOptions } from './types/minions';
+import { taskGroupFromActivity } from './util/taskGroupFromActivity';
 
 async function calculateMinionTaskCounts() {
 	const minionTaskCounts: Record<ActivityGroup, number> = {

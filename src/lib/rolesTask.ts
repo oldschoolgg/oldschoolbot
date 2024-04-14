@@ -2,16 +2,16 @@ import { Prisma } from '@prisma/client';
 import { noOp, notEmpty } from 'e';
 
 import { production, SupportServer } from '../config';
-import { ClueTiers } from '../lib/clues/clueTiers';
-import { Roles, usernameCache } from '../lib/constants';
-import { getCollectionItems } from '../lib/data/Collections';
-import { Minigames } from '../lib/settings/minigames';
-import { prisma } from '../lib/settings/prisma';
 import Skills from '../lib/skilling/skills';
-import { convertXPtoLVL } from '../lib/util';
-import { logError } from '../lib/util/logError';
+import { ClueTiers } from './clues/clueTiers';
+import { Roles, usernameCache } from './constants';
+import { getCollectionItems } from './data/Collections';
+import { Minigames } from './settings/minigames';
+import { prisma } from './settings/prisma';
 import { TeamLoot } from './simulation/TeamLoot';
 import { ItemBank } from './types';
+import { convertXPtoLVL } from './util';
+import { logError } from './util/logError';
 
 function addToUserMap(userMap: Record<string, string[]>, id: string, reason: string) {
 	if (!userMap[id]) userMap[id] = [];

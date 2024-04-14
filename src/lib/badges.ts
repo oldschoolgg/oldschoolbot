@@ -1,5 +1,5 @@
-import { badges, BadgesEnum } from '../lib/constants';
-import { prisma } from '../lib/settings/prisma';
+import { badges, BadgesEnum } from './constants';
+import { prisma } from './settings/prisma';
 
 export async function cacheBadges() {
 	const newCache = new Map();

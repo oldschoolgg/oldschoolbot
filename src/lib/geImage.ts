@@ -6,7 +6,7 @@ import { floor } from 'lodash';
 import fetch from 'node-fetch';
 import * as path from 'path';
 
-import { GEListingWithTransactions } from './../mahoji/commands/ge';
+import { GEListingWithTransactions } from '../mahoji/commands/ge';
 import { GrandExchange } from './grandExchange';
 import { fillTextXTimesInCtx } from './util/canvasUtil';
 import getOSItem from './util/getOSItem';

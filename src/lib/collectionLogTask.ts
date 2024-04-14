@@ -4,11 +4,11 @@ import { calcWhatPercent, objectEntries } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Util } from 'oldschooljs';
 
-import { allCollectionLogs, getCollection, getTotalCl, UserStatsDataNeededForCL } from '../lib/data/Collections';
-import { IToReturnCollection } from '../lib/data/CollectionsExport';
-import { fillTextXTimesInCtx, getClippedRegion, measureTextWidth } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
 import { IBgSprite } from './bankImage';
+import { allCollectionLogs, getCollection, getTotalCl, UserStatsDataNeededForCL } from './data/Collections';
+import { IToReturnCollection } from './data/CollectionsExport';
+import { fillTextXTimesInCtx, getClippedRegion, measureTextWidth } from './util/canvasUtil';
 
 export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },

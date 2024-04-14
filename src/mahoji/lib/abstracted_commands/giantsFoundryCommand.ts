@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { TOTAL_GIANT_WEAPONS } from '../../../lib/giantsFoundry';
+import { GiantsFoundryBank, TOTAL_GIANT_WEAPONS } from '../../../lib/giantsFoundry';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import Smithing from '../../../lib/skilling/skills/smithing';
@@ -14,7 +14,6 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsBankUpdate, userStatsUpdate } from '../../mahojiSettings';
-import { GiantsFoundryBank } from './../../../lib/giantsFoundry';
 
 export const giantsFoundryAlloys = [
 	{

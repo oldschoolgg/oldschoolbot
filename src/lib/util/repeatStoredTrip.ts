@@ -3,6 +3,7 @@ import { ButtonBuilder, ButtonInteraction, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 
 import { autocompleteMonsters } from '../../mahoji/commands/k';
+import { giantsFoundryAlloys } from '../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 import { PvMMethod } from '../constants';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
@@ -40,6 +41,7 @@ import {
 	MotherlodeMiningActivityTaskOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
+	NightmareZoneActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	PuroPuroActivityTaskOptions,
@@ -54,11 +56,10 @@ import {
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
 	TOAOptions,
+	UnderwaterAgilityThievingTaskOptions,
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
-import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
-import { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
 import getOSItem from './getOSItem';
 import { deferInteraction } from './interactionReply';
 
