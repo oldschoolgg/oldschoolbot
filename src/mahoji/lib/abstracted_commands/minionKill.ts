@@ -288,7 +288,7 @@ export async function minionKillCommand(
 		}
 	}
 
-	const kcForThisMonster = monsterScores[monster.id ?? 0];
+	const kcForThisMonster = monsterScores[monster.id] ?? 0;
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, kcForThisMonster);
 
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
