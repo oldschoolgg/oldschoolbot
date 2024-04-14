@@ -3,10 +3,14 @@ import { ButtonBuilder, ButtonInteraction, ButtonStyle, Interaction } from 'disc
 import { removeFromArr, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { getItemContractDetails, handInContract } from '../../mahoji/commands/ic';
 import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
+import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { repeatTameTrip } from '../../tasks/tames/tameTasks';
+import { modifyBusyCounter } from '../busyCounterCache';
 import { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
@@ -14,8 +18,11 @@ import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
 import { ItemBank } from '../types';
 import { formatDuration, stringMatches } from '../util';
+import { CACHED_ACTIVE_USER_IDS } from './cachedUserIDs';
 import { updateGiveawayMessage } from './giveaway';
+import { handleMahojiConfirmation } from './handleMahojiConfirmation';
 import { interactionReply } from './interactionReply';
+import { logErrorForInteraction } from './logError';
 import { minionIsBusy } from './minionIsBusy';
 import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
 
@@ -26,12 +33,16 @@ const globalInteractionActions = [
 	'DO_HARD_CLUE',
 	'DO_ELITE_CLUE',
 	'DO_MASTER_CLUE',
+	'DO_GRANDMASTER_CLUE',
+	'DO_ELDER_CLUE',
 	'OPEN_BEGINNER_CASKET',
 	'OPEN_EASY_CASKET',
 	'OPEN_MEDIUM_CASKET',
 	'OPEN_HARD_CASKET',
 	'OPEN_ELITE_CASKET',
 	'OPEN_MASTER_CASKET',
+	'OPEN_GRANDMASTER_CASKET',
+	'OPEN_ELDER_CASKET',
 	'DO_BIRDHOUSE_RUN',
 	'CLAIM_DAILY',
 	'CHECK_PATCHES',
@@ -44,6 +55,10 @@ const globalInteractionActions = [
 	'BUY_MINION',
 	'BUY_BINGO_TICKET',
 	'NEW_SLAYER_TASK',
+	'SPAWN_LAMP',
+	'REPEAT_TAME_TRIP',
+	'ITEM_CONTRACT_SEND',
+	'DO_FISHING_CONTEST',
 	'DO_SHOOTING_STAR',
 	'CHECK_TOA'
 ] as const;
@@ -231,6 +246,85 @@ async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	return repeatTrip(interaction, matchingActivity);
 }
 
+function icDonateValidation(user: MUser, donator: MUser) {
+	if (user.isIronman || donator.isIronman) {
+		return 'Ironmen stand alone!';
+	}
+	if (user.id === donator.id) {
+		return 'You cannot donate to yourself.';
+	}
+	if (user.bitfield.includes(BitField.NoItemContractDonations)) {
+		return "That user doesn't want donations.";
+	}
+	const details = getItemContractDetails(user);
+	if (!details.nextContractIsReady || !details.currentItem) {
+		return "That user's Item Contract isn't ready.";
+	}
+
+	if (user.isBusy || donator.isBusy) {
+		return 'One of you is busy, and cannot do this trade right now.';
+	}
+
+	const cost = new Bank().add(details.currentItem.id);
+	if (!donator.bank.has(cost)) {
+		return `You don't own ${cost}.`;
+	}
+
+	return {
+		cost,
+		details
+	};
+}
+
+async function donateICHandler(interaction: ButtonInteraction) {
+	const userID = interaction.customId.split('_')[2];
+	if (!userID || !CACHED_ACTIVE_USER_IDS.has(userID)) {
+		return interactionReply(interaction, { content: 'Invalid user.', ephemeral: true });
+	}
+
+	const user = await mUserFetch(userID);
+	const donator = await mUserFetch(interaction.user.id);
+
+	const errorStr = icDonateValidation(user, donator);
+	if (typeof errorStr === 'string') return interactionReply(interaction, { content: errorStr, ephemeral: true });
+
+	await handleMahojiConfirmation(
+		interaction,
+		`${donator}, are you sure you want to give ${errorStr.cost} to ${
+			user.badgedUsername
+		}? You own ${donator.bank.amount(errorStr.details.currentItem!.id)} of this item.`,
+		[donator.id]
+	);
+
+	await user.sync();
+	await donator.sync();
+
+	const secondaryErrorStr = icDonateValidation(user, donator);
+	if (typeof secondaryErrorStr === 'string') return interactionReply(interaction, { content: secondaryErrorStr });
+	const { cost } = secondaryErrorStr;
+
+	try {
+		modifyBusyCounter(donator.id, 1);
+		await donator.removeItemsFromBank(cost);
+		await user.addItemsToBank({ items: cost, collectionLog: false, filterLoot: false });
+		await userStatsBankUpdate(donator.id, 'ic_donations_given_bank', cost);
+		await userStatsBankUpdate(user.id, 'ic_donations_received_bank', cost);
+
+		return interactionReply(interaction, {
+			content: `${donator}, you donated ${cost} to ${user}!
+
+${user.mention} ${await handInContract(null, user)}`,
+			allowedMentions: {
+				users: [user.id]
+			}
+		});
+	} catch (err) {
+		logErrorForInteraction(err, interaction);
+	} finally {
+		modifyBusyCounter(donator.id, -1);
+	}
+}
+
 async function handleGearPresetEquip(user: MUser, id: string, interaction: ButtonInteraction) {
 	const [, setupName, presetName] = id.split('_');
 	if (!setupName || !presetName) return;
@@ -328,6 +422,7 @@ export async function interactionHook(interaction: Interaction) {
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
+	if (id.includes('DONATE_IC')) return donateICHandler(interaction);
 	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
 	if (id.startsWith('PTR_')) return handlePinnedTripRepeat(user, id, interaction);
 	if (id === 'TOA_CHECK') {
@@ -426,10 +521,45 @@ export async function interactionHook(interaction: Interaction) {
 		});
 	}
 
+	if (id === 'SPAWN_LAMP') {
+		return runCommand({
+			commandName: 'tools',
+			args: { patron: { spawnlamp: {} } },
+			bypassInhibitors: true,
+			...options
+		});
+	}
+	if (id === 'REPEAT_TAME_TRIP') {
+		return repeatTameTrip({ ...options });
+	}
+	if (id === 'ITEM_CONTRACT_SEND') {
+		return runCommand({
+			commandName: 'ic',
+			args: { send: {} },
+			bypassInhibitors: true,
+			...options
+		});
+	}
+
 	if (id === 'BUY_MINION') {
 		return runCommand({
 			commandName: 'minion',
 			args: { buy: {} },
+			bypassInhibitors: true,
+			...options
+		});
+	}
+
+	if (id === 'DO_FISHING_CONTEST') {
+		if (user.perkTier() < PerkTier.Four) {
+			return interactionReply(interaction, {
+				content: 'You need to be a Tier 3 patron to use this button.',
+				ephemeral: true
+			});
+		}
+		return runCommand({
+			commandName: 'bsominigames',
+			args: { fishing_contest: { fish: {} } },
 			bypassInhibitors: true,
 			...options
 		});
@@ -458,6 +588,9 @@ export async function interactionHook(interaction: Interaction) {
 	if (id === 'OPEN_MASTER_CASKET') {
 		return openCasket('Master');
 	}
+	if (id === 'OPEN_GRANDMASTER_CASKET') {
+		return openCasket('Grandmaster');
+	}
 
 	if (minionIsBusy(user.id)) {
 		return interactionReply(interaction, { content: `${user.minionName} is busy.`, ephemeral: true });
@@ -476,6 +609,8 @@ export async function interactionHook(interaction: Interaction) {
 			return doClue('Elite');
 		case 'DO_MASTER_CLUE':
 			return doClue('Master');
+		case 'DO_GRANDMASTER_CLUE':
+			return doClue('Grandmaster');
 
 		case 'DO_BIRDHOUSE_RUN':
 			return runCommand({

@@ -32,11 +32,10 @@ model BlacklistedEntity {
 }
 
 model User {
-    id                BigInt  @id @unique
-    bits              Int[]
-    github_id         Int?
-    patreon_id        String?
-    migrated_user_id  BigInt?
+    id         BigInt  @id @unique
+    bits       Int[]
+    github_id  Int?
+    patreon_id String?
 
     leagues_completed_tasks_ids Int[]
     leagues_points_balance_osb  Int   @default(0)

@@ -1,4 +1,5 @@
 import 'source-map-support/register';
+import './lib/customItems/customItems';
 import './lib/data/itemAliases';
 import './lib/crons';
 import './lib/MUser';
@@ -151,7 +152,7 @@ client.on('interactionCreate', async interaction => {
 		if (interaction.isChatInputCommand()) {
 			await interaction.reply({
 				content:
-					'Old School Bot is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+					'BSO is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
 				ephemeral: true
 			});
 		}

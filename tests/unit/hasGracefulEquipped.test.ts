@@ -16,6 +16,20 @@ describe('hasGracefulEquipped', () => {
 				})
 			)
 		).toEqual(true);
+		expect(
+			hasGracefulEquipped(
+				constructGearSetup({
+					cape: 'Agility master cape'
+				})
+			)
+		).toEqual(true);
+		expect(
+			hasGracefulEquipped(
+				constructGearSetup({
+					cape: 'Support cape'
+				})
+			)
+		).toEqual(true);
 	});
 
 	test('no graceful equipped', () => {

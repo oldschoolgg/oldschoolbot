@@ -4,8 +4,9 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
-import { PvMMethod } from '../constants';
+import { BitField, PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
+import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import { KillableMonster } from '../minions/types';
 import { prisma } from '../settings/prisma';
 import { getNewUser } from '../settings/settings';
@@ -41,10 +42,13 @@ export interface DetermineBoostParams {
 export function determineBoostChoice(params: DetermineBoostParams) {
 	let boostChoice = 'none';
 
+	// BSO Only:
+	if (!params.isOnTask) return boostChoice;
+
 	if (params.method && params.method === 'none') {
 		return boostChoice;
 	}
-	if (params.method && params.method === 'chinning') {
+	if (params.method && (params.method as string) === 'chinning') {
 		boostChoice = 'chinning';
 	} else if (params.method && params.method === 'barrage') {
 		boostChoice = 'barrage';
@@ -142,6 +146,20 @@ export function userCanUseTask(
 	// Slayer unlock restrictions:
 	const lmon = task.monster.name.toLowerCase();
 	const lmast = master.name.toLowerCase();
+	if (
+		[
+			BSOMonsters.FungalRodent.name,
+			BSOMonsters.InfestedAxe.name,
+			BSOMonsters.FungalMage.name,
+			BSOMonsters.Grifolaroo.name,
+			BSOMonsters.Grifolapine.name,
+			BSOMonsters.GanodermicRunt.name,
+			BSOMonsters.GanodermicBeast.name
+		].includes(task.monster.name) &&
+		!myUnlocks.includes(SlayerTaskUnlocksEnum.PoreDecisions)
+	) {
+		return false;
+	}
 	if (lmon === 'grotesque guardians' && !bankHasItem(user.bank.bank, itemID('Brittle key'))) return false;
 	if (lmon === 'lizardman' && !myUnlocks.includes(SlayerTaskUnlocksEnum.ReptileGotRipped)) return false;
 	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed)) return false;
@@ -165,6 +183,7 @@ export function userCanUseTask(
 }
 
 export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
+	const unlocks = _user.user.slayer_unlocks;
 	// assignedTask is the task object, currentTask is the database row.
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master, false));
 	let bossTask = false;
@@ -202,7 +221,28 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		}
 	}
 
-	const quantity = randInt(assignedTask!.amount[0], maxQuantity);
+	let quantity = randInt(assignedTask!.amount[0], maxQuantity);
+
+	const extendReward = SlayerRewardsShop.find(srs => srs.extendID && srs.extendID.includes(assignedTask!.monster.id));
+	if (extendReward && unlocks.includes(extendReward.id)) {
+		quantity = assignedTask.extendedAmount
+			? randInt(assignedTask.extendedAmount[0], assignedTask.extendedAmount[1])
+			: Math.ceil(quantity * extendReward.extendMult!);
+	}
+
+	let messages: string[] = [];
+	if (unlocks.includes(SlayerTaskUnlocksEnum.SizeMatters)) {
+		quantity *= 2;
+		messages.push('2x qty for Size Matters unlock');
+	}
+	if (
+		_user.bitfield.includes(BitField.HasScrollOfLongevity) &&
+		!_user.bitfield.includes(BitField.ScrollOfLongevityDisabled)
+	) {
+		quantity *= 2;
+		messages.push('2x qty for Scroll of longevity');
+	}
+
 	const currentTask = await prisma.slayerTask.create({
 		data: {
 			user_id: newUser.id,
@@ -217,14 +257,22 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		slayer_last_task: assignedTask!.monster.id
 	});
 
-	return { currentTask, assignedTask };
+	return { currentTask, assignedTask, messages };
 }
 
 export function calcMaxBlockedTasks(user: MUser) {
 	const qps = user.QP;
 	// 6 Blocks total 5 for 250 qps, + 1 for lumby.
 	// For now we're do 1 free + 1 for every 50 qps.
-	return Math.min(1 + Math.floor(qps / 50), 6);
+	let amount = Math.min(1 + Math.floor(qps / 50), 6);
+
+	const unlocks = user.user.slayer_unlocks;
+	const hasBlockAndRoll = unlocks.includes(SlayerTaskUnlocksEnum.BlockAndRoll);
+
+	if (hasBlockAndRoll) {
+		amount += 3;
+	}
+	return amount;
 }
 export function getCommonTaskName(task: Monster) {
 	let commonName = task.name;

@@ -14,7 +14,9 @@ export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },
 	{ name: 'sacrifice', description: 'Sacrificed Items Log' },
 	{ name: 'bank', description: 'Owned Items Log' },
-	{ name: 'temp', description: 'Temporary Log' }
+	{ name: 'temp', description: 'Temporary Log' },
+	{ name: 'tame', description: 'Tames Collection Log' },
+	{ name: 'disassembly', description: 'Disassembly Collection Log' }
 ] as const;
 export type CollectionLogType = (typeof collectionLogTypes)[number]['name'];
 export const CollectionLogFlags = [
@@ -90,7 +92,7 @@ class CollectionLogTask {
 				ctxl.fillStyle = index % 2 === 0 ? colors.odd : 'transparent';
 			}
 			ctxl.fillRect(1, index * 15, canvasList.width, 15);
-			ctxl.fillStyle = colors[status];
+			ctxl.fillStyle = collectionLog.category === 'Discontinued' ? colors.not_started : colors[status];
 			const measuredName = ctxl.measureText(name).width;
 			if (measuredName > widestName) widestName = measuredName;
 			this.drawText(ctxl, name, 4, index * 15 + 13);
@@ -113,6 +115,10 @@ class CollectionLogTask {
 		if (options.flags.temp) {
 			options.type = 'temp';
 		}
+		if (options.flags.tame) {
+			options.type = 'tame';
+		}
+
 		let { collection, type, user, flags } = options;
 
 		let collectionLog: IToReturnCollection | undefined | false = undefined;
@@ -167,7 +173,7 @@ class CollectionLogTask {
 
 		const fullSize = flags.nl || !collectionLog.leftList;
 
-		const userTotalCl = getTotalCl(user, type, options.stats);
+		const userTotalCl = await getTotalCl(user, type, options.stats);
 		const leftListCanvas = this.drawLeftList(collectionLog, sprite);
 
 		let leftDivisor = 214;
@@ -232,7 +238,13 @@ class CollectionLogTask {
 		ctx.font = '16px RuneScape Bold 12';
 		ctx.fillStyle = '#FF981F';
 		const title = `${user.rawUsername}'s ${
-			type === 'sacrifice' ? 'Sacrifice' : type === 'collection' ? 'Collection' : 'Bank'
+			type === 'sacrifice'
+				? 'Sacrifice'
+				: type === 'collection'
+				? 'Collection'
+				: type === 'tame'
+				? 'Tame Collection'
+				: 'Bank'
 		} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()} / ${calcWhatPercent(
 			userTotalCl[1],
 			userTotalCl[0]
@@ -335,7 +347,9 @@ class CollectionLogTask {
 		const toDraw = flags.missing ? 'Missing: ' : type === 'sacrifice' ? 'Sacrificed: ' : 'Obtained: ';
 		const obtainableMeasure = ctx.measureText(toDraw);
 		this.drawText(ctx, toDraw, 0, 13);
-		if (collectionLog.collectionTotal === collectionLog.collectionObtained) {
+		if (collectionLog.category === 'Discontinued') {
+			ctx.fillStyle = '#FF981F';
+		} else if (collectionLog.collectionTotal === collectionLog.collectionObtained) {
 			ctx.fillStyle = '#00FF00';
 		} else if (collectionLog.collectionObtained === 0) {
 			ctx.fillStyle = '#FF0000';

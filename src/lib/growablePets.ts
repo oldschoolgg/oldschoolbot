@@ -1,4 +1,4 @@
-import { randFloat, Time } from 'e';
+import { randFloat, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { ActivityTaskOptions } from './types/minions';
@@ -26,14 +26,43 @@ export const cats = resolveItems([
 interface GrowablePet {
 	growthRate: number;
 	stages: number[];
+	shinyVersion?: number;
+	shinyChance?: number;
 }
 
-export const growablePets: GrowablePet[] = [];
+export const growablePets: GrowablePet[] = [
+	{
+		growthRate: (Time.Hour * 8) / Time.Minute,
+		stages: resolveItems(['Baby raven', 'Raven'])
+	},
+	{
+		growthRate: (Time.Hour * 5) / Time.Minute,
+		stages: resolveItems(['Magic kitten', 'Magic cat'])
+	},
+	{
+		growthRate: (Time.Hour * 2) / Time.Minute,
+		stages: resolveItems(['Zamorak egg', 'Baby zamorak hawk', 'Juvenile zamorak hawk', 'Zamorak hawk'])
+	},
+	{
+		growthRate: (Time.Hour * 2) / Time.Minute,
+		stages: resolveItems(['Guthix egg', 'Baby guthix raptor', 'Juvenile guthix raptor', 'Guthix raptor'])
+	},
+	{
+		growthRate: (Time.Hour * 2) / Time.Minute,
+		stages: resolveItems(['Saradomin egg', 'Baby saradomin owl', 'Juvenile saradomin owl', 'Saradomin owl'])
+	},
+	{
+		growthRate: (Time.Hour * 2) / Time.Minute,
+		stages: resolveItems(['Penguin egg', 'Skip'])
+	}
+];
 
 for (let i = 0; i < kittens.length; i++) {
 	growablePets.push({
 		growthRate: (Time.Hour * 3) / Time.Minute,
-		stages: [kittens[i], cats[i]]
+		stages: [kittens[i], cats[i]],
+		shinyChance: 500,
+		shinyVersion: getOSItem('Shiny cat').id
 	});
 }
 
@@ -45,9 +74,18 @@ export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOpt
 	if (equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1] === equippedPet) return;
 	const minutesInThisTrip = data.duration / Time.Minute;
 	if (randFloat(0, equippedGrowablePet.growthRate) <= minutesInThisTrip) {
-		const nextPet = equippedGrowablePet.stages[equippedGrowablePet.stages.indexOf(equippedPet) + 1];
+		let nextPet = equippedGrowablePet.stages[equippedGrowablePet.stages.indexOf(equippedPet) + 1];
+		const isLastPet = nextPet === equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1];
 		if (nextPet === -1) {
 			throw new Error(`${user.usernameOrMention}'s pet[${equippedPet}] has no index in growable pet stages.`);
+		}
+		if (
+			isLastPet &&
+			equippedGrowablePet.shinyChance &&
+			equippedGrowablePet.shinyVersion &&
+			roll(equippedGrowablePet.shinyChance)
+		) {
+			nextPet = equippedGrowablePet.shinyVersion;
 		}
 
 		// Sync to avoid out of date CL
@@ -59,3 +97,8 @@ export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOpt
 		messages.push(`Your ${getOSItem(equippedPet).name} grew into a ${getOSItem(nextPet).name}!`);
 	}
 }
+
+export const growablePetsCL = growablePets
+	.map(i => i.stages)
+	.flat()
+	.filter(i => !resolveItems(['Skip', 'Penguin egg']).includes(i));

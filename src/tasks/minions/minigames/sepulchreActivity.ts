@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { GrandHallowedCoffin } from 'oldschooljs/dist/simulation/misc/GrandHallowedCoffin';
 
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
@@ -26,8 +27,8 @@ export const sepulchreTask: MinionTask = {
 		const highestCompletedFloor = completedFloors.reduce((prev, next) => (prev.number > next.number ? prev : next));
 		for (let i = 0; i < quantity; i++) {
 			for (const floor of completedFloors) {
-				if (floor.number === 5) {
-					loot.add(GrandHallowedCoffin.roll());
+				if (floor.number >= 5) {
+					loot.add(GrandHallowedCoffin.roll(), { 5: 1, 6: 2, 7: 3 }[floor.number] ?? 1);
 				}
 
 				const numCoffinsToOpen = 1;
@@ -41,6 +42,11 @@ export const sepulchreTask: MinionTask = {
 			if (roll(highestCompletedFloor.petChance)) {
 				loot.add('Giant squirrel');
 			}
+		}
+
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
+			loot.multiply(2);
 		}
 
 		const { previousCL, itemsAdded } = await transactItems({
@@ -80,6 +86,8 @@ export const sepulchreTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
 			floors[0]
 		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}\n${thievingXpRes}`;
+
+		str += `\n${flappyRes.userMsg}`;
 
 		const image = await makeBankImage({
 			bank: itemsAdded,

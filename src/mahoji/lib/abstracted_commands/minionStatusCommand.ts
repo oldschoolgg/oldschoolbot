@@ -3,7 +3,8 @@ import { BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'd
 import { roll, stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { BitField, Emoji, minionBuyButton } from '../../../lib/constants';
+import { BitField, Emoji, minionBuyButton, PerkTier } from '../../../lib/constants';
+import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
 import { clArrayUpdate } from '../../../lib/handleNewCLItems';
 import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
@@ -15,6 +16,9 @@ import {
 } from '../../../lib/util/globalInteractions';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
+import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/util/tameUtil';
+import { getItemContractDetails } from '../../commands/ic';
+import { spawnLampIsReady } from '../../commands/tools';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
@@ -54,15 +58,17 @@ async function fetchPinnedTrips(userID: string) {
 	);
 }
 
-export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptions> {
+export async function minionStatusCommand(user: MUser, channelID: string): Promise<BaseMessageOptions> {
 	const { minionIsBusy } = user;
-	const [roboChimpUser, birdhouseDetails, gearPresetButtons, pinnedTripButtons, dailyIsReady] = await Promise.all([
-		roboChimpUserFetch(user.id),
-		minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user.id),
-		minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
-		minionIsBusy ? [] : fetchPinnedTrips(user.id),
-		isUsersDailyReady(user)
-	]);
+	const [roboChimpUser, birdhouseDetails, gearPresetButtons, pinnedTripButtons, fishingResult, dailyIsReady] =
+		await Promise.all([
+			roboChimpUserFetch(user.id),
+			minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user.id),
+			minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
+			minionIsBusy ? [] : fetchPinnedTrips(user.id),
+			getUsersFishingContestDetails(user),
+			isUsersDailyReady(user)
+		]);
 
 	roboChimpSyncData(user);
 	await clArrayUpdate(user, user.cl);
@@ -87,6 +93,21 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 
 	const status = minionStatus(user);
 	const buttons: ButtonBuilder[] = [];
+
+	if (
+		user.perkTier() >= PerkTier.Four &&
+		fishingResult.catchesFromToday.length === 0 &&
+		!user.minionIsBusy &&
+		['Contest rod', "Beginner's tackle box"].every(i => user.hasEquippedOrInBank(i))
+	) {
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('DO_FISHING_CONTEST')
+				.setLabel('Fishing Contest')
+				.setEmoji('630911040091193356')
+				.setStyle(ButtonStyle.Secondary)
+		);
+	}
 
 	if (dailyIsReady.isReady) {
 		buttons.push(
@@ -151,6 +172,45 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 					.setStyle(ButtonStyle.Secondary)
 			);
 		}
+	}
+
+	const perkTier = user.perkTier();
+	if (perkTier >= PerkTier.Two) {
+		const { tame, species, activity } = await getUsersTame(user);
+		if (tame && !activity) {
+			const lastTameAct = await tameLastFinishedActivity(user);
+			if (lastTameAct) {
+				buttons.push(
+					new ButtonBuilder()
+						.setCustomId('REPEAT_TAME_TRIP')
+						.setLabel(`Repeat ${shortTameTripDesc(lastTameAct)}`)
+						.setEmoji(species!.emojiID)
+						.setStyle(ButtonStyle.Secondary)
+				);
+			}
+		}
+	}
+
+	const [spawnLampReady] = spawnLampIsReady(user, channelID);
+	if (spawnLampReady) {
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('SPAWN_LAMP')
+				.setLabel('Spawn Lamp')
+				.setEmoji('988325171498721290')
+				.setStyle(ButtonStyle.Secondary)
+		);
+	}
+
+	const icDetails = getItemContractDetails(user);
+	if (perkTier >= PerkTier.Two && icDetails.currentItem && icDetails.owns) {
+		buttons.push(
+			new ButtonBuilder()
+				.setCustomId('ITEM_CONTRACT_SEND')
+				.setLabel(`IC: ${icDetails.currentItem.name.slice(0, 20)}`)
+				.setEmoji('988422348434718812')
+				.setStyle(ButtonStyle.Secondary)
+		);
 	}
 
 	if (roboChimpUser.leagues_points_total === 0) {

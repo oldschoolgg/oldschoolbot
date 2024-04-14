@@ -6,6 +6,7 @@ import { cacheBadges } from '../../lib/badges';
 import { syncBlacklists } from '../../lib/blacklists';
 import { Channel, DISABLED_COMMANDS, globalConfig, META_CONSTANTS } from '../../lib/constants';
 import { initCrons } from '../../lib/crons';
+import { syncDoubleLoot } from '../../lib/doubleLoot';
 import { GrandExchange } from '../../lib/grandExchange';
 import { prisma } from '../../lib/settings/prisma';
 import { initTickers } from '../../lib/tickers';
@@ -13,6 +14,7 @@ import { runTimedLoggedFn } from '../../lib/util';
 import { cacheCleanup } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
+import { syncSlayerMaskLeaderboardCache } from '../../lib/util/slayerMaskLeaderboard';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { cacheUsernames } from '../commands/leaderboard';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
@@ -55,6 +57,7 @@ export async function onStartup() {
 		});
 	}
 
+	await syncDoubleLoot();
 	runTimedLoggedFn('Syncing prices', syncCustomPrices);
 
 	runTimedLoggedFn('Caching badges', cacheBadges);
@@ -66,6 +69,8 @@ export async function onStartup() {
 
 	initCrons();
 	initTickers();
+
+	syncSlayerMaskLeaderboardCache();
 
 	sendToChannelID(Channel.GeneralChannel, {
 		content: `I have just turned on!

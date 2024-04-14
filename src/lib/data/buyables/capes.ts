@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { MAX_QP } from '../../../mahoji/lib/abstracted_commands/questCommand';
+import { expertCapesSource } from '../../bso/expertCapes';
 import { diaries, userhasDiaryTier } from '../../diaries';
 import { musicCapeRequirements } from '../../musicCape';
 import { Buyable } from './buyables';
@@ -71,6 +72,14 @@ export const capeBuyables: Buyable[] = [
 		}
 	},
 	{
+		name: 'Master quest cape',
+		outputItems: new Bank({
+			'Master quest cape': 1
+		}),
+		gpCost: 1_000_000_000,
+		qpRequired: 5000
+	},
+	{
 		name: 'Music cape',
 		outputItems: new Bank({
 			'Music cape': 1,
@@ -126,3 +135,23 @@ export const capeBuyables: Buyable[] = [
 		}
 	}
 ];
+
+for (const { cape, requiredItems, skills } of expertCapesSource) {
+	const itemCost = new Bank();
+	for (const i of requiredItems) itemCost.add(i);
+	const capeBank = new Bank().add(cape.id).freeze();
+
+	capeBuyables.push({
+		name: cape.name,
+		itemCost,
+		outputItems: capeBank,
+		customReq: async user => {
+			for (const skill of skills) {
+				if (user.skillsAsXP[skill] < 500_000_000) {
+					return [false, `You don't have 500m ${skill}.`];
+				}
+			}
+			return [true];
+		}
+	});
+}

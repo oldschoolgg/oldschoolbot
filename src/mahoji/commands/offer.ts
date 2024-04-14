@@ -32,7 +32,7 @@ const specialBones = [
 	}
 ];
 
-const eggs = ['Red bird egg', 'Green bird egg', 'Blue bird egg'].map(getOSItem);
+export const eggs = ['Red bird egg', 'Green bird egg', 'Blue bird egg'].map(getOSItem);
 
 const offerables = new Set(
 	[...Offerables, ...specialBones.map(i => i.item), ...eggs, ...Prayer.Bones]

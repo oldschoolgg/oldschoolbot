@@ -166,6 +166,24 @@ describe('Gear', () => {
 		expect(new Gear().toString()).toEqual('No items');
 	});
 
+	test('dyed gorajan', () => {
+		const goraGear = new Gear({
+			head: 'Gorajan warrior helmet',
+			body: 'Gorajan warrior top',
+			legs: 'Gorajan warrior legs',
+			hands: 'Gorajan warrior gloves',
+			feet: 'Gorajan warrior boots'
+		});
+		const primalGear = new Gear({
+			head: 'Gorajan warrior helmet (Primal)',
+			body: 'Gorajan warrior top (Primal)',
+			legs: 'Gorajan warrior legs (Primal)',
+			hands: 'Gorajan warrior gloves (Primal)',
+			feet: 'Gorajan warrior boots (Primal)'
+		});
+		expect(primalGear.hasEquipped(goraGear.allItems())).toEqual(true);
+	});
+
 	test('allItemsBank', () => {
 		const gear = new Gear({
 			ammo: 'Dragon arrow',

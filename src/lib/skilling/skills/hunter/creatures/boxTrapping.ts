@@ -4,20 +4,6 @@ import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const boxTrappingCreatures: Creature[] = [
 	{
-		name: 'Ferret',
-		id: 6,
-		aliases: ['ferret'],
-		level: 27,
-		hunterXP: 115.2,
-		table: new LootTable().every('Ferret'),
-		huntTechnique: HunterTechniqueEnum.BoxTrapping,
-		multiTraps: true,
-		catchTime: 22,
-		qpRequired: 2,
-		slope: 1,
-		intercept: 15
-	},
-	{
 		name: 'Chinchompa',
 		id: 7,
 		aliases: ['chinchompa', 'chin', 'chins'],

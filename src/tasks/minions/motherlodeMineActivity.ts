@@ -1,12 +1,13 @@
-import { roll } from 'e';
+import { roll, Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { globalDroprates } from '../../lib/data/globalDroprates';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MotherlodeMiningActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
+import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const motherlodeMiningTask: MinionTask = {
@@ -23,9 +24,9 @@ export const motherlodeMiningTask: MinionTask = {
 
 		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
 		if (
-			user.gear.skilling.hasEquipped(
+			user.hasEquippedOrInBank(
 				Object.keys(Mining.prospectorItems).map(i => parseInt(i)),
-				true
+				'every'
 			)
 		) {
 			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
@@ -34,7 +35,7 @@ export const motherlodeMiningTask: MinionTask = {
 		} else {
 			// For each prospector item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Mining.prospectorItems)) {
-				if (user.hasEquipped(parseInt(itemID))) {
+				if (user.hasEquippedOrInBank(parseInt(itemID))) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -67,13 +68,23 @@ export const motherlodeMiningTask: MinionTask = {
 
 		const coalWeight = 10_000 - (nuggetWeight + runiteWeight + adamantiteWeight + mithrilWeight + goldWeight);
 
-		const table = new LootTable()
+		let table = new LootTable()
 			.add('Golden nugget', 1, nuggetWeight)
 			.add('Runite ore', 1, runiteWeight)
 			.add('Adamantite ore', 1, adamantiteWeight)
 			.add('Mithril ore', 1, mithrilWeight)
 			.add('Gold ore', 1, goldWeight)
 			.add('Coal', 1, coalWeight);
+
+		if (user.hasEquippedOrInBank('Mining master cape')) {
+			table = new LootTable()
+				.add('Golden nugget', 2, nuggetWeight)
+				.add('Runite ore', 1, runiteWeight)
+				.add('Adamantite ore', 1, adamantiteWeight)
+				.add('Mithril ore', 1, mithrilWeight)
+				.add('Gold ore', 1, goldWeight)
+				.add('Coal', 1, coalWeight);
+		}
 
 		loot.add(table.roll(quantity));
 		if (loot.has('Runite ore')) {
@@ -109,9 +120,31 @@ export const motherlodeMiningTask: MinionTask = {
 			);
 		}
 
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutesInTrip = Math.ceil(duration / Time.Minute);
+			const droprate = clAdjustedDroprate(
+				user,
+				'Doug',
+				globalDroprates.doug.baseRate,
+				globalDroprates.doug.clIncrease
+			);
+			for (let i = 0; i < minutesInTrip; i++) {
+				if (roll(droprate)) {
+					loot.add('Doug');
+					str +=
+						"\n<:doug:748892864813203591> A pink-colored mole emerges from where you're mining, and decides to join you on your adventures after seeing your groundbreaking new methods of mining.";
+					break;
+				}
+			}
+		}
+
 		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
+		}
+
+		if (user.hasEquippedOrInBank('Mining master cape')) {
+			str += '\n2x nuggets for Mining master cape.';
 		}
 
 		await transactItems({

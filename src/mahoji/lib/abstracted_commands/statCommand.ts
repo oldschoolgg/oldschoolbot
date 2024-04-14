@@ -1,3 +1,5 @@
+import { bold } from '@discordjs/builders';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import { activity_type_enum, UserStats } from '@prisma/client';
 import { sumArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -12,6 +14,14 @@ import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
 import { skillEmoji } from '../../../lib/data/emojis';
+import { slayerMaskHelms } from '../../../lib/data/slayerMaskHelms';
+import {
+	calculateAllFletchedItems,
+	calculateChargedItems,
+	calculateDartsFletchedFromScratch,
+	calculateTiarasMade,
+	calculateXPSources
+} from '../../../lib/leagues/stats';
 import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { RandomEvents } from '../../../lib/randomEvents';
@@ -19,7 +29,6 @@ import { getMinigameScore } from '../../../lib/settings/minigames';
 import { prisma } from '../../../lib/settings/prisma';
 import Agility from '../../../lib/skilling/skills/agility';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
-import { ForestryEvents } from '../../../lib/skilling/skills/Woodcutting/forestry';
 import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import { InfernoOptions } from '../../../lib/types/minions';
@@ -28,6 +37,7 @@ import { barChart, lineChart, pieChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
+import { ForestryEvents } from '../../commands/chop';
 import { Cooldowns } from '../Cooldowns';
 import { collectables } from './collectCommand';
 
@@ -318,7 +328,163 @@ function makeResponseForBuffer(attachment: Buffer): Awaited<CommandResponse> {
 	};
 }
 
+const bsoOnlyDatapoints: readonly DataPiece[] = [
+	{
+		name: 'Actual Clues Done',
+		perkTierNeeded: null,
+		run: async (user: MUser) => {
+			const actualClues = await user.calcActualClues();
+			return `These are the clues you have acquired, completed and opened yourself:
+
+${actualClues.actualCluesBank
+	.items()
+	.map(i => `${bold(i[0].name)}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
+		}
+	},
+	{
+		name: 'Bars from Infernal adze',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.bars_from_adze_bank as ItemBank), 'Your Bars from Infernal Adze');
+		}
+	},
+	{
+		name: 'Bars from Klik',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.bars_from_klik_bank as ItemBank), 'Your Bars from Klik');
+		}
+	},
+	{
+		name: 'Ores from Mining spirits',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.ores_from_spirits_bank as ItemBank), 'Your Ores from Spirits');
+		}
+	},
+	{
+		name: 'Leather from Portable tanner',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(
+				new Bank(stats.portable_tanner_bank as ItemBank),
+				'Your Leather from Portable tanner'
+			);
+		}
+	},
+	{
+		name: 'Clues from Clue upgrader',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.clue_upgrader_bank as ItemBank), 'Clues from Clue upgrader');
+		}
+	},
+	{
+		name: 'XP from bonecrusher',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return `You have received ${Number(
+				stats.bonecrusher_prayer_xp
+			).toLocaleString()} XP from your Bonecrusher.`;
+		}
+	},
+	{
+		name: 'XP from Silverhawk boots passive',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return `You have received ${Number(
+				stats.silverhawk_boots_passive_xp
+			).toLocaleString()} XP from your Silverhawk boots passive.`;
+		}
+	},
+	{
+		name: 'XP from Lamps',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			const entries = Object.entries(stats.lamped_xp as ItemBank);
+			if (entries.length === 0) return 'No recorded lamp usages.';
+			return `**XP From Lamps**
+${entries.map(i => `**${toTitleCase(i[0])}**: ${toKMB(i[1])}`).join('\n')}`;
+		}
+	},
+	{
+		name: 'Loot from Smokey',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.smokey_loot_bank as ItemBank), 'Loot From Smokey');
+		}
+	},
+	{
+		name: 'Loot from Zippy',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.loot_from_zippy_bank as ItemBank), 'Loot From Zippy');
+		}
+	},
+	{
+		name: 'Loot from Peky',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.peky_loot_bank as ItemBank), 'Loot From Peky');
+		}
+	},
+	{
+		name: 'Loot from Obis',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.obis_loot_bank as ItemBank), 'Loot From Obis');
+		}
+	},
+	{
+		name: 'Loot from Brock',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.brock_loot_bank as ItemBank), 'Loot From Brock');
+		}
+	},
+	{
+		name: 'Loot from Wilvus',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.wilvus_loot_bank as ItemBank), 'Loot From Wilvus');
+		}
+	},
+	{
+		name: 'Loot from Doug',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.doug_loot_bank as ItemBank), 'Loot From Doug');
+		}
+	},
+	{
+		name: 'Loot from Harry',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.harry_loot_bank as ItemBank), 'Loot From Harry');
+		}
+	},
+	{
+		name: 'Loot from Double Loot Trips',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.doubled_loot_bank as ItemBank), 'Loot From Double Loot Trips');
+		}
+	},
+	{
+		name: 'Loot Destroyed by Chincannon',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(
+				new Bank(stats.chincannon_destroyed_loot_bank as ItemBank),
+				'Loot Destroyed by Chincannon'
+			);
+		}
+	}
+];
+
 export const dataPoints: readonly DataPiece[] = [
+	...bsoOnlyDatapoints,
 	{
 		name: 'Personal Activity Types',
 		perkTierNeeded: PerkTier.Four,
@@ -339,7 +505,7 @@ GROUP BY type;`);
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { type: activity_type_enum; hours: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT type, sum(duration::bigint)::bigint / ${Time.Hour} AS hours
+				await prisma.$queryRawUnsafe(`SELECT type, sum(duration)::int / ${Time.Hour} AS hours
 FROM activity
 WHERE completed = true
 AND user_id = ${BigInt(user.id)}
@@ -609,6 +775,21 @@ GROUP BY data->>'plantsName'`;
 		run: async (_, stats) => {
 			return makeResponseForBank(new Bank(stats.tob_loot as ItemBank), 'Your TOB Loot');
 		}
+	},
+	{
+		name: 'Gambling PNL',
+		run: async (_, stats) => {
+			const gpDice = toKMB(Number(stats.gp_dice));
+			const gpLuckyPick = toKMB(Number(stats.gp_luckypick));
+			const gpSlots = toKMB(Number(stats.gp_slots));
+
+			return {
+				content: `**Dicing:** ${gpDice}
+**Lucky Pick:** ${gpLuckyPick}
+**Slots:** ${gpSlots}`
+			};
+		},
+		perkTierNeeded: PerkTier.Four
 	},
 	{
 		name: 'Personal Slayer Tasks',
@@ -946,12 +1127,17 @@ GROUP BY "bankBackground";`);
 		}
 	},
 	{
-		name: 'Prayer XP from Ash Sanctifier',
+		name: 'Total Items Given For Item Contracts',
 		perkTierNeeded: PerkTier.Four,
 		run: async (_, stats) => {
-			return `You've received **${Number(
-				stats.ash_sanctifier_prayer_xp
-			).toLocaleString()}** XP from using the Ash Sanctifier.`;
+			return makeResponseForBank(new Bank(stats.ic_cost_bank as ItemBank), 'Item Contract Items Paid');
+		}
+	},
+	{
+		name: 'Total Loot From Item Contracts',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.ic_loot_bank as ItemBank), 'Item Contract Loot');
 		}
 	},
 	{
@@ -960,7 +1146,7 @@ GROUP BY "bankBackground";`);
 		run: async (user: MUser) => {
 			const result = await prisma.$queryRawUnsafe<any>(
 				`SELECT skill,
-					SUM(xp)::bigint AS total_xp
+					SUM(xp)::int AS total_xp
 				 FROM xp_gains
 				 WHERE source = 'TearsOfGuthix'
 				 AND user_id = ${BigInt(user.id)}
@@ -981,12 +1167,12 @@ GROUP BY "bankBackground";`);
 		run: async (user: MUser) => {
 			const result = await prisma.$queryRawUnsafe<any>(
 				`SELECT skill,
-					SUM(xp)::bigint AS total_xp
+					SUM(xp)::int AS total_xp
 				 FROM xp_gains
 				 WHERE source = 'ForestryEvents'
 				 AND user_id = ${BigInt(user.id)}
 				 GROUP BY skill
-				 ORDER BY CASE
+				 ORDER BY CASE 
 					 WHEN skill = 'woodcutting' THEN 0
 					 ELSE 1
 				 END`
@@ -1024,6 +1210,15 @@ GROUP BY "bankBackground";`);
 		perkTierNeeded: null,
 		run: async (_, stats) => {
 			return makeResponseForBank(new Bank(stats.scattered_ashes_bank as ItemBank), "You've scattered...");
+		}
+	},
+	{
+		name: 'Prayer XP from Ash Sanctifier',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return `You've received **${Number(
+				stats.ash_sanctifier_prayer_xp
+			).toLocaleString()}** XP from using the Ash Sanctifier.`;
 		}
 	},
 	{
@@ -1066,6 +1261,26 @@ GROUP BY "bankBackground";`);
 			}
 			sanitizeBank(items);
 			return makeResponseForBank(items, "You've received from giveaways...");
+		}
+	},
+	{
+		name: 'Item Contract Donations Given',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(
+				new Bank(stats.ic_donations_given_bank as ItemBank),
+				'Item Contract Donations Given'
+			);
+		}
+	},
+	{
+		name: 'Item Contract Donations Received',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(
+				new Bank(stats.ic_donations_received_bank as ItemBank),
+				'Item Contract Donations Received'
+			);
 		}
 	},
 	{
@@ -1146,6 +1361,19 @@ ${bank
 		}
 	},
 	{
+		name: 'Slayer Masks',
+		perkTierNeeded: null,
+		run: async (_, userStats) => {
+			return Object.entries(userStats.on_task_with_mask_monster_scores as ItemBank)
+				.map(i => {
+					const monster = Monsters.find(m => m.id === Number(i[0]))!;
+					const mask = slayerMaskHelms.find(m => m.monsters.includes(monster.id))!;
+					return `${monster.name}: ${i[1]} kills towards mask, ${mask.killsRequiredForUpgrade} needed`;
+				})
+				.join('\n');
+		}
+	},
+	{
 		name: 'Raids/CoX Luckiest and Unluckiest',
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
@@ -1222,6 +1450,68 @@ ${unluckiest
 		}
 	},
 	{
+		name: 'Items Fletched',
+		perkTierNeeded: null,
+		run: async user => {
+			return makeResponseForBank(await calculateAllFletchedItems(user), 'Fletched Items');
+		}
+	},
+	{
+		name: 'Darts Fletched from Scratch',
+		perkTierNeeded: null,
+		run: async user => {
+			return makeResponseForBank(
+				await calculateDartsFletchedFromScratch({
+					itemsSmithed: await personalSmithingStats(user),
+					itemsFletched: await calculateAllFletchedItems(user)
+				}),
+				'Fletched Items'
+			);
+		}
+	},
+	{
+		name: 'Tiaras Made/Runecrafted',
+		perkTierNeeded: null,
+		run: async user => {
+			return makeResponseForBank(await calculateTiarasMade(user), 'Tiaras Made');
+		}
+	},
+	{
+		name: 'Charged Items',
+		perkTierNeeded: null,
+		run: async user => {
+			return makeResponseForBank((await calculateChargedItems(user)).bankOfChargedItems, 'Charged Items');
+		}
+	},
+	{
+		name: 'XP Gain Sources',
+		perkTierNeeded: null,
+		run: async user => {
+			const result = await calculateXPSources(user);
+			return {
+				content: `You have gained....
+				
+${Object.entries(result)
+	.map(i => `${i[0]}: ${i[1].toLocaleString()} XP`)
+	.join('\n')}`
+			};
+		}
+	},
+	{
+		name: 'Stealing/Thieving Cost',
+		perkTierNeeded: null,
+		run: async (_, userStats) => {
+			return makeResponseForBank(new Bank(userStats.steal_cost_bank as ItemBank), 'Your Stealing/Thieving Cost');
+		}
+	},
+	{
+		name: 'Stealing/Thieving Loot',
+		perkTierNeeded: null,
+		run: async (_, userStats) => {
+			return makeResponseForBank(new Bank(userStats.steal_loot_bank as ItemBank), 'Your Stealing/Thieving Loot');
+		}
+	},
+	{
 		name: 'Herbs cleaned while farming',
 		perkTierNeeded: PerkTier.Four,
 		run: (_, userStats) => {
@@ -1288,6 +1578,13 @@ ${unluckiest
 			return makeResponseForBuffer(
 				await barChart('Your Weekly GP gains', val => `${toKMB(val)} GP`, dataPoints, true)
 			);
+		}
+	},
+	{
+		name: 'Loot from Octo',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.octo_loot_bank as ItemBank), 'Loot From Octo');
 		}
 	}
 ] as const;

@@ -1,6 +1,9 @@
+import { uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { championScrolls, skillingPetsCL } from '../../../lib/data/CollectionsExport';
+import { TanglerootTable } from '../../../lib/minions/data/killableMonsters/custom/Treebeard';
+import { assert } from '../../../lib/util';
 import resolveItems from '../../../lib/util/resolveItems';
 import { GlobalBingoTile } from './bingoUtil';
 
@@ -64,11 +67,6 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 		id: 2,
 		name: 'Receive any skilling pet',
 		oneOf: skillingPetsCL
-	},
-	{
-		id: 3,
-		name: 'Receive any Torva Armour Piece from Nex',
-		oneOf: resolveItems(['Torva full helm (damaged)', 'Torva platebody (damaged)', 'Torva platelegs (damaged)'])
 	},
 	{
 		id: 4,
@@ -285,6 +283,323 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 	},
 	{
 		id: 37,
+		name: 'Receive any custom pet',
+		oneOf: resolveItems([
+			'Doug',
+			'Zippy',
+			'Shelldon',
+			'Remy',
+			'Lil Lamb',
+			'Harry',
+			'Klik',
+			'Wintertoad',
+			'Scruffy',
+			'Zak',
+			'Skipper',
+			'Ori',
+			'Takon',
+			'Obis',
+			'Peky',
+			'Plopper',
+			'Brock',
+			'Wilvus',
+			'Sandy',
+			'Baby kalphite king',
+			'Steve',
+			'Voidling',
+			'Jal-MejJak',
+			'Queen black dragonling',
+			'Phoenix eggling',
+			'Cogsworth',
+			'Mini moktang',
+			'Balloon cat',
+			'Baby yaga house',
+			'Gary',
+			'Crush',
+			'Herbert'
+		])
+	},
+	{
+		id: 38,
+		name: 'Receive any Main+off-hand drygore set',
+		customReq: cl => {
+			return [
+				['Drygore longsword', 'Offhand drygore longsword'],
+				['Drygore mace', 'Offhand drygore mace'],
+				['Drygore rapier', 'Offhand drygore rapier']
+			].some(set => set.every(item => cl.has(item)));
+		},
+		allItems: resolveItems([
+			'Drygore longsword',
+			'Offhand drygore longsword',
+			'Drygore mace',
+			'Offhand drygore mace',
+			'Drygore rapier',
+			'Offhand drygore rapier'
+		])
+	},
+	{
+		id: 39,
+		name: 'Receive a Moktang pet, or dye or frame',
+		oneOf: resolveItems(['Mini moktang', 'Volcanic dye', 'Igne gear frame'])
+	},
+	{
+		id: 40,
+		name: 'Receive a Vasa Magus pet, or jar, or scroll, or robes',
+		oneOf: resolveItems(['Jar of magic', 'Tattered robes of Vasa', 'Voidling', 'Magus scroll'])
+	},
+	{
+		id: 41,
+		name: 'Create any spirit shield from scratch',
+		customReq: cl => {
+			return [
+				['Holy elixir', 'Spirit shield', 'Spectral sigil', 'Spectral spirit shield'],
+				['Holy elixir', 'Spirit shield', 'Arcane sigil', 'Arcane spirit shield'],
+				['Holy elixir', 'Spirit shield', 'Elysian sigil', 'Elysian spirit shield'],
+				['Holy elixir', 'Spirit shield', 'Divine sigil', 'Divine spirit shield']
+			].some(set => set.every(item => cl.has(item)));
+		},
+		allItems: resolveItems([
+			'Holy elixir',
+			'Spirit shield',
+			'Spectral sigil',
+			'Spectral spirit shield',
+			'Holy elixir',
+			'Spirit shield',
+			'Arcane sigil',
+			'Arcane spirit shield',
+			'Holy elixir',
+			'Spirit shield',
+			'Elysian sigil',
+			'Elysian spirit shield',
+			'Holy elixir',
+			'Spirit shield',
+			'Divine sigil',
+			'Divine spirit shield'
+		])
+	},
+	{
+		id: 42,
+		name: 'Receive any weapon from revs',
+		oneOf: resolveItems([
+			'Amulet of avarice',
+			"Craw's bow (u)",
+			"Thammaron's sceptre (u)",
+			"Viggora's chainmace (u)"
+		])
+	},
+	{
+		id: 43,
+		name: 'Receive any TOB unique',
+		oneOf: resolveItems([
+			'Scythe of vitur (uncharged)',
+			'Ghrazi rapier',
+			'Sanguinesti staff (uncharged)',
+			'Justiciar faceguard',
+			'Justiciar chestguard',
+			'Justiciar legguards',
+			'Avernic defender hilt'
+		])
+	},
+	{
+		id: 44,
+		name: 'Receive any COX unique (excluding scrolls)',
+		oneOf: resolveItems([
+			'Takon',
+			'Steve',
+			'Olmlet',
+			'Twisted bow',
+			'Elder maul',
+			'Kodai insignia',
+			'Dragon claws',
+			'Ancestral hat',
+			'Ancestral robe top',
+			'Ancestral robe bottom',
+			"Dinh's bulwark",
+			'Dragon hunter crossbow',
+			'Twisted buckler'
+		])
+	},
+	{
+		id: 45,
+		name: 'Receive any Ignecarus unique',
+		oneOf: resolveItems(['Ignis ring', 'Ignecarus dragonclaw', 'Dragon egg'])
+	},
+	{
+		id: 46,
+		name: 'Receive any Malygos unique',
+		oneOf: resolveItems(['Abyssal cape', 'Abyssal thread', 'Ori'])
+	},
+	{
+		id: 47,
+		name: 'Receive 120 Athelas seeds',
+		customReq: cl => cl.has(new Bank().add('Athelas seed', 120)),
+		allItems: resolveItems(['Athelas seed'])
+	},
+	{
+		id: 48,
+		name: 'Receive all Polypore dungeon uniques',
+		allOf: resolveItems([
+			'Mycelium visor web',
+			'Morchella mushroom spore',
+			'Mycelium leggings web',
+			'Ganodermic gloves',
+			'Ganodermic boots',
+			'Tombshroom spore',
+			'Mycelium poncho web',
+			'Grifolic gloves',
+			'Grifolic orb'
+		])
+	},
+	{
+		id: 49,
+		name: 'Receive all GWD uniques (excluding pets)',
+		allOf: resolveItems([
+			'Godsword shard 1',
+			'Godsword shard 2',
+			'Godsword shard 3',
+
+			'Armadyl crossbow',
+			'Saradomin hilt',
+			'Saradomin sword',
+			"Saradomin's light",
+
+			'Bandos chestplate',
+			'Bandos tassets',
+			'Bandos boots',
+			'Bandos hilt',
+
+			'Armadyl helmet',
+			'Armadyl chestplate',
+			'Armadyl chainskirt',
+			'Armadyl hilt',
+
+			'Staff of the dead',
+			'Zamorakian spear',
+			'Steam battlestaff',
+			'Zamorak hilt'
+		])
+	},
+	{
+		id: 50,
+		name: 'Receive any Naxxus unique',
+		oneOf: resolveItems(['Dark crystal', 'Abyssal gem', 'Tattered tome', 'Spellbound ring'])
+	},
+	{
+		id: 51,
+		name: 'Receive all 3 Dagannoth Kings pets',
+		allOf: resolveItems(['Pet dagannoth prime', 'Pet dagannoth supreme', 'Pet dagannoth rex'])
+	},
+	{
+		id: 52,
+		name: 'Receive a full set of Nex armour',
+		customReq: cl => {
+			return [
+				[
+					'Torva full helm (broken)',
+					'Torva platebody (broken)',
+					'Torva platelegs (broken)',
+					'Torva boots (broken)',
+					'Torva gloves (broken)'
+				],
+				[
+					'Pernix cowl (broken)',
+					'Pernix body (broken)',
+					'Pernix chaps (broken)',
+					'Pernix boots (broken)',
+					'Pernix gloves (broken)'
+				],
+				[
+					'Virtus mask (broken)',
+					'Virtus robe top (broken)',
+					'Virtus robe legs (broken)',
+					'Virtus boots (broken)',
+					'Virtus gloves (broken)'
+				]
+			].some(set => set.every(item => cl.has(item)));
+		},
+		allItems: resolveItems([
+			'Torva full helm (broken)',
+			'Pernix cowl (broken)',
+			'Virtus mask (broken)',
+			'Torva platebody (broken)',
+			'Pernix body (broken)',
+			'Virtus robe top (broken)',
+			'Torva platelegs (broken)',
+			'Pernix chaps (broken)',
+			'Virtus robe legs (broken)',
+			'Torva boots (broken)',
+			'Pernix boots (broken)',
+			'Virtus boots (broken)',
+			'Torva gloves (broken)',
+			'Pernix gloves (broken)',
+			'Virtus gloves (broken)'
+		])
+	},
+	{
+		id: 53,
+		name: 'Receive any Nihiliz unique',
+		oneOf: resolveItems(['Nihil horn', 'Zaryte vambraces', 'Nexling'])
+	},
+	{
+		id: 54,
+		name: 'Receive all Tangleroot variants from Treebeard',
+		oneOf: TanglerootTable.allItems
+	},
+	{
+		id: 55,
+		name: 'Receive 4 Gorajan shards',
+		customReq: cl => cl.has(new Bank().add('Gorajan shards', 4)),
+		allItems: resolveItems(['Gorajan shards'])
+	},
+	{
+		id: 56,
+		name: 'Receive a unique from Baxtorian Bathhouses',
+		oneOf: resolveItems(['Phoenix eggling', 'Inferno adze', 'Flame gloves', 'Ring of fire'])
+	},
+	{
+		id: 57,
+		name: 'Receive a statue, egg or banana from Monkey Rumble',
+		oneOf: resolveItems(['Marimbo statue', 'Monkey egg', 'Big banana'])
+	},
+	{
+		id: 58,
+		name: 'Receive 50x Korulsi seeds',
+		customReq: cl => cl.has(new Bank().add('Korulsi seed', 50)),
+		allItems: resolveItems(['Korulsi seed'])
+	},
+	{
+		id: 5000,
+		name: 'Create Master Farmer Outfit from Scratch (8 Ent hides + 5 outfit pieces)',
+		customReq: cl => {
+			return (
+				cl.has(new Bank().add('Ent hide', 8)) &&
+				[
+					'Master farmer hat',
+					'Master farmer jacket',
+					'Master farmer pants',
+					'Master farmer gloves',
+					'Master farmer boots'
+				].every(masterFarmerPiece => cl.has(masterFarmerPiece))
+			);
+		},
+		allItems: resolveItems([
+			'Ent hide',
+			'Master farmer hat',
+			'Master farmer jacket',
+			'Master farmer pants',
+			'Master farmer gloves',
+			'Master farmer boots'
+		])
+	},
+	{
+		id: 5001,
+		name: 'Receive 5x Squid dye',
+		customReq: cl => cl.has(new Bank().add('Squid dye', 5)),
+		allItems: resolveItems(['Squid dye'])
+	},
+	{
+		id: 5002,
 		name: 'Create any spirit shield from scratch',
 		customReq: (cl: Bank) => {
 			return allSpiritShieldSets.some(set => set.every(item => cl.has(item)));
@@ -292,7 +607,7 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 		allItems: allSpiritShieldSets.flat(2)
 	},
 	{
-		id: 38,
+		id: 5003,
 		name: 'Create a Ultor, Magus, Venator or Bellator ring from scratch',
 		customReq: (cl: Bank) => {
 			return allRingSets.some(set => set.every(item => cl.has(item))) && cl.amount('Chromium ingot') >= 3;
@@ -300,3 +615,5 @@ export const globalBingoTiles: GlobalBingoTile[] = [
 		allItems: allRingSets.flat(2)
 	}
 ];
+
+assert(uniqueArr(globalBingoTiles.map(i => i.id)).length === globalBingoTiles.length);

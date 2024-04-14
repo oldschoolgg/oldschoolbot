@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Events } from '../../../lib/constants';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/minigames';
 import { bloodEssence } from '../../../lib/skilling/functions/calcsRunecrafting';
@@ -87,16 +88,16 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		// If they have the entire Raiments of the Eye outfit, give an extra 20% quantity bonus (NO bonus XP)
 		let setBonus = 1;
 		if (
-			user.gear.skilling.hasEquipped(
+			user.hasEquippedOrInBank(
 				Object.keys(Runecraft.raimentsOfTheEyeItems).map(i => parseInt(i)),
-				true
+				'every'
 			)
 		) {
 			setBonus += 60 / 100;
 		} else {
 			// For each Raiments of the Eye item, check if they have it, give its' quantity boost if so (NO bonus XP).
 			for (const [itemID, bonus] of Object.entries(Runecraft.raimentsOfTheEyeItems)) {
-				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
+				if (user.hasEquippedOrInBank(parseInt(itemID))) {
 					setBonus += bonus / 100;
 				}
 			}
@@ -129,6 +130,8 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		for (let i = 0; i < quantity; i++) {
 			rewardsQty += randInt(rolls - 1, rolls);
 		}
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) rewardsQty *= 2;
 		rewardsGuardianLoot.add(rewardsGuardianTable.roll(rewardsQty));
 
 		await userStatsUpdate(
@@ -167,6 +170,8 @@ export const guardiansOfTheRiftTask: MinionTask = {
 				? ` ${Math.floor((setBonus - 1) * 100)}% Quantity bonus for Raiments Of The Eye Set Items`
 				: ''
 		}. ${xpResRunecraft} ${xpResCrafting} ${xpResMining}`;
+		if (flappyRes.userMsg) str += `\n${flappyRes.userMsg}`;
+
 		if (bonusBloods > 0) {
 			str += `\n\n**Blood essence used:** ${bonusBloods.toLocaleString()}`;
 		}

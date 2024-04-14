@@ -1,5 +1,7 @@
 import { increaseNumByPercent, randInt } from 'e';
 
+import { chargePortentIfHasCharges, PortentID } from '../../../lib/bso/divination';
+import { BitField } from '../../../lib/constants';
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -55,6 +57,19 @@ export const togTask: MinionTask = {
 		// 10% boost for Lumbridge&Draynor Hard
 		const [hasDiary] = await userhasDiaryTier(user, LumbridgeDraynorDiary.hard);
 		if (hasDiary) xpToGive = increaseNumByPercent(xpToGive, 10);
+		const hasEngram = user.bitfield.includes(BitField.HasGuthixEngram);
+		if (hasEngram) {
+			xpToGive = increaseNumByPercent(xpToGive, 10);
+		}
+
+		const { didCharge } = await chargePortentIfHasCharges({
+			user,
+			portentID: PortentID.LuckyPortent,
+			charges: 1
+		});
+		if (didCharge) {
+			xpToGive *= 2;
+		}
 
 		const xpStr = await user.addXP({ skillName: lowestSkill, amount: xpToGive, duration, source: 'TearsOfGuthix' });
 
@@ -63,6 +78,14 @@ export const togTask: MinionTask = {
 		} finished telling Juna a story and drinking from the Tears of Guthix and collected ${tears} tears.\nLowest XP skill is ${lowestSkill}.\n${xpStr.toLocaleString()}.${
 			hasDiary ? '\n10% XP bonus for Lumbridge & Draynor Hard diary.' : ''
 		}`;
+		if (hasEngram) {
+			output += ' 10% Bonus XP for Guthix engram';
+		}
+		if (didCharge) {
+			output += '\nYour Lucky Portent doubled your XP!';
+		}
+
+		await user.addToGodFavour(['Guthix'], data.duration);
 
 		handleTripFinish(user, channelID, output, undefined, data, null);
 	}

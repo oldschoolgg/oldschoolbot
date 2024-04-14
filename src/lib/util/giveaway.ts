@@ -1,3 +1,4 @@
+import { Giveaway } from '@prisma/client';
 import { MessageEditOptions, time, userMention } from 'discord.js';
 import { debounce, noOp, randArrItem, Time } from 'e';
 import { Bank } from 'oldschooljs';
@@ -8,7 +9,6 @@ import { prisma } from '../settings/prisma';
 import { channelIsSendable } from '../util';
 import { logError } from './logError';
 import { sendToChannelID } from './webhook';
-import { Giveaway } from '.prisma/client';
 
 async function refundGiveaway(creator: MUser, loot: Bank) {
 	await transactItems({
@@ -102,8 +102,8 @@ export async function handleGiveawayCompletion(_giveaway: Giveaway) {
 		);
 
 		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${users.length} users joined, the winner is... **${winner.mention}**
-			
-They received these items: ${loot}`;
+
+They received these items: ${loot}.`;
 
 		await sendToChannelID(giveaway.channel_id, {
 			content: str

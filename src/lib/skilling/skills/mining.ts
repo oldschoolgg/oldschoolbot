@@ -2,9 +2,10 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
+import resolveItems from '../../util/resolveItems';
 import { Ore, SkillsEnum } from '../types';
 
-const GemRockTable = new LootTable()
+export const GemRockTable = new LootTable()
 	.add('Uncut opal', 1, 60)
 	.add('Uncut jade', 1, 30)
 	.add('Uncut red topaz', 1, 15)
@@ -232,6 +233,18 @@ const ores: Ore[] = [
 		aliases: ['addy', 'adamant', 'adamant ore', 'adamantite']
 	},
 	{
+		level: 80,
+		xp: 1115,
+		id: itemID('Obsidian shards'),
+		name: 'Obsidian',
+		respawnTime: 100,
+		bankingTime: 40,
+		slope: 0.1,
+		intercept: -0.7,
+		petChance: 50_000,
+		requiredPickaxes: resolveItems(['Crystal pickaxe', 'Dwarven pickaxe', 'Volcanic pickaxe'])
+	},
+	{
 		level: 85,
 		xp: 125,
 		id: 451,
@@ -257,6 +270,18 @@ const ores: Ore[] = [
 		minerals: 20,
 		clueScrollChance: 46_350,
 		aliases: ['amy', 'ame']
+	},
+	{
+		level: 105,
+		xp: 275,
+		id: 70_011,
+		name: 'Dark animica',
+		respawnTime: 4,
+		bankingTime: 58,
+		slope: 0.188,
+		intercept: -3,
+		petChance: 30_000,
+		clueScrollChance: 46_350
 	}
 ];
 

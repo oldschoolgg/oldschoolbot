@@ -1,45 +1,23 @@
-import { SimpleTable } from '@oldschoolgg/toolkit';
-import { randInt } from 'e';
+import { randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import { clAdjustedDroprate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
-export const PointsTable = new SimpleTable<number>()
-	.add(420)
-	.add(470)
-	.add(500)
-	.add(505)
-	.add(510)
-	.add(520)
-	.add(550)
-	.add(560)
-	.add(590)
-	.add(600)
-	.add(620)
-	.add(650)
-	.add(660)
-	.add(670)
-	.add(680)
-	.add(700)
-	.add(720)
-	.add(740)
-	.add(750)
-	.add(780)
-	.add(850);
-
 export const wintertodtTask: MinionTask = {
 	type: 'Wintertodt',
 	async run(data: ActivityTaskOptionsWithQuantity) {
-		const { userID, channelID, quantity } = data;
+		const { userID, channelID, quantity, duration } = data;
 		const user = await mUserFetch(userID);
 
 		let loot = new Bank();
@@ -47,7 +25,7 @@ export const wintertodtTask: MinionTask = {
 		let totalPoints = 0;
 
 		for (let i = 0; i < quantity; i++) {
-			const points = PointsTable.rollOrThrow();
+			const points = randInt(1000, 5000);
 			totalPoints += points;
 
 			loot.add(
@@ -58,6 +36,13 @@ export const wintertodtTask: MinionTask = {
 					firemakingXP: user.skillsAsXP.firemaking
 				})
 			);
+		}
+
+		let gotToad = false;
+		const dropRate = clAdjustedDroprate(user, 'Wintertoad', 3000 / Math.floor(duration / Time.Minute), 1.2);
+		if (duration > Time.Minute * 20 && roll(dropRate)) {
+			gotToad = true;
+			loot.add('Wintertoad');
 		}
 
 		// Track loot in Economy Stats
@@ -97,9 +82,9 @@ export const wintertodtTask: MinionTask = {
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
-			user.gear.skilling.hasEquipped(
+			user.hasEquippedOrInBank(
 				Object.keys(Firemaking.pyromancerItems).map(i => parseInt(i)),
-				true
+				'every'
 			)
 		) {
 			const amountToAdd = Math.floor(fmXpToGive * (2.5 / 100));
@@ -108,7 +93,7 @@ export const wintertodtTask: MinionTask = {
 		} else {
 			// For each pyromancer item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Firemaking.pyromancerItems)) {
-				if (user.hasEquipped(parseInt(itemID))) {
+				if (user.hasEquippedOrInBank(parseInt(itemID))) {
 					const amountToAdd = Math.floor(fmXpToGive * (bonus / 100));
 					fmXpToGive += amountToAdd;
 					fmBonusXP += amountToAdd;
@@ -128,6 +113,13 @@ export const wintertodtTask: MinionTask = {
 			duration: data.duration,
 			source: 'Wintertodt'
 		})}`;
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
+			loot.multiply(2);
+		}
+		if (user.hasEquippedOrInBank('Firemaking master cape')) {
+			loot.multiply(2);
+		}
 
 		const { itemsAdded, previousCL } = await transactItems({
 			userID: user.id,
@@ -147,6 +139,11 @@ export const wintertodtTask: MinionTask = {
 		if (fmBonusXP > 0) {
 			output += `\n\n**Firemaking Bonus XP:** ${fmBonusXP.toLocaleString()}`;
 		}
+
+		if (gotToad) {
+			output += '\n\n<:wintertoad:749945071230779493> A Wintertoad sneakily hops into your bank!';
+		}
+		if (flappyRes.shouldGiveBoost) output += `\n${flappyRes.userMsg}`;
 
 		await trackLoot({
 			totalLoot: itemsAdded,

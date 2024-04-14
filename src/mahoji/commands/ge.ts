@@ -17,7 +17,7 @@ import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmatio
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
-import { itemOption, ownedItemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
+import { itemArr, itemOption, ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
 
@@ -117,7 +117,7 @@ export const geCommand: OSBMahojiCommand = {
 								value: itemID.toString()
 							}));
 						}
-						let res = tradeableItemArr.filter(i => i.key.includes(value.toLowerCase()));
+						let res = itemArr.filter(i => i.key.includes(value.toLowerCase()));
 						return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
 					}
 				},

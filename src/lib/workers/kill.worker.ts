@@ -1,13 +1,13 @@
+import '../customItems/customItems';
 import '../data/itemAliases';
 
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { Bank, Misc, Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
-import killableMonsters from '../minions/data/killableMonsters';
-import { handleNexKills } from '../simulation/nex';
+import { production } from '../../config';
+import { YETI_ID } from '../constants';
+import killableMonsters from '../minions/data/killableMonsters/index';
 import { simulatedKillables } from '../simulation/simulatedKillables';
-import { calcDropRatesFromBank } from '../util/calcDropRatesFromBank';
-import resolveItems from '../util/resolveItems';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
 
 export default async ({
@@ -21,6 +21,9 @@ export default async ({
 	const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, bossName)));
 
 	if (osjsMonster) {
+		if (osjsMonster.id === YETI_ID && production) {
+			return { error: 'The bot is too scared to simulate fighting the yeti.' };
+		}
 		if (quantity > limit) {
 			return {
 				error:
@@ -41,7 +44,7 @@ export default async ({
 
 		const killableMonster = killableMonsters.find(mon => mon.id === osjsMonster.id);
 		if (killableMonster && killableMonster.specialLoot) {
-			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity });
+			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity, cl: new Bank() });
 		}
 
 		return result;
@@ -58,50 +61,6 @@ export default async ({
 		}
 
 		return { bank: simulatedKillable.loot(quantity) };
-	}
-
-	if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {
-		let bank = new Bank();
-		if (quantity > 10_000) {
-			return { error: 'I can only kill a maximum of 10k nightmares a time!' };
-		}
-		for (let i = 0; i < quantity; i++) {
-			bank.add(Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }], isPhosani: false }).id);
-		}
-		return { bank };
-	}
-
-	if (['nex', 'next'].some(alias => stringMatches(alias, bossName))) {
-		if (quantity > 3000) {
-			return { error: 'I can only kill a maximum of 3k Nex a time!' };
-		}
-
-		const loot = handleNexKills({
-			quantity,
-			team: [
-				{ id: '1', contribution: 100, deaths: [] },
-				{ id: '2', contribution: 100, deaths: [] },
-				{ id: '3', contribution: 100, deaths: [] },
-				{ id: '4', contribution: 100, deaths: [] }
-			]
-		});
-		return {
-			bank: loot.get('1'),
-			title: `Personal Loot From ${quantity}x Nex, Team of 4`,
-			content: calcDropRatesFromBank(
-				loot.get('1'),
-				quantity,
-				resolveItems([
-					'Nexling',
-					'Ancient hilt',
-					'Nihil horn',
-					'Zaryte vambraces',
-					'Torva full helm (damaged)',
-					'Torva platebody (damaged)',
-					'Torva platelegs (damaged)'
-				])
-			)
-		};
 	}
 
 	return { error: "I don't have that monster!" };

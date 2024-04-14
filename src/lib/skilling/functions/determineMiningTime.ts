@@ -1,11 +1,11 @@
 import { percentChance, Time } from 'e';
 
-import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import { Ore } from './../types';
 
 interface MiningTimeOptions {
+	hasGlory: boolean;
+	maxTripLength: number;
 	quantity: number | undefined;
-	user: MUser;
 	ore: Ore;
 	ticksBetweenRolls: number;
 	glovesRate: number;
@@ -19,7 +19,6 @@ interface MiningTimeOptions {
 
 export function determineMiningTime({
 	quantity,
-	user,
 	ore,
 	ticksBetweenRolls,
 	glovesRate,
@@ -28,10 +27,12 @@ export function determineMiningTime({
 	powermining,
 	goldSilverBoost,
 	miningLvl,
-	passedDuration
+	passedDuration,
+	hasGlory,
+	maxTripLength
 }: MiningTimeOptions): [number, number] {
 	let { intercept } = ore;
-	if (ore.name === 'Gem rock' && user.hasEquipped('Amulet of glory')) {
+	if (ore.name === 'Gem rock' && hasGlory) {
 		intercept *= 3;
 	}
 	let timeElapsed = 0;
@@ -46,7 +47,7 @@ export function determineMiningTime({
 		passedDuration = 0;
 	}
 
-	let userMaxTripTicks = (calcMaxTripLength(user, 'Mining') - passedDuration) / (Time.Second * 0.6);
+	let userMaxTripTicks = (maxTripLength - passedDuration) / (Time.Second * 0.6);
 
 	if (ore.name === 'Amethyst' || ore.name === 'Daeyalt essence rock') {
 		userMaxTripTicks *= 1.5;

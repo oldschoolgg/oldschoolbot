@@ -1,3 +1,4 @@
+import { roll } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -115,6 +116,11 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			return `You don't own ${bankToSac}.`;
 		}
 
+		const cantSac = bankToSac.items().find(i => i[0].customItemData?.cantBeSacrificed);
+		if (cantSac) {
+			return `${cantSac[0].name} can't be sacrificed!`;
+		}
+
 		if (bankToSac.length === 0) {
 			return `No items were provided.\nYour current sacrificed value is: ${sacVal.toLocaleString()} (${toKMB(
 				sacVal
@@ -161,8 +167,23 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		);
 		await user.removeItemsFromBank(bankToSac);
 
-		if (totalPrice > 200_000_000) {
-			globalClient.emit(Events.ServerNotification, `${user.badgedUsername} just sacrificed ${bankToSac}!`);
+		if (totalPrice > 5_000_000_000) {
+			globalClient.emit(Events.ServerNotification, `${user.usernameOrMention} just sacrificed ${bankToSac}!`);
+		}
+		let str = '';
+		const hasSkipper = user.usingPet('Skipper') || user.owns('Skipper');
+		if (hasSkipper) {
+			totalPrice = Math.floor(totalPrice * 1.3);
+		}
+
+		let hammyCount = 0;
+		for (let i = 0; i < Math.floor(totalPrice / 51_530_000); i++) {
+			if (roll(140)) {
+				hammyCount++;
+			}
+		}
+		if (hammyCount) {
+			await user.addItemsToBank({ items: new Bank().add('Hammy', hammyCount), collectionLog: true });
 		}
 
 		await user.update({
@@ -174,8 +195,6 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		const newValue = user.user.sacrificedValue;
 
 		await trackSacBank(user, bankToSac);
-
-		let str = '';
 
 		// Ignores notifying the user/server if the user is using a custom icon
 		if (!currentIcon || minionIcons.find(m => m.emoji === currentIcon)) {
@@ -193,6 +212,19 @@ export const sacrificeCommand: OSBMahojiCommand = {
 				}
 			}
 		}
+
+		if (hammyCount) {
+			str +=
+				'\n\n<:Hamstare:685036648089780234> A small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes.';
+			if (hammyCount > 1) {
+				str += ` **(x${hammyCount})**`;
+			}
+		}
+		if (hasSkipper) {
+			str +=
+				'\n<:skipper:755853421801766912> Skipper has negotiated with the bank and gotten you +30% extra value from your sacrifice.';
+		}
+
 		return `You sacrificed ${bankToSac}, with a value of ${totalPrice.toLocaleString()}gp (${toKMB(
 			totalPrice
 		)}). Your total amount sacrificed is now: ${newValue.toLocaleString()}. ${str}`;

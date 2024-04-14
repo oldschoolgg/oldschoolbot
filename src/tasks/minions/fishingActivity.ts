@@ -2,12 +2,14 @@ import { calcPercentOfNum, percentChance, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import { z } from 'zod';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { globalDroprates } from '../../lib/data/globalDroprates';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
+import { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { roll, skillingPetDropRate } from '../../lib/util';
+import { clAdjustedDroprate, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
@@ -21,7 +23,7 @@ function radasBlessing(user: MUser) {
 	];
 
 	for (const [itemName, boostPercent] of blessingBoosts) {
-		if (user.hasEquipped(itemName)) {
+		if (user.hasEquippedOrInBank(itemName)) {
 			return { blessingEquipped: true, blessingChance: boostPercent as number };
 		}
 	}
@@ -91,28 +93,6 @@ export const fishingTask: MinionTask = {
 		} else {
 			xpReceived = quantity * fish.xp;
 		}
-		let bonusXP = 0;
-
-		// If they have the entire angler outfit, give an extra 0.5% xp bonus
-		if (
-			user.gear.skilling.hasEquipped(
-				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
-				true
-			)
-		) {
-			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
-			xpReceived += amountToAdd;
-			bonusXP += amountToAdd;
-		} else {
-			// For each angler item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasEquipped(parseInt(itemID))) {
-					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
-					xpReceived += amountToAdd;
-					bonusXP += amountToAdd;
-				}
-			}
-		}
 
 		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Fishing,
@@ -166,7 +146,16 @@ export const fishingTask: MinionTask = {
 			[fish.id]: lootQuantity
 		});
 
-		// Add clue scrolls
+		if (user.usingPet('Klik')) {
+			const cookedFish = Cookables.find(c => Boolean(c.inputCookables[fish.id]));
+			if (cookedFish) {
+				loot.remove(fish.id, quantity);
+				loot.add(cookedFish.id, quantity);
+				str +=
+					'\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and cooks all your fish!';
+			}
+		}
+
 		if (fish.clueScrollChance) {
 			addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, fish.clueScrollChance, loot);
 		}
@@ -179,6 +168,7 @@ export const fishingTask: MinionTask = {
 			loot.add('Leaping trout', leapingTrout);
 		}
 
+		let bonusXP = 0;
 		const xpBonusPercent = anglerBoostPercent(user);
 		if (xpBonusPercent > 0) {
 			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, xpReceived));
@@ -207,6 +197,24 @@ export const fishingTask: MinionTask = {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(fish.bigFishRate)) {
 					loot.add(fish.bigFish);
+				}
+			}
+		}
+
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutesInTrip = Math.ceil(duration / 1000 / 60);
+			const petChance = clAdjustedDroprate(
+				user,
+				'Shelldon',
+				globalDroprates.shelldon.baseRate,
+				globalDroprates.shelldon.clIncrease
+			);
+			for (let i = 0; i < minutesInTrip; i++) {
+				if (roll(petChance)) {
+					loot.add('Shelldon');
+					str +=
+						'\n<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called shelldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!';
+					break;
 				}
 			}
 		}

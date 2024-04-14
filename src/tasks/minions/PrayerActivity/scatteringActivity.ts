@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ScatteringActivityTaskOptions } from '../../../lib/types/minions';
+import { calcPerHour, toKMB } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
@@ -26,7 +27,7 @@ export const scatteringTask: MinionTask = {
 
 		let str = `${user}, ${user.minionName} finished scattering ${quantity} ${
 			ash.name
-		}, you also received ${xpReceived.toLocaleString()} XP.`;
+		}, you also received ${xpReceived.toLocaleString()} XP (${toKMB(calcPerHour(xpReceived, data.duration))}/hr).`;
 
 		if (newLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;

@@ -43,7 +43,7 @@ interface RaidResultUser {
 export const toaTask: MinionTask = {
 	type: 'TombsOfAmascut',
 	async run(data: TOAOptions) {
-		const { channelID, raidLevel, duration, leader, quantity, wipedRoom: _wipedRoom } = data;
+		const { channelID, raidLevel, duration, leader, quantity, wipedRoom: _wipedRoom, cc: chincannonUser } = data;
 		const detailedUsers = normalizeTOAUsers(data);
 		const wipedRooms = Array.isArray(_wipedRoom) ? _wipedRoom : [_wipedRoom];
 		assert(Array.isArray(detailedUsers[0]) && isObject(detailedUsers[0][0]), `${detailedUsers}`);
@@ -137,15 +137,17 @@ export const toaTask: MinionTask = {
 
 		for (let [userID, userData] of raidResults.entries()) {
 			const { points, deaths, mUser: user } = userData;
-			await userStatsUpdate(
-				user.id,
-				{
-					total_toa_points: {
-						increment: points
-					}
-				},
-				{}
-			);
+			if (!chincannonUser) {
+				await userStatsUpdate(
+					user.id,
+					{
+						total_toa_points: {
+							increment: points
+						}
+					},
+					{}
+				);
+			}
 
 			// If the user already has these in their bank they cannot get another
 			for (const itemID of [...toaPetTransmogItems, ...toaOrnamentKits.map(i => i[0].id)]) {
@@ -156,13 +158,32 @@ export const toaTask: MinionTask = {
 				}
 			}
 
-			const { itemsAdded } = await transactItems({
-				userID,
-				itemsToAdd: totalLoot.get(userID),
-				collectionLog: true
-			});
+			let str: string = 'Nothing';
+			if (!chincannonUser) {
+				const { itemsAdded } = await transactItems({
+					userID,
+					itemsToAdd: totalLoot.get(userID),
+					collectionLog: true
+				});
+				itemsAddedTeamLoot.add(userID, itemsAdded);
+				const items = itemsAdded.items();
 
-			itemsAddedTeamLoot.add(userID, itemsAdded);
+				const isPurple = items.some(([item]) => toaPurpleItems.includes(item.id));
+				if (
+					items.some(([item]) => toaPurpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))
+				) {
+					const itemsToAnnounce = itemsAdded.filter(item => toaPurpleItems.includes(item.id), false);
+					globalClient.emit(
+						Events.ServerNotification,
+						`${Emoji.Purple} ${
+							user.badgedUsername
+						} just received **${itemsToAnnounce}** on their ${formatOrdinal(
+							minigameIncrementResult[0].newScore
+						)} raid.`
+					);
+				}
+				str = isPurple ? `${Emoji.Purple} ||${itemsAdded}||` : itemsAdded.toString();
+			}
 
 			userStatsUpdate(
 				user.id,
@@ -174,33 +195,23 @@ export const toaTask: MinionTask = {
 						total_toa_duration_minutes: {
 							increment: Math.floor(duration / Time.Minute)
 						},
-						toa_loot: new Bank(u.toa_loot as ItemBank).add(totalLoot.get(userID)).bank
+						toa_loot: !chincannonUser
+							? new Bank(u.toa_loot as ItemBank).add(totalLoot.get(userID)).bank
+							: undefined
 					};
 				},
 				{}
 			);
 
-			const items = itemsAdded.items();
-
-			const isPurple = items.some(([item]) => toaPurpleItems.includes(item.id));
-			if (items.some(([item]) => toaPurpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
-				const itemsToAnnounce = itemsAdded.filter(item => toaPurpleItems.includes(item.id), false);
-				globalClient.emit(
-					Events.ServerNotification,
-					`${Emoji.Purple} ${
-						user.badgedUsername
-					} just received **${itemsToAnnounce}** on their ${formatOrdinal(
-						minigameIncrementResult[0].newScore
-					)} raid.`
-				);
-			}
-			const str = isPurple ? `${Emoji.Purple} ||${itemsAdded}||` : itemsAdded.toString();
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
-
-			if (shouldShowImage) {
-				resultMessage += `\n${deathStr} **${user}** ${bold(points.toLocaleString())} points`;
-			} else {
-				resultMessage += `\n${deathStr} **${user}** received: ${str} (${bold(points.toLocaleString())} points)`;
+			if (!chincannonUser) {
+				if (shouldShowImage) {
+					resultMessage += `\n${deathStr} **${user}** ${bold(points.toLocaleString())} points`;
+				} else {
+					resultMessage += `\n${deathStr} **${user}** received: ${str} (${bold(
+						points.toLocaleString()
+					)} points)`;
+				}
 			}
 
 			const xpPromises = calculateXPFromRaid({
@@ -219,7 +230,9 @@ export const toaTask: MinionTask = {
 			resultMessage += `\n\n${messages.join('\n')}`;
 		}
 
-		updateBankSetting('toa_loot', totalLoot.totalLoot());
+		if (!chincannonUser) {
+			updateBankSetting('toa_loot', totalLoot.totalLoot());
+		}
 		await trackLoot({
 			totalLoot: totalLoot.totalLoot(),
 			id: 'tombs_of_amascut',

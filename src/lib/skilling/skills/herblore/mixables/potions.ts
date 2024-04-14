@@ -396,7 +396,7 @@ const Potions: Mixable[] = [
 		xp: 200,
 		inputItems: new Bank({ 'Dwarf weed potion (unf)': 1, 'Lily of the sands': 1 }),
 		tickRate: 2,
-		bankTimePerPotion: 0.3
+		bankTimePerPotion: 0.17
 	},
 	{
 		item: getOSItem('Super combat potion (4)'),
@@ -444,6 +444,15 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.3
 	},
 	{
+		item: getOSItem('Vial of blood'),
+		aliases: ['Vial of blood'],
+		level: 94,
+		xp: 125,
+		inputItems: new Bank().add('Dwarf weed potion (unf)', 1).add('Blood orange', 1),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
 		item: getOSItem('Extended super antifire (4)'),
 		aliases: ['Extended super antifire (4)', 'Extended super antifire'],
 		level: 98,
@@ -454,6 +463,44 @@ const Potions: Mixable[] = [
 		}),
 		tickRate: 2,
 		qpRequired: 205,
+		bankTimePerPotion: 0.3
+	},
+	{
+		item: getOSItem('Heat res. brew'),
+		aliases: ['heat res. brew', 'heat res brew'],
+		level: 110,
+		xp: 230,
+		inputItems: new Bank({
+			'Heat res. vial': 1,
+			'Super antifire potion(4)': 1,
+			'Saradomin brew(4)': 1
+		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
+		item: getOSItem('Heat res. restore'),
+		aliases: ['heat res. restore', 'heat res restore'],
+		level: 110,
+		xp: 230,
+		inputItems: new Bank({
+			'Heat res. vial': 1,
+			'Super antifire potion(4)': 1,
+			'Super restore(4)': 1
+		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
+		item: getOSItem("Dragon's fury"),
+		aliases: ['dragons fury'],
+		level: 120,
+		xp: 1830,
+		inputItems: new Bank({
+			'Ignecarus scales': 3,
+			'Abyssal dragon bones': 1
+		}),
+		tickRate: 2,
 		bankTimePerPotion: 0.3
 	},
 	{
@@ -469,6 +516,67 @@ const Potions: Mixable[] = [
 		}),
 		tickRate: 10,
 		bankTimePerPotion: 0.5
+	},
+	{
+		item: getOSItem('Enhanced saradomin brew'),
+		aliases: ['enhanced saradomin brew', 'enhanced brew'],
+		level: 110,
+		xp: 160,
+		inputItems: new Bank({
+			Korulsi: 1,
+			'Crystal dust': 10,
+			'Saradomin brew (4)': 1
+		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
+		item: getOSItem('Enhanced super restore'),
+		aliases: ['enhanced super restore', 'enhanced restore'],
+		level: 110,
+		xp: 160,
+		inputItems: new Bank({
+			Korulsi: 1,
+			'Crystal dust': 10,
+			'Super restore (4)': 1
+		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
+		item: getOSItem('Enhanced stamina potion'),
+		aliases: ['enhanced stamina potion', 'enhanced stam', 'enhanced stamina'],
+		level: 110,
+		xp: 160,
+		inputItems: new Bank({
+			Korulsi: 1,
+			'Crystal dust': 10,
+			'Stamina potion (4)': 1
+		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
+		item: getOSItem('Enhanced divine water'),
+		aliases: ['enhanced divine water', 'enhanced div', 'enhanced water', 'enhanced div water'],
+		level: 110,
+		xp: 150,
+		inputItems: new Bank({
+			Korulsi: 1,
+			'Crystal dust': 10,
+			'Divine water': 1
+		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
+		item: getOSItem('Divination potion'),
+		aliases: ['divination potion'],
+		level: 105,
+		xp: 115,
+		inputItems: new Bank().add('Spirit weed').add('Advax berry'),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
 	}
 ];
 

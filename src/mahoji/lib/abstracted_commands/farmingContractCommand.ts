@@ -24,6 +24,12 @@ const contractToFarmingLevel = {
 	hard: 85
 };
 
+export function getFarmingContractOfUser(user: MUser) {
+	const currentContract: FarmingContract =
+		(user.user.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
+	return currentContract;
+}
+
 export async function farmingContractCommand(userID: string, input?: ContractOption): CommandResponse {
 	const user = await mUserFetch(userID);
 	const farmingLevel = user.skillsAsLevels.farming;

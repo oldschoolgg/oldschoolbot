@@ -3,10 +3,17 @@ import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { NIGHTMARES_HP } from '../../constants';
+import { NexMonster } from '../../nex';
 import { SkillsEnum } from '../../skilling/types';
 import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
+import { Ignecarus } from '../data/killableMonsters/custom/bosses/Ignecarus';
+import { KalphiteKingMonster } from '../data/killableMonsters/custom/bosses/KalphiteKing';
+import KingGoldemar from '../data/killableMonsters/custom/bosses/KingGoldemar';
+import { Naxxus, NAXXUS_HP } from '../data/killableMonsters/custom/bosses/Naxxus';
+import { VasaMagus } from '../data/killableMonsters/custom/bosses/VasaMagus';
+import { BSOMonsters } from '../data/killableMonsters/custom/customMonsters';
 import { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
 
 export { default as calculateMonsterFood } from './calculateMonsterFood';
@@ -22,15 +29,42 @@ export const attackStylesArr = [
 export type AttackStyles = (typeof attackStylesArr)[number];
 
 const miscHpMap: Record<number, number> = {
+	3127: 250,
+	46_274: 5000,
 	9415: NIGHTMARES_HP,
-	3127: 250
+	[KingGoldemar.id]: 10_000,
+	[VasaMagus.id]: 3900,
+	[KalphiteKingMonster.id]: 5300,
+	[BSOMonsters.SeaKraken.id]: 5200,
+	[Ignecarus.id]: 10_000,
+	[Naxxus.id]: NAXXUS_HP
 };
 
+function meleeOnly(user: MUser): AttackStyles[] {
+	const skills = user.getAttackStyles();
+	if (skills.some(skill => skill === SkillsEnum.Ranged || skill === SkillsEnum.Magic)) {
+		return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
+	}
+	return skills;
+}
 export function resolveAttackStyles(
 	user: MUser,
 	params: ResolveAttackStylesParams
 ): [KillableMonster | undefined, Monster | undefined, AttackStyles[]] {
+	if (params.monsterID === KingGoldemar.id) return [undefined, undefined, meleeOnly(user)];
+	if (params.monsterID === VasaMagus.id) return [undefined, undefined, [SkillsEnum.Magic]];
+	if (params.monsterID === NexMonster.id) return [undefined, undefined, [SkillsEnum.Ranged]];
+	if (params.monsterID === KalphiteKingMonster.id) return [undefined, undefined, meleeOnly(user)];
+	if (params.monsterID === Naxxus.id) {
+		return [undefined, undefined, [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Magic]];
+	}
+
 	const killableMon = params.monsterID ? killableMonsters.find(m => m.id === params.monsterID) : undefined;
+
+	if (!killableMon) {
+		return [undefined, undefined, [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence]];
+	}
+
 	const osjsMon = params.monsterID ? Monsters.get(params.monsterID) : undefined;
 
 	// The styles chosen by this user to use.
@@ -130,7 +164,9 @@ export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
 
 	if (params.isOnTask) {
 		let newSlayerXP = 0;
-		if (osjsMon?.data?.slayerXP) {
+		if (miscHpMap[params.monsterID]) {
+			newSlayerXP += params.taskQuantity! * miscHpMap[params.monsterID];
+		} else if (osjsMon?.data?.slayerXP) {
 			newSlayerXP += params.taskQuantity! * osjsMon.data.slayerXP;
 		} else {
 			newSlayerXP += params.taskQuantity! * hp;

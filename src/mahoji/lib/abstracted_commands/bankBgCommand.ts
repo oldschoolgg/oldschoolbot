@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
-import { formatSkillRequirements, stringMatches, toKMB } from '../../../lib/util';
+import { formatSkillRequirements, getAllIDsOfUser, stringMatches, toKMB } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -19,7 +19,9 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 		return 'This is already your bank background.';
 	}
 
-	if (user.bitfield.includes(BitField.isModerator)) {
+	const owners = selectedImage.owners ?? [];
+	let allAccounts = getAllIDsOfUser(user);
+	if (user.bitfield.includes(BitField.isModerator) || allAccounts.some(a => owners.includes(a))) {
 		await user.update({
 			bankBackground: selectedImage.id
 		});

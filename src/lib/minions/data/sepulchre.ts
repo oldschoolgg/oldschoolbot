@@ -1,5 +1,7 @@
 import { randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
+import HerbDropTable from 'oldschooljs/dist/simulation/subtables/HerbDropTable';
+import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { ItemBank } from '../../types';
@@ -40,6 +42,34 @@ const HighTierCoffin = new LootTable()
 	.add('Sanfew serum(4)', [1, 2])
 	.add('Ranarr seed', [1, 2])
 	.add('Coins', [17_500, 25_000]);
+
+const MasterTierCoffin = new LootTable()
+	.add('Dragon 2h sword')
+	.add('Dragon chainbody')
+	.add('Law rune', [250, 350])
+	.add('Blood rune', [250, 350])
+	.add('Soul rune', [250, 350])
+	.add('Runite bolts', [200, 400])
+	.add('Monkfish', [6, 12])
+	.add('Sanfew serum(4)', [3, 6])
+	.add('Ranarr seed', [4, 6])
+	.add('Coins', [37_500, 55_000]);
+
+const GrandmasterTierCoffin = new LootTable()
+	.add('Stamina potion(4)', [2, 4])
+	.add(
+		[
+			['Super restore(4)', 3],
+			['Saradomin brew(4)', 1]
+		],
+		[2, 6]
+	)
+	.add('Prayer potion(4)', [4, 8])
+	.add('Rocktail', [10, 20])
+	.add('Raw rocktail', [20, 30])
+	.add(RareDropTable, [2, 6])
+	.add(HerbDropTable, [2, 10])
+	.add('Coins', [250_000, 500_000]);
 
 export const sepulchreFloors = [
 	{
@@ -114,6 +144,28 @@ export const sepulchreFloors = [
 			.tertiary(60, 'Clue scroll (elite)'),
 		numCoffins: 3,
 		marksRange: [4, 6]
+	},
+	{
+		number: 6,
+		petChance: 1800,
+		agilityLevel: 105,
+		xp: 17_550,
+		time: Time.Minute * 5.15,
+		lockpickCoffinChance: 400,
+		coffinTable: new LootTable().add(HighTierCoffin, 1, 80).add(MasterTierCoffin, 2, 20),
+		numCoffins: 4,
+		marksRange: [6, 8]
+	},
+	{
+		number: 7,
+		petChance: 1500,
+		agilityLevel: 115,
+		xp: 46_800,
+		time: Time.Minute * 7.08,
+		lockpickCoffinChance: 200,
+		coffinTable: new LootTable().add(MasterTierCoffin, 2, 80).add(GrandmasterTierCoffin, 1, 20),
+		numCoffins: 6,
+		marksRange: [12, 14]
 	}
 ];
 
@@ -142,12 +194,14 @@ export function openCoffin(floor: number, user: MUser): ItemBank {
 	loot.add(floorObj.coffinTable.roll());
 	loot.add('Hallowed mark', randInt(floorObj.marksRange[0], floorObj.marksRange[1]));
 
-	const page = pages[floor - 1];
+	if (floor <= 5) {
+		const page = pages[floor - 1];
 
-	if (roll(10)) {
-		const bank = user.allItemsOwned;
-		if (!bank.has(page)) {
-			loot.add(page);
+		if (roll(10)) {
+			const bank = user.allItemsOwned;
+			if (!bank.has(page)) {
+				loot.add(page);
+			}
 		}
 	}
 	return loot.bank;

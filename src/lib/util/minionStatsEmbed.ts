@@ -11,6 +11,7 @@ import { badges } from '../constants';
 import { calcCLDetails } from '../data/Collections';
 import { skillEmoji } from '../data/emojis';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
+import { MALEDICT_MORTIMER_ID } from '../simulation/maledictMortimer';
 import { courses } from '../skilling/skills/agility';
 import creatures from '../skilling/skills/hunter/creatures';
 import { ItemBank, Skills } from '../types';
@@ -30,7 +31,8 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 
 		const skillXP = user.skillsAsXP[skill as keyof Skills] ?? 1;
 		return `${skillEmoji[skill as keyof typeof skillEmoji] as keyof SkillsScore} ${convertXPtoLVL(
-			skillXP
+			skillXP,
+			120
 		).toLocaleString()} (${toKMB(skillXP)})`;
 	};
 
@@ -63,7 +65,17 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const embed = new EmbedBuilder().setTitle(`${badgesStr}${user.minionName}`.slice(0, 255)).addFields(
 		{
 			name: '\u200b',
-			value: ['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
+			value: [
+				'attack',
+				'strength',
+				'defence',
+				'ranged',
+				'prayer',
+				'magic',
+				'runecraft',
+				'construction',
+				'invention'
+			]
 				.map(skillCell)
 				.join('\n'),
 			inline: true
@@ -77,7 +89,18 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 		},
 		{
 			name: '\u200b',
-			value: ['mining', 'smithing', 'fishing', 'cooking', 'firemaking', 'woodcutting', 'farming', 'overall']
+			value: [
+				'mining',
+				'smithing',
+				'fishing',
+				'cooking',
+				'firemaking',
+				'woodcutting',
+				'farming',
+				'dungeoneering',
+				'divination',
+				'overall'
+			]
 				.map(skillCell)
 				.join('\n'),
 			inline: true
@@ -145,10 +168,14 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	if (lapCounts.length > 0) {
 		const [id, score] = lapCounts[0];
 		const res = courses.find(c => c.id === parseInt(id))!;
-		otherStats.push([`${res.name} Laps`, score]);
+		if (res) {
+			otherStats.push([`${res.name} Laps`, score]);
+		}
 	}
 
-	const monsterScores = Object.entries(userStats.monster_scores as ItemBank).sort((a, b) => a[1] - b[1]);
+	const monsterScores = Object.entries(userStats.monster_scores as ItemBank)
+		.sort((a, b) => a[1] - b[1])
+		.filter(i => ![MALEDICT_MORTIMER_ID].includes(Number(i[0])));
 	if (monsterScores.length > 0) {
 		const [id, score] = monsterScores[0];
 		const res = effectiveMonsters.find(c => c.id === parseInt(id))!;

@@ -2,12 +2,13 @@
 import { execSync } from 'node:child_process';
 import { inspect } from 'node:util';
 
-import { codeBlock } from '@discordjs/builders';
+import { codeBlock, userMention } from '@discordjs/builders';
 import { ClientStorage, economy_transaction_type } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
+import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
-import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions } from 'discord.js';
-import { calcWhatPercent, noOp, notEmpty, randArrItem, sleep, Time, uniqueArr } from 'e';
+import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions, Message, TextChannel } from 'discord.js';
+import { calcPercentOfNum, calcWhatPercent, noOp, notEmpty, randArrItem, roll, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
@@ -17,6 +18,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
+import { boxFrenzy } from '../../lib/boxFrenzy';
 import {
 	badges,
 	BadgesEnum,
@@ -24,10 +26,13 @@ import {
 	BitFieldData,
 	BOT_TYPE,
 	Channel,
+	COINS_ID,
 	DISABLED_COMMANDS,
 	globalConfig,
 	META_CONSTANTS
 } from '../../lib/constants';
+import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
+import { addToDoubleLootTimer, syncDoubleLoot } from '../../lib/doubleLoot';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetup } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
@@ -57,12 +62,15 @@ import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { slayerMaskLeaderboardCache } from '../../lib/util/slayerMaskLeaderboard';
 import { sendToChannelID } from '../../lib/util/webhook';
+import { LampTable } from '../../lib/xpLamps';
 import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { getLotteryBank } from './lottery';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -207,6 +215,12 @@ const viewableThings: {
 		}
 	},
 	{
+		name: 'Invention Disassembly Cost',
+		run: async clientSettings => {
+			return new Bank(clientSettings.items_disassembled_cost as ItemBank);
+		}
+	},
+	{
 		name: 'All Equipped Items',
 		run: async () => {
 			const res = await prisma.$queryRaw<Record<string, GearSetup | null>[]>`SELECT "gear.melee",
@@ -277,6 +291,25 @@ AND ("gear.melee" IS NOT NULL OR
 				content: Object.entries(memoryAnalysis())
 					.map(i => `${i[0]}: ${i[1]}`)
 					.join('\n')
+			};
+		}
+	},
+	{
+		name: 'Slayer Mask Leaderboard',
+		run: async () => {
+			let res = '';
+
+			for (const [maskID, userID] of slayerMaskLeaderboardCache.entries()) {
+				const mask = slayerMaskHelms.find(i => i.mask.id === maskID);
+				if (!mask) continue;
+				res += `${mask.mask.name}: ${userMention(userID)}\n`;
+			}
+
+			return {
+				content: res,
+				allowedMentions: {
+					users: []
+				}
 			};
 		}
 	},
@@ -516,11 +549,6 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'debug_patreon',
-			description: 'Debug patreon.'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'eval',
 			description: 'Eval.',
 			options: [
@@ -718,15 +746,34 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 			]
 		},
+		// {
+		// 	type: ApplicationCommandOptionType.Subcommand,
+		// 	name: 'ltc',
+		// 	description: 'Ltc?',
+		// 	options: [
+		// 		{
+		// 			...itemOption(),
+		// 			name: 'item',
+		// 			description: 'The item.',
+		// 			required: false
+		// 		}
+		// 	]
+		// },
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'ltc',
-			description: 'Ltc?',
+			name: 'double_loot',
+			description: 'Manage double loot',
 			options: [
 				{
-					...itemOption(),
-					name: 'item',
-					description: 'The item.',
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'reset',
+					description: 'Reset double loot',
+					required: false
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'add',
+					description: 'Add double loot time',
 					required: false
 				}
 			]
@@ -773,13 +820,50 @@ export const adminCommand: OSBMahojiCommand = {
 					description: 'The reason'
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'box_frenzy',
+			description: 'Box frenzy',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'amount',
+					description: 'The amount',
+					required: true,
+					min_value: 1,
+					max_value: 500
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'lamp_frenzy',
+			description: 'Lamp frenzy',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'amount',
+					description: 'The amount',
+					required: true,
+					min_value: 1,
+					max_value: 20
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'lottery_dump',
+			description: 'lottery_dump',
+			options: []
 		}
 	],
 	run: async ({
 		options,
 		userID,
 		interaction,
-		guildID
+		guildID,
+		channelID
 	}: CommandRunOptions<{
 		reboot?: {};
 		shut_down?: {};
@@ -798,24 +882,27 @@ export const adminCommand: OSBMahojiCommand = {
 		set_price?: { item: string; price: number };
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
 		ltc?: { item?: string };
+		double_loot?: { reset?: boolean; add?: string };
 		view?: { thing: string };
 		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string; reason?: string };
+		box_frenzy?: { amount: number };
+		lamp_frenzy?: { amount: number };
+		lottery_dump?: {};
 	}>) => {
 		await deferInteraction(interaction);
 
 		const adminUser = await mUserFetch(userID);
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
-		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
 
 		if (!guildID || !isMod || (production && guildID.toString() !== '342983479501389826')) return randArrItem(gifs);
-
 		/**
 		 *
 		 * Mod Only Commands
 		 *
 		 */
+		if (!isMod) return randArrItem(gifs);
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
 			await cancelTask(user.id);
@@ -1170,6 +1257,22 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			}
 			return { content, files };
 		}
+		if (options.double_loot) {
+			if (options.double_loot.reset) {
+				await mahojiClientSettingsUpdate({
+					double_loot_finish_time: 0
+				});
+				await syncDoubleLoot();
+				return 'Reset the double loot timer.';
+			}
+			if (options.double_loot.add) {
+				const duration = new Duration(options.double_loot.add);
+				const ms = duration.offset;
+				await handleMahojiConfirmation(interaction, `Add ${formatDuration(ms)} to double loot timer?`);
+				addToDoubleLootTimer(ms, 'added by RP command');
+				return `Added ${formatDuration(ms)} to the double loot timer.`;
+			}
+		}
 		if (options.ltc) {
 			let str = '';
 			const results = await prisma.lootTrack.findMany();
@@ -1224,6 +1327,89 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 			return {
 				files: [{ attachment: Buffer.from(str), name: 'output.txt' }]
 			};
+		}
+
+		if (options.lottery_dump) {
+			const res = await getLotteryBank();
+			for (const user of res.users) {
+				if (!globalClient.users.cache.has(user.id)) {
+					await globalClient.users.fetch(user.id);
+				}
+			}
+			const taxedBank = new Bank();
+			for (const [item, qty] of res.totalLoot.items()) {
+				if (item.id === COINS_ID) {
+					taxedBank.add('Coins', qty);
+					continue;
+				}
+				let fivePercent = Math.ceil(calcPercentOfNum(5, qty));
+				taxedBank.add(item, Math.max(fivePercent, 1));
+			}
+
+			const actualLootBank = res.totalLoot.clone().remove(taxedBank);
+
+			return {
+				files: [
+					{
+						name: 'lottery.txt',
+						attachment: Buffer.from(
+							JSON.stringify(
+								res.users.map(i => [globalClient.users.cache.get(i.id)?.username ?? i.id, i.tickets])
+							)
+						)
+					},
+					{
+						name: 'totalloot.json',
+						attachment: Buffer.from(JSON.stringify(actualLootBank.bank))
+					},
+					{
+						name: 'taxedbank.json',
+						attachment: Buffer.from(JSON.stringify(taxedBank.bank))
+					},
+					(await makeBankImage({ bank: taxedBank, title: 'Taxed Bank' })).file,
+					(await makeBankImage({ bank: actualLootBank, title: 'Actual Loot' })).file
+				]
+			};
+		}
+
+		if (options.box_frenzy) {
+			boxFrenzy(channelID, 'Box Frenzy started!', options.box_frenzy.amount);
+			return null;
+		}
+
+		if (options.lamp_frenzy) {
+			const channel = globalClient.channels.cache.get(channelID)! as TextChannel;
+			const wonCache = new Set();
+
+			const message = await channel.send(
+				`Giving out ${options.lamp_frenzy.amount} lamps! To win, just say something.`
+			);
+
+			const totalLoot = new Bank();
+
+			await channel
+				.awaitMessages({
+					time: 20_000,
+					errors: ['time'],
+					filter: async (_msg: Message) => {
+						if (!roll(3)) return false;
+						if (wonCache.has(_msg.author.id)) return false;
+						if (wonCache.size >= options.lamp_frenzy!.amount) return false;
+						wonCache.add(_msg.author.id);
+
+						const loot = LampTable.roll();
+						totalLoot.add(loot);
+
+						const user = await mUserFetch(_msg.author.id);
+						await user.addItemsToBank({ items: loot, collectionLog: true });
+						_msg.channel.send(`${_msg.author} won ${loot}.`);
+						return false;
+					}
+				})
+				.then(() => message.edit({ content: 'Finished!', files: [] }))
+				.catch(noOp);
+
+			await channel.send(`Spawnlamp frenzy finished! ${totalLoot} was given out.`);
 		}
 
 		return 'Invalid command.';

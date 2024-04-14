@@ -3,8 +3,9 @@ import { objectEntries, partition } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
-import { MIMIC_MONSTER_ID, NEX_ID, ZALCANO_ID } from './constants';
+import { MIMIC_MONSTER_ID, ZALCANO_ID } from './constants';
 import { championScrolls } from './data/CollectionsExport';
+import { NexMonster } from './nex';
 import { RandomEvents } from './randomEvents';
 import { MinigameName, Minigames } from './settings/minigames';
 import { getUsersActivityCounts, prisma } from './settings/prisma';
@@ -70,7 +71,7 @@ export const musicCapeRequirements = new Requirements()
 			[Monsters.CommanderZilyana.id]: 1,
 			[Monsters.Kreearra.id]: 1,
 			[Monsters.KrilTsutsaroth.id]: 1,
-			[NEX_ID]: 1,
+			[NexMonster.id]: 1,
 			[Monsters.Cerberus.id]: 1,
 			[Monsters.GiantMole.id]: 1,
 			[Monsters.Jogre.id]: 1,
@@ -90,9 +91,11 @@ export const musicCapeRequirements = new Requirements()
 		}
 	})
 	.add({
+		name: '200 QP',
 		qpRequirement: 200
 	})
 	.add({
+		name: 'Sacrifice Fire Cape',
 		sacrificedItemsRequirement: new Bank().add('Fire cape')
 	})
 	.add({
@@ -155,7 +158,12 @@ AND data->>'runeID' IS NOT NULL;`;
 				activity_type_enum.BlastFurnace, // During the slash command migration this moved to under the smelting activity
 				activity_type_enum.ChampionsChallenge,
 				activity_type_enum.Nex,
-				activity_type_enum.Revenants // This is now under monsterActivity
+				activity_type_enum.BossEvent,
+				activity_type_enum.TrickOrTreat,
+				activity_type_enum.Revenants, // This is now under monsterActivity,
+				activity_type_enum.HalloweenMiniMinigame,
+				activity_type_enum.Mortimer,
+				activity_type_enum.BirthdayCollectIngredients
 			];
 			const activityCounts = await getUsersActivityCounts(user);
 
@@ -181,7 +189,7 @@ AND data->>'runeID' IS NOT NULL;`;
 	.add({
 		name: 'One of Every Minigame',
 		has: async ({ user }) => {
-			const results: RequirementFailure[] = [];
+			const results = [];
 			const typesNotRequiredForMusicCape: MinigameName[] = [
 				'corrupted_gauntlet',
 				'raids_challenge_mode',

@@ -1,11 +1,12 @@
+import { increaseNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, roll, skillingPetDropRate } from '../../lib/util';
+import { clAdjustedDroprate, itemID, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { calcMaxRCQuantity } from '../../mahoji/mahojiSettings';
 
@@ -20,6 +21,9 @@ export const runecraftTask: MinionTask = {
 		const quantityPerEssence = calcMaxRCQuantity(rune, user);
 		let runeQuantity = essenceQuantity * quantityPerEssence;
 		let bonusQuantity = 0;
+		if (rune.name === 'Elder rune') {
+			runeQuantity = Math.max(1, Math.floor(runeQuantity / 3));
+		}
 
 		let runeXP = rune.xp;
 
@@ -27,8 +31,20 @@ export const runecraftTask: MinionTask = {
 			runeXP = rune.xp * 1.5;
 		}
 
-		const xpReceived = essenceQuantity * runeXP;
+		let xpReceived = essenceQuantity * runeXP;
 
+		const hasMaster = user.hasEquippedOrInBank(
+			[
+				'Master runecrafter hat',
+				'Master runecrafter robe',
+				'Master runecrafter skirt',
+				'Master runecrafter boots'
+			],
+			'every'
+		);
+		if (hasMaster) {
+			xpReceived = increaseNumByPercent(xpReceived, 10);
+		}
 		const magicXpReceived = imbueCasts * 86;
 
 		let xpRes = `\n${await user.addXP({
@@ -41,6 +57,9 @@ export const runecraftTask: MinionTask = {
 		}
 
 		let str = `${user}, ${user.minionName} finished crafting ${runeQuantity} ${rune.name}. ${xpRes}`;
+		if (hasMaster) {
+			str += 'You received 10% bonus XP from your Master runecrafter outfit.';
+		}
 
 		const raimentQuantity = raimentBonus(user, runeQuantity);
 		runeQuantity += raimentQuantity;
@@ -55,6 +74,17 @@ export const runecraftTask: MinionTask = {
 		const loot = new Bank({
 			[rune.id]: runeQuantity
 		});
+
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutes = duration / Time.Minute;
+			const droprate = clAdjustedDroprate(user, 'Obis', Math.floor(5000 / minutes), 1.5);
+			if (roll(droprate)) {
+				str +=
+					'\n**<:obis:787028036792614974> An enchantment guardian takes note of your prowess in runecrafting and elects to join you.**';
+				loot.add('Obis');
+			}
+		}
+
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, 1_795_758);
 		if (roll(petDropRate / essenceQuantity)) {
 			loot.add('Rift guardian');

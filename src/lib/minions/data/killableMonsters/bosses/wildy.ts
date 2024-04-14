@@ -5,7 +5,7 @@ import { WildernessDiary } from '../../../../diaries';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
-import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
+import { deepResolveItems } from '../../../../util/resolveItems';
 import { KillableMonster } from '../../../types';
 
 export const wildyKillableMonsters: KillableMonster[] = [
@@ -40,7 +40,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		},
 
 		difficultyRating: 7,
-		notifyDrops: resolveItems(['Callisto cub']),
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
@@ -163,7 +162,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		},
 
 		difficultyRating: 2,
-		notifyDrops: resolveItems(['Callisto cub']),
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
@@ -277,7 +275,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		respawnTime: Time.Minute * 0.33,
 
 		difficultyRating: 7,
-		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
@@ -391,7 +388,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		pkBaseDeathChance: 9,
 
 		difficultyRating: 2,
-		notifyDrops: resolveItems(["Vet'ion jr.", 'Skeleton champion scroll']),
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
@@ -527,7 +523,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		},
 
 		difficultyRating: 6,
-		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
@@ -666,7 +661,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		},
 
 		difficultyRating: 2,
-		notifyDrops: resolveItems(['Venenatis spiderling']),
 		qpRequired: 0,
 		equippedItemBoosts: [
 			{
@@ -783,10 +777,9 @@ export const wildyKillableMonsters: KillableMonster[] = [
 
 		difficultyRating: 8,
 		itemsRequired: deepResolveItems([
-			["Black d'hide body", "Karil's leathertop"],
-			["Black d'hide chaps", "Karil's leatherskirt"]
+			['Pernix body', "Black d'hide body", "Karil's leathertop"],
+			['Pernix chaps', "Black d'hide chaps", "Karil's leatherskirt"]
 		]),
-		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -816,7 +809,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		emoji: '<:Ancient_staff:412845709453426689>',
 		wildy: true,
 		difficultyRating: 6,
-		notifyDrops: resolveItems(['Pet chaos elemental']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
@@ -859,7 +851,6 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		emoji: '<:Scorpias_offspring:324127378773377024>',
 		wildy: true,
 		difficultyRating: 7,
-		notifyDrops: resolveItems(["Scorpia's offspring"]),
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }, { [itemID('Harmonised nightmare staff')]: 10 }],
 		defaultAttackStyles: [SkillsEnum.Magic],

@@ -1,10 +1,13 @@
-import { ComponentType } from 'discord.js';
+import { ComponentType, User } from 'discord.js';
+import { Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { Bank } from 'oldschooljs';
 
 import { mahojiInformationalButtons } from '../../../lib/constants';
 import { clArrayUpdate } from '../../../lib/handleNewCLItems';
+import { isAtleastThisOld } from '../../../lib/util';
 
-export async function minionBuyCommand(user: MUser, ironman: boolean): CommandResponse {
+export async function minionBuyCommand(apiUser: User, user: MUser, ironman: boolean): CommandResponse {
 	if (user.user.minion_hasBought) return 'You already have a minion!';
 
 	await user.update({
@@ -13,6 +16,27 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 		minion_ironman: Boolean(ironman)
 	});
 
+	const starter = isAtleastThisOld(apiUser.createdAt, Time.Year * 2)
+		? new Bank({
+				Shark: 300,
+				'Saradomin brew(4)': 50,
+				'Super restore(4)': 20,
+				'Anti-dragon shield': 1,
+				'Tiny lamp': 5,
+				'Small lamp': 2,
+				'Tradeable mystery box': 5,
+				'Untradeable Mystery box': 5,
+				'Dragon bones': 50,
+				Coins: 50_000_000,
+				'Clue scroll (beginner)': 10,
+				'Equippable mystery box': 1,
+				'Pet Mystery box': 1
+		  })
+		: null;
+
+	if (starter) {
+		await user.addItemsToBank({ items: starter, collectionLog: false });
+	}
 	// Ensure user has a userStats row
 	await clArrayUpdate(user, user.cl);
 
@@ -27,7 +51,9 @@ export async function minionBuyCommand(user: MUser, ironman: boolean): CommandRe
 
 <:BSO:863823820435619890> **BSO:** I run a 2nd bot called BSO (Bot School Old), which you can also play, it has lots of fun and unique changes, like 5x XP and infinitely stacking clues. Type \`/help\` for more information.
 
-Please click the buttons below for important links.`,
+Please click the buttons below for important links.
+
+${starter !== null ? `**You received these starter items:** ${starter}.` : ''}`,
 		components: [
 			{
 				type: ComponentType.ActionRow,

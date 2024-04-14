@@ -1,3 +1,5 @@
+import '../customItems/customItems';
+
 import { modifyItem } from '@oldschoolgg/toolkit';
 
 import resolveItems from '../util/resolveItems';
@@ -59,7 +61,9 @@ for (const item of allTrophyItems) {
 		tradeable: false,
 		tradeable_on_ge: false,
 		customItemData: {
-			cantBeSacrificed: true
+			cantBeSacrificed: true,
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
 		}
 	});
 }

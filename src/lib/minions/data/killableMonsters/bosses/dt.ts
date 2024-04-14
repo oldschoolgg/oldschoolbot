@@ -1,11 +1,13 @@
-import { Time } from 'e';
+import { roll, Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
+import { VirtusTable } from 'oldschooljs/dist/simulation/subtables/VirtusTable';
 
 import { QuestID } from '../../../../../mahoji/lib/abstracted_commands/questCommand';
+import { OSB_VIRTUS_IDS } from '../../../../constants';
 import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
-import { roll } from '../../../../util';
+import { removeItemsFromLootTable } from '../../../../util';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { KillableMonster } from '../../../types';
@@ -24,7 +26,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.DukeSucellus.aliases,
 		timeToFinish: Time.Minute * 5.1,
 		table: Monsters.DukeSucellus,
-		notifyDrops: resolveItems(['Virtus robe top', 'Baron', 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(['Baron']),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -76,7 +78,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Frozen tablet')) return;
+			if (user.bank.has('Frozen tablet') && user.cl.has('Frozen tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -112,7 +114,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.AwakenedDukeSucellus.aliases,
 		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedDukeSucellus,
-		notifyDrops: resolveItems(['Virtus robe top', 'Baron', 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(['Baron']),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -160,7 +162,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Frozen tablet')) return;
+			if (user.bank.has('Frozen tablet') && user.cl.has('Frozen tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -197,7 +199,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.TheLeviathan.aliases,
 		timeToFinish: Time.Minute * 5.1,
 		table: Monsters.TheLeviathan,
-		notifyDrops: resolveItems(['Virtus robe top', "Lil'viathan", 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(["Lil'viathan"]),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -262,7 +264,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Scarred tablet')) return;
+			if (user.bank.has('Scarred tablet') && user.cl.has('Scarred tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -286,7 +288,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.AwakenedTheLeviathan.aliases,
 		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedTheLeviathan,
-		notifyDrops: resolveItems(['Virtus robe top', "Lil'viathan", 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(["Lil'viathan"]),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -351,7 +353,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Scarred tablet')) return;
+			if (user.bank.has('Scarred tablet') && user.cl.has('Scarred tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -376,7 +378,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.TheWhisperer.aliases,
 		timeToFinish: Time.Minute * 5.1,
 		table: Monsters.TheWhisperer,
-		notifyDrops: resolveItems(['Virtus robe top', 'Wisp', 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(['Wisp']),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -408,7 +410,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			{
 				items: [
 					{ boostPercent: 5, itemID: itemID('Ancestral robe bottom') },
-					{ boostPercent: 3, itemID: itemID('Virtus robe bottom') }
+					{ boostPercent: 3, itemID: itemID('Virtus robe legs') }
 				],
 				gearSetup: 'mage'
 			},
@@ -432,8 +434,8 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		},
 		uniques: theWhispererCL,
 		itemsRequired: deepResolveItems([
-			['Ancestral robe top', 'Virtus robe top', "Ahrim's robetop"],
-			['Ancestral robe bottom', 'Virtus robe bottom', "Ahrim's robeskirt"]
+			['Ancestral robe top', "Ahrim's robetop"],
+			['Ancestral robe bottom', 'Virtus robe legs', "Ahrim's robeskirt"]
 		]),
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.135,
@@ -441,7 +443,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Sirenic tablet')) return;
+			if (user.bank.has('Sirenic tablet') && user.cl.has('Sirenic tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -481,7 +483,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.AwakenedTheWhisperer.aliases,
 		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedTheWhisperer,
-		notifyDrops: resolveItems(['Virtus robe top', 'Wisp', 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(['Wisp']),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -513,7 +515,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 			{
 				items: [
 					{ boostPercent: 5, itemID: itemID('Ancestral robe bottom') },
-					{ boostPercent: 3, itemID: itemID('Virtus robe bottom') }
+					{ boostPercent: 3, itemID: itemID('Virtus robe legs') }
 				],
 				gearSetup: 'mage'
 			},
@@ -537,8 +539,8 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		},
 		uniques: theWhispererCL,
 		itemsRequired: deepResolveItems([
-			['Ancestral robe top', 'Virtus robe top', "Ahrim's robetop"],
-			['Ancestral robe bottom', 'Virtus robe bottom', "Ahrim's robeskirt"]
+			['Ancestral robe top', "Ahrim's robetop"],
+			['Ancestral robe bottom', 'Virtus robe legs', "Ahrim's robeskirt"]
 		]),
 		defaultAttackStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.135,
@@ -546,7 +548,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Sirenic tablet')) return;
+			if (user.bank.has('Sirenic tablet') && user.cl.has('Sirenic tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -587,7 +589,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.Vardorvis.aliases,
 		timeToFinish: Time.Minute * 5.1,
 		table: Monsters.Vardorvis,
-		notifyDrops: resolveItems(['Virtus robe top', 'Butch', 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(['Baron']),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -639,7 +641,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Strangled tablet')) return;
+			if (user.bank.has('Strangled tablet') && user.cl.has('Strangled tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -675,7 +677,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		aliases: Monsters.AwakenedVardorvis.aliases,
 		timeToFinish: Time.Minute * 15.5,
 		table: Monsters.AwakenedVardorvis,
-		notifyDrops: resolveItems(['Virtus robe top', 'Butch', 'Virtus robe bottom', 'Virtus mask']),
+		notifyDrops: resolveItems(['Baron']),
 		qpRequired: 100,
 		equippedItemBoosts: [
 			{
@@ -723,7 +725,7 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash],
 		effect: async ({ quantity, user, loot, messages }) => {
-			if (user.bank.has('Strangled tablet')) return;
+			if (user.bank.has('Strangled tablet') && user.cl.has('Strangled tablet')) return;
 			let gotTab = false;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(25)) {
@@ -755,3 +757,6 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 		deathProps: awakenedDeathProps
 	}
 ];
+
+// Remove virtus from drop tables
+removeItemsFromLootTable(VirtusTable, OSB_VIRTUS_IDS);

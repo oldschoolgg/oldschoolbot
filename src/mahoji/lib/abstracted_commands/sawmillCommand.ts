@@ -11,9 +11,10 @@ import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export async function sawmillCommand(
 	user: MUser,
-	plankName: string | number,
+	plankName: string,
 	quantity: number | undefined,
-	channelID: string
+	channelID: string,
+	speed: number | undefined
 ) {
 	const plank = Planks.find(
 		plank =>
@@ -54,15 +55,20 @@ export async function sawmillCommand(
 	if (quantity === 0) {
 		return `You don't have any ${itemNameFromID(plank.inputItem)}.`;
 	}
+	let duration = quantity * timePerPlank;
 
 	const { GP } = user;
-	let cost = plank!.gpCost * quantity;
+
+	let cost = plank!.gpCost * 2 * quantity;
+
+	if (speed && speed > 1 && speed < 6) {
+		cost += Math.ceil(cost * (speed * ((speed + 0.2) / 6)));
+		duration /= speed;
+	}
 
 	if (GP < cost) {
 		return `You need ${toKMB(cost)} GP to create ${quantity} planks.`;
 	}
-
-	const duration = quantity * timePerPlank;
 
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
@@ -72,10 +78,10 @@ export async function sawmillCommand(
 		)}.`;
 	}
 
-	const costBank = new Bank().add('Coins', plank!.gpCost * quantity).add(plank!.inputItem, quantity);
-	await transactItems({ userID: user.id, itemsToRemove: costBank });
+	const costBank = new Bank().add('Coins', cost).add(plank!.inputItem, quantity);
+	await user.removeItemsFromBank(costBank);
 
-	await updateBankSetting('construction_cost_bank', new Bank().add('Coins', plank!.gpCost * quantity));
+	await updateBankSetting('construction_cost_bank', new Bank().add('Coins', cost));
 
 	await addSubTaskToActivityTask<SawmillActivityTaskOptions>({
 		type: 'Sawmill',

@@ -9,9 +9,12 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
-import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/constants';
+import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier, secretItems } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
+import { gearImages } from '../../lib/gear/functions/generateGearImage';
+import { Inventions } from '../../lib/invention/inventions';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { prisma } from '../../lib/settings/prisma';
 import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
@@ -64,6 +67,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: "Disable Grand Exchange DM's",
 		bit: BitField.DisableGrandExchangeDMs
+	},
+	{
+		name: 'Disable Scroll of Longevity',
+		bit: BitField.ScrollOfLongevityDisabled
 	},
 	{
 		name: 'Clean herbs during farm runs',
@@ -125,16 +132,24 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisabledFarmingReminders
 	},
 	{
+		name: 'Disable Gorajan Bonecrusher',
+		bit: BitField.DisabledGorajanBoneCrusher
+	},
+	{
+		name: 'Disable Item Contract Donations',
+		bit: BitField.NoItemContractDonations
+	},
+	{
+		name: 'Disable Eagle Tame Opening Clues',
+		bit: BitField.DisabledTameClueOpening
+	},
+	{
 		name: 'Disable Clue Buttons',
 		bit: BitField.DisableClueButtons
 	},
 	{
 		name: 'Disable wilderness high peak time warning',
 		bit: BitField.DisableHighPeakTimeWarning
-	},
-	{
-		name: 'Disable Names on Opens',
-		bit: BitField.DisableOpenableNames
 	}
 ];
 
@@ -173,8 +188,8 @@ async function favFoodConfig(
 	const currentItems = `Your current favorite food is: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
-	if (!item) return currentItems;
-	if (!Eatables.some(i => i.id === item.id)) return "That's not a valid item.";
+	if (!item || secretItems.includes(item.id)) return currentItems;
+	if (!Eatables.some(i => i.id === item.id || i.raw === item.id)) return "That's not a valid item.";
 
 	if (itemToAdd) {
 		if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
@@ -204,7 +219,7 @@ async function favItemConfig(
 	const currentItems = `Your current favorite items are: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
-	if (!item) return currentItems;
+	if (!item || secretItems.includes(item.id)) return currentItems;
 	if (itemToAdd) {
 		let limit = (user.perkTier() + 1) * 100;
 		if (currentFavorites.length >= limit) {
@@ -481,42 +496,6 @@ async function handlePetMessagesEnable(
 	return 'Disabled Pet Messages in this guild.';
 }
 
-async function handleJModCommentsEnable(
-	user: MUser,
-	guild: Guild | null,
-	channelID: string,
-	choice: 'enable' | 'disable'
-) {
-	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user.id, guild)))
-		return "You need to be 'Ban Member' permissions to use this command.";
-	const cID = channelID.toString();
-	const settings = await mahojiGuildSettingsFetch(guild);
-
-	if (choice === 'enable') {
-		if (guild!.memberCount < 20 && user.perkTier() < PerkTier.Four) {
-			return 'This server is too small to enable this feature in.';
-		}
-		if (settings.jmodComments === cID) {
-			return 'JMod Comments are already enabled in this channel.';
-		}
-		await mahojiGuildSettingsUpdate(guild.id, {
-			jmodComments: cID
-		});
-		if (settings.jmodComments !== null) {
-			return "JMod Comments are already enabled in another channel, but I've switched them to use this channel.";
-		}
-		return 'Enabled JMod Comments in this channel.';
-	}
-	if (settings.jmodComments === null) {
-		return "JMod Comments aren't enabled, so you can't disable them.";
-	}
-	await mahojiGuildSettingsUpdate(guild.id, {
-		jmodComments: null
-	});
-	return 'Disabled JMod Comments in this channel.';
-}
-
 async function handleCommandEnable(
 	user: MUser,
 	guild: Guild | null,
@@ -627,34 +606,6 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 	}
 
 	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`;
-}
-
-async function handleRSN(user: MUser, newRSN: string) {
-	const { RSN } = user.user;
-	if (!newRSN && RSN) {
-		return `Your current RSN is: \`${RSN}\``;
-	}
-
-	if (!newRSN && !RSN) {
-		return "You don't have an RSN set. You can set one like this: `/config user set_rsn <username>`";
-	}
-
-	newRSN = newRSN.toLowerCase();
-	if (!newRSN.match('^[A-Za-z0-9]{1}[A-Za-z0-9 -_\u00A0]{0,11}$')) {
-		return 'That username is not valid.';
-	}
-
-	if (RSN === newRSN) {
-		return `Your RSN is already set to \`${RSN}\``;
-	}
-
-	await user.update({
-		RSN: newRSN
-	});
-	if (RSN !== null) {
-		return `Changed your RSN from \`${RSN}\` to \`${newRSN}\``;
-	}
-	return `Your RSN has been set to: \`${newRSN}\`.`;
 }
 
 function pinnedTripLimit(perkTier: number) {
@@ -768,23 +719,6 @@ export const configCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'jmod_comments',
-					description: 'Enable or disable JMod Reddit comments in this server.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'choice',
-							description: 'Enable or disable JMod Reddit comments for this server.',
-							required: true,
-							choices: [
-								{ name: 'Enable', value: 'enable' },
-								{ name: 'Disable', value: 'disable' }
-							]
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
 					name: 'command',
 					description: 'Enable or disable a command in your server.',
 					options: [
@@ -878,19 +812,6 @@ export const configCommand: OSBMahojiCommand = {
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.name, value: i.name }));
 							}
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'set_rsn',
-					description: 'Set your RuneScape username in the bot.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'username',
-							description: 'Your RuneScape username.',
-							required: true
 						}
 					]
 				},
@@ -1026,12 +947,24 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'Add an item to your favorite food.',
 							required: false,
 							autocomplete: async (value: string) => {
-								return Eatables.filter(i =>
+								const rawFood = Eatables.filter(i => i.raw).map(i => getItem(i.raw!)!);
+								const autocompleteList = Eatables.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({
 									name: `${i.name}`,
 									value: i.id.toString()
 								}));
+								autocompleteList.push(
+									...rawFood
+										.filter(i =>
+											!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+										)
+										.map(i => ({
+											name: `${i.name}`,
+											value: i.id.toString()
+										}))
+								);
+								return autocompleteList;
 							}
 						},
 						{
@@ -1040,14 +973,21 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'Remove an item from your favorite food.',
 							required: false,
 							autocomplete: async (value: string, user: User) => {
+								const rawFood = Eatables.filter(i => i.raw).map(i => getItem(i.raw!)!);
+								const allFood = Eatables.map(i => {
+									return { name: i.name, id: i.id };
+								});
+								allFood.push(...rawFood);
 								const mUser = await mahojiUsersSettingsFetch(user.id, { favorite_food: true });
-								return Eatables.filter(i => {
-									if (!mUser.favorite_food.includes(i.id)) return false;
-									return !value ? true : i.name.toLowerCase().includes(value.toLowerCase());
-								}).map(i => ({
-									name: `${i.name}`,
-									value: i.id.toString()
-								}));
+								return allFood
+									.filter(i => {
+										if (!mUser.favorite_food.includes(i.id)) return false;
+										return !value ? true : i.name.toLowerCase().includes(value.toLowerCase());
+									})
+									.map(i => ({
+										name: `${i.name}`,
+										value: i.id.toString()
+									}));
 							}
 						},
 						{
@@ -1101,6 +1041,31 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'Set default autoslay mode',
 							required: false,
 							choices: autoslayChoices
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'toggle_invention',
+					description: 'Toggle an invention on/off.',
+					options: [
+						{
+							name: 'invention',
+							type: ApplicationCommandOptionType.String,
+							description: 'The invention you want to toggle on/off.',
+							required: true,
+							autocomplete: async (value, user) => {
+								const settings = await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true });
+
+								return Inventions.filter(i =>
+									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({
+									name: `${i.name} (Currently ${
+										settings.disabled_inventions.includes(i.id) ? 'DISABLED' : 'Enabled'
+									})`,
+									value: i.name
+								}));
+							}
 						}
 					]
 				},
@@ -1162,6 +1127,27 @@ LIMIT 20;
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'gearframe',
+					description: 'Change your gear frame.',
+					options: [
+						{
+							name: 'name',
+							type: ApplicationCommandOptionType.String,
+							description: 'The gear frame you want to use.',
+							required: true,
+							autocomplete: async value => {
+								return gearImages
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({
+										name: i.name,
+										value: i.name
+									}));
+							}
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'icon_pack',
 					description: 'Change your icon pack',
 					options: [
@@ -1206,6 +1192,8 @@ LIMIT 20;
 			favorite_items?: { add?: string; remove?: string; reset?: boolean };
 			favorite_bh_seeds?: { add?: string; remove?: string; reset?: boolean };
 			slayer?: { master?: string; autoslay?: string };
+			toggle_invention?: { invention: string };
+			gearframe?: { name: string };
 			pin_trip?: { trip?: string; unpin_trip?: string; emoji?: string; custom_name?: string };
 			icon_pack?: { name?: string };
 		};
@@ -1219,9 +1207,6 @@ LIMIT 20;
 			if (options.server.pet_messages) {
 				return handlePetMessagesEnable(user, guild, channelID, options.server.pet_messages.choice);
 			}
-			if (options.server.jmod_comments) {
-				return handleJModCommentsEnable(user, guild, channelID, options.server.jmod_comments.choice);
-			}
 			if (options.server.command) {
 				return handleCommandEnable(user, guild, options.server.command.command, options.server.command.choice);
 			}
@@ -1230,7 +1215,6 @@ LIMIT 20;
 			const {
 				toggle,
 				combat_options,
-				set_rsn,
 				bg_color,
 				bank_sort,
 				favorite_alchs,
@@ -1271,9 +1255,6 @@ LIMIT 20;
 			}
 			if (combat_options) {
 				return handleCombatOptions(user, combat_options.action, combat_options.input);
-			}
-			if (set_rsn) {
-				return handleRSN(user, set_rsn.username);
 			}
 			if (bg_color) {
 				return bgColorConfig(user, bg_color.color);
@@ -1319,6 +1300,35 @@ LIMIT 20;
 					const { message } = await setDefaultSlayerMaster(user, slayer.master);
 					return message;
 				}
+			}
+			if (options.user.toggle_invention) {
+				const invention = Inventions.find(i =>
+					stringMatches(i.name, options.user?.toggle_invention?.invention ?? '')
+				);
+				if (!invention) return 'Invalid invention.';
+				if (user.user.disabled_inventions.includes(invention.id)) {
+					await mahojiUserSettingsUpdate(user.id, {
+						disabled_inventions: removeFromArr(user.user.disabled_inventions, invention.id)
+					});
+					return `${invention.name} is now **Enabled**.`;
+				}
+				await mahojiUserSettingsUpdate(user.id, {
+					disabled_inventions: {
+						push: invention.id
+					}
+				});
+				return `${invention.name} is now **Disabled**.`;
+			}
+			if (options.user.gearframe) {
+				const matchingFrame = gearImages.find(i => stringMatches(i.name, options.user?.gearframe?.name ?? ''));
+				if (!matchingFrame) return 'Invalid name.';
+				if (!user.user.unlocked_gear_templates.includes(matchingFrame.id) && matchingFrame.id !== 0) {
+					return "You don't have this gear frame unlocked.";
+				}
+				await user.update({
+					gear_template: matchingFrame.id
+				});
+				return `Your gear frame is now set to **${matchingFrame.name}**!`;
 			}
 			if (pin_trip) {
 				if (pin_trip.trip) {

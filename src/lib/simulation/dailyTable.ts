@@ -1,6 +1,8 @@
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { MysteryBoxes } from '../bsoOpenables';
+
 const RareTable = new LootTable()
 	.add('Hornwood helm')
 	.add('Hand fan')
@@ -41,15 +43,12 @@ const DailyTable = new LootTable()
 	.add('Coins', [100_000, 500_000])
 	.add(UncommonTable)
 	.add(CommonTable, 1, 2)
-	.add('Mystery box', 1, 2);
+	.add(MysteryBoxes, 1, 2);
 
 export default function dailyRoll(qty = 1, correct = false) {
 	const loot = new Bank();
-
-	for (let i = 0; i < qty; i++) {
-		loot.add(DailyTable.roll());
-		if (correct) loot.add(CommonTable.roll());
-	}
-
+	loot.add(DailyTable.roll(qty));
+	// Correct trivia gives 2x extra daily roll
+	if (correct) loot.add(CommonTable.roll(qty)).add(DailyTable.roll(2));
 	return loot;
 }

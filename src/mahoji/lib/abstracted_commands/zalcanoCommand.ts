@@ -44,6 +44,11 @@ export async function zalcanoCommand(user: MUser, channelID: string) {
 	baseTime = reduceNumByPercent(baseTime, skillPercentage / 40);
 	boosts.push(`${skillPercentage / 40}% boost for levels`);
 
+	if (user.usingPet('Obis')) {
+		baseTime /= 2;
+		boosts.push('2x boost for Obis');
+	}
+
 	if (!userHasGracefulEquipped(user)) {
 		baseTime *= 1.15;
 		boosts.push('-15% time penalty for not having graceful equipped');

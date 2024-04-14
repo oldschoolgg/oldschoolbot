@@ -1,5 +1,6 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
@@ -24,12 +25,17 @@ function calcPoints() {
 export const soulWarsTask: MinionTask = {
 	type: 'SoulWars',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		const { channelID, quantity, userID } = data;
+		const { channelID, quantity, userID, duration } = data;
 		const user = await mUserFetch(userID);
 
 		let points = 0;
 		for (let i = 0; i < quantity; i++) {
 			points += calcPoints();
+		}
+
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
+			points *= 2;
 		}
 
 		await user.update({
@@ -40,7 +46,8 @@ export const soulWarsTask: MinionTask = {
 
 		await incrementMinigameScore(user.id, 'soul_wars', quantity);
 
-		const str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${user.user.zeal_tokens}.\n`;
+		let str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${user.user.zeal_tokens}.\n\n`;
+		if (flappyRes.shouldGiveBoost) str += `\n${flappyRes.userMsg}`;
 
 		handleTripFinish(user, channelID, str, undefined!, data, null);
 	}

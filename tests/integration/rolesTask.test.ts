@@ -12,6 +12,12 @@ describe('Roles Task', async () => {
 	test('Should not throw', async () => {
 		const user = await createTestUser();
 		await userStatsBankUpdate(user.id, 'sacrificed_bank', new Bank().add('Coal', 10_000));
+		await userStatsBankUpdate(user.id, 'openable_scores', new Bank().add('Tradeable mystery box', 10_000));
+		await user.update({
+			monkeys_fought: ['a'],
+			disassembled_items_bank: new Bank().add('Twisted bow').bank,
+			skills_invention: 1000
+		});
 		const ironUser = await createTestUser();
 		await ironUser.update({ minion_ironman: true, sacrificedValue: 1_000_000 });
 		await userStatsBankUpdate(ironUser.id, 'sacrificed_bank', new Bank().add('Coal', 10_000));

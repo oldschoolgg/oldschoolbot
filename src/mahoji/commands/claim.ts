@@ -24,7 +24,7 @@ const claimables = [
 			if (user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)) {
 				return 'You already claimed this!';
 			}
-			sendToChannelID(Channel.General, {
+			sendToChannelID(Channel.BSOGeneral, {
 				content: `${user.mention} just claimed free T1 patron perks for being maxed in both bots!`
 			});
 			await user.update({
@@ -32,7 +32,7 @@ const claimables = [
 					push: BitField.BothBotsMaxedFreeTierOnePerks
 				}
 			});
-			return 'You claimed free T1 patron perks in OSB for being maxed in both bots. You can claim this on BSO too for free patron perks on BSO.';
+			return 'You claimed free T1 patron perks in BSO for being maxed in both bots. You can claim this on OSB too for free patron perks on OSB.';
 		}
 	}
 ];

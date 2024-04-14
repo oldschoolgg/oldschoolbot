@@ -9,7 +9,7 @@ test('Trade consistency', async () => {
 	await mockClient();
 
 	const bank = new Bank().add('Coins', 1000).add('Egg', 1000).add('Coal', 1000).add('Trout', 1000).freeze();
-	const NUMBER_OF_USERS = 100;
+	const NUMBER_OF_USERS = 50;
 
 	const users: TestUser[] = [];
 	for (let i = 0; i < NUMBER_OF_USERS; i++) {

@@ -20,6 +20,7 @@ export interface Collectable {
 	quantity: number;
 	duration: number;
 	qpRequired?: number;
+	onlyTamesCan?: boolean;
 }
 
 export const collectables: Collectable[] = [
@@ -151,6 +152,32 @@ export const collectables: Collectable[] = [
 		},
 		duration: 10 * Time.Minute,
 		qpRequired: 100
+	},
+	{
+		item: getOSItem('Neem drupe'),
+		quantity: 5,
+		itemCost: new Bank({
+			'Astral rune': 26,
+			'Cosmic rune': 12
+		}),
+		skillReqs: {
+			magic: 82,
+			herblore: 82,
+			agility: 92
+		},
+		duration: 5 * Time.Minute,
+		qpRequired: 82
+	},
+	{
+		item: getOSItem('Orange'),
+		quantity: 1,
+		duration: 2 * Time.Minute,
+		onlyTamesCan: true
+	},
+	{
+		item: getOSItem('Cabbage'),
+		quantity: 28,
+		duration: 1.2 * Time.Minute
 	}
 ];
 
@@ -166,6 +193,10 @@ export async function collectCommand(
 		return `That's not something your minion can collect, you can collect these things: ${collectables
 			.map(i => i.item.name)
 			.join(', ')}.`;
+	}
+
+	if (collectable.onlyTamesCan) {
+		return 'Only Tames can collect this.';
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'Collecting');

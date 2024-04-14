@@ -9,7 +9,7 @@ export const DEV_SERVER_ID = '';
 export const GITHUB_TOKEN = '';
 export const DISCORD_SETTINGS: Partial<IDiscordSettings> = {
 	// Your bot unique ID goes here
-	BotID: '303730326692429825'
+	BotID: '729244028989603850'
 };
 // Add or replace these with your Discord ID:
 export const OWNER_IDS = ['157797566833098752'];

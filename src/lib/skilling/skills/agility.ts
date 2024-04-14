@@ -171,6 +171,16 @@ export const courses: Course[] = [
 		xp: agilLevel => 722 + (300 + agilLevel * 8),
 		lapTime: 125.1,
 		petChance: 1_005_146
+	},
+	{
+		id: 30,
+		name: 'Daemonheim Rooftop Course',
+		aliases: ['daemonheim', 'dh', 'daemonheim rooftop course'],
+		level: 101,
+		xp: 10_140.6,
+		marksPer60: 35,
+		lapTime: 140.2,
+		petChance: 25_146
 	}
 ];
 

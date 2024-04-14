@@ -94,6 +94,7 @@ export default function getUserBestGearFromBank(
 			? skillsMeetRequirements(skills, item.equipment.requirements)
 			: true;
 		if (item.equipable_by_player && item.equipment && item.equipment[gearStat] >= 0 && quantity > 0 && hasStats) {
+			// Ignore wilderness only items if non wildy gear type
 			equipables[item.equipment.slot].push(item.id);
 		}
 	}

@@ -9,7 +9,7 @@ import { MUserClass } from '../../../lib/MUser';
 import { prisma } from '../../../lib/settings/prisma';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { mahojiParseNumber, updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
+import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings';
 
 async function checkBal(user: MUser, amount: number) {
 	return user.GP >= amount;
@@ -104,11 +104,7 @@ export async function duelCommand(
 		await duelMessage.edit('The fight is almost over...').catch(noOp);
 		await sleep(2000);
 
-		const taxRate = 0.95;
 		const winningAmount = amount * 2;
-		const tax = winningAmount - Math.floor(winningAmount * taxRate);
-		const dividedAmount = tax / 1_000_000;
-		await updateClientGPTrackSetting('economyStats_duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
 
 		await userStatsUpdate(
 			winner.id,
@@ -129,14 +125,13 @@ export async function duelCommand(
 			{}
 		);
 
-		const loot = new Bank().add('Coins', winningAmount - tax);
-		await winner.addItemsToBank({ items: loot, collectionLog: false });
+		await winner.addItemsToBank({ items: new Bank().add('Coins', winningAmount), collectionLog: false });
 		await prisma.economyTransaction.create({
 			data: {
 				guild_id: interaction.guildId ? BigInt(interaction.guildId) : null,
 				sender: BigInt(loser.id),
 				recipient: BigInt(winner.id),
-				items_sent: new Bank().add('Coins', Math.floor(amount * taxRate)).bank,
+				items_sent: new Bank().add('Coins', Math.floor(amount)).bank,
 				type: 'duel'
 			}
 		});
@@ -156,9 +151,7 @@ export async function duelCommand(
 		);
 
 		duelMessage.edit(
-			`Congratulations ${winner.badgedUsername}! You won ${Util.toKMB(winningAmount)}, and paid ${Util.toKMB(
-				tax
-			)} tax.`
+			`Congratulations ${winner.usernameOrMention}! You won ${Util.toKMB(winningAmount)}, and paid 0 tax.`
 		);
 
 		return `Duel finished, ${winner} won.`;
