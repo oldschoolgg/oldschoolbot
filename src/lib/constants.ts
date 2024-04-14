@@ -811,7 +811,7 @@ export const chompyHats = [
 	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
 
-export const secretItems: number[] = resolveItems(['Cluckers', 'Dwarfqueen tiara']);
+export const secretItems: number[] = resolveItems([]);
 
 export const toaPurpleItems = resolveItems([
 	"Tumeken's guardian",
