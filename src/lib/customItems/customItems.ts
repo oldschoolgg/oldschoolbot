@@ -1922,7 +1922,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_051,
@@ -1933,7 +1933,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_052,
@@ -1944,7 +1944,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_053,
@@ -1955,7 +1955,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_054,
@@ -1966,7 +1966,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_055,
@@ -1977,7 +1977,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_056,
@@ -1988,7 +1988,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_057,
@@ -1999,7 +1999,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_058,
@@ -2010,7 +2010,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000
+	100
 );
 setCustomItem(
 	50_059,
@@ -9286,8 +9286,7 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	1_000_000
@@ -11582,7 +11581,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1
+	1_000_000
 );
 
 setCustomItem(
@@ -11716,4 +11715,757 @@ setCustomItem(
 		}
 	},
 	1
+);
+
+setCustomItem(
+	73_123,
+	'Clue scroll (elder)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_124,
+	'Reward casket (elder)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_125,
+	'Octo',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_126,
+	'First age robe top',
+	'Proselyte hauberk',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_127,
+	'First age robe bottom',
+	'Proselyte cuisse',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_128,
+	'Elder scroll piece',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	73_129,
+	'Commander cap',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_130,
+	'Commander top',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_131,
+	'Commander trousers',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_132,
+	'Commander gloves',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_133,
+	'Commander boots',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_134,
+	'Lord marshal cap',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_135,
+	'Lord marshal top',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_136,
+	'Lord marshal trousers',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_137,
+	'Lord marshal gloves',
+	'Bronze gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_138,
+	'Lord marshal boots',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_139,
+	'Akumu mask',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_140,
+	'Demon statuette',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		},
+		highalch: 80_000_000
+	},
+	100_000_000
+);
+
+setCustomItem(
+	73_141,
+	'2nd age range coif',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_500_000_000
+);
+
+setCustomItem(
+	73_142,
+	'2nd age range top',
+	'Rune platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_500_000_000
+);
+
+setCustomItem(
+	73_143,
+	'2nd age range legs',
+	'Rune platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_500_000_000
+);
+
+setCustomItem(
+	73_144,
+	'2nd age bow',
+	'Rune 2h sword',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_500_000_000
+);
+
+setCustomItem(
+	73_145,
+	'2nd age mage mask',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_500_000_000
+);
+
+setCustomItem(
+	73_146,
+	'2nd age mage top',
+	'Rune platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_500_000_000
+);
+
+setCustomItem(
+	73_147,
+	'2nd age mage bottom',
+	'Rune platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_500_000_000
+);
+
+setCustomItem(
+	73_148,
+	'2nd age staff',
+	'Rune 2h sword',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_500_000_000
+);
+
+setCustomItem(
+	73_149,
+	'Clue bag',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	2_500_000
+);
+
+setCustomItem(
+	73_150,
+	'Apple parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_151,
+	'Watermelon parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_152,
+	'Lime parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_153,
+	'Lemon parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_154,
+	'Strawberry parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_155,
+	'Blueberry parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_156,
+	'Grape parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_157,
+	'Coconut parasol',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_158,
+	'Detective hat',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_159,
+	'Detective trenchcoat',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_160,
+	'Detective pants',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_161,
+	'Inventors tools',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_162,
+	'Spiders leg bottom',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_163,
+	'Baby venatrix',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	500_000
+);
+
+setCustomItem(
+	73_164,
+	'Offhand spidergore rapier',
+	'Offhand drygore rapier',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		},
+		equipment: {
+			attack_stab: 44,
+			attack_slash: 9,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 11,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.Shield,
+			requirements: null
+		}
+	},
+	100_000_000
+);
+
+setCustomItem(
+	73_165,
+	'Nightmarish ashes',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	73_166,
+	'Cursed onyx',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	73_167,
+	'Lumina',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(
+	73_168,
+	'Mini akumu',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	73_169,
+	'Deathly toxic potion',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_170,
+	'Toxic zygomite spores',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+// addInvention(73_179, 'Webshooter');
+
+setCustomItem(
+	73_180,
+	'Venatrix webbing',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_181,
+	'Venatrix eggs',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_182,
+	'Elder knowledge',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_171,
+	'Cluckers',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			superTradeableButTradeableOnGE: true,
+			isDiscontinued: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_172,
+	'Queen goldemar blouse',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_173,
+	'Queen goldemar skirt',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_174,
+	'Queen goldemar beard',
+	'Amulet of strength',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_175,
+	'Dwarven frying pan',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_176,
+	'Offhand dwarven spatula',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_177,
+	'Dwarfqueen tiara',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true,
+			isSuperUntradeable: true
+		}
+	},
+	1
+);
+
+setCustomItem(
+	73_178,
+	'Large egg',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
 );

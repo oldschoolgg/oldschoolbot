@@ -759,6 +759,7 @@ model Tame {
   third_age_jibwings_loot     Json @default("{}") @db.JsonB
   abyssal_jibwings_loot       Json @default("{}") @db.JsonB
   implings_loot               Json @default("{}") @db.JsonB
+  elder_knowledge_loot_bank   Json @default("{}") @db.JsonB
 
   last_activity_date   DateTime? @db.Timestamp(6)
   levels_from_egg_feed Int?
@@ -1030,6 +1031,8 @@ model UserStats {
   loot_from_lucky_portent          Json   @default("{}") @db.JsonB
   loot_destroyed_by_hunter_portent Json   @default("{}") @db.JsonB
   divination_loot                  Json   @default("{}") @db.JsonB
+
+  octo_loot_bank Json @default("{}") @db.Json
 
   @@map("user_stats")
 }
@@ -1462,7 +1465,7 @@ model UserEvent {
   user_id             String               @db.VarChar(19)
   type                UserEventType
   skill               xp_gains_skill_enum?
-  collection_log_name String?              @db.VarChar(19)
+  collection_log_name String?
 
   @@map("user_event")
 }

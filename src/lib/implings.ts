@@ -1,8 +1,9 @@
 import { activity_type_enum } from '@prisma/client';
-import { Time } from 'e';
+import { objectEntries, reduceNumByPercent, Time } from 'e';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
 import { BitField } from './constants';
+import { inventionBoosts, InventionID, inventionItemBoost } from './invention/inventions';
 import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
 import { ActivityTaskData } from './types/minions';
 import activityInArea, { WorldLocations } from './util/activityInArea';
@@ -65,6 +66,7 @@ export const puroImplings: Record<number, { catchXP: number }> = {
 	[DragonImpling.id]: { catchXP: 65 },
 	[LuckyImpling.id]: { catchXP: 80 }
 };
+export const implingsCL = objectEntries(implings).map(m => Number(m[0]));
 
 export const puroImpSpellTable = new LootTable()
 	.add('Baby impling jar', 1, 3100)
@@ -143,7 +145,7 @@ const implingTableByWorldLocation: TWorldLocationImplingTable = {
 		new LootTable().oneIn(caughtChance, hasMrE ? mrETable : defaultImpTable)
 };
 
-export async function handlePassiveImplings(user: MUser, data: ActivityTaskData) {
+export async function handlePassiveImplings(user: MUser, data: ActivityTaskData, messages: string[]) {
 	if (
 		[
 			'FightCaves',
@@ -177,6 +179,19 @@ export async function handlePassiveImplings(user: MUser, data: ActivityTaskData)
 	const hasScrollOfTheHunt = user.bitfield.includes(BitField.HasScrollOfTheHunt);
 	if (hasScrollOfTheHunt) baseChance = Math.floor(baseChance / 2);
 	if (user.hasEquippedOrInBank('Hunter master cape')) baseChance = Math.floor(baseChance / 2);
+
+	// Webshooter
+	if (user.hasEquippedOrInBank('Webshooter') && data.duration > Time.Minute) {
+		const costRes = await inventionItemBoost({
+			user,
+			inventionID: InventionID.Webshooter,
+			duration: data.duration / 5
+		});
+		if (costRes.success) {
+			baseChance = reduceNumByPercent(baseChance, inventionBoosts.webshooter.passiveImplingBoostPercent);
+			messages.push(costRes.messages);
+		}
+	}
 
 	const area = activityInArea(data);
 	const impTable = implingTableByWorldLocation[area](baseChance, user.usingPet('Mr. E'));

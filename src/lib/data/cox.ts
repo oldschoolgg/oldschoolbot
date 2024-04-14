@@ -464,6 +464,12 @@ const itemBoosts: ItemBoost[][] = [
 	],
 	[
 		{
+			item: getOSItem('Offhand spidergore rapier'),
+			boost: 6.5,
+			mustBeEquipped: true,
+			setup: 'melee'
+		},
+		{
 			item: getOSItem('Offhand drygore rapier'),
 			boost: 4,
 			mustBeEquipped: true,

@@ -23,6 +23,7 @@ export const materialTypes = [
 	'pious',
 	'crystal',
 	'rocky',
+	'wooden',
 	// Special
 	'corporeal',
 	'third-age',

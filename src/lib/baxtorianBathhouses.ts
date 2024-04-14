@@ -266,6 +266,8 @@ function calcHerbsNeeded(qty: number) {
 	return Math.ceil(qty * 5.5);
 }
 
+export const durationPerBaxBath = Time.Minute * 4;
+
 export async function baxtorianBathhousesStartCommand({
 	user,
 	tier,
@@ -284,9 +286,8 @@ export async function baxtorianBathhousesStartCommand({
 	}
 	const userBank = user.bank;
 	const maxTripLength = calcMaxTripLength(user, 'BaxtorianBathhouses');
-	const durationPerPath = Time.Minute * 10;
-	const quantity = Math.floor(maxTripLength / durationPerPath);
-	const duration = quantity * durationPerPath;
+	const quantity = Math.floor(maxTripLength / durationPerBaxBath);
+	const duration = quantity * durationPerBaxBath;
 	const bathHouseTier = bathHouseTiers.find(i => stringMatches(i.name, tier)) ?? bathHouseTiers[0];
 	const warmthNeeded = bathHouseTier.warmthPerBath * quantity;
 	const herbsNeeded = calcHerbsNeeded(quantity);
@@ -378,7 +379,7 @@ ${Emoji.Herblore} **Water Mixture cost:** ${herbCost}
 **Boosts:** ${boosts.length > 0 ? boosts.join(', ') : 'None.'}`;
 }
 
-function calculateResult(data: BathhouseTaskOptions) {
+export function calculateBathouseResult(data: BathhouseTaskOptions) {
 	const { quantity } = data;
 	const ore = BathhouseOres.find(i => i.item.id === data.ore)!;
 	const tier = bathHouseTiers.find(t => t.name === data.tier)!;
@@ -423,7 +424,7 @@ export function baxBathSim() {
 		for (const ore of BathhouseOres) {
 			for (const mixture of BathwaterMixtures) {
 				results.push({
-					...calculateResult({
+					...calculateBathouseResult({
 						mixture: mixture.name,
 						ore: ore.item.id,
 						tier: tier.name,
@@ -454,7 +455,7 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 	const { userID, channelID, quantity, duration } = data;
 	const user = await mUserFetch(userID);
 	const { cl } = user;
-	const { loot, herbXP, firemakingXP, tier, speciesServed, gaveExtraTips } = calculateResult(data);
+	const { loot, herbXP, firemakingXP, tier, speciesServed, gaveExtraTips } = calculateBathouseResult(data);
 	await incrementMinigameScore(userID, 'bax_baths', quantity);
 
 	const uniques = resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire']);
@@ -462,15 +463,12 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 	const uniquesNotReceived = uniques.filter(i => !cl.has(i));
 	if (uniquesNotReceived.length === 0) uniqueChance *= 1.5;
 	const uniquesCanReceive = uniquesNotReceived.length === 0 ? uniques : uniquesNotReceived;
-	let gotPurple = false;
 	const petChance = Math.floor(1000 * tier.uniqueMultiplier);
 	for (let i = 0; i < quantity; i++) {
 		if (roll(uniqueChance)) {
-			gotPurple = true;
 			loot.add(randArrItem(uniquesCanReceive));
 		}
 		if (roll(petChance)) {
-			gotPurple = true;
 			loot.add('Phoenix eggling');
 		}
 	}
@@ -487,21 +485,24 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 	let uniqSpecies = uniqueArr(speciesServed);
 	updateBankSetting('bb_loot', loot);
 
-	const str = gotPurple ? `${Emoji.Purple} ||${loot}||` : loot.toString();
+	const bankImage = await bankImageGenerator.generateBankImage({
+		bank: loot,
+		user,
+		title: 'Baxtorian Bathhouses Loot'
+	});
 
 	handleTripFinish(
 		user,
 		channelID,
 		`${userMention(userID)}, ${user.minionName} finished running ${quantity}x ${tier.name} baths for ${
 			uniqSpecies.length
-		} species (${uniqSpecies.map(i => i.name).join(', ')}) at the Baxtorian Bathhouses.
-**Tips received:** ${str}.${
+		} species (${uniqSpecies.map(i => i.name).join(', ')}) at the Baxtorian Bathhouses.${
 			gaveExtraTips
 				? `\nYou got extra tips from ${gaveExtraTips.name} for using their preferred water mixture.`
 				: ''
 		}
 ${xpStr}`,
-		undefined,
+		bankImage.image,
 		data,
 		loot
 	);

@@ -15,6 +15,7 @@ import {
 } from './data/CollectionsExport';
 import { baseHolidayItems, PartyhatTable } from './data/holidayItems';
 import { allTrophyItems } from './data/trophies';
+import { chickenChanceFromEgg } from './easter2024';
 import { keyCrates } from './keyCrates';
 import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
 import { UnifiedOpenable } from './openables';
@@ -772,6 +773,8 @@ for (const energy of divinationEnergies) {
 	DivineEggTable.add(energy.item.id, weight, weight);
 }
 
+const VenatrixEggTable = new LootTable().tertiary(1000, 'Baby venatrix');
+
 export const bsoOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Tradeables Mystery box',
@@ -1006,6 +1009,24 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		output: DivineEggTable,
 		allItems: DivineEggTable.allItems,
 		smokeyApplies: true
+	},
+	{
+		name: 'Venatrix eggs',
+		id: itemID('Venatrix eggs'),
+		openedItem: getOSItem('Venatrix eggs'),
+		aliases: ['venatrix eggs'],
+		output: VenatrixEggTable,
+		allItems: VenatrixEggTable.allItems,
+		smokeyApplies: false
+	},
+	{
+		name: 'Large egg',
+		id: itemID('Large egg'),
+		openedItem: getOSItem('Large egg'),
+		aliases: ['large egg'],
+		output: new LootTable().tertiary(chickenChanceFromEgg, 'Cluckers'),
+		allItems: [],
+		smokeyApplies: false
 	}
 ];
 

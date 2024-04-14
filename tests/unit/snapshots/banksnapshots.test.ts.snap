@@ -26053,6 +26053,146 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "4587": 1,
+        "73057": 7500,
+        "73090": 30000,
+      },
+      "frozen": false,
+    },
+    "name": "Sundial scimitar",
+    "outputItems": Bank {
+      "bank": {
+        "73094": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "47516": 1,
+        "73162": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Offhand spidergore rapier",
+    "outputItems": Bank {
+      "bank": {
+        "73164": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50021": 30,
+      },
+      "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "wooden": 15,
+      },
+    },
+    "name": "Lumina (Materials)",
+    "outputItems": Bank {
+      "bank": {
+        "73167": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73128": 3,
+      },
+      "frozen": false,
+    },
+    "name": "Clue scroll (elder)",
+    "outputItems": Bank {
+      "bank": {
+        "73123": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "50017": 5,
+        "50021": 30,
+      },
+      "frozen": false,
+    },
+    "name": "Lumina (Elder logs)",
+    "outputItems": Bank {
+      "bank": {
+        "73167": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "19669": 10,
+        "50021": 30,
+      },
+      "frozen": false,
+    },
+    "name": "Lumina (Redwood logs)",
+    "outputItems": Bank {
+      "bank": {
+        "73167": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1513": 30,
+        "50021": 30,
+      },
+      "frozen": false,
+    },
+    "name": "Lumina (Magic logs)",
+    "outputItems": Bank {
+      "bank": {
+        "73167": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "1515": 50,
+        "50021": 30,
+      },
+      "frozen": false,
+    },
+    "name": "Lumina (Yew logs)",
+    "outputItems": Bank {
+      "bank": {
+        "73167": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "40054": 1,
       },
       "frozen": false,

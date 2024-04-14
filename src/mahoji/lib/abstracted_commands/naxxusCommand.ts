@@ -38,7 +38,7 @@ const bisMeleeGear = new Gear({
 	neck: "Brawler's hook necklace",
 	cape: 'TzKal cape',
 	weapon: 'Drygore rapier',
-	shield: 'Offhand drygore rapier',
+	shield: 'Offhand spidergore rapier',
 	ring: 'Ignis ring(i)'
 });
 

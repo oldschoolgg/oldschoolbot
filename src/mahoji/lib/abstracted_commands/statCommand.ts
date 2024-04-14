@@ -1579,6 +1579,13 @@ ${Object.entries(result)
 				await barChart('Your Weekly GP gains', val => `${toKMB(val)} GP`, dataPoints, true)
 			);
 		}
+	},
+	{
+		name: 'Loot from Octo',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.octo_loot_bank as ItemBank), 'Loot From Octo');
+		}
 	}
 ] as const;
 

@@ -32,7 +32,7 @@ import {
 	META_CONSTANTS
 } from '../../lib/constants';
 import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
-import { addToDoubleLootTimer } from '../../lib/doubleLoot';
+import { addToDoubleLootTimer, syncDoubleLoot } from '../../lib/doubleLoot';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetup } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
@@ -1262,6 +1262,7 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 				await mahojiClientSettingsUpdate({
 					double_loot_finish_time: 0
 				});
+				await syncDoubleLoot();
 				return 'Reset the double loot timer.';
 			}
 			if (options.double_loot.add) {

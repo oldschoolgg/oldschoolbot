@@ -138,14 +138,14 @@ for (const clueTier of ClueTiers) {
 		aliases: [clueTier.name.toLowerCase()],
 		output: async ({ quantity, user, self }) => {
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
-			let loot = new Bank(clueTier.table.open(quantity));
+			let loot = new Bank(clueTier.table.open(quantity, user));
 
 			const hasCHEquipped = user.hasEquippedOrInBank(clueHunterOutfit, 'every');
 			let extraClueRolls = 0;
 			for (let i = 0; i < quantity; i++) {
 				const roll = randInt(1, 3);
 				extraClueRolls += roll - 1;
-				loot.add(clueTier.table.open(roll));
+				loot.add(clueTier.table.open(roll, user));
 				if (clueTier.name === 'Master' && percentChance(hasCHEquipped ? 3.5 : 1.5)) {
 					loot.add('Clue scroll (grandmaster)');
 				}

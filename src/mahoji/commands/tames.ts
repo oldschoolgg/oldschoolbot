@@ -953,7 +953,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 		return 'Only fully grown tames can kill this monster.';
 	}
 	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
-		return "You haven't unlocked this monster..";
+		return "You haven't unlocked this monster.";
 	}
 	// Get the amount stronger than minimum, and set boost accordingly:
 	const [speciesMinCombat, speciesMaxCombat] = species.combatLevelRange;
@@ -1448,6 +1448,16 @@ async function viewCommand(user: MUser, tameID: number): CommandResponse {
 				})
 			).file.attachment
 		);
+
+		files.push(
+			(
+				await makeBankImage({
+					bank: new Bank(tame.elder_knowledge_loot_bank as ItemBank),
+					title: 'Total Loot From Elder Knowledge',
+					user
+				})
+			).file.attachment
+		);
 	}
 
 	let content = `**Name:** ${tame.nickname ?? 'No name'}
@@ -1642,6 +1652,10 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 		return 'Invalid clue tier.';
 	}
 
+	if (clueTier.name === 'Elder' && !tame.hasBeenFed('Elder knowledge')) {
+		return 'Your tame lacks the *knowledge* required to complete elder clues.';
+	}
+
 	let { cost, quantity, duration, boosts, costSavedByDemonicJibwings } = determineTameClueResult({
 		tameGrowthLevel: tame.growthLevel,
 		clueTier,
@@ -1662,8 +1676,8 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 	if (units.filter(u => u.tier.tier === clueTier.name).some(u => !u.isFull)) {
 		return `You need to have all your ${clueTier.name} STASH units built and full.`;
 	}
-	if (clueTier.name === 'Grandmaster' && units.some(u => !u.isFull)) {
-		return 'You need to have all your STASH units built and full for your tame to do Grandmaster clues.';
+	if (['Grandmaster', 'Elder'].includes(clueTier.name) && units.some(u => !u.isFull)) {
+		return 'You need to have all your STASH units built and full for your tame to do Grandmaster/Elder clues.';
 	}
 
 	if (!user.owns(cost) || (costSavedByDemonicJibwings !== null && !user.owns(costSavedByDemonicJibwings))) {

@@ -36,7 +36,9 @@ export function calculateHunterInput({
 	creature,
 	bank,
 	isUsingQuickTrap,
-	quickTrapMessages
+	quickTrapMessages,
+	isUsingWebshooter,
+	webshooterMessages
 }: {
 	creature: Creature;
 	bank: Bank;
@@ -52,6 +54,8 @@ export function calculateHunterInput({
 	allGear: UserFullGearSetup;
 	isUsingQuickTrap: boolean;
 	quickTrapMessages: string | undefined;
+	isUsingWebshooter: boolean;
+	webshooterMessages: string | undefined;
 }) {
 	const messages: string[] = [];
 	let traps = 1;
@@ -147,6 +151,14 @@ export function calculateHunterInput({
 		const boostedActionTime = reduceNumByPercent(timePerCatch, inventionBoosts.quickTrap.boxTrapBoostPercent);
 		messages.push(
 			`${inventionBoosts.quickTrap.boxTrapBoostPercent}% boost for Quick-Trap invention (${quickTrapMessages})`
+		);
+		timePerCatch = boostedActionTime;
+	}
+
+	if (isUsingWebshooter) {
+		const boostedActionTime = reduceNumByPercent(timePerCatch, inventionBoosts.webshooter.hunterBoostPercent);
+		messages.push(
+			`${inventionBoosts.webshooter.hunterBoostPercent}% boost for Webshooter invention (${webshooterMessages})`
 		);
 		timePerCatch = boostedActionTime;
 	}
@@ -303,6 +315,7 @@ export const huntCommand: OSBMahojiCommand = {
 		const maxTripLength = calcMaxTripLength(user, 'Hunter');
 		const elligibleForQuickTrap =
 			creature.huntTechnique === HunterTechniqueEnum.BoxTrapping && user.owns('Quick trap');
+		const elligibleForWebshooter = user.owns('Webshooter');
 
 		const hunterInputArgs: Parameters<typeof calculateHunterInput>['0'] = {
 			creature,
@@ -318,7 +331,9 @@ export const huntCommand: OSBMahojiCommand = {
 			QP: user.QP,
 			bank: user.bank,
 			isUsingQuickTrap: elligibleForQuickTrap,
-			quickTrapMessages: undefined
+			quickTrapMessages: undefined,
+			isUsingWebshooter: elligibleForWebshooter,
+			webshooterMessages: undefined
 		};
 
 		const preResult = calculateHunterInput({
@@ -337,10 +352,20 @@ export const huntCommand: OSBMahojiCommand = {
 			  })
 			: null;
 
+		const webshooterResult = elligibleForWebshooter
+			? await inventionItemBoost({
+					user,
+					inventionID: InventionID.Webshooter,
+					duration: preResult.duration
+			  })
+			: null;
+
 		const result = calculateHunterInput({
 			...hunterInputArgs,
 			isUsingQuickTrap: quickTrapResult?.success ?? false,
-			quickTrapMessages: quickTrapResult?.success ? quickTrapResult.messages : undefined
+			quickTrapMessages: quickTrapResult?.success ? quickTrapResult.messages : undefined,
+			webshooterMessages: webshooterResult?.success ? webshooterResult.messages : undefined,
+			isUsingWebshooter: webshooterResult?.success ?? false
 		});
 
 		if (typeof result === 'string') {
