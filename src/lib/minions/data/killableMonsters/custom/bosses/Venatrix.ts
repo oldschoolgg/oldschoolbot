@@ -63,7 +63,7 @@ export const Venatrix: CustomMonster = {
 		melee: addStatsOfItemsTogether(resolveItems(['Soulreaper axe']), [GearStat.AttackSlash])
 	},
 	itemCost: {
-		itemCost: new Bank().add('Anti-venom+(4)').add('Sanfew serum(4)').add('Saradomin brew (4)', 1),
+		itemCost: new Bank().add('Anti-venom+(4)', 2).add('Saradomin brew (4)', 1),
 		qtyPerKill: 1
 	},
 	tameCantKill: true,
