@@ -1,78 +1,19 @@
 import { percentChance, randInt, Time } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, TwitcherGloves } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
-import Woodcutting from '../../lib/skilling/skills/woodcutting';
+import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
+import { ForestryEvents, LeafTable } from '../../lib/skilling/skills/Woodcutting/forestry';
+import Woodcutting from '../../lib/skilling/skills/Woodcutting/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { perTimeUnitChance, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import resolveItems from '../../lib/util/resolveItems';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-
-export interface ForestryEvent {
-	id: number;
-	name: string;
-	uniqueXP: SkillsEnum;
-}
-
-export const ForestryEvents: ForestryEvent[] = [
-	{
-		id: 1,
-		name: 'Rising Roots',
-		uniqueXP: SkillsEnum.Woodcutting
-	},
-	{
-		id: 2,
-		name: 'Struggling Sapling',
-		uniqueXP: SkillsEnum.Farming
-	},
-	{
-		id: 3,
-		name: 'Flowering Bush',
-		uniqueXP: SkillsEnum.Woodcutting
-	},
-	{
-		id: 4,
-		name: 'Woodcutting Leprechaun',
-		uniqueXP: SkillsEnum.Woodcutting
-	},
-	{
-		id: 5,
-		name: 'Beehive',
-		uniqueXP: SkillsEnum.Construction
-	},
-	{
-		id: 6,
-		name: 'Friendly Ent',
-		uniqueXP: SkillsEnum.Fletching
-	},
-	{
-		id: 7,
-		name: 'Poachers',
-		uniqueXP: SkillsEnum.Hunter
-	},
-	{
-		id: 8,
-		name: 'Enchantment Ritual',
-		uniqueXP: SkillsEnum.Woodcutting
-	},
-	{
-		id: 9,
-		name: 'Pheasant Control',
-		uniqueXP: SkillsEnum.Thieving
-	}
-];
-
-const LeafTable = new LootTable()
-	.add('Leaves', 20)
-	.add('Oak leaves', 20)
-	.add('Willow leaves', 20)
-	.add('Maple leaves', 20)
-	.add('Yew leaves', 20)
-	.add('Magic leaves', 20);
 
 async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
 	let eventCounts: { [key: number]: number } = {};
@@ -241,7 +182,7 @@ export const woodcuttingTask: MinionTask = {
 	async run(data: WoodcuttingActivityTaskOptions) {
 		const { logID, quantity, userID, channelID, duration, powerchopping, forestry, twitchers } = data;
 		const user = await mUserFetch(userID);
-		let userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
+		const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 		const log = Woodcutting.Logs.find(i => i.id === logID)!;
 		const forestersRations = user.bank.amount("Forester's ration");
 		const wcCapeNestBoost =
@@ -259,6 +200,7 @@ export const woodcuttingTask: MinionTask = {
 		let lostLogs = 0;
 		let loot = new Bank();
 		let itemsToRemove = new Bank();
+		let priffUnlocked = user.hasSkillReqs(soteSkillRequirements) && user.QP >= 150;
 
 		// Felling axe +10% xp bonus & 20% logs lost
 		if (user.gear.skilling.hasEquipped('Bronze felling axe')) {
@@ -320,6 +262,12 @@ export const woodcuttingTask: MinionTask = {
 			}
 		}
 
+		// Add crystal shards for chopping teaks/mahogany in priff
+		if (forestry && priffUnlocked && resolveItems(['Teak logs', 'Mahogany logs']).includes(log.id)) {
+			// 15 Shards per hour
+			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+		}
+
 		// Check for twitcher gloves
 		if (twitchersEquipped) {
 			if (twitchers !== undefined) {
@@ -362,6 +310,8 @@ export const woodcuttingTask: MinionTask = {
 			if (twitcherSetting !== undefined) {
 				str += `Your Twitcher's gloves increases the chance of receiving ${twitcherSetting} nests.\n`;
 			}
+		} else if (twitcherSetting === 'clue') {
+			str += `Your Twitcher's gloves increases the chance of receiving ${twitcherSetting} nests.\n`;
 		}
 
 		// Forestry events
