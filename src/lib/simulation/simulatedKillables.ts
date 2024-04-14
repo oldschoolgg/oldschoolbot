@@ -110,7 +110,7 @@ export const simulatedKillables: SimulatedKillable[] = [
 		loot: (quantity: number) => {
 			let loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
-				loot.add(src.lootTable.roll());
+				loot.add(src.lootTable?.roll());
 			}
 			return loot;
 		}

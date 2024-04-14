@@ -43,6 +43,7 @@ import {
 	SlayerActivityConstants,
 	superiorCannonSingleConsumables
 } from '../../../lib/minions/data/combatConstants';
+import { BSOMonsters } from '../../../lib/minions/data/killableMonsters/custom/customMonsters';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import {
 	AttackStyles,
@@ -121,13 +122,13 @@ function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
 
 const { floor } = Math;
 
-const gorajanBoosts = [
+export const gorajanBoosts = [
 	[gorajanArcherOutfit, 'range'],
 	[gorajanWarriorOutfit, 'melee'],
 	[gorajanOccultOutfit, 'mage']
 ] as const;
 
-const gearstatToSetup = new Map()
+export const gearstatToSetup = new Map()
 	.set('attack_stab', 'melee')
 	.set('attack_slash', 'melee')
 	.set('attack_crush', 'melee')
@@ -257,6 +258,18 @@ export async function minionKillCommand(
 		}
 	}
 
+	const monsterScores = await user.fetchMonsterScores();
+
+	if (monster.kcRequirements) {
+		for (const [key, val] of Object.entries(monster.kcRequirements)) {
+			const { id } = BSOMonsters[key as keyof typeof BSOMonsters];
+			const kc = monsterScores[id] ?? 0;
+			if (kc < val) {
+				return `You need at least ${val} ${key} KC to kill ${monster.name}, you have ${kc}.`;
+			}
+		}
+	}
+
 	if (monster.minimumWeaponShieldStats) {
 		for (const [setup, minimum] of Object.entries(monster.minimumWeaponShieldStats)) {
 			const gear = user.gear[setup as GearSetupType];
@@ -275,7 +288,7 @@ export async function minionKillCommand(
 		}
 	}
 
-	const kcForThisMonster = await user.getKC(monster.id);
+	const kcForThisMonster = monsterScores[monster.id ?? 0];
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, kcForThisMonster);
 
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
@@ -480,6 +493,9 @@ export async function minionKillCommand(
 	if (boostChoice === 'burst' && user.skillLevel(SkillsEnum.Magic) < 70) {
 		return `You need 70 Magic to use Ice Burst. You have ${user.skillLevel(SkillsEnum.Magic)}`;
 	}
+
+	timeToFinish = Math.floor(timeToFinish);
+
 	const { canAfford } = await canAffordInventionBoost(user, InventionID.SuperiorDwarfMultiCannon, timeToFinish);
 	const canAffordSuperiorCannonBoost = hasSuperiorCannon ? canAfford : false;
 	if (boostChoice === 'chinning' && user.skillLevel(SkillsEnum.Ranged) < 65) {
@@ -699,7 +715,7 @@ export async function minionKillCommand(
 		}
 	}
 	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
-		return "You haven't unlocked this monster..";
+		return "You haven't unlocked this monster.";
 	}
 
 	quantity = Math.max(1, quantity);
@@ -902,6 +918,9 @@ export async function minionKillCommand(
 		}
 		if (monster.name === 'Yeti') {
 			return 'You send your minion off to fight Yeti with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
+		}
+		if ([BSOMonsters.Akumu.id, BSOMonsters.Venatrix.id].includes(monster.id)) {
+			return 'This monster is temporarily unable to be killed with a Deathtouched dart.';
 		}
 		usedDart = true;
 		await userStatsUpdate(user.id, () => ({

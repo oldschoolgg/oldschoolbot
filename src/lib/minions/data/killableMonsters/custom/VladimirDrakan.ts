@@ -5,7 +5,7 @@ import { vladDrakanCL } from '../../../../data/CollectionsExport';
 import { globalDroprates } from '../../../../data/globalDroprates';
 import { GearStat } from '../../../../gear';
 import { runeWeaponTable } from '../../../../simulation/sharedTables';
-import { clAdjustedDroprate, randomVariation } from '../../../../util';
+import { clAdjustedDroprate, randomVariation, resolveNameBank } from '../../../../util';
 import resolveItems from '../../../../util/resolveItems';
 import { CustomMonster } from './customMonsters';
 
@@ -68,7 +68,11 @@ export const VladimirDrakan: CustomMonster = {
 	levelRequirements: {
 		hitpoints: 120
 	},
-	itemInBankBoosts: [],
+	itemInBankBoosts: [
+		resolveNameBank({
+			'Axe of the high sungod': 10
+		})
+	],
 	itemCost: {
 		itemCost: new Bank().add('Vial of blood', 1).add('Silver stake', 1),
 		qtyPerKill: 1

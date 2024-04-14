@@ -25,7 +25,10 @@ export const TreasureTrails: DisassemblySourceGroup = {
 		{ item: i('Reward casket (master)'), lvl: 99, outputMultiplier: 4 },
 
 		{ item: i('Clue scroll (grandmaster)'), lvl: 99 },
-		{ item: i('Reward casket (grandmaster)'), lvl: 99, outputMultiplier: 4 }
+		{ item: i('Reward casket (grandmaster)'), lvl: 99, outputMultiplier: 4 },
+
+		{ item: i('Clue scroll (elder)'), lvl: 99 },
+		{ item: i('Reward casket (elder)'), lvl: 99, outputMultiplier: 4 }
 	],
 	parts: { treasured: 100 }
 };

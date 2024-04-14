@@ -773,6 +773,8 @@ for (const energy of divinationEnergies) {
 	DivineEggTable.add(energy.item.id, weight, weight);
 }
 
+const VenatrixEggTable = new LootTable().tertiary(1000, 'Baby venatrix');
+
 export const bsoOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Tradeables Mystery box',
@@ -1007,6 +1009,15 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		output: DivineEggTable,
 		allItems: DivineEggTable.allItems,
 		smokeyApplies: true
+	},
+	{
+		name: 'Venatrix eggs',
+		id: itemID('Venatrix eggs'),
+		openedItem: getOSItem('Venatrix eggs'),
+		aliases: ['venatrix eggs'],
+		output: VenatrixEggTable,
+		allItems: VenatrixEggTable.allItems,
+		smokeyApplies: false
 	},
 	{
 		name: 'Large egg',

@@ -582,7 +582,7 @@ export const tripHandlers = {
 	[activity_type_enum.Woodcutting]: {
 		commandName: 'chop',
 		args: (data: WoodcuttingActivityTaskOptions) => ({
-			name: itemNameFromID(data.logID),
+			name: data.logID === 323_424 ? 'Ivy' : itemNameFromID(data.logID),
 			quantity: data.iQty,
 			powerchop: data.powerchopping
 		})

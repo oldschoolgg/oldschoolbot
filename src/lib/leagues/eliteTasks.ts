@@ -854,5 +854,12 @@ export const eliteTasks: Task[] = [
 		has: async ({ cl }) => {
 			return cl.has('Axe of the high sungod');
 		}
+	},
+	{
+		id: 3112,
+		name: 'Acquire, complete and open 100 Elder clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (elder)') >= 100;
+		}
 	}
 ];

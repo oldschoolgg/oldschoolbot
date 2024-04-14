@@ -2,6 +2,7 @@ import { roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../../bsoOpenables';
+import { BitField } from '../../../constants';
 import { globalDroprates } from '../../../data/globalDroprates';
 import { clAdjustedDroprate } from '../../../util';
 import getOSItem from '../../../util/getOSItem';
@@ -47,6 +48,12 @@ export const zygomiteFarmingSource = [
 			)
 			.every(new LootTable().add('Avocado').add('Mango').add('Papaya fruit').add('Lychee'), [50, 150])
 			.every(MysteryBoxes)
+	},
+	{
+		name: 'Toxic zygomite',
+		mutatedFromItems: null,
+		seedItem: getOSItem('Toxic zygomite spores'),
+		lootTable: null
 	}
 ];
 
@@ -80,18 +87,30 @@ export const zygomitePlants: Plant[] = zygomiteFarmingSource.map(src => ({
 	additionalPatchesByFarmGuildAndLvl: [],
 	timePerPatchTravel: 10,
 	timePerHarvest: 5,
-	onHarvest: ({ loot, user, quantity }) => {
+	onHarvest: async ({ loot, user, quantity, messages }) => {
 		const dropRate = clAdjustedDroprate(
 			user,
 			'Fungo',
 			globalDroprates.fungo.baseRate,
 			globalDroprates.fungo.clIncrease
 		);
-		for (let i = 0; i < quantity; i++) {
-			loot.add(src.lootTable.roll());
-			if (roll(dropRate)) {
-				loot.add('Fungo');
+		if (src.lootTable) {
+			for (let i = 0; i < quantity; i++) {
+				loot.add(src.lootTable.roll());
+				if (roll(dropRate)) {
+					loot.add('Fungo');
+				}
 			}
+		}
+		if (src.name === 'Toxic zygomite' && !user.bitfield.includes(BitField.HasUnlockedVenatrix)) {
+			await user.update({
+				bitfield: {
+					push: BitField.HasUnlockedVenatrix
+				}
+			});
+			messages.push(
+				'The toxic zygomite has infected a nearby spider nest, causing them to glow green and run away. Your minion has feeling something bad happened to them.'
+			);
 		}
 	}
 }));

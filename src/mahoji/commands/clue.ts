@@ -1,4 +1,4 @@
-import { clamp, randInt, Time } from 'e';
+import { clamp, increaseNumByPercent, randInt, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
@@ -126,10 +126,23 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 				}
 			}
 		}
+		if (clueTier.name === 'Elder') {
+			const result = await checkElderClueRequirements(user);
+			if (result.unmetRequirements.length > 0) {
+				return `You don't have the requirements to do Elder clues: ${result.unmetRequirements.join(', ')}`;
+			}
+		}
 
-		const maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
+		let maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
 
 		const boosts = [];
+
+		if (user.hasEquippedOrInBank('Clue bag')) {
+			let boostPercent = 20;
+			maxTripLength = increaseNumByPercent(maxTripLength, boostPercent);
+			boosts.push(`${boostPercent}% longer trip length for Clue bag`);
+		}
+
 		const stats = await user.fetchStats({ openable_scores: true });
 
 		let [timeToFinish, percentReduced] = reducedClueTime(
@@ -320,7 +333,8 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 					boost: '10% for Achievement diary cape',
 					durationMultiplier: 0.9
 				}
-			]
+			],
+			Elder: []
 		};
 
 		const clueTierName = clueTier.name;

@@ -11,6 +11,7 @@ import { CollectionLogType } from '../collectionLogTask';
 import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
 import { discontinuedDyes, dyedItems } from '../dyedItems';
 import { growablePetsCL } from '../growablePets';
+import { implingsCL } from '../implings';
 import { inventionCL } from '../invention/inventions';
 import { keyCrates } from '../keyCrates';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
@@ -33,6 +34,7 @@ import {
 } from '../minions/data/templeTrekking';
 import { nexLootTable, NexMonster } from '../nex';
 import type { MinigameName } from '../settings/minigames';
+import { ElderClueTable } from '../simulation/elderClue';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { pumpkinHeadUniqueTable } from '../simulation/pumpkinHead';
 import { cookingCL } from '../skilling/skills/cooking/cooking';
@@ -51,6 +53,7 @@ import {
 	abyssalDragonCL,
 	abyssalSireCL,
 	aerialFishingCL,
+	akumuCL,
 	alchemicalHydraCL,
 	allPetsCL,
 	balthazarsBigBonanzaCL,
@@ -122,7 +125,6 @@ import {
 	ICollection,
 	ignecarusCL,
 	ILeftListStatus,
-	implingsCL,
 	IToReturnCollection,
 	kalphiteKingCL,
 	kalphiteQueenCL,
@@ -187,6 +189,7 @@ import {
 	tzHaarCL,
 	vardorvisCL,
 	vasaMagusCL,
+	venatrixCL,
 	venenatisCL,
 	vetionCL,
 	vladDrakanCL,
@@ -676,6 +679,18 @@ export const allCollectionLogs: ICollection = {
 				items: queenBlackDragonCL,
 				fmtProg: kcProg(BSOMonsters.QueenBlackDragon.id)
 			},
+			Akumu: {
+				alias: ['akumu'],
+				allItems: akumuCL,
+				items: akumuCL,
+				fmtProg: kcProg(BSOMonsters.Akumu.id)
+			},
+			Venatrix: {
+				alias: ['venatrix'],
+				allItems: venatrixCL,
+				items: venatrixCL,
+				fmtProg: kcProg(BSOMonsters.Venatrix.id)
+			},
 			"Chamber's of Xeric": {
 				alias: ChambersOfXeric.aliases,
 				kcActivity: {
@@ -891,6 +906,28 @@ export const allCollectionLogs: ICollection = {
 				items: cluesMasterCL,
 				isActivity: true,
 				fmtProg: clueProg(['Master'])
+			},
+			'Elder Treasure Trails': {
+				alias: ['elder'],
+				allItems: resolveItems([
+					...ElderClueTable.allItems,
+					'Clue bag',
+					'Inventors tools',
+					'Elder knowledge',
+					'Octo'
+				]),
+				kcActivity: {
+					Default: async (_, __, { openableScores }) => openableScores.amount(73_124)
+				},
+				items: resolveItems([
+					...ElderClueTable.allItems,
+					'Clue bag',
+					'Inventors tools',
+					'Elder knowledge',
+					'Octo'
+				]),
+				isActivity: true,
+				fmtProg: clueProg(['Elder'])
 			},
 			'Grandmaster Treasure Trails': {
 				alias: ['grandmaster', 'clues grandmaster', 'clue grandmaster', 'clue gm', 'gm'],
