@@ -1,26 +1,20 @@
 import { percentChance, randInt, Time } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, MAX_LEVEL, MIN_LENGTH_FOR_PET, TwitcherGloves } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
+import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Firemaking from '../../lib/skilling/skills/firemaking';
-import Woodcutting from '../../lib/skilling/skills/woodcutting';
+import { ForestryEvents, LeafTable } from '../../lib/skilling/skills/woodcutting/forestry';
+import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { clAdjustedDroprate, itemID, perTimeUnitChance, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { ForestryEvents } from '../../mahoji/commands/chop';
+import resolveItems from '../../lib/util/resolveItems';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-
-const LeafTable = new LootTable()
-	.add('Leaves', 20)
-	.add('Oak leaves', 20)
-	.add('Willow leaves', 20)
-	.add('Maple leaves', 20)
-	.add('Yew leaves', 20)
-	.add('Magic leaves', 20);
 
 async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
 	let eventCounts: { [key: number]: number } = {};
@@ -189,7 +183,7 @@ export const woodcuttingTask: MinionTask = {
 	async run(data: WoodcuttingActivityTaskOptions) {
 		const { logID, quantity, userID, channelID, duration, powerchopping, forestry, twitchers } = data;
 		const user = await mUserFetch(userID);
-		const userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
+		let userWcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 		const log = Woodcutting.Logs.find(i => i.id === logID)!;
 		const forestersRations = user.bank.amount("Forester's ration");
 		const wcCapeNestBoost =
@@ -207,6 +201,7 @@ export const woodcuttingTask: MinionTask = {
 		let lostLogs = 0;
 		let loot = new Bank();
 		let itemsToRemove = new Bank();
+		let priffUnlocked = user.hasSkillReqs(soteSkillRequirements) && user.QP >= 150;
 
 		// GMC for elder logs
 		let clueChance = log.clueScrollChance;
@@ -286,6 +281,12 @@ export const woodcuttingTask: MinionTask = {
 			}
 		}
 
+		// Add crystal shards for chopping teaks/mahogany in priff
+		if (forestry && priffUnlocked && resolveItems(['Teak logs', 'Mahogany logs']).includes(log.id)) {
+			// 15 Shards per hour
+			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+		}
+
 		// WC master cape perk
 		if (user.hasEquippedOrInBank('Woodcutting master cape')) {
 			loot.multiply(2);
@@ -333,6 +334,8 @@ export const woodcuttingTask: MinionTask = {
 			if (twitcherSetting !== undefined) {
 				str += `Your Twitcher's gloves increases the chance of receiving ${twitcherSetting} nests.\n`;
 			}
+		} else if (twitcherSetting === 'clue') {
+			str += `Your Twitcher's gloves increases the chance of receiving ${twitcherSetting} nests.\n`;
 		}
 
 		// Forestry events

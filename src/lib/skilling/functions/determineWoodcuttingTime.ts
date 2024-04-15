@@ -2,6 +2,7 @@ import { percentChance, Time } from 'e';
 
 import { IVY_MAX_TRIP_LENGTH_BOOST } from '../../constants';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
+import resolveItems from '../../util/resolveItems';
 import { MUserClass } from './../../MUser';
 import { Log } from './../types';
 
@@ -11,6 +12,7 @@ interface WoodcuttingTimeOptions {
 	log: Log;
 	axeMultiplier: number;
 	powerchopping: boolean;
+	forestry: boolean;
 	woodcuttingLvl: number;
 }
 
@@ -20,17 +22,24 @@ export function determineWoodcuttingTime({
 	log,
 	axeMultiplier,
 	powerchopping,
+	forestry,
 	woodcuttingLvl
 }: WoodcuttingTimeOptions): [number, number] {
 	let timeElapsed = 0;
 
 	const bankTime = log.bankingTime;
+	const farmingLvl = user.skillsAsLevels.farming;
 	const chanceOfSuccess = (log.slope * woodcuttingLvl + log.intercept) * axeMultiplier;
 	const { findNewTreeTime } = log;
 
 	let teakTick = false;
-	if (user.skillsAsLevels.woodcutting >= 92 && (log.name === 'Teak Logs' || log.name === 'Mahogany Logs')) {
-		teakTick = true;
+	if (!forestry && woodcuttingLvl >= 92) {
+		if (resolveItems('Teak logs').includes(log.id) && farmingLvl >= 35) {
+			teakTick = true;
+		}
+		if (resolveItems('Mahogany logs').includes(log.id) && farmingLvl >= 55) {
+			teakTick = true;
+		}
 	}
 
 	let newQuantity = 0;

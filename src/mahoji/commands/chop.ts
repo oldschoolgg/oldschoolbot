@@ -1,11 +1,10 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { IVY_MAX_TRIP_LENGTH_BOOST, TwitcherGloves, TWITCHERS_GLOVES } from '../../lib/constants';
 import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
-import Woodcutting from '../../lib/skilling/skills/woodcutting';
+import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -69,60 +68,6 @@ export const axes = [
 		id: itemID('Bronze axe'),
 		multiplier: 1,
 		wcLvl: 1
-	}
-];
-
-export interface ForestryEvent {
-	id: number;
-	name: string;
-	uniqueXP: SkillsEnum;
-}
-
-export const ForestryEvents: ForestryEvent[] = [
-	{
-		id: 1,
-		name: 'Rising Roots',
-		uniqueXP: SkillsEnum.Woodcutting
-	},
-	{
-		id: 2,
-		name: 'Struggling Sapling',
-		uniqueXP: SkillsEnum.Farming
-	},
-	{
-		id: 3,
-		name: 'Flowering Bush',
-		uniqueXP: SkillsEnum.Woodcutting
-	},
-	{
-		id: 4,
-		name: 'Woodcutting Leprechaun',
-		uniqueXP: SkillsEnum.Woodcutting
-	},
-	{
-		id: 5,
-		name: 'Beehive',
-		uniqueXP: SkillsEnum.Construction
-	},
-	{
-		id: 6,
-		name: 'Friendly Ent',
-		uniqueXP: SkillsEnum.Fletching
-	},
-	{
-		id: 7,
-		name: 'Poachers',
-		uniqueXP: SkillsEnum.Hunter
-	},
-	{
-		id: 8,
-		name: 'Enchantment Ritual',
-		uniqueXP: SkillsEnum.Woodcutting
-	},
-	{
-		id: 9,
-		name: 'Pheasant Control',
-		uniqueXP: SkillsEnum.Thieving
 	}
 ];
 
@@ -218,8 +163,9 @@ export const chopCommand: OSBMahojiCommand = {
 		const boosts = [];
 
 		let wcLvl = skills.woodcutting;
+		const farmingLvl = user.skillsAsLevels.farming;
 
-		// Invisible wc boost for woodcutting guild, forestry events don't happen in woodcutting guild
+		// Ivy, Redwood logs, Logs, Sulliuscep, Farming patches, Woodcutting guild don't spawn forestry events
 		if (
 			!forestry_events ||
 			resolveItems(['Redwood logs', 'Logs']).includes(log.id) ||
@@ -227,17 +173,22 @@ export const chopCommand: OSBMahojiCommand = {
 			log.name === 'Ivy'
 		) {
 			forestry_events = false;
+			// Invisible wc boost for woodcutting guild
 			if (skills.woodcutting >= 60 && log.wcGuild) {
 				boosts.push('+7 invisible WC lvls at the Woodcutting guild');
 				wcLvl += 7;
 			}
+			// 1.5 tick hardwood at 92 wc, 1.5t is only possible at farming patches
+			if (skills.woodcutting >= 92) {
+				if (resolveItems('Teak logs').includes(log.id) && farmingLvl >= 35) {
+					boosts.push('1.5t woodcutting teak trees with 92+ wc & 35+ farming');
+				}
+				if (resolveItems('Mahogany logs').includes(log.id) && farmingLvl >= 55) {
+					boosts.push('1.5t woodcutting mahogany trees with 92+ wc & 55+ farming');
+				}
+			}
 		} else {
 			boosts.push('Participating in Forestry events');
-		}
-
-		// Enable 1.5 tick teaks half way to 99
-		if (skills.woodcutting >= 92 && (log.name === 'Teak Logs' || log.name === 'Mahogany Logs')) {
-			boosts.push('1.5t teak/mahogany chopping with 92+ wc');
 		}
 
 		// Default bronze axe, last in the array
@@ -251,6 +202,7 @@ export const chopCommand: OSBMahojiCommand = {
 				log,
 				axeMultiplier: 10,
 				powerchopping: Boolean(powerchop),
+				forestry: forestry_events,
 				woodcuttingLvl: wcLvl
 			});
 			const boostRes = await inventionItemBoost({
@@ -315,6 +267,7 @@ export const chopCommand: OSBMahojiCommand = {
 			log,
 			axeMultiplier,
 			powerchopping: powerchop,
+			forestry: forestry_events,
 			woodcuttingLvl: wcLvl
 		});
 
