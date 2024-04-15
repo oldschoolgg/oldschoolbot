@@ -806,9 +806,14 @@ async function dryStreakCommand(monsterName: string, itemName: string, ironmanOn
 		.join('\n')}`;
 }
 
-async function mostDrops(user: MUser, itemName: string, ironmanOnly: boolean) {
+async function mostDrops(user: MUser, itemName: string, filter: string) {
 	const item = getItem(itemName);
-	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
+	const ironmanPart =
+		filter === 'Irons Only'
+			? 'AND "minion.ironman" = true'
+			: filter === 'Mains Only'
+			? 'AND "minion.ironman" = false'
+			: '';
 	if (!item) return "That's not a valid item.";
 	if (!allDroppedItems.includes(item.id) && !user.bitfield.includes(BitField.isModerator)) {
 		return "You can't check this item, because it's not on any collection log.";
@@ -1040,10 +1045,11 @@ export const toolsCommand: OSBMahojiCommand = {
 							required: true
 						},
 						{
-							type: ApplicationCommandOptionType.Boolean,
-							name: 'ironman',
-							description: 'Only check ironmen accounts.',
-							required: false
+							type: ApplicationCommandOptionType.String,
+							name: 'filter',
+							description: 'Filter by account type.',
+							required: false,
+							choices: ['Both', 'Irons Only', 'Mains Only'].map(i => ({ name: i, value: i }))
 						}
 					]
 				},
@@ -1259,7 +1265,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			};
 			mostdrops?: {
 				item: string;
-				ironman?: boolean;
+				filter?: string;
 			};
 			sacrificed_bank?: {};
 			cl_bank?: {
@@ -1310,7 +1316,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			}
 			if (patron.mostdrops) {
 				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return mostDrops(mahojiUser, patron.mostdrops.item, Boolean(patron.mostdrops.ironman));
+				return mostDrops(mahojiUser, patron.mostdrops.item, String(patron.mostdrops.filter));
 			}
 			if (patron.sacrificed_bank) {
 				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);

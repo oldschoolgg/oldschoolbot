@@ -6,7 +6,7 @@ import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { Emoji, PerkTier } from '../../../lib/constants';
+import { BitField, Emoji, PerkTier } from '../../../lib/constants';
 import { allOpenables, getOpenableLoot, UnifiedOpenable } from '../../../lib/openables';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
@@ -222,7 +222,7 @@ async function finalizeOpening({
 				: 'Loot From Opening',
 		user,
 		previousCL,
-		mahojiFlags: ['show_names']
+		mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
 	});
 
 	if (loot.has('Coins')) {
