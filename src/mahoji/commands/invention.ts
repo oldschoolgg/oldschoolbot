@@ -244,8 +244,9 @@ export const inventionCommand: OSBMahojiCommand = {
 			};
 		}
 
+		// Defer Interaction for all DB-related functions:
+		await deferInteraction(interaction);
 		if (options.tools) {
-			await deferInteraction(interaction);
 			switch (options.tools.command) {
 				case 'items_disassembled': {
 					const a = await mahojiUsersSettingsFetch(user.id, {
