@@ -3,7 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { TwitcherGloves, TWITCHERS_GLOVES } from '../../lib/constants';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
-import Woodcutting from '../../lib/skilling/skills/Woodcutting/woodcutting';
+import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';

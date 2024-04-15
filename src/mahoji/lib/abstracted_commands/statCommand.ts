@@ -19,7 +19,7 @@ import { getMinigameScore } from '../../../lib/settings/minigames';
 import { prisma } from '../../../lib/settings/prisma';
 import Agility from '../../../lib/skilling/skills/agility';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
-import { ForestryEvents } from '../../../lib/skilling/skills/Woodcutting/forestry';
+import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestry';
 import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import { InfernoOptions } from '../../../lib/types/minions';
