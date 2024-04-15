@@ -78,6 +78,8 @@ export class ElderClue extends Clue {
 	open(quantity: number, user: MUser) {
 		const loot = new Bank();
 
+		const currentCl = user.cl.clone();
+
 		for (let i = 0; i < quantity; i++) {
 			const numberOfRolls = randInt(4, 7);
 
@@ -86,7 +88,6 @@ export class ElderClue extends Clue {
 			}
 
 			const untradeableUniques = resolveItems(['Clue bag', 'Inventors tools', 'Elder knowledge']);
-			const currentCl = user.cl.clone();
 			if (roll(100)) {
 				const unowned = untradeableUniques.filter(id => !currentCl.add(loot).has(id));
 				if (unowned.length > 0) {
