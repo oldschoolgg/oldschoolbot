@@ -193,7 +193,7 @@ export async function handlePassiveImplings(user: MUser, data: ActivityTaskData,
 		}
 	}
 
-	const area = activityInArea(data);
+	const area = activityInArea(user, data);
 	const impTable = implingTableByWorldLocation[area](baseChance, user.usingPet('Mr. E'));
 
 	for (let i = 0; i < minutes; i++) {

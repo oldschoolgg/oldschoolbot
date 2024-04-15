@@ -2659,7 +2659,9 @@ export const metamorphPets = resolveItems([
 	'Ziggy',
 	'Red',
 	'Great blue heron',
-	'Greatish guardian'
+	'Greatish guardian',
+	28_670, // use id to not get mixed up with the "Fox" quest item
+	'Pheasant'
 ]);
 
 export const allPetIDs = [

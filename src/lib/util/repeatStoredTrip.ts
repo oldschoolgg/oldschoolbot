@@ -584,7 +584,9 @@ export const tripHandlers = {
 		args: (data: WoodcuttingActivityTaskOptions) => ({
 			name: data.logID === 323_424 ? 'Ivy' : itemNameFromID(data.logID),
 			quantity: data.iQty,
-			powerchop: data.powerchopping
+			powerchop: data.powerchopping,
+			forestry_events: data.forestry,
+			twitchers_gloves: data.twitchers
 		})
 	},
 	[activity_type_enum.VasaMagus]: {
