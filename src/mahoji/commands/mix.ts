@@ -92,8 +92,10 @@ export const mixCommand: OSBMahojiCommand = {
 
 		if ((zahur && mixableZahur) || (wesley && mixableWesley)) {
 			timeToMixSingleItem = 0.000_001;
-			requiredItems.add('Coins', wesley ? 50 : 200);
-			cost = `decided to pay ${wesley ? 'Wesley 50' : 'Zahur 200'} gp for each item so they don't have to go`;
+			requiredItems.add('Coins', mixableWesley ? 50 : 200);
+			cost = `decided to pay ${
+				mixableWesley ? 'Wesley 50' : 'Zahur 200'
+			} gp for each item so they don't have to go.`;
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Herblore');
@@ -101,10 +103,16 @@ export const mixCommand: OSBMahojiCommand = {
 		const maxCanDo = user.bankWithGP.fits(baseCost);
 		const maxCanMix = Math.floor(maxTripLength / timeToMixSingleItem);
 
+		if (!user.owns(requiredItems)) {
+			return `You don't have the required items for ${mixableItem.item.name}: ${requiredItems}.`;
+		}
+
 		if (!quantity) {
 			quantity = maxCanMix;
 			if (maxCanDo < quantity && maxCanDo !== 0) quantity = maxCanDo;
 		}
+
+		quantity = Math.max(1, quantity);
 
 		if (quantity * timeToMixSingleItem > maxTripLength)
 			return `${user.minionName} can't go on trips longer than ${formatDuration(

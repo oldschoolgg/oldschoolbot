@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 
 import { superCompostables } from '../../../lib/data/filterables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { prisma } from '../../../lib/settings/prisma';
 import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
@@ -50,7 +49,7 @@ export async function harvestCommand({
 			', '
 		)}. *Don't include numbers, this command harvests all crops available of the specified patch type.*`;
 	}
-	const { patchesDetailed } = await getFarmingInfo(user.id);
+	const { patchesDetailed, patches } = await getFarmingInfo(user.id);
 	const patch = patchesDetailed.find(i => i.patchName === seedType)!;
 	if (patch.ready === null) return 'You have nothing planted in those patches.';
 
@@ -107,9 +106,9 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 
 	await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 		plantsName: patch.lastPlanted,
-		patchType: patch,
+		patchType: patches[patch.patchName],
 		userID: user.id,
-		channelID: channelID.toString(),
+		channelID,
 		upgradeType,
 		duration,
 		quantity: patch.lastQuantity,
@@ -165,12 +164,7 @@ export async function farmingPlantCommand({
 		return `${user.minionName} needs ${plant.level} Farming to plant ${plant.name}.`;
 	}
 
-	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 65);
-	if (!hasFavour && plant.name === 'Grape') {
-		return `${user.minionName} needs ${requiredPoints}% Hosidius Favour to plant Grapes.`;
-	}
-
-	const { patchesDetailed } = await getFarmingInfo(user.id);
+	const { patchesDetailed, patches } = await getFarmingInfo(user.id);
 	const patchType = patchesDetailed.find(i => i.patchName === plant.seedType)!;
 
 	const timePerPatchTravel = Time.Second * plant.timePerPatchTravel;
@@ -186,9 +180,9 @@ export async function farmingPlantCommand({
 	const treeStr = !planted ? null : treeCheck(planted, currentWoodcuttingLevel, GP, patchType.lastQuantity);
 	if (treeStr) return treeStr;
 
-	const [numOfPatches, noFarmGuild] = calcNumOfPatches(plant, user, questPoints);
+	const [numOfPatches] = calcNumOfPatches(plant, user, questPoints);
 	if (numOfPatches === 0) {
-		return 'There are no available patches to you. Note: 60% Hosidius favour is required for farming guild.';
+		return 'There are no available patches to you.';
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'Farming');
@@ -292,8 +286,6 @@ export async function farmingPlantCommand({
 		);
 	}
 
-	if (noFarmGuild) boostStr.push(noFarmGuild);
-
 	const inserted = await prisma.farmedCrop.create({
 		data: {
 			user_id: user.id,
@@ -310,7 +302,7 @@ export async function farmingPlantCommand({
 
 	await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 		plantsName: plant.name,
-		patchType,
+		patchType: patches[plant.seedType],
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,

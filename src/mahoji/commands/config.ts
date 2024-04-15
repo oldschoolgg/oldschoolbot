@@ -131,6 +131,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable wilderness high peak time warning',
 		bit: BitField.DisableHighPeakTimeWarning
+	},
+	{
+		name: 'Disable Names on Opens',
+		bit: BitField.DisableOpenableNames
 	}
 ];
 
@@ -313,7 +317,8 @@ async function bankSortConfig(
 	user: MUser,
 	sortMethod: string | undefined,
 	addWeightingBank: string | undefined,
-	removeWeightingBank: string | undefined
+	removeWeightingBank: string | undefined,
+	resetWeightingBank: string | undefined
 ): CommandResponse {
 	const currentMethod = user.user.bank_sort_method;
 	const currentWeightingBank = new Bank(user.user.bank_sort_weightings as ItemBank);
@@ -323,7 +328,7 @@ async function bankSortConfig(
 		return patronMsg(PerkTier.Two);
 	}
 
-	if (!sortMethod && !addWeightingBank && !removeWeightingBank) {
+	if (!sortMethod && !addWeightingBank && !removeWeightingBank && !resetWeightingBank) {
 		const sortStr = currentMethod
 			? `Your current bank sort method is ${inlineCode(currentMethod)}.`
 			: 'You have not set a bank sort method.';
@@ -367,12 +372,13 @@ async function bankSortConfig(
 
 	if (addWeightingBank) newBank.add(inputBank);
 	else if (removeWeightingBank) newBank.remove(inputBank);
+	else if (resetWeightingBank && resetWeightingBank === 'reset') newBank.bank = {};
 
 	await user.update({
 		bank_sort_weightings: newBank.bank
 	});
 
-	return bankSortConfig(await mUserFetch(user.id), undefined, undefined, undefined);
+	return bankSortConfig(await mUserFetch(user.id), undefined, undefined, undefined, undefined);
 }
 
 async function bgColorConfig(user: MUser, hex?: string) {
@@ -666,14 +672,15 @@ export async function pinTripCommand(
 	if (!trip) return 'Invalid trip.';
 
 	if (emoji) {
-		const cachedEmoji = globalClient.emojis.cache.get(emoji);
-		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && production) {
-			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
-		}
 		const res = ParsedCustomEmojiWithGroups.exec(emoji);
 		if (!res || !res[3]) return "That's not a valid emoji.";
 		// eslint-disable-next-line prefer-destructuring
 		emoji = res[3];
+
+		const cachedEmoji = globalClient.emojis.cache.get(emoji);
+		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && production) {
+			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
+		}
 	}
 
 	if (customName) {
@@ -922,6 +929,12 @@ export const configCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.String,
 							name: 'remove_weightings',
 							description: "Remove weightings for extra bank sorting (e.g. '1 trout, 5 coal')",
+							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'reset_weightings',
+							description: "Type 'reset' to confirm you want to delete ALL of your bank weightings.",
 							required: false
 						}
 					]
@@ -1182,7 +1195,12 @@ LIMIT 20;
 			combat_options?: { action: 'add' | 'remove' | 'list' | 'help'; input: string };
 			set_rsn?: { username: string };
 			bg_color?: { color?: string };
-			bank_sort?: { sort_method?: string; add_weightings?: string; remove_weightings?: string };
+			bank_sort?: {
+				sort_method?: string;
+				add_weightings?: string;
+				remove_weightings?: string;
+				reset_weightings?: string;
+			};
 			favorite_alchs?: { add?: string; remove?: string; add_many?: string; reset?: boolean };
 			favorite_food?: { add?: string; remove?: string; reset?: boolean };
 			favorite_items?: { add?: string; remove?: string; reset?: boolean };
@@ -1265,7 +1283,8 @@ LIMIT 20;
 					user,
 					bank_sort.sort_method,
 					bank_sort.add_weightings,
-					bank_sort.remove_weightings
+					bank_sort.remove_weightings,
+					bank_sort.reset_weightings
 				);
 			}
 			if (favorite_alchs) {

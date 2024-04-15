@@ -60,9 +60,30 @@ const bowfaCorruptSimilar = resolveItems([
 	25_894, // Light blue
 	25_896 // Dark blue
 ]);
+const fellingAxe = resolveItems([
+	'Bronze felling axe',
+	'Iron felling axe',
+	'Steel felling axe',
+	'Black felling axe',
+	'Mithril felling axe',
+	'Adamant felling axe',
+	'Rune felling axe',
+	'Dragon felling axe',
+	'Crystal felling axe',
+	'3rd age felling axe'
+]);
 
 const source: [string, (string | number)[]][] = [
-	['Rune axe', ['Gilded axe']],
+	['Bronze felling axe', fellingAxe],
+	['Bronze axe', ['Bronze felling axe']],
+	['Iron axe', ['Iron felling axe']],
+	['Steel axe', ['Steel felling axe']],
+	['Black axe', ['Black felling axe']],
+	['Mithril axe', ['Mithril felling axe']],
+	['Adamant axe', ['Adamant felling axe']],
+	['Rune axe', ['Rune felling axe', 'Gilded axe']],
+	['Dragon axe', ['Dragon felling axe', '3rd age axe', '3rd age felling axe']],
+	['Crystal axe', ['Crystal felling axe']],
 	['Rune pickaxe', ['Gilded pickaxe']],
 	['Dragon full helm', ['Dragon full helm (g)']],
 	['Dragon chainbody', ['Dragon chainbody (g)']],
@@ -94,7 +115,6 @@ const source: [string, (string | number)[]][] = [
 	['Dragon hunter crossbow', ['Dragon hunter crossbow (t)', 'Dragon hunter crossbow (b)']],
 	['Armadyl crossbow', ['Zaryte crossbow']],
 	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, '3rd age pickaxe', 'Infernal pickaxe']],
-	['Dragon axe', ['3rd age axe']],
 	['Steam battlestaff', [12_795]],
 	['Lava battlestaff', [21_198]],
 	['Odium ward', [12_807]],
@@ -350,7 +370,9 @@ const source: [string, (string | number)[]][] = [
 	['Lumberjack hat', ['Forestry hat']],
 	['Lumberjack top', ['Forestry top']],
 	['Lumberjack legs', ['Forestry legs']],
-	['Lumberjack boots', ['Forestry boots']]
+	['Lumberjack boots', ['Forestry boots']],
+	['Log basket', ['Forestry basket']],
+	['Forestry kit', ['Forestry basket']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(

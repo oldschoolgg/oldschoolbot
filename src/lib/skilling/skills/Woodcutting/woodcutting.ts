@@ -1,8 +1,8 @@
 import { LootTable } from 'oldschooljs';
 
-import { Emoji } from '../../constants';
-import itemID from '../../util/itemID';
-import { Log, SkillsEnum } from '../types';
+import { Emoji } from '../../../constants';
+import itemID from '../../../util/itemID';
+import { Log, SkillsEnum } from '../../types';
 
 const sulliuscepTable = new LootTable()
 	.add('Numulite', [4, 8], 34)
@@ -20,6 +20,7 @@ const logs: Log[] = [
 		xp: 25,
 		id: itemID('Logs'),
 		name: 'Logs',
+		leaf: itemID('Leaves'),
 		aliases: ['normal'],
 		findNewTreeTime: 9,
 		bankingTime: 20,
@@ -50,6 +51,7 @@ const logs: Log[] = [
 		xp: 37.5,
 		id: itemID('Oak logs'),
 		name: 'Oak Logs',
+		leaf: itemID('Oak leaves'),
 		findNewTreeTime: 7,
 		bankingTime: 20,
 		slope: 0.27,
@@ -65,6 +67,7 @@ const logs: Log[] = [
 		xp: 67.5,
 		id: itemID('Willow logs'),
 		name: 'Willow Logs',
+		leaf: itemID('Willow leaves'),
 		findNewTreeTime: 7,
 		bankingTime: 16,
 		slope: 0.14,
@@ -94,6 +97,7 @@ const logs: Log[] = [
 		xp: 100,
 		id: itemID('Maple logs'),
 		name: 'Maple Logs',
+		leaf: itemID('Maple leaves'),
 		findNewTreeTime: 6,
 		bankingTime: 16,
 		slope: 0.07,
@@ -151,6 +155,7 @@ const logs: Log[] = [
 		xp: 175,
 		id: itemID('Yew logs'),
 		name: 'Yew Logs',
+		leaf: itemID('Yew leaves'),
 		findNewTreeTime: 7,
 		bankingTime: 16,
 		slope: 0.04,
@@ -184,6 +189,7 @@ const logs: Log[] = [
 		xp: 250,
 		id: itemID('Magic logs'),
 		name: 'Magic Logs',
+		leaf: itemID('Magic leaves'),
 		findNewTreeTime: 7,
 		bankingTime: 16,
 		slope: 0.03,

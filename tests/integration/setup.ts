@@ -1,6 +1,8 @@
 import '../globalSetup';
 
-import { vi } from 'vitest';
+import { afterEach, beforeEach, vi } from 'vitest';
+
+import { prisma } from '../../src/lib/settings/prisma';
 
 vi.mock('../../src/lib/util/handleMahojiConfirmation', () => ({
 	handleMahojiConfirmation: vi.fn()
@@ -26,3 +28,17 @@ globalClient.fetchUser = async (id: string | bigint) => ({
 	id: typeof id === 'string' ? id : String(id),
 	send: async () => {}
 });
+
+beforeEach(async () => {
+	await prisma.$connect();
+});
+
+afterEach(async () => {
+	await prisma.$disconnect();
+});
+
+async function init() {
+	await prisma.$queryRaw`CREATE EXTENSION IF NOT EXISTS intarray;`;
+}
+
+init();

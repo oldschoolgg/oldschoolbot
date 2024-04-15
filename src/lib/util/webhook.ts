@@ -10,6 +10,7 @@ import {
 } from 'discord.js';
 import PQueue from 'p-queue';
 
+import { production } from '../../config';
 import { prisma } from '../settings/prisma';
 import { channelIsSendable } from '../util';
 import { logError } from './logError';
@@ -24,7 +25,7 @@ export async function resolveChannel(channelID: string): Promise<WebhookClient |
 		return new WebhookClient({ id: db.webhook_id, token: db.webhook_token });
 	}
 
-	if (!channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.ManageWebhooks)) {
+	if (!production || !channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.ManageWebhooks)) {
 		return channel;
 	}
 
@@ -107,7 +108,7 @@ export async function sendToChannelID(
 			});
 		}
 	}
-	queue.add(queuedFn);
+	return queue.add(queuedFn);
 }
 
 async function sendToChannelOrWebhook(channel: WebhookClient | Message['channel'], input: BaseMessageOptions) {

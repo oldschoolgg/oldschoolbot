@@ -1488,7 +1488,12 @@ export const troubleBrewingCL = resolveItems([
 	'Red rum (trouble brewing)',
 	'Blue rum (trouble brewing)'
 ]);
-export const volcanicMineCL = resolveItems(['Ash covered tome', 'Large water container', 'Volcanic mine teleport']);
+export const volcanicMineCL = resolveItems([
+	'Ash covered tome',
+	'Large water container',
+	'Volcanic mine teleport',
+	'Dragon pickaxe (broken)'
+]);
 export const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 export const aerialFishingCL = resolveItems([
 	'Golden tench',
@@ -1554,7 +1559,8 @@ export const allPetsCL = resolveItems([
 	'Wisp',
 	"Lil'viathan",
 	'Butch',
-	'Baron'
+	'Baron',
+	'Scurry'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1624,6 +1630,8 @@ export const cyclopsCL = resolveItems([
 	'Dragon defender'
 ]);
 export const forestryCL = resolveItems([
+	'Fox whistle',
+	'Golden pheasant egg',
 	'Lumberjack hat',
 	'Lumberjack top',
 	'Lumberjack legs',
@@ -1632,10 +1640,19 @@ export const forestryCL = resolveItems([
 	'Forestry top',
 	'Forestry legs',
 	'Forestry boots',
+	"Twitcher's gloves",
 	'Funky shaped log',
 	'Log basket',
 	'Log brace',
-	'Clothes pouch blueprint'
+	'Clothes pouch blueprint',
+	'Cape pouch',
+	'Felling axe handle',
+	'Pheasant hat',
+	'Pheasant legs',
+	'Pheasant boots',
+	'Pheasant cape',
+	'Petal garland',
+	'Sturdy beehive parts'
 ]);
 
 export const fossilIslandNotesCL = resolveItems([
@@ -1831,7 +1848,12 @@ export const slayerCL = resolveItems([
 	// "Dagon'hai hat",
 	// "Dagon'hai robe top",
 	// "Dagon'hai robe bottom",
-	'Blood shard'
+	'Blood shard',
+	'Ancient ceremonial mask',
+	'Ancient ceremonial top',
+	'Ancient ceremonial legs',
+	'Ancient ceremonial gloves',
+	'Ancient ceremonial boots'
 ]);
 export const tzHaarCL = resolveItems([
 	'Obsidian cape',
@@ -2216,7 +2238,9 @@ export const metamorphPets = resolveItems([
 	'Ziggy',
 	'Red',
 	'Great blue heron',
-	'Greatish guardian'
+	'Greatish guardian',
+	28_670, // use id to not get mixed up with the "Fox" quest item
+	'Pheasant'
 ]);
 
 export const allPetIDs = [
@@ -2265,8 +2289,6 @@ export const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem('Guthixian icon'), cost: 500 },
 	{ item: getOSItem('Trouver parchment'), cost: 18 },
 	{ item: getOSItem('Wilderness crabs teleport'), cost: 1 },
-	{ item: getOSItem('Blighted bind sack'), quantity: 300, cost: 1 },
-	{ item: getOSItem('Blighted snare sack'), quantity: 150, cost: 1 },
 	{ item: getOSItem('Blighted entangle sack'), quantity: 70, cost: 1 },
 	{ item: getOSItem('Blighted teleport spell sack'), quantity: 50, cost: 1 },
 	{ item: getOSItem('Blighted vengeance sack'), quantity: 50, cost: 1 },

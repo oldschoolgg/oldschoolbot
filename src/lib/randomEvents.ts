@@ -12,6 +12,7 @@ export interface RandomEvent {
 	id: number;
 	name: string;
 	outfit?: number[];
+	uniqueMusic?: boolean;
 	loot: LootTable;
 }
 
@@ -56,18 +57,20 @@ const randomEventTable = new LootTable()
 	.add('Tooth half of key', 1, 1);
 
 // https://oldschool.runescape.wiki/w/Random_events#List_of_random_events
-// Missing: Evil Bob, Jekyll and Hyde, Maze, Prison Pete
+// Missing: Evil Bob, Jekyll and Hyde, Maze (uniqueMusic: true), Prison Pete (uniqueMusic: true)
 export const RandomEvents: RandomEvent[] = [
 	{
 		id: 1,
 		name: 'Bee keeper',
 		outfit: beekeeperOutfit,
+		uniqueMusic: true,
 		loot: new LootTable().add('Coins', [16, 36]).add('Flax', [1, 27])
 	},
 	{
 		id: 2,
 		name: 'Drill Demon',
 		outfit: camoOutfit,
+		uniqueMusic: true,
 		loot: new LootTable().every('Genie lamp')
 	},
 	{
@@ -79,6 +82,7 @@ export const RandomEvents: RandomEvent[] = [
 		id: 4,
 		name: 'Freaky Forester',
 		outfit: lederhosenOutfit,
+		uniqueMusic: true,
 		loot: new LootTable().every('Genie lamp')
 	},
 	{
@@ -101,11 +105,13 @@ export const RandomEvents: RandomEvent[] = [
 		id: 8,
 		name: 'Mime',
 		outfit: mimeOutfit,
+		uniqueMusic: true,
 		loot: new LootTable().every('Genie lamp')
 	},
 	{
 		id: 9,
 		name: 'Quiz master',
+		uniqueMusic: true,
 		loot: new LootTable().every('Mystery box')
 	},
 	{
@@ -123,6 +129,7 @@ export const RandomEvents: RandomEvent[] = [
 	{
 		id: 11,
 		name: 'Surprise Exam',
+		uniqueMusic: true,
 		loot: new LootTable().every('Book of knowledge')
 	},
 	{
@@ -156,6 +163,7 @@ export const RandomEvents: RandomEvent[] = [
 	{
 		id: 15,
 		name: 'Evil twin',
+		uniqueMusic: true,
 		loot: new LootTable()
 			.add('Uncut sapphire', [2, 4])
 			.add('Uncut emerald', [2, 4])
@@ -175,6 +183,7 @@ export const RandomEvents: RandomEvent[] = [
 	{
 		id: 18,
 		name: 'Pinball',
+		uniqueMusic: true,
 		loot: new LootTable().add('Sapphire', 5, 3).add('Emerald', 5, 3).add('Ruby', 5, 3).add('Diamond', 2, 1)
 	},
 	{

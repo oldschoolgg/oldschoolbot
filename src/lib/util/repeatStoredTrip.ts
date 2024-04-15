@@ -34,7 +34,6 @@ import {
 	GuardiansOfTheRiftActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
-	KourendFavourActivityTaskOptions,
 	MahoganyHomesActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
@@ -76,7 +75,8 @@ export const taskCanBeRepeated = (activity: Activity) => {
 			activity_type_enum.BlastFurnace,
 			activity_type_enum.Easter,
 			activity_type_enum.TokkulShop,
-			activity_type_enum.Birdhouse
+			activity_type_enum.Birdhouse,
+			activity_type_enum.StrongholdOfSecurity
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
@@ -130,6 +130,10 @@ export const tripHandlers = {
 		commandName: 'm',
 		args: () => ({})
 	},
+	[activity_type_enum.KourendFavour]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.AerialFishing]: {
 		commandName: 'activities',
 		args: () => ({ aerial_fishing: {} })
@@ -141,10 +145,6 @@ export const tripHandlers = {
 			quantity: data.quantity,
 			alch: Boolean(data.alch)
 		})
-	},
-	[activity_type_enum.AgilityArena]: {
-		commandName: 'minigames',
-		args: () => ({ agility_arena: { start: {} } })
 	},
 	[activity_type_enum.AgilityArena]: {
 		commandName: 'minigames',
@@ -351,10 +351,6 @@ export const tripHandlers = {
 		commandName: 'activities',
 		args: () => ({ inferno: { action: 'start' } })
 	},
-	[activity_type_enum.KourendFavour]: {
-		commandName: 'activities',
-		args: (data: KourendFavourActivityTaskOptions) => ({ favour: { name: data.favour } })
-	},
 	[activity_type_enum.LastManStanding]: {
 		commandName: 'minigames',
 		args: () => ({ lms: { start: {} } })
@@ -410,7 +406,8 @@ export const tripHandlers = {
 		args: (data: NexTaskOptions) => {
 			return {
 				name: 'nex',
-				quantity: data.quantity
+				quantity: data.quantity,
+				solo: data.userDetails.length === 1
 			};
 		}
 	},
@@ -550,7 +547,9 @@ export const tripHandlers = {
 		args: (data: WoodcuttingActivityTaskOptions) => ({
 			name: itemNameFromID(data.logID),
 			quantity: data.iQty,
-			powerchop: data.powerchopping
+			powerchop: data.powerchopping,
+			forestry_events: data.forestry,
+			twitchers_gloves: data.twitchers
 		})
 	},
 	[activity_type_enum.GiantsFoundry]: {

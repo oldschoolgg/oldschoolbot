@@ -123,9 +123,9 @@ interface TeamMember {
 	totalDefensivePercent: number;
 }
 
-interface NexContext {
+export interface NexContext {
 	quantity: number;
-	team: { id: string; contribution: number; deaths: number[] }[];
+	team: { id: string; contribution: number; deaths: number[]; ghost?: true }[];
 }
 
 export const purpleNexItems = resolveItems([
@@ -143,6 +143,9 @@ export function handleNexKills({ quantity, team }: NexContext) {
 
 	for (let i = 0; i < quantity; i++) {
 		const survivors = team.filter(usr => !usr.deaths.includes(i));
+		if (survivors.length === 0) {
+			continue;
+		}
 
 		const uniqueRecipient = roll(43) ? randArrItem(survivors).id : null;
 		const nonUniqueDrop = NexNonUniqueTable.roll();
@@ -163,6 +166,11 @@ export function handleNexKills({ quantity, team }: NexContext) {
 		}
 	}
 
+	for (const member of team) {
+		if (member.ghost) {
+			teamLoot.map.delete(member.id);
+		}
+	}
 	return teamLoot;
 }
 

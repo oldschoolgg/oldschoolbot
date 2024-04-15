@@ -36,7 +36,6 @@ import {
 	SlayerActivityConstants
 } from '../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
-import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import {
 	AttackStyles,
 	calculateMonsterFood,
@@ -76,6 +75,7 @@ import { generateChart } from '../../../lib/util/chart';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahojiSettings';
 import { nexCommand } from './nexCommand';
@@ -132,7 +132,8 @@ export async function minionKillCommand(
 	channelID: string,
 	name: string,
 	quantity: number | undefined,
-	method: PvMMethod | undefined
+	method: PvMMethod | undefined,
+	solo: boolean | undefined
 ) {
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
@@ -148,7 +149,7 @@ export async function minionKillCommand(
 
 	if (!name) return invalidMonsterMsg;
 
-	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID);
+	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID, solo);
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
 	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name, quantity);
@@ -205,11 +206,6 @@ export async function minionKillCommand(
 	const [hasReqs, reason] = hasMonsterRequirements(user, monster);
 	if (!hasReqs) return reason ?? "You don't have the requirements to fight this monster";
 
-	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Shayzien, 100);
-	if (!hasFavour && monster.id === Monsters.LizardmanShaman.id) {
-		return `${user.minionName} needs ${requiredPoints}% Shayzien Favour to kill Lizardman shamans.`;
-	}
-
 	if (monster.diaryRequirement) {
 		const [diary, tier]: [Diary, DiaryTier] = monster.diaryRequirement;
 		const [hasDiary] = await userhasDiaryTier(user, tier);
@@ -252,6 +248,8 @@ export async function minionKillCommand(
 	let blackMaskBoostMsg = '';
 	let salveAmuletBoost = 0;
 	let salveAmuletBoostMsg = '';
+	let virtusBoost = 0;
+	let virtusBoostMsg = '';
 
 	const dragonBoost = 15; // Common boost percentage for dragon-related gear
 
@@ -327,6 +325,24 @@ export async function minionKillCommand(
 			}
 		}
 	}
+
+	function calculateVirtusBoost() {
+		let virtusPiecesEquipped = 0;
+		for (const item of resolveItems(['Virtus mask', 'Virtus robe top', 'Virtus robe bottom'])) {
+			if (user.gear.mage.hasEquipped(item)) {
+				virtusPiecesEquipped += blackMaskBoost !== 0 && itemNameFromID(item) === 'Virtus mask' ? 0 : 1;
+			}
+		}
+
+		virtusBoost = virtusPiecesEquipped * 2;
+		virtusBoostMsg =
+			virtusPiecesEquipped > 1
+				? ` with ${virtusPiecesEquipped} Virtus pieces`
+				: virtusPiecesEquipped > 0
+				? ` with ${virtusPiecesEquipped} Virtus piece`
+				: '';
+	}
+
 	if (isDragon && monster.name.toLowerCase() !== 'vorkath') {
 		applyDragonBoost();
 	}
@@ -391,13 +407,15 @@ export async function minionKillCommand(
 
 	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 		consumableCosts.push(iceBarrageConsumables);
-		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
-		boosts.push(`${boostIceBarrage}% for Ice Barrage`);
+		calculateVirtusBoost();
+		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage + virtusBoost);
+		boosts.push(`${boostIceBarrage + virtusBoost}% for Ice Barrage${virtusBoostMsg}`);
 		burstOrBarrage = SlayerActivityConstants.IceBarrage;
 	} else if (boostChoice === 'burst' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 		consumableCosts.push(iceBurstConsumables);
-		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst);
-		boosts.push(`${boostIceBurst}% for Ice Burst`);
+		calculateVirtusBoost();
+		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst + virtusBoost);
+		boosts.push(`${boostIceBurst + virtusBoost}% for Ice Burst${virtusBoostMsg}`);
 		burstOrBarrage = SlayerActivityConstants.IceBurst;
 	} else if (boostChoice === 'cannon' && hasCannon && monster!.cannonMulti) {
 		usingCannon = true;
@@ -969,14 +987,7 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 	if (monster.qpRequired) {
 		str.push(`${monster.name} requires **${monster.qpRequired}qp** to kill, and you have ${QP}qp.\n`);
 	}
-	if (stringMatches(name, 'shaman') || stringMatches(name, 'lizardman shaman')) {
-		const [hasFavour] = gotFavour(user, Favours.Shayzien, 100);
-		if (!hasFavour) {
-			str.push('You require 100% Shayzien favour\n');
-		} else {
-			str.push('You meet the required 100% Shayzien favour\n');
-		}
-	}
+
 	let itemRequirements = [];
 	if (monster.itemsRequired && monster.itemsRequired.length > 0) {
 		itemRequirements.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}\n`);

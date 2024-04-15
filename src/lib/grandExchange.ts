@@ -7,6 +7,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
+import { BLACKLISTED_USERS } from './blacklists';
 import { BitField, globalConfig, ONE_TRILLION, PerkTier } from './constants';
 import { marketPricemap } from './marketPrices';
 import { RobochimpUser, roboChimpUserFetch } from './roboChimp';
@@ -27,7 +28,7 @@ interface CreateListingArgs {
 }
 
 function validateNumber(num: number) {
-	if (num < 0 || isNaN(num) || !Number.isInteger(num) || num > Number.MAX_SAFE_INTEGER) {
+	if (num < 0 || isNaN(num) || !Number.isInteger(num) || num >= Number.MAX_SAFE_INTEGER) {
 		throw new Error(`Invalid number: ${num}.`);
 	}
 }
@@ -529,7 +530,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		}
 
 		debugLog(
-			`Completing a transaction, removing ${bankToRemoveFromGeBank} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${geBank.toString()}.`,
+			`Completing a transaction, removing ${bankToRemoveFromGeBank} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${geBank.toString()}. ${debug}`,
 			{
 				totalPriceAfterTax,
 				totalTaxPaid,
@@ -598,13 +599,15 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			items: buyerLoot,
 			collectionLog: false,
 			dontAddToTempCL: true,
-			filterLoot: false
+			filterLoot: false,
+			neverUpdateHistory: true
 		});
 		await sellerUser.addItemsToBank({
 			items: sellerLoot,
 			collectionLog: false,
 			dontAddToTempCL: true,
-			filterLoot: false
+			filterLoot: false,
+			neverUpdateHistory: true
 		});
 
 		const itemName = itemNameFromID(buyerListing.item_id)!;
@@ -665,6 +668,9 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			const components = [disableDMsButton];
 			if (newSellerListingQuantityRemaining > 0) {
 				components.push(createGECancelButton(sellerListing));
+				str += `\n\nYou have ${newSellerListingQuantityRemaining}x remaining to sell in your listing.`;
+			} else {
+				str += '\n\nThis listing has now been fully fulfilled.';
 			}
 
 			await sellerDJSUser.send({ content: str, components: makeComponents(components) }).catch(noOp);
@@ -678,9 +684,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					type: GEListingType.Buy,
 					fulfilled_at: null,
 					cancelled_at: null,
-					user_id: {
-						not: null
-					}
+					user_id: { not: null }
 				},
 				orderBy: [
 					{
@@ -696,9 +700,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					type: GEListingType.Sell,
 					fulfilled_at: null,
 					cancelled_at: null,
-					user_id: {
-						not: null
-					}
+					user_id: { not: null }
 				},
 				orderBy: [
 					{
@@ -766,9 +768,18 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 		debugLog(`Expected G.E Bank: ${shouldHave}`);
 		if (!currentBank.equals(shouldHave)) {
-			throw new Error(
-				`GE either has extra or insufficient items. Difference: ${shouldHave.difference(currentBank)}`
-			);
+			if (!currentBank.has(shouldHave)) {
+				throw new Error(
+					`GE is MISSING items to cover the ${[...buyListings, ...sellListings].length}x active listings.
+G.E Bank Has: ${currentBank}
+G.E Bank Should Have: ${shouldHave}
+Difference: ${shouldHave.difference(currentBank)}`
+				);
+			}
+			throw new Error(`GE has EXTRA items.
+G.E Bank Has: ${currentBank}
+G.E Bank Should Have: ${shouldHave}
+Difference: ${shouldHave.difference(currentBank)}`);
 		} else {
 			debugLog(
 				`GE has ${currentBank}, which is enough to cover the ${
@@ -819,7 +830,11 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		if (this.locked) return;
 		const stopwatch = new Stopwatch();
 		stopwatch.start();
-		const { buyListings, sellListings } = await this.fetchActiveListings();
+		const { buyListings: _buyListings, sellListings: _sellListings } = await this.fetchActiveListings();
+
+		// Filter out listings from Blacklisted users:
+		const buyListings = _buyListings.filter(l => !BLACKLISTED_USERS.has(l.user_id!));
+		const sellListings = _sellListings.filter(l => !BLACKLISTED_USERS.has(l.user_id!));
 
 		for (const buyListing of buyListings) {
 			// These are all valid, matching sell listings we can match with this buy listing.

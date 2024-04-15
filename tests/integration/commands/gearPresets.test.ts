@@ -1,7 +1,6 @@
 import { randInt } from 'e';
 import { describe, expect, test, vi } from 'vitest';
 
-import { prisma } from '../../../src/lib/settings/prisma';
 import itemID from '../../../src/lib/util/itemID';
 import { gearPresetsCommand } from '../../../src/mahoji/commands/gearpresets';
 import { createTestUser } from '../util';
@@ -29,7 +28,7 @@ describe('Gear Presets Command', async () => {
 			}
 		});
 
-		const gpResult = await prisma.gearPreset.findFirst({ where: { user_id: user.id, name: 'test2h' } });
+		const gpResult = await global.prisma!.gearPreset.findFirst({ where: { user_id: user.id, name: 'test2h' } });
 		// Verify row exists:
 		expect(gpResult).toBeTruthy();
 		if (!gpResult) return false;
@@ -54,7 +53,7 @@ describe('Gear Presets Command', async () => {
 			}
 		});
 
-		const gpResult = await prisma.gearPreset.findFirst({ where: { user_id: user.id, name: 'testedit' } });
+		const gpResult = await global.prisma!.gearPreset.findFirst({ where: { user_id: user.id, name: 'testedit' } });
 		// Verify row exists:
 		expect(gpResult).toBeTruthy();
 		if (!gpResult) return false;
@@ -63,7 +62,9 @@ describe('Gear Presets Command', async () => {
 			edit: { gear_preset: 'TestEdit', weapon: 'Ghrazi rapier', feet: 'None' }
 		});
 
-		const gpEditResult = await prisma.gearPreset.findFirst({ where: { user_id: user.id, name: 'testedit' } });
+		const gpEditResult = await global.prisma!.gearPreset.findFirst({
+			where: { user_id: user.id, name: 'testedit' }
+		});
 
 		// Verify row found:
 		expect(gpEditResult).toBeTruthy();

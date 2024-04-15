@@ -7,7 +7,6 @@ import { ClueTier } from '../clues/clueTiers';
 import { BitField, BitFieldData, BOT_TYPE } from '../constants';
 import { diariesObject, DiaryTierName, userhasDiaryTier } from '../diaries';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
-import { UserKourendFavour } from '../minions/data/kourendFavour';
 import { ClueBank } from '../minions/types';
 import type { RobochimpUser } from '../roboChimp';
 import { MinigameName } from '../settings/minigames';
@@ -51,7 +50,6 @@ type Requirement = {
 	| { qpRequirement: number }
 	| { lapsRequirement: Record<number, number> }
 	| { sacrificedItemsRequirement: Bank }
-	| { favour: Partial<UserKourendFavour> }
 	| { OR: Requirement[] }
 	| { minigames: Partial<Record<MinigameName, number>> }
 	| { bitfieldRequirement: BitField }
@@ -108,14 +106,6 @@ export class Requirements {
 
 		if ('sacrificedItemsRequirement' in req) {
 			requirementParts.push(`Sacrificed Items Requirement: ${req.sacrificedItemsRequirement.toString()}`);
-		}
-
-		if ('favour' in req) {
-			requirementParts.push(
-				`Kourend Favour Requirement: ${Object.entries(req.favour)
-					.map(([k, v]) => `${v}% favour in ${k}`)
-					.join(', ')}.`
-			);
 		}
 
 		if ('minigames' in req) {
@@ -258,20 +248,6 @@ export class Requirements {
 			if (!sacBank.has(requirement.sacrificedItemsRequirement)) {
 				results.push({
 					reason: `You need to have sacrificed these items: ${requirement.sacrificedItemsRequirement}.`
-				});
-			}
-		}
-
-		if ('favour' in requirement) {
-			const insufficientFavour = [];
-			for (const [house, favour] of objectEntries(requirement.favour)) {
-				if (user.kourendFavour[house] < favour!) {
-					insufficientFavour.push(`${favour}% favour in ${house}`);
-				}
-			}
-			if (insufficientFavour.length > 0) {
-				results.push({
-					reason: `You need these favour: ${insufficientFavour.join(', ')}.`
 				});
 			}
 		}

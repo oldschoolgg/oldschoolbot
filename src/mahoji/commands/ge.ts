@@ -392,11 +392,11 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 					return patronMsg(PerkTier.Four);
 				}
 				let result = await prisma.$queryRawUnsafe<
-					{ quantity_bought: number; price_per_item_before_tax: number; created_at: Date }[]
+					{ total_quantity_bought: number; average_price_per_item_before_tax: number; week: Date }[]
 				>(`SELECT
-  sellTransactions.created_at,
-  sellTransactions.price_per_item_before_tax,
-  sellTransactions.quantity_bought
+  DATE_TRUNC('week', sellTransactions.created_at) AS week,
+  AVG(sellTransactions.price_per_item_before_tax) AS average_price_per_item_before_tax,
+  SUM(sellTransactions.quantity_bought)::int AS total_quantity_bought
 FROM
   ge_listing
 INNER JOIN
@@ -407,15 +407,18 @@ AND
   ge_listing.cancelled_at IS NULL
 AND
   ge_listing.fulfilled_at IS NOT NULL
+GROUP BY
+  week
 ORDER BY
-  sellTransactions.created_at ASC;`);
-				if (result.length < 2) return 'No price history found for that item.';
-				if (result[0].price_per_item_before_tax <= 1_000_000) {
-					result = result.filter(i => i.quantity_bought > 1);
+  week ASC;
+`);
+				if (result.length < 1) return 'No price history found for that item.';
+				if (result[0].average_price_per_item_before_tax <= 1_000_000) {
+					result = result.filter(i => i.total_quantity_bought > 1);
 				}
 				const buffer = await lineChart(
 					`Price History for ${item.name}`,
-					result.map(i => [new Date(i.created_at).toDateString(), i.price_per_item_before_tax]),
+					result.map(i => [new Date(i.week).toDateString(), i.average_price_per_item_before_tax]),
 					val => val.toString(),
 					val => val,
 					false

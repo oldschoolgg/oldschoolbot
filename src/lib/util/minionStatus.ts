@@ -26,7 +26,7 @@ import Prayer from '../skilling/skills/prayer';
 import Runecraft from '../skilling/skills/runecraft';
 import Smithing from '../skilling/skills/smithing';
 import { stealables } from '../skilling/skills/thieving/stealables';
-import Woodcutting from '../skilling/skills/woodcutting';
+import Woodcutting from '../skilling/skills/Woodcutting/woodcutting';
 import {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
@@ -519,7 +519,7 @@ export function minionStatus(user: MUser) {
 
 		case 'Raids': {
 			const data = currentTask as RaidsOptions;
-			return `${name} is currently doing the Chamber's of Xeric${
+			return `${name} is currently doing the Chambers of Xeric${
 				data.challengeMode ? ' in Challenge Mode' : ''
 			}, ${
 				data.users.length === 1 ? 'as a solo.' : `with a team of ${data.users.length} minions.`

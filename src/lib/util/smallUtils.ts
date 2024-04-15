@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 
 import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
+import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
 import deepmerge from 'deepmerge';
 import { ButtonBuilder, ButtonStyle, InteractionReplyOptions, time } from 'discord.js';
 import { clamp, objectEntries, roll, Time } from 'e';
@@ -170,7 +171,7 @@ export function makeAutoFarmButton() {
 export const SQL_sumOfAllCLItems = (clItems: number[]) =>
 	`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`;
 
-export const generateGrandExchangeID = () => miniID(5).toLowerCase();
+export const generateGrandExchangeID = () => miniID(6).toLowerCase();
 
 export function tailFile(fileName: string, numLines: number): Promise<string> {
 	return new Promise((resolve, reject) => {
@@ -338,4 +339,14 @@ export function ellipsize(str: string, maxLen: number = 2000) {
 		return `${str.substring(0, maxLen - 3)}...`;
 	}
 	return str;
+}
+
+export function makeTable(headers: string[], rows: unknown[][]) {
+	return new AsciiTable3()
+		.setHeading(...headers)
+		.setAlign(1, AlignmentEnum.RIGHT)
+		.setAlign(2, AlignmentEnum.CENTER)
+		.setAlign(3, AlignmentEnum.LEFT)
+		.addRowMatrix(rows)
+		.toString();
 }

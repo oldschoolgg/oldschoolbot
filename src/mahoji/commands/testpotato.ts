@@ -14,7 +14,6 @@ import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { UserKourendFavour } from '../../lib/minions/data/kourendFavour';
 import potions from '../../lib/minions/data/potions';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
@@ -39,6 +38,7 @@ import {
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
+import { userEventToStr } from '../../lib/util/userEvents';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { MAX_QP } from '../lib/abstracted_commands/questCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
@@ -54,14 +54,7 @@ export async function giveMaxStats(user: MUser) {
 	}
 	await user.update({
 		QP: MAX_QP,
-		...updates,
-		kourend_favour: {
-			Arceuus: 100,
-			Hosidius: 100,
-			Lovakengj: 100,
-			Piscarilius: 100,
-			Shayzien: 100
-		} as UserKourendFavour as any
+		...updates
 	});
 }
 
@@ -558,6 +551,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							max_value: 1000
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'events',
+					description: 'See events',
+					options: []
 				}
 			],
 			run: async ({
@@ -579,13 +578,24 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				check?: { monster_droprates?: string };
 				bingo_tools?: { start_bingo: string };
 				setslayertask?: { master: string; monster: string; quantity: number };
+				events?: {};
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
 				const user = await mUserFetch(userID.toString());
-
+				if (options.events) {
+					const events = await prisma.userEvent.findMany({
+						where: {
+							user_id: user.id
+						},
+						orderBy: {
+							date: 'desc'
+						}
+					});
+					return events.map(userEventToStr).join('\n');
+				}
 				if (options.bingo_tools) {
 					if (options.bingo_tools.start_bingo) {
 						const bingo = await prisma.bingo.findFirst({
