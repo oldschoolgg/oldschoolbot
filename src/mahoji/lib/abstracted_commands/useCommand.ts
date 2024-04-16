@@ -616,8 +616,7 @@ for (const zygomite of resolveItems(['Herbal zygomite spores', 'Barky zygomite s
 		run: async (user: MUser) => {
 			const cost = new Bank().add('Deathly toxic potion').add(zygomite);
 			const loot = new Bank().add('Toxic zygomite spores');
-			await transactItems({
-				userID: user.id,
+			await user.transactItems({
 				collectionLog: true,
 				filterLoot: false,
 				itemsToAdd: loot,

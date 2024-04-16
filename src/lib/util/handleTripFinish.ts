@@ -235,8 +235,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 						`Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`
 					);
 				}
-				await user.addItemsToBank({ items: alchResult.bankToAdd });
-				await user.removeItemsFromBank(alchResult.bankToRemove);
+				await user.transactItems({
+					itemsToRemove: alchResult.bankToRemove,
+					itemsToAdd: alchResult.bankToAdd,
+					collectionLog: true
+				});
 
 				updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 
