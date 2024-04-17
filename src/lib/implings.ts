@@ -130,7 +130,7 @@ export function handlePassiveImplings(user: MUser, data: ActivityTaskData) {
 	let bank = new Bank();
 	const missed = new Bank();
 
-	const impTable = implingTableByWorldLocation[activityInArea(data)];
+	const impTable = implingTableByWorldLocation[activityInArea(user, data)];
 
 	for (let i = 0; i < minutes; i++) {
 		const loot = impTable.roll();
