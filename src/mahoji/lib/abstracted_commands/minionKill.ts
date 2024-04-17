@@ -481,9 +481,10 @@ export async function minionKillCommand(
 	) {
 		return `${monster!.name} cannot be barraged or burst.`;
 	}
-
-	if (method === 'cannon' && !monster!.canCannon) {
-		return `${monster!.name} cannot be killed with a cannon.`;
+	if (!usingCannon) {
+		if (method === 'cannon' && !monster!.canCannon) {
+			return `${monster!.name} cannot be killed with a cannon.`;
+		}
 	}
 
 	if (
