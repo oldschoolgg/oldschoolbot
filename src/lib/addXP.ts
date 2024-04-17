@@ -200,7 +200,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		totalFirstAgeBonus += 1;
 	}
 
-	params.amount = increaseNumByPercent(params.amount, totalFirstAgeBonus);
+	if (totalFirstAgeBonus > 0) params.amount = increaseNumByPercent(params.amount, totalFirstAgeBonus);
 
 	const boosts = staticXPBoosts.get(params.skillName);
 	if (boosts && !params.artificial) {
