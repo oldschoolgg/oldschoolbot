@@ -459,33 +459,26 @@ export async function minionKillCommand(
 	}
 
 	// Wildy Monster checks
-	console.log(monster.cannonMulti);
-	console.log(isInWilderness);
-
-	if (isInWilderness !== undefined) {
-		if (method === 'barrage' || method === 'burst') {
-			if (monster.id === Monsters.Jelly.id) {
-				monster.canBarrage = isInWilderness;
-			}
-		}
+	if (isInWilderness === true) {
 		if (method === 'cannon') {
 			if (monster.id === Monsters.HillGiant.id || monster.id === Monsters.MossGiant.id) {
-				monster.canCannon = isInWilderness;
+				usingCannon = isInWilderness;
 			}
-
-			if (monster.wildySlayerCave && isInWilderness) {
-				monster.canCannon = isInWilderness;
-				monster.cannonMulti = isInWilderness;
+			if (monster.wildySlayerCave) {
+				usingCannon = isInWilderness;
+				cannonMulti = isInWilderness;
 				if (monster.id === Monsters.AbyssalDemon.id && !isOnTask) {
-					monster.canCannon = false;
-					monster.cannonMulti = false;
+					usingCannon = false;
+					cannonMulti = false;
 				}
 			}
 		}
 	}
-	console.log(monster.cannonMulti);
 
-	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
+	if (
+		(method === 'burst' || method === 'barrage') &&
+		(monster!.canBarrage || (isInWilderness && monster.id === Monsters.Jelly.id))
+	) {
 		return `${monster!.name} cannot be barraged or burst.`;
 	}
 
@@ -493,25 +486,33 @@ export async function minionKillCommand(
 		return `${monster!.name} cannot be killed with a cannon.`;
 	}
 
-	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
+	if (
+		boostChoice === 'barrage' &&
+		attackStyles.includes(SkillsEnum.Magic) &&
+		(monster!.canBarrage || (isInWilderness && monster.id === Monsters.Jelly.id))
+	) {
 		consumableCosts.push(iceBarrageConsumables);
 		calculateVirtusBoost();
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage + virtusBoost);
 		boosts.push(`${boostIceBarrage + virtusBoost}% for Ice Barrage${virtusBoostMsg}`);
 		burstOrBarrage = SlayerActivityConstants.IceBarrage;
-	} else if (boostChoice === 'burst' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
+	} else if (
+		boostChoice === 'burst' &&
+		attackStyles.includes(SkillsEnum.Magic) &&
+		(monster!.canBarrage || (isInWilderness && monster.id === Monsters.Jelly.id))
+	) {
 		consumableCosts.push(iceBurstConsumables);
 		calculateVirtusBoost();
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst + virtusBoost);
 		boosts.push(`${boostIceBurst + virtusBoost}% for Ice Burst${virtusBoostMsg}`);
 		burstOrBarrage = SlayerActivityConstants.IceBurst;
-	} else if (boostChoice === 'cannon' && hasCannon && monster!.cannonMulti) {
+	} else if ((boostChoice === 'cannon' && hasCannon && monster!.cannonMulti) || cannonMulti) {
 		usingCannon = true;
 		cannonMulti = true;
 		consumableCosts.push(cannonMultiConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannonMulti);
 		boosts.push(`${boostCannonMulti}% for Cannon in multi`);
-	} else if (boostChoice === 'cannon' && hasCannon && monster!.canCannon) {
+	} else if ((boostChoice === 'cannon' && hasCannon && monster!.canCannon) || usingCannon) {
 		usingCannon = true;
 		consumableCosts.push(cannonSingleConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
