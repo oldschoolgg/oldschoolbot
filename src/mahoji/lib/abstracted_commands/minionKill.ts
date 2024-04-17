@@ -195,23 +195,6 @@ export async function minionKillCommand(
 		return `You can't kill ${monster.name} in the wilderness.`;
 	}
 
-	if (monster.id === Monsters.Jelly.id) {
-		monster.canBarrage = isInWilderness;
-	}
-
-	if (monster.id === Monsters.HillGiant.id || monster.id === Monsters.MossGiant.id) {
-		monster.canCannon = isInWilderness;
-	}
-
-	if (monster.wildySlayerCave && isInWilderness) {
-		monster.canCannon = true;
-		monster.cannonMulti = true;
-		if (monster.id === Monsters.AbyssalDemon.id && !isOnTask) {
-			monster.canCannon = false;
-			monster.cannonMulti = false;
-		}
-	}
-
 	const wildyGearStat = wildyGear.getStats()[key];
 	const revGearPercent = Math.max(0, calcWhatPercent(wildyGearStat, maxOffenceStats[key]));
 
@@ -458,15 +441,13 @@ export async function minionKillCommand(
 	let chinning = false;
 	let burstOrBarrage = 0;
 	const hasCannon = cannonBanks.some(i => user.owns(i));
-	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
-		return `${monster!.name} cannot be barraged or burst.`;
-	}
+
+	// Check for cannon
 	if (method === 'cannon' && !hasCannon) {
 		return "You don't own a Dwarf multicannon, so how could you use one?";
 	}
-	if (method === 'cannon' && !monster!.canCannon) {
-		return `${monster!.name} cannot be killed with a cannon.`;
-	}
+
+	// Check for stats
 	if (boostChoice === 'barrage' && user.skillLevel(SkillsEnum.Magic) < 94) {
 		return `You need 94 Magic to use Ice Barrage. You have ${user.skillLevel(SkillsEnum.Magic)}`;
 	}
@@ -475,6 +456,41 @@ export async function minionKillCommand(
 	}
 	if (boostChoice === 'chinning' && user.skillLevel(SkillsEnum.Ranged) < 65) {
 		return `You need 65 Ranged to use Chinning method. You have ${user.skillLevel(SkillsEnum.Ranged)}`;
+	}
+
+	// Wildy Monster checks
+	console.log(monster.cannonMulti);
+	console.log(isInWilderness);
+
+	if (isInWilderness !== undefined) {
+		if (method === 'barrage' || method === 'burst') {
+			if (monster.id === Monsters.Jelly.id) {
+				monster.canBarrage = isInWilderness;
+			}
+		}
+		if (method === 'cannon') {
+			if (monster.id === Monsters.HillGiant.id || monster.id === Monsters.MossGiant.id) {
+				monster.canCannon = isInWilderness;
+			}
+
+			if (monster.wildySlayerCave && isInWilderness) {
+				monster.canCannon = isInWilderness;
+				monster.cannonMulti = isInWilderness;
+				if (monster.id === Monsters.AbyssalDemon.id && !isOnTask) {
+					monster.canCannon = false;
+					monster.cannonMulti = false;
+				}
+			}
+		}
+	}
+	console.log(monster.cannonMulti);
+
+	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
+		return `${monster!.name} cannot be barraged or burst.`;
+	}
+
+	if (method === 'cannon' && !monster!.canCannon) {
+		return `${monster!.name} cannot be killed with a cannon.`;
 	}
 
 	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
