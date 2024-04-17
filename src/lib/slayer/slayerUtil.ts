@@ -231,7 +231,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 	}
 
 	let messages: string[] = [];
-	if (unlocks.includes(SlayerTaskUnlocksEnum.SizeMatters)) {
+	if (unlocks.includes(SlayerTaskUnlocksEnum.SizeMatters) && !_user.bitfield.includes(BitField.DisableSizeMatters)) {
 		quantity *= 2;
 		messages.push('2x qty for Size Matters unlock');
 	}
