@@ -101,7 +101,7 @@ Differences AS (
 
 SELECT
     user_id,
-    week_start,
+    week_start::text,
     diff_cl_global_rank,
     diff_cl_completion_percentage,
     diff_cl_completion_count,
