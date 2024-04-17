@@ -75,6 +75,7 @@ import { generateChart } from '../../../lib/util/chart';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahojiSettings';
 import { nexCommand } from './nexCommand';
@@ -198,6 +199,10 @@ export async function minionKillCommand(
 		monster.canBarrage = isInWilderness;
 	}
 
+	if (monster.id === Monsters.HillGiant.id || monster.id === Monsters.MossGiant.id) {
+		monster.canCannon = isInWilderness;
+	}
+
 	const wildyGearStat = wildyGear.getStats()[key];
 	const revGearPercent = Math.max(0, calcWhatPercent(wildyGearStat, maxOffenceStats[key]));
 
@@ -268,6 +273,8 @@ export async function minionKillCommand(
 	let blackMaskBoostMsg = '';
 	let salveAmuletBoost = 0;
 	let salveAmuletBoostMsg = '';
+	let virtusBoost = 0;
+	let virtusBoostMsg = '';
 
 	let dragonBoost = 0;
 	let dragonBoostMsg = '';
@@ -369,6 +376,23 @@ export async function minionKillCommand(
 
 	if (isInWilderness && monster.revsWeaponBoost) {
 		applyRevWeaponBoost();
+  }
+ 
+	function calculateVirtusBoost() {
+		let virtusPiecesEquipped = 0;
+		for (const item of resolveItems(['Virtus mask', 'Virtus robe top', 'Virtus robe bottom'])) {
+			if (user.gear.mage.hasEquipped(item)) {
+				virtusPiecesEquipped += blackMaskBoost !== 0 && itemNameFromID(item) === 'Virtus mask' ? 0 : 1;
+			}
+		}
+
+		virtusBoost = virtusPiecesEquipped * 2;
+		virtusBoostMsg =
+			virtusPiecesEquipped > 1
+				? ` with ${virtusPiecesEquipped} Virtus pieces`
+				: virtusPiecesEquipped > 0
+				? ` with ${virtusPiecesEquipped} Virtus piece`
+				: '';
 	}
 
 	if (isDragon && monster.name.toLowerCase() !== 'vorkath') {
@@ -446,13 +470,15 @@ export async function minionKillCommand(
 
 	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 		consumableCosts.push(iceBarrageConsumables);
-		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
-		boosts.push(`${boostIceBarrage}% for Ice Barrage`);
+		calculateVirtusBoost();
+		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage + virtusBoost);
+		boosts.push(`${boostIceBarrage + virtusBoost}% for Ice Barrage${virtusBoostMsg}`);
 		burstOrBarrage = SlayerActivityConstants.IceBarrage;
 	} else if (boostChoice === 'burst' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 		consumableCosts.push(iceBurstConsumables);
-		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst);
-		boosts.push(`${boostIceBurst}% for Ice Burst`);
+		calculateVirtusBoost();
+		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst + virtusBoost);
+		boosts.push(`${boostIceBurst + virtusBoost}% for Ice Burst${virtusBoostMsg}`);
 		burstOrBarrage = SlayerActivityConstants.IceBurst;
 	} else if (boostChoice === 'cannon' && hasCannon && monster!.cannonMulti) {
 		usingCannon = true;

@@ -26,7 +26,7 @@ import Prayer from '../skilling/skills/prayer';
 import Runecraft from '../skilling/skills/runecraft';
 import Smithing from '../skilling/skills/smithing';
 import { stealables } from '../skilling/skills/thieving/stealables';
-import Woodcutting from '../skilling/skills/woodcutting';
+import Woodcutting from '../skilling/skills/woodcutting/woodcutting';
 import {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
