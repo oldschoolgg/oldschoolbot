@@ -376,8 +376,8 @@ export async function minionKillCommand(
 
 	if (isInWilderness && monster.revsWeaponBoost) {
 		applyRevWeaponBoost();
-  }
- 
+	}
+
 	function calculateVirtusBoost() {
 		let virtusPiecesEquipped = 0;
 		for (const item of resolveItems(['Virtus mask', 'Virtus robe top', 'Virtus robe bottom'])) {
