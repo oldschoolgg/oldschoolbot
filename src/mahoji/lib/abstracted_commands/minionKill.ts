@@ -203,6 +203,15 @@ export async function minionKillCommand(
 		monster.canCannon = isInWilderness;
 	}
 
+	if (monster.wildySlayerCave && isInWilderness) {
+		monster.canCannon = true;
+		monster.cannonMulti = true;
+		if (monster.id === Monsters.AbyssalDemon.id && !isOnTask) {
+			monster.canCannon = false;
+			monster.cannonMulti = false;
+		}
+	}
+
 	const wildyGearStat = wildyGear.getStats()[key];
 	const revGearPercent = Math.max(0, calcWhatPercent(wildyGearStat, maxOffenceStats[key]));
 
@@ -544,7 +553,7 @@ export async function minionKillCommand(
 				degItemBeingUsed.push(degItem);
 			}
 		}
-	} else {
+	} else if (!isInWilderness) {
 		for (const degItem of degradeablePvmBoostItems) {
 			const isUsing =
 				convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
