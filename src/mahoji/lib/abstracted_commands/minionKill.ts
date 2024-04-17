@@ -199,6 +199,10 @@ export async function minionKillCommand(
 		monster.canBarrage = isInWilderness;
 	}
 
+	if (monster.id === Monsters.HillGiant.id || monster.id === Monsters.MossGiant.id) {
+		monster.canCannon = isInWilderness;
+	}
+
 	const wildyGearStat = wildyGear.getStats()[key];
 	const revGearPercent = Math.max(0, calcWhatPercent(wildyGearStat, maxOffenceStats[key]));
 
