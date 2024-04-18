@@ -12469,3 +12469,29 @@ setCustomItem(
 	},
 	100_000
 );
+
+setCustomItem(73_185, 'Frost mask', 'Bronze full helm', {}, 100_000);
+
+setCustomItem(
+	73_186,
+	'Nex plushie',
+	'Coal',
+	{
+		tradeable: false
+	},
+	100_000
+);
+
+setCustomItem(73_187, 'Dunce hat', 'Bronze full helm', {}, 100_000);
+
+setCustomItem(73_188, 'Dunce top', 'Bronze platebody', {}, 100_000);
+
+setCustomItem(73_189, 'Dunce legs', 'Bronze platelegs', {}, 100_000);
+
+setCustomItem(73_190, 'Dunce gloves', 'Bronze gloves', {}, 100_000);
+
+setCustomItem(73_191, 'Dunce shoes', 'Bronze boots', {}, 100_000);
+
+setCustomItem(73_192, 'Chilli chocolate', 'Coal', {}, 100_000);
+
+setCustomItem(73_193, 'Zak plushie', 'Coal', { tradeable: false }, 100_000);
