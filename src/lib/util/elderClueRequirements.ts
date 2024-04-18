@@ -15,7 +15,7 @@ import {
 } from '../data/CollectionsExport';
 import { getSimilarItems } from '../data/similarItems';
 import { slayerMaskHelms } from '../data/slayerMaskHelms';
-import resolveItems, { deepResolveItems } from './resolveItems';
+import { deepResolveItems } from './resolveItems';
 import { itemNameFromID } from './smallUtils';
 
 export const elderRequiredClueCLItems = uniqueArr([
@@ -34,7 +34,7 @@ export const elderSherlockItems = deepResolveItems([
 	'Axe of the high sungod',
 	'Hellfire bow',
 	'Ignis ring(i)',
-	'Infernal bulwark',
+	['Infernal bulwark', 'Superior inferno adze'],
 	'Royal crossbow',
 	'Spellbound ring(i)',
 	'Titan ballista',
@@ -43,10 +43,10 @@ export const elderSherlockItems = deepResolveItems([
 	'Dwarven warhammer',
 	'Tidal collector',
 	'Atlantean trident',
-	resolveItems(['Brackish blade', 'Ganodermic gloves', 'Ganodermic boots']),
+	['Brackish blade', 'Ganodermic gloves', 'Ganodermic boots'],
 	gods.map(g => ('pets' in g ? g.pets[g.pets.length - 1] : undefined)).filter(notEmpty),
 	slayerMaskHelms.map(h => h.helm.id),
-	resolveItems(['Elder rumble greegree', 'Gorilla rumble greegree'])
+	['Elder rumble greegree', 'Gorilla rumble greegree']
 ]);
 
 export async function checkElderClueRequirements(user: MUser) {

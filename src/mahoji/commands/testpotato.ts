@@ -1,10 +1,9 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
-import { Prisma, tame_growth, xp_gains_skill_enum } from '@prisma/client';
+import { activity_type_enum, Prisma, tame_growth, xp_gains_skill_enum } from '@prisma/client';
 import { User } from 'discord.js';
 import { noOp, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
@@ -31,6 +30,7 @@ import { DisassemblySourceGroups } from '../../lib/invention/groups';
 import { Inventions, transactMaterialsFromUser } from '../../lib/invention/inventions';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { Celestara, Solis } from '../../lib/minions/data/killableMonsters/custom/SunMoon';
 import potions from '../../lib/minions/data/potions';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
@@ -40,11 +40,12 @@ import { prisma } from '../../lib/settings/prisma';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { slayerMasterChoices } from '../../lib/slayer/constants';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { allSlayerMonsters } from '../../lib/slayer/tasks';
-import { tameFeedableItems, tameSpecies } from '../../lib/tames';
+import { tameFeedableItems, tameSpecies, TameSpeciesID } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
 import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
 import { elderRequiredClueCLItems, elderSherlockItems } from '../../lib/util/elderClueRequirements';
@@ -959,16 +960,28 @@ ${droprates.join('\n')}`),
 						)) {
 							fedItems.add(food.item.id);
 						}
-						await generateNewTame(user, specie);
-
+						const tame = await generateNewTame(user, specie);
+						if (!tame) continue;
 						await prisma.tame.updateMany({
 							where: {
-								user_id: user.id
+								id: tame.id
 							},
 							data: {
-								growth_stage: tame_growth.adult
+								growth_stage: tame_growth.adult,
+								fed_items: fedItems.bank
 							}
 						});
+						if (tame.species_id === TameSpeciesID.Igne) {
+							await prisma.tame.update({
+								where: {
+									id: tame.id
+								},
+								data: {
+									equipped_primary: itemID('Gorajan igne claws'),
+									equipped_armor: itemID('Gorajan igne armor')
+								}
+							});
+						}
 					}
 					await getPOH(user.id);
 					await prisma.playerOwnedHouse.update({
@@ -1008,6 +1021,8 @@ ${droprates.join('\n')}`),
 						.add('Coins', 100_000_000)
 						.add('Shark', 100_000_000)
 						.add('Vial of blood', 100_000_000)
+						.add('Clue scroll (grandmaster)', 100)
+						.add('Reward casket (grandmaster)', 100)
 						.add('Rune pouch')
 						.add('Zamorakian spear')
 						.add('Dragon warhammer')
@@ -1030,6 +1045,25 @@ ${droprates.join('\n')}`),
 					for (const item of [...elderSherlockItems, ...elderRequiredClueCLItems]) {
 						loot.add(Array.isArray(item) ? item[0] : item);
 					}
+					await user.incrementKC(Celestara.id, 1);
+					await user.incrementKC(Solis.id, 1);
+
+					await prisma.activity.create({
+						data: {
+							user_id: BigInt(user.id),
+							completed: true,
+							start_date: new Date(),
+							finish_date: new Date(),
+							channel_id: BigInt(interaction.channelId),
+							group_activity: false,
+							type: activity_type_enum.ClueCompletion,
+							duration: 1,
+							data: {
+								clueID: itemID('Reward casket (grandmaster)'),
+								quantity: 100
+							}
+						}
+					});
 
 					let options = {
 						GP: 5_000_000_000,
@@ -1052,9 +1086,18 @@ ${droprates.join('\n')}`),
 							dartQuantity: 100_000,
 							dartID: itemID('Dragon dart')
 						},
-						bitfield: {
-							push: [BitField.HasUnlockedYeti, BitField.HasPlantedIvy]
-						}
+						bitfield: [
+							...user.bitfield,
+							BitField.HasScrollOfFarming,
+							BitField.HasScrollOfLongevity,
+							BitField.HasScrollOfTheHunt,
+							BitField.HasMoondashCharm,
+							BitField.HasUnlockedVenatrix,
+							BitField.HasDaemonheimAgilityPass,
+							BitField.HasGuthixEngram,
+							BitField.HasPlantedIvy,
+							BitField.HasArcaneScroll
+						]
 					};
 					for (const skill of Object.values(SkillsEnum)) {
 						// @ts-expect-error
@@ -1066,7 +1109,7 @@ ${droprates.join('\n')}`),
 						collectionLog: true
 					});
 					return `Fully maxed your account, stocked your bank, charged all chargeable items.
-					
+
 Spawned an adult of each tame, fed them all applicable items, and spawned ALL their equippable items into your bank (but not equipped).`;
 				}
 				if (options.patron) {
