@@ -26151,6 +26151,157 @@ exports[`BSO Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
+        "19835": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Enigma tokens (Master clues)",
+    "outputItems": Bank {
+      "bank": {
+        "73203": 10,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "12073": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Enigma tokens (Elite clues)",
+    "outputItems": Bank {
+      "bank": {
+        "73203": 7,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "2722": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Enigma tokens (Hard clues)",
+    "outputItems": Bank {
+      "bank": {
+        "73203": 4,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "2801": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Enigma tokens (Medium clues)",
+    "outputItems": Bank {
+      "bank": {
+        "73203": 2,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "2677": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Enigma tokens (Easy clues)",
+    "outputItems": Bank {
+      "bank": {
+        "73203": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "23182": 2,
+      },
+      "frozen": false,
+    },
+    "name": "Enigma tokens (Beginner clues)",
+    "outputItems": Bank {
+      "bank": {
+        "73203": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "19837": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Enigma tokens (Grandmaster clues)",
+    "outputItems": Bank {
+      "bank": {
+        "73203": 50,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73123": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Enigma tokens (Elder clues)",
+    "outputItems": Bank {
+      "bank": {
+        "73203": 100,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "73201": 1,
+      },
+      "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "magic": 500,
+        "organic": 1000,
+        "third-age": 10,
+      },
+    },
+    "name": "Quantum transmuter",
+    "outputItems": Bank {
+      "bank": {
+        "73200": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
         "50017": 5,
         "50021": 30,
       },

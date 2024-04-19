@@ -549,7 +549,7 @@ export async function transactMaterialsFromUser({
 	addToResearchedMaterialsBank?: boolean;
 	addToGlobalInventionCostBank?: boolean;
 }) {
-	const materialsOwnedBank = user.ownedMaterials();
+	const materialsOwnedBank = user.materialsOwned();
 	if (add) materialsOwnedBank.add(add);
 	if (remove) materialsOwnedBank.remove(remove);
 
@@ -627,15 +627,18 @@ type InventionItemBoostResult =
 			success: false;
 	  };
 
-export function canAffordInventionBoost(user: MUser, inventionID: InventionID, duration: number) {
+export function calcInventionCost(
+	inventionID: InventionID,
+	duration: number,
+	noLimit: boolean = false
+): { invention: Invention; materialCost: MaterialBank } {
 	const invention = Inventions.find(i => i.id === inventionID)!;
 	if (invention.usageCostMultiplier === null) {
 		throw new Error('Tried to calculate cost of invention that has no cost.');
 	}
-	const materialsOwned = user.materialsOwned();
 	const materialCost = new MaterialBank();
 	let multiplier = Math.ceil(duration / (Time.Minute * 3));
-	multiplier = clamp(Math.floor(multiplier * invention.usageCostMultiplier), 1, 1000);
+	if (!noLimit) multiplier = clamp(Math.floor(multiplier * invention.usageCostMultiplier), 1, 1000);
 	materialCost.add(invention.materialTypeBank.clone().multiply(multiplier));
 	for (const [mat, boosts] of materialBoosts) {
 		if (!materialCost.has(mat)) continue;
@@ -647,6 +650,17 @@ export function canAffordInventionBoost(user: MUser, inventionID: InventionID, d
 	}
 	materialCost.validate();
 
+	return { invention, materialCost };
+}
+export function canAffordInventionBoost(
+	user: MUser,
+	inventionID: InventionID,
+	duration: number,
+	noLimit: boolean = false
+) {
+	const materialsOwned = user.materialsOwned();
+	const { invention, materialCost } = calcInventionCost(inventionID, duration, noLimit);
+
 	return {
 		invention,
 		materialsOwned,
@@ -655,23 +669,37 @@ export function canAffordInventionBoost(user: MUser, inventionID: InventionID, d
 	};
 }
 
-export async function inventionItemBoost({
-	user,
-	inventionID,
-	duration
-}: {
-	user: MUser;
-	inventionID: InventionID;
-	duration: number;
-}): Promise<InventionItemBoostResult> {
-	const { materialCost, canAfford, invention } = await canAffordInventionBoost(user, inventionID, duration);
-
-	// If it has to be equipped, and isn't, or has to be in bank, and isn't, fail.
+export function inventionEnabled(user: MUser, inventionID: InventionID) {
+	const invention = Inventions.find(i => i.id === inventionID)!;
 	if (
 		user.user.disabled_inventions.includes(invention.id) ||
 		(invention.flags.includes('equipped') && !user.hasEquipped(invention.item.id)) ||
 		(invention.flags.includes('bank') && !user.hasEquippedOrInBank([invention.item.id]))
 	) {
+		return false;
+	}
+	return true;
+}
+
+export async function inventionItemBoost({
+	user,
+	inventionID,
+	duration,
+	noLimit
+}: {
+	user: MUser;
+	inventionID: InventionID;
+	duration: number;
+	noLimit?: boolean;
+}): Promise<InventionItemBoostResult> {
+	const { materialCost, canAfford, invention } = canAffordInventionBoost(
+		user,
+		inventionID,
+		duration,
+		noLimit ?? false
+	);
+	// If it has to be equipped, and isn't, or has to be in bank, and isn't, fail.
+	if (!inventionEnabled(user, invention.id) || duration === 0) {
 		return { success: false };
 	}
 

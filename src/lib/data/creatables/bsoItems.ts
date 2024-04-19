@@ -1389,6 +1389,52 @@ export const BsoCreateables: Createable[] = [
 		name: 'Clue scroll (elder)',
 		inputItems: new Bank().add('Elder scroll piece', 3),
 		outputItems: new Bank().add('Clue scroll (elder)')
+	},
+	{
+		name: 'Enigma tokens (Master clues)',
+		inputItems: new Bank().add('Clue scroll (master)', 1).freeze(),
+		outputItems: new Bank().add('Enigma tokens', 10).freeze()
+	},
+	{
+		name: 'Enigma tokens (Elite clues)',
+		inputItems: new Bank().add('Clue scroll (elite)', 1).freeze(),
+		outputItems: new Bank().add('Enigma tokens', 7).freeze()
+	},
+	{
+		name: 'Enigma tokens (Hard clues)',
+		inputItems: new Bank().add('Clue scroll (hard)', 1).freeze(),
+		outputItems: new Bank().add('Enigma tokens', 4).freeze()
+	},
+	{
+		name: 'Enigma tokens (Medium clues)',
+		inputItems: new Bank().add('Clue scroll (medium)', 1).freeze(),
+		outputItems: new Bank().add('Enigma tokens', 2).freeze()
+	},
+	{
+		name: 'Enigma tokens (Easy clues)',
+		inputItems: new Bank().add('Clue scroll (easy)', 1).freeze(),
+		outputItems: new Bank().add('Enigma tokens', 1).freeze()
+	},
+	{
+		name: 'Enigma tokens (Beginner clues)',
+		inputItems: new Bank().add('Clue scroll (beginner)', 2).freeze(),
+		outputItems: new Bank().add('Enigma tokens', 1).freeze()
+	},
+	{
+		name: 'Enigma tokens (Grandmaster clues)',
+		inputItems: new Bank().add('Clue scroll (grandmaster)', 1).freeze(),
+		outputItems: new Bank().add('Enigma tokens', 50).freeze()
+	},
+	{
+		name: 'Enigma tokens (Elder clues)',
+		inputItems: new Bank().add('Clue scroll (elder)', 1).freeze(),
+		outputItems: new Bank().add('Enigma tokens', 100).freeze()
+	},
+	{
+		name: 'Quantum transmuter',
+		inputItems: new Bank().add('Enigmatic orb').freeze(),
+		outputItems: new Bank().add('Quantum transmuter').freeze(),
+		materialCost: new MaterialBank().add('magic', 500).add('third-age', 10).add('organic', 1000)
 	}
 ];
 

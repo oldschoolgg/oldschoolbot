@@ -55,7 +55,7 @@ export const Akumu: CustomMonster = {
 		highestDeathChance: 65
 	},
 	minimumFoodHealAmount: 22,
-	allItems: resolveItems([]),
+	allItems: [],
 	minimumGearRequirements: {
 		melee: {}
 	},

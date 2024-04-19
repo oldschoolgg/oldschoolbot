@@ -12468,3 +12468,47 @@ setCustomItem(
 	},
 	100_000
 );
+
+setCustomItem(73_200, 'Quantum transmuter', 'Coal', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	}
+});
+
+setCustomItem(
+	73_201,
+	'Enigmatic orb',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		},
+		highalch: 25_000_000
+	},
+	30_000_000
+);
+
+setCustomItem(
+	73_202,
+	"Mini 'mar",
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	73_203,
+	'Enigma tokens',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);

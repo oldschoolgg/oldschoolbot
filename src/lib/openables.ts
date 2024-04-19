@@ -160,6 +160,8 @@ for (const clueTier of ClueTiers) {
 			loot.add(clueTier.table.open(includeBuggedRolls ? totalRolls + quantity : totalRolls, user));
 			const extraClueRolls = totalRolls - quantity;
 
+			loot.add(clueTier.table.open(totalRolls, user));
+
 			let mimicNumber = 0;
 			if (clueTier.mimicChance) {
 				for (let i = 0; i < quantity; i++) {

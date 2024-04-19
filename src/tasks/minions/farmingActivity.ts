@@ -61,6 +61,10 @@ async function farmingLootBoosts(
 			);
 		}
 	}
+	if (user.owns('Quantum transmuter')) {
+		bonusPercentage += 80;
+		messages.push('80% for Quantum transmuter');
+	}
 	increaseBankQuantitesByPercent(loot, bonusPercentage);
 }
 

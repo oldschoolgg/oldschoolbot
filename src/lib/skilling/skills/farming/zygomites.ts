@@ -143,7 +143,7 @@ export const zygomitePlants: Plant[] = zygomiteFarmingSource.map(src => ({
 	harvestXp: 927.7,
 	inputItems: new Bank().add(src.seedItem.id),
 	name: src.name,
-	aliases: [src.name.toLowerCase()],
+	aliases: [src.name.toLowerCase(), src.name.toLowerCase().split(' ')[0]],
 	petChance: 7500,
 	seedType: 'mushroom' as const,
 	growthTime: 240,
