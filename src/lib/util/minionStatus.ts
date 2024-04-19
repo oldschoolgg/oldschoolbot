@@ -667,6 +667,11 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
+		case 'CombatRing': {
+			return `${name} is currently fighting in the Combat Ring! The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'SpecificQuest': {
 			const data = currentTask as SpecificQuestOptions;
 			return `${name} is currently doing the ${
