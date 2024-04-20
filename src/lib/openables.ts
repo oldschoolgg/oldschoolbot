@@ -155,7 +155,7 @@ for (const clueTier of ClueTiers) {
 			}
 			// Roll loot, and calculate how many bonus rolls were received:
 			loot.add(clueTier.table.open(includeBuggedRolls ? totalRolls + quantity : totalRolls, user));
-			const extraClueRolls = totalRolls - quantity;
+			const extraClueRolls = includeBuggedRolls ? totalRolls : totalRolls - quantity;
 
 			let mimicNumber = 0;
 			if (clueTier.mimicChance) {
