@@ -1,7 +1,7 @@
 import { randInt } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
-import { Events, ZALCANO_ID } from '../../../lib/constants';
+import { ZALCANO_ID } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { ashSanctifierEffect } from '../../../lib/util/ashSanctifier';
@@ -50,15 +50,6 @@ export const zalcanoTask: MinionTask = {
 		);
 
 		await ashSanctifierEffect(user, loot, duration, xpRes);
-
-		if (loot.amount('Smolcano') > 0) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received **Smolcano**, their Zalcano KC is ${randInt(newKC - quantity, newKC)}!`
-			);
-		}
 
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,

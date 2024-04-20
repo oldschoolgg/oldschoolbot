@@ -1,7 +1,7 @@
 import { percentChance, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, MAX_LEVEL, MIN_LENGTH_FOR_PET, TwitcherGloves } from '../../lib/constants';
+import { MAX_LEVEL, MIN_LENGTH_FOR_PET, TwitcherGloves } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
@@ -360,14 +360,6 @@ export const woodcuttingTask: MinionTask = {
 			if (roll(petDropRate / quantity)) {
 				loot.add('Beaver');
 				str += "\n**You have a funny feeling you're being followed...**";
-				globalClient.emit(
-					Events.ServerNotification,
-					`${Emoji.Woodcutting} **${user.badgedUsername}'s** minion, ${
-						user.minionName
-					}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
-						'woodcutting'
-					)} Woodcutting!`
-				);
 			}
 		}
 

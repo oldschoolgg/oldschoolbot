@@ -1,4 +1,3 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { randArrItem, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
@@ -6,13 +5,13 @@ import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeri
 
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
-import { CHINCANNON_MESSAGES, Emoji, Events } from '../../../lib/constants';
+import { CHINCANNON_MESSAGES, Emoji } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { RaidsOptions } from '../../../lib/types/minions';
 import { randomVariation, roll } from '../../../lib/util';
 import { handleSpecialCoxLoot } from '../../../lib/util/handleSpecialCoxLoot';
@@ -36,7 +35,6 @@ const orangeItems = resolveItems(['Takon', 'Steve']);
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic', 'Onyx']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
 const blueItems = resolveItems(['Metamorphic dust']);
-const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
 
 export const coxPurpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
 
@@ -209,20 +207,7 @@ export const raidsTask: MinionTask = {
 			const isOrange = items.some(([item]) => orangeItems.includes(item.id));
 			const specialLoot = isPurple || isOrange;
 			const emote = isOrange ? Emoji.Orange : isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
-			if (
-				!cc &&
-				items.some(([item]) => coxPurpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))
-			) {
-				const itemsToAnnounce = itemsAdded.filter(item => coxPurpleItems.includes(item.id), false);
-				globalClient.emit(
-					Events.ServerNotification,
-					`${Emoji.Purple} ${
-						user.badgedUsername
-					} just received **${itemsToAnnounce}** on their ${formatOrdinal(
-						await getMinigameScore(user.id, minigameID)
-					)} raid.`
-				);
-			}
+
 			const str = specialLoot ? `${emote} ||${itemsAdded}||` : itemsAdded.toString();
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 

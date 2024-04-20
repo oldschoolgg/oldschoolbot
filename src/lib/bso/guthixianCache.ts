@@ -5,13 +5,9 @@ import { MinigameActivityTaskOptionsWithNoChanges } from '../types/minions';
 import { formatDuration, getInterval } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 
-const getGuthixianCacheInterval = () => getInterval(24);
+export const getGuthixianCacheInterval = () => getInterval(24);
 
-export async function joinGuthixianCache(user: MUser, channelID: string) {
-	if (user.minionIsBusy) {
-		return `${user.minionName} is busy.`;
-	}
-
+export async function userHasDoneCurrentGuthixianCache(user: MUser) {
 	const currentInterval = getGuthixianCacheInterval();
 
 	const lastTrips = await prisma.activity.findMany({
@@ -24,13 +20,21 @@ export async function joinGuthixianCache(user: MUser, channelID: string) {
 		},
 		take: 10
 	});
-	if (
-		lastTrips.some(
-			trip =>
-				trip.finish_date.getTime() > currentInterval.start.getTime() &&
-				trip.finish_date.getTime() < currentInterval.end.getTime()
-		)
-	) {
+	return lastTrips.some(
+		trip =>
+			trip.finish_date.getTime() > currentInterval.start.getTime() &&
+			trip.finish_date.getTime() < currentInterval.end.getTime()
+	);
+}
+
+export async function joinGuthixianCache(user: MUser, channelID: string) {
+	if (user.minionIsBusy) {
+		return `${user.minionName} is busy.`;
+	}
+
+	const currentInterval = getGuthixianCacheInterval();
+
+	if (await userHasDoneCurrentGuthixianCache(user)) {
 		return `You already participated in the current Guthixian Cache, try again at: ${currentInterval.nextResetStr}`;
 	}
 

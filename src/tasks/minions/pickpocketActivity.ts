@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { chargePortentIfHasCharges, PortentID } from '../../lib/bso/divination';
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
@@ -69,7 +69,6 @@ export const pickpocketTask: MinionTask = {
 		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived, duration } = data;
 		const user = await mUserFetch(userID);
 		const obj = stealables.find(_obj => _obj.id === monsterID)!;
-		const currentLevel = user.skillLevel('thieving');
 		let rogueOutfitBoostActivated = false;
 
 		const loot = new Bank();
@@ -175,14 +174,6 @@ export const pickpocketTask: MinionTask = {
 
 		if (loot.amount('Rocky') > 0) {
 			str += "\n**You have a funny feeling you're being followed...**";
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a **Rocky** <:Rocky:324127378647285771> while ${
-					obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
-				} from ${obj.name}, their Thieving level is ${currentLevel}!`
-			);
 		}
 		if (boosts.length > 0) {
 			str += `\n\n**Messages:** ${boosts.join(', ')}`;

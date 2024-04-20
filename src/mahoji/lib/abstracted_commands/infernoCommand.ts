@@ -377,7 +377,8 @@ async function infernoRun({
 			'Drygore mace',
 			'Offhand drygore rapier',
 			'Offhand drygore longsword',
-			'Offhand drygore mace'
+			'Offhand drygore mace',
+			'Offhand spidergore rapier'
 		]).filter(i => allMeleeGearItems.includes(i)).length;
 		if (amountOfDrygoreEquipped < 2) {
 			return 'You need strong kalphite weapons to pierce TzKal-Zuk skin!';

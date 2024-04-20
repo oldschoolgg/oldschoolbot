@@ -150,6 +150,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable wilderness high peak time warning',
 		bit: BitField.DisableHighPeakTimeWarning
+	},
+	{
+		name: 'Use super restores for Dwarven blessing',
+		bit: BitField.UseSuperRestoresForDwarvenBlessing
 	}
 ];
 
