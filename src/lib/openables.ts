@@ -140,6 +140,8 @@ for (const clueTier of ClueTiers) {
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
 
 			// BSO Clue roll code:
+			const includeBuggedRolls = true;
+
 			const loot = new Bank();
 			const hasCHEquipped = user.hasEquippedOrInBank(clueHunterOutfit, 'every');
 			let totalRolls = 0;
@@ -152,7 +154,7 @@ for (const clueTier of ClueTiers) {
 				}
 			}
 			// Roll loot, and calculate how many bonus rolls were received:
-			loot.add(clueTier.table.open(totalRolls, user));
+			loot.add(clueTier.table.open(includeBuggedRolls ? totalRolls + quantity : totalRolls, user));
 			const extraClueRolls = totalRolls - quantity;
 
 			let mimicNumber = 0;
