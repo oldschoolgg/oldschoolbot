@@ -150,6 +150,10 @@ const toggles: UserConfigToggle[] = [
 	{
 		name: 'Disable wilderness high peak time warning',
 		bit: BitField.DisableHighPeakTimeWarning
+	},
+	{
+		name: 'Disable Names on Opens',
+		bit: BitField.DisableOpenableNames
 	}
 ];
 

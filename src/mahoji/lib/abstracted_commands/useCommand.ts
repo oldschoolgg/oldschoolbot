@@ -13,6 +13,7 @@ import { mysteriousStepData } from '../../../lib/mysteryTrail';
 import { makeScriptImage } from '../../../lib/scriptImages';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
+import resolveItems from '../../../lib/util/resolveItems';
 import { flowerTable } from './hotColdCommand';
 
 const messageInABottleMessages = [
@@ -608,6 +609,17 @@ usables.push({
 		return 'You used your Double Loot Token!';
 	}
 });
+
+for (const zygomite of resolveItems(['Herbal zygomite spores', 'Barky zygomite spores', 'Fruity zygomite spores'])) {
+	usables.push({
+		items: [getOSItem(zygomite), getOSItem('Deathly toxic potion')],
+		run: async (user: MUser) => {
+			await user.removeItemsFromBank(new Bank().add('Deathly toxic potion').add(zygomite));
+			await user.addItemsToBank({ items: new Bank().add('Toxic zygomite spores'), collectionLog: true });
+			return 'You poured the Deathly toxic potion on the zygomite spores, turning them into Toxic zygomite spores!';
+		}
+	});
+}
 
 for (const [_, val] of objectEntries(mysteriousStepData)) {
 	if (!val.clueItem) continue;

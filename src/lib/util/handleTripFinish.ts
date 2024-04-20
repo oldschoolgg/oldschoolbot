@@ -16,6 +16,7 @@ import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
+import { eggChancePerMinute } from '../easter2024';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
@@ -84,7 +85,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Implings',
 		fn: async ({ data, messages, user }) => {
-			const imp = await handlePassiveImplings(user, data);
+			const imp = await handlePassiveImplings(user, data, messages);
 			if (imp && imp.bank.length > 0) {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
@@ -421,7 +422,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: async ({ data, user, messages }) => {
 			if (!user.bank.has('Moonlight mutator')) return;
 			if (user.user.disabled_inventions.includes(InventionID.MoonlightMutator)) return;
-			const randomZyg = randArrItem(zygomiteFarmingSource);
+			const randomZyg = randArrItem(zygomiteFarmingSource.filter(z => z.lootTable !== null));
 			const loot = new Bank();
 			const cost = new Bank();
 
@@ -429,7 +430,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (minutes < 1) return;
 			for (let i = 0; i < minutes; i++) {
 				if (roll(zygomiteSeedMutChance)) {
-					const ownedSeed = shuffleArr(randomZyg.mutatedFromItems).find(seed => user.bank.has(seed));
+					const ownedSeed = shuffleArr(randomZyg.mutatedFromItems!).find(seed => user.bank.has(seed));
 					if (!ownedSeed) continue;
 					cost.add(ownedSeed);
 
@@ -455,6 +456,23 @@ const tripFinishEffects: TripFinishEffect[] = [
 				} else if (loot.length > 0) {
 					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost} seeds, ${loot} survived`);
 				}
+			}
+		}
+	},
+	{
+		name: 'Large egg spawns',
+		fn: async ({ data, messages, user }) => {
+			const minutes = Math.floor(data.duration / Time.Minute);
+			if (minutes < 1) return;
+			const loot = new Bank();
+			for (let i = 0; i < minutes; i++) {
+				if (roll(eggChancePerMinute)) {
+					loot.add('Large egg');
+				}
+			}
+			if (loot.length > 0) {
+				await user.addItemsToBank({ items: loot, collectionLog: true });
+				messages.push(`You found ${loot}`);
 			}
 		}
 	}

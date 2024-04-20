@@ -296,6 +296,7 @@ export enum BitField {
 	DisableClueButtons = 38,
 	DisableAutoSlayButton = 39,
 	DisableHighPeakTimeWarning = 40,
+	DisableOpenableNames = 41,
 
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
@@ -326,7 +327,8 @@ export enum BitField {
 	HasVibrantBoon = 225,
 	HasAncientBoon = 226,
 	DisabledTameClueOpening = 227,
-	HasMoondashCharm = 228
+	HasMoondashCharm = 228,
+	HasUnlockedVenatrix = 229
 }
 
 interface BitFieldData {
@@ -530,10 +532,20 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		protected: false,
 		userConfigurable: true
 	},
+	[BitField.DisableOpenableNames]: {
+		name: 'Disable Names On Open',
+		protected: false,
+		userConfigurable: true
+	},
 	[BitField.HasMoondashCharm]: {
 		name: 'Used Moondash Charm',
 		protected: false,
-		userConfigurable: true
+		userConfigurable: false
+	},
+	[BitField.HasUnlockedVenatrix]: {
+		name: 'Has Unlocked Venatrix',
+		protected: false,
+		userConfigurable: false
 	}
 } as const;
 
@@ -773,6 +785,9 @@ export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 
 export const UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL = ['agility', 'thieving', 'agility+thieving'] as const;
 export type UnderwaterAgilityThievingTrainingSkill = (typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL)[number];
+
+export const TWITCHERS_GLOVES = ['egg', 'ring', 'seed', 'clue'] as const;
+export type TwitcherGloves = (typeof TWITCHERS_GLOVES)[number];
 
 export const busyImmuneCommands = ['admin', 'rp'];
 export const usernameCache = new Map<string, string>();

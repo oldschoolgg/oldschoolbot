@@ -1365,8 +1365,58 @@ export const BsoCreateables: Createable[] = [
 		noCl: true
 	},
 	...ghostCreatables,
-	...divinationCreatables
+	...divinationCreatables,
+	{
+		name: 'Sundial scimitar',
+		inputItems: new Bank().add('Solite', 7500).add('Atomic energy', 30_000).add('Dragon scimitar'),
+		outputItems: new Bank().add('Sundial scimitar')
+	},
+	{
+		name: 'Offhand spidergore rapier',
+		inputItems: new Bank().add('Offhand drygore rapier').add('Spiders leg bottom'),
+		outputItems: new Bank().add('Offhand spidergore rapier')
+	},
+	{
+		name: 'Lumina (Materials)',
+		inputItems: new Bank().add('Elder rune', 30),
+		outputItems: new Bank().add('Lumina'),
+		materialCost: new MaterialBank({
+			wooden: 15
+		})
+	},
+	{
+		name: 'Clue scroll (elder)',
+		inputItems: new Bank().add('Elder scroll piece', 3),
+		outputItems: new Bank().add('Clue scroll (elder)')
+	}
 ];
+
+const potionOfLightLogs = [
+	{
+		item: getOSItem('Elder logs'),
+		qty: 5
+	},
+	{
+		item: getOSItem('Redwood logs'),
+		qty: 10
+	},
+	{
+		item: getOSItem('Magic logs'),
+		qty: 30
+	},
+	{
+		item: getOSItem('Yew logs'),
+		qty: 50
+	}
+];
+
+for (const { item, qty } of potionOfLightLogs) {
+	BsoCreateables.push({
+		name: `Lumina (${item.name})`,
+		inputItems: new Bank().add('Elder rune', 30).add(item, qty),
+		outputItems: new Bank().add('Lumina')
+	});
+}
 
 for (const { cape, skills } of expertCapesSource) {
 	const capeBank = new Bank().add(cape.id).freeze();

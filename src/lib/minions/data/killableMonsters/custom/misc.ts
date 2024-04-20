@@ -6,6 +6,8 @@ import { LowSeedPackTable } from '../../../../data/seedPackTables';
 import { GearStat } from '../../../../gear';
 import { BattlestaffTable, runeAlchablesTable, StoneSpiritTable } from '../../../../simulation/sharedTables';
 import resolveItems from '../../../../util/resolveItems';
+import { Akumu } from './bosses/Akumu';
+import { Venatrix } from './bosses/Venatrix';
 import { CustomMonster } from './customMonsters';
 import { TormentedDemon } from './TormentedDemon';
 import { VladimirDrakan } from './VladimirDrakan';
@@ -70,5 +72,7 @@ export const MiscCustomMonsters = {
 	CockroachSoldier,
 	EliteBlackKnight,
 	Yeti,
-	VladimirDrakan
+	VladimirDrakan,
+	Akumu,
+	Venatrix
 };

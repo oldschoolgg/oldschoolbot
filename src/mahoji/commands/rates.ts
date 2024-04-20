@@ -5,9 +5,17 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import {
+	BathhouseOres,
+	bathHouseTiers,
+	BathwaterMixtures,
+	calculateBathouseResult,
+	durationPerBaxBath
+} from '../../lib/baxtorianBathhouses';
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { GLOBAL_BSO_XP_MULTIPLIER, PeakTier } from '../../lib/constants';
+import { Eatables } from '../../lib/data/eatables';
 import { inventionBoosts } from '../../lib/invention/inventions';
 import { marketPriceOfBank } from '../../lib/marketPrices';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -28,6 +36,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { HunterTechniqueEnum } from '../../lib/skilling/types';
 import { Gear } from '../../lib/structures/Gear';
+import { BathhouseTaskOptions } from '../../lib/types/minions';
 import { convertBankToPerHourStats, stringMatches, toKMB } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -38,6 +47,7 @@ import { calculateDungeoneeringResult } from '../../tasks/minions/bso/dungeoneer
 import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
 import { calculateHunterResult } from '../../tasks/minions/HunterActivity/hunterActivity';
 import { calculateMiningResult } from '../../tasks/minions/miningActivity';
+import { gearstatToSetup, gorajanBoosts } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
 import { calculateHunterInput } from './hunt';
 import { calculateMiningInput } from './mine';
@@ -47,6 +57,19 @@ export const ratesCommand: OSBMahojiCommand = {
 	name: 'rates',
 	description: 'Check rates of various skills/activities.',
 	options: [
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'minigames',
+			description: 'Check minigames rates.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'baxtorian_bathhouses',
+					description: 'baxtorian bathhouses',
+					options: []
+				}
+			]
+		},
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'tames',
@@ -139,9 +162,52 @@ export const ratesCommand: OSBMahojiCommand = {
 		monster?: { monster?: { name: string } };
 		tames?: { eagle?: {} };
 		misc?: { zygomite_seeds?: {} };
+		minigames?: { baxtorian_bathhouses?: {} };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
+
+		if (options.minigames?.baxtorian_bathhouses) {
+			let results = [];
+			for (const tier of bathHouseTiers) {
+				for (const ore of BathhouseOres) {
+					for (const mixture of BathwaterMixtures) {
+						results.push({
+							...calculateBathouseResult({
+								mixture: mixture.name,
+								ore: ore.item.id,
+								tier: tier.name,
+								minigameID: 'bax_baths',
+								quantity: 4
+							} as BathhouseTaskOptions),
+							tier,
+							ore,
+							mixture
+						});
+					}
+				}
+			}
+
+			results.sort(
+				(a, b) => b.firemakingXP * GLOBAL_BSO_XP_MULTIPLIER - a.firemakingXP * GLOBAL_BSO_XP_MULTIPLIER
+			);
+			let tableArr = [['Combo', 'FM XP/hr', 'Herb XP/hr'].join('\t')];
+			for (const { tier, ore, mixture, firemakingXP, herbXP } of results) {
+				const duration = durationPerBaxBath * 4;
+				const totalFiremakingXP = firemakingXP * GLOBAL_BSO_XP_MULTIPLIER;
+				const totalHerbloreXP = herbXP * GLOBAL_BSO_XP_MULTIPLIER;
+				tableArr.push(
+					[
+						`${tier.name} ${ore.item.name} ${mixture.name}`,
+						toKMB(calcPerHour(totalFiremakingXP, duration)),
+						toKMB(calcPerHour(totalHerbloreXP, duration))
+					].join('\t')
+				);
+			}
+			return {
+				...(returnStringOrFile(tableArr.join('\n'), true) as InteractionReplyOptions)
+			};
+		}
 		if (options.misc?.zygomite_seeds) {
 			const mutationChancePerMinute = 1 / zygomiteSeedMutChance;
 			const survivalChancePerMutation = 1 / zygomiteMutSurvivalChance;
@@ -155,9 +221,9 @@ export const ratesCommand: OSBMahojiCommand = {
 ${zygomiteFarmingSource
 	.map(
 		z =>
-			`${bold(z.seedItem.name)} evolves from: ${z.mutatedFromItems
-				.map(itemNameFromID)
-				.join(', ')}, drops these items: ${z.lootTable.allItems.map(itemNameFromID).join(', ')}.`
+			`${bold(z.seedItem.name)} evolves from: ${
+				!z.mutatedFromItems ? 'No items' : z.mutatedFromItems.map(itemNameFromID).join(', ')
+			}, drops these items: ${!z.lootTable ? 'Nothing' : z.lootTable.allItems.map(itemNameFromID).join(', ')}.`
 	)
 	.join('\n\n')}`;
 		}
@@ -197,15 +263,10 @@ ${zygomiteFarmingSource
 				return 'Invalid monster.';
 			}
 
-			if (user.id !== '157797566833098752') {
-				return 'This command is currently disabled.';
-			}
-
 			let { timeToFinish } = monster;
 			// 10% for learning
 			timeToFinish = reduceNumByPercent(timeToFinish, 10);
 
-			// 2x for BSO
 			timeToFinish /= 2;
 
 			if (monster.pohBoosts) {
@@ -219,11 +280,9 @@ ${zygomiteFarmingSource
 			}
 
 			if (!monster.wildy) {
-				// boosts.push('40% boost for Dwarven warhammer');
 				timeToFinish = reduceNumByPercent(timeToFinish, 40);
 			} else if (monster.wildy) {
 				timeToFinish /= 3;
-				// boosts.push('3x boost for Hellfire bow');
 			}
 
 			timeToFinish = reduceNumByPercent(timeToFinish, 15);
@@ -236,6 +295,37 @@ ${zygomiteFarmingSource
 					}
 				}
 			}
+
+			const hasBlessing = true;
+			const hasZealotsAmulet = true;
+			if (hasZealotsAmulet && hasBlessing) {
+				timeToFinish *= 0.75;
+			} else if (hasBlessing) {
+				timeToFinish *= 0.8;
+			}
+			if (monster.wildy && hasZealotsAmulet) {
+				timeToFinish *= 0.95;
+			}
+
+			const allGorajan = gorajanBoosts.every(e => user.gear[e[1]].hasEquipped(e[0], true));
+			for (const [outfit, setup] of gorajanBoosts) {
+				if (
+					allGorajan ||
+					(gearstatToSetup.get(monster.attackStyleToUse) === setup &&
+						user.gear[setup].hasEquipped(outfit, true))
+				) {
+					timeToFinish *= 0.9;
+					break;
+				}
+			}
+
+			timeToFinish *= 0.85;
+
+			timeToFinish *= 0.9;
+
+			const bestFood = Eatables.filter(e => e.pvmBoost !== undefined).sort((a, b) => b.pvmBoost! - a.pvmBoost!)[0]
+				.pvmBoost;
+			timeToFinish = reduceNumByPercent(timeToFinish, bestFood!);
 
 			const sampleSize = 100_000;
 			let boostedSize = increaseNumByPercent(sampleSize, 25);
@@ -259,12 +349,23 @@ ${zygomiteFarmingSource
 
 			str += '\n';
 
+			str += `Each kill takes ${formatDuration(timeToFinish)}, killing ${calcPerHour(sampleSize, totalTime)}/hr.`;
+			str += '\n';
+
 			str += `Based on market/bot prices, this monster produces ${toKMB(
 				calcPerHour(marketPriceOfBank(loot), totalTime)
 			)}/hr in GP.`;
 
 			str += '\n\nAssumes max learning, poh boosts, all item boosts, DWWH/HFB, Ori.';
-			return str;
+			return {
+				content: str,
+				files: [
+					{
+						attachment: Buffer.from(`${results.map(i => [i.item.name, i.qty, i.perHour]).join('\n')}`),
+						name: `result-${monster.name}.txt`
+					}
+				]
+			};
 		}
 		if (options.xphr?.hunter) {
 			let results = `${[
@@ -339,7 +440,9 @@ ${zygomiteFarmingSource
 									isUsingQuickTrap: hasQuickTrap,
 									quickTrapMessages: '',
 									QP: 5000,
-									hasGraceful: true
+									hasGraceful: true,
+									isUsingWebshooter: hasQuickTrap,
+									webshooterMessages: ''
 								});
 
 								if (typeof inputResult === 'string') {
@@ -375,11 +478,7 @@ ${zygomiteFarmingSource
 										calcPerHour(result.totalHunterXP * GLOBAL_BSO_XP_MULTIPLIER, duration)
 									).toLocaleString(),
 									hasPortent ? 'Has Portent' : 'No Portent',
-									hasQuickTrap
-										? 'Has Quick Trap'
-										: creature.huntTechnique === HunterTechniqueEnum.BoxTrapping
-										? 'No Quick Trap'
-										: 'Not Applicable',
+									hasQuickTrap ? 'Has QT/WS' : 'No QT/WS',
 									hasMaxLearning ? 'Max Learning' : 'No Max Learning',
 									usingStamAndHunterPotions ? 'Has Pots' : 'No Pots',
 									calcPerHour(result.successfulQuantity, duration).toLocaleString(),

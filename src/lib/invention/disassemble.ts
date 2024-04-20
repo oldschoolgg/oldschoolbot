@@ -208,6 +208,12 @@ export async function handleDisassembly({
 		);
 	}
 
+	if (user.owns('Inventors tools')) {
+		const reduction = 30;
+		timePer = reduceNumByPercent(timePer, reduction);
+		messages.push(`${reduction}% faster disassembly for inventors tools`);
+	}
+
 	// The max amount of items they can disassemble this trip
 	const maxCanDo = floor(maxTripLength / timePer);
 
