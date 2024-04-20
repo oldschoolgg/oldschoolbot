@@ -114,7 +114,7 @@ export const mixCommand: OSBMahojiCommand = {
 			if (maxCanDo < quantity && maxCanDo !== 0) quantity = maxCanDo;
 		}
 
-		if (!options.wesley && !options.zahur) {
+		if (!(wesley && mixableWesley) && !(zahur && mixableZahur)) {
 			const boostedTimeToMixSingleItem = reduceNumByPercent(
 				timeToMixSingleItem,
 				inventionBoosts.mechaMortar.herbloreSpeedBoostPercent
