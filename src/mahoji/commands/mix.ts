@@ -1,8 +1,9 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { clamp, reduceNumByPercent, Time } from 'e';
+import { calcPercentOfNum, clamp, reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
+import { secondaries } from '../../lib/data/filterables';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -11,6 +12,7 @@ import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const mixCommand: OSBMahojiCommand = {
@@ -144,7 +146,21 @@ export const mixCommand: OSBMahojiCommand = {
 				maxTripLength
 			)}, try a lower quantity. The highest amount of ${itemName} you can mix is ${maxCanMix}.`;
 
+		const hasScroll = user.owns('Scroll of cleansing');
 		const finalCost = requiredItems.clone().multiply(quantity);
+
+		if (hasScroll) {
+			for (const [item, qty] of finalCost.items()) {
+				if (secondaries.includes(item.id)) {
+					const saved = Math.floor(calcPercentOfNum(10, qty));
+					finalCost.remove(item.id, saved);
+					const savedBank = new Bank();
+					savedBank.add(item.id, saved);
+					userStatsBankUpdate(user.id, 'cleansing_scroll_bank', savedBank);
+				}
+			}
+		}
+
 		if (!user.owns(finalCost))
 			return `You don't have enough items. For ${quantity}x ${itemName}, you're missing **${finalCost
 				.clone()
@@ -170,6 +186,9 @@ export const mixCommand: OSBMahojiCommand = {
 		}${itemName}, it'll take around ${formatDuration(quantity * timeToMixSingleItem)} to finish.`;
 		if (boosts.length > 0) {
 			str += `\n**Boosts:** ${boosts.join(', ')}`;
+		}
+		if (hasScroll) {
+			str += ' Your scroll of cleansing enables you to save 10% of your secondaries.';
 		}
 
 		return str;
