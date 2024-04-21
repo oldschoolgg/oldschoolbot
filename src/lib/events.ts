@@ -9,6 +9,7 @@ import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { boxSpawnHandler } from './boxSpawns';
+import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from './bso/guthixianCache';
 import { allMbTables } from './bsoOpenables';
 import { BitField, Emoji, globalConfig, secretItems } from './constants';
 import { customItems } from './customItems/util';
@@ -213,6 +214,16 @@ const mentionCommands: MentionCommand[] = [
 					);
 				})
 				.join('\n');
+
+			const currentGuthixCacheInterval = getGuthixianCacheInterval();
+			content += '\n';
+			if (await userHasDoneCurrentGuthixianCache(user)) {
+				content += `Guthixian Cache: ${currentGuthixCacheInterval.nextResetStr}`;
+			} else {
+				content += bold(
+					`Guthixian Cache: Ready ${mentionCommand(globalClient, 'bsominigames', 'guthixian_cache', 'join')}`
+				);
+			}
 
 			if (isDoubleLootActive()) {
 				let date = new Date(DOUBLE_LOOT_FINISH_TIME_CACHE);

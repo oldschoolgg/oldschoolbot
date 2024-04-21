@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { EquipmentSlot, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { chargePortentIfHasCharges, PortentID } from '../../../lib/bso/divination';
-import { Events, GLOBAL_BSO_XP_MULTIPLIER, MAX_LEVEL, PeakTier } from '../../../lib/constants';
+import { GLOBAL_BSO_XP_MULTIPLIER, MAX_LEVEL, PeakTier } from '../../../lib/constants';
 import { globalDroprates } from '../../../lib/data/globalDroprates';
 import { UserFullGearSetup } from '../../../lib/gear';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
@@ -363,14 +363,6 @@ export const hunterTask: MinionTask = {
 
 		if (loot.amount('Baby chinchompa') > 0 || loot.amount('Herbi') > 0) {
 			str += "\n\n**You have a funny feeling like you're being followed....**";
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.usernameOrMention}'s** minion, ${user.minionName}, just received a ${
-					loot.amount('Baby chinchompa') > 0
-						? '**Baby chinchompa** <:Baby_chinchompa_red:324127375539306497>'
-						: '**Herbi** <:Herbi:357773175318249472>'
-				} while hunting a ${creature.name}, their Hunter level is ${user.skillsAsLevels.hunter}!`
-			);
 		}
 
 		if (messages.length > 0) {

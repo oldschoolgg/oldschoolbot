@@ -328,7 +328,9 @@ export enum BitField {
 	HasAncientBoon = 226,
 	DisabledTameClueOpening = 227,
 	HasMoondashCharm = 228,
-	HasUnlockedVenatrix = 229
+	HasUnlockedVenatrix = 229,
+	GrewFiveSpiritTrees = 230,
+	UseSuperRestoresForDwarvenBlessing = 231
 }
 
 interface BitFieldData {
@@ -546,6 +548,16 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		name: 'Has Unlocked Venatrix',
 		protected: false,
 		userConfigurable: false
+	},
+	[BitField.GrewFiveSpiritTrees]: {
+		name: 'Has grown five spirit trees',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.UseSuperRestoresForDwarvenBlessing]: {
+		name: 'Use Super Restores For Dwarven Blessing',
+		protected: false,
+		userConfigurable: true
 	}
 } as const;
 

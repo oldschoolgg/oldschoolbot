@@ -114,7 +114,8 @@ async function handleImplingLocator(user: MUser, tame: MTame, duration: number, 
 				type: 'MonsterKilling',
 				duration
 			} as ActivityTaskData,
-			messages
+			messages,
+			true
 		);
 		if (result && result.bank.length > 0) {
 			const actualImplingLoot = new Bank();
