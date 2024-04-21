@@ -78,7 +78,7 @@ export const clueCommand: OSBMahojiCommand = {
 				return ClueTiers.map(i => ({
 					name: `${i.name} (${bank.amount(i.scrollID)}x Owned)`,
 					value: i.name as string
-				})).concat([{ name: 'Elder', value: 'Elder' }]);
+				})).concat([{ name: 'Elder (Info)', value: 'Elder (Info)' }]);
 			}
 		},
 		{
@@ -91,7 +91,7 @@ export const clueCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ tier: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
-		if (options.tier === 'Elder') {
+		if (options.tier === 'Elder (Info)') {
 			const reqs = await checkElderClueRequirements(user);
 			if (reqs.unmetRequirements.length > 0) {
 				return `You do not have the requirements to do Elder clues.

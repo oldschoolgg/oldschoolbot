@@ -296,6 +296,7 @@ export enum BitField {
 	DisableClueButtons = 38,
 	DisableAutoSlayButton = 39,
 	DisableHighPeakTimeWarning = 40,
+	DisableOpenableNames = 41,
 
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
@@ -530,6 +531,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisableHighPeakTimeWarning]: {
 		name: 'Disable Wilderness High Peak Time Warning',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableOpenableNames]: {
+		name: 'Disable Names On Open',
 		protected: false,
 		userConfigurable: true
 	},

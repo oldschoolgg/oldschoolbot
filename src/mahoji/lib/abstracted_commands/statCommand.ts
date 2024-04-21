@@ -111,7 +111,7 @@ Differences AS (
 
 SELECT
     user_id,
-    week_start,
+    week_start::text,
     diff_cl_global_rank,
     diff_cl_completion_percentage,
     diff_cl_completion_count,
@@ -505,7 +505,7 @@ GROUP BY type;`);
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { type: activity_type_enum; hours: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT type, sum(duration)::int / ${Time.Hour} AS hours
+				await prisma.$queryRawUnsafe(`SELECT type, sum(duration::bigint)::bigint / ${Time.Hour} AS hours
 FROM activity
 WHERE completed = true
 AND user_id = ${BigInt(user.id)}
@@ -513,8 +513,8 @@ OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY type;`);
 			const dataPoints: [string, number][] = result
 				.filter(i => i.hours >= 1)
-				.sort((a, b) => b.hours - a.hours)
-				.map(i => [i.type, i.hours]);
+				.sort((a, b) => Number(b.hours - a.hours))
+				.map(i => [i.type, Number(i.hours)]);
 			const buffer = await barChart('Your Activity Durations', val => `${val} Hrs`, dataPoints);
 			return makeResponseForBuffer(buffer);
 		}
@@ -1146,7 +1146,7 @@ GROUP BY "bankBackground";`);
 		run: async (user: MUser) => {
 			const result = await prisma.$queryRawUnsafe<any>(
 				`SELECT skill,
-					SUM(xp)::int AS total_xp
+					SUM(xp)::bigint AS total_xp
 				 FROM xp_gains
 				 WHERE source = 'TearsOfGuthix'
 				 AND user_id = ${BigInt(user.id)}
@@ -1167,12 +1167,12 @@ GROUP BY "bankBackground";`);
 		run: async (user: MUser) => {
 			const result = await prisma.$queryRawUnsafe<any>(
 				`SELECT skill,
-					SUM(xp)::int AS total_xp
+					SUM(xp)::bigint AS total_xp
 				 FROM xp_gains
 				 WHERE source = 'ForestryEvents'
 				 AND user_id = ${BigInt(user.id)}
 				 GROUP BY skill
-				 ORDER BY CASE 
+				 ORDER BY CASE
 					 WHEN skill = 'woodcutting' THEN 0
 					 ELSE 1
 				 END`

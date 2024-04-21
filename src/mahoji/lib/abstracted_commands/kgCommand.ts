@@ -29,6 +29,8 @@ export async function kgCommand(
 			strength: 105,
 			defence: 105
 		},
+		speedMaxReduction: 45,
+		boostMax: 40,
 		itemBoosts: [
 			['Axe of the high sungod', 20],
 			['Drygore longsword', 10],

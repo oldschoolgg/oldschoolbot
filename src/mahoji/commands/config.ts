@@ -152,6 +152,10 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisableHighPeakTimeWarning
 	},
 	{
+		name: 'Disable Names on Opens',
+		bit: BitField.DisableOpenableNames
+	},
+	{
 		name: 'Use super restores for Dwarven blessing',
 		bit: BitField.UseSuperRestoresForDwarvenBlessing
 	}
