@@ -16,7 +16,6 @@ import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
-import { eggChancePerMinute } from '../easter2024';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
@@ -260,7 +259,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Invention Effects',
 		fn: async ({ data, messages, user }) => {
-			if (user.hasEquippedOrInBank('Silverhawk boots') && data.duration > Time.Minute) {
+			if (user.hasEquippedOrInBank('Silverhawk boots') && data.duration >= Time.Minute * 5) {
 				const costRes = await inventionItemBoost({
 					user,
 					inventionID: InventionID.SilverHawkBoots,
@@ -456,23 +455,6 @@ const tripFinishEffects: TripFinishEffect[] = [
 				} else if (loot.length > 0) {
 					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost} seeds, ${loot} survived`);
 				}
-			}
-		}
-	},
-	{
-		name: 'Large egg spawns',
-		fn: async ({ data, messages, user }) => {
-			const minutes = Math.floor(data.duration / Time.Minute);
-			if (minutes < 1) return;
-			const loot = new Bank();
-			for (let i = 0; i < minutes; i++) {
-				if (roll(eggChancePerMinute)) {
-					loot.add('Large egg');
-				}
-			}
-			if (loot.length > 0) {
-				await user.addItemsToBank({ items: loot, collectionLog: true });
-				messages.push(`You found ${loot}`);
 			}
 		}
 	}

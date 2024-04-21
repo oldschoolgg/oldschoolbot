@@ -1,8 +1,6 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { increaseNumByPercent, randInt } from 'e';
+import { increaseNumByPercent } from 'e';
 
-import { Emoji, Events } from '../../../lib/constants';
-import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { getTemporossLoot } from '../../../lib/simulation/tempoross';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -16,26 +14,13 @@ export const temporossTask: MinionTask = {
 		const { userID, channelID, quantity, rewardBoost, duration } = data;
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		const previousScore = (await getMinigameEntity(user.id)).tempoross;
-		const { newScore } = await incrementMinigameScore(userID, 'tempoross', quantity);
-		const kcForPet = randInt(previousScore, newScore);
+		await incrementMinigameScore(userID, 'tempoross', quantity);
 
 		let rewardTokens = quantity * 6;
 		if (rewardBoost > 0) {
 			rewardTokens = Math.ceil(increaseNumByPercent(rewardTokens, rewardBoost));
 		}
 		const loot = getTemporossLoot(rewardTokens, currentLevel, user.bank);
-
-		if (loot.has('Tiny tempor')) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.TinyTempor} **${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a Tiny tempor! They got the pet on the ${formatOrdinal(
-					kcForPet
-				)} kill, and their Fishing level is ${currentLevel}.`
-			);
-		}
 
 		let fXPtoGive = quantity * 5500 * (currentLevel / 40);
 		let fBonusXP = 0;

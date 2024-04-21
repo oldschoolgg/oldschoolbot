@@ -3,7 +3,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
-import { BitField, Emoji, Events } from '../../lib/constants';
+import { BitField } from '../../lib/constants';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
@@ -508,10 +508,6 @@ export const farmingTask: MinionTask = {
 				infoStr.push('\n```diff');
 				infoStr.push("\n- You have a funny feeling you're being followed...");
 				infoStr.push('```');
-				globalClient.emit(
-					Events.ServerNotification,
-					`${Emoji.Farming} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
-				);
 			}
 
 			let newPatch: PatchTypes.PatchData = {

@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
+import { Emoji } from '../../../lib/constants';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
@@ -107,14 +107,6 @@ export const titheFarmTask: MinionTask = {
 			lootStr.push('\n\n```diff');
 			lootStr.push("\n- You have a funny feeling you're being followed...");
 			lootStr.push('```');
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Farming} **${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a Tangleroot by completing the ${Emoji.MinigameIcon} Tithe Farm on their ${
-					titheFarmsCompleted + 1
-				} run!`
-			);
 
 			await transactItems({
 				userID: user.id,

@@ -41,7 +41,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
-		notifyDrops: resolveItems(['Abyssal head', 'Abyssal dagger']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 85

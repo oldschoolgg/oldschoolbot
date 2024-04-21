@@ -1,4 +1,5 @@
 import { truncateString } from '@oldschoolgg/toolkit';
+import { clamp } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
@@ -71,6 +72,7 @@ export const openCommand: OSBMahojiCommand = {
 				1950
 			)}.`;
 		}
+		options.quantity = clamp(options.quantity ?? 1, 1, 100_000_000);
 		if (options.open_until) {
 			return abstractedOpenUntilCommand(user.id, options.name, options.open_until);
 		}

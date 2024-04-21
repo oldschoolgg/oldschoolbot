@@ -1,17 +1,14 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { calcWhatPercent, clamp, reduceNumByPercent, roll, round, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { Events } from '../../../lib/constants';
-import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
 import { maxOtherStats } from '../../../lib/structures/Gear';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, itemID, makeComponents, randomVariation, stringMatches } from '../../../lib/util';
+import { formatDuration, makeComponents, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -192,7 +189,7 @@ export async function barbAssaultGambleCommand(
 			cost * quantity
 		).toLocaleString()} honour points?`
 	);
-	const newStats = await userStatsUpdate(
+	await userStatsUpdate(
 		user.id,
 		{
 			honour_points: {
@@ -211,18 +208,6 @@ export async function barbAssaultGambleCommand(
 		}
 	);
 	const loot = new Bank().add(table.roll(quantity));
-	if (loot.has('Pet penance queen')) {
-		const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
-
-		globalClient.emit(
-			Events.ServerNotification,
-			`<:Pet_penance_queen:324127377649303553> **${user.badgedUsername}'s** minion, ${
-				user.minionName
-			}, just received a Pet penance queen from their ${formatOrdinal(
-				newStats.high_gambles
-			)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
-		);
-	}
 	const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 	const perkTier = user.perkTier();

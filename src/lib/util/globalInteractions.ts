@@ -659,7 +659,7 @@ export async function interactionHook(interaction: Interaction) {
 				commandName: 'open',
 				args: {
 					name: 'Seed pack',
-					quantity: 1
+					quantity: user.bank.amount('Seed pack')
 				},
 				...options
 			});

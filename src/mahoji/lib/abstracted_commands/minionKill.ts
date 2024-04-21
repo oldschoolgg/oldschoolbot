@@ -716,18 +716,21 @@ export async function minionKillCommand(
 	let duration = timeToFinish * quantity;
 
 	// If you have dwarven blessing, you need 1 prayer pot per 5 mins
-	const prayerPots = user.bank.amount('Prayer potion(4)');
+	const dwarvenBlessingItem = user.bitfield.includes(BitField.UseSuperRestoresForDwarvenBlessing)
+		? 'Super restore(4)'
+		: 'Prayer potion(4)';
+	const prayerPots = user.bank.amount(dwarvenBlessingItem);
 	const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
-	let prayerPotsNeeded = Math.max(1, fiveMinIncrements);
+	let dwarvenBlessingPotsNeeded = Math.max(1, fiveMinIncrements);
 	const hasPrayerMasterCape = user.hasEquipped('Prayer master cape');
 	if (hasPrayerMasterCape && hasBlessing) {
-		boosts.push('40% less prayer pots');
-		prayerPotsNeeded = Math.floor(0.6 * prayerPotsNeeded);
+		boosts.push(`40% less ${dwarvenBlessingItem}`);
+		dwarvenBlessingPotsNeeded = Math.floor(0.6 * dwarvenBlessingPotsNeeded);
 	}
-	prayerPotsNeeded = Math.max(1, prayerPotsNeeded);
+	dwarvenBlessingPotsNeeded = Math.max(1, dwarvenBlessingPotsNeeded);
 	if (hasBlessing) {
-		if (prayerPots < prayerPotsNeeded) {
-			return "You don't have enough Prayer potion(4)'s to power your Dwarven blessing.";
+		if (prayerPots < dwarvenBlessingPotsNeeded) {
+			return `You don't have enough ${dwarvenBlessingItem}'s to power your Dwarven blessing.`;
 		}
 	}
 
@@ -907,8 +910,8 @@ export async function minionKillCommand(
 		duration *= 0.9;
 	}
 
-	if (hasBlessing && prayerPotsNeeded) {
-		const prayerPotsBank = new Bank().add('Prayer potion(4)', prayerPotsNeeded);
+	if (hasBlessing && dwarvenBlessingPotsNeeded) {
+		const prayerPotsBank = new Bank().add(dwarvenBlessingItem, dwarvenBlessingPotsNeeded);
 		lootToRemove.add(prayerPotsBank);
 	}
 	const rangeSetup = { ...user.gear.range.raw() };
