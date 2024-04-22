@@ -970,7 +970,9 @@ GROUP BY "bankBackground";`);
 			return `**Personal XP gained from Tears of Guthix**\n${result
 				.map(
 					(i: any) =>
-						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(i.total_xp)}`
+						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(
+							Number(i.total_xp)
+						)}`
 				)
 				.join('\n')}`;
 		}
@@ -995,7 +997,9 @@ GROUP BY "bankBackground";`);
 			return `**Personal XP gained from Forestry events**\n${result
 				.map(
 					(i: any) =>
-						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(i.total_xp)}`
+						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(
+							Number(i.total_xp)
+						)}`
 				)
 				.join('\n')}`;
 		}
