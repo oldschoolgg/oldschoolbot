@@ -209,6 +209,10 @@ export async function minionKillCommand(
 		}
 	}
 
+	// Add jelly check as can barrage in wilderness
+	const jelly = monster.id === Monsters.Jelly.id;
+	const wildyJelly = jelly && isInWilderness;
+
 	// Set chosen boost based on priority:
 	const myCBOpts = user.combatOptions;
 	const boostChoice = determineBoostChoice({
@@ -216,7 +220,8 @@ export async function minionKillCommand(
 		user,
 		monster,
 		method,
-		isOnTask
+		isOnTask,
+		wildyJelly
 	});
 
 	// Check requirements
@@ -295,10 +300,10 @@ export async function minionKillCommand(
 	}
 
 	function applyDragonBoost() {
-		const hasDragonLance = monster?.canBePked
+		const hasDragonLance = isInWilderness
 			? wildyGear.hasEquipped('Dragon hunter lance')
 			: user.hasEquippedOrInBank('Dragon hunter lance');
-		const hasDragonCrossbow = monster?.canBePked
+		const hasDragonCrossbow = isInWilderness
 			? wildyGear.hasEquipped('Dragon hunter crossbow')
 			: user.hasEquippedOrInBank('Dragon hunter crossbow');
 
@@ -315,10 +320,10 @@ export async function minionKillCommand(
 	}
 
 	function applyBlackMaskBoost() {
-		const hasBlackMask = monster?.canBePked
+		const hasBlackMask = isInWilderness
 			? wildyGear.hasEquipped('Black mask')
 			: user.hasEquippedOrInBank('Black mask');
-		const hasBlackMaskI = monster?.canBePked
+		const hasBlackMaskI = isInWilderness
 			? wildyGear.hasEquipped('Black mask (i)')
 			: user.hasEquippedOrInBank('Black mask (i)');
 
@@ -338,10 +343,10 @@ export async function minionKillCommand(
 		let salveEnhanced = false;
 		const style = attackStyles[0];
 		if (style === 'ranged' || style === 'magic') {
-			salveBoost = monster?.canBePked
+			salveBoost = isInWilderness
 				? wildyGear.hasEquipped('Salve amulet(i)')
 				: user.hasEquippedOrInBank('Salve amulet (i)');
-			salveEnhanced = monster?.canBePked
+			salveEnhanced = isInWilderness
 				? wildyGear.hasEquipped('Salve amulet(ei)')
 				: user.hasEquippedOrInBank('Salve amulet (ei)');
 			if (salveBoost) {
@@ -351,10 +356,10 @@ export async function minionKillCommand(
 				} on non-melee task`;
 			}
 		} else {
-			salveBoost = monster?.canBePked
+			salveBoost = isInWilderness
 				? wildyGear.hasEquipped('Salve amulet')
 				: user.hasEquippedOrInBank('Salve amulet');
-			salveEnhanced = monster?.canBePked
+			salveEnhanced = isInWilderness
 				? wildyGear.hasEquipped('Salve amulet (e)')
 				: user.hasEquippedOrInBank('Salve amulet (e)');
 			if (salveBoost) {
@@ -372,8 +377,13 @@ export async function minionKillCommand(
 
 	function calculateVirtusBoost() {
 		let virtusPiecesEquipped = 0;
+
 		for (const item of resolveItems(['Virtus mask', 'Virtus robe top', 'Virtus robe bottom'])) {
-			if (user.gear.mage.hasEquipped(item)) {
+			if (isInWilderness) {
+				if (wildyGear.hasEquipped(item)) {
+					virtusPiecesEquipped += blackMaskBoost !== 0 && itemNameFromID(item) === 'Virtus mask' ? 0 : 1;
+				}
+			} else if (user.gear.mage.hasEquipped(item)) {
 				virtusPiecesEquipped += blackMaskBoost !== 0 && itemNameFromID(item) === 'Virtus mask' ? 0 : 1;
 			}
 		}
@@ -382,7 +392,7 @@ export async function minionKillCommand(
 		virtusBoostMsg =
 			virtusPiecesEquipped > 1
 				? ` with ${virtusPiecesEquipped} Virtus pieces`
-				: virtusPiecesEquipped > 0
+				: virtusPiecesEquipped === 1
 				? ` with ${virtusPiecesEquipped} Virtus piece`
 				: '';
 	}
@@ -459,39 +469,35 @@ export async function minionKillCommand(
 	}
 
 	// Wildy Monster checks
-	if (isInWilderness === true) {
-		if (method === 'cannon') {
-			if (monster.id === Monsters.HillGiant.id || monster.id === Monsters.MossGiant.id) {
-				usingCannon = isInWilderness;
-			}
-			if (monster.wildySlayerCave) {
-				usingCannon = isInWilderness;
-				cannonMulti = isInWilderness;
-				if (monster.id === Monsters.AbyssalDemon.id && !isOnTask) {
-					usingCannon = false;
-					cannonMulti = false;
-				}
+	if (isInWilderness === true && boostChoice === 'cannon') {
+		if (monster.id === Monsters.HillGiant.id || monster.id === Monsters.MossGiant.id) {
+			usingCannon = isInWilderness;
+		}
+		if (monster.wildySlayerCave) {
+			usingCannon = isInWilderness;
+			cannonMulti = isInWilderness;
+			if (monster.id === Monsters.AbyssalDemon.id && !isOnTask) {
+				usingCannon = false;
+				cannonMulti = false;
 			}
 		}
 	}
 
-	if (
-		(method === 'burst' || method === 'barrage') &&
-		(monster!.canBarrage || (isInWilderness && monster.id === Monsters.Jelly.id))
-	) {
-		return `${monster!.name} cannot be barraged or burst.`;
+	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
+		if (jelly) {
+			if (!isInWilderness) {
+				return `${monster.name} can only be barraged or burst in the wilderness.`;
+			}
+		} else return `${monster!.name} cannot be barraged or burst.`;
 	}
+
 	if (!usingCannon) {
 		if (method === 'cannon' && !monster!.canCannon) {
 			return `${monster!.name} cannot be killed with a cannon.`;
 		}
 	}
 
-	if (
-		boostChoice === 'barrage' &&
-		attackStyles.includes(SkillsEnum.Magic) &&
-		(monster!.canBarrage || (isInWilderness && monster.id === Monsters.Jelly.id))
-	) {
+	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && (monster!.canBarrage || wildyJelly)) {
 		consumableCosts.push(iceBarrageConsumables);
 		calculateVirtusBoost();
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage + virtusBoost);
@@ -500,7 +506,7 @@ export async function minionKillCommand(
 	} else if (
 		boostChoice === 'burst' &&
 		attackStyles.includes(SkillsEnum.Magic) &&
-		(monster!.canBarrage || (isInWilderness && monster.id === Monsters.Jelly.id))
+		(monster!.canBarrage || wildyJelly)
 	) {
 		consumableCosts.push(iceBurstConsumables);
 		calculateVirtusBoost();

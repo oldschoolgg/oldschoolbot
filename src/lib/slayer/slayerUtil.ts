@@ -37,6 +37,7 @@ export interface DetermineBoostParams {
 	monster: KillableMonster;
 	method?: PvMMethod | null;
 	isOnTask?: boolean;
+	wildyJelly?: boolean;
 }
 export function determineBoostChoice(params: DetermineBoostParams) {
 	let boostChoice = 'none';
@@ -52,9 +53,15 @@ export function determineBoostChoice(params: DetermineBoostParams) {
 		boostChoice = 'burst';
 	} else if (params.method && params.method === 'cannon') {
 		boostChoice = 'cannon';
-	} else if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) && params.monster!.canBarrage) {
+	} else if (
+		(params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) && params.monster!.canBarrage) ||
+		params.wildyJelly
+	) {
 		boostChoice = 'barrage';
-	} else if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) && params.monster!.canBarrage) {
+	} else if (
+		(params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) && params.monster!.canBarrage) ||
+		params.wildyJelly
+	) {
 		boostChoice = 'burst';
 	} else if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
 		boostChoice = 'cannon';
