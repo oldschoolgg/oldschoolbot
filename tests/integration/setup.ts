@@ -50,7 +50,7 @@ function setupRequestLogging() {
 
 	mitmInstance.on('connect', (socket, opts) => {
 		if (opts?.host) {
-			console.trace(`Sending request to ${opts.host}`);
+			throw new Error(`Sending request to ${opts.host}`);
 			socket.bypass();
 		}
 	});
