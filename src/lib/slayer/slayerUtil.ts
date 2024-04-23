@@ -54,13 +54,13 @@ export function determineBoostChoice(params: DetermineBoostParams) {
 	} else if (params.method && params.method === 'cannon') {
 		boostChoice = 'cannon';
 	} else if (
-		(params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) && params.monster!.canBarrage) ||
-		params.wildyJelly
+		params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
+		(params.monster!.canBarrage || params.wildyJelly)
 	) {
 		boostChoice = 'barrage';
 	} else if (
-		(params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) && params.monster!.canBarrage) ||
-		params.wildyJelly
+		params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) &&
+		(params.monster!.canBarrage || params.wildyJelly)
 	) {
 		boostChoice = 'burst';
 	} else if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
