@@ -8,11 +8,11 @@ import { Bank } from 'oldschooljs';
 import { Events } from '../../lib/constants';
 import { defaultMegaDuckLocation, MegaDuckLocation } from '../../lib/minions/types';
 import { prisma } from '../../lib/settings/prisma';
-import { getUsername, resetCooldown } from '../../lib/util';
+import { getUsername } from '../../lib/util';
 import { canvasImageFromBuffer } from '../../lib/util/canvasUtil';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { mahojiGuildSettingsUpdate } from '../guildSettings';
-import { OSBMahojiCommand } from '../lib/util';
+import { OSBMahojiCommand, resetCooldown } from '../lib/util';
 
 const _mapImage = readFileSync('./src/lib/resources/images/megaduckmap.png');
 const noMoveImageBuf = readFileSync('./src/lib/resources/images/megaducknomovemap.png');
