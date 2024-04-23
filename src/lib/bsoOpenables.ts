@@ -107,7 +107,8 @@ export const PMBTable = new LootTable()
 	.add('Baron')
 	.add('Butch')
 	.add("Lil'viathan")
-	.add('Wisp');
+	.add('Wisp')
+	.add('Scurry');
 
 const DwarvenCrateTable = new LootTable()
 	.add('Dwarven ore')
