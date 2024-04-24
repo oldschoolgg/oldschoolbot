@@ -53,7 +53,7 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 
 	if (!validLocs.includes(fishingLocation)) {
 		return `This Fishing Location isn't valid for todays catch! These ones are: ${validLocs
-			.m ap(i => i.name)
+			.map(i => i.name)
 			.join(', ')}`;
 	}
 
