@@ -224,3 +224,14 @@ export const CosmeticsTable = new LootTable()
 	)
 	.add(new LootTable().add('Prisoner top').add('Prisoner legs'))
 	.add(new LootTable().add('Fox ears').add('Fox tail'));
+
+export const UncutGemTable = new LootTable()
+	.add('Uncut sapphire', 50, 2)
+	.add('Uncut opal', 70, 2)
+	.add('Uncut jade', 60, 2)
+	.add('Uncut emerald', 40, 2)
+	.add('Uncut ruby', 35)
+	.add('Uncut diamond', 25)
+	.add('Uncut dragonstone', 15)
+	.add('Uncut onyx', 2)
+	.add('Uncut zenyte', 1);

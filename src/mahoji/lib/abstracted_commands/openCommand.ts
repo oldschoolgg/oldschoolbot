@@ -1,18 +1,20 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { noOp, notEmpty, randArrItem, roll, shuffleArr, uniqueArr } from 'e';
+import { noOp, notEmpty, percentChance, randArrItem, shuffleArr, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { Emoji, PerkTier } from '../../../lib/constants';
+import { BitField, Emoji, PerkTier } from '../../../lib/constants';
 import { allOpenables, getOpenableLoot, UnifiedOpenable } from '../../../lib/openables';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { assert, itemNameFromID, makeComponents } from '../../../lib/util';
+import { checkElderClueRequirements } from '../../../lib/util/elderClueRequirements';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import itemID from '../../../lib/util/itemID';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
 import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahojiSettings';
@@ -126,20 +128,27 @@ async function finalizeOpening({
 	const newOpenableScores = await addToOpenablesScores(user, kcBank);
 
 	const hasSmokey = user.allItemsOwned.has('Smokey');
+	const hasOcto = user.allItemsOwned.has('Octo');
 	let smokeyMsg: string | null = null;
 
-	if (hasSmokey) {
+	if (hasSmokey || hasOcto) {
 		let bonuses = [];
 		const totalLeaguesPoints = (await roboChimpUserFetch(user.id)).leagues_points_total;
 		for (const openable of openables) {
 			if (!openable.smokeyApplies) continue;
+			const bonusChancePercent = hasSmokey ? 10 : 8;
+
 			let smokeyBonus = 0;
 			const amountOfThisOpenable = cost.amount(openable.openedItem.id);
 			assert(amountOfThisOpenable > 0, `>0 ${openable.name}`);
 			for (let i = 0; i < amountOfThisOpenable; i++) {
-				if (roll(10)) smokeyBonus++;
+				if (percentChance(bonusChancePercent)) smokeyBonus++;
 			}
-			userStatsBankUpdate(user.id, 'smokey_loot_bank', new Bank().add(openable.openedItem.id, smokeyBonus));
+			await userStatsBankUpdate(
+				user.id,
+				hasSmokey ? 'smokey_loot_bank' : 'octo_loot_bank',
+				new Bank().add(openable.openedItem.id, smokeyBonus)
+			);
 			loot.add(
 				(
 					await getOpenableLoot({
@@ -152,7 +161,10 @@ async function finalizeOpening({
 			);
 			bonuses.push(`${smokeyBonus}x ${openable.name}`);
 		}
-		smokeyMsg = bonuses.length > 0 ? `${Emoji.Smokey} Bonus Rolls: ${bonuses.join(', ')}` : null;
+		smokeyMsg =
+			bonuses.length > 0
+				? `${hasOcto ? '<:Octo:1227526833776492554>' : Emoji.Smokey} Bonus Rolls: ${bonuses.join(', ')}`
+				: null;
 	}
 	if (smokeyMsg) messages.push(smokeyMsg);
 
@@ -210,7 +222,7 @@ async function finalizeOpening({
 				: 'Loot From Opening',
 		user,
 		previousCL,
-		mahojiFlags: ['show_names']
+		mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
 	});
 
 	if (loot.has('Coins')) {
@@ -271,6 +283,14 @@ export async function abstractedOpenCommand(
 			if (!user.owns(tmpCost)) return `You don't own ${tmpCost}`;
 		}
 	}
+
+	if (openables.some(o => o.openedItem.id === itemID('Reward casket (elder)'))) {
+		const result = await checkElderClueRequirements(user);
+		if (result.unmetRequirements.length > 0) {
+			return `You don't have the requirements to open Elder caskets: ${result.unmetRequirements.join(', ')}`;
+		}
+	}
+
 	const cost = new Bank();
 	const kcBank = new Bank();
 	const loot = new Bank();

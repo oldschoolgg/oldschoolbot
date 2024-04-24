@@ -210,17 +210,31 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 		throw new UserError('Error migrating user. Sorry about that!');
 	}
 
-	const robochimpTx = [];
-	robochimpTx.push(roboChimpClient.user.deleteMany({ where: { id: BigInt(destUser.id) } }));
-	robochimpTx.push(
-		roboChimpClient.user.updateMany({ where: { id: BigInt(sourceUser.id) }, data: { id: BigInt(destUser.id) } })
-	);
-	try {
-		await roboChimpClient.$transaction(robochimpTx);
-	} catch (err: any) {
-		err.message += ' - User already migrated! Robochimp migration failed!';
-		logError(err);
-		throw new UserError('Robochimp migration failed, but minion data migrated already!');
+	const roboChimpTarget = await roboChimpClient.user.findFirst({
+		select: { migrated_user_id: true },
+		where: { id: BigInt(destUser.id) }
+	});
+	if (!roboChimpTarget || roboChimpTarget.migrated_user_id !== BigInt(sourceUser.id)) {
+		// Only migrate robochimp data if it's not already been migrated:
+		const robochimpTx = [];
+		robochimpTx.push(roboChimpClient.user.deleteMany({ where: { id: BigInt(destUser.id) } }));
+		robochimpTx.push(
+			roboChimpClient.user.updateMany({ where: { id: BigInt(sourceUser.id) }, data: { id: BigInt(destUser.id) } })
+		);
+		// Set the migrated_user_id value to prevent duplicate robochimp migrations.
+		robochimpTx.push(
+			roboChimpClient.user.updateMany({
+				where: { id: BigInt(destUser.id) },
+				data: { migrated_user_id: BigInt(sourceUser.id) }
+			})
+		);
+		try {
+			await roboChimpClient.$transaction(robochimpTx);
+		} catch (err: any) {
+			err.message += ' - User already migrated! Robochimp migration failed!';
+			logError(err);
+			throw new UserError('Robochimp migration failed, but minion data migrated already!');
+		}
 	}
 
 	// This regenerates a default users table row for the now-clean sourceUser

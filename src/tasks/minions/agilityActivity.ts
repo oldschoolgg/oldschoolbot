@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { chargePortentIfHasCharges, PortentID } from '../../lib/bso/divination';
-import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
@@ -285,10 +285,6 @@ export const agilityTask: MinionTask = {
 		if (roll(petDropRate / quantity)) {
 			loot.add('Giant squirrel');
 			str += "\nYou have a funny feeling you're being followed...";
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Agility} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`
-			);
 		}
 
 		await transactItems({

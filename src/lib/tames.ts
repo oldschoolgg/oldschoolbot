@@ -86,6 +86,12 @@ export const tameFeedableItems: FeedableItem[] = [
 		description: 'Allows your tame to passively catch implings',
 		tameSpeciesCanBeFedThis: [TameSpeciesID.Eagle, TameSpeciesID.Igne],
 		announcementString: 'Your tame now has the ability to find and catch implings.'
+	},
+	{
+		item: getOSItem('Elder knowledge'),
+		description: 'Allows your tame to complete elder clues and gives a chance of increased loot.',
+		tameSpeciesCanBeFedThis: [TameSpeciesID.Eagle],
+		announcementString: 'Your tame now has the ability to complete elder clues and a chance of increased loot.'
 	}
 ];
 

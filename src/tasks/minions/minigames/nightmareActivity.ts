@@ -58,7 +58,9 @@ export const nightmareTask: MinionTask = {
 
 		const { newKC } = await user.incrementKC(monsterID, kc);
 
-		const ownsOrUsedTablet = user.bank.has('Slepey tablet') || user.bitfield.includes(BitField.HasSlepeyTablet);
+		const ownsOrUsedTablet =
+			user.bank.has('Slepey tablet') ||
+			(user.bitfield.includes(BitField.HasSlepeyTablet) && user.cl.has('Slepey Tablet'));
 		if (isPhosani) {
 			if (ownsOrUsedTablet) {
 				userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));

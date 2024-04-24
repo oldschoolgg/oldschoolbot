@@ -43,6 +43,7 @@ import {
 	SlayerActivityConstants,
 	superiorCannonSingleConsumables
 } from '../../../lib/minions/data/combatConstants';
+import { BSOMonsters } from '../../../lib/minions/data/killableMonsters/custom/customMonsters';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import {
 	AttackStyles,
@@ -83,6 +84,7 @@ import { generateChart } from '../../../lib/util/chart';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { hasMonsterRequirements, resolveAvailableItemBoosts, userStatsUpdate } from '../../mahojiSettings';
@@ -121,13 +123,13 @@ function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
 
 const { floor } = Math;
 
-const gorajanBoosts = [
+export const gorajanBoosts = [
 	[gorajanArcherOutfit, 'range'],
 	[gorajanWarriorOutfit, 'melee'],
 	[gorajanOccultOutfit, 'mage']
 ] as const;
 
-const gearstatToSetup = new Map()
+export const gearstatToSetup = new Map()
 	.set('attack_stab', 'melee')
 	.set('attack_slash', 'melee')
 	.set('attack_crush', 'melee')
@@ -189,7 +191,7 @@ export async function minionKillCommand(
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID);
 	if (['igne ', 'ignecarus'].some(i => name.toLowerCase().includes(i)))
 		return igneCommand(interaction, user, channelID, name, quantity);
-	if (['kg', 'goldemar'].some(i => name.toLowerCase().includes(i)))
+	if (['kg', 'king goldemar'].some(i => name.toLowerCase().includes(i)))
 		return kgCommand(interaction, user, channelID, name, quantity);
 	if (['kk', 'kalphite king'].some(i => name.toLowerCase().includes(i)))
 		return kkCommand(interaction, user, channelID, name, quantity);
@@ -257,6 +259,18 @@ export async function minionKillCommand(
 		}
 	}
 
+	const monsterScores = await user.fetchMonsterScores();
+
+	if (monster.kcRequirements) {
+		for (const [key, val] of Object.entries(monster.kcRequirements)) {
+			const { id } = BSOMonsters[key as keyof typeof BSOMonsters];
+			const kc = monsterScores[id] ?? 0;
+			if (kc < val) {
+				return `You need at least ${val} ${key} KC to kill ${monster.name}, you have ${kc}.`;
+			}
+		}
+	}
+
 	if (monster.minimumWeaponShieldStats) {
 		for (const [setup, minimum] of Object.entries(monster.minimumWeaponShieldStats)) {
 			const gear = user.gear[setup as GearSetupType];
@@ -275,7 +289,7 @@ export async function minionKillCommand(
 		}
 	}
 
-	const kcForThisMonster = await user.getKC(monster.id);
+	const kcForThisMonster = monsterScores[monster.id] ?? 0;
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, kcForThisMonster);
 
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
@@ -326,6 +340,8 @@ export async function minionKillCommand(
 	let blackMaskBoostMsg = '';
 	let salveAmuletBoost = 0;
 	let salveAmuletBoostMsg = '';
+	let virtusBoost = 0;
+	let virtusBoostMsg = '';
 
 	const dragonBoost = 15; // Common boost percentage for dragon-related gear
 
@@ -417,6 +433,24 @@ export async function minionKillCommand(
 			}
 		}
 	}
+
+	function calculateVirtusBoost() {
+		let virtusPiecesEquipped = 0;
+		for (const item of resolveItems(['Virtus mask', 'Virtus robe top', 'Virtus robe legs'])) {
+			if (user.gear.mage.hasEquipped(item)) {
+				virtusPiecesEquipped += blackMaskBoost !== 0 && itemNameFromID(item) === 'Virtus mask' ? 0 : 1;
+			}
+		}
+
+		virtusBoost = virtusPiecesEquipped * 2;
+		virtusBoostMsg =
+			virtusPiecesEquipped > 1
+				? ` with ${virtusPiecesEquipped} Virtus pieces`
+				: virtusPiecesEquipped > 0
+				? ` with ${virtusPiecesEquipped} Virtus piece`
+				: '';
+	}
+
 	if (isDragon && monster.name.toLowerCase() !== 'vorkath') {
 		applyDragonBoost();
 	}
@@ -480,6 +514,9 @@ export async function minionKillCommand(
 	if (boostChoice === 'burst' && user.skillLevel(SkillsEnum.Magic) < 70) {
 		return `You need 70 Magic to use Ice Burst. You have ${user.skillLevel(SkillsEnum.Magic)}`;
 	}
+
+	timeToFinish = Math.floor(timeToFinish);
+
 	const { canAfford } = await canAffordInventionBoost(user, InventionID.SuperiorDwarfMultiCannon, timeToFinish);
 	const canAffordSuperiorCannonBoost = hasSuperiorCannon ? canAfford : false;
 	if (boostChoice === 'chinning' && user.skillLevel(SkillsEnum.Ranged) < 65) {
@@ -507,13 +544,15 @@ export async function minionKillCommand(
 		}
 	} else if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 		consumableCosts.push(iceBarrageConsumables);
-		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
-		boosts.push(`${boostIceBarrage}% for Ice Barrage`);
+		calculateVirtusBoost();
+		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage + virtusBoost);
+		boosts.push(`${boostIceBarrage + virtusBoost}% for Ice Barrage${virtusBoostMsg}`);
 		burstOrBarrage = SlayerActivityConstants.IceBarrage;
 	} else if (boostChoice === 'burst' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 		consumableCosts.push(iceBurstConsumables);
-		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst);
-		boosts.push(`${boostIceBurst}% for Ice Burst`);
+		calculateVirtusBoost();
+		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst + virtusBoost);
+		boosts.push(`${boostIceBurst + virtusBoost}% for Ice Burst${virtusBoostMsg}`);
 		burstOrBarrage = SlayerActivityConstants.IceBurst;
 	} else if (boostChoice === 'cannon' && hasCannon && monster!.cannonMulti) {
 		usingCannon = true;
@@ -677,18 +716,21 @@ export async function minionKillCommand(
 	let duration = timeToFinish * quantity;
 
 	// If you have dwarven blessing, you need 1 prayer pot per 5 mins
-	const prayerPots = user.bank.amount('Prayer potion(4)');
+	const dwarvenBlessingItem = user.bitfield.includes(BitField.UseSuperRestoresForDwarvenBlessing)
+		? 'Super restore(4)'
+		: 'Prayer potion(4)';
+	const prayerPots = user.bank.amount(dwarvenBlessingItem);
 	const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
-	let prayerPotsNeeded = Math.max(1, fiveMinIncrements);
+	let dwarvenBlessingPotsNeeded = Math.max(1, fiveMinIncrements);
 	const hasPrayerMasterCape = user.hasEquipped('Prayer master cape');
 	if (hasPrayerMasterCape && hasBlessing) {
-		boosts.push('40% less prayer pots');
-		prayerPotsNeeded = Math.floor(0.6 * prayerPotsNeeded);
+		boosts.push(`40% less ${dwarvenBlessingItem}`);
+		dwarvenBlessingPotsNeeded = Math.floor(0.6 * dwarvenBlessingPotsNeeded);
 	}
-	prayerPotsNeeded = Math.max(1, prayerPotsNeeded);
+	dwarvenBlessingPotsNeeded = Math.max(1, dwarvenBlessingPotsNeeded);
 	if (hasBlessing) {
-		if (prayerPots < prayerPotsNeeded) {
-			return "You don't have enough Prayer potion(4)'s to power your Dwarven blessing.";
+		if (prayerPots < dwarvenBlessingPotsNeeded) {
+			return `You don't have enough ${dwarvenBlessingItem}'s to power your Dwarven blessing.`;
 		}
 	}
 
@@ -699,7 +741,7 @@ export async function minionKillCommand(
 		}
 	}
 	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
-		return "You haven't unlocked this monster..";
+		return "You haven't unlocked this monster.";
 	}
 
 	quantity = Math.max(1, quantity);
@@ -868,8 +910,8 @@ export async function minionKillCommand(
 		duration *= 0.9;
 	}
 
-	if (hasBlessing && prayerPotsNeeded) {
-		const prayerPotsBank = new Bank().add('Prayer potion(4)', prayerPotsNeeded);
+	if (hasBlessing && dwarvenBlessingPotsNeeded) {
+		const prayerPotsBank = new Bank().add(dwarvenBlessingItem, dwarvenBlessingPotsNeeded);
 		lootToRemove.add(prayerPotsBank);
 	}
 	const rangeSetup = { ...user.gear.range.raw() };
@@ -902,6 +944,9 @@ export async function minionKillCommand(
 		}
 		if (monster.name === 'Yeti') {
 			return 'You send your minion off to fight Yeti with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
+		}
+		if ([BSOMonsters.Akumu.id, BSOMonsters.Venatrix.id].includes(monster.id)) {
+			return 'This monster is temporarily unable to be killed with a Deathtouched dart.';
 		}
 		usedDart = true;
 		await userStatsUpdate(user.id, () => ({

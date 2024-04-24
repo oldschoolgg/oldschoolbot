@@ -26,8 +26,8 @@ export async function fetchCLLeaderboard({
     SELECT user_id::text AS id, CARDINALITY(cl_array) - CARDINALITY(cl_array - array[${items
 		.map(i => `${i}`)
 		.join(', ')}]) AS qty
-    FROM user_stats
-    WHERE user_id::text IN (${userIdsList})
+    FROM user_stats s INNER JOIN users u ON s.user_id::text = u.id
+    WHERE ${ironmenOnly ? 'u."minion.ironman" = true AND' : ''} user_id::text IN (${userIdsList})
 `)
 				: [];
 		const generalUsers = await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
@@ -77,7 +77,11 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
   FROM users
   WHERE ("collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
   ${ironmenOnly ? 'AND "minion.ironman" = true' : ''})
-  ${userIds.length > 0 ? `OR id in (${userIds.map(i => `'${i}'`).join(', ')})` : ''}
+  ${
+		userIds.length > 0
+			? `OR (id in (${userIds.map(i => `'${i}'`).join(', ')})${ironmenOnly ? 'AND "minion.ironman" = true' : ''})`
+			: ''
+  }
 ) u
 ORDER BY qty DESC
 LIMIT ${resultLimit};

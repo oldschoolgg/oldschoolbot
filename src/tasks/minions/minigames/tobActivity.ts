@@ -1,14 +1,14 @@
-import { formatOrdinal, miniID } from '@oldschoolgg/toolkit';
+import { miniID } from '@oldschoolgg/toolkit';
 import { randArrItem, roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
-import { BOT_TYPE, CHINCANNON_MESSAGES, Emoji, Events } from '../../../lib/constants';
+import { BOT_TYPE, CHINCANNON_MESSAGES, Emoji } from '../../../lib/constants';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
-import { TOBRooms, TOBUniques, TOBUniquesToAnnounce } from '../../../lib/data/tob';
+import { TOBRooms, TOBUniques } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -175,18 +175,7 @@ export const tobTask: MinionTask = {
 				const items = userLoot.items();
 
 				const isPurple = items.some(([item]) => TOBUniques.includes(item.id));
-				const shouldAnnounce = items.some(([item]) => TOBUniquesToAnnounce.includes(item.id));
-				if (shouldAnnounce) {
-					const itemsToAnnounce = userLoot.filter(item => TOBUniques.includes(item.id), false);
-					globalClient.emit(
-						Events.ServerNotification,
-						`${Emoji.Purple} ${
-							user.badgedUsername
-						} just received **${itemsToAnnounce}** on their ${formatOrdinal(
-							(await getMinigameScore(user.id, minigameID)) + (raidId - wipeCount)
-						)} raid.`
-					);
-				}
+
 				const deathStr =
 					userDeaths.length === 0 ? '' : `${Emoji.Skull}(${userDeaths.map(i => TOBRooms[i].name)})`;
 

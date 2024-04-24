@@ -108,10 +108,15 @@ function doubleLootCheck(tame: Tame, loot: Bank) {
 
 async function handleImplingLocator(user: MUser, tame: MTame, duration: number, loot: Bank, messages: string[]) {
 	if (tame.hasBeenFed('Impling locator')) {
-		const result = await handlePassiveImplings(user, {
-			type: 'MonsterKilling',
-			duration
-		} as ActivityTaskData);
+		const result = await handlePassiveImplings(
+			user,
+			{
+				type: 'MonsterKilling',
+				duration
+			} as ActivityTaskData,
+			messages,
+			true
+		);
 		if (result && result.bank.length > 0) {
 			const actualImplingLoot = new Bank();
 			for (const [item, qty] of result.bank.items()) {
@@ -327,7 +332,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			if (user.bitfield.includes(BitField.DisabledTameClueOpening)) {
 				loot.add(clueTier.id, activityData.quantity);
 			} else {
-				const openingLoot = clueTier.table.open(actualOpenQuantityWithBonus);
+				const openingLoot = clueTier.table.open(actualOpenQuantityWithBonus, user);
 
 				if (mTame.hasEquipped('Abyssal jibwings') && clueTier !== ClueTiers[0]) {
 					const lowerTier = ClueTiers[ClueTiers.indexOf(clueTier) - 1];
@@ -336,7 +341,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 					for (let i = 0; i < activityData.quantity; i++) {
 						if (percentChance(5)) {
 							bonusClues++;
-							abysJwLoot.add(lowerTier.table.open(1));
+							abysJwLoot.add(lowerTier.table.open(1, user));
 						}
 					}
 					if (abysJwLoot.length > 0) {
@@ -354,6 +359,12 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				}
 
 				loot.add(openingLoot);
+			}
+
+			if (mTame.hasBeenFed('Elder knowledge') && roll(15)) {
+				await mTame.addToStatsBank('elder_knowledge_loot_bank', loot);
+				loot.multiply(2);
+				messages.push('2x loot from Elder knowledge (1/15 chance)');
 			}
 
 			let str = `${user}, ${mTame} finished completing ${activityData.quantity}x ${itemNameFromID(

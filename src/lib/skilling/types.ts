@@ -197,6 +197,7 @@ export interface Mixable {
 	zahur?: boolean;
 	wesley?: boolean;
 	qpRequired?: number;
+	defaultQuantity?: number;
 }
 
 export interface CutLeapingFish {
@@ -278,7 +279,7 @@ export interface Plant {
 	additionalPatchesByFarmGuildAndLvl: number[][];
 	timePerPatchTravel: number;
 	timePerHarvest: number;
-	onHarvest?: (options: { user: MUser; loot: Bank; quantity: number }) => unknown;
+	onHarvest?: (options: { user: MUser; loot: Bank; quantity: number; messages: string[] }) => Promise<unknown>;
 }
 
 export enum HunterTechniqueEnum {

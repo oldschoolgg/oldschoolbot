@@ -1,7 +1,7 @@
 import '../../lib/customItems/customItems';
 import '../data/itemAliases';
 
-import { roll } from 'e';
+import { randInt, roll } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';
@@ -9,7 +9,14 @@ import type { CasketWorkerArgs } from '.';
 
 export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Bank, string]> => {
 	const clueTier = ClueTiers.find(tier => tier.id === clueTierID)!;
-	let loot = clueTier.table.open(quantity);
+
+	let loot = clueTier.table.open(quantity, { cl: new Bank() } as MUser);
+
+	for (let i = 0; i < quantity; i++) {
+		const qty = randInt(1, 3);
+		loot.add(clueTier.table.open(qty, { cl: loot } as MUser));
+	}
+
 	let mimicNumber = 0;
 	if (clueTier.mimicChance) {
 		for (let i = 0; i < quantity; i++) {

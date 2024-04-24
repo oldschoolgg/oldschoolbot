@@ -193,6 +193,12 @@ export async function kkCommand(
 			msgs.push(`${percent}% boost for TzKal cape`);
 		}
 
+		if (user.owns('Axe of the high sungod')) {
+			const percent = 10;
+			effectiveTime = reduceNumByPercent(effectiveTime, percent);
+			msgs.push(`${percent}% boost for Axe of the high sungod`);
+		}
+
 		// Increase duration for lower melee-strength gear.
 		let rangeStrBonus = 0;
 		if (data.percentAttackStrength < 40) {

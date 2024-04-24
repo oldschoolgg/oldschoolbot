@@ -252,13 +252,15 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Advax berry seed'), 'advax'],
 	[i('Advax berry'), 'advax'],
 	[i('Divination Potion'), 'div'],
-	[i('Elder logs'), 'Elder'],
+	[i('Elder logs'), 'elder'],
 	[i('Clue scroll (grandmaster)'), 'grandmaster'],
 	[i('Reward casket (grandmaster)'), 'grandmaster'],
-	[i('Atomic energy'), 'Atomic'],
-	[i('Fruity zygomite spores'), 'Fruity'],
-	[i('Barky zygomite spores'), 'Barky'],
-	[i('Herbal zygomite spores'), 'Herbal']
+	[i('Atomic energy'), 'atomic'],
+	[i('Fruity zygomite spores'), 'fruity'],
+	[i('Barky zygomite spores'), 'barky'],
+	[i('Herbal zygomite spores'), 'herbal']
+	[i('Clue scroll (elder)'), 'elder'],
+	[i('Reward casket (elder)'), 'elder']
 ]);
 
 for (const energy of divinationEnergies) {

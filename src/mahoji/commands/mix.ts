@@ -101,7 +101,7 @@ export const mixCommand: OSBMahojiCommand = {
 
 		const boosts: string[] = [];
 		const maxTripLength = calcMaxTripLength(user, 'Herblore');
-		let quantity = optionQuantity;
+		let quantity = optionQuantity ?? mixableItem.defaultQuantity;
 		const maxCanDo = user.bankWithGP.fits(baseCost);
 		const maxCanMix = Math.floor(maxTripLength / timeToMixSingleItem);
 
@@ -114,7 +114,7 @@ export const mixCommand: OSBMahojiCommand = {
 			if (maxCanDo < quantity && maxCanDo !== 0) quantity = maxCanDo;
 		}
 
-		if (!options.wesley && !options.zahur) {
+		if (!(wesley && mixableWesley) && !(zahur && mixableZahur)) {
 			const boostedTimeToMixSingleItem = reduceNumByPercent(
 				timeToMixSingleItem,
 				inventionBoosts.mechaMortar.herbloreSpeedBoostPercent

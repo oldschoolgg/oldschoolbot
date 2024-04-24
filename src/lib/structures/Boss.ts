@@ -131,6 +131,8 @@ export interface BossOptions {
 	allowMoreThan1Group?: boolean;
 	quantity?: number;
 	allowedMentions?: BaseMessageOptions['allowedMentions'];
+	// Override for Max Boost if you have multiple conflicting boost items
+	boostMax?: number;
 	// Duration before mass is automatically send
 	automaticStartTime?: number;
 	// The total % reduction that perfect gear/kc/boosts nets:
@@ -185,6 +187,7 @@ export class BossInstance {
 	boosts: string[] = [];
 	automaticStartTime: number;
 	maxSize: number;
+	boostMax: number | null = null;
 	speedMaxReduction: number = 40;
 	speedGearWeight: number = 25;
 	speedKcWeight: number = 35;
@@ -210,6 +213,7 @@ export class BossInstance {
 		this.minSize = options.minSize;
 		this.solo = options.solo;
 		this.canDie = options.canDie;
+		this.boostMax = options.boostMax ?? null;
 		this.speedKcWeight = options.speedKcWeight ?? 35;
 		this.speedGearWeight = options.speedGearWeight ?? 25;
 		this.speedMaxReduction = options.speedMaxReduction ?? 40;
@@ -350,7 +354,7 @@ export class BossInstance {
 			speedKcWeight: speedReductionForKC
 		} = this;
 		// The total combined values for item boosts equal their relative contribution to the speed
-		const speedReductionForBoosts = sumArr(this.itemBoosts.map(i => i[1]));
+		const speedReductionForBoosts = this.boostMax ?? sumArr(this.itemBoosts.map(i => i[1]));
 		const totalSpeedReduction = speedReductionForGear + speedReductionForKC + speedReductionForBoosts;
 
 		const bossUsers: BossUser[] = [];

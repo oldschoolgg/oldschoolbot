@@ -14,6 +14,7 @@ import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
 import { calculateSimpleMonsterDeathChance } from '../util';
+import { BSOMonsters } from './data/killableMonsters/custom/customMonsters';
 import { AttackStyles } from './functions';
 
 export type BankBackground = {
@@ -142,6 +143,7 @@ export interface KillableMonster {
 	tameCantKill?: true;
 	customRequirement?: (user: MUser) => Promise<string | null>;
 	setupsUsed?: GearSetupType[];
+	kcRequirements?: Partial<Record<keyof typeof BSOMonsters, number>>;
 }
 /*
  * Monsters will have an array of Consumables

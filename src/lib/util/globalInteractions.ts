@@ -34,6 +34,7 @@ const globalInteractionActions = [
 	'DO_ELITE_CLUE',
 	'DO_MASTER_CLUE',
 	'DO_GRANDMASTER_CLUE',
+	'DO_ELDER_CLUE',
 	'OPEN_BEGINNER_CASKET',
 	'OPEN_EASY_CASKET',
 	'OPEN_MEDIUM_CASKET',
@@ -41,6 +42,7 @@ const globalInteractionActions = [
 	'OPEN_ELITE_CASKET',
 	'OPEN_MASTER_CASKET',
 	'OPEN_GRANDMASTER_CASKET',
+	'OPEN_ELDER_CASKET',
 	'DO_BIRDHOUSE_RUN',
 	'CLAIM_DAILY',
 	'CHECK_PATCHES',
@@ -657,7 +659,7 @@ export async function interactionHook(interaction: Interaction) {
 				commandName: 'open',
 				args: {
 					name: 'Seed pack',
-					quantity: 1
+					quantity: user.bank.amount('Seed pack')
 				},
 				...options
 			});

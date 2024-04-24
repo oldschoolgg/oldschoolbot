@@ -70,6 +70,9 @@ export const TormentedDemon: CustomMonster = {
 	itemInBankBoosts: [
 		resolveNameBank({
 			'TzKal cape': 5
+		}),
+		resolveNameBank({
+			'Axe of the high sungod': 10
 		})
 	]
 };

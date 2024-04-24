@@ -77,7 +77,8 @@ export class MTame {
 			| 'demonic_jibwings_saved_cost'
 			| 'third_age_jibwings_loot'
 			| 'abyssal_jibwings_loot'
-			| 'implings_loot',
+			| 'implings_loot'
+			| 'elder_knowledge_loot_bank',
 		bank: Bank
 	) {
 		await prisma.tame.update({
