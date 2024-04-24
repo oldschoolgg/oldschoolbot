@@ -58,7 +58,7 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 	}
 
 	if (!['Contest rod', "Beginner's tackle box"].every(i => user.hasEquippedOrInBank(i))) {
-		return `You need to </buy:982663098949304331> a Contest rod and a Beginner's tackle box to compete in the Fishing contest.`;
+		return `You needto </buy:982663098949304331> a Contest rod and a Beginner's tackle box to compete in the Fishing contest.`;
 	}
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
