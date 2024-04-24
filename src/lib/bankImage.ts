@@ -258,7 +258,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Atomic energy'), 'atomic'],
 	[i('Fruity zygomite spores'), 'fruity'],
 	[i('Barky zygomite spores'), 'barky'],
-	[i('Herbal zygomite spores'), 'herbal']
+	[i('Herbal zygomite spores'), 'herbal'],
 	[i('Clue scroll (elder)'), 'elder'],
 	[i('Reward casket (elder)'), 'elder']
 ]);
