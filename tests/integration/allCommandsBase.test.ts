@@ -173,6 +173,12 @@ for (const item of Items.array()) {
 test(
 	'All Commands Base Test',
 	async () => {
+		vi.spyOn(bankImageGenerator, 'generateBankImage').mockReturnValue(
+			Promise.resolve({
+				image: Buffer.from(''),
+				isTransparent: false
+			})
+		);
 		expect(vi.isMockFunction(handleMahojiConfirmation)).toBe(true);
 		const client = await mockClient();
 		process.env.CLIENT_ID = client.data.id;
@@ -292,26 +298,13 @@ test(
 		for (const command of cmds) {
 			if (ignoredCommands.includes(command.name)) continue;
 			const options = await generateCommandInputs(maxUser, command.options!);
-			// writeFileSync(`${command.name}.txt`, JSON.stringify(options, null, 4));
 			for (const option of options) {
 				try {
-					// await prisma.activity.deleteMany({
-					// 	where: {
-					// 		user_id: BigInt(maxUser.id)
-					// 	}
-					// });
-					// minionActivityCache.clear();
-					// console.log(`Running command ${command.name}
-					// Options: ${JSON.stringify(option)}`);
 					const res = await maxUser.runCommand(command, option);
-					await client.processActivities();
 					minionActivityCache.clear();
-					// await prisma.activity.deleteMany({
-					// 	where: {
-					// 		user_id: BigInt(maxUser.id)
-					// 	}
-					// });
-					console.log(`Result: ${JSON.stringify(res)}`);
+					// 					console.log(`Running command ${command.name}
+					// Options: ${JSON.stringify(option)}
+					// Result: ${JSON.stringify(res).slice(0, 100)}`);
 				} catch (err) {
 					console.error(
 						`Failed to run command ${command.name} with options ${JSON.stringify(option)}: ${err}`
@@ -320,6 +313,8 @@ test(
 				}
 			}
 		}
+
+		await client.processActivities();
 	},
 	{
 		timeout: Time.Minute * 10

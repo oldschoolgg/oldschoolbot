@@ -1,5 +1,6 @@
 import '../globalSetup';
 
+import { noOp } from 'e';
 import mitm from 'mitm';
 import { afterEach, beforeEach, vi } from 'vitest';
 
@@ -40,7 +41,7 @@ afterEach(async () => {
 });
 
 async function init() {
-	await prisma.$queryRaw`CREATE EXTENSION IF NOT EXISTS intarray;`;
+	await prisma.$queryRaw`CREATE EXTENSION IF NOT EXISTS intarray;`.catch(noOp);
 }
 
 init();

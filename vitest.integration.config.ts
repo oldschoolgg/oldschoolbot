@@ -12,8 +12,8 @@ export default defineConfig({
 		},
 		testTimeout: 30_000,
 		bail: 1,
-		maxConcurrency: 1,
-		maxWorkers: 1,
+		maxConcurrency: 3,
+		maxWorkers: 3,
 		minWorkers: 1,
 		pool: 'forks'
 	}

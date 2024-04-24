@@ -231,7 +231,7 @@ const ActivityTaskOptionsSchema = z.object({
 
 export async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
-	console.log(`Attemping to complete activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
+	debugLog(`Attemping to complete activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
 
 	if (_activity.completed) {
 		throw new Error('Tried to complete an already completed task.');
