@@ -233,7 +233,8 @@ const trees: Plant[] = [
 		additionalPatchesByFarmLvl: [],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10,
-		additionalPatchesByFarmGuildAndLvl: []
+		additionalPatchesByFarmGuildAndLvl: [],
+		noArcaneHarvester: true
 	}
 ];
 
