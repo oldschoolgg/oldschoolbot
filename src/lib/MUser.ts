@@ -508,7 +508,7 @@ GROUP BY data->>'clueID';`);
 		};
 	}
 
-	async specialRemoveItems(bankToRemove: Bank, options?: { wildy?: boolean }) {
+	async specialRemoveItems(bankToRemove: Bank, options?: { wildy?: boolean; death?: boolean }) {
 		bankToRemove = determineRunes(this, bankToRemove);
 		const bankRemove = new Bank();
 		let dart: [Item, number] | null = null;
@@ -527,7 +527,7 @@ GROUP BY data->>'clueID';`);
 				continue;
 			}
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(item.id));
-			if (projectileCategory) {
+			if (projectileCategory && !options?.death) {
 				if (ammoRemove !== null) {
 					bankRemove.add(item.id, quantity);
 					continue;
@@ -566,6 +566,7 @@ GROUP BY data->>'clueID';`);
 					} but you have only ${ammo}.`
 				);
 			newRangeGear.ammo!.quantity -= ammoRemove![1];
+			if (newRangeGear.ammo!.quantity <= 0) newRangeGear.ammo = null;
 			const updateKey = options?.wildy ? 'gear_wildy' : 'gear_range';
 			updates[updateKey] = newRangeGear as any as Prisma.InputJsonObject;
 		}
