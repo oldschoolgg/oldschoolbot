@@ -508,7 +508,7 @@ GROUP BY data->>'clueID';`);
 		};
 	}
 
-	async specialRemoveItems(bankToRemove: Bank, options?: { wildy?: boolean; death?: boolean }) {
+	async specialRemoveItems(bankToRemove: Bank, options?: { wildy?: boolean }) {
 		bankToRemove = determineRunes(this, bankToRemove);
 		const bankRemove = new Bank();
 		let dart: [Item, number] | null = null;
@@ -527,7 +527,7 @@ GROUP BY data->>'clueID';`);
 				continue;
 			}
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(item.id));
-			if (projectileCategory && !options?.death) {
+			if (projectileCategory) {
 				if (ammoRemove !== null) {
 					bankRemove.add(item.id, quantity);
 					continue;
