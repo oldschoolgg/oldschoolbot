@@ -87,6 +87,7 @@ export const zygomitePlants: Plant[] = zygomiteFarmingSource.map(src => ({
 	additionalPatchesByFarmGuildAndLvl: [],
 	timePerPatchTravel: 10,
 	timePerHarvest: 5,
+	noArcaneHarvester: src.name === 'Toxic zygomite' ? true : undefined,
 	onHarvest: async ({ loot, user, quantity, messages }) => {
 		const dropRate = clAdjustedDroprate(
 			user,
