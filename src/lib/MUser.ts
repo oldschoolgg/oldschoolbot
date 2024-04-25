@@ -566,6 +566,7 @@ GROUP BY data->>'clueID';`);
 					} but you have only ${ammo}.`
 				);
 			newRangeGear.ammo!.quantity -= ammoRemove![1];
+			if (newRangeGear.ammo!.quantity <= 0) newRangeGear.ammo = null;
 			const updateKey = options?.wildy ? 'gear_wildy' : 'gear_range';
 			updates[updateKey] = newRangeGear as any as Prisma.InputJsonObject;
 		}
