@@ -1,4 +1,3 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit';
 import { Tame, TameActivity } from '@prisma/client';
 import {
 	ActionRowBuilder,
@@ -42,6 +41,7 @@ import { getUsersTamesCollectionLog } from '../../lib/util/getUsersTameCL';
 import { handleCrateSpawns } from '../../lib/util/handleCrateSpawns';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { tameHasBeenFed, tameLastFinishedActivity, tameName } from '../../lib/util/tameUtil';
+import { sendToChannelID } from '../../lib/util/webhook';
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
 
 export const arbitraryTameActivities: ArbitraryTameActivity[] = [
@@ -165,9 +165,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 		const crateRes = await handleCrateSpawns(user, activity.duration);
 		if (crateRes !== null) res.message += `\n${crateRes}`;
 
-		const channel = globalClient.channels.cache.get(activity.channel_id);
-		if (!channelIsSendable(channel)) return;
-		channel.send({
+		sendToChannelID(activity.channel_id, {
 			content: res.message,
 			components: [
 				new ActionRowBuilder<ButtonBuilder>().addComponents(
