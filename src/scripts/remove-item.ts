@@ -25,7 +25,7 @@ const removeFromBankQuery = (column: string) => `"${column}" = "${column}"::json
 const removeFromArrayQuery = (column: string) => `"${column}" = ARRAY_REMOVE("${column}", ${itemIDToRemove})`;
 
 const userBankQuery = `
-UPDATE users 
+UPDATE users
 SET ${removeFromBankQuery('bank')},
     ${removeFromBankQuery('collectionLogBank')},
     ${removeFromBankQuery('temp_cl')},
@@ -73,7 +73,7 @@ SET ${removeFromBankQuery('sold_items_bank')},
     ${removeFromBankQuery('buy_cost_bank')},
     ${removeFromBankQuery('buy_loot_bank')},
     ${removeFromBankQuery('magic_cost_bank')},
-    
+
     ${removeFromBankQuery('crafting_cost')},
     ${removeFromBankQuery('gnome_res_cost')},
     ${removeFromBankQuery('gnome_res_loot')},
@@ -91,10 +91,18 @@ FINAL_QUERY += clientQuery;
 
 // BSO
 const bsoUserBankQuery = `
-UPDATE users 
+UPDATE users
 SET ${removeFromBankQuery('item_contract_bank')},
     ${removeFromBankQuery('disassembled_items_bank')};
 `;
+
+const currentIcQuery = `
+UPDATE users
+SET current_item_contract = null
+WHERE current_item_contract::text::integer = ${itemIDToRemove};
+`;
+
+FINAL_QUERY += currentIcQuery;
 
 FINAL_QUERY += bsoUserBankQuery;
 const bsoUserStatsBankQuery = `
