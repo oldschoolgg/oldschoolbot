@@ -1,7 +1,7 @@
 import { userMention } from '@discordjs/builders';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
-import { calcWhatPercent, objectEntries, randArrItem, sumArr, Time, uniqueArr } from 'e';
+import { calcWhatPercent, objectEntries, percentChance, randArrItem, sumArr, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
@@ -42,7 +42,7 @@ import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
 import { MTame } from './structures/MTame';
 import { ItemBank, Skills } from './types';
-import { addItemToBank, convertXPtoLVL, getAllIDsOfUser, itemNameFromID, murMurSort, percentChance } from './util';
+import { addItemToBank, convertXPtoLVL, getAllIDsOfUser, itemNameFromID, murMurSort } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
