@@ -150,7 +150,6 @@ export function randFloat(min: number, max: number) {
 }
 
 export function percentChance(percent: number) {
-	if (process.env.TEST) return false;
 	return bool(percent / 100)(nodeCrypto);
 }
 
