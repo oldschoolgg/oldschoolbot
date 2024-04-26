@@ -15,7 +15,7 @@ describe('specialRemoveItems', () => {
 		});
 		expect(user.gear.range.ammo!.quantity).toBe(1000);
 		await user.specialRemoveItems(new Bank().add('Rune arrow', 1000));
-		expect(user.gear.range.ammo!.quantity).toBe(0);
+		expect(user.gear.range.ammo).toBeNull();
 	});
 
 	test("should deduct for ava's", async () => {
@@ -43,6 +43,6 @@ describe('specialRemoveItems', () => {
 		});
 		expect(user.gear.range.ammo!.quantity).toBe(1000);
 		await user.specialRemoveItems(new Bank().add('Rune javelin', 1000));
-		expect(user.gear.range.ammo!.quantity).toBe(0);
+		expect(user.gear.range.ammo).toBeNull;
 	});
 });
