@@ -614,8 +614,14 @@ for (const zygomite of resolveItems(['Herbal zygomite spores', 'Barky zygomite s
 	usables.push({
 		items: [getOSItem(zygomite), getOSItem('Deathly toxic potion')],
 		run: async (user: MUser) => {
-			await user.removeItemsFromBank(new Bank().add('Deathly toxic potion').add(zygomite));
-			await user.addItemsToBank({ items: new Bank().add('Toxic zygomite spores'), collectionLog: true });
+			const cost = new Bank().add('Deathly toxic potion').add(zygomite);
+			const loot = new Bank().add('Toxic zygomite spores');
+			await user.transactItems({
+				collectionLog: true,
+				filterLoot: false,
+				itemsToAdd: loot,
+				itemsToRemove: cost
+			});
 			return 'You poured the Deathly toxic potion on the zygomite spores, turning them into Toxic zygomite spores!';
 		}
 	});
