@@ -606,11 +606,12 @@ export async function inventCommand(user: MUser, inventionName: string): Command
 		addToGlobalInventionCostBank: true
 	});
 
+	const itemsToRemove = new Bank();
 	if (invention.itemCost) {
-		await user.removeItemsFromBank(invention.itemCost);
+		itemsToRemove.add(invention.itemCost);
 	}
 	const loot = new Bank().add(invention.item.id);
-	await user.addItemsToBank({ items: loot, collectionLog: true });
+	await user.transactItems({ itemsToRemove, itemsToAdd: loot, collectionLog: true });
 	return `${userMention(user.id)}, your minion created a ${invention.name}! (${
 		invention.description
 	}) Items removed: ${invention.itemCost ?? 'None'}. Materials used: ${cost}.`;

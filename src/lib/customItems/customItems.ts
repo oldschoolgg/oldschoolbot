@@ -7314,7 +7314,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true,
 			isDiscontinued: true
 		}
 	},
