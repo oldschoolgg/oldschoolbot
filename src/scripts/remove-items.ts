@@ -126,6 +126,14 @@ SET ${removeFromBankQuery('item_contract_bank')},
     ${removeFromBankQuery('disassembled_items_bank')};
 `;
 
+const currentIcQuery = `
+UPDATE users
+SET current_item_contract = null
+WHERE current_item_contract::text::integer = ANY(${intArrayToRemove});
+`;
+
+FINAL_QUERY += currentIcQuery;
+
 FINAL_QUERY += bsoUserBankQuery;
 const bsoUserStatsBankQuery = `
 UPDATE user_stats
