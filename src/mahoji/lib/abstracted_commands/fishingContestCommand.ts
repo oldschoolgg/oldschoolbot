@@ -65,7 +65,7 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 	}
 
 	const result = await getUsersFishingContestDetails(user);
-	if (result.catchesFromToday.length > 0) {
+	if (0) {
 		return `You already participated in the Fishing Contest today. You caught: ${result.catchesFromToday
 			.map(i => `${i.name}(${i.length_cm / 100}m)`)
 			.join(', ')}.`;
