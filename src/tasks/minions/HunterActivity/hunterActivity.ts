@@ -387,7 +387,7 @@ export const hunterTask: MinionTask = {
 		let str = `${user}, ${user.minionName} finished hunting ${creature.name}${
 			crystalImpling
 				? '.'
-				: `${quantity}x times, due to clever creatures you missed out on ${
+				: ` ${quantity}x times, due to clever creatures you missed out on ${
 						quantity - successfulQuantity
 				  }x catches. `
 		}${xpStr}`;
