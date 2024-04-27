@@ -158,7 +158,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	if (preMax !== -1) {
 		str += params.minimal
 			? `+${Math.ceil(preMax).toLocaleString()} ${skillEmoji[params.skillName]}`
-			: `You received ${Math.ceil(preMax).toLocaleString()} ${skillEmoji[params.skillName]} XP`;
+			: `You received ${Math.ceil(preMax).toLocaleString()} ${skillEmoji[params.skillName]} XP.`;
 		if (params.duration) {
 			let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
