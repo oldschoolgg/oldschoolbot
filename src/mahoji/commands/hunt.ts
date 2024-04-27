@@ -170,7 +170,7 @@ export function calculateHunterInput({
 		timePerCatch = boostedActionTime;
 	}
 
-	if (!crystalImpling && isUsingWebshooter) {
+	if (isUsingWebshooter) {
 		const boostedActionTime = reduceNumByPercent(timePerCatch, inventionBoosts.webshooter.hunterBoostPercent);
 		messages.push(
 			`${inventionBoosts.webshooter.hunterBoostPercent}% boost for Webshooter invention (${webshooterMessages})`
