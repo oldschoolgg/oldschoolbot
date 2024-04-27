@@ -58,7 +58,7 @@ const butterflyNettingCreatures: Creature[] = [
 	},
 	{
 		name: 'Crystal impling',
-		id: 37,
+		id: 42,
 		aliases: ['cimp', 'crystal imp', 'c imp', 'crystal impling'],
 		level: 80,
 		hunterXP: 280,
