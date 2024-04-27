@@ -1,6 +1,7 @@
 import type { CropUpgradeType } from '@prisma/client';
 
 import { BathhouseTierName } from '../baxtorianBathhouses';
+import { TuraelsTrialsMethod } from '../bso/turaelsTrials';
 import { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
 import { Kibble } from '../data/kibble';
 import { IMaterialBank, MaterialType } from '../invention';
@@ -27,6 +28,13 @@ export interface KibbleOptions extends ActivityTaskOptions {
 	type: 'KibbleMaking';
 	quantity: number;
 	kibbleType: Kibble['type'];
+}
+
+export interface TuraelsTrialsOptions extends ActivityTaskOptions {
+	type: 'TuraelsTrials';
+	minigameID: MinigameName;
+	q: number;
+	m: TuraelsTrialsMethod;
 }
 
 export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
@@ -374,7 +382,8 @@ export interface MinigameActivityTaskOptionsWithNoChanges extends MinigameActivi
 		| 'OuraniaDeliveryService'
 		| 'FistOfGuthix'
 		| 'BalthazarsBigBonanza'
-		| 'GuthixianCache';
+		| 'GuthixianCache'
+		| 'TuraelsTrials';
 }
 
 export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -765,4 +774,5 @@ export type ActivityTaskData =
 	| ResearchTaskOptions
 	| CutLeapingFishActivityTaskOptions
 	| MortimerOptions
-	| MemoryHarvestOptions;
+	| MemoryHarvestOptions
+	| TuraelsTrialsOptions;

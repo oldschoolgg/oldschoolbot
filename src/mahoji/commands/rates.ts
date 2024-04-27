@@ -13,6 +13,7 @@ import {
 	durationPerBaxBath
 } from '../../lib/baxtorianBathhouses';
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
+import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '../../lib/bso/turaelsTrials';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { GLOBAL_BSO_XP_MULTIPLIER, PeakTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
@@ -45,6 +46,7 @@ import { calcPerHour, formatDuration, itemNameFromID, returnStringOrFile } from 
 import { calculateAgilityResult } from '../../tasks/minions/agilityActivity';
 import { calculateDungeoneeringResult } from '../../tasks/minions/bso/dungeoneeringActivity';
 import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
+import { calculateTuraelsTrialsResult } from '../../tasks/minions/bso/turaelsTrialsActivity';
 import { calculateHunterResult } from '../../tasks/minions/HunterActivity/hunterActivity';
 import { calculateMiningResult } from '../../tasks/minions/miningActivity';
 import { gearstatToSetup, gorajanBoosts } from '../lib/abstracted_commands/minionKill';
@@ -117,6 +119,12 @@ export const ratesCommand: OSBMahojiCommand = {
 					name: 'hunter',
 					description: 'XP/hr rates for Hunter.',
 					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'turaels_trials',
+					description: 'XP/hr rates for TT.',
+					options: []
 				}
 			]
 		},
@@ -158,7 +166,14 @@ export const ratesCommand: OSBMahojiCommand = {
 		userID,
 		interaction
 	}: CommandRunOptions<{
-		xphr?: { divination_memory_harvesting?: {}; agility?: {}; dungeoneering?: {}; mining?: {}; hunter?: {} };
+		xphr?: {
+			divination_memory_harvesting?: {};
+			agility?: {};
+			dungeoneering?: {};
+			mining?: {};
+			hunter?: {};
+			turaels_trials?: {};
+		};
 		monster?: { monster?: { name: string } };
 		tames?: { eagle?: {} };
 		misc?: { zygomite_seeds?: {} };
@@ -493,6 +508,46 @@ ${zygomiteFarmingSource
 			return {
 				...(returnStringOrFile(results, true) as InteractionReplyOptions),
 				content: 'Assumes: Hunter master cape, level 120 Hunter, full Graceful, Sandy pet equipped.'
+			};
+		}
+
+		if (options.xphr?.turaels_trials) {
+			let results = `${[
+				'Method',
+				'Slayer XP/Hr',
+				'Melee XP/Hr',
+				'Range XP/Hr',
+				'Mage XP/Hr',
+				'Loot/hr',
+				'Cost/hr'
+			].join('\t')}\n`;
+			const duration = Time.Hour;
+
+			for (const method of TuraelsTrialsMethods) {
+				const input = calculateTuraelsTrialsInput({ maxTripLength: duration, method });
+				const result = calculateTuraelsTrialsResult({ quantity: input.quantity, method });
+				if (input.scytheChargesNeeded !== 0) {
+					input.cost.add('Scythe of vitur', input.scytheChargesNeeded);
+				}
+				if (input.hpHealingNeeded !== 0) {
+					input.cost.add('Rocktail', Math.ceil(input.hpHealingNeeded / 26));
+				}
+
+				results += [
+					method,
+					Math.floor(calcPerHour(result.slayerXP * GLOBAL_BSO_XP_MULTIPLIER, duration)).toLocaleString(),
+					Math.floor(calcPerHour(result.meleeXP * GLOBAL_BSO_XP_MULTIPLIER, duration)).toLocaleString(),
+					Math.floor(calcPerHour(result.rangedXP * GLOBAL_BSO_XP_MULTIPLIER, duration)).toLocaleString(),
+					Math.floor(calcPerHour(result.magicXP * GLOBAL_BSO_XP_MULTIPLIER, duration)).toLocaleString(),
+					convertBankToPerHourStats(result.loot, duration).join(', '),
+					convertBankToPerHourStats(input.cost, duration).join(', ')
+				].join('\t');
+				results += '\n';
+			}
+
+			return {
+				...(returnStringOrFile(results, true) as InteractionReplyOptions),
+				content: 'Assumes: Rocktail for food'
 			};
 		}
 

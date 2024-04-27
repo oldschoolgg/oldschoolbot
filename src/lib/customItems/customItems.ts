@@ -12470,3 +12470,15 @@ setCustomItem(
 	},
 	100_000
 );
+
+setCustomItem(
+	73_195,
+	'Turael tokens',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
