@@ -1136,10 +1136,10 @@ model UserEvent {
   id   String   @id @default(uuid()) @db.Uuid
   date DateTime @default(now()) @db.Timestamp(6)
 
-  user_id             String               @db.VarChar(19)
+  user_id             String               @db.Text
   type                UserEventType
   skill               xp_gains_skill_enum?
-  collection_log_name String?              @db.VarChar(19)
+  collection_log_name String?
 
   @@map("user_event")
 }
