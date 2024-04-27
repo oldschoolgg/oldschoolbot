@@ -216,7 +216,7 @@ export function calculateHunterInput({
 		}
 	}
 
-	// If creatures Herbiboar or Razor-backed kebbit use Stamina potion(4)
+	// If creatures Herbiboar or Razor-backed kebbit or Crystal Impling use Stamina potion(4)
 	if (shouldUseStaminaPotions) {
 		if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID || crystalImpling) {
 			let staminaPotionQuantity =
