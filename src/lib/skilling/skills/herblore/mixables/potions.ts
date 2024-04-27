@@ -396,7 +396,7 @@ const Potions: Mixable[] = [
 		xp: 200,
 		inputItems: new Bank({ 'Dwarf weed potion (unf)': 1, 'Lily of the sands': 1 }),
 		tickRate: 2,
-		bankTimePerPotion: 0.17
+		bankTimePerPotion: 0.3
 	},
 	{
 		item: getOSItem('Super combat potion (4)'),
