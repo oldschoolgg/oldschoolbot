@@ -432,7 +432,10 @@ export function minionStatus(user: MUser) {
 						stringMatches(alias, data.creatureName) || stringMatches(alias.split(' ')[0], data.creatureName)
 				)
 			);
-			return `${name} is currently hunting ${data.quantity}x ${creature!.name}. ${formattedDuration}`;
+			let crystalImpling = creature?.name === 'Crystal impling';
+			return `${name} is currently hunting ${
+				crystalImpling ? creature!.name : `${data.quantity}x ${creature!.name}`
+			}. ${formattedDuration}`;
 		}
 
 		case 'Birdhouse': {
