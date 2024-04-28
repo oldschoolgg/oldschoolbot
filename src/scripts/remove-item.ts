@@ -6,26 +6,55 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { GearSetupTypes } from '../lib/gear/types';
 
-const itemIDToRemove = 830;
+/* PSQL Function that needs to be created */
+const extraFunctions = `
+CREATE OR REPLACE FUNCTION remove_jsonb_keys(data jsonb, keys text[])
+RETURNS jsonb LANGUAGE plpgsql AS $$
+declare
+	key text;
+BEGIN
+    FOREACH key IN ARRAY keys LOOP
+        data := data - key;
+    END LOOP;
+    RETURN data;
+END;
+$$;
+CREATE OR REPLACE FUNCTION array_remove_multiple(original_array anyarray, values_to_remove anyarray)
+RETURNS anyarray AS $$
+BEGIN
+    RETURN ARRAY(
+        SELECT elem
+        FROM unnest(original_array) elem
+        WHERE elem NOT IN (SELECT unnest(values_to_remove))
+    );
+END;
+$$ LANGUAGE plpgsql;`;
 
-let FINAL_QUERY = `-- Nuke these items: https://chisel.weirdgloop.org/moid/item_id.html#${itemIDToRemove}`;
+const itemsToRemove = '2678,2679,2680';
+const itemIDsToRemove = itemsToRemove.split(',');
+const arrayToRemove = `ARRAY[${itemIDsToRemove.map(i => `'${i}'`).join(',')}]`;
+const intArrayToRemove = `ARRAY[${itemIDsToRemove.join(',')}]`;
+
+let FINAL_QUERY = `-- Nuke these items: https://chisel.weirdgloop.org/moid/item_id.html#${itemsToRemove}`;
+FINAL_QUERY += `\n${extraFunctions}\n\n`;
 
 FINAL_QUERY += '\nBEGIN;\n';
 
 FINAL_QUERY += GearSetupTypes.map(gearType =>
 	Object.values(EquipmentSlot).map(
 		slot =>
-			`UPDATE users SET "gear.${gearType}" = jsonb_set("gear.${gearType}"::jsonb, ARRAY['${slot}'], 'null'::jsonb) WHERE "gear.${gearType}"->'${slot}'->>'item' = '${itemIDToRemove}';`
+			`UPDATE users SET "gear.${gearType}" = jsonb_set("gear.${gearType}"::jsonb, ARRAY['${slot}'], 'null'::jsonb) WHERE "gear.${gearType}"->'${slot}'->>'item' = ANY(${arrayToRemove});`
 	)
 )
 	.flat()
 	.join('\n');
 
-const removeFromBankQuery = (column: string) => `"${column}" = "${column}"::jsonb -'${itemIDToRemove}'`;
-const removeFromArrayQuery = (column: string) => `"${column}" = ARRAY_REMOVE("${column}", ${itemIDToRemove})`;
+const removeFromBankQuery = (column: string) => `"${column}" = remove_jsonb_keys("${column}"::jsonb, ${arrayToRemove})`;
+const removeFromArrayQuery = (column: string) =>
+	`"${column}" = array_remove_multiple("${column}", ${intArrayToRemove})`;
 
 const userBankQuery = `
-UPDATE users 
+UPDATE users
 SET ${removeFromBankQuery('bank')},
     ${removeFromBankQuery('collectionLogBank')},
     ${removeFromBankQuery('temp_cl')},
@@ -58,7 +87,7 @@ FINAL_QUERY += userStatsBankQuery;
 const petQuery = `
 UPDATE users
 SET "minion.equippedPet" = null
-WHERE "minion.equippedPet"::text::integer = ${itemIDToRemove};
+WHERE "minion.equippedPet"::text::integer = ANY(${intArrayToRemove});
 `;
 
 FINAL_QUERY += petQuery;
@@ -73,7 +102,7 @@ SET ${removeFromBankQuery('sold_items_bank')},
     ${removeFromBankQuery('buy_cost_bank')},
     ${removeFromBankQuery('buy_loot_bank')},
     ${removeFromBankQuery('magic_cost_bank')},
-    
+
     ${removeFromBankQuery('crafting_cost')},
     ${removeFromBankQuery('gnome_res_cost')},
     ${removeFromBankQuery('gnome_res_loot')},
