@@ -6,6 +6,7 @@ import { Bank } from 'oldschooljs';
 import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { trackLoot } from '../../lib/lootTrack';
+import { getPOHObject } from '../../lib/poh';
 import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
@@ -16,6 +17,7 @@ import { formatDuration, hasSkillReqs, itemID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { userHasGracefulEquipped } from '../mahojiSettings';
 
@@ -209,20 +211,46 @@ export const huntCommand: OSBMahojiCommand = {
 			}
 		}
 
-		// If creatures Herbiboar or Razor-backed kebbit use Stamina potion(4)
-		if (usingStaminaPotion) {
-			if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID || crystalImpling) {
-				let staminaPotionQuantity =
-					creature.id === HERBIBOAR_ID || crystalImpling
-						? Math.round(duration / (9 * Time.Minute))
-						: Math.round(duration / (18 * Time.Minute));
+		const poh = await getPOH(user.id);
+		const poolNames = [
+			'Revitalisation pool',
+			'Rejuvenation pool',
+			'Fancy Rejuvenation pool',
+			'Ornate Rejuvenation pool'
+		];
 
-				if (userBank.amount('Stamina potion(4)') < staminaPotionQuantity) {
-					return `You need ${staminaPotionQuantity}x Stamina potion(4) to hunt for the whole trip, try a lower quantity or make/buy more potions.`;
+		let staminaPool = false;
+		for (const poolName of poolNames) {
+			if (poh.pool === getPOHObject(poolName).id) {
+				if (user.hasEquippedOrInBank('Max cape') || user.hasEquippedOrInBank('Construct. cape')) {
+					staminaPool = true;
+					break; 
 				}
-				removeBank.add('Stamina potion(4)', staminaPotionQuantity);
-				boosts.push(`20% boost for using ${staminaPotionQuantity}x Stamina potion(4)`);
 			}
+		}
+
+		const eternalTeleportCrystal = user.owns('Eternal teleport crystal');
+		const ringOfEndurance = user.hasEquippedOrInBank('Ring of endurance');
+
+		if (crystalImpling && usingStaminaPotion && eternalTeleportCrystal && ringOfEndurance && staminaPool) {
+			boosts.push(
+				'20% boost for having Ring of Endurance, an Eternal Teleport Crystal, Construction Cape, and a stamina pool.'
+			);
+		} else if (
+			usingStaminaPotion &&
+			(creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID || crystalImpling)
+		) {
+			const staminaPotionQuantity =
+				creature.id === HERBIBOAR_ID || crystalImpling
+					? Math.round(duration / (9 * Time.Minute))
+					: Math.round(duration / (18 * Time.Minute));
+
+			if (userBank.amount('Stamina potion(4)') < staminaPotionQuantity) {
+				return `You need ${staminaPotionQuantity}x Stamina potion(4) to hunt for the whole trip. Try a lower quantity or make/buy more potions.`;
+			}
+
+			removeBank.add('Stamina potion(4)', staminaPotionQuantity);
+			boosts.push(`20% boost for using ${staminaPotionQuantity}x Stamina potion(4)`);
 		}
 
 		if (usingHuntPotion) {
