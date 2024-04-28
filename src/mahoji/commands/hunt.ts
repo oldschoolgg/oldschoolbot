@@ -224,7 +224,7 @@ export const huntCommand: OSBMahojiCommand = {
 			if (poh.pool === getPOHObject(poolName).id) {
 				if (user.hasEquippedOrInBank('Max cape') || user.hasEquippedOrInBank('Construct. cape')) {
 					staminaPool = true;
-					break; 
+					break;
 				}
 			}
 		}
