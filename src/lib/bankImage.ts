@@ -232,6 +232,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Scythe of vitur (uncharged)'), 'Unch.'],
 	[i('Holy scythe of vitur (uncharged)'), 'Unch.'],
 	[i('Sanguine scythe of vitur (uncharged)'), 'Unch.'],
+	[i('Venator bow (uncharged)'), 'Unch.'],
 
 	// Ore Packs
 	[27_019, 'GF Pack'],

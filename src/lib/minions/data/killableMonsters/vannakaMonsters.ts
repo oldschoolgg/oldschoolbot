@@ -220,6 +220,18 @@ export const vannakaMonsters: KillableMonster[] = [
 				[itemID('Arclight')]: 15
 			}
 		],
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'range',
+				items: [
+					{
+						itemID: itemID('Venator bow'),
+						boostPercent: 10
+					}
+				]
+			}
+		],
 		healAmountNeeded: 12,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic],
@@ -348,6 +360,18 @@ export const vannakaMonsters: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Dragonbone necklace')]: 2
+			}
+		],
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'range',
+				items: [
+					{
+						itemID: itemID('Venator bow'),
+						boostPercent: 10
+					}
+				]
 			}
 		],
 		healAmountNeeded: 9,
@@ -566,6 +590,18 @@ export const vannakaMonsters: KillableMonster[] = [
 			},
 			{
 				[itemID('Masori mask (f)')]: 1
+			}
+		],
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'range',
+				items: [
+					{
+						itemID: itemID('Venator bow'),
+						boostPercent: 5
+					}
+				]
 			}
 		],
 		healAmountNeeded: 20 * 12,
@@ -944,6 +980,18 @@ export const vannakaMonsters: KillableMonster[] = [
 		itemInBankBoosts: [
 			{
 				[itemID('Arclight')]: 15
+			}
+		],
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'range',
+				items: [
+					{
+						itemID: itemID('Venator bow'),
+						boostPercent: 10
+					}
+				]
 			}
 		],
 		superior: Monsters.InsatiableMutatedBloodveld,
