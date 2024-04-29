@@ -10,75 +10,75 @@ import { clAdjustedDroprate } from '../../../util';
 import getOSItem from '../../../util/getOSItem';
 import { Plant } from '../../types';
 
-export const zygomiteSeedMutChance = 10;
+export const zygomiteSeedMutChance = 12;
 
 interface MutatedSourceItem {
 	item: Item;
 	zygomite: 'Herbal zygomite' | 'Barky zygomite' | 'Fruity zygomite';
 	weight: number;
-	mutationChance: number;
+	surivalChance: number;
 }
 
 export const mutatedSourceItems: MutatedSourceItem[] = [
 	{
-		item: getOSItem('Torstol seed'),
-		zygomite: 'Herbal zygomite',
-		weight: 10,
-		mutationChance: 15
-	},
-	{
-		item: getOSItem('Dwarf weed seed'),
-		zygomite: 'Herbal zygomite',
-		weight: 1,
-		mutationChance: 2
-	},
-	{
-		item: getOSItem('Lantadyme seed'),
-		zygomite: 'Herbal zygomite',
-		weight: 10,
-		mutationChance: 15
-	},
-	{
-		item: getOSItem('Magic seed'),
-		zygomite: 'Barky zygomite',
-		weight: 20,
-		mutationChance: 10
-	},
-	{
-		item: getOSItem('Redwood tree seed'),
-		zygomite: 'Barky zygomite',
-		weight: 1,
-		mutationChance: 2
-	},
-	{
-		item: getOSItem('Yew seed'),
-		zygomite: 'Barky zygomite',
-		weight: 25,
-		mutationChance: 12
-	},
-	{
-		item: getOSItem('Dragonfruit tree seed'),
-		zygomite: 'Fruity zygomite',
-		weight: 1,
-		mutationChance: 2
-	},
-	{
 		item: getOSItem('Papaya tree seed'),
 		zygomite: 'Fruity zygomite',
 		weight: 6,
-		mutationChance: 15
+		surivalChance: 19
 	},
 	{
 		item: getOSItem('Palm tree seed'),
 		zygomite: 'Fruity zygomite',
 		weight: 5,
-		mutationChance: 14
+		surivalChance: 15
 	},
 	{
 		item: getOSItem('Blood orange seed'),
 		zygomite: 'Fruity zygomite',
 		weight: 3,
-		mutationChance: 5
+		surivalChance: 9
+	},
+	{
+		item: getOSItem('Dragonfruit tree seed'),
+		zygomite: 'Fruity zygomite',
+		weight: 1,
+		surivalChance: 3
+	},
+	{
+		item: getOSItem('Torstol seed'),
+		zygomite: 'Herbal zygomite',
+		weight: 10,
+		surivalChance: 15
+	},
+	{
+		item: getOSItem('Dwarf weed seed'),
+		zygomite: 'Herbal zygomite',
+		weight: 1,
+		surivalChance: 3
+	},
+	{
+		item: getOSItem('Lantadyme seed'),
+		zygomite: 'Herbal zygomite',
+		weight: 10,
+		surivalChance: 17
+	},
+	{
+		item: getOSItem('Yew seed'),
+		zygomite: 'Barky zygomite',
+		weight: 25,
+		surivalChance: 14
+	},
+	{
+		item: getOSItem('Magic seed'),
+		zygomite: 'Barky zygomite',
+		weight: 20,
+		surivalChance: 12
+	},
+	{
+		item: getOSItem('Redwood tree seed'),
+		zygomite: 'Barky zygomite',
+		weight: 1,
+		surivalChance: 2
 	}
 ];
 
@@ -101,7 +101,7 @@ export const zygomiteFarmingSource = [
 				5
 			)
 			.every(new LootTable().add('Torstol').add('Dwarf weed').add('Cadantine').add('Kwuarm'), [40, 100])
-			.oneIn(3, MysteryBoxes)
+			.every(MysteryBoxes)
 	},
 	{
 		name: 'Barky zygomite',
@@ -113,7 +113,7 @@ export const zygomiteFarmingSource = [
 				5
 			)
 			.every(new LootTable().add('Elder logs').add('Mahogany logs'), [50, 100])
-			.oneIn(3, MysteryBoxes)
+			.every(MysteryBoxes)
 	},
 	{
 		name: 'Fruity zygomite',
@@ -125,7 +125,7 @@ export const zygomiteFarmingSource = [
 				5
 			)
 			.every(new LootTable().add('Avocado').add('Mango').add('Papaya fruit').add('Lychee'), [50, 150])
-			.oneIn(3, MysteryBoxes)
+			.every(MysteryBoxes)
 	},
 	{
 		name: 'Toxic zygomite',

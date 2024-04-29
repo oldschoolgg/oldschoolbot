@@ -27,8 +27,8 @@ import {
 	numberOfGorajanOutfitsEquipped
 } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import {
+	mutatedSourceItems,
 	zygomiteFarmingSource,
-	zygomiteMutSurvivalChance,
 	zygomiteSeedMutChance
 } from '../../lib/skilling/skills/farming/zygomites';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
@@ -210,11 +210,16 @@ export const ratesCommand: OSBMahojiCommand = {
 		}
 		if (options.misc?.zygomite_seeds) {
 			const mutationChancePerMinute = 1 / zygomiteSeedMutChance;
-			const survivalChancePerMutation = 1 / zygomiteMutSurvivalChance;
+			const totalSurvivalChance = sumArr(mutatedSourceItems.map(msi => msi.weight * msi.surivalChance));
+			const totalMutationsWeight = sumArr(mutatedSourceItems.map(msi => msi.weight));
+			const avgSurvivalChance = totalSurvivalChance / totalMutationsWeight;
+			const survivalChancePerMutation = 1 / avgSurvivalChance;
 			const chancePerMinuteBoth = mutationChancePerMinute * survivalChancePerMutation;
 			const averageMinutesToGetBoth = 1 / chancePerMinuteBoth;
 			const averageHoursToGetBoth = averageMinutesToGetBoth / 60;
-			return `For every minute in any trip, a random, valid seed from your bank has a 1 in ${zygomiteSeedMutChance} chance of mutating, and then that mutated seed has a 1 in ${zygomiteMutSurvivalChance} chance of surviving. ${averageHoursToGetBoth.toFixed(
+			return `For every minute in any trip, a random, valid seed from your bank has a 1 in ${zygomiteSeedMutChance} chance of mutating, and then that mutated seed has a 1 in ${avgSurvivalChance.toFixed(
+				2
+			)} (weighted average) chance of surviving. ${averageHoursToGetBoth.toFixed(
 				1
 			)} hours on average to get a zygomite seed.
 
@@ -222,7 +227,12 @@ ${zygomiteFarmingSource
 	.map(
 		z =>
 			`${bold(z.seedItem.name)} evolves from: ${
-				!z.mutatedFromItems ? 'No items' : z.mutatedFromItems.map(itemNameFromID).join(', ')
+				!z.mutatedFromItems
+					? 'No items'
+					: mutatedSourceItems
+							.filter(msi => msi.zygomite === z.name)
+							.map(i => i.item.name)
+							.join(', ')
 			}, drops these items: ${!z.lootTable ? 'Nothing' : z.lootTable.allItems.map(itemNameFromID).join(', ')}.`
 	)
 	.join('\n\n')}`;

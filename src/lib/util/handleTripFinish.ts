@@ -432,7 +432,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					if (!sourceSeed || !user.bank.has(sourceSeed.item.id)) continue;
 					cost.add(sourceSeed.item.id);
 
-					if (roll(sourceSeed.mutationChance)) {
+					if (roll(sourceSeed.surivalChance)) {
 						loot.add(randomZyg.seedItem);
 					}
 				}
