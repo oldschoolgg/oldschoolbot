@@ -1,7 +1,7 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, bold, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { notEmpty, randArrItem, randInt, roll, shuffleArr, Time } from 'e';
+import { notEmpty, randArrItem, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -23,11 +23,7 @@ import { mysteriousStepData } from '../mysteryTrail';
 import { triggerRandomEvent } from '../randomEvents';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
-import {
-	zygomiteFarmingSource,
-	zygomiteMutSurvivalChance,
-	zygomiteSeedMutChance
-} from '../skilling/skills/farming/zygomites';
+import { zygomiteFarmingSource, zygomiteSeedMutChance } from '../skilling/skills/farming/zygomites';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskData } from '../types/minions';
@@ -432,11 +428,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (minutes < 1) return;
 			for (let i = 0; i < minutes; i++) {
 				if (roll(zygomiteSeedMutChance)) {
-					const ownedSeed = shuffleArr(randomZyg.mutatedFromItems!).find(seed => user.bank.has(seed));
-					if (!ownedSeed) continue;
-					cost.add(ownedSeed);
+					const sourceSeed = randomZyg.mutatedFromItems?.roll();
+					if (!sourceSeed || !user.bank.has(sourceSeed.item.id)) continue;
+					cost.add(sourceSeed.item.id);
 
-					if (roll(zygomiteMutSurvivalChance)) {
+					if (roll(sourceSeed.mutationChance)) {
 						loot.add(randomZyg.seedItem);
 					}
 				}

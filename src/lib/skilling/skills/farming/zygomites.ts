@@ -1,21 +1,99 @@
+import { SimpleTable } from '@oldschoolgg/toolkit';
 import { roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { MysteryBoxes } from '../../../bsoOpenables';
 import { BitField } from '../../../constants';
 import { globalDroprates } from '../../../data/globalDroprates';
 import { clAdjustedDroprate } from '../../../util';
 import getOSItem from '../../../util/getOSItem';
-import resolveItems from '../../../util/resolveItems';
 import { Plant } from '../../types';
 
 export const zygomiteSeedMutChance = 10;
-export const zygomiteMutSurvivalChance = 19;
+
+interface MutatedSourceItem {
+	item: Item;
+	zygomite: 'Herbal zygomite' | 'Barky zygomite' | 'Fruity zygomite';
+	weight: number;
+	mutationChance: number;
+}
+
+export const mutatedSourceItems: MutatedSourceItem[] = [
+	{
+		item: getOSItem('Torstol seed'),
+		zygomite: 'Herbal zygomite',
+		weight: 10,
+		mutationChance: 15
+	},
+	{
+		item: getOSItem('Dwarf weed seed'),
+		zygomite: 'Herbal zygomite',
+		weight: 1,
+		mutationChance: 2
+	},
+	{
+		item: getOSItem('Lantadyme seed'),
+		zygomite: 'Herbal zygomite',
+		weight: 10,
+		mutationChance: 15
+	},
+	{
+		item: getOSItem('Magic seed'),
+		zygomite: 'Barky zygomite',
+		weight: 20,
+		mutationChance: 10
+	},
+	{
+		item: getOSItem('Redwood tree seed'),
+		zygomite: 'Barky zygomite',
+		weight: 1,
+		mutationChance: 2
+	},
+	{
+		item: getOSItem('Yew seed'),
+		zygomite: 'Barky zygomite',
+		weight: 25,
+		mutationChance: 12
+	},
+	{
+		item: getOSItem('Dragonfruit tree seed'),
+		zygomite: 'Fruity zygomite',
+		weight: 1,
+		mutationChance: 2
+	},
+	{
+		item: getOSItem('Papaya tree seed'),
+		zygomite: 'Fruity zygomite',
+		weight: 6,
+		mutationChance: 15
+	},
+	{
+		item: getOSItem('Palm tree seed'),
+		zygomite: 'Fruity zygomite',
+		weight: 5,
+		mutationChance: 14
+	},
+	{
+		item: getOSItem('Blood orange seed'),
+		zygomite: 'Fruity zygomite',
+		weight: 3,
+		mutationChance: 5
+	}
+];
+
+function sourceItemsToTable(items: MutatedSourceItem[]) {
+	const table = new SimpleTable<MutatedSourceItem>();
+	for (const item of items) {
+		table.add(item, item.weight);
+	}
+	return table;
+}
 
 export const zygomiteFarmingSource = [
 	{
 		name: 'Herbal zygomite',
-		mutatedFromItems: resolveItems(['Torstol seed', 'Dwarf weed seed', 'Lantadyme seed']),
+		mutatedFromItems: sourceItemsToTable(mutatedSourceItems.filter(m => m.zygomite === 'Herbal zygomite')),
 		seedItem: getOSItem('Herbal zygomite spores'),
 		lootTable: new LootTable()
 			.every(
@@ -23,11 +101,11 @@ export const zygomiteFarmingSource = [
 				5
 			)
 			.every(new LootTable().add('Torstol').add('Dwarf weed').add('Cadantine').add('Kwuarm'), [40, 100])
-			.every(MysteryBoxes)
+			.oneIn(3, MysteryBoxes)
 	},
 	{
 		name: 'Barky zygomite',
-		mutatedFromItems: resolveItems(['Magic seed', 'Redwood tree seed']),
+		mutatedFromItems: sourceItemsToTable(mutatedSourceItems.filter(m => m.zygomite === 'Barky zygomite')),
 		seedItem: getOSItem('Barky zygomite spores'),
 		lootTable: new LootTable()
 			.every(
@@ -35,11 +113,11 @@ export const zygomiteFarmingSource = [
 				5
 			)
 			.every(new LootTable().add('Elder logs').add('Mahogany logs'), [50, 100])
-			.every(MysteryBoxes)
+			.oneIn(3, MysteryBoxes)
 	},
 	{
 		name: 'Fruity zygomite',
-		mutatedFromItems: resolveItems(['Dragonfruit tree seed', 'Palm tree seed', 'Papaya tree seed']),
+		mutatedFromItems: sourceItemsToTable(mutatedSourceItems.filter(m => m.zygomite === 'Fruity zygomite')),
 		seedItem: getOSItem('Fruity zygomite spores'),
 		lootTable: new LootTable()
 			.every(
@@ -47,7 +125,7 @@ export const zygomiteFarmingSource = [
 				5
 			)
 			.every(new LootTable().add('Avocado').add('Mango').add('Papaya fruit').add('Lychee'), [50, 150])
-			.every(MysteryBoxes)
+			.oneIn(3, MysteryBoxes)
 	},
 	{
 		name: 'Toxic zygomite',
