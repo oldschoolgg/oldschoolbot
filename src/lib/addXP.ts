@@ -390,7 +390,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	if (preMax !== -1) {
 		str = params.minimal
 			? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
-			: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP`;
+			: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP.`;
 		if (masterCape && !params.minimal) {
 			str += ` You received ${matchingCapeID ? '8' : '3'}% bonus XP for having a ${itemNameFromID(masterCape)}.`;
 		}
