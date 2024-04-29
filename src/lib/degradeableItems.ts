@@ -228,7 +228,7 @@ export const degradeableItems: DegradeableItem[] = [
 		setup: 'range',
 		aliases: ['venator bow, ven bow'],
 		chargeInput: {
-			cost: new Bank().add('ancient essence', 1).freeze(),
+			cost: new Bank().add('Ancient essence', 1).freeze(),
 			charges: 1
 		},
 		unchargedItem: getOSItem('Venator bow (uncharged)'),
