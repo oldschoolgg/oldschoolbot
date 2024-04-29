@@ -226,7 +226,7 @@ export const degradeableItems: DegradeableItem[] = [
 		itemsToRefundOnBreak: new Bank().add('Venator bow (uncharged)').freeze(),
 		refundVariants: [],
 		setup: 'range',
-		aliases: ['venator bow, ven bow'],
+		aliases: ['venator bow', 'ven bow'],
 		chargeInput: {
 			cost: new Bank().add('Ancient essence', 1).freeze(),
 			charges: 1
