@@ -420,7 +420,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: async ({ data, user, messages }) => {
 			if (!user.bank.has('Moonlight mutator')) return;
 			if (user.user.disabled_inventions.includes(InventionID.MoonlightMutator)) return;
-			const randomZyg = randArrItem(zygomiteFarmingSource.filter(z => z.lootTable !== null));
+
 			const loot = new Bank();
 			const cost = new Bank();
 
@@ -428,6 +428,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (minutes < 1) return;
 			for (let i = 0; i < minutes; i++) {
 				if (roll(zygomiteSeedMutChance)) {
+					const randomZyg = randArrItem(zygomiteFarmingSource.filter(z => z.lootTable !== null));
 					const sourceSeed = randomZyg.mutatedFromItems?.roll();
 					if (!sourceSeed || !user.bank.has(sourceSeed.item.id)) continue;
 					cost.add(sourceSeed.item.id);
@@ -450,9 +451,9 @@ const tripFinishEffects: TripFinishEffect[] = [
 				});
 
 				if (cost.length > 0 && loot.length === 0) {
-					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost} seeds, but all died`);
+					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost}, but all died`);
 				} else if (loot.length > 0) {
-					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost} seeds, ${loot} survived`);
+					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost}; ${loot} survived`);
 				}
 			}
 		}
