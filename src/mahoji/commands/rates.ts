@@ -1,6 +1,7 @@
 import { bold } from '@discordjs/builders';
 import { InteractionReplyOptions } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent, sumArr, Time } from 'e';
+import { uniq } from 'lodash';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -210,10 +211,26 @@ export const ratesCommand: OSBMahojiCommand = {
 		}
 		if (options.misc?.zygomite_seeds) {
 			const mutationChancePerMinute = 1 / zygomiteSeedMutChance;
-			const totalSurvivalChance = sumArr(mutatedSourceItems.map(msi => msi.weight * msi.surivalChance));
-			const totalMutationsWeight = sumArr(mutatedSourceItems.map(msi => msi.weight));
-			const avgSurvivalChance = totalSurvivalChance / totalMutationsWeight;
-			const survivalChancePerMutation = 1 / avgSurvivalChance;
+
+			const validZygomiteList = uniq(mutatedSourceItems.map(m => m.zygomite));
+			// Returns an array containing [totalWeight, totalWeightedChance] for each Zygomite
+			const survivalChanceData = validZygomiteList.map(z =>
+				mutatedSourceItems
+					.filter(m => m.zygomite === z)
+					.reduce(
+						(acc: [number, number, string], m) => {
+							acc[0] += m.weight;
+							acc[1] += m.weight * (1 / m.surivalChance);
+							acc[2] = m.zygomite;
+							return acc;
+						},
+						[0, 0, '']
+					)
+			);
+			const survivalChancePerMutation =
+				sumArr(survivalChanceData.map(d => d[1] / d[0])) / validZygomiteList.length;
+			const avgSurvivalChance = 1 / survivalChancePerMutation;
+
 			const chancePerMinuteBoth = mutationChancePerMinute * survivalChancePerMutation;
 			const averageMinutesToGetBoth = 1 / chancePerMinuteBoth;
 			const averageHoursToGetBoth = averageMinutesToGetBoth / 60;

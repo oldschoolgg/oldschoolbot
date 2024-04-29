@@ -23,7 +23,7 @@ import { mysteriousStepData } from '../mysteryTrail';
 import { triggerRandomEvent } from '../randomEvents';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
-import { zygomiteFarmingSource, zygomiteSeedMutChance } from '../skilling/skills/farming/zygomites';
+import { calculateZygomiteLoot } from '../skilling/skills/farming/zygomites';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskData } from '../types/minions';
@@ -421,23 +421,9 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (!user.bank.has('Moonlight mutator')) return;
 			if (user.user.disabled_inventions.includes(InventionID.MoonlightMutator)) return;
 
-			const loot = new Bank();
-			const cost = new Bank();
-
 			const minutes = Math.floor(data.duration / Time.Minute);
 			if (minutes < 1) return;
-			for (let i = 0; i < minutes; i++) {
-				if (roll(zygomiteSeedMutChance)) {
-					const randomZyg = randArrItem(zygomiteFarmingSource.filter(z => z.lootTable !== null));
-					const sourceSeed = randomZyg.mutatedFromItems?.roll();
-					if (!sourceSeed || !user.bank.has(sourceSeed.item.id)) continue;
-					cost.add(sourceSeed.item.id);
-
-					if (roll(sourceSeed.surivalChance)) {
-						loot.add(randomZyg.seedItem);
-					}
-				}
-			}
+			const { loot, cost } = calculateZygomiteLoot(minutes, user.bank);
 
 			if (cost.length > 0 || loot.length > 0) {
 				if (cost.length > 0 && !user.bank.has(cost)) {

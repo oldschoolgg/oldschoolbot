@@ -1,5 +1,5 @@
 import { SimpleTable } from '@oldschoolgg/toolkit';
-import { roll } from 'e';
+import { randArrItem, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -10,7 +10,7 @@ import { clAdjustedDroprate } from '../../../util';
 import getOSItem from '../../../util/getOSItem';
 import { Plant } from '../../types';
 
-export const zygomiteSeedMutChance = 12;
+export const zygomiteSeedMutChance = 15;
 
 interface MutatedSourceItem {
 	item: Item;
@@ -36,7 +36,7 @@ export const mutatedSourceItems: MutatedSourceItem[] = [
 		item: getOSItem('Blood orange seed'),
 		zygomite: 'Fruity zygomite',
 		weight: 3,
-		surivalChance: 9
+		surivalChance: 10
 	},
 	{
 		item: getOSItem('Dragonfruit tree seed'),
@@ -45,34 +45,34 @@ export const mutatedSourceItems: MutatedSourceItem[] = [
 		surivalChance: 3
 	},
 	{
+		item: getOSItem('Lantadyme seed'),
+		zygomite: 'Herbal zygomite',
+		weight: 14,
+		surivalChance: 16
+	},
+	{
 		item: getOSItem('Torstol seed'),
 		zygomite: 'Herbal zygomite',
-		weight: 10,
-		surivalChance: 15
+		weight: 13,
+		surivalChance: 14
 	},
 	{
 		item: getOSItem('Dwarf weed seed'),
 		zygomite: 'Herbal zygomite',
-		weight: 1,
+		weight: 2,
 		surivalChance: 3
-	},
-	{
-		item: getOSItem('Lantadyme seed'),
-		zygomite: 'Herbal zygomite',
-		weight: 10,
-		surivalChance: 17
 	},
 	{
 		item: getOSItem('Yew seed'),
 		zygomite: 'Barky zygomite',
-		weight: 25,
-		surivalChance: 14
+		weight: 17,
+		surivalChance: 15
 	},
 	{
 		item: getOSItem('Magic seed'),
 		zygomite: 'Barky zygomite',
-		weight: 20,
-		surivalChance: 12
+		weight: 11,
+		surivalChance: 13
 	},
 	{
 		item: getOSItem('Redwood tree seed'),
@@ -193,3 +193,24 @@ export const zygomitePlants: Plant[] = zygomiteFarmingSource.map(src => ({
 		}
 	}
 }));
+
+export function calculateZygomiteLoot(minutes: number, userBank: Bank) {
+	const cost = new Bank();
+	const loot = new Bank();
+
+	for (let i = 0; i < minutes; i++) {
+		if (roll(zygomiteSeedMutChance)) {
+			const randomZyg = randArrItem(zygomiteFarmingSource.filter(z => z.lootTable !== null));
+			const sourceSeed = randomZyg.mutatedFromItems?.roll();
+			if (!sourceSeed) continue;
+			if (userBank.amount(sourceSeed.item.id) < cost.amount(sourceSeed.item.id) + 1) continue;
+
+			cost.add(sourceSeed.item.id);
+
+			if (roll(sourceSeed.surivalChance)) {
+				loot.add(randomZyg.seedItem);
+			}
+		}
+	}
+	return { cost, loot };
+}
