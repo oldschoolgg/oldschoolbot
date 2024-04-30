@@ -347,7 +347,7 @@ const itemBoosts: ItemBoost[][] = [
 ];
 
 const speedReductionForGear = 16;
-const speedReductionForKC = 20;
+const speedReductionForKC = 40;
 const speedReductionForDarts = 4;
 
 const maxSpeedReductionFromItems = itemBoosts.reduce(
