@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { describe, expect, test } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
 import { MemoryHarvestType } from '../../src/lib/bso/divination';
 import { Gear } from '../../src/lib/structures/Gear';
@@ -11,6 +11,15 @@ import { createTestUser, mockClient } from './util';
 
 describe('Divination', async () => {
 	await mockClient();
+
+	const ogRandom = Math.random;
+
+	beforeEach(() => {
+		Math.random = () => 0.2;
+	});
+	afterEach(() => {
+		Math.random = ogRandom;
+	});
 
 	test('Memory Harvesting - Convert to XP', async () => {
 		const user = await createTestUser();
