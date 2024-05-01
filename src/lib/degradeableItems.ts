@@ -22,7 +22,8 @@ interface DegradeableItem {
 		| 'tum_shadow_charges'
 		| 'blood_essence_charges'
 		| 'trident_charges'
-		| 'scythe_of_vitur_charges';
+		| 'scythe_of_vitur_charges'
+		| 'venator_bow_charges';
 	itemsToRefundOnBreak: Bank;
 	refundVariants: {
 		variant: Item;
@@ -218,6 +219,21 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: getOSItem('Scythe of vitur (uncharged)'),
 		convertOnCharge: true,
 		emoji: ''
+	},
+	{
+		item: getOSItem('Venator bow'),
+		settingsKey: 'venator_bow_charges',
+		itemsToRefundOnBreak: new Bank().add('Venator bow (uncharged)').freeze(),
+		refundVariants: [],
+		setup: 'range',
+		aliases: ['venator bow', 'ven bow'],
+		chargeInput: {
+			cost: new Bank().add('Ancient essence', 1).freeze(),
+			charges: 1
+		},
+		unchargedItem: getOSItem('Venator bow (uncharged)'),
+		convertOnCharge: true,
+		emoji: ''
 	}
 ];
 
@@ -255,6 +271,13 @@ export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
 		degradeable: degradeableItems.find(di => di.item.id === itemID('Abyssal tentacle'))!,
 		attackStyle: 'melee',
 		charges: ({ totalHP }) => totalHP / 20,
+		boost: 3
+	},
+	{
+		item: getOSItem('Venator bow'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Venator bow'))!,
+		attackStyle: 'range',
+		charges: ({ totalHP }) => totalHP / 25,
 		boost: 3
 	}
 ];

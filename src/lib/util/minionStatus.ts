@@ -25,7 +25,7 @@ import Prayer from '../skilling/skills/prayer';
 import Runecraft from '../skilling/skills/runecraft';
 import Smithing from '../skilling/skills/smithing';
 import { stealables } from '../skilling/skills/thieving/stealables';
-import Woodcutting from '../skilling/skills/woodcutting';
+import Woodcutting from '../skilling/skills/woodcutting/woodcutting';
 import {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
@@ -432,7 +432,10 @@ export function minionStatus(user: MUser) {
 						stringMatches(alias, data.creatureName) || stringMatches(alias.split(' ')[0], data.creatureName)
 				)
 			);
-			return `${name} is currently hunting ${data.quantity}x ${creature!.name}. ${formattedDuration}`;
+			let crystalImpling = creature?.name === 'Crystal impling';
+			return `${name} is currently hunting ${
+				crystalImpling ? creature!.name : `${data.quantity}x ${creature!.name}`
+			}. ${formattedDuration}`;
 		}
 
 		case 'Birdhouse': {

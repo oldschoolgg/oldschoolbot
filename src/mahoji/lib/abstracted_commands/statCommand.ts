@@ -19,6 +19,7 @@ import { getMinigameScore } from '../../../lib/settings/minigames';
 import { prisma } from '../../../lib/settings/prisma';
 import Agility from '../../../lib/skilling/skills/agility';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
+import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestry';
 import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import { InfernoOptions } from '../../../lib/types/minions';
@@ -27,7 +28,6 @@ import { barChart, lineChart, pieChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
-import { ForestryEvents } from '../../../tasks/minions/woodcuttingActivity';
 import { Cooldowns } from '../Cooldowns';
 import { collectables } from './collectCommand';
 
@@ -101,7 +101,7 @@ Differences AS (
 
 SELECT
     user_id,
-    week_start,
+    week_start::text,
     diff_cl_global_rank,
     diff_cl_completion_percentage,
     diff_cl_completion_count,
@@ -347,8 +347,8 @@ OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY type;`);
 			const dataPoints: [string, number][] = result
 				.filter(i => i.hours >= 1)
-				.sort((a, b) => b.hours - a.hours)
-				.map(i => [i.type, i.hours]);
+				.sort((a, b) => Number(b.hours - a.hours))
+				.map(i => [i.type, Number(i.hours)]);
 			const buffer = await barChart('Your Activity Durations', val => `${val} Hrs`, dataPoints);
 			return makeResponseForBuffer(buffer);
 		}
@@ -970,7 +970,9 @@ GROUP BY "bankBackground";`);
 			return `**Personal XP gained from Tears of Guthix**\n${result
 				.map(
 					(i: any) =>
-						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(i.total_xp)}`
+						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(
+							Number(i.total_xp)
+						)}`
 				)
 				.join('\n')}`;
 		}
@@ -995,7 +997,9 @@ GROUP BY "bankBackground";`);
 			return `**Personal XP gained from Forestry events**\n${result
 				.map(
 					(i: any) =>
-						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(i.total_xp)}`
+						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(
+							Number(i.total_xp)
+						)}`
 				)
 				.join('\n')}`;
 		}

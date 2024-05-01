@@ -468,6 +468,16 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 						boostPercent: 7
 					}
 				]
+			},
+			{
+				required: false,
+				gearSetup: 'range',
+				items: [
+					{
+						itemID: itemID('Venator bow'),
+						boostPercent: 5
+					}
+				]
 			}
 		],
 		deathProps: {
@@ -571,6 +581,16 @@ export const desertTreasureKillableBosses: KillableMonster[] = [
 					{
 						itemID: itemID('Sanguinesti staff'),
 						boostPercent: 7
+					}
+				]
+			},
+			{
+				required: false,
+				gearSetup: 'range',
+				items: [
+					{
+						itemID: itemID('Venator bow'),
+						boostPercent: 5
 					}
 				]
 			}
