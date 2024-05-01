@@ -607,6 +607,7 @@ enum XpGainSource {
   MemoryHarvest
   GuthixianCache
   ForestryEvents
+  TuraelsTrials
 }
 
 model XPGain {

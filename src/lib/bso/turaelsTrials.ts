@@ -3,9 +3,11 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { trackClientBankStats, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { degradeItem } from '../degradeableItems';
 import { TuraelsTrialsOptions } from '../types/minions';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
+import getOSItem from '../util/getOSItem';
 import { formatDuration } from '../util/smallUtils';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -103,9 +105,13 @@ export async function turaelsTrialsStartCommand(user: MUser, channelID: string, 
 		return `${user.minionName} is busy.`;
 	}
 
+	if (user.skillsAsLevels.slayer < 120) {
+		return 'You need 120 Slayer to do Turaels Trials.';
+	}
+
 	const { duration, quantity, cost, scytheChargesNeeded } = calculateTuraelsTrialsInput({
 		maxTripLength: calcMaxTripLength(user, 'TuraelsTrials'),
-		method: 'melee'
+		method
 	});
 
 	if (scytheChargesNeeded > 0 && user.user.scythe_of_vitur_charges < scytheChargesNeeded) {
@@ -116,6 +122,17 @@ export async function turaelsTrialsStartCommand(user: MUser, channelID: string, 
 
 	if (!user.owns(cost)) {
 		return `You don't have the required items, you need: ${cost}.`;
+	}
+
+	let scytheDegradeResult: {
+		userMessage: string;
+	} | null = null;
+	if (scytheChargesNeeded > 0) {
+		scytheDegradeResult = await degradeItem({
+			item: getOSItem('Scythe of vitur'),
+			user,
+			chargesToDegrade: scytheChargesNeeded
+		});
 	}
 
 	await user.removeItemsFromBank(cost);
@@ -134,7 +151,9 @@ export async function turaelsTrialsStartCommand(user: MUser, channelID: string, 
 
 	let response = `${user.minionName} is now participating in Turaels Trials, it'll take around ${formatDuration(
 		task.duration
-	)} to finish.`;
+	)} to finish.
+
+Removed ${cost}${scytheChargesNeeded ? `, ${scytheDegradeResult!.userMessage}` : ''}`;
 
 	return response;
 }

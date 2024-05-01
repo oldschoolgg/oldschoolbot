@@ -7,18 +7,18 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { trackClientBankStats, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
 export function calculateTuraelsTrialsResult({ quantity, method }: { quantity: number; method: TuraelsTrialsMethod }) {
-	let slayerXP = 49_000 * quantity;
+	let slayerXP = 29_000 * quantity;
 	const loot = new Bank();
 	let meleeXP = 0;
 	let rangedXP = 0;
 	let magicXP = 0;
 
 	if (method === 'melee') {
-		meleeXP = 249_000 * quantity;
+		meleeXP = 89_000 * quantity;
 	} else if (method === 'range') {
-		rangedXP = 249_000 * quantity;
+		rangedXP = 89_000 * quantity;
 	} else {
-		magicXP = 249_000 * quantity;
+		magicXP = 89_000 * quantity;
 	}
 
 	return {
@@ -48,7 +48,8 @@ export const turaelsTrialsTask: MinionTask = {
 				skillName: SkillsEnum.Slayer,
 				amount: result.slayerXP,
 				duration,
-				minimal: true
+				minimal: true,
+				source: 'TuraelsTrials'
 			})
 		);
 
@@ -58,7 +59,8 @@ export const turaelsTrialsTask: MinionTask = {
 					skillName: SkillsEnum.Magic,
 					amount: result.magicXP,
 					duration,
-					minimal: true
+					minimal: true,
+					source: 'TuraelsTrials'
 				})
 			);
 		}
@@ -68,7 +70,8 @@ export const turaelsTrialsTask: MinionTask = {
 					skillName: SkillsEnum.Ranged,
 					amount: result.rangedXP,
 					duration,
-					minimal: true
+					minimal: true,
+					source: 'TuraelsTrials'
 				})
 			);
 		}
@@ -78,7 +81,8 @@ export const turaelsTrialsTask: MinionTask = {
 					skillName: SkillsEnum.Attack,
 					amount: result.meleeXP / 3,
 					duration,
-					minimal: true
+					minimal: true,
+					source: 'TuraelsTrials'
 				})
 			);
 			xpResults.push(
@@ -86,7 +90,8 @@ export const turaelsTrialsTask: MinionTask = {
 					skillName: SkillsEnum.Strength,
 					amount: result.meleeXP / 3,
 					duration,
-					minimal: true
+					minimal: true,
+					source: 'TuraelsTrials'
 				})
 			);
 			xpResults.push(
@@ -94,7 +99,8 @@ export const turaelsTrialsTask: MinionTask = {
 					skillName: SkillsEnum.Defence,
 					amount: result.meleeXP / 3,
 					duration,
-					minimal: true
+					minimal: true,
+					source: 'TuraelsTrials'
 				})
 			);
 		}
