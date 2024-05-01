@@ -10,7 +10,7 @@ import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionSta
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { boxSpawnHandler } from './boxSpawns';
 import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from './bso/guthixianCache';
-import { allMbTables } from './bsoOpenables';
+import { IronmanPMBTable, itemSearchMbTable } from './bsoOpenables';
 import { BitField, Emoji, globalConfig, secretItems } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
@@ -151,11 +151,14 @@ const mentionCommands: MentionCommand[] = [
 					if (isCustom) icons.push(Emoji.BSO);
 					if (((sacrificedBank as ItemBank)[item.id] ?? 0) > 0) icons.push(Emoji.Incinerator);
 
-					const price = toKMB(Math.floor(item.price));
+					if (user.isIronman) {
+						itemSearchMbTable.push(...IronmanPMBTable.allItems);
+					}
 
+					const price = toKMB(Math.floor(item.price));
 					const wikiURL = isCustom ? '' : `[Wiki Page](${item.wiki_url}) `;
 					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
-						allMbTables.includes(item.id) ? Emoji.MysteryBox : ''
+						itemSearchMbTable.includes(item.id) ? Emoji.MysteryBox : ''
 					} ${wikiURL}${icons.join(' ')}`;
 					if (gettedItem.id === item.id) {
 						str = bold(str);

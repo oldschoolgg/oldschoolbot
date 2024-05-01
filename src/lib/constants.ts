@@ -330,7 +330,8 @@ export enum BitField {
 	HasMoondashCharm = 228,
 	HasUnlockedVenatrix = 229,
 	GrewFiveSpiritTrees = 230,
-	UseSuperRestoresForDwarvenBlessing = 231
+	UseSuperRestoresForDwarvenBlessing = 231,
+	DisableSizeMatters = 232
 }
 
 interface BitFieldData {
@@ -556,6 +557,11 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.UseSuperRestoresForDwarvenBlessing]: {
 		name: 'Use Super Restores For Dwarven Blessing',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableSizeMatters]: {
+		name: 'Disable Size Matters unlock',
 		protected: false,
 		userConfigurable: true
 	}

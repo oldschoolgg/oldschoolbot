@@ -2474,7 +2474,8 @@ export const discontinuedCustomPetsCL = resolveItems([
 	'Buggy',
 	'Casper',
 	'Mini mortimer',
-	'Rudolph'
+	'Rudolph',
+	'Cluckers'
 ]);
 
 export const kingGoldemarCL = resolveItems([
@@ -2606,7 +2607,7 @@ export const queenBlackDragonCL = resolveItems([
 ]);
 
 export const akumuCL = resolveItems(['Mini akumu', 'Nightmarish ashes', 'Cursed onyx', 'Demon statuette']);
-export const venatrixCL = resolveItems(['Venatrix eggs', 'Venatrix webbing', 'Spiders leg bottom']);
+export const venatrixCL = resolveItems(['Baby venatrix', 'Venatrix eggs', 'Venatrix webbing', 'Spiders leg bottom']);
 
 export const customBossesDropsThatCantBeDroppedInMBs = [
 	...kingGoldemarCL,

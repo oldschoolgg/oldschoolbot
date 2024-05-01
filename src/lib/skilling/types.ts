@@ -280,6 +280,7 @@ export interface Plant {
 	timePerPatchTravel: number;
 	timePerHarvest: number;
 	onHarvest?: (options: { user: MUser; loot: Bank; quantity: number; messages: string[] }) => Promise<unknown>;
+	noArcaneHarvester?: boolean;
 }
 
 export enum HunterTechniqueEnum {

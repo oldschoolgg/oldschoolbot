@@ -107,7 +107,8 @@ export const PMBTable = new LootTable()
 	.add('Baron')
 	.add('Butch')
 	.add("Lil'viathan")
-	.add('Wisp');
+	.add('Wisp')
+	.add('Scurry');
 
 const DwarvenCrateTable = new LootTable()
 	.add('Dwarven ore')
@@ -710,6 +711,16 @@ for (const item of Items.values()) {
 }
 
 export const allMbTables = [...new Set([...tmbTable, ...umbTable, ...embTable])];
+export const itemSearchMbTable = [
+	...new Set([
+		...tmbTable,
+		...umbTable,
+		...embTable,
+		...PMBTable.allItems,
+		...ClothingMysteryBoxTable.allItems,
+		...baseHolidayItems.allItems
+	])
+];
 
 function makeOutputFromArrayOfItemIDs(fn: () => number, quantity: number) {
 	const loot = new Bank();

@@ -1,6 +1,7 @@
 import { bold } from '@discordjs/builders';
 import { InteractionReplyOptions } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent, sumArr, Time } from 'e';
+import { uniq } from 'lodash';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -28,8 +29,8 @@ import {
 	numberOfGorajanOutfitsEquipped
 } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import {
+	mutatedSourceItems,
 	zygomiteFarmingSource,
-	zygomiteMutSurvivalChance,
 	zygomiteSeedMutChance
 } from '../../lib/skilling/skills/farming/zygomites';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
@@ -225,11 +226,32 @@ export const ratesCommand: OSBMahojiCommand = {
 		}
 		if (options.misc?.zygomite_seeds) {
 			const mutationChancePerMinute = 1 / zygomiteSeedMutChance;
-			const survivalChancePerMutation = 1 / zygomiteMutSurvivalChance;
+
+			const validZygomiteList = uniq(mutatedSourceItems.map(m => m.zygomite));
+			// Returns an array containing [totalWeight, totalWeightedChance] for each Zygomite
+			const survivalChanceData = validZygomiteList.map(z =>
+				mutatedSourceItems
+					.filter(m => m.zygomite === z)
+					.reduce(
+						(acc: [number, number, string], m) => {
+							acc[0] += m.weight;
+							acc[1] += m.weight * (1 / m.surivalChance);
+							acc[2] = m.zygomite;
+							return acc;
+						},
+						[0, 0, '']
+					)
+			);
+			const survivalChancePerMutation =
+				sumArr(survivalChanceData.map(d => d[1] / d[0])) / validZygomiteList.length;
+			const avgSurvivalChance = 1 / survivalChancePerMutation;
+
 			const chancePerMinuteBoth = mutationChancePerMinute * survivalChancePerMutation;
 			const averageMinutesToGetBoth = 1 / chancePerMinuteBoth;
 			const averageHoursToGetBoth = averageMinutesToGetBoth / 60;
-			return `For every minute in any trip, a random, valid seed from your bank has a 1 in ${zygomiteSeedMutChance} chance of mutating, and then that mutated seed has a 1 in ${zygomiteMutSurvivalChance} chance of surviving. ${averageHoursToGetBoth.toFixed(
+			return `For every minute in any trip, a random, valid seed from your bank has a 1 in ${zygomiteSeedMutChance} chance of mutating, and then that mutated seed has a 1 in ${avgSurvivalChance.toFixed(
+				2
+			)} (weighted average) chance of surviving. ${averageHoursToGetBoth.toFixed(
 				1
 			)} hours on average to get a zygomite seed.
 
@@ -237,7 +259,12 @@ ${zygomiteFarmingSource
 	.map(
 		z =>
 			`${bold(z.seedItem.name)} evolves from: ${
-				!z.mutatedFromItems ? 'No items' : z.mutatedFromItems.map(itemNameFromID).join(', ')
+				!z.mutatedFromItems
+					? 'No items'
+					: mutatedSourceItems
+							.filter(msi => msi.zygomite === z.name)
+							.map(i => i.item.name)
+							.join(', ')
 			}, drops these items: ${!z.lootTable ? 'Nothing' : z.lootTable.allItems.map(itemNameFromID).join(', ')}.`
 	)
 	.join('\n\n')}`;
