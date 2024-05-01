@@ -1,70 +1,11 @@
 import { sumArr, Time } from 'e';
-import { Bank } from 'oldschooljs';
 
-import { Skills } from '../../../lib/types';
 import { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
+import { formatDuration, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
+import { MAX_GLOBAL_QP, MAX_QP, quests } from '../../../lib/util/specificQuests';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
-
-export const MAX_GLOBAL_QP = 303;
-
-interface Quest {
-	id: QuestID;
-	qp: number;
-	name: string;
-	skillReqs: Skills;
-	qpReq: number;
-	rewards: Bank;
-	combatLevelReq: number;
-	calcTime: (user: MUser) => number;
-}
-
-export enum QuestID {
-	DesertTreasureII = 1
-}
-
-export const quests: Quest[] = [
-	{
-		id: QuestID.DesertTreasureII,
-		qp: 5,
-		name: 'Desert Treasure II - The Fallen Empire',
-		skillReqs: {
-			firemaking: 75,
-			magic: 75,
-			thieving: 70,
-			herblore: 62,
-			runecraft: 60,
-			construction: 60
-		},
-		combatLevelReq: 110,
-		qpReq: 150,
-		rewards: new Bank().add(28_409, 3).add('Ring of shadows').freeze(),
-		calcTime: (user: MUser) => {
-			let duration = Time.Hour * 3;
-			if (user.combatLevel < 100) {
-				duration += Time.Minute * 30;
-			}
-			if (user.combatLevel < 90) {
-				duration += Time.Minute * 40;
-			}
-			const percentOfBossCL = user.percentOfBossCLFinished();
-			if (percentOfBossCL < 10) {
-				duration += Time.Minute * 20;
-			} else if (percentOfBossCL < 30) {
-				duration += Time.Minute * 10;
-			} else if (percentOfBossCL > 80) {
-				duration -= Time.Minute * 60;
-			} else if (percentOfBossCL > 50) {
-				duration -= Time.Minute * 30;
-			}
-			return duration;
-		}
-	}
-];
-
-export const MAX_QP = MAX_GLOBAL_QP + sumArr(quests.map(i => i.qp));
 
 export async function questCommand(user: MUser, channelID: string, name?: string) {
 	if (!user.user.minion_hasBought) {
@@ -84,8 +25,34 @@ export async function questCommand(user: MUser, channelID: string, name?: string
 			return `You've already completed ${quest.name}.`;
 		}
 
-		if (user.QP < quest.qpReq) {
-			return `You need ${quest.qpReq} QP to do ${quest.name}.`;
+		if (quest.qpReq) {
+			if (user.QP < quest.qpReq) {
+				return `You need ${quest.qpReq} QP to do ${quest.name}.`;
+			}
+		}
+
+		// Check if the user has completed the required quests (if any)
+		if (quest.prerequisitesQuests) {
+			for (const prerequisite of quest.prerequisitesQuests) {
+				if (!user.user.finished_quest_ids.includes(prerequisite)) {
+					return `You need to complete "${quests.find(q => q.id === prerequisite)?.name}" before starting ${
+						quest.name
+					}.`;
+				}
+			}
+		}
+
+		if (quest.skillReqs) {
+			const [hasReqs, reason] = hasSkillReqs(user, quest.skillReqs);
+			if (!hasReqs) {
+				return `To complete ${quest.name}, you need: ${reason}.`;
+			}
+		}
+		if (user.isIronman && quest.ironmanSkillReqs) {
+			const [hasIronReqs, ironReason] = hasSkillReqs(user, quest.ironmanSkillReqs);
+			if (!hasIronReqs) {
+				return `To complete ${quest.name} as an ironman, you need: ${ironReason}.`;
+			}
 		}
 
 		const duration = quest.calcTime(user);

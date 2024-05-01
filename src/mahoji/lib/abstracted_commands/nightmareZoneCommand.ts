@@ -13,9 +13,9 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
+import { MAX_QP } from '../../../lib/util/specificQuests';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
-import { MAX_QP } from './questCommand';
 
 const itemBoosts = [
 	// Special weapons
