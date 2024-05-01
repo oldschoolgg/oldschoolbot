@@ -34,6 +34,7 @@ export async function ouraniaAltarStartCommand({
 	const daeyaltEssenceOwned = bank.amount('Daeyalt essence');
 	const boosts = [];
 	const mageLvl = user.skillLevel(SkillsEnum.Magic);
+	const spellbookSwap = mageLvl > 95;
 
 	let inventorySize = 28;
 	// For each pouch the user has, increase their inventory size.
@@ -45,7 +46,7 @@ export async function ouraniaAltarStartCommand({
 
 	if (inventorySize > 28) boosts.push(`+${inventorySize - 28} inv spaces from pouches`);
 
-	if (!userHasGracefulEquipped(user)) {
+	if (!userHasGracefulEquipped(user) || !spellbookSwap) {
 		boosts.push(`${gracefulPenalty}% slower for no Graceful`);
 		timePerTrip = increaseNumByPercent(timePerTrip, gracefulPenalty);
 	}
@@ -55,7 +56,7 @@ export async function ouraniaAltarStartCommand({
 		timePerTrip = increaseNumByPercent(timePerTrip, 50);
 	}
 
-	if (stamina || mageLvl > 95) {
+	if (stamina || spellbookSwap) {
 		timePerTrip *= 0.8;
 	}
 
@@ -93,8 +94,8 @@ export async function ouraniaAltarStartCommand({
 	let totalCost = new Bank();
 	let itemCost = new Bank();
 
-	if (stamina || mageLvl > 95) {
-		if (mageLvl > 95) {
+	if (stamina || spellbookSwap) {
+		if (spellbookSwap) {
 			boosts.push('20% faster for using Spellbook Swap and Vile Vigour instead of Staminas');
 		} else {
 			itemCost.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
