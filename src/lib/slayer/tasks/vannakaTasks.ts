@@ -478,23 +478,9 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	{
-		monster: Monsters.SpiritualMage,
+		monster: Monsters.SpiritualRanger,
 		amount: [110, 170],
 
-		weight: 12,
-		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
-		levelRequirements: {
-			slayer: 60
-		},
-		combatLevel: 60,
-		slayerLevel: 63,
-		questPoints: 3,
-		unlocked: true,
-		dontAssign: true
-	},
-	{
-		monster: Monsters.SpiritualRanger,
-		amount: [60, 120],
 		weight: 8,
 		monsters: [Monsters.SpiritualRanger.id, Monsters.SpiritualWarrior.id, Monsters.SpiritualMage.id],
 		levelRequirements: {

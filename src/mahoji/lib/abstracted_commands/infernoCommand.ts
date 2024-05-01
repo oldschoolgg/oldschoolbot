@@ -118,7 +118,7 @@ function baseDuration(_attempts: number) {
 async function timesMadeToZuk(userID: string) {
 	const timesMadeToZuk = Number(
 		(
-			await prisma.$queryRawUnsafe<any>(`SELECT COUNT(*)
+			await prisma.$queryRawUnsafe<any>(`SELECT COUNT(*)::int
 FROM activity
 WHERE type = 'Inferno'
 AND user_id = ${userID}
@@ -267,7 +267,7 @@ async function infernoRun({
 		const weapon = setup.equippedWeapon();
 		const validWeapons = Object.keys(weapons)
 			.map(itemID)
-			.map(id => [...getSimilarItems(id), id])
+			.map(id => getSimilarItems(id))
 			.flat();
 		if (!weapon || !validWeapons.includes(weapon.id)) {
 			return `You need one of these weapons in your ${name} setup: ${Object.keys(weapons).join(', ')}.`;
@@ -282,15 +282,11 @@ async function infernoRun({
 	duration.add(getSimilarItems(itemID('Armadyl crossbow')).includes(rangeGear.equippedWeapon()!.id), 4.5, 'ACB');
 
 	zukDeathChance.add(
-		[...getSimilarItems(itemID('Twisted bow')), itemID('Twisted bow')].includes(rangeGear.equippedWeapon()!.id),
+		getSimilarItems(itemID('Twisted bow')).includes(rangeGear.equippedWeapon()!.id),
 		1.5,
 		'Zuk with TBow'
 	);
-	duration.add(
-		[...getSimilarItems(itemID('Twisted bow')), itemID('Twisted bow')].includes(rangeGear.equippedWeapon()!.id),
-		-7.5,
-		'TBow'
-	);
+	duration.add(getSimilarItems(itemID('Twisted bow')).includes(rangeGear.equippedWeapon()!.id), -7.5, 'TBow');
 
 	/**
 	 *

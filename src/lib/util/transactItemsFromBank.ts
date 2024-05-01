@@ -17,6 +17,7 @@ export interface TransactItemsArgs {
 	collectionLog?: boolean;
 	filterLoot?: boolean;
 	dontAddToTempCL?: boolean;
+	neverUpdateHistory?: boolean;
 	otherUpdates?: Prisma.UserUpdateArgs['data'];
 }
 
@@ -146,7 +147,9 @@ export async function transactItemsFromBank({
 			}
 		}
 
-		await handleNewCLItems({ itemsAdded, user: settings, previousCL, newCL });
+		if (!options.neverUpdateHistory) {
+			await handleNewCLItems({ itemsAdded, user: settings, previousCL, newCL });
+		}
 
 		return {
 			previousCL,

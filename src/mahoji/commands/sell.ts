@@ -7,7 +7,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { NestBoxesTable } from '../../lib/simulation/misc';
-import { itemID, toKMB } from '../../lib/util';
+import { itemID, returnStringOrFile, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -159,6 +159,49 @@ export const sellCommand: OSBMahojiCommand = {
 			return `You exchanged ${abbyBank} and received: ${loot}.`;
 		}
 
+		if (
+			bankToSell.has('Golden pheasant egg') ||
+			bankToSell.has('Fox whistle') ||
+			bankToSell.has('Petal garland') ||
+			bankToSell.has('Pheasant tail feathers') ||
+			bankToSell.has('Sturdy beehive parts')
+		) {
+			const forestryBank = new Bank();
+			const loot = new Bank();
+			if (bankToSell.has('Golden pheasant egg')) {
+				forestryBank.add('Golden pheasant egg', bankToSell.amount('Golden pheasant egg'));
+				loot.add('Anima-infused bark', bankToSell.amount('Golden pheasant egg') * 250);
+			}
+			if (bankToSell.has('Fox whistle')) {
+				forestryBank.add('Fox whistle', bankToSell.amount('Fox whistle'));
+				loot.add('Anima-infused bark', bankToSell.amount('Fox whistle') * 250);
+			}
+			if (bankToSell.has('Petal garland')) {
+				forestryBank.add('Petal garland', bankToSell.amount('Petal garland'));
+				loot.add('Anima-infused bark', bankToSell.amount('Petal garland') * 150);
+			}
+			if (bankToSell.has('Pheasant tail feathers')) {
+				forestryBank.add('Pheasant tail feathers', bankToSell.amount('Pheasant tail feathers'));
+				loot.add('Anima-infused bark', bankToSell.amount('Pheasant tail feathers') * 5);
+			}
+			if (bankToSell.has('Sturdy beehive parts')) {
+				forestryBank.add('Sturdy beehive parts', bankToSell.amount('Sturdy beehive parts'));
+				loot.add('Anima-infused bark', bankToSell.amount('Sturdy beehive parts') * 25);
+			}
+
+			await handleMahojiConfirmation(
+				interaction,
+				`${user}, please confirm you want to sell ${forestryBank} for **${loot}**.`
+			);
+
+			await user.transactItems({
+				collectionLog: false,
+				itemsToAdd: loot,
+				itemsToRemove: forestryBank
+			});
+			return `You exchanged ${forestryBank} and received: ${loot}.`;
+		}
+
 		if (bankToSell.has('Golden tench')) {
 			const loot = new Bank();
 			const tenchBank = new Bank();
@@ -234,8 +277,10 @@ export const sellCommand: OSBMahojiCommand = {
 			prisma.botItemSell.createMany({ data: botItemSellData })
 		]);
 
-		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
-			user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
-		}.`;
+		return returnStringOrFile(
+			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
+				user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
+			}.`
+		);
 	}
 };

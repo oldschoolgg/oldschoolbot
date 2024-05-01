@@ -2,14 +2,13 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { NEX_ID, PVM_METHODS, PvMMethod, ZALCANO_ID } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import { prisma } from '../../lib/settings/prisma';
+import { returnStringOrFile } from '../../lib/util/smallUtils';
 import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const autocompleteMonsters = [
 	...killableMonsters,
-	...revenantMonsters,
 	{
 		id: -1,
 		name: 'Tempoross',
@@ -106,6 +105,12 @@ export const killCommand: OSBMahojiCommand = {
 			name: 'show_info',
 			description: 'Show information on this monster.',
 			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'solo',
+			description: 'Solo (if its a group boss)',
+			required: false
 		}
 	],
 	run: async ({
@@ -113,9 +118,25 @@ export const killCommand: OSBMahojiCommand = {
 		userID,
 		channelID,
 		interaction
-	}: CommandRunOptions<{ name: string; quantity?: number; method?: PvMMethod; show_info?: boolean }>) => {
+	}: CommandRunOptions<{
+		name: string;
+		quantity?: number;
+		method?: PvMMethod;
+		show_info?: boolean;
+		solo?: boolean;
+	}>) => {
 		const user = await mUserFetch(userID);
-		if (options.show_info) return monsterInfo(user, options.name);
-		return minionKillCommand(user, interaction, channelID, options.name, options.quantity, options.method);
+		if (options.show_info) {
+			return returnStringOrFile(await monsterInfo(user, options.name));
+		}
+		return minionKillCommand(
+			user,
+			interaction,
+			channelID,
+			options.name,
+			options.quantity,
+			options.method,
+			options.solo
+		);
 	}
 };

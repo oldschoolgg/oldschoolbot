@@ -1,4 +1,4 @@
-import { randInt } from 'e';
+import { percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -20,7 +20,7 @@ export const smeltingTask: MinionTask = {
 		if ((bar.chanceOfFail > 0 && bar.name !== 'Iron bar') || (!blastf && bar.name === 'Iron bar')) {
 			let newQuantity = 0;
 			for (let i = 0; i < quantity; i++) {
-				if (randInt(0, 100) > bar.chanceOfFail) {
+				if (!percentChance(bar.chanceOfFail)) {
 					newQuantity++;
 				}
 			}

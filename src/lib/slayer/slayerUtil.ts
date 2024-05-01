@@ -283,13 +283,18 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 	}
 
 	const slayerMaster = slayerMasters.find(master => master.id === currentTask.slayer_master_id);
-	const assignedTask = slayerMaster!.tasks.find(m => m.monster.id === currentTask.monster_id)!;
+	const assignedTask = slayerMaster?.tasks.find(m => m.monster.id === currentTask.monster_id);
 
 	if (!assignedTask || !slayerMaster) {
 		logError(
 			`Could not find task or slayer master for user ${id} task ${currentTask.monster_id} master ${currentTask.slayer_master_id}`,
 			{ userID: id }
 		);
+		// 'Skip' broken task:
+		await prisma.slayerTask.update({
+			data: { skipped: true, quantity_remaining: 0 },
+			where: { id: currentTask.id }
+		});
 		return {
 			currentTask: null,
 			assignedTask: null,
@@ -364,7 +369,6 @@ export function hasSlayerUnlock(
 }
 
 const filterLootItems = resolveItems([
-	'Black mask (10)',
 	"Hydra's eye",
 	"Hydra's fang",
 	"Hydra's heart",
@@ -379,26 +383,18 @@ const bludgeonPieces = resolveItems(['Bludgeon claw', 'Bludgeon spine', 'Bludgeo
 
 export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	// Order: Fang, eye, heart.
-	const numBlackMask = myLoot.amount('Black mask (10)');
 	let numHydraEyes = myLoot.amount("Hydra's eye");
 	numHydraEyes += myLoot.amount("Hydra's fang");
 	numHydraEyes += myLoot.amount("Hydra's heart");
 	const numDarkTotemBases = myLoot.amount('Dark totem base');
 	const numBludgeonPieces = myLoot.amount('Bludgeon claw');
-	if (!numBludgeonPieces && !numDarkTotemBases && !numHydraEyes && !numBlackMask) {
+	if (!numBludgeonPieces && !numDarkTotemBases && !numHydraEyes) {
 		return { bankLoot: myLoot, clLoot: myLoot };
 	}
 
 	myLoot.filter(i => !filterLootItems.includes(i.id), true);
 
 	const myClLoot = new Bank(myLoot.bank);
-
-	if (numBlackMask) {
-		for (let x = 0; x < numBlackMask; x++) {
-			myLoot.add('Black mask');
-			myClLoot.add('Black mask (10)');
-		}
-	}
 
 	const combinedBank = new Bank(myBank).add(myLoot);
 	if (numBludgeonPieces) {
@@ -462,7 +458,7 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 
 export async function getSlayerTaskStats(userID: string) {
 	const result: { monster_id: number; total_quantity: number; qty: number }[] =
-		await prisma.$queryRaw`SELECT monster_id, SUM(quantity) AS total_quantity, COUNT(monster_id) AS qty
+		await prisma.$queryRaw`SELECT monster_id, SUM(quantity)::int AS total_quantity, COUNT(monster_id)::int AS qty
 FROM slayer_tasks
 WHERE user_id = ${userID}
 AND quantity_remaining = 0

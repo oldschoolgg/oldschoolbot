@@ -14,7 +14,6 @@ import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { UserKourendFavour } from '../../lib/minions/data/kourendFavour';
 import potions from '../../lib/minions/data/potions';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
@@ -24,6 +23,10 @@ import { prisma } from '../../lib/settings/prisma';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
+import { slayerMasterChoices } from '../../lib/slayer/constants';
+import { slayerMasters } from '../../lib/slayer/slayerMasters';
+import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
+import { allSlayerMonsters } from '../../lib/slayer/tasks';
 import { stringMatches } from '../../lib/util';
 import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
 import {
@@ -35,6 +38,7 @@ import {
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
+import { userEventToStr } from '../../lib/util/userEvents';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { MAX_QP } from '../lib/abstracted_commands/questCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
@@ -43,21 +47,14 @@ import { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 
-async function giveMaxStats(user: MUser) {
+export async function giveMaxStats(user: MUser) {
 	let updates: Prisma.UserUpdateArgs['data'] = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
 		updates[`skills_${skill}`] = convertLVLtoXP(99);
 	}
 	await user.update({
 		QP: MAX_QP,
-		...updates,
-		kourend_favour: {
-			Arceuus: 100,
-			Hosidius: 100,
-			Lovakengj: 100,
-			Piscarilius: 100,
-			Shayzien: 100
-		} as UserKourendFavour as any
+		...updates
 	});
 }
 
@@ -514,6 +511,52 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							}
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'setslayertask',
+					description: 'Set slayer task.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'master',
+							description: 'The master you wish to set your task.',
+							required: true,
+							choices: slayerMasterChoices
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'monster',
+							description: 'The monster you want to set your task as.',
+							required: true,
+							autocomplete: async value => {
+								const filteredMonsters = [...new Set(allSlayerMonsters)].filter(monster => {
+									if (!value) return true;
+									return [monster.name.toLowerCase(), ...monster.aliases].some(aliases =>
+										aliases.includes(value.toLowerCase())
+									);
+								});
+								return filteredMonsters.map(monster => ({
+									name: monster.name,
+									value: monster.name
+								}));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The task quantity you want to assign.',
+							required: false,
+							min_value: 0,
+							max_value: 1000
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'events',
+					description: 'See events',
+					options: []
 				}
 			],
 			run: async ({
@@ -534,13 +577,25 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				set?: { qp?: number; all_ca_tasks?: boolean };
 				check?: { monster_droprates?: string };
 				bingo_tools?: { start_bingo: string };
+				setslayertask?: { master: string; monster: string; quantity: number };
+				events?: {};
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
 				const user = await mUserFetch(userID.toString());
-
+				if (options.events) {
+					const events = await prisma.userEvent.findMany({
+						where: {
+							user_id: user.id
+						},
+						orderBy: {
+							date: 'desc'
+						}
+					});
+					return events.map(userEventToStr).join('\n');
+				}
 				if (options.bingo_tools) {
 					if (options.bingo_tools.start_bingo) {
 						const bingo = await prisma.bingo.findFirst({
@@ -731,6 +786,7 @@ ${droprates.join('\n')}`),
 						ash_sanctifier_charges: 10_000,
 						celestial_ring_charges: 10_000,
 						scythe_of_vitur_charges: 10_000,
+						venator_bow_charges: 10_000,
 						gear_mage: TOBMaxMageGear.raw() as any,
 						gear_melee: TOBMaxMeleeGear.raw() as any,
 						gear_range: TOBMaxRangeGear.raw() as any,
@@ -830,6 +886,61 @@ ${droprates.join('\n')}`),
 						}
 					});
 					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
+				}
+
+				if (options.setslayertask) {
+					const user = await mUserFetch(userID);
+					const usersTask = await getUsersCurrentSlayerInfo(user.id);
+
+					const { monster, master } = options.setslayertask;
+
+					const selectedMonster = allSlayerMonsters.find(m => stringMatches(m.name, monster));
+					const selectedMaster = slayerMasters.find(
+						sm => stringMatches(master, sm.name) || sm.aliases.some(alias => stringMatches(master, alias))
+					);
+
+					// Set quantity to 50 if user doesn't assign a quantity
+					const quantity = options.setslayertask?.quantity ?? 50;
+
+					const assignedTask = selectedMaster!.tasks.find(m => m.monster.id === selectedMonster?.id)!;
+
+					if (!selectedMaster) return 'Invalid slayer master.';
+					if (!selectedMonster) return 'Invalid monster.';
+					if (!assignedTask) return `${selectedMaster.name} can not assign ${selectedMonster.name}.`;
+
+					// Update an existing slayer task for the user
+					if (usersTask.currentTask?.id) {
+						await prisma.slayerTask.update({
+							where: {
+								id: usersTask.currentTask?.id
+							},
+							data: {
+								quantity,
+								quantity_remaining: quantity,
+								slayer_master_id: selectedMaster.id,
+								monster_id: selectedMonster.id,
+								skipped: false
+							}
+						});
+					} else {
+						// Create a new slayer task for the user
+						await prisma.slayerTask.create({
+							data: {
+								user_id: user.id,
+								quantity,
+								quantity_remaining: quantity,
+								slayer_master_id: selectedMaster.id,
+								monster_id: selectedMonster.id,
+								skipped: false
+							}
+						});
+					}
+
+					await user.update({
+						slayer_last_task: selectedMonster.id
+					});
+
+					return `You set your slayer task to ${selectedMonster.name} using ${selectedMaster.name}.`;
 				}
 
 				return 'Nothin!';

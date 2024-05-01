@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-const replaceItems = ['Fish barrel', 'Tackle box', 'Big harpoonfish', 'Tiny tempor'];
+const replaceItems = ['Fish barrel', 'Tackle box', 'Big harpoonfish'];
 
 const PoolCasketTable = new LootTable()
 	.add('Rune med helm', 1, 9)

@@ -1,5 +1,7 @@
 import path from 'node:path';
 
+import { Image } from '@napi-rs/canvas';
+import { StoreBitfield } from '@oldschoolgg/toolkit';
 import { execSync } from 'child_process';
 import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import * as dotenv from 'dotenv';
@@ -22,7 +24,8 @@ export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB' as 'BSO' | 'OSB';
 
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
-	Notifications: production ? '469523207691436042' : '1042760447830536212',
+	Notifications:
+		DISCORD_SETTINGS.Channels?.Notifications ?? (production ? '469523207691436042' : '1042760447830536212'),
 	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '682996313209831435',
 	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
 	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
@@ -256,7 +259,11 @@ export enum BitField {
 	UsedFrozenTablet = 34,
 	CleanHerbsFarming = 35,
 	SelfGamblingLocked = 36,
-	DisabledFarmingReminders = 37
+	DisabledFarmingReminders = 37,
+	DisableClueButtons = 38,
+	DisableAutoSlayButton = 39,
+	DisableHighPeakTimeWarning = 40,
+	DisableOpenableNames = 41
 }
 
 interface BitFieldData {
@@ -334,6 +341,26 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	},
 	[BitField.DisabledFarmingReminders]: {
 		name: 'Disable Farming Reminders',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableClueButtons]: {
+		name: 'Disable Clue Buttons',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableAutoSlayButton]: {
+		name: 'Disable Auto Slay Button',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableHighPeakTimeWarning]: {
+		name: 'Disable Wilderness High Peak Time Warning',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisableOpenableNames]: {
+		name: 'Disable Names On Open',
 		protected: false,
 		userConfigurable: true
 	}
@@ -489,6 +516,9 @@ export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 export const UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL = ['agility', 'thieving', 'agility+thieving'] as const;
 export type UnderwaterAgilityThievingTrainingSkill = (typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL)[number];
 
+export const TWITCHERS_GLOVES = ['egg', 'ring', 'seed', 'clue'] as const;
+export type TwitcherGloves = (typeof TWITCHERS_GLOVES)[number];
+
 export const busyImmuneCommands = ['admin', 'rp'];
 export const usernameCache = new Map<string, string>();
 export const badgesCache = new Map<string, string>();
@@ -548,7 +578,7 @@ const globalConfigSchema = z.object({
 	clientID: z.string().min(15).max(25),
 	geAdminChannelID: z.string().default('')
 });
-dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.example' : '.env') });
+dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
 export const globalConfig = globalConfigSchema.parse({
 	patreonToken: process.env.PATREON_TOKEN,
@@ -578,3 +608,24 @@ META_CONSTANTS.RENDERED_STR = `**Date/Time:** ${dateFm(META_CONSTANTS.STARTUP_DA
 **Git Hash:** ${META_CONSTANTS.GIT_HASH.slice(0, 7)}
 **Commit:** <${META_CONSTANTS.GITHUB_URL}>
 **Code Difference:** <${META_CONSTANTS.GIT_DIFF_URL}>`;
+
+export const masteryKey = BOT_TYPE === 'OSB' ? 'osb_mastery' : 'bso_mastery';
+
+export const ItemIconPacks = [
+	{
+		name: 'Halloween',
+		storeBitfield: StoreBitfield.HalloweenItemIconPack,
+		id: 'halloween',
+		icons: new Map<number, Image>()
+	}
+];
+
+export const patronFeatures = {
+	ShowEnteredInGiveawayList: {
+		tier: PerkTier.Four
+	}
+};
+
+export const gearValidationChecks = new Set();
+
+export const BSO_MAX_TOTAL_LEVEL = 3120;

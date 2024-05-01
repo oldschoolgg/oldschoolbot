@@ -1,8 +1,13 @@
 import { Activity, activity_type_enum } from '@prisma/client';
+import { z, ZodSchema } from 'zod';
 
+import { production } from '../config';
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
 import { butlerTask } from '../tasks/minions/butlerActivity';
+import { camdozaalFishingTask } from '../tasks/minions/camdozaalActivity/camdozaalFishingActivity';
+import { camdozaalMiningTask } from '../tasks/minions/camdozaalActivity/camdozaalMiningActivity';
+import { camdozaalSmithingTask } from '../tasks/minions/camdozaalActivity/camdozaalSmithingActivity';
 import { castingTask } from '../tasks/minions/castingActivity';
 import { clueTask } from '../tasks/minions/clueActivity';
 import { collectingTask } from '../tasks/minions/collectingActivity';
@@ -23,7 +28,6 @@ import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishing
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
 import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
 import { hunterTask } from '../tasks/minions/HunterActivity/hunterActivity';
-import { kourendTask } from '../tasks/minions/kourendFavourActivity';
 import { mageArenaTwoTask } from '../tasks/minions/mageArena2Activity';
 import { mageArenaTask } from '../tasks/minions/mageArenaActivity';
 import { agilityArenaTask } from '../tasks/minions/minigames/agilityArenaActivity';
@@ -69,7 +73,6 @@ import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
 import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
 import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity';
 import { questingTask } from '../tasks/minions/questingActivity';
-import { revenantsTask } from '../tasks/minions/revenantsActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
 import { sawmillTask } from '../tasks/minions/sawmillActivity';
 import { shootingStarTask } from '../tasks/minions/shootingStarsActivity';
@@ -151,7 +154,6 @@ export const tasks: MinionTask[] = [
 	motherlodeMiningTask,
 	runecraftTask,
 	sawmillTask,
-	revenantsTask,
 	woodcuttingTask,
 	wealthChargeTask,
 	tokkulShopTask,
@@ -160,7 +162,6 @@ export const tasks: MinionTask[] = [
 	pickpocketTask,
 	questingTask,
 	monsterTask,
-	kourendTask,
 	vmTask,
 	templeTrekkingTask,
 	mageTrainingTask,
@@ -179,9 +180,40 @@ export const tasks: MinionTask[] = [
 	toaTask,
 	underwaterAgilityThievingTask,
 	strongholdTask,
-	specificQuestTask
+	specificQuestTask,
+	camdozaalMiningTask,
+	camdozaalSmithingTask,
+	camdozaalFishingTask
 ];
 
+export async function processPendingActivities() {
+	const activities: Activity[] = await prisma.activity.findMany({
+		where: {
+			completed: false,
+			finish_date: production
+				? {
+						lt: new Date()
+				  }
+				: undefined
+		}
+	});
+
+	if (activities.length > 0) {
+		await prisma.activity.updateMany({
+			where: {
+				id: {
+					in: activities.map(i => i.id)
+				}
+			},
+			data: {
+				completed: true
+			}
+		});
+	}
+
+	await Promise.all(activities.map(completeActivity));
+	return activities;
+}
 export async function syncActivityCache() {
 	const tasks = await prisma.activity.findMany({ where: { completed: false } });
 
@@ -190,6 +222,14 @@ export async function syncActivityCache() {
 		activitySync(task);
 	}
 }
+
+const ActivityTaskOptionsSchema = z.object({
+	userID: z.string(),
+	duration: z.number(),
+	id: z.number(),
+	finishDate: z.number(),
+	channelID: z.string()
+});
 
 export async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
@@ -206,6 +246,13 @@ export async function completeActivity(_activity: Activity) {
 
 	modifyBusyCounter(activity.userID, 1);
 	try {
+		if ('dataSchema' in task && task.dataSchema) {
+			const schema = ActivityTaskOptionsSchema.and(task.dataSchema);
+			const { success } = schema.safeParse(activity);
+			if (!success) {
+				console.error(`Invalid activity data for ${activity.type} task: ${JSON.stringify(activity)}`);
+			}
+		}
 		await task.run(activity);
 	} catch (err) {
 		logError(err);
@@ -218,6 +265,7 @@ export async function completeActivity(_activity: Activity) {
 
 interface IMinionTask {
 	type: activity_type_enum;
+	dataSchema?: ZodSchema;
 	run: Function;
 }
 declare global {
@@ -228,7 +276,9 @@ const ignored: activity_type_enum[] = [
 	activity_type_enum.BirthdayEvent,
 	activity_type_enum.BlastFurnace,
 	activity_type_enum.Easter,
-	activity_type_enum.HalloweenEvent
+	activity_type_enum.HalloweenEvent,
+	activity_type_enum.Revenants,
+	activity_type_enum.KourendFavour
 ];
 for (const a of Object.values(activity_type_enum)) {
 	if (ignored.includes(a)) {

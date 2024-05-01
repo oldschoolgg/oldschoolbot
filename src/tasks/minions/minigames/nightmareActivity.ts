@@ -48,7 +48,7 @@ export const nightmareTask: MinionTask = {
 			}
 		}
 
-		await addMonsterXP(user, {
+		let xpRes = await addMonsterXP(user, {
 			monsterID: NIGHTMARE_ID,
 			quantity: Math.ceil(quantity / team.length),
 			duration,
@@ -58,12 +58,16 @@ export const nightmareTask: MinionTask = {
 
 		const { newKC } = await user.incrementKC(monsterID, kc);
 
-		const ownsOrUsedTablet = user.bank.has('Slepey tablet') || user.bitfield.includes(BitField.HasSlepeyTablet);
-		if (ownsOrUsedTablet) {
-			userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));
-		}
-		if (!ownsOrUsedTablet && kc > 0 && newKC >= 100 && !userLoot.has('Slepey tablet')) {
-			userLoot.add('Slepey tablet');
+		const ownsOrUsedTablet =
+			user.bank.has('Slepey tablet') ||
+			(user.bitfield.includes(BitField.HasSlepeyTablet) && user.cl.has('Slepey Tablet'));
+		if (isPhosani) {
+			if (ownsOrUsedTablet) {
+				userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));
+			}
+			if (!ownsOrUsedTablet && kc > 0 && newKC >= 100 && !userLoot.has('Slepey tablet')) {
+				userLoot.add('Slepey tablet');
+			}
 		}
 
 		// Fix purple items on solo kills
@@ -113,7 +117,7 @@ export const nightmareTask: MinionTask = {
 			handleTripFinish(
 				user,
 				channelID,
-				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName}, you died ${deaths} times. Your ${monsterName} KC is now ${kc}.`,
+				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName}, you died ${deaths} times. Your ${monsterName} KC is now ${kc}. ${xpRes}`,
 				image.file.attachment,
 				data,
 				itemsAdded

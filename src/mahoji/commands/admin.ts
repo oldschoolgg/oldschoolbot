@@ -28,6 +28,7 @@ import {
 	globalConfig,
 	META_CONSTANTS
 } from '../../lib/constants';
+import { economyLog } from '../../lib/economyLogs';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetup } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
@@ -63,7 +64,6 @@ import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
-import { getUserInfo } from './minion';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
@@ -132,7 +132,7 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 async function allEquippedPets() {
 	const pets = await prisma.$queryRawUnsafe<
 		{ pet: number; qty: number }[]
-	>(`SELECT "minion.equippedPet" AS pet, COUNT("minion.equippedPet") AS qty
+	>(`SELECT "minion.equippedPet" AS pet, COUNT("minion.equippedPet")::int AS qty
 FROM users
 WHERE "minion.equippedPet" IS NOT NULL
 GROUP BY "minion.equippedPet"
@@ -330,7 +330,7 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 		name: 'Most Active',
 		run: async () => {
 			const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
-SELECT sum(duration) as num, "new_user"."username", user_id
+SELECT sum(duration)::int as num, "new_user"."username", user_id
 FROM activity
 INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
 WHERE start_date > now() - interval '2 days'
@@ -408,7 +408,7 @@ The next buy limit reset is at: ${buyLimitInterval.nextResetStr}, it resets ever
 	{
 		name: 'Buy GP Sinks',
 		run: async () => {
-			const result = await prisma.$queryRawUnsafe<{ item_id: string; total_gp_spent: number }[]>(`SELECT
+			const result = await prisma.$queryRawUnsafe<{ item_id: string; total_gp_spent: bigint }[]>(`SELECT
   key AS item_id,
   sum((cost_gp / total_items) * value::integer) AS total_gp_spent
 FROM
@@ -473,6 +473,28 @@ from bot_item_sell;`);
 						{ name: 'output.txt' }
 					)
 				]
+			};
+		}
+	},
+	{
+		name: 'Max G.E Slot users',
+		run: async () => {
+			const res = await prisma.$queryRawUnsafe<{ user_id: string; slots_used: number }[]>(`
+SELECT user_id, COUNT(*)::int AS slots_used
+FROM ge_listing
+WHERE cancelled_at IS NULL AND fulfilled_at IS NULL
+GROUP BY user_id
+HAVING COUNT(*) >= 3
+ORDER BY slots_used DESC;
+`);
+			let usersUsingAllSlots = 0;
+			for (const row of res) {
+				const user = await mUserFetch(row.user_id);
+				const { slots } = await GrandExchange.calculateSlotsOfUser(user);
+				if (row.slots_used >= slots) usersUsingAllSlots++;
+			}
+			return {
+				content: `There are ${usersUsingAllSlots}x users using all their G.E slots.`
 			};
 		}
 	}
@@ -586,25 +608,6 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'add_ironman_alt',
-			description: 'Add an ironman alt account for a user',
-			options: [
-				{
-					type: ApplicationCommandOptionType.User,
-					name: 'main',
-					description: 'The main',
-					required: true
-				},
-				{
-					type: ApplicationCommandOptionType.User,
-					name: 'ironman_alt',
-					description: 'The ironman alt',
-					required: true
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'badges',
 			description: 'Manage badges of a user',
 			options: [
@@ -663,19 +666,6 @@ export const adminCommand: OSBMahojiCommand = {
 							.filter(i => disabledCommands.includes(i.name))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'view_user',
-			description: 'View a users info',
-			options: [
-				{
-					type: ApplicationCommandOptionType.User,
-					name: 'user',
-					description: 'The user',
-					required: true
 				}
 			]
 		},
@@ -803,11 +793,9 @@ export const adminCommand: OSBMahojiCommand = {
 		cancel_task?: { user: MahojiUserOption };
 		sync_roles?: {};
 		sync_patreon?: {};
-		add_ironman_alt?: { main: MahojiUserOption; ironman_alt: MahojiUserOption };
 		badges?: { user: MahojiUserOption; add?: string; remove?: string };
 		bypass_age?: { user: MahojiUserOption };
 		command?: { enable?: string; disable?: string };
-		view_user?: { user: MahojiUserOption };
 		set_price?: { item: string; price: number };
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
 		ltc?: { item?: string };
@@ -854,62 +842,6 @@ export const adminCommand: OSBMahojiCommand = {
 			await patreonTask.run();
 			syncLinkedAccounts();
 			return 'Finished syncing patrons.';
-		}
-		if (options.add_ironman_alt) {
-			const mainAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.main.user.id, {
-				minion_ironman: true,
-				id: true,
-				ironman_alts: true,
-				main_account: true
-			});
-			const altAccount = await mahojiUsersSettingsFetch(options.add_ironman_alt.ironman_alt.user.id, {
-				minion_ironman: true,
-				bitfield: true,
-				id: true,
-				ironman_alts: true,
-				main_account: true
-			});
-			const mainUser = await mUserFetch(mainAccount.id);
-			const altUser = await mUserFetch(altAccount.id);
-			if (mainAccount === altAccount) return "They're they same account.";
-			if (mainAccount.minion_ironman) return `${mainUser.usernameOrMention} is an ironman.`;
-			if (!altAccount.minion_ironman) return `${altUser.usernameOrMention} is not an ironman.`;
-			if (!altAccount.bitfield.includes(BitField.PermanentIronman)) {
-				return `${altUser.usernameOrMention} is not a *permanent* ironman.`;
-			}
-
-			const peopleWithThisAltAlready = (
-				await prisma.$queryRawUnsafe<unknown[]>(
-					`SELECT id FROM users WHERE '${altAccount.id}' = ANY(ironman_alts);`
-				)
-			).length;
-			if (peopleWithThisAltAlready > 0) {
-				return `Someone already has ${altUser.usernameOrMention} as an ironman alt.`;
-			}
-			if (mainAccount.main_account) {
-				return `${mainUser.usernameOrMention} has a main account connected already.`;
-			}
-			if (altAccount.main_account) {
-				return `${altUser.usernameOrMention} has a main account connected already.`;
-			}
-			const mainAccountsAlts = mainAccount.ironman_alts;
-			if (mainAccountsAlts.includes(altAccount.id)) {
-				return `${mainUser.usernameOrMention} already has ${altUser.usernameOrMention} as an alt.`;
-			}
-
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure that \`${altUser.usernameOrMention}\` is the alt account of \`${mainUser.usernameOrMention}\`?`
-			);
-			await mahojiUserSettingsUpdate(mainAccount.id, {
-				ironman_alts: {
-					push: altAccount.id
-				}
-			});
-			await mahojiUserSettingsUpdate(altAccount.id, {
-				main_account: mainAccount.id
-			});
-			return `You set \`${altUser.usernameOrMention}\` as the alt account of \`${mainUser.usernameOrMention}\`.`;
 		}
 
 		if (options.badges) {
@@ -1007,10 +939,6 @@ export const adminCommand: OSBMahojiCommand = {
 			}
 			return 'Invalid.';
 		}
-		if (options.view_user) {
-			const userToView = await mUserFetch(options.view_user.user.user.id);
-			return (await getUserInfo(userToView)).everythingString;
-		}
 		if (options.set_price) {
 			const item = getItem(options.set_price.item);
 			if (!item) return 'Invalid item.';
@@ -1077,10 +1005,11 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 		if (options.reboot) {
 			globalClient.isShuttingDown = true;
-			await sleep(Time.Second * 20);
+			await economyLog('Flushing economy log due to reboot', true);
 			await interactionReply(interaction, {
 				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
 			});
+			await sleep(Time.Second * 20);
 			await sendToChannelID(Channel.GeneralChannel, {
 				content: `I am shutting down! Goodbye :(
 
@@ -1094,6 +1023,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			await interactionReply(interaction, {
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
+			await economyLog('Flushing economy log due to shutdown', true);
 			await Promise.all([sleep(timer), GrandExchange.queue.onEmpty()]);
 			await sendToChannelID(Channel.GeneralChannel, {
 				content: `I am shutting down! Goodbye :(

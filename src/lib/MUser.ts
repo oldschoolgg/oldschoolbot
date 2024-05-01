@@ -1,8 +1,9 @@
 import { userMention } from '@discordjs/builders';
-import { Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
-import { calcWhatPercent, objectEntries, sumArr, uniqueArr } from 'e';
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
+import { calcWhatPercent, objectEntries, percentChance, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
@@ -16,14 +17,16 @@ import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { GearSetup, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
+import { marketPriceOfBank } from './marketPrices';
+import backgroundImages from './minions/data/bankBackgrounds';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
-import { baseUserKourendFavour, UserKourendFavour } from './minions/data/kourendFavour';
 import { defaultFarmingContract } from './minions/farming';
 import { FarmingContract } from './minions/farming/types';
 import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
 import { getUsersPerkTier, syncPerkTierOfUser } from './perkTiers';
+import { roboChimpUserFetch } from './roboChimp';
 import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
 import { prisma } from './settings/prisma';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
@@ -32,7 +35,7 @@ import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
 import { ItemBank, Skills } from './types';
-import { addItemToBank, assert, convertXPtoLVL, itemNameFromID, percentChance } from './util';
+import { addItemToBank, convertXPtoLVL, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
@@ -160,13 +163,6 @@ export class MUserClass {
 		});
 	}
 
-	get kourendFavour() {
-		const favour = this.user.kourend_favour as any as UserKourendFavour | null;
-		if (favour === null) return { ...baseUserKourendFavour };
-		assert(typeof favour.Arceuus === 'number', `kourendFavour should return valid data for ${this.id}`);
-		return favour;
-	}
-
 	get isBusy() {
 		return userIsBusy(this.id);
 	}
@@ -274,7 +270,7 @@ export class MUserClass {
 
 	async calcActualClues() {
 		const result: { id: number; qty: number }[] =
-			await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int) AS qty
+			await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'ClueCompletion'
 AND user_id = '${this.id}'::bigint
@@ -330,19 +326,22 @@ GROUP BY data->>'clueID';`);
 		items,
 		collectionLog = false,
 		filterLoot = true,
-		dontAddToTempCL = false
+		dontAddToTempCL = false,
+		neverUpdateHistory = false
 	}: {
 		items: ItemBank | Bank;
 		collectionLog?: boolean;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
+		neverUpdateHistory?: boolean;
 	}) {
 		const res = await transactItems({
 			collectionLog,
 			itemsToAdd: new Bank(items),
 			filterLoot,
 			dontAddToTempCL,
-			userID: this.id
+			userID: this.id,
+			neverUpdateHistory
 		});
 		this.user = res.newUser;
 		this.updateProperties();
@@ -418,7 +417,7 @@ GROUP BY data->>'clueID';`);
 		const { bank } = this;
 		const items = resolveItems(_items);
 		for (const baseID of items) {
-			const similarItems = [...getSimilarItems(baseID), baseID];
+			const similarItems = getSimilarItems(baseID);
 			const hasOneEquipped = similarItems.some(id => this.hasEquipped(id, true));
 			const hasOneInBank = similarItems.some(id => bank.has(id));
 			// If only one needs to be equipped, return true now if it is equipped.
@@ -509,20 +508,21 @@ GROUP BY data->>'clueID';`);
 		};
 	}
 
-	async specialRemoveItems(bankToRemove: Bank) {
+	async specialRemoveItems(bankToRemove: Bank, options?: { wildy?: boolean }) {
 		bankToRemove = determineRunes(this, bankToRemove);
 		const bankRemove = new Bank();
 		let dart: [Item, number] | null = null;
 		let ammoRemove: [Item, number] | null = null;
 
+		const gearKey = options?.wildy ? 'wildy' : 'range';
 		const realCost = bankToRemove.clone();
-		const rangeGear = this.gear.range;
+		const rangeGear = this.gear[gearKey];
 		const hasAvas = rangeGear.hasEquipped("Ava's assembler");
 		const updates: Prisma.UserUpdateArgs['data'] = {};
 
 		for (const [item, quantity] of bankToRemove.items()) {
 			if (blowpipeDarts.includes(item)) {
-				if (dart !== null) throw new Error('Tried to remove more than 1 blowpipe dart.');
+				if (dart !== null) throw new UserError('Tried to remove more than 1 blowpipe dart.');
 				dart = [item, quantity];
 				continue;
 			}
@@ -541,12 +541,12 @@ GROUP BY data->>'clueID';`);
 		if (ammoRemove) {
 			const equippedAmmo = rangeGear.ammo?.item;
 			if (!equippedAmmo) {
-				throw new Error('No ammo equipped.');
+				throw new UserError('No ammo equipped.');
 			}
 			if (equippedAmmo !== ammoRemove[0].id) {
-				throw new Error(`Has ${itemNameFromID(equippedAmmo)}, but needs ${ammoRemove[0].name}.`);
+				throw new UserError(`Has ${itemNameFromID(equippedAmmo)}, but needs ${ammoRemove[0].name}.`);
 			}
-			const newRangeGear = { ...this.gear.range };
+			const newRangeGear = { ...this.gear[gearKey] };
 			const ammo = newRangeGear.ammo?.quantity;
 
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(equippedAmmo));
@@ -560,13 +560,15 @@ GROUP BY data->>'clueID';`);
 				}
 			}
 			if (!ammo || ammo < ammoRemove[1])
-				throw new Error(
-					`Not enough ${ammoRemove[0].name} equipped in range gear, you need ${
+				throw new UserError(
+					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${
 						ammoRemove![1]
 					} but you have only ${ammo}.`
 				);
 			newRangeGear.ammo!.quantity -= ammoRemove![1];
-			updates.gear_range = newRangeGear as any as Prisma.InputJsonObject;
+			if (newRangeGear.ammo!.quantity <= 0) newRangeGear.ammo = null;
+			const updateKey = options?.wildy ? 'gear_wildy' : 'gear_range';
+			updates[updateKey] = newRangeGear as any as Prisma.InputJsonObject;
 		}
 
 		if (dart) {
@@ -582,20 +584,20 @@ GROUP BY data->>'clueID';`);
 			const scales = Math.ceil((10 / 3) * dart[1]);
 			const rawBlowpipeData = this.blowpipe;
 			if (!this.allItemsOwned.has('Toxic blowpipe') || !rawBlowpipeData) {
-				throw new Error("You don't have a Toxic blowpipe.");
+				throw new UserError("You don't have a Toxic blowpipe.");
 			}
 			if (!rawBlowpipeData.dartID || !rawBlowpipeData.dartQuantity) {
-				throw new Error('You have no darts in your Toxic blowpipe.');
+				throw new UserError('You have no darts in your Toxic blowpipe.');
 			}
 			if (rawBlowpipeData.dartQuantity < dart[1]) {
-				throw new Error(
+				throw new UserError(
 					`You don't have enough ${itemNameFromID(
 						rawBlowpipeData.dartID
 					)}s in your Toxic blowpipe, you need ${dart[1]}, but you have only ${rawBlowpipeData.dartQuantity}.`
 				);
 			}
 			if (!rawBlowpipeData.scales || rawBlowpipeData.scales < scales) {
-				throw new Error(
+				throw new UserError(
 					`You don't have enough Zulrah's scales in your Toxic blowpipe, you need ${scales} but you have only ${rawBlowpipeData.scales}.`
 				);
 			}
@@ -608,7 +610,7 @@ GROUP BY data->>'clueID';`);
 
 		if (bankRemove.length > 0) {
 			if (!this.bankWithGP.has(bankRemove)) {
-				throw new Error(`You don't own: ${bankRemove.clone().remove(this.bankWithGP)}.`);
+				throw new UserError(`You don't own: ${bankRemove.clone().remove(this.bankWithGP)}.`);
 			}
 			await transactItems({ userID: this.id, itemsToRemove: bankRemove });
 		}
@@ -691,7 +693,7 @@ GROUP BY data->>'clueID';`);
 			select: keysToSelect
 		});
 
-		return result as SelectedUserStats<T>;
+		return result as unknown as SelectedUserStats<T>;
 	}
 
 	get logName() {
@@ -749,6 +751,159 @@ GROUP BY data->>'clueID';`);
 			changes.set('Clue scroll (elite)', 5);
 		}
 		return changes;
+	}
+
+	async checkBankBackground() {
+		if (this.bitfield.includes(BitField.isModerator)) {
+			return;
+		}
+		const resetBackground = async () => {
+			await this.update({ bankBackground: 1 });
+		};
+		const background = backgroundImages.find(i => i.id === this.user.bankBackground);
+		if (!background) {
+			return resetBackground();
+		}
+		if (background.id === 1) return;
+		if (background.storeBitField && this.user.store_bitfield.includes(background.storeBitField)) {
+			return;
+		}
+		if (background.perkTierNeeded && this.perkTier() >= background.perkTierNeeded) {
+			return;
+		}
+		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
+			return;
+		}
+		if (!background.storeBitField && !background.perkTierNeeded && !background.bitfield) {
+			return;
+		}
+		return resetBackground();
+	}
+
+	async fetchRobochimpUser() {
+		return roboChimpUserFetch(this.id);
+	}
+
+	async forceUnequip(setup: GearSetupType, slot: EquipmentSlot, reason: string) {
+		const gear = this.gear[setup].raw();
+		const equippedInSlot = gear[slot];
+		if (!equippedInSlot) {
+			return { refundBank: new Bank() };
+		}
+		gear[slot] = null;
+
+		const actualItem = getItem(equippedInSlot.item);
+		const refundBank = new Bank();
+		if (actualItem) {
+			refundBank.add(actualItem.id, equippedInSlot.quantity);
+		}
+
+		await this.update({
+			[`gear_${setup}`]: gear as any as Prisma.InputJsonObject
+		});
+		if (refundBank.length > 0) {
+			await this.addItemsToBank({
+				items: refundBank,
+				collectionLog: false
+			});
+		}
+
+		debugLog(
+			`ForceUnequip User[${this.id}] in ${setup} slot[${slot}] ${JSON.stringify(equippedInSlot)}: ${reason}`
+		);
+
+		return { refundBank };
+	}
+
+	async validateEquippedGear() {
+		let itemsUnequippedAndRefunded = new Bank();
+		for (const [gearSetupName, gearSetup] of Object.entries(this.gear) as [GearSetupType, GearSetup][]) {
+			if (gearSetup['2h'] !== null) {
+				if (gearSetup.weapon?.item) {
+					const { refundBank } = await this.forceUnequip(
+						gearSetupName,
+						EquipmentSlot.Weapon,
+						'2h Already equipped'
+					);
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+				if (gearSetup.shield?.item) {
+					const { refundBank } = await this.forceUnequip(
+						gearSetupName,
+						EquipmentSlot.Shield,
+						'2h Already equipped'
+					);
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+			}
+			for (const slot of Object.values(EquipmentSlot)) {
+				const item = gearSetup[slot];
+				if (!item) continue;
+				const osItem = getItem(item.item);
+				if (!osItem) {
+					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Invalid item');
+					itemsUnequippedAndRefunded.add(refundBank);
+					continue;
+				}
+				if (osItem.equipment?.slot !== slot) {
+					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Wrong slot');
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+				if (osItem.equipment?.requirements && !this.hasSkillReqs(osItem.equipment.requirements)) {
+					const { refundBank } = await this.forceUnequip(gearSetupName, slot, 'Doesnt meet requirements');
+					itemsUnequippedAndRefunded.add(refundBank);
+				}
+			}
+		}
+		return {
+			itemsUnequippedAndRefunded
+		};
+	}
+
+	async calculateNetWorth() {
+		const bank = this.allItemsOwned.clone();
+		const activeListings = await prisma.gEListing.findMany({
+			where: {
+				user_id: this.id,
+				quantity_remaining: {
+					gt: 0
+				},
+				fulfilled_at: null,
+				cancelled_at: null
+			},
+			include: {
+				buyTransactions: true,
+				sellTransactions: true
+			}
+		});
+		for (const listing of activeListings) {
+			if (listing.type === 'Sell') {
+				bank.add(listing.item_id, listing.quantity_remaining);
+			} else {
+				bank.add('Coins', Number(listing.asking_price_per_item) * listing.quantity_remaining);
+			}
+		}
+		const activeGiveaways = await prisma.giveaway.findMany({
+			where: {
+				completed: false,
+				user_id: this.id
+			}
+		});
+		for (const giveaway of activeGiveaways) {
+			bank.add(giveaway.loot as ItemBank);
+		}
+		const gifts = await prisma.giftBox.findMany({
+			where: {
+				owner_id: this.id
+			}
+		});
+		for (const gift of gifts) {
+			bank.add(gift.items as ItemBank);
+		}
+		return {
+			bank,
+			value: marketPriceOfBank(bank)
+		};
 	}
 }
 declare global {

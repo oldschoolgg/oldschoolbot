@@ -8,6 +8,7 @@ import { MasterCasket, MasterClueTable } from 'oldschooljs/dist/simulation/clues
 import { MediumCasket, MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
 import itemID from '../util/itemID';
+import resolveItems from '../util/resolveItems';
 import { beginnerReqs, ClueReqs } from './clueReqs';
 import {
 	beginnerStashes,
@@ -37,6 +38,7 @@ export interface ClueTier {
 	allItems: number[];
 	stashUnits: StashUnitTier;
 	reqs: ClueReqs;
+	implings?: number[];
 }
 
 export const ClueTiers: ClueTier[] = [
@@ -49,7 +51,8 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: false,
 		allItems: BeginnerClueTable.allItems,
 		stashUnits: beginnerStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		implings: resolveItems(['Baby impling jar', 'Young impling jar'])
 	},
 	{
 		name: 'Easy',
@@ -64,7 +67,8 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: false,
 		allItems: EasyClueTable.allItems,
 		stashUnits: easyStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		implings: resolveItems(['Baby impling jar', 'Young impling jar', 'Gourmet impling jar'])
 	},
 	{
 		name: 'Medium',
@@ -79,7 +83,8 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: false,
 		allItems: MediumClueTable.allItems,
 		stashUnits: mediumStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		implings: resolveItems(['Earth impling jar', 'Essence impling jar', 'Eclectic impling jar'])
 	},
 	{
 		name: 'Hard',
@@ -90,7 +95,8 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: false,
 		allItems: HardClueTable.allItems,
 		stashUnits: hardStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		implings: resolveItems(['Nature impling jar', 'Magpie impling jar', 'Ninja impling jar'])
 	},
 	{
 		name: 'Elite',
@@ -105,7 +111,8 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: 35,
 		allItems: EliteClueTable.allItems,
 		stashUnits: eliteStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		implings: resolveItems(['Crystal impling jar', 'Dragon impling jar'])
 	},
 	{
 		name: 'Master',

@@ -1,11 +1,12 @@
-import { EmbedBuilder, userMention } from '@discordjs/builders';
+import { userMention } from '@discordjs/builders';
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 
 import { NEX_ID } from '../../lib/constants';
 import { trackLoot } from '../../lib/lootTrack';
-import { handleNexKills } from '../../lib/simulation/nex';
+import { handleNexKills, NexContext } from '../../lib/simulation/nex';
 import { NexTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 
 export const nexTask: MinionTask = {
@@ -16,13 +17,38 @@ export const nexTask: MinionTask = {
 		const allMUsers = await Promise.all(users.map(id => mUserFetch(id)));
 
 		const survivedQuantity = wipedKill ? wipedKill - 1 : quantity;
+		let teamResult: NexContext['team'] = userDetails.map(u => ({
+			id: u[0],
+			contribution: u[1],
+			deaths: u[2]
+		}));
+
+		if (allMUsers.length === 1) {
+			teamResult = teamResult.concat(
+				{
+					id: '2',
+					contribution: teamResult[0].contribution,
+					deaths: [],
+					ghost: true
+				},
+				{
+					id: '3',
+					contribution: teamResult[0].contribution,
+					deaths: [],
+					ghost: true
+				},
+				{
+					id: '4',
+					contribution: teamResult[0].contribution,
+					deaths: [],
+					ghost: true
+				}
+			);
+		}
+
 		const loot = handleNexKills({
 			quantity: survivedQuantity,
-			team: userDetails.map(u => ({
-				id: u[0],
-				contribution: u[1],
-				deaths: u[2]
-			}))
+			team: teamResult
 		});
 
 		for (const [uID, uLoot] of loot.entries()) {
@@ -46,21 +72,29 @@ export const nexTask: MinionTask = {
 		});
 		await updateBankSetting('nex_loot', loot.totalLoot());
 
-		const embed = new EmbedBuilder().setThumbnail(
-			'https://cdn.discordapp.com/attachments/342983479501389826/951730848426786846/Nex.webp'
-		).setDescription(`
-${loot.formatLoot()}`);
-
-		handleTripFinish(
+		return handleTripFinish(
 			allMUsers[0],
 			channelID,
 			{
-				content: `${allMention} Your team finished killing ${quantity}x Nex.${
-					wipedKill ? ` Your team wiped on the ${formatOrdinal(wipedKill)} kill.` : ''
-				}`,
-				embeds: [embed]
+				content:
+					survivedQuantity === 0
+						? `${allMention} your minion${users.length === 1 ? '' : 's'} died in all kill attempts.`
+						: `${allMention} Your team finished killing ${quantity}x Nex.${
+								wipedKill ? ` Your team wiped on the ${formatOrdinal(wipedKill)} kill.` : ''
+						  }
+				
+${loot.formatLoot()}`
 			},
-			undefined,
+			users.length === 1 && loot.totalLoot().length > 0
+				? (
+						await makeBankImage({
+							bank: loot.totalLoot(),
+							title: `Loot From ${survivedQuantity}x Nex`,
+							user: allMUsers[0],
+							previousCL: undefined
+						})
+				  ).file.attachment
+				: undefined,
 			data,
 			loot.totalLoot()
 		);

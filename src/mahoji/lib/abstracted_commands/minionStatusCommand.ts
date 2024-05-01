@@ -1,6 +1,6 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
-import { stripNonAlphanumeric } from 'e';
+import { roll, stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, minionBuyButton } from '../../../lib/constants';
@@ -8,7 +8,11 @@ import { clArrayUpdate } from '../../../lib/handleNewCLItems';
 import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { makeComponents } from '../../../lib/util';
-import { makeAutoContractButton, makeBirdHouseTripButton } from '../../../lib/util/globalInteractions';
+import {
+	makeAutoContractButton,
+	makeAutoSlayButton,
+	makeBirdHouseTripButton
+} from '../../../lib/util/globalInteractions';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
@@ -62,6 +66,11 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 
 	roboChimpSyncData(user);
 	await clArrayUpdate(user, user.cl);
+	if (user.user.cached_networth_value === null || roll(100)) {
+		await user.update({
+			cached_networth_value: (await user.calculateNetWorth()).value
+		});
+	}
 
 	if (!user.user.minion_hasBought) {
 		return {
@@ -99,14 +108,8 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 		);
 	}
 
-	if (!minionIsBusy) {
-		buttons.push(
-			new ButtonBuilder()
-				.setCustomId('AUTO_SLAY')
-				.setLabel('Auto Slay')
-				.setEmoji('630911040560824330')
-				.setStyle(ButtonStyle.Secondary)
-		);
+	if (!minionIsBusy && !user.bitfield.includes(BitField.DisableAutoSlayButton)) {
+		buttons.push(makeAutoSlayButton());
 	}
 
 	buttons.push(
@@ -136,7 +139,7 @@ export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptio
 
 	const { bank } = user;
 
-	if (!minionIsBusy) {
+	if (!minionIsBusy && !user.bitfield.includes(BitField.DisableClueButtons)) {
 		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))
 			.reverse()
 			.slice(0, 3)) {

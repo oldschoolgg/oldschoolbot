@@ -4,6 +4,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { GearStat } from '../../../gear/types';
 import itemID from '../../../util/itemID';
+import resolveItems from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
 const killableMonsters: KillableMonster[] = [
@@ -140,6 +141,26 @@ const killableMonsters: KillableMonster[] = [
 		attackStyleToUse: GearStat.AttackRanged,
 		defaultAttackStyles: [SkillsEnum.Ranged, SkillsEnum.Magic],
 		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength]
+	},
+	{
+		id: Monsters.BloodReaver.id,
+		name: Monsters.BloodReaver.name,
+		aliases: Monsters.BloodReaver.aliases,
+		timeToFinish: Time.Second * 25,
+		table: Monsters.BloodReaver,
+		wildy: false,
+		difficultyRating: 3,
+		qpRequired: 1,
+		itemsRequired: resolveItems(['Frozen key']),
+		healAmountNeeded: 30,
+		attackStyleToUse: GearStat.AttackRanged,
+		disallowedAttackStyles: [SkillsEnum.Magic],
+		attackStylesUsed: [GearStat.AttackMagic],
+		itemInBankBoosts: [
+			{
+				[itemID('Arclight')]: 10
+			}
+		]
 	}
 ];
 

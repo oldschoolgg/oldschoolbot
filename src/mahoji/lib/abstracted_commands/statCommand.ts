@@ -3,7 +3,7 @@ import { sumArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { ItemBank, SkillsScore } from 'oldschooljs/dist/meta/types';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { toKMB } from 'oldschooljs/dist/util';
 
@@ -11,13 +11,15 @@ import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
-import backgroundImages from '../../../lib/minions/data/bankBackgrounds';
+import { skillEmoji } from '../../../lib/data/emojis';
+import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { RandomEvents } from '../../../lib/randomEvents';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { prisma } from '../../../lib/settings/prisma';
 import Agility from '../../../lib/skilling/skills/agility';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
+import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestry';
 import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import { InfernoOptions } from '../../../lib/types/minions';
@@ -39,9 +41,85 @@ function wrap(str: string) {
 	return `'"${str}"'`;
 }
 
+async function fetchHistoricalDataDifferences(user: MUser) {
+	const result = await prisma.$queryRawUnsafe<
+		{
+			user_id: string;
+			week_start: string;
+			diff_cl_global_rank: number;
+			diff_cl_completion_percentage: number;
+			diff_cl_completion_count: number;
+			diff_GP: number;
+			diff_total_xp: number;
+		}[]
+	>(`WITH DateSeries AS (
+    SELECT generate_series(
+        (SELECT DATE_TRUNC('week', MIN(date)) FROM historical_data WHERE user_id = '${user.id}'),
+        (SELECT DATE_TRUNC('week', MAX(date)) FROM historical_data WHERE user_id = '${user.id}'),
+        '1 week'::interval
+    )::DATE AS week_start
+),
+WeeklyLastValue AS (
+    SELECT
+        ds.week_start,
+        hd.user_id,
+        FIRST_VALUE(cl_global_rank) OVER (PARTITION BY hd.user_id, ds.week_start ORDER BY hd.date DESC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_cl_global_rank,
+        FIRST_VALUE(cl_completion_percentage) OVER (PARTITION BY hd.user_id, ds.week_start ORDER BY hd.date DESC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_cl_completion_percentage,
+        FIRST_VALUE(cl_completion_count) OVER (PARTITION BY hd.user_id, ds.week_start ORDER BY hd.date DESC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_cl_completion_count,
+        FIRST_VALUE("GP") OVER (PARTITION BY hd.user_id, ds.week_start ORDER BY hd.date DESC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS "last_GP",
+        FIRST_VALUE(total_xp) OVER (PARTITION BY hd.user_id, ds.week_start ORDER BY hd.date DESC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_total_xp
+    FROM
+        DateSeries ds
+    LEFT JOIN historical_data hd ON hd.date BETWEEN ds.week_start AND ds.week_start + '6 days'::interval AND hd.user_id = '${user.id}'
+),
+DistinctWeeklyLastValue AS (
+    SELECT DISTINCT
+        user_id,
+        week_start,
+        last_cl_global_rank,
+        last_cl_completion_percentage,
+        last_cl_completion_count,
+        "last_GP",
+        last_total_xp
+    FROM
+        WeeklyLastValue
+),
+Differences AS (
+    SELECT
+        user_id,
+        week_start,
+        last_cl_global_rank - COALESCE(LAG(last_cl_global_rank) OVER (PARTITION BY user_id ORDER BY week_start), 0) AS diff_cl_global_rank,
+        last_cl_completion_percentage - COALESCE(LAG(last_cl_completion_percentage) OVER (PARTITION BY user_id ORDER BY week_start), 0) AS diff_cl_completion_percentage,
+        last_cl_completion_count - COALESCE(LAG(last_cl_completion_count) OVER (PARTITION BY user_id ORDER BY week_start), 0) AS diff_cl_completion_count,
+        "last_GP" - COALESCE(LAG("last_GP") OVER (PARTITION BY user_id ORDER BY week_start), 0) AS "diff_GP",
+        last_total_xp - COALESCE(LAG(last_total_xp) OVER (PARTITION BY user_id ORDER BY week_start), 0) AS diff_total_xp
+    FROM
+        DistinctWeeklyLastValue
+	WHERE
+        week_start > (SELECT MIN(week_start) FROM DistinctWeeklyLastValue WHERE user_id = '${user.id}')
+)
+
+SELECT
+    user_id,
+    week_start::text,
+    diff_cl_global_rank,
+    diff_cl_completion_percentage,
+    diff_cl_completion_count,
+    "diff_GP",
+    diff_total_xp
+FROM
+    Differences
+WHERE
+    week_start > (SELECT DATE_TRUNC('week', MIN(date)) FROM historical_data WHERE user_id = '${user.id}');
+`);
+	const x = result.filter(i => i.user_id !== null);
+	x.shift();
+	return x;
+}
+
 export async function personalConstructionStats(user: MUser) {
 	const result: { id: number; qty: number }[] =
-		await prisma.$queryRawUnsafe(`SELECT (data->>'objectID')::int AS id, SUM((data->>'quantity')::int) AS qty
+		await prisma.$queryRawUnsafe(`SELECT (data->>'objectID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Construction'
 AND user_id = '${user.id}'::bigint
@@ -59,7 +137,7 @@ GROUP BY data->>'objectID';`);
 
 export async function personalFiremakingStats(user: MUser) {
 	const result: { id: number; qty: number }[] =
-		await prisma.$queryRawUnsafe(`SELECT (data->>'burnableID')::int AS id, SUM((data->>'quantity')::int) AS qty
+		await prisma.$queryRawUnsafe(`SELECT (data->>'burnableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Firemaking'
 AND user_id = '${user.id}'::bigint
@@ -77,7 +155,7 @@ GROUP BY data->>'burnableID';`);
 
 export async function personalWoodcuttingStats(user: MUser) {
 	const result: { id: number; qty: number }[] =
-		await prisma.$queryRawUnsafe(`SELECT (data->>'logID')::int AS id, SUM((data->>'quantity')::int) AS qty
+		await prisma.$queryRawUnsafe(`SELECT (data->>'logID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Woodcutting'
 AND user_id = '${user.id}'::bigint
@@ -95,7 +173,7 @@ GROUP BY data->>'logID';`);
 
 export async function personalMiningStats(user: MUser) {
 	const result: { id: number; qty: number }[] =
-		await prisma.$queryRawUnsafe(`SELECT (data->>'oreID')::int AS id, SUM((data->>'quantity')::int) AS qty
+		await prisma.$queryRawUnsafe(`SELECT (data->>'oreID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Mining'
 AND user_id = '${user.id}'::bigint
@@ -111,9 +189,9 @@ GROUP BY data->>'oreID';`);
 	return items;
 }
 
-export async function personalHerbloreStats(user: MUser) {
+export async function personalHerbloreStats(user: MUser, stats: UserStats) {
 	const result: { id: number; qty: number }[] =
-		await prisma.$queryRawUnsafe(`SELECT (data->>'mixableID')::int AS id, SUM((data->>'quantity')::int) AS qty
+		await prisma.$queryRawUnsafe(`SELECT (data->>'mixableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Herblore'
 AND user_id = '${user.id}'::bigint
@@ -126,11 +204,12 @@ GROUP BY data->>'mixableID';`);
 		if (!item) continue;
 		items.add(item.id, res.qty);
 	}
+	items.add(new Bank(stats.herbs_cleaned_while_farming_bank as ItemBank));
 	return items;
 }
 export async function personalAlchingStats(user: MUser, includeAgilityAlching = true) {
 	const result: { id: number; qty: number }[] =
-		await prisma.$queryRawUnsafe(`SELECT (data->>'itemID')::int AS id, SUM((data->>'quantity')::int) AS qty
+		await prisma.$queryRawUnsafe(`SELECT (data->>'itemID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Alching'
 AND user_id = '${user.id}'::bigint
@@ -138,7 +217,7 @@ AND data->>'itemID' IS NOT NULL
 AND completed = true
 GROUP BY data->>'itemID';`);
 	const agilityAlchRes: { id: number; qty: number }[] =
-		await prisma.$queryRawUnsafe(`SELECT (((data->>'alch')::json)->>'itemID')::int AS id, SUM((((data->>'alch')::json)->>'quantity')::int) AS qty
+		await prisma.$queryRawUnsafe(`SELECT (((data->>'alch')::json)->>'itemID')::int AS id, SUM((((data->>'alch')::json)->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Agility'
 AND user_id = '${user.id}'::bigint
@@ -156,7 +235,7 @@ GROUP BY ((data->>'alch')::json)->>'itemID';`);
 }
 export async function personalSmithingStats(user: MUser) {
 	const result: { id: number; qty: number }[] =
-		await prisma.$queryRawUnsafe(`SELECT (data->>'smithedBarID')::int AS id, SUM((data->>'quantity')::int) AS qty
+		await prisma.$queryRawUnsafe(`SELECT (data->>'smithedBarID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Smithing'
 AND user_id = '${user.id}'::bigint
@@ -173,7 +252,7 @@ GROUP BY data->>'smithedBarID';`);
 }
 export async function personalSmeltingStats(user: MUser) {
 	const result: { id: number; qty: number }[] =
-		await prisma.$queryRawUnsafe(`SELECT (data->>'barID')::int AS id, SUM((data->>'quantity')::int) AS qty
+		await prisma.$queryRawUnsafe(`SELECT (data->>'barID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Smelting'
 AND user_id = '${user.id}'::bigint
@@ -190,7 +269,7 @@ GROUP BY data->>'barID';`);
 }
 export async function personalSpellCastStats(user: MUser) {
 	const result: { id: number; qty: number }[] =
-		await prisma.$queryRawUnsafe(`SELECT (data->>'spellID')::int AS id, SUM((data->>'quantity')::int) AS qty
+		await prisma.$queryRawUnsafe(`SELECT (data->>'spellID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Casting'
 AND user_id = '${user.id}'::bigint
@@ -201,7 +280,7 @@ GROUP BY data->>'spellID';`);
 }
 export async function personalCollectingStats(user: MUser) {
 	const result: { id: number; qty: number }[] =
-		await prisma.$queryRawUnsafe(`SELECT (data->>'collectableID')::int AS id, SUM((data->>'quantity')::int) AS qty
+		await prisma.$queryRawUnsafe(`SELECT (data->>'collectableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Collecting'
 AND user_id = '${user.id}'::bigint
@@ -245,9 +324,9 @@ export const dataPoints: readonly DataPiece[] = [
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { type: activity_type_enum; qty: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT type, count(type) AS qty
+				await prisma.$queryRawUnsafe(`SELECT type, count(type)::int AS qty
 FROM activity
-WHERE completed = true	
+WHERE completed = true
 AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY type;`);
@@ -260,14 +339,17 @@ GROUP BY type;`);
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { type: activity_type_enum; hours: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT type, sum(duration) / ${Time.Hour} AS hours
+				await prisma.$queryRawUnsafe(`SELECT type, sum(duration::bigint)::bigint / ${Time.Hour} AS hours
 FROM activity
 WHERE completed = true
 AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY type;`);
-			const dataPoints: [string, number][] = result.filter(i => i.hours >= 1).map(i => [i.type, i.hours]);
-			const buffer = await barChart('Your Activity Durations', val => `${val} Hours`, dataPoints);
+			const dataPoints: [string, number][] = result
+				.filter(i => i.hours >= 1)
+				.sort((a, b) => Number(b.hours - a.hours))
+				.map(i => [i.type, Number(i.hours)]);
+			const buffer = await barChart('Your Activity Durations', val => `${val} Hrs`, dataPoints);
 			return makeResponseForBuffer(buffer);
 		}
 	},
@@ -276,7 +358,7 @@ GROUP BY type;`);
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { id: number; kc: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT (data->>'monsterID')::int as id, SUM((data->>'quantity')::int) AS kc
+				await prisma.$queryRawUnsafe(`SELECT (data->>'monsterID')::int as id, SUM((data->>'quantity')::int)::int AS kc
 FROM activity
 WHERE completed = true
 AND user_id = ${BigInt(user.id)}
@@ -337,7 +419,7 @@ GROUP BY data->>'monsterID';`);
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
 			const result: { mins: number; count: number }[] =
-				await prisma.$queryRaw`SELECT mins, COUNT(mins) FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
+				await prisma.$queryRaw`SELECT mins, COUNT(mins)::int FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
 FROM activity
 WHERE type = 'Inferno'
 AND completed = true
@@ -357,7 +439,7 @@ GROUP BY mins;`;
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { mins: number; count: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT mins, COUNT(mins) FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
+				await prisma.$queryRawUnsafe(`SELECT mins, COUNT(mins)::int FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
 FROM activity
 WHERE type = 'Inferno'
 AND user_id = ${BigInt(user.id)}
@@ -459,9 +541,9 @@ GROUP BY 1;`;
 				await Promise.all(
 					Object.values(SkillsEnum).map(
 						skillName =>
-							prisma.$queryRawUnsafe(`SELECT '${skillName}' as skill_name, COUNT(id) AS qty
+							prisma.$queryRawUnsafe(`SELECT '${skillName}' as skill_name, COUNT(id)::int AS qty
 FROM users
-WHERE "skills.${skillName}" = 200000000;`) as Promise<{ qty: number; skill_name: string }[]>
+WHERE "skills.${skillName}" = 200000000::int;`) as Promise<{ qty: number; skill_name: string }[]>
 					)
 				)
 			)
@@ -480,7 +562,7 @@ WHERE "skills.${skillName}" = 200000000;`) as Promise<{ qty: number; skill_name:
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
 			const result: { plant: string; qty: number }[] =
-				await prisma.$queryRawUnsafe(`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName') AS qty
+				await prisma.$queryRawUnsafe(`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName')::int AS qty
 FROM activity
 WHERE type = 'Farming'
 AND data->>'plantsName' IS NOT NULL
@@ -500,7 +582,7 @@ GROUP BY data->>'plantsName'`);
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
 			const result: { plant: string; qty: number }[] =
-				await prisma.$queryRaw`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName') AS qty
+				await prisma.$queryRaw`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName')::int AS qty
 FROM activity
 WHERE type = 'Farming'
 AND data->>'plantsName' IS NOT NULL
@@ -574,8 +656,8 @@ ${result
 	{
 		name: 'Personal Herblore Stats',
 		perkTierNeeded: PerkTier.Four,
-		run: async (user: MUser) => {
-			const result = await personalHerbloreStats(user);
+		run: async (user: MUser, stats) => {
+			const result = await personalHerbloreStats(user, stats);
 			if (result.length === 0) return "You haven't made anything yet.";
 			return `You've made...
 ${result
@@ -702,7 +784,7 @@ ${result
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
 			const result = await prisma.$queryRawUnsafe<any>(
-				'SELECT COUNT(*) FROM users WHERE "minion.hasBought" = true;'
+				'SELECT COUNT(*)::int FROM users WHERE "minion.hasBought" = true;'
 			);
 			return `There are ${result[0].count.toLocaleString()} minions!`;
 		}
@@ -712,7 +794,7 @@ ${result
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
 			const result = await prisma.$queryRawUnsafe<any>(
-				'SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;'
+				'SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true;'
 			);
 			return `There are ${parseInt(result[0].count).toLocaleString()} ironman minions!`;
 		}
@@ -722,7 +804,7 @@ ${result
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
 			const result: { icon: string | null; qty: number }[] = await prisma.$queryRawUnsafe(
-				'SELECT "minion.icon" as icon, COUNT(*) as qty FROM users WHERE "minion.icon" is not null group by "minion.icon" order by qty asc;'
+				'SELECT "minion.icon" as icon, COUNT(*)::int as qty FROM users WHERE "minion.icon" is not null group by "minion.icon" order by qty asc;'
 			);
 			return `**Current minion tiers and their number of users:**\n${Object.values(result)
 				.map(row => `${row.icon ?? '<:minion:763743627092164658>'} : ${row.qty}`)
@@ -733,7 +815,7 @@ ${result
 		name: 'Global Bank Backgrounds',
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
-			const result = await prisma.$queryRawUnsafe<any>(`SELECT "bankBackground", COUNT(*)
+			const result = await prisma.$queryRawUnsafe<any>(`SELECT "bankBackground", COUNT(*)::int
 FROM users
 WHERE "bankBackground" <> 1
 GROUP BY "bankBackground";`);
@@ -741,7 +823,7 @@ GROUP BY "bankBackground";`);
 			return result
 				.map(
 					(res: any) =>
-						`**${backgroundImages[res.bankBackground - 1].name}:** ${parseInt(res.count).toLocaleString()}`
+						`**${getBankBgById(res.bankBackground).name}:** ${parseInt(res.count).toLocaleString()}`
 				)
 				.join('\n');
 		}
@@ -873,6 +955,68 @@ GROUP BY "bankBackground";`);
 		}
 	},
 	{
+		name: 'Personal XP gained from Tears of Guthix',
+		perkTierNeeded: PerkTier.Four,
+		run: async (user: MUser) => {
+			const result = await prisma.$queryRawUnsafe<any>(
+				`SELECT skill,
+					SUM(xp)::bigint AS total_xp
+				 FROM xp_gains
+				 WHERE source = 'TearsOfGuthix'
+				 AND user_id = ${BigInt(user.id)}
+				 GROUP BY skill`
+			);
+
+			return `**Personal XP gained from Tears of Guthix**\n${result
+				.map(
+					(i: any) =>
+						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(
+							Number(i.total_xp)
+						)}`
+				)
+				.join('\n')}`;
+		}
+	},
+	{
+		name: 'Personal XP gained from Forestry events',
+		perkTierNeeded: PerkTier.Four,
+		run: async (user: MUser) => {
+			const result = await prisma.$queryRawUnsafe<any>(
+				`SELECT skill,
+					SUM(xp)::bigint AS total_xp
+				 FROM xp_gains
+				 WHERE source = 'ForestryEvents'
+				 AND user_id = ${BigInt(user.id)}
+				 GROUP BY skill
+				 ORDER BY CASE
+					 WHEN skill = 'woodcutting' THEN 0
+					 ELSE 1
+				 END`
+			);
+
+			return `**Personal XP gained from Forestry events**\n${result
+				.map(
+					(i: any) =>
+						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(
+							Number(i.total_xp)
+						)}`
+				)
+				.join('\n')}`;
+		}
+	},
+	{
+		name: 'Forestry events completed',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, userStats) => {
+			let str = 'You have completed...\n\n';
+			for (const event of ForestryEvents) {
+				const qty = (userStats.forestry_event_completions_bank as ItemBank)[event.id] ?? 0;
+				str += `${event.name}: ${qty}\n`;
+			}
+			return str;
+		}
+	},
+	{
 		name: 'Bird Eggs Offered',
 		perkTierNeeded: null,
 		run: async (_, stats) => {
@@ -963,7 +1107,7 @@ FROM   (
                              SUM(FLOOR(value::numeric)::bigint) AS itemqty
                   FROM       users
                   CROSS JOIN jsonb_each_text("collectionLogBank")
-				  WHERE "users"."minion.ironman" = true 
+				  WHERE "users"."minion.ironman" = true
                   GROUP BY   KEY ) s;`;
 			const bank = new Bank(res[0].banks);
 			return {
@@ -1079,6 +1223,75 @@ ${unluckiest
 			const itemsNotSacBank = new Bank();
 			for (const item of itemsNotSacFiltered) itemsNotSacBank.add(item);
 			return makeResponseForBank(itemsNotSacBank, 'Not Sacrificed Items');
+		}
+	},
+	{
+		name: 'Herbs cleaned while farming',
+		perkTierNeeded: PerkTier.Four,
+		run: (_, userStats) => {
+			return makeResponseForBank(
+				new Bank().add(userStats.herbs_cleaned_while_farming_bank as ItemBank),
+				'Herbs cleaned while farming'
+			);
+		}
+	},
+	{
+		name: 'Implings Obtained Passively',
+		perkTierNeeded: null,
+		run: (_, userStats) => {
+			return makeResponseForBank(
+				new Bank().add(userStats.passive_implings_bank as ItemBank),
+				'Implings Obtained Passively'
+			);
+		}
+	},
+	{
+		name: 'Weekly XP Gains',
+		perkTierNeeded: PerkTier.Four,
+		run: async user => {
+			const result = await fetchHistoricalDataDifferences(user);
+			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_total_xp]);
+			return makeResponseForBuffer(
+				await barChart('Your Weekly XP Gains', val => `${toKMB(val)} XP`, dataPoints, true)
+			);
+		}
+	},
+	{
+		name: 'Weekly CL slot gains',
+		perkTierNeeded: PerkTier.Four,
+		run: async user => {
+			const result = await fetchHistoricalDataDifferences(user);
+			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_cl_completion_count]);
+			return makeResponseForBuffer(
+				await barChart('Your Weekly CL slot Gains', val => `${toKMB(val)} Slots`, dataPoints, true)
+			);
+		}
+	},
+	{
+		name: 'Weekly CL leaderboard rank gains',
+		perkTierNeeded: PerkTier.Four,
+		run: async user => {
+			const result = await fetchHistoricalDataDifferences(user);
+			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_cl_global_rank]);
+			return makeResponseForBuffer(
+				await barChart(
+					'Your Weekly CL leaderboard rank gains',
+					val => `${val > 0 ? `+${val}` : val}`,
+					dataPoints,
+					true
+				)
+			);
+		}
+	},
+	{
+		name: 'Weekly GP gains',
+		perkTierNeeded: PerkTier.Four,
+		run: async user => {
+			const result = await fetchHistoricalDataDifferences(user);
+			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_GP]);
+			return makeResponseForBuffer(
+				await barChart('Your Weekly GP gains', val => `${toKMB(val)} GP`, dataPoints, true)
+			);
 		}
 	}
 ] as const;

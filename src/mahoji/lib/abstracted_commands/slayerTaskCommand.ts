@@ -117,7 +117,7 @@ export async function slayerStatusCommand(mahojiUser: MUser) {
 
 async function returnSuccess(channelID: string, user: MUser, content: string) {
 	const channel = globalClient.channels.cache.get(String(channelID));
-	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
+	if (!channelIsSendable(channel)) return;
 
 	const sentMessage = await channel.send({ content, components: returnSuccessButtons });
 
@@ -422,8 +422,8 @@ export async function slayerSkipTaskCommand({
 		interactionReply(
 			interaction,
 			`You cannot have more than ${maxBlocks} slayer blocks!\n\nUse:\n` +
-				'`st --unblock kalphite`\n to remove a block.\n' +
-				'`st --list` for list of blocked monsters and their IDs.'
+				'`/slayer rewards unblock assignment:kalphite`\n to remove a blocked monster.\n' +
+				'`/slayer manage command:list_blocks` for your list of blocked monsters.'
 		);
 		return;
 	}

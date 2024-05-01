@@ -1,9 +1,13 @@
 import { exec } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 
 import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { ButtonBuilder, ButtonStyle, time } from 'discord.js';
+import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
+import deepmerge from 'deepmerge';
+import { ButtonBuilder, ButtonStyle, InteractionReplyOptions, time } from 'discord.js';
 import { clamp, objectEntries, roll, Time } from 'e';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
@@ -89,6 +93,10 @@ export function hasSkillReqs(user: MUser, reqs: Skills): [boolean, string | null
 	return [true, null];
 }
 
+export function pluraliseItemName(name: string): string {
+	return name + (name.endsWith('s') ? '' : 's');
+}
+
 /**
  * Scale percentage exponentially
  *
@@ -163,7 +171,7 @@ export function makeAutoFarmButton() {
 export const SQL_sumOfAllCLItems = (clItems: number[]) =>
 	`NULLIF(${clItems.map(i => `COALESCE(("collectionLogBank"->>'${i}')::int, 0)`).join(' + ')}, 0)`;
 
-export const generateGrandExchangeID = () => miniID(5).toLowerCase();
+export const generateGrandExchangeID = () => miniID(6).toLowerCase();
 
 export function tailFile(fileName: string, numLines: number): Promise<string> {
 	return new Promise((resolve, reject) => {
@@ -283,4 +291,62 @@ export function addBanks(banks: ItemBank[]): Bank {
 
 export function isValidDiscordSnowflake(snowflake: string): boolean {
 	return /^\d{17,19}$/.test(snowflake);
+}
+
+const TOO_LONG_STR = 'The result was too long (over 2000 characters), please read the attached file.';
+
+export function returnStringOrFile(string: string | InteractionReplyOptions): Awaited<CommandResponse> {
+	if (typeof string === 'string') {
+		if (string.length > 2000) {
+			return {
+				content: TOO_LONG_STR,
+				files: [{ attachment: Buffer.from(string), name: 'result.txt' }]
+			};
+		}
+		return string;
+	}
+	if (string.content && string.content.length > 2000) {
+		return deepmerge(
+			string,
+			{
+				content: TOO_LONG_STR,
+				files: [{ attachment: Buffer.from(string.content), name: 'result.txt' }]
+			},
+			{ clone: false }
+		);
+	}
+	return string;
+}
+
+const wordBlacklistBase64 = readFileSync('./src/lib/data/wordBlacklist.txt', 'utf-8');
+const wordBlacklist = Buffer.from(wordBlacklistBase64.trim(), 'base64')
+	.toString('utf8')
+	.split('\n')
+	.map(word => word.trim().toLowerCase());
+
+export function containsBlacklistedWord(str: string): boolean {
+	const lowerCaseStr = str.toLowerCase();
+	for (const word of wordBlacklist) {
+		if (lowerCaseStr.includes(word)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+export function ellipsize(str: string, maxLen: number = 2000) {
+	if (str.length > maxLen) {
+		return `${str.substring(0, maxLen - 3)}...`;
+	}
+	return str;
+}
+
+export function makeTable(headers: string[], rows: unknown[][]) {
+	return new AsciiTable3()
+		.setHeading(...headers)
+		.setAlign(1, AlignmentEnum.RIGHT)
+		.setAlign(2, AlignmentEnum.CENTER)
+		.setAlign(3, AlignmentEnum.LEFT)
+		.addRowMatrix(rows)
+		.toString();
 }

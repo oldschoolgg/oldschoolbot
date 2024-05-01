@@ -1,27 +1,24 @@
 import 'source-map-support/register';
 
-import { randomSnowflake } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
-import { prisma } from '../../src/lib/settings/prisma';
 import { tradePlayerItems } from '../../src/lib/util/tradePlayerItems';
+import { mockedId } from './util';
 
 describe('Transactionalized Trade Test', async () => {
 	async function createUserWithBank(bank: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
-		const userId = randomSnowflake();
+		const userId = mockedId();
 		const GP = bank.amount('Coins');
 		delete bank.bank[995];
 
-		await prisma.user.create({
+		await global.prisma!.user.create({
 			data: { id: userId, GP, bank: bank.bank, ...userData }
 		});
 
 		return userId;
 	}
-
-	globalClient.busyCounterCache = new Map<string, number>();
 
 	test('Test valid trade between Cyr and Magna...', async () => {
 		const startingBankCyr = new Bank().add('Coins', 10_000_000).add('Twisted bow', 2).add('Dragon arrow', 1000);

@@ -4,7 +4,6 @@ import { Bank, Clues, Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import Monster from 'oldschooljs/dist/structures/Monster';
-import { table } from 'table';
 
 import { ClueTier, ClueTiers } from '../clues/clueTiers';
 import { NEX_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
@@ -24,7 +23,7 @@ import { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
 import { fetchStatsForCL, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
-import { shuffleRandom } from '../util/smallUtils';
+import { makeTable, shuffleRandom } from '../util/smallUtils';
 import {
 	abyssalSireCL,
 	aerialFishingCL,
@@ -143,7 +142,7 @@ function kcProg(mon: Monster): FormatProgressFunction {
 }
 
 function mgProg(minigameName: MinigameName): FormatProgressFunction {
-	return ({ minigames }) => `${minigames[minigameName]} KC`;
+	return ({ minigames }) => `${minigames[minigameName]} Completions`;
 }
 
 function skillProg(skillName: SkillsEnum): FormatProgressFunction {
@@ -157,7 +156,8 @@ function clueProg(tiers: ClueTier['name'][]): FormatProgressFunction {
 				const tier = ClueTiers.find(_tier => _tier.name === i)!;
 				return `${stats.openableScores.amount(tier.id)} ${tier.name} Opens`;
 			})
-			.filter(notEmpty);
+			.filter(notEmpty)
+			.join(', ');
 	};
 }
 
@@ -433,6 +433,12 @@ export const allCollectionLogs: ICollection = {
 				items: scorpiaCL,
 				fmtProg: kcProg(Monsters.Scorpia)
 			},
+			Scurrius: {
+				alias: Monsters.Scurrius.aliases,
+				allItems: Monsters.Scurrius.allItems,
+				items: resolveItems(['Scurry', "Scurrius' spine"]),
+				fmtProg: kcProg(Monsters.Scurrius)
+			},
 			Skotizo: {
 				alias: Monsters.Skotizo.aliases,
 				allItems: Monsters.Skotizo.allItems,
@@ -501,7 +507,7 @@ export const allCollectionLogs: ICollection = {
 	},
 	Raids: {
 		activities: {
-			"Chamber's of Xeric": {
+			'Chambers of Xeric': {
 				alias: ChambersOfXeric.aliases,
 				kcActivity: {
 					Default: async (_, minigameScores) =>
@@ -806,7 +812,7 @@ export const allCollectionLogs: ICollection = {
 			"Shades of Mort'ton": {
 				items: shadesOfMorttonCL,
 				isActivity: true,
-				fmtProg: () => '0 KC'
+				fmtProg: mgProg('shades_of_morton')
 			},
 			'Soul Wars': {
 				alias: ['soul wars', 'sw'],
@@ -888,7 +894,7 @@ export const allCollectionLogs: ICollection = {
 				items: cyclopsCL
 			},
 			Forestry: {
-				alias: ['forestry'],
+				alias: ['forestry', 'forest', 'for'],
 				fmtProg: skillProg(SkillsEnum.Woodcutting),
 				allItems: forestryCL,
 				items: forestryCL
@@ -1235,7 +1241,7 @@ export interface UserStatsDataNeededForCL {
 export function getBank(
 	user: MUser,
 	type: 'sacrifice' | 'bank' | 'collection' | 'temp',
-	userStats: UserStatsDataNeededForCL | null
+	userStats: UserStatsDataNeededForCL | MUserStats | null
 ) {
 	switch (type) {
 		case 'collection':
@@ -1254,7 +1260,7 @@ export function getBank(
 export function getTotalCl(
 	user: MUser,
 	logType: 'sacrifice' | 'bank' | 'collection' | 'temp',
-	userStats: UserStatsDataNeededForCL | null
+	userStats: UserStatsDataNeededForCL | MUserStats | null
 ) {
 	return getUserClData(getBank(user, logType, userStats).bank, allCLItemsFiltered);
 }
@@ -1276,24 +1282,41 @@ export function getPossibleOptions() {
 	for (const monster of effectiveMonsters) {
 		categories.push(['Monsters', monster.name, monster.aliases ? monster.aliases.join(', ') : '']);
 	}
-	const normalTable = table([['Type', 'name: ', 'Alias'], ...[...categories, ...activities, ...roles]]);
+	const normalTable = makeTable(['Type', 'name: ', 'Alias'], [...categories, ...activities, ...roles]);
 	return new AttachmentBuilder(Buffer.from(normalTable), { name: 'possible_logs.txt' });
 }
 
-export function getCollectionItems(collection: string, allItems = false, removeCoins = false): number[] {
+export function getCollectionItems(
+	collection: string,
+	allItems: boolean,
+	removeCoins: boolean,
+	returnResolvedCl: boolean
+): { resolvedCl: string; items: number[] };
+export function getCollectionItems(collection: string, allItems?: boolean, removeCoins?: boolean): number[];
+export function getCollectionItems(
+	collection: string,
+	allItems = false,
+	removeCoins = false,
+	returnResolvedCl?: boolean
+): { resolvedCl: string; items: number[] } | number[] {
+	const returnValue = (clName: string, items: number[]) => {
+		return returnResolvedCl !== undefined ? { resolvedCl: clName.toLowerCase(), items } : items;
+	};
 	if (collection === 'overall+') {
-		return overallPlusItems;
+		return returnValue(collection, overallPlusItems);
 	}
 	if (['overall', 'all'].some(s => stringMatches(collection, s))) {
-		return allCLItemsFiltered;
+		return returnValue('overall', allCLItemsFiltered);
 	}
 
 	let _items: number[] = [];
+	let _clName: string = '';
 	loop: for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (
 			stringMatches(category, collection) ||
 			(entries.alias && entries.alias.some(a => stringMatches(a, collection)))
 		) {
+			_clName = category;
 			_items = uniqueArr(
 				Object.values(entries.activities)
 					.map(e => [...new Set([...e.items, ...(allItems ? e.allItems ?? [] : [])])])
@@ -1307,6 +1330,7 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 				stringMatches(activityName, collection) ||
 				(attributes.alias && attributes.alias.find(a => stringMatches(a, collection)))
 			) {
+				_clName = activityName;
 				_items = [
 					...new Set([...attributes.items, ...(allItems && attributes.allItems ? attributes.allItems : [])])
 				];
@@ -1320,11 +1344,12 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 			[m.name, ...m.aliases].some(name => stringMatches(name, collection))
 		);
 		if (_monster) {
+			_clName = _monster.name;
 			_items = uniqueArr(Monsters.get(_monster!.id)!.allItems);
 		}
 	}
 	if (removeCoins && _items.includes(995)) _items = removeFromArr(_items, 995);
-	return _items;
+	return returnValue(_clName, _items);
 }
 
 function getUserClData(usarBank: ItemBank, clItems: number[]): [number, number] {

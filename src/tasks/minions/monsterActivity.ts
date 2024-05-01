@@ -36,7 +36,12 @@ export const monsterTask: MinionTask = {
 			pkEncounters,
 			hasWildySupplies
 		} = data;
+
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
+		const revenants = monster.name.includes('Revenant');
+
+		let skulled = false;
+		if (revenants) skulled = true;
 
 		const messages: string[] = [];
 
@@ -101,7 +106,7 @@ export const monsterTask: MinionTask = {
 					smited: hasPrayerLevel && !protectItem,
 					protectItem: hasPrayerLevel,
 					after20wilderness: monster.pkBaseDeathChance && monster.pkBaseDeathChance >= 5 ? true : false,
-					skulled: false
+					skulled
 				});
 
 				let reEquipedItems = false;
@@ -110,7 +115,7 @@ export const monsterTask: MinionTask = {
 						gear_wildy: calc.newGear as Prisma.InputJsonObject
 					});
 				} else {
-					await user.specialRemoveItems(calc.lostItems);
+					await user.transactItems({ itemsToRemove: calc.lostItems });
 					reEquipedItems = true;
 				}
 
@@ -219,9 +224,10 @@ export const monsterTask: MinionTask = {
 			}
 		}
 		// Regular loot
-		const loot = monster.table.kill(quantity - newSuperiorCount, killOptions);
+		const finalQuantity = quantity - newSuperiorCount;
+		const loot = monster.table.kill(finalQuantity, killOptions);
 		if (monster.specialLoot) {
-			monster.specialLoot(loot, user, data);
+			monster.specialLoot({ loot, ownedItems: user.allItemsOwned, quantity: finalQuantity });
 		}
 		if (newSuperiorCount) {
 			// Superior loot and totems if in catacombs
@@ -381,6 +387,6 @@ export const monsterTask: MinionTask = {
 						previousCL
 				  });
 
-		handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded, messages);
+		return handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded, messages);
 	}
 };

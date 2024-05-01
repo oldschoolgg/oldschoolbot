@@ -3,9 +3,9 @@ import './lib/data/itemAliases';
 import './lib/crons';
 import './lib/MUser';
 import './lib/util/transactItemsFromBank';
-import './lib/util/logger';
 import './lib/data/trophies';
 import './lib/itemMods';
+import './lib/geImage';
 
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
@@ -14,11 +14,11 @@ import { GatewayIntentBits, Options, Partials, TextChannel } from 'discord.js';
 import { isObject } from 'e';
 import { MahojiClient } from 'mahoji';
 import { join } from 'path';
-import { isMainThread } from 'worker_threads';
 
-import { botToken, DEV_SERVER_ID, production, SENTRY_DSN, SupportServer } from './config';
+import { botToken, DEV_SERVER_ID, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
 import { Channel, Events, globalConfig, META_CONSTANTS } from './lib/constants';
+import { economyLog } from './lib/economyLogs';
 import { onMessage } from './lib/events';
 import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
@@ -30,22 +30,13 @@ import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUser
 import { interactionHook } from './lib/util/globalInteractions';
 import { handleInteractionError } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
-import { sendToChannelID } from './lib/util/webhook';
+import { sonicBoom } from './lib/util/logger';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
 debugLog(`Starting... Git Hash ${META_CONSTANTS.GIT_HASH}`);
-
-if (production && !process.env.TEST && isMainThread) {
-	// eslint-disable-next-line @typescript-eslint/no-var-requires
-	require('segfault-handler').registerHandler('crash.log');
-}
-
-if (!production) {
-	import('./lib/devHotReload');
-}
 
 Chart.register(ChartDataLabels);
 
@@ -188,17 +179,9 @@ client.on(Events.ServerNotification, (message: string) => {
 	const channel = globalClient.channels.cache.get(Channel.Notifications);
 	if (channel) (channel as TextChannel).send(message);
 });
-let economyLogBuffer: string[] = [];
 
 client.on(Events.EconomyLog, async (message: string) => {
-	economyLogBuffer.push(message);
-	if (economyLogBuffer.length === 10) {
-		await sendToChannelID(Channel.EconomyLogs, {
-			content: economyLogBuffer.join('\n---------------------------------\n'),
-			allowedMentions: { parse: [], users: [], roles: [] }
-		});
-		economyLogBuffer = [];
-	}
+	economyLog(message);
 });
 client.on('guildCreate', guild => {
 	if (!guild.available) return;
@@ -237,6 +220,7 @@ process.on('unhandledRejection', err => {
 });
 
 process.on('exit', exitCode => {
+	sonicBoom.flushSync();
 	debugLog('Process Exit', { type: 'PROCESS_EXIT', exitCode });
 });
 

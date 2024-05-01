@@ -4,7 +4,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
-import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
@@ -62,10 +61,6 @@ export const fishCommand: OSBMahojiCommand = {
 			if (user.QP < fish.qpRequired) {
 				return `You need ${fish.qpRequired} qp to catch those!`;
 			}
-		}
-		const [hasFavour, requiredPoints] = gotFavour(user, Favours.Piscarilius, 100);
-		if (!hasFavour && fish.name === 'Anglerfish') {
-			return `${user.minionName} needs ${requiredPoints}% Piscarilius Favour to fish Anglerfish!`;
 		}
 
 		if (
@@ -175,6 +170,7 @@ export const fishCommand: OSBMahojiCommand = {
 			userID: user.id,
 			channelID: channelID.toString(),
 			quantity,
+			iQty: options.quantity ? options.quantity : undefined,
 			duration,
 			type: 'Fishing'
 		});

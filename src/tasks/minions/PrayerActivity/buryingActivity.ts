@@ -14,8 +14,6 @@ export const buryingTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const { zealOutfitAmount, zealOutfitChance } = zealOutfitBoost(user);
 
-		const currentLevel = user.skillLevel(SkillsEnum.Prayer);
-
 		const bone = Prayer.Bones.find(bone => bone.inputId === boneID);
 
 		if (!bone) return;
@@ -34,19 +32,13 @@ export const buryingTask: MinionTask = {
 		const XPMod = 1;
 		const xpReceived = newQuantity * bone.xp * XPMod;
 
+		const xpRes = await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived, duration: data.duration });
 		await user.addXP({ skillName: SkillsEnum.Prayer, amount: xpReceived, source: 'BuryingBones' });
-		const newLevel = user.skillLevel(SkillsEnum.Prayer);
 
-		let str = `${user}, ${user.minionName} finished burying ${quantity} ${
-			bone.name
-		}, you also received ${xpReceived.toLocaleString()} XP.`;
+		let str = `${user}, ${user.minionName} finished burying ${quantity} ${bone.name}, ${xpRes}.`;
 
 		if (zealOutfitAmount > 0) {
 			str += `\nYour ${zealOutfitAmount} pieces of Zealot's robes helped you bury an extra ${zealBonesSaved} ${bone.name}.`;
-		}
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;
 		}
 
 		if (

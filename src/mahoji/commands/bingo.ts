@@ -1,5 +1,5 @@
 import { userMention } from '@discordjs/builders';
-import { mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
+import { formatOrdinal, mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
 import { bold, ChatInputCommandInteraction, User } from 'discord.js';
 import { chunk, noOp, notEmpty, Time, uniqueArr } from 'e';
@@ -17,7 +17,8 @@ import { prisma } from '../../lib/settings/prisma';
 import { channelIsSendable, dateFm, isValidDiscordSnowflake, isValidNickname, md5sum, toKMB } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { BingoManager } from '../lib/bingo/BingoManager';
+import { parseBank } from '../../lib/util/parseStringBank';
+import { BingoManager, BingoTrophies } from '../lib/bingo/BingoManager';
 import { generateTileName, getAllTileItems, isGlobalTile, StoredBingoTile } from '../lib/bingo/bingoUtil';
 import { globalBingoTiles } from '../lib/bingo/globalTiles';
 import { OSBMahojiCommand } from '../lib/util';
@@ -66,10 +67,16 @@ export async function fetchBingosThatUserIsInvolvedIn(userID: string) {
 	return bingos;
 }
 
-async function bingoTeamLeaderboard(user: MUser, channelID: string, bingo: BingoManager): CommandResponse {
+async function bingoTeamLeaderboard(
+	interaction: ChatInputCommandInteraction,
+	user: MUser,
+	channelID: string,
+	bingo: BingoManager
+): CommandResponse {
 	const { teams } = await bingo.fetchAllParticipants();
 
 	doMenu(
+		interaction,
 		user,
 		channelID,
 		chunk(teams, 10).map((subList, i) =>
@@ -206,13 +213,21 @@ async function leaveTeamCommand(interaction: ChatInputCommandInteraction, bingo:
 }
 
 function parseTileAddInput(input: string): StoredBingoTile | null {
-	if (input.includes('+') && input.includes('|')) {
+	const plus = input.includes('+');
+	const pipe = input.includes('|');
+
+	if (plus && pipe) {
 		return null;
 	}
 
-	const delimiter = input.includes('+') ? '+' : '|';
+	if (!plus && !pipe) {
+		return { bank: parseBank({ inputStr: input, noDuplicateItems: true }) }.bank;
+	}
+
+	const delimiter = plus ? '+' : '|';
 	const arr = input.split(delimiter);
 	const items = [];
+
 	for (const name of arr) {
 		const item = getItem(name);
 		if (item) {
@@ -222,14 +237,8 @@ function parseTileAddInput(input: string): StoredBingoTile | null {
 	if (items.length === 0) {
 		return null;
 	}
-	if (delimiter === '+') {
-		return {
-			allOf: items.map(i => i.id)
-		};
-	}
-	return {
-		oneOf: items.map(i => i.id)
-	};
+
+	return delimiter === '+' ? { allOf: items.map(i => i.id) } : { oneOf: items.map(i => i.id) };
 }
 
 async function getBingoFromUserInput(input: string) {
@@ -508,6 +517,12 @@ export const bingoCommand: OSBMahojiCommand = {
 					description: 'Add extra gp to the prize.',
 					required: false,
 					min_value: 1_000_000
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'trophy_handout',
+					description: 'Hand out trophies.',
+					required: false
 				}
 			]
 		},
@@ -565,6 +580,7 @@ export const bingoCommand: OSBMahojiCommand = {
 			remove_tile?: string;
 			finalize?: boolean;
 			add_extra_gp?: number;
+			trophy_handout?: boolean;
 		};
 		view?: {
 			bingo: string;
@@ -639,7 +655,7 @@ export const bingoCommand: OSBMahojiCommand = {
 		if (options.leaderboard) {
 			const bingo = await getBingoFromUserInput(options.leaderboard.bingo);
 			if (!bingo) return 'Invalid bingo.';
-			return bingoTeamLeaderboard(user, channelID, new BingoManager(bingo));
+			return bingoTeamLeaderboard(interaction, user, channelID, new BingoManager(bingo));
 		}
 
 		if (options.create_bingo) {
@@ -681,7 +697,7 @@ export const bingoCommand: OSBMahojiCommand = {
 				bingo_tiles: [],
 				creator_id: user.id,
 				guild_id: channel.guildId
-			} as const;
+			};
 
 			if (createOptions.team_size < 1 || createOptions.team_size > 5) {
 				return 'Team size must be between 1 and 5.';
@@ -787,9 +803,11 @@ The creator of the bingo (${userMention(
 								teams
 									.map(team =>
 										[
-											team.participants.map(u => u.user_id).join(','),
-											team.bingoTableStr,
-											team.tilesCompletedCount
+											team.participants
+												.map(u => usernameCache.get(u.user_id) ?? u.user_id)
+												.join(','),
+											team.tilesCompletedCount,
+											team.trophy?.item.name ?? 'No Trophy'
 										].join('\t')
 									)
 									.join('\n')
@@ -798,7 +816,7 @@ The creator of the bingo (${userMention(
 						},
 						{
 							attachment: Buffer.from(
-								users.map(u => [u.id, u.bingoTableStr, u.tilesCompletedCount].join('\t')).join('\n')
+								users.map(u => [u.id, u.tilesCompletedCount].join('\t')).join('\n')
 							),
 							name: 'users.txt'
 						}
@@ -910,6 +928,49 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 				debugLog('Added extra gp to bingo', { bingoID: bingo.id, amount });
 
 				return `Added ${cost} to the prize pool.`;
+			}
+
+			if (options.manage_bingo.trophy_handout) {
+				if (!bingo.isGlobal || !bingo.wasFinalized || !bingo.trophiesApply) {
+					return 'This bingo is not eligible for trophies.';
+				}
+				const result = await bingo.fetchAllParticipants();
+
+				const toInsert: Prisma.ReclaimableItemCreateManyInput[] = [];
+
+				for (const team of result.teams) {
+					if (!team.trophy) continue;
+					const trophiesToReceive = BingoTrophies.filter(
+						trophy => trophy.percentile >= team.trophy!.percentile
+					);
+
+					for (const userID of team.participants.map(t => t.user_id)) {
+						const reclaimableItems: Prisma.ReclaimableItemCreateManyInput[] = trophiesToReceive.map(
+							trophy => ({
+								name: `Bingo Trophy (${trophy.item.name})`,
+								quantity: 1,
+								key: `bso-bingo-2-${trophy.item.id}`,
+								item_id: trophy.item.id,
+								description: `Awarded for placing in the top ${trophy.percentile}% of ${
+									bingo.title
+								}. Your team (${team.participants
+									.map(t => usernameCache.get(t.user_id) ?? t.user_id)
+									.join(', ')}) placed ${formatOrdinal(team.rank)} with ${
+									team.tilesCompletedCount
+								} tiles completed.`,
+								date: bingo.endDate.toISOString(),
+								user_id: userID
+							})
+						);
+						toInsert.push(...reclaimableItems);
+					}
+				}
+
+				await prisma.reclaimableItem.createMany({
+					data: toInsert
+				});
+
+				return 'Handed out trophies.';
 			}
 		}
 

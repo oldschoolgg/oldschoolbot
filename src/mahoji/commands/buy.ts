@@ -1,9 +1,9 @@
+import { bold } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import Buyables from '../../lib/data/buyables/buyables';
-import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
 import { MUserStats } from '../../lib/structures/MUserStats';
@@ -13,6 +13,7 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
+import { quests } from '../lib/abstracted_commands/questCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
 
@@ -86,17 +87,19 @@ export const buyCommand: OSBMahojiCommand = {
 			}
 		}
 
+		if (buyable.requiredQuests) {
+			const incompleteQuest = buyable.requiredQuests.find(quest => !user.user.finished_quest_ids.includes(quest));
+			if (incompleteQuest) {
+				return `You need to have completed the ${bold(
+					quests.find(i => i.id === incompleteQuest)!.name
+				)} quest to buy the ${buyable.name}.`;
+			}
+		}
+
 		if (buyable.skillsNeeded && !user.hasSkillReqs(buyable.skillsNeeded)) {
 			return `You don't have the required stats to buy this item. You need ${formatSkillRequirements(
 				buyable.skillsNeeded
 			)}.`;
-		}
-
-		if (buyable.requiredFavour) {
-			const [success, points] = gotFavour(user, buyable.requiredFavour, 100);
-			if (!success) {
-				return `You don't have the required amount of Favour to buy this item.\n\nRequired: ${points}% ${buyable.requiredFavour.toString()} Favour.`;
-			}
 		}
 
 		if (buyable.minigameScoreReq) {

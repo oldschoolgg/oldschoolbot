@@ -44,7 +44,7 @@ LIMIT 1;`;
 const mostSlayerTasksDoneQuery = `SELECT user_id::text as id, 'Most Tasks' as desc
 FROM slayer_tasks
 GROUP BY user_id
-ORDER BY count(user_id) DESC
+ORDER BY count(user_id)::int DESC
 LIMIT 1;`;
 
 async function addRoles({
@@ -275,8 +275,10 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 		let topSacrificers: string[] = [];
 		const mostValue = await q<any[]>('SELECT id FROM users ORDER BY "sacrificedValue" DESC LIMIT 3;');
 		for (let i = 0; i < 3; i++) {
-			topSacrificers.push(mostValue[i].id);
-			addToUserMap(userMap, mostValue[i].id, `Rank ${i + 1} Sacrifice Value`);
+			if (mostValue[i] !== undefined) {
+				topSacrificers.push(mostValue[i].id);
+				addToUserMap(userMap, mostValue[i].id, `Rank ${i + 1} Sacrifice Value`);
+			}
 		}
 		const mostValueIronman = await q<any[]>(
 			'SELECT id FROM users WHERE "minion.ironman" = true ORDER BY "sacrificedValue" DESC LIMIT 1;'
@@ -285,12 +287,12 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 		addToUserMap(userMap, mostValueIronman[0].id, 'Rank 1 Ironman Sacrificed Value');
 
 		const mostUniques = await q<any[]>(`SELECT u.id, u.sacbanklength FROM (
-  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("sacrificed_bank")) sacbanklength, user_id::text as id FROM user_stats
+  SELECT (SELECT COUNT(*)::int FROM JSONB_OBJECT_KEYS("sacrificed_bank")) sacbanklength, user_id::text as id FROM user_stats
 ) u
 ORDER BY u.sacbanklength DESC LIMIT 1;`);
 
 		const mostUniquesIron = await q<any[]>(`SELECT u.id, u.sacbanklength FROM (
-  SELECT (SELECT COUNT(*) FROM JSONB_OBJECT_KEYS("sacrificed_bank")) sacbanklength, user_id::text as id FROM user_stats
+  SELECT (SELECT COUNT(*)::int FROM JSONB_OBJECT_KEYS("sacrificed_bank")) sacbanklength, user_id::text as id FROM user_stats
   INNER JOIN users ON "user_stats"."user_id"::text = "users"."id"
   WHERE "users"."minion.ironman" = true
 ) u
@@ -386,7 +388,7 @@ LIMIT 2;`,
 FROM activity
 WHERE type = 'Farming'
 GROUP BY user_id
-ORDER BY count(user_id) DESC
+ORDER BY count(user_id)::int DESC
 LIMIT 2;`,
 			`SELECT user_id::text as id, 'Top 2 Tithe Farm' as desc
 FROM user_stats
@@ -443,7 +445,9 @@ LIMIT 2;`
 			'982989775399174184',
 			'346304390858145792'
 		];
-		const res = await prisma.$queryRaw<{ user_id: string; qty: number }[]>`SELECT user_id, COUNT(user_id) AS qty
+		const res = await prisma.$queryRaw<
+			{ user_id: string; qty: number }[]
+		>`SELECT user_id, COUNT(user_id)::int AS qty
 FROM giveaway
 WHERE channel_id IN (${Prisma.join(GIVEAWAY_CHANNELS)})
 AND user_id NOT IN ('157797566833098752')

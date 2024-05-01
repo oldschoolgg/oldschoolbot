@@ -45,6 +45,7 @@ export interface Ore {
 	petChance?: number;
 	minerals?: number;
 	clueScrollChance?: number;
+	aliases?: string[];
 }
 
 export interface Log {
@@ -53,6 +54,7 @@ export interface Log {
 	id: number;
 	lootTable?: LootTable;
 	name: string;
+	leaf?: number;
 	aliases?: string[];
 	findNewTreeTime: number;
 	bankingTime: number;
