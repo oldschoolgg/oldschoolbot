@@ -4,7 +4,6 @@ import { XpGainSource } from '@prisma/client';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
-import { QuestID } from '../../mahoji/lib/abstracted_commands/questCommand';
 import { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
 import { Diary, DiaryTier } from '../diaries';
@@ -14,6 +13,7 @@ import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
 import { calculateSimpleMonsterDeathChance } from '../util';
+import { QuestID } from '../util/specificQuests';
 import { AttackStyles } from './functions';
 
 export type BankBackground = {
