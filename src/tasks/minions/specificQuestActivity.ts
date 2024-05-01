@@ -12,8 +12,11 @@ export const specificQuestTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const quest = quests.find(quest => quest.id === questID)!;
 
+		let completionMessage = `${user}, ${user.minionName} finished ${bold(quest.name)}.`;
+
 		if (quest.rewards) {
 			await user.addItemsToBank({ items: quest.rewards, collectionLog: true });
+			completionMessage += ` You received ${quest.rewards}.`;
 		}
 
 		if (quest.skillsRewards) {
@@ -22,6 +25,9 @@ export const specificQuestTask: MinionTask = {
 					await user.addXP({ skillName: skillName as SkillsEnum, amount });
 				}
 			}
+			completionMessage += ` You gained the following skills rewards: ${Object.entries(quest.skillsRewards)
+				.map(([skill, xp]) => `${xp} XP in ${skill}`)
+				.join(', ')}.`;
 		}
 
 		await user.update({
@@ -33,13 +39,6 @@ export const specificQuestTask: MinionTask = {
 			}
 		});
 
-		handleTripFinish(
-			user,
-			channelID,
-			`${user}, ${user.minionName} finished ${bold(quest.name)}. You received ${quest.rewards}.`,
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, completionMessage, undefined, data, null);
 	}
 };
