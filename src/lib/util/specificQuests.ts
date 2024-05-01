@@ -114,7 +114,8 @@ export const quests: Quest[] = [
 		},
 		combatLevelReq: 65,
 		qpReq: 20,
-		rewards: new Bank().add(28_820).freeze(),
+		// Awaiting item update for the lamp to be added
+		// rewards: new Bank().add(28_820).freeze(),
 		skillsRewards: {
 			smithing: 15_000,
 			hunter: 15_000
