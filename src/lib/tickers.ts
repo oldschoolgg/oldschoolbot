@@ -267,7 +267,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 					if (!user) continue;
 					const message = await user
 						.send({
-							content: `The ${planted.name} planted in your ${patchType} patches is ready to be harvested!`,
+							content: `The ${planted.name} planted in your ${patchType} patches are ready to be harvested!`,
 							components: [farmingReminderButtons]
 						})
 						.catch(noOp);
