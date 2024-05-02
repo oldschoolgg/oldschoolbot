@@ -178,7 +178,7 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 
 async function buyCommand(user: MUser, name?: string, quantity?: number) {
 	const buyable = dungBuyables.find(i => stringMatches(name, i.item.name));
-	if (!buyable || !name) {
+	if (!buyable) {
 		let msg = `${dungBuyables.map(i => `**${i.item.name}:** ${i.cost.toLocaleString()} tokens`).join('\n')}.`;
 		if (name !== undefined) msg = `**That isn't a buyable item**. Here are the items you can buy:\n\n${msg}`;
 		return msg;
