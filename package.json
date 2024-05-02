@@ -1,4 +1,5 @@
 {
+	"type": "module",
 	"scripts": {
 		"gen": "concurrently \"prisma generate\" \"prisma generate --schema prisma/robochimp.prisma\" && echo \"Generated Prisma Client\"",
 		"lint": "concurrently \"prettier --use-tabs ./**/*.{js,md,json,yml} --write\" \"eslint *.ts \"{src,tests}/**/*.ts\" --fix\"",
