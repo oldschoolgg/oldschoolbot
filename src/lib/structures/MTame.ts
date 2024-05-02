@@ -22,6 +22,7 @@ export class MTame {
 	maxSupportLevel: number;
 	growthLevel: number;
 	currentSupportLevel: number;
+	totalLoot: Bank;
 
 	private currentLevel(maxLevel: number) {
 		return round(maxLevel / this.growthLevel, 2);
@@ -40,6 +41,7 @@ export class MTame {
 		this.maxSupportLevel = tame.max_support_level;
 		this.growthLevel = 3 - [tame_growth.baby, tame_growth.juvenile, tame_growth.adult].indexOf(tame.growth_stage);
 		this.currentSupportLevel = this.currentLevel(this.maxSupportLevel);
+		this.totalLoot = new Bank(this.tame.max_total_loot as ItemBank);
 	}
 
 	toString() {
