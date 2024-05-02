@@ -597,8 +597,6 @@ setCustomItem(
 	'Balloon cat',
 	'Herbi',
 	{
-		tradeable_on_ge: true,
-		tradeable: true,
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true
