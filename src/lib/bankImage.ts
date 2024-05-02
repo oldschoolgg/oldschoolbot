@@ -247,6 +247,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Mango seed'), 'mango'],
 	[i('Avocado seed'), 'avocado'],
 	[i('Lychee seed'), 'lychee'],
+	[i('Blood orange seed'), 'b.orange'],
 	[i('Spirit weed seed'), 'spirit.w'],
 	[i('Spirit weed'), 'spirit.w'],
 	[i('Advax berry seed'), 'advax'],
@@ -257,8 +258,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Reward casket (grandmaster)'), 'grandmaster'],
 	[i('Clue scroll (elder)'), 'elder'],
 	[i('Reward casket (elder)'), 'elder'],
-	[i('Atomic energy'), 'Atomic'],
-	[i('Blood orange seed'), 'b.orange']
+	[i('Atomic energy'), 'Atomic']
 ]);
 
 for (const energy of divinationEnergies) {
