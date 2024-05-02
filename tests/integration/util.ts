@@ -102,18 +102,6 @@ export class TestUser extends MUserClass {
 		return this;
 	}
 
-	async runActivity() {
-		const [finishedActivity] = await processPendingActivities();
-		if (!finishedActivity) {
-			throw new Error('runActivity: No activity was ran');
-		}
-		if (finishedActivity.user_id.toString() !== this.id) {
-			throw new Error('runActivity: Ran activity, but it didnt belong to this user');
-		}
-		const data = convertStoredActivityToFlatActivity(finishedActivity);
-		return data;
-	}
-
 	randomBankSubset() {
 		const bank = new Bank();
 		const items = shuffleArr(this.bankWithGP.items()).slice(0, randInt(0, this.bankWithGP.length));

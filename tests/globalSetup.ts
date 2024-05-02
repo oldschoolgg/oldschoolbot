@@ -26,7 +26,7 @@ global.globalClient = {
 	guilds: { cache: new Collection() },
 	mahojiClient: {
 		commands: {
-			values: ['ca'].map(n => ({
+			values: ['test'].map(n => ({
 				name: n,
 				description: 'test description',
 				attributes: { description: 'test description' },

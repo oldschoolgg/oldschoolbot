@@ -1,32 +1,20 @@
-import './mocks';
-import '../globalSetup';
-
 import { Image } from '@napi-rs/canvas';
-import { noOp } from 'e';
-import mitm from 'mitm';
-import { afterEach, beforeEach, vi } from 'vitest';
+import { beforeEach, vi } from 'vitest';
 
 import { BankImageTask } from '../../src/lib/bankImage';
-import { prisma } from '../../src/lib/settings/prisma';
 
-console.log('MOCKING!!!!!!!---------------------------------------');
-export function randomMock(random = 0.1) {
-	Math.random = () => random;
-}
+vi.mock('../../src/lib/util/handleMahojiConfirmation.ts', () => ({
+	handleMahojiConfirmation: vi.fn()
+}));
+vi.mock('../../src/lib/util/interactionReply', () => ({
+	deferInteraction: vi.fn(),
+	interactionReply: vi.fn()
+}));
 
-vi.mock('../../src/lib/util/webhook', async () => {
-	const actual: any = await vi.importActual('../../src/lib/util/webhook');
-	return {
-		...actual,
-		sendToChannelID: async (_args: any) => {}
-	};
-});
-
-// @ts-ignore mock
-globalClient.fetchUser = async (id: string | bigint) => ({
-	id: typeof id === 'string' ? id : String(id),
-	send: async () => {}
-});
+vi.mock('../../src/lib/util/interactionReply', () => ({
+	deferInteraction: vi.fn(),
+	interactionReply: vi.fn()
+}));
 
 const mockBankImageTask = {
 	init: vi.fn(),
@@ -35,6 +23,7 @@ const mockBankImageTask = {
 	getItemImage: vi.fn().mockReturnValue(Promise.resolve(new Image())),
 	fetchAndCacheImage: vi.fn().mockReturnValue(Promise.resolve(new Image()))
 };
+console.log('000000000000000000000000000000000000000000000');
 global.bankImageGenerator = mockBankImageTask as any;
 BankImageTask.prototype.init = mockBankImageTask.init;
 BankImageTask.prototype.run = mockBankImageTask.init;
@@ -43,7 +32,6 @@ BankImageTask.prototype.getItemImage = mockBankImageTask.getItemImage;
 BankImageTask.prototype.fetchAndCacheImage = mockBankImageTask.fetchAndCacheImage;
 
 beforeEach(async () => {
-	await prisma.$connect();
 	global.bankImageGenerator = mockBankImageTask as any;
 	BankImageTask.prototype.init = mockBankImageTask.init;
 	BankImageTask.prototype.run = mockBankImageTask.init;
@@ -51,26 +39,3 @@ beforeEach(async () => {
 	BankImageTask.prototype.getItemImage = mockBankImageTask.getItemImage;
 	BankImageTask.prototype.fetchAndCacheImage = mockBankImageTask.fetchAndCacheImage;
 });
-
-afterEach(async () => {
-	await prisma.$disconnect();
-});
-
-async function init() {
-	await prisma.$queryRaw`CREATE EXTENSION IF NOT EXISTS intarray;`.catch(noOp);
-}
-
-init();
-
-function setupRequestLogging() {
-	const mitmInstance = mitm();
-
-	mitmInstance.on('connect', (socket, opts) => {
-		if (opts?.host) {
-			throw new Error(`Sending request to ${opts.host}`);
-			socket.bypass();
-		}
-	});
-}
-
-setupRequestLogging();

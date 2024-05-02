@@ -263,7 +263,7 @@ export const bankFlags = [
 ] as const;
 export type BankFlag = (typeof bankFlags)[number];
 
-class BankImageTask {
+export class BankImageTask {
 	public itemIconsList: Set<number>;
 	public itemIconImagesCache: Map<number, Image>;
 	public backgroundImages: BankBackground[] = [];
@@ -612,12 +612,6 @@ class BankImageTask {
 		collectionLog?: Bank;
 		mahojiFlags?: BankFlag[];
 	}): Promise<BankImageResult> {
-		if (process.env.TEST) {
-			return {
-				image: Buffer.from(''),
-				isTransparent: false
-			};
-		}
 		let { user, collectionLog, title = '', showValue = true } = opts;
 		const bank = opts.bank.clone();
 		const flags = new Map(Object.entries(opts.flags ?? {}));
@@ -776,6 +770,8 @@ class BankImageTask {
 		if (!isTransparent && noBorder !== 1) {
 			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
 		}
+
+		console.log(`Drawing image with ${items.length} items`);
 		await this.drawItems(
 			ctx,
 			compact,

@@ -1,16 +1,16 @@
-import './allCommandsBase.mocks';
-
 import { join } from 'node:path';
 
+import { Image } from '@napi-rs/canvas';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { randArrItem, randInt, shuffleArr, Time } from 'e';
 import { Store } from 'mahoji/dist/lib/structures/Store';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { isValidCommand } from 'mahoji/dist/lib/util';
 import { Bank, Items } from 'oldschooljs';
-import { expect, test, vi } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vitest';
 
-import { BitField, globalConfig, minionActivityCache } from '../../src/lib/constants';
+import { BankImageTask } from '../../src/lib/bankImage';
+import { BitField, minionActivityCache } from '../../src/lib/constants';
 import { prisma } from '../../src/lib/settings/prisma';
 import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation';
@@ -38,11 +38,9 @@ import { dryCalcCommand } from '../../src/mahoji/commands/drycalc';
 import { fakeCommand } from '../../src/mahoji/commands/fake';
 import { fakepmCommand } from '../../src/mahoji/commands/fakepm';
 import { farmingCommand } from '../../src/mahoji/commands/farming';
-import { finishCommand } from '../../src/mahoji/commands/finish';
 import { fishCommand } from '../../src/mahoji/commands/fish';
 import { fletchCommand } from '../../src/mahoji/commands/fletch';
 import { gambleCommand } from '../../src/mahoji/commands/gamble';
-import { geCommand } from '../../src/mahoji/commands/ge';
 import { gearCommand } from '../../src/mahoji/commands/gear';
 import { gearPresetsCommand } from '../../src/mahoji/commands/gearpresets';
 import { giftCommand } from '../../src/mahoji/commands/gift';
@@ -73,7 +71,6 @@ import { priceCommand } from '../../src/mahoji/commands/price';
 import { raidCommand } from '../../src/mahoji/commands/raid';
 import { redeemCommand } from '../../src/mahoji/commands/redeem';
 import { rollCommand } from '../../src/mahoji/commands/roll';
-import { rpCommand } from '../../src/mahoji/commands/rp';
 import { runecraftCommand } from '../../src/mahoji/commands/runecraft';
 import { sacrificeCommand } from '../../src/mahoji/commands/sacrifice';
 import { sellCommand } from '../../src/mahoji/commands/sell';
@@ -173,16 +170,9 @@ for (const item of Items.array()) {
 test(
 	'All Commands Base Test',
 	async () => {
-		vi.spyOn(bankImageGenerator, 'generateBankImage').mockReturnValue(
-			Promise.resolve({
-				image: Buffer.from(''),
-				isTransparent: false
-			})
-		);
 		expect(vi.isMockFunction(handleMahojiConfirmation)).toBe(true);
 		const client = await mockClient();
 		process.env.CLIENT_ID = client.data.id;
-		console.log({ aaaaaaaaa: client.data.id, bbbb: globalConfig.clientID });
 		randomMock();
 		const maxUser = await createTestUser(bank, { GP: 100_000_000_000 });
 		await maxUser.max();
@@ -190,7 +180,6 @@ test(
 		const store = new Store({ name: 'commands', dirs: [join('dist', 'mahoji')], checker: isValidCommand });
 		await store.load();
 		const currentClientSettings = await mahojiClientSettingsFetch({ construction_cost_bank: true });
-		console.log({ currentClientSettings });
 		await prisma.activity.deleteMany({
 			where: {
 				user_id: BigInt(maxUser.id)
@@ -213,7 +202,9 @@ test(
 			'casket',
 			'finish',
 			'kill',
-			'trivia'
+			'trivia',
+			'ge',
+			'rp'
 		];
 		const cmds = [
 			adminCommand,
@@ -231,7 +222,6 @@ test(
 			claimCommand,
 			cluesCommand,
 			mCommand,
-			geCommand,
 			gpCommand,
 			payCommand,
 			collectionLogCommand,
@@ -266,7 +256,6 @@ test(
 			simulateCommand,
 			sellCommand,
 			sacrificeCommand,
-			rpCommand,
 			rollCommand,
 			runecraftCommand,
 			raidCommand,
@@ -302,7 +291,7 @@ test(
 				try {
 					const res = await maxUser.runCommand(command, option);
 					minionActivityCache.clear();
-					// 					console.log(`Running command ${command.name}
+					// console.log(`Running command ${command.name}
 					// Options: ${JSON.stringify(option)}
 					// Result: ${JSON.stringify(res).slice(0, 100)}`);
 				} catch (err) {

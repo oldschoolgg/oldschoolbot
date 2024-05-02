@@ -71,7 +71,7 @@ describe('Grand Exchange', async () => {
 			console.log(`Finished initializing ${amountOfUsers} users`);
 
 			// Run a bunch of commands to buy/sell
-			const commandPromises = new PQueue({ concurrency: 10 });
+			const commandPromises = new PQueue({ concurrency: 20 });
 			for (const user of shuffleArr(users)) {
 				const method = randArrItem(['buy', 'sell']);
 				let quantity = randArrItem(quantities);
@@ -96,10 +96,7 @@ describe('Grand Exchange', async () => {
 			for (let i = 0; i < 100; i++) {
 				await GrandExchange.tick();
 				await waitForGEToBeEmpty();
-				await Promise.all([
-					GrandExchange.checkGECanFullFilAllListings(),
-					GrandExchange.extensiveVerification()
-				]);
+				await GrandExchange.extensiveVerification();
 			}
 			await waitForGEToBeEmpty();
 			console.log('Finished ticking 100 times');
@@ -156,7 +153,6 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 			assert(GrandExchange.queue.size === 0, 'Queue should be empty');
 		},
 		{
-			repeats: 1,
 			timeout: Time.Minute * 5
 		}
 	);

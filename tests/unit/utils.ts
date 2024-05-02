@@ -122,8 +122,6 @@ export async function testRunCmd({
 	const mockedUser = mockMUser({ id: hash, ...user });
 	if (mockedUser.GP === null || Number.isNaN(mockedUser.GP) || mockedUser.GP < 0 || mockedUser.GP === undefined) {
 		throw new Error(`Invalid GP for user ${hash}`);
-	} else {
-		console.log('User GP:', mockedUser.GP.toString());
 	}
 	mockUserMap.set(hash, mockedUser);
 	const options: any = {
