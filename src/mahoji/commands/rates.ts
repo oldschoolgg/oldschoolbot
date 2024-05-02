@@ -553,8 +553,11 @@ ${zygomiteFarmingSource
 			for (const method of TuraelsTrialsMethods) {
 				const input = calculateTuraelsTrialsInput({ maxTripLength: duration, method });
 				const result = calculateTuraelsTrialsResult({ quantity: input.quantity, method });
-				if (input.scytheChargesNeeded !== 0) {
-					input.cost.add('Scythe of vitur', input.scytheChargesNeeded);
+				if (input.chargeBank.amount('scythe_of_vitur_charges') !== 0) {
+					input.cost.add('Scythe of vitur', input.chargeBank.amount('scythe_of_vitur_charges'));
+				}
+				if (input.chargeBank.amount('blood_fury_charges') !== 0) {
+					input.cost.add('Scythe of vitur', input.chargeBank.amount('blood_fury_charges'));
 				}
 				if (input.hpHealingNeeded !== 0) {
 					input.cost.add('Rocktail', Math.ceil(input.hpHealingNeeded / 26));

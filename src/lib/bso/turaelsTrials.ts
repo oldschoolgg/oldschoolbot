@@ -1,55 +1,50 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import { trackClientBankStats, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
-import { degradeItem } from '../degradeableItems';
+import { degradeChargeBank } from '../degradeableItems';
+import { ChargeBank } from '../structures/Banks';
 import { TuraelsTrialsOptions } from '../types/minions';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import getOSItem from '../util/getOSItem';
 import { formatDuration } from '../util/smallUtils';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _monsters = [
-	{
-		monster: Monsters.ColossalHydra
-	},
-	{
-		monster: Monsters.NuclearSmokeDevil
-	},
-	{
-		monster: Monsters.NightBeast
-	},
-	{
-		monster: Monsters.GreaterAbyssalDemon
-	},
-	{
-		monster: Monsters.GuardianDrake
-	},
-	{
-		monster: Monsters.Nechryarch
-	},
-	{
-		monster: Monsters.MarbleGargoyle
-	},
-	{
-		monster: Monsters.KingKurask
-	},
-	{
-		monster: Monsters.ChokeDevil
-	},
-	{
-		monster: Monsters.ShadowWyrm
-	},
-	{
-		monster: Monsters.BasiliskSentinel
-	}
-];
+// const monsters = [
+// 	{
+// 		monster: Monsters.ColossalHydra
+// 	},
+// 	{
+// 		monster: Monsters.NuclearSmokeDevil
+// 	},
+// 	{
+// 		monster: Monsters.NightBeast
+// 	},
+// 	{
+// 		monster: Monsters.GreaterAbyssalDemon
+// 	},
+// 	{
+// 		monster: Monsters.GuardianDrake
+// 	},
+// 	{
+// 		monster: Monsters.Nechryarch
+// 	},
+// 	{
+// 		monster: Monsters.MarbleGargoyle
+// 	},
+// 	{
+// 		monster: Monsters.KingKurask
+// 	},
+// 	{
+// 		monster: Monsters.ChokeDevil
+// 	},
+// 	{
+// 		monster: Monsters.ShadowWyrm
+// 	},
+// 	{
+// 		monster: Monsters.BasiliskSentinel
+// 	}
+// ];
 
-console.log(_monsters);
-
-// scythe or barrage or chin
 // longer max trip length with blood fury
 
 export const TuraelsTrialsMethods = ['melee', 'mage', 'range'] as const;
@@ -91,11 +86,13 @@ export function calculateTuraelsTrialsInput({
 
 	const hpHealingNeeded = Math.ceil(minutesRoundedUp * 50);
 
+	const chargeBank = new ChargeBank().add('scythe_of_vitur_charges', scytheChargesNeeded);
+
 	return {
 		duration,
 		quantity,
 		cost,
-		scytheChargesNeeded,
+		chargeBank,
 		hpHealingNeeded
 	};
 }
@@ -109,32 +106,21 @@ export async function turaelsTrialsStartCommand(user: MUser, channelID: string, 
 		return 'You need 120 Slayer to do Turaels Trials.';
 	}
 
-	const { duration, quantity, cost, scytheChargesNeeded } = calculateTuraelsTrialsInput({
+	const { duration, quantity, cost, chargeBank } = calculateTuraelsTrialsInput({
 		maxTripLength: calcMaxTripLength(user, 'TuraelsTrials'),
 		method
 	});
 
-	if (scytheChargesNeeded > 0 && user.user.scythe_of_vitur_charges < scytheChargesNeeded) {
-		return `You need ${scytheChargesNeeded} Scythe of vitur charges, you have ${
-			user.user.scythe_of_vitur_charges
-		}x. Charge it using ${mentionCommand(globalClient, 'minion', 'charge')}.`;
+	const hasChargesResult = user.hasCharges(chargeBank);
+	if (!hasChargesResult.hasCharges) {
+		return hasChargesResult.fullUserString!;
 	}
 
 	if (!user.owns(cost)) {
 		return `You don't have the required items, you need: ${cost}.`;
 	}
 
-	let scytheDegradeResult: {
-		userMessage: string;
-	} | null = null;
-	if (scytheChargesNeeded > 0) {
-		scytheDegradeResult = await degradeItem({
-			item: getOSItem('Scythe of vitur'),
-			user,
-			chargesToDegrade: scytheChargesNeeded
-		});
-	}
-
+	const degradeResults = await degradeChargeBank(user, chargeBank);
 	await user.removeItemsFromBank(cost);
 	await trackClientBankStats('turaels_trials_cost_bank', cost);
 	await userStatsBankUpdate(user.id, 'turaels_trials_cost_bank', cost);
@@ -153,7 +139,8 @@ export async function turaelsTrialsStartCommand(user: MUser, channelID: string, 
 		task.duration
 	)} to finish.
 
-Removed ${cost}${scytheChargesNeeded ? `, ${scytheDegradeResult!.userMessage}` : ''}`;
+Removed ${cost}
+${degradeResults.map(i => i.userMessage).join(', ')}`;
 
 	return response;
 }

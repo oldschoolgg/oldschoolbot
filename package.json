@@ -46,6 +46,7 @@
 		"lodash": "^4.17.21",
 		"lru-cache": "^8.0.0",
 		"mahoji": "^0.0.7",
+		"mathjs": "^12.4.2",
 		"murmurhash": "^2.0.1",
 		"node-cron": "^3.0.3",
 		"node-fetch": "^2.6.7",
