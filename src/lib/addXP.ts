@@ -326,7 +326,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			resultStr += `${skill.emoji} **${user.usernameOrMention}'s** minion, ${
 				user.minionName
 			}, just achieved level ${value} in ${skillNameCased}! They are the {nthUser} to get level ${value} in ${skillNameCased}.${
-				!user.isIronman ? '' : ` They are the {nthIron} to get level ${value} in ${skillNameCased}`
+				!user.isIronman ? '' : ` They are the {nthIron} Ironman to get level ${value} in ${skillNameCased}`
 			}`;
 		} else {
 			queryValue = value;
@@ -335,7 +335,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			}, just achieved ${toKMB(value)} XP in ${skillNameCased}! They are the {nthUser} to get ${toKMB(
 				value
 			)} in ${skillNameCased}.${
-				!user.isIronman ? '' : ` They are the {nthIron} to get ${toKMB(value)} XP in ${skillNameCased}`
+				!user.isIronman ? '' : ` They are the {nthIron} Ironman to get ${toKMB(value)} XP in ${skillNameCased}`
 			}`;
 		}
 		// Query nthUser and nthIronman
