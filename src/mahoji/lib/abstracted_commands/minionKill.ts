@@ -593,7 +593,7 @@ export async function minionKillCommand(
 	}
 
 	const hasBlessing = user.hasEquipped('Dwarven blessing');
-	const hasZealotsAmulet = user.hasEquippedOrInBank('Amulet of zealots');
+	const hasZealotsAmulet = user.hasEquipped('Amulet of zealots');
 	if (hasZealotsAmulet && hasBlessing) {
 		timeToFinish *= 0.75;
 		boosts.push('25% for Dwarven blessing & Amulet of zealots');
