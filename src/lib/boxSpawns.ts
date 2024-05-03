@@ -262,9 +262,7 @@ export async function boxSpawnHandler(msg: Message) {
 	);
 	let wonStr = `This is your ${formatOrdinal(newStats.main_server_challenges_won)} challenge win!`;
 	const loot = roll(20) ? LampTable.roll() : MysteryBoxes.roll();
-	if (!winnerUser.isIronman) {
-		await winnerUser.addItemsToBank({ items: loot, collectionLog: true });
-		return msg.channel.send(`Congratulations, ${winner}! You received: **${loot}**. ${wonStr}`);
-	}
-	return msg.channel.send(`Congratulations, ${winner}! You won! But you stand alone, no ${loot} for you. ${wonStr}`);
+
+	await winnerUser.addItemsToBank({ items: loot, collectionLog: true });
+	return msg.channel.send(`Congratulations, ${winner}! You received: **${loot}**. ${wonStr}`);
 }

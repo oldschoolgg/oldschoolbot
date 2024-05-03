@@ -247,6 +247,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Mango seed'), 'mango'],
 	[i('Avocado seed'), 'avocado'],
 	[i('Lychee seed'), 'lychee'],
+	[i('Blood orange seed'), 'b.orange'],
 	[i('Spirit weed seed'), 'spirit.w'],
 	[i('Spirit weed'), 'spirit.w'],
 	[i('Advax berry seed'), 'advax'],

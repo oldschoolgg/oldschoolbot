@@ -30,7 +30,7 @@ import { prisma } from '../../../lib/settings/prisma';
 import Agility from '../../../lib/skilling/skills/agility';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestry';
-import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
+import { getAllAlternateMonsters, getCommonTaskName, getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import { InfernoOptions } from '../../../lib/types/minions';
 import { formatDuration, getUsername, sanitizeBank, SQL_sumOfAllCLItems, stringMatches } from '../../../lib/util';
@@ -1365,14 +1365,32 @@ ${bank
 		}
 	},
 	{
-		name: 'Slayer Masks',
+		name: 'Slayer Masks - Progress',
+		perkTierNeeded: null,
+		run: async (_, userStats) => {
+			return slayerMaskHelms
+				.map(mask => {
+					const monster = Monsters.find(m => m.id === mask.monsters[0])!;
+					const className = getCommonTaskName(monster);
+					const compatibleMons = getAllAlternateMonsters({ monsterId: monster.id });
+					const totalKills = sumArr(
+						Object.entries(userStats.on_task_with_mask_monster_scores as ItemBank)
+							.filter(score => compatibleMons.includes(Number(score[0])))
+							.map(i => i[1])
+					);
+					return `${className}: ${totalKills} kills towards mask, ${mask.killsRequiredForUpgrade} needed`;
+				})
+				.join('\n');
+		}
+	},
+	{
+		name: 'Slayer Masks - All kills',
 		perkTierNeeded: null,
 		run: async (_, userStats) => {
 			return Object.entries(userStats.on_task_with_mask_monster_scores as ItemBank)
 				.map(i => {
 					const monster = Monsters.find(m => m.id === Number(i[0]))!;
-					const mask = slayerMaskHelms.find(m => m.monsters.includes(monster.id))!;
-					return `${monster.name}: ${i[1]} kills towards mask, ${mask.killsRequiredForUpgrade} needed`;
+					return `${monster.name}: ${i[1]} masked kills`;
 				})
 				.join('\n');
 		}
@@ -1494,7 +1512,7 @@ ${unluckiest
 			const result = await calculateXPSources(user);
 			return {
 				content: `You have gained....
-				
+
 ${Object.entries(result)
 	.map(i => `${i[0]}: ${i[1].toLocaleString()} XP`)
 	.join('\n')}`
