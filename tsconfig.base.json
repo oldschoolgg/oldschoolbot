@@ -5,6 +5,9 @@
 		"checkJs": false,
 		"skipLibCheck": true,
 		"types": ["node", "node-fetch", "discord.js"],
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"module": "ESNext",
+		"target": "ESNext",
+		"moduleResolution": "node"
 	}
 }

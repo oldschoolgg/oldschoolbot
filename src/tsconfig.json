@@ -6,7 +6,8 @@
 		"tsBuildInfoFile": "../dist/.tsbuildinfo",
 		"composite": true,
 		"declaration": true,
-		"incremental": true
+		"incremental": true,
+		"moduleResolution": "node"
 	},
 	"include": [".", "./**/*.json"]
 }
