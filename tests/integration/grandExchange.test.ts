@@ -1,5 +1,3 @@
-import 'source-map-support/register';
-
 import { calcPercentOfNum, randArrItem, randInt, shuffleArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import PQueue from 'p-queue';

@@ -1,5 +1,4 @@
-import { EmbedBuilder } from '@discordjs/builders';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, TextChannel } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, TextChannel } from 'discord.js';
 import { noOp, randInt, removeFromArr, shuffleArr, Time } from 'e';
 
 import { production } from '../config';

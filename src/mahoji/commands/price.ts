@@ -1,4 +1,4 @@
-import { EmbedBuilder } from '@discordjs/builders';
+import { EmbedBuilder } from 'discord.js';
 import { CommandRunOptions } from 'mahoji';
 import { toKMB } from 'oldschooljs/dist/util';
 
