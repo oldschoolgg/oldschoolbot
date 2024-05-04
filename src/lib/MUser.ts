@@ -1,6 +1,6 @@
-import { userMention } from '@discordjs/builders';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
+import { userMention } from 'discord.js';
 import { calcWhatPercent, objectEntries, percentChance, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';

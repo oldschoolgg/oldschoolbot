@@ -1,5 +1,4 @@
-import { userMention } from '@discordjs/builders';
-import { ChannelType, ChatInputCommandInteraction, TextChannel } from 'discord.js';
+import { ChannelType, ChatInputCommandInteraction, TextChannel, userMention } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '../../../lib/lootTrack';

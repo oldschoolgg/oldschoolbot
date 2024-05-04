@@ -1,6 +1,5 @@
-import { EmbedBuilder } from '@discordjs/builders';
 import { Activity, User } from '@prisma/client';
-import { ChannelType } from 'discord.js';
+import { ChannelType, EmbedBuilder } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
