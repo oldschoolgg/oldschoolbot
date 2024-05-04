@@ -10,7 +10,7 @@
 		"test:lint": "eslint --quiet *.{mts,ts} \"{src,tests}/**/*.ts\"",
 		"test:unit": "vitest run --coverage --config vitest.unit.config.mts",
 		"dev": "yarn wipedist && tsc -w -p src",
-		"test:watch": "vitest --config vitest.unit.config.ts --coverage",
+		"test:watch": "vitest --config vitest.unit.config.mts --coverage",
 		"test:integration": "tsx ./src/scripts/integration-tests.ts",
 		"prebuild:scripts": "tsx ./src/scripts/render-creatables-file.ts",
 		"build:esbuild": "esbuild --bundle src/index.ts --outdir=dist --platform=node --loader:.node=file --external:canvas",
