@@ -159,7 +159,7 @@ describe('Bank with allowedKeys', () => {
 });
 
 test('Float Banks', () => {
-	const floatBank = new GeneralBank<string>({ valueSchema: { floats: true, min: 0, max: 1000 } });
+	const floatBank = new GeneralBank<string>({ valueSchema: { floats: true, min: 0, max: 1_222_222.100_150_02 } });
 	floatBank.add('a', 1);
 	floatBank.add('a', 0.15);
 	expect(floatBank.amount('a')).toBe(1.15);

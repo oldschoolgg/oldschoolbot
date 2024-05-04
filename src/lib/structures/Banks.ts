@@ -13,13 +13,3 @@ export class XPBank extends GeneralBank<SkillNameType> {
 		super({ initialBank, allowedKeys: SkillsArray });
 	}
 }
-
-export class FloatsBank extends GeneralBank<number> {
-	constructor(initialBank?: GeneralBankType<number>) {
-		super({ initialBank, valueSchema: { floats: true, min: 0, max: 1000 } });
-	}
-}
-
-const floats = new FloatsBank();
-floats.addItem(1, 1.5);
-console.log(floats.entries());
