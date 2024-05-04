@@ -1,13 +1,13 @@
 {
 	"scripts": {
 		"gen": "concurrently \"prisma generate\" \"prisma generate --schema prisma/robochimp.prisma\" && echo \"Generated Prisma Client\"",
-		"lint": "concurrently \"prettier --use-tabs ./**/*.{js,md,json,yml} --write\" \"eslint *.mts \"{src,tests}/**/*.ts\" --fix\"",
+		"lint": "concurrently \"prettier --use-tabs ./**/*.{js,md,json,yml} --write\" \"eslint *.{ts,mts} \"{src,tests}/**/*.ts\" --fix\"",
 		"build:tsc": "tsc -p src",
 		"build": "concurrently \"yarn wipedist\" \"yarn gen\" && concurrently \"yarn prebuild:scripts\" && yarn build:tsc && echo \"Finished Building\"",
 		"wipedist": "rimraf \"dist/\"",
 		"start": "yarn build && concurrently \"tsc -w -p src\" \"node --enable-source-maps dist/\"",
 		"test": "concurrently \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\"",
-		"test:lint": "eslint --quiet *.ts \"{src,tests}/**/*.ts\"",
+		"test:lint": "eslint --quiet *.{mts,ts} \"{src,tests}/**/*.ts\"",
 		"test:unit": "vitest run --coverage --config vitest.unit.config.mts",
 		"dev": "yarn wipedist && tsc -w -p src",
 		"test:watch": "vitest --config vitest.unit.config.ts --coverage",
@@ -17,7 +17,7 @@
 		"run:node": "node --enable-source-maps dist/index.js"
 	},
 	"dependencies": {
-		"@discordjs/builders": "^1.5.0",
+		"@discordjs/builders": "^1.7.0",
 		"@fastify/cors": "^8.2.0",
 		"@fastify/helmet": "^10.1.0",
 		"@fastify/rate-limit": "^8.0.0",
@@ -29,7 +29,7 @@
 		"@sapphire/snowflake": "^3.5.3",
 		"@sapphire/stopwatch": "^1.4.0",
 		"@sapphire/time-utilities": "^1.6.0",
-		"@sentry/node": "^7.102.0",
+		"@sentry/node": "^7.113.0",
 		"ascii-table3": "^0.9.0",
 		"bufferutil": "^4.0.8",
 		"chart.js": "^3.7.0",
@@ -37,7 +37,7 @@
 		"chartjs-plugin-datalabels": "^2.0.0",
 		"deep-equal": "^2.2.3",
 		"deepmerge": "^4.3.1",
-		"discord.js": "^14.13.0",
+		"discord.js": "^14.14.1",
 		"dotenv": "^16.0.3",
 		"e": "^0.2.33",
 		"fastify": "^4.14.1",
@@ -51,13 +51,13 @@
 		"node-fetch": "^2.6.7",
 		"oldschooljs": "^2.5.1",
 		"p-queue": "^6.6.2",
-		"piscina": "^4.3.2",
+		"piscina": "^4.4.0",
 		"random-js": "^2.1.0",
 		"simple-statistics": "^7.8.3",
-		"sonic-boom": "^3.8.0",
-		"tsx": "^4.7.1",
+		"sonic-boom": "^4.0.1",
+		"tsx": "^4.9.0",
 		"zlib-sync": "^0.1.9",
-		"zod": "^3.22.4"
+		"zod": "^3.23.6"
 	},
 	"devDependencies": {
 		"@oldschoolgg/eslint-config": "^2.0.13",
