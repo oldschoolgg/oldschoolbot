@@ -17,7 +17,6 @@
 		"run:node": "node --enable-source-maps dist/index.js"
 	},
 	"dependencies": {
-		"@discordjs/builders": "^1.7.0",
 		"@fastify/cors": "^8.2.0",
 		"@fastify/helmet": "^10.1.0",
 		"@fastify/rate-limit": "^8.0.0",

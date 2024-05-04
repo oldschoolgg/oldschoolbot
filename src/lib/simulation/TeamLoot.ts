@@ -1,4 +1,4 @@
-import { spoiler, userMention } from '@discordjs/builders';
+import { spoiler, userMention } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../constants';
