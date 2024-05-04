@@ -1,19 +1,20 @@
 {
 	"scripts": {
 		"gen": "concurrently \"prisma generate\" \"prisma generate --schema prisma/robochimp.prisma\" && echo \"Generated Prisma Client\"",
-		"lint": "concurrently \"prettier --use-tabs ./**/*.{js,md,json,yml} --write\" \"eslint *.ts \"{src,tests}/**/*.ts\" --fix\"",
+		"lint": "concurrently \"prettier --use-tabs ./**/*.{js,md,json,yml} --write\" \"eslint *.mts \"{src,tests}/**/*.ts\" --fix\"",
 		"build:tsc": "tsc -p src",
 		"build": "concurrently \"yarn wipedist\" \"yarn gen\" && concurrently \"yarn prebuild:scripts\" && yarn build:tsc && echo \"Finished Building\"",
 		"wipedist": "rimraf \"dist/\"",
-		"start": "yarn build && concurrently \"tsc -w -p src\" \"node dist/\"",
+		"start": "yarn build && concurrently \"tsc -w -p src\" \"node --enable-source-maps dist/\"",
 		"test": "concurrently \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\"",
 		"test:lint": "eslint --quiet *.ts \"{src,tests}/**/*.ts\"",
-		"test:unit": "vitest run --coverage --config vitest.unit.config.ts",
+		"test:unit": "vitest run --coverage --config vitest.unit.config.mts",
 		"dev": "yarn wipedist && tsc -w -p src",
 		"test:watch": "vitest --config vitest.unit.config.ts --coverage",
 		"test:integration": "tsx ./src/scripts/integration-tests.ts",
 		"prebuild:scripts": "tsx ./src/scripts/render-creatables-file.ts",
-		"build:esbuild": "esbuild --bundle src/index.ts --outdir=dist --platform=node --loader:.node=file --external:canvas"
+		"build:esbuild": "esbuild --bundle src/index.ts --outdir=dist --platform=node --loader:.node=file --external:canvas",
+		"run:node": "node --enable-source-maps dist/index.js"
 	},
 	"dependencies": {
 		"@discordjs/builders": "^1.5.0",
@@ -24,7 +25,7 @@
 		"@napi-rs/canvas": "0.1.38",
 		"@octokit/graphql": "^4.8.0",
 		"@oldschoolgg/toolkit": "^0.0.24",
-		"@prisma/client": "^5.10.2",
+		"@prisma/client": "^5.13.0",
 		"@sapphire/snowflake": "^3.5.3",
 		"@sapphire/stopwatch": "^1.4.0",
 		"@sapphire/time-utilities": "^1.6.0",
@@ -74,7 +75,7 @@
 		"@vitest/coverage-v8": "^1.3.1",
 		"concurrently": "^7.6.0",
 		"dotenv-cli": "^7.3.0",
-		"esbuild": "^0.19.5",
+		"esbuild": "^0.20.2",
 		"eslint": "^8.36.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-import": "^2.26.0",
@@ -82,13 +83,12 @@
 		"eslint-plugin-simple-import-sort": "^8.0.0",
 		"eslint-plugin-unicorn": "^44.0.2",
 		"jest-image-snapshot": "^6.2.0",
-		"madge": "^6.0.0",
+		"madge": "^7.0.0",
 		"prettier": "^2.7.1",
-		"prisma": "^5.10.2",
-		"rimraf": "^4.4.0",
-		"source-map-support": "^0.5.21",
+		"prisma": "^5.13.0",
+		"rimraf": "^5.0.5",
 		"typescript": "5.0.2",
-		"vitest": "^1.3.1"
+		"vitest": "^1.6.0"
 	},
 	"engines": {
 		"node": ">=18.12.0"
