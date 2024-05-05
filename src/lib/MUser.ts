@@ -41,7 +41,7 @@ import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
-import { ChargeBank } from './structures/Banks';
+import { ChargeBank, XPBank } from './structures/Banks';
 import { defaultGear, Gear } from './structures/Gear';
 import { MTame } from './structures/MTame';
 import { ItemBank, Skills } from './types';
@@ -260,6 +260,20 @@ export class MUserClass {
 
 	addXP(params: AddXpParams) {
 		return addXP(this, params);
+	}
+
+	async addXPBank(params: Omit<AddXpParams, 'amount' | 'skillName'> & { bank: XPBank }) {
+		const results = [];
+		for (const [id, qty] of params.bank.entries()) {
+			results.push(
+				await this.addXP({
+					...params,
+					amount: qty,
+					skillName: id as SkillsEnum
+				})
+			);
+		}
+		return results;
 	}
 
 	async getKC(monsterID: number) {

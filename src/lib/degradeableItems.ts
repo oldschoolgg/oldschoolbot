@@ -418,7 +418,9 @@ export async function degradeChargeBank(user: MUser, chargeBank: ChargeBank) {
 	const hasChargesResult = user.hasCharges(chargeBank);
 	if (!hasChargesResult.hasCharges) {
 		throw new Error(
-			`Tried to degrade a charge bank (${chargeBank}) for ${user.logName}, but they don't have the required charges: ${hasChargesResult}`
+			`Tried to degrade a charge bank (${chargeBank}) for ${
+				user.logName
+			}, but they don't have the required charges: ${JSON.stringify(hasChargesResult)}`
 		);
 	}
 

@@ -1,32 +1,29 @@
 import { Bank } from 'oldschooljs';
 
 import { TuraelsTrialsMethod } from '../../../lib/bso/turaelsTrials';
-import { SkillsEnum } from '../../../lib/skilling/types';
+import { XPBank } from '../../../lib/structures/Banks';
 import { TuraelsTrialsOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { trackClientBankStats, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
 export function calculateTuraelsTrialsResult({ quantity, method }: { quantity: number; method: TuraelsTrialsMethod }) {
-	let slayerXP = 29_000 * quantity;
 	const loot = new Bank();
-	let meleeXP = 0;
-	let rangedXP = 0;
-	let magicXP = 0;
+	const xpBank = new XPBank().add('slayer', 29_000 * quantity);
 
 	if (method === 'melee') {
-		meleeXP = 89_000 * quantity;
+		const meleeXP = Math.floor((89_000 * quantity) / 3);
+		xpBank.add('attack', meleeXP);
+		xpBank.add('strength', meleeXP);
+		xpBank.add('defence', meleeXP);
 	} else if (method === 'range') {
-		rangedXP = 89_000 * quantity;
+		xpBank.add('ranged', 89_000 * quantity);
 	} else {
-		magicXP = 89_000 * quantity;
+		xpBank.add('magic', 89_000 * quantity);
 	}
 
 	return {
-		slayerXP,
-		loot,
-		meleeXP,
-		rangedXP,
-		magicXP
+		xpBank,
+		loot
 	};
 }
 
@@ -42,68 +39,12 @@ export const turaelsTrialsTask: MinionTask = {
 		await trackClientBankStats('turaels_trials_loot_bank', result.loot);
 		await userStatsBankUpdate(user.id, 'turaels_trials_loot_bank', result.loot);
 
-		const xpResults: string[] = [];
-		xpResults.push(
-			await user.addXP({
-				skillName: SkillsEnum.Slayer,
-				amount: result.slayerXP,
-				duration,
-				minimal: true,
-				source: 'TuraelsTrials'
-			})
-		);
-
-		if (result.magicXP !== 0) {
-			xpResults.push(
-				await user.addXP({
-					skillName: SkillsEnum.Magic,
-					amount: result.magicXP,
-					duration,
-					minimal: true,
-					source: 'TuraelsTrials'
-				})
-			);
-		}
-		if (result.rangedXP !== 0) {
-			xpResults.push(
-				await user.addXP({
-					skillName: SkillsEnum.Ranged,
-					amount: result.rangedXP,
-					duration,
-					minimal: true,
-					source: 'TuraelsTrials'
-				})
-			);
-		}
-		if (result.meleeXP !== 0) {
-			xpResults.push(
-				await user.addXP({
-					skillName: SkillsEnum.Attack,
-					amount: result.meleeXP / 3,
-					duration,
-					minimal: true,
-					source: 'TuraelsTrials'
-				})
-			);
-			xpResults.push(
-				await user.addXP({
-					skillName: SkillsEnum.Strength,
-					amount: result.meleeXP / 3,
-					duration,
-					minimal: true,
-					source: 'TuraelsTrials'
-				})
-			);
-			xpResults.push(
-				await user.addXP({
-					skillName: SkillsEnum.Defence,
-					amount: result.meleeXP / 3,
-					duration,
-					minimal: true,
-					source: 'TuraelsTrials'
-				})
-			);
-		}
+		const xpResults: string[] = await user.addXPBank({
+			bank: result.xpBank,
+			duration,
+			minimal: true,
+			source: 'TuraelsTrials'
+		});
 
 		return handleTripFinish(
 			user,

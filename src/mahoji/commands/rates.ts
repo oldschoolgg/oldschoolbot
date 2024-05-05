@@ -551,7 +551,7 @@ ${zygomiteFarmingSource
 			const duration = Time.Hour;
 
 			for (const method of TuraelsTrialsMethods) {
-				const input = calculateTuraelsTrialsInput({ maxTripLength: duration, method });
+				const input = calculateTuraelsTrialsInput({ maxTripLength: duration, method, isUsingBloodFury: false });
 				const result = calculateTuraelsTrialsResult({ quantity: input.quantity, method });
 				if (input.chargeBank.amount('scythe_of_vitur_charges') !== 0) {
 					input.cost.add('Scythe of vitur', input.chargeBank.amount('scythe_of_vitur_charges'));
@@ -565,10 +565,18 @@ ${zygomiteFarmingSource
 
 				results += [
 					method,
-					Math.floor(calcPerHour(result.slayerXP * GLOBAL_BSO_XP_MULTIPLIER, duration)).toLocaleString(),
-					Math.floor(calcPerHour(result.meleeXP * GLOBAL_BSO_XP_MULTIPLIER, duration)).toLocaleString(),
-					Math.floor(calcPerHour(result.rangedXP * GLOBAL_BSO_XP_MULTIPLIER, duration)).toLocaleString(),
-					Math.floor(calcPerHour(result.magicXP * GLOBAL_BSO_XP_MULTIPLIER, duration)).toLocaleString(),
+					Math.floor(
+						calcPerHour(result.xpBank.amount('slayer') * GLOBAL_BSO_XP_MULTIPLIER, duration)
+					).toLocaleString(),
+					Math.floor(
+						calcPerHour(result.xpBank.amount('attack') * GLOBAL_BSO_XP_MULTIPLIER, duration)
+					).toLocaleString(),
+					Math.floor(
+						calcPerHour(result.xpBank.amount('ranged') * GLOBAL_BSO_XP_MULTIPLIER, duration)
+					).toLocaleString(),
+					Math.floor(
+						calcPerHour(result.xpBank.amount('magic') * GLOBAL_BSO_XP_MULTIPLIER, duration)
+					).toLocaleString(),
 					convertBankToPerHourStats(result.loot, duration).join(', '),
 					convertBankToPerHourStats(input.cost, duration).join(', ')
 				].join('\t');

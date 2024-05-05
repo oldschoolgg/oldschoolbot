@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { increaseNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { trackClientBankStats, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
@@ -52,9 +52,11 @@ export type TuraelsTrialsMethod = (typeof TuraelsTrialsMethods)[number];
 
 export function calculateTuraelsTrialsInput({
 	maxTripLength,
-	method
+	method,
+	isUsingBloodFury
 }: {
 	maxTripLength: number;
+	isUsingBloodFury: boolean;
 	method: TuraelsTrialsMethod;
 }) {
 	let timePerKill = Time.Minute * 2.9;
@@ -86,7 +88,19 @@ export function calculateTuraelsTrialsInput({
 
 	const hpHealingNeeded = Math.ceil(minutesRoundedUp * 50);
 
-	const chargeBank = new ChargeBank().add('scythe_of_vitur_charges', scytheChargesNeeded);
+	const chargeBank = new ChargeBank();
+
+	if (scytheChargesNeeded > 0) {
+		chargeBank.add('scythe_of_vitur_charges', scytheChargesNeeded);
+	}
+
+	if (isUsingBloodFury) {
+		const hoursPerBloodyFury = 2;
+		const periodInMs = Time.Hour * hoursPerBloodyFury;
+		const chargesPerMillisecond = 10_000 / periodInMs;
+		const bloodyFuryCharges = Math.floor(duration * chargesPerMillisecond);
+		chargeBank.add('blood_fury_charges', bloodyFuryCharges);
+	}
 
 	return {
 		duration,
@@ -106,9 +120,19 @@ export async function turaelsTrialsStartCommand(user: MUser, channelID: string, 
 		return 'You need 120 Slayer to do Turaels Trials.';
 	}
 
+	const messages: string[] = [];
+
+	const isUsingBloodFury = user.hasEquipped('Amulet of blood fury');
+	let maxTripLength = calcMaxTripLength(user, 'TuraelsTrials');
+	if (isUsingBloodFury) {
+		maxTripLength = increaseNumByPercent(maxTripLength, 20);
+		messages.push('+20% Trip length for Blood fury');
+	}
+
 	const { duration, quantity, cost, chargeBank } = calculateTuraelsTrialsInput({
-		maxTripLength: calcMaxTripLength(user, 'TuraelsTrials'),
-		method
+		maxTripLength,
+		method,
+		isUsingBloodFury
 	});
 
 	const hasChargesResult = user.hasCharges(chargeBank);
@@ -124,6 +148,8 @@ export async function turaelsTrialsStartCommand(user: MUser, channelID: string, 
 	await user.removeItemsFromBank(cost);
 	await trackClientBankStats('turaels_trials_cost_bank', cost);
 	await userStatsBankUpdate(user.id, 'turaels_trials_cost_bank', cost);
+	messages.push(degradeResults.map(i => i.userMessage).join(', '));
+	messages.push(`Removed ${cost}`);
 
 	const task = await addSubTaskToActivityTask<TuraelsTrialsOptions>({
 		userID: user.id,
@@ -139,8 +165,7 @@ export async function turaelsTrialsStartCommand(user: MUser, channelID: string, 
 		task.duration
 	)} to finish.
 
-Removed ${cost}
-${degradeResults.map(i => i.userMessage).join(', ')}`;
+${messages.join('\n')}`;
 
 	return response;
 }
