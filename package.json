@@ -84,7 +84,7 @@
 		"eslint-plugin-unicorn": "^44.0.2",
 		"jest-image-snapshot": "^6.2.0",
 		"madge": "^6.0.0",
-		"prettier": "^2.7.1",
+		"prettier": "^2.8.8",
 		"prisma": "^5.10.2",
 		"rimraf": "^4.4.0",
 		"source-map-support": "^0.5.21",
