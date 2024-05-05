@@ -3,7 +3,9 @@ import { beforeEach, describe, expect, it, test } from 'vitest';
 import { GeneralBank } from '../../src/lib/structures/GeneralBank';
 
 describe('GeneralBank', () => {
+	// eslint-disable-next-line @typescript-eslint/init-declarations
 	let bank: GeneralBank<string>;
+	// eslint-disable-next-line @typescript-eslint/init-declarations
 	let validator: (key: string, value: number, bank: Record<string, number>) => void;
 
 	beforeEach(() => {
@@ -59,6 +61,7 @@ describe('GeneralBank', () => {
 });
 
 describe('GeneralBank 2', () => {
+	// eslint-disable-next-line @typescript-eslint/init-declarations
 	let bank: GeneralBank<string>;
 
 	beforeEach(() => {
@@ -118,6 +121,7 @@ describe('GeneralBank 2', () => {
 });
 
 describe('Bank with allowedKeys', () => {
+	// eslint-disable-next-line @typescript-eslint/init-declarations
 	let bank: GeneralBank<string>;
 
 	beforeEach(() => {

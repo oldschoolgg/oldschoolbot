@@ -812,6 +812,11 @@ export function minionStatus(user: MUser) {
 				method.name
 			}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
+		case 'TuraelsTrials': {
+			return `${name} is currently slaying monsters in Turaels Trials. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
+		}
 		case 'HalloweenMiniMinigame':
 		case 'Easter':
 		case 'HalloweenEvent':
