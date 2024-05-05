@@ -1,4 +1,4 @@
-import { percentChance } from 'e';
+import { percentChance, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -15,6 +15,7 @@ interface DegradeableItem {
 	settingsKey:
 		| 'tentacle_charges'
 		| 'sang_charges'
+		| 'void_staff_charges'
 		| 'celestial_ring_charges'
 		| 'ash_sanctifier_charges'
 		| 'serp_helm_charges'
@@ -37,7 +38,7 @@ interface DegradeableItem {
 	};
 	unchargedItem?: Item;
 	convertOnCharge?: boolean;
-	emoji: string;
+	emoji?: string;
 }
 
 interface DegradeableItemPVMBoost {
@@ -91,8 +92,22 @@ export const degradeableItems: DegradeableItem[] = [
 			charges: 1
 		},
 		unchargedItem: getOSItem('Sanguinesti staff (uncharged)'),
+		convertOnCharge: true
+	},
+	{
+		item: getOSItem('Void staff'),
+		settingsKey: 'void_staff_charges',
+		itemsToRefundOnBreak: new Bank().add('Void staff (u)'),
+		setup: 'mage',
+		aliases: ['void staff'],
+		chargeInput: {
+			cost: new Bank().add('Elder rune', 5),
+			charges: 1
+		},
 		convertOnCharge: true,
-		emoji: '<:Sanguinesti_staff_uncharged:455403545298993162>'
+		unchargedItem: getOSItem('Void staff (u)'),
+		emoji: '<:Sanguinesti_staff_uncharged:455403545298993162>',
+		refundVariants: []
 	},
 	{
 		item: getOSItem('Celestial ring'),
@@ -274,11 +289,28 @@ export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
 		boost: 3
 	},
 	{
+<<<<<<< HEAD
 		item: getOSItem('Venator bow'),
 		degradeable: degradeableItems.find(di => di.item.id === itemID('Venator bow'))!,
 		attackStyle: 'range',
 		charges: ({ totalHP }) => totalHP / 25,
 		boost: 3
+=======
+		item: getOSItem('Void staff'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Void staff'))!,
+		attackStyle: 'mage',
+		boost: 8,
+		charges: ({ duration, user }) => {
+			const mageGear = user.gear.mage;
+			const minutesDuration = Math.ceil(duration / Time.Minute);
+			if (user.hasEquipped('Magic master cape')) {
+				return Math.ceil(minutesDuration / 3);
+			} else if (mageGear.hasEquipped('Vasa cloak')) {
+				return Math.ceil(minutesDuration / 2);
+			}
+			return minutesDuration;
+		}
+>>>>>>> bsopet
 	}
 ];
 

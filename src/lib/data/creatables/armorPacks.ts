@@ -2164,29 +2164,6 @@ export const armorAndItemPacks: Createable[] = [
 			[itemID('Mystic set (dusk)')]: 1
 		}
 	},
-	// {
-	// 	name: "Unpack dagon'hai robes set",
-	// 	inputItems: {
-	// 		[itemID("Dagon'hai robes set")]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID("Dagon'hai hat")]: 1,
-	// 		[itemID("Dagon'hai robe top")]: 1,
-	// 		[itemID("Dagon'hai robe bottom")]: 1
-	// 	},
-	// 	noCl: true
-	// },
-	// {
-	// 	name: "Dagon'hai robes set",
-	// 	inputItems: {
-	// 		[itemID("Dagon'hai hat")]: 1,
-	// 		[itemID("Dagon'hai robe top")]: 1,
-	// 		[itemID("Dagon'hai robe bottom")]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID("Dagon'hai robes set")]: 1
-	// 	}
-	// },
 	{
 		name: 'Unpack ancestral robes set',
 		inputItems: {
@@ -2361,82 +2338,6 @@ export const armorAndItemPacks: Createable[] = [
 			[itemID('Book of war page set')]: 1
 		}
 	},
-	// twisted relichunter
-	// {
-	// 	name: 'Unpack twisted relichunter (t1) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted relichunter (t1) armour set')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted hat (t1)')]: 1,
-	// 		[itemID('Twisted coat (t1)')]: 1,
-	// 		[itemID('Twisted trousers (t1)')]: 1,
-	// 		[itemID('Twisted boots (t1)')]: 1
-	// 	},
-	// 	noCl: true
-	// },
-	// {
-	// 	name: 'Twisted relichunter (t1) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted hat (t1)')]: 1,
-	// 		[itemID('Twisted coat (t1)')]: 1,
-	// 		[itemID('Twisted trousers (t1)')]: 1,
-	// 		[itemID('Twisted boots (t1)')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted relichunter (t1) armour set')]: 1
-	// 	}
-	// },
-	// {
-	// 	name: 'Unpack twisted relichunter (t2) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted relichunter (t2) armour set')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted hat (t2)')]: 1,
-	// 		[itemID('Twisted coat (t2)')]: 1,
-	// 		[itemID('Twisted trousers (t2)')]: 1,
-	// 		[itemID('Twisted boots (t2)')]: 1
-	// 	},
-	// 	noCl: true
-	// },
-	// {
-	// 	name: 'Twisted relichunter (t2) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted hat (t2)')]: 1,
-	// 		[itemID('Twisted coat (t2)')]: 1,
-	// 		[itemID('Twisted trousers (t2)')]: 1,
-	// 		[itemID('Twisted boots (t2)')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted relichunter (t2) armour set')]: 1
-	// 	}
-	// },
-	// {
-	// 	name: 'Unpack twisted relichunter (t3) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted relichunter (t3) armour set')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted hat (t3)')]: 1,
-	// 		[itemID('Twisted coat (t3)')]: 1,
-	// 		[itemID('Twisted trousers (t3)')]: 1,
-	// 		[itemID('Twisted boots (t3)')]: 1
-	// 	},
-	// 	noCl: true
-	// },
-	// {
-	// 	name: 'Twisted relichunter (t3) armour set',
-	// 	inputItems: {
-	// 		[itemID('Twisted hat (t3)')]: 1,
-	// 		[itemID('Twisted coat (t3)')]: 1,
-	// 		[itemID('Twisted trousers (t3)')]: 1,
-	// 		[itemID('Twisted boots (t3)')]: 1
-	// 	},
-	// 	outputItems: {
-	// 		[itemID('Twisted relichunter (t3) armour set')]: 1
-	// 	}
-	// },
 	// holiday
 	{
 		name: 'Unpack partyhat set',
@@ -2572,6 +2473,114 @@ const armorSetsSrc: { unpacked: Bank; packed: Item }[] = [
 	{
 		unpacked: new Bank().add('Masori mask (f)').add('Masori body (f)').add('Masori chaps (f)'),
 		packed: getOSItem('Masori armour set (f)')
+	},
+	{
+		unpacked: new Bank().add('Clown hat').add('Clown shirt').add('Clown leggings').add('Clown feet'),
+		packed: getOSItem('Clown set')
+	},
+	{
+		unpacked: new Bank().add('Acrobat hood').add('Acrobat shirt').add('Acrobat pants').add('Acrobat shoes'),
+		packed: getOSItem('Acrobat set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Ringmaster hat')
+			.add('Ringmaster shirt')
+			.add('Ringmaster pants')
+			.add('Ringmaster boots'),
+		packed: getOSItem('Ringmaster set')
+	},
+	{
+		unpacked: new Bank().add('Acrylic hood').add('Acrylic top').add('Acrylic bottom').add('Acrylic boots'),
+		packed: getOSItem('Acrylic set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Warpriest of Zamorak helm')
+			.add('Warpriest of Zamorak cuirass')
+			.add('Warpriest of Zamorak greaves')
+			.add('Warpriest of Zamorak boots')
+			.add('Warpriest of Zamorak gauntlets')
+			.add('Warpriest of Zamorak cape'),
+		packed: getOSItem('Warpriest of Zamorak set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Warpriest of Saradomin helm')
+			.add('Warpriest of Saradomin cuirass')
+			.add('Warpriest of Saradomin greaves')
+			.add('Warpriest of Saradomin boots')
+			.add('Warpriest of Saradomin gauntlets')
+			.add('Warpriest of Saradomin cape'),
+		packed: getOSItem('Warpriest of Saradomin set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Warpriest of Armadyl helm')
+			.add('Warpriest of Armadyl cuirass')
+			.add('Warpriest of Armadyl greaves')
+			.add('Warpriest of Armadyl boots')
+			.add('Warpriest of Armadyl gauntlets')
+			.add('Warpriest of Armadyl cape'),
+		packed: getOSItem('Warpriest of Armadyl set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Warpriest of Bandos helm')
+			.add('Warpriest of Bandos cuirass')
+			.add('Warpriest of Bandos greaves')
+			.add('Warpriest of Bandos boots')
+			.add('Warpriest of Bandos gauntlets')
+			.add('Warpriest of Bandos cape'),
+		packed: getOSItem('Warpriest of Bandos set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Dwarven full helm')
+			.add('Dwarven platebody')
+			.add('Dwarven platelegs')
+			.add('Dwarven boots')
+			.add('Dwarven gloves'),
+		packed: getOSItem('Dwarven armour set')
+	},
+	{
+		unpacked: new Bank().add('Drygore longsword').add('Offhand drygore longsword'),
+		packed: getOSItem('Drygore longsword set')
+	},
+	{
+		unpacked: new Bank().add('Drygore rapier').add('Offhand drygore rapier'),
+		packed: getOSItem('Drygore rapier set')
+	},
+	{
+		unpacked: new Bank().add('Drygore mace').add('Offhand drygore mace'),
+		packed: getOSItem('Drygore mace set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Torva full helm')
+			.add('Torva platebody')
+			.add('Torva platelegs')
+			.add('Torva boots')
+			.add('Torva gloves'),
+		packed: getOSItem('Torva armour set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Pernix cowl')
+			.add('Pernix body')
+			.add('Pernix chaps')
+			.add('Pernix boots')
+			.add('Pernix gloves'),
+		packed: getOSItem('Pernix armour set')
+	},
+	{
+		unpacked: new Bank()
+			.add('Virtus mask')
+			.add('Virtus robe top')
+			.add('Virtus robe legs')
+			.add('Virtus boots')
+			.add('Virtus gloves'),
+		packed: getOSItem('Virtus armour set')
 	}
 ];
 

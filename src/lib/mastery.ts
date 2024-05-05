@@ -2,14 +2,17 @@ import { calcWhatPercent, clamp, round, sumArr } from 'e';
 
 import { calculateAchievementDiaryProgress } from '../mahoji/lib/abstracted_commands/achievementDiaryCommand';
 import { MAX_QP } from '../mahoji/lib/abstracted_commands/questCommand';
+import { calculateCompCapeProgress } from './bso/calculateCompCapeProgress';
 import { allCombatAchievementTasks } from './combat_achievements/combatAchievements';
 import { MAX_XP } from './constants';
 import { getTotalCl } from './data/Collections';
+import { maxLeaguesPoints } from './leagues/leagues';
 import { SkillsEnum } from './skilling/types';
 import { MUserStats } from './structures/MUserStats';
 
 export async function calculateMastery(user: MUser, stats: MUserStats) {
-	const [totalClItems, clItems] = getTotalCl(user, 'collection', stats);
+	const [totalClItems, clItems] = await getTotalCl(user, 'collection', stats);
+	const roboChimpUser = await user.fetchRobochimpUser();
 	const clCompletionPercentage = round(calcWhatPercent(clItems, totalClItems), 2);
 	const totalXP = sumArr(Object.values(user.skillsAsXP));
 	const maxTotalXP = Object.values(SkillsEnum).length * MAX_XP;
@@ -19,6 +22,10 @@ export async function calculateMastery(user: MUser, stats: MUserStats) {
 		calcWhatPercent(user.user.completed_ca_task_ids.length, allCombatAchievementTasks.length),
 		2
 	);
+
+	const leaguesPoints = roboChimpUser.leagues_points_total;
+
+	const { totalPercentTrimmed, totalPercentUntrimmed } = await calculateCompCapeProgress(user);
 
 	const masteryFactors = [
 		{
@@ -41,12 +48,28 @@ export async function calculateMastery(user: MUser, stats: MUserStats) {
 			name: 'Achievement Diaries',
 			percentage: (await calculateAchievementDiaryProgress(user, stats, await user.fetchMinigameScores()))
 				.percentComplete
+		},
+		{
+			name: 'Leagues',
+			percentage: calcWhatPercent(leaguesPoints, maxLeaguesPoints)
+		},
+		{
+			name: 'Trimmed Completion',
+			percentage: totalPercentTrimmed
+		},
+		{
+			name: 'Untrimmed Completion',
+			percentage: totalPercentUntrimmed
 		}
 	] as const;
 
 	const totalMastery = sumArr(masteryFactors.map(i => i.percentage)) / masteryFactors.length;
 	return {
 		masteryFactors,
-		totalMastery
+		totalMastery,
+		compCapeProgress: {
+			totalPercentTrimmed,
+			totalPercentUntrimmed
+		}
 	};
 }

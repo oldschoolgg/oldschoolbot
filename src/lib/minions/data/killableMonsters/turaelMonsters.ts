@@ -269,11 +269,11 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
 			['Torva platebody', 'Bandos chestplate'],
-			["Verac's plateskirt", 'Bandos tassets', 'Torva platelegs'],
+			['Torva platelegs', "Verac's plateskirt", 'Bandos tassets'],
 			['Arclight', 'Abyssal whip', 'Dragon scimitar'],
 			['Rune crossbow', "Karil's crossbow", 'Armadyl crossbow'],
-			['Armadyl chestplate', "Karil's leathertop"],
-			['Armadyl chainskirt', "Karil's leatherskirt"]
+			['Gorajan archer top', 'Pernix body', 'Armadyl chestplate', "Karil's leathertop"],
+			['Gorajan archer legs', 'Pernix chaps', 'Armadyl chainskirt', "Karil's leatherskirt"]
 		]),
 		qpRequired: 175,
 		itemInBankBoosts: [
@@ -1041,7 +1041,7 @@ export const turaelMonsters: KillableMonster[] = [
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
 			['Torva platebody', 'Bandos chestplate'],
-			["Verac's plateskirt", 'Bandos tassets', 'Torva platelegs'],
+			['Torva platelegs', "Verac's plateskirt", 'Bandos tassets'],
 			['Abyssal whip', 'Dragon scimitar']
 		]),
 		qpRequired: 175,

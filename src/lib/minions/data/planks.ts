@@ -25,5 +25,11 @@ export const Planks: Plankable[] = [
 		inputItem: itemID('Mahogany logs'),
 		outputItem: itemID('Mahogany plank'),
 		gpCost: 1500
+	},
+	{
+		name: 'Elder plank',
+		inputItem: itemID('Elder logs'),
+		outputItem: itemID('Elder plank'),
+		gpCost: 8500
 	}
 ];

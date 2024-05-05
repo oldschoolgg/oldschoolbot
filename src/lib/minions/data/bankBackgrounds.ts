@@ -81,10 +81,22 @@ const backgroundImages: BankBackground[] = [
 			'Ancient hilt': 1,
 			'Nihil horn': 1,
 			'Zaryte vambraces': 1,
-			'Torva full helm (damaged)': 1,
-			'Torva platebody (damaged)': 1,
-			'Torva platelegs (damaged)': 1,
-			'Nihil shard': 1
+			'Nihil shard': 1,
+			'Torva full helm (broken)': 1,
+			'Torva platebody (broken)': 1,
+			'Torva platelegs (broken)': 1,
+			'Torva boots (broken)': 1,
+			'Torva gloves (broken)': 1,
+			'Pernix cowl (broken)': 1,
+			'Pernix body (broken)': 1,
+			'Pernix chaps (broken)': 1,
+			'Pernix boots (broken)': 1,
+			'Pernix gloves (broken)': 1,
+			'Virtus mask (broken)': 1,
+			'Virtus robe top (broken)': 1,
+			'Virtus robe legs (broken)': 1,
+			'Virtus boots (broken)': 1,
+			'Virtus gloves (broken)': 1
 		}),
 		itemCost: new Bank({
 			'Armadyl godsword': 1,
@@ -436,6 +448,191 @@ const backgroundImages: BankBackground[] = [
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 10_000_000,
 		storeBitField: StoreBitfield.HalloweenItemIconPack
+	},
+	{
+		id: 504,
+		name: 'Skipper',
+		image: null,
+		available: true,
+		gpCost: 10_000_000,
+		perkTierNeeded: PerkTier.Four,
+		transparent: true
+	},
+	{
+		id: 505,
+		name: 'Remy',
+		image: null,
+		available: true,
+		gpCost: 10_000_000,
+		perkTierNeeded: PerkTier.Four,
+		transparent: true
+	},
+	{
+		id: 506,
+		name: 'Peepo Scooter',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 10_000_000
+	},
+	{
+		id: 507,
+		name: 'Ignecarus',
+		image: null,
+		available: true,
+		collectionLogItemsNeeded: new Bank({
+			'Dragon egg': 1,
+			'Ignis ring': 1,
+			'Ignecarus dragonclaw': 1,
+			'Ignecarus scales': 1
+		}),
+		itemCost: new Bank({
+			'Ignecarus scales': 1,
+			'Ignecarus dragonclaw': 1
+		}),
+		gpCost: 500_000_000,
+		perkTierNeeded: PerkTier.Four
+	},
+	{
+		id: 1000,
+		name: 'Kiddo CustomBG',
+		image: null,
+		available: false,
+		owners: ['775241966677131306']
+	},
+	{
+		id: 1001,
+		name: 'Timebrawler CustomBG',
+		image: null,
+		available: false,
+		owners: ['235883747658956802'],
+		purpleImage: null,
+		hasPurple: true
+	},
+	{
+		id: 1002,
+		name: 'Serg CustomBG',
+		image: null,
+		available: false,
+		owners: ['797618464176996372']
+	},
+	{
+		id: 1003,
+		name: 'TastyPum CustomBG',
+		image: null,
+		available: false,
+		owners: ['794368001856110594']
+	},
+	{
+		id: 1004,
+		name: 'Jersey CustomBG',
+		image: null,
+		available: false,
+		owners: ['252113050704805890']
+	},
+	{
+		id: 1005,
+		name: 'Abyssalcrow8 CustomBG',
+		image: null,
+		available: false,
+		owners: ['268901875158351872']
+	},
+	{
+		id: 1006,
+		name: 'Benny CustomBG',
+		image: null,
+		available: false,
+		owners: ['507686806624534529']
+	},
+	{
+		id: 1007,
+		name: 'Hekla CustomBG',
+		image: null,
+		available: false,
+		owners: ['255767128051810305']
+	},
+	{
+		id: 1008,
+		name: 'Mylife CustomBG',
+		image: null,
+		available: false,
+		owners: ['251536370613485568']
+	},
+	{
+		id: 1009,
+		name: 'Cyrillax CustomBG',
+		image: null,
+		hasPurple: true,
+		purpleImage: null,
+		available: false,
+		owners: ['425134194436341760']
+	},
+	{
+		id: 1010,
+		name: 'theshadyhobo CustomBG',
+		image: null,
+		available: false,
+		owners: ['343104695209951255']
+	},
+	{
+		id: 1011,
+		name: 'Turbo CustomBG',
+		image: null,
+		available: false,
+		owners: ['288054683161853952'],
+		purpleImage: null,
+		hasPurple: true
+	},
+	{
+		id: 1012,
+		name: 'Fishy CustomBG',
+		image: null,
+		available: false,
+		owners: ['212931609123487744']
+	},
+	{
+		id: 1013,
+		name: 'Beans CustomBG',
+		image: null,
+		available: false,
+		owners: ['134922117081858050']
+	},
+	{
+		id: 1014,
+		name: 'Coolbop CustomBG',
+		image: null,
+		available: false,
+		owners: ['198993057323024384']
+	},
+	{
+		id: 1015,
+		name: 'Thievious CustomBG',
+		image: null,
+		available: false,
+		owners: ['411025849966526470']
+	},
+	{
+		id: 1016,
+		name: 'Rickturpentine CustomBG',
+		image: null,
+		available: false,
+		owners: ['604278562320810009']
+	},
+	{
+		id: 1017,
+		name: 'boyo CustomBG',
+		image: null,
+		available: false,
+		owners: ['505593989584519169'],
+		purpleImage: null,
+		hasPurple: true
+	},
+	{
+		id: 1018,
+		name: 'DT CustomBG',
+		image: null,
+		available: false,
+		owners: ['310150823986593803']
 	}
 ];
 

@@ -2,9 +2,8 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Emoji } from '../constants';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import { ItemBank } from '../types';
+import { ItemBank, Skills } from '../types';
 import { FarmingPatchName } from '../util/farmingHelpers';
 
 export enum SkillsEnum {
@@ -30,7 +29,10 @@ export enum SkillsEnum {
 	Defence = 'defence',
 	Ranged = 'ranged',
 	Hitpoints = 'hitpoints',
-	Slayer = 'slayer'
+	Dungeoneering = 'dungeoneering',
+	Slayer = 'slayer',
+	Invention = 'invention',
+	Divination = 'divination'
 }
 
 export interface Ore {
@@ -45,6 +47,7 @@ export interface Ore {
 	petChance?: number;
 	minerals?: number;
 	clueScrollChance?: number;
+	requiredPickaxes?: number[];
 	aliases?: string[];
 }
 
@@ -65,6 +68,8 @@ export interface Log {
 	petChance?: number;
 	qpRequired: number;
 	clueScrollChance?: number;
+	customReq?: (user: MUser) => string | undefined;
+	hasNoLoot?: true;
 	clueNestsOnly?: boolean;
 }
 
@@ -147,6 +152,8 @@ export interface SmithedItem {
 	timeToUse: number;
 	outputMultiple: number;
 	qpRequired?: number;
+	requiresBlacksmith?: boolean;
+	cantBeDoubled?: boolean;
 }
 
 export interface Craftable {
@@ -160,8 +167,10 @@ export interface Craftable {
 	crushChance?: number[];
 	bankChest?: boolean;
 	outputMultiple?: number;
+	otherSkillRequirements?: Partial<Skills>;
 	qpRequired?: number;
 	wcLvl?: number;
+	cantBeDoubled?: boolean;
 }
 
 export interface Fletchable {
@@ -217,7 +226,7 @@ export type LevelRequirements = Partial<{
 export interface Skill {
 	aliases: string[];
 	id: SkillsEnum;
-	emoji: Emoji;
+	emoji: string;
 	name: string;
 }
 
@@ -269,6 +278,7 @@ export interface Plant {
 	additionalPatchesByFarmGuildAndLvl: number[][];
 	timePerPatchTravel: number;
 	timePerHarvest: number;
+	onHarvest?: (options: { user: MUser; loot: Bank; quantity: number }) => unknown;
 }
 
 export enum HunterTechniqueEnum {
@@ -306,4 +316,5 @@ export interface Creature {
 	qpRequired?: number;
 	slope: number;
 	intercept: number;
+	bait?: (quantity: number) => Bank;
 }

@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../../lib/util';
@@ -10,7 +11,7 @@ import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 export const titheFarmTask: MinionTask = {
 	type: 'TitheFarm',
 	async run(data: TitheFarmActivityTaskOptions) {
-		const { userID, channelID } = data;
+		const { userID, channelID, duration } = data;
 		const baseHarvest = 85;
 		const lootStr: string[] = [];
 
@@ -22,7 +23,12 @@ export const titheFarmTask: MinionTask = {
 		const titheFarmPoints = userStats.tithe_farm_points;
 
 		const determineHarvest = baseHarvest + Math.min(15, titheFarmsCompleted);
-		const determinePoints = determineHarvest - 74;
+		let determinePoints = determineHarvest - 74;
+
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
+			determinePoints *= 2;
+		}
 
 		await userStatsUpdate(
 			user.id,
@@ -117,7 +123,7 @@ export const titheFarmTask: MinionTask = {
 			});
 		}
 
-		const returnStr = `${harvestStr} ${xpRes} ${bonusXpStr}\n\n${completedStr}${lootStr}\n`;
+		const returnStr = `${harvestStr} ${xpRes} ${bonusXpStr}\n\n${completedStr}${lootStr}\n\n${flappyRes.userMsg}`;
 
 		handleTripFinish(user, channelID, returnStr, undefined, data, loot.length > 0 ? loot : null);
 	}

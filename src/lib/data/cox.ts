@@ -14,6 +14,7 @@ import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/Chamber
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { GearStats } from '../gear/types';
+import { inventionBoosts } from '../invention/inventions';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { constructGearSetup, Gear } from '../structures/Gear';
@@ -34,6 +35,7 @@ export const bareMinStats: Skills = {
 export const SANGUINESTI_CHARGES_PER_COX = 150;
 export const SHADOW_CHARGES_PER_COX = 130;
 export const TENTACLE_CHARGES_PER_COX = 200;
+export const VOID_STAFF_CHARGES_PER_COX = 15;
 
 export function hasMinRaidsRequirements(user: MUser) {
 	return user.hasSkillReqs(bareMinStats);
@@ -129,7 +131,7 @@ export async function createTeam(
 	return res;
 }
 
-function calcSetupPercent(
+export function calcSetupPercent(
 	maxStats: GearStats,
 	userStats: GearStats,
 	heavyPenalizeStat: keyof GearStats,
@@ -166,44 +168,44 @@ function calcSetupPercent(
 }
 
 export const maxMageGear = constructGearSetup({
-	head: 'Ancestral hat',
-	neck: 'Occult necklace',
-	body: 'Ancestral robe top',
-	cape: 'Imbued saradomin cape',
-	hands: 'Tormented bracelet',
-	legs: 'Ancestral robe bottom',
-	feet: 'Eternal boots',
-	weapon: 'Harmonised nightmare staff',
-	shield: 'Arcane spirit shield',
-	ring: 'Magus ring'
+	head: 'Virtus mask',
+	body: 'Virtus robe top',
+	hands: 'Virtus gloves',
+	legs: 'Virtus robe legs',
+	feet: 'Virtus boots',
+	cape: 'Vasa cloak',
+	neck: 'Arcane blast necklace',
+	weapon: 'Virtus wand',
+	shield: 'Virtus book',
+	ring: 'Seers ring(i)'
 });
 const maxMage = new Gear(maxMageGear);
 
 export const maxRangeGear = constructGearSetup({
-	head: 'Armadyl helmet',
-	neck: 'Necklace of anguish',
-	body: 'Armadyl chestplate',
-	cape: "Ava's assembler",
-	hands: 'Zaryte vambraces',
-	legs: 'Armadyl chainskirt',
-	feet: 'Pegasian boots',
+	head: 'Pernix cowl',
+	neck: 'Farsight snapshot necklace',
+	body: 'Pernix body',
+	cape: 'Tidal collector',
+	hands: 'Pernix gloves',
+	legs: 'Pernix chaps',
+	feet: 'Pernix boots',
 	'2h': 'Twisted bow',
-	ring: 'Venator ring',
+	ring: 'Ring of piercing(i)',
 	ammo: 'Dragon arrow'
 });
 const maxRange = new Gear(maxRangeGear);
 
 export const maxMeleeGear = constructGearSetup({
-	head: "Inquisitor's great helm",
-	neck: 'Amulet of torture',
-	body: "Inquisitor's hauberk",
-	cape: 'Infernal cape',
-	hands: 'Ferocious gloves',
-	legs: "Inquisitor's plateskirt",
-	feet: 'Primordial boots',
-	weapon: "Inquisitor's mace",
-	shield: 'Avernic defender',
-	ring: 'Ultor ring'
+	head: 'Torva full helm',
+	neck: "Brawler's hook necklace",
+	body: 'Torva platebody',
+	cape: 'TzKal cape',
+	hands: 'Torva gloves',
+	legs: 'Torva platelegs',
+	feet: 'Torva boots',
+	weapon: 'Drygore rapier',
+	shield: 'Offhand drygore rapier',
+	ring: 'Ignis ring(i)'
 });
 const maxMelee = new Gear(maxMeleeGear);
 
@@ -275,10 +277,9 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity: number
 			if (
 				users.length > 1 &&
 				!user.hasEquippedOrInBank('Dragon hunter crossbow') &&
-				!user.hasEquippedOrInBank('Twisted bow') &&
-				!user.hasEquipped(['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'], true)
+				!['Twisted bow', 'Zaryte bow', 'Bow of faerdhinen (c)'].some(i => user.hasEquippedOrInBank(i))
 			) {
-				return `${user.usernameOrMention} doesn't own a Twisted bow, Bow of faerdhinen (c) or Dragon hunter crossbow, which is required for Challenge Mode.`;
+				return `${user.usernameOrMention} doesn't own a Twisted bow, Zaryte bow, Bow of faerdhinen (c) or Dragon hunter crossbow, which is required for Challenge Mode.`;
 			}
 			const kc = await getMinigameScore(user.id, 'raids');
 			if (kc < 200) {
@@ -306,6 +307,16 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity: number
 			});
 			if (!sangResult.hasEnough) {
 				return sangResult.userMessage;
+			}
+		}
+		if (user.gear.mage.hasEquipped('Void staff')) {
+			const voidStaffResult = checkUserCanUseDegradeableItem({
+				item: getOSItem('Void staff'),
+				chargesToDegrade: VOID_STAFF_CHARGES_PER_COX,
+				user
+			});
+			if (!voidStaffResult.hasEnough) {
+				return voidStaffResult.userMessage;
 			}
 		}
 		if (user.gear.mage.hasEquipped("Tumeken's shadow")) {
@@ -366,7 +377,7 @@ interface ItemBoost {
 	item: Item;
 	boost: number;
 	mustBeEquipped: boolean;
-	setup?: 'mage' | 'range';
+	setup?: 'mage' | 'range' | 'melee';
 	mustBeCharged?: boolean;
 	requiredCharges?: number;
 }
@@ -375,7 +386,7 @@ const itemBoosts: ItemBoost[][] = [
 	[
 		{
 			item: getOSItem('Twisted bow'),
-			boost: 8,
+			boost: 7,
 			mustBeEquipped: false
 		},
 		{
@@ -408,6 +419,11 @@ const itemBoosts: ItemBoost[][] = [
 	],
 	[
 		{
+			item: getOSItem('Drygore rapier'),
+			boost: 8,
+			mustBeEquipped: true
+		},
+		{
 			item: getOSItem('Dragon hunter lance'),
 			boost: 3,
 			mustBeEquipped: false
@@ -422,8 +438,16 @@ const itemBoosts: ItemBoost[][] = [
 	],
 	[
 		{
-			item: getOSItem("Tumeken's shadow"),
+			item: getOSItem('Void staff'),
 			boost: 9,
+			mustBeEquipped: true,
+			setup: 'mage',
+			mustBeCharged: true,
+			requiredCharges: VOID_STAFF_CHARGES_PER_COX
+		},
+		{
+			item: getOSItem("Tumeken's shadow"),
+			boost: 8,
 			mustBeEquipped: false,
 			setup: 'mage',
 			mustBeCharged: true,
@@ -431,7 +455,7 @@ const itemBoosts: ItemBoost[][] = [
 		},
 		{
 			item: getOSItem('Sanguinesti staff'),
-			boost: 6,
+			boost: 7,
 			mustBeEquipped: false,
 			setup: 'mage',
 			mustBeCharged: true,
@@ -440,10 +464,10 @@ const itemBoosts: ItemBoost[][] = [
 	],
 	[
 		{
-			item: getOSItem('Zaryte vambraces'),
+			item: getOSItem('Offhand drygore rapier'),
 			boost: 4,
 			mustBeEquipped: true,
-			setup: 'range'
+			setup: 'melee'
 		}
 	]
 ];
@@ -468,6 +492,7 @@ export async function calcCoxDuration(
 	duration: number;
 	maxUserReduction: number;
 	degradeables: { item: Item; user: MUser; chargesToDegrade: number }[];
+	chinCannonUser: MUser | null;
 }> {
 	const team = shuffleArr(_team).slice(0, 9);
 	const size = team.length;
@@ -523,8 +548,10 @@ export async function calcCoxDuration(
 			}
 		});
 
-		totalReduction += userPercentChange / size;
-		reductions[u.id] = userPercentChange / size;
+		let perc = Math.min(100, userPercentChange / size);
+
+		totalReduction += perc;
+		reductions[u.id] = perc;
 	}
 	let duration = baseDuration;
 
@@ -537,7 +564,23 @@ export async function calcCoxDuration(
 
 	duration -= duration * (teamSizeBoostPercent(size) / 100);
 
-	return { duration, reductions, maxUserReduction: maxSpeedReductionUser / size, degradeables: degradeableItems };
+	let chinCannonUser: MUser | null = null;
+
+	for (const u of team) {
+		if (u.gear.range.hasEquipped('Chincannon')) {
+			duration = reduceNumByPercent(duration, inventionBoosts.chincannon.coxPercentReduction);
+			chinCannonUser = u;
+			break;
+		}
+	}
+
+	return {
+		duration,
+		reductions,
+		maxUserReduction: maxSpeedReductionUser / size,
+		degradeables: degradeableItems,
+		chinCannonUser
+	};
 }
 
 export async function calcCoxInput(u: MUser, solo: boolean) {

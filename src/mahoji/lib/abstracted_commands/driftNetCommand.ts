@@ -24,7 +24,10 @@ export async function driftNetCommand(
 		return 'You need atleast level 44 Hunter and 47 Fishing to do Drift net fishing.';
 	}
 
-	if (!user.hasEquipped(['Graceful gloves', 'Graceful top', 'Graceful legs'])) {
+	if (
+		!user.hasEquipped(['Graceful gloves', 'Graceful top', 'Graceful legs']) &&
+		!user.hasEquippedOrInBank(['Agility master cape'])
+	) {
 		return 'You need Graceful top, legs and gloves equipped to do Drift net fishing.';
 	}
 

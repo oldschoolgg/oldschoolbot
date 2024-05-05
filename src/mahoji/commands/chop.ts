@@ -1,7 +1,12 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+<<<<<<< HEAD
 import { TwitcherGloves, TWITCHERS_GLOVES } from '../../lib/constants';
+=======
+import { IVY_MAX_TRIP_LENGTH_BOOST } from '../../lib/constants';
+import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+>>>>>>> bsopet
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
@@ -13,6 +18,11 @@ import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const axes = [
+	{
+		id: itemID('Dwarven greataxe'),
+		multiplier: 8,
+		wcLvl: 99
+	},
 	{
 		id: itemID('Crystal axe'),
 		multiplier: 4,
@@ -136,7 +146,11 @@ export const chopCommand: OSBMahojiCommand = {
 
 		if (!log) return "That's not a valid log to chop.";
 
+<<<<<<< HEAD
 		let { quantity, powerchop, forestry_events, twitchers_gloves } = options;
+=======
+		let { quantity, powerchop = false } = options;
+>>>>>>> bsopet
 
 		const skills = user.skillsAsLevels;
 
@@ -147,6 +161,11 @@ export const chopCommand: OSBMahojiCommand = {
 		const { QP } = user;
 		if (QP < log.qpRequired) {
 			return `${user.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`;
+		}
+
+		if (log.customReq) {
+			const res = await log.customReq(user);
+			if (typeof res === 'string') return res;
 		}
 
 		const boosts = [];
@@ -177,14 +196,41 @@ export const chopCommand: OSBMahojiCommand = {
 
 		// Default bronze axe, last in the array
 		let axeMultiplier = 1;
-		boosts.push(`**${axeMultiplier}x** success multiplier for Bronze axe`);
 
-		for (const axe of axes) {
-			if (!user.hasEquippedOrInBank([axe.id]) || skills.woodcutting < axe.wcLvl) continue;
-			axeMultiplier = axe.multiplier;
-			boosts.pop();
-			boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
-			break;
+		if (user.hasEquippedOrInBank(['Drygore axe'])) {
+			let [predeterminedTotalTime] = determineWoodcuttingTime({
+				quantity,
+				user,
+				log,
+				axeMultiplier: 10,
+				powerchopping: powerchop,
+				woodcuttingLvl: wcLvl
+			});
+			const boostRes = await inventionItemBoost({
+				user,
+				inventionID: InventionID.DrygoreAxe,
+				duration: predeterminedTotalTime
+			});
+			if (boostRes.success) {
+				axeMultiplier = 10;
+				boosts.push(`**10x** success multiplier for Drygore axe (${boostRes.messages})`);
+			} else {
+				axeMultiplier = 8;
+				boosts.push('**8x** success multiplier for Dwarven greataxe');
+			}
+		} else {
+			for (const axe of axes) {
+				if (!user.hasEquippedOrInBank([axe.id]) || skills.woodcutting < axe.wcLvl) continue;
+				axeMultiplier = axe.multiplier;
+				boosts.pop();
+				boosts.push(`**${axeMultiplier}x** success multiplier for ${itemNameFromID(axe.id)}`);
+				break;
+			}
+		}
+
+		if (log.name === 'Ivy') {
+			boosts.push(`+${formatDuration(IVY_MAX_TRIP_LENGTH_BOOST, true)} max trip length for Ivy`);
+			powerchop = false;
 		}
 
 		if (!powerchop) {

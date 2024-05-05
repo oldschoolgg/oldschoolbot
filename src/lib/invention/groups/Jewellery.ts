@@ -1,0 +1,98 @@
+import getOSItem from '../../util/getOSItem';
+import { DisassemblySourceGroup } from '..';
+
+const i = getOSItem;
+
+export const Jewellery: DisassemblySourceGroup = {
+	name: 'Jewellery',
+	items: [
+		{ item: i('Opal ring'), lvl: 1 },
+		{ item: i('Gold ring'), lvl: 5 },
+		{ item: i('Gold necklace'), lvl: 6 },
+		{ item: i('Gold bracelet'), lvl: 7 },
+		{ item: i('Pre-nature amulet'), lvl: 8 },
+		{ item: i('Gold amulet'), lvl: 8 },
+		{ item: i('Amulet of power'), lvl: 8 },
+		{ item: i('Jade ring'), lvl: 13 },
+		{ item: i('Holy symbol'), lvl: 16 },
+		{ item: i('Opal necklace'), lvl: 16 },
+		{ item: i('Topaz ring'), lvl: 16 },
+		{ item: i('Ring of recoil'), lvl: 20 },
+		{ item: i('Sapphire ring'), lvl: 20 },
+		{ item: i('Opal bracelet'), lvl: 22 },
+		{ item: i('Sapphire necklace'), lvl: 22 },
+		{ item: i('Bracelet of clay'), lvl: 23 },
+		{ item: i('Sapphire bracelet'), lvl: 23 },
+		{ item: i('Sapphire amulet'), lvl: 24 },
+		{ item: i('Jade necklace'), lvl: 25 },
+		{ item: i('Emerald ring'), lvl: 27 },
+		{ item: i('Opal amulet'), lvl: 27 },
+		{ item: i('Binding necklace'), lvl: 29 },
+		{ item: i('Emerald necklace'), lvl: 29 },
+		{ item: i('Jade bracelet'), lvl: 29 },
+		{ item: i('Emerald bracelet'), lvl: 30 },
+		{ item: i('Emerald amulet'), lvl: 31 },
+		{ item: i('Topaz necklace'), lvl: 32 },
+		{ item: i('Jade amulet'), lvl: 34 },
+		{ item: i('Ring of forging'), lvl: 34 },
+		{ item: i('Ruby ring'), lvl: 34 },
+		{ item: i('Salve amulet'), lvl: 35 },
+		{ item: i('Salve amulet (e)'), lvl: 35 },
+		{ item: i('Topaz bracelet'), lvl: 38 },
+		{ item: i('Ruby necklace'), lvl: 40 },
+		{ item: i('Ruby bracelet'), lvl: 42 },
+		{ item: i('Diamond ring'), lvl: 43 },
+		{ item: i('Ring of life'), lvl: 43 },
+		{ item: i('Archers ring'), lvl: 45 },
+		{ item: i('Seers ring'), lvl: 45 },
+		{ item: i('Topaz amulet'), lvl: 45 },
+		{ item: i('Warrior ring'), lvl: 45 },
+		{
+			item: i('Ring of coins'),
+			lvl: 50
+		},
+		{ item: i('Ruby amulet'), lvl: 50 },
+		{
+			item: i('Strength amulet (t)'),
+			lvl: 50
+		},
+		{ item: i('Dragonstone ring'), lvl: 55 },
+		{ item: i('Ring of wealth'), lvl: 55 },
+		{ item: i('Diamond necklace'), lvl: 56 },
+		{ item: i('Phoenix necklace'), lvl: 56 },
+		{ item: i('Diamond bracelet'), lvl: 58 },
+		{ item: i('Onyx ring'), lvl: 67 },
+		{ item: i('Ring of stone'), lvl: 67 },
+		{ item: i('Diamond amulet'), lvl: 70 },
+		{ item: i('Skills necklace'), lvl: 72 },
+		{ item: i('Combat bracelet'), lvl: 74 },
+		{ item: i('Dragonstone bracelet'), lvl: 74 },
+		{
+			item: [
+				'Dragonstone amulet',
+				'Amulet of glory',
+				'Amulet of glory (t)',
+				'Amulet of glory (t4)',
+				'Amulet of glory (t6)',
+				'Amulet of glory(4)',
+				'Amulet of glory(6)'
+			].map(i),
+			lvl: 80
+		},
+		{ item: i('Berserker necklace'), lvl: 82 },
+		{ item: i('Onyx necklace'), lvl: 82 },
+		{ item: i('Onyx bracelet'), lvl: 84 },
+		{ item: i('Regen bracelet'), lvl: 84 },
+		{ item: i('Onyx amulet'), lvl: 90 },
+		{ item: i('Zenyte ring'), lvl: 89 },
+		{ item: i('Ring of suffering'), lvl: 89 },
+		{ item: i('Zenyte necklace'), lvl: 92 },
+		{ item: i('Necklace of anguish'), lvl: 92 },
+		{ item: i('Zenyte bracelet'), lvl: 95 },
+		{ item: i('Tormented bracelet'), lvl: 95 },
+		{ item: i('Zenyte amulet'), lvl: 98 },
+		{ item: i('Amulet of torture'), lvl: 98 },
+		{ item: i('Amulet of fury'), lvl: 90 }
+	],
+	parts: { precious: 20, smooth: 80 }
+};

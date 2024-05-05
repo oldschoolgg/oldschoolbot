@@ -15,6 +15,7 @@ import { randFloat, roll } from '../../util';
 import itemID from '../../util/itemID';
 
 const clues = [
+	[itemID('Clue scroll (grandmaster)'), 0.2 / 10],
 	[itemID('Clue scroll(elite)'), 1 / 10],
 	[itemID('Clue scroll(hard)'), 2 / 10],
 	[itemID('Clue scroll(medium)'), 3 / 10],
@@ -22,7 +23,7 @@ const clues = [
 ];
 
 export default function addSkillingClueToLoot(
-	user: MUser,
+	userOrLevel: MUser | number,
 	skill: SkillsEnum,
 	quantity: number,
 	clueChance: number,
@@ -32,8 +33,14 @@ export default function addSkillingClueToLoot(
 	twitcherSetting?: string,
 	wcCapeNestBoost?: boolean
 ) {
+<<<<<<< HEAD
 	const userLevel = user.skillLevel(skill);
 	const nestChance = wcCapeNestBoost ? Math.floor(256 * 0.9) : 256;
+=======
+	const userLevel = typeof userOrLevel === 'number' ? userOrLevel : userOrLevel.skillLevel(skill);
+	const chance = Math.floor(clueChance / (100 + userLevel));
+	let nests = 0;
+>>>>>>> bsopet
 	const cluesTotalWeight = sumArr(clues.map(c => c[1]));
 	let chance = Math.floor(clueChance / (100 + userLevel));
 	let nests = 0;
@@ -74,11 +81,14 @@ export default function addSkillingClueToLoot(
 		let clueRoll = randFloat(0, cluesTotalWeight);
 		for (const clue of clues) {
 			if (clueRoll < clue[1] || nextTier) {
+<<<<<<< HEAD
 				if (BOT_TYPE === 'OSB' && (user.bank.amount(clue[0]) >= 1 || loot.amount(clue[0]) >= 1)) {
 					nextTier = true;
 					continue;
 				}
 
+=======
+>>>>>>> bsopet
 				nests++;
 				gotClue = true;
 				loot.add(clue[0]);

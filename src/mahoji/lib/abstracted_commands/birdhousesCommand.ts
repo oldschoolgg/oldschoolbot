@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import birdhouses, { Birdhouse, birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import defaultBirdhouseTrap, { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
+import { birdhouseLimit, formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
@@ -65,6 +65,8 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	const infoStr: string[] = [];
 	const boostStr: string[] = [];
 
+	const birdHouses = birdhouseLimit(user);
+
 	const existingBirdhouse = await calculateBirdhouseDetails(user.id);
 	if (!existingBirdhouse.isReady && existingBirdhouse.raw.lastPlaced) return birdhouseCheckCommand(user.user);
 
@@ -103,7 +105,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	}
 	let gotCraft = false;
 	let removeBank = new Bank();
-	const premadeBankCost = birdhouseToPlant.houseItemReq.clone().multiply(4);
+	const premadeBankCost = birdhouseToPlant.houseItemReq.clone().multiply(birdHouses);
 	if (user.owns(premadeBankCost)) {
 		removeBank.add(premadeBankCost);
 	} else {
@@ -111,7 +113,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 			return `${user.minionName} needs ${birdhouseToPlant.craftLvl} Crafting to make ${birdhouseToPlant.name} during the run or write \`/activities birdhouse run --nocraft\`.`;
 		}
 		gotCraft = true;
-		removeBank.add(birdhouseToPlant.craftItemReq.clone().multiply(4));
+		removeBank.add(birdhouseToPlant.craftItemReq.clone().multiply(birdHouses));
 	}
 
 	let canPay = false;
@@ -122,7 +124,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 		for (const fav of favourites) {
 			const seed = birdhouseSeeds.find(s => s.item.id === fav);
 			if (!seed) continue;
-			const seedCost = new Bank().add(seed.item.id, seed.amount * 4);
+			const seedCost = new Bank().add(seed.item, seed.amount * birdHouses);
 			if (userBank.has(seedCost)) {
 				infoStr.push(`You baited the birdhouses with ${seedCost}.`);
 				removeBank.add(seedCost);
@@ -153,10 +155,10 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 
 	// If user does not have something already placed, just place the new birdhouses.
 	if (!existingBirdhouse.raw.birdhousePlaced) {
-		infoStr.unshift(`${user.minionName} is now placing 4x ${birdhouseToPlant.name}.`);
+		infoStr.unshift(`${user.minionName} is now placing ${birdHouses}x ${birdhouseToPlant.name}.`);
 	} else {
 		infoStr.unshift(
-			`${user.minionName} is now collecting 4x ${existingBirdhouse.raw.lastPlaced}, and then placing 4x ${birdhouseToPlant.name}.`
+			`${user.minionName} is now collecting ${birdHouses}x ${existingBirdhouse.raw.lastPlaced}, and then placing ${birdHouses}x ${birdhouseToPlant.name}.`
 		);
 	}
 

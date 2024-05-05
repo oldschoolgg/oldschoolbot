@@ -1,5 +1,9 @@
 import { randInt } from 'e';
 
+import { userHasMasterFarmerOutfit } from '../../../mahoji/mahojiSettings';
+import { BitField } from '../../constants';
+import { hasUnlockedAtlantis } from '../../util';
+import { FarmingPatchName } from '../../util/farmingHelpers';
 import { Plant, SkillsEnum } from '../types';
 
 export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number] {
@@ -27,6 +31,22 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 			break;
 		}
 	}
+	if (user.bitfield.includes(BitField.HasScrollOfFarming)) numOfPatches += 2;
+	if (userHasMasterFarmerOutfit(user)) numOfPatches += 3;
+
+	// Unlock extra patches in Atlantis
+	const atlantisPatches: Partial<Record<FarmingPatchName, number>> = {
+		fruit_tree: 1,
+		seaweed: 2,
+		tree: 1
+	};
+	if (hasUnlockedAtlantis(user)) {
+		const extraAtlantisPatches = atlantisPatches[plant.seedType];
+		if (extraAtlantisPatches) {
+			numOfPatches += extraAtlantisPatches;
+		}
+	}
+
 	return [numOfPatches];
 }
 
@@ -38,13 +58,13 @@ export function calcVariableYield(
 ) {
 	if (!plant.variableYield) return 0;
 	let cropYield = 0;
-	if (plant.name === 'Crystal tree') {
+	if (plant.name === 'Crystal tree' || plant.name === 'Grand crystal tree') {
 		if (!plant.variableOutputAmount) return 0;
-		for (let i = plant.variableOutputAmount.length; i > 0; i--) {
-			const [upgradeTypeNeeded, min, max] = plant.variableOutputAmount[i - 1];
+		for (const [upgradeTypeNeeded, min, max] of plant.variableOutputAmount) {
 			if (upgradeType === upgradeTypeNeeded) {
-				cropYield += randInt(min, max);
-				cropYield *= quantityAlive;
+				for (let i = 0; i < quantityAlive; i++) {
+					cropYield += randInt(min, max);
+				}
 				break;
 			}
 		}

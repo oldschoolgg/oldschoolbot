@@ -23,6 +23,17 @@ vi.mock('../../src/lib/util/webhook', async () => {
 	};
 });
 
+vi.mock('../../src/lib/leagues/stats', async () => {
+	const actual: any = await vi.importActual('../../src/lib/leagues/stats');
+	return {
+		...actual,
+		calcLeaguesRanking: async () => ({
+			pointsRanking: 1,
+			tasksRanking: 1
+		})
+	};
+});
+
 // @ts-ignore mock
 globalClient.fetchUser = async (id: string | bigint) => ({
 	id: typeof id === 'string' ? id : String(id),

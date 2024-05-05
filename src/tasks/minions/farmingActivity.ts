@@ -1,16 +1,26 @@
-import { randInt } from 'e';
+import { randInt, Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
 import { BitField, Emoji, Events } from '../../lib/constants';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { prisma } from '../../lib/settings/prisma';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
-import Farming from '../../lib/skilling/skills/farming';
-import { SkillsEnum } from '../../lib/skilling/types';
+import Farming, { plants } from '../../lib/skilling/skills/farming';
+import { Plant, SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { assert, roll, skillingPetDropRate } from '../../lib/util';
+import {
+	assert,
+	clAdjustedDroprate,
+	increaseBankQuantitesByPercent,
+	itemID,
+	itemNameFromID,
+	roll,
+	skillingPetDropRate
+} from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -18,14 +28,97 @@ import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
+const plopperBoostPercent = 100;
+
+async function farmingLootBoosts(
+	user: MUser,
+	method: 'harvest' | 'plant',
+	plant: Plant,
+	loot: Bank,
+	messages: string[]
+) {
+	let bonusPercentage = 0;
+	if (user.allItemsOwned.has('Plopper')) {
+		bonusPercentage += plopperBoostPercent;
+		messages.push(`${plopperBoostPercent}% for Plopper`);
+	}
+
+	if (user.hasEquippedOrInBank('Farming master cape')) {
+		bonusPercentage += 100;
+		messages.push('100% for Farming master cape');
+	}
+	if (method === 'harvest' && user.hasEquippedOrInBank(['Arcane harvester']) && plant.name !== 'Mysterious tree') {
+		const boostRes = await inventionItemBoost({
+			user,
+			inventionID: InventionID.ArcaneHarvester,
+			duration: plant.level * Time.Second * 30
+		});
+		if (boostRes.success) {
+			bonusPercentage += inventionBoosts.arcaneHarvester.harvestBoostPercent;
+			messages.push(
+				`${inventionBoosts.arcaneHarvester.harvestBoostPercent}% bonus yield from Arcane Harvester (${boostRes.messages})`
+			);
+		}
+	}
+	increaseBankQuantitesByPercent(loot, bonusPercentage);
+}
+
+const mutations = [
+	{
+		chance: 30,
+		plantName: 'Mango bush',
+		output: itemID('Shiny mango')
+	},
+	{
+		chance: 7,
+		plantName: 'Cabbage',
+		output: itemID('Cannonball cabbage')
+	},
+	{
+		chance: 7,
+		plantName: 'Potato',
+		output: itemID('Sweet potato')
+	},
+	{
+		chance: 7,
+		plantName: 'Sweetcorn',
+		output: itemID('Rainbow sweetcorn')
+	},
+	{
+		chance: 7,
+		plantName: 'Strawberry',
+		output: itemID('White strawberry')
+	},
+	{
+		chance: 7,
+		plantName: 'Mushroom',
+		output: itemID('Mooshroom')
+	}
+];
+for (const mut of mutations) {
+	const plant = plants.find(i => i.name === mut.plantName);
+	if (!plant) throw new Error(`Missing ${mut.plantName}`);
+}
+
 export const farmingTask: MinionTask = {
 	type: 'Farming',
 	async run(data: FarmingActivityTaskOptions) {
-		const { plantsName, patchType, quantity, upgradeType, payment, userID, channelID, planting, currentDate, pid } =
-			data;
+		const {
+			plantsName,
+			patchType,
+			quantity,
+			upgradeType,
+			payment,
+			userID,
+			channelID,
+			planting,
+			currentDate,
+			pid,
+			duration
+		} = data;
 		const user = await mUserFetch(userID);
-		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
-		const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
+		const currentFarmingLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
+		const currentWoodcuttingLevel = Math.min(99, user.skillLevel(SkillsEnum.Woodcutting));
 		let baseBonus = 1;
 		let bonusXP = 0;
 		let plantXp = 0;
@@ -49,6 +142,8 @@ export const farmingTask: MinionTask = {
 		let bonusXpMultiplier = 0;
 		let farmersPiecesCheck = 0;
 		let loot = new Bank();
+
+		const hasPlopper = user.allItemsOwned.has('Plopper');
 
 		const plant = Farming.Plants.find(plant => plant.name === plantsName)!;
 		assert(Boolean(plant));
@@ -122,7 +217,15 @@ export const farmingTask: MinionTask = {
 				duration: data.duration
 			})}`;
 
-			if (loot.length > 0) str += `\n\nYou received: ${loot}.`;
+			await farmingLootBoosts(user, 'plant', plant, loot, infoStr);
+
+			if (loot.has('Plopper')) {
+				loot.bank[itemID('Plopper')] = 1;
+			}
+
+			if (loot.length > 0) {
+				str += `\n\nYou received: ${loot}.`;
+			}
 
 			updateBankSetting('farming_loot_bank', loot);
 			await transactItems({
@@ -153,12 +256,14 @@ export const farmingTask: MinionTask = {
 			const plantToHarvest = Farming.Plants.find(plant => plant.name === patchType.lastPlanted)!;
 
 			let quantityDead = 0;
-			for (let i = 0; i < patchType.lastQuantity; i++) {
-				for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
-					const deathRoll = Math.random();
-					if (deathRoll < Math.floor(plantToHarvest.chanceOfDeath * chanceOfDeathReduction) / 128) {
-						quantityDead += 1;
-						break;
+			if (!hasPlopper) {
+				for (let i = 0; i < patchType.lastQuantity; i++) {
+					for (let j = 0; j < plantToHarvest.numOfStages - 1; j++) {
+						const deathRoll = Math.random();
+						if (deathRoll < Math.floor(plantToHarvest.chanceOfDeath * chanceOfDeathReduction) / 128) {
+							quantityDead += 1;
+							break;
+						}
 					}
 				}
 			}
@@ -196,7 +301,7 @@ export const farmingTask: MinionTask = {
 							Math.floor(
 								plantToHarvest.chance1 +
 									(plantToHarvest.chance99 - plantToHarvest.chance1) *
-										((user.skillLevel(SkillsEnum.Farming) - 1) / 98)
+										((currentFarmingLevel - 1) / 98)
 							) * baseBonus
 						) + 1;
 					const chanceToSaveLife = (plantChanceFactor + 1) / 256;
@@ -274,7 +379,15 @@ export const farmingTask: MinionTask = {
 					harvestXp = 0;
 				} else if (plantToHarvest.givesCrops && chopped) {
 					if (!plantToHarvest.outputCrop) return;
-					harvestXp = cropYield * plantToHarvest.harvestXp;
+
+					loot.add(
+						plantToHarvest.outputCrop,
+						plantToHarvest.fixedOutput && plantToHarvest.fixedOutputAmount
+							? plantToHarvest.fixedOutputAmount * alivePlants
+							: cropYield
+					);
+
+					harvestXp = cropYield * alivePlants * plantToHarvest.harvestXp;
 				}
 			}
 
@@ -333,6 +446,11 @@ export const farmingTask: MinionTask = {
 				);
 			}
 
+			if (duration > Time.Minute * 20 && roll(10)) {
+				loot.multiply(2);
+				loot.add(MysteryBoxes.roll());
+			}
+
 			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, plantToHarvest.petChance);
 			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementKC(Monsters.Hespori.id, patchType.lastQuantity);
@@ -351,6 +469,13 @@ export const farmingTask: MinionTask = {
 				};
 				await combatAchievementTripEffect({ user, loot, messages: infoStr, data: fakeMonsterTaskOptions });
 				loot = hesporiLoot;
+				const plopperDroprate = clAdjustedDroprate(
+					user,
+					'Plopper',
+					(plantToHarvest.petChance - currentFarmingLevel * 25) / patchType.lastQuantity / 5,
+					2
+				);
+				if (roll(plopperDroprate)) loot.add('Plopper');
 			} else if (
 				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
@@ -358,6 +483,14 @@ export const farmingTask: MinionTask = {
 				roll(petDropRate / alivePlants)
 			) {
 				loot.add('Tangleroot');
+			} else if (patchType.patchPlanted && plantToHarvest.petChance && alivePlants > 0) {
+				const plopperDroprate = clAdjustedDroprate(
+					user,
+					'Plopper',
+					(plantToHarvest.petChance - currentFarmingLevel * 25) / alivePlants / 5,
+					2
+				);
+				if (roll(plopperDroprate)) loot.add('Plopper');
 			}
 			if (plantToHarvest.seedType === 'seaweed' && roll(3)) loot.add('Seaweed spore', randInt(1, 3));
 
@@ -429,12 +562,66 @@ export const farmingTask: MinionTask = {
 				janeMessage = true;
 			}
 
-			if (loot.length > 0) infoStr.push(`\nYou received: ${loot}.`);
-
 			if (!planting) {
 				infoStr.push('\nThe patches have been cleared. They are ready to have new seeds planted.');
 			} else {
 				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
+			}
+
+			await farmingLootBoosts(user, 'harvest', plantToHarvest, loot, infoStr);
+			if ('onHarvest' in plantToHarvest && plantToHarvest.onHarvest) {
+				plantToHarvest.onHarvest({ user, loot, quantity: patchType.lastQuantity });
+			}
+
+			if (plantToHarvest.name === 'Mysterious tree') {
+				if (loot.has('Seed Pack')) {
+					loot.add('Seed Pack', 1);
+					infoStr.push('+1 Seed Pack for Mysterious tree farming contract');
+				}
+			}
+
+			if (loot.has('Plopper')) {
+				loot.bank[itemID('Plopper')] = 1;
+				infoStr.push(
+					'<:plopper:787310793321349120> You found a pig on a farm and have adopted it to help you with farming.'
+				);
+			}
+
+			if (user.hasEquippedOrInBank('Farming master cape')) {
+				for (let j = 0; j < alivePlants; j++) {
+					if (roll(10)) {
+						loot.add(MysteryBoxes.roll());
+					}
+				}
+			}
+			// Give boxes for planting when harvesting
+			if (planting && plant.name === 'Mysterious tree') {
+				for (let j = 0; j < quantity; j++) {
+					let upper = randInt(1, 2);
+					for (let i = 0; i < upper; i++) {
+						loot.add(MysteryBoxes.roll());
+					}
+				}
+			}
+			// Give the boxes for harvesting during a harvest
+			if (alivePlants && plantToHarvest.name === 'Mysterious tree') {
+				for (let j = 0; j < alivePlants; j++) {
+					let upper = randInt(1, 3);
+					for (let i = 0; i < upper; i++) {
+						loot.add(MysteryBoxes.roll());
+					}
+				}
+			}
+
+			for (const mut of mutations) {
+				if (alivePlants && plantToHarvest.name === mut.plantName && roll(mut.chance)) {
+					loot.add(mut.output);
+					infoStr.push(`One of your crops mutated into a ${itemNameFromID(mut.output)}.`);
+				}
+			}
+
+			if (Object.keys(loot).length > 0) {
+				infoStr.push(`\nYou received: ${loot}.`);
 			}
 
 			updateBankSetting('farming_loot_bank', loot);
@@ -455,13 +642,19 @@ export const farmingTask: MinionTask = {
 				});
 			}
 
-			handleTripFinish(
+			const seedPackCount = loot.amount('Seed pack');
+
+			return handleTripFinish(
 				user,
 				channelID,
 				infoStr.join('\n'),
 				janeMessage
 					? await chatHeadImage({
-							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${
+							content: `You've completed your contract and I have rewarded you with ${seedPackCount} Seed pack${
+								seedPackCount > 1 ? 's' : ''
+							}. Please open ${
+								seedPackCount > 1 ? 'these Seed packs' : 'this Seed pack'
+							} before asking for a new contract!\nYou have completed ${
 								contractsCompleted + 1
 							} farming contracts.`,
 							head: 'jane'

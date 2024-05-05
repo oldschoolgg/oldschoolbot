@@ -1,9 +1,11 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { Time } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { Emoji } from '../../lib/constants';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Runecraft from '../../lib/skilling/skills/runecraft';
@@ -134,6 +136,14 @@ export const runecraftCommand: OSBMahojiCommand = {
 			tripLength *= 0.95;
 			boosts.push('5% for 60+ Agility');
 		}
+		if (user.usingPet('Obis')) {
+			tripLength /= 2;
+			boosts.push('2x from Obis (3x more essence)');
+		}
+		if (user.hasEquippedOrInBank('Runecraft master cape')) {
+			tripLength /= 2;
+			boosts.push(`${Emoji.RunecraftMasterCape} 2x faster`);
+		}
 
 		if (!usestams) {
 			tripLength *= 3;
@@ -166,6 +176,32 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		const maxTripLength = calcMaxTripLength(user, 'Runecraft');
 
+		if (user.hasEquippedOrInBank(['Abyssal amulet'])) {
+			const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
+				b.runes.some(r => stringMatches(r, runeObj.name))
+			);
+			if (abyssalAmuletBoost) {
+				const boostedActionTime = reduceNumByPercent(tripLength, abyssalAmuletBoost.boost);
+				const boostResult = await inventionItemBoost({
+					user,
+					inventionID: InventionID.AbyssalAmulet,
+					duration: Math.min(
+						maxTripLength,
+						Math.min(
+							Math.floor(maxTripLength / tripLength) * inventorySize,
+							quantity ? quantity / inventorySize : Math.floor(maxTripLength / boostedActionTime)
+						) * boostedActionTime
+					)
+				});
+				if (boostResult.success) {
+					tripLength = boostedActionTime;
+					boosts.push(
+						`${abyssalAmuletBoost.boost}% boost for Abyssal amulet (Removed ${boostResult.materialCost})`
+					);
+				}
+			}
+		}
+
 		const maxCanDo = Math.floor(maxTripLength / tripLength) * inventorySize;
 
 		// If no quantity provided, set it to the max.
@@ -174,12 +210,25 @@ export const runecraftCommand: OSBMahojiCommand = {
 			if (daeyaltEssenceOwned === 0 || quantity === 0 || daeyaltEssenceOwned < quantity) {
 				return "You don't have enough Daeyalt Essence to craft these runes. You can acquire Daeyalt Shards through Mining, and then exchange for essence with the `/create` command.";
 			}
-		} else {
-			if (!quantity) quantity = Math.min(numEssenceOwned, maxCanDo);
+		} else if (!quantity) quantity = Math.min(numEssenceOwned, maxCanDo);
 
-			if (numEssenceOwned === 0 || quantity === 0 || numEssenceOwned < quantity) {
-				return "You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players.";
-			}
+		let essenceRequired = quantity;
+		let outputQuantity = quantity * quantityPerEssence;
+		if (user.usingPet('Obis')) {
+			essenceRequired *= 3;
+		}
+		if (runeObj.name === 'Elder rune') {
+			outputQuantity = Math.max(1, Math.floor((quantityPerEssence * quantity) / 3));
+		}
+		if (
+			!daeyalt_essence &&
+			(numEssenceOwned === 0 ||
+				quantity === 0 ||
+				numEssenceOwned < quantity ||
+				!essenceRequired ||
+				numEssenceOwned < essenceRequired)
+		) {
+			return "You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players.";
 		}
 
 		const numberOfInventories = Math.max(Math.ceil(quantity / inventorySize), 1);
@@ -205,8 +254,8 @@ export const runecraftCommand: OSBMahojiCommand = {
 		let removeTalismanAndOrRunes = new Bank();
 		let hasRingOfTheElements = false;
 		if (runeObj.inputTalisman) {
-			const tomeOfFire = user.hasEquipped(['Tome of fire', 'Tome of fire (empty)']) ? 0 : 7;
-			const tomeOfWater = user.hasEquipped(['Tome of water', 'Tome of water (empty)']) ? 0 : 7;
+			const tomeOfFire = user.hasEquippedOrInBank(['Tome of fire', 'Tome of fire (empty)']) ? 0 : 7;
+			const tomeOfWater = user.hasEquippedOrInBank(['Tome of water', 'Tome of water (empty)']) ? 0 : 7;
 			const magicImbueRuneCost = determineRunes(
 				user,
 				new Bank({ 'Astral rune': 2, 'Fire rune': tomeOfFire, 'Water rune': tomeOfWater })
@@ -282,10 +331,10 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 
 		if (daeyalt_essence) {
-			totalCost.add('Daeyalt essence', quantity);
+			totalCost.add('Daeyalt essence', essenceRequired);
 			if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 		} else {
-			totalCost.add('Pure essence', quantity);
+			totalCost.add('Pure essence', essenceRequired);
 		}
 		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 
@@ -301,10 +350,11 @@ export const runecraftCommand: OSBMahojiCommand = {
 			daeyaltEssence: daeyalt_essence,
 			duration,
 			imbueCasts,
+			obisEssenceQuantity: essenceRequired,
 			type: 'Runecraft'
 		});
 
-		let response = `${user.minionName} is now turning ${quantity}x`;
+		let response = `${user.minionName} is now turning ${essenceRequired}x`;
 
 		if (daeyalt_essence) {
 			response += ' Daeyalt ';
@@ -314,9 +364,9 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		response += `Essence into ${runeObj.name}, it'll take around ${formatDuration(
 			duration
-		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${
-			quantityPerEssence * quantity
-		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
+		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${outputQuantity}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(
+			', '
+		)}`;
 
 		if (!runeObj.stams) {
 			response += `\nNote: You are unable to use Stamina Potion's when crafting ${runeObj.name}s.`;

@@ -21,7 +21,11 @@ const arrayColumns = [
 	['users', 'ironman_alts'],
 	['users', 'slayer.unlocks'],
 	['users', 'slayer.blocked_ids'],
-	['users', 'slayer.autoslay_options']
+	['users', 'slayer.autoslay_options'],
+	['users', 'monkeys_fought'],
+	['users', 'unlocked_blueprints'],
+	['users', 'disabled_inventions'],
+	['users', 'unlocked_gear_templates']
 ];
 
 for (const [table, column] of arrayColumns) {
@@ -121,6 +125,9 @@ for (const { table, name, body } of checkConstraints) {
 }
 startupScripts.push({
 	sql: 'CREATE UNIQUE INDEX IF NOT EXISTS activity_only_one_task ON activity (user_id, completed) WHERE NOT completed;'
+});
+startupScripts.push({
+	sql: 'CREATE UNIQUE INDEX IF NOT EXISTS tame_only_one_task ON tame_activity (user_id, completed) WHERE NOT completed;'
 });
 
 const itemMetaDataNames = Items.map(item => `(${item.id}, '${item.name.replace(/'/g, "''")}')`).join(', ');

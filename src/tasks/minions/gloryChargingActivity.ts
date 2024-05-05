@@ -1,10 +1,9 @@
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../lib/constants';
+import { Events, gloriesInventorySize } from '../../lib/constants';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { gloriesInventorySize } from '../../mahoji/lib/abstracted_commands/chargeGloriesCommand';
 
 export const gloryChargingTask: MinionTask = {
 	type: 'GloryCharging',

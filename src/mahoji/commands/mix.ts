@@ -1,8 +1,9 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { Time } from 'e';
+import { clamp, reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
@@ -98,6 +99,7 @@ export const mixCommand: OSBMahojiCommand = {
 			} gp for each item so they don't have to go.`;
 		}
 
+		const boosts: string[] = [];
 		const maxTripLength = calcMaxTripLength(user, 'Herblore');
 		let quantity = optionQuantity;
 		const maxCanDo = user.bankWithGP.fits(baseCost);
@@ -112,7 +114,30 @@ export const mixCommand: OSBMahojiCommand = {
 			if (maxCanDo < quantity && maxCanDo !== 0) quantity = maxCanDo;
 		}
 
-		quantity = Math.max(1, quantity);
+		if (!options.wesley && !options.zahur) {
+			const boostedTimeToMixSingleItem = reduceNumByPercent(
+				timeToMixSingleItem,
+				inventionBoosts.mechaMortar.herbloreSpeedBoostPercent
+			);
+			const boostResult = await inventionItemBoost({
+				user,
+				inventionID: InventionID.MechaMortar,
+				duration: Math.min(
+					maxTripLength,
+					Math.min(maxCanDo, options.quantity ?? Math.floor(maxTripLength / boostedTimeToMixSingleItem)) *
+						boostedTimeToMixSingleItem
+				)
+			});
+			if (boostResult.success) {
+				timeToMixSingleItem = boostedTimeToMixSingleItem;
+				boosts.push(
+					`${inventionBoosts.mechaMortar.herbloreSpeedBoostPercent}% boost for Mecha-Mortar (${boostResult.messages})`
+				);
+				if (!options.quantity) quantity = Math.min(maxCanDo, Math.floor(maxTripLength / timeToMixSingleItem));
+			}
+		}
+
+		quantity = clamp(quantity, 1, maxCanDo);
 
 		if (quantity * timeToMixSingleItem > maxTripLength)
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
@@ -140,8 +165,13 @@ export const mixCommand: OSBMahojiCommand = {
 			type: 'Herblore'
 		});
 
-		return `${user.minionName} ${cost} making ${quantity}x ${
+		let str = `${user.minionName} ${cost} making ${quantity}x ${
 			mixableItem.outputMultiple ? 'batches of' : ''
 		}${itemName}, it'll take around ${formatDuration(quantity * timeToMixSingleItem)} to finish.`;
+		if (boosts.length > 0) {
+			str += `\n**Boosts:** ${boosts.join(', ')}`;
+		}
+
+		return str;
 	}
 };

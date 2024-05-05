@@ -1,4 +1,5 @@
 import { exec } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 
 import { miniID, toTitleCase } from '@oldschoolgg/toolkit';
@@ -8,13 +9,17 @@ import deepmerge from 'deepmerge';
 import { ButtonBuilder, ButtonStyle, InteractionReplyOptions, time } from 'discord.js';
 import { clamp, objectEntries, roll, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { Bank, Items } from 'oldschooljs';
+import { Bank, Items, LootTable } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { skillEmoji } from '../data/emojis';
 import type { ArrayItemsResolved, Skills } from '../types';
 import getOSItem from './getOSItem';
+
+export function md5sum(str: string) {
+	return createHash('md5').update(str).digest('hex');
+}
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
@@ -129,6 +134,13 @@ export function averageBank(bank: Bank, kc: number) {
 		newBank.add(item.id, Math.floor(qty / kc));
 	}
 	return newBank;
+}
+
+export function calcBabyYagaHouseDroprate(xpBeingReceived: number, cl: Bank) {
+	let rate = 1 / (((xpBeingReceived / 30) * 30) / 50_000_000);
+	let amountInCl = cl.amount('Baby yaga house');
+	if (amountInCl > 1) rate *= amountInCl;
+	return Math.floor(rate);
 }
 
 const shortItemNames = new Map([
@@ -250,6 +262,22 @@ export function calculateSimpleMonsterDeathChance({
 	return clamp(deathChance, lowestDeathChance, highestDeathChance);
 }
 
+export function removeItemsFromLootTable(lootTable: LootTable, itemsToRemove: number[]): void {
+	const filterFunction = (item: any) => !itemsToRemove.includes(item);
+
+	lootTable.table = lootTable.table.filter(item => filterFunction(item.item));
+	lootTable.oneInItems = lootTable.oneInItems.filter(item => filterFunction(item.item));
+	lootTable.tertiaryItems = lootTable.tertiaryItems.filter(item => filterFunction(item.item));
+	lootTable.everyItems = lootTable.everyItems.filter(item => filterFunction(item.item));
+	lootTable.allItems = lootTable.allItems.filter(filterFunction);
+
+	for (const item of lootTable.table) {
+		if (item.item instanceof LootTable) {
+			removeItemsFromLootTable(item.item, itemsToRemove);
+		}
+	}
+}
+
 export function perHourChance(
 	durationMilliseconds: number,
 	oneInXPerHourChance: number,
@@ -295,22 +323,27 @@ export function isValidDiscordSnowflake(snowflake: string): boolean {
 
 const TOO_LONG_STR = 'The result was too long (over 2000 characters), please read the attached file.';
 
-export function returnStringOrFile(string: string | InteractionReplyOptions): Awaited<CommandResponse> {
+export function returnStringOrFile(
+	string: string | InteractionReplyOptions,
+	forceFile = false
+): Awaited<CommandResponse> {
 	if (typeof string === 'string') {
-		if (string.length > 2000) {
+		const hash = md5sum(string).slice(0, 5);
+		if (string.length > 2000 || forceFile) {
 			return {
 				content: TOO_LONG_STR,
-				files: [{ attachment: Buffer.from(string), name: 'result.txt' }]
+				files: [{ attachment: Buffer.from(string), name: `result-${hash}.txt` }]
 			};
 		}
 		return string;
 	}
-	if (string.content && string.content.length > 2000) {
+	if (string.content && (string.content.length > 2000 || forceFile)) {
+		const hash = md5sum(string.content).slice(0, 5);
 		return deepmerge(
 			string,
 			{
 				content: TOO_LONG_STR,
-				files: [{ attachment: Buffer.from(string.content), name: 'result.txt' }]
+				files: [{ attachment: Buffer.from(string.content), name: `result-${hash}.txt` }]
 			},
 			{ clone: false }
 		);
@@ -332,6 +365,12 @@ export function containsBlacklistedWord(str: string): boolean {
 		}
 	}
 	return false;
+}
+
+export function calculateAverageTimeForSuccess(probabilityPercent: number, timeFrameMilliseconds: number): number {
+	let probabilityOfSuccess = probabilityPercent / 100;
+	let averageTimeUntilSuccessMilliseconds = timeFrameMilliseconds / probabilityOfSuccess;
+	return averageTimeUntilSuccessMilliseconds;
 }
 
 export function ellipsize(str: string, maxLen: number = 2000) {

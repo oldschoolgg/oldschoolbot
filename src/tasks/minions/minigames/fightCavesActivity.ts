@@ -3,6 +3,7 @@ import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { prisma } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
@@ -146,6 +147,11 @@ export const fightCavesTask: MinionTask = {
 			);
 		}
 
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
+			loot.multiply(2);
+		}
+
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,
@@ -191,6 +197,10 @@ export const fightCavesTask: MinionTask = {
 
 			msg = `Jad task completed. ${xpMessage}. \n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
 			// End slayer code
+		}
+
+		if (flappyRes.shouldGiveBoost) {
+			msg += `\n\n${flappyRes.userMsg}`;
 		}
 
 		handleTripFinish(

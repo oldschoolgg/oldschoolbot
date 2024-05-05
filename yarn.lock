@@ -566,6 +566,11 @@
   dependencies:
     "@sapphire/utilities" "^3.3.0"
 
+"@sapphire/utilities@^1.4.7":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-1.7.0.tgz#b40adc0f092ce988232da3879c68d0ee17ee8908"
+  integrity sha512-+bU6rGr529oj1RoK31aHkBoLYnEqawRwwwUMSRPeaZx21gPrvqjJgwyBBMPEWTv2kjRSyzTTVtV7U0bkZ2RMjQ==
+
 "@sapphire/utilities@^3.3.0":
   version "3.3.0"
   resolved "https://registry.npmjs.org/@sapphire/utilities/-/utilities-3.3.0.tgz"

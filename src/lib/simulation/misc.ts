@@ -178,37 +178,3 @@ export const BuildersSupplyCrateTable = new LootTable()
 	.add('Soft clay', [45, 48])
 	.add('Bolt of cloth', 15)
 	.add('Limestone brick', 9);
-
-export const NexUniqueTable = new LootTable()
-	.add('Nihil horn', 1, 2)
-	.add('Zaryte vambraces', 1, 3)
-	.add('Ancient hilt', 1, 1)
-	.add('Torva full helm (damaged)', 1, 2)
-	.add('Torva platebody (damaged)', 1, 2)
-	.add('Torva platelegs (damaged)', 1, 2);
-
-const NexNonUniqueBaseTable = new LootTable()
-	.add('Blood rune', [84, 325], 3)
-	.add('Death rune', [85, 170], 3)
-	.add('Soul rune', [86, 227], 3)
-	.add('Dragon bolts (unf)', [12, 90], 3)
-	.add('Cannonball', [42, 298], 3)
-	.add('Air rune', [123, 1365])
-	.add('Fire rune', [210, 1655])
-	.add('Water rune', [193, 1599])
-	.add('Onyx bolts (e)', [11, 29])
-	.add('Air orb', [6, 20], 3)
-	.add('Uncut ruby', [3, 26], 3)
-	.add('Wine of zamorak', [4, 14], 3)
-	.add('Coal', [23, 95])
-	.add('Runite ore', [2, 28])
-	.add(new LootTable().every('Shark', 3).every('Prayer potion(4)', 1), 1, 1)
-	.add(new LootTable().every('Saradomin brew(4)', 2).every('Super restore(4)', 1), 1, 1)
-	.add('Ecumenical key shard', [6, 39])
-	.add('Blood essence', [1, 2])
-	.add('Coins', [8539, 26_748]);
-
-export const NexNonUniqueTable = new LootTable()
-	.every(NexNonUniqueBaseTable, 2)
-	.oneIn(25, 'Nihil shard', [1, 20])
-	.oneIn(100, 'Rune sword');

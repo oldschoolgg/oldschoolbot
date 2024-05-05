@@ -1,6 +1,7 @@
 import { Craftable } from '../../../types';
 import Birdhouse from './birdhouse';
 import Built from './built';
+import { customCraftables } from './custom';
 import Dragonhide from './dragonhide';
 import Gems from './gems';
 import Glassblowing from './glassblowing';
@@ -20,5 +21,8 @@ export const Craftables: Craftable[] = [
 	...Leather,
 	...Misc,
 	...Silver,
-	...Tanning
+	...Tanning,
+	...customCraftables
 ];
+
+export const craftingCL = Craftables.map(i => i.id);

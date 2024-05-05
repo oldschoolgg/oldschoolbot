@@ -31,13 +31,13 @@ LIMIT 10;`;
 	return random;
 }
 
-const clKey: keyof User = 'osb_cl_percent';
-const levelKey: keyof User = 'osb_total_level';
+const clKey: keyof User = 'bso_cl_percent';
+const levelKey: keyof User = 'bso_total_level';
 const totalXPKey: keyof User = BOT_TYPE === 'OSB' ? 'osb_total_xp' : 'bso_total_xp';
 
 export async function roboChimpSyncData(user: MUser) {
 	const stats = await MUserStats.fromID(user.id);
-	const [totalClItems, clItems] = getTotalCl(user, 'collection', stats);
+	const [totalClItems, clItems] = await getTotalCl(user, 'collection', stats);
 	const clCompletionPercentage = round(calcWhatPercent(clItems, totalClItems), 2);
 	const totalXP = sumArr(Object.values(user.skillsAsXP));
 

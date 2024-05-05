@@ -1,9 +1,10 @@
 import { Time } from 'e';
 
+import { BitField } from '../../../lib/constants';
 import { Enchantables } from '../../../lib/skilling/skills/magic/enchantables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { EnchantingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches } from '../../../lib/util';
+import { formatDuration, itemID, itemNameFromID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
@@ -19,6 +20,10 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 
 	if (!enchantable) {
 		return 'That is not a valid item to enchant.';
+	}
+
+	if (enchantable.id === itemID('Magic banana') && !user.bitfield.includes(BitField.HasBananaEnchantmentScroll)) {
+		return "You haven't learnt this spell yet.";
 	}
 
 	if (user.skillLevel(SkillsEnum.Magic) < enchantable.level) {
@@ -65,7 +70,8 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'Enchanting'
+		type: 'Enchanting',
+		cantBeDoubled: enchantable.cantBeDoubled
 	});
 
 	const xpHr = `${Math.round(((enchantable.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;

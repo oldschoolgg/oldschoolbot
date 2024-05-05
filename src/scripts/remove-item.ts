@@ -118,6 +118,25 @@ SET ${removeFromBankQuery('sold_items_bank')},
 
 FINAL_QUERY += clientQuery;
 
+// BSO
+const bsoUserBankQuery = `
+UPDATE users 
+SET ${removeFromBankQuery('item_contract_bank')},
+    ${removeFromBankQuery('disassembled_items_bank')};
+`;
+
+FINAL_QUERY += bsoUserBankQuery;
+const bsoUserStatsBankQuery = `
+UPDATE user_stats
+SET ${removeFromBankQuery('ic_cost_bank')},
+    ${removeFromBankQuery('ic_donations_given_bank')},
+    ${removeFromBankQuery('ic_donations_received_bank')},
+    ${removeFromBankQuery('tame_cl_bank')},
+    ${removeFromBankQuery('create_loot_bank')};
+`;
+
+FINAL_QUERY += bsoUserStatsBankQuery;
+
 FINAL_QUERY += 'COMMIT;\n';
 
 writeFileSync('./remove-items.sql', FINAL_QUERY);

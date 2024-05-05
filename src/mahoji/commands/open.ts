@@ -72,7 +72,7 @@ export const openCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 		if (options.open_until) {
-			return abstractedOpenUntilCommand(interaction, user.id, options.name, options.open_until);
+			return abstractedOpenUntilCommand(user.id, options.name, options.open_until);
 		}
 		if (options.name.toLowerCase() === 'all') {
 			return abstractedOpenCommand(interaction, user.id, ['all'], 'auto');

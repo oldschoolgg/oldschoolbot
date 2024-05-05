@@ -1,3 +1,4 @@
+import { increaseNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
@@ -24,7 +25,7 @@ export const craftingTask: MinionTask = {
 
 		let crushed = 0;
 		if (item.crushChance) {
-			for (let i = 0; i < quantity; i++) {
+			for (let i = 0; i < quantityToGive; i++) {
 				if (randFloat(0, 1) > (currentLevel - 1) * item.crushChance[0] + item.crushChance[1]) {
 					crushed++;
 				}
@@ -33,11 +34,27 @@ export const craftingTask: MinionTask = {
 			xpReceived -= 0.75 * crushed * item.xp;
 			loot.add('crushed gem', crushed);
 		}
-		loot.add(item.id, quantityToGive - crushed);
 
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Crafting, amount: xpReceived, duration });
+		const hasScroll = user.owns('Scroll of dexterity');
+		if (hasScroll) {
+			let _qty = quantityToGive - crushed;
+			_qty = Math.floor(increaseNumByPercent(_qty, 15));
+			loot.add(item.id, _qty);
+		} else {
+			loot.add(item.id, quantityToGive - crushed);
+		}
+
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Crafting,
+			amount: xpReceived,
+			duration
+		});
 
 		let str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}. ${xpRes}`;
+
+		if (hasScroll) {
+			str += '\n\nYour Scroll of dexterity allows you to receive 15% extra items.';
+		}
 
 		await transactItems({
 			userID: user.id,

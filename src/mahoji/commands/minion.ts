@@ -27,7 +27,7 @@ import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { MUserStats } from '../../lib/structures/MUserStats';
-import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
+import { convertLVLtoXP, getAllIDsOfUser, getUsername, isValidNickname } from '../../lib/util';
 import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -41,11 +41,12 @@ import { bankBgCommand } from '../lib/abstracted_commands/bankBgCommand';
 import { cancelTaskCommand } from '../lib/abstracted_commands/cancelTaskCommand';
 import { crackerCommand } from '../lib/abstracted_commands/crackerCommand';
 import { dailyCommand } from '../lib/abstracted_commands/dailyCommand';
+import { feedHammyCommand } from '../lib/abstracted_commands/hammyCommand';
 import { ironmanCommand } from '../lib/abstracted_commands/ironmanCommand';
 import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
-import { skillOption } from '../lib/mahojiCommandOptions';
+import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
 
@@ -204,8 +205,13 @@ export const minionCommand: OSBMahojiCommand = {
 						const mUser = await mUserFetch(user.id);
 						const isMod = mUser.bitfield.includes(BitField.isModerator);
 						const bankImages = bankImageGenerator.backgroundImages;
+						const allAccounts = getAllIDsOfUser(mUser);
 						const owned = bankImages
-							.filter(bg => bg.storeBitField && mUser.user.store_bitfield.includes(bg.storeBitField))
+							.filter(
+								bg =>
+									(bg.storeBitField && mUser.user.store_bitfield.includes(bg.storeBitField)) ||
+									bg.owners?.some(i => allAccounts.includes(i))
+							)
 							.map(bg => bg.id);
 						return bankImages
 							.filter(bg => isMod || bg.available || owned.includes(bg.id))
@@ -429,12 +435,23 @@ export const minionCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
+			name: 'feed_hammy',
+			description: 'Feed an item to your Hammy pet.',
+			options: [
+				{
+					...ownedItemOption()
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
 			name: 'mastery',
 			description: 'View your minions mastery.'
 		}
 	],
 	run: async ({
 		userID,
+		user: apiUser,
 		options,
 		interaction,
 		channelID
@@ -459,13 +476,16 @@ export const minionCommand: OSBMahojiCommand = {
 		status?: {};
 		info?: {};
 		peak?: {};
+		feed_hammy?: {
+			item: string;
+		};
 		mastery?: {};
 	}>) => {
 		const user = await mUserFetch(userID);
 		const perkTier = user.perkTier();
 
 		if (options.info) return (await getUserInfo(user)).everythingString;
-		if (options.status) return minionStatusCommand(user);
+		if (options.status) return minionStatusCommand(user, channelID.toString());
 
 		if (options.stats) {
 			return { embeds: [await minionStatsEmbed(user)] };
@@ -539,8 +559,9 @@ export const minionCommand: OSBMahojiCommand = {
 			return `Your ${kcName} KC is: ${kcAmount}.`;
 		}
 
-		if (options.buy) return minionBuyCommand(user, Boolean(options.buy.ironman));
-		if (options.ironman) return ironmanCommand(user, interaction, Boolean(options.ironman.permanent));
+		if (options.buy) return minionBuyCommand(apiUser, user, Boolean(options.buy.ironman));
+		if (options.ironman) return ironmanCommand(user, interaction);
+
 		if (options.charge) {
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);
 		}
@@ -558,6 +579,7 @@ export const minionCommand: OSBMahojiCommand = {
 				options.blowpipe.quantity
 			);
 		}
+		if (options.feed_hammy) return feedHammyCommand(interaction, user, options.feed_hammy.item);
 
 		if (options.peak) return checkPeakTimes();
 
@@ -565,7 +587,7 @@ export const minionCommand: OSBMahojiCommand = {
 			const { masteryFactors, totalMastery } = await calculateMastery(user, await MUserStats.fromID(user.id));
 			const substr = masteryFactors.map(i => `${bold(i.name)}: ${i.percentage.toFixed(2)}%`).join('\n');
 			return `You have ${totalMastery.toFixed(2)}% mastery.
-			
+
 ${substr}`;
 		}
 

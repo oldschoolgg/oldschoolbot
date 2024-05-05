@@ -1,23 +1,36 @@
 import { userMention } from '@discordjs/builders';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+<<<<<<< HEAD
 import { GearSetupType, Prisma, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { calcWhatPercent, objectEntries, percentChance, sumArr, uniqueArr } from 'e';
+=======
+import { Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
+import { calcWhatPercent, objectEntries, randArrItem, sumArr, Time, uniqueArr } from 'e';
+>>>>>>> bsopet
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
+import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
+import { GodFavourBank, GodName } from './bso/divineDominion';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
 import { CATier, CombatAchievements } from './combat_achievements/combatAchievements';
-import { badges, BitField, Emoji, projectiles, usernameCache } from './constants';
+import { badges, BitField, Emoji, PerkTier, projectiles, usernameCache } from './constants';
 import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
-import { GearSetup, UserFullGearSetup } from './gear/types';
+import { gearImages } from './gear/functions/generateGearImage';
+import { GearSetup, GearSetupType, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
+<<<<<<< HEAD
 import { marketPriceOfBank } from './marketPrices';
+=======
+import { IMaterialBank } from './invention';
+import { MaterialBank } from './invention/MaterialBank';
+>>>>>>> bsopet
 import backgroundImages from './minions/data/bankBackgrounds';
 import { CombatOptionsEnum } from './minions/data/combatConstants';
 import { defaultFarmingContract } from './minions/farming';
@@ -25,6 +38,7 @@ import { FarmingContract } from './minions/farming/types';
 import { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
+import { mysteriousStepData, mysteriousTrailTracks } from './mysteryTrail';
 import { getUsersPerkTier, syncPerkTierOfUser } from './perkTiers';
 import { roboChimpUserFetch } from './roboChimp';
 import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
@@ -34,14 +48,21 @@ import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
 import { defaultGear, Gear } from './structures/Gear';
+import { MTame } from './structures/MTame';
 import { ItemBank, Skills } from './types';
+<<<<<<< HEAD
 import { addItemToBank, convertXPtoLVL, itemNameFromID } from './util';
+=======
+import { addItemToBank, convertXPtoLVL, getAllIDsOfUser, itemNameFromID, murMurSort, percentChance } from './util';
+>>>>>>> bsopet
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
+import itemID from './util/itemID';
 import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
+import { repairBrokenItemsFromUser } from './util/repairBrokenItems';
 import resolveItems from './util/resolveItems';
 import { TransactItemsArgs } from './util/transactItemsFromBank';
 
@@ -89,6 +110,7 @@ export class MUserClass {
 	gear!: UserFullGearSetup;
 	skillsAsXP!: Required<Skills>;
 	skillsAsLevels!: Required<Skills>;
+	paintedItems!: Map<number, number>;
 
 	constructor(user: User) {
 		this.user = user;
@@ -125,6 +147,12 @@ export class MUserClass {
 
 		this.skillsAsXP = this.getSkills(false);
 		this.skillsAsLevels = this.getSkills(true);
+
+		this.paintedItems = this.buildPaintedItems();
+	}
+
+	get gearTemplate() {
+		return gearImages.find(i => i.id === this.user.gear_template)!;
 	}
 
 	countSkillsAtleast99() {
@@ -454,7 +482,10 @@ GROUP BY data->>'clueID';`);
 			defence: Number(this.user.skills_defence),
 			ranged: Number(this.user.skills_ranged),
 			hitpoints: Number(this.user.skills_hitpoints),
-			slayer: Number(this.user.skills_slayer)
+			slayer: Number(this.user.skills_slayer),
+			dungeoneering: Number(this.user.skills_dungeoneering),
+			invention: Number(this.user.skills_invention),
+			divination: Number(this.user.skills_divination)
 		};
 		if (levels) {
 			for (const [key, val] of Object.entries(skills) as [keyof Skills, number][]) {
@@ -673,6 +704,14 @@ GROUP BY data->>'clueID';`);
 		return allItems.has(checkBank);
 	}
 
+	usingPet(name: string) {
+		return this.user.minion_equippedPet === itemID(name);
+	}
+
+	materialsOwned() {
+		return new MaterialBank(this.user.materials_owned as IMaterialBank);
+	}
+
 	async sync() {
 		const newUser = await prisma.user.findUnique({ where: { id: this.id } });
 		if (!newUser) throw new Error(`Failed to sync user ${this.id}, no record was found`);
@@ -708,6 +747,12 @@ GROUP BY data->>'clueID';`);
 		return Boolean(this.user.minion_hasBought);
 	}
 
+	accountAgeInDays(): null | number {
+		const createdAt = this.user.minion_bought_date;
+		if (!createdAt) return null;
+		return (Date.now() - createdAt.getTime()) / Time.Day;
+	}
+
 	farmingContract() {
 		const currentFarmingContract = this.user.minion_farmingContract as FarmingContract | null;
 		const plant = !currentFarmingContract
@@ -718,6 +763,95 @@ GROUP BY data->>'clueID';`);
 			contract: currentFarmingContract ?? defaultFarmingContract,
 			plant,
 			matchingPlantedCrop: plant ? detailed.patchesDetailed.find(i => i.plant && i.plant === plant) : undefined
+		};
+	}
+
+	private buildPaintedItems(): Map<number, number> {
+		const rawPaintedItems = this.user.painted_items_tuple;
+		if (!rawPaintedItems) return new Map();
+		return new Map(rawPaintedItems as [number, number][]);
+	}
+
+	async getTames() {
+		const tames = await prisma.tame.findMany({ where: { user_id: this.id } });
+		return tames.map(t => new MTame(t));
+	}
+
+	async getGodFavour(): Promise<GodFavourBank> {
+		let { god_favour_bank: currentFavour } = await this.fetchStats({ god_favour_bank: true });
+		if (!currentFavour) {
+			return {
+				Zamorak: 0,
+				Armadyl: 0,
+				Bandos: 0,
+				Guthix: 0,
+				Saradomin: 0
+			};
+		}
+		return currentFavour as GodFavourBank;
+	}
+
+	async addToGodFavour(gods: GodName[], duration: number) {
+		const currentFavour = await this.getGodFavour();
+		const newFavour = { ...currentFavour };
+
+		for (const god of gods) {
+			const newGodFavour = currentFavour[god] + duration / (Time.Minute * 6.125);
+			newFavour[god] = newGodFavour;
+		}
+
+		// Dont update if nothing changed
+		if (gods.every(god => newFavour[god] === currentFavour[god])) {
+			return currentFavour;
+		}
+
+		const res = await userStatsUpdate(
+			this.id,
+			{
+				god_favour_bank: newFavour
+			},
+			{
+				god_favour_bank: true
+			}
+		);
+
+		return {
+			newFavourBank: res.god_favour_bank
+		};
+	}
+
+	ownedMaterials() {
+		const materialsOwnedBank = new MaterialBank(this.user.materials_owned as IMaterialBank);
+		return materialsOwnedBank;
+	}
+
+	async repairBrokenItems() {
+		await repairBrokenItemsFromUser(this);
+		await this.sync();
+	}
+
+	getMysteriousTrailData() {
+		const currentStepID = this.user.bso_mystery_trail_current_step_id as 1 | 2 | 3 | 4 | 5 | 6 | 7 | null;
+		if (currentStepID === null) {
+			return { step: null, track: null };
+		}
+		const [trackID] = murMurSort(
+			mysteriousTrailTracks.map(i => i.id),
+			`${this.id}i222v1dv,2`
+		);
+		const track = mysteriousTrailTracks.find(i => i.id === trackID)!;
+		const step = track.steps[currentStepID - 1];
+		if (!step) {
+			throw new Error(`No step for ${currentStepID} ${this.id}`);
+		}
+		return {
+			step,
+			nextStep: track.steps[currentStepID as any] ?? null,
+			track,
+			stepData: mysteriousStepData[currentStepID],
+			nextStepData: mysteriousStepData[(currentStepID + 1) as keyof typeof mysteriousStepData],
+			previousStepData: mysteriousStepData[(currentStepID - 1) as keyof typeof mysteriousStepData],
+			minionMessage: randArrItem(mysteriousStepData[currentStepID].messages).replace('{minion}', this.minionName)
 		};
 	}
 
@@ -774,8 +908,14 @@ GROUP BY data->>'clueID';`);
 		if (background.bitfield && this.bitfield.includes(background.bitfield)) {
 			return;
 		}
-		if (!background.storeBitField && !background.perkTierNeeded && !background.bitfield) {
+		if (!background.storeBitField && !background.perkTierNeeded && !background.bitfield && !background.owners) {
 			return;
+		}
+		if (background.owners) {
+			const userIDs = getAllIDsOfUser(this);
+			if (background.owners.some(owner => userIDs.includes(owner))) {
+				return;
+			}
 		}
 		return resetBackground();
 	}
@@ -813,6 +953,11 @@ GROUP BY data->>'clueID';`);
 		);
 
 		return { refundBank };
+	}
+
+	async fetchStashUnits() {
+		const units = await getParsedStashUnits(this.id);
+		return units;
 	}
 
 	async validateEquippedGear() {
@@ -860,6 +1005,7 @@ GROUP BY data->>'clueID';`);
 		};
 	}
 
+<<<<<<< HEAD
 	async calculateNetWorth() {
 		const bank = this.allItemsOwned.clone();
 		const activeListings = await prisma.gEListing.findMany({
@@ -904,6 +1050,32 @@ GROUP BY data->>'clueID';`);
 			bank,
 			value: marketPriceOfBank(bank)
 		};
+=======
+	async fetchTames() {
+		const tames = await prisma.tame.findMany({
+			where: {
+				user_id: this.id
+			}
+		});
+		return tames.map(t => new MTame(t));
+	}
+
+	async fetchActiveTame(): Promise<{ tame: null; activity: null } | { activity: TameActivity | null; tame: MTame }> {
+		if (!this.user.selected_tame) {
+			return {
+				tame: null,
+				activity: null
+			};
+		}
+		const tame = await prisma.tame.findFirst({ where: { id: this.user.selected_tame } });
+		if (!tame) {
+			throw new Error('No tame found for selected tame.');
+		}
+		const activity = await prisma.tameActivity.findFirst({
+			where: { user_id: this.id, tame_id: tame.id, completed: false }
+		});
+		return { activity, tame: new MTame(tame) };
+>>>>>>> bsopet
 	}
 }
 declare global {
@@ -936,4 +1108,32 @@ declare global {
 	}
 }
 global.mUserFetch = srcMUserFetch;
+
+/**
+ * Determines if the user is only a patron because they have shared perks from another account.
+ */
+export function isPrimaryPatron(user: MUser) {
+	const perkTier = getUsersPerkTier(user, true);
+	return perkTier > 0;
+}
+
+export const dailyResetTime = Time.Hour * 4;
+export const spawnLampResetTime = (user: MUser) => {
+	const bf = user.bitfield;
+	const perkTier = getUsersPerkTier(user, true);
+
+	const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
+	const hasTier5 = perkTier >= PerkTier.Five;
+	const hasTier4 = !hasTier5 && perkTier === PerkTier.Four;
+
+	let cooldown = ([PerkTier.Six, PerkTier.Five] as number[]).includes(perkTier) ? Time.Hour * 12 : Time.Hour * 24;
+
+	if (!hasTier5 && !hasTier4 && hasPerm) {
+		cooldown = Time.Hour * 48;
+	}
+
+	return cooldown - Time.Minute * 15;
+};
+export const itemContractResetTime = Time.Hour * 7.8;
+export const giveBoxResetTime = Time.Hour * 23.5;
 global.GlobalMUserClass = MUserClass;

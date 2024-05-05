@@ -48,6 +48,10 @@ export const dropCommand: OSBMahojiCommand = {
 			maxSize: 70
 		});
 
+		if (bank.items().some(i => i[0].customItemData?.cantBeDropped)) {
+			return 'You are trying to drop an item that cannot be dropped.';
+		}
+
 		if (!user.owns(bank)) {
 			return `You don't own ${bank}.`;
 		}

@@ -176,6 +176,27 @@ const birdhouses: Birdhouse[] = [
 		waitTime: 50 * Time.Minute,
 		runTime: 81 * Time.Second,
 		qpRequired: 3
+	},
+	{
+		name: 'Elder bird house',
+		aliases: ['elder', 'elder bird house'],
+		huntLvl: 99,
+		huntXP: 1600,
+		craftLvl: 99,
+		craftXP: 95,
+		houseItemReq: new Bank().add('Elder bird house', 1),
+		craftItemReq: new Bank().add('Elder logs', 1),
+		table: new LootTable()
+			.every('Raw bird meat', [1, 3])
+			.tertiary(2, nestTable, [5, 18])
+			.tertiary(3, 'Feather', [10, 100])
+			.tertiary(150, 'Clue scroll (grandmaster)'),
+		huntTechnique: 'bird house trapping',
+		waitTime: 50 * Time.Minute,
+		runTime: 81 * Time.Second,
+		qpRequired: 33,
+		normalNestTable: new LootTable().tertiary(2, nestTable, [1, 9]),
+		strungRabbitFootTable: new LootTable().tertiary(2, strungRabbitFootNestTable, [1, 9])
 	}
 ];
 

@@ -15,6 +15,10 @@ export default function calculateMonsterFood(monster: Readonly<KillableMonster>,
 		return [0, ''];
 	}
 
+	if (monster.name === 'Koschei the deathless') {
+		return [monster.healAmountNeeded!, ''];
+	}
+
 	let gearToCheck: GearSetupType = 'melee';
 
 	switch (attackStyleToUse) {
@@ -28,6 +32,7 @@ export default function calculateMonsterFood(monster: Readonly<KillableMonster>,
 			break;
 	}
 
+	if (monster.wildy) gearToCheck = 'wildy';
 	const gearStats = user.gear[gearToCheck].stats;
 
 	let totalPercentOfGearLevel = 0;
@@ -44,13 +49,18 @@ export default function calculateMonsterFood(monster: Readonly<KillableMonster>,
 
 	totalOffensivePercent = floor(calcWhatPercent(gearStats[attackStyleToUse], maxOffenceStats[attackStyleToUse]));
 
-	// Get average of all defensive%'s and limit it to a cap of 95
-	totalPercentOfGearLevel = Math.min(floor(max(0, totalPercentOfGearLevel / attackStylesUsed.length)), 95);
-	// Floor at 0 and cap at 95
-	totalOffensivePercent = Math.min(floor(max(0, totalOffensivePercent)), 95);
+	// Get average of all defensive%'s and limit it to a cap of 75
+	totalPercentOfGearLevel = Math.min(floor(max(0, totalPercentOfGearLevel / attackStylesUsed.length)), 75);
+	// Floor at 0 and cap at 80
+	totalOffensivePercent = Math.min(floor(max(0, totalOffensivePercent)), 80);
 
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalPercentOfGearLevel));
 	healAmountNeeded = floor(reduceNumByPercent(healAmountNeeded, totalOffensivePercent));
+
+	const hasAbyssalCape = user.hasEquipped('Abyssal cape');
+	if (hasAbyssalCape) {
+		healAmountNeeded = Math.floor(healAmountNeeded * 0.5);
+	}
 
 	return [
 		healAmountNeeded,
@@ -58,6 +68,8 @@ export default function calculateMonsterFood(monster: Readonly<KillableMonster>,
 			totalPercentOfGearLevel
 		)}% for defence(${attackStylesUsed.map(inverseOfOffenceStat).map(readableStatName).join(', ')}), -${floor(
 			totalOffensivePercent
-		)}% for offensive stats(${readableStatName(attackStyleToUse)})`
+		)}% for offensive stats(${readableStatName(attackStyleToUse)})${
+			hasAbyssalCape ? ', -50% for Abyssal cape' : ''
+		}`
 	];
 }

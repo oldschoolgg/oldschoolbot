@@ -14,7 +14,8 @@ export enum Plank {
 	Plank = itemID('Plank'),
 	OakPlank = itemID('Oak plank'),
 	TeakPlank = itemID('Teak plank'),
-	MahoganyPlank = itemID('Mahogany plank')
+	MahoganyPlank = itemID('Mahogany plank'),
+	ElderPlank = itemID('Elder plank')
 }
 
 const Constructables: Constructable[] = [
@@ -191,6 +192,14 @@ const Constructables: Constructable[] = [
 		xp: 840,
 		level: 77,
 		ticks: 5
+	},
+	{
+		id: 52_634,
+		name: 'Elder table',
+		input: [Plank.ElderPlank, 6],
+		xp: 1540,
+		level: 105,
+		ticks: 4
 	}
 ];
 

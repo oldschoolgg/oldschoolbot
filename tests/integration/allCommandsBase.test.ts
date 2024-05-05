@@ -10,9 +10,7 @@ import { chooseCommand } from '../../src/mahoji/commands/choose';
 import { chopCommand } from '../../src/mahoji/commands/chop';
 import { claimCommand } from '../../src/mahoji/commands/claim';
 import { clueCommand } from '../../src/mahoji/commands/clue';
-import { cluesCommand } from '../../src/mahoji/commands/clues';
 import { createCommand } from '../../src/mahoji/commands/create';
-import { dryCalcCommand } from '../../src/mahoji/commands/drycalc';
 import { farmingCommand } from '../../src/mahoji/commands/farming';
 import { fishCommand } from '../../src/mahoji/commands/fish';
 import { fletchCommand } from '../../src/mahoji/commands/fletch';
@@ -47,14 +45,12 @@ const commands: [OSBMahojiCommand, null | object][] = [
 	[bsCommand, null],
 	[clueCommand, null],
 	[claimCommand, null],
-	[cluesCommand, null],
 	[farmingCommand, null],
 	[gpCommand, null],
 	[lapsCommand, null],
 	[leaderboardCommand, null],
 	[fletchCommand, null],
 	[fishCommand, null],
-	[dryCalcCommand, null],
 	[createCommand, { item: 'asdf' }],
 	[chopCommand, null],
 	[chooseCommand, { list: 'a,a,a' }],

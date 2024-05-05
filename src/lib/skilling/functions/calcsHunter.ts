@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Time } from 'e';
+=======
+import { calcPercentOfNum } from 'e';
+>>>>>>> bsopet
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { percentChance } from '../../util';
@@ -8,9 +12,13 @@ export function calcLootXPHunting(
 	currentLevel: number,
 	creature: Creature,
 	quantity: number,
+<<<<<<< HEAD
 	usingStaminaPotion: boolean,
 	graceful: boolean,
 	experienceScore: number
+=======
+	noRandomness = false
+>>>>>>> bsopet
 ): [number, number, number] {
 	let xpReceived = 0;
 	let successful = 0;
@@ -35,13 +43,20 @@ export function calcLootXPHunting(
 		chanceOfSuccess += chanceOfSuccess * (percentIncrease / 100);
 	}
 
-	for (let i = 0; i < quantity; i++) {
-		if (!percentChance(chanceOfSuccess)) {
-			continue;
-		}
-		successful++;
+	let xpToAdd = creature.hunterXP + (creature.name === 'Herbiboar' ? 27 * (currentLevel - 80) : 0);
 
-		xpReceived += creature.hunterXP + (creature.name === 'Herbiboar' ? 27 * (currentLevel - 80) : 0);
+	if (noRandomness) {
+		const successes = Math.floor(calcPercentOfNum(chanceOfSuccess, quantity));
+		successful = successes;
+		xpReceived = successes * xpToAdd;
+	} else {
+		for (let i = 0; i < quantity; i++) {
+			if (!percentChance(chanceOfSuccess)) {
+				continue;
+			}
+			successful++;
+			xpReceived += xpToAdd;
+		}
 	}
 
 	return [successful, xpReceived, chanceOfSuccess];

@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { GearSetup } from '../gear/types';
+import skillcapes from '../skilling/skillcapes';
 import getOSItem from './getOSItem';
 import itemID from './itemID';
 import resolveItems from './resolveItems';
@@ -94,11 +95,7 @@ export const gearSwap: IGearSwap = {
 	[itemID('Accursed sceptre')]: [itemID('Accursed sceptre (u)')],
 	[itemID('Accursed sceptre (a)')]: [itemID('Accursed sceptre (au)')],
 	[itemID('Webweaver bow')]: [itemID('Webweaver bow (u)')],
-	[itemID('Venator bow')]: [itemID('Venator bow (uncharged)')],
-	// These 3 are NOT for BSO
-	[itemID('Sanguine torva platebody')]: [itemID('Torva platebody')],
-	[itemID('Sanguine torva platelegs')]: [itemID('Torva platelegs')],
-	[itemID('Sanguine torva full helm')]: [itemID('Torva full helm')]
+	[itemID('Venator bow')]: [itemID('Venator bow (uncharged)')]
 };
 
 export const lockedItems = resolveItems([
@@ -165,8 +162,19 @@ export const lockedItems = resolveItems([
 	'Ranger hat (l)',
 	'Healer hat (l)',
 	'Fighter torso (l)',
-	'Ancient sceptre (l)'
+	'Ancient sceptre (l)',
+	"Combatant's cape",
+	...skillcapes.map(s => s.masterCape.name)
 ]);
+
+const itemsThatBreakOnDeath: Record<number, number> = {
+	[itemID('Hellfire bow')]: itemID('Hellfire bow (broken)'),
+	[itemID('Hellfire bownana')]: itemID('Hellfire bownana (broken)'),
+	[itemID('Mistleboe')]: itemID('Hellfire bow (broken)'),
+	[itemID('Hellfire bow (ice)')]: itemID('Hellfire bow (broken)'),
+	[itemID('Hellfire bow (Oceanic)')]: itemID('Hellfire bow (broken)'),
+	[itemID('Demonic piercer')]: itemID('Hellfire bow (broken)')
+};
 
 export default function calculateGearLostOnDeathWilderness(
 	options = <
@@ -221,9 +229,24 @@ export default function calculateGearLostOnDeathWilderness(
 		lostItemsBank.add(originalItem.id);
 	}
 
+	const gearThatBroke = new Bank();
+	const gearToRefund = new Bank();
+	for (const item of lostItemsBank.items()) {
+		if (itemsThatBreakOnDeath[item[0].id]) {
+			const itemID = item[0].id;
+			const qty = item[1];
+			gearThatBroke.add(itemID, qty);
+			lostItemsBank.remove(itemID, qty);
+			const brokenID = itemsThatBreakOnDeath[itemID];
+			gearToRefund.add(brokenID, qty);
+		}
+	}
+
 	// 6 - Return lost items + new gear
 	return {
 		lostItems: lostItemsBank,
-		newGear: userGear
+		newGear: userGear,
+		gearThatBroke,
+		gearToRefund
 	};
 }

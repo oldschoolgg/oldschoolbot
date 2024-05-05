@@ -3,13 +3,16 @@ import { CropUpgradeType } from '@prisma/client';
 import { Emoji } from '../../../constants';
 import getOSItem from '../../../util/getOSItem';
 import itemID from '../../../util/itemID';
+import resolveItems from '../../../util/resolveItems';
 import { Plant, SkillsEnum } from '../../types';
 import allotmentPlants from './allotments';
+import { bushes } from './bushes';
 import fruitTrees from './fruitTrees';
 import herbPlants from './herbPlants';
 import hopsPlants from './hops';
 import specialPlants from './specialPlants';
 import trees from './trees';
+import { zygomitePlants } from './zygomites';
 
 export const plants: Plant[] = [
 	...herbPlants,
@@ -17,7 +20,9 @@ export const plants: Plant[] = [
 	...allotmentPlants,
 	...fruitTrees,
 	...hopsPlants,
-	...specialPlants
+	...specialPlants,
+	...bushes,
+	...zygomitePlants
 ];
 
 const maleFarmerItems: { [key: number]: number } = {
@@ -52,6 +57,7 @@ export const CompostTiers = [
 ] as const;
 
 for (const plant of plants) {
+	if (resolveItems(['Pumpkin']).includes(plant.id)) continue;
 	if (plant.outputCrop) allFarmingItems.push(plant.outputCrop);
 	for (const key of Object.keys(plant.inputItems.bank)) {
 		allFarmingItems.push(Number(key));
@@ -59,7 +65,20 @@ for (const plant of plants) {
 	if (plant.outputLogs) allFarmingItems.push(plant.outputLogs);
 	if (plant.outputRoots) allFarmingItems.push(plant.outputRoots);
 }
-allFarmingItems.push(itemID('Tangleroot'));
+
+allFarmingItems.push(
+	...resolveItems([
+		'Master farmer hat',
+		'Master farmer jacket',
+		'Master farmer pants',
+		'Master farmer gloves',
+		'Master farmer boots',
+		'Tangleroot',
+		'Plopper',
+		'Shiny mango',
+		'Fungo'
+	])
+);
 
 const Farming = {
 	aliases: ['farming'],

@@ -9,6 +9,7 @@ import {
 } from '../../lib/collectionLogTask';
 import { allCollectionLogs } from '../../lib/data/Collections';
 import { fetchStatsForCL } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const collectionLogCommand: OSBMahojiCommand = {
@@ -72,7 +73,8 @@ export const collectionLogCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID
+		userID,
+		interaction
 	}: CommandRunOptions<{
 		name: string;
 		type?: CollectionLogType;
@@ -80,6 +82,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 		flag_extra?: string;
 		all?: boolean;
 	}>) => {
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		let flags: Record<string, string> = {};
 		if (options.flag) flags[options.flag] = options.flag;

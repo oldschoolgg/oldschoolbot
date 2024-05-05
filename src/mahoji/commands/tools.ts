@@ -1,16 +1,20 @@
-import { EmbedBuilder } from '@discordjs/builders';
+import { EmbedBuilder, userMention } from '@discordjs/builders';
 import { Activity, User } from '@prisma/client';
 import { ChannelType } from 'discord.js';
+import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
+import { ADMIN_IDS, OWNER_IDS, production } from '../../config';
+import { MysteryBoxes, spookyTable } from '../../lib/bsoOpenables';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
-import { BitField, PerkTier } from '../../lib/constants';
-import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
+import { BitField, Channel, Emoji, PerkTier } from '../../lib/constants';
+import { allCLItems, allDroppedItems } from '../../lib/data/Collections';
 import {
 	anglerOutfit,
 	evilChickenOutfit,
@@ -20,26 +24,34 @@ import {
 	toaCL
 } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
+import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import { giveBoxResetTime, isPrimaryPatron, mahojiUserSettingsUpdate, spawnLampResetTime } from '../../lib/MUser';
+import { getUsersPerkTier } from '../../lib/perkTiers';
 import { MinigameName, Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
 import {
 	asyncGzip,
 	formatDuration,
+	generateXPLevelQuestion,
 	getUsername,
 	isGroupActivity,
 	isNexActivity,
 	isRaidsActivity,
 	isTOBOrTOAActivity,
+	itemID,
 	itemNameFromID,
+	roll,
 	stringMatches
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { repairBrokenItemsFromUser } from '../../lib/util/repairBrokenItems';
 import resolveItems from '../../lib/util/resolveItems';
+import { LampTable } from '../../lib/xpLamps';
 import {
 	getParsedStashUnits,
 	stashUnitBuildAllCommand,
@@ -47,6 +59,9 @@ import {
 	stashUnitUnfillCommand,
 	stashUnitViewCommand
 } from '../lib/abstracted_commands/stashUnitsCommand';
+import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
+import { buttonUserPicker } from '../lib/buttonUserPicker';
+import { Cooldowns } from '../lib/Cooldowns';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
@@ -58,6 +73,36 @@ const skillsVals = Object.values(Skills);
 
 function dateDiff(first: number, second: number) {
 	return Math.round((second - first) / (1000 * 60 * 60 * 24));
+}
+
+async function giveBox(mahojiUser: MUser, _recipient: MahojiUserOption) {
+	if (!_recipient) return 'You need to specify a user to give a box to.';
+	const recipient = await mUserFetch(_recipient.user.id);
+	if (!isPrimaryPatron(mahojiUser)) {
+		return 'Shared-perk accounts cannot use this.';
+	}
+
+	const currentDate = Date.now();
+	const lastDate = Number(mahojiUser.user.lastGivenBoxx);
+	const difference = currentDate - lastDate;
+	const isOwner = OWNER_IDS.includes(mahojiUser.id);
+
+	// If no user or not an owner and can not send one yet, show time till next box.
+	if (difference < giveBoxResetTime && !isOwner) {
+		return `You can give another box in ${formatDuration(giveBoxResetTime - difference)}`;
+	}
+
+	if (recipient.id === mahojiUser.id) return "You can't give boxes to yourself!";
+	if (recipient.isIronman) return "You can't give boxes to ironmen!";
+	await mahojiUserSettingsUpdate(mahojiUser.id, {
+		lastGivenBoxx: currentDate
+	});
+
+	const boxToReceive = new Bank().add(roll(10) ? MysteryBoxes.roll() : itemID('Mystery box'));
+
+	await recipient.addItemsToBank({ items: boxToReceive, collectionLog: false });
+
+	return `Gave **${boxToReceive}** to ${recipient}.`;
 }
 
 const whereInMassClause = (id: string) =>
@@ -154,7 +199,7 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean)
 		title = `Highest All clue scroll completions in the past ${interval}`;
 	}
 
-	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
+	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate
 	  FROM activity a
 	  JOIN users u ON a.user_id::text = u.id
 	  WHERE a.type = 'ClueCompletion'
@@ -195,22 +240,22 @@ async function executeXPGainsQuery(
 	ironmanOnly: boolean
 ): Promise<XPRecord[]> {
 	const query = `
-        SELECT 
-            x.user_id::text AS user, 
-            sum(x.xp) AS total_xp, 
+        SELECT
+            x.user_id::text AS user,
+            sum(x.xp) AS total_xp,
             max(x.date) AS lastDate
-        FROM 
+        FROM
             xp_gains AS x
-        INNER JOIN 
+        INNER JOIN
             users AS u ON u.id = x.user_id::text
-        WHERE 
+        WHERE
             x.date > now() - INTERVAL '1 ${intervalValue}'
             ${skillId ? `AND x.skill = '${skillId}'` : ''}
             ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
-        GROUP BY 
+        GROUP BY
             x.user_id
-        ORDER BY 
-            total_xp DESC, 
+        ORDER BY
+            total_xp DESC,
             lastDate ASC
         LIMIT 10;
     `;
@@ -258,7 +303,7 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) 
 				.join('\n')
 		);
 
-	return { embeds: [embed] };
+	return { embeds: [embed.data] };
 }
 
 async function kcGains(interval: string, monsterName: string, ironmanOnly?: boolean): CommandResponse {
@@ -286,7 +331,7 @@ async function kcGains(interval: string, monsterName: string, ironmanOnly?: bool
 	}
 
 	const query = `
-    SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
+    SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate
     FROM activity a
     JOIN users u ON a.user_id::text = u.id
     WHERE a.type = 'MonsterKilling' AND (a."data"->>'monsterID')::int = ${monster.id}
@@ -311,7 +356,83 @@ async function kcGains(interval: string, monsterName: string, ironmanOnly?: bool
 				.join('\n')
 		);
 
-	return { embeds: [embed] };
+	return { embeds: [embed.data] };
+}
+
+export function spawnLampIsReady(user: MUser, channelID: string): [true] | [false, string] {
+	if (production && ![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(channelID)) {
+		return [false, "You can't use spawnlamp in this channel."];
+	}
+
+	const perkTier = getUsersPerkTier(user, true);
+	const isPatron = perkTier >= PerkTier.Four || user.bitfield.includes(BitField.HasPermanentSpawnLamp);
+	if (!isPatron) {
+		return [false, 'You need to be a T3 patron or higher to use this command.'];
+	}
+	const currentDate = Date.now();
+	const lastDate = Number(user.user.lastSpawnLamp);
+	const difference = currentDate - lastDate;
+
+	const cooldown = spawnLampResetTime(user);
+
+	if (difference < cooldown) {
+		const duration = formatDuration(Date.now() - (lastDate + cooldown));
+		return [false, `You can spawn another lamp in ${duration}.`];
+	}
+	return [true];
+}
+async function spawnLampCommand(user: MUser, channelID: string): CommandResponse {
+	const isAdmin = OWNER_IDS.includes(user.id) || ADMIN_IDS.includes(user.id);
+	const [lampIsReady, reason] = isAdmin ? [true, ''] : spawnLampIsReady(user, channelID.toString());
+	if (!lampIsReady && reason) return reason;
+
+	await mahojiUserSettingsUpdate(user.id, {
+		lastSpawnLamp: Date.now()
+	});
+
+	const { answers, question, explainAnswer } = generateXPLevelQuestion();
+
+	const winnerID = await buttonUserPicker({
+		channelID,
+		str: `<:Huge_lamp:988325171498721290> ${userMention(user.id)} spawned a Lamp: ${question}`,
+		ironmenAllowed: false,
+		answers,
+		creator: user.id,
+		creatorGetsTwoGuesses: true
+	});
+	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
+	const winner = await mUserFetch(winnerID);
+	const loot = LampTable.roll();
+	await winner.addItemsToBank({ items: loot, collectionLog: false });
+	return `${winner} got it, and won **${loot}**! ${explainAnswer}`;
+}
+async function spawnBoxCommand(user: MUser, channelID: string): CommandResponse {
+	const perkTier = getUsersPerkTier(user, true);
+	if (perkTier < PerkTier.Four && !user.bitfield.includes(BitField.HasPermanentEventBackgrounds)) {
+		return 'You need to be a T3 patron or higher to use this command.';
+	}
+	if (production && ![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(channelID.toString())) {
+		return "You can't use spawnbox in this channel.";
+	}
+	const isOnCooldown = Cooldowns.get(user.id, 'SPAWN_BOX', Time.Minute * 45);
+	if (isOnCooldown !== null) {
+		return `This command is on cooldown for you for ${formatDuration(isOnCooldown)}.`;
+	}
+	const { answers, question, explainAnswer } = generateXPLevelQuestion();
+
+	const winnerID = await buttonUserPicker({
+		channelID,
+		str: `${Emoji.MysteryBox} ${userMention(user.id)} spawned a Mystery Box: ${question}`,
+		ironmenAllowed: false,
+		answers,
+		creator: user.id
+	});
+	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
+	const winner = await mUserFetch(winnerID);
+
+	const loot = new Bank().add(MysteryBoxes.roll());
+	await winner.addItemsToBank({ items: loot, collectionLog: false });
+	return `Congratulations, ${winner}! You received: **${loot}**. ${explainAnswer}`;
 }
 
 const clueItemsOnlyDroppedInOneTier = ClueTiers.map(i =>
@@ -364,6 +485,24 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 		name: 'Shades of Morton',
 		key: 'shades_of_morton',
 		items: shadesOfMorttonCL
+	},
+	{
+		name: 'Baxtorian Bathhouses',
+		key: 'bax_baths',
+		items: resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire', 'Phoenix eggling'])
+	},
+	{
+		name: 'Monkey Rumble',
+		key: 'monkey_rumble',
+		items: resolveItems([
+			'Monkey egg',
+			'Marimbo statue',
+			'Monkey dye',
+			'Banana enchantment scroll',
+			'Rumble token',
+			'Big banana',
+			'Monkey crate'
+		])
 	}
 ];
 
@@ -375,6 +514,29 @@ interface DrystreakEntity {
 }
 
 export const dryStreakEntities: DrystreakEntity[] = [
+	{
+		name: 'Halloween Mini-Minigames',
+		items: resolveItems([
+			'Spooky gear frame unlock',
+			'Kuro',
+			'Spooky cat ears',
+			'Pumpkinpole',
+			'Gastly ghost cape',
+			'Spooky box'
+		]),
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; val: number }[]
+			>(`SELECT user_id::text AS id, COUNT(1) as val
+FROM activity WHERE
+user_id IN (SELECT id::bigint FROM users WHERE "collectionLogBank"->'${item.id}' IS NULL
+${ironmanOnly ? ' AND "minion.ironman" = TRUE' : ''})
+AND type = 'HalloweenMiniMinigame' GROUP BY user_id
+ORDER BY val DESC LIMIT 10`);
+			return result;
+		},
+		format: num => `${num} Mini-Minigames`
+	},
 	{
 		name: 'Chambers of Xeric (CoX)',
 		items: resolveItems([
@@ -429,8 +591,8 @@ LIMIT 10;`);
 		   FROM users
 		   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 		   WHERE "collectionLogBank"->>'${item.id}' IS NULL
-		   AND "monster_scores"->>'${NightmareMonster.id}' IS NOT NULL 
-		   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
+		   AND "monster_scores"->>'${NightmareMonster.id}' IS NOT NULL
+		   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 		   ORDER BY ("monster_scores"->>'${NightmareMonster.id}')::int DESC
 		   LIMIT 10;`);
 			return result;
@@ -447,7 +609,7 @@ LIMIT 10;`);
 				   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 				   WHERE "collectionLogBank"->>'${item.id}' IS NULL
 				   AND high_gambles > 0
-				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
+				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 				   ORDER BY high_gambles DESC
 				   LIMIT 10;`);
 			return result;
@@ -489,7 +651,7 @@ LIMIT 10;`);
             ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
             GROUP BY users.id
             ORDER BY val DESC
-            LIMIT 10 
+            LIMIT 10
 			)
 			AS eggs
 			WHERE eggs.val > 0;`);
@@ -503,7 +665,7 @@ LIMIT 10;`);
 		run: async ({ ironmanOnly }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; mbox_opens: number; baguettes_received: number }[]
-			>(`SELECT id, (openable_scores->>'6199')::int AS mbox_opens, ("collectionLogBank"->>'6961')::int AS baguettes_received, 
+			>(`SELECT id, (openable_scores->>'6199')::int AS mbox_opens, ("collectionLogBank"->>'6961')::int AS baguettes_received,
 
 (openable_scores->>'6199')::int + (("collectionLogBank"->>'6961')::int * 4) AS factor
 
@@ -621,11 +783,11 @@ async function dryStreakCommand(monsterName: string, itemName: string, ironmanOn
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
 	const key = 'monster_scores';
 	const { id } = mon;
-	const query = `SELECT id, "${key}"->>'${id}' AS "KC" 
+	const query = `SELECT id, "${key}"->>'${id}' AS "KC"
 				FROM users
 				INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
-				WHERE "collectionLogBank"->>'${item.id}' IS NULL 
-						AND "${key}"->>'${id}' IS NOT NULL 
+				WHERE "collectionLogBank"->>'${item.id}' IS NULL
+						AND "${key}"->>'${id}' IS NOT NULL
 						${ironmanPart}
 				ORDER BY ("${key}"->>'${id}')::int DESC
 				LIMIT 10;`;
@@ -723,6 +885,42 @@ async function checkMassesCommand(guildID: string | undefined) {
 ${massStr}`.slice(0, 1999);
 }
 
+function calcTime(perkTier: PerkTier | 0) {
+	for (const [bit, dur] of [
+		[PerkTier.Seven, Time.Minute * 90],
+		[PerkTier.Six, Time.Minute * 40],
+		[PerkTier.Five, Time.Minute * 20]
+	] as const) {
+		if (perkTier === bit) return dur;
+	}
+	throw new Error('User is not a Tier 4+ Patron');
+}
+
+export const PATRON_DOUBLE_LOOT_COOLDOWN = Time.Day * 31;
+async function patronTriggerDoubleLoot(user: MUser) {
+	const perkTier = getUsersPerkTier(user);
+	if (perkTier < PerkTier.Five) {
+		return 'Only T4, T5 or T6 patrons can use this command.';
+	}
+	const lastTime = user.user.last_patron_double_time_trigger;
+	const differenceSinceLastUsage = lastTime ? Date.now() - lastTime.getTime() : null;
+	if (differenceSinceLastUsage && differenceSinceLastUsage < PATRON_DOUBLE_LOOT_COOLDOWN) {
+		return `This command is still on cooldown, you can use it again in: ${formatDuration(
+			PATRON_DOUBLE_LOOT_COOLDOWN - differenceSinceLastUsage
+		)}.`;
+	}
+
+	const time = calcTime(perkTier);
+	await mahojiUserSettingsUpdate(user.id, {
+		last_patron_double_time_trigger: new Date()
+	});
+	await addToDoubleLootTimer(
+		time,
+		`${userMention(user.id)} used their monthly Tier ${perkTier - 1} double loot time`
+	);
+	return `Added ${formatDuration(time)} of double loot.`;
+}
+
 export const toolsCommand: OSBMahojiCommand = {
 	name: 'tools',
 	description: 'Various tools and miscellaneous commands.',
@@ -818,14 +1016,14 @@ export const toolsCommand: OSBMahojiCommand = {
 							autocomplete: async value => {
 								return [
 									...dryStreakEntities.map(i => ({ name: i.name, value: i })),
-									...killableMonsters
+									...effectiveMonsters
 								]
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({ name: i.name, value: i.name }));
 							}
 						},
 						{
-							...itemOption(item => allCLItemsFiltered.includes(item.id)),
+							...itemOption(item => [...allCLItems, ...spookyTable.allItems].includes(item.id)),
 							required: true
 						},
 						{
@@ -881,8 +1079,58 @@ export const toolsCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'give_box',
+					description: 'Allows you to give a mystery box to a friend.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user you want to give a box too.',
+							required: true
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'spawnlamp',
+					description: 'Allows you to spawn a lamp.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'spawnbox',
+					description: 'Allows you to spawn a mystery box.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'activity_export',
 					description: 'Export all your activities (For advanced users).'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'stats',
+					description: 'Check various stats.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'stat',
+							description: 'The stat you want to check',
+							autocomplete: async (value: string) => {
+								return dataPoints
+									.map(i => i.name)
+									.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({
+										name: i,
+										value: i
+									}));
+							},
+							required: true
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'doubleloot',
+					description: 'Add double loot time.'
 				}
 			]
 		},
@@ -914,6 +1162,11 @@ export const toolsCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'checkmasses',
 					description: 'Check the masses going on in the server.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'fixbank',
+					description: 'Fix broken items in your bank/gear/etc.'
 				}
 			]
 		},
@@ -986,6 +1239,7 @@ export const toolsCommand: OSBMahojiCommand = {
 		options,
 		userID,
 		interaction,
+		channelID,
 		guildID
 	}: CommandRunOptions<{
 		patron?: {
@@ -1018,10 +1272,16 @@ export const toolsCommand: OSBMahojiCommand = {
 				format?: 'bank' | 'json';
 			};
 			minion_stats?: {};
+			give_box?: {
+				user: MahojiUserOption;
+			};
 			activity_export?: {};
+			spawnlamp?: {};
+			spawnbox?: {};
 			stats?: { stat: string };
+			doubleloot?: {};
 		};
-		user?: { mypets?: {}; temp_cl: { reset?: boolean }; checkmasses?: {} };
+		user?: { mypets?: {}; temp_cl: { reset?: boolean }; checkmasses?: {}; fixbank?: {} };
 		stash_units?: {
 			view?: { unit?: string; not_filled?: boolean };
 			build_all?: {};
@@ -1029,7 +1289,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			unfill?: { unit: string };
 		};
 	}>) => {
-		await deferInteraction(interaction);
+		if (interaction) await deferInteraction(interaction);
 		const mahojiUser = await mUserFetch(userID);
 
 		if (options.patron) {
@@ -1087,8 +1347,13 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 			if (patron.minion_stats) {
+				await deferInteraction(interaction);
 				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser.user);
+			}
+			if (patron.give_box) {
+				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				return giveBox(mahojiUser, patron.give_box.user);
 			}
 			if (patron.activity_export) {
 				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
@@ -1099,6 +1364,16 @@ export const toolsCommand: OSBMahojiCommand = {
 				);
 				const result = await promise;
 				return result;
+			}
+			if (patron.spawnlamp) {
+				return spawnLampCommand(mahojiUser, channelID);
+			}
+			if (patron.spawnbox) return spawnBoxCommand(mahojiUser, channelID);
+			if (patron.stats) {
+				return statsCommand(mahojiUser, patron.stats.stat);
+			}
+			if (patron.doubleloot) {
+				return patronTriggerDoubleLoot(mahojiUser);
 			}
 		}
 		if (options.user) {
@@ -1133,7 +1408,10 @@ export const toolsCommand: OSBMahojiCommand = {
 		}
 		if (options.user?.temp_cl) {
 			if (options.user.temp_cl.reset === true) {
-				await handleMahojiConfirmation(interaction, 'Are you sure you want to reset your temporary CL?');
+				await handleMahojiConfirmation(
+					interaction,
+					'Are you sure you want to reset your temporary CL? If you are participating in a Bingo, this will reset your progress.'
+				);
 				await mahojiUser.update({
 					temp_cl: {},
 					last_temp_cl_reset: new Date()
@@ -1148,6 +1426,7 @@ export const toolsCommand: OSBMahojiCommand = {
 					last_temp_cl_reset: true
 				}
 			});
+
 			return `You can view your temporary CL using, for example, \`/cl name:PvM type:Temp\`.
 You last reset your temporary CL: ${
 				Boolean(lastReset?.last_temp_cl_reset)
@@ -1157,6 +1436,9 @@ You last reset your temporary CL: ${
 		}
 		if (options.user?.checkmasses) {
 			return checkMassesCommand(guildID);
+		}
+		if (options.user?.fixbank) {
+			return (await repairBrokenItemsFromUser(mahojiUser))[0];
 		}
 		return 'Invalid command!';
 	}

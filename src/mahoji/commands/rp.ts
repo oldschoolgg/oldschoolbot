@@ -12,6 +12,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
 import { analyticsTick } from '../../lib/analytics';
+import { calculateCompCapeProgress } from '../../lib/bso/calculateCompCapeProgress';
 import { BitField, Channel } from '../../lib/constants';
 import { allCollectionLogsFlat } from '../../lib/data/Collections';
 import { GearSetupType } from '../../lib/gear/types';
@@ -82,6 +83,12 @@ export const rpCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'force_comp_update',
+					description: 'Force the top 100 completionist users to update their completion percentage.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'view_all_items',
 					description: 'View all item IDs present in banks/cls.',
 					options: []
@@ -105,6 +112,19 @@ export const rpCommand: OSBMahojiCommand = {
 			name: 'player',
 			description: 'Player manipulation tools',
 			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'givetgb',
+					description: 'Give em a tgb',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user',
+							required: true
+						}
+					]
+				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'set_buy_date',
@@ -452,11 +472,13 @@ export const rpCommand: OSBMahojiCommand = {
 		action?: {
 			validate_ge?: {};
 			patreon_reset?: {};
+			force_comp_update?: {};
 			view_all_items?: {};
 			analytics_tick?: {};
 			networth_sync?: {};
 		};
 		player?: {
+			givetgb?: { user: MahojiUserOption };
 			viewbank?: { user: MahojiUserOption; json?: boolean };
 			add_patron_time?: { user: MahojiUserOption; tier: number; time: string };
 			steal_items?: {
@@ -493,6 +515,7 @@ export const rpCommand: OSBMahojiCommand = {
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isAdmin = ADMIN_IDS.includes(userID);
 		const isMod = isOwner || isAdmin || adminUser.bitfield.includes(BitField.isModerator);
+<<<<<<< HEAD
 		const isTrusted = [BitField.IsWikiContributor, BitField.isContributor].some(bit =>
 			adminUser.bitfield.includes(bit)
 		);
@@ -551,7 +574,23 @@ Date: ${dateFm(date)}`;
 		}
 
 		if (!isMod) return randArrItem(gifs);
+=======
+		const isContrib = isMod || adminUser.bitfield.includes(BitField.isContributor);
+>>>>>>> bsopet
 
+		if (!guildID || !isContrib || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
+		// Contributor+ only commands:
+		if (options.player?.givetgb) {
+			const user = await mUserFetch(options.player?.givetgb.user.user.id);
+			if (user.id === adminUser.id) {
+				return randArrItem(gifs);
+			}
+			await user.addItemsToBank({ items: new Bank().add('Tester gift box'), collectionLog: true });
+			return `Gave 1x Tester gift box to ${user}.`;
+		}
+
+		if (!isMod) return randArrItem(gifs);
+		// Mod+ only commands:
 		if (options.action?.validate_ge) {
 			const isValid = await GrandExchange.extensiveVerification();
 			if (isValid) {
@@ -559,6 +598,24 @@ Date: ${dateFm(date)}`;
 			}
 			return 'Something was invalid. Check logs!';
 		}
+		if (options.action?.force_comp_update) {
+			const usersToUpdate = await prisma.userStats.findMany({
+				where: {
+					untrimmed_comp_cape_percent: {
+						not: null
+					}
+				},
+				orderBy: {
+					untrimmed_comp_cape_percent: 'desc'
+				},
+				take: 100
+			});
+			for (const user of usersToUpdate) {
+				await calculateCompCapeProgress(await mUserFetch(user.user_id.toString()));
+			}
+			return 'Done.';
+		}
+
 		if (options.action?.analytics_tick) {
 			await analyticsTick();
 			return 'Finished.';
@@ -763,9 +820,6 @@ ORDER BY item_id ASC;`);
 			if (mainAccount === altAccount) return "They're they same account.";
 			if (mainAccount.minion_ironman) return `${mainUser.usernameOrMention} is an ironman.`;
 			if (!altAccount.minion_ironman) return `${altUser.usernameOrMention} is not an ironman.`;
-			if (!altAccount.bitfield.includes(BitField.PermanentIronman)) {
-				return `${altUser.usernameOrMention} is not a *permanent* ironman.`;
-			}
 
 			const peopleWithThisAltAlready = (
 				await prisma.$queryRawUnsafe<unknown[]>(

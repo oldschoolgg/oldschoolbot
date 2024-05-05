@@ -1,10 +1,11 @@
 import { gzip } from 'node:zlib';
 
 import { stripEmojis } from '@oldschoolgg/toolkit';
+import { PrismaClient } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
-import { createHash } from 'crypto';
 import {
 	BaseMessageOptions,
+	bold,
 	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
@@ -20,16 +21,39 @@ import {
 	SelectMenuInteraction,
 	TextChannel
 } from 'discord.js';
-import { chunk, notEmpty, objectEntries, Time } from 'e';
+import {
+	calcWhatPercent,
+	chunk,
+	increaseNumByPercent,
+	notEmpty,
+	objectEntries,
+	randArrItem,
+	randInt,
+	shuffleArr,
+	sumArr,
+	Time
+} from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
-import { Bank } from 'oldschooljs';
+import { Bank, Items, Monsters } from 'oldschooljs';
+import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import Monster from 'oldschooljs/dist/structures/Monster';
+import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
-import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
+import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../config';
 import { ClueTiers } from './clues/clueTiers';
-import { badgesCache, BitField, projectiles, usernameCache } from './constants';
+import {
+	badgesCache,
+	BitField,
+	globalConfig,
+	ONE_TRILLION,
+	projectiles,
+	ProjectileType,
+	usernameCache
+} from './constants';
 import { UserStatsDataNeededForCL } from './data/Collections';
+import { doaCL } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import type { Consumable } from './minions/types';
@@ -39,7 +63,7 @@ import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
 import { Gear } from './structures/Gear';
 import { MUserStats } from './structures/MUserStats';
-import type { ItemBank, Skills } from './types';
+import type { Skills } from './types';
 import type {
 	GroupMonsterActivityTaskOptions,
 	NexTaskOptions,
@@ -48,6 +72,7 @@ import type {
 } from './types/minions';
 import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
+import resolveItems from './util/resolveItems';
 import { itemNameFromID } from './util/smallUtils';
 
 export { cleanString, stringMatches, stripEmojis } from '@oldschoolgg/toolkit';
@@ -80,12 +105,29 @@ export function cleanMentions(guild: Guild | null, input: string, showAt = true)
 		});
 }
 
+export function inlineCodeblock(input: string) {
+	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
+}
+
+export function britishTime() {
+	const currentDate = new Date(Date.now() - Time.Hour * 10);
+	return currentDate;
+}
+
+export function isNightTime() {
+	const time = britishTime();
+	let hours = time.getHours();
+
+	if (!production) hours = 20;
+	return hours > 16 || hours < 5;
+}
+
 export function isWeekend() {
 	const currentDate = new Date(Date.now() - Time.Hour * 6);
 	return [6, 0].includes(currentDate.getDay());
 }
 
-export function convertXPtoLVL(xp: number, cap = 99) {
+export function convertXPtoLVL(xp: number, cap = 120) {
 	let points = 0;
 
 	for (let lvl = 1; lvl <= cap; lvl++) {
@@ -108,6 +150,7 @@ export function randFloat(min: number, max: number) {
 }
 
 export function percentChance(percent: number) {
+	if (process.env.TEST) return false;
 	return bool(percent / 100)(nodeCrypto);
 }
 
@@ -164,13 +207,17 @@ export function calcCombatLevel(skills: Skills) {
 	const mage = 0.325 * (Math.floor(magic / 2) + magic);
 	return Math.floor(base + Math.max(melee, range, mage));
 }
+export function calcTotalLevel(skills: Skills) {
+	return sumArr(Object.values(skills));
+}
+
 export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 	for (const [skillName, level] of objectEntries(requirements)) {
 		if ((skillName as string) === 'combat') {
 			if (calcCombatLevel(skills) < level!) return false;
 		} else {
 			const xpHas = skills[skillName];
-			const levelHas = convertXPtoLVL(xpHas ?? 1);
+			const levelHas = convertXPtoLVL(xpHas ?? 1, 120);
 			if (levelHas < level!) return false;
 		}
 	}
@@ -254,11 +301,9 @@ function gaussianRand(rolls: number = 3) {
 	}
 	return rand / rolls;
 }
-
 export function gaussianRandom(min: number, max: number, rolls?: number) {
 	return Math.floor(min + gaussianRand(rolls) * (max - min + 1));
 }
-
 export function isValidNickname(str?: string) {
 	return Boolean(
 		str &&
@@ -275,6 +320,77 @@ export type PaginatedMessagePage = MessageEditOptions;
 export async function makePaginatedMessage(channel: TextChannel, pages: PaginatedMessagePage[], target?: string) {
 	const m = new PaginatedMessage({ pages, channel });
 	return m.run(target ? [target] : undefined);
+}
+
+export function isSuperUntradeable(item: number | Item) {
+	const id = typeof item === 'number' ? item : item.id;
+	if (id === 5021) return true;
+	if (id === itemID('Snowball')) return true;
+	const fullItem = Items.get(id);
+	if (fullItem?.customItemData?.isSuperUntradeable) {
+		return true;
+	}
+	return id >= 40_000 && id <= 45_000;
+}
+
+export function isGEUntradeable(item: number | Item) {
+	const fullItem = typeof item === 'number' ? Items.get(item) : item;
+	if (!fullItem || !fullItem.customItemData || !fullItem.customItemData.superTradeableButTradeableOnGE) {
+		return isSuperUntradeable(item);
+	}
+	if (fullItem.customItemData.isSuperUntradeable && fullItem.customItemData.superTradeableButTradeableOnGE) {
+		return false;
+	}
+	return isSuperUntradeable(item);
+}
+
+export function birdhouseLimit(user: MUser) {
+	let base = 4;
+	if (user.bitfield.includes(BitField.HasScrollOfTheHunt)) base += 4;
+	if (user.hasEquippedOrInBank('Hunter master cape')) base += 4;
+	return base;
+}
+
+export function determineProjectileTypeFromGear(gear: Gear): ProjectileType | null {
+	if (resolveItems(['Twisted bow', 'Hellfire bow', 'Zaryte bow']).some(i => gear.hasEquipped(i))) {
+		return 'arrow';
+	} else if (
+		resolveItems(['Chaotic crossbow', 'Armadyl crossbow', 'Dragon crossbow']).some(i => gear.hasEquipped(i))
+	) {
+		return 'bolt';
+	}
+	return null;
+}
+
+export function getMonster(str: string): Monster {
+	const mon = Monsters.find(_m => _m.name === str);
+
+	if (!mon) {
+		throw new Error(`Invalid monster name given: ${str}`);
+	}
+	return mon;
+}
+
+export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
+	let result = [];
+	let uniquesReceived = 0;
+	for (const [item, qty] of bank.items().sort((a, b) => a[1] - b[1])) {
+		if (uniques.includes(item.id)) {
+			uniquesReceived += qty;
+		}
+		const rate = Math.round(iterations / qty);
+		if (rate < 2) continue;
+		let { name } = item;
+		if (uniques.includes(item.id)) name = bold(name);
+		result.push(`${qty}x ${name} (1 in ${rate})`);
+	}
+	result.push(
+		`\n**${uniquesReceived}x Uniques (1 in ${Math.round(iterations / uniquesReceived)} which is ${calcWhatPercent(
+			uniquesReceived,
+			iterations
+		)}%)**`
+	);
+	return result.join(', ');
 }
 
 export function convertPercentChance(percent: number) {
@@ -297,9 +413,11 @@ export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGe
 
 	switch (style) {
 		case GearStat.AttackMagic:
+		case GearStat.DefenceMagic:
 			setup = 'mage';
 			break;
 		case GearStat.AttackRanged:
+		case GearStat.DefenceRanged:
 			setup = 'range';
 			break;
 		default:
@@ -307,6 +425,22 @@ export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGe
 	}
 
 	return setup;
+}
+
+export function formatTimestamp(date: Date, relative = false) {
+	const unixTime = date.getTime() / 1000;
+	if (relative) {
+		return `<t:${unixTime}:R>`;
+	}
+	return `<t:${unixTime}>`;
+}
+
+export function ISODateString(date?: Date) {
+	return (date ?? new Date()).toISOString().slice(0, 10);
+}
+
+export function averageArr(arr: number[]) {
+	return sumArr(arr) / arr.length;
 }
 
 export function convertPvmStylesToGearSetup(attackStyles: SkillsEnum[]) {
@@ -367,8 +501,33 @@ export function convertBankToPerHourStats(bank: Bank, time: number) {
 	return result;
 }
 
+export function isAtleastThisOld(date: Date | number, age: number) {
+	const difference = Date.now() - (typeof date === 'number' ? date : date.getTime());
+	return difference >= age;
+}
+
 export function removeMarkdownEmojis(str: string) {
 	return escapeMarkdown(stripEmojis(str));
+}
+
+export function moidLink(items: number[]) {
+	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
+}
+export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank) {
+	const marketPrices = (await prisma.clientStorage.findFirst({
+		where: { id: globalConfig.clientID },
+		select: {
+			market_prices: true
+		}
+	}))!.market_prices as ItemBank;
+	let price = 0;
+	for (const [item, qty] of bank.items()) {
+		if (!item) {
+			continue;
+		}
+		price += (marketPrices[item.id] ?? item.price * 0.8) * qty;
+	}
+	return price;
 }
 
 export function isValidSkill(skill: string): skill is SkillsEnum {
@@ -411,13 +570,49 @@ export async function asyncGzip(buffer: Buffer) {
 	});
 }
 
+export function increaseBankQuantitesByPercent(bank: Bank, percent: number, whitelist: number[] | null = null) {
+	for (const [key, value] of Object.entries(bank.bank)) {
+		if (whitelist !== null && !whitelist.includes(parseInt(key))) continue;
+		const increased = Math.floor(increaseNumByPercent(value, percent));
+		bank.bank[key] = increased;
+	}
+}
+
+export function generateXPLevelQuestion() {
+	const level = randInt(1, 120);
+	const xp = randInt(convertLVLtoXP(level), convertLVLtoXP(level + 1) - 1);
+
+	let chanceOfSwitching = randInt(1, 4);
+
+	let answers: string[] = [level.toString()];
+	let arr = shuffleArr(['plus', 'minus'] as const);
+
+	while (answers.length < 4) {
+		let modifier = randArrItem([1, 1, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 9, 10, 10]);
+		let action = roll(chanceOfSwitching) ? arr[0] : arr[1];
+		let potentialAnswer = action === 'plus' ? level + modifier : level - modifier;
+		if (potentialAnswer < 1) potentialAnswer = level + modifier;
+		else if (potentialAnswer > 120) potentialAnswer = level - modifier;
+
+		if (answers.includes(potentialAnswer.toString())) continue;
+		answers.push(potentialAnswer.toString());
+	}
+
+	return {
+		question: `What level would you be at with **${xp.toLocaleString()}** XP?`,
+		answers,
+		explainAnswer: `${xp.toLocaleString()} is level ${level}!`
+	};
+}
+
 export function skillingPetDropRate(
-	user: MUserClass,
+	userOrSkillXP: MUserClass | number,
 	skill: SkillsEnum,
 	baseDropRate: number
 ): { petDropRate: number } {
-	const twoHundredMillXP = user.skillsAsXP[skill] >= 200_000_000;
-	const skillLevel = user.skillsAsLevels[skill];
+	const xp = typeof userOrSkillXP === 'number' ? userOrSkillXP : userOrSkillXP.skillsAsXP[skill];
+	const twoHundredMillXP = xp >= 5_000_000_000;
+	const skillLevel = convertXPtoLVL(xp);
 	const petRateDivisor = twoHundredMillXP ? 15 : 1;
 	const dropRate = Math.floor((baseDropRate - skillLevel * 25) / petRateDivisor);
 	return { petDropRate: dropRate };
@@ -434,6 +629,22 @@ export function getUsername(id: string | bigint, withBadges: boolean = true) {
 	let username = usernameCache.get(id.toString()) ?? 'Unknown';
 	if (withBadges) username = `${getBadges(id)} ${username}`;
 	return username;
+}
+
+export function clAdjustedDroprate(
+	user: MUser | Bank,
+	item: string | number,
+	baseRate: number,
+	increaseMultiplier: number
+) {
+	const amountInCL = user instanceof Bank ? user.amount(item) : user.cl.amount(item);
+	if (amountInCL === 0) return baseRate;
+	let newRate = baseRate;
+	for (let i = 0; i < amountInCL; i++) {
+		newRate *= increaseMultiplier;
+		if (newRate >= ONE_TRILLION) break;
+	}
+	return Math.floor(newRate);
 }
 
 export function makeComponents(components: ButtonBuilder[]): InteractionReplyOptions['components'] {
@@ -474,6 +685,15 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	debugLog(`Finished ${name} in ${stopwatch.toString()}`);
 }
 
+export function getAllIDsOfUser(user: MUser) {
+	let main = user.user.main_account;
+	const allAccounts: string[] = [...user.user.ironman_alts, user.id];
+	if (main) {
+		allAccounts.push(main);
+	}
+	return allAccounts;
+}
+
 export function getInteractionTypeName(type: InteractionType) {
 	return {
 		[InteractionType.Ping]: 'Ping',
@@ -489,6 +709,7 @@ export function isModOrAdmin(user: MUser) {
 }
 
 export async function calcClueScores(user: MUser) {
+	const { actualCluesBank } = await user.calcActualClues();
 	const stats = await user.fetchStats({ openable_scores: true });
 	const openableBank = new Bank(stats.openable_scores as ItemBank);
 	return openableBank
@@ -500,7 +721,8 @@ export async function calcClueScores(user: MUser) {
 				tier,
 				casket: getOSItem(tier.id),
 				clueScroll: getOSItem(tier.scrollID),
-				opened: openableBank.amount(tier.id)
+				opened: openableBank.amount(tier.id),
+				actualOpened: actualCluesBank.amount(tier.scrollID)
 			};
 		})
 		.filter(notEmpty);
@@ -519,10 +741,6 @@ export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededF
 		gotrRiftSearches: userStats.gotr_rift_searches,
 		stats
 	};
-}
-
-export function md5sum(str: string) {
-	return createHash('md5').update(str).digest('hex');
 }
 
 export { assert } from './util/logError';
@@ -552,4 +770,8 @@ export function checkRangeGearWeapon(gear: Gear) {
 		weapon,
 		ammo
 	};
+}
+
+export function hasUnlockedAtlantis(user: MUser) {
+	return doaCL.some(itemID => user.cl.has(itemID));
 }

@@ -14,7 +14,6 @@ import resolveItems from './util/resolveItems';
 
 export const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
 export type DiaryTierName = (typeof diaryTiers)[number];
-
 export interface DiaryTier {
 	name: 'Easy' | 'Medium' | 'Hard' | 'Elite';
 	items: Item[];
@@ -494,6 +493,7 @@ export const FaladorDiary: Diary = {
 			thieving: 13,
 			woodcutting: 75
 		},
+		qp: MAX_QP,
 		collectionLogReqs: resolveItems(['Air rune', 'Saradomin brew(3)']),
 		customReq: (user, summary) => {
 			if (summary) return [false, 'Quest point cape or Skill cape.'];

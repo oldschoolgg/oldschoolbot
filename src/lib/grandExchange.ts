@@ -9,11 +9,20 @@ import PQueue from 'p-queue';
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
 import { BitField, globalConfig, ONE_TRILLION, PerkTier } from './constants';
+import { isCustomItem } from './customItems/util';
 import { marketPricemap } from './marketPrices';
 import { RobochimpUser, roboChimpUserFetch } from './roboChimp';
 import { prisma } from './settings/prisma';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
-import { assert, generateGrandExchangeID, getInterval, itemNameFromID, makeComponents, toKMB } from './util';
+import {
+	assert,
+	generateGrandExchangeID,
+	getInterval,
+	isGEUntradeable,
+	itemNameFromID,
+	makeComponents,
+	toKMB
+} from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
@@ -133,14 +142,14 @@ class GrandExchangeSingleton {
 					name: 'Base',
 					amount: 3
 				},
-				...[100, 250, 1000, 2000].map(num => ({
+				...[100, 250, 1000, 2000, 2500].map(num => ({
 					has: (user: MUser) => user.totalLevel >= num,
 					name: `${num} Total Level`,
 					amount: 1
 				})),
 				...[30, 60, 90, 95].map(num => ({
 					has: (_: MUser, robochimpUser: RobochimpUser) =>
-						robochimpUser.osb_cl_percent && robochimpUser.osb_cl_percent >= num,
+						robochimpUser.bso_cl_percent && robochimpUser.bso_cl_percent >= num,
 					name: `${num}% CL Completion`,
 					amount: 1
 				})),
@@ -248,7 +257,11 @@ class GrandExchangeSingleton {
 		for (const tx of allActiveListingsInTimePeriod) sanityCheckTransaction(tx);
 
 		const item = getOSItem(geListing.item_id);
-		const buyLimit = item.buy_limit ?? this.config.buyLimit.fallbackBuyLimit(item);
+		let buyLimit = item.buy_limit ?? this.config.buyLimit.fallbackBuyLimit(item);
+		if (!isCustomItem(item.id)) {
+			buyLimit *= 5;
+		}
+
 		const totalSold = sumArr(allActiveListingsInTimePeriod.map(listing => listing.quantity_bought));
 		const remainingItemsCanBuy = Math.max(0, buyLimit - totalSold);
 
@@ -278,7 +291,11 @@ class GrandExchangeSingleton {
 		}
 		if (user.isIronman) return { error: "You're an ironman." };
 		const item = getItem(itemName);
-		if (!item || !item.tradeable_on_ge || ['Coins'].includes(item.name)) {
+		if (!item || ['Coins'].includes(item.name)) {
+			return { error: 'Invalid item.' };
+		}
+
+		if (isGEUntradeable(item.id)) {
 			return { error: 'Invalid item.' };
 		}
 
@@ -791,17 +808,21 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	}
 
 	async tick() {
-		await this.queue.add(async () => {
-			if (this.isTicking) throw new Error('Already ticking.');
-			try {
-				await this._tick();
-			} catch (err: any) {
-				logError(err.message);
-				debugLog(err.message);
-				throw err;
-			} finally {
-				this.isTicking = false;
-			}
+		return new Promise<void>((resolve, reject) => {
+			this.queue.add(async () => {
+				if (this.isTicking) return reject(new Error('Already ticking.'));
+				this.isTicking = true;
+				try {
+					await this._tick();
+				} catch (err: any) {
+					logError(err.message);
+					debugLog(err.message);
+					return reject(err);
+				} finally {
+					this.isTicking = false;
+					resolve();
+				}
+			});
 		});
 	}
 

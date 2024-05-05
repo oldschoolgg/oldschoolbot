@@ -13,6 +13,7 @@ import {
 	LastManStandingGame,
 	LootTrack,
 	Minigame,
+	MortimerTricks,
 	PinnedTrip,
 	PlayerOwnedHouse,
 	Prisma,
@@ -31,6 +32,7 @@ import { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
 import { GrandExchange } from '../../src/lib/grandExchange';
 import { trackLoot } from '../../src/lib/lootTrack';
 import { incrementMinigameScore, MinigameName } from '../../src/lib/settings/minigames';
+import { prisma } from '../../src/lib/settings/prisma';
 import { SkillsEnum } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil';
@@ -58,7 +60,7 @@ import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings';
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity';
 import { createTestUser, mockClient, mockedId, TestUser } from './util';
-import { BotItemSell, GEListing, StashUnit } from '.prisma/client';
+import { BotItemSell, FishingContestCatch, GEListing, StashUnit, Tame, TameActivity } from '.prisma/client';
 
 interface TestCommand {
 	name: string;
@@ -106,6 +108,12 @@ class UserData {
 	bingos?: Bingo[];
 	commandUsage?: CommandUsage[];
 	geListings?: GEListing[];
+	// BSO Data
+	tames?: Tame[];
+	tameActivity?: TameActivity[];
+	fishingContestCatches?: FishingContestCatch[];
+	// BSO Event Data
+	mortimerTricks?: MortimerTricks[];
 
 	constructor(_user: string | MUser) {
 		this.id = typeof _user === 'string' ? _user : _user.id;
@@ -256,6 +264,33 @@ class UserData {
 			orderBy: { id: 'asc' }
 		});
 		if (geListings.length > 0) this.geListings = geListings;
+
+		// BSO Data:
+		const tames = await prisma.tame.findMany({
+			where: { user_id: this.id },
+			orderBy: { id: 'asc' }
+		});
+		if (tames.length > 0) this.tames = tames;
+
+		const tameActivity = await prisma.tameActivity.findMany({
+			where: { user_id: this.id },
+			orderBy: { id: 'asc' }
+		});
+		if (tameActivity.length > 0) this.tameActivity = tameActivity;
+
+		const fishingContestCatches = await prisma.fishingContestCatch.findMany({
+			where: { user_id: BigInt(this.id) },
+			orderBy: { id: 'asc' }
+		});
+		if (fishingContestCatches.length > 0) this.fishingContestCatches = fishingContestCatches;
+
+		// BSO Limited Event Data:
+		const mortimerTricks = await prisma.mortimerTricks.findMany({
+			where: { OR: [{ trickster_id: this.id }, { target_id: this.id }] },
+			orderBy: { date: 'asc' }
+		});
+
+		if (mortimerTricks.length > 0) this.mortimerTricks = mortimerTricks;
 
 		this.loaded = true;
 	}
@@ -599,6 +634,73 @@ class UserData {
 			const smallerSet = balance ? target.geListings : this.geListings;
 			if (!smallerSet.every(s => biggerSet.some(b => s.id === b.id))) {
 				errors.push('Mismatched GE Listing data - Comparison failed.');
+			}
+		}
+
+		// BSO Data
+		// Tames
+		if (this.tames !== target.tames) {
+			const srcCt = this.tames?.length ?? 0;
+			const dstCt = target.tames?.length ?? 0;
+			if (srcCt !== dstCt) {
+				errors.push(`Wrong number of Tames. ${srcCt} vs ${dstCt}`);
+			} else if (
+				!this.tames!.every(s =>
+					target.tames!.some(
+						t => s.nickname === t.nickname && s.max_combat_level === t.max_combat_level && s.id === t.id
+					)
+				)
+			) {
+				errors.push("One or more Tames don't match.");
+			}
+		}
+		// Tame Activity
+		if (this.tameActivity !== target.tameActivity) {
+			const srcCt = this.tameActivity?.length ?? 0;
+			const dstCt = target.tameActivity?.length ?? 0;
+			if (srcCt !== dstCt) {
+				errors.push(`Wrong number of Tame Activity rows. ${srcCt} vs ${dstCt}`);
+			} else if (
+				!this.tameActivity!.every(s =>
+					target.tameActivity!.some(t => JSON.stringify(s.data) === JSON.stringify(t.data) && s.id === t.id)
+				)
+			) {
+				errors.push("One or more Tame Activities don't match.");
+			}
+		}
+		// Fishing Contest Catches
+		if (this.fishingContestCatches !== target.fishingContestCatches) {
+			const srcCt = this.fishingContestCatches?.length ?? 0;
+			const dstCt = target.fishingContestCatches?.length ?? 0;
+			if (srcCt !== dstCt) {
+				errors.push(`Wrong number of fishingContestCatches rows. ${srcCt} vs ${dstCt}`);
+			} else if (
+				!this.fishingContestCatches!.every(s =>
+					target.fishingContestCatches!.some(t => s.name === t.name && s.id === t.id)
+				)
+			) {
+				errors.push("One or more fishingContestCatches don't match.");
+			}
+		}
+
+		// BSO Limited Event Data:
+		// Mortimer Tricks
+		if (this.mortimerTricks !== target.mortimerTricks) {
+			const srcCt = this.mortimerTricks?.length ?? 0;
+			const dstCt = target.mortimerTricks?.length ?? 0;
+			if (srcCt !== dstCt) {
+				errors.push(`Wrong number of MortimerTricks rows. ${srcCt} vs ${dstCt}`);
+			} else if (
+				!this.mortimerTricks!.every(s =>
+					target.mortimerTricks!.some(t => {
+						if ([t.trickster_id, s.trickster_id].includes(this.id)) {
+							return t.target_id === s.target_id && s.id === t.id;
+						}
+						return t.trickster_id === s.trickster_id && s.id === t.id;
+					})
+				)
+			) {
+				errors.push("One or more MortimerTricks rows don't match.");
 			}
 		}
 
@@ -1096,6 +1198,97 @@ const allTableCommands: TestCommand[] = [
 				}
 			});
 		}
+	},
+	// BSO Commands / data tables
+	{
+		name: 'Create tame',
+		cmd: async user => {
+			const tameNicknames = ['Xlaug', 'Smog', 'Xmaug', 'Infernape', 'Charmander', 'Charizard'];
+			await prisma.tame.create({
+				data: {
+					user_id: user.id,
+					nickname: randArrItem(tameNicknames),
+					species_id: 1,
+					growth_stage: 'adult',
+					growth_percent: 100,
+					max_combat_level: randInt(75, 100),
+					max_artisan_level: randInt(1, 10),
+					max_gatherer_level: randInt(15, 30),
+					max_support_level: randInt(1, 10)
+				}
+			});
+		},
+		priority: true
+	},
+	{
+		name: 'Create tame activity',
+		cmd: async user => {
+			const tame = await prisma.tame.findFirst({ where: { user_id: user.id }, select: { id: true } });
+			if (!tame) return false;
+			const start_date = new Date();
+			const duration = 60 * 60 * 1000;
+			const finish_date = new Date(start_date.getTime() + duration);
+			await prisma.tameActivity.create({
+				data: {
+					start_date,
+					finish_date,
+					duration,
+					user_id: user.id,
+					tame_id: tame.id,
+					type: 'pvm',
+					channel_id: '1111111111111111111',
+					completed: true,
+					data: { type: 'pvm', monsterID: 707_070, quantity: randInt(30, 100) }
+				}
+			});
+		}
+	},
+	{
+		name: 'Fishing Contest Catch',
+		cmd: async user => {
+			const fishNames = [
+				['Pacific', 'Atlantic', 'Antarctic', 'Arctic', 'Indian', 'Summer', 'Frowning', 'Smiling'],
+				['Outback', 'Tailback', 'Longfin', 'Tuna', 'Bluefin', 'Whaleback', 'Tigerfish', 'Striped-back']
+			];
+			const name = fishNames.map(slug => randArrItem(slug)).join(' ');
+			await prisma.fishingContestCatch.create({
+				data: {
+					user_id: BigInt(user.id),
+					name,
+					length_cm: randInt(80, 120)
+				}
+			});
+		},
+		priority: true
+	},
+	// BSO Event data
+	{
+		name: 'Mortimer tricks you',
+		cmd: async user => {
+			const target_id = user.id;
+			const trickster_id = mockedId();
+			await prisma.mortimerTricks.create({
+				data: {
+					trickster_id,
+					target_id,
+					completed: false
+				}
+			});
+		}
+	},
+	{
+		name: 'Mortimer tricks target',
+		cmd: async user => {
+			const trickster_id = user.id;
+			const target_id = mockedId();
+			await prisma.mortimerTricks.create({
+				data: {
+					trickster_id,
+					target_id,
+					completed: false
+				}
+			});
+		}
 	}
 ];
 
@@ -1318,6 +1511,11 @@ describe('migrate user test', async () => {
 		newData.botItemSell = [];
 		if (newData.gear?.melee) newData.gear.melee.weapon = null;
 
+		// BSO Data failure simulation:
+		newData.tames![0].nickname = 'Not my real nickname';
+		// BSO Limited Event Failure simulation:
+		newData.mortimerTricks![0].trickster_id = '111111111';
+
 		const badResult = sourceData.equals(newData);
 		expect(badResult.result).toBe(false);
 
@@ -1327,7 +1525,11 @@ describe('migrate user test', async () => {
 			"cooking level doesn't match. 1 vs 1000000",
 			"POH Object doesn't match: null !== 33",
 			'User Stats doesn\'t match: {} !== {"2":1}',
-			'Wrong number of BotItemSell rows. 1 vs 0'
+			'Wrong number of BotItemSell rows. 1 vs 0',
+			// BSO Failure Check
+			"One or more Tames don't match.",
+			// BSO Event Failure Check
+			"One or more MortimerTricks rows don't match."
 		];
 		expect(badResult.errors).toEqual(expectedBadResult);
 	});

@@ -24,10 +24,28 @@ export type PartialGearSetup = Partial<{
 	[key in EquipmentSlot]: string;
 }>;
 
+export function addStatsOfItemsTogether(items: number[], statWhitelist = Object.values(GearStat)) {
+	const osItems = items.map(i => getOSItem(i));
+	let base: Required<GearRequirement> = {} as Required<GearRequirement>;
+	for (const item of osItems) {
+		for (const stat of Object.values(GearStat)) {
+			let thisStat = item.equipment?.[stat] ?? 0;
+			if (!base[stat]) base[stat] = 0;
+			if (statWhitelist.includes(stat)) {
+				base[stat] += thisStat;
+			}
+		}
+	}
+	return base;
+}
+
 export function hasGracefulEquipped(setup: Gear) {
-	return setup.hasEquipped(
-		['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful gloves', 'Graceful cape'],
-		true
+	return (
+		setup.hasEquipped('Agility master cape') ||
+		setup.hasEquipped(
+			['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful gloves', 'Graceful cape'],
+			true
+		)
 	);
 }
 
@@ -311,6 +329,27 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 		pinned_setup: null
 	},
 	{
+		name: 'diviner',
+		user_id: '123',
+		head: itemID("Diviner's headwear"),
+		neck: null,
+		body: itemID("Diviner's robe"),
+		legs: itemID("Diviner's legwear"),
+		cape: null,
+		two_handed: null,
+		hands: itemID("Diviner's handwear"),
+		feet: itemID("Diviner's footwear"),
+		shield: null,
+		weapon: null,
+		ring: null,
+		ammo: null,
+		ammo_qty: null,
+		emoji_id: null,
+		times_equipped: 0,
+		defaultSetup: 'skilling',
+		pinned_setup: null
+	},
+	{
 		name: 'smith',
 		user_id: '123',
 		head: null,
@@ -333,7 +372,7 @@ export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 	}
 ];
 
-const baseStats: GearStats = {
+export const baseStats: GearStats = {
 	attack_stab: 0,
 	attack_slash: 0,
 	attack_crush: 0,

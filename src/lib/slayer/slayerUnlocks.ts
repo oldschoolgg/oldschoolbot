@@ -67,7 +67,12 @@ export enum SlayerTaskUnlocksEnum {
 	HerbSack,
 	RunePouch,
 	DoubleTrouble,
-	BroaderFletching
+	BroaderFletching,
+	// Custom
+	SizeMatters,
+	BlockAndRoll,
+	PoreDecisions,
+	Maskuerade
 }
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 	{
@@ -514,5 +519,39 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 300,
 		canBeRemoved: false,
 		aliases: ['broad bolts', 'broads', 'broad arrows', 'fletching', 'broad fletching']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.SizeMatters,
+		name: 'Size Matters',
+		desc: 'Makes all tasks have double quantity',
+		slayerPointCost: 1500,
+		canBeRemoved: true,
+		aliases: ['size matters']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.BlockAndRoll,
+		name: 'Block and Roll',
+		desc: 'Allows you to have 3 extra task blocks',
+		slayerPointCost: 5000,
+		canBeRemoved: true,
+		aliases: ['block n roll', 'block and roll']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.PoreDecisions,
+		name: 'Pore Decisions',
+		desc: 'Allows you to get Polypore Dungeon monsters as slayer tasks',
+		slayerPointCost: 600,
+		canBeRemoved: true,
+		aliases: ['pore decisions', 'poor decisions']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.Maskuerade,
+		name: 'Maskuerade',
+		desc: 'Allows you to get Slayer masks and turn them into helms.',
+		slayerPointCost: 750,
+		canBeRemoved: true,
+		aliases: ['maskuerade', 'masquerade']
 	}
 ];
+
+export const slayerUnlockableRewards = SlayerRewardsShop.filter(reward => !reward.item);
