@@ -9,44 +9,6 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { formatDuration } from '../util/smallUtils';
 
-// const monsters = [
-// 	{
-// 		monster: Monsters.ColossalHydra
-// 	},
-// 	{
-// 		monster: Monsters.NuclearSmokeDevil
-// 	},
-// 	{
-// 		monster: Monsters.NightBeast
-// 	},
-// 	{
-// 		monster: Monsters.GreaterAbyssalDemon
-// 	},
-// 	{
-// 		monster: Monsters.GuardianDrake
-// 	},
-// 	{
-// 		monster: Monsters.Nechryarch
-// 	},
-// 	{
-// 		monster: Monsters.MarbleGargoyle
-// 	},
-// 	{
-// 		monster: Monsters.KingKurask
-// 	},
-// 	{
-// 		monster: Monsters.ChokeDevil
-// 	},
-// 	{
-// 		monster: Monsters.ShadowWyrm
-// 	},
-// 	{
-// 		monster: Monsters.BasiliskSentinel
-// 	}
-// ];
-
-// longer max trip length with blood fury
-
 export const TuraelsTrialsMethods = ['melee', 'mage', 'range'] as const;
 export type TuraelsTrialsMethod = (typeof TuraelsTrialsMethods)[number];
 
