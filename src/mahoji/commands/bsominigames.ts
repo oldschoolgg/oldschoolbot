@@ -292,12 +292,6 @@ export const minigamesCommand: OSBMahojiCommand = {
 							required: true
 						}
 					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'stats',
-					description: 'View your turaels trials stats.',
-					options: []
 				}
 			]
 		}
@@ -351,7 +345,6 @@ export const minigamesCommand: OSBMahojiCommand = {
 		};
 		turaels_trials?: {
 			start?: { method: TuraelsTrialsMethod };
-			stats?: {};
 		};
 	}>) => {
 		const klasaUser = await mUserFetch(userID);
