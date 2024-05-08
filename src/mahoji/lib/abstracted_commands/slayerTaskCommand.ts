@@ -100,10 +100,8 @@ export function slayerListBlocksCommand(mahojiUser: MUser) {
 export async function slayerStatusCommand(mahojiUser: MUser) {
 	const { currentTask, assignedTask, slayerMaster } = await getUsersCurrentSlayerInfo(mahojiUser.id);
 	const { slayer_points: slayerPoints } = mahojiUser.user;
-	const { slayer_task_streak: slayerStreak } = await mahojiUser.fetchStats({ slayer_task_streak: true });
-	const { slayer_wildy_task_streak: wildySlayerStreak } = await mahojiUser.fetchStats({
-		slayer_wildy_task_streak: true
-	});
+	const slayer_streaks = await mahojiUser.fetchStats({ slayer_task_streak: true, slayer_wildy_task_streak: true });
+
 	return (
 		`${
 			currentTask
@@ -114,7 +112,9 @@ export async function slayerStatusCommand(mahojiUser: MUser) {
 				  )}. You have ${currentTask.quantity_remaining.toLocaleString()} kills remaining.`
 				: ''
 		}` +
-		`\nYou have ${slayerPoints.toLocaleString()} slayer points, and have completed ${slayerStreak} tasks in a row and ${wildySlayerStreak} wilderness tasks in a row.`
+		`\nYou have ${slayerPoints.toLocaleString()} slayer points, and have completed ${
+			slayer_streaks.slayer_task_streak
+		} tasks in a row and ${slayer_streaks.slayer_wildy_task_streak} wilderness tasks in a row.`
 	);
 }
 

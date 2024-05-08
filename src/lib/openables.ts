@@ -309,10 +309,10 @@ const osjsOpenables: UnifiedOpenable[] = [
 		allItems: Openables.NestBoxSeeds.table.allItems
 	},
 	{
-		name: 'Bird nest (ent)',
+		name: 'Bird nest',
 		id: 5070,
 		openedItem: getOSItem(5070),
-		aliases: ['bird nest (ent)', 'ent nest', 'ent bird nest', 'bird nest ent'],
+		aliases: ['bird nest', 'nest'],
 		output: nestTable,
 		allItems: nestTable.allItems
 	},

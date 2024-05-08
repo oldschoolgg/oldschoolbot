@@ -735,11 +735,7 @@ GROUP BY data->>'clueID';`);
 		return this.caPoints() >= CombatAchievements[tier].rewardThreshold;
 	}
 
-	buildTertiaryItemChanges(
-		hasRingOfWealthI: boolean = false,
-		isInWilderness: boolean = false,
-		isOnSlayerTask: boolean = false
-	) {
+	buildTertiaryItemChanges(hasRingOfWealthI: boolean = false, inWildy: boolean = false, onTask: boolean = false) {
 		const changes = new Map();
 
 		const tiers = Object.keys(CombatAchievements) as Array<keyof typeof CombatAchievements>;
@@ -751,19 +747,14 @@ GROUP BY data->>'clueID';`);
 			changes.set(`Clue scroll (${tier})`, change);
 		}
 
-		if (isInWilderness) changes.set('Giant key', 50);
+		if (inWildy) changes.set('Giant key', 50);
 
-		let mossGiantType: string = `${isInWilderness}_${isOnSlayerTask}`;
-		switch (mossGiantType) {
-			case 'true_false':
-				changes.set('Mossy key', 60);
-				break;
-			case 'false_true':
-				changes.set('Mossy key', 66.67);
-				break;
-			case 'true_true':
-				changes.set('Mossy key', 77.6);
-				break;
+		if (inWildy && !onTask) {
+			changes.set('Mossy key', 60);
+		} else if (!inWildy && onTask) {
+			changes.set('Mossy key', 66.67);
+		} else if (inWildy && onTask) {
+			changes.set('Mossy key', 77.6);
 		}
 
 		return changes;
