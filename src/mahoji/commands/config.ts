@@ -1,7 +1,15 @@
-import { EmbedBuilder, inlineCode } from '@discordjs/builders';
 import { hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import { bold, ChatInputCommandInteraction, Guild, HexColorString, resolveColor, User } from 'discord.js';
+import {
+	bold,
+	ChatInputCommandInteraction,
+	EmbedBuilder,
+	Guild,
+	HexColorString,
+	inlineCode,
+	resolveColor,
+	User
+} from 'discord.js';
 import { clamp, removeFromArr, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';

@@ -1,5 +1,5 @@
-import { time } from '@discordjs/builders';
 import { User } from '@prisma/client';
+import { time } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import birdhouses, { Birdhouse, birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';

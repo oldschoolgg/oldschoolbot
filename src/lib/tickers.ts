@@ -1,5 +1,4 @@
-import { EmbedBuilder } from '@discordjs/builders';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, TextChannel } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, TextChannel } from 'discord.js';
 import { noOp, randInt, removeFromArr, shuffleArr, Time } from 'e';
 
 import { production } from '../config';
@@ -267,7 +266,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 					if (!user) continue;
 					const message = await user
 						.send({
-							content: `The ${planted.name} planted in your ${patchType} patches is ready to be harvested!`,
+							content: `The ${planted.name} planted in your ${patchType} patches are ready to be harvested!`,
 							components: [farmingReminderButtons]
 						})
 						.catch(noOp);

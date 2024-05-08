@@ -1,5 +1,6 @@
 import type { ChartConfiguration } from 'chart.js';
 import { ChartJSNodeCanvas } from 'chartjs-node-canvas';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const width = 1000; // px
 const height = 500; // px
@@ -40,7 +41,8 @@ export async function pieChart(title: string, format: (value: any) => string, va
 					}
 				}
 			}
-		}
+		},
+		plugins: [ChartDataLabels]
 	};
 	return generateChart(options);
 }

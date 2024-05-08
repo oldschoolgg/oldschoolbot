@@ -51,7 +51,7 @@ export function findPlant(lastPlanted: IPatchData['lastPlanted']) {
 export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]): BaseMessageOptions {
 	let str = '';
 	for (const patch of patchesDetailed.filter(i => i.ready === true)) {
-		str += `${Emoji.Tick} **${patch.friendlyName}**: ${patch.lastQuantity} ${patch.lastPlanted} is ready to be harvested!\n`;
+		str += `${Emoji.Tick} **${patch.friendlyName}**: ${patch.lastQuantity} ${patch.lastPlanted} are ready to be harvested!\n`;
 	}
 	for (const patch of patchesDetailed.filter(i => i.ready === false)) {
 		str += `${Emoji.Stopwatch} **${patch.friendlyName}**: ${patch.lastQuantity} ${
