@@ -1,7 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { userMention } from '@discordjs/builders';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, TextChannel } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, TextChannel, userMention } from 'discord.js';
 import { debounce, noOp, Time } from 'e';
 
 import { production } from '../config';

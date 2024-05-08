@@ -101,7 +101,7 @@ Differences AS (
 
 SELECT
     user_id,
-    week_start,
+    week_start::text,
     diff_cl_global_rank,
     diff_cl_completion_percentage,
     diff_cl_completion_count,
@@ -347,8 +347,8 @@ OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY type;`);
 			const dataPoints: [string, number][] = result
 				.filter(i => i.hours >= 1)
-				.sort((a, b) => b.hours - a.hours)
-				.map(i => [i.type, i.hours]);
+				.sort((a, b) => Number(b.hours - a.hours))
+				.map(i => [i.type, Number(i.hours)]);
 			const buffer = await barChart('Your Activity Durations', val => `${val} Hrs`, dataPoints);
 			return makeResponseForBuffer(buffer);
 		}
@@ -405,7 +405,7 @@ GROUP BY data->>'monsterID';`);
 			const { percent } = calcCLDetails(user);
 			const attachment: Buffer = await pieChart(
 				'Your Personal Collection Log Progress',
-				val => `${toKMB(val)}%`,
+				val => `${val.toFixed(2)}%`,
 				[
 					['Complete Collection Log Items', percent, '#9fdfb2'],
 					['Incomplete Collection Log Items', 100 - percent, '#df9f9f']
@@ -970,7 +970,9 @@ GROUP BY "bankBackground";`);
 			return `**Personal XP gained from Tears of Guthix**\n${result
 				.map(
 					(i: any) =>
-						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(i.total_xp)}`
+						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(
+							Number(i.total_xp)
+						)}`
 				)
 				.join('\n')}`;
 		}
@@ -995,7 +997,9 @@ GROUP BY "bankBackground";`);
 			return `**Personal XP gained from Forestry events**\n${result
 				.map(
 					(i: any) =>
-						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(i.total_xp)}`
+						`${skillEmoji[i.skill as keyof typeof skillEmoji] as keyof SkillsScore} ${toKMB(
+							Number(i.total_xp)
+						)}`
 				)
 				.join('\n')}`;
 		}

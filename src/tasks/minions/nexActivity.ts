@@ -1,5 +1,5 @@
-import { userMention } from '@discordjs/builders';
 import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { userMention } from 'discord.js';
 
 import { NEX_ID } from '../../lib/constants';
 import { trackLoot } from '../../lib/lootTrack';

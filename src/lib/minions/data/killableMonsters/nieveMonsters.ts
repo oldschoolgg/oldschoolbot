@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
+import { itemID } from 'oldschooljs/dist/util';
 
 import { GearStat } from '../../../gear/types';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
@@ -143,6 +144,18 @@ export const nieveMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
+		degradeableItemUsage: [
+			{
+				required: false,
+				gearSetup: 'range',
+				items: [
+					{
+						itemID: itemID('Venator bow'),
+						boostPercent: 10
+					}
+				]
+			}
+		],
 		qpRequired: 0,
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,

@@ -94,7 +94,7 @@ describe('MUser', () => {
 		expect(user.skillsAsLevels.agility).toEqual(1);
 		const result = await user.addXP({ skillName: SkillsEnum.Agility, amount: 1000 });
 		expect(user.skillsAsLevels.agility).toEqual(9);
-		expect(result).toEqual(`You received 1,000 <:agility:630911040355565568> XP
+		expect(result).toEqual(`You received 1,000 <:agility:630911040355565568> XP.
 **Congratulations! Your Agility level is now 9** 🎉`);
 		const xpAdded = await global.prisma!.xPGain.findMany({
 			where: {
