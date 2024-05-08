@@ -3,6 +3,7 @@ import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
+import { quests } from '../../mahoji/lib/abstracted_commands/questCommand';
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
@@ -78,7 +79,6 @@ import {
 } from '../types/minions';
 import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../util';
 import { getActivityOfUser } from './minionIsBusy';
-import { quests } from './specificQuests';
 
 export function minionStatus(user: MUser) {
 	const currentTask = getActivityOfUser(user.id);

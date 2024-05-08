@@ -3,7 +3,7 @@ import { bold } from 'discord.js';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { SpecificQuestOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { quests } from '../../lib/util/specificQuests';
+import { quests } from '../../mahoji/lib/abstracted_commands/questCommand';
 
 export const specificQuestTask: MinionTask = {
 	type: 'SpecificQuest',

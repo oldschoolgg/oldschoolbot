@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 
+import { MAX_QP } from '../../../mahoji/lib/abstracted_commands/questCommand';
 import { diaries, userhasDiaryTier } from '../../diaries';
 import { musicCapeRequirements } from '../../musicCape';
-import { MAX_QP } from '../../util/specificQuests';
 import { Buyable } from './buyables';
 
 export const capeBuyables: Buyable[] = [

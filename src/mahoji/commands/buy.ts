@@ -10,10 +10,10 @@ import { MUserStats } from '../../lib/structures/MUserStats';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { quests } from '../../lib/util/specificQuests';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
+import { quests } from '../lib/abstracted_commands/questCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
 
