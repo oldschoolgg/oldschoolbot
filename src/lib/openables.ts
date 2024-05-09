@@ -124,7 +124,9 @@ const clueItemsToNotifyOf = resolveItems([
 			'First age amulet',
 			'First age cape',
 			'First age bracelet',
-			'First age ring'
+			'First age ring',
+			'First age robe bottom',
+			'First age robe top'
 		])
 	);
 
