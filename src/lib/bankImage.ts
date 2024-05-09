@@ -241,6 +241,8 @@ const forcedShortNameMap = new Map<number, string>([
 
 	// BSO exclusive misc
 	[i('Athelas'), 'athelas'],
+	[i('Korulsi'), 'korulsi'],
+	[i('Grimy korulsi'), 'korulsi'],
 	[i('Athelas seed'), 'athelas'],
 	[i('Mysterious seed'), 'mysterious'],
 	[i('Mango seed'), 'mango'],
