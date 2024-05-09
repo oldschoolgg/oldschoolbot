@@ -2745,6 +2745,13 @@ expect@^29.0.0:
     jest-message-util "^29.6.2"
     jest-util "^29.6.2"
 
+fast-check@^3.18.0:
+  version "3.18.0"
+  resolved "https://registry.yarnpkg.com/fast-check/-/fast-check-3.18.0.tgz#025c137cb1ad3f229af7d1f913f4aa2e075fa0c5"
+  integrity sha512-/951xaT0kA40w0GXRsZXEwSTE7LugjZtSA/8vPgFkiPQ8wNp8tRvqWuNDHBgLxJYXtsK11e/7Q4ObkKW5BdTFQ==
+  dependencies:
+    pure-rand "^6.1.0"
+
 fast-content-type-parse@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fast-content-type-parse/-/fast-content-type-parse-1.0.0.tgz#cddce00df7d7efb3727d375a598e4904bfcb751c"
@@ -4681,6 +4688,11 @@ punycode@^2.1.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.0.tgz#f67fa67c94da8f4d0cfff981aee4118064199b8f"
   integrity sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==
+
+pure-rand@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-6.1.0.tgz#d173cf23258231976ccbdb05247c9787957604f2"
+  integrity sha512-bVWawvoZoBYpp6yIoQtQXHZjmz35RSVHnUOTefl8Vcjr8snTPY1wnpSPMWekcFwbxI6gtmT7rSYPFvz71ldiOA==
 
 queue-microtask@^1.2.2:
   version "1.2.3"

@@ -58,7 +58,7 @@ export class GeneralBank<T extends string | number> {
 				throw new Error(`Key ${key} is not allowed.`);
 			}
 			assert(
-				typeof value === 'number' && value >= this.valueSchema.min && value < this.valueSchema.max,
+				typeof value === 'number' && value >= this.valueSchema.min && value <= this.valueSchema.max,
 				`Invalid value (not within minmax ${this.valueSchema.min}-${this.valueSchema.max}) for ${key}: ${value}`
 			);
 			if (!this.valueSchema.floats) {
@@ -96,7 +96,7 @@ export class GeneralBank<T extends string | number> {
 			throw new Error(`Value for ${key} exceeds the maximum of ${this.valueSchema.max}.`);
 		}
 		this.bank[key] = newValue;
-		if (!production) this.validate();
+		this.validate();
 		return this;
 	}
 
@@ -111,7 +111,7 @@ export class GeneralBank<T extends string | number> {
 		if (newValue === 0) {
 			delete this.bank[key];
 		}
-		if (!production) this.validate();
+		this.validate();
 		return this;
 	}
 
