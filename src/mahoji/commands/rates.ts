@@ -548,11 +548,12 @@ ${zygomiteFarmingSource
 				'Loot/hr',
 				'Cost/hr'
 			].join('\t')}\n`;
-			const duration = Time.Hour;
+			const maxTripLength = Time.Hour;
 
 			for (const method of TuraelsTrialsMethods) {
-				const input = calculateTuraelsTrialsInput({ maxTripLength: duration, method, isUsingBloodFury: false });
+				const input = calculateTuraelsTrialsInput({ maxTripLength, method, isUsingBloodFury: true });
 				const result = calculateTuraelsTrialsResult({ quantity: input.quantity, method });
+				const { duration } = input;
 				if (input.chargeBank.amount('scythe_of_vitur_charges') !== 0) {
 					input.cost.add('Scythe of vitur', input.chargeBank.amount('scythe_of_vitur_charges'));
 				}
