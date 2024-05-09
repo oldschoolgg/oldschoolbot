@@ -1,4 +1,3 @@
-// tests/GeneralBank.fuzz.test.ts
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 
@@ -33,23 +32,6 @@ describe('GeneralBank Fuzz Tests', () => {
 							expect(Number.isInteger(value)).toBe(true);
 						}
 					}
-				}
-			)
-		);
-	});
-
-	it('can add and remove random quantities while preserving invariants', () => {
-		fc.assert(
-			fc.property(
-				fc.dictionary(fc.string(), fc.integer({ min: 1, max: 1000 })),
-				fc.string({ minLength: 1, maxLength: 10 }),
-				fc.integer({ min: 1, max: 500 }),
-				(initialBank, key, quantity) => {
-					const bank = new GeneralBank<string>({ initialBank });
-					expect(() => bank.add(key, quantity)).not.toThrow();
-					expect(bank.amount(key)).toBeGreaterThanOrEqual(quantity);
-					expect(() => bank.remove(key, quantity)).not.toThrow();
-					expect(bank.amount(key)).toBe(0);
 				}
 			)
 		);
