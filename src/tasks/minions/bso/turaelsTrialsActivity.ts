@@ -8,7 +8,7 @@ import { trackClientBankStats, userStatsBankUpdate } from '../../../mahoji/mahoj
 
 export function calculateTuraelsTrialsResult({ quantity, method }: { quantity: number; method: TuraelsTrialsMethod }) {
 	const loot = new Bank();
-	const xpBank = new XPBank().add('slayer', 37_050 * quantity);
+	const xpBank = new XPBank().add('slayer', 36_009 * quantity);
 
 	if (method === 'melee') {
 		const meleeXP = Math.floor((89_000 * quantity) / 3);

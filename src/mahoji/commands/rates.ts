@@ -563,11 +563,11 @@ ${zygomiteFarmingSource
 					input.cost.add('Rocktail', Math.ceil(input.hpHealingNeeded / 26));
 				}
 
+				let slayerXP = result.xpBank.amount('slayer') * GLOBAL_BSO_XP_MULTIPLIER;
+				slayerXP = increaseNumByPercent(slayerXP, 8);
 				results += [
 					method,
-					Math.floor(
-						calcPerHour(result.xpBank.amount('slayer') * GLOBAL_BSO_XP_MULTIPLIER, duration)
-					).toLocaleString(),
+					Math.floor(calcPerHour(slayerXP, duration)).toLocaleString(),
 					Math.floor(
 						calcPerHour(result.xpBank.amount('attack') * GLOBAL_BSO_XP_MULTIPLIER, duration)
 					).toLocaleString(),
@@ -585,7 +585,7 @@ ${zygomiteFarmingSource
 
 			return {
 				...(returnStringOrFile(results, true) as InteractionReplyOptions),
-				content: 'Assumes: Rocktail for food'
+				content: 'Assumes: Slayer master cape (8% boost to slayer xp)'
 			};
 		}
 
