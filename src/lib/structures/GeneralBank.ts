@@ -1,4 +1,3 @@
-import { production } from '../../config';
 import { mathjs } from '../constants';
 import { assert } from '../util';
 
