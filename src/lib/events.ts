@@ -257,7 +257,14 @@ const mentionCommands: MentionCommand[] = [
 							const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
 							return `${cd.name}: ${durationRemaining}`;
 						}
-						return bold(`${cd.name}: Ready ${mentionCommand(cd.command[0], cd.command[1], cd.command[2])}`);
+						return bold(
+							`${cd.name}: Ready ${mentionCommand(
+								globalClient,
+								cd.command[0],
+								cd.command[1],
+								cd.command[2]
+							)}`
+						);
 					})
 					.join('\n'),
 				components
@@ -274,6 +281,7 @@ const mentionCommands: MentionCommand[] = [
 			}
 			return msg.reply({
 				content: `Click this button to find out if you're ready to do Tombs of Amascut! You can also use the ${mentionCommand(
+					globalClient,
 					'raid',
 					'toa',
 					'help'
