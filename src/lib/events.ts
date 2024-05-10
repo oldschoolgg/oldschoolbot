@@ -15,7 +15,6 @@ import { ItemBank } from './types';
 import { channelIsSendable, formatDuration, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
-import { mentionCommand } from './util/mentionCommand';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
 
 const rareRolesSrc: [string, number, string][] = [
