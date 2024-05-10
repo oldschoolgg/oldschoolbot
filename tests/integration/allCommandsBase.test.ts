@@ -1,15 +1,13 @@
 import { join } from 'node:path';
 
-import { Image } from '@napi-rs/canvas';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { randArrItem, randInt, shuffleArr, Time } from 'e';
 import { Store } from 'mahoji/dist/lib/structures/Store';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { isValidCommand } from 'mahoji/dist/lib/util';
 import { Bank, Items } from 'oldschooljs';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vitest';
 
-import { BankImageTask } from '../../src/lib/bankImage';
 import { BitField, minionActivityCache } from '../../src/lib/constants';
 import { prisma } from '../../src/lib/settings/prisma';
 import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
@@ -24,7 +22,6 @@ import { buyCommand } from '../../src/mahoji/commands/buy';
 import { caCommand } from '../../src/mahoji/commands/ca';
 import { chooseCommand } from '../../src/mahoji/commands/choose';
 import { chopCommand } from '../../src/mahoji/commands/chop';
-import { collectionLogCommand } from '../../src/mahoji/commands/cl';
 import { claimCommand } from '../../src/mahoji/commands/claim';
 import { clueCommand } from '../../src/mahoji/commands/clue';
 import { cluesCommand } from '../../src/mahoji/commands/clues';
@@ -204,7 +201,8 @@ test(
 			'kill',
 			'trivia',
 			'ge',
-			'rp'
+			'rp',
+			'cl'
 		];
 		const cmds = [
 			adminCommand,
@@ -224,7 +222,6 @@ test(
 			mCommand,
 			gpCommand,
 			payCommand,
-			collectionLogCommand,
 			craftCommand,
 			fishCommand,
 			farmingCommand,

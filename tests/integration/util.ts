@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 
 import { globalConfig } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
-import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/prisma';
 import { processPendingActivities } from '../../src/lib/Task';
 import { ItemBank } from '../../src/lib/types';
 import { cryptoRand } from '../../src/lib/util';

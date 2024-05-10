@@ -12,9 +12,9 @@ export default defineConfig({
     },
     testTimeout: 30_000,
     bail: 1,
-		maxConcurrency: 5,
-		maxWorkers: 5,
-		minWorkers: 1,
-		pool: 'forks'
+    maxConcurrency: 5,
+    maxWorkers: 5,
+    minWorkers: 1,
+    pool: 'forks'
   }
 });
