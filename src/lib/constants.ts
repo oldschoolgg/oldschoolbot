@@ -15,6 +15,7 @@ import {
 import * as dotenv from 'dotenv';
 import { Time } from 'e';
 import { CommandOptions } from 'mahoji/dist/lib/types';
+import { all, create } from 'mathjs';
 import { Items } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
@@ -972,3 +973,5 @@ export const christmasCakeIngredients = resolveItems([
 export const gearValidationChecks = new Set();
 
 export const BSO_MAX_TOTAL_LEVEL = 3120;
+
+export const mathjs = create(all);

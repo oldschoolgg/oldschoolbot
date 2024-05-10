@@ -66,6 +66,7 @@ import type {
 	TiaraRunecraftActivityTaskOptions,
 	TinkeringWorkshopOptions,
 	TOAOptions,
+	TuraelsTrialsOptions,
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
@@ -806,6 +807,16 @@ export const tripHandlers = {
 			harvest_memories: {
 				energy: divinationEnergies.find(i => i.item.id === data.e)!.type,
 				type: memoryHarvestTypes[data.t].id
+			}
+		})
+	},
+	[activity_type_enum.TuraelsTrials]: {
+		commandName: 'bsominigames',
+		args: (_data: TuraelsTrialsOptions) => ({
+			turaels_trials: {
+				start: {
+					method: _data.m
+				}
 			}
 		})
 	}

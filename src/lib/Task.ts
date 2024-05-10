@@ -26,6 +26,7 @@ import { odsTask } from '../tasks/minions/bso/ouraniaDeliveryServiceActivity';
 import { researchActivityTask } from '../tasks/minions/bso/researchActivity';
 import { scTask } from '../tasks/minions/bso/stealingCreationActivity';
 import { twTask } from '../tasks/minions/bso/tinkeringWorkshopActivity';
+import { turaelsTrialsTask } from '../tasks/minions/bso/turaelsTrialsActivity';
 import { vasaTask } from '../tasks/minions/bso/vasaMagusActivity';
 import { butlerTask } from '../tasks/minions/butlerActivity';
 import { camdozaalFishingTask } from '../tasks/minions/camdozaalActivity/camdozaalFishingActivity';
@@ -225,7 +226,8 @@ export const tasks: MinionTask[] = [
 	camdozaalSmithingTask,
 	camdozaalFishingTask,
 	memoryHarvestTask,
-	guthixianCacheTask
+	guthixianCacheTask,
+	turaelsTrialsTask
 ];
 
 export async function processPendingActivities() {
