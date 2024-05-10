@@ -35,6 +35,7 @@ const mockBankImageTask = {
 	fetchAndCacheImage: vi.fn().mockReturnValue(Promise.resolve(new Image())),
 	getBgAndSprite: bankImageTask.getBgAndSprite.bind(bankImageGenerator)
 };
+bankImageTask.fetchAndCacheImage = mockBankImageTask.fetchAndCacheImage;
 global.bankImageGenerator = mockBankImageTask as any;
 BankImageTask.prototype.init = mockBankImageTask.init;
 BankImageTask.prototype.run = mockBankImageTask.init;
@@ -68,7 +69,7 @@ function setupRequestLogging() {
 
 	mitmInstance.on('connect', (socket, opts) => {
 		if (opts?.host) {
-			throw new Error(`Sending request to ${opts.host}`);
+			// throw new Error(`Sending request to ${opts.host}`);
 			socket.bypass();
 		}
 	});

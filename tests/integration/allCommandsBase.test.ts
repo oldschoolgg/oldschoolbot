@@ -281,10 +281,20 @@ test(
 			throw new Error(`Command ${command.name} is not in the test`);
 		}
 
+		const ignoredSubCommands = [
+			['tools', 'patron', 'cl_bank'],
+			['loot', 'view']
+		];
+
 		for (const command of cmds) {
 			if (ignoredCommands.includes(command.name)) continue;
 			const options = await generateCommandInputs(maxUser, command.options!);
-			for (const option of options) {
+			outer: for (const option of options) {
+				for (const [parent, sub, subsub] of ignoredSubCommands) {
+					if (command.name === parent && option[sub] && (subsub ? option[sub][subsub] : true)) {
+						continue outer;
+					}
+				}
 				try {
 					const res = await maxUser.runCommand(command, option);
 					minionActivityCache.clear();

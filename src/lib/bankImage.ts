@@ -772,7 +772,6 @@ export class BankImageTask {
 			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
 		}
 
-		console.log(`Drawing image with ${items.length} items`);
 		await this.drawItems(
 			ctx,
 			compact,
