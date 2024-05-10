@@ -89,6 +89,40 @@ export const XPLamps: IXPLamp[] = [
 		minimumLevel: 1
 	},
 	{
+		itemID: 28_587,
+		amount: 30_000,
+		name: 'Magic lamp (strength)',
+		minimumLevel: 1,
+		allowedSkills: [SkillsEnum.Strength]
+	},
+	{
+		itemID: 28_588,
+		amount: 20_000,
+		name: 'Magic lamp (slayer)',
+		minimumLevel: 1,
+		allowedSkills: [SkillsEnum.Slayer]
+	},
+	{
+		itemID: 28_589,
+		amount: 5000,
+		name: 'Magic lamp (thieving)',
+		minimumLevel: 1,
+		allowedSkills: [SkillsEnum.Thieving]
+	},
+	{
+		itemID: 28_590,
+		amount: 500,
+		name: 'Magic lamp (magic)',
+		minimumLevel: 1,
+		allowedSkills: [SkillsEnum.Magic]
+	},
+	{
+		itemID: 28_820,
+		amount: 5000,
+		name: 'Antique lamp (defender of varrock)',
+		minimumLevel: 1
+	},
+	{
 		itemID: itemID('Antique lamp (easy ca)'),
 		amount: 5000,
 		name: 'Antique lamp (easy ca)',

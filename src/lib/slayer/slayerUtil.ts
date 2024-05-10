@@ -2,7 +2,7 @@ import { notEmpty, objectKeys, randFloat, randInt } from 'e';
 import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
-import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
+import { KourendKebosDiary, LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
 import { BitField, PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
@@ -261,20 +261,27 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 	return { currentTask, assignedTask, messages };
 }
 
-export function calcMaxBlockedTasks(user: MUser) {
+export async function calcMaxBlockedTasks(user: MUser) {
 	const qps = user.QP;
-	// 6 Blocks total 5 for 250 qps, + 1 for lumby.
-	// For now we're do 1 free + 1 for every 50 qps.
-	let amount = Math.min(1 + Math.floor(qps / 50), 6);
+	let blocks = 0;
+	const [hasLumbyDiary] = await userhasDiaryTier(user, LumbridgeDraynorDiary.elite);
+	if (hasLumbyDiary) {
+		blocks += 1;
+	}
+	blocks += Math.floor(qps / 50);
+
+	// Limit blocks to 7 due to BSO quest points
+	blocks = Math.min(blocks, 7);
 
 	const unlocks = user.user.slayer_unlocks;
 	const hasBlockAndRoll = unlocks.includes(SlayerTaskUnlocksEnum.BlockAndRoll);
 
 	if (hasBlockAndRoll) {
-		amount += 3;
+		blocks += 3;
 	}
-	return amount;
+	return blocks;
 }
+
 export function getCommonTaskName(task: Monster) {
 	let commonName = task.name;
 	switch (task.id) {
