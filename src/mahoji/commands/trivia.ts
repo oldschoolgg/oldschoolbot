@@ -1,5 +1,4 @@
-import { userMention } from '@discordjs/builders';
-import { TextChannel } from 'discord.js';
+import { TextChannel, userMention } from 'discord.js';
 import { shuffleArr, uniqueArr } from 'e';
 import { ApplicationCommandOptionType } from 'mahoji';
 import { CommandRunOptions, MahojiUserOption } from 'mahoji/dist/lib/types';

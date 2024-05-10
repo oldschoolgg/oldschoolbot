@@ -1,4 +1,3 @@
-import 'source-map-support/register';
 import './lib/data/itemAliases';
 import './lib/crons';
 import './lib/MUser';
@@ -18,6 +17,7 @@ import { join } from 'path';
 import { botToken, DEV_SERVER_ID, SENTRY_DSN, SupportServer } from './config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
 import { Channel, Events, globalConfig, META_CONSTANTS } from './lib/constants';
+import { economyLog } from './lib/economyLogs';
 import { onMessage } from './lib/events';
 import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
@@ -30,7 +30,6 @@ import { interactionHook } from './lib/util/globalInteractions';
 import { handleInteractionError } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
 import { sonicBoom } from './lib/util/logger';
-import { sendToChannelID } from './lib/util/webhook';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
@@ -179,17 +178,9 @@ client.on(Events.ServerNotification, (message: string) => {
 	const channel = globalClient.channels.cache.get(Channel.Notifications);
 	if (channel) (channel as TextChannel).send(message);
 });
-let economyLogBuffer: string[] = [];
 
 client.on(Events.EconomyLog, async (message: string) => {
-	economyLogBuffer.push(message);
-	if (economyLogBuffer.length === 10) {
-		await sendToChannelID(Channel.EconomyLogs, {
-			content: economyLogBuffer.join('\n---------------------------------\n'),
-			allowedMentions: { parse: [], users: [], roles: [] }
-		});
-		economyLogBuffer = [];
-	}
+	economyLog(message);
 });
 client.on('guildCreate', guild => {
 	if (!guild.available) return;

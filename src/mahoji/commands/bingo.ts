@@ -1,7 +1,6 @@
-import { userMention } from '@discordjs/builders';
 import { formatOrdinal, mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
 import { Prisma } from '@prisma/client';
-import { bold, ChatInputCommandInteraction, User } from 'discord.js';
+import { bold, ChatInputCommandInteraction, User, userMention } from 'discord.js';
 import { chunk, noOp, notEmpty, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';

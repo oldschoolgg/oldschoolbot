@@ -1,5 +1,4 @@
-import { EmbedBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { LootTable } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';

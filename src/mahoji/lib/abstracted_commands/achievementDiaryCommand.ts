@@ -1,5 +1,5 @@
-import { strikethrough } from '@discordjs/builders';
 import { toTitleCase } from '@oldschoolgg/toolkit';
+import { strikethrough } from 'discord.js';
 import { calcWhatPercent } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 

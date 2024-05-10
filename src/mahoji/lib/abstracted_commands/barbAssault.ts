@@ -6,6 +6,7 @@ import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { Events } from '../../../lib/constants';
+import { degradeItem } from '../../../lib/degradeableItems';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
@@ -273,6 +274,24 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	waveTime = reduceNumByPercent(waveTime, kcPercentBoost);
 
 	let quantity = Math.floor(calcMaxTripLength(user, 'BarbarianAssault') / waveTime);
+
+	// 10% speed boost for Venator bow
+	const venatorBowChargesPerWave = 50;
+	const totalVenChargesUsed = venatorBowChargesPerWave * quantity;
+	let venBowMsg = '';
+	if (user.gear.range.hasEquipped('Venator Bow') && user.user.venator_bow_charges >= totalVenChargesUsed) {
+		await degradeItem({
+			item: getOSItem('Venator Bow'),
+			chargesToDegrade: totalVenChargesUsed,
+			user
+		});
+		boosts.push('10% for venator bow.');
+		venBowMsg = `\n\nYou have used ${totalVenChargesUsed} charges on your Venator bow, and have ${user.user.venator_bow_charges} remaining.`;
+		waveTime = reduceNumByPercent(waveTime, 10);
+	}
+
+	quantity = Math.floor(calcMaxTripLength(user, 'BarbarianAssault') / waveTime);
+
 	const duration = quantity * waveTime;
 
 	boosts.push(`Each wave takes ${formatDuration(waveTime)}`);
@@ -281,9 +300,9 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 		user.minionName
 	} is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
 		waveTime
-	)} - the total trip will take ${formatDuration(duration)}. `;
+	)} - the total trip will take ${formatDuration(duration)}.`;
 
-	str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+	str += `\n\n**Boosts:** ${boosts.join(', ')}.${venBowMsg}`;
 	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID: channelID.toString(),
