@@ -6,7 +6,15 @@ import { ClientStorage, economy_transaction_type } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
-import { AttachmentBuilder, codeBlock, escapeCodeBlock, InteractionReplyOptions, Message, TextChannel, userMention } from 'discord.js';
+import {
+	AttachmentBuilder,
+	codeBlock,
+	escapeCodeBlock,
+	InteractionReplyOptions,
+	Message,
+	TextChannel,
+	userMention
+} from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, noOp, notEmpty, randArrItem, roll, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';

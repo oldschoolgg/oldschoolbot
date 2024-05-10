@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, userMention } from 'discord.js';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
 

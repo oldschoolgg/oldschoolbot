@@ -55,9 +55,9 @@ export const applyPaintToItemIcon = async (img: Image, tintColor: [number, numbe
 	const imageData = ctx.getImageData(0, 0, img.width, img.height);
 
 	for (let i = 0; i < imageData.data.length; i += 4) {
-		const originalRed = imageData.data[i + 0];
-		const originalGreen = imageData.data[i + 1];
-		const originalBlue = imageData.data[i + 2];
+		const originalRed = imageData.data[i + 0] as number;
+		const originalGreen = imageData.data[i + 1] as number;
+		const originalBlue = imageData.data[i + 2] as number;
 
 		if (
 			(originalRed === 48 && originalGreen === 32 && originalBlue === 32) ||

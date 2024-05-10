@@ -1,8 +1,7 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, EmbedBuilder, Message, TextChannel, time } from 'discord.js';
-import { isFunction, roll, Time } from 'e';
-import LRUCache from 'lru-cache';
+import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, EmbedBuilder, Message, time } from 'discord.js';
+import { isFunction, Time } from 'e';
 import { Items } from 'oldschooljs';
 
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
