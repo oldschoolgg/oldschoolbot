@@ -33,7 +33,8 @@ const mockBankImageTask = {
 	run: vi.fn(),
 	generateBankImage: vi.fn().mockReturnValue(Promise.resolve({ image: Buffer.from(''), isTransparent: false })),
 	getItemImage: vi.fn().mockReturnValue(Promise.resolve(new Image())),
-	fetchAndCacheImage: vi.fn().mockReturnValue(Promise.resolve(new Image()))
+	fetchAndCacheImage: vi.fn().mockReturnValue(Promise.resolve(new Image())),
+	getBgAndSprite: bankImageGenerator.getBgAndSprite.bind(bankImageGenerator)
 };
 global.bankImageGenerator = mockBankImageTask as any;
 BankImageTask.prototype.init = mockBankImageTask.init;
@@ -41,6 +42,7 @@ BankImageTask.prototype.run = mockBankImageTask.init;
 BankImageTask.prototype.generateBankImage = mockBankImageTask.generateBankImage;
 BankImageTask.prototype.getItemImage = mockBankImageTask.getItemImage;
 BankImageTask.prototype.fetchAndCacheImage = mockBankImageTask.fetchAndCacheImage;
+BankImageTask.prototype.getBgAndSprite = mockBankImageTask.getBgAndSprite;
 
 beforeEach(async () => {
 	await prisma.$connect();
