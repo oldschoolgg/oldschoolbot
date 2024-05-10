@@ -441,7 +441,7 @@ export const Inventions: readonly Invention[] = [
 			strong: 1
 		}),
 		itemCost: null,
-		flags: ['equipped'],
+		flags: ['bank'],
 		inventionLevelNeeded: 100,
 		usageCostMultiplier: 1
 	},
