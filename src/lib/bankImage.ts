@@ -953,5 +953,6 @@ declare global {
 		}
 	}
 }
-global.bankImageGenerator = new BankImageTask();
+export const bankImageTask = new BankImageTask();
+global.bankImageGenerator = bankImageTask;
 bankImageGenerator.init();

@@ -6,10 +6,9 @@ import { noOp } from 'e';
 import mitm from 'mitm';
 import { afterEach, beforeEach, vi } from 'vitest';
 
-import { BankImageTask } from '../../src/lib/bankImage';
+import { BankImageTask, bankImageTask } from '../../src/lib/bankImage';
 import { prisma } from '../../src/lib/settings/prisma';
 
-console.log('MOCKING!!!!!!!---------------------------------------');
 export function randomMock(random = 0.1) {
 	Math.random = () => random;
 }
@@ -34,7 +33,7 @@ const mockBankImageTask = {
 	generateBankImage: vi.fn().mockReturnValue(Promise.resolve({ image: Buffer.from(''), isTransparent: false })),
 	getItemImage: vi.fn().mockReturnValue(Promise.resolve(new Image())),
 	fetchAndCacheImage: vi.fn().mockReturnValue(Promise.resolve(new Image())),
-	getBgAndSprite: bankImageGenerator.getBgAndSprite.bind(bankImageGenerator)
+	getBgAndSprite: bankImageTask.getBgAndSprite.bind(bankImageGenerator)
 };
 global.bankImageGenerator = mockBankImageTask as any;
 BankImageTask.prototype.init = mockBankImageTask.init;
