@@ -187,6 +187,9 @@ model ClientStorage {
 
   xmas_ironman_food_bank Json @default("{}") @db.Json
 
+  turaels_trials_cost_bank Json @default("{}") @db.Json
+  turaels_trials_loot_bank Json @default("{}") @db.Json
+
   @@map("clientStorage")
 }
 
@@ -604,6 +607,7 @@ enum XpGainSource {
   MemoryHarvest
   GuthixianCache
   ForestryEvents
+  TuraelsTrials
 }
 
 model XPGain {
@@ -695,6 +699,7 @@ model Minigame {
   depths_of_atlantis       Int @default(0)
   depths_of_atlantis_cm    Int @default(0)
   guthixian_cache          Int @default(0)
+  turaels_trials           Int @default(0)
 
   new_user NewUser?
 
@@ -1034,6 +1039,9 @@ model UserStats {
 
   octo_loot_bank Json @default("{}") @db.Json
 
+  turaels_trials_cost_bank Json @default("{}") @db.Json
+  turaels_trials_loot_bank Json @default("{}") @db.Json
+
   @@map("user_stats")
 }
 
@@ -1243,6 +1251,7 @@ enum activity_type_enum {
   CamdozaalSmithing
   MemoryHarvest
   GuthixianCache
+  TuraelsTrials
 }
 
 enum xp_gains_skill_enum {
