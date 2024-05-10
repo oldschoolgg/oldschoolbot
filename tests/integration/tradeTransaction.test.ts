@@ -1,5 +1,3 @@
-import 'source-map-support/register';
-
 import { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';

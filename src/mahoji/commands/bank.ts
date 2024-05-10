@@ -1,4 +1,4 @@
-import { codeBlock, EmbedBuilder } from '@discordjs/builders';
+import { codeBlock, EmbedBuilder } from 'discord.js';
 import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';

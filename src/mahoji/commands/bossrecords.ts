@@ -1,6 +1,5 @@
-import { EmbedBuilder } from '@discordjs/builders';
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { MessageEditOptions } from 'discord.js';
+import { EmbedBuilder, MessageEditOptions } from 'discord.js';
 import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Hiscores } from 'oldschooljs';

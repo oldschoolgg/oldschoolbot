@@ -1,7 +1,7 @@
-import { userMention } from '@discordjs/builders';
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
+import { userMention } from 'discord.js';
 import { calcWhatPercent, objectEntries, percentChance, randArrItem, sumArr, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
@@ -540,7 +540,7 @@ GROUP BY data->>'clueID';`);
 			return {
 				hasCharges: false,
 				fullUserString: `${failureReasons.join(', ')}
-			
+
 Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			};
 		}
