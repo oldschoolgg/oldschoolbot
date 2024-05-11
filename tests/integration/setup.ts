@@ -40,7 +40,8 @@ const mockBankImageTask = {
 	run: vi.fn(),
 	generateBankImage: vi.fn().mockReturnValue(Promise.resolve({ image: Buffer.from(''), isTransparent: false })),
 	getItemImage: vi.fn().mockReturnValue(Promise.resolve(new Image())),
-	fetchAndCacheImage: vi.fn().mockReturnValue(Promise.resolve(new Image()))
+	fetchAndCacheImage: vi.fn().mockReturnValue(Promise.resolve(new Image())),
+	backgroundImages: []
 };
 bankImageTask.fetchAndCacheImage = mockBankImageTask.fetchAndCacheImage;
 global.bankImageGenerator = mockBankImageTask as any;

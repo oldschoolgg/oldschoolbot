@@ -291,8 +291,8 @@ test(
 			if (ignoredCommands.includes(command.name)) continue;
 			const options = await generateCommandInputs(maxUser, command.options!);
 			outer: for (const option of options) {
-				for (const [parent, sub, subsub] of ignoredSubCommands) {
-					if (command.name === parent && option[sub] && (subsub ? option[sub][subsub] : true)) {
+				for (const [parent, sub, subCommand] of ignoredSubCommands) {
+					if (command.name === parent && option[sub] && (subCommand ? option[sub][subCommand] : true)) {
 						continue outer;
 					}
 				}
