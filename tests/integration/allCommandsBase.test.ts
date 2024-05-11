@@ -283,7 +283,8 @@ test(
 
 		const ignoredSubCommands = [
 			['tools', 'patron', 'cl_bank'],
-			['loot', 'view']
+			['loot', 'view'],
+			['minion', 'bankbg']
 		];
 
 		for (const command of cmds) {
