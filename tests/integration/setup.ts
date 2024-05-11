@@ -17,7 +17,15 @@ vi.mock('../../src/lib/util/webhook', async () => {
 	const actual: any = await vi.importActual('../../src/lib/util/webhook');
 	return {
 		...actual,
-		sendToChannelID: async (_args: any) => {}
+		sendToChannelID: vi.fn()
+	};
+});
+
+vi.mock('../../src/lib/gear/functions/generateGearImage', async () => {
+	const actual: any = await vi.importActual('../../src/lib/gear/functions/generateGearImage');
+	return {
+		...actual,
+		generateGearImage: vi.fn().mockReturnValue(Promise.resolve(Buffer.from('')))
 	};
 });
 
@@ -32,8 +40,7 @@ const mockBankImageTask = {
 	run: vi.fn(),
 	generateBankImage: vi.fn().mockReturnValue(Promise.resolve({ image: Buffer.from(''), isTransparent: false })),
 	getItemImage: vi.fn().mockReturnValue(Promise.resolve(new Image())),
-	fetchAndCacheImage: vi.fn().mockReturnValue(Promise.resolve(new Image())),
-	getBgAndSprite: bankImageTask.getBgAndSprite.bind(bankImageGenerator)
+	fetchAndCacheImage: vi.fn().mockReturnValue(Promise.resolve(new Image()))
 };
 bankImageTask.fetchAndCacheImage = mockBankImageTask.fetchAndCacheImage;
 global.bankImageGenerator = mockBankImageTask as any;
@@ -42,7 +49,6 @@ BankImageTask.prototype.run = mockBankImageTask.init;
 BankImageTask.prototype.generateBankImage = mockBankImageTask.generateBankImage;
 BankImageTask.prototype.getItemImage = mockBankImageTask.getItemImage;
 BankImageTask.prototype.fetchAndCacheImage = mockBankImageTask.fetchAndCacheImage;
-BankImageTask.prototype.getBgAndSprite = mockBankImageTask.getBgAndSprite;
 
 beforeEach(async () => {
 	await prisma.$connect();
