@@ -5,7 +5,7 @@ import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/pris
 import { Gear } from '../../src/lib/structures/Gear';
 import { processPendingActivities } from '../../src/lib/Task';
 import { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
-import { killCommand } from '../../src/mahoji/commands/k';
+import { killCommand } from '../../src/mahoji/commands/kill';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { createTestUser, mockClient } from './util';
 
