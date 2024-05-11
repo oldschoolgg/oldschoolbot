@@ -29,7 +29,7 @@ import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
 import { getKCByName } from '../../lib/util/getKCByName';
-import getOSItem from '../../lib/util/getOSItem';
+import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 import { checkPeakTimes } from '../../lib/util/minionUtils';
@@ -232,7 +232,8 @@ export const minionCommand: OSBMahojiCommand = {
 					autocomplete: async (value, user) => {
 						const mappedLampables = Lampables.map(i => i.items)
 							.flat(2)
-							.map(getOSItem)
+							.map(getItem)
+							.filter(notEmpty)
 							.map(i => ({ id: i.id, name: i.name }));
 
 						const botUser = await mUserFetch(user.id);

@@ -370,7 +370,9 @@ async function openLb(
 	name: string,
 	ironmanOnly: boolean
 ) {
-	name = name.trim();
+	if (name) {
+		name = name.trim();
+	}
 
 	let entityID = -1;
 	let key = '';

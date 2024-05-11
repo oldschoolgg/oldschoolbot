@@ -51,7 +51,7 @@ LIMIT 10;`,
 	return new Set(res.map(i => Number(i.mon_id)));
 }
 
-export const killCommand: OSBMahojiCommand = {
+export const minionKCommand: OSBMahojiCommand = {
 	name: 'k',
 	description: 'Send your minion to kill things.',
 	attributes: {
