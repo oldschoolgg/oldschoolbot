@@ -124,9 +124,9 @@ export const mineCommand: OSBMahojiCommand = {
 		let glovesRate = 0;
 		if (user.skillsAsLevels.mining >= 60) {
 			for (const glove of miningGloves) {
-				if (!user.hasEquipped(glove.id) || !glove.Percentages.has(ore.id)) continue;
-				glovesRate = glove.Percentages.amount(ore.id);
-				if (glovesRate !== 0) {
+				if (!user.hasEquipped(glove.id) || !glove.Percentages[ore.name]) continue;
+				glovesRate = glove.Percentages[ore.name];
+				if (glovesRate) {
 					boosts.push(`Lowered rock depletion rate by **${glovesRate}%** for ${itemNameFromID(glove.id)}`);
 					break;
 				}
@@ -135,9 +135,9 @@ export const mineCommand: OSBMahojiCommand = {
 
 		let armourEffect = 0;
 		for (const armour of varrockArmours) {
-			if (!user.hasEquippedOrInBank(armour.id) || !armour.Percentages.has(ore.id)) continue;
-			armourEffect = armour.Percentages.amount(ore.id);
-			if (armourEffect !== 0) {
+			if (!user.hasEquippedOrInBank(armour.id) || !armour.Percentages[ore.name]) continue;
+			armourEffect = armour.Percentages[ore.name];
+			if (armourEffect) {
 				boosts.push(`**${armourEffect}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
 				break;
 			}
@@ -150,9 +150,9 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		let miningCapeEffect = 0;
-		if (user.hasEquippedOrInBank([itemID('Mining cape')]) && miningCapeOreEffect.has(ore.id)) {
-			miningCapeEffect = miningCapeOreEffect.amount(ore.id);
-			if (miningCapeEffect !== 0) {
+		if (user.hasEquippedOrInBank([itemID('Mining cape')]) && miningCapeOreEffect[ore.name]) {
+			miningCapeEffect = miningCapeOreEffect[ore.name];
+			if (miningCapeEffect) {
 				boosts.push(`**${miningCapeEffect}%** chance to mine an extra ore using Mining cape`);
 			}
 		}

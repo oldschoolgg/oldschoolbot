@@ -54,7 +54,7 @@ function notifyUniques(user: MUser, activity: string, uniques: number[], loot: B
 	}
 }
 
-export const mineCommand: OSBMahojiCommand = {
+export const offerCommand: OSBMahojiCommand = {
 	name: 'offer',
 	description: 'Offer bones or bird eggs.',
 	attributes: {

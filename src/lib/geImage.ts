@@ -3,16 +3,11 @@ import { formatItemStackQuantity, generateHexColorForCashStack, toTitleCase } fr
 import { GEListing, GETransaction } from '@prisma/client';
 import * as fs from 'fs/promises';
 import { floor } from 'lodash';
-import fetch from 'node-fetch';
-import * as path from 'path';
 
 import { GEListingWithTransactions } from './../mahoji/commands/ge';
 import { GrandExchange } from './grandExchange';
 import { fillTextXTimesInCtx } from './util/canvasUtil';
 import getOSItem from './util/getOSItem';
-import { logError } from './util/logError';
-
-const CACHE_DIR = './icon_cache';
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
 	// Draw Page Title
@@ -34,20 +29,9 @@ class GeImageTask {
 	public geProgressShadow: Image | null = null;
 	public geIconBuy: Image | null = null;
 	public geIconSell: Image | null = null;
-	public itemIconsList: Set<number>;
-	public itemIconImagesCache: Map<number, Image>;
-
-	public constructor() {
-		// This tells us simply whether the file exists or not on disk.
-		this.itemIconsList = new Set();
-
-		// If this file does exist, it might be cached in this, or need to be read from fs.
-		this.itemIconImagesCache = new Map();
-	}
 
 	async init() {
 		await this.prepare();
-		await this.run();
 	}
 
 	async prepare() {
@@ -72,23 +56,6 @@ class GeImageTask {
 		this.geIconSell = await loadImage(
 			await fs.readFile('./src/lib/resources/images/grandexchange/ge_sell_mini_icon.png')
 		);
-	}
-
-	async run() {
-		await this.cacheFiles();
-	}
-
-	async cacheFiles() {
-		// Ensure that the icon_cache dir exists.
-		await fs.mkdir(CACHE_DIR).catch(() => null);
-		CACHE_DIR;
-		// Get a list of all files (images) in the dir.
-		const filesInDir = await fs.readdir(CACHE_DIR);
-
-		// For each one, set a cache value that it exists.
-		for (const fileName of filesInDir) {
-			this.itemIconsList.add(parseInt(path.parse(fileName).name));
-		}
 	}
 
 	drawText(
@@ -148,7 +115,7 @@ class GeImageTask {
 
 		if (listing) {
 			// Get item
-			const itemImage = await this.getItemImage(listing.item_id);
+			const itemImage = await bankImageGenerator.getItemImage(listing.item_id);
 
 			// Draw item
 			ctx.textAlign = 'left';
@@ -219,40 +186,6 @@ class GeImageTask {
 
 			ctx.restore();
 		}
-	}
-
-	async getItemImage(itemID: number): Promise<Image> {
-		const cachedImage = this.itemIconImagesCache.get(itemID);
-		if (cachedImage) return cachedImage;
-
-		const isOnDisk = this.itemIconsList.has(itemID);
-		if (!isOnDisk) {
-			await this.fetchAndCacheImage(itemID);
-			return this.getItemImage(itemID);
-		}
-
-		const imageBuffer = await fs.readFile(path.join(CACHE_DIR, `${itemID}.png`));
-		try {
-			const image = await loadImage(imageBuffer);
-			this.itemIconImagesCache.set(itemID, image);
-			return image;
-		} catch (err) {
-			logError(`Failed to load item icon with id: ${itemID}`);
-			return this.getItemImage(1);
-		}
-	}
-
-	async fetchAndCacheImage(itemID: number) {
-		const imageBuffer = await fetch(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`).then(
-			result => result.buffer()
-		);
-
-		await fs.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
-
-		const image = await loadImage(imageBuffer);
-
-		this.itemIconsList.add(itemID);
-		this.itemIconImagesCache.set(itemID, image);
 	}
 
 	async createInterface(opts: {
