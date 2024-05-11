@@ -278,7 +278,9 @@ test(
 		for (const command of store.values) {
 			if (ignoredCommands.includes(command.name)) continue;
 			if (cmds.some(c => c.name === command.name)) continue;
-			throw new Error(`Command ${command.name} is not in the test`);
+			throw new Error(
+				`If you added a new command (${command.name}), you need to put it in the allCommandsBase.test.ts file.`
+			);
 		}
 
 		const ignoredSubCommands = [
