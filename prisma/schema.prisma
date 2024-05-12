@@ -1145,3 +1145,15 @@ model UserEvent {
 
   @@map("user_event")
 }
+
+enum MigrationType {
+    Migration
+    Deletion
+}
+
+model MigratedUsers {
+    id               Int           @id @unique @default(autoincrement())
+    source_id        String        @db.Text
+    dest_id          String        @db.Text
+    type             MigrationType
+}
