@@ -1393,32 +1393,38 @@ export const BsoCreateables: Createable[] = [
 	{
 		name: 'Enigma tokens (Master clues)',
 		inputItems: new Bank().add('Clue scroll (master)', 1).freeze(),
-		outputItems: new Bank().add('Enigma tokens', 10).freeze()
+		outputItems: new Bank().add('Enigma tokens', 8).freeze(),
+		materialCost: new MaterialBank().add('treasured', 400)
 	},
 	{
 		name: 'Enigma tokens (Elite clues)',
 		inputItems: new Bank().add('Clue scroll (elite)', 1).freeze(),
-		outputItems: new Bank().add('Enigma tokens', 7).freeze()
+		outputItems: new Bank().add('Enigma tokens', 5).freeze(),
+		materialCost: new MaterialBank().add('treasured', 250)
 	},
 	{
 		name: 'Enigma tokens (Hard clues)',
 		inputItems: new Bank().add('Clue scroll (hard)', 1).freeze(),
-		outputItems: new Bank().add('Enigma tokens', 4).freeze()
+		outputItems: new Bank().add('Enigma tokens', 3).freeze(),
+		materialCost: new MaterialBank().add('treasured', 150)
 	},
 	{
 		name: 'Enigma tokens (Medium clues)',
 		inputItems: new Bank().add('Clue scroll (medium)', 1).freeze(),
-		outputItems: new Bank().add('Enigma tokens', 2).freeze()
+		outputItems: new Bank().add('Enigma tokens', 2).freeze(),
+		materialCost: new MaterialBank().add('treasured', 100)
 	},
 	{
 		name: 'Enigma tokens (Easy clues)',
 		inputItems: new Bank().add('Clue scroll (easy)', 1).freeze(),
-		outputItems: new Bank().add('Enigma tokens', 1).freeze()
+		outputItems: new Bank().add('Enigma tokens', 1).freeze(),
+		materialCost: new MaterialBank().add('treasured', 50)
 	},
 	{
 		name: 'Enigma tokens (Beginner clues)',
 		inputItems: new Bank().add('Clue scroll (beginner)', 2).freeze(),
-		outputItems: new Bank().add('Enigma tokens', 1).freeze()
+		outputItems: new Bank().add('Enigma tokens', 1).freeze(),
+		materialCost: new MaterialBank().add('treasured', 50)
 	},
 	{
 		name: 'Enigma tokens (Grandmaster clues)',
@@ -1428,7 +1434,7 @@ export const BsoCreateables: Createable[] = [
 	{
 		name: 'Enigma tokens (Elder clues)',
 		inputItems: new Bank().add('Clue scroll (elder)', 1).freeze(),
-		outputItems: new Bank().add('Enigma tokens', 100).freeze()
+		outputItems: new Bank().add('Enigma tokens', 150).freeze()
 	},
 	{
 		name: 'Quantum transmuter',
