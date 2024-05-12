@@ -40,11 +40,13 @@ export const autocompleteMonsters = [
 
 async function fetchUsersRecentlyKilledMonsters(userID: string) {
 	const res = await prisma.$queryRawUnsafe<{ mon_id: string }[]>(
-		`SELECT DISTINCT((data->>'monsterID')) AS mon_id
+		`SELECT DISTINCT((data->>'monsterID')) AS mon_id, MAX(start_date)
 FROM activity
 WHERE user_id = $1
 AND type = 'MonsterKilling'
 AND finish_date > now() - INTERVAL '31 days'
+GROUP BY 1
+ORDER BY 2 DESC
 LIMIT 10;`,
 		BigInt(userID)
 	);
