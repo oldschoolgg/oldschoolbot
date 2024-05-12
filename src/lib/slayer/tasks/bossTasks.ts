@@ -34,7 +34,8 @@ export const bossTasks: AssignableSlayerTask[] = [
 		amount: [3, 35],
 		weight: 1,
 		monsters: [Monsters.Callisto.id],
-		isBoss: true
+		isBoss: true,
+		wilderness: true
 	},
 	{
 		monster: Monsters.Cerberus,
@@ -52,14 +53,16 @@ export const bossTasks: AssignableSlayerTask[] = [
 		amount: [3, 35],
 		weight: 1,
 		monsters: [Monsters.ChaosElemental.id],
-		isBoss: true
+		isBoss: true,
+		wilderness: true
 	},
 	{
 		monster: Monsters.ChaosFanatic,
 		amount: [3, 35],
 		weight: 1,
 		monsters: [Monsters.ChaosFanatic.id],
-		isBoss: true
+		isBoss: true,
+		wilderness: true
 	},
 	{
 		monster: Monsters.CommanderZilyana,
@@ -77,7 +80,8 @@ export const bossTasks: AssignableSlayerTask[] = [
 		amount: [3, 35],
 		weight: 1,
 		monsters: [Monsters.CrazyArchaeologist.id],
-		isBoss: true
+		isBoss: true,
+		wilderness: true
 	},
 	{
 		monster: Monsters.DagannothPrime,
@@ -200,7 +204,8 @@ export const bossTasks: AssignableSlayerTask[] = [
 		amount: [3, 35],
 		weight: 1,
 		monsters: [Monsters.Scorpia.id],
-		isBoss: true
+		isBoss: true,
+		wilderness: true
 	},
 	{
 		monster: Monsters.ThermonuclearSmokeDevil,
@@ -215,14 +220,16 @@ export const bossTasks: AssignableSlayerTask[] = [
 		amount: [3, 35],
 		weight: 1,
 		monsters: [Monsters.Venenatis.id],
-		isBoss: true
+		isBoss: true,
+		wilderness: true
 	},
 	{
 		monster: Monsters.Vetion,
 		amount: [3, 35],
 		weight: 1,
 		monsters: [Monsters.Vetion.id],
-		isBoss: true
+		isBoss: true,
+		wilderness: true
 	},
 	{
 		monster: Monsters.Vorkath,
@@ -245,5 +252,64 @@ export const bossTasks: AssignableSlayerTask[] = [
 		questPoints: 75,
 		monsters: [Monsters.Zulrah.id],
 		isBoss: true
+	}
+];
+
+export const wildernessBossTasks: AssignableSlayerTask[] = [
+	{
+		monster: Monsters.Callisto,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.Callisto.id],
+		isBoss: true,
+		wilderness: true
+	},
+	{
+		monster: Monsters.ChaosElemental,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.ChaosElemental.id],
+		isBoss: true,
+		wilderness: true
+	},
+	{
+		monster: Monsters.ChaosFanatic,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.ChaosFanatic.id],
+		isBoss: true,
+		wilderness: true
+	},
+	{
+		monster: Monsters.CrazyArchaeologist,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.CrazyArchaeologist.id],
+		isBoss: true,
+		wilderness: true
+	},
+	{
+		monster: Monsters.Scorpia,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.Scorpia.id],
+		isBoss: true,
+		wilderness: true
+	},
+	{
+		monster: Monsters.Venenatis,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.Venenatis.id],
+		isBoss: true,
+		wilderness: true
+	},
+	{
+		monster: Monsters.Vetion,
+		amount: [3, 35],
+		weight: 1,
+		monsters: [Monsters.Vetion.id],
+		isBoss: true,
+		wilderness: true
 	}
 ];

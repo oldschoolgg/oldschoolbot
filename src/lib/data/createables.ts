@@ -2214,6 +2214,12 @@ const Createables: Createable[] = [
 		customReq: salveECustomReq
 	},
 	{
+		name: 'Ring of wealth (i)',
+		inputItems: new Bank().add('Ring of wealth').add('Ring of wealth scroll'),
+		GPCost: 50_000,
+		outputItems: new Bank().add('Ring of wealth (i)')
+	},
+	{
 		name: 'Strange hallowed tome',
 		inputItems: new Bank({
 			'Mysterious page 1': 1,

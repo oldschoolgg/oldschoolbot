@@ -34,7 +34,8 @@ export const monsterTask: MinionTask = {
 			burstOrBarrage,
 			died,
 			pkEncounters,
-			hasWildySupplies
+			hasWildySupplies,
+			isInWilderness
 		} = data;
 
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
@@ -199,7 +200,12 @@ export const monsterTask: MinionTask = {
 		const isOnTaskResult = await isOnSlayerTask({ user, monsterID, quantityKilled: quantity });
 
 		const superiorTable = isOnTaskResult.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
-		const isInCatacombs = !usingCannon ? monster.existsInCatacombs ?? undefined : undefined;
+		const isInCatacombs = (!usingCannon ? monster.existsInCatacombs ?? undefined : undefined) && !isInWilderness;
+
+		let hasRingOfWealthI = user.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness;
+		if (hasRingOfWealthI) {
+			messages.push('\nYour clue scroll chance is doubled due to wearing a Ring of Wealth (i).');
+		}
 
 		const killOptions: MonsterKillOptions = {
 			onSlayerTask: isOnTaskResult.isOnTask,
@@ -207,22 +213,37 @@ export const monsterTask: MinionTask = {
 			hasSuperiors: superiorTable,
 			inCatacombs: isInCatacombs,
 			lootTableOptions: {
-				tertiaryItemPercentageChanges: user.buildCATertiaryItemChanges()
+				tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(
+					hasRingOfWealthI,
+					isInWilderness,
+					isOnTaskResult.isOnTask
+				)
 			}
 		};
 
 		// Calculate superiors and assign loot.
 		let newSuperiorCount = 0;
+
 		if (superiorTable && isOnTaskResult.isOnTask) {
-			let superiorDroprate = 200;
-			if (user.hasCompletedCATier('elite')) {
-				superiorDroprate = 150;
-				messages.push(`${Emoji.CombatAchievements} 25% more common superiors due to Elite CA tier`);
-			}
-			for (let i = 0; i < quantity; i++) {
-				if (roll(superiorDroprate)) newSuperiorCount++;
+			if (!(isInWilderness && monster.name === 'Bloodveld')) {
+				let superiorDroprate = 200;
+				if (isInWilderness) {
+					superiorDroprate *= 0.9;
+					messages.push('\n10% more common superiors due to Wilderness Slayer.');
+				}
+				if (user.hasCompletedCATier('elite')) {
+					superiorDroprate *= 0.75;
+					messages.push(`\n${Emoji.CombatAchievements} 25% more common superiors due to Elite CA tier.`);
+				}
+
+				for (let i = 0; i < quantity; i++) {
+					if (roll(superiorDroprate)) {
+						newSuperiorCount++;
+					}
+				}
 			}
 		}
+
 		// Regular loot
 		const finalQuantity = quantity - newSuperiorCount;
 		const loot = monster.table.kill(finalQuantity, killOptions);
@@ -233,6 +254,16 @@ export const monsterTask: MinionTask = {
 			// Superior loot and totems if in catacombs
 			loot.add(superiorTable!.kill(newSuperiorCount));
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
+			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
+		}
+
+		// Hill giant key wildy buff
+		if (isInWilderness && monster.name === 'Hill giant') {
+			for (let i = 0; i < quantity; i++) {
+				if (roll(128)) {
+					loot.add('Giant key');
+				}
+			}
 		}
 
 		const xpRes: string[] = [];
@@ -303,9 +334,32 @@ export const monsterTask: MinionTask = {
 					: quantitySlayed;
 
 			const quantityLeft = Math.max(0, isOnTaskResult.currentTask!.quantity_remaining - effectiveSlayed);
+			const isUsingKrystilia = isOnTaskResult.slayerMaster.id === 8;
 
 			thisTripFinishesTask = quantityLeft === 0;
-			if (thisTripFinishesTask) {
+			if (thisTripFinishesTask && isUsingKrystilia) {
+				const newStats = await userStatsUpdate(
+					user.id,
+					{
+						slayer_wildy_task_streak: {
+							increment: 1
+						}
+					},
+					{ slayer_wildy_task_streak: true }
+				);
+				const currentStreak = newStats.slayer_wildy_task_streak;
+				const points = await calculateSlayerPoints(currentStreak, isOnTaskResult.slayerMaster, user);
+				const secondNewUser = await user.update({
+					slayer_points: {
+						increment: points
+					}
+				});
+				str += `\n**You've completed ${currentStreak} wilderness tasks and received ${points} points; giving you a total of ${secondNewUser.newUser.slayer_points}; return to a Slayer master.**`;
+				if (isOnTaskResult.assignedTask.isBoss) {
+					str += ` ${await user.addXP({ skillName: SkillsEnum.Slayer, amount: 5000, minimal: true })}`;
+					str += ' for completing your boss task.';
+				}
+			} else if (thisTripFinishesTask) {
 				const newStats = await userStatsUpdate(
 					user.id,
 					{
