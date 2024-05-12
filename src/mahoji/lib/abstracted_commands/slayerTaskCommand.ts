@@ -100,7 +100,8 @@ export async function slayerListBlocksCommand(mahojiUser: MUser) {
 export async function slayerStatusCommand(mahojiUser: MUser) {
 	const { currentTask, assignedTask, slayerMaster } = await getUsersCurrentSlayerInfo(mahojiUser.id);
 	const { slayer_points: slayerPoints } = mahojiUser.user;
-	const { slayer_task_streak: slayerStreak } = await mahojiUser.fetchStats({ slayer_task_streak: true });
+	const slayer_streaks = await mahojiUser.fetchStats({ slayer_task_streak: true, slayer_wildy_task_streak: true });
+
 	return (
 		`${
 			currentTask
@@ -111,7 +112,9 @@ export async function slayerStatusCommand(mahojiUser: MUser) {
 				  )}. You have ${currentTask.quantity_remaining.toLocaleString()} kills remaining.`
 				: ''
 		}` +
-		`\nYou have ${slayerPoints.toLocaleString()} slayer points, and have completed ${slayerStreak} tasks in a row.`
+		`\nYou have ${slayerPoints.toLocaleString()} slayer points, and have completed ${
+			slayer_streaks.slayer_task_streak
+		} tasks in a row and ${slayer_streaks.slayer_wildy_task_streak} wilderness tasks in a row.`
 	);
 }
 
@@ -242,8 +245,9 @@ export async function slayerNewTaskCommand({
 
 	const has99SlayerCape = user.skillLevel('slayer') >= 99 && user.hasEquippedOrInBank('Slayer cape');
 
-	// Chooses a default slayer master:
+	// Chooses a default slayer master (excluding Krystilia):
 	const proposedDefaultMaster = slayerMasters
+		.filter(sm => sm.id !== 8) // Exclude Krystilia
 		.sort((a, b) => b.basePoints - a.basePoints)
 		.find(sm => userCanUseMaster(user, sm));
 
@@ -277,11 +281,13 @@ export async function slayerNewTaskCommand({
 			interactionReply(interaction, 'You cannot skip this task because Turael assigns it.');
 			return;
 		}
+		const isUsingKrystilia = Boolean(currentTask?.slayer_master_id === 8);
+		const taskStreakKey = isUsingKrystilia ? 'slayer_wildy_task_streak' : 'slayer_task_streak';
+		const warning = `Really cancel task? This will reset your${
+			isUsingKrystilia ? ' wilderness' : ''
+		} streak to 0 and give you a new ${slayerMaster.name} task.`;
 
-		await handleMahojiConfirmation(
-			interaction,
-			`Really cancel task? This will reset your streak to 0 and give you a new ${slayerMaster.name} task.`
-		);
+		await handleMahojiConfirmation(interaction, warning);
 		await prisma.slayerTask.update({
 			where: {
 				id: currentTask.id
@@ -291,7 +297,8 @@ export async function slayerNewTaskCommand({
 				quantity_remaining: 0
 			}
 		});
-		await userStatsUpdate(user.id, { slayer_task_streak: 0 }, {});
+		await userStatsUpdate(user.id, { [taskStreakKey]: 0 }, {});
+
 		const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
 		const returnMessage =
