@@ -1,3 +1,4 @@
+import { User } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import {
@@ -173,7 +174,15 @@ export const activitiesCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					name: 'name',
 					description: 'The name of the quest (optional).',
-					choices: quests.map(i => ({ name: i.name, value: i.name })),
+					autocomplete: async (_value: string, user: User) => {
+						const mUser = await mUserFetch(user.id);
+						let list = quests
+							.filter(i => !mUser.user.finished_quest_ids.includes(i.id))
+							.map(i => ({ name: i.name, value: i.name }));
+						if (list.length === 0)
+							list = quests.map(i => ({ name: `${i.name} (completed)`, value: i.name }));
+						return list;
+					},
 					required: false
 				}
 			]
