@@ -1,7 +1,6 @@
-import { EmbedBuilder } from '@discordjs/builders';
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, time } from 'discord.js';
+import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, EmbedBuilder, Message, time } from 'discord.js';
 import { isFunction, Time } from 'e';
 import { Items } from 'oldschooljs';
 
@@ -9,7 +8,8 @@ import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { boxSpawnHandler } from './boxSpawns';
-import { allMbTables } from './bsoOpenables';
+import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from './bso/guthixianCache';
+import { IronmanPMBTable, itemSearchMbTable } from './bsoOpenables';
 import { BitField, Emoji, globalConfig, secretItems } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
@@ -150,11 +150,14 @@ const mentionCommands: MentionCommand[] = [
 					if (isCustom) icons.push(Emoji.BSO);
 					if (((sacrificedBank as ItemBank)[item.id] ?? 0) > 0) icons.push(Emoji.Incinerator);
 
-					const price = toKMB(Math.floor(item.price));
+					if (user.isIronman) {
+						itemSearchMbTable.push(...IronmanPMBTable.allItems);
+					}
 
+					const price = toKMB(Math.floor(item.price));
 					const wikiURL = isCustom ? '' : `[Wiki Page](${item.wiki_url}) `;
 					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
-						allMbTables.includes(item.id) ? Emoji.MysteryBox : ''
+						itemSearchMbTable.includes(item.id) ? Emoji.MysteryBox : ''
 					} ${wikiURL}${icons.join(' ')}`;
 					if (gettedItem.id === item.id) {
 						str = bold(str);
@@ -213,6 +216,16 @@ const mentionCommands: MentionCommand[] = [
 					);
 				})
 				.join('\n');
+
+			const currentGuthixCacheInterval = getGuthixianCacheInterval();
+			content += '\n';
+			if (await userHasDoneCurrentGuthixianCache(user)) {
+				content += `Guthixian Cache: ${currentGuthixCacheInterval.nextResetStr}`;
+			} else {
+				content += bold(
+					`Guthixian Cache: Ready ${mentionCommand(globalClient, 'bsominigames', 'guthixian_cache', 'join')}`
+				);
+			}
 
 			if (isDoubleLootActive()) {
 				let date = new Date(DOUBLE_LOOT_FINISH_TIME_CACHE);

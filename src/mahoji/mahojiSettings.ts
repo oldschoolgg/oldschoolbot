@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 
 import { globalConfig } from '../lib/constants';
 import { getSimilarItems } from '../lib/data/similarItems';
+import { GearStat } from '../lib/gear';
 import type { KillableMonster } from '../lib/minions/types';
 import type { SelectedUserStats } from '../lib/MUser';
 import { prisma } from '../lib/settings/prisma';
@@ -65,7 +66,10 @@ export function getMahojiBank(user: { bank: Prisma.JsonValue }) {
 	return new Bank(user.bank as ItemBank);
 }
 
-export async function trackClientBankStats(key: 'clue_upgrader_loot' | 'portable_tanner_loot', newItems: Bank) {
+export async function trackClientBankStats(
+	key: 'clue_upgrader_loot' | 'portable_tanner_loot' | 'turaels_trials_cost_bank' | 'turaels_trials_loot_bank',
+	newItems: Bank
+) {
 	const currentTrackedLoot = await mahojiClientSettingsFetch({ [key]: true });
 	await mahojiClientSettingsUpdate({
 		[key]: new Bank(currentTrackedLoot[key] as ItemBank).add(newItems).bank
@@ -275,6 +279,19 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 		for (const [setup, requirements] of objectEntries(monster.minimumGearRequirements)) {
 			const gear = user.gear[setup];
 			if (setup && requirements) {
+				if (setup === 'wildy' && user.gear.wildy.hasEquipped('Hellfire bow')) {
+					const attackOverrides = [
+						GearStat.AttackSlash,
+						GearStat.AttackCrush,
+						GearStat.AttackStab,
+						GearStat.MeleeStrength,
+						GearStat.AttackMagic,
+						GearStat.MagicDamage
+					];
+					for (const override of attackOverrides) {
+						delete requirements[override];
+					}
+				}
 				const [meetsRequirements, unmetKey, has] = gear.meetsStatRequirements(requirements);
 				if (!meetsRequirements) {
 					return [

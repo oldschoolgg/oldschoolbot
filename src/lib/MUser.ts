@@ -1,7 +1,8 @@
-import { userMention } from '@discordjs/builders';
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
-import { calcWhatPercent, objectEntries, randArrItem, sumArr, Time, uniqueArr } from 'e';
+import { userMention } from 'discord.js';
+import { calcWhatPercent, objectEntries, percentChance, randArrItem, sumArr, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
@@ -17,6 +18,7 @@ import { badges, BitField, Emoji, PerkTier, projectiles, usernameCache } from '.
 import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
+import { degradeableItems } from './degradeableItems';
 import { gearImages } from './gear/functions/generateGearImage';
 import { GearSetup, GearSetupType, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
@@ -39,10 +41,11 @@ import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
+import { ChargeBank, XPBank } from './structures/Banks';
 import { defaultGear, Gear } from './structures/Gear';
 import { MTame } from './structures/MTame';
 import { ItemBank, Skills } from './types';
-import { addItemToBank, convertXPtoLVL, getAllIDsOfUser, itemNameFromID, murMurSort, percentChance } from './util';
+import { addItemToBank, convertXPtoLVL, getAllIDsOfUser, itemNameFromID, murMurSort } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
@@ -257,6 +260,20 @@ export class MUserClass {
 
 	addXP(params: AddXpParams) {
 		return addXP(this, params);
+	}
+
+	async addXPBank(params: Omit<AddXpParams, 'amount' | 'skillName'> & { bank: XPBank }) {
+		const results = [];
+		for (const [id, qty] of params.bank.entries()) {
+			results.push(
+				await this.addXP({
+					...params,
+					amount: qty,
+					skillName: id as SkillsEnum
+				})
+			);
+		}
+		return results;
 	}
 
 	async getKC(monsterID: number) {
@@ -504,6 +521,32 @@ GROUP BY data->>'clueID';`);
 		return blowpipe;
 	}
 
+	hasCharges(chargeBank: ChargeBank) {
+		const failureReasons: string[] = [];
+		for (const [keyName, chargesToDegrade] of chargeBank.entries()) {
+			const degradeableItem = degradeableItems.find(i => i.settingsKey === keyName);
+			if (!degradeableItem) {
+				throw new Error(`Invalid degradeable item key: ${keyName}`);
+			}
+			const currentCharges = this.user[degradeableItem.settingsKey];
+			const newCharges = currentCharges - chargesToDegrade;
+			if (newCharges < 0) {
+				failureReasons.push(
+					`You don't have enough ${degradeableItem.item.name} charges, you need ${chargesToDegrade}, but you have only ${currentCharges}.`
+				);
+			}
+		}
+		if (failureReasons.length > 0) {
+			return {
+				hasCharges: false,
+				fullUserString: `${failureReasons.join(', ')}
+
+Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
+			};
+		}
+		return { hasCharges: true };
+	}
+
 	percentOfBossCLFinished() {
 		const percentBossCLFinished = calcWhatPercent(
 			this.cl.items().filter(i => bossCLItems.includes(i[0].id)).length,
@@ -585,6 +628,7 @@ GROUP BY data->>'clueID';`);
 					} but you have only ${ammo}.`
 				);
 			newRangeGear.ammo!.quantity -= ammoRemove![1];
+			if (newRangeGear.ammo!.quantity <= 0) newRangeGear.ammo = null;
 			const updateKey = options?.wildy ? 'gear_wildy' : 'gear_range';
 			updates[updateKey] = newRangeGear as any as Prisma.InputJsonObject;
 		}

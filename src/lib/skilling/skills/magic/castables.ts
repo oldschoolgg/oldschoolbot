@@ -1,6 +1,8 @@
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import Prayer from '../prayer';
+
 export interface Castable {
 	id: number;
 	input: Bank;
@@ -430,6 +432,16 @@ export const Castables: Castable[] = [
 		output: null,
 		ticks: 8,
 		prayerXp: 990
+	},
+	{
+		id: itemID('Nightmarish ashes'),
+		name: 'Demonic offering nightmarish',
+		level: 95,
+		xp: 175,
+		input: new Bank().add('Nightmarish ashes', 3).add('Soul rune', 1).add('Wrath rune', 1),
+		output: null,
+		ticks: 8,
+		prayerXp: Prayer.Ashes.find(ash => ash.name === 'Nightmarish ashes')!.xp * 9
 	},
 	{
 		id: itemID('Cursed onyx'),

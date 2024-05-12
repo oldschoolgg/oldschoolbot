@@ -339,8 +339,20 @@ const skillingRequirements = new Requirements()
 	.add({
 		name: 'Grow 5 Spirit trees',
 		has: async ({ user }) => {
+			if (user.bitfield.includes(BitField.GrewFiveSpiritTrees)) {
+				return true;
+			}
 			const info = await getFarmingInfo(user.id);
-			return info.patches.spirit.lastQuantity >= 5;
+			const hasFive = info.patches.spirit.lastQuantity >= 5;
+			if (hasFive && !user.bitfield.includes(BitField.GrewFiveSpiritTrees)) {
+				await user.update({
+					bitfield: {
+						push: BitField.GrewFiveSpiritTrees
+					}
+				});
+			}
+
+			return hasFive;
 		}
 	});
 

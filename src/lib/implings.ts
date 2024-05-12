@@ -145,7 +145,12 @@ const implingTableByWorldLocation: TWorldLocationImplingTable = {
 		new LootTable().oneIn(caughtChance, hasMrE ? mrETable : defaultImpTable)
 };
 
-export async function handlePassiveImplings(user: MUser, data: ActivityTaskData, messages: string[]) {
+export async function handlePassiveImplings(
+	user: MUser,
+	data: ActivityTaskData,
+	messages: string[],
+	forceDisableWebshooter = false
+) {
 	if (
 		[
 			'FightCaves',
@@ -181,7 +186,7 @@ export async function handlePassiveImplings(user: MUser, data: ActivityTaskData,
 	if (user.hasEquippedOrInBank('Hunter master cape')) baseChance = Math.floor(baseChance / 2);
 
 	// Webshooter
-	if (user.hasEquippedOrInBank('Webshooter') && data.duration > Time.Minute) {
+	if (user.hasEquippedOrInBank('Webshooter') && data.duration > Time.Minute && !forceDisableWebshooter) {
 		const costRes = await inventionItemBoost({
 			user,
 			inventionID: InventionID.Webshooter,

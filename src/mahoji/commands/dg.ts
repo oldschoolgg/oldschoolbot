@@ -176,12 +176,12 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 	return str;
 }
 
-async function buyCommand(user: MUser, name: string, quantity?: number) {
+async function buyCommand(user: MUser, name?: string, quantity?: number) {
 	const buyable = dungBuyables.find(i => stringMatches(name, i.item.name));
 	if (!buyable) {
-		return `That isn't a buyable item. Here are the items you can buy: \n\n${dungBuyables
-			.map(i => `**${i.item.name}:** ${i.cost.toLocaleString()} tokens`)
-			.join('\n')}.`;
+		let msg = `${dungBuyables.map(i => `**${i.item.name}:** ${i.cost.toLocaleString()} tokens`).join('\n')}.`;
+		if (name !== undefined) msg = `**That isn't a buyable item**. Here are the items you can buy:\n\n${msg}`;
+		return msg;
 	}
 
 	if (!quantity) {
@@ -258,7 +258,7 @@ export const dgCommand: OSBMahojiCommand = {
 							.filter(i => (!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.item.name, value: i.item.name }));
 					},
-					required: true
+					required: false
 				},
 				{
 					type: ApplicationCommandOptionType.Integer,
@@ -277,7 +277,7 @@ export const dgCommand: OSBMahojiCommand = {
 		interaction
 	}: CommandRunOptions<{
 		start?: { floor?: string; solo?: boolean };
-		buy?: { item: string; quantity?: number };
+		buy?: { item?: string; quantity?: number };
 		stats?: {};
 	}>) => {
 		if (interaction) await deferInteraction(interaction);

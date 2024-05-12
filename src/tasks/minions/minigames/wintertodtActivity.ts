@@ -1,10 +1,9 @@
 import { randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
-import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -47,17 +46,6 @@ export const wintertodtTask: MinionTask = {
 
 		// Track loot in Economy Stats
 		await updateBankSetting('economyStats_wintertodtLoot', loot);
-
-		if (loot.has('Phoenix')) {
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Phoenix} **${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a Phoenix! Their Wintertodt KC is ${
-					(await getMinigameScore(user.id, 'wintertodt')) + quantity
-				}, and their Firemaking level is ${user.skillLevel(SkillsEnum.Firemaking)}.`
-			);
-		}
 
 		/**
 		 * https://oldschool.runescape.wiki/w/Wintertodt#Rewards_2

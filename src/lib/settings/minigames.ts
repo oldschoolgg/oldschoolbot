@@ -250,6 +250,11 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Guthixian Caches',
 		aliases: ['guthixian caches', 'cache'],
 		column: 'guthixian_cache'
+	},
+	{
+		name: 'Turaels Trials',
+		aliases: ['turaels trials', 'trials'],
+		column: 'turaels_trials'
 	}
 ];
 

@@ -1,7 +1,6 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
@@ -60,10 +59,6 @@ export const agilityArenaTask: MinionTask = {
 					collectionLog: true
 				});
 				str += "**\nYou have a funny feeling you're being followed...**";
-				globalClient.emit(
-					Events.ServerNotification,
-					`${Emoji.Agility} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
-				);
 			}
 		}
 

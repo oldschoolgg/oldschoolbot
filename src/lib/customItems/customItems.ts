@@ -1745,7 +1745,7 @@ setCustomItem(50_007, 'Blacksmith boots', 'Rune boots', {}, 100_000);
 
 setCustomItem(50_008, 'Mysterious seed', 'Magic seed', {}, 100_000);
 setCustomItem(50_009, 'Athelas seed', 'Magic seed', {}, 50_000);
-setCustomItem(50_010, 'Athelas', 'Magic seed', {}, 100_000);
+setCustomItem(50_010, 'Athelas', 'Magic seed', { buy_limit: 500 }, 100_000);
 
 // Master farmer
 setCustomItem(50_011, 'Ent hide', 'Magic seed', {}, 1_000_000);
@@ -4246,8 +4246,7 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000
@@ -7314,7 +7313,6 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			cantBeSacrificed: true,
 			isDiscontinued: true
 		}
 	},
@@ -11764,7 +11762,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1
+	1_000_000_000
 );
 
 setCustomItem(
@@ -11776,7 +11774,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1
+	1_000_000_000
 );
 
 setCustomItem(
@@ -12464,7 +12462,8 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			isSuperUntradeable: true,
+			isDiscontinued: true
 		}
 	},
 	100_000

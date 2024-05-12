@@ -1,7 +1,7 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import { AttachmentBuilder, bold, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { notEmpty, randArrItem, randInt, roll, shuffleArr, Time } from 'e';
+import { notEmpty, randArrItem, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
@@ -16,7 +16,6 @@ import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
-import { eggChancePerMinute } from '../easter2024';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
@@ -24,11 +23,7 @@ import { mysteriousStepData } from '../mysteryTrail';
 import { triggerRandomEvent } from '../randomEvents';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
-import {
-	zygomiteFarmingSource,
-	zygomiteMutSurvivalChance,
-	zygomiteSeedMutChance
-} from '../skilling/skills/farming/zygomites';
+import { calculateZygomiteLoot } from '../skilling/skills/farming/zygomites';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskData } from '../types/minions';
@@ -235,8 +230,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 						`Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`
 					);
 				}
-				await user.addItemsToBank({ items: alchResult.bankToAdd });
-				await user.removeItemsFromBank(alchResult.bankToRemove);
+				await user.transactItems({
+					itemsToRemove: alchResult.bankToRemove,
+					itemsToAdd: alchResult.bankToAdd,
+					collectionLog: true
+				});
 
 				updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
 
@@ -260,7 +258,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Invention Effects',
 		fn: async ({ data, messages, user }) => {
-			if (user.hasEquippedOrInBank('Silverhawk boots') && data.duration > Time.Minute) {
+			if (user.hasEquippedOrInBank('Silverhawk boots') && data.duration >= Time.Minute * 5) {
 				const costRes = await inventionItemBoost({
 					user,
 					inventionID: InventionID.SilverHawkBoots,
@@ -422,23 +420,10 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: async ({ data, user, messages }) => {
 			if (!user.bank.has('Moonlight mutator')) return;
 			if (user.user.disabled_inventions.includes(InventionID.MoonlightMutator)) return;
-			const randomZyg = randArrItem(zygomiteFarmingSource.filter(z => z.lootTable !== null));
-			const loot = new Bank();
-			const cost = new Bank();
 
 			const minutes = Math.floor(data.duration / Time.Minute);
 			if (minutes < 1) return;
-			for (let i = 0; i < minutes; i++) {
-				if (roll(zygomiteSeedMutChance)) {
-					const ownedSeed = shuffleArr(randomZyg.mutatedFromItems!).find(seed => user.bank.has(seed));
-					if (!ownedSeed) continue;
-					cost.add(ownedSeed);
-
-					if (roll(zygomiteMutSurvivalChance)) {
-						loot.add(randomZyg.seedItem);
-					}
-				}
-			}
+			const { loot, cost } = calculateZygomiteLoot(minutes, user.bank);
 
 			if (cost.length > 0 || loot.length > 0) {
 				if (cost.length > 0 && !user.bank.has(cost)) {
@@ -452,27 +437,10 @@ const tripFinishEffects: TripFinishEffect[] = [
 				});
 
 				if (cost.length > 0 && loot.length === 0) {
-					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost} seeds, but all died`);
+					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost}, but all died`);
 				} else if (loot.length > 0) {
-					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost} seeds, ${loot} survived`);
+					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost}; ${loot} survived`);
 				}
-			}
-		}
-	},
-	{
-		name: 'Large egg spawns',
-		fn: async ({ data, messages, user }) => {
-			const minutes = Math.floor(data.duration / Time.Minute);
-			if (minutes < 1) return;
-			const loot = new Bank();
-			for (let i = 0; i < minutes; i++) {
-				if (roll(eggChancePerMinute)) {
-					loot.add('Large egg');
-				}
-			}
-			if (loot.length > 0) {
-				await user.addItemsToBank({ items: loot, collectionLog: true });
-				messages.push(`You found ${loot}`);
 			}
 		}
 	}

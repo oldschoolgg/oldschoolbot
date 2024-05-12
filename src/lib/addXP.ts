@@ -326,7 +326,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			resultStr += `${skill.emoji} **${user.usernameOrMention}'s** minion, ${
 				user.minionName
 			}, just achieved level ${value} in ${skillNameCased}! They are the {nthUser} to get level ${value} in ${skillNameCased}.${
-				!user.isIronman ? '' : ` They are the {nthIron} to get level ${value} in ${skillNameCased}`
+				!user.isIronman ? '' : ` They are the {nthIron} Ironman to get level ${value} in ${skillNameCased}`
 			}`;
 		} else {
 			queryValue = value;
@@ -335,7 +335,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			}, just achieved ${toKMB(value)} XP in ${skillNameCased}! They are the {nthUser} to get ${toKMB(
 				value
 			)} in ${skillNameCased}.${
-				!user.isIronman ? '' : ` They are the {nthIron} to get ${toKMB(value)} XP in ${skillNameCased}`
+				!user.isIronman ? '' : ` They are the {nthIron} Ironman to get ${toKMB(value)} XP in ${skillNameCased}`
 			}`;
 		}
 		// Query nthUser and nthIronman
@@ -390,7 +390,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	if (preMax !== -1) {
 		str = params.minimal
 			? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
-			: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP`;
+			: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP.`;
 		if (masterCape && !params.minimal) {
 			str += ` You received ${matchingCapeID ? '8' : '3'}% bonus XP for having a ${itemNameFromID(masterCape)}.`;
 		}

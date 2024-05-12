@@ -4,6 +4,7 @@ import { soteSkillRequirements } from '../skilling/functions/questRequirements';
 import {
 	ActivityTaskData,
 	AgilityActivityTaskOptions,
+	HunterActivityTaskOptions,
 	MonsterActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	WoodcuttingActivityTaskOptions
@@ -50,6 +51,12 @@ const WorldLocationsChecker = [
 				) {
 					return true;
 				}
+			}
+			if (
+				activity.type === 'Hunter' &&
+				(activity as HunterActivityTaskOptions).creatureName === 'Crystal impling'
+			) {
+				return true;
 			}
 
 			return false;

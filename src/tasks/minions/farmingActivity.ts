@@ -3,7 +3,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
-import { BitField, Emoji, Events } from '../../lib/constants';
+import { BitField } from '../../lib/constants';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
@@ -34,6 +34,7 @@ async function farmingLootBoosts(
 	user: MUser,
 	method: 'harvest' | 'plant',
 	plant: Plant,
+	quantity: number,
 	loot: Bank,
 	messages: string[]
 ) {
@@ -47,11 +48,11 @@ async function farmingLootBoosts(
 		bonusPercentage += 100;
 		messages.push('100% for Farming master cape');
 	}
-	if (method === 'harvest' && user.hasEquippedOrInBank(['Arcane harvester']) && plant.name !== 'Mysterious tree') {
+	if (method === 'harvest' && user.hasEquippedOrInBank(['Arcane harvester']) && !plant.noArcaneHarvester) {
 		const boostRes = await inventionItemBoost({
 			user,
 			inventionID: InventionID.ArcaneHarvester,
-			duration: plant.level * Time.Second * 30
+			duration: plant.level * Time.Second * quantity
 		});
 		if (boostRes.success) {
 			bonusPercentage += inventionBoosts.arcaneHarvester.harvestBoostPercent;
@@ -217,7 +218,7 @@ export const farmingTask: MinionTask = {
 				duration: data.duration
 			})}`;
 
-			await farmingLootBoosts(user, 'plant', plant, loot, infoStr);
+			await farmingLootBoosts(user, 'plant', plant, quantity, loot, infoStr);
 
 			if (loot.has('Plopper')) {
 				loot.bank[itemID('Plopper')] = 1;
@@ -508,10 +509,6 @@ export const farmingTask: MinionTask = {
 				infoStr.push('\n```diff');
 				infoStr.push("\n- You have a funny feeling you're being followed...");
 				infoStr.push('```');
-				globalClient.emit(
-					Events.ServerNotification,
-					`${Emoji.Farming} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`
-				);
 			}
 
 			let newPatch: PatchTypes.PatchData = {
@@ -568,7 +565,7 @@ export const farmingTask: MinionTask = {
 				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
 			}
 
-			await farmingLootBoosts(user, 'harvest', plantToHarvest, loot, infoStr);
+			await farmingLootBoosts(user, 'harvest', plantToHarvest, patchType.lastQuantity, loot, infoStr);
 			if ('onHarvest' in plantToHarvest && plantToHarvest.onHarvest) {
 				await plantToHarvest.onHarvest({ user, loot, quantity: patchType.lastQuantity, messages: infoStr });
 			}

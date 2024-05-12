@@ -25,6 +25,7 @@ import { interactionReply } from './interactionReply';
 import { logErrorForInteraction } from './logError';
 import { minionIsBusy } from './minionIsBusy';
 import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
+import { tradePlayerItems } from './tradePlayerItems';
 
 const globalInteractionActions = [
 	'DO_BEGINNER_CLUE',
@@ -305,8 +306,7 @@ async function donateICHandler(interaction: ButtonInteraction) {
 
 	try {
 		modifyBusyCounter(donator.id, 1);
-		await donator.removeItemsFromBank(cost);
-		await user.addItemsToBank({ items: cost, collectionLog: false, filterLoot: false });
+		await tradePlayerItems(donator, user, cost);
 		await userStatsBankUpdate(donator.id, 'ic_donations_given_bank', cost);
 		await userStatsBankUpdate(user.id, 'ic_donations_received_bank', cost);
 
@@ -659,7 +659,7 @@ export async function interactionHook(interaction: Interaction) {
 				commandName: 'open',
 				args: {
 					name: 'Seed pack',
-					quantity: 1
+					quantity: user.bank.amount('Seed pack')
 				},
 				...options
 			});

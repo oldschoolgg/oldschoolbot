@@ -213,16 +213,6 @@ export const infernoTask: MinionTask = {
 			}
 			baseBank.add(zukLoot);
 
-			if (baseBank.has('Jal-nib-rek')) {
-				globalClient.emit(
-					Events.ServerNotification,
-					`**${user.badgedUsername}** just received their ${formatOrdinal(
-						user.cl.amount('Jal-nib-rek') + 1
-					)} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(
-						await getMinigameScore(user.id, 'inferno')
-					)} kill!`
-				);
-			}
 			if (baseBank.has('Jal-MejJak')) {
 				globalClient.emit(
 					Events.ServerNotification,

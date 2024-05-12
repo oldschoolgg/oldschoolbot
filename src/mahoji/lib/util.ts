@@ -3,6 +3,7 @@ import { isObject } from 'e';
 import { ICommand, MahojiClient } from 'mahoji';
 import { CommandOptions, MahojiUserOption } from 'mahoji/dist/lib/types';
 
+import { Cooldowns } from './Cooldowns';
 import type { AbstractCommand, AbstractCommandAttributes } from './inhibitors';
 
 export interface OSBMahojiCommand extends ICommand {
@@ -71,4 +72,8 @@ export function getCommandArgs(
 
 export function allAbstractCommands(mahojiClient: MahojiClient): AbstractCommand[] {
 	return mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand);
+}
+
+export function resetCooldown(user: MUser, key?: string) {
+	return Cooldowns.delete(user.id, key);
 }

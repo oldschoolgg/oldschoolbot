@@ -2,12 +2,19 @@
 import { execSync } from 'node:child_process';
 import { inspect } from 'node:util';
 
-import { codeBlock, userMention } from '@discordjs/builders';
 import { ClientStorage, economy_transaction_type } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
-import { AttachmentBuilder, escapeCodeBlock, InteractionReplyOptions, Message, TextChannel } from 'discord.js';
+import {
+	AttachmentBuilder,
+	codeBlock,
+	escapeCodeBlock,
+	InteractionReplyOptions,
+	Message,
+	TextChannel,
+	userMention
+} from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, noOp, notEmpty, randArrItem, roll, sleep, Time, uniqueArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -33,6 +40,7 @@ import {
 } from '../../lib/constants';
 import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import { addToDoubleLootTimer, syncDoubleLoot } from '../../lib/doubleLoot';
+import { economyLog } from '../../lib/economyLogs';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetup } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
@@ -1091,10 +1099,11 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 		if (options.reboot) {
 			globalClient.isShuttingDown = true;
-			await sleep(Time.Second * 20);
+			await economyLog('Flushing economy log due to reboot', true);
 			await interactionReply(interaction, {
 				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
 			});
+			await sleep(Time.Second * 20);
 			await sendToChannelID(Channel.GeneralChannel, {
 				content: `I am shutting down! Goodbye :(
 
@@ -1108,6 +1117,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			await interactionReply(interaction, {
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
+			await economyLog('Flushing economy log due to shutdown', true);
 			await Promise.all([sleep(timer), GrandExchange.queue.onEmpty()]);
 			await sendToChannelID(Channel.GeneralChannel, {
 				content: `I am shutting down! Goodbye :(

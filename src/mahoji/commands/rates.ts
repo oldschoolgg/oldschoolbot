@@ -1,6 +1,7 @@
 import { bold } from '@discordjs/builders';
 import { InteractionReplyOptions } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent, sumArr, Time } from 'e';
+import { uniq } from 'lodash';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -13,6 +14,7 @@ import {
 	durationPerBaxBath
 } from '../../lib/baxtorianBathhouses';
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
+import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '../../lib/bso/turaelsTrials';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { GLOBAL_BSO_XP_MULTIPLIER, PeakTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
@@ -27,8 +29,8 @@ import {
 	numberOfGorajanOutfitsEquipped
 } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import {
+	mutatedSourceItems,
 	zygomiteFarmingSource,
-	zygomiteMutSurvivalChance,
 	zygomiteSeedMutChance
 } from '../../lib/skilling/skills/farming/zygomites';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
@@ -45,6 +47,7 @@ import { calcPerHour, formatDuration, itemNameFromID, returnStringOrFile } from 
 import { calculateAgilityResult } from '../../tasks/minions/agilityActivity';
 import { calculateDungeoneeringResult } from '../../tasks/minions/bso/dungeoneeringActivity';
 import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
+import { calculateTuraelsTrialsResult } from '../../tasks/minions/bso/turaelsTrialsActivity';
 import { calculateHunterResult } from '../../tasks/minions/HunterActivity/hunterActivity';
 import { calculateMiningResult } from '../../tasks/minions/miningActivity';
 import { gearstatToSetup, gorajanBoosts } from '../lib/abstracted_commands/minionKill';
@@ -117,6 +120,12 @@ export const ratesCommand: OSBMahojiCommand = {
 					name: 'hunter',
 					description: 'XP/hr rates for Hunter.',
 					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'turaels_trials',
+					description: 'XP/hr rates for TT.',
+					options: []
 				}
 			]
 		},
@@ -158,7 +167,14 @@ export const ratesCommand: OSBMahojiCommand = {
 		userID,
 		interaction
 	}: CommandRunOptions<{
-		xphr?: { divination_memory_harvesting?: {}; agility?: {}; dungeoneering?: {}; mining?: {}; hunter?: {} };
+		xphr?: {
+			divination_memory_harvesting?: {};
+			agility?: {};
+			dungeoneering?: {};
+			mining?: {};
+			hunter?: {};
+			turaels_trials?: {};
+		};
 		monster?: { monster?: { name: string } };
 		tames?: { eagle?: {} };
 		misc?: { zygomite_seeds?: {} };
@@ -210,11 +226,32 @@ export const ratesCommand: OSBMahojiCommand = {
 		}
 		if (options.misc?.zygomite_seeds) {
 			const mutationChancePerMinute = 1 / zygomiteSeedMutChance;
-			const survivalChancePerMutation = 1 / zygomiteMutSurvivalChance;
+
+			const validZygomiteList = uniq(mutatedSourceItems.map(m => m.zygomite));
+			// Returns an array containing [totalWeight, totalWeightedChance] for each Zygomite
+			const survivalChanceData = validZygomiteList.map(z =>
+				mutatedSourceItems
+					.filter(m => m.zygomite === z)
+					.reduce(
+						(acc: [number, number, string], m) => {
+							acc[0] += m.weight;
+							acc[1] += m.weight * (1 / m.surivalChance);
+							acc[2] = m.zygomite;
+							return acc;
+						},
+						[0, 0, '']
+					)
+			);
+			const survivalChancePerMutation =
+				sumArr(survivalChanceData.map(d => d[1] / d[0])) / validZygomiteList.length;
+			const avgSurvivalChance = 1 / survivalChancePerMutation;
+
 			const chancePerMinuteBoth = mutationChancePerMinute * survivalChancePerMutation;
 			const averageMinutesToGetBoth = 1 / chancePerMinuteBoth;
 			const averageHoursToGetBoth = averageMinutesToGetBoth / 60;
-			return `For every minute in any trip, a random, valid seed from your bank has a 1 in ${zygomiteSeedMutChance} chance of mutating, and then that mutated seed has a 1 in ${zygomiteMutSurvivalChance} chance of surviving. ${averageHoursToGetBoth.toFixed(
+			return `For every minute in any trip, a random, valid seed from your bank has a 1 in ${zygomiteSeedMutChance} chance of mutating, and then that mutated seed has a 1 in ${avgSurvivalChance.toFixed(
+				2
+			)} (weighted average) chance of surviving. ${averageHoursToGetBoth.toFixed(
 				1
 			)} hours on average to get a zygomite seed.
 
@@ -222,7 +259,12 @@ ${zygomiteFarmingSource
 	.map(
 		z =>
 			`${bold(z.seedItem.name)} evolves from: ${
-				!z.mutatedFromItems ? 'No items' : z.mutatedFromItems.map(itemNameFromID).join(', ')
+				!z.mutatedFromItems
+					? 'No items'
+					: mutatedSourceItems
+							.filter(msi => msi.zygomite === z.name)
+							.map(i => i.item.name)
+							.join(', ')
 			}, drops these items: ${!z.lootTable ? 'Nothing' : z.lootTable.allItems.map(itemNameFromID).join(', ')}.`
 	)
 	.join('\n\n')}`;
@@ -493,6 +535,58 @@ ${zygomiteFarmingSource
 			return {
 				...(returnStringOrFile(results, true) as InteractionReplyOptions),
 				content: 'Assumes: Hunter master cape, level 120 Hunter, full Graceful, Sandy pet equipped.'
+			};
+		}
+
+		if (options.xphr?.turaels_trials) {
+			let results = `${[
+				'Method',
+				'Slayer XP/Hr',
+				'Melee XP/Hr',
+				'Range XP/Hr',
+				'Mage XP/Hr',
+				'Loot/hr',
+				'Cost/hr'
+			].join('\t')}\n`;
+			const maxTripLength = Time.Hour;
+
+			for (const method of TuraelsTrialsMethods) {
+				const input = calculateTuraelsTrialsInput({ maxTripLength, method, isUsingBloodFury: true });
+				const result = calculateTuraelsTrialsResult({ quantity: input.quantity, method });
+				const { duration } = input;
+				if (input.chargeBank.amount('scythe_of_vitur_charges') !== 0) {
+					input.cost.add('Scythe of vitur', input.chargeBank.amount('scythe_of_vitur_charges'));
+				}
+				if (input.chargeBank.amount('blood_fury_charges') !== 0) {
+					input.cost.add('Scythe of vitur', input.chargeBank.amount('blood_fury_charges'));
+				}
+				if (input.hpHealingNeeded !== 0) {
+					input.cost.add('Rocktail', Math.ceil(input.hpHealingNeeded / 26));
+				}
+
+				let slayerXP = result.xpBank.amount('slayer') * GLOBAL_BSO_XP_MULTIPLIER;
+				slayerXP = increaseNumByPercent(slayerXP, 8);
+				results += [
+					method,
+					Math.floor(calcPerHour(slayerXP, duration)).toLocaleString(),
+					Math.floor(
+						calcPerHour(result.xpBank.amount('attack') * GLOBAL_BSO_XP_MULTIPLIER, duration)
+					).toLocaleString(),
+					Math.floor(
+						calcPerHour(result.xpBank.amount('ranged') * GLOBAL_BSO_XP_MULTIPLIER, duration)
+					).toLocaleString(),
+					Math.floor(
+						calcPerHour(result.xpBank.amount('magic') * GLOBAL_BSO_XP_MULTIPLIER, duration)
+					).toLocaleString(),
+					convertBankToPerHourStats(result.loot, duration).join(', '),
+					convertBankToPerHourStats(input.cost, duration).join(', ')
+				].join('\t');
+				results += '\n';
+			}
+
+			return {
+				...(returnStringOrFile(results, true) as InteractionReplyOptions),
+				content: 'Assumes: Slayer master cape (8% boost to slayer xp)'
 			};
 		}
 

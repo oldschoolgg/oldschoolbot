@@ -445,7 +445,10 @@ export function minionStatus(user: MUser) {
 						stringMatches(alias, data.creatureName) || stringMatches(alias.split(' ')[0], data.creatureName)
 				)
 			);
-			return `${name} is currently hunting ${data.quantity}x ${creature!.name}. ${formattedDuration}`;
+			let crystalImpling = creature?.name === 'Crystal impling';
+			return `${name} is currently hunting ${
+				crystalImpling ? creature!.name : `${data.quantity}x ${creature!.name}`
+			}. ${formattedDuration}`;
 		}
 
 		case 'Birdhouse': {
@@ -808,6 +811,11 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently harvesting ${energy.type} memories using ${
 				method.name
 			}. The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'TuraelsTrials': {
+			return `${name} is currently slaying monsters in Turaels Trials. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
 		}
 		case 'HalloweenMiniMinigame':
 		case 'Easter':
