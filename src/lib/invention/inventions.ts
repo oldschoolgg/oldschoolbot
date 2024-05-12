@@ -671,14 +671,11 @@ export function canAffordInventionBoost(
 
 export function inventionEnabled(user: MUser, inventionID: InventionID) {
 	const invention = Inventions.find(i => i.id === inventionID)!;
-	if (
+	return !(
 		user.user.disabled_inventions.includes(invention.id) ||
 		(invention.flags.includes('equipped') && !user.hasEquipped(invention.item.id)) ||
 		(invention.flags.includes('bank') && !user.hasEquippedOrInBank([invention.item.id]))
-	) {
-		return false;
-	}
-	return true;
+	);
 }
 
 export async function inventionItemBoost({
