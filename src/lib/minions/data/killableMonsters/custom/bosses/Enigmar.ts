@@ -2,7 +2,8 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { HighSeedPackTable, MediumSeedPackTable } from '../../../../../data/seedPackTables';
+import { MysteryBoxes } from '../../../../../bsoOpenables';
+import { HighSeedPackTable } from '../../../../../data/seedPackTables';
 import { GearStat } from '../../../../../gear';
 import { addStatsOfItemsTogether } from '../../../../../structures/Gear';
 import itemID from '../../../../../util/itemID';
@@ -13,26 +14,29 @@ import { CustomMonster } from '../customMonsters';
 export const EnigmarLootTable = new LootTable()
 	.every(
 		new LootTable()
-			.add('Wrath rune', [100, 150])
+			.add('Wrath rune', [200, 250])
 			.add('Soul rune', [150, 250])
 			.add('Blood rune', [200, 300], 2)
 			.add('Nature rune', [100, 300], 2)
 			.add('Death rune', [100, 300], 2)
 
-			.add(HighSeedPackTable.clone().add('Korulsi seed', 1, 2), [1, 3])
-			.add(MediumSeedPackTable, [2, 5], 2)
+			.add(HighSeedPackTable.clone().add('Korulsi seed', 1, 4), [2, 3])
 
 			.add('Dragon scimitar')
 			.add('Dragon dagger')
 			.add('Dragon battleaxe')
 
 			.add(
-				new LootTable().add('Mahogany plank', [30, 75]).add('Teak plank', [40, 85]).add('Oak plank', [75, 150]),
+				new LootTable()
+					.add('Mahogany plank', [55, 111])
+					.add('Teak plank', [66, 121])
+					.add('Oak plank', [77, 143]),
 				1,
 				2
 			),
-		2
+		3
 	)
+	.tertiary(15, MysteryBoxes)
 	.tertiary(100, 'Elder scroll piece')
 	.tertiary(200, 'Enigmatic orb')
 	.tertiary(10, 'Enigma tokens', [1, 3])
@@ -79,8 +83,14 @@ export const Enigmar: CustomMonster = {
 		mage: addStatsOfItemsTogether(resolveItems(['Master wand', 'Arcane spirit shield']), [GearStat.AttackMagic])
 	},
 	itemCost: {
-		itemCost: new Bank().add('Enigma tokens', 1).freeze(),
-		qtyPerKill: 1
+		itemCost: new Bank().add('Enigma tokens', 1).add('Super restore(4)', 1).freeze(),
+		qtyPerKill: 1,
+		alternativeConsumables: [
+			{
+				itemCost: new Bank().add('Enigma tokens', 1).add('Prayer potion(4)', 2).freeze(),
+				qtyPerKill: 1
+			}
+		]
 	},
 	tameCantKill: true,
 	itemsRequired: resolveItems([]),
