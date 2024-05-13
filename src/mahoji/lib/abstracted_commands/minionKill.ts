@@ -614,7 +614,6 @@ export async function minionKillCommand(
 		}
 	}
 
-	
 	if (
 		boostChoice === 'cannon' &&
 		!user.user.disabled_inventions.includes(InventionID.SuperiorDwarfMultiCannon) &&
@@ -634,7 +633,11 @@ export async function minionKillCommand(
 			timeToFinish = reduceNumByPercent(timeToFinish, boost);
 			boosts.push(`${boost}% for Superior Cannon (${res.messages})`);
 		}
-	} else if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && (monster!.canBarrage || wildyJelly)) {
+	} else if (
+		boostChoice === 'barrage' &&
+		attackStyles.includes(SkillsEnum.Magic) &&
+		(monster!.canBarrage || wildyJelly)
+	) {
 		consumableCosts.push(iceBarrageConsumables);
 		calculateVirtusBoost();
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage + virtusBoost);

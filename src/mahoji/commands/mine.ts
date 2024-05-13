@@ -10,11 +10,10 @@ import Mining from '../../lib/skilling/skills/mining';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { minionName } from '../../lib/util/minionUtils';
 import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 
 export function calculateMiningInput({
 	nameInput,

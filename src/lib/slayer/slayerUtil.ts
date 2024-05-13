@@ -18,8 +18,8 @@ import resolveItems from '../util/resolveItems';
 import { autoslayModes } from './constants';
 import { slayerMasters } from './slayerMasters';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
-import { bossTasks, wildernessBossTasks } from './tasks/bossTasks';
 import { allSlayerTasks } from './tasks';
+import { bossTasks, wildernessBossTasks } from './tasks/bossTasks';
 import { AssignableSlayerTask, SlayerMaster } from './types';
 
 export enum SlayerMasterEnum {
