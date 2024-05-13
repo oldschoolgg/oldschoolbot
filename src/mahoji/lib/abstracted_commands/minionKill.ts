@@ -345,11 +345,11 @@ export async function minionKillCommand(
 		timeToFinish = reduceNumByPercent(timeToFinish, 20);
 		boosts.push('20% boost for Gregoyle');
 	}
-	if (user.hasEquipped('Dwarven warhammer') && !monster.wildy) {
+	if (user.hasEquipped('Dwarven warhammer') && !isInWilderness) {
 		timeToFinish = reduceNumByPercent(timeToFinish, 40);
 		boosts.push('40% boost for Dwarven warhammer');
 	}
-	if (user.gear.wildy.hasEquipped(['Hellfire bow']) && monster.wildy) {
+	if (user.gear.wildy.hasEquipped(['Hellfire bow']) && isInWilderness) {
 		timeToFinish /= 3;
 		boosts.push('3x boost for Hellfire bow');
 	}
@@ -700,7 +700,7 @@ export async function minionKillCommand(
 		timeToFinish *= 0.8;
 		boosts.push('20% for Dwarven blessing');
 	}
-	if (monster.wildy && hasZealotsAmulet) {
+	if (isInWilderness && hasZealotsAmulet) {
 		timeToFinish *= 0.95;
 		boosts.push('5% for Amulet of zealots');
 	}
