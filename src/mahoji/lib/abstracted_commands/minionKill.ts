@@ -484,7 +484,7 @@ export async function minionKillCommand(
 	function calculateVirtusBoost() {
 		let virtusPiecesEquipped = 0;
 
-		for (const item of resolveItems(['Virtus mask', 'Virtus robe top', 'Virtus robe bottom'])) {
+		for (const item of resolveItems(['Virtus mask', 'Virtus robe top', 'Virtus robe legs'])) {
 			if (isInWilderness) {
 				if (wildyGear.hasEquipped(item)) {
 					virtusPiecesEquipped += blackMaskBoost !== 0 && itemNameFromID(item) === 'Virtus mask' ? 0 : 1;
