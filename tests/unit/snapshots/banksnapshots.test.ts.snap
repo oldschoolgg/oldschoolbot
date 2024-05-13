@@ -26155,10 +26155,15 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
+    "materialCost": MaterialBank {
+      "bank": {
+        "treasured": 400,
+      },
+    },
     "name": "Enigma tokens (Master clues)",
     "outputItems": Bank {
       "bank": {
-        "73203": 10,
+        "73203": 8,
       },
       "frozen": false,
     },
@@ -26171,10 +26176,15 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
+    "materialCost": MaterialBank {
+      "bank": {
+        "treasured": 250,
+      },
+    },
     "name": "Enigma tokens (Elite clues)",
     "outputItems": Bank {
       "bank": {
-        "73203": 7,
+        "73203": 5,
       },
       "frozen": false,
     },
@@ -26187,10 +26197,15 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
+    "materialCost": MaterialBank {
+      "bank": {
+        "treasured": 150,
+      },
+    },
     "name": "Enigma tokens (Hard clues)",
     "outputItems": Bank {
       "bank": {
-        "73203": 4,
+        "73203": 3,
       },
       "frozen": false,
     },
@@ -26202,6 +26217,11 @@ exports[`BSO Creatables 1`] = `
         "2801": 1,
       },
       "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "treasured": 100,
+      },
     },
     "name": "Enigma tokens (Medium clues)",
     "outputItems": Bank {
@@ -26219,6 +26239,11 @@ exports[`BSO Creatables 1`] = `
       },
       "frozen": false,
     },
+    "materialCost": MaterialBank {
+      "bank": {
+        "treasured": 50,
+      },
+    },
     "name": "Enigma tokens (Easy clues)",
     "outputItems": Bank {
       "bank": {
@@ -26234,6 +26259,11 @@ exports[`BSO Creatables 1`] = `
         "23182": 2,
       },
       "frozen": false,
+    },
+    "materialCost": MaterialBank {
+      "bank": {
+        "treasured": 50,
+      },
     },
     "name": "Enigma tokens (Beginner clues)",
     "outputItems": Bank {
@@ -26270,7 +26300,7 @@ exports[`BSO Creatables 1`] = `
     "name": "Enigma tokens (Elder clues)",
     "outputItems": Bank {
       "bank": {
-        "73203": 100,
+        "73203": 150,
       },
       "frozen": false,
     },
