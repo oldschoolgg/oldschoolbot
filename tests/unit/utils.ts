@@ -69,6 +69,8 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		skills_strength: overrides?.skills_strength ?? 0,
 		skills_defence: overrides?.skills_defence ?? 0,
 		skills_slayer: 0,
+		skills_dungeoneering: 0,
+		skills_invention: 0,
 		skills_hitpoints: overrides?.skills_hitpoints ?? convertLVLtoXP(10),
 		GP: overrides?.GP ?? 0,
 		premium_balance_tier: overrides?.premium_balance_tier,
@@ -79,7 +81,9 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		QP: overrides?.QP ?? 0,
 		sacrificedValue: 0,
 		id: overrides?.id ?? '',
-		monsterScores: {}
+		disabled_inventions: [],
+		monsterScores: {},
+		skills_divination: 0
 	} as unknown as User;
 
 	return r;

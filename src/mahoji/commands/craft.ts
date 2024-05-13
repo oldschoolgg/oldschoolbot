@@ -1,12 +1,13 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
-import { Time } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
+import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -75,6 +76,8 @@ export const craftCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`;
 		}
 
+		const maxTripLength = calcMaxTripLength(user, 'Crafting');
+		const boosts: string[] = [];
 		const userBank = user.bankWithGP;
 
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
@@ -84,12 +87,41 @@ export const craftCommand: OSBMahojiCommand = {
 			timeToCraftSingleItem /= 3.25;
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Crafting');
+		const maxCanDo = userBank.fits(craftable.inputItems);
+		const isTannable = Tanning.includes(craftable);
+		if (user.usingPet('Klik') && isTannable) {
+			timeToCraftSingleItem /= 3;
+			boosts.push('3x faster for Klik helping Tan');
+		}
+		if (!isTannable) {
+			if (user.hasEquippedOrInBank('Dwarven greathammer')) {
+				timeToCraftSingleItem /= 2;
+				boosts.push('2x faster for Dwarven greathammer');
+			}
+			const boostedTimeToCraftSingleItem = reduceNumByPercent(
+				timeToCraftSingleItem,
+				inventionBoosts.masterHammerAndChisel.speedBoostPercent
+			);
+			const res = await inventionItemBoost({
+				user,
+				inventionID: InventionID.MasterHammerAndChisel,
+				duration: Math.min(
+					maxTripLength,
+					Math.min(maxCanDo, options.quantity ?? Math.floor(maxTripLength / boostedTimeToCraftSingleItem)) *
+						boostedTimeToCraftSingleItem
+				)
+			});
+			if (res.success) {
+				timeToCraftSingleItem = boostedTimeToCraftSingleItem;
+				boosts.push(
+					`${inventionBoosts.masterHammerAndChisel.speedBoostPercent}% faster for Master hammer and chisel (${res.messages})`
+				);
+			}
+		}
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCraftSingleItem);
-			const max = userBank.fits(craftable.inputItems);
-			if (max < quantity && max !== 0) quantity = max;
+			if (maxCanDo < quantity && maxCanDo !== 0) quantity = maxCanDo;
 		}
 
 		const duration = quantity * timeToCraftSingleItem;
@@ -120,11 +152,16 @@ export const craftCommand: OSBMahojiCommand = {
 			channelID: channelID.toString(),
 			quantity,
 			duration,
-			type: 'Crafting'
+			type: 'Crafting',
+			cantBeDoubled: craftable.cantBeDoubled
 		});
-
-		return `${user.minionName} is now crafting ${quantity}${sets} ${
+		let str = `${user.minionName} is now crafting ${quantity}${sets} ${
 			craftable.name
 		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`;
+		if (boosts.length > 0) {
+			str += `**Boosts:** ${boosts.join(', ')}`;
+		}
+
+		return str;
 	}
 };

@@ -2,6 +2,16 @@ import itemID from '../../util/itemID';
 
 export const pickaxes = [
 	{
+		id: itemID('Volcanic pickaxe'),
+		ticksBetweenRolls: 1.24,
+		miningLvl: 105
+	},
+	{
+		id: itemID('Dwarven pickaxe'),
+		ticksBetweenRolls: 1.5,
+		miningLvl: 99
+	},
+	{
 		id: itemID('Crystal pickaxe'),
 		ticksBetweenRolls: 2.75,
 		miningLvl: 71

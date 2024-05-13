@@ -1,4 +1,6 @@
+import { boxFrenzy } from '../../../boxFrenzy';
 import { Channel } from '../../../constants';
+import { addPatronLootTime } from '../../../doubleLoot';
 import { patreonTask } from '../../../patreon';
 import { syncLinkedAccounts } from '../../../util/linkedAccountsUtil';
 import { sendToChannelID } from '../../../util/webhook';
@@ -27,6 +29,19 @@ const githubSponsors = (server: FastifyServer) =>
 					});
 					if (userID) {
 						await patreonTask.givePerks(userID, tier);
+						addPatronLootTime(tier, await mUserFetch(userID));
+					}
+
+					for (const id of [Channel.BSOChannel, Channel.BSOGeneral]) {
+						boxFrenzy(
+							id,
+							`🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
+🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
+${data.sender.login} became a Github sponsor, as a reward for everyone, here is a box frenzy, guess any of the items in the image for a mystery box.
+🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
+🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉`,
+							tier * 3
+						);
 					}
 					break;
 				}

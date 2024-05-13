@@ -101,6 +101,17 @@ const Crush: Mixable[] = [
 		wesley: true
 	},
 	{
+		item: getOSItem('Athelas paste'),
+		aliases: ['athelas paste', 'athelas'],
+		level: 82,
+		xp: 10,
+		inputItems: new Bank({ Athelas: 1 }),
+		tickRate: 2,
+		bankTimePerPotion: 0.17,
+		wesley: false,
+		outputMultiple: 2
+	},
+	{
 		item: getOSItem('Nihil Dust'),
 		aliases: ['nihil dust', 'nihil shard', 'nihil'],
 		level: 1,

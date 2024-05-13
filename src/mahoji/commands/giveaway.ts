@@ -19,7 +19,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { Emoji, patronFeatures } from '../../lib/constants';
 import { marketPriceOfBank } from '../../lib/marketPrices';
 import { prisma } from '../../lib/settings/prisma';
-import { channelIsSendable, isModOrAdmin, makeComponents, toKMB } from '../../lib/util';
+import { channelIsSendable, isModOrAdmin, isSuperUntradeable, makeComponents, toKMB } from '../../lib/util';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
@@ -134,6 +134,10 @@ export const giveawayCommand: OSBMahojiCommand = {
 				filters: [options.start.filter, 'tradeables'],
 				maxSize: 70
 			});
+
+			if (bank.items().some(i => isSuperUntradeable(i[0]))) {
+				return 'You are trying to sell unsellable items.';
+			}
 
 			if (!user.bankWithGP.has(bank)) {
 				return "You don't own those items.";

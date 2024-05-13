@@ -1,13 +1,16 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord.js';
+import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType, User } from 'discord.js';
 import { uniqueArr } from 'e';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank, Items } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { secretItems } from '../../lib/constants';
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
 import { GearSetupTypes } from '../../lib/gear/types';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { IMaterialBank, materialTypes } from '../../lib/invention';
+import { MaterialBank } from '../../lib/invention/MaterialBank';
+import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { globalPresets } from '../../lib/structures/Gear';
@@ -29,7 +32,7 @@ export const filterOption: CommandOption = {
 	}
 };
 
-const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
+export const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
 
 export const tradeableItemArr = itemArr.filter(i => i.tradeable_on_ge);
 
@@ -41,7 +44,7 @@ export const itemOption = (filter?: (item: Item) => boolean): CommandOption => (
 	description: 'The item you want to pick.',
 	required: false,
 	autocomplete: async value => {
-		let res = itemArr.filter(i => i.key.includes(value.toLowerCase()));
+		let res = itemArr.filter(i => i.key.includes(value.toLowerCase())).filter(i => !secretItems.includes(i.id));
 		if (filter) res = res.filter(filter);
 		return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
 	}
@@ -64,7 +67,7 @@ export const monsterOption: CommandOption = {
 	description: 'The monster you want to pick.',
 	required: true,
 	autocomplete: async value => {
-		return killableMonsters
+		return effectiveMonsters
 			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 			.map(i => ({ name: i.name, value: i.name }));
 	}
@@ -75,7 +78,11 @@ export const skillOption: CommandOption = {
 	name: 'skill',
 	description: 'The skill you want to select.',
 	required: false,
-	choices: Object.values(SkillsEnum).map(i => ({ name: toTitleCase(i), value: i }))
+	autocomplete: async (value: string) => {
+		return Object.values(SkillsEnum)
+			.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
+			.map(i => ({ name: toTitleCase(i), value: i }));
+	}
 };
 
 export const gearSetupOption: CommandOption = {
@@ -147,6 +154,27 @@ export const gearPresetOption: CommandOption = {
 	}
 };
 
+export const ownedMaterialOption = {
+	name: 'material',
+	type: ApplicationCommandOptionType.String,
+	description: 'The type of materials you want to research with.',
+	required: true,
+	autocomplete: async (value: string, user: User) => {
+		const mahojiUser = await mahojiUsersSettingsFetch(user.id, { materials_owned: true });
+		const bank = new MaterialBank(mahojiUser.materials_owned as IMaterialBank);
+		return materialTypes
+			.filter(i => (!value ? true : i.includes(value.toLowerCase())))
+			.sort((a, b) => {
+				if (bank.has(b)) return 1;
+				if (bank.has(a)) return -1;
+				return 0;
+			})
+			.map(i => ({
+				name: `${toTitleCase(i)} ${bank.has(i) ? `(${bank.amount(i).toLocaleString()}x Owned)` : ''}`,
+				value: i
+			}));
+	}
+} as const;
 export function generateRandomBank(size: number) {
 	const bank = new Bank();
 	for (let i = 0; i < size; i++) {

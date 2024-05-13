@@ -61,7 +61,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 		getMinigameScore(user.id, 'gauntlet')
 	]);
 
-	if (type === 'corrupted' && normalKC < 50) {
+	if (type === 'corrupted' && normalKC < (user.usingPet('Brock') ? 0 : 50)) {
 		return "You can't attempt the Corrupted Gauntlet, you have less than 50 normal Gauntlets completed - you would not stand a chance in the Corrupted Gauntlet!";
 	}
 
@@ -76,6 +76,11 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	let baseLength = type === 'corrupted' ? corrPrep + corrHunllef : normPrep + normHunllef;
 
 	const boosts = [];
+
+	if (user.usingPet('Brock')) {
+		boosts.push('2x faster for having Brock');
+		baseLength /= 2;
+	}
 
 	// Gauntlet prep boost
 	let prepBoost = Math.min(100, calcWhatPercent(corruptedKC + normalKC, 100)) / 5;

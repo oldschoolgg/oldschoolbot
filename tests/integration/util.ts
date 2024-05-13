@@ -1,12 +1,14 @@
 import { Prisma } from '@prisma/client';
-import { randInt, shuffleArr, uniqueArr } from 'e';
+import { randInt, shuffleArr, Time, uniqueArr } from 'e';
 import { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { globalConfig } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
+import { convertStoredActivityToFlatActivity, prisma } from '../../src/lib/settings/prisma';
 import { processPendingActivities } from '../../src/lib/Task';
 import { ItemBank } from '../../src/lib/types';
+import { ActivityTaskOptions } from '../../src/lib/types/minions';
 import { cryptoRand } from '../../src/lib/util';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
@@ -17,7 +19,7 @@ export const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'opti
 	userID,
 	guildID: '342983479501389826',
 	member: {} as any,
-	user: { id: userID } as any,
+	user: { id: userID, createdAt: new Date().getTime() - Time.Year } as any,
 	channelID: '111111111',
 	interaction: {
 		channelId: '1',
@@ -58,13 +60,10 @@ export class TestUser extends MUserClass {
 	}
 
 	async reset() {
-		const res = await ironmanCommand(this, null);
-		if (res !== 'You are now an ironman.') {
-			throw new Error(`Failed to reset: ${res}`);
-		}
-		await global.prisma!.userStats.deleteMany({ where: { user_id: BigInt(this.id) } });
-		await global.prisma!.user.delete({ where: { id: this.id } });
-		const user = await global.prisma!.user.create({ data: { id: this.id } });
+		await ironmanCommand(this, null);
+		await prisma.userStats.deleteMany({ where: { user_id: BigInt(this.id) } });
+		await prisma.user.delete({ where: { id: this.id } });
+		const user = await prisma.user.create({ data: { id: this.id } });
 		this.user = user;
 	}
 
@@ -91,7 +90,11 @@ export class TestUser extends MUserClass {
 	async statsMatch(key: keyof UserStats, value: any) {
 		await this.sync();
 		const stats = await this.fetchStats({ [key]: true });
-		if (stats[key] !== value) {
+		if (value instanceof Bank) {
+			if (!new Bank(stats[key]).equals(value)) {
+				throw new Error(`Expected ${key} to be ${value} but got ${new Bank(stats[key])}`);
+			}
+		} else if (stats[key] !== value) {
 			throw new Error(`Expected ${key} to be ${value} but got ${stats[key]}`);
 		}
 	}
@@ -99,6 +102,18 @@ export class TestUser extends MUserClass {
 	async max() {
 		await giveMaxStats(this);
 		return this;
+	}
+
+	async runActivity<T extends ActivityTaskOptions>(): Promise<T> {
+		const [finishedActivity] = await processPendingActivities();
+		if (!finishedActivity) {
+			throw new Error('runActivity: No activity was ran');
+		}
+		if (finishedActivity.user_id.toString() !== this.id) {
+			throw new Error('runActivity: Ran activity, but it didnt belong to this user');
+		}
+		const data = convertStoredActivityToFlatActivity(finishedActivity);
+		return data as any;
 	}
 
 	randomBankSubset() {

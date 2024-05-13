@@ -1,7 +1,6 @@
 import { calcPercentOfNum, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
@@ -82,9 +81,9 @@ export const aerialFishingTask: MinionTask = {
 
 		// If they have the entire angler outfit, give an extra 2.5% xp bonus
 		if (
-			user.gear.skilling.hasEquipped(
+			user.hasEquippedOrInBank(
 				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
-				true
+				'every'
 			)
 		) {
 			const amountToAdd = Math.floor(fishXpReceived * (2.5 / 100));
@@ -93,7 +92,7 @@ export const aerialFishingTask: MinionTask = {
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasEquipped(parseInt(itemID))) {
+				if (user.hasEquippedOrInBank(parseInt(itemID))) {
 					const amountToAdd = Math.floor(fishXpReceived * (bonus / 100));
 					fishXpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -139,10 +138,6 @@ export const aerialFishingTask: MinionTask = {
 		if (roll(petDropRate / totalFishCaught)) {
 			loot.add('Heron');
 			str += "\nYou have a funny feeling you're being followed...";
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a **Heron** while Aerial fishing at level ${currentFishLevel} Fishing!`
-			);
 		}
 
 		await transactItems({
@@ -154,10 +149,6 @@ export const aerialFishingTask: MinionTask = {
 
 		if (loot.amount('Golden tench') > 0) {
 			str += '\n\n**The cormorant has brought you a very strange tench.**';
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.usernameOrMention}'s** minion, ${user.minionName}, just received a **Golden tench** while aerial fishing, their Fishing/Hunter level is ${currentFishLevel}/${currentHuntLevel}!`
-			);
 		}
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);

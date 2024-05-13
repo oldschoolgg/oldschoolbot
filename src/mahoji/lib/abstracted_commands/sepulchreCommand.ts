@@ -40,9 +40,16 @@ export async function sepulchreCommand(user: MUser, channelID: string) {
 
 	lapLength = reduceNumByPercent(lapLength, percentReduced);
 
-	for (const [item, percent] of sepulchreBoosts.items()) {
-		if (user.hasEquippedOrInBank(item.id)) {
-			boosts.push(`${percent}% for ${item.name}`);
+	const hasCob = user.usingPet('Cob');
+
+	if (hasCob) {
+		lapLength /= 2;
+		boosts.push("2x boost with Cob's help");
+	}
+
+	for (const [id, percent] of sepulchreBoosts.items()) {
+		if (user.hasEquippedOrInBank(id.id)) {
+			boosts.push(`${percent}% for ${id.name}`);
 			lapLength = reduceNumByPercent(lapLength, percent);
 		}
 	}

@@ -1,6 +1,7 @@
-import { noOp, randArrItem } from 'e';
+import { noOp, randArrItem, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -19,7 +20,11 @@ export const groupoMonsterTask: MinionTask = {
 		const kcAmounts: { [key: string]: number } = {};
 
 		for (let i = 0; i < quantity; i++) {
-			const loot = monster.table.kill(1, {});
+			let loot = monster.table.kill(1, {});
+			if (roll(10) && monster.id !== 696_969) {
+				loot.multiply(4);
+				loot.add(MysteryBoxes.roll());
+			}
 			const userWhoGetsLoot = randArrItem(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = loot.add(currentLoot);
@@ -42,12 +47,18 @@ export const groupoMonsterTask: MinionTask = {
 				taskQuantity: null
 			});
 			totalLoot.add(loot);
+
+			const kcToAdd = kcAmounts[user.id];
+			if (user.usingPet('Ori') && duration > Time.Minute * 5) {
+				loot.add(monster.table.kill(Math.ceil(kcToAdd * 0.25), {}));
+			}
 			await transactItems({
 				userID: user.id,
 				collectionLog: true,
 				itemsToAdd: loot
 			});
-			const kcToAdd = kcAmounts[user.id];
+			totalLoot.add(loot);
+
 			if (kcToAdd) await user.incrementKC(monsterID, kcToAdd);
 			const purple = Object.keys(loot).some(itemID => isImportantItemForMonster(parseInt(itemID), monster));
 

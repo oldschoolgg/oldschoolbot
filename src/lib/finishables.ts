@@ -10,6 +10,7 @@ import MediumClueTable from 'oldschooljs/dist/simulation/clues/Medium';
 import { ChambersOfXeric, Nightmare } from 'oldschooljs/dist/simulation/misc';
 import { EliteMimicTable, MasterMimicTable } from 'oldschooljs/dist/simulation/misc/Mimic';
 
+import { rollNaxxusLoot } from '../tasks/minions/bso/naxxusActivity';
 import { allCollectionLogsFlat } from './data/Collections';
 import {
 	chambersOfXericCL,
@@ -21,10 +22,14 @@ import {
 	cluesMasterCL,
 	cluesMediumCL,
 	evilChickenOutfit,
-	NexCL,
+	moktangCL,
+	naxxusCL,
+	nexCL,
+	nexUniqueDrops,
 	temporossCL,
-	theatreOfBLoodCL,
-	theatreOfBLoodNormalCL,
+	theatreOfBloodCapes,
+	theatreOfBloodHardUniques,
+	theatreOfBloodNormalUniques,
 	theGauntletCL,
 	theNightmareCL,
 	theNightmareNormalCL,
@@ -32,10 +37,13 @@ import {
 } from './data/CollectionsExport';
 import pets from './data/pets';
 import killableMonsters from './minions/data/killableMonsters';
+import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/Moktang';
+import { Naxxus } from './minions/data/killableMonsters/custom/bosses/Naxxus';
+import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
+import { NEX_UNIQUE_DROPRATE, NexMonster } from './nex';
 import { openShadeChest } from './shadesKeys';
 import { birdsNestID, treeSeedsNest } from './simulation/birdsNest';
 import { gauntlet } from './simulation/gauntlet';
-import { handleNexKills } from './simulation/nex';
 import { getTemporossLoot } from './simulation/tempoross';
 import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
@@ -87,7 +95,7 @@ export const finishables: Finishable[] = [
 	{
 		name: 'Theatre of Blood (Solo, Non-HM)',
 		aliases: ['tob', 'theatre of blood'],
-		cl: theatreOfBLoodNormalCL,
+		cl: [...theatreOfBloodNormalUniques, ...theatreOfBloodCapes],
 		kill: () => new Bank(TheatreOfBlood.complete({ hardMode: false, team: [{ id: '1', deaths: [] }] }).loot['1']),
 		tertiaryDrops: [
 			{ itemId: itemID('Sinhaza shroud tier 1'), kcNeeded: 100 },
@@ -100,7 +108,7 @@ export const finishables: Finishable[] = [
 	{
 		name: 'Theatre of Blood (Solo, HM)',
 		aliases: ['tob hard', 'tob hard mode', 'tobhm'],
-		cl: theatreOfBLoodCL,
+		cl: [...theatreOfBloodNormalUniques, ...theatreOfBloodCapes, ...theatreOfBloodHardUniques],
 		kill: () => new Bank(TheatreOfBlood.complete({ hardMode: true, team: [{ id: '1', deaths: [] }] }).loot['1']),
 		tertiaryDrops: [
 			{ itemId: itemID('Sinhaza shroud tier 1'), kcNeeded: 100 },
@@ -136,17 +144,11 @@ export const finishables: Finishable[] = [
 		tertiaryDrops: [{ itemId: itemID('Gauntlet cape'), kcNeeded: 1 }]
 	},
 	{
-		name: 'Nex',
-		aliases: [],
-		cl: NexCL,
-		kill: () => handleNexKills({ quantity: 1, team: [{ id: '1', contribution: 100, deaths: [] }] }).get('1')
-	},
-	{
 		name: 'Wintertodt (500pt crates, Max stats)',
 		cl: wintertodtCL,
 		aliases: ['todt', 'wintertodt', 'wt'],
-		kill: ({ accumulatedLoot }) =>
-			new Bank(
+		kill: ({ accumulatedLoot }) => {
+			const loot = new Bank(
 				WintertodtCrate.open({
 					points: 500,
 					itemsOwned: accumulatedLoot.bank,
@@ -161,7 +163,33 @@ export const finishables: Finishable[] = [
 					},
 					firemakingXP: 1000
 				})
-			)
+			);
+			// Wintertoad: Assume 1 game per 5 minutes, Wintertoad rate is 1 in 3k minutes
+			if (roll(600)) loot.add('Wintertoad');
+			return loot;
+		}
+	},
+	{
+		name: Naxxus.name,
+		cl: naxxusCL,
+		aliases: Naxxus.aliases,
+		kill: ({ accumulatedLoot }) => rollNaxxusLoot(1, accumulatedLoot)
+	},
+	{
+		name: 'Nex',
+		cl: nexCL.filter(i => i !== itemID('Frozen key')),
+		kill: () => {
+			const loot = new Bank(NexMonster.table.kill(1, {}));
+			if (roll(NEX_UNIQUE_DROPRATE(1))) {
+				loot.add(randArrItem(nexUniqueDrops), 1);
+			}
+			return loot;
+		}
+	},
+	{
+		name: 'Moktang',
+		cl: moktangCL,
+		kill: () => MoktangLootTable.roll()
 	},
 	{
 		name: 'Tempoross',
@@ -267,17 +295,21 @@ export const finishables: Finishable[] = [
 	}
 ];
 
-const monsterPairedCLs = Monsters.map(mon => {
-	const cl = allCollectionLogsFlat.find(c => stringMatches(c.name, mon.name));
-	if (!cl) return null;
-	if (!cl.items.every(id => mon.allItems.includes(id))) return null;
-	return {
-		name: mon.name,
-		aliases: mon.aliases,
-		cl: cl.items,
-		mon
-	};
-}).filter(notEmpty);
+const monsterPairedCLs = [...Monsters.values(), ...Object.values(BSOMonsters)]
+	.map(mon => {
+		const cl = allCollectionLogsFlat.find(c => stringMatches(c.name, mon.name));
+		if (!cl) return null;
+		if (!('allItems' in mon) || !mon.allItems) return;
+		if (!cl.items.every(id => mon.allItems!.includes(id))) return null;
+		if (finishables.some(f => stringMatches(f.name, mon.name))) return null;
+		return {
+			name: mon.name,
+			aliases: mon.aliases,
+			cl: cl.items,
+			mon
+		};
+	})
+	.filter(notEmpty);
 
 for (const mon of monsterPairedCLs) {
 	const killableMonster = killableMonsters.find(m => m.id === mon.mon.id);
@@ -293,9 +325,10 @@ for (const mon of monsterPairedCLs) {
 			if (killableMonster?.itemCost) {
 				cost.add(calculateTripConsumableCost(killableMonster.itemCost, 1, killableMonster.timeToFinish));
 			}
-			let loot = mon.mon.kill(1, {});
+
+			let loot = 'kill' in mon.mon ? mon.mon.kill(1, {}) : mon.mon.table.roll();
 			if (killableMonster && killableMonster.specialLoot) {
-				killableMonster.specialLoot({ ownedItems: accumulatedLoot, loot, quantity: 1 });
+				killableMonster.specialLoot({ ownedItems: accumulatedLoot, loot, quantity: 1, cl: accumulatedLoot });
 			}
 			return { loot, cost };
 		}

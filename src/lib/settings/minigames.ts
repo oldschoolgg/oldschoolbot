@@ -112,6 +112,11 @@ export const Minigames: readonly BotMinigame[] = [
 		column: 'magic_training_arena'
 	},
 	{
+		name: 'Ourania Delivery Service',
+		aliases: ['ods'],
+		column: 'ourania_delivery_service'
+	},
+	{
 		name: 'Puro Puro',
 		aliases: ['puro', 'puro puro'],
 		column: 'puro_puro'
@@ -137,9 +142,19 @@ export const Minigames: readonly BotMinigame[] = [
 		column: 'volcanic_mine'
 	},
 	{
+		name: "Mad Marimbo's Monkey Rumble",
+		column: 'monkey_rumble',
+		aliases: ['mmmr', 'mr', 'mmr']
+	},
+	{
 		name: 'Inferno',
 		aliases: ['inferno', 'zuk'],
 		column: 'inferno'
+	},
+	{
+		name: 'Emerged Zuk Inferno',
+		aliases: ['ei', 'emerged inferno'],
+		column: 'emerged_inferno'
 	},
 	{
 		name: 'Tears Of Guthix',
@@ -157,9 +172,19 @@ export const Minigames: readonly BotMinigame[] = [
 		column: 'tob_hard'
 	},
 	{
+		name: 'Fishing Contest',
+		aliases: ['fishing contest', 'fc'],
+		column: 'fishing_contest'
+	},
+	{
 		name: 'Last Man Standing',
 		aliases: ['last man standing', 'lms'],
 		column: 'lms'
+	},
+	{
+		name: 'Baxtorian Bathhouses',
+		aliases: ['bb', 'bbh', 'baxtorian bathhouses', 'baxtorian bathhouse'],
+		column: 'bax_baths'
 	},
 	{
 		name: 'Trouble Brewing',
@@ -177,6 +202,16 @@ export const Minigames: readonly BotMinigame[] = [
 		column: 'guardians_of_the_rift'
 	},
 	{
+		name: 'Fist of Guthix',
+		aliases: ['fist of guthix', 'fog'],
+		column: 'fist_of_guthix'
+	},
+	{
+		name: 'Stealing Creation',
+		aliases: ['stealing creation', 'sc'],
+		column: 'stealing_creation'
+	},
+	{
 		name: 'Nightmare Zone',
 		aliases: ['nightmare zone', 'nmz'],
 		column: 'nmz'
@@ -187,9 +222,39 @@ export const Minigames: readonly BotMinigame[] = [
 		column: 'shades_of_morton'
 	},
 	{
+		name: 'Tinkering Workshop',
+		aliases: ['tinkering workshop', 'tw'],
+		column: 'tinkering_workshop'
+	},
+	{
 		name: 'Tombs of Amascut',
 		aliases: ['toa', 'tombs of amascut'],
 		column: 'tombs_of_amascut'
+	},
+	{
+		name: 'Balthazars Big Bonanza',
+		aliases: ['bbb', 'balthazars big bonanza', 'circus'],
+		column: 'balthazars_big_bonanza'
+	},
+	{
+		name: 'Depths of Atlantis',
+		aliases: ['doa'],
+		column: 'depths_of_atlantis'
+	},
+	{
+		name: 'Depths of Atlantis - Challenge Mode',
+		aliases: ['doa cm'],
+		column: 'depths_of_atlantis_cm'
+	},
+	{
+		name: 'Guthixian Caches',
+		aliases: ['guthixian caches', 'cache'],
+		column: 'guthixian_cache'
+	},
+	{
+		name: 'Turaels Trials',
+		aliases: ['turaels trials', 'trials'],
+		column: 'turaels_trials'
 	}
 ];
 

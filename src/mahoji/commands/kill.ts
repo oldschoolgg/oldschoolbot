@@ -4,6 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
 import { simulatedKillables } from '../../lib/simulation/simulatedKillables';
+import { stringMatches } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
@@ -51,9 +52,7 @@ export const killCommand: OSBMahojiCommand = {
 			autocomplete: async (value: string) => {
 				return [
 					...Monsters.map(i => ({ name: i.name, aliases: i.aliases })),
-					...simulatedKillables.map(i => ({ name: i.name, aliases: [i.name] })),
-					{ name: 'nex', aliases: ['nex'] },
-					{ name: 'nightmare', aliases: ['nightmare'] }
+					...simulatedKillables.map(i => ({ name: i.name, aliases: [i.name] }))
 				]
 					.filter(i =>
 						!value ? true : i.aliases.some(alias => alias.toLowerCase().includes(value.toLowerCase()))
@@ -74,12 +73,29 @@ export const killCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
 		const user = await mUserFetch(userID);
-		await deferInteraction(interaction);
+		deferInteraction(interaction);
+		const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, options.name)));
+		const simulatedKillable = simulatedKillables.find(i => stringMatches(i.name, options.name));
+
+		let limit = determineKillLimit(user);
+		if (osjsMonster?.isCustom) {
+			if (user.perkTier() < PerkTier.Four) {
+				return 'Simulating kills of custom monsters is a T3 perk!';
+			}
+			limit /= 4;
+		}
+
+		if (simulatedKillable?.isCustom) {
+			if (user.perkTier() < PerkTier.Four) {
+				return 'Simulating kills of custom monsters or raids is a T3 perk!';
+			}
+			limit /= 4;
+		}
 
 		const result = await Workers.kill({
 			quantity: options.quantity,
 			bossName: options.name,
-			limit: determineKillLimit(user),
+			limit,
 			catacombs: false,
 			onTask: false,
 			lootTableTertiaryChanges: Array.from(user.buildTertiaryItemChanges().entries())
@@ -89,11 +105,13 @@ export const killCommand: OSBMahojiCommand = {
 			return result.error;
 		}
 
+		const bank = new Bank(result.bank?.bank);
 		const image = await makeBankImage({
-			bank: new Bank(result.bank?.bank),
+			bank,
 			title: result.title ?? `Loot from ${options.quantity.toLocaleString()} ${toTitleCase(options.name)}`,
 			user
 		});
+
 		return {
 			files: [image.file],
 			content: result.content

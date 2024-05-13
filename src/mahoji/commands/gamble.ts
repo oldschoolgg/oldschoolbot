@@ -5,8 +5,8 @@ import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
+import { isSuperUntradeable } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';
 import { duelCommand } from '../lib/abstracted_commands/duelCommand';
@@ -243,7 +243,7 @@ export const gambleCommand: OSBMahojiCommand = {
 			await senderUser.sync();
 			const bank = senderUser.bank
 				.items()
-				.filter(i => itemIsTradeable(i[0].id))
+				.filter(i => !isSuperUntradeable(i[0].id))
 				.filter(i => !user.user.favoriteItems.includes(i[0].id));
 			const entry = randArrItem(bank);
 			if (!entry) return 'You have no items you can give away!';

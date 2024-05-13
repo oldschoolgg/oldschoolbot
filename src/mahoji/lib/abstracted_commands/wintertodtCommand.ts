@@ -45,6 +45,22 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 	healAmountNeeded -= warmGearAmount * 15;
 	durationPerTodt = reduceNumByPercent(durationPerTodt, 5 * warmGearAmount);
 
+	const boosts: string[] = [];
+
+	if (user.hasEquippedOrInBank('Dwarven greataxe')) {
+		durationPerTodt /= 2;
+		boosts.push('2x faster for Dwarven greataxe.');
+	}
+
+	if (healAmountNeeded !== baseHealAmountNeeded) {
+		messages.push(
+			`${calcWhatPercent(
+				baseHealAmountNeeded - healAmountNeeded,
+				baseHealAmountNeeded
+			)}% less food for wearing warm gear`
+		);
+	}
+
 	const quantity = Math.floor(calcMaxTripLength(user, 'Wintertodt') / durationPerTodt);
 
 	for (const food of Eatables) {
@@ -109,7 +125,15 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 		type: 'Wintertodt'
 	});
 
-	return `${user.minionName} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(
+	let str = `${
+		user.minionName
+	} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(
 		durationPerTodt * quantity
-	)}. (${formatDuration(durationPerTodt)} per Wintertodt)\n\n${messages.join('')}.`;
+	)}. (${formatDuration(durationPerTodt)} per todt)\n\n${messages.join(', ')}.`;
+
+	if (boosts.length > 0) {
+		str += `**Boosts:** ${boosts.join(', ')}`;
+	}
+
+	return str;
 }

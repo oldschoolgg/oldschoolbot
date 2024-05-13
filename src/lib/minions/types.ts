@@ -14,6 +14,7 @@ import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
 import { calculateSimpleMonsterDeathChance } from '../util';
+import { BSOMonsters } from './data/killableMonsters/custom/customMonsters';
 import { AttackStyles } from './functions';
 
 export type BankBackground = {
@@ -30,6 +31,7 @@ export type BankBackground = {
 	sacValueRequired?: number;
 	skillsNeeded?: Skills;
 	transparent?: true;
+	owners?: string[];
 	alternateImages?: { id: number }[];
 	storeBitField?: StoreBitfield;
 } & (
@@ -109,7 +111,7 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
-	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number }) => void;
+	specialLoot?: (data: { loot: Bank; ownedItems: Bank; quantity: number; cl: Bank }) => void;
 	effect?: (opts: {
 		messages: string[];
 		user: MUser;
@@ -124,6 +126,7 @@ export interface KillableMonster {
 		items: { boostPercent: number; itemID: number }[];
 	}[];
 	projectileUsage?: {
+		requiredAmmo?: number[];
 		required: boolean;
 		calculateQuantity: (opts: { quantity: number }) => number;
 	};
@@ -135,6 +138,14 @@ export interface KillableMonster {
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
 	diaryRequirement?: [Diary, DiaryTier];
 	wildySlayerCave?: boolean;
+	requiredBitfield?: BitField;
+
+	minimumFoodHealAmount?: number;
+	minimumWeaponShieldStats?: Partial<Record<GearSetupType, Required<GearRequirement>>>;
+	tameCantKill?: true;
+	customRequirement?: (user: MUser) => Promise<string | null>;
+	setupsUsed?: GearSetupType[];
+	kcRequirements?: Partial<Record<keyof typeof BSOMonsters, number>>;
 }
 /*
  * Monsters will have an array of Consumables
@@ -157,6 +168,7 @@ export interface AddXpParams {
 	multiplier?: boolean;
 	minimal?: boolean;
 	artificial?: boolean;
+	masterCapeBoost?: boolean;
 	source?: XpGainSource;
 }
 
@@ -183,6 +195,22 @@ export interface BlowpipeData {
 	dartQuantity: number;
 	dartID: number | null;
 }
+
+export interface MegaDuckLocation {
+	x: number;
+	y: number;
+	placesVisited: string[];
+	usersParticipated: Record<string, number>;
+	steps: [number, number][];
+}
+
+export const defaultMegaDuckLocation: Readonly<MegaDuckLocation> = {
+	x: 1356,
+	y: 209,
+	usersParticipated: {},
+	placesVisited: [],
+	steps: []
+};
 export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
 export type ClueBank = Record<ClueTier['name'], number>;

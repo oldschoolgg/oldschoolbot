@@ -23,12 +23,12 @@ describe('Open Command', async () => {
 		});
 		await user.bankAmountMatch('Reward casket (beginner)', 99);
 		await user.openedBankMatch(new Bank().add('Reward casket (beginner)', 1));
-		await user.bankMatch(new Bank().add('Reward casket (beginner)', 99).add('Fire rune', 17));
+		await user.bankMatch(new Bank().add('Reward casket (beginner)', 99).add('Fire rune', 17 * 2));
 		await user.runCommand(openCommand, { name: 'reward casket (beginner)' });
 		await user.bankAmountMatch('Reward casket (beginner)', 98);
 		await user.openedBankMatch(new Bank().add('Reward casket (beginner)', 2));
-		await user.bankMatch(new Bank().add('Reward casket (beginner)', 98).add('Fire rune', 34));
-		await user.clMatch(new Bank().add('Fire rune', 34));
+		await user.bankMatch(new Bank().add('Reward casket (beginner)', 98).add('Fire rune', 34 * 2));
+		await user.clMatch(new Bank().add('Fire rune', 34 * 2));
 	});
 
 	test('Open with quantity', async () => {

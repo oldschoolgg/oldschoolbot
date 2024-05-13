@@ -1,6 +1,7 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
@@ -53,6 +54,20 @@ export const trawlerTask: MinionTask = {
 		}
 
 		if (hasEliteArdy) str += '\n\n50% Extra fish for Ardougne Elite diary';
+
+		if (user.hasEquippedOrInBank('Fishing master cape')) {
+			loot.multiply(4);
+			for (let i = 0; i < quantity; i++) {
+				if (roll(2)) loot.add(MysteryBoxes.roll());
+			}
+			str += '\n\nYou received **4x** extra fish because you are a master at Fishing.';
+		}
+
+		if (user.usingPet('Shelldon')) {
+			loot.multiply(2);
+			totalXP *= 1.5;
+			str += '\nYou received **2x** extra fish from Shelldon helping you.';
+		}
 
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,

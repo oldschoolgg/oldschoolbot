@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 import { Bank, Util } from 'oldschooljs';
 
-import { cryptoRand } from '../../../lib/util';
+import { cryptoRand, percentChance } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import {
 	mahojiParseNumber,
@@ -24,8 +24,8 @@ export async function diceCommand(user: MUser, interaction: ChatInputCommandInte
 	}
 	if (user.isIronman) return "You're an ironman and you cant play dice.";
 
-	if (amount > 500_000_000) {
-		return 'You can only dice up to 500m at a time!';
+	if (amount > 10_000_000_000) {
+		return 'You can only dice up to 10b at a time!';
 	}
 
 	if (amount < 1_000_000) {
@@ -60,7 +60,14 @@ export async function diceCommand(user: MUser, interaction: ChatInputCommandInte
 		await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	}
 
-	return `${user.badgedUsername} rolled **${roll}** on the percentile dice, and you ${
+	if (amount >= 100_000_000 && won && percentChance(3)) {
+		await user.addItemsToBank({ items: new Bank().add('Gamblers bag'), collectionLog: true });
+		return `${user.usernameOrMention} rolled **${roll}** on the percentile dice, and you won ${Util.toKMB(
+			amountToAdd
+		)} GP.\n\nYou received a **Gamblers Bag**.`;
+	}
+
+	return `${user.usernameOrMention} rolled **${roll}** on the percentile dice, and you ${
 		won ? 'won' : 'lost'
 	} ${Util.toKMB(amountToAdd)} GP.`;
 }

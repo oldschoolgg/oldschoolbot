@@ -1,9 +1,11 @@
+import { Prisma } from '@prisma/client';
 import { ChartConfiguration } from 'chart.js';
 import { bold, ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
+	notEmpty,
 	objectKeys,
 	reduceNumByPercent,
 	round,
@@ -15,26 +17,33 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { BitField, PeakTier, PvMMethod } from '../../../lib/constants';
+import { BitField, PeakTier, PvMMethod, YETI_ID } from '../../../lib/constants';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem } from '../../../lib/degradeableItems';
 import { Diary, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
-import { GearSetupType } from '../../../lib/gear/types';
+import { readableStatName } from '../../../lib/gear';
+import { GearSetupType, GearStat } from '../../../lib/gear/types';
+import { canAffordInventionBoost, InventionID, inventionItemBoost } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import {
 	boostCannon,
 	boostCannonMulti,
 	boostIceBarrage,
 	boostIceBurst,
+	boostSuperiorCannon,
+	boostSuperiorCannonMulti,
 	cannonBanks,
 	cannonMultiConsumables,
 	cannonSingleConsumables,
 	CombatOptionsEnum,
 	iceBarrageConsumables,
 	iceBurstConsumables,
-	SlayerActivityConstants
+	SlayerActivityConstants,
+	superiorCannonSingleConsumables
 } from '../../../lib/minions/data/combatConstants';
+import { BSOMonsters } from '../../../lib/minions/data/killableMonsters/custom/customMonsters';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import {
 	AttackStyles,
@@ -49,7 +58,7 @@ import { calcPOHBoosts } from '../../../lib/poh';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { maxOffenceStats } from '../../../lib/structures/Gear';
+import { addStatsOfItemsTogether, maxOffenceStats } from '../../../lib/structures/Gear';
 import { Peak } from '../../../lib/tickers';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
@@ -77,12 +86,20 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahojiSettings';
+import { sendToChannelID } from '../../../lib/util/webhook';
+import { hasMonsterRequirements, resolveAvailableItemBoosts, userStatsUpdate } from '../../mahojiSettings';
+import { findBingosWithUserParticipating } from '../bingo/BingoManager';
+import { igneCommand } from './igneCommand';
+import { kgCommand } from './kgCommand';
+import { kkCommand } from './kkCommand';
+import { moktangCommand } from './moktangCommand';
+import { naxxusCommand } from './naxxusCommand';
 import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
 import { quests } from './questCommand';
 import { temporossCommand } from './temporossCommand';
+import { vasaCommand } from './vasaCommand';
 import { wintertodtCommand } from './wintertodtCommand';
 import { zalcanoCommand } from './zalcanoCommand';
 
@@ -112,6 +129,19 @@ function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
 
 const { floor } = Math;
 
+export const gorajanBoosts = [
+	[gorajanArcherOutfit, 'range'],
+	[gorajanWarriorOutfit, 'melee'],
+	[gorajanOccultOutfit, 'mage']
+] as const;
+
+export const gearstatToSetup = new Map()
+	.set('attack_stab', 'melee')
+	.set('attack_slash', 'melee')
+	.set('attack_crush', 'melee')
+	.set('attack_magic', 'mage')
+	.set('attack_ranged', 'range');
+
 function applySkillBoost(user: MUser, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = sumArr(styles.map(s => user.skillLevel(s)));
 
@@ -139,8 +169,7 @@ export async function minionKillCommand(
 	name: string,
 	quantity: number | undefined,
 	method: PvMMethod | undefined,
-	wilderness: boolean | undefined,
-	solo: boolean | undefined
+	wilderness: boolean | undefined
 ) {
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
@@ -156,11 +185,26 @@ export async function minionKillCommand(
 
 	if (!name) return invalidMonsterMsg;
 
-	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID, solo);
+	if (user.usingPet('Ishi')) {
+		sendToChannelID(channelID.toString(), {
+			content: `${user} Ishi Says: Let's kill some ogress warriors instead? 🥰 🐳`
+		});
+		name = 'Ogress Warrior';
+	}
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
+	if (['vasa', 'vasa magus'].some(i => stringMatches(i, name))) return vasaCommand(user, channelID, quantity);
 	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name, quantity);
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID);
+	if (['igne ', 'ignecarus'].some(i => name.toLowerCase().includes(i)))
+		return igneCommand(interaction, user, channelID, name, quantity);
+	if (['kg', 'king goldemar'].some(i => name.toLowerCase().includes(i)))
+		return kgCommand(interaction, user, channelID, name, quantity);
+	if (['kk', 'kalphite king'].some(i => name.toLowerCase().includes(i)))
+		return kkCommand(interaction, user, channelID, name, quantity);
+	if (name.toLowerCase().includes('nex')) return nexCommand(interaction, user, channelID, name, quantity);
+	if (name.toLowerCase().includes('moktang')) return moktangCommand(user, channelID, quantity);
+	if (name.toLowerCase().includes('naxxus')) return naxxusCommand(user, channelID, quantity);
 
 	let monster = findMonster(name);
 	let revenants = false;
@@ -174,6 +218,7 @@ export async function minionKillCommand(
 	}
 
 	if (!monster) return invalidMonsterMsg;
+	const maxTripLength = calcMaxTripLength(user, 'MonsterKilling');
 
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask =
@@ -236,7 +281,38 @@ export async function minionKillCommand(
 		}
 	}
 
-	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, await user.getKC(monster.id));
+	const monsterScores = await user.fetchMonsterScores();
+
+	if (monster.kcRequirements) {
+		for (const [key, val] of Object.entries(monster.kcRequirements)) {
+			const { id } = BSOMonsters[key as keyof typeof BSOMonsters];
+			const kc = monsterScores[id] ?? 0;
+			if (kc < val) {
+				return `You need at least ${val} ${key} KC to kill ${monster.name}, you have ${kc}.`;
+			}
+		}
+	}
+
+	if (monster.minimumWeaponShieldStats) {
+		for (const [setup, minimum] of Object.entries(monster.minimumWeaponShieldStats)) {
+			const gear = user.gear[setup as GearSetupType];
+			const stats = addStatsOfItemsTogether(
+				[gear['2h']?.item, gear.weapon?.item, gear.shield?.item].filter(notEmpty)
+			);
+			for (const [key, requiredValue] of Object.entries(minimum)) {
+				if (requiredValue < 1) continue;
+				const theirValue = stats[key as GearStat] ?? 0;
+				if (theirValue < requiredValue) {
+					return `Your ${setup} weapons/shield need to have at least ${requiredValue} ${readableStatName(
+						key
+					)} to kill ${monster.name}, you have ${theirValue}.`;
+				}
+			}
+		}
+	}
+
+	const kcForThisMonster = monsterScores[monster.id] ?? 0;
+	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, kcForThisMonster);
 
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
 		monsterID: monster.id,
@@ -246,6 +322,9 @@ export async function minionKillCommand(
 
 	timeToFinish = newTime;
 	boosts.push(skillBoostMsg);
+
+	timeToFinish /= 2;
+	boosts.push('2x BSO Boost');
 
 	if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
 
@@ -260,6 +339,19 @@ export async function minionKillCommand(
 	for (const [itemID, boostAmount] of Object.entries(resolveAvailableItemBoosts(user, monster, isInWilderness))) {
 		timeToFinish *= (100 - boostAmount) / 100;
 		boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+	}
+
+	if (user.usingPet('Gregoyle') && [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id].includes(monster.id)) {
+		timeToFinish = reduceNumByPercent(timeToFinish, 20);
+		boosts.push('20% boost for Gregoyle');
+	}
+	if (user.hasEquipped('Dwarven warhammer') && !monster.wildy) {
+		timeToFinish = reduceNumByPercent(timeToFinish, 40);
+		boosts.push('40% boost for Dwarven warhammer');
+	}
+	if (user.gear.wildy.hasEquipped(['Hellfire bow']) && monster.wildy) {
+		timeToFinish /= 3;
+		boosts.push('3x boost for Hellfire bow');
 	}
 
 	const monsterHP = osjsMon?.data.hitpoints ?? 100;
@@ -320,6 +412,12 @@ export async function minionKillCommand(
 	}
 
 	function applyBlackMaskBoost() {
+		const hasInfernalSlayerHelmI = isInWilderness
+			? wildyGear.hasEquipped('Infernal slayer helmet(i)')
+			: user.hasEquippedOrInBank('Infernal slayer helmet(i)');
+		const hasInfernalSlayerHelm = isInWilderness
+			? wildyGear.hasEquipped('Infernal slayer helmet')
+			: user.hasEquippedOrInBank('Infernal slayer helmet');
 		const hasBlackMask = isInWilderness
 			? wildyGear.hasEquipped('Black mask')
 			: user.hasEquippedOrInBank('Black mask');
@@ -332,9 +430,17 @@ export async function minionKillCommand(
 				blackMaskBoost = oneSixthBoost;
 				blackMaskBoostMsg = `${blackMaskBoost}% for Black mask (i) on non-melee task`;
 			}
+		} else if (hasInfernalSlayerHelm) {
+			blackMaskBoost = 17;
+			blackMaskBoostMsg = `${blackMaskBoost}% for Infernal slayer helmet on melee task`;
 		} else if (hasBlackMask) {
 			blackMaskBoost = oneSixthBoost;
 			blackMaskBoostMsg = `${blackMaskBoost}% for Black mask on melee task`;
+		}
+
+		if (hasInfernalSlayerHelmI) {
+			blackMaskBoost = 22;
+			blackMaskBoostMsg = `${blackMaskBoost}% for Infernal slayer helmet(i) on task`;
 		}
 	}
 
@@ -450,9 +556,15 @@ export async function minionKillCommand(
 	let cannonMulti = false;
 	let chinning = false;
 	let burstOrBarrage = 0;
-	const hasCannon = cannonBanks.some(i => user.owns(i));
+	const hasSuperiorCannon = user.owns('Superior dwarf multicannon');
+	const hasCannon = cannonBanks.some(i => user.owns(i)) || hasSuperiorCannon;
 
-	// Check for cannon
+	if (!isOnTask && method && method !== 'none') {
+		return 'You can only burst/barrage/cannon while on task in BSO.';
+	}
+	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
+		return `${monster!.name} cannot be barraged or burst.`;
+	}
 	if (method === 'cannon' && !hasCannon) {
 		return "You don't own a Dwarf multicannon, so how could you use one?";
 	}
@@ -464,6 +576,11 @@ export async function minionKillCommand(
 	if (boostChoice === 'burst' && user.skillLevel(SkillsEnum.Magic) < 70) {
 		return `You need 70 Magic to use Ice Burst. You have ${user.skillLevel(SkillsEnum.Magic)}`;
 	}
+
+	timeToFinish = Math.floor(timeToFinish);
+
+	const { canAfford } = await canAffordInventionBoost(user, InventionID.SuperiorDwarfMultiCannon, timeToFinish);
+	const canAffordSuperiorCannonBoost = hasSuperiorCannon ? canAfford : false;
 	if (boostChoice === 'chinning' && user.skillLevel(SkillsEnum.Ranged) < 65) {
 		return `You need 65 Ranged to use Chinning method. You have ${user.skillLevel(SkillsEnum.Ranged)}`;
 	}
@@ -497,7 +614,27 @@ export async function minionKillCommand(
 		}
 	}
 
-	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && (monster!.canBarrage || wildyJelly)) {
+	
+	if (
+		boostChoice === 'cannon' &&
+		!user.user.disabled_inventions.includes(InventionID.SuperiorDwarfMultiCannon) &&
+		canAffordSuperiorCannonBoost &&
+		(monster.canCannon || monster.cannonMulti)
+	) {
+		let qty = quantity || floor(maxTripLength / timeToFinish);
+		const res = await inventionItemBoost({
+			user,
+			inventionID: InventionID.SuperiorDwarfMultiCannon,
+			duration: timeToFinish * qty
+		});
+		if (res.success) {
+			usingCannon = true;
+			consumableCosts.push(superiorCannonSingleConsumables);
+			let boost = monster.cannonMulti ? boostSuperiorCannonMulti : boostSuperiorCannon;
+			timeToFinish = reduceNumByPercent(timeToFinish, boost);
+			boosts.push(`${boost}% for Superior Cannon (${res.messages})`);
+		}
+	} else if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && (monster!.canBarrage || wildyJelly)) {
 		consumableCosts.push(iceBarrageConsumables);
 		calculateVirtusBoost();
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage + virtusBoost);
@@ -524,7 +661,7 @@ export async function minionKillCommand(
 		consumableCosts.push(cannonSingleConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
 		boosts.push(`${boostCannon}% for Cannon in singles`);
-	} else if (method === 'chinning' && attackStyles.includes(SkillsEnum.Ranged) && monster!.canChinning) {
+	} else if ((method as string) === 'chinning' && attackStyles.includes(SkillsEnum.Ranged) && monster!.canChinning) {
 		chinning = true;
 		// Check what Chinchompa to use
 		const chinchompas = ['Black chinchompa', 'Red chinchompa', 'Chinchompa'];
@@ -551,7 +688,45 @@ export async function minionKillCommand(
 		consumableCosts.push(chinningConsumables);
 	}
 
-	const maxTripLength = calcMaxTripLength(user, 'MonsterKilling');
+	const hasBlessing = user.hasEquipped('Dwarven blessing');
+	const hasZealotsAmulet = user.hasEquipped('Amulet of zealots');
+	if (hasZealotsAmulet && hasBlessing) {
+		timeToFinish *= 0.75;
+		boosts.push('25% for Dwarven blessing & Amulet of zealots');
+	} else if (hasBlessing) {
+		timeToFinish *= 0.8;
+		boosts.push('20% for Dwarven blessing');
+	}
+	if (monster.wildy && hasZealotsAmulet) {
+		timeToFinish *= 0.95;
+		boosts.push('5% for Amulet of zealots');
+	}
+	const allGorajan = gorajanBoosts.every(e => user.gear[e[1]].hasEquipped(e[0], true));
+	for (const [outfit, setup] of gorajanBoosts) {
+		if (
+			allGorajan ||
+			(gearstatToSetup.get(monster.attackStyleToUse) === setup && user.gear[setup].hasEquipped(outfit, true))
+		) {
+			boosts.push('10% for Gorajan');
+			timeToFinish *= 0.9;
+			break;
+		}
+	}
+
+	if (attackStyles.includes(SkillsEnum.Ranged) && user.hasEquipped('Ranged master cape')) {
+		timeToFinish *= 0.85;
+		boosts.push('15% for Ranged master cape');
+	} else if (attackStyles.includes(SkillsEnum.Magic) && user.hasEquipped('Magic master cape')) {
+		timeToFinish *= 0.85;
+		boosts.push('15% for Magic master cape');
+	} else if (
+		!attackStyles.includes(SkillsEnum.Magic) &&
+		!attackStyles.includes(SkillsEnum.Ranged) &&
+		user.hasEquipped('Attack master cape')
+	) {
+		timeToFinish *= 0.85;
+		boosts.push('15% for Attack master cape');
+	}
 
 	/**
 	 *
@@ -581,7 +756,8 @@ export async function minionKillCommand(
 		for (const degItem of degradeablePvmBoostItems) {
 			const isUsing =
 				convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
-				user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
+				user.gear[degItem.attackStyle].hasEquipped(degItem.item.id) &&
+				(monster.setupsUsed ? monster.setupsUsed.includes(degItem.attackStyle) : true);
 			if (isUsing) {
 				// We assume they have enough charges, add the boost, and degrade at the end to avoid doing it twice.
 				degItemBeingUsed.push(degItem);
@@ -613,6 +789,9 @@ export async function minionKillCommand(
 			quantity = floor(maxTripLength / timeToFinish);
 		}
 	}
+
+	quantity = Math.max(1, quantity);
+
 	if (isOnTask) {
 		let effectiveQtyRemaining = usersTask.currentTask!.quantity_remaining;
 		if (
@@ -630,9 +809,41 @@ export async function minionKillCommand(
 		}
 		quantity = Math.min(quantity, effectiveQtyRemaining);
 	}
+	let duration = timeToFinish * quantity;
+
+	// If you have dwarven blessing, you need 1 prayer pot per 5 mins
+	const dwarvenBlessingItem = user.bitfield.includes(BitField.UseSuperRestoresForDwarvenBlessing)
+		? 'Super restore(4)'
+		: 'Prayer potion(4)';
+	const prayerPots = user.bank.amount(dwarvenBlessingItem);
+	const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
+	let dwarvenBlessingPotsNeeded = Math.max(1, fiveMinIncrements);
+	const hasPrayerMasterCape = user.hasEquipped('Prayer master cape');
+	if (hasPrayerMasterCape && hasBlessing) {
+		boosts.push(`40% less ${dwarvenBlessingItem}`);
+		dwarvenBlessingPotsNeeded = Math.floor(0.6 * dwarvenBlessingPotsNeeded);
+	}
+	dwarvenBlessingPotsNeeded = Math.max(1, dwarvenBlessingPotsNeeded);
+	if (hasBlessing) {
+		if (prayerPots < dwarvenBlessingPotsNeeded) {
+			return `You don't have enough ${dwarvenBlessingItem}'s to power your Dwarven blessing.`;
+		}
+	}
+
+	if (monster.customRequirement && kcForThisMonster === 0) {
+		const reasonDoesntHaveReq = await monster.customRequirement(user);
+		if (reasonDoesntHaveReq) {
+			return `You don't meet the requirements to kill this monster: ${reasonDoesntHaveReq}.`;
+		}
+	}
+	if (monster.requiredBitfield && !user.bitfield.includes(monster.requiredBitfield)) {
+		return "You haven't unlocked this monster.";
+	}
 
 	quantity = Math.max(1, quantity);
-	let duration = timeToFinish * quantity;
+	if (!user.bitfield.includes(BitField.HasUnlockedYeti) && monster.id === YETI_ID) {
+		quantity = 1;
+	}
 	if (quantity > 1 && duration > maxTripLength) {
 		return `${minionName} can't go on PvM trips longer than ${formatDuration(
 			maxTripLength
@@ -724,6 +935,14 @@ export async function minionKillCommand(
 		if (!user.gear.range.ammo?.item) {
 			return `You need range ammo equipped to kill ${monster.name}.`;
 		}
+		if (
+			monster.projectileUsage.requiredAmmo &&
+			!monster.projectileUsage.requiredAmmo.includes(user.gear.range.ammo.item)
+		) {
+			return `You need to be using one of these projectiles to fight ${
+				monster.name
+			}: ${monster.projectileUsage.requiredAmmo.map(itemNameFromID).join(', ')}.`;
+		}
 		const rangeCheck = checkRangeGearWeapon(user.gear.range);
 		if (typeof rangeCheck === 'string') {
 			return `Your range gear isn't right: ${rangeCheck}`;
@@ -749,11 +968,6 @@ export async function minionKillCommand(
 	}
 
 	duration = randomVariation(duration, 3);
-
-	if (isWeekend()) {
-		boosts.push('10% for Weekend');
-		duration *= 0.9;
-	}
 
 	const degradeablesWithEnoughCharges = [];
 	for (const degItem of degItemBeingUsed) {
@@ -782,7 +996,63 @@ export async function minionKillCommand(
 			chargesToDegrade: chargesNeeded,
 			user
 		});
+		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
 		messages.push(degradeResult.userMessage);
+		duration = reduceNumByPercent(duration, degItem.boost);
+	}
+
+	if (isWeekend()) {
+		boosts.push('10% for Weekend');
+		duration *= 0.9;
+	}
+
+	if (hasBlessing && dwarvenBlessingPotsNeeded) {
+		const prayerPotsBank = new Bank().add(dwarvenBlessingItem, dwarvenBlessingPotsNeeded);
+		lootToRemove.add(prayerPotsBank);
+	}
+	const rangeSetup = { ...user.gear.range.raw() };
+	let usedDart = false;
+	if (rangeSetup.weapon?.item === itemID('Deathtouched dart')) {
+		const bingos = await findBingosWithUserParticipating(user.id);
+		if (bingos.some(bingo => bingo.isActive())) {
+			return 'You cannot use Deathtouched darts while in an active Bingo.';
+		}
+		duration = 1;
+		if (rangeSetup.weapon.quantity > 1) {
+			rangeSetup.weapon.quantity--;
+		} else {
+			rangeSetup.weapon = null;
+		}
+		await user.update({
+			gear_range: rangeSetup as Prisma.InputJsonObject
+		});
+		if (monster.name === 'Koschei the deathless') {
+			return (
+				'You send your minion off to fight Koschei with a Deathtouched dart, they stand a safe distance and throw the dart - Koschei immediately locks' +
+				' eyes with your minion and grabs the dart mid-air, and throws it back, killing your minion instantly.'
+			);
+		}
+		if (monster.name === 'Solis') {
+			return 'The dart melts into a crisp dust before coming into contact with Solis.';
+		}
+		if (monster.name === 'Celestara') {
+			return 'Your minion threw the dart at the moon, it did not reach.';
+		}
+		if (monster.name === 'Yeti') {
+			return 'You send your minion off to fight Yeti with a Deathtouched dart, they stand a safe distance and throw the dart - the cold, harsh wind blows it out of the air. Your minion runs back to you in fear.';
+		}
+		if ([BSOMonsters.Akumu.id, BSOMonsters.Venatrix.id].includes(monster.id)) {
+			return 'This monster is temporarily unable to be killed with a Deathtouched dart.';
+		}
+		usedDart = true;
+		await userStatsUpdate(user.id, () => ({
+			death_touched_darts_used: {
+				increment: 1
+			}
+		}));
+	}
+	if (monster.name === 'Koschei the deathless') {
+		return 'You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.';
 	}
 
 	let wildyPeak = null;
@@ -876,7 +1146,8 @@ export async function minionKillCommand(
 					? ['wildy']
 					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced,
-				isWilderness: isInWilderness
+				isWilderness: isInWilderness,
+				minimumHealAmount: monster.minimumFoodHealAmount
 			});
 
 			if (foodRemoved.length === 0) {
@@ -923,6 +1194,11 @@ export async function minionKillCommand(
 		duration = reduceNumByPercent(duration, noFoodBoost);
 	}
 
+	if (monster.deathProps) {
+		const deathChance = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC: kcForThisMonster });
+		messages.push(`${deathChance.toFixed(1)}% chance of death`);
+	}
+
 	// Remove items after food calc to prevent losing items if the user doesn't have the right amount of food. Example: Mossy key
 	if (lootToRemove.length > 0) {
 		updateBankSetting('economyStats_PVMCost', lootToRemove);
@@ -962,6 +1238,11 @@ export async function minionKillCommand(
 		hasWildySupplies,
 		isInWilderness
 	});
+
+	if (usedDart) {
+		return `<:deathtouched_dart:822674661967265843> ${user.minionName} used a **Deathtouched dart**.`;
+	}
+
 	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 		duration
 	)} to finish. Attack styles used: ${attackStyles.join(', ')}.`;
@@ -1024,13 +1305,13 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 			!attackStyles.includes(SkillsEnum.Ranged) &&
 			!attackStyles.includes(SkillsEnum.Magic)
 		) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
+			timeToFinish = reduceNumByPercent(timeToFinish, 20);
 			ownedBoostItems.push('Dragon hunter lance');
-			totalItemBoost += 15;
+			totalItemBoost += 20;
 		} else if (user.hasEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
+			timeToFinish = reduceNumByPercent(timeToFinish, 20);
 			ownedBoostItems.push('Dragon hunter crossbow');
-			totalItemBoost += 15;
+			totalItemBoost += 20;
 		}
 	}
 	// poh boosts

@@ -1,17 +1,20 @@
 import { Prisma } from '@prisma/client';
 import { noOp, notEmpty } from 'e';
+import { Bank } from 'oldschooljs';
 
 import { production, SupportServer } from '../config';
 import { ClueTiers } from '../lib/clues/clueTiers';
 import { Roles, usernameCache } from '../lib/constants';
-import { getCollectionItems } from '../lib/data/Collections';
+import { getCollectionItems, overallPlusItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
 import { prisma } from '../lib/settings/prisma';
 import Skills from '../lib/skilling/skills';
-import { convertXPtoLVL } from '../lib/util';
+import { assert, convertXPtoLVL, sanitizeBank } from '../lib/util';
 import { logError } from '../lib/util/logError';
 import { TeamLoot } from './simulation/TeamLoot';
 import { ItemBank } from './types';
+import { fetchTameCLLeaderboard } from './util/clLeaderboard';
+import resolveItems from './util/resolveItems';
 
 function addToUserMap(userMap: Record<string, string[]>, id: string, reason: string) {
 	if (!userMap[id]) userMap[id] = [];
@@ -20,7 +23,7 @@ function addToUserMap(userMap: Record<string, string[]>, id: string, reason: str
 
 const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
 
-const collections = ['pets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'slayer', 'other', 'custom'];
+const collections = ['skilling', 'clues', 'minigames', 'raids', 'Dyed Items', 'slayer', 'other'];
 
 for (const cl of collections) {
 	const items = getCollectionItems(cl);
@@ -471,6 +474,9 @@ LIMIT 50;`;
 		for (const giveaway of giveaways) {
 			giveawayBank.add(giveaway.user_id, giveaway.loot as ItemBank);
 		}
+		for (const [, bank] of giveawayBank.entries()) {
+			sanitizeBank(bank);
+		}
 
 		let userMap = {};
 		const [[highestID, loot]] = giveawayBank.entries().sort((a, b) => b[1].value() - a[1].value());
@@ -479,28 +485,130 @@ LIMIT 50;`;
 		results.push(
 			await addRoles({
 				users: [highestID],
-				role: '1052481561603346442',
+				role: '1104155653745946746',
 				badge: null,
 				userMap
 			})
 		);
 	}
 
-	// Global CL %
-	async function globalCL() {
-		const result = await roboChimpClient.$queryRaw<
-			{ id: string; total_cl_percent: number }[]
-		>`SELECT ((osb_cl_percent + bso_cl_percent) / 2) AS total_cl_percent, id::text AS id
-FROM public.user
-WHERE osb_cl_percent IS NOT NULL AND bso_cl_percent IS NOT NULL
-ORDER BY total_cl_percent DESC
-LIMIT 10;`;
+	async function monkeyKing() {
+		const res = await q<any>(
+			'SELECT id FROM users WHERE monkeys_fought IS NOT NULL ORDER BY cardinality(monkeys_fought) DESC LIMIT 1;'
+		);
+		results.push(await addRoles({ users: [res[0].id], role: '886180040465870918', badge: null }));
+	}
+	async function topInventor() {
+		const userMap = {};
+		let topInventors: string[] = [];
+		const mostUniques = await q<
+			{ id: string; uniques: number; disassembled_items_bank: ItemBank }[]
+		>(`SELECT u.id, u.uniques, u.disassembled_items_bank FROM (
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("disassembled_items_bank")) uniques, id, disassembled_items_bank FROM users WHERE "skills.invention" > 0
+) u
+ORDER BY u.uniques DESC LIMIT 300;`);
+		topInventors.push(mostUniques[0].id);
+		addToUserMap(userMap, mostUniques[0].id, 'Most Uniques Disassembled');
+		const parsed = mostUniques
+			.map(i => ({ ...i, value: new Bank(i.disassembled_items_bank).value() }))
+			.sort((a, b) => b.value - a.value);
+		topInventors.push(parsed[0].id);
+		addToUserMap(userMap, parsed[0].id, 'Most Value Disassembled');
+		results.push(await addRoles({ users: topInventors, role: Roles.TopInventor, badge: null, userMap }));
+	}
+	async function topLeagues() {
+		if (process.env.TEST) return;
+		const topPoints = await roboChimpClient.user.findMany({
+			where: {
+				leagues_points_total: {
+					gt: 0
+				}
+			},
+			orderBy: {
+				leagues_points_total: 'desc'
+			},
+			take: 2
+		});
+		const topTasks: { id: string; tasks_completed: number }[] =
+			await roboChimpClient.$queryRaw`SELECT id::text, COALESCE(cardinality(leagues_completed_tasks_ids), 0) AS tasks_completed
+										  FROM public.user
+										  ORDER BY tasks_completed DESC
+										  LIMIT 2;`;
+		const userMap = {};
+		addToUserMap(userMap, topPoints[0].id.toString(), 'Rank 1 Leagues Points');
+		addToUserMap(userMap, topPoints[1].id.toString(), 'Rank 2 Leagues Points');
+		addToUserMap(userMap, topTasks[0].id, 'Rank 1 Leagues Tasks');
+		addToUserMap(userMap, topTasks[1].id, 'Rank 2 Leagues Tasks');
+		const allLeagues = topPoints.map(i => i.id.toString()).concat(topTasks.map(i => i.id));
+		assert(allLeagues.length > 0 && allLeagues.length <= 4);
+		results.push(await addRoles({ users: allLeagues, role: Roles.TopLeagues, badge: null, userMap }));
+	}
+
+	async function topTamer() {
+		const [rankOne] = await fetchTameCLLeaderboard({ items: overallPlusItems, resultLimit: 1 });
+		if (rankOne) {
+			results.push(
+				await addRoles({
+					users: [rankOne.user_id],
+					role: '1054356709222666240',
+					badge: null,
+					userMap: { [rankOne.user_id]: ['Rank 1 Tames CL'] }
+				})
+			);
+		}
+	}
+
+	const notes: string[] = [];
+
+	async function mysterious() {
+		const items = resolveItems([
+			'Pet mystery box',
+			'Holiday mystery box',
+			'Equippable mystery box',
+			'Clothing mystery box',
+			'Tradeable mystery box',
+			'Untradeable mystery box'
+		]);
+		const res = await Promise.all(
+			items.map(id =>
+				prisma
+					.$queryRawUnsafe<{ id: string; score: number }[]>(
+						`SELECT user_id::text AS id, ("openable_scores"->>'${id}')::int AS score
+FROM user_stats
+WHERE "openable_scores"->>'${id}' IS NOT NULL
+AND ("openable_scores"->>'${id}')::int > 50
+ORDER BY ("openable_scores"->>'${id}')::int DESC
+LIMIT 50;`
+					)
+					.then(i => i.map(t => ({ id: t.id, score: Number(t.score) })))
+			)
+		);
+
+		const userScoreMap: Record<string, number> = {};
+		for (const lb of res) {
+			const [rankOne] = lb;
+			for (const user of lb) {
+				if (!userScoreMap[user.id]) userScoreMap[user.id] = 0;
+				userScoreMap[user.id] += user.score / rankOne.score;
+			}
+		}
+
+		const entries = Object.entries(userScoreMap).sort((a, b) => b[1] - a[1]);
+		const [[rankOneID]] = entries;
+
+		let note = '**Top Mystery Box Openers**\n\n';
+		for (const [id, score] of entries.slice(0, 10)) {
+			note += `${usernameCache.get(id) ?? id} - ${score}\n`;
+		}
+
+		notes.push(note);
 
 		results.push(
 			await addRoles({
-				users: result.slice(0, 10).map(i => i.id),
-				role: Roles.TopGlobalCL,
-				badge: null
+				users: [rankOneID],
+				role: '1074592096968785960',
+				badge: null,
+				userMap: { [rankOneID]: ['Rank 1 Mystery Box Opens'] }
 			})
 		);
 	}
@@ -514,7 +622,12 @@ LIMIT 10;`;
 		['Top Skillers', topSkillers],
 		['Top Farmers', farmers],
 		['Top Giveawayers', giveaways],
-		['Global CL', globalCL]
+		['Monkey King', monkeyKing],
+		['Top Farmers', farmers],
+		['Top Inventor', topInventor],
+		['Top Leagues', topLeagues],
+		['Top Tamer', topTamer],
+		['Mysterious', mysterious]
 	] as const;
 
 	let failed: string[] = [];
@@ -534,7 +647,8 @@ LIMIT 10;`;
 
 	let res = `**Roles**
 ${results.join('\n')}
-${failed.length > 0 ? `Failed: ${failed.join(', ')}` : ''}`;
+${failed.length > 0 ? `Failed: ${failed.join(', ')}` : ''}
+${notes.join('\n')}`;
 
 	return res;
 }

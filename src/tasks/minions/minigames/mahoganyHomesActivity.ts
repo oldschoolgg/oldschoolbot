@@ -1,5 +1,6 @@
 import { calcPercentOfNum } from 'e';
 
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
@@ -9,7 +10,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 export const mahoganyHomesTask: MinionTask = {
 	type: 'MahoganyHomes',
 	async run(data: MahoganyHomesActivityTaskOptions) {
-		const { channelID, quantity, xp, duration, userID, points } = data;
+		let { channelID, quantity, xp, duration, userID, points } = data;
 		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'mahogany_homes', quantity);
 
@@ -24,6 +25,10 @@ export const mahoganyHomesTask: MinionTask = {
 			duration,
 			source: 'MahoganyHomes'
 		});
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
+			points *= 2;
+		}
 
 		await user.update({
 			carpenter_points: {
@@ -31,7 +36,7 @@ export const mahoganyHomesTask: MinionTask = {
 			}
 		});
 
-		let str = `${user}, ${user.minionName} finished doing ${quantity}x Mahogany Homes contracts, you received ${points} Carpenter points. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished doing ${quantity}x Mahogany Homes contracts, you received ${points} Carpenter points. ${xpRes} ${flappyRes.userMsg}`;
 
 		if (bonusXP > 0) {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;

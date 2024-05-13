@@ -1,13 +1,12 @@
 import { ChatInputCommandInteraction, TextChannel } from 'discord.js';
-import { roll, shuffleArr, Time, uniqueArr } from 'e';
+import { roll, shuffleArr, uniqueArr } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { SupportServer } from '../../../config';
 import { COINS_ID, Emoji } from '../../../lib/constants';
-import pets from '../../../lib/data/pets';
 import { DynamicButtons } from '../../../lib/DynamicButtons';
+import { dailyResetTime } from '../../../lib/MUser';
 import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
@@ -23,8 +22,8 @@ export async function isUsersDailyReady(
 	const lastVoteDate = Number(stats.last_daily_timestamp);
 	const difference = currentDate - lastVoteDate;
 
-	if (difference < Time.Hour * 12) {
-		const duration = Date.now() - (lastVoteDate + Time.Hour * 12);
+	if (difference < dailyResetTime) {
+		const duration = Date.now() - (lastVoteDate + dailyResetTime);
 		return { isReady: false, durationUntilReady: duration };
 	}
 
@@ -35,7 +34,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	const guild = globalClient.guilds.cache.get(SupportServer);
 	const member = await guild?.members.fetch(user.id).catch(() => null);
 
-	const loot = dailyRoll(1, triviaCorrect);
+	const loot = dailyRoll(3, triviaCorrect);
 
 	const bonuses = [];
 
@@ -68,7 +67,10 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	}
 
 	if (!triviaCorrect) {
-		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 0.4);
+		loot.bank[COINS_ID] = 0;
+	} else if (loot.bank[COINS_ID] <= 1_000_000_000) {
+		// Correct daily gives 10% more cash if the jackpot is not won
+		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 1.1);
 	}
 
 	// Ensure amount of GP is an integer
@@ -86,23 +88,17 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 
 	let dmStr = `${bonuses.join('')} **${Emoji.Diango} Diango says..** That's ${correct}! ${reward}\n`;
 
-	if (triviaCorrect && roll(13)) {
-		const pet = pets[Math.floor(Math.random() * pets.length)];
-		const userPets = {
-			...(user.user.pets as ItemBank)
-		};
-		if (!userPets[pet.id]) userPets[pet.id] = 1;
-		else userPets[pet.id]++;
-
-		await user.update({
-			pets: { ...userPets }
-		});
-
-		dmStr += `\n**${pet.name}** pet! ${pet.emoji}`;
+	const hasSkipper = user.usingPet('Skipper') || user.bank.amount('Skipper') > 0;
+	if (!user.isIronman && triviaCorrect && hasSkipper) {
+		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 1.5);
+		dmStr +=
+			'\n<:skipper:755853421801766912> Skipper has negotiated with Diango and gotten you 50% extra GP from your daily!';
 	}
 
 	if (loot.bank[COINS_ID] > 0) {
 		updateClientGPTrackSetting('gp_daily', loot.bank[COINS_ID]);
+	} else {
+		delete loot.bank[COINS_ID];
 	}
 
 	const { itemsAdded, previousCL } = await transactItems({

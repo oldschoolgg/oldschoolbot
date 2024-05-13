@@ -1,6 +1,5 @@
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import Mining from '../../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -15,7 +14,6 @@ export const camdozaalMiningTask: MinionTask = {
 		let { quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
 		const camdozaalMine = Mining.CamdozaalMine;
-		const currentLevel = user.skillLevel(SkillsEnum.Mining);
 
 		// amulet of glory check for mining
 		let barroniteGems = 256;
@@ -103,10 +101,6 @@ export const camdozaalMiningTask: MinionTask = {
 		if (roll(petDropRate / quantity)) {
 			loot.add('Rock golem');
 			str += "\nYou have a funny feeling you're being followed...";
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Mining} **${user.usernameOrMention}'s** minion, ${user.minionName}, just received a Rock golem while mining in Camdozaal at level ${currentLevel} Mining!`
-			);
 		}
 
 		// Give the user the items from the trip

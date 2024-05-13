@@ -1,4 +1,5 @@
 import { Canvas, Image, SKRSContext2D } from '@napi-rs/canvas';
+import { PlayerOwnedHouse } from '@prisma/client';
 import { objectEntries, randInt } from 'e';
 import * as fs from 'fs';
 import path from 'path';
@@ -6,7 +7,6 @@ import path from 'path';
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
 import { canvasImageFromBuffer, loadAndCacheLocalImage } from './util/canvasUtil';
 import { getActivityOfUser } from './util/minionIsBusy';
-import { PlayerOwnedHouse } from '.prisma/client';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
 const FOLDERS = [

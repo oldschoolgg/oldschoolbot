@@ -1,7 +1,7 @@
 import { randFloat, randInt, roll, Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { Emoji, Events } from '../../lib/constants';
+import { userHasFlappy } from '../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../lib/settings/settings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
@@ -22,27 +22,32 @@ export const vmTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
-		const userSkillingGear = user.gear.skilling;
 		const userMiningLevel = user.skillLevel(SkillsEnum.Mining);
 		let boost = 1;
 		// Activity boosts
-		if (userMiningLevel >= 71 && userSkillingGear.hasEquipped('Crystal pickaxe')) {
+		if (userMiningLevel >= 99 && user.hasEquippedOrInBank('Dwarven pickaxe')) {
+			boost += 2;
+		} else if (userMiningLevel >= 71 && user.hasEquippedOrInBank('Crystal pickaxe')) {
 			boost += 0.5;
-		} else if (userMiningLevel >= 61 && userSkillingGear.hasEquipped('Dragon pickaxe')) {
+		} else if (userMiningLevel >= 61 && user.hasEquippedOrInBank('Dragon pickaxe')) {
 			boost += 0.3;
 		}
 		if (
-			userSkillingGear.hasEquipped(
+			user.hasEquippedOrInBank(
 				['Prospector helmet', 'Prospector jacket', 'Prospector legs', 'Prospector boots'],
-				true
+				'every'
 			)
 		) {
 			boost += 0.025;
 		}
 
-		const xpReceived = Math.round(
+		let xpReceived = Math.round(
 			userMiningLevel * ((VolcanicMineGameTime * quantity) / Time.Minute) * 10 * boost * randFloat(1.02, 1.08)
 		);
+
+		// Boost XP for having doug equipped
+		if (user.usingPet('Doug')) xpReceived = Math.floor(xpReceived * 1.2);
+
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Mining,
 			amount: xpReceived,
@@ -53,6 +58,13 @@ export const vmTask: MinionTask = {
 
 		const currentUserPoints = user.user.volcanic_mine_points;
 		let pointsReceived = Math.round(xpReceived / 5.5);
+
+		const flappyRes = await userHasFlappy({ user, duration });
+
+		if (flappyRes.shouldGiveBoost) {
+			pointsReceived *= 2;
+		}
+
 		const maxPoints = 2_097_151;
 
 		await user.update({
@@ -78,18 +90,18 @@ export const vmTask: MinionTask = {
 			if (roll(petDropRate)) loot.add('Rock golem');
 		}
 
+		// 4x Loot for having doug helping, as it helps mining more fragments
+		if (flappyRes.shouldGiveBoost) loot.multiply(2);
+
 		let str = `${user}, ${user.minionName} finished playing ${quantity} games of Volcanic Mine.\n${xpRes}${
 			loot.length > 0 ? `\nYou received ${loot}` : ''
 		}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}`;
 
 		if (loot.has('Rock golem')) {
 			str += "\nYou have a funny feeling you're being followed...";
-			globalClient.emit(
-				Events.ServerNotification,
-				`${Emoji.Mining} **${user.badgedUsername}'s** minion, ${user.minionName}, just received ${
-					loot.amount('Rock golem') > 1 ? `${loot.amount('Rock golem')}x ` : 'a'
-				} Rock golem while mining on the Volcanic Mine at level ${userMiningLevel} Mining!`
-			);
+		}
+		if (flappyRes.userMsg) {
+			str += `\n${flappyRes.userMsg}`;
 		}
 
 		const { itemsAdded } = await transactItems({

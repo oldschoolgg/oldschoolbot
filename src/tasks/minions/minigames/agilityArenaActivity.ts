@@ -1,8 +1,8 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
@@ -33,15 +33,22 @@ export const agilityArenaTask: MinionTask = {
 				if (roll(10)) bonusTickets++;
 			}
 		}
+
 		ticketsReceived += bonusTickets;
 
-		await incrementMinigameScore(user.id, 'agility_arena', ticketsReceived);
+		const flappyRes = await userHasFlappy({ user, duration });
+
+		if (flappyRes.shouldGiveBoost) {
+			ticketsReceived *= 2;
+		}
+
+		incrementMinigameScore(user.id, 'agility_arena', ticketsReceived);
 
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP, duration: data.duration });
 
 		let str = `${user}, ${user.minionName} finished doing the Brimhaven Agility Arena for ${formatDuration(
 			duration
-		)}, ${xpRes} and ${ticketsReceived} Agility arena tickets.`;
+		)}, ${xpRes} and ${ticketsReceived} Agility arena tickets.${flappyRes.userMsg}`;
 
 		// Roll for pet
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Agility, 26_404);
@@ -52,10 +59,6 @@ export const agilityArenaTask: MinionTask = {
 					collectionLog: true
 				});
 				str += "**\nYou have a funny feeling you're being followed...**";
-				globalClient.emit(
-					Events.ServerNotification,
-					`${Emoji.Agility} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
-				);
 			}
 		}
 

@@ -51,7 +51,7 @@ export const shades: Shade[] = [
 		gpRange: [600, 700],
 		lowMetalKeys: {
 			fraction: 0.125,
-			items: resolveItems(['Bronze key black', 'Bronze key purple'])
+			items: resolveItems(['Bronze key black'])
 		},
 		highMetalKeys: {
 			fraction: 0.665,
@@ -90,7 +90,7 @@ export const shades: Shade[] = [
 		gpRange: [1500, 5000],
 		lowMetalKeys: {
 			fraction: 0.634,
-			items: resolveItems(['Silver key brown', 'Silver key crimson', 'Silver key black', 'Silver key purple'])
+			items: resolveItems(['Silver key brown', 'Silver key crimson', 'Silver key black'])
 		},
 		highMetalKeys: {
 			fraction: 0.156,

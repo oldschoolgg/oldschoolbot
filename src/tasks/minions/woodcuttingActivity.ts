@@ -1,16 +1,17 @@
 import { percentChance, randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, TwitcherGloves } from '../../lib/constants';
+import { MAX_LEVEL, MIN_LENGTH_FOR_PET, TwitcherGloves } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
 import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
+import Firemaking from '../../lib/skilling/skills/firemaking';
 import { ForestryEvents, LeafTable } from '../../lib/skilling/skills/woodcutting/forestry';
 import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { perTimeUnitChance, roll, skillingPetDropRate } from '../../lib/util';
+import { clAdjustedDroprate, itemID, perTimeUnitChance, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
@@ -202,6 +203,13 @@ export const woodcuttingTask: MinionTask = {
 		let itemsToRemove = new Bank();
 		let priffUnlocked = user.hasSkillReqs(soteSkillRequirements) && user.QP >= 150;
 
+		// GMC for elder logs
+		let clueChance = log.clueScrollChance;
+		if (logID === itemID('Elder logs')) {
+			// Bring it as close as possible to Rocktails
+			if (userWcLevel >= MAX_LEVEL) clueChance = 13_011;
+		}
+
 		// Felling axe +10% xp bonus & 20% logs lost
 		if (user.gear.skilling.hasEquipped('Bronze felling axe')) {
 			for (let i = 0; i < quantity && i < forestersRations; i++) {
@@ -218,9 +226,9 @@ export const woodcuttingTask: MinionTask = {
 
 		// If they have the entire lumberjack outfit, give an extra 0.5% xp bonus
 		if (
-			user.gear.skilling.hasEquipped(
+			user.hasEquippedOrInBank(
 				Object.keys(Woodcutting.lumberjackItems).map(i => parseInt(i)),
-				true
+				'every'
 			)
 		) {
 			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
@@ -229,7 +237,7 @@ export const woodcuttingTask: MinionTask = {
 		} else {
 			// For each lumberjack item, check if they have it, give its XP boost if so
 			for (const [itemID, bonus] of Object.entries(Woodcutting.lumberjackItems)) {
-				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
+				if (user.hasEquippedOrInBank(parseInt(itemID))) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -238,7 +246,7 @@ export const woodcuttingTask: MinionTask = {
 		}
 
 		// Give the user xp
-		const xpRes = await user.addXP({
+		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Woodcutting,
 			amount: Math.ceil(xpReceived),
 			duration
@@ -248,8 +256,19 @@ export const woodcuttingTask: MinionTask = {
 		if (!powerchopping) {
 			if (log.lootTable) {
 				loot.add(log.lootTable.roll(quantity - lostLogs));
-			} else {
+			} else if (!log.hasNoLoot) {
 				loot.add(log.id, quantity - lostLogs);
+				const logItem = Firemaking.Burnables.find(i => i.inputLogs === log.id);
+				if (user.hasEquipped('Inferno adze') && logItem) {
+					loot.remove(log.id, quantity - lostLogs);
+					loot.add('Ashes', quantity - lostLogs);
+					xpRes += '\n';
+					xpRes += await user.addXP({
+						skillName: SkillsEnum.Firemaking,
+						amount: logItem.xp * quantity,
+						duration
+					});
+				}
 			}
 		}
 
@@ -268,6 +287,11 @@ export const woodcuttingTask: MinionTask = {
 			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
 		}
 
+		// WC master cape perk
+		if (user.hasEquippedOrInBank('Woodcutting master cape')) {
+			loot.multiply(2);
+		}
+
 		// Check for twitcher gloves
 		if (twitchersEquipped) {
 			if (twitchers !== undefined) {
@@ -277,13 +301,13 @@ export const woodcuttingTask: MinionTask = {
 			twitcherSetting = undefined;
 		}
 
-		// Add clue scrolls & nests
-		if (log.clueScrollChance) {
+		// Add clue scrolls
+		if (clueChance) {
 			addSkillingClueToLoot(
 				user,
 				SkillsEnum.Woodcutting,
 				quantity,
-				log.clueScrollChance,
+				clueChance,
 				loot,
 				log.clueNestsOnly,
 				strungRabbitFoot,
@@ -319,20 +343,23 @@ export const woodcuttingTask: MinionTask = {
 			str += await handleForestry({ user, duration, loot });
 		}
 
-		// Roll for pet
+		// Roll for Peky
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutes = duration / Time.Minute;
+			const droprate = clAdjustedDroprate(user, 'Peky', Math.floor(4000 / minutes), 1.5);
+			if (roll(droprate)) {
+				loot.add('Peky');
+				str +=
+					'\n<:peky:787028037031559168> A small pigeon has taken a liking to you, and hides itself in your bank.';
+			}
+		}
+
+		// Roll for OSB pet
 		if (log.petChance) {
 			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Woodcutting, log.petChance);
 			if (roll(petDropRate / quantity)) {
 				loot.add('Beaver');
 				str += "\n**You have a funny feeling you're being followed...**";
-				globalClient.emit(
-					Events.ServerNotification,
-					`${Emoji.Woodcutting} **${user.badgedUsername}'s** minion, ${
-						user.minionName
-					}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
-						'woodcutting'
-					)} Woodcutting!`
-				);
 			}
 		}
 

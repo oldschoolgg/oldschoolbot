@@ -1,8 +1,12 @@
+import { isFunction, reduceNumByPercent } from 'e';
 import { readFileSync } from 'fs';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import Createables from '../../lib/data/createables';
+import { IMaterialBank } from '../../lib/invention';
+import { transactMaterialsFromUser } from '../../lib/invention/inventions';
+import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
@@ -10,7 +14,7 @@ import { stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { OSBMahojiCommand } from '../lib/util';
-import { userStatsBankUpdate } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../mahojiSettings';
 
 const creatablesTable = readFileSync('./src/lib/data/creatablesTable.txt', 'utf8');
 
@@ -122,11 +126,36 @@ export const createCommand: OSBMahojiCommand = {
 			quantity = createableItem.maxCanOwn - amountOwned;
 		}
 
-		const outItems = new Bank(createableItem.outputItems).multiply(quantity);
-		const inItems = new Bank(createableItem.inputItems).multiply(quantity);
+		const outItems = new Bank(
+			isFunction(createableItem.outputItems) ? createableItem.outputItems(user) : createableItem.outputItems
+		).multiply(quantity);
+		const inItems = (
+			isFunction(createableItem.inputItems)
+				? createableItem.inputItems(user)
+				: new Bank(createableItem.inputItems)
+		).multiply(quantity);
 
 		if (createableItem.GPCost) {
 			inItems.add('Coins', createableItem.GPCost * quantity);
+		}
+
+		const mahojiUser = await mahojiUsersSettingsFetch(user.id, { materials_owned: true });
+		const materialsOwned = new MaterialBank(mahojiUser.materials_owned as IMaterialBank);
+		const materialCost = createableItem.materialCost
+			? createableItem.materialCost.clone().multiply(quantity)
+			: null;
+
+		if (
+			materialCost &&
+			materialCost.has('wooden') &&
+			createableItem.name === 'Potion of light' &&
+			user.skillsAsXP.firemaking >= 500_000_000
+		) {
+			materialCost.bank.wooden = Math.ceil(reduceNumByPercent(materialCost.bank.wooden!, 20));
+		}
+
+		if (materialCost && !materialsOwned.has(materialCost)) {
+			return `You don't own the materials needed to create this, you need: ${materialCost}.`;
 		}
 
 		// Check for any items they cant have 2 of.
@@ -142,12 +171,20 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 
+		const isDyeing = inItems.items().some(i => i[0].name.toLowerCase().includes('dye'));
+
 		let str =
 			{
 				revert: `${user}, please confirm that you want to revert **${inItems}** into ${outItems}`,
 				unpack: `${user}, please confirm that you want to unpack **${inItems}** into ${outItems}`
 			}[action as string] ??
-			`${user}, please confirm that you want to ${action} **${outItems}** using ${inItems}`;
+			`${user}, please confirm that you want to ${action} **${outItems}** using ${inItems}${
+				materialCost !== null ? `, and ${materialCost} materials` : ''
+			}${
+				isDyeing
+					? '\n\nIf you are putting a dye on an item - the action is irreversible, you cannot get back the dye or the item, it is dyed forever. Are you sure you want to do that?'
+					: ''
+			}`;
 
 		if (createableItem.type) {
 			switch (createableItem.type) {
@@ -176,6 +213,12 @@ export const createCommand: OSBMahojiCommand = {
 			return `You don't have the required items to ${action} this item. You need: ${inItems}.`;
 		}
 
+		if (materialCost) {
+			await transactMaterialsFromUser({
+				user,
+				remove: materialCost
+			});
+		}
 		let extraMessage = '';
 		// Handle onCreate() features, and last chance to abort:
 		if (createableItem.onCreate) {

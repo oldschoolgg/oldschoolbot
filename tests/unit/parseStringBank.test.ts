@@ -200,9 +200,9 @@ describe('Bank Parsers', () => {
 	});
 
 	test('parseBank - check item aliases', async () => {
-		const bank = new Bank().add('Arceuus graceful top', 30).add('Bones');
-		expect(parseBank({ inputBank: bank, inputStr: 'pUrPle gRaceful top' }).toString()).toEqual(
-			'30x Arceuus graceful top'
+		const bank = new Bank().add('Arceuus graceful top', 30).add('Bones').add('Tradeable mystery box');
+		expect(parseBank({ inputBank: bank, inputStr: 'pUrPle gRaceful top, 5 tmb' }).toString()).toEqual(
+			'30x Arceuus graceful top, 1x Tradeable Mystery Box'
 		);
 	});
 
@@ -374,5 +374,50 @@ describe('Bank Parsers', () => {
 		) {
 			throw new Error('Result had a cannonball/toolkit');
 		}
+	});
+
+	test('edge cases', () => {
+		const usersBank = new Bank().add('Coal', 100).add('Huge lamp', 3);
+
+		expect(parseBank({ inputBank: usersBank, inputStr: '# coal' }).toString()).toEqual('100x Coal');
+		expect(parseBank({ inputBank: usersBank, inputStr: '0 coal' }).toString()).toEqual('100x Coal');
+		expect(parseBank({ inputBank: usersBank, inputStr: 'coal' }).toString()).toEqual('100x Coal');
+	});
+	test('ensureOldNamesDontWorkForCustomItems', () => {
+		const usersBank = new Bank()
+			.add('Doug', 3)
+			.add('Lil lamb', 10)
+			.add('Tradeable mystery box', 6)
+			.add('Huge lamp', 33)
+			.add('Average lamp');
+
+		expect(
+			parseBank({
+				inputBank: usersBank,
+				inputStr: 'snakeweed mixture, 1 indigo pentagon, indigo square, tmb'
+			}).toString()
+		).toEqual('6x Tradeable Mystery Box');
+
+		expect(
+			parseBank({
+				inputBank: usersBank,
+				inputStr: 'snakeweed mixture, 1 indigo pentagon, indigo square, mystery box'
+			}).toString()
+		).toEqual('No items');
+
+		expect(
+			parseBank({
+				inputBank: usersBank,
+				inputStr: 'snake@w-eed miXture, 0 doug, 1 lil lamb, 1 indigo pentagon, indigo square, mystery box'
+			}).toString()
+		).toEqual('3x Doug, 1x Lil Lamb');
+
+		// Test when part of the name matches an overwritten item (ie. "lamp")
+		expect(
+			parseBank({
+				inputBank: usersBank,
+				inputStr: 'Huge lamp, Lil lamb, average lamp'
+			}).toString()
+		).toEqual('33x Huge lamp, 10x Lil Lamb, 1x Average lamp');
 	});
 });

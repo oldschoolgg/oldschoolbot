@@ -16,7 +16,7 @@ import { insertUserEvent } from './util/userEvents';
 export async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
 	const clStats = calcCLDetails(user);
 	const clRank = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
-	const { totalMastery } = await calculateMastery(user, await MUserStats.fromID(user.id));
+	const { totalMastery, compCapeProgress } = await calculateMastery(user, await MUserStats.fromID(user.id));
 
 	return {
 		user_id: user.id,
@@ -25,6 +25,8 @@ export async function createHistoricalData(user: MUser): Promise<Prisma.Historic
 		cl_completion_percentage: clStats.percent,
 		cl_completion_count: clStats.owned.length,
 		cl_global_rank: Number(clRank[0].count),
+		comp_cape_percent: compCapeProgress.totalPercentTrimmed,
+		comp_cape_percent_untrimmed: compCapeProgress.totalPercentUntrimmed,
 		mastery_percentage: totalMastery
 	};
 }
@@ -90,7 +92,9 @@ export async function handleNewCLItems({
 	const milestonePercentages = [25, 50, 70, 80, 90, 95, 100];
 	for (const milestone of milestonePercentages) {
 		if (previousCLDetails.percent < milestone && newCLDetails.percent >= milestone) {
-			newCLPercentMessage = `${user} just reached ${milestone}% Collection Log completion, after receiving ${newCLItems}!`;
+			newCLPercentMessage = `${user} just reached ${milestone}% Collection Log completion, after receiving ${newCLItems
+				.toString()
+				.slice(0, 500)}!`;
 
 			if (previousCLRank !== newCLRank && newCLRank !== null && previousCLRank !== null) {
 				newCLPercentMessage += ` In the overall CL leaderboard, they went from rank ${previousCLRank} to rank ${newCLRank}.`;

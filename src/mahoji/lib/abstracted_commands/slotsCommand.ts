@@ -28,24 +28,24 @@ interface ButtonInstance extends Button {
 
 const buttonsData: Button[] = [
 	{
-		name: 'Scroll',
+		name: 'Peky',
 		mod: (qty: number) => qty * 2,
-		emoji: '403018312906309632'
+		emoji: '886284972263084133'
 	},
 	{
-		name: 'Dinhs',
+		name: 'Wintertoad',
 		mod: (qty: number) => qty * 3,
-		emoji: '403018312960835595'
+		emoji: '886284972141457439'
 	},
 	{
-		name: 'DClaws',
+		name: 'Flappy',
 		mod: (qty: number) => qty * 5,
-		emoji: '403018313124282368'
+		emoji: '884799334737129513'
 	},
 	{
-		name: 'TBow',
+		name: 'Smokey',
 		mod: (qty: number) => qty * 15,
-		emoji: '403018312402862081'
+		emoji: '886284971914969149'
 	}
 ];
 

@@ -19,6 +19,7 @@ export interface AssignableSlayerTask {
 	extendedAmount?: [number, number];
 	extendedUnlockId?: number;
 	wilderness?: boolean;
+	dungeoneeringLevel?: number;
 }
 
 export interface SlayerMaster {

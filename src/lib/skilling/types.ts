@@ -2,9 +2,8 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Emoji } from '../constants';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import { ItemBank } from '../types';
+import { ItemBank, Skills } from '../types';
 import { FarmingPatchName } from '../util/farmingHelpers';
 
 export enum SkillsEnum {
@@ -30,7 +29,48 @@ export enum SkillsEnum {
 	Defence = 'defence',
 	Ranged = 'ranged',
 	Hitpoints = 'hitpoints',
-	Slayer = 'slayer'
+	Dungeoneering = 'dungeoneering',
+	Slayer = 'slayer',
+	Invention = 'invention',
+	Divination = 'divination'
+}
+
+export const SkillsArray = [
+	'agility',
+	'cooking',
+	'fishing',
+	'mining',
+	'smithing',
+	'woodcutting',
+	'firemaking',
+	'runecraft',
+	'crafting',
+	'prayer',
+	'fletching',
+	'farming',
+	'herblore',
+	'thieving',
+	'hunter',
+	'construction',
+	'magic',
+	'attack',
+	'strength',
+	'defence',
+	'ranged',
+	'hitpoints',
+	'dungeoneering',
+	'slayer',
+	'invention',
+	'divination'
+] as const;
+
+export type SkillNameType = (typeof SkillsArray)[number];
+for (const skill of SkillsArray) {
+	const matching = Object.keys(SkillsEnum).find(key => key.toLowerCase() === skill);
+	if (!matching) throw new Error(`Missing skill enum for ${skill}`);
+}
+if (SkillsArray.length !== Object.keys(SkillsEnum).length) {
+	throw new Error('Not all skills have been added to the SkillsArray.');
 }
 
 export interface Ore {
@@ -45,6 +85,7 @@ export interface Ore {
 	petChance?: number;
 	minerals?: number;
 	clueScrollChance?: number;
+	requiredPickaxes?: number[];
 	aliases?: string[];
 }
 
@@ -65,6 +106,8 @@ export interface Log {
 	petChance?: number;
 	qpRequired: number;
 	clueScrollChance?: number;
+	customReq?: (user: MUser) => string | undefined;
+	hasNoLoot?: true;
 	clueNestsOnly?: boolean;
 }
 
@@ -147,6 +190,8 @@ export interface SmithedItem {
 	timeToUse: number;
 	outputMultiple: number;
 	qpRequired?: number;
+	requiresBlacksmith?: boolean;
+	cantBeDoubled?: boolean;
 }
 
 export interface Craftable {
@@ -160,8 +205,10 @@ export interface Craftable {
 	crushChance?: number[];
 	bankChest?: boolean;
 	outputMultiple?: number;
+	otherSkillRequirements?: Partial<Skills>;
 	qpRequired?: number;
 	wcLvl?: number;
+	cantBeDoubled?: boolean;
 }
 
 export interface Fletchable {
@@ -188,6 +235,7 @@ export interface Mixable {
 	zahur?: boolean;
 	wesley?: boolean;
 	qpRequired?: number;
+	defaultQuantity?: number;
 }
 
 export interface CutLeapingFish {
@@ -217,7 +265,7 @@ export type LevelRequirements = Partial<{
 export interface Skill {
 	aliases: string[];
 	id: SkillsEnum;
-	emoji: Emoji;
+	emoji: string;
 	name: string;
 }
 
@@ -269,6 +317,8 @@ export interface Plant {
 	additionalPatchesByFarmGuildAndLvl: number[][];
 	timePerPatchTravel: number;
 	timePerHarvest: number;
+	onHarvest?: (options: { user: MUser; loot: Bank; quantity: number; messages: string[] }) => Promise<unknown>;
+	noArcaneHarvester?: boolean;
 }
 
 export enum HunterTechniqueEnum {
@@ -306,4 +356,5 @@ export interface Creature {
 	qpRequired?: number;
 	slope: number;
 	intercept: number;
+	bait?: (quantity: number) => Bank;
 }

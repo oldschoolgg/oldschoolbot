@@ -8,7 +8,16 @@ import { PlantTier } from '../../minions/farming/types';
 export function openSeedPack(seedTier: number): Bank {
 	const loot = new Bank();
 
-	const tempTable = new LootTable();
+	const tempTable = new LootTable()
+		.tertiary(3, 'Athelas seed')
+		.tertiary(4, 'Korulsi seed')
+		.tertiary(3, 'Crystal acorn', [1, 3]);
+
+	if (seedTier > 2) {
+		tempTable
+			.tertiary(10, new LootTable().every('Mysterious seed'))
+			.tertiary(15, new LootTable().every('Grand crystal acorn', [1, 3]));
+	}
 
 	// Roll amount variables
 	let high = 0;
@@ -144,7 +153,14 @@ const hardPlants: PlantsList = [
 	[85, 'Dragonfruit tree', 5],
 	[85, 'Celastrus tree', 5],
 	[85, 'Torstol', 4],
-	[90, 'Redwood tree', 5]
+	[90, 'Redwood tree', 5],
+	[99, 'Athelas', 5],
+	[99, 'Avocado bush', 5],
+	[105, 'Mango bush', 5],
+	[110, 'Korulsi', 5],
+	[111, 'Lychee bush', 5],
+	[115, 'Grand crystal tree', 5],
+	[120, 'Mysterious tree', 5]
 ];
 
 export function getPlantToGrow(

@@ -1,114 +1,25 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, EmbedBuilder, Message, TextChannel } from 'discord.js';
-import { isFunction, roll, Time } from 'e';
-import LRUCache from 'lru-cache';
+import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, EmbedBuilder, Message, time } from 'discord.js';
+import { isFunction, Time } from 'e';
 import { Items } from 'oldschooljs';
 
-import { production, SupportServer } from '../config';
-import { untrustedGuildSettingsCache } from '../mahoji/guildSettings';
+import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
-import { BitField, Channel, Emoji, globalConfig } from './constants';
-import pets from './data/pets';
+import { Cooldowns } from '../mahoji/lib/Cooldowns';
+import { boxSpawnHandler } from './boxSpawns';
+import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from './bso/guthixianCache';
+import { IronmanPMBTable, itemSearchMbTable } from './bsoOpenables';
+import { BitField, Emoji, globalConfig, secretItems } from './constants';
+import { customItems } from './customItems/util';
+import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
+import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
 import { channelIsSendable, formatDuration, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
-
-const rareRolesSrc: [string, number, string][] = [
-	['670211706907000842', 250, 'Bronze'],
-	['706511231242076253', 1000, 'Xerician'],
-	['670211798091300864', 2500, 'Iron'],
-	['688563471096348771', 5000, 'Steel'],
-	['705987772372221984', 7500, 'Void'],
-	['688563333464457304', 10_000, 'Mithril'],
-	['688563389185917072', 15_000, 'Adamant'],
-	['705988547202515016', 20_000, "Inquisitor's"],
-	['670212713258942467', 25_000, 'Rune'],
-	['705988292646141983', 30_000, 'Obsidian'],
-	['706512132899995648', 40_000, 'Crystal'],
-	['670212821484568577', 50_000, 'Dragon'],
-	['706508079184871446', 60_000, 'Bandos'],
-	['706512315805204502', 65_000, 'Armadyl'],
-	['688563635873644576', 75_000, 'Barrows'],
-	['705988130401943643', 80_000, 'Ancestral'],
-	['706510440452194324', 85_000, "Dagon'hai"],
-	['706510238643388476', 90_000, 'Lunar'],
-	['688563780686446649', 100_000, 'Justiciar'],
-	['670212876832735244', 1_000_000, 'Third Age']
-];
-
-const userCache = new LRUCache<string, number>({ max: 1000 });
-function rareRoles(msg: Message) {
-	if (!msg.guild || msg.guild.id !== SupportServer) {
-		return;
-	}
-
-	const lastMessage = userCache.get(msg.author.id) ?? 1;
-	if (Date.now() - lastMessage < Time.Second * 13) return;
-	userCache.set(msg.author.id, Date.now());
-
-	if (!roll(10)) return;
-
-	for (const [roleID, chance, name] of rareRolesSrc) {
-		if (roll(chance / 10)) {
-			if (msg.member?.roles.cache.has(roleID)) continue;
-			if (!production) {
-				return msg.channel.send(`${msg.author}, you would've gotten the **${name}** role.`);
-			}
-			msg.member?.roles.add(roleID);
-			msg.react(Emoji.Gift);
-
-			const channel = globalClient.channels.cache.get(Channel.Notifications);
-
-			if (
-				!rareRolesSrc
-					.slice(0, 3)
-					.map(i => i[2])
-					.includes(name)
-			) {
-				(channel as TextChannel).send(
-					`${Emoji.Fireworks} **${msg.author.username}** just received the **${name}** role. `
-				);
-			}
-			break;
-		}
-	}
-}
-
-const petCache = new LRUCache<string, number>({ max: 2000 });
-async function petMessages(msg: Message) {
-	if (!msg.guild) return;
-	const cachedSettings = untrustedGuildSettingsCache.get(msg.guild.id);
-	if (!cachedSettings?.petchannel) return;
-
-	const key = `${msg.author.id}.${msg.guild.id}`;
-	// If they sent a message in this server in the past 1.5 mins, return.
-	const lastMessage = petCache.get(key) ?? 1;
-	if (Date.now() - lastMessage < 80_000) return;
-	petCache.set(key, Date.now());
-
-	const pet = pets[Math.floor(Math.random() * pets.length)];
-	if (roll(Math.max(Math.min(pet.chance, 250_000), 1000))) {
-		const user = await mUserFetch(msg.author.id);
-		const userPets = user.user.pets as ItemBank;
-		const newUserPets = { ...userPets };
-		if (!newUserPets[pet.id]) newUserPets[pet.id] = 1;
-		else newUserPets[pet.id]++;
-		await user.update({
-			pets: { ...newUserPets }
-		});
-		if (!channelIsSendable(msg.channel)) return;
-		if (userPets[pet.id] > 1) {
-			msg.channel.send(`${msg.author} has a funny feeling like they would have been followed. ${pet.emoji}`);
-		} else {
-			msg.channel.send(`You have a funny feeling like you’re being followed, ${msg.author} ${pet.emoji}
-Type \`/tools user mypets\` to see your pets.`);
-		}
-	}
-}
 
 const mentionText = `<@${globalConfig.clientID}>`;
 const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
@@ -130,6 +41,42 @@ const cooldownTimers: {
 		timeStamp: (_, stats) => Number(stats.last_daily_timestamp),
 		cd: Time.Hour * 12,
 		command: ['minion', 'daily']
+	},
+	{
+		name: 'Spawn Lamp',
+		timeStamp: (user: MUser) => Number(user.user.lastSpawnLamp),
+		cd: (user: MUser) => spawnLampResetTime(user),
+		command: ['tools', 'patron', 'spawnlamp']
+	},
+	{
+		name: 'Spawn Box',
+		timeStamp: (user: MUser) => Cooldowns.cooldownMap.get(user.id)?.get('SPAWN_BOX') ?? 0,
+		cd: Time.Minute * 45,
+		command: ['tools', 'patron', 'spawnbox']
+	},
+	{
+		name: 'Give Box',
+		timeStamp: (user: MUser) => Number(user.user.lastGivenBoxx),
+		cd: giveBoxResetTime,
+		command: ['tools', 'patron', 'give_box']
+	},
+	{
+		name: 'Item Contract',
+		timeStamp: (user: MUser) => Number(user.user.last_item_contract_date),
+		cd: itemContractResetTime,
+		command: ['ic', 'info']
+	},
+	{
+		name: 'Monthly Double Loot',
+		timeStamp: (user: MUser) => Number(user.user.last_patron_double_time_trigger),
+		cd: PATRON_DOUBLE_LOOT_COOLDOWN,
+		command: ['tools', 'patron', 'doubleloot']
+	},
+	{
+		name: 'Balthazars Big Bonanza',
+		timeStamp: (user: MUser) => Number(user.user.last_bonanza_date),
+		cd: Time.Day * 7,
+		command: ['bsominigames', 'balthazars_big_bonanza', 'start']
 	}
 ];
 
@@ -182,8 +129,10 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['is'],
 		description: 'Searches for items.',
 		run: async ({ msg, components, user, content }: MentionCommandOptions) => {
-			const items = Items.filter(i =>
-				[i.id.toString(), i.name.toLowerCase()].includes(content.toLowerCase())
+			const items = Items.filter(
+				i =>
+					[i.id.toString(), i.name.toLowerCase()].includes(content.toLowerCase()) &&
+					!secretItems.includes(i.id)
 			).array();
 			if (items.length === 0) return msg.reply('No results for that item.');
 
@@ -197,13 +146,19 @@ const mentionCommands: MentionCommand[] = [
 
 					if (user.cl.has(item.id)) icons.push(Emoji.CollectionLog);
 					if (user.bank.has(item.id)) icons.push(Emoji.Bank);
+					const isCustom = customItems.includes(item.id);
+					if (isCustom) icons.push(Emoji.BSO);
 					if (((sacrificedBank as ItemBank)[item.id] ?? 0) > 0) icons.push(Emoji.Incinerator);
 
-					const price = toKMB(Math.floor(item.price));
+					if (user.isIronman) {
+						itemSearchMbTable.push(...IronmanPMBTable.allItems);
+					}
 
+					const price = toKMB(Math.floor(item.price));
+					const wikiURL = isCustom ? '' : `[Wiki Page](${item.wiki_url}) `;
 					let str = `${index + 1}. ${item.name} ID[${item.id}] Price[${price}] ${
-						item.tradeable ? 'Tradeable' : 'Untradeable'
-					} [Wiki Page](${item.wiki_url}) ${icons.join(' ')}`;
+						itemSearchMbTable.includes(item.id) ? Emoji.MysteryBox : ''
+					} ${wikiURL}${icons.join(' ')}`;
 					if (gettedItem.id === item.id) {
 						str = bold(str);
 					}
@@ -247,26 +202,37 @@ const mentionCommands: MentionCommand[] = [
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
 			const stats = await user.fetchStats({ last_daily_timestamp: true, last_tears_of_guthix_timestamp: true });
-			return msg.reply({
-				content: cooldownTimers
-					.map(cd => {
-						const lastDone = cd.timeStamp(user, stats);
-						const difference = Date.now() - lastDone;
-						const cooldown = isFunction(cd.cd) ? cd.cd(user) : cd.cd;
-						if (difference < cooldown) {
-							const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
-							return `${cd.name}: ${durationRemaining}`;
-						}
-						return bold(
-							`${cd.name}: Ready ${mentionCommand(
-								globalClient,
-								cd.command[0],
-								cd.command[1],
-								cd.command[2]
-							)}`
-						);
-					})
-					.join('\n'),
+			let content = cooldownTimers
+				.map(cd => {
+					const lastDone = cd.timeStamp(user, stats);
+					const difference = Date.now() - lastDone;
+					const cooldown = isFunction(cd.cd) ? cd.cd(user) : cd.cd;
+					if (difference < cooldown) {
+						const durationRemaining = formatDuration(Date.now() - (lastDone + cooldown));
+						return `${cd.name}: ${durationRemaining}`;
+					}
+					return bold(
+						`${cd.name}: Ready ${mentionCommand(globalClient, cd.command[0], cd.command[1], cd.command[2])}`
+					);
+				})
+				.join('\n');
+
+			const currentGuthixCacheInterval = getGuthixianCacheInterval();
+			content += '\n';
+			if (await userHasDoneCurrentGuthixianCache(user)) {
+				content += `Guthixian Cache: ${currentGuthixCacheInterval.nextResetStr}`;
+			} else {
+				content += bold(
+					`Guthixian Cache: Ready ${mentionCommand(globalClient, 'bsominigames', 'guthixian_cache', 'join')}`
+				);
+			}
+
+			if (isDoubleLootActive()) {
+				let date = new Date(DOUBLE_LOOT_FINISH_TIME_CACHE);
+				content += `\n\n2️⃣🇽 **Double Loot is Active until ${time(date)} (${time(date, 'R')})**`;
+			}
+			msg.reply({
+				content,
 				components
 			});
 		}
@@ -310,13 +276,12 @@ const mentionCommands: MentionCommand[] = [
 ];
 
 export async function onMessage(msg: Message) {
-	rareRoles(msg);
-	petMessages(msg);
+	boxSpawnHandler(msg);
 	if (!msg.content || msg.author.bot || !channelIsSendable(msg.channel)) return;
 	const content = msg.content.trim();
 	if (!content.includes(mentionText)) return;
 	const user = await mUserFetch(msg.author.id);
-	const result = await minionStatusCommand(user);
+	const result = await minionStatusCommand(user, msg.channelId);
 	const { components } = result;
 
 	const command = mentionCommands.find(i =>

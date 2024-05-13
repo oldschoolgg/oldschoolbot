@@ -1,10 +1,13 @@
 import { Bank } from 'oldschooljs';
 
+import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { globalDroprates } from '../../lib/data/globalDroprates';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
 import Cooking from '../../lib/skilling/skills/cooking/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
+import { clAdjustedDroprate, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const cookingTask: MinionTask = {
@@ -49,6 +52,24 @@ export const cookingTask: MinionTask = {
 		const loot = new Bank({ [cookable.id]: quantity });
 		loot.remove(cookable.id, burnedAmount);
 		loot.add(cookable.burntCookable, burnedAmount);
+
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const dropRate = clAdjustedDroprate(
+				user,
+				'Remy',
+				globalDroprates.remy.baseRate,
+				globalDroprates.remy.clIncrease
+			);
+			const minutesInTrip = Math.ceil(duration / 1000 / 60);
+			for (let i = 0; i < minutesInTrip; i++) {
+				if (roll(dropRate)) {
+					loot.add('Remy');
+					str +=
+						"\n<:remy:748491189925183638> A small rat notices you cooking, and tells you you're cooking it all wrong! He crawls into your bank to help you with your cooking. You can equip Remy for a boost to your cooking skills.";
+					break;
+				}
+			}
+		}
 
 		str += `\nYou received: ${loot}.`;
 

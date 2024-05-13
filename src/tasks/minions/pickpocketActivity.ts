@@ -1,21 +1,35 @@
-import { percentChance, randInt, roll } from 'e';
+import { percentChance, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../lib/constants';
+import { chargePortentIfHasCharges, PortentID } from '../../lib/bso/divination';
+import { ClueTiers } from '../../lib/clues/clueTiers';
+import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { skillingPetDropRate } from '../../lib/util';
+import { perHourChance, skillingPetDropRate } from '../../lib/util';
+import { forcefullyUnequipItem } from '../../lib/util/forcefullyUnequipItem';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { rogueOutfitPercentBonus, updateClientGPTrackSetting } from '../../mahoji/mahojiSettings';
+import resolveItems from '../../lib/util/resolveItems';
+import { rogueOutfitPercentBonus, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { clueUpgraderEffect } from './monsterActivity';
+
+const notMultiplied = resolveItems([
+	'Blood shard',
+	'Enhanced crystal teleport seed',
+	...ClueTiers.map(i => i.scrollID),
+	...ClueTiers.map(i => i.id)
+]);
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,
 	npc: Stealable,
 	quantity: number,
 	hasThievingCape: boolean,
-	hasDiary: boolean
+	hasDiary: boolean,
+	armband: boolean
 ): [number, number, number, number] {
 	let xpReceived = 0;
 
@@ -28,6 +42,10 @@ export function calcLootXPPickpocketing(
 	const thievCape = hasThievingCape && npc.customTickRate === undefined ? 1.1 : 1;
 
 	let chanceOfSuccess = (npc.slope! * currentLevel + npc.intercept!) * diary * thievCape;
+	if (armband) {
+		// 50% better success chance if has armband
+		chanceOfSuccess += chanceOfSuccess / 2;
+	}
 
 	for (let i = 0; i < quantity; i++) {
 		if (!percentChance(chanceOfSuccess)) {
@@ -51,7 +69,6 @@ export const pickpocketTask: MinionTask = {
 		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived, duration } = data;
 		const user = await mUserFetch(userID);
 		const obj = stealables.find(_obj => _obj.id === monsterID)!;
-		const currentLevel = user.skillLevel('thieving');
 		let rogueOutfitBoostActivated = false;
 
 		const loot = new Bank();
@@ -83,17 +100,47 @@ export const pickpocketTask: MinionTask = {
 				if (percentChance(obj.lootPercent!)) {
 					loot.add(obj.table.roll());
 				}
+			}
+		}
 
-				// Roll for pet
-				if (roll(petDropRate)) {
-					loot.add('Rocky');
-				}
+		let boosts: string[] = [];
+		await clueUpgraderEffect(user, loot, boosts, 'pickpocketing');
+		if (user.hasEquipped("Thieves' armband")) {
+			boosts.push('3x loot for Thieves armband');
+			loot.multiply(3, notMultiplied);
+			await perHourChance(duration, 40, async () => {
+				await forcefullyUnequipItem(user, getOSItem("Thieves' armband"));
+				boosts.push('Your thieves armband broke!');
+			});
+		} else {
+			const { didCharge } = await chargePortentIfHasCharges({
+				user,
+				portentID: PortentID.RoguesPortent,
+				charges: Math.ceil(duration / Time.Minute)
+			});
+			if (didCharge) {
+				boosts.push('3x loot for Rogues portent');
+				const before = loot.clone();
+				loot.multiply(3, notMultiplied);
+				const after = loot.clone();
+				await userStatsBankUpdate(user.id, 'loot_from_rogues_portent', after.difference(before));
+			}
+		}
+
+		let gotWil = false;
+		if (duration >= MIN_LENGTH_FOR_PET) {
+			const minutes = duration / Time.Minute;
+			if (roll(Math.floor(4000 / minutes))) {
+				loot.add('Wilvus');
+				gotWil = true;
 			}
 		}
 
 		if (loot.has('Coins')) {
 			updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
+
+		await userStatsBankUpdate(user.id, 'steal_loot_bank', loot);
 
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
@@ -107,6 +154,11 @@ export const pickpocketTask: MinionTask = {
 		} from ${obj.name} ${successfulQuantity}x times, due to failures you missed out on ${
 			quantity - successfulQuantity
 		}x ${obj.type === 'pickpockable' ? 'pickpockets' : 'steals'}. ${xpRes}`;
+
+		if (gotWil) {
+			str +=
+				'<:wilvus:787320791011164201> A raccoon saw you thieving and partners with you to help you steal more stuff!';
+		}
 
 		str += `\n${
 			obj.type === 'pickpockable'
@@ -122,14 +174,9 @@ export const pickpocketTask: MinionTask = {
 
 		if (loot.amount('Rocky') > 0) {
 			str += "\n**You have a funny feeling you're being followed...**";
-			globalClient.emit(
-				Events.ServerNotification,
-				`**${user.badgedUsername}'s** minion, ${
-					user.minionName
-				}, just received a **Rocky** <:Rocky:324127378647285771> while ${
-					obj.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
-				} from ${obj.name}, their Thieving level is ${currentLevel}!`
-			);
+		}
+		if (boosts.length > 0) {
+			str += `\n\n**Messages:** ${boosts.join(', ')}`;
 		}
 
 		const image =

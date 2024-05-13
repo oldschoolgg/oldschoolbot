@@ -198,6 +198,43 @@ const trees: Plant[] = [
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
+	},
+	{
+		id: itemID('Mysterious seed'),
+		level: 120,
+		plantXp: 545.4,
+		checkXp: 23_768.3,
+		harvestXp: 0,
+		name: 'Mysterious tree',
+		aliases: ['mysterious tree', 'mystery', 'mysterious'],
+		inputItems: new Bank({ 'Mysterious seed': 1 }),
+		outputLogs: itemID('Magic logs'),
+		outputRoots: itemID('Magic roots'),
+		treeWoodcuttingLevel: 99,
+		petChance: 9368,
+		seedType: 'tree',
+		growthTime: 720,
+		numOfStages: 12,
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 8 / 128,
+		woodcuttingXp: 250,
+		needsChopForHarvest: true,
+		fixedOutput: false,
+		givesLogs: true,
+		givesCrops: false,
+		defaultNumOfPatches: 2,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [[3000, 1]],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10,
+		additionalPatchesByFarmGuildAndLvl: [],
+		noArcaneHarvester: true
 	}
 ];
 

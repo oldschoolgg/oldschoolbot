@@ -1,6 +1,7 @@
 import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 
 import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -9,7 +10,7 @@ import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 export const barbAssaultTask: MinionTask = {
 	type: 'BarbarianAssault',
 	async run(data: MinigameActivityTaskOptionsWithNoChanges) {
-		const { channelID, quantity, userID } = data;
+		const { channelID, quantity, userID, duration } = data;
 		const user = await mUserFetch(userID);
 		const { honour_level: currentHonourLevel } = await user.fetchStats({ honour_level: true });
 
@@ -30,6 +31,12 @@ export const barbAssaultTask: MinionTask = {
 		}
 		let totalPoints = Math.floor(pts * quantity);
 
+		const flappyRes = await userHasFlappy({ user, duration });
+
+		if (flappyRes.shouldGiveBoost) {
+			totalPoints *= 2;
+		}
+
 		await incrementMinigameScore(user.id, 'barb_assault', quantity);
 		await userStatsUpdate(
 			user.id,
@@ -43,6 +50,7 @@ export const barbAssaultTask: MinionTask = {
 
 		resultStr = `${user.mention}, ${user.minionName} finished doing ${quantity} waves of Barbarian Assault, you received ${totalPoints} Honour Points.
 ${resultStr}`;
+		if (flappyRes.shouldGiveBoost) resultStr += `\n\n${flappyRes.userMsg}`;
 
 		handleTripFinish(user, channelID, resultStr, undefined, data, null);
 	}

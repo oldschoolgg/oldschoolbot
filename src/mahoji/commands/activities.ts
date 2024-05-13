@@ -70,6 +70,14 @@ export const activitiesCommand: OSBMahojiCommand = {
 					description: 'The quantity of planks to make.',
 					required: false,
 					min_value: 1
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'speed',
+					description: 'The speed at which you want to make planks.',
+					required: false,
+					min_value: 1,
+					max_value: 5
 				}
 			]
 		},
@@ -262,6 +270,12 @@ export const activitiesCommand: OSBMahojiCommand = {
 						{ name: 'Start Inferno Trip', value: 'start' },
 						{ name: 'Check Inferno Stats', value: 'stats' }
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'emerged',
+					description: 'If you want this Inferno trip to be an Emerged Zuk trip.',
+					required: false
 				}
 			]
 		},
@@ -403,6 +417,14 @@ export const activitiesCommand: OSBMahojiCommand = {
 					description: 'The quantity to alch.',
 					required: false,
 					min_value: 1
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'speed',
+					description: 'Alch faster, but use more runes.',
+					required: false,
+					min_value: 1,
+					max_value: 5
 				}
 			]
 		},
@@ -506,7 +528,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		userID,
 		interaction
 	}: CommandRunOptions<{
-		plank_make?: { action: string; type: string; quantity?: number };
+		plank_make?: { action: string; type: string; quantity?: number; speed?: number };
 		chompy_hunt?: { action: 'start' | 'claim' };
 		champions_challenge?: {};
 		warriors_guild?: { action: string; quantity?: number };
@@ -518,14 +540,14 @@ export const activitiesCommand: OSBMahojiCommand = {
 		decant?: { potion_name: string; dose?: number };
 		charge?: { item: string; quantity?: number };
 		fight_caves?: {};
-		inferno?: { action: string };
+		inferno?: { action: string; emerged?: boolean };
 		birdhouses?: { action?: string; birdhouse?: string };
 		aerial_fishing?: {};
 		enchant?: { name: string; quantity?: number };
 		bury?: { name: string; quantity?: number };
 		scatter?: { name: string; quantity?: number };
 		puro_puro?: { impling: string; dark_lure?: boolean; implingTier?: number };
-		alch?: { item: string; quantity?: number };
+		alch?: { item: string; quantity?: number; speed?: number };
 		cast?: { spell: string; quantity?: number };
 		underwater?: {
 			agility_thieving?: {
@@ -558,9 +580,17 @@ export const activitiesCommand: OSBMahojiCommand = {
 		if (options.birdhouses?.action === 'harvest') {
 			return birdhouseHarvestCommand(user, channelID, options.birdhouses.birdhouse);
 		}
-		if (options.inferno?.action === 'start') return infernoStartCommand(user, channelID);
+		if (options.inferno?.action === 'start') {
+			return infernoStartCommand(user, channelID, Boolean(options.inferno.emerged));
+		}
 		if (options.plank_make?.action === 'sawmill') {
-			return sawmillCommand(user, options.plank_make.type, options.plank_make.quantity, channelID);
+			return sawmillCommand(
+				user,
+				options.plank_make.type,
+				options.plank_make.quantity,
+				channelID,
+				options.plank_make.speed
+			);
 		}
 		if (options.plank_make?.action === 'butler') {
 			return butlerCommand(user, options.plank_make.type, options.plank_make.quantity, channelID);
@@ -619,7 +649,14 @@ export const activitiesCommand: OSBMahojiCommand = {
 			return scatterCommand(user, channelID, options.scatter.name, options.scatter.quantity);
 		}
 		if (options.alch) {
-			return alchCommand(interaction, channelID, user, options.alch.item, options.alch.quantity);
+			return alchCommand(
+				interaction,
+				channelID,
+				user,
+				options.alch.item,
+				options.alch.quantity,
+				options.alch.speed
+			);
 		}
 		if (options.puro_puro) {
 			return puroPuroStartCommand(

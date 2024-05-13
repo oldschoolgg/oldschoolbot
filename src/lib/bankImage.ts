@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-invalid-this */
 import { Canvas, GlobalFonts, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
 import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
@@ -11,9 +12,10 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
-import { BitField, BOT_TYPE, ItemIconPacks, PerkTier, toaPurpleItems } from '../lib/constants';
+import { BitField, BOT_TYPE, doaPurples, ItemIconPacks, PerkTier, toaPurpleItems } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
+import { calcWholeDisXP, findDisassemblyGroup } from '../lib/invention/disassemble';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
@@ -22,9 +24,13 @@ import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
+import { divinationEnergies } from './bso/divination';
 import { TOBUniques } from './data/tob';
 import { marketPriceOfBank, marketPriceOrBotPrice } from './marketPrices';
+import { SkillsEnum } from './skilling/types';
+import { applyCustomItemEffects } from './util/customItemEffects';
 import resolveItems from './util/resolveItems';
+import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
 
 const fonts = {
 	OSRSFont: './src/lib/resources/osrs-font.ttf',
@@ -121,6 +127,8 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Papaya tree seed'), 'papaya'],
 	[i('Palm tree seed'), 'palm'],
 	[i('Dragonfruit tree seed'), 'dragon'],
+	[i('Korulsi seed'), 'korulsi'],
+	[i('Grand crystal acorn'), 'grand'],
 	[i('Potato seed'), 'potato'],
 	[i('Onion seed'), 'onion'],
 	[i('Cabbage seed'), 'cabbage'],
@@ -181,19 +189,14 @@ const forcedShortNameMap = new Map<number, string>([
 	// Clues & Caskets
 	[i('Clue scroll (beginner)'), 'beginner'],
 	[i('Reward casket (beginner)'), 'beginner'],
-
 	[i('Clue scroll (easy)'), 'easy'],
 	[i('Reward casket (easy)'), 'easy'],
-
 	[i('Clue scroll (medium)'), 'medium'],
 	[i('Reward casket (medium)'), 'medium'],
-
 	[i('Clue scroll (hard)'), 'hard'],
 	[i('Reward casket (hard)'), 'hard'],
-
 	[i('Clue scroll (elite)'), 'elite'],
 	[i('Reward casket (elite)'), 'elite'],
-
 	[i('Clue scroll (master)'), 'master'],
 	[i('Reward casket (master)'), 'master'],
 
@@ -236,8 +239,38 @@ const forcedShortNameMap = new Map<number, string>([
 
 	// Ore Packs
 	[27_019, 'GF Pack'],
-	[27_693, 'VM Pack']
+	[27_693, 'VM Pack'],
+
+	// BSO exclusive misc
+	[i('Athelas'), 'athelas'],
+	[i('Athelas seed'), 'athelas'],
+	[i('Mysterious seed'), 'mysterious'],
+	[i('Mango seed'), 'mango'],
+	[i('Avocado seed'), 'avocado'],
+	[i('Lychee seed'), 'lychee'],
+	[i('Blood orange seed'), 'b.orange'],
+	[i('Spirit weed seed'), 'spirit.w'],
+	[i('Spirit weed'), 'spirit.w'],
+	[i('Advax berry seed'), 'advax'],
+	[i('Advax berry'), 'advax'],
+	[i('Divination Potion'), 'div'],
+	[i('Elder logs'), 'elder'],
+	[i('Clue scroll (grandmaster)'), 'grandmaster'],
+	[i('Reward casket (grandmaster)'), 'grandmaster'],
+	[i('Atomic energy'), 'atomic'],
+	[i('Fruity zygomite spores'), 'fruity'],
+	[i('Barky zygomite spores'), 'barky'],
+	[i('Herbal zygomite spores'), 'herbal'],
+	[i('Clue scroll (elder)'), 'elder'],
+	[i('Reward casket (elder)'), 'elder']
 ]);
+
+for (const energy of divinationEnergies) {
+	forcedShortNameMap.set(energy.item.id, energy.item.name.slice(0, 4));
+	if (energy.boon) {
+		forcedShortNameMap.set(energy.boon.id, energy.item.name.slice(0, 4));
+	}
+}
 
 function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
 	// Draw Bank Title
@@ -260,7 +293,8 @@ export const bankFlags = [
 	'show_names',
 	'show_weights',
 	'show_all',
-	'wide'
+	'wide',
+	'invention_xp'
 ] as const;
 export type BankFlag = (typeof bankFlags)[number];
 
@@ -272,6 +306,10 @@ export class BankImageTask {
 
 	public _bgSpriteData: Image = new Image();
 	public bgSpriteList: Record<string, IBgSprite> = {};
+	public imageHamstare: Image | null = null;
+	public redGlow: Image | null = null;
+	public bananaGlow: Image | null = null;
+	public glows: Map<number, Image>;
 	public treeImage!: Image;
 
 	public constructor() {
@@ -280,9 +318,16 @@ export class BankImageTask {
 
 		// If this file does exist, it might be cached in this, or need to be read from fs.
 		this.itemIconImagesCache = new Map();
+
+		this.glows = new Map([
+			[itemID('Dragon egg'), this.redGlow!],
+			[itemID('Monkey egg'), this.bananaGlow!]
+		]);
 	}
 
 	async init() {
+		this.redGlow = await loadImage(await fs.readFile('./src/lib/resources/images/red-glow.png'));
+		this.bananaGlow = await loadImage(await fs.readFile('./src/lib/resources/images/banana-glow.png'));
 		const colors: Record<BGSpriteName, string> = {
 			default: '#655741',
 			dark: '#393939',
@@ -391,7 +436,12 @@ export class BankImageTask {
 
 		const isOnDisk = this.itemIconsList.has(itemID);
 		if (!isOnDisk) {
-			await this.fetchAndCacheImage(itemID);
+			try {
+				await this.fetchAndCacheImage(itemID);
+			} catch (err) {
+				console.error(`Failed to load ${itemID} image`, err);
+				return this.getItemImage(1, user);
+			}
 			return this.getItemImage(itemID, user);
 		}
 
@@ -407,8 +457,8 @@ export class BankImageTask {
 	}
 
 	async fetchAndCacheImage(itemID: number) {
-		const imageBuffer = await fetch(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`).then(
-			result => result.buffer()
+		const imageBuffer = await fetch(`https://static.runelite.net/cache/item/icon/${itemID}.png`).then(result =>
+			result.buffer()
 		);
 
 		await fs.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
@@ -549,11 +599,28 @@ export class BankImageTask {
 
 			const x = floor(xLoc + (itemSize - itemWidth) / 2) + 2;
 			const y = floor(yLoc + (itemSize - itemHeight) / 2);
+			let glow = this.glows.get(item.id);
+			if (allSlayerMaskHelmsAndMasks.has(item.id)) {
+				if (slayerMaskLeaderboardCache.get(item.id) === user?.id) {
+					glow = this.redGlow!;
+				}
+			}
+			if (glow) {
+				const centerX = xLoc + itemImage.width / 2;
+				const centerY = yLoc + itemImage.height / 2;
+				const glowX = centerX - glow.width / 2;
+				const glowY = centerY - glow.width / 2;
+				ctx.strokeStyle = 'red';
+				ctx.drawImage(glow, glowX, glowY, glow.width, glow.height);
+			}
+
+			const imageAfterEffects = await applyCustomItemEffects(user ?? null, itemImage, item.id);
 
 			if (isNewCLItem) {
-				drawImageWithOutline(ctx, itemImage, x, y, itemWidth, itemHeight, '#ac7fff', 1);
+				drawImageWithOutline(ctx, imageAfterEffects, x, y, itemWidth, itemHeight, '#ac7fff', 1);
 			} else {
-				ctx.drawImage(itemImage, x, y, itemWidth, itemHeight);
+				ctx.drawImage(imageAfterEffects, x, y, itemWidth, itemHeight);
+				ctx.restore();
 			}
 
 			// Do not draw the item qty if there is 0 of that item in the bank
@@ -580,6 +647,15 @@ export class BankImageTask {
 				bottomItemText = item.id.toString();
 			} else if (flags.has('names') || mahojiFlags?.includes('show_names')) {
 				bottomItemText = item.name;
+			} else if (mahojiFlags?.includes('invention_xp') && user) {
+				const group = findDisassemblyGroup(item);
+				const inventionLevel = user.skillLevel(SkillsEnum.Invention);
+				const xp = group && inventionLevel >= group.data.lvl && calcWholeDisXP(user, item, quantity);
+				if (xp) {
+					bottomItemText = `${toKMB(xp)}XP`;
+				} else {
+					bottomItemText = 0;
+				}
 			} else if (mahojiFlags?.includes('show_weights') && weightings && weightings[item.id]) {
 				bottomItemText = weightings[item.id];
 			} else if (mahojiFlags?.includes('show_market_price')) {
@@ -622,6 +698,12 @@ export class BankImageTask {
 		const bankBackgroundID = Number(user?.user.bankBackground ?? flags.get('background') ?? 1);
 		const rawCL = user?.cl;
 		const currentCL: Bank | undefined = collectionLog ?? (rawCL === undefined ? undefined : new Bank(rawCL));
+
+		if (flags.has('alch')) {
+			bank.filter(item => {
+				return item.price > 1000 && item.price < (item.highalch ?? 0) * 3;
+			}, true);
+		}
 
 		// Filtering
 		const searchQuery = flags.get('search') as string | undefined;
@@ -726,7 +808,9 @@ export class BankImageTask {
 
 		const hexColor = user?.user.bank_bg_hex;
 
-		const useSmallBank = user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true;
+		const useSmallBank =
+			bgImage.id !== 100 &&
+			(user ? (hasBgSprite ? true : user.bitfield.includes(BitField.AlwaysSmallBank)) : true);
 
 		const canvas = new Canvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight));
 
@@ -853,6 +937,16 @@ const chestLootTypes = [
 		]),
 		position: () => [12, 44],
 		itemRect: [135, 45, 120, 120]
+	},
+	{
+		title: 'Depths of Atlantis',
+		chestImage: loadImage('./src/lib/resources/images/doa.png'),
+		chestImagePurple: loadImage('./src/lib/resources/images/doa.png'),
+		width: 260,
+		height: 180,
+		purpleItems: doaPurples,
+		position: () => [12, 44],
+		itemRect: [135, 45, 120, 120]
 	}
 ] as const;
 
@@ -920,7 +1014,7 @@ export async function drawChestLootImage(options: {
 		canvases.push(canvas);
 	}
 
-	const fileName = `${anyoneGotPurple ? 'SPOILER_' : ''}toaloot-${randInt(1, 1000)}.png`;
+	const fileName = `${anyoneGotPurple ? 'SPOILER_' : ''}chestloot-${randInt(1, 1000)}.png`;
 
 	if (canvases.length === 1) {
 		return new AttachmentBuilder(await canvases[0].encode('png'), {

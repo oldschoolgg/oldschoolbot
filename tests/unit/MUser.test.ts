@@ -44,7 +44,10 @@ describe('MUser.test', () => {
 			smithing: 1,
 			strength: 1,
 			thieving: 1,
-			woodcutting: 1
+			woodcutting: 1,
+			invention: 1,
+			dungeoneering: 1,
+			divination: 1
 		});
 	});
 	test('bankWithGP', () => {

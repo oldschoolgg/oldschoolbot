@@ -12,6 +12,12 @@ import {
 	minimumCoxSuppliesNeeded
 } from '../../../lib/data/cox';
 import { degradeItem } from '../../../lib/degradeableItems';
+import {
+	canAffordInventionBoost,
+	inventionBoosts,
+	InventionID,
+	inventionItemBoost
+} from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { setupParty } from '../../../lib/party';
 import { getMinigameScore } from '../../../lib/settings/minigames';
@@ -141,6 +147,7 @@ export async function coxCommand(
 				isChallengeMode &&
 				!user.hasEquippedOrInBank('Dragon hunter crossbow') &&
 				!user.hasEquippedOrInBank('Twisted bow') &&
+				!user.hasEquippedOrInBank('Zaryte bow') &&
 				!user.hasEquipped(['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'], true)
 			) {
 				return [
@@ -166,7 +173,8 @@ export async function coxCommand(
 		duration: raidDuration,
 		maxUserReduction,
 		reductions,
-		degradeables
+		degradeables,
+		chinCannonUser
 	} = await calcCoxDuration(users, isChallengeMode);
 	const maxTripLength = calcMaxTripLength(user, 'Raids');
 	const maxCanDo = Math.max(Math.floor(maxTripLength / raidDuration), 1);
@@ -186,6 +194,12 @@ export async function coxCommand(
 	let debugStr = '';
 	const isSolo = users.length === 1;
 
+	if (chinCannonUser) {
+		if (!canAffordInventionBoost(chinCannonUser, InventionID.ChinCannon, duration).canAfford) {
+			return `${chinCannonUser.usernameOrMention} doesn't have enough materials to use the Chincannon for this trip.`;
+		}
+	}
+
 	const totalCost = new Bank();
 
 	await Promise.all(
@@ -196,13 +210,28 @@ export async function coxCommand(
 
 	const costResult = await Promise.all([
 		...users.map(async u => {
-			const supplies = await calcCoxInput(u, isSolo);
+			const supplies = (await calcCoxInput(u, isSolo)).multiply(quantity);
 			await u.removeItemsFromBank(supplies);
 			totalCost.add(supplies);
 			const { total } = calculateUserGearPercents(u);
+
 			debugStr += `${u.usernameOrMention} (${Emoji.Gear}${total.toFixed(1)}% ${
 				Emoji.CombatSword
-			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${supplies}\n`;
+			} ${calcWhatPercent(reductions[u.id], maxUserReduction).toFixed(1)}%) used ${supplies}`;
+
+			if (chinCannonUser === u) {
+				const res = await inventionItemBoost({
+					user,
+					inventionID: InventionID.ChinCannon,
+					duration
+				});
+				if (!res.success) {
+					throw new Error(`${u.id} did not have enough charges to use the Chincannon.`);
+				}
+				debugStr += ` ${inventionBoosts.chincannon.coxPercentReduction}% speed increase from the Chincannon (${res.messages})`;
+			}
+
+			debugStr += '\n';
 			return {
 				userID: u.id,
 				itemsRemoved: supplies
@@ -231,7 +260,8 @@ export async function coxCommand(
 		leader: user.id,
 		users: users.map(u => u.id),
 		challengeMode: isChallengeMode,
-		quantity
+		quantity,
+		cc: chinCannonUser?.id
 	});
 
 	let str = isSolo

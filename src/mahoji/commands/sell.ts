@@ -1,10 +1,11 @@
 import { Prisma } from '@prisma/client';
-import { clamp, reduceNumByPercent } from 'e';
+import { calcPercentOfNum, clamp, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
+import { customPrices } from '../../lib/customItems/util';
 import { prisma } from '../../lib/settings/prisma';
 import { NestBoxesTable } from '../../lib/simulation/misc';
 import { itemID, returnStringOrFile, toKMB } from '../../lib/util';
@@ -40,7 +41,7 @@ const specialSoldItems = new Map([
 
 export const CUSTOM_PRICE_CACHE = new Map<number, number>();
 
-export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; basePrice: number } {
+export function sellPriceOfItem(item: Item, taxRate = 25): { price: number; basePrice: number } {
 	let cachePrice = CUSTOM_PRICE_CACHE.get(item.id);
 	if (!cachePrice && (item.price === undefined || !item.tradeable)) {
 		return { price: 0, basePrice: 0 };
@@ -48,6 +49,9 @@ export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; base
 	let basePrice = cachePrice ?? item.price;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
+	if (!(item.id in customPrices) && price < (item.highalch ?? 0) * 3) {
+		price = calcPercentOfNum(30, item.highalch!);
+	}
 	price = clamp(price, 0, MAX_INT_JAVA);
 	return { price, basePrice };
 }
@@ -61,7 +65,6 @@ export function sellStorePriceOfItem(item: Item, qty: number): { price: number; 
 	price = clamp(price, 0, MAX_INT_JAVA);
 	return { price, basePrice };
 }
-
 export const sellCommand: OSBMahojiCommand = {
 	name: 'sell',
 	description: 'Sell items from your bank to the bot for GP.',
@@ -219,7 +222,11 @@ export const sellCommand: OSBMahojiCommand = {
 		}
 
 		let totalPrice = 0;
-		const taxRatePercent = 25;
+		const hasSkipper = user.usingPet('Skipper') || user.bank.has('Skipper');
+		let taxRatePercent = 25;
+		if (hasSkipper) {
+			taxRatePercent -= 5;
+		}
 
 		const botItemSellData: Prisma.BotItemSellCreateManyInput[] = [];
 
@@ -277,10 +284,17 @@ export const sellCommand: OSBMahojiCommand = {
 			prisma.botItemSell.createMany({ data: botItemSellData })
 		]);
 
+		if (user.isIronman) {
+			return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**`;
+		}
 		return returnStringOrFile(
-			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
-				user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
-			}.`
+			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(
+				totalPrice
+			)})** (${taxRatePercent}% below market price). ${
+				hasSkipper
+					? '\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you were charged less tax on the sale!'
+					: ''
+			}`
 		);
 	}
 };

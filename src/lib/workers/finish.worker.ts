@@ -1,3 +1,4 @@
+import '../../lib/customItems/customItems';
 import '../data/itemAliases';
 
 import { removeFromArr } from 'e';

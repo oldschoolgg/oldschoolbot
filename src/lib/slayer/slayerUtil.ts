@@ -4,8 +4,9 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { KourendKebosDiary, LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
-import { PvMMethod } from '../constants';
+import { BitField, PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
+import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import { KillableMonster } from '../minions/types';
 import { prisma } from '../settings/prisma';
 import { getNewUser } from '../settings/settings';
@@ -18,6 +19,7 @@ import { autoslayModes } from './constants';
 import { slayerMasters } from './slayerMasters';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
 import { bossTasks, wildernessBossTasks } from './tasks/bossTasks';
+import { allSlayerTasks } from './tasks';
 import { AssignableSlayerTask, SlayerMaster } from './types';
 
 export enum SlayerMasterEnum {
@@ -42,10 +44,13 @@ export interface DetermineBoostParams {
 export function determineBoostChoice(params: DetermineBoostParams) {
 	let boostChoice = 'none';
 
+	// BSO Only:
+	if (!params.isOnTask) return boostChoice;
+
 	if (params.method && params.method === 'none') {
 		return boostChoice;
 	}
-	if (params.method && params.method === 'chinning') {
+	if (params.method && (params.method as string) === 'chinning') {
 		boostChoice = 'chinning';
 	} else if (params.method && params.method === 'barrage') {
 		boostChoice = 'barrage';
@@ -149,6 +154,20 @@ export function userCanUseTask(
 	// Slayer unlock restrictions:
 	const lmon = task.monster.name.toLowerCase();
 	const lmast = master.name.toLowerCase();
+	if (
+		[
+			BSOMonsters.FungalRodent.name,
+			BSOMonsters.InfestedAxe.name,
+			BSOMonsters.FungalMage.name,
+			BSOMonsters.Grifolaroo.name,
+			BSOMonsters.Grifolapine.name,
+			BSOMonsters.GanodermicRunt.name,
+			BSOMonsters.GanodermicBeast.name
+		].includes(task.monster.name) &&
+		!myUnlocks.includes(SlayerTaskUnlocksEnum.PoreDecisions)
+	) {
+		return false;
+	}
 	if (lmon === 'grotesque guardians' && !bankHasItem(user.bank.bank, itemID('Brittle key'))) return false;
 	if (lmon === 'lizardman' && !myUnlocks.includes(SlayerTaskUnlocksEnum.ReptileGotRipped)) return false;
 	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed)) return false;
@@ -178,6 +197,7 @@ export function userCanUseTask(
 }
 
 export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
+	const unlocks = _user.user.slayer_unlocks;
 	// assignedTask is the task object, currentTask is the database row.
 	const baseTasks = [...master.tasks].filter(t => userCanUseTask(_user, t, master, false));
 	let bossTask = false;
@@ -228,7 +248,28 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		}
 	}
 
-	const quantity = randInt(assignedTask!.amount[0], maxQuantity);
+	let quantity = randInt(assignedTask!.amount[0], maxQuantity);
+
+	const extendReward = SlayerRewardsShop.find(srs => srs.extendID && srs.extendID.includes(assignedTask!.monster.id));
+	if (extendReward && unlocks.includes(extendReward.id)) {
+		quantity = assignedTask.extendedAmount
+			? randInt(assignedTask.extendedAmount[0], assignedTask.extendedAmount[1])
+			: Math.ceil(quantity * extendReward.extendMult!);
+	}
+
+	let messages: string[] = [];
+	if (unlocks.includes(SlayerTaskUnlocksEnum.SizeMatters) && !_user.bitfield.includes(BitField.DisableSizeMatters)) {
+		quantity *= 2;
+		messages.push('2x qty for Size Matters unlock');
+	}
+	if (
+		_user.bitfield.includes(BitField.HasScrollOfLongevity) &&
+		!_user.bitfield.includes(BitField.ScrollOfLongevityDisabled)
+	) {
+		quantity *= 2;
+		messages.push('2x qty for Scroll of longevity');
+	}
+
 	const currentTask = await prisma.slayerTask.create({
 		data: {
 			user_id: newUser.id,
@@ -243,7 +284,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		slayer_last_task: assignedTask!.monster.id
 	});
 
-	return { currentTask, assignedTask };
+	return { currentTask, assignedTask, messages };
 }
 
 export async function calcMaxBlockedTasks(user: MUser) {
@@ -258,6 +299,12 @@ export async function calcMaxBlockedTasks(user: MUser) {
 	// Limit blocks to 7 due to BSO quest points
 	blocks = Math.min(blocks, 7);
 
+	const unlocks = user.user.slayer_unlocks;
+	const hasBlockAndRoll = unlocks.includes(SlayerTaskUnlocksEnum.BlockAndRoll);
+
+	if (hasBlockAndRoll) {
+		blocks += 3;
+	}
 	return blocks;
 }
 
@@ -592,4 +639,13 @@ export async function isOnSlayerTask({
 		quantitySlayed,
 		...usersTask
 	};
+}
+
+export function getAllAlternateMonsters(options: { monster: Monster }): Monster[];
+export function getAllAlternateMonsters(options: { monsterId: number }): number[];
+export function getAllAlternateMonsters(options: { monster: Monster } | { monsterId: number }) {
+	const useMonster = 'monster' in options;
+	const monsterId = useMonster ? options.monster.id : options.monsterId;
+	const monsters = allSlayerTasks.map(task => (task.monsters.includes(monsterId) ? task.monsters : [])).flat(2);
+	return useMonster ? Monsters.filter(m => monsters.includes(m.id)).map(m => m) : monsters;
 }

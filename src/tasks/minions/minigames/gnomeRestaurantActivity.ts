@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
@@ -78,6 +79,12 @@ export const gnomeResTask: MinionTask = {
 		}
 
 		const user = await mUserFetch(userID);
+
+		const flappyRes = await userHasFlappy({ user, duration });
+		if (flappyRes.shouldGiveBoost) {
+			loot.multiply(2);
+		}
+
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,
@@ -89,7 +96,7 @@ export const gnomeResTask: MinionTask = {
 			duration
 		});
 
-		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x Gnome Restaurant deliveries. You received **${loot}**. ${xpRes}`;
+		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x Gnome Restaurant deliveries.  You received **${loot}**. ${xpRes} ${flappyRes.userMsg}`;
 
 		updateBankSetting('gnome_res_loot', loot);
 

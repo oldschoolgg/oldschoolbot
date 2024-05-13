@@ -7,6 +7,7 @@ import Mining from '../../../lib/skilling/skills/mining';
 import { MotherlodeMiningActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { minionName } from '../../../lib/util/minionUtils';
 
 export async function motherlodeMineCommand({
@@ -63,7 +64,6 @@ export async function motherlodeMineCommand({
 	// Calculate the time it takes to mine specific quantity or as many as possible
 	let [duration, newQuantity] = determineMiningTime({
 		quantity,
-		user,
 		ore: motherlode,
 		ticksBetweenRolls: currentPickaxe.ticksBetweenRolls,
 		glovesRate,
@@ -71,7 +71,9 @@ export async function motherlodeMineCommand({
 		miningCapeEffect,
 		powermining: powermine,
 		goldSilverBoost,
-		miningLvl: miningLevel
+		miningLvl: miningLevel,
+		maxTripLength: calcMaxTripLength(user, 'Mining'),
+		hasGlory: user.hasEquippedOrInBank('Amulet of glory')
 	});
 
 	const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
@@ -94,6 +96,10 @@ export async function motherlodeMineCommand({
 			? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
 			: formatDuration(duration)
 	} to finish.`;
+
+	if (user.usingPet('Doug')) {
+		response += '\n<:doug:748892864813203591> Doug joins you on your mining trip!';
+	}
 
 	if (boosts.length > 0) {
 		response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

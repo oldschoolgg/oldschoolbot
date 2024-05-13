@@ -64,7 +64,7 @@ ${explanation}`
 			text: `You received ${flowerLoot}`
 		});
 	const response: Awaited<CommandResponse> = {
-		embeds: [embed]
+		embeds: [embed.data]
 	};
 
 	// You get 5x if you roll a black/white flower

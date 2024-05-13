@@ -7,6 +7,8 @@ import { HardCasket, HardClueTable } from 'oldschooljs/dist/simulation/clues/Har
 import { MasterCasket, MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumCasket, MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
+import { ElderClue, ElderClueTable } from '../simulation/elderClue';
+import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { beginnerReqs, ClueReqs } from './clueReqs';
@@ -28,22 +30,26 @@ interface ClueMilestoneReward {
 }
 
 export interface ClueTier {
-	name: 'Beginner' | 'Easy' | 'Medium' | 'Hard' | 'Elite' | 'Master';
-	table: BeginnerCasket | EasyCasket | MediumCasket | HardCasket | EliteCasket | MasterCasket;
+	name: 'Beginner' | 'Easy' | 'Medium' | 'Hard' | 'Elite' | 'Master' | 'Grandmaster' | 'Elder';
+	table: BeginnerCasket | EasyCasket | MediumCasket | HardCasket | EliteCasket | MasterCasket | ElderClue;
 	id: number;
 	scrollID: number;
 	timeToFinish: number;
 	milestoneReward?: ClueMilestoneReward;
 	mimicChance: number | false;
 	allItems: number[];
+	aliases: string[];
 	stashUnits: StashUnitTier;
 	reqs: ClueReqs;
 	implings?: number[];
+	qtyForGrandmasters: number;
+	trickableItems?: number[];
 }
 
 export const ClueTiers: ClueTier[] = [
 	{
 		name: 'Beginner',
+		aliases: ['beginner', 'beg', 'b'],
 		table: Beginner,
 		id: 23_245,
 		scrollID: 23_182,
@@ -52,10 +58,12 @@ export const ClueTiers: ClueTier[] = [
 		allItems: BeginnerClueTable.allItems,
 		stashUnits: beginnerStashes,
 		reqs: beginnerReqs,
-		implings: resolveItems(['Baby impling jar', 'Young impling jar'])
+		implings: resolveItems(['Baby impling jar', 'Young impling jar']),
+		qtyForGrandmasters: 0
 	},
 	{
 		name: 'Easy',
+		aliases: ['easy', 'ez'],
 		table: Easy,
 		id: 20_546,
 		scrollID: 2677,
@@ -68,10 +76,12 @@ export const ClueTiers: ClueTier[] = [
 		allItems: EasyClueTable.allItems,
 		stashUnits: easyStashes,
 		reqs: beginnerReqs,
-		implings: resolveItems(['Baby impling jar', 'Young impling jar', 'Gourmet impling jar'])
+		implings: resolveItems(['Baby impling jar', 'Young impling jar', 'Gourmet impling jar']),
+		qtyForGrandmasters: 300
 	},
 	{
 		name: 'Medium',
+		aliases: ['medium', 'med'],
 		table: Medium,
 		id: 20_545,
 		scrollID: 2801,
@@ -84,10 +94,12 @@ export const ClueTiers: ClueTier[] = [
 		allItems: MediumClueTable.allItems,
 		stashUnits: mediumStashes,
 		reqs: beginnerReqs,
-		implings: resolveItems(['Earth impling jar', 'Essence impling jar', 'Eclectic impling jar'])
+		implings: resolveItems(['Earth impling jar', 'Essence impling jar', 'Eclectic impling jar']),
+		qtyForGrandmasters: 250
 	},
 	{
 		name: 'Hard',
+		aliases: ['hard', 'hrd', 'h'],
 		table: Hard,
 		id: 20_544,
 		scrollID: 2722,
@@ -96,10 +108,12 @@ export const ClueTiers: ClueTier[] = [
 		allItems: HardClueTable.allItems,
 		stashUnits: hardStashes,
 		reqs: beginnerReqs,
-		implings: resolveItems(['Nature impling jar', 'Magpie impling jar', 'Ninja impling jar'])
+		implings: resolveItems(['Nature impling jar', 'Magpie impling jar', 'Ninja impling jar']),
+		qtyForGrandmasters: 200
 	},
 	{
 		name: 'Elite',
+		aliases: ['elite', 'e'],
 		table: Elite,
 		id: 20_543,
 		scrollID: 12_073,
@@ -112,10 +126,12 @@ export const ClueTiers: ClueTier[] = [
 		allItems: EliteClueTable.allItems,
 		stashUnits: eliteStashes,
 		reqs: beginnerReqs,
-		implings: resolveItems(['Crystal impling jar', 'Dragon impling jar'])
+		implings: resolveItems(['Crystal impling jar', 'Dragon impling jar']),
+		qtyForGrandmasters: 150
 	},
 	{
 		name: 'Master',
+		aliases: ['master', 'm'],
 		table: Master,
 		id: 19_836,
 		scrollID: 19_835,
@@ -127,6 +143,40 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: 15,
 		allItems: MasterClueTable.allItems,
 		stashUnits: masterStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		qtyForGrandmasters: 100
+	},
+	{
+		name: 'Grandmaster',
+		aliases: ['grandmaster', 'gm', 'gmc'],
+		table: GrandmasterClueTable,
+		id: 19_838,
+		scrollID: 19_837,
+		timeToFinish: Time.Minute * 32.23,
+		mimicChance: false,
+		allItems: GrandmasterClueTable.allItems,
+		stashUnits: masterStashes,
+		reqs: beginnerReqs,
+		qtyForGrandmasters: 0,
+		trickableItems: resolveItems([
+			'First age tiara',
+			'First age amulet',
+			'First age cape',
+			'First age bracelet',
+			'First age ring'
+		])
+	},
+	{
+		name: 'Elder',
+		aliases: ['elder', 'emc'],
+		table: ElderClueTable,
+		id: 73_124,
+		scrollID: 73_123,
+		timeToFinish: Time.Minute * 42.23,
+		mimicChance: false,
+		allItems: resolveItems([...ElderClueTable.allItems, 'Clue bag', 'Inventors tools', 'Elder knowledge', 'Octo']),
+		stashUnits: masterStashes,
+		reqs: beginnerReqs,
+		qtyForGrandmasters: 0
 	}
 ];

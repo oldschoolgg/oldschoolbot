@@ -1013,9 +1013,10 @@ ${progressString}
 
 			return {
 				content: str,
-				allowed_mentions: {
+				allowedMentions: {
 					parse: [],
-					users: []
+					users: [],
+					roles: []
 				},
 				files: [
 					{

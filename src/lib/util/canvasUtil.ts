@@ -59,6 +59,12 @@ export function drawImageWithOutline(
 	ctx.drawImage(image, dx, dy, dw, dh);
 }
 
+export function calcAspectRatioFit(srcWidth: number, srcHeight: number, maxWidth: number, maxHeight: number) {
+	let ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+
+	return { width: srcWidth * ratio, height: srcHeight * ratio };
+}
+
 function printMultilineText(ctx: SKRSContext2D, text: string, x: number, y: number) {
 	const lines = text.split(/\r?\n/);
 
@@ -125,6 +131,14 @@ export function getClippedRegion(image: Image | Canvas, x: number, y: number, wi
 	}
 	return canvas;
 }
+
+export function drawCircle(ctx: SKRSContext2D, x: number, y: number, radius: number, fill = 'rgba(255,0,0,0.5)') {
+	ctx.beginPath();
+	ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+	ctx.fillStyle = fill;
+	ctx.fill();
+}
+
 export async function getClippedRegionImage(
 	image: Image | Canvas,
 	x: number,

@@ -1,5 +1,6 @@
+import { activity_type_enum } from '@prisma/client';
+
 import { ActivityGroup } from '../constants';
-import { activity_type_enum } from '.prisma/client';
 
 export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 	switch (type) {
@@ -7,6 +8,10 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 			return ActivityGroup.Clue;
 		case 'GroupMonsterKilling':
 		case 'MonsterKilling':
+		case 'KalphiteKing':
+		case 'Nex':
+		case 'KingGoldemar':
+		case 'VasaMagus':
 			return ActivityGroup.Monster;
 		case 'Fishing':
 		case 'Agility':

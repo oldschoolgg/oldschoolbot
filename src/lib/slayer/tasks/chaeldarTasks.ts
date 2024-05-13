@@ -1,7 +1,10 @@
 import { Monsters } from 'oldschooljs';
 
+import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
+import { polyporeTasks } from './polyporeTasks';
 
 export const chaeldarTasks: AssignableSlayerTask[] = [
 	{
@@ -18,7 +21,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AbyssalDemon,
 		amount: [110, 170],
 		weight: 12,
-		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, BSOMonsters.Malygos.id],
 		combatLevel: 85,
 		slayerLevel: 85,
 		questPoints: 1,
@@ -125,7 +128,7 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveKraken,
 		amount: [30, 50],
 		weight: 12,
-		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id],
+		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id, BSOMonsters.SeaKraken.id],
 		combatLevel: 80,
 		slayerLevel: 87,
 		unlocked: true
@@ -309,7 +312,8 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 			Monsters.KalphiteWorker.id,
 			Monsters.KalphiteSoldier.id,
 			Monsters.KalphiteGuardian.id,
-			Monsters.KalphiteQueen.id
+			Monsters.KalphiteQueen.id,
+			KalphiteKingMonster.id
 		],
 		combatLevel: 15,
 		unlocked: true
@@ -469,7 +473,8 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 			Monsters.FeralVampyre.id,
 			Monsters.VampyreJuvinate.id,
 			Monsters.Vyrewatch.id,
-			Monsters.VyrewatchSentinel.id
+			Monsters.VyrewatchSentinel.id,
+			BSOMonsters.VladimirDrakan.id
 		],
 		combatLevel: 35,
 		questPoints: 1,
@@ -492,5 +497,6 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		slayerLevel: 62,
 		unlocked: true
 	},
-	...bossTasks
+	...bossTasks,
+	...polyporeTasks
 ];

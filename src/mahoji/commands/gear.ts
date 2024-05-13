@@ -1,12 +1,15 @@
+import { Canvas, loadImage } from '@napi-rs/canvas';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { gearValidationChecks } from '../../lib/constants';
 import { allPetIDs } from '../../lib/data/CollectionsExport';
+import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { GearSetupType, GearSetupTypes, GearStat } from '../../lib/gear/types';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { itemNameFromID } from '../../lib/util';
+import { findBestGearSetups } from '../../lib/util/findBISGear';
 import {
 	gearEquipCommand,
 	gearStatsCommand,
@@ -168,6 +171,20 @@ export const gearCommand: OSBMahojiCommand = {
 					choices: GearSetupTypes.map(i => ({ name: toTitleCase(i), value: i }))
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'best_in_slot',
+			description: 'View the best in slot items for a particular stat.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'stat',
+					description: 'The stat to view the BiS items for.',
+					required: true,
+					choices: Object.values(GearStat).map(k => ({ name: k, value: k }))
+				}
+			]
 		}
 	],
 	run: async ({
@@ -188,8 +205,33 @@ export const gearCommand: OSBMahojiCommand = {
 		pet?: { equip?: string; unequip?: string };
 		view?: { setup: string; text_format?: boolean };
 		swap?: { setup_one: GearSetupType; setup_two: GearSetupType };
+		best_in_slot?: { stat: GearStat };
 	}>) => {
 		const user = await mUserFetch(userID);
+
+		if (options.best_in_slot?.stat) {
+			const res = findBestGearSetups(options.best_in_slot.stat);
+			const totalCanvas = new Canvas(5 * 175, 240);
+			const ctx = totalCanvas.getContext('2d');
+			for (let i = 0; i < 5; i++) {
+				const gearImage = await generateGearImage(user, res[i], 'melee', null, `${i + 1}`);
+				ctx.drawImage(await loadImage(gearImage), i * 175, 0);
+			}
+			return {
+				content: `These are the best in slot items for ${options.best_in_slot.stat}.
+
+${res
+	.slice(0, 10)
+	.map(
+		(setup, idx) =>
+			`${idx + 1}. ${setup.toString()} has ${setup.getStats()[options.best_in_slot!.stat]} ${
+				options.best_in_slot!.stat
+			}`
+	)
+	.join('\n')}`,
+				files: [await totalCanvas.encode('png')]
+			};
+		}
 		if ((options.equip || options.unequip) && !gearValidationChecks.has(userID)) {
 			const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();
 			if (itemsUnequippedAndRefunded.length > 0) {
