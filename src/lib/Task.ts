@@ -11,6 +11,7 @@ import { camdozaalSmithingTask } from '../tasks/minions/camdozaalActivity/camdoz
 import { castingTask } from '../tasks/minions/castingActivity';
 import { clueTask } from '../tasks/minions/clueActivity';
 import { collectingTask } from '../tasks/minions/collectingActivity';
+import { combatRingTask } from '../tasks/minions/combatRingActivity';
 import { constructionTask } from '../tasks/minions/constructionActivity';
 import { cookingTask } from '../tasks/minions/cookingActivity';
 import { craftingTask } from '../tasks/minions/craftingActivity';
@@ -178,6 +179,7 @@ export const tasks: MinionTask[] = [
 	toaTask,
 	underwaterAgilityThievingTask,
 	strongholdTask,
+	combatRingTask,
 	specificQuestTask,
 	camdozaalMiningTask,
 	camdozaalSmithingTask,

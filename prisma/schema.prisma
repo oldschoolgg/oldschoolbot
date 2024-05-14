@@ -940,6 +940,7 @@ enum activity_type_enum {
   TombsOfAmascut
   UnderwaterAgilityThieving
   StrongholdOfSecurity
+  CombatRing
   SpecificQuest
   CamdozaalFishing
   CamdozaalMining

@@ -45,7 +45,8 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'Easter'
 		| 'ShootingStars'
 		| 'HalloweenEvent'
-		| 'StrongholdOfSecurity';
+		| 'StrongholdOfSecurity'
+		| 'CombatRing';
 }
 
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
