@@ -32,6 +32,13 @@ export async function farmingContractCommand(userID: string, input?: ContractOpt
 	const plant = currentContract.hasContract ? findPlant(currentContract.plantToGrow) : null;
 
 	if (!input) {
+		if (!currentContract.hasContract) {
+			const bestTier = bestFarmingContractUserCanDo(user);
+			if (bestTier !== undefined) {
+				return farmingContractCommand(user.id, bestTier);
+			}
+		}
+
 		return `You have completed a total of ${currentContract.contractsCompleted} Farming Contracts!
 **Current Contract:** ${plant ? `${plant.name} - ${currentContract.difficultyLevel}` : 'None'}`;
 	}
@@ -150,9 +157,15 @@ export async function canRunAutoContract(user: MUser) {
 
 	// If the patch we're contracted to is ready, we can auto contract
 	const contractedPatch = farmingDetails.patchesDetailed.find(
-		p => p.patchName === plants.find(p => p.name === contract.plantToGrow)?.seedType
+		p => p.patchName === plants.find(pl => pl.name === contract.plantToGrow)?.seedType
 	);
 	return contractedPatch?.ready;
+}
+
+export function bestFarmingContractUserCanDo(user: MUser) {
+	return Object.entries(contractToFarmingLevel)
+		.sort((a, b) => b[1] - a[1])
+		.find(a => user.skillLevel('farming') >= a[1])?.[0] as ContractOption | undefined;
 }
 
 export async function autoContract(user: MUser, channelID: string, userID: string): CommandResponse {
@@ -163,9 +176,7 @@ export async function autoContract(user: MUser, channelID: string, userID: strin
 	const contract = mahojiUser.minion_farmingContract as FarmingContract | null;
 	const plant = contract?.hasContract ? findPlant(contract?.plantToGrow) : null;
 	const patch = farmingDetails.patchesDetailed.find(p => p.plant === plant);
-	const bestContractTierCanDo = Object.entries(contractToFarmingLevel)
-		.sort((a, b) => b[1] - a[1])
-		.find(a => user.skillLevel('farming') >= a[1])?.[0] as ContractOption | undefined;
+	const bestContractTierCanDo = bestFarmingContractUserCanDo(user);
 
 	if (user.owns('Seed pack')) {
 		const openResponse = await abstractedOpenCommand(null, user.id, ['seed pack'], 'auto');
@@ -177,11 +188,11 @@ export async function autoContract(user: MUser, channelID: string, userID: strin
 	if (!contract || !contract.hasContract) {
 		const contractResult = await farmingContractCommand(userID, bestContractTierCanDo);
 		const newUser = await mahojiUsersSettingsFetch(userID, { minion_farmingContract: true });
-		const contract = newUser.minion_farmingContract as FarmingContract | null;
-		if (!contract || !contract.plantToGrow) return contractResult;
+		const newContract = (newUser.minion_farmingContract ?? defaultFarmingContract) as FarmingContract;
+		if (!newContract.hasContract || !newContract.plantToGrow) return contractResult;
 		return farmingPlantCommand({
 			userID: user.id,
-			plantName: contract.plantToGrow,
+			plantName: newContract.plantToGrow,
 			pay: false,
 			autoFarmed: false,
 			quantity: null,
@@ -201,7 +212,7 @@ export async function autoContract(user: MUser, channelID: string, userID: strin
 		});
 	}
 
-	// If they have a contract, and its planted, and its ready, harvest it.
+	// If they have a contract, and its planted, and it's ready, harvest it.
 	if (patch.ready) {
 		return harvestCommand({ user, channelID, seedType: patch.patchName });
 	}
