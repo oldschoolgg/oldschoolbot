@@ -391,12 +391,16 @@ export function roughMergeMahojiResponse(
 ): InteractionReplyOptions {
 	const first = normalizeMahojiResponse(one);
 	const second = normalizeMahojiResponse(two);
+	const newContent: string[] = [];
+
 	const newResponse: InteractionReplyOptions = { content: '', files: [], components: [] };
 	for (const res of [first, second]) {
-		if (res.content) newResponse.content += `${res.content} `;
+		if (res.content) newContent.push(res.content);
 		if (res.files) newResponse.files = [...newResponse.files!, ...res.files];
 		if (res.components) newResponse.components = res.components;
 	}
+	newResponse.content = newContent.join('\n\n');
+
 	return newResponse;
 }
 
