@@ -81,7 +81,8 @@ export const gods = [
 			'Guthix robe legs',
 			'Guthix stole',
 			"Guthix d'hide boots",
-			"Guthix d'hide shield"
+			"Guthix d'hide shield",
+			'Peaceful blessing'
 		]),
 		friendlyMonsters: [
 			Monsters.Ent.id,
