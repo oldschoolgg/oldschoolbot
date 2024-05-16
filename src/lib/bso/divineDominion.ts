@@ -194,7 +194,8 @@ export const gods = [
 			"Armadyl d'hide boots",
 			"Armadyl d'hide shield",
 			'Armadyl godsword',
-			'Armadyl bracers'
+			'Armadyl bracers',
+			'Honourable blessing'
 		]),
 		friendlyMonsters: [Monsters.Kreearra.id, Monsters.Aviansie.id]
 	}
