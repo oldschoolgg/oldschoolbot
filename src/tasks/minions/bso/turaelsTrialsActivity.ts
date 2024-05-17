@@ -21,7 +21,7 @@ export function calculateTuraelsTrialsResult({ quantity, method }: { quantity: n
 		xpBank.add('magic', 89_000 * quantity);
 	}
 
-	xpBank.add('hitpoints', 89_000 * quantity);
+	xpBank.add('hitpoints', Math.floor((89_000 * quantity) / 3));
 
 	return {
 		xpBank,

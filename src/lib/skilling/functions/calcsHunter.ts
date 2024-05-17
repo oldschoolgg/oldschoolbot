@@ -1,4 +1,4 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum, Time } from 'e';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { percentChance } from '../../util';
@@ -8,12 +8,33 @@ export function calcLootXPHunting(
 	currentLevel: number,
 	creature: Creature,
 	quantity: number,
+	usingStaminaPotion: boolean,
+	graceful: boolean,
+	experienceScore: number,
 	noRandomness = false
 ): [number, number, number] {
 	let xpReceived = 0;
 	let successful = 0;
 
-	const chanceOfSuccess = creature.slope * currentLevel + creature.intercept;
+	let chanceOfSuccess = creature.slope * currentLevel + creature.intercept;
+
+	if (creature.name === 'Crystal impling') {
+		chanceOfSuccess = 20;
+		if (graceful) {
+			chanceOfSuccess *= 1.05;
+		}
+		if (usingStaminaPotion) {
+			chanceOfSuccess *= 1.2;
+		}
+
+		const timeInSeconds = creature.catchTime * Time.Second;
+		const experienceFactor = experienceScore / (Time.Hour / timeInSeconds);
+
+		const maxPercentIncrease = 10;
+		let percentIncrease = Math.min(Math.floor(experienceFactor), maxPercentIncrease);
+
+		chanceOfSuccess += chanceOfSuccess * (percentIncrease / 100);
+	}
 
 	let xpToAdd = creature.hunterXP + (creature.name === 'Herbiboar' ? 27 * (currentLevel - 80) : 0);
 

@@ -484,7 +484,8 @@ ${zygomiteFarmingSource
 									QP: 5000,
 									hasGraceful: true,
 									isUsingWebshooter: hasQuickTrap,
-									webshooterMessages: ''
+									webshooterMessages: '',
+									user
 								});
 
 								if (typeof inputResult === 'string') {
@@ -496,6 +497,7 @@ ${zygomiteFarmingSource
 									allItemsOwned: new Bank(),
 									skillsAsLevels,
 									usingHuntPotion: usingStamAndHunterPotions,
+									usingStaminaPotion: true,
 									bank,
 									quantity: inputResult.quantity,
 									duration,
@@ -512,7 +514,9 @@ ${zygomiteFarmingSource
 										? { didCharge: true, portent: { charges_remaining: 1000 } as any }
 										: { didCharge: false },
 									invincible: true,
-									noRandomness: true
+									noRandomness: true,
+									graceful: true,
+									experienceScore: 10
 								});
 								results += [
 									creature.name,
