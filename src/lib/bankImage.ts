@@ -26,7 +26,6 @@ import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
 import { divinationEnergies } from './bso/divination';
 import { TOBUniques } from './data/tob';
-<<<<<<< HEAD
 import { marketPriceOfBank, marketPriceOrBotPrice } from './marketPrices';
 =======
 import { SkillsEnum } from './skilling/types';
