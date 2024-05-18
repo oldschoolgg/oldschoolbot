@@ -1397,20 +1397,6 @@ export const allCollectionLogs: ICollection = {
 				alias: ['pet', 'pets'],
 				items: allPetsCL
 			},
-			Camdozaal: {
-				items: camdozaalCL
-			},
-			'Chompy Birds': {
-				alias: ['chompy', 'bgc', 'big chompy hunting', 'ch', 'chompyhunting', 'chompyhunt'],
-				kcActivity: 'BigChompyBirdHunting',
-				items: chompyBirdsCL
-			},
-			'Creature Creation': {
-				items: creatureCreationCL
-			},
-			'Fossil Island Notes': {
-				items: fossilIslandNotesCL
-			},
 			'Random Events': {
 				alias: ['random'],
 				items: randomEventsCL
