@@ -81,7 +81,8 @@ export const gods = [
 			'Guthix robe legs',
 			'Guthix stole',
 			"Guthix d'hide boots",
-			"Guthix d'hide shield"
+			"Guthix d'hide shield",
+			'Peaceful blessing'
 		]),
 		friendlyMonsters: [
 			Monsters.Ent.id,
@@ -193,7 +194,8 @@ export const gods = [
 			"Armadyl d'hide boots",
 			"Armadyl d'hide shield",
 			'Armadyl godsword',
-			'Armadyl bracers'
+			'Armadyl bracers',
+			'Honourable blessing'
 		]),
 		friendlyMonsters: [Monsters.Kreearra.id, Monsters.Aviansie.id]
 	}
