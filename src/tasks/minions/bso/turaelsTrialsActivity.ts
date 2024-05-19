@@ -37,7 +37,7 @@ export const turaelsTrialsTask: MinionTask = {
 		const user = await mUserFetch(userID);
 
 		const result = calculateTuraelsTrialsResult({ quantity, method });
-		
+
 		await incrementMinigameScore(user.id, 'turaels_trials', quantity);
 
 		await user.addItemsToBank({ items: result.loot, collectionLog: true });
