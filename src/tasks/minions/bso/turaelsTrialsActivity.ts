@@ -38,7 +38,7 @@ export const turaelsTrialsTask: MinionTask = {
 
 		const result = calculateTuraelsTrialsResult({ quantity, method });
 
-		await incrementMinigameScore(user.id, 'turaels_trials', quantity);
+const { newScore } = await incrementMinigameScore(userID, 'turaels_trials', quantity);
 
 		await user.addItemsToBank({ items: result.loot, collectionLog: true });
 		await trackClientBankStats('turaels_trials_loot_bank', result.loot);
@@ -50,16 +50,6 @@ export const turaelsTrialsTask: MinionTask = {
 			minimal: true,
 			source: 'TuraelsTrials'
 		});
-
-		await userStatsUpdate(
-			user.id,
-			{
-				TuraelsTrials: {
-					increment: quantity
-				}
-			},
-			{}
-		);
 
 		return handleTripFinish(
 			user,
