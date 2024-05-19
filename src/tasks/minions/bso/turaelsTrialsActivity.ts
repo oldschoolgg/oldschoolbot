@@ -55,7 +55,7 @@ export const turaelsTrialsTask: MinionTask = {
 			user.id,
 			{
 				turaels_trials: {
-					increment: quantity
+					increment: number
 				}
 			},
 			{}
