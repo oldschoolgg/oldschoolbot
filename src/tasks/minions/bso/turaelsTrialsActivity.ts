@@ -38,7 +38,7 @@ export const turaelsTrialsTask: MinionTask = {
 
 		const result = calculateTuraelsTrialsResult({ quantity, method });
 
-		const { newScore } = await incrementMinigameScore(userID, 'TuraelsTrials', quantity);
+		const { newScore } = await incrementMinigameScore(userID, 'turaels_trials', quantity);
 
 		await user.addItemsToBank({ items: result.loot, collectionLog: true });
 		await trackClientBankStats('turaels_trials_loot_bank', result.loot);
@@ -54,7 +54,7 @@ export const turaelsTrialsTask: MinionTask = {
 		return handleTripFinish(
 			user,
 			channelID,
-			`${user}, your minion finished slaying ${quantity}x superiors in Turaels Trials. ${xpResults.join(', ')}`,
+			`${user}, your minion finished slaying ${quantity}x superiors in Turaels Trials. Your new total is ${newScore}. ${xpResults.join(', ')}`,
 			undefined,
 			data,
 			result.loot
