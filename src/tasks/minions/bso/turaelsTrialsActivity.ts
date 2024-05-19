@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 
 import { TuraelsTrialsMethod } from '../../../lib/bso/turaelsTrials';
-import { XPBank } from '../../../lib/structures/Banks';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { XPBank } from '../../../lib/structures/Banks';
 import { TuraelsTrialsOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { trackClientBankStats, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
