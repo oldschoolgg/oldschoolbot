@@ -54,8 +54,8 @@ export const turaelsTrialsTask: MinionTask = {
 		await userStatsUpdate(
 			user.id,
 			{
-				turaels_trials: {
-					increment: number
+				TuraelsTrials: {
+					increment: quantity
 				}
 			},
 			{}
