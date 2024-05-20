@@ -1257,17 +1257,6 @@ export const allCollectionLogs: ICollection = {
 			Camdozaal: {
 				items: camdozaalCL
 			},
-			"Champion's Challenge": {
-				alias: ['champion', 'champion scrolls', 'champion scroll', 'scroll', 'scrolls'],
-				items: championsChallengeCL,
-				isActivity: true,
-				fmtProg: mgProg('champions_challenge')
-			},
-			'Chaos Druids': {
-				allItems: Monsters.ElderChaosDruid.allItems,
-				kcActivity: Monsters.ElderChaosDruid.name,
-				items: chaosDruisCL
-			},
 			'Chompy Birds': {
 				alias: ['chompy', 'bgc', 'big chompy hunting', 'ch', 'chompyhunting', 'chompyhunt'],
 				kcActivity: 'BigChompyBirdHunting',
@@ -1396,20 +1385,6 @@ export const allCollectionLogs: ICollection = {
 			'All Pets': {
 				alias: ['pet', 'pets'],
 				items: allPetsCL
-			},
-			Camdozaal: {
-				items: camdozaalCL
-			},
-			'Chompy Birds': {
-				alias: ['chompy', 'bgc', 'big chompy hunting', 'ch', 'chompyhunting', 'chompyhunt'],
-				kcActivity: 'BigChompyBirdHunting',
-				items: chompyBirdsCL
-			},
-			'Creature Creation': {
-				items: creatureCreationCL
-			},
-			'Fossil Island Notes': {
-				items: fossilIslandNotesCL
 			},
 			'Random Events': {
 				alias: ['random'],
