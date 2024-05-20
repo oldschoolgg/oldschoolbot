@@ -84,12 +84,13 @@ export const XPLamps: IXPLamp[] = [
 		minimumLevel: 1,
 		allowedSkills: [SkillsEnum.Magic]
 	},
+	/*	Needs OSJS Update
 	{
 		itemID: 28_820,
 		amount: 5000,
 		name: 'Antique lamp (defender of varrock)',
 		minimumLevel: 1
-	},
+	},*/
 	{
 		itemID: itemID('Antique lamp (easy ca)'),
 		amount: 5000,
