@@ -181,7 +181,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.String,
 					name: 'name',
-					description: 'The name of the quest (optional.',
+					description: 'The name of the quest (optional).',
 					autocomplete: async (_value: string, user: User) => {
 						const mUser = await mUserFetch(user.id);
 						let list = quests
