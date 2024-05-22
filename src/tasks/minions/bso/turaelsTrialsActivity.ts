@@ -56,9 +56,9 @@ export const turaelsTrialsTask: MinionTask = {
 		return handleTripFinish(
 			user,
 			channelID,
-			`${user}, your minion finished slaying; ${quantity}x superiors in ${name}.\n**Your ${name} KC is now ${newScore}**.\n${xpResults.join(
+			`${user}, your minion finished slaying; ${quantity}x superiors in ${name}.\n\n**Your ${name} KC is now ${newScore}**.\n\n${xpResults.join(
 				', '
-			)}`,
+			)}`\n,
 			undefined,
 			data,
 			result.loot
