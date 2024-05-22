@@ -12,10 +12,10 @@ export function calculateTuraelsTrialsResult({ quantity, method }: { quantity: n
 	const xpBank = new XPBank().add('slayer', 36_009 * quantity);
 
 	if (method === 'melee') {
-		const meleeXP = Math.floor((89_000 * quantity) / 3);
-		xpBank.add('attack', meleeXP);
-		xpBank.add('strength', meleeXP);
-		xpBank.add('defence', meleeXP);
+			const meleeXP = Math.floor((89_000 * quantity) / 3);
+			xpBank.add('attack', meleeXP);
+			xpBank.add('strength', meleeXP);
+			xpBank.add('defence', meleeXP);
 	} else if (method === 'range') {
 		xpBank.add('ranged', 89_000 * quantity);
 	} else {
@@ -56,9 +56,11 @@ export const turaelsTrialsTask: MinionTask = {
 		return handleTripFinish(
 			user,
 			channelID,
-			`${user}, your minion finished slaying; ${quantity}x superiors in ${name}.\n**Your ${name} KC is now ${newScore}**.\n\n${xpResults.join(
-				', '
-			)}\n`,
+			`${user}, your minion finished slaying ${quantity}x superiors in ${name}.
+**Your ${name} KC is now ${newScore}**.
+
+${xpResults.join(', ')}
+`,
 			undefined,
 			data,
 			result.loot
