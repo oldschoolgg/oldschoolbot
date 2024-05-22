@@ -39,8 +39,8 @@ export const turaelsTrialsTask: MinionTask = {
 		const result = calculateTuraelsTrialsResult({ quantity, method });
 
 		const { newScore } = await incrementMinigameScore(userID, 'turaels_trials', quantity);
-		
-		const name = "Turaels Trials";
+
+		const name = 'Turaels Trials';
 
 		await user.addItemsToBank({ items: result.loot, collectionLog: true });
 		await trackClientBankStats('turaels_trials_loot_bank', result.loot);
