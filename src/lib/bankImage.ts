@@ -298,7 +298,7 @@ export const bankFlags = [
 ] as const;
 export type BankFlag = (typeof bankFlags)[number];
 
-export class BankImageTask {
+class BankImageTask {
 	public itemIconsList: Set<number>;
 	public itemIconImagesCache: Map<number, Image>;
 	public backgroundImages: BankBackground[] = [];
@@ -855,7 +855,6 @@ export class BankImageTask {
 		if (!isTransparent && noBorder !== 1) {
 			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
 		}
-
 		await this.drawItems(
 			ctx,
 			compact,
@@ -1046,6 +1045,5 @@ declare global {
 		}
 	}
 }
-export const bankImageTask = new BankImageTask();
-global.bankImageGenerator = bankImageTask;
+global.bankImageGenerator = new BankImageTask();
 bankImageGenerator.init();
