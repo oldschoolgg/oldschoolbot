@@ -15,7 +15,7 @@ import { toaHelpCommand } from '../simulation/toa';
 import { ItemBank } from '../types';
 import { formatDuration, stringMatches } from '../util';
 import { updateGiveawayMessage } from './giveaway';
-import { interactionReply } from './interactionReply';
+import { deferInteraction, interactionReply } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';
 import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
 
@@ -324,6 +324,8 @@ export async function interactionHook(interaction: Interaction) {
 	});
 	const id = interaction.customId;
 	const userID = interaction.user.id;
+
+	await deferInteraction(interaction);
 
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
