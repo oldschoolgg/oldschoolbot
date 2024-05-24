@@ -325,6 +325,14 @@ export async function interactionHook(interaction: Interaction) {
 	const id = interaction.customId;
 	const userID = interaction.user.id;
 
+	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
+	if (cd !== null) {
+		return interactionReply(interaction, {
+			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(cd, true)}.`,
+			ephemeral: true
+		});
+	}
+
 	await deferInteraction(interaction);
 
 	const user = await mUserFetch(userID);
@@ -354,14 +362,6 @@ export async function interactionHook(interaction: Interaction) {
 		interaction,
 		continueDeltaMillis: null
 	};
-
-	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
-	if (cd !== null) {
-		return interactionReply(interaction, {
-			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(cd, true)}.`,
-			ephemeral: true
-		});
-	}
 
 	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();
 	const timeLimit = reactionTimeLimit(user.perkTier());
