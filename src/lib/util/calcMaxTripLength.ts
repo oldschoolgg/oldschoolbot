@@ -53,6 +53,7 @@ export function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 		case 'Moktang':
 		case 'DepthsOfAtlantis':
 		case 'Naxxus':
+		case 'TuraelsTrials':
 		case 'Dungeoneering': {
 			masterHPCapeBoost = 10;
 			regularHPBoost = true;

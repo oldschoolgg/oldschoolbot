@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { TuraelsTrialsMethod } from '../../../lib/bso/turaelsTrials';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { XPBank } from '../../../lib/structures/Banks';
 import { TuraelsTrialsOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -21,7 +22,7 @@ export function calculateTuraelsTrialsResult({ quantity, method }: { quantity: n
 		xpBank.add('magic', 89_000 * quantity);
 	}
 
-	xpBank.add('hitpoints', 89_000 * quantity);
+	xpBank.add('hitpoints', Math.floor((89_000 * quantity) / 3));
 
 	return {
 		xpBank,
@@ -37,6 +38,8 @@ export const turaelsTrialsTask: MinionTask = {
 
 		const result = calculateTuraelsTrialsResult({ quantity, method });
 
+		const { newScore } = await incrementMinigameScore(userID, 'turaels_trials', quantity);
+
 		await user.addItemsToBank({ items: result.loot, collectionLog: true });
 		await trackClientBankStats('turaels_trials_loot_bank', result.loot);
 		await userStatsBankUpdate(user.id, 'turaels_trials_loot_bank', result.loot);
@@ -51,7 +54,9 @@ export const turaelsTrialsTask: MinionTask = {
 		return handleTripFinish(
 			user,
 			channelID,
-			`${user}, your minion finished slaying ${quantity}x superiors in Turaels Trials. ${xpResults.join(', ')}`,
+			`${user}, your minion finished slaying ${quantity}x superiors in Turaels Trials. **Your KC is: __${newScore}__**. ${xpResults.join(
+				', '
+			)}`,
 			undefined,
 			data,
 			result.loot

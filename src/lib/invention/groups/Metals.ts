@@ -24,5 +24,5 @@ export const Metals: DisassemblySourceGroup = {
 		{ item: i('Rune dart tip'), lvl: 9 },
 		{ item: i('Dragon dart tip'), lvl: 80, flags: new Set(['orikalkum']) }
 	],
-	parts: { strong: 10, plated: 10, heavy: 10, metallic: 70 }
+	parts: { strong: 10, plated: 20, heavy: 10, metallic: 60 }
 };
