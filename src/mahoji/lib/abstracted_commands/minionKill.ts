@@ -1121,7 +1121,8 @@ export async function minionKillCommand(
 			wildyPeak!,
 			monster,
 			duration,
-			hasWildySupplies
+			hasWildySupplies,
+			cannonMulti
 		);
 		thePkCount = pkCount;
 		hasDied = died;
