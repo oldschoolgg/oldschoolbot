@@ -901,6 +901,10 @@ async function patronTriggerDoubleLoot(user: MUser) {
 	if (perkTier < PerkTier.Five) {
 		return 'Only T4, T5 or T6 patrons can use this command.';
 	}
+	if (!isPrimaryPatron(user)) {
+		return 'You can only do this from your primary account.';
+	}
+
 	const lastTime = user.user.last_patron_double_time_trigger;
 	const differenceSinceLastUsage = lastTime ? Date.now() - lastTime.getTime() : null;
 	if (differenceSinceLastUsage && differenceSinceLastUsage < PATRON_DOUBLE_LOOT_COOLDOWN) {
