@@ -56,7 +56,7 @@ export const turaelsTrialsTask: MinionTask = {
 			channelID,
 			`${user}, your minion finished slaying ${quantity}x superiors in Turaels Trials.\n**Your Turaels Trials KC is now ${newScore}**.\n\n${xpResults.join(
 				', '
-			)}\n`,
+			)}`,
 			undefined,
 			data,
 			result.loot
