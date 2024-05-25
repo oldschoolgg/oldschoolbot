@@ -54,7 +54,7 @@ function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 }
 
 export function makeOpenCasketButton(tier: ClueTier) {
-	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
+	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>
 	const id: GlobalInteractionAction = `OPEN_${name}_CASKET`;
 	return new ButtonBuilder()
 		.setCustomId(id)
@@ -310,6 +310,8 @@ async function handleGEButton(user: MUser, id: string, interaction: ButtonIntera
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
 
+	await deferInteraction(interaction);
+
 	if (globalClient.isShuttingDown) {
 		return interactionReply(interaction, {
 			content: 'The bot is currently rebooting, please try again in a couple minutes.',
@@ -332,8 +334,6 @@ export async function interactionHook(interaction: Interaction) {
 			ephemeral: true
 		});
 	}
-
-	await deferInteraction(interaction);
 
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
@@ -547,11 +547,7 @@ export async function interactionHook(interaction: Interaction) {
 				return interactionReply(interaction, str);
 			}
 			return interactionReply(interaction, {
-				content: `${
-					star && star.expiry < Date.now()
-						? 'The Crashed Star has expired!'
-						: `That Crashed Star was not discovered by ${user.minionName}.`
-				}`,
+				content: `${ 					star && star.expiry < Date.now() 						? 'The Crashed Star has expired!' 						: `That Crashed Star was not discovered by ${user.minionName}.` 				}`,
 				ephemeral: true
 			});
 		}
