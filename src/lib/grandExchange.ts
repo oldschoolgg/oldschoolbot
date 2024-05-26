@@ -229,6 +229,10 @@ class GrandExchangeSingleton {
 		this.locked = true;
 	}
 
+	getItemBuyLimit(item: Item) {
+		return item.buy_limit ?? this.config.buyLimit.fallbackBuyLimit(item);
+	}
+
 	async checkBuyLimitForListing(geListing: GEListing) {
 		const interval = this.getInterval();
 
@@ -248,7 +252,7 @@ class GrandExchangeSingleton {
 		for (const tx of allActiveListingsInTimePeriod) sanityCheckTransaction(tx);
 
 		const item = getOSItem(geListing.item_id);
-		const buyLimit = item.buy_limit ?? this.config.buyLimit.fallbackBuyLimit(item);
+		const buyLimit = this.getItemBuyLimit(item);
 		const totalSold = sumArr(allActiveListingsInTimePeriod.map(listing => listing.quantity_bought));
 		const remainingItemsCanBuy = Math.max(0, buyLimit - totalSold);
 
