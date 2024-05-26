@@ -436,7 +436,8 @@ export const tripHandlers = {
 			return {
 				name: autocompleteMonsters.find(i => i.id === data.monsterID)?.name ?? data.monsterID.toString(),
 				quantity: data.iQty,
-				method
+				method,
+				wilderness: data.isInWilderness
 			};
 		}
 	},

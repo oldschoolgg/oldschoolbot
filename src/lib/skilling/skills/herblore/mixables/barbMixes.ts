@@ -33,10 +33,7 @@ export const barbMixes: Mixable[] = [
 		aliases: ['Relicyms mix roe', 'Relicyms mix(2)', 'Relicyms mix 2 roe'],
 		level: 9,
 		xp: 14,
-		inputItems: new Bank({
-			4846: 1,
-			Roe: 1
-		}),
+		inputItems: new Bank().add("Relicym's balm(2)").add('Roe'),
 		tickRate: 1,
 		bankTimePerPotion: 0.088
 	},
