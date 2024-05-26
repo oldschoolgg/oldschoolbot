@@ -19,7 +19,6 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { itemOption, ownedItemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { patronMsg } from '../mahojiSettings';
 
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
@@ -210,12 +209,12 @@ export const geCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'view',
-			description: 'Lookup the market price of an item on the g.e',
+			description: 'Lookup information about an item on the g.e',
 			options: [
 				{
 					...itemOption(item => Boolean(item.tradeable_on_ge)),
-					name: 'price_history',
-					description: 'View the price history of an item.'
+					name: 'item',
+					description: 'The item to view.'
 				}
 			]
 		}
@@ -243,7 +242,7 @@ export const geCommand: OSBMahojiCommand = {
 		};
 		stats?: {};
 		price?: { item: string };
-		view?: { price_history?: string };
+		view?: { item?: string };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
@@ -384,12 +383,22 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 		}
 
 		if (options.view) {
-			if (options.view.price_history) {
-				const item = getItem(options.view.price_history);
+			if (options.view.item) {
+				const item = getItem(options.view.item);
 				if (!item) return 'Invalid item.';
 				if (!itemIsTradeable(item.id)) return 'That item is not tradeable on the Grand Exchange.';
+				const priceData = marketPricemap.get(item.id);
+				let baseMessage = `**${item.name}**
+**Buy Limit Per 4 hours:** ${GrandExchange.getItemBuyLimit(item).toLocaleString()}`;
+				if (priceData) {
+					baseMessage += `
+**Market Price:** ${toKMB(priceData.guidePrice)} (${priceData.guidePrice.toLocaleString()}) GP.
+**Recent Price:** ${toKMB(priceData.averagePriceLast100)} (${priceData.averagePriceLast100.toLocaleString()}) GP.
+
+`;
+				}
 				if (user.perkTier() < PerkTier.Four) {
-					return patronMsg(PerkTier.Four);
+					return baseMessage;
 				}
 				let result = await prisma.$queryRawUnsafe<
 					{ total_quantity_bought: number; average_price_per_item_before_tax: number; week: Date }[]
@@ -412,7 +421,7 @@ GROUP BY
 ORDER BY
   week ASC;
 `);
-				if (result.length < 1) return 'No price history found for that item.';
+				if (result.length < 1) return baseMessage;
 				if (result[0].average_price_per_item_before_tax <= 1_000_000) {
 					result = result.filter(i => i.total_quantity_bought > 1);
 				}
@@ -424,6 +433,7 @@ ORDER BY
 					false
 				);
 				return {
+					content: baseMessage,
 					files: [buffer]
 				};
 			}
