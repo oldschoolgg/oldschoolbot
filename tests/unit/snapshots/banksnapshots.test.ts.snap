@@ -78,7 +78,7 @@ exports[`BSO Buyables 1`] = `
       "feather",
     ],
     "gpCost": 50,
-    "ironmanPrice": 2,
+    "ironmanPrice": 3,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7782,7 +7782,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7796,7 +7796,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7810,7 +7810,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7824,7 +7824,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7838,7 +7838,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7852,7 +7852,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7866,7 +7866,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7880,7 +7880,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7894,7 +7894,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7908,7 +7908,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7922,7 +7922,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7936,7 +7936,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7950,7 +7950,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7964,7 +7964,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7978,7 +7978,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7992,7 +7992,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8006,7 +8006,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8020,7 +8020,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8034,7 +8034,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8048,7 +8048,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8062,7 +8062,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8076,7 +8076,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8090,7 +8090,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8104,7 +8104,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8118,7 +8118,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8132,7 +8132,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8146,7 +8146,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8160,7 +8160,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8174,7 +8174,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8188,7 +8188,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8202,7 +8202,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8216,7 +8216,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8230,7 +8230,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8244,7 +8244,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8258,7 +8258,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8272,7 +8272,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8286,7 +8286,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8300,7 +8300,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8314,7 +8314,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8328,7 +8328,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8342,7 +8342,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8356,7 +8356,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8370,7 +8370,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8384,7 +8384,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8398,7 +8398,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8412,7 +8412,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8426,7 +8426,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8440,7 +8440,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8454,7 +8454,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8468,7 +8468,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,

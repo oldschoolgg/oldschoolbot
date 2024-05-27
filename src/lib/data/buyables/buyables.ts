@@ -816,7 +816,7 @@ const Buyables: Buyable[] = [
 		name: 'Feather',
 		aliases: ['feather'],
 		gpCost: 50,
-		ironmanPrice: 2
+		ironmanPrice: 3
 	},
 	{
 		name: 'Shield right half',
@@ -1218,7 +1218,7 @@ for (const cape of allTeamCapes) {
 	Buyables.push({
 		name: cape.name,
 		outputItems: new Bank().add(cape.id),
-		gpCost: 15_000
+		gpCost: 20_000
 	});
 }
 
