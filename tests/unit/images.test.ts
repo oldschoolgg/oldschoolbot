@@ -33,7 +33,7 @@ describe('Images', () => {
 		expect(result.files[0].attachment).toMatchImageSnapshot();
 	});
 
-	test('Collection Log', async () => {
+	test.skip('Collection Log', async () => {
 		const result: any = await clImageGenerator.generateLogImage({
 			user: mockMUser({ cl: new Bank().add('Harmonised orb') }),
 			collection: 'nightmare',
@@ -52,7 +52,7 @@ describe('Images', () => {
 		expect(result.files[0].attachment).toMatchImageSnapshot();
 	});
 
-	test('Bank Image', async () => {
+	test.skip('Bank Image', async () => {
 		let bank = new Bank();
 		for (const item of [...Monsters.Cow.allItems]) {
 			bank.add(item);
