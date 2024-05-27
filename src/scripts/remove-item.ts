@@ -8,17 +8,6 @@ import { GearSetupTypes } from '../lib/gear/types';
 
 /* PSQL Function that needs to be created */
 const extraFunctions = `
-CREATE OR REPLACE FUNCTION remove_jsonb_keys(data jsonb, keys text[])
-RETURNS jsonb LANGUAGE plpgsql AS $$
-declare
-	key text;
-BEGIN
-    FOREACH key IN ARRAY keys LOOP
-        data := data - key;
-    END LOOP;
-    RETURN data;
-END;
-$$;
 CREATE OR REPLACE FUNCTION array_remove_multiple(original_array anyarray, values_to_remove anyarray)
 RETURNS anyarray AS $$
 BEGIN
@@ -49,7 +38,7 @@ FINAL_QUERY += GearSetupTypes.map(gearType =>
 	.flat()
 	.join('\n');
 
-const removeFromBankQuery = (column: string) => `"${column}" = remove_jsonb_keys("${column}"::jsonb, ${arrayToRemove})`;
+const removeFromBankQuery = (column: string) => `"${column}" = "${column}"::jsonb - ${arrayToRemove}`;
 const removeFromArrayQuery = (column: string) =>
 	`"${column}" = array_remove_multiple("${column}", ${intArrayToRemove})`;
 
