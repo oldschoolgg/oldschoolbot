@@ -816,7 +816,7 @@ const Buyables: Buyable[] = [
 		name: 'Feather',
 		aliases: ['feather'],
 		gpCost: 50,
-		ironmanPrice: 2
+		ironmanPrice: 3
 	},
 	{
 		name: 'Shield right half',
