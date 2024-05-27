@@ -1,4 +1,3 @@
-import 'source-map-support/register';
 import './lib/customItems/customItems';
 import './lib/data/itemAliases';
 import './lib/crons';

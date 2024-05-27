@@ -48,7 +48,8 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 
 	// Track names of re-mapped items to break the link:
 	const oldItem = Items.get(id);
-	if (oldItem) {
+	if (oldItem && deepCleanString(oldItem.name) !== deepCleanString(name)) {
+		// If the custom item has the same name as the original item don't break the link
 		overwrittenItemNames.set(deepCleanString(oldItem.name), oldItem);
 	}
 	Items.set(id, data);

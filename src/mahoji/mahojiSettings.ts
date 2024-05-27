@@ -66,7 +66,10 @@ export function getMahojiBank(user: { bank: Prisma.JsonValue }) {
 	return new Bank(user.bank as ItemBank);
 }
 
-export async function trackClientBankStats(key: 'clue_upgrader_loot' | 'portable_tanner_loot', newItems: Bank) {
+export async function trackClientBankStats(
+	key: 'clue_upgrader_loot' | 'portable_tanner_loot' | 'turaels_trials_cost_bank' | 'turaels_trials_loot_bank',
+	newItems: Bank
+) {
 	const currentTrackedLoot = await mahojiClientSettingsFetch({ [key]: true });
 	await mahojiClientSettingsUpdate({
 		[key]: new Bank(currentTrackedLoot[key] as ItemBank).add(newItems).bank

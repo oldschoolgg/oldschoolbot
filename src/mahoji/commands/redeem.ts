@@ -1,5 +1,5 @@
-import { bold } from '@discordjs/builders';
 import { ProductID, products } from '@oldschoolgg/toolkit';
+import { bold } from 'discord.js';
 import { notEmpty, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 

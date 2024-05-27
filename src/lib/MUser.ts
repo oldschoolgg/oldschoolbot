@@ -1,6 +1,7 @@
-import { userMention } from '@discordjs/builders';
+import { mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
+import { userMention } from 'discord.js';
 import { calcWhatPercent, objectEntries, percentChance, randArrItem, sumArr, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
@@ -17,6 +18,7 @@ import { badges, BitField, Emoji, PerkTier, projectiles, usernameCache } from '.
 import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
+import { degradeableItems } from './degradeableItems';
 import { gearImages } from './gear/functions/generateGearImage';
 import { GearSetup, GearSetupType, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
@@ -39,6 +41,7 @@ import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
 import { BankSortMethod } from './sorts';
+import { ChargeBank, XPBank } from './structures/Banks';
 import { defaultGear, Gear } from './structures/Gear';
 import { MTame } from './structures/MTame';
 import { ItemBank, Skills } from './types';
@@ -257,6 +260,20 @@ export class MUserClass {
 
 	addXP(params: AddXpParams) {
 		return addXP(this, params);
+	}
+
+	async addXPBank(params: Omit<AddXpParams, 'amount' | 'skillName'> & { bank: XPBank }) {
+		const results = [];
+		for (const [id, qty] of params.bank.entries()) {
+			results.push(
+				await this.addXP({
+					...params,
+					amount: qty,
+					skillName: id as SkillsEnum
+				})
+			);
+		}
+		return results;
 	}
 
 	async getKC(monsterID: number) {
@@ -502,6 +519,32 @@ GROUP BY data->>'clueID';`);
 		const blowpipe = this.user.blowpipe as any as BlowpipeData;
 		validateBlowpipeData(blowpipe);
 		return blowpipe;
+	}
+
+	hasCharges(chargeBank: ChargeBank) {
+		const failureReasons: string[] = [];
+		for (const [keyName, chargesToDegrade] of chargeBank.entries()) {
+			const degradeableItem = degradeableItems.find(i => i.settingsKey === keyName);
+			if (!degradeableItem) {
+				throw new Error(`Invalid degradeable item key: ${keyName}`);
+			}
+			const currentCharges = this.user[degradeableItem.settingsKey];
+			const newCharges = currentCharges - chargesToDegrade;
+			if (newCharges < 0) {
+				failureReasons.push(
+					`You don't have enough ${degradeableItem.item.name} charges, you need ${chargesToDegrade}, but you have only ${currentCharges}.`
+				);
+			}
+		}
+		if (failureReasons.length > 0) {
+			return {
+				hasCharges: false,
+				fullUserString: `${failureReasons.join(', ')}
+
+Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
+			};
+		}
+		return { hasCharges: true };
 	}
 
 	percentOfBossCLFinished() {

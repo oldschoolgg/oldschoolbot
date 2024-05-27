@@ -258,12 +258,13 @@ export const monsterTask: MinionTask = {
 				});
 
 				let reEquipedItems = false;
-				if (!user.bank.has(calc.lostItems)) {
+				const itemsToReplace = new Bank().add(calc.lostItems).add(calc.gearThatBroke);
+				if (!user.bank.has(itemsToReplace)) {
 					await user.update({
 						gear_wildy: calc.newGear as Prisma.InputJsonObject
 					});
 				} else {
-					await user.transactItems({ itemsToRemove: calc.lostItems });
+					await user.transactItems({ itemsToRemove: itemsToReplace });
 					reEquipedItems = true;
 				}
 

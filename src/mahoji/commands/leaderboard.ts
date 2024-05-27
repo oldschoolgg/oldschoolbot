@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { EmbedBuilder } from '@discordjs/builders';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Prisma, UserStats } from '@prisma/client';
-import { ChatInputCommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { calcWhatPercent, chunk, objectValues, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
@@ -967,8 +966,8 @@ ${Object.entries(taskObj)
 		const taskObj = allLeagueTasks.find(t => t.id === parseInt(task[0]))!;
 		return `${taskObj.name}: ${task[1]} users completed`;
 	})
-	.join('\n')}	
-	
+	.join('\n')}
+
 **Most Commonly Completed Tasks:**
 ${Object.entries(taskObj)
 	.sort((a, b) => b[1] - a[1])

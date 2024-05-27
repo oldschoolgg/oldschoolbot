@@ -2389,6 +2389,11 @@ const Createables: Createable[] = [
 			crafting: 35
 		}
 	},
+	{
+		name: 'Venator bow (uncharged)',
+		inputItems: new Bank().add('Venator shard', 5).freeze(),
+		outputItems: new Bank().add('Venator bow (uncharged)').freeze()
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,

@@ -1,7 +1,6 @@
-import { EmbedBuilder } from '@discordjs/builders';
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, Message, time } from 'discord.js';
+import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, EmbedBuilder, Message, time } from 'discord.js';
 import { isFunction, Time } from 'e';
 import { Items } from 'oldschooljs';
 

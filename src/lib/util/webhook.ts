@@ -1,8 +1,8 @@
-import { EmbedBuilder } from '@discordjs/builders';
 import { splitMessage } from '@oldschoolgg/toolkit';
 import {
 	AttachmentBuilder,
 	BaseMessageOptions,
+	EmbedBuilder,
 	Message,
 	PartialGroupDMChannel,
 	PermissionsBitField,

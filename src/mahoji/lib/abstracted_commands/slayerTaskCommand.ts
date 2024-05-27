@@ -84,8 +84,8 @@ function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 	return '';
 }
 
-export function slayerListBlocksCommand(mahojiUser: MUser) {
-	const maxBlocks = calcMaxBlockedTasks(mahojiUser);
+export async function slayerListBlocksCommand(mahojiUser: MUser) {
+	const maxBlocks = await calcMaxBlockedTasks(mahojiUser);
 	const myBlockList = mahojiUser.user.slayer_blocked_ids;
 
 	let outstr =
@@ -201,7 +201,6 @@ async function returnSuccess(channelID: string, user: MUser, content: string) {
 					interaction: selection,
 					...options
 				});
-				return;
 			}
 		}
 	} catch (err: unknown) {
@@ -382,7 +381,7 @@ export async function slayerSkipTaskCommand({
 	const user = await mUserFetch(userID);
 	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
 	const myBlockList = user.user.slayer_blocked_ids;
-	const maxBlocks = calcMaxBlockedTasks(user);
+	const maxBlocks = await calcMaxBlockedTasks(user);
 	if (minionIsBusy(user.id)) {
 		interactionReply(interaction, 'You cannot change your task while your minion is busy.');
 		return;
@@ -452,7 +451,6 @@ export async function slayerSkipTaskCommand({
 			});
 		}
 		interactionReply(interaction, resultMessage);
-		return;
 	} catch (e) {
 		logError(e, {
 			user_id: user.id.toString(),

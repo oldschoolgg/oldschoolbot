@@ -9,13 +9,14 @@ import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntG
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { trackLoot } from '../../lib/lootTrack';
 import { monkeyTiers } from '../../lib/monkeyRumble';
+import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { Creature, HunterTechniqueEnum } from '../../lib/skilling/types';
 import { Peak } from '../../lib/tickers';
 import { Skills } from '../../lib/types';
 import { HunterActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, stringMatches } from '../../lib/util';
+import { formatDuration, hasSkillReqs, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -38,7 +39,8 @@ export function calculateHunterInput({
 	isUsingQuickTrap,
 	quickTrapMessages,
 	isUsingWebshooter,
-	webshooterMessages
+	webshooterMessages,
+	user
 }: {
 	creature: Creature;
 	bank: Bank;
@@ -56,6 +58,7 @@ export function calculateHunterInput({
 	quickTrapMessages: string | undefined;
 	isUsingWebshooter: boolean;
 	webshooterMessages: string | undefined;
+	user: MUser;
 }) {
 	const messages: string[] = [];
 	let traps = 1;
@@ -75,6 +78,18 @@ export function calculateHunterInput({
 		)
 	) {
 		return "You can't hunt Chimpchompa's! You need to be wearing a greegree.";
+	}
+
+	let crystalImpling = creature.name === 'Crystal impling';
+
+	if (crystalImpling) {
+		const [hasReqs, reason] = hasSkillReqs(user, soteSkillRequirements);
+		if (!hasReqs) {
+			return `To hunt ${creature.name}, you need: ${reason}.`;
+		}
+		if (user.QP < 150) {
+			return `To hunt ${creature.name}, you need 150 QP.`;
+		}
 	}
 
 	if (skillsAsLevels.hunter + (isUsingHunterPotion ? 2 : 0) < creature.level) {
@@ -165,9 +180,19 @@ export function calculateHunterInput({
 
 	let maxQuantity = Math.floor(maxTripLength / timePerCatch);
 	let quantity = quantityInput;
-	if (!quantity) quantity = maxQuantity;
+	if (!quantity) {
+		if (crystalImpling) {
+			quantity = Math.floor(maxTripLength / Time.Minute);
+		} else {
+			quantity = maxQuantity;
+		}
+	}
 
 	let duration = Math.floor(quantity * timePerCatch);
+
+	if (crystalImpling) {
+		duration = Math.floor(quantity * Time.Minute);
+	}
 
 	if (duration > maxTripLength) {
 		return `You can't go on trips longer than ${formatDuration(
@@ -191,11 +216,11 @@ export function calculateHunterInput({
 		}
 	}
 
-	// If creatures Herbiboar or Razor-backed kebbit use Stamina potion(4)
+	// If creatures Herbiboar or Razor-backed kebbit or Crystal Impling use Stamina potion(4)
 	if (shouldUseStaminaPotions) {
-		if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID) {
+		if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID || crystalImpling) {
 			let staminaPotionQuantity =
-				creature.id === HERBIBOAR_ID
+				creature.id === HERBIBOAR_ID || crystalImpling
 					? Math.round(duration / (9 * Time.Minute))
 					: Math.round(duration / (18 * Time.Minute));
 
@@ -312,10 +337,12 @@ export const huntCommand: OSBMahojiCommand = {
 
 		if (!creature) return "That's not a valid creature to hunt.";
 
+		let crystalImpling = creature.name === 'Crystal impling';
+
 		const maxTripLength = calcMaxTripLength(user, 'Hunter');
 		const elligibleForQuickTrap =
 			creature.huntTechnique === HunterTechniqueEnum.BoxTrapping && user.owns('Quick trap');
-		const elligibleForWebshooter = user.owns('Webshooter');
+		const elligibleForWebshooter = user.owns('Webshooter') && !crystalImpling;
 
 		const hunterInputArgs: Parameters<typeof calculateHunterInput>['0'] = {
 			creature,
@@ -333,7 +360,8 @@ export const huntCommand: OSBMahojiCommand = {
 			isUsingQuickTrap: elligibleForQuickTrap,
 			quickTrapMessages: undefined,
 			isUsingWebshooter: elligibleForWebshooter,
-			webshooterMessages: undefined
+			webshooterMessages: undefined,
+			user
 		};
 
 		const preResult = calculateHunterInput({
@@ -401,9 +429,9 @@ export const huntCommand: OSBMahojiCommand = {
 			type: 'Hunter'
 		});
 
-		let response = `${user.minionName} is now ${creature.huntTechnique} ${quantity}x ${
-			creature.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+		let response = `${user.minionName} is now ${crystalImpling ? 'hunting' : `${creature.huntTechnique}`} ${
+			crystalImpling ? '' : ` ${quantity}x `
+		}${creature.name}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (messages.length > 0) {
 			response += `\n\n${messages.join(', ')}.`;

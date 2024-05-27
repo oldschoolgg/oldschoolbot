@@ -11,6 +11,7 @@ import {
 } from '../../lib/baxtorianBathhouses';
 import { allGodlyItems, divineDominionCheck, divineDominionSacrificeCommand } from '../../lib/bso/divineDominion';
 import { joinGuthixianCache } from '../../lib/bso/guthixianCache';
+import { TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartCommand } from '../../lib/bso/turaelsTrials';
 import { fishingLocations } from '../../lib/fishingContest';
 import { MaterialType } from '../../lib/invention';
 import { bonanzaCommand } from '../lib/abstracted_commands/bonanzaCommand';
@@ -272,6 +273,27 @@ export const minigamesCommand: OSBMahojiCommand = {
 					options: []
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'turaels_trials',
+			description: 'The Turaels Trials minigame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a trip.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'method',
+							description: 'The attack method to use.',
+							choices: TuraelsTrialsMethods.map(method => ({ name: method, value: method })),
+							required: true
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -321,6 +343,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 			join?: {};
 			stats?: {};
 		};
+		turaels_trials?: {
+			start?: { method: TuraelsTrialsMethod };
+		};
 	}>) => {
 		const klasaUser = await mUserFetch(userID);
 		const {
@@ -333,6 +358,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 			divine_dominion
 		} = options;
 
+		if (options.turaels_trials?.start) {
+			return turaelsTrialsStartCommand(klasaUser, channelID, options.turaels_trials.start.method);
+		}
 		if (options.guthixian_cache?.join) {
 			return joinGuthixianCache(klasaUser, channelID);
 		}

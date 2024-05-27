@@ -1,6 +1,5 @@
-import { EmbedBuilder, userMention } from '@discordjs/builders';
 import { Activity, User } from '@prisma/client';
-import { ChannelType } from 'discord.js';
+import { ChannelType, EmbedBuilder, userMention } from 'discord.js';
 import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -902,6 +901,10 @@ async function patronTriggerDoubleLoot(user: MUser) {
 	if (perkTier < PerkTier.Five) {
 		return 'Only T4, T5 or T6 patrons can use this command.';
 	}
+	if (!isPrimaryPatron(user)) {
+		return 'You can only do this from your primary account.';
+	}
+
 	const lastTime = user.user.last_patron_double_time_trigger;
 	const differenceSinceLastUsage = lastTime ? Date.now() - lastTime.getTime() : null;
 	if (differenceSinceLastUsage && differenceSinceLastUsage < PATRON_DOUBLE_LOOT_COOLDOWN) {

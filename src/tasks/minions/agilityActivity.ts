@@ -151,13 +151,16 @@ export const agilityTask: MinionTask = {
 		const [hasArdyElite] = await userhasDiaryTier(user, ArdougneDiary.elite);
 		const hasDiaryBonus = hasArdyElite && course.name === 'Ardougne Rooftop Course';
 
+		const messages: string[] = [];
+		const petMessages: string[] = [];
+
 		const portentResult = await chargePortentIfHasCharges({
 			user,
 			portentID: PortentID.GracefulPortent,
 			charges: minutes
 		});
 
-		const { successfulLaps, loot, xpReceived, lapsFailed, portentXP } = calculateAgilityResult({
+		const { successfulLaps, loot, xpReceived, lapsFailed, portentXP, boosts } = calculateAgilityResult({
 			quantity,
 			course,
 			agilityLevel: currentLevel,
@@ -218,7 +221,7 @@ export const agilityTask: MinionTask = {
 				if (currentLapCount < monkey.lapsRequired) break;
 				if (!user.hasEquippedOrInBank(monkey.id)) {
 					loot.add(monkey.id);
-					str += `\nYou received the ${monkey.name} monkey backpack!`;
+					messages.push(`You received the ${monkey.name} monkey backpack!`);
 				}
 			}
 		}
@@ -235,8 +238,9 @@ export const agilityTask: MinionTask = {
 				for (let i = 0; i < minutes; i++) {
 					if (roll(scruffyDroprate)) {
 						loot.add('Scruffy');
-						str +=
-							"\n\n<:scruffy:749945071146762301> As you jump off the rooftop in Varrock, a stray dog covered in flies approaches you. You decide to adopt the dog, and name him 'Scruffy'.";
+						petMessages.push(
+							"<:scruffy:749945071146762301> As you jump off the rooftop in Varrock, a stray dog covered in flies approaches you. You decide to adopt the dog, and name him 'Scruffy'."
+						);
 						break;
 					}
 				}
@@ -246,8 +250,9 @@ export const agilityTask: MinionTask = {
 				for (let i = 0; i < minutes; i++) {
 					if (roll(1600)) {
 						loot.add('Harry');
-						str +=
-							'\n\n<:harry:749945071104819292> As you jump across a rooftop, you notice a monkey perched on the roof - which has escaped from the Ardougne Zoo! You decide to adopt the monkey, and call him Harry.';
+						petMessages.push(
+							'<:harry:749945071104819292> As you jump across a rooftop, you notice a monkey perched on the roof - which has escaped from the Ardougne Zoo! You decide to adopt the monkey, and call him Harry.'
+						);
 						break;
 					}
 				}
@@ -258,8 +263,9 @@ export const agilityTask: MinionTask = {
 				for (let i = 0; i < minutes; i++) {
 					if (roll(dropRate)) {
 						loot.add('Skipper');
-						str +=
-							"\n\n<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept.";
+						petMessages.push(
+							"<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept."
+						);
 						break;
 					}
 				}
@@ -276,7 +282,7 @@ export const agilityTask: MinionTask = {
 						shardQty *= 2;
 					}
 					loot.add(item.id, shardQty);
-					str += `\nYou received **${shardQty}x ${item.name}**`;
+					messages.push(`You received **${shardQty}x ${item.name}**`);
 				}
 			}
 		}
@@ -284,7 +290,7 @@ export const agilityTask: MinionTask = {
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Agility, course.petChance);
 		if (roll(petDropRate / quantity)) {
 			loot.add('Giant squirrel');
-			str += "\nYou have a funny feeling you're being followed...";
+			petMessages.push("You have a funny feeling you're being followed...");
 		}
 
 		await transactItems({
@@ -292,6 +298,10 @@ export const agilityTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
+
+		for (const msgs of [boosts, messages, petMessages]) {
+			if (msgs.length > 0) str += `\n\n${msgs.join('\n')}`;
+		}
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
