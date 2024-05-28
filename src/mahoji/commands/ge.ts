@@ -10,7 +10,14 @@ import { PerkTier } from '../../lib/constants';
 import { createGECancelButton, GrandExchange } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 import { prisma } from '../../lib/settings/prisma';
-import { formatDuration, itemNameFromID, makeComponents, returnStringOrFile, toKMB } from '../../lib/util';
+import {
+	formatDuration,
+	isGEUntradeable,
+	itemNameFromID,
+	makeComponents,
+	returnStringOrFile,
+	toKMB
+} from '../../lib/util';
 import { lineChart } from '../../lib/util/chart';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -131,7 +138,7 @@ export const geCommand: OSBMahojiCommand = {
 			description: 'Sell something on the grand exchange.',
 			options: [
 				{
-					...ownedItemOption(item => Boolean(item.tradeable_on_ge)),
+					...ownedItemOption(item => !isGEUntradeable(item.id)),
 					name: 'item',
 					description: 'The item you want to sell.',
 					required: true
