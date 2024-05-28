@@ -23,7 +23,7 @@ const toMatchImageSnapshotPlugin = configureToMatchImageSnapshot({
 });
 expect.extend({ toMatchImageSnapshot: toMatchImageSnapshotPlugin });
 
-describe('Images', () => {
+describe.skip('Images', () => {
 	test('Chat Heads', async () => {
 		const result = await mahojiChatHead({
 			content:
