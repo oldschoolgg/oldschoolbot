@@ -936,4 +936,3 @@ export const gearValidationChecks = new Set();
 export const BSO_MAX_TOTAL_LEVEL = 3120;
 
 export const mathjs = create(all);
-console.log(1);
