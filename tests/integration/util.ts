@@ -5,10 +5,9 @@ import { Bank } from 'oldschooljs';
 
 import { globalConfig } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
-import { convertStoredActivityToFlatActivity, prisma } from '../../src/lib/settings/prisma';
+import { prisma } from '../../src/lib/settings/prisma';
 import { processPendingActivities } from '../../src/lib/Task';
 import { ItemBank } from '../../src/lib/types';
-import { ActivityTaskOptions } from '../../src/lib/types/minions';
 import { cryptoRand } from '../../src/lib/util';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
@@ -102,18 +101,6 @@ export class TestUser extends MUserClass {
 	async max() {
 		await giveMaxStats(this);
 		return this;
-	}
-
-	async runActivity<T extends ActivityTaskOptions>(): Promise<T> {
-		const [finishedActivity] = await processPendingActivities();
-		if (!finishedActivity) {
-			throw new Error('runActivity: No activity was ran');
-		}
-		if (finishedActivity.user_id.toString() !== this.id) {
-			throw new Error('runActivity: Ran activity, but it didnt belong to this user');
-		}
-		const data = convertStoredActivityToFlatActivity(finishedActivity);
-		return data as any;
 	}
 
 	randomBankSubset() {

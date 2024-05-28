@@ -3,7 +3,9 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
 import { MemoryHarvestType } from '../../src/lib/bso/divination';
+import { convertStoredActivityToFlatActivity, prisma } from '../../src/lib/settings/prisma';
 import { Gear } from '../../src/lib/structures/Gear';
+import { processPendingActivities } from '../../src/lib/Task';
 import { MemoryHarvestOptions } from '../../src/lib/types/minions';
 import itemID from '../../src/lib/util/itemID';
 import { divinationCommand } from '../../src/mahoji/commands/divination';
@@ -32,8 +34,15 @@ describe('Divination', async () => {
 				energy: 'Pale'
 			}
 		});
-		const activity = await user.runActivity<MemoryHarvestOptions>();
+		await processPendingActivities();
 		await user.sync();
+		const _activity = await prisma.activity.findFirst({
+			where: {
+				user_id: BigInt(user.id),
+				type: 'MemoryHarvest'
+			}
+		});
+		const activity = convertStoredActivityToFlatActivity(_activity!) as MemoryHarvestOptions;
 		expect(user.skillsAsXP.divination).toBeGreaterThan(1);
 		expect(user.skillsAsLevels.divination).toEqual(36);
 		expect(activity.dp).toEqual(false);
@@ -55,8 +64,15 @@ describe('Divination', async () => {
 				type: MemoryHarvestType.ConvertToEnergy
 			}
 		});
-		const activity = await user.runActivity<MemoryHarvestOptions>();
+		await processPendingActivities();
 		await user.sync();
+		const _activity = await prisma.activity.findFirst({
+			where: {
+				user_id: BigInt(user.id),
+				type: 'MemoryHarvest'
+			}
+		});
+		const activity = convertStoredActivityToFlatActivity(_activity!) as MemoryHarvestOptions;
 		expect(user.skillsAsXP.divination).toBeGreaterThan(1);
 		expect(user.skillsAsLevels.divination).toEqual(32);
 		expect(activity.dp).toEqual(false);
