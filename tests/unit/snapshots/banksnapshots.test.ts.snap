@@ -21474,7 +21474,7 @@ exports[`OSB Creatables 1`] = `
       },
       "frozen": false,
     },
-    "name": "Revert Elite void robe (or))",
+    "name": "Revert Elite void robe (or)",
     "noCl": true,
     "outputItems": Bank {
       "bank": {
@@ -22744,7 +22744,7 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
-        "26807": 1,
+        "26809": 1,
       },
       "frozen": false,
     },
@@ -22752,7 +22752,7 @@ exports[`OSB Creatables 1`] = `
     "noCl": true,
     "outputItems": Bank {
       "bank": {
-        "26809": 1,
+        "26807": 1,
       },
       "frozen": false,
     },
@@ -22761,7 +22761,7 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
-        "26807": 1,
+        "26811": 1,
       },
       "frozen": false,
     },
@@ -22769,7 +22769,7 @@ exports[`OSB Creatables 1`] = `
     "noCl": true,
     "outputItems": Bank {
       "bank": {
-        "26811": 1,
+        "26807": 1,
       },
       "frozen": false,
     },
@@ -22778,7 +22778,7 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
-        "26809": 1,
+        "26807": 1,
       },
       "frozen": false,
     },
@@ -22786,7 +22786,7 @@ exports[`OSB Creatables 1`] = `
     "noCl": true,
     "outputItems": Bank {
       "bank": {
-        "26807": 1,
+        "26809": 1,
       },
       "frozen": false,
     },
@@ -22795,7 +22795,7 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
-        "26809": 1,
+        "26811": 1,
       },
       "frozen": false,
     },
@@ -22803,7 +22803,7 @@ exports[`OSB Creatables 1`] = `
     "noCl": true,
     "outputItems": Bank {
       "bank": {
-        "26811": 1,
+        "26809": 1,
       },
       "frozen": false,
     },
@@ -22812,7 +22812,7 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
-        "26811": 1,
+        "26807": 1,
       },
       "frozen": false,
     },
@@ -22820,7 +22820,7 @@ exports[`OSB Creatables 1`] = `
     "noCl": true,
     "outputItems": Bank {
       "bank": {
-        "26807": 1,
+        "26811": 1,
       },
       "frozen": false,
     },
@@ -22829,7 +22829,7 @@ exports[`OSB Creatables 1`] = `
     "cantHaveItems": undefined,
     "inputItems": Bank {
       "bank": {
-        "26811": 1,
+        "26809": 1,
       },
       "frozen": false,
     },
@@ -22837,7 +22837,7 @@ exports[`OSB Creatables 1`] = `
     "noCl": true,
     "outputItems": Bank {
       "bank": {
-        "26809": 1,
+        "26811": 1,
       },
       "frozen": false,
     },
