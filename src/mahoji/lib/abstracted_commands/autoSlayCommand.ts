@@ -208,6 +208,54 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientName: Monsters.RevenantDemon.name,
 		efficientMonster: Monsters.RevenantDemon.id,
 		efficientMethod: 'none'
+	},
+	{
+		monsterID: Monsters.GreenDragon.id,
+		efficientName: Monsters.GreenDragon.name,
+		efficientMonster: Monsters.GreenDragon.id,
+		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.Mammoth.id,
+		efficientName: Monsters.Mammoth.name,
+		efficientMonster: Monsters.Mammoth.id,
+		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.ChaosDruid.id,
+		efficientName: Monsters.ChaosDruid.name,
+		efficientMonster: Monsters.ChaosDruid.id,
+		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.DarkWarrior.id,
+		efficientName: Monsters.DarkWarrior.name,
+		efficientMonster: Monsters.DarkWarrior.id,
+		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.DeadlyRedSpider.id,
+		efficientName: Monsters.DeadlyRedSpider.name,
+		efficientMonster: Monsters.DeadlyRedSpider.id,
+		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.ElderChaosDruid.id,
+		efficientName: Monsters.ElderChaosDruid.name,
+		efficientMonster: Monsters.ElderChaosDruid.id,
+		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.Ent.id,
+		efficientName: Monsters.Ent.name,
+		efficientMonster: Monsters.Ent.id,
+		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.GuardBandit.id,
+		efficientName: Monsters.GuardBandit.name,
+		efficientMonster: Monsters.GuardBandit.id,
+		efficientMethod: 'cannon'
 	}
 ];
 
