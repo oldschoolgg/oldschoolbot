@@ -4,10 +4,23 @@ import { cancelUsersListings } from '../../mahoji/lib/abstracted_commands/cancel
 import { prisma } from '../settings/prisma';
 import { logError } from './logError';
 
-export async function migrateUser(_source: string | MUser, _dest: string | MUser): Promise<string | true> {
+export async function migrateUser(_source: string | MUser, _dest: string | MUser, options?: { noRobochimp?: boolean }) {
 	const sourceUser = typeof _source === 'string' ? await mUserFetch(_source) : _source;
 	const destUser = typeof _dest === 'string' ? await mUserFetch(_dest) : _dest;
 
+	try {
+		await migrateBotUser(sourceUser, destUser);
+		if (!options?.noRobochimp) await migrateRobochimpUser(sourceUser, destUser);
+	} catch (err: any) {
+		throw err;
+	} finally {
+		// This regenerates a default users table row for the now-clean sourceUser
+		await mUserFetch(sourceUser.id);
+	}
+	return true;
+}
+
+export async function migrateBotUser(sourceUser: MUser, destUser: MUser) {
 	// First check for + cancel active GE Listings:
 	await Promise.all([cancelUsersListings(sourceUser), cancelUsersListings(destUser)]);
 
@@ -170,13 +183,25 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	const updateToAUsers = `UPDATE activity SET data = data::jsonb || CONCAT('{"detailedUsers":', REPLACE(data->>'detailedUsers', '${sourceUser.id}', '${destUser.id}'),'}')::jsonb WHERE type = 'TombsOfAmascut' AND data->>'detailedUsers' LIKE '%${sourceUser.id}%'`;
 	transactions.push(prisma.$queryRawUnsafe(updateToAUsers));
 
+	transactions.push(
+		prisma.migratedUsers.create({
+			data: {
+				source_id: sourceUser.id,
+				dest_id: destUser.id,
+				type: 'Migration'
+			}
+		})
+	);
+
 	try {
 		await prisma.$transaction(transactions);
 	} catch (err: any) {
 		logError(err);
 		throw new UserError('Error migrating user. Sorry about that!');
 	}
+}
 
+export async function migrateRobochimpUser(sourceUser: MUser, destUser: MUser) {
 	const roboChimpTarget = await roboChimpClient.user.findFirst({
 		select: { migrated_user_id: true },
 		where: { id: BigInt(destUser.id) }
@@ -203,9 +228,4 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 			throw new UserError('Robochimp migration failed, but minion data migrated already!');
 		}
 	}
-
-	// This regenerates a default users table row for the now-clean sourceUser
-	await mUserFetch(sourceUser.id);
-
-	return true;
 }

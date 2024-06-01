@@ -26,6 +26,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import { ItemBank } from '../../lib/types';
 import { dateFm, isValidDiscordSnowflake, returnStringOrFile } from '../../lib/util';
+import { deleteUser } from '../../lib/util/deleteUser';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -291,6 +292,24 @@ export const rpCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'delete_user',
+					description: 'Delete a user entirely',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user_to_delete',
+							description: 'Account to erase entirely!',
+							required: true
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'reason',
+							description: 'The reason'
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'list_trades',
 					description: 'Show trades between users',
 					options: [
@@ -478,6 +497,7 @@ export const rpCommand: OSBMahojiCommand = {
 			add_ironman_alt?: { main: MahojiUserOption; ironman_alt: MahojiUserOption };
 			view_user?: { user: MahojiUserOption };
 			migrate_user?: { source: MahojiUserOption; dest: MahojiUserOption; reason?: string };
+			delete_user?: { user_to_delete: MahojiUserOption; reason?: string };
 			list_trades?: {
 				user: MahojiUserOption;
 				partner?: MahojiUserOption;
@@ -805,6 +825,30 @@ ORDER BY item_id ASC;`);
 			return (await getUserInfo(userToView)).everythingString;
 		}
 
+		if (options.player?.delete_user) {
+			if (!isOwner && !isAdmin) {
+				return randArrItem(gifs);
+			}
+			const { user_to_delete: target, reason } = options.player.delete_user;
+			const userToDelete = await mUserFetch(target.user.id);
+			if (isProtectedAccount(userToDelete)) return 'You cannot clobber that account.';
+
+			await handleMahojiConfirmation(
+				interaction,
+				`Are you 1000%, totally, **REALLY** sure that \`${userToDelete.logName}\` is the account you want to PERMANENTLY DELETE??`
+			);
+
+			const result = await deleteUser(userToDelete);
+
+			if (result) {
+				await sendToChannelID(Channel.BotLogs, {
+					content: `${adminUser.logName} DELETED ${userToDelete.logName}${
+						reason ? `, because ${reason}` : ''
+					}`
+				});
+				return 'Done';
+			}
+		}
 		if (options.player?.migrate_user) {
 			if (!isOwner && !isAdmin) {
 				return randArrItem(gifs);
@@ -833,7 +877,7 @@ ORDER BY item_id ASC;`);
 				`Are you 1000%, totally, **REALLY** sure that \`${sourceUser.logName}\` is the account you want to preserve, and \`${destUser.logName}\` is the new account that will have ALL existing data destroyed?`
 			);
 			const result = await migrateUser(sourceUser, destUser);
-			if (result === true) {
+			if (result) {
 				await sendToChannelID(Channel.BotLogs, {
 					content: `${adminUser.logName} migrated ${sourceUser.logName} to ${destUser.logName}${
 						reason ? `, for ${reason}` : ''
@@ -841,7 +885,6 @@ ORDER BY item_id ASC;`);
 				});
 				return 'Done';
 			}
-			return result;
 		}
 		if (options.player?.list_trades) {
 			const baseSql =
