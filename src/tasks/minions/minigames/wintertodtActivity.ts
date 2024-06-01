@@ -18,6 +18,7 @@ export const wintertodtTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity, duration } = data;
 		const user = await mUserFetch(userID);
+		const hasMasterCape = user.hasEquippedOrInBank('Firemaking master cape');
 
 		let loot = new Bank();
 
@@ -105,7 +106,7 @@ export const wintertodtTask: MinionTask = {
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
-		if (user.hasEquippedOrInBank('Firemaking master cape')) {
+		if (hasMasterCape) {
 			loot.multiply(2);
 		}
 
@@ -114,7 +115,7 @@ export const wintertodtTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		incrementMinigameScore(user.id, 'wintertodt', quantity);
+		await incrementMinigameScore(user.id, 'wintertodt', quantity);
 
 		const image = await makeBankImage({
 			bank: itemsAdded,
@@ -122,7 +123,11 @@ export const wintertodtTask: MinionTask = {
 			previousCL
 		});
 
-		let output = `${user}, ${user.minionName} finished subduing Wintertodt ${quantity}x times. ${xpStr}, you cut ${numberOfRoots}x Bruma roots.`;
+		let output = `${user}, ${
+			user.minionName
+		} finished subduing Wintertodt ${quantity}x times. ${xpStr}, you cut ${numberOfRoots}x Bruma roots${
+			hasMasterCape ? ', 2x loot for Firemaking master cape.' : '.'
+		}`;
 
 		if (fmBonusXP > 0) {
 			output += `\n\n**Firemaking Bonus XP:** ${fmBonusXP.toLocaleString()}`;
@@ -149,6 +154,6 @@ export const wintertodtTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
+		return handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
 	}
 };
