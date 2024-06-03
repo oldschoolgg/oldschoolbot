@@ -353,10 +353,7 @@ export const allCollectionLogs: ICollection = {
 				fmtProg: kcProg(Monsters.Hespori)
 			},
 			'The Inferno': {
-				kcActivity: {
-					Default: async (_, minigameScores) =>
-						minigameScores.find(i => i.minigame.column === 'inferno')!.score
-				},
+				kcActivity: minigameScores.find(i => i.minigame.column === 'inferno')?.score ?? 0,
 				alias: ['zuk', 'inferno'],
 				items: theInfernoCL,
 				fmtProg: ({ minigames }) => `${minigames.inferno} KC`
