@@ -4,25 +4,6 @@ exports[`BSO Buyables 1`] = `
 [
   {
     "aliases": [
-      "quest cape",
-    ],
-    "gpCost": 99000,
-    "itemCost": Bank {
-      "bank": {},
-      "frozen": false,
-    },
-    "name": "Quest point cape",
-    "outputItems": Bank {
-      "bank": {
-        "9813": 1,
-        "9814": 1,
-      },
-      "frozen": false,
-    },
-    "qpRequired": 5015,
-  },
-  {
-    "aliases": [
       "rope",
     ],
     "gpCost": 100,
@@ -319,23 +300,6 @@ exports[`BSO Buyables 1`] = `
     },
     "name": "M'speak amulet",
     "outputItems": undefined,
-  },
-  {
-    "customReq": [Function],
-    "gpCost": 1000000,
-    "itemCost": Bank {
-      "bank": {},
-      "frozen": false,
-    },
-    "name": "Achievement diary cape",
-    "outputItems": Bank {
-      "bank": {
-        "13069": 1,
-        "13070": 1,
-        "19476": 1,
-      },
-      "frozen": false,
-    },
   },
   {
     "gpCost": 200000,
@@ -3592,6 +3556,21 @@ exports[`BSO Buyables 1`] = `
     "qpRequired": 5015,
   },
   {
+    "gpCost": 1000000000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Master quest cape",
+    "outputItems": Bank {
+      "bank": {
+        "40053": 1,
+      },
+      "frozen": false,
+    },
+    "qpRequired": 5000,
+  },
+  {
     "aliases": [
       "achievement cape",
     ],
@@ -3628,21 +3607,6 @@ exports[`BSO Buyables 1`] = `
       "frozen": false,
     },
     "qpRequired": 5015,
-  },
-  {
-    "gpCost": 1000000000,
-    "itemCost": Bank {
-      "bank": {},
-      "frozen": false,
-    },
-    "name": "Master quest cape",
-    "outputItems": Bank {
-      "bank": {
-        "40053": 1,
-      },
-      "frozen": false,
-    },
-    "qpRequired": 5000,
   },
   {
     "customReq": [Function],
