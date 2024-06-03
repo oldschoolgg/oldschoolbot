@@ -23867,6 +23867,20 @@ exports[`BSO Creatables 1`] = `
       "bank": {},
       "frozen": false,
     },
+    "name": "Divine water (Jogre bones)",
+    "outputItems": Bank {
+      "bank": {
+        "50599": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {},
+      "frozen": false,
+    },
     "name": "Divine water (Babydragon bones)",
     "outputItems": Bank {
       "bank": {

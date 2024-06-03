@@ -1195,6 +1195,7 @@ const dragonBoneCreatables: Createable[] = [
 const divineWaterBones = [
 	'Bones',
 	'Big bones',
+	'Jogre bones',
 	'Babydragon bones',
 	'Dragon bones',
 	'Wyrm bones',
