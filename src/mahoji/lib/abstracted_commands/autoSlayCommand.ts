@@ -256,6 +256,12 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientName: Monsters.GuardBandit.name,
 		efficientMonster: Monsters.GuardBandit.id,
 		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.MagicAxe.id,
+		efficientName: Monsters.MagicAxe.name,
+		efficientMonster: Monsters.MagicAxe.id,
+		efficientMethod: 'cannon'
 	}
 ];
 

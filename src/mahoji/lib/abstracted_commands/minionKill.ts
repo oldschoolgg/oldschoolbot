@@ -755,17 +755,22 @@ export async function minionKillCommand(
 				degItemBeingUsed.push(degItem);
 			}
 		}
-	} else if (!isInWilderness) {
+	} else {
 		for (const degItem of degradeablePvmBoostItems) {
 			const isUsing =
 				convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
-				user.gear[degItem.attackStyle].hasEquipped(degItem.item.id) &&
 				(monster.setupsUsed ? monster.setupsUsed.includes(degItem.attackStyle) : true);
-			if (isUsing) {
+
+			const gearCheck = isInWilderness
+				? user.gear.wildy.hasEquipped(degItem.item.id)
+				: user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
+
+			if (isUsing && gearCheck) {
 				// We assume they have enough charges, add the boost, and degrade at the end to avoid doing it twice.
 				degItemBeingUsed.push(degItem);
 			}
 		}
+
 		for (const degItem of degItemBeingUsed) {
 			boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
 			timeToFinish = reduceNumByPercent(timeToFinish, degItem.boost);

@@ -167,7 +167,8 @@ export const krystiliaMonsters: KillableMonster[] = [
 		},
 		pkActivityRating: 1,
 		pkBaseDeathChance: 1,
-		revsWeaponBoost: true
+		revsWeaponBoost: true,
+		canCannon: true
 	},
 	{
 		id: Monsters.Mammoth.id,
