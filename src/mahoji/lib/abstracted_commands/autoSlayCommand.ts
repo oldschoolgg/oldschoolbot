@@ -208,18 +208,39 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientName: Monsters.RevenantDemon.name,
 		efficientMonster: Monsters.RevenantDemon.id,
 		efficientMethod: 'none'
+	}
+];
+
+const WildyAutoSlayMaxEfficiencyTable: AutoslayLink[] = [
+	{
+		monsterID: Monsters.AbyssalDemon.id,
+		efficientName: Monsters.AbyssalDemon.name,
+		efficientMonster: Monsters.AbyssalDemon.id,
+		efficientMethod: 'barrage'
 	},
 	{
-		monsterID: Monsters.GreenDragon.id,
-		efficientName: Monsters.GreenDragon.name,
-		efficientMonster: Monsters.GreenDragon.id,
+		monsterID: Monsters.Ankou.id,
+		efficientName: Monsters.Ankou.name,
+		efficientMonster: Monsters.Ankou.id,
+		efficientMethod: 'barrage'
+	},
+	{
+		monsterID: Monsters.BlackDemon.id,
+		efficientName: Monsters.BlackDemon.name,
+		efficientMonster: Monsters.BlackDemon.id,
 		efficientMethod: 'cannon'
 	},
 	{
-		monsterID: Monsters.Mammoth.id,
-		efficientName: Monsters.Mammoth.name,
-		efficientMonster: Monsters.Mammoth.id,
+		monsterID: Monsters.BlackKnight.id,
+		efficientName: Monsters.BlackKnight.name,
+		efficientMonster: Monsters.BlackKnight.id,
 		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.Bloodveld.id,
+		efficientName: Monsters.Bloodveld.name,
+		efficientMonster: Monsters.Bloodveld.id,
+		efficientMethod: 'barrage'
 	},
 	{
 		monsterID: Monsters.ChaosDruid.id,
@@ -240,6 +261,12 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientMethod: 'cannon'
 	},
 	{
+		monsterID: Monsters.DustDevil.id,
+		efficientName: Monsters.DustDevil.name,
+		efficientMonster: Monsters.DustDevil.id,
+		efficientMethod: 'barrage'
+	},
+	{
 		monsterID: Monsters.ElderChaosDruid.id,
 		efficientName: Monsters.ElderChaosDruid.name,
 		efficientMonster: Monsters.ElderChaosDruid.id,
@@ -252,15 +279,93 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientMethod: 'cannon'
 	},
 	{
+		monsterID: Monsters.GreaterDemon.id,
+		efficientName: Monsters.GreaterDemon.name,
+		efficientMonster: Monsters.GreaterDemon.id,
+		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.GreenDragon.id,
+		efficientName: Monsters.GreenDragon.name,
+		efficientMonster: Monsters.GreenDragon.id,
+		efficientMethod: 'cannon'
+	},
+	{
 		monsterID: Monsters.GuardBandit.id,
 		efficientName: Monsters.GuardBandit.name,
 		efficientMonster: Monsters.GuardBandit.id,
 		efficientMethod: 'cannon'
 	},
 	{
+		monsterID: Monsters.Hellhound.id,
+		efficientName: Monsters.Hellhound.name,
+		efficientMonster: Monsters.Hellhound.id,
+		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.IceGiant.id,
+		efficientName: Monsters.IceGiant.name,
+		efficientMonster: Monsters.IceGiant.id,
+		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.IceWarrior.id,
+		efficientName: Monsters.IceWarrior.name,
+		efficientMonster: Monsters.IceWarrior.id,
+		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.Jelly.id,
+		efficientName: Monsters.Jelly.name,
+		efficientMonster: Monsters.Jelly.id,
+		efficientMethod: 'barrage'
+	},
+	{
+		monsterID: Monsters.LesserDemon.id,
+		efficientName: Monsters.LesserDemon.name,
+		efficientMonster: Monsters.LesserDemon.id,
+		efficientMethod: 'cannon'
+	},
+	{
 		monsterID: Monsters.MagicAxe.id,
 		efficientName: Monsters.MagicAxe.name,
 		efficientMonster: Monsters.MagicAxe.id,
+		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.Mammoth.id,
+		efficientName: Monsters.Mammoth.name,
+		efficientMonster: Monsters.Mammoth.id,
+		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.MossGiant.id,
+		efficientName: Monsters.MossGiant.name,
+		efficientMonster: Monsters.MossGiant.id,
+		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.Nechryael.id,
+		efficientName: Monsters.Nechryael.name,
+		efficientMonster: Monsters.Nechryael.id,
+		efficientMethod: 'barrage'
+	},
+	{
+		monsterID: Monsters.RevenantImp.id,
+		efficientName: Monsters.RevenantDemon.name,
+		efficientMonster: Monsters.RevenantDemon.id,
+		efficientMethod: 'none'
+	},
+	{
+		monsterID: Monsters.Scorpion.id,
+		efficientName: Monsters.Scorpion.name,
+		efficientMonster: Monsters.Scorpion.id,
+		efficientMethod: 'cannon'
+	},
+	{
+		monsterID: Monsters.Spider.id,
+		efficientName: Monsters.Spider.name,
+		efficientMonster: Monsters.Spider.id,
 		efficientMethod: 'cannon'
 	}
 ];
@@ -345,21 +450,23 @@ export async function autoSlayCommand({
 		return;
 	}
 	if (method === 'ehp') {
-		const ehpMonster = AutoSlayMaxEfficiencyTable.find(e => {
+		let ehpMonster = AutoSlayMaxEfficiencyTable.find(e => {
 			const masterMatch = !e.slayerMasters || e.slayerMasters.includes(usersTask.currentTask!.slayer_master_id);
 			return masterMatch && e.monsterID === usersTask.assignedTask!.monster.id;
 		});
 
+		if (usersTask.currentTask.slayer_master_id === 8) {
+			ehpMonster = WildyAutoSlayMaxEfficiencyTable.find(e => {
+				const masterMatch =
+					!e.slayerMasters || e.slayerMasters.includes(usersTask.currentTask!.slayer_master_id);
+				return masterMatch && e.monsterID === usersTask.assignedTask!.monster.id;
+			});
+		}
+
 		const ehpKillable = killableMonsters.find(m => m.id === ehpMonster?.efficientMonster);
 
 		// If we don't have the requirements for the efficient monster, revert to default monster
-		if (
-			(ehpKillable?.levelRequirements !== undefined && !hasSkillReqs(user, ehpKillable.levelRequirements)[0]) ||
-			(usersTask.currentTask!.slayer_master_id === 8 &&
-				[Monsters.Jelly.id, Monsters.Bloodveld.id, Monsters.BlackDragon.id].includes(
-					usersTask.assignedTask!.monster.id
-				))
-		) {
+		if (ehpKillable?.levelRequirements !== undefined && !hasSkillReqs(user, ehpKillable.levelRequirements)[0]) {
 			runCommand({
 				commandName: 'k',
 				args: {
