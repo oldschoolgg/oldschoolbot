@@ -772,6 +772,10 @@ export async function minionKillCommand(
 				degItemBeingUsed.push(degItem);
 			}
 		}
+		for (const degItem of degItemBeingUsed) {
+			boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
+			timeToFinish = reduceNumByPercent(timeToFinish, degItem.boost);
+		}
 	}
 
 	if (monster.equippedItemBoosts) {
