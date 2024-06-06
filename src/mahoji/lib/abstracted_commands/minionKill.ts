@@ -254,9 +254,11 @@ export async function minionKillCommand(
 		}
 	}
 
-	// Add jelly check as can barrage in wilderness
+	// Add jelly & bloodveld check as can barrage in wilderness
 	const jelly = monster.id === Monsters.Jelly.id;
-	const wildyJelly = jelly && isInWilderness;
+	const bloodveld = monster.id === Monsters.Bloodveld.id;
+
+	const wildyBurst = (jelly || bloodveld) && isInWilderness;
 
 	// Set chosen boost based on priority:
 	const myCBOpts = user.combatOptions;
@@ -266,7 +268,7 @@ export async function minionKillCommand(
 		monster,
 		method,
 		isOnTask,
-		wildyJelly
+		wildyBurst
 	});
 
 	// Check requirements
@@ -601,7 +603,7 @@ export async function minionKillCommand(
 	}
 
 	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
-		if (jelly) {
+		if (jelly || bloodveld) {
 			if (!isInWilderness) {
 				return `${monster.name} can only be barraged or burst in the wilderness.`;
 			}
@@ -636,7 +638,7 @@ export async function minionKillCommand(
 	} else if (
 		boostChoice === 'barrage' &&
 		attackStyles.includes(SkillsEnum.Magic) &&
-		(monster!.canBarrage || wildyJelly)
+		(monster!.canBarrage || wildyBurst)
 	) {
 		consumableCosts.push(iceBarrageConsumables);
 		calculateVirtusBoost();
@@ -646,7 +648,7 @@ export async function minionKillCommand(
 	} else if (
 		boostChoice === 'burst' &&
 		attackStyles.includes(SkillsEnum.Magic) &&
-		(monster!.canBarrage || wildyJelly)
+		(monster!.canBarrage || wildyBurst)
 	) {
 		consumableCosts.push(iceBurstConsumables);
 		calculateVirtusBoost();
