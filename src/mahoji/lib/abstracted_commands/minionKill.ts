@@ -564,7 +564,7 @@ export async function minionKillCommand(
 	if (!isOnTask && method && method !== 'none') {
 		return 'You can only burst/barrage/cannon while on task in BSO.';
 	}
-	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
+	if (!wildyBurst && (method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
 		return `${monster!.name} cannot be barraged or burst.`;
 	}
 	if (method === 'cannon' && !hasCannon) {
@@ -771,11 +771,6 @@ export async function minionKillCommand(
 				// We assume they have enough charges, add the boost, and degrade at the end to avoid doing it twice.
 				degItemBeingUsed.push(degItem);
 			}
-		}
-
-		for (const degItem of degItemBeingUsed) {
-			boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
-			timeToFinish = reduceNumByPercent(timeToFinish, degItem.boost);
 		}
 	}
 
