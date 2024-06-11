@@ -52,7 +52,8 @@ const itemFilters = [
 ];
 
 function isProtectedAccount(user: MUser) {
-	if ([...ADMIN_IDS, ...OWNER_IDS].includes(user.id)) return true;
+	const botAccounts = ['303730326692429825', '729244028989603850', '969542224058654790'];
+	if ([...ADMIN_IDS, ...OWNER_IDS, ...botAccounts].includes(user.id)) return true;
 	if ([BitField.isModerator, BitField.isContributor].some(bf => user.bitfield.includes(bf))) return true;
 	return false;
 }
@@ -809,7 +810,12 @@ ORDER BY item_id ASC;`);
 			if (!isOwner && !isAdmin) {
 				return randArrItem(gifs);
 			}
+
 			const { source, dest, reason } = options.player.migrate_user;
+
+			if (source.user.id === dest.user.id) {
+				return 'Destination cannot be the same as the source!';
+			}
 			const sourceUser = await mUserFetch(source.user.id);
 			const destUser = await mUserFetch(dest.user.id);
 
