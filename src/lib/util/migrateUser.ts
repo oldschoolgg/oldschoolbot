@@ -8,6 +8,10 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	const sourceUser = typeof _source === 'string' ? await mUserFetch(_source) : _source;
 	const destUser = typeof _dest === 'string' ? await mUserFetch(_dest) : _dest;
 
+	if (sourceUser.id === destUser.id) {
+		throw new UserError('Destination user cannot be the same as the source!');
+	}
+
 	// First check for + cancel active GE Listings:
 	await Promise.all([cancelUsersListings(sourceUser), cancelUsersListings(destUser)]);
 
