@@ -201,7 +201,6 @@ const source: [string, (string | number)[]][] = [
 	['Ardougne cloak 4', ['Ardougne max cape']],
 	["Ava's accumulator", ['Accumulator max cape', 'Tidal collector']],
 	['Mythical cape', ['Mythical max cape']],
-	['Achievement diary cape', ['Achievement diary cape(t)']],
 	[
 		'Imbued guthix cape',
 		[
@@ -395,7 +394,7 @@ const source: [string, (string | number)[]][] = [
 	['Armadyl helmet', ['Masori mask (f)', 'Masori mask']],
 	['Armadyl chestplate', ['Armadyl chestplate', 'Masori body (f)', 'Masori body']],
 	['Armadyl chainskirt', ['Masori chaps (f)', 'Masori chaps']],
-	['Music cape', ['Music cape (t)']],
+
 	['Imbued heart', ['Saturated heart']],
 	["Craw's bow", ['Webweaver bow']],
 	["Viggora's chainmace", ['Ursine chainmace']],
@@ -409,15 +408,16 @@ const source: [string, (string | number)[]][] = [
 	['Abyssal jibwings', ['Abyssal jibwings (e)']],
 	['3rd age jibwings', ['3rd age jibwings (e)']],
 	['Demonic jibwings', ['Demonic jibwings (e)']],
-	// Expert & Completionist cape
-	[
-		'Completionist cape',
-		['Completionist cape (t)', 'Master quest cape', 'Achievement diary cape (t)', 'Music cape (t)']
-	],
+	// Mastery Capes
 	["Combatant's cape", ['Completionist cape', 'Completionist cape (t)']],
 	["Gatherer's cape", ['Completionist cape', 'Completionist cape (t)']],
 	['Support cape', ['Completionist cape', 'Completionist cape (t)']],
-	["Artisan's cape", ['Completionist cape', 'Completionist cape (t)']]
+	["Artisan's cape", ['Completionist cape', 'Completionist cape (t)']],
+	['Achievement diary cape', ['Achievement diary cape(t)', 'Completionist cape', 'Completionist cape (t)']],
+	['Music cape', ['Music cape (t)', 'Completionist cape', 'Completionist cape (t)']],
+	['Quest point cape', ['Quest point cape (t)', 'Master quest cape', 'Completionist cape', 'Completionist cape (t)']],
+	['Master quest cape', ['Completionist cape', 'Completionist cape (t)']],
+	['Completionist cape', ['Completionist cape (t)']]
 ];
 
 // Build skill cape & master cape similar items. This also handles comp and comp(t) receiving all skillcape and master cape perks.
