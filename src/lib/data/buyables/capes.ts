@@ -36,6 +36,14 @@ export const capeBuyables: Buyable[] = [
 		}
 	},
 	{
+		name: 'Master quest cape',
+		outputItems: new Bank({
+			'Master quest cape': 1
+		}),
+		gpCost: 1_000_000_000,
+		qpRequired: 5000
+	},
+	{
 		name: 'Achievement diary cape',
 		outputItems: new Bank({
 			'Achievement diary cape': 1,
@@ -71,14 +79,7 @@ export const capeBuyables: Buyable[] = [
 			return [true];
 		}
 	},
-	{
-		name: 'Master quest cape',
-		outputItems: new Bank({
-			'Master quest cape': 1
-		}),
-		gpCost: 1_000_000_000,
-		qpRequired: 5000
-	},
+
 	{
 		name: 'Music cape',
 		outputItems: new Bank({

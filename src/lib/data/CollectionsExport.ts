@@ -2301,6 +2301,7 @@ export const capesCL = resolveItems([
 	'Mythical max hood',
 	'Mythical max cape',
 	...masterCapesCL,
+	'Master quest cape',
 	...expertCapesCL,
 	'Fire max hood',
 	'Fire max cape',
