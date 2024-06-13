@@ -41,6 +41,8 @@ model Analytic {
   ironMinionsCount   Int?
   totalSacrificed    BigInt?
   totalGP            BigInt?
+  totalGeGp          BigInt?
+  totalBigAlchGp     BigInt?
   dicingBank         BigInt?
   duelTaxBank        BigInt?
   dailiesAmount      BigInt?
