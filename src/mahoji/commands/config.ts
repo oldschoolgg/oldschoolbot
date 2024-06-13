@@ -21,7 +21,9 @@ import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier } from '
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { prisma } from '../../lib/settings/prisma';
+import Skills from '../../lib/skilling/skills';
 import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
 import { BankSortMethods } from '../../lib/sorts';
@@ -35,8 +37,6 @@ import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSet
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
-import Skills from '../../lib/skilling/skills';
 
 interface UserConfigToggle {
 	name: string;
@@ -289,11 +289,7 @@ async function favAlchConfig(
 	return `Added ${item.name} to your favorite alchable items.`;
 }
 
-async function favSkillConfig(
-	user: MUser,
-	skillToAdd: string | undefined,
-	reset: boolean
-) {
+async function favSkillConfig(user: MUser, skillToAdd: string | undefined, reset: boolean) {
 	if (reset) {
 		await user.update({ favorite_skill: null });
 		return 'Cleared your favorite skill.';
@@ -311,7 +307,6 @@ async function favSkillConfig(
 	const currentItem = `Your current favorite skill is: ${currentFavorite ? currentFavorite : 'None'}.`;
 	return currentItem;
 }
-
 
 async function favBhSeedsConfig(
 	user: MUser,
@@ -1367,11 +1362,7 @@ LIMIT 20;
 				);
 			}
 			if (favorite_skill_lvl) {
-				return favSkillConfig(
-					user,
-					favorite_skill_lvl.skill,
-					Boolean(favorite_skill_lvl.reset)
-				);
+				return favSkillConfig(user, favorite_skill_lvl.skill, Boolean(favorite_skill_lvl.reset));
 			}
 			if (slayer) {
 				if (slayer.autoslay) {
