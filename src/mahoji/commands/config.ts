@@ -1,4 +1,4 @@
-import { hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
+import { hasBanMemberPerms, miniID, toTitleCase } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import {
 	bold,
@@ -35,6 +35,8 @@ import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSet
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
+import Skills from '../../lib/skilling/skills';
 
 interface UserConfigToggle {
 	name: string;
@@ -286,6 +288,30 @@ async function favAlchConfig(
 	});
 	return `Added ${item.name} to your favorite alchable items.`;
 }
+
+async function favSkillConfig(
+	user: MUser,
+	skillToAdd: string | undefined,
+	reset: boolean
+) {
+	if (reset) {
+		await user.update({ favorite_skill: null });
+		return 'Cleared your favorite skill.';
+	}
+
+	const currentFavorite = user.user.favorite_skill;
+	if (skillToAdd) {
+		const skill = Object.values(Skills).find(i => i.name.toLowerCase() === skillToAdd.toLowerCase());
+		if (!skill) return "That skill doesn't exist.";
+		if (currentFavorite === skill.id) return 'This skill is already favorited.';
+		await user.update({ favorite_skill: skill.id });
+		return `You favorited ${skill.name}.`;
+	}
+
+	const currentItem = `Your current favorite skill is: ${currentFavorite ? currentFavorite : 'None'}.`;
+	return currentItem;
+}
+
 
 async function favBhSeedsConfig(
 	user: MUser,
@@ -1025,6 +1051,26 @@ export const configCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'favorite_skill_lvl',
+					description: 'Manage your skill to show on return trips.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'skill',
+							description: 'Which skill do you want to show.',
+							required: false,
+							choices: Object.values(SkillsEnum).map(i => ({ name: toTitleCase(i), value: i }))
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'reset',
+							description: 'Reset your skill to show.',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'favorite_food',
 					description: 'Manage your favorite food.',
 					options: [
@@ -1213,6 +1259,7 @@ LIMIT 20;
 			favorite_food?: { add?: string; remove?: string; reset?: boolean };
 			favorite_items?: { add?: string; remove?: string; reset?: boolean };
 			favorite_bh_seeds?: { add?: string; remove?: string; reset?: boolean };
+			favorite_skill_lvl?: { add?: string; reset?: boolean };
 			slayer?: { master?: string; autoslay?: string };
 			pin_trip?: { trip?: string; unpin_trip?: string; emoji?: string; custom_name?: string };
 			icon_pack?: { name?: string };
@@ -1245,6 +1292,7 @@ LIMIT 20;
 				favorite_food,
 				favorite_items,
 				favorite_bh_seeds,
+				favorite_skill_lvl,
 				slayer,
 				pin_trip,
 				icon_pack
@@ -1316,6 +1364,13 @@ LIMIT 20;
 					favorite_bh_seeds.add,
 					favorite_bh_seeds.remove,
 					Boolean(favorite_bh_seeds.reset)
+				);
+			}
+			if (favorite_skill_lvl) {
+				return favSkillConfig(
+					user,
+					favorite_skill_lvl.skill,
+					Boolean(favorite_skill_lvl.reset)
 				);
 			}
 			if (slayer) {

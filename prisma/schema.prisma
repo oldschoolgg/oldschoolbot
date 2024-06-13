@@ -334,6 +334,7 @@ model User {
   favorite_alchables         Int[]
   favorite_food              Int[]
   favorite_bh_seeds          Int[]
+  favorite_skill             String?
   minion_defaultPay          Boolean            @default(false) @map("minion.defaultPay")
   minion_icon                String?            @map("minion.icon")
   minion_name                String?            @map("minion.name")
