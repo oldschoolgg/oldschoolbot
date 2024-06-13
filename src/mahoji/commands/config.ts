@@ -1046,7 +1046,7 @@ export const configCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'favorite_skill_lvl',
+					name: 'favorite_skill',
 					description: 'Manage your skill to show on return trips.',
 					options: [
 						{
@@ -1254,7 +1254,7 @@ LIMIT 20;
 			favorite_food?: { add?: string; remove?: string; reset?: boolean };
 			favorite_items?: { add?: string; remove?: string; reset?: boolean };
 			favorite_bh_seeds?: { add?: string; remove?: string; reset?: boolean };
-			favorite_skill_lvl?: { add?: string; reset?: boolean };
+			favorite_skill?: { skill?: string; reset?: boolean };
 			slayer?: { master?: string; autoslay?: string };
 			pin_trip?: { trip?: string; unpin_trip?: string; emoji?: string; custom_name?: string };
 			icon_pack?: { name?: string };
@@ -1287,7 +1287,7 @@ LIMIT 20;
 				favorite_food,
 				favorite_items,
 				favorite_bh_seeds,
-				favorite_skill_lvl,
+				favorite_skill,
 				slayer,
 				pin_trip,
 				icon_pack
@@ -1361,8 +1361,8 @@ LIMIT 20;
 					Boolean(favorite_bh_seeds.reset)
 				);
 			}
-			if (favorite_skill_lvl) {
-				return favSkillConfig(user, favorite_skill_lvl.skill, Boolean(favorite_skill_lvl.reset));
+			if (favorite_skill) {
+				return favSkillConfig(user, favorite_skill.skill, Boolean(favorite_skill.reset));
 			}
 			if (slayer) {
 				if (slayer.autoslay) {
