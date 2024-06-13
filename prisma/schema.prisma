@@ -945,6 +945,7 @@ enum activity_type_enum {
   CamdozaalFishing
   CamdozaalMining
   CamdozaalSmithing
+  MyNotes
 }
 
 enum xp_gains_skill_enum {
