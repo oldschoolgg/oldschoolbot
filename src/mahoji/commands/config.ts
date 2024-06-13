@@ -291,7 +291,10 @@ async function favAlchConfig(
 
 async function favSkillConfig(user: MUser, skillToAdd: string | undefined, reset: boolean) {
 	if (reset) {
-		await user.update({ favorite_skill: null });
+		if (!user.user.favorite_skill) {
+			return 'Your favorite skill is already cleared.';
+		}
+		await user.update({ favorite_skill: '' });
 		return 'Cleared your favorite skill.';
 	}
 
@@ -304,8 +307,8 @@ async function favSkillConfig(user: MUser, skillToAdd: string | undefined, reset
 		return `You favorited ${skill.name}.`;
 	}
 
-	const currentItem = `Your current favorite skill is: ${currentFavorite ? currentFavorite : 'None'}.`;
-	return currentItem;
+	const currentSkill = `Your current favorite skill is: ${currentFavorite ? currentFavorite : 'None'}.`;
+	return currentSkill;
 }
 
 async function favBhSeedsConfig(
