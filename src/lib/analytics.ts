@@ -54,12 +54,12 @@ export async function analyticsTick() {
 	const [totalGeGp, totalArtifactGp, totalDemonStatuetteGp] = (
 		await Promise.all(
 			[
-				'SELECT quantity AS ge_gp FROM ge_bank WHERE item_id = 995',
-				`SELECT SUM((bank->>'${artifact.id})::bigint) * ${artifact.highalch} as artifact_val`,
-				`SELECT SUM((bank->>'${statuette.id})::bigint) * ${statuette.highalch} as statuette_val`
-			].map(q => prisma.$queryRawUnsafe<string>(q))
+				'SELECT quantity AS val FROM ge_bank WHERE item_id = 995',
+				`SELECT COALESCE(SUM((bank->>'${artifact.id}')::bigint) * ${artifact.highalch}, 0) as val FROM users WHERE bank->>'${artifact.id}' IS NOT NULL`,
+				`SELECT COALESCE(SUM((bank->>'${statuette.id}')::bigint) * ${statuette.highalch}, 0) as val FROM users WHERE bank->>'${artifact.id}' IS NOT NULL`
+			].map(q => prisma.$queryRawUnsafe<{ val: bigint }[]>(q))
 		)
-	).map((v: string) => BigInt(v));
+	).map((v: { val: bigint }[]) => BigInt(v[0].val));
 
 	const taskCounts = await calculateMinionTaskCounts();
 	const currentClientSettings = await prisma.clientStorage.findFirst({
