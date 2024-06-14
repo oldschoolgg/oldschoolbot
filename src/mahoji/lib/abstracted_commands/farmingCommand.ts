@@ -221,7 +221,7 @@ export async function farmingPlantCommand({
 		duration *= 0.9;
 	}
 
-	if (user.hasEquipped('Ring of endurance')) {
+	if (user.hasEquippedOrInBank('Ring of endurance')) {
 		boostStr.push('10% time for Ring of Endurance');
 		duration *= 0.9;
 	}
