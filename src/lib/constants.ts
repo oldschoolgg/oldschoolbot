@@ -6,6 +6,7 @@ import { execSync } from 'child_process';
 import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import * as dotenv from 'dotenv';
 import { CommandOptions } from 'mahoji/dist/lib/types';
+import { all, create } from 'mathjs';
 import { z } from 'zod';
 
 import { DISCORD_SETTINGS, production } from '../config';
@@ -629,3 +630,5 @@ export const patronFeatures = {
 export const gearValidationChecks = new Set();
 
 export const BSO_MAX_TOTAL_LEVEL = 3120;
+
+export const mathjs = create(all);

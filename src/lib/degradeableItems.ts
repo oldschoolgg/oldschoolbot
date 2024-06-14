@@ -10,7 +10,7 @@ import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import { updateBankSetting } from './util/updateBankSetting';
 
-interface DegradeableItem {
+export interface DegradeableItem {
 	item: Item;
 	settingsKey:
 		| 'tentacle_charges'
