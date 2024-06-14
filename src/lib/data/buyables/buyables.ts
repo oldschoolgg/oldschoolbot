@@ -717,6 +717,16 @@ const questBuyables: Buyable[] = [
 		name: 'Ring of shadows',
 		gpCost: 75_000,
 		requiredQuests: [QuestID.DesertTreasureII]
+	},
+	{
+		name: 'Crystal saw',
+		gpCost: 75_000,
+		qpRequired: 7,
+		skillsNeeded: {
+			agility: 25,
+			construction: 5,
+			magic: 46
+		}
 	}
 ];
 
