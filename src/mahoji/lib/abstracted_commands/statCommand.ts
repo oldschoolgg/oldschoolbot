@@ -480,6 +480,16 @@ ${entries.map(i => `**${toTitleCase(i[0])}**: ${toKMB(i[1])}`).join('\n')}`;
 				'Loot Destroyed by Chincannon'
 			);
 		}
+	},
+	{
+		name: 'Secondaries saved with Scroll of Cleansing',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(
+				new Bank(stats.cleansing_scroll_bank as ItemBank),
+				'Secondaries Saved With Scroll of Cleansing'
+			);
+		}
 	}
 ];
 
