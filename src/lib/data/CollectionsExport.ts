@@ -343,13 +343,14 @@ export const grotesqueGuardiansCL = resolveItems([
 	'Granite dust'
 ]);
 export const hesporiCL = resolveItems(['Bottomless compost bucket', 'Iasor seed', 'Kronos seed', 'Attas seed']);
-export const theInfernoCL = resolveItems(['Jal-nib-rek', 'Infernal cape', 'Tokkul']);
+export const theInfernoCL = resolveItems(['Jal-nib-rek', 'Infernal cape']);
 export const kalphiteQueenCL = resolveItems([
 	'Kalphite princess',
 	'Kq head',
 	'Jar of sand',
 	'Dragon 2h sword',
-	'Dragon chainbody'
+	'Dragon chainbody',
+	'Dragon pickaxe'
 ]);
 export const kingBlackDragonCL = resolveItems([
 	'Prince black dragon',
@@ -391,12 +392,12 @@ export const spiritAnglerOutfit = resolveItems([
 export const temporossCL = resolveItems([
 	'Tiny tempor',
 	'Big harpoonfish',
+	...spiritAnglerOutfit,
 	'Tome of water (empty)',
 	'Soaked page',
 	'Tackle box',
 	'Fish barrel',
 	'Dragon harpoon',
-	...spiritAnglerOutfit,
 	'Spirit flakes'
 ]);
 export const thermonuclearSmokeDevilCL = resolveItems([
