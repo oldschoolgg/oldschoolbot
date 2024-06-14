@@ -13,6 +13,9 @@ export default defineConfig({
     },
     setupFiles: 'tests/unit/setup.ts',
     resolveSnapshotPath: (testPath, extension) =>
-      join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`)
+      join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`),
+    maxConcurrency: 10,
+    maxWorkers: 5,
+    minWorkers: 1
   }
 });

@@ -35,7 +35,7 @@ interface MockUserArgs {
 export const mockUser = (overrides?: MockUserArgs): User => {
 	const gearMelee = filterGearSetup(overrides?.meleeGear);
 	const cl = new Bank().add(overrides?.cl ?? {});
-	return {
+	const r = {
 		cl,
 		gear_fashion: new Gear().raw() as Prisma.JsonValue,
 		gear_mage: new Gear().raw() as Prisma.JsonValue,
@@ -72,7 +72,7 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		skills_dungeoneering: 0,
 		skills_invention: 0,
 		skills_hitpoints: overrides?.skills_hitpoints ?? convertLVLtoXP(10),
-		GP: overrides?.GP,
+		GP: overrides?.GP ?? 0,
 		premium_balance_tier: overrides?.premium_balance_tier,
 		premium_balance_expiry_date: overrides?.premium_balance_expiry_date,
 		ironman_alts: [],
@@ -85,6 +85,8 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		monsterScores: {},
 		skills_divination: 0
 	} as unknown as User;
+
+	return r;
 };
 
 class TestMUser extends MUserClass {
@@ -122,6 +124,9 @@ export async function testRunCmd({
 	Math.random = () => 0.5;
 	const hash = murmurhash(JSON.stringify({ name: cmd.name, opts, user })).toString();
 	const mockedUser = mockMUser({ id: hash, ...user });
+	if (mockedUser.GP === null || Number.isNaN(mockedUser.GP) || mockedUser.GP < 0 || mockedUser.GP === undefined) {
+		throw new Error(`Invalid GP for user ${hash}`);
+	}
 	mockUserMap.set(hash, mockedUser);
 	const options: any = {
 		user: mockedUser.user,

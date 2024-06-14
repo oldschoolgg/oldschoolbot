@@ -966,6 +966,20 @@ exports[`BSO Buyables 1`] = `
     "qpRequired": 172,
   },
   {
+    "gpCost": 5000,
+    "ironmanPrice": 500,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Lockpick",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "agility": 50,
+      "thieving": 50,
+    },
+  },
+  {
     "itemCost": Bank {
       "bank": {
         "24711": 1,
@@ -9918,6 +9932,24 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "12018": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "GPCost": 50000,
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "12783": 1,
+        "2572": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Ring of wealth (i)",
+    "outputItems": Bank {
+      "bank": {
+        "12785": 1,
       },
       "frozen": false,
     },
@@ -24041,7 +24073,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24062,7 +24094,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24083,7 +24115,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24104,7 +24136,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24125,7 +24157,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24146,7 +24178,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24167,7 +24199,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24188,7 +24220,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24209,7 +24241,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24230,7 +24262,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24251,7 +24283,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24272,7 +24304,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24293,7 +24325,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24314,7 +24346,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24335,7 +24367,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24356,7 +24388,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {

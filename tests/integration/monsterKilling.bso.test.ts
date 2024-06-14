@@ -5,7 +5,7 @@ import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/pris
 import { Gear } from '../../src/lib/structures/Gear';
 import { processPendingActivities } from '../../src/lib/Task';
 import { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
-import { killCommand } from '../../src/mahoji/commands/k';
+import { minionKCommand } from '../../src/mahoji/commands/k';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { createTestUser, mockClient } from './util';
 
@@ -33,12 +33,19 @@ test('Killing Vlad', async () => {
 		skills_hitpoints: 200_000_000
 	});
 
-	await user.runCommand(killCommand, {
+	await user.runCommand(minionKCommand, {
 		name: 'vladimir drakan'
 	});
 
-	const [finishedActivity] = await processPendingActivities();
-	const data = convertStoredActivityToFlatActivity(finishedActivity) as MonsterActivityTaskOptions;
+	await processPendingActivities();
+	await user.sync();
+	const _activity = await global.prisma!.activity.findFirst({
+		where: {
+			user_id: BigInt(user.id),
+			type: 'MonsterKilling'
+		}
+	});
+	const data = convertStoredActivityToFlatActivity(_activity!) as MonsterActivityTaskOptions;
 
 	const quantityKilled = data.quantity;
 	expect(user.bank.amount('Shark')).toBeLessThan(1_000_000);

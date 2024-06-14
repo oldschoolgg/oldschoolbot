@@ -668,45 +668,6 @@ export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
-export const scaryEatables = [
-	{
-		item: getOSItem('Candy teeth'),
-		healAmount: 3
-	},
-	{
-		item: getOSItem('Toffeet'),
-		healAmount: 5
-	},
-	{
-		item: getOSItem('Chocolified skull'),
-		healAmount: 8
-	},
-	{
-		item: getOSItem('Rotten sweets'),
-		healAmount: 9
-	},
-	{
-		item: getOSItem('Hairyfloss'),
-		healAmount: 12
-	},
-	{
-		item: getOSItem('Eyescream'),
-		healAmount: 13
-	},
-	{
-		item: getOSItem('Goblinfinger soup'),
-		healAmount: 20
-	},
-	{
-		item: getOSItem("Benny's brain brew"),
-		healAmount: 50
-	},
-	{
-		item: getOSItem('Roasted newt'),
-		healAmount: 120
-	}
-];
-
 export const projectiles = {
 	arrow: {
 		items: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow', 'Hellfire arrow']),
@@ -878,7 +839,7 @@ const globalConfigSchema = z.object({
 	patreonCampaignID: z.coerce.number().int().default(1),
 	patreonWebhookSecret: z.coerce.string().default(''),
 	httpPort: z.coerce.number().int().default(8080),
-	clientID: z.string().min(15).max(25),
+	clientID: z.string().min(10).max(25),
 	geAdminChannelID: z.string().default('')
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });

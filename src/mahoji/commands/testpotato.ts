@@ -81,6 +81,12 @@ export async function giveMaxStats(user: MUser) {
 	}
 	await user.update({
 		QP: MAX_QP,
+		slayer_points: 50_000,
+		nmz_points: 50_000,
+		volcanic_mine_points: 500_000,
+		carpenter_points: 5_000_000,
+		zeal_tokens: 500_000,
+		lms_points: 500_000,
 		...updates
 	});
 }

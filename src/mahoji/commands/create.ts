@@ -64,7 +64,7 @@ export const createCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ item: string; quantity?: number; showall?: boolean }>) => {
 		const user = await mUserFetch(userID.toString());
 
-		const itemName = options.item.toLowerCase();
+		const itemName = options.item?.toLowerCase();
 		let { quantity } = options;
 		if (options.showall) {
 			return allCreatablesTable;

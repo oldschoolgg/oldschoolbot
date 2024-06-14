@@ -5,10 +5,9 @@ import { Bank } from 'oldschooljs';
 
 import { globalConfig } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
-import { convertStoredActivityToFlatActivity, prisma } from '../../src/lib/settings/prisma';
+import { prisma } from '../../src/lib/settings/prisma';
 import { processPendingActivities } from '../../src/lib/Task';
 import { ItemBank } from '../../src/lib/types';
-import { ActivityTaskOptions } from '../../src/lib/types/minions';
 import { cryptoRand } from '../../src/lib/util';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
@@ -22,6 +21,7 @@ export const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'opti
 	user: { id: userID, createdAt: new Date().getTime() - Time.Year } as any,
 	channelID: '111111111',
 	interaction: {
+		channelId: '1',
 		deferReply: () => Promise.resolve(),
 		editReply: () => Promise.resolve(),
 		followUp: () => Promise.resolve()
@@ -103,18 +103,6 @@ export class TestUser extends MUserClass {
 		return this;
 	}
 
-	async runActivity<T extends ActivityTaskOptions>(): Promise<T> {
-		const [finishedActivity] = await processPendingActivities();
-		if (!finishedActivity) {
-			throw new Error('runActivity: No activity was ran');
-		}
-		if (finishedActivity.user_id.toString() !== this.id) {
-			throw new Error('runActivity: Ran activity, but it didnt belong to this user');
-		}
-		const data = convertStoredActivityToFlatActivity(finishedActivity);
-		return data as any;
-	}
-
 	randomBankSubset() {
 		const bank = new Bank();
 		const items = shuffleArr(this.bankWithGP.items()).slice(0, randInt(0, this.bankWithGP.length));
@@ -128,7 +116,7 @@ export class TestUser extends MUserClass {
 const idsUsed = new Set<string>();
 
 export function mockedId() {
-	return cryptoRand(1_000_000_000, 5_000_000_000_000).toString();
+	return cryptoRand(1_000_000_000_000, 5_000_000_000_000).toString();
 }
 
 export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
@@ -186,6 +174,10 @@ class TestClient {
 		if (this.data[key] !== value) {
 			throw new Error(`Expected ${key} to be ${value} but got ${this.data[key]}`);
 		}
+	}
+
+	async processActivities() {
+		await processPendingActivities();
 	}
 }
 

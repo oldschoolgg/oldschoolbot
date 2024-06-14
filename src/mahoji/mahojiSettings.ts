@@ -310,7 +310,7 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 	return [true];
 }
 
-export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster) {
+export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster, isInWilderness: boolean = false) {
 	const boosts = new Bank();
 	if (monster.itemInBankBoosts) {
 		for (const boostSet of monster.itemInBankBoosts) {
@@ -320,7 +320,7 @@ export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster
 			// find the highest boost that the player has
 			for (const [itemID, boostAmount] of Object.entries(boostSet)) {
 				const parsedId = parseInt(itemID);
-				if (!user.hasEquippedOrInBank(parsedId)) {
+				if (isInWilderness ? !user.hasEquipped(parsedId) : !user.hasEquippedOrInBank(parsedId)) {
 					continue;
 				}
 				if (boostAmount > highestBoostAmount) {

@@ -1142,6 +1142,15 @@ const Buyables: Buyable[] = [
 			return toaKCs.expertKC >= 25 ? [true] : [false, 'You need a 25 Expert KC in Tombs of Amascut to buy this.'];
 		}
 	},
+	{
+		name: 'Lockpick',
+		gpCost: 5000,
+		ironmanPrice: 500,
+		skillsNeeded: {
+			agility: 50,
+			thieving: 50
+		}
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
