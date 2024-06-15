@@ -1,8 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import { MAX_QP, QuestID } from '../../../mahoji/lib/abstracted_commands/questCommand';
+import { QuestID } from '../../../mahoji/lib/abstracted_commands/questCommand';
 import { chompyHats } from '../../constants';
-import { diaries, userhasDiaryTier } from '../../diaries';
 import { MinigameName } from '../../settings/settings';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
 import { MUserStats } from '../../structures/MUserStats';
@@ -780,16 +779,6 @@ const noveltyFood: Buyable[] = [
 
 const Buyables: Buyable[] = [
 	{
-		name: 'Quest point cape',
-		outputItems: new Bank({
-			'Quest point cape': 1,
-			'Quest point hood': 1
-		}),
-		aliases: ['quest cape'],
-		qpRequired: MAX_QP,
-		gpCost: 99_000
-	},
-	{
 		name: 'Rope',
 		aliases: ['rope'],
 		gpCost: 100,
@@ -816,7 +805,7 @@ const Buyables: Buyable[] = [
 		name: 'Feather',
 		aliases: ['feather'],
 		gpCost: 50,
-		ironmanPrice: 2
+		ironmanPrice: 3
 	},
 	{
 		name: 'Shield right half',
@@ -926,24 +915,6 @@ const Buyables: Buyable[] = [
 	{
 		name: "M'speak amulet",
 		gpCost: 100_000
-	},
-	{
-		name: 'Achievement diary cape',
-		outputItems: new Bank({
-			'Achievement diary cape': 1,
-			'Achievement diary cape(t)': 1,
-			'Achievement diary hood': 1
-		}),
-		gpCost: 1_000_000,
-		customReq: async user => {
-			for (const diary of diaries.map(d => d.elite)) {
-				const [has] = await userhasDiaryTier(user, diary);
-				if (!has) {
-					return [false, "You can't buy this because you haven't completed all the Elite diaries!"];
-				}
-			}
-			return [true];
-		}
 	},
 	{
 		name: 'Salve amulet',
@@ -1171,6 +1142,15 @@ const Buyables: Buyable[] = [
 			return toaKCs.expertKC >= 25 ? [true] : [false, 'You need a 25 Expert KC in Tombs of Amascut to buy this.'];
 		}
 	},
+	{
+		name: 'Lockpick',
+		gpCost: 5000,
+		ironmanPrice: 500,
+		skillsNeeded: {
+			agility: 50,
+			thieving: 50
+		}
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -1218,7 +1198,7 @@ for (const cape of allTeamCapes) {
 	Buyables.push({
 		name: cape.name,
 		outputItems: new Bank().add(cape.id),
-		gpCost: 15_000
+		gpCost: 20_000
 	});
 }
 

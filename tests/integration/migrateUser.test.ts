@@ -29,7 +29,6 @@ import { describe, expect, test, vi } from 'vitest';
 
 import { BitField } from '../../src/lib/constants';
 import { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
-import { GrandExchange } from '../../src/lib/grandExchange';
 import { trackLoot } from '../../src/lib/lootTrack';
 import { incrementMinigameScore, MinigameName } from '../../src/lib/settings/minigames';
 import { prisma } from '../../src/lib/settings/prisma';
@@ -1414,9 +1413,6 @@ describe('migrate user test', async () => {
 			console.log(JSON.stringify(newData));
 		}
 	};
-
-	await GrandExchange.totalReset();
-	await GrandExchange.init();
 
 	test('test preventing a double (clobber) robochimp migration (two bot-migration)', async () => {
 		const sourceUserId = mockedId();

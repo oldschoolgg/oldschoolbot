@@ -15,6 +15,7 @@ import { implingsCL } from '../implings';
 import { inventionCL } from '../invention/inventions';
 import { keyCrates } from '../keyCrates';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
+import { AkumuLootTable } from '../minions/data/killableMonsters/custom/bosses/Akumu';
 import { Ignecarus } from '../minions/data/killableMonsters/custom/bosses/Ignecarus';
 import {
 	kalphiteKingLootTable,
@@ -24,6 +25,7 @@ import KingGoldemar from '../minions/data/killableMonsters/custom/bosses/KingGol
 import { MOKTANG_ID, MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import { Naxxus, NaxxusLootTableFinishable } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
 import { VasaMagus } from '../minions/data/killableMonsters/custom/bosses/VasaMagus';
+import { VenatrixLootTable } from '../minions/data/killableMonsters/custom/bosses/Venatrix';
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import { sepulchreFloors } from '../minions/data/sepulchre';
 import {
@@ -311,14 +313,12 @@ export const allCollectionLogs: ICollection = {
 				},
 				allItems: (() => {
 					return [
-						...new Set(
-							...[
-								Monsters.GeneralGraardor.allItems,
-								Monsters.CommanderZilyana.allItems,
-								Monsters.Kreearra.allItems,
-								Monsters.KrilTsutsaroth.allItems
-							]
-						)
+						...new Set([
+							...Monsters.GeneralGraardor.allItems,
+							...Monsters.CommanderZilyana.allItems,
+							...Monsters.Kreearra.allItems,
+							...Monsters.KrilTsutsaroth.allItems
+						])
 					];
 				})(),
 				items: [
@@ -681,13 +681,13 @@ export const allCollectionLogs: ICollection = {
 			},
 			Akumu: {
 				alias: ['akumu'],
-				allItems: akumuCL,
+				allItems: AkumuLootTable.allItems,
 				items: akumuCL,
 				fmtProg: kcProg(BSOMonsters.Akumu.id)
 			},
 			Venatrix: {
 				alias: ['venatrix'],
-				allItems: venatrixCL,
+				allItems: VenatrixLootTable.allItems,
 				items: venatrixCL,
 				fmtProg: kcProg(BSOMonsters.Venatrix.id)
 			},
@@ -785,21 +785,19 @@ export const allCollectionLogs: ICollection = {
 				},
 				allItems: (() => {
 					return [
-						...new Set(
-							...[
-								Monsters.RevenantImp.allItems,
-								Monsters.RevenantGoblin.allItems,
-								Monsters.RevenantPyrefiend.allItems,
-								Monsters.RevenantHobgoblin.allItems,
-								Monsters.RevenantCyclops.allItems,
-								Monsters.RevenantHellhound.allItems,
-								Monsters.RevenantDemon.allItems,
-								Monsters.RevenantOrk.allItems,
-								Monsters.RevenantDarkBeast.allItems,
-								Monsters.RevenantKnight.allItems,
-								Monsters.RevenantDragon.allItems
-							]
-						)
+						...new Set([
+							...Monsters.RevenantImp.allItems,
+							...Monsters.RevenantGoblin.allItems,
+							...Monsters.RevenantPyrefiend.allItems,
+							...Monsters.RevenantHobgoblin.allItems,
+							...Monsters.RevenantCyclops.allItems,
+							...Monsters.RevenantHellhound.allItems,
+							...Monsters.RevenantDemon.allItems,
+							...Monsters.RevenantOrk.allItems,
+							...Monsters.RevenantDarkBeast.allItems,
+							...Monsters.RevenantKnight.allItems,
+							...Monsters.RevenantDragon.allItems
+						])
 					];
 				})(),
 				items: revenantsCL
@@ -920,7 +918,37 @@ export const allCollectionLogs: ICollection = {
 					Default: async (_, __, { openableScores }) => openableScores.amount(73_124)
 				},
 				items: resolveItems([
-					...ElderClueTable.allItems,
+					'Lord marshal boots',
+					'Lord marshal gloves',
+					'Lord marshal trousers',
+					'Lord marshal top',
+					'Lord marshal cap',
+					'Akumu mask',
+					'Commander boots',
+					'Commander gloves',
+					'Commander trousers',
+					'Commander top',
+					'Commander cap',
+					'Apple parasol',
+					'Watermelon parasol',
+					'Lemon parasol',
+					'Strawberry parasol',
+					'Blueberry parasol',
+					'Grape parasol',
+					'Coconut parasol',
+					'Detective hat',
+					'Detective trenchcoat',
+					'Detective pants',
+					'2nd age range legs',
+					'2nd age range top',
+					'2nd age range coif',
+					'2nd age bow',
+					'2nd age mage top',
+					'2nd age mage bottom',
+					'2nd age mage mask',
+					'2nd age staff',
+					'First age robe top',
+					'First age robe bottom',
 					'Clue bag',
 					'Inventors tools',
 					'Elder knowledge',

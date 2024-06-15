@@ -984,10 +984,11 @@ model UserStats {
   high_gambles                     Int  @default(0)
   honour_points                    Int  @default(0)
 
-  slayer_task_streak     Int @default(0)
-  slayer_superior_count  Int @default(0)
-  slayer_unsired_offered Int @default(0)
-  slayer_chewed_offered  Int @default(0)
+  slayer_task_streak        Int @default(0)
+  slayer_wildy_task_streak  Int @default(0)
+  slayer_superior_count     Int @default(0)
+  slayer_unsired_offered    Int @default(0)
+  slayer_chewed_offered     Int @default(0)
 
   tob_cost        Json @default("{}")
   tob_loot        Json @default("{}")

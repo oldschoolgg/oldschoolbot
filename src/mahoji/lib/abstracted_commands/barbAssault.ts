@@ -171,7 +171,7 @@ export async function barbAssaultGambleCommand(
 	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	tier: string,
-	quantity: number
+	quantity = 1
 ) {
 	const buyable = GambleTiers.find(i => stringMatches(tier, i.name));
 	if (!buyable) {

@@ -12,7 +12,6 @@ import {
 import { Bank, LootTable } from 'oldschooljs';
 
 import { OWNER_IDS, production } from '../config';
-import { scaryEatables } from './constants';
 import { prisma } from './settings/prisma';
 import {
 	getPHeadDescriptor,
@@ -26,6 +25,7 @@ import { BossInstance, BossOptions, BossUser } from './structures/Boss';
 import { Gear } from './structures/Gear';
 import { NewBossOptions } from './types/minions';
 import { formatDuration, roll } from './util';
+import getOSItem from './util/getOSItem';
 import { logError } from './util/logError';
 import { sendToChannelID } from './util/webhook';
 import { LampTable } from './xpLamps';
@@ -38,6 +38,45 @@ interface BossEvent {
 }
 
 export const bossEventChannelID = production ? '897170239333220432' : '1023760501957722163';
+
+export const scaryEatables = [
+	{
+		item: getOSItem('Candy teeth'),
+		healAmount: 3
+	},
+	{
+		item: getOSItem('Toffeet'),
+		healAmount: 5
+	},
+	{
+		item: getOSItem('Chocolified skull'),
+		healAmount: 8
+	},
+	{
+		item: getOSItem('Rotten sweets'),
+		healAmount: 9
+	},
+	{
+		item: getOSItem('Hairyfloss'),
+		healAmount: 12
+	},
+	{
+		item: getOSItem('Eyescream'),
+		healAmount: 13
+	},
+	{
+		item: getOSItem('Goblinfinger soup'),
+		healAmount: 20
+	},
+	{
+		item: getOSItem("Benny's brain brew"),
+		healAmount: 50
+	},
+	{
+		item: getOSItem('Roasted newt'),
+		healAmount: 120
+	}
+];
 
 function getScaryFoodFromBank(user: MUser, totalHealingNeeded: number, _userBank?: Bank): false | Bank {
 	if (OWNER_IDS.includes(user.id)) return new Bank();

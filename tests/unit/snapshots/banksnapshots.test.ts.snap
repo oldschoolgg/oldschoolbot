@@ -4,25 +4,6 @@ exports[`BSO Buyables 1`] = `
 [
   {
     "aliases": [
-      "quest cape",
-    ],
-    "gpCost": 99000,
-    "itemCost": Bank {
-      "bank": {},
-      "frozen": false,
-    },
-    "name": "Quest point cape",
-    "outputItems": Bank {
-      "bank": {
-        "9813": 1,
-        "9814": 1,
-      },
-      "frozen": false,
-    },
-    "qpRequired": 5015,
-  },
-  {
-    "aliases": [
       "rope",
     ],
     "gpCost": 100,
@@ -78,7 +59,7 @@ exports[`BSO Buyables 1`] = `
       "feather",
     ],
     "gpCost": 50,
-    "ironmanPrice": 2,
+    "ironmanPrice": 3,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -319,23 +300,6 @@ exports[`BSO Buyables 1`] = `
     },
     "name": "M'speak amulet",
     "outputItems": undefined,
-  },
-  {
-    "customReq": [Function],
-    "gpCost": 1000000,
-    "itemCost": Bank {
-      "bank": {},
-      "frozen": false,
-    },
-    "name": "Achievement diary cape",
-    "outputItems": Bank {
-      "bank": {
-        "13069": 1,
-        "13070": 1,
-        "19476": 1,
-      },
-      "frozen": false,
-    },
   },
   {
     "gpCost": 200000,
@@ -1000,6 +964,20 @@ exports[`BSO Buyables 1`] = `
     "name": "Mask of rebirth",
     "outputItems": undefined,
     "qpRequired": 172,
+  },
+  {
+    "gpCost": 5000,
+    "ironmanPrice": 500,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Lockpick",
+    "outputItems": undefined,
+    "skillsNeeded": {
+      "agility": 50,
+      "thieving": 50,
+    },
   },
   {
     "itemCost": Bank {
@@ -3592,6 +3570,21 @@ exports[`BSO Buyables 1`] = `
     "qpRequired": 5015,
   },
   {
+    "gpCost": 1000000000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Master quest cape",
+    "outputItems": Bank {
+      "bank": {
+        "40053": 1,
+      },
+      "frozen": false,
+    },
+    "qpRequired": 5000,
+  },
+  {
     "aliases": [
       "achievement cape",
     ],
@@ -3628,21 +3621,6 @@ exports[`BSO Buyables 1`] = `
       "frozen": false,
     },
     "qpRequired": 5015,
-  },
-  {
-    "gpCost": 1000000000,
-    "itemCost": Bank {
-      "bank": {},
-      "frozen": false,
-    },
-    "name": "Master quest cape",
-    "outputItems": Bank {
-      "bank": {
-        "40053": 1,
-      },
-      "frozen": false,
-    },
-    "qpRequired": 5000,
   },
   {
     "customReq": [Function],
@@ -7782,7 +7760,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7796,7 +7774,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7810,7 +7788,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7824,7 +7802,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7838,7 +7816,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7852,7 +7830,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7866,7 +7844,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7880,7 +7858,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7894,7 +7872,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7908,7 +7886,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7922,7 +7900,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7936,7 +7914,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7950,7 +7928,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7964,7 +7942,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7978,7 +7956,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -7992,7 +7970,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8006,7 +7984,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8020,7 +7998,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8034,7 +8012,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8048,7 +8026,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8062,7 +8040,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8076,7 +8054,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8090,7 +8068,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8104,7 +8082,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8118,7 +8096,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8132,7 +8110,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8146,7 +8124,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8160,7 +8138,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8174,7 +8152,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8188,7 +8166,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8202,7 +8180,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8216,7 +8194,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8230,7 +8208,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8244,7 +8222,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8258,7 +8236,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8272,7 +8250,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8286,7 +8264,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8300,7 +8278,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8314,7 +8292,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8328,7 +8306,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8342,7 +8320,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8356,7 +8334,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8370,7 +8348,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8384,7 +8362,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8398,7 +8376,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8412,7 +8390,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8426,7 +8404,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8440,7 +8418,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8454,7 +8432,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -8468,7 +8446,7 @@ exports[`BSO Buyables 1`] = `
     },
   },
   {
-    "gpCost": 15000,
+    "gpCost": 20000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -9954,6 +9932,24 @@ exports[`BSO Creatables 1`] = `
     "outputItems": Bank {
       "bank": {
         "12018": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "GPCost": 50000,
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {
+        "12783": 1,
+        "2572": 1,
+      },
+      "frozen": false,
+    },
+    "name": "Ring of wealth (i)",
+    "outputItems": Bank {
+      "bank": {
+        "12785": 1,
       },
       "frozen": false,
     },
@@ -23867,6 +23863,20 @@ exports[`BSO Creatables 1`] = `
       "bank": {},
       "frozen": false,
     },
+    "name": "Divine water (Jogre bones)",
+    "outputItems": Bank {
+      "bank": {
+        "50599": 1,
+      },
+      "frozen": false,
+    },
+  },
+  {
+    "cantHaveItems": undefined,
+    "inputItems": Bank {
+      "bank": {},
+      "frozen": false,
+    },
     "name": "Divine water (Babydragon bones)",
     "outputItems": Bank {
       "bank": {
@@ -24063,7 +24073,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24084,7 +24094,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24105,7 +24115,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24126,7 +24136,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24147,7 +24157,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24168,7 +24178,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24189,7 +24199,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24210,7 +24220,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24231,7 +24241,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24252,7 +24262,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24273,7 +24283,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24294,7 +24304,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24315,7 +24325,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24336,7 +24346,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24357,7 +24367,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {
@@ -24378,7 +24388,7 @@ exports[`BSO Creatables 1`] = `
       "frozen": false,
     },
     "requiredSlayerUnlocks": [
-      54,
+      56,
     ],
   },
   {

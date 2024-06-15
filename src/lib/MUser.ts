@@ -901,20 +901,28 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return this.caPoints() >= CombatAchievements[tier].rewardThreshold;
 	}
 
-	buildCATertiaryItemChanges() {
+	buildTertiaryItemChanges(hasRingOfWealthI: boolean = false, inWildy: boolean = false, onTask: boolean = false) {
 		const changes = new Map();
-		if (this.hasCompletedCATier('easy')) {
-			changes.set('Clue scroll (easy)', 5);
+
+		const tiers = Object.keys(CombatAchievements) as Array<keyof typeof CombatAchievements>;
+		for (const tier of tiers) {
+			let change = hasRingOfWealthI ? 50 : 0;
+			if (this.hasCompletedCATier(tier)) {
+				change += 5;
+			}
+			changes.set(`Clue scroll (${tier})`, change);
 		}
-		if (this.hasCompletedCATier('medium')) {
-			changes.set('Clue scroll (medium)', 5);
+
+		if (inWildy) changes.set('Giant key', 50);
+
+		if (inWildy && !onTask) {
+			changes.set('Mossy key', 60);
+		} else if (!inWildy && onTask) {
+			changes.set('Mossy key', 66.67);
+		} else if (inWildy && onTask) {
+			changes.set('Mossy key', 77.6);
 		}
-		if (this.hasCompletedCATier('hard')) {
-			changes.set('Clue scroll (hard)', 5);
-		}
-		if (this.hasCompletedCATier('elite')) {
-			changes.set('Clue scroll (elite)', 5);
-		}
+
 		return changes;
 	}
 

@@ -71,6 +71,7 @@ export interface KillableMonster {
 	existsInCatacombs?: boolean;
 	qpRequired?: number;
 	difficultyRating?: number;
+	revsWeaponBoost?: boolean;
 
 	/**
 	 * An array of objects of ([key: itemID]: boostPercentage) boosts that apply to
@@ -136,6 +137,7 @@ export interface KillableMonster {
 	requiredQuests?: QuestID[];
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
 	diaryRequirement?: [Diary, DiaryTier];
+	wildySlayerCave?: boolean;
 	requiredBitfield?: BitField;
 
 	minimumFoodHealAmount?: number;
