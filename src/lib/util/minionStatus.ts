@@ -36,6 +36,7 @@ import {
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
+	ColoTaskOptions,
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
@@ -680,6 +681,14 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently doing the ${
 				quests.find(i => i.id === data.questID)!.name
 			}! The trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'Colosseum': {
+			const data = currentTask as ColoTaskOptions;
+			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+
+			return `${name} is currently attempting the Colosseum, if they are successful, the trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
 		}
 		case 'HalloweenEvent': {
 			return `${name} is doing the Halloween event! The trip should take ${formatDuration(durationRemaining)}.`;

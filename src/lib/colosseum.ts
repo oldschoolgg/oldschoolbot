@@ -1,21 +1,40 @@
-import { calcPercentOfNum, calcWhatPercent, clamp, percentChance, randFloat, randInt, sumArr, Time } from 'e';
+import {
+	calcPercentOfNum,
+	calcWhatPercent,
+	clamp,
+	objectEntries,
+	objectValues,
+	percentChance,
+	randInt,
+	sumArr,
+	Time
+} from 'e';
 import { Bank, LootTable } from 'oldschooljs';
+import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
+import { GearSetupType } from './gear/types';
+import { trackLoot } from './lootTrack';
 import { GeneralBank, GeneralBankType } from './structures/GeneralBank';
+import { ItemBank, Skills } from './types';
+import { ColoTaskOptions } from './types/minions';
 import { assert } from './util';
-import { averageBank, exponentialPercentScale, formatDuration } from './util/smallUtils';
+import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
+import resolveItems from './util/resolveItems';
+import {
+	averageBank,
+	exponentialPercentScale,
+	formatDuration,
+	formatSkillRequirements,
+	itemNameFromID
+} from './util/smallUtils';
+import { updateBankSetting } from './util/updateBankSetting';
 
 interface Wave {
 	waveNumber: number;
 	enemies: string[];
 	reinforcements?: string[];
 	table: LootTable;
-}
-
-interface Handicap {
-	name: string;
-	effect: string;
-	tier?: number;
 }
 
 const waves: Wave[] = [
@@ -271,11 +290,16 @@ const calculateLootForWave = (wave: Wave) => {
 function calculateDeathChance(kc: number, waveNumber: number): number {
 	const cappedKc = Math.min(Math.max(kc, 0), 1000);
 
-	const baseChance = 75;
+	const baseChance = 65;
 	const kcReduction = Math.min(90, 90 * (1 - Math.exp(-0.1 * cappedKc))); // Steep reduction for the first few kc
 	const waveIncrease = waveNumber * 1.5;
 
-	const deathChance = Math.max(1, Math.min(99, baseChance - kcReduction + waveIncrease));
+	let newChance = baseChance - kcReduction + waveIncrease;
+	if (kc > 0) {
+		newChance /= 10;
+	}
+
+	const deathChance = Math.max(1, Math.min(80, newChance));
 
 	return deathChance;
 }
@@ -296,6 +320,8 @@ interface ColosseumResult {
 	maxGlory: number;
 	addedWaveKCBank: ColosseumWaveBank;
 	debugMessages: string[];
+	fakeDuration: number;
+	realDuration: number;
 }
 
 const startColosseumRun = (options: { kcBank: ColosseumWaveBank; chosenWaveToStop: number }): ColosseumResult => {
@@ -314,15 +340,19 @@ const startColosseumRun = (options: { kcBank: ColosseumWaveBank; chosenWaveToSto
 
 	const addedWaveKCBank = new ColosseumWaveBank();
 
+	let realDuration = 0;
+	const fakeDuration = 12 * (Time.Minute * 3.5);
+
 	let maxGlory = 0;
 	for (const wave of waves) {
+		realDuration += Time.Minute * 3.5;
 		const kc = options.kcBank.amount(wave.waveNumber) ?? 0;
 		const kcSkill = waveKCSkillBank.amount(wave.waveNumber) ?? 0;
 		const wavePerformance = exponentialPercentScale((totalKCSkillPercent + kcSkill) / 2);
 		const glory = randInt(calcPercentOfNum(wavePerformance, ourMaxGlory), ourMaxGlory);
 		maxGlory = Math.max(glory, maxGlory);
-		const deathChance = calculateDeathChance(kc, wave.waveNumber);
-		// console.log({ expSkill, wavePerformance, totalKCSkillPercent });
+		let deathChance = calculateDeathChance(kc, wave.waveNumber);
+		// deathChance = reduceNumByPercent(deathChance, clamp(kc * 3, 1, 50));
 
 		debugMessages.push(`Wave ${wave.waveNumber} at ${kc}KC death chance: ${deathChance}%`);
 		if (percentChance(deathChance)) {
@@ -331,7 +361,9 @@ const startColosseumRun = (options: { kcBank: ColosseumWaveBank; chosenWaveToSto
 				loot: null,
 				maxGlory: 0,
 				addedWaveKCBank,
-				debugMessages
+				debugMessages,
+				fakeDuration,
+				realDuration
 			};
 		}
 		addedWaveKCBank.add(wave.waveNumber);
@@ -343,7 +375,9 @@ const startColosseumRun = (options: { kcBank: ColosseumWaveBank; chosenWaveToSto
 				loot: bank,
 				maxGlory,
 				addedWaveKCBank,
-				debugMessages
+				debugMessages,
+				fakeDuration,
+				realDuration
 			};
 		}
 	}
@@ -352,11 +386,12 @@ const startColosseumRun = (options: { kcBank: ColosseumWaveBank; chosenWaveToSto
 };
 
 function simulateColosseumRuns() {
-	const totalSimulations = 200;
+	const totalSimulations = 500;
 	let totalAttempts = 0;
 	let totalDeaths = 0;
 	const totalLoot = new Bank();
 	const finishAttemptAmounts = [];
+	let totalDuration = 0;
 
 	for (let i = 0; i < totalSimulations; i++) {
 		let attempts = 0;
@@ -369,8 +404,8 @@ function simulateColosseumRuns() {
 			attempts++;
 			const stopAt = waves[waves.length - 1].waveNumber;
 			const result = startColosseumRun({ kcBank, chosenWaveToStop: stopAt });
+			totalDuration += result.realDuration;
 			kcBank.add(result.addedWaveKCBank);
-			// console.log(result.debugMessages.join(', '));
 			if (result.diedAt === null) {
 				if (result.loot) runLoot.add(result.loot);
 				done = true;
@@ -384,7 +419,6 @@ function simulateColosseumRuns() {
 		totalAttempts += attempts;
 		totalDeaths += deaths;
 		totalLoot.add(runLoot);
-		console.log(runLoot.toString());
 	}
 
 	const averageAttempts = totalAttempts / totalSimulations;
@@ -392,6 +426,7 @@ function simulateColosseumRuns() {
 
 	finishAttemptAmounts.sort((a, b) => a - b);
 
+	console.log(`Avg duration: ${formatDuration(totalDuration / totalSimulations)}`);
 	console.log(`Total simulations: ${totalSimulations}`);
 	console.log(
 		`Average attempts to beat wave 12: ${averageAttempts}. ${formatDuration(
@@ -404,3 +439,121 @@ function simulateColosseumRuns() {
 }
 
 simulateColosseumRuns();
+
+export async function colosseumCommand(user: MUser, channelID: string) {
+	if (user.minionIsBusy) {
+		return `${user.usernameOrMention} is busy`;
+	}
+
+	const skillReqs: Skills = {
+		attack: 90,
+		strength: 90,
+		defence: 90,
+		prayer: 80,
+		ranged: 90,
+		magic: 94,
+		hitpoints: 90
+	};
+
+	if (!user.hasSkillReqs(skillReqs)) {
+		return `You need ${formatSkillRequirements(skillReqs)} to enter the Colosseum.`;
+	}
+
+	const requiredItems: Partial<Record<GearSetupType, Partial<Record<EquipmentSlot, number[]>>>> = {
+		melee: {
+			head: resolveItems(['Torva full helm', 'Neitiznot faceguard', 'Justiciar faceguard']),
+			cape: resolveItems(['Infernal cape', 'Fire cape']),
+			neck: resolveItems(['Amulet of blood fury']),
+			body: resolveItems(['Torva platebody', 'Bandos chestplate']),
+			legs: resolveItems(['Torva platelegs', 'Bandos tassets']),
+			feet: resolveItems(['Primordial boots']),
+			ring: resolveItems(['Ultor ring', 'Berserker ring (i)']),
+			'2h': resolveItems(['Scythe of vitur'])
+		},
+		range: {
+			cape: resolveItems(["Dizana's quiver", "Ava's assembler"]),
+			head: resolveItems(['Masori mask (f)', 'Masori mask', 'Armadyl helmet']),
+			neck: resolveItems(['Necklace of anguish']),
+			body: resolveItems(['Masori body (f)', 'Masori body', 'Armadyl chestplate']),
+			legs: resolveItems(['Masori chaps (f)', 'Masori chaps', 'Armadyl chainskirt']),
+			feet: resolveItems(['Pegasian boots']),
+			ring: resolveItems(['Venator ring', 'Archers ring (i)']),
+			ammo: resolveItems(['Dragon arrow']),
+			'2h': resolveItems(['Twisted bow'])
+		}
+	};
+
+	const meleeWeapons = resolveItems(['Scythe of vitur', 'Blade of saeldor (c)']);
+	const rangeWeapons = resolveItems(['Twisted bow', 'Bow of faerdhinen (c)']);
+
+	for (const [gearType, gearNeeded] of objectEntries(requiredItems)) {
+		const gear = user.gear[gearType];
+		if (!gearNeeded) continue;
+		for (const items of objectValues(gearNeeded)) {
+			if (!items) continue;
+			if (!items.some(g => gear.hasEquipped(g))) {
+				return `You need one of these equipped in your ${gearType} setup to enter the Colosseum: ${items
+					.map(itemNameFromID)
+					.join(', ')}.`;
+			}
+		}
+	}
+
+	if (!meleeWeapons.some(i => user.gear.melee.hasEquipped(i))) {
+		return `You need one of these equipped in your melee setup to enter the Colosseum: ${meleeWeapons
+			.map(itemNameFromID)
+			.join(', ')}.`;
+	}
+
+	if (!rangeWeapons.some(i => user.gear.range.hasEquipped(i))) {
+		return `You need one of these equipped in your melee setup to enter the Colosseum: ${rangeWeapons
+			.map(itemNameFromID)
+			.join(', ')}.`;
+	}
+
+	const cost = new Bank()
+		.add('Saradomin brew(4)', 6)
+		.add('Super restore(4)', 8)
+		.add('Super combat potion(4)')
+		.add('Bastion potion(4)');
+
+	if (!user.owns(cost)) {
+		return `You need ${cost} to attempt the Colosseum.`;
+	}
+
+	const res = startColosseumRun({
+		kcBank: new ColosseumWaveBank((await user.fetchStats({ colo_kc_bank: true })).colo_kc_bank as ItemBank),
+		chosenWaveToStop: 12
+	});
+
+	await updateBankSetting('colo_cost', cost);
+	await userStatsBankUpdate(user.id, 'colo_cost', cost);
+	await trackLoot({
+		totalCost: cost,
+		id: 'colo',
+		type: 'Minigame',
+		changeType: 'cost',
+		users: [
+			{
+				id: user.id,
+				cost
+			}
+		]
+	});
+	await user.removeItemsFromBank(cost);
+
+	await addSubTaskToActivityTask<ColoTaskOptions>({
+		userID: user.id,
+		channelID,
+		duration: res.realDuration,
+		type: 'Colosseum',
+		fakeDuration: res.fakeDuration,
+		maxGlory: res.maxGlory,
+		diedAt: res.diedAt ?? undefined,
+		loot: res.loot?.bank
+	});
+
+	return `${user.minionName} is now attempting the Colosseum. They will finish in around ${formatDuration(
+		res.fakeDuration
+	)}, unless they die early. Removed ${cost}.`;
+}

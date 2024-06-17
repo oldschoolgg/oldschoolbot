@@ -15,6 +15,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { colosseumCommand } from '../../../lib/colosseum';
 import { BitField, PeakTier, PvMMethod } from '../../../lib/constants';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
@@ -156,6 +157,7 @@ export async function minionKillCommand(
 
 	if (!name) return invalidMonsterMsg;
 
+	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelID);
 	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID, solo);
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);

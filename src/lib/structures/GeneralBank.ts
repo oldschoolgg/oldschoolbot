@@ -41,6 +41,10 @@ export class GeneralBank<T extends string | number> {
 		this.validate();
 	}
 
+	get _bank() {
+		return this.bank;
+	}
+
 	clone(): GeneralBank<T> {
 		return new GeneralBank<T>({
 			allowedKeys: this.allowedKeys ? Array.from(this.allowedKeys) : undefined,
