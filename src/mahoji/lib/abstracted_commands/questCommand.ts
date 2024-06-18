@@ -91,7 +91,7 @@ export const quests: Quest[] = [
 		},
 		combatLevelReq: 50,
 		qpReq: 10,
-		rewards: new Bank().add(28_587).add(28_587).add(28_588).add(28_589).add(28_590).freeze(),
+		rewards: new Bank().add(28_587).add(28_588).add(28_589).add(28_590).freeze(),
 		calcTime: (user: MUser) => {
 			let duration = Time.Minute * 10;
 			if (user.combatLevel < 90) {
@@ -119,8 +119,7 @@ export const quests: Quest[] = [
 		},
 		combatLevelReq: 65,
 		qpReq: 20,
-		// Awaiting item update for the lamp to be added
-		// rewards: new Bank().add(28_820).freeze(),
+		rewards: new Bank().add(28_820).freeze(),
 		skillsRewards: {
 			smithing: 15_000,
 			hunter: 15_000

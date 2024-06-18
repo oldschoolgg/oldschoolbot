@@ -1122,7 +1122,7 @@ for (const cape of allTeamCapes) {
 	Buyables.push({
 		name: cape.name,
 		outputItems: new Bank().add(cape.id),
-		gpCost: 15_000
+		gpCost: 20_000
 	});
 }
 

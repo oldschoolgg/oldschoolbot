@@ -47,7 +47,8 @@ const noSacPrice = resolveItems([
 	'Bronze pickaxe',
 	'Iron pickaxe',
 	'Red dye',
-	'Cannon furnace'
+	'Cannon furnace',
+	'Feather'
 ]);
 
 export function sacrificePriceOfItem(item: Item, qty: number) {
