@@ -157,7 +157,7 @@ export function makeEasierFarmingContractButton() {
 		.setCustomId('FARMING_CONTRACT_EASIER')
 		.setLabel('Ask for easier Contract')
 		.setStyle(ButtonStyle.Secondary)
-		.setEmoji('977410792754413668');
+		.setEmoji('🎲');
 }
 
 export function makeAutoFarmButton() {
