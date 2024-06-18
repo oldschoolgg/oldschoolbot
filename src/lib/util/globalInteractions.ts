@@ -15,7 +15,7 @@ import { toaHelpCommand } from '../simulation/toa';
 import { ItemBank } from '../types';
 import { formatDuration, stringMatches } from '../util';
 import { updateGiveawayMessage } from './giveaway';
-import { interactionReply } from './interactionReply';
+import { deferInteraction, interactionReply } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';
 import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
 
@@ -325,6 +325,16 @@ export async function interactionHook(interaction: Interaction) {
 	const id = interaction.customId;
 	const userID = interaction.user.id;
 
+	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
+	if (cd !== null) {
+		return interactionReply(interaction, {
+			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(cd, true)}.`,
+			ephemeral: true
+		});
+	}
+
+	await deferInteraction(interaction);
+
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
@@ -352,14 +362,6 @@ export async function interactionHook(interaction: Interaction) {
 		interaction,
 		continueDeltaMillis: null
 	};
-
-	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
-	if (cd !== null) {
-		return interactionReply(interaction, {
-			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(cd, true)}.`,
-			ephemeral: true
-		});
-	}
 
 	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();
 	const timeLimit = reactionTimeLimit(user.perkTier());
