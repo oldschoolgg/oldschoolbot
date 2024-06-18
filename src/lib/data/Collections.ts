@@ -105,6 +105,7 @@ import {
 	dukeSucellusCL,
 	dungeoneeringCL,
 	emergedZukInfernoCL,
+	enigmarCL,
 	expertCapesCL,
 	fightCavesCL,
 	fishingContestCL,
@@ -690,6 +691,12 @@ export const allCollectionLogs: ICollection = {
 				allItems: VenatrixLootTable.allItems,
 				items: venatrixCL,
 				fmtProg: kcProg(BSOMonsters.Venatrix.id)
+			},
+			Enigmar: {
+				alias: ['enigmar', 'enigma'],
+				allItems: BSOMonsters.Enigmar.table.allItems,
+				items: enigmarCL,
+				fmtProg: kcProg(BSOMonsters.Enigmar.id)
 			},
 			"Chamber's of Xeric": {
 				alias: ChambersOfXeric.aliases,

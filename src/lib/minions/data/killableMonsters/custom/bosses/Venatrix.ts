@@ -55,7 +55,7 @@ export const Venatrix: CustomMonster = {
 		highestDeathChance: 65
 	},
 	minimumFoodHealAmount: 22,
-	allItems: resolveItems([]),
+	allItems: [],
 	minimumGearRequirements: {
 		melee: {}
 	},

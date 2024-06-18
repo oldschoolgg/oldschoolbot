@@ -361,3 +361,5 @@ setItemAlias(25_922, 'Antique lamp (hard ca)');
 setItemAlias(25_923, 'Antique lamp (elite ca)');
 setItemAlias(25_924, 'Antique lamp (master ca)');
 setItemAlias(25_925, 'Antique lamp (grandmaster ca)');
+
+setItemAlias(73_203, 'Enigma token');
