@@ -13,6 +13,7 @@ import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
+import Skills from '../skilling/skills';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, makeComponents } from '../util';
@@ -118,6 +119,19 @@ export async function handleTripFinish(
 		clueReceived.map(
 			clue => (message.content += `\n${Emoji.Casket} **You got a ${clue.name} clue scroll** in your loot.`)
 		);
+	}
+
+	if (user.user.favorite_skill) {
+		const skillID = user.user.favorite_skill;
+		const skill = Object.values(Skills).find(skill => skill.id === skillID);
+		if (skill) {
+			const { name } = skill;
+			const currentLevel = user.skillLevel(skill.id);
+			const currentXP = Number(user.user[`skills_${skill.id}`]);
+			message.content += `\n${
+				skill.emoji
+			} Your ${name} level is ${currentLevel} (${currentXP.toLocaleString()} XP)`;
+		}
 	}
 
 	const existingCollector = collectors.get(user.id);
