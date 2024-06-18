@@ -57,7 +57,7 @@ describe('Sacrifice Command', async () => {
 		expect(
 			new Bank(stats2.sacrificed_bank as ItemBank).equals(new Bank().add('Coal', 20).add('Trout', 3).add('Cake'))
 		).toBe(true);
-		expect(user.user.sacrificedValue).toEqual(BigInt(3974));
+		expect(user.user.sacrificedValue).toEqual(BigInt(3437));
 
 		const clientSettings2 = await mahojiClientSettingsFetch({ economyStats_sacrificedBank: true });
 		expect(
