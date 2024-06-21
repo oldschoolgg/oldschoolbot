@@ -3,8 +3,10 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ColosseumWaveBank } from '../../lib/colosseum';
 import { trackLoot } from '../../lib/lootTrack';
+import { incrementMinigameScore } from '../../lib/settings/minigames';
 import { ColoTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 
@@ -38,8 +40,10 @@ export const colosseumTask: MinionTask = {
 			);
 		}
 
+		await incrementMinigameScore(user.id, 'colosseum');
+
 		const loot = new Bank().add(possibleLoot);
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		await updateBankSetting('colo_loot', loot);
 		await userStatsBankUpdate(user.id, 'colo_loot', loot);
@@ -66,6 +70,8 @@ export const colosseumTask: MinionTask = {
 			str += ` Your new max glory is ${maxGlory}!`;
 		}
 
-		return handleTripFinish(user, channelID, str, undefined, data, loot);
+		const image = await makeBankImage({ bank: loot, title: 'Colosseum Loot', user, previousCL });
+
+		return handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
 	}
 };

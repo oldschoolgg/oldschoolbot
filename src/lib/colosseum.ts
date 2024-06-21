@@ -1,7 +1,10 @@
+import { mentionCommand } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	clamp,
+	increaseNumByPercent,
 	objectEntries,
 	objectValues,
 	percentChance,
@@ -12,9 +15,12 @@ import {
 import { Bank, LootTable } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import { QuestID } from '../mahoji/lib/abstracted_commands/questCommand';
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
+import { degradeChargeBank } from './degradeableItems';
 import { GearSetupType } from './gear/types';
 import { trackLoot } from './lootTrack';
+import { ChargeBank } from './structures/Bank';
 import { GeneralBank, GeneralBankType } from './structures/GeneralBank';
 import { ItemBank, Skills } from './types';
 import { ColoTaskOptions } from './types/minions';
@@ -261,7 +267,7 @@ const waves: Wave[] = [
 		waveNumber: 12,
 		enemies: ['Sol Heredit'],
 		table: new LootTable()
-			.every("Dizana's quiver")
+			.every("Dizana's quiver (uncharged)")
 			.tertiary(200, 'Smol heredit')
 			.add('Onyx bolts', 100, 792)
 			.add('Rune warhammer', 8, 792)
@@ -314,6 +320,45 @@ export class ColosseumWaveBank extends GeneralBank<number> {
 	}
 }
 
+function calculateTimeInMs(kc: number): number {
+	const points: { kc: number; timeInMinutes: number }[] = [
+		{ kc: 0, timeInMinutes: 50 },
+		{ kc: 1, timeInMinutes: 40 },
+		{ kc: 10, timeInMinutes: 30 },
+		{ kc: 100, timeInMinutes: 20 },
+		{ kc: 300, timeInMinutes: 16 }
+	];
+
+	if (kc <= 0) return points[0].timeInMinutes * 60 * 1000;
+	if (kc >= 300) return points[4].timeInMinutes * 60 * 1000;
+
+	if (kc <= 1) {
+		const timeAtKc0 = points[0].timeInMinutes;
+		const timeAtKc1 = points[1].timeInMinutes;
+		const slope = timeAtKc1 - timeAtKc0;
+		return (timeAtKc0 + slope * kc) * 60 * 1000;
+	}
+
+	if (kc <= 10) {
+		const timeAtKc1 = points[1].timeInMinutes;
+		const timeAtKc10 = points[2].timeInMinutes;
+		const slope = (timeAtKc10 - timeAtKc1) / (10 - 1);
+		return (timeAtKc1 + slope * (kc - 1)) * 60 * 1000;
+	}
+
+	if (kc <= 100) {
+		const timeAtKc10 = points[2].timeInMinutes;
+		const timeAtKc100 = points[3].timeInMinutes;
+		const slope = (timeAtKc100 - timeAtKc10) / (100 - 10);
+		return (timeAtKc10 + slope * (kc - 10)) * 60 * 1000;
+	}
+
+	const timeAtKc100 = points[3].timeInMinutes;
+	const timeAtKc300 = points[4].timeInMinutes;
+	const slope = (timeAtKc300 - timeAtKc100) / (300 - 100);
+	return (timeAtKc100 + slope * (kc - 100)) * 60 * 1000;
+}
+
 interface ColosseumResult {
 	diedAt: number | null;
 	loot: Bank | null;
@@ -324,7 +369,13 @@ interface ColosseumResult {
 	realDuration: number;
 }
 
-const startColosseumRun = (options: { kcBank: ColosseumWaveBank; chosenWaveToStop: number }): ColosseumResult => {
+const startColosseumRun = (options: {
+	kcBank: ColosseumWaveBank;
+	chosenWaveToStop: number;
+	hasScythe: boolean;
+	hasTBow: boolean;
+	hasVenBow: boolean;
+}): ColosseumResult => {
 	const debugMessages: string[] = [];
 	const bank = new Bank();
 
@@ -340,12 +391,25 @@ const startColosseumRun = (options: { kcBank: ColosseumWaveBank; chosenWaveToSto
 
 	const addedWaveKCBank = new ColosseumWaveBank();
 
+	let waveDuration = calculateTimeInMs(options.kcBank.amount(12)) / 12;
+
+	if (!options.hasScythe) {
+		waveDuration = increaseNumByPercent(waveDuration, 10);
+	}
+	if (!options.hasTBow) {
+		waveDuration = increaseNumByPercent(waveDuration, 10);
+	}
+	if (!options.hasVenBow) {
+		waveDuration = increaseNumByPercent(waveDuration, 7);
+	}
+
 	let realDuration = 0;
-	const fakeDuration = 12 * (Time.Minute * 3.5);
+
+	const fakeDuration = 12 * waveDuration;
 
 	let maxGlory = 0;
 	for (const wave of waves) {
-		realDuration += Time.Minute * 3.5;
+		realDuration += waveDuration;
 		const kc = options.kcBank.amount(wave.waveNumber) ?? 0;
 		const kcSkill = waveKCSkillBank.amount(wave.waveNumber) ?? 0;
 		const wavePerformance = exponentialPercentScale((totalKCSkillPercent + kcSkill) / 2);
@@ -403,7 +467,13 @@ function simulateColosseumRuns() {
 		while (!done) {
 			attempts++;
 			const stopAt = waves[waves.length - 1].waveNumber;
-			const result = startColosseumRun({ kcBank, chosenWaveToStop: stopAt });
+			const result = startColosseumRun({
+				kcBank,
+				chosenWaveToStop: stopAt,
+				hasScythe: true,
+				hasTBow: true,
+				hasVenBow: true
+			});
 			totalDuration += result.realDuration;
 			kcBank.add(result.addedWaveKCBank);
 			if (result.diedAt === null) {
@@ -445,6 +515,14 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		return `${user.usernameOrMention} is busy`;
 	}
 
+	if (!user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
+		return `You need to complete the "Children of the Sun" quest before you can enter the Colosseum. Send your minion to do the quest using: ${mentionCommand(
+			globalClient,
+			'activities',
+			'quest'
+		)}.`;
+	}
+
 	const skillReqs: Skills = {
 		attack: 90,
 		strength: 90,
@@ -467,8 +545,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 			body: resolveItems(['Torva platebody', 'Bandos chestplate']),
 			legs: resolveItems(['Torva platelegs', 'Bandos tassets']),
 			feet: resolveItems(['Primordial boots']),
-			ring: resolveItems(['Ultor ring', 'Berserker ring (i)']),
-			'2h': resolveItems(['Scythe of vitur'])
+			ring: resolveItems(['Ultor ring', 'Berserker ring (i)'])
 		},
 		range: {
 			cape: resolveItems(["Dizana's quiver", "Ava's assembler"]),
@@ -477,9 +554,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 			body: resolveItems(['Masori body (f)', 'Masori body', 'Armadyl chestplate']),
 			legs: resolveItems(['Masori chaps (f)', 'Masori chaps', 'Armadyl chainskirt']),
 			feet: resolveItems(['Pegasian boots']),
-			ring: resolveItems(['Venator ring', 'Archers ring (i)']),
-			ammo: resolveItems(['Dragon arrow']),
-			'2h': resolveItems(['Twisted bow'])
+			ring: resolveItems(['Venator ring', 'Archers ring (i)'])
 		}
 	};
 
@@ -506,25 +581,66 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	}
 
 	if (!rangeWeapons.some(i => user.gear.range.hasEquipped(i))) {
-		return `You need one of these equipped in your melee setup to enter the Colosseum: ${rangeWeapons
+		return `You need one of these equipped in your range setup to enter the Colosseum: ${rangeWeapons
 			.map(itemNameFromID)
 			.join(', ')}.`;
 	}
 
+	const messages: string[] = [];
+
+	const hasScythe = user.gear.melee.hasEquipped('Scythe of vitur', true, true);
+	const hasTBow = user.gear.range.hasEquipped('Twisted bow', true, true);
+	function calculateVenCharges(duration: number) {
+		return Math.floor((duration / Time.Minute) * 3);
+	}
+	const hasVenBow = user.owns('Venator bow') && user.user.venator_bow_charges >= calculateVenCharges(Time.Hour);
+
+	const res = startColosseumRun({
+		kcBank: new ColosseumWaveBank((await user.fetchStats({ colo_kc_bank: true })).colo_kc_bank as ItemBank),
+		chosenWaveToStop: 12,
+		hasScythe,
+		hasTBow,
+		hasVenBow
+	});
+	const minutes = res.realDuration / Time.Minute;
+
+	const chargeBank = new ChargeBank();
 	const cost = new Bank()
 		.add('Saradomin brew(4)', 6)
 		.add('Super restore(4)', 8)
 		.add('Super combat potion(4)')
 		.add('Bastion potion(4)');
 
-	if (!user.owns(cost)) {
-		return `You need ${cost} to attempt the Colosseum.`;
+	const scytheChargesPerHour = 2500;
+	const scytheChargesPerMinute = scytheChargesPerHour / 60;
+	const scytheCharges = Math.ceil(minutes * scytheChargesPerMinute);
+	if (hasScythe) {
+		messages.push('10% boost for Scythe');
+		chargeBank.add('scythe_of_vitur_charges', scytheCharges);
+	}
+	if (hasTBow) {
+		messages.push('10% boost for TBow');
+		const arrowsNeeded = minutes * 3;
+		cost.add('Dragon arrow', arrowsNeeded);
+	}
+	if (hasVenBow) {
+		messages.push('7% boost for Venator bow');
+		chargeBank.add('venator_bow_charges', calculateVenCharges(res.realDuration));
 	}
 
-	const res = startColosseumRun({
-		kcBank: new ColosseumWaveBank((await user.fetchStats({ colo_kc_bank: true })).colo_kc_bank as ItemBank),
-		chosenWaveToStop: 12
-	});
+	chargeBank.add('blood_fury_charges', scytheCharges);
+
+	const realCost = new Bank();
+	try {
+		const result = await user.specialRemoveItems(cost);
+		realCost.add(result.realCost);
+	} catch (err: any) {
+		if (err instanceof UserError) {
+			return err.message;
+		}
+		throw err;
+	}
+	messages.push(`Removed ${realCost}`);
 
 	await updateBankSetting('colo_cost', cost);
 	await userStatsBankUpdate(user.id, 'colo_cost', cost);
@@ -542,6 +658,16 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	});
 	await user.removeItemsFromBank(cost);
 
+	if (chargeBank.length() > 0) {
+		const hasChargesResult = user.hasCharges(chargeBank);
+		if (!hasChargesResult.hasCharges) {
+			return hasChargesResult.fullUserString!;
+		}
+
+		const degradeResults = await degradeChargeBank(user, chargeBank);
+		messages.push(degradeResults.map(i => i.userMessage).join(', '));
+	}
+
 	await addSubTaskToActivityTask<ColoTaskOptions>({
 		userID: user.id,
 		channelID,
@@ -555,5 +681,5 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 
 	return `${user.minionName} is now attempting the Colosseum. They will finish in around ${formatDuration(
 		res.fakeDuration
-	)}, unless they die early. Removed ${cost}.`;
+	)}, unless they die early. ${messages.join(', ')}`;
 }

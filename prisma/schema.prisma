@@ -574,6 +574,7 @@ model Minigame {
   nmz                     Int    @default(0)
   shades_of_morton        Int    @default(0)
   tombs_of_amascut        Int    @default(0)
+  colosseum               Int    @default(0)
 
   new_user NewUser?
 
@@ -771,6 +772,8 @@ model UserStats {
   colo_loot      Json @default("{}") @db.Json
   colo_kc_bank   Json @default("{}") @db.Json
   colo_max_glory Int?
+
+  quivers_sacrificed Int @default(0)
 
   @@map("user_stats")
 }
