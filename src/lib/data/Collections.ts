@@ -49,6 +49,7 @@ import { SkillsEnum } from '../skilling/types';
 import { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
 import { fetchStatsForCL, stringMatches } from '../util';
+import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
 import { makeTable, shuffleRandom } from '../util/smallUtils';
 import {
@@ -1831,7 +1832,9 @@ export const allCollectionLogs: ICollection = {
 for (const crate of keyCrates) {
 	allCollectionLogs.Discontinued.activities[crate.item.name] = {
 		alias: [crate.item.name.toLowerCase()],
-		items: resolveItems([crate.item.id, crate.key.id, ...crate.table.allItems]),
+		items: resolveItems([crate.item.id, crate.key.id, ...crate.table.allItems]).filter(
+			i => !getOSItem(i).customItemData?.isSecret
+		),
 		counts: false
 	};
 }

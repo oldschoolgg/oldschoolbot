@@ -5,6 +5,7 @@ export interface CustomItemData {
 	cantBeDropped?: true;
 	isDiscontinued?: true;
 	superTradeableButTradeableOnGE?: true;
+	isSecret?: true;
 }
 
 declare module 'oldschooljs/dist/meta/types' {

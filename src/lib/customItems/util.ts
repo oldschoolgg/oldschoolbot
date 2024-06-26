@@ -43,6 +43,7 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 	) {
 		throw new Error('Tried to add a custom item with superTradeableButTradeableOnGE, but not isSuperUntradeable');
 	}
+
 	const data: Item = deepMerge({ ...getOSItem(baseItem) }, { ...newItemData, name, id }) as Item;
 	data.price = price || 1;
 

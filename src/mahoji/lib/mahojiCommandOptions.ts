@@ -5,7 +5,6 @@ import { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank, Items } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { secretItems } from '../../lib/constants';
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
 import { GearSetupTypes } from '../../lib/gear/types';
 import { IMaterialBank, materialTypes } from '../../lib/invention';
@@ -44,7 +43,7 @@ export const itemOption = (filter?: (item: Item) => boolean): CommandOption => (
 	description: 'The item you want to pick.',
 	required: false,
 	autocomplete: async value => {
-		let res = itemArr.filter(i => i.key.includes(value.toLowerCase())).filter(i => !secretItems.includes(i.id));
+		let res = itemArr.filter(i => i.key.includes(value.toLowerCase())).filter(i => !i.customItemData?.isSecret);
 		if (filter) res = res.filter(filter);
 		return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
 	}

@@ -17,7 +17,7 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
-import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier, secretItems } from '../../lib/constants';
+import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { gearImages } from '../../lib/gear/functions/generateGearImage';
 import { Inventions } from '../../lib/invention/inventions';
@@ -204,7 +204,7 @@ async function favFoodConfig(
 	const currentItems = `Your current favorite food is: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
-	if (!item || secretItems.includes(item.id)) return currentItems;
+	if (!item || item.customItemData?.isSecret) return currentItems;
 	if (!Eatables.some(i => i.id === item.id || i.raw === item.id)) return "That's not a valid item.";
 
 	if (itemToAdd) {
@@ -235,7 +235,7 @@ async function favItemConfig(
 	const currentItems = `Your current favorite items are: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
-	if (!item || secretItems.includes(item.id)) return currentItems;
+	if (!item || item.customItemData?.isSecret) return currentItems;
 	if (itemToAdd) {
 		let limit = (user.perkTier() + 1) * 100;
 		if (currentFavorites.length >= limit) {
