@@ -17,6 +17,7 @@ import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
 import getOSItem from './util/getOSItem';
 import { handleTripFinish } from './util/handleTripFinish';
+import { makeBankImage } from './util/makeBankImage';
 import resolveItems, { resolveOSItems } from './util/resolveItems';
 import { updateBankSetting } from './util/updateBankSetting';
 
@@ -358,7 +359,7 @@ export async function baxtorianBathhousesStartCommand({
 	if (!user.owns(cost)) {
 		return `You don't have enough supplies to do a trip, for ${quantity}x ${bathHouseTier.name} baths, you need: ${cost}.`;
 	}
-	updateBankSetting('bb_cost', cost);
+	await updateBankSetting('bb_cost', cost);
 	await user.removeItemsFromBank(cost);
 
 	await addSubTaskToActivityTask<BathhouseTaskOptions>({
@@ -473,7 +474,12 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 		}
 	}
 
-	await user.addItemsToBank({ items: loot, collectionLog: true });
+	const { previousCL, itemsAdded } = await transactItems({
+		userID: user.id,
+		collectionLog: true,
+		itemsToAdd: loot
+	});
+
 	let xpStr = await user.addXP({ skillName: SkillsEnum.Herblore, amount: herbXP, duration });
 	xpStr += '\n';
 	xpStr += await user.addXP({
@@ -483,15 +489,16 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 	});
 
 	let uniqSpecies = uniqueArr(speciesServed);
-	updateBankSetting('bb_loot', loot);
+	await updateBankSetting('bb_loot', loot);
 
-	const bankImage = await bankImageGenerator.generateBankImage({
-		bank: loot,
+	const bankImage = await makeBankImage({
+		bank: itemsAdded,
+		title: 'Baxtorian Bathhouses Loot',
 		user,
-		title: 'Baxtorian Bathhouses Loot'
+		previousCL
 	});
 
-	handleTripFinish(
+	return handleTripFinish(
 		user,
 		channelID,
 		`${userMention(userID)}, ${user.minionName} finished running ${quantity}x ${tier.name} baths for ${
@@ -502,7 +509,7 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 				: ''
 		}
 ${xpStr}`,
-		bankImage.image,
+		bankImage.file.attachment,
 		data,
 		loot
 	);
