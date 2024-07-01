@@ -293,7 +293,7 @@ const calculateLootForWave = (wave: Wave) => {
 	return loot;
 };
 
-function calculateDeathChance(kc: number, waveNumber: number): number {
+function calculateDeathChance(kc: number, waveNumber: number, hasBF: boolean): number {
 	const cappedKc = Math.min(Math.max(kc, 0), 1000);
 
 	const baseChance = 65;
@@ -303,6 +303,10 @@ function calculateDeathChance(kc: number, waveNumber: number): number {
 	let newChance = baseChance - kcReduction + waveIncrease;
 	if (kc > 0) {
 		newChance /= 10;
+	}
+
+	if (hasBF) {
+		newChance -= 5;
 	}
 
 	const deathChance = Math.max(1, Math.min(80, newChance));
@@ -375,6 +379,7 @@ const startColosseumRun = (options: {
 	hasScythe: boolean;
 	hasTBow: boolean;
 	hasVenBow: boolean;
+	hasBF: boolean;
 }): ColosseumResult => {
 	const debugMessages: string[] = [];
 	const bank = new Bank();
@@ -415,8 +420,7 @@ const startColosseumRun = (options: {
 		const wavePerformance = exponentialPercentScale((totalKCSkillPercent + kcSkill) / 2);
 		const glory = randInt(calcPercentOfNum(wavePerformance, ourMaxGlory), ourMaxGlory);
 		maxGlory = Math.max(glory, maxGlory);
-		let deathChance = calculateDeathChance(kc, wave.waveNumber);
-		// deathChance = reduceNumByPercent(deathChance, clamp(kc * 3, 1, 50));
+		let deathChance = calculateDeathChance(kc, wave.waveNumber, options.hasBF);
 
 		debugMessages.push(`Wave ${wave.waveNumber} at ${kc}KC death chance: ${deathChance}%`);
 		if (percentChance(deathChance)) {
@@ -472,7 +476,8 @@ function simulateColosseumRuns() {
 				chosenWaveToStop: stopAt,
 				hasScythe: true,
 				hasTBow: true,
-				hasVenBow: true
+				hasVenBow: true,
+				hasBF: true
 			});
 			totalDuration += result.realDuration;
 			kcBank.add(result.addedWaveKCBank);
@@ -541,7 +546,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		melee: {
 			head: resolveItems(['Torva full helm', 'Neitiznot faceguard', 'Justiciar faceguard']),
 			cape: resolveItems(['Infernal cape', 'Fire cape']),
-			neck: resolveItems(['Amulet of blood fury']),
+			neck: resolveItems(['Amulet of blood fury', 'Amulet of torture']),
 			body: resolveItems(['Torva platebody', 'Bandos chestplate']),
 			legs: resolveItems(['Torva platelegs', 'Bandos tassets']),
 			feet: resolveItems(['Primordial boots']),
@@ -574,13 +579,13 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		}
 	}
 
-	if (!meleeWeapons.some(i => user.gear.melee.hasEquipped(i))) {
+	if (!meleeWeapons.some(i => user.gear.melee.hasEquipped(i, true, true))) {
 		return `You need one of these equipped in your melee setup to enter the Colosseum: ${meleeWeapons
 			.map(itemNameFromID)
 			.join(', ')}.`;
 	}
 
-	if (!rangeWeapons.some(i => user.gear.range.hasEquipped(i))) {
+	if (!rangeWeapons.some(i => user.gear.range.hasEquipped(i, true, true))) {
 		return `You need one of these equipped in your range setup to enter the Colosseum: ${rangeWeapons
 			.map(itemNameFromID)
 			.join(', ')}.`;
@@ -588,19 +593,21 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 
 	const messages: string[] = [];
 
+	const hasBF = user.gear.melee.hasEquipped('Amulet of blood fury', true, false);
 	const hasScythe = user.gear.melee.hasEquipped('Scythe of vitur', true, true);
 	const hasTBow = user.gear.range.hasEquipped('Twisted bow', true, true);
-	function calculateVenCharges(duration: number) {
-		return Math.floor((duration / Time.Minute) * 3);
+	function calculateVenCharges() {
+		return 50;
 	}
-	const hasVenBow = user.owns('Venator bow') && user.user.venator_bow_charges >= calculateVenCharges(Time.Hour);
+	const hasVenBow = user.owns('Venator bow') && user.user.venator_bow_charges >= calculateVenCharges();
 
 	const res = startColosseumRun({
 		kcBank: new ColosseumWaveBank((await user.fetchStats({ colo_kc_bank: true })).colo_kc_bank as ItemBank),
 		chosenWaveToStop: 12,
 		hasScythe,
 		hasTBow,
-		hasVenBow
+		hasVenBow,
+		hasBF
 	});
 	const minutes = res.realDuration / Time.Minute;
 
@@ -611,24 +618,38 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		.add('Super combat potion(4)')
 		.add('Bastion potion(4)');
 
-	const scytheChargesPerHour = 2500;
-	const scytheChargesPerMinute = scytheChargesPerHour / 60;
-	const scytheCharges = Math.ceil(minutes * scytheChargesPerMinute);
+	const scytheCharges = 300;
 	if (hasScythe) {
 		messages.push('10% boost for Scythe');
 		chargeBank.add('scythe_of_vitur_charges', scytheCharges);
+	} else {
+		messages.push('Missed 10% Scythe boost. If you have one, charge it and equip to melee.');
 	}
 	if (hasTBow) {
 		messages.push('10% boost for TBow');
-		const arrowsNeeded = minutes * 3;
+		const arrowsNeeded = Math.ceil(minutes * 3);
 		cost.add('Dragon arrow', arrowsNeeded);
+	} else {
+		messages.push(
+			'Missed 10% TBow boost. If you have one, equip it to range. You also need dragon arrows equipped.'
+		);
 	}
 	if (hasVenBow) {
 		messages.push('7% boost for Venator bow');
-		chargeBank.add('venator_bow_charges', calculateVenCharges(res.realDuration));
+		chargeBank.add('venator_bow_charges', calculateVenCharges());
+		cost.add('Dragon arrow', 50);
+	} else {
+		messages.push(
+			'Missed 7% Venator bow boost. If you have one, charge it and keep it in your bank. You also need atleast 50 dragon arrows equipped.'
+		);
 	}
 
-	chargeBank.add('blood_fury_charges', scytheCharges);
+	if (user.gear.melee.hasEquipped('Amulet of blood fury')) {
+		chargeBank.add('blood_fury_charges', scytheCharges * 3);
+		messages.push('-5% death chance for blood fury');
+	} else {
+		messages.push('Missed -5% death chance for blood fury. If you have one, add charges and equip it to melee.');
+	}
 
 	const realCost = new Bank();
 	try {
@@ -642,21 +663,20 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	}
 	messages.push(`Removed ${realCost}`);
 
-	await updateBankSetting('colo_cost', cost);
-	await userStatsBankUpdate(user.id, 'colo_cost', cost);
+	await updateBankSetting('colo_cost', realCost);
+	await userStatsBankUpdate(user.id, 'colo_cost', realCost);
 	await trackLoot({
-		totalCost: cost,
+		totalCost: realCost,
 		id: 'colo',
 		type: 'Minigame',
 		changeType: 'cost',
 		users: [
 			{
 				id: user.id,
-				cost
+				cost: realCost
 			}
 		]
 	});
-	await user.removeItemsFromBank(cost);
 
 	if (chargeBank.length() > 0) {
 		const hasChargesResult = user.hasCharges(chargeBank);
