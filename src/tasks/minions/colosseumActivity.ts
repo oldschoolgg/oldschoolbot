@@ -8,8 +8,11 @@ import { incrementMinigameScore } from '../../lib/settings/minigames';
 import { ColoTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import resolveItems from '../../lib/util/resolveItems';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
+
+const sunfireItems = resolveItems(['Sunfire fanatic helm', 'Sunfire fanatic cuirass', 'Sunfire fanatic chausses']);
 
 export const colosseumTask: MinionTask = {
 	type: 'Colosseum',
@@ -48,6 +51,18 @@ export const colosseumTask: MinionTask = {
 		await incrementMinigameScore(user.id, 'colosseum');
 
 		const loot = new Bank().add(possibleLoot);
+
+		const missingItems = sunfireItems.filter(id => !user.cl.has(id));
+		const itemsTheyHave = sunfireItems.filter(id => user.cl.has(id));
+		if (missingItems.length > 0) {
+			for (const item of sunfireItems) {
+				if (loot.has(item) && itemsTheyHave.includes(item)) {
+					loot.remove(item);
+					loot.add(randArrItem(missingItems));
+				}
+			}
+		}
+
 		const { previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		await updateBankSetting('colo_loot', loot);
