@@ -1,5 +1,8 @@
-import { mathjs } from '../constants';
+import { all, create } from 'mathjs';
+
 import { assert } from '../util';
+
+const mathjs = create(all);
 
 export type GeneralBankType<T extends string | number> = Record<T, number>;
 

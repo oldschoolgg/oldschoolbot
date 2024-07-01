@@ -453,6 +453,7 @@ const startColosseumRun = (options: {
 	throw new Error('Colosseum run did not end correctly.');
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function simulateColosseumRuns() {
 	const totalSimulations = 500;
 	let totalAttempts = 0;
@@ -612,11 +613,15 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	const minutes = res.realDuration / Time.Minute;
 
 	const chargeBank = new ChargeBank();
-	const cost = new Bank()
-		.add('Saradomin brew(4)', 6)
-		.add('Super restore(4)', 8)
-		.add('Super combat potion(4)')
-		.add('Bastion potion(4)');
+	const cost = new Bank().add('Saradomin brew(4)', 6).add('Super restore(4)', 8).add('Super combat potion(4)');
+
+	if (user.bank.has('Ranging potion(4)')) {
+		cost.add('Ranging potion(4)');
+	} else if (user.bank.has('Bastion potion(4)')) {
+		cost.add('Bastion potion(4)');
+	} else {
+		return 'You need to have a Ranging potion(4) or Bastion potion(4) in your bank.';
+	}
 
 	const scytheCharges = 300;
 	if (hasScythe) {

@@ -135,7 +135,9 @@ describe('Bank with allowedKeys', () => {
 	});
 
 	it('prevents adding items with disallowed keys', () => {
-		expect(() => bank.add('Fplatinum', 50)).toThrow('Key Fplatinum is not allowed.');
+		expect(() => bank.add('Fplatinum', 50)).toThrow(
+			'Key Fplatinum (string) is not allowed, only these are allowed: Fgold, Fsilver, Fcopper'
+		);
 	});
 
 	it('allows removing items with allowed keys', () => {
@@ -146,13 +148,17 @@ describe('Bank with allowedKeys', () => {
 
 	it('throws error on attempt to clone with disallowed key modifications', () => {
 		const cloneBank = bank.clone();
-		expect(() => cloneBank.add('Firon', 100)).toThrow('Key Firon is not allowed.');
+		expect(() => cloneBank.add('Firon', 100)).toThrow(
+			'Key Firon (string) is not allowed, only these are allowed: Fgold, Fsilver, Fcopper'
+		);
 	});
 
 	it('ensures that operations on cloned banks respect original allowed keys', () => {
 		const cloneBank = bank.clone();
 		cloneBank.add('Fsilver', 200);
-		expect(() => cloneBank.add('Fbronze', 100)).toThrow('Key Fbronze is not allowed.');
+		expect(() => cloneBank.add('Fbronze', 100)).toThrow(
+			'Key Fbronze (string) is not allowed, only these are allowed: Fgold, Fsilver, Fcopper'
+		);
 		expect(cloneBank.amount('Fsilver')).toBe(200);
 	});
 
