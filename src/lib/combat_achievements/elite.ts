@@ -1510,7 +1510,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		monster: 'Colosseum',
 		rng: {
-			chancePerKill: 15,
+			chancePerKill: 12,
 			hasChance: (data: ActivityTaskData) =>
 				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 7))
 		}
@@ -1522,7 +1522,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		monster: 'Colosseum',
 		rng: {
-			chancePerKill: 15,
+			chancePerKill: 12,
 			hasChance: (data: ActivityTaskData) =>
 				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 4))
 		}
