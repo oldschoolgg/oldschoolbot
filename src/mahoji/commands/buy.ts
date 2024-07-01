@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import Buyables from '../../lib/data/buyables/buyables';
+import { quests } from '../../lib/minions/data/quests';
 import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
 import { MUserStats } from '../../lib/structures/MUserStats';
@@ -13,7 +14,6 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
-import { quests } from '../lib/abstracted_commands/questCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
 

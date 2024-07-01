@@ -16,11 +16,11 @@ import {
 import { Bank, LootTable } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { QuestID } from '../mahoji/lib/abstracted_commands/questCommand';
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { degradeChargeBank } from './degradeableItems';
 import { GearSetupType } from './gear/types';
 import { trackLoot } from './lootTrack';
+import { QuestID } from './minions/data/quests';
 import { ChargeBank } from './structures/Bank';
 import { GeneralBank, GeneralBankType } from './structures/GeneralBank';
 import { ItemBank, Skills } from './types';

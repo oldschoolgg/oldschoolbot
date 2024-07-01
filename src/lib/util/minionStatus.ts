@@ -3,12 +3,12 @@ import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
-import { quests } from '../../mahoji/lib/abstracted_commands/questCommand';
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
+import { quests } from '../minions/data/quests';
 import Agility from '../skilling/skills/agility';
 import Constructables from '../skilling/skills/construction/constructables';
 import Cooking from '../skilling/skills/cooking/cooking';

@@ -7,6 +7,7 @@ import {
 } from '../../lib/constants';
 import { Planks } from '../../lib/minions/data/planks';
 import Potions from '../../lib/minions/data/potions';
+import { quests } from '../../lib/minions/data/quests';
 import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
@@ -30,7 +31,7 @@ import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand'
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
 import { otherActivities, otherActivitiesCommand } from '../lib/abstracted_commands/otherActivitiesCommand';
 import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
-import { questCommand, quests } from '../lib/abstracted_commands/questCommand';
+import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { scatterCommand } from '../lib/abstracted_commands/scatterCommand';
 import { underwaterAgilityThievingCommand } from '../lib/abstracted_commands/underwaterCommand';
