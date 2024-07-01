@@ -1472,7 +1472,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 15,
 			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt < 11))
+				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 11))
 		}
 	},
 	{
@@ -1517,7 +1517,8 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 1,
-			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && data.duration < Time.Minute * 28
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'Colosseum' && !data.diedAt && data.duration < Time.Minute * 28
 		}
 	}
 ];

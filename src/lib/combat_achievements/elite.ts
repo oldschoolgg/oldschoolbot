@@ -1512,7 +1512,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 15,
 			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt < 7))
+				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 7))
 		}
 	},
 	{
@@ -1524,7 +1524,7 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 15,
 			hasChance: (data: ActivityTaskData) =>
-				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt < 4))
+				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 4))
 		}
 	}
 ];

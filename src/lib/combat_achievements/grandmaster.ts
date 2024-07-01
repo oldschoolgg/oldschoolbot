@@ -1037,7 +1037,8 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		monster: 'Colosseum',
 		rng: {
 			chancePerKill: 1,
-			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && data.duration < Time.Minute * 24
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'Colosseum' && !data.diedAt && data.duration < Time.Minute * 24
 		}
 	},
 	{

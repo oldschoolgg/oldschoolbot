@@ -9,6 +9,7 @@ import {
 	objectValues,
 	percentChance,
 	randInt,
+	reduceNumByPercent,
 	sumArr,
 	Time
 } from 'e';
@@ -24,17 +25,17 @@ import { ChargeBank } from './structures/Bank';
 import { GeneralBank, GeneralBankType } from './structures/GeneralBank';
 import { ItemBank, Skills } from './types';
 import { ColoTaskOptions } from './types/minions';
-import { assert } from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import resolveItems from './util/resolveItems';
-import {
-	averageBank,
-	exponentialPercentScale,
-	formatDuration,
-	formatSkillRequirements,
-	itemNameFromID
-} from './util/smallUtils';
+import { exponentialPercentScale, formatDuration, formatSkillRequirements, itemNameFromID } from './util/smallUtils';
 import { updateBankSetting } from './util/updateBankSetting';
+
+function combinedChance(percentages: number[]): number {
+	const failureProbabilities = percentages.map(p => (100 - p) / 100);
+	const combinedFailureProbability = failureProbabilities.reduce((acc, prob) => acc * prob, 1);
+	const combinedSuccessProbability = 1 - combinedFailureProbability;
+	return combinedSuccessProbability * 100;
+}
 
 interface Wave {
 	waveNumber: number;
@@ -43,7 +44,7 @@ interface Wave {
 	table: LootTable;
 }
 
-const waves: Wave[] = [
+export const colosseumWaves: Wave[] = [
 	{
 		waveNumber: 1,
 		enemies: ['Fremennik Warband', 'Serpent Shaman'],
@@ -65,7 +66,7 @@ const waves: Wave[] = [
 	},
 	{
 		waveNumber: 3,
-		enemies: ['Fremennik Warband', 'Serpent Shaman', '2x Javelin Colossus'],
+		enemies: ['Fremennik Warband', 'Serpent Shaman', 'Javelin Colossus'],
 		reinforcements: ['Jaguar Warrior'],
 		table: new LootTable()
 			.add('Rune platebody', 1, 9)
@@ -130,7 +131,7 @@ const waves: Wave[] = [
 	},
 	{
 		waveNumber: 6,
-		enemies: ['Fremennik Warband', 'Serpent Shaman', '2x Javelin Colossus', 'Manticore'],
+		enemies: ['Fremennik Warband', 'Serpent Shaman', 'Javelin Colossus', 'Manticore'],
 		reinforcements: ['Jaguar Warrior', 'Serpent Shaman'],
 		table: new LootTable()
 			.add('Onyx bolts', 30, 2375)
@@ -149,7 +150,7 @@ const waves: Wave[] = [
 	{
 		waveNumber: 7,
 		enemies: ['Fremennik Warband', 'Javelin Colossus', 'Manticore', 'Shockwave Colossus'],
-		reinforcements: ['Minotaur (Fortis Colosseum)'],
+		reinforcements: ['Minotaur'],
 		table: new LootTable()
 			.add('Onyx bolts', 30, 5832)
 			.add('Snapdragon seed', 1, 5832)
@@ -173,8 +174,8 @@ const waves: Wave[] = [
 	},
 	{
 		waveNumber: 8,
-		enemies: ['Fremennik Warband', '2x Javelin Colossus', 'Manticore', 'Shockwave Colossus'],
-		reinforcements: ['Minotaur (Fortis Colosseum)'],
+		enemies: ['Fremennik Warband', 'Javelin Colossus', 'Manticore', 'Shockwave Colossus'],
+		reinforcements: ['Minotaur'],
 		table: new LootTable()
 			.add('Onyx bolts', 30, 14_472)
 			.add('Snapdragon seed', 1, 14_472)
@@ -198,8 +199,8 @@ const waves: Wave[] = [
 	},
 	{
 		waveNumber: 9,
-		enemies: ['Fremennik Warband', 'Javelin Colossus', '2x Manticore'],
-		reinforcements: ['Minotaur (Fortis Colosseum)'],
+		enemies: ['Fremennik Warband', 'Javelin Colossus', 'Manticore'],
+		reinforcements: ['Minotaur'],
 		table: new LootTable()
 			.add('Dragon bolts (unf)', 200, 3180)
 			.add('Ranarr seed', 4, 3180)
@@ -221,8 +222,8 @@ const waves: Wave[] = [
 	},
 	{
 		waveNumber: 10,
-		enemies: ['Fremennik Warband', '2x Javelin Colossus', '2x Manticore'],
-		reinforcements: ['Minotaur (Fortis Colosseum)', 'Serpent Shaman'],
+		enemies: ['Fremennik Warband', 'Javelin Colossus', 'Manticore'],
+		reinforcements: ['Minotaur', 'Serpent Shaman'],
 		table: new LootTable()
 			.add('Onyx bolts', 50, 2340)
 			.add('Dragon platelegs', 2, 2340)
@@ -244,8 +245,8 @@ const waves: Wave[] = [
 	},
 	{
 		waveNumber: 11,
-		enemies: ['Fremennik Warband', 'Javelin Colossus', '2x Manticore', 'Shockwave Colossus'],
-		reinforcements: ['Minotaur (Fortis Colosseum)', 'Serpent Shaman'],
+		enemies: ['Fremennik Warband', 'Javelin Colossus', 'Manticore', 'Shockwave Colossus'],
+		reinforcements: ['Minotaur', 'Serpent Shaman'],
 		table: new LootTable()
 			.add('Onyx bolts', 75, 360)
 			.add('Sunfire splinters', 2500, 360)
@@ -287,80 +288,73 @@ const waves: Wave[] = [
 	}
 ];
 
-const calculateLootForWave = (wave: Wave) => {
-	const loot = new Bank();
-	loot.add(wave.table.roll());
-	return loot;
-};
+function calculateDeathChance(waveKC: number, hasBF: boolean, hasSGS: boolean): number {
+	const cappedKc = Math.min(Math.max(waveKC, 0), 150);
+	const baseChance = 80;
+	const kcReduction = 80 * (1 - Math.exp(-1.5 * cappedKc));
 
-function calculateDeathChance(kc: number, waveNumber: number, hasBF: boolean): number {
-	const cappedKc = Math.min(Math.max(kc, 0), 1000);
+	let newChance = baseChance - kcReduction;
 
-	const baseChance = 65;
-	const kcReduction = Math.min(90, 90 * (1 - Math.exp(-0.1 * cappedKc))); // Steep reduction for the first few kc
-	const waveIncrease = waveNumber * 1.5;
-
-	let newChance = baseChance - kcReduction + waveIncrease;
-	if (kc > 0) {
-		newChance /= 10;
+	if (hasSGS) {
+		newChance = reduceNumByPercent(newChance, 5);
 	}
-
 	if (hasBF) {
-		newChance -= 5;
+		newChance = reduceNumByPercent(newChance, 5);
 	}
 
-	const deathChance = Math.max(1, Math.min(80, newChance));
-
-	return deathChance;
+	return clamp(newChance, 1, 80);
 }
 
 export class ColosseumWaveBank extends GeneralBank<number> {
 	constructor(initialBank?: GeneralBankType<number>) {
 		super({
 			initialBank,
-			allowedKeys: waves.map(i => i.waveNumber),
+			allowedKeys: colosseumWaves.map(i => i.waveNumber),
 			valueSchema: { floats: true, min: 0, max: 999_999 }
 		});
 	}
 }
 
-function calculateTimeInMs(kc: number): number {
+function calculateTimeInMs(waveTwelveKC: number): number {
 	const points: { kc: number; timeInMinutes: number }[] = [
-		{ kc: 0, timeInMinutes: 50 },
-		{ kc: 1, timeInMinutes: 40 },
-		{ kc: 10, timeInMinutes: 30 },
-		{ kc: 100, timeInMinutes: 20 },
-		{ kc: 300, timeInMinutes: 16 }
+		{ kc: 0, timeInMinutes: 60 },
+		{ kc: 1, timeInMinutes: 45 },
+		{ kc: 1, timeInMinutes: 35 },
+		{ kc: 5, timeInMinutes: 30 },
+		{ kc: 10, timeInMinutes: 25 },
+		{ kc: 50, timeInMinutes: 19 },
+		{ kc: 100, timeInMinutes: 16 },
+		{ kc: 300, timeInMinutes: 15 }
 	];
 
-	if (kc <= 0) return points[0].timeInMinutes * 60 * 1000;
-	if (kc >= 300) return points[4].timeInMinutes * 60 * 1000;
+	if (waveTwelveKC <= points[0].kc) return points[0].timeInMinutes * 60 * 1000;
+	if (waveTwelveKC >= points[points.length - 1].kc) return points[points.length - 1].timeInMinutes * 60 * 1000;
 
-	if (kc <= 1) {
-		const timeAtKc0 = points[0].timeInMinutes;
-		const timeAtKc1 = points[1].timeInMinutes;
-		const slope = timeAtKc1 - timeAtKc0;
-		return (timeAtKc0 + slope * kc) * 60 * 1000;
+	for (let i = 0; i < points.length - 1; i++) {
+		const point1 = points[i];
+		const point2 = points[i + 1];
+		if (waveTwelveKC >= point1.kc && waveTwelveKC <= point2.kc) {
+			const slope = (point2.timeInMinutes - point1.timeInMinutes) / (point2.kc - point1.kc);
+			return (point1.timeInMinutes + slope * (waveTwelveKC - point1.kc)) * 60 * 1000;
+		}
 	}
 
-	if (kc <= 10) {
-		const timeAtKc1 = points[1].timeInMinutes;
-		const timeAtKc10 = points[2].timeInMinutes;
-		const slope = (timeAtKc10 - timeAtKc1) / (10 - 1);
-		return (timeAtKc1 + slope * (kc - 1)) * 60 * 1000;
-	}
+	return 0;
+}
 
-	if (kc <= 100) {
-		const timeAtKc10 = points[2].timeInMinutes;
-		const timeAtKc100 = points[3].timeInMinutes;
-		const slope = (timeAtKc100 - timeAtKc10) / (100 - 10);
-		return (timeAtKc10 + slope * (kc - 10)) * 60 * 1000;
+function calculateGlory(kcBank: ColosseumWaveBank, wave: Wave) {
+	const waveKCSkillBank = new ColosseumWaveBank();
+	for (const [waveNumber, kc] of kcBank.entries()) {
+		waveKCSkillBank.add(waveNumber, clamp(calcWhatPercent(kc, 30 - waveNumber), 1, 100));
 	}
-
-	const timeAtKc100 = points[3].timeInMinutes;
-	const timeAtKc300 = points[4].timeInMinutes;
-	const slope = (timeAtKc300 - timeAtKc100) / (300 - 100);
-	return (timeAtKc100 + slope * (kc - 100)) * 60 * 1000;
+	const kcSkill = waveKCSkillBank.amount(wave.waveNumber) ?? 0;
+	const totalKCSkillPercent = sumArr(waveKCSkillBank.entries().map(ent => ent[1])) / waveKCSkillBank.length();
+	const expSkill = exponentialPercentScale(totalKCSkillPercent);
+	const maxPossibleGlory = 60_000;
+	const ourMaxGlory = calcPercentOfNum(expSkill, maxPossibleGlory);
+	const wavePerformance = exponentialPercentScale((totalKCSkillPercent + kcSkill) / 2);
+	const glory = randInt(calcPercentOfNum(wavePerformance, ourMaxGlory), ourMaxGlory);
+	return glory;
 }
 
 interface ColosseumResult {
@@ -368,35 +362,30 @@ interface ColosseumResult {
 	loot: Bank | null;
 	maxGlory: number;
 	addedWaveKCBank: ColosseumWaveBank;
-	debugMessages: string[];
 	fakeDuration: number;
 	realDuration: number;
+	totalDeathChance: number;
+	deathChances: number[];
 }
 
-const startColosseumRun = (options: {
+const logs = new Set();
+
+export const startColosseumRun = (options: {
 	kcBank: ColosseumWaveBank;
-	chosenWaveToStop: number;
 	hasScythe: boolean;
 	hasTBow: boolean;
 	hasVenBow: boolean;
 	hasBF: boolean;
+	hasClaws: boolean;
+	hasSGS: boolean;
+	hasTorture: boolean;
 }): ColosseumResult => {
-	const debugMessages: string[] = [];
+	const waveTwelveKC = options.kcBank.amount(12);
+
 	const bank = new Bank();
 
-	const waveKCSkillBank = new ColosseumWaveBank();
-	for (const [waveNumber, kc] of options.kcBank.entries()) {
-		waveKCSkillBank.add(waveNumber, clamp(calcWhatPercent(kc, 30 - waveNumber), 1, 100));
-	}
-	const totalKCSkillPercent = sumArr(waveKCSkillBank.entries().map(ent => ent[1])) / waveKCSkillBank.length();
-
-	const expSkill = exponentialPercentScale(totalKCSkillPercent);
-	const maxPossibleGlory = 60_000;
-	const ourMaxGlory = calcPercentOfNum(expSkill, maxPossibleGlory);
-
 	const addedWaveKCBank = new ColosseumWaveBank();
-
-	let waveDuration = calculateTimeInMs(options.kcBank.amount(12)) / 12;
+	let waveDuration = calculateTimeInMs(waveTwelveKC) / 12;
 
 	if (!options.hasScythe) {
 		waveDuration = increaseNumByPercent(waveDuration, 10);
@@ -407,114 +396,63 @@ const startColosseumRun = (options: {
 	if (!options.hasVenBow) {
 		waveDuration = increaseNumByPercent(waveDuration, 7);
 	}
-
-	let realDuration = 0;
+	if (!options.hasClaws) {
+		waveDuration = increaseNumByPercent(waveDuration, 4);
+	}
+	if (!options.hasTorture) {
+		waveDuration = increaseNumByPercent(waveDuration, 5);
+	}
 
 	const fakeDuration = 12 * waveDuration;
-
+	const deathChances: number[] = [];
+	let realDuration = 0;
 	let maxGlory = 0;
-	for (const wave of waves) {
-		realDuration += waveDuration;
-		const kc = options.kcBank.amount(wave.waveNumber) ?? 0;
-		const kcSkill = waveKCSkillBank.amount(wave.waveNumber) ?? 0;
-		const wavePerformance = exponentialPercentScale((totalKCSkillPercent + kcSkill) / 2);
-		const glory = randInt(calcPercentOfNum(wavePerformance, ourMaxGlory), ourMaxGlory);
-		maxGlory = Math.max(glory, maxGlory);
-		let deathChance = calculateDeathChance(kc, wave.waveNumber, options.hasBF);
 
-		debugMessages.push(`Wave ${wave.waveNumber} at ${kc}KC death chance: ${deathChance}%`);
+	for (const wave of colosseumWaves) {
+		realDuration += waveDuration;
+		const kcForThisWave = options.kcBank.amount(wave.waveNumber);
+		maxGlory = Math.max(calculateGlory(options.kcBank, wave), maxGlory);
+		const deathChance = calculateDeathChance(kcForThisWave, options.hasBF, options.hasSGS);
+		deathChances.push(deathChance);
+
+		if (waveTwelveKC === 0) {
+			const g = `Wave ${wave.waveNumber} WAVE12KC=${waveTwelveKC}, WAVE=${wave.waveNumber}, WAVEKC=${kcForThisWave} death chance: ${deathChance}%`;
+			if (!logs.has(g)) {
+				console.log(g);
+				logs.add(g);
+			}
+		}
+
 		if (percentChance(deathChance)) {
 			return {
 				diedAt: wave.waveNumber,
 				loot: null,
 				maxGlory: 0,
 				addedWaveKCBank,
-				debugMessages,
 				fakeDuration,
-				realDuration
+				realDuration,
+				totalDeathChance: combinedChance(deathChances),
+				deathChances
 			};
 		}
 		addedWaveKCBank.add(wave.waveNumber);
-		const waveLoot = calculateLootForWave(wave);
-		bank.add(waveLoot);
-		if (wave.waveNumber === options.chosenWaveToStop || wave.waveNumber === 12) {
+		bank.add(wave.table.roll());
+		if (wave.waveNumber === 12) {
 			return {
 				diedAt: null,
 				loot: bank,
 				maxGlory,
 				addedWaveKCBank,
-				debugMessages,
 				fakeDuration,
-				realDuration
+				realDuration,
+				totalDeathChance: combinedChance(deathChances),
+				deathChances
 			};
 		}
 	}
 
 	throw new Error('Colosseum run did not end correctly.');
 };
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function simulateColosseumRuns() {
-	const totalSimulations = 500;
-	let totalAttempts = 0;
-	let totalDeaths = 0;
-	const totalLoot = new Bank();
-	const finishAttemptAmounts = [];
-	let totalDuration = 0;
-
-	for (let i = 0; i < totalSimulations; i++) {
-		let attempts = 0;
-		let deaths = 0;
-		let done = false;
-		const kcBank = new ColosseumWaveBank();
-		const runLoot = new Bank();
-
-		while (!done) {
-			attempts++;
-			const stopAt = waves[waves.length - 1].waveNumber;
-			const result = startColosseumRun({
-				kcBank,
-				chosenWaveToStop: stopAt,
-				hasScythe: true,
-				hasTBow: true,
-				hasVenBow: true,
-				hasBF: true
-			});
-			totalDuration += result.realDuration;
-			kcBank.add(result.addedWaveKCBank);
-			if (result.diedAt === null) {
-				if (result.loot) runLoot.add(result.loot);
-				done = true;
-			} else {
-				deaths++;
-			}
-		}
-
-		assert(kcBank.amount(12) > 0);
-		finishAttemptAmounts.push(attempts);
-		totalAttempts += attempts;
-		totalDeaths += deaths;
-		totalLoot.add(runLoot);
-	}
-
-	const averageAttempts = totalAttempts / totalSimulations;
-	const averageDeaths = totalDeaths / totalSimulations;
-
-	finishAttemptAmounts.sort((a, b) => a - b);
-
-	console.log(`Avg duration: ${formatDuration(totalDuration / totalSimulations)}`);
-	console.log(`Total simulations: ${totalSimulations}`);
-	console.log(
-		`Average attempts to beat wave 12: ${averageAttempts}. ${formatDuration(
-			Time.Minute * 40 * averageAttempts
-		)} hours.`
-	);
-	console.log(`Average deaths before beating wave 12: ${averageDeaths}`);
-	console.log(`Average loot: ${averageBank(totalLoot, totalSimulations)}`);
-	console.log(`Min: ${finishAttemptAmounts[0]}, Max: ${finishAttemptAmounts[finishAttemptAmounts.length - 1]}`);
-}
-
-simulateColosseumRuns();
 
 export async function colosseumCommand(user: MUser, channelID: string) {
 	if (user.minionIsBusy) {
@@ -600,15 +538,20 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	function calculateVenCharges() {
 		return 50;
 	}
-	const hasVenBow = user.owns('Venator bow') && user.user.venator_bow_charges >= calculateVenCharges();
+	const hasVenBow = user.hasEquippedOrInBank('Venator bow') && user.user.venator_bow_charges >= calculateVenCharges();
+	const hasClaws = user.hasEquippedOrInBank('Dragon claws');
+	const hasSGS = user.hasEquippedOrInBank('Saradomin godsword');
+	const hasTorture = !hasBF && user.gear.melee.hasEquipped('Amulet of torture');
 
 	const res = startColosseumRun({
 		kcBank: new ColosseumWaveBank((await user.fetchStats({ colo_kc_bank: true })).colo_kc_bank as ItemBank),
-		chosenWaveToStop: 12,
 		hasScythe,
 		hasTBow,
 		hasVenBow,
-		hasBF
+		hasBF,
+		hasClaws,
+		hasSGS,
+		hasTorture
 	});
 	const minutes = res.realDuration / Time.Minute;
 
@@ -649,11 +592,29 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 		);
 	}
 
+	if (hasClaws) {
+		messages.push('4% boost for Dragon claws');
+	} else {
+		messages.push('Missed 4% Dragon claws boost.');
+	}
+
+	if (hasTorture) {
+		messages.push('5% boost for Torture');
+	} else {
+		messages.push('Missed 5% Torture boost.');
+	}
+
 	if (user.gear.melee.hasEquipped('Amulet of blood fury')) {
 		chargeBank.add('blood_fury_charges', scytheCharges * 3);
 		messages.push('-5% death chance for blood fury');
 	} else {
 		messages.push('Missed -5% death chance for blood fury. If you have one, add charges and equip it to melee.');
+	}
+
+	if (hasSGS) {
+		messages.push('-5% death chance for Saradomin godsword');
+	} else {
+		messages.push('Missed -5% death chance boost for Saradomin godsword.');
 	}
 
 	const realCost = new Bank();

@@ -1,7 +1,8 @@
+import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { ColosseumWaveBank } from '../../lib/colosseum';
+import { ColosseumWaveBank, colosseumWaves } from '../../lib/colosseum';
 import { trackLoot } from '../../lib/lootTrack';
 import { incrementMinigameScore } from '../../lib/settings/minigames';
 import { ColoTaskOptions } from '../../lib/types/minions';
@@ -30,10 +31,14 @@ export const colosseumTask: MinionTask = {
 
 		const newWaveKcStr = !diedAt || diedAt > 1 ? `New wave KCs: ${newKCsStr}.` : 'No new KCs.';
 		if (diedAt) {
+			const wave = colosseumWaves[diedAt];
 			return handleTripFinish(
 				user,
 				channelID,
-				`${user}, you died on wave ${diedAt}, and received no loot. ${newWaveKcStr}`,
+				`${user}, you died on wave ${diedAt} to ${randArrItem([
+					...(wave?.reinforcements ?? []),
+					...wave.enemies
+				])}, and received no loot. ${newWaveKcStr}`,
 				undefined,
 				data,
 				null
