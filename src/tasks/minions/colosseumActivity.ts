@@ -31,7 +31,7 @@ export const colosseumTask: MinionTask = {
 
 		const newWaveKcStr = !diedAt || diedAt > 1 ? `New wave KCs: ${newKCsStr}.` : 'No new KCs.';
 		if (diedAt) {
-			const wave = colosseumWaves[diedAt];
+			const wave = colosseumWaves.find(i => i.waveNumber === diedAt)!;
 			return handleTripFinish(
 				user,
 				channelID,

@@ -1,4 +1,3 @@
-import { Stopwatch } from '@sapphire/stopwatch';
 import { randInt, roll } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -32,9 +31,8 @@ export function determineCoxLimit(user: MUser) {
 	return 10;
 }
 
-function simulateColosseumRuns() {
-	const stopwatch = new Stopwatch();
-	const totalSimulations = 500;
+function simulateColosseumRuns(samples = 100) {
+	const totalSimulations = samples;
 	let totalAttempts = 0;
 	let totalDeaths = 0;
 	const totalLoot = new Bank();
@@ -88,8 +86,7 @@ function simulateColosseumRuns() {
 **Fastest completion trips:** ${finishAttemptAmounts[0]}
 **Mean completion trips:** ${finishAttemptAmounts[Math.floor(finishAttemptAmounts.length / 2)]}
 **Average trips to beat wave 12:** ${averageAttempts}.
-**Longest completion trips:** ${finishAttemptAmounts[finishAttemptAmounts.length - 1]}
-Time to run code: ${stopwatch.stop()}`;
+**Longest completion trips:** ${finishAttemptAmounts[finishAttemptAmounts.length - 1]}`;
 	return result;
 }
 

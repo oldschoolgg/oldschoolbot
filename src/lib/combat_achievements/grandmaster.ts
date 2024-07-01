@@ -1059,7 +1059,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'mechanical',
 		monster: 'Colosseum',
 		rng: {
-			chancePerKill: 15,
+			chancePerKill: 30,
 			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
 		}
 	},
@@ -1070,7 +1070,7 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 		type: 'perfection',
 		monster: 'Colosseum',
 		rng: {
-			chancePerKill: 15,
+			chancePerKill: 20,
 			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
 		}
 	},

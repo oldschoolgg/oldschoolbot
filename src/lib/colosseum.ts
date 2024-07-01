@@ -368,8 +368,6 @@ interface ColosseumResult {
 	deathChances: number[];
 }
 
-const logs = new Set();
-
 export const startColosseumRun = (options: {
 	kcBank: ColosseumWaveBank;
 	hasScythe: boolean;
@@ -414,14 +412,6 @@ export const startColosseumRun = (options: {
 		maxGlory = Math.max(calculateGlory(options.kcBank, wave), maxGlory);
 		const deathChance = calculateDeathChance(kcForThisWave, options.hasBF, options.hasSGS);
 		deathChances.push(deathChance);
-
-		if (waveTwelveKC === 0) {
-			const g = `Wave ${wave.waveNumber} WAVE12KC=${waveTwelveKC}, WAVE=${wave.waveNumber}, WAVEKC=${kcForThisWave} death chance: ${deathChance}%`;
-			if (!logs.has(g)) {
-				console.log(g);
-				logs.add(g);
-			}
-		}
 
 		if (percentChance(deathChance)) {
 			return {
