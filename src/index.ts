@@ -29,7 +29,6 @@ import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUser
 import { interactionHook } from './lib/util/globalInteractions';
 import { handleInteractionError } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
-import { sonicBoom } from './lib/util/logger';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
@@ -216,11 +215,6 @@ process.on('uncaughtException', err => {
 process.on('unhandledRejection', err => {
 	console.error(err);
 	logError(err);
-});
-
-process.on('exit', exitCode => {
-	sonicBoom.flushSync();
-	debugLog('Process Exit', { type: 'PROCESS_EXIT', exitCode });
 });
 
 main();

@@ -2,7 +2,6 @@ import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
 import { formatItemStackQuantity, generateHexColorForCashStack, toTitleCase } from '@oldschoolgg/toolkit';
 import { GEListing, GETransaction } from '@prisma/client';
 import * as fs from 'fs/promises';
-import { floor } from 'lodash';
 
 import { GEListingWithTransactions } from './../mahoji/commands/ge';
 import { GrandExchange } from './grandExchange';
@@ -13,7 +12,7 @@ function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
 	// Draw Page Title
 	ctx.font = '16px RuneScape Bold 12';
 	const titleWidthPx = ctx.measureText(title);
-	let titleX = Math.floor(floor(canvas.width) * 0.95 - titleWidthPx.width);
+	let titleX = Math.floor(Math.floor(canvas.width) * 0.95 - titleWidthPx.width);
 	ctx.fillStyle = '#000000';
 	fillTextXTimesInCtx(ctx, title, titleX + 1, 22);
 

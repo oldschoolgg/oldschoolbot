@@ -1,7 +1,7 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { PrismaClient, TriviaQuestion, User } from '@prisma/robochimp';
-import deepEqual from 'deep-equal';
 import { calcWhatPercent, round, sumArr } from 'e';
+import deepEqual from 'fast-deep-equal';
 
 import { BOT_TYPE, masteryKey } from './constants';
 import { getTotalCl } from './data/Collections';
