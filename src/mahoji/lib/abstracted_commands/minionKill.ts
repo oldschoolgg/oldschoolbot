@@ -338,7 +338,7 @@ export async function minionKillCommand(
 		}
 	}
 
-	for (const [itemID, boostAmount] of Object.entries(resolveAvailableItemBoosts(user, monster, isInWilderness))) {
+	for (const [itemID, boostAmount] of Object.entries(resolveAvailableItemBoosts(user, monster))) {
 		timeToFinish *= (100 - boostAmount) / 100;
 		boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 	}
@@ -394,13 +394,8 @@ export async function minionKillCommand(
 	}
 
 	function applyDragonBoost() {
-		const hasDragonLance = isInWilderness
-			? wildyGear.hasEquipped('Dragon hunter lance')
-			: user.hasEquippedOrInBank('Dragon hunter lance');
-		const hasDragonCrossbow = isInWilderness
-			? wildyGear.hasEquipped('Dragon hunter crossbow')
-			: user.hasEquippedOrInBank('Dragon hunter crossbow');
-
+		const hasDragonLance = user.hasEquippedOrInBank('Dragon hunter lance');
+		const hasDragonCrossbow = user.hasEquippedOrInBank('Dragon hunter crossbow');
 		if (
 			(hasDragonLance && !attackStyles.includes(SkillsEnum.Ranged) && !attackStyles.includes(SkillsEnum.Magic)) ||
 			(hasDragonCrossbow && attackStyles.includes(SkillsEnum.Ranged))
@@ -414,18 +409,10 @@ export async function minionKillCommand(
 	}
 
 	function applyBlackMaskBoost() {
-		const hasInfernalSlayerHelmI = isInWilderness
-			? wildyGear.hasEquipped('Infernal slayer helmet(i)')
-			: user.hasEquippedOrInBank('Infernal slayer helmet(i)');
-		const hasInfernalSlayerHelm = isInWilderness
-			? wildyGear.hasEquipped('Infernal slayer helmet')
-			: user.hasEquippedOrInBank('Infernal slayer helmet');
-		const hasBlackMask = isInWilderness
-			? wildyGear.hasEquipped('Black mask')
-			: user.hasEquippedOrInBank('Black mask');
-		const hasBlackMaskI = isInWilderness
-			? wildyGear.hasEquipped('Black mask (i)')
-			: user.hasEquippedOrInBank('Black mask (i)');
+		const hasInfernalSlayerHelmI = user.hasEquippedOrInBank('Infernal slayer helmet(i)');
+		const hasInfernalSlayerHelm = user.hasEquippedOrInBank('Infernal slayer helmet');
+		const hasBlackMask = user.hasEquippedOrInBank('Black mask');
+		const hasBlackMaskI = user.hasEquippedOrInBank('Black mask (i)');
 
 		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
 			if (hasBlackMaskI) {
@@ -451,12 +438,8 @@ export async function minionKillCommand(
 		let salveEnhanced = false;
 		const style = attackStyles[0];
 		if (style === 'ranged' || style === 'magic') {
-			salveBoost = isInWilderness
-				? wildyGear.hasEquipped('Salve amulet(i)')
-				: user.hasEquippedOrInBank('Salve amulet (i)');
-			salveEnhanced = isInWilderness
-				? wildyGear.hasEquipped('Salve amulet(ei)')
-				: user.hasEquippedOrInBank('Salve amulet (ei)');
+			salveBoost = user.hasEquippedOrInBank('Salve amulet (i)');
+			salveEnhanced = user.hasEquippedOrInBank('Salve amulet (ei)');
 			if (salveBoost) {
 				salveAmuletBoost = salveEnhanced ? 20 : oneSixthBoost;
 				salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
@@ -464,12 +447,8 @@ export async function minionKillCommand(
 				} on non-melee task`;
 			}
 		} else {
-			salveBoost = isInWilderness
-				? wildyGear.hasEquipped('Salve amulet')
-				: user.hasEquippedOrInBank('Salve amulet');
-			salveEnhanced = isInWilderness
-				? wildyGear.hasEquipped('Salve amulet (e)')
-				: user.hasEquippedOrInBank('Salve amulet (e)');
+			salveBoost = user.hasEquippedOrInBank('Salve amulet');
+			salveEnhanced = user.hasEquippedOrInBank('Salve amulet (e)');
 			if (salveBoost) {
 				salveAmuletBoost = salveEnhanced ? 20 : oneSixthBoost;
 				salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
@@ -487,11 +466,7 @@ export async function minionKillCommand(
 		let virtusPiecesEquipped = 0;
 
 		for (const item of resolveItems(['Virtus mask', 'Virtus robe top', 'Virtus robe legs'])) {
-			if (isInWilderness) {
-				if (wildyGear.hasEquipped(item)) {
-					virtusPiecesEquipped += blackMaskBoost !== 0 && itemNameFromID(item) === 'Virtus mask' ? 0 : 1;
-				}
-			} else if (user.gear.mage.hasEquipped(item)) {
+			if (user.gear.mage.hasEquipped(item)) {
 				virtusPiecesEquipped += blackMaskBoost !== 0 && itemNameFromID(item) === 'Virtus mask' ? 0 : 1;
 			}
 		}
@@ -763,9 +738,7 @@ export async function minionKillCommand(
 				convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
 				(monster.setupsUsed ? monster.setupsUsed.includes(degItem.attackStyle) : true);
 
-			const gearCheck = isInWilderness
-				? user.gear.wildy.hasEquipped(degItem.item.id)
-				: user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
+			const gearCheck = user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
 
 			if (isUsing && gearCheck) {
 				// We assume they have enough charges, add the boost, and degrade at the end to avoid doing it twice.
@@ -1070,7 +1043,7 @@ export async function minionKillCommand(
 	let hasDied: boolean | undefined = undefined;
 	let hasWildySupplies = undefined;
 
-	if (isInWilderness) {
+	if (isInWilderness && ![BSOMonsters.Malygos.id, BSOMonsters.Treebeard.id].includes(monster.id)) {
 		await increaseWildEvasionXp(user, duration);
 		thePkCount = 0;
 		hasDied = false;

@@ -15,6 +15,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 
 		difficultyRating: 5,
 		qpRequired: 0,
+		canCannon: true,
 		pkActivityRating: 1,
 		pkBaseDeathChance: 1,
 		revsWeaponBoost: true,

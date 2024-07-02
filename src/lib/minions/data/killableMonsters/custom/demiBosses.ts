@@ -103,7 +103,8 @@ const Malygos: CustomMonster = {
 	uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
 	notifyDrops: resolveItems(['Abyssal cape', 'Ori']),
 	baseMonster: Monsters.Vorkath,
-	customMonsterData: { attributes: [MonsterAttribute.Dragon, MonsterAttribute.Fiery] }
+	customMonsterData: { attributes: [MonsterAttribute.Dragon, MonsterAttribute.Fiery] },
+	canBePked: true
 };
 
 const Treebeard: CustomMonster = {
@@ -139,7 +140,8 @@ const Treebeard: CustomMonster = {
 		resolveNameBank({
 			'Axe of the high sungod': 10
 		})
-	]
+	],
+	canBePked: true
 };
 
 export const QueenBlackDragon: CustomMonster = {
