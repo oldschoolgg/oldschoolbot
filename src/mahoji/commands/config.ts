@@ -489,42 +489,6 @@ async function handlePetMessagesEnable(
 	return 'Disabled Pet Messages in this guild.';
 }
 
-async function handleJModCommentsEnable(
-	user: MUser,
-	guild: Guild | null,
-	channelID: string,
-	choice: 'enable' | 'disable'
-) {
-	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user.id, guild)))
-		return "You need to be 'Ban Member' permissions to use this command.";
-	const cID = channelID.toString();
-	const settings = await mahojiGuildSettingsFetch(guild);
-
-	if (choice === 'enable') {
-		if (guild!.memberCount < 20 && user.perkTier() < PerkTier.Four) {
-			return 'This server is too small to enable this feature in.';
-		}
-		if (settings.jmodComments === cID) {
-			return 'JMod Comments are already enabled in this channel.';
-		}
-		await mahojiGuildSettingsUpdate(guild.id, {
-			jmodComments: cID
-		});
-		if (settings.jmodComments !== null) {
-			return "JMod Comments are already enabled in another channel, but I've switched them to use this channel.";
-		}
-		return 'Enabled JMod Comments in this channel.';
-	}
-	if (settings.jmodComments === null) {
-		return "JMod Comments aren't enabled, so you can't disable them.";
-	}
-	await mahojiGuildSettingsUpdate(guild.id, {
-		jmodComments: null
-	});
-	return 'Disabled JMod Comments in this channel.';
-}
-
 async function handleCommandEnable(
 	user: MUser,
 	guild: Guild | null,
@@ -776,23 +740,6 @@ export const configCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'jmod_comments',
-					description: 'Enable or disable JMod Reddit comments in this server.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'choice',
-							description: 'Enable or disable JMod Reddit comments for this server.',
-							required: true,
-							choices: [
-								{ name: 'Enable', value: 'enable' },
-								{ name: 'Disable', value: 'disable' }
-							]
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
 					name: 'command',
 					description: 'Enable or disable a command in your server.',
 					options: [
@@ -810,7 +757,7 @@ export const configCommand: OSBMahojiCommand = {
 						{
 							type: ApplicationCommandOptionType.String,
 							name: 'choice',
-							description: 'Enable or disable JMod Reddit comments for this server.',
+							description: 'Whether you want to enable or disable this command.',
 							required: true,
 							choices: [
 								{ name: 'Enable', value: 'enable' },
@@ -1195,7 +1142,6 @@ LIMIT 20;
 		server?: {
 			channel?: { choice: 'enable' | 'disable' };
 			pet_messages?: { choice: 'enable' | 'disable' };
-			jmod_comments?: { choice: 'enable' | 'disable' };
 			command?: { command: string; choice: 'enable' | 'disable' };
 		};
 		user?: {
@@ -1226,9 +1172,6 @@ LIMIT 20;
 			}
 			if (options.server.pet_messages) {
 				return handlePetMessagesEnable(user, guild, channelID, options.server.pet_messages.choice);
-			}
-			if (options.server.jmod_comments) {
-				return handleJModCommentsEnable(user, guild, channelID, options.server.jmod_comments.choice);
 			}
 			if (options.server.command) {
 				return handleCommandEnable(user, guild, options.server.command.command, options.server.command.choice);
