@@ -1,4 +1,4 @@
-import { AssignableSlayerTask } from '../types';
+import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
 import { chaeldarTasks } from './chaeldarTasks';
 import { duradelTasks } from './duradelTasks';

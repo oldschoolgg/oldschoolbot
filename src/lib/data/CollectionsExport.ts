@@ -1,14 +1,14 @@
-import { Minigame } from '@prisma/client';
+import type { Minigame } from '@prisma/client';
 import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
-import { MinigameScore } from '../settings/minigames';
+import type { MinigameScore } from '../settings/minigames';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
-import { UserStatsDataNeededForCL } from './Collections';
+import type { UserStatsDataNeededForCL } from './Collections';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -2248,7 +2248,7 @@ export const allPetIDs = [
 	...allPetsCL,
 	...chambersOfXericMetamorphPets,
 	...tobMetamorphPets,
-	...growablePets.map(petSeries => petSeries.stages).flat(1),
+	...growablePets.flatMap(petSeries => petSeries.stages),
 	...metamorphPets,
 	...toaMetamorphPets
 ];

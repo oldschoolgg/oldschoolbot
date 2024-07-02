@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { CyclopsTable } from '../../../../lib/simulation/cyclops';
-import { ActivityTaskOptionsWithQuantity } from '../../../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../../../lib/types/minions';
 import { roll } from '../../../../lib/util';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 import itemID from '../../../../lib/util/itemID';
@@ -51,7 +51,7 @@ export const cyclopsTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const userBank = user.bank;
 
-		let loot = new Bank();
+		const loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
 			const highestDefenderOwned = defenders.find(
@@ -77,7 +77,7 @@ export const cyclopsTask: MinionTask = {
 		});
 
 		const { newKC } = await user.incrementKC(cyclopsID, quantity);
-		let str = `${user}, ${user.minionName} finished killing ${quantity} Cyclops. Your Cyclops KC is now ${newKC}.`;
+		const str = `${user}, ${user.minionName} finished killing ${quantity} Cyclops. Your Cyclops KC is now ${newKC}.`;
 
 		const image = await makeBankImage({
 			bank: itemsAdded,

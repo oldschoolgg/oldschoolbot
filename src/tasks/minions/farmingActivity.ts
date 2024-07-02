@@ -3,13 +3,13 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
 import { BitField, Emoji, Events } from '../../lib/constants';
-import { PatchTypes } from '../../lib/minions/farming';
-import { FarmingContract } from '../../lib/minions/farming/types';
+import type { PatchTypes } from '../../lib/minions/farming';
+import type { FarmingContract } from '../../lib/minions/farming/types';
 import { prisma } from '../../lib/settings/prisma';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
+import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { assert, roll, skillingPetDropRate } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
@@ -465,7 +465,7 @@ export const farmingTask: MinionTask = {
 								contractsCompleted + 1
 							} farming contracts.`,
 							head: 'jane'
-					  })
+						})
 					: undefined,
 				data,
 				loot

@@ -1,6 +1,7 @@
 import { randArrItem } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { MahojiUserOption } from 'mahoji/dist/lib/types';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
+import type { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../lib/constants';
@@ -13,7 +14,7 @@ import { duelCommand } from '../lib/abstracted_commands/duelCommand';
 import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
 import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',
@@ -268,7 +269,7 @@ export const gambleCommand: OSBMahojiCommand = {
 					type: 'gri'
 				}
 			});
-			let debug = new Bank();
+			const debug = new Bank();
 			for (const t of bank) debug.add(t[0].id);
 
 			return `You gave ${qty.toLocaleString()}x ${item.name} to ${recipientuser.usernameOrMention}.`;

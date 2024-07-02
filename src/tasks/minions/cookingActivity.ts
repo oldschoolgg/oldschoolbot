@@ -4,7 +4,7 @@ import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
 import Cooking from '../../lib/skilling/skills/cooking/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { CookingActivityTaskOptions } from '../../lib/types/minions';
+import type { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const cookingTask: MinionTask = {

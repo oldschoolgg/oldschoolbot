@@ -92,7 +92,7 @@ export async function barChart(
 	title: string,
 	format: (value: any) => string,
 	values: [string, number, string?][],
-	useRelativeColors: boolean = false
+	useRelativeColors = false
 ) {
 	const positiveValues = values.map(i => i[1]).filter(v => v > 0);
 	const negativeValues = values.map(i => i[1]).filter(v => v < 0);

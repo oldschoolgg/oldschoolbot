@@ -1,17 +1,17 @@
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { randInt, shuffleArr, uniqueArr } from 'e';
-import { CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { globalConfig } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
 import { processPendingActivities } from '../../src/lib/Task';
-import { ItemBank } from '../../src/lib/types';
+import { globalConfig } from '../../src/lib/constants';
+import type { ItemBank } from '../../src/lib/types';
 import { cryptoRand } from '../../src/lib/util';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
-import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
-import { ClientStorage, User, UserStats } from '.prisma/client';
+import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
+import type { ClientStorage, User, UserStats } from '.prisma/client';
 
 export const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> => ({
 	userID,

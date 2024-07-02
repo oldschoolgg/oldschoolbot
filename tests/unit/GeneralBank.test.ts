@@ -1,11 +1,10 @@
+import Decimal from 'decimal.js';
 import { beforeEach, describe, expect, it, test } from 'vitest';
 
 import { GeneralBank } from '../../src/lib/structures/GeneralBank';
 
 describe('GeneralBank', () => {
-	// eslint-disable-next-line @typescript-eslint/init-declarations
 	let bank: GeneralBank<string>;
-	// eslint-disable-next-line @typescript-eslint/init-declarations
 	let validator: (key: string, value: number, bank: Record<string, number>) => void;
 
 	beforeEach(() => {
@@ -61,7 +60,6 @@ describe('GeneralBank', () => {
 });
 
 describe('GeneralBank 2', () => {
-	// eslint-disable-next-line @typescript-eslint/init-declarations
 	let bank: GeneralBank<string>;
 
 	beforeEach(() => {
@@ -121,7 +119,6 @@ describe('GeneralBank 2', () => {
 });
 
 describe('Bank with allowedKeys', () => {
-	// eslint-disable-next-line @typescript-eslint/init-declarations
 	let bank: GeneralBank<string>;
 
 	beforeEach(() => {
@@ -183,4 +180,7 @@ test('Float Banks', () => {
 		['a', 1.15],
 		['b', 1_222_222.100_150_01]
 	]);
+	expect(Decimal.add(0.000_000_000_001, 0.000_000_000_001).toNumber()).toEqual(0.000_000_000_002);
+	expect(Decimal.add(1, 0.1).toNumber()).toEqual(1.1);
+	expect(Decimal.add(1, 1).toNumber()).toEqual(2);
 });

@@ -1,0 +1,57 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"files": {
+		"maxSize": 10000000,
+		"ignore": ["node_modules", "dist", "coverage", "profiling", "logs", "icon_cache"],
+		"include": ["**/*.ts", "**/*.mts", "**/*.json"]
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"a11y": {
+				"useAltText": "off",
+				"useKeyWithClickEvents": "off"
+			},
+			"suspicious": {
+				"noExplicitAny": "warn",
+				"noAssignInExpressions": "warn",
+				"noAsyncPromiseExecutor": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "off",
+				"noParameterAssign": "off",
+				"useExponentiationOperator": "off",
+				"noUselessElse": "off"
+			},
+			"correctness": {
+				"useExhaustiveDependencies": "warn",
+				"noUnnecessaryContinue": "warn",
+				"noConstructorReturn": "off"
+			},
+			"complexity": {
+				"noExtraBooleanCast": "warn",
+				"noBannedTypes": "warn",
+				"noForEach": "warn"
+			}
+		}
+	},
+	"formatter": {
+		"enabled": true,
+		"formatWithErrors": true,
+		"indentStyle": "tab",
+		"indentWidth": 4,
+		"lineWidth": 120,
+		"lineEnding": "lf"
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "single",
+			"trailingCommas": "none",
+			"arrowParentheses": "asNeeded"
+		}
+	}
+}

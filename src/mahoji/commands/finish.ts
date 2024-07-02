@@ -1,6 +1,7 @@
 import { AttachmentBuilder } from 'discord.js';
 import { notEmpty } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { finishables } from '../../lib/finishables';
@@ -9,7 +10,7 @@ import { stringMatches } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const finishCommand: OSBMahojiCommand = {
 	name: 'finish',

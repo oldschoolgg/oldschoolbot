@@ -1,11 +1,11 @@
-import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
+import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Eatables } from '../../../lib/data/eatables';
 import { warmGear } from '../../../lib/data/filterables';
 import { trackLoot } from '../../../lib/lootTrack';
-import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -59,7 +59,7 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 			continue;
 		}
 
-		let foodStr: string = `**Food:** ${healAmountNeeded} HP/kill`;
+		let foodStr = `**Food:** ${healAmountNeeded} HP/kill`;
 
 		if (healAmountNeeded !== baseHealAmountNeeded) {
 			foodStr += `. Reduced from ${baseHealAmountNeeded}, -${calcWhatPercent(

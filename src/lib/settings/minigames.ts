@@ -1,4 +1,4 @@
-import { Minigame } from '@prisma/client';
+import type { Minigame } from '@prisma/client';
 
 import { prisma } from './prisma';
 

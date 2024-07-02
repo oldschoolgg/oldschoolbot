@@ -1,5 +1,5 @@
 import { patreonTask } from '../../../patreon';
-import { FastifyServer } from '../../types';
+import type { FastifyServer } from '../../types';
 import { verifyPatreonSecret } from '../../util';
 
 export const patreonRoute = (server: FastifyServer) =>

@@ -1,7 +1,8 @@
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
-import { Prisma, UserEventType } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
+import { UserEventType } from '@prisma/client';
 import { roll, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 
 import { Events } from './constants';
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections';
@@ -124,7 +125,7 @@ export async function handleNewCLItems({
 					user,
 					minigames: await user.fetchMinigames(),
 					stats: await fetchStatsForCL(user)
-			  })}!`
+				})}!`
 			: '';
 
 		const nthUser = (

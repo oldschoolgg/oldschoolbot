@@ -1,5 +1,5 @@
-import { FastifyInstance, FastifyLoggerInstance } from 'fastify';
-import { IncomingMessage, Server, ServerResponse } from 'http';
+import type { IncomingMessage, Server, ServerResponse } from 'node:http';
+import type { FastifyInstance, FastifyLoggerInstance } from 'fastify';
 
 interface UserAuth {
 	token: string;

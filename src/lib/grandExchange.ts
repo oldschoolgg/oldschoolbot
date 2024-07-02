@@ -1,16 +1,18 @@
-import { GEListing, GEListingType, GETransaction } from '@prisma/client';
+import type { GEListing, GETransaction } from '@prisma/client';
+import { GEListingType } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
-import { bold, ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
-import { calcPercentOfNum, clamp, noOp, sumArr, Time } from 'e';
+import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
+import { Time, calcPercentOfNum, clamp, noOp, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
-import { BitField, globalConfig, ONE_TRILLION, PerkTier } from './constants';
+import { BitField, ONE_TRILLION, PerkTier, globalConfig } from './constants';
 import { marketPricemap } from './marketPrices';
-import { RobochimpUser, roboChimpUserFetch } from './roboChimp';
+import type { RobochimpUser } from './roboChimp';
+import { roboChimpUserFetch } from './roboChimp';
 import { prisma } from './settings/prisma';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
 import { assert, generateGrandExchangeID, getInterval, itemNameFromID, makeComponents, toKMB } from './util';
@@ -28,7 +30,7 @@ interface CreateListingArgs {
 }
 
 function validateNumber(num: number) {
-	if (num < 0 || isNaN(num) || !Number.isInteger(num) || num >= Number.MAX_SAFE_INTEGER) {
+	if (num < 0 || Number.isNaN(num) || !Number.isInteger(num) || num >= Number.MAX_SAFE_INTEGER) {
 		throw new Error(`Invalid number: ${num}.`);
 	}
 }
@@ -286,12 +288,24 @@ class GrandExchangeSingleton {
 			return { error: 'Invalid item.' };
 		}
 
-		if (!price || price <= 0 || isNaN(price) || !Number.isInteger(price) || price > this.config.maxPricePerItem) {
+		if (
+			!price ||
+			price <= 0 ||
+			Number.isNaN(price) ||
+			!Number.isInteger(price) ||
+			price > this.config.maxPricePerItem
+		) {
 			return {
 				error: `Invalid price, the price must be a number between 1 and ${toKMB(this.config.maxPricePerItem)}.`
 			};
 		}
-		if (!quantity || quantity <= 0 || isNaN(quantity) || !Number.isInteger(quantity) || quantity > 5_000_000) {
+		if (
+			!quantity ||
+			quantity <= 0 ||
+			Number.isNaN(quantity) ||
+			!Number.isInteger(quantity) ||
+			quantity > 5_000_000
+		) {
 			return { error: 'Invalid quantity, the quantity must be a number between 1 and 5m.' };
 		}
 
@@ -343,8 +357,8 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			type === 'Buy'
 				? ''
 				: applicableTax.taxedAmount > 0
-				? ` At this price, you will receive ${toKMB(totalAfterTax)} after taxes.`
-				: ' No tax will be charged on these items.'
+					? ` At this price, you will receive ${toKMB(totalAfterTax)} after taxes.`
+					: ' No tax will be charged on these items.'
 		}`;
 
 		const guidePrice = marketPricemap.get(item.id);
@@ -405,7 +419,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		sellerListing: GEListing,
 		remainingItemsInBuyLimit: number
 	) {
-		let logContext: Record<string, string> = {
+		const logContext: Record<string, string> = {
 			buyerListingID: buyerListing.id.toString(),
 			sellerListingID: sellerListing.id.toString(),
 			type: 'GE_TRANSACTION'
@@ -441,7 +455,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		}
 
 		let priceWinner: 'buyer' | 'seller' = 'buyer';
-		let pricePerItemBeforeTax: number = -1;
+		let pricePerItemBeforeTax = -1;
 		if (buyerListing.created_at < sellerListing.created_at) {
 			pricePerItemBeforeTax = Number(buyerListing.asking_price_per_item);
 			priceWinner = 'buyer';

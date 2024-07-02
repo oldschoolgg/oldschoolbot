@@ -39,15 +39,7 @@
 	{
 		"name": "bingo",
 		"desc": "Bingo!",
-		"subOptions": [
-			"make_team",
-			"leave_team",
-			"view",
-			"leaderboard",
-			"create_bingo",
-			"manage_bingo",
-			"items"
-		]
+		"subOptions": ["make_team", "leave_team", "view", "leaderboard", "create_bingo", "manage_bingo", "items"]
 	},
 	{
 		"name": "bossrecords",
@@ -205,28 +197,12 @@
 	{
 		"name": "gamble",
 		"desc": "Partake in various gambling activities.",
-		"subOptions": [
-			"item",
-			"dice",
-			"duel",
-			"lucky_pick",
-			"slots",
-			"hot_cold",
-			"give_random_item"
-		]
+		"subOptions": ["item", "dice", "duel", "lucky_pick", "slots", "hot_cold", "give_random_item"]
 	},
 	{
 		"name": "ge",
 		"desc": "Exchange grandly with other players on the bot!",
-		"subOptions": [
-			"buy",
-			"sell",
-			"my_listings",
-			"cancel",
-			"stats",
-			"price",
-			"view"
-		]
+		"subOptions": ["buy", "sell", "my_listings", "cancel", "stats", "price", "view"]
 	},
 	{
 		"name": "gear",
@@ -533,10 +509,7 @@
 	{
 		"name": "tokkulshop",
 		"desc": "Buy or sell items from the Tzhaar shops.",
-		"examples": [
-			"/tokkulshop buy Obsidian platebody",
-			"/tokkulshop sell Chaos rune 5000"
-		],
+		"examples": ["/tokkulshop buy Obsidian platebody", "/tokkulshop sell Chaos rune 5000"],
 		"flags": ["minion"],
 		"subOptions": ["buy", "sell"]
 	},

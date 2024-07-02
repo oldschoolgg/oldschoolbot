@@ -1,6 +1,7 @@
 import { randInt, roll } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
+import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
 import { toKMB } from 'oldschooljs/dist/util';
@@ -11,7 +12,7 @@ import pets from '../../lib/data/pets';
 import { assert, averageBank, formatDuration } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export function determineCoxLimit(user: MUser) {
 	const perkTier = user.perkTier();
@@ -106,7 +107,7 @@ async function coxCommand(user: MUser, quantity: number, cm = false, points = 25
 		team.push({ id: `${randInt(1, 10_000_000)}`, personalPoints: points });
 	}
 
-	let loot = new Bank();
+	const loot = new Bank();
 	for (let i = 0; i < quantity; i++) {
 		const singleRaidLoot = ChambersOfXeric.complete({
 			team,

@@ -1,9 +1,9 @@
-import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
+import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
 
 import { ZALCANO_ID } from '../../../lib/constants';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { soteSkillRequirements } from '../../../lib/skilling/functions/questRequirements';
-import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
+import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { randInt } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
@@ -30,12 +29,14 @@ describe('Bank Parsers', () => {
 		expect(expected).toEqual(expect.arrayContaining(output));
 		expect(output.length).toEqual(expected.length);
 		for (let i = 0; i < output.length; i++) {
-			let [resItem, resQty] = output[i];
-			let [expItem, expQty] = expected[i];
+			const [resItem, resQty] = output[i];
+			const [expItem, expQty] = expected[i];
 			expect(resItem).toEqual(expItem);
 			expect(resQty).toEqual(expQty);
 		}
+	});
 
+	test('parseStringBank2', async () => {
 		expect(psb('')).toEqual([]);
 		expect(psb(' ')).toEqual([]);
 		expect(psb(', ')).toEqual([]);

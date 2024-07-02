@@ -11,7 +11,7 @@ it(`${BOT_TYPE} Creatables`, () => {
 		...i,
 		inputItems: new Bank(i.inputItems),
 		outputItems: new Bank(i.outputItems),
-		cantHaveItems: Boolean(i.cantHaveItems) ? new Bank(i.cantHaveItems) : undefined
+		cantHaveItems: i.cantHaveItems ? new Bank(i.cantHaveItems) : undefined
 	}));
 	expect(result).toMatchSnapshot();
 });
@@ -23,8 +23,8 @@ it(`${BOT_TYPE} Buyables`, () => {
 		outputItems: !i.outputItems
 			? undefined
 			: i.outputItems instanceof Bank
-			? i.outputItems
-			: i.outputItems(mockMUser())
+				? i.outputItems
+				: i.outputItems(mockMUser())
 	}));
 	expect(result).toMatchSnapshot();
 });

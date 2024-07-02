@@ -4,18 +4,18 @@ import { Monsters } from 'oldschooljs';
 import { NEX_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
 import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { Requirements } from '../structures/Requirements';
-import {
+import type {
 	ActivityTaskData,
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
 	RaidsOptions,
-	TheatreOfBloodTaskOptions,
-	TOAOptions
+	TOAOptions,
+	TheatreOfBloodTaskOptions
 } from '../types/minions';
 import resolveItems from '../util/resolveItems';
 import { isCertainMonsterTrip } from './caUtils';
-import { type CombatAchievement } from './combatAchievements';
+import type { CombatAchievement } from './combatAchievements';
 
 export const masterCombatAchievements: CombatAchievement[] = [
 	{

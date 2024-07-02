@@ -5,7 +5,8 @@ import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
-import { DiaryID, KillableMonster } from '../../../types';
+import type { KillableMonster } from '../../../types';
+import { DiaryID } from '../../../types';
 
 export const wildyKillableMonsters: KillableMonster[] = [
 	{

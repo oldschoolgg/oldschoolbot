@@ -1,17 +1,19 @@
-import { Minigame } from '@prisma/client';
+import type { Minigame } from '@prisma/client';
 import { calcWhatPercent, objectEntries } from 'e';
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 
-import { getParsedStashUnits, ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { ClueTier } from '../clues/clueTiers';
-import { BitField, BitFieldData, BOT_TYPE } from '../constants';
+import type { ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
+import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
+import type { ClueTier } from '../clues/clueTiers';
+import type { BitField } from '../constants';
+import { BOT_TYPE, BitFieldData } from '../constants';
 import { diaries, userhasDiaryIDTier } from '../diaries';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
-import { ClueBank, DiaryID, DiaryTierName } from '../minions/types';
+import type { ClueBank, DiaryID, DiaryTierName } from '../minions/types';
 import type { RobochimpUser } from '../roboChimp';
-import { MinigameName } from '../settings/minigames';
+import type { MinigameName } from '../settings/minigames';
 import Agility from '../skilling/skills/agility';
-import { Skills } from '../types';
+import type { Skills } from '../types';
 import { itemNameFromID } from '../util';
 import { MUserStats } from './MUserStats';
 
@@ -87,7 +89,7 @@ export class Requirements {
 		if ('kcRequirement' in req) {
 			requirementParts.push(
 				`Kill Count Requirement: ${Object.entries(req.kcRequirement)
-					.map(([k, v]) => `${v}x ${effectiveMonsters.find(i => i.id === Number(k))!.name}`)
+					.map(([k, v]) => `${v}x ${effectiveMonsters.find(i => i.id === Number(k))?.name}`)
 					.join(', ')}.`
 			);
 		}
@@ -99,7 +101,7 @@ export class Requirements {
 		if ('lapsRequirement' in req) {
 			requirementParts.push(
 				`Agility Course Laps Requirements: ${Object.entries(req.lapsRequirement)
-					.map(([k, v]) => `${v}x laps of ${Agility.Courses.find(i => i.id === Number(k))!.name}`)
+					.map(([k, v]) => `${v}x laps of ${Agility.Courses.find(i => i.id === Number(k))?.name}`)
 					.join(', ')}.`
 			);
 		}
@@ -123,7 +125,7 @@ export class Requirements {
 		if ('diaryRequirement' in req) {
 			requirementParts.push(
 				`Achievement Diary Requirement: ${req.diaryRequirement
-					.map(i => `${i[1]} ${diaries.find(d => d.id === i[0])!.name}`)
+					.map(i => `${i[1]} ${diaries.find(d => d.id === i[0])?.name}`)
 					.join(', ')}`
 			);
 		}
@@ -211,7 +213,7 @@ export class Requirements {
 			for (const [id, amount] of Object.entries(requirement.kcRequirement)) {
 				if (!kcs[id] || kcs[id] < amount) {
 					missingMonsterNames.push(
-						`${amount}x ${effectiveMonsters.find(m => m.id === parseInt(id))?.name ?? id}`
+						`${amount}x ${effectiveMonsters.find(m => m.id === Number.parseInt(id))?.name ?? id}`
 					);
 				}
 			}
@@ -236,7 +238,7 @@ export class Requirements {
 				if (!laps[id] || laps[id] < amount) {
 					results.push({
 						reason: `You need ${amount}x laps in the ${
-							Agility.Courses.find(i => i.id.toString() === id)!.name
+							Agility.Courses.find(i => i.id.toString() === id)?.name
 						} agility course.`
 					});
 				}
@@ -341,7 +343,7 @@ export class Requirements {
 		}));
 
 		const results = await Promise.all(requirementResults);
-		const flatReasons = results.map(r => r.result).flat();
+		const flatReasons = results.flatMap(r => r.result);
 
 		const totalRequirements = this.requirements.length;
 		const metRequirements = results.filter(i => i.result.length === 0).length;

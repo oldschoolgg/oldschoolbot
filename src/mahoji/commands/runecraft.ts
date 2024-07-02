@@ -1,20 +1,21 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Runecraft from '../../lib/skilling/skills/runecraft';
-import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
+import type { RunecraftActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { calcMaxRCQuantity, userHasGracefulEquipped } from '../mahojiSettings';
 
 export const runecraftCommand: OSBMahojiCommand = {
@@ -202,7 +203,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		let imbueCasts = 0;
 		let teleportReduction = 1;
-		let removeTalismanAndOrRunes = new Bank();
+		const removeTalismanAndOrRunes = new Bank();
 		let hasRingOfTheElements = false;
 		if (runeObj.inputTalisman) {
 			const tomeOfFire = user.hasEquipped(['Tome of fire', 'Tome of fire (empty)']) ? 0 : 7;

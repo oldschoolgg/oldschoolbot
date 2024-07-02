@@ -1,7 +1,7 @@
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { isObject } from 'e';
-import { ICommand, MahojiClient } from 'mahoji';
-import { CommandOptions, MahojiUserOption } from 'mahoji/dist/lib/types';
+import type { ICommand, MahojiClient } from 'mahoji';
+import type { CommandOptions, MahojiUserOption } from 'mahoji/dist/lib/types';
 
 import type { AbstractCommand, AbstractCommandAttributes } from './inhibitors';
 
@@ -24,7 +24,7 @@ interface CompressedArg {
 	[key: string]: string | number | boolean | null | undefined | CompressedArg;
 }
 function compressMahojiArgs(options: CommandOptions) {
-	let newOptions: CompressedArg = {};
+	const newOptions: CompressedArg = {};
 	for (const [key, val] of Object.entries(options) as [
 		keyof CommandOptions,
 		CommandOptions[keyof CommandOptions]

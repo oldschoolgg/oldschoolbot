@@ -1,11 +1,12 @@
 import path from 'node:path';
 
-import { Image } from '@napi-rs/canvas';
+import { execSync } from 'node:child_process';
+import type { Image } from '@napi-rs/canvas';
 import { SimpleTable, StoreBitfield } from '@oldschoolgg/toolkit';
-import { execSync } from 'child_process';
-import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import type { APIButtonComponent } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import * as dotenv from 'dotenv';
-import { CommandOptions } from 'mahoji/dist/lib/types';
+import type { CommandOptions } from 'mahoji/dist/lib/types';
 import { z } from 'zod';
 
 import { DISCORD_SETTINGS, production } from '../config';
@@ -42,8 +43,8 @@ export const Channel = {
 				? '346304390858145792'
 				: '1154056119019393035'
 			: production
-			? '792691343284764693'
-			: '1154056119019393035'
+				? '792691343284764693'
+				: '1154056119019393035'
 };
 
 export const Roles = {
@@ -69,7 +70,7 @@ export const Roles = {
 	TopGlobalCL: '1072426869028294747'
 };
 
-export const enum Emoji {
+export enum Emoji {
 	MoneyBag = '<:MoneyBag:493286312854683654>',
 	OSBot = '<:OSBot:601768469905801226>',
 	Joy = '😂',
@@ -178,7 +179,7 @@ export enum ActivityGroup {
 	Minigame = 'Minigame'
 }
 
-export const enum Events {
+export enum Events {
 	Error = 'error',
 	Log = 'log',
 	Verbose = 'verbose',
@@ -191,7 +192,7 @@ export const enum Events {
 
 export const COINS_ID = 995;
 
-export const enum PerkTier {
+export enum PerkTier {
 	/**
 	 * Boosters
 	 */
@@ -366,7 +367,7 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	}
 } as const;
 
-export const enum PatronTierID {
+export enum PatronTierID {
 	One = '4608201',
 	Two = '4608226',
 	Three = '4720356',

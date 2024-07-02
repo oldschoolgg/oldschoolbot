@@ -1,16 +1,17 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
+import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const mixCommand: OSBMahojiCommand = {
 	name: 'mix',

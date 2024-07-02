@@ -1,11 +1,11 @@
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { MUserClass } from '../MUser';
 import { prisma } from '../settings/prisma';
 
 async function syncLinkedAccountPerks(user: MUser) {
-	let main = user.user.main_account;
+	const main = user.user.main_account;
 	const allAccounts: string[] = [...user.user.ironman_alts];
 	if (main) {
 		allAccounts.push(main);

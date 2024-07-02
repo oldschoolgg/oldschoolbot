@@ -1,7 +1,8 @@
-import { percentChance, randInt, Time } from 'e';
+import { Time, objectEntries, percentChance, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, TwitcherGloves } from '../../lib/constants';
+import type { TwitcherGloves } from '../../lib/constants';
+import { Emoji, Events } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
@@ -9,15 +10,15 @@ import { soteSkillRequirements } from '../../lib/skilling/functions/questRequire
 import { ForestryEvents, LeafTable } from '../../lib/skilling/skills/woodcutting/forestry';
 import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
+import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { perTimeUnitChance, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 
 async function handleForestry({ user, duration, loot }: { user: MUser; duration: number; loot: Bank }) {
-	let eventCounts: { [key: number]: number } = {};
-	let eventXP = {} as { [key in SkillsEnum]: number };
+	const eventCounts: { [key: number]: number } = {};
+	const eventXP = {} as { [key in SkillsEnum]: number };
 	ForestryEvents.forEach(event => {
 		eventCounts[event.id] = 0;
 		eventXP[event.uniqueXP] = 0;
@@ -123,25 +124,20 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 	});
 
 	let totalEvents = 0;
-	for (const event in eventCounts) {
-		if (eventCounts.hasOwnProperty(event)) {
-			const count = eventCounts[event];
+	for (const [event, count] of objectEntries(eventCounts)) {
+		if (event && count && count > 0) {
 			totalEvents += count;
-			await userStatsBankUpdate(
-				user.id,
-				'forestry_event_completions_bank',
-				new Bank().add(parseInt(event), count)
-			);
+			await userStatsBankUpdate(user.id, 'forestry_event_completions_bank', new Bank().add(Number(event), count));
 		}
 	}
 
 	// Give user xp from events
 	let xpRes = '';
-	for (const skill in eventXP) {
-		if (eventXP.hasOwnProperty(skill)) {
+	for (const [key, val] of objectEntries(eventXP)) {
+		if (key && val && val > 0) {
 			xpRes += await user.addXP({
-				skillName: skill as SkillsEnum,
-				amount: Math.ceil(eventXP[skill as SkillsEnum]),
+				skillName: key,
+				amount: Math.ceil(val),
 				minimal: true,
 				source: 'ForestryEvents'
 			});
@@ -151,8 +147,8 @@ async function handleForestry({ user, duration, loot }: { user: MUser; duration:
 	// Generate forestry message
 	const completedEvents = Object.entries(eventCounts)
 		.map(([eventId, count]) => {
-			const event = ForestryEvents.find(e => e.id === parseInt(eventId));
-			return count > 0 ? `${count} ${event!.name}` : null;
+			const event = ForestryEvents.find(e => e.id === Number.parseInt(eventId));
+			return count > 0 ? `${count} ${event?.name}` : null;
 		})
 		.filter(Boolean)
 		.join(' & ');
@@ -191,16 +187,16 @@ export const woodcuttingTask: MinionTask = {
 				user.bank.has(['Woodcutting cape', 'Cape pouch']) &&
 				userWcLevel >= 99);
 
-		let strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
-		let twitchersEquipped = user.hasEquipped("twitcher's gloves");
+		const strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
+		const twitchersEquipped = user.hasEquipped("twitcher's gloves");
 		let twitcherSetting: TwitcherGloves | undefined = 'egg';
 		let xpReceived = quantity * log.xp;
 		let bonusXP = 0;
 		let rationUsed = 0;
 		let lostLogs = 0;
-		let loot = new Bank();
-		let itemsToRemove = new Bank();
-		let priffUnlocked = user.hasSkillReqs(soteSkillRequirements) && user.QP >= 150;
+		const loot = new Bank();
+		const itemsToRemove = new Bank();
+		const priffUnlocked = user.hasSkillReqs(soteSkillRequirements) && user.QP >= 150;
 
 		// Felling axe +10% xp bonus & 20% logs lost
 		if (user.gear.skilling.hasEquipped('Bronze felling axe')) {
@@ -219,7 +215,7 @@ export const woodcuttingTask: MinionTask = {
 		// If they have the entire lumberjack outfit, give an extra 0.5% xp bonus
 		if (
 			user.gear.skilling.hasEquipped(
-				Object.keys(Woodcutting.lumberjackItems).map(i => parseInt(i)),
+				Object.keys(Woodcutting.lumberjackItems).map(i => Number.parseInt(i)),
 				true
 			)
 		) {
@@ -229,7 +225,7 @@ export const woodcuttingTask: MinionTask = {
 		} else {
 			// For each lumberjack item, check if they have it, give its XP boost if so
 			for (const [itemID, bonus] of Object.entries(Woodcutting.lumberjackItems)) {
-				if (user.gear.skilling.hasEquipped([parseInt(itemID)], false)) {
+				if (user.gear.skilling.hasEquipped([Number.parseInt(itemID)], false)) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;
@@ -343,7 +339,7 @@ export const woodcuttingTask: MinionTask = {
 			lostLogs > 0 && !powerchopping
 				? `You lost ${
 						log.lootTable ? `${lostLogs}x ${log.name} loot rolls` : `${lostLogs}x ${log.name}`
-				  } due to using a felling axe.`
+					} due to using a felling axe.`
 				: ''
 		}`;
 

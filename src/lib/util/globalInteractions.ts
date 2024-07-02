@@ -1,18 +1,19 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonInteraction, ButtonStyle, Interaction } from 'discord.js';
-import { removeFromArr, Time, uniqueArr } from 'e';
+import type { ButtonInteraction, Interaction } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Time, removeFromArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import { Cooldowns } from '../../mahoji/lib/Cooldowns';
-import { ClueTier } from '../clues/clueTiers';
+import type { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
-import { ItemBank } from '../types';
+import type { ItemBank } from '../types';
 import { formatDuration, stringMatches } from '../util';
 import { updateGiveawayMessage } from './giveaway';
 import { deferInteraction, interactionReply } from './interactionReply';

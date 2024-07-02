@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import driftNetCreatures from '../../../lib/skilling/skills/hunter/driftNet';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 // Bonus loot from higher fishing level
@@ -32,7 +32,7 @@ const fishBonusLoot = [
 export const driftNetTask: MinionTask = {
 	type: 'DriftNet',
 	async run(data: ActivityTaskOptionsWithQuantity) {
-		let { quantity, userID, channelID, duration } = data;
+		const { quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
 		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
@@ -40,7 +40,7 @@ export const driftNetTask: MinionTask = {
 		// Current fishable creatures
 		const fishShoal = driftNetCreatures.find(_fish => _fish.name === 'Fish shoal')!;
 
-		let fishShoalCaught = quantity;
+		const fishShoalCaught = quantity;
 
 		// Build up loot table based on fishing level
 		const fishTable = fishShoal.table.clone();

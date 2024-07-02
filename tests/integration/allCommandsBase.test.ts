@@ -1,9 +1,9 @@
 import { join } from 'node:path';
 
 import { ApplicationCommandOptionType } from 'discord.js';
-import { randArrItem, randInt, shuffleArr, Time } from 'e';
+import { Time, randArrItem, randInt, shuffleArr } from 'e';
 import { Store } from 'mahoji/dist/lib/structures/Store';
-import { CommandOption } from 'mahoji/dist/lib/types';
+import type { CommandOption } from 'mahoji/dist/lib/types';
 import { isValidCommand } from 'mahoji/dist/lib/util';
 import { Bank, Items } from 'oldschooljs';
 import { expect, test, vi } from 'vitest';
@@ -39,7 +39,6 @@ import { fishCommand } from '../../src/mahoji/commands/fish';
 import { fletchCommand } from '../../src/mahoji/commands/fletch';
 import { gambleCommand } from '../../src/mahoji/commands/gamble';
 import { gearCommand } from '../../src/mahoji/commands/gear';
-import { gearPresetsCommand } from '../../src/mahoji/commands/gearpresets';
 import { giftCommand } from '../../src/mahoji/commands/gift';
 import { giveawayCommand } from '../../src/mahoji/commands/giveaway';
 import { gpCommand } from '../../src/mahoji/commands/gp';
@@ -82,11 +81,12 @@ import { tradeCommand } from '../../src/mahoji/commands/trade';
 import { triviaCommand } from '../../src/mahoji/commands/trivia';
 import { mahojiUseCommand } from '../../src/mahoji/commands/use';
 import { randomMock } from './setup';
-import { createTestUser, mockClient, TestUser } from './util';
+import type { TestUser } from './util';
+import { createTestUser, mockClient } from './util';
 
 type CommandInput = Record<string, any>;
 async function generateCommandInputs(user: TestUser, options: readonly CommandOption[]): Promise<CommandInput[]> {
-	let results: CommandInput[] = [];
+	const results: CommandInput[] = [];
 	const allPossibleOptions: Record<string, any[]> = {};
 
 	for (const option of options) {
@@ -150,7 +150,7 @@ async function generateCommandInputs(user: TestUser, options: readonly CommandOp
 	const sorted = Object.values(allPossibleOptions).sort((a, b) => b.length - a.length);
 	const longestOptions = sorted[0]?.length;
 	for (let i = 0; i < longestOptions; i++) {
-		let obj: Record<string, any> = {};
+		const obj: Record<string, any> = {};
 		for (const [key, val] of Object.entries(allPossibleOptions)) {
 			obj[key] = val[i] ?? randArrItem(val);
 		}
@@ -202,7 +202,8 @@ test(
 			'trivia',
 			'ge',
 			'rp',
-			'cl'
+			'cl',
+			'gearpresets'
 		];
 		const cmds = [
 			adminCommand,
@@ -235,7 +236,6 @@ test(
 			fletchCommand,
 			gambleCommand,
 			gearCommand,
-			gearPresetsCommand,
 			giveawayCommand,
 			helpCommand,
 			huntCommand,

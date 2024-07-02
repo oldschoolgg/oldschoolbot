@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from '../../util/getOSItem';
 import itemID from '../../util/itemID';
-import { Createable } from '../createables';
+import type { Createable } from '../createables';
 
 export const armorAndItemPacks: Createable[] = [
 	// Melee armour sets

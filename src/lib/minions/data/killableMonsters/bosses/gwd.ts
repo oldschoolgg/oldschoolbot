@@ -11,7 +11,7 @@ import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
-import { KillableMonster } from '../../../types';
+import type { KillableMonster } from '../../../types';
 
 const killableBosses: KillableMonster[] = [
 	{

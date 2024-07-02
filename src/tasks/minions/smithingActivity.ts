@@ -24,7 +24,7 @@ export const smithingTask: MinionTask = {
 			[smithedItem.id]: quantity * smithedItem.outputMultiple
 		});
 
-		let str = `${user}, ${user.minionName} finished smithing, you received ${loot}. ${xpRes}`;
+		const str = `${user}, ${user.minionName} finished smithing, you received ${loot}. ${xpRes}`;
 
 		await transactItems({
 			userID: user.id,

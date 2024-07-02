@@ -1,23 +1,23 @@
 import {
+	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
 	percentChance,
 	randInt,
 	reduceNumByPercent,
-	shuffleArr,
-	Time
+	shuffleArr
 } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
+import type { Item } from 'oldschooljs/dist/meta/types';
+import type { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
-import { GearStats } from '../gear/types';
+import type { GearStats } from '../gear/types';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
-import { constructGearSetup, Gear } from '../structures/Gear';
-import { Skills } from '../types';
+import { Gear, constructGearSetup } from '../structures/Gear';
+import type { Skills } from '../types';
 import { randomVariation } from '../util';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
@@ -55,7 +55,7 @@ export async function createTeam(
 	users: MUser[],
 	cm: boolean
 ): Promise<Array<{ deaths: number; deathChance: number } & ChambersOfXericOptions['team'][0]>> {
-	let res = [];
+	const res = [];
 	const isSolo = users.length === 1;
 
 	for (const u of users) {
@@ -146,14 +146,8 @@ function calcSetupPercent(
 	}
 	// For melee compare the highest melee attack stat of max setup with the highest melee attack stat of the user
 	if (melee) {
-		let maxMeleeStat = Math.max(
-			maxStats['attack_stab'],
-			Math.max(maxStats['attack_slash'], maxStats['attack_crush'])
-		);
-		let userMeleeStat = Math.max(
-			userStats['attack_stab'],
-			Math.max(userStats['attack_slash'], userStats['attack_crush'])
-		);
+		const maxMeleeStat = Math.max(maxStats.attack_stab, Math.max(maxStats.attack_slash, maxStats.attack_crush));
+		const userMeleeStat = Math.max(userStats.attack_stab, Math.max(userStats.attack_slash, userStats.attack_crush));
 		totalPercent += Math.min(100, calcWhatPercent(userMeleeStat, maxMeleeStat));
 		numKeys++;
 	}
@@ -243,7 +237,7 @@ export const minimumCoxSuppliesNeeded = new Bank({
 	'Super restore(4)': 5
 });
 
-export async function checkCoxTeam(users: MUser[], cm: boolean, quantity: number = 1): Promise<string | null> {
+export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): Promise<string | null> {
 	const hasHerbalist = users.some(u => u.skillLevel(SkillsEnum.Herblore) >= 78);
 	if (!hasHerbalist) {
 		return 'nobody with atleast level 78 Herblore';
@@ -474,7 +468,7 @@ export async function calcCoxDuration(
 
 	let totalReduction = 0;
 
-	let reductions: Record<string, number> = {};
+	const reductions: Record<string, number> = {};
 
 	// Track degradeable items:
 	const degradeableItems: { item: Item; user: MUser; chargesToDegrade: number }[] = [];

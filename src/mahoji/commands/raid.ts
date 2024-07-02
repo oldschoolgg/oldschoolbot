@@ -1,11 +1,13 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
 
-import { mileStoneBaseDeathChances, RaidLevel, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
+import type { RaidLevel } from '../../lib/simulation/toa';
+import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const raidCommand: OSBMahojiCommand = {
 	name: 'raid',
@@ -133,7 +135,10 @@ export const raidCommand: OSBMahojiCommand = {
 							name: 'raid_level',
 							description: 'Choose the raid level you want to do (1-600).',
 							required: true,
-							choices: mileStoneBaseDeathChances.map(i => ({ name: i.level.toString(), value: i.level }))
+							choices: mileStoneBaseDeathChances.map(i => ({
+								name: i.level.toString(),
+								value: i.level
+							}))
 						},
 						{
 							type: ApplicationCommandOptionType.Boolean,
@@ -197,7 +202,7 @@ export const raidCommand: OSBMahojiCommand = {
 
 		if (minionIsBusy(user.id)) return "Your minion is busy, you can't do this.";
 
-		if (cox && cox.start) {
+		if (cox?.start) {
 			return coxCommand(
 				channelID,
 				user,

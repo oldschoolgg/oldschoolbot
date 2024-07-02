@@ -1,8 +1,8 @@
-import { FarmedCrop, User } from '@prisma/client';
-import { BaseMessageOptions, ButtonBuilder } from 'discord.js';
+import type { FarmedCrop, User } from '@prisma/client';
+import type { BaseMessageOptions, ButtonBuilder } from 'discord.js';
 
 import { Emoji } from '../constants';
-import { IPatchData, IPatchDataDetailed } from '../minions/farming/types';
+import type { IPatchData, IPatchDataDetailed } from '../minions/farming/types';
 import Farming from '../skilling/skills/farming';
 import { dateFm, makeAutoFarmButton, makeComponents, stringMatches } from '../util';
 

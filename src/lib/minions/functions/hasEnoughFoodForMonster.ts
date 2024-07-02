@@ -1,4 +1,4 @@
-import { KillableMonster } from '../types';
+import type { KillableMonster } from '../types';
 import calculateMonsterFood from './calculateMonsterFood';
 import getUserFoodFromBank from './getUserFoodFromBank';
 
