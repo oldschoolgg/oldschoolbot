@@ -301,7 +301,7 @@ export async function slayerNewTaskCommand({
 		await userStatsUpdate(user.id, { [taskStreakKey]: 0 }, {});
 
 		const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
-		const commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
+		const commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 		const returnMessage =
 			`Your task has been skipped.\n\n ${slayerMaster.name}` +
 			` has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}${getAlternateMonsterList(
@@ -369,7 +369,7 @@ export async function slayerNewTaskCommand({
 		});
 	}
 
-	let commonName = getCommonTaskName(newSlayerTask.assignedTask?.monster);
+	let commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 	if (commonName === 'TzHaar') {
 		resultMessage += 'Ah... Tzhaar... ';
 		commonName +=
