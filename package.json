@@ -1,7 +1,7 @@
 {
 	"scripts": {
 		"gen": "concurrently \"prisma generate --no-hints\" \"prisma generate --no-hints --schema prisma/robochimp.prisma\" && echo \"Generated Prisma Client\"",
-		"lint": "concurrently \"prettier --use-tabs ./**/*.{js,md,json,yml} --write\" \"eslint *.{ts,mts} \"{src,tests}/**/*.ts\" --fix\"",
+		"lint": "concurrently \"prettier --use-tabs ./**/*.{js,md,json,yml} --write\" \"eslint --quiet *.{ts,mts} \"{src,tests}/**/*.ts\" --fix\"",
 		"build:tsc": "tsc -p src",
 		"build": "concurrently \"yarn wipedist\" \"yarn gen\" && concurrently \"yarn prebuild:scripts\" && yarn build:tsc && yarn postbuild && echo \"Finished Building\"",
 		"wipedist": "rimraf \"dist/\"",
