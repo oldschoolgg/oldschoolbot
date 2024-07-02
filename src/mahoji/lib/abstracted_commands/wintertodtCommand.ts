@@ -18,15 +18,21 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 		return 'You need 50 Firemaking to have a chance at defeating the Wintertodt.';
 	}
 
-	const messages = [];
-
 	let durationPerTodt = Time.Minute * 7.3;
 
 	// Up to a 10% boost for 99 WC
 	const wcBoost = (wcLevel + 1) / 10;
 
+	const boosts: string[] = [];
+	const foodStr: string[] = [];
+
 	if (wcBoost > 1) {
-		messages.push(`**Boosts:** ${wcBoost.toFixed(2)}% for Woodcutting level\n`);
+		boosts.push(`**Boosts:** ${wcBoost.toFixed(2)}% for Woodcutting level`);
+	}
+
+	if (user.hasEquippedOrInBank('Dwarven greataxe')) {
+		durationPerTodt /= 2;
+		boosts.push('2x faster for Dwarven greataxe.');
 	}
 
 	durationPerTodt = reduceNumByPercent(durationPerTodt, wcBoost);
@@ -45,22 +51,6 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 	healAmountNeeded -= warmGearAmount * 15;
 	durationPerTodt = reduceNumByPercent(durationPerTodt, 5 * warmGearAmount);
 
-	const boosts: string[] = [];
-
-	if (user.hasEquippedOrInBank('Dwarven greataxe')) {
-		durationPerTodt /= 2;
-		boosts.push('2x faster for Dwarven greataxe.');
-	}
-
-	if (healAmountNeeded !== baseHealAmountNeeded) {
-		messages.push(
-			`${calcWhatPercent(
-				baseHealAmountNeeded - healAmountNeeded,
-				baseHealAmountNeeded
-			)}% less food for wearing warm gear`
-		);
-	}
-
 	const quantity = Math.floor(calcMaxTripLength(user, 'Wintertodt') / durationPerTodt);
 
 	for (const food of Eatables) {
@@ -75,20 +65,18 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 			continue;
 		}
 
-		let foodStr: string = `**Food:** ${healAmountNeeded} HP/kill`;
+		foodStr.push(`**Food:** ${healAmountNeeded} HP/kill`);
 
 		if (healAmountNeeded !== baseHealAmountNeeded) {
-			foodStr += `. Reduced from ${baseHealAmountNeeded}, -${calcWhatPercent(
-				baseHealAmountNeeded - healAmountNeeded,
-				baseHealAmountNeeded
-			)}% for wearing warm gear. `;
-		} else {
-			foodStr += '. ';
+			foodStr.push(
+				`Reduced from ${baseHealAmountNeeded}, -${calcWhatPercent(
+					baseHealAmountNeeded - healAmountNeeded,
+					baseHealAmountNeeded
+				)}% for wearing warm gear`
+			);
 		}
 
-		foodStr += ` **Removed ${amountNeeded}x ${food.name}**`;
-
-		messages.push(foodStr);
+		foodStr.push(`**Removed ${amountNeeded}x ${food.name}**`);
 
 		const cost = new Bank().add(food.id, amountNeeded);
 
@@ -129,11 +117,9 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 		user.minionName
 	} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(
 		durationPerTodt * quantity
-	)}. (${formatDuration(durationPerTodt)} per todt)\n\n${messages.join(', ')}.`;
-
-	if (boosts.length > 0) {
-		str += `**Boosts:** ${boosts.join(', ')}`;
-	}
+	)}. (${formatDuration(durationPerTodt)} per todt)\n\n${boosts.length > 0 ? `${boosts.join(', ')}\n` : ''}${
+		foodStr.length > 0 ? foodStr.join(', ') : ''
+	}.`;
 
 	return str;
 }
