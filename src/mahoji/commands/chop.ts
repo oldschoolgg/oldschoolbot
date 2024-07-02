@@ -164,6 +164,7 @@ export const chopCommand: OSBMahojiCommand = {
 
 		let wcLvl = skills.woodcutting;
 		const farmingLvl = user.skillsAsLevels.farming;
+		const pekyBoost = user.usingPet('Peky');
 
 		// Ivy, Redwood logs, Logs, Sulliuscep, Farming patches, Woodcutting guild don't spawn forestry events
 		if (
@@ -188,7 +189,11 @@ export const chopCommand: OSBMahojiCommand = {
 				}
 			}
 		} else {
-			boosts.push('Participating in Forestry events');
+			boosts.push(
+				`Participating in Forestry events${
+					pekyBoost ? " (uniques are 5x as common thanks to Peky's help)" : ''
+				}`
+			);
 		}
 
 		// Default bronze axe, last in the array
