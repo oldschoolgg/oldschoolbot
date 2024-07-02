@@ -1,7 +1,7 @@
 import path from 'node:path';
 
 import { Image } from '@napi-rs/canvas';
-import { StoreBitfield } from '@oldschoolgg/toolkit';
+import { SimpleTable, StoreBitfield } from '@oldschoolgg/toolkit';
 import { execSync } from 'child_process';
 import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import * as dotenv from 'dotenv';
@@ -629,3 +629,26 @@ export const patronFeatures = {
 export const gearValidationChecks = new Set();
 
 export const BSO_MAX_TOTAL_LEVEL = 3120;
+
+export const winterTodtPointsTable = new SimpleTable<number>()
+	.add(420)
+	.add(470)
+	.add(500)
+	.add(505)
+	.add(510)
+	.add(520)
+	.add(550)
+	.add(560)
+	.add(590)
+	.add(600)
+	.add(620)
+	.add(650)
+	.add(660)
+	.add(670)
+	.add(680)
+	.add(700)
+	.add(720)
+	.add(740)
+	.add(750)
+	.add(780)
+	.add(850);

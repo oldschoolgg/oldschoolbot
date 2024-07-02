@@ -35,6 +35,11 @@ export const autocompleteMonsters = [
 		aliases: ['wt', 'wintertodt', 'todt'],
 		id: -1,
 		emoji: '<:Phoenix:324127378223792129>'
+	},
+	{
+		name: 'Colosseum',
+		aliases: ['colo', 'colosseum'],
+		id: -1
 	}
 ];
 

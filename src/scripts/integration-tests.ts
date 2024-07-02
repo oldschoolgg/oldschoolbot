@@ -20,7 +20,7 @@ async function main() {
 		let runs = 1;
 		for (let i = 0; i < runs; i++) {
 			console.log(`Starting run ${i + 1}/${runs}`);
-			execSync('vitest run --config vitest.integration.config.mts', {
+			execSync('vitest run --config vitest.integration.config.mts sacrifice', {
 				stdio: 'inherit',
 				encoding: 'utf-8'
 			});

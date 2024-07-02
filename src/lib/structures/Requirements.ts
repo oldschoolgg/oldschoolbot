@@ -5,9 +5,9 @@ import { Bank } from 'oldschooljs';
 import { getParsedStashUnits, ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { ClueTier } from '../clues/clueTiers';
 import { BitField, BitFieldData, BOT_TYPE } from '../constants';
-import { diariesObject, DiaryTierName, userhasDiaryTier } from '../diaries';
+import { diaries, userhasDiaryIDTier } from '../diaries';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
-import { ClueBank } from '../minions/types';
+import { ClueBank, DiaryID, DiaryTierName } from '../minions/types';
 import type { RobochimpUser } from '../roboChimp';
 import { MinigameName } from '../settings/minigames';
 import Agility from '../skilling/skills/agility';
@@ -53,7 +53,7 @@ type Requirement = {
 	| { OR: Requirement[] }
 	| { minigames: Partial<Record<MinigameName, number>> }
 	| { bitfieldRequirement: BitField }
-	| { diaryRequirement: [keyof typeof diariesObject, DiaryTierName][] }
+	| { diaryRequirement: [DiaryID, DiaryTierName][] }
 	| { clueCompletions: Partial<Record<ClueTier['name'], number>> }
 );
 
@@ -123,7 +123,7 @@ export class Requirements {
 		if ('diaryRequirement' in req) {
 			requirementParts.push(
 				`Achievement Diary Requirement: ${req.diaryRequirement
-					.map(i => `${i[1]} ${diariesObject[i[0]].name}`)
+					.map(i => `${i[1]} ${diaries.find(d => d.id === i[0])!.name}`)
 					.join(', ')}`
 			);
 		}
@@ -278,12 +278,15 @@ export class Requirements {
 		if ('diaryRequirement' in requirement) {
 			const unmetDiaries = (
 				await Promise.all(
-					requirement.diaryRequirement.map(async ([diary, tier]) => ({
-						has: await userhasDiaryTier(user, diariesObject[diary][tier]),
-						tierName: `${tier} ${diariesObject[diary].name}`
-					}))
+					requirement.diaryRequirement.map(async ([diary, tier]) => {
+						const res = await userhasDiaryIDTier(user, diary, tier);
+						return {
+							has: res.hasDiary,
+							tierName: `${tier} ${res.diaryGroup.name}`
+						};
+					})
 				)
-			).filter(i => !i.has[0]);
+			).filter(i => !i.has);
 			if (unmetDiaries.length > 0) {
 				results.push({
 					reason: `You need to finish these achievement diaries: ${unmetDiaries

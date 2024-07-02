@@ -622,6 +622,12 @@ export const tripHandlers = {
 				drift_net_fishing: { minutes: Math.floor(data.duration / Time.Minute) }
 			}
 		})
+	},
+	[activity_type_enum.Colosseum]: {
+		commandName: 'k',
+		args: () => ({
+			name: 'colosseum'
+		})
 	}
 } as const;
 

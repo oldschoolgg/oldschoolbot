@@ -26,17 +26,18 @@ export const gambleCommand: OSBMahojiCommand = {
 		 */
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'cape',
-			description: 'Allows you to gamble fire/infernal capes for a chance at the pets.',
+			name: 'item',
+			description: 'Allows you to gamble fire/infernal capes/quivers for a chance at the pets.',
 			options: [
 				{
 					type: ApplicationCommandOptionType.String,
-					name: 'type',
-					description: 'The cape you wish to gamble.',
+					name: 'item',
+					description: 'The item you wish to gamble.',
 					required: false,
 					choices: [
 						{ name: 'fire', value: 'fire' },
-						{ name: 'infernal', value: 'infernal' }
+						{ name: 'infernal', value: 'infernal' },
+						{ name: 'quiver', value: 'quiver' }
 					]
 				},
 				{
@@ -175,7 +176,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		guildID,
 		userID
 	}: CommandRunOptions<{
-		cape?: { type?: string; autoconfirm?: boolean };
+		item?: { item?: string; autoconfirm?: boolean };
 		dice?: { amount?: string };
 		duel?: { user: MahojiUserOption; amount?: string };
 		lucky_pick?: { amount: string };
@@ -185,9 +186,9 @@ export const gambleCommand: OSBMahojiCommand = {
 	}>) => {
 		const user = await mUserFetch(userID);
 
-		if (options.cape) {
-			if (options.cape.type) {
-				return capeGambleCommand(user, options.cape.type, interaction, options.cape.autoconfirm);
+		if (options.item) {
+			if (options.item.item) {
+				return capeGambleCommand(user, options.item.item, interaction, options.item.autoconfirm);
 			}
 			return capeGambleStatsCommand(user);
 		}

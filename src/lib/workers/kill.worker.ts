@@ -10,6 +10,10 @@ import { calcDropRatesFromBank } from '../util/calcDropRatesFromBank';
 import resolveItems from '../util/resolveItems';
 import type { KillWorkerArgs, KillWorkerReturn } from '.';
 
+if (global.prisma) {
+	throw new Error('Prisma is loaded in the kill worker!');
+}
+
 export default async ({
 	quantity,
 	bossName,

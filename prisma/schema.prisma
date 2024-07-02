@@ -134,6 +134,8 @@ model ClientStorage {
   nmz_cost                     Json     @default("{}") @db.Json
   toa_cost                     Json     @default("{}") @db.Json
   toa_loot                     Json     @default("{}") @db.Json
+  colo_cost                    Json     @default("{}") @db.Json
+  colo_loot                    Json     @default("{}") @db.Json
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
@@ -572,6 +574,7 @@ model Minigame {
   nmz                     Int    @default(0)
   shades_of_morton        Int    @default(0)
   tombs_of_amascut        Int    @default(0)
+  colosseum               Int    @default(0)
 
   new_user NewUser?
 
@@ -737,11 +740,11 @@ model UserStats {
   high_gambles             Int @default(0)
   honour_points            Int @default(0)
 
-  slayer_task_streak        Int @default(0)
-  slayer_wildy_task_streak  Int @default(0)
-  slayer_superior_count     Int @default(0)
-  slayer_unsired_offered    Int @default(0)
-  slayer_chewed_offered     Int @default(0)
+  slayer_task_streak       Int @default(0)
+  slayer_wildy_task_streak Int @default(0)
+  slayer_superior_count    Int @default(0)
+  slayer_unsired_offered   Int @default(0)
+  slayer_chewed_offered    Int @default(0)
 
   tob_cost        Json @default("{}")
   tob_loot        Json @default("{}")
@@ -764,6 +767,13 @@ model UserStats {
   herbs_cleaned_while_farming_bank Json @default("{}") @db.Json
 
   forestry_event_completions_bank Json @default("{}") @db.Json
+
+  colo_cost      Json @default("{}") @db.Json
+  colo_loot      Json @default("{}") @db.Json
+  colo_kc_bank   Json @default("{}") @db.Json
+  colo_max_glory Int?
+
+  quivers_sacrificed Int @default(0)
 
   @@map("user_stats")
 }
@@ -945,6 +955,7 @@ enum activity_type_enum {
   CamdozaalFishing
   CamdozaalMining
   CamdozaalSmithing
+  Colosseum
 }
 
 enum xp_gains_skill_enum {

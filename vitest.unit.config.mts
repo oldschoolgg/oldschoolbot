@@ -13,6 +13,9 @@ export default defineConfig({
     },
     setupFiles: 'tests/unit/setup.ts',
     resolveSnapshotPath: (testPath, extension) =>
-      join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`)
+      join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`),
+    maxWorkers: 10,
+    minWorkers: 1,
+    slowTestThreshold: 0
   }
 });
