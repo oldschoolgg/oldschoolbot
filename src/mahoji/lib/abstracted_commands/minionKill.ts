@@ -15,11 +15,12 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { colosseumCommand } from '../../../lib/colosseum';
 import { BitField, PeakTier, PvMMethod } from '../../../lib/constants';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem } from '../../../lib/degradeableItems';
-import { Diary, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
+import { userhasDiaryIDTier } from '../../../lib/diaries';
 import { GearSetupType } from '../../../lib/gear/types';
 import { trackLoot } from '../../../lib/lootTrack';
 import {
@@ -36,6 +37,7 @@ import {
 	SlayerActivityConstants
 } from '../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
+import { quests } from '../../../lib/minions/data/quests';
 import {
 	AttackStyles,
 	calculateMonsterFood,
@@ -81,7 +83,6 @@ import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahoji
 import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
-import { quests } from './questCommand';
 import { temporossCommand } from './temporossCommand';
 import { wintertodtCommand } from './wintertodtCommand';
 import { zalcanoCommand } from './zalcanoCommand';
@@ -156,6 +157,7 @@ export async function minionKillCommand(
 
 	if (!name) return invalidMonsterMsg;
 
+	if (stringMatches(name, 'colosseum')) return colosseumCommand(user, channelID);
 	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID, solo);
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
@@ -229,10 +231,10 @@ export async function minionKillCommand(
 	if (!hasReqs) return reason ?? "You don't have the requirements to fight this monster";
 
 	if (monster.diaryRequirement) {
-		const [diary, tier]: [Diary, DiaryTier] = monster.diaryRequirement;
-		const [hasDiary] = await userhasDiaryTier(user, tier);
+		const [diaryID, tier] = monster.diaryRequirement;
+		const { hasDiary, diaryGroup } = await userhasDiaryIDTier(user, diaryID, tier);
 		if (!hasDiary) {
-			return `${user.minionName} is missing the ${diary.name} ${tier.name} diary to kill ${monster.name}.`;
+			return `${user.minionName} is missing the ${diaryGroup.name} ${tier} diary to kill ${monster.name}.`;
 		}
 	}
 

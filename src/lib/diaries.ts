@@ -1,34 +1,20 @@
 import { objectEntries } from 'e';
 import { Monsters } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
 
-import { MAX_QP } from '../mahoji/lib/abstracted_commands/questCommand';
-import type { MinigameName, MinigameScore } from './settings/minigames';
+import { MAX_QP } from './minions/data/quests';
+import { DiaryID, DiaryTier, DiaryTierName } from './minions/types';
+import type { MinigameScore } from './settings/minigames';
 import Skillcapes from './skilling/skillcapes';
 import { courses } from './skilling/skills/agility';
 import { MUserStats } from './structures/MUserStats';
-import { Skills } from './types';
-import { formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util';
+import type { Skills } from './types';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
+import { formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util/smallUtils';
 
-export const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
-export type DiaryTierName = (typeof diaryTiers)[number];
-
-export interface DiaryTier {
-	name: 'Easy' | 'Medium' | 'Hard' | 'Elite';
-	items: Item[];
-	skillReqs: Skills;
-	ownedItems?: number[];
-	collectionLogReqs?: number[];
-	minigameReqs?: Partial<Record<MinigameName, number>>;
-	lapsReqs?: Record<string, number>;
-	qp?: number;
-	monsterScores?: Record<string, number>;
-	customReq?: (user: MUser, summary: Boolean, stats: MUserStats) => [true] | [false, string];
-}
 export interface Diary {
 	name: string;
+	id: DiaryID;
 	alias?: string[];
 	easy: DiaryTier;
 	medium: DiaryTier;
@@ -140,6 +126,7 @@ export async function userhasDiaryTier(user: MUser, tier: DiaryTier): Promise<[t
 
 export const WesternProv: Diary = {
 	name: 'Western Provinces',
+	id: DiaryID.WesternProvinces,
 	alias: ['western', 'wp', 'west', 'west prov'],
 	easy: {
 		name: 'Easy',
@@ -238,6 +225,7 @@ export const WesternProv: Diary = {
 };
 export const ArdougneDiary: Diary = {
 	name: 'Ardougne',
+	id: DiaryID.Ardougne,
 	alias: ['ardy', 'ardougn'],
 	easy: {
 		name: 'Easy',
@@ -329,6 +317,7 @@ export const ArdougneDiary: Diary = {
 
 export const DesertDiary: Diary = {
 	name: 'Desert',
+	id: DiaryID.Desert,
 	easy: {
 		name: 'Easy',
 		items: [getOSItem('Desert amulet 1')],
@@ -412,6 +401,7 @@ export const DesertDiary: Diary = {
 
 export const FaladorDiary: Diary = {
 	name: 'Falador',
+	id: DiaryID.Falador,
 	alias: ['fally', 'fal'],
 	easy: {
 		name: 'Easy',
@@ -512,6 +502,7 @@ export const FaladorDiary: Diary = {
 
 export const FremennikDiary: Diary = {
 	name: 'Fremennik',
+	id: DiaryID.Fremennik,
 	alias: ['fremmy', 'fremenik', 'fremmenik', 'frem'],
 	easy: {
 		name: 'Easy',
@@ -592,6 +583,7 @@ export const FremennikDiary: Diary = {
 
 export const KandarinDiary: Diary = {
 	name: 'Kandarin',
+	id: DiaryID.Kandarin,
 	alias: ['kand'],
 	easy: {
 		name: 'Easy',
@@ -681,6 +673,7 @@ export const KandarinDiary: Diary = {
 
 export const KaramjaDiary: Diary = {
 	name: 'Karamja',
+	id: DiaryID.Karamja,
 	alias: ['ramja', 'ram', 'karam', 'kar'],
 	easy: {
 		name: 'Easy',
@@ -743,6 +736,7 @@ export const KaramjaDiary: Diary = {
 
 export const KourendKebosDiary: Diary = {
 	name: 'Kourend & Kebos',
+	id: DiaryID.KourendKebos,
 	alias: ['kebos', 'kouren', 'kourend', 'kk', 'kek'],
 	easy: {
 		name: 'Easy',
@@ -818,6 +812,7 @@ export const KourendKebosDiary: Diary = {
 };
 export const LumbridgeDraynorDiary: Diary = {
 	name: 'Lumbridge & Draynor',
+	id: DiaryID.LumbridgeDraynor,
 	alias: ['lumb', 'draynor', 'lumbridge', 'led'],
 	easy: {
 		name: 'Easy',
@@ -890,6 +885,7 @@ export const LumbridgeDraynorDiary: Diary = {
 
 export const MorytaniaDiary: Diary = {
 	name: 'Morytania',
+	id: DiaryID.Morytania,
 	alias: ['mory', 'swamp'],
 	easy: {
 		name: 'Easy',
@@ -969,6 +965,7 @@ export const MorytaniaDiary: Diary = {
 
 export const VarrockDiary: Diary = {
 	name: 'Varrock',
+	id: DiaryID.Varrock,
 	alias: ['var'],
 	easy: {
 		name: 'Easy',
@@ -1036,6 +1033,7 @@ export const VarrockDiary: Diary = {
 
 export const WildernessDiary: Diary = {
 	name: 'Wilderness',
+	id: DiaryID.Wilderness,
 	alias: ['wild', 'wildy'],
 	easy: {
 		name: 'Easy',
@@ -1130,3 +1128,17 @@ export const diariesObject = {
 	WildernessDiary
 } as const;
 export const diaries = Object.values(diariesObject);
+
+export async function userhasDiaryIDTier(user: MUser, type: DiaryID, tier: DiaryTierName) {
+	const diaryGroup = diaries.find(d => d.id === type)!;
+	const diaryTier = diaryGroup[tier]!;
+	const [hasDiary] = userhasDiaryTierSync(user, diaryTier, {
+		stats: await MUserStats.fromID(user.id),
+		minigameScores: await user.fetchMinigameScores()
+	});
+	return {
+		hasDiary,
+		diaryGroup,
+		diaryTier
+	};
+}

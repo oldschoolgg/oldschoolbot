@@ -3,7 +3,8 @@ import { strikethrough } from 'discord.js';
 import { calcWhatPercent } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { diaries, DiaryTier, userhasDiaryTier, userhasDiaryTierSync } from '../../../lib/diaries';
+import { diaries, userhasDiaryTier, userhasDiaryTierSync } from '../../../lib/diaries';
+import { DiaryTier } from '../../../lib/minions/types';
 import { Minigames, MinigameScore } from '../../../lib/settings/minigames';
 import { MUserStats } from '../../../lib/structures/MUserStats';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../../lib/util';

@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import { MAX_QP } from '../../../mahoji/lib/abstracted_commands/questCommand';
 import { diaries, userhasDiaryTier } from '../../diaries';
+import { MAX_QP } from '../../minions/data/quests';
 import { musicCapeRequirements } from '../../musicCape';
 import { Buyable } from './buyables';
 

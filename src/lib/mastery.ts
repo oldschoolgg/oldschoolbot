@@ -1,10 +1,10 @@
 import { calcWhatPercent, clamp, round, sumArr } from 'e';
 
 import { calculateAchievementDiaryProgress } from '../mahoji/lib/abstracted_commands/achievementDiaryCommand';
-import { MAX_QP } from '../mahoji/lib/abstracted_commands/questCommand';
 import { allCombatAchievementTasks } from './combat_achievements/combatAchievements';
 import { MAX_XP } from './constants';
 import { getTotalCl } from './data/Collections';
+import { MAX_QP } from './minions/data/quests';
 import { SkillsEnum } from './skilling/types';
 import { MUserStats } from './structures/MUserStats';
 

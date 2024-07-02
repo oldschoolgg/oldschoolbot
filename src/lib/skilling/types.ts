@@ -33,6 +33,41 @@ export enum SkillsEnum {
 	Slayer = 'slayer'
 }
 
+export const SkillsArray = [
+	'agility',
+	'cooking',
+	'fishing',
+	'mining',
+	'smithing',
+	'woodcutting',
+	'firemaking',
+	'runecraft',
+	'crafting',
+	'prayer',
+	'fletching',
+	'farming',
+	'herblore',
+	'thieving',
+	'hunter',
+	'construction',
+	'magic',
+	'attack',
+	'strength',
+	'defence',
+	'ranged',
+	'hitpoints',
+	'slayer'
+] as const;
+
+export type SkillNameType = (typeof SkillsArray)[number];
+for (const skill of SkillsArray) {
+	const matching = Object.keys(SkillsEnum).find(key => key.toLowerCase() === skill);
+	if (!matching) throw new Error(`Missing skill enum for ${skill}`);
+}
+if (SkillsArray.length !== Object.keys(SkillsEnum).length) {
+	throw new Error('Not all skills have been added to the SkillsArray.');
+}
+
 export interface Ore {
 	level: number;
 	xp: number;

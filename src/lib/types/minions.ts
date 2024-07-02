@@ -449,6 +449,14 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers 
 	solo?: boolean;
 }
 
+export interface ColoTaskOptions extends ActivityTaskOptions {
+	type: 'Colosseum';
+	fakeDuration: number;
+	diedAt?: number;
+	loot?: ItemBank;
+	maxGlory: number;
+}
+
 type UserID = string;
 type Points = number;
 type RoomIDsDiedAt = number[];
@@ -600,4 +608,5 @@ export type ActivityTaskData =
 	| FightCavesActivityTaskOptions
 	| ActivityTaskOptionsWithQuantity
 	| MinigameActivityTaskOptionsWithNoChanges
-	| CutLeapingFishActivityTaskOptions;
+	| CutLeapingFishActivityTaskOptions
+	| ColoTaskOptions;

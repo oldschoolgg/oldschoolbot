@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 
-import { QuestID } from '../../../mahoji/lib/abstracted_commands/questCommand';
 import { chompyHats } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
+import { QuestID } from '../../minions/data/quests';
 import { MinigameName } from '../../settings/settings';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
 import { MUserStats } from '../../structures/MUserStats';
@@ -757,7 +757,7 @@ const Buyables: Buyable[] = [
 		name: 'Feather',
 		aliases: ['feather'],
 		gpCost: 50,
-		ironmanPrice: 2
+		ironmanPrice: 4
 	},
 	{
 		name: 'Shield right half',

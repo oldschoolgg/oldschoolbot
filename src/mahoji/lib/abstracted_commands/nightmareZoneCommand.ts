@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { NMZStrategy } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
+import { MAX_QP } from '../../../lib/minions/data/quests';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -15,7 +16,6 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
-import { MAX_QP } from './questCommand';
 
 const itemBoosts = [
 	// Special weapons

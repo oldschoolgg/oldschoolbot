@@ -1,8 +1,7 @@
-import { SimpleTable } from '@oldschoolgg/toolkit';
 import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
+import { Emoji, Events, winterTodtPointsTable } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
@@ -12,29 +11,6 @@ import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-
-export const PointsTable = new SimpleTable<number>()
-	.add(420)
-	.add(470)
-	.add(500)
-	.add(505)
-	.add(510)
-	.add(520)
-	.add(550)
-	.add(560)
-	.add(590)
-	.add(600)
-	.add(620)
-	.add(650)
-	.add(660)
-	.add(670)
-	.add(680)
-	.add(700)
-	.add(720)
-	.add(740)
-	.add(750)
-	.add(780)
-	.add(850);
 
 export const wintertodtTask: MinionTask = {
 	type: 'Wintertodt',
@@ -47,7 +23,7 @@ export const wintertodtTask: MinionTask = {
 		let totalPoints = 0;
 
 		for (let i = 0; i < quantity; i++) {
-			const points = PointsTable.rollOrThrow();
+			const points = winterTodtPointsTable.rollOrThrow();
 			totalPoints += points;
 
 			loot.add(

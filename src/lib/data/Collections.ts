@@ -317,6 +317,24 @@ export const allCollectionLogs: ICollection = {
 				items: fightCavesCL,
 				fmtProg: kcProg(Monsters.TzTokJad)
 			},
+			'Fortis Colosseum': {
+				kcActivity: {
+					Default: async (_, minigameScores) =>
+						minigameScores.find(i => i.minigame.column === 'colosseum')!.score
+				},
+				alias: ['colosseum'],
+				items: resolveItems([
+					'Smol heredit',
+					"Dizana's quiver (uncharged)",
+					'Sunfire fanatic cuirass',
+					'Sunfire fanatic chausses',
+					'Sunfire fanatic helm',
+					'Echo crystal',
+					'Tonalztics of ralos (uncharged)',
+					'Sunfire splinters'
+				]),
+				fmtProg: ({ minigames }) => `${minigames.colosseum} KC`
+			},
 			'The Gauntlet': {
 				alias: ['gauntlet', 'crystalline hunllef', 'hunllef'],
 				kcActivity: {

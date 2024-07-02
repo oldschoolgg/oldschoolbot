@@ -6,6 +6,10 @@ import { Bank, Misc } from 'oldschooljs';
 import { ClueTiers } from '../clues/clueTiers';
 import type { CasketWorkerArgs } from '.';
 
+if (global.prisma) {
+	throw new Error('Prisma is loaded in the casket worker!');
+}
+
 export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Bank, string]> => {
 	const clueTier = ClueTiers.find(tier => tier.id === clueTierID)!;
 	let loot = clueTier.table.open(quantity);

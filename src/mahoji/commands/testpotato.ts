@@ -15,6 +15,7 @@ import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import potions from '../../lib/minions/data/potions';
+import { MAX_QP } from '../../lib/minions/data/quests';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
 import { tiers } from '../../lib/patreon';
@@ -27,6 +28,7 @@ import { slayerMasterChoices } from '../../lib/slayer/constants';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { allSlayerMonsters } from '../../lib/slayer/tasks';
+import { Gear } from '../../lib/structures/Gear';
 import { stringMatches } from '../../lib/util';
 import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
 import {
@@ -38,9 +40,9 @@ import {
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
+import resolveItems from '../../lib/util/resolveItems';
 import { userEventToStr } from '../../lib/util/userEvents';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
-import { MAX_QP } from '../lib/abstracted_commands/questCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { BingoManager } from '../lib/bingo/BingoManager';
 import { OSBMahojiCommand } from '../lib/util';
@@ -80,12 +82,47 @@ async function givePatronLevel(user: MUser, tier: number) {
 	return `Gave you tier ${tierToGive[1] - 1} patron.`;
 }
 
+const coloMelee = new Gear();
+for (const gear of resolveItems([
+	'Torva full helm',
+	'Infernal cape',
+	'Amulet of blood fury',
+	'Torva platebody',
+	'Torva platelegs',
+	'Primordial boots',
+	'Ultor ring',
+	'Scythe of vitur'
+])) {
+	coloMelee.equip(getOSItem(gear));
+}
+
+const coloRange = new Gear();
+for (const gear of resolveItems([
+	"Dizana's quiver",
+	'Masori mask (f)',
+	'Necklace of anguish',
+	'Masori body (f)',
+	'Masori chaps (f)',
+	'Pegasian boots',
+	'Venator ring',
+	'Dragon arrow',
+	'Twisted bow'
+])) {
+	coloRange.equip(getOSItem(gear));
+}
+
 const gearPresets = [
 	{
 		name: 'ToB',
 		melee: TOBMaxMeleeGear,
 		mage: TOBMaxMageGear,
 		range: TOBMaxRangeGear
+	},
+	{
+		name: 'Colosseum',
+		melee: coloMelee,
+		range: coloRange,
+		mage: coloRange
 	}
 ];
 

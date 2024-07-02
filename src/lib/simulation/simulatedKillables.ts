@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { PointsTable } from '../../tasks/minions/minigames/wintertodtActivity';
+import { winterTodtPointsTable } from '../constants';
 import { WintertodtCrate } from './wintertodt';
 
 interface SimulatedKillable {
@@ -14,7 +14,7 @@ export const simulatedKillables: SimulatedKillable[] = [
 		loot: (quantity: number) => {
 			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
-				const points = PointsTable.rollOrThrow();
+				const points = winterTodtPointsTable.rollOrThrow();
 
 				loot.add(
 					WintertodtCrate.open({

@@ -164,6 +164,9 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data
 	if (dataCopy.type === 'Inferno' && !dataCopy.diedPreZuk && !dataCopy.diedZuk) {
 		(dataCopy as any).quantity = 1;
 	}
+	if (dataCopy.type === 'Colosseum') {
+		(dataCopy as any).quantity = 1;
+	}
 	if (!('quantity' in dataCopy)) return;
 	let quantity = Number(dataCopy.quantity);
 	if (isNaN(quantity)) return;

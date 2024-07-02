@@ -11,6 +11,7 @@ import { camdozaalSmithingTask } from '../tasks/minions/camdozaalActivity/camdoz
 import { castingTask } from '../tasks/minions/castingActivity';
 import { clueTask } from '../tasks/minions/clueActivity';
 import { collectingTask } from '../tasks/minions/collectingActivity';
+import { colosseumTask } from '../tasks/minions/colosseumActivity';
 import { combatRingTask } from '../tasks/minions/combatRingActivity';
 import { constructionTask } from '../tasks/minions/constructionActivity';
 import { cookingTask } from '../tasks/minions/cookingActivity';
@@ -183,7 +184,8 @@ export const tasks: MinionTask[] = [
 	specificQuestTask,
 	camdozaalMiningTask,
 	camdozaalSmithingTask,
-	camdozaalFishingTask
+	camdozaalFishingTask,
+	colosseumTask
 ];
 
 export async function processPendingActivities() {

@@ -18,6 +18,7 @@ export async function userQueueFn<T>(userID: string, fn: () => Promise<T>) {
 		try {
 			return await fn();
 		} catch (e) {
+			console.error(e);
 			error.message = (e as Error).message;
 			throw error;
 		}
