@@ -95,8 +95,7 @@ export const caCommand: OSBMahojiCommand = {
 
 			const completedTasks: CombatAchievement[] = [];
 			for (const task of tasksToCheck) {
-				if ('rng' in task) {
-				} else if ('requirements' in task) {
+				if ('requirements' in task) {
 					const { hasAll } = await task.requirements.check(user);
 					if (hasAll) {
 						completedTasks.push(task);

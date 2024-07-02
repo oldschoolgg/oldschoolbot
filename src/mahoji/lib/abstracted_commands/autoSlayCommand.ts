@@ -348,7 +348,7 @@ export async function autoSlayCommand({
 	if (method === 'boss') {
 		// This code handles the 'highest/boss' setting of autoslay.
 		const myQPs = await user.QP;
-		const commonName = getCommonTaskName(usersTask.assignedTask?.monster);
+		const commonName = getCommonTaskName(usersTask.assignedTask!.monster);
 		if (commonName === 'TzHaar') {
 			runCommand({
 				commandName: 'activities',

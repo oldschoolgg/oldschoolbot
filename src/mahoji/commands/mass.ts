@@ -41,7 +41,7 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 		if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 			return `${
 				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
-			} have enough food. You need at least ${monster?.healAmountNeeded! * quantity} HP in food to ${
+			} have enough food. You need at least ${monster.healAmountNeeded! * quantity} HP in food to ${
 				users.length === 1 ? 'start the mass' : 'enter the mass'
 			}.`;
 		}

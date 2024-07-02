@@ -35,6 +35,9 @@ async function execAsync(command: string) {
 	}
 }
 
+if (!existsSync('./cache.json')) {
+	writeFileSync('./cache.json', JSON.stringify({}, null, 2));
+}
 const currentCache = JSON.parse(readFileSync('./cache.json', 'utf-8'));
 
 function doHash(string: string | Buffer) {
@@ -118,7 +121,7 @@ async function handleCreatables() {
 	if (currentCache.creatablesHash !== hash || forceRebuild) {
 		console.log('   Rebuilding creatables.txt file');
 		const { renderCreatablesFile } = await import('./renderCreatablesFile');
-		await renderCreatablesFile();
+		renderCreatablesFile();
 		setCacheValue('creatablesHash', hash);
 	}
 }

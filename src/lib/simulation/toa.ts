@@ -1087,8 +1087,7 @@ export async function checkTOATeam(users: MUser[], raidLevel: number, quantity: 
 			Time.Hour,
 			quantity
 		);
-		if (!checkResult[0]) {
-		} else {
+		if (checkResult[1]) {
 			return checkResult[1];
 		}
 	}
