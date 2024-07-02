@@ -13,7 +13,7 @@ async function main() {
 		execSync('dotenv -e .env.test -- prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit' });
 
 		console.log('Building...');
-		execSync('yarn prebuild:scripts', { stdio: 'inherit' });
+		execSync('yarn pre:build', { stdio: 'inherit' });
 		execSync('yarn build:esbuild', { stdio: 'inherit' });
 
 		console.log('Starting tests...');
