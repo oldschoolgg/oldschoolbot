@@ -80,8 +80,6 @@ async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 	let thenable = false;
 	// eslint-disable-next-line @typescript-eslint/init-declarations
 	try {
-		code = `\nconst {Gear} = require('../../lib/structures/Gear')\n${code};`;
-		code = `\nconst {Bank} = require('oldschooljs');\n${code}`;
 		// eslint-disable-next-line no-eval
 		result = eval(code);
 		syncTime = stopwatch.toString();

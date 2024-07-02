@@ -8,6 +8,7 @@ import Createables from '../lib/data/createables';
 import { makeTable } from '../lib/util/smallUtils';
 
 export function main() {
+	console.log('Prebuild');
 	const headers = ['Item name', 'Input Items', 'Output Items', 'GP Cost'];
 	const rows = Createables.map(i => {
 		return [i.name, `${new Bank(i.inputItems)}`, `${new Bank(i.outputItems)}`, `${i.GPCost ?? 0}`];
