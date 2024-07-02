@@ -1,5 +1,6 @@
 import './no-prisma';
 
+import { execSync } from 'node:child_process';
 import { join } from 'node:path';
 
 import { stringMatches } from '@oldschoolgg/toolkit';
@@ -55,8 +56,10 @@ async function renderCommands() {
 }
 
 export async function main() {
+	console.log('Postbuild');
 	const commands = await renderCommands();
 	writeFileSync(`./src/lib/data/${BOT_TYPE.toLowerCase()}.commands.json`, JSON.stringify(commands, null, 4));
+	execSync('yarn prettify');
 }
 
 main().then(() => null);

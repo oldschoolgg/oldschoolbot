@@ -1,9 +1,10 @@
 {
 	"scripts": {
 		"gen": "concurrently \"prisma generate --no-hints\" \"prisma generate --no-hints --schema prisma/robochimp.prisma\" && echo \"Generated Prisma Client\"",
-		"lint": "concurrently \"prettier --use-tabs ./**/*.{js,md,json,yml} --write\" \"eslint --quiet *.{ts,mts} \"{src,tests}/**/*.ts\" --fix\"",
+		"prettify": "prettier --use-tabs ./**/*.{js,md,json,yml} --write",
+		"lint": "concurrently \"yarn prettify\" \"eslint --quiet *.{ts,mts} \"{src,tests}/**/*.ts\" --fix\"",
 		"build:tsc": "tsc -p src",
-		"build": "concurrently \"yarn wipedist\" \"yarn gen\" && concurrently \"yarn prebuild:scripts\" && yarn build:tsc && yarn postbuild && echo \"Finished Building\"",
+		"build": "concurrently \"yarn wipedist\" \"yarn gen\" && yarn pre:build && yarn build:tsc && yarn post:build && echo \"Finished Building\"",
 		"wipedist": "rimraf \"dist/\"",
 		"start": "yarn build && concurrently \"tsc -w -p src\" \"node --enable-source-maps dist/\"",
 		"test": "concurrently \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\"",
@@ -12,8 +13,8 @@
 		"dev": "yarn wipedist && tsc -w -p src",
 		"test:watch": "vitest --config vitest.unit.config.mts --coverage",
 		"test:integration": "tsx ./src/scripts/integration-tests.ts",
-		"prebuild:scripts": "tsx ./src/scripts/render-creatables-file.ts",
-		"postbuild": "tsx ./src/scripts/postbuild.ts",
+		"pre:build": "tsx ./src/scripts/render-creatables-file.ts",
+		"post:build": "tsx ./src/scripts/postbuild.ts",
 		"build:esbuild": "esbuild --bundle src/index.ts --outdir=dist --platform=node --loader:.node=file --external:canvas",
 		"run:node": "node --enable-source-maps dist/index.js"
 	},
