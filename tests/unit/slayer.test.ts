@@ -20,6 +20,6 @@ describe('Slayer', () => {
 				delete copy[key];
 			}
 		}
-		writeFileSync('./tests/unit/snapshots/slayerUnlocks.snapshot.json', JSON.stringify(copy, null, 4));
+		writeFileSync('./tests/unit/snapshots/slayerUnlocks.snapshot.json', `${JSON.stringify(copy, null, '	')}\n`);
 	});
 });

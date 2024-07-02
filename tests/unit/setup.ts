@@ -1,5 +1,4 @@
 import '../globalSetup';
-
 import { vi } from 'vitest';
 
 import { globalConfig } from '../../src/lib/constants';

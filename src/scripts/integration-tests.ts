@@ -13,14 +13,13 @@ async function main() {
 		execSync('dotenv -e .env.test -- prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit' });
 
 		console.log('Building...');
-		execSync('yarn pre:build', { stdio: 'inherit' });
 		execSync('yarn build:esbuild', { stdio: 'inherit' });
 
 		console.log('Starting tests...');
 		const runs = 1;
 		for (let i = 0; i < runs; i++) {
 			console.log(`Starting run ${i + 1}/${runs}`);
-			execSync('vitest run --config vitest.integration.config.mts sacrifice', {
+			execSync('vitest run --config vitest.integration.config.mts', {
 				stdio: 'inherit',
 				encoding: 'utf-8'
 			});

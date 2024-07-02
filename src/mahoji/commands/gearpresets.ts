@@ -71,7 +71,9 @@ export async function createOrEditGearSetup(
 	emoji: string | undefined,
 	pinned_setup: GearSetupType | 'reset' | undefined
 ) {
-	name = cleanString(name).toLowerCase();
+	if (name) {
+		name = cleanString(name).toLowerCase();
+	}
 	if (name.length > 24) return 'Gear preset names must be less than 25 characters long.';
 	if (!name) return "You didn't supply a name.";
 	if (!isUpdating && !isValidNickname(name)) {

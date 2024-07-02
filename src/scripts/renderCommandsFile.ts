@@ -60,5 +60,5 @@ export async function commandsFile() {
 	const commands = await renderCommands();
 	const path = `./src/lib/data/${BOT_TYPE.toLowerCase()}.commands.json`;
 	writeFileSync(path, JSON.stringify(commands, null, 4));
-	execSync(`prettier --use-tabs ${path} --write`);
+	execSync('yarn lint');
 }

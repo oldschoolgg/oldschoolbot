@@ -39,7 +39,6 @@ import { fishCommand } from '../../src/mahoji/commands/fish';
 import { fletchCommand } from '../../src/mahoji/commands/fletch';
 import { gambleCommand } from '../../src/mahoji/commands/gamble';
 import { gearCommand } from '../../src/mahoji/commands/gear';
-import { gearPresetsCommand } from '../../src/mahoji/commands/gearpresets';
 import { giftCommand } from '../../src/mahoji/commands/gift';
 import { giveawayCommand } from '../../src/mahoji/commands/giveaway';
 import { gpCommand } from '../../src/mahoji/commands/gp';
@@ -203,7 +202,8 @@ test(
 			'trivia',
 			'ge',
 			'rp',
-			'cl'
+			'cl',
+			'gearpresets'
 		];
 		const cmds = [
 			adminCommand,
@@ -236,7 +236,6 @@ test(
 			fletchCommand,
 			gambleCommand,
 			gearCommand,
-			gearPresetsCommand,
 			giveawayCommand,
 			helpCommand,
 			huntCommand,
