@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { ClueActivityTaskOptions } from '../../lib/types/minions';
+import type { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const clueTask: MinionTask = {

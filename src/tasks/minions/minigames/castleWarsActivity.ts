@@ -2,7 +2,7 @@ import { SimpleTable } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const ticketTable = new SimpleTable<number>().add(1, 4).add(2, 4).add(3, 1);

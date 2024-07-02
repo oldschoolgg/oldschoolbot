@@ -3,7 +3,8 @@ import { Bank } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
 import { tradeCommand } from '../../src/mahoji/commands/trade';
-import { createTestUser, mockClient, TestUser } from './util';
+import type { TestUser } from './util';
+import { createTestUser, mockClient } from './util';
 
 test('Trade consistency', async () => {
 	await mockClient();

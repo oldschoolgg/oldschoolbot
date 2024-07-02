@@ -1,7 +1,16 @@
-import { Activity, activity_type_enum } from '@prisma/client';
-import { z, ZodSchema } from 'zod';
+import type { Activity } from '@prisma/client';
+import { activity_type_enum } from '@prisma/client';
+import type { ZodSchema } from 'zod';
+import { z } from 'zod';
 
 import { production } from '../config';
+import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
+import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
+import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
+import { hunterTask } from '../tasks/minions/HunterActivity/hunterActivity';
+import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
+import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
+import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity';
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
 import { butlerTask } from '../tasks/minions/butlerActivity';
@@ -26,10 +35,6 @@ import { fletchingTask } from '../tasks/minions/fletchingActivity';
 import { gloryChargingTask } from '../tasks/minions/gloryChargingActivity';
 import { groupoMonsterTask } from '../tasks/minions/groupMonsterActivity';
 import { herbloreTask } from '../tasks/minions/herbloreActivity';
-import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
-import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
-import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
-import { hunterTask } from '../tasks/minions/HunterActivity/hunterActivity';
 import { mageArenaTwoTask } from '../tasks/minions/mageArena2Activity';
 import { mageArenaTask } from '../tasks/minions/mageArenaActivity';
 import { agilityArenaTask } from '../tasks/minions/minigames/agilityArenaActivity';
@@ -70,9 +75,6 @@ import { monsterTask } from '../tasks/minions/monsterActivity';
 import { motherlodeMiningTask } from '../tasks/minions/motherlodeMineActivity';
 import { nexTask } from '../tasks/minions/nexActivity';
 import { pickpocketTask } from '../tasks/minions/pickpocketActivity';
-import { buryingTask } from '../tasks/minions/PrayerActivity/buryingActivity';
-import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
-import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity';
 import { questingTask } from '../tasks/minions/questingActivity';
 import { runecraftTask } from '../tasks/minions/runecraftActivity';
 import { sawmillTask } from '../tasks/minions/sawmillActivity';
@@ -195,7 +197,7 @@ export async function processPendingActivities() {
 			finish_date: production
 				? {
 						lt: new Date()
-				  }
+					}
 				: undefined
 		}
 	});

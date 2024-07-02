@@ -3,12 +3,13 @@ import './no-prisma';
 import { execSync } from 'node:child_process';
 import { join } from 'node:path';
 
+import { writeFileSync } from 'node:fs';
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { writeFileSync } from 'fs';
 import { MahojiClient } from 'mahoji';
 
 import { BOT_TYPE } from '../lib/constants';
+
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { allAbstractCommands } from '../mahoji/lib/util';
 
@@ -55,11 +56,9 @@ async function renderCommands() {
 		.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-export async function main() {
-	console.log('Postbuild');
+export async function commandsFile() {
 	const commands = await renderCommands();
-	writeFileSync(`./src/lib/data/${BOT_TYPE.toLowerCase()}.commands.json`, JSON.stringify(commands, null, 4));
-	execSync('yarn prettify');
+	const path = `./src/lib/data/${BOT_TYPE.toLowerCase()}.commands.json`;
+	writeFileSync(path, JSON.stringify(commands, null, 4));
+	execSync(`prettier --use-tabs ${path} --write`);
 }
-
-main().then(() => null);

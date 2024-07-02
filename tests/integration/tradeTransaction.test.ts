@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
@@ -9,7 +9,7 @@ describe('Transactionalized Trade Test', async () => {
 	async function createUserWithBank(bank: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 		const userId = mockedId();
 		const GP = bank.amount('Coins');
-		delete bank.bank[995];
+		bank.bank[995] = undefined;
 
 		await global.prisma!.user.create({
 			data: { id: userId, GP, bank: bank.bank, ...userData }

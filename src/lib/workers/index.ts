@@ -1,10 +1,10 @@
 import { resolve } from 'node:path';
 
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 import Piscina from 'piscina';
 
 import { production } from '../../config';
-import { ItemBank } from '../types';
+import type { ItemBank } from '../types';
 
 export interface CasketWorkerArgs {
 	clueTierID: number;

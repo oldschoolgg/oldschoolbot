@@ -1,9 +1,10 @@
 import { isMainThread } from 'node:worker_threads';
 
-import { Activity, activity_type_enum, Prisma, PrismaClient } from '@prisma/client';
+import type { Activity, Prisma } from '@prisma/client';
+import { PrismaClient, activity_type_enum } from '@prisma/client';
 
 import { production } from '../../config';
-import { ActivityTaskData } from '../types/minions';
+import type { ActivityTaskData } from '../types/minions';
 import { sqlLog } from '../util/logger';
 
 declare global {
@@ -34,7 +35,7 @@ function makePrismaClient(): PrismaClient {
 export const prisma = global.prisma || makePrismaClient();
 global.prisma = prisma;
 
-export let queryCountStore = { value: 0 };
+export const queryCountStore = { value: 0 };
 
 if (isMainThread) {
 	// @ts-ignore ignore
@@ -68,8 +69,8 @@ export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolea
 				   WHERE ("collectionLogBank"->>'${itemID}') IS NOT NULL 
 				   AND ("collectionLogBank"->>'${itemID}')::int >= 1
 				   ${ironmenOnly ? 'AND "minion.ironman" = true' : ''};`;
-	const result = parseInt(((await prisma.$queryRawUnsafe(query)) as any)[0].count);
-	if (isNaN(result)) {
+	const result = Number.parseInt(((await prisma.$queryRawUnsafe(query)) as any)[0].count);
+	if (Number.isNaN(result)) {
 		throw new Error(`countUsersWithItemInCl produced invalid number '${result}' for ${itemID}`);
 	}
 	return result;
@@ -81,7 +82,7 @@ FROM activity
 WHERE user_id = ${BigInt(user.id)}
 GROUP BY type;`;
 
-	let result: Record<activity_type_enum, number> = {} as Record<activity_type_enum, number>;
+	const result: Record<activity_type_enum, number> = {} as Record<activity_type_enum, number>;
 	for (const type of Object.values(activity_type_enum)) {
 		result[type] = 0;
 	}

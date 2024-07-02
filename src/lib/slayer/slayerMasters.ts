@@ -8,7 +8,7 @@ import { mazchnaTasks } from './tasks/mazchnaTasks';
 import { nieveTasks } from './tasks/nieveTasks';
 import { turaelTasks } from './tasks/turaelTasks';
 import { vannakaTasks } from './tasks/vannakaTasks';
-import { SlayerMaster } from './types';
+import type { SlayerMaster } from './types';
 
 export const slayerMasters: SlayerMaster[] = [
 	{

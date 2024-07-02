@@ -6,9 +6,11 @@ import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
 import { MIMIC_MONSTER_ID, NEX_ID, ZALCANO_ID } from './constants';
 import { championScrolls } from './data/CollectionsExport';
 import { RandomEvents } from './randomEvents';
-import { MinigameName, Minigames } from './settings/minigames';
+import type { MinigameName } from './settings/minigames';
+import { Minigames } from './settings/minigames';
 import { getUsersActivityCounts, prisma } from './settings/prisma';
-import { RequirementFailure, Requirements } from './structures/Requirements';
+import type { RequirementFailure } from './structures/Requirements';
+import { Requirements } from './structures/Requirements';
 import { itemNameFromID } from './util';
 import resolveItems from './util/resolveItems';
 

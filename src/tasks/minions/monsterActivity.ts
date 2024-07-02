@@ -1,6 +1,7 @@
-import { Prisma } from '@prisma/client';
-import { deepClone, percentChance, Time } from 'e';
-import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
+import type { Prisma } from '@prisma/client';
+import { Time, deepClone, percentChance } from 'e';
+import type { MonsterKillOptions } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji } from '../../lib/constants';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
@@ -12,7 +13,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, isOnSlayerTask } from '../../lib/slayer/slayerUtil';
-import { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import type { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { calculateSimpleMonsterDeathChance, hasSkillReqs, roll } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
@@ -106,7 +107,7 @@ export const monsterTask: MinionTask = {
 					gear: userGear,
 					smited: hasPrayerLevel && !protectItem,
 					protectItem: hasPrayerLevel,
-					after20wilderness: monster.pkBaseDeathChance && monster.pkBaseDeathChance >= 5 ? true : false,
+					after20wilderness: !!(monster.pkBaseDeathChance && monster.pkBaseDeathChance >= 5),
 					skulled
 				});
 
@@ -202,7 +203,7 @@ export const monsterTask: MinionTask = {
 		const superiorTable = isOnTaskResult.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
 		const isInCatacombs = (!usingCannon ? monster.existsInCatacombs ?? undefined : undefined) && !isInWilderness;
 
-		let hasRingOfWealthI = user.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness;
+		const hasRingOfWealthI = user.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness;
 		if (hasRingOfWealthI) {
 			messages.push('\nYour clue scroll chance is doubled due to wearing a Ring of Wealth (i).');
 		}
@@ -252,7 +253,7 @@ export const monsterTask: MinionTask = {
 		}
 		if (newSuperiorCount) {
 			// Superior loot and totems if in catacombs
-			loot.add(superiorTable!.kill(newSuperiorCount));
+			loot.add(superiorTable?.kill(newSuperiorCount));
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
 		}
@@ -323,17 +324,17 @@ export const monsterTask: MinionTask = {
 			const { quantitySlayed } = isOnTaskResult;
 			const effectiveSlayed =
 				monsterID === Monsters.KrilTsutsaroth.id &&
-				isOnTaskResult.currentTask!.monster_id !== Monsters.KrilTsutsaroth.id
+				isOnTaskResult.currentTask?.monster_id !== Monsters.KrilTsutsaroth.id
 					? quantitySlayed! * 2
 					: monsterID === Monsters.Kreearra.id &&
-					  isOnTaskResult.currentTask.monster_id !== Monsters.Kreearra.id
-					? quantitySlayed * 4
-					: monsterID === Monsters.GrotesqueGuardians.id &&
-					  user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
-					? quantitySlayed * 2
-					: quantitySlayed;
+							isOnTaskResult.currentTask.monster_id !== Monsters.Kreearra.id
+						? quantitySlayed * 4
+						: monsterID === Monsters.GrotesqueGuardians.id &&
+								user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+							? quantitySlayed * 2
+							: quantitySlayed;
 
-			const quantityLeft = Math.max(0, isOnTaskResult.currentTask!.quantity_remaining - effectiveSlayed);
+			const quantityLeft = Math.max(0, isOnTaskResult.currentTask?.quantity_remaining - effectiveSlayed);
 			const isUsingKrystilia = isOnTaskResult.slayerMaster.id === 8;
 
 			thisTripFinishesTask = quantityLeft === 0;
@@ -383,12 +384,12 @@ export const monsterTask: MinionTask = {
 				}
 			} else {
 				str += `\nYou killed ${effectiveSlayed}x of your ${
-					isOnTaskResult.currentTask!.quantity_remaining
+					isOnTaskResult.currentTask?.quantity_remaining
 				} remaining kills, you now have ${quantityLeft} kills remaining.`;
 			}
 			await prisma.slayerTask.update({
 				where: {
-					id: isOnTaskResult.currentTask!.id
+					id: isOnTaskResult.currentTask?.id
 				},
 				data: {
 					quantity_remaining: quantityLeft
@@ -439,7 +440,7 @@ export const monsterTask: MinionTask = {
 						title: `Loot From ${quantity} ${monster.name}:`,
 						user,
 						previousCL
-				  });
+					});
 
 		return handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded, messages);
 	}

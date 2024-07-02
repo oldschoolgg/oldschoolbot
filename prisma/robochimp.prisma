@@ -13,6 +13,7 @@ model TriviaQuestion {
     id       Int      @id @unique @default(autoincrement())
     question String   @db.VarChar()
     answers  String[] @db.VarChar()
+    answe2rs String[] @db.VarChar()
 
     @@map("trivia_question")
 }
@@ -32,11 +33,11 @@ model BlacklistedEntity {
 }
 
 model User {
-    id                BigInt  @id @unique
-    bits              Int[]
-    github_id         Int?
-    patreon_id        String?
-    migrated_user_id  BigInt?
+    id               BigInt  @id @unique
+    bits             Int[]
+    github_id        Int?
+    patreon_id       String?
+    migrated_user_id BigInt?
 
     leagues_completed_tasks_ids Int[]
     leagues_points_balance_osb  Int   @default(0)

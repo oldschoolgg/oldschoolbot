@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { CraftingActivityTaskOptions } from '../../lib/types/minions';
+import type { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import { randFloat } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -19,7 +19,7 @@ export const craftingTask: MinionTask = {
 		if (item.outputMultiple) {
 			sets = ' sets of';
 		}
-		let quantityToGive = item.outputMultiple ? quantity * item.outputMultiple : quantity;
+		const quantityToGive = item.outputMultiple ? quantity * item.outputMultiple : quantity;
 		const loot = new Bank();
 
 		let crushed = 0;
@@ -37,7 +37,7 @@ export const craftingTask: MinionTask = {
 
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Crafting, amount: xpReceived, duration });
 
-		let str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}. ${xpRes}`;
+		const str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}. ${xpRes}`;
 
 		await transactItems({
 			userID: user.id,

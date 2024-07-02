@@ -2,7 +2,8 @@ import { LootTable } from 'oldschooljs';
 
 import { Emoji } from '../../../constants';
 import itemID from '../../../util/itemID';
-import { Log, SkillsEnum } from '../../types';
+import type { Log } from '../../types';
+import { SkillsEnum } from '../../types';
 
 const sulliuscepTable = new LootTable()
 	.add('Numulite', [4, 8], 34)

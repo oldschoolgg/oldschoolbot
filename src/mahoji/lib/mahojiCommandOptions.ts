@@ -1,9 +1,10 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'discord.js';
+import type { APIApplicationCommandOptionChoice } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { uniqueArr } from 'e';
-import { CommandOption } from 'mahoji/dist/lib/types';
+import type { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank, Items } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
 import { GearSetupTypes } from '../../lib/gear/types';
@@ -20,7 +21,7 @@ export const filterOption: CommandOption = {
 	description: 'The filter you want to use.',
 	required: false,
 	autocomplete: async (value: string) => {
-		let res = !value
+		const res = !value
 			? filterableTypes
 			: [...filterableTypes].filter(filter => filter.name.toLowerCase().includes(value.toLowerCase()));
 		return [...res]
@@ -94,7 +95,7 @@ export const equippedItemOption = (): CommandOption => ({
 	autocomplete: async (value, user) => {
 		const mUser = await mUserFetch(user.id);
 
-		let results: APIApplicationCommandOptionChoice[] = [];
+		const results: APIApplicationCommandOptionChoice[] = [];
 		const entries: [string, Item[]][] = Object.entries(mUser.gear).map(entry => [
 			entry[0],
 			entry[1].allItems(false).map(getOSItem)

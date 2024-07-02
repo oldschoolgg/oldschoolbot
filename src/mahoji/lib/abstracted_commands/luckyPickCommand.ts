@@ -1,12 +1,6 @@
-import {
-	ActionRowBuilder,
-	BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
-	ChatInputCommandInteraction,
-	MessageComponentInteraction
-} from 'discord.js';
-import { chunk, noOp, roll, shuffleArr, Time } from 'e';
+import type { BaseMessageOptions, ChatInputCommandInteraction, MessageComponentInteraction } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Time, chunk, noOp, roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
@@ -62,10 +56,26 @@ export async function luckyPickCommand(
 
 	function getButtons(): ButtonInstance[] {
 		// prettier-ignore
-		let buttonsToShow = ['0', '0', '0',
-		'2x', '1.5x', '0', '1.5x', '0',
-		'1.5x', '1.5x', '2x', '0', '3x',
-		'2x', '0', '0', '2x', '0'];
+		const buttonsToShow = [
+			'0',
+			'0',
+			'0',
+			'2x',
+			'1.5x',
+			'0',
+			'1.5x',
+			'0',
+			'1.5x',
+			'1.5x',
+			'2x',
+			'0',
+			'3x',
+			'2x',
+			'0',
+			'0',
+			'2x',
+			'0'
+		];
 
 		buttonsToShow.push(roll(10) ? '10x' : '0');
 		buttonsToShow.push(roll(10) ? '5x' : '0');
@@ -96,11 +106,11 @@ export async function luckyPickCommand(
 	await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	const buttonsToShow = getButtons();
 	function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }): BaseMessageOptions['components'] {
-		let chunkedButtons = chunk(buttonsToShow, 5);
+		const chunkedButtons = chunk(buttonsToShow, 5);
 		return chunkedButtons.map(c =>
 			new ActionRowBuilder<ButtonBuilder>().addComponents(
 				c.map(b => {
-					let button = new ButtonBuilder()
+					const button = new ButtonBuilder()
 
 						.setCustomId(b.id.toString())
 						.setStyle(
@@ -140,7 +150,7 @@ export async function luckyPickCommand(
 		button: ButtonInstance;
 		interaction: MessageComponentInteraction;
 	}) => {
-		let amountReceived = Math.floor(button.mod(amount));
+		const amountReceived = Math.floor(button.mod(amount));
 		await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
 		await updateClientGPTrackSetting('gp_luckypick', amountReceived - amount);
 		await updateGPTrackSetting('gp_luckypick', amountReceived - amount, user);

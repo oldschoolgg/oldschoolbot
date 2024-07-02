@@ -1,18 +1,19 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
 
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Mining from '../../lib/skilling/skills/mining';
-import { MiningActivityTaskOptions } from '../../lib/types/minions';
+import type { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, itemNameFromID, randomVariation } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
 import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const mineCommand: OSBMahojiCommand = {
 	name: 'mine',
@@ -61,7 +62,7 @@ export const mineCommand: OSBMahojiCommand = {
 
 		const motherlodeMine =
 			stringMatches(Mining.MotherlodeMine.name, options.name) ||
-			Mining.MotherlodeMine.aliases!.some(a => stringMatches(a, options.name));
+			Mining.MotherlodeMine.aliases?.some(a => stringMatches(a, options.name));
 
 		if (motherlodeMine) {
 			return motherlodeMineCommand({ user, channelID, quantity });
@@ -71,7 +72,7 @@ export const mineCommand: OSBMahojiCommand = {
 			ore =>
 				stringMatches(ore.id, options.name) ||
 				stringMatches(ore.name, options.name) ||
-				(ore.aliases && ore.aliases.some(a => stringMatches(a, options.name)))
+				ore.aliases?.some(a => stringMatches(a, options.name))
 		);
 		if (!ore) {
 			return `Thats not a valid ore to mine. Valid ores are ${Mining.Ores.map(ore => ore.name).join(', ')}, or ${
@@ -163,7 +164,7 @@ export const mineCommand: OSBMahojiCommand = {
 			boosts.push('**Powermining**');
 		}
 		// Calculate the time it takes to mine specific quantity or as many as possible
-		let [timeToMine, newQuantity] = determineMiningTime({
+		const [timeToMine, newQuantity] = determineMiningTime({
 			quantity,
 			user,
 			ore,

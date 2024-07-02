@@ -1,4 +1,4 @@
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
@@ -137,7 +137,7 @@ export async function agilityArenaBuyCommand(user: MUser, input: string, qty = 1
 
 export async function agilityArenaRecolorCommand(user: MUser) {
 	const { bank } = user;
-	let ticketCost = 250;
+	const ticketCost = 250;
 	if (!bank.has(plainGraceful)) {
 		return mahojiChatHead({
 			content: "Ye don't have a full set of Graceful in your bank for me to recolor!",
@@ -180,9 +180,7 @@ export async function agilityArenaXPCommand(user: MUser, qty: number): CommandRe
 	}
 	const [hasKaramjaMed] = await userhasDiaryTier(user, KaramjaDiary.medium);
 	const xpToGive = determineXPFromTickets(qty, user, hasKaramjaMed);
-	let str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(
-		xpToGive / qty
-	).toFixed(2)} ea)`;
+	let str = `Redeemed ${qty}x Agility arena tickets for ${xpToGive.toLocaleString()} Agility XP. (${(xpToGive / qty).toFixed(2)} ea)`;
 	await transactItems({ userID: user.id, itemsToRemove: new Bank().add('Agility arena ticket', qty) });
 	await user.addXP({
 		skillName: SkillsEnum.Agility,

@@ -1,9 +1,10 @@
-import { Activity, User } from '@prisma/client';
+import type { Activity, User } from '@prisma/client';
 import { ChannelType, EmbedBuilder } from 'discord.js';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
+import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
@@ -20,7 +21,8 @@ import {
 } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
-import { MinigameName, Minigames } from '../../lib/settings/minigames';
+import type { MinigameName } from '../../lib/settings/minigames';
+import { Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
 import {
@@ -47,7 +49,7 @@ import {
 	stashUnitViewCommand
 } from '../lib/abstracted_commands/stashUnitsCommand';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
 
 const INTERVAL_DAY = 'day';
@@ -63,9 +65,7 @@ const whereInMassClause = (id: string) =>
 	`OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIKE '%${id}%')`;
 
 async function activityExport(user: User): CommandResponse {
-	const allActivities = await prisma.$queryRawUnsafe<
-		Activity[]
-	>(`SELECT floor(date_part('epoch', start_date)) AS start_date, floor(date_part('epoch', finish_date)) AS finish_date, duration, type, data
+	const allActivities = await prisma.$queryRawUnsafe<Activity[]>(`SELECT floor(date_part('epoch', start_date)) AS start_date, floor(date_part('epoch', finish_date)) AS finish_date, duration, type, data
 FROM activity
 WHERE user_id = '${user.id}'
 OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIKE '%${user.id}%');`);
@@ -219,7 +219,7 @@ async function executeXPGainsQuery(
 }
 
 async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) {
-	let intervalValue: string = '';
+	let intervalValue = '';
 
 	switch (interval.toLowerCase()) {
 		case INTERVAL_DAY:
@@ -261,7 +261,7 @@ async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) 
 }
 
 async function kcGains(interval: string, monsterName: string, ironmanOnly?: boolean): CommandResponse {
-	let intervalValue: string = '';
+	let intervalValue = '';
 
 	switch (interval.toLowerCase()) {
 		case INTERVAL_DAY:
@@ -313,9 +313,9 @@ async function kcGains(interval: string, monsterName: string, ironmanOnly?: bool
 	return { embeds: [embed] };
 }
 
-const clueItemsOnlyDroppedInOneTier = ClueTiers.map(i =>
+const clueItemsOnlyDroppedInOneTier = ClueTiers.flatMap(i =>
 	i.table.allItems.filter(itemID => ClueTiers.filter(i => i.table.allItems.includes(itemID)).length === 1)
-).flat();
+);
 
 interface DrystreakMinigame {
 	name: string;
@@ -392,9 +392,7 @@ export const dryStreakEntities: DrystreakEntity[] = [
 			'Olmlet'
 		]),
 		run: async ({ item, ironmanOnly }) => {
-			const result = await prisma.$queryRawUnsafe<
-				{ id: string; points: number; raids_total_kc: number }[]
-			>(`SELECT "users"."id", "user_stats".total_cox_points AS points, "minigames"."raids" + "minigames"."raids_challenge_mode" AS raids_total_kc
+			const result = await prisma.$queryRawUnsafe<{ id: string; points: number; raids_total_kc: number }[]>(`SELECT "users"."id", "user_stats".total_cox_points AS points, "minigames"."raids" + "minigames"."raids_challenge_mode" AS raids_total_kc
 FROM user_stats
 INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text
 INNER JOIN "minigames" on "minigames"."user_id" = "user_stats"."user_id"::text
@@ -457,9 +455,7 @@ LIMIT 10;`);
 		name: 'Guardians of the Rift',
 		items: guardiansOfTheRiftCL,
 		run: async ({ item, ironmanOnly }) => {
-			const result = await prisma.$queryRawUnsafe<
-				{ id: string; val: number }[]
-			>(`SELECT users.id, gotr_rift_searches AS val
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT users.id, gotr_rift_searches AS val
             FROM users
             INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
             WHERE "collectionLogBank"->>'${item.id}' IS NULL
@@ -554,9 +550,7 @@ LIMIT 10;`);
 		name: 'Superior Slayer Creatures',
 		items: resolveItems(['Imbued heart', 'Eternal gem']),
 		run: async ({ ironmanOnly, item }) => {
-			const result = await prisma.$queryRawUnsafe<
-				{ id: string; slayer_superior_count: number }[]
-			>(`SELECT id, slayer_superior_count
+			const result = await prisma.$queryRawUnsafe<{ id: string; slayer_superior_count: number }[]>(`SELECT id, slayer_superior_count
 FROM users
 INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
@@ -629,17 +623,18 @@ async function dryStreakCommand(monsterName: string, itemName: string, ironmanOn
 				ORDER BY ("${key}"->>'${id}')::int DESC
 				LIMIT 10;`;
 
-	const result = await prisma.$queryRawUnsafe<
-		{
-			id: string;
-			KC: string;
-		}[]
-	>(query);
+	const result =
+		await prisma.$queryRawUnsafe<
+			{
+				id: string;
+				KC: string;
+			}[]
+		>(query);
 
 	if (result.length === 0) return 'No results found.';
 
 	return `**Dry Streaks for ${item.name} from ${mon.name}:**\n${result
-		.map(({ id, KC }) => `${getUsername(id) as string}: ${parseInt(KC).toLocaleString()}`)
+		.map(({ id, KC }) => `${getUsername(id) as string}: ${Number.parseInt(KC).toLocaleString()}`)
 		.join('\n')}`;
 }
 
@@ -649,8 +644,8 @@ async function mostDrops(user: MUser, itemName: string, filter: string) {
 		filter === 'Irons Only'
 			? 'AND "minion.ironman" = true'
 			: filter === 'Mains Only'
-			? 'AND "minion.ironman" = false'
-			: '';
+				? 'AND "minion.ironman" = false'
+				: '';
 	if (!item) return "That's not a valid item.";
 	if (!allDroppedItems.includes(item.id) && !user.bitfield.includes(BitField.isModerator)) {
 		return "You can't check this item, because it's not on any collection log.";
@@ -658,19 +653,20 @@ async function mostDrops(user: MUser, itemName: string, filter: string) {
 
 	const query = `SELECT "id", "collectionLogBank"->>'${item.id}' AS "qty" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL ${ironmanPart} ORDER BY ("collectionLogBank"->>'${item.id}')::int DESC LIMIT 10;`;
 
-	const result = await prisma.$queryRawUnsafe<
-		{
-			id: string;
-			qty: string;
-		}[]
-	>(query);
+	const result =
+		await prisma.$queryRawUnsafe<
+			{
+				id: string;
+				qty: string;
+			}[]
+		>(query);
 
 	if (result.length === 0) return 'No results found.';
 
 	return `**Most '${item.name}' received:**\n${result
 		.map(
 			({ id, qty }) =>
-				`${result.length < 10 ? '(Anonymous)' : getUsername(id)}: ${parseInt(qty).toLocaleString()}`
+				`${result.length < 10 ? '(Anonymous)' : getUsername(id)}: ${Number.parseInt(qty).toLocaleString()}`
 		)
 		.join('\n')}`;
 }
@@ -1102,7 +1098,7 @@ export const toolsCommand: OSBMahojiCommand = {
 		}
 		if (options.user) {
 			if (options.user.mypets) {
-				let b = new Bank();
+				const b = new Bank();
 				for (const [pet, qty] of Object.entries(mahojiUser.user.pets as ItemBank)) {
 					const petObj = pets.find(i => i.id === Number(pet));
 					if (!petObj) continue;
@@ -1149,7 +1145,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			});
 			return `You can view your temporary CL using, for example, \`/cl name:PvM type:Temp\`.
 You last reset your temporary CL: ${
-				Boolean(lastReset?.last_temp_cl_reset)
+				lastReset?.last_temp_cl_reset
 					? `<t:${Math.floor((lastReset?.last_temp_cl_reset?.getTime() ?? 1) / 1000)}>`
 					: 'Never'
 			}`;

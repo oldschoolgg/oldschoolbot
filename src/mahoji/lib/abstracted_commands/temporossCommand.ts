@@ -1,7 +1,7 @@
-import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
+import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { TemporossActivityTaskOptions } from '../../../lib/types/minions';
+import type { TemporossActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';

@@ -1,10 +1,9 @@
-import { User } from 'discord.js';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { User } from 'discord.js';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
 
-import {
-	UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL,
-	UnderwaterAgilityThievingTrainingSkill
-} from '../../lib/constants';
+import type { UnderwaterAgilityThievingTrainingSkill } from '../../lib/constants';
+import { UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL } from '../../lib/constants';
 import { Planks } from '../../lib/minions/data/planks';
 import Potions from '../../lib/minions/data/potions';
 import { quests } from '../../lib/minions/data/quests';
@@ -23,7 +22,7 @@ import { championsChallengeCommand } from '../lib/abstracted_commands/championsC
 import { chargeGloriesCommand } from '../lib/abstracted_commands/chargeGloriesCommand';
 import { chargeWealthCommand } from '../lib/abstracted_commands/chargeWealthCommand';
 import { chompyHuntClaimCommand, chompyHuntCommand } from '../lib/abstracted_commands/chompyHuntCommand';
-import { collectables, collectCommand } from '../lib/abstracted_commands/collectCommand';
+import { collectCommand, collectables } from '../lib/abstracted_commands/collectCommand';
 import { decantCommand } from '../lib/abstracted_commands/decantCommand';
 import { driftNetCommand } from '../lib/abstracted_commands/driftNetCommand';
 import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
@@ -37,7 +36,7 @@ import { scatterCommand } from '../lib/abstracted_commands/scatterCommand';
 import { underwaterAgilityThievingCommand } from '../lib/abstracted_commands/underwaterCommand';
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const activitiesCommand: OSBMahojiCommand = {
 	name: 'activities',

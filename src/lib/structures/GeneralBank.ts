@@ -1,8 +1,6 @@
-import { all, create } from 'mathjs';
+import Decimal from 'decimal.js';
 
 import { assert } from '../util';
-
-const mathjs = create(all);
 
 export type GeneralBankType<T extends string | number> = Record<T, number>;
 
@@ -12,9 +10,7 @@ interface GeneralBankValueSchema {
 	floats: boolean;
 }
 
-interface BankValidator<T extends string | number> {
-	(key: T, value: number, bank: GeneralBankType<T>): void;
-}
+type BankValidator<T extends string | number> = (key: T, value: number, bank: GeneralBankType<T>) => void;
 
 export class GeneralBank<T extends string | number> {
 	private bank: GeneralBankType<T>;
@@ -62,7 +58,7 @@ export class GeneralBank<T extends string | number> {
 			const value = this.bank[key];
 			if (this.allowedKeys) {
 				if (typeof Array.from(this.allowedKeys.values())[0] === 'number') {
-					key = parseInt(key as string) as T;
+					key = Number.parseInt(key as string) as T;
 				}
 				if (!this.allowedKeys.has(key)) {
 					throw new Error(
@@ -107,7 +103,7 @@ export class GeneralBank<T extends string | number> {
 
 	private addItem(key: T, quantity: number): this {
 		assert(quantity >= 0, 'Quantity must be non-negative.');
-		const newValue = mathjs.add(this.amount(key), quantity);
+		const newValue = Decimal.add(this.amount(key), quantity).toNumber();
 		if (newValue > this.valueSchema.max) {
 			throw new Error(`Value for ${key} exceeds the maximum of ${this.valueSchema.max}.`);
 		}
@@ -122,7 +118,7 @@ export class GeneralBank<T extends string | number> {
 		if (currentAmount < quantity) {
 			throw new Error(`Not enough ${key} to remove.`);
 		}
-		const newValue = mathjs.subtract(currentAmount, quantity);
+		const newValue = Decimal.sub(currentAmount, quantity).toNumber();
 		this.bank[key] = newValue;
 		if (newValue === 0) {
 			delete this.bank[key];
@@ -131,7 +127,7 @@ export class GeneralBank<T extends string | number> {
 		return this;
 	}
 
-	add(keyOrBank: T | GeneralBank<T>, quantity: number = 1): this {
+	add(keyOrBank: T | GeneralBank<T>, quantity = 1): this {
 		if (keyOrBank instanceof GeneralBank) {
 			for (const [key, qty] of keyOrBank.entries()) {
 				this.addItem(key, qty);
@@ -142,7 +138,7 @@ export class GeneralBank<T extends string | number> {
 		return this;
 	}
 
-	remove(keyOrBank: T | GeneralBank<T>, quantity: number = 1): this {
+	remove(keyOrBank: T | GeneralBank<T>, quantity = 1): this {
 		if (keyOrBank instanceof GeneralBank) {
 			for (const [key, qty] of Object.entries(keyOrBank.bank) as [T, number][]) {
 				this.removeItem(key as T, qty);

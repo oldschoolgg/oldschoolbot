@@ -1,8 +1,8 @@
+import { createHmac } from 'node:crypto';
 import { graphql } from '@octokit/graphql';
-import { createHmac } from 'crypto';
 
 import { CLIENT_SECRET, GITHUB_TOKEN } from '../../config';
-import { globalConfig, PerkTier } from '../constants';
+import { PerkTier, globalConfig } from '../constants';
 
 export function rateLimit(max: number, timeWindow: string) {
 	return {

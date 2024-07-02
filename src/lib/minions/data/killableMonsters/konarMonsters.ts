@@ -4,7 +4,7 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import { GearStat } from '../../../gear/types';
 import resolveItems from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 
 export const konarMonsters: KillableMonster[] = [
 	{

@@ -1,43 +1,42 @@
 import { gzip } from 'node:zlib';
 
+import { createHash } from 'node:crypto';
 import { stripEmojis } from '@oldschoolgg/toolkit';
 import { Stopwatch } from '@sapphire/stopwatch';
-import { createHash } from 'crypto';
-import {
+import type {
 	BaseMessageOptions,
 	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
 	Collection,
 	CollectorFilter,
-	ComponentType,
-	escapeMarkdown,
 	Guild,
 	InteractionReplyOptions,
-	InteractionType,
 	Message,
 	MessageEditOptions,
 	SelectMenuInteraction,
 	TextChannel
 } from 'discord.js';
-import { chunk, notEmpty, objectEntries, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { ComponentType, InteractionType, escapeMarkdown } from 'discord.js';
+import { Time, chunk, notEmpty, objectEntries } from 'e';
+import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
-import { ClueTiers } from './clues/clueTiers';
-import { badgesCache, BitField, projectiles, usernameCache } from './constants';
-import { UserStatsDataNeededForCL } from './data/Collections';
-import { getSimilarItems } from './data/similarItems';
-import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
-import type { Consumable } from './minions/types';
-import { MUserClass } from './MUser';
+import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
+import { ClueTiers } from './clues/clueTiers';
+import { BitField, badgesCache, projectiles, usernameCache } from './constants';
+import type { UserStatsDataNeededForCL } from './data/Collections';
+import { getSimilarItems } from './data/similarItems';
+import type { DefenceGearStat, GearSetupType, OffenceGearStat } from './gear/types';
+import { GearSetupTypes, GearStat } from './gear/types';
+import type { Consumable } from './minions/types';
 import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
-import { Gear } from './structures/Gear';
+import type { Gear } from './structures/Gear';
 import { MUserStats } from './structures/MUserStats';
 import type { ItemBank, Skills } from './types';
 import type {
@@ -55,7 +54,6 @@ export * from 'oldschooljs/dist/util/index';
 
 const zeroWidthSpace = '\u200b';
 // @ts-ignore ignore
-// eslint-disable-next-line no-extend-native, func-names
 BigInt.prototype.toJSON = function () {
 	return this.toString();
 };
@@ -247,7 +245,7 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	return slotStr.join(', ');
 }
 
-function gaussianRand(rolls: number = 3) {
+function gaussianRand(rolls = 3) {
 	let rand = 0;
 	for (let i = 0; i < rolls; i += 1) {
 		rand += Math.random();
@@ -360,7 +358,7 @@ export function validateBankAndThrow(bank: Bank) {
 }
 
 export function convertBankToPerHourStats(bank: Bank, time: number) {
-	let result = [];
+	const result = [];
 	for (const [item, qty] of bank.items()) {
 		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
 	}
@@ -434,7 +432,7 @@ export function getBadges(user: MUser | string | bigint) {
 	return user.badgeString;
 }
 
-export function getUsername(id: string | bigint, withBadges: boolean = true) {
+export function getUsername(id: string | bigint, withBadges = true) {
 	let username = usernameCache.get(id.toString()) ?? 'Unknown';
 	if (withBadges) username = `${getBadges(id)} ${username}`;
 	return username;
@@ -540,10 +538,7 @@ export function checkRangeGearWeapon(gear: Gear) {
 	if (!ammo) return 'You have no ammo equipped.';
 
 	const projectileCategory = objectEntries(projectiles).find(i =>
-		i[1].weapons
-			.map(w => getSimilarItems(w))
-			.flat()
-			.includes(weapon.id)
+		i[1].weapons.flatMap(w => getSimilarItems(w)).includes(weapon.id)
 	);
 	if (!projectileCategory) return 'You have an invalid range weapon.';
 	if (!projectileCategory[1].items.includes(ammo.item)) {

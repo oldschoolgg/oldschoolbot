@@ -1,22 +1,25 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
-import { Prisma, xp_gains_skill_enum } from '@prisma/client';
-import { User } from 'discord.js';
-import { noOp, Time, uniqueArr } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { Prisma } from '@prisma/client';
+import { xp_gains_skill_enum } from '@prisma/client';
+import type { User } from 'discord.js';
+import { Time, noOp, uniqueArr } from 'e';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
 import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
-import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
+import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { BitField, MAX_INT_JAVA } from '../../lib/constants';
+import type { BitField } from '../../lib/constants';
+import { MAX_INT_JAVA } from '../../lib/constants';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import potions from '../../lib/minions/data/potions';
 import { MAX_QP } from '../../lib/minions/data/quests';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allOpenables } from '../../lib/openables';
 import { tiers } from '../../lib/patreon';
 import { Minigames } from '../../lib/settings/minigames';
@@ -31,12 +34,8 @@ import { allSlayerMonsters } from '../../lib/slayer/tasks';
 import { Gear } from '../../lib/structures/Gear';
 import { stringMatches } from '../../lib/util';
 import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
-import {
-	FarmingPatchName,
-	farmingPatchNames,
-	getFarmingKeyFromName,
-	userGrowingProgressStr
-} from '../../lib/util/farmingHelpers';
+import type { FarmingPatchName } from '../../lib/util/farmingHelpers';
+import { farmingPatchNames, getFarmingKeyFromName, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
@@ -45,12 +44,12 @@ import { userEventToStr } from '../../lib/util/userEvents';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { BingoManager } from '../lib/bingo/BingoManager';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 
 export async function giveMaxStats(user: MUser) {
-	let updates: Prisma.UserUpdateArgs['data'] = {};
+	const updates: Prisma.UserUpdateArgs['data'] = {};
 	for (const skill of Object.values(xp_gains_skill_enum)) {
 		updates[`skills_${skill}`] = convertLVLtoXP(99);
 	}
@@ -663,7 +662,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				if (options.check) {
 					if (options.check.monster_droprates) {
 						const monster = killableMonsters.find(m =>
-							stringMatches(m.name, options.check!.monster_droprates)
+							stringMatches(m.name, options.check?.monster_droprates)
 						);
 						if (!monster) return 'Invalid monster';
 						const qty = 1_000_000;
@@ -695,9 +694,9 @@ ${droprates.join('\n')}`),
 					}
 					if (options.set.all_ca_tasks) {
 						await user.update({
-							completed_ca_task_ids: Object.values(CombatAchievements)
-								.map(i => i.tasks.map(t => t.id))
-								.flat()
+							completed_ca_task_ids: Object.values(CombatAchievements).flatMap(i =>
+								i.tasks.map(t => t.id)
+							)
 						});
 						return 'Finished all CA tasks.';
 					}
@@ -710,7 +709,7 @@ ${droprates.join('\n')}`),
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
 				}
 				if (options.wipe) {
-					let { thing } = options.wipe;
+					const { thing } = options.wipe;
 					if (thing === 'kc') {
 						await userStatsUpdate(user.id, {
 							monster_scores: {}
@@ -945,7 +944,7 @@ ${droprates.join('\n')}`),
 					// Set quantity to 50 if user doesn't assign a quantity
 					const quantity = options.setslayertask?.quantity ?? 50;
 
-					const assignedTask = selectedMaster!.tasks.find(m => m.monster.id === selectedMonster?.id)!;
+					const assignedTask = selectedMaster?.tasks.find(m => m.monster.id === selectedMonster?.id)!;
 
 					if (!selectedMaster) return 'Invalid slayer master.';
 					if (!selectedMonster) return 'Invalid monster.';
@@ -988,4 +987,4 @@ ${droprates.join('\n')}`),
 
 				return 'Nothin!';
 			}
-	  };
+		};

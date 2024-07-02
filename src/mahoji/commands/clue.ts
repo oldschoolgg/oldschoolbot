@@ -1,18 +1,20 @@
-import { notEmpty, randInt, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { Time, notEmpty, randInt } from 'e';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
+import type { ClueTier } from '../../lib/clues/clueTiers';
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allOpenables, getOpenableLoot } from '../../lib/openables';
 import { getPOHObject } from '../../lib/poh';
-import { ClueActivityTaskOptions } from '../../lib/types/minions';
+import type { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { addToOpenablesScores, getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
@@ -336,7 +338,7 @@ export const clueCommand: OSBMahojiCommand = {
 			const maxCanDo = Math.floor(maxTripLength / timeToFinish);
 			const bankedImplings = user.bank.amount(clueImpling.id);
 			let openedImplings = 0;
-			let implingLoot = new Bank();
+			const implingLoot = new Bank();
 			while (implingClues + bankedClues < maxCanDo && openedImplings < bankedImplings) {
 				const impLoot = await getOpenableLoot({ openable: implingJarOpenable, user, quantity: 1 });
 				implingLoot.add(impLoot.bank);

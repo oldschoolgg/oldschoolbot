@@ -1,7 +1,5 @@
-import {
+import type {
 	BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
 	DMChannel,
 	Message,
 	MessageComponentInteraction,
@@ -9,7 +7,8 @@ import {
 	TextChannel,
 	ThreadChannel
 } from 'discord.js';
-import { noOp, Time } from 'e';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Time, noOp } from 'e';
 import murmurhash from 'murmurhash';
 
 import { BLACKLISTED_USERS } from './blacklists';

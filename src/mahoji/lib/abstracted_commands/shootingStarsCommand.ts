@@ -1,19 +1,20 @@
 import { SimpleTable } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
+import type { activity_type_enum } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { percentChance, randInt, roll, Time } from 'e';
+import { Time, percentChance, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClueToLoot';
 import { determineMiningTime } from '../../../lib/skilling/functions/determineMiningTime';
 import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
-import { Ore, SkillsEnum } from '../../../lib/skilling/types';
-import { ActivityTaskData, ShootingStarsOptions } from '../../../lib/types/minions';
+import type { Ore } from '../../../lib/skilling/types';
+import { SkillsEnum } from '../../../lib/skilling/types';
+import type { ActivityTaskData, ShootingStarsOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength, patronMaxTripBonus } from '../../../lib/util/calcMaxTripLength';
 import { minionName } from '../../../lib/util/minionUtils';
-import { MUserClass } from './../../../lib/MUser';
+import type { MUserClass } from './../../../lib/MUser';
 
 interface Star extends Ore {
 	size: number;
@@ -202,8 +203,8 @@ export async function shootingStarsCommand(channelID: string, user: MUserClass, 
 	let duration = 0;
 	let dustReceived = 0;
 	let totalXp = 0;
-	for (let star of stars) {
-		let [timeToMine, newQuantity] = determineMiningTime({
+	for (const star of stars) {
+		const [timeToMine, newQuantity] = determineMiningTime({
 			quantity: Math.round(star.dustAvailable / usersWith),
 			user,
 			ore: star,

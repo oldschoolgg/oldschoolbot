@@ -1,6 +1,6 @@
 import { notEmpty } from 'e';
 import _ from 'lodash';
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 import * as ss from 'simple-statistics';
 
 import { prisma } from './settings/prisma';

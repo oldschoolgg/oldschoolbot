@@ -53,7 +53,7 @@ describe('Images', () => {
 	});
 
 	test('Bank Image', async () => {
-		let bank = new Bank();
+		const bank = new Bank();
 		for (const item of [...Monsters.Cow.allItems]) {
 			bank.add(item);
 		}

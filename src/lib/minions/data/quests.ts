@@ -1,7 +1,7 @@
-import { sumArr, Time } from 'e';
+import { Time, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Skills } from '../../types';
+import type { Skills } from '../../types';
 
 interface Quest {
 	id: QuestID;
@@ -190,7 +190,7 @@ export const quests: Quest[] = [
 			herblore: 500
 		},
 		calcTime: () => {
-			let duration = Time.Minute * 6;
+			const duration = Time.Minute * 6;
 			return duration;
 		}
 	},

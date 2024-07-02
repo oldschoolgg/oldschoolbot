@@ -6,7 +6,7 @@ import { MAX_XP } from './constants';
 import { getTotalCl } from './data/Collections';
 import { MAX_QP } from './minions/data/quests';
 import { SkillsEnum } from './skilling/types';
-import { MUserStats } from './structures/MUserStats';
+import type { MUserStats } from './structures/MUserStats';
 
 export async function calculateMastery(user: MUser, stats: MUserStats) {
 	const [totalClItems, clItems] = getTotalCl(user, 'collection', stats);

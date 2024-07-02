@@ -1,22 +1,22 @@
-import { Image } from '@napi-rs/canvas';
-import { StoreBitfield } from '@oldschoolgg/toolkit';
-import { XpGainSource } from '@prisma/client';
-import { Bank, MonsterKillOptions } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
+import type { Image } from '@napi-rs/canvas';
+import type { StoreBitfield } from '@oldschoolgg/toolkit';
+import type { XpGainSource } from '@prisma/client';
+import type { Bank, MonsterKillOptions } from 'oldschooljs';
+import type { Item } from 'oldschooljs/dist/meta/types';
+import type SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
-import { ClueTier } from '../clues/clueTiers';
-import { BitField, PerkTier } from '../constants';
-import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
-import { POHBoosts } from '../poh';
-import { MinigameName } from '../settings/minigames';
-import { LevelRequirements, SkillsEnum } from '../skilling/types';
+import type { ClueTier } from '../clues/clueTiers';
+import type { BitField, PerkTier } from '../constants';
+import type { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
+import type { POHBoosts } from '../poh';
+import type { MinigameName } from '../settings/minigames';
+import type { LevelRequirements, SkillsEnum } from '../skilling/types';
 import type { MUserStats } from '../structures/MUserStats';
-import { ArrayItemsResolved, ItemBank, Skills } from '../types';
-import { MonsterActivityTaskOptions } from '../types/minions';
-import { calculateSimpleMonsterDeathChance } from '../util';
-import { QuestID } from './data/quests';
-import { AttackStyles } from './functions';
+import type { ArrayItemsResolved, ItemBank, Skills } from '../types';
+import type { MonsterActivityTaskOptions } from '../types/minions';
+import type { calculateSimpleMonsterDeathChance } from '../util';
+import type { QuestID } from './data/quests';
+import type { AttackStyles } from './functions';
 
 export type BankBackground = {
 	image: Image | null;

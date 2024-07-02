@@ -1,4 +1,4 @@
-import { UserStats } from '@prisma/client';
+import type { UserStats } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';
@@ -42,7 +42,7 @@ export class MUserStats {
 		for (const tier of ClueTiers) clueCounts[tier.name] = 0;
 
 		for (const [key, val] of Object.entries(this.userStats.openable_scores as ItemBank)) {
-			const clueTier = ClueTiers.find(i => i.id === parseInt(key));
+			const clueTier = ClueTiers.find(i => i.id === Number.parseInt(key));
 			if (!clueTier) continue;
 			clueCounts[clueTier.name] += val;
 		}

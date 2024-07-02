@@ -2,8 +2,8 @@ import { Bank } from 'oldschooljs';
 
 import { BitField } from '../constants';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
-import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import { ItemBank, Skills } from '../types';
+import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
+import type { ItemBank, Skills } from '../types';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import { itemNameFromID } from '../util/smallUtils';

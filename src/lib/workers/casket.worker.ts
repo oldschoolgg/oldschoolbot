@@ -3,8 +3,8 @@ import '../data/itemAliases';
 import { roll } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
-import { ClueTiers } from '../clues/clueTiers';
 import type { CasketWorkerArgs } from '.';
+import { ClueTiers } from '../clues/clueTiers';
 
 if (global.prisma) {
 	throw new Error('Prisma is loaded in the casket worker!');
@@ -12,7 +12,7 @@ if (global.prisma) {
 
 export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Bank, string]> => {
 	const clueTier = ClueTiers.find(tier => tier.id === clueTierID)!;
-	let loot = clueTier.table.open(quantity);
+	const loot = clueTier.table.open(quantity);
 	let mimicNumber = 0;
 	if (clueTier.mimicChance) {
 		for (let i = 0; i < quantity; i++) {

@@ -1,6 +1,5 @@
-import {
+import type {
 	Activity,
-	activity_type_enum,
 	Bingo,
 	BingoParticipant,
 	BuyCommandTransaction,
@@ -19,22 +18,24 @@ import {
 	ReclaimableItem,
 	SlayerTask,
 	UserStats,
-	XPGain
+	XPGain,
+	activity_type_enum
 } from '@prisma/client';
-import { deepClone, randArrItem, randInt, shuffleArr, sumArr, Time } from 'e';
+import { Time, deepClone, randArrItem, randInt, shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { describe, expect, test, vi } from 'vitest';
 
+import { processPendingActivities } from '../../src/lib/Task';
 import { BitField } from '../../src/lib/constants';
-import { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
+import type { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
 import { trackLoot } from '../../src/lib/lootTrack';
-import { incrementMinigameScore, MinigameName } from '../../src/lib/settings/minigames';
-import { SkillsEnum } from '../../src/lib/skilling/types';
+import type { MinigameName } from '../../src/lib/settings/minigames';
+import { incrementMinigameScore } from '../../src/lib/settings/minigames';
+import type { SkillsEnum } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil';
-import { processPendingActivities } from '../../src/lib/Task';
-import { Skills } from '../../src/lib/types';
+import type { Skills } from '../../src/lib/types';
 import { isGroupActivity } from '../../src/lib/util';
 import { gearEquipMultiImpl } from '../../src/lib/util/equipMulti';
 import { findPlant } from '../../src/lib/util/farmingHelpers';
@@ -53,11 +54,12 @@ import {
 	stashUnitFillAllCommand
 } from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { syncNewUserUsername } from '../../src/mahoji/lib/preCommand';
-import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
+import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings';
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity';
-import { createTestUser, mockClient, mockedId, TestUser } from './util';
-import { BotItemSell, GEListing, StashUnit } from '.prisma/client';
+import type { TestUser } from './util';
+import { createTestUser, mockClient, mockedId } from './util';
+import type { BotItemSell, GEListing, StashUnit } from '.prisma/client';
 
 interface TestCommand {
 	name: string;
@@ -67,7 +69,7 @@ interface TestCommand {
 }
 class UserData {
 	// Class Data
-	private loaded: boolean = false;
+	private loaded = false;
 	private mUser: MUser | null = null;
 
 	// Robochimp:
@@ -259,7 +261,7 @@ class UserData {
 		this.loaded = true;
 	}
 
-	equals(target: UserData, ignoreRoboChimp: boolean = false): { result: boolean; errors: string[] } {
+	equals(target: UserData, ignoreRoboChimp = false): { result: boolean; errors: string[] } {
 		const errors: string[] = [];
 		if (!this.loaded || !target.loaded) {
 			errors.push('Both UserData object must be loaded. Try .sync()');
@@ -1114,7 +1116,7 @@ async function runAllTestCommandsOnUser(user: TestUser) {
 	return user;
 }
 
-async function runRandomTestCommandsOnUser(user: TestUser, numCommands: number = 6, forceRoboChimp: boolean = false) {
+async function runRandomTestCommandsOnUser(user: TestUser, numCommands = 6, forceRoboChimp = false) {
 	const commandHistory: string[] = [];
 	const priorityCommands = allTableCommands.filter(c => c.priority);
 	const otherCommands = allTableCommands.filter(c => !c.priority);

@@ -1,9 +1,9 @@
 import { clamp, objectValues } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { Skills } from '../../../lib/types';
+import type { Skills } from '../../../lib/types';
 import { assert, isValidSkill, itemID } from '../../../lib/util';
 import { getItem } from '../../../lib/util/getOSItem';
 import resolveItems from '../../../lib/util/resolveItems';
@@ -268,7 +268,7 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 		]!}** in ${skill} to receive it.`;
 	}
 
-	let amount = skillsToReceive[skill]!;
+	const amount = skillsToReceive[skill]!;
 	assert(typeof amount === 'number' && amount > 0);
 
 	await user.removeItemsFromBank(toRemoveFromBank);

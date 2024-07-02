@@ -1,4 +1,4 @@
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
 import { sleep } from 'e';
 
 async function main() {
@@ -17,7 +17,7 @@ async function main() {
 		execSync('yarn build:esbuild', { stdio: 'inherit' });
 
 		console.log('Starting tests...');
-		let runs = 1;
+		const runs = 1;
 		for (let i = 0; i < runs; i++) {
 			console.log(`Starting run ${i + 1}/${runs}`);
 			execSync('vitest run --config vitest.integration.config.mts sacrifice', {

@@ -1,9 +1,9 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
-import { getPOHObject, GroupedPohObjects, itemsNotRefundable, PoHObjects } from '../../../lib/poh';
+import { GroupedPohObjects, PoHObjects, getPOHObject, itemsNotRefundable } from '../../../lib/poh';
 import { pohImageGenerator } from '../../../lib/pohImage';
 import { prisma } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';

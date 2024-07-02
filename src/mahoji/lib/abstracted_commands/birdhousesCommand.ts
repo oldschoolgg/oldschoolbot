@@ -1,10 +1,12 @@
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { time } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import birdhouses, { Birdhouse, birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
-import defaultBirdhouseTrap, { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
-import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
+import type { Birdhouse } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
+import birdhouses, { birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
+import type { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
+import defaultBirdhouseTrap from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
+import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -75,7 +77,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 						stringMatches(alias, inputBirdhouseName) ||
 						stringMatches(alias.split(' ')[0], inputBirdhouseName)
 				)
-		  )
+			)
 		: undefined;
 	if (!birdhouseToPlant && existingBirdhouse.birdHouse) birdhouseToPlant = existingBirdhouse.birdHouse;
 
@@ -102,7 +104,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 		duration *= 0.9;
 	}
 	let gotCraft = false;
-	let removeBank = new Bank();
+	const removeBank = new Bank();
 	const premadeBankCost = birdhouseToPlant.houseItemReq.clone().multiply(4);
 	if (user.owns(premadeBankCost)) {
 		removeBank.add(premadeBankCost);

@@ -1,4 +1,4 @@
-import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
+import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
@@ -6,7 +6,7 @@ import { determineMiningTime } from '../../../lib/skilling/functions/determineMi
 import { pickaxes } from '../../../lib/skilling/functions/miningBoosts';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import Mining from '../../../lib/skilling/skills/mining';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -45,7 +45,7 @@ async function miningCommand(user: MUser, channelID: string, quantity: number | 
 	const barroniteRocks = Mining.CamdozaalMine;
 
 	// Calculate the time it takes to mine specific quantity or as many as possible
-	let [duration, newQuantity] = determineMiningTime({
+	const [duration, newQuantity] = determineMiningTime({
 		quantity,
 		user,
 		ore: barroniteRocks,
@@ -137,7 +137,7 @@ async function fishingCommand(user: MUser, channelID: string, quantity: number |
 
 	const maxTripLength = calcMaxTripLength(user, 'CamdozaalFishing');
 	const camdozaalfish = Fishing.camdozaalFishes.find(_fish => _fish.name === 'Raw guppy')!;
-	let timePerFish = camdozaalfish.timePerFish * Time.Second;
+	const timePerFish = camdozaalfish.timePerFish * Time.Second;
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerFish);

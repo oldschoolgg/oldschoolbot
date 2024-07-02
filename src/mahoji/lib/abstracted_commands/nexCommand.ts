@@ -1,10 +1,11 @@
-import { ChannelType, ChatInputCommandInteraction, TextChannel, userMention } from 'discord.js';
+import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
+import { ChannelType, userMention } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { trackLoot } from '../../../lib/lootTrack';
 import { setupParty } from '../../../lib/party';
 import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
-import { NexTaskOptions } from '../../../lib/types/minions';
+import type { NexTaskOptions } from '../../../lib/types/minions';
 import { calcPerHour, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { deferInteraction } from '../../../lib/util/interactionReply';
@@ -117,7 +118,7 @@ export async function nexCommand(
 		wipedKill: details.wipedKill
 	});
 
-	let str = `${user.usernameOrMention}'s party (${mahojiUsers
+	const str = `${user.usernameOrMention}'s party (${mahojiUsers
 		.map(u => u.usernameOrMention)
 		.join(', ')}) is now off to kill ${details.quantity}x Nex! (${calcPerHour(
 		details.quantity,

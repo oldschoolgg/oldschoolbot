@@ -1,5 +1,6 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { BaseMessageOptions, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import type { BaseMessageOptions } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { roll, stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
