@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, expect, test } from 'vitest';
 
 import { makeServer } from '../../../src/lib/http';
-import { FastifyServer } from '../../../src/lib/http/types';
+import type { FastifyServer } from '../../../src/lib/http/types';
 
 let app: FastifyServer = null!;
 beforeAll(async () => {

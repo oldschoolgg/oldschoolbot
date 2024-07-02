@@ -1,5 +1,5 @@
-import { Prisma } from '@prisma/client';
-import { randInt, Time } from 'e';
+import type { Prisma } from '@prisma/client';
+import { Time, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
@@ -9,7 +9,7 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { HunterActivityTaskOptions } from '../../../lib/types/minions';
+import type { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate, stringMatches } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
@@ -55,7 +55,7 @@ export const hunterTask: MinionTask = {
 
 		if (!creature) return;
 
-		let crystalImpling = creature.name === 'Crystal impling';
+		const crystalImpling = creature.name === 'Crystal impling';
 
 		let graceful = false;
 		if (userHasGracefulEquipped(user)) {
@@ -114,8 +114,8 @@ export const hunterTask: MinionTask = {
 			}
 			if (gotPked && !died) {
 				if (userBank.amount('Saradomin brew(4)') >= 10 && userBank.amount('Super restore(4)') >= 5) {
-					let lostBrew = randInt(1, 10);
-					let lostRestore = randInt(1, 5);
+					const lostBrew = randInt(1, 10);
+					const lostRestore = randInt(1, 5);
 					const cost = new Bank().add('Saradomin brew(4)', lostBrew).add('Super restore(4)', lostRestore);
 					await transactItems({ userID: user.id, itemsToRemove: cost });
 
@@ -181,7 +181,7 @@ export const hunterTask: MinionTask = {
 				? '.'
 				: `${quantity}x times, due to clever creatures you missed out on ${
 						quantity - successfulQuantity
-				  }x catches. `
+					}x catches. `
 		}${xpStr}\n\nYou received: ${loot}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
 
 		if (gotPked && !died) {

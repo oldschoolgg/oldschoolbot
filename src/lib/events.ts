@@ -1,17 +1,18 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, EmbedBuilder, Message, TextChannel } from 'discord.js';
-import { isFunction, roll, Time } from 'e';
+import type { BaseMessageOptions, Message, TextChannel } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, EmbedBuilder, bold } from 'discord.js';
+import { Time, isFunction, roll } from 'e';
 import { LRUCache } from 'lru-cache';
 import { Items } from 'oldschooljs';
 
-import { production, SupportServer } from '../config';
+import { SupportServer, production } from '../config';
 import { untrustedGuildSettingsCache } from '../mahoji/guildSettings';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { BitField, Channel, Emoji, globalConfig } from './constants';
 import pets from './data/pets';
 import { prisma } from './settings/prisma';
-import { ItemBank } from './types';
+import type { ItemBank } from './types';
 import { channelIsSendable, formatDuration, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';

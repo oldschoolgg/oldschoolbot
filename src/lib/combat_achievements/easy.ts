@@ -6,7 +6,7 @@ import { Requirements } from '../structures/Requirements';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
 import { isCertainMonsterTrip } from './caUtils';
-import { type CombatAchievement } from './combatAchievements';
+import type { CombatAchievement } from './combatAchievements';
 
 export const easyCombatAchievements: CombatAchievement[] = [
 	{

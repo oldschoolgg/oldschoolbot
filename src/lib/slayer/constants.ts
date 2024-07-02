@@ -1,8 +1,8 @@
 export enum AutoslayOptionsEnum {
-	Default,
-	HighestUnlocked,
-	MaxEfficiency,
-	LowestCombat
+	Default = 0,
+	HighestUnlocked = 1,
+	MaxEfficiency = 2,
+	LowestCombat = 3
 }
 
 export const slayerMasterChoices = [

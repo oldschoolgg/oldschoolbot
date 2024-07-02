@@ -3,10 +3,10 @@ import { Bank } from 'oldschooljs';
 import { chompyHats } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { QuestID } from '../../minions/data/quests';
-import { MinigameName } from '../../settings/settings';
+import type { MinigameName } from '../../settings/settings';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
-import { MUserStats } from '../../structures/MUserStats';
-import { Skills } from '../../types';
+import type { MUserStats } from '../../structures/MUserStats';
+import type { Skills } from '../../types';
 import { allTeamCapes } from '../misc';
 import { aerialFishBuyables } from './aerialFishBuyables';
 import { canifisClothes } from './canifisClothes';
@@ -469,7 +469,7 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Monkey',
 		outputItems: new Bank({
-			19_556: 1
+			19556: 1
 		}),
 		gpCost: 1_000_000,
 		qpRequired: 182

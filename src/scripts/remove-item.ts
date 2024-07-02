@@ -1,7 +1,7 @@
 import '../lib/data/itemAliases';
 import '../lib/itemMods';
 
-import { writeFileSync } from 'fs';
+import { writeFileSync } from 'node:fs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { GearSetupTypes } from '../lib/gear/types';
@@ -29,14 +29,12 @@ FINAL_QUERY += `\n${extraFunctions}\n\n`;
 
 FINAL_QUERY += '\nBEGIN;\n';
 
-FINAL_QUERY += GearSetupTypes.map(gearType =>
+FINAL_QUERY += GearSetupTypes.flatMap(gearType =>
 	Object.values(EquipmentSlot).map(
 		slot =>
 			`UPDATE users SET "gear.${gearType}" = jsonb_set("gear.${gearType}"::jsonb, ARRAY['${slot}'], 'null'::jsonb) WHERE "gear.${gearType}"->'${slot}'->>'item' = ANY(${arrayToRemove});`
 	)
-)
-	.flat()
-	.join('\n');
+).join('\n');
 
 const removeFromBankQuery = (column: string) => `"${column}" = "${column}"::jsonb - ${arrayToRemove}`;
 const removeFromArrayQuery = (column: string) =>

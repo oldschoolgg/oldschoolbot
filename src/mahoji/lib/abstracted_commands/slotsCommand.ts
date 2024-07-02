@@ -1,13 +1,8 @@
 import { SimpleTable } from '@oldschoolgg/toolkit';
-import {
-	ActionRowBuilder,
-	BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
-	ChatInputCommandInteraction
-} from 'discord.js';
+import type { BaseMessageOptions, ChatInputCommandInteraction } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { chunk, noOp, randInt, shuffleArr, sleep } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
@@ -81,7 +76,7 @@ function determineWinnings(bet: number, buttons: ButtonInstance[]) {
 	const winningRow = chunk(buttons, 3)
 		.filter(row => row.every(b => b.name === row[0].name))
 		.sort((a, b) => b[0].mod(bet) - a[0].mod(bet))[0];
-	let amountReceived = winningRow ? winningRow[0].mod(bet) : 0;
+	const amountReceived = winningRow ? winningRow[0].mod(bet) : 0;
 	return {
 		amountReceived,
 		winningRow
@@ -125,7 +120,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 
 	await user.removeItemsFromBank(new Bank().add('Coins', amount));
 	const buttonsToShow = getButtons();
-	let chunkedButtons = chunk(buttonsToShow, 3);
+	const chunkedButtons = chunk(buttonsToShow, 3);
 
 	const { winningRow, amountReceived } = determineWinnings(amount, buttonsToShow);
 
@@ -141,8 +136,8 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 							!shouldShowThisButton
 								? ButtonStyle.Secondary
 								: isWinning
-								? ButtonStyle.Success
-								: ButtonStyle.Secondary
+									? ButtonStyle.Success
+									: ButtonStyle.Secondary
 						)
 						.setEmoji(shouldShowThisButton ? b.emoji : '❓');
 				})

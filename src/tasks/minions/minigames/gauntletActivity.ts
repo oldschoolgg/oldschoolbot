@@ -3,9 +3,10 @@ import { calcWhatPercent, percentChance } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
-import { getMinigameScore, incrementMinigameScore, MinigameName } from '../../../lib/settings/settings';
+import type { MinigameName } from '../../../lib/settings/settings';
+import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
-import { GauntletOptions } from '../../../lib/types/minions';
+import type { GauntletOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';

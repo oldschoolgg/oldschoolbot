@@ -1,4 +1,4 @@
-import { reduceNumByPercent, Time } from 'e';
+import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { SkillsEnum } from '../../../lib/skilling/types';

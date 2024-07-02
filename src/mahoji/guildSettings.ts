@@ -1,5 +1,5 @@
-import { Guild, Prisma } from '@prisma/client';
-import { Guild as DJSGuild } from 'discord.js';
+import type { Guild, Prisma } from '@prisma/client';
+import type { Guild as DJSGuild } from 'discord.js';
 import { LRUCache } from 'lru-cache';
 
 import { prisma } from '../lib/settings/prisma';

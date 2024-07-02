@@ -1,11 +1,11 @@
-import { calcPercentOfNum, calcWhatPercent, randFloat, randInt, reduceNumByPercent, round, Time } from 'e';
+import { Time, calcPercentOfNum, calcWhatPercent, randFloat, randInt, reduceNumByPercent, round } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 import { randomVariation } from 'oldschooljs/dist/util';
 
 import type { GearStats } from '../gear/types';
 import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
-import { constructGearSetup, Gear } from '../structures/Gear';
+import { Gear, constructGearSetup } from '../structures/Gear';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 import resolveItems from '../util/resolveItems';
@@ -71,10 +71,10 @@ export function calculateTOBDeaths(
 		total: number;
 	}
 ): TOBDeaths {
-	let deaths: number[] = [];
-	let wipeDeaths: number[] = [];
-	let realDeathChances: { name: string; deathChance: number }[] = [];
-	let wipeDeathChances: { name: string; deathChance: number }[] = [];
+	const deaths: number[] = [];
+	const wipeDeaths: number[] = [];
+	const realDeathChances: { name: string; deathChance: number }[] = [];
+	const wipeDeathChances: { name: string; deathChance: number }[] = [];
 
 	// These numbers are for proficiency. After this point, the odds of a wipe are the same, but deaths are reduced.
 	const minionProfiencyKC = isHardMode ? 75 : 50;
@@ -170,14 +170,8 @@ function calcSetupPercent(
 	}
 	// For melee compare the highest melee attack stat of max setup with the highest melee attack stat of the user
 	if (melee) {
-		let maxMeleeStat = Math.max(
-			maxStats['attack_stab'],
-			Math.max(maxStats['attack_slash'], maxStats['attack_crush'])
-		);
-		let userMeleeStat = Math.max(
-			userStats['attack_stab'],
-			Math.max(userStats['attack_slash'], userStats['attack_crush'])
-		);
+		const maxMeleeStat = Math.max(maxStats.attack_stab, Math.max(maxStats.attack_slash, maxStats.attack_crush));
+		const userMeleeStat = Math.max(userStats.attack_stab, Math.max(userStats.attack_slash, userStats.attack_crush));
 		totalPercent += Math.min(100, calcWhatPercent(userMeleeStat, maxMeleeStat));
 		numKeys++;
 	}
@@ -385,9 +379,9 @@ interface TobTeam {
 export function calcTOBBaseDuration({ team, hardMode }: { team: TobTeam[]; hardMode: boolean }) {
 	const teamSize = team.length;
 
-	let individualReductions = [];
+	const individualReductions = [];
 
-	let reductions: Record<string, number> = {};
+	const reductions: Record<string, number> = {};
 
 	for (const u of team) {
 		let userPercentChange = 0;
@@ -448,7 +442,7 @@ export function calcTOBBaseDuration({ team, hardMode }: { team: TobTeam[]; hardM
 			userPercentChange = reduceNumByPercent(userPercentChange, 10);
 		}
 
-		let reduction = round(userPercentChange / teamSize, 1);
+		const reduction = round(userPercentChange / teamSize, 1);
 
 		individualReductions.push(userPercentChange);
 		reductions[u.user.id] = reduction;
@@ -499,7 +493,7 @@ export function createTOBRaid({
 	hardMode: boolean;
 	disableVariation?: true;
 }): { duration: number; parsedTeam: ParsedTeamMember[]; wipedRoom: TOBRoom | null; deathDuration: number | null } {
-	let parsedTeam: ParsedTeamMember[] = [];
+	const parsedTeam: ParsedTeamMember[] = [];
 
 	for (const u of team) {
 		const gearPercents = calculateTOBUserGearPercents(u.user);
@@ -514,12 +508,12 @@ export function createTOBRaid({
 		});
 	}
 
-	let duration = Math.floor(randomVariation(baseDuration, 5));
+	const duration = Math.floor(randomVariation(baseDuration, 5));
 
 	let wipedRoom: TOBRoom | null = null;
 	let deathDuration: number | null = 0;
 	for (let i = 0; i < TOBRooms.length; i++) {
-		let room = TOBRooms[i];
+		const room = TOBRooms[i];
 
 		if (parsedTeam.every(member => member.wipeDeaths.includes(i))) {
 			wipedRoom = room;

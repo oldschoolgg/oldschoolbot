@@ -3,8 +3,8 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { farmingPlantCommand } from '../../../mahoji/lib/abstracted_commands/farmingCommand';
 import { plants } from '../../skilling/skills/farming';
-import { IPatchDataDetailed } from '../farming/types';
-import { Plant } from './../../skilling/types';
+import type { IPatchDataDetailed } from '../farming/types';
+import type { Plant } from './../../skilling/types';
 import { allFarm, replant } from './autoFarmFilters';
 
 export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[], channelID: string) {
@@ -41,7 +41,7 @@ export async function autoFarm(user: MUser, patchesDetailed: IPatchDataDetailed[
 		.sort((a, b) => b.level - a.level);
 
 	if (autoFarmFilter === AutoFarmFilterEnum.AllFarm) {
-		canHarvest = elligible.find(p => patchesDetailed.find(_p => _p.patchName === p.seedType)!.ready);
+		canHarvest = elligible.find(p => patchesDetailed.find(_p => _p.patchName === p.seedType)?.ready);
 		errorString = "There's no Farming crops that you have the requirements to plant, and nothing to harvest.";
 	}
 	if (autoFarmFilter === AutoFarmFilterEnum.Replant) {

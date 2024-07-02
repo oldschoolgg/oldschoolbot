@@ -1,5 +1,5 @@
 import { ComponentType } from 'discord.js';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { mahojiInformationalButtons } from '../../../lib/constants';
 import { clArrayUpdate } from '../../../lib/handleNewCLItems';

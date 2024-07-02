@@ -1,12 +1,12 @@
-import { calcPercentOfNum, calcWhatPercent, reduceNumByPercent, Time } from 'e';
+import { Time, calcPercentOfNum, calcWhatPercent, reduceNumByPercent } from 'e';
 import { randomVariation } from 'oldschooljs/dist/util';
 
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { PeakTier } from '../constants';
-import { KillableMonster } from '../minions/types';
+import type { KillableMonster } from '../minions/types';
 import { SkillsEnum } from '../skilling/types';
 import { maxDefenceStats } from '../structures/Gear';
-import { Peak } from '../tickers';
+import type { Peak } from '../tickers';
 import { percentChance } from '../util';
 
 const peakFactor = [
@@ -50,7 +50,7 @@ export async function calcWildyPKChance(
 ): Promise<[number, boolean, string]> {
 	// Chance per minute, Difficulty from 1 to 10, and factor a million difference, High peak 5x as likley encounter, Medium peak 1x, Low peak 5x as unlikley
 	const peakInfluence = peakFactor.find(_peaktier => _peaktier.peakTier === peak?.peakTier)?.factor ?? 1;
-	let pkChance = (1 / (7_000_000 / (Math.pow(monster.pkActivityRating ?? 1, 6) * peakInfluence))) * 100;
+	const pkChance = (1 / (7_000_000 / (Math.pow(monster.pkActivityRating ?? 1, 6) * peakInfluence))) * 100;
 	let chanceString = `**PK Chance:** ${pkChance.toFixed(2)}% per min (${peak.peakTier} peak time)`;
 
 	const evasionReduction = await getWildEvasionPercent(user);
@@ -78,21 +78,19 @@ export async function calcWildyPKChance(
 
 	// Weighted Melee gear percent protection 60% slash, 30% crush, 10% stab
 	const defensiveMeleeGearPercent =
-		(Math.max(0, calcWhatPercent(user.gear.wildy.getStats().defence_slash, maxDefenceStats['defence_slash'])) * 60 +
-			Math.max(0, calcWhatPercent(user.gear.wildy.getStats().defence_crush, maxDefenceStats['defence_crush'])) *
-				30 +
-			Math.max(0, calcWhatPercent(user.gear.wildy.getStats().defence_stab, maxDefenceStats['defence_stab'])) *
-				10) /
+		(Math.max(0, calcWhatPercent(user.gear.wildy.getStats().defence_slash, maxDefenceStats.defence_slash)) * 60 +
+			Math.max(0, calcWhatPercent(user.gear.wildy.getStats().defence_crush, maxDefenceStats.defence_crush)) * 30 +
+			Math.max(0, calcWhatPercent(user.gear.wildy.getStats().defence_stab, maxDefenceStats.defence_stab)) * 10) /
 		100;
 
 	const defensiveRangeGearPercent = Math.max(
 		0,
-		calcWhatPercent(user.gear.wildy.getStats().defence_ranged, maxDefenceStats['defence_ranged'])
+		calcWhatPercent(user.gear.wildy.getStats().defence_ranged, maxDefenceStats.defence_ranged)
 	);
 
 	const defensiveMageGearPercent = Math.max(
 		0,
-		calcWhatPercent(user.gear.wildy.getStats().defence_magic, maxDefenceStats['defence_magic'])
+		calcWhatPercent(user.gear.wildy.getStats().defence_magic, maxDefenceStats.defence_magic)
 	);
 
 	// Weighted attack style percent, 60% magic, 40% ranged, 20% melee

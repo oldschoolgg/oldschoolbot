@@ -1,5 +1,6 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { PrismaClient, TriviaQuestion, User } from '@prisma/robochimp';
+import type { TriviaQuestion, User } from '@prisma/robochimp';
+import { PrismaClient } from '@prisma/robochimp';
 import { calcWhatPercent, round, sumArr } from 'e';
 import deepEqual from 'fast-deep-equal';
 

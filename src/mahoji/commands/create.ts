@@ -1,20 +1,21 @@
-import { readFileSync } from 'fs';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { readFileSync } from 'node:fs';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import Createables from '../../lib/data/createables';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
+import type { SkillsEnum } from '../../lib/skilling/types';
+import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate } from '../mahojiSettings';
 
 const creatablesTable = readFileSync('./src/lib/data/creatablesTable.txt', 'utf8');
 
-let content = 'Theses are the items that you can create:';
+const content = 'Theses are the items that you can create:';
 const allCreatablesTable = {
 	content,
 	files: [{ attachment: Buffer.from(creatablesTable), name: 'Creatables.txt' }]
@@ -92,7 +93,7 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 		if (createableItem.requiredSlayerUnlocks) {
-			let mySlayerUnlocks = user.user.slayer_unlocks;
+			const mySlayerUnlocks = user.user.slayer_unlocks;
 
 			const { success, errors } = hasSlayerUnlock(
 				mySlayerUnlocks as SlayerTaskUnlocksEnum[],

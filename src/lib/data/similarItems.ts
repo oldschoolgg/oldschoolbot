@@ -392,7 +392,7 @@ for (const [baseItem, similarItems] of source) {
 		if (!inverseSimilarItems.get(item)) {
 			inverseSimilarItems.set(item, new Set());
 		}
-		inverseSimilarItems.get(item)!.add(itemID(baseItem));
+		inverseSimilarItems.get(item)?.add(itemID(baseItem));
 	}
 }
 

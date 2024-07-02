@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import { diaries, userhasDiaryTier } from '../../diaries';
 import { MAX_QP } from '../../minions/data/quests';
 import { musicCapeRequirements } from '../../musicCape';
-import { Buyable } from './buyables';
+import type { Buyable } from './buyables';
 
 export const capeBuyables: Buyable[] = [
 	{

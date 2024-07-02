@@ -1,12 +1,13 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
+import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { BitField, PerkTier } from '../../../lib/constants';
-import { allOpenables, getOpenableLoot, UnifiedOpenable } from '../../../lib/openables';
+import type { UnifiedOpenable } from '../../../lib/openables';
+import { allOpenables, getOpenableLoot } from '../../../lib/openables';
 import { makeComponents } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -57,7 +58,7 @@ export async function abstractedOpenUntilCommand(
 	const cost = new Bank();
 	const loot = new Bank();
 	let amountOpened = 0;
-	let max = Math.min(100, amountOfThisOpenableOwned);
+	const max = Math.min(100, amountOfThisOpenableOwned);
 	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({ openable, quantity: 1, user });
@@ -131,14 +132,14 @@ async function finalizeOpening({
 	const perkTier = user.perkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
-	let response: Awaited<CommandResponse> = {
+	const response: Awaited<CommandResponse> = {
 		files: [image.file],
 		content: `You have now opened a total of ${openedStr}
 ${messages.join(', ')}`,
 		components: components.length > 0 ? makeComponents(components) : undefined
 	};
 	if (response.content!.length > 1900) {
-		response.files!.push({ name: 'response.txt', attachment: Buffer.from(response.content!) });
+		response.files?.push({ name: 'response.txt', attachment: Buffer.from(response.content!) });
 		response.content =
 			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
 	}

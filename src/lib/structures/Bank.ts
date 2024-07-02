@@ -1,6 +1,9 @@
-import { DegradeableItem, degradeableItems } from '../degradeableItems';
-import { SkillNameType, SkillsArray } from '../skilling/types';
-import { GeneralBank, GeneralBankType } from './GeneralBank';
+import type { DegradeableItem } from '../degradeableItems';
+import { degradeableItems } from '../degradeableItems';
+import type { SkillNameType } from '../skilling/types';
+import { SkillsArray } from '../skilling/types';
+import type { GeneralBankType } from './GeneralBank';
+import { GeneralBank } from './GeneralBank';
 
 export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
 	constructor(initialBank?: GeneralBankType<DegradeableItem['settingsKey']>) {

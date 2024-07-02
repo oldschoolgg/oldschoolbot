@@ -2,7 +2,8 @@ import { objectEntries } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { MAX_QP } from './minions/data/quests';
-import { DiaryID, DiaryTier, DiaryTierName } from './minions/types';
+import type { DiaryTier, DiaryTierName } from './minions/types';
+import { DiaryID } from './minions/types';
 import type { MinigameScore } from './settings/minigames';
 import Skillcapes from './skilling/skillcapes';
 import { courses } from './skilling/skills/agility';
@@ -32,7 +33,7 @@ export function userhasDiaryTierSync(
 	let canDo = true;
 	const reasons: string[] = [];
 	if (!hasReqs) {
-		let failSkills: Skills = {};
+		const failSkills: Skills = {};
 		for (const skill of objectEntries(tier.skillReqs)) {
 			if (skills[skill[0]] < skill[1]!) failSkills[skill[0]] = skill[1]!;
 			canDo = false;

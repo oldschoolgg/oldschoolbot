@@ -1,11 +1,11 @@
-import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import type { Bank } from 'oldschooljs';
+import type { Item } from 'oldschooljs/dist/meta/types';
+import type LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Emoji } from '../constants';
-import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import { ItemBank } from '../types';
-import { FarmingPatchName } from '../util/farmingHelpers';
+import type { Emoji } from '../constants';
+import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
+import type { ItemBank } from '../types';
+import type { FarmingPatchName } from '../util/farmingHelpers';
 
 export enum SkillsEnum {
 	Agility = 'agility',

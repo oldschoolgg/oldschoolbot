@@ -1,4 +1,4 @@
-import { badges, BadgesEnum } from '../lib/constants';
+import { BadgesEnum, badges } from '../lib/constants';
 import { prisma } from '../lib/settings/prisma';
 
 export async function cacheBadges() {

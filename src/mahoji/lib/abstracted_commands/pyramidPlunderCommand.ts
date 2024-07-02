@@ -1,8 +1,8 @@
-import { reduceNumByPercent, Time } from 'e';
+import { Time, reduceNumByPercent } from 'e';
 
 import { plunderBoosts, plunderRooms } from '../../../lib/minions/data/plunder';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { PlunderActivityTaskOptions } from '../../../lib/types/minions';
+import type { PlunderActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';

@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
+import type { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';

@@ -1,7 +1,11 @@
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { defaultFarmingContract } from '../../../lib/minions/farming';
-import { ContractOption, FarmingContract, FarmingContractDifficultyLevel } from '../../../lib/minions/farming/types';
+import type {
+	ContractOption,
+	FarmingContract,
+	FarmingContractDifficultyLevel
+} from '../../../lib/minions/farming/types';
 import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
 import { plants } from '../../../lib/skilling/skills/farming';

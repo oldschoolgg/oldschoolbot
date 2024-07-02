@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { prisma } from './settings/prisma';
-import { ItemBank } from './types';
+import type { ItemBank } from './types';
 import { validateBankAndThrow } from './util';
 
 export function makeTransactFromTableBankQueries({

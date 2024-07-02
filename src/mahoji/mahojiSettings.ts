@@ -3,11 +3,11 @@ import type { Prisma, User, UserStats } from '@prisma/client';
 import { isFunction, objectEntries, round } from 'e';
 import { Bank } from 'oldschooljs';
 
+import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
 import type { KillableMonster } from '../lib/minions/types';
-import type { SelectedUserStats } from '../lib/MUser';
 import { prisma } from '../lib/settings/prisma';
-import { Rune } from '../lib/skilling/skills/runecraft';
+import type { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
 import type { ItemBank } from '../lib/types';
 import { anglerBoosts, formatItemReqs, hasSkillReqs, itemNameFromID, readableStatName } from '../lib/util';
@@ -129,9 +129,9 @@ export async function multipleUserStatsBankUpdate(userID: string, updates: Parti
 	await userStatsUpdate(
 		userID,
 		u => {
-			let updateObj: Prisma.UserStatsUpdateInput = {};
+			const updateObj: Prisma.UserStatsUpdateInput = {};
 			for (const [key, bank] of objectEntries(updates)) {
-				updateObj[key] = bank!.clone().add(u[key] as ItemBank).bank;
+				updateObj[key] = bank?.clone().add(u[key] as ItemBank).bank;
 			}
 			return updateObj;
 		},
@@ -258,7 +258,7 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 						`You don't have the requirements to kill ${monster.name}! Your ${readableStatName(
 							unmetKey!
 						)} stat in your ${setup} setup is ${has}, but you need atleast ${
-							monster.minimumGearRequirements[setup]![unmetKey!]
+							monster.minimumGearRequirements[setup]?.[unmetKey!]
 						}.`
 					];
 				}
@@ -269,7 +269,7 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 	return [true];
 }
 
-export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster, isInWilderness: boolean = false) {
+export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster, isInWilderness = false) {
 	const boosts = new Bank();
 	if (monster.itemInBankBoosts) {
 		for (const boostSet of monster.itemInBankBoosts) {
@@ -278,7 +278,7 @@ export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster
 
 			// find the highest boost that the player has
 			for (const [itemID, boostAmount] of Object.entries(boostSet)) {
-				const parsedId = parseInt(itemID);
+				const parsedId = Number.parseInt(itemID);
 				if (isInWilderness ? !user.hasEquipped(parsedId) : !user.hasEquippedOrInBank(parsedId)) {
 					continue;
 				}

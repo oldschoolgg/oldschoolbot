@@ -1,13 +1,13 @@
 import { getItem } from '@oldschoolgg/toolkit';
 import { evalMathExpression } from '@oldschoolgg/toolkit/dist/util/expressionParser';
-import { GEListing, GETransaction } from '@prisma/client';
+import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
-import { CommandRunOptions } from 'mahoji';
-import { CommandOption } from 'mahoji/dist/lib/types';
+import type { CommandRunOptions } from 'mahoji';
+import type { CommandOption } from 'mahoji/dist/lib/types';
 
 import { PerkTier } from '../../lib/constants';
-import { createGECancelButton, GrandExchange } from '../../lib/grandExchange';
+import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 import { prisma } from '../../lib/settings/prisma';
 import { formatDuration, itemNameFromID, makeComponents, returnStringOrFile, toKMB } from '../../lib/util';
@@ -18,7 +18,7 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { itemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
@@ -116,7 +116,7 @@ export const geCommand: OSBMahojiCommand = {
 								value: itemID.toString()
 							}));
 						}
-						let res = tradeableItemArr.filter(i => i.key.includes(value.toLowerCase()));
+						const res = tradeableItemArr.filter(i => i.key.includes(value.toLowerCase()));
 						return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
 					}
 				},
@@ -205,7 +205,7 @@ export const geCommand: OSBMahojiCommand = {
 						const listings = Array.from(marketPricemap.values());
 						return listings
 							.filter(i =>
-								!input ? true : itemNameFromID(i.itemID)!.toLowerCase().includes(input.toLowerCase())
+								!input ? true : itemNameFromID(i.itemID)?.toLowerCase().includes(input.toLowerCase())
 							)
 							.map(l => ({
 								name: `${itemNameFromID(l.itemID)!}`,
@@ -311,9 +311,7 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 
 **G.E Slots You Can Use:** ${slots}
 **Taxes you have paid:** ${(totalGPYourSales._sum.total_tax_paid ?? 0).toLocaleString()} GP
-**Total Tax Paid on your sales AND purchases:** ${(
-				totalGPYourTransactions._sum.total_tax_paid ?? 0
-			).toLocaleString()} GP`;
+**Total Tax Paid on your sales AND purchases:** ${(totalGPYourTransactions._sum.total_tax_paid ?? 0).toLocaleString()} GP`;
 		}
 
 		if (options.my_listings) {
@@ -458,7 +456,7 @@ ORDER BY
 				itemName: (options.buy?.item ?? options.sell?.item)!,
 				price: parseNumber((options.buy?.price ?? options.sell?.price)!),
 				quantity: parseNumber((options.buy?.quantity ?? options.sell?.quantity)!),
-				type: Boolean(options.buy) ? 'Buy' : 'Sell'
+				type: options.buy ? 'Buy' : 'Sell'
 			});
 
 			if ('error' in result) return result.error;
@@ -473,9 +471,9 @@ ORDER BY
 		if (options.buy) {
 			const result = await GrandExchange.createListing({
 				user,
-				itemName: options.buy!.item,
-				price: parseNumber(options.buy!.price),
-				quantity: parseNumber(options.buy!.quantity),
+				itemName: options.buy?.item,
+				price: parseNumber(options.buy?.price),
+				quantity: parseNumber(options.buy?.quantity),
 				type: 'Buy'
 			});
 

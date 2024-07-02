@@ -1,6 +1,7 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import {
+	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
 	clamp,
@@ -10,21 +11,21 @@ import {
 	percentChance,
 	randInt,
 	reduceNumByPercent,
-	sumArr,
-	Time
+	sumArr
 } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import type { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { degradeChargeBank } from './degradeableItems';
-import { GearSetupType } from './gear/types';
+import type { GearSetupType } from './gear/types';
 import { trackLoot } from './lootTrack';
 import { QuestID } from './minions/data/quests';
 import { ChargeBank } from './structures/Bank';
-import { GeneralBank, GeneralBankType } from './structures/GeneralBank';
-import { ItemBank, Skills } from './types';
-import { ColoTaskOptions } from './types/minions';
+import type { GeneralBankType } from './structures/GeneralBank';
+import { GeneralBank } from './structures/GeneralBank';
+import type { ItemBank, Skills } from './types';
+import type { ColoTaskOptions } from './types/minions';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import resolveItems from './util/resolveItems';
 import { exponentialPercentScale, formatDuration, formatSkillRequirements, itemNameFromID } from './util/smallUtils';

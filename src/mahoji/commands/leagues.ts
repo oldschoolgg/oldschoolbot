@@ -1,10 +1,11 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
 import fetch from 'node-fetch';
 import { Hiscores } from 'oldschooljs';
 
 import leaguesJson from '../../lib/leagues.json';
 import { statsEmbed } from '../../lib/util/statsEmbed';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 interface LeaguesData {
 	[key: string]: {

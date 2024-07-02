@@ -1,14 +1,15 @@
-import { Prisma, User } from '@prisma/client';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { Prisma, User } from '@prisma/client';
+import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurhash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { expect } from 'vitest';
 
-import { BitField } from '../../src/lib/constants';
-import type { GearSetup } from '../../src/lib/gear/types';
 import { MUserClass } from '../../src/lib/MUser';
-import { filterGearSetup, Gear, PartialGearSetup } from '../../src/lib/structures/Gear';
+import type { BitField } from '../../src/lib/constants';
+import type { GearSetup } from '../../src/lib/gear/types';
+import type { PartialGearSetup } from '../../src/lib/structures/Gear';
+import { Gear, filterGearSetup } from '../../src/lib/structures/Gear';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 
 interface MockUserArgs {

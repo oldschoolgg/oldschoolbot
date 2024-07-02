@@ -1,11 +1,12 @@
 import { bold } from 'discord.js';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import Buyables from '../../lib/data/buyables/buyables';
 import { quests } from '../../lib/minions/data/quests';
-import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
+import { Minigames, getMinigameScore } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
@@ -14,7 +15,7 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }, { name: 'Fossil Island Notes' }];
@@ -53,9 +54,7 @@ export const buyCommand: OSBMahojiCommand = {
 		}
 
 		const buyable = Buyables.find(
-			item =>
-				stringMatches(name, item.name) ||
-				(item.aliases && item.aliases.some(alias => stringMatches(alias, name)))
+			item => stringMatches(name, item.name) || item.aliases?.some(alias => stringMatches(alias, name))
 		);
 
 		if (!buyable) return "That's not a valid item you can buy.";
@@ -110,7 +109,7 @@ export const buyCommand: OSBMahojiCommand = {
 			}
 			if (kc < req) {
 				return `You need ${req} KC in ${
-					Minigames.find(i => i.column === key)!.name
+					Minigames.find(i => i.column === key)?.name
 				} to buy this, you only have ${kc} KC.`;
 			}
 		}
@@ -126,12 +125,12 @@ export const buyCommand: OSBMahojiCommand = {
 			return `You don't have the required items to purchase this. You need: ${totalCost}.`;
 		}
 
-		let singleOutput: Bank =
+		const singleOutput: Bank =
 			buyable.outputItems === undefined
 				? new Bank().add(buyable.name)
 				: buyable.outputItems instanceof Bank
-				? buyable.outputItems
-				: buyable.outputItems(user);
+					? buyable.outputItems
+					: buyable.outputItems(user);
 
 		const outItems = singleOutput.clone().multiply(quantity);
 

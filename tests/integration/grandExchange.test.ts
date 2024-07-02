@@ -1,4 +1,4 @@
-import { calcPercentOfNum, randArrItem, randInt, shuffleArr, Time } from 'e';
+import { Time, calcPercentOfNum, randArrItem, randInt, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { describe, expect, test } from 'vitest';
@@ -9,7 +9,8 @@ import { assert } from '../../src/lib/util';
 import resolveItems from '../../src/lib/util/resolveItems';
 import { geCommand } from '../../src/mahoji/commands/ge';
 import { cancelUsersListings } from '../../src/mahoji/lib/abstracted_commands/cancelGEListingCommand';
-import { createTestUser, mockClient, TestUser } from './util';
+import type { TestUser } from './util';
+import { createTestUser, mockClient } from './util';
 
 const quantities = [-1, 0, 100_000_000_000_000_000, 1, 2, 38, 1_000_000_000_000, 500, '5*5'];
 const prices = [
@@ -38,7 +39,7 @@ const sampleBank = new Bank()
 
 describe('Grand Exchange', async () => {
 	const itemPool = resolveItems(['Egg', 'Trout', 'Coal']);
-	GrandExchange.calculateSlotsOfUser = async () => ({ slots: 500 } as any);
+	GrandExchange.calculateSlotsOfUser = async () => ({ slots: 500 }) as any;
 	await mockClient();
 
 	async function waitForGEToBeEmpty() {
@@ -49,6 +50,7 @@ describe('Grand Exchange', async () => {
 	test(
 		'Fuzz',
 		async () => {
+			// biome-ignore lint/suspicious/noSelfCompare: <explanation>
 			assert(randInt(1, 100_000) !== randInt(1, 100_000));
 
 			await GrandExchange.totalReset();
@@ -56,10 +58,10 @@ describe('Grand Exchange', async () => {
 
 			const currentOwnedBank = await GrandExchange.fetchOwnedBank();
 			expect(currentOwnedBank.toString()).toEqual(new Bank().toString());
-			let amountOfUsers = randInt(100, 200);
+			const amountOfUsers = randInt(100, 200);
 
 			const totalExpectedBank = sampleBank.clone().multiply(amountOfUsers);
-			let users: TestUser[] = [];
+			const users: TestUser[] = [];
 
 			for (let i = 0; i < amountOfUsers; i++) {
 				const user = await createTestUser();
@@ -73,8 +75,8 @@ describe('Grand Exchange', async () => {
 			for (const user of shuffleArr(users)) {
 				commandPromises.add(async () => {
 					const method = randArrItem(['buy', 'sell']);
-					let quantity = randArrItem(quantities);
-					let price = randArrItem(prices);
+					const quantity = randArrItem(quantities);
+					const price = randArrItem(prices);
 					for (const item of itemPool) {
 						await user.runCommand(geCommand, {
 							[method]: {

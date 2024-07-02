@@ -3,7 +3,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 
 const renanimatedMonstersRaw = [
 	{

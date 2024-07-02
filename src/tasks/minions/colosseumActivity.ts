@@ -1,11 +1,11 @@
 import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ColosseumWaveBank, colosseumWaves } from '../../lib/colosseum';
 import { trackLoot } from '../../lib/lootTrack';
 import { incrementMinigameScore } from '../../lib/settings/minigames';
-import { ColoTaskOptions } from '../../lib/types/minions';
+import type { ColoTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
@@ -25,7 +25,8 @@ export const colosseumTask: MinionTask = {
 			newKCs.add(i + 1);
 		}
 		const stats = await user.fetchStats({ colo_kc_bank: true, colo_max_glory: true });
-		for (const [key, value] of Object.entries(stats.colo_kc_bank as ItemBank)) newKCs.add(parseInt(key), value);
+		for (const [key, value] of Object.entries(stats.colo_kc_bank as ItemBank))
+			newKCs.add(Number.parseInt(key), value);
 		await userStatsUpdate(user.id, { colo_kc_bank: newKCs._bank });
 		const newKCsStr = `${newKCs
 			.entries()

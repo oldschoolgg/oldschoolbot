@@ -1,8 +1,8 @@
-import { percentChance, reduceNumByPercent, Time } from 'e';
+import { Time, percentChance, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { chompyHats } from '../../../lib/constants';
-import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
+import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
@@ -50,7 +50,7 @@ export async function chompyHuntCommand(user: MUser, channelID: string) {
 
 	const tripLength = calcMaxTripLength(user, 'BigChompyBirdHunting');
 
-	let boosts = [];
+	const boosts = [];
 	let quantity = Math.floor((baseChompyPerHour / Time.Hour) * tripLength);
 	for (const [diary, boost] of diaryBoosts) {
 		const [hasDiary] = await userhasDiaryTier(user, diary);

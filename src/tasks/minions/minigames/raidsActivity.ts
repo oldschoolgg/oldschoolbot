@@ -11,7 +11,7 @@ import { createTeam } from '../../../lib/data/cox';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
-import { RaidsOptions } from '../../../lib/types/minions';
+import type { RaidsOptions } from '../../../lib/types/minions';
 import { randomVariation, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
@@ -149,7 +149,7 @@ export const raidsTask: MinionTask = {
 		} finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
 		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, quantity)));
 
-		for (let [userID, userData] of raidResults) {
+		for (const [userID, userData] of raidResults) {
 			const { personalPoints, deaths, deathChance, loot, mUser: user } = userData;
 			if (!user) continue;
 
@@ -230,7 +230,7 @@ export const raidsTask: MinionTask = {
 								}
 							],
 							type: 'Chambers of Xerician'
-					  })
+						})
 					: undefined,
 				data,
 				totalLoot
@@ -250,7 +250,7 @@ export const raidsTask: MinionTask = {
 							customTexts: []
 						})),
 						type: 'Chambers of Xerician'
-				  })
+					})
 				: undefined,
 			data,
 			null

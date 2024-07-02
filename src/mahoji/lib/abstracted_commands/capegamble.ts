@@ -1,5 +1,5 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
@@ -68,7 +68,7 @@ export async function capeGambleCommand(
 	user: MUser,
 	type: string,
 	interaction: ChatInputCommandInteraction,
-	autoconfirm: boolean = false
+	autoconfirm = false
 ) {
 	const src = itemGambles.find(i => i.type === type);
 	if (!src) return 'Invalid type. You can only gamble fire capes, infernal capes, or quivers.';

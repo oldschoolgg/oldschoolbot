@@ -24,8 +24,6 @@ To suggest a new feature, [click here](https://github.com/oldschoolgg/oldschoolb
 
 Anyone is free to create PR's with improvements and additions to Old School Bot.
 
-Please lint your code with the projects' [ESLint](https://eslint.org/) config.
-
 Contributors are listed in this file, and given a Contributor role in the support server. If you have more questions, there are lots of helpful Contributors in the `#developers` channel on the Discord server.
 
 ### Setting up the bot to run locally for contributing
@@ -93,3 +91,13 @@ You can also ask Magna to invite your Bot with your invite link above if you so 
 ## Self Hosting
 
 Self hosting is not supported.
+
+## Notes
+
+### Profiling tests
+
+- node --cpu-prof --cpu-prof-dir=./profiling ./node_modules/vitest/vitest.mjs run --coverage --config vitest.unit.config.mts parseStringBank
+
+## Module graph
+
+- yarn build && npx madge --image graph2.svg ./dist/index.js
