@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, test } from 'vitest';
 
 import { GeneralBank } from '../../src/lib/structures/GeneralBank';
 
-describe.concurrent('GeneralBank', () => {
+describe('GeneralBank', () => {
 	let bank: GeneralBank<string>;
 	let validator: (key: string, value: number, bank: Record<string, number>) => void;
 
@@ -59,7 +59,7 @@ describe.concurrent('GeneralBank', () => {
 	});
 });
 
-describe.concurrent('GeneralBank 2', () => {
+describe('GeneralBank 2', () => {
 	let bank: GeneralBank<string>;
 
 	beforeEach(() => {
@@ -118,7 +118,7 @@ describe.concurrent('GeneralBank 2', () => {
 	});
 });
 
-describe.concurrent('Bank with allowedKeys', () => {
+describe('Bank with allowedKeys', () => {
 	let bank: GeneralBank<string>;
 
 	beforeEach(() => {
@@ -165,7 +165,7 @@ describe.concurrent('Bank with allowedKeys', () => {
 	});
 });
 
-test.concurrent('Float Banks', () => {
+test('Float Banks', () => {
 	const floatBank = new GeneralBank<string>({ valueSchema: { floats: true, min: 0, max: 1_222_222.100_150_02 } });
 	floatBank.add('a', 1);
 	floatBank.add('a', 0.15);
