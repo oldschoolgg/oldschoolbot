@@ -322,7 +322,8 @@ export function minionStatus(user: MUser) {
 			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
 		}
 		case 'Wintertodt': {
-			return `${name} is currently fighting the Wintertodt. ${formattedDuration}`;
+			const data = currentTask as ActivityTaskOptionsWithQuantity;
+			return `${name} is currently fighting Wintertodt  ${data.quantity}x times. ${formattedDuration}`;
 		}
 		case 'Tempoross': {
 			return `${name} is currently fighting Tempoross. ${formattedDuration}`;

@@ -113,6 +113,7 @@ export const wintertodtTask: MinionTask = {
 		incrementMinigameScore(user.id, 'wintertodt', quantity);
 
 		const image = await makeBankImage({
+			title: `Loot From ${quantity}x Wintertodt`,
 			bank: itemsAdded,
 			user,
 			previousCL

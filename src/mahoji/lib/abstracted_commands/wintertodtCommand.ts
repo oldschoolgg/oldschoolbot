@@ -2,6 +2,7 @@ import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { floor } from 'lodash';
 import { Eatables } from '../../../lib/data/eatables';
 import { warmGear } from '../../../lib/data/filterables';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -11,7 +12,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
-export async function wintertodtCommand(user: MUser, channelID: string) {
+export async function wintertodtCommand(user: MUser, channelID: string, quantity?: number) {
 	const fmLevel = user.skillLevel(SkillsEnum.Firemaking);
 	const wcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 	if (fmLevel < 50) {
@@ -45,7 +46,18 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 	healAmountNeeded -= warmGearAmount * 15;
 	durationPerTodt = reduceNumByPercent(durationPerTodt, 5 * warmGearAmount);
 
-	const quantity = Math.floor(calcMaxTripLength(user, 'Wintertodt') / durationPerTodt);
+	const maxTripLength = calcMaxTripLength(user, 'Wintertodt');
+	if (!quantity) quantity = floor(maxTripLength / durationPerTodt);
+	quantity = Math.max(1, quantity);
+	const duration = durationPerTodt * quantity;
+
+	if (quantity > 1 && duration > maxTripLength) {
+		return `${user.minionName} can't go on PvM trips longer than ${formatDuration(
+			maxTripLength
+		)}, try a lower quantity. The highest amount you can do for Wintertodt is ${floor(
+			maxTripLength / durationPerTodt
+		)}.`;
+	}
 
 	for (const food of Eatables) {
 		const healAmount = typeof food.healAmount === 'number' ? food.healAmount : food.healAmount(user);
@@ -97,8 +109,6 @@ export async function wintertodtCommand(user: MUser, channelID: string) {
 
 		break;
 	}
-
-	const duration = durationPerTodt * quantity;
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		minigameID: 'wintertodt',
