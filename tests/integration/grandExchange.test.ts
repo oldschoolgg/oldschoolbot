@@ -67,19 +67,19 @@ describe('Grand Exchange', async () => {
 			const commandPromises = new PQueue({ concurrency: 20 });
 			for (const user of shuffleArr(users)) {
 				commandPromises.add(async () => {
-					for (let i = 0; i < 5;i++) {
+					for (let i = 0; i < 5; i++) {
 						const method = randArrItem(['buy', 'sell']);
-					const quantity = randArrItem(quantities);
-					const price = randArrItem(prices);
-					for (const item of itemPool) {
-						await user.runCommand(geCommand, {
-							[method]: {
-								item,
-								quantity,
-								price
-							}
-						});
-					}
+						const quantity = randArrItem(quantities);
+						const price = randArrItem(prices);
+						for (const item of itemPool) {
+							await user.runCommand(geCommand, {
+								[method]: {
+									item,
+									quantity,
+									price
+								}
+							});
+						}
 					}
 				});
 			}
