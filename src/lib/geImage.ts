@@ -231,15 +231,9 @@ class GeImageTask {
 }
 
 declare global {
-	const geImageGenerator: GeImageTask;
+	var geImageGenerator: GeImageTask;
 }
-declare global {
-	namespace NodeJS {
-		interface Global {
-			geImageGenerator: GeImageTask;
-		}
-	}
-}
+
 global.geImageGenerator = new GeImageTask();
 
 geImageGenerator.init();

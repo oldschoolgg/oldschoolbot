@@ -22,15 +22,9 @@ export interface TransactItemsArgs {
 }
 
 declare global {
-	const transactItems: typeof transactItemsFromBank;
+	var transactItems: typeof transactItemsFromBank;
 }
-declare global {
-	namespace NodeJS {
-		interface Global {
-			transactItems: typeof transactItemsFromBank;
-		}
-	}
-}
+
 global.transactItems = transactItemsFromBank;
 export async function transactItemsFromBank({
 	userID,

@@ -3,7 +3,6 @@ import '../globalSetup';
 
 import { Image } from '@napi-rs/canvas';
 import { noOp } from 'e';
-import mitm from 'mitm';
 import { afterEach, beforeEach, vi } from 'vitest';
 
 import { BankImageTask, bankImageTask } from '../../src/lib/bankImage';
@@ -70,16 +69,3 @@ async function init() {
 }
 
 init();
-
-function setupRequestLogging() {
-	const mitmInstance = mitm();
-
-	mitmInstance.on('connect', (socket, opts) => {
-		if (opts?.host) {
-			// throw new Error(`Sending request to ${opts.host}`);
-			socket.bypass();
-		}
-	});
-}
-
-setupRequestLogging();

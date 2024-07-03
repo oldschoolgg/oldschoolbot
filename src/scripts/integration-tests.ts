@@ -1,4 +1,6 @@
 import { execSync } from 'node:child_process';
+import path from 'node:path';
+import { config } from 'dotenv';
 import { sleep } from 'e';
 
 async function main() {
@@ -9,11 +11,13 @@ async function main() {
 		await sleep(2000);
 
 		console.log('Getting ready...');
-		execSync('dotenv -e .env.test -- prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit' });
-		execSync('dotenv -e .env.test -- prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit' });
+		const env = { ...process.env, ...config({ path: path.resolve('.env.test') }).parsed };
+
+		execSync('npx prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit', env });
+		execSync('npx prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit', env });
 
 		console.log('Building...');
-		execSync('yarn build:esbuild', { stdio: 'inherit' });
+		execSync('yarn build', { stdio: 'inherit' });
 
 		console.log('Starting tests...');
 		const runs = 1;

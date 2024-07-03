@@ -10,14 +10,7 @@ import { calculateMastery } from './mastery';
 import { MUserStats } from './structures/MUserStats';
 
 declare global {
-	const roboChimpClient: PrismaClient;
-}
-declare global {
-	namespace NodeJS {
-		interface Global {
-			roboChimpClient: PrismaClient;
-		}
-	}
+	var roboChimpClient: PrismaClient;
 }
 
 export type RobochimpUser = User;
