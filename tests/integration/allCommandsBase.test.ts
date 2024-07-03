@@ -176,7 +176,7 @@ test(
 		await maxUser.update({ bitfield: [BitField.isModerator] });
 		const store = new Store({ name: 'commands', dirs: [join('dist', 'mahoji')], checker: isValidCommand });
 		await store.load();
-		const currentClientSettings = await mahojiClientSettingsFetch({ construction_cost_bank: true });
+		await mahojiClientSettingsFetch({ construction_cost_bank: true });
 		await prisma.activity.deleteMany({
 			where: {
 				user_id: BigInt(maxUser.id)
@@ -315,6 +315,8 @@ test(
 				});
 			}
 		}
+
+		await Promise.all(promises);
 
 		await client.processActivities();
 	},

@@ -24,7 +24,7 @@ const toMatchImageSnapshotPlugin = configureToMatchImageSnapshot({
 expect.extend({ toMatchImageSnapshot: toMatchImageSnapshotPlugin });
 
 describe('Images', () => {
-	test('Chat Heads', async () => {
+	test.concurrent('Chat Heads', async () => {
 		const result = await mahojiChatHead({
 			content:
 				'Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test',
@@ -33,7 +33,7 @@ describe('Images', () => {
 		expect(result.files[0].attachment).toMatchImageSnapshot();
 	});
 
-	test('Collection Log', async () => {
+	test.concurrent('Collection Log', async () => {
 		const result: any = await clImageGenerator.generateLogImage({
 			user: mockMUser({ cl: new Bank().add('Harmonised orb') }),
 			collection: 'nightmare',
@@ -52,7 +52,7 @@ describe('Images', () => {
 		expect(result.files[0].attachment).toMatchImageSnapshot();
 	});
 
-	test('Bank Image', async () => {
+	test.concurrent('Bank Image', async () => {
 		const bank = new Bank();
 		for (const item of [...Monsters.Cow.allItems]) {
 			bank.add(item);
@@ -66,7 +66,7 @@ describe('Images', () => {
 		expect(result.file.attachment).toMatchImageSnapshot();
 	});
 
-	test('POH Image', async () => {
+	test.concurrent('POH Image', async () => {
 		const result = await pohImageGenerator.run({
 			prayer_altar: 13_197,
 			throne: 13_667,
@@ -85,7 +85,7 @@ describe('Images', () => {
 	// 	expect(result).toMatchImageSnapshot();
 	// });
 
-	test('TOA Image', async () => {
+	test.concurrent('TOA Image', async () => {
 		const image = await drawChestLootImage({
 			entries: [
 				{
@@ -106,7 +106,7 @@ describe('Images', () => {
 		expect(image.attachment as Buffer).toMatchImageSnapshot();
 	});
 
-	test('COX Image', async () => {
+	test.concurrent('COX Image', async () => {
 		const image = await drawChestLootImage({
 			entries: [
 				{

@@ -24,7 +24,7 @@ import type {
 import { Time, deepClone, randArrItem, randInt, shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
-import { describe, expect, test, vi } from 'vitest';
+import { expect, test, vi } from 'vitest';
 
 import { processPendingActivities } from '../../src/lib/Task';
 import { BitField } from '../../src/lib/constants';

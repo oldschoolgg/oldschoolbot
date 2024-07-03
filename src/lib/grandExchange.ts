@@ -1,6 +1,5 @@
 import type { GEListing, GETransaction } from '@prisma/client';
 import { GEListingType } from '@prisma/client';
-import { Stopwatch } from '@sapphire/stopwatch';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
 import { Time, calcPercentOfNum, clamp, noOp, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
