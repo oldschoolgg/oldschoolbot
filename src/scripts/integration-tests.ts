@@ -11,10 +11,10 @@ async function main() {
 		await sleep(2000);
 
 		console.log('Getting ready...');
-		const env = config({ path: path.resolve('.env.test') });
+		const env = { ...process.env, ...config({ path: path.resolve('.env.test') }) };
 
-		execSync('prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit', env: env.parsed });
-		execSync('prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit', env: env.parsed });
+		execSync('npx prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit', env: env.parsed });
+		execSync('npx prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit', env: env.parsed });
 
 		console.log('Building...');
 		execSync('yarn build', { stdio: 'inherit' });
