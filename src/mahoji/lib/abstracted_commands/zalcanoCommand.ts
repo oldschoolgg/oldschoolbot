@@ -62,7 +62,7 @@ export async function zalcanoCommand(user: MUser, channelID: string, quantity?: 
 	if (quantity > 1 && duration > maxTripLength) {
 		return `${user.minionName} can't go on PvM trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount you can do for Wintertodt is ${Math.floor(
+		)}, try a lower quantity. The highest amount you can do for Zalcano is ${Math.floor(
 			maxTripLength / baseTime
 		)}.`;
 	}
