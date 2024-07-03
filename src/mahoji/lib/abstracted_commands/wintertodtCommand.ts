@@ -2,7 +2,6 @@ import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { floor } from 'lodash';
 import { Eatables } from '../../../lib/data/eatables';
 import { warmGear } from '../../../lib/data/filterables';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -47,14 +46,14 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 	durationPerTodt = reduceNumByPercent(durationPerTodt, 5 * warmGearAmount);
 
 	const maxTripLength = calcMaxTripLength(user, 'Wintertodt');
-	if (!quantity) quantity = floor(maxTripLength / durationPerTodt);
+	if (!quantity) quantity = Math.floor(maxTripLength / durationPerTodt);
 	quantity = Math.max(1, quantity);
 	const duration = durationPerTodt * quantity;
 
 	if (quantity > 1 && duration > maxTripLength) {
 		return `${user.minionName} can't go on PvM trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount you can do for Wintertodt is ${floor(
+		)}, try a lower quantity. The highest amount you can do for Wintertodt is ${Math.floor(
 			maxTripLength / durationPerTodt
 		)}.`;
 	}
