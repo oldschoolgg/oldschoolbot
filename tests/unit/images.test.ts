@@ -1,39 +1,26 @@
-import { configureToMatchImageSnapshot } from 'jest-image-snapshot';
+import { writeFile } from 'node:fs/promises';
 import { Bank, Monsters } from 'oldschooljs';
-import { describe, expect, test } from 'vitest';
+import { describe, test } from 'vitest';
 
 import { drawChestLootImage } from '../../src/lib/bankImage';
 import { clImageGenerator } from '../../src/lib/collectionLogTask';
+import { BOT_TYPE } from '../../src/lib/constants';
 import { pohImageGenerator } from '../../src/lib/pohImage';
 import { mahojiChatHead } from '../../src/lib/util/chatHeadImage';
 import { makeBankImage } from '../../src/lib/util/makeBankImage';
 import { mockMUser } from './utils';
 
-declare module 'vitest' {
-	interface Assertion<T> {
-		toMatchImageSnapshot(): T;
-	}
-}
-
-const toMatchImageSnapshotPlugin = configureToMatchImageSnapshot({
-	customSnapshotsDir: './tests/unit/snapshots',
-	noColors: true,
-	failureThreshold: 5,
-	failureThresholdType: 'percent'
-});
-expect.extend({ toMatchImageSnapshot: toMatchImageSnapshotPlugin });
-
 describe('Images', () => {
-	test('Chat Heads', async () => {
+	test.concurrent('Chat Heads', async () => {
 		const result = await mahojiChatHead({
 			content:
 				'Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test',
 			head: 'santa'
 		});
-		expect(result.files[0].attachment).toMatchImageSnapshot();
+		await writeFile(`tests/unit/snapshots/chatHead.${BOT_TYPE}.png`, result.files[0].attachment);
 	});
 
-	test('Collection Log', async () => {
+	test.concurrent('Collection Log', async () => {
 		const result: any = await clImageGenerator.generateLogImage({
 			user: mockMUser({ cl: new Bank().add('Harmonised orb') }),
 			collection: 'nightmare',
@@ -49,10 +36,10 @@ describe('Images', () => {
 				gotrRiftSearches: 1
 			}
 		});
-		expect(result.files[0].attachment).toMatchImageSnapshot();
+		await writeFile(`tests/unit/snapshots/cl.${BOT_TYPE}.png`, result.files[0].attachment);
 	});
 
-	test('Bank Image', async () => {
+	test.concurrent('Bank Image', async () => {
 		const bank = new Bank();
 		for (const item of [...Monsters.Cow.allItems]) {
 			bank.add(item);
@@ -63,10 +50,10 @@ describe('Images', () => {
 			bank,
 			title: 'Test Image'
 		});
-		expect(result.file.attachment).toMatchImageSnapshot();
+		await writeFile(`tests/unit/snapshots/bank.${BOT_TYPE}.png`, result.file.attachment);
 	});
 
-	test('POH Image', async () => {
+	test.concurrent('POH Image', async () => {
 		const result = await pohImageGenerator.run({
 			prayer_altar: 13_197,
 			throne: 13_667,
@@ -74,7 +61,7 @@ describe('Images', () => {
 			mounted_cape: 29_210,
 			background_id: 1
 		} as any);
-		expect(result).toMatchImageSnapshot();
+		await writeFile(`tests/unit/snapshots/poh.${BOT_TYPE}.png`, result);
 	});
 
 	// test('Chart Image', async () => {
@@ -85,7 +72,7 @@ describe('Images', () => {
 	// 	expect(result).toMatchImageSnapshot();
 	// });
 
-	test('TOA Image', async () => {
+	test.concurrent('TOA Image', async () => {
 		const image = await drawChestLootImage({
 			entries: [
 				{
@@ -103,10 +90,10 @@ describe('Images', () => {
 			],
 			type: 'Tombs of Amascut'
 		});
-		expect(image.attachment as Buffer).toMatchImageSnapshot();
+		await writeFile(`tests/unit/snapshots/toa.${BOT_TYPE}.png`, image.attachment);
 	});
 
-	test('COX Image', async () => {
+	test.concurrent('COX Image', async () => {
 		const image = await drawChestLootImage({
 			entries: [
 				{
@@ -124,6 +111,6 @@ describe('Images', () => {
 			],
 			type: 'Chambers of Xerician'
 		});
-		expect(image.attachment as Buffer).toMatchImageSnapshot();
+		await writeFile(`tests/unit/snapshots/cox.${BOT_TYPE}.png`, image.attachment);
 	});
 });

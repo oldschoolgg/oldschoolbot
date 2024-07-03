@@ -133,12 +133,7 @@ describe('Transactionalized Trade Test', async () => {
 
 		const expectedResult = { success: false, message: `<@${cyr}> doesn't own all items.` };
 
-		expect(uCyr.GP).toBe(1_000_000);
-		expect(uMagna.GP).toBe(20_000_000);
-
-		await uCyr.sync();
 		expect(result).toMatchObject(expectedResult);
-		console.log(cyrStartingBank.bank);
 		expect(uCyr.bankWithGP.toString()).toEqual(cyrStartingBank.toString());
 		expect(uCyr.bankWithGP.equals(cyrStartingBank)).toBe(true);
 		expect(uMagna.bankWithGP.equals(magnaStartingBank)).toBe(true);

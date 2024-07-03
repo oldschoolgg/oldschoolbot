@@ -947,6 +947,8 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 }
 declare global {
 	export type MUser = MUserClass;
+	var mUserFetch: typeof srcMUserFetch;
+	var GlobalMUserClass: typeof MUserClass;
 }
 
 export async function srcMUserFetch(userID: string) {
@@ -962,17 +964,5 @@ export async function srcMUserFetch(userID: string) {
 	return new MUserClass(user);
 }
 
-declare global {
-	const mUserFetch: typeof srcMUserFetch;
-	const GlobalMUserClass: typeof MUserClass;
-}
-declare global {
-	namespace NodeJS {
-		interface Global {
-			mUserFetch: typeof srcMUserFetch;
-			GlobalMUserClass: typeof MUserClass;
-		}
-	}
-}
 global.mUserFetch = srcMUserFetch;
 global.GlobalMUserClass = MUserClass;

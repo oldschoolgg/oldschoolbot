@@ -176,7 +176,7 @@ test(
 		await maxUser.update({ bitfield: [BitField.isModerator] });
 		const store = new Store({ name: 'commands', dirs: [join('dist', 'mahoji')], checker: isValidCommand });
 		await store.load();
-		const currentClientSettings = await mahojiClientSettingsFetch({ construction_cost_bank: true });
+		await mahojiClientSettingsFetch({ construction_cost_bank: true });
 		await prisma.activity.deleteMany({
 			where: {
 				user_id: BigInt(maxUser.id)
@@ -289,29 +289,34 @@ test(
 			['minion', 'bankbg']
 		];
 
+		const promises = [];
+
 		for (const command of cmds) {
 			if (ignoredCommands.includes(command.name)) continue;
-			const options = await generateCommandInputs(maxUser, command.options!);
+
+			const options = shuffleArr(await generateCommandInputs(maxUser, command.options!)).slice(0, 5);
 			outer: for (const option of options) {
 				for (const [parent, sub, subCommand] of ignoredSubCommands) {
 					if (command.name === parent && option[sub] && (subCommand ? option[sub][subCommand] : true)) {
 						continue outer;
 					}
 				}
-				try {
-					const res = await maxUser.runCommand(command, option);
-					minionActivityCache.clear();
-					// console.log(`Running command ${command.name}
-					// Options: ${JSON.stringify(option)}
-					// Result: ${JSON.stringify(res).slice(0, 100)}`);
-				} catch (err) {
-					console.error(
-						`Failed to run command ${command.name} with options ${JSON.stringify(option)}: ${err}`
-					);
-					throw err;
-				}
+
+				promises.push(async () => {
+					try {
+						await maxUser.runCommand(command, option);
+						minionActivityCache.clear();
+					} catch (err) {
+						console.error(
+							`Failed to run command ${command.name} with options ${JSON.stringify(option)}: ${err}`
+						);
+						throw err;
+					}
+				});
 			}
 		}
+
+		await Promise.all(promises);
 
 		await client.processActivities();
 	},

@@ -944,15 +944,9 @@ export async function drawChestLootImage(options: {
 }
 
 declare global {
-	const bankImageGenerator: BankImageTask;
+	var bankImageGenerator: BankImageTask;
 }
-declare global {
-	namespace NodeJS {
-		interface Global {
-			bankImageGenerator: BankImageTask;
-		}
-	}
-}
+
 export const bankImageTask = new BankImageTask();
 global.bankImageGenerator = bankImageTask;
 bankImageGenerator.init();

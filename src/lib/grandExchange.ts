@@ -1,6 +1,5 @@
 import type { GEListing, GETransaction } from '@prisma/client';
 import { GEListingType } from '@prisma/client';
-import { Stopwatch } from '@sapphire/stopwatch';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
 import { Time, calcPercentOfNum, clamp, noOp, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
@@ -846,8 +845,6 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	private async _tick() {
 		if (!this.ready) return;
 		if (this.locked) return;
-		const stopwatch = new Stopwatch();
-		stopwatch.start();
 		const { buyListings: _buyListings, sellListings: _sellListings } = await this.fetchActiveListings();
 
 		// Filter out listings from Blacklisted users:
@@ -895,8 +892,6 @@ Difference: ${shouldHave.difference(currentBank)}`);
 			// Process only one transaction per tick
 			break;
 		}
-
-		stopwatch.stop();
 	}
 
 	async totalReset() {

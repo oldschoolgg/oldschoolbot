@@ -127,14 +127,7 @@ export const mahojiClient = new MahojiClient({
 });
 
 declare global {
-	const globalClient: OldSchoolBotClient;
-}
-declare global {
-	namespace NodeJS {
-		interface Global {
-			globalClient: OldSchoolBotClient;
-		}
-	}
+	var globalClient: OldSchoolBotClient;
 }
 
 client.mahojiClient = mahojiClient;
