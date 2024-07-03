@@ -1190,226 +1190,212 @@ async function buildBaseUser(userId: string) {
 	const user = await createTestUser(startBank, userData);
 	return user;
 }
-describe('migrate user test', async () => {
-	await mockClient();
-	vi.doMock('../../src/lib/util', async () => {
-		const actual: any = await vi.importActual('../../src/lib/util');
-		return {
-			...actual,
-			channelIsSendable: () => false
-		};
-	});
-
-	const logResult = (
-		result: { result: boolean; errors: string[] },
-		sourceData: UserData,
-		newData: UserData,
-		srcHistory?: string[],
-		dstHistory?: string[]
-	) => {
-		if (!result.result) {
-			if (srcHistory) {
-				console.log(`Source Command History: ${sourceData.id}`);
-				console.log(srcHistory);
-			}
-			if (dstHistory) {
-				console.log(`Target Command History: ${newData.id}`);
-				console.log(dstHistory);
-			}
-			console.log(`source: ${sourceData.id}  dest: ${newData.id}`);
-			console.log(result.errors);
-			console.log(JSON.stringify(sourceData));
-			console.log(JSON.stringify(newData));
-		}
+await mockClient();
+vi.doMock('../../src/lib/util', async () => {
+	const actual: any = await vi.importActual('../../src/lib/util');
+	return {
+		...actual,
+		channelIsSendable: () => false
 	};
+});
 
-	test('test preventing a double (clobber) robochimp migration (two bot-migration)', async () => {
-		const sourceUserId = mockedId();
-		const destUserId = mockedId();
+const logResult = (
+	result: { result: boolean; errors: string[] },
+	sourceData: UserData,
+	newData: UserData,
+	srcHistory?: string[],
+	dstHistory?: string[]
+) => {
+	if (!result.result) {
+		if (srcHistory) {
+			console.log(`Source Command History: ${sourceData.id}`);
+			console.log(srcHistory);
+		}
+		if (dstHistory) {
+			console.log(`Target Command History: ${newData.id}`);
+			console.log(dstHistory);
+		}
+		console.log(`source: ${sourceData.id}  dest: ${newData.id}`);
+		console.log(result.errors);
+		console.log(JSON.stringify(sourceData));
+		console.log(JSON.stringify(newData));
+	}
+};
 
-		// Create source user, and populate data:
-		const sourceUser = await buildBaseUser(sourceUserId);
-		const srcHistory = await runRandomTestCommandsOnUser(sourceUser, 5, true);
+test.concurrent('test preventing a double (clobber) robochimp migration (two bot-migration)', async () => {
+	const sourceUserId = mockedId();
+	const destUserId = mockedId();
 
-		const sourceData = new UserData(sourceUser);
-		await sourceData.sync();
+	// Create source user, and populate data:
+	const sourceUser = await buildBaseUser(sourceUserId);
+	const srcHistory = await runRandomTestCommandsOnUser(sourceUser, 5, true);
 
-		const migrateResult = await migrateUser(sourceUser.id, destUserId);
-		expect(migrateResult).toEqual(true);
+	const sourceData = new UserData(sourceUser);
+	await sourceData.sync();
 
-		const destData = new UserData(destUserId);
-		await destData.sync();
+	const migrateResult = await migrateUser(sourceUser.id, destUserId);
+	expect(migrateResult).toEqual(true);
 
-		const compareResult = sourceData.equals(destData);
-		logResult(compareResult, sourceData, destData, srcHistory, []);
-		expect(compareResult.result).toBe(true);
+	const destData = new UserData(destUserId);
+	await destData.sync();
 
-		// Now the actual test, everything above has to happen first...
-		await runAllTestCommandsOnUser(sourceUser);
+	const compareResult = sourceData.equals(destData);
+	logResult(compareResult, sourceData, destData, srcHistory, []);
+	expect(compareResult.result).toBe(true);
 
-		const newSourceData = new UserData(sourceUser);
-		await newSourceData.sync();
+	// Now the actual test, everything above has to happen first...
+	await runAllTestCommandsOnUser(sourceUser);
 
-		const secondMigrateResult = await migrateUser(sourceUser.id, destUserId);
-		expect(secondMigrateResult).toEqual(true);
+	const newSourceData = new UserData(sourceUser);
+	await newSourceData.sync();
 
-		const newDestData = new UserData(destUserId);
-		await newDestData.sync();
+	const secondMigrateResult = await migrateUser(sourceUser.id, destUserId);
+	expect(secondMigrateResult).toEqual(true);
 
-		const newCompareResult = sourceData.equals(destData);
-		logResult(newCompareResult, newSourceData, newDestData);
-		expect(newCompareResult.result).toBe(true);
+	const newDestData = new UserData(destUserId);
+	await newDestData.sync();
 
-		expect(newDestData.githubId).toEqual(sourceData.githubId);
-		expect(newDestData.githubId).toEqual(destData.githubId);
+	const newCompareResult = sourceData.equals(destData);
+	logResult(newCompareResult, newSourceData, newDestData);
+	expect(newCompareResult.result).toBe(true);
 
-		// Make sure the 2nd transfer didn't overwrite robochimp:
-		expect(newDestData.githubId !== newSourceData.githubId).toBeTruthy();
+	expect(newDestData.githubId).toEqual(sourceData.githubId);
+	expect(newDestData.githubId).toEqual(destData.githubId);
 
-		// Verify migrated id is correct
-		expect(newDestData.migratedUserId).toEqual(BigInt(sourceData.id));
-	});
-	test('test migrating existing user to target with no records', async () => {
-		const sourceUser = await buildBaseUser(mockedId());
-		await runAllTestCommandsOnUser(sourceUser);
+	// Make sure the 2nd transfer didn't overwrite robochimp:
+	expect(newDestData.githubId !== newSourceData.githubId).toBeTruthy();
 
-		const destUserId = mockedId();
+	// Verify migrated id is correct
+	expect(newDestData.migratedUserId).toEqual(BigInt(sourceData.id));
+});
+test.concurrent('test migrating existing user to target with no records', async () => {
+	const sourceUser = await buildBaseUser(mockedId());
+	await runAllTestCommandsOnUser(sourceUser);
 
-		const sourceData = new UserData(sourceUser);
-		await sourceData.sync();
+	const destUserId = mockedId();
 
-		const migrateResult = await migrateUser(sourceUser.id, destUserId);
-		expect(migrateResult).toEqual(true);
+	const sourceData = new UserData(sourceUser);
+	await sourceData.sync();
 
-		const newData = new UserData(destUserId);
-		await newData.sync();
+	const migrateResult = await migrateUser(sourceUser.id, destUserId);
+	expect(migrateResult).toEqual(true);
 
-		const compareResult = sourceData.equals(newData);
-		logResult(compareResult, sourceData, newData);
+	const newData = new UserData(destUserId);
+	await newData.sync();
 
-		expect(compareResult.result).toBe(true);
-	});
+	const compareResult = sourceData.equals(newData);
+	logResult(compareResult, sourceData, newData);
 
-	test('test migrating full user on top of full profile', async () => {
-		const sourceUser = await buildBaseUser(mockedId());
-		const destUser = await buildBaseUser(mockedId());
-		await runAllTestCommandsOnUser(sourceUser);
-		await runAllTestCommandsOnUser(destUser);
+	expect(compareResult.result).toBe(true);
+});
 
-		const sourceData = new UserData(sourceUser);
-		await sourceData.sync();
+test.concurrent('test migrating full user on top of full profile', async () => {
+	const sourceUser = await buildBaseUser(mockedId());
+	const destUser = await buildBaseUser(mockedId());
+	await runAllTestCommandsOnUser(sourceUser);
+	await runAllTestCommandsOnUser(destUser);
 
-		const migrateResult = await migrateUser(sourceUser.id, destUser.id);
-		expect(migrateResult).toEqual(true);
+	const sourceData = new UserData(sourceUser);
+	await sourceData.sync();
 
-		const newData = new UserData(destUser.id);
-		await newData.sync();
-		const compareResult = sourceData.equals(newData);
-		logResult(compareResult, sourceData, newData);
+	const migrateResult = await migrateUser(sourceUser.id, destUser.id);
+	expect(migrateResult).toEqual(true);
 
-		expect(compareResult.result).toBe(true);
+	const newData = new UserData(destUser.id);
+	await newData.sync();
+	const compareResult = sourceData.equals(newData);
+	logResult(compareResult, sourceData, newData);
 
-		if (newData.poh) newData.poh.spellbook_altar = 33;
-		if (newData.userStats) newData.userStats.sacrificed_bank = new Bank().add('Cannonball').bank;
-		newData.skillsAsLevels!.cooking = 1_000_000;
-		newData.bingos = [];
-		newData.botItemSell = [];
-		if (newData.gear?.melee) newData.gear.melee.weapon = null;
+	expect(compareResult.result).toBe(true);
 
-		const badResult = sourceData.equals(newData);
-		expect(badResult.result).toBe(false);
+	if (newData.poh) newData.poh.spellbook_altar = 33;
+	if (newData.userStats) newData.userStats.sacrificed_bank = new Bank().add('Cannonball').bank;
+	newData.skillsAsLevels!.cooking = 1_000_000;
+	newData.bingos = [];
+	newData.botItemSell = [];
+	if (newData.gear?.melee) newData.gear.melee.weapon = null;
 
-		const expectedBadResult = [
-			`Failed comparing ${sourceUser.id} vs ${destUser.id}:`,
-			"melee gear doesn't match",
-			"cooking level doesn't match. 1 vs 1000000",
-			"POH Object doesn't match: null !== 33",
-			'User Stats doesn\'t match: {} !== {"2":1}',
-			'Wrong number of BotItemSell rows. 1 vs 0'
-		];
-		expect(badResult.errors).toEqual(expectedBadResult);
-	});
+	const badResult = sourceData.equals(newData);
+	expect(badResult.result).toBe(false);
 
-	test(
-		'test migrating random user on top of empty profile',
-		async () => {
-			const sourceUser = await buildBaseUser(mockedId());
-			const destUserId = mockedId();
+	const expectedBadResult = [
+		`Failed comparing ${sourceUser.id} vs ${destUser.id}:`,
+		"melee gear doesn't match",
+		"cooking level doesn't match. 1 vs 1000000",
+		"POH Object doesn't match: null !== 33",
+		'User Stats doesn\'t match: {} !== {"2":1}',
+		'Wrong number of BotItemSell rows. 1 vs 0'
+	];
+	expect(badResult.errors).toEqual(expectedBadResult);
+});
 
-			const sourceRolls = randInt(6, 11);
-			const cmdHistory = await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
+test.concurrent('test migrating random user on top of empty profile', async () => {
+	const sourceUser = await buildBaseUser(mockedId());
+	const destUserId = mockedId();
 
-			const sourceData = new UserData(sourceUser);
-			await sourceData.sync();
+	const sourceRolls = randInt(6, 11);
+	const cmdHistory = await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
 
-			const result = await migrateUser(sourceUser, destUserId);
+	const sourceData = new UserData(sourceUser);
+	await sourceData.sync();
 
-			if (result !== true) throw new Error(`${sourceUser.id} - ${result}`);
-			expect(result).toEqual(true);
+	const result = await migrateUser(sourceUser, destUserId);
 
-			const newData = new UserData(destUserId);
-			await newData.sync();
+	if (result !== true) throw new Error(`${sourceUser.id} - ${result}`);
+	expect(result).toEqual(true);
 
-			const compareResult = sourceData.equals(newData);
-			logResult(compareResult, sourceData, newData, cmdHistory, []);
+	const newData = new UserData(destUserId);
+	await newData.sync();
 
-			expect(compareResult.result).toBe(true);
-		},
-		{ repeats: 1 }
-	);
+	const compareResult = sourceData.equals(newData);
+	logResult(compareResult, sourceData, newData, cmdHistory, []);
 
-	test(
-		'test migrating random user on top of random profile',
-		async () => {
-			const sourceUser = await buildBaseUser(mockedId());
-			const destUser = await buildBaseUser(mockedId());
+	expect(compareResult.result).toBe(true);
+});
 
-			const sourceRolls = randInt(5, 12);
-			const destRolls = randInt(5, 12);
+test.concurrent('test migrating random user on top of random profile', async () => {
+	const sourceUser = await buildBaseUser(mockedId());
+	const destUser = await buildBaseUser(mockedId());
 
-			const srcHistory = await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
-			const dstHistory = await runRandomTestCommandsOnUser(destUser, destRolls);
+	const sourceRolls = randInt(5, 12);
+	const destRolls = randInt(5, 12);
 
-			const sourceData = new UserData(sourceUser);
-			await sourceData.sync();
+	const srcHistory = await runRandomTestCommandsOnUser(sourceUser, sourceRolls);
+	const dstHistory = await runRandomTestCommandsOnUser(destUser, destRolls);
 
-			const result = await migrateUser(sourceUser, destUser);
-			expect(result).toEqual(true);
+	const sourceData = new UserData(sourceUser);
+	await sourceData.sync();
 
-			const newData = new UserData(destUser);
-			await newData.sync();
+	const result = await migrateUser(sourceUser, destUser);
+	expect(result).toEqual(true);
 
-			const compareResult = sourceData.equals(newData);
-			logResult(compareResult, sourceData, newData, srcHistory, dstHistory);
+	const newData = new UserData(destUser);
+	await newData.sync();
 
-			expect(compareResult.result).toBe(true);
-		},
-		{ repeats: 1 }
-	);
+	const compareResult = sourceData.equals(newData);
+	logResult(compareResult, sourceData, newData, srcHistory, dstHistory);
 
-	test(
-		'test migrating random user on top of full profile',
-		async () => {
-			const sourceUser = await buildBaseUser(mockedId());
-			const destUser = await buildBaseUser(mockedId());
+	expect(compareResult.result).toBe(true);
+});
 
-			const cmdHistory = await runRandomTestCommandsOnUser(sourceUser);
-			await runAllTestCommandsOnUser(destUser);
+test.concurrent('test migrating random user on top of full profile', async () => {
+	const sourceUser = await buildBaseUser(mockedId());
+	const destUser = await buildBaseUser(mockedId());
 
-			const sourceData = new UserData(sourceUser);
-			await sourceData.sync();
+	const cmdHistory = await runRandomTestCommandsOnUser(sourceUser);
+	await runAllTestCommandsOnUser(destUser);
 
-			const result = await migrateUser(sourceUser, destUser);
-			expect(result).toEqual(true);
+	const sourceData = new UserData(sourceUser);
+	await sourceData.sync();
 
-			const newData = new UserData(destUser);
-			await newData.sync();
+	const result = await migrateUser(sourceUser, destUser);
+	expect(result).toEqual(true);
 
-			const compareResult = sourceData.equals(newData);
-			logResult(compareResult, sourceData, newData, cmdHistory, []);
+	const newData = new UserData(destUser);
+	await newData.sync();
 
-			expect(compareResult.result).toBe(true);
-		},
-		{ repeats: 1 }
-	);
+	const compareResult = sourceData.equals(newData);
+	logResult(compareResult, sourceData, newData, cmdHistory, []);
+
+	expect(compareResult.result).toBe(true);
 });

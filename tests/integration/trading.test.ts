@@ -14,7 +14,7 @@ test('Trade consistency', async () => {
 
 	let users: TestUser[] = [];
 	for (let i = 0; i < NUMBER_OF_USERS; i++) {
-		users.push( createTestUser(bank) as any);
+		users.push(createTestUser(bank) as any);
 	}
 	users = await Promise.all(users);
 
