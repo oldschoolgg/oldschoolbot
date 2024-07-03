@@ -8,11 +8,7 @@ import type { ActivityTaskData } from '../types/minions';
 import { sqlLog } from '../util/logger';
 
 declare global {
-	namespace NodeJS {
-		interface Global {
-			prisma: PrismaClient | undefined;
-		}
-	}
+	var prisma: PrismaClient | undefined;
 }
 
 function makePrismaClient(): PrismaClient {
@@ -31,6 +27,7 @@ function makePrismaClient(): PrismaClient {
 	});
 }
 
+// biome-ignore lint/suspicious/noRedeclare: <explanation>
 export const prisma = global.prisma || makePrismaClient();
 global.prisma = prisma;
 
