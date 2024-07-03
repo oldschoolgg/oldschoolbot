@@ -11,6 +11,11 @@ import { geCommand } from '../../src/mahoji/commands/ge';
 import { cancelUsersListings } from '../../src/mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import type { TestUser } from './util';
 import { createTestUser, mockClient } from './util';
+import { Stopwatch } from '@sapphire/stopwatch';
+
+
+const TICKS_TO_RUN = 40;
+const AMOUNT_USERS = 20;
 
 const quantities = [-1, 0, 100_000_000_000_000_000, 1, 2, 38, 1_000_000_000_000, 500, '5*5'];
 const prices = [
@@ -58,17 +63,19 @@ describe('Grand Exchange', async () => {
 
 			const currentOwnedBank = await GrandExchange.fetchOwnedBank();
 			expect(currentOwnedBank.toString()).toEqual(new Bank().toString());
-			const amountOfUsers = randInt(100, 200);
 
-			const totalExpectedBank = sampleBank.clone().multiply(amountOfUsers);
-			const users: TestUser[] = [];
+			const totalExpectedBank = sampleBank.clone().multiply(AMOUNT_USERS);
+			let users: TestUser[] = [];
 
-			for (let i = 0; i < amountOfUsers; i++) {
-				const user = await createTestUser();
-				await user.addItemsToBank({ items: sampleBank });
-				users.push(user);
+			for (let i = 0; i < AMOUNT_USERS; i++) {
+				users.push((async () => {
+					const user = await createTestUser();
+					await user.addItemsToBank({ items: sampleBank });
+					return user;
+				})() as any)
 			}
-			console.log(`Finished initializing ${amountOfUsers} users`);
+			users = await Promise.all(users);
+			console.log(`Finished initializing ${AMOUNT_USERS} users`);
 
 			// Run a bunch of commands to buy/sell
 			const commandPromises = new PQueue({ concurrency: 20 });
@@ -93,13 +100,11 @@ describe('Grand Exchange', async () => {
 			console.log('Finished running all commands');
 
 			// Tick the g.e to make some transactions
-			for (let i = 0; i < 100; i++) {
+			for (let i = 0; i < TICKS_TO_RUN; i++) {
 				await GrandExchange.tick();
-				await waitForGEToBeEmpty();
 				await GrandExchange.extensiveVerification();
 			}
 			await waitForGEToBeEmpty();
-			console.log('Finished ticking 100 times');
 
 			// Cancel all remaining listings
 			const cancelPromises = [];

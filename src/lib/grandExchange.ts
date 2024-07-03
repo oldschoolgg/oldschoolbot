@@ -846,8 +846,6 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	private async _tick() {
 		if (!this.ready) return;
 		if (this.locked) return;
-		const stopwatch = new Stopwatch();
-		stopwatch.start();
 		const { buyListings: _buyListings, sellListings: _sellListings } = await this.fetchActiveListings();
 
 		// Filter out listings from Blacklisted users:
@@ -895,8 +893,6 @@ Difference: ${shouldHave.difference(currentBank)}`);
 			// Process only one transaction per tick
 			break;
 		}
-
-		stopwatch.stop();
 	}
 
 	async totalReset() {
