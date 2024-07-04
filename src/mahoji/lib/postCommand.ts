@@ -1,11 +1,11 @@
-import { CommandOptions } from 'mahoji/dist/lib/types';
+import type { CommandOptions } from 'mahoji/dist/lib/types';
 
 import { modifyBusyCounter } from '../../lib/busyCounterCache';
 import { busyImmuneCommands, shouldTrackCommand } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { makeCommandUsage } from '../../lib/util/commandUsage';
 import { logError } from '../../lib/util/logError';
-import { AbstractCommand } from './inhibitors';
+import type { AbstractCommand } from './inhibitors';
 
 export async function postCommand({
 	abstractCommand,

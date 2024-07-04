@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import LeapingFish from '../../../lib/skilling/skills/cooking/leapingFish';
-import { CutLeapingFishActivityTaskOptions } from '../../../lib/types/minions';
+import type { CutLeapingFishActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -27,9 +27,9 @@ export async function cutLeapingFishCommand({
 
 	if (!barbarianFish) return 'That is not a valid fish to cut.';
 
-	let requiredItems = barbarianFish.item.name;
+	const requiredItems = barbarianFish.item.name;
 
-	let timeToCutSingleItem = barbarianFish.tickRate * Time.Second * 0.6;
+	const timeToCutSingleItem = barbarianFish.tickRate * Time.Second * 0.6;
 
 	const maxTripLength = calcMaxTripLength(user, 'Cooking');
 

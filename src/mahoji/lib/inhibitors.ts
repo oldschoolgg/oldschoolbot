@@ -1,19 +1,11 @@
-import {
-	ComponentType,
-	DMChannel,
-	Guild,
-	GuildMember,
-	InteractionReplyOptions,
-	PermissionsBitField,
-	TextChannel,
-	User
-} from 'discord.js';
+import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel, User } from 'discord.js';
+import { ComponentType, PermissionsBitField } from 'discord.js';
 
 import { OWNER_IDS, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
-import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, minionBuyButton, PerkTier } from '../../lib/constants';
+import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, PerkTier, minionBuyButton } from '../../lib/constants';
 import { perkTierCache, syncPerkTierOfUser } from '../../lib/perkTiers';
-import { CategoryFlag } from '../../lib/types';
+import type { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';

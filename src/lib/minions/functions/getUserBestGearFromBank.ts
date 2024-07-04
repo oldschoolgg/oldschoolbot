@@ -1,15 +1,16 @@
 import { Bank } from 'oldschooljs';
-import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
+import type { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
-import { GearSetupType, GearStat } from '../../gear/types';
-import { Gear } from '../../structures/Gear';
-import { Skills } from '../../types';
+import type { GearSetupType } from '../../gear/types';
+import { GearStat } from '../../gear/types';
+import type { Gear } from '../../structures/Gear';
+import type { Skills } from '../../types';
 import { assert, skillsMeetRequirements } from '../../util';
 import getOSItem from '../../util/getOSItem';
 
 function getItemScore(item: Item) {
 	return Object.values(item.equipment!).reduce(
-		(a, b) => (!isNaN(Number(a)) ? Number(a) : 0) + (!isNaN(Number(b)) ? Number(b) : 0),
+		(a, b) => (!Number.isNaN(Number(a)) ? Number(a) : 0) + (!Number.isNaN(Number(b)) ? Number(b) : 0),
 		0
 	);
 }
@@ -23,8 +24,8 @@ export default function getUserBestGearFromBank(
 	extra: string | null = null
 ) {
 	assert(Object.values(GearStat).includes(gearStat as any));
-	let toRemoveFromGear: Bank = new Bank();
-	let toRemoveFromBank: Bank = new Bank();
+	const toRemoveFromGear: Bank = new Bank();
+	const toRemoveFromBank: Bank = new Bank();
 	const gearToEquip = { ...userGear.raw() };
 
 	let score2h = 0;
@@ -133,16 +134,16 @@ export default function getUserBestGearFromBank(
 	// Removes weapon/shield or 2h, depending on what has the highest stats
 	if ((!gearStatExtra && scoreWs > score2h) || (gearStatExtra && scoreWsExtra > score2hExtra)) {
 		if (gearToEquip['2h']) {
-			toRemoveFromBank.remove(gearToEquip['2h']!.item, gearToEquip['2h']!.quantity);
+			toRemoveFromBank.remove(gearToEquip['2h']?.item, gearToEquip['2h']?.quantity);
 			gearToEquip['2h'] = null;
 		}
 	} else {
 		if (gearToEquip.weapon) {
-			toRemoveFromBank.remove(gearToEquip.weapon!.item, gearToEquip.weapon!.quantity);
+			toRemoveFromBank.remove(gearToEquip.weapon?.item, gearToEquip.weapon?.quantity);
 			gearToEquip.weapon = null;
 		}
 		if (gearToEquip.shield) {
-			toRemoveFromBank.remove(gearToEquip.shield!.item, gearToEquip.shield!.quantity);
+			toRemoveFromBank.remove(gearToEquip.shield?.item, gearToEquip.shield?.quantity);
 			gearToEquip.shield = null;
 		}
 	}

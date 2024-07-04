@@ -4,7 +4,7 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import { GearStat } from '../../../gear/types';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 
 export const nieveMonsters: KillableMonster[] = [
 	{
@@ -32,7 +32,7 @@ export const nieveMonsters: KillableMonster[] = [
 		timeToFinish: Time.Second * 76,
 		table: Monsters.BlackDragon,
 
-		wildy: false,
+		wildy: true,
 
 		difficultyRating: 4,
 		itemsRequired: resolveItems(['Anti-dragon shield']),
@@ -42,7 +42,11 @@ export const nieveMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		pkActivityRating: 2,
+		pkBaseDeathChance: 7,
+		revsWeaponBoost: true,
+		wildySlayerCave: true
 	},
 	{
 		id: Monsters.BrutalBlackDragon.id,

@@ -1,4 +1,4 @@
-import { SkillsEnum } from '../skilling/types';
+import type { SkillsEnum } from '../skilling/types';
 
 export interface ItemBank {
 	[key: string]: number;

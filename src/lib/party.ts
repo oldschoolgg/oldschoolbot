@@ -1,13 +1,12 @@
-/* eslint-disable prefer-promise-reject-errors */
-import { userMention } from '@discordjs/builders';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, TextChannel } from 'discord.js';
-import { debounce, noOp, Time } from 'e';
+import type { TextChannel } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, userMention } from 'discord.js';
+import { Time, debounce, noOp } from 'e';
 
 import { production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
 import { SILENT_ERROR, usernameCache } from './constants';
-import { MakePartyOptions } from './types';
+import type { MakePartyOptions } from './types';
 import { makeComponents } from './util';
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 

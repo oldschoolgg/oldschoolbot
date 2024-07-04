@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-plus-operands */
 import { Canvas } from '@napi-rs/canvas';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
@@ -10,7 +9,8 @@ import {
 	fillTextXTimesInCtx,
 	loadAndCacheLocalImage
 } from '../../util/canvasUtil';
-import { GearSetup, GearSetupType, GearSetupTypes } from '../types';
+import type { GearSetup, GearSetupType } from '../types';
+import { GearSetupTypes } from '../types';
 
 /**
  * The default gear in a gear setup, when nothing is equipped.
@@ -62,8 +62,8 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 				i === 0
 					? x - (ctx.textAlign === 'end' ? ctx.measureText(texts[i + 1]).width - 3 : 0)
 					: ctx.textAlign === 'end'
-					? x
-					: ctx.measureText(texts[i - 1]).width + x + 3,
+						? x
+						: ctx.measureText(texts[i - 1]).width + x + 3,
 				y
 			);
 		}
@@ -82,7 +82,7 @@ export async function generateGearImage(
 	debugLog('Generating gear image', { user_id: user.id });
 	const bankBg = user.user.bankBackground ?? 1;
 
-	let { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg, user);
+	const { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg, user);
 
 	const hexColor = user.user.bank_bg_hex;
 
@@ -239,7 +239,7 @@ export async function generateGearImage(
 }
 
 export async function generateAllGearImage(user: MUser) {
-	let {
+	const {
 		sprite: bgSprite,
 		uniqueSprite: hasBgSprite,
 		background: userBg

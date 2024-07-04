@@ -1,8 +1,8 @@
 import { Time } from 'e';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
-import { Skills } from '../../../lib/types';
-import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
+import type { Skills } from '../../../lib/types';
+import type { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';

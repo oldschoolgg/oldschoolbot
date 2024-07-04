@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { ItemBank } from '../../../lib/types';
+import type { ItemBank } from '../../../lib/types';
 import { getItem } from '../../../lib/util/getOSItem';
 import { globalBingoTiles } from './globalTiles';
 

@@ -1,4 +1,4 @@
-import { PlayerOwnedHouse } from '@prisma/client';
+import type { PlayerOwnedHouse } from '@prisma/client';
 import { describe, expect, test } from 'vitest';
 
 import { calcPOHBoosts, getPOHObject } from '../../src/lib/poh';

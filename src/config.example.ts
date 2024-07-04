@@ -1,4 +1,4 @@
-import { IDiscordSettings } from './lib/types';
+import type { IDiscordSettings } from './lib/types';
 
 export const botToken = '';
 export const production = false;

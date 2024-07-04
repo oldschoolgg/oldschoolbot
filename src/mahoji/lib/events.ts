@@ -1,10 +1,10 @@
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { DEV_SERVER_ID, production } from '../../config';
 import { cacheBadges } from '../../lib/badges';
 import { syncBlacklists } from '../../lib/blacklists';
-import { Channel, DISABLED_COMMANDS, globalConfig, META_CONSTANTS } from '../../lib/constants';
+import { Channel, DISABLED_COMMANDS, META_CONSTANTS, globalConfig } from '../../lib/constants';
 import { initCrons } from '../../lib/crons';
 import { GrandExchange } from '../../lib/grandExchange';
 import { prisma } from '../../lib/settings/prisma';
@@ -39,8 +39,10 @@ export async function onStartup() {
 		update: {}
 	});
 
-	for (const command of disabledCommands!.disabled_commands) {
-		DISABLED_COMMANDS.add(command);
+	if (disabledCommands.disabled_commands) {
+		for (const command of disabledCommands.disabled_commands) {
+			DISABLED_COMMANDS.add(command);
+		}
 	}
 
 	// Sync blacklists

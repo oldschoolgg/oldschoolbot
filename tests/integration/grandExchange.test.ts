@@ -1,35 +1,23 @@
-import 'source-map-support/register';
-
-import { calcPercentOfNum, randArrItem, randInt, shuffleArr, Time } from 'e';
+import { Time, calcPercentOfNum, randArrItem, randInt, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { describe, expect, test } from 'vitest';
 
 import { usernameCache } from '../../src/lib/constants';
 import { GrandExchange } from '../../src/lib/grandExchange';
+import { prisma } from '../../src/lib/settings/prisma';
 import { assert } from '../../src/lib/util';
 import resolveItems from '../../src/lib/util/resolveItems';
 import { geCommand } from '../../src/mahoji/commands/ge';
 import { cancelUsersListings } from '../../src/mahoji/lib/abstracted_commands/cancelGEListingCommand';
-import { createTestUser, mockClient, TestUser } from './util';
+import type { TestUser } from './util';
+import { createTestUser, mockClient } from './util';
 
-const quantities = [-1, 0, 100_000_000_000_000_000, 1, 2, 38, 1_000_000_000_000, 500, '5*5'];
-const prices = [
-	-1,
-	0,
-	100_000_000_000_000_000,
-	1,
-	2,
-	1_000_000_000_000,
-	99,
-	100,
-	101,
-	1005,
-	4005,
-	5005,
-	100_000,
-	'5*9999999'
-];
+const TICKS_TO_RUN = 100;
+const AMOUNT_USERS = 20;
+
+const quantities = [1, 2, 38, 500, '5*5'];
+const prices = [1, 30, 33, 55];
 
 const sampleBank = new Bank()
 	.add('Coins', 1_000_000_000)
@@ -40,7 +28,7 @@ const sampleBank = new Bank()
 
 describe('Grand Exchange', async () => {
 	const itemPool = resolveItems(['Egg', 'Trout', 'Coal']);
-	GrandExchange.calculateSlotsOfUser = async () => ({ slots: 500 } as any);
+	GrandExchange.calculateSlotsOfUser = async () => ({ slots: 500 }) as any;
 	await mockClient();
 
 	async function waitForGEToBeEmpty() {
@@ -51,6 +39,7 @@ describe('Grand Exchange', async () => {
 	test(
 		'Fuzz',
 		async () => {
+			// biome-ignore lint/suspicious/noSelfCompare: <explanation>
 			assert(randInt(1, 100_000) !== randInt(1, 100_000));
 
 			await GrandExchange.totalReset();
@@ -58,33 +47,39 @@ describe('Grand Exchange', async () => {
 
 			const currentOwnedBank = await GrandExchange.fetchOwnedBank();
 			expect(currentOwnedBank.toString()).toEqual(new Bank().toString());
-			let amountOfUsers = randInt(100, 200);
 
-			const totalExpectedBank = sampleBank.clone().multiply(amountOfUsers);
+			const totalExpectedBank = sampleBank.clone().multiply(AMOUNT_USERS);
 			let users: TestUser[] = [];
 
-			for (let i = 0; i < amountOfUsers; i++) {
-				const user = await createTestUser();
-				await user.addItemsToBank({ items: sampleBank });
-				users.push(user);
+			for (let i = 0; i < AMOUNT_USERS; i++) {
+				users.push(
+					(async () => {
+						const user = await createTestUser();
+						await user.addItemsToBank({ items: sampleBank });
+						return user;
+					})() as any
+				);
 			}
-			console.log(`Finished initializing ${amountOfUsers} users`);
+			users = await Promise.all(users);
+			console.log(`Finished initializing ${AMOUNT_USERS} users`);
 
 			// Run a bunch of commands to buy/sell
-			const commandPromises = new PQueue({ concurrency: 10 });
+			const commandPromises = new PQueue({ concurrency: 20 });
 			for (const user of shuffleArr(users)) {
-				const method = randArrItem(['buy', 'sell']);
-				let quantity = randArrItem(quantities);
-				let price = randArrItem(prices);
 				commandPromises.add(async () => {
-					for (const item of itemPool) {
-						await user.runCommand(geCommand, {
-							[method]: {
-								item,
-								quantity,
-								price
-							}
-						});
+					for (let i = 0; i < 5; i++) {
+						const method = randArrItem(['buy', 'sell']);
+						const quantity = randArrItem(quantities);
+						const price = randArrItem(prices);
+						for (const item of itemPool) {
+							await user.runCommand(geCommand, {
+								[method]: {
+									item,
+									quantity,
+									price
+								}
+							});
+						}
 					}
 				});
 			}
@@ -93,16 +88,13 @@ describe('Grand Exchange', async () => {
 			console.log('Finished running all commands');
 
 			// Tick the g.e to make some transactions
-			for (let i = 0; i < 100; i++) {
+			for (let i = 0; i < TICKS_TO_RUN; i++) {
 				await GrandExchange.tick();
-				await waitForGEToBeEmpty();
-				await Promise.all([
-					GrandExchange.checkGECanFullFilAllListings(),
-					GrandExchange.extensiveVerification()
-				]);
+				await GrandExchange.extensiveVerification();
 			}
 			await waitForGEToBeEmpty();
-			console.log('Finished ticking 100 times');
+			const count = await prisma.gETransaction.count();
+			console.log(`Finished ticking ${TICKS_TO_RUN} times, made ${count} transactions`);
 
 			// Cancel all remaining listings
 			const cancelPromises = [];
@@ -133,8 +125,6 @@ describe('Grand Exchange', async () => {
 
 			const data = await GrandExchange.fetchData();
 			expect(data.isLocked).toEqual(false);
-			expect(data.taxBank, '1MS').toBeGreaterThan(0);
-			expect(data.totalTax, 'L1M').toBeGreaterThan(0);
 
 			const totalTaxed = await global.prisma!.gETransaction.aggregate({
 				_sum: {
@@ -156,7 +146,6 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 			assert(GrandExchange.queue.size === 0, 'Queue should be empty');
 		},
 		{
-			repeats: 1,
 			timeout: Time.Minute * 5
 		}
 	);

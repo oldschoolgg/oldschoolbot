@@ -1,16 +1,18 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
 
-import { TwitcherGloves, TWITCHERS_GLOVES } from '../../lib/constants';
+import type { TwitcherGloves } from '../../lib/constants';
+import { TWITCHERS_GLOVES } from '../../lib/constants';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
-import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
+import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const axes = [
 	{
@@ -209,7 +211,7 @@ export const chopCommand: OSBMahojiCommand = {
 		}
 
 		// Calculate the time it takes to chop specific quantity or as many as possible
-		let [timeToChop, newQuantity] = determineWoodcuttingTime({
+		const [timeToChop, newQuantity] = determineWoodcuttingTime({
 			quantity,
 			user,
 			log,

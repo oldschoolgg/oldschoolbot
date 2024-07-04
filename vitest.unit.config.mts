@@ -13,6 +13,15 @@ export default defineConfig({
 		},
 		setupFiles: 'tests/unit/setup.ts',
 		resolveSnapshotPath: (testPath, extension) =>
-			join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`)
+			join(join(dirname(testPath), 'snapshots'), `${basename(testPath)}${extension}`),
+		slowTestThreshold: 0,
+		isolate: false,
+		poolOptions: {
+			threads: {
+				minThreads: 10,
+				maxThreads: 20,
+				singleThread: true
+			}
+		}
 	}
 });

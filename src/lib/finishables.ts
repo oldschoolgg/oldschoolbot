@@ -12,6 +12,7 @@ import { EliteMimicTable, MasterMimicTable } from 'oldschooljs/dist/simulation/m
 
 import { allCollectionLogsFlat } from './data/Collections';
 import {
+	NexCL,
 	chambersOfXericCL,
 	chambersOfXericNormalCL,
 	cluesBeginnerCL,
@@ -21,13 +22,12 @@ import {
 	cluesMasterCL,
 	cluesMediumCL,
 	evilChickenOutfit,
-	NexCL,
 	temporossCL,
-	theatreOfBLoodCL,
-	theatreOfBLoodNormalCL,
 	theGauntletCL,
 	theNightmareCL,
 	theNightmareNormalCL,
+	theatreOfBLoodCL,
+	theatreOfBLoodNormalCL,
 	wintertodtCL
 } from './data/CollectionsExport';
 import pets from './data/pets';
@@ -287,14 +287,14 @@ for (const mon of monsterPairedCLs) {
 		cl: mon.cl,
 		kill: ({ accumulatedLoot }) => {
 			const cost = new Bank();
-			if (killableMonster && killableMonster.healAmountNeeded) {
+			if (killableMonster?.healAmountNeeded) {
 				cost.add('Swordfish', Math.ceil(killableMonster.healAmountNeeded / 14));
 			}
 			if (killableMonster?.itemCost) {
 				cost.add(calculateTripConsumableCost(killableMonster.itemCost, 1, killableMonster.timeToFinish));
 			}
-			let loot = mon.mon.kill(1, {});
-			if (killableMonster && killableMonster.specialLoot) {
+			const loot = mon.mon.kill(1, {});
+			if (killableMonster?.specialLoot) {
 				killableMonster.specialLoot({ ownedItems: accumulatedLoot, loot, quantity: 1 });
 			}
 			return { loot, cost };

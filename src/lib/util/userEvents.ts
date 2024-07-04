@@ -1,4 +1,5 @@
-import { Prisma, UserEvent, UserEventType, xp_gains_skill_enum } from '@prisma/client';
+import type { Prisma, UserEvent, xp_gains_skill_enum } from '@prisma/client';
+import { UserEventType } from '@prisma/client';
 
 import { MAX_LEVEL, MAX_TOTAL_LEVEL } from '../constants';
 import { allCollectionLogsFlat } from '../data/Collections';

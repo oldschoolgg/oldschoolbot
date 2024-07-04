@@ -2,7 +2,7 @@ import { Time } from 'e';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { percentChance } from '../../util';
-import { Creature } from '../types';
+import type { Creature } from '../types';
 
 export function calcLootXPHunting(
 	currentLevel: number,
@@ -30,7 +30,7 @@ export function calcLootXPHunting(
 		const experienceFactor = experienceScore / (Time.Hour / timeInSeconds);
 
 		const maxPercentIncrease = 10;
-		let percentIncrease = Math.min(Math.floor(experienceFactor), maxPercentIncrease);
+		const percentIncrease = Math.min(Math.floor(experienceFactor), maxPercentIncrease);
 
 		chanceOfSuccess += chanceOfSuccess * (percentIncrease / 100);
 	}
@@ -48,10 +48,10 @@ export function calcLootXPHunting(
 }
 
 export function generateHerbiTable(currentHerbLvl: number, gotMagicSec: boolean): LootTable {
-	let herbiTable = new LootTable();
+	const herbiTable = new LootTable();
 	if (currentHerbLvl < 31) return herbiTable;
 	herbiTable.tertiary(6500, 'Herbi');
-	let baseYield = gotMagicSec ? 2 : 1;
+	const baseYield = gotMagicSec ? 2 : 1;
 	herbiTable
 		.add('Grimy guam leaf', [baseYield, 4])
 		.add('Grimy irit leaf', [baseYield, 4])

@@ -1,10 +1,10 @@
-import { calcWhatPercent, randInt, reduceNumByPercent, Time } from 'e';
+import { Time, calcWhatPercent, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { getPOHObject } from '../../../lib/poh';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
+import type { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';

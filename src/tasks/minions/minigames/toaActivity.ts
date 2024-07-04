@@ -1,8 +1,8 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
-import { isObject, Time, uniqueArr } from 'e';
+import { Time, isObject, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { Emoji, Events, toaPurpleItems } from '../../../lib/constants';
@@ -17,7 +17,7 @@ import {
 	toaOrnamentKits,
 	toaPetTransmogItems
 } from '../../../lib/simulation/toa';
-import { TOAOptions } from '../../../lib/types/minions';
+import type { TOAOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { assert } from '../../../lib/util/logError';
 import resolveItems from '../../../lib/util/resolveItems';
@@ -130,12 +130,12 @@ export const toaTask: MinionTask = {
 		let resultMessage = isSolo
 			? `${leaderSoloUser}, your minion finished ${quantity === 1 ? 'a' : `${quantity}x`} Tombs of Amascut raid${
 					quantity > 1 ? 's' : ''
-			  }! Your KC is now ${minigameIncrementResult[0].newScore}.\n`
+				}! Your KC is now ${minigameIncrementResult[0].newScore}.\n`
 			: `<@${leader}> Your Raid${quantity > 1 ? 's have' : ' has'} finished.\n`;
 
 		const shouldShowImage = allUsers.length <= 3 && totalLoot.entries().every(i => i[1].length <= 6);
 
-		for (let [userID, userData] of raidResults.entries()) {
+		for (const [userID, userData] of raidResults.entries()) {
 			const { points, deaths, mUser: user } = userData;
 			await userStatsUpdate(
 				user.id,
@@ -266,7 +266,7 @@ export const toaTask: MinionTask = {
 								}
 							],
 							type: 'Tombs of Amascut'
-					  })
+						})
 					: undefined,
 				data,
 				itemsAddedTeamLoot.totalLoot()
@@ -286,7 +286,7 @@ export const toaTask: MinionTask = {
 							customTexts: makeCustomTexts(u.id)
 						})),
 						type: 'Tombs of Amascut'
-				  })
+					})
 				: undefined,
 			data,
 			null

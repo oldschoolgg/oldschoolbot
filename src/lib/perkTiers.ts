@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { notEmpty } from 'e';
 
 import { SupportServer } from '../config';
@@ -46,7 +46,7 @@ export function getUsersPerkTier(
 	}
 
 	if (noCheckOtherAccounts !== true && userOrBitfield instanceof GlobalMUserClass) {
-		let main = userOrBitfield.user.main_account;
+		const main = userOrBitfield.user.main_account;
 		const allAccounts: string[] = [...userOrBitfield.user.ironman_alts, userOrBitfield.id];
 		if (main) {
 			allAccounts.push(main);

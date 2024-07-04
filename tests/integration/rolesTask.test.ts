@@ -3,7 +3,8 @@ import { Bank } from 'oldschooljs';
 import { describe, expect, test } from 'vitest';
 
 import { runRolesTask } from '../../src/lib/rolesTask';
-import { MinigameName, Minigames } from '../../src/lib/settings/minigames';
+import type { MinigameName } from '../../src/lib/settings/minigames';
+import { Minigames } from '../../src/lib/settings/minigames';
 import { cryptoRand } from '../../src/lib/util';
 import { userStatsBankUpdate } from '../../src/mahoji/mahojiSettings';
 import { createTestUser, mockedId } from './util';

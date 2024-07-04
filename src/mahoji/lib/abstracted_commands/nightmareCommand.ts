@@ -1,5 +1,5 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
-import { reduceNumByPercent, Time } from 'e';
+import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BitField, PHOSANI_NIGHTMARE_ID, ZAM_HASTA_CRUSH } from '../../../lib/constants';
@@ -8,9 +8,9 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import { KillableMonster } from '../../../lib/minions/types';
+import type { KillableMonster } from '../../../lib/minions/types';
 import { Gear } from '../../../lib/structures/Gear';
-import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
+import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
@@ -129,8 +129,8 @@ function perUserCost(user: MUser, quantity: number, isPhosani: boolean, hasShado
 }
 
 export async function nightmareCommand(user: MUser, channelID: string, name: string, qty: number | undefined) {
-	const hasShadow = user.gear.mage.hasEquipped("Tumeken's shadow") ? true : false;
-	const hasSang = user.gear.mage.hasEquipped('Sanguinesti staff') ? true : false;
+	const hasShadow = !!user.gear.mage.hasEquipped("Tumeken's shadow");
+	const hasSang = !!user.gear.mage.hasEquipped('Sanguinesti staff');
 	name = name.toLowerCase();
 	let isPhosani = false;
 	let type: 'solo' | 'mass' = 'solo';
@@ -228,7 +228,7 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		}
 	}
 
-	let durQtyRes = await calcDurQty(
+	const durQtyRes = await calcDurQty(
 		users,
 		{ ...NightmareMonster, timeToFinish: effectiveTime },
 		qty,
@@ -236,7 +236,7 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		Time.Minute * 30
 	);
 	if (typeof durQtyRes === 'string') return durQtyRes;
-	let [quantity, duration, perKillTime] = durQtyRes;
+	const [quantity, duration, perKillTime] = durQtyRes;
 
 	const totalCost = new Bank();
 	let soloFoodUsage: Bank | null = null;
@@ -244,7 +244,7 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 	const cost = perUserCost(user, quantity, isPhosani, hasShadow, hasSang);
 	if (typeof cost === 'string') return cost;
 
-	let healingMod = isPhosani ? 1.5 : 1;
+	const healingMod = isPhosani ? 1.5 : 1;
 	try {
 		const { foodRemoved } = await removeFoodFromUser({
 			user,
@@ -313,19 +313,19 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
 			: `${user.usernameOrMention}'s party of ${
 					users.length
-			  } is now off to kill ${quantity}x Nightmare. Each kill takes ${formatDuration(
+				} is now off to kill ${quantity}x Nightmare. Each kill takes ${formatDuration(
 					perKillTime
-			  )} instead of ${formatDuration(
+				)} instead of ${formatDuration(
 					NightmareMonster.timeToFinish
-			  )} - the total trip will take ${formatDuration(duration)}.`;
+				)} - the total trip will take ${formatDuration(duration)}.`;
 
 	str += `\nRemoved ${soloFoodUsage} from your bank.${
 		isPhosani
 			? hasShadow
 				? ` Your minion is using ${shadowChargesPerKc * quantity} Tumeken's shadow charges. `
 				: hasSang
-				? ` Your minion is using ${sangChargesPerKc * quantity} Sanguinesti staff charges. `
-				: ''
+					? ` Your minion is using ${sangChargesPerKc * quantity} Sanguinesti staff charges. `
+					: ''
 			: ''
 	}`;
 

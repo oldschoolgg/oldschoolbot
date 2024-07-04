@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { prisma } from '../../../lib/settings/prisma';

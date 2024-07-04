@@ -1,4 +1,4 @@
-import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
+import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';

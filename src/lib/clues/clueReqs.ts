@@ -1,7 +1,7 @@
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 
 import type { Skills } from '../types';
-import { ClueTier } from './clueTiers';
+import type { ClueTier } from './clueTiers';
 import { allStashUnitTiers } from './stashUnits';
 
 export interface ClueReq {

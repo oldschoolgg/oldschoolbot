@@ -1,24 +1,13 @@
 import '../lib/data/itemAliases';
 import '../lib/itemMods';
 
-import { writeFileSync } from 'fs';
+import { writeFileSync } from 'node:fs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { GearSetupTypes } from '../lib/gear/types';
 
 /* PSQL Function that needs to be created */
 const extraFunctions = `
-CREATE OR REPLACE FUNCTION remove_jsonb_keys(data jsonb, keys text[])
-RETURNS jsonb LANGUAGE plpgsql AS $$
-declare
-	key text;
-BEGIN
-    FOREACH key IN ARRAY keys LOOP
-        data := data - key;
-    END LOOP;
-    RETURN data;
-END;
-$$;
 CREATE OR REPLACE FUNCTION array_remove_multiple(original_array anyarray, values_to_remove anyarray)
 RETURNS anyarray AS $$
 BEGIN
@@ -40,16 +29,14 @@ FINAL_QUERY += `\n${extraFunctions}\n\n`;
 
 FINAL_QUERY += '\nBEGIN;\n';
 
-FINAL_QUERY += GearSetupTypes.map(gearType =>
+FINAL_QUERY += GearSetupTypes.flatMap(gearType =>
 	Object.values(EquipmentSlot).map(
 		slot =>
 			`UPDATE users SET "gear.${gearType}" = jsonb_set("gear.${gearType}"::jsonb, ARRAY['${slot}'], 'null'::jsonb) WHERE "gear.${gearType}"->'${slot}'->>'item' = ANY(${arrayToRemove});`
 	)
-)
-	.flat()
-	.join('\n');
+).join('\n');
 
-const removeFromBankQuery = (column: string) => `"${column}" = remove_jsonb_keys("${column}"::jsonb, ${arrayToRemove})`;
+const removeFromBankQuery = (column: string) => `"${column}" = "${column}"::jsonb - ${arrayToRemove}`;
 const removeFromArrayQuery = (column: string) =>
 	`"${column}" = array_remove_multiple("${column}", ${intArrayToRemove})`;
 

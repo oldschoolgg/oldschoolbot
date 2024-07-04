@@ -1,14 +1,14 @@
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import {
+import type {
 	ButtonInteraction,
 	ChatInputCommandInteraction,
-	DiscordAPIError,
 	Interaction,
 	InteractionReplyOptions,
 	InteractionResponse,
 	Message,
 	RepliableInteraction
 } from 'discord.js';
+import { DiscordAPIError } from 'discord.js';
 
 import { SILENT_ERROR } from '../constants';
 import { logErrorForInteraction } from './logError';

@@ -1,13 +1,13 @@
 import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
 import { UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
-import { noOp, Time } from 'e';
+import { Time, noOp } from 'e';
 import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util/util';
 
 import { MAXING_MESSAGE, SupportServer } from '../config';
 import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants';
 import { skillEmoji } from './data/emojis';
-import { AddXpParams } from './minions/types';
+import type { AddXpParams } from './minions/types';
 import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';
 import { insertUserEvent } from './util/userEvents';
@@ -25,7 +25,7 @@ async function howManyMaxed() {
 		(await Promise.all([prisma.$queryRawUnsafe(makeQuery(false)), prisma.$queryRawUnsafe(makeQuery(true))])) as any
 	)
 		.map((i: any) => i[0].count)
-		.map((i: any) => parseInt(i));
+		.map((i: any) => Number.parseInt(i));
 
 	return {
 		normies,
@@ -124,7 +124,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 		let str = `${skill.emoji} **${user.badgedUsername}'s** minion, ${
 			user.minionName
 		}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
-			parseInt(usersWith.count) + 1
+			Number.parseInt(usersWith.count) + 1
 		)} to get 99 ${skillNameCased}.`;
 
 		if (user.isIronman) {
@@ -135,7 +135,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			>(
 				`SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${LEVEL_99_XP};`
 			);
-			str += ` They are the ${formatOrdinal(parseInt(ironmenWith.count) + 1)} Ironman to get 99.`;
+			str += ` They are the ${formatOrdinal(Number.parseInt(ironmenWith.count) + 1)} Ironman to get 99.`;
 		}
 		globalClient.emit(Events.ServerNotification, str);
 	}

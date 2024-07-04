@@ -1,9 +1,9 @@
-import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
+import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
-import { DarkAltarOptions } from '../../types/minions';
+import type { DarkAltarOptions } from '../../types/minions';
 import { formatDuration, hasSkillReqs } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';

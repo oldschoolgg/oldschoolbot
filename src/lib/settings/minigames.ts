@@ -1,4 +1,4 @@
-import { Minigame } from '@prisma/client';
+import type { Minigame } from '@prisma/client';
 
 import { prisma } from './prisma';
 
@@ -190,6 +190,11 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Tombs of Amascut',
 		aliases: ['toa', 'tombs of amascut'],
 		column: 'tombs_of_amascut'
+	},
+	{
+		name: 'Fortis Colosseum',
+		aliases: ['colo'],
+		column: 'colosseum'
 	}
 ];
 

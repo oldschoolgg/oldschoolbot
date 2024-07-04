@@ -1,11 +1,11 @@
-import { randInt, roll, Time } from 'e';
+import { Time, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MiningActivityTaskOptions } from '../../lib/types/minions';
+import type { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -13,7 +13,7 @@ export const miningTask: MinionTask = {
 	type: 'Mining',
 	async run(data: MiningActivityTaskOptions) {
 		const { oreID, userID, channelID, duration, powermine } = data;
-		let { quantity } = data;
+		const { quantity } = data;
 		const user = await mUserFetch(userID);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
@@ -23,7 +23,7 @@ export const miningTask: MinionTask = {
 		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
 		if (
 			user.gear.skilling.hasEquipped(
-				Object.keys(Mining.prospectorItems).map(i => parseInt(i)),
+				Object.keys(Mining.prospectorItems).map(i => Number.parseInt(i)),
 				true
 			)
 		) {
@@ -33,7 +33,7 @@ export const miningTask: MinionTask = {
 		} else {
 			// For each prospector item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Mining.prospectorItems)) {
-				if (user.hasEquipped(parseInt(itemID))) {
+				if (user.hasEquipped(Number.parseInt(itemID))) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;

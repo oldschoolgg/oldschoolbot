@@ -1,11 +1,12 @@
-import { bold } from '@discordjs/builders';
 import { ProductID, products } from '@oldschoolgg/toolkit';
+import { bold } from 'discord.js';
 import { notEmpty } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
 
 import { BOT_TYPE } from '../../lib/constants';
 import { roboChimpSyncData } from '../../lib/roboChimp';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const redeemCommand: OSBMahojiCommand = {
 	name: 'redeem',
@@ -78,7 +79,7 @@ export const redeemCommand: OSBMahojiCommand = {
 									push: product.bit
 								}
 							}
-					  })
+						})
 					: undefined
 			].filter(notEmpty)
 		);

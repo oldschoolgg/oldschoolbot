@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 
 export const camdozaalMonsters: KillableMonster[] = [
 	{

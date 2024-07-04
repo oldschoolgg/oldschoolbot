@@ -1,13 +1,13 @@
-import { Activity, NewUser, Prisma } from '@prisma/client';
-import {
+import type { Activity, NewUser, Prisma } from '@prisma/client';
+import type {
 	APIInteractionGuildMember,
 	ButtonInteraction,
 	ChatInputCommandInteraction,
 	GuildMember,
 	User
 } from 'discord.js';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { CommandOptions } from 'mahoji/dist/lib/types';
+import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandOptions } from 'mahoji/dist/lib/types';
 
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
@@ -113,7 +113,7 @@ export async function runCommand({
 	if (!mahojiCommand) throw new Error('No command found');
 	const abstractCommand = convertMahojiCommandToAbstractCommand(mahojiCommand);
 
-	let error: Error | null = null;
+	const error: Error | null = null;
 	let inhibited = false;
 	try {
 		const inhibitedReason = await preCommand({
@@ -134,7 +134,7 @@ export async function runCommand({
 				content:
 					typeof inhibitedReason.reason! === 'string'
 						? inhibitedReason.reason
-						: inhibitedReason.reason!.content!,
+						: inhibitedReason.reason?.content!,
 				ephemeral: true
 			});
 			return null;
