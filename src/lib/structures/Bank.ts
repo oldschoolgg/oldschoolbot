@@ -11,7 +11,7 @@ export class ChargeBank extends GeneralBank<DegradeableItem['settingsKey']> {
 	}
 }
 
-export class XPBank extends GeneralBank<SkillNameType> {
+class XPBank extends GeneralBank<SkillNameType> {
 	constructor(initialBank?: GeneralBankType<SkillNameType>) {
 		super({ initialBank, allowedKeys: SkillsArray });
 	}

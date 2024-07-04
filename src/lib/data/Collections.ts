@@ -1193,7 +1193,7 @@ export const allCLItemsFiltered = [
 	)
 ];
 
-export const overallPlusItems = [
+const overallPlusItems = [
 	...new Set(
 		Object.entries(allCollectionLogs)
 			.filter(i => i[0] !== 'Discontinued')
@@ -1253,7 +1253,7 @@ export interface UserStatsDataNeededForCL {
 	stats: MUserStats;
 }
 
-export function getBank(
+function getBank(
 	user: MUser,
 	type: 'sacrifice' | 'bank' | 'collection' | 'temp',
 	userStats: UserStatsDataNeededForCL | MUserStats | null
@@ -1280,7 +1280,7 @@ export function getTotalCl(
 	return getUserClData(getBank(user, logType, userStats).bank, allCLItemsFiltered);
 }
 
-export function getPossibleOptions() {
+function getPossibleOptions() {
 	const roles: [string, string, string][] = [];
 	const categories: [string, string, string][] = [];
 	const activities: [string, string, string][] = [];

@@ -46,4 +46,3 @@ export const camdozaalMonsters: KillableMonster[] = [
 	}
 ];
 
-export default camdozaalMonsters;

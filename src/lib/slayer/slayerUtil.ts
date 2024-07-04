@@ -31,7 +31,7 @@ export enum SlayerMasterEnum {
 	Duradel = 7
 }
 
-export interface DetermineBoostParams {
+interface DetermineBoostParams {
 	cbOpts: CombatOptionsEnum[];
 	user: MUser;
 	monster: KillableMonster;
@@ -98,7 +98,7 @@ export async function calculateSlayerPoints(currentStreak: number, master: Slaye
 	return basePoints;
 }
 
-export function weightedPick(filteredTasks: AssignableSlayerTask[]) {
+function weightedPick(filteredTasks: AssignableSlayerTask[]) {
 	let totalweight = 0;
 	for (let i = 0; i < filteredTasks.length; i++) {
 		totalweight += filteredTasks[i].weight;
@@ -129,7 +129,7 @@ export function userCanUseMaster(user: MUser, master: SlayerMaster) {
 	);
 }
 
-export function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerMaster, allowBossTasks = false) {
+function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerMaster, allowBossTasks = false) {
 	if (task.isBoss && !allowBossTasks) return false;
 	if (task.dontAssign) return false;
 	const myLastTask = user.user.slayer_last_task;
@@ -342,7 +342,7 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 	};
 }
 
-export const allSlayerHelmets = [
+const allSlayerHelmets = [
 	'Slayer helmet',
 	'Slayer helmet (i)',
 	'Black slayer helmet',
@@ -361,7 +361,7 @@ export const allSlayerHelmets = [
 	'Twisted slayer helmet (i)'
 ];
 
-export function getSlayerMasterOSJSbyID(slayerMasterID: number) {
+function getSlayerMasterOSJSbyID(slayerMasterID: number) {
 	const osjsSlayerMaster = [
 		MonsterSlayerMaster.Turael,
 		MonsterSlayerMaster.Turael,
@@ -376,7 +376,7 @@ export function getSlayerMasterOSJSbyID(slayerMasterID: number) {
 	return osjsSlayerMaster[slayerMasterID];
 }
 
-export function getSlayerReward(id: SlayerTaskUnlocksEnum): string {
+function getSlayerReward(id: SlayerTaskUnlocksEnum): string {
 	const { name } = SlayerRewardsShop.find(srs => {
 		return srs?.id === id;
 	})!;

@@ -10,7 +10,7 @@ import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 import resolveItems from '../util/resolveItems';
 
-export interface TOBRoom {
+interface TOBRoom {
 	name: string;
 	difficultyRating: number;
 	timeWeighting: number;

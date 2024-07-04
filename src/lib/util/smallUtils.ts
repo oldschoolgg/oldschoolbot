@@ -251,7 +251,7 @@ export function calculateSimpleMonsterDeathChance({
 	return clamp(deathChance, lowestDeathChance, highestDeathChance);
 }
 
-export function perHourChance(
+function perHourChance(
 	durationMilliseconds: number,
 	oneInXPerHourChance: number,
 	successFunction: () => unknown

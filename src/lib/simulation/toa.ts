@@ -113,7 +113,7 @@ function estimatePoints(raidLevel: number, teamSize: number) {
 	return totalPoints;
 }
 
-export const maxMageGear = constructGearSetup({
+const maxMageGear = constructGearSetup({
 	head: 'Ancestral hat',
 	neck: 'Occult necklace',
 	body: 'Ancestral robe top',
@@ -126,7 +126,7 @@ export const maxMageGear = constructGearSetup({
 });
 const maxMage = new Gear(maxMageGear);
 
-export const maxRangeGear = constructGearSetup({
+const maxRangeGear = constructGearSetup({
 	head: 'Masori mask (f)',
 	neck: 'Necklace of anguish',
 	body: 'Masori body (f)',
@@ -142,7 +142,7 @@ export const maxRangeGear = constructGearSetup({
 const maxRange = new Gear(maxRangeGear);
 maxRange.ammo!.quantity = 100_000;
 
-export const maxMeleeLessThan300Gear = constructGearSetup({
+const maxMeleeLessThan300Gear = constructGearSetup({
 	head: 'Torva full helm',
 	neck: 'Amulet of torture',
 	body: 'Torva platebody',
@@ -154,7 +154,7 @@ export const maxMeleeLessThan300Gear = constructGearSetup({
 	shield: 'Avernic defender',
 	ring: 'Lightbearer'
 });
-export const maxMeleeOver300Gear = constructGearSetup({
+const maxMeleeOver300Gear = constructGearSetup({
 	head: 'Torva full helm',
 	neck: 'Amulet of torture',
 	body: 'Torva platebody',
@@ -913,7 +913,7 @@ interface GearSetupPercents {
 	mage: number;
 	total: number;
 }
-export function calculateUserGearPercents(gear: UserFullGearSetup, raidLevel: number): GearSetupPercents {
+function calculateUserGearPercents(gear: UserFullGearSetup, raidLevel: number): GearSetupPercents {
 	const maxMelee = raidLevel < 300 ? maxMeleeLessThan300Gear : maxMeleeOver300Gear;
 	const melee = calcSetupPercent(
 		maxMelee.stats,
@@ -1010,7 +1010,7 @@ async function calcTOAInput({
 	};
 }
 
-export async function checkTOAUser(
+async function checkTOAUser(
 	user: MUser,
 	kc: number,
 	raidLevel: number,
@@ -1068,7 +1068,7 @@ export async function checkTOAUser(
 	return [false];
 }
 
-export async function checkTOATeam(users: MUser[], raidLevel: number, quantity: number): Promise<string | null> {
+async function checkTOATeam(users: MUser[], raidLevel: number, quantity: number): Promise<string | null> {
 	const userWithoutSupplies = users.find(u => !u.bank.has(minimumSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
@@ -1337,7 +1337,7 @@ interface ParsedTeamMember {
 	attempts: number;
 }
 
-export function createTOATeam({
+function createTOATeam({
 	team,
 	disableVariation,
 	raidLevel,
@@ -1536,7 +1536,7 @@ export function createTOATeam({
 	return results;
 }
 
-export async function toaCheckCommand(user: MUser) {
+async function toaCheckCommand(user: MUser) {
 	const result = await checkTOAUser(user, await getMinigameScore(user.id, 'tombs_of_amascut'), 200, 5, Time.Hour, 1);
 	if (result[0]) {
 		return `🔴 You aren't able to join a Tombs of Amascut raid, address these issues first: ${result[1]}`;

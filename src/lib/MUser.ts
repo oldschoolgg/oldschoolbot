@@ -951,7 +951,7 @@ declare global {
 	var GlobalMUserClass: typeof MUserClass;
 }
 
-export async function srcMUserFetch(userID: string) {
+async function srcMUserFetch(userID: string) {
 	const user = await prisma.user.upsert({
 		create: {
 			id: userID

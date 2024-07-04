@@ -4,7 +4,7 @@ export interface ItemBank {
 	[key: string]: number;
 }
 
-export interface Patron {
+interface Patron {
 	patreonID: string;
 	discordID?: string;
 	entitledTiers: string[];
@@ -44,7 +44,7 @@ export type CategoryFlag =
 	| 'fun'
 	| 'simulation';
 
-export interface IDiscordSettings {
+interface IDiscordSettings {
 	Roles: Record<string, string>;
 	Channels: Record<string, string>;
 	Emojis: Record<string, string>;

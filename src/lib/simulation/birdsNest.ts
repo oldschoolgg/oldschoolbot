@@ -23,7 +23,7 @@ export const treeSeedsNest = new LootTable()
 	.add('Celastrus seed', 1, 3)
 	.add('Redwood tree seed', 1, 2);
 
-export const wysonSeedsNest = new LootTable()
+const wysonSeedsNest = new LootTable()
 	.add('Sweetcorn seed', 6, 102)
 	.add('Strawberry seed', 6, 100)
 	.add('Acorn', 1, 80)

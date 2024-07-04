@@ -73,7 +73,7 @@ export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]): B
 	};
 }
 
-export function parseFarmedCrop(crop: FarmedCrop) {
+function parseFarmedCrop(crop: FarmedCrop) {
 	return {
 		id: crop.id,
 		userID: crop.user_id,

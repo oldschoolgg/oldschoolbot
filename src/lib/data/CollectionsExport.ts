@@ -35,7 +35,7 @@ export interface ILeftListStatus {
 	[key: string]: 'not_started' | 'started' | 'completed';
 }
 
-export interface IKCActivity {
+interface IKCActivity {
 	[key: string]:
 		| string
 		| string[]
@@ -54,7 +54,7 @@ export type FormatProgressFunction = ({
 	stats: UserStatsDataNeededForCL;
 }) => string | string[] | Promise<string | string[]>;
 
-export interface ICollectionActivity {
+interface ICollectionActivity {
 	[key: string]: {
 		// If the collection will count towards the collection log counter
 		counts?: false;
@@ -181,27 +181,27 @@ export const alchemicalHydraCL = resolveItems([
 	'Alchemical hydra heads'
 ]);
 
-export const karilsItems = resolveItems([
+const karilsItems = resolveItems([
 	"Karil's coif",
 	"Karil's leathertop",
 	"Karil's leatherskirt",
 	"Karil's crossbow"
 ]);
-export const ahrimsItems = resolveItems(["Ahrim's hood", "Ahrim's robetop", "Ahrim's robeskirt", "Ahrim's staff"]);
-export const dharokItems = resolveItems([
+const ahrimsItems = resolveItems(["Ahrim's hood", "Ahrim's robetop", "Ahrim's robeskirt", "Ahrim's staff"]);
+const dharokItems = resolveItems([
 	"Dharok's helm",
 	"Dharok's platebody",
 	"Dharok's platelegs",
 	"Dharok's greataxe"
 ]);
-export const guthansItems = resolveItems([
+const guthansItems = resolveItems([
 	"Guthan's helm",
 	"Guthan's platebody",
 	"Guthan's chainskirt",
 	"Guthan's warspear"
 ]);
-export const toragsItems = resolveItems(["Torag's helm", "Torag's platebody", "Torag's platelegs", "Torag's hammers"]);
-export const veracsItems = resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]);
+const toragsItems = resolveItems(["Torag's helm", "Torag's platebody", "Torag's platelegs", "Torag's hammers"]);
+const veracsItems = resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]);
 export const barrowsItemArr = [karilsItems, ahrimsItems, guthansItems, toragsItems, veracsItems, dharokItems];
 export const barrowsChestCL = resolveItems([
 	...karilsItems,
@@ -233,7 +233,7 @@ export const cerberusCL = resolveItems([
 export const chaosElementalCL = resolveItems(['Pet chaos elemental', 'Dragon pickaxe', 'Dragon 2h sword']);
 export const chaosFanaticCL = resolveItems(['Pet chaos elemental', 'Odium shard 1', 'Malediction shard 1']);
 
-export const godWarsDungeonGodswordShards = resolveItems(['Godsword shard 1', 'Godsword shard 2', 'Godsword shard 3']);
+const godWarsDungeonGodswordShards = resolveItems(['Godsword shard 1', 'Godsword shard 2', 'Godsword shard 3']);
 export const generalGraardorCL = resolveItems([
 	'Pet general graardor',
 	'Bandos chestplate',
@@ -465,7 +465,7 @@ export const chambersOfXericMetamorphPets = resolveItems([
 	'Vespina'
 ]);
 export const tobMetamorphPets = resolveItems(["Lil' Maiden", "Lil' Bloat", "Lil' Nylo", "Lil' Sot", "Lil' Xarp"]);
-export const toaMetamorphPets = resolveItems(['Zebo', "Tumeken's guardian", 'Kephriti', 'Babi', 'Akkhito']);
+const toaMetamorphPets = resolveItems(['Zebo', "Tumeken's guardian", 'Kephriti', 'Babi', 'Akkhito']);
 export const chambersOfXericNormalCL = resolveItems([
 	'Olmlet',
 	'Twisted bow',
@@ -1926,7 +1926,7 @@ export const miscellaneousCL = resolveItems([
 	'Orange egg sac',
 	'Blue egg sac'
 ]);
-export const holidayCL = resolveItems([
+const holidayCL = resolveItems([
 	'Cow mask',
 	'Cow top',
 	'Cow trousers',
@@ -2230,7 +2230,7 @@ export const gracefulCL = resolveItems([
 	...gracefulCapes
 ]).filter(id => !resolveItems(['Max cape', 'Agility cape', 'Agility cape(t)']).includes(id));
 
-export const metamorphPets = resolveItems([
+const metamorphPets = resolveItems([
 	'Little parasite',
 	'Dark squirrel',
 	'Baby mole-rat',
@@ -2253,7 +2253,7 @@ export const allPetIDs = [
 	...toaMetamorphPets
 ];
 
-export const antiSantaOutfit = new Bank({
+const antiSantaOutfit = new Bank({
 	'Antisanta mask': 1,
 	'Antisanta jacket': 1,
 	'Antisanta pantaloons': 1,

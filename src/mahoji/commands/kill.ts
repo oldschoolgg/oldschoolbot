@@ -10,7 +10,7 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import type { OSBMahojiCommand } from '../lib/util';
 
-export function determineKillLimit(user: MUser) {
+function determineKillLimit(user: MUser) {
 	const perkTier = user.perkTier();
 
 	if (perkTier >= PerkTier.Six) {

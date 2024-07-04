@@ -40,7 +40,7 @@ function parseInputGear(inputGear: InputGear) {
 	return { gear, remove };
 }
 
-export function gearPresetToGear(preset: GearPreset): GearSetup {
+function gearPresetToGear(preset: GearPreset): GearSetup {
 	function gearItem(val: null | number) {
 		if (val === null) return null;
 		return {

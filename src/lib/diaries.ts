@@ -13,7 +13,7 @@ import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 import { formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util/smallUtils';
 
-export interface Diary {
+interface Diary {
 	name: string;
 	id: DiaryID;
 	alias?: string[];
@@ -316,7 +316,7 @@ export const ArdougneDiary: Diary = {
 	}
 };
 
-export const DesertDiary: Diary = {
+const DesertDiary: Diary = {
 	name: 'Desert',
 	id: DiaryID.Desert,
 	easy: {
@@ -501,7 +501,7 @@ export const FaladorDiary: Diary = {
 	}
 };
 
-export const FremennikDiary: Diary = {
+const FremennikDiary: Diary = {
 	name: 'Fremennik',
 	id: DiaryID.Fremennik,
 	alias: ['fremmy', 'fremenik', 'fremmenik', 'frem'],
@@ -964,7 +964,7 @@ export const MorytaniaDiary: Diary = {
 	}
 };
 
-export const VarrockDiary: Diary = {
+const VarrockDiary: Diary = {
 	name: 'Varrock',
 	id: DiaryID.Varrock,
 	alias: ['var'],

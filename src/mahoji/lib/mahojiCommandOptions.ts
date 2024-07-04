@@ -47,7 +47,7 @@ export const itemOption = (filter?: (item: Item) => boolean): CommandOption => (
 		return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
 	}
 });
-export const equipableItemOption = (filter?: (item: Item) => boolean): CommandOption => ({
+const equipableItemOption = (filter?: (item: Item) => boolean): CommandOption => ({
 	type: ApplicationCommandOptionType.String,
 	name: 'item',
 	description: 'The item you want to pick.',
@@ -148,7 +148,7 @@ export const gearPresetOption: CommandOption = {
 	}
 };
 
-export function generateRandomBank(size: number) {
+function generateRandomBank(size: number) {
 	const bank = new Bank();
 	for (let i = 0; i < size; i++) {
 		bank.add(allEquippableItems[i]);

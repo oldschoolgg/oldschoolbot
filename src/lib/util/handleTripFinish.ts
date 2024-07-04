@@ -27,7 +27,7 @@ import {
 } from './globalInteractions';
 import { sendToChannelID } from './webhook';
 
-export const collectors = new Map<string, MessageCollector>();
+const collectors = new Map<string, MessageCollector>();
 
 const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'GroupMonsterKilling',

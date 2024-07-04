@@ -36,7 +36,7 @@ DO UPDATE SET quantity = "ge_bank"."quantity" + ${quantity};`)
 	return queries;
 }
 
-export async function transactFromTableBank({ bankToAdd, bankToRemove }: { bankToAdd?: Bank; bankToRemove?: Bank }) {
+async function transactFromTableBank({ bankToAdd, bankToRemove }: { bankToAdd?: Bank; bankToRemove?: Bank }) {
 	const queries = makeTransactFromTableBankQueries({ bankToAdd, bankToRemove });
 	await prisma.$transaction(queries);
 }

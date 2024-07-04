@@ -49,7 +49,7 @@ const globalInteractionActions = [
 	'CHECK_TOA'
 ] as const;
 
-export type GlobalInteractionAction = (typeof globalInteractionActions)[number];
+type GlobalInteractionAction = (typeof globalInteractionActions)[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 	return globalInteractionActions.includes(str as GlobalInteractionAction);
 }

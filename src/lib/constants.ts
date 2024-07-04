@@ -19,7 +19,7 @@ import { dateFm } from './util/smallUtils';
 
 export { PerkTier };
 
-export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
+const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
 const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '940760643525570591';
 
@@ -458,7 +458,7 @@ export const projectiles = {
 export type ProjectileType = keyof typeof projectiles;
 
 export const PHOSANI_NIGHTMARE_ID = 9416;
-export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
+const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
 export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
 	if (!Array.isArray(args)) return true;
 	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {

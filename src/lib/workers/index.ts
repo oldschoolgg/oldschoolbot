@@ -6,12 +6,12 @@ import Piscina from 'piscina';
 import { production } from '../../config';
 import type { ItemBank } from '../types';
 
-export interface CasketWorkerArgs {
+interface CasketWorkerArgs {
 	clueTierID: number;
 	quantity: number;
 }
 
-export interface KillWorkerArgs {
+interface KillWorkerArgs {
 	bossName: string;
 	quantity: number;
 	limit: number;
@@ -20,19 +20,19 @@ export interface KillWorkerArgs {
 	lootTableTertiaryChanges: [string, number][];
 }
 
-export type KillWorkerReturn = Promise<{
+type KillWorkerReturn = Promise<{
 	bank?: Bank;
 	error?: string;
 	title?: string;
 	content?: string;
 }>;
 
-export interface FinishWorkerArgs {
+interface FinishWorkerArgs {
 	name: string;
 	tertiaries?: boolean;
 }
 
-export type FinishWorkerReturn = Promise<
+type FinishWorkerReturn = Promise<
 	| {
 			loot: ItemBank;
 			kcBank: ItemBank;
@@ -44,15 +44,15 @@ export type FinishWorkerReturn = Promise<
 
 const maxThreads = production ? 3 : 1;
 
-export const finishWorker = new Piscina({
+const finishWorker = new Piscina({
 	filename: resolve(__dirname.replace('src', 'dist'), 'finish.worker.js'),
 	maxThreads
 });
-export const killWorker = new Piscina({
+const killWorker = new Piscina({
 	filename: resolve(__dirname.replace('src', 'dist'), 'kill.worker.js'),
 	maxThreads
 });
-export const casketWorker = new Piscina({
+const casketWorker = new Piscina({
 	filename: resolve(__dirname.replace('src', 'dist'), 'casket.worker.js'),
 	maxThreads
 });

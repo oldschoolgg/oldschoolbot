@@ -41,7 +41,7 @@ export async function interactionReplyGetDuration(
 	}
 }
 
-export function makePlainButtons(...buttons: { label: string; customId: string }[]) {
+function makePlainButtons(...buttons: { label: string; customId: string }[]) {
 	const components: ButtonBuilder[] = [];
 	for (let i = 0; i < buttons.length; i++) {
 		components.push(

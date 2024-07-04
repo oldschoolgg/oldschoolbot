@@ -179,7 +179,7 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 	return channel.send(`And the Last Man Standing is... **${winner}**!`);
 }
 
-export interface LastManStandingGame {
+interface LastManStandingGame {
 	prep: boolean;
 	final: boolean;
 	contestants: Set<string>;

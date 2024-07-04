@@ -13,7 +13,7 @@ import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironman
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import type { ClientStorage, User, UserStats } from '.prisma/client';
 
-export const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> => ({
+const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> => ({
 	userID,
 	guildID: '342983479501389826',
 	member: {} as any,

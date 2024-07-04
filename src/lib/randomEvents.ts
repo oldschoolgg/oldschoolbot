@@ -8,7 +8,7 @@ import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { BitField } from './constants';
 import resolveItems from './util/resolveItems';
 
-export interface RandomEvent {
+interface RandomEvent {
 	id: number;
 	name: string;
 	outfit?: number[];
@@ -18,7 +18,7 @@ export interface RandomEvent {
 
 const baguetteTable = new LootTable().add('Baguette', 1, 63).add('Stale baguette', 1, 1);
 
-export const beekeeperOutfit = resolveItems([
+const beekeeperOutfit = resolveItems([
 	"Beekeeper's hat",
 	"Beekeeper's top",
 	"Beekeeper's legs",
@@ -26,11 +26,11 @@ export const beekeeperOutfit = resolveItems([
 	"Beekeeper's boots"
 ]);
 
-export const camoOutfit = resolveItems(['Camo helmet', 'Camo top', 'Camo bottoms']);
+const camoOutfit = resolveItems(['Camo helmet', 'Camo top', 'Camo bottoms']);
 
-export const lederhosenOutfit = resolveItems(['Lederhosen hat', 'Lederhosen top', 'Lederhosen shorts']);
+const lederhosenOutfit = resolveItems(['Lederhosen hat', 'Lederhosen top', 'Lederhosen shorts']);
 
-export const zombieOutfit = resolveItems([
+const zombieOutfit = resolveItems([
 	'Zombie mask',
 	'Zombie shirt',
 	'Zombie trousers',
@@ -38,7 +38,7 @@ export const zombieOutfit = resolveItems([
 	'Zombie boots'
 ]);
 
-export const mimeOutfit = resolveItems(['Mime mask', 'Mime top', 'Mime legs', 'Mime gloves', 'Mime boots']);
+const mimeOutfit = resolveItems(['Mime mask', 'Mime top', 'Mime legs', 'Mime gloves', 'Mime boots']);
 
 // Used by Mysterious Old man, Pillory, Rick Turpentine
 const randomEventTable = new LootTable()

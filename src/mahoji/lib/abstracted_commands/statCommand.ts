@@ -118,7 +118,7 @@ WHERE
 	return x;
 }
 
-export async function personalConstructionStats(user: MUser) {
+async function personalConstructionStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'objectID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Construction'
@@ -135,7 +135,7 @@ GROUP BY data->>'objectID';`);
 	return items;
 }
 
-export async function personalFiremakingStats(user: MUser) {
+async function personalFiremakingStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'burnableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Firemaking'
@@ -152,7 +152,7 @@ GROUP BY data->>'burnableID';`);
 	return items;
 }
 
-export async function personalWoodcuttingStats(user: MUser) {
+async function personalWoodcuttingStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'logID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Woodcutting'
@@ -169,7 +169,7 @@ GROUP BY data->>'logID';`);
 	return items;
 }
 
-export async function personalMiningStats(user: MUser) {
+async function personalMiningStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'oreID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Mining'
@@ -186,7 +186,7 @@ GROUP BY data->>'oreID';`);
 	return items;
 }
 
-export async function personalHerbloreStats(user: MUser, stats: UserStats) {
+async function personalHerbloreStats(user: MUser, stats: UserStats) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'mixableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Herblore'
@@ -203,7 +203,7 @@ GROUP BY data->>'mixableID';`);
 	items.add(new Bank(stats.herbs_cleaned_while_farming_bank as ItemBank));
 	return items;
 }
-export async function personalAlchingStats(user: MUser, includeAgilityAlching = true) {
+async function personalAlchingStats(user: MUser, includeAgilityAlching = true) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'itemID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Alching'
@@ -227,7 +227,7 @@ GROUP BY ((data->>'alch')::json)->>'itemID';`);
 	}
 	return items;
 }
-export async function personalSmithingStats(user: MUser) {
+async function personalSmithingStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'smithedBarID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Smithing'
@@ -243,7 +243,7 @@ GROUP BY data->>'smithedBarID';`);
 	}
 	return items;
 }
-export async function personalSmeltingStats(user: MUser) {
+async function personalSmeltingStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'barID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Smelting'
@@ -259,7 +259,7 @@ GROUP BY data->>'barID';`);
 	}
 	return items;
 }
-export async function personalSpellCastStats(user: MUser) {
+async function personalSpellCastStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'spellID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Casting'
@@ -269,7 +269,7 @@ AND completed = true
 GROUP BY data->>'spellID';`);
 	return result.map(i => ({ castable: Castables.find(t => t.id === i.id)!, id: i.id, qty: i.qty }));
 }
-export async function personalCollectingStats(user: MUser) {
+async function personalCollectingStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'collectableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Collecting'

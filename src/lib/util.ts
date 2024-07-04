@@ -147,7 +147,7 @@ export function getSupportGuild(): Guild | null {
 	return guild;
 }
 
-export function calcCombatLevel(skills: Skills) {
+function calcCombatLevel(skills: Skills) {
 	const defence = skills.defence ? convertXPtoLVL(skills.defence) : 1;
 	const ranged = skills.ranged ? convertXPtoLVL(skills.ranged) : 1;
 	const hitpoints = skills.hitpoints ? convertXPtoLVL(skills.hitpoints) : 1;
@@ -279,14 +279,14 @@ export function convertPercentChance(percent: number) {
 	return (1 / (percent / 100)).toFixed(1);
 }
 
-export function murMurHashChance(input: string, percent: number) {
+function murMurHashChance(input: string, percent: number) {
 	const hash = murmurHash.v3(input) % 1e4;
 	return hash < percent * 100;
 }
 
 const getMurKey = (input: string | number, sortHash: string) => `${input.toString()}-${sortHash}`;
 
-export function murMurSort<T extends string | number>(arr: T[], sortHash: string) {
+function murMurSort<T extends string | number>(arr: T[], sortHash: string) {
 	return [...arr].sort((a, b) => murmurHash.v3(getMurKey(b, sortHash)) - murmurHash.v3(getMurKey(a, sortHash)));
 }
 
@@ -425,7 +425,7 @@ export function skillingPetDropRate(
 	return { petDropRate: dropRate };
 }
 
-export function getBadges(user: MUser | string | bigint) {
+function getBadges(user: MUser | string | bigint) {
 	if (typeof user === 'string' || typeof user === 'bigint') {
 		return badgesCache.get(user.toString()) ?? '';
 	}
@@ -476,7 +476,7 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	debugLog(`Finished ${name} in ${stopwatch.toString()}`);
 }
 
-export function getInteractionTypeName(type: InteractionType) {
+function getInteractionTypeName(type: InteractionType) {
 	return {
 		[InteractionType.Ping]: 'Ping',
 		[InteractionType.ApplicationCommand]: 'ApplicationCommand',
@@ -490,7 +490,7 @@ export function isModOrAdmin(user: MUser) {
 	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }
 
-export async function calcClueScores(user: MUser) {
+async function calcClueScores(user: MUser) {
 	const stats = await user.fetchStats({ openable_scores: true });
 	const openableBank = new Bank(stats.openable_scores as ItemBank);
 	return openableBank

@@ -22,7 +22,7 @@ import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { transactItemsFromBank } from '../../../lib/util/transactItemsFromBank';
 import { mahojiParseNumber } from '../../mahojiSettings';
 
-export async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
+async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
@@ -110,7 +110,7 @@ export async function gearPresetEquipCommand(user: MUser, gearSetup: string, pre
 	};
 }
 
-export async function gearEquipMultiCommand(
+async function gearEquipMultiCommand(
 	user: MUser,
 	interaction: ChatInputCommandInteraction,
 	setup: string,
@@ -294,7 +294,7 @@ export async function gearUnequipCommand(
 	};
 }
 
-export async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipmentType: string): CommandResponse {
+async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipmentType: string): CommandResponse {
 	if (gearSetup === 'other' && user.perkTier() < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}

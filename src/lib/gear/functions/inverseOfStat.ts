@@ -17,7 +17,7 @@ const offenceMap: { [key in OffenceGearStat]: DefenceGearStat } = {
 	[GearStat.AttackRanged]: GearStat.DefenceRanged
 };
 
-export function inverseOfDefenceStat(stat: DefenceGearStat) {
+function inverseOfDefenceStat(stat: DefenceGearStat) {
 	return defenceMap[stat];
 }
 

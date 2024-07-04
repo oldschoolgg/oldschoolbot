@@ -8,7 +8,7 @@ export interface OSBMahojiCommand extends ICommand {
 	attributes?: Omit<AbstractCommandAttributes, 'description'>;
 }
 
-export function isMahojiUserOption(data: any): data is MahojiUserOption {
+function isMahojiUserOption(data: any): data is MahojiUserOption {
 	return 'user' in data && 'id' in data.user;
 }
 

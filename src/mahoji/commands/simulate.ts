@@ -14,7 +14,7 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import type { OSBMahojiCommand } from '../lib/util';
 
-export function determineCoxLimit(user: MUser) {
+function determineCoxLimit(user: MUser) {
 	const perkTier = user.perkTier();
 
 	if (perkTier >= PerkTier.Three) {

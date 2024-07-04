@@ -6,7 +6,7 @@ import { assert } from './util';
 export interface GiantsFoundryBank {
 	[key: string]: number;
 }
-export const tipMoulds: string[] = [
+const tipMoulds: string[] = [
 	'Saw Tip',
 	'Gladius Point',
 	"Serpent's Fang",
@@ -20,7 +20,7 @@ export const tipMoulds: string[] = [
 	'The Point!'
 ];
 
-export const bladeMoulds: string[] = [
+const bladeMoulds: string[] = [
 	'Gladius Edge',
 	'Stiletto Blade',
 	'Medusa Blade',
@@ -34,7 +34,7 @@ export const bladeMoulds: string[] = [
 	'Choppa!'
 ];
 
-export const forteMoulds: string[] = [
+const forteMoulds: string[] = [
 	'Serrated Forte',
 	'Serpent Ricasso',
 	'Medusa Ricasso',
@@ -51,7 +51,7 @@ export const forteMoulds: string[] = [
 export const TOTAL_GIANT_WEAPONS = tipMoulds.length * bladeMoulds.length * forteMoulds.length;
 
 // weaponID stored as 10-4-3 => 10, 4, 3
-export function decodeGiantWeapons(weaponID: string) {
+function decodeGiantWeapons(weaponID: string) {
 	const weaponIDs = weaponID.split('-');
 	assert(weaponIDs.length === 3);
 	const [tipMould, bladeMould, forteMould] = weaponIDs;

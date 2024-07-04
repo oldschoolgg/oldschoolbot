@@ -33,7 +33,7 @@ interface MockUserArgs {
 	id?: string;
 }
 
-export const mockUser = (overrides?: MockUserArgs): User => {
+const mockUser = (overrides?: MockUserArgs): User => {
 	const gearMelee = filterGearSetup(overrides?.meleeGear);
 	const cl = new Bank().add(overrides?.cl ?? {});
 	const r = {

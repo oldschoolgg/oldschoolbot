@@ -10,7 +10,7 @@ interface ModalListener {
 
 const modalListeners: ModalListener[] = [];
 
-export function addModalListener(listener: ModalListener) {
+function addModalListener(listener: ModalListener) {
 	modalListeners.push(listener);
 	modalListeners.sort((a, b) => a.expiration - b.expiration);
 	assert(modalListeners[0].expiration <= modalListeners[modalListeners.length - 1].expiration);

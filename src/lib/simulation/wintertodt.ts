@@ -138,7 +138,7 @@ const pyroPieces = resolveItems([
 	'Pyromancer boots'
 ]) as number[];
 
-export class WintertodtCrateClass {
+class WintertodtCrateClass {
 	public pickWeightedLootItem<T>(lvl: number, array: T[]): T {
 		const maxIndex = Math.max(Math.floor(calcPercentOfNum(Math.min(lvl + 15, 99), array.length)), 1);
 		const minIndex = Math.floor(calcPercentOfNum(Math.max(lvl - 70, 1), array.length));

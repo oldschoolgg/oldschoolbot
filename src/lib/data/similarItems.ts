@@ -382,7 +382,7 @@ const source: [string, (string | number)[]][] = [
 	['Forestry kit', ['Forestry basket']]
 ];
 
-export const similarItems: Map<number, number[]> = new Map(
+const similarItems: Map<number, number[]> = new Map(
 	source.map(entry => [itemID(entry[0]), resolveItems(entry[1])])
 );
 

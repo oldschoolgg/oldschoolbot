@@ -12,7 +12,7 @@ import type { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } f
 export { default as calculateMonsterFood } from './calculateMonsterFood';
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
 
-export const attackStylesArr = [
+const attackStylesArr = [
 	SkillsEnum.Attack,
 	SkillsEnum.Strength,
 	SkillsEnum.Defence,

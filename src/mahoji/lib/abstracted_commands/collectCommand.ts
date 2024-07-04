@@ -13,7 +13,7 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { getPOH } from './pohCommand';
 
-export interface Collectable {
+interface Collectable {
 	item: Item;
 	skillReqs?: Skills;
 	itemCost?: Bank;

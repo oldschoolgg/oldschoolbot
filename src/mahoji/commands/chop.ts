@@ -14,7 +14,7 @@ import { minionName } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
 import type { OSBMahojiCommand } from '../lib/util';
 
-export const axes = [
+const axes = [
 	{
 		id: itemID('Crystal axe'),
 		multiplier: 4,

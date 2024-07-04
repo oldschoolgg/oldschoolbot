@@ -166,7 +166,7 @@ export async function canRunAutoContract(user: MUser) {
 	return contractedPatch?.ready;
 }
 
-export function bestFarmingContractUserCanDo(user: MUser) {
+function bestFarmingContractUserCanDo(user: MUser) {
 	return Object.entries(contractToFarmingLevel)
 		.sort((a, b) => b[1] - a[1])
 		.find(a => user.skillLevel('farming') >= a[1])?.[0] as ContractOption | undefined;

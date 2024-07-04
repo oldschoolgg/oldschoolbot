@@ -48,7 +48,7 @@ export async function cancelTask(userID: string) {
 	minionActivityCache.delete(userID);
 }
 
-export async function runMahojiCommand({
+async function runMahojiCommand({
 	channelID,
 	userID,
 	guildID,
@@ -84,7 +84,7 @@ export async function runMahojiCommand({
 	});
 }
 
-export interface RunCommandArgs {
+interface RunCommandArgs {
 	commandName: string;
 	args: CommandOptions;
 	user: User | MUser;

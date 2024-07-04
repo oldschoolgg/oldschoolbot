@@ -16,7 +16,6 @@
 	},
 	"dependencies": {
 		"@napi-rs/canvas": "^0.1.53",
-		"@octokit/graphql": "^4.8.0",
 		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#7abad3bb6354edc1d8c584727d959216c80b76aa",
 		"@prisma/client": "^5.13.0",
 		"@sapphire/snowflake": "^3.5.3",
@@ -24,7 +23,6 @@
 		"@sapphire/time-utilities": "^1.6.0",
 		"@sentry/node": "^8.13.0",
 		"ascii-table3": "^0.9.0",
-		"bufferutil": "^4.0.8",
 		"chart.js": "^3.7.0",
 		"chartjs-node-canvas": "github:gc/ChartjsNodeCanvas#a598b6dd27c44351f235bca07ca4ee660121f289",
 		"chartjs-plugin-datalabels": "^2.0.0",
@@ -45,7 +43,6 @@
 		"random-js": "^2.1.0",
 		"simple-statistics": "^7.8.3",
 		"sonic-boom": "^4.0.1",
-		"zlib-sync": "^0.1.9",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {

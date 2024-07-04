@@ -2,7 +2,7 @@ import { modifyItem } from '@oldschoolgg/toolkit';
 
 import { allTeamCapes } from './data/misc';
 
-export interface CustomItemData {
+interface CustomItemData {
 	cantBeSacrificed?: true;
 }
 declare module 'oldschooljs/dist/meta/types' {
