@@ -247,10 +247,16 @@ const killableMonsters: KillableMonster[] = [
 				[itemID('Scythe of vitur')]: 15
 			},
 			{
+				[itemID('Masori body (f)')]: 4,
 				[itemID("Karil's leathertop")]: 3
 			},
 			{
+				[itemID('Masori chaps (f)')]: 3,
 				[itemID("Karil's leatherskirt")]: 2
+			},
+			// Transformation ring
+			{
+				[itemID('Ring of stone')]: 10
 			}
 		],
 		levelRequirements: {

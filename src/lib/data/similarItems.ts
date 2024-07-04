@@ -379,7 +379,8 @@ const source: [string, (string | number)[]][] = [
 	['Lumberjack legs', ['Forestry legs']],
 	['Lumberjack boots', ['Forestry boots']],
 	['Log basket', ['Forestry basket']],
-	['Forestry kit', ['Forestry basket']]
+	['Forestry kit', ['Forestry basket']],
+	['Ring of stone', ['Ring of coins', 'Crate ring', 'Ring of nature', 'Snowman ring', 'Ring of 3rd age']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
