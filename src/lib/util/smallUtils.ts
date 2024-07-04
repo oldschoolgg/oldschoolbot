@@ -251,21 +251,6 @@ export function calculateSimpleMonsterDeathChance({
 	return clamp(deathChance, lowestDeathChance, highestDeathChance);
 }
 
-function perHourChance(
-	durationMilliseconds: number,
-	oneInXPerHourChance: number,
-	successFunction: () => unknown
-) {
-	const minutesPassed = Math.floor(durationMilliseconds / 60_000);
-	const perMinuteChance = oneInXPerHourChance * 60;
-
-	for (let i = 0; i < minutesPassed; i++) {
-		if (roll(perMinuteChance)) {
-			successFunction();
-		}
-	}
-}
-
 export function perTimeUnitChance(
 	durationMilliseconds: number,
 	oneInXPerTimeUnitChance: number,

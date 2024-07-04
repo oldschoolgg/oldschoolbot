@@ -1,5 +1,5 @@
 import { notEmpty, objectKeys, randFloat, randInt } from 'e';
-import { Bank, MonsterSlayerMaster, Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
 import { KourendKebosDiary, LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
@@ -340,40 +340,6 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 		assignedTask,
 		slayerMaster
 	};
-}
-
-const allSlayerHelmets = [
-	'Slayer helmet',
-	'Slayer helmet (i)',
-	'Black slayer helmet',
-	'Black slayer helmet (i)',
-	'Green slayer helmet',
-	'Green slayer helmet (i)',
-	'Red slayer helmet',
-	'Red slayer helmet (i)',
-	'Purple slayer helmet',
-	'Purple slayer helmet (i)',
-	'Turquoise slayer helmet',
-	'Turquoise slayer helmet (i)',
-	'Hydra slayer helmet',
-	'Hydra slayer helmet (i)',
-	'Twisted slayer helmet',
-	'Twisted slayer helmet (i)'
-];
-
-function getSlayerMasterOSJSbyID(slayerMasterID: number) {
-	const osjsSlayerMaster = [
-		MonsterSlayerMaster.Turael,
-		MonsterSlayerMaster.Turael,
-		MonsterSlayerMaster.Mazchna,
-		MonsterSlayerMaster.Vannaka,
-		MonsterSlayerMaster.Chaeldar,
-		MonsterSlayerMaster.Konar,
-		MonsterSlayerMaster.Nieve,
-		MonsterSlayerMaster.Duradel,
-		MonsterSlayerMaster.Krystilia
-	];
-	return osjsSlayerMaster[slayerMasterID];
 }
 
 function getSlayerReward(id: SlayerTaskUnlocksEnum): string {

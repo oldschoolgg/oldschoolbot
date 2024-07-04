@@ -34,7 +34,7 @@ export interface SlayerMaster {
 	osjsEnum: MonsterSlayerMaster;
 }
 
-interface SlayerShopItem {
+export interface SlayerShopItem {
 	item: Item;
 	alias?: string;
 	itemAmount?: number;

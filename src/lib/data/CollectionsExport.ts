@@ -1,6 +1,6 @@
 import type { Minigame } from '@prisma/client';
 import { objectEntries } from 'e';
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { growablePets } from '../growablePets';
@@ -35,7 +35,7 @@ export interface ILeftListStatus {
 	[key: string]: 'not_started' | 'started' | 'completed';
 }
 
-interface IKCActivity {
+export interface IKCActivity {
 	[key: string]:
 		| string
 		| string[]
@@ -181,25 +181,10 @@ export const alchemicalHydraCL = resolveItems([
 	'Alchemical hydra heads'
 ]);
 
-const karilsItems = resolveItems([
-	"Karil's coif",
-	"Karil's leathertop",
-	"Karil's leatherskirt",
-	"Karil's crossbow"
-]);
+const karilsItems = resolveItems(["Karil's coif", "Karil's leathertop", "Karil's leatherskirt", "Karil's crossbow"]);
 const ahrimsItems = resolveItems(["Ahrim's hood", "Ahrim's robetop", "Ahrim's robeskirt", "Ahrim's staff"]);
-const dharokItems = resolveItems([
-	"Dharok's helm",
-	"Dharok's platebody",
-	"Dharok's platelegs",
-	"Dharok's greataxe"
-]);
-const guthansItems = resolveItems([
-	"Guthan's helm",
-	"Guthan's platebody",
-	"Guthan's chainskirt",
-	"Guthan's warspear"
-]);
+const dharokItems = resolveItems(["Dharok's helm", "Dharok's platebody", "Dharok's platelegs", "Dharok's greataxe"]);
+const guthansItems = resolveItems(["Guthan's helm", "Guthan's platebody", "Guthan's chainskirt", "Guthan's warspear"]);
 const toragsItems = resolveItems(["Torag's helm", "Torag's platebody", "Torag's platelegs", "Torag's hammers"]);
 const veracsItems = resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]);
 export const barrowsItemArr = [karilsItems, ahrimsItems, guthansItems, toragsItems, veracsItems, dharokItems];
@@ -1926,57 +1911,7 @@ export const miscellaneousCL = resolveItems([
 	'Orange egg sac',
 	'Blue egg sac'
 ]);
-const holidayCL = resolveItems([
-	'Cow mask',
-	'Cow top',
-	'Cow trousers',
-	'Cow gloves',
-	'Cow shoes',
-	'Slice of birthday cake',
-	'Bunny ears',
-	'Easter egg',
-	'Pumpkin',
-	'Scythe',
-	'Red halloween mask',
-	'Blue halloween mask',
-	'Green halloween mask',
-	'Skeleton mask',
-	'Skeleton shirt',
-	'Skeleton leggings',
-	'Skeleton gloves',
-	'Skeleton boots',
-	'Santa mask',
-	'Santa jacket',
-	'Santa pantaloons',
-	'Santa gloves',
-	'Santa boots',
-	'Sack of presents',
-	'Christmas cracker',
-	'Santa hat',
-	'Cursed banana',
-	'Banana cape',
-	'Gnome child hat',
-	'Slice of birthday cake',
-	'Easter basket',
-	'Rubber chicken',
-	'Easter ring',
-	'Chicken head',
-	'Chicken wings',
-	'Chicken legs',
-	'Chicken feet',
-	'Banshee mask',
-	'Banshee top',
-	'Banshee robe',
-	'Hunting knife',
-	'Yo-yo',
-	'Candy cane',
-	'Snow globe',
-	'Antisanta mask',
-	'Antisanta jacket',
-	'Antisanta pantaloons',
-	'Antisanta gloves',
-	'Antisanta boots'
-]);
+
 export const diariesCL = [
 	'Karamja gloves 1',
 	'Karamja gloves 2',
@@ -2252,14 +2187,6 @@ export const allPetIDs = [
 	...metamorphPets,
 	...toaMetamorphPets
 ];
-
-const antiSantaOutfit = new Bank({
-	'Antisanta mask': 1,
-	'Antisanta jacket': 1,
-	'Antisanta pantaloons': 1,
-	'Antisanta gloves': 1,
-	'Antisanta boots': 1
-});
 
 export const allClueItems = [
 	...cluesBeginnerCL,

@@ -20,27 +20,6 @@ import { Thrones } from './objects/thrones';
 import { Torches } from './objects/torches';
 import type { PlayerOwnedHouse } from '.prisma/client';
 
-interface PoH {
-	background: 1;
-	throne: number | null;
-	pool: number | null;
-	mountedCape: number | null;
-	mountedFish: number | null;
-	jewelleryBox: number | null;
-	prayerAltar: number | null;
-	spellbookAltar: number | null;
-	mountedHead: number | null;
-	teleport: number | null;
-	mountedItem: number | null;
-	gardenDecoration: number | null;
-	amulet: number | null;
-
-	torch: number | null;
-	guard: number | null;
-	dungeonDecoration: number | null;
-	prison: number | null;
-}
-
 export const HOUSE_WIDTH = 585;
 export const TOP_FLOOR_Y = 118;
 

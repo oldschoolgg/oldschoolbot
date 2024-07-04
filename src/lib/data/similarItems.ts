@@ -382,9 +382,7 @@ const source: [string, (string | number)[]][] = [
 	['Forestry kit', ['Forestry basket']]
 ];
 
-const similarItems: Map<number, number[]> = new Map(
-	source.map(entry => [itemID(entry[0]), resolveItems(entry[1])])
-);
+const similarItems: Map<number, number[]> = new Map(source.map(entry => [itemID(entry[0]), resolveItems(entry[1])]));
 
 export const inverseSimilarItems: Map<number, Set<number>> = new Map();
 for (const [baseItem, similarItems] of source) {

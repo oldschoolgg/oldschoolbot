@@ -42,7 +42,3 @@ export function deepResolveItems(itemArray: ArrayItemsResolvable): ArrayItemsRes
 
 	return newArray;
 }
-
-function resolveOSItems(...args: Parameters<typeof resolveItems>) {
-	return resolveItems(...args).map(i => Items.get(i)!);
-}

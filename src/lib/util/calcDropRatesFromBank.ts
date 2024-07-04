@@ -2,7 +2,7 @@ import { bold } from 'discord.js';
 import { calcWhatPercent } from 'e';
 import type { Bank } from 'oldschooljs';
 
-function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
+export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
 	const result = [];
 	let uniquesReceived = 0;
 	for (const [item, qty] of bank.items().sort((a, b) => a[1] - b[1])) {

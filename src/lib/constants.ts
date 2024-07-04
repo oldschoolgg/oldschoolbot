@@ -1,6 +1,6 @@
+import { execSync } from 'node:child_process';
 import path from 'node:path';
 
-import { execSync } from 'node:child_process';
 import type { Image } from '@napi-rs/canvas';
 import { PerkTier, SimpleTable, StoreBitfield } from '@oldschoolgg/toolkit';
 import type { CommandOptions } from '@oldschoolgg/toolkit';
@@ -18,8 +18,6 @@ import resolveItems from './util/resolveItems';
 import { dateFm } from './util/smallUtils';
 
 export { PerkTier };
-
-const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
 const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '940760643525570591';
 

@@ -30,13 +30,7 @@ const camoOutfit = resolveItems(['Camo helmet', 'Camo top', 'Camo bottoms']);
 
 const lederhosenOutfit = resolveItems(['Lederhosen hat', 'Lederhosen top', 'Lederhosen shorts']);
 
-const zombieOutfit = resolveItems([
-	'Zombie mask',
-	'Zombie shirt',
-	'Zombie trousers',
-	'Zombie gloves',
-	'Zombie boots'
-]);
+const zombieOutfit = resolveItems(['Zombie mask', 'Zombie shirt', 'Zombie trousers', 'Zombie gloves', 'Zombie boots']);
 
 const mimeOutfit = resolveItems(['Mime mask', 'Mime top', 'Mime legs', 'Mime gloves', 'Mime boots']);
 

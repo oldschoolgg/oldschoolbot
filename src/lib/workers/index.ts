@@ -6,12 +6,12 @@ import Piscina from 'piscina';
 import { production } from '../../config';
 import type { ItemBank } from '../types';
 
-interface CasketWorkerArgs {
+export interface CasketWorkerArgs {
 	clueTierID: number;
 	quantity: number;
 }
 
-interface KillWorkerArgs {
+export interface KillWorkerArgs {
 	bossName: string;
 	quantity: number;
 	limit: number;
@@ -20,19 +20,19 @@ interface KillWorkerArgs {
 	lootTableTertiaryChanges: [string, number][];
 }
 
-type KillWorkerReturn = Promise<{
+export type KillWorkerReturn = Promise<{
 	bank?: Bank;
 	error?: string;
 	title?: string;
 	content?: string;
 }>;
 
-interface FinishWorkerArgs {
+export interface FinishWorkerArgs {
 	name: string;
 	tertiaries?: boolean;
 }
 
-type FinishWorkerReturn = Promise<
+export type FinishWorkerReturn = Promise<
 	| {
 			loot: ItemBank;
 			kcBank: ItemBank;

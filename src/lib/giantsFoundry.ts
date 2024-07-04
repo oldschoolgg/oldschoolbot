@@ -1,7 +1,5 @@
 import { randInt } from 'e';
 
-import { assert } from './util';
-
 // Difference between this and ItemBank, is ItemBank is expected to have only integers as strings
 export interface GiantsFoundryBank {
 	[key: string]: number;
@@ -49,14 +47,6 @@ const forteMoulds: string[] = [
 ];
 
 export const TOTAL_GIANT_WEAPONS = tipMoulds.length * bladeMoulds.length * forteMoulds.length;
-
-// weaponID stored as 10-4-3 => 10, 4, 3
-function decodeGiantWeapons(weaponID: string) {
-	const weaponIDs = weaponID.split('-');
-	assert(weaponIDs.length === 3);
-	const [tipMould, bladeMould, forteMould] = weaponIDs;
-	return [Number.parseInt(tipMould), Number.parseInt(bladeMould), Number.parseInt(forteMould)];
-}
 
 // weaponID encoded as 10-4-3
 export function encodeGiantWeapons([tip, blade, forte]: [number, number, number]) {

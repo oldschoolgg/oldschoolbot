@@ -45,4 +45,3 @@ export const camdozaalMonsters: KillableMonster[] = [
 		qpRequired: 17
 	}
 ];
-

@@ -36,11 +36,6 @@ DO UPDATE SET quantity = "ge_bank"."quantity" + ${quantity};`)
 	return queries;
 }
 
-async function transactFromTableBank({ bankToAdd, bankToRemove }: { bankToAdd?: Bank; bankToRemove?: Bank }) {
-	const queries = makeTransactFromTableBankQueries({ bankToAdd, bankToRemove });
-	await prisma.$transaction(queries);
-}
-
 export async function fetchTableBank() {
 	const result = await prisma.$queryRawUnsafe<{ bank: ItemBank }[]>(
 		'SELECT json_object_agg(item_id, quantity) as bank FROM ge_bank WHERE quantity != 0;'

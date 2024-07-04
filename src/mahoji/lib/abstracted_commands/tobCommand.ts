@@ -233,12 +233,7 @@ async function checkTOBUser(
 	return [false];
 }
 
-async function checkTOBTeam(
-	users: MUser[],
-	isHardMode: boolean,
-	solo: boolean,
-	quantity = 1
-): Promise<string | null> {
+async function checkTOBTeam(users: MUser[], isHardMode: boolean, solo: boolean, quantity = 1): Promise<string | null> {
 	const userWithoutSupplies = users.find(u => !u.bank.has(minimumTOBSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
