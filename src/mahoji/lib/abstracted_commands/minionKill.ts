@@ -211,7 +211,9 @@ export async function minionKillCommand(
 
 	// Add jelly check as can barrage in wilderness
 	const jelly = monster.id === Monsters.Jelly.id;
-	const wildyJelly = jelly && isInWilderness;
+	const bloodveld = monster.id === Monsters.Bloodveld.id;
+
+	const wildyBurst = (jelly || bloodveld) && isInWilderness;
 
 	// Set chosen boost based on priority:
 	const myCBOpts = user.combatOptions;
@@ -221,7 +223,7 @@ export async function minionKillCommand(
 		monster,
 		method,
 		isOnTask,
-		wildyJelly
+		wildyBurst
 	});
 
 	// Check requirements
@@ -484,7 +486,7 @@ export async function minionKillCommand(
 	}
 
 	if ((method === 'burst' || method === 'barrage') && !monster?.canBarrage) {
-		if (jelly) {
+		if (jelly || bloodveld) {
 			if (!isInWilderness) {
 				return `${monster.name} can only be barraged or burst in the wilderness.`;
 			}
@@ -497,7 +499,7 @@ export async function minionKillCommand(
 		}
 	}
 
-	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && (monster?.canBarrage || wildyJelly)) {
+	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && (monster?.canBarrage || wildyBurst)) {
 		consumableCosts.push(iceBarrageConsumables);
 		calculateVirtusBoost();
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage + virtusBoost);
@@ -506,7 +508,7 @@ export async function minionKillCommand(
 	} else if (
 		boostChoice === 'burst' &&
 		attackStyles.includes(SkillsEnum.Magic) &&
-		(monster?.canBarrage || wildyJelly)
+		(monster?.canBarrage || wildyBurst)
 	) {
 		consumableCosts.push(iceBurstConsumables);
 		calculateVirtusBoost();
@@ -579,10 +581,12 @@ export async function minionKillCommand(
 		}
 	} else if (!isInWilderness) {
 		for (const degItem of degradeablePvmBoostItems) {
-			const isUsing =
-				convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
-				user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
-			if (isUsing) {
+			const isUsing = convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle);
+			const gearCheck = isInWilderness
+				? user.gear.wildy.hasEquipped(degItem.item.id)
+				: user.gear[degItem.attackStyle].hasEquipped(degItem.item.id);
+
+			if (isUsing && gearCheck) {
 				// We assume they have enough charges, add the boost, and degrade at the end to avoid doing it twice.
 				degItemBeingUsed.push(degItem);
 			}
@@ -848,7 +852,8 @@ export async function minionKillCommand(
 			wildyPeak!,
 			monster,
 			duration,
-			hasWildySupplies
+			hasWildySupplies,
+			cannonMulti
 		);
 		thePkCount = pkCount;
 		hasDied = died;
