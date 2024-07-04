@@ -2,14 +2,14 @@ import { Time } from 'e';
 import fetch from 'node-fetch';
 
 import { production } from '../config';
-import { cacheBadges } from './badges';
-import { BadgesEnum, BitField, Channel, globalConfig, PatronTierID, PerkTier } from './constants';
-import { fetchSponsors, getUserIdFromGithubID } from './http/util';
 import { mahojiUserSettingsUpdate } from './MUser';
+import { cacheBadges } from './badges';
+import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier, globalConfig } from './constants';
+import { fetchSponsors, getUserIdFromGithubID } from './http/util';
 import { getUsersPerkTier } from './perkTiers';
 import { roboChimpUserFetch } from './roboChimp';
 import { prisma } from './settings/prisma';
-import { Patron } from './types';
+import type { Patron } from './types';
 import { logError } from './util/logError';
 import { sendToChannelID } from './util/webhook';
 
@@ -144,7 +144,7 @@ class PatreonTask {
 		const userBitfield = user.bitfield;
 
 		try {
-			let newField = [
+			const newField = [
 				...userBitfield.filter(number => !tiers.map(t => t[1]).includes(number)),
 				bitFieldFromPerkTier(perkTier)
 			];
@@ -179,13 +179,13 @@ class PatreonTask {
 	}
 
 	async syncGithub() {
-		let messages = [];
+		const messages = [];
 		const sponsors = await fetchSponsors();
 		for (const sponsor of sponsors) {
 			if (!sponsor.tier) continue;
 			const userID = await getUserIdFromGithubID(sponsor.githubID);
 			if (!userID) continue;
-			let res = await this.validatePerks(userID, sponsor.tier);
+			const res = await this.validatePerks(userID, sponsor.tier);
 			if (res) {
 				messages.push(res);
 			}

@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import Runecraft from '../../../lib/skilling/skills/runecraft';
-import { TiaraRunecraftActivityTaskOptions } from '../../../lib/types/minions';
+import type { TiaraRunecraftActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';

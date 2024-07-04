@@ -1,4 +1,4 @@
-import { ClientStorage, Prisma } from '@prisma/client';
+import type { ClientStorage, Prisma } from '@prisma/client';
 
 import { globalConfig } from '../constants';
 import { prisma } from '../settings/prisma';

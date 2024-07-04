@@ -1,5 +1,6 @@
-import { command_usage_status, Prisma } from '@prisma/client';
-import { CommandOptions } from 'mahoji/dist/lib/types';
+import type { Prisma } from '@prisma/client';
+import { command_usage_status } from '@prisma/client';
+import type { CommandOptions } from 'mahoji/dist/lib/types';
 
 import { getCommandArgs } from '../../mahoji/lib/util';
 

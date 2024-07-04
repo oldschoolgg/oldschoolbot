@@ -1,14 +1,15 @@
-import { Prisma, User } from '@prisma/client';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { Prisma, User } from '@prisma/client';
+import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurhash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { expect } from 'vitest';
 
-import { BitField } from '../../src/lib/constants';
-import type { GearSetup } from '../../src/lib/gear/types';
 import { MUserClass } from '../../src/lib/MUser';
-import { filterGearSetup, Gear, PartialGearSetup } from '../../src/lib/structures/Gear';
+import type { BitField } from '../../src/lib/constants';
+import type { GearSetup } from '../../src/lib/gear/types';
+import type { PartialGearSetup } from '../../src/lib/structures/Gear';
+import { Gear, filterGearSetup } from '../../src/lib/structures/Gear';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 
 interface MockUserArgs {
@@ -35,7 +36,7 @@ interface MockUserArgs {
 export const mockUser = (overrides?: MockUserArgs): User => {
 	const gearMelee = filterGearSetup(overrides?.meleeGear);
 	const cl = new Bank().add(overrides?.cl ?? {});
-	return {
+	const r = {
 		cl,
 		gear_fashion: new Gear().raw() as Prisma.JsonValue,
 		gear_mage: new Gear().raw() as Prisma.JsonValue,
@@ -70,7 +71,7 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		skills_defence: overrides?.skills_defence ?? 0,
 		skills_slayer: 0,
 		skills_hitpoints: overrides?.skills_hitpoints ?? convertLVLtoXP(10),
-		GP: overrides?.GP,
+		GP: overrides?.GP ?? 0,
 		premium_balance_tier: overrides?.premium_balance_tier,
 		premium_balance_expiry_date: overrides?.premium_balance_expiry_date,
 		ironman_alts: [],
@@ -81,6 +82,8 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		id: overrides?.id ?? '',
 		monsterScores: {}
 	} as unknown as User;
+
+	return r;
 };
 
 class TestMUser extends MUserClass {
@@ -118,6 +121,9 @@ export async function testRunCmd({
 	Math.random = () => 0.5;
 	const hash = murmurhash(JSON.stringify({ name: cmd.name, opts, user })).toString();
 	const mockedUser = mockMUser({ id: hash, ...user });
+	if (mockedUser.GP === null || Number.isNaN(mockedUser.GP) || mockedUser.GP < 0 || mockedUser.GP === undefined) {
+		throw new Error(`Invalid GP for user ${hash}`);
+	}
 	mockUserMap.set(hash, mockedUser);
 	const options: any = {
 		user: mockedUser.user,

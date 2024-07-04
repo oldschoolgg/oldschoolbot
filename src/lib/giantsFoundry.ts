@@ -55,7 +55,7 @@ export function decodeGiantWeapons(weaponID: string) {
 	const weaponIDs = weaponID.split('-');
 	assert(weaponIDs.length === 3);
 	const [tipMould, bladeMould, forteMould] = weaponIDs;
-	return [parseInt(tipMould), parseInt(bladeMould), parseInt(forteMould)];
+	return [Number.parseInt(tipMould), Number.parseInt(bladeMould), Number.parseInt(forteMould)];
 }
 
 // weaponID encoded as 10-4-3

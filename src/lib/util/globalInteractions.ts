@@ -1,21 +1,22 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonInteraction, ButtonStyle, Interaction } from 'discord.js';
-import { removeFromArr, Time, uniqueArr } from 'e';
+import type { ButtonInteraction, Interaction } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Time, removeFromArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import { Cooldowns } from '../../mahoji/lib/Cooldowns';
-import { ClueTier } from '../clues/clueTiers';
+import type { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
-import { ItemBank } from '../types';
+import type { ItemBank } from '../types';
 import { formatDuration, stringMatches } from '../util';
 import { updateGiveawayMessage } from './giveaway';
-import { interactionReply } from './interactionReply';
+import { deferInteraction, interactionReply } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';
 import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
 
@@ -325,6 +326,16 @@ export async function interactionHook(interaction: Interaction) {
 	const id = interaction.customId;
 	const userID = interaction.user.id;
 
+	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
+	if (cd !== null) {
+		return interactionReply(interaction, {
+			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(cd, true)}.`,
+			ephemeral: true
+		});
+	}
+
+	await deferInteraction(interaction);
+
 	const user = await mUserFetch(userID);
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
@@ -352,14 +363,6 @@ export async function interactionHook(interaction: Interaction) {
 		interaction,
 		continueDeltaMillis: null
 	};
-
-	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
-	if (cd !== null) {
-		return interactionReply(interaction, {
-			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(cd, true)}.`,
-			ephemeral: true
-		});
-	}
 
 	const timeSinceMessage = Date.now() - new Date(interaction.message.createdTimestamp).getTime();
 	const timeLimit = reactionTimeLimit(user.perkTier());

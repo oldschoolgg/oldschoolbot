@@ -1,4 +1,6 @@
-import { execSync } from 'child_process';
+import { execSync } from 'node:child_process';
+import path from 'node:path';
+import { config } from 'dotenv';
 import { sleep } from 'e';
 
 async function main() {
@@ -9,18 +11,19 @@ async function main() {
 		await sleep(2000);
 
 		console.log('Getting ready...');
-		execSync('dotenv -e .env.test -- prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit' });
-		execSync('dotenv -e .env.test -- prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit' });
+		const env = { ...process.env, ...config({ path: path.resolve('.env.test') }).parsed };
+
+		execSync('npx prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit', env });
+		execSync('npx prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit', env });
 
 		console.log('Building...');
-		execSync('yarn prebuild:scripts', { stdio: 'inherit' });
-		execSync('yarn build:esbuild', { stdio: 'inherit' });
+		execSync('yarn build', { stdio: 'inherit' });
 
 		console.log('Starting tests...');
-		let runs = 1;
+		const runs = 1;
 		for (let i = 0; i < runs; i++) {
 			console.log(`Starting run ${i + 1}/${runs}`);
-			execSync('vitest run --config vitest.integration.config.ts', {
+			execSync('vitest run --config vitest.integration.config.mts', {
 				stdio: 'inherit',
 				encoding: 'utf-8'
 			});

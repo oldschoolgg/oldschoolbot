@@ -1,13 +1,13 @@
 import { getItem } from '@oldschoolgg/toolkit';
 import { evalMathExpression } from '@oldschoolgg/toolkit/dist/util/expressionParser';
-import { GEListing, GETransaction } from '@prisma/client';
+import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
-import { CommandRunOptions } from 'mahoji';
-import { CommandOption } from 'mahoji/dist/lib/types';
+import type { CommandRunOptions } from 'mahoji';
+import type { CommandOption } from 'mahoji/dist/lib/types';
 
 import { PerkTier } from '../../lib/constants';
-import { createGECancelButton, GrandExchange } from '../../lib/grandExchange';
+import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 import { prisma } from '../../lib/settings/prisma';
 import { formatDuration, itemNameFromID, makeComponents, returnStringOrFile, toKMB } from '../../lib/util';
@@ -17,9 +17,8 @@ import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmatio
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
-import { itemOption, ownedItemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
-import { patronMsg } from '../mahojiSettings';
+import { itemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
@@ -117,7 +116,7 @@ export const geCommand: OSBMahojiCommand = {
 								value: itemID.toString()
 							}));
 						}
-						let res = tradeableItemArr.filter(i => i.key.includes(value.toLowerCase()));
+						const res = tradeableItemArr.filter(i => i.key.includes(value.toLowerCase()));
 						return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
 					}
 				},
@@ -131,10 +130,19 @@ export const geCommand: OSBMahojiCommand = {
 			description: 'Sell something on the grand exchange.',
 			options: [
 				{
-					...ownedItemOption(item => Boolean(item.tradeable_on_ge)),
 					name: 'item',
+					type: ApplicationCommandOptionType.String,
 					description: 'The item you want to sell.',
-					required: true
+					required: true,
+					autocomplete: async (value, { id }) => {
+						const user = await mUserFetch(id);
+
+						return user.bank
+							.items()
+							.filter(i => i[0].tradeable_on_ge)
+							.filter(i => (!value ? true : i[0].name.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name }));
+					}
 				},
 				quantityOption,
 				priceOption
@@ -197,7 +205,7 @@ export const geCommand: OSBMahojiCommand = {
 						const listings = Array.from(marketPricemap.values());
 						return listings
 							.filter(i =>
-								!input ? true : itemNameFromID(i.itemID)!.toLowerCase().includes(input.toLowerCase())
+								!input ? true : itemNameFromID(i.itemID)?.toLowerCase().includes(input.toLowerCase())
 							)
 							.map(l => ({
 								name: `${itemNameFromID(l.itemID)!}`,
@@ -210,12 +218,12 @@ export const geCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'view',
-			description: 'Lookup the market price of an item on the g.e',
+			description: 'Lookup information about an item on the g.e',
 			options: [
 				{
 					...itemOption(item => Boolean(item.tradeable_on_ge)),
-					name: 'price_history',
-					description: 'View the price history of an item.'
+					name: 'item',
+					description: 'The item to view.'
 				}
 			]
 		}
@@ -243,7 +251,7 @@ export const geCommand: OSBMahojiCommand = {
 		};
 		stats?: {};
 		price?: { item: string };
-		view?: { price_history?: string };
+		view?: { item?: string };
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
@@ -303,9 +311,7 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 
 **G.E Slots You Can Use:** ${slots}
 **Taxes you have paid:** ${(totalGPYourSales._sum.total_tax_paid ?? 0).toLocaleString()} GP
-**Total Tax Paid on your sales AND purchases:** ${(
-				totalGPYourTransactions._sum.total_tax_paid ?? 0
-			).toLocaleString()} GP`;
+**Total Tax Paid on your sales AND purchases:** ${(totalGPYourTransactions._sum.total_tax_paid ?? 0).toLocaleString()} GP`;
 		}
 
 		if (options.my_listings) {
@@ -384,12 +390,22 @@ The next buy limit reset is at: ${GrandExchange.getInterval().nextResetStr}, it 
 		}
 
 		if (options.view) {
-			if (options.view.price_history) {
-				const item = getItem(options.view.price_history);
+			if (options.view.item) {
+				const item = getItem(options.view.item);
 				if (!item) return 'Invalid item.';
 				if (!itemIsTradeable(item.id)) return 'That item is not tradeable on the Grand Exchange.';
+				const priceData = marketPricemap.get(item.id);
+				let baseMessage = `**${item.name}**
+**Buy Limit Per 4 hours:** ${GrandExchange.getItemBuyLimit(item).toLocaleString()}`;
+				if (priceData) {
+					baseMessage += `
+**Market Price:** ${toKMB(priceData.guidePrice)} (${priceData.guidePrice.toLocaleString()}) GP.
+**Recent Price:** ${toKMB(priceData.averagePriceLast100)} (${priceData.averagePriceLast100.toLocaleString()}) GP.
+
+`;
+				}
 				if (user.perkTier() < PerkTier.Four) {
-					return patronMsg(PerkTier.Four);
+					return baseMessage;
 				}
 				let result = await prisma.$queryRawUnsafe<
 					{ total_quantity_bought: number; average_price_per_item_before_tax: number; week: Date }[]
@@ -412,7 +428,7 @@ GROUP BY
 ORDER BY
   week ASC;
 `);
-				if (result.length < 1) return 'No price history found for that item.';
+				if (result.length < 1) return baseMessage;
 				if (result[0].average_price_per_item_before_tax <= 1_000_000) {
 					result = result.filter(i => i.total_quantity_bought > 1);
 				}
@@ -424,6 +440,7 @@ ORDER BY
 					false
 				);
 				return {
+					content: baseMessage,
 					files: [buffer]
 				};
 			}
@@ -439,7 +456,7 @@ ORDER BY
 				itemName: (options.buy?.item ?? options.sell?.item)!,
 				price: parseNumber((options.buy?.price ?? options.sell?.price)!),
 				quantity: parseNumber((options.buy?.quantity ?? options.sell?.quantity)!),
-				type: Boolean(options.buy) ? 'Buy' : 'Sell'
+				type: options.buy ? 'Buy' : 'Sell'
 			});
 
 			if ('error' in result) return result.error;
@@ -454,9 +471,9 @@ ORDER BY
 		if (options.buy) {
 			const result = await GrandExchange.createListing({
 				user,
-				itemName: options.buy!.item,
-				price: parseNumber(options.buy!.price),
-				quantity: parseNumber(options.buy!.quantity),
+				itemName: options.buy?.item,
+				price: parseNumber(options.buy?.price),
+				quantity: parseNumber(options.buy?.quantity),
 				type: 'Buy'
 			});
 

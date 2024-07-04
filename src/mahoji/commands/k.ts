@@ -1,11 +1,13 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
 
-import { NEX_ID, PVM_METHODS, PvMMethod, ZALCANO_ID } from '../../lib/constants';
+import type { PvMMethod } from '../../lib/constants';
+import { NEX_ID, PVM_METHODS, ZALCANO_ID } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import { returnStringOrFile } from '../../lib/util/smallUtils';
 import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const autocompleteMonsters = [
 	...killableMonsters,
@@ -35,23 +37,30 @@ export const autocompleteMonsters = [
 		aliases: ['wt', 'wintertodt', 'todt'],
 		id: -1,
 		emoji: '<:Phoenix:324127378223792129>'
+	},
+	{
+		name: 'Colosseum',
+		aliases: ['colo', 'colosseum'],
+		id: -1
 	}
 ];
 
 async function fetchUsersRecentlyKilledMonsters(userID: string) {
-	const res = await prisma.$queryRawUnsafe<{ mon_id: string }[]>(
-		`SELECT DISTINCT((data->>'monsterID')) AS mon_id
+	const res = await prisma.$queryRawUnsafe<{ mon_id: string; last_killed: Date }[]>(
+		`SELECT DISTINCT((data->>'monsterID')) AS mon_id, MAX(start_date) as last_killed
 FROM activity
 WHERE user_id = $1
 AND type = 'MonsterKilling'
 AND finish_date > now() - INTERVAL '31 days'
+GROUP BY 1
+ORDER BY 2 DESC
 LIMIT 10;`,
 		BigInt(userID)
 	);
-	return new Set(res.map(i => Number(i.mon_id)));
+	return res.map(i => Number(i.mon_id));
 }
 
-export const killCommand: OSBMahojiCommand = {
+export const minionKCommand: OSBMahojiCommand = {
 	name: 'k',
 	description: 'Send your minion to kill things.',
 	attributes: {
@@ -73,15 +82,17 @@ export const killCommand: OSBMahojiCommand = {
 							: [m.name.toLowerCase(), ...m.aliases].some(str => str.includes(value.toLowerCase()))
 					)
 					.sort((a, b) => {
-						const hasA = recentlyKilled.has(a.id);
-						const hasB = recentlyKilled.has(b.id);
-						if (hasA && hasB) return 0;
+						const hasA = recentlyKilled.includes(a.id);
+						const hasB = recentlyKilled.includes(b.id);
+						if (hasA && hasB) {
+							return recentlyKilled.indexOf(a.id) < recentlyKilled.indexOf(b.id) ? -1 : 1;
+						}
 						if (hasA) return -1;
 						if (hasB) return 1;
 						return 0;
 					})
 					.map(i => ({
-						name: `${i.name}${recentlyKilled.has(i.id) ? ' (Recently killed)' : ''}`,
+						name: `${i.name}${recentlyKilled.includes(i.id) ? ' (Recently killed)' : ''}`,
 						value: i.name
 					}));
 			}
@@ -108,6 +119,12 @@ export const killCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Boolean,
+			name: 'wilderness',
+			description: 'If you want to kill the monster in the wilderness.',
+			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
 			name: 'solo',
 			description: 'Solo (if its a group boss)',
 			required: false
@@ -123,6 +140,7 @@ export const killCommand: OSBMahojiCommand = {
 		quantity?: number;
 		method?: PvMMethod;
 		show_info?: boolean;
+		wilderness?: boolean;
 		solo?: boolean;
 	}>) => {
 		const user = await mUserFetch(userID);
@@ -136,6 +154,7 @@ export const killCommand: OSBMahojiCommand = {
 			options.name,
 			options.quantity,
 			options.method,
+			options.wilderness,
 			options.solo
 		);
 	}

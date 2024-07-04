@@ -1,18 +1,20 @@
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { PHOSANI_NIGHTMARE_ID } from '../constants';
 import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { Requirements } from '../structures/Requirements';
-import {
+import type {
+	ActivityTaskData,
 	GauntletOptions,
 	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	RaidsOptions,
-	TheatreOfBloodTaskOptions,
-	TOAOptions
+	TOAOptions,
+	TheatreOfBloodTaskOptions
 } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
-import { type CombatAchievement } from './combatAchievements';
+import type { CombatAchievement } from './combatAchievements';
 
 export const grandmasterCombatAchievements: CombatAchievement[] = [
 	{
@@ -1026,5 +1028,62 @@ export const grandmasterCombatAchievements: CombatAchievement[] = [
 			chancePerKill: 110,
 			hasChance: isCertainMonsterTrip(Monsters.Zulrah.id)
 		}
+	},
+	{
+		id: 3090,
+		name: 'Colosseum Speed-Runner',
+		desc: 'Complete the Colosseum with a total time of 24:00 or less.',
+		type: 'speed',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'Colosseum' && !data.diedAt && data.duration < Time.Minute * 24
+		}
+	},
+	{
+		id: 3091,
+		name: 'Slow Dancing in the Sand',
+		desc: 'Defeat Sol Heredit without running during the fight with him.',
+		type: 'restriction',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 15,
+			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+		}
+	},
+	{
+		id: 3092,
+		name: 'Reinforcements',
+		desc: 'Defeat Sol Heredit with "Bees II", "Quartet" and "Solarflare II" modifiers active.',
+		type: 'mechanical',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 30,
+			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+		}
+	},
+	{
+		id: 3093,
+		name: 'Perfect Footwork',
+		desc: 'Defeat Sol Heredit without taking any damage from his Spear, Shield, Grapple or Triple Attack.',
+		type: 'perfection',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 20,
+			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+		}
+	},
+	{
+		id: 3094,
+		name: 'Colosseum Grand Champion',
+		desc: 'Defeat Sol Heredit 10 times.',
+		type: 'kill_count',
+		monster: 'Colosseum',
+		requirements: new Requirements().add({
+			minigames: {
+				colosseum: 10
+			}
+		})
 	}
 ];

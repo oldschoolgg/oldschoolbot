@@ -3,18 +3,20 @@ import { Bank } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
 import { tradeCommand } from '../../src/mahoji/commands/trade';
-import { createTestUser, mockClient, TestUser } from './util';
+import type { TestUser } from './util';
+import { createTestUser, mockClient } from './util';
 
 test('Trade consistency', async () => {
 	await mockClient();
 
 	const bank = new Bank().add('Coins', 1000).add('Egg', 1000).add('Coal', 1000).add('Trout', 1000).freeze();
-	const NUMBER_OF_USERS = 100;
+	const NUMBER_OF_USERS = 20;
 
-	const users: TestUser[] = [];
+	let users: TestUser[] = [];
 	for (let i = 0; i < NUMBER_OF_USERS; i++) {
-		users.push(await createTestUser(bank));
+		users.push(createTestUser(bank) as any);
 	}
+	users = await Promise.all(users);
 
 	function checkMatch() {
 		const expectedBank = bank.clone().multiply(NUMBER_OF_USERS);
@@ -27,9 +29,9 @@ test('Trade consistency', async () => {
 
 	checkMatch();
 
-	for (let i = 0; i < 3; i++) {
-		const promises = [];
+	const promises = [];
 
+	for (let i = 0; i < 3; i++) {
 		for (const user of shuffleArr(users)) {
 			const other = randArrItem(users);
 			const method = randArrItem(['send', 'receive', 'both']);

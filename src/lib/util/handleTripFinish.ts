@@ -1,6 +1,6 @@
-import { activity_type_enum } from '@prisma/client';
-import { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { Bank } from 'oldschooljs';
+import type { activity_type_enum } from '@prisma/client';
+import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
+import type { Bank } from 'oldschooljs';
 
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
@@ -14,7 +14,7 @@ import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
-import { ActivityTaskData } from '../types/minions';
+import type { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, makeComponents } from '../util';
 import {
 	makeAutoContractButton,

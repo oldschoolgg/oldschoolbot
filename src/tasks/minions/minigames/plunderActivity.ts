@@ -6,7 +6,7 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { PlunderActivityTaskOptions } from './../../../lib/types/minions';
+import type { PlunderActivityTaskOptions } from './../../../lib/types/minions';
 
 export const plunderTask: MinionTask = {
 	type: 'Plunder',

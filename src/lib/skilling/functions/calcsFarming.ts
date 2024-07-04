@@ -1,6 +1,7 @@
 import { randInt } from 'e';
 
-import { Plant, SkillsEnum } from '../types';
+import type { Plant } from '../types';
+import { SkillsEnum } from '../types';
 
 export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number] {
 	let numOfPatches = plant.defaultNumOfPatches;

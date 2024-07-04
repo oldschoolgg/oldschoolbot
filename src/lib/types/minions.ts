@@ -1,12 +1,12 @@
 import type { CropUpgradeType } from '@prisma/client';
 
-import { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
+import type { ItemBank } from '.';
+import type { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
 import type { IPatchData } from '../minions/farming/types';
 import type { MinigameName } from '../settings/minigames';
-import { RaidLevel } from '../simulation/toa';
+import type { RaidLevel } from '../simulation/toa';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
-import type { ItemBank } from '.';
 
 export interface ActivityTaskOptions {
 	userID: string;
@@ -45,7 +45,8 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'Easter'
 		| 'ShootingStars'
 		| 'HalloweenEvent'
-		| 'StrongholdOfSecurity';
+		| 'StrongholdOfSecurity'
+		| 'CombatRing';
 }
 
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
@@ -140,6 +141,7 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	died?: boolean;
 	pkEncounters?: number;
 	hasWildySupplies?: boolean;
+	isInWilderness?: boolean;
 }
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
@@ -454,6 +456,14 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers 
 	solo?: boolean;
 }
 
+export interface ColoTaskOptions extends ActivityTaskOptions {
+	type: 'Colosseum';
+	fakeDuration: number;
+	diedAt?: number;
+	loot?: ItemBank;
+	maxGlory: number;
+}
+
 type UserID = string;
 type Points = number;
 type RoomIDsDiedAt = number[];
@@ -606,4 +616,5 @@ export type ActivityTaskData =
 	| FightCavesActivityTaskOptions
 	| ActivityTaskOptionsWithQuantity
 	| MinigameActivityTaskOptionsWithNoChanges
-	| CutLeapingFishActivityTaskOptions;
+	| CutLeapingFishActivityTaskOptions
+	| ColoTaskOptions;

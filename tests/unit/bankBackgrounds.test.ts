@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import { describe, expect, test } from 'vitest';
 
 import backgroundImages from '../../src/lib/minions/data/bankBackgrounds';

@@ -11,8 +11,7 @@ const specialUntradeables = resolveItems([
 	...leaguesCreatables
 		.filter(i => !i.noCl)
 		.map(i => new Bank(i.outputItems))
-		.map(i => i.items().map(i => i[0].id))
-		.flat(),
+		.flatMap(i => i.items().map(i => i[0].id)),
 	...leagueBuyables.map(i => i.item.id)
 ]);
 

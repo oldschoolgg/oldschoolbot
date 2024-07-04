@@ -1,14 +1,16 @@
-import { Activity, activity_type_enum, Prisma } from '@prisma/client';
-import { ButtonBuilder, ButtonInteraction, ButtonStyle } from 'discord.js';
+import type { Activity, Prisma } from '@prisma/client';
+import { activity_type_enum } from '@prisma/client';
+import type { ButtonInteraction } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 
 import { autocompleteMonsters } from '../../mahoji/commands/k';
-import { PvMMethod } from '../constants';
+import type { PvMMethod } from '../constants';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
 import { convertStoredActivityToFlatActivity, prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
-import {
+import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
@@ -51,15 +53,15 @@ import {
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
+	TOAOptions,
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
-	TOAOptions,
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
-import { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
+import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
 import getOSItem from './getOSItem';
 import { deferInteraction } from './interactionReply';
 
@@ -77,7 +79,8 @@ export const taskCanBeRepeated = (activity: Activity) => {
 			activity_type_enum.Easter,
 			activity_type_enum.TokkulShop,
 			activity_type_enum.Birdhouse,
-			activity_type_enum.StrongholdOfSecurity
+			activity_type_enum.StrongholdOfSecurity,
+			activity_type_enum.CombatRing
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
@@ -100,6 +103,10 @@ export const tripHandlers = {
 		args: () => ({})
 	},
 	[activity_type_enum.StrongholdOfSecurity]: {
+		commandName: 'm',
+		args: () => ({})
+	},
+	[activity_type_enum.CombatRing]: {
 		commandName: 'm',
 		args: () => ({})
 	},
@@ -233,7 +240,10 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.Cooking]: {
 		commandName: 'cook',
-		args: (data: CookingActivityTaskOptions) => ({ name: itemNameFromID(data.cookableID), quantity: data.quantity })
+		args: (data: CookingActivityTaskOptions) => ({
+			name: itemNameFromID(data.cookableID),
+			quantity: data.quantity
+		})
 	},
 	[activity_type_enum.Crafting]: {
 		commandName: 'craft',
@@ -289,7 +299,7 @@ export const tripHandlers = {
 			data.autoFarmed
 				? {
 						auto_farm: {}
-				  }
+					}
 				: {}
 	},
 	[activity_type_enum.FightCaves]: {
@@ -407,7 +417,8 @@ export const tripHandlers = {
 			return {
 				name: autocompleteMonsters.find(i => i.id === data.monsterID)?.name ?? data.monsterID.toString(),
 				quantity: data.iQty,
-				method
+				method,
+				wilderness: data.isInWilderness
 			};
 		}
 	},
@@ -625,6 +636,12 @@ export const tripHandlers = {
 			underwater: {
 				drift_net_fishing: { minutes: Math.floor(data.duration / Time.Minute) }
 			}
+		})
+	},
+	[activity_type_enum.Colosseum]: {
+		commandName: 'k',
+		args: () => ({
+			name: 'colosseum'
 		})
 	}
 } as const;

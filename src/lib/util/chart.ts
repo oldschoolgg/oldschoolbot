@@ -1,5 +1,6 @@
 import type { ChartConfiguration } from 'chart.js';
 import { ChartJSNodeCanvas } from 'chartjs-node-canvas';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const width = 1000; // px
 const height = 500; // px
@@ -40,7 +41,8 @@ export async function pieChart(title: string, format: (value: any) => string, va
 					}
 				}
 			}
-		}
+		},
+		plugins: [ChartDataLabels]
 	};
 	return generateChart(options);
 }
@@ -90,7 +92,7 @@ export async function barChart(
 	title: string,
 	format: (value: any) => string,
 	values: [string, number, string?][],
-	useRelativeColors: boolean = false
+	useRelativeColors = false
 ) {
 	const positiveValues = values.map(i => i[1]).filter(v => v > 0);
 	const negativeValues = values.map(i => i[1]).filter(v => v < 0);

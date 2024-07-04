@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { ItemBank } from '../types';
+import type { ItemBank } from '../types';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './clientSettings';
 
 type ClientBankKey =
@@ -60,7 +60,9 @@ type ClientBankKey =
 	| 'nmz_cost'
 	| 'toa_cost'
 	| 'toa_loot'
-	| 'ourania_loot';
+	| 'ourania_loot'
+	| 'colo_cost'
+	| 'colo_loot';
 
 export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);

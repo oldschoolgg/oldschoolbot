@@ -1,12 +1,12 @@
 import { Bank } from 'oldschooljs';
 
-import { QuestID } from '../../../mahoji/lib/abstracted_commands/questCommand';
 import { chompyHats } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
-import { MinigameName } from '../../settings/settings';
+import { QuestID } from '../../minions/data/quests';
+import type { MinigameName } from '../../settings/settings';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
-import { MUserStats } from '../../structures/MUserStats';
-import { Skills } from '../../types';
+import type { MUserStats } from '../../structures/MUserStats';
+import type { Skills } from '../../types';
 import { allTeamCapes } from '../misc';
 import { aerialFishBuyables } from './aerialFishBuyables';
 import { canifisClothes } from './canifisClothes';
@@ -469,7 +469,7 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Monkey',
 		outputItems: new Bank({
-			19_556: 1
+			19556: 1
 		}),
 		gpCost: 1_000_000,
 		qpRequired: 182
@@ -757,7 +757,7 @@ const Buyables: Buyable[] = [
 		name: 'Feather',
 		aliases: ['feather'],
 		gpCost: 50,
-		ironmanPrice: 2
+		ironmanPrice: 4
 	},
 	{
 		name: 'Shield right half',
@@ -1067,6 +1067,15 @@ const Buyables: Buyable[] = [
 		customReq: async (_, stats) => {
 			const toaKCs = stats.getToaKCs();
 			return toaKCs.expertKC >= 25 ? [true] : [false, 'You need a 25 Expert KC in Tombs of Amascut to buy this.'];
+		}
+	},
+	{
+		name: 'Lockpick',
+		gpCost: 5000,
+		ironmanPrice: 500,
+		skillsNeeded: {
+			agility: 50,
+			thieving: 50
 		}
 	},
 	...sepulchreBuyables,

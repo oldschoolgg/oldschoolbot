@@ -1,10 +1,11 @@
-import { userMention } from '@discordjs/builders';
 import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { userMention } from 'discord.js';
 
 import { NEX_ID } from '../../lib/constants';
 import { trackLoot } from '../../lib/lootTrack';
-import { handleNexKills, NexContext } from '../../lib/simulation/nex';
-import { NexTaskOptions } from '../../lib/types/minions';
+import type { NexContext } from '../../lib/simulation/nex';
+import { handleNexKills } from '../../lib/simulation/nex';
+import type { NexTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -81,7 +82,7 @@ export const nexTask: MinionTask = {
 						? `${allMention} your minion${users.length === 1 ? '' : 's'} died in all kill attempts.`
 						: `${allMention} Your team finished killing ${quantity}x Nex.${
 								wipedKill ? ` Your team wiped on the ${formatOrdinal(wipedKill)} kill.` : ''
-						  }
+							}
 				
 ${loot.formatLoot()}`
 			},
@@ -93,7 +94,7 @@ ${loot.formatLoot()}`
 							user: allMUsers[0],
 							previousCL: undefined
 						})
-				  ).file.attachment
+					).file.attachment
 				: undefined,
 			data,
 			loot.totalLoot()

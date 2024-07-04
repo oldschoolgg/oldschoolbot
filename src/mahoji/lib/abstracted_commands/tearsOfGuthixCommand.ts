@@ -1,4 +1,4 @@
-import { notEmpty, objectEntries, Time } from 'e';
+import { Time, notEmpty, objectEntries } from 'e';
 
 import { Emoji } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';

@@ -2,7 +2,7 @@ import { activity_type_enum } from '@prisma/client';
 import { Time } from 'e';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
-import { ActivityTaskData } from './types/minions';
+import type { ActivityTaskData } from './types/minions';
 import activityInArea, { WorldLocations } from './util/activityInArea';
 
 const {
@@ -117,7 +117,8 @@ export function handlePassiveImplings(user: MUser, data: ActivityTaskData) {
 			activity_type_enum.Construction,
 			activity_type_enum.TombsOfAmascut,
 			activity_type_enum.DriftNet,
-			activity_type_enum.UnderwaterAgilityThieving
+			activity_type_enum.UnderwaterAgilityThieving,
+			activity_type_enum.Colosseum
 		].includes(data.type)
 	)
 		return null;
@@ -127,7 +128,7 @@ export function handlePassiveImplings(user: MUser, data: ActivityTaskData) {
 	const skills = user.skillsAsLevels;
 	const level = skills.hunter;
 
-	let bank = new Bank();
+	const bank = new Bank();
 	const missed = new Bank();
 
 	const impTable = implingTableByWorldLocation[activityInArea(user, data)];

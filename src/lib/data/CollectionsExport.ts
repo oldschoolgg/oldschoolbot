@@ -1,14 +1,14 @@
-import { Minigame } from '@prisma/client';
+import type { Minigame } from '@prisma/client';
 import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
-import { MinigameScore } from '../settings/minigames';
+import type { MinigameScore } from '../settings/minigames';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
-import { UserStatsDataNeededForCL } from './Collections';
+import type { UserStatsDataNeededForCL } from './Collections';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -343,13 +343,14 @@ export const grotesqueGuardiansCL = resolveItems([
 	'Granite dust'
 ]);
 export const hesporiCL = resolveItems(['Bottomless compost bucket', 'Iasor seed', 'Kronos seed', 'Attas seed']);
-export const theInfernoCL = resolveItems(['Jal-nib-rek', 'Infernal cape', 'Tokkul']);
+export const theInfernoCL = resolveItems(['Jal-nib-rek', 'Infernal cape']);
 export const kalphiteQueenCL = resolveItems([
 	'Kalphite princess',
 	'Kq head',
 	'Jar of sand',
 	'Dragon 2h sword',
-	'Dragon chainbody'
+	'Dragon chainbody',
+	'Dragon pickaxe'
 ]);
 export const kingBlackDragonCL = resolveItems([
 	'Prince black dragon',
@@ -391,12 +392,12 @@ export const spiritAnglerOutfit = resolveItems([
 export const temporossCL = resolveItems([
 	'Tiny tempor',
 	'Big harpoonfish',
+	...spiritAnglerOutfit,
 	'Tome of water (empty)',
 	'Soaked page',
 	'Tackle box',
 	'Fish barrel',
 	'Dragon harpoon',
-	...spiritAnglerOutfit,
 	'Spirit flakes'
 ]);
 export const thermonuclearSmokeDevilCL = resolveItems([
@@ -1845,9 +1846,9 @@ export const slayerCL = resolveItems([
 	'Mystic gloves (dusk)',
 	'Mystic boots (dusk)',
 	'Basilisk jaw',
-	// "Dagon'hai hat",
-	// "Dagon'hai robe top",
-	// "Dagon'hai robe bottom",
+	"Dagon'hai hat",
+	"Dagon'hai robe top",
+	"Dagon'hai robe bottom",
 	'Blood shard',
 	'Ancient ceremonial mask',
 	'Ancient ceremonial top',
@@ -2247,7 +2248,7 @@ export const allPetIDs = [
 	...allPetsCL,
 	...chambersOfXericMetamorphPets,
 	...tobMetamorphPets,
-	...growablePets.map(petSeries => petSeries.stages).flat(1),
+	...growablePets.flatMap(petSeries => petSeries.stages),
 	...metamorphPets,
 	...toaMetamorphPets
 ];

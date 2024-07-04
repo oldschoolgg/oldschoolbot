@@ -1,10 +1,10 @@
-import { EmbedBuilder } from '@discordjs/builders';
-import { CommandRunOptions } from 'mahoji';
+import { EmbedBuilder } from 'discord.js';
+import type { CommandRunOptions } from 'mahoji';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { getItem } from '../../lib/util/getOSItem';
 import { itemOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { sellPriceOfItem } from './sell';
 
 export const priceCommand: OSBMahojiCommand = {

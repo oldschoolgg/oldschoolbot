@@ -3,12 +3,16 @@ import '../data/itemAliases';
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { Bank, Misc, Monsters } from 'oldschooljs';
 
+import type { KillWorkerArgs, KillWorkerReturn } from '.';
 import killableMonsters from '../minions/data/killableMonsters';
 import { handleNexKills } from '../simulation/nex';
 import { simulatedKillables } from '../simulation/simulatedKillables';
 import { calcDropRatesFromBank } from '../util/calcDropRatesFromBank';
 import resolveItems from '../util/resolveItems';
-import type { KillWorkerArgs, KillWorkerReturn } from '.';
+
+if (global.prisma) {
+	throw new Error('Prisma is loaded in the kill worker!');
+}
 
 export default async ({
 	quantity,
@@ -23,9 +27,7 @@ export default async ({
 	if (osjsMonster) {
 		if (quantity > limit) {
 			return {
-				error:
-					`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! ` +
-					'*You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>'
+				error: `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>`
 			};
 		}
 
@@ -40,7 +42,7 @@ export default async ({
 		};
 
 		const killableMonster = killableMonsters.find(mon => mon.id === osjsMonster.id);
-		if (killableMonster && killableMonster.specialLoot) {
+		if (killableMonster?.specialLoot) {
 			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity });
 		}
 
@@ -51,9 +53,7 @@ export default async ({
 	if (simulatedKillable) {
 		if (quantity > limit) {
 			return {
-				error:
-					`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! ` +
-					'*You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>'
+				error: `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 1 million by becoming a patron at <https://www.patreon.com/oldschoolbot>`
 			};
 		}
 
@@ -61,7 +61,7 @@ export default async ({
 	}
 
 	if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {
-		let bank = new Bank();
+		const bank = new Bank();
 		if (quantity > 10_000) {
 			return { error: 'I can only kill a maximum of 10k nightmares a time!' };
 		}

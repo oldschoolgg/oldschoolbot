@@ -1,7 +1,7 @@
-import { percentChance, Time } from 'e';
+import { Time, percentChance } from 'e';
 
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
-import { Ore } from './../types';
+import type { Ore } from './../types';
 
 interface MiningTimeOptions {
 	quantity: number | undefined;

@@ -1,6 +1,7 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { chunk } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { leagueBuyables } from '../../lib/data/leaguesBuyables';
@@ -8,7 +9,7 @@ import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { getUsername } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { doMenu } from './leaderboard';
 
 const leaguesTrophiesBuyables = [
@@ -118,14 +119,14 @@ ${leaguesTrophiesBuyables
 		}
 
 		if (options.buy_reward) {
-			let quantity = 1;
+			const quantity = 1;
 			const pointsCostMultiplier = 150;
 
 			const item = leagueBuyables.find(i => stringMatches(i.item.name, options.buy_reward?.item));
 
 			if (!item) return "That's not a valid item.";
 
-			let baseCost = item.price * pointsCostMultiplier;
+			const baseCost = item.price * pointsCostMultiplier;
 			const cost = quantity * baseCost;
 			if (roboChimpUser.leagues_points_balance_osb < cost) {
 				return `You don't have enough League Points to purchase this. You need ${cost}, but you have ${roboChimpUser.leagues_points_balance_osb}.`;

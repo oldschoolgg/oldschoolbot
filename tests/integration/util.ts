@@ -1,18 +1,17 @@
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { randInt, shuffleArr, uniqueArr } from 'e';
-import { CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { globalConfig } from '../../src/lib/constants';
 import { MUserClass } from '../../src/lib/MUser';
-import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/prisma';
 import { processPendingActivities } from '../../src/lib/Task';
-import { ItemBank } from '../../src/lib/types';
+import { globalConfig } from '../../src/lib/constants';
+import type { ItemBank } from '../../src/lib/types';
 import { cryptoRand } from '../../src/lib/util';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
-import { OSBMahojiCommand } from '../../src/mahoji/lib/util';
-import { ClientStorage, User, UserStats } from '.prisma/client';
+import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
+import type { ClientStorage, User, UserStats } from '.prisma/client';
 
 export const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> => ({
 	userID,
@@ -21,6 +20,7 @@ export const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'opti
 	user: { id: userID } as any,
 	channelID: '111111111',
 	interaction: {
+		channelId: '1',
 		deferReply: () => Promise.resolve(),
 		editReply: () => Promise.resolve(),
 		followUp: () => Promise.resolve()
@@ -101,18 +101,6 @@ export class TestUser extends MUserClass {
 		return this;
 	}
 
-	async runActivity() {
-		const [finishedActivity] = await processPendingActivities();
-		if (!finishedActivity) {
-			throw new Error('runActivity: No activity was ran');
-		}
-		if (finishedActivity.user_id.toString() !== this.id) {
-			throw new Error('runActivity: Ran activity, but it didnt belong to this user');
-		}
-		const data = convertStoredActivityToFlatActivity(finishedActivity);
-		return data;
-	}
-
 	randomBankSubset() {
 		const bank = new Bank();
 		const items = shuffleArr(this.bankWithGP.items()).slice(0, randInt(0, this.bankWithGP.length));
@@ -126,7 +114,7 @@ export class TestUser extends MUserClass {
 const idsUsed = new Set<string>();
 
 export function mockedId() {
-	return cryptoRand(1_000_000_000, 5_000_000_000_000).toString();
+	return cryptoRand(1_000_000_000_000, 5_000_000_000_000).toString();
 }
 
 export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
@@ -184,6 +172,10 @@ class TestClient {
 		if (this.data[key] !== value) {
 			throw new Error(`Expected ${key} to be ${value} but got ${this.data[key]}`);
 		}
+	}
+
+	async processActivities() {
+		await processPendingActivities();
 	}
 }
 

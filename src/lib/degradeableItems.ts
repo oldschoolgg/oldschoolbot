@@ -1,16 +1,17 @@
 import { percentChance } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import type { Item } from 'oldschooljs/dist/meta/types';
+import type Monster from 'oldschooljs/dist/structures/Monster';
 
-import { GearSetupType } from './gear/types';
-import { KillableMonster } from './minions/types';
+import type { GearSetupType } from './gear/types';
+import type { KillableMonster } from './minions/types';
+import type { ChargeBank } from './structures/Bank';
 import { assert } from './util';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import { updateBankSetting } from './util/updateBankSetting';
 
-interface DegradeableItem {
+export interface DegradeableItem {
 	item: Item;
 	settingsKey:
 		| 'tentacle_charges'
@@ -403,4 +404,25 @@ export async function checkDegradeableItemCharges({ item, user }: { item: Item; 
 	const currentCharges = user.user[degItem.settingsKey];
 	assert(typeof currentCharges === 'number');
 	return currentCharges;
+}
+
+export async function degradeChargeBank(user: MUser, chargeBank: ChargeBank) {
+	const hasChargesResult = user.hasCharges(chargeBank);
+	if (!hasChargesResult.hasCharges) {
+		throw new Error(
+			`Tried to degrade a charge bank (${chargeBank}) for ${
+				user.logName
+			}, but they don't have the required charges: ${JSON.stringify(hasChargesResult)}`
+		);
+	}
+
+	const results = [];
+
+	for (const [key, chargesToDegrade] of chargeBank.entries()) {
+		const { item } = degradeableItems.find(i => i.settingsKey === key)!;
+		const result = await degradeItem({ item, chargesToDegrade, user });
+		results.push(result);
+	}
+
+	return results;
 }

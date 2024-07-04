@@ -1,16 +1,9 @@
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import {
-	ActionRowBuilder,
-	BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
-	ComponentType,
-	MessageEditOptions,
-	TextChannel
-} from 'discord.js';
+import type { BaseMessageOptions, ComponentType, MessageEditOptions, TextChannel } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 
-import { PaginatedMessagePage } from './util';
+import type { PaginatedMessagePage } from './util';
 import { logError } from './util/logError';
 
 const controlButtons: {
@@ -97,7 +90,7 @@ export class PaginatedMessage {
 											.setEmoji(i.emoji)
 									)
 								)
-						  ]
+							]
 			};
 		} catch (err) {
 			if (typeof err === 'string') return err;

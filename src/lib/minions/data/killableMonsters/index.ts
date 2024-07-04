@@ -6,7 +6,7 @@ import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import bosses from './bosses';
 import { camdozaalMonsters } from './camdozaalMonsters';

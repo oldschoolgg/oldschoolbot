@@ -1,6 +1,6 @@
-import { EmbedBuilder } from '@discordjs/builders';
-import { ChatInputCommandInteraction } from 'discord.js';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
+import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { LootTable } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
@@ -41,8 +41,8 @@ export async function hotColdCommand(
 	if (!amount || !choice || !['hot', 'cold'].includes(choice) || !Number.isInteger(amount)) return explanation;
 	if (amount < 10_000_000 || amount > 500_000_000) return 'You must gamble between 10m and 500m.';
 	if (user.GP < amount) return "You can't afford to gamble that much.";
-	let flowerLoot = flowerTable.roll();
-	let flower = flowerLoot.items()[0][0];
+	const flowerLoot = flowerTable.roll();
+	const flower = flowerLoot.items()[0][0];
 
 	await handleMahojiConfirmation(
 		interaction,

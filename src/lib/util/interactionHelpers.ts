@@ -1,6 +1,7 @@
-import { createHash } from 'crypto';
-import { ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ComponentType } from 'discord.js';
-import { chunk, randInt, Time } from 'e';
+import { createHash } from 'node:crypto';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import { Time, chunk, randInt } from 'e';
 
 import { deferInteraction, interactionReply } from './interactionReply';
 

@@ -1,9 +1,9 @@
-import { percentChance, Time } from 'e';
+import { Time, percentChance } from 'e';
 
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import resolveItems from '../../util/resolveItems';
-import { MUserClass } from './../../MUser';
-import { Log } from './../types';
+import type { MUserClass } from './../../MUser';
+import type { Log } from './../types';
 
 interface WoodcuttingTimeOptions {
 	quantity: number | undefined;

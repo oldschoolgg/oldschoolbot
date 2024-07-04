@@ -1,6 +1,6 @@
-import { CAViewType } from '../../mahoji/commands/ca';
+import type { CAViewType } from '../../mahoji/commands/ca';
 import type { ActivityTaskData, MonsterActivityTaskOptions } from '../types/minions';
-import { CombatAchievement } from './combatAchievements';
+import type { CombatAchievement } from './combatAchievements';
 
 export function isCertainMonsterTrip(monsterID: number) {
 	return (data: ActivityTaskData) =>

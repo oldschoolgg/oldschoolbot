@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
-import { CollectingOptions } from '../../lib/types/minions';
+import type { CollectingOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
@@ -10,7 +10,7 @@ import { collectables } from '../../mahoji/lib/abstracted_commands/collectComman
 export const collectingTask: MinionTask = {
 	type: 'Collecting',
 	async run(data: CollectingOptions) {
-		let { collectableID, quantity, userID, channelID, duration } = data;
+		const { collectableID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
 
 		const collectable = collectables.find(c => c.item.id === collectableID)!;

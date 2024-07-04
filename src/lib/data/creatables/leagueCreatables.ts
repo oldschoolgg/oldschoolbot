@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { Createable } from '../createables';
+import type { Createable } from '../createables';
 
 const toolCreatables: Createable[] = [
 	{
@@ -271,7 +271,7 @@ const voidOrnaments: Createable[] = [
 		outputItems: new Bank().add('Elite void robe (or)')
 	},
 	{
-		name: 'Revert Elite void robe (or))',
+		name: 'Revert Elite void robe (or)',
 		inputItems: new Bank({
 			'Elite void robe (or)': 1
 		}),

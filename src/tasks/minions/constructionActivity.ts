@@ -2,7 +2,7 @@ import { calcPercentOfNum } from 'e';
 
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
+import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import { calcConBonusXP } from '../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 

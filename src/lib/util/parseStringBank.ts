@@ -1,7 +1,7 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit/dist/util/expressionParser';
 import { notEmpty } from 'e';
 import { Bank, Items } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
 import { ONE_TRILLION } from '../constants';
@@ -19,27 +19,27 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	const split = str.split(' ');
 
 	// If we're passed 2 numbers in a row, e.g. '1 1 coal', remove that number and recurse back.
-	if (!isNaN(Number(split[1])) && split.length > 2) {
+	if (!Number.isNaN(Number(split[1])) && split.length > 2) {
 		split.splice(1, 1);
 		return parseQuantityAndItem(split.join(' '));
 	}
 
 	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
 
-	let lazyItemGet = Items.get(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
+	const lazyItemGet = Items.get(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
 	if (str.includes('#') && lazyItemGet && inputBank) {
 		potentialQty = potentialQty.replace('#', inputBank.amount(lazyItemGet.id).toString());
 	}
 
 	let parsedQty: number | null = evalMathExpression(potentialQty.replace('x', ''));
-	if (parsedQty !== null && isNaN(parsedQty)) parsedQty = null;
+	if (parsedQty !== null && Number.isNaN(parsedQty)) parsedQty = null;
 
 	const parsedName = parsedQty === null ? str : potentialName.join(' ');
 
 	let osItems: Item[] = [];
 
 	const nameAsInt = Number(parsedName);
-	if (!isNaN(nameAsInt)) {
+	if (!Number.isNaN(nameAsInt)) {
 		const item = Items.get(nameAsInt);
 		if (item) osItems.push(item);
 	} else {
@@ -51,7 +51,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	}
 	if (osItems.length === 0) return [];
 
-	let quantity = floor(min(ONE_TRILLION, max(0, parsedQty ?? 0)));
+	const quantity = floor(min(ONE_TRILLION, max(0, parsedQty ?? 0)));
 
 	return [osItems, quantity];
 }
@@ -63,10 +63,10 @@ export function parseStringBank(str = '', inputBank?: Bank, noDuplicateItems?: t
 		.split(',')
 		.filter(i => notEmpty(i) && i !== '');
 	if (split.length === 0) return [];
-	let items: [Item, number | undefined][] = [];
+	const items: [Item, number | undefined][] = [];
 	const currentIDs = new Set();
 	for (let i = 0; i < split.length; i++) {
-		let [resItems, quantity] = parseQuantityAndItem(split[i], inputBank);
+		const [resItems, quantity] = parseQuantityAndItem(split[i], inputBank);
 		if (resItems !== undefined) {
 			for (const item of noDuplicateItems ? resItems.slice(0, 1) : resItems) {
 				if (currentIDs.has(item.id)) continue;
@@ -92,7 +92,7 @@ export function parseBankFromFlags({
 	user?: MUser;
 }): Bank {
 	const newBank = new Bank();
-	const maxQuantity = Number(flags.qty) || Infinity;
+	const maxQuantity = Number(flags.qty) || Number.POSITIVE_INFINITY;
 
 	// Add filterables
 	const flagsKeys = Object.keys(flags);
@@ -148,7 +148,7 @@ export function parseBank({
 	noDuplicateItems = undefined
 }: ParseBankOptions): Bank {
 	if (inputStr) {
-		let _bank = new Bank();
+		const _bank = new Bank();
 		const strItems = parseStringBank(inputStr, inputBank, noDuplicateItems);
 		for (const [item, quantity] of strItems) {
 			if (maxSize && _bank.length >= maxSize) break;
@@ -157,8 +157,8 @@ export function parseBank({
 				!quantity
 					? inputBank?.amount(item.id)
 					: inputBank === undefined
-					? quantity
-					: Math.max(0, Math.min(quantity, inputBank.amount(item.id) ?? 1))
+						? quantity
+						: Math.max(0, Math.min(quantity, inputBank.amount(item.id) ?? 1))
 			);
 		}
 		return _bank;
@@ -178,7 +178,7 @@ export function parseBank({
 }
 
 function truncateBankToSize(bank: Bank, size: number) {
-	let newBank = new Bank();
+	const newBank = new Bank();
 
 	for (const [item, qty] of bank.items()) {
 		if (newBank.length === size) break;
@@ -207,12 +207,12 @@ export function parseInputCostBank({
 	}
 
 	const baseBank = parseBankFromFlags({ bank: usersBank, flags, excludeItems, user });
-	const stringInputBank = Boolean(inputStr) ? parseStringBank(inputStr, baseBank, true) : [];
+	const stringInputBank = inputStr ? parseStringBank(inputStr, baseBank, true) : [];
 
 	const bank = new Bank();
 	for (const [item, qty] of stringInputBank) {
 		const amountOwned = baseBank.amount(item.id);
-		const maxQuantity = Number(flags.qty) || Infinity;
+		const maxQuantity = Number(flags.qty) || Number.POSITIVE_INFINITY;
 		bank.add(item.id, Math.min(maxQuantity, amountOwned, qty || amountOwned));
 	}
 
