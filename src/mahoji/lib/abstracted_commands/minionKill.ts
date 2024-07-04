@@ -579,7 +579,7 @@ export async function minionKillCommand(
 				degItemBeingUsed.push(degItem);
 			}
 		}
-	} else if (!isInWilderness) {
+	} else {
 		for (const degItem of degradeablePvmBoostItems) {
 			const isUsing = convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle);
 			const gearCheck = isInWilderness
