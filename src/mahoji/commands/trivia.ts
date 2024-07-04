@@ -1,9 +1,9 @@
 import type { TextChannel } from 'discord.js';
 import { userMention } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { shuffleArr, uniqueArr } from 'e';
-import { ApplicationCommandOptionType } from 'mahoji';
-import type { CommandRunOptions, MahojiUserOption } from 'mahoji/dist/lib/types';
 
+import type { CommandRunOptions, MahojiUserOption } from '@oldschoolgg/toolkit';
 import { DynamicButtons } from '../../lib/DynamicButtons';
 import { getRandomTriviaQuestions } from '../../lib/roboChimp';
 import { deferInteraction } from '../../lib/util/interactionReply';

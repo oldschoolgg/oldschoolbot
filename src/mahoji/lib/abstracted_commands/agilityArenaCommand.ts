@@ -1,4 +1,4 @@
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';

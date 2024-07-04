@@ -1,6 +1,6 @@
 import { isGuildChannel } from '@oldschoolgg/toolkit';
+import type { CommandOptions } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import type { CommandOptions } from 'mahoji/dist/lib/types';
 import { Monsters } from 'oldschooljs';
 
 import type { PvMMethod } from '../../../lib/constants';

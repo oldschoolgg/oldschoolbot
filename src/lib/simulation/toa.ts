@@ -1,4 +1,5 @@
 import { SimpleTable, mentionCommand } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { Minigame } from '@prisma/client';
 import { XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
@@ -19,7 +20,6 @@ import {
 	sumArr,
 	uniqueArr
 } from 'e';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';

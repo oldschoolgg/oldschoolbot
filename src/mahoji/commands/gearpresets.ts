@@ -1,7 +1,7 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandOption } from '@oldschoolgg/toolkit';
 import type { GearPreset } from '@prisma/client';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
-import type { CommandOption } from 'mahoji/dist/lib/types';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';

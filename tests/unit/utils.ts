@@ -1,5 +1,5 @@
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { Prisma, User } from '@prisma/client';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurhash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';

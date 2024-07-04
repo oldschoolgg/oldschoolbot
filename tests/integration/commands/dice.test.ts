@@ -25,8 +25,8 @@ describe('Dice Command', async () => {
 	});
 
 	test('Lose dice', async () => {
-		randomMock();
 		await user.gpMatch(100_000_000);
+		randomMock();
 		const result = await user.runCommand(gambleCommand, { dice: { amount: '100m' } });
 		expect(result).toMatchObject(` <@${user.id}> rolled **11** on the percentile dice, and you lost -100m GP.`);
 		await user.gpMatch(0);
@@ -36,8 +36,8 @@ describe('Dice Command', async () => {
 	});
 
 	test('Won dice', async () => {
-		randomMock(0.9);
 		await user.gpMatch(100_000_000);
+		randomMock(0.9);
 		const result = await user.runCommand(gambleCommand, { dice: { amount: '100m' } });
 		expect(result).toMatchObject(` <@${user.id}> rolled **91** on the percentile dice, and you won 100m GP.`);
 		await user.gpMatch(200_000_000);

@@ -2,11 +2,11 @@ import path from 'node:path';
 
 import { execSync } from 'node:child_process';
 import type { Image } from '@napi-rs/canvas';
-import { SimpleTable, StoreBitfield } from '@oldschoolgg/toolkit';
+import { PerkTier, SimpleTable, StoreBitfield } from '@oldschoolgg/toolkit';
+import type { CommandOptions } from '@oldschoolgg/toolkit';
 import type { APIButtonComponent } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import * as dotenv from 'dotenv';
-import type { CommandOptions } from 'mahoji/dist/lib/types';
 import { z } from 'zod';
 
 import { DISCORD_SETTINGS, production } from '../config';
@@ -16,6 +16,8 @@ import type { ActivityTaskData } from './types/minions';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 import { dateFm } from './util/smallUtils';
+
+export { PerkTier };
 
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
@@ -192,37 +194,6 @@ export enum Events {
 
 export const COINS_ID = 995;
 
-export enum PerkTier {
-	/**
-	 * Boosters
-	 */
-	One = 1,
-	/**
-	 * Tier 1 Patron
-	 */
-	Two = 2,
-	/**
-	 * Tier 2 Patron, Contributors, Mods
-	 */
-	Three = 3,
-	/**
-	 * Tier 3 Patron
-	 */
-	Four = 4,
-	/**
-	 * Tier 4 Patron
-	 */
-	Five = 5,
-	/**
-	 * Tier 5 Patron
-	 */
-	Six = 6,
-	/**
-	 * Tier 6 Patron
-	 */
-	Seven = 7
-}
-
 export enum BitField {
 	IsPatronTier1 = 2,
 	IsPatronTier2 = 3,
@@ -366,15 +337,6 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		userConfigurable: true
 	}
 } as const;
-
-export enum PatronTierID {
-	One = '4608201',
-	Two = '4608226',
-	Three = '4720356',
-	Four = '5262065',
-	Five = '5262216',
-	Six = '8091554'
-}
 
 export const BadgesEnum = {
 	Developer: 0,

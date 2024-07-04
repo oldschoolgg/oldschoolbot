@@ -1,7 +1,7 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { notEmpty } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { finishables } from '../../lib/finishables';

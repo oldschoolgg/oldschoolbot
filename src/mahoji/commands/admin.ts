@@ -1,18 +1,17 @@
 import { execSync } from 'node:child_process';
 import { inspect } from 'node:util';
 
+import { type CommandRunOptions, bulkUpdateCommands } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import type { ClientStorage } from '@prisma/client';
 import { economy_transaction_type } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { isThenable } from '@sentry/utils';
 import type { InteractionReplyOptions } from 'discord.js';
 import { AttachmentBuilder, codeBlock, escapeCodeBlock } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, sleep, uniqueArr } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import type { MahojiUserOption } from 'mahoji/dist/lib/types';
-import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -34,7 +33,6 @@ import { economyLog } from '../../lib/economyLogs';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import type { GearSetup } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
-import { patreonTask } from '../../lib/patreon';
 import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
@@ -55,7 +53,6 @@ import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
-import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -830,11 +827,6 @@ export const adminCommand: OSBMahojiCommand = {
 				return `Failed to run roles task. ${err.message}`;
 			}
 		}
-		if (options.sync_patreon) {
-			await patreonTask.run();
-			syncLinkedAccounts();
-			return 'Finished syncing patrons.';
-		}
 
 		if (options.badges) {
 			if ((!options.badges.remove && !options.badges.add) || (options.badges.add && options.badges.remove)) {
@@ -1042,7 +1034,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 
 		if (options.sync_commands) {
 			const global = Boolean(production);
-			const totalCommands = globalClient.mahojiClient.commands.values;
+			const totalCommands = Array.from(globalClient.mahojiClient.commands.values());
 			const globalCommands = totalCommands.filter(i => !i.guildID);
 			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
 			if (global) {
@@ -1108,13 +1100,6 @@ ${guildCommands.length} Guild commands`;
 
 			await user.addItemsToBank({ items, collectionLog: false });
 			return `Gave ${items} to ${user.mention}`;
-		}
-
-		if (options.debug_patreon) {
-			const result = await patreonTask.fetchPatrons();
-			return {
-				files: [{ attachment: Buffer.from(JSON.stringify(result, null, 4)), name: 'patreon.txt' }]
-			};
 		}
 
 		/**

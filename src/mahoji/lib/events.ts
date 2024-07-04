@@ -1,6 +1,6 @@
-import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { bulkUpdateCommands } from '@oldschoolgg/toolkit';
 import { DEV_SERVER_ID, production } from '../../config';
 import { cacheBadges } from '../../lib/badges';
 import { syncBlacklists } from '../../lib/blacklists';
@@ -52,7 +52,7 @@ export async function onStartup() {
 		console.log('Syncing commands locally...');
 		await bulkUpdateCommands({
 			client: globalClient.mahojiClient,
-			commands: globalClient.mahojiClient.commands.values,
+			commands: Array.from(globalClient.mahojiClient.commands.values()),
 			guildID: DEV_SERVER_ID
 		});
 	}

@@ -1,6 +1,6 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 

@@ -6,22 +6,20 @@ import './lib/data/trophies';
 import './lib/itemMods';
 import './lib/geImage';
 
-import { join } from 'node:path';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
 import { isObject } from 'e';
-import { MahojiClient } from 'mahoji';
 
+import { MahojiClient } from '@oldschoolgg/toolkit';
 import { DEV_SERVER_ID, SENTRY_DSN, SupportServer, botToken } from './config';
 import { syncActivityCache } from './lib/Task';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
 import { Channel, Events, META_CONSTANTS, globalConfig } from './lib/constants';
 import { economyLog } from './lib/economyLogs';
 import { onMessage } from './lib/events';
-import { makeServer } from './lib/http';
 import { modalInteractionHook } from './lib/modals';
 import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
@@ -30,6 +28,7 @@ import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUser
 import { interactionHook } from './lib/util/globalInteractions';
 import { handleInteractionError } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
+import { allCommands } from './mahoji/commands/allCommands';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
@@ -96,7 +95,7 @@ const client = new OldSchoolBotClient({
 export const mahojiClient = new MahojiClient({
 	developmentServerID: DEV_SERVER_ID,
 	applicationID: globalConfig.clientID,
-	storeDirs: [join('dist', 'mahoji')],
+	commands: allCommands,
 	handlers: {
 		preCommand: async ({ command, interaction, options }) => {
 			const result = await preCommand({
@@ -188,15 +187,11 @@ client.once('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()
 
 async function main() {
 	if (process.env.TEST) return;
-	client.fastifyServer = await makeServer();
 	await Promise.all([
 		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
 		runTimedLoggedFn('Sync Activity Cache', syncActivityCache)
 	]);
-	await Promise.all([
-		runTimedLoggedFn('Start Mahoji Client', async () => mahojiClient.start()),
-		runTimedLoggedFn('Startup Scripts', runStartupScripts)
-	]);
+	await runTimedLoggedFn('Startup Scripts', runStartupScripts);
 
 	await runTimedLoggedFn('Log In', () => client.login(botToken));
 }

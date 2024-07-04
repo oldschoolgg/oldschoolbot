@@ -1,12 +1,10 @@
 import './no-prisma';
 
 import { execSync } from 'node:child_process';
-import { join } from 'node:path';
 
 import { writeFileSync } from 'node:fs';
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { MahojiClient, stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { MahojiClient } from 'mahoji';
 
 import { BOT_TYPE } from '../lib/constants';
 
@@ -17,11 +15,10 @@ async function renderCommands() {
 	const mahojiClient = new MahojiClient({
 		developmentServerID: 'x',
 		applicationID: 'x',
-		storeDirs: [join('dist', 'mahoji')],
+		commands: [],
 		djsClient: {} as any
 	});
-	await mahojiClient.commands.load();
-	const mahojiCommands = mahojiClient.commands.values;
+	const mahojiCommands = Array.from(mahojiClient.commands.values());
 	return allAbstractCommands(mahojiClient)
 		.filter(c => {
 			const has = typeof c.attributes?.description === 'string' && c.attributes.description.length > 1;

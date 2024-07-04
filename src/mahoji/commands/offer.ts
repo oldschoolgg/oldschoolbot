@@ -1,8 +1,8 @@
 import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, randArrItem, randInt, roll } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';

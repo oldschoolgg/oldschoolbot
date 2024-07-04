@@ -1,12 +1,12 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
 import { SnowflakeUtil, codeBlock } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, randArrItem, sumArr } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
-import type { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
@@ -20,7 +20,6 @@ import { GrandExchange } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { patreonTask } from '../../lib/patreon';
 import { allPerkBitfields } from '../../lib/perkTiers';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 import { prisma } from '../../lib/settings/prisma';
@@ -607,7 +606,6 @@ ORDER BY item_id ASC;`);
 				BitField.IsPatronTier6
 			];
 			await prisma.$queryRaw`UPDATE users SET bitfield = bitfield - '{${bitfieldsToRemove.join(',')}'::int[];`;
-			await patreonTask.run();
 			await syncLinkedAccounts();
 			return 'Finished.';
 		}

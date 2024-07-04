@@ -2,6 +2,7 @@ import { gzip } from 'node:zlib';
 
 import { createHash } from 'node:crypto';
 import { stripEmojis } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { Stopwatch } from '@sapphire/stopwatch';
 import type {
 	BaseMessageOptions,
@@ -19,7 +20,6 @@ import type {
 } from 'discord.js';
 import { ComponentType, InteractionType, escapeMarkdown } from 'discord.js';
 import { Time, chunk, notEmpty, objectEntries } from 'e';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { bool, integer, nodeCrypto, real } from 'random-js';

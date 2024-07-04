@@ -1,5 +1,5 @@
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BSO_MAX_TOTAL_LEVEL, BitField, Channel } from '../../lib/constants';

@@ -1,5 +1,5 @@
+import type { CommandOptions } from '@oldschoolgg/toolkit';
 import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
-import type { CommandOptions } from 'mahoji/dist/lib/types';
 
 import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
 import { Emoji, badges, badgesCache, busyImmuneCommands, usernameCache } from '../../lib/constants';

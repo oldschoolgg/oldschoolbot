@@ -1,8 +1,8 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
+import type { CommandOption } from '@oldschoolgg/toolkit';
 import type { APIApplicationCommandOptionChoice } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { uniqueArr } from 'e';
-import type { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank, Items } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 

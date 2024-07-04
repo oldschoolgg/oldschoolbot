@@ -1,5 +1,5 @@
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import { channelIsSendable } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';

@@ -1,9 +1,9 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { MessageEditOptions } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { chunk } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 import { Hiscores } from 'oldschooljs';
 import { bossNameMap } from 'oldschooljs/dist/constants';
 import type { BossRecords } from 'oldschooljs/dist/meta/types';

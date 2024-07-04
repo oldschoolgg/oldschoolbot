@@ -1,7 +1,7 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { TextChannel } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, objectKeys } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';

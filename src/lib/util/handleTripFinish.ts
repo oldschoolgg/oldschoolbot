@@ -101,7 +101,13 @@ export async function handleTripFinish(
 ) {
 	const message = typeof _message === 'string' ? { content: _message } : _message;
 	if (attachment) {
-		!message.files ? (message.files = [attachment]) : message.files.push(attachment);
+		if (!message.files) {
+			message.files = [attachment];
+		} else if (Array.isArray(message.files)) {
+			message.files.push(attachment);
+		} else {
+			console.warn(`Unexpected attachment type in handleTripFinish: ${typeof attachment}`);
+		}
 	}
 	const perkTier = user.perkTier();
 	const messages: string[] = [];

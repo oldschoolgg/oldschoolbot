@@ -1,15 +1,16 @@
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { UserStats, activity_type_enum } from '@prisma/client';
 import { Time, sumArr } from 'e';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import type { ItemBank, SkillsScore } from 'oldschooljs/dist/meta/types';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { PerkTier } from '@oldschoolgg/toolkit';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
-import { Emoji, PerkTier } from '../../../lib/constants';
+import { Emoji } from '../../../lib/constants';
 import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
 import { skillEmoji } from '../../../lib/data/emojis';
 import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';

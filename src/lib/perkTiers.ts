@@ -29,6 +29,7 @@ export function getUsersPerkTier(
 	userOrBitfield: MUser | User | BitField[],
 	noCheckOtherAccounts?: boolean
 ): PerkTier | 0 {
+	// Check if the user has a premium balance tier
 	if (userOrBitfield instanceof GlobalMUserClass && userOrBitfield.user.premium_balance_tier !== null) {
 		const date = userOrBitfield.user.premium_balance_expiry_date;
 		if (date && Date.now() < date) {

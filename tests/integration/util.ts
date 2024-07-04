@@ -1,6 +1,6 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { randInt, shuffleArr, uniqueArr } from 'e';
-import type { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { MUserClass } from '../../src/lib/MUser';

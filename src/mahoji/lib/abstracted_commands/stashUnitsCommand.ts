@@ -1,7 +1,7 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { StashUnit, User } from '@prisma/client';
 import { partition } from 'e';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import Bank from 'oldschooljs/dist/structures/Bank';
 
 import type { IStashUnit, StashUnitTier } from '../../../lib/clues/stashUnits';

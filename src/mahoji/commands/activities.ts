@@ -1,6 +1,6 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { User } from 'discord.js';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import type { UnderwaterAgilityThievingTrainingSkill } from '../../lib/constants';
 import { UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL } from '../../lib/constants';

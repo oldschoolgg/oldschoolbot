@@ -1,8 +1,8 @@
 import { ProductID, products } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { notEmpty } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 
 import { BOT_TYPE } from '../../lib/constants';
 import { roboChimpSyncData } from '../../lib/roboChimp';
