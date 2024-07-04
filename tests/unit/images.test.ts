@@ -6,6 +6,7 @@ import { drawChestLootImage } from '../../src/lib/bankImage';
 import { clImageGenerator } from '../../src/lib/collectionLogTask';
 import { BOT_TYPE } from '../../src/lib/constants';
 import { pohImageGenerator } from '../../src/lib/pohImage';
+import { barChart, pieChart } from '../../src/lib/util/chart';
 import { mahojiChatHead } from '../../src/lib/util/chatHeadImage';
 import { makeBankImage } from '../../src/lib/util/makeBankImage';
 import { mockMUser } from './utils';
@@ -65,12 +66,22 @@ describe('Images', () => {
 	});
 
 	// test('Chart Image', async () => {
-	// 	const result = await pieChart('Test', val => `${toKMB(val)}%`, [
+	// 	//val => `${toKMB(val)}%`,
+	// 	const result = await pieChart('Test',  [
 	// 		['Complete Collection Log Items', 20, '#9fdfb2'],
 	// 		['Incomplete Collection Log Items', 80, '#df9f9f']
 	// 	]);
-	// 	expect(result).toMatchImageSnapshot();
+	// 	await writeFile(`tests/unit/snapshots/chartpie1.${BOT_TYPE}.png`, result);
 	// });
+
+	test('BAR Image', async () => {
+		//val => `${toKMB(val)}%`,
+		const result = await barChart('Test', [
+			['Complete Collection Log Items', 20, '#9fdfb2'],
+			['Incomplete Collection Log Items', 80, '#df9f9f']
+		]);
+		await writeFile(`tests/unit/snapshots/barpie1.${BOT_TYPE}.png`, result);
+	});
 
 	test.concurrent('TOA Image', async () => {
 		const image = await drawChestLootImage({

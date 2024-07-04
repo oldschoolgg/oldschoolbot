@@ -393,7 +393,7 @@ GROUP BY data->>'monsterID';`);
 			const { percent } = calcCLDetails(user);
 			const attachment: Buffer = await pieChart(
 				'Your Personal Collection Log Progress',
-				val => `${val.toFixed(2)}%`,
+				// val => `${val.toFixed(2)}%`,
 				[
 					['Complete Collection Log Items', percent, '#9fdfb2'],
 					['Incomplete Collection Log Items', 100 - percent, '#df9f9f']
