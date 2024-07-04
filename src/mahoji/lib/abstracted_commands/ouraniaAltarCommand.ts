@@ -1,9 +1,9 @@
-import { increaseNumByPercent, Time } from 'e';
+import { Time, increaseNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { OuraniaAltarOptions } from '../../../lib/types/minions';
+import type { OuraniaAltarOptions } from '../../../lib/types/minions';
 import { formatDuration, itemID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -27,7 +27,7 @@ export async function ouraniaAltarStartCommand({
 }) {
 	let timePerTrip = Time.Minute * 1.05;
 	const stamina: boolean = usestams !== undefined ? usestams : true;
-	let daeyalt = daeyalt_essence || false;
+	const daeyalt = daeyalt_essence || false;
 
 	const { bank } = user;
 	const numEssenceOwned = bank.amount('Pure essence');
@@ -83,7 +83,7 @@ export async function ouraniaAltarStartCommand({
 	}
 
 	const numberOfInventories = Math.max(Math.ceil(quantity / inventorySize), 1);
-	let duration = numberOfInventories * timePerTrip;
+	const duration = numberOfInventories * timePerTrip;
 
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
@@ -91,8 +91,8 @@ export async function ouraniaAltarStartCommand({
 		)}, try a lower quantity. The highest amount of essence you can craft is ${Math.floor(maxCanDo)}.`;
 	}
 
-	let totalCost = new Bank();
-	let itemCost = new Bank();
+	const totalCost = new Bank();
+	const itemCost = new Bank();
 
 	if (stamina || spellbookSwap) {
 		if (spellbookSwap) {

@@ -7,7 +7,7 @@ import { trackLoot } from '../../lib/lootTrack';
 import { raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
 import Runecraft, { ouraniaAltarTables } from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { OuraniaAltarOptions } from '../../lib/types/minions';
+import type { OuraniaAltarOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -46,11 +46,11 @@ const ouraniaAltarTask: MinionTask = {
 		for (const [rune, qty] of loot.items()) {
 			const rRune = Runecraft.Runes.find(r => r.id === rune.id);
 			let dBonus = 0;
-			let rBonus = raimentBonus(user, qty);
+			const rBonus = raimentBonus(user, qty);
 			if (hasArdyMedium) {
 				for (let i = 0; i < qty; i++) {
 					if (!rRune && percentChance(10)) dBonus++;
-					else if (rRune && rRune.ardyDiaryChance && percentChance(rRune.ardyDiaryChance)) dBonus++;
+					else if (rRune?.ardyDiaryChance && percentChance(rRune.ardyDiaryChance)) dBonus++;
 				}
 				diaryQuantity += dBonus;
 			}
@@ -58,7 +58,7 @@ const ouraniaAltarTask: MinionTask = {
 			loot.add(rune, dBonus + rBonus);
 		}
 
-		let xpRes = `\n${await user.addXP({
+		const xpRes = `\n${await user.addXP({
 			skillName: SkillsEnum.Runecraft,
 			amount: totalXp,
 			duration,
