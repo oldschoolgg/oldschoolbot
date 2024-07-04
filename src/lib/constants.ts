@@ -534,20 +534,12 @@ export const minionActivityCache: Map<string, ActivityTaskData> = new Map();
 export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
 
 const globalConfigSchema = z.object({
-	patreonToken: z.coerce.string().default(''),
-	patreonCampaignID: z.coerce.number().int().default(1),
-	patreonWebhookSecret: z.coerce.string().default(''),
-	httpPort: z.coerce.number().int().default(8080),
 	clientID: z.string().min(10).max(25),
 	geAdminChannelID: z.string().default('')
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
 export const globalConfig = globalConfigSchema.parse({
-	patreonToken: process.env.PATREON_TOKEN,
-	patreonCampaignID: process.env.PATREON_CAMPAIGN_ID,
-	patreonWebhookSecret: process.env.PATREON_WEBHOOK_SECRET,
-	httpPort: process.env.HTTP_PORT,
 	clientID: process.env.CLIENT_ID,
 	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID
 });
