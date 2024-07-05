@@ -157,13 +157,11 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 		amountReceived === 0
 			? "Unlucky, you didn't win anything, and lost your bet!"
 			: `You won ${toKMB(amountReceived)}!`;
-	sentMessage?.edit({ content: finishContent, components: getCurrentButtons({ columnsToHide: [] }) }).catch(noOp);
+	sentMessage?.delete().catch(noOp);
 
 	await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived), collectionLog: false });
 	await updateClientGPTrackSetting('gp_slots', amountReceived - amount);
 	await updateGPTrackSetting('gp_slots', amountReceived - amount, user);
 
-	return {
-		content: finishContent
-	};
+	return { content: finishContent, components: getCurrentButtons({ columnsToHide: [] }) };
 }

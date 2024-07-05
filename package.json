@@ -6,7 +6,7 @@
 		"build:tsc": "tsc -p src",
 		"build": "tsx ./src/scripts/build.ts",
 		"wipedist": "node -e \"require('fs').rm('dist', { recursive: true })\"",
-		"start": "yarn build && concurrently \"tsc -w -p src\" \"node --enable-source-maps dist/\"",
+		"start": "yarn build && node --enable-source-maps dist/",
 		"test": "concurrently --timings --raw --kill-others-on-fail \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\" \"tsc -p tests/integration\" \"tsc -p tests/unit\"",
 		"test:lint": "biome check --diagnostic-level=error",
 		"test:unit": "vitest run --coverage --config vitest.unit.config.mts",

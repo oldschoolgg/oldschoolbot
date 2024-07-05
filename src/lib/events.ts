@@ -1,4 +1,4 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import type { BaseMessageOptions, Message, TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, EmbedBuilder, bold } from 'discord.js';
@@ -13,7 +13,7 @@ import { BitField, Channel, Emoji, globalConfig } from './constants';
 import pets from './data/pets';
 import { prisma } from './settings/prisma';
 import type { ItemBank } from './types';
-import { channelIsSendable, formatDuration, makeComponents, toKMB } from './util';
+import { formatDuration, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
