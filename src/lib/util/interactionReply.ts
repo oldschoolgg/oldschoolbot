@@ -36,11 +36,14 @@ export async function interactionReply(interaction: RepliableInteraction, respon
 
 const wasDeferred = new Set();
 
-export async function deferInteraction(interaction: ButtonInteraction | ChatInputCommandInteraction, ephemeral = false) {
+export async function deferInteraction(
+	interaction: ButtonInteraction | ChatInputCommandInteraction,
+	ephemeral = false
+) {
 	if (wasDeferred.size > 1000) wasDeferred.clear();
 	if (!interaction.deferred && !wasDeferred.has(interaction.id)) {
 		wasDeferred.add(interaction.id);
-		const promise = await interaction.deferReply({ephemeral});
+		const promise = await interaction.deferReply({ ephemeral });
 		interaction.deferred = true;
 		wasDeferred.add(interaction.id);
 		return promise;

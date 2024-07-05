@@ -7,22 +7,18 @@ import { toKMB } from 'oldschooljs/dist/util';
 import { SILENT_ERROR } from '../../../lib/constants';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation, silentButtonAck } from '../../../lib/util/handleMahojiConfirmation';
+import { deferInteraction } from '../../../lib/util/interactionReply';
 import { logError } from '../../../lib/util/logError';
 import { mahojiParseNumber, updateClientGPTrackSetting, updateGPTrackSetting } from '../../mahojiSettings';
-import { deferInteraction } from '../../../lib/util/interactionReply';
 
-export async function luckyPickCommand(
-	user: MUser,
-	luckypickamount: string,
-	interaction: ChatInputCommandInteraction
-): Promise<string> {
+export async function luckyPickCommand(user: MUser, luckypickamount: string, interaction: ChatInputCommandInteraction) {
 	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 3_000_000_000 });
 
 	if (!amount) {
 		return 'amount must be between 1000000 and 3000000000 exclusively.';
 	}
 
-	await deferInteraction(interaction, true);
+	await deferInteraction(interaction);
 
 	interface Button {
 		name: string;
@@ -181,6 +177,7 @@ export async function luckyPickCommand(
 			},
 			time: Time.Second * 10
 		});
+		sentMessage.delete().catch(noOp);
 
 		const pickedButton = buttonsToShow.find(b => b.id === selection.customId)!;
 		const index = Number.parseInt(pickedButton.id.split('_')[1]);
@@ -189,8 +186,10 @@ export async function luckyPickCommand(
 		try {
 			await silentButtonAck(selection as ButtonInteraction<CacheType>);
 			const result = await finalize({ button: pickedButton });
-			await sentMessage.edit({ content: result }).catch(noOp);
-			return result;
+			return {
+				content: result,
+				components: getCurrentButtons({ showTrueNames: true })
+			};
 		} catch (err) {
 			logError(err);
 			return 'Error.';
