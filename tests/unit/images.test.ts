@@ -1,13 +1,14 @@
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
+import deepEqual from 'fast-deep-equal';
 import { Bank, Monsters } from 'oldschooljs';
 import { describe, test } from 'vitest';
+import { Time } from 'e';
 
 import { drawChestLootImage } from '../../src/lib/bankImage';
 import { clImageGenerator } from '../../src/lib/collectionLogTask';
 import { BOT_TYPE } from '../../src/lib/constants';
 import { pohImageGenerator } from '../../src/lib/pohImage';
-import { randFloat } from '../../src/lib/util';
-import { barChart } from '../../src/lib/util/chart';
+import { type ChartOptions, createApexChartConfig, createChart } from '../../src/lib/util/chart';
 import { mahojiChatHead } from '../../src/lib/util/chatHeadImage';
 import { makeBankImage } from '../../src/lib/util/makeBankImage';
 import { mockMUser } from './utils';
@@ -66,50 +67,57 @@ describe('Images', () => {
 		await writeFile(`tests/unit/snapshots/poh.${BOT_TYPE}.png`, result);
 	});
 
-	// test('Chart Image', async () => {
-	// 	//val => `${toKMB(val)}%`,
-	// 	const result = await pieChart('Test',  [
-	// 		['Complete Collection Log Items', 20, '#9fdfb2'],
-	// 		['Incomplete Collection Log Items', 80, '#df9f9f']
-	// 	]);
-	// 	await writeFile(`tests/unit/snapshots/chartpie1.${BOT_TYPE}.png`, result);
-	// });
+	test(
+		'Charts',
+		async () => {
+			const sampleData: Record<'kmb' | 'percent', ChartOptions['values'][]> = {
+				percent: [
+					[
+						['Magna', 55],
+						['Cyr', 45]
+					]
+				],
+				kmb: [
+					[
+						['Twisted bow', 5_000_000_000],
+						['Egg', 1_500_000_000],
+						['Cat', 500_000_000],
+						['Dog', 2500_000_000],
+						['Trout', 4500_000_000]
+					]
+				]
+			} as const;
 
-	test('Bar Chart', async () => {
-		Math.random = () => randFloat(0, 1);
-		await writeFile(
-			`tests/unit/snapshots/chart.bar.${BOT_TYPE}.png`,
-			await barChart('Collection Log Completion', 'percent', [
-				['Complete Collection Log Items', 20, '#9fdfb2'],
-				['Incomplete Collection Log Items', 80, '#df9f9f']
-			])
-		);
+			for (const chartType of ['bar', 'line'] as const) {
+				for (const format of ['kmb', 'percent'] as const) {
+					const chartOptions: ChartOptions = {
+						type: chartType,
+						title: `${chartType} ${format} title`,
+						values: sampleData[format][0],
+						format: format
+					};
 
-		await writeFile(
-			`tests/unit/snapshots/chart2.bar.${BOT_TYPE}.png`,
-			await barChart('Chart with many values', 'percent', [
-				['Complete Collection Log Items', 20, '#9fdfb2'],
-				['Incomplete Collection Log Items', 80, '#df9f9f'],
-				['Something Something', 1, '#df9f9f'],
-				['Something Something', 1, '#df9f9f'],
-				['Something Something', 1, '#df9f9f'],
-				['Something Something', 1, '#df9f9f'],
-				['Something Something', 1, '#df9f9f'],
-				['Something Something', 1, '#df9f9f'],
-				['Something Something', 1, '#df9f9f'],
-				['Something Something', 1, '#df9f9f']
-			])
-		);
+					const config = createApexChartConfig(chartOptions);
+					const configFilePath = `tests/unit/snapshots/chart.${chartType}.${format}.json`;
+					const existingConfigRaw = await readFile(configFilePath, 'utf-8').catch(() => null);
+					if (existingConfigRaw) {
+						const existingConfig = JSON.parse(existingConfigRaw);
+						if (deepEqual(existingConfig, config)) {
+							console.log(`Skipping ${chartType} ${format} chart, no changes.`);
+							continue;
+						}
+					}
 
-		await writeFile(
-			`tests/unit/snapshots/chart3.bar.${BOT_TYPE}.png`,
-			await barChart('Collection Log Completion', 'kmb', [
-				['Complete Collection Log Items', 20_000_000, '#9fdfb2'],
-				['Incomplete Collection Log Items', 100_000_000, '#df9f9f'],
-				['Incomplete', 45_000_000]
-			])
-		);
-	});
+					const res = await createChart(chartOptions);
+					await writeFile(`tests/unit/snapshots/chart.${chartType}.${format}.png`, res);
+					await writeFile(configFilePath, `${JSON.stringify(config, null, 4)}\n`);
+				}
+			}
+		},
+		{
+			timeout: Time.Second * 30
+		}
+	);
 
 	test.concurrent.skip('TOA Image', async () => {
 		const image = await drawChestLootImage({

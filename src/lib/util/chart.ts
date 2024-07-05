@@ -1,179 +1,164 @@
-import { exec } from 'node:child_process';
-import { promises as fs } from 'node:fs';
-import * as os from 'node:os';
-import * as path from 'node:path';
-import { miniID } from '@oldschoolgg/toolkit';
-import { randFloat } from '../util';
+import type { ApexOptions } from 'apexcharts';
+import deepmerge from 'deepmerge';
+import fetch from 'node-fetch';
 
-function randomHSLColor(num = randFloat(0, 1)): string {
-	const hue = num * 137.508;
-	return `hsl(${hue},50%,75%)`;
+const colors = [
+	'#fd7f6f',
+	'#7eb0d5',
+	'#b2e061',
+	'#bd7ebe',
+	'#ffb55a',
+	'#ffee65',
+	'#beb9db',
+	'#fdcce5',
+	'#8bd3c7',
+	'#ea5545',
+	'#f46a9b',
+	'#ef9b20',
+	'#edbf33',
+	'#ede15b',
+	'#bdcf32',
+	'#87bc45',
+	'#27aeef',
+	'#b33dc6',
+	'#e60049',
+	'#0bb4ff',
+	'#50e991',
+	'#e6d800',
+	'#9b19f5',
+	'#ffa300',
+	'#dc0ab4',
+	'#b3d4ff',
+	'#00bfa0'
+];
+function getWrappedArrayItem<T>(array: T[], index: number): T {
+	const wrappedIndex = ((index % array.length) + array.length) % array.length;
+	return array[wrappedIndex];
 }
 
-function nextNiceNumber(value: number) {
-    const exponent = Math.floor(Math.log10(value));
-    const fraction = value / Math.pow(10, exponent);
-    let niceFraction = -1;
-    
-    if (fraction <= 1) {
-        niceFraction = 1;
-    } else if (fraction <= 2) {
-        niceFraction = 2;
-    } else if (fraction <= 5) {
-        niceFraction = 5;
-    } else {
-        niceFraction = 10;
-    }
-    
-    return niceFraction * Math.pow(10, exponent);
+function randomHexColor(value: number): string {
+	return getWrappedArrayItem(colors, Math.floor(value));
 }
 
-function randomHexColor(): string {
-	const hsl = randomHSLColor();
-	const [h, s, l] = hsl.match(/\d+/g)!.map(Number);
-	const hNorm = h / 360;
-	const sNorm = s / 100;
-	const lNorm = l / 100;
+async function renderChart(url: string) {
+	console.log('RENDERING CHART---------');
+	const response = await fetch(url, {
+		method: 'GET',
+		headers: { 'Content-Type': 'application/json' }
+	});
 
-	const a = sNorm * Math.min(lNorm, 1 - lNorm);
-	const f = (n: number, k = (n + hNorm * 12) % 12) => lNorm - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-
-	const rgb = [f(0), f(8), f(4)].map(x =>
-		Math.round(x * 255)
-			.toString(16)
-			.padStart(2, '0')
-	);
-
-	return `#${rgb.join('')}`;
+	return response.buffer();
 }
 
-function createGnuplotScript(
-	type: 'pie' | 'line' | 'bar',
-	format: ChartType,
-	title: string,
-	values: [string, number, string?][]
-): string {
-	let script = `
-set terminal png enhanced font 'Arial,10' size 1100,550
-set output 'chart.png'
-set title "${title}"
-    `;
+export interface ChartOptions {
+	type: 'pie' | 'line' | 'bar';
+	title: string;
+	values: ([string, number] | [string, number, string])[];
+	format: ChartNumberFormat;
+}
 
-	if (format === 'percent') {
-		// Make the values show as percentages
-		script += `\nset format y "%.0f%%";`;
-		// Set min/max Y to 0-100%
-		script += '\nset yrange [0:100]';
-	}
+export function createApexChartConfig({ type, title, values, format }: ChartOptions) {
+	const categories = values.map(([label]) => label);
+	const seriesName = title;
+
+	const formatter = (formatList.find(f => f.name === format) ?? formatList[0]).format;
+
+	let config: ApexOptions = {
+		chart: { type },
+		title: { text: title },
+		series: [
+			{
+				name: seriesName,
+				data: values.map(([label, value, color]) => ({
+					x: label,
+					y: value,
+					fillColor: color ?? randomHexColor(value)
+				}))
+			}
+		],
+		xaxis: { categories },
+		dataLabels: {
+			enabled: true,
+			style: {
+				colors: ['#000']
+			},
+			// @ts-expect-error
+			formatter: 'FORMATTER'
+		},
+		// @ts-expect-error
+		yaxis: {
+			labels: {
+				formatter: 'FORMATTER'
+			}
+		}
+	};
 
 	if (type === 'pie') {
-		script += `
-set style data histograms
-set style fill solid 1.00 border -1
-set boxwidth 0.5
-plot '-' using 2:xtic(1) title columnheader linecolor rgb variable
-        `;
-	} else if (type === 'line') {
-		script += `
-set xlabel "Category"
-set ylabel "Value"
-plot '-' using 1:2 with linespoints title columnheader linecolor rgb variable
-        `;
-	} else if (type === 'bar') {
-		const lowestValue = Math.min(...values.map(v => v[1]));
-		const highestValue = Math.max(...values.map(v => v[1]));
-const numTics = 9
-
-const roundedMaxY = nextNiceNumber(highestValue);
-const steps = Math.ceil(roundedMaxY / numTics);
-
-if (format === 'kmb') {
-		script += `# Custom tics for y-axis
-set yrange [0:${roundedMaxY}]
-unset ytics
-do for [i=${steps}:${roundedMaxY}:${steps}] {
-    if (i >= 1e9) {
-        set ytics add (sprintf("%.1fB", i/1e9) i)
-    } else if (i >= 1e6) {
-        set ytics add (sprintf("%.1fM", i/1e6) i)
-    } else if (i >= 1e3) {
-        set ytics add (sprintf("%.1fK", i/1e3) i)
-    } else {
-        set ytics add (sprintf("%d", i) i)
-    }
-}`;
-	}
-		script += `
-set style data histograms
-set style histogram cluster gap 1
-set style fill solid
-set boxwidth 0.5
-set xlabel "Category"
-set ylabel "Value"
-set xtics rotate by 30 right font ", 8"
-
-${values.map(([_label, _value, color = randomHexColor()], i) => `set style line ${i + 1} lc rgb "${color}"`).join('\n')}
-
-plot ${values.map(([_label, _value, _color], i) => `'-' using 1:3:xtic(2) with boxes linestyle ${i + 1} title ''`).join(', ')}
-
-${values.map(([label, value], i) => `${i + 1} "${label}" ${value}\ne`).join('\n')}
-`;
-	}
-
-	return script;
-}
-
-async function saveGnuplotChart(script: string): Promise<Buffer> {
-	const scriptID = miniID(10);
-	const imageID = miniID(10);
-	script = script.replace("'chart.png'", `'${path.join(os.tmpdir(), `chart.${imageID}.png`)}'`);
-	console.log(script);
-	const scriptPath = path.join(os.tmpdir(), `plot_script.${scriptID}.gp`);
-	const outputPath = path.join(os.tmpdir(), `chart.${imageID}.png`);
-
-	await fs.writeFile(scriptPath, script);
-
-	return new Promise<Buffer>((resolve, reject) => {
-		exec(`gnuplot ${scriptPath}`, async (error, _stdout, stderr) => {
-			if (error) {
-				throw new Error(error);
-			}
-			if (stderr) {
-				throw new Error(stderr);
-			}
-			try {
-				const buffer = await fs.readFile(outputPath);
-				resolve(buffer);
-			} catch (readError) {
-				reject(readError);
+		config = deepmerge(config, {
+			plotOptions: {
+				pie: {
+					dataLabels: {
+						offset: 10
+					}
+				}
 			}
 		});
-	});
+	}
+
+	if (type === 'bar') {
+		config = deepmerge(config, {
+			plotOptions: {
+				bar: {
+					dataLabels: {
+						position: 'top'
+					}
+				}
+			}
+		});
+	}
+
+	if (format === 'percent') {
+		config = deepmerge(config, {
+			yaxis: {
+				min: 0,
+				max: 100
+			}
+		});
+	}
+
+	const encoded = JSON.stringify(config).replaceAll('"FORMATTER"', formatter.toString());
+
+	if (encoded.includes('FORMATTER')) {
+		throw new Error('Failed to encode chart config');
+	}
+	return {
+		encoded,
+		config,
+		url: `https://quickchart.io/apex-charts/render?config=${encodeURIComponent(encoded)}`
+	};
 }
 
-const types = [
-	{ name: 'percent', format: '%' },
-	{ name: 'kmb', format: 'idk' },
-	{ name: 'rank', format: 'idk' },
-	{ name: 'number', format: 'idk' }
+const formatList = [
+	{
+		name: 'kmb',
+		format: (v: number) => {
+			if (v > 999_999_999 || v < -999_999_999) {
+				return `${Math.round(v / 1_000_000_000)}b`;
+			} else if (v > 999_999 || v < -999_999) {
+				return `${Math.round(v / 1_000_000)}m`;
+			} else if (v > 999 || v < -999) {
+				return `${Math.round(v / 1000)}k`;
+			}
+			return Math.round(v);
+		}
+	},
+	{ name: 'percent', format: (v: number) => `${v}%` },
+	{ name: 'hours', format: (v: number) => `${v}hrs` },
+	{ name: 'delta', format: (v: number) => (v === 0 ? '0' : v > 0 ? `+${v}` : `-${v}`) }
 ] as const;
-type ChartType = (typeof types)[number]['name'];
+type ChartNumberFormat = (typeof formatList)[number]['name'];
 
-export async function pieChart(title: string, format: ChartType, values: [string, number, string?][]): Promise<Buffer> {
-	const script = createGnuplotScript('pie', format, title, values);
-	return await saveGnuplotChart(script);
-}
-
-export async function lineChart(
-	title: string,
-	format: ChartType,
-	values: [string, number, string?][]
-): Promise<Buffer> {
-	const script = createGnuplotScript('line', format, title, values);
-	return await saveGnuplotChart(script);
-}
-
-export async function barChart(title: string, format: ChartType, values: [string, number, string?][]): Promise<Buffer> {
-	const script = createGnuplotScript('bar', format, title, values);
-	return await saveGnuplotChart(script);
+export async function createChart(options: ChartOptions) {
+	const res = createApexChartConfig(options);
+	return renderChart(res.url);
 }
