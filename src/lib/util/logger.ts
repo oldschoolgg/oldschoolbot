@@ -24,7 +24,7 @@ const sqlLogger = new SonicBoom({
 	sync: true
 });
 
-export const sqlLog = (str: string) => sqlLogger.write(`${str}\n`);
+export const sqlLog = (str: string) => sqlLogger.write(`${new Date().toLocaleTimeString()} ${str}\n`);
 
 interface LogContext {
 	type?: string;
