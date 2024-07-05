@@ -55,7 +55,6 @@ export async function luckyPickCommand(
 	];
 
 	function getButtons(): ButtonInstance[] {
-		// prettier-ignore
 		const buttonsToShow = [
 			'0',
 			'0',

@@ -6,7 +6,7 @@ import './lib/data/trophies';
 import './lib/itemMods';
 import './lib/geImage';
 
-import * as Sentry from '@sentry/node';
+import { init } from '@sentry/node';
 import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
 import { isObject } from 'e';
@@ -15,7 +15,7 @@ import { MahojiClient } from '@oldschoolgg/toolkit';
 import { DEV_SERVER_ID, SENTRY_DSN, SupportServer, botToken } from './config';
 import { syncActivityCache } from './lib/Task';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { Channel, Events, META_CONSTANTS, globalConfig } from './lib/constants';
+import { Channel, Events, META_CONSTANTS, gitHash, globalConfig } from './lib/constants';
 import { economyLog } from './lib/economyLogs';
 import { onMessage } from './lib/events';
 import { modalInteractionHook } from './lib/modals';
@@ -35,9 +35,12 @@ import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 debugLog(`Starting... Git Hash ${META_CONSTANTS.GIT_HASH}`);
 
 if (SENTRY_DSN) {
-	Sentry.init({
+	init({
 		dsn: SENTRY_DSN,
-		enableTracing: false
+		enableTracing: false,
+		defaultIntegrations: false,
+		integrations: [],
+		release: gitHash
 	});
 }
 

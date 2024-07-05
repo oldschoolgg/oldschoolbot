@@ -616,7 +616,6 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 	// The number of raid levels from 400 to 550
 	const y = Math.min(150, raidLevel - 400);
 
-	// prettier-ignore
 	const pointsForOnePercentUniqueChance = 10_500 - 20 * (x + y / 3);
 	const chanceOfUnique = Math.min(totalTeamPoints / pointsForOnePercentUniqueChance, 55);
 	const didGetUnique = percentChance(chanceOfUnique);

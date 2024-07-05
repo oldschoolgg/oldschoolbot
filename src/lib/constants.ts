@@ -545,7 +545,7 @@ export const globalConfig = globalConfigSchema.parse({
 export const ONE_TRILLION = 1_000_000_000_000;
 export const demonBaneWeapons = resolveItems(['Silverlight', 'Darklight', 'Arclight']);
 
-const gitHash = execSync('git rev-parse HEAD').toString().trim();
+export const gitHash = execSync('git rev-parse HEAD').toString().trim();
 const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
 
 const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
