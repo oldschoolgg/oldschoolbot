@@ -36,7 +36,7 @@ async function execAsync(command: string) {
 }
 
 if (!existsSync('./cache.json')) {
-	writeFileSync('./cache.json', `${JSON.stringify({}, null, 4)}\n`);
+	writeFileSync('./cache.json', `${JSON.stringify({}, null, '	')}\n`);
 }
 const currentCache = JSON.parse(readFileSync('./cache.json', 'utf-8'));
 
@@ -58,7 +58,7 @@ function setCacheValue(key: string, value: string | number) {
 	if (process.env.TEST) return;
 	const cache = JSON.parse(readFileSync(cacheFilePath, 'utf-8'));
 	cache[key] = value;
-	writeFileSync(cacheFilePath, `${JSON.stringify(cache, null, 4)}\n`);
+	writeFileSync(cacheFilePath, `${JSON.stringify(cache, null, '	')}\n`);
 }
 
 function shouldGeneratePrismaClient(

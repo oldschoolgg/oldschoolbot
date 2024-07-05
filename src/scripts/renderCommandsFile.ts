@@ -1,25 +1,17 @@
 import './no-prisma';
 
-import { execSync } from 'node:child_process';
-
 import { writeFileSync } from 'node:fs';
-import { MahojiClient, stringMatches } from '@oldschoolgg/toolkit';
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 
 import { BOT_TYPE } from '../lib/constants';
-
+import { allCommands } from '../mahoji/commands/allCommands';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
-import { allAbstractCommands } from '../mahoji/lib/util';
+import { convertMahojiCommandToAbstractCommand } from '../mahoji/lib/util';
 
 async function renderCommands() {
-	const mahojiClient = new MahojiClient({
-		developmentServerID: 'x',
-		applicationID: 'x',
-		commands: [],
-		djsClient: {} as any
-	});
-	const mahojiCommands = Array.from(mahojiClient.commands.values());
-	return allAbstractCommands(mahojiClient)
+	return allCommands
+		.map(c => convertMahojiCommandToAbstractCommand(c))
 		.filter(c => {
 			const has = typeof c.attributes?.description === 'string' && c.attributes.description.length > 1;
 			if (!has) {
@@ -29,7 +21,7 @@ async function renderCommands() {
 		})
 		.filter(i => !['admin', 'testpotato'].includes(i.name))
 		.map((cmd: AbstractCommand) => {
-			const mahojiCommand = mahojiCommands.find(i => stringMatches(i.name, cmd.name));
+			const mahojiCommand = allCommands.find(i => stringMatches(i.name, cmd.name));
 			if (!mahojiCommand) {
 				throw new Error(`Could not find mahoji command for ${cmd.name}`);
 			}
@@ -56,6 +48,5 @@ async function renderCommands() {
 export async function commandsFile() {
 	const commands = await renderCommands();
 	const path = `./src/lib/data/${BOT_TYPE.toLowerCase()}.commands.json`;
-	writeFileSync(path, JSON.stringify(commands, null, 4));
-	execSync('yarn lint');
+	writeFileSync(path, `${JSON.stringify(commands, null, '	')}\n`);
 }
