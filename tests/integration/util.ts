@@ -72,7 +72,6 @@ export class TestUser extends MUserClass {
 
 	async runCommand(command: OSBMahojiCommand, options: object = {}) {
 		const result = await command.run({ ...commandRunOptions(this.id), options });
-		await this.sync();
 		return result;
 	}
 
@@ -123,21 +122,31 @@ export function mockedId() {
 	return unMockedCyptoRand(1_000_000_000_000, 5_000_000_000_000).toString();
 }
 
-export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
+export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 	const id = userData?.id ?? mockedId();
 	if (idsUsed.has(id)) {
 		throw new Error(`ID ${id} has already been used`);
 	}
 	idsUsed.add(id);
+
+	const bank = _bank ? _bank.clone() : null;
+	let GP = userData.GP ?? 0;
+	if (bank) {
+		GP = bank.amount('Coins');
+		bank.remove('Coins', GP);
+	}
+
 	const user = await global.prisma!.user.upsert({
 		create: {
 			id,
 			...userData,
-			bank: bank?.bank
+			bank: bank?.bank,
+			GP
 		},
 		update: {
 			...userData,
-			bank: bank?.bank
+			bank: bank?.bank,
+			GP
 		},
 		where: {
 			id
