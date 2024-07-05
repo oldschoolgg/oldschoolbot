@@ -13,9 +13,9 @@ import { cancelUsersListings } from '../../src/mahoji/lib/abstracted_commands/ca
 import type { TestUser } from './util';
 import { createTestUser, mockClient } from './util';
 
-const TICKS_TO_RUN = 5;
-const AMOUNT_USERS = 5;
-const COMMANDS_PER_USER = 5;
+const TICKS_TO_RUN = 100;
+const AMOUNT_USERS = 25;
+const COMMANDS_PER_USER = 3;
 const TICKS_PER_EXTENSIVE_VERIFICATION = 100;
 const itemPool = resolveItems(['Egg', 'Trout', 'Coal']);
 
