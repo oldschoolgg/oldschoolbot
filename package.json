@@ -5,7 +5,7 @@
 		"lint": "concurrently --raw --kill-others-on-fail \"biome check --write --unsafe --diagnostic-level=error\" \"yarn prettify\"",
 		"build:tsc": "tsc -p src",
 		"build": "tsx ./src/scripts/build.ts",
-		"wipedist": "node -e \"require('fs').rm('dist', { recursive: true })\"",
+		"wipedist": "node -e \"require('fs').rmSync('dist', { recursive: true })\"",
 		"start": "yarn build && node --enable-source-maps dist/",
 		"test": "concurrently --timings --raw --kill-others-on-fail \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\" \"tsc -p tests/integration\" \"tsc -p tests/unit\"",
 		"test:lint": "biome check --diagnostic-level=error",
