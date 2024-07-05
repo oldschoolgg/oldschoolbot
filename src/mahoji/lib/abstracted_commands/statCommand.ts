@@ -320,7 +320,7 @@ AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY type;`);
 			const dataPoints: [string, number][] = result.filter(i => i.qty >= 5).map(i => [i.type, i.qty]);
-			return makeResponseForBuffer(await barChart('Your Activity Types', val => `${val} Trips`, dataPoints));
+			return makeResponseForBuffer(await barChart('Your Activity Types', 'number', dataPoints));
 		}
 	},
 	{
@@ -358,7 +358,7 @@ GROUP BY data->>'monsterID';`);
 				.sort((a, b) => b.kc - a.kc)
 				.slice(0, 30)
 				.map(i => [killableMonsters.find(mon => mon.id === i.id)?.name ?? i.id.toString(), i.kc]);
-			const buffer = await barChart("Your Monster KC's", val => `${val} KC`, dataPoints);
+			const buffer = await barChart("Your Monster KC's", 'number', dataPoints);
 			return makeResponseForBuffer(buffer);
 		}
 	},
@@ -391,14 +391,10 @@ GROUP BY data->>'monsterID';`);
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser): CommandResponse => {
 			const { percent } = calcCLDetails(user);
-			const attachment: Buffer = await pieChart(
-				'Your Personal Collection Log Progress',
-				// val => `${val.toFixed(2)}%`,
-				[
-					['Complete Collection Log Items', percent, '#9fdfb2'],
-					['Incomplete Collection Log Items', 100 - percent, '#df9f9f']
-				]
-			);
+			const attachment: Buffer = await pieChart('Your Personal Collection Log Progress', 'percent', [
+				['Complete Collection Log Items', percent, '#9fdfb2'],
+				['Incomplete Collection Log Items', 100 - percent, '#df9f9f']
+			]);
 			return makeResponseForBuffer(attachment);
 		}
 	},
@@ -415,8 +411,8 @@ GROUP BY mins;`;
 			if (result.length === 0) return 'No results.';
 			const buffer = await lineChart(
 				'Global Inferno Death Times',
-				result.map(i => [i.mins.toString(), i.count]),
-				val => `${val} Mins`
+				'number',
+				result.map(i => [i.mins.toString(), i.count])
 			);
 			return makeResponseForBuffer(buffer);
 		}
@@ -435,8 +431,8 @@ GROUP BY mins;`);
 			if (result.length === 0) return 'No results.';
 			const buffer = await lineChart(
 				'Personal Inferno Death Times',
-				result.map(i => [i.mins.toString(), i.count]),
-				val => `${val} Mins`
+				'number',
+				result.map(i => [i.mins.toString(), i.count])
 			);
 			return makeResponseForBuffer(buffer);
 		}
@@ -493,7 +489,7 @@ GROUP BY 1;`);
 			}
 			const buffer = await barChart(
 				'Personal TOB Deaths',
-				val => `${val} Deaths`,
+				'number',
 				result.map(i => [TOBRooms[i.wiped_room].name, i.count])
 			);
 			return makeResponseForBuffer(buffer);
@@ -511,7 +507,7 @@ AND data->>'wipedRoom' IS NOT NULL
 GROUP BY 1;`;
 			const buffer = await barChart(
 				'Global TOB Deaths',
-				val => `${val} Deaths`,
+				'number',
 				result.map(i => [TOBRooms[i.wiped_room].name, i.count])
 			);
 			return makeResponseForBuffer(buffer);
@@ -535,7 +531,7 @@ WHERE "skills.${skillName}" = 200000000::int;`) as Promise<{ qty: number; skill_
 				.sort((a, b) => b.qty - a.qty);
 			const buffer = await barChart(
 				'Global 200ms',
-				val => `${val} 200ms`,
+				'number',
 				result.map(i => [i.skill_name, i.qty])
 			);
 			return makeResponseForBuffer(buffer);
@@ -554,7 +550,7 @@ GROUP BY data->>'plantsName'`);
 			result.sort((a, b) => b.qty - a.qty);
 			const buffer = await barChart(
 				'Personal Farmed Crops',
-				val => `${val} Crops`,
+				'number',
 				result.map(i => [i.plant, i.qty])
 			);
 			return makeResponseForBuffer(buffer);
@@ -572,7 +568,7 @@ GROUP BY data->>'plantsName'`;
 			result.sort((a, b) => b.qty - a.qty);
 			const buffer = await barChart(
 				'Global Farmed Crops',
-				val => `${val} Crops`,
+				'number',
 				result.map(i => [i.plant, i.qty])
 			);
 			return makeResponseForBuffer(buffer);
@@ -1229,9 +1225,7 @@ ${unluckiest
 		run: async user => {
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_total_xp]);
-			return makeResponseForBuffer(
-				await barChart('Your Weekly XP Gains', val => `${toKMB(val)} XP`, dataPoints, true)
-			);
+			return makeResponseForBuffer(await barChart('Your Weekly XP Gains', 'kmb', dataPoints));
 		}
 	},
 	{
@@ -1240,9 +1234,7 @@ ${unluckiest
 		run: async user => {
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_cl_completion_count]);
-			return makeResponseForBuffer(
-				await barChart('Your Weekly CL slot Gains', val => `${toKMB(val)} Slots`, dataPoints, true)
-			);
+			return makeResponseForBuffer(await barChart('Your Weekly CL slot Gains', 'number', dataPoints));
 		}
 	},
 	{
@@ -1251,14 +1243,7 @@ ${unluckiest
 		run: async user => {
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_cl_global_rank]);
-			return makeResponseForBuffer(
-				await barChart(
-					'Your Weekly CL leaderboard rank gains',
-					val => `${val > 0 ? `+${val}` : val}`,
-					dataPoints,
-					true
-				)
-			);
+			return makeResponseForBuffer(await barChart('Your Weekly CL leaderboard rank gains', 'rank', dataPoints));
 		}
 	},
 	{
@@ -1267,9 +1252,7 @@ ${unluckiest
 		run: async user => {
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_GP]);
-			return makeResponseForBuffer(
-				await barChart('Your Weekly GP gains', val => `${toKMB(val)} GP`, dataPoints, true)
-			);
+			return makeResponseForBuffer(await barChart('Your Weekly GP gains', 'kmb', dataPoints));
 		}
 	}
 ] as const;

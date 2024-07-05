@@ -434,10 +434,8 @@ ORDER BY
 				}
 				const buffer = await lineChart(
 					`Price History for ${item.name}`,
+					'number',
 					result.map(i => [new Date(i.week).toDateString(), i.average_price_per_item_before_tax]),
-					val => val.toString(),
-					val => val,
-					false
 				);
 				return {
 					content: baseMessage,

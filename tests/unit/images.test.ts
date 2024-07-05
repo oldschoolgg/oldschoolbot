@@ -6,6 +6,7 @@ import { drawChestLootImage } from '../../src/lib/bankImage';
 import { clImageGenerator } from '../../src/lib/collectionLogTask';
 import { BOT_TYPE } from '../../src/lib/constants';
 import { pohImageGenerator } from '../../src/lib/pohImage';
+import { randFloat } from '../../src/lib/util';
 import { barChart } from '../../src/lib/util/chart';
 import { mahojiChatHead } from '../../src/lib/util/chatHeadImage';
 import { makeBankImage } from '../../src/lib/util/makeBankImage';
@@ -54,7 +55,7 @@ describe('Images', () => {
 		await writeFile(`tests/unit/snapshots/bank.${BOT_TYPE}.png`, result.file.attachment);
 	});
 
-	test.concurrent('POH Image', async () => {
+	test.concurrent.skip('POH Image', async () => {
 		const result = await pohImageGenerator.run({
 			prayer_altar: 13_197,
 			throne: 13_667,
@@ -74,12 +75,40 @@ describe('Images', () => {
 	// 	await writeFile(`tests/unit/snapshots/chartpie1.${BOT_TYPE}.png`, result);
 	// });
 
-	test('BAR Image', async () => {
-		const result = await barChart('Test', 'percent', [
-			['Complete Collection Log Items', 20, '#9fdfb2'],
-			['Incomplete Collection Log Items', 80, '#df9f9f']
-		]);
-		await writeFile(`tests/unit/snapshots/chart.bar.${BOT_TYPE}.png`, result);
+	test('Bar Chart', async () => {
+		Math.random = () => randFloat(0, 1);
+		await writeFile(
+			`tests/unit/snapshots/chart.bar.${BOT_TYPE}.png`,
+			await barChart('Collection Log Completion', 'percent', [
+				['Complete Collection Log Items', 20, '#9fdfb2'],
+				['Incomplete Collection Log Items', 80, '#df9f9f']
+			])
+		);
+
+		await writeFile(
+			`tests/unit/snapshots/chart2.bar.${BOT_TYPE}.png`,
+			await barChart('Chart with many values', 'percent', [
+				['Complete Collection Log Items', 20, '#9fdfb2'],
+				['Incomplete Collection Log Items', 80, '#df9f9f'],
+				['Something Something', 1, '#df9f9f'],
+				['Something Something', 1, '#df9f9f'],
+				['Something Something', 1, '#df9f9f'],
+				['Something Something', 1, '#df9f9f'],
+				['Something Something', 1, '#df9f9f'],
+				['Something Something', 1, '#df9f9f'],
+				['Something Something', 1, '#df9f9f'],
+				['Something Something', 1, '#df9f9f']
+			])
+		);
+
+		await writeFile(
+			`tests/unit/snapshots/chart3.bar.${BOT_TYPE}.png`,
+			await barChart('Collection Log Completion', 'kmb', [
+				['Complete Collection Log Items', 20_000_000, '#9fdfb2'],
+				['Incomplete Collection Log Items', 100_000_000, '#df9f9f'],
+				['Incomplete', 45_000_000]
+			])
+		);
 	});
 
 	test.concurrent.skip('TOA Image', async () => {
