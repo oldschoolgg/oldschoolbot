@@ -1,7 +1,7 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { chunk } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { leagueBuyables } from '../../lib/data/leaguesBuyables';

@@ -49,7 +49,7 @@ const globalInteractionActions = [
 	'CHECK_TOA'
 ] as const;
 
-export type GlobalInteractionAction = (typeof globalInteractionActions)[number];
+type GlobalInteractionAction = (typeof globalInteractionActions)[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 	return globalInteractionActions.includes(str as GlobalInteractionAction);
 }
@@ -310,6 +310,8 @@ async function handleGEButton(user: MUser, id: string, interaction: ButtonIntera
 
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
+	if (['CONFIRM', 'CANCEL'].includes(interaction.customId)) return;
+	if (interaction.customId.startsWith('LP_')) return;
 
 	if (globalClient.isShuttingDown) {
 		return interactionReply(interaction, {

@@ -1,10 +1,10 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, calcWhatPercent, chunk, objectValues } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 
 import type { ClueTier } from '../../lib/clues/clueTiers';
 import { ClueTiers } from '../../lib/clues/clueTiers';
@@ -1251,7 +1251,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		combat_achievements?: {};
 		mastery?: {};
 	}>) => {
-		deferInteraction(interaction);
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		const {
 			opens,

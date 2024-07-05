@@ -1,4 +1,3 @@
-import { AttachmentBuilder } from 'discord.js';
 import { calcWhatPercent, isObject, notEmpty, removeFromArr, sumArr, uniqueArr } from 'e';
 import { Bank, Clues, Monsters } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
@@ -8,7 +7,7 @@ import type Monster from 'oldschooljs/dist/structures/Monster';
 import type { ClueTier } from '../clues/clueTiers';
 import { ClueTiers } from '../clues/clueTiers';
 import { NEX_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
-import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
+import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters';
 import { sepulchreFloors } from '../minions/data/sepulchre';
 import {
 	EasyEncounterLoot,
@@ -24,7 +23,7 @@ import type { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
 import { fetchStatsForCL, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
-import { makeTable, shuffleRandom } from '../util/smallUtils';
+import { shuffleRandom } from '../util/smallUtils';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
 import {
 	NexCL,
@@ -1193,7 +1192,7 @@ export const allCLItemsFiltered = [
 	)
 ];
 
-export const overallPlusItems = [
+const overallPlusItems = [
 	...new Set(
 		Object.entries(allCollectionLogs)
 			.filter(i => i[0] !== 'Discontinued')
@@ -1253,7 +1252,7 @@ export interface UserStatsDataNeededForCL {
 	stats: MUserStats;
 }
 
-export function getBank(
+function getBank(
 	user: MUser,
 	type: 'sacrifice' | 'bank' | 'collection' | 'temp',
 	userStats: UserStatsDataNeededForCL | MUserStats | null
@@ -1278,27 +1277,6 @@ export function getTotalCl(
 	userStats: UserStatsDataNeededForCL | MUserStats | null
 ) {
 	return getUserClData(getBank(user, logType, userStats).bank, allCLItemsFiltered);
-}
-
-export function getPossibleOptions() {
-	const roles: [string, string, string][] = [];
-	const categories: [string, string, string][] = [];
-	const activities: [string, string, string][] = [];
-
-	// Get categories and enabled activities
-	for (const [category, entries] of Object.entries(allCollectionLogs)) {
-		categories.push(['General', category, entries.alias ? entries.alias.join(', ') : '']);
-		for (const [activityName, attributes] of Object.entries(entries.activities)) {
-			categories.push(['Activity', activityName, attributes.alias ? attributes.alias.join(', ') : '']);
-		}
-	}
-
-	// get monsters
-	for (const monster of effectiveMonsters) {
-		categories.push(['Monsters', monster.name, monster.aliases ? monster.aliases.join(', ') : '']);
-	}
-	const normalTable = makeTable(['Type', 'name: ', 'Alias'], [...categories, ...activities, ...roles]);
-	return new AttachmentBuilder(Buffer.from(normalTable), { name: 'possible_logs.txt' });
 }
 
 export function getCollectionItems(

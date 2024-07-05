@@ -1,4 +1,4 @@
-import type { CommandOptions } from 'mahoji/dist/lib/types';
+import type { CommandOptions } from '@oldschoolgg/toolkit';
 
 import { modifyBusyCounter } from '../../lib/busyCounterCache';
 import { busyImmuneCommands, shouldTrackCommand } from '../../lib/constants';

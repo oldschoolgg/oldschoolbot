@@ -1,12 +1,12 @@
 import { formatOrdinal, mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { bold, userMention } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, chunk, noOp, notEmpty, uniqueArr } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import type { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 

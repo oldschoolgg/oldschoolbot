@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';
 import type { ClueBank } from '../minions/types';
-import { prisma } from '../settings/prisma';
 import type { ItemBank } from '../types';
 import { getToaKCs } from '../util/smallUtils';
 

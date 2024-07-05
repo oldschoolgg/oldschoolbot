@@ -6,6 +6,7 @@ import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
+import { LRUCache } from 'lru-cache';
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
 import { BitField, ONE_TRILLION, PerkTier, globalConfig } from './constants';
@@ -171,7 +172,15 @@ class GrandExchangeSingleton {
 		}
 	}
 
-	async calculateSlotsOfUser(user: MUser) {
+	private slotsCache = new LRUCache<string, Awaited<ReturnType<typeof this.calculateSlotsOfUser>>>({
+		ttl: Time.Hour,
+		max: 100
+	});
+	async calculateSlotsOfUser(
+		user: MUser
+	): Promise<{ slots: number; doesntHaveNames: string[]; possibleExtra: number; maxPossible: number }> {
+		const cached = this.slotsCache.get(user.id);
+		if (cached) return cached;
 		const robochimpUser = await roboChimpUserFetch(user.id);
 		let slots = 0;
 		const doesntHaveNames = [];
@@ -186,7 +195,9 @@ class GrandExchangeSingleton {
 				possibleExtra += boost.amount;
 			}
 		}
-		return { slots, doesntHaveNames, possibleExtra, maxPossible };
+		const result = { slots, doesntHaveNames, possibleExtra, maxPossible };
+		this.slotsCache.set(user.id, result);
+		return result;
 	}
 
 	getInterval() {
@@ -757,16 +768,12 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	}
 
 	async extensiveVerification() {
-		const allListings = await prisma.gEListing.findMany();
-		for (const listing of allListings) sanityCheckListing(listing);
-
-		const allTransactions = await prisma.gETransaction.findMany();
-		for (const transaction of allTransactions) sanityCheckTransaction(transaction);
-
-		await this.checkGECanFullFilAllListings();
-
+		await Promise.all([
+			prisma.gETransaction.findMany().then(txs => txs.map(tx => sanityCheckTransaction(tx))),
+			prisma.gEListing.findMany().then(listings => listings.map(listing => sanityCheckListing(listing))),
+			this.checkGECanFullFilAllListings()
+		]);
 		debugLog('Validated GE and found no issues.');
-
 		return true;
 	}
 
@@ -808,17 +815,20 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	}
 
 	async tick() {
-		await this.queue.add(async () => {
-			if (this.isTicking) throw new Error('Already ticking.');
-			try {
-				await this._tick();
-			} catch (err: any) {
-				logError(err.message);
-				debugLog(err.message);
-				throw err;
-			} finally {
-				this.isTicking = false;
-			}
+		return new Promise<void>(async (resolve, reject) => {
+			await this.queue.add(async () => {
+				if (this.isTicking) return reject('Already ticking.');
+				try {
+					await this._tick();
+				} catch (err: any) {
+					logError(err.message);
+					debugLog(err.message);
+					reject(err);
+				} finally {
+					this.isTicking = false;
+					resolve();
+				}
+			});
 		});
 	}
 

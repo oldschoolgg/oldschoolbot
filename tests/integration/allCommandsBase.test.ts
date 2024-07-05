@@ -1,10 +1,6 @@
-import { join } from 'node:path';
-
+import type { CommandOption } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, randArrItem, randInt, shuffleArr } from 'e';
-import { Store } from 'mahoji/dist/lib/structures/Store';
-import type { CommandOption } from 'mahoji/dist/lib/types';
-import { isValidCommand } from 'mahoji/dist/lib/util';
 import { Bank, Items } from 'oldschooljs';
 import { expect, test, vi } from 'vitest';
 
@@ -12,74 +8,7 @@ import { BitField, minionActivityCache } from '../../src/lib/constants';
 import { prisma } from '../../src/lib/settings/prisma';
 import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation';
-import { activitiesCommand } from '../../src/mahoji/commands/activities';
-import { adminCommand } from '../../src/mahoji/commands/admin';
-import { askCommand } from '../../src/mahoji/commands/ask';
-import { botLeaguesCommand } from '../../src/mahoji/commands/botleagues';
-import { bsCommand } from '../../src/mahoji/commands/bs';
-import { buildCommand } from '../../src/mahoji/commands/build';
-import { buyCommand } from '../../src/mahoji/commands/buy';
-import { caCommand } from '../../src/mahoji/commands/ca';
-import { chooseCommand } from '../../src/mahoji/commands/choose';
-import { chopCommand } from '../../src/mahoji/commands/chop';
-import { claimCommand } from '../../src/mahoji/commands/claim';
-import { clueCommand } from '../../src/mahoji/commands/clue';
-import { cluesCommand } from '../../src/mahoji/commands/clues';
-import { configCommand } from '../../src/mahoji/commands/config';
-import { cookCommand } from '../../src/mahoji/commands/cook';
-import { craftCommand } from '../../src/mahoji/commands/craft';
-import { createCommand } from '../../src/mahoji/commands/create';
-import { dataCommand } from '../../src/mahoji/commands/data';
-import { dropCommand } from '../../src/mahoji/commands/drop';
-import { dryCalcCommand } from '../../src/mahoji/commands/drycalc';
-import { fakeCommand } from '../../src/mahoji/commands/fake';
-import { fakepmCommand } from '../../src/mahoji/commands/fakepm';
-import { farmingCommand } from '../../src/mahoji/commands/farming';
-import { fishCommand } from '../../src/mahoji/commands/fish';
-import { fletchCommand } from '../../src/mahoji/commands/fletch';
-import { gambleCommand } from '../../src/mahoji/commands/gamble';
-import { gearCommand } from '../../src/mahoji/commands/gear';
-import { giftCommand } from '../../src/mahoji/commands/gift';
-import { giveawayCommand } from '../../src/mahoji/commands/giveaway';
-import { gpCommand } from '../../src/mahoji/commands/gp';
-import { helpCommand } from '../../src/mahoji/commands/help';
-import { huntCommand } from '../../src/mahoji/commands/hunt';
-import { inviteCommand } from '../../src/mahoji/commands/invite';
-import { minionKCommand } from '../../src/mahoji/commands/k';
-import { kcCommand } from '../../src/mahoji/commands/kc';
-import { lapsCommand } from '../../src/mahoji/commands/laps';
-import { leaderboardCommand } from '../../src/mahoji/commands/leaderboard';
-import { lightCommand } from '../../src/mahoji/commands/light';
-import { lootCommand } from '../../src/mahoji/commands/loot';
-import { mCommand } from '../../src/mahoji/commands/m';
-import { massCommand } from '../../src/mahoji/commands/mass';
-import { mineCommand } from '../../src/mahoji/commands/mine';
-import { minigamesCommand } from '../../src/mahoji/commands/minigames';
-import { minionCommand } from '../../src/mahoji/commands/minion';
-import { mixCommand } from '../../src/mahoji/commands/mix';
-import { offerCommand } from '../../src/mahoji/commands/offer';
-import { openCommand } from '../../src/mahoji/commands/open';
-import { patreonCommand } from '../../src/mahoji/commands/patreon';
-import { payCommand } from '../../src/mahoji/commands/pay';
-import { pohCommand } from '../../src/mahoji/commands/poh';
-import { pollCommand } from '../../src/mahoji/commands/poll';
-import { priceCommand } from '../../src/mahoji/commands/price';
-import { raidCommand } from '../../src/mahoji/commands/raid';
-import { redeemCommand } from '../../src/mahoji/commands/redeem';
-import { rollCommand } from '../../src/mahoji/commands/roll';
-import { runecraftCommand } from '../../src/mahoji/commands/runecraft';
-import { sacrificeCommand } from '../../src/mahoji/commands/sacrifice';
-import { sellCommand } from '../../src/mahoji/commands/sell';
-import { simulateCommand } from '../../src/mahoji/commands/simulate';
-import { slayerCommand } from '../../src/mahoji/commands/slayer';
-import { smeltingCommand } from '../../src/mahoji/commands/smelt';
-import { smithCommand } from '../../src/mahoji/commands/smith';
-import { stealCommand } from '../../src/mahoji/commands/steal';
-import { tksCommand } from '../../src/mahoji/commands/tokkulshop';
-import { toolsCommand } from '../../src/mahoji/commands/tools';
-import { tradeCommand } from '../../src/mahoji/commands/trade';
-import { triviaCommand } from '../../src/mahoji/commands/trivia';
-import { mahojiUseCommand } from '../../src/mahoji/commands/use';
+import { allCommands } from '../../src/mahoji/commands/allCommands';
 import { randomMock } from './setup';
 import type { TestUser } from './util';
 import { createTestUser, mockClient } from './util';
@@ -174,8 +103,6 @@ test(
 		const maxUser = await createTestUser(bank, { GP: 100_000_000_000 });
 		await maxUser.max();
 		await maxUser.update({ bitfield: [BitField.isModerator] });
-		const store = new Store({ name: 'commands', dirs: [join('dist', 'mahoji')], checker: isValidCommand });
-		await store.load();
 		await mahojiClientSettingsFetch({ construction_cost_bank: true });
 		await prisma.activity.deleteMany({
 			where: {
@@ -205,77 +132,9 @@ test(
 			'cl',
 			'gearpresets'
 		];
-		const cmds = [
-			adminCommand,
-			askCommand,
-			botLeaguesCommand,
-			bsCommand,
-			buildCommand,
-			buyCommand,
-			caCommand,
-			chooseCommand,
-			chopCommand,
-			cookCommand,
-			clueCommand,
-			configCommand,
-			claimCommand,
-			cluesCommand,
-			mCommand,
-			gpCommand,
-			payCommand,
-			craftCommand,
-			fishCommand,
-			farmingCommand,
-			dropCommand,
-			dryCalcCommand,
-			createCommand,
-			activitiesCommand,
-			dataCommand,
-			fakeCommand,
-			fakepmCommand,
-			fletchCommand,
-			gambleCommand,
-			gearCommand,
-			giveawayCommand,
-			helpCommand,
-			huntCommand,
-			giftCommand,
-			inviteCommand,
-			kcCommand,
-			minionKCommand,
-			lapsCommand,
-			leaderboardCommand,
-			lightCommand,
-			mineCommand,
-			massCommand,
-			minigamesCommand,
-			minionCommand,
-			simulateCommand,
-			sellCommand,
-			sacrificeCommand,
-			rollCommand,
-			runecraftCommand,
-			raidCommand,
-			pollCommand,
-			pohCommand,
-			priceCommand,
-			openCommand,
-			offerCommand,
-			mixCommand,
-			lootCommand,
-			smeltingCommand,
-			slayerCommand,
-			redeemCommand,
-			patreonCommand,
-			smithCommand,
-			stealCommand,
-			tradeCommand,
-			triviaCommand,
-			toolsCommand,
-			tksCommand,
-			mahojiUseCommand
-		];
-		for (const command of store.values) {
+		const cmds = allCommands;
+
+		for (const command of cmds) {
 			if (ignoredCommands.includes(command.name)) continue;
 			if (cmds.some(c => c.name === command.name)) continue;
 			throw new Error(

@@ -1,5 +1,5 @@
 import { notEmpty, objectKeys, randFloat, randInt } from 'e';
-import { Bank, MonsterSlayerMaster, Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
 import { KourendKebosDiary, LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
@@ -31,7 +31,7 @@ export enum SlayerMasterEnum {
 	Duradel = 7
 }
 
-export interface DetermineBoostParams {
+interface DetermineBoostParams {
 	cbOpts: CombatOptionsEnum[];
 	user: MUser;
 	monster: KillableMonster;
@@ -98,7 +98,7 @@ export async function calculateSlayerPoints(currentStreak: number, master: Slaye
 	return basePoints;
 }
 
-export function weightedPick(filteredTasks: AssignableSlayerTask[]) {
+function weightedPick(filteredTasks: AssignableSlayerTask[]) {
 	let totalweight = 0;
 	for (let i = 0; i < filteredTasks.length; i++) {
 		totalweight += filteredTasks[i].weight;
@@ -129,7 +129,7 @@ export function userCanUseMaster(user: MUser, master: SlayerMaster) {
 	);
 }
 
-export function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerMaster, allowBossTasks = false) {
+function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerMaster, allowBossTasks = false) {
 	if (task.isBoss && !allowBossTasks) return false;
 	if (task.dontAssign) return false;
 	const myLastTask = user.user.slayer_last_task;
@@ -342,41 +342,7 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 	};
 }
 
-export const allSlayerHelmets = [
-	'Slayer helmet',
-	'Slayer helmet (i)',
-	'Black slayer helmet',
-	'Black slayer helmet (i)',
-	'Green slayer helmet',
-	'Green slayer helmet (i)',
-	'Red slayer helmet',
-	'Red slayer helmet (i)',
-	'Purple slayer helmet',
-	'Purple slayer helmet (i)',
-	'Turquoise slayer helmet',
-	'Turquoise slayer helmet (i)',
-	'Hydra slayer helmet',
-	'Hydra slayer helmet (i)',
-	'Twisted slayer helmet',
-	'Twisted slayer helmet (i)'
-];
-
-export function getSlayerMasterOSJSbyID(slayerMasterID: number) {
-	const osjsSlayerMaster = [
-		MonsterSlayerMaster.Turael,
-		MonsterSlayerMaster.Turael,
-		MonsterSlayerMaster.Mazchna,
-		MonsterSlayerMaster.Vannaka,
-		MonsterSlayerMaster.Chaeldar,
-		MonsterSlayerMaster.Konar,
-		MonsterSlayerMaster.Nieve,
-		MonsterSlayerMaster.Duradel,
-		MonsterSlayerMaster.Krystilia
-	];
-	return osjsSlayerMaster[slayerMasterID];
-}
-
-export function getSlayerReward(id: SlayerTaskUnlocksEnum): string {
+function getSlayerReward(id: SlayerTaskUnlocksEnum): string {
 	const { name } = SlayerRewardsShop.find(srs => {
 		return srs?.id === id;
 	})!;

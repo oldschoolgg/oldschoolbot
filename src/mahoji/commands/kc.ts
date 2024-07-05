@@ -1,6 +1,6 @@
 import { stringMatches, toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Hiscores } from 'oldschooljs';
 import { bossNameMap, mappedBossNames } from 'oldschooljs/dist/constants';
 import type { BossRecords } from 'oldschooljs/dist/meta/types';

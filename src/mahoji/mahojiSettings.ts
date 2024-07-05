@@ -31,7 +31,7 @@ export function mahojiParseNumber({
 	return parsed;
 }
 
-export type SelectedUser<T extends Prisma.UserSelect> = {
+type SelectedUser<T extends Prisma.UserSelect> = {
 	[K in keyof T]: K extends keyof User ? User[K] : never;
 };
 

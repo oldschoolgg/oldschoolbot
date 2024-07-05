@@ -2,7 +2,7 @@ import { Monsters } from 'oldschooljs';
 
 import itemID from '../util/itemID';
 
-export interface SlayerTaskUnlocks {
+interface SlayerTaskUnlocks {
 	id: SlayerTaskUnlocksEnum;
 	name: string;
 	desc?: string;

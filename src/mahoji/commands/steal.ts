@@ -1,8 +1,8 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { randInt } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';

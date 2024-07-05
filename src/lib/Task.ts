@@ -98,7 +98,7 @@ import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
 
-export const tasks: MinionTask[] = [
+const tasks: MinionTask[] = [
 	aerialFishingTask,
 	birdHouseTask,
 	driftNetTask,
@@ -235,7 +235,7 @@ const ActivityTaskOptionsSchema = z.object({
 	channelID: z.string()
 });
 
-export async function completeActivity(_activity: Activity) {
+async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
 	debugLog(`Attemping to complete activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
 

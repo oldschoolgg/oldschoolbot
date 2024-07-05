@@ -1,7 +1,7 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { clamp, reduceNumByPercent } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 

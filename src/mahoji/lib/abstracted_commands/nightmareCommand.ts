@@ -44,7 +44,7 @@ const inquisitorItems = resolveItems([
 	"Inquisitor's mace"
 ]);
 
-export const phosaniBISGear = new Gear({
+const phosaniBISGear = new Gear({
 	head: "Inquisitor's great helm",
 	neck: 'Amulet of torture',
 	body: "Inquisitor's hauberk",

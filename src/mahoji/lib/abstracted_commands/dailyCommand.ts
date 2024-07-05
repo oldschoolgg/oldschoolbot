@@ -1,6 +1,6 @@
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { Time, roll, shuffleArr, uniqueArr } from 'e';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 

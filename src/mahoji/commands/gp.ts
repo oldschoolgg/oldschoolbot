@@ -1,4 +1,4 @@
-import type { CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { Emoji } from '../../lib/constants';

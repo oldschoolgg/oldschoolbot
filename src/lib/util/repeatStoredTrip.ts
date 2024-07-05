@@ -65,7 +65,7 @@ import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOpt
 import getOSItem from './getOSItem';
 import { deferInteraction } from './interactionReply';
 
-export const taskCanBeRepeated = (activity: Activity) => {
+const taskCanBeRepeated = (activity: Activity) => {
 	if (activity.type === activity_type_enum.ClueCompletion) {
 		const realActivity = convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
 		return realActivity.implingID !== undefined;
@@ -85,7 +85,7 @@ export const taskCanBeRepeated = (activity: Activity) => {
 	).includes(activity.type);
 };
 
-export const tripHandlers = {
+const tripHandlers = {
 	[activity_type_enum.ClueCompletion]: {
 		commandName: 'clue',
 		args: (data: ClueActivityTaskOptions) => ({ tier: data.clueID, implings: getOSItem(data.implingID!).name })

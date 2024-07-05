@@ -1,11 +1,11 @@
 import { hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
 import type { ChatInputCommandInteraction, Guild, HexColorString, User } from 'discord.js';
 import { EmbedBuilder, bold, inlineCode, resolveColor } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, clamp, removeFromArr, uniqueArr } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 

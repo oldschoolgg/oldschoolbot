@@ -1,6 +1,6 @@
 import { truncateString } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
 import { deferInteraction } from '../../lib/util/interactionReply';

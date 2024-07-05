@@ -1,11 +1,15 @@
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
+import { Time } from 'e';
+import deepEqual from 'fast-deep-equal';
 import { Bank, Monsters } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
+import { MUserClass } from '../../src/lib/MUser';
 import { drawChestLootImage } from '../../src/lib/bankImage';
 import { clImageGenerator } from '../../src/lib/collectionLogTask';
 import { BOT_TYPE } from '../../src/lib/constants';
 import { pohImageGenerator } from '../../src/lib/pohImage';
+import { type ChartOptions, createApexChartConfig, createChart } from '../../src/lib/util/chart';
 import { mahojiChatHead } from '../../src/lib/util/chatHeadImage';
 import { makeBankImage } from '../../src/lib/util/makeBankImage';
 import { mockMUser } from './utils';
@@ -21,6 +25,11 @@ describe('Images', () => {
 	});
 
 	test.concurrent('Collection Log', async () => {
+		// @ts-expect-error
+		global.prisma = { userStats: { upsert: () => {} } };
+		MUserClass.prototype.fetchStats = async () => {
+			return { monster_scores: {} } as any;
+		};
 		const result: any = await clImageGenerator.generateLogImage({
 			user: mockMUser({ cl: new Bank().add('Harmonised orb') }),
 			collection: 'nightmare',
@@ -35,7 +44,7 @@ describe('Images', () => {
 				highGambles: 1,
 				gotrRiftSearches: 1
 			}
-		});
+		} as any);
 		await writeFile(`tests/unit/snapshots/cl.${BOT_TYPE}.png`, result.files[0].attachment);
 	});
 
@@ -64,13 +73,57 @@ describe('Images', () => {
 		await writeFile(`tests/unit/snapshots/poh.${BOT_TYPE}.png`, result);
 	});
 
-	// test('Chart Image', async () => {
-	// 	const result = await pieChart('Test', val => `${toKMB(val)}%`, [
-	// 		['Complete Collection Log Items', 20, '#9fdfb2'],
-	// 		['Incomplete Collection Log Items', 80, '#df9f9f']
-	// 	]);
-	// 	expect(result).toMatchImageSnapshot();
-	// });
+	test(
+		'Charts',
+		async () => {
+			const sampleData: Record<'kmb' | 'percent', ChartOptions['values'][]> = {
+				percent: [
+					[
+						['Magna', 55],
+						['Cyr', 45]
+					]
+				],
+				kmb: [
+					[
+						['Twisted bow', 5_000_000_000],
+						['Egg', 1_500_000_000],
+						['Cat', 500_000_000],
+						['Dog', 2500_000_000],
+						['Trout', 4500_000_000]
+					]
+				]
+			} as const;
+
+			for (const chartType of ['bar', 'line'] as const) {
+				for (const format of ['kmb', 'percent'] as const) {
+					const chartOptions: ChartOptions = {
+						type: chartType,
+						title: `${chartType} ${format} title`,
+						values: sampleData[format][0],
+						format: format
+					};
+
+					const config = createApexChartConfig(chartOptions);
+					const configFilePath = `tests/unit/snapshots/chart.${chartType}.${format}.json`;
+					const existingConfigRaw = await readFile(configFilePath, 'utf-8').catch(() => null);
+					if (existingConfigRaw) {
+						const existingConfig = JSON.parse(existingConfigRaw);
+						if (deepEqual(existingConfig, config)) {
+							console.log(`Skipping ${chartType} ${format} chart, no changes.`);
+							continue;
+						}
+					}
+
+					const res = await createChart(chartOptions);
+					await writeFile(`tests/unit/snapshots/chart.${chartType}.${format}.png`, res);
+					await writeFile(configFilePath, `${JSON.stringify(config, null, 4)}\n`);
+				}
+			}
+		},
+		{
+			timeout: Time.Second * 30
+		}
+	);
 
 	test.concurrent('TOA Image', async () => {
 		const image = await drawChestLootImage({

@@ -10,7 +10,7 @@ import resolveItems from './resolveItems';
 interface IGearSwap {
 	[key: number]: number[];
 }
-export const gearSwap: IGearSwap = {
+const gearSwap: IGearSwap = {
 	[itemID("Craw's bow")]: [itemID("Craw's bow (u)")],
 	[itemID("Thammaron's sceptre")]: [itemID("Thammaron's sceptre (u)")],
 	[itemID("Viggora's chainmace")]: [itemID("Viggora's chainmace (u)")],
@@ -101,7 +101,7 @@ export const gearSwap: IGearSwap = {
 	[itemID('Sanguine torva full helm')]: [itemID('Torva full helm')]
 };
 
-export const lockedItems = resolveItems([
+const lockedItems = resolveItems([
 	'Rune pouch (l)',
 	'Fire cape (l)',
 	'Infernal cape (l)',

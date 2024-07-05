@@ -1,8 +1,8 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { CropUpgradeType } from '@prisma/client';
 import { AutoFarmFilterEnum } from '@prisma/client';
 import type { User } from 'discord.js';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
 import { superCompostables } from '../../lib/data/filterables';

@@ -13,10 +13,10 @@ vi.mock('@oldschoolgg/toolkit', async () => {
 });
 
 vi.mock('../node_modules/@oldschoolgg/toolkit/src/util/discord.ts', async () => {
-	const actualToolkit = await vi.importActual('../node_modules/@oldschoolgg/toolkit/src/util/discord.ts'); // Import all actual exports
+	const actualToolkit = await vi.importActual('../node_modules/@oldschoolgg/toolkit/src/util/discord.ts');
 	return {
-		...actualToolkit, // Include all actual exports in the mock
-		mentionCommand: vi.fn().mockReturnValue('') // Mock mentionCommand to return a blank string
+		...actualToolkit,
+		mentionCommand: vi.fn().mockReturnValue('')
 	};
 });
 
@@ -26,12 +26,13 @@ global.globalClient = {
 	guilds: { cache: new Collection() },
 	mahojiClient: {
 		commands: {
-			values: ['test'].map(n => ({
-				name: n,
-				description: 'test description',
-				attributes: { description: 'test description' },
-				options: [{ name: 'claim' }]
-			}))
+			values: () =>
+				['test'].map(n => ({
+					name: n,
+					description: 'test description',
+					attributes: { description: 'test description' },
+					options: [{ name: 'claim' }]
+				}))
 		}
 	},
 	users: {
@@ -42,3 +43,7 @@ global.globalClient = {
 	},
 	busyCounterCache: new Map<string, number>()
 } as any;
+
+if (!process.env.TEST) {
+	throw new Error('This file should only be imported in tests.');
+}

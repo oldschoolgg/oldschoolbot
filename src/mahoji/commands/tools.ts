@@ -1,15 +1,16 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { Activity, User } from '@prisma/client';
 import { ChannelType, EmbedBuilder } from 'discord.js';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
+import { PerkTier } from '@oldschoolgg/toolkit';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
-import { BitField, PerkTier } from '../../lib/constants';
+import { BitField } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
 import {
 	anglerOutfit,

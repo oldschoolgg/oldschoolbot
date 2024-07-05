@@ -42,7 +42,7 @@ const minStats = {
 
 const SCYTHE_CHARGES_PER_RAID = 200;
 
-export async function calcTOBInput(u: MUser) {
+async function calcTOBInput(u: MUser) {
 	const items = new Bank();
 	const kc = await getMinigameScore(u.id, 'tob');
 	items.add('Super combat potion(4)', 1);
@@ -75,7 +75,7 @@ export async function calcTOBInput(u: MUser) {
 	return items;
 }
 
-export async function checkTOBUser(
+async function checkTOBUser(
 	user: MUser,
 	isHardMode: boolean,
 	teamSize?: number,
@@ -233,12 +233,7 @@ export async function checkTOBUser(
 	return [false];
 }
 
-export async function checkTOBTeam(
-	users: MUser[],
-	isHardMode: boolean,
-	solo: boolean,
-	quantity = 1
-): Promise<string | null> {
+async function checkTOBTeam(users: MUser[], isHardMode: boolean, solo: boolean, quantity = 1): Promise<string | null> {
 	const userWithoutSupplies = users.find(u => !u.bank.has(minimumTOBSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;

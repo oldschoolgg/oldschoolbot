@@ -189,7 +189,7 @@ export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
 export type ClueBank = Record<ClueTier['name'], number>;
 
-export const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
+const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
 export type DiaryTierName = (typeof diaryTiers)[number];
 
 export interface DiaryTier {

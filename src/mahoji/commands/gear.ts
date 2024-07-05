@@ -1,6 +1,6 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import { gearValidationChecks } from '../../lib/constants';
 import { allPetIDs } from '../../lib/data/CollectionsExport';

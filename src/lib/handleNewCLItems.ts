@@ -14,7 +14,7 @@ import { fetchStatsForCL } from './util';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
 import { insertUserEvent } from './util/userEvents';
 
-export async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
+async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
 	const clStats = calcCLDetails(user);
 	const clRank = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
 	const { totalMastery } = await calculateMastery(user, await MUserStats.fromID(user.id));

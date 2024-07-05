@@ -1,5 +1,5 @@
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { mahojiParseNumber } from '../../../mahoji/mahojiSettings';

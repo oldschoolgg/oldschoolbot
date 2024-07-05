@@ -145,7 +145,7 @@ export function cacheCleanup() {
 				guild.emojis?.cache.clear();
 
 				for (const channel of guild.channels.cache.values()) {
-					if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildNewsThread) {
+					if (channel.type === ChannelType.GuildVoice || channel.type === ChannelType.AnnouncementThread) {
 						guild.channels.cache.delete(channel.id);
 					}
 				}

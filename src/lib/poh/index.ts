@@ -20,37 +20,16 @@ import { Thrones } from './objects/thrones';
 import { Torches } from './objects/torches';
 import type { PlayerOwnedHouse } from '.prisma/client';
 
-export interface PoH {
-	background: 1;
-	throne: number | null;
-	pool: number | null;
-	mountedCape: number | null;
-	mountedFish: number | null;
-	jewelleryBox: number | null;
-	prayerAltar: number | null;
-	spellbookAltar: number | null;
-	mountedHead: number | null;
-	teleport: number | null;
-	mountedItem: number | null;
-	gardenDecoration: number | null;
-	amulet: number | null;
-
-	torch: number | null;
-	guard: number | null;
-	dungeonDecoration: number | null;
-	prison: number | null;
-}
-
 export const HOUSE_WIDTH = 585;
 export const TOP_FLOOR_Y = 118;
 
 export const GROUND_FLOOR_Y = 236;
 export const DUNGEON_FLOOR_Y = 351;
-export const FLOOR_HEIGHT = 112;
+const FLOOR_HEIGHT = 112;
 const GARDEN_X = 587;
 const GARDEN_Y = 236;
 
-export type PoHSlot = keyof Omit<PlayerOwnedHouse, 'background_id' | 'user_id'>;
+type PoHSlot = keyof Omit<PlayerOwnedHouse, 'background_id' | 'user_id'>;
 
 export interface PoHObject {
 	id: number;

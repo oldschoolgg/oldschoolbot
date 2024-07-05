@@ -25,5 +25,6 @@ export async function cacheBadges() {
 		newCache.set(user.RSN.toLowerCase(), userBadges.join(' '));
 	}
 
+	globalClient._badgeCache.clear();
 	globalClient._badgeCache = newCache;
 }
