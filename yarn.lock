@@ -3482,6 +3482,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nan@npm:^2.18.0":
+  version: 2.20.0
+  resolution: "nan@npm:2.20.0"
+  dependencies:
+    node-gyp: "npm:latest"
+  checksum: 10c0/75775309a21ad179a55250d62ce47322c33ca03d8ddb5ad4c555bd820dd72484b3c59253dd9f41cc68dd63453ef04017407fbd081a549bc030d977079bb798b7
+  languageName: node
+  linkType: hard
+
 "nanoid@npm:^3.3.7":
   version: 3.3.7
   resolution: "nanoid@npm:3.3.7"
@@ -4186,6 +4195,7 @@ __metadata:
     tsx: "npm:^4.16.2"
     typescript: "npm:^5.5.3"
     vitest: "npm:^1.6.0"
+    zlib-sync: "npm:^0.1.9"
     zod: "npm:^3.23.8"
   languageName: unknown
   linkType: soft
@@ -4922,6 +4932,16 @@ __metadata:
   version: 1.0.0
   resolution: "yocto-queue@npm:1.0.0"
   checksum: 10c0/856117aa15cf5103d2a2fb173f0ab4acb12b4b4d0ed3ab249fdbbf612e55d1cadfd27a6110940e24746fb0a78cf640b522cc8bca76f30a3b00b66e90cf82abe0
+  languageName: node
+  linkType: hard
+
+"zlib-sync@npm:^0.1.9":
+  version: 0.1.9
+  resolution: "zlib-sync@npm:0.1.9"
+  dependencies:
+    nan: "npm:^2.18.0"
+    node-gyp: "npm:latest"
+  checksum: 10c0/1c05fdc5140f4c9afb931bfca01fc9f26ddfe242eb5c8c06ffc93b53d5103f0a99e8b8048697446001eb4a92c12febd270bcb4cda3fa3de9bf822e6ba0664902
   languageName: node
   linkType: hard
 

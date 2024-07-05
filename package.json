@@ -40,6 +40,7 @@
 		"random-js": "^2.1.0",
 		"simple-statistics": "^7.8.3",
 		"sonic-boom": "^4.0.1",
+		"zlib-sync": "^0.1.9",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
