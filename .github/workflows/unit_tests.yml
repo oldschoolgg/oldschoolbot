@@ -44,4 +44,6 @@ jobs:
       - name: Build
         run: yarn build --clean
       - name: Test
-        run: yarn test
+        run: |
+          yarn test
+          npm i -g dpdm && dpdm --exit-code circular:1 ./dist/index.js
