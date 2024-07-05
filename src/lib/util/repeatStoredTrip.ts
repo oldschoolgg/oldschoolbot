@@ -438,8 +438,9 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.Wintertodt]: {
 		commandName: 'k',
-		args: () => ({
-			name: 'wintertodt'
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			name: 'wintertodt',
+			quantity: data.quantity
 		})
 	},
 	[activity_type_enum.Nightmare]: {
