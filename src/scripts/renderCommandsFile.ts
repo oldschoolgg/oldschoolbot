@@ -1,5 +1,6 @@
 import './no-prisma';
 
+import { execSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import { stringMatches } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
@@ -49,4 +50,5 @@ export async function commandsFile() {
 	const commands = await renderCommands();
 	const path = `./src/lib/data/${BOT_TYPE.toLowerCase()}.commands.json`;
 	writeFileSync(path, `${JSON.stringify(commands, null, '	')}\n`);
+	execSync(`npx biome check --write ${path}`);
 }

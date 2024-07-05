@@ -129,7 +129,7 @@ async function handleCreatables() {
 
 async function handleCommandsJSON() {
 	const currentFileHash = getFileHash(`./src/lib/data/${BOT_TYPE}.commands.json`);
-	if (currentCache.commandsHash !== currentFileHash || forceRebuild) {
+	if (currentCache.commandsHash !== currentFileHash) {
 		console.log('   Updating commands json file');
 		const { commandsFile } = await import('./renderCommandsFile');
 		await commandsFile();
