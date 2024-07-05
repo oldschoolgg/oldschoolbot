@@ -44,8 +44,12 @@ function doHash(string: string | Buffer) {
 	return createHash('sha256').update(string).digest('hex');
 }
 
-function getFileHash(filePath: string): string {
-	return doHash(readFileSync(filePath));
+function getFileHash(filePath: string) {
+	try {
+		return doHash(readFileSync(filePath));
+	} catch {
+		return null;
+	}
 }
 
 function getCacheHash(cachePath: string, key: string): string | null {
@@ -71,7 +75,7 @@ function shouldGeneratePrismaClient(
 	const currentHash = getFileHash(schemaPath);
 	const cachedHash = getCacheHash(cachePath, cacheKey);
 	if (currentHash !== cachedHash) {
-		setCacheValue(cacheKey, currentHash);
+		setCacheValue(cacheKey, currentHash!);
 		return true;
 	}
 	return false;
@@ -128,12 +132,13 @@ async function handleCreatables() {
 }
 
 async function handleCommandsJSON() {
-	const currentFileHash = getFileHash(`./src/lib/data/${BOT_TYPE}.commands.json`);
-	if (currentCache.commandsHash !== currentFileHash) {
+	const cmdFile = `./src/lib/data/${BOT_TYPE.toLowerCase()}.commands.json`;
+	const currentFileHash = getFileHash(cmdFile);
+	if (currentFileHash === null || currentCache.commandsHash !== currentFileHash) {
 		console.log('   Updating commands json file');
 		const { commandsFile } = await import('./renderCommandsFile');
 		await commandsFile();
-		setCacheValue('commandsHash', currentFileHash);
+		setCacheValue('commandsHash', getFileHash(cmdFile)!);
 	}
 }
 
