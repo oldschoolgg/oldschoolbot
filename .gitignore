@@ -1,7 +1,5 @@
 # Klasa
 *.log
-bot/bwd/provider/json/
-src/bwd/provider/json/
 /config/private.js
 /config/private.json
 private.json
