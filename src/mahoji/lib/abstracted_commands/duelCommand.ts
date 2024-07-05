@@ -1,7 +1,7 @@
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, noOp, sleep } from 'e';
-import type { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank, Util } from 'oldschooljs';
 
 import { MUserClass } from '../../../lib/MUser';

@@ -1,11 +1,11 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { PerkTier, stringMatches } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
-import { BitField, PerkTier } from '../../../lib/constants';
+import { BitField } from '../../../lib/constants';
 import type { UnifiedOpenable } from '../../../lib/openables';
 import { allOpenables, getOpenableLoot } from '../../../lib/openables';
 import { makeComponents } from '../../../lib/util';
@@ -139,7 +139,8 @@ ${messages.join(', ')}`,
 		components: components.length > 0 ? makeComponents(components) : undefined
 	};
 	if (response.content!.length > 1900) {
-		response.files?.push({ name: 'response.txt', attachment: Buffer.from(response.content!) });
+		response.files = [{ name: 'response.txt', attachment: Buffer.from(response.content!) }];
+
 		response.content =
 			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
 	}

@@ -1,8 +1,8 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
+import type { CommandOption } from '@oldschoolgg/toolkit';
 import type { APIApplicationCommandOptionChoice } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { uniqueArr } from 'e';
-import type { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank, Items } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -43,17 +43,6 @@ export const itemOption = (filter?: (item: Item) => boolean): CommandOption => (
 	required: false,
 	autocomplete: async value => {
 		let res = itemArr.filter(i => i.key.includes(value.toLowerCase()));
-		if (filter) res = res.filter(filter);
-		return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
-	}
-});
-export const equipableItemOption = (filter?: (item: Item) => boolean): CommandOption => ({
-	type: ApplicationCommandOptionType.String,
-	name: 'item',
-	description: 'The item you want to pick.',
-	required: false,
-	autocomplete: async value => {
-		let res = allEquippableItems.filter(i => i.name.includes(value.toLowerCase()));
 		if (filter) res = res.filter(filter);
 		return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
 	}
@@ -147,11 +136,3 @@ export const gearPresetOption: CommandOption = {
 			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
 	}
 };
-
-export function generateRandomBank(size: number) {
-	const bank = new Bank();
-	for (let i = 0; i < size; i++) {
-		bank.add(allEquippableItems[i]);
-	}
-	return bank;
-}

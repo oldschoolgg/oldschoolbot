@@ -383,9 +383,7 @@ const source: [string, (string | number)[]][] = [
 	['Ring of stone', ['Ring of coins', 'Crate ring', 'Ring of nature', 'Snowman ring', 'Ring of 3rd age']]
 ];
 
-export const similarItems: Map<number, number[]> = new Map(
-	source.map(entry => [itemID(entry[0]), resolveItems(entry[1])])
-);
+const similarItems: Map<number, number[]> = new Map(source.map(entry => [itemID(entry[0]), resolveItems(entry[1])]));
 
 export const inverseSimilarItems: Map<number, Set<number>> = new Map();
 for (const [baseItem, similarItems] of source) {

@@ -25,7 +25,7 @@ export type UniversalBingoTile = {
 	name: string;
 } & (OneOf | AllOf | BankTile | CustomReq);
 
-export interface StoredGlobalTile {
+interface StoredGlobalTile {
 	global: number;
 }
 

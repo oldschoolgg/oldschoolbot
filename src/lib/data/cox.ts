@@ -22,7 +22,7 @@ import { randomVariation } from '../util';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 
-export const bareMinStats: Skills = {
+const bareMinStats: Skills = {
 	attack: 80,
 	strength: 80,
 	defence: 80,
@@ -31,9 +31,9 @@ export const bareMinStats: Skills = {
 	prayer: 70
 };
 
-export const SANGUINESTI_CHARGES_PER_COX = 150;
-export const SHADOW_CHARGES_PER_COX = 130;
-export const TENTACLE_CHARGES_PER_COX = 200;
+const SANGUINESTI_CHARGES_PER_COX = 150;
+const SHADOW_CHARGES_PER_COX = 130;
+const TENTACLE_CHARGES_PER_COX = 200;
 
 export function hasMinRaidsRequirements(user: MUser) {
 	return user.hasSkillReqs(bareMinStats);
@@ -159,7 +159,7 @@ function calcSetupPercent(
 	return totalPercent;
 }
 
-export const maxMageGear = constructGearSetup({
+const maxMageGear = constructGearSetup({
 	head: 'Ancestral hat',
 	neck: 'Occult necklace',
 	body: 'Ancestral robe top',
@@ -173,7 +173,7 @@ export const maxMageGear = constructGearSetup({
 });
 const maxMage = new Gear(maxMageGear);
 
-export const maxRangeGear = constructGearSetup({
+const maxRangeGear = constructGearSetup({
 	head: 'Armadyl helmet',
 	neck: 'Necklace of anguish',
 	body: 'Armadyl chestplate',
@@ -187,7 +187,7 @@ export const maxRangeGear = constructGearSetup({
 });
 const maxRange = new Gear(maxRangeGear);
 
-export const maxMeleeGear = constructGearSetup({
+const maxMeleeGear = constructGearSetup({
 	head: "Inquisitor's great helm",
 	neck: 'Amulet of torture',
 	body: "Inquisitor's hauberk",

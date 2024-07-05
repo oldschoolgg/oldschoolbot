@@ -186,7 +186,7 @@ export const gracefulItems = [
 	'Agility cape(t)'
 ];
 
-export const MonkeyBackpacks = [
+const MonkeyBackpacks = [
 	{
 		id: 24_862,
 		name: 'Karamjan monkey',

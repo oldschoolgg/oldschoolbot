@@ -8,7 +8,7 @@ import type { ActivityTaskData } from '../types/minions';
 import { sqlLog } from '../util/logger';
 
 declare global {
-	var prisma: PrismaClient | undefined;
+	var prisma: PrismaClient;
 }
 
 function makePrismaClient(): PrismaClient {

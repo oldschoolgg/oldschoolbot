@@ -74,7 +74,7 @@ export interface ShootingStarsOptions extends ActivityTaskOptions {
 	totalXp: number;
 	lootItems: ItemBank;
 }
-export interface ActivityTaskOptionsWithUsers extends ActivityTaskOptions {
+interface ActivityTaskOptionsWithUsers extends ActivityTaskOptions {
 	users: string[];
 }
 
@@ -461,7 +461,7 @@ type UserID = string;
 type Points = number;
 type RoomIDsDiedAt = number[];
 
-export type TOAUser = [UserID, Points[], RoomIDsDiedAt[]];
+type TOAUser = [UserID, Points[], RoomIDsDiedAt[]];
 export interface TOAOptions extends ActivityTaskOptionsWithUsers {
 	type: 'TombsOfAmascut';
 	leader: string;

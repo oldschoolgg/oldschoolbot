@@ -1,6 +1,6 @@
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { LootTable } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 

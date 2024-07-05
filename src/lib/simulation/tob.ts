@@ -7,7 +7,7 @@ import { JSONClone, convertLootBanksToItemBanks } from 'oldschooljs/dist/util';
 import { TOBRooms } from '../data/tob';
 import { assert } from '../util/logError';
 
-export interface TeamMember {
+interface TeamMember {
 	id: string;
 	/**
 	 * The rooms they died in.
@@ -15,7 +15,7 @@ export interface TeamMember {
 	deaths: number[];
 }
 
-export interface TheatreOfBloodOptions {
+interface TheatreOfBloodOptions {
 	/**
 	 * Whether or not this raid is in Challenge Mode or not.
 	 */
@@ -87,7 +87,7 @@ const HardModeExtraTable = new LootTable()
 	.tertiary(150, 'Sanguine ornament kit')
 	.tertiary(100, 'Holy ornament kit');
 
-export class TheatreOfBloodClass {
+class TheatreOfBloodClass {
 	nonUniqueLoot(member: ParsedMember, isHardMode: boolean, deaths: number[]) {
 		if (deaths.length === TOBRooms.length) {
 			return new Bank().add('Cabbage');

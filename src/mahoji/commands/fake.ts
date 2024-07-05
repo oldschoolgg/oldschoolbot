@@ -1,8 +1,8 @@
 import type { SKRSContext2D } from '@napi-rs/canvas';
 import { Canvas } from '@napi-rs/canvas';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { randInt } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 
 import { loadAndCacheLocalImage, measureTextWidth } from '../../lib/util/canvasUtil';
 import type { OSBMahojiCommand } from '../lib/util';

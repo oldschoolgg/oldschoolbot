@@ -1,15 +1,16 @@
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { UserStats, activity_type_enum } from '@prisma/client';
 import { Time, sumArr } from 'e';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import type { ItemBank, SkillsScore } from 'oldschooljs/dist/meta/types';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { PerkTier } from '@oldschoolgg/toolkit';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
-import { Emoji, PerkTier } from '../../../lib/constants';
+import { Emoji } from '../../../lib/constants';
 import { calcCLDetails, isCLItem } from '../../../lib/data/Collections';
 import { skillEmoji } from '../../../lib/data/emojis';
 import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';
@@ -24,7 +25,7 @@ import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import type { InfernoOptions } from '../../../lib/types/minions';
 import { SQL_sumOfAllCLItems, formatDuration, getUsername, sanitizeBank, stringMatches } from '../../../lib/util';
-import { barChart, lineChart, pieChart } from '../../../lib/util/chart';
+import { createChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
@@ -117,7 +118,7 @@ WHERE
 	return x;
 }
 
-export async function personalConstructionStats(user: MUser) {
+async function personalConstructionStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'objectID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Construction'
@@ -134,7 +135,7 @@ GROUP BY data->>'objectID';`);
 	return items;
 }
 
-export async function personalFiremakingStats(user: MUser) {
+async function personalFiremakingStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'burnableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Firemaking'
@@ -151,7 +152,7 @@ GROUP BY data->>'burnableID';`);
 	return items;
 }
 
-export async function personalWoodcuttingStats(user: MUser) {
+async function personalWoodcuttingStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'logID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Woodcutting'
@@ -168,7 +169,7 @@ GROUP BY data->>'logID';`);
 	return items;
 }
 
-export async function personalMiningStats(user: MUser) {
+async function personalMiningStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'oreID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Mining'
@@ -185,7 +186,7 @@ GROUP BY data->>'oreID';`);
 	return items;
 }
 
-export async function personalHerbloreStats(user: MUser, stats: UserStats) {
+async function personalHerbloreStats(user: MUser, stats: UserStats) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'mixableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Herblore'
@@ -202,7 +203,7 @@ GROUP BY data->>'mixableID';`);
 	items.add(new Bank(stats.herbs_cleaned_while_farming_bank as ItemBank));
 	return items;
 }
-export async function personalAlchingStats(user: MUser, includeAgilityAlching = true) {
+async function personalAlchingStats(user: MUser, includeAgilityAlching = true) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'itemID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Alching'
@@ -226,7 +227,7 @@ GROUP BY ((data->>'alch')::json)->>'itemID';`);
 	}
 	return items;
 }
-export async function personalSmithingStats(user: MUser) {
+async function personalSmithingStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'smithedBarID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Smithing'
@@ -242,7 +243,7 @@ GROUP BY data->>'smithedBarID';`);
 	}
 	return items;
 }
-export async function personalSmeltingStats(user: MUser) {
+async function personalSmeltingStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'barID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Smelting'
@@ -258,7 +259,7 @@ GROUP BY data->>'barID';`);
 	}
 	return items;
 }
-export async function personalSpellCastStats(user: MUser) {
+async function personalSpellCastStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'spellID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Casting'
@@ -268,7 +269,7 @@ AND completed = true
 GROUP BY data->>'spellID';`);
 	return result.map(i => ({ castable: Castables.find(t => t.id === i.id)!, id: i.id, qty: i.qty }));
 }
-export async function personalCollectingStats(user: MUser) {
+async function personalCollectingStats(user: MUser) {
 	const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'collectableID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'Collecting'
@@ -319,7 +320,14 @@ AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY type;`);
 			const dataPoints: [string, number][] = result.filter(i => i.qty >= 5).map(i => [i.type, i.qty]);
-			return makeResponseForBuffer(await barChart('Your Activity Types', val => `${val} Trips`, dataPoints));
+			return makeResponseForBuffer(
+				await createChart({
+					title: 'Your Activity Types',
+					format: 'kmb',
+					values: dataPoints,
+					type: 'bar'
+				})
+			);
 		}
 	},
 	{
@@ -337,8 +345,14 @@ GROUP BY type;`);
 				.filter(i => i.hours >= 1)
 				.sort((a, b) => Number(b.hours - a.hours))
 				.map(i => [i.type, Number(i.hours)]);
-			const buffer = await barChart('Your Activity Durations', val => `${val} Hrs`, dataPoints);
-			return makeResponseForBuffer(buffer);
+			return makeResponseForBuffer(
+				await createChart({
+					title: 'Your Activity Durations',
+					format: 'kmb',
+					values: dataPoints,
+					type: 'bar'
+				})
+			);
 		}
 	},
 	{
@@ -357,8 +371,14 @@ GROUP BY data->>'monsterID';`);
 				.sort((a, b) => b.kc - a.kc)
 				.slice(0, 30)
 				.map(i => [killableMonsters.find(mon => mon.id === i.id)?.name ?? i.id.toString(), i.kc]);
-			const buffer = await barChart("Your Monster KC's", val => `${val} KC`, dataPoints);
-			return makeResponseForBuffer(buffer);
+			return makeResponseForBuffer(
+				await createChart({
+					title: "Your Monster KC's",
+					format: 'kmb',
+					values: dataPoints,
+					type: 'bar'
+				})
+			);
 		}
 	},
 	{
@@ -374,15 +394,14 @@ GROUP BY data->>'monsterID';`);
 			const everythingElseBank = new Bank();
 			for (const i of everythingElse) everythingElseBank.add(i[0].name, i[1]);
 			dataPoints.push(['Everything else', everythingElseBank.value()]);
-			const buffer = await barChart(
-				'Your Top Bank Value Items',
-				val => {
-					if (typeof val === 'string') return val;
-					return `${toKMB(val)} GP`;
-				},
-				dataPoints
+			return makeResponseForBuffer(
+				await createChart({
+					title: 'Your Top Bank Value Items',
+					format: 'kmb',
+					values: dataPoints,
+					type: 'bar'
+				})
 			);
-			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
@@ -390,15 +409,17 @@ GROUP BY data->>'monsterID';`);
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser): CommandResponse => {
 			const { percent } = calcCLDetails(user);
-			const attachment: Buffer = await pieChart(
-				'Your Personal Collection Log Progress',
-				val => `${val.toFixed(2)}%`,
-				[
-					['Complete Collection Log Items', percent, '#9fdfb2'],
-					['Incomplete Collection Log Items', 100 - percent, '#df9f9f']
-				]
+			return makeResponseForBuffer(
+				await createChart({
+					title: 'Your Personal Collection Log Progress',
+					format: 'percent',
+					values: [
+						['Complete Collection Log Items', percent, '#9fdfb2'],
+						['Incomplete Collection Log Items', 100 - percent, '#df9f9f']
+					],
+					type: 'pie'
+				})
 			);
-			return makeResponseForBuffer(attachment);
 		}
 	},
 	{
@@ -412,12 +433,15 @@ AND completed = true
 AND data->>'deathTime' IS NOT NULL) death_mins
 GROUP BY mins;`;
 			if (result.length === 0) return 'No results.';
-			const buffer = await lineChart(
-				'Global Inferno Death Times',
-				result.map(i => [i.mins.toString(), i.count]),
-				val => `${val} Mins`
+
+			return makeResponseForBuffer(
+				await createChart({
+					title: 'Global Inferno Death Times',
+					format: 'kmb',
+					values: result.map(i => [i.mins.toString(), i.count]),
+					type: 'line'
+				})
 			);
-			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
@@ -432,12 +456,15 @@ AND completed = true
 AND data->>'deathTime' IS NOT NULL) death_mins
 GROUP BY mins;`);
 			if (result.length === 0) return 'No results.';
-			const buffer = await lineChart(
-				'Personal Inferno Death Times',
-				result.map(i => [i.mins.toString(), i.count]),
-				val => `${val} Mins`
+
+			return makeResponseForBuffer(
+				await createChart({
+					title: 'Personal Inferno Death Times',
+					format: 'kmb',
+					values: result.map(i => [i.mins.toString(), i.count]),
+					type: 'line'
+				})
 			);
-			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
@@ -490,12 +517,15 @@ GROUP BY 1;`);
 			if (result.length === 0) {
 				return { content: "You haven't wiped in any Theatre of Blood raids yet." };
 			}
-			const buffer = await barChart(
-				'Personal TOB Deaths',
-				val => `${val} Deaths`,
-				result.map(i => [TOBRooms[i.wiped_room].name, i.count])
+
+			return makeResponseForBuffer(
+				await createChart({
+					title: 'Personal TOB Deaths',
+					format: 'kmb',
+					values: result.map(i => [TOBRooms[i.wiped_room].name, i.count]),
+					type: 'bar'
+				})
 			);
-			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
@@ -508,12 +538,15 @@ WHERE type = 'TheatreOfBlood'
 AND completed = true
 AND data->>'wipedRoom' IS NOT NULL
 GROUP BY 1;`;
-			const buffer = await barChart(
-				'Global TOB Deaths',
-				val => `${val} Deaths`,
-				result.map(i => [TOBRooms[i.wiped_room].name, i.count])
+
+			return makeResponseForBuffer(
+				await createChart({
+					title: 'Global TOB Deaths',
+					format: 'kmb',
+					values: result.map(i => [TOBRooms[i.wiped_room].name, i.count]),
+					type: 'bar'
+				})
 			);
-			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
@@ -532,12 +565,15 @@ WHERE "skills.${skillName}" = 200000000::int;`) as Promise<{ qty: number; skill_
 			)
 				.map(i => i[0])
 				.sort((a, b) => b.qty - a.qty);
-			const buffer = await barChart(
-				'Global 200ms',
-				val => `${val} 200ms`,
-				result.map(i => [i.skill_name, i.qty])
+
+			return makeResponseForBuffer(
+				await createChart({
+					title: 'Global 200ms',
+					format: 'kmb',
+					values: result.map(i => [i.skill_name, i.qty]),
+					type: 'bar'
+				})
 			);
-			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
@@ -551,12 +587,15 @@ AND data->>'plantsName' IS NOT NULL
 AND user_id = ${BigInt(user.id)}
 GROUP BY data->>'plantsName'`);
 			result.sort((a, b) => b.qty - a.qty);
-			const buffer = await barChart(
-				'Personal Farmed Crops',
-				val => `${val} Crops`,
-				result.map(i => [i.plant, i.qty])
+
+			return makeResponseForBuffer(
+				await createChart({
+					title: 'Personal Farmed Crops',
+					format: 'kmb',
+					values: result.map(i => [i.plant, i.qty]),
+					type: 'bar'
+				})
 			);
-			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
@@ -569,12 +608,15 @@ WHERE type = 'Farming'
 AND data->>'plantsName' IS NOT NULL
 GROUP BY data->>'plantsName'`;
 			result.sort((a, b) => b.qty - a.qty);
-			const buffer = await barChart(
-				'Global Farmed Crops',
-				val => `${val} Crops`,
-				result.map(i => [i.plant, i.qty])
+
+			return makeResponseForBuffer(
+				await createChart({
+					title: 'Global Farmed Crops',
+					format: 'kmb',
+					values: result.map(i => [i.plant, i.qty]),
+					type: 'bar'
+				})
 			);
-			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
@@ -1229,7 +1271,12 @@ ${unluckiest
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_total_xp]);
 			return makeResponseForBuffer(
-				await barChart('Your Weekly XP Gains', val => `${toKMB(val)} XP`, dataPoints, true)
+				await createChart({
+					title: 'Your Weekly XP Gains',
+					format: 'kmb',
+					values: dataPoints,
+					type: 'bar'
+				})
 			);
 		}
 	},
@@ -1240,7 +1287,12 @@ ${unluckiest
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_cl_completion_count]);
 			return makeResponseForBuffer(
-				await barChart('Your Weekly CL slot Gains', val => `${toKMB(val)} Slots`, dataPoints, true)
+				await createChart({
+					title: 'Your Weekly CL slot Gains',
+					format: 'kmb',
+					values: dataPoints,
+					type: 'bar'
+				})
 			);
 		}
 	},
@@ -1251,12 +1303,12 @@ ${unluckiest
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_cl_global_rank]);
 			return makeResponseForBuffer(
-				await barChart(
-					'Your Weekly CL leaderboard rank gains',
-					val => `${val > 0 ? `+${val}` : val}`,
-					dataPoints,
-					true
-				)
+				await createChart({
+					title: 'Your Weekly CL leaderboard rank gains',
+					format: 'delta',
+					values: dataPoints,
+					type: 'bar'
+				})
 			);
 		}
 	},
@@ -1267,7 +1319,12 @@ ${unluckiest
 			const result = await fetchHistoricalDataDifferences(user);
 			const dataPoints: [string, number][] = result.map(i => [i.week_start, i.diff_GP]);
 			return makeResponseForBuffer(
-				await barChart('Your Weekly GP gains', val => `${toKMB(val)} GP`, dataPoints, true)
+				await createChart({
+					title: 'Your Weekly GP gains',
+					format: 'delta',
+					values: dataPoints,
+					type: 'bar'
+				})
 			);
 		}
 	}

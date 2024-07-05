@@ -1,8 +1,8 @@
 import type { SKRSContext2D } from '@napi-rs/canvas';
 import { Canvas } from '@napi-rs/canvas';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { calcWhatPercent, objectEntries } from 'e';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import type { Bank } from 'oldschooljs';
 import { Util } from 'oldschooljs';
 

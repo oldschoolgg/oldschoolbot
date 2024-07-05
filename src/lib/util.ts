@@ -2,6 +2,7 @@ import { gzip } from 'node:zlib';
 
 import { createHash } from 'node:crypto';
 import { stripEmojis } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { Stopwatch } from '@sapphire/stopwatch';
 import type {
 	BaseMessageOptions,
@@ -17,17 +18,14 @@ import type {
 	SelectMenuInteraction,
 	TextChannel
 } from 'discord.js';
-import { ComponentType, InteractionType, escapeMarkdown } from 'discord.js';
-import { Time, chunk, notEmpty, objectEntries } from 'e';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import murmurHash from 'murmurhash';
+import { ComponentType, escapeMarkdown } from 'discord.js';
+import { Time, chunk, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
-import { bool, integer, nodeCrypto, real } from 'random-js';
+import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
-import { ClueTiers } from './clues/clueTiers';
 import { BitField, badgesCache, projectiles, usernameCache } from './constants';
 import type { UserStatsDataNeededForCL } from './data/Collections';
 import { getSimilarItems } from './data/similarItems';
@@ -45,7 +43,7 @@ import type {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import getOSItem, { getItem } from './util/getOSItem';
+import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { itemNameFromID } from './util/smallUtils';
 
@@ -97,16 +95,18 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 	return cap;
 }
 
+const randEngine = process.env.TEST ? nativeMath : nodeCrypto;
+
 export function cryptoRand(min: number, max: number) {
-	return integer(min, max)(nodeCrypto);
+	return integer(min, max)(randEngine);
 }
 
 export function randFloat(min: number, max: number) {
-	return real(min, max)(nodeCrypto);
+	return real(min, max)(randEngine);
 }
 
 export function percentChance(percent: number) {
-	return bool(percent / 100)(nodeCrypto);
+	return bool(percent / 100)(randEngine);
 }
 
 export function roll(max: number) {
@@ -147,7 +147,7 @@ export function getSupportGuild(): Guild | null {
 	return guild;
 }
 
-export function calcCombatLevel(skills: Skills) {
+function calcCombatLevel(skills: Skills) {
 	const defence = skills.defence ? convertXPtoLVL(skills.defence) : 1;
 	const ranged = skills.ranged ? convertXPtoLVL(skills.ranged) : 1;
 	const hitpoints = skills.hitpoints ? convertXPtoLVL(skills.hitpoints) : 1;
@@ -277,17 +277,6 @@ export async function makePaginatedMessage(channel: TextChannel, pages: Paginate
 
 export function convertPercentChance(percent: number) {
 	return (1 / (percent / 100)).toFixed(1);
-}
-
-export function murMurHashChance(input: string, percent: number) {
-	const hash = murmurHash.v3(input) % 1e4;
-	return hash < percent * 100;
-}
-
-const getMurKey = (input: string | number, sortHash: string) => `${input.toString()}-${sortHash}`;
-
-export function murMurSort<T extends string | number>(arr: T[], sortHash: string) {
-	return [...arr].sort((a, b) => murmurHash.v3(getMurKey(b, sortHash)) - murmurHash.v3(getMurKey(a, sortHash)));
 }
 
 export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {
@@ -425,7 +414,7 @@ export function skillingPetDropRate(
 	return { petDropRate: dropRate };
 }
 
-export function getBadges(user: MUser | string | bigint) {
+function getBadges(user: MUser | string | bigint) {
 	if (typeof user === 'string' || typeof user === 'bigint') {
 		return badgesCache.get(user.toString()) ?? '';
 	}
@@ -476,36 +465,8 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	debugLog(`Finished ${name} in ${stopwatch.toString()}`);
 }
 
-export function getInteractionTypeName(type: InteractionType) {
-	return {
-		[InteractionType.Ping]: 'Ping',
-		[InteractionType.ApplicationCommand]: 'ApplicationCommand',
-		[InteractionType.MessageComponent]: 'MessageComponent',
-		[InteractionType.ApplicationCommandAutocomplete]: 'ApplicationCommandAutocomplete',
-		[InteractionType.ModalSubmit]: 'ModalSubmit'
-	}[type];
-}
-
 export function isModOrAdmin(user: MUser) {
 	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
-}
-
-export async function calcClueScores(user: MUser) {
-	const stats = await user.fetchStats({ openable_scores: true });
-	const openableBank = new Bank(stats.openable_scores as ItemBank);
-	return openableBank
-		.items()
-		.map(entry => {
-			const tier = ClueTiers.find(i => i.id === entry[0].id);
-			if (!tier) return;
-			return {
-				tier,
-				casket: getOSItem(tier.id),
-				clueScroll: getOSItem(tier.scrollID),
-				opened: openableBank.amount(tier.id)
-			};
-		})
-		.filter(notEmpty);
 }
 
 export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededForCL> {

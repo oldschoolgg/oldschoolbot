@@ -1,6 +1,6 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 
 import type { TwitcherGloves } from '../../lib/constants';
 import { TWITCHERS_GLOVES } from '../../lib/constants';
@@ -14,7 +14,7 @@ import { minionName } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
 import type { OSBMahojiCommand } from '../lib/util';
 
-export const axes = [
+const axes = [
 	{
 		id: itemID('Crystal axe'),
 		multiplier: 4,

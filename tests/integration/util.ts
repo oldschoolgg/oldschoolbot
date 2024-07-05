@@ -1,19 +1,20 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { randInt, shuffleArr, uniqueArr } from 'e';
-import type { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
+import { integer, nodeCrypto } from 'random-js';
+import { vi } from 'vitest';
 import { MUserClass } from '../../src/lib/MUser';
 import { processPendingActivities } from '../../src/lib/Task';
 import { globalConfig } from '../../src/lib/constants';
 import type { ItemBank } from '../../src/lib/types';
-import { cryptoRand } from '../../src/lib/util';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import type { ClientStorage, User, UserStats } from '.prisma/client';
 
-export const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> => ({
+const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> => ({
 	userID,
 	guildID: '342983479501389826',
 	member: {} as any,
@@ -25,7 +26,8 @@ export const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'opti
 		editReply: () => Promise.resolve(),
 		followUp: () => Promise.resolve()
 	} as any,
-	client: {} as any
+	client: {} as any,
+	djsClient: {} as any
 });
 
 export class TestUser extends MUserClass {
@@ -70,7 +72,6 @@ export class TestUser extends MUserClass {
 
 	async runCommand(command: OSBMahojiCommand, options: object = {}) {
 		const result = await command.run({ ...commandRunOptions(this.id), options });
-		await this.sync();
 		return result;
 	}
 
@@ -113,25 +114,43 @@ export class TestUser extends MUserClass {
 
 const idsUsed = new Set<string>();
 
-export function mockedId() {
-	return cryptoRand(1_000_000_000_000, 5_000_000_000_000).toString();
+export function unMockedCyptoRand(min: number, max: number) {
+	return integer(min, max)(nodeCrypto);
 }
 
-export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
+export function mockedId() {
+	return unMockedCyptoRand(1_000_000_000_000, 5_000_000_000_000).toString();
+}
+
+export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
 	const id = userData?.id ?? mockedId();
 	if (idsUsed.has(id)) {
 		throw new Error(`ID ${id} has already been used`);
 	}
 	idsUsed.add(id);
+
+	const bank = _bank ? _bank.clone() : null;
+	let GP = userData.GP ? Number(userData.GP) : undefined;
+	if (bank) {
+		if (GP) {
+			GP += bank.amount('Coins');
+		} else {
+			GP = bank.amount('Coins');
+		}
+		bank.remove('Coins', GP);
+	}
+
 	const user = await global.prisma!.user.upsert({
 		create: {
 			id,
 			...userData,
-			bank: bank?.bank
+			bank: bank?.bank,
+			GP: GP ?? undefined
 		},
 		update: {
 			...userData,
-			bank: bank?.bank
+			bank: bank?.bank,
+			GP
 		},
 		where: {
 			id
@@ -193,4 +212,10 @@ export async function mockClient() {
 
 if (uniqueArr([mockedId(), mockedId(), mockedId()]).length !== 3) {
 	throw new Error('mockedId is broken');
+}
+
+const originalMathRandom = Math.random;
+export function mockMathRandom(value: number) {
+	vi.spyOn(Math, 'random').mockImplementation(() => value);
+	return () => (Math.random = originalMathRandom);
 }

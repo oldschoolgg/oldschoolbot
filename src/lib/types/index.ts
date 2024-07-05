@@ -4,17 +4,6 @@ export interface ItemBank {
 	[key: string]: number;
 }
 
-export interface Patron {
-	patreonID: string;
-	discordID?: string;
-	entitledTiers: string[];
-	lastChargeDate: string;
-	lastChargeStatus: string;
-	lifeTimeSupportCents: number;
-	patronStatus: string;
-	pledgeRelationshipStart: string;
-}
-
 type ResolvableItem = number | string;
 export type ArrayItemsResolvable = (ResolvableItem | ResolvableItem[])[];
 export type ArrayItemsResolved = (number | number[])[];

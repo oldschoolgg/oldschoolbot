@@ -8,7 +8,7 @@ import { prisma } from '../settings/prisma';
 import { channelIsSendable } from '../util';
 import { logError } from './logError';
 
-export async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {
+async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {
 	const channel = globalClient.channels.cache.get(channelID);
 	if (!channel || channel instanceof PartialGroupDMChannel) return undefined;
 	if (channel.isDMBased()) return channel;

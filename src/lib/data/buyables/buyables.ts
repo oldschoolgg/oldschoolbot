@@ -1127,4 +1127,3 @@ for (const cape of allTeamCapes) {
 }
 
 export default Buyables;
-export { Buyables };

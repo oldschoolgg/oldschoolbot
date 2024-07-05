@@ -11,7 +11,7 @@ interface Usable {
 	items: Item[];
 	run: (user: MUser) => Promise<string>;
 }
-export const usables: Usable[] = [];
+const usables: Usable[] = [];
 
 interface UsableUnlock {
 	item: Item;

@@ -1,9 +1,9 @@
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { notEmpty, randArrItem } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
-import type { MahojiUserOption } from 'mahoji/dist/lib/types';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import {

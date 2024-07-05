@@ -22,19 +22,21 @@ jobs:
         run: sudo apt-get install -y build-essential libpq-dev
 
       - name: Checkout Project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+      - run: corepack enable
+      - run: corepack install
       - name: Use Node.js ${{ matrix.node_version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_version }}
           cache: yarn
       - name: Restore CI Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
-          key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles(matrix.os == 'windows-latest' && '**\yarn.lock' || '**/yarn.lock') }}
+          key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/yarn.lock') }}
       - name: Install Dependencies
-        run: yarn --frozen-lockfile
+        run: yarn --immutable
       - name: Copy Configuration
         run: |
           pushd src &&

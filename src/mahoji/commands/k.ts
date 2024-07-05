@@ -1,5 +1,5 @@
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import type { PvMMethod } from '../../lib/constants';
 import { NEX_ID, PVM_METHODS, ZALCANO_ID } from '../../lib/constants';

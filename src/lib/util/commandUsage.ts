@@ -1,6 +1,6 @@
+import type { CommandOptions } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { command_usage_status } from '@prisma/client';
-import type { CommandOptions } from 'mahoji/dist/lib/types';
 
 import { getCommandArgs } from '../../mahoji/lib/util';
 

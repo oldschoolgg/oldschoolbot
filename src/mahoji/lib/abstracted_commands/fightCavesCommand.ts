@@ -1,5 +1,5 @@
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { Time, calcWhatPercent, percentChance, randInt, reduceNumByPercent } from 'e';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 import { itemID } from 'oldschooljs/dist/util';

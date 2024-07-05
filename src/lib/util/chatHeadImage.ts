@@ -15,7 +15,7 @@ const antiSantaChatHead = loadAndCacheLocalImage('./src/lib/resources/images/ant
 const bunnyChatHead = loadAndCacheLocalImage('./src/lib/resources/images/bunny.png');
 const minimusHead = loadAndCacheLocalImage('./src/lib/resources/images/minimus.png');
 
-export const chatHeads = {
+const chatHeads = {
 	mejJal: mejJalChatHead,
 	jane: janeChatHead,
 	santa: santaChatHead,

@@ -1,15 +1,14 @@
 import type { Prisma } from '@prisma/client';
 import { isObject } from 'e';
-import type { ICommand, MahojiClient } from 'mahoji';
-import type { CommandOptions, MahojiUserOption } from 'mahoji/dist/lib/types';
 
+import type { CommandOptions, ICommand, MahojiClient, MahojiUserOption } from '@oldschoolgg/toolkit';
 import type { AbstractCommand, AbstractCommandAttributes } from './inhibitors';
 
 export interface OSBMahojiCommand extends ICommand {
 	attributes?: Omit<AbstractCommandAttributes, 'description'>;
 }
 
-export function isMahojiUserOption(data: any): data is MahojiUserOption {
+function isMahojiUserOption(data: any): data is MahojiUserOption {
 	return 'user' in data && 'id' in data.user;
 }
 
@@ -70,5 +69,5 @@ export function getCommandArgs(
 }
 
 export function allAbstractCommands(mahojiClient: MahojiClient): AbstractCommand[] {
-	return mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand);
+	return Array.from(mahojiClient.commands.values()).map(convertMahojiCommandToAbstractCommand);
 }

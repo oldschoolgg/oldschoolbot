@@ -25,13 +25,13 @@ const peakFactor = [
 ];
 
 // Returns a value 0 - 100 representing the % of 10 hours spent in pk-able wilderness.
-export async function getPkEvasionExp(user: MUser) {
+async function getPkEvasionExp(user: MUser) {
 	const maxBoostDuration = Time.Hour * 10;
 	const stats: { pk_evasion_exp: number } = await user.fetchStats({ pk_evasion_exp: true });
 	return Math.min(100, (stats.pk_evasion_exp / maxBoostDuration) * 100);
 }
 
-export async function getWildEvasionPercent(user: MUser) {
+async function getWildEvasionPercent(user: MUser) {
 	const maxReductionPercent = 75;
 	return randomVariation(calcPercentOfNum(await getPkEvasionExp(user), maxReductionPercent), 10);
 }

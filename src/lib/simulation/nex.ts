@@ -30,7 +30,7 @@ const minStats: Skills = {
 	prayer: 74
 };
 
-export function nexGearStats(user: MUser) {
+function nexGearStats(user: MUser) {
 	const { gear } = user;
 	const offence = calcWhatPercent(gear.range.stats.attack_ranged, 252);
 	const defence = calcWhatPercent(gear.range.stats.defence_magic, 150);
@@ -128,7 +128,7 @@ export interface NexContext {
 	team: { id: string; contribution: number; deaths: number[]; ghost?: true }[];
 }
 
-export const purpleNexItems = resolveItems([
+const purpleNexItems = resolveItems([
 	'Nexling',
 	'Ancient hilt',
 	'Nihil horn',

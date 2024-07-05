@@ -1,7 +1,7 @@
 import PromiseQueue from 'p-queue';
 
-export const userQueues: Map<string, PromiseQueue> = new Map();
-export function getUserUpdateQueue(userID: string) {
+const userQueues: Map<string, PromiseQueue> = new Map();
+function getUserUpdateQueue(userID: string) {
 	const currentQueue = userQueues.get(userID);
 	if (!currentQueue) {
 		const queue = new PromiseQueue({ concurrency: 1 });

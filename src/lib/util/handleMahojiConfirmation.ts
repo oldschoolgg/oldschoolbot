@@ -6,7 +6,7 @@ import { Time, noOp } from 'e';
 import { SILENT_ERROR } from '../constants';
 import { deferInteraction, interactionReply } from './interactionReply';
 
-async function silentButtonAck(interaction: ButtonInteraction) {
+export async function silentButtonAck(interaction: ButtonInteraction) {
 	return globalClient.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
 		body: {
 			type: InteractionResponseType.DeferredMessageUpdate

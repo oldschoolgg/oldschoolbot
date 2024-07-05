@@ -1,7 +1,7 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
-import type { CommandRunOptions } from 'mahoji';
-import { ApplicationCommandOptionType } from 'mahoji';
 import { Bank, Monsters } from 'oldschooljs';
 
 import TokkulShopItems from '../../lib/data/buyables/tokkulBuyables';

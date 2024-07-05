@@ -49,7 +49,7 @@ interface KillArgs {
 	totalRuns: number;
 }
 
-export interface Finishable {
+interface Finishable {
 	name: string;
 	aliases?: string[];
 	cl: number[];

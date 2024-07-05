@@ -1,9 +1,10 @@
 import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel, User } from 'discord.js';
 import { ComponentType, PermissionsBitField } from 'discord.js';
 
+import { PerkTier } from '@oldschoolgg/toolkit';
 import { OWNER_IDS, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
-import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, PerkTier, minionBuyButton } from '../../lib/constants';
+import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, minionBuyButton } from '../../lib/constants';
 import { perkTierCache, syncPerkTierOfUser } from '../../lib/perkTiers';
 import type { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';

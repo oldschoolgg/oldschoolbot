@@ -5,9 +5,8 @@ import { describe, expect, test } from 'vitest';
 import { runRolesTask } from '../../src/lib/rolesTask';
 import type { MinigameName } from '../../src/lib/settings/minigames';
 import { Minigames } from '../../src/lib/settings/minigames';
-import { cryptoRand } from '../../src/lib/util';
 import { userStatsBankUpdate } from '../../src/mahoji/mahojiSettings';
-import { createTestUser, mockedId } from './util';
+import { createTestUser, mockedId, unMockedCyptoRand } from './util';
 
 describe('Roles Task', async () => {
 	test('Should not throw', async () => {
@@ -39,7 +38,7 @@ describe('Roles Task', async () => {
 				message_id: mockedId(),
 				reaction_id: mockedId(),
 				users_entered: [],
-				id: cryptoRand(1, 10_000_000),
+				id: unMockedCyptoRand(1, 10_000_000),
 				completed: false,
 				duration: 10_000
 			}

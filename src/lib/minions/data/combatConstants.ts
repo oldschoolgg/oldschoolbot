@@ -13,7 +13,7 @@ export const xpPercentToCannonM = 70;
 // Amount to vary cannon vs regular XP
 export const xpCannonVaryPercent = 10;
 
-export interface CombatOptionsDesc {
+interface CombatOptionsDesc {
 	id: number;
 	name: string;
 	desc: string;

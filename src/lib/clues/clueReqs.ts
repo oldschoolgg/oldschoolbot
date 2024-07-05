@@ -4,7 +4,7 @@ import type { Skills } from '../types';
 import type { ClueTier } from './clueTiers';
 import { allStashUnitTiers } from './stashUnits';
 
-export interface ClueReq {
+interface ClueReq {
 	itemCost?: Bank;
 	skillReqs?: Partial<Skills>;
 	stashUnitID?: number;

@@ -24,7 +24,7 @@ import type {
 import { Time, deepClone, randArrItem, randInt, shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
-import { expect, test, vi } from 'vitest';
+import { beforeAll, expect, test, vi } from 'vitest';
 
 import { processPendingActivities } from '../../src/lib/Task';
 import { BitField } from '../../src/lib/constants';
@@ -63,7 +63,7 @@ import type { BotItemSell, GEListing, StashUnit } from '.prisma/client';
 
 interface TestCommand {
 	name: string;
-	cmd: [OSBMahojiCommand, Object] | ((user: TestUser) => Promise<any>);
+	cmd: [OSBMahojiCommand, object] | ((user: TestUser) => Promise<any>);
 	activity?: boolean;
 	priority?: boolean;
 }
@@ -745,7 +745,7 @@ const allTableCommands: TestCommand[] = [
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
 
-			await user.update({ [`gear_${setup}`]: equippedGear });
+			await user.update({ [`gear_${setup}`]: equippedGear as Prisma.InputJsonValue });
 		}
 	},
 	{
@@ -755,8 +755,8 @@ const allTableCommands: TestCommand[] = [
 			const items = 'Bandos chestplate, Bandos tassets, Berserker ring, Ghrazi rapier';
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
-
-			await user.update({ [`gear_${setup}`]: equippedGear });
+			if (!equippedGear) throw new Error('Equipped gear is undefined');
+			await user.update({ [`gear_${setup}`]: equippedGear as Prisma.InputJsonValue });
 		}
 	},
 	{
@@ -1190,7 +1190,7 @@ async function buildBaseUser(userId: string) {
 	const user = await createTestUser(startBank, userData);
 	return user;
 }
-await mockClient();
+
 vi.doMock('../../src/lib/util', async () => {
 	const actual: any = await vi.importActual('../../src/lib/util');
 	return {
@@ -1268,6 +1268,11 @@ test.concurrent('test preventing a double (clobber) robochimp migration (two bot
 	// Verify migrated id is correct
 	expect(newDestData.migratedUserId).toEqual(BigInt(sourceData.id));
 });
+
+beforeAll(async () => {
+	await mockClient();
+});
+
 test.concurrent('test migrating existing user to target with no records', async () => {
 	const sourceUser = await buildBaseUser(mockedId());
 	await runAllTestCommandsOnUser(sourceUser);

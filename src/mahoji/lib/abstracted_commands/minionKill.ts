@@ -1,4 +1,3 @@
-import type { ChartConfiguration } from 'chart.js';
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 import { bold } from 'discord.js';
 import {
@@ -53,7 +52,6 @@ import { maxOffenceStats } from '../../../lib/structures/Gear';
 import type { Peak } from '../../../lib/tickers';
 import type { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
-	calculateSimpleMonsterDeathChance,
 	calculateTripConsumableCost,
 	checkRangeGearWeapon,
 	convertAttackStyleToGearSetup,
@@ -71,7 +69,6 @@ import {
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { calcWildyPKChance, increaseWildEvasionXp } from '../../../lib/util/calcWildyPkChance';
-import { generateChart } from '../../../lib/util/chart';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -1191,55 +1188,6 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 	const response: InteractionReplyOptions = {
 		content: str.join('\n')
 	};
-
-	if (monster.deathProps) {
-		const maxKillCount = 200;
-		const values: [string, number][] = [];
-		for (let currentKC = 0; currentKC <= maxKillCount; currentKC += 5) {
-			const deathChancePercent = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC });
-			values.push([currentKC.toString(), round(deathChancePercent, 1)]);
-		}
-		const options: ChartConfiguration = {
-			type: 'line',
-			data: {
-				labels: values.map(i => `${i[0]}KC`),
-				datasets: [
-					{
-						data: values.map(i => i[1])
-					}
-				]
-			},
-			options: {
-				plugins: {
-					title: { display: true, text: 'Death Chance vs Kill Count' },
-					datalabels: {
-						font: {
-							weight: 'bolder'
-						},
-						formatter(value) {
-							return `${value}%`;
-						}
-					},
-					legend: {
-						display: false
-					}
-				},
-				scales: {
-					y: {
-						min: 1,
-						max: 100,
-						ticks: {
-							callback(value) {
-								return `${value}%`;
-							}
-						}
-					}
-				}
-			}
-		};
-		const chart = await generateChart(options);
-		response.files = [chart];
-	}
 
 	return response;
 }

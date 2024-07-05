@@ -8,7 +8,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export const gloriesInventorySize = 26;
-export const gloriesInventoryTime = Time.Minute * 2.2;
+const gloriesInventoryTime = Time.Minute * 2.2;
 
 export async function chargeGloriesCommand(user: MUser, channelID: string, quantity: number | undefined) {
 	const userBank = user.bank;

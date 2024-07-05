@@ -78,7 +78,7 @@ export function parseStringBank(str = '', inputBank?: Bank, noDuplicateItems?: t
 	return items;
 }
 
-export function parseBankFromFlags({
+function parseBankFromFlags({
 	bank,
 	flags,
 	excludeItems,
