@@ -28,6 +28,7 @@ describe('Sacrifice Command', async () => {
 	test('Successful', async () => {
 		await user.addItemsToBank({ items: new Bank().add('Trout').add('Coal', 10) });
 		const result = await user.runCommand(sacrificeCommand, { items: '1 trout, 10 coal' });
+		await user.sync();
 		expect(result).toEqual(
 			'You sacrificed 10x Coal, 1x Trout, with a value of 1,590gp (1.59k). Your total amount sacrificed is now: 3,180. '
 		);

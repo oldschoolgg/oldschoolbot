@@ -130,9 +130,9 @@ export async function createTestUser(_bank?: Bank, userData: Partial<Prisma.User
 	idsUsed.add(id);
 
 	const bank = _bank ? _bank.clone() : null;
-	let GP = userData.GP ?? 0;
+	let GP = Number(userData.GP) ?? 0;
 	if (bank) {
-		GP = bank.amount('Coins');
+		GP += bank.amount('Coins');
 		bank.remove('Coins', GP);
 	}
 
