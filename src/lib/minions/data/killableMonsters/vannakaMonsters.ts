@@ -677,7 +677,9 @@ export const vannakaMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash],
 		canCannon: true,
 		revsWeaponBoost: true,
-		wildySlayerCave: true
+		wildySlayerCave: true,
+		pkActivityRating: 2,
+		pkBaseDeathChance: 4
 	},
 	{
 		id: Monsters.HarpieBugSwarm.id,
