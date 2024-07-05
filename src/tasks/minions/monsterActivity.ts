@@ -256,7 +256,7 @@ export const monsterTask: MinionTask = {
 			loot.add(superiorTable?.kill(newSuperiorCount));
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
-			if (e.slayerMasters.includes(usersTask.currentTask?.slayer_master_id === 8)) loot.add('Brimstone key', newSuperiorCount);
+			if (usersTask.currentTask?.slayer_master_id === 8) loot.add('Brimstone key', newSuperiorCount);
 		}
 
 		// Hill giant key wildy buff
