@@ -56,7 +56,8 @@ import type {
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
-	WoodcuttingActivityTaskOptions
+	WoodcuttingActivityTaskOptions,
+	ZalcanoActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
@@ -424,8 +425,9 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.Zalcano]: {
 		commandName: 'k',
-		args: () => ({
-			name: 'zalcano'
+		args: (data: ZalcanoActivityTaskOptions) => ({
+			name: 'zalcano',
+			quantity: data.quantity
 		})
 	},
 	[activity_type_enum.Tempoross]: {
