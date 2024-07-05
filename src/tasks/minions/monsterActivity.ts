@@ -256,6 +256,7 @@ export const monsterTask: MinionTask = {
 			loot.add(superiorTable?.kill(newSuperiorCount));
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
+			const usersTask = await getUsersCurrentSlayerInfo(user.id);
 			if (usersTask.currentTask?.slayer_master_id === 8) loot.add('Brimstone key', newSuperiorCount);
 		}
 
