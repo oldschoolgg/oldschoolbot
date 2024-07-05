@@ -26,19 +26,6 @@ async function syncLinkedAccountPerks(user: MUser) {
 	allUsers.map(u => new MUserClass(u as User));
 }
 
-/**
- * 
- * 
-
-
-TODO
-
-
-
-
-
-
- */
 export async function syncLinkedAccounts() {
 	const users = await prisma.user.findMany({
 		where: {
