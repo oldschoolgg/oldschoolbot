@@ -4,6 +4,7 @@ import deepEqual from 'fast-deep-equal';
 import { Bank, Monsters } from 'oldschooljs';
 import { describe, test } from 'vitest';
 
+import { MUserClass } from '../../src/lib/MUser';
 import { drawChestLootImage } from '../../src/lib/bankImage';
 import { clImageGenerator } from '../../src/lib/collectionLogTask';
 import { BOT_TYPE } from '../../src/lib/constants';
@@ -14,7 +15,7 @@ import { makeBankImage } from '../../src/lib/util/makeBankImage';
 import { mockMUser } from './utils';
 
 describe('Images', () => {
-	test.concurrent.skip('Chat Heads', async () => {
+	test.concurrent('Chat Heads', async () => {
 		const result = await mahojiChatHead({
 			content:
 				'Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test',
@@ -23,7 +24,12 @@ describe('Images', () => {
 		await writeFile(`tests/unit/snapshots/chatHead.${BOT_TYPE}.png`, result.files[0].attachment);
 	});
 
-	test.concurrent.skip('Collection Log', async () => {
+	test.concurrent('Collection Log', async () => {
+		// @ts-expect-error
+		global.prisma = { userStats: { upsert: () => {} } };
+		MUserClass.prototype.fetchStats = async () => {
+			return { monster_scores: {} } as any;
+		};
 		const result: any = await clImageGenerator.generateLogImage({
 			user: mockMUser({ cl: new Bank().add('Harmonised orb') }),
 			collection: 'nightmare',
@@ -38,11 +44,11 @@ describe('Images', () => {
 				highGambles: 1,
 				gotrRiftSearches: 1
 			}
-		});
+		} as any);
 		await writeFile(`tests/unit/snapshots/cl.${BOT_TYPE}.png`, result.files[0].attachment);
 	});
 
-	test.concurrent.skip('Bank Image', async () => {
+	test.concurrent('Bank Image', async () => {
 		const bank = new Bank();
 		for (const item of [...Monsters.Cow.allItems]) {
 			bank.add(item);
@@ -56,7 +62,7 @@ describe('Images', () => {
 		await writeFile(`tests/unit/snapshots/bank.${BOT_TYPE}.png`, result.file.attachment);
 	});
 
-	test.concurrent.skip('POH Image', async () => {
+	test.concurrent('POH Image', async () => {
 		const result = await pohImageGenerator.run({
 			prayer_altar: 13_197,
 			throne: 13_667,
@@ -119,7 +125,7 @@ describe('Images', () => {
 		}
 	);
 
-	test.concurrent.skip('TOA Image', async () => {
+	test.concurrent('TOA Image', async () => {
 		const image = await drawChestLootImage({
 			entries: [
 				{
@@ -140,7 +146,7 @@ describe('Images', () => {
 		await writeFile(`tests/unit/snapshots/toa.${BOT_TYPE}.png`, image.attachment);
 	});
 
-	test.concurrent.skip('COX Image', async () => {
+	test.concurrent('COX Image', async () => {
 		const image = await drawChestLootImage({
 			entries: [
 				{

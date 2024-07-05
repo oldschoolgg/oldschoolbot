@@ -26,7 +26,8 @@ const commandRunOptions = (userID: string): Omit<CommandRunOptions, 'options'> =
 		editReply: () => Promise.resolve(),
 		followUp: () => Promise.resolve()
 	} as any,
-	client: {} as any
+	client: {} as any,
+	djsClient: {} as any
 });
 
 export class TestUser extends MUserClass {

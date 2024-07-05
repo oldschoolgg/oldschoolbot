@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { gambleCommand } from '../../../src/mahoji/commands/gamble';
-import { randomMock } from '../setup';
 import { createTestUser, mockClient, mockMathRandom } from '../util';
 
 vi.mock('../../../src/lib/util', async () => {

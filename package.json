@@ -7,7 +7,7 @@
 		"build": "tsx ./src/scripts/build.ts",
 		"wipedist": "rimraf \"dist/\"",
 		"start": "yarn build && concurrently \"tsc -w -p src\" \"node --enable-source-maps dist/\"",
-		"test": "concurrently --timings --raw --kill-others-on-fail \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\"",
+		"test": "concurrently --timings --raw --kill-others-on-fail \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\" \"tsc -p tests/integration\" \"tsc -p tests/unit\"",
 		"test:lint": "biome check --diagnostic-level=error",
 		"test:unit": "vitest run --coverage --config vitest.unit.config.mts",
 		"dev": "yarn wipedist && tsc -w -p src",

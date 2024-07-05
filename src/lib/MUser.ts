@@ -33,7 +33,6 @@ import { getUsersPerkTier, syncPerkTierOfUser } from './perkTiers';
 import { roboChimpUserFetch } from './roboChimp';
 import type { MinigameScore } from './settings/minigames';
 import { Minigames, getMinigameEntity } from './settings/minigames';
-import { prisma } from './settings/prisma';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
@@ -53,7 +52,7 @@ import type { TransactItemsArgs } from './util/transactItemsFromBank';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
-		const newUser = await prisma.user.update({
+		const newUser = await global.prisma.user.update({
 			data,
 			where: {
 				id: user.toString()

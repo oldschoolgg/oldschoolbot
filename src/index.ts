@@ -36,7 +36,8 @@ debugLog(`Starting... Git Hash ${META_CONSTANTS.GIT_HASH}`);
 
 if (SENTRY_DSN) {
 	Sentry.init({
-		dsn: SENTRY_DSN
+		dsn: SENTRY_DSN,
+		enableTracing: false
 	});
 }
 

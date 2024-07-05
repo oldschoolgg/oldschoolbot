@@ -52,7 +52,6 @@ import { maxOffenceStats } from '../../../lib/structures/Gear';
 import type { Peak } from '../../../lib/tickers';
 import type { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
-	calculateSimpleMonsterDeathChance,
 	calculateTripConsumableCost,
 	checkRangeGearWeapon,
 	convertAttackStyleToGearSetup,
@@ -1184,15 +1183,6 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 	const response: InteractionReplyOptions = {
 		content: str.join('\n')
 	};
-
-	if (monster.deathProps) {
-		const maxKillCount = 200;
-		const values: [string, number][] = [];
-		for (let currentKC = 0; currentKC <= maxKillCount; currentKC += 5) {
-			const deathChancePercent = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC });
-			values.push([currentKC.toString(), round(deathChancePercent, 1)]);
-		}
-	}
 
 	return response;
 }

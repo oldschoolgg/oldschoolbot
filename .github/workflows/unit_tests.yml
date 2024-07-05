@@ -42,4 +42,4 @@ jobs:
       - name: Build
         run: yarn build --clean
       - name: Test
-        run: yarn test:unit
+        run: yarn test

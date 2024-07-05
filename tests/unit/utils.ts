@@ -86,20 +86,8 @@ const mockUser = (overrides?: MockUserArgs): User => {
 	return r;
 };
 
-class TestMUser extends MUserClass {
-	// @ts-expect-error Mock
-	public readonly rawUsername = 'test';
-
-	// @ts-expect-error Mock
-	async fetchStats() {
-		return {
-			monster_scores: {}
-		};
-	}
-}
-
 export const mockMUser = (overrides?: MockUserArgs) => {
-	const user = new TestMUser(mockUser(overrides));
+	const user = new MUserClass(mockUser(overrides));
 	return user;
 };
 
@@ -124,7 +112,7 @@ export async function testRunCmd({
 	if (mockedUser.GP === null || Number.isNaN(mockedUser.GP) || mockedUser.GP < 0 || mockedUser.GP === undefined) {
 		throw new Error(`Invalid GP for user ${hash}`);
 	}
-	mockUserMap.set(hash, mockedUser);
+	mockUserMap.set(hash, mockedUser as any as MUser);
 	const options: any = {
 		user: mockedUser.user,
 		channelID: '1234',

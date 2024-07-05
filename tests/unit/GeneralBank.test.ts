@@ -8,7 +8,7 @@ describe('GeneralBank', () => {
 	let validator: (key: string, value: number, bank: Record<string, number>) => void;
 
 	beforeEach(() => {
-		validator = (key, value, bank) => {
+		validator = key => {
 			if (!key.startsWith('F')) throw new Error(`Key ${key} does not start with F`);
 		};
 		bank = new GeneralBank<string>({ validator });
@@ -98,7 +98,7 @@ describe('GeneralBank 2', () => {
 
 	it('handles complex validators', () => {
 		const complexBank = new GeneralBank<string>({
-			validator: (key, value, bank) => {
+			validator: (_key, value, _bank) => {
 				if (value > 1000) throw new Error('Values above 1000 are not allowed');
 			}
 		});
