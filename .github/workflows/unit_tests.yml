@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout Project
         uses: actions/checkout@v4
+      - run: corepack enable
+      - run: corepack install
       - name: Use Node.js ${{ matrix.node_version }}
         uses: actions/setup-node@v4
         with:
@@ -30,7 +32,6 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/yarn.lock') }}
-      - run: corepack enable
       - name: Install Dependencies
         run: yarn --immutable
       - name: Copy Configuration
