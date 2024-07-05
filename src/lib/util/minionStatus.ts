@@ -323,7 +323,7 @@ export function minionStatus(user: MUser) {
 		}
 		case 'Wintertodt': {
 			const data = currentTask as ActivityTaskOptionsWithQuantity;
-			return `${name} is currently fighting Wintertodt  ${data.quantity}x times. ${formattedDuration}`;
+			return `${name} is currently fighting Wintertodt ${data.quantity}x times. ${formattedDuration}`;
 		}
 		case 'Tempoross': {
 			return `${name} is currently fighting Tempoross. ${formattedDuration}`;
