@@ -1,5 +1,3 @@
-import './no-prisma';
-
 import { execSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import { stringMatches } from '@oldschoolgg/toolkit';
