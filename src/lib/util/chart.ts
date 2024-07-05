@@ -1,4 +1,3 @@
-import type { ApexOptions } from 'apexcharts';
 import deepmerge from 'deepmerge';
 import fetch from 'node-fetch';
 
@@ -65,7 +64,7 @@ export function createApexChartConfig({ type, title, values, format }: ChartOpti
 
 	const formatter = (formatList.find(f => f.name === format) ?? formatList[0]).format;
 
-	let config: ApexOptions = {
+	let config = {
 		chart: { type },
 		title: { text: title },
 		series: [
@@ -84,10 +83,8 @@ export function createApexChartConfig({ type, title, values, format }: ChartOpti
 			style: {
 				colors: ['#000']
 			},
-			// @ts-expect-error
 			formatter: 'FORMATTER'
 		},
-		// @ts-expect-error
 		yaxis: {
 			labels: {
 				formatter: 'FORMATTER'
