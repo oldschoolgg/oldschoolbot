@@ -1251,7 +1251,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		combat_achievements?: {};
 		mastery?: {};
 	}>) => {
-		deferInteraction(interaction);
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		const {
 			opens,
