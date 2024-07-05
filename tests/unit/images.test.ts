@@ -1,8 +1,8 @@
 import { readFile, writeFile } from 'node:fs/promises';
+import { Time } from 'e';
 import deepEqual from 'fast-deep-equal';
 import { Bank, Monsters } from 'oldschooljs';
 import { describe, test } from 'vitest';
-import { Time } from 'e';
 
 import { drawChestLootImage } from '../../src/lib/bankImage';
 import { clImageGenerator } from '../../src/lib/collectionLogTask';

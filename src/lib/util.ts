@@ -21,7 +21,7 @@ import type {
 import { ComponentType, escapeMarkdown } from 'discord.js';
 import { Time, chunk, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
-import { bool, integer, nodeCrypto, real } from 'random-js';
+import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import type { MUserClass } from './MUser';
@@ -95,16 +95,18 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 	return cap;
 }
 
+const randEngine = process.env.TEST ? nativeMath : nodeCrypto;
+
 export function cryptoRand(min: number, max: number) {
-	return integer(min, max)(nodeCrypto);
+	return integer(min, max)(randEngine);
 }
 
 export function randFloat(min: number, max: number) {
-	return real(min, max)(nodeCrypto);
+	return real(min, max)(randEngine);
 }
 
 export function percentChance(percent: number) {
-	return bool(percent / 100)(nodeCrypto);
+	return bool(percent / 100)(randEngine);
 }
 
 export function roll(max: number) {

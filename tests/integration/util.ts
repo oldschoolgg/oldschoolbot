@@ -3,11 +3,12 @@ import type { Prisma } from '@prisma/client';
 import { randInt, shuffleArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { integer, nodeCrypto } from 'random-js';
+import { vi } from 'vitest';
 import { MUserClass } from '../../src/lib/MUser';
 import { processPendingActivities } from '../../src/lib/Task';
 import { globalConfig } from '../../src/lib/constants';
 import type { ItemBank } from '../../src/lib/types';
-import { cryptoRand } from '../../src/lib/util';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { ironmanCommand } from '../../src/mahoji/lib/abstracted_commands/ironmanCommand';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
@@ -113,8 +114,12 @@ export class TestUser extends MUserClass {
 
 const idsUsed = new Set<string>();
 
+export function unMockedCyptoRand(min: number, max: number) {
+	return integer(min, max)(nodeCrypto);
+}
+
 export function mockedId() {
-	return cryptoRand(1_000_000_000_000, 5_000_000_000_000).toString();
+	return unMockedCyptoRand(1_000_000_000_000, 5_000_000_000_000).toString();
 }
 
 export async function createTestUser(bank?: Bank, userData: Partial<Prisma.UserCreateInput> = {}) {
@@ -193,4 +198,10 @@ export async function mockClient() {
 
 if (uniqueArr([mockedId(), mockedId(), mockedId()]).length !== 3) {
 	throw new Error('mockedId is broken');
+}
+
+const originalMathRandom = Math.random;
+export function mockMathRandom(value: number) {
+	vi.spyOn(Math, 'random').mockImplementation(() => value);
+	return () => (Math.random = originalMathRandom);
 }
