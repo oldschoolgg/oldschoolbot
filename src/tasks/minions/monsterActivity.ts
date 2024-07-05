@@ -202,7 +202,7 @@ export const monsterTask: MinionTask = {
 
 		const superiorTable = isOnTaskResult.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
 		const isInCatacombs = (!usingCannon ? monster.existsInCatacombs ?? undefined : undefined) && !isInWilderness;
-
+		
 		const hasRingOfWealthI = user.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness;
 		if (hasRingOfWealthI) {
 			messages.push('\nYour clue scroll chance is doubled due to wearing a Ring of Wealth (i).');
@@ -256,6 +256,7 @@ export const monsterTask: MinionTask = {
 			loot.add(superiorTable?.kill(newSuperiorCount));
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
+			if (e.slayerMasters.includes(usersTask.currentTask?.slayer_master_id === 8)) loot.add('Brimstone key', newSuperiorCount);
 		}
 
 		// Hill giant key wildy buff
