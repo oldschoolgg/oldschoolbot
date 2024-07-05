@@ -7,8 +7,6 @@ import './lib/itemMods';
 import './lib/geImage';
 
 import * as Sentry from '@sentry/node';
-import { Chart } from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
 import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
 import { isObject } from 'e';
@@ -35,8 +33,6 @@ import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
 debugLog(`Starting... Git Hash ${META_CONSTANTS.GIT_HASH}`);
-
-Chart.register(ChartDataLabels);
 
 if (SENTRY_DSN) {
 	Sentry.init({

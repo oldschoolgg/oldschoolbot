@@ -1,4 +1,3 @@
-import type { ChartConfiguration } from 'chart.js';
 import type { ChatInputCommandInteraction, InteractionReplyOptions } from 'discord.js';
 import { bold } from 'discord.js';
 import {
@@ -71,7 +70,6 @@ import {
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { calcWildyPKChance, increaseWildEvasionXp } from '../../../lib/util/calcWildyPkChance';
-import { generateChart } from '../../../lib/util/chart';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -1194,7 +1192,7 @@ export async function monsterInfo(user: MUser, name: string): Promise<string | I
 			const deathChancePercent = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC });
 			values.push([currentKC.toString(), round(deathChancePercent, 1)]);
 		}
-		const options: ChartConfiguration = {
+		const options = {
 			type: 'line',
 			data: {
 				labels: values.map(i => `${i[0]}KC`),

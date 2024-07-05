@@ -9,12 +9,21 @@ function randomHexColor(num: number): string {
 	return `hsl(${hue},50%,75%)`;
 }
 
-function createGnuplotScript(type: 'pie' | 'line' | 'bar', title: string, values: [string, number, string?][]): string {
+function createGnuplotScript(
+	type: 'pie' | 'line' | 'bar',
+	format: ChartType,
+	title: string,
+	values: [string, number, string?][]
+): string {
 	let script = `
 set terminal pngcairo enhanced font 'Verdana,10'
 set output 'chart.png'
 set title "${title}"
     `;
+
+	if (format === 'percent') {
+		script += `\nset format y "%.0f%%";`;
+	}
 
 	if (type === 'pie') {
 		script += `
@@ -29,8 +38,8 @@ set xlabel "Category"
 set ylabel "Value"
 plot '-' using 1:2 with linespoints title columnheader linecolor rgb variable
         `;
-	} else if (type === 'bar') {
-		script += `
+} else if (type === 'bar') {
+	script += `
 set yrange [0:*]
 set lmargin 10
 set rmargin 10
@@ -43,14 +52,13 @@ set boxwidth 0.2
 set xlabel "Category"
 set ylabel "Value"
 
+${values.map(([_label, value, color = randomHexColor(value)], i) => `set style line ${i + 1} lc rgb "${color}"`).join('\n')}
 
-${values.map(([label, value, color = randomHexColor(value)], i) => `set style line ${i + 1} lc rgb "${color}"`).join('\n')}
-
-plot '-' using 1:3:xtic(2) with boxes title ''
-${values.map(([label, value, color], i) => `${i + 1} "${label}" ${value}`).join('\n')}
+plot ${values.map(([_label, _value, _color], i) => `'-' using 1:3:xtic(2) with boxes linestyle ${i + 1} title ''`).join(', ')}
+${values.map(([label, value], i) => `${i + 1} "${label}" ${value}`).join('\n')}
 e
 `;
-	}
+}
 
 	return script;
 }
@@ -83,17 +91,27 @@ async function saveGnuplotChart(script: string): Promise<Buffer> {
 	});
 }
 
-export async function pieChart(title: string, values: [string, number, string?][]): Promise<Buffer> {
-	const script = createGnuplotScript('pie', title, values);
+const types = [
+	{ name: 'percent', format: '%' },
+	{ name: 'kmb', format: 'idk' }
+] as const;
+type ChartType = (typeof types)[number]['name'];
+
+export async function pieChart(title: string, format: ChartType, values: [string, number, string?][]): Promise<Buffer> {
+	const script = createGnuplotScript('pie', format, title, values);
 	return await saveGnuplotChart(script);
 }
 
-export async function lineChart(title: string, values: [string, number, string?][]): Promise<Buffer> {
-	const script = createGnuplotScript('line', title, values);
+export async function lineChart(
+	title: string,
+	format: ChartType,
+	values: [string, number, string?][]
+): Promise<Buffer> {
+	const script = createGnuplotScript('line', format, title, values);
 	return await saveGnuplotChart(script);
 }
 
-export async function barChart(title: string, values: [string, number, string?][]): Promise<Buffer> {
-	const script = createGnuplotScript('bar', title, values);
+export async function barChart(title: string, format: ChartType, values: [string, number, string?][]): Promise<Buffer> {
+	const script = createGnuplotScript('bar', format, title, values);
 	return await saveGnuplotChart(script);
 }

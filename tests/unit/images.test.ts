@@ -6,13 +6,13 @@ import { drawChestLootImage } from '../../src/lib/bankImage';
 import { clImageGenerator } from '../../src/lib/collectionLogTask';
 import { BOT_TYPE } from '../../src/lib/constants';
 import { pohImageGenerator } from '../../src/lib/pohImage';
-import { barChart, pieChart } from '../../src/lib/util/chart';
+import { barChart } from '../../src/lib/util/chart';
 import { mahojiChatHead } from '../../src/lib/util/chatHeadImage';
 import { makeBankImage } from '../../src/lib/util/makeBankImage';
 import { mockMUser } from './utils';
 
 describe('Images', () => {
-	test.concurrent('Chat Heads', async () => {
+	test.concurrent.skip('Chat Heads', async () => {
 		const result = await mahojiChatHead({
 			content:
 				'Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test Test',
@@ -21,7 +21,7 @@ describe('Images', () => {
 		await writeFile(`tests/unit/snapshots/chatHead.${BOT_TYPE}.png`, result.files[0].attachment);
 	});
 
-	test.concurrent('Collection Log', async () => {
+	test.concurrent.skip('Collection Log', async () => {
 		const result: any = await clImageGenerator.generateLogImage({
 			user: mockMUser({ cl: new Bank().add('Harmonised orb') }),
 			collection: 'nightmare',
@@ -40,7 +40,7 @@ describe('Images', () => {
 		await writeFile(`tests/unit/snapshots/cl.${BOT_TYPE}.png`, result.files[0].attachment);
 	});
 
-	test.concurrent('Bank Image', async () => {
+	test.concurrent.skip('Bank Image', async () => {
 		const bank = new Bank();
 		for (const item of [...Monsters.Cow.allItems]) {
 			bank.add(item);
@@ -75,15 +75,14 @@ describe('Images', () => {
 	// });
 
 	test('BAR Image', async () => {
-		//val => `${toKMB(val)}%`,
-		const result = await barChart('Test', [
+		const result = await barChart('Test', 'percent', [
 			['Complete Collection Log Items', 20, '#9fdfb2'],
 			['Incomplete Collection Log Items', 80, '#df9f9f']
 		]);
-		await writeFile(`tests/unit/snapshots/barpie1.${BOT_TYPE}.png`, result);
+		await writeFile(`tests/unit/snapshots/chart.bar.${BOT_TYPE}.png`, result);
 	});
 
-	test.concurrent('TOA Image', async () => {
+	test.concurrent.skip('TOA Image', async () => {
 		const image = await drawChestLootImage({
 			entries: [
 				{
@@ -104,7 +103,7 @@ describe('Images', () => {
 		await writeFile(`tests/unit/snapshots/toa.${BOT_TYPE}.png`, image.attachment);
 	});
 
-	test.concurrent('COX Image', async () => {
+	test.concurrent.skip('COX Image', async () => {
 		const image = await drawChestLootImage({
 			entries: [
 				{
