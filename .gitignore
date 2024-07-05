@@ -35,3 +35,5 @@ node_modules/
 *.cpuprofile
 
 cache.json
+
+tests/**/*.tsbuildinfo

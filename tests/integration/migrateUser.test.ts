@@ -24,7 +24,7 @@ import type {
 import { Time, deepClone, randArrItem, randInt, shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
-import { expect, test, vi } from 'vitest';
+import { beforeAll, expect, test, vi } from 'vitest';
 
 import { processPendingActivities } from '../../src/lib/Task';
 import { BitField } from '../../src/lib/constants';
@@ -58,7 +58,7 @@ import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings';
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity';
 import type { TestUser } from './util';
-import { createTestUser, mockedId } from './util';
+import { createTestUser, mockClient, mockedId } from './util';
 import type { BotItemSell, GEListing, StashUnit } from '.prisma/client';
 
 interface TestCommand {
@@ -1268,6 +1268,11 @@ test.concurrent('test preventing a double (clobber) robochimp migration (two bot
 	// Verify migrated id is correct
 	expect(newDestData.migratedUserId).toEqual(BigInt(sourceData.id));
 });
+
+beforeAll(async () => {
+	await mockClient();
+});
+
 test.concurrent('test migrating existing user to target with no records', async () => {
 	const sourceUser = await buildBaseUser(mockedId());
 	await runAllTestCommandsOnUser(sourceUser);
