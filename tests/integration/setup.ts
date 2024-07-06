@@ -1,6 +1,5 @@
 import './mocks';
 import '../globalSetup';
-import './mocks';
 
 import { Image } from '@napi-rs/canvas';
 import { noOp } from 'e';
@@ -88,16 +87,3 @@ async function init() {
 }
 
 init();
-
-function setupRequestLogging() {
-	const mitmInstance = mitm();
-
-	mitmInstance.on('connect', (socket, opts) => {
-		if (opts?.host) {
-			// throw new Error(`Sending request to ${opts.host}`);
-			socket.bypass();
-		}
-	});
-}
-
-setupRequestLogging();
