@@ -35,7 +35,7 @@ import potions from '../../lib/minions/data/potions';
 import { MAX_QP } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
-import { prisma } from '../../lib/settings/prisma';
+
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';

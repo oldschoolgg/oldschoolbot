@@ -89,14 +89,7 @@ export const defaultGear: GearSetup = {
 	[EquipmentSlot.Weapon]: null
 };
 Object.freeze(defaultGear);
-export function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
-	const filteredGear = !gear
-		? undefined
-		: typeof gear.ammo === 'undefined' || typeof gear.ammo === 'string'
-			? constructGearSetup(gear as PartialGearSetup)
-			: (gear as GearSetup);
-	return filteredGear;
-}
+
 export const globalPresets: (GearPreset & { defaultSetup: GearSetupType })[] = [
 	{
 		name: 'graceful',

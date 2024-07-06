@@ -16,7 +16,7 @@ import {
 import { skillEmoji } from './data/emojis';
 import { getSimilarItems } from './data/similarItems';
 import type { AddXpParams } from './minions/types';
-import { prisma } from './settings/prisma';
+
 import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';
 import { SkillsEnum } from './skilling/types';

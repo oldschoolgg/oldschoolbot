@@ -1,7 +1,6 @@
 import { formatDuration, getInterval } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 
-import { prisma } from '../settings/prisma';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../types/minions';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 

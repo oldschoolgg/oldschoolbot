@@ -19,7 +19,7 @@ import {
 import { BitField } from '../constants';
 import { calcCLDetails } from '../data/Collections';
 import { getMinigameEntity } from '../settings/minigames';
-import { prisma } from '../settings/prisma';
+
 import smithables from '../skilling/skills/smithing/smithables';
 import { getSlayerTaskStats } from '../slayer/slayerUtil';
 import { getAllUserTames } from '../tames';

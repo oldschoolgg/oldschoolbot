@@ -4,7 +4,7 @@ import { Bank, Items } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { getSimilarItems } from '../data/similarItems';
-import { prisma } from '../settings/prisma';
+
 import { type Species, TameSpeciesID, tameFeedableItems, tameSpecies } from '../tames';
 import type { ItemBank } from '../types';
 import getOSItem from '../util/getOSItem';

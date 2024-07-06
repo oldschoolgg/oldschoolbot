@@ -21,7 +21,7 @@ import { IronmanPMBTable, itemSearchMbTable } from './bsoOpenables';
 import { BitField, Emoji, globalConfig, secretItems } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
-import { prisma } from './settings/prisma';
+
 import type { ItemBank } from './types';
 import { formatDuration, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';

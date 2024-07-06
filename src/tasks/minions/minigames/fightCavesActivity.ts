@@ -4,7 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { userHasFlappy } from '../../../lib/invention/inventions';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';

@@ -7,7 +7,7 @@ import { toKMB } from 'oldschooljs/dist/util';
 import * as ss from 'simple-statistics';
 
 import { Emoji } from '../../../lib/constants';
-import { prisma } from '../../../lib/settings/prisma';
+
 import type { ItemBank } from '../../../lib/types';
 import getOSItem from '../../../lib/util/getOSItem';
 import { addBanks } from '../../../lib/util/smallUtils';

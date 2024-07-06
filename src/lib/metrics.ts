@@ -6,7 +6,6 @@ import { miniID } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import { Time } from 'e';
 
-import { prisma } from './settings/prisma';
 import { LOG_FILE_NAME, sonicBoom } from './util/logger';
 import { formatDuration, tailFile } from './util/smallUtils';
 

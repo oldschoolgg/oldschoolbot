@@ -7,7 +7,7 @@ import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { customPrices } from '../../lib/customItems/util';
-import { prisma } from '../../lib/settings/prisma';
+
 import { NestBoxesTable } from '../../lib/simulation/misc';
 import { itemID, returnStringOrFile, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';

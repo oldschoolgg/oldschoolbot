@@ -6,7 +6,7 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { BitField } from '../../../lib/constants';
 import { GrandExchange } from '../../../lib/grandExchange';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { assert } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';

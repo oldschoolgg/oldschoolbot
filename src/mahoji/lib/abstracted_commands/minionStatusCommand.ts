@@ -8,7 +8,7 @@ import { BitField, Emoji, PerkTier, minionBuyButton } from '../../../lib/constan
 import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
 import { clArrayUpdate } from '../../../lib/handleNewCLItems';
 import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { makeComponents } from '../../../lib/util';
 import {
 	makeAutoContractButton,

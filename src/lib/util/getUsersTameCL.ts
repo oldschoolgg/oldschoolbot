@@ -1,8 +1,6 @@
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { prisma } from '../settings/prisma';
-
 export async function getUsersTamesCollectionLog(userID: string) {
 	const allTames = await prisma.tame.findMany({
 		where: {

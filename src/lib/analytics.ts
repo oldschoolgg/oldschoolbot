@@ -1,5 +1,5 @@
 import { ActivityGroup, globalConfig } from '../lib/constants';
-import { prisma } from '../lib/settings/prisma';
+
 import type { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
 import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
 import { getItem } from './util/getOSItem';

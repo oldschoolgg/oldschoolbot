@@ -7,7 +7,7 @@ import { Bank } from 'oldschooljs';
 
 import { production } from '../../config';
 import { Events } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
+
 import { SkillsEnum } from '../../lib/skilling/types';
 import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '../../lib/tames';
 import { formatDuration, gaussianRandom, roll } from '../../lib/util';

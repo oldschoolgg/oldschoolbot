@@ -4,7 +4,7 @@ import { sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { gloriesInventorySize, wealthInventorySize } from '../constants';
-import { prisma } from '../settings/prisma';
+
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import type { ItemBank } from '../types';
 import { getItem } from '../util/getOSItem';

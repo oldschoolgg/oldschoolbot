@@ -3,7 +3,7 @@ import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 
 import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
 import { Emoji, badges, badgesCache, busyImmuneCommands, usernameCache } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
+
 import { removeMarkdownEmojis, stripEmojis } from '../../lib/util';
 import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
 import type { AbstractCommand } from './inhibitors';

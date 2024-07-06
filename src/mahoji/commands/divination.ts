@@ -13,7 +13,7 @@ import {
 	portents
 } from '../../lib/bso/divination';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
-import { prisma } from '../../lib/settings/prisma';
+
 import type { MemoryHarvestOptions } from '../../lib/types/minions';
 import { assert } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';

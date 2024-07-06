@@ -12,7 +12,7 @@ import {
 	WildernessDiary,
 	userhasDiaryTier
 } from './diaries';
-import { prisma } from './settings/prisma';
+
 import { SkillsEnum } from './skilling/types';
 import { ISODateString, gaussianRandom } from './util';
 import getOSItem from './util/getOSItem';

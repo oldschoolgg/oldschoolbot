@@ -8,7 +8,7 @@ import { globalConfig } from '../lib/constants';
 import { getSimilarItems } from '../lib/data/similarItems';
 import { GearStat } from '../lib/gear';
 import type { KillableMonster } from '../lib/minions/types';
-import { prisma } from '../lib/settings/prisma';
+
 import type { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
 import type { ItemBank } from '../lib/types';

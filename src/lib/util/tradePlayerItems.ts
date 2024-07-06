@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { modifyBusyCounter } from '../busyCounterCache';
-import { prisma } from '../settings/prisma';
+
 import { logError } from './logError';
 import { userQueueFn } from './userQueues';
 

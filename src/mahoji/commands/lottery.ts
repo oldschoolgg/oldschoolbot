@@ -8,7 +8,7 @@ import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { ores, secondaries, seedsFilter } from '../../lib/data/filterables';
 import { Herb } from '../../lib/invention/groups/Herb';
-import { prisma } from '../../lib/settings/prisma';
+
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { assert, isSuperUntradeable } from '../../lib/util';

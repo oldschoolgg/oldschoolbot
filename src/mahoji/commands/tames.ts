@@ -28,7 +28,7 @@ import { trackLoot } from '../../lib/lootTrack';
 import { Planks } from '../../lib/minions/data/planks';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import { getUsersPerkTier } from '../../lib/perkTiers';
-import { prisma } from '../../lib/settings/prisma';
+
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {

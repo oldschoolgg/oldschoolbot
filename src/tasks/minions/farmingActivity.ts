@@ -8,7 +8,7 @@ import { BitField } from '../../lib/constants';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import type { PatchTypes } from '../../lib/minions/farming';
 import type { FarmingContract } from '../../lib/minions/farming/types';
-import { prisma } from '../../lib/settings/prisma';
+
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming, { plants } from '../../lib/skilling/skills/farming';
 import { type Plant, SkillsEnum } from '../../lib/skilling/types';

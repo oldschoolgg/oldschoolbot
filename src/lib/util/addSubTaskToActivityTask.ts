@@ -1,6 +1,5 @@
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 
-import { prisma } from '../settings/prisma';
 import { activitySync } from '../settings/settings';
 import type { ActivityTaskData, ActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';

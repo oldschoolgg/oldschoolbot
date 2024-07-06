@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { prisma } from './settings/prisma';
 import type { ItemBank } from './types';
 import { validateBankAndThrow } from './util';
 

@@ -8,7 +8,7 @@ import { BitField, type PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import type { KillableMonster } from '../minions/types';
-import { prisma } from '../settings/prisma';
+
 import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
 import { bankHasItem, roll, stringMatches } from '../util';

@@ -20,7 +20,7 @@ import { BitField } from '../../lib/constants';
 import { handlePassiveImplings } from '../../lib/implings';
 import { trackLoot } from '../../lib/lootTrack';
 import { allOpenables } from '../../lib/openables';
-import { prisma } from '../../lib/settings/prisma';
+
 import { runCommand } from '../../lib/settings/settings';
 import { getTemporossLoot } from '../../lib/simulation/tempoross';
 import { WintertodtCrate } from '../../lib/simulation/wintertodt';

@@ -5,7 +5,7 @@ import { Items } from 'oldschooljs';
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
 import { getSimilarItems } from '../data/similarItems';
-import { prisma } from '../settings/prisma';
+
 import {
 	type Species,
 	type TameTaskOptions,

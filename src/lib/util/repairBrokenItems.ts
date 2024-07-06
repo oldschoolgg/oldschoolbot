@@ -4,7 +4,7 @@ import { Items } from 'oldschooljs';
 
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { type GearSetup, GearSetupTypes } from '../gear';
-import { prisma } from '../settings/prisma';
+
 import type { ItemBank } from '../types';
 import { moidLink } from '../util';
 

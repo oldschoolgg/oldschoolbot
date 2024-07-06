@@ -8,7 +8,7 @@ import KingGoldemar, {
 	KingGoldemarLootTable
 } from '../../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { addMonsterXP } from '../../../lib/minions/functions';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { calcDwwhChance } from '../../../lib/structures/Boss';
 import type { NewBossOptions } from '../../../lib/types/minions';

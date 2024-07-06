@@ -15,7 +15,7 @@ import { isCustomItem } from './customItems/util';
 import { marketPricemap } from './marketPrices';
 import type { RobochimpUser } from './roboChimp';
 import { roboChimpUserFetch } from './roboChimp';
-import { prisma } from './settings/prisma';
+
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
 import { assert, generateGrandExchangeID, isGEUntradeable, itemNameFromID, makeComponents, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';

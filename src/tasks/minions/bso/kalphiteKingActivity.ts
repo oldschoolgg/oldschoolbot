@@ -9,7 +9,7 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { BossActivityTaskOptions } from '../../../lib/types/minions';

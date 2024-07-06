@@ -9,7 +9,7 @@ import { ParsedCustomEmojiWithGroups } from '../../lib/constants';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import type { GearSetup, GearSetupType } from '../../lib/gear/types';
 import { GearSetupTypes } from '../../lib/gear/types';
-import { prisma } from '../../lib/settings/prisma';
+
 import { Gear, defaultGear, globalPresets } from '../../lib/structures/Gear';
 import { cleanString, isValidGearSetup, isValidNickname, stringMatches } from '../../lib/util';
 import { emojiServers } from '../../lib/util/cachedUserIDs';

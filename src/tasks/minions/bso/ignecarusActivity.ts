@@ -11,7 +11,7 @@ import {
 } from '../../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { BossUser } from '../../../lib/structures/Boss';

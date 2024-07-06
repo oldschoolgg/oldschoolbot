@@ -7,7 +7,7 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { type MegaDuckLocation, defaultMegaDuckLocation } from '../../lib/minions/types';
-import { prisma } from '../../lib/settings/prisma';
+
 import { getUsername } from '../../lib/util';
 import { canvasImageFromBuffer } from '../../lib/util/canvasUtil';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';

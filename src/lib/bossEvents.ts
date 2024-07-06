@@ -12,7 +12,7 @@ import {
 import { Bank, LootTable } from 'oldschooljs';
 
 import { OWNER_IDS, production } from '../config';
-import { prisma } from './settings/prisma';
+
 import {
 	PUMPKINHEAD_HEALING_NEEDED,
 	PUMPKINHEAD_ID,

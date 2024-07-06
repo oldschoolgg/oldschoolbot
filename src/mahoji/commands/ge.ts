@@ -9,7 +9,7 @@ import { sumArr, uniqueArr } from 'e';
 import { PerkTier } from '../../lib/constants';
 import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
-import { prisma } from '../../lib/settings/prisma';
+
 import {
 	formatDuration,
 	isGEUntradeable,

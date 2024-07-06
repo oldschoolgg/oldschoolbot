@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import { slayerMaskHelms } from '../data/slayerMaskHelms';
-import { prisma } from '../settings/prisma';
+
 import type { ItemBank } from '../types';
 
 export const slayerMaskLeaderboardCache = new Map<number, string>();

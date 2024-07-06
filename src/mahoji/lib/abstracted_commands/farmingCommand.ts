@@ -7,7 +7,7 @@ import { Time, reduceNumByPercent } from 'e';
 import { BitField } from '../../../lib/constants';
 import { superCompostables } from '../../../lib/data/filterables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
 import Farming from '../../../lib/skilling/skills/farming';

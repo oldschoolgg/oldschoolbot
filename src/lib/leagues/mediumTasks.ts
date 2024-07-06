@@ -31,7 +31,7 @@ import {
 import { implings } from '../implings';
 import { TormentedDemon } from '../minions/data/killableMonsters/custom/TormentedDemon';
 import { QueenBlackDragon } from '../minions/data/killableMonsters/custom/demiBosses';
-import { prisma } from '../settings/prisma';
+
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';

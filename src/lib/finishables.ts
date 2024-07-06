@@ -10,7 +10,7 @@ import MediumClueTable from 'oldschooljs/dist/simulation/clues/Medium';
 import { ChambersOfXeric, Nightmare } from 'oldschooljs/dist/simulation/misc';
 import { EliteMimicTable, MasterMimicTable } from 'oldschooljs/dist/simulation/misc/Mimic';
 
-import { rollNaxxusLoot } from '../tasks/minions/bso/naxxusActivity';
+import { rollNaxxusLoot } from './bso/naxxus/rollNaxxusLoot';
 import { allCollectionLogsFlat } from './data/Collections';
 import {
 	chambersOfXericCL,

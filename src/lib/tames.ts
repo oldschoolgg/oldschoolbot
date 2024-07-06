@@ -8,7 +8,7 @@ import killableMonsters, { NightmareMonster } from './minions/data/killableMonst
 import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBosses';
 import { Planks } from './minions/data/planks';
 import type { KillableMonster } from './minions/types';
-import { prisma } from './settings/prisma';
+
 import Tanning from './skilling/skills/crafting/craftables/tanning';
 import { assert, calculateSimpleMonsterDeathChance } from './util';
 import getOSItem from './util/getOSItem';

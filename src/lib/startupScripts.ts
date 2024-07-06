@@ -1,6 +1,5 @@
 import { Items } from 'oldschooljs';
 
-import { prisma } from './settings/prisma';
 import { logError } from './util/logError';
 
 const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
