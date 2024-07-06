@@ -254,7 +254,6 @@ export const miningTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
-<<<<<<< HEAD
 		const sd = await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true });
 		const spiritOre = stoneSpirits.find(t => t.ore.id === ore.id);
 		const amountOfSpiritsToUse =
@@ -294,36 +293,6 @@ export const miningTask: MinionTask = {
 			portentResult,
 			collectionLog: user.cl,
 			miningXP: user.skillsAsXP.mining
-=======
-		let xpReceived = quantity * ore.xp;
-		let bonusXP = 0;
-
-		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
-		if (
-			user.gear.skilling.hasEquipped(
-				Object.keys(Mining.prospectorItems).map(i => Number.parseInt(i)),
-				true
-			)
-		) {
-			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
-			xpReceived += amountToAdd;
-			bonusXP += amountToAdd;
-		} else {
-			// For each prospector item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Mining.prospectorItems)) {
-				if (user.hasEquipped(Number.parseInt(itemID))) {
-					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
-					xpReceived += amountToAdd;
-					bonusXP += amountToAdd;
-				}
-			}
-		}
-		const currentLevel = user.skillLevel(SkillsEnum.Mining);
-		const xpRes = await user.addXP({
-			skillName: SkillsEnum.Mining,
-			amount: xpReceived,
-			duration
->>>>>>> master
 		});
 
 		await transactItems({

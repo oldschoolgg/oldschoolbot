@@ -5,6 +5,8 @@ import { Bank } from 'oldschooljs';
 import birdhouses from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import type { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
+import { birdhouseLimit } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { sendToChannelID } from '../../../lib/util/webhook';

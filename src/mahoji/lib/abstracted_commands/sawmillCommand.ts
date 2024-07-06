@@ -94,14 +94,13 @@ export async function sawmillCommand(
 	await updateBankSetting('construction_cost_bank', new Bank().add('Coins', plank?.gpCost * quantity));
 >>>>>>> master
 
-	await addSubTaskToActivityTask<SawmillActivityTaskOptions>({
+	await addSubTaskToActivityTask<SawmillActivityTaskOptions>(
 		type: 'Sawmill',
 		duration,
 		plankID: plank?.outputItem,
 		plankQuantity: quantity,
 		userID: user.id,
-		channelID: channelID.toString()
-	});
+		channelID: channelID.toString());
 
 	let response = `${user.minionName} is now creating ${quantity} ${itemNameFromID(plank.outputItem)}${
 		quantity > 1 ? 's' : ''

@@ -1,4 +1,4 @@
-import { calcPercentOfNum, percentChance, randInt } from 'e';
+import { calcPercentOfNum, percentChance, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { z } from 'zod';
 
@@ -8,6 +8,8 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
+import type { FishingActivityTaskOptions } from '../../lib/types/minions';
+import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
@@ -90,31 +92,6 @@ export const fishingTask: MinionTask = {
 		} else {
 			xpReceived = quantity * fish.xp;
 		}
-<<<<<<< HEAD
-=======
-		let bonusXP = 0;
-
-		// If they have the entire angler outfit, give an extra 0.5% xp bonus
-		if (
-			user.gear.skilling.hasEquipped(
-				Object.keys(Fishing.anglerItems).map(i => Number.parseInt(i)),
-				true
-			)
-		) {
-			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
-			xpReceived += amountToAdd;
-			bonusXP += amountToAdd;
-		} else {
-			// For each angler item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasEquipped(Number.parseInt(itemID))) {
-					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
-					xpReceived += amountToAdd;
-					bonusXP += amountToAdd;
-				}
-			}
-		}
->>>>>>> master
 
 		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Fishing,

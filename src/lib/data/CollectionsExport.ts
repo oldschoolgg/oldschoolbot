@@ -1,6 +1,7 @@
 import type { Minigame } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
+
 import { growablePets } from '../growablePets';
 import { stoneSpirits } from '../minions/data/stoneSpirits';
 import type { MinigameScore } from '../settings/minigames';
@@ -354,7 +355,6 @@ export const grotesqueGuardiansCL = resolveItems([
 	'Granite dust'
 ]);
 export const hesporiCL = resolveItems(['Bottomless compost bucket', 'Iasor seed', 'Kronos seed', 'Attas seed']);
-<<<<<<< HEAD
 
 export const theInfernoCL = resolveItems(['Jal-nib-rek', 'Infernal cape']);
 
@@ -365,9 +365,6 @@ export const emergedZukInfernoCL = resolveItems([
 	'Infernal core'
 ]);
 
-=======
-export const theInfernoCL = resolveItems(['Jal-nib-rek', 'Infernal cape']);
->>>>>>> master
 export const kalphiteQueenCL = resolveItems([
 	'Kalphite princess',
 	'Kq head',
@@ -2098,12 +2095,7 @@ export const miscellaneousCL = resolveItems([
 	'Elite black knight platebody',
 	'Elite black knight platelegs'
 ]);
-<<<<<<< HEAD
 export const diariesCL = resolveItems([
-=======
-
-export const diariesCL = [
->>>>>>> master
 	'Karamja gloves 1',
 	'Karamja gloves 2',
 	'Karamja gloves 3',

@@ -6,7 +6,7 @@ import type Monster from 'oldschooljs/dist/structures/Monster';
 
 import { divinationEnergies, portents } from '../bso/divination';
 import { type ClueTier, ClueTiers } from '../clues/clueTiers';
-import { CollectionLogType } from '../collectionLogTask';
+import type { CollectionLogType } from '../collectionLogTask';
 import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
 import { discontinuedDyes, dyedItems } from '../dyedItems';
 import { growablePetsCL } from '../growablePets';
@@ -54,7 +54,7 @@ import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCol
 import {
 	type ICollection,
 	type ILeftListStatus,
-	IToReturnCollection,
+	type IToReturnCollection,
 	abyssalDragonCL,
 	abyssalSireCL,
 	aerialFishingCL,
@@ -2062,13 +2062,8 @@ for (const mon of killableMonsters) allClNames.push(mon.name);
 export async function getCollection(options: {
 	user: MUser;
 	search: string;
-<<<<<<< HEAD
-	flags: [key: string]: string | number ;
+	flags: { [key: string]: string | number | undefined };
 	logType?: CollectionLogType;
-=======
-	flags: [key: string]: string | number | undefined ;
-	logType?: 'collection' | 'sacrifice' | 'bank' | 'temp';
->>>>>>> master
 }): Promise<false | IToReturnCollection> {
 	let { user, search, flags, logType } = options;
 
@@ -2206,13 +2201,6 @@ export function isCLItem(item: Item | number | [Item, number]): boolean {
 }
 
 export const bossCLItems = Object.values({
-<<<<<<< HEAD
 	...allCollectionLogs['PvM'].activities
 })
-	.map(i => i.items)
-	.flat();
-=======
-	...allCollectionLogs.Bosses.activities,
-	...allCollectionLogs.Raids.activities
-}).flatMap(i => i.items);
->>>>>>> master
+	.flatMap(i => i.items);

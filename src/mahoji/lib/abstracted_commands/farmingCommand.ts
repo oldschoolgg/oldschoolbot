@@ -1,6 +1,9 @@
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
+import type { CropUpgradeType } from '@prisma/client';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { Time, reduceNumByPercent } from 'e';
 import { BitField } from '../../../lib/constants';
 import { superCompostables } from '../../../lib/data/filterables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
@@ -11,7 +14,7 @@ import Farming from '../../../lib/skilling/skills/farming';
 import type { Plant } from '../../../lib/skilling/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { FarmingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
+import { formatDuration, percentChance, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { farmingPatchNames, findPlant, isPatchName } from '../../../lib/util/farmingHelpers';

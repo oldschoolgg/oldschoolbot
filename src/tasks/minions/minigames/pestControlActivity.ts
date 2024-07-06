@@ -16,16 +16,11 @@ export const pestControlTask: MinionTask = {
 
 		const { boatType, pointsPerGame, bonusPointsPerGame } = getBoatType(user, user.combatLevel);
 
-<<<<<<< HEAD
 		let points = pointsPerGame * quantity;
 		const flappyRes = await userHasFlappy({ user, duration });
 		if (flappyRes.shouldGiveBoost) {
 			points *= 2;
 		}
-=======
-		const points = pointsPerGame * quantity;
-
->>>>>>> master
 		await incrementMinigameScore(userID, 'pest_control', quantity);
 		const newUserStats = await userStatsUpdate(
 			user.id,

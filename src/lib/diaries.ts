@@ -13,25 +13,7 @@ import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 import { formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util/smallUtils';
 
-<<<<<<< HEAD
-export const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
-export type DiaryTierName = (typeof diaryTiers)[number];
-export interface DiaryTier {
-	name: 'Easy' | 'Medium' | 'Hard' | 'Elite';
-	items: Item[];
-	skillReqs: Skills;
-	ownedItems?: number[];
-	collectionLogReqs?: number[];
-	minigameReqs?: Partial<Record<MinigameName, number>>;
-	lapsReqs?: Record<string, number>;
-	qp?: number;
-	monsterScores?: Record<string, number>;
-	customReq?: (user: MUser, summary: boolean, stats: MUserStats) => [true] | [false, string];
-}
-export type Diary = {}
-=======
-type Diary = {}
->>>>>>> master
+export type Diary = {
 	name: string;
 	id: DiaryID;
 	alias?: string[];

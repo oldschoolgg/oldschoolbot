@@ -3,39 +3,20 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
-<<<<<<< HEAD
 import { BitField } from '../../lib/constants';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
-import type { PatchTypes } from '../../lib/minions/farming';
-import { FarmingContract } from '../../lib/minions/farming/types';
-import { prisma } from '../../lib/settings/prisma';
-import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
-import Farming, { plants } from '../../lib/skilling/skills/farming';
-import { type Plant, SkillsEnum } from '../../lib/skilling/types';
-import { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
-import {
-	assert,
-	clAdjustedDroprate,
-	increaseBankQuantitesByPercent,
-	itemID,
-	itemNameFromID,
-	roll,
-	skillingPetDropRate
-} from '../../lib/util';
-=======
-import { BitField, Emoji, Events } from '../../lib/constants';
 import type { PatchTypes } from '../../lib/minions/farming';
 import type { FarmingContract } from '../../lib/minions/farming/types';
 import { prisma } from '../../lib/settings/prisma';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
-import Farming from '../../lib/skilling/skills/farming';
-import { SkillsEnum } from '../../lib/skilling/types';
+import Farming, { plants } from '../../lib/skilling/skills/farming';
+import { type Plant, SkillsEnum } from '../../lib/skilling/types';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { assert, roll, skillingPetDropRate } from '../../lib/util';
->>>>>>> master
+import { assert, clAdjustedDroprate, itemNameFromID, roll, skillingPetDropRate } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import itemID from '../../lib/util/itemID';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';

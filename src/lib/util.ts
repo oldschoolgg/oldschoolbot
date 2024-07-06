@@ -1,71 +1,23 @@
 import { gzip } from 'node:zlib';
 
-import { createHash } from 'node:crypto';
-import { stripEmojis } from '@oldschoolgg/toolkit';
-	BaseMessageOptions,
-	bold,
-	ButtonBuilder,
-	ButtonInteraction,
-	CacheType,
-	Collection,
-	CollectorFilter,
-	Guild,
-	InteractionReplyOptions,
-	Message,
-	MessageEditOptions,
-	SelectMenuInteraction,
-	TextChannel
-} from 'discord.js';
-<<<<<<< HEAD
-import {
-	Time,
-	calcWhatPercent,
-	chunk,
-	increaseNumByPercent,
-	notEmpty,
-	objectEntries,
-	randArrItem,
-	randInt,
-	shuffleArr,
-	sumArr
-} from 'e';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import murmurHash from 'murmurhash';
+import { type CommandResponse, stripEmojis } from '@oldschoolgg/toolkit';
+import { Time, calcWhatPercent, chunk, increaseNumByPercent, notEmpty, objectEntries, randArrItem, randInt, shuffleArr, sumArr } from 'e';
 import { Bank, Items, Monsters } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import type Monster from 'oldschooljs/dist/structures/Monster';
-import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
-import { bool, integer, nodeCrypto, real } from 'random-js';
-
-import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../config';
-import { MUserClass } from './MUser';
-import { ClueTiers } from './clues/clueTiers';
-import {
-	BitField,
-	ONE_TRILLION,
-	type ProjectileType,
-	badgesCache,
-	globalConfig,
-	projectiles,
-	usernameCache
-} from './constants';
-import { UserStatsDataNeededForCL } from './data/Collections';
-import { doaCL } from './data/CollectionsExport';
-import { getSimilarItems } from './data/similarItems';
-import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
-import type { Consumable } from './minions/types';
-=======
-import { ComponentType, escapeMarkdown } from 'discord.js';
-import { Time, chunk, objectEntries } from 'e';
-import { Bank } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
-import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
+import type { PrismaClient } from '@prisma/client';
+import { Stopwatch } from '@sapphire/stopwatch';
+import { type BaseMessageOptions, type ButtonBuilder, type ButtonInteraction, type CacheType, type Collection, type CollectorFilter, ComponentType, type Guild, type InteractionReplyOptions, InteractionType, type Message, type MessageEditOptions, type SelectMenuInteraction, type TextChannel, bold, escapeMarkdown } from 'discord.js';
+import type { Item } from 'oldschooljs/dist/meta/types';
+import type Monster from 'oldschooljs/dist/structures/Monster';
+import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
+import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../config';
 import type { MUserClass } from './MUser';
->>>>>>> master
 import { PaginatedMessage } from './PaginatedMessage';
-import { BitField, badgesCache, projectiles, usernameCache } from './constants';
+import { ClueTiers } from './clues/clueTiers';
+import { BitField, ONE_TRILLION, type ProjectileType, badgesCache, globalConfig, projectiles, usernameCache } from './constants';
 import type { UserStatsDataNeededForCL } from './data/Collections';
+import { doaCL } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import type { DefenceGearStat, GearSetupType, OffenceGearStat } from './gear/types';
 import { GearSetupTypes, GearStat } from './gear/types';
@@ -74,14 +26,14 @@ import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
 import type { Gear } from './structures/Gear';
 import { MUserStats } from './structures/MUserStats';
-import type { Skills } from './types';
+import type { ItemBank, Skills } from './types';
 import type {
 	GroupMonsterActivityTaskOptions,
 	NexTaskOptions,
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import { getItem } from './util/getOSItem';
+import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 import { itemNameFromID } from './util/smallUtils';
@@ -89,31 +41,10 @@ import { itemNameFromID } from './util/smallUtils';
 export { cleanString, stringMatches, stripEmojis } from '@oldschoolgg/toolkit';
 export * from 'oldschooljs/dist/util/index';
 
-const zeroWidthSpace = '\u200b';
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {
 	return this.toString();
 };
-export function cleanMentions(guild: Guild | null, input: string, showAt = true) {
-	const at = showAt ? '@' : '';
-	return input
-		.replace(/@(here|everyone)/g, `@${zeroWidthSpace}$1`)
-		.replace(/<(@[!&]?|#)(\d{17,19})>/g, (match, type, id) => {
-			switch (type) {
-				case '@':
-				case '@!': {
-					const tag = guild?.client.users.cache.get(id);
-					return tag ? `${at}${tag.username}` : `<${type}${zeroWidthSpace}${id}>`;
-				}
-				case '@&': {
-					const role = guild?.roles.cache.get(id);
-					return role ? `${at}${role.name}` : match;
-				}
-				default:
-					return `<${type}${zeroWidthSpace}${id}>`;
-			}
-		});
-}
 
 export function inlineCodeblock(input: string) {
 	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
@@ -427,20 +358,8 @@ export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGe
 	return setup;
 }
 
-export function formatTimestamp(date: Date, relative = false) {
-	const unixTime = date.getTime() / 1000;
-	if (relative) {
-		return `<t:${unixTime}:R>`;
-	}
-	return `<t:${unixTime}>`;
-}
-
 export function ISODateString(date?: Date) {
 	return (date ?? new Date()).toISOString().slice(0, 10);
-}
-
-export function averageArr(arr: number[]) {
-	return sumArr(arr) / arr.length;
 }
 
 export function convertPvmStylesToGearSetup(attackStyles: SkillsEnum[]) {
@@ -493,19 +412,6 @@ export function validateBankAndThrow(bank: Bank) {
 	}
 }
 
-export function convertBankToPerHourStats(bank: Bank, time: number) {
-	const result = [];
-	for (const [item, qty] of bank.items()) {
-		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
-	}
-	return result;
-}
-
-export function isAtleastThisOld(date: Date | number, age: number) {
-	const difference = Date.now() - (typeof date === 'number' ? date : date.getTime());
-	return difference >= age;
-}
-
 export function removeMarkdownEmojis(str: string) {
 	return escapeMarkdown(stripEmojis(str));
 }
@@ -513,6 +419,7 @@ export function removeMarkdownEmojis(str: string) {
 export function moidLink(items: number[]) {
 	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
 }
+
 export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank) {
 	const marketPrices = (await prisma.clientStorage.findFirst({
 		where: { id: globalConfig.clientID },
@@ -561,25 +468,6 @@ export function roughMergeMahojiResponse(
 	newResponse.content = newContent.join('\n\n');
 
 	return newResponse;
-}
-
-export async function asyncGzip(buffer: Buffer) {
-	return new Promise<Buffer>((resolve, reject) => {
-		gzip(buffer, {}, (error, gzipped) => {
-			if (error) {
-				reject(error);
-			}
-			resolve(gzipped);
-		});
-	});
-}
-
-export function increaseBankQuantitesByPercent(bank: Bank, percent: number, whitelist: number[] | null = null) {
-	for (const [key, value] of Object.entries(bank.bank)) {
-		if (whitelist !== null && !whitelist.includes(Number.parseInt(key))) continue;
-		const increased = Math.floor(increaseNumByPercent(value, percent));
-		bank.bank[key] = increased;
-	}
 }
 
 export function generateXPLevelQuestion() {
@@ -689,7 +577,6 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	debugLog(`Finished ${name} in ${stopwatch.toString()}`);
 }
 
-<<<<<<< HEAD
 export function getAllIDsOfUser(user: MUser) {
 	const main = user.user.main_account;
 	const allAccounts: string[] = [...user.user.ironman_alts, user.id];
@@ -709,13 +596,10 @@ export function getInteractionTypeName(type: InteractionType) {
 	}[type];
 }
 
-=======
->>>>>>> master
 export function isModOrAdmin(user: MUser) {
 	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }
 
-<<<<<<< HEAD
 export async function calcClueScores(user: MUser) {
 	const { actualCluesBank } = await user.calcActualClues();
 	const stats = await user.fetchStats({ openable_scores: true });
@@ -736,8 +620,6 @@ export async function calcClueScores(user: MUser) {
 		.filter(notEmpty);
 }
 
-=======
->>>>>>> master
 export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededForCL> {
 	const stats = await MUserStats.fromID(user.id);
 	const { userStats } = stats;

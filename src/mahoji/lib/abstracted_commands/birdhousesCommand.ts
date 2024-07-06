@@ -2,6 +2,11 @@ import type { User } from '@prisma/client';
 import { time } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import birdhouses, { type Birdhouse, birdhouseSeeds } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
+import defaultBirdhouseTrap, { type BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
+import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
+import { birdhouseLimit } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
@@ -101,7 +106,7 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	}
 	let gotCraft = false;
 <<<<<<< HEAD
-	let removeBank = new Bank();
+	const removeBank = new Bank();
 	const premadeBankCost = birdhouseToPlant.houseItemReq.clone().multiply(birdHouses);
 =======
 	const removeBank = new Bank();

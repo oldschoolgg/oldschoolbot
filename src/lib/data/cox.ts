@@ -13,7 +13,7 @@ import type { Item } from 'oldschooljs/dist/meta/types';
 import type { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
-import { GearStats } from '../gear';
+import type { GearStats } from '../gear';
 import { inventionBoosts } from '../invention/inventions';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
@@ -161,7 +161,6 @@ export function calcSetupPercent(
 	return totalPercent;
 }
 
-<<<<<<< HEAD
 export const maxMageGear = constructGearSetup({
 	head: 'Virtus mask',
 	body: 'Virtus robe top',
@@ -184,37 +183,12 @@ export const maxRangeGear = constructGearSetup({
 	hands: 'Pernix gloves',
 	legs: 'Pernix chaps',
 	feet: 'Pernix boots',
-=======
-const maxMageGear = constructGearSetup({
-	head: 'Ancestral hat',
-	neck: 'Occult necklace',
-	body: 'Ancestral robe top',
-	cape: 'Imbued saradomin cape',
-	hands: 'Tormented bracelet',
-	legs: 'Ancestral robe bottom',
-	feet: 'Eternal boots',
-	weapon: 'Harmonised nightmare staff',
-	shield: 'Arcane spirit shield',
-	ring: 'Magus ring'
-});
-const maxMage = new Gear(maxMageGear);
-
-const maxRangeGear = constructGearSetup({
-	head: 'Armadyl helmet',
-	neck: 'Necklace of anguish',
-	body: 'Armadyl chestplate',
-	cape: "Ava's assembler",
-	hands: 'Zaryte vambraces',
-	legs: 'Armadyl chainskirt',
-	feet: 'Pegasian boots',
->>>>>>> master
 	'2h': 'Twisted bow',
 	ring: 'Ring of piercing(i)',
 	ammo: 'Dragon arrow'
 });
 const maxRange = new Gear(maxRangeGear);
 
-<<<<<<< HEAD
 export const maxMeleeGear = constructGearSetup({
 	head: 'Torva full helm',
 	neck: "Brawler's hook necklace",
@@ -226,19 +200,6 @@ export const maxMeleeGear = constructGearSetup({
 	weapon: 'Drygore rapier',
 	shield: 'Offhand drygore rapier',
 	ring: 'Ignis ring(i)'
-=======
-const maxMeleeGear = constructGearSetup({
-	head: "Inquisitor's great helm",
-	neck: 'Amulet of torture',
-	body: "Inquisitor's hauberk",
-	cape: 'Infernal cape',
-	hands: 'Ferocious gloves',
-	legs: "Inquisitor's plateskirt",
-	feet: 'Primordial boots',
-	weapon: "Inquisitor's mace",
-	shield: 'Avernic defender',
-	ring: 'Ultor ring'
->>>>>>> master
 });
 const maxMelee = new Gear(maxMeleeGear);
 

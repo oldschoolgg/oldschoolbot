@@ -213,5 +213,5 @@ export const quests: Quest[] = [
 	}
 ];
 
-export const MAX_GLOBAL_QP = 293;
+export const MAX_GLOBAL_QP = 5000;
 export const MAX_QP = MAX_GLOBAL_QP + sumArr(quests.map(i => i.qp));

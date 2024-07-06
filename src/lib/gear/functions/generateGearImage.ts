@@ -97,26 +97,7 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 	}
 }
 
-<<<<<<< HEAD
 async function drawStats(canvas: Canvas, gearStats: GearStats, alternateImage: Image | null) {
-=======
-export async function generateGearImage(
-	user: MUser,
-	gearSetup: Gear | GearSetup,
-	gearType: GearSetupType | null,
-	petID: number | null
-) {
-	debugLog('Generating gear image', { user_id: user.id });
-	const bankBg = user.user.bankBackground ?? 1;
-
-	const { sprite, uniqueSprite, background: userBgImage } = bankImageGenerator.getBgAndSprite(bankBg, user);
-
-	const hexColor = user.user.bank_bg_hex;
-
-	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
-	const gearTemplateImage = await loadAndCacheLocalImage('./src/lib/resources/images/gear_template.png');
-	const canvas = new Canvas(gearTemplateImage.width, gearTemplateImage.height);
->>>>>>> master
 	const ctx = canvas.getContext('2d');
 
 	if (alternateImage) {

@@ -27,7 +27,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	let [potentialQty, ...potentialName] = split.length === 1 ? ['', split[0]] : split;
 
 	if (isDeletedItemName(str)) return [];
-	if (!isNaN(Number(potentialQty)) && isDeletedItemName(potentialName.join(' '))) return [];
+	if (!Number.isNaN(Number(potentialQty)) && isDeletedItemName(potentialName.join(' '))) return [];
 
 	const lazyItemGet = Items.get(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
 	if (str.includes('#') && lazyItemGet && inputBank) {
@@ -178,46 +178,4 @@ export function parseBank({
 	}
 
 	return parseBankFromFlags({ bank: inputBank ?? new Bank(), flags, excludeItems, maxSize, user });
-}
-
-function truncateBankToSize(bank: Bank, size: number) {
-	const newBank = new Bank();
-
-	for (const [item, qty] of bank.items()) {
-		if (newBank.length === size) break;
-		newBank.add(item.id, qty);
-	}
-
-	return newBank;
-}
-
-interface ParseInputCostBankOptions {
-	usersBank: Bank;
-	flags?: Record<string, string>;
-	inputStr?: string;
-	excludeItems: readonly number[];
-	user?: MUser;
-}
-export function parseInputCostBank({
-	usersBank,
-	inputStr,
-	flags = {},
-	excludeItems,
-	user
-}: ParseInputCostBankOptions): Bank {
-	if (!inputStr && Object.keys(flags).length > 0) {
-		return truncateBankToSize(parseBankFromFlags({ bank: usersBank, flags, excludeItems, user }), 60);
-	}
-
-	const baseBank = parseBankFromFlags({ bank: usersBank, flags, excludeItems, user });
-	const stringInputBank = inputStr ? parseStringBank(inputStr, baseBank, true) : [];
-
-	const bank = new Bank();
-	for (const [item, qty] of stringInputBank) {
-		const amountOwned = baseBank.amount(item.id);
-		const maxQuantity = Number(flags.qty) || Number.POSITIVE_INFINITY;
-		bank.add(item.id, Math.min(maxQuantity, amountOwned, qty || amountOwned));
-	}
-
-	return truncateBankToSize(bank, 60);
 }

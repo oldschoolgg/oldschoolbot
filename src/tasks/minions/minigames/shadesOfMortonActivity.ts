@@ -8,7 +8,7 @@ import { Events } from '../../../lib/constants';
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ShadesOfMortonOptions } from '../../../lib/types/minions';
+import type { ShadesOfMortonOptions } from '../../../lib/types/minions';
 import { clAdjustedDroprate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { shades, shadesLogs } from '../../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
@@ -39,15 +39,7 @@ export const shadesOfMortonTask: MinionTask = {
 			table.add(subTable, 1, shade.highMetalKeys.fraction * multiplier);
 		}
 
-<<<<<<< HEAD
 		const messages: string[] = [];
-=======
-		for (let i = 0; i < quantity; i++) {
-			loot.add(table.roll());
-		}
-
-		const messages: string[] = [];
->>>>>>> master
 
 		// Pet droprate gets rarer if using lower tier shades
 		let gotPet = false;

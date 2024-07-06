@@ -1,27 +1,10 @@
-<<<<<<< HEAD
 import type { Prisma } from '@prisma/client';
-import {
-	Time,
-	calcWhatPercent,
-	deepClone,
-	increaseNumByPercent,
-	percentChance,
-	randArrItem,
-	reduceNumByPercent,
-	roll,
-	sumArr
-} from 'e';
-import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
-import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
-=======
-import type { Prisma } from '@prisma/client';
-import { Time, deepClone, percentChance } from 'e';
+import { Time, calcWhatPercent, deepClone, increaseNumByPercent, percentChance, randArrItem, reduceNumByPercent, roll, sumArr } from 'e';
 import type { MonsterKillOptions } from 'oldschooljs';
 import { Bank, Monsters } from 'oldschooljs';
->>>>>>> master
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import assert from 'assert';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { BitField, Emoji } from '../../lib/constants';
@@ -40,7 +23,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, isOnSlayerTask } from '../../lib/slayer/slayerUtil';
 import type { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { calculateSimpleMonsterDeathChance, clAdjustedDroprate, hasSkillReqs } from '../../lib/util';
+import { assert, calculateSimpleMonsterDeathChance, clAdjustedDroprate, hasSkillReqs } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import getOSItem from '../../lib/util/getOSItem';
@@ -381,11 +364,7 @@ export const monsterTask: MinionTask = {
 		const superiorTable = isOnTaskResult.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
 		const isInCatacombs = (!usingCannon ? monster.existsInCatacombs ?? undefined : undefined) && !isInWilderness;
 
-<<<<<<< HEAD
 		const hasRingOfWealthI = user.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness;
-=======
-		const hasRingOfWealthI = user.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness;
->>>>>>> master
 		if (hasRingOfWealthI) {
 			messages.push('\nYour clue scroll chance is doubled due to wearing a Ring of Wealth (i).');
 		}
@@ -431,12 +410,9 @@ export const monsterTask: MinionTask = {
 			}
 		}
 
-<<<<<<< HEAD
 		const masterCapeRolls = user.hasEquippedOrInBank('Slayer master cape') ? newSuperiorCount : 0;
 		newSuperiorCount += masterCapeRolls;
 
-=======
->>>>>>> master
 		// Regular loot
 		if (monster.specialLoot) {
 			monster.specialLoot({ loot, ownedItems: user.allItemsOwned, quantity: boostedQuantity, cl: user.cl });
@@ -596,7 +572,6 @@ export const monsterTask: MinionTask = {
 							? quantitySlayed * 2
 							: quantitySlayed;
 
-<<<<<<< HEAD
 			/**
 			 * Slayer masks/helms
 			 */
@@ -630,9 +605,6 @@ export const monsterTask: MinionTask = {
 			}
 
 			const quantityLeft = Math.max(0, isOnTaskResult.currentTask!.quantity_remaining - effectiveSlayed);
-=======
-			const quantityLeft = Math.max(0, isOnTaskResult.currentTask?.quantity_remaining - effectiveSlayed);
->>>>>>> master
 			const isUsingKrystilia = isOnTaskResult.slayerMaster.id === 8;
 
 			thisTripFinishesTask = quantityLeft === 0;

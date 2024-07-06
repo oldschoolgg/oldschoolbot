@@ -1,12 +1,13 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { type CommandOption, toTitleCase } from '@oldschoolgg/toolkit';
 import { uniqueArr } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { type APIApplicationCommandOptionChoice, ApplicationCommandOptionType, type User } from 'discord.js';
 import { secretItems } from '../../lib/constants';
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
 import { GearSetupTypes } from '../../lib/gear/types';
-import { IMaterialBank, materialTypes } from '../../lib/invention';
+import { type IMaterialBank, materialTypes } from '../../lib/invention';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
@@ -140,7 +141,6 @@ export const gearPresetOption: CommandOption = {
 			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
 	}
 };
-<<<<<<< HEAD
 
 export const ownedMaterialOption = {
 	name: 'material',
@@ -170,5 +170,3 @@ export function generateRandomBank(size: number) {
 	}
 	return bank;
 }
-=======
->>>>>>> master

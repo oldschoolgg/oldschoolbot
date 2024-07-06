@@ -76,11 +76,7 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 			continue;
 		}
 
-<<<<<<< HEAD
 		foodStr.push(`**Food:** ${healAmountNeeded} HP/kill`);
-=======
-		let foodStr = `**Food:** ${healAmountNeeded} HP/kill`;
->>>>>>> master
 
 		if (healAmountNeeded !== baseHealAmountNeeded) {
 			foodStr.push(
@@ -91,9 +87,10 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 			);
 		}
 
-		foodStr.push(`**Removed ${amountNeeded}x ${food.name}**`);
 
 		const cost = new Bank().add(food.id, amountNeeded);
+
+		foodStr.push(`**Removed ${cost}**`);
 
 		await user.removeItemsFromBank(cost);
 
@@ -126,7 +123,7 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 		type: 'Wintertodt'
 	});
 
-	let str = `${
+	const str = `${
 		user.minionName
 	} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(
 		durationPerTodt * quantity

@@ -4,7 +4,7 @@ import { chunk, sleep } from 'e';
 
 import type LastManStandingUsage from '../../structures/LastManStandingUsage';
 import { LMS_FINAL, LMS_PREP, LMS_ROUND } from '../../structures/LastManStandingUsage';
-import { channelIsSendable, cleanMentions } from '../../util';
+import { channelIsSendable } from '../../util';
 
 const playing = new Set<string>();
 

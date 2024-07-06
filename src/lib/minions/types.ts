@@ -1,10 +1,24 @@
 import type { Image } from '@napi-rs/canvas';
-import type { StoreBitfield } from '@oldschoolgg/toolkit';
-import type { XpGainSource } from '@prisma/client';
+import type { PerkTier, StoreBitfield } from '@oldschoolgg/toolkit';
+import type { GearSetupType, XpGainSource } from '@prisma/client';
+import type { BitField } from 'discord.js';
 import type { Bank, MonsterKillOptions } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import type SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
+import type { ClueTier } from '../clues/clueTiers';
+import type { Diary } from '../diaries';
+import type { GearStat, OffenceGearStat } from '../gear';
+import type { POHBoosts } from '../poh';
+import type { MinigameName } from '../settings/minigames';
+import type { LevelRequirements, SkillsEnum } from '../skilling/types';
+import type { MUserStats } from '../structures/MUserStats';
+import type { ArrayItemsResolved, Skills } from '../types';
+import type { MonsterActivityTaskOptions } from '../types/minions';
+import type { calculateSimpleMonsterDeathChance } from '../util';
+import type { BSOMonsters } from './data/killableMonsters/custom/customMonsters';
+import type { QuestID } from './data/quests';
+import type { AttackStyles } from './functions';
 
 export type BankBackground = {
 	image: Image | null;
@@ -125,7 +139,6 @@ export interface KillableMonster {
 	}[];
 	requiredQuests?: QuestID[];
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
-<<<<<<< HEAD
 	diaryRequirement?: [Diary, DiaryTier];
 	wildySlayerCave?: boolean;
 	requiredBitfield?: BitField;
@@ -136,10 +149,6 @@ export interface KillableMonster {
 	customRequirement?: (user: MUser) => Promise<string | null>;
 	setupsUsed?: GearSetupType[];
 	kcRequirements?: Partial<Record<keyof typeof BSOMonsters, number>>;
-=======
-	diaryRequirement?: [DiaryID, DiaryTierName];
-	wildySlayerCave?: boolean;
->>>>>>> master
 }
 /*
  * Monsters will have an array of Consumables

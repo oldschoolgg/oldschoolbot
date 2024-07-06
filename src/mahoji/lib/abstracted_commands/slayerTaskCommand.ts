@@ -1,4 +1,6 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
+import { Time, notEmpty, removeFromArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
@@ -347,26 +349,6 @@ export async function slayerNewTaskCommand({
 	}
 
 	const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
-<<<<<<< HEAD
-=======
-	const myUnlocks = user.user.slayer_unlocks ?? [];
-	const extendReward = SlayerRewardsShop.find(srs => srs.extendID?.includes(newSlayerTask.currentTask.monster_id));
-	if (extendReward && myUnlocks.includes(extendReward.id)) {
-		const quantity = newSlayerTask.assignedTask.extendedAmount
-			? randInt(newSlayerTask.assignedTask.extendedAmount[0], newSlayerTask.assignedTask.extendedAmount[1])
-			: Math.ceil(newSlayerTask.currentTask.quantity * extendReward.extendMult!);
-		newSlayerTask.currentTask.quantity = quantity;
-		await prisma.slayerTask.update({
-			where: {
-				id: newSlayerTask.currentTask.id
-			},
-			data: {
-				quantity: newSlayerTask.currentTask.quantity,
-				quantity_remaining: newSlayerTask.currentTask.quantity
-			}
-		});
-	}
->>>>>>> master
 
 	let commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 	if (commonName === 'TzHaar') {

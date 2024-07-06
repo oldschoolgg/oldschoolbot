@@ -1,6 +1,8 @@
 import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
 import { UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
+import { Time, increaseNumByPercent, noOp, notEmpty, objectValues } from 'e';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { MAXING_MESSAGE } from '../config';
 import { Channel, Events, GLOBAL_BSO_XP_MULTIPLIER, LEVEL_120_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants';
@@ -12,11 +14,13 @@ import {
 	inventorOutfit
 } from './data/CollectionsExport';
 import { skillEmoji } from './data/emojis';
+import { getSimilarItems } from './data/similarItems';
+import type { AddXpParams } from './minions/types';
 import { prisma } from './settings/prisma';
 import Skillcapes from './skilling/skillcapes';
 import Skills from './skilling/skills';
 import { SkillsEnum } from './skilling/types';
-import { itemNameFromID } from './util';
+import { convertLVLtoXP, convertXPtoLVL, itemNameFromID, toKMB } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
 import { insertUserEvent } from './util/userEvents';
@@ -105,7 +109,7 @@ const skillingOutfitBoosts = [
 // Build list of all Master capes including combined capes.
 const allMasterCapes = Skillcapes.map(i => i.masterCape)
 	.map(msc => getSimilarItems(msc.id))
-	.flat(Infinity) as number[];
+	.flat(Number.POSITIVE_INFINITY) as number[];
 
 function getEquippedCapes(user: MUser) {
 	return objectValues(user.gear)
@@ -338,19 +342,8 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			{
 				count: string;
 			}[]
-<<<<<<< HEAD
 		>(`SELECT COUNT(*)::int FROM users WHERE "skills.${params.skillName}" >= ${queryValue};`);
 		resultStr = resultStr.replace('{nthUser}', formatOrdinal(Number(nthUser.count) + 1));
-=======
-		>(`SELECT COUNT(*)::int FROM users WHERE "skills.${params.skillName}" >= ${LEVEL_99_XP};`);
-
-		let str = `${skill.emoji} **${user.badgedUsername}'s** minion, ${
-			user.minionName
-		}, just achieved level 99 in ${skillNameCased}! They are the ${formatOrdinal(
-			Number.parseInt(usersWith.count) + 1
-		)} to get 99 ${skillNameCased}.`;
-
->>>>>>> master
 		if (user.isIronman) {
 			const [nthIron] = await prisma.$queryRawUnsafe<
 				{
@@ -359,11 +352,7 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 			>(
 				`SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${queryValue};`
 			);
-<<<<<<< HEAD
 			resultStr = resultStr.replace('{nthIron}', formatOrdinal(Number(nthIron.count) + 1));
-=======
-			str += ` They are the ${formatOrdinal(Number.parseInt(ironmenWith.count) + 1)} Ironman to get 99.`;
->>>>>>> master
 		}
 		globalClient.emit(Events.ServerNotification, resultStr);
 	}

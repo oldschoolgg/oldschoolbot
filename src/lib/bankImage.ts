@@ -1,12 +1,8 @@
-<<<<<<< HEAD
-import { Canvas, GlobalFonts, Image, SKRSContext2D, loadImage } from '@napi-rs/canvas';
-=======
 import { existsSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import type { SKRSContext2D } from '@napi-rs/canvas';
 import { Canvas, GlobalFonts, Image, loadImage } from '@napi-rs/canvas';
->>>>>>> master
 import { PerkTier, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { AttachmentBuilder, BitField } from 'discord.js';

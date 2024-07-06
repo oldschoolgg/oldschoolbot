@@ -95,11 +95,7 @@ export const templeTrekkingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-<<<<<<< HEAD
-		let str = `${user}, ${user.minionName} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated. ${flappyRes.userMsg}`;
-=======
-		const str = `${user}, ${user.minionName} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated.`;
->>>>>>> master
+		const str = `${user}, ${user.minionName} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated. ${flappyRes.userMsg}`;
 
 		const image = await makeBankImage({
 			bank: itemsAdded,

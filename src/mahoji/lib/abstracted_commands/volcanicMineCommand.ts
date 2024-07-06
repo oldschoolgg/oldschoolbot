@@ -161,15 +161,11 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 
 	await transactItems({ userID: user.id, itemsToRemove: suppliesUsage });
 
-<<<<<<< HEAD
 	if (user.usingPet('Doug')) {
 		boosts.push('20% more Mining XP for having Doug helping you!');
 	}
 
-	let duration = VolcanicMineGameTime * gameQuantity;
-=======
 	const duration = VolcanicMineGameTime * gameQuantity;
->>>>>>> master
 
 	const str = `${
 		user.minionName

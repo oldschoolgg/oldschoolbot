@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"@napi-rs/canvas": "^0.1.53",
-		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#829c88554e74eff5c7ba1c50bd335a0056728a45",
+		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#34f0318a1002fbc6799931a20a8fcd2588f85920",
 		"@prisma/client": "^5.16.1",
 		"@sapphire/snowflake": "^3.5.3",
 		"@sapphire/stopwatch": "^1.4.0",
@@ -36,7 +36,7 @@
 		"murmurhash": "^2.0.1",
 		"node-cron": "^3.0.3",
 		"node-fetch": "^2.6.7",
-		"oldschooljs": "^2.5.4",
+		"oldschooljs": "2.5.4",
 		"p-queue": "^6.6.2",
 		"piscina": "^4.6.1",
 		"random-js": "^2.1.0",

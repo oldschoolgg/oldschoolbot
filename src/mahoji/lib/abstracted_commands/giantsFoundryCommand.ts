@@ -1,5 +1,7 @@
 import { Bank } from 'oldschooljs';
 
+import { ChatInputCommandInteraction } from 'discord.js';
+import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 import { TOTAL_GIANT_WEAPONS } from '../../../lib/giantsFoundry';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
@@ -178,7 +180,7 @@ export async function giantsFoundryStartCommand(
 	if (
 <<<<<<< HEAD
 		user.hasEquippedOrInBank(
-			Object.keys(Smithing.smithsUniformItems).map(i => parseInt(i)),
+			Object.keys(Smithing.smithsUniformItems).map(i => Number.parseInt(i)),
 			'every'
 =======
 		user.gear.skilling.hasEquipped(
@@ -192,7 +194,7 @@ export async function giantsFoundryStartCommand(
 		// For each Smiths' Uniform item, check if they have it, give its' set boost and covert to 15% speed bonus later.
 		for (const [itemID] of Object.entries(Smithing.smithsUniformItems)) {
 <<<<<<< HEAD
-			if (user.hasEquippedOrInBank(parseInt(itemID))) {
+			if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
 =======
 			if (user.gear.skilling.hasEquipped([Number.parseInt(itemID)], false)) {
 >>>>>>> master

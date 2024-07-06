@@ -22,12 +22,8 @@ export const brewingTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-<<<<<<< HEAD
-		const str = `${user}, ${user.minionName} finished doing ${quantity}x games of Trouble Brewing, you received: ${loot}.`;
+		let str = `${user}, ${user.minionName} finished doing ${quantity}x games of Trouble Brewing, you received: ${loot}.`;
 		if (flappyRes.userMsg) str += `\n${flappyRes.userMsg}`;
-=======
-		const str = `${user}, ${user.minionName} finished doing ${quantity}x games of Trouble Brewing, you received: ${loot}.`;
->>>>>>> master
 
 		handleTripFinish(user, channelID, str, undefined, data, null);
 	}

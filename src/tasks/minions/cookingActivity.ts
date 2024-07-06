@@ -1,11 +1,14 @@
 import { Bank } from 'oldschooljs';
 
+import { roll } from 'e';
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables';
 import Cooking from '../../lib/skilling/skills/cooking/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
+import type { CookingActivityTaskOptions } from '../../lib/types/minions';
+import { clAdjustedDroprate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const cookingTask: MinionTask = {

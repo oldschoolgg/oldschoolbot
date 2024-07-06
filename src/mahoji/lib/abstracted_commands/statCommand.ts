@@ -4,7 +4,10 @@ import type { ItemBank, SkillsScore } from 'oldschooljs/dist/meta/types';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { PerkTier } from '@oldschoolgg/toolkit';
+import { type CommandResponse, PerkTier, toTitleCase } from '@oldschoolgg/toolkit';
+import type { UserStats, activity_type_enum } from '@prisma/client';
+import { bold } from 'discord.js';
+import { Time, sumArr } from 'e';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
 import { Emoji } from '../../../lib/constants';

@@ -1,12 +1,12 @@
 import { PerkTier, mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { BitField, Emoji, type User, userMention } from 'discord.js';
+import type { GearSetupType, Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
+import { userMention } from 'discord.js';
 import { Time, calcWhatPercent, objectEntries, percentChance, randArrItem, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import type { GearSetupType, Prisma, TameActivity, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
@@ -15,7 +15,7 @@ import type { GodFavourBank, GodName } from './bso/divineDominion';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
 import { type CATier, CombatAchievements } from './combat_achievements/combatAchievements';
-import { badges, projectiles, usernameCache } from './constants';
+import { BitField, Emoji, badges, projectiles, usernameCache } from './constants';
 import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';

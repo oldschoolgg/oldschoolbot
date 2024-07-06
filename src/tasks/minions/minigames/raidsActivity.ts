@@ -11,6 +11,8 @@ import { createTeam } from '../../../lib/data/cox';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
+import { incrementMinigameScore } from '../../../lib/settings/minigames';
+import type { RaidsOptions } from '../../../lib/types/minions';
 import { randomVariation, roll } from '../../../lib/util';
 import { handleSpecialCoxLoot } from '../../../lib/util/handleSpecialCoxLoot';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -168,13 +170,8 @@ export const raidsTask: MinionTask = {
 		} finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
 		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, quantity)));
 
-<<<<<<< HEAD
 		for (const [userID, userData] of raidResults) {
 			const { personalPoints, deaths, deathChance, loot, mUser: user, naturalDouble, flappyMsg } = userData;
-=======
-		for (const [userID, userData] of raidResults) {
-			const { personalPoints, deaths, deathChance, loot, mUser: user } = userData;
->>>>>>> master
 			if (!user) continue;
 			if (naturalDouble) loot.add(MysteryBoxes.roll());
 

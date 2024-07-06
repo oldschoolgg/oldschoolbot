@@ -70,15 +70,9 @@ export const wintertodtTask: MinionTask = {
 
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
-<<<<<<< HEAD
 			user.hasEquippedOrInBank(
 				Object.keys(Firemaking.pyromancerItems).map(i => Number.parseInt(i)),
 				'every'
-=======
-			user.gear.skilling.hasEquipped(
-				Object.keys(Firemaking.pyromancerItems).map(i => Number.parseInt(i)),
-				true
->>>>>>> master
 			)
 		) {
 			const amountToAdd = Math.floor(fmXpToGive * (2.5 / 100));
@@ -87,11 +81,7 @@ export const wintertodtTask: MinionTask = {
 		} else {
 			// For each pyromancer item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Firemaking.pyromancerItems)) {
-<<<<<<< HEAD
 				if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
-=======
-				if (user.hasEquipped(Number.parseInt(itemID))) {
->>>>>>> master
 					const amountToAdd = Math.floor(fmXpToGive * (bonus / 100));
 					fmXpToGive += amountToAdd;
 					fmBonusXP += amountToAdd;

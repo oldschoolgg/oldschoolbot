@@ -1,8 +1,10 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
+import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
+import { calcBabyYagaHouseDroprate } from '../../lib/util';
 import { calcConBonusXP } from '../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 

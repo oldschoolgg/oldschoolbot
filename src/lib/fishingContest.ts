@@ -1,7 +1,7 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import { FishingContestCatch } from '@prisma/client';
+import { seedShuffle, toTitleCase } from '@oldschoolgg/toolkit';
+import type { FishingContestCatch } from '@prisma/client';
 import { calcPercentOfNum, randArrItem } from 'e';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import {
 	ArdougneDiary,
@@ -9,12 +9,12 @@ import {
 	KourendKebosDiary,
 	LumbridgeDraynorDiary,
 	MorytaniaDiary,
-	userhasDiaryTier,
-	WildernessDiary
+	WildernessDiary,
+	userhasDiaryTier
 } from './diaries';
 import { prisma } from './settings/prisma';
 import { SkillsEnum } from './skilling/types';
-import { averageArr, gaussianRandom, ISODateString, murMurSort } from './util';
+import { ISODateString, averageArr, gaussianRandom, murMurSort } from './util';
 import getOSItem from './util/getOSItem';
 
 const warmVerbs = ['freshwater', 'waterborn', 'silver'];
@@ -247,8 +247,8 @@ export function getCurrentFishType(dateOverride?: Date): FishType {
 	const day = (dateOverride ?? new Date()).toLocaleDateString();
 
 	return {
-		temperature: murMurSort(['cold', 'warm'], day)[0],
-		water: murMurSort(['ocean', 'lake', 'river'], day)[0]
+		temperature: seedShuffle(['cold', 'warm'] as const, day)[0],
+		water: seedShuffle(['ocean', 'lake', 'river'] as const, day)[0]
 	};
 }
 

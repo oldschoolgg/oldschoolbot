@@ -17,9 +17,9 @@ import {
 } from '../../../lib/data/tob';
 import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
 import {
+	InventionID,
 	canAffordInventionBoost,
 	inventionBoosts,
-	InventionID,
 	inventionItemBoost
 } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -262,16 +262,12 @@ async function checkTOBUser(
 	return [false];
 }
 
-<<<<<<< HEAD
 export async function checkTOBTeam(
 	users: MUser[],
 	isHardMode: boolean,
 	solo: 'solo' | 'trio' | undefined,
-	quantity: number = 1
+	quantity = 1
 ): Promise<string | null> {
-=======
-async function checkTOBTeam(users: MUser[], isHardMode: boolean, solo: boolean, quantity = 1): Promise<string | null> {
->>>>>>> master
 	const userWithoutSupplies = users.find(u => !u.bank.has(minimumTOBSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
@@ -282,15 +278,10 @@ async function checkTOBTeam(users: MUser[], isHardMode: boolean, solo: boolean, 
 
 	for (const user of users) {
 		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
-<<<<<<< HEAD
 		const checkResult = await checkTOBUser(user, isHardMode, solo === 'trio' ? 3 : users.length, quantity);
 		if (!checkResult[0]) {
 			continue;
 		} else {
-=======
-		const checkResult = await checkTOBUser(user, isHardMode, users.length, quantity);
-		if (checkResult[1]) {
->>>>>>> master
 			return checkResult[1];
 		}
 	}
@@ -477,7 +468,6 @@ export async function tobStartCommand(
 			const supplies = await calcTOBInput(u);
 			const { total } = calculateTOBUserGearPercents(u);
 			const blowpipeData = u.blowpipe;
-<<<<<<< HEAD
 			const preChincannonCost = supplies
 				.clone()
 				.add('Coins', 100_000)
@@ -489,16 +479,6 @@ export async function tobStartCommand(
 				preChincannonCost.add(u.gear.range.ammo!.item, 100);
 			}
 			const { realCost } = await u.specialRemoveItems(preChincannonCost.multiply(qty));
-=======
-			const { realCost } = await u.specialRemoveItems(
-				supplies
-					.clone()
-					.add('Coins', 100_000)
-					.add(blowpipeData.dartID!, Math.floor(Math.min(blowpipeData.dartQuantity, 156)))
-					.add(u.gear.range.ammo?.item, 100)
-					.multiply(qty)
-			);
->>>>>>> master
 			await userStatsBankUpdate(u.id, 'tob_cost', realCost);
 			const effectiveCost = realCost.clone().remove('Coins', realCost.amount('Coins'));
 			totalCost.add(effectiveCost);

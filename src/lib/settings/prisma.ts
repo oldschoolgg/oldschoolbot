@@ -13,11 +13,7 @@ declare global {
 
 function makePrismaClient(): PrismaClient {
 	if (!production && !process.env.TEST) console.log('Making prisma client...');
-<<<<<<< HEAD
 	if (!isMainThread) {
-=======
-	if (!isMainThread && !process.env.TEST) {
->>>>>>> master
 		throw new Error('Prisma client should only be created on the main thread.');
 	}
 

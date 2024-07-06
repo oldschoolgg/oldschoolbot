@@ -96,11 +96,7 @@ export const gnomeResTask: MinionTask = {
 			duration
 		});
 
-<<<<<<< HEAD
 		const str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x Gnome Restaurant deliveries.  You received **${loot}**. ${xpRes} ${flappyRes.userMsg}`;
-=======
-		const str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x Gnome Restaurant deliveries. You received **${loot}**. ${xpRes}`;
->>>>>>> master
 
 		updateBankSetting('gnome_res_loot', loot);
 

@@ -1,8 +1,9 @@
 import { clamp, objectValues } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { Item } from 'oldschooljs/dist/meta/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import type { Skills } from '../../../lib/types';
+import type { ItemBank, Skills } from '../../../lib/types';
 import { assert, isValidSkill, itemID } from '../../../lib/util';
 import { getItem } from '../../../lib/util/getOSItem';
 import resolveItems from '../../../lib/util/resolveItems';
@@ -306,7 +307,7 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 	const amount = skillsToReceive[skill]!;
 	assert(typeof amount === 'number' && amount > 0);
 	userStatsUpdate(user.id, u => {
-		let newLampedXp = {
+		const newLampedXp = {
 			...(u.lamped_xp as ItemBank)
 		};
 		if (!newLampedXp[skill]) newLampedXp[skill] = amount;

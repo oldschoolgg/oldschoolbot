@@ -88,19 +88,19 @@ import { temporossCommand } from './temporossCommand';
 import { vasaCommand } from './vasaCommand';
 import { wintertodtCommand } from './wintertodtCommand';
 import { zalcanoCommand } from './zalcanoCommand';
-import { GearSetupType, Prisma } from '@prisma/client';
-import { ChatInputCommandInteraction, BitField, bold, InteractionReplyOptions } from 'discord.js';
-import { PvMMethod, YETI_ID, PeakTier } from '../../../lib/constants';
+import type { GearSetupType, Prisma } from '@prisma/client';
+import { type ChatInputCommandInteraction, BitField, bold, type InteractionReplyOptions } from 'discord.js';
+import { type PvMMethod, YETI_ID, PeakTier } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanWarriorOutfit, gorajanOccultOutfit } from '../../../lib/data/CollectionsExport';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { degradeablePvmBoostItems, checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
 import { userhasDiaryIDTier } from '../../../lib/diaries';
-import { maxOffenceStats, GearStat } from '../../../lib/gear';
+import { maxOffenceStats, type GearStat } from '../../../lib/gear';
 import { canAffordInventionBoost, InventionID, inventionItemBoost } from '../../../lib/invention/inventions';
 import { addStatsOfItemsTogether } from '../../../lib/structures/Gear';
-import { Peak } from '../../../lib/tickers';
-import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
+import type { Peak } from '../../../lib/tickers';
+import type { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
@@ -397,30 +397,6 @@ export async function minionKillCommand(
 		const style = convertAttackStylesToSetup(user.user.attack_style);
 		const specialWeapon = revSpecialWeapons[style];
 		const upgradedWeapon = revUpgradedWeapons[style];
-<<<<<<< HEAD
-=======
-
-		if (wildyGear.hasEquipped(specialWeapon.name)) {
-			revBoost = 12.5;
-			timeToFinish = reduceNumByPercent(timeToFinish, revBoost);
-			revBoostMsg = `${revBoost}% for ${specialWeapon.name}`;
-		}
-
-		if (wildyGear.hasEquipped(upgradedWeapon.name)) {
-			revBoost = 17.5;
-			timeToFinish = reduceNumByPercent(timeToFinish, revBoost);
-			revBoostMsg = `${revBoost}% for ${upgradedWeapon.name}`;
-		}
-	}
-
-	function applyDragonBoost() {
-		const hasDragonLance = isInWilderness
-			? wildyGear.hasEquipped('Dragon hunter lance')
-			: user.hasEquippedOrInBank('Dragon hunter lance');
-		const hasDragonCrossbow = isInWilderness
-			? wildyGear.hasEquipped('Dragon hunter crossbow')
-			: user.hasEquippedOrInBank('Dragon hunter crossbow');
->>>>>>> master
 
 		if (wildyGear.hasEquipped(specialWeapon.name)) {
 			revBoost = 12.5;
@@ -451,19 +427,10 @@ export async function minionKillCommand(
 	}
 
 	function applyBlackMaskBoost() {
-<<<<<<< HEAD
 		const hasInfernalSlayerHelmI = user.hasEquippedOrInBank('Infernal slayer helmet(i)');
 		const hasInfernalSlayerHelm = user.hasEquippedOrInBank('Infernal slayer helmet');
 		const hasBlackMask = user.hasEquippedOrInBank('Black mask');
 		const hasBlackMaskI = user.hasEquippedOrInBank('Black mask (i)');
-=======
-		const hasBlackMask = isInWilderness
-			? wildyGear.hasEquipped('Black mask')
-			: user.hasEquippedOrInBank('Black mask');
-		const hasBlackMaskI = isInWilderness
-			? wildyGear.hasEquipped('Black mask (i)')
-			: user.hasEquippedOrInBank('Black mask (i)');
->>>>>>> master
 
 		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
 			if (hasBlackMaskI) {

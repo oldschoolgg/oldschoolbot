@@ -5,7 +5,7 @@ import { itemID } from 'oldschooljs/dist/util';
 import { prisma } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { Gear } from '../../../lib/structures/Gear';
+import type { Gear } from '../../../lib/structures/Gear';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
@@ -692,7 +692,7 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 	});
 
 	updateBankSetting('inferno_cost', realCost);
-	let emergedZukDeathMsg = emerged
+	const emergedZukDeathMsg = emerged
 		? `**Emerged Zuk Death Chance:** ${emergedZukDeathChance.value.toFixed(
 				1
 		  )}% ${emergedZukDeathChance.messages.join(', ')} ${

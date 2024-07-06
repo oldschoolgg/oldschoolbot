@@ -1,12 +1,17 @@
 import { Bank } from 'oldschooljs';
 
+import { channelIsSendable, formatDuration, isWeekend } from '@oldschoolgg/toolkit';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { Time, increaseNumByPercent, reduceNumByPercent, round } from 'e';
 import { calcBossFood } from '../../../lib/bso/calcBossFood';
 import { gorajanArcherOutfit, pernixOutfit } from '../../../lib/data/CollectionsExport';
 import { trackLoot } from '../../../lib/lootTrack';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
-import { KillableMonster } from '../../../lib/minions/types';
+import type { KillableMonster } from '../../../lib/minions/types';
 import { NexMonster } from '../../../lib/nex';
 import { setupParty } from '../../../lib/party';
+import type { MakePartyOptions } from '../../../lib/types';
+import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
@@ -135,7 +140,7 @@ export async function nexCommand(
 			users.map(u => u.id)
 		);
 		debugStr += `**${user.usernameOrMention}**: `;
-		let msgs = [];
+		const msgs = [];
 
 		const rangeGear = user.gear.range;
 		if (rangeGear.hasEquipped(pernixOutfit, true, true)) {
@@ -236,7 +241,7 @@ export async function nexCommand(
 	if (users.length === 5) minDuration = 1.2;
 	if (users.length >= 6) minDuration = 1;
 
-	let durQtyRes = await calcDurQty(
+	const durQtyRes = await calcDurQty(
 		users,
 		{ ...NexMonster, timeToFinish: effectiveTime },
 		inputQuantity,
@@ -244,12 +249,12 @@ export async function nexCommand(
 		Time.Minute * 30
 	);
 	if (typeof durQtyRes === 'string') return durQtyRes;
-	let [quantity, duration, perKillTime] = durQtyRes;
+	const [quantity, duration, perKillTime] = durQtyRes;
 	const secondCheck = await checkReqs(users, NexMonster, quantity);
 	if (secondCheck) return secondCheck;
 
-	let foodString = 'Removed brews/restores from users: ';
-	let foodRemoved: string[] = [];
+	const foodString = 'Removed brews/restores from users: ';
+	const foodRemoved: string[] = [];
 	for (const user of users) {
 		const food = await calcBossFood(user, NexMonster, users.length, quantity);
 		if (!user.bank.has(food)) {
@@ -284,7 +289,7 @@ export async function nexCommand(
 	});
 
 <<<<<<< HEAD
-	foodString += `${foodRemoved.join(', ')}.`;
+	foodString += `$foodRemoved.join(', ').`;
 =======
 	const str = `${user.usernameOrMention}'s party (${mahojiUsers
 		.map(u => u.usernameOrMention)
@@ -307,10 +312,10 @@ export async function nexCommand(
 
 	let str =
 		type === 'solo'
-			? `Your minion is now attempting to kill ${quantity}x Nex. ${foodString} The trip will take ${formatDuration(
+			? `Your minion is now attempting to kill $quantityx Nex. $foodStringThe trip will take $formatDuration(
 					duration
-			  )}.`
-			: `${partyOptions.leader.usernameOrMention}'s party (${users
+			  ).`
+			: `$partyOptions.leader.usernameOrMention's party (${users
 					.map(u => u.usernameOrMention)
 					.join(', ')}) is now off to kill ${quantity}x ${NexMonster.name}. Each kill takes ${formatDuration(
 					perKillTime

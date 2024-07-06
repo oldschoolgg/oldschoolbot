@@ -833,20 +833,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#829c88554e74eff5c7ba1c50bd335a0056728a45":
+"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#34f0318a1002fbc6799931a20a8fcd2588f85920":
   version: 0.0.24
-  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=829c88554e74eff5c7ba1c50bd335a0056728a45"
+  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=34f0318a1002fbc6799931a20a8fcd2588f85920"
   dependencies:
-    deep-merge: "npm:^1.0.0"
-    e: "npm:^0.2.33"
+    decimal.js: "npm:^10.4.3"
+    deepmerge: "npm:4.3.1"
+    e: "npm:0.2.33"
     emoji-regex: "npm:^10.2.1"
     ioredis: "npm:^5.4.1"
     math-expression-evaluator: "npm:^1.3.14"
-    zod: "npm:^3.23.8"
+    pure-rand: "npm:^6.1.0"
+    zod: "npm:3.23.8"
   peerDependencies:
     discord.js: ^14.15.3
-    oldschooljs: ^2.5.4
-  checksum: 10c0/f16d1d97bc659c0c4c288b13c306a5b29acc37045a0d78a4080af0f82f9993a380fee84be3254ed85fc0e622f0a839203a6c36d9797b1f1a85bde2012ca18522
+    oldschooljs: ^2.5.6
+  checksum: 10c0/aacd3415f73b2bddc77157f6942a8b4d548d9e236cb77358f47b0cb2aa1ec759c78015627efc078d2c76646ae0bd9b376400fffa8cbcd9165cda16bfb1f6d3af
   languageName: node
   linkType: hard
 
@@ -2277,16 +2279,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deep-merge@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "deep-merge@npm:1.0.0"
-  dependencies:
-    xtend: "npm:~1.0.3"
-  checksum: 10c0/240b4242e8f73547286d7b733bf27039530c1b70bf0b772a5fb4327407c84e04f20bc2d58d80e9c20f7e36370fe3d54c97fa1586e64ed1807d5e8aef68c15a5c
-  languageName: node
-  linkType: hard
-
-"deepmerge@npm:^4.3.1":
+"deepmerge@npm:4.3.1, deepmerge@npm:^4.3.1":
   version: 4.3.1
   resolution: "deepmerge@npm:4.3.1"
   checksum: 10c0/e53481aaf1aa2c4082b5342be6b6d8ad9dfe387bc92ce197a66dea08bd4265904a087e75e464f14d1347cf2ac8afe1e4c16b266e0561cc5df29382d3c5f80044
@@ -2348,14 +2341,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"e@npm:^0.2.32":
-  version: 0.2.32
-  resolution: "e@npm:0.2.32"
-  checksum: 10c0/a9c6d585defbb2938820451c223dc24b488c7d676ee1ca6b1ce1021cf347339f596c89f9665b3702a522134fd99066205e537d5f9aa8394acd5225e1498d4ea0
-  languageName: node
-  linkType: hard
-
-"e@npm:^0.2.33":
+"e@npm:0.2.33, e@npm:^0.2.32, e@npm:^0.2.33":
   version: 0.2.33
   resolution: "e@npm:0.2.33"
   checksum: 10c0/28c12ee98d5587686765831ac71ea5676e138c43491a305c9dc28edc10efc53ac2aedec8e0266f0bcc5ff414f909e0ccf1cc37032754660f1c07d8ed2b6652d1
@@ -3636,7 +3622,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oldschooljs@npm:^2.5.4":
+"oldschooljs@npm:2.5.4":
   version: 2.5.4
   resolution: "oldschooljs@npm:2.5.4"
   dependencies:
@@ -4012,6 +3998,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pure-rand@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "pure-rand@npm:6.1.0"
+  checksum: 10c0/1abe217897bf74dcb3a0c9aba3555fe975023147b48db540aa2faf507aee91c03bf54f6aef0eb2bf59cc259a16d06b28eca37f0dc426d94f4692aeff02fb0e65
+  languageName: node
+  linkType: hard
+
 "queue-microtask@npm:^1.2.2":
   version: 1.2.3
   resolution: "queue-microtask@npm:1.2.3"
@@ -4187,7 +4180,7 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:^1.8.3"
     "@napi-rs/canvas": "npm:^0.1.53"
-    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#829c88554e74eff5c7ba1c50bd335a0056728a45"
+    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#34f0318a1002fbc6799931a20a8fcd2588f85920"
     "@prisma/client": "npm:^5.16.1"
     "@sapphire/snowflake": "npm:^3.5.3"
     "@sapphire/stopwatch": "npm:^1.4.0"
@@ -4214,7 +4207,7 @@ __metadata:
     murmurhash: "npm:^2.0.1"
     node-cron: "npm:^3.0.3"
     node-fetch: "npm:^2.6.7"
-    oldschooljs: "npm:^2.5.4"
+    oldschooljs: "npm:2.5.4"
     p-queue: "npm:^6.6.2"
     piscina: "npm:^4.6.1"
     prettier: "npm:^3.3.2"
@@ -4915,13 +4908,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xtend@npm:~1.0.3":
-  version: 1.0.3
-  resolution: "xtend@npm:1.0.3"
-  checksum: 10c0/82a31d7be2f693717d8dd284b4ec3f40e7b729fdf20f36a9f9233eb4f9dd6398fa5cd5062def9c4723c5846996ca54322c953f550e4b3c84eea46a6465002af4
-  languageName: node
-  linkType: hard
-
 "y18n@npm:^5.0.5":
   version: 5.0.8
   resolution: "y18n@npm:5.0.8"
@@ -4975,7 +4961,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.23.8":
+"zod@npm:3.23.8, zod@npm:^3.23.8":
   version: 3.23.8
   resolution: "zod@npm:3.23.8"
   checksum: 10c0/8f14c87d6b1b53c944c25ce7a28616896319d95bc46a9660fe441adc0ed0a81253b02b5abdaeffedbeb23bdd25a0bf1c29d2c12dd919aef6447652dd295e3e69

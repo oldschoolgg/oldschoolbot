@@ -233,7 +233,7 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 	if (hasCob && type === 'solo') {
 		effectiveTime /= 2;
 	}
-	let durQtyRes = await calcDurQty(
+	const durQtyRes = await calcDurQty(
 =======
 	const durQtyRes = await calcDurQty(
 >>>>>>> master
