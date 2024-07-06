@@ -4,6 +4,8 @@ import { Bank } from 'oldschooljs';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { production } from '../../config';
+import { DOANonUniqueTable } from '../../lib/bso/doa/doaLootTable';
+import { doaStartCommand } from '../../lib/bso/doa/doaStartCommand';
 import { doaMetamorphPets } from '../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { degradeableItems } from '../../lib/degradeableItems';
@@ -13,7 +15,6 @@ import {
 	chanceOfDOAUnique,
 	createDOATeam,
 	doaHelpCommand,
-	doaStartCommand,
 	pickUniqueToGiveUser
 } from '../../lib/depthsOfAtlantis';
 import { type RaidLevel, mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
@@ -22,7 +23,6 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import resolveItems from '../../lib/util/resolveItems';
-import { DOANonUniqueTable } from '../../tasks/minions/bso/doaActivity';
 import { coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
 import type { OSBMahojiCommand } from '../lib/util';

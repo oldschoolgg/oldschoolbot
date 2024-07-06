@@ -1,7 +1,7 @@
 import { randArrItem, randInt, roll } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
-import { DOANonUniqueTable } from '../../tasks/minions/bso/doaActivity';
+import { DOANonUniqueTable } from '../bso/doa/doaLootTable';
 import { nexUniqueDrops } from '../data/CollectionsExport';
 import { chanceOfDOAUnique, pickUniqueToGiveUser } from '../depthsOfAtlantis';
 import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';

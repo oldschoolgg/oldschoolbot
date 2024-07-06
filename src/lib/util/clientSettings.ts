@@ -1,7 +1,6 @@
 import type { ClientStorage, Prisma } from '@prisma/client';
 
 import { globalConfig } from '../constants';
-import { prisma } from '../settings/prisma';
 
 // Is not typesafe, returns only what is selected, but will say it contains everything.
 export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSelect = { id: true }) {

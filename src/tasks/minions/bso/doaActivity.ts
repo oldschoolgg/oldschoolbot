@@ -1,10 +1,11 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { Time, randArrItem, reduceNumByPercent, roll, uniqueArr } from 'e';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
+import { DOANonUniqueTable } from '../../../lib/bso/doa/doaLootTable';
 import { Emoji, Events } from '../../../lib/constants';
 import { doaCL, doaMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../../lib/data/globalDroprates';
@@ -13,51 +14,11 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import { DragonTable } from '../../../lib/simulation/grandmasterClue';
-import { StoneSpiritTable, runeAlchablesTable } from '../../../lib/simulation/sharedTables';
 import type { DOAOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
-
-const DragonFletchingTable = new LootTable()
-	.add('Dragon arrowtips', [10, 20])
-	.add('Dragon dart tip', [10, 20])
-	.add('Dragon javelin heads', [10, 20]);
-
-const RareGemRockTable = new LootTable()
-	.add('Uncut sapphire', 1, 9)
-	.add('Uncut emerald', 1, 5)
-	.add('Uncut ruby', 1, 5)
-	.add('Uncut diamond', 1, 4);
-
-const RareOreTable = new LootTable()
-	.add('Mithril ore', [10, 70], 55)
-	.add('Adamantite ore', [15, 50], 55)
-	.add('Runite ore', [1, 20], 45)
-	.add('Amethyst', [1, 15], 45);
-
-const BaseNonUniqueTable = new LootTable()
-	.add(RareGemRockTable, [80, 120], undefined, { multiply: true })
-	.add(DragonFletchingTable, [15, 20], undefined, { multiply: true })
-	.add(runeAlchablesTable, [25, 30], undefined, { multiply: true })
-	.add(RareOreTable, [11, 15], undefined, { multiply: true })
-	.add(DragonTable, [11, 18], undefined, { multiply: true })
-	.add(StoneSpiritTable, [30, 60], undefined, { multiply: true });
-
-const DOAClueTable = new LootTable()
-	.add('Clue scroll (medium)', 1, 5)
-	.add('Clue scroll (hard)', 1, 4)
-	.add('Clue scroll (elite)', 1, 3)
-	.add('Clue scroll (master)', 1, 2)
-	.add('Clue scroll (grandmaster)', 1, 2);
-
-export const DOANonUniqueTable = new LootTable()
-	.tertiary(100, 'Oceanic dye')
-	.oneIn(40, 'Shark tooth')
-	.every(DOAClueTable, 2, { multiply: true })
-	.every(BaseNonUniqueTable, 3, { multiply: true });
 
 async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
 	let rangeXP = 10_000 * qty;

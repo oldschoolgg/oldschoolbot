@@ -844,8 +844,8 @@ const allTableCommands: TestCommand[] = [
 			const items = 'Pyromancer garb, Pyromancer boots, Pyromancer hood, Pyromancer robe, Warm gloves';
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
-
-			await user.update({ [`gear_${setup}`]: equippedGear });
+			if (!equippedGear) throw new Error('Equipped gear is undefined.');
+			await user.update({ [`gear_${setup}`]: equippedGear as Prisma.InputJsonObject });
 		}
 	},
 	{
@@ -855,8 +855,8 @@ const allTableCommands: TestCommand[] = [
 			const items = 'Bandos chestplate, Bandos tassets, Berserker ring, Ghrazi rapier';
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
-
-			await user.update({ [`gear_${setup}`]: equippedGear });
+			if (!equippedGear) throw new Error('Equipped gear is undefined.');
+			await user.update({ [`gear_${setup}`]: equippedGear as Prisma.InputJsonObject });
 		}
 	},
 	{

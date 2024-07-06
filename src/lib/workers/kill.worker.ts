@@ -10,6 +10,9 @@ import { YETI_ID } from '../constants';
 import killableMonsters from '../minions/data/killableMonsters/index';
 import { simulatedKillables } from '../simulation/simulatedKillables';
 
+if (global.prisma) {
+	throw new Error('Prisma is loaded in the kill worker!');
+}
 export default async ({
 	quantity,
 	bossName,

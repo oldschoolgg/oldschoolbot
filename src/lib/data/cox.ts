@@ -15,7 +15,6 @@ import type { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/Ch
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import type { GearStats } from '../gear';
 import { inventionBoosts } from '../invention/inventions';
-import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
 import { Gear, constructGearSetup } from '../structures/Gear';
 import type { Skills } from '../types';
@@ -75,7 +74,7 @@ export async function createTeam(
 			deathChance -= calcPercentOfNum(total, 10);
 		}
 
-		const kc = await getMinigameScore(u.id, cm ? 'raids_challenge_mode' : 'raids');
+		const kc = (await u.fetchMinigames())[cm ? 'raids_challenge_mode' : 'raids'];
 		const kcChange = kcPointsEffect(kc);
 		if (kcChange < 0) points = reduceNumByPercent(points, Math.abs(kcChange));
 		else points = increaseNumByPercent(points, kcChange);
@@ -275,7 +274,7 @@ export async function checkCoxTeam(users: MUser[], cm: boolean, quantity = 1): P
 			) {
 				return `${user.usernameOrMention} doesn't own a Twisted bow, Zaryte bow, Bow of faerdhinen (c) or Dragon hunter crossbow, which is required for Challenge Mode.`;
 			}
-			const kc = await getMinigameScore(user.id, 'raids');
+			const kc = (await user.fetchMinigames()).raids;
 			if (kc < 200) {
 				return `${user.usernameOrMention} doesn't have the 200 KC required for Challenge Mode.`;
 			}
@@ -585,7 +584,7 @@ export async function calcCoxDuration(
 
 export async function calcCoxInput(u: MUser, solo: boolean) {
 	const items = new Bank();
-	const kc = await getMinigameScore(u.id, 'raids');
+	const kc = await u.fetchMinigames().then(stats => stats.raids);
 	items.add('Stamina potion(4)', solo ? 2 : 1);
 
 	let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));

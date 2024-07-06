@@ -59,11 +59,7 @@ exports[`BSO Buyables 1`] = `
       "feather",
     ],
     "gpCost": 50,
-<<<<<<< HEAD
-    "ironmanPrice": 3,
-=======
     "ironmanPrice": 4,
->>>>>>> master
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -19778,10 +19774,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Vasa cloak",
     "outputItems": Bank {
       "bank": {
@@ -23874,10 +23867,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water",
     "outputItems": Bank {
       "bank": {
@@ -23888,10 +23878,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water (Bones)",
     "outputItems": Bank {
       "bank": {
@@ -23902,10 +23889,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water (Big bones)",
     "outputItems": Bank {
       "bank": {
@@ -23916,10 +23900,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water (Jogre bones)",
     "outputItems": Bank {
       "bank": {
@@ -23930,10 +23911,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water (Babydragon bones)",
     "outputItems": Bank {
       "bank": {
@@ -23944,10 +23922,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water (Dragon bones)",
     "outputItems": Bank {
       "bank": {
@@ -23958,10 +23933,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water (Wyrm bones)",
     "outputItems": Bank {
       "bank": {
@@ -23972,10 +23944,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water (Wyvern bones)",
     "outputItems": Bank {
       "bank": {
@@ -23986,10 +23955,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water (Drake bones)",
     "outputItems": Bank {
       "bank": {
@@ -24000,10 +23966,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water (Lava dragon bones)",
     "outputItems": Bank {
       "bank": {
@@ -24014,10 +23977,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water (Hydra bones)",
     "outputItems": Bank {
       "bank": {
@@ -24028,10 +23988,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water (Dagannoth bones)",
     "outputItems": Bank {
       "bank": {
@@ -24042,10 +23999,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water (Superior dragon bones)",
     "outputItems": Bank {
       "bank": {
@@ -24056,10 +24010,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water (Abyssal dragon bones)",
     "outputItems": Bank {
       "bank": {
@@ -24070,10 +24021,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water (Frost dragon bones)",
     "outputItems": Bank {
       "bank": {
@@ -24084,10 +24032,7 @@ exports[`BSO Creatables 1`] = `
   },
   {
     "cantHaveItems": undefined,
-    "inputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "inputItems": "function",
     "name": "Divine water (Royal dragon bones)",
     "outputItems": Bank {
       "bank": {
@@ -24618,10 +24563,7 @@ exports[`BSO Creatables 1`] = `
     },
     "name": "Revert completionist cape",
     "noCl": true,
-    "outputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "outputItems": "function",
   },
   {
     "cantHaveItems": undefined,
@@ -26282,10 +26224,7 @@ exports[`BSO Creatables 1`] = `
     },
     "name": "Revert Support cape",
     "noCl": true,
-    "outputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "outputItems": "function",
   },
   {
     "cantHaveItems": undefined,
@@ -26297,10 +26236,7 @@ exports[`BSO Creatables 1`] = `
     },
     "name": "Revert Gatherer's cape",
     "noCl": true,
-    "outputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "outputItems": "function",
   },
   {
     "cantHaveItems": undefined,
@@ -26312,10 +26248,7 @@ exports[`BSO Creatables 1`] = `
     },
     "name": "Revert Combatant's cape",
     "noCl": true,
-    "outputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "outputItems": "function",
   },
   {
     "cantHaveItems": undefined,
@@ -26327,10 +26260,7 @@ exports[`BSO Creatables 1`] = `
     },
     "name": "Revert Artisan's cape",
     "noCl": true,
-    "outputItems": Bank {
-      "bank": {},
-      "frozen": false,
-    },
+    "outputItems": "function",
   },
   {
     "cantHaveItems": undefined,
