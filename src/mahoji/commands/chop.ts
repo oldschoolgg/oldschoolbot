@@ -2,6 +2,7 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { TwitcherGloves } from '../../lib/constants';
 import { TWITCHERS_GLOVES } from '../../lib/constants';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
@@ -11,7 +12,6 @@ import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
-import resolveItems from '../../lib/util/resolveItems';
 import type { OSBMahojiCommand } from '../lib/util';
 
 const axes = [

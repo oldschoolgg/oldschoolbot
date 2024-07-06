@@ -1,9 +1,5 @@
-import { gzip } from 'node:zlib';
-
-import { createHash } from 'node:crypto';
-import { stripEmojis } from '@oldschoolgg/toolkit';
+import { Stopwatch, stripEmojis } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
-import { Stopwatch } from '@sapphire/stopwatch';
 import type {
 	BaseMessageOptions,
 	ButtonBuilder,
@@ -18,7 +14,7 @@ import type {
 	SelectMenuInteraction,
 	TextChannel
 } from 'discord.js';
-import { ComponentType, escapeMarkdown } from 'discord.js';
+import { ComponentType } from 'discord.js';
 import { Time, chunk, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
@@ -47,39 +43,13 @@ import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { itemNameFromID } from './util/smallUtils';
 
-export { cleanString, stringMatches, stripEmojis } from '@oldschoolgg/toolkit';
+export * from '@oldschoolgg/toolkit';
 export * from 'oldschooljs/dist/util/index';
 
-const zeroWidthSpace = '\u200b';
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {
 	return this.toString();
 };
-export function cleanMentions(guild: Guild | null, input: string, showAt = true) {
-	const at = showAt ? '@' : '';
-	return input
-		.replace(/@(here|everyone)/g, `@${zeroWidthSpace}$1`)
-		.replace(/<(@[!&]?|#)(\d{17,19})>/g, (match, type, id) => {
-			switch (type) {
-				case '@':
-				case '@!': {
-					const tag = guild?.client.users.cache.get(id);
-					return tag ? `${at}${tag.username}` : `<${type}${zeroWidthSpace}${id}>`;
-				}
-				case '@&': {
-					const role = guild?.roles.cache.get(id);
-					return role ? `${at}${role.name}` : match;
-				}
-				default:
-					return `<${type}${zeroWidthSpace}${id}>`;
-			}
-		});
-}
-
-export function isWeekend() {
-	const currentDate = new Date(Date.now() - Time.Hour * 6);
-	return [6, 0].includes(currentDate.getDay());
-}
 
 export function convertXPtoLVL(xp: number, cap = 99) {
 	let points = 0;
@@ -245,18 +215,6 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	return slotStr.join(', ');
 }
 
-function gaussianRand(rolls = 3) {
-	let rand = 0;
-	for (let i = 0; i < rolls; i += 1) {
-		rand += Math.random();
-	}
-	return rand / rolls;
-}
-
-export function gaussianRandom(min: number, max: number, rolls?: number) {
-	return Math.floor(min + gaussianRand(rolls) * (max - min + 1));
-}
-
 export function isValidNickname(str?: string) {
 	return Boolean(
 		str &&
@@ -273,10 +231,6 @@ export type PaginatedMessagePage = MessageEditOptions;
 export async function makePaginatedMessage(channel: TextChannel, pages: PaginatedMessagePage[], target?: string) {
 	const m = new PaginatedMessage({ pages, channel });
 	return m.run(target ? [target] : undefined);
-}
-
-export function convertPercentChance(percent: number) {
-	return (1 / (percent / 100)).toFixed(1);
 }
 
 export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {
@@ -346,18 +300,6 @@ export function validateBankAndThrow(bank: Bank) {
 	}
 }
 
-export function convertBankToPerHourStats(bank: Bank, time: number) {
-	const result = [];
-	for (const [item, qty] of bank.items()) {
-		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
-	}
-	return result;
-}
-
-export function removeMarkdownEmojis(str: string) {
-	return escapeMarkdown(stripEmojis(str));
-}
-
 export function isValidSkill(skill: string): skill is SkillsEnum {
 	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
 }
@@ -389,17 +331,6 @@ export function roughMergeMahojiResponse(
 	newResponse.content = newContent.join('\n\n');
 
 	return newResponse;
-}
-
-export async function asyncGzip(buffer: Buffer) {
-	return new Promise<Buffer>((resolve, reject) => {
-		gzip(buffer, {}, (error, gzipped) => {
-			if (error) {
-				reject(error);
-			}
-			resolve(gzipped);
-		});
-	});
 }
 
 export function skillingPetDropRate(
@@ -482,10 +413,6 @@ export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededF
 		gotrRiftSearches: userStats.gotr_rift_searches,
 		stats
 	};
-}
-
-export function md5sum(str: string) {
-	return createHash('md5').update(str).digest('hex');
 }
 
 export { assert } from './util/logError';

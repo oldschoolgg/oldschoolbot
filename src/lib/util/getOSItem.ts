@@ -6,17 +6,11 @@ import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
 
-const cache = new Map();
-
 function cleanItemName(itemName: string) {
 	return itemName.replace(/’/g, "'");
 }
 
 export default function getOSItem(itemName: string | number): Item {
-	if (cache.has(itemName)) {
-		return cache.get(itemName);
-	}
-
 	let identifier: string | number | undefined = '';
 	if (typeof itemName === 'number') {
 		identifier = itemName;
@@ -27,7 +21,6 @@ export default function getOSItem(itemName: string | number): Item {
 
 	const osItem = Items.get(identifier) as Item | undefined;
 	if (!osItem) throw new UserError(`${production ? 'That item' : identifier} doesn't exist.`);
-	cache.set(itemName, osItem);
 	return osItem;
 }
 

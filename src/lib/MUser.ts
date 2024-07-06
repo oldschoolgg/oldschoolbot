@@ -7,6 +7,7 @@ import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
@@ -47,7 +48,6 @@ import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
-import resolveItems from './util/resolveItems';
 import type { TransactItemsArgs } from './util/transactItemsFromBank';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {

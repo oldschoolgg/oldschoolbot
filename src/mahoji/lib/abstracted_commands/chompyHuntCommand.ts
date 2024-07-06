@@ -1,11 +1,11 @@
 import { Time, percentChance, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { chompyHats } from '../../../lib/constants';
 import { WesternProv, userhasDiaryTier } from '../../../lib/diaries';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';

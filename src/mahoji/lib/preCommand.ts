@@ -1,17 +1,18 @@
 import type { CommandOptions } from '@oldschoolgg/toolkit';
-import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
+import { type InteractionReplyOptions, type TextChannel, type User, escapeMarkdown } from 'discord.js';
 
 import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
 import { Emoji, badges, badgesCache, busyImmuneCommands, usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
-import { removeMarkdownEmojis, stripEmojis } from '../../lib/util';
+import { stripEmojis } from '../../lib/util';
 import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
 import type { AbstractCommand } from './inhibitors';
 import { runInhibitors } from './inhibitors';
 
 function cleanUsername(username: string) {
-	return removeMarkdownEmojis(username).substring(0, 32);
+	return escapeMarkdown(stripEmojis(username)).substring(0, 32);
 }
+
 export async function syncNewUserUsername(user: MUser, username: string) {
 	const newUsername = cleanUsername(username);
 	const newUser = await prisma.newUser.findUnique({

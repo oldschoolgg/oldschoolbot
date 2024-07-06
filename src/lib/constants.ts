@@ -2,20 +2,19 @@ import { execSync } from 'node:child_process';
 import path from 'node:path';
 
 import type { Image } from '@napi-rs/canvas';
-import { PerkTier, SimpleTable, StoreBitfield } from '@oldschoolgg/toolkit';
+import { PerkTier, SimpleTable, StoreBitfield, dateFm } from '@oldschoolgg/toolkit';
 import type { CommandOptions } from '@oldschoolgg/toolkit';
 import type { APIButtonComponent } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import * as dotenv from 'dotenv';
 import { z } from 'zod';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
 import getOSItem from './util/getOSItem';
-import resolveItems from './util/resolveItems';
-import { dateFm } from './util/smallUtils';
 
 export { PerkTier };
 

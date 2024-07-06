@@ -14,13 +14,14 @@ import {
 import { Bank } from 'oldschooljs';
 import { randomVariation } from 'oldschooljs/dist/util/util';
 
+import { exponentialPercentScale, formatDuration } from '@oldschoolgg/toolkit';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { BitField, NEX_ID } from '../constants';
 import type { Skills } from '../types';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import itemID from '../util/itemID';
 import { arrows, bolts, bows, crossbows } from '../util/minionUtils';
-import resolveItems from '../util/resolveItems';
-import { exponentialPercentScale, formatDuration, formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
+import { formatSkillRequirements, itemNameFromID } from '../util/smallUtils';
 import { TeamLoot } from './TeamLoot';
 import { NexNonUniqueTable, NexUniqueTable } from './misc';
 

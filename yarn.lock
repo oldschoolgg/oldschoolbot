@@ -833,20 +833,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#829c88554e74eff5c7ba1c50bd335a0056728a45":
+"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#cb60916b04372514d939ce51513818d409493b7e":
   version: 0.0.24
-  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=829c88554e74eff5c7ba1c50bd335a0056728a45"
+  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=cb60916b04372514d939ce51513818d409493b7e"
   dependencies:
-    deep-merge: "npm:^1.0.0"
-    e: "npm:^0.2.33"
+    decimal.js: "npm:^10.4.3"
+    deepmerge: "npm:4.3.1"
+    e: "npm:0.2.33"
     emoji-regex: "npm:^10.2.1"
     ioredis: "npm:^5.4.1"
     math-expression-evaluator: "npm:^1.3.14"
-    zod: "npm:^3.23.8"
+    pure-rand: "npm:^6.1.0"
+    zod: "npm:3.23.8"
   peerDependencies:
     discord.js: ^14.15.3
-    oldschooljs: ^2.5.4
-  checksum: 10c0/f16d1d97bc659c0c4c288b13c306a5b29acc37045a0d78a4080af0f82f9993a380fee84be3254ed85fc0e622f0a839203a6c36d9797b1f1a85bde2012ca18522
+    oldschooljs: ^2.5.6
+  checksum: 10c0/19ce0b927d7324b6489fa4e218ce77780b5b7dbc27055df51010c2931f0ebe774607f95186cbad7334b1db636cffaebd16f568429e6a883428ab42578976f4b8
   languageName: node
   linkType: hard
 
@@ -1383,15 +1385,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/stopwatch@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@sapphire/stopwatch@npm:1.4.0"
-  dependencies:
-    tslib: "npm:^2.3.1"
-  checksum: 10c0/3e20f6cedfbca01e8590ba44b932248925831a25b04e82b91505ee8c45e4918014210a2ae561a3533ea54335fd55125f1e20399eb002c2c9f04a441457ed134f
-  languageName: node
-  linkType: hard
-
 "@sapphire/time-utilities@npm:^1.6.0":
   version: 1.6.0
   resolution: "@sapphire/time-utilities@npm:1.6.0"
@@ -1494,6 +1487,18 @@ __metadata:
   version: 0.27.8
   resolution: "@sinclair/typebox@npm:0.27.8"
   checksum: 10c0/ef6351ae073c45c2ac89494dbb3e1f87cc60a93ce4cde797b782812b6f97da0d620ae81973f104b43c9b7eaa789ad20ba4f6a1359f1cc62f63729a55a7d22d4e
+  languageName: node
+  linkType: hard
+
+"@ts-morph/common@npm:~0.24.0":
+  version: 0.24.0
+  resolution: "@ts-morph/common@npm:0.24.0"
+  dependencies:
+    fast-glob: "npm:^3.3.2"
+    minimatch: "npm:^9.0.4"
+    mkdirp: "npm:^3.0.1"
+    path-browserify: "npm:^1.0.1"
+  checksum: 10c0/37b1fa63aff71f21da9527a460bd33d323f3126de8b80f1f6678733a6150892e7721f4782283e6d6fb6b87769363d6f4fc1f591d5a1c8e66106cedfe3ee667e7
   languageName: node
   linkType: hard
 
@@ -2158,6 +2163,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"code-block-writer@npm:^13.0.1":
+  version: 13.0.1
+  resolution: "code-block-writer@npm:13.0.1"
+  checksum: 10c0/1ca0329032228aab4a8094148bc2b50fd8ff07a0e3f78c11986398951fc51c6bad24bc7236437e639ac95d4c3bb489c2f3c629dc5f21c22a3bca0daa41d64187
+  languageName: node
+  linkType: hard
+
 "color-convert@npm:^2.0.1":
   version: 2.0.1
   resolution: "color-convert@npm:2.0.1"
@@ -2270,16 +2282,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deep-merge@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "deep-merge@npm:1.0.0"
-  dependencies:
-    xtend: "npm:~1.0.3"
-  checksum: 10c0/240b4242e8f73547286d7b733bf27039530c1b70bf0b772a5fb4327407c84e04f20bc2d58d80e9c20f7e36370fe3d54c97fa1586e64ed1807d5e8aef68c15a5c
-  languageName: node
-  linkType: hard
-
-"deepmerge@npm:^4.3.1":
+"deepmerge@npm:4.3.1":
   version: 4.3.1
   resolution: "deepmerge@npm:4.3.1"
   checksum: 10c0/e53481aaf1aa2c4082b5342be6b6d8ad9dfe387bc92ce197a66dea08bd4265904a087e75e464f14d1347cf2ac8afe1e4c16b266e0561cc5df29382d3c5f80044
@@ -2341,14 +2344,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"e@npm:^0.2.32":
-  version: 0.2.32
-  resolution: "e@npm:0.2.32"
-  checksum: 10c0/a9c6d585defbb2938820451c223dc24b488c7d676ee1ca6b1ce1021cf347339f596c89f9665b3702a522134fd99066205e537d5f9aa8394acd5225e1498d4ea0
-  languageName: node
-  linkType: hard
-
-"e@npm:^0.2.33":
+"e@npm:0.2.33, e@npm:^0.2.33":
   version: 0.2.33
   resolution: "e@npm:0.2.33"
   checksum: 10c0/28c12ee98d5587686765831ac71ea5676e138c43491a305c9dc28edc10efc53ac2aedec8e0266f0bcc5ff414f909e0ccf1cc37032754660f1c07d8ed2b6652d1
@@ -3447,6 +3443,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mkdirp@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "mkdirp@npm:3.0.1"
+  bin:
+    mkdirp: dist/cjs/src/bin.js
+  checksum: 10c0/9f2b975e9246351f5e3a40dcfac99fcd0baa31fbfab615fe059fb11e51f10e4803c63de1f384c54d656e4db31d000e4767e9ef076a22e12a641357602e31d57d
+  languageName: node
+  linkType: hard
+
 "mlly@npm:^1.2.0":
   version: 1.2.1
   resolution: "mlly@npm:1.2.1"
@@ -3546,7 +3551,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.7":
+"node-fetch@npm:2.6.7, node-fetch@npm:^2.6.7":
   version: 2.6.7
   resolution: "node-fetch@npm:2.6.7"
   dependencies:
@@ -3629,14 +3634,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oldschooljs@npm:^2.5.4":
-  version: 2.5.4
-  resolution: "oldschooljs@npm:2.5.4"
+"oldschooljs@npm:^2.5.9":
+  version: 2.5.9
+  resolution: "oldschooljs@npm:2.5.9"
   dependencies:
-    deepmerge: "npm:^4.3.1"
-    e: "npm:^0.2.32"
-    node-fetch: "npm:^2.6.7"
-  checksum: 10c0/76aff957d0eb4dedf7917578c4020f6a0c5593e7102d7ebaa06e39136e3b0c45c5f7da5c8c5f1a2a562105a999eb302337884cd47d8119cb46b948f621b0e534
+    deepmerge: "npm:4.3.1"
+    e: "npm:^0.2.33"
+    node-fetch: "npm:2.6.7"
+  checksum: 10c0/6e9f44153a876c2fe389a5c65d437b9526d0cfb0a574696823144f59dee84e36330dcb88a76fdaa3199f9c00c7ba9d57559bf6d6b511e792be90e0783091eac1
   languageName: node
   linkType: hard
 
@@ -3717,6 +3722,13 @@ __metadata:
   version: 1.0.0
   resolution: "package-json-from-dist@npm:1.0.0"
   checksum: 10c0/e3ffaf6ac1040ab6082a658230c041ad14e72fabe99076a2081bb1d5d41210f11872403fc09082daf4387fc0baa6577f96c9c0e94c90c394fd57794b66aa4033
+  languageName: node
+  linkType: hard
+
+"path-browserify@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "path-browserify@npm:1.0.1"
+  checksum: 10c0/8b8c3fd5c66bd340272180590ae4ff139769e9ab79522e2eb82e3d571a89b8117c04147f65ad066dccfb42fcad902e5b7d794b3d35e0fd840491a8ddbedf8c66
   languageName: node
   linkType: hard
 
@@ -4005,6 +4017,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pure-rand@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "pure-rand@npm:6.1.0"
+  checksum: 10c0/1abe217897bf74dcb3a0c9aba3555fe975023147b48db540aa2faf507aee91c03bf54f6aef0eb2bf59cc259a16d06b28eca37f0dc426d94f4692aeff02fb0e65
+  languageName: node
+  linkType: hard
+
 "queue-microtask@npm:^1.2.2":
   version: 1.2.3
   resolution: "queue-microtask@npm:1.2.3"
@@ -4180,10 +4199,9 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:^1.8.3"
     "@napi-rs/canvas": "npm:^0.1.53"
-    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#829c88554e74eff5c7ba1c50bd335a0056728a45"
+    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#cb60916b04372514d939ce51513818d409493b7e"
     "@prisma/client": "npm:^5.16.1"
     "@sapphire/snowflake": "npm:^3.5.3"
-    "@sapphire/stopwatch": "npm:^1.4.0"
     "@sapphire/time-utilities": "npm:^1.6.0"
     "@sentry/node": "npm:^8.15.0"
     "@types/lodash": "npm:^4.14.195"
@@ -4194,11 +4212,9 @@ __metadata:
     ascii-table3: "npm:^0.9.0"
     bufferutil: "npm:^4.0.8"
     concurrently: "npm:^8.2.2"
-    decimal.js: "npm:^10.4.3"
-    deepmerge: "npm:^4.3.1"
     discord.js: "npm:^14.15.3"
     dotenv: "npm:^16.4.5"
-    e: "npm:^0.2.33"
+    e: "npm:0.2.33"
     fast-deep-equal: "npm:^3.1.3"
     fast-glob: "npm:^3.3.2"
     lodash: "npm:^4.17.21"
@@ -4206,7 +4222,7 @@ __metadata:
     murmurhash: "npm:^2.0.1"
     node-cron: "npm:^3.0.3"
     node-fetch: "npm:^2.6.7"
-    oldschooljs: "npm:^2.5.4"
+    oldschooljs: "npm:^2.5.9"
     p-queue: "npm:^6.6.2"
     piscina: "npm:^4.6.1"
     prettier: "npm:^3.3.2"
@@ -4214,11 +4230,12 @@ __metadata:
     random-js: "npm:^2.1.0"
     simple-statistics: "npm:^7.8.3"
     sonic-boom: "npm:^4.0.1"
+    ts-morph: "npm:^23.0.0"
     tsx: "npm:^4.16.2"
     typescript: "npm:^5.5.3"
     vitest: "npm:^1.6.0"
     zlib-sync: "npm:^0.1.9"
-    zod: "npm:^3.23.8"
+    zod: "npm:3.23.8"
   languageName: unknown
   linkType: soft
 
@@ -4588,6 +4605,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ts-morph@npm:^23.0.0":
+  version: 23.0.0
+  resolution: "ts-morph@npm:23.0.0"
+  dependencies:
+    "@ts-morph/common": "npm:~0.24.0"
+    code-block-writer: "npm:^13.0.1"
+  checksum: 10c0/3ac061a3e85b2c7758f7591a73c44b8666488c1615a79c133868d4f5e03a4e73fc855d58ce78c3d5fb605ce14af377353a379fe5ee60fc7b384629f0d2cefc6f
+  languageName: node
+  linkType: hard
+
 "tslib@npm:2.6.2, tslib@npm:^2.6.2":
   version: 2.6.2
   resolution: "tslib@npm:2.6.2"
@@ -4595,7 +4622,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.1.0, tslib@npm:^2.3.1":
+"tslib@npm:^2.1.0":
   version: 2.5.0
   resolution: "tslib@npm:2.5.0"
   checksum: 10c0/e32fc99cc730dd514e53c44e668d76016e738f0bcc726aad5dbd2d335cf19b87a95a9b1e4f0a9993e370f1d702b5e471cdd4acabcac428a3099d496b9af2021e
@@ -4907,13 +4934,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xtend@npm:~1.0.3":
-  version: 1.0.3
-  resolution: "xtend@npm:1.0.3"
-  checksum: 10c0/82a31d7be2f693717d8dd284b4ec3f40e7b729fdf20f36a9f9233eb4f9dd6398fa5cd5062def9c4723c5846996ca54322c953f550e4b3c84eea46a6465002af4
-  languageName: node
-  linkType: hard
-
 "y18n@npm:^5.0.5":
   version: 5.0.8
   resolution: "y18n@npm:5.0.8"
@@ -4967,7 +4987,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.23.8":
+"zod@npm:3.23.8":
   version: 3.23.8
   resolution: "zod@npm:3.23.8"
   checksum: 10c0/8f14c87d6b1b53c944c25ce7a28616896319d95bc46a9660fe441adc0ed0a81253b02b5abdaeffedbeb23bdd25a0bf1c29d2c12dd919aef6447652dd295e3e69

@@ -1,5 +1,5 @@
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import itemID from '../util/itemID';
-import resolveItems from '../util/resolveItems';
 import {
 	gracefulCapes,
 	gracefulFeet,

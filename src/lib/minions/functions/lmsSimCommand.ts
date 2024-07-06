@@ -4,7 +4,7 @@ import { chunk, sleep } from 'e';
 
 import type LastManStandingUsage from '../../structures/LastManStandingUsage';
 import { LMS_FINAL, LMS_PREP, LMS_ROUND } from '../../structures/LastManStandingUsage';
-import { channelIsSendable, cleanMentions } from '../../util';
+import { channelIsSendable } from '../../util';
 
 const playing = new Set<string>();
 
@@ -108,13 +108,13 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 	if (!channel) return;
 	if (!(channel instanceof TextChannel)) return;
 	let filtered = new Set<string>();
-	const splitContestants = names ? cleanMentions(channel.guild!, names).split(',') : [];
+	const splitContestants = names ? names.split(',') : [];
 	// Autofill using authors from the last 100 messages, if none are given to the command
 	if (names === 'auto' || !names || splitContestants.length === 0) {
 		const messages = await channel.messages.fetch({ limit: 100 });
 
 		for (const { author } of messages.values()) {
-			const name = cleanMentions(channel.guild, author.username);
+			const name = author.username;
 			if (!filtered.has(name)) filtered.add(name);
 		}
 	} else {
@@ -162,7 +162,7 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 			// If the channel is not postable, break:
 			if (!channelIsSendable(channel)) return;
 
-			gameMessage = await channel.send(text);
+			gameMessage = await channel.send({ content: text });
 			await sleep(Math.max(gameMessage?.content.length / 20, 7) * 700);
 
 			// Delete the previous message, and if stopped, send stop.
@@ -176,7 +176,10 @@ export async function lmsSimCommand(channel: Channel | undefined, names?: string
 	// The match finished with one remaining player
 	const winner = game.contestants.values().next().value;
 	playing.delete(channel.guildId);
-	return channel.send(`And the Last Man Standing is... **${winner}**!`);
+	return channel.send({
+		content: `And the Last Man Standing is... **${winner}**!`,
+		allowedMentions: { parse: [], users: [] }
+	});
 }
 
 interface LastManStandingGame {

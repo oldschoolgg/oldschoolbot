@@ -15,6 +15,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { colosseumCommand } from '../../../lib/colosseum';
 import type { PvMMethod } from '../../../lib/constants';
 import { BitField, PeakTier } from '../../../lib/constants';
@@ -72,7 +73,6 @@ import { calcWildyPKChance, increaseWildEvasionXp } from '../../../lib/util/calc
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements, resolveAvailableItemBoosts } from '../../mahojiSettings';
 import { nexCommand } from './nexCommand';

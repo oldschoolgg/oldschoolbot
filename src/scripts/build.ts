@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { promisify } from 'node:util';
-import { Stopwatch } from '@sapphire/stopwatch';
+import { Stopwatch } from '@oldschoolgg/toolkit';
 import fg from 'fast-glob';
 
 import { BOT_TYPE } from '../lib/constants';

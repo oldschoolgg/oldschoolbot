@@ -8,6 +8,7 @@ import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { PerkTier } from '@oldschoolgg/toolkit';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
 import { Emoji } from '../../../lib/constants';
@@ -28,7 +29,6 @@ import { SQL_sumOfAllCLItems, formatDuration, getUsername, sanitizeBank, stringM
 import { createChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import resolveItems from '../../../lib/util/resolveItems';
 import { Cooldowns } from '../Cooldowns';
 import { collectables } from './collectCommand';
 

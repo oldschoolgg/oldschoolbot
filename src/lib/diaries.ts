@@ -1,6 +1,7 @@
 import { objectEntries } from 'e';
 import { Monsters } from 'oldschooljs';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { MAX_QP } from './minions/data/quests';
 import type { DiaryTier, DiaryTierName } from './minions/types';
 import { DiaryID } from './minions/types';
@@ -10,7 +11,6 @@ import { courses } from './skilling/skills/agility';
 import { MUserStats } from './structures/MUserStats';
 import type { Skills } from './types';
 import getOSItem from './util/getOSItem';
-import resolveItems from './util/resolveItems';
 import { formatSkillRequirements, hasSkillReqs, itemNameFromID } from './util/smallUtils';
 
 interface Diary {

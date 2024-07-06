@@ -1,5 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { soteSkillRequirements } from '../skilling/functions/questRequirements';
 import type {
 	ActivityTaskData,
@@ -9,7 +10,6 @@ import type {
 	PickpocketActivityTaskOptions,
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
-import resolveItems from './resolveItems';
 
 export enum WorldLocations {
 	Priffdinas = 0,

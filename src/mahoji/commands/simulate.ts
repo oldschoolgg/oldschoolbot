@@ -6,10 +6,10 @@ import { Bank } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { PerkTier } from '@oldschoolgg/toolkit';
+import { PerkTier, averageBank } from '@oldschoolgg/toolkit';
 import { ColosseumWaveBank, startColosseumRun } from '../../lib/colosseum';
 import pets from '../../lib/data/pets';
-import { assert, averageBank, formatDuration } from '../../lib/util';
+import { assert, formatDuration } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import type { OSBMahojiCommand } from '../lib/util';

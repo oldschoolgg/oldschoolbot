@@ -13,8 +13,8 @@ import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
 import type { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import itemID from '../util/itemID';
-import resolveItems from '../util/resolveItems';
 import type { ClueReqs } from './clueReqs';
 import { beginnerReqs } from './clueReqs';
 import type { StashUnitTier } from './stashUnits';

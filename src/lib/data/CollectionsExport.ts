@@ -3,11 +3,11 @@ import { objectEntries } from 'e';
 import type { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
 import type { MinigameScore } from '../settings/minigames';
 import getOSItem from '../util/getOSItem';
-import resolveItems from '../util/resolveItems';
 import type { UserStatsDataNeededForCL } from './Collections';
 import {
 	gracefulCapes,

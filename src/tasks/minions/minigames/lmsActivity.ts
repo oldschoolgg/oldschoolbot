@@ -1,11 +1,10 @@
-import { SimpleTable, formatOrdinal } from '@oldschoolgg/toolkit';
+import { SimpleTable, calcPerHour, formatOrdinal, gaussianRandom } from '@oldschoolgg/toolkit';
 import { clamp, percentChance, sumArr } from 'e';
 
 import { Emoji } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { calcPerHour, gaussianRandom } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 interface LMSGameSimulated {

@@ -1,10 +1,10 @@
-import { getItem } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { CommandOption } from '@oldschoolgg/toolkit';
 import { evalMathExpression } from '@oldschoolgg/toolkit/dist/util/expressionParser';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';
+import { getItem } from 'oldschooljs/dist/util/util';
 
 import { PerkTier } from '../../lib/constants';
 import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';

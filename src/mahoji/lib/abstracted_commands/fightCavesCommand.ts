@@ -4,10 +4,10 @@ import { Bank, Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
