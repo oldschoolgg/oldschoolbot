@@ -1,30 +1,37 @@
-/* eslint-disable @typescript-eslint/no-invalid-this */
-import { Canvas, GlobalFonts, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
-import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
+<<<<<<< HEAD
+import { Canvas, GlobalFonts, Image, SKRSContext2D, loadImage } from '@napi-rs/canvas';
+=======
+import { existsSync } from 'node:fs';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
+import type { SKRSContext2D } from '@napi-rs/canvas';
+import { Canvas, GlobalFonts, Image, loadImage } from '@napi-rs/canvas';
+>>>>>>> master
+import { PerkTier, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { AttachmentBuilder } from 'discord.js';
+import { AttachmentBuilder, BitField } from 'discord.js';
 import { chunk, randInt, sumArr } from 'e';
-import { existsSync } from 'fs';
-import * as fs from 'fs/promises';
 import fetch from 'node-fetch';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util/util';
-import * as path from 'path';
 
-import { BitField, BOT_TYPE, doaPurples, ItemIconPacks, PerkTier, toaPurpleItems } from '../lib/constants';
+import { existsSync } from 'fs';
+import path from 'path';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import { calcWholeDisXP, findDisassemblyGroup } from '../lib/invention/disassemble';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
-import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
-import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
-import { ItemBank } from '../lib/types';
+import type { BankBackground, FlagMap, Flags } from '../lib/minions/types';
+import type { BankSortMethod } from '../lib/sorts';
+import { BankSortMethods, sorts } from '../lib/sorts';
+import type { ItemBank } from '../lib/types';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegionImage } from '../lib/util/canvasUtil';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 import { XPLamps } from '../mahoji/lib/abstracted_commands/lampCommand';
 import { divinationEnergies } from './bso/divination';
+import { BOT_TYPE, ItemIconPacks, doaPurples, toaPurpleItems } from './constants';
 import { TOBUniques } from './data/tob';
 import { marketPriceOfBank, marketPriceOrBotPrice } from './marketPrices';
 import { SkillsEnum } from './skilling/types';
@@ -276,7 +283,7 @@ function drawTitle(ctx: SKRSContext2D, title: string, canvas: Canvas) {
 	// Draw Bank Title
 	ctx.font = '16px RuneScape Bold 12';
 	const titleWidthPx = ctx.measureText(title);
-	let titleX = Math.floor(floor(canvas.width / 2) - titleWidthPx.width / 2);
+	const titleX = Math.floor(floor(canvas.width / 2) - titleWidthPx.width / 2);
 
 	ctx.fillStyle = '#000000';
 	fillTextXTimesInCtx(ctx, title, titleX + 1, 22);
@@ -337,8 +344,8 @@ export class BankImageTask {
 		const basePath = './src/lib/resources/images/bank_backgrounds/spritesheet/';
 		const files = await fs.readdir(basePath);
 		for (const file of files) {
-			const bgName: BGSpriteName = file.split('\\').pop()!.split('/').pop()!.split('.').shift()! as BGSpriteName;
-			let d = await loadImage(await fs.readFile(basePath + file));
+			const bgName: BGSpriteName = file.split('\\').pop()?.split('/').pop()?.split('.').shift()! as BGSpriteName;
+			const d = await loadImage(await fs.readFile(basePath + file));
 			this._bgSpriteData = d;
 			this.bgSpriteList[bgName] = {
 				name: bgName,
@@ -403,7 +410,7 @@ export class BankImageTask {
 
 		// For each one, set a cache value that it exists.
 		for (const fileName of filesInDir) {
-			this.itemIconsList.add(parseInt(path.parse(fileName).name));
+			this.itemIconsList.add(Number.parseInt(path.parse(fileName).name));
 		}
 
 		for (const pack of ItemIconPacks) {
@@ -412,7 +419,7 @@ export class BankImageTask {
 			for (const dir of directories) {
 				const filesInThisDir = await fs.readdir(`./src/lib/resources/images/icon_packs/${pack.id}_${dir}`);
 				for (const fileName of filesInThisDir) {
-					const themedItemID = parseInt(path.parse(fileName).name);
+					const themedItemID = Number.parseInt(path.parse(fileName).name);
 					const image = await loadImage(
 						`./src/lib/resources/images/icon_packs/${pack.id}_${dir}/${fileName}`
 					);
@@ -532,13 +539,12 @@ export class BankImageTask {
 		}
 	}
 
-	getBgAndSprite(bankBgId: number = 1, user?: MUser) {
-		let background = this.backgroundImages.find(i => i.id === bankBgId)!;
+	getBgAndSprite(bankBgId = 1, user?: MUser) {
+		const background = this.backgroundImages.find(i => i.id === bankBgId)!;
 
 		const currentContract = user?.farmingContract();
 		const isFarmingContractReadyToHarvest = Boolean(
-			currentContract &&
-				currentContract.contract.hasContract &&
+			currentContract?.contract.hasContract &&
 				currentContract.matchingPlantedCrop &&
 				currentContract.matchingPlantedCrop.ready
 		);
@@ -590,7 +596,7 @@ export class BankImageTask {
 			// Adds distance from side
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
-			let [item, quantity] = items[i];
+			const [item, quantity] = items[i];
 			const itemImage = await this.getItemImage(item.id, user);
 			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
 			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
@@ -669,7 +675,7 @@ export class BankImageTask {
 			}
 
 			if (bottomItemText) {
-				let text =
+				const text =
 					typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText.toString().slice(0, 8);
 				ctx.fillStyle = 'black';
 				fillTextXTimesInCtx(ctx, text, floor(xLoc), yLoc + distanceFromTop);
@@ -772,7 +778,7 @@ export class BankImageTask {
 
 		// Paging
 		if (typeof page === 'number' && !isShowingFullBankImage) {
-			let pageLoot = chunked[page];
+			const pageLoot = chunked[page];
 			if (!pageLoot) throw new UserError('You have no items on this page.');
 			items = pageLoot;
 		}
@@ -790,7 +796,7 @@ export class BankImageTask {
 					itemSize * 1.5
 			) - 2;
 
-		let {
+		const {
 			sprite: bgSprite,
 			uniqueSprite: hasBgSprite,
 			background: bgImage,
@@ -804,7 +810,7 @@ export class BankImageTask {
 			currentCL !== undefined &&
 			bank.items().some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
 
-		let actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : backgroundImage;
+		const actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : backgroundImage;
 
 		const hexColor = user?.user.bank_bg_hex;
 
@@ -1021,7 +1027,7 @@ export async function drawChestLootImage(options: {
 			name: fileName
 		});
 	}
-	let spaceBetweenImages = 15;
+	const spaceBetweenImages = 15;
 	const combinedCanvas = new Canvas(
 		canvases[0].width * canvases.length + spaceBetweenImages * canvases.length,
 		canvases[0].height
@@ -1037,15 +1043,9 @@ export async function drawChestLootImage(options: {
 }
 
 declare global {
-	const bankImageGenerator: BankImageTask;
+	var bankImageGenerator: BankImageTask;
 }
-declare global {
-	namespace NodeJS {
-		interface Global {
-			bankImageGenerator: BankImageTask;
-		}
-	}
-}
+
 export const bankImageTask = new BankImageTask();
 global.bankImageGenerator = bankImageTask;
 bankImageGenerator.init();

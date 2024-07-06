@@ -1,10 +1,10 @@
 import { resolve } from 'node:path';
 
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 import Piscina from 'piscina';
 
 import { production } from '../../config';
-import { ItemBank } from '../types';
+import type { ItemBank } from '../types';
 
 export interface CasketWorkerArgs {
 	clueTierID: number;
@@ -44,9 +44,18 @@ export type FinishWorkerReturn = Promise<
 
 const maxThreads = production ? 3 : 1;
 
-export const finishWorker = new Piscina({ filename: resolve(__dirname, 'finish.worker.js'), maxThreads });
-export const killWorker = new Piscina({ filename: resolve(__dirname, 'kill.worker.js'), maxThreads });
-export const casketWorker = new Piscina({ filename: resolve(__dirname, 'casket.worker.js'), maxThreads });
+const finishWorker = new Piscina({
+	filename: resolve(__dirname.replace('src', 'dist'), 'finish.worker.js'),
+	maxThreads
+});
+const killWorker = new Piscina({
+	filename: resolve(__dirname.replace('src', 'dist'), 'kill.worker.js'),
+	maxThreads
+});
+const casketWorker = new Piscina({
+	filename: resolve(__dirname.replace('src', 'dist'), 'casket.worker.js'),
+	maxThreads
+});
 
 export const Workers = {
 	casketOpen: (args: CasketWorkerArgs): Promise<[Bank, string]> => casketWorker.run(args),

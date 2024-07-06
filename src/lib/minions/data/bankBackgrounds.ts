@@ -2,7 +2,7 @@ import { StoreBitfield } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
 import { BitField, PerkTier } from '../../constants';
-import { BankBackground } from '../types';
+import type { BankBackground } from '../types';
 
 const backgroundImages: BankBackground[] = [
 	{

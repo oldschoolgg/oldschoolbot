@@ -1,5 +1,3 @@
-import { calcPercentOfNum, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { BlacksmithOutfit } from '../../lib/bsoOpenables';
@@ -7,14 +5,14 @@ import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import Smithing from '../../lib/skilling/skills/smithing';
 import smithables from '../../lib/skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { SmithingActivityTaskOptions } from '../../lib/types/minions';
+import type { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import resolveItems from '../../lib/util/resolveItems';
 import { pluraliseItemName } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const smithCommand: OSBMahojiCommand = {
 	name: 'smith',
@@ -75,16 +73,26 @@ export const smithCommand: OSBMahojiCommand = {
 		// If they have the entire Smiths' Uniform, give 100% chance save 1 tick each item
 		let setBonus = 0;
 		if (
+<<<<<<< HEAD
 			user.hasEquippedOrInBank(
 				Object.keys(Smithing.smithsUniformItems).map(i => parseInt(i)),
 				'every'
+=======
+			user.gear.skilling.hasEquipped(
+				Object.keys(Smithing.smithsUniformItems).map(i => Number.parseInt(i)),
+				true
+>>>>>>> master
 			)
 		) {
 			setBonus += 100;
 		} else {
 			// For each Smiths' Uniform item, check if they have it, give % chance to save 1 tick each item
 			for (const [itemID, bonus] of Object.entries(Smithing.smithsUniformItems)) {
+<<<<<<< HEAD
 				if (user.hasEquippedOrInBank(parseInt(itemID))) {
+=======
+				if (user.gear.skilling.hasEquipped([Number.parseInt(itemID)], false)) {
+>>>>>>> master
 					setBonus += bonus;
 				}
 			}
@@ -107,12 +115,18 @@ export const smithCommand: OSBMahojiCommand = {
 		}
 
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
+<<<<<<< HEAD
 		let timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
 		if (user.usingPet('Takon')) {
 			timeToSmithSingleBar /= 4;
 		} else if (user.hasEquippedOrInBank('Dwarven greathammer')) {
 			timeToSmithSingleBar /= 2;
 		}
+=======
+		const timeToSmithSingleBar = timeToUse + Time.Second / 4 - (Time.Second * 0.6 * setBonus) / 100;
+
+		let maxTripLength = calcMaxTripLength(user, 'Smithing');
+>>>>>>> master
 
 		if (smithedItem.name === 'Cannonball') {
 			maxTripLength *= 2;

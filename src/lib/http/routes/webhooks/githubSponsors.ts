@@ -4,8 +4,8 @@ import { addPatronLootTime } from '../../../doubleLoot';
 import { patreonTask } from '../../../patreon';
 import { syncLinkedAccounts } from '../../../util/linkedAccountsUtil';
 import { sendToChannelID } from '../../../util/webhook';
-import { GithubSponsorsWebhookData } from '../../githubApiTypes';
-import { FastifyServer } from '../../types';
+import type { GithubSponsorsWebhookData } from '../../githubApiTypes';
+import type { FastifyServer } from '../../types';
 import { getUserIdFromGithubID, parseStrToTier, verifyGithubSecret } from '../../util';
 
 const githubSponsors = (server: FastifyServer) =>
@@ -19,7 +19,6 @@ const githubSponsors = (server: FastifyServer) =>
 			}
 			const data = request.body as GithubSponsorsWebhookData;
 			const userID = await getUserIdFromGithubID(data.sender.id.toString());
-			// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 			switch (data.action) {
 				case 'created': {
 					const tier = parseStrToTier(data.sponsorship.tier.name);

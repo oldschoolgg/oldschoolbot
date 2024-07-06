@@ -2,7 +2,7 @@ import { toTitleCase } from '@oldschoolgg/toolkit';
 import { EmbedBuilder } from 'discord.js';
 import { shuffleArr, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { SkillsScore } from 'oldschooljs/dist/meta/types';
+import type { SkillsScore } from 'oldschooljs/dist/meta/types';
 import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util';
 
 import { ClueTiers } from '../clues/clueTiers';
@@ -14,7 +14,7 @@ import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { MALEDICT_MORTIMER_ID } from '../simulation/maledictMortimer';
 import { courses } from '../skilling/skills/agility';
 import creatures from '../skilling/skills/hunter/creatures';
-import { ItemBank, Skills } from '../types';
+import type { ItemBank, Skills } from '../types';
 import { logError } from './logError';
 
 export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
@@ -126,7 +126,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 			name: '<:Clue_scroll:365003979840552960> Clue Scores',
 			value: clueEntries
 				.map(([id, qty]) => {
-					const clueTier = ClueTiers.find(t => t.id === parseInt(id));
+					const clueTier = ClueTiers.find(t => t.id === Number.parseInt(id));
 					if (!clueTier) {
 						logError(`No clueTier: ${id}`);
 						return;
@@ -167,10 +167,15 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const lapCounts = Object.entries(userStats.laps_scores as ItemBank).sort((a, b) => a[1] - b[1]);
 	if (lapCounts.length > 0) {
 		const [id, score] = lapCounts[0];
+<<<<<<< HEAD
 		const res = courses.find(c => c.id === parseInt(id))!;
 		if (res) {
 			otherStats.push([`${res.name} Laps`, score]);
 		}
+=======
+		const res = courses.find(c => c.id === Number.parseInt(id))!;
+		otherStats.push([`${res.name} Laps`, score]);
+>>>>>>> master
 	}
 
 	const monsterScores = Object.entries(userStats.monster_scores as ItemBank)
@@ -178,7 +183,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 		.filter(i => ![MALEDICT_MORTIMER_ID].includes(Number(i[0])));
 	if (monsterScores.length > 0) {
 		const [id, score] = monsterScores[0];
-		const res = effectiveMonsters.find(c => c.id === parseInt(id))!;
+		const res = effectiveMonsters.find(c => c.id === Number.parseInt(id))!;
 		if (!res) {
 			logError(`No monster found with id ${id} for stats embed`);
 		} else {
@@ -189,7 +194,7 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const hunterScores = Object.entries(userStats.creature_scores as ItemBank).sort((a, b) => a[1] - b[1]);
 	if (hunterScores.length > 0) {
 		const [id, score] = hunterScores[0];
-		const res = creatures.find(c => c.id === parseInt(id))!;
+		const res = creatures.find(c => c.id === Number.parseInt(id))!;
 		if (res) {
 			otherStats.push([`${res.name}'s Caught`, score]);
 		}

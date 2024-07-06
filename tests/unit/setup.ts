@@ -1,8 +1,6 @@
 import '../globalSetup';
-
 import { vi } from 'vitest';
 
-import { globalConfig } from '../../src/lib/constants';
 import { MUserStats } from '../../src/lib/structures/MUserStats';
 import { mockMUser, mockUserMap } from './utils';
 
@@ -46,9 +44,6 @@ vi.mock('../../src/lib/patreon', async () => {
 		}
 	};
 });
-
-export const mockPatreonWebhookSecret = 'test';
-globalConfig.patreonWebhookSecret = mockPatreonWebhookSecret;
 
 vi.mock('../../src/lib/settings/minigames.ts', async () => {
 	const actual: any = await vi.importActual('../../src/lib/settings/minigames.ts');

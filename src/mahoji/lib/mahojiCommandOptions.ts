@@ -1,9 +1,7 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType, User } from 'discord.js';
 import { uniqueArr } from 'e';
-import { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank, Items } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { secretItems } from '../../lib/constants';
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
@@ -23,7 +21,7 @@ export const filterOption: CommandOption = {
 	description: 'The filter you want to use.',
 	required: false,
 	autocomplete: async (value: string) => {
-		let res = !value
+		const res = !value
 			? filterableTypes
 			: [...filterableTypes].filter(filter => filter.name.toLowerCase().includes(value.toLowerCase()));
 		return [...res]
@@ -45,17 +43,6 @@ export const itemOption = (filter?: (item: Item) => boolean): CommandOption => (
 	required: false,
 	autocomplete: async value => {
 		let res = itemArr.filter(i => i.key.includes(value.toLowerCase())).filter(i => !secretItems.includes(i.id));
-		if (filter) res = res.filter(filter);
-		return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
-	}
-});
-export const equipableItemOption = (filter?: (item: Item) => boolean): CommandOption => ({
-	type: ApplicationCommandOptionType.String,
-	name: 'item',
-	description: 'The item you want to pick.',
-	required: false,
-	autocomplete: async value => {
-		let res = allEquippableItems.filter(i => i.name.includes(value.toLowerCase()));
 		if (filter) res = res.filter(filter);
 		return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
 	}
@@ -101,7 +88,7 @@ export const equippedItemOption = (): CommandOption => ({
 	autocomplete: async (value, user) => {
 		const mUser = await mUserFetch(user.id);
 
-		let results: APIApplicationCommandOptionChoice[] = [];
+		const results: APIApplicationCommandOptionChoice[] = [];
 		const entries: [string, Item[]][] = Object.entries(mUser.gear).map(entry => [
 			entry[0],
 			entry[1].allItems(false).map(getOSItem)
@@ -153,6 +140,7 @@ export const gearPresetOption: CommandOption = {
 			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
 	}
 };
+<<<<<<< HEAD
 
 export const ownedMaterialOption = {
 	name: 'material',
@@ -182,3 +170,5 @@ export function generateRandomBank(size: number) {
 	}
 	return bank;
 }
+=======
+>>>>>>> master

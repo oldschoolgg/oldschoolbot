@@ -22,15 +22,15 @@ To suggest a new feature, [click here](https://github.com/oldschoolgg/oldschoolb
 
 ## Contributing
 
-Anyone is free to create PR's with improvements and additions to Old School Bot.
-
-Please lint your code with the projects' [ESLint](https://eslint.org/) config.
-
-Contributors are listed in this file, and given a Contributor role in the support server. If you have more questions, there are lots of helpful Contributors in the `#developers` channel on the Discord server.
+Anyone is free to create PR's with improvements and additions to Old School Bot. If you have questions, ask in the `#developers` channel on our Discord server.
 
 ### Setting up the bot to run locally for contributing
 
-To run the bot, you need the following things first: Git, [NodeJS v18+](https://nodejs.org/en/), [Postgres](https://www.postgresql.org/download/), [Python](https://www.python.org/) and a discord bot account.
+#### **Setup**
+
+1. Install [NvM](https://github.com/coreybutler/nvm-windows/), then use it to install NodeJS v20.15.0
+2. Install [Postgres](https://www.postgresql.org/download/)
+3. Install Yarn using: npm i -g yarn
 
 #### **Setting up a Discord Bot**
 
@@ -57,7 +57,7 @@ To run the bot, you need the following things first: Git, [NodeJS v18+](https://
 7. Update this new `.env` file:
    1. Input your username, password, and schema names into `DATABASE_URL` and `ROBOCHIMP_DATABASE_URL` using the format `postgresql://USER:PASSWORD@HOST:PORT/DATABASE`
    2. Input your Application ID you retrieved earlier into `CLIENT_ID`
-8. Run `yarn` then `yarn install`
+8. Run `yarn`
 9. Run `npx prisma generate` to generate the Prisma client files and load the DSN from #6.
 10. Run `npx prisma db push` to create the tables on the database referenced in .env
 11. Run `npx prisma generate --schema=./prisma/robochimp.prisma` to generate the Prisma client files and load the DSN from #6 for the `robochimp` database.
@@ -93,3 +93,13 @@ You can also ask Magna to invite your Bot with your invite link above if you so 
 ## Self Hosting
 
 Self hosting is not supported.
+
+## Notes
+
+### Profiling tests
+
+- node --cpu-prof --cpu-prof-dir=./profiling ./node_modules/vitest/vitest.mjs run --coverage --config vitest.unit.config.mts parseStringBank
+
+## Module graph
+
+- yarn build && npx madge --image graph2.svg ./dist/index.js

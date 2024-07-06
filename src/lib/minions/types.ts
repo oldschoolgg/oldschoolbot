@@ -1,21 +1,10 @@
-import { Image } from '@napi-rs/canvas';
-import { StoreBitfield } from '@oldschoolgg/toolkit';
-import { XpGainSource } from '@prisma/client';
-import { Bank, MonsterKillOptions } from 'oldschooljs';
-import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
+import type { Image } from '@napi-rs/canvas';
+import type { StoreBitfield } from '@oldschoolgg/toolkit';
+import type { XpGainSource } from '@prisma/client';
+import type { Bank, MonsterKillOptions } from 'oldschooljs';
+import type { Item } from 'oldschooljs/dist/meta/types';
+import type SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
-import { QuestID } from '../../mahoji/lib/abstracted_commands/questCommand';
-import { ClueTier } from '../clues/clueTiers';
-import { BitField, PerkTier } from '../constants';
-import { Diary, DiaryTier } from '../diaries';
-import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
-import { POHBoosts } from '../poh';
-import { LevelRequirements, SkillsEnum } from '../skilling/types';
-import { ArrayItemsResolved, ItemBank, Skills } from '../types';
-import { MonsterActivityTaskOptions } from '../types/minions';
-import { calculateSimpleMonsterDeathChance } from '../util';
-import { BSOMonsters } from './data/killableMonsters/custom/customMonsters';
-import { AttackStyles } from './functions';
 
 export type BankBackground = {
 	image: Image | null;
@@ -136,6 +125,7 @@ export interface KillableMonster {
 	}[];
 	requiredQuests?: QuestID[];
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
+<<<<<<< HEAD
 	diaryRequirement?: [Diary, DiaryTier];
 	wildySlayerCave?: boolean;
 	requiredBitfield?: BitField;
@@ -146,6 +136,10 @@ export interface KillableMonster {
 	customRequirement?: (user: MUser) => Promise<string | null>;
 	setupsUsed?: GearSetupType[];
 	kcRequirements?: Partial<Record<keyof typeof BSOMonsters, number>>;
+=======
+	diaryRequirement?: [DiaryID, DiaryTierName];
+	wildySlayerCave?: boolean;
+>>>>>>> master
 }
 /*
  * Monsters will have an array of Consumables
@@ -214,3 +208,33 @@ export const defaultMegaDuckLocation: Readonly<MegaDuckLocation> = {
 export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
 export type ClueBank = Record<ClueTier['name'], number>;
+
+const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
+export type DiaryTierName = (typeof diaryTiers)[number];
+
+export interface DiaryTier {
+	name: 'Easy' | 'Medium' | 'Hard' | 'Elite';
+	items: Item[];
+	skillReqs: Skills;
+	ownedItems?: number[];
+	collectionLogReqs?: number[];
+	minigameReqs?: Partial<Record<MinigameName, number>>;
+	lapsReqs?: Record<string, number>;
+	qp?: number;
+	monsterScores?: Record<string, number>;
+	customReq?: (user: MUser, summary: boolean, stats: MUserStats) => [true] | [false, string];
+}
+export enum DiaryID {
+	WesternProvinces = 0,
+	Ardougne = 1,
+	Desert = 2,
+	Falador = 3,
+	Fremennik = 4,
+	Kandarin = 5,
+	Karamja = 6,
+	KourendKebos = 7,
+	LumbridgeDraynor = 8,
+	Morytania = 9,
+	Varrock = 10,
+	Wilderness = 11
+}

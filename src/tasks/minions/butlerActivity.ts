@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { ButlerActivityTaskOptions } from '../../lib/types/minions';
+import type { ButlerActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const butlerTask: MinionTask = {
@@ -13,7 +13,7 @@ export const butlerTask: MinionTask = {
 			[plankID]: plankQuantity
 		});
 
-		let str = `${user}, ${user.minionName} finished creating planks, you received ${loot}.`;
+		const str = `${user}, ${user.minionName} finished creating planks, you received ${loot}.`;
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 

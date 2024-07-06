@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { PoHObject } from '..';
+import type { PoHObject } from '..';
 
 const baseBank = () => new Bank().add('Marble block').add('Gold leaf');
 

@@ -1,23 +1,12 @@
-import { calcPercentOfNum, increaseNumByPercent, percentChance, randInt, roll, sumArr, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { BitField, Emoji, projectiles } from '../../../lib/constants';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
-import { getSimilarItems } from '../../../lib/data/similarItems';
-import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
-import { BlowpipeData } from '../../../lib/minions/types';
-import { getMinigameEntity, getMinigameScore } from '../../../lib/settings/minigames';
 import { prisma } from '../../../lib/settings/prisma';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { Gear } from '../../../lib/structures/Gear';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
-import { Skills } from '../../../lib/types';
-import { InfernoOptions } from '../../../lib/types/minions';
-import { determineProjectileTypeFromGear, formatDuration, itemNameFromID, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -359,13 +348,13 @@ async function infernoRun({
 		const weapon = setup.equippedWeapon();
 		const validWeapons = Object.keys(weapons)
 			.map(itemID)
-			.map(id => getSimilarItems(id))
-			.flat();
+			.flatMap(id => getSimilarItems(id));
 		if (!weapon || !validWeapons.includes(weapon.id)) {
 			return `You need one of these weapons in your ${name} setup: ${Object.keys(weapons).join(', ')}.`;
 		}
 	}
 
+<<<<<<< HEAD
 	const allMeleeGearItems = meleeGear.allItems(true);
 	const allRangeGearItems = rangeGear.allItems(true);
 	const allMageGearItems = mageGear.allItems(true);
@@ -446,6 +435,15 @@ async function infernoRun({
 	) {
 		return 'You not worthy to fight TzKal-Zuk in his full form, you need better mage gear.';
 	}
+=======
+	const rangeGearWeapon = rangeGear.equippedWeapon()!;
+
+	zukDeathChance.add(getSimilarItems(itemID('Armadyl crossbow')).includes(rangeGearWeapon.id), 7.5, 'Zuk with ACB');
+	duration.add(getSimilarItems(itemID('Armadyl crossbow')).includes(rangeGearWeapon.id), 4.5, 'ACB');
+
+	zukDeathChance.add(getSimilarItems(itemID('Twisted bow')).includes(rangeGearWeapon.id), 1.5, 'Zuk with TBow');
+	duration.add(getSimilarItems(itemID('Twisted bow')).includes(rangeGearWeapon.id), -7.5, 'TBow');
+>>>>>>> master
 
 	/**
 	 *
@@ -463,9 +461,9 @@ async function infernoRun({
 	const isOnTask =
 		usersTask.currentTask !== null &&
 		usersTask.currentTask !== undefined &&
-		usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
+		usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
 		score > 0 &&
-		usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
+		usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
 	duration.add(isOnTask && user.hasEquippedOrInBank('Black mask (i)'), -9, `${Emoji.Slayer} Slayer Task`);
 
@@ -490,14 +488,18 @@ async function infernoRun({
 	if (!projectile) {
 		return 'You have no projectiles equipped in your range setup.';
 	}
+<<<<<<< HEAD
 	const projectileType = determineProjectileTypeFromGear(rangeGear);
 	if (!projectileType) {
 		return "You aren't wearing an appropriate ranged weapon.";
 	}
+=======
+	const projectileType: ProjectileType = rangeGear.equippedWeapon()?.name === 'Twisted bow' ? 'arrow' : 'bolt';
+>>>>>>> master
 	const projectilesForTheirType = projectiles[projectileType].items;
 	if (!projectilesForTheirType.includes(projectile.item)) {
 		return `You're using incorrect projectiles, you're using a ${
-			rangeGear.equippedWeapon()!.name
+			rangeGear.equippedWeapon()?.name
 		}, which uses ${projectileType}s, so you should be using one of these: ${projectilesForTheirType
 			.map(itemNameFromID)
 			.join(', ')}.`;

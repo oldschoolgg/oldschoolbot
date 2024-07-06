@@ -27,12 +27,12 @@ import {
 	nexCL,
 	nexUniqueDrops,
 	temporossCL,
-	theatreOfBloodCapes,
-	theatreOfBloodHardUniques,
-	theatreOfBloodNormalUniques,
 	theGauntletCL,
 	theNightmareCL,
 	theNightmareNormalCL,
+	theatreOfBloodCapes,
+	theatreOfBloodHardUniques,
+	theatreOfBloodNormalUniques,
 	wintertodtCL
 } from './data/CollectionsExport';
 import pets from './data/pets';
@@ -57,7 +57,7 @@ interface KillArgs {
 	totalRuns: number;
 }
 
-export interface Finishable {
+interface Finishable {
 	name: string;
 	aliases?: string[];
 	cl: number[];
@@ -319,14 +319,14 @@ for (const mon of monsterPairedCLs) {
 		cl: mon.cl,
 		kill: ({ accumulatedLoot }) => {
 			const cost = new Bank();
-			if (killableMonster && killableMonster.healAmountNeeded) {
+			if (killableMonster?.healAmountNeeded) {
 				cost.add('Swordfish', Math.ceil(killableMonster.healAmountNeeded / 14));
 			}
 			if (killableMonster?.itemCost) {
 				cost.add(calculateTripConsumableCost(killableMonster.itemCost, 1, killableMonster.timeToFinish));
 			}
 
-			let loot = 'kill' in mon.mon ? mon.mon.kill(1, {}) : mon.mon.table.roll();
+			const loot = 'kill' in mon.mon ? mon.mon.kill(1, {}) : mon.mon.table.roll();
 			if (killableMonster && killableMonster.specialLoot) {
 				killableMonster.specialLoot({ ownedItems: accumulatedLoot, loot, quantity: 1, cl: accumulatedLoot });
 			}

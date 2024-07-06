@@ -3,8 +3,6 @@ import { Time } from 'e';
 import { BitField } from '../../../lib/constants';
 import { Enchantables } from '../../../lib/skilling/skills/magic/enchantables';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { EnchantingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemID, itemNameFromID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
@@ -34,7 +32,7 @@ export async function enchantCommand(user: MUser, channelID: string, name: strin
 
 	const maxTripLength = calcMaxTripLength(user, 'Enchanting');
 
-	let timeToEnchantTen = 3 * Time.Second * 0.6 + Time.Second / 4;
+	const timeToEnchantTen = 3 * Time.Second * 0.6 + Time.Second / 4;
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timeToEnchantTen);

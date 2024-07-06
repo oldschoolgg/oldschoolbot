@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -6,10 +6,10 @@ import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBu
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { GearStat } from '../../../lib/gear/types';
 import { difficulties, rewardTokens, trekBankBoosts } from '../../../lib/minions/data/templeTrekking';
-import { AddXpParams, GearRequirement } from '../../../lib/minions/types';
+import type { AddXpParams, GearRequirement } from '../../../lib/minions/types';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
+import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, readableStatName, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -41,9 +41,9 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 				);
 
 				if (setup === 'melee') {
-					if (maxMeleeStat[0] !== GearStat.AttackCrush) delete newRequirements.attack_crush;
-					if (maxMeleeStat[0] !== GearStat.AttackSlash) delete newRequirements.attack_slash;
-					if (maxMeleeStat[0] !== GearStat.AttackStab) delete newRequirements.attack_stab;
+					if (maxMeleeStat[0] !== GearStat.AttackCrush) newRequirements.attack_crush = undefined;
+					if (maxMeleeStat[0] !== GearStat.AttackSlash) newRequirements.attack_slash = undefined;
+					if (maxMeleeStat[0] !== GearStat.AttackStab) newRequirements.attack_stab = undefined;
 				} else {
 					newRequirements = requirements;
 				}
@@ -53,7 +53,7 @@ export async function trekCommand(user: MUser, channelID: string, difficulty: st
 					return `You don't have the requirements to do ${tier.difficulty} treks! Your ${readableStatName(
 						unmetKey!
 					)} stat in your ${setup} setup is ${has}, but you need atleast ${
-						tier.minimumGearRequirements[setup]![unmetKey!]
+						tier.minimumGearRequirements[setup]?.[unmetKey!]
 					}.`;
 				}
 			}
@@ -150,9 +150,7 @@ export async function trekShop(
 ) {
 	const userBank = user.bank;
 	const specifiedItem = TrekShopItems.find(
-		item =>
-			stringMatches(reward, item.name) ||
-			(item.aliases && item.aliases.some(alias => stringMatches(alias, reward)))
+		item => stringMatches(reward, item.name) || item.aliases?.some(alias => stringMatches(alias, reward))
 	);
 
 	if (!specifiedItem) {
@@ -161,22 +159,22 @@ export async function trekShop(
 		}).join(', ')}.`;
 	}
 
-	let inbankquantity =
+	const inbankquantity =
 		difficulty === 'Easy'
 			? userBank.amount(rewardTokens.easy)
 			: difficulty === 'Medium'
-			? userBank.amount(rewardTokens.medium)
-			: userBank.amount(rewardTokens.hard);
+				? userBank.amount(rewardTokens.medium)
+				: userBank.amount(rewardTokens.hard);
 	if (quantity === undefined) {
 		quantity = inbankquantity;
 	}
 	if (quantity > inbankquantity || quantity === 0) {
 		return "You don't have enough reward tokens for that.";
 	}
-	let outItems = new Bank();
+	const outItems = new Bank();
 
-	let inItems = new Bank();
-	let outXP: AddXpParams[] = [
+	const inItems = new Bank();
+	const outXP: AddXpParams[] = [
 		{
 			skillName: SkillsEnum.Agility,
 			amount: 0,

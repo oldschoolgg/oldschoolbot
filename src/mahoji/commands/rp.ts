@@ -1,31 +1,31 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
-import { codeBlock, SnowflakeUtil } from 'discord.js';
-import { randArrItem, sumArr, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { MahojiUserOption } from 'mahoji/dist/lib/types';
+import { SnowflakeUtil, codeBlock } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, randArrItem, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
-import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
+import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { analyticsTick } from '../../lib/analytics';
 import { calculateCompCapeProgress } from '../../lib/bso/calculateCompCapeProgress';
 import { BitField, Channel } from '../../lib/constants';
 import { allCollectionLogsFlat } from '../../lib/data/Collections';
-import { GearSetupType } from '../../lib/gear/types';
+import type { GearSetupType } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { patreonTask } from '../../lib/patreon';
 import { allPerkBitfields } from '../../lib/perkTiers';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 import { prisma } from '../../lib/settings/prisma';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
-import { ItemBank } from '../../lib/types';
+import type { ItemBank } from '../../lib/types';
 import { dateFm, isValidDiscordSnowflake, returnStringOrFile } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -39,7 +39,7 @@ import { insertUserEvent } from '../../lib/util/userEvents';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { cancelUsersListings } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { gearSetupOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { gifs } from './admin';
 import { getUserInfo } from './minion';
@@ -53,7 +53,8 @@ const itemFilters = [
 ];
 
 function isProtectedAccount(user: MUser) {
-	if ([...ADMIN_IDS, ...OWNER_IDS].includes(user.id)) return true;
+	const botAccounts = ['303730326692429825', '729244028989603850', '969542224058654790'];
+	if ([...ADMIN_IDS, ...OWNER_IDS, ...botAccounts].includes(user.id)) return true;
 	if ([BitField.isModerator, BitField.isContributor].some(bf => user.bitfield.includes(bf))) return true;
 	return false;
 }
@@ -640,9 +641,7 @@ Date: ${dateFm(date)}`;
 			return 'Done.';
 		}
 		if (options.action?.view_all_items) {
-			const result = await prisma.$queryRawUnsafe<
-				{ item_id: number }[]
-			>(`SELECT DISTINCT json_object_keys(bank)::int AS item_id
+			const result = await prisma.$queryRawUnsafe<{ item_id: number }[]>(`SELECT DISTINCT json_object_keys(bank)::int AS item_id
 FROM users
 UNION
 SELECT DISTINCT jsonb_object_keys("collectionLogBank")::int AS item_id
@@ -661,7 +660,6 @@ ORDER BY item_id ASC;`);
 				BitField.IsPatronTier6
 			];
 			await prisma.$queryRaw`UPDATE users SET bitfield = bitfield - '{${bitfieldsToRemove.join(',')}'::int[];`;
-			await patreonTask.run();
 			await syncLinkedAccounts();
 			return 'Finished.';
 		}
@@ -718,8 +716,8 @@ ORDER BY item_id ASC;`);
 			const gearSlot = opts.all
 				? 'all'
 				: opts.gear_setup && allGearSlots.includes(opts.gear_setup)
-				? opts.gear_setup
-				: undefined;
+					? opts.gear_setup
+					: undefined;
 			if (gearSlot === undefined) {
 				return 'No gear slot specified.';
 			}
@@ -756,7 +754,7 @@ ORDER BY item_id ASC;`);
 
 			const items = new Bank();
 			if (options.player.steal_items.item_filter) {
-				const filter = itemFilters.find(i => i.name === options.player!.steal_items!.item_filter);
+				const filter = itemFilters.find(i => i.name === options.player?.steal_items?.item_filter);
 				if (!filter) return 'Invalid item filter.';
 				for (const [item, qty] of userToStealFrom.bank.items()) {
 					if (filter.filter(item)) {
@@ -860,7 +858,12 @@ ORDER BY item_id ASC;`);
 			if (!isOwner && !isAdmin) {
 				return randArrItem(gifs);
 			}
+
 			const { source, dest, reason } = options.player.migrate_user;
+
+			if (source.user.id === dest.user.id) {
+				return 'Destination cannot be the same as the source!';
+			}
 			const sourceUser = await mUserFetch(source.user.id);
 			const destUser = await mUserFetch(dest.user.id);
 

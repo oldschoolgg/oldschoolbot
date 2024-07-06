@@ -1,4 +1,4 @@
-import { IDiscordSettings } from './lib/types';
+import type { IDiscordSettings } from './lib/types';
 
 export const botToken = '';
 export const production = false;
@@ -6,7 +6,6 @@ export const production = false;
 export const SENTRY_DSN: string | null = null;
 export const CLIENT_SECRET = '';
 export const DEV_SERVER_ID = '';
-export const GITHUB_TOKEN = '';
 export const DISCORD_SETTINGS: Partial<IDiscordSettings> = {
 	// Your bot unique ID goes here
 	BotID: '729244028989603850'

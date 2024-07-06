@@ -1,16 +1,11 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 
-import {
-	clImageGenerator,
-	CollectionLogFlags,
-	CollectionLogType,
-	collectionLogTypes
-} from '../../lib/collectionLogTask';
+import type { CollectionLogType } from '../../lib/collectionLogTask';
+import { CollectionLogFlags, clImageGenerator, collectionLogTypes } from '../../lib/collectionLogTask';
 import { allCollectionLogs } from '../../lib/data/Collections';
 import { fetchStatsForCL } from '../../lib/util';
-import { deferInteraction } from '../../lib/util/interactionReply';
-import { OSBMahojiCommand } from '../lib/util';
 
 export const collectionLogCommand: OSBMahojiCommand = {
 	name: 'cl',
@@ -48,21 +43,30 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			name: 'type',
 			description: 'The type of log you want to see.',
 			required: false,
-			choices: collectionLogTypes.map(i => ({ name: `${toTitleCase(i.name)} (${i.description})`, value: i.name }))
+			choices: collectionLogTypes.map(i => ({
+				name: `${toTitleCase(i.name)} (${i.description})`,
+				value: i.name
+			}))
 		},
 		{
 			type: ApplicationCommandOptionType.String,
 			name: 'flag',
 			description: 'The flag you want to pass.',
 			required: false,
-			choices: CollectionLogFlags.map(i => ({ name: `${toTitleCase(i.name)} (${i.description})`, value: i.name }))
+			choices: CollectionLogFlags.map(i => ({
+				name: `${toTitleCase(i.name)} (${i.description})`,
+				value: i.name
+			}))
 		},
 		{
 			type: ApplicationCommandOptionType.String,
 			name: 'flag_extra',
 			description: 'An additional flag you want to pass.',
 			required: false,
-			choices: CollectionLogFlags.map(i => ({ name: `${toTitleCase(i.name)} (${i.description})`, value: i.name }))
+			choices: CollectionLogFlags.map(i => ({
+				name: `${toTitleCase(i.name)} (${i.description})`,
+				value: i.name
+			}))
 		},
 		{
 			type: ApplicationCommandOptionType.Boolean,
@@ -84,7 +88,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 	}>) => {
 		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
-		let flags: Record<string, string> = {};
+		const flags: Record<string, string> = {};
 		if (options.flag) flags[options.flag] = options.flag;
 		if (options.flag_extra) flags[options.flag_extra] = options.flag_extra;
 		if (options.all) flags.all = 'all';

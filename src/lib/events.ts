@@ -1,22 +1,23 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { time } from 'console';
+import { isFunction } from 'util';
+import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { BaseMessageOptions, bold, ButtonBuilder, ButtonStyle, EmbedBuilder, Message, time } from 'discord.js';
-import { isFunction, Time } from 'e';
+import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, EmbedBuilder, type Message, bold } from 'discord.js';
+import { Time } from 'e';
 import { Items } from 'oldschooljs';
-
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
-import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
+import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
+import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
 import { boxSpawnHandler } from './boxSpawns';
 import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from './bso/guthixianCache';
 import { IronmanPMBTable, itemSearchMbTable } from './bsoOpenables';
 import { BitField, Emoji, globalConfig, secretItems } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
-import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
 import { prisma } from './settings/prisma';
-import { ItemBank } from './types';
-import { channelIsSendable, formatDuration, makeComponents, toKMB } from './util';
+import type { ItemBank } from './types';
+import { formatDuration, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
@@ -228,7 +229,7 @@ const mentionCommands: MentionCommand[] = [
 			}
 
 			if (isDoubleLootActive()) {
-				let date = new Date(DOUBLE_LOOT_FINISH_TIME_CACHE);
+				const date = new Date(DOUBLE_LOOT_FINISH_TIME_CACHE);
 				content += `\n\n2️⃣🇽 **Double Loot is Active until ${time(date)} (${time(date, 'R')})**`;
 			}
 			msg.reply({

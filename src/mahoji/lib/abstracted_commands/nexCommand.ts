@@ -1,5 +1,3 @@
-import { ChatInputCommandInteraction } from 'discord.js';
-import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { calcBossFood } from '../../../lib/bso/calcBossFood';
@@ -9,9 +7,6 @@ import { calculateMonsterFood } from '../../../lib/minions/functions';
 import { KillableMonster } from '../../../lib/minions/types';
 import { NexMonster } from '../../../lib/nex';
 import { setupParty } from '../../../lib/party';
-import { MakePartyOptions } from '../../../lib/types';
-import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
@@ -288,7 +283,16 @@ export async function nexCommand(
 		}))
 	});
 
+<<<<<<< HEAD
 	foodString += `${foodRemoved.join(', ')}.`;
+=======
+	const str = `${user.usernameOrMention}'s party (${mahojiUsers
+		.map(u => u.usernameOrMention)
+		.join(', ')}) is now off to kill ${details.quantity}x Nex! (${calcPerHour(
+		details.quantity,
+		details.fakeDuration
+	).toFixed(1)}/hr) - the total trip will take ${formatDuration(details.fakeDuration)}.
+>>>>>>> master
 
 	await addSubTaskToActivityTask<BossActivityTaskOptions>({
 		userID: user.id,

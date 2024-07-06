@@ -1,8 +1,8 @@
-import { MonsterSlayerMaster } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import type { MonsterSlayerMaster } from 'oldschooljs';
+import type { Item } from 'oldschooljs/dist/meta/types';
+import type Monster from 'oldschooljs/dist/structures/Monster';
 
-import { LevelRequirements } from '../skilling/types';
+import type { LevelRequirements } from '../skilling/types';
 
 export interface AssignableSlayerTask {
 	monster: Monster;
@@ -19,7 +19,10 @@ export interface AssignableSlayerTask {
 	extendedAmount?: [number, number];
 	extendedUnlockId?: number;
 	wilderness?: boolean;
+<<<<<<< HEAD
 	dungeoneeringLevel?: number;
+=======
+>>>>>>> master
 }
 
 export interface SlayerMaster {

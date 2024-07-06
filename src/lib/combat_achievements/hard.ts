@@ -1,11 +1,11 @@
 import { Monsters } from 'oldschooljs';
 
-import { demonBaneWeapons, NIGHTMARE_ID } from '../constants';
+import { NIGHTMARE_ID, demonBaneWeapons } from '../constants';
 import { anglerOutfit } from '../data/CollectionsExport';
 import { Requirements } from '../structures/Requirements';
-import { TOAOptions } from '../types/minions';
+import type { TOAOptions } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
-import { type CombatAchievement } from './combatAchievements';
+import type { CombatAchievement } from './combatAchievements';
 
 export const hardCombatAchievements: CombatAchievement[] = [
 	{

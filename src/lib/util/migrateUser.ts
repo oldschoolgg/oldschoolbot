@@ -8,10 +8,14 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 	const sourceUser = typeof _source === 'string' ? await mUserFetch(_source) : _source;
 	const destUser = typeof _dest === 'string' ? await mUserFetch(_dest) : _dest;
 
+	if (sourceUser.id === destUser.id) {
+		throw new UserError('Destination user cannot be the same as the source!');
+	}
+
 	// First check for + cancel active GE Listings:
 	await Promise.all([cancelUsersListings(sourceUser), cancelUsersListings(destUser)]);
 
-	let transactions = [];
+	const transactions = [];
 	transactions.push(prisma.$executeRaw`SET CONSTRAINTS ALL DEFERRED`);
 
 	// Delete Queries
@@ -219,7 +223,10 @@ export async function migrateUser(_source: string | MUser, _dest: string | MUser
 		const robochimpTx = [];
 		robochimpTx.push(roboChimpClient.user.deleteMany({ where: { id: BigInt(destUser.id) } }));
 		robochimpTx.push(
-			roboChimpClient.user.updateMany({ where: { id: BigInt(sourceUser.id) }, data: { id: BigInt(destUser.id) } })
+			roboChimpClient.user.updateMany({
+				where: { id: BigInt(sourceUser.id) },
+				data: { id: BigInt(destUser.id) }
+			})
 		);
 		// Set the migrated_user_id value to prevent duplicate robochimp migrations.
 		robochimpTx.push(

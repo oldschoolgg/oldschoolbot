@@ -1,15 +1,13 @@
 import { truncateString } from '@oldschoolgg/toolkit';
-import { clamp } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import {
+	OpenUntilItems,
 	abstractedOpenCommand,
-	abstractedOpenUntilCommand,
-	OpenUntilItems
+	abstractedOpenUntilCommand
 } from '../lib/abstracted_commands/openCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const openCommand: OSBMahojiCommand = {
 	name: 'open',

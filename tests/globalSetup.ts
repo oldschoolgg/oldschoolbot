@@ -6,6 +6,7 @@ import { vi } from 'vitest';
 
 vi.mock('@oldschoolgg/toolkit', async () => {
 	const actual: any = await vi.importActual('@oldschoolgg/toolkit');
+<<<<<<< HEAD
 	return {
 		...actual,
 		mentionCommand: async (_args: any) => 'hi'
@@ -14,9 +15,19 @@ vi.mock('@oldschoolgg/toolkit', async () => {
 
 vi.mock('../node_modules/@oldschoolgg/toolkit/src/util/discord.ts', async () => {
 	const actualToolkit = await vi.importActual('../node_modules/@oldschoolgg/toolkit/src/util/discord.ts'); // Import all actual exports
+=======
+>>>>>>> master
 	return {
-		...actualToolkit, // Include all actual exports in the mock
-		mentionCommand: vi.fn().mockReturnValue('') // Mock mentionCommand to return a blank string
+		...actual,
+		mentionCommand: async (_args: any) => 'hi'
+	};
+});
+
+vi.mock('../node_modules/@oldschoolgg/toolkit/src/util/discord.ts', async () => {
+	const actualToolkit = await vi.importActual('../node_modules/@oldschoolgg/toolkit/src/util/discord.ts');
+	return {
+		...actualToolkit,
+		mentionCommand: vi.fn().mockReturnValue('')
 	};
 });
 
@@ -26,12 +37,22 @@ global.globalClient = {
 	guilds: { cache: new Collection() },
 	mahojiClient: {
 		commands: {
+<<<<<<< HEAD
 			values: ['test'].map(n => ({
 				name: n,
 				description: 'test description',
 				attributes: { description: 'test description' },
 				options: [{ name: 'claim' }]
 			}))
+=======
+			values: () =>
+				['test'].map(n => ({
+					name: n,
+					description: 'test description',
+					attributes: { description: 'test description' },
+					options: [{ name: 'claim' }]
+				}))
+>>>>>>> master
 		}
 	},
 	users: {
@@ -42,3 +63,7 @@ global.globalClient = {
 	},
 	busyCounterCache: new Map<string, number>()
 } as any;
+
+if (!process.env.TEST) {
+	throw new Error('This file should only be imported in tests.');
+}

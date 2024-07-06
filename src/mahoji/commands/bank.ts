@@ -1,19 +1,22 @@
-import { codeBlock, EmbedBuilder } from 'discord.js';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { EmbedBuilder, codeBlock } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { chunk } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 
-import { BankFlag, bankFlags } from '../../lib/bankImage';
-import { Emoji, PerkTier } from '../../lib/constants';
-import { Flags } from '../../lib/minions/types';
 import { PaginatedMessage } from '../../lib/PaginatedMessage';
-import { BankSortMethod, BankSortMethods } from '../../lib/sorts';
+import type { BankFlag } from '../../lib/bankImage';
+import { bankFlags } from '../../lib/bankImage';
+import { Emoji, PerkTier } from '../../lib/constants';
+import type { Flags } from '../../lib/minions/types';
+import type { BankSortMethod } from '../../lib/sorts';
+import { BankSortMethods } from '../../lib/sorts';
 import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption, itemOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const bankFormats = ['json', 'text_paged', 'text_full'] as const;
 const bankItemsPerPage = 10;
@@ -191,7 +194,7 @@ export const bankCommand: OSBMahojiCommand = {
 			return `${codeBlock('json', json)}`;
 		}
 
-		let flags: Flags = {
+		const flags: Flags = {
 			page: options.page - 1
 		};
 		if (options.sort) flags.sort = options.sort;

@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../../lib/constants';
@@ -86,7 +86,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 	/**
 	 * If this bank image has a gp or item cost, confirm and charge.
 	 */
-	let economyCost = new Bank();
+	const economyCost = new Bank();
 	if (selectedImage.gpCost || selectedImage.itemCost) {
 		const userBank = user.bank;
 

@@ -1,14 +1,11 @@
-import './no-prisma';
-import '../lib/data/itemAliases';
-
+import { writeFileSync } from 'node:fs';
 import { isFunction } from 'e';
-import { writeFileSync } from 'fs';
 import { Bank } from 'oldschooljs';
 
 import Createables from '../lib/data/createables';
 import { makeTable } from '../lib/util/smallUtils';
 
-export function main() {
+export function renderCreatablesFile() {
 	const headers = ['Item name', 'Input Items', 'Output Items', 'GP Cost'];
 	const rows = Createables.map(i => {
 		return [
@@ -21,5 +18,3 @@ export function main() {
 
 	writeFileSync('./src/lib/data/creatablesTable.txt', makeTable(headers, rows));
 }
-
-main();

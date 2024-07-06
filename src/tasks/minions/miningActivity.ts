@@ -1,19 +1,21 @@
-import { increaseNumByPercent, randInt, roll, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { chargePortentIfHasCharges, PortentID } from '../../lib/bso/divination';
+import { Time, increaseNumByPercent, randInt, roll } from 'e';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { itemID, toKMB } from 'oldschooljs/dist/util';
+import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
 import { GLOBAL_BSO_XP_MULTIPLIER, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { upgradedDragonstoneOutfit } from '../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../lib/data/globalDroprates';
-import { UserFullGearSetup } from '../../lib/gear';
+import type { UserFullGearSetup } from '../../lib/gear';
 import { InventionID } from '../../lib/invention/inventions';
-import { StoneSpirit, stoneSpirits } from '../../lib/minions/data/stoneSpirits';
+import { type StoneSpirit, stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
-import { Ore, SkillsEnum } from '../../lib/skilling/types';
-import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { clAdjustedDroprate, itemID, skillingPetDropRate, toKMB } from '../../lib/util';
+import type { Ore } from '../../lib/skilling/types';
+import type { MiningActivityTaskOptions } from '../../lib/types/minions';
+import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 import { mahojiUsersSettingsFetch, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
@@ -65,7 +67,7 @@ export function calculateMiningResult({
 	// Prospector outfit
 	if (
 		allGear.skilling.hasEquipped(
-			Object.keys(Mining.prospectorItems).map(i => parseInt(i)),
+			Object.keys(Mining.prospectorItems).map(i => Number.parseInt(i)),
 			true
 		)
 	) {
@@ -248,10 +250,11 @@ export const miningTask: MinionTask = {
 	type: 'Mining',
 	async run(data: MiningActivityTaskOptions) {
 		const { oreID, userID, channelID, duration, powermine } = data;
-		let { quantity } = data;
+		const { quantity } = data;
 		const user = await mUserFetch(userID);
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
+<<<<<<< HEAD
 		const sd = await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true });
 		const spiritOre = stoneSpirits.find(t => t.ore.id === ore.id);
 		const amountOfSpiritsToUse =
@@ -291,6 +294,36 @@ export const miningTask: MinionTask = {
 			portentResult,
 			collectionLog: user.cl,
 			miningXP: user.skillsAsXP.mining
+=======
+		let xpReceived = quantity * ore.xp;
+		let bonusXP = 0;
+
+		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
+		if (
+			user.gear.skilling.hasEquipped(
+				Object.keys(Mining.prospectorItems).map(i => Number.parseInt(i)),
+				true
+			)
+		) {
+			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
+			xpReceived += amountToAdd;
+			bonusXP += amountToAdd;
+		} else {
+			// For each prospector item, check if they have it, give its' XP boost if so.
+			for (const [itemID, bonus] of Object.entries(Mining.prospectorItems)) {
+				if (user.hasEquipped(Number.parseInt(itemID))) {
+					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
+					xpReceived += amountToAdd;
+					bonusXP += amountToAdd;
+				}
+			}
+		}
+		const currentLevel = user.skillLevel(SkillsEnum.Mining);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Mining,
+			amount: xpReceived,
+			duration
+>>>>>>> master
 		});
 
 		await transactItems({

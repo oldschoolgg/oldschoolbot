@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -120,7 +120,7 @@ async function cyclopsCommand(user: MUser, channelID: string, quantity: number |
 		type: 'Cyclops'
 	});
 
-	let response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDuration(
+	const response = `${user.minionName} is now off to kill ${quantity}x Cyclops, it'll take around ${formatDuration(
 		duration
 	)} to finish. ${
 		hasAttackCape

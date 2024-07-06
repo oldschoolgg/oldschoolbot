@@ -1,10 +1,7 @@
-import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
+import type { Bank } from 'oldschooljs';
+import type { Item } from 'oldschooljs/dist/meta/types';
+import type LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import { ItemBank, Skills } from '../types';
-import { FarmingPatchName } from '../util/farmingHelpers';
 
 export enum SkillsEnum {
 	Agility = 'agility',
@@ -62,6 +59,41 @@ export const SkillsArray = [
 	'slayer',
 	'invention',
 	'divination'
+] as const;
+
+export type SkillNameType = (typeof SkillsArray)[number];
+for (const skill of SkillsArray) {
+	const matching = Object.keys(SkillsEnum).find(key => key.toLowerCase() === skill);
+	if (!matching) throw new Error(`Missing skill enum for ${skill}`);
+}
+if (SkillsArray.length !== Object.keys(SkillsEnum).length) {
+	throw new Error('Not all skills have been added to the SkillsArray.');
+}
+
+export const SkillsArray = [
+	'agility',
+	'cooking',
+	'fishing',
+	'mining',
+	'smithing',
+	'woodcutting',
+	'firemaking',
+	'runecraft',
+	'crafting',
+	'prayer',
+	'fletching',
+	'farming',
+	'herblore',
+	'thieving',
+	'hunter',
+	'construction',
+	'magic',
+	'attack',
+	'strength',
+	'defence',
+	'ranged',
+	'hitpoints',
+	'slayer'
 ] as const;
 
 export type SkillNameType = (typeof SkillsArray)[number];

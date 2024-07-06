@@ -1,9 +1,13 @@
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+<<<<<<< HEAD
 import Prayer from '../prayer';
 
 export interface Castable {
+=======
+interface Castable {
+>>>>>>> master
 	id: number;
 	input: Bank;
 	output: Bank | null;

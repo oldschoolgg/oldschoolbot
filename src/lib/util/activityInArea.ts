@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { soteSkillRequirements } from '../skilling/functions/questRequirements';
-import {
+import type {
 	ActivityTaskData,
 	AgilityActivityTaskOptions,
 	HunterActivityTaskOptions,
@@ -11,9 +11,9 @@ import {
 } from '../types/minions';
 import resolveItems from './resolveItems';
 
-export const enum WorldLocations {
-	Priffdinas,
-	World
+export enum WorldLocations {
+	Priffdinas = 0,
+	World = 1
 }
 
 const WorldLocationsChecker = [

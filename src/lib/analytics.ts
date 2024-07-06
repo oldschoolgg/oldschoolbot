@@ -1,6 +1,6 @@
 import { ActivityGroup, globalConfig } from '../lib/constants';
 import { prisma } from '../lib/settings/prisma';
-import { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
+import type { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
 import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
 import { getItem } from './util/getOSItem';
 
@@ -46,7 +46,7 @@ export async function analyticsTick() {
 				'SELECT SUM("GP") AS count FROM users;'
 			].map(query => prisma.$queryRawUnsafe(query))
 		)
-	).map((result: any) => parseInt(result[0].count)) as number[];
+	).map((result: any) => Number.parseInt(result[0].count)) as number[];
 
 	const artifact = getItem('Magical artifact')!;
 	const statuette = getItem('Demon statuette')!;

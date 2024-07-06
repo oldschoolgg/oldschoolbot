@@ -4,8 +4,6 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import { GearStat } from '../../../gear/types';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
-import { makeKillTable } from '../../../util/setCustomMonster';
-import { KillableMonster } from '../../types';
 
 export const vannakaMonsters: KillableMonster[] = [
 	{

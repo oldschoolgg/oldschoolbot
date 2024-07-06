@@ -1,9 +1,9 @@
+import './mocks';
 import '../globalSetup';
 import './mocks';
 
 import { Image } from '@napi-rs/canvas';
 import { noOp } from 'e';
-import mitm from 'mitm';
 import { afterEach, beforeEach, vi } from 'vitest';
 
 import { BankImageTask, bankImageTask } from '../../src/lib/bankImage';
@@ -29,6 +29,7 @@ vi.mock('../../src/lib/gear/functions/generateGearImage', async () => {
 	};
 });
 
+<<<<<<< HEAD
 vi.mock('../../src/lib/leagues/stats', async () => {
 	const actual: any = await vi.importActual('../../src/lib/leagues/stats');
 	return {
@@ -37,6 +38,13 @@ vi.mock('../../src/lib/leagues/stats', async () => {
 			pointsRanking: 1,
 			tasksRanking: 1
 		})
+=======
+vi.mock('../../src/lib/util/chart', async () => {
+	const actual: any = await vi.importActual('../../src/lib/gear/functions/generateGearImage');
+	return {
+		...actual,
+		createChart: vi.fn().mockReturnValue(Promise.resolve(Buffer.from('')))
+>>>>>>> master
 	};
 });
 

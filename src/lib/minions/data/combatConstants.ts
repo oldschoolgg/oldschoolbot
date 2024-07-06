@@ -1,7 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { inventionBoosts } from '../../invention/inventions';
-import { Consumable } from '../types';
 
 // Configure boost percents
 export const boostCannon = 30;
@@ -16,23 +14,23 @@ export const xpPercentToCannonM = 70;
 // Amount to vary cannon vs regular XP
 export const xpCannonVaryPercent = 10;
 
-export interface CombatOptionsDesc {
+interface CombatOptionsDesc {
 	id: number;
 	name: string;
 	desc: string;
 	aliases: string[];
 }
 export enum CombatOptionsEnum {
-	NullOption,
-	AlwaysCannon,
-	AlwaysIceBurst,
-	AlwaysIceBarrage
+	NullOption = 0,
+	AlwaysCannon = 1,
+	AlwaysIceBurst = 2,
+	AlwaysIceBarrage = 3
 }
 export enum SlayerActivityConstants {
-	None,
-	IceBarrage,
-	IceBurst,
-	Cannon
+	None = 0,
+	IceBarrage = 1,
+	IceBurst = 2,
+	Cannon = 3
 }
 export const CombatCannonItemBank = new Bank({
 	'Cannon barrels': 1,

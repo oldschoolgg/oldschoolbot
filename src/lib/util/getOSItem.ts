@@ -1,6 +1,6 @@
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { Items } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
 
@@ -20,7 +20,7 @@ export default function getOSItem(itemName: string | number): Item {
 		identifier = itemName;
 	} else {
 		const parsed = Number(itemName);
-		identifier = isNaN(parsed) ? cleanItemName(itemName) : parsed;
+		identifier = Number.isNaN(parsed) ? cleanItemName(itemName) : parsed;
 	}
 
 	const osItem = Items.get(identifier) as Item | undefined;

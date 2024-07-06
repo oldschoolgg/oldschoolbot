@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
 
 export const krystiliaMonsters: KillableMonster[] = [
 	{

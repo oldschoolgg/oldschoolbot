@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time } from 'e';
 
 import { handleMahojiConfirmation } from './util/handleMahojiConfirmation';

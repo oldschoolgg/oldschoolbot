@@ -1,11 +1,11 @@
-import { percentChance, randInt, roll, Time } from 'e';
+import { Time, percentChance, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { chargePortentIfHasCharges, PortentID } from '../../lib/bso/divination';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { Stealable, stealables } from '../../lib/skilling/skills/thieving/stealables';
-import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import { perHourChance, skillingPetDropRate } from '../../lib/util';
 import { forcefullyUnequipItem } from '../../lib/util/forcefullyUnequipItem';
@@ -41,11 +41,15 @@ export function calcLootXPPickpocketing(
 	const diary = hasDiary && npc.customTickRate === undefined ? 1.1 : 1;
 	const thievCape = hasThievingCape && npc.customTickRate === undefined ? 1.1 : 1;
 
+<<<<<<< HEAD
 	let chanceOfSuccess = (npc.slope! * currentLevel + npc.intercept!) * diary * thievCape;
 	if (armband) {
 		// 50% better success chance if has armband
 		chanceOfSuccess += chanceOfSuccess / 2;
 	}
+=======
+	const chanceOfSuccess = (npc.slope! * currentLevel + npc.intercept!) * diary * thievCape;
+>>>>>>> master
 
 	for (let i = 0; i < quantity; i++) {
 		if (!percentChance(chanceOfSuccess)) {
@@ -103,7 +107,7 @@ export const pickpocketTask: MinionTask = {
 			}
 		}
 
-		let boosts: string[] = [];
+		const boosts: string[] = [];
 		await clueUpgraderEffect(user, loot, boosts, 'pickpocketing');
 		if (user.hasEquipped("Thieves' armband")) {
 			boosts.push('3x loot for Thieves armband');
@@ -165,7 +169,7 @@ export const pickpocketTask: MinionTask = {
 				? ''
 				: `${
 						100 - obj.lootPercent!
-				  }% of the loot was dropped in favour of enhancing amount of stalls stolen from.`
+					}% of the loot was dropped in favour of enhancing amount of stalls stolen from.`
 		}`;
 
 		if (rogueOutfitBoostActivated) {
@@ -187,7 +191,7 @@ export const pickpocketTask: MinionTask = {
 						title: `Loot From ${successfulQuantity} ${obj.name}:`,
 						user,
 						previousCL
-				  });
+					});
 
 		handleTripFinish(user, channelID, str, image?.file.attachment, data, loot);
 	}

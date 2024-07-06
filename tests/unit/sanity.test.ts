@@ -244,7 +244,7 @@ describe('Sanity', () => {
 		expect(itemID('Reward casket (master)')).toEqual(19_836);
 	});
 	test('openables', () => {
-		let ids = new Set();
+		const ids = new Set();
 		for (const openable of allOpenables) {
 			if (getOSItem(openable.id) !== openable.openedItem) {
 				throw new Error(`${openable.name} doesnt match`);
@@ -257,7 +257,7 @@ describe('Sanity', () => {
 	});
 	test('exponentialPercentScale', () => {
 		for (let i = 0; i < 100; i++) {
-			let num = exponentialPercentScale(i);
+			const num = exponentialPercentScale(i);
 			expect(num > 0 && num <= 100).toBeTruthy();
 		}
 		expect(exponentialPercentScale(100)).toEqual(100);

@@ -1,12 +1,10 @@
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { randFloat, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import birdhouses from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
-import { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
+import type { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { birdhouseLimit } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -26,7 +24,7 @@ export const birdHouseTask: MinionTask = {
 		const user = await mUserFetch(userID);
 		let hunterXP = 0;
 		let craftingXP = 0;
-		let strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
+		const strungRabbitFoot = user.hasEquipped('Strung rabbit foot');
 		const loot = new Bank();
 
 		const birdhouse = birdhouses.find(_birdhouse => _birdhouse.name === birdhouseName);

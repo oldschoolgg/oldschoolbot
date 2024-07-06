@@ -1,10 +1,11 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { StashUnit, User } from '@prisma/client';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { StashUnit, User } from '@prisma/client';
 import { partition } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import Bank from 'oldschooljs/dist/structures/Bank';
 
-import { allStashUnitsFlat, allStashUnitTiers, IStashUnit, StashUnitTier } from '../../../lib/clues/stashUnits';
+import type { IStashUnit, StashUnitTier } from '../../../lib/clues/stashUnits';
+import { allStashUnitTiers, allStashUnitsFlat } from '../../../lib/clues/stashUnits';
 import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -30,7 +31,7 @@ export async function getParsedStashUnits(userID: string): Promise<ParsedUnit[]>
 							return slot.some(i => builtUnit.items_contained.includes(i));
 						}
 						return builtUnit.items_contained.includes(slot);
-				  })
+					})
 				: false,
 			builtUnit,
 			tier

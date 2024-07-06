@@ -5,7 +5,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { GearStat } from '../../../gear/types';
 import itemID from '../../../util/itemID';
 import resolveItems from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 
 const killableMonsters: KillableMonster[] = [
 	{

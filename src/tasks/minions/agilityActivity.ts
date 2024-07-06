@@ -1,17 +1,19 @@
-import { increaseNumByPercent, randInt, roll, Time } from 'e';
+import { Time, increaseNumByPercent, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { chargePortentIfHasCharges, PortentID } from '../../lib/bso/divination';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { addItemToBank, randomVariation, toKMB } from 'oldschooljs/dist/util';
+import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import Agility from '../../lib/skilling/skills/agility';
 import { calcUserGorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
-import { Course, SkillsEnum } from '../../lib/skilling/types';
-import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, clAdjustedDroprate, randomVariation, skillingPetDropRate, toKMB } from '../../lib/util';
+import type { Course } from '../../lib/skilling/types';
+import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
+import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';
@@ -56,7 +58,7 @@ function calculateMarks({
 	}
 
 	if (usingHarry) {
-		let harryBonus = Math.ceil(randomVariation(totalMarks * 2, 10));
+		const harryBonus = Math.ceil(randomVariation(totalMarks * 2, 10));
 		boosts.push(`Harry found you ${harryBonus - totalMarks}x extra Marks of grace.`);
 		totalMarks = harryBonus;
 	} else if (course.id !== 5 && agilityLevel >= course.level + 20) {
@@ -141,8 +143,12 @@ export function calculateAgilityResult({
 export const agilityTask: MinionTask = {
 	type: 'Agility',
 	async run(data: AgilityActivityTaskOptions) {
-		let { courseID, quantity, userID, channelID, duration, alch } = data;
+<<<<<<< HEAD
+		const { courseID, quantity, userID, channelID, duration, alch } = data;
 		const minutes = Math.round(duration / Time.Minute);
+=======
+		const { courseID, quantity, userID, channelID, duration, alch } = data;
+>>>>>>> master
 		const user = await mUserFetch(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 

@@ -1,26 +1,26 @@
 import { Time } from 'e';
 import { Clues } from 'oldschooljs';
-import { BeginnerCasket, BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
-import { EasyCasket, EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
-import { EliteCasket, EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
-import { HardCasket, HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
-import { MasterCasket, MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
-import { MediumCasket, MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
+import type { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
+import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
+import type { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
+import { EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
+import type { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
+import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
+import type { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
+import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
+import type { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
+import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
+import type { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
+import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
 import { ElderClue, ElderClueTable } from '../simulation/elderClue';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
-import { beginnerReqs, ClueReqs } from './clueReqs';
-import {
-	beginnerStashes,
-	easyStashes,
-	eliteStashes,
-	hardStashes,
-	masterStashes,
-	mediumStashes,
-	StashUnitTier
-} from './stashUnits';
+import type { ClueReqs } from './clueReqs';
+import { beginnerReqs } from './clueReqs';
+import type { StashUnitTier } from './stashUnits';
+import { beginnerStashes, easyStashes, eliteStashes, hardStashes, masterStashes, mediumStashes } from './stashUnits';
 
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 

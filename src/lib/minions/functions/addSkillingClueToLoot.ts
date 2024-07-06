@@ -1,5 +1,5 @@
 import { percentChance, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 
 import {
 	birdsNestID,

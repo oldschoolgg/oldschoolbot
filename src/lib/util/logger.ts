@@ -24,7 +24,7 @@ const sqlLogger = new SonicBoom({
 	sync: true
 });
 
-export const sqlLog = (str: string) => sqlLogger.write(`${str}\n`);
+export const sqlLog = (str: string) => sqlLogger.write(`${new Date().toLocaleTimeString()} ${str}\n`);
 
 interface LogContext {
 	type?: string;
@@ -37,14 +37,7 @@ function _debugLog(str: string, context: LogContext = {}) {
 	sonicBoom.write(`${JSON.stringify(o)}\n`);
 }
 declare global {
-	const debugLog: typeof _debugLog;
-}
-declare global {
-	namespace NodeJS {
-		interface Global {
-			debugLog: typeof _debugLog;
-		}
-	}
+	var debugLog: typeof _debugLog;
 }
 
 global.debugLog = _debugLog;

@@ -7,7 +7,7 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
-import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
+import type { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const groupoMonsterTask: MinionTask = {
@@ -28,7 +28,7 @@ export const groupoMonsterTask: MinionTask = {
 			const userWhoGetsLoot = randArrItem(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
 			teamsLoot[userWhoGetsLoot] = loot.add(currentLoot);
-			kcAmounts[userWhoGetsLoot] = Boolean(kcAmounts[userWhoGetsLoot]) ? ++kcAmounts[userWhoGetsLoot] : 1;
+			kcAmounts[userWhoGetsLoot] = kcAmounts[userWhoGetsLoot] ? ++kcAmounts[userWhoGetsLoot] : 1;
 		}
 
 		const leaderUser = await mUserFetch(leader);
@@ -60,7 +60,9 @@ export const groupoMonsterTask: MinionTask = {
 			totalLoot.add(loot);
 
 			if (kcToAdd) await user.incrementKC(monsterID, kcToAdd);
-			const purple = Object.keys(loot).some(itemID => isImportantItemForMonster(parseInt(itemID), monster));
+			const purple = Object.keys(loot).some(itemID =>
+				isImportantItemForMonster(Number.parseInt(itemID), monster)
+			);
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;
 

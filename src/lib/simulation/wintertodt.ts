@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { SimpleTable } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
@@ -6,8 +5,9 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
 
 import { MAX_XP } from '../constants';
-import { LevelRequirements, SkillsEnum } from '../skilling/types';
-import { ItemBank } from '../types';
+import type { LevelRequirements } from '../skilling/types';
+import { SkillsEnum } from '../skilling/types';
+import type { ItemBank } from '../types';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { normal } from '../util/smallUtils';
@@ -138,7 +138,7 @@ const pyroPieces = resolveItems([
 	'Pyromancer boots'
 ]) as number[];
 
-export class WintertodtCrateClass {
+class WintertodtCrateClass {
 	public pickWeightedLootItem<T>(lvl: number, array: T[]): T {
 		const maxIndex = Math.max(Math.floor(calcPercentOfNum(Math.min(lvl + 15, 99), array.length)), 1);
 		const minIndex = Math.floor(calcPercentOfNum(Math.max(lvl - 70, 1), array.length));
@@ -258,7 +258,7 @@ export class WintertodtCrateClass {
 		for (let i = 0; i < rolls; i++) {
 			const rolledUnique = this.rollUnique(new Bank().add(itemsOwned).add(loot), firemakingXP);
 
-			if (rolledUnique instanceof Array) {
+			if (Array.isArray(rolledUnique)) {
 				const [itemID, qty] = rolledUnique;
 				loot.add(itemID, qty);
 				continue;

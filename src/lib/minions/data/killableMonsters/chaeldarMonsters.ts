@@ -5,7 +5,7 @@ import { itemID } from 'oldschooljs/dist/util';
 import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 
 export const chaeldarMonsters: KillableMonster[] = [
 	{

@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { AlchingActivityTaskOptions } from '../../lib/types/minions';
+import type { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -12,7 +12,7 @@ import { updateClientGPTrackSetting } from '../../mahoji/mahojiSettings';
 export const alchingTask: MinionTask = {
 	type: 'Alching',
 	async run(data: AlchingActivityTaskOptions) {
-		let { itemID, quantity, channelID, alchValue, userID, duration } = data;
+		const { itemID, quantity, channelID, alchValue, userID, duration } = data;
 		const user = await mUserFetch(userID);
 		const loot = new Bank({ Coins: alchValue });
 
@@ -52,7 +52,7 @@ export const alchingTask: MinionTask = {
 		});
 
 		const saved = savedRunes > 0 ? `Your Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
-		let responses = [
+		const responses = [
 			`${user}, ${user.minionName} has finished alching ${quantity}x ${item.name}! ${loot} has been added to your bank. ${xpRes}. ${saved}`
 		].join('\n');
 

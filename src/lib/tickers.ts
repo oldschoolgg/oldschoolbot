@@ -1,20 +1,21 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, TextChannel } from 'discord.js';
-import { noOp, randInt, removeFromArr, shuffleArr, Time } from 'e';
+import type { TextChannel } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
+import { Time, noOp, randInt, removeFromArr, shuffleArr } from 'e';
 
 import { production } from '../config';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { runTameTask } from '../tasks/tames/tameTasks';
+import { mahojiUserSettingsUpdate } from './MUser';
+import { processPendingActivities } from './Task';
 import { bossEvents, startBossEvent } from './bossEvents';
-import { BitField, Channel, informationalButtons, PeakTier } from './constants';
+import { BitField, Channel, PeakTier, informationalButtons } from './constants';
 import { GrandExchange } from './grandExchange';
 import { cacheGEPrices } from './marketPrices';
 import { collectMetrics } from './metrics';
-import { mahojiUserSettingsUpdate } from './MUser';
 import { prisma, queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
-import { processPendingActivities } from './Task';
 import { awaitMessageComponentInteraction, getSupportGuild, makeComponents, stringMatches } from './util';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
 import { handleGiveawayCompletion } from './util/giveaway';
@@ -73,14 +74,14 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 		timer: null,
 		interval: Time.Minute,
 		cb: async () => {
-			let storedCount = queryCountStore.value;
+			const storedCount = queryCountStore.value;
 			queryCountStore.value = 0;
 			const data = {
 				timestamp: Math.floor(Date.now() / 1000),
 				...(await collectMetrics()),
 				qps: storedCount / 60
 			};
-			if (isNaN(data.eventLoopDelayMean)) {
+			if (Number.isNaN(data.eventLoopDelayMean)) {
 				data.eventLoopDelayMean = 0;
 			}
 			await prisma.metric.create({
@@ -115,7 +116,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 				.setEmoji('493286312854683654')
 				.setStyle(ButtonStyle.Secondary);
 			const components = [dailyDMButton];
-			let str = 'Your daily is ready!';
+			const str = 'Your daily is ready!';
 
 			for (const row of result.values()) {
 				if (!production) continue;
@@ -144,7 +145,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 
 			// Divide the current day into interverals
 			for (let i = 0; i <= 10; i++) {
-				let randomedTime = randInt(1, 2);
+				const randomedTime = randInt(1, 2);
 				const [peakTier] = shuffleArr(peakTiers);
 				const peak: Peak = {
 					startTime: randomedTime,
@@ -167,7 +168,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 
 			let currentTime = new Date().getTime();
 
-			for (let peak of peakInterval) {
+			for (const peak of peakInterval) {
 				peak.startTime = currentTime;
 				currentTime += peak.finishTime * Time.Hour;
 				peak.finishTime = currentTime;
@@ -182,7 +183,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 		timer: null,
 		cb: async () => {
 			if (!production) return;
-			let basePlantTime = 1_626_556_507_451;
+			const basePlantTime = 1_626_556_507_451;
 			const now = Date.now();
 			const users = await prisma.user.findMany({
 				where: {
@@ -213,11 +214,11 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 					const storeHarvestablePlant = patch.lastPlanted;
 					const planted = storeHarvestablePlant
 						? Farming.Plants.find(plants => stringMatches(plants.name, storeHarvestablePlant)) ??
-						  Farming.Plants.find(
+							Farming.Plants.find(
 								plants =>
 									stringMatches(plants.name, storeHarvestablePlant) ||
 									stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
-						  )
+							)
 						: null;
 					const difference = now - patch.plantTime;
 					if (!planted) continue;
@@ -305,7 +306,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 			const channel = guild?.channels.cache.get(Channel.HelpAndSupport) as TextChannel | undefined;
 			if (!channel) return;
 			const messages = await channel.messages.fetch({ limit: 5 });
-			if (messages.some(m => m.author.id === globalClient.user!.id)) return;
+			if (messages.some(m => m.author.id === globalClient.user?.id)) return;
 			if (lastMessageID) {
 				const message = await channel.messages.fetch(lastMessageID).catch(noOp);
 				if (message) {
@@ -396,7 +397,6 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 		interval: Time.Hour * 4,
 		cb: async () => {
 			await cacheGEPrices();
-			await GrandExchange.extensiveVerification();
 		}
 	}
 ];

@@ -14,7 +14,7 @@ import {
 } from '../data/CollectionsExport';
 import { allTeamCapes } from '../data/misc';
 import resolveItems, { deepResolveItems } from '../util/resolveItems';
-import { ClueTier } from './clueTiers';
+import type { ClueTier } from './clueTiers';
 
 export interface IStashUnit {
 	id: number;
@@ -612,4 +612,4 @@ export const allStashUnitTiers = [
 	masterStashes
 ];
 
-export const allStashUnitsFlat = allStashUnitTiers.map(i => i.units).flat();
+export const allStashUnitsFlat = allStashUnitTiers.flatMap(i => i.units);

@@ -1,4 +1,4 @@
-import { ItemBank } from '../../types';
+import type { ItemBank } from '../../types';
 import itemID from '../../util/itemID';
 
 interface TitheFarmBuyable {

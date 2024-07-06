@@ -11,8 +11,6 @@ import { createTeam } from '../../../lib/data/cox';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { RaidsOptions } from '../../../lib/types/minions';
 import { randomVariation, roll } from '../../../lib/util';
 import { handleSpecialCoxLoot } from '../../../lib/util/handleSpecialCoxLoot';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -36,7 +34,7 @@ const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic', 'Onyx']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
 const blueItems = resolveItems(['Metamorphic dust']);
 
-export const coxPurpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
+const coxPurpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
 
 async function handleCoxXP(user: MUser, qty: number, isCm: boolean) {
 	let hitpointsXP = 12_000 * qty;
@@ -170,8 +168,13 @@ export const raidsTask: MinionTask = {
 		} finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
 		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, quantity)));
 
-		for (let [userID, userData] of raidResults) {
+<<<<<<< HEAD
+		for (const [userID, userData] of raidResults) {
 			const { personalPoints, deaths, deathChance, loot, mUser: user, naturalDouble, flappyMsg } = userData;
+=======
+		for (const [userID, userData] of raidResults) {
+			const { personalPoints, deaths, deathChance, loot, mUser: user } = userData;
+>>>>>>> master
 			if (!user) continue;
 			if (naturalDouble) loot.add(MysteryBoxes.roll());
 
@@ -218,7 +221,7 @@ export const raidsTask: MinionTask = {
 		}
 
 		if (cc) {
-			let msg = randArrItem(CHINCANNON_MESSAGES);
+			const msg = randArrItem(CHINCANNON_MESSAGES);
 			resultMessage += `\n\n**${msg}**`;
 		}
 
@@ -256,7 +259,7 @@ export const raidsTask: MinionTask = {
 								}
 							],
 							type: 'Chambers of Xerician'
-					  })
+						})
 					: undefined,
 				data,
 				totalLoot
@@ -276,7 +279,7 @@ export const raidsTask: MinionTask = {
 							customTexts: []
 						})),
 						type: 'Chambers of Xerician'
-				  })
+					})
 				: undefined,
 			data,
 			null

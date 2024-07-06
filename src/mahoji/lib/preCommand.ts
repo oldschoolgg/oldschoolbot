@@ -1,12 +1,13 @@
-import { InteractionReplyOptions, TextChannel, User } from 'discord.js';
-import { CommandOptions } from 'mahoji/dist/lib/types';
+import type { CommandOptions } from '@oldschoolgg/toolkit';
+import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 
 import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
-import { badges, badgesCache, busyImmuneCommands, Emoji, usernameCache } from '../../lib/constants';
+import { Emoji, badges, badgesCache, busyImmuneCommands, usernameCache } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { removeMarkdownEmojis, stripEmojis } from '../../lib/util';
 import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
-import { AbstractCommand, runInhibitors } from './inhibitors';
+import type { AbstractCommand } from './inhibitors';
+import { runInhibitors } from './inhibitors';
 
 function cleanUsername(username: string) {
 	return removeMarkdownEmojis(username).substring(0, 32);
@@ -30,7 +31,7 @@ export async function syncNewUserUsername(user: MUser, username: string) {
 			}
 		});
 	}
-	let name = stripEmojis(username);
+	const name = stripEmojis(username);
 	usernameCache.set(user.id, name);
 	const rawBadges = user.user.badges.map(num => badges[num]);
 	if (user.isIronman) {

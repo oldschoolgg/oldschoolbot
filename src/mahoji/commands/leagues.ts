@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { calcWhatPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
@@ -15,6 +16,16 @@ import { formatDuration } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { Cooldowns } from '../lib/Cooldowns';
 import { OSBMahojiCommand } from '../lib/util';
+=======
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+import fetch from 'node-fetch';
+import { Hiscores } from 'oldschooljs';
+
+import leaguesJson from '../../lib/leagues.json';
+import { statsEmbed } from '../../lib/util/statsEmbed';
+import type { OSBMahojiCommand } from '../lib/util';
+>>>>>>> master
 
 export const leaguesOSRSCommand: OSBMahojiCommand = {
 	name: 'leagues',

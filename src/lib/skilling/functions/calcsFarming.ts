@@ -1,10 +1,5 @@
 import { randInt } from 'e';
 
-import { userHasMasterFarmerOutfit } from '../../../mahoji/mahojiSettings';
-import { BitField } from '../../constants';
-import { hasUnlockedAtlantis } from '../../util';
-import { FarmingPatchName } from '../../util/farmingHelpers';
-import { Plant, SkillsEnum } from '../types';
 
 export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number] {
 	let numOfPatches = plant.defaultNumOfPatches;

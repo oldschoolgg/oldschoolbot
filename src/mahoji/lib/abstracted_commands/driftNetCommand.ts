@@ -1,8 +1,8 @@
-import { randFloat, reduceNumByPercent, Time } from 'e';
+import { Time, randFloat, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -35,9 +35,10 @@ export async function driftNetCommand(
 		return 'You need a trident equipped to do Drift net fishing. Example of tridents are Merfolk trident and Uncharged trident.';
 	}
 
-	if (minutes < 1 || !Number.isInteger(minutes) || isNaN(minutes)) return 'Please specify a valid number of minutes.';
+	if (minutes < 1 || !Number.isInteger(minutes) || Number.isNaN(minutes))
+		return 'Please specify a valid number of minutes.';
 
-	let tripLength = Time.Minute * minutes;
+	const tripLength = Time.Minute * minutes;
 
 	if (tripLength > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(

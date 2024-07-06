@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { randArrItem, reduceNumByPercent, roll, sumArr } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
@@ -17,6 +18,13 @@ import {
 } from '../../lib/depthsOfAtlantis';
 import { mileStoneBaseDeathChances, RaidLevel, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
 import { averageBank, formatDuration } from '../../lib/util';
+=======
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+
+import type { RaidLevel } from '../../lib/simulation/toa';
+import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
+>>>>>>> master
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
@@ -24,7 +32,7 @@ import resolveItems from '../../lib/util/resolveItems';
 import { DOANonUniqueTable } from '../../tasks/minions/bso/doaActivity';
 import { coxCommand, coxStatsCommand } from '../lib/abstracted_commands/coxCommand';
 import { tobCheckCommand, tobStartCommand, tobStatsCommand } from '../lib/abstracted_commands/tobCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const raidCommand: OSBMahojiCommand = {
 	name: 'raid',
@@ -152,7 +160,10 @@ export const raidCommand: OSBMahojiCommand = {
 							name: 'raid_level',
 							description: 'Choose the raid level you want to do (1-600).',
 							required: true,
-							choices: mileStoneBaseDeathChances.map(i => ({ name: i.level.toString(), value: i.level }))
+							choices: mileStoneBaseDeathChances.map(i => ({
+								name: i.level.toString(),
+								value: i.level
+							}))
 						},
 						{
 							type: ApplicationCommandOptionType.Boolean,
@@ -449,7 +460,7 @@ Slowest finish: ${formatDuration(slowest.time)}
 
 		if (minionIsBusy(user.id)) return "Your minion is busy, you can't do this.";
 
-		if (cox && cox.start) {
+		if (cox?.start) {
 			return coxCommand(
 				channelID,
 				user,

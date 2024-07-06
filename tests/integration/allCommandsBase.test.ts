@@ -1,17 +1,14 @@
-import { join } from 'node:path';
-
+import { join } from 'path';
+import type { CommandOption } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { randArrItem, randInt, shuffleArr, Time } from 'e';
-import { Store } from 'mahoji/dist/lib/structures/Store';
-import { CommandOption } from 'mahoji/dist/lib/types';
-import { isValidCommand } from 'mahoji/dist/lib/util';
+import { Time, randArrItem, randInt, shuffleArr } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { expect, test, vi } from 'vitest';
-
 import { BitField, minionActivityCache } from '../../src/lib/constants';
 import { prisma } from '../../src/lib/settings/prisma';
 import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation';
+<<<<<<< HEAD
 import { activitiesCommand } from '../../src/mahoji/commands/activities';
 import { adminCommand } from '../../src/mahoji/commands/admin';
 import { askCommand } from '../../src/mahoji/commands/ask';
@@ -78,11 +75,21 @@ import { tradeCommand } from '../../src/mahoji/commands/trade';
 import { triviaCommand } from '../../src/mahoji/commands/trivia';
 import { mahojiUseCommand } from '../../src/mahoji/commands/use';
 import { randomMock } from './setup';
-import { createTestUser, mockClient, TestUser } from './util';
+import { type TestUser, createTestUser, mockClient } from './util';
 
 type CommandInput = Record<string, any>;
 async function generateCommandInputs(user: TestUser, options: readonly CommandOption[]): Promise<CommandInput[]> {
-	let results: CommandInput[] = [];
+	const results: CommandInput[] = [];
+=======
+import { allCommands } from '../../src/mahoji/commands/allCommands';
+import { randomMock } from './setup';
+import type { TestUser } from './util';
+import { createTestUser, mockClient } from './util';
+
+type CommandInput = Record<string, any>;
+async function generateCommandInputs(user: TestUser, options: readonly CommandOption[]): Promise<CommandInput[]> {
+	const results: CommandInput[] = [];
+>>>>>>> master
 	const allPossibleOptions: Record<string, any[]> = {};
 
 	for (const option of options) {
@@ -146,7 +153,11 @@ async function generateCommandInputs(user: TestUser, options: readonly CommandOp
 	const sorted = Object.values(allPossibleOptions).sort((a, b) => b.length - a.length);
 	const longestOptions = sorted[0]?.length;
 	for (let i = 0; i < longestOptions; i++) {
-		let obj: Record<string, any> = {};
+<<<<<<< HEAD
+		const obj: Record<string, any> = {};
+=======
+		const obj: Record<string, any> = {};
+>>>>>>> master
 		for (const [key, val] of Object.entries(allPossibleOptions)) {
 			obj[key] = val[i] ?? randArrItem(val);
 		}
@@ -160,7 +171,7 @@ for (const item of Items.array()) {
 	bank.add(item.id, 100_000_000);
 }
 
-test.skip(
+test(
 	'All Commands Base Test',
 	async () => {
 		expect(vi.isMockFunction(handleMahojiConfirmation)).toBe(true);
@@ -170,14 +181,15 @@ test.skip(
 		const maxUser = await createTestUser(bank, { GP: 100_000_000_000 });
 		await maxUser.max();
 		await maxUser.update({ bitfield: [BitField.isModerator] });
+<<<<<<< HEAD
 		const store = new Store({ name: 'commands', dirs: [join('dist', 'mahoji')], checker: isValidCommand });
 		await store.load();
 		const currentClientSettings = await mahojiClientSettingsFetch({ construction_cost_bank: true });
-		await prisma.activity.deleteMany({
-			where: {
-				user_id: BigInt(maxUser.id)
-			}
-		});
+=======
+		await mahojiClientSettingsFetch(construction_cost_bank: true );
+>>>>>>> master
+		await prisma.activity.deleteMany(
+				user_id: BigInt(maxUser.id));
 
 		const ignoredCommands = [
 			'leagues',
@@ -199,6 +211,7 @@ test.skip(
 			'ge',
 			'rp',
 			'cl',
+<<<<<<< HEAD
 			'bsominigames',
 			'completion',
 			'dg',
@@ -286,6 +299,18 @@ test.skip(
 			// throw new Error(
 			// 	`If you added a new command (${command.name}), you need to put it in the allCommandsBase.test.ts file.`
 			// );
+=======
+			'gearpresets'
+		];
+		const cmds = allCommands;
+
+		for (const command of cmds) {
+			if (ignoredCommands.includes(command.name)) continue;
+			if (cmds.some(c => c.name === command.name)) continue;
+			throw new Error(
+				`If you added a new command (${command.name}), you need to put it in the allCommandsBase.test.ts file.`
+			);
+>>>>>>> master
 		}
 
 		const ignoredSubCommands = [
@@ -294,15 +319,25 @@ test.skip(
 			['minion', 'bankbg']
 		];
 
+<<<<<<< HEAD
 		for (const command of cmds) {
 			if (ignoredCommands.includes(command.name)) continue;
 			const options = await generateCommandInputs(maxUser, command.options!);
+=======
+		const promises = [];
+
+		for (const command of cmds) {
+			if (ignoredCommands.includes(command.name)) continue;
+
+			const options = shuffleArr(await generateCommandInputs(maxUser, command.options!)).slice(0, 5);
+>>>>>>> master
 			outer: for (const option of options) {
 				for (const [parent, sub, subCommand] of ignoredSubCommands) {
 					if (command.name === parent && option[sub] && (subCommand ? option[sub][subCommand] : true)) {
 						continue outer;
 					}
 				}
+<<<<<<< HEAD
 				try {
 					const res = await maxUser.runCommand(command, option);
 					minionActivityCache.clear();
@@ -318,9 +353,25 @@ test.skip(
 			}
 		}
 
+=======
+
+				promises.push(async () => 
+					try {
+						await maxUser.runCommand(command, option);
+						minionActivityCache.clear();
+					} catch (err) {
+						console.error(
+							`Failed to run command ${command.name} with options ${JSON.stringify(option)}: ${err}`
+						);
+						throw err;
+					});
+			}
+		}
+
+		await Promise.all(promises);
+
+>>>>>>> master
 		await client.processActivities();
 	},
-	{
 		timeout: Time.Minute * 10
-	}
 );

@@ -1,16 +1,17 @@
-import { randInt, Time } from 'e';
+import { Time, randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
+<<<<<<< HEAD
 import { BitField } from '../../lib/constants';
-import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
-import { PatchTypes } from '../../lib/minions/farming';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
+import type { PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { prisma } from '../../lib/settings/prisma';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming, { plants } from '../../lib/skilling/skills/farming';
-import { Plant, SkillsEnum } from '../../lib/skilling/types';
+import { type Plant, SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
 	assert,
@@ -21,6 +22,17 @@ import {
 	roll,
 	skillingPetDropRate
 } from '../../lib/util';
+=======
+import { BitField, Emoji, Events } from '../../lib/constants';
+import type { PatchTypes } from '../../lib/minions/farming';
+import type { FarmingContract } from '../../lib/minions/farming/types';
+import { prisma } from '../../lib/settings/prisma';
+import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
+import Farming from '../../lib/skilling/skills/farming';
+import { SkillsEnum } from '../../lib/skilling/types';
+import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
+import { assert, roll, skillingPetDropRate } from '../../lib/util';
+>>>>>>> master
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -594,7 +606,7 @@ export const farmingTask: MinionTask = {
 			// Give boxes for planting when harvesting
 			if (planting && plant.name === 'Mysterious tree') {
 				for (let j = 0; j < quantity; j++) {
-					let upper = randInt(1, 2);
+					const upper = randInt(1, 2);
 					for (let i = 0; i < upper; i++) {
 						loot.add(MysteryBoxes.roll());
 					}
@@ -603,7 +615,7 @@ export const farmingTask: MinionTask = {
 			// Give the boxes for harvesting during a harvest
 			if (alivePlants && plantToHarvest.name === 'Mysterious tree') {
 				for (let j = 0; j < alivePlants; j++) {
-					let upper = randInt(1, 3);
+					const upper = randInt(1, 3);
 					for (let i = 0; i < upper; i++) {
 						loot.add(MysteryBoxes.roll());
 					}
@@ -655,7 +667,7 @@ export const farmingTask: MinionTask = {
 								contractsCompleted + 1
 							} farming contracts.`,
 							head: 'jane'
-					  })
+						})
 					: undefined,
 				data,
 				loot

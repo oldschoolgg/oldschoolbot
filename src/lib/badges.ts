@@ -1,4 +1,4 @@
-import { badges, BadgesEnum } from '../lib/constants';
+import { BadgesEnum, badges } from '../lib/constants';
 import { prisma } from '../lib/settings/prisma';
 
 export async function cacheBadges() {
@@ -25,5 +25,6 @@ export async function cacheBadges() {
 		newCache.set(user.RSN.toLowerCase(), userBadges.join(' '));
 	}
 
+	globalClient._badgeCache.clear();
 	globalClient._badgeCache = newCache;
 }

@@ -1,13 +1,15 @@
-import { sumArr, Time } from 'e';
-import { Bank } from 'oldschooljs';
+import { Time, sumArr } from 'e';
 
+import { Bank } from 'oldschooljs';
+import { MAX_GLOBAL_QP, MAX_QP, quests } from '../../../lib/minions/data/quests';
 import { Skills } from '../../../lib/types';
-import { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '../../../lib/types/minions';
 import { formatDuration, hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
+<<<<<<< HEAD
 export const MAX_GLOBAL_QP = 5000;
 
 interface Quest {
@@ -197,7 +199,7 @@ export const quests: Quest[] = [
 			herblore: 500
 		},
 		calcTime: () => {
-			let duration = Time.Minute * 6;
+			const duration = Time.Minute * 6;
 			return duration;
 		}
 	},
@@ -222,6 +224,8 @@ export const quests: Quest[] = [
 
 export const MAX_QP = MAX_GLOBAL_QP + sumArr(quests.map(i => i.qp));
 
+=======
+>>>>>>> master
 export async function questCommand(user: MUser, channelID: string, name?: string) {
 	if (!user.user.minion_hasBought) {
 		return 'You need a minion to do a questing trip';

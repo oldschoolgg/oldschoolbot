@@ -1,9 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../minions/data/killableMonsters';
-import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
-import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
-import { AssignableSlayerTask } from '../types';
 
 export const vannakaTasks: AssignableSlayerTask[] = [
 	{
@@ -178,7 +175,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		amount: [40, 80],
 		weight: 6,
 		monsters: [Monsters.EarthWarrior.id],
-		levelRequirements: killableMonsters.find(k => k.id === Monsters.EarthWarrior.id)!.levelRequirements,
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.EarthWarrior.id)?.levelRequirements,
 		combatLevel: 35,
 		unlocked: true
 	},

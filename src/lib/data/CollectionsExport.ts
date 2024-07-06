@@ -1,15 +1,14 @@
-import { Minigame } from '@prisma/client';
+import type { Minigame } from '@prisma/client';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-
+import type { Item } from 'oldschooljs/dist/meta/types';
 import { growablePets } from '../growablePets';
 import { stoneSpirits } from '../minions/data/stoneSpirits';
-import { MinigameScore } from '../settings/minigames';
+import type { MinigameScore } from '../settings/minigames';
 import getOSItem from '../util/getOSItem';
 import { assert } from '../util/logError';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
-import { UserStatsDataNeededForCL } from './Collections';
+import type { UserStatsDataNeededForCL } from './Collections';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -18,7 +17,7 @@ import {
 	gracefulLegs,
 	gracefulTops
 } from './gracefulVariants';
-import { allHolidayItems, PartyhatTable } from './holidayItems';
+import { PartyhatTable, allHolidayItems } from './holidayItems';
 
 export interface IToReturnCollection {
 	category: string;
@@ -56,7 +55,7 @@ export type FormatProgressFunction = ({
 	stats: UserStatsDataNeededForCL;
 }) => string | string[] | Promise<string | string[]>;
 
-export interface ICollectionActivity {
+interface ICollectionActivity {
 	[key: string]: {
 		// If the collection will count towards the collection log counter
 		counts?: false;
@@ -207,27 +206,12 @@ export const alchemicalHydraCL = resolveItems([
 	'Alchemical hydra heads'
 ]);
 
-export const karilsItems = resolveItems([
-	"Karil's coif",
-	"Karil's leathertop",
-	"Karil's leatherskirt",
-	"Karil's crossbow"
-]);
-export const ahrimsItems = resolveItems(["Ahrim's hood", "Ahrim's robetop", "Ahrim's robeskirt", "Ahrim's staff"]);
-export const dharokItems = resolveItems([
-	"Dharok's helm",
-	"Dharok's platebody",
-	"Dharok's platelegs",
-	"Dharok's greataxe"
-]);
-export const guthansItems = resolveItems([
-	"Guthan's helm",
-	"Guthan's platebody",
-	"Guthan's chainskirt",
-	"Guthan's warspear"
-]);
-export const toragsItems = resolveItems(["Torag's helm", "Torag's platebody", "Torag's platelegs", "Torag's hammers"]);
-export const veracsItems = resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]);
+const karilsItems = resolveItems(["Karil's coif", "Karil's leathertop", "Karil's leatherskirt", "Karil's crossbow"]);
+const ahrimsItems = resolveItems(["Ahrim's hood", "Ahrim's robetop", "Ahrim's robeskirt", "Ahrim's staff"]);
+const dharokItems = resolveItems(["Dharok's helm", "Dharok's platebody", "Dharok's platelegs", "Dharok's greataxe"]);
+const guthansItems = resolveItems(["Guthan's helm", "Guthan's platebody", "Guthan's chainskirt", "Guthan's warspear"]);
+const toragsItems = resolveItems(["Torag's helm", "Torag's platebody", "Torag's platelegs", "Torag's hammers"]);
+const veracsItems = resolveItems(["Verac's helm", "Verac's brassard", "Verac's plateskirt", "Verac's flail"]);
 export const barrowsItemArr = [karilsItems, ahrimsItems, guthansItems, toragsItems, veracsItems, dharokItems];
 export const barrowsChestCL = resolveItems([
 	...karilsItems,
@@ -259,7 +243,7 @@ export const cerberusCL = resolveItems([
 export const chaosElementalCL = resolveItems(['Pet chaos elemental', 'Dragon pickaxe', 'Dragon 2h sword']);
 export const chaosFanaticCL = resolveItems(['Pet chaos elemental', 'Odium shard 1', 'Malediction shard 1']);
 
-export const godWarsDungeonGodswordShards = resolveItems(['Godsword shard 1', 'Godsword shard 2', 'Godsword shard 3']);
+const godWarsDungeonGodswordShards = resolveItems(['Godsword shard 1', 'Godsword shard 2', 'Godsword shard 3']);
 export const generalGraardorCL = resolveItems([
 	'Pet general graardor',
 	'Bandos chestplate',
@@ -370,6 +354,7 @@ export const grotesqueGuardiansCL = resolveItems([
 	'Granite dust'
 ]);
 export const hesporiCL = resolveItems(['Bottomless compost bucket', 'Iasor seed', 'Kronos seed', 'Attas seed']);
+<<<<<<< HEAD
 
 export const theInfernoCL = resolveItems(['Jal-nib-rek', 'Infernal cape']);
 
@@ -380,12 +365,16 @@ export const emergedZukInfernoCL = resolveItems([
 	'Infernal core'
 ]);
 
+=======
+export const theInfernoCL = resolveItems(['Jal-nib-rek', 'Infernal cape']);
+>>>>>>> master
 export const kalphiteQueenCL = resolveItems([
 	'Kalphite princess',
 	'Kq head',
 	'Jar of sand',
 	'Dragon 2h sword',
-	'Dragon chainbody'
+	'Dragon chainbody',
+	'Dragon pickaxe'
 ]);
 export const kingBlackDragonCL = resolveItems([
 	'Prince black dragon',
@@ -427,12 +416,12 @@ export const spiritAnglerOutfit = resolveItems([
 export const temporossCL = resolveItems([
 	'Tiny tempor',
 	'Big harpoonfish',
+	...spiritAnglerOutfit,
 	'Tome of water (empty)',
 	'Soaked page',
 	'Tackle box',
 	'Fish barrel',
 	'Dragon harpoon',
-	...spiritAnglerOutfit,
 	'Spirit flakes'
 ]);
 export const thermonuclearSmokeDevilCL = resolveItems([
@@ -502,7 +491,7 @@ export const chambersOfXericMetamorphPets = resolveItems([
 	'Vespina'
 ]);
 export const tobMetamorphPets = resolveItems(["Lil' Maiden", "Lil' Bloat", "Lil' Nylo", "Lil' Sot", "Lil' Xarp"]);
-export const toaMetamorphPets = resolveItems(['Zebo', "Tumeken's guardian", 'Kephriti', 'Babi', 'Akkhito']);
+const toaMetamorphPets = resolveItems(['Zebo', "Tumeken's guardian", 'Kephriti', 'Babi', 'Akkhito']);
 export const chambersOfXericNormalCL = resolveItems([
 	'Olmlet',
 	'Twisted bow',
@@ -2109,7 +2098,12 @@ export const miscellaneousCL = resolveItems([
 	'Elite black knight platebody',
 	'Elite black knight platelegs'
 ]);
+<<<<<<< HEAD
 export const diariesCL = resolveItems([
+=======
+
+export const diariesCL = [
+>>>>>>> master
 	'Karamja gloves 1',
 	'Karamja gloves 2',
 	'Karamja gloves 3',
@@ -2652,7 +2646,7 @@ export const gorajanArcherOutfit = resolveItems([
 	'Gorajan archer boots'
 ]);
 
-export const metamorphPets = resolveItems([
+const metamorphPets = resolveItems([
 	'Little parasite',
 	'Dark squirrel',
 	'Baby mole-rat',
@@ -2672,7 +2666,7 @@ export const allPetIDs = [
 	...discontinuedCustomPetsCL,
 	...chambersOfXericMetamorphPets,
 	...tobMetamorphPets,
-	...growablePets.map(petSeries => petSeries.stages).flat(1),
+	...growablePets.flatMap(petSeries => petSeries.stages),
 	...resolveItems(['Little parasite', 'Dark squirrel', 'Black swan', 'Abyssal protector']),
 	...metamorphPets,
 	...toaMetamorphPets,

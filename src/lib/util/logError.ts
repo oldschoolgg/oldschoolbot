@@ -1,7 +1,7 @@
 import { captureException } from '@sentry/node';
-import { Interaction } from 'discord.js';
-import { convertAPIOptionsToCommandOptions } from 'mahoji/dist/lib/util';
+import type { Interaction } from 'discord.js';
 
+import { convertAPIOptionsToCommandOptions } from '@oldschoolgg/toolkit';
 import { production } from '../../config';
 import getOSItem from './getOSItem';
 

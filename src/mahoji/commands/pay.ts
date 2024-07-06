@@ -1,5 +1,6 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { MahojiUserOption } from 'mahoji/dist/lib/types';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
@@ -9,7 +10,7 @@ import { toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { tradePlayerItems } from '../../lib/util/tradePlayerItems';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
 
 export const payCommand: OSBMahojiCommand = {

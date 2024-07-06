@@ -5,7 +5,7 @@ import addSkillingClueToLoot from '../../../lib/minions/functions/addSkillingClu
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
@@ -13,7 +13,7 @@ import { anglerBoostPercent } from '../../../mahoji/mahojiSettings';
 export const aerialFishingTask: MinionTask = {
 	type: 'AerialFishing',
 	async run(data: ActivityTaskOptionsWithQuantity) {
-		let { quantity, userID, channelID } = data;
+		const { quantity, userID, channelID } = data;
 		const user = await mUserFetch(userID);
 		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
@@ -38,7 +38,7 @@ export const aerialFishingTask: MinionTask = {
 			if (roll(100 - ((maxRoll - 40) * 25) / 59)) {
 				molchPearls++;
 			}
-			let currentRoll = randInt(0, maxRoll);
+			const currentRoll = randInt(0, maxRoll);
 			loot.add(bluegill.table.roll());
 
 			if (
@@ -81,9 +81,15 @@ export const aerialFishingTask: MinionTask = {
 
 		// If they have the entire angler outfit, give an extra 2.5% xp bonus
 		if (
+<<<<<<< HEAD
 			user.hasEquippedOrInBank(
-				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
+				Object.keys(Fishing.anglerItems).map(i => Number.parseInt(i)),
 				'every'
+=======
+			user.gear.skilling.hasEquipped(
+				Object.keys(Fishing.anglerItems).map(i => Number.parseInt(i)),
+				true
+>>>>>>> master
 			)
 		) {
 			const amountToAdd = Math.floor(fishXpReceived * (2.5 / 100));
@@ -92,7 +98,11 @@ export const aerialFishingTask: MinionTask = {
 		} else {
 			// For each angler item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasEquippedOrInBank(parseInt(itemID))) {
+<<<<<<< HEAD
+				if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
+=======
+				if (user.hasEquipped(Number.parseInt(itemID))) {
+>>>>>>> master
 					const amountToAdd = Math.floor(fishXpReceived * (bonus / 100));
 					fishXpReceived += amountToAdd;
 					bonusXP += amountToAdd;

@@ -8,8 +8,6 @@ import { countUsersWithItemInCl, prisma } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { ItemBank } from '../../../lib/types';
-import { InfernoOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
@@ -50,9 +48,9 @@ export const infernoTask: MinionTask = {
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
+			usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
 			score > 0 &&
-			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
+			usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
 		const { inferno_attempts: newInfernoAttempts } = await userStatsUpdate(
 			user.id,
@@ -126,7 +124,7 @@ export const infernoTask: MinionTask = {
 
 				await prisma.slayerTask.update({
 					where: {
-						id: usersTask.currentTask!.id
+						id: usersTask.currentTask?.id
 					},
 					data: {
 						quantity_remaining: 0,
@@ -157,7 +155,7 @@ export const infernoTask: MinionTask = {
 
 			await prisma.slayerTask.update({
 				where: {
-					id: usersTask.currentTask!.id
+					id: usersTask.currentTask?.id
 				},
 				data: {
 					quantity_remaining: 0,
@@ -274,7 +272,7 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 				unusedItems.length
 					? `, you didn't use ${percSuppliesRefunded.toFixed(
 							2
-					  )}% of your supplies, ${unusedItems} was returned to your bank`
+						)}% of your supplies, ${unusedItems} was returned to your bank`
 					: '.'
 			}
 `,

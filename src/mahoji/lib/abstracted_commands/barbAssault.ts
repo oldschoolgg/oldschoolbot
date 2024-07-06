@@ -1,6 +1,3 @@
-import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { calcWhatPercent, clamp, reduceNumByPercent, roll, round, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
@@ -140,15 +137,11 @@ export async function barbAssaultBuyCommand(
 	const stats = await user.fetchStats({ honour_points: true });
 	const balance = stats.honour_points;
 	if (balance < cost * quantity) {
-		return `You don't have enough Honour Points to buy ${quantity.toLocaleString()}x ${item.name}. You need ${(
-			cost * quantity
-		).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
+		return `You don't have enough Honour Points to buy ${quantity.toLocaleString()}x ${item.name}. You need ${(cost * quantity).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
 	}
 	await handleMahojiConfirmation(
 		interaction,
-		`Are you sure you want to buy ${quantity.toLocaleString()}x ${item.name}, for ${(
-			cost * quantity
-		).toLocaleString()} honour points?`
+		`Are you sure you want to buy ${quantity.toLocaleString()}x ${item.name}, for ${(cost * quantity).toLocaleString()} honour points?`
 	);
 	await userStatsUpdate(
 		user.id,
@@ -162,9 +155,7 @@ export async function barbAssaultBuyCommand(
 
 	await user.addItemsToBank({ items: new Bank().add(item.id, quantity), collectionLog: true });
 
-	return `Successfully purchased ${quantity.toLocaleString()}x ${item.name} for ${(
-		cost * quantity
-	).toLocaleString()} Honour Points.`;
+	return `Successfully purchased ${quantity.toLocaleString()}x ${item.name} for ${(cost * quantity).toLocaleString()} Honour Points.`;
 }
 
 export async function barbAssaultGambleCommand(
@@ -180,15 +171,11 @@ export async function barbAssaultGambleCommand(
 	const { honour_points: balance } = await user.fetchStats({ honour_points: true });
 	const { cost, name, table } = buyable;
 	if (balance < cost * quantity) {
-		return `You don't have enough Honour Points to do ${quantity.toLocaleString()}x ${name} gamble. You need ${(
-			cost * quantity
-		).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
+		return `You don't have enough Honour Points to do ${quantity.toLocaleString()}x ${name} gamble. You need ${(cost * quantity).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
 	}
 	await handleMahojiConfirmation(
 		interaction,
-		`Are you sure you want to do ${quantity.toLocaleString()}x ${name} gamble, using ${(
-			cost * quantity
-		).toLocaleString()} honour points?`
+		`Are you sure you want to do ${quantity.toLocaleString()}x ${name} gamble, using ${(cost * quantity).toLocaleString()} honour points?`
 	);
 	await userStatsUpdate(
 		user.id,
@@ -200,7 +187,7 @@ export async function barbAssaultGambleCommand(
 				name === 'High'
 					? {
 							increment: quantity
-					  }
+						}
 					: undefined
 		},
 		{
@@ -214,10 +201,8 @@ export async function barbAssaultGambleCommand(
 	const perkTier = user.perkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
-	let response: Awaited<CommandResponse> = {
-		content: `You spent ${(
-			cost * quantity
-		).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`,
+	const response: Awaited<CommandResponse> = {
+		content: `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`,
 		files: [
 			(
 				await makeBankImage({

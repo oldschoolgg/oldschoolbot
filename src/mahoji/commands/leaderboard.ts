@@ -1,12 +1,8 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { Prisma, UserStats } from '@prisma/client';
-import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { calcWhatPercent, chunk, objectValues, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
-import { badges, badgesCache, Emoji, masteryKey, usernameCache } from '../../lib/constants';
+import type { ClueTier } from '../../lib/clues/clueTiers';
+import { ClueTiers } from '../../lib/clues/clueTiers';
+import { Emoji, badges, badgesCache, masteryKey, usernameCache } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
 import { allLeagueTasks } from '../../lib/leagues/leagues';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -30,7 +26,7 @@ import { fetchCLLeaderboard, fetchTameCLLeaderboard } from '../../lib/util/clLea
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { userEventsToMap } from '../../lib/util/userEvents';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const LB_PAGE_SIZE = 10;
 
@@ -76,7 +72,7 @@ async function kcLb(
 ) {
 	const monster = effectiveMonsters.find(mon => [mon.name, ...mon.aliases].some(alias => stringMatches(alias, name)));
 	if (!monster) return "That's not a valid monster!";
-	let list = await prisma.$queryRawUnsafe<{ id: string; kc: number }[]>(
+	const list = await prisma.$queryRawUnsafe<{ id: string; kc: number }[]>(
 		`SELECT user_id::text AS id, CAST("monster_scores"->>'${monster.id}' AS INTEGER) as kc
 		 FROM user_stats
 		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
@@ -107,7 +103,7 @@ async function farmingContractLb(
 	channelID: string,
 	ironmanOnly: boolean
 ) {
-	let list = await prisma.$queryRawUnsafe<{ id: string; count: number }[]>(
+	const list = await prisma.$queryRawUnsafe<{ id: string; count: number }[]>(
 		`SELECT id, CAST("minion.farmingContract"->>'contractsCompleted' AS INTEGER) as count
 		 FROM users
 		 WHERE "minion.farmingContract" is not null and CAST ("minion.farmingContract"->>'contractsCompleted' AS INTEGER) >= 1
@@ -195,7 +191,7 @@ async function sacrificeLb(
 					   ORDER BY "sacrificedValue"
 					   DESC LIMIT 2000;`
 			)
-		).map((res: any) => ({ ...res, amount: parseInt(res.sacrificedValue) }));
+		).map((res: any) => ({ ...res, amount: Number.parseInt(res.sacrificedValue) }));
 
 		doMenu(
 			interaction,
@@ -428,7 +424,7 @@ async function openLb(
 		? undefined
 		: allOpenables.find(
 				item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
-		  );
+			);
 	if (openable) {
 		entityID = openable.id;
 		key = 'openable_scores';
@@ -439,7 +435,7 @@ async function openLb(
 		return `That's not a valid openable item! You can check: ${allOpenables.map(i => i.name).join(', ')}.`;
 	}
 
-	let list = await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(
+	const list = await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(
 		`SELECT user_id::text AS id, ("${key}"->>'${entityID}')::int as qty FROM user_stats
 			${ironmanOnly ? 'INNER JOIN users ON users.id::bigint = user_stats.user_id' : ''}
 			WHERE ("${key}"->>'${entityID}')::int > 3
@@ -649,7 +645,7 @@ async function skillsLb(
 		),
 		`${skill ? toTitleCase(skill.id) : 'Overall'} Leaderboard`
 	);
-	return lbMsg(`Overall ${skill!.name} ${type}`);
+	return lbMsg(`Overall ${skill?.name} ${type}`);
 }
 
 async function cluesLb(
@@ -724,7 +720,7 @@ export async function cacheUsernames() {
 		}
 	});
 
-	let orConditions: Prisma.UserWhereInput[] = [];
+	const orConditions: Prisma.UserWhereInput[] = [];
 	for (const skill of objectValues(SkillsEnum)) {
 		orConditions.push({
 			[`skills_${skill}`]: {
@@ -887,9 +883,7 @@ LIMIT 10;
 		return lbMsg('Global Mastery Leaderboard');
 	}
 
-	const result = await roboChimpClient.$queryRaw<
-		{ id: string; total_cl_percent: number }[]
-	>`SELECT ((osb_cl_percent + bso_cl_percent) / 2) AS total_cl_percent, id::text AS id
+	const result = await roboChimpClient.$queryRaw<{ id: string; total_cl_percent: number }[]>`SELECT ((osb_cl_percent + bso_cl_percent) / 2) AS total_cl_percent, id::text AS id
 FROM public.user
 WHERE osb_cl_percent IS NOT NULL AND bso_cl_percent IS NOT NULL
 ORDER BY total_cl_percent DESC
@@ -1181,7 +1175,7 @@ async function masteryLb(interaction: ChatInputCommandInteraction, user: MUser, 
 			subList
 				.map(
 					(lUser, j) =>
-						`${getPos(i, j)}**${getUsername(lUser.id)}:** ${lUser[masteryKey]!.toFixed(3)}% mastery`
+						`${getPos(i, j)}**${getUsername(lUser.id)}:** ${lUser[masteryKey]?.toFixed(3)}% mastery`
 				)
 				.join('\n')
 		),
@@ -1362,7 +1356,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 									? true
 									: [i.name, ...i.aliases].some(str =>
 											str.toLowerCase().includes(value.toLowerCase())
-									  )
+										)
 							)
 							.map(i => ({ name: i.name, value: i.name }));
 					}
@@ -1518,7 +1512,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		combat_achievements?: {};
 		mastery?: {};
 	}>) => {
-		deferInteraction(interaction);
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID);
 		const {
 			opens,

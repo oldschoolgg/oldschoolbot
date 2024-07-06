@@ -1,9 +1,10 @@
-import { Giveaway } from '@prisma/client';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { Giveaway } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
+import type { BaseMessageOptions } from 'discord.js';
 import {
 	ActionRowBuilder,
 	AttachmentBuilder,
-	BaseMessageOptions,
 	ButtonBuilder,
 	ButtonStyle,
 	ChannelType,
@@ -11,10 +12,10 @@ import {
 	messageLink,
 	time
 } from 'discord.js';
-import { randInt, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, randInt } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Emoji, patronFeatures } from '../../lib/constants';
 import { marketPriceOfBank } from '../../lib/marketPrices';
@@ -27,7 +28,7 @@ import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance } from '../mahojiSettings';
 
 function makeGiveawayButtons(giveawayID: number): BaseMessageOptions['components'] {

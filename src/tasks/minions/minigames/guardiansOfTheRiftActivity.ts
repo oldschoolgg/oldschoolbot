@@ -13,7 +13,7 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { calcMaxRCQuantity, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 import { rewardsGuardianTable } from './../../../lib/simulation/rewardsGuardian';
-import { GuardiansOfTheRiftActivityTaskOptions } from './../../../lib/types/minions';
+import type { GuardiansOfTheRiftActivityTaskOptions } from './../../../lib/types/minions';
 
 const catalyticRunesArray: string[] = [
 	'Mind rune',
@@ -71,7 +71,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			})
 		]);
 
-		let runesLoot = new Bank();
+		const runesLoot = new Bank();
 		let inventorySize = 28;
 		const { bank } = user;
 		// For each pouch the user has, increase their inventory size.
@@ -84,16 +84,26 @@ export const guardiansOfTheRiftTask: MinionTask = {
 		// If they have the entire Raiments of the Eye outfit, give an extra 20% quantity bonus (NO bonus XP)
 		let setBonus = 1;
 		if (
+<<<<<<< HEAD
 			user.hasEquippedOrInBank(
-				Object.keys(Runecraft.raimentsOfTheEyeItems).map(i => parseInt(i)),
+				Object.keys(Runecraft.raimentsOfTheEyeItems).map(i => Number.parseInt(i)),
 				'every'
+=======
+			user.gear.skilling.hasEquipped(
+				Object.keys(Runecraft.raimentsOfTheEyeItems).map(i => Number.parseInt(i)),
+				true
+>>>>>>> master
 			)
 		) {
 			setBonus += 60 / 100;
 		} else {
 			// For each Raiments of the Eye item, check if they have it, give its' quantity boost if so (NO bonus XP).
 			for (const [itemID, bonus] of Object.entries(Runecraft.raimentsOfTheEyeItems)) {
-				if (user.hasEquippedOrInBank(parseInt(itemID))) {
+<<<<<<< HEAD
+				if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
+=======
+				if (user.gear.skilling.hasEquipped([Number.parseInt(itemID)], false)) {
+>>>>>>> master
 					setBonus += bonus / 100;
 				}
 			}
@@ -121,7 +131,7 @@ export const guardiansOfTheRiftTask: MinionTask = {
 			runesLoot.add(rune, Math.floor(quantityPerEssence * inventorySize * setBonus));
 		}
 
-		let rewardsGuardianLoot = new Bank();
+		const rewardsGuardianLoot = new Bank();
 		let rewardsQty = 0;
 		for (let i = 0; i < quantity; i++) {
 			rewardsQty += randInt(rolls - 1, rolls);

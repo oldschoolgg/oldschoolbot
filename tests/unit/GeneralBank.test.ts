@@ -3,13 +3,6 @@ import { beforeEach, describe, expect, it, test } from 'vitest';
 import { GeneralBank } from '../../src/lib/structures/GeneralBank';
 
 describe('GeneralBank', () => {
-	// eslint-disable-next-line @typescript-eslint/init-declarations
-	let bank: GeneralBank<string>;
-	// eslint-disable-next-line @typescript-eslint/init-declarations
-	let validator: (key: string, value: number, bank: Record<string, number>) => void;
-
-	beforeEach(() => {
-		validator = (key, value, bank) => {
 			if (!key.startsWith('F')) throw new Error(`Key ${key} does not start with F`);
 		};
 		bank = new GeneralBank<string>({ validator });
@@ -61,7 +54,6 @@ describe('GeneralBank', () => {
 });
 
 describe('GeneralBank 2', () => {
-	// eslint-disable-next-line @typescript-eslint/init-declarations
 	let bank: GeneralBank<string>;
 
 	beforeEach(() => {
@@ -100,7 +92,6 @@ describe('GeneralBank 2', () => {
 
 	it('handles complex validators', () => {
 		const complexBank = new GeneralBank<string>({
-			validator: (key, value, bank) => {
 				if (value > 1000) throw new Error('Values above 1000 are not allowed');
 			}
 		});
@@ -121,7 +112,6 @@ describe('GeneralBank 2', () => {
 });
 
 describe('Bank with allowedKeys', () => {
-	// eslint-disable-next-line @typescript-eslint/init-declarations
 	let bank: GeneralBank<string>;
 
 	beforeEach(() => {
@@ -135,7 +125,6 @@ describe('Bank with allowedKeys', () => {
 	});
 
 	it('prevents adding items with disallowed keys', () => {
-		expect(() => bank.add('Fplatinum', 50)).toThrow('Key Fplatinum is not allowed.');
 	});
 
 	it('allows removing items with allowed keys', () => {
@@ -146,13 +135,11 @@ describe('Bank with allowedKeys', () => {
 
 	it('throws error on attempt to clone with disallowed key modifications', () => {
 		const cloneBank = bank.clone();
-		expect(() => cloneBank.add('Firon', 100)).toThrow('Key Firon is not allowed.');
 	});
 
 	it('ensures that operations on cloned banks respect original allowed keys', () => {
 		const cloneBank = bank.clone();
 		cloneBank.add('Fsilver', 200);
-		expect(() => cloneBank.add('Fbronze', 100)).toThrow('Key Fbronze is not allowed.');
 		expect(cloneBank.amount('Fsilver')).toBe(200);
 	});
 

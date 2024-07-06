@@ -1,11 +1,8 @@
 import { percentChance, Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import type { Item } from 'oldschooljs/dist/meta/types';
+import type Monster from 'oldschooljs/dist/structures/Monster';
 
-import { GearSetupType } from './gear/types';
-import { KillableMonster } from './minions/types';
-import { ChargeBank } from './structures/Banks';
 import { assert } from './util';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';

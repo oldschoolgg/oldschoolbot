@@ -1,13 +1,6 @@
 import { splitMessage } from '@oldschoolgg/toolkit';
-import {
-	AttachmentBuilder,
-	BaseMessageOptions,
-	EmbedBuilder,
-	Message,
-	PartialGroupDMChannel,
-	PermissionsBitField,
-	WebhookClient
-} from 'discord.js';
+import type { AttachmentBuilder, BaseMessageOptions, EmbedBuilder, Message } from 'discord.js';
+import { PartialGroupDMChannel, PermissionsBitField, WebhookClient } from 'discord.js';
 import PQueue from 'p-queue';
 
 import { production } from '../../config';
@@ -15,7 +8,7 @@ import { prisma } from '../settings/prisma';
 import { channelIsSendable } from '../util';
 import { logError } from './logError';
 
-export async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {
+async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {
 	const channel = globalClient.channels.cache.get(channelID);
 	if (!channel || channel instanceof PartialGroupDMChannel) return undefined;
 	if (channel.isDMBased()) return channel;
@@ -31,8 +24,8 @@ export async function resolveChannel(channelID: string): Promise<WebhookClient |
 
 	try {
 		const createdWebhook = await channel.createWebhook({
-			name: globalClient.user!.username,
-			avatar: globalClient.user!.displayAvatarURL({})
+			name: globalClient.user?.username,
+			avatar: globalClient.user?.displayAvatarURL({})
 		});
 		await prisma.webhook.create({
 			data: {
@@ -72,8 +65,8 @@ export async function sendToChannelID(
 		const channel = await resolveChannel(channelID);
 		if (!channel) return;
 
-		let files = data.image ? [data.image] : data.files;
-		let embeds = [];
+		const files = data.image ? [data.image] : data.files;
+		const embeds = [];
 		if (data.embed) embeds.push(data.embed);
 		if (channel instanceof WebhookClient) {
 			try {
@@ -126,9 +119,9 @@ async function sendToChannelOrWebhook(channel: WebhookClient | Message['channel'
 		const newPayload = { ...input };
 		// Separate files and components from payload for interactions
 		const { files, embeds, components, allowedMentions } = newPayload;
-		delete newPayload.files;
-		delete newPayload.embeds;
-		delete newPayload.components;
+		newPayload.files = undefined;
+		newPayload.embeds = undefined;
+		newPayload.components = undefined;
 		await sendToChannelOrWebhook(channel, { ...newPayload, content: split[0] });
 
 		for (let i = 1; i < split.length; i++) {

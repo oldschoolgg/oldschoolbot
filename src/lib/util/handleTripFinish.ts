@@ -1,8 +1,3 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
-import { AttachmentBuilder, bold, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { notEmpty, randArrItem, randInt, roll, Time } from 'e';
-import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
@@ -26,9 +21,6 @@ import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { calculateZygomiteLoot } from '../skilling/skills/farming/zygomites';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
-import { ActivityTaskData } from '../types/minions';
-import { channelIsSendable, makeComponents, perHourChance, toKMB } from '../util';
-import { mahojiChatHead } from './chatHeadImage';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -44,7 +36,7 @@ import { logError } from './logError';
 import { updateBankSetting } from './updateBankSetting';
 import { sendToChannelID } from './webhook';
 
-export const collectors = new Map<string, MessageCollector>();
+const collectors = new Map<string, MessageCollector>();
 
 const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'GroupMonsterKilling',
@@ -458,7 +450,13 @@ export async function handleTripFinish(
 ) {
 	const message = typeof _message === 'string' ? { content: _message } : _message;
 	if (attachment) {
-		!message.files ? (message.files = [attachment]) : message.files.push(attachment);
+		if (!message.files) {
+			message.files = [attachment];
+		} else if (Array.isArray(message.files)) {
+			message.files.push(attachment);
+		} else {
+			console.warn(`Unexpected attachment type in handleTripFinish: ${typeof attachment}`);
+		}
 	}
 	const perkTier = user.perkTier();
 	const messages: string[] = [];

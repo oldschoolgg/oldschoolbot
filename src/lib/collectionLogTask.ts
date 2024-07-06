@@ -1,14 +1,17 @@
-import { Canvas, SKRSContext2D } from '@napi-rs/canvas';
+import type { SKRSContext2D } from '@napi-rs/canvas';
+import { Canvas } from '@napi-rs/canvas';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { calcWhatPercent, objectEntries } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { Bank, Util } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
+import { Util } from 'oldschooljs';
 
-import { allCollectionLogs, getCollection, getTotalCl, UserStatsDataNeededForCL } from '../lib/data/Collections';
-import { IToReturnCollection } from '../lib/data/CollectionsExport';
+import type { UserStatsDataNeededForCL } from '../lib/data/Collections';
+import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
+import type { IToReturnCollection } from '../lib/data/CollectionsExport';
 import { fillTextXTimesInCtx, getClippedRegion, measureTextWidth } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
-import { IBgSprite } from './bankImage';
+import type { IBgSprite } from './bankImage';
 
 export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },
@@ -31,15 +34,7 @@ class CollectionLogTask {
 		return bankImageGenerator.drawBorder(ctx, sprite);
 	}
 
-	drawSquare(
-		ctx: SKRSContext2D,
-		x: number,
-		y: number,
-		w: number,
-		h: number,
-		pixelSize: number = 1,
-		hollow: boolean = true
-	) {
+	drawSquare(ctx: SKRSContext2D, x: number, y: number, w: number, h: number, pixelSize = 1, hollow = true) {
 		ctx.save();
 		if (hollow) {
 			ctx.translate(0.5, 0.5);
@@ -106,7 +101,7 @@ class CollectionLogTask {
 		user: MUser;
 		collection: string;
 		type: CollectionLogType;
-		flags: { [key: string]: string | number };
+		flags: { [key: string]: string | number | undefined };
 		stats: UserStatsDataNeededForCL | null;
 		collectionLog?: IToReturnCollection;
 	}): Promise<CommandResponse> {
@@ -119,7 +114,7 @@ class CollectionLogTask {
 			options.type = 'tame';
 		}
 
-		let { collection, type, user, flags } = options;
+		const { collection, type, user, flags } = options;
 
 		let collectionLog: IToReturnCollection | undefined | false = undefined;
 
@@ -150,7 +145,7 @@ class CollectionLogTask {
 						attachment: Buffer.from(
 							collectionLog.collection
 								.map(i => {
-									let _i = getOSItem(i);
+									const _i = getOSItem(i);
 									const _q = (collectionLog as IToReturnCollection).userItems.amount(_i.id);
 									if (_q === 0 && !flags.missing) return undefined;
 									return `${flags.nq || flags.missing ? '' : `${_q}x `}${_i.name}`;
@@ -166,7 +161,7 @@ class CollectionLogTask {
 
 		// Disable tall flag when not showing left list
 		if (flags.nl && flags.tall) {
-			delete flags.tall;
+			flags.tall = undefined;
 		}
 
 		const userCollectionBank = collectionLog.userItems;
@@ -374,7 +369,7 @@ class CollectionLogTask {
 			ctx.fillStyle = '#FF981F';
 			this.drawText(ctx, (drawnSoFar = collectionLog.isActivity ? 'Completions: ' : 'Kills: '), 0, 25);
 			let pixelLevel = 25;
-			for (let [type, value] of objectEntries(collectionLog.completions)) {
+			for (const [type, value] of objectEntries(collectionLog.completions)) {
 				if (
 					measureTextWidth(ctx, drawnSoFar) +
 						measureTextWidth(ctx, ` / ${type}: `) +
@@ -413,12 +408,12 @@ class CollectionLogTask {
 		ctx.save();
 		ctx.font = '16px OSRSFontCompact';
 		ctx.fillStyle = generateHexColorForCashStack(totalPrice);
-		let value = Util.toKMB(totalPrice);
+		const value = Util.toKMB(totalPrice);
 		this.drawText(ctx, value, ctx.canvas.width - 15 - ctx.measureText(value).width, 75 + 25);
 		ctx.restore();
 
 		if (leftListCanvas && !fullSize) {
-			if (!Boolean(flags.tall)) {
+			if (!flags.tall) {
 				let selectedPos = 8;
 				const listItemSize = 15;
 				for (const name of Object.keys(collectionLog.leftList!)) {

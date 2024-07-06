@@ -2,7 +2,7 @@ import { Monsters } from 'oldschooljs';
 
 import itemID from '../util/itemID';
 
-export interface SlayerTaskUnlocks {
+interface SlayerTaskUnlocks {
 	id: SlayerTaskUnlocksEnum;
 	name: string;
 	desc?: string;
@@ -18,6 +18,7 @@ export interface SlayerTaskUnlocks {
 export enum SlayerTaskUnlocksEnum {
 	// Unlockables
 	MalevolentMasquerade = 2,
+<<<<<<< HEAD
 	RingBling,
 	SeeingRed,
 	IHopeYouMithMe,
@@ -75,7 +76,62 @@ export enum SlayerTaskUnlocksEnum {
 	BlockAndRoll,
 	PoreDecisions,
 	Maskuerade
+=======
+	RingBling = 3,
+	SeeingRed = 4,
+	IHopeYouMithMe = 5,
+	WatchTheBirdie = 6,
+	HotStuff = 7,
+	ReptileGotRipped = 8,
+	LikeABoss = 9,
+	BiggerAndBadder = 10,
+	KingBlackBonnet = 11,
+	KalphiteKhat = 12,
+	UnholyHelmet = 13,
+	DarkMantle = 14,
+	UndeadHead = 15,
+	UseMoreHead = 16,
+	TwistedVision = 17,
+	StopTheWyvern = 18,
+	Basilocked = 19,
+	ActualVampyreSlayer = 20,
+	// Extension Unlocks
+	NeedMoreDarkness = 21,
+	AnkouVeryMuch = 22,
+	SuqANotherOne = 23,
+	FireAndDarkness = 24,
+	PedalToTheMetals = 25,
+	IReallyMithYou = 26,
+	AdamindSomeMore = 27,
+	RUUUUUNE = 28,
+	SpiritualFervour = 29,
+	BirdsOfAFeather = 30,
+	GreaterChallenge = 31,
+	ItsDarkInHere = 32,
+	BleedMeDry = 33,
+	SmellYaLater = 34,
+	Horrorific = 35,
+	ToDustYouShallReturn = 36,
+	WyverNotherOne = 37,
+	GetSmashed = 38,
+	NechsPlease = 39,
+	AugmentMyAbbies = 40,
+	KrackOn = 41,
+	GetScabarightOnIt = 42,
+	WyverNotherTwo = 43,
+	Basilonger = 44,
+	MoreAtStake = 45,
+	// Item Purchases:
+	SlayerRing = 46,
+	HerbSack = 47,
+	RunePouch = 48,
+	DoubleTrouble = 49,
+	BroaderFletching = 50,
+	IWildyMoreSlayer = 200,
+	Revenenenenenants = 201
+>>>>>>> master
 }
+
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 	{
 		id: SlayerTaskUnlocksEnum.MalevolentMasquerade,
@@ -539,6 +595,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		extendMult: 1.5,
 		canBeRemoved: true,
 		aliases: ['extend revenants', 'extend revs']
+<<<<<<< HEAD
 	},
 	{
 		id: SlayerTaskUnlocksEnum.SizeMatters,
@@ -571,6 +628,8 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 750,
 		canBeRemoved: true,
 		aliases: ['maskuerade', 'masquerade']
+=======
+>>>>>>> master
 	}
 ];
 

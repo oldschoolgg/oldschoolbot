@@ -1,3 +1,7 @@
+import { modifyItem } from '@oldschoolgg/toolkit';
+
+import { allTeamCapes } from './data/misc';
+
 export interface CustomItemData {
 	cantBeSacrificed?: true;
 	isSuperUntradeable?: boolean;
@@ -13,4 +17,8 @@ declare module 'oldschooljs/dist/meta/types' {
 	}
 }
 
-export {};
+for (const item of allTeamCapes) {
+	modifyItem(item.id, {
+		price: 100
+	});
+}

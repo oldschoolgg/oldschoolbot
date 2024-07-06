@@ -1,6 +1,5 @@
-import { percentChance, Time } from 'e';
+import { Time, percentChance } from 'e';
 
-import { Ore } from './../types';
 
 interface MiningTimeOptions {
 	hasGlory: boolean;

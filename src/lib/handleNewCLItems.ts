@@ -1,7 +1,8 @@
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
-import { Prisma, UserEventType } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
+import { UserEventType } from '@prisma/client';
 import { roll, sumArr } from 'e';
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 
 import { Events } from './constants';
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections';
@@ -13,7 +14,7 @@ import { fetchStatsForCL } from './util';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
 import { insertUserEvent } from './util/userEvents';
 
-export async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
+async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
 	const clStats = calcCLDetails(user);
 	const clRank = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
 	const { totalMastery, compCapeProgress } = await calculateMastery(user, await MUserStats.fromID(user.id));
@@ -128,7 +129,7 @@ export async function handleNewCLItems({
 					user,
 					minigames: await user.fetchMinigames(),
 					stats: await fetchStatsForCL(user)
-			  })}!`
+				})}!`
 			: '';
 
 		const nthUser = (

@@ -1,11 +1,12 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { BaseMessageOptions, escapeMarkdown, time } from 'discord.js';
+import type { BaseMessageOptions } from 'discord.js';
+import { escapeMarkdown, time } from 'discord.js';
 import { Time } from 'e';
 import { convertXPtoLVL } from 'oldschooljs/dist/util/util';
 
 import { Emoji } from '../constants';
-import { SkillsEnum } from '../skilling/types';
-import { Peak } from './../tickers';
+import type { SkillsEnum } from '../skilling/types';
+import type { Peak } from './../tickers';
 import resolveItems from './resolveItems';
 
 export function skillLevel(user: MUser, skill: SkillsEnum) {
@@ -81,7 +82,7 @@ export function minionName(user: MUser) {
 	const prefix = isIronman ? Emoji.Ironman : '';
 	icon ??= Emoji.Minion;
 
-	let strPrefix = prefix ? `${prefix} ` : '';
+	const strPrefix = prefix ? `${prefix} ` : '';
 
 	return name ? `${strPrefix}${icon} **${escapeMarkdown(name)}**` : `${strPrefix}${icon} Your minion`;
 }

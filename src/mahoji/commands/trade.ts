@@ -1,6 +1,7 @@
 import { discrimName, mentionCommand, truncateString } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { MahojiUserOption } from 'mahoji/dist/lib/types';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
@@ -12,7 +13,7 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { tradePlayerItems } from '../../lib/util/tradePlayerItems';
 import { filterOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { addToGPTaxBalance, mahojiParseNumber } from '../mahojiSettings';
 
 export const tradeCommand: OSBMahojiCommand = {
@@ -92,7 +93,7 @@ export const tradeCommand: OSBMahojiCommand = {
 						filters: [options.filter],
 						search: options.search,
 						noDuplicateItems: true
-				  }).filter(i => itemIsTradeable(i.id, true));
+					}).filter(i => itemIsTradeable(i.id, true));
 		const itemsReceived = parseBank({
 			inputStr: options.receive,
 			maxSize: 70,

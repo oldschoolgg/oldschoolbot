@@ -1,51 +1,52 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { PerkTier, mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
-import { userMention } from 'discord.js';
-import { calcWhatPercent, objectEntries, percentChance, randArrItem, sumArr, Time, uniqueArr } from 'e';
+import { BitField, Emoji, type User, userMention } from 'discord.js';
+import { Time, calcWhatPercent, objectEntries, percentChance, randArrItem, sumArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import type { GearSetupType, Prisma, TameActivity, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
-import { GodFavourBank, GodName } from './bso/divineDominion';
+import type { GodFavourBank, GodName } from './bso/divineDominion';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
-import { CATier, CombatAchievements } from './combat_achievements/combatAchievements';
-import { badges, BitField, Emoji, PerkTier, projectiles, usernameCache } from './constants';
+import { type CATier, CombatAchievements } from './combat_achievements/combatAchievements';
+import { badges, projectiles, usernameCache } from './constants';
 import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import { degradeableItems } from './degradeableItems';
+import { type GearSetup, type UserFullGearSetup, defaultGear } from './gear';
 import { gearImages } from './gear/functions/generateGearImage';
-import { GearSetup, GearSetupType, UserFullGearSetup } from './gear/types';
 import { handleNewCLItems } from './handleNewCLItems';
-import { IMaterialBank } from './invention';
+import type { IMaterialBank } from './invention';
 import { MaterialBank } from './invention/MaterialBank';
 import { marketPriceOfBank } from './marketPrices';
 import backgroundImages from './minions/data/bankBackgrounds';
-import { CombatOptionsEnum } from './minions/data/combatConstants';
+import type { CombatOptionsEnum } from './minions/data/combatConstants';
 import { defaultFarmingContract } from './minions/farming';
-import { FarmingContract } from './minions/farming/types';
-import { AttackStyles } from './minions/functions';
+import type { FarmingContract } from './minions/farming/types';
+import type { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
-import { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
+import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
 import { mysteriousStepData, mysteriousTrailTracks } from './mysteryTrail';
 import { getUsersPerkTier, syncPerkTierOfUser } from './perkTiers';
 import { roboChimpUserFetch } from './roboChimp';
-import { getMinigameEntity, Minigames, MinigameScore } from './settings/minigames';
-import { prisma } from './settings/prisma';
+import type { MinigameScore } from './settings/minigames';
+import { Minigames, getMinigameEntity } from './settings/minigames';
 import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
 import { SkillsEnum } from './skilling/types';
-import { BankSortMethod } from './sorts';
-import { ChargeBank, XPBank } from './structures/Banks';
-import { defaultGear, Gear } from './structures/Gear';
+import type { BankSortMethod } from './sorts';
+import type { ChargeBank, XPBank } from './structures/Banks';
+import { Gear } from './structures/Gear';
 import { MTame } from './structures/MTame';
-import { ItemBank, Skills } from './types';
-import { addItemToBank, convertXPtoLVL, getAllIDsOfUser, itemNameFromID, murMurSort } from './util';
+import type { Skills } from './types';
+import { addItemToBank, convertXPtoLVL, getAllIDsOfUser, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
@@ -55,11 +56,11 @@ import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import { repairBrokenItemsFromUser } from './util/repairBrokenItems';
 import resolveItems from './util/resolveItems';
-import { TransactItemsArgs } from './util/transactItemsFromBank';
+import type { TransactItemsArgs } from './util/transactItemsFromBank';
 
 export async function mahojiUserSettingsUpdate(user: string | bigint, data: Prisma.UserUncheckedUpdateInput) {
 	try {
-		const newUser = await prisma.user.update({
+		const newUser = await global.prisma.user.update({
 			data,
 			where: {
 				id: user.toString()
@@ -302,8 +303,7 @@ export class MUserClass {
 	}
 
 	async calcActualClues() {
-		const result: { id: number; qty: number }[] =
-			await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
+		const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
 FROM activity
 WHERE type = 'ClueCompletion'
 AND user_id = '${this.id}'::bigint
@@ -460,7 +460,7 @@ GROUP BY data->>'clueID';`);
 				return false;
 			}
 		}
-		return type === 'one' ? false : true;
+		return type !== 'one';
 	}
 
 	getSkills(levels: boolean) {
@@ -612,8 +612,8 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			const ammo = newRangeGear.ammo?.quantity;
 
 			const projectileCategory = Object.values(projectiles).find(i => i.items.includes(equippedAmmo));
-			if (hasAvas && projectileCategory!.savedByAvas) {
-				let ammoCopy = ammoRemove[1];
+			if (hasAvas && projectileCategory?.savedByAvas) {
+				const ammoCopy = ammoRemove[1];
 				for (let i = 0; i < ammoCopy; i++) {
 					if (percentChance(80)) {
 						ammoRemove[1]--;
@@ -624,10 +624,10 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			if (!ammo || ammo < ammoRemove[1])
 				throw new UserError(
 					`Not enough ${ammoRemove[0].name} equipped in ${gearKey} gear, you need ${
-						ammoRemove![1]
+						ammoRemove?.[1]
 					} but you have only ${ammo}.`
 				);
-			newRangeGear.ammo!.quantity -= ammoRemove![1];
+			newRangeGear.ammo!.quantity -= ammoRemove?.[1];
 			if (newRangeGear.ammo!.quantity <= 0) newRangeGear.ammo = null;
 			const updateKey = options?.wildy ? 'gear_wildy' : 'gear_range';
 			updates[updateKey] = newRangeGear as any as Prisma.InputJsonObject;
@@ -635,7 +635,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 
 		if (dart) {
 			if (hasAvas) {
-				let copyDarts = dart![1];
+				const copyDarts = dart?.[1];
 				for (let i = 0; i < copyDarts; i++) {
 					if (percentChance(80)) {
 						realCost.remove(dart[0].id, 1);
@@ -664,7 +664,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 				);
 			}
 			const bpData = { ...this.blowpipe };
-			bpData.dartQuantity -= dart![1];
+			bpData.dartQuantity -= dart?.[1];
 			bpData.scales -= scales;
 			validateBlowpipeData(bpData);
 			updates.blowpipe = bpData;
@@ -809,7 +809,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async getGodFavour(): Promise<GodFavourBank> {
-		let { god_favour_bank: currentFavour } = await this.fetchStats({ god_favour_bank: true });
+		const { god_favour_bank: currentFavour } = await this.fetchStats({ god_favour_bank: true });
 		if (!currentFavour) {
 			return {
 				Zamorak: 0,
@@ -901,7 +901,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return this.caPoints() >= CombatAchievements[tier].rewardThreshold;
 	}
 
-	buildTertiaryItemChanges(hasRingOfWealthI: boolean = false, inWildy: boolean = false, onTask: boolean = false) {
+	buildTertiaryItemChanges(hasRingOfWealthI = false, inWildy = false, onTask = false) {
 		const changes = new Map();
 
 		const tiers = Object.keys(CombatAchievements) as Array<keyof typeof CombatAchievements>;
@@ -1000,7 +1000,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async validateEquippedGear() {
-		let itemsUnequippedAndRefunded = new Bank();
+		const itemsUnequippedAndRefunded = new Bank();
 		for (const [gearSetupName, gearSetup] of Object.entries(this.gear) as [GearSetupType, GearSetup][]) {
 			if (gearSetup['2h'] !== null) {
 				if (gearSetup.weapon?.item) {
@@ -1118,9 +1118,11 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 }
 declare global {
 	export type MUser = MUserClass;
+	var mUserFetch: typeof srcMUserFetch;
+	var GlobalMUserClass: typeof MUserClass;
 }
 
-export async function srcMUserFetch(userID: string) {
+async function srcMUserFetch(userID: string) {
 	const user = await prisma.user.upsert({
 		create: {
 			id: userID
@@ -1133,18 +1135,6 @@ export async function srcMUserFetch(userID: string) {
 	return new MUserClass(user);
 }
 
-declare global {
-	const mUserFetch: typeof srcMUserFetch;
-	const GlobalMUserClass: typeof MUserClass;
-}
-declare global {
-	namespace NodeJS {
-		interface Global {
-			mUserFetch: typeof srcMUserFetch;
-			GlobalMUserClass: typeof MUserClass;
-		}
-	}
-}
 global.mUserFetch = srcMUserFetch;
 
 /**

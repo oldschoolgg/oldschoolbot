@@ -1,4 +1,4 @@
-import { roll, Time } from 'e';
+import { Time, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
@@ -8,7 +8,7 @@ import { CorporealBeastTable } from '../../../../simulation/Corp';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
-import { KillableMonster } from '../../../types';
+import type { KillableMonster } from '../../../types';
 
 const killableBosses: KillableMonster[] = [
 	{

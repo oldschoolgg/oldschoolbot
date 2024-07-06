@@ -1,10 +1,10 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
+import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
 import { BitField } from '../../../lib/constants';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { GauntletOptions } from '../../../lib/types/minions';
+import type { GauntletOptions } from '../../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -120,7 +120,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 	}
 
 	// Add a 5% variance to account for randomness of gauntlet
-	let gauntletLength = randomVariation(baseLength, 5);
+	const gauntletLength = randomVariation(baseLength, 5);
 
 	const maxTripLength = calcMaxTripLength(user, 'Gauntlet');
 
@@ -146,9 +146,7 @@ export async function gauntletCommand(user: MUser, channelID: string, type: 'cor
 
 	const boostsStr = boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}` : '';
 
-	return `${user.minionName} is now doing ${quantity}x ${readableName}. The trip will take ${formatDuration(
-		duration
-	)}.
+	return `${user.minionName} is now doing ${quantity}x ${readableName}. The trip will take ${formatDuration(duration)}.
 ${boostsStr}
 `;
 }

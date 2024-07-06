@@ -1,7 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { wealthInventorySize } from '../../lib/constants';
-import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -11,7 +9,7 @@ export const wealthChargeTask: MinionTask = {
 		const { quantity, userID, channelID } = data;
 		const user = await mUserFetch(userID);
 		let deaths = 0;
-		let loot = new Bank();
+		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
 			if (roll(9)) {
 				deaths++;

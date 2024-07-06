@@ -1,7 +1,8 @@
 import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
-import { User } from 'discord.js';
-import { randArrItem, randInt, roll, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
@@ -10,7 +11,7 @@ import { Offerables } from '../../lib/data/offerData';
 import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { OfferingActivityTaskOptions } from '../../lib/types/minions';
+import type { OfferingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
@@ -18,7 +19,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings';
 
 const specialBones = [
@@ -103,7 +104,7 @@ export const offerCommand: OSBMahojiCommand = {
 		const whichOfferable = Offerables.find(
 			item =>
 				stringMatches(options.name, item.name) ||
-				(item.aliases && item.aliases.some(alias => stringMatches(alias, options.name)))
+				item.aliases?.some(alias => stringMatches(alias, options.name))
 		);
 		if (whichOfferable) {
 			const offerableOwned = userBank.amount(whichOfferable.itemID);
@@ -114,7 +115,7 @@ export const offerCommand: OSBMahojiCommand = {
 			if (quantity > offerableOwned) {
 				return `You don't have ${quantity} ${whichOfferable.name} to offer the ${whichOfferable.offerWhere}. You have ${offerableOwned}.`;
 			}
-			let loot = new Bank().add(whichOfferable.table.roll(quantity));
+			const loot = new Bank().add(whichOfferable.table.roll(quantity));
 
 			const { previousCL, itemsAdded } = await user.transactItems({
 				collectionLog: true,
@@ -132,7 +133,7 @@ export const offerCommand: OSBMahojiCommand = {
 					{ slayer_chewed_offered: true, slayer_unsired_offered: true }
 				); // Notify uniques
 				if (whichOfferable.uniques) {
-					let current = newStats[whichOfferable.economyCounter];
+					const current = newStats[whichOfferable.economyCounter];
 					notifyUniques(
 						user,
 						whichOfferable.name,
@@ -166,7 +167,7 @@ export const offerCommand: OSBMahojiCommand = {
 			const cost = new Bank().add(egg.id, quantity);
 			if (!user.owns(cost)) return "You don't own enough of these eggs.";
 
-			let loot = new Bank();
+			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				if (roll(300)) {
 					loot.add(randArrItem(evilChickenOutfit));

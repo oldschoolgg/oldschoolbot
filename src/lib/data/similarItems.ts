@@ -192,7 +192,22 @@ const source: [string, (string | number)[]][] = [
 	['Fire cape', ['Fire max cape', 'Fire max cape (l)']],
 	['Infernal cape', ['Infernal max cape', 'Infernal max cape (l)', 'TzKal cape']],
 	['Ardougne cloak 4', ['Ardougne max cape']],
+<<<<<<< HEAD
 	["Ava's accumulator", ['Accumulator max cape', 'Tidal collector']],
+=======
+	["Ava's accumulator", ['Accumulator max cape']],
+	[
+		"Ava's assembler",
+		[
+			'Assembler max cape',
+			'Assembler max cape (l)',
+			'Masori assembler',
+			'Masori assembler max cape',
+			"Blessed dizana's quiver",
+			"Dizana's max cape"
+		]
+	],
+>>>>>>> master
 	['Mythical cape', ['Mythical max cape']],
 	['Achievement diary cape', ['Achievement diary cape(t)']],
 	[
@@ -463,6 +478,7 @@ const source: [string, (string | number)[]][] = [
 	["Artisan's cape", ['Completionist cape', 'Completionist cape (t)']],
 	['Log basket', ['Forestry basket']],
 	['Forestry kit', ['Forestry basket']],
+<<<<<<< HEAD
 	['Dwarven greataxe', ['Drygore axe']]
 ];
 
@@ -506,6 +522,12 @@ for (const { baseItem, dyedVersions } of dyedItems) {
 export const similarItems: Map<number, number[]> = new Map(
 	source.map(entry => [itemID(entry[0]), resolveItems(entry[1])])
 );
+=======
+	['Ring of stone', ['Ring of coins', 'Crate ring', 'Ring of nature', 'Snowman ring', 'Ring of 3rd age']]
+];
+
+const similarItems: Map<number, number[]> = new Map(source.map(entry => [itemID(entry[0]), resolveItems(entry[1])]));
+>>>>>>> master
 
 export const inverseSimilarItems: Map<number, Set<number>> = new Map();
 for (const [baseItem, similarItems] of source) {
@@ -513,7 +535,7 @@ for (const [baseItem, similarItems] of source) {
 		if (!inverseSimilarItems.get(item)) {
 			inverseSimilarItems.set(item, new Set());
 		}
-		inverseSimilarItems.get(item)!.add(itemID(baseItem));
+		inverseSimilarItems.get(item)?.add(itemID(baseItem));
 	}
 }
 

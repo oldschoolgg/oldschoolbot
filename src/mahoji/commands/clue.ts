@@ -1,20 +1,11 @@
-import { clamp, increaseNumByPercent, randInt, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
-import { clueHunterOutfit } from '../../lib/data/CollectionsExport';
-import { getPOHObject } from '../../lib/poh';
-import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { calcClueScores, formatDuration, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { checkElderClueRequirements } from '../../lib/util/elderClueRequirements';
 import getOSItem from '../../lib/util/getOSItem';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
-import { OSBMahojiCommand } from '../lib/util';
-import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
 	// Every 3 hours become 1% better to a cap of 10%
@@ -346,10 +337,27 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 		let { quantity } = options;
 		const maxPerTrip = Math.floor(maxTripLength / timeToFinish);
 
+<<<<<<< HEAD
 		if (!quantity) {
 			quantity = maxPerTrip;
 		}
 		quantity = clamp(quantity, 1, user.bank.amount(clueTier.scrollID));
+=======
+			const bankedClues = user.bank.amount(clueTier.scrollID);
+			const maxCanDo = Math.floor(maxTripLength / timeToFinish);
+			const bankedImplings = user.bank.amount(clueImpling.id);
+			let openedImplings = 0;
+			const implingLoot = new Bank();
+			while (implingClues + bankedClues < maxCanDo && openedImplings < bankedImplings) {
+				const impLoot = await getOpenableLoot({ openable: implingJarOpenable, user, quantity: 1 });
+				implingLoot.add(impLoot.bank);
+				implingClues = implingLoot.amount(clueTier.scrollID);
+				openedImplings++;
+			}
+			if (implingLoot.has(clueTier.scrollID)) {
+				implingLoot.remove(clueTier.scrollID, implingLoot.amount(clueTier.scrollID));
+			}
+>>>>>>> master
 
 		let duration = timeToFinish * quantity;
 

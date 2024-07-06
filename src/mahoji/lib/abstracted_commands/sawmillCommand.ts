@@ -1,8 +1,8 @@
-import { clamp, Time } from 'e';
+import { Time, clamp } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Planks } from '../../../lib/minions/data/planks';
-import { SawmillActivityTaskOptions } from '../../../lib/types/minions';
+import type { SawmillActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -58,6 +58,7 @@ export async function sawmillCommand(
 	let duration = quantity * timePerPlank;
 
 	const { GP } = user;
+<<<<<<< HEAD
 
 	let cost = plank!.gpCost * 2 * quantity;
 
@@ -65,6 +66,9 @@ export async function sawmillCommand(
 		cost += Math.ceil(cost * (speed * ((speed + 0.2) / 6)));
 		duration /= speed;
 	}
+=======
+	const cost = plank?.gpCost * quantity;
+>>>>>>> master
 
 	if (GP < cost) {
 		return `You need ${toKMB(cost)} GP to create ${quantity} planks.`;
@@ -78,15 +82,22 @@ export async function sawmillCommand(
 		)}.`;
 	}
 
+<<<<<<< HEAD
 	const costBank = new Bank().add('Coins', cost).add(plank!.inputItem, quantity);
 	await user.removeItemsFromBank(costBank);
 
 	await updateBankSetting('construction_cost_bank', new Bank().add('Coins', cost));
+=======
+	const costBank = new Bank().add('Coins', plank?.gpCost * quantity).add(plank?.inputItem, quantity);
+	await transactItems({ userID: user.id, itemsToRemove: costBank });
+
+	await updateBankSetting('construction_cost_bank', new Bank().add('Coins', plank?.gpCost * quantity));
+>>>>>>> master
 
 	await addSubTaskToActivityTask<SawmillActivityTaskOptions>({
 		type: 'Sawmill',
 		duration,
-		plankID: plank!.outputItem,
+		plankID: plank?.outputItem,
 		plankQuantity: quantity,
 		userID: user.id,
 		channelID: channelID.toString()

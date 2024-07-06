@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
 	ComponentType,
 	DMChannel,
@@ -9,9 +10,15 @@ import {
 	User
 } from 'discord.js';
 import { roll } from 'e';
+=======
+import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel, User } from 'discord.js';
+import { ComponentType, PermissionsBitField } from 'discord.js';
+>>>>>>> master
 
+import { PerkTier } from '@oldschoolgg/toolkit';
 import { OWNER_IDS, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
+<<<<<<< HEAD
 import {
 	BadgesEnum,
 	BitField,
@@ -21,8 +28,11 @@ import {
 	minionBuyButton,
 	PerkTier
 } from '../../lib/constants';
+=======
+import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, minionBuyButton } from '../../lib/constants';
+>>>>>>> master
 import { perkTierCache, syncPerkTierOfUser } from '../../lib/perkTiers';
-import { CategoryFlag } from '../../lib/types';
+import type { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';

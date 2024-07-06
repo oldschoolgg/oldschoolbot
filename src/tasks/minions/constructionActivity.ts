@@ -3,8 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { calcBabyYagaHouseDroprate, roll } from '../../lib/util';
 import { calcConBonusXP } from '../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 

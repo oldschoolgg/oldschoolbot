@@ -1,4 +1,4 @@
-import { mathjs } from '../constants';
+import Decimal from 'decimal.js';
 import { assert } from '../util';
 
 export type GeneralBankType<T extends string | number> = Record<T, number>;
@@ -9,9 +9,7 @@ interface GeneralBankValueSchema {
 	floats: boolean;
 }
 
-interface BankValidator<T extends string | number> {
-	(key: T, value: number, bank: GeneralBankType<T>): void;
-}
+type BankValidator<T extends string | number> = (key: T, value: number, bank: GeneralBankType<T>) => void;
 
 export class GeneralBank<T extends string | number> {
 	private bank: GeneralBankType<T>;
@@ -41,6 +39,10 @@ export class GeneralBank<T extends string | number> {
 		this.validate();
 	}
 
+	get _bank() {
+		return this.bank;
+	}
+
 	clone(): GeneralBank<T> {
 		return new GeneralBank<T>({
 			allowedKeys: this.allowedKeys ? Array.from(this.allowedKeys) : undefined,
@@ -51,10 +53,19 @@ export class GeneralBank<T extends string | number> {
 	}
 
 	validate(): void {
-		for (const key of Object.keys(this.bank) as T[]) {
+		for (let key of Object.keys(this.bank) as T[]) {
 			const value = this.bank[key];
-			if (this.allowedKeys && !this.allowedKeys.has(key)) {
-				throw new Error(`Key ${key} is not allowed.`);
+			if (this.allowedKeys) {
+				if (typeof Array.from(this.allowedKeys.values())[0] === 'number') {
+					key = Number.parseInt(key as string) as T;
+				}
+				if (!this.allowedKeys.has(key)) {
+					throw new Error(
+						`Key ${key} (${typeof key}) is not allowed, only these are allowed: ${Array.from(
+							this.allowedKeys
+						).join(', ')}`
+					);
+				}
 			}
 			assert(
 				typeof value === 'number' && value >= this.valueSchema.min && value <= this.valueSchema.max,
@@ -69,6 +80,10 @@ export class GeneralBank<T extends string | number> {
 
 	entries() {
 		return Object.entries(this.bank) as [T, number][];
+	}
+
+	length() {
+		return Object.keys(this.bank).length;
 	}
 
 	amount(key: T): number {
@@ -87,10 +102,7 @@ export class GeneralBank<T extends string | number> {
 
 	private addItem(key: T, quantity: number): this {
 		assert(quantity >= 0, 'Quantity must be non-negative.');
-		if (this.allowedKeys && !this.allowedKeys.has(key)) {
-			throw new Error(`Key ${key} is not allowed.`);
-		}
-		const newValue = mathjs.add(this.amount(key), quantity);
+		const newValue = Decimal.add(this.amount(key), quantity).toNumber();
 		if (newValue > this.valueSchema.max) {
 			throw new Error(`Value for ${key} exceeds the maximum of ${this.valueSchema.max}.`);
 		}
@@ -105,7 +117,7 @@ export class GeneralBank<T extends string | number> {
 		if (currentAmount < quantity) {
 			throw new Error(`Not enough ${key} to remove.`);
 		}
-		const newValue = mathjs.subtract(currentAmount, quantity);
+		const newValue = Decimal.sub(currentAmount, quantity).toNumber();
 		this.bank[key] = newValue;
 		if (newValue === 0) {
 			delete this.bank[key];
@@ -114,7 +126,7 @@ export class GeneralBank<T extends string | number> {
 		return this;
 	}
 
-	add(keyOrBank: T | GeneralBank<T>, quantity: number = 1): this {
+	add(keyOrBank: T | GeneralBank<T>, quantity = 1): this {
 		if (keyOrBank instanceof GeneralBank) {
 			for (const [key, qty] of keyOrBank.entries()) {
 				this.addItem(key, qty);
@@ -125,7 +137,7 @@ export class GeneralBank<T extends string | number> {
 		return this;
 	}
 
-	remove(keyOrBank: T | GeneralBank<T>, quantity: number = 1): this {
+	remove(keyOrBank: T | GeneralBank<T>, quantity = 1): this {
 		if (keyOrBank instanceof GeneralBank) {
 			for (const [key, qty] of Object.entries(keyOrBank.bank) as [T, number][]) {
 				this.removeItem(key as T, qty);

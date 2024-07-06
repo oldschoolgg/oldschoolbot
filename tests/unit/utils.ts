@@ -1,14 +1,15 @@
-import { Prisma, User } from '@prisma/client';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { Prisma, User } from '@prisma/client';
 import murmurhash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { expect } from 'vitest';
 
-import { BitField } from '../../src/lib/constants';
-import type { GearSetup } from '../../src/lib/gear/types';
 import { MUserClass } from '../../src/lib/MUser';
-import { filterGearSetup, Gear, PartialGearSetup } from '../../src/lib/structures/Gear';
+import type { BitField } from '../../src/lib/constants';
+import type { GearSetup } from '../../src/lib/gear/types';
+import type { PartialGearSetup } from '../../src/lib/structures/Gear';
+import { Gear, filterGearSetup } from '../../src/lib/structures/Gear';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 
 interface MockUserArgs {
@@ -32,7 +33,7 @@ interface MockUserArgs {
 	id?: string;
 }
 
-export const mockUser = (overrides?: MockUserArgs): User => {
+const mockUser = (overrides?: MockUserArgs): User => {
 	const gearMelee = filterGearSetup(overrides?.meleeGear);
 	const cl = new Bank().add(overrides?.cl ?? {});
 	const r = {
@@ -89,20 +90,8 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 	return r;
 };
 
-class TestMUser extends MUserClass {
-	// @ts-expect-error Mock
-	public readonly rawUsername = 'test';
-
-	// @ts-expect-error Mock
-	async fetchStats() {
-		return {
-			monster_scores: {}
-		};
-	}
-}
-
 export const mockMUser = (overrides?: MockUserArgs) => {
-	const user = new TestMUser(mockUser(overrides));
+	const user = new MUserClass(mockUser(overrides));
 	return user;
 };
 
@@ -127,7 +116,11 @@ export async function testRunCmd({
 	if (mockedUser.GP === null || Number.isNaN(mockedUser.GP) || mockedUser.GP < 0 || mockedUser.GP === undefined) {
 		throw new Error(`Invalid GP for user ${hash}`);
 	}
+<<<<<<< HEAD
 	mockUserMap.set(hash, mockedUser);
+=======
+	mockUserMap.set(hash, mockedUser as any as MUser);
+>>>>>>> master
 	const options: any = {
 		user: mockedUser.user,
 		channelID: '1234',

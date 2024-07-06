@@ -3,8 +3,6 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
-import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
