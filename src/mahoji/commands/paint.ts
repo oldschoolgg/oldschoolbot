@@ -1,5 +1,5 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import {ApplicationCommandOptionType } from 'discord.js'; 
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { getPaintedItemImage, paintColors } from '../../lib/paintColors';

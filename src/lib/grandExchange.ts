@@ -17,14 +17,7 @@ import type { RobochimpUser } from './roboChimp';
 import { roboChimpUserFetch } from './roboChimp';
 import { prisma } from './settings/prisma';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
-import {
-	assert,
-	generateGrandExchangeID,
-	isGEUntradeable,
-	itemNameFromID,
-	makeComponents,
-	toKMB
-} from './util';
+import { assert, generateGrandExchangeID, isGEUntradeable, itemNameFromID, makeComponents, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';

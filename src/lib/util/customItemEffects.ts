@@ -1,5 +1,5 @@
 import { Canvas, type Image, loadImage } from '@napi-rs/canvas';
-import {LRUCache} from 'lru-cache';
+import { LRUCache } from 'lru-cache';
 
 import { getPaintedItemImage, paintColorsMap } from '../paintColors';
 import itemID from './itemID';

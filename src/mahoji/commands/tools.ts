@@ -1,6 +1,12 @@
-import { type CommandResponse, type CommandRunOptions, type MahojiUserOption, PerkTier, asyncGzip } from '@oldschoolgg/toolkit';
+import {
+	type CommandResponse,
+	type CommandRunOptions,
+	type MahojiUserOption,
+	PerkTier,
+	asyncGzip
+} from '@oldschoolgg/toolkit';
 import type { Activity, User } from '@prisma/client';
-import { ApplicationCommandOptionType,  ChannelType, EmbedBuilder, userMention } from 'discord.js';
+import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, userMention } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';

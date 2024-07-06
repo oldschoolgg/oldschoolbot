@@ -4,13 +4,13 @@ import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
 import { type Prisma, activity_type_enum, tame_growth, xp_gains_skill_enum } from '@prisma/client';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
-import { Time, noOp,  } from 'e';
+import { Time, noOp } from 'e';
 import { production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { BitField,  MAX_INT_JAVA, MAX_XP } from '../../lib/constants';
+import { BitField, MAX_INT_JAVA, MAX_XP } from '../../lib/constants';
 import {
 	expertCapesCL,
 	gorajanArcherOutfit,

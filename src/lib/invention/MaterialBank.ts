@@ -20,7 +20,8 @@ export class MaterialBank {
 		for (const [key, value] of Object.entries(this.bank)) {
 			if (!materialTypes.includes(key as any)) {
 				delete this.bank[key as keyof IMaterialBank];
-				return this.validate();
+				this.validate();
+				return;
 			}
 			assert(materialTypes.includes(key as any), `${key} ${value}`);
 			assert(typeof value === 'number' && value > 0 && !Number.isNaN(value));

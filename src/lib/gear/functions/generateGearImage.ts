@@ -119,8 +119,6 @@ async function drawStats(canvas: Canvas, gearStats: GearStats, alternateImage: I
 				b.height
 			);
 		}
-		const { sprite } = bankImageGenerator.getBgAndSprite(1);
-		if (1 > 2) bankImageGenerator.drawBorder(ctx, sprite, false);
 		return;
 	}
 

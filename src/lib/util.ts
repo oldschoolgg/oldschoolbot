@@ -1,15 +1,5 @@
 import { type CommandResponse, stripEmojis } from '@oldschoolgg/toolkit';
-import {
-	Time,
-	calcWhatPercent,
-	chunk,
-	notEmpty,
-	objectEntries,
-	randArrItem,
-	randInt,
-	shuffleArr,
-	sumArr
-} from 'e';
+import { Time, calcWhatPercent, chunk, notEmpty, objectEntries, randArrItem, randInt, shuffleArr, sumArr } from 'e';
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 

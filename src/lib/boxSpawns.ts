@@ -25,7 +25,7 @@ const triviaChallenge: Challenge = async (msg: Message): Promise<User | null> =>
 
 	const embed = new EmbedBuilder()
 		.setTitle('Reply with the answer for a reward!')
-		.setDescription(`${(question)}\n\nPossible answers: ${allAnswers.join(', ')}`)
+		.setDescription(`${question}\n\nPossible answers: ${allAnswers.join(', ')}`)
 		.setThumbnail(
 			'https://cdn.discordapp.com/attachments/357422607982919680/1100378550189707314/534px-Mystery_box_detail.png'
 		);

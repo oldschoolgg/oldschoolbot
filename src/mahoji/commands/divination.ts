@@ -1,6 +1,6 @@
 import { mentionCommand } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import {ApplicationCommandOptionType } from 'discord.js'; 
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, increaseNumByPercent, removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
 

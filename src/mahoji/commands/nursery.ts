@@ -1,7 +1,7 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { tame_growth } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import {ApplicationCommandOptionType } from 'discord.js'; 
+import { ApplicationCommandOptionType } from 'discord.js';
 import { randArrItem, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 

@@ -162,7 +162,7 @@ export const allCommands: OSBMahojiCommand[] = [
 	geCommand,
 	rpCommand,
 	collectionLogCommand,
-	gearPresetsCommand,
+	gearPresetsCommand
 ];
 
 if (!production && testPotatoCommand) {

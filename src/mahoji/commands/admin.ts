@@ -43,14 +43,7 @@ import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { sorts } from '../../lib/sorts';
 import { Gear } from '../../lib/structures/Gear';
-import {
-	calcPerHour,
-	cleanString,
-	formatDuration,
-	sanitizeBank,
-	stringMatches,
-	toKMB
-} from '../../lib/util';
+import { calcPerHour, cleanString, formatDuration, sanitizeBank, stringMatches, toKMB } from '../../lib/util';
 import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';

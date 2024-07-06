@@ -152,7 +152,7 @@ import { implingsCL } from './implings';
 import { inventionCL } from './invention/inventions';
 import { allLeagueTasks, leagueTasks } from './leagues/leagues';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
-import { type DiaryID,  type DiaryTierName,  diaryTiers } from './minions/types';
+import { type DiaryID, type DiaryTierName, diaryTiers } from './minions/types';
 import { PoHObjects, getPOHObject } from './poh';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Skillcapes from './skilling/skillcapes';
@@ -776,7 +776,7 @@ for (const [, b] of objectEntries(diariesObject)) {
 		diaryRequirement: diaries.flatMap(i => {
 			const res: [DiaryID, DiaryTierName][] = [];
 			for (const a of diaryTiers) {
-				res.push([i.id, a])
+				res.push([i.id, a]);
 			}
 			return res;
 		})

@@ -1,5 +1,5 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import {ApplicationCommandOptionType } from 'discord.js'; 
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';

@@ -1,7 +1,7 @@
 import { bold } from '@discordjs/builders';
 import { type CommandRunOptions, convertBankToPerHourStats } from '@oldschoolgg/toolkit';
 import type { InteractionReplyOptions } from 'discord.js';
-import {ApplicationCommandOptionType } from 'discord.js'; 
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, increaseNumByPercent, reduceNumByPercent, sumArr } from 'e';
 import { uniq } from 'lodash';
 import { Bank } from 'oldschooljs';

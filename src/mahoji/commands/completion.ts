@@ -1,6 +1,6 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
-import {ApplicationCommandOptionType } from 'discord.js'; 
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import { calculateCompCapeProgress } from '../../lib/bso/calculateCompCapeProgress';
 import { generateAllCompCapeTasksList } from '../../lib/compCape';

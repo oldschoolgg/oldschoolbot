@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { isFunction,  reduceNumByPercent } from 'e';
+import { isFunction, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import type { SkillsEnum } from 'oldschooljs/dist/constants';
 import Createables from '../../lib/data/createables';

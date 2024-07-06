@@ -1,6 +1,6 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import {ApplicationCommandOptionType } from 'discord.js'; 
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
 
 import { setupParty } from '../../lib/party';

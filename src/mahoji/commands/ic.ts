@@ -1,7 +1,7 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
-import {ApplicationCommandOptionType } from 'discord.js'; 
+import { ApplicationCommandOptionType } from 'discord.js';
 import { randArrItem, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';

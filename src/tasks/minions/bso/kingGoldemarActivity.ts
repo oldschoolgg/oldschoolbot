@@ -10,9 +10,9 @@ import KingGoldemar, {
 import { addMonsterXP } from '../../../lib/minions/functions';
 import { prisma } from '../../../lib/settings/prisma';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import { calcDwwhChance, gpCostPerKill } from '../../../lib/structures/Boss';
+import { calcDwwhChance } from '../../../lib/structures/Boss';
 import type { NewBossOptions } from '../../../lib/types/minions';
-import { formatDuration, roll, toKMB } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
@@ -170,12 +170,6 @@ export const kingGoldemarTask: MinionTask = {
 			resultStr += `\n\n**Died in battle**: ${deaths.map(
 				u => `${u.toString()}(${randArrItem(methodsOfDeath)})`
 			)}.`;
-		}
-
-		if (1 > 2) {
-			resultStr += `\n\nAt this rate, it will take approximately ${dwwhChance} trips (${formatDuration(
-				dwwhChance * duration
-			)}) to receive a DWWH, costing ${toKMB(dwwhChance * gpCostPerKill(users[0]))} GP. 1 in ${dwwhChance}`;
 		}
 
 		if (!solo) {

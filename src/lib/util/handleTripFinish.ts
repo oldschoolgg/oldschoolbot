@@ -1,6 +1,12 @@
 import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import { type AttachmentBuilder, type ButtonBuilder, type MessageCollector, type MessageCreateOptions, bold } from 'discord.js';
+import {
+	type AttachmentBuilder,
+	type ButtonBuilder,
+	type MessageCollector,
+	type MessageCreateOptions,
+	bold
+} from 'discord.js';
 import { Time, notEmpty, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { alching } from '../../mahoji/commands/laps';

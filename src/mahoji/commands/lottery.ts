@@ -1,6 +1,6 @@
 import { userMention } from '@discordjs/builders';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import {ApplicationCommandOptionType } from 'discord.js'; 
+import { ApplicationCommandOptionType } from 'discord.js';
 import { calcWhatPercent, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { Canvas } from '@napi-rs/canvas';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import {ApplicationCommandOptionType } from 'discord.js'; 
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 

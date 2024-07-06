@@ -13,7 +13,7 @@ import { growablePetsCL } from '../growablePets';
 import { implingsCL } from '../implings';
 import { inventionCL } from '../invention/inventions';
 import { keyCrates } from '../keyCrates';
-import killableMonsters, {  NightmareMonster } from '../minions/data/killableMonsters';
+import killableMonsters, { NightmareMonster } from '../minions/data/killableMonsters';
 import { AkumuLootTable } from '../minions/data/killableMonsters/custom/bosses/Akumu';
 import { Ignecarus } from '../minions/data/killableMonsters/custom/bosses/Ignecarus';
 import {
