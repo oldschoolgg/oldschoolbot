@@ -13,7 +13,7 @@ import { production } from '../../config';
 import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
-import { prisma } from '../../lib/settings/prisma';
+
 import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';

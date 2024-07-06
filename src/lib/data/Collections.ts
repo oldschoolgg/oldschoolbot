@@ -4,6 +4,7 @@ import type { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
+import { stringMatches } from '@oldschoolgg/toolkit';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { ClueTier } from '../clues/clueTiers';
 import { ClueTiers } from '../clues/clueTiers';
@@ -22,7 +23,7 @@ import { allFarmingItems } from '../skilling/skills/farming';
 import { SkillsEnum } from '../skilling/types';
 import type { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
-import { fetchStatsForCL, stringMatches } from '../util';
+import { fetchStatsForCL } from '../util/fetchStatsForCL';
 import { shuffleRandom } from '../util/smallUtils';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
 import {

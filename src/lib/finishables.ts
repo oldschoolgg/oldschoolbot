@@ -40,7 +40,7 @@ import { handleNexKills } from './simulation/nex';
 import { getTemporossLoot } from './simulation/tempoross';
 import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
-import { calculateTripConsumableCost } from './util';
+import { calculateTripConsumableCost } from './util/calculateTripConsumableCost';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 

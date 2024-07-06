@@ -8,7 +8,7 @@ import * as ss from 'simple-statistics';
 
 import { addBanks } from '@oldschoolgg/toolkit';
 import { Emoji } from '../../../lib/constants';
-import { prisma } from '../../../lib/settings/prisma';
+
 import type { ItemBank } from '../../../lib/types';
 import getOSItem from '../../../lib/util/getOSItem';
 import { sendToChannelID } from '../../../lib/util/webhook';

@@ -1,20 +1,20 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
-
 import type { Image } from '@napi-rs/canvas';
 import { PerkTier, SimpleTable, StoreBitfield, dateFm } from '@oldschoolgg/toolkit';
 import type { CommandOptions } from '@oldschoolgg/toolkit';
 import type { APIButtonComponent } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import * as dotenv from 'dotenv';
+import { getItemOrThrow, resolveItems } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import './data/itemAliases';
+
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
-import getOSItem from './util/getOSItem';
 
 export { PerkTier };
 
@@ -489,24 +489,24 @@ export const minionBuyButton = new ButtonBuilder()
 export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
 
 export const chompyHats = [
-	[getOSItem('Chompy bird hat (ogre bowman)'), 30],
-	[getOSItem('Chompy bird hat (bowman)'), 40],
-	[getOSItem('Chompy bird hat (ogre yeoman)'), 50],
-	[getOSItem('Chompy bird hat (yeoman)'), 70],
-	[getOSItem('Chompy bird hat (ogre marksman)'), 95],
-	[getOSItem('Chompy bird hat (marksman)'), 125],
-	[getOSItem('Chompy bird hat (ogre woodsman)'), 170],
-	[getOSItem('Chompy bird hat (woodsman)'), 225],
-	[getOSItem('Chompy bird hat (ogre forester)'), 300],
-	[getOSItem('Chompy bird hat (forester)'), 400],
-	[getOSItem('Chompy bird hat (ogre bowmaster)'), 550],
-	[getOSItem('Chompy bird hat (bowmaster)'), 700],
-	[getOSItem('Chompy bird hat (ogre expert)'), 1000],
-	[getOSItem('Chompy bird hat (expert)'), 1300],
-	[getOSItem('Chompy bird hat (ogre dragon archer)'), 1700],
-	[getOSItem('Chompy bird hat (dragon archer)'), 2250],
-	[getOSItem('Chompy bird hat (expert ogre dragon archer)'), 3000],
-	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
+	[getItemOrThrow('Chompy bird hat (ogre bowman)'), 30],
+	[getItemOrThrow('Chompy bird hat (bowman)'), 40],
+	[getItemOrThrow('Chompy bird hat (ogre yeoman)'), 50],
+	[getItemOrThrow('Chompy bird hat (yeoman)'), 70],
+	[getItemOrThrow('Chompy bird hat (ogre marksman)'), 95],
+	[getItemOrThrow('Chompy bird hat (marksman)'), 125],
+	[getItemOrThrow('Chompy bird hat (ogre woodsman)'), 170],
+	[getItemOrThrow('Chompy bird hat (woodsman)'), 225],
+	[getItemOrThrow('Chompy bird hat (ogre forester)'), 300],
+	[getItemOrThrow('Chompy bird hat (forester)'), 400],
+	[getItemOrThrow('Chompy bird hat (ogre bowmaster)'), 550],
+	[getItemOrThrow('Chompy bird hat (bowmaster)'), 700],
+	[getItemOrThrow('Chompy bird hat (ogre expert)'), 1000],
+	[getItemOrThrow('Chompy bird hat (expert)'), 1300],
+	[getItemOrThrow('Chompy bird hat (ogre dragon archer)'), 1700],
+	[getItemOrThrow('Chompy bird hat (dragon archer)'), 2250],
+	[getItemOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
+	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
 
 export const toaPurpleItems = resolveItems([

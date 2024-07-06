@@ -9,7 +9,7 @@ import { getItem } from 'oldschooljs/dist/util/util';
 import { PerkTier } from '../../lib/constants';
 import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
-import { prisma } from '../../lib/settings/prisma';
+
 import { formatDuration, itemNameFromID, makeComponents, returnStringOrFile, toKMB } from '../../lib/util';
 import { createChart } from '../../lib/util/chart';
 import getOSItem from '../../lib/util/getOSItem';

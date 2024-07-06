@@ -11,7 +11,7 @@ import type { GearSetup, GearSetupType } from '../../../lib/gear/types';
 import { GearStat } from '../../../lib/gear/types';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { Gear, defaultGear, globalPresets } from '../../../lib/structures/Gear';
 import { assert, formatSkillRequirements, isValidGearSetup, stringMatches } from '../../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../../lib/util/calculateGearLostOnDeathWilderness';

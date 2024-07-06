@@ -3,8 +3,6 @@ import os from 'node:os';
 import { monitorEventLoopDelay } from 'node:perf_hooks';
 import type { Prisma } from '@prisma/client';
 
-import { prisma } from './settings/prisma';
-
 const h = monitorEventLoopDelay();
 h.enable();
 

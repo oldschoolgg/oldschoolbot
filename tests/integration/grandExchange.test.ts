@@ -5,7 +5,7 @@ import { describe, expect, test } from 'vitest';
 
 import { usernameCache } from '../../src/lib/constants';
 import { GrandExchange } from '../../src/lib/grandExchange';
-import { prisma } from '../../src/lib/settings/prisma';
+
 import { assert, Stopwatch } from '../../src/lib/util';
 import { geCommand } from '../../src/mahoji/commands/ge';
 import { cancelUsersListings } from '../../src/mahoji/lib/abstracted_commands/cancelGEListingCommand';

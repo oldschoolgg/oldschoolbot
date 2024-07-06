@@ -833,9 +833,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#cb60916b04372514d939ce51513818d409493b7e":
+"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#3d176631060d5cc434be0cbc7ef536a99a4e6e23":
   version: 0.0.24
-  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=cb60916b04372514d939ce51513818d409493b7e"
+  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=3d176631060d5cc434be0cbc7ef536a99a4e6e23"
   dependencies:
     decimal.js: "npm:^10.4.3"
     deepmerge: "npm:4.3.1"
@@ -847,8 +847,8 @@ __metadata:
     zod: "npm:3.23.8"
   peerDependencies:
     discord.js: ^14.15.3
-    oldschooljs: ^2.5.6
-  checksum: 10c0/19ce0b927d7324b6489fa4e218ce77780b5b7dbc27055df51010c2931f0ebe774607f95186cbad7334b1db636cffaebd16f568429e6a883428ab42578976f4b8
+    oldschooljs: ^2.5.9
+  checksum: 10c0/3004398dfc296156734d1a707411c7fdb955226e27a21313f1b4ce9c37d7a3f7d5d13417f9642f68adf0bd57bf1c21ae283e656a82af8bae0c9bd6a9aaa1416a
   languageName: node
   linkType: hard
 
@@ -4199,7 +4199,7 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:^1.8.3"
     "@napi-rs/canvas": "npm:^0.1.53"
-    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#cb60916b04372514d939ce51513818d409493b7e"
+    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#3d176631060d5cc434be0cbc7ef536a99a4e6e23"
     "@prisma/client": "npm:^5.16.1"
     "@sapphire/snowflake": "npm:^3.5.3"
     "@sapphire/time-utilities": "npm:^1.6.0"
@@ -4235,7 +4235,7 @@ __metadata:
     typescript: "npm:^5.5.3"
     vitest: "npm:^1.6.0"
     zlib-sync: "npm:^0.1.9"
-    zod: "npm:3.23.8"
+    zod: "npm:^3.23.8"
   languageName: unknown
   linkType: soft
 
@@ -4987,7 +4987,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:3.23.8":
+"zod@npm:3.23.8, zod@npm:^3.23.8":
   version: 3.23.8
   resolution: "zod@npm:3.23.8"
   checksum: 10c0/8f14c87d6b1b53c944c25ce7a28616896319d95bc46a9660fe441adc0ed0a81253b02b5abdaeffedbeb23bdd25a0bf1c29d2c12dd919aef6447652dd295e3e69

@@ -7,7 +7,7 @@ import { syncBlacklists } from '../../lib/blacklists';
 import { Channel, DISABLED_COMMANDS, META_CONSTANTS, globalConfig } from '../../lib/constants';
 import { initCrons } from '../../lib/crons';
 import { GrandExchange } from '../../lib/grandExchange';
-import { prisma } from '../../lib/settings/prisma';
+
 import { initTickers } from '../../lib/tickers';
 import { runTimedLoggedFn } from '../../lib/util';
 import { cacheCleanup } from '../../lib/util/cachedUserIDs';

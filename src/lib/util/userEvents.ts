@@ -4,7 +4,6 @@ import { UserEventType } from '@prisma/client';
 
 import { MAX_LEVEL, MAX_TOTAL_LEVEL } from '../constants';
 import { allCollectionLogsFlat } from '../data/Collections';
-import { prisma } from '../settings/prisma';
 
 export function userEventsToMap(_events: UserEvent[] | null) {
 	if (_events === null) return new Map<string, number>();

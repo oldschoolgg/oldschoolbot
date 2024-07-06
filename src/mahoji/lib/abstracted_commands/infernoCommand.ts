@@ -10,7 +10,7 @@ import { getSimilarItems } from '../../../lib/data/similarItems';
 import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
 import type { BlowpipeData } from '../../../lib/minions/types';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import type { Skills } from '../../../lib/types';

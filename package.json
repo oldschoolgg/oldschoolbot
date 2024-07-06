@@ -17,7 +17,7 @@
 	},
 	"dependencies": {
 		"@napi-rs/canvas": "^0.1.53",
-		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#cb60916b04372514d939ce51513818d409493b7e",
+		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#3d176631060d5cc434be0cbc7ef536a99a4e6e23",
 		"@prisma/client": "^5.16.1",
 		"@sapphire/snowflake": "^3.5.3",
 		"@sapphire/time-utilities": "^1.6.0",

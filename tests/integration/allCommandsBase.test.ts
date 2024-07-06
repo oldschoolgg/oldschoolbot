@@ -3,7 +3,7 @@ import { Time, shuffleArr } from 'e';
 import { expect, test, vi } from 'vitest';
 
 import { BitField, minionActivityCache } from '../../src/lib/constants';
-import { prisma } from '../../src/lib/settings/prisma';
+
 import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation';
 import { allCommands } from '../../src/mahoji/commands/allCommands';

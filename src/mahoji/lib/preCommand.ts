@@ -3,7 +3,7 @@ import { type InteractionReplyOptions, type TextChannel, type User, escapeMarkdo
 
 import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
 import { Emoji, badges, badgesCache, busyImmuneCommands, usernameCache } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
+
 import { stripEmojis } from '../../lib/util';
 import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
 import type { AbstractCommand } from './inhibitors';

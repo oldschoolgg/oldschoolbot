@@ -7,7 +7,7 @@ import { Bank } from 'oldschooljs';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BOT_TYPE } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
+
 import type { ItemBank } from '../../lib/types';
 import { containsBlacklistedWord, isValidNickname } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';

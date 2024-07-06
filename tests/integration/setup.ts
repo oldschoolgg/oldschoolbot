@@ -6,7 +6,6 @@ import { noOp } from 'e';
 import { afterEach, beforeEach, vi } from 'vitest';
 
 import { BankImageTask, bankImageTask } from '../../src/lib/bankImage';
-import { prisma } from '../../src/lib/settings/prisma';
 
 export function randomMock(random = 0.1) {
 	Math.random = () => random;

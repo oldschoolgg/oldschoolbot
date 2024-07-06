@@ -4,7 +4,7 @@ import { PartialGroupDMChannel, PermissionsBitField, WebhookClient } from 'disco
 import PQueue from 'p-queue';
 
 import { production } from '../../config';
-import { prisma } from '../settings/prisma';
+
 import { channelIsSendable } from '../util';
 import { logError } from './logError';
 

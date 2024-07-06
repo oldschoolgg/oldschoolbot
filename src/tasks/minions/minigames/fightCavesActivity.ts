@@ -3,7 +3,7 @@ import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';

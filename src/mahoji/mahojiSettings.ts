@@ -6,7 +6,7 @@ import { Bank } from 'oldschooljs';
 import type { SelectedUserStats } from '../lib/MUser';
 import { globalConfig } from '../lib/constants';
 import type { KillableMonster } from '../lib/minions/types';
-import { prisma } from '../lib/settings/prisma';
+
 import type { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
 import type { ItemBank } from '../lib/types';

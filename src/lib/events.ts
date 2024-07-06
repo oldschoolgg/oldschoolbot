@@ -11,7 +11,7 @@ import { untrustedGuildSettingsCache } from '../mahoji/guildSettings';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { BitField, Channel, Emoji, globalConfig } from './constants';
 import pets from './data/pets';
-import { prisma } from './settings/prisma';
+
 import type { ItemBank } from './types';
 import { formatDuration, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';

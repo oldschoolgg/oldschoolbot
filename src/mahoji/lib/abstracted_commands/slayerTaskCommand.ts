@@ -5,7 +5,7 @@ import { Time, notEmpty, randInt, removeFromArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { runCommand } from '../../../lib/settings/settings';
 import { slayerMasters } from '../../../lib/slayer/slayerMasters';
 import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';

@@ -2,7 +2,7 @@ import type { CommandOptions } from '@oldschoolgg/toolkit';
 
 import { modifyBusyCounter } from '../../lib/busyCounterCache';
 import { busyImmuneCommands, shouldTrackCommand } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
+
 import { makeCommandUsage } from '../../lib/util/commandUsage';
 import { logError } from '../../lib/util/logError';
 import type { AbstractCommand } from './inhibitors';

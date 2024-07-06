@@ -53,7 +53,6 @@ import { maxOffenceStats } from '../../../lib/structures/Gear';
 import type { Peak } from '../../../lib/tickers';
 import type { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
-	calculateTripConsumableCost,
 	checkRangeGearWeapon,
 	convertAttackStyleToGearSetup,
 	convertPvmStylesToGearSetup,
@@ -70,6 +69,7 @@ import {
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { calcWildyPKChance, increaseWildEvasionXp } from '../../../lib/util/calcWildyPkChance';
+import { calculateTripConsumableCost } from '../../../lib/util/calculateTripConsumableCost';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';

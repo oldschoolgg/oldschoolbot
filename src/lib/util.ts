@@ -2,7 +2,6 @@ import { Stopwatch, stripEmojis } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type {
 	BaseMessageOptions,
-	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
 	Collection,
@@ -14,16 +13,15 @@ import type {
 	SelectMenuInteraction,
 	TextChannel
 } from 'discord.js';
-import { ComponentType } from 'discord.js';
-import { Time, chunk, objectEntries } from 'e';
-import { Bank } from 'oldschooljs';
+import type { ComponentType } from 'discord.js';
+import { Time, objectEntries } from 'e';
+import type { Bank } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { BitField, badgesCache, projectiles, usernameCache } from './constants';
-import type { UserStatsDataNeededForCL } from './data/Collections';
 import { getSimilarItems } from './data/similarItems';
 import type { DefenceGearStat, GearSetupType, OffenceGearStat } from './gear/types';
 import { GearSetupTypes, GearStat } from './gear/types';
@@ -31,8 +29,7 @@ import type { Consumable } from './minions/types';
 import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
 import type { Gear } from './structures/Gear';
-import { MUserStats } from './structures/MUserStats';
-import type { ItemBank, Skills } from './types';
+import type { Skills } from './types';
 import type {
 	GroupMonsterActivityTaskOptions,
 	NexTaskOptions,
@@ -185,19 +182,6 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 
 	return str.join('');
 }
-
-export const calculateTripConsumableCost = (c: Consumable, quantity: number, duration: number) => {
-	const consumableCost = c.itemCost.clone();
-	if (c.qtyPerKill) {
-		consumableCost.multiply(quantity);
-	} else if (c.qtyPerMinute) {
-		consumableCost.multiply(duration / Time.Minute);
-	}
-	for (const [item, qty] of Object.entries(consumableCost.bank)) {
-		consumableCost.bank[item] = Math.ceil(qty);
-	}
-	return consumableCost;
-};
 
 export function formatPohBoosts(boosts: POHBoosts) {
 	const bonusStr = [];
@@ -358,16 +342,6 @@ export function getUsername(id: string | bigint, withBadges = true) {
 	return username;
 }
 
-export function makeComponents(components: ButtonBuilder[]): InteractionReplyOptions['components'] {
-	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
-}
-
-type test = CollectorFilter<
-	[
-		ButtonInteraction<CacheType> | SelectMenuInteraction<CacheType>,
-		Collection<string, ButtonInteraction<CacheType> | SelectMenuInteraction>
-	]
->;
 export function awaitMessageComponentInteraction({
 	message,
 	filter,
@@ -375,7 +349,12 @@ export function awaitMessageComponentInteraction({
 }: {
 	time: number;
 	message: Message;
-	filter: test;
+	filter: CollectorFilter<
+		[
+			ButtonInteraction<CacheType> | SelectMenuInteraction<CacheType>,
+			Collection<string, ButtonInteraction<CacheType> | SelectMenuInteraction>
+		]
+	>;
 }): Promise<SelectMenuInteraction<CacheType> | ButtonInteraction<CacheType>> {
 	return new Promise((resolve, reject) => {
 		const collector = message.createMessageComponentCollector<ComponentType.Button>({ max: 1, filter, time });
@@ -398,21 +377,6 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 
 export function isModOrAdmin(user: MUser) {
 	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
-}
-
-export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededForCL> {
-	const stats = await MUserStats.fromID(user.id);
-	const { userStats } = stats;
-	return {
-		sacrificedBank: new Bank(userStats.sacrificed_bank as ItemBank),
-		titheFarmsCompleted: userStats.tithe_farms_completed,
-		lapsScores: userStats.laps_scores as ItemBank,
-		openableScores: new Bank(userStats.openable_scores as ItemBank),
-		kcBank: userStats.monster_scores as ItemBank,
-		highGambles: userStats.high_gambles,
-		gotrRiftSearches: userStats.gotr_rift_searches,
-		stats
-	};
 }
 
 export { assert } from './util/logError';

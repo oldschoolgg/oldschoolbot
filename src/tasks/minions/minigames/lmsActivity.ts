@@ -2,7 +2,7 @@ import { SimpleTable, calcPerHour, formatOrdinal, gaussianRandom } from '@oldsch
 import { clamp, percentChance, sumArr } from 'e';
 
 import { Emoji } from '../../../lib/constants';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';

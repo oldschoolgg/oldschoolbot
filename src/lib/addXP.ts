@@ -8,7 +8,6 @@ import { MAXING_MESSAGE, SupportServer } from '../config';
 import { Events, LEVEL_99_XP, MAX_TOTAL_LEVEL, MAX_XP } from './constants';
 import { skillEmoji } from './data/emojis';
 import type { AddXpParams } from './minions/types';
-import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';
 import { insertUserEvent } from './util/userEvents';
 import { sendToChannelID } from './util/webhook';
