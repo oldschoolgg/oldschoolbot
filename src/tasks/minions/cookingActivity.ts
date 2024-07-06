@@ -1,6 +1,6 @@
+import { roll } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { roll } from 'e';
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';

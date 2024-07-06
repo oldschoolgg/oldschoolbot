@@ -1,30 +1,23 @@
-<<<<<<< HEAD
 import { randArrItem, reduceNumByPercent, roll, sumArr } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { production } from '../../config';
 import { doaMetamorphPets } from '../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../lib/data/globalDroprates';
 import { degradeableItems } from '../../lib/degradeableItems';
 import {
+	DOARooms,
 	calcDOAInput,
 	chanceOfDOAUnique,
 	createDOATeam,
 	doaHelpCommand,
-	DOARooms,
 	doaStartCommand,
 	pickUniqueToGiveUser
 } from '../../lib/depthsOfAtlantis';
-import { mileStoneBaseDeathChances, RaidLevel, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
+import { type RaidLevel, mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
 import { averageBank, formatDuration } from '../../lib/util';
-=======
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
-
-import type { RaidLevel } from '../../lib/simulation/toa';
-import { mileStoneBaseDeathChances, toaHelpCommand, toaStartCommand } from '../../lib/simulation/toa';
->>>>>>> master
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
@@ -328,7 +321,7 @@ export const raidCommand: OSBMahojiCommand = {
 			for (let t = 0; t < samples; t++) {
 				let i = 0;
 				const totalLoot = new Bank();
-				let items = resolveItems([
+				const items = resolveItems([
 					'Shark jaw',
 					'Shark tooth',
 					'Oceanic relic',
@@ -351,7 +344,7 @@ export const raidCommand: OSBMahojiCommand = {
 				while (items.some(item => !totalLoot.has(item))) {
 					i++;
 
-					let loot = new Bank();
+					const loot = new Bank();
 					if (roll(uniqueChance)) {
 						loot.add(pickUniqueToGiveUser(totalLoot));
 					} else {
@@ -376,7 +369,7 @@ export const raidCommand: OSBMahojiCommand = {
 						kcBank.add(room.id, i);
 					}
 
-					let team = [];
+					const team = [];
 					for (let a = 0; a < teamSize; a++) {
 						team.push({ user, kc: a, attempts: a, roomKCs: kcBank.bank as any });
 					}

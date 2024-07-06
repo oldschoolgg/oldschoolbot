@@ -1,3 +1,7 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { Prisma } from '@prisma/client';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { calcPercentOfNum, clamp, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -38,13 +42,8 @@ const specialSoldItems = new Map([
 
 export const CUSTOM_PRICE_CACHE = new Map<number, number>();
 
-<<<<<<< HEAD
 export function sellPriceOfItem(item: Item, taxRate = 25): { price: number; basePrice: number } {
-	let cachePrice = CUSTOM_PRICE_CACHE.get(item.id);
-=======
-export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; basePrice: number } {
 	const cachePrice = CUSTOM_PRICE_CACHE.get(item.id);
->>>>>>> master
 	if (!cachePrice && (item.price === undefined || !item.tradeable)) {
 		return { price: 0, basePrice: 0 };
 	}

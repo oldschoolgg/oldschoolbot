@@ -163,10 +163,3 @@ export const ownedMaterialOption = {
 			}));
 	}
 } as const;
-export function generateRandomBank(size: number) {
-	const bank = new Bank();
-	for (let i = 0; i < size; i++) {
-		bank.add(allEquippableItems[i]);
-	}
-	return bank;
-}

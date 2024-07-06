@@ -1,15 +1,24 @@
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, reduceNumByPercent } from 'e';
+import { itemID } from 'oldschooljs/dist/util';
 import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
-import { UserFullGearSetup } from '../../lib/gear';
+import type { UserFullGearSetup } from '../../lib/gear';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
-import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import { trackLoot } from '../../lib/lootTrack';
 import { monkeyTiers } from '../../lib/monkeyRumble';
 import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
+import { type Creature, HunterTechniqueEnum } from '../../lib/skilling/types';
+import type { Peak } from '../../lib/tickers';
+import type { Skills } from '../../lib/types';
+import type { HunterActivityTaskOptions } from '../../lib/types/minions';
+import { hasSkillReqs } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -73,7 +82,7 @@ export function calculateHunterInput({
 		return "You can't hunt Chimpchompa's! You need to be wearing a greegree.";
 	}
 
-	let crystalImpling = creature.name === 'Crystal impling';
+	const crystalImpling = creature.name === 'Crystal impling';
 
 	if (crystalImpling) {
 		const [hasReqs, reason] = hasSkillReqs(user, soteSkillRequirements);
@@ -171,7 +180,7 @@ export function calculateHunterInput({
 		timePerCatch = boostedActionTime;
 	}
 
-	let maxQuantity = Math.floor(maxTripLength / timePerCatch);
+	const maxQuantity = Math.floor(maxTripLength / timePerCatch);
 	let quantity = quantityInput;
 	if (!quantity) {
 		if (crystalImpling) {
@@ -193,7 +202,7 @@ export function calculateHunterInput({
 		)}, try a lower quantity. The highest amount of ${creature.name} you can hunt is ${maxQuantity}.`;
 	}
 
-	let totalCost = new Bank();
+	const totalCost = new Bank();
 
 	if (creature.itemsConsumed) {
 		for (const [item, qty] of creature.itemsConsumed.items()) {
@@ -212,7 +221,7 @@ export function calculateHunterInput({
 	// If creatures Herbiboar or Razor-backed kebbit or Crystal Impling use Stamina potion(4)
 	if (shouldUseStaminaPotions) {
 		if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID || crystalImpling) {
-			let staminaPotionQuantity =
+			const staminaPotionQuantity =
 				creature.id === HERBIBOAR_ID || crystalImpling
 					? Math.round(duration / (9 * Time.Minute))
 					: Math.round(duration / (18 * Time.Minute));
@@ -235,7 +244,7 @@ export function calculateHunterInput({
 	}
 
 	if (creature.bait) {
-		let reqBank = creature.bait(quantity);
+		const reqBank = creature.bait(quantity);
 		if (!bank.has(reqBank)) {
 			return `You don't have enough bait to catch ${quantity}x ${creature.name}, you need: ${reqBank}.`;
 		}
@@ -322,22 +331,6 @@ export const huntCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; hunter_potion?: boolean; stamina_potions?: boolean }>) => {
 		const user = await mUserFetch(userID);
-<<<<<<< HEAD
-=======
-		const userBank = user.bank;
-		const userQP = user.QP;
-		const boosts = [];
-		let traps = 1;
-		const usingHuntPotion = Boolean(options.hunter_potion);
-		let wildyScore = 0;
-
-		if (options.stamina_potions === undefined) {
-			options.stamina_potions = true;
-		}
-
-		const usingStaminaPotion = Boolean(options.stamina_potions);
-
->>>>>>> master
 		const creature = Hunter.Creatures.find(creature =>
 			creature.aliases.some(
 				alias => stringMatches(alias, options.name) || stringMatches(alias.split(' ')[0], options.name)
@@ -346,41 +339,7 @@ export const huntCommand: OSBMahojiCommand = {
 
 		if (!creature) return "That's not a valid creature to hunt.";
 
-<<<<<<< HEAD
-		let crystalImpling = creature.name === 'Crystal impling';
-=======
-		if (user.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0) < creature.level) {
-			return `${user.minionName} needs ${creature.level} Hunter to hunt ${creature.name}.`;
-		}
-
-		if (creature.qpRequired && userQP < creature.qpRequired) {
-			return `${user.minionName} needs ${creature.qpRequired} QP to hunt ${creature.name}.`;
-		}
-
-		if (creature.prayerLvl && user.skillLevel(SkillsEnum.Prayer) < creature.prayerLvl) {
-			return `${user.minionName} needs ${creature.prayerLvl} Prayer to hunt ${creature.name}.`;
-		}
-
-		if (creature.herbloreLvl && user.skillLevel(SkillsEnum.Herblore) < creature.herbloreLvl) {
-			return `${user.minionName} needs ${creature.herbloreLvl} Herblore to hunt ${creature.name}.`;
-		}
-
-		if (creature.multiTraps) {
-			traps +=
-				Math.min(Math.floor((user.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0)) / 20), 5) +
-				(creature.wildy ? 1 : 0);
-		}
-
-		if (creature.itemsRequired) {
-			for (const [item, quantity] of creature.itemsRequired.items()) {
-				if (userBank.amount(item.name) < quantity * traps) {
-					return `You don't have ${traps}x ${item.name}, hunter tools can be bought using the buy command.`;
-				}
-			}
-		}
-
 		const crystalImpling = creature.name === 'Crystal impling';
->>>>>>> master
 
 		const maxTripLength = calcMaxTripLength(user, 'Hunter');
 		const elligibleForQuickTrap =
@@ -443,79 +402,8 @@ export const huntCommand: OSBMahojiCommand = {
 			return result;
 		}
 
-<<<<<<< HEAD
 		const { wildyPeak, messages, totalCost, quantity, duration, isUsingHunterPotion, shouldUseStaminaPotions } =
 			result;
-=======
-		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDuration(
-				maxTripLength
-			)}, try a lower quantity. The highest amount of ${creature.name} you can hunt is ${Math.floor(
-				maxTripLength / ((catchTime * Time.Second) / traps)
-			)}.`;
-		}
-
-		const removeBank = new Bank();
-
-		if (creature.itemsConsumed) {
-			for (const [item, qty] of creature.itemsConsumed.items()) {
-				if (userBank.amount(item.id) < qty * quantity) {
-					if (userBank.amount(item.id) > qty) {
-						quantity = Math.floor(userBank.amount(item.id) / qty);
-						duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
-					} else {
-						return `You don't have enough ${item.name}s.`;
-					}
-				}
-				removeBank.add(item.id, qty * quantity);
-			}
-		}
-
-		// If creatures Herbiboar or Razor-backed kebbit use Stamina potion(4)
-		if (usingStaminaPotion) {
-			if (creature.id === HERBIBOAR_ID || creature.id === RAZOR_KEBBIT_ID || crystalImpling) {
-				const staminaPotionQuantity =
-					creature.id === HERBIBOAR_ID || crystalImpling
-						? Math.round(duration / (9 * Time.Minute))
-						: Math.round(duration / (18 * Time.Minute));
-
-				if (userBank.amount('Stamina potion(4)') < staminaPotionQuantity) {
-					return `You need ${staminaPotionQuantity}x Stamina potion(4) to hunt for the whole trip, try a lower quantity or make/buy more potions.`;
-				}
-				removeBank.add('Stamina potion(4)', staminaPotionQuantity);
-				boosts.push(`20% boost for using ${staminaPotionQuantity}x Stamina potion(4)`);
-			}
-		}
-
-		if (usingHuntPotion) {
-			const hunterPotionQuantity = Math.round(duration / (8 * Time.Minute));
-			if (userBank.amount('Hunter potion(4)') < hunterPotionQuantity) {
-				return `You need ${hunterPotionQuantity}x Hunter potion(4) to boost your level for the whole trip, try a lower quantity or make/buy more potions.`;
-			}
-			removeBank.add(itemID('Hunter potion(4)'), hunterPotionQuantity);
-			boosts.push(`+2 hunter level for using ${hunterPotionQuantity}x Hunter potion(4) every 2nd minute.`);
-		}
-
-		updateBankSetting('hunter_cost', removeBank);
-		await user.removeItemsFromBank(removeBank);
-
-		let wildyPeak = null;
-		let wildyStr = '';
-
-		if (creature.wildy) {
-			const date = new Date().getTime();
-			const cachedPeakInterval: Peak[] = globalClient._peakIntervalCache;
-			for (const peak of cachedPeakInterval) {
-				if (peak.startTime < date && peak.finishTime > date) {
-					wildyPeak = peak;
-					break;
-				}
-			}
-			wildyStr = `You are hunting ${creature.name} in the Wilderness during ${
-				wildyPeak?.peakTier
-			} peak time and potentially risking your equipped body and legs in the wildy setup with a score ${wildyScore} and also risking Saradomin brews and Super restore potions.`;
-		}
->>>>>>> master
 
 		await user.removeItemsFromBank(totalCost);
 		await updateBankSetting('hunter_cost', totalCost);

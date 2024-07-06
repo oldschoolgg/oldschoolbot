@@ -87,14 +87,11 @@ export type ClientBankKey =
 	| 'nmz_cost'
 	| 'toa_cost'
 	| 'toa_loot'
-<<<<<<< HEAD
 	| 'doa_cost'
 	| 'doa_loot'
-	| 'xmas_ironman_food_bank';
-=======
+	| 'xmas_ironman_food_bank'
 	| 'colo_cost'
 	| 'colo_loot';
->>>>>>> master
 
 export async function updateBankSetting(key: ClientBankKey, bankToAdd: Bank) {
 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${key}`);

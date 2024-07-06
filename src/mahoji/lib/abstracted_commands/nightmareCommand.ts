@@ -228,15 +228,11 @@ export async function nightmareCommand(user: MUser, channelID: string, name: str
 		}
 	}
 
-<<<<<<< HEAD
 	const hasCob = user.usingPet('Cob');
 	if (hasCob && type === 'solo') {
 		effectiveTime /= 2;
 	}
 	const durQtyRes = await calcDurQty(
-=======
-	const durQtyRes = await calcDurQty(
->>>>>>> master
 		users,
 		{ ...NightmareMonster, timeToFinish: effectiveTime },
 		qty,
@@ -325,15 +321,10 @@ ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
 					perKillTime
 				)} instead of ${formatDuration(
 					NightmareMonster.timeToFinish
-<<<<<<< HEAD
 			  )} - the total trip will take ${formatDuration(duration)}.`;
 	if (hasCob && type === 'solo') {
 		str += '\n2x Boost from Cob\n';
 	}
-=======
-				)} - the total trip will take ${formatDuration(duration)}.`;
-
->>>>>>> master
 	str += `\nRemoved ${soloFoodUsage} from your bank.${
 		isPhosani
 			? hasShadow

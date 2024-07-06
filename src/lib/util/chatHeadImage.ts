@@ -13,15 +13,12 @@ const ketKehChatHead = loadAndCacheLocalImage('./src/lib/resources/images/ketKeh
 const gertrudeChatHead = loadAndCacheLocalImage('./src/lib/resources/images/gertrude.png');
 const antiSantaChatHead = loadAndCacheLocalImage('./src/lib/resources/images/antisanta.png');
 const bunnyChatHead = loadAndCacheLocalImage('./src/lib/resources/images/bunny.png');
-<<<<<<< HEAD
 const monkeyChildChatHead = loadAndCacheLocalImage('./src/lib/resources/images/monkeychild.png');
 const marimboChatHead = loadAndCacheLocalImage('./src/lib/resources/images/marimbo.png');
 const partyPeteHead = loadAndCacheLocalImage('./src/lib/resources/images/partyPete.png');
 const mysteriousFigureHead = loadAndCacheLocalImage('./src/lib/resources/images/mysteriousFigure.png');
 const rudolphChatHead = loadAndCacheLocalImage('./src/lib/resources/images/rudolph.png');
-=======
 const minimusHead = loadAndCacheLocalImage('./src/lib/resources/images/minimus.png');
->>>>>>> master
 
 const chatHeads = {
 	mejJal: mejJalChatHead,
@@ -35,13 +32,10 @@ const chatHeads = {
 	gertrude: gertrudeChatHead,
 	antiSanta: antiSantaChatHead,
 	bunny: bunnyChatHead,
-<<<<<<< HEAD
 	partyPete: partyPeteHead,
 	mysteriousFigure: mysteriousFigureHead,
-	rudolph: rudolphChatHead
-=======
+	rudolph: rudolphChatHead,
 	minimus: minimusHead
->>>>>>> master
 };
 
 const names: Record<keyof typeof chatHeads, string> = {
@@ -56,13 +50,10 @@ const names: Record<keyof typeof chatHeads, string> = {
 	gertrude: 'Gertrude',
 	antiSanta: 'Anti-Santa',
 	bunny: 'Easter Bunny',
-<<<<<<< HEAD
 	partyPete: 'Party Pete',
 	mysteriousFigure: 'Mysterious Figure',
-	rudolph: 'Rudolph the Reindeer'
-=======
+	rudolph: 'Rudolph the Reindeer',
 	minimus: 'Minimus'
->>>>>>> master
 };
 
 export async function newChatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {

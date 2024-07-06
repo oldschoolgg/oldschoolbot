@@ -67,13 +67,10 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'ShootingStars'
 		| 'HalloweenEvent'
 		| 'StrongholdOfSecurity'
-<<<<<<< HEAD
 		| 'TrickOrTreat'
 		| 'HalloweenMiniMinigame'
-		| 'BirthdayCollectIngredients';
-=======
+		| 'BirthdayCollectIngredients'
 		| 'CombatRing';
->>>>>>> master
 }
 
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {

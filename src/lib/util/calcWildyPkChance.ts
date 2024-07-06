@@ -73,11 +73,7 @@ export async function calcWildyPKChance(
 	deathChance += deathChanceFromLevels;
 
 	// Multi does make it riskier, but only if there's actually a team on you
-<<<<<<< HEAD
-	let wildyMultiMultiplier = monster.wildyMulti || cannonMulti ? 2 : 1;
-=======
 	const wildyMultiMultiplier = monster.wildyMulti || cannonMulti ? 2 : 1;
->>>>>>> master
 	const hasSupplies = supplies ? 0.5 : 1;
 	const hasOverheads = user.skillLevel(SkillsEnum.Prayer) >= 43 ? 0.25 : 1;
 

@@ -1,6 +1,6 @@
 import { Bank } from 'oldschooljs';
 
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 import { TOTAL_GIANT_WEAPONS } from '../../../lib/giantsFoundry';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -178,26 +178,16 @@ export async function giantsFoundryStartCommand(
 	// If they have the entire Smiths' Uniform, give an extra 15% speed bonus
 	let setBonus = 0;
 	if (
-<<<<<<< HEAD
 		user.hasEquippedOrInBank(
 			Object.keys(Smithing.smithsUniformItems).map(i => Number.parseInt(i)),
 			'every'
-=======
-		user.gear.skilling.hasEquipped(
-			Object.keys(Smithing.smithsUniformItems).map(i => Number.parseInt(i)),
-			true
->>>>>>> master
 		)
 	) {
 		setBonus += 15;
 	} else {
 		// For each Smiths' Uniform item, check if they have it, give its' set boost and covert to 15% speed bonus later.
 		for (const [itemID] of Object.entries(Smithing.smithsUniformItems)) {
-<<<<<<< HEAD
 			if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
-=======
-			if (user.gear.skilling.hasEquipped([Number.parseInt(itemID)], false)) {
->>>>>>> master
 				setBonus += 3;
 			}
 		}

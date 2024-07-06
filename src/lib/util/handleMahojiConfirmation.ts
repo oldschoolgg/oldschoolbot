@@ -1,22 +1,16 @@
 import { channelIsSendable } from '@oldschoolgg/toolkit';
-<<<<<<< HEAD
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
-	ButtonInteraction,
+	type ButtonInteraction,
 	ButtonStyle,
-	ChatInputCommandInteraction,
-	ComponentType,
+	type ChatInputCommandInteraction,
+	type ComponentType,
 	InteractionResponseType,
-	MessageCreateOptions,
+	type MessageCreateOptions,
 	Routes
 } from 'discord.js';
-import { noOp, Time } from 'e';
-=======
-import type { ButtonInteraction, ChatInputCommandInteraction, ComponentType } from 'discord.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionResponseType, Routes } from 'discord.js';
 import { Time, noOp } from 'e';
->>>>>>> master
 
 import { SILENT_ERROR } from '../constants';
 import { deferInteraction, interactionReply } from './interactionReply';

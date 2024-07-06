@@ -5,93 +5,20 @@ import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 
 import { autocompleteMonsters } from '../../mahoji/commands/k';
+import { divinationEnergies, memoryHarvestTypes } from '../bso/divination';
+import type { PvMMethod } from '../constants';
+import { kibbles } from '../data/kibble';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
-import type {
-	ActivityTaskOptionsWithQuantity,
-	AgilityActivityTaskOptions,
-	AlchingActivityTaskOptions,
-	AnimatedArmourActivityTaskOptions,
-	BathhouseTaskOptions,
-	BuryingActivityTaskOptions,
-	ButlerActivityTaskOptions,
-	CastingActivityTaskOptions,
-	ClueActivityTaskOptions,
-	CollectingOptions,
-	ConstructionActivityTaskOptions,
-	CookingActivityTaskOptions,
-	CraftingActivityTaskOptions,
-	CutLeapingFishActivityTaskOptions,
-	DarkAltarOptions,
-	DisassembleTaskOptions,
-	DOAOptions,
-	DungeoneeringOptions,
-	EnchantingActivityTaskOptions,
-	FarmingActivityTaskOptions,
-	FiremakingActivityTaskOptions,
-	FishingActivityTaskOptions,
-	FletchingActivityTaskOptions,
-	GauntletOptions,
-	GiantsFoundryActivityTaskOptions,
-	GroupMonsterActivityTaskOptions,
-	GuardiansOfTheRiftActivityTaskOptions,
-	HerbloreActivityTaskOptions,
-	HunterActivityTaskOptions,
-	InfernoOptions,
-	KibbleOptions,
-	MahoganyHomesActivityTaskOptions,
-	MemoryHarvestOptions,
-	MiningActivityTaskOptions,
-	MonsterActivityTaskOptions,
-	MotherlodeMiningActivityTaskOptions,
-	NewBossOptions,
-	NexTaskOptions,
-	NightmareActivityTaskOptions,
-	OfferingActivityTaskOptions,
-	PickpocketActivityTaskOptions,
-	PuroPuroActivityTaskOptions,
-	RaidsOptions,
-	ResearchTaskOptions,
-	RunecraftActivityTaskOptions,
-	SawmillActivityTaskOptions,
-	ScatteringActivityTaskOptions,
-	ShadesOfMortonOptions,
-	SmeltingActivityTaskOptions,
-	SmithingActivityTaskOptions,
-	TOAOptions,
-	TempleTrekkingActivityTaskOptions,
-	TheatreOfBloodTaskOptions,
-	TiaraRunecraftActivityTaskOptions,
-<<<<<<< HEAD
-	TinkeringWorkshopOptions,
-	TOAOptions,
-	TuraelsTrialsOptions,
-	WoodcuttingActivityTaskOptions
-} from '../types/minions';
-import { itemNameFromID } from '../util';
-import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
-import { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
-import { deferInteraction } from './interactionReply';
-
-export const taskCanBeRepeated = (activity: Activity) => {
-=======
-	WoodcuttingActivityTaskOptions,
-	ZalcanoActivityTaskOptions
-} from '../types/minions';
+import type { ActivityTaskOptionsWithQuantity, AgilityActivityTaskOptions, AlchingActivityTaskOptions, AnimatedArmourActivityTaskOptions, BathhouseTaskOptions, BuryingActivityTaskOptions, ButlerActivityTaskOptions, CastingActivityTaskOptions, ClueActivityTaskOptions, CollectingOptions, ConstructionActivityTaskOptions, CookingActivityTaskOptions, CraftingActivityTaskOptions, CutLeapingFishActivityTaskOptions, DOAOptions, DarkAltarOptions, DisassembleTaskOptions, DungeoneeringOptions, EnchantingActivityTaskOptions, FarmingActivityTaskOptions, FiremakingActivityTaskOptions, FishingActivityTaskOptions, FletchingActivityTaskOptions, GauntletOptions, GiantsFoundryActivityTaskOptions, GroupMonsterActivityTaskOptions, GuardiansOfTheRiftActivityTaskOptions, HerbloreActivityTaskOptions, HunterActivityTaskOptions, InfernoOptions, KibbleOptions, MahoganyHomesActivityTaskOptions, MemoryHarvestOptions, MiningActivityTaskOptions, MonsterActivityTaskOptions, MotherlodeMiningActivityTaskOptions, NewBossOptions, NexTaskOptions, NightmareActivityTaskOptions, OfferingActivityTaskOptions, PickpocketActivityTaskOptions, PuroPuroActivityTaskOptions, RaidsOptions, ResearchTaskOptions, RunecraftActivityTaskOptions, SawmillActivityTaskOptions, ScatteringActivityTaskOptions, ShadesOfMortonOptions, SmeltingActivityTaskOptions, SmithingActivityTaskOptions, TOAOptions, TempleTrekkingActivityTaskOptions, TheatreOfBloodTaskOptions, TiaraRunecraftActivityTaskOptions, TinkeringWorkshopOptions, TuraelsTrialsOptions, WoodcuttingActivityTaskOptions, ZalcanoActivityTaskOptions } from '../types/minions';
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
-import getOSItem from './getOSItem';
 import { deferInteraction } from './interactionReply';
 
-const taskCanBeRepeated = (activity: Activity) => {
-	if (activity.type === activity_type_enum.ClueCompletion) {
-		const realActivity = convertStoredActivityToFlatActivity(activity) as ClueActivityTaskOptions;
-		return realActivity.implingID !== undefined;
-	}
->>>>>>> master
+export const taskCanBeRepeated = (activity: Activity) => {
 	return !(
 		[
 			activity_type_enum.TearsOfGuthix,
@@ -113,17 +40,10 @@ const taskCanBeRepeated = (activity: Activity) => {
 	).includes(activity.type);
 };
 
-<<<<<<< HEAD
 export const tripHandlers = {
 	[activity_type_enum.HalloweenMiniMinigame]: {
 		commandName: 'm',
 		args: () => ({})
-=======
-const tripHandlers = {
-	[activity_type_enum.ClueCompletion]: {
-		commandName: 'clue',
-		args: (data: ClueActivityTaskOptions) => ({ tier: data.clueID, implings: getOSItem(data.implingID!).name })
->>>>>>> master
 	},
 	[activity_type_enum.TrickOrTreat]: {
 		commandName: 'm',
@@ -824,7 +744,6 @@ const tripHandlers = {
 			}
 		})
 	},
-<<<<<<< HEAD
 	[activity_type_enum.DepthsOfAtlantis]: {
 		commandName: 'raid',
 		args: (data: DOAOptions) => ({
@@ -854,12 +773,12 @@ const tripHandlers = {
 					method: _data.m
 				}
 			}
-=======
+		})
+	},
 	[activity_type_enum.Colosseum]: {
 		commandName: 'k',
 		args: () => ({
 			name: 'colosseum'
->>>>>>> master
 		})
 	}
 } as const;

@@ -13,18 +13,14 @@ if (global.prisma) {
 
 export default async ({ clueTierID, quantity }: CasketWorkerArgs): Promise<[Bank, string]> => {
 	const clueTier = ClueTiers.find(tier => tier.id === clueTierID)!;
-<<<<<<< HEAD
 
-	let loot = clueTier.table.open(quantity, { cl: new Bank() } as MUser);
+	const loot = clueTier.table.open(quantity, { cl: new Bank() } as MUser);
 
 	for (let i = 0; i < quantity; i++) {
 		const qty = randInt(1, 3);
 		loot.add(clueTier.table.open(qty, { cl: loot } as MUser));
 	}
 
-=======
-	const loot = clueTier.table.open(quantity);
->>>>>>> master
 	let mimicNumber = 0;
 	if (clueTier.mimicChance) {
 		for (let i = 0; i < quantity; i++) {

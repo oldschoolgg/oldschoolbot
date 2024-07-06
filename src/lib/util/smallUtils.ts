@@ -10,7 +10,7 @@ import deepmerge from 'deepmerge';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { time } from 'node:console';
-import { ButtonBuilder, ButtonStyle, InteractionReplyOptions } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from 'discord.js';
 import { Time, clamp, objectEntries, roll } from 'e';
 import { Bank, Items, LootTable } from 'oldschooljs';
 import { skillEmoji } from '../data/emojis';
@@ -262,7 +262,6 @@ export function calculateSimpleMonsterDeathChance({
 	return clamp(deathChance, lowestDeathChance, highestDeathChance);
 }
 
-<<<<<<< HEAD
 export function removeItemsFromLootTable(lootTable: LootTable, itemsToRemove: number[]): void {
 	const filterFunction = (item: any) => !itemsToRemove.includes(item);
 
@@ -294,8 +293,6 @@ export function perHourChance(
 	}
 }
 
-=======
->>>>>>> master
 export function perTimeUnitChance(
 	durationMilliseconds: number,
 	oneInXPerTimeUnitChance: number,
@@ -370,7 +367,6 @@ export function containsBlacklistedWord(str: string): boolean {
 	return false;
 }
 
-<<<<<<< HEAD
 export function calculateAverageTimeForSuccess(probabilityPercent: number, timeFrameMilliseconds: number): number {
 	const probabilityOfSuccess = probabilityPercent / 100;
 	const averageTimeUntilSuccessMilliseconds = timeFrameMilliseconds / probabilityOfSuccess;
@@ -378,9 +374,6 @@ export function calculateAverageTimeForSuccess(probabilityPercent: number, timeF
 }
 
 export function ellipsize(str: string, maxLen = 2000) {
-=======
-export function ellipsize(str: string, maxLen = 2000) {
->>>>>>> master
 	if (str.length > maxLen) {
 		return `${str.substring(0, maxLen - 3)}...`;
 	}

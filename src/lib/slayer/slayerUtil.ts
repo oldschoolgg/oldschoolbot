@@ -2,8 +2,13 @@ import { notEmpty, objectKeys, randFloat, randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
+import { BitField } from 'discord.js';
 import { KourendKebosDiary, LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
+import type { PvMMethod } from '../constants';
+import { CombatOptionsEnum } from '../minions/data/combatConstants';
+import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
+import type { KillableMonster } from '../minions/types';
 import { prisma } from '../settings/prisma';
 import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
@@ -14,6 +19,9 @@ import resolveItems from '../util/resolveItems';
 import { autoslayModes } from './constants';
 import { slayerMasters } from './slayerMasters';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
+import { allSlayerTasks } from './tasks';
+import { bossTasks, wildernessBossTasks } from './tasks/bossTasks';
+import type { AssignableSlayerTask, SlayerMaster } from './types';
 
 export enum SlayerMasterEnum {
 	Reserved = 0,
@@ -53,20 +61,12 @@ export function determineBoostChoice(params: DetermineBoostParams) {
 		boostChoice = 'cannon';
 	} else if (
 		params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
-<<<<<<< HEAD
 		(params.monster!.canBarrage || params.wildyBurst)
-=======
-		(params.monster?.canBarrage || params.wildyBurst)
->>>>>>> master
 	) {
 		boostChoice = 'barrage';
 	} else if (
 		params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) &&
-<<<<<<< HEAD
 		(params.monster!.canBarrage || params.wildyBurst)
-=======
-		(params.monster?.canBarrage || params.wildyBurst)
->>>>>>> master
 	) {
 		boostChoice = 'burst';
 	} else if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
@@ -244,7 +244,6 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		}
 	}
 
-<<<<<<< HEAD
 	let quantity = randInt(assignedTask!.amount[0], maxQuantity);
 
 	const extendReward = SlayerRewardsShop.find(srs => srs.extendID && srs.extendID.includes(assignedTask!.monster.id));
@@ -254,7 +253,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 			: Math.ceil(quantity * extendReward.extendMult!);
 	}
 
-	let messages: string[] = [];
+	const messages: string[] = [];
 	if (unlocks.includes(SlayerTaskUnlocksEnum.SizeMatters) && !_user.bitfield.includes(BitField.DisableSizeMatters)) {
 		quantity *= 2;
 		messages.push('2x qty for Size Matters unlock');
@@ -267,9 +266,6 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		messages.push('2x qty for Scroll of longevity');
 	}
 
-=======
-	const quantity = randInt(assignedTask?.amount[0], maxQuantity);
->>>>>>> master
 	const currentTask = await prisma.slayerTask.create({
 		data: {
 			user_id: newUser.id,

@@ -11,7 +11,7 @@ import type { KillableMonster } from '../../../lib/minions/types';
 import { NexMonster } from '../../../lib/nex';
 import { setupParty } from '../../../lib/party';
 import type { MakePartyOptions } from '../../../lib/types';
-import { BossActivityTaskOptions } from '../../../lib/types/minions';
+import type { BossActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
@@ -253,7 +253,7 @@ export async function nexCommand(
 	const secondCheck = await checkReqs(users, NexMonster, quantity);
 	if (secondCheck) return secondCheck;
 
-	const foodString = 'Removed brews/restores from users: ';
+	let foodString = 'Removed brews/restores from users: ';
 	const foodRemoved: string[] = [];
 	for (const user of users) {
 		const food = await calcBossFood(user, NexMonster, users.length, quantity);
@@ -288,16 +288,7 @@ export async function nexCommand(
 		}))
 	});
 
-<<<<<<< HEAD
-	foodString += `$foodRemoved.join(', ').`;
-=======
-	const str = `${user.usernameOrMention}'s party (${mahojiUsers
-		.map(u => u.usernameOrMention)
-		.join(', ')}) is now off to kill ${details.quantity}x Nex! (${calcPerHour(
-		details.quantity,
-		details.fakeDuration
-	).toFixed(1)}/hr) - the total trip will take ${formatDuration(details.fakeDuration)}.
->>>>>>> master
+	foodString += `${foodRemoved.join(', ')}.`;
 
 	await addSubTaskToActivityTask<BossActivityTaskOptions>({
 		userID: user.id,

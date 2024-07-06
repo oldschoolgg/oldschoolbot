@@ -1,7 +1,6 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-
-import { PVM_METHODS, PvMMethod, ZALCANO_ID } from '../../lib/constants';
+import { PVM_METHODS, type PvMMethod, ZALCANO_ID } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { KalphiteKingMonster } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
@@ -75,17 +74,14 @@ export const autocompleteMonsters = [
 		aliases: ['wt', 'wintertodt', 'todt'],
 		id: -1,
 		emoji: '<:Phoenix:324127378223792129>'
-	},
-	{
-<<<<<<< HEAD
+	},{
 		name: 'Moktang',
 		aliases: ['moktang'],
 		id: MOKTANG_ID
-=======
+	},{
 		name: 'Colosseum',
 		aliases: ['colo', 'colosseum'],
 		id: -1
->>>>>>> master
 	}
 ];
 
@@ -185,10 +181,7 @@ export const minionKCommand: OSBMahojiCommand = {
 		method?: PvMMethod;
 		show_info?: boolean;
 		wilderness?: boolean;
-<<<<<<< HEAD
-=======
 		solo?: boolean;
->>>>>>> master
 	}>) => {
 		const user = await mUserFetch(userID);
 		if (options.show_info) {
@@ -201,12 +194,8 @@ export const minionKCommand: OSBMahojiCommand = {
 			options.name,
 			options.quantity,
 			options.method,
-<<<<<<< HEAD
-			options.wilderness
-=======
 			options.wilderness,
 			options.solo
->>>>>>> master
 		);
 	}
 };

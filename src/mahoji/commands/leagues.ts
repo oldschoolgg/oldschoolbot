@@ -1,31 +1,21 @@
-<<<<<<< HEAD
-import { calcWhatPercent, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { Time, calcWhatPercent } from 'e';
 
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { production } from '../../config';
 import { PerkTier } from '../../lib/constants';
 import {
 	allLeagueTasks,
 	generateLeaguesTasksTextFile,
+	leagueTasks,
 	leaguesCheckUser,
-	leaguesClaimCommand,
-	leagueTasks
+	leaguesClaimCommand
 } from '../../lib/leagues/leagues';
 import { getUsersPerkTier } from '../../lib/perkTiers';
 import { formatDuration } from '../../lib/util';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { Cooldowns } from '../lib/Cooldowns';
-import { OSBMahojiCommand } from '../lib/util';
-=======
-import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
-import fetch from 'node-fetch';
-import { Hiscores } from 'oldschooljs';
-
-import leaguesJson from '../../lib/leagues.json';
-import { statsEmbed } from '../../lib/util/statsEmbed';
 import type { OSBMahojiCommand } from '../lib/util';
->>>>>>> master
 
 export const leaguesOSRSCommand: OSBMahojiCommand = {
 	name: 'leagues',

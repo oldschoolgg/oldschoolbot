@@ -459,7 +459,6 @@ export function createTOBRaid({
 	baseDuration: number;
 	hardMode: boolean;
 	disableVariation?: true;
-<<<<<<< HEAD
 }): {
 	chinCannonUser: MUser | null;
 	duration: number;
@@ -467,11 +466,7 @@ export function createTOBRaid({
 	wipedRoom: TOBRoom | null;
 	deathDuration: number | null;
 } {
-	let parsedTeam: ParsedTeamMember[] = [];
-=======
-}): { duration: number; parsedTeam: ParsedTeamMember[]; wipedRoom: TOBRoom | null; deathDuration: number | null } {
 	const parsedTeam: ParsedTeamMember[] = [];
->>>>>>> master
 
 	for (const u of team) {
 		const gearPercents = calculateTOBUserGearPercents(u.user);

@@ -105,13 +105,8 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 		duration *= 0.9;
 	}
 	let gotCraft = false;
-<<<<<<< HEAD
 	const removeBank = new Bank();
 	const premadeBankCost = birdhouseToPlant.houseItemReq.clone().multiply(birdHouses);
-=======
-	const removeBank = new Bank();
-	const premadeBankCost = birdhouseToPlant.houseItemReq.clone().multiply(4);
->>>>>>> master
 	if (user.owns(premadeBankCost)) {
 		removeBank.add(premadeBankCost);
 	} else {

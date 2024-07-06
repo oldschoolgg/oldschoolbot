@@ -1,9 +1,12 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, mentionCommand } from '@oldschoolgg/toolkit';
 import { Bank, Items } from 'oldschooljs';
 import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
+import { type Prisma, activity_type_enum, tame_growth, xp_gains_skill_enum } from '@prisma/client';
+import { ApplicationCommandOptionType, type User } from 'discord.js';
+import { Time, noOp, uniqueArr } from 'e';
 import { production } from '../../config';
-<<<<<<< HEAD
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
@@ -17,15 +20,9 @@ import {
 	torvaOutfit,
 	virtusOutfit
 } from '../../lib/data/CollectionsExport';
-=======
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
-import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { MAX_INT_JAVA } from '../../lib/constants';
->>>>>>> master
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
-import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
+import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { dyedItems } from '../../lib/dyedItems';
 import { type GearSetupType, GearStat } from '../../lib/gear';
 import { materialTypes } from '../../lib/invention';
@@ -47,34 +44,29 @@ import { slayerMasterChoices } from '../../lib/slayer/constants';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { allSlayerMonsters } from '../../lib/slayer/tasks';
-<<<<<<< HEAD
 import { TameSpeciesID, tameFeedableItems, tameSpecies } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
 import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
 import { elderRequiredClueCLItems, elderSherlockItems } from '../../lib/util/elderClueRequirements';
 import {
-	FarmingPatchName,
+	type FarmingPatchName,
 	farmingPatchNames,
 	getFarmingKeyFromName,
 	userGrowingProgressStr
 } from '../../lib/util/farmingHelpers';
 import { findBestGearSetups } from '../../lib/util/findBISGear';
-=======
-import { Gear } from '../../lib/structures/Gear';
-import { stringMatches } from '../../lib/util';
-import { calcDropRatesFromBankWithoutUniques } from '../../lib/util/calcDropRatesFromBank';
-import type { FarmingPatchName } from '../../lib/util/farmingHelpers';
-import { farmingPatchNames, getFarmingKeyFromName, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
->>>>>>> master
 import getOSItem from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';
+import { getUsersTame } from '../../lib/util/tameUtil';
 import { userEventToStr } from '../../lib/util/userEvents';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { BingoManager } from '../lib/bingo/BingoManager';
+import { gearSetupOption } from '../lib/mahojiCommandOptions';
+import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 import { generateNewTame } from './nursery';
@@ -97,68 +89,10 @@ export async function giveMaxStats(user: MUser) {
 	});
 }
 
-<<<<<<< HEAD
-async function givePatronLevel(user: MUser, tier: number) {
-	const tierToGive = tiers[tiers.length - tier];
-	const currentBitfield = user.bitfield;
-	if (!tier || !tierToGive) {
-		await user.update({
-			bitfield: currentBitfield.filter(i => !tiers.map(t => t[1]).includes(i))
-		});
-		return 'Removed patron perks.';
-	}
-	const newBitField: BitField[] = [...currentBitfield, tierToGive[1]];
-	await user.update({
-		bitfield: uniqueArr(newBitField)
-	});
-	return `Gave you ${BitFieldData[tierToGive[1]].name}.`;
-=======
-const coloMelee = new Gear();
-for (const gear of resolveItems([
-	'Torva full helm',
-	'Infernal cape',
-	'Amulet of blood fury',
-	'Torva platebody',
-	'Torva platelegs',
-	'Primordial boots',
-	'Ultor ring',
-	'Scythe of vitur'
-])) {
-	coloMelee.equip(getOSItem(gear));
-}
-
-const coloRange = new Gear();
-for (const gear of resolveItems([
-	"Dizana's quiver",
-	'Masori mask (f)',
-	'Necklace of anguish',
-	'Masori body (f)',
-	'Masori chaps (f)',
-	'Pegasian boots',
-	'Venator ring',
-	'Dragon arrow',
-	'Twisted bow'
-])) {
-	coloRange.equip(getOSItem(gear));
->>>>>>> master
-}
-
 const gearPresets = [
 	{
 		name: 'ToB',
-<<<<<<< HEAD
 		gear: TOBMaxRangeGear
-=======
-		melee: TOBMaxMeleeGear,
-		mage: TOBMaxMageGear,
-		range: TOBMaxRangeGear
-	},
-	{
-		name: 'Colosseum',
-		melee: coloMelee,
-		range: coloRange,
-		mage: coloRange
->>>>>>> master
 	}
 ];
 
@@ -926,7 +860,6 @@ ${droprates.join('\n')}`),
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
 				}
 				if (options.wipe) {
-<<<<<<< HEAD
 					const { thing } = options.wipe;
 					if (thing === 'trips') {
 						await prisma.activity.deleteMany({
@@ -945,9 +878,6 @@ ${droprates.join('\n')}`),
 						});
 						return 'MT + cl + bank reset.';
 					}
-=======
-					const { thing } = options.wipe;
->>>>>>> master
 					if (thing === 'kc') {
 						await userStatsUpdate(user.id, {
 							monster_scores: {}

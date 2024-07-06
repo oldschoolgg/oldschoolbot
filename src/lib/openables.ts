@@ -140,7 +140,6 @@ for (const clueTier of ClueTiers) {
 		aliases: [clueTier.name.toLowerCase()],
 		output: async ({ quantity, user, self }) => {
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
-<<<<<<< HEAD
 
 			// BSO Clue roll code:
 			const includeBuggedRolls = true;
@@ -160,9 +159,6 @@ for (const clueTier of ClueTiers) {
 			loot.add(clueTier.table.open(includeBuggedRolls ? totalRolls + quantity : totalRolls, user));
 			const extraClueRolls = totalRolls - quantity;
 
-=======
-			const loot = new Bank(clueTier.table.open(quantity));
->>>>>>> master
 			let mimicNumber = 0;
 			if (clueTier.mimicChance) {
 				for (let i = 0; i < quantity; i++) {

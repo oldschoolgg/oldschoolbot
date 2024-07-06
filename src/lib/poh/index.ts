@@ -1,4 +1,4 @@
-import { PlayerOwnedHouse } from '@prisma/client';
+import type { PlayerOwnedHouse } from '@prisma/client';
 import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -19,7 +19,6 @@ import { SpellbookAltars } from './objects/spellbook_altars';
 import { Teleports } from './objects/teleports';
 import { Thrones } from './objects/thrones';
 import { Torches } from './objects/torches';
-<<<<<<< HEAD
 
 export interface PoH {
 	background: 1;
@@ -41,9 +40,6 @@ export interface PoH {
 	dungeonDecoration: number | null;
 	prison: number | null;
 }
-=======
-import type { PlayerOwnedHouse } from '.prisma/client';
->>>>>>> master
 
 export const HOUSE_WIDTH = 585;
 export const TOP_FLOOR_Y = 118;

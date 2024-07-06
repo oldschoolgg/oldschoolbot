@@ -274,15 +274,11 @@ class GrandExchangeSingleton {
 		for (const tx of allActiveListingsInTimePeriod) sanityCheckTransaction(tx);
 
 		const item = getOSItem(geListing.item_id);
-<<<<<<< HEAD
 		let buyLimit = item.buy_limit ?? this.config.buyLimit.fallbackBuyLimit(item);
 		if (!isCustomItem(item.id)) {
 			buyLimit *= 5;
 		}
 
-=======
-		const buyLimit = this.getItemBuyLimit(item);
->>>>>>> master
 		const totalSold = sumArr(allActiveListingsInTimePeriod.map(listing => listing.quantity_bought));
 		const remainingItemsCanBuy = Math.max(0, buyLimit - totalSold);
 

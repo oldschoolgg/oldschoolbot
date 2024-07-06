@@ -1,4 +1,4 @@
-import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
+import { formatDuration, formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
@@ -30,72 +30,8 @@ import Runecraft from '../skilling/skills/runecraft';
 import Smithing from '../skilling/skills/smithing';
 import { stealables } from '../skilling/skills/thieving/stealables';
 import Woodcutting from '../skilling/skills/woodcutting/woodcutting';
-import type {
-	ActivityTaskOptionsWithQuantity,
-	AgilityActivityTaskOptions,
-	AlchingActivityTaskOptions,
-	BossActivityTaskOptions,
-	BuryingActivityTaskOptions,
-	ButlerActivityTaskOptions,
-	CastingActivityTaskOptions,
-	ClueActivityTaskOptions,
-	CollectingOptions,
-	ColoTaskOptions,
-	ConstructionActivityTaskOptions,
-	CookingActivityTaskOptions,
-	CraftingActivityTaskOptions,
-	CutLeapingFishActivityTaskOptions,
-	DarkAltarOptions,
-	DisassembleTaskOptions,
-	DOAOptions,
-	DungeoneeringOptions,
-	EnchantingActivityTaskOptions,
-	FarmingActivityTaskOptions,
-	FightCavesActivityTaskOptions,
-	FiremakingActivityTaskOptions,
-	FishingActivityTaskOptions,
-	FishingContestOptions,
-	FletchingActivityTaskOptions,
-	GauntletOptions,
-	GroupMonsterActivityTaskOptions,
-	HerbloreActivityTaskOptions,
-	HunterActivityTaskOptions,
-	InfernoOptions,
-	KourendFavourActivityTaskOptions,
-	MemoryHarvestOptions,
-	MinigameActivityTaskOptionsWithNoChanges,
-	MiningActivityTaskOptions,
-	MoktangTaskOptions,
-	MonkeyRumbleOptions,
-	MonsterActivityTaskOptions,
-	MotherlodeMiningActivityTaskOptions,
-	NewBossOptions,
-	NightmareActivityTaskOptions,
-	OfferingActivityTaskOptions,
-	PickpocketActivityTaskOptions,
-	PlunderActivityTaskOptions,
-	RaidsOptions,
-	ResearchTaskOptions,
-	RunecraftActivityTaskOptions,
-	SawmillActivityTaskOptions,
-	ScatteringActivityTaskOptions,
-	SepulchreActivityTaskOptions,
-	ShadesOfMortonOptions,
-	SmeltingActivityTaskOptions,
-	SmithingActivityTaskOptions,
-	SpecificQuestOptions,
-	TOAOptions,
-	TheatreOfBloodTaskOptions,
-	TiaraRunecraftActivityTaskOptions,
-<<<<<<< HEAD
-	TinkeringWorkshopOptions,
-	TOAOptions,
-=======
->>>>>>> master
-	WoodcuttingActivityTaskOptions,
-	ZalcanoActivityTaskOptions
-} from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../util';
+import type { ActivityTaskOptionsWithQuantity, AgilityActivityTaskOptions, AlchingActivityTaskOptions, BossActivityTaskOptions, BuryingActivityTaskOptions, ButlerActivityTaskOptions, CastingActivityTaskOptions, ClueActivityTaskOptions, CollectingOptions, ColoTaskOptions, ConstructionActivityTaskOptions, CookingActivityTaskOptions, CraftingActivityTaskOptions, CutLeapingFishActivityTaskOptions, DOAOptions, DarkAltarOptions, DisassembleTaskOptions, DungeoneeringOptions, EnchantingActivityTaskOptions, FarmingActivityTaskOptions, FightCavesActivityTaskOptions, FiremakingActivityTaskOptions, FishingActivityTaskOptions, FishingContestOptions, FletchingActivityTaskOptions, GauntletOptions, GroupMonsterActivityTaskOptions, HerbloreActivityTaskOptions, HunterActivityTaskOptions, InfernoOptions, KourendFavourActivityTaskOptions, MemoryHarvestOptions, MinigameActivityTaskOptionsWithNoChanges, MiningActivityTaskOptions, MoktangTaskOptions, MonkeyRumbleOptions, MonsterActivityTaskOptions, MotherlodeMiningActivityTaskOptions, NewBossOptions, NightmareActivityTaskOptions, OfferingActivityTaskOptions, PickpocketActivityTaskOptions, PlunderActivityTaskOptions, RaidsOptions, ResearchTaskOptions, RunecraftActivityTaskOptions, SawmillActivityTaskOptions, ScatteringActivityTaskOptions, SepulchreActivityTaskOptions, ShadesOfMortonOptions, SmeltingActivityTaskOptions, SmithingActivityTaskOptions, SpecificQuestOptions, TOAOptions, TheatreOfBloodTaskOptions, TiaraRunecraftActivityTaskOptions, TinkeringWorkshopOptions, WoodcuttingActivityTaskOptions, ZalcanoActivityTaskOptions } from '../types/minions';
+import { itemNameFromID, randomVariation, stringMatches } from '../util';
 import { getActivityOfUser } from './minionIsBusy';
 
 export function minionStatus(user: MUser) {
@@ -776,7 +712,6 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
-<<<<<<< HEAD
 		case 'BalthazarsBigBonanza': {
 			return `${name} is currently performing at Balthazars Big Bonanza, the trip should take ${formatDuration(
 				durationRemaining
@@ -791,13 +726,12 @@ export function minionStatus(user: MUser) {
 			)}.`;
 		}
 		case 'BirthdayCollectIngredients': {
-			return `${name} is currently collecting ingredients, the trip should take ${formatDuration(
-=======
+			return `${name} is currently collecting ingredients, the trip should take ${formatDuration(durationRemaining)}.`;
+		}
 		case 'CombatRing': {
-			return `${name} is currently fighting in the Combat Ring! The trip should take ${formatDuration(
->>>>>>> master
+			return `$nameis currently fighting in the Combat Ring! The trip should take $formatDuration(
 				durationRemaining
-			)}.`;
+			).`;
 		}
 		case 'SpecificQuest': {
 			const data = currentTask as SpecificQuestOptions;
@@ -805,12 +739,11 @@ export function minionStatus(user: MUser) {
 				quests.find(i => i.id === data.questID)?.name
 			}! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
-<<<<<<< HEAD
 		case 'Mortimer': {
 			return `${name} is currently fighting Maledict Mortimer! The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
-=======
+		}
 		case 'Colosseum': {
 			const data = currentTask as ColoTaskOptions;
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
@@ -821,7 +754,6 @@ export function minionStatus(user: MUser) {
 		}
 		case 'HalloweenEvent': {
 			return `${name} is doing the Halloween event! The trip should take ${formatDuration(durationRemaining)}.`;
->>>>>>> master
 		}
 		case 'GuthixianCache': {
 			return `${name} is currently participating in a Guthixian cache. The trip should take ${formatDuration(

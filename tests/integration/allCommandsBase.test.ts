@@ -1,179 +1,18 @@
-import { join } from 'path';
-import type { CommandOption } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, randArrItem, randInt, shuffleArr } from 'e';
-import { Bank, Items } from 'oldschooljs';
+import { generateCommandInputs, generateRandomBank } from '@oldschoolgg/toolkit';
+import { Time,  shuffleArr } from 'e';
 import { expect, test, vi } from 'vitest';
 import { BitField, minionActivityCache } from '../../src/lib/constants';
-import { prisma } from '../../src/lib/settings/prisma';
 import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation';
-<<<<<<< HEAD
-import { activitiesCommand } from '../../src/mahoji/commands/activities';
-import { adminCommand } from '../../src/mahoji/commands/admin';
-import { askCommand } from '../../src/mahoji/commands/ask';
-import { bsCommand } from '../../src/mahoji/commands/bs';
-import { buildCommand } from '../../src/mahoji/commands/build';
-import { buyCommand } from '../../src/mahoji/commands/buy';
-import { caCommand } from '../../src/mahoji/commands/ca';
-import { chooseCommand } from '../../src/mahoji/commands/choose';
-import { chopCommand } from '../../src/mahoji/commands/chop';
-import { claimCommand } from '../../src/mahoji/commands/claim';
-import { clueCommand } from '../../src/mahoji/commands/clue';
-import { configCommand } from '../../src/mahoji/commands/config';
-import { cookCommand } from '../../src/mahoji/commands/cook';
-import { craftCommand } from '../../src/mahoji/commands/craft';
-import { createCommand } from '../../src/mahoji/commands/create';
-import { dataCommand } from '../../src/mahoji/commands/data';
-import { dropCommand } from '../../src/mahoji/commands/drop';
-import { fakeCommand } from '../../src/mahoji/commands/fake';
-import { fakepmCommand } from '../../src/mahoji/commands/fakepm';
-import { farmingCommand } from '../../src/mahoji/commands/farming';
-import { fishCommand } from '../../src/mahoji/commands/fish';
-import { fletchCommand } from '../../src/mahoji/commands/fletch';
-import { gambleCommand } from '../../src/mahoji/commands/gamble';
-import { gearCommand } from '../../src/mahoji/commands/gear';
-import { gearPresetsCommand } from '../../src/mahoji/commands/gearpresets';
-import { giftCommand } from '../../src/mahoji/commands/gift';
-import { giveawayCommand } from '../../src/mahoji/commands/giveaway';
-import { gpCommand } from '../../src/mahoji/commands/gp';
-import { helpCommand } from '../../src/mahoji/commands/help';
-import { huntCommand } from '../../src/mahoji/commands/hunt';
-import { inviteCommand } from '../../src/mahoji/commands/invite';
-import { minionKCommand } from '../../src/mahoji/commands/k';
-import { lapsCommand } from '../../src/mahoji/commands/laps';
-import { leaderboardCommand } from '../../src/mahoji/commands/leaderboard';
-import { lightCommand } from '../../src/mahoji/commands/light';
-import { lootCommand } from '../../src/mahoji/commands/loot';
-import { mCommand } from '../../src/mahoji/commands/m';
-import { massCommand } from '../../src/mahoji/commands/mass';
-import { mineCommand } from '../../src/mahoji/commands/mine';
-import { minigamesCommand } from '../../src/mahoji/commands/minigames';
-import { minionCommand } from '../../src/mahoji/commands/minion';
-import { mixCommand } from '../../src/mahoji/commands/mix';
-import { offerCommand } from '../../src/mahoji/commands/offer';
-import { openCommand } from '../../src/mahoji/commands/open';
-import { patreonCommand } from '../../src/mahoji/commands/patreon';
-import { payCommand } from '../../src/mahoji/commands/pay';
-import { pohCommand } from '../../src/mahoji/commands/poh';
-import { pollCommand } from '../../src/mahoji/commands/poll';
-import { priceCommand } from '../../src/mahoji/commands/price';
-import { raidCommand } from '../../src/mahoji/commands/raid';
-import { redeemCommand } from '../../src/mahoji/commands/redeem';
-import { rollCommand } from '../../src/mahoji/commands/roll';
-import { runecraftCommand } from '../../src/mahoji/commands/runecraft';
-import { sacrificeCommand } from '../../src/mahoji/commands/sacrifice';
-import { sellCommand } from '../../src/mahoji/commands/sell';
-import { simulateCommand } from '../../src/mahoji/commands/simulate';
-import { slayerCommand } from '../../src/mahoji/commands/slayer';
-import { smeltingCommand } from '../../src/mahoji/commands/smelt';
-import { smithCommand } from '../../src/mahoji/commands/smith';
-import { stealCommand } from '../../src/mahoji/commands/steal';
-import { tksCommand } from '../../src/mahoji/commands/tokkulshop';
-import { toolsCommand } from '../../src/mahoji/commands/tools';
-import { tradeCommand } from '../../src/mahoji/commands/trade';
-import { triviaCommand } from '../../src/mahoji/commands/trivia';
-import { mahojiUseCommand } from '../../src/mahoji/commands/use';
-import { randomMock } from './setup';
-import { type TestUser, createTestUser, mockClient } from './util';
-
-type CommandInput = Record<string, any>;
-async function generateCommandInputs(user: TestUser, options: readonly CommandOption[]): Promise<CommandInput[]> {
-	const results: CommandInput[] = [];
-=======
 import { allCommands } from '../../src/mahoji/commands/allCommands';
 import { randomMock } from './setup';
-import type { TestUser } from './util';
 import { createTestUser, mockClient } from './util';
 
-type CommandInput = Record<string, any>;
-async function generateCommandInputs(user: TestUser, options: readonly CommandOption[]): Promise<CommandInput[]> {
-	const results: CommandInput[] = [];
->>>>>>> master
-	const allPossibleOptions: Record<string, any[]> = {};
-
-	for (const option of options) {
-		switch (option.type) {
-			case ApplicationCommandOptionType.SubcommandGroup:
-			case ApplicationCommandOptionType.Subcommand:
-				if (option.options) {
-					const subOptionsResults = await generateCommandInputs(user, option.options);
-					results.push(...subOptionsResults.map(input => ({ [option.name]: input })));
-				}
-				break;
-			case ApplicationCommandOptionType.String:
-				if ('autocomplete' in option && option.autocomplete) {
-					const autoCompleteResults = await option.autocomplete('', { id: user.id } as any, {} as any);
-					allPossibleOptions[option.name] = shuffleArr(autoCompleteResults.map(c => c.value)).slice(0, 3);
-				} else if (option.choices) {
-					allPossibleOptions[option.name] = option.choices.map(c => c.value).slice(0, 3);
-				} else if (['guild_id', 'message_id'].includes(option.name)) {
-					allPossibleOptions[option.name] = ['157797566833098752'];
-				} else {
-					allPossibleOptions[option.name] = ['plain string'];
-				}
-				break;
-			case ApplicationCommandOptionType.Integer:
-			case ApplicationCommandOptionType.Number:
-				if (option.choices) {
-					allPossibleOptions[option.name] = option.choices.map(c => c.value);
-				} else {
-					let value = randInt(1, 10);
-					if (option.min_value && option.max_value) {
-						value = randInt(option.min_value, option.max_value);
-					}
-					allPossibleOptions[option.name] = [option.min_value, value];
-				}
-				break;
-			case ApplicationCommandOptionType.Boolean: {
-				allPossibleOptions[option.name] = [true, false];
-				break;
-			}
-			case ApplicationCommandOptionType.User: {
-				allPossibleOptions[option.name] = [
-					{
-						user: {
-							id: '425134194436341760',
-							username: 'username',
-							bot: false
-						},
-						member: undefined
-					}
-				];
-				break;
-			}
-			case ApplicationCommandOptionType.Channel:
-			case ApplicationCommandOptionType.Role:
-			case ApplicationCommandOptionType.Mentionable:
-				// results.push({ ...currentPath, [option.name]: `Any ${option.type}` });
-				break;
-		}
-	}
-
-	const sorted = Object.values(allPossibleOptions).sort((a, b) => b.length - a.length);
-	const longestOptions = sorted[0]?.length;
-	for (let i = 0; i < longestOptions; i++) {
-<<<<<<< HEAD
-		const obj: Record<string, any> = {};
-=======
-		const obj: Record<string, any> = {};
->>>>>>> master
-		for (const [key, val] of Object.entries(allPossibleOptions)) {
-			obj[key] = val[i] ?? randArrItem(val);
-		}
-		results.push(obj);
-	}
-	return results;
-}
-
-const bank = new Bank();
-for (const item of Items.array()) {
-	bank.add(item.id, 100_000_000);
-}
 
 test(
 	'All Commands Base Test',
 	async () => {
+		const bank = generateRandomBank(500, 100_000)
 		expect(vi.isMockFunction(handleMahojiConfirmation)).toBe(true);
 		const client = await mockClient();
 		process.env.CLIENT_ID = client.data.id;
@@ -181,15 +20,7 @@ test(
 		const maxUser = await createTestUser(bank, { GP: 100_000_000_000 });
 		await maxUser.max();
 		await maxUser.update({ bitfield: [BitField.isModerator] });
-<<<<<<< HEAD
-		const store = new Store({ name: 'commands', dirs: [join('dist', 'mahoji')], checker: isValidCommand });
-		await store.load();
-		const currentClientSettings = await mahojiClientSettingsFetch({ construction_cost_bank: true });
-=======
-		await mahojiClientSettingsFetch(construction_cost_bank: true );
->>>>>>> master
-		await prisma.activity.deleteMany(
-				user_id: BigInt(maxUser.id));
+		await mahojiClientSettingsFetch({ construction_cost_bank: true });
 
 		const ignoredCommands = [
 			'leagues',
@@ -211,95 +42,6 @@ test(
 			'ge',
 			'rp',
 			'cl',
-<<<<<<< HEAD
-			'bsominigames',
-			'completion',
-			'dg',
-			'invention',
-			'divination',
-			'droprate',
-			'ic',
-			'kibble',
-			'lottery',
-			'megaduck',
-			'nursery',
-			'tames',
-			'farming'
-		];
-		const cmds = [
-			adminCommand,
-			askCommand,
-			bsCommand,
-			buildCommand,
-			buyCommand,
-			caCommand,
-			chooseCommand,
-			chopCommand,
-			cookCommand,
-			clueCommand,
-			configCommand,
-			claimCommand,
-			mCommand,
-			gpCommand,
-			payCommand,
-			craftCommand,
-			fishCommand,
-			farmingCommand,
-			dropCommand,
-			createCommand,
-			activitiesCommand,
-			dataCommand,
-			fakeCommand,
-			fakepmCommand,
-			fletchCommand,
-			gambleCommand,
-			gearCommand,
-			gearPresetsCommand,
-			giveawayCommand,
-			helpCommand,
-			huntCommand,
-			giftCommand,
-			inviteCommand,
-			minionKCommand,
-			lapsCommand,
-			leaderboardCommand,
-			lightCommand,
-			mineCommand,
-			massCommand,
-			minigamesCommand,
-			minionCommand,
-			simulateCommand,
-			sellCommand,
-			sacrificeCommand,
-			rollCommand,
-			runecraftCommand,
-			raidCommand,
-			pollCommand,
-			pohCommand,
-			priceCommand,
-			openCommand,
-			offerCommand,
-			mixCommand,
-			lootCommand,
-			smeltingCommand,
-			slayerCommand,
-			redeemCommand,
-			patreonCommand,
-			smithCommand,
-			stealCommand,
-			tradeCommand,
-			triviaCommand,
-			toolsCommand,
-			tksCommand,
-			mahojiUseCommand
-		];
-		for (const command of store.values) {
-			if (ignoredCommands.includes(command.name)) continue;
-			if (cmds.some(c => c.name === command.name)) continue;
-			// throw new Error(
-			// 	`If you added a new command (${command.name}), you need to put it in the allCommandsBase.test.ts file.`
-			// );
-=======
 			'gearpresets'
 		];
 		const cmds = allCommands;
@@ -310,7 +52,6 @@ test(
 			throw new Error(
 				`If you added a new command (${command.name}), you need to put it in the allCommandsBase.test.ts file.`
 			);
->>>>>>> master
 		}
 
 		const ignoredSubCommands = [
@@ -319,43 +60,19 @@ test(
 			['minion', 'bankbg']
 		];
 
-<<<<<<< HEAD
-		for (const command of cmds) {
-			if (ignoredCommands.includes(command.name)) continue;
-			const options = await generateCommandInputs(maxUser, command.options!);
-=======
 		const promises = [];
 
 		for (const command of cmds) {
 			if (ignoredCommands.includes(command.name)) continue;
-
-			const options = shuffleArr(await generateCommandInputs(maxUser, command.options!)).slice(0, 5);
->>>>>>> master
+			const options = shuffleArr(await generateCommandInputs(command.options!)).slice(0, 5);
 			outer: for (const option of options) {
 				for (const [parent, sub, subCommand] of ignoredSubCommands) {
 					if (command.name === parent && option[sub] && (subCommand ? option[sub][subCommand] : true)) {
 						continue outer;
 					}
 				}
-<<<<<<< HEAD
-				try {
-					const res = await maxUser.runCommand(command, option);
-					minionActivityCache.clear();
-					// console.log(`Running command ${command.name}
-					// Options: ${JSON.stringify(option)}
-					// Result: ${JSON.stringify(res).slice(0, 100)}`);
-				} catch (err) {
-					console.error(
-						`Failed to run command ${command.name} with options ${JSON.stringify(option)}: ${err}`
-					);
-					throw err;
-				}
-			}
-		}
 
-=======
-
-				promises.push(async () => 
+				promises.push(async () => {
 					try {
 						await maxUser.runCommand(command, option);
 						minionActivityCache.clear();
@@ -364,14 +81,14 @@ test(
 							`Failed to run command ${command.name} with options ${JSON.stringify(option)}: ${err}`
 						);
 						throw err;
-					});
+					}
+				})
 			}
 		}
 
 		await Promise.all(promises);
 
->>>>>>> master
 		await client.processActivities();
 	},
-		timeout: Time.Minute * 10
+		{timeout: Time.Minute * 10}
 );

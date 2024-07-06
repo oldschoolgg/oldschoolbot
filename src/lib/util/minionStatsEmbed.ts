@@ -167,15 +167,10 @@ export async function minionStatsEmbed(user: MUser): Promise<EmbedBuilder> {
 	const lapCounts = Object.entries(userStats.laps_scores as ItemBank).sort((a, b) => a[1] - b[1]);
 	if (lapCounts.length > 0) {
 		const [id, score] = lapCounts[0];
-<<<<<<< HEAD
-		const res = courses.find(c => c.id === parseInt(id))!;
+		const res = courses.find(c => c.id === Number.parseInt(id))!;
 		if (res) {
 			otherStats.push([`${res.name} Laps`, score]);
 		}
-=======
-		const res = courses.find(c => c.id === Number.parseInt(id))!;
-		otherStats.push([`${res.name} Laps`, score]);
->>>>>>> master
 	}
 
 	const monsterScores = Object.entries(userStats.monster_scores as ItemBank)

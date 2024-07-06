@@ -115,17 +115,10 @@ function estimatePoints(raidLevel: number, teamSize: number) {
 	return totalPoints;
 }
 
-<<<<<<< HEAD
 export const maxMageGear = constructGearSetup({
 	head: 'Gorajan occult helmet',
 	neck: 'Arcane blast necklace',
 	body: 'Gorajan occult top',
-=======
-const maxMageGear = constructGearSetup({
-	head: 'Ancestral hat',
-	neck: 'Occult necklace',
-	body: 'Ancestral robe top',
->>>>>>> master
 	cape: 'Imbued saradomin cape',
 	hands: 'Gorajan occult gloves',
 	legs: 'Gorajan occult legs',
@@ -136,7 +129,6 @@ const maxMageGear = constructGearSetup({
 });
 const maxMage = new Gear(maxMageGear);
 
-<<<<<<< HEAD
 export const maxRangeGear = constructGearSetup({
 	head: 'Gorajan archer helmet',
 	neck: 'Farsight snapshot necklace',
@@ -148,37 +140,13 @@ export const maxRangeGear = constructGearSetup({
 	'2h': 'Hellfire bow',
 	ring: 'Ring of piercing(i)',
 	ammo: 'Hellfire arrow'
-=======
-const maxRangeGear = constructGearSetup({
-	head: 'Masori mask (f)',
-	neck: 'Necklace of anguish',
-	body: 'Masori body (f)',
-	cape: "Ava's assembler",
-	hands: 'Zaryte vambraces',
-	legs: 'Masori chaps (f)',
-	feet: 'Pegasian boots',
-	'2h': 'Twisted bow',
-	ring: 'Lightbearer',
-	ammo: 'Dragon arrow'
->>>>>>> master
 });
 
 const maxRange = new Gear(maxRangeGear);
 maxRange.ammo!.quantity = 100_000;
 
-<<<<<<< HEAD
 export const maxMeleeLessThan300Gear = constructGearSetup({
 	cape: 'Tzkal cape',
-=======
-const maxMeleeLessThan300Gear = constructGearSetup({
-	head: 'Torva full helm',
-	neck: 'Amulet of torture',
-	body: 'Torva platebody',
-	cape: 'Infernal cape',
-	hands: 'Ferocious gloves',
-	legs: 'Torva platelegs',
-	feet: 'Primordial boots',
->>>>>>> master
 	weapon: 'Ghrazi rapier',
 	shield: 'Avernic defender',
 	ring: 'Ignis ring(i)',
@@ -189,7 +157,6 @@ const maxMeleeLessThan300Gear = constructGearSetup({
 	legs: 'Gorajan warrior legs',
 	feet: 'Gorajan warrior boots'
 });
-<<<<<<< HEAD
 export const maxMeleeOver300Gear = constructGearSetup({
 	head: 'Gorajan warrior helmet',
 	neck: "Brawler's hook necklace",
@@ -198,16 +165,6 @@ export const maxMeleeOver300Gear = constructGearSetup({
 	hands: 'Gorajan warrior gloves',
 	legs: 'Gorajan warrior legs',
 	feet: 'Gorajan warrior boots',
-=======
-const maxMeleeOver300Gear = constructGearSetup({
-	head: 'Torva full helm',
-	neck: 'Amulet of torture',
-	body: 'Torva platebody',
-	cape: 'Infernal cape',
-	hands: 'Ferocious gloves',
-	legs: 'Torva platelegs',
-	feet: 'Primordial boots',
->>>>>>> master
 	weapon: "Osmumten's fang",
 	shield: 'Avernic defender',
 	ring: 'Ignis ring(i)'

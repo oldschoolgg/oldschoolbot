@@ -2,7 +2,7 @@ import { Time, objectEntries, percentChance, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { itemID } from 'oldschooljs/dist/util';
-import { MAX_LEVEL, MIN_LENGTH_FOR_PET, TwitcherGloves } from '../../lib/constants';
+import { MAX_LEVEL, MIN_LENGTH_FOR_PET, type TwitcherGloves } from '../../lib/constants';
 import { MediumSeedPackTable } from '../../lib/data/seedPackTables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import { eggNest } from '../../lib/simulation/birdsNest';
@@ -11,7 +11,7 @@ import Firemaking from '../../lib/skilling/skills/firemaking';
 import { ForestryEvents, LeafTable } from '../../lib/skilling/skills/woodcutting/forestry';
 import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
+import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { clAdjustedDroprate, perTimeUnitChance, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';

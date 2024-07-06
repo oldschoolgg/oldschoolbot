@@ -10,7 +10,6 @@ import { PerkTier } from '../../lib/constants';
 import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 import { prisma } from '../../lib/settings/prisma';
-<<<<<<< HEAD
 import {
 	formatDuration,
 	isGEUntradeable,
@@ -19,16 +18,14 @@ import {
 	returnStringOrFile,
 	toKMB
 } from '../../lib/util';
-import { lineChart } from '../../lib/util/chart';
-=======
-import { formatDuration, itemNameFromID, makeComponents, returnStringOrFile, toKMB } from '../../lib/util';
 import { createChart } from '../../lib/util/chart';
->>>>>>> master
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
+import { itemArr, itemOption, ownedItemOption } from '../lib/mahojiCommandOptions';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
@@ -126,11 +123,7 @@ export const geCommand: OSBMahojiCommand = {
 								value: itemID.toString()
 							}));
 						}
-<<<<<<< HEAD
-						let res = itemArr.filter(i => i.key.includes(value.toLowerCase()));
-=======
-						const res = tradeableItemArr.filter(i => i.key.includes(value.toLowerCase()));
->>>>>>> master
+						const res = itemArr.filter(i => i.key.includes(value.toLowerCase()));
 						return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
 					}
 				},
@@ -144,10 +137,7 @@ export const geCommand: OSBMahojiCommand = {
 			description: 'Sell something on the grand exchange.',
 			options: [
 				{
-<<<<<<< HEAD
 					...ownedItemOption(item => !isGEUntradeable(item.id)),
-=======
->>>>>>> master
 					name: 'item',
 					type: ApplicationCommandOptionType.String,
 					description: 'The item you want to sell.',
