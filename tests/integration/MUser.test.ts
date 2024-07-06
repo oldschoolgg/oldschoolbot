@@ -7,7 +7,7 @@ import { describe, expect, test } from 'vitest';
 
 import { ClueTiers } from '../../src/lib/clues/clueTiers';
 import { GLOBAL_BSO_XP_MULTIPLIER } from '../../src/lib/constants';
-import { prisma } from '../../src/lib/settings/prisma';
+
 import { SkillsEnum } from '../../src/lib/skilling/types';
 import { assert } from '../../src/lib/util/logError';
 import { mahojiUsersSettingsFetch } from '../../src/mahoji/mahojiSettings';

@@ -4,7 +4,7 @@ import { describe, expect, test } from 'vitest';
 
 import { usernameCache } from '../../src/lib/constants';
 import { GrandExchange } from '../../src/lib/grandExchange';
-import { prisma } from '../../src/lib/settings/prisma';
+
 import { BetterStopwatch } from '../../src/lib/structures/BetterStopwatch';
 import { assert } from '../../src/lib/util';
 import resolveItems from '../../src/lib/util/resolveItems';

@@ -32,7 +32,7 @@ import { BitField } from '../../src/lib/constants';
 import type { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
 import { trackLoot } from '../../src/lib/lootTrack';
 import { type MinigameName, incrementMinigameScore } from '../../src/lib/settings/minigames';
-import { prisma } from '../../src/lib/settings/prisma';
+
 import type { SkillsEnum } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil';
