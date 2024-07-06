@@ -1,5 +1,7 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit';
 
+import { ApplicationCommandOptionType, type User } from 'discord.js';
+import { randInt, reduceNumByPercent } from 'e';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import type { Stealable } from '../../lib/skilling/skills/thieving/stealables';
@@ -12,6 +14,8 @@ import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { logError } from '../../lib/util/logError';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
+import type { OSBMahojiCommand } from '../lib/util';
+import { rogueOutfitPercentBonus, userStatsBankUpdate } from '../mahojiSettings';
 
 export const stealCommand: OSBMahojiCommand = {
 	name: 'steal',

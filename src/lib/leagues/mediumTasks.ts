@@ -23,23 +23,23 @@ import {
 	KourendKebosDiary,
 	LumbridgeDraynorDiary,
 	MorytaniaDiary,
-	userhasDiaryTier,
 	VarrockDiary,
 	WesternProv,
-	WildernessDiary
+	WildernessDiary,
+	userhasDiaryTier
 } from '../diaries';
 import { implings } from '../implings';
-import { QueenBlackDragon } from '../minions/data/killableMonsters/custom/demiBosses';
 import { TormentedDemon } from '../minions/data/killableMonsters/custom/TormentedDemon';
+import { QueenBlackDragon } from '../minions/data/killableMonsters/custom/demiBosses';
 import { prisma } from '../settings/prisma';
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
-import { ItemBank } from '../types';
+import type { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
-import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, Task } from './leaguesUtils';
+import { type Task, leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster } from './leaguesUtils';
 import { calculateChargedItems, calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats';
 
 export const mediumTasks: Task[] = [
@@ -925,7 +925,7 @@ export const mediumTasks: Task[] = [
 		id: 1128,
 		name: 'Offer 5 of each bird egg',
 		has: async ({ userStats }) => {
-			let vals = Object.values(userStats.bird_eggs_offered_bank as ItemBank);
+			const vals = Object.values(userStats.bird_eggs_offered_bank as ItemBank);
 			return vals.length === eggs.length && vals.every(i => Number(i) >= 5);
 		}
 	},
@@ -940,7 +940,7 @@ export const mediumTasks: Task[] = [
 		id: 1130,
 		name: 'Scatter 100 of every ashes',
 		has: async ({ userStats }) => {
-			let vals = Object.values(userStats.scattered_ashes_bank as ItemBank);
+			const vals = Object.values(userStats.scattered_ashes_bank as ItemBank);
 			return vals.length === ashes.length && vals.every(i => i >= 100);
 		}
 	},

@@ -1,4 +1,4 @@
-import { PerkTier } from '@oldschoolgg/toolkit';
+import { PerkTier, getInterval } from '@oldschoolgg/toolkit';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { GEListingType } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
@@ -20,7 +20,6 @@ import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
 import {
 	assert,
 	generateGrandExchangeID,
-	getInterval,
 	isGEUntradeable,
 	itemNameFromID,
 	makeComponents,

@@ -5,12 +5,12 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { Naxxus, NaxxusLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
-export function rollNaxxusLoot(quantity: number = 1, cl?: Bank) {
+export function rollNaxxusLoot(quantity = 1, cl?: Bank) {
 	const loot = new Bank();
 	loot.add(NaxxusLootTable.roll(quantity));
 

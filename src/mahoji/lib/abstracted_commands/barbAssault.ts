@@ -1,3 +1,6 @@
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
+import { Time, calcWhatPercent, clamp, reduceNumByPercent, round } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
@@ -6,7 +9,7 @@ import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
 import { maxOtherStats } from '../../../lib/structures/Gear';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration, makeComponents, randomVariation, stringMatches } from '../../../lib/util';
+import { formatDuration, makeComponents, randomVariation, roll, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';

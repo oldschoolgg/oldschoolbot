@@ -1,13 +1,15 @@
-import { mentionCommand, miniID, truncateString } from '@oldschoolgg/toolkit';
+import { containsBlacklistedWord, mentionCommand, miniID, truncateString } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { GiftBoxStatus } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BOT_TYPE } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
+import { isSuperUntradeable, isValidNickname } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { makeBankImage } from '../../lib/util/makeBankImage';

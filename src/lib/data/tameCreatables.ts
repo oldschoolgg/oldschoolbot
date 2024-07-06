@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import { MaterialBank } from '../invention/MaterialBank';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
-import { Createable } from './createables';
+import type { Createable } from './createables';
 
 const eagleTameCreatables: Createable[] = [
 	{

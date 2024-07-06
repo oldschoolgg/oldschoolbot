@@ -1,6 +1,6 @@
 import { increaseNumByPercent, randInt } from 'e';
 
-import { chargePortentIfHasCharges, PortentID } from '../../../lib/bso/divination';
+import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
 import { BitField } from '../../../lib/constants';
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
@@ -73,7 +73,7 @@ export const togTask: MinionTask = {
 
 		const xpStr = await user.addXP({ skillName: lowestSkill, amount: xpToGive, duration, source: 'TearsOfGuthix' });
 
-		const output = `${user}, ${
+		let output = `${user}, ${
 			user.minionName
 		} finished telling Juna a story and drinking from the Tears of Guthix and collected ${tears} tears.\nLowest XP skill is ${lowestSkill}.\n${xpStr.toLocaleString()}.${
 			hasDiary ? '\n10% XP bonus for Lumbridge & Draynor Hard diary.' : ''

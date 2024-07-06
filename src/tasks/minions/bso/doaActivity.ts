@@ -1,21 +1,21 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { randArrItem, reduceNumByPercent, roll, Time, uniqueArr } from 'e';
+import { Time, randArrItem, reduceNumByPercent, roll, uniqueArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { Emoji, Events } from '../../../lib/constants';
 import { doaCL, doaMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../../lib/data/globalDroprates';
-import { chanceOfDOAUnique, DOARooms, pickUniqueToGiveUser } from '../../../lib/depthsOfAtlantis';
+import { DOARooms, chanceOfDOAUnique, pickUniqueToGiveUser } from '../../../lib/depthsOfAtlantis';
 import { trackLoot } from '../../../lib/lootTrack';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { DragonTable } from '../../../lib/simulation/grandmasterClue';
-import { runeAlchablesTable, StoneSpiritTable } from '../../../lib/simulation/sharedTables';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import { DOAOptions } from '../../../lib/types/minions';
+import { DragonTable } from '../../../lib/simulation/grandmasterClue';
+import { StoneSpiritTable, runeAlchablesTable } from '../../../lib/simulation/sharedTables';
+import type { DOAOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -212,12 +212,12 @@ export const doaTask: MinionTask = {
 		let resultMessage = isSolo
 			? `${leaderSoloUser}, your minion finished ${quantity === 1 ? 'a' : `${quantity}x`}${
 					cm ? ' Challenge Mode' : ''
-			  } Depths of Atlantis raid${quantity > 1 ? 's' : ''}! Your KC is now ${
+				} Depths of Atlantis raid${quantity > 1 ? 's' : ''}! Your KC is now ${
 					minigameIncrementResult[0].newScore
-			  }.\n`
+				}.\n`
 			: `<@${leader}> Your${cm ? ' Challenge Mode' : ''} Depths of Atlantis Raid${
 					quantity > 1 ? 's have' : ' has'
-			  } finished.\n`;
+				} finished.\n`;
 
 		const shouldShowImage = allUsers.length <= 3 && totalLoot.entries().every(i => i[1].length <= 6);
 
@@ -310,7 +310,7 @@ export const doaTask: MinionTask = {
 								}
 							],
 							type: 'Depths of Atlantis'
-					  })
+						})
 					: undefined,
 				data,
 				null
@@ -330,7 +330,7 @@ export const doaTask: MinionTask = {
 							customTexts: []
 						})),
 						type: 'Depths of Atlantis'
-				  })
+					})
 				: undefined,
 			data,
 			null

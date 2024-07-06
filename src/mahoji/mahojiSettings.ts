@@ -310,7 +310,7 @@ export function hasMonsterRequirements(user: MUser, monster: KillableMonster) {
 	return [true];
 }
 
-export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster, isInWilderness = false) {
+export function resolveAvailableItemBoosts(user: MUser, monster: KillableMonster, _isInWilderness = false) {
 	const boosts = new Bank();
 	if (monster.itemInBankBoosts) {
 		for (const boostSet of monster.itemInBankBoosts) {

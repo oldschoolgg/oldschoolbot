@@ -21,7 +21,7 @@ export type Diary = {
 	medium: DiaryTier;
 	hard: DiaryTier;
 	elite: DiaryTier;
-}
+};
 
 export function userhasDiaryTierSync(
 	user: MUser,
@@ -316,7 +316,7 @@ export const ArdougneDiary: Diary = {
 	}
 };
 
-const DesertDiary: Diary = {
+export const DesertDiary: Diary = {
 	name: 'Desert',
 	id: DiaryID.Desert,
 	easy: {
@@ -502,7 +502,7 @@ export const FaladorDiary: Diary = {
 	}
 };
 
-const FremennikDiary: Diary = {
+export const FremennikDiary: Diary = {
 	name: 'Fremennik',
 	id: DiaryID.Fremennik,
 	alias: ['fremmy', 'fremenik', 'fremmenik', 'frem'],
@@ -965,7 +965,7 @@ export const MorytaniaDiary: Diary = {
 	}
 };
 
-const VarrockDiary: Diary = {
+export const VarrockDiary: Diary = {
 	name: 'Varrock',
 	id: DiaryID.Varrock,
 	alias: ['var'],

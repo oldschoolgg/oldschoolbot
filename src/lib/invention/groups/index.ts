@@ -1,5 +1,5 @@
+import type { DisassemblySourceGroup } from '..';
 import getOSItem from '../../util/getOSItem';
-import { DisassemblySourceGroup } from '..';
 import { Ashes } from './Ashes';
 import { Axes } from './Axes';
 import { Barrows } from './Barrows';

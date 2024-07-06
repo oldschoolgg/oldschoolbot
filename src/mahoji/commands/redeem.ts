@@ -1,7 +1,8 @@
 import { ProductID, products } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import { bold } from 'discord.js';
+import { ApplicationCommandOptionType, bold } from 'discord.js';
 
+import { Time, notEmpty } from 'e';
 import { BOT_TYPE } from '../../lib/constants';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { roboChimpSyncData } from '../../lib/roboChimp';

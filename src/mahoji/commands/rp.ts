@@ -1,4 +1,4 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { dateFm, toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
@@ -26,7 +26,7 @@ import { premiumPatronTime } from '../../lib/premiumPatronTime';
 import { prisma } from '../../lib/settings/prisma';
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import type { ItemBank } from '../../lib/types';
-import { dateFm, isValidDiscordSnowflake, returnStringOrFile } from '../../lib/util';
+import {isValidDiscordSnowflake, returnStringOrFile } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';

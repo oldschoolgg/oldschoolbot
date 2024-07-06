@@ -1,8 +1,8 @@
-import { EmbedBuilder, TextChannel } from 'discord.js';
-import { randInt, sumArr, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { EmbedBuilder, type TextChannel } from 'discord.js';
+import { Time, randInt, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { VasaMagus } from '../../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { BossInstance } from '../../../lib/structures/Boss';
 import { Gear } from '../../../lib/structures/Gear';

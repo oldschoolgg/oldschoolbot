@@ -4,11 +4,7 @@ import { describe, expect, test } from 'vitest';
 
 import getOSItem from '../../src/lib/util/getOSItem';
 import itemID from '../../src/lib/util/itemID';
-import {
-	parseBank,
-	parseQuantityAndItem,
-	parseStringBank
-} from '../../src/lib/util/parseStringBank';
+import { parseBank, parseQuantityAndItem, parseStringBank } from '../../src/lib/util/parseStringBank';
 
 const psb = parseStringBank;
 const get = getOSItem;
@@ -199,17 +195,10 @@ describe('Bank Parsers', () => {
 		expect(parseBank({ inputBank: bank, inputStr: '0 cOaL' }).toString()).toEqual('500x Coal');
 	});
 
-<<<<<<< HEAD
-	test('parseBank - check item aliases', async () => {
-		const bank = new Bank().add('Arceuus graceful top', 30).add('Bones').add('Tradeable mystery box');
-		expect(parseBank({ inputBank: bank, inputStr: 'pUrPle gRaceful top, 5 tmb' }).toString()).toEqual(
-			'30x Arceuus graceful top, 1x Tradeable Mystery Box'
-=======
 	test.concurrent('parseBank - check item aliases', async () => {
 		const bank = new Bank().add('Arceuus graceful top', 30).add('Bones');
 		expect(parseBank({ inputBank: bank, inputStr: 'pUrPle gRaceful top' }).toString()).toEqual(
 			'30x Arceuus graceful top'
->>>>>>> master
 		);
 	});
 

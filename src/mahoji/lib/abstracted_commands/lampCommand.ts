@@ -1,7 +1,7 @@
 import { clamp, objectValues } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ItemBank, Skills } from '../../../lib/types';
 import { assert, isValidSkill, itemID } from '../../../lib/util';

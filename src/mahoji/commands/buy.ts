@@ -3,8 +3,13 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { type CommandRunOptions, formatOrdinal } from '@oldschoolgg/toolkit';
 import { Events } from '../../lib/constants';
 import Buyables from '../../lib/data/buyables/buyables';
+import { quests } from '../../lib/minions/data/quests';
+import { Minigames, getMinigameScore } from '../../lib/settings/minigames';
+import { countUsersWithItemInCl } from '../../lib/settings/prisma';
+import { isElligibleForPresent } from '../../lib/settings/settings';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { formatSkillRequirements, itemID, itemNameFromID, stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
@@ -159,7 +164,7 @@ export const buyCommand: OSBMahojiCommand = {
 			buyable.globalAnnouncementOnFirstBuy &&
 			!user.cl.has(buyable.name)
 		) {
-			let [count, ironCount] = await Promise.all([
+			const [count, ironCount] = await Promise.all([
 				countUsersWithItemInCl(itemID(buyable.name), false),
 				countUsersWithItemInCl(itemID(buyable.name), true)
 			]);

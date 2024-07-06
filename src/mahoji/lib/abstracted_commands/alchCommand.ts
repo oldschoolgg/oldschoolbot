@@ -78,7 +78,7 @@ export async function alchCommand(
 		...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
 		'Nature rune': quantity
 	});
-	let speed = speedInput ? clamp(speedInput, 1, 5) : null;
+	const speed = speedInput ? clamp(speedInput, 1, 5) : null;
 	if (speed && speed > 1 && speed < 6) {
 		consumedItems.multiply(speed);
 		consumedItems.add('Nature rune', Math.floor(consumedItems.amount('Nature rune') * 0.5));

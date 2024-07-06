@@ -1,11 +1,18 @@
-import * as fs from 'fs';
+import * as fs from 'node:fs';
+import * as fsPromises from 'node:fs/promises';
 import { Canvas, type Image } from '@napi-rs/canvas';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { randInt } from 'e';
-import * as fsPromises from 'fs/promises';
 import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
 
-import { type GearSetup, type GearSetupType, GearSetupTypes, type GearStats, maxDefenceStats, maxOffenceStats } from '..';
+import {
+	type GearSetup,
+	type GearSetupType,
+	GearSetupTypes,
+	type GearStats,
+	maxDefenceStats,
+	maxOffenceStats
+} from '..';
 import { monkeyTiers } from '../../monkeyRumble';
 import { Gear } from '../../structures/Gear';
 import {

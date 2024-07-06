@@ -1,20 +1,21 @@
 import { bold } from '@discordjs/builders';
-import { InteractionReplyOptions } from 'discord.js';
-import { increaseNumByPercent, reduceNumByPercent, sumArr, Time } from 'e';
+import { type CommandRunOptions, convertBankToPerHourStats } from '@oldschoolgg/toolkit';
+import type { InteractionReplyOptions } from 'discord.js';
+import {ApplicationCommandOptionType } from 'discord.js'; 
+import { Time, increaseNumByPercent, reduceNumByPercent, sumArr } from 'e';
 import { uniq } from 'lodash';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import {
 	BathhouseOres,
-	bathHouseTiers,
 	BathwaterMixtures,
+	bathHouseTiers,
 	calculateBathouseResult,
 	durationPerBaxBath
 } from '../../lib/baxtorianBathhouses';
 import { calcAtomicEnergy, divinationEnergies, memoryHarvestTypes } from '../../lib/bso/divination';
-import { calculateTuraelsTrialsInput, TuraelsTrialsMethods } from '../../lib/bso/turaelsTrials';
+import { TuraelsTrialsMethods, calculateTuraelsTrialsInput } from '../../lib/bso/turaelsTrials';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { GLOBAL_BSO_XP_MULTIPLIER, PeakTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
@@ -38,20 +39,20 @@ import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { HunterTechniqueEnum } from '../../lib/skilling/types';
 import { Gear } from '../../lib/structures/Gear';
-import { BathhouseTaskOptions } from '../../lib/types/minions';
-import { convertBankToPerHourStats, stringMatches, toKMB } from '../../lib/util';
+import type { BathhouseTaskOptions } from '../../lib/types/minions';
+import { stringMatches, toKMB } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemID from '../../lib/util/itemID';
 import { calcPerHour, formatDuration, itemNameFromID, returnStringOrFile } from '../../lib/util/smallUtils';
+import { calculateHunterResult } from '../../tasks/minions/HunterActivity/hunterActivity';
 import { calculateAgilityResult } from '../../tasks/minions/agilityActivity';
 import { calculateDungeoneeringResult } from '../../tasks/minions/bso/dungeoneeringActivity';
 import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
 import { calculateTuraelsTrialsResult } from '../../tasks/minions/bso/turaelsTrialsActivity';
-import { calculateHunterResult } from '../../tasks/minions/HunterActivity/hunterActivity';
 import { calculateMiningResult } from '../../tasks/minions/miningActivity';
 import { gearstatToSetup, gorajanBoosts } from '../lib/abstracted_commands/minionKill';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { calculateHunterInput } from './hunt';
 import { calculateMiningInput } from './mine';
 import { determineTameClueResult } from './tames';
@@ -184,7 +185,7 @@ export const ratesCommand: OSBMahojiCommand = {
 		const user = await mUserFetch(userID);
 
 		if (options.minigames?.baxtorian_bathhouses) {
-			let results = [];
+			const results = [];
 			for (const tier of bathHouseTiers) {
 				for (const ore of BathhouseOres) {
 					for (const mixture of BathwaterMixtures) {
@@ -207,7 +208,7 @@ export const ratesCommand: OSBMahojiCommand = {
 			results.sort(
 				(a, b) => b.firemakingXP * GLOBAL_BSO_XP_MULTIPLIER - a.firemakingXP * GLOBAL_BSO_XP_MULTIPLIER
 			);
-			let tableArr = [['Combo', 'FM XP/hr', 'Herb XP/hr'].join('\t')];
+			const tableArr = [['Combo', 'FM XP/hr', 'Herb XP/hr'].join('\t')];
 			for (const { tier, ore, mixture, firemakingXP, herbXP } of results) {
 				const duration = durationPerBaxBath * 4;
 				const totalFiremakingXP = firemakingXP * GLOBAL_BSO_XP_MULTIPLIER;
@@ -251,9 +252,7 @@ export const ratesCommand: OSBMahojiCommand = {
 			const averageHoursToGetBoth = averageMinutesToGetBoth / 60;
 			return `For every minute in any trip, a random, valid seed from your bank has a 1 in ${zygomiteSeedMutChance} chance of mutating, and then that mutated seed has a 1 in ${avgSurvivalChance.toFixed(
 				2
-			)} (weighted average) chance of surviving. ${averageHoursToGetBoth.toFixed(
-				1
-			)} hours on average to get a zygomite seed.
+			)} (weighted average) chance of surviving. ${averageHoursToGetBoth.toFixed(1)} hours on average to get a zygomite seed.
 
 ${zygomiteFarmingSource
 	.map(
@@ -370,10 +369,10 @@ ${zygomiteFarmingSource
 			timeToFinish = reduceNumByPercent(timeToFinish, bestFood!);
 
 			const sampleSize = 100_000;
-			let boostedSize = increaseNumByPercent(sampleSize, 25);
+			const boostedSize = increaseNumByPercent(sampleSize, 25);
 
 			const loot = monster.table.kill(boostedSize, {});
-			let totalTime = timeToFinish * sampleSize;
+			const totalTime = timeToFinish * sampleSize;
 
 			let str = `${monster.name}\n`;
 
@@ -426,7 +425,7 @@ ${zygomiteFarmingSource
 					for (const _hasQuickTrap of [true, false]) {
 						for (const usingStamAndHunterPotions of [true, false]) {
 							for (const hasMaxLearning of [true, false]) {
-								let hasQuickTrap =
+								const hasQuickTrap =
 									_hasQuickTrap && creature.huntTechnique === HunterTechniqueEnum.BoxTrapping;
 								if (creature.huntTechnique !== HunterTechniqueEnum.BoxTrapping && _hasQuickTrap) {
 									continue;
@@ -622,7 +621,7 @@ ${zygomiteFarmingSource
 									);
 									if (usingAdze && (!smeltedOre || isPowerminingInput)) continue;
 
-									let miningLevel = 120;
+									const miningLevel = 120;
 									const fakeGear = user.gear.skilling.clone();
 									fakeGear.equip('Volcanic pickaxe');
 									fakeGear.equip('Varrock armour 4');
@@ -761,8 +760,7 @@ ${zygomiteFarmingSource
 									const nextEnergy = divinationEnergies[divinationEnergies.indexOf(energy) + 1];
 									let timeToGetBoon = 0;
 									if (
-										nextEnergy &&
-										nextEnergy.boonEnergyCost &&
+										nextEnergy?.boonEnergyCost &&
 										energyPerHour > 0 &&
 										res.loot.has(energy.item.id)
 									) {
@@ -774,7 +772,7 @@ ${zygomiteFarmingSource
 											? '0'
 											: calcPerHour(energyReceived * calcAtomicEnergy(energy), duration).toFixed(
 													1
-											  );
+												);
 
 									results += [
 										energy.type,
@@ -828,7 +826,7 @@ ${zygomiteFarmingSource
 							}
 							const quantity = Math.floor(Time.Hour / timePerLap);
 							const duration = quantity * timePerLap;
-							let agilityLevel = 120;
+							const agilityLevel = 120;
 							const result = calculateAgilityResult({
 								quantity,
 								course,
@@ -861,10 +859,10 @@ ${zygomiteFarmingSource
 			for (const floor of [1, 2, 3, 4, 5, 6, 7]) {
 				for (const hasPortent of [true, false]) {
 					const dungeonLength = Time.Minute * 5 * (floor / 2);
-					let quantity = Math.floor(calcMaxTripLength(user, 'Dungeoneering') / dungeonLength);
-					let duration = quantity * dungeonLength;
-					let dungeoneeringLevel = 120;
-					let goraShardChance = calcGorajanShardChance({
+					const quantity = Math.floor(calcMaxTripLength(user, 'Dungeoneering') / dungeonLength);
+					const duration = quantity * dungeonLength;
+					const dungeoneeringLevel = 120;
+					const goraShardChance = calcGorajanShardChance({
 						dungLevel: dungeoneeringLevel,
 						hasMasterCape: user.hasEquipped('Dungeoneering master cape'),
 						hasRingOfLuck: user.hasEquipped('Ring of luck')

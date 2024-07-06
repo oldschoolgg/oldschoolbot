@@ -280,7 +280,6 @@ export async function checkTOBTeam(
 		if (user.minionIsBusy) return `${user.usernameOrMention}'s minion is busy.`;
 		const checkResult = await checkTOBUser(user, isHardMode, solo === 'trio' ? 3 : users.length, quantity);
 		if (!checkResult[0]) {
-			continue;
 		} else {
 			return checkResult[1];
 		}

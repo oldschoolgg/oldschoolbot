@@ -1,6 +1,7 @@
 import { Time, randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { increaseBankQuantitesByPercent } from '@oldschoolgg/toolkit';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { combatAchievementTripEffect } from '../../lib/combat_achievements/combatAchievements';
 import { BitField } from '../../lib/constants';

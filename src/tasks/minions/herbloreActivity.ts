@@ -1,6 +1,12 @@
-import { randInt, roll, Time } from 'e';
+import { Time, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { herbertDroprate } from '../../lib/constants';
+import { WildernessDiary, userhasDiaryTier } from '../../lib/diaries';
+import Herblore from '../../lib/skilling/skills/herblore/herblore';
+import type { Mixable } from '../../lib/skilling/types';
+import type { HerbloreActivityTaskOptions } from '../../lib/types/minions';
 import { percentChance } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';

@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 
+import { Time, randFloat, roll } from 'e';
 import type { ActivityTaskOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
@@ -98,6 +99,5 @@ export async function handleGrowablePetGrowth(user: MUser, data: ActivityTaskOpt
 }
 
 export const growablePetsCL = growablePets
-	.map(i => i.stages)
-	.flat()
+	.flatMap(i => i.stages)
 	.filter(i => !resolveItems(['Skip', 'Penguin egg']).includes(i));

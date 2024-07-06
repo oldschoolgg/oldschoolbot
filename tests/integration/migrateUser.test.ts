@@ -34,8 +34,12 @@ import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { beforeAll, expect, test, vi } from 'vitest';
 
+import type { SkillsEnum } from 'oldschooljs/dist/constants';
 import { processPendingActivities } from '../../src/lib/Task';
 import { BitField } from '../../src/lib/constants';
+import type { UserFullGearSetup } from '../../src/lib/gear';
+import { trackLoot } from '../../src/lib/lootTrack';
+import { type MinigameName, incrementMinigameScore } from '../../src/lib/settings/minigames';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil';
 import type { Skills } from '../../src/lib/types';
@@ -60,11 +64,7 @@ import { syncNewUserUsername } from '../../src/mahoji/lib/preCommand';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings';
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity';
-import type { SkillsEnum } from 'oldschooljs/dist/constants';
-import type { UserFullGearSetup } from '../../src/lib/gear';
-import { trackLoot } from '../../src/lib/lootTrack';
-import { type MinigameName, incrementMinigameScore } from '../../src/lib/settings/minigames';
-import { type TestUser, mockedId, createTestUser } from './util';
+import { type TestUser, createTestUser, mockedId } from './util';
 
 interface TestCommand {
 	name: string;

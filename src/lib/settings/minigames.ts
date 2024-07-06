@@ -1,6 +1,5 @@
 import type { Minigame } from '@prisma/client';
 
-import { name } from 'assert';
 import { prisma } from './prisma';
 
 export type MinigameName = keyof Omit<Minigame, 'id' | 'user_id'>;
@@ -251,7 +250,8 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Guthixian Caches',
 		aliases: ['guthixian caches', 'cache'],
 		column: 'guthixian_cache'
-	},{
+	},
+	{
 		name: 'Turaels Trials',
 		aliases: ['turaels trials', 'trials'],
 		column: 'turaels_trials'

@@ -310,9 +310,9 @@ export async function nexCommand(
 					.map(u => u.usernameOrMention)
 					.join(', ')}) is now off to kill ${quantity}x ${NexMonster.name}. Each kill takes ${formatDuration(
 					perKillTime
-			  )} instead of ${formatDuration(NexMonster.timeToFinish)} - the total trip will take ${formatDuration(
+				)} instead of ${formatDuration(NexMonster.timeToFinish)} - the total trip will take ${formatDuration(
 					duration
-			  )}. ${foodString}`;
+				)}. ${foodString}`;
 
 	str += ` \n\n${debugStr}`;
 

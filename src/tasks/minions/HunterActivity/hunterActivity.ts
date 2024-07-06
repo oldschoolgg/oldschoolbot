@@ -3,7 +3,7 @@ import { Time, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot, type ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { type } from 'os';
+import { increaseBankQuantitesByPercent } from '@oldschoolgg/toolkit';
 import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
 import { GLOBAL_BSO_XP_MULTIPLIER, MAX_LEVEL, PeakTier } from '../../../lib/constants';
 import { globalDroprates } from '../../../lib/data/globalDroprates';
@@ -303,7 +303,7 @@ export const hunterTask: MinionTask = {
 						user,
 						inventionID: InventionID.ArcaneHarvester,
 						duration: quantity * Time.Minute * 4
-				  })
+					})
 				: null;
 
 		const minutes = Math.ceil(duration / Time.Minute);
@@ -383,7 +383,7 @@ export const hunterTask: MinionTask = {
 				? '.'
 				: ` ${quantity}x times, due to clever creatures you missed out on ${
 						quantity - successfulQuantity
-				  }x catches. `
+					}x catches. `
 		}${xpStr}`;
 
 		str += `\n\nYou received: ${loot}.`;

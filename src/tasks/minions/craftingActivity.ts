@@ -50,7 +50,7 @@ export const craftingTask: MinionTask = {
 			duration
 		});
 
-		const str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}. ${xpRes}`;
 
 		if (hasScroll) {
 			str += '\n\nYour Scroll of dexterity allows you to receive 15% extra items.';

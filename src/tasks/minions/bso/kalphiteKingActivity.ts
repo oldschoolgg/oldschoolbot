@@ -12,7 +12,7 @@ import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { prisma } from '../../../lib/settings/prisma';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { BossActivityTaskOptions } from '../../../lib/types/minions';
+import type { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -60,7 +60,7 @@ export const kalphiteKingTask: MinionTask = {
 				}
 
 				if (teamFailed || percentChance(user.chanceOfDeath)) {
-					deaths[user.id] = Boolean(deaths[user.id]) ? deaths[user.id] + 1 : 1;
+					deaths[user.id] = deaths[user.id] ? deaths[user.id] + 1 : 1;
 					// Mark user as dead this kill:
 					deathsThisKill[user.id] = 1;
 				} else {
@@ -78,7 +78,7 @@ export const kalphiteKingTask: MinionTask = {
 			if (!winner) continue;
 			teamsLoot.add(winner, loot);
 
-			kcAmounts[winner] = Boolean(kcAmounts[winner]) ? ++kcAmounts[winner] : 1;
+			kcAmounts[winner] = kcAmounts[winner] ? ++kcAmounts[winner] : 1;
 		}
 
 		const leaderUser = parsedUsers.find(p => p.id === userID)?.user ?? parsedUsers[0].user;
@@ -89,14 +89,14 @@ export const kalphiteKingTask: MinionTask = {
 		let soloItemsAdded = null;
 
 		const totalLoot = new Bank();
-		for (let [userID, loot] of teamsLoot.entries()) {
+		for (const [userID, loot] of teamsLoot.entries()) {
 			const { user } = parsedUsers.find(p => p.id === userID)!;
 			if (!user) continue;
 			totalLoot.add(loot);
 			const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) await user.incrementKC(KalphiteKingMonster.id, kcToAdd);
-			const purple = Object.keys(loot.bank).some(id => kalphiteKingCL.includes(parseInt(id)));
+			const purple = Object.keys(loot.bank).some(id => kalphiteKingCL.includes(Number.parseInt(id)));
 
 			const usersTask = await getUsersCurrentSlayerInfo(user.id);
 			const isOnTask =
@@ -104,7 +104,7 @@ export const kalphiteKingTask: MinionTask = {
 				usersTask.currentTask !== null &&
 				usersTask.assignedTask.monsters.includes(KalphiteKingMonster.id);
 
-			let xpStr = await addMonsterXP(user, {
+			const xpStr = await addMonsterXP(user, {
 				monsterID: KalphiteKingMonster.id,
 				quantity: Math.ceil(quantity / users.length),
 				duration,
@@ -189,7 +189,7 @@ export const kalphiteKingTask: MinionTask = {
 							user: leaderUser,
 							previousCL: soloPrevCl ?? undefined
 						})
-				  ).file.attachment;
+					).file.attachment;
 			handleTripFinish(
 				leaderUser,
 				channelID,
@@ -197,9 +197,9 @@ export const kalphiteKingTask: MinionTask = {
 					? `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Kalphite King, they apologize and promise to try harder next time.`
 					: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 							KalphiteKingMonster.name
-					  }, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${await leaderUser.getKC(
+						}, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${await leaderUser.getKC(
 							KalphiteKingMonster.id
-					  )}.\n\n${soloXP}`,
+						)}.\n\n${soloXP}`,
 				image!,
 				data,
 				soloItemsAdded

@@ -192,14 +192,14 @@ async function infernoRun({
 				hitpoints: 100,
 				ranged: 107,
 				prayer: 105
-		  }
+			}
 		: {
 				defence: 92,
 				magic: 94,
 				hitpoints: 92,
 				ranged: 92,
 				prayer: 77
-		  };
+			};
 	const hasSkillReqs = user.hasSkillReqs(skillReqs);
 	if (!hasSkillReqs) {
 		return `You not meet skill requirements, you need ${Object.entries(skillReqs)
@@ -692,11 +692,11 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 	const emergedZukDeathMsg = emerged
 		? `**Emerged Zuk Death Chance:** ${emergedZukDeathChance.value.toFixed(
 				1
-		  )}% ${emergedZukDeathChance.messages.join(', ')} ${
+			)}% ${emergedZukDeathChance.messages.join(', ')} ${
 				emergedZukDeathChance.missed.length === 0
 					? ''
 					: `*(You didn't get these: ||${emergedZukDeathChance.missed.join(', ')}||)*`
-		  }`
+			}`
 		: '';
 	return {
 		content: `

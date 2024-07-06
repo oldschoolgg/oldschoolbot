@@ -1,9 +1,9 @@
-import { GearPreset } from '@prisma/client';
+import type { GearPreset } from '@prisma/client';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import itemID from '../util/itemID';
-import { DefenceGearStat, GearSetup, GearStat, OffenceGearStat, OtherGearStat } from './types';
-import { constructGearSetup, PartialGearSetup } from './util';
+import { type DefenceGearStat, type GearSetup, GearStat, type OffenceGearStat, type OtherGearStat } from './types';
+import { type PartialGearSetup, constructGearSetup } from './util';
 
 export * from './types';
 export * from './util';
@@ -50,8 +50,8 @@ export function filterGearSetup(gear: undefined | null | GearSetup | PartialGear
 	const filteredGear = !gear
 		? undefined
 		: typeof gear.ammo === 'undefined' || typeof gear.ammo === 'string'
-		? constructGearSetup(gear as PartialGearSetup)
-		: (gear as GearSetup);
+			? constructGearSetup(gear as PartialGearSetup)
+			: (gear as GearSetup);
 	return filteredGear;
 }
 export const globalPresets: GearPreset[] = [

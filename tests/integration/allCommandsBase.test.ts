@@ -1,5 +1,5 @@
 import { generateCommandInputs, generateRandomBank } from '@oldschoolgg/toolkit';
-import { Time,  shuffleArr } from 'e';
+import { Time, shuffleArr } from 'e';
 import { expect, test, vi } from 'vitest';
 import { BitField, minionActivityCache } from '../../src/lib/constants';
 import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
@@ -8,11 +8,10 @@ import { allCommands } from '../../src/mahoji/commands/allCommands';
 import { randomMock } from './setup';
 import { createTestUser, mockClient } from './util';
 
-
 test(
 	'All Commands Base Test',
 	async () => {
-		const bank = generateRandomBank(500, 100_000)
+		const bank = generateRandomBank(500, 100_000);
 		expect(vi.isMockFunction(handleMahojiConfirmation)).toBe(true);
 		const client = await mockClient();
 		process.env.CLIENT_ID = client.data.id;
@@ -82,7 +81,7 @@ test(
 						);
 						throw err;
 					}
-				})
+				});
 			}
 		}
 
@@ -90,5 +89,5 @@ test(
 
 		await client.processActivities();
 	},
-		{timeout: Time.Minute * 10}
+	{ timeout: Time.Minute * 10 }
 );

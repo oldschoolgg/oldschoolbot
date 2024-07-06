@@ -58,14 +58,7 @@ class GeImageTask {
 		);
 	}
 
-	drawText(
-		ctx: SKRSContext2D,
-		text: string,
-		x: number,
-		y: number,
-		maxWidth: number | undefined = undefined,
-		lineHeight: number
-	) {
+	drawText(ctx: SKRSContext2D, text: string, x: number, y: number, maxWidth: number | undefined, lineHeight: number) {
 		// If max width is set, we have to line break the text
 		const textLines = [];
 		const measuredText = ctx.measureText(text);

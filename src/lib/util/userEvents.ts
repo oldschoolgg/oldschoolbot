@@ -1,10 +1,10 @@
+import { dateFm } from '@oldschoolgg/toolkit';
 import type { Prisma, UserEvent, xp_gains_skill_enum } from '@prisma/client';
 import { UserEventType } from '@prisma/client';
 
 import { MAX_LEVEL, MAX_TOTAL_LEVEL } from '../constants';
 import { allCollectionLogsFlat } from '../data/Collections';
 import { prisma } from '../settings/prisma';
-import { dateFm } from './smallUtils';
 
 export function userEventsToMap(_events: UserEvent[] | null) {
 	if (_events === null) return new Map<string, number>();

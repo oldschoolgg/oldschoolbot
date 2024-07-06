@@ -13,7 +13,7 @@ import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
 import type { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
-import { ElderClue, ElderClueTable } from '../simulation/elderClue';
+import { type ElderClue, ElderClueTable } from '../simulation/elderClue';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';

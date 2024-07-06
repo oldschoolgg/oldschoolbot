@@ -1,13 +1,12 @@
 import type { Image } from '@napi-rs/canvas';
 import type { PerkTier, StoreBitfield } from '@oldschoolgg/toolkit';
 import type { GearSetupType, XpGainSource } from '@prisma/client';
-import type { BitField } from 'discord.js';
 import type { Bank, MonsterKillOptions } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import type SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 import type { ClueTier } from '../clues/clueTiers';
-import type { Diary } from '../diaries';
+import type { BitField } from '../constants';
 import type { GearStat, OffenceGearStat } from '../gear';
 import type { POHBoosts } from '../poh';
 import type { MinigameName } from '../settings/minigames';
@@ -139,7 +138,7 @@ export interface KillableMonster {
 	}[];
 	requiredQuests?: QuestID[];
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
-	diaryRequirement?: [Diary, DiaryTier];
+	diaryRequirement?: [DiaryID, DiaryTierName];
 	wildySlayerCave?: boolean;
 	requiredBitfield?: BitField;
 
@@ -218,7 +217,7 @@ export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
 export type ClueBank = Record<ClueTier['name'], number>;
 
-const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
+export const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
 export type DiaryTierName = (typeof diaryTiers)[number];
 
 export interface DiaryTier {

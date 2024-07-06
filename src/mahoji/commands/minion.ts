@@ -47,6 +47,8 @@ import { ironmanCommand } from '../lib/abstracted_commands/ironmanCommand';
 import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
+import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
+import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
 
 const patMessages = [

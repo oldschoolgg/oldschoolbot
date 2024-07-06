@@ -379,7 +379,7 @@ export const huntCommand: OSBMahojiCommand = {
 					user,
 					inventionID: InventionID.QuickTrap,
 					duration: preResult.duration
-			  })
+				})
 			: null;
 
 		const webshooterResult = elligibleForWebshooter
@@ -387,7 +387,7 @@ export const huntCommand: OSBMahojiCommand = {
 					user,
 					inventionID: InventionID.Webshooter,
 					duration: preResult.duration
-			  })
+				})
 			: null;
 
 		const result = calculateHunterInput({

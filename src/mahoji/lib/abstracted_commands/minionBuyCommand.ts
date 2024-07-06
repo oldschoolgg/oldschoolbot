@@ -1,4 +1,3 @@
-
 import { type CommandResponse, isAtleastThisOld } from '@oldschoolgg/toolkit';
 import { ComponentType, type User } from 'discord.js';
 import { Time } from 'e';
@@ -30,7 +29,7 @@ export async function minionBuyCommand(apiUser: User, user: MUser, ironman: bool
 				'Clue scroll (beginner)': 10,
 				'Equippable mystery box': 1,
 				'Pet Mystery box': 1
-		  })
+			})
 		: null;
 
 	if (starter) {

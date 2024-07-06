@@ -92,7 +92,7 @@ export const cookCommand: OSBMahojiCommand = {
 			if (hasRemy) timeToCookSingleCookable /= 1.5;
 		} else {
 			let cookingBoost = 1;
-			let cookingBoostItems: string[] = [];
+			const cookingBoostItems: string[] = [];
 			if (user.hasEquippedOrInBank('Cooking master cape')) {
 				cookingBoostItems.push('Cooking master cape');
 				cookingBoost += 2.5;

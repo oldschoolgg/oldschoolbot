@@ -1,8 +1,8 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum } from 'e';
 
+import { type IMaterialBank, type MaterialType, materialTypes } from '.';
 import { assert } from '../util';
-import { IMaterialBank, MaterialType, materialTypes } from '.';
 
 export class MaterialBank {
 	public bank: IMaterialBank;
@@ -23,8 +23,8 @@ export class MaterialBank {
 				return this.validate();
 			}
 			assert(materialTypes.includes(key as any), `${key} ${value}`);
-			assert(typeof value === 'number' && value > 0 && !isNaN(value));
-			assert(parseInt(value.toString()) === value, `${key} ${value} ${parseInt(value.toString())}`);
+			assert(typeof value === 'number' && value > 0 && !Number.isNaN(value));
+			assert(Number.parseInt(value.toString()) === value, `${key} ${value} ${Number.parseInt(value.toString())}`);
 		}
 	}
 
@@ -95,7 +95,7 @@ export class MaterialBank {
 	}
 
 	public values() {
-		let values: { type: MaterialType; quantity: number }[] = [];
+		const values: { type: MaterialType; quantity: number }[] = [];
 		for (const [key, value] of Object.entries(this.bank)) {
 			values.push({ type: key as MaterialType, quantity: value });
 		}
@@ -120,7 +120,7 @@ export class MaterialBank {
 
 	mutReduceAllValuesByPercent(percent: number) {
 		for (const [key, value] of Object.entries(this.bank) as [MaterialType, number][]) {
-			let percentOfThisItem = Math.floor(calcPercentOfNum(value, percent));
+			const percentOfThisItem = Math.floor(calcPercentOfNum(value, percent));
 			this.remove(key, percentOfThisItem);
 		}
 		return this;
@@ -128,7 +128,7 @@ export class MaterialBank {
 
 	mutIncreaseAllValuesByPercent(percent: number) {
 		for (const [key, value] of Object.entries(this.bank) as [MaterialType, number][]) {
-			let percentOfThisItem = Math.floor(calcPercentOfNum(value, percent));
+			const percentOfThisItem = Math.floor(calcPercentOfNum(value, percent));
 			this.add(key, percentOfThisItem);
 		}
 		return this;

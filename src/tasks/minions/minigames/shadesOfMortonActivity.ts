@@ -3,7 +3,7 @@ import { bold } from 'discord.js';
 import { increaseNumByPercent, randInt, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import assert from 'assert';
+import assert from 'node:assert';
 import { Events } from '../../../lib/constants';
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';

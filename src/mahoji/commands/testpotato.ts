@@ -4,13 +4,13 @@ import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
 import { type Prisma, activity_type_enum, tame_growth, xp_gains_skill_enum } from '@prisma/client';
 import { ApplicationCommandOptionType, type User } from 'discord.js';
-import { Time, noOp, uniqueArr } from 'e';
+import { Time, noOp,  } from 'e';
 import { production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
 import { CombatAchievements } from '../../lib/combat_achievements/combatAchievements';
-import { BitField, BitFieldData, MAX_INT_JAVA, MAX_XP } from '../../lib/constants';
+import { BitField,  MAX_INT_JAVA, MAX_XP } from '../../lib/constants';
 import {
 	expertCapesCL,
 	gorajanArcherOutfit,
@@ -22,7 +22,7 @@ import {
 } from '../../lib/data/CollectionsExport';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { Eatables } from '../../lib/data/eatables';
-import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear, TOBMaxRangeGear } from '../../lib/data/tob';
+import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { dyedItems } from '../../lib/dyedItems';
 import { type GearSetupType, GearStat } from '../../lib/gear';
 import { materialTypes } from '../../lib/invention';
@@ -183,7 +183,7 @@ for (const o of BathhouseOres) {
 	baxBathBank.add(o.logs.id, 100_000);
 }
 for (const m of BathwaterMixtures) {
-	for (const i of m.items) baxBathBank.add(i.id, 100_000);
+	for (const i of m.items) baxBathBank.add(i, 100_000);
 }
 baxBathBank.add('Coal', 100_000);
 

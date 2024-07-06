@@ -1,11 +1,11 @@
-import { Tame, tame_growth } from '@prisma/client';
+import { type Tame, tame_growth } from '@prisma/client';
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { assert, describe, expect, test } from 'vitest';
 
-import { allMbTables, embTable, PMBTable, tmbTable, umbTable } from '../../src/lib/bsoOpenables';
-import Buyables from '../../src/lib/data/buyables/buyables';
+import { PMBTable, allMbTables, embTable, tmbTable, umbTable } from '../../src/lib/bsoOpenables';
 import { allPetIDs, masterCapesCL, toaCL } from '../../src/lib/data/CollectionsExport';
+import Buyables from '../../src/lib/data/buyables/buyables';
 import { itemsToDelete } from '../../src/lib/deletedItems';
 import { dyedItems } from '../../src/lib/dyedItems';
 import { growablePets } from '../../src/lib/growablePets';
@@ -39,7 +39,7 @@ describe('Sanity', () => {
 		expect(itemIsTradeable(itemID('Infernal bulwark'))).toEqual(false);
 	});
 	test('Growable pets cant come from mystery boxes', () => {
-		const allGrowablePets = growablePets.map(p => p.stages).flat();
+		const allGrowablePets = growablePets.flatMap(p => p.stages);
 		expect(allGrowablePets.every(growablePet => !PMBTable.allItems.includes(growablePet))).toEqual(true);
 		expect(allGrowablePets.every(growablePet => !allMbTables.includes(growablePet))).toEqual(true);
 	});
@@ -269,7 +269,7 @@ describe('Sanity', () => {
 		expect(scep.equipment?.slot).toEqual(EquipmentSlot.Weapon);
 	});
 	test('all dyed items should be untradeable and not in boxes', () => {
-		for (const item of dyedItems.map(i => i.dyedVersions.map(t => t.item)).flat()) {
+		for (const item of dyedItems.flatMap(i => i.dyedVersions.map(t => t.item))) {
 			assert(!itemIsTradeable(item.id), `${item.name} should be super-untradeable`);
 			assert(!allMbTables.includes(item.id), `${item.name} shouldnt drop from boxes`);
 		}

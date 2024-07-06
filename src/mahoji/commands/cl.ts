@@ -6,6 +6,8 @@ import type { CollectionLogType } from '../../lib/collectionLogTask';
 import { CollectionLogFlags, clImageGenerator, collectionLogTypes } from '../../lib/collectionLogTask';
 import { allCollectionLogs } from '../../lib/data/Collections';
 import { fetchStatsForCL } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const collectionLogCommand: OSBMahojiCommand = {
 	name: 'cl',

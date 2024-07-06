@@ -10,7 +10,7 @@ import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { NEX_UNIQUE_DROPRATE, NexMonster } from '../../../lib/nex';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import { BossActivityTaskOptions } from '../../../lib/types/minions';
+import type { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -59,7 +59,7 @@ export const nexTask: MinionTask = {
 				}
 
 				if (teamFailed || percentChance(user.chanceOfDeath)) {
-					deaths[user.id] = Boolean(deaths[user.id]) ? deaths[user.id] + 1 : 1;
+					deaths[user.id] = deaths[user.id] ? deaths[user.id] + 1 : 1;
 					// Mark user as dead this kill:
 					deathsThisKill[user.id] = 1;
 				} else {
@@ -80,7 +80,7 @@ export const nexTask: MinionTask = {
 			if (!winner) continue;
 			teamsLoot.add(winner, loot);
 
-			kcAmounts[winner] = Boolean(kcAmounts[winner]) ? ++kcAmounts[winner] : 1;
+			kcAmounts[winner] = kcAmounts[winner] ? ++kcAmounts[winner] : 1;
 		}
 
 		const leaderUser = parsedUsers.find(p => p.id === userID)?.user ?? parsedUsers[0].user;
@@ -91,7 +91,7 @@ export const nexTask: MinionTask = {
 		let soloPrevCl = new Bank();
 		let soloItemsAdded: Bank = new Bank();
 
-		for (let [userID, loot] of teamsLoot.entries()) {
+		for (const [userID, loot] of teamsLoot.entries()) {
 			const { user } = parsedUsers.find(p => p.id === userID)!;
 			if (!user) continue;
 			let xpStr = '';
@@ -115,7 +115,7 @@ export const nexTask: MinionTask = {
 
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) await user.incrementKC(NexMonster.id, kcToAdd);
-			const purple = Object.keys(loot.bank).some(id => nexCL.includes(parseInt(id)));
+			const purple = Object.keys(loot.bank).some(id => nexCL.includes(Number.parseInt(id)));
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
 
@@ -173,7 +173,7 @@ export const nexTask: MinionTask = {
 							user: leaderUser,
 							previousCL: soloPrevCl
 						})
-				  ).file.attachment;
+					).file.attachment;
 			handleTripFinish(
 				leaderUser,
 				channelID,
@@ -181,9 +181,9 @@ export const nexTask: MinionTask = {
 					? `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill Nex, they apologize and promise to try harder next time.`
 					: `${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
 							NexMonster.name
-					  }, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${await leaderUser.getKC(
+						}, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${await leaderUser.getKC(
 							NexMonster.id
-					  )}.\n\n${soloXP}`,
+						)}.\n\n${soloXP}`,
 				image!,
 				data,
 				soloItemsAdded

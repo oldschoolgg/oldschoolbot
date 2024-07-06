@@ -4,7 +4,14 @@ import { ComponentType, PermissionsBitField } from 'discord.js';
 
 import { OWNER_IDS, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
-import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, gearValidationChecks, minionBuyButton } from '../../lib/constants';
+import {
+	BadgesEnum,
+	BitField,
+	Channel,
+	DISABLED_COMMANDS,
+	gearValidationChecks,
+	minionBuyButton
+} from '../../lib/constants';
 import { perkTierCache, syncPerkTierOfUser } from '../../lib/perkTiers';
 import type { CategoryFlag } from '../../lib/types';
 import { formatDuration, roll } from '../../lib/util';

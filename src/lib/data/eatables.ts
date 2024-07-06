@@ -1,6 +1,6 @@
 import itemID from '../util/itemID';
 
-interface Eatable {
+export interface Eatable {
 	name: string;
 	id: number;
 	raw: number | null;

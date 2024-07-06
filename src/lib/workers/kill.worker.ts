@@ -41,7 +41,7 @@ export default async ({
 		};
 
 		const killableMonster = killableMonsters.find(mon => mon.id === osjsMonster.id);
-		if (killableMonster && killableMonster.specialLoot) {
+		if (killableMonster?.specialLoot) {
 			killableMonster.specialLoot({ ownedItems: result.bank, loot: result.bank, quantity, cl: new Bank() });
 		}
 

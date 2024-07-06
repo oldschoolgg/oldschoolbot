@@ -21,7 +21,7 @@ export const wintertodtTask: MinionTask = {
 
 		const loot = new Bank();
 
-		const totalPoints = 0;
+		let totalPoints = 0;
 
 		for (let i = 0; i < quantity; i++) {
 			const points = randInt(1000, 5000);

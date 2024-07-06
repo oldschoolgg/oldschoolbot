@@ -1,5 +1,15 @@
 import type { Prisma } from '@prisma/client';
-import { Time, calcWhatPercent, deepClone, increaseNumByPercent, percentChance, randArrItem, reduceNumByPercent, roll, sumArr } from 'e';
+import {
+	Time,
+	calcWhatPercent,
+	deepClone,
+	increaseNumByPercent,
+	percentChance,
+	randArrItem,
+	reduceNumByPercent,
+	roll,
+	sumArr
+} from 'e';
 import type { MonsterKillOptions } from 'oldschooljs';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -80,7 +90,7 @@ async function bonecrusherEffect(user: MUser, loot: Bank, duration: number, mess
 			hasSuperior
 				? `+${inventionBoosts.superiorBonecrusher.xpBoostPercent}% more from Superior bonecrusher${
 						boostMsg ? ` (${boostMsg})` : ''
-				  }`
+					}`
 				: ' from Gorajan bonecrusher'
 		}`
 	);
@@ -465,9 +475,9 @@ export const monsterTask: MinionTask = {
 			quantity === 0
 				? `${user}, ${user.minionName} died in ALL their kill attempts!${
 						roll(10) ? ` ${randArrItem(sorryMessages)}` : ''
-				  }`
+					}`
 				: `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
-				  ` Your ${monster.name} KC is now ${newKC}.\n${xpRes}\n`;
+					` Your ${monster.name} KC is now ${newKC}.\n${xpRes}\n`;
 
 		if (masterCapeRolls > 0) {
 			messages.push(`${Emoji.SlayerMasterCape} You received ${masterCapeRolls}x bonus superior rolls`);

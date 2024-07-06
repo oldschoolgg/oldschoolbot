@@ -29,7 +29,7 @@ export const barbAssaultTask: MinionTask = {
 			pts *= 1.1;
 			resultStr += `${user.usernameOrMention} received 10% extra pts for Kandarin Hard diary. `;
 		}
-		const totalPoints = Math.floor(pts * quantity);
+		let totalPoints = Math.floor(pts * quantity);
 
 		const flappyRes = await userHasFlappy({ user, duration });
 

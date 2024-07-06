@@ -1,19 +1,19 @@
-import { Tame, TameActivity } from '@prisma/client';
+import type { Tame, TameActivity } from '@prisma/client';
 import {
+	type APIInteractionGuildMember,
 	ActionRowBuilder,
-	APIInteractionGuildMember,
 	AttachmentBuilder,
 	ButtonBuilder,
-	ButtonInteraction,
+	type ButtonInteraction,
 	ButtonStyle,
-	ChatInputCommandInteraction,
-	GuildMember,
+	type ChatInputCommandInteraction,
+	type GuildMember,
 	userMention
 } from 'discord.js';
-import { increaseNumByPercent, isFunction, percentChance, randArrItem, randInt, roll, Time } from 'e';
+import { Time, increaseNumByPercent, isFunction, percentChance, randArrItem, randInt, roll } from 'e';
 import { isEmpty } from 'lodash';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { BitField } from '../../lib/constants';
@@ -26,15 +26,15 @@ import { getTemporossLoot } from '../../lib/simulation/tempoross';
 import { WintertodtCrate } from '../../lib/simulation/wintertodt';
 import { MTame } from '../../lib/structures/MTame';
 import {
-	addDurationToTame,
-	ArbitraryTameActivity,
-	seaMonkeySpells,
-	tameKillableMonsters,
+	type ArbitraryTameActivity,
 	TameSpeciesID,
-	TameTaskOptions,
-	TameType
+	type TameTaskOptions,
+	TameType,
+	addDurationToTame,
+	seaMonkeySpells,
+	tameKillableMonsters
 } from '../../lib/tames';
-import { ActivityTaskData } from '../../lib/types/minions';
+import type { ActivityTaskData } from '../../lib/types/minions';
 import { assert, calcPerHour, formatDuration, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { getUsersTamesCollectionLog } from '../../lib/util/getUsersTameCL';
@@ -131,7 +131,7 @@ async function handleImplingLocator(user: MUser, tame: MTame, duration: number, 
 									self: openable,
 									totalLeaguesPoints: 0
 								})
-						  ).bank
+							).bank
 						: openable.output.roll(qty)
 				);
 			}
@@ -187,7 +187,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 								})
 							).file.attachment
 						)
-				  ]
+					]
 				: undefined
 		});
 	}

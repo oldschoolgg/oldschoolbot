@@ -1,7 +1,7 @@
+import { writeFileSync } from 'node:fs';
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { tame_growth, UserStats } from '@prisma/client';
+import { type UserStats, tame_growth } from '@prisma/client';
 import { calcWhatPercent, objectEntries, sumArr } from 'e';
-import { writeFileSync } from 'fs';
 import { Bank, Items } from 'oldschooljs';
 
 import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
@@ -120,10 +120,10 @@ import {
 	stealingCreationCL,
 	templeTrekkingCL,
 	temporossCL,
-	theatreOfBLoodCL,
 	theGauntletCL,
 	theInfernoCL,
 	theNightmareCL,
+	theatreOfBLoodCL,
 	thermonuclearSmokeDevilCL,
 	tinkeringWorshopCL,
 	titheFarmCL,
@@ -146,13 +146,14 @@ import { creatablesCL } from './data/createables';
 import { kibbleCL } from './data/kibble';
 import { getSimilarItems } from './data/similarItems';
 import { slayerMasksHelmsCL } from './data/slayerMaskHelms';
-import { diariesObject, diaryTiers } from './diaries';
+import { diaries, diariesObject } from './diaries';
 import { growablePetsCL } from './growablePets';
 import { implingsCL } from './implings';
 import { inventionCL } from './invention/inventions';
 import { allLeagueTasks, leagueTasks } from './leagues/leagues';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
-import { getPOHObject, PoHObjects } from './poh';
+import { type DiaryID,  type DiaryTierName,  diaryTiers } from './minions/types';
+import { PoHObjects, getPOHObject } from './poh';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Skillcapes from './skilling/skillcapes';
 import Agility from './skilling/skills/agility';
@@ -164,9 +165,9 @@ import { fletchingCL } from './skilling/skills/fletching/fletchables';
 import { herbloreCL } from './skilling/skills/herblore/mixables';
 import { smithingCL } from './skilling/skills/smithing/smithables';
 import { slayerUnlockableRewards } from './slayer/slayerUnlocks';
-import { RequirementFailure, Requirements } from './structures/Requirements';
-import { tameFeedableItems, TameSpeciesID } from './tames';
-import { ItemBank } from './types';
+import { type RequirementFailure, Requirements } from './structures/Requirements';
+import { TameSpeciesID, tameFeedableItems } from './tames';
+import type { ItemBank } from './types';
 import { itemID, itemNameFromID } from './util';
 import resolveItems from './util/resolveItems';
 
@@ -769,10 +770,16 @@ const tameRequirements = new Requirements()
 	});
 
 const diaryRequirements = new Requirements();
-for (const [key, b] of objectEntries(diariesObject)) {
+for (const [, b] of objectEntries(diariesObject)) {
 	diaryRequirements.add({
 		name: `Complete the ${b.name} achievement diary`,
-		diaryRequirement: diaryTiers.map(i => [key, i])
+		diaryRequirement: diaries.flatMap(i => {
+			const res: [DiaryID, DiaryTierName][] = [];
+			for (const a of diaryTiers) {
+				res.push([i.id, a])
+			}
+			return res;
+		})
 	});
 }
 diaryRequirements.add({ name: 'Complete Achievement Diary CL', clRequirement: diariesCL });
@@ -854,13 +861,12 @@ export const compCapeCategories = [
 const allCLItemsCheckedFor = compCapeCategories
 	.map(i => i.requirements.requirements)
 	.flat(2)
-	.map(req => {
+	.flatMap(req => {
 		if ('clRequirement' in req) {
 			return Array.isArray(req.clRequirement) ? req.clRequirement : req.clRequirement.items().map(i => i[0].id);
 		}
 		return [];
-	})
-	.flat();
+	});
 
 const overallItemsNotCheckedFor = Items.array()
 	.map(i => i.id)

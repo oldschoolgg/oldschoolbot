@@ -1,19 +1,20 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { tame_growth } from '@prisma/client';
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import {ApplicationCommandOptionType } from 'discord.js'; 
 import { randArrItem, reduceNumByPercent } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { production } from '../../config';
 import { Events } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { Nursery, Species, tameSpecies, TameSpeciesID } from '../../lib/tames';
+import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '../../lib/tames';
 import { formatDuration, gaussianRandom, roll } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 function makeTameNickname(species: Species) {
 	switch (species.id) {
@@ -36,7 +37,7 @@ function makeTameNickname(species: Species) {
 }
 
 export async function generateNewTame(user: MUser, species: Species) {
-	let shinyChance = user.hasEquippedOrInBank(['Ring of luck'])
+	const shinyChance = user.hasEquippedOrInBank(['Ring of luck'])
 		? Math.floor(reduceNumByPercent(species.shinyChance, 3))
 		: species.shinyChance;
 
@@ -83,8 +84,8 @@ async function view(user: MUser) {
 	const specie = tameSpecies.find(i => i.id === egg.species)!;
 
 	let diff = Date.now() - egg.insertedAt;
-	let constructionMaster = user.hasEquippedOrInBank('Construction master cape');
-	let masterString = constructionMaster
+	const constructionMaster = user.hasEquippedOrInBank('Construction master cape');
+	const masterString = constructionMaster
 		? '\n\nYour minion has constructed a very high quality nursery that hatches eggs twice as fast.'
 		: '';
 	if (constructionMaster) {
@@ -165,7 +166,7 @@ async function buildCommand(user: MUser) {
 	await user.update({
 		nursery: newNursery
 	});
-	let constructionMaster = user.hasEquippedOrInBank('Construction master cape');
+	const constructionMaster = user.hasEquippedOrInBank('Construction master cape');
 	return `You built a nursery! Removed ${cost} from your bank.${
 		constructionMaster
 			? '\n\nYour minion has constructed a very high quality nursery that hatches eggs twice as fast.'

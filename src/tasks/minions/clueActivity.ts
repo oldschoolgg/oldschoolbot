@@ -1,8 +1,9 @@
-import { randInt, Time } from 'e';
+import { Time, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
+import type { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
@@ -36,10 +37,10 @@ export const clueTask: MinionTask = {
 			quantity > 1 ? 's' : ''
 		} in your bank. You can open this casket using \`/open name:${clueTier.name}\``;
 
-		let loot = new Bank().add(clueTier.id, quantity);
+		const loot = new Bank().add(clueTier.id, quantity);
 
 		if (user.usingPet('Zippy') && duration > Time.Minute * 5) {
-			let bonusLoot = new Bank();
+			const bonusLoot = new Bank();
 			const numberOfMinutes = Math.floor(duration / Time.Minute);
 
 			for (let i = 0; i < numberOfMinutes / randInt(5, 10); i++) {

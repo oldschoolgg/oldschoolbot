@@ -1,19 +1,21 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import {ApplicationCommandOptionType } from 'discord.js'; 
 
 import {
 	BathhouseOres,
-	bathHouseTiers,
 	BathwaterMixtures,
+	bathHouseTiers,
 	baxBathHelpStr,
 	baxBathSim,
 	baxtorianBathhousesStartCommand
 } from '../../lib/baxtorianBathhouses';
 import { allGodlyItems, divineDominionCheck, divineDominionSacrificeCommand } from '../../lib/bso/divineDominion';
 import { joinGuthixianCache } from '../../lib/bso/guthixianCache';
-import { TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartCommand } from '../../lib/bso/turaelsTrials';
+import { type TuraelsTrialsMethod, TuraelsTrialsMethods, turaelsTrialsStartCommand } from '../../lib/bso/turaelsTrials';
 import { fishingLocations } from '../../lib/fishingContest';
-import { MaterialType } from '../../lib/invention';
+import type { MaterialType } from '../../lib/invention';
+import { itemNameFromID } from '../../lib/util';
 import { bonanzaCommand } from '../lib/abstracted_commands/bonanzaCommand';
 import {
 	fishingContestStartCommand,
@@ -22,15 +24,15 @@ import {
 import { fistOfGuthixCommand } from '../lib/abstracted_commands/fistOfGuthix';
 import { monkeyRumbleCommand, monkeyRumbleStatsCommand } from '../lib/abstracted_commands/monkeyRumbleCommand';
 import {
+	OuraniaBuyables,
 	odsBuyCommand,
 	odsStartCommand,
-	odsStatsCommand,
-	OuraniaBuyables
+	odsStatsCommand
 } from '../lib/abstracted_commands/odsCommand';
 import { stealingCreationCommand } from '../lib/abstracted_commands/stealingCreation';
 import { tinkeringWorkshopCommand } from '../lib/abstracted_commands/tinkeringWorkshopCommand';
 import { itemOption, ownedMaterialOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const minigamesCommand: OSBMahojiCommand = {
 	name: 'bsominigames',
@@ -79,7 +81,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							description: 'The herbs you want to use for your water mixture.',
 							required: true,
 							choices: BathwaterMixtures.map(i => ({
-								name: `${i.name} (${i.items.map(i => i.name).join(', ')})`,
+								name: `${i.name} (${i.items.map(itemNameFromID).join(', ')})`,
 								value: i.name
 							}))
 						}

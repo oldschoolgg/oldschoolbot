@@ -2,6 +2,7 @@ import type { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { findBingosWithUserParticipating } from '../../mahoji/lib/bingo/BingoManager';
+import { mahojiUserSettingsUpdate } from '../MUser';
 import { handleNewCLItems } from '../handleNewCLItems';
 import { filterLootReplace } from '../slayer/slayerUtil';
 import type { ItemBank } from '../types';

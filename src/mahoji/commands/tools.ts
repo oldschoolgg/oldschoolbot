@@ -1,7 +1,17 @@
+import { type CommandResponse, type CommandRunOptions, type MahojiUserOption, PerkTier, asyncGzip } from '@oldschoolgg/toolkit';
+import type { Activity, User } from '@prisma/client';
+import { ApplicationCommandOptionType,  ChannelType, EmbedBuilder, userMention } from 'discord.js';
+import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
-
+import { ADMIN_IDS, OWNER_IDS, production } from '../../config.example';
+import { giveBoxResetTime, isPrimaryPatron, mahojiUserSettingsUpdate, spawnLampResetTime } from '../../lib/MUser';
+import { MysteryBoxes, spookyTable } from '../../lib/bsoOpenables';
+import { ClueTiers } from '../../lib/clues/clueTiers';
+import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
+import { BitField, Channel, Emoji } from '../../lib/constants';
+import { allCLItems, allDroppedItems } from '../../lib/data/Collections';
 import {
 	anglerOutfit,
 	evilChickenOutfit,
@@ -13,10 +23,11 @@ import {
 import pets from '../../lib/data/pets';
 import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import { getUsersPerkTier } from '../../lib/perkTiers';
+import { type MinigameName, Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
 import {
-	asyncGzip,
 	formatDuration,
 	generateXPLevelQuestion,
 	getUsername,
@@ -36,6 +47,7 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { repairBrokenItemsFromUser } from '../../lib/util/repairBrokenItems';
 import resolveItems from '../../lib/util/resolveItems';
 import { LampTable } from '../../lib/xpLamps';
+import { Cooldowns } from '../lib/Cooldowns';
 import {
 	getParsedStashUnits,
 	stashUnitBuildAllCommand,
@@ -45,7 +57,6 @@ import {
 } from '../lib/abstracted_commands/stashUnitsCommand';
 import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { buttonUserPicker } from '../lib/buttonUserPicker';
-import { Cooldowns } from '../lib/Cooldowns';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
@@ -507,9 +518,7 @@ export const dryStreakEntities: DrystreakEntity[] = [
 			'Spooky box'
 		]),
 		run: async ({ item, ironmanOnly }) => {
-			const result = await prisma.$queryRawUnsafe<
-				{ id: string; val: number }[]
-			>(`SELECT user_id::text AS id, COUNT(1) as val
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT user_id::text AS id, COUNT(1) as val
 FROM activity WHERE
 user_id IN (SELECT id::bigint FROM users WHERE "collectionLogBank"->'${item.id}' IS NULL
 ${ironmanOnly ? ' AND "minion.ironman" = TRUE' : ''})

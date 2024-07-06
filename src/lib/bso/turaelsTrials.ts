@@ -1,10 +1,10 @@
-import { increaseNumByPercent, Time } from 'e';
+import { Time, increaseNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { trackClientBankStats, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { degradeChargeBank } from '../degradeableItems';
 import { ChargeBank } from '../structures/Banks';
-import { TuraelsTrialsOptions } from '../types/minions';
+import type { TuraelsTrialsOptions } from '../types/minions';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { formatDuration } from '../util/smallUtils';
@@ -21,8 +21,8 @@ export function calculateTuraelsTrialsInput({
 	isUsingBloodFury: boolean;
 	method: TuraelsTrialsMethod;
 }) {
-	let timePerKill = Time.Minute * 2.9;
-	let quantity = Math.floor(maxTripLength / timePerKill);
+	const timePerKill = Time.Minute * 2.9;
+	const quantity = Math.floor(maxTripLength / timePerKill);
 	const duration = Math.floor(timePerKill * quantity);
 	const minutesRoundedUp = Math.ceil(duration / Time.Minute);
 
@@ -123,7 +123,7 @@ export async function turaelsTrialsStartCommand(user: MUser, channelID: string, 
 		m: method
 	});
 
-	let response = `${user.minionName} is now participating in Turaels Trials, it'll take around ${formatDuration(
+	const response = `${user.minionName} is now participating in Turaels Trials, it'll take around ${formatDuration(
 		task.duration
 	)} to finish.
 

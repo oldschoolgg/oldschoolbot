@@ -327,7 +327,7 @@ for (const mon of monsterPairedCLs) {
 			}
 
 			const loot = 'kill' in mon.mon ? mon.mon.kill(1, {}) : mon.mon.table.roll();
-			if (killableMonster && killableMonster.specialLoot) {
+			if (killableMonster?.specialLoot) {
 				killableMonster.specialLoot({ ownedItems: accumulatedLoot, loot, quantity: 1, cl: accumulatedLoot });
 			}
 			return { loot, cost };

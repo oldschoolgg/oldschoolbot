@@ -1,8 +1,8 @@
-import { Canvas, Image } from '@napi-rs/canvas';
+import fs from 'node:fs/promises';
+import { Canvas, type Image } from '@napi-rs/canvas';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { randArrItem, randInt, roll } from 'e';
-import fs from 'fs/promises';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { canvasImageFromBuffer, printWrappedText } from './util/canvasUtil';
 import { textBoxFile } from './util/chatHeadImage';
@@ -165,7 +165,7 @@ export const fightingMessages = [
 
 export const monkeyPhrases = ['Ah Ah!', 'Ah Uh Ah!', 'Ah!', 'Ook Ah Ook!', 'Ook Ah Uh!', 'Ook Ook!', 'Ook!', 'Ook.'];
 export const getMonkeyPhrase = () => {
-	let arr = [];
+	const arr = [];
 	for (let i = 0; i < randInt(5, 10); i++) {
 		arr.push(randArrItem(monkeyPhrases));
 	}

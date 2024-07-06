@@ -1,3 +1,6 @@
+import type { Giveaway } from '@prisma/client';
+import { type MessageEditOptions, time, userMention } from 'discord.js';
+import { Time, debounce, noOp, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 

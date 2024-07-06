@@ -180,12 +180,12 @@ export const raidsTask: MinionTask = {
 				cc
 					? userStatsBankUpdate(user.id, 'chincannon_destroyed_loot_bank', loot).then(() => ({
 							itemsAdded: new Bank()
-					  }))
+						}))
 					: transactItems({
 							userID,
 							itemsToAdd: loot,
 							collectionLog: true
-					  }),
+						}),
 				userStatsUpdate(
 					user.id,
 					{

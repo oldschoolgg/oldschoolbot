@@ -1,9 +1,11 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, reduceNumByPercent } from 'e';
 import { Emoji } from '../../lib/constants';
-import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Runecraft from '../../lib/skilling/skills/runecraft';

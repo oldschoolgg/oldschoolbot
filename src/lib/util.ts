@@ -1,13 +1,38 @@
-import { gzip } from 'node:zlib';
-
 import { type CommandResponse, stripEmojis } from '@oldschoolgg/toolkit';
-import { Time, calcWhatPercent, chunk, increaseNumByPercent, notEmpty, objectEntries, randArrItem, randInt, shuffleArr, sumArr } from 'e';
+import {
+	Time,
+	calcWhatPercent,
+	chunk,
+	notEmpty,
+	objectEntries,
+	randArrItem,
+	randInt,
+	shuffleArr,
+	sumArr
+} from 'e';
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
 import type { PrismaClient } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
-import { type BaseMessageOptions, type ButtonBuilder, type ButtonInteraction, type CacheType, type Collection, type CollectorFilter, ComponentType, type Guild, type InteractionReplyOptions, InteractionType, type Message, type MessageEditOptions, type SelectMenuInteraction, type TextChannel, bold, escapeMarkdown } from 'discord.js';
+import {
+	type BaseMessageOptions,
+	type ButtonBuilder,
+	type ButtonInteraction,
+	type CacheType,
+	type Collection,
+	type CollectorFilter,
+	ComponentType,
+	type Guild,
+	type InteractionReplyOptions,
+	InteractionType,
+	type Message,
+	type MessageEditOptions,
+	type SelectMenuInteraction,
+	type TextChannel,
+	bold,
+	escapeMarkdown
+} from 'discord.js';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
@@ -15,7 +40,15 @@ import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../config';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { ClueTiers } from './clues/clueTiers';
-import { BitField, ONE_TRILLION, type ProjectileType, badgesCache, globalConfig, projectiles, usernameCache } from './constants';
+import {
+	BitField,
+	ONE_TRILLION,
+	type ProjectileType,
+	badgesCache,
+	globalConfig,
+	projectiles,
+	usernameCache
+} from './constants';
 import type { UserStatsDataNeededForCL } from './data/Collections';
 import { doaCL } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
@@ -134,7 +167,7 @@ export function getSupportGuild(): Guild | null {
 	return guild;
 }
 
-function calcCombatLevel(skills: Skills) {
+export function calcCombatLevel(skills: Skills) {
 	const defence = skills.defence ? convertXPtoLVL(skills.defence) : 1;
 	const ranged = skills.ranged ? convertXPtoLVL(skills.ranged) : 1;
 	const hitpoints = skills.hitpoints ? convertXPtoLVL(skills.hitpoints) : 1;

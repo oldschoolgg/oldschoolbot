@@ -1,14 +1,14 @@
 import { EmbedBuilder } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
-import { checkUserCanUseDegradeableItem, degradeablePvmBoostItems, degradeItem } from '../../../lib/degradeableItems';
-import { GearStats } from '../../../lib/gear';
+import { checkUserCanUseDegradeableItem, degradeItem, degradeablePvmBoostItems } from '../../../lib/degradeableItems';
+import type { GearStats } from '../../../lib/gear';
 import { trackLoot } from '../../../lib/lootTrack';
-import { Naxxus, NAXXUS_HP } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
+import { NAXXUS_HP, Naxxus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { Gear } from '../../../lib/structures/Gear';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, isWeekend } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -172,7 +172,7 @@ export async function naxxusCommand(user: MUser, channelID: string, quantity: nu
 		)}% of max melee, ${Math.ceil(mage)}% of max mage]`
 	);
 
-	for (let itemBoost of itemBoosts) {
+	for (const itemBoost of itemBoosts) {
 		if (user.gear[itemBoost.setup].hasEquipped(itemBoost.item.id)) {
 			effectiveTime = reduceNumByPercent(effectiveTime, itemBoost.boost);
 			boosts.push(`${itemBoost.boost}% ${itemBoost.item.name}`);

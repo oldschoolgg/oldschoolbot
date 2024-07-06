@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
-
+import { inventionBoosts } from '../../invention/inventions';
+import type { Consumable } from '../types';
 
 // Configure boost percents
 export const boostCannon = 30;

@@ -1,10 +1,12 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
 import { Canvas, type Image, type SKRSContext2D, loadImage } from '@napi-rs/canvas';
 import { mentionCommand } from '@oldschoolgg/toolkit';
+import type { CommandResponse, CommandRunOptions } from '@oldschoolgg/toolkit';
 import { type Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
-import type { ChatInputCommandInteraction, User } from 'discord.js';
+import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
 import {
 	Time,
 	calcPercentOfNum,
@@ -15,9 +17,6 @@ import {
 	randInt,
 	reduceNumByPercent
 } from 'e';
-import { readFile } from 'fs/promises';
-import { ApplicationCommandOptionType, type CommandRunOptions } from 'mahoji';
-import type { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -1084,9 +1083,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	reply += `\n\n${monster.name} has a base kill time of **${formatDuration(
 		monster.timeToFinish,
 		true
-	)}**, your kill time is **${formatDuration(speed, true)}**, meaning you can kill **${(
-		maxTripLength / speed
-	).toFixed(2)}** in your max trip length of **${formatDuration(maxTripLength, true)}**`;
+	)}**, your kill time is **${formatDuration(speed, true)}**, meaning you can kill **${(maxTripLength / speed).toFixed(2)}** in your max trip length of **${formatDuration(maxTripLength, true)}**`;
 
 	return reply;
 }
@@ -1823,7 +1820,7 @@ export const tamesCommand: OSBMahojiCommand = {
 								!value
 									? true
 									: i.name.toLowerCase().includes(value.toLowerCase()) ||
-									  i.aliases.some(alias => stringMatches(alias, value))
+										i.aliases.some(alias => stringMatches(alias, value))
 							)
 							.map(i => ({ name: i.name, value: i.name }));
 					}

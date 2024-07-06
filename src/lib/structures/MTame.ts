@@ -1,11 +1,11 @@
 import { type Tame, tame_growth } from '@prisma/client';
 import { round } from 'e';
 import { Bank, Items } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { getSimilarItems } from '../data/similarItems';
 import { prisma } from '../settings/prisma';
-import { Species, tameFeedableItems, tameSpecies, TameSpeciesID } from '../tames';
+import { type Species, TameSpeciesID, tameFeedableItems, tameSpecies } from '../tames';
 import type { ItemBank } from '../types';
 import getOSItem from '../util/getOSItem';
 

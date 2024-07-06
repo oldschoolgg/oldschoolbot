@@ -1,7 +1,8 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import { Canvas } from '@napi-rs/canvas';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import {ApplicationCommandOptionType } from 'discord.js'; 
 import { Time } from 'e';
-import { ApplicationCommandOptionType, type CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';

@@ -10,12 +10,12 @@ import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier, secretItems } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { gearImages } from '../../lib/gear/functions/generateGearImage';
 import { Inventions } from '../../lib/invention/inventions';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { prisma } from '../../lib/settings/prisma';
 import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';

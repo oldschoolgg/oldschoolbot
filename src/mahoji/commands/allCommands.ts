@@ -46,7 +46,6 @@ import { kcCommand } from './kc';
 import { killCommand } from './kill';
 import { lapsCommand } from './laps';
 import { leaderboardCommand } from './leaderboard';
-import { leaguesOSRSCommand } from './leagues';
 import { lightCommand } from './light';
 import { lootCommand } from './loot';
 import { lvlCommand } from './lvl';
@@ -74,7 +73,6 @@ import { simulateCommand } from './simulate';
 import { slayerCommand } from './slayer';
 import { smeltingCommand } from './smelt';
 import { smithCommand } from './smith';
-import { statsCommand } from './stats';
 import { stealCommand } from './steal';
 import { testPotatoCommand } from './testpotato';
 import { tksCommand } from './tokkulshop';
@@ -83,7 +81,6 @@ import { tradeCommand } from './trade';
 import { triviaCommand } from './trivia';
 import { mahojiUseCommand } from './use';
 import { wikiCommand } from './wiki';
-import { xpCommand } from './xp';
 
 export const allCommands: OSBMahojiCommand[] = [
 	adminCommand,
@@ -154,7 +151,6 @@ export const allCommands: OSBMahojiCommand[] = [
 	toolsCommand,
 	tksCommand,
 	mahojiUseCommand,
-	leaguesOSRSCommand,
 	bingoCommand,
 	bankCommand,
 	bossrecordCommand,
@@ -167,8 +163,6 @@ export const allCommands: OSBMahojiCommand[] = [
 	rpCommand,
 	collectionLogCommand,
 	gearPresetsCommand,
-	statsCommand,
-	xpCommand
 ];
 
 if (!production && testPotatoCommand) {

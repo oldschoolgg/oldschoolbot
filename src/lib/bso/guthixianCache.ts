@@ -1,8 +1,8 @@
+import { formatDuration, getInterval } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 
 import { prisma } from '../settings/prisma';
-import { MinigameActivityTaskOptionsWithNoChanges } from '../types/minions';
-import { formatDuration, getInterval } from '../util';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../types/minions';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 
 export const getGuthixianCacheInterval = () => getInterval(24);
@@ -47,7 +47,7 @@ export async function joinGuthixianCache(user: MUser, channelID: string) {
 		minigameID: 'guthixian_cache'
 	});
 
-	let response = `${
+	const response = `${
 		user.minionName
 	} is now participating in the current Guthixian Cache, it'll take around ${formatDuration(
 		task.duration

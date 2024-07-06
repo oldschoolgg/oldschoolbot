@@ -2,7 +2,6 @@ import { Time, increaseNumByPercent, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-
 import { addItemToBank, randomVariation, toKMB } from 'oldschooljs/dist/util';
 import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
@@ -11,7 +10,7 @@ import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import Agility from '../../lib/skilling/skills/agility';
 import { calcUserGorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
-import { SkillsEnum, SkillsEnum, type Course } from '../../lib/skilling/types';
+import { type Course, SkillsEnum } from '../../lib/skilling/types';
 import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';

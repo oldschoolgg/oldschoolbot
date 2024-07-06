@@ -13,9 +13,9 @@ import {
 } from '../../../lib/data/cox';
 import { degradeItem } from '../../../lib/degradeableItems';
 import {
+	InventionID,
 	canAffordInventionBoost,
 	inventionBoosts,
-	InventionID,
 	inventionItemBoost
 } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';

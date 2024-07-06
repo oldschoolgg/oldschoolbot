@@ -30,7 +30,7 @@ export function calcGorajanShardChance({
 	dungLevel: number;
 	hasRingOfLuck: boolean;
 }) {
-	let goraShardBoosts = [];
+	const goraShardBoosts = [];
 	let baseRate = 2000;
 	if (hasMasterCape) {
 		baseRate /= 2;

@@ -9,7 +9,6 @@ import { AlignmentEnum, AsciiTable3 } from 'ascii-table3';
 import deepmerge from 'deepmerge';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
-import { time } from 'node:console';
 import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from 'discord.js';
 import { Time, clamp, objectEntries, roll } from 'e';
 import { Bank, Items, LootTable } from 'oldschooljs';
@@ -214,30 +213,6 @@ export function getToaKCs(toaRaidLevelsBank: Prisma.JsonValue) {
 		entryKC += qty;
 	}
 	return { entryKC, normalKC, expertKC, totalKC: entryKC + normalKC + expertKC };
-}
-export const alphabeticalSort = (a: string, b: string) => a.localeCompare(b);
-
-export function dateFm(date: Date) {
-	return `${time(date, 'T')} (${time(date, 'R')})`;
-}
-
-export function getInterval(intervalHours: number) {
-	const currentTime = new Date();
-	const currentHour = currentTime.getHours();
-
-	// Find the nearest interval start hour (0, intervalHours, 2*intervalHours, etc.)
-	const startHour = currentHour - (currentHour % intervalHours);
-	const startInterval = new Date(currentTime);
-	startInterval.setHours(startHour, 0, 0, 0);
-
-	const endInterval = new Date(startInterval);
-	endInterval.setHours(startHour + intervalHours);
-
-	return {
-		start: startInterval,
-		end: endInterval,
-		nextResetStr: dateFm(endInterval)
-	};
 }
 
 export function calculateSimpleMonsterDeathChance({

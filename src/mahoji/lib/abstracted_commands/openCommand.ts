@@ -263,7 +263,7 @@ export async function abstractedOpenCommand(
 		? allOpenables.filter(
 				({ openedItem, excludeFromOpenAll }) =>
 					user.bank.has(openedItem.id) && !favorites.includes(openedItem.id) && excludeFromOpenAll !== true
-		  )
+			)
 		: names
 				.map(name => allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name))))
 				.filter(notEmpty);

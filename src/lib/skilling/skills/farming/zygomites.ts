@@ -1,14 +1,14 @@
 import { SimpleTable } from '@oldschoolgg/toolkit';
 import { randArrItem, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { MysteryBoxes } from '../../../bsoOpenables';
 import { BitField } from '../../../constants';
 import { globalDroprates } from '../../../data/globalDroprates';
 import { clAdjustedDroprate } from '../../../util';
 import getOSItem from '../../../util/getOSItem';
-import { Plant } from '../../types';
+import type { Plant } from '../../types';
 
 export const zygomiteSeedMutChance = 15;
 

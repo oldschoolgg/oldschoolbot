@@ -258,7 +258,7 @@ export const raidCommand: OSBMahojiCommand = {
 									}
 								]
 							} as any
-					  ])
+						])
 			]
 		}
 	],

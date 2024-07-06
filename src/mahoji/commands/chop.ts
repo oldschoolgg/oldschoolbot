@@ -2,6 +2,8 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 
+import { IVY_MAX_TRIP_LENGTH_BOOST, TWITCHERS_GLOVES, type TwitcherGloves } from '../../lib/constants';
+import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
 import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
@@ -200,7 +202,7 @@ export const chopCommand: OSBMahojiCommand = {
 		boosts.push(`**${axeMultiplier}x** success multiplier for Bronze axe`);
 
 		if (user.hasEquippedOrInBank(['Drygore axe'])) {
-			let [predeterminedTotalTime] = determineWoodcuttingTime({
+			const [predeterminedTotalTime] = determineWoodcuttingTime({
 				quantity,
 				user,
 				log,

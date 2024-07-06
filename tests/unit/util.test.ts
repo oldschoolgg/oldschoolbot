@@ -94,11 +94,7 @@ describe('util', () => {
 	test('sellPriceOfItem', () => {
 		const item = getOSItem('Dragon pickaxe');
 		const { price } = item;
-<<<<<<< HEAD
-		let expected = reduceNumByPercent(price, 25);
-=======
-		const expected = reduceNumByPercent(price, 20);
->>>>>>> master
+		const expected = reduceNumByPercent(price, 25);
 		expect(sellPriceOfItem(item)).toEqual({ price: expected, basePrice: price });
 		expect(sellPriceOfItem(getOSItem('Yellow square'))).toEqual({ price: 0, basePrice: 0 });
 
@@ -125,9 +121,9 @@ describe('util', () => {
 		const item = getOSItem('Dragon pickaxe');
 		const { cost } = item;
 
-		let expectedOneQty =
+		const expectedOneQty =
 			(((0.4 - 0.015 * Math.min(1 - 1, 10)) * Math.min(1, 11) + Math.max(1 - 11, 0) * 0.1) * cost) / 1;
-		let expectedTwentytwoQty =
+		const expectedTwentytwoQty =
 			(((0.4 - 0.015 * Math.min(22 - 1, 10)) * Math.min(22, 11) + Math.max(22 - 11, 0) * 0.1) * cost) / 22;
 		expect(sellStorePriceOfItem(item, 1)).toEqual({ price: expectedOneQty, basePrice: cost });
 		expect(sellStorePriceOfItem(item, 22)).toEqual({ price: expectedTwentytwoQty, basePrice: cost });
@@ -156,17 +152,10 @@ describe('util', () => {
 		expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRateLvl99);
 		// Lvl 120 (BSO) and 5B xp
 		testUser = mockMUser({
-<<<<<<< HEAD
 			skills_agility: 5_000_000_000
 		});
 		const dropRate5b = Math.floor((baseDropRate - 120 * 25) / 15);
 		expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRate5b);
-=======
-			skills_agility: 200_000_000
-		}) as any as MUser;
-		const dropRate200M = Math.floor((baseDropRate - 99 * 25) / 15);
-		expect(skillingPetDropRate(testUser, SkillsEnum.Agility, baseDropRate).petDropRate).toEqual(dropRate200M);
->>>>>>> master
 	});
 
 	test('userBusyCache', () => {

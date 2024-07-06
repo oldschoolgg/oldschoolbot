@@ -1,12 +1,12 @@
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
+import { processPendingActivities } from '../../src/lib/Task';
 import { MemoryHarvestType } from '../../src/lib/bso/divination';
 import { convertStoredActivityToFlatActivity, prisma } from '../../src/lib/settings/prisma';
 import { Gear } from '../../src/lib/structures/Gear';
-import { processPendingActivities } from '../../src/lib/Task';
-import { MemoryHarvestOptions } from '../../src/lib/types/minions';
+import type { MemoryHarvestOptions } from '../../src/lib/types/minions';
 import itemID from '../../src/lib/util/itemID';
 import { divinationCommand } from '../../src/mahoji/commands/divination';
 import { createTestUser, mockClient } from './util';

@@ -87,7 +87,6 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 			);
 		}
 
-
 		const cost = new Bank().add(food.id, amountNeeded);
 
 		foodStr.push(`**Removed ${cost}**`);

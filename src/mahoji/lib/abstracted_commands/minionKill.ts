@@ -26,7 +26,21 @@ import { type GearStat, maxOffenceStats } from '../../../lib/gear';
 import { InventionID, canAffordInventionBoost, inventionItemBoost } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import type { CombatOptionsEnum } from '../../../lib/minions/data/combatConstants';
-import { SlayerActivityConstants, boostCannon, boostCannonMulti, boostIceBarrage, boostIceBurst, boostSuperiorCannon, boostSuperiorCannonMulti, cannonBanks, cannonMultiConsumables, cannonSingleConsumables, iceBarrageConsumables, iceBurstConsumables, superiorCannonSingleConsumables } from '../../../lib/minions/data/combatConstants';
+import {
+	SlayerActivityConstants,
+	boostCannon,
+	boostCannonMulti,
+	boostIceBarrage,
+	boostIceBurst,
+	boostSuperiorCannon,
+	boostSuperiorCannonMulti,
+	cannonBanks,
+	cannonMultiConsumables,
+	cannonSingleConsumables,
+	iceBarrageConsumables,
+	iceBurstConsumables,
+	superiorCannonSingleConsumables
+} from '../../../lib/minions/data/combatConstants';
 import { BSOMonsters } from '../../../lib/minions/data/killableMonsters/custom/customMonsters';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { quests } from '../../../lib/minions/data/quests';
@@ -150,7 +164,7 @@ export async function minionKillCommand(
 	quantity: number | undefined,
 	method: PvMMethod | undefined,
 	wilderness: boolean | undefined,
-	solo: boolean | undefined
+	_solo: boolean | undefined
 ) {
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
@@ -415,7 +429,7 @@ export async function minionKillCommand(
 	}
 
 	function calculateSalveAmuletBoost() {
-		const salveBoost = false;
+		let salveBoost = false;
 		let salveEnhanced = false;
 		const style = attackStyles[0];
 		if (style === 'ranged' || style === 'magic') {
@@ -457,8 +471,8 @@ export async function minionKillCommand(
 			virtusPiecesEquipped > 1
 				? ` with ${virtusPiecesEquipped} Virtus pieces`
 				: virtusPiecesEquipped === 1
-				? ` with ${virtusPiecesEquipped} Virtus piece`
-				: '';
+					? ` with ${virtusPiecesEquipped} Virtus piece`
+					: '';
 	}
 
 	if (isDragon && monster.name.toLowerCase() !== 'vorkath') {
@@ -512,7 +526,7 @@ export async function minionKillCommand(
 	// Calculate Cannon and Barrage boosts + costs:
 	let usingCannon = false;
 	let cannonMulti = false;
-	const chinning = false;
+	let chinning = false;
 	let burstOrBarrage = 0;
 	const hasSuperiorCannon = user.owns('Superior dwarf multicannon');
 	const hasCannon = cannonBanks.some(i => user.owns(i)) || hasSuperiorCannon;
@@ -711,7 +725,7 @@ export async function minionKillCommand(
 				degItemBeingUsed.push(degItem);
 			}
 		}
-	} else 
+	} else
 		for (const degItem of degradeablePvmBoostItems) {
 			const isUsing =
 				convertPvmStylesToGearSetup(attackStyles).includes(degItem.attackStyle) &&
@@ -724,10 +738,10 @@ export async function minionKillCommand(
 				degItemBeingUsed.push(degItem);
 			}
 		}
-		for (const degItem of degItemBeingUsed) {
-			boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
-			timeToFinish = reduceNumByPercent(timeToFinish, degItem.boost);
-		}
+	for (const degItem of degItemBeingUsed) {
+		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
+		timeToFinish = reduceNumByPercent(timeToFinish, degItem.boost);
+	}
 
 	if (monster.equippedItemBoosts) {
 		for (const boostSet of monster.equippedItemBoosts) {
@@ -1150,11 +1164,11 @@ export async function minionKillCommand(
 				return e.message;
 			}
 		}
-	} else  {
-			boosts.push(`${noFoodBoost}% for no food`);
+	} else {
+		boosts.push(`${noFoodBoost}% for no food`);
 		duration = reduceNumByPercent(duration, noFoodBoost);
 	}
-	
+
 	if (monster.deathProps) {
 		const deathChance = calculateSimpleMonsterDeathChance({ ...monster.deathProps, currentKC: kcForThisMonster });
 		messages.push(`${deathChance.toFixed(1)}% chance of death`);
@@ -1163,7 +1177,7 @@ export async function minionKillCommand(
 	// Remove items after food calc to prevent losing items if the user doesn't have the right amount of food. Example: Mossy key
 	if (lootToRemove.length > 0) {
 		updateBankSetting('economyStats_PVMCost', lootToRemove);
-		await user.specialRemoveItems(lootToRemove, {wildy: isInWilderness } );
+		await user.specialRemoveItems(lootToRemove, { wildy: isInWilderness });
 		totalCost.add(lootToRemove);
 	}
 

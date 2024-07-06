@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process';
 import { inspect } from 'node:util';
 
-import { type CommandRunOptions, bulkUpdateCommands } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, bulkUpdateCommands, convertBankToPerHourStats, dateFm } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import type { ClientStorage } from '@prisma/client';
@@ -46,8 +46,6 @@ import { Gear } from '../../lib/structures/Gear';
 import {
 	calcPerHour,
 	cleanString,
-	convertBankToPerHourStats,
-	dateFm,
 	formatDuration,
 	sanitizeBank,
 	stringMatches,

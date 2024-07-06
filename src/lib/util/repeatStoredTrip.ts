@@ -12,7 +12,66 @@ import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
 import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
-import type { ActivityTaskOptionsWithQuantity, AgilityActivityTaskOptions, AlchingActivityTaskOptions, AnimatedArmourActivityTaskOptions, BathhouseTaskOptions, BuryingActivityTaskOptions, ButlerActivityTaskOptions, CastingActivityTaskOptions, ClueActivityTaskOptions, CollectingOptions, ConstructionActivityTaskOptions, CookingActivityTaskOptions, CraftingActivityTaskOptions, CutLeapingFishActivityTaskOptions, DOAOptions, DarkAltarOptions, DisassembleTaskOptions, DungeoneeringOptions, EnchantingActivityTaskOptions, FarmingActivityTaskOptions, FiremakingActivityTaskOptions, FishingActivityTaskOptions, FletchingActivityTaskOptions, GauntletOptions, GiantsFoundryActivityTaskOptions, GroupMonsterActivityTaskOptions, GuardiansOfTheRiftActivityTaskOptions, HerbloreActivityTaskOptions, HunterActivityTaskOptions, InfernoOptions, KibbleOptions, MahoganyHomesActivityTaskOptions, MemoryHarvestOptions, MiningActivityTaskOptions, MonsterActivityTaskOptions, MotherlodeMiningActivityTaskOptions, NewBossOptions, NexTaskOptions, NightmareActivityTaskOptions, OfferingActivityTaskOptions, PickpocketActivityTaskOptions, PuroPuroActivityTaskOptions, RaidsOptions, ResearchTaskOptions, RunecraftActivityTaskOptions, SawmillActivityTaskOptions, ScatteringActivityTaskOptions, ShadesOfMortonOptions, SmeltingActivityTaskOptions, SmithingActivityTaskOptions, TOAOptions, TempleTrekkingActivityTaskOptions, TheatreOfBloodTaskOptions, TiaraRunecraftActivityTaskOptions, TinkeringWorkshopOptions, TuraelsTrialsOptions, WoodcuttingActivityTaskOptions, ZalcanoActivityTaskOptions } from '../types/minions';
+import type {
+	ActivityTaskOptionsWithQuantity,
+	AgilityActivityTaskOptions,
+	AlchingActivityTaskOptions,
+	AnimatedArmourActivityTaskOptions,
+	BathhouseTaskOptions,
+	BuryingActivityTaskOptions,
+	ButlerActivityTaskOptions,
+	CastingActivityTaskOptions,
+	ClueActivityTaskOptions,
+	CollectingOptions,
+	ConstructionActivityTaskOptions,
+	CookingActivityTaskOptions,
+	CraftingActivityTaskOptions,
+	CutLeapingFishActivityTaskOptions,
+	DOAOptions,
+	DarkAltarOptions,
+	DisassembleTaskOptions,
+	DungeoneeringOptions,
+	EnchantingActivityTaskOptions,
+	FarmingActivityTaskOptions,
+	FiremakingActivityTaskOptions,
+	FishingActivityTaskOptions,
+	FletchingActivityTaskOptions,
+	GauntletOptions,
+	GiantsFoundryActivityTaskOptions,
+	GroupMonsterActivityTaskOptions,
+	GuardiansOfTheRiftActivityTaskOptions,
+	HerbloreActivityTaskOptions,
+	HunterActivityTaskOptions,
+	InfernoOptions,
+	KibbleOptions,
+	MahoganyHomesActivityTaskOptions,
+	MemoryHarvestOptions,
+	MiningActivityTaskOptions,
+	MonsterActivityTaskOptions,
+	MotherlodeMiningActivityTaskOptions,
+	NewBossOptions,
+	NexTaskOptions,
+	NightmareActivityTaskOptions,
+	OfferingActivityTaskOptions,
+	PickpocketActivityTaskOptions,
+	PuroPuroActivityTaskOptions,
+	RaidsOptions,
+	ResearchTaskOptions,
+	RunecraftActivityTaskOptions,
+	SawmillActivityTaskOptions,
+	ScatteringActivityTaskOptions,
+	ShadesOfMortonOptions,
+	SmeltingActivityTaskOptions,
+	SmithingActivityTaskOptions,
+	TOAOptions,
+	TempleTrekkingActivityTaskOptions,
+	TheatreOfBloodTaskOptions,
+	TiaraRunecraftActivityTaskOptions,
+	TinkeringWorkshopOptions,
+	TuraelsTrialsOptions,
+	WoodcuttingActivityTaskOptions,
+	ZalcanoActivityTaskOptions
+} from '../types/minions';
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
@@ -107,10 +166,6 @@ export const tripHandlers = {
 		args: () => ({})
 	},
 	[activity_type_enum.Easter]: {
-		commandName: 'm',
-		args: () => ({})
-	},
-	[activity_type_enum.HalloweenEvent]: {
 		commandName: 'm',
 		args: () => ({})
 	},

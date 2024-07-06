@@ -2,10 +2,10 @@ import { calcPercentOfNum, increaseNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import {
+	type DivinationEnergy,
+	MemoryHarvestType,
 	calcEnergyPerMemory,
-	divinationEnergies,
-	DivinationEnergy,
-	MemoryHarvestType
+	divinationEnergies
 } from '../../../lib/bso/divination';
 import { Emoji } from '../../../lib/constants';
 import { inventionBoosts } from '../../../lib/invention/inventions';
@@ -22,14 +22,14 @@ const MEMORIES_PER_HARVEST = SECONDS_TO_HARVEST * 2;
 export const totalTimePerRound = SECONDS_TO_HARVEST + SECONDS_TO_CONVERT * MEMORIES_PER_HARVEST;
 
 function calcConversionResult(hasBoon: boolean, method: MemoryHarvestType, energy: DivinationEnergy) {
-	let convertToXPXP = hasBoon ? energy.convertBoon ?? energy.convertNormal : energy.convertNormal;
+	const convertToXPXP = hasBoon ? energy.convertBoon ?? energy.convertNormal : energy.convertNormal;
 
 	switch (method) {
 		case MemoryHarvestType.ConvertToXP: {
 			return { xp: convertToXPXP };
 		}
 		case MemoryHarvestType.ConvertToEnergy: {
-			let xp = 1 + Math.ceil(convertToXPXP / 3.5);
+			const xp = 1 + Math.ceil(convertToXPXP / 3.5);
 			return { xp };
 		}
 		case MemoryHarvestType.ConvertWithEnergyToXP: {
@@ -80,7 +80,7 @@ export function memoryHarvestResult({
 
 	for (let i = 0; i < rounds; i++) {
 		// Step 1: Harvest memories
-		let memoriesHarvested = MEMORIES_PER_HARVEST;
+		const memoriesHarvested = MEMORIES_PER_HARVEST;
 
 		totalMemoriesHarvested += memoriesHarvested;
 
@@ -129,7 +129,7 @@ export function memoryHarvestResult({
 			}
 		}
 
-		let clueChance = 1200;
+		const clueChance = 1200;
 		// Step 3: Roll for pet
 		for (let t = 0; t < memoriesHarvested; t++) {
 			if (roll(petChance)) {
@@ -183,7 +183,7 @@ export function memoryHarvestResult({
 export const memoryHarvestTask: MinionTask = {
 	type: 'MemoryHarvest',
 	async run(data: MemoryHarvestOptions) {
-		let {
+		const {
 			userID,
 			channelID,
 			duration,

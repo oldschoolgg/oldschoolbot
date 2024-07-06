@@ -1,7 +1,6 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { EmbedBuilder, type Message, type User } from 'discord.js';
 import { Time, isFunction, randArrItem, shuffleArr } from 'e';
-import he from 'he';
 import fetch from 'node-fetch';
 import { Bank, Items, LootTable, Monsters } from 'oldschooljs';
 
@@ -26,7 +25,7 @@ const triviaChallenge: Challenge = async (msg: Message): Promise<User | null> =>
 
 	const embed = new EmbedBuilder()
 		.setTitle('Reply with the answer for a reward!')
-		.setDescription(`${he.decode(question)}\n\nPossible answers: ${allAnswers.join(', ')}`)
+		.setDescription(`${(question)}\n\nPossible answers: ${allAnswers.join(', ')}`)
 		.setThumbnail(
 			'https://cdn.discordapp.com/attachments/357422607982919680/1100378550189707314/534px-Mystery_box_detail.png'
 		);
@@ -99,8 +98,8 @@ const createdChallenge: Challenge = async (msg: Message): Promise<User | null> =
 				isFunction(randomCreatable.inputItems)
 					? "This shouldn't be possible..."
 					: randomCreatable.inputItems instanceof Bank
-					? randomCreatable.inputItems
-					: new Bank(randomCreatable.inputItems)
+						? randomCreatable.inputItems
+						: new Bank(randomCreatable.inputItems)
 			}`
 		)
 		.setThumbnail(

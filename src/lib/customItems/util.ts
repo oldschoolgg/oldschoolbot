@@ -1,8 +1,8 @@
 import { cleanString as deepCleanString } from '@oldschoolgg/toolkit';
-import { DeepPartial } from '@sapphire/utilities';
+import type { DeepPartial } from '@sapphire/utilities';
 import deepMerge from 'deepmerge';
 import { Items } from 'oldschooljs';
-import { Item, ItemRequirements } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemRequirements } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { cleanString } from 'oldschooljs/dist/util/cleanString';
 
@@ -35,12 +35,7 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 	if (hasSet.some(i => i.name === name) && name !== 'Smokey') {
 		throw new Error(`Tried to add 2 custom items with same name, called ${name}`);
 	}
-	if (
-		newItemData &&
-		newItemData.customItemData &&
-		newItemData.customItemData.superTradeableButTradeableOnGE &&
-		!newItemData.customItemData.isSuperUntradeable
-	) {
+	if (newItemData?.customItemData?.superTradeableButTradeableOnGE && !newItemData.customItemData.isSuperUntradeable) {
 		throw new Error('Tried to add a custom item with superTradeableButTradeableOnGE, but not isSuperUntradeable');
 	}
 	const data: Item = deepMerge({ ...getOSItem(baseItem) }, { ...newItemData, name, id }) as Item;

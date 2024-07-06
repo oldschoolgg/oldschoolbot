@@ -2,12 +2,14 @@ import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum, calcWhatPercent, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
 import { countUsersWithItemInCl, prisma } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
+import type { InfernoOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
@@ -239,7 +241,7 @@ export const infernoTask: MinionTask = {
 			const emergedKC = await getMinigameScore(user.id, 'emerged_inferno');
 			// If first successfull emerged zuk kill
 			if (baseBank.has('Infernal cape') && isEmergedZuk && !diedEmergedZuk && emergedKC === 1) {
-				const usersDefeatedEmergedZuk = parseInt(
+				const usersDefeatedEmergedZuk = Number.parseInt(
 					(
 						await prisma.$queryRawUnsafe<any>(
 							`SELECT COUNT(user_id)

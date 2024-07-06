@@ -13,10 +13,10 @@ import './dwarven';
 import './moktang';
 import './leagues';
 
-import { EquipmentSlot, ItemRequirements } from 'oldschooljs/dist/meta/types';
+import { EquipmentSlot, type ItemRequirements } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from '../util/getOSItem';
-import { maxedRequirements, setCustomItem, UN_EQUIPPABLE } from './util';
+import { UN_EQUIPPABLE, maxedRequirements, setCustomItem } from './util';
 
 setCustomItem(1579, "Thieves' armband", 'Rune gloves', {}, 100_000);
 setCustomItem(

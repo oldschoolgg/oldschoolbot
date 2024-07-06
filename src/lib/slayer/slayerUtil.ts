@@ -2,10 +2,9 @@ import { notEmpty, objectKeys, randFloat, randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
-import { BitField } from 'discord.js';
 import { KourendKebosDiary, LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
-import type { PvMMethod } from '../constants';
+import { BitField, type PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import type { KillableMonster } from '../minions/types';
@@ -246,7 +245,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 
 	let quantity = randInt(assignedTask!.amount[0], maxQuantity);
 
-	const extendReward = SlayerRewardsShop.find(srs => srs.extendID && srs.extendID.includes(assignedTask!.monster.id));
+	const extendReward = SlayerRewardsShop.find(srs => srs.extendID?.includes(assignedTask!.monster.id));
 	if (extendReward && unlocks.includes(extendReward.id)) {
 		quantity = assignedTask.extendedAmount
 			? randInt(assignedTask.extendedAmount[0], assignedTask.extendedAmount[1])

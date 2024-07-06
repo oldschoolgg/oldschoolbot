@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { prisma } from '../settings/prisma';
 
@@ -9,7 +9,7 @@ export async function getUsersTamesCollectionLog(userID: string) {
 			user_id: userID
 		}
 	});
-	let totalBank = new Bank();
+	const totalBank = new Bank();
 	for (const tame of allTames) {
 		totalBank.add(tame.max_total_loot as ItemBank);
 	}

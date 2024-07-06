@@ -379,9 +379,7 @@ for (const override of overrides) {
 }
 
 export async function getIgneTameKC(tame: Tame) {
-	const result = await prisma.$queryRaw<
-		{ mid: number; kc: number }[]
-	>`SELECT (data->>'monsterID')::int AS mid, SUM((data->>'quantity')::int)::int AS kc
+	const result = await prisma.$queryRaw<{ mid: number; kc: number }[]>`SELECT (data->>'monsterID')::int AS mid, SUM((data->>'quantity')::int)::int AS kc
 										  FROM tame_activity
 										  WHERE tame_id = ${tame.id}
 										  AND completed = true

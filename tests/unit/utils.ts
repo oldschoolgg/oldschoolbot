@@ -116,11 +116,7 @@ export async function testRunCmd({
 	if (mockedUser.GP === null || Number.isNaN(mockedUser.GP) || mockedUser.GP < 0 || mockedUser.GP === undefined) {
 		throw new Error(`Invalid GP for user ${hash}`);
 	}
-<<<<<<< HEAD
 	mockUserMap.set(hash, mockedUser);
-=======
-	mockUserMap.set(hash, mockedUser as any as MUser);
->>>>>>> master
 	const options: any = {
 		user: mockedUser.user,
 		channelID: '1234',

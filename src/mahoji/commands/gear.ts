@@ -3,8 +3,11 @@ import { toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 
+import type { GearSetupType } from '@prisma/client';
 import { gearValidationChecks } from '../../lib/constants';
 import { allPetIDs } from '../../lib/data/CollectionsExport';
+import { GearSetupTypes, GearStat } from '../../lib/gear';
+import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { itemNameFromID } from '../../lib/util';

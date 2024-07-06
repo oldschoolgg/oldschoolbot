@@ -69,7 +69,7 @@ export default function addSkillingClueToLoot(
 		}
 
 		if (!roll(chance)) continue;
-		let nextTier = false;
+		const nextTier = false;
 		let gotClue = false;
 		let clueRoll = randFloat(0, cluesTotalWeight);
 		for (const clue of clues) {

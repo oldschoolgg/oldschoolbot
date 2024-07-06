@@ -236,10 +236,10 @@ class CollectionLogTask {
 			type === 'sacrifice'
 				? 'Sacrifice'
 				: type === 'collection'
-				? 'Collection'
-				: type === 'tame'
-				? 'Tame Collection'
-				: 'Bank'
+					? 'Collection'
+					: type === 'tame'
+						? 'Tame Collection'
+						: 'Bank'
 		} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()} / ${calcWhatPercent(
 			userTotalCl[1],
 			userTotalCl[0]

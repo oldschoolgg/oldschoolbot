@@ -5,55 +5,62 @@ import { GeneralBank } from '../../src/lib/structures/GeneralBank';
 describe('GeneralBank', () => {
 			if (!key.startsWith('F')) throw new Error(`Key ${key} does not start with F`);
 		};
-		bank = new GeneralBank<string>({ validator });
-	});
+bank = new GeneralBank<string>({ validator });
+})
 
-	it('initializes an empty bank correctly', () => {
-		expect(bank.toString()).toBe('Bank is empty');
-	});
+it('initializes an empty bank correctly', () =>
+{
+	expect(bank.toString()).toBe('Bank is empty');
+}
+)
 
-	it('adds and retrieves an item correctly', () => {
-		bank.add('Fgold', 100);
-		expect(bank.amount('Fgold')).toBe(100);
-	});
+it('adds and retrieves an item correctly', () =>
+{
+	bank.add('Fgold', 100);
+	expect(bank.amount('Fgold')).toBe(100);
+}
+)
 
-	it('throws an error if adding an item with a key not starting with F', () => {
-		expect(() => bank.add('gold', 100)).toThrow('Key gold does not start with F');
-	});
+it('throws an error if adding an item with a key not starting with F', () =>
+{
+	expect(() => bank.add('gold', 100)).toThrow('Key gold does not start with F');
+}
+)
 
-	it('removes items correctly and respects item non-existence', () => {
-		bank.add('Fsilver', 50);
-		bank.remove('Fsilver', 20);
-		expect(bank.amount('Fsilver')).toBe(30);
-		expect(() => bank.remove('Fsilver', 50)).toThrow();
-	});
-
-	it('handles cloning correctly', () => {
-		bank.add('Fcopper', 200);
-		const newBank = bank.clone();
-		expect(newBank.amount('Fcopper')).toBe(200);
-		newBank.add('Fcopper', 100);
-		expect(bank.amount('Fcopper')).toBe(200);
-		expect(newBank.amount('Fcopper')).toBe(300);
-	});
-
-	it('supports adding another bank', () => {
-		const otherBank = new GeneralBank<string>();
-		otherBank.add('Fbronze', 300);
-		bank.add(otherBank);
-		expect(bank.amount('Fbronze')).toBe(300);
-	});
-
-	it('supports removing quantities via another bank', () => {
-		bank.add('Firon', 500);
-		const otherBank = new GeneralBank<string>();
-		otherBank.add('Firon', 200);
-		bank.remove(otherBank);
-		expect(bank.amount('Firon')).toBe(300);
-	});
+it('removes items correctly and respects item non-existence', () => {
+	bank.add('Fsilver', 50);
+	bank.remove('Fsilver', 20);
+	expect(bank.amount('Fsilver')).toBe(30);
+	expect(() => bank.remove('Fsilver', 50)).toThrow();
 });
 
-describe('GeneralBank 2', () => {
+it('handles cloning correctly', () => {
+	bank.add('Fcopper', 200);
+	const newBank = bank.clone();
+	expect(newBank.amount('Fcopper')).toBe(200);
+	newBank.add('Fcopper', 100);
+	expect(bank.amount('Fcopper')).toBe(200);
+	expect(newBank.amount('Fcopper')).toBe(300);
+});
+
+it('supports adding another bank', () => {
+	const otherBank = new GeneralBank<string>();
+	otherBank.add('Fbronze', 300);
+	bank.add(otherBank);
+	expect(bank.amount('Fbronze')).toBe(300);
+});
+
+it('supports removing quantities via another bank', () => {
+	bank.add('Firon', 500);
+	const otherBank = new GeneralBank<string>();
+	otherBank.add('Firon', 200);
+	bank.remove(otherBank);
+	expect(bank.amount('Firon')).toBe(300);
+});
+})
+
+describe('GeneralBank 2', () =>
+{
 	let bank: GeneralBank<string>;
 
 	beforeEach(() => {
@@ -94,24 +101,28 @@ describe('GeneralBank 2', () => {
 		const complexBank = new GeneralBank<string>({
 				if (value > 1000) throw new Error('Values above 1000 are not allowed');
 			}
-		});
-		complexBank.add('Fgold', 500);
-		expect(() => complexBank.add('Fgold', 600)).toThrow('Values above 1000 are not allowed');
-	});
+}
+)
+complexBank.add('Fgold', 500)
+expect(() => complexBank.add('Fgold', 600)).toThrow('Values above 1000 are not allowed')
+})
 
-	it('processes high volume operations correctly', async () => {
-		for (let i = 0; i < 1000; i++) {
-			bank.add(`Fitem${i}`, i + 1);
-		}
-		expect(bank.amount('Fitem999')).toBe(1000);
-		for (let i = 0; i < 1000; i++) {
-			bank.remove(`Fitem${i}`, i + 1);
-		}
-		expect(bank.amount('Fitem999')).toBe(0);
-	});
-});
+it('processes high volume operations correctly', async () =>
+{
+	for (let i = 0; i < 1000; i++) {
+		bank.add(`Fitem${i}`, i + 1);
+	}
+	expect(bank.amount('Fitem999')).toBe(1000);
+	for (let i = 0; i < 1000; i++) {
+		bank.remove(`Fitem${i}`, i + 1);
+	}
+	expect(bank.amount('Fitem999')).toBe(0);
+}
+)
+})
 
-describe('Bank with allowedKeys', () => {
+describe('Bank with allowedKeys', () =>
+{
 	let bank: GeneralBank<string>;
 
 	beforeEach(() => {
@@ -124,8 +135,7 @@ describe('Bank with allowedKeys', () => {
 		expect(bank.amount('Fgold')).toBe(100);
 	});
 
-	it('prevents adding items with disallowed keys', () => {
-	});
+	it('prevents adding items with disallowed keys', () => {});
 
 	it('allows removing items with allowed keys', () => {
 		bank.add('Fsilver', 50);
@@ -147,9 +157,11 @@ describe('Bank with allowedKeys', () => {
 		const b = new GeneralBank<string>();
 		expect(() => b.add('a', 0.15)).toThrow();
 	});
-});
+}
+)
 
-test('Float Banks', () => {
+test('Float Banks', () =>
+{
 	const floatBank = new GeneralBank<string>({ valueSchema: { floats: true, min: 0, max: 1_222_222.100_150_02 } });
 	floatBank.add('a', 1);
 	floatBank.add('a', 0.15);
@@ -164,4 +176,5 @@ test('Float Banks', () => {
 		['a', 1.15],
 		['b', 1_222_222.100_150_01]
 	]);
-});
+}
+)

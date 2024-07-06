@@ -20,7 +20,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 	}
 
 	const owners = selectedImage.owners ?? [];
-	let allAccounts = getAllIDsOfUser(user);
+	const allAccounts = getAllIDsOfUser(user);
 	if (user.bitfield.includes(BitField.isModerator) || allAccounts.some(a => owners.includes(a))) {
 		await user.update({
 			bankBackground: selectedImage.id

@@ -1,4 +1,4 @@
-import { noOp, randArrItem, roll, Time } from 'e';
+import { Time, noOp, randArrItem, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
@@ -20,7 +20,7 @@ export const groupoMonsterTask: MinionTask = {
 		const kcAmounts: { [key: string]: number } = {};
 
 		for (let i = 0; i < quantity; i++) {
-			let loot = monster.table.kill(1, {});
+			const loot = monster.table.kill(1, {});
 			if (roll(10) && monster.id !== 696_969) {
 				loot.multiply(4);
 				loot.add(MysteryBoxes.roll());

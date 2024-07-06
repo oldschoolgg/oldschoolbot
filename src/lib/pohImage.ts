@@ -1,5 +1,8 @@
+import { readFile, readdir } from 'node:fs/promises';
+import path from 'node:path';
+import { Canvas, type Image, type SKRSContext2D } from '@napi-rs/canvas';
+import type { PlayerOwnedHouse } from '@prisma/client';
 import { objectEntries, randInt } from 'e';
-
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from './poh';
 import { canvasImageFromBuffer, loadAndCacheLocalImage } from './util/canvasUtil';
 import { getActivityOfUser } from './util/minionIsBusy';
@@ -36,10 +39,10 @@ class PoHImage {
 		this.bgImages.push(await loadAndCacheLocalImage('./src/lib/poh/images/bg_2.jpg'));
 		for (const folder of FOLDERS) {
 			const currentPath = path.join(CONSTRUCTION_IMG_DIR, folder);
-			const filesInDir = await fs.promises.readdir(currentPath);
+			const filesInDir = await readdir(currentPath);
 			for (const fileName of filesInDir) {
 				const id = Number.parseInt(path.parse(fileName).name);
-				const imageBuffer = await fs.promises.readFile(path.join(currentPath, `${id}.png`));
+				const imageBuffer = await readFile(path.join(currentPath, `${id}.png`));
 				const image = await canvasImageFromBuffer(imageBuffer);
 
 				this.imageCache.set(id, image);

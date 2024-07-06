@@ -265,7 +265,7 @@ export const miningTask: MinionTask = {
 						user,
 						portentID: PortentID.MiningPortent,
 						charges: amountOfSpiritsToUse
-				  })
+					})
 				: null;
 		const {
 			totalMiningXPToAdd,

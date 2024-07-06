@@ -1,19 +1,20 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ButtonStyle, ChatInputCommandInteraction } from 'discord.js';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
+import {ApplicationCommandOptionType } from 'discord.js'; 
 import { randArrItem, roll } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, LootTable } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { chargePortentIfHasCharges, PortentID } from '../../lib/bso/divination';
-import { allMbTables, MysteryBoxes, PMBTable } from '../../lib/bsoOpenables';
+import { itemContractResetTime } from '../../lib/MUser';
+import { PortentID, chargePortentIfHasCharges } from '../../lib/bso/divination';
+import { MysteryBoxes, PMBTable, allMbTables } from '../../lib/bsoOpenables';
 import { BitField, Emoji } from '../../lib/constants';
 import { AbyssalDragonLootTable } from '../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { kalphiteKingLootTable } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { BSOMonsters } from '../../lib/minions/data/killableMonsters/custom/customMonsters';
-import { itemContractResetTime } from '../../lib/MUser';
 import { nexLootTable } from '../../lib/nex';
 import { DragonTable } from '../../lib/simulation/grandmasterClue';
 import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/sharedTables';
@@ -23,7 +24,7 @@ import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmatio
 import resolveItems from '../../lib/util/resolveItems';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { LampTable } from '../../lib/xpLamps';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { updateClientGPTrackSetting, userStatsBankUpdate } from '../mahojiSettings';
 
 const contractTable = new LootTable()
@@ -79,7 +80,7 @@ const itemContractItems = Array.from(itemContractItemsSet);
 function pickItemContract(streak: number) {
 	let item = randArrItem(itemContractItems);
 	if (streak > 50) {
-		let fifties = Math.floor(streak / 50);
+		const fifties = Math.floor(streak / 50);
 		for (let i = 0; i < fifties; i++) {
 			if (roll(95 + i * 5)) {
 				item = randArrItem(allThirdAgeItems);
@@ -98,7 +99,7 @@ export function getItemContractDetails(mUser: MUser) {
 	const totalContracts = mUser.user.total_item_contracts;
 	const streak = mUser.user.item_contract_streak;
 	const currentItem = mUser.user.current_item_contract ? getOSItem(mUser.user.current_item_contract) : null;
-	let durationRemaining = Date.now() - (lastDate + itemContractResetTime);
+	const durationRemaining = Date.now() - (lastDate + itemContractResetTime);
 	const nextContractIsReady = difference >= itemContractResetTime;
 	const { bank } = mUser;
 
@@ -282,7 +283,7 @@ export const icCommand: OSBMahojiCommand = {
 							.setLabel('Donate IC')
 							.setEmoji('988422348434718812')
 							.setCustomId(`DONATE_IC_${user.id}`)
-				  ])
+					])
 				: undefined;
 
 		if (options.info) {

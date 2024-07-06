@@ -16,14 +16,7 @@ describe('Sacrifice Command', async () => {
 		await user.runCommand(sacrificeCommand, { items: '1 trout, 10 coal' });
 		const result = await user.runCommand(sacrificeCommand, {});
 		expect(result).toEqual(
-<<<<<<< HEAD
-			`${Emoji.Incinerator} **Your Sacrifice Stats** ${Emoji.Incinerator}\n\n` +
-				`**Current Minion Icon:** ${Emoji.Minion}\n` +
-				'**Sacrificed Value:** 1,590 GP\n' +
-				'**Unique Items Sacrificed:** 2 items'
-=======
 			`${Emoji.Incinerator} **Your Sacrifice Stats** ${Emoji.Incinerator}\n\n**Current Minion Icon:** ${Emoji.Minion}\n**Sacrificed Value:** 1,590 GP\n**Unique Items Sacrificed:** 2 items`
->>>>>>> master
 		);
 	});
 

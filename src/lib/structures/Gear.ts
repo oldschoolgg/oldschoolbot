@@ -27,10 +27,10 @@ export type PartialGearSetup = Partial<{
 
 export function addStatsOfItemsTogether(items: number[], statWhitelist = Object.values(GearStat)) {
 	const osItems = items.map(i => getOSItem(i));
-	let base: Required<GearRequirement> = {} as Required<GearRequirement>;
+	const base: Required<GearRequirement> = {} as Required<GearRequirement>;
 	for (const item of osItems) {
 		for (const stat of Object.values(GearStat)) {
-			let thisStat = item.equipment?.[stat] ?? 0;
+			const thisStat = item.equipment?.[stat] ?? 0;
 			if (!base[stat]) base[stat] = 0;
 			if (statWhitelist.includes(stat)) {
 				base[stat] += thisStat;

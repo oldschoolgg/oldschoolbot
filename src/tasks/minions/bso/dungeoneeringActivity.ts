@@ -1,7 +1,7 @@
-import { reduceNumByPercent, Time } from 'e';
+import { Time, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { chargePortentIfHasCharges, PortentID } from '../../../lib/bso/divination';
+import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import {
@@ -10,7 +10,7 @@ import {
 	numberOfGorajanOutfitsEquipped
 } from '../../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { DungeoneeringOptions } from '../../../lib/types/minions';
+import type { DungeoneeringOptions } from '../../../lib/types/minions';
 import { randomVariation, roll, toKMB } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
@@ -79,7 +79,7 @@ export function calculateDungeoneeringResult({
 		loot.add('Gorajan bonecrusher (u)');
 	}
 
-	let portentXP = Math.ceil(tokens * 16.646);
+	const portentXP = Math.ceil(tokens * 16.646);
 	if (hasDungeonPortent && tokens > 0) {
 		xp += portentXP;
 		tokens = 0;

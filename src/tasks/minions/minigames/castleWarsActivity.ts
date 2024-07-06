@@ -20,7 +20,7 @@ export const castleWarsTask: MinionTask = {
 		for (let i = 0; i < quantity; i++) {
 			loot.add('Castle wars ticket', ticketTable.rollOrThrow());
 		}
-		let boosts = [];
+		const boosts = [];
 
 		const flappyRes = await userHasFlappy({ user, duration });
 		if (flappyRes.shouldGiveBoost) {

@@ -1,4 +1,4 @@
-import { PerkTier, mentionCommand } from '@oldschoolgg/toolkit';
+import { PerkTier, mentionCommand, seedShuffle } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import type { GearSetupType, Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
@@ -866,9 +866,9 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		if (currentStepID === null) {
 			return { step: null, track: null };
 		}
-		const [trackID] = murMurSort(
+		const [trackID] = seedShuffle(
 			mysteriousTrailTracks.map(i => i.id),
-			`${this.id}i222v1dv,2`
+			this.id
 		);
 		const track = mysteriousTrailTracks.find(i => i.id === trackID)!;
 		const step = track.steps[currentStepID - 1];

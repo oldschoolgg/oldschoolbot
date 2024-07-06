@@ -240,7 +240,7 @@ export const tobTask: MinionTask = {
 		});
 
 		if (chincannonUser) {
-			let msg = randArrItem(CHINCANNON_MESSAGES);
+			const msg = randArrItem(CHINCANNON_MESSAGES);
 			resultMessage += `\n\n**${msg}**`;
 		}
 		const shouldShowImage =

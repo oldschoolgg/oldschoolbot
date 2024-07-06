@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 
+import { expertCapesSource } from '../../bso/expertCapes';
 import { diaries, userhasDiaryTier } from '../../diaries';
 import { MAX_QP } from '../../minions/data/quests';
 import { musicCapeRequirements } from '../../musicCape';

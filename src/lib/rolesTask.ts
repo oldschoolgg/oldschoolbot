@@ -498,9 +498,7 @@ LIMIT 50;`;
 	async function topInventor() {
 		const userMap = {};
 		const topInventors: string[] = [];
-		const mostUniques = await q<
-			{ id: string; uniques: number; disassembled_items_bank: ItemBank }[]
-		>(`SELECT u.id, u.uniques, u.disassembled_items_bank FROM (
+		const mostUniques = await q<{ id: string; uniques: number; disassembled_items_bank: ItemBank }[]>(`SELECT u.id, u.uniques, u.disassembled_items_bank FROM (
   SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("disassembled_items_bank")) uniques, id, disassembled_items_bank FROM users WHERE "skills.invention" > 0
 ) u
 ORDER BY u.uniques DESC LIMIT 300;`);
@@ -526,8 +524,7 @@ ORDER BY u.uniques DESC LIMIT 300;`);
 			},
 			take: 2
 		});
-		const topTasks: { id: string; tasks_completed: number }[] =
-			await roboChimpClient.$queryRaw`SELECT id::text, COALESCE(cardinality(leagues_completed_tasks_ids), 0) AS tasks_completed
+		const topTasks: { id: string; tasks_completed: number }[] = await roboChimpClient.$queryRaw`SELECT id::text, COALESCE(cardinality(leagues_completed_tasks_ids), 0) AS tasks_completed
 										  FROM public.user
 										  ORDER BY tasks_completed DESC
 										  LIMIT 2;`;

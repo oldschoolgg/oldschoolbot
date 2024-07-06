@@ -1,4 +1,4 @@
-import { calcPercentOfNum, Time } from 'e';
+import { Time, calcPercentOfNum } from 'e';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { percentChance } from '../../util';
@@ -36,7 +36,7 @@ export function calcLootXPHunting(
 		chanceOfSuccess += chanceOfSuccess * (percentIncrease / 100);
 	}
 
-	let xpToAdd = creature.hunterXP + (creature.name === 'Herbiboar' ? 27 * (currentLevel - 80) : 0);
+	const xpToAdd = creature.hunterXP + (creature.name === 'Herbiboar' ? 27 * (currentLevel - 80) : 0);
 
 	if (noRandomness) {
 		const successes = Math.floor(calcPercentOfNum(chanceOfSuccess, quantity));

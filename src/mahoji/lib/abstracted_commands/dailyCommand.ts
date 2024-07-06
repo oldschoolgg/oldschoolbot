@@ -1,10 +1,15 @@
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
+import { shuffleArr, uniqueArr } from 'e';
+import { Bank } from 'oldschooljs';
 
 import { SupportServer } from '../../../config';
 import { DynamicButtons } from '../../../lib/DynamicButtons';
+import { dailyResetTime } from '../../../lib/MUser';
 import { COINS_ID, Emoji } from '../../../lib/constants';
 import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import dailyRoll from '../../../lib/simulation/dailyTable';
-import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
+import { channelIsSendable, formatDuration, isWeekend, roll } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';

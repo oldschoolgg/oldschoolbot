@@ -1,7 +1,20 @@
+import { readFileSync } from 'node:fs';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { isFunction,  reduceNumByPercent } from 'e';
+import { Bank } from 'oldschooljs';
+import type { SkillsEnum } from 'oldschooljs/dist/constants';
+import Createables from '../../lib/data/createables';
+import type { IMaterialBank } from '../../lib/invention';
+import { MaterialBank } from '../../lib/invention/MaterialBank';
+import { transactMaterialsFromUser } from '../../lib/invention/inventions';
+import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
+import type { OSBMahojiCommand } from '../lib/util';
+import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../mahojiSettings';
 
 const creatablesTable = readFileSync('./src/lib/data/creatablesTable.txt', 'utf8');
 
@@ -133,8 +146,7 @@ export const createCommand: OSBMahojiCommand = {
 			: null;
 
 		if (
-			materialCost &&
-			materialCost.has('wooden') &&
+			materialCost?.has('wooden') &&
 			createableItem.name === 'Potion of light' &&
 			user.skillsAsXP.firemaking >= 500_000_000
 		) {

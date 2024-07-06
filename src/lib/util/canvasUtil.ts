@@ -61,7 +61,7 @@ export function drawImageWithOutline(
 }
 
 export function calcAspectRatioFit(srcWidth: number, srcHeight: number, maxWidth: number, maxHeight: number) {
-	let ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+	const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
 
 	return { width: srcWidth * ratio, height: srcHeight * ratio };
 }

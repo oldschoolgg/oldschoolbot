@@ -2,7 +2,7 @@ import { execSync } from 'node:child_process';
 import path from 'node:path';
 
 import type { Image } from '@napi-rs/canvas';
-import { PerkTier, SimpleTable, StoreBitfield } from '@oldschoolgg/toolkit';
+import { PerkTier, SimpleTable, StoreBitfield, dateFm } from '@oldschoolgg/toolkit';
 import type { CommandOptions } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
 import type { APIButtonComponent, APIInteractionDataResolvedChannel, APIRole } from 'discord.js';
@@ -20,7 +20,6 @@ import type { ActivityTaskData } from './types/minions';
 import { convertLVLtoXP } from './util';
 import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
-import { dateFm } from './util/smallUtils';
 
 export { PerkTier };
 
@@ -48,8 +47,8 @@ export const Channel = {
 				? '346304390858145792'
 				: '1154056119019393035'
 			: production
-			? '792691343284764693'
-			: '1154056119019393035',
+				? '792691343284764693'
+				: '1154056119019393035',
 	// BSO Channels
 	BSOGeneral: DISCORD_SETTINGS.Channels?.BSOGeneral ?? '792691343284764693',
 	BSOChannel: DISCORD_SETTINGS.Channels?.BSOChannel ?? '732207379818479756',

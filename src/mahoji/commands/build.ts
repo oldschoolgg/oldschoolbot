@@ -1,7 +1,9 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, stringMatches } from '@oldschoolgg/toolkit';
 import { Bank } from 'oldschooljs';
 
-import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import { ApplicationCommandOptionType, type User } from 'discord.js';
+import { Time, reduceNumByPercent, round } from 'e';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import type { Skills } from '../../lib/types';
 import type { ConstructionActivityTaskOptions } from '../../lib/types/minions';
@@ -94,7 +96,7 @@ export const buildCommand: OSBMahojiCommand = {
 			}
 		}
 
-		const timeToBuildSingleObject = object.ticks * 300;
+		let timeToBuildSingleObject = object.ticks * 300;
 
 		const [plank, planksQtyCost] = object.input;
 
@@ -104,7 +106,7 @@ export const buildCommand: OSBMahojiCommand = {
 		const maxTripLength = calcMaxTripLength(user, 'Construction');
 		const maxForMaterials = planksHas / planksQtyCost;
 
-		let boosts: string[] = [];
+		const boosts: string[] = [];
 
 		const boostedActionTime = reduceNumByPercent(
 			timeToBuildSingleObject,
@@ -129,7 +131,7 @@ export const buildCommand: OSBMahojiCommand = {
 		}
 		const maxForTime = Math.floor(maxTripLength / timeToBuildSingleObject);
 
-		let defaultQuantity = Math.floor(Math.min(maxForTime, Math.max(maxForMaterials, 1)));
+		const defaultQuantity = Math.floor(Math.min(maxForTime, Math.max(maxForMaterials, 1)));
 
 		let { quantity } = options;
 		if (!quantity) quantity = defaultQuantity;

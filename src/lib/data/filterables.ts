@@ -7,7 +7,7 @@ import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
 import { tmbTable, umbTable } from '../bsoOpenables';
 import { customItems } from '../customItems/util';
-import { DisassembleFlag, disassembleFlagMaterials, materialTypes } from '../invention';
+import { type DisassembleFlag, disassembleFlagMaterials, materialTypes } from '../invention';
 import { DisassemblySourceGroups } from '../invention/groups';
 import Potions from '../minions/data/potions';
 import { monkeyEatables } from '../monkeyRumble';
@@ -962,7 +962,7 @@ export const baseFilters: Filterable[] = [
 	{
 		name: 'Pets',
 		aliases: ['pets', 'pmb'],
-		items: () => allPetIDs.flat(Infinity) as number[]
+		items: () => allPetIDs.flat(Number.POSITIVE_INFINITY) as number[]
 	},
 	{
 		name: 'Holiday',
@@ -1051,7 +1051,7 @@ for (const type of materialTypes) {
 	if (disassembleFlagMaterials.includes(type as DisassembleFlag)) {
 		items = DisassemblySourceGroups.flatMap(group =>
 			group.items
-				.filter(item => item.flags && item.flags.has(type as DisassembleFlag))
+				.filter(item => item.flags?.has(type as DisassembleFlag))
 				.flatMap(item => (Array.isArray(item.item) ? item.item.map(i => i.id) : [item.item.id]))
 		);
 	} else {

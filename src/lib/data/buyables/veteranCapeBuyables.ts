@@ -3,7 +3,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import getOSItem from '../../util/getOSItem';
-import { Buyable } from './buyables';
+import type { Buyable } from './buyables';
 
 const veteranCapeSrc = [
 	{

@@ -13,7 +13,7 @@ import { growablePetsCL } from '../growablePets';
 import { implingsCL } from '../implings';
 import { inventionCL } from '../invention/inventions';
 import { keyCrates } from '../keyCrates';
-import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
+import killableMonsters, {  NightmareMonster } from '../minions/data/killableMonsters';
 import { AkumuLootTable } from '../minions/data/killableMonsters/custom/bosses/Akumu';
 import { Ignecarus } from '../minions/data/killableMonsters/custom/bosses/Ignecarus';
 import {
@@ -52,9 +52,6 @@ import resolveItems from '../util/resolveItems';
 import { shuffleRandom } from '../util/smallUtils';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
 import {
-	type ICollection,
-	type ILeftListStatus,
-	type IToReturnCollection,
 	abyssalDragonCL,
 	abyssalSireCL,
 	aerialFishingCL,
@@ -1417,9 +1414,7 @@ export const allCollectionLogs: ICollection = {
 				items: resolveItems([
 					...divinersOutfit,
 					...portents.map(p => p.item.id),
-					...divinationEnergies
-						.flatMap(i => [i.boon?.id, i.item.id])
-						.filter(notEmpty),
+					...divinationEnergies.flatMap(i => [i.boon?.id, i.item.id]).filter(notEmpty),
 					'Divine egg',
 					'Jar of memories',
 					'Doopy'
@@ -1887,7 +1882,7 @@ export const allCLItemsFiltered = [
 	)
 ];
 
-const overallPlusItems = [
+export const overallPlusItems = [
 	...new Set(
 		Object.entries(allCollectionLogs)
 			.filter(i => i[0] !== 'Discontinued')
@@ -2201,6 +2196,5 @@ export function isCLItem(item: Item | number | [Item, number]): boolean {
 }
 
 export const bossCLItems = Object.values({
-	...allCollectionLogs['PvM'].activities
-})
-	.flatMap(i => i.items);
+	...allCollectionLogs.PvM.activities
+}).flatMap(i => i.items);

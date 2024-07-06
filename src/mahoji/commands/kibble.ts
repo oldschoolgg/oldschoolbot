@@ -1,16 +1,17 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import {ApplicationCommandOptionType } from 'discord.js'; 
 import { Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { Eatable, Eatables } from '../../lib/data/eatables';
+import { type Eatable, Eatables } from '../../lib/data/eatables';
 import { kibbles } from '../../lib/data/kibble';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { KibbleOptions } from '../../lib/types/minions';
+import type { KibbleOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const kibbleCommand: OSBMahojiCommand = {
 	name: 'kibble',
@@ -52,7 +53,7 @@ export const kibbleCommand: OSBMahojiCommand = {
 
 		const cost = new Bank();
 		const qtyPerComponent = 5 * (kibbles.indexOf(kibble) + 1);
-		let totalQtyPerComponent = qtyPerComponent * options.quantity;
+		const totalQtyPerComponent = qtyPerComponent * options.quantity;
 
 		const herbComponent = kibble.herbComponent.find(i => userBank.amount(i.id) >= totalQtyPerComponent);
 		if (!herbComponent) {
@@ -62,7 +63,7 @@ export const kibbleCommand: OSBMahojiCommand = {
 		}
 		cost.add(herbComponent.id, totalQtyPerComponent);
 
-		let herbsNeeded = Math.ceil(totalQtyPerComponent / 2);
+		const herbsNeeded = Math.ceil(totalQtyPerComponent / 2);
 		const cropComponent = kibble.cropComponent.find(i => userBank.amount(i.id) >= herbsNeeded);
 		if (!cropComponent) {
 			return `You need ${herbsNeeded} of one of these crops for ${kibble.item.name}: ${kibble.cropComponent
@@ -71,13 +72,13 @@ export const kibbleCommand: OSBMahojiCommand = {
 		}
 		cost.add(cropComponent.id, herbsNeeded);
 
-		let healAmountNeeded = qtyPerComponent * kibble.minimumFishHeal;
+		const healAmountNeeded = qtyPerComponent * kibble.minimumFishHeal;
 		const calcFish = (fish: Eatable) =>
 			Math.ceil(
 				(healAmountNeeded * options.quantity) /
 					(typeof fish.healAmount === 'number' ? fish.healAmount : fish.healAmount(user))
 			);
-		let suitableFish = Eatables.filter(
+		const suitableFish = Eatables.filter(
 			i =>
 				i.raw &&
 				(typeof i.healAmount === 'number' ? i.healAmount : i.healAmount(user)) >= kibble.minimumFishHeal
@@ -93,15 +94,15 @@ export const kibbleCommand: OSBMahojiCommand = {
 				.map(i => itemNameFromID(i.raw!))
 				.join(', ')}.`;
 		}
-		let fishNeeded = calcFish(rawFishComponent);
+		const fishNeeded = calcFish(rawFishComponent);
 		cost.add(rawFishComponent.raw!, fishNeeded);
 
 		let timePer = Time.Second * 2;
 		if (user.usingPet('Remy')) {
 			timePer = Math.floor(timePer / 2);
 		}
-		let duration = timePer * options.quantity;
-		let maxTripLength = calcMaxTripLength(user, 'KibbleMaking');
+		const duration = timePer * options.quantity;
+		const maxTripLength = calcMaxTripLength(user, 'KibbleMaking');
 		if (duration > calcMaxTripLength(user, 'KibbleMaking')) {
 			return `The maximum amount of ${kibble.item.name} you can create in ${formatDuration(
 				calcMaxTripLength(user, 'KibbleMaking')

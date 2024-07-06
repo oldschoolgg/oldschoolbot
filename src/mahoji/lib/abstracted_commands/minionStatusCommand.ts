@@ -4,7 +4,7 @@ import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { roll, stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { BitField, Emoji, minionBuyButton, PerkTier } from '../../../lib/constants';
+import { BitField, Emoji, PerkTier, minionBuyButton } from '../../../lib/constants';
 import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
 import { clArrayUpdate } from '../../../lib/handleNewCLItems';
 import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';

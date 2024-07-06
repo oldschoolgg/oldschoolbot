@@ -321,7 +321,7 @@ ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}`
 					perKillTime
 				)} instead of ${formatDuration(
 					NightmareMonster.timeToFinish
-			  )} - the total trip will take ${formatDuration(duration)}.`;
+				)} - the total trip will take ${formatDuration(duration)}.`;
 	if (hasCob && type === 'solo') {
 		str += '\n2x Boost from Cob\n';
 	}

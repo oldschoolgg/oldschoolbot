@@ -1,9 +1,7 @@
-import { time } from 'console';
-import { isFunction } from 'util';
 import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, EmbedBuilder, type Message, bold } from 'discord.js';
-import { Time } from 'e';
+import { type BaseMessageOptions, ButtonBuilder, ButtonStyle, EmbedBuilder, type Message, bold, time } from 'discord.js';
+import { Time, isFunction } from 'e';
 import { Items } from 'oldschooljs';
 import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';

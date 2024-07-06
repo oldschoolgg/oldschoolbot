@@ -1,5 +1,7 @@
 import { Bank } from 'oldschooljs';
 
+import { wealthInventorySize } from '../../lib/constants';
+import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 

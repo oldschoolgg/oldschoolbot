@@ -1,6 +1,6 @@
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder, bold } from 'discord.js';
-import { notEmpty, objectEntries, randArrItem, randInt, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { Time, notEmpty, objectEntries, randArrItem, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 

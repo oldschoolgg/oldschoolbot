@@ -8,6 +8,13 @@ import { SkillsEnum } from '../../skilling/types';
 import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
+import { Ignecarus } from '../data/killableMonsters/custom/bosses/Ignecarus';
+import { KalphiteKingMonster } from '../data/killableMonsters/custom/bosses/KalphiteKing';
+import KingGoldemar from '../data/killableMonsters/custom/bosses/KingGoldemar';
+import { NAXXUS_HP, Naxxus } from '../data/killableMonsters/custom/bosses/Naxxus';
+import { VasaMagus } from '../data/killableMonsters/custom/bosses/VasaMagus';
+import { BSOMonsters } from '../data/killableMonsters/custom/customMonsters';
+import type { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
 
 export { default as calculateMonsterFood } from './calculateMonsterFood';
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
@@ -23,7 +30,7 @@ export type AttackStyles = (typeof attackStylesArr)[number];
 
 const miscHpMap: Record<number, number> = {
 	3127: 250,
-	46_274: 5000,
+	46274: 5000,
 	9415: NIGHTMARES_HP,
 	[KingGoldemar.id]: 10_000,
 	[VasaMagus.id]: 3900,

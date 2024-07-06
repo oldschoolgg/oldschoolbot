@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { BitField, discontinuedItems } from '../constants';
 import { allDyedItems } from '../dyedItems';
-import { MaterialBank } from '../invention/MaterialBank';
+import type { MaterialBank } from '../invention/MaterialBank';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import type { ItemBank, Skills } from '../types';
@@ -2455,7 +2455,6 @@ const Createables: Createable[] = [
 export default Createables;
 export const creatablesCL = uniqueArr(
 	Createables.filter(i => i.noCl !== true)
-		.map(i => (isFunction(i.outputItems) ? [] : new Bank(i.outputItems).items().map(i => i[0].id)))
-		.flat()
+		.flatMap(i => (isFunction(i.outputItems) ? [] : new Bank(i.outputItems).items().map(i => i[0].id)))
 		.filter(i => !discontinuedItems.includes(i) && !allDyedItems.includes(i))
 );
