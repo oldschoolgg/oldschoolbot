@@ -6,6 +6,7 @@ import { promisify } from 'node:util';
 import { Stopwatch } from '@sapphire/stopwatch';
 import fg from 'fast-glob';
 
+import '../lib/customItems/customItems';
 import { BOT_TYPE } from '../lib/constants';
 
 const args = process.argv.slice(2);
