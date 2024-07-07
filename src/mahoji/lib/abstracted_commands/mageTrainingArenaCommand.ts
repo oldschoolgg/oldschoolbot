@@ -2,7 +2,6 @@ import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { Time } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { prisma } from '../../../lib/settings/prisma';
 import { getNewUser } from '../../../lib/settings/settings';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';

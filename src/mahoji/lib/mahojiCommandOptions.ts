@@ -9,7 +9,7 @@ import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
 import { GearSetupTypes } from '../../lib/gear/types';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { prisma } from '../../lib/settings/prisma';
+
 import { SkillsEnum } from '../../lib/skilling/types';
 import { globalPresets } from '../../lib/structures/Gear';
 import getOSItem from '../../lib/util/getOSItem';

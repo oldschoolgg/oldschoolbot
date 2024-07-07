@@ -1,10 +1,9 @@
-import { Stopwatch } from '@sapphire/stopwatch';
+import { Stopwatch } from '@oldschoolgg/toolkit';
 import { ChannelType } from 'discord.js';
 import { objectEntries } from 'e';
 
 import { OWNER_IDS, SupportServer } from '../../config';
 import { globalConfig } from '../constants';
-import { prisma } from '../settings/prisma';
 import { runTimedLoggedFn } from '../util';
 
 export const CACHED_ACTIVE_USER_IDS = new Set();

@@ -1,7 +1,7 @@
 import { schedule } from 'node-cron';
 
 import { analyticsTick } from './analytics';
-import { prisma } from './settings/prisma';
+
 import { cacheCleanup } from './util/cachedUserIDs';
 
 export function initCrons() {

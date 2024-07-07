@@ -32,10 +32,6 @@ export function drawTitleText(ctx: SKRSContext2D, title: string, x: number, y: n
 	fillTextXTimesInCtx(ctx, title, x, y);
 }
 
-export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
-	return loadImage(imageBuffer);
-}
-
 export function drawImageWithOutline(
 	ctx: SKRSContext2D,
 	image: Canvas | Image,

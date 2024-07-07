@@ -1,10 +1,11 @@
 import { Time, calcWhatPercent, percentChance, reduceNumByPercent } from 'e';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { ZALCANO_ID } from '../../../lib/constants';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { soteSkillRequirements } from '../../../lib/skilling/functions/questRequirements';
 import type { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, hasSkillReqs } from '../../../lib/util';
+import { hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { userHasGracefulEquipped } from '../../mahojiSettings';

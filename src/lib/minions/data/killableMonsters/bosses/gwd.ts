@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
+import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import {
 	commanderZilyanaCL,
 	generalGraardorCL,
@@ -10,7 +11,6 @@ import {
 import { GearStat } from '../../../../gear/types';
 import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
-import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import type { KillableMonster } from '../../../types';
 
 const killableBosses: KillableMonster[] = [

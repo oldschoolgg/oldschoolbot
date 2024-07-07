@@ -10,7 +10,7 @@ import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContra
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import type { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
-import { prisma } from '../settings/prisma';
+
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
 import type { ItemBank } from '../types';

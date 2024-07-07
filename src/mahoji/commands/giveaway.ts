@@ -19,7 +19,7 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Emoji, patronFeatures } from '../../lib/constants';
 import { marketPriceOfBank } from '../../lib/marketPrices';
-import { prisma } from '../../lib/settings/prisma';
+
 import { channelIsSendable, isModOrAdmin, makeComponents, toKMB } from '../../lib/util';
 import { generateGiveawayContent } from '../../lib/util/giveaway';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';

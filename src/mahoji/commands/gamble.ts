@@ -5,7 +5,7 @@ import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
+
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';

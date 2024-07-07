@@ -1,8 +1,8 @@
 import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
-import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 

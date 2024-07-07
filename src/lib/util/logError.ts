@@ -1,7 +1,7 @@
+import { convertAPIOptionsToCommandOptions } from '@oldschoolgg/toolkit';
 import { captureException } from '@sentry/node';
 import type { Interaction } from 'discord.js';
 
-import { convertAPIOptionsToCommandOptions } from '@oldschoolgg/toolkit';
 import { production } from '../../config';
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {

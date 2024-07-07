@@ -1,6 +1,6 @@
 import { modifyItem } from '@oldschoolgg/toolkit';
 
-import resolveItems from '../util/resolveItems';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { setItemAlias } from './itemAliases';
 
 // BSO (Twisted) trophies

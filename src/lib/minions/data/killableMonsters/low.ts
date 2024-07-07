@@ -2,9 +2,9 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../gear/types';
 import itemID from '../../../util/itemID';
-import resolveItems from '../../../util/resolveItems';
 import type { KillableMonster } from '../../types';
 
 const killableMonsters: KillableMonster[] = [

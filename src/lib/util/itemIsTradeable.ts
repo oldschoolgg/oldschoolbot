@@ -1,10 +1,10 @@
 import { Bank } from 'oldschooljs';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 
 import { COINS_ID } from '../constants';
 import { leaguesCreatables } from '../data/creatables/leagueCreatables';
 import { leagueBuyables } from '../data/leaguesBuyables';
 import getOSItem from './getOSItem';
-import resolveItems from './resolveItems';
 
 const specialUntradeables = resolveItems([
 	'Coins',

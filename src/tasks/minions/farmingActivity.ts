@@ -5,7 +5,7 @@ import { combatAchievementTripEffect } from '../../lib/combat_achievements/comba
 import { BitField, Emoji, Events } from '../../lib/constants';
 import type { PatchTypes } from '../../lib/minions/farming';
 import type { FarmingContract } from '../../lib/minions/farming/types';
-import { prisma } from '../../lib/settings/prisma';
+
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';

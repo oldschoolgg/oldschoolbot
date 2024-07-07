@@ -2,13 +2,13 @@ import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ColosseumWaveBank, colosseumWaves } from '../../lib/colosseum';
 import { trackLoot } from '../../lib/lootTrack';
 import { incrementMinigameScore } from '../../lib/settings/minigames';
 import type { ColoTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import resolveItems from '../../lib/util/resolveItems';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 

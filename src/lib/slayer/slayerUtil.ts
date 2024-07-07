@@ -2,18 +2,18 @@ import { notEmpty, objectKeys, randFloat, randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { KourendKebosDiary, LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
 import type { PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import type { KillableMonster } from '../minions/types';
-import { prisma } from '../settings/prisma';
+
 import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
 import { bankHasItem, roll, stringMatches } from '../util';
 import itemID from '../util/itemID';
 import { logError } from '../util/logError';
-import resolveItems from '../util/resolveItems';
 import { autoslayModes } from './constants';
 import { slayerMasters } from './slayerMasters';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';

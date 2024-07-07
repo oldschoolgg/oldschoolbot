@@ -6,11 +6,11 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 import * as ss from 'simple-statistics';
 
+import { addBanks } from '@oldschoolgg/toolkit';
 import { Emoji } from '../../../lib/constants';
-import { prisma } from '../../../lib/settings/prisma';
+
 import type { ItemBank } from '../../../lib/types';
 import getOSItem from '../../../lib/util/getOSItem';
-import { addBanks } from '../../../lib/util/smallUtils';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import type { StoredBingoTile, UniversalBingoTile } from './bingoUtil';
 import { generateTileName, isGlobalTile, rowsForSquare } from './bingoUtil';
