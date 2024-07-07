@@ -24,6 +24,8 @@ To suggest a new feature, [click here](https://github.com/oldschoolgg/oldschoolb
 
 Anyone is free to create PR's with improvements and additions to Old School Bot. If you have questions, ask in the `#developers` channel on our Discord server.
 
+[Read this file for help setting up a bot](SETUP.md)
+
 #### **Shared Testing Server**
 
 In addition to being able your develop on your own server as we have done above, there is a shared dev server which can be joined here: [https://discord.gg/Cup2gwUGwr](https://discord.gg/Cup2gwUGwr)
@@ -48,16 +50,6 @@ You can also ask Magna to invite your Bot with your invite link above if you so 
 - [[Andre](https://github.com/ard35)]
 - [[TastyPumPum](https://github.com/TastyPumPum)]
 
-## Self Hosting
+### Self Hosting
 
 Self hosting is not supported.
-
-## Notes
-
-### Profiling tests
-
-- node --cpu-prof --cpu-prof-dir=./profiling ./node_modules/vitest/vitest.mjs run --coverage --config vitest.unit.config.mts parseStringBank
-
-## Module graph
-
-- yarn build && npx madge --image graph2.svg ./dist/index.js

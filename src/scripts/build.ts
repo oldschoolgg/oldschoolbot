@@ -6,6 +6,7 @@ import { promisify } from 'node:util';
 import { Stopwatch } from '@oldschoolgg/toolkit';
 import fg from 'fast-glob';
 
+import { production } from '../config.js';
 import { BOT_TYPE } from '../lib/constants';
 
 const args = process.argv.slice(2);
@@ -99,7 +100,10 @@ async function handlePrismaClientGeneration() {
 	}
 
 	if (shouldRunGen || forceRebuild) {
-		await execAsync('yarn gen');
+		await Promise.all([
+			execAsync('yarn prisma generate --no-hints --schema prisma/robochimp.prisma'),
+			execAsync('yarn prisma db push')
+		]);
 	}
 }
 
@@ -144,9 +148,13 @@ async function handleCommandsJSON() {
 }
 
 async function main() {
+	if (production || process.env.NODE_ENV === 'production') {
+		throw new Error("Don't run build script in production!");
+	}
 	await runTimedLoggedFn('Prisma Client / Wipe Dist', () =>
 		Promise.all([handlePrismaClientGeneration(), checkForWipingDistFolder()])
 	);
+	await runTimedLoggedFn('Yarn Installation', () => execAsync('yarn'));
 	await runTimedLoggedFn('Typescript Compilation', handleTypescriptCompilation);
 	await runTimedLoggedFn('Post Build', () => Promise.all([handleCreatables(), handleCommandsJSON()]));
 }

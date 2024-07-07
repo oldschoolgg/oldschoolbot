@@ -13,7 +13,7 @@ import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
 import { isObject } from 'e';
 
-import { DEV_SERVER_ID, SENTRY_DSN, SupportServer, botToken } from './config';
+import { DEV_SERVER_ID, SENTRY_DSN, SupportServer } from './config';
 import { syncActivityCache } from './lib/Task';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
 import { Channel, Events, META_CONSTANTS, gitHash, globalConfig } from './lib/constants';
@@ -194,7 +194,7 @@ async function main() {
 	]);
 	await runTimedLoggedFn('Startup Scripts', runStartupScripts);
 
-	await runTimedLoggedFn('Log In', () => client.login(botToken));
+	await runTimedLoggedFn('Log In', () => client.login(globalConfig.botToken));
 }
 
 process.on('uncaughtException', err => {

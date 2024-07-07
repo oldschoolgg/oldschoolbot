@@ -34,5 +34,4 @@ export interface IDiscordSettings {
 	Channels: Record<string, string>;
 	Emojis: Record<string, string>;
 	SupportServer: string;
-	BotID: string;
 }

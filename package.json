@@ -17,7 +17,7 @@
 	},
 	"dependencies": {
 		"@napi-rs/canvas": "^0.1.53",
-		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#3d176631060d5cc434be0cbc7ef536a99a4e6e23",
+		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#62f9f71274c6d36db6c56a2228ae3df9ab090dbd",
 		"@prisma/client": "^5.16.1",
 		"@sapphire/snowflake": "^3.5.3",
 		"@sapphire/time-utilities": "^1.6.0",
@@ -58,7 +58,7 @@
 		"vitest": "^1.6.0"
 	},
 	"engines": {
-		"node": ">=20.12.0"
+		"node": "20.15.0"
 	},
 	"packageManager": "yarn@4.3.1"
 }

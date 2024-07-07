@@ -532,13 +532,23 @@ export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id
 
 const globalConfigSchema = z.object({
 	clientID: z.string().min(10).max(25),
-	geAdminChannelID: z.string().default('')
+	geAdminChannelID: z.string().default(''),
+	redisPort: z.coerce.number().int().optional(),
+	botToken: z.string().min(1)
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
+if (!process.env.BOT_TOKEN) {
+	throw new Error(
+		`You need to specify the BOT_TOKEN environment variable, copy your bot token from your config.ts and put it in the ".env" file like so:\n\nBOT_TOKEN=your_token_here`
+	);
+}
+
 export const globalConfig = globalConfigSchema.parse({
 	clientID: process.env.CLIENT_ID,
-	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID
+	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID,
+	redisPort: process.env.REDIS_PORT,
+	botToken: process.env.BOT_TOKEN
 });
 
 export const ONE_TRILLION = 1_000_000_000_000;
