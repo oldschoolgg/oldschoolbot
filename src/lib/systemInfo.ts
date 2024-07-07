@@ -2,6 +2,7 @@ import { execSync } from 'node:child_process';
 import { PrismaClient } from '@prisma/client';
 
 async function getPostgresVersion() {
+	if (process.env.TEST) return '???';
 	const client = new PrismaClient();
 	try {
 		const result = await client.$queryRawUnsafe<any>('SELECT version();');
