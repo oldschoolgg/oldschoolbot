@@ -11,7 +11,7 @@ if (global.prisma) {
 }
 
 export default async ({ name, tertiaries }: FinishWorkerArgs): FinishWorkerReturn => {
-	const { finishables } = await import('../finishables');
+	const { finishables } = await import('../finishables.js');
 	const val = finishables.find(i => i.name === name)!;
 	let finishCL = [...val.cl];
 	if (val.tertiaryDrops && !tertiaries) {

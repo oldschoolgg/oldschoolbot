@@ -4,7 +4,6 @@ import { objectEntries } from 'e';
 
 import { OWNER_IDS, SupportServer } from '../../config';
 import { globalConfig } from '../constants';
-
 import { runTimedLoggedFn } from '../util';
 
 export const CACHED_ACTIVE_USER_IDS = new Set();

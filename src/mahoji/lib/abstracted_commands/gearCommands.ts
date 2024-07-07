@@ -19,7 +19,6 @@ import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
 import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { transactItemsFromBank } from '../../../lib/util/transactItemsFromBank';
 import { mahojiParseNumber } from '../../mahojiSettings';
 
 async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
@@ -224,7 +223,7 @@ export async function gearEquipCommand(args: {
 
 	const result = currentEquippedGear.equip(itemToEquip, quantity);
 
-	await transactItemsFromBank({
+	await transactItems({
 		userID: user.id,
 		collectionLog: false,
 		dontAddToTempCL: true,

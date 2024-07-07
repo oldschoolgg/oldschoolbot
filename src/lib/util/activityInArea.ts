@@ -1,6 +1,6 @@
 import { Monsters } from 'oldschooljs';
-
 import { resolveItems } from 'oldschooljs/dist/util/util';
+
 import { soteSkillRequirements } from '../skilling/functions/questRequirements';
 import type {
 	ActivityTaskData,

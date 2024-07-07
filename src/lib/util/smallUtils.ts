@@ -7,9 +7,9 @@ import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { clamp, objectEntries } from 'e';
 import { type Bank, Items } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ArrayItemsResolved } from 'oldschooljs/dist/util/util';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
-import type { ArrayItemsResolved } from 'oldschooljs/dist/util/util';
 import { skillEmoji } from '../data/emojis';
 import type { Skills } from '../types';
 import getOSItem from './getOSItem';

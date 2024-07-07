@@ -1,8 +1,8 @@
 import { deepClone, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 import type { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
-
 import { resolveItems } from 'oldschooljs/dist/util/util';
+
 import type { GearSetup } from '../gear/types';
 import getOSItem from './getOSItem';
 import itemID from './itemID';
