@@ -41,9 +41,13 @@ jobs:
           popd
       - name: Copy env
         run: cp .env.test .env
+      - name: Generate Prisma Clients
+        run: yarn gen
       - name: Build
-        run: yarn build --clean
+        run: yarn build:tsc
       - name: Test
         run: |
-          yarn test
+          yarn test:unit
+          yarn test:lint
+          tsc -p tests/integration && tsc -p tests/unit
           npm i -g dpdm && dpdm --exit-code circular:1 --progress=false --warning=false --tree=false ./dist/index.js
