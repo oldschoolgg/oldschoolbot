@@ -6,7 +6,6 @@ import { askCommand } from './ask';
 import { bankCommand } from './bank';
 import { bingoCommand } from './bingo';
 import { bossrecordCommand } from './bossrecords';
-import { botLeaguesCommand } from './botleagues';
 import { bsCommand } from './bs';
 import { buildCommand } from './build';
 import { buyCommand } from './buy';
@@ -85,7 +84,6 @@ import { wikiCommand } from './wiki';
 export const allCommands: OSBMahojiCommand[] = [
 	adminCommand,
 	askCommand,
-	botLeaguesCommand,
 	bsCommand,
 	buildCommand,
 	buyCommand,
