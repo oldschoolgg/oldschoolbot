@@ -10,7 +10,7 @@ async function main() {
 		execSync('docker compose up -d --wait', { stdio: 'inherit' });
 		stopwatch.check('Docker compose finished.');
 
-		await sleep(100);
+		await sleep(500);
 
 		const env = { ...process.env, ...config({ path: path.resolve('.env.test') }).parsed };
 		execSync('yarn prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit', env });
