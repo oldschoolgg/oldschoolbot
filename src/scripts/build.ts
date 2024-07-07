@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { promisify } from 'node:util';
+import { Stopwatch } from '@oldschoolgg/toolkit';
 import fg from 'fast-glob';
 
 import '../lib/customItems/customItems';
@@ -126,7 +127,7 @@ async function handleCreatables() {
 	const hash = doHash(allCreatablesFiles.join('\n'));
 	if (currentCache.creatablesHash !== hash || forceRebuild) {
 		console.log('   Rebuilding creatables.txt file');
-		const { renderCreatablesFile } = await import('./renderCreatablesFile');
+		const { renderCreatablesFile } = await import('./renderCreatablesFile.js');
 		renderCreatablesFile();
 		setCacheValue('creatablesHash', hash);
 	}
@@ -137,7 +138,7 @@ async function handleCommandsJSON() {
 	const currentFileHash = getFileHash(cmdFile);
 	if (currentFileHash === null || currentCache.commandsHash !== currentFileHash) {
 		console.log('   Updating commands json file');
-		const { commandsFile } = await import('./renderCommandsFile');
+		const { commandsFile } = await import('./renderCommandsFile.js');
 		await commandsFile();
 		setCacheValue('commandsHash', getFileHash(cmdFile)!);
 	}
