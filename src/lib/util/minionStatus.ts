@@ -789,9 +789,9 @@ export function minionStatus(user: MUser) {
 			return `${name} is currently collecting ingredients, the trip should take ${formatDuration(durationRemaining)}.`;
 		}
 		case 'CombatRing': {
-			return `$nameis currently fighting in the Combat Ring! The trip should take $formatDuration(
+			return `${name} is currently fighting in the Combat Ring! The trip should take ${formatDuration(
 				durationRemaining
-			).`;
+			)}.`;
 		}
 		case 'SpecificQuest': {
 			const data = currentTask as SpecificQuestOptions;

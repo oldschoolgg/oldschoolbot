@@ -360,13 +360,13 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	if (currentXP >= MAX_XP) {
 		let xpStr = '';
 		if (params.duration && !params.minimal) {
-			xpStr += 'You received no XP because you have $toKMB(MAX_XP)$nameXP already.';
-			xpStr += ' Tracked $params.amount.toLocaleString()$skill.emojiXP.';
+			xpStr += `You received no XP because you have ${toKMB(MAX_XP)} ${name}XP already`;
+			xpStr += ` Tracked ${params.amount.toLocaleString()}${skill.emoji}XP.`;
 			let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 			xpStr += ` (${toKMB(rawXPHr)}/Hr)`;
 		} else {
-			xpStr += ':no_entry_sign: Tracked $params.amount.toLocaleString()$skill.emojiXP.';
+			xpStr += `:no_entry_sign: Tracked ${params.amount.toLocaleString()}${skill.emoji}XP.`;
 		}
 		return xpStr;
 	}

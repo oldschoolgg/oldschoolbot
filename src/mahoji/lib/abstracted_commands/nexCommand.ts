@@ -303,10 +303,8 @@ export async function nexCommand(
 
 	let str =
 		type === 'solo'
-			? `Your minion is now attempting to kill $quantityx Nex. $foodStringThe trip will take $formatDuration(
-					duration
-			  ).`
-			: `$partyOptions.leader.usernameOrMention's party (${users
+			? `Your minion is now attempting to kill $quantityx Nex. ${foodString} The trip will take ${formatDuration(duration)}.`
+			: `${partyOptions.leader.usernameOrMention}'s party (${users
 					.map(u => u.usernameOrMention)
 					.join(', ')}) is now off to kill ${quantity}x ${NexMonster.name}. Each kill takes ${formatDuration(
 					perKillTime

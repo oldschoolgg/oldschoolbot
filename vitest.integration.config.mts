@@ -13,7 +13,7 @@ export default defineConfig({
 		testTimeout: 30_000,
 		bail: 1,
 		pool: 'threads',
-		maxConcurrency: 10,
+		maxConcurrency: 5,
 		poolOptions: {
 			threads: {
 				maxThreads: 5,
