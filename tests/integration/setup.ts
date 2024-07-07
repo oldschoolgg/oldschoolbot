@@ -70,12 +70,6 @@ BankImageTask.prototype.fetchAndCacheImage = mockBankImageTask.fetchAndCacheImag
 beforeAll(async () => {
 	await prisma.$connect();
 	await prisma.$queryRaw`CREATE EXTENSION IF NOT EXISTS intarray;`.catch(noOp);
-	global.bankImageGenerator = mockBankImageTask as any;
-	BankImageTask.prototype.init = mockBankImageTask.init;
-	BankImageTask.prototype.run = mockBankImageTask.init;
-	BankImageTask.prototype.generateBankImage = mockBankImageTask.generateBankImage;
-	BankImageTask.prototype.getItemImage = mockBankImageTask.getItemImage;
-	BankImageTask.prototype.fetchAndCacheImage = mockBankImageTask.fetchAndCacheImage;
 });
 
 beforeEach(async () => {
