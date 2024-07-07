@@ -8,6 +8,7 @@ import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { PerkTier } from '@oldschoolgg/toolkit';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { getClueScoresFromOpenables } from '../../../lib/clues/clueUtils';
 import { Emoji } from '../../../lib/constants';
@@ -17,7 +18,7 @@ import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { RandomEvents } from '../../../lib/randomEvents';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { prisma } from '../../../lib/settings/prisma';
+
 import Agility from '../../../lib/skilling/skills/agility';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { ForestryEvents } from '../../../lib/skilling/skills/woodcutting/forestry';
@@ -28,7 +29,6 @@ import { SQL_sumOfAllCLItems, formatDuration, getUsername, sanitizeBank, stringM
 import { createChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import resolveItems from '../../../lib/util/resolveItems';
 import { Cooldowns } from '../Cooldowns';
 import { collectables } from './collectCommand';
 

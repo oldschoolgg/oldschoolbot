@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import { BSO_MAX_TOTAL_LEVEL, BitField, Channel } from '../../lib/constants';
 import { getReclaimableItemsOfUser } from '../../lib/reclaimableItems';
 import { roboChimpUserFetch } from '../../lib/roboChimp';
-import { prisma } from '../../lib/settings/prisma';
+
 import { dateFm, stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { sendToChannelID } from '../../lib/util/webhook';

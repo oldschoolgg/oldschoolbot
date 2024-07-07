@@ -8,6 +8,7 @@ import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/Hallowe
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 import LarransChest, { LarransChestOpenable } from 'oldschooljs/dist/simulation/openables/LarransChest';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ClueTiers } from './clues/clueTiers';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { cluesRaresCL } from './data/CollectionsExport';
@@ -26,7 +27,6 @@ import { openSeedPack } from './skilling/functions/calcFarmingContracts';
 import type { ItemBank } from './types';
 import { itemID, roll } from './util';
 import getOSItem from './util/getOSItem';
-import resolveItems from './util/resolveItems';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)

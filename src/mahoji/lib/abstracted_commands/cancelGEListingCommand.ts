@@ -2,7 +2,7 @@ import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import { Bank } from 'oldschooljs';
 
 import { GrandExchange } from '../../../lib/grandExchange';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { makeTransactFromTableBankQueries } from '../../../lib/tableBank';
 import { logError } from '../../../lib/util/logError';
 

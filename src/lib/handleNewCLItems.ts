@@ -8,10 +8,10 @@ import { Events } from './constants';
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections';
 import { calculateMastery } from './mastery';
 import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp';
-import { prisma } from './settings/prisma';
+
 import { MUserStats } from './structures/MUserStats';
-import { fetchStatsForCL } from './util';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
+import { fetchStatsForCL } from './util/fetchStatsForCL';
 import { insertUserEvent } from './util/userEvents';
 
 async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {

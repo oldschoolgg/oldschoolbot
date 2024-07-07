@@ -2,10 +2,11 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, hasSkillReqs, stringMatches } from '../../../lib/util';
+import { formatSkillRequirements, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';

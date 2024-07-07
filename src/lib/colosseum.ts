@@ -1,4 +1,5 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { exponentialPercentScale, formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
+import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit/dist/lib/GeneralBank';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import {
 	Time,
@@ -16,19 +17,17 @@ import {
 import { Bank, LootTable } from 'oldschooljs';
 import type { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { degradeChargeBank } from './degradeableItems';
 import type { GearSetupType } from './gear/types';
 import { trackLoot } from './lootTrack';
 import { QuestID } from './minions/data/quests';
 import { ChargeBank } from './structures/Bank';
-import type { GeneralBankType } from './structures/GeneralBank';
-import { GeneralBank } from './structures/GeneralBank';
 import type { ItemBank, Skills } from './types';
 import type { ColoTaskOptions } from './types/minions';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
-import resolveItems from './util/resolveItems';
-import { exponentialPercentScale, formatDuration, formatSkillRequirements, itemNameFromID } from './util/smallUtils';
+import { formatSkillRequirements, itemNameFromID } from './util/smallUtils';
 import { updateBankSetting } from './util/updateBankSetting';
 
 function combinedChance(percentages: number[]): number {

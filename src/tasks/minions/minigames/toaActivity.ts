@@ -4,6 +4,7 @@ import { Time, isObject, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { Emoji, Events, toaPurpleItems } from '../../../lib/constants';
 import { toaCL } from '../../../lib/data/CollectionsExport';
@@ -20,7 +21,6 @@ import {
 import type { TOAOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { assert } from '../../../lib/util/logError';
-import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 

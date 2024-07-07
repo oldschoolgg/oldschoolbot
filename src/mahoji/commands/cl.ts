@@ -5,7 +5,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import type { CollectionLogType } from '../../lib/collectionLogTask';
 import { CollectionLogFlags, clImageGenerator, collectionLogTypes } from '../../lib/collectionLogTask';
 import { allCollectionLogs } from '../../lib/data/Collections';
-import { fetchStatsForCL } from '../../lib/util';
+import { fetchStatsForCL } from '../../lib/util/fetchStatsForCL';
 import type { OSBMahojiCommand } from '../lib/util';
 
 export const collectionLogCommand: OSBMahojiCommand = {

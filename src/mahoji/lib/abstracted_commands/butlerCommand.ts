@@ -1,13 +1,13 @@
 import { Time, clamp } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { Planks } from '../../../lib/minions/data/planks';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ButlerActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches, toKMB } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const unlimitedEarthRuneProviders = resolveItems([

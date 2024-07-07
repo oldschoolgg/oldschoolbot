@@ -1,11 +1,9 @@
-import { splitMessage } from '@oldschoolgg/toolkit';
+import { channelIsSendable, splitMessage } from '@oldschoolgg/toolkit';
 import type { AttachmentBuilder, BaseMessageOptions, EmbedBuilder, Message } from 'discord.js';
 import { PartialGroupDMChannel, PermissionsBitField, WebhookClient } from 'discord.js';
 import PQueue from 'p-queue';
 
 import { production } from '../../config';
-import { prisma } from '../settings/prisma';
-import { channelIsSendable } from '../util';
 import { logError } from './logError';
 
 async function resolveChannel(channelID: string): Promise<WebhookClient | Message['channel'] | undefined> {

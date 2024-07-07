@@ -1,12 +1,7 @@
-import { gzip } from 'node:zlib';
-
-import { createHash } from 'node:crypto';
-import { stripEmojis } from '@oldschoolgg/toolkit';
+import { Stopwatch, stripEmojis } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
-import { Stopwatch } from '@sapphire/stopwatch';
 import type {
 	BaseMessageOptions,
-	ButtonBuilder,
 	ButtonInteraction,
 	CacheType,
 	Collection,
@@ -18,16 +13,15 @@ import type {
 	SelectMenuInteraction,
 	TextChannel
 } from 'discord.js';
-import { ComponentType, escapeMarkdown } from 'discord.js';
-import { Time, chunk, objectEntries } from 'e';
-import { Bank } from 'oldschooljs';
+import type { ComponentType } from 'discord.js';
+import { Time, objectEntries } from 'e';
+import type { Bank } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { BitField, badgesCache, projectiles, usernameCache } from './constants';
-import type { UserStatsDataNeededForCL } from './data/Collections';
 import { getSimilarItems } from './data/similarItems';
 import type { DefenceGearStat, GearSetupType, OffenceGearStat } from './gear/types';
 import { GearSetupTypes, GearStat } from './gear/types';
@@ -35,8 +29,7 @@ import type { Consumable } from './minions/types';
 import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
 import type { Gear } from './structures/Gear';
-import { MUserStats } from './structures/MUserStats';
-import type { ItemBank, Skills } from './types';
+import type { Skills } from './types';
 import type {
 	GroupMonsterActivityTaskOptions,
 	NexTaskOptions,
@@ -47,39 +40,13 @@ import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { itemNameFromID } from './util/smallUtils';
 
-export { cleanString, stringMatches, stripEmojis } from '@oldschoolgg/toolkit';
+export * from '@oldschoolgg/toolkit';
 export * from 'oldschooljs/dist/util/index';
 
-const zeroWidthSpace = '\u200b';
 // @ts-ignore ignore
 BigInt.prototype.toJSON = function () {
 	return this.toString();
 };
-export function cleanMentions(guild: Guild | null, input: string, showAt = true) {
-	const at = showAt ? '@' : '';
-	return input
-		.replace(/@(here|everyone)/g, `@${zeroWidthSpace}$1`)
-		.replace(/<(@[!&]?|#)(\d{17,19})>/g, (match, type, id) => {
-			switch (type) {
-				case '@':
-				case '@!': {
-					const tag = guild?.client.users.cache.get(id);
-					return tag ? `${at}${tag.username}` : `<${type}${zeroWidthSpace}${id}>`;
-				}
-				case '@&': {
-					const role = guild?.roles.cache.get(id);
-					return role ? `${at}${role.name}` : match;
-				}
-				default:
-					return `<${type}${zeroWidthSpace}${id}>`;
-			}
-		});
-}
-
-export function isWeekend() {
-	const currentDate = new Date(Date.now() - Time.Hour * 6);
-	return [6, 0].includes(currentDate.getDay());
-}
 
 export function convertXPtoLVL(xp: number, cap = 99) {
 	let points = 0;
@@ -216,19 +183,6 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	return str.join('');
 }
 
-export const calculateTripConsumableCost = (c: Consumable, quantity: number, duration: number) => {
-	const consumableCost = c.itemCost.clone();
-	if (c.qtyPerKill) {
-		consumableCost.multiply(quantity);
-	} else if (c.qtyPerMinute) {
-		consumableCost.multiply(duration / Time.Minute);
-	}
-	for (const [item, qty] of Object.entries(consumableCost.bank)) {
-		consumableCost.bank[item] = Math.ceil(qty);
-	}
-	return consumableCost;
-};
-
 export function formatPohBoosts(boosts: POHBoosts) {
 	const bonusStr = [];
 	const slotStr = [];
@@ -243,18 +197,6 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	}
 
 	return slotStr.join(', ');
-}
-
-function gaussianRand(rolls = 3) {
-	let rand = 0;
-	for (let i = 0; i < rolls; i += 1) {
-		rand += Math.random();
-	}
-	return rand / rolls;
-}
-
-export function gaussianRandom(min: number, max: number, rolls?: number) {
-	return Math.floor(min + gaussianRand(rolls) * (max - min + 1));
 }
 
 export function isValidNickname(str?: string) {
@@ -273,10 +215,6 @@ export type PaginatedMessagePage = MessageEditOptions;
 export async function makePaginatedMessage(channel: TextChannel, pages: PaginatedMessagePage[], target?: string) {
 	const m = new PaginatedMessage({ pages, channel });
 	return m.run(target ? [target] : undefined);
-}
-
-export function convertPercentChance(percent: number) {
-	return (1 / (percent / 100)).toFixed(1);
 }
 
 export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {
@@ -346,18 +284,6 @@ export function validateBankAndThrow(bank: Bank) {
 	}
 }
 
-export function convertBankToPerHourStats(bank: Bank, time: number) {
-	const result = [];
-	for (const [item, qty] of bank.items()) {
-		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
-	}
-	return result;
-}
-
-export function removeMarkdownEmojis(str: string) {
-	return escapeMarkdown(stripEmojis(str));
-}
-
 export function isValidSkill(skill: string): skill is SkillsEnum {
 	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
 }
@@ -391,17 +317,6 @@ export function roughMergeMahojiResponse(
 	return newResponse;
 }
 
-export async function asyncGzip(buffer: Buffer) {
-	return new Promise<Buffer>((resolve, reject) => {
-		gzip(buffer, {}, (error, gzipped) => {
-			if (error) {
-				reject(error);
-			}
-			resolve(gzipped);
-		});
-	});
-}
-
 export function skillingPetDropRate(
 	user: MUserClass,
 	skill: SkillsEnum,
@@ -427,16 +342,6 @@ export function getUsername(id: string | bigint, withBadges = true) {
 	return username;
 }
 
-export function makeComponents(components: ButtonBuilder[]): InteractionReplyOptions['components'] {
-	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
-}
-
-type test = CollectorFilter<
-	[
-		ButtonInteraction<CacheType> | SelectMenuInteraction<CacheType>,
-		Collection<string, ButtonInteraction<CacheType> | SelectMenuInteraction>
-	]
->;
 export function awaitMessageComponentInteraction({
 	message,
 	filter,
@@ -444,7 +349,12 @@ export function awaitMessageComponentInteraction({
 }: {
 	time: number;
 	message: Message;
-	filter: test;
+	filter: CollectorFilter<
+		[
+			ButtonInteraction<CacheType> | SelectMenuInteraction<CacheType>,
+			Collection<string, ButtonInteraction<CacheType> | SelectMenuInteraction>
+		]
+	>;
 }): Promise<SelectMenuInteraction<CacheType> | ButtonInteraction<CacheType>> {
 	return new Promise((resolve, reject) => {
 		const collector = message.createMessageComponentCollector<ComponentType.Button>({ max: 1, filter, time });
@@ -467,25 +377,6 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 
 export function isModOrAdmin(user: MUser) {
 	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
-}
-
-export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededForCL> {
-	const stats = await MUserStats.fromID(user.id);
-	const { userStats } = stats;
-	return {
-		sacrificedBank: new Bank(userStats.sacrificed_bank as ItemBank),
-		titheFarmsCompleted: userStats.tithe_farms_completed,
-		lapsScores: userStats.laps_scores as ItemBank,
-		openableScores: new Bank(userStats.openable_scores as ItemBank),
-		kcBank: userStats.monster_scores as ItemBank,
-		highGambles: userStats.high_gambles,
-		gotrRiftSearches: userStats.gotr_rift_searches,
-		stats
-	};
-}
-
-export function md5sum(str: string) {
-	return createHash('md5').update(str).digest('hex');
 }
 
 export { assert } from './util/logError';

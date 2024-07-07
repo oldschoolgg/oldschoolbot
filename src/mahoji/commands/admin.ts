@@ -1,12 +1,11 @@
 import { execSync } from 'node:child_process';
 import { inspect } from 'node:util';
 
-import { type CommandRunOptions, bulkUpdateCommands } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, Stopwatch, bulkUpdateCommands } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import type { ClientStorage } from '@prisma/client';
 import { economy_transaction_type } from '@prisma/client';
-import { Stopwatch } from '@sapphire/stopwatch';
 import { isThenable } from '@sentry/utils';
 import type { InteractionReplyOptions } from 'discord.js';
 import { AttachmentBuilder, codeBlock, escapeCodeBlock } from 'discord.js';

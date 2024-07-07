@@ -1,4 +1,4 @@
-import { formatOrdinal, miniID } from '@oldschoolgg/toolkit';
+import { convertPercentChance, formatOrdinal, miniID } from '@oldschoolgg/toolkit';
 import { roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -13,7 +13,6 @@ import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { convertPercentChance } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';

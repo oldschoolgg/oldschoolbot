@@ -11,7 +11,7 @@ import uniqBy from 'lodash/uniqBy';
 import type { Bank } from 'oldschooljs';
 
 import { mean, medianSorted, quantileSorted } from 'simple-statistics';
-import { prisma } from './settings/prisma';
+
 import { getItem } from './util/getOSItem';
 
 interface MarketPriceData {

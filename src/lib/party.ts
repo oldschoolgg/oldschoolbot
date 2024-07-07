@@ -1,3 +1,4 @@
+import { makeComponents } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import type { TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, userMention } from 'discord.js';
@@ -7,7 +8,6 @@ import { production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
 import { SILENT_ERROR, usernameCache } from './constants';
 import type { MakePartyOptions } from './types';
-import { makeComponents } from './util';
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();

@@ -7,7 +7,7 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import Buyables from '../../lib/data/buyables/buyables';
 import { quests } from '../../lib/minions/data/quests';
 import { Minigames, getMinigameScore } from '../../lib/settings/minigames';
-import { prisma } from '../../lib/settings/prisma';
+
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';

@@ -1,8 +1,9 @@
 import { Time, sumArr } from 'e';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { MAX_GLOBAL_QP, MAX_QP, quests } from '../../../lib/minions/data/quests';
 import type { ActivityTaskOptionsWithNoChanges, SpecificQuestOptions } from '../../../lib/types/minions';
-import { formatDuration, hasSkillReqs } from '../../../lib/util';
+import { hasSkillReqs } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { userHasGracefulEquipped } from '../../mahojiSettings';

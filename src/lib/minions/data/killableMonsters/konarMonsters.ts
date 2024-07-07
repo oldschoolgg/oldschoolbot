@@ -2,8 +2,8 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../gear/types';
-import resolveItems from '../../../util/resolveItems';
 import type { KillableMonster } from '../../types';
 
 export const konarMonsters: KillableMonster[] = [

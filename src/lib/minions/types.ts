@@ -12,9 +12,9 @@ import type { POHBoosts } from '../poh';
 import type { MinigameName } from '../settings/minigames';
 import type { LevelRequirements, SkillsEnum } from '../skilling/types';
 import type { MUserStats } from '../structures/MUserStats';
-import type { ArrayItemsResolved, ItemBank, Skills } from '../types';
+import type { ItemBank, Skills } from '../types';
 import type { MonsterActivityTaskOptions } from '../types/minions';
-import type { calculateSimpleMonsterDeathChance } from '../util';
+import type { ArrayItemsResolved, calculateSimpleMonsterDeathChance } from '../util';
 import type { QuestID } from './data/quests';
 import type { AttackStyles } from './functions';
 

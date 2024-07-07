@@ -2,7 +2,6 @@ import type { User } from '@prisma/client';
 
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { MUserClass } from '../MUser';
-import { prisma } from '../settings/prisma';
 
 async function syncLinkedAccountPerks(user: MUser) {
 	const main = user.user.main_account;

@@ -22,7 +22,7 @@ import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { allPerkBitfields } from '../../lib/perkTiers';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
-import { prisma } from '../../lib/settings/prisma';
+
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
 import type { ItemBank } from '../../lib/types';
 import { dateFm, isValidDiscordSnowflake, returnStringOrFile } from '../../lib/util';

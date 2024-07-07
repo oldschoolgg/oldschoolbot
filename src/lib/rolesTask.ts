@@ -6,7 +6,7 @@ import { ClueTiers } from '../lib/clues/clueTiers';
 import { Roles, usernameCache } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
-import { prisma } from '../lib/settings/prisma';
+
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';
 import { logError } from '../lib/util/logError';
