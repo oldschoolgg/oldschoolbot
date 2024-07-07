@@ -10,10 +10,3 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       PGPORT: 1234
-
-  redis:
-    image: redis:alpine
-    restart: always
-    container_name: redis
-    ports:
-      - "6379:6379"
