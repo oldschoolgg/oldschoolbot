@@ -32,6 +32,7 @@ async function main() {
 			console.log(`Finished run ${i + 1}/${runs}`);
 		}
 	} catch (err) {
+		console.log(execSync('docker-compose logs', { encoding: 'utf-8' }));
 		console.error(err);
 		throw new Error(err as any);
 	} finally {
