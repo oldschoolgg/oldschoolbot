@@ -20,8 +20,7 @@ jobs:
     steps:
       - name: Checkout Project
         uses: actions/checkout@v4
-      - run: corepack enable
-      - run: corepack install
+      - run: corepack enable &&  corepack install
       - name: Use Node.js ${{ matrix.node_version }}
         uses: actions/setup-node@v4
         with:
@@ -38,9 +37,7 @@ jobs:
         run: |
           pushd src &&
           cp config.example.ts config.ts &&
-          popd
-      - name: Copy env
-        run: cp .env.test .env
+          popd && cp .env.test .env
       - name: Generate Prisma Clients
         run: yarn gen
       - name: Build
