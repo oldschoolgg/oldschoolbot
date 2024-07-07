@@ -34,7 +34,7 @@ import { tinkeringWorkshopCommand } from '../lib/abstracted_commands/tinkeringWo
 import { itemOption, ownedMaterialOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 
-export const minigamesCommand: OSBMahojiCommand = {
+export const bsoMinigamesCommand: OSBMahojiCommand = {
 	name: 'bsominigames',
 	description: 'Send your minion to do various bso minigames.',
 	options: [
