@@ -47,11 +47,6 @@
 		"subOptions": []
 	},
 	{
-		"name": "botleagues",
-		"desc": "Compete in the OSB/BSO Leagues.",
-		"subOptions": ["help", "claim_trophy", "leaderboard", "buy_reward"]
-	},
-	{
 		"name": "bs",
 		"desc": "Search your minions bank.",
 		"subOptions": []
@@ -107,12 +102,6 @@
 		"subOptions": []
 	},
 	{
-		"name": "clues",
-		"desc": "See your OSRS clue scores.",
-		"examples": ["/clues rsn:Magnaboy"],
-		"subOptions": []
-	},
-	{
 		"name": "config",
 		"desc": "Commands configuring settings and options.",
 		"subOptions": ["server", "user"]
@@ -144,11 +133,6 @@
 		"name": "drop",
 		"desc": "Drop items from your bank.",
 		"examples": ["/drop items:10 trout, 5 coal"],
-		"subOptions": []
-	},
-	{
-		"name": "drycalc",
-		"desc": "Calculate your drystreak chance.",
 		"subOptions": []
 	},
 	{
@@ -528,11 +512,6 @@
 		"name": "use",
 		"desc": "Use items/things.",
 		"examples": ["/use name:Mithril seeds"],
-		"subOptions": []
-	},
-	{
-		"name": "wiki",
-		"desc": "Search the official OSRS wiki.",
 		"subOptions": []
 	}
 ]

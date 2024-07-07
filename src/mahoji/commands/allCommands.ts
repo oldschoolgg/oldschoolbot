@@ -16,14 +16,12 @@ import { chopCommand } from './chop';
 import { collectionLogCommand } from './cl';
 import { claimCommand } from './claim';
 import { clueCommand } from './clue';
-import { cluesCommand } from './clues';
 import { configCommand } from './config';
 import { cookCommand } from './cook';
 import { craftCommand } from './craft';
 import { createCommand } from './create';
 import { dataCommand } from './data';
 import { dropCommand } from './drop';
-import { dryCalcCommand } from './drycalc';
 import { fakeCommand } from './fake';
 import { fakepmCommand } from './fakepm';
 import { farmingCommand } from './farming';
@@ -79,7 +77,6 @@ import { toolsCommand } from './tools';
 import { tradeCommand } from './trade';
 import { triviaCommand } from './trivia';
 import { mahojiUseCommand } from './use';
-import { wikiCommand } from './wiki';
 
 export const allCommands: OSBMahojiCommand[] = [
 	adminCommand,
@@ -94,7 +91,6 @@ export const allCommands: OSBMahojiCommand[] = [
 	clueCommand,
 	configCommand,
 	claimCommand,
-	cluesCommand,
 	mCommand,
 	gpCommand,
 	payCommand,
@@ -102,7 +98,6 @@ export const allCommands: OSBMahojiCommand[] = [
 	fishCommand,
 	farmingCommand,
 	dropCommand,
-	dryCalcCommand,
 	createCommand,
 	activitiesCommand,
 	dataCommand,
@@ -152,7 +147,6 @@ export const allCommands: OSBMahojiCommand[] = [
 	bingoCommand,
 	bankCommand,
 	bossrecordCommand,
-	wikiCommand,
 	lvlCommand,
 	casketCommand,
 	finishCommand,
