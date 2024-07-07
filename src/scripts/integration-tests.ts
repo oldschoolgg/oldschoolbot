@@ -1,23 +1,25 @@
 import { execSync } from 'node:child_process';
 import path from 'node:path';
+import { Stopwatch } from '@oldschoolgg/toolkit';
 import { config } from 'dotenv';
 import { sleep } from 'e';
 
 async function main() {
+	const stopwatch = new Stopwatch();
 	try {
 		execSync('docker compose up -d --wait', { stdio: 'inherit' });
+		stopwatch.check('Docker compose finished.');
 
-		console.log('Waiting...');
-		await sleep(2000);
+		await sleep(3000);
+		stopwatch.check('Finished waiting.');
 
-		console.log('Getting ready...');
 		const env = { ...process.env, ...config({ path: path.resolve('.env.test') }).parsed };
+		execSync('yarn prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit', env });
+		execSync('yarn prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit', env });
+		stopwatch.check('Finished prisma pushing.');
 
-		execSync('npx prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit', env });
-		execSync('npx prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit', env });
-
-		console.log('Building...');
-		execSync('yarn build', { stdio: 'inherit' });
+		execSync('yarn build:tsc', { stdio: 'inherit' });
+		stopwatch.check('Finished building, starting tests.');
 
 		console.log('Starting tests...');
 		const runs = 1;
@@ -33,8 +35,8 @@ async function main() {
 		console.error(err);
 		throw new Error(err as any);
 	} finally {
-		console.log('Shutting down containers...');
 		execSync('docker-compose down', { stdio: 'inherit' });
+		stopwatch.check('Finished.');
 	}
 }
 

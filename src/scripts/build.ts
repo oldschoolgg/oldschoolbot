@@ -1,42 +1,18 @@
-import { exec as execNonPromise } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { promisify } from 'node:util';
-import { Stopwatch } from '@oldschoolgg/toolkit';
 import fg from 'fast-glob';
 
 import { production } from '../config.js';
 import { BOT_TYPE } from '../lib/constants';
 import { getSystemInfo } from '../lib/systemInfo.js';
+import { execAsync, runTimedLoggedFn } from './scriptUtil.js';
 
 const args = process.argv.slice(2);
 
 const hasArg = (arg: string) => args.includes(arg);
 
 const forceRebuild = hasArg('--clean');
-
-async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
-	const stopwatch = new Stopwatch();
-	stopwatch.start();
-	await fn();
-	stopwatch.stop();
-	console.log(`Finished ${name} in ${stopwatch.toString()}`);
-}
-
-const rawExecAsync = promisify(execNonPromise);
-
-async function execAsync(command: string) {
-	try {
-		console.log('   Running command:', command);
-		const result = await rawExecAsync(command);
-		if (result.stderr) {
-			console.error(result.stderr);
-		}
-	} catch (err) {
-		console.error(err);
-	}
-}
 
 if (!existsSync('./cache.json')) {
 	writeFileSync('./cache.json', `${JSON.stringify({}, null, '	')}\n`);

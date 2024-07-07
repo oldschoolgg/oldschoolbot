@@ -49,3 +49,9 @@ This assumes you are using VSCode as your IDE. If you have errors or issues, you
   // Always use \n for EOF
   "files.eol": "\n",
 ```
+
+# Troubleshooting
+
+- Check your NodeJS/NPM/Yarn/Postgres versions.
+- Uninstall prettier/eslint vscode plugins.
+- Delete these folders: node_modules, dist
