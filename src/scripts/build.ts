@@ -8,6 +8,7 @@ import fg from 'fast-glob';
 
 import { production } from '../config.js';
 import { BOT_TYPE } from '../lib/constants';
+import { getSystemInfo } from '../lib/systemInfo.js';
 
 const args = process.argv.slice(2);
 
@@ -151,6 +152,7 @@ async function main() {
 	if (production || process.env.NODE_ENV === 'production') {
 		throw new Error("Don't run build script in production!");
 	}
+	console.log((await getSystemInfo()).singleStr);
 	await runTimedLoggedFn('Prisma Client / Wipe Dist', () =>
 		Promise.all([handlePrismaClientGeneration(), checkForWipingDistFolder()])
 	);

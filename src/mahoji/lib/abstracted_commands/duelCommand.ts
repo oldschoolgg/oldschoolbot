@@ -37,7 +37,6 @@ export async function duelCommand(
 	if (duelSourceUser.isIronman) return "You can't duel someone as an ironman.";
 	if (duelTargetUser.isIronman) return "You can't duel someone who is an ironman.";
 	if (duelSourceUser.id === duelTargetUser.id) return 'You cant duel yourself.';
-	if (!duelTargetUser) return "You didn't mention a user to duel.";
 	if (BLACKLISTED_USERS.has(duelTargetUser.id)) return 'Target user is blacklisted.';
 	if (targetAPIUser.user.bot) return 'You cant duel a bot.';
 
