@@ -1,7 +1,7 @@
+import { convertAPIOptionsToCommandOptions } from '@oldschoolgg/toolkit';
 import { captureException } from '@sentry/node';
 import type { Interaction } from 'discord.js';
 
-import { convertAPIOptionsToCommandOptions } from '@oldschoolgg/toolkit';
 import { production } from '../../config';
 import getOSItem from './getOSItem';
 

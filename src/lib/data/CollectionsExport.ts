@@ -2,12 +2,12 @@ import type { Minigame } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { growablePets } from '../growablePets';
 import { stoneSpirits } from '../minions/data/stoneSpirits';
 import type { MinigameScore } from '../settings/minigames';
 import getOSItem from '../util/getOSItem';
 import { assert } from '../util/logError';
-import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
 import type { UserStatsDataNeededForCL } from './Collections';
 import {

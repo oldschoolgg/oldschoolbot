@@ -1,5 +1,6 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
+
 import { PVM_METHODS, type PvMMethod, ZALCANO_ID } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
@@ -9,7 +10,6 @@ import { MOKTANG_ID } from '../../lib/minions/data/killableMonsters/custom/bosse
 import { Naxxus } from '../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { NexMonster } from '../../lib/nex';
-
 import { returnStringOrFile } from '../../lib/util/smallUtils';
 import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
 import type { OSBMahojiCommand } from '../lib/util';

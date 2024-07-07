@@ -4,9 +4,9 @@ import { EmbedBuilder } from 'discord.js';
 import { LootTable } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { mahojiClientSettingsUpdate } from '../../../lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import resolveItems from '../../../lib/util/resolveItems';
 import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings';
 
 export const flowerTable = new LootTable()

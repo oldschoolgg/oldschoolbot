@@ -1,4 +1,4 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { exponentialPercentScale, formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
 import {
 	Time,
@@ -28,7 +28,7 @@ import type { ItemBank, Skills } from './types';
 import type { ColoTaskOptions } from './types/minions';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import resolveItems from './util/resolveItems';
-import { exponentialPercentScale, formatDuration, formatSkillRequirements, itemNameFromID } from './util/smallUtils';
+import { formatSkillRequirements, itemNameFromID } from './util/smallUtils';
 import { updateBankSetting } from './util/updateBankSetting';
 
 function combinedChance(percentages: number[]): number {

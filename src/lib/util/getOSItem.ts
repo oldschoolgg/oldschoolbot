@@ -1,37 +1,7 @@
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { Items } from 'oldschooljs';
-import type { Item } from 'oldschooljs/dist/meta/types';
+import '../data/trophies';
 
-const cache = new Map();
+import { getItem, getItemOrThrow } from 'oldschooljs/dist/util/util';
 
-function cleanItemName(itemName: string) {
-	return itemName.replace(/’/g, "'");
-}
+export { getItem, getItemOrThrow as getOSItem };
 
-export default function getOSItem(itemName: string | number): Item {
-	if (cache.has(itemName)) {
-		return cache.get(itemName);
-	}
-
-	let identifier: string | number | undefined = '';
-	if (typeof itemName === 'number') {
-		identifier = itemName;
-	} else {
-		const parsed = Number(itemName);
-		identifier = Number.isNaN(parsed) ? cleanItemName(itemName) : parsed;
-	}
-
-	const osItem = Items.get(identifier) as Item | undefined;
-	if (!osItem) throw new UserError(`That item doesn't exist.`);
-	cache.set(itemName, osItem);
-	return osItem;
-}
-
-export function getItem(itemName: string | number | undefined): Item | null {
-	if (!itemName) return null;
-	try {
-		return getOSItem(itemName);
-	} catch {
-		return null;
-	}
-}
+export default getItemOrThrow;

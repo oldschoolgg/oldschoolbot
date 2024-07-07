@@ -799,11 +799,10 @@ export function minionStatus(user: MUser) {
 				quests.find(i => i.id === data.questID)?.name
 			}! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
-		case 'Mortimer': {
+		case 'Mortimer':
 			return `${name} is currently fighting Maledict Mortimer! The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
-		}
 		case 'Colosseum': {
 			const data = currentTask as ColoTaskOptions;
 			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
@@ -812,14 +811,12 @@ export function minionStatus(user: MUser) {
 				durationRemaining
 			)}.`;
 		}
-		case 'HalloweenEvent': {
+		case 'HalloweenEvent':
 			return `${name} is doing the Halloween event! The trip should take ${formatDuration(durationRemaining)}.`;
-		}
-		case 'GuthixianCache': {
+		case 'GuthixianCache':
 			return `${name} is currently participating in a Guthixian cache. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
-		}
 		case 'MemoryHarvest': {
 			const data = currentTask as MemoryHarvestOptions;
 			const energy = divinationEnergies.find(e => e.item.id === data.e)!;
@@ -828,16 +825,14 @@ export function minionStatus(user: MUser) {
 				method.name
 			}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
-		case 'TuraelsTrials': {
+		case 'TuraelsTrials':
 			return `${name} is currently slaying monsters in Turaels Trials. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
-		}
 		case 'HalloweenMiniMinigame':
 		case 'Easter':
 		case 'BlastFurnace':
-		case 'TrickOrTreat': {
+		case 'TrickOrTreat':
 			throw new Error('Removed');
-		}
 	}
 }

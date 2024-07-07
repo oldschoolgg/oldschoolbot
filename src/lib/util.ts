@@ -1,18 +1,11 @@
-import { type CommandResponse, stripEmojis } from '@oldschoolgg/toolkit';
-import { Time, calcWhatPercent, chunk, notEmpty, objectEntries, randArrItem, randInt, shuffleArr, sumArr } from 'e';
-import { Bank, Items, Monsters } from 'oldschooljs';
-import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
-
-import type { PrismaClient } from '@prisma/client';
-import { Stopwatch } from '@sapphire/stopwatch';
+import { Stopwatch, stripEmojis } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
 import {
 	type BaseMessageOptions,
-	type ButtonBuilder,
 	type ButtonInteraction,
 	type CacheType,
 	type Collection,
 	type CollectorFilter,
-	ComponentType,
 	type Guild,
 	type InteractionReplyOptions,
 	InteractionType,
@@ -23,6 +16,12 @@ import {
 	bold,
 	escapeMarkdown
 } from 'discord.js';
+import type { ComponentType } from 'discord.js';
+import { Time, calcWhatPercent, notEmpty, objectEntries, randArrItem, randInt, shuffleArr, sumArr } from 'e';
+import { Bank, Items, Monsters } from 'oldschooljs';
+import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
+
+import type { PrismaClient } from '@prisma/client';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
@@ -39,7 +38,6 @@ import {
 	projectiles,
 	usernameCache
 } from './constants';
-import type { UserStatsDataNeededForCL } from './data/Collections';
 import { doaCL } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import type { DefenceGearStat, GearSetupType, OffenceGearStat } from './gear/types';
@@ -48,7 +46,6 @@ import type { Consumable } from './minions/types';
 import type { POHBoosts } from './poh';
 import { SkillsEnum } from './skilling/types';
 import type { Gear } from './structures/Gear';
-import { MUserStats } from './structures/MUserStats';
 import type { ItemBank, Skills } from './types';
 import type {
 	GroupMonsterActivityTaskOptions,
@@ -61,7 +58,7 @@ import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
 import { itemNameFromID } from './util/smallUtils';
 
-export { cleanString, stringMatches, stripEmojis } from '@oldschoolgg/toolkit';
+export * from '@oldschoolgg/toolkit';
 export * from 'oldschooljs/dist/util/index';
 
 // @ts-ignore ignore
@@ -230,19 +227,6 @@ export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
 	return str.join('');
 }
 
-export const calculateTripConsumableCost = (c: Consumable, quantity: number, duration: number) => {
-	const consumableCost = c.itemCost.clone();
-	if (c.qtyPerKill) {
-		consumableCost.multiply(quantity);
-	} else if (c.qtyPerMinute) {
-		consumableCost.multiply(duration / Time.Minute);
-	}
-	for (const [item, qty] of Object.entries(consumableCost.bank)) {
-		consumableCost.bank[item] = Math.ceil(qty);
-	}
-	return consumableCost;
-};
-
 export function formatPohBoosts(boosts: POHBoosts) {
 	const bonusStr = [];
 	const slotStr = [];
@@ -259,16 +243,6 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	return slotStr.join(', ');
 }
 
-function gaussianRand(rolls = 3) {
-	let rand = 0;
-	for (let i = 0; i < rolls; i += 1) {
-		rand += Math.random();
-	}
-	return rand / rolls;
-}
-export function gaussianRandom(min: number, max: number, rolls?: number) {
-	return Math.floor(min + gaussianRand(rolls) * (max - min + 1));
-}
 export function isValidNickname(str?: string) {
 	return Boolean(
 		str &&
@@ -489,7 +463,6 @@ export function roughMergeMahojiResponse(
 		if (res.components) newResponse.components = res.components;
 	}
 	newResponse.content = newContent.join('\n\n');
-
 	return newResponse;
 }
 
@@ -562,16 +535,6 @@ export function clAdjustedDroprate(
 	return Math.floor(newRate);
 }
 
-export function makeComponents(components: ButtonBuilder[]): InteractionReplyOptions['components'] {
-	return chunk(components, 5).map(i => ({ components: i, type: ComponentType.ActionRow }));
-}
-
-type test = CollectorFilter<
-	[
-		ButtonInteraction<CacheType> | SelectMenuInteraction<CacheType>,
-		Collection<string, ButtonInteraction<CacheType> | SelectMenuInteraction>
-	]
->;
 export function awaitMessageComponentInteraction({
 	message,
 	filter,
@@ -579,7 +542,12 @@ export function awaitMessageComponentInteraction({
 }: {
 	time: number;
 	message: Message;
-	filter: test;
+	filter: CollectorFilter<
+		[
+			ButtonInteraction<CacheType> | SelectMenuInteraction<CacheType>,
+			Collection<string, ButtonInteraction<CacheType> | SelectMenuInteraction>
+		]
+	>;
 }): Promise<SelectMenuInteraction<CacheType> | ButtonInteraction<CacheType>> {
 	return new Promise((resolve, reject) => {
 		const collector = message.createMessageComponentCollector<ComponentType.Button>({ max: 1, filter, time });
@@ -641,21 +609,6 @@ export async function calcClueScores(user: MUser) {
 			};
 		})
 		.filter(notEmpty);
-}
-
-export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededForCL> {
-	const stats = await MUserStats.fromID(user.id);
-	const { userStats } = stats;
-	return {
-		sacrificedBank: new Bank(userStats.sacrificed_bank as ItemBank),
-		titheFarmsCompleted: userStats.tithe_farms_completed,
-		lapsScores: userStats.laps_scores as ItemBank,
-		openableScores: new Bank(userStats.openable_scores as ItemBank),
-		kcBank: userStats.monster_scores as ItemBank,
-		highGambles: userStats.high_gambles,
-		gotrRiftSearches: userStats.gotr_rift_searches,
-		stats
-	};
 }
 
 export { assert } from './util/logError';

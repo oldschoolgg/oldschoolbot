@@ -25,7 +25,7 @@ declare global {
 }
 
 global.transactItems = transactItemsFromBank;
-export async function transactItemsFromBank({
+async function transactItemsFromBank({
 	userID,
 	collectionLog = false,
 	filterLoot = true,

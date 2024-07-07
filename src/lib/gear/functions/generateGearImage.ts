@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
-import { Canvas, type Image } from '@napi-rs/canvas';
+import { Canvas, type Image, loadImage } from '@napi-rs/canvas';
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import { randInt } from 'e';
 import { EquipmentSlot, type Item } from 'oldschooljs/dist/meta/types';
@@ -15,18 +15,12 @@ import {
 } from '..';
 import { monkeyTiers } from '../../monkeyRumble';
 import { Gear } from '../../structures/Gear';
-import {
-	calcAspectRatioFit,
-	canvasImageFromBuffer,
-	drawItemQuantityText,
-	drawTitleText,
-	fillTextXTimesInCtx
-} from '../../util/canvasUtil';
+import { calcAspectRatioFit, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
 import { applyCustomItemEffects } from '../../util/customItemEffects';
 import getOSItem from '../../util/getOSItem';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from '../../util/slayerMaskLeaderboard';
 
-const banana = canvasImageFromBuffer(fs.readFileSync('./src/lib/resources/images/banana.png'));
+const banana = loadImage(fs.readFileSync('./src/lib/resources/images/banana.png'));
 
 export const gearImages = [
 	{
@@ -222,23 +216,23 @@ interface TransmogItem {
 const transmogItems: TransmogItem[] = [
 	{
 		item: getOSItem('Gorilla rumble greegree'),
-		image: fsPromises.readFile('./src/lib/resources/images/mmmr/gorilla.png').then(canvasImageFromBuffer),
+		image: fsPromises.readFile('./src/lib/resources/images/mmmr/gorilla.png').then(loadImage),
 		maxHeight: 170
 	},
 	...monkeyTiers.map(m => m.greegrees.map(g => ({ item: g, image: m.image }))).flat(2),
 	{
 		item: getOSItem('Gastly ghost cape'),
-		image: fsPromises.readFile('./src/lib/resources/images/ghost.png').then(canvasImageFromBuffer),
+		image: fsPromises.readFile('./src/lib/resources/images/ghost.png').then(loadImage),
 		maxHeight: 170
 	},
 	{
 		item: getOSItem('Spooky cat ears'),
-		image: fsPromises.readFile('./src/lib/resources/images/cat.png').then(canvasImageFromBuffer),
+		image: fsPromises.readFile('./src/lib/resources/images/cat.png').then(loadImage),
 		maxHeight: 74
 	},
 	{
 		item: getOSItem('Pumpkinpole'),
-		image: fsPromises.readFile('./src/lib/resources/images/pumpkin.png').then(canvasImageFromBuffer),
+		image: fsPromises.readFile('./src/lib/resources/images/pumpkin.png').then(loadImage),
 		maxHeight: 180
 	}
 ];
@@ -261,7 +255,7 @@ export async function generateGearImage(
 	const hexColor = user.user.bank_bg_hex;
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
-	const gearTemplateImage = await canvasImageFromBuffer(user.gearTemplate.template);
+	const gearTemplateImage = await loadImage(user.gearTemplate.template);
 	const canvas = new Canvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
@@ -376,7 +370,7 @@ export async function generateAllGearImage(user: MUser) {
 
 	const hexColor = user.user.bank_bg_hex;
 	debugLog('Generating all-gear image', { user_id: user.id });
-	const gearTemplateImage = await canvasImageFromBuffer(user.gearTemplate.templateCompact);
+	const gearTemplateImage = await loadImage(user.gearTemplate.templateCompact);
 	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;

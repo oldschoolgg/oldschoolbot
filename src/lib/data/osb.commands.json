@@ -292,11 +292,6 @@
 		]
 	},
 	{
-		"name": "leagues",
-		"desc": "Check the stats of a OSRS account.",
-		"subOptions": []
-	},
-	{
 		"name": "light",
 		"desc": "Light logs to train Firemaking.",
 		"examples": ["/light name:Logs"],

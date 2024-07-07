@@ -1,35 +1,33 @@
 {
 	"scripts": {
+		"build": "tsx ./src/scripts/build.ts",
+		"fix": "tsx ./src/scripts/troubleshooter.ts",
+		"start": "yarn build && node --enable-source-maps dist/",
 		"gen": "concurrently --raw \"prisma generate --no-hints\" \"prisma generate --no-hints --schema prisma/robochimp.prisma\" && echo \"Generated Prisma Client\"",
 		"prettify": "prettier --use-tabs \"./**/*.{md,yml}\" --write",
 		"lint": "concurrently --raw --kill-others-on-fail \"biome check --write --unsafe --diagnostic-level=error\" \"yarn prettify\"",
 		"build:tsc": "tsc -p src",
-		"build": "tsx ./src/scripts/build.ts",
-		"wipedist": "node -e \"require('fs').rmSync('dist', { recursive: true })\"",
-		"start": "yarn build && node --enable-source-maps dist/",
+		"wipedist": "node -e \"try { require('fs').rmSync('dist', { recursive: true }) } catch(_){}\"",
+		"dev": "yarn && yarn wipedist && yarn lint && yarn build && yarn test && npm i -g dpdm && dpdm --exit-code circular:1 --progress=false --warning=false --tree=false ./dist/index.js",
 		"test": "concurrently --timings --raw --kill-others-on-fail \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\" \"tsc -p tests/integration\" \"tsc -p tests/unit\"",
 		"test:lint": "biome check --diagnostic-level=error",
 		"test:unit": "vitest run --coverage --config vitest.unit.config.mts",
-		"dev": "yarn wipedist && tsc -w -p src",
 		"test:watch": "vitest --config vitest.unit.config.mts --coverage",
-		"test:integration": "tsx ./src/scripts/integration-tests.ts"
+		"test:integration": "tsx ./src/scripts/integration-tests.ts",
+		"watch": "tsc -w -p src"
 	},
 	"dependencies": {
 		"@napi-rs/canvas": "^0.1.53",
-		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#9573a4a3945dd8a812fa89e107e7184459a0f98e",
+		"@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#62f9f71274c6d36db6c56a2228ae3df9ab090dbd",
 		"@prisma/client": "^5.16.1",
 		"@sapphire/snowflake": "^3.5.3",
-		"@sapphire/stopwatch": "^1.4.0",
 		"@sapphire/time-utilities": "^1.6.0",
-		"@sapphire/utilities": "^1.4.7",
 		"@sentry/node": "^8.15.0",
 		"ascii-table3": "^0.9.0",
 		"bufferutil": "^4.0.8",
-		"decimal.js": "^10.4.3",
-		"deepmerge": "^4.3.1",
 		"discord.js": "^14.15.3",
 		"dotenv": "^16.4.5",
-		"e": "^0.2.33",
+		"e": "0.2.33",
 		"fast-deep-equal": "^3.1.3",
 		"lodash": "^4.17.21",
 		"lru-cache": "^10.3.0",
@@ -61,7 +59,7 @@
 		"vitest": "^1.6.0"
 	},
 	"engines": {
-		"node": ">=20.12.0"
+		"node": "20.15.0"
 	},
 	"packageManager": "yarn@4.3.1"
 }

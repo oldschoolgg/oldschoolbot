@@ -1,13 +1,13 @@
 import { Time, increaseNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { trackClientBankStats, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { degradeChargeBank } from '../degradeableItems';
 import { ChargeBank } from '../structures/Banks';
 import type { TuraelsTrialsOptions } from '../types/minions';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import { formatDuration } from '../util/smallUtils';
 
 export const TuraelsTrialsMethods = ['melee', 'mage', 'range'] as const;
 export type TuraelsTrialsMethod = (typeof TuraelsTrialsMethods)[number];

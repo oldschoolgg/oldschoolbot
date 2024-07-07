@@ -1,9 +1,11 @@
 import { formatOrdinal, stringMatches } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { formatDuration } from '@oldschoolgg/toolkit';
 import type { User } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 
 import { Events } from '../../lib/constants';
 import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
@@ -12,13 +14,11 @@ import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { OfferingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import getOSItem from '../../lib/util/getOSItem';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import resolveItems from '../../lib/util/resolveItems';
 import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings';
 

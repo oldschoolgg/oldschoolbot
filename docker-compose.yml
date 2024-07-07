@@ -26,3 +26,10 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: robochimp_integration_test
       PGPORT: 1235
+
+  redis:
+    image: redis:alpine
+    restart: always
+    container_name: redis
+    ports:
+      - "6379:6379"

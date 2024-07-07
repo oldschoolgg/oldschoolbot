@@ -1,7 +1,7 @@
+import { isFunction } from 'e';
 import { Bank } from 'oldschooljs';
 import { expect, it } from 'vitest';
 
-import { isFunction } from 'e';
 import { BOT_TYPE } from '../../src/lib/constants';
 import Buyables from '../../src/lib/data/buyables/buyables';
 import Createables from '../../src/lib/data/createables';

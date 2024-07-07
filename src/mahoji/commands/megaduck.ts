@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs';
 import { Canvas } from '@napi-rs/canvas';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
@@ -7,15 +6,11 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { type MegaDuckLocation, defaultMegaDuckLocation } from '../../lib/minions/types';
-
 import { getUsername } from '../../lib/util';
-import { canvasImageFromBuffer } from '../../lib/util/canvasUtil';
+import { loadAndCacheLocalImage } from '../../lib/util/canvasUtil';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { mahojiGuildSettingsUpdate } from '../guildSettings';
 import { type OSBMahojiCommand, resetCooldown } from '../lib/util';
-
-const _mapImage = readFileSync('./src/lib/resources/images/megaduckmap.png');
-const noMoveImageBuf = readFileSync('./src/lib/resources/images/megaducknomovemap.png');
 
 const apeAtoll = [1059, 1226];
 const portSarim = [1418, 422];
@@ -71,12 +66,10 @@ function getPixel(x: number, y: number, data: any, width: number) {
 	return [data[i], data[i + 1], data[i + 2], data[i + 3]];
 }
 
-const _noMoveImage = canvasImageFromBuffer(noMoveImageBuf);
-
 async function makeImage(location: MegaDuckLocation) {
 	const { x, y, steps = [] } = location;
-	const mapImage = await canvasImageFromBuffer(_mapImage);
-	const noMoveImage = await _noMoveImage;
+	const mapImage = await loadAndCacheLocalImage('./src/lib/resources/images/megaduckmap.png');
+	const noMoveImage = await loadAndCacheLocalImage('./src/lib/resources/images/megaducknomovemap.png');
 
 	const scale = 3;
 	const canvasSize = 250;

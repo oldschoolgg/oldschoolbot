@@ -1,4 +1,4 @@
-import { Stopwatch } from '@sapphire/stopwatch';
+import { Stopwatch } from '@oldschoolgg/toolkit';
 import { ChannelType } from 'discord.js';
 import { objectEntries } from 'e';
 

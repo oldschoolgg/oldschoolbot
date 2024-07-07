@@ -47,7 +47,8 @@ import smithables from '../skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../skilling/types';
 import type { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
-import { fetchStatsForCL, stringMatches } from '../util';
+import { stringMatches } from '../util';
+import { fetchStatsForCL } from '../util/fetchStatsForCL';
 import resolveItems from '../util/resolveItems';
 import { shuffleRandom } from '../util/smallUtils';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
@@ -1954,7 +1955,7 @@ export async function getBank(user: MUser, type: CLType, userStats: UserStatsDat
 			if (!userStats) return new Bank();
 			return new Bank(userStats.sacrificedBank);
 		case 'tame': {
-			const { getUsersTamesCollectionLog } = await import('../util/getUsersTameCL');
+			const { getUsersTamesCollectionLog } = await import('../util/getUsersTameCL.js');
 			return getUsersTamesCollectionLog(user.id);
 		}
 		case 'temp':

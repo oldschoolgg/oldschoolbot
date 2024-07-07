@@ -6,6 +6,7 @@ import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
 import { getSimilarItems } from '../data/similarItems';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import {
 	type Species,
 	type TameTaskOptions,
@@ -15,7 +16,7 @@ import {
 	tameSpecies
 } from '../tames';
 import type { ItemBank } from '../types';
-import { formatDuration, itemNameFromID } from './smallUtils';
+import { itemNameFromID } from './smallUtils';
 
 export async function tameLastFinishedActivity(user: MUser) {
 	const tameID = user.user.selected_tame;

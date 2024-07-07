@@ -360,26 +360,24 @@ export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
 	if (currentXP >= MAX_XP) {
 		let xpStr = '';
 		if (params.duration && !params.minimal) {
-			xpStr += `You received no XP because you have ${toKMB(MAX_XP)} ${name} XP already.`;
-			xpStr += ` Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
+			xpStr += 'You received no XP because you have $toKMB(MAX_XP)$nameXP already.';
+			xpStr += ' Tracked $params.amount.toLocaleString()$skill.emojiXP.';
 			let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
 			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 			xpStr += ` (${toKMB(rawXPHr)}/Hr)`;
 		} else {
-			xpStr += `:no_entry_sign: Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
+			xpStr += ':no_entry_sign: Tracked $params.amount.toLocaleString()$skill.emojiXP.';
 		}
 		return xpStr;
 	}
 
-	await user.update({
-		[`skills_${params.skillName}`]: Math.floor(newXP)
-	});
+	await user.update({ [`skills_${params.skillName}`]: Math.floor(newXP) });
 
 	if (currentXP < MAX_XP && newXP === MAX_XP && Object.values(user.skillsAsXP).every(xp => xp === MAX_XP)) {
 		globalClient.emit(
 			Events.ServerNotification,
 			bold(
-				`🎉 ${skill.emoji} **${user.badgedUsername}'s** minion, ${user.minionName}, just achieved the maximum possible total XP!`
+				`🎉 ${skill.emoji}**${user.badgedUsername}'s** minion, ${user.minionName}, just achieved the maximum possible total XP!`
 			)
 		);
 		await insertUserEvent({ userID: user.id, type: UserEventType.MaxTotalXP });

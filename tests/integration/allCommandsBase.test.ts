@@ -1,6 +1,7 @@
 import { generateCommandInputs, generateRandomBank } from '@oldschoolgg/toolkit';
 import { Time, shuffleArr } from 'e';
 import { expect, test, vi } from 'vitest';
+
 import { BitField, minionActivityCache } from '../../src/lib/constants';
 import { mahojiClientSettingsFetch } from '../../src/lib/util/clientSettings';
 import { handleMahojiConfirmation } from '../../src/lib/util/handleMahojiConfirmation';
@@ -20,6 +21,11 @@ test(
 		await maxUser.max();
 		await maxUser.update({ bitfield: [BitField.isModerator] });
 		await mahojiClientSettingsFetch({ construction_cost_bank: true });
+		await prisma.activity.deleteMany({
+			where: {
+				user_id: BigInt(maxUser.id)
+			}
+		});
 
 		const ignoredCommands = [
 			'leagues',
@@ -89,5 +95,7 @@ test(
 
 		await client.processActivities();
 	},
-	{ timeout: Time.Minute * 10 }
+	{
+		timeout: Time.Minute * 10
+	}
 );

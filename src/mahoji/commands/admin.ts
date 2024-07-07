@@ -1,12 +1,17 @@
 import { execSync } from 'node:child_process';
 import { inspect } from 'node:util';
 
-import { type CommandRunOptions, bulkUpdateCommands, convertBankToPerHourStats, dateFm } from '@oldschoolgg/toolkit';
+import {
+	type CommandRunOptions,
+	Stopwatch,
+	bulkUpdateCommands,
+	convertBankToPerHourStats,
+	dateFm
+} from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import type { ClientStorage } from '@prisma/client';
 import { economy_transaction_type } from '@prisma/client';
-import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import { isThenable } from '@sentry/utils';
 import type { InteractionReplyOptions, Message, TextChannel } from 'discord.js';

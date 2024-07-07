@@ -2,8 +2,8 @@ import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../gear/types';
-import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { makeKillTable } from '../../../util/setCustomMonster';
 import type { KillableMonster } from '../../types';
 

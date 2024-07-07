@@ -32,7 +32,7 @@ import { BitField } from '../../src/lib/constants';
 import type { GearSetupType, UserFullGearSetup } from '../../src/lib/gear/types';
 import { trackLoot } from '../../src/lib/lootTrack';
 import { type MinigameName, incrementMinigameScore } from '../../src/lib/settings/minigames';
-
+import { prisma } from '../../src/lib/settings/prisma';
 import type { SkillsEnum } from '../../src/lib/skilling/types';
 import { slayerMasters } from '../../src/lib/slayer/slayerMasters';
 import { assignNewSlayerTask } from '../../src/lib/slayer/slayerUtil';
@@ -844,8 +844,8 @@ const allTableCommands: TestCommand[] = [
 			const items = 'Pyromancer garb, Pyromancer boots, Pyromancer hood, Pyromancer robe, Warm gloves';
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
-			if (!equippedGear) throw new Error('Equipped gear is undefined.');
-			await user.update({ [`gear_${setup}`]: equippedGear as Prisma.InputJsonObject });
+
+			await user.update({ [`gear_${setup}`]: equippedGear });
 		}
 	},
 	{
@@ -855,8 +855,8 @@ const allTableCommands: TestCommand[] = [
 			const items = 'Bandos chestplate, Bandos tassets, Berserker ring, Ghrazi rapier';
 			const { success: resultSuccess, failMsg, equippedGear } = gearEquipMultiImpl(user, setup, items);
 			if (!resultSuccess) return failMsg!;
-			if (!equippedGear) throw new Error('Equipped gear is undefined.');
-			await user.update({ [`gear_${setup}`]: equippedGear as Prisma.InputJsonObject });
+
+			await user.update({ [`gear_${setup}`]: equippedGear });
 		}
 	},
 	{

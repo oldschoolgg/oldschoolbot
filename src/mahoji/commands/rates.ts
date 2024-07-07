@@ -1,5 +1,5 @@
 import { bold } from '@discordjs/builders';
-import { type CommandRunOptions, convertBankToPerHourStats } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, calcPerHour, convertBankToPerHourStats, formatDuration } from '@oldschoolgg/toolkit';
 import type { InteractionReplyOptions } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, increaseNumByPercent, reduceNumByPercent, sumArr } from 'e';
@@ -44,7 +44,7 @@ import { stringMatches, toKMB } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemID from '../../lib/util/itemID';
-import { calcPerHour, formatDuration, itemNameFromID, returnStringOrFile } from '../../lib/util/smallUtils';
+import { itemNameFromID, returnStringOrFile } from '../../lib/util/smallUtils';
 import { calculateHunterResult } from '../../tasks/minions/HunterActivity/hunterActivity';
 import { calculateAgilityResult } from '../../tasks/minions/agilityActivity';
 import { calculateDungeoneeringResult } from '../../tasks/minions/bso/dungeoneeringActivity';

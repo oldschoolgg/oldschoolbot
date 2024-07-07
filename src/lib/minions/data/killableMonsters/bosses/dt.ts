@@ -1,14 +1,14 @@
+import { Time, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { VirtusTable } from 'oldschooljs/dist/simulation/subtables/VirtusTable';
 
-import { Time, roll } from 'e';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { OSB_VIRTUS_IDS } from '../../../../constants';
 import { dukeSucellusCL, theLeviathanCL, theWhispererCL, vardorvisCL } from '../../../../data/CollectionsExport';
-import { GearStat } from '../../../../gear';
-import { removeItemsFromLootTable } from '../../../../util';
+import { GearStat } from '../../../../gear/types';
+import { SkillsEnum } from '../../../../skilling/types';
 import itemID from '../../../../util/itemID';
-import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
+import { removeItemsFromLootTable } from '../../../../util/smallUtils';
 import type { KillableMonster } from '../../../types';
 import { QuestID } from '../../quests';
 

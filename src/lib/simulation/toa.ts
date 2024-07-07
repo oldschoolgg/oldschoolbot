@@ -1,4 +1,4 @@
-import { SimpleTable, mentionCommand } from '@oldschoolgg/toolkit';
+import { SimpleTable, exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { Minigame } from '@prisma/client';
 import { XpGainSource } from '@prisma/client';
@@ -22,11 +22,12 @@ import {
 } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { Emoji } from '../constants';
 import { getSimilarItems } from '../data/similarItems';
 import { degradeItem } from '../degradeableItems';
-import type { GearStats, UserFullGearSetup } from '../gear';
+import type { GearStats, UserFullGearSetup } from '../gear/types';
 import { InventionID, canAffordInventionBoost, inventionBoosts, inventionItemBoost } from '../invention/inventions';
 import { trackLoot } from '../lootTrack';
 import { setupParty } from '../party';
@@ -47,8 +48,7 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
-import resolveItems from '../util/resolveItems';
-import { bankToStrShortNames, exponentialPercentScale, getToaKCs } from '../util/smallUtils';
+import { bankToStrShortNames, getToaKCs } from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 

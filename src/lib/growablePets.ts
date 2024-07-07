@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 
 import { Time, randFloat, roll } from 'e';
 import type { ActivityTaskOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
-import resolveItems from './util/resolveItems';
 
 export const kittens = resolveItems([
 	'Grey and black kitten',

@@ -1,13 +1,12 @@
 import { Time, calcPercentOfNum, randArrItem, randInt, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { describe, expect, test } from 'vitest';
 
 import { usernameCache } from '../../src/lib/constants';
 import { GrandExchange } from '../../src/lib/grandExchange';
 
-import { BetterStopwatch } from '../../src/lib/structures/BetterStopwatch';
-import { assert } from '../../src/lib/util';
-import resolveItems from '../../src/lib/util/resolveItems';
+import { assert, Stopwatch } from '../../src/lib/util';
 import { geCommand } from '../../src/mahoji/commands/ge';
 import { cancelUsersListings } from '../../src/mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import type { TestUser } from './util';
@@ -44,7 +43,7 @@ describe('Grand Exchange', async () => {
 	test(
 		'Fuzz',
 		async () => {
-			const stopwatch = new BetterStopwatch();
+			const stopwatch = new Stopwatch();
 			stopwatch.start();
 			// biome-ignore lint/suspicious/noSelfCompare: <explanation>
 			assert(randInt(1, 100_000) !== randInt(1, 100_000));
@@ -67,7 +66,7 @@ describe('Grand Exchange', async () => {
 				);
 			}
 			users = await Promise.all(users);
-			stopwatch.cp(`Finished initializing ${AMOUNT_USERS} users`);
+			stopwatch.check(`Finished initializing ${AMOUNT_USERS} users`);
 
 			// Run a bunch of commands to buy/sell
 			const commandPromises = [];
@@ -89,25 +88,25 @@ describe('Grand Exchange', async () => {
 					}
 				}
 			}
-			stopwatch.cp('Finished initiaing commands');
+			stopwatch.check('Finished initiaing commands');
 			await Promise.all(commandPromises);
 			await waitForGEToBeEmpty();
-			stopwatch.cp('Finished running all commands');
+			stopwatch.check('Finished running all commands');
 
 			// Tick the g.e to make some transactions
 			for (let i = 0; i < TICKS_TO_RUN; i++) {
 				await GrandExchange.tick();
 				if (i % TICKS_PER_EXTENSIVE_VERIFICATION === 0) {
-					stopwatch.cp('Running verification');
+					stopwatch.check('Running verification');
 					await GrandExchange.extensiveVerification();
 				}
 			}
 
-			stopwatch.cp('Finished ticking');
+			stopwatch.check('Finished ticking');
 			await waitForGEToBeEmpty();
 
 			const count = await prisma.gETransaction.count();
-			stopwatch.cp(`Finished ticking ${TICKS_TO_RUN} times, made ${count} transactions`);
+			stopwatch.check(`Finished ticking ${TICKS_TO_RUN} times, made ${count} transactions`);
 
 			// Cancel all remaining listings
 			const cancelPromises = [];
@@ -124,10 +123,10 @@ describe('Grand Exchange', async () => {
 			if (newCurrentOwnedBank.length !== 0) {
 				throw new Error('There should be no items in the G.E bank!');
 			}
-			stopwatch.cp('Finished cancelling');
+			stopwatch.check('Finished cancelling');
 
 			await Promise.all(users.map(u => u.sync()));
-			stopwatch.cp('Finished syncing all users');
+			stopwatch.check('Finished syncing all users');
 
 			const testBank = new Bank();
 			for (const user of users) {
@@ -159,7 +158,7 @@ Based on G.E data, we should have received ${data.totalTax} tax`;
 
 			await GrandExchange.queue.onEmpty();
 			assert(GrandExchange.queue.size === 0, 'Queue should be empty');
-			stopwatch.cp('Finished final checks');
+			stopwatch.check('Finished final checks');
 		},
 		{
 			timeout: Time.Minute * 10

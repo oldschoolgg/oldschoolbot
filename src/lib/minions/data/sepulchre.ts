@@ -4,8 +4,8 @@ import HerbDropTable from 'oldschooljs/dist/simulation/subtables/HerbDropTable';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import type { ItemBank } from '../../types';
-import resolveItems from '../../util/resolveItems';
 
 const LowTierCoffin = new LootTable()
 	.add("Monk's robe top")
