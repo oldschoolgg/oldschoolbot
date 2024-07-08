@@ -98,14 +98,11 @@ describe('Grand Exchange', async () => {
 			for (let i = 0; i < TICKS_TO_RUN; i++) {
 				await GrandExchange.tick();
 				if (i % TICKS_PER_EXTENSIVE_VERIFICATION === 0) {
-					stopwatch.check('Running verification');
 					await GrandExchange.extensiveVerification();
 				}
 			}
 
-			stopwatch.check('Finished ticking');
 			await waitForGEToBeEmpty();
-
 			const count = await prisma.gETransaction.count();
 			stopwatch.check(`Finished ticking ${TICKS_TO_RUN} times, made ${count} transactions`);
 

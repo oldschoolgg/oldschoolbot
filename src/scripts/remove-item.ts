@@ -1,5 +1,4 @@
-import '../lib/data/itemAliases';
-import '../lib/itemMods';
+import '../lib/safeglobals';
 
 import { writeFileSync } from 'node:fs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';

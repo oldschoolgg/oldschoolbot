@@ -9,16 +9,16 @@ COPY .yarn/ .yarn/
 
 ENTRYPOINT ["dumb-init", "--"]
 
-
 FROM base AS dependencies
+WORKDIR /usr/src/app
 RUN yarn install --immutable
 
-
 FROM base AS build-run
+WORKDIR /usr/src/app
 ENV NODE_ENV="development"
 ENV NODE_OPTIONS="--enable-source-maps --max_old_space_size=4096"
 
-COPY --from=dependencies /usr/src/app/node_modules ./node_modules
+COPY --from=dependencies /usr/src/app/node_modules /usr/src/app/node_modules
 COPY . .
 
 ENV CI=true

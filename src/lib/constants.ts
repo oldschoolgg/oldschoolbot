@@ -9,8 +9,6 @@ import * as dotenv from 'dotenv';
 import { getItemOrThrow, resolveItems } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
 
-import './data/itemAliases';
-
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';

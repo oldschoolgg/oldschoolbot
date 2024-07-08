@@ -1,8 +1,11 @@
 import { modifyItem } from '@oldschoolgg/toolkit';
 import { Items } from 'oldschooljs';
+import { allTeamCapes } from 'oldschooljs/dist/data/itemConstants';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { cleanString } from 'oldschooljs/dist/util/cleanString';
 import { resolveItems } from 'oldschooljs/dist/util/util';
+
+import { getOSItem } from '../util/getOSItem';
 
 export function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
@@ -364,4 +367,26 @@ for (const item of allTrophyItems) {
 			cantBeSacrificed: true
 		}
 	});
+}
+
+/**
+ * Item modifications
+ */
+
+export interface CustomItemData {
+	cantBeSacrificed?: true;
+}
+declare module 'oldschooljs/dist/meta/types' {
+	interface Item {
+		customItemData?: CustomItemData;
+	}
+}
+
+for (const item of allTeamCapes) {
+	modifyItem(item.id, {
+		price: 100
+	});
+	if (getOSItem(item.id).price !== 100) {
+		throw new Error(`Failed to modify price of item ${item.id}`);
+	}
 }

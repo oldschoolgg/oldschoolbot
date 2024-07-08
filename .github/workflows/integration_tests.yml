@@ -9,37 +9,15 @@ on:
 
 jobs:
   test:
-    name: Node v${{ matrix.node_version }} - ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     timeout-minutes: 10
-    strategy:
-      matrix:
-        node_version: [20.15.0]
-        os: [ubuntu-latest]
 
     steps:
-      - name: Install System Packages
-        run: sudo apt-get install -y build-essential libpq-dev
-
       - name: Checkout Project
         uses: actions/checkout@v4
-      - run: corepack enable && corepack install
-      - name: Use Node.js ${{ matrix.node_version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node_version }}
-          cache: yarn
-      - name: Restore CI Cache
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles('**/yarn.lock') }}
-      - name: Install Dependencies
-        run: yarn --immutable
-      - name: Copy Configuration
-        run: |
-          pushd src &&
-          cp config.example.ts config.ts &&
-          popd && cp .env.test .env
-      - name: Test
-        run: yarn test:integration
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up Docker Buildx
+        run: docker-compose up --build --abort-on-container-exit

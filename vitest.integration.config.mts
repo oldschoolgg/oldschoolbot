@@ -11,6 +11,14 @@ export default defineConfig({
 			include: ['src/lib/MUser.ts']
 		},
 		testTimeout: 30_000,
-		bail: 1
+		bail: 1,
+		pool: 'forks',
+		maxConcurrency: 5,
+		poolOptions: {
+			forks: {
+				maxForks: 10,
+				minForks: 10
+			}
+		}
 	}
 });

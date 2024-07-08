@@ -1,11 +1,9 @@
-import './lib/data/itemAliases';
+import './lib/safeglobals';
 import './lib/globals';
 import './lib/crons';
 import './lib/MUser';
 import './lib/util/transactItemsFromBank';
-import './lib/itemMods';
 import './lib/geImage';
-import './lib/util/logger';
 
 import { MahojiClient } from '@oldschoolgg/toolkit';
 import { init } from '@sentry/node';
