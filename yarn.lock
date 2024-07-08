@@ -3997,6 +3997,7 @@ __metadata:
     discord.js: "npm:^14.15.3"
     dotenv: "npm:^16.4.5"
     e: "npm:0.2.33"
+    esbuild: "npm:0.21.5"
     fast-deep-equal: "npm:^3.1.3"
     fast-glob: "npm:^3.3.2"
     lodash: "npm:^4.17.21"

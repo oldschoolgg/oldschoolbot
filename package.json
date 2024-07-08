@@ -14,7 +14,8 @@
 		"test:unit": "vitest run --coverage --config vitest.unit.config.mts",
 		"test:watch": "vitest --config vitest.unit.config.mts --coverage",
 		"test:integration": "tsx ./src/scripts/integration-tests.ts",
-		"watch": "tsc -w -p src"
+		"watch": "tsc -w -p src",
+		"build:esbuild": "esbuild --bundle src/index.ts --outdir=dist --platform=node --loader:.node=file"
 	},
 	"dependencies": {
 		"@napi-rs/canvas": "^0.1.53",
@@ -51,6 +52,7 @@
 		"@types/node-fetch": "^2.6.1",
 		"@vitest/coverage-v8": "^1.6.0",
 		"concurrently": "^8.2.2",
+		"esbuild": "0.21.5",
 		"fast-glob": "^3.3.2",
 		"prettier": "^3.3.2",
 		"prisma": "^5.16.1",
