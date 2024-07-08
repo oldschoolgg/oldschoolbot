@@ -12,6 +12,7 @@ services:
       PGPORT: 5435
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - .tests/integration/initdb:/docker-entrypoint-initdb.d
 
   app:
     build:
