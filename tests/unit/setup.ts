@@ -1,7 +1,6 @@
 import '../globalSetup';
 import { vi } from 'vitest';
 
-import { MUserStats } from '../../src/lib/structures/MUserStats';
 import { mockMUser, mockUserMap } from './utils';
 
 vi.mock('../../src/lib/settings/prisma.ts', () => ({
@@ -52,10 +51,3 @@ vi.mock('../../src/lib/settings/minigames.ts', async () => {
 		getMinigameEntity: async () => ({})
 	};
 });
-
-// @ts-ignore mock
-MUserStats.fromID = async () => {
-	return new MUserStats({
-		user_id: ''
-	} as any);
-};

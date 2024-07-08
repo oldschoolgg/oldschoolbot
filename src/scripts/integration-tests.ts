@@ -2,7 +2,6 @@ import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { Stopwatch } from '@oldschoolgg/toolkit';
 import { config } from 'dotenv';
-import { sleep } from 'e';
 
 async function main() {
 	const stopwatch = new Stopwatch();
