@@ -10,7 +10,7 @@ import { BitField, Channel, PeakTier, informationalButtons } from './constants';
 import { GrandExchange } from './grandExchange';
 import { cacheGEPrices } from './marketPrices';
 import { collectMetrics } from './metrics';
-import { prisma, queryCountStore } from './settings/prisma';
+import { queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';

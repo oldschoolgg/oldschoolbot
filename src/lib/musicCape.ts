@@ -9,7 +9,7 @@ import { championScrolls } from './data/CollectionsExport';
 import { RandomEvents } from './randomEvents';
 import type { MinigameName } from './settings/minigames';
 import { Minigames } from './settings/minigames';
-import { getUsersActivityCounts, prisma } from './settings/prisma';
+import { getUsersActivityCounts } from './settings/prisma';
 import type { RequirementFailure } from './structures/Requirements';
 import { Requirements } from './structures/Requirements';
 import { itemNameFromID } from './util';

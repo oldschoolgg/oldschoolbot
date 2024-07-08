@@ -16,7 +16,7 @@ import { minionActivityCache } from '../constants';
 import { channelIsSendable, isGroupActivity } from '../util';
 import { handleInteractionError, interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
-import { convertStoredActivityToFlatActivity, prisma } from './prisma';
+import { convertStoredActivityToFlatActivity } from './prisma';
 
 export * from './minigames';
 
