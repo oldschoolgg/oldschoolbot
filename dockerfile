@@ -24,7 +24,7 @@ ENV CI=true
 RUN cp .env.test .env
 RUN cp src/config.example.ts src/config.ts
 
-RUN yarn run build:esbuild
+RUN yarn run build:tsc
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 RUN chmod +x /wait

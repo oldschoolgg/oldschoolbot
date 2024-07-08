@@ -46,17 +46,24 @@ const maxThreads = production ? 3 : 1;
 
 const dirName = __dirname.replace('src/lib', 'dist/lib');
 
+const finishWorkerPath = resolve(dirName, 'lib', 'workers', 'finish.worker.js');
+const killWorkerPath = resolve(dirName, 'lib', 'workers', 'kill.worker.js');
+const casketWorkerPath = resolve(dirName, 'lib', 'workers', 'casket.worker.js');
+
 const finishWorker = new Piscina({
-	filename: resolve(dirName, 'finish.worker.js'),
-	maxThreads
+	filename: finishWorkerPath,
+	maxThreads,
+	workerData: { fullpath: finishWorkerPath }
 });
 const killWorker = new Piscina({
-	filename: resolve(dirName, 'kill.worker.js'),
-	maxThreads
+	filename: killWorkerPath,
+	maxThreads,
+	workerData: { fullpath: killWorkerPath }
 });
 const casketWorker = new Piscina({
-	filename: resolve(dirName, 'casket.worker.js'),
-	maxThreads
+	filename: casketWorkerPath,
+	maxThreads,
+	workerData: { fullpath: casketWorkerPath }
 });
 
 export const Workers = {
