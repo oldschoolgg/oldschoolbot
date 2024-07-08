@@ -5,7 +5,6 @@ RUN apk add --no-cache dumb-init python3 g++ make git
 RUN corepack enable
 
 COPY yarn.lock package.json .yarnrc.yml ./
-COPY .yarn/ .yarn/
 
 ENTRYPOINT ["dumb-init", "--"]
 
