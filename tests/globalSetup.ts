@@ -1,5 +1,4 @@
-import '../src/index';
-import '../src/lib/roboChimp';
+import '../src/lib/safeglobals';
 
 import { Collection } from 'discord.js';
 import { vi } from 'vitest';

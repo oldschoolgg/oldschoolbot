@@ -1,5 +1,6 @@
 {
 	"scripts": {
+		"watch": "nodemon -e ts -w src --exec 'yarn buildandrun'",
 		"build": "tsx ./src/scripts/build.ts",
 		"fix": "tsx ./src/scripts/troubleshooter.ts",
 		"start": "yarn build && node --enable-source-maps dist/",
@@ -9,12 +10,15 @@
 		"build:tsc": "tsc -p src",
 		"wipedist": "node -e \"try { require('fs').rmSync('dist', { recursive: true }) } catch(_){}\"",
 		"dev": "yarn && yarn wipedist && yarn lint && yarn build && yarn test && npm i -g dpdm && dpdm --exit-code circular:1 --progress=false --warning=false --tree=false ./dist/index.js",
-		"test": "concurrently --timings --raw --kill-others-on-fail \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\" \"tsc -p tests/integration\" \"tsc -p tests/unit\"",
+		"test": "concurrently --raw --kill-others-on-fail \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\" \"tsc -p tests/integration\" \"tsc -p tests/unit\"",
 		"test:lint": "biome check --diagnostic-level=error",
 		"test:unit": "vitest run --coverage --config vitest.unit.config.mts",
 		"test:watch": "vitest --config vitest.unit.config.mts --coverage",
 		"test:integration": "tsx ./src/scripts/integration-tests.ts",
-		"watch": "tsc -w -p src"
+		"buildandrun": "yarn build:esbuild && node dist",
+		"build:esbuild": "concurrently --raw \"yarn build:main\" \"yarn build:workers\"",
+		"build:main": "esbuild src/index.ts src/lib/workers/index.ts --minify --legal-comments=none --outdir=./dist --log-level=error --bundle --platform=node --loader:.node=file --external:@napi-rs/canvas --external:@prisma/robochimp --external:@prisma/client --external:zlib-sync --external:bufferutil --external:oldschooljs --external:discord.js --external:node-fetch --external:piscina",
+		"build:workers": "esbuild src/lib/workers/kill.worker.ts src/lib/workers/finish.worker.ts src/lib/workers/casket.worker.ts --log-level=error --bundle --minify --legal-comments=none --outdir=./dist/lib/workers --platform=node --loader:.node=file --external:@napi-rs/canvas --external:@prisma/robochimp --external:@prisma/client --external:zlib-sync --external:bufferutil --external:oldschooljs --external:discord.js --external:node-fetch --external:piscina"
 	},
 	"dependencies": {
 		"@napi-rs/canvas": "^0.1.53",
@@ -51,7 +55,9 @@
 		"@types/node-fetch": "^2.6.1",
 		"@vitest/coverage-v8": "^1.6.0",
 		"concurrently": "^8.2.2",
+		"esbuild": "0.21.5",
 		"fast-glob": "^3.3.2",
+		"nodemon": "^3.1.4",
 		"prettier": "^3.3.2",
 		"prisma": "^5.16.1",
 		"tsx": "^4.16.2",
@@ -61,5 +67,8 @@
 	"engines": {
 		"node": "20.15.0"
 	},
-	"packageManager": "yarn@4.3.1"
+	"packageManager": "yarn@4.3.1",
+	"resolutions": {
+		"esbuild": "0.21.5"
+	}
 }

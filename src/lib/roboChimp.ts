@@ -1,6 +1,5 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import type { TriviaQuestion, User } from '@prisma/robochimp';
-import { PrismaClient } from '@prisma/robochimp';
 import { calcWhatPercent, round, sumArr } from 'e';
 import deepEqual from 'fast-deep-equal';
 
@@ -9,13 +8,7 @@ import { getTotalCl } from './data/Collections';
 import { calculateMastery } from './mastery';
 import { MUserStats } from './structures/MUserStats';
 
-declare global {
-	var roboChimpClient: PrismaClient;
-}
-
 export type RobochimpUser = User;
-
-global.roboChimpClient = global.roboChimpClient || new PrismaClient();
 
 export async function getRandomTriviaQuestions(): Promise<TriviaQuestion[]> {
 	const random: TriviaQuestion[] = await roboChimpClient.$queryRaw`SELECT id, question, answers

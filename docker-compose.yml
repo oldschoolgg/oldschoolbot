@@ -1,12 +1,27 @@
 services:
-  osb:
+  db:
     image: postgres:16-alpine
     command: -c 'max_connections=1000'
     restart: always
     container_name: osb_database
     ports:
-      - "5435:3001"
+      - "5435:5435"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      PGPORT: 3001
+      PGPORT: 5435
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+    depends_on:
+      - db
+    environment:
+      ROBOCHIMP_DATABASE_URL: postgresql://postgres:postgres@db:5435/robochimp_integration_test?connection_limit=500&pool_timeout=0&schema=public
+      DATABASE_URL: postgresql://postgres:postgres@db:5435/osb_integration_test?connection_limit=500&pool_timeout=0&schema=public
+      WAIT_HOSTS: db:5435
+
+volumes:
+  postgres_data:
