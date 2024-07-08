@@ -12,13 +12,10 @@ services:
       PGPORT: 5435
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - .tests/integration/initdb:/docker-entrypoint-initdb.d
 
   app:
     build:
       context: .
-      args:
-        GIT_BRANCH: ${GIT_BRANCH}
     depends_on:
       - db
     environment:

@@ -7,6 +7,7 @@ import { Image } from '@napi-rs/canvas';
 import { beforeEach, vi } from 'vitest';
 
 import { PrismaClient } from '@prisma/client';
+import { noOp } from 'e';
 import { BankImageTask, bankImageTask } from '../../src/lib/bankImage';
 
 if (!roboChimpClient) {
@@ -65,6 +66,7 @@ BankImageTask.prototype.getItemImage = mockBankImageTask.getItemImage;
 BankImageTask.prototype.fetchAndCacheImage = mockBankImageTask.fetchAndCacheImage;
 
 const __prismaClient = new PrismaClient();
+__prismaClient.$queryRawUnsafe('CREATE EXTENSION IF NOT EXISTS intarray;').then(noOp);
 
 beforeEach(async () => {
 	global.prisma = __prismaClient;
