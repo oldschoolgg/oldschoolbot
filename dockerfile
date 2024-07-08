@@ -24,9 +24,7 @@ ENV CI=true
 RUN cp .env.test .env
 RUN cp src/config.example.ts src/config.ts
 
-RUN yarn run build:tsc
-
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 RUN chmod +x /wait
 
-CMD /wait && yarn prisma db push --schema='./prisma/robochimp.prisma' && yarn prisma db push --schema='./prisma/schema.prisma' && yarn vitest run --config vitest.integration.config.mts
+CMD /wait && yarn prisma db push --schema='./prisma/robochimp.prisma' && yarn prisma db push --schema='./prisma/schema.prisma' && yarn run build:tsc && yarn vitest run --config vitest.integration.config.mts
