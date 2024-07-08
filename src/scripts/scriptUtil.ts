@@ -1,17 +1,21 @@
-import { exec as execNonPromise } from 'node:child_process';
+import { type ExecOptions, exec as execNonPromise } from 'node:child_process';
 import { promisify } from 'node:util';
 import { Stopwatch } from '@oldschoolgg/toolkit';
 
 const rawExecAsync = promisify(execNonPromise);
 
-export async function execAsync(command: string) {
+export async function execAsync(command: string | string[], options?: ExecOptions): Promise<void> {
 	try {
 		console.log('   Running command:', command);
 
-		const result = await rawExecAsync(command);
+		const results = Array.isArray(command)
+			? await Promise.all(command.map(cmd => rawExecAsync(cmd, options)))
+			: [await rawExecAsync(command, options)];
 
-		if (result.stderr) {
-			console.error(result.stderr);
+		for (const result of results) {
+			if (result.stderr) {
+				console.error(result.stderr);
+			}
 		}
 	} catch (err) {
 		console.error(err);
