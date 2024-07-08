@@ -32,7 +32,6 @@ import { economyLog } from '../../lib/economyLogs';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import type { GearSetup } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
-import { runRolesTask } from '../../lib/rolesTask';
 import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { sorts } from '../../lib/sorts';
@@ -814,17 +813,18 @@ export const adminCommand: OSBMahojiCommand = {
 			return 'Done.';
 		}
 		if (options.sync_roles) {
-			try {
-				const result = await runRolesTask();
-				if (result.length < 2000) return result;
-				return {
-					content: 'The result was too big! Check the file.',
-					files: [new AttachmentBuilder(Buffer.from(result), { name: 'roles.txt' })]
-				};
-			} catch (err: any) {
-				logError(err);
-				return `Failed to run roles task. ${err.message}`;
-			}
+			// try {
+			// 	const result = await runRolesTask();
+			// 	if (result.length < 2000) return result;
+			// 	return {
+			// 		content: 'The result was too big! Check the file.',
+			// 		files: [new AttachmentBuilder(Buffer.from(result), { name: 'roles.txt' })]
+			// 	};
+			// } catch (err: any) {
+			// 	logError(err);
+			// 	return `Failed to run roles task. ${err.message}`;
+			// }
+			return 'The roles task is disabled for now.';
 		}
 
 		if (options.badges) {
