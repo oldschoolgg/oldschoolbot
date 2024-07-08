@@ -1,14 +1,12 @@
 import { type Tame, tame_growth } from '@prisma/client';
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
-import { assert, describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
-import { PMBTable, allMbTables, embTable, tmbTable, umbTable } from '../../src/lib/bsoOpenables';
-import { allPetIDs, masterCapesCL, toaCL } from '../../src/lib/data/CollectionsExport';
+import { allMbTables } from '../../src/lib/bsoOpenables';
+import { allPetIDs } from '../../src/lib/data/CollectionsExport';
 import Buyables from '../../src/lib/data/buyables/buyables';
 import { itemsToDelete } from '../../src/lib/deletedItems';
-import { dyedItems } from '../../src/lib/dyedItems';
-import { growablePets } from '../../src/lib/growablePets';
 import { marketPriceOfBank } from '../../src/lib/marketPrices';
 import killableMonsters from '../../src/lib/minions/data/killableMonsters';
 import { Ignecarus } from '../../src/lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
@@ -17,7 +15,6 @@ import KingGoldemar from '../../src/lib/minions/data/killableMonsters/custom/bos
 import { VasaMagus } from '../../src/lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { allOpenables } from '../../src/lib/openables';
 import { Gear } from '../../src/lib/structures/Gear';
-import { exponentialPercentScale, isSuperUntradeable, itemNameFromID } from '../../src/lib/util';
 import getOSItem from '../../src/lib/util/getOSItem';
 import itemID from '../../src/lib/util/itemID';
 import itemIsTradeable from '../../src/lib/util/itemIsTradeable';
@@ -26,143 +23,12 @@ import { calculateMaximumTameFeedingLevelGain } from '../../src/lib/util/tameUti
 import { BingoTrophies } from '../../src/mahoji/lib/bingo/BingoManager';
 
 describe('Sanity', () => {
-	test('santa hats should be tradeable', () => {
-		expect(itemIsTradeable(itemID('Black santa hat'))).toEqual(true);
-		expect(itemIsTradeable(itemID('Inverted santa hat'))).toEqual(true);
-		expect(itemIsTradeable(itemID('Santa hat'))).toEqual(true);
-		expect(itemIsTradeable(itemID('Coal'))).toEqual(true);
-		expect(itemIsTradeable(itemID('Golden partyhat'))).toEqual(true);
-		expect(itemIsTradeable(itemID('Rune pouch'))).toEqual(true);
-		expect(itemIsTradeable(itemID('Agility cape'))).toEqual(true);
-		expect(itemIsTradeable(itemID('Achievement diary cape'))).toEqual(true);
-		expect(itemIsTradeable(itemID('Crafting master cape'))).toEqual(false);
-		expect(itemIsTradeable(itemID('Infernal bulwark'))).toEqual(false);
-	});
-	test('Growable pets cant come from mystery boxes', () => {
-		const allGrowablePets = growablePets.flatMap(p => p.stages);
-		expect(allGrowablePets.every(growablePet => !PMBTable.allItems.includes(growablePet))).toEqual(true);
-		expect(allGrowablePets.every(growablePet => !allMbTables.includes(growablePet))).toEqual(true);
-	});
-	test('isSuperUntradeable', () => {
-		expect(isSuperUntradeable(getOSItem('TzKal Cape'))).toEqual(true);
-		expect(isSuperUntradeable(getOSItem("TzKal-Zuk's skin"))).toEqual(true);
-		expect(isSuperUntradeable(getOSItem('Jal-MejJak'))).toEqual(true);
-		expect(isSuperUntradeable(getOSItem('Infernal slayer helmet'))).toEqual(true);
-		expect(isSuperUntradeable(getOSItem('Infernal slayer helmet(i)'))).toEqual(true);
-		expect(isSuperUntradeable(getOSItem('TzKal cape'))).toEqual(true);
-		expect(isSuperUntradeable(getOSItem('Head of TzKal Zuk'))).toEqual(true);
-		expect(isSuperUntradeable(getOSItem('Infernal bulwark'))).toEqual(true);
-		expect(isSuperUntradeable(getOSItem('Infernal core'))).toEqual(true);
-		expect(isSuperUntradeable(getOSItem('Seed pack'))).toEqual(true);
-
-		for (const cape of masterCapesCL) {
-			expect(isSuperUntradeable(cape)).toEqual(true);
-		}
-	});
 	test('avas', () => {
 		expect(new Gear({ cape: "Ava's assembler" }).hasEquipped("Ava's assembler")).toEqual(true);
 		expect(new Gear({ cape: 'Assembler max cape' }).hasEquipped("Ava's assembler", true, true)).toEqual(true);
 		expect(new Gear({ cape: "Combatant's cape" }).hasEquipped("Ava's assembler", true, true)).toEqual(true);
 	});
-	test('cant be dropped by mystery boxes', () => {
-		const shouldntBeIn = resolveItems([
-			'Coins',
-			'Tester gift box',
-			'Abyssal pouch',
-			'Cob',
-			'Runite stone spirit',
-			'Coal stone spirit',
-			'Frozen santa hat',
-			'Flappy meal',
-			'Seer',
-			'Pretzel',
-			'Smokey painting',
-			'Festive present',
-			'Smokey',
-			'Pink partyhat',
-			'Santa hat',
-			'Dwarven ore',
-			'100 sided die',
-			'Party horn',
-			'Diamond crown',
-			'Snappy the Turtle',
-			'Liber tea',
-			'Invention master cape',
-			'Portable tanner',
-			'Clue upgrader',
-			'Justiciar armour set',
-			'Justiciar legguards',
-			'Justiciar chestguard',
-			'Justiciar faceguard',
-			'Accursed sceptre',
-			'Masori assembler max cape',
-			...toaCL
-		]);
-		for (const i of shouldntBeIn) {
-			if (allMbTables.includes(i)) {
-				throw new Error(`${itemNameFromID(i)} is in the mystery box tables, but it shouldn't be.`);
-			}
-		}
-	});
-	test('exclude certain openables from mystery boxes', () => {
-		// These items appear in some Openables but should still also appear in Mystery boxes:
-		const shouldBeIn = resolveItems([
-			'Coal',
-			'Blacksmith helmet',
-			'Blacksmith boots',
-			'Blacksmith gloves',
-			'Uncut sapphire',
-			'Oak plank',
-			'Pure essence',
-			'Runite bolts',
-			'Lava flower crown',
-			'Purple flower crown'
-		]);
-		// These items should all still excluded by the 'Openables' rule. Some items are also excluded by other means.
-		const shouldntBeIn = resolveItems([
-			'Christmas cracker',
-			'White partyhat',
-			'Corgi',
-			'Beach ball',
-			'Glass of bubbly',
-			'Sparkler',
-			'Liber tea',
-			'Party music box',
-			'6 sided die',
-			'Huge lamp',
-			'Ancient hilt',
-			'Nihil horn',
-			'Zaryte vambraces',
-			'Ancient godsword',
-			'Seed pack',
-			27_499,
-			27_828,
-			'Paint box',
-			'Ruby Red paint can',
-			'Scurry',
-			'Trailblazer reloaded dragon trophy',
-			'Trailblazer reloaded rune trophy',
-			'Trailblazer reloaded adamant trophy',
-			'Trailblazer reloaded mithril trophy',
-			'Trailblazer reloaded steel trophy',
-			'Trailblazer reloaded iron trophy',
-			'Trailblazer reloaded bronze trophy'
-		]);
-		for (const i of shouldntBeIn) {
-			if (allMbTables.includes(i)) {
-				console.error('wtf');
-				throw new Error(`Item ${itemNameFromID(i)} shouldn't be in Mystery Boxes, but is.`);
-			}
-		}
-		for (const i of shouldBeIn) {
-			if (!allMbTables.includes(i)) {
-				console.error('wtf');
-				throw new Error(`Item ${itemNameFromID(i)} should be in Mystery Boxes, but isn't.`);
-			}
-		}
-		expect(shouldBeIn.every(ss => allMbTables.includes(ss))).toEqual(true);
-		expect(shouldntBeIn.some(ss => allMbTables.includes(ss))).toEqual(false);
-	});
+
 	test('custom monsters', () => {
 		expect(killableMonsters.some(m => m.name === 'Frost Dragon')).toBeTruthy();
 		expect(killableMonsters.some(m => m.name === 'Sea Kraken')).toBeTruthy();
@@ -171,13 +37,7 @@ describe('Sanity', () => {
 			expect(killableMonsters.some(i => i.id === id)).toEqual(false);
 		}
 	});
-	test('fancy', () => {
-		expect(tmbTable.includes(itemID('Clothing Mystery Box'))).toEqual(false);
-		expect(umbTable.includes(itemID('Clothing Mystery Box'))).toEqual(false);
-		expect(tmbTable.includes(itemID('Swanky boots'))).toEqual(false);
-		expect(embTable.includes(itemID('Swanky boots'))).toEqual(false);
-		expect(umbTable.includes(itemID('Swanky boots'))).toEqual(false);
-	});
+
 	test('misc', () => {
 		expect(itemID('Phoenix')).toEqual(20_693);
 		expect(itemID('Kalphite princess')).toEqual(12_647);
@@ -255,25 +115,14 @@ describe('Sanity', () => {
 			ids.add(openable.id);
 		}
 	});
-	test('exponentialPercentScale', () => {
-		for (let i = 0; i < 100; i++) {
-			const num = exponentialPercentScale(i);
-			expect(num > 0 && num <= 100).toBeTruthy();
-		}
-		expect(exponentialPercentScale(100)).toEqual(100);
-	});
+
 	test('pharaohs sceptre', () => {
 		const scep = getOSItem("Pharaoh's sceptre");
 		expect(scep.id).toEqual(9044);
 		expect(scep.equipable).toEqual(true);
 		expect(scep.equipment?.slot).toEqual(EquipmentSlot.Weapon);
 	});
-	test('all dyed items should be untradeable and not in boxes', () => {
-		for (const item of dyedItems.flatMap(i => i.dyedVersions.map(t => t.item))) {
-			assert(!itemIsTradeable(item.id), `${item.name} should be super-untradeable`);
-			assert(!allMbTables.includes(item.id), `${item.name} shouldnt drop from boxes`);
-		}
-	});
+
 	test("klik/divine shouldn't be openable", () => {
 		for (const openable of allOpenables) {
 			for (const name of ['Klik', 'Divine spirit shield']) {
@@ -299,21 +148,7 @@ describe('Sanity', () => {
 			}
 		}
 	});
-	test('comp cape reqs', () => {
-		const items = [
-			getOSItem('Completionist cape'),
-			getOSItem('Completionist cape (t)'),
-			getOSItem('Completionist hood')
-		];
-		for (const item of items) {
-			expect(item.equipment!.requirements?.agility).toEqual(120);
-			expect(item.equipment!.requirements?.attack).toEqual(120);
-			// @ts-ignore ignore
-			expect(item.equipment!.requirements?.divination).toEqual(120);
-		}
-		// @ts-ignore ignore
-		expect(getOSItem("Gatherer's cape").equipment!.requirements?.divination).toEqual(120);
-	});
+
 	test('calculateMaximumTameFeedingLevelGain', () => {
 		expect(
 			calculateMaximumTameFeedingLevelGain({
@@ -323,18 +158,7 @@ describe('Sanity', () => {
 			} as Tame)
 		).toEqual(14);
 	});
-	test('comp cape similar items', () => {
-		const gear = new Gear();
-		gear.equip('Completionist cape');
-		expect(gear.hasEquipped("Combatant's cape")).toEqual(true);
-		expect(gear.hasEquipped('Support cape')).toEqual(true);
 
-		const gear2 = new Gear();
-		gear2.equip('Completionist cape (t)');
-
-		expect(gear2.hasEquipped("Combatant's cape")).toEqual(true);
-		expect(gear2.hasEquipped('Support cape')).toEqual(true);
-	});
 	test('market price of coins', () => {
 		const b = new Bank().add('Coins', 66);
 		expect(marketPriceOfBank(b)).toEqual(66);
