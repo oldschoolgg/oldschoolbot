@@ -5,7 +5,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
-import { countUsersWithItemInCl, prisma } from '../../../lib/settings/prisma';
+import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';

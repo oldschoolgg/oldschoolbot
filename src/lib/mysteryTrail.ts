@@ -1,6 +1,6 @@
 import { Bank, Monsters } from 'oldschooljs';
 
-import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
+import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { getUsersCurrentSlayerInfo } from './slayer/slayerUtil';
 import type { ActivityTaskData } from './types/minions';
 import getOSItem from './util/getOSItem';

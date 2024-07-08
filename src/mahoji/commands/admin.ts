@@ -44,7 +44,7 @@ import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import type { GearSetup } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
 import { runRolesTask } from '../../lib/rolesTask';
-import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
+import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { sorts } from '../../lib/sorts';
 import { Gear } from '../../lib/structures/Gear';

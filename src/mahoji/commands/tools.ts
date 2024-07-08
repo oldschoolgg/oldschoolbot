@@ -31,7 +31,7 @@ import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { getUsersPerkTier } from '../../lib/perkTiers';
 import { type MinigameName, Minigames } from '../../lib/settings/minigames';
-import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
+import { convertStoredActivityToFlatActivity } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
 import {
 	formatDuration,

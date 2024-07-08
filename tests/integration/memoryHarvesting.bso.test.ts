@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
 import { processPendingActivities } from '../../src/lib/Task';
 import { MemoryHarvestType } from '../../src/lib/bso/divination';
-import { convertStoredActivityToFlatActivity, prisma } from '../../src/lib/settings/prisma';
+import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/prisma';
 import { Gear } from '../../src/lib/structures/Gear';
 import type { MemoryHarvestOptions } from '../../src/lib/types/minions';
 import itemID from '../../src/lib/util/itemID';

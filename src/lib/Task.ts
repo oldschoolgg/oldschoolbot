@@ -117,7 +117,7 @@ import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneAct
 import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity';
 import { modifyBusyCounter } from './busyCounterCache';
 import { minionActivityCache } from './constants';
-import { convertStoredActivityToFlatActivity, prisma } from './settings/prisma';
+import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
 
