@@ -36,7 +36,7 @@ async function transactItemsFromBank({
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
 	const itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
 
-	return userQueueFn(userID, async () => {
+	return userQueueFn(userID, async function transactItemsInner() {
 		const settings = await mUserFetch(userID);
 
 		const gpToRemove = (itemsToRemove?.amount('Coins') ?? 0) - (itemsToAdd?.amount('Coins') ?? 0);

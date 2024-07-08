@@ -13,14 +13,15 @@ function getUserUpdateQueue(userID: string) {
 
 export async function userQueueFn<T>(userID: string, fn: () => Promise<T>) {
 	const queue = getUserUpdateQueue(userID);
-	return queue.add(async () => {
-		const error = new Error();
-		try {
-			return await fn();
-		} catch (e) {
-			console.error(e);
-			error.message = (e as Error).message;
-			throw error;
-		}
+	return new Promise<T>((resolve, reject) => {
+		queue.add(async () => {
+			try {
+				const result = await fn();
+				resolve(result);
+			} catch (e) {
+				console.error(e);
+				reject(e);
+			}
+		});
 	});
 }

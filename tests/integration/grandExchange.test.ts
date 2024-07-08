@@ -6,6 +6,7 @@ import { describe, expect, test } from 'vitest';
 import { usernameCache } from '../../src/lib/constants';
 import { GrandExchange } from '../../src/lib/grandExchange';
 
+import PQueue from 'p-queue';
 import { assert, Stopwatch } from '../../src/lib/util';
 import { geCommand } from '../../src/mahoji/commands/ge';
 import { cancelUsersListings } from '../../src/mahoji/lib/abstracted_commands/cancelGEListingCommand';
@@ -69,14 +70,14 @@ describe('Grand Exchange', async () => {
 			stopwatch.check(`Finished initializing ${AMOUNT_USERS} users`);
 
 			// Run a bunch of commands to buy/sell
-			const commandPromises = [];
+			const commandPromises = new PQueue({ concurrency: 10 });
 			for (const user of shuffleArr(users)) {
 				for (let i = 0; i < COMMANDS_PER_USER; i++) {
 					const method = randArrItem(['buy', 'sell']);
 					const quantity = randArrItem(quantities);
 					const price = randArrItem(prices);
 					for (const item of itemPool) {
-						commandPromises.push(
+						commandPromises.add(() =>
 							user.runCommand(geCommand, {
 								[method]: {
 									item,
@@ -89,7 +90,7 @@ describe('Grand Exchange', async () => {
 				}
 			}
 			stopwatch.check('Finished initiaing commands');
-			await Promise.all(commandPromises);
+			await commandPromises.onEmpty();
 			await waitForGEToBeEmpty();
 			stopwatch.check('Finished running all commands');
 
