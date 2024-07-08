@@ -9,8 +9,6 @@ import * as dotenv from 'dotenv';
 import { getItemOrThrow, resolveItems } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
 
-import './data/itemAliases';
-
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
@@ -534,11 +532,12 @@ const globalConfigSchema = z.object({
 	clientID: z.string().min(10).max(25),
 	geAdminChannelID: z.string().default(''),
 	redisPort: z.coerce.number().int().optional(),
-	botToken: z.string().min(1)
+	botToken: z.string().min(1),
+	isCI: z.coerce.boolean().default(false)
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
-if (!process.env.BOT_TOKEN) {
+if (!process.env.BOT_TOKEN && !process.env.CI) {
 	throw new Error(
 		`You need to specify the BOT_TOKEN environment variable, copy your bot token from your config.ts and put it in the ".env" file like so:\n\nBOT_TOKEN=your_token_here`
 	);
@@ -548,7 +547,8 @@ export const globalConfig = globalConfigSchema.parse({
 	clientID: process.env.CLIENT_ID,
 	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID,
 	redisPort: process.env.REDIS_PORT,
-	botToken: process.env.BOT_TOKEN
+	botToken: process.env.BOT_TOKEN,
+	isCI: process.env.CI
 });
 
 export const ONE_TRILLION = 1_000_000_000_000;

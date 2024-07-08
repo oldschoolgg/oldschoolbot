@@ -12,12 +12,12 @@ export default defineConfig({
 		},
 		testTimeout: 30_000,
 		bail: 1,
-		pool: 'threads',
-		maxConcurrency: 10,
+		pool: 'forks',
+		maxConcurrency: 5,
 		poolOptions: {
-			threads: {
-				maxThreads: 5,
-				minThreads: 5
+			forks: {
+				maxForks: 10,
+				minForks: 10
 			}
 		}
 	}

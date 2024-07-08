@@ -69,9 +69,11 @@ export async function onStartup() {
 	initCrons();
 	initTickers();
 
-	sendToChannelID(Channel.GeneralChannel, {
-		content: `I have just turned on!
+	if (production) {
+		sendToChannelID(Channel.GeneralChannel, {
+			content: `I have just turned on!
 
 ${META_CONSTANTS.RENDERED_STR}`
-	}).catch(console.error);
+		}).catch(console.error);
+	}
 }
