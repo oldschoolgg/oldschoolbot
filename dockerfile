@@ -30,6 +30,6 @@ RUN chmod +x /wait
 CMD /wait && \
     yarn prisma db push --schema='./prisma/robochimp.prisma' && \
     yarn prisma db push --schema='./prisma/schema.prisma' && \
-    yarn run build:tsc && \
+    yarn run build:esbuild && \
     yarn vitest run --config vitest.integration.config.mts && \
     exit 0
