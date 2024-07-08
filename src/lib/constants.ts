@@ -535,7 +535,7 @@ const globalConfigSchema = z.object({
 	geAdminChannelID: z.string().default(''),
 	redisPort: z.coerce.number().int().optional(),
 	botToken: z.string().min(1),
-	isCI: z.boolean().default(false)
+	isCI: z.coerce.boolean().default(false)
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 

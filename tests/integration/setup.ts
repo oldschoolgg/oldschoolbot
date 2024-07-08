@@ -70,7 +70,3 @@ beforeEach(async () => {
 	BankImageTask.prototype.getItemImage = mockBankImageTask.getItemImage;
 	BankImageTask.prototype.fetchAndCacheImage = mockBankImageTask.fetchAndCacheImage;
 });
-
-afterAll(async () => {
-	await prisma.$disconnect();
-});

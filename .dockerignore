@@ -1,1 +1,4 @@
 .env
+icon_cache
+logs
+dist

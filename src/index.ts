@@ -1,6 +1,5 @@
-import './lib/globals';
 import './lib/data/itemAliases';
-import './lib/data/trophies';
+import './lib/globals';
 import './lib/crons';
 import './lib/MUser';
 import './lib/util/transactItemsFromBank';

@@ -15,7 +15,7 @@
 		"test:watch": "vitest --config vitest.unit.config.mts --coverage",
 		"test:integration": "tsx ./src/scripts/integration-tests.ts",
 		"watch": "tsc -w -p src",
-		"build:esbuild": "esbuild --bundle src/index.ts --outdir=dist --platform=node --loader:.node=file"
+		"build:esbuild": "esbuild src/index.ts src/lib/workers/kill.worker.ts src/lib/workers/finish.worker.ts src/lib/workers/casket.worker.ts --bundle  --outdir=dist --platform=node --loader:.node=file"
 	},
 	"dependencies": {
 		"@napi-rs/canvas": "^0.1.53",

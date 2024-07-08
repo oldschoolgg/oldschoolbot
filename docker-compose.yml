@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:16-alpine
-    command: -c 'max_connections=1000'
+    command: -c 'max_connections=1000' -c 'log_connections=on' -c 'log_disconnections=on'
     restart: always
     container_name: osb_database
     ports:
