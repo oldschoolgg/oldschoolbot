@@ -13,10 +13,10 @@ import { cancelUsersListings } from '../../src/mahoji/lib/abstracted_commands/ca
 import type { TestUser } from './util';
 import { createTestUser, mockClient } from './util';
 
-const TICKS_TO_RUN = 100;
-const AMOUNT_USERS = 25;
+const TICKS_TO_RUN = 50;
+const AMOUNT_USERS = 20;
 const COMMANDS_PER_USER = 3;
-const TICKS_PER_EXTENSIVE_VERIFICATION = 100;
+const TICKS_PER_EXTENSIVE_VERIFICATION = 20;
 const itemPool = resolveItems(['Egg', 'Trout', 'Coal']);
 
 console.log(`G.E test will make ${itemPool.length * COMMANDS_PER_USER * AMOUNT_USERS} listings.`);

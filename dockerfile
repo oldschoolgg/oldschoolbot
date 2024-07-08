@@ -27,4 +27,10 @@ RUN cp src/config.example.ts src/config.ts
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 RUN chmod +x /wait
 
-CMD /wait && yarn prisma db push --schema='./prisma/robochimp.prisma' && yarn prisma db push --schema='./prisma/schema.prisma' && yarn run build:tsc && yarn vitest run --config vitest.integration.config.mts
+CMD /wait && \
+    psql postgres://postgres:postgres@localhost:5435/postgres -c 'CREATE EXTENSION IF NOT EXISTS intarray;' && \
+    yarn prisma db push --schema='./prisma/robochimp.prisma' && \
+    yarn prisma db push --schema='./prisma/schema.prisma' && \
+    yarn run build:tsc && \
+    yarn vitest run --config vitest.integration.config.mts && \
+    exit 0
