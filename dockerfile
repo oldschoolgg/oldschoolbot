@@ -22,6 +22,7 @@ COPY . .
 
 ENV CI=true
 RUN cp .env.test .env
+RUN cp src/config.example.ts src/config.ts
 
 RUN yarn run build:esbuild
 
