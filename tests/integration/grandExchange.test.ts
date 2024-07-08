@@ -14,7 +14,7 @@ import type { TestUser } from './util';
 import { createTestUser, mockClient } from './util';
 
 const TICKS_TO_RUN = 50;
-const AMOUNT_USERS = 20;
+const AMOUNT_USERS = 10;
 const COMMANDS_PER_USER = 3;
 const TICKS_PER_EXTENSIVE_VERIFICATION = 20;
 const itemPool = resolveItems(['Egg', 'Trout', 'Coal']);

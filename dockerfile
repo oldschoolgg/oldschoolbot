@@ -10,7 +10,7 @@ ENTRYPOINT ["dumb-init", "--"]
 
 FROM base AS dependencies
 WORKDIR /usr/src/app
-RUN yarn install --immutable
+RUN yarn remove zlib-sync && yarn install
 
 FROM base AS build-run
 WORKDIR /usr/src/app
