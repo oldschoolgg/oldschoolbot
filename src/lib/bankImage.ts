@@ -311,6 +311,7 @@ export class BankImageTask {
 	public bananaGlow: Image | null = null;
 	public glows: Map<number, Image>;
 	public treeImage!: Image;
+	public ready!: Promise<void>;
 
 	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
@@ -323,6 +324,8 @@ export class BankImageTask {
 			[itemID('Dragon egg'), this.redGlow!],
 			[itemID('Monkey egg'), this.bananaGlow!]
 		]);
+
+		this.ready = this.init();
 	}
 
 	async init() {
@@ -1036,4 +1039,3 @@ declare global {
 
 export const bankImageTask = new BankImageTask();
 global.bankImageGenerator = bankImageTask;
-bankImageGenerator.init();
