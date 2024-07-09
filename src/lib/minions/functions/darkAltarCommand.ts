@@ -1,11 +1,12 @@
-import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { Time, increaseNumByPercent, reduceNumByPercent } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { userHasGracefulEquipped } from '../../../mahoji/mahojiSettings';
 import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
-import { inventionBoosts, InventionID, inventionItemBoost } from '../../invention/inventions';
-import { DarkAltarOptions } from '../../types/minions';
-import { formatDuration, hasSkillReqs, stringMatches } from '../../util';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../invention/inventions';
+import type { DarkAltarOptions } from '../../types/minions';
+import { hasSkillReqs } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import getOSItem from '../../util/getOSItem';

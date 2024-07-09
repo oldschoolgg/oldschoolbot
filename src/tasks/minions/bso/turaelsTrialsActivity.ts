@@ -1,9 +1,9 @@
 import { Bank } from 'oldschooljs';
 
-import { TuraelsTrialsMethod } from '../../../lib/bso/turaelsTrials';
+import type { TuraelsTrialsMethod } from '../../../lib/bso/turaelsTrials';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { XPBank } from '../../../lib/structures/Banks';
-import { TuraelsTrialsOptions } from '../../../lib/types/minions';
+import type { TuraelsTrialsOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { trackClientBankStats, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
@@ -33,7 +33,7 @@ export function calculateTuraelsTrialsResult({ quantity, method }: { quantity: n
 export const turaelsTrialsTask: MinionTask = {
 	type: 'TuraelsTrials',
 	async run(data: TuraelsTrialsOptions) {
-		let { q: quantity, channelID, userID, duration, m: method } = data;
+		const { q: quantity, channelID, userID, duration, m: method } = data;
 		const user = await mUserFetch(userID);
 
 		const result = calculateTuraelsTrialsResult({ quantity, method });

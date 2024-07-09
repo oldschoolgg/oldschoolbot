@@ -13,11 +13,11 @@ import {
 	theatreOfBloodNormalUniques,
 	toaCL
 } from './data/CollectionsExport';
-import { baseHolidayItems, PartyhatTable } from './data/holidayItems';
-import { allTrophyItems } from './data/trophies';
+import { PartyhatTable, baseHolidayItems } from './data/holidayItems';
+import { allTrophyItems } from './data/itemAliases';
 import { keyCrates } from './keyCrates';
 import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
-import { UnifiedOpenable } from './openables';
+import type { UnifiedOpenable } from './openables';
 import { PaintBoxTable } from './paintColors';
 import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
 import { RuneTable } from './simulation/seedTable';
@@ -1065,7 +1065,7 @@ function randomEquippable(): number {
 }
 
 function findMysteryBoxItem(table: number[]): number {
-	let result = randArrItem(table);
+	const result = randArrItem(table);
 	if (cantBeDropped.includes(result)) return findMysteryBoxItem(table);
 	if (result >= 40_000 && result <= 50_000) return findMysteryBoxItem(table);
 	return result;
@@ -1090,7 +1090,7 @@ export function getMysteryBoxItem(
 ): Bank {
 	const mrEDroprate = clAdjustedDroprate(user, 'Mr. E', MR_E_DROPRATE_FROM_UMB_AND_TMB, 1.2);
 	const table = tradeables ? tmbTable : umbTable;
-	let loot = new Bank();
+	const loot = new Bank();
 
 	const elligibleLeaguesRewards = leaguesUnlockedMysteryBoxItems
 		.filter(i => totalLeaguesPoints >= i.unlockedAt)

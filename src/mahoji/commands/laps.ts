@@ -1,17 +1,18 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../lib/constants';
-import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import { courses } from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { AgilityActivityTaskOptions } from '../../lib/types/minions';
+import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const unlimitedFireRuneProviders = [
 	'Staff of fire',
@@ -150,7 +151,7 @@ export const lapsCommand: OSBMahojiCommand = {
 
 		let timePerLap = course.lapTime * Time.Second;
 
-		let boosts: string[] = [];
+		const boosts: string[] = [];
 		if (user.hasEquippedOrInBank('Silverhawk boots')) {
 			const boostedTimePerLap = Math.floor(timePerLap / inventionBoosts.silverHawks.agilityBoostMultiplier);
 			const costRes = await inventionItemBoost({
@@ -191,12 +192,12 @@ export const lapsCommand: OSBMahojiCommand = {
 			course.name === 'Ape Atoll Agility Course'
 				? null
 				: !options.alch
-				? null
-				: alching({
-						user,
-						tripLength: duration,
-						isUsingVoidling: user.usingPet('Voidling')
-				  });
+					? null
+					: alching({
+							user,
+							tripLength: duration,
+							isUsingVoidling: user.usingPet('Voidling')
+						});
 		if (alchResult !== null) {
 			if (!user.owns(alchResult.bankToRemove)) {
 				return `You don't own ${alchResult.bankToRemove}.`;
@@ -223,7 +224,7 @@ export const lapsCommand: OSBMahojiCommand = {
 					: {
 							itemID: alchResult.itemToAlch.id,
 							quantity: alchResult.maxCasts
-					  }
+						}
 		});
 
 		return response;

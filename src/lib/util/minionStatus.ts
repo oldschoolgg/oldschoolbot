@@ -1,9 +1,8 @@
-import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
+import { formatDuration, formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
-import { quests } from '../../mahoji/lib/abstracted_commands/questCommand';
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
 import { bossEvents } from '../bossEvents';
 import { divinationEnergies, memoryHarvestTypes } from '../bso/divination';
@@ -12,6 +11,7 @@ import { Emoji } from '../constants';
 import { fishingLocations } from '../fishingContest';
 import killableMonsters from '../minions/data/killableMonsters';
 import { Planks } from '../minions/data/planks';
+import { quests } from '../minions/data/quests';
 import Agility from '../skilling/skills/agility';
 import Constructables from '../skilling/skills/construction/constructables';
 import Cooking from '../skilling/skills/cooking/cooking';
@@ -30,7 +30,7 @@ import Runecraft from '../skilling/skills/runecraft';
 import Smithing from '../skilling/skills/smithing';
 import { stealables } from '../skilling/skills/thieving/stealables';
 import Woodcutting from '../skilling/skills/woodcutting/woodcutting';
-import {
+import type {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
@@ -40,13 +40,14 @@ import {
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
+	ColoTaskOptions,
 	ConstructionActivityTaskOptions,
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
+	DOAOptions,
 	DarkAltarOptions,
 	DisassembleTaskOptions,
-	DOAOptions,
 	DungeoneeringOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
@@ -83,14 +84,14 @@ import {
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	SpecificQuestOptions,
+	TOAOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
 	TinkeringWorkshopOptions,
-	TOAOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
-import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../util';
+import { itemNameFromID, randomVariation, stringMatches } from '../util';
 import { getActivityOfUser } from './minionIsBusy';
 
 export function minionStatus(user: MUser) {
@@ -108,14 +109,14 @@ export function minionStatus(user: MUser) {
 			const data = currentTask as MonsterActivityTaskOptions;
 			const monster = killableMonsters.find(mon => mon.id === data.monsterID);
 
-			return `${name} is currently killing ${data.quantity}x ${monster!.name}. ${formattedDuration}`;
+			return `${name} is currently killing ${data.quantity}x ${monster?.name}. ${formattedDuration}`;
 		}
 
 		case 'GroupMonsterKilling': {
 			const data = currentTask as GroupMonsterActivityTaskOptions;
 			const monster = killableMonsters.find(mon => mon.id === data.monsterID);
 
-			return `${name} is currently killing ${data.quantity}x ${monster!.name} with a party of ${
+			return `${name} is currently killing ${data.quantity}x ${monster?.name} with a party of ${
 				data.users.length
 			}. ${formattedDuration}`;
 		}
@@ -125,14 +126,14 @@ export function minionStatus(user: MUser) {
 
 			const clueTier = ClueTiers.find(tier => tier.id === data.clueID);
 
-			return `${name} is currently completing ${data.quantity}x ${clueTier!.name} clues. ${formattedDuration}`;
+			return `${name} is currently completing ${data.quantity}x ${clueTier?.name} clues. ${formattedDuration}`;
 		}
 
 		case 'Crafting': {
 			const data = currentTask as CraftingActivityTaskOptions;
 			const craftable = Crafting.Craftables.find(item => item.id === data.craftableID);
 
-			return `${name} is currently crafting ${data.quantity}x ${craftable!.name}. ${formattedDuration} Your ${
+			return `${name} is currently crafting ${data.quantity}x ${craftable?.name}. ${formattedDuration} Your ${
 				Emoji.Crafting
 			} Crafting level is ${user.skillLevel(SkillsEnum.Crafting)}`;
 		}
@@ -142,7 +143,7 @@ export function minionStatus(user: MUser) {
 
 			const course = Agility.Courses.find(course => course.name === data.courseID);
 
-			return `${name} is currently running ${data.quantity}x ${course!.name} laps. ${formattedDuration} Your ${
+			return `${name} is currently running ${data.quantity}x ${course?.name} laps. ${formattedDuration} Your ${
 				Emoji.Agility
 			} Agility level is ${user.skillLevel(SkillsEnum.Agility)}`;
 		}
@@ -152,7 +153,7 @@ export function minionStatus(user: MUser) {
 
 			const cookable = Cooking.Cookables.find(cookable => cookable.id === data.cookableID);
 
-			return `${name} is currently cooking ${data.quantity}x ${cookable!.name}. ${formattedDuration} Your ${
+			return `${name} is currently cooking ${data.quantity}x ${cookable?.name}. ${formattedDuration} Your ${
 				Emoji.Cooking
 			} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
 		}
@@ -162,7 +163,7 @@ export function minionStatus(user: MUser) {
 
 			const fish = Fishing.Fishes.find(fish => fish.id === data.fishID);
 
-			return `${name} is currently fishing ${data.quantity}x ${fish!.name}. ${formattedDuration} Your ${
+			return `${name} is currently fishing ${data.quantity}x ${fish?.name}. ${formattedDuration} Your ${
 				Emoji.Fishing
 			} Fishing level is ${user.skillLevel(SkillsEnum.Fishing)}`;
 		}
@@ -172,14 +173,14 @@ export function minionStatus(user: MUser) {
 
 			const ore = Mining.Ores.find(ore => ore.id === data.oreID);
 
-			return `${name} is currently mining ${ore!.name}. ${
+			return `${name} is currently mining ${ore?.name}. ${
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
 					: `approximately ${formatDuration(
 							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
-					  )} **to** ${formatDuration(
+						)} **to** ${formatDuration(
 							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
-					  )} remaining.`
+						)} remaining.`
 			} Your ${Emoji.Mining} Mining level is ${user.skillLevel(SkillsEnum.Mining)}`;
 		}
 
@@ -191,9 +192,9 @@ export function minionStatus(user: MUser) {
 					? formattedDuration
 					: `approximately ${formatDuration(
 							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
-					  )} **to** ${formatDuration(
+						)} **to** ${formatDuration(
 							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
-					  )} remaining.`
+						)} remaining.`
 			} Your ${Emoji.Mining} Mining level is ${user.skillLevel(SkillsEnum.Mining)}`;
 		}
 
@@ -202,7 +203,7 @@ export function minionStatus(user: MUser) {
 
 			const bar = Smithing.Bars.find(bar => bar.id === data.barID);
 
-			return `${name} is currently smelting ${data.quantity}x ${bar!.name}. ${formattedDuration} Your ${
+			return `${name} is currently smelting ${data.quantity}x ${bar?.name}. ${formattedDuration} Your ${
 				Emoji.Smithing
 			} Smithing level is ${user.skillLevel(SkillsEnum.Smithing)}`;
 		}
@@ -212,7 +213,7 @@ export function minionStatus(user: MUser) {
 
 			const SmithableItem = Smithing.SmithableItems.find(item => item.id === data.smithedBarID);
 
-			return `${name} is currently smithing ${data.quantity}x ${SmithableItem!.name}. ${formattedDuration} Your ${
+			return `${name} is currently smithing ${data.quantity}x ${SmithableItem?.name}. ${formattedDuration} Your ${
 				Emoji.Smithing
 			} Smithing level is ${user.skillLevel(SkillsEnum.Smithing)}`;
 		}
@@ -222,7 +223,7 @@ export function minionStatus(user: MUser) {
 
 			const bones = Prayer.Bones.find(bones => bones.inputId === data.boneID);
 
-			return `${name} is currently offering ${data.quantity}x ${bones!.name}. ${formattedDuration} Your ${
+			return `${name} is currently offering ${data.quantity}x ${bones?.name}. ${formattedDuration} Your ${
 				Emoji.Prayer
 			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
 		}
@@ -232,7 +233,7 @@ export function minionStatus(user: MUser) {
 
 			const bones = Prayer.Bones.find(bones => bones.inputId === data.boneID);
 
-			return `${name} is currently burying ${data.quantity}x ${bones!.name}. ${formattedDuration} Your ${
+			return `${name} is currently burying ${data.quantity}x ${bones?.name}. ${formattedDuration} Your ${
 				Emoji.Prayer
 			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
 		}
@@ -242,7 +243,7 @@ export function minionStatus(user: MUser) {
 
 			const ashes = Prayer.Ashes.find(ashes => ashes.inputId === data.ashID);
 
-			return `${name} is currently scattering ${data.quantity}x ${ashes!.name}. ${formattedDuration} Your ${
+			return `${name} is currently scattering ${data.quantity}x ${ashes?.name}. ${formattedDuration} Your ${
 				Emoji.Prayer
 			} Prayer level is ${user.skillLevel(SkillsEnum.Prayer)}`;
 		}
@@ -252,7 +253,7 @@ export function minionStatus(user: MUser) {
 
 			const burn = Firemaking.Burnables.find(burn => burn.inputLogs === data.burnableID);
 
-			return `${name} is currently lighting ${data.quantity}x ${burn!.name}. ${formattedDuration} Your ${
+			return `${name} is currently lighting ${data.quantity}x ${burn?.name}. ${formattedDuration} Your ${
 				Emoji.Firemaking
 			} Firemaking level is ${user.skillLevel(SkillsEnum.Firemaking)}`;
 		}
@@ -266,14 +267,14 @@ export function minionStatus(user: MUser) {
 
 			const log = Woodcutting.Logs.find(log => log.id === data.logID);
 
-			return `${name} is currently chopping ${log!.name}. ${
+			return `${name} is currently chopping ${log?.name}. ${
 				data.fakeDurationMax === data.fakeDurationMin
 					? formattedDuration
 					: `approximately ${formatDuration(
 							randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
-					  )} **to** ${formatDuration(
+						)} **to** ${formatDuration(
 							randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
-					  )} remaining.`
+						)} remaining.`
 			} Your ${Emoji.Woodcutting} Woodcutting level is ${user.skillLevel(SkillsEnum.Woodcutting)}`;
 		}
 		case 'Runecraft': {
@@ -282,7 +283,7 @@ export function minionStatus(user: MUser) {
 			const rune = Runecraft.Runes.find(_rune => _rune.id === data.runeID);
 
 			return `${name} is currently turning ${data.essenceQuantity}x Essence into ${
-				rune!.name
+				rune?.name
 			}. ${formattedDuration} Your ${Emoji.Runecraft} Runecraft level is ${user.skillLevel(
 				SkillsEnum.Runecraft
 			)}`;
@@ -292,7 +293,7 @@ export function minionStatus(user: MUser) {
 			const data = currentTask as TiaraRunecraftActivityTaskOptions;
 			const tiara = Runecraft.Tiaras.find(_tiara => _tiara.id === data.tiaraID);
 
-			return `${name} is currently crafting ${data.tiaraQuantity} ${tiara!.name}. ${formattedDuration} Your ${
+			return `${name} is currently crafting ${data.tiaraQuantity} ${tiara?.name}. ${formattedDuration} Your ${
 				Emoji.Runecraft
 			} Runecraft level is ${user.skillLevel(SkillsEnum.Runecraft)}`;
 		}
@@ -321,7 +322,7 @@ export function minionStatus(user: MUser) {
 			const data = currentTask as HerbloreActivityTaskOptions;
 			const mixable = Herblore.Mixables.find(i => i.item.id === data.mixableID);
 
-			return `${name} is currently mixing ${data.quantity}x ${mixable!.item.name}. ${formattedDuration} Your ${
+			return `${name} is currently mixing ${data.quantity}x ${mixable?.item.name}. ${formattedDuration} Your ${
 				Emoji.Herblore
 			} Herblore level is ${user.skillLevel(SkillsEnum.Herblore)}`;
 		}
@@ -330,11 +331,12 @@ export function minionStatus(user: MUser) {
 			const barbarianFish = LeapingFish.find(item => item.item.id === data.id);
 
 			return `${name} is currently cutting ${data.quantity}x ${
-				barbarianFish!.item.name
+				barbarianFish?.item.name
 			}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${user.skillLevel(SkillsEnum.Cooking)}`;
 		}
 		case 'Wintertodt': {
-			return `${name} is currently fighting the Wintertodt. ${formattedDuration}`;
+			const data = currentTask as ActivityTaskOptionsWithQuantity;
+			return `${name} is currently fighting Wintertodt ${data.quantity}x times. ${formattedDuration}`;
 		}
 		case 'Tempoross': {
 			return `${name} is currently fighting Tempoross. ${formattedDuration}`;
@@ -353,16 +355,16 @@ export function minionStatus(user: MUser) {
 
 			const plants = Farming.Plants.find(plants => plants.name === data.plantsName);
 
-			return `${name} is currently farming ${data.quantity}x ${plants!.name}. ${formattedDuration} Your ${
+			return `${name} is currently farming ${data.quantity}x ${plants?.name}. ${formattedDuration} Your ${
 				Emoji.Farming
 			} Farming level is ${user.skillLevel(SkillsEnum.Farming)}.`;
 		}
 
 		case 'Sawmill': {
 			const data = currentTask as SawmillActivityTaskOptions;
-			const plank = Planks.find(_plank => _plank.outputItem === data.plankID);
+			const plank = Planks.find(_plank => _plank.outputItem === data.plankID)!;
 			return `${name} is currently creating ${data.plankQuantity}x ${itemNameFromID(
-				plank!.outputItem
+				plank.outputItem
 			)}s. ${formattedDuration}`;
 		}
 
@@ -418,8 +420,8 @@ export function minionStatus(user: MUser) {
 		case 'Pickpocket': {
 			const data = currentTask as PickpocketActivityTaskOptions;
 			const obj = stealables.find(_obj => _obj.id === data.monsterID);
-			return `${name} is currently ${obj!.type === 'pickpockable' ? 'pickpocketing' : 'stealing'} from ${
-				obj!.name
+			return `${name} is currently ${obj?.type === 'pickpockable' ? 'pickpocketing' : 'stealing'} from ${
+				obj?.name
 			} ${data.quantity}x times. ${formattedDuration}`;
 		}
 
@@ -445,9 +447,9 @@ export function minionStatus(user: MUser) {
 						stringMatches(alias, data.creatureName) || stringMatches(alias.split(' ')[0], data.creatureName)
 				)
 			);
-			let crystalImpling = creature?.name === 'Crystal impling';
+			const crystalImpling = creature?.name === 'Crystal impling';
 			return `${name} is currently hunting ${
-				crystalImpling ? creature!.name : `${data.quantity}x ${creature!.name}`
+				crystalImpling ? creature?.name : `${data.quantity}x ${creature?.name}`
 			}. ${formattedDuration}`;
 		}
 
@@ -472,9 +474,9 @@ export function minionStatus(user: MUser) {
 
 		case 'Butler': {
 			const data = currentTask as ButlerActivityTaskOptions;
-			const plank = Planks.find(_plank => _plank.outputItem === data.plankID);
+			const plank = Planks.find(_plank => _plank.outputItem === data.plankID)!;
 			return `${name} is currently creating ${data.plankQuantity}x ${itemNameFromID(
-				plank!.outputItem
+				plank.outputItem
 			)}s. ${formattedDuration}`;
 		}
 
@@ -485,13 +487,13 @@ export function minionStatus(user: MUser) {
 		case 'Enchanting': {
 			const data = currentTask as EnchantingActivityTaskOptions;
 			const enchantable = Enchantables.find(i => i.id === data.itemID);
-			return `${name} is currently enchanting ${data.quantity}x ${enchantable!.name}. ${formattedDuration}`;
+			return `${name} is currently enchanting ${data.quantity}x ${enchantable?.name}. ${formattedDuration}`;
 		}
 
 		case 'Casting': {
 			const data = currentTask as CastingActivityTaskOptions;
 			const spell = Castables.find(i => i.id === data.spellID);
-			return `${name} is currently casting ${data.quantity}x ${spell!.name}. ${formattedDuration}`;
+			return `${name} is currently casting ${data.quantity}x ${spell?.name}. ${formattedDuration}`;
 		}
 
 		case 'GloryCharging': {
@@ -784,26 +786,37 @@ export function minionStatus(user: MUser) {
 			)}.`;
 		}
 		case 'BirthdayCollectIngredients': {
-			return `${name} is currently collecting ingredients, the trip should take ${formatDuration(
+			return `${name} is currently collecting ingredients, the trip should take ${formatDuration(durationRemaining)}.`;
+		}
+		case 'CombatRing': {
+			return `${name} is currently fighting in the Combat Ring! The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
 		}
 		case 'SpecificQuest': {
 			const data = currentTask as SpecificQuestOptions;
 			return `${name} is currently doing the ${
-				quests.find(i => i.id === data.questID)!.name
+				quests.find(i => i.id === data.questID)?.name
 			}! The trip should take ${formatDuration(durationRemaining)}.`;
 		}
-		case 'Mortimer': {
+		case 'Mortimer':
 			return `${name} is currently fighting Maledict Mortimer! The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
-		}
-		case 'GuthixianCache': {
-			return `${name} is currently participating in a Guthixian cache. The trip should take ${formatDuration(
+		case 'Colosseum': {
+			const data = currentTask as ColoTaskOptions;
+			const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+
+			return `${name} is currently attempting the Colosseum, if they are successful, the trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
 		}
+		case 'HalloweenEvent':
+			return `${name} is doing the Halloween event! The trip should take ${formatDuration(durationRemaining)}.`;
+		case 'GuthixianCache':
+			return `${name} is currently participating in a Guthixian cache. The trip should take ${formatDuration(
+				durationRemaining
+			)}.`;
 		case 'MemoryHarvest': {
 			const data = currentTask as MemoryHarvestOptions;
 			const energy = divinationEnergies.find(e => e.item.id === data.e)!;
@@ -812,17 +825,14 @@ export function minionStatus(user: MUser) {
 				method.name
 			}. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
-		case 'TuraelsTrials': {
+		case 'TuraelsTrials':
 			return `${name} is currently slaying monsters in Turaels Trials. The trip should take ${formatDuration(
 				durationRemaining
 			)}.`;
-		}
 		case 'HalloweenMiniMinigame':
 		case 'Easter':
-		case 'HalloweenEvent':
 		case 'BlastFurnace':
-		case 'TrickOrTreat': {
+		case 'TrickOrTreat':
 			throw new Error('Removed');
-		}
 	}
 }

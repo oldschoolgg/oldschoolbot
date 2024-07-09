@@ -1,10 +1,9 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -20,8 +19,8 @@ export const mageTrainingTask: MinionTask = {
 		const loot = new Bank();
 
 		const user = await mUserFetch(userID);
-		let baseXP = (25_000 / (Time.Minute * 60)) * duration;
-		let xp = randomVariation(baseXP, 5);
+		const baseXP = (25_000 / (Time.Minute * 60)) * duration;
+		const xp = randomVariation(baseXP, 5);
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Magic,
 			amount: xp,
@@ -43,7 +42,7 @@ export const mageTrainingTask: MinionTask = {
 			}
 		});
 
-		let str = `${user}, ${
+		const str = `${user}, ${
 			user.minionName
 		} finished completing ${quantity}x Magic Training Arena rooms. You received **${pizazzPoints} Pizazz points**. You now have **${totalPizazzPoints?.pizazz_points.toLocaleString()} Pizazz points**. ${xpRes}`;
 

@@ -1,16 +1,16 @@
-import { randInt, reduceNumByPercent, roll, Time } from 'e';
+import { Time, randInt, reduceNumByPercent, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import {
 	implings,
 	puroImpHighTierTable,
-	puroImplings,
 	puroImpNormalTable,
-	puroImpSpellTable
+	puroImpSpellTable,
+	puroImplings
 } from '../../../lib/implings';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
-import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
+import type { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { userHasGracefulEquipped, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
@@ -35,7 +35,7 @@ export const puroPuroTask: MinionTask = {
 		const missed = new Bank();
 		const itemCost = new Bank();
 		let hunterXP = 0;
-		let hunterLevel = user.skillLevel(SkillsEnum.Hunter);
+		const hunterLevel = user.skillLevel(SkillsEnum.Hunter);
 		const allImpQty = hunt(minutes, user, 1, 3);
 		const highTierImpQty = hunt(minutes, user, 0.75, 1) * (darkLure ? 1.2 : 1);
 		const singleImpQty = hunt(minutes, user, 5, 6);

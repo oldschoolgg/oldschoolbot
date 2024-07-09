@@ -1,17 +1,17 @@
-import { reduceNumByPercent, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { type CommandRunOptions, formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, reduceNumByPercent } from 'e';
 
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
-import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import type { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const craftCommand: OSBMahojiCommand = {
 	name: 'craft',

@@ -2,10 +2,10 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { deepResolveItems } from 'oldschooljs/dist/util/util';
 import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
-import { deepResolveItems } from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 
 export const turaelMonsters: KillableMonster[] = [
 	{

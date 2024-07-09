@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';

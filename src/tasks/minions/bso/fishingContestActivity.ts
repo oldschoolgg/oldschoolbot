@@ -4,11 +4,11 @@ import { Bank } from 'oldschooljs';
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { catchFishAtLocation, fishingLocations } from '../../../lib/fishingContest';
 import { trackLoot } from '../../../lib/lootTrack';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClueTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { FishingContestOptions } from '../../../lib/types/minions';
+import type { FishingContestOptions } from '../../../lib/types/minions';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -29,7 +29,7 @@ export const fishingContestTask: MinionTask = {
 		const { newScore } = await incrementMinigameScore(userID, 'fishing_contest', 1);
 		const fishLocation = fishingLocations.find(i => i.id === location)!;
 
-		let caughtFish = [];
+		const caughtFish = [];
 		for (let i = 0; i < quantity; i++) {
 			const fish = await catchFishAtLocation({ user, location: fishLocation });
 			caughtFish.push(fish);
@@ -44,7 +44,7 @@ export const fishingContestTask: MinionTask = {
 		});
 
 		const loot = new Bank();
-		let tackleBoxChance = user.hasEquipped('Fishing master cape') ? 2 : 3;
+		const tackleBoxChance = user.hasEquipped('Fishing master cape') ? 2 : 3;
 		if (roll(tackleBoxChance)) {
 			for (const [tackleBox, fishLevel] of [
 				['Basic tackle box', 75],
@@ -86,12 +86,12 @@ export const fishingContestTask: MinionTask = {
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		let fishingXP = calculateFishingContestXP({
+		const fishingXP = calculateFishingContestXP({
 			fishSizeCM: caughtFish[0].lengthCentimetres,
 			fishingLevel: user.skillLevel(SkillsEnum.Fishing)
 		});
 
-		let xpStr = await user.addXP({
+		const xpStr = await user.addXP({
 			skillName: SkillsEnum.Fishing,
 			amount: fishingXP,
 			duration

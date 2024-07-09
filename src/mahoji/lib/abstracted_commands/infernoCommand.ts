@@ -1,23 +1,23 @@
-import { calcPercentOfNum, increaseNumByPercent, percentChance, randInt, roll, sumArr, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { type CommandResponse, formatDuration } from '@oldschoolgg/toolkit';
+import { Time, calcPercentOfNum, increaseNumByPercent, percentChance, randInt, roll, sumArr } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { itemID } from 'oldschooljs/dist/util';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
+import { itemID, randomVariation } from 'oldschooljs/dist/util';
 
 import { BitField, Emoji, projectiles } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
-import { BlowpipeData } from '../../../lib/minions/types';
+import type { BlowpipeData } from '../../../lib/minions/types';
 import { getMinigameEntity, getMinigameScore } from '../../../lib/settings/minigames';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { Gear } from '../../../lib/structures/Gear';
+import type { Gear } from '../../../lib/structures/Gear';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
-import { Skills } from '../../../lib/types';
-import { InfernoOptions } from '../../../lib/types/minions';
-import { determineProjectileTypeFromGear, formatDuration, itemNameFromID, randomVariation } from '../../../lib/util';
+import type { Skills } from '../../../lib/types';
+import type { InfernoOptions } from '../../../lib/types/minions';
+import { determineProjectileTypeFromGear, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -192,14 +192,14 @@ async function infernoRun({
 				hitpoints: 100,
 				ranged: 107,
 				prayer: 105
-		  }
+			}
 		: {
 				defence: 92,
 				magic: 94,
 				hitpoints: 92,
 				ranged: 92,
 				prayer: 77
-		  };
+			};
 	const hasSkillReqs = user.hasSkillReqs(skillReqs);
 	if (!hasSkillReqs) {
 		return `You not meet skill requirements, you need ${Object.entries(skillReqs)
@@ -359,8 +359,7 @@ async function infernoRun({
 		const weapon = setup.equippedWeapon();
 		const validWeapons = Object.keys(weapons)
 			.map(itemID)
-			.map(id => getSimilarItems(id))
-			.flat();
+			.flatMap(id => getSimilarItems(id));
 		if (!weapon || !validWeapons.includes(weapon.id)) {
 			return `You need one of these weapons in your ${name} setup: ${Object.keys(weapons).join(', ')}.`;
 		}
@@ -463,9 +462,9 @@ async function infernoRun({
 	const isOnTask =
 		usersTask.currentTask !== null &&
 		usersTask.currentTask !== undefined &&
-		usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
+		usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
 		score > 0 &&
-		usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
+		usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
 	duration.add(isOnTask && user.hasEquippedOrInBank('Black mask (i)'), -9, `${Emoji.Slayer} Slayer Task`);
 
@@ -497,7 +496,7 @@ async function infernoRun({
 	const projectilesForTheirType = projectiles[projectileType].items;
 	if (!projectilesForTheirType.includes(projectile.item)) {
 		return `You're using incorrect projectiles, you're using a ${
-			rangeGear.equippedWeapon()!.name
+			rangeGear.equippedWeapon()?.name
 		}, which uses ${projectileType}s, so you should be using one of these: ${projectilesForTheirType
 			.map(itemNameFromID)
 			.join(', ')}.`;
@@ -690,14 +689,14 @@ export async function infernoStartCommand(user: MUser, channelID: string, emerge
 	});
 
 	updateBankSetting('inferno_cost', realCost);
-	let emergedZukDeathMsg = emerged
+	const emergedZukDeathMsg = emerged
 		? `**Emerged Zuk Death Chance:** ${emergedZukDeathChance.value.toFixed(
 				1
-		  )}% ${emergedZukDeathChance.messages.join(', ')} ${
+			)}% ${emergedZukDeathChance.messages.join(', ')} ${
 				emergedZukDeathChance.missed.length === 0
 					? ''
 					: `*(You didn't get these: ||${emergedZukDeathChance.missed.join(', ')}||)*`
-		  }`
+			}`
 		: '';
 	return {
 		content: `

@@ -1,10 +1,10 @@
 import { expect, test } from 'vitest';
 
 import { allMbTables } from '../../src/lib/bsoOpenables';
-import { allTrophyItems } from '../../src/lib/data/trophies';
+import { allTrophyItems } from '../../src/lib/data/itemAliases';
 import getOSItem from '../../src/lib/util/getOSItem';
 import itemIsTradeable from '../../src/lib/util/itemIsTradeable';
-import { resolveOSItems } from '../../src/lib/util/resolveItems';
+import resolveItems from '../../src/lib/util/resolveItems';
 
 test('trophies', async () => {
 	expect(getOSItem('BSO dragon trophy')).toMatchObject({ id: 24_372 });
@@ -16,7 +16,7 @@ test('trophies', async () => {
 	expect(getOSItem('Placeholder dragon trophy')).toMatchObject({ id: 26_515 });
 	expect(getOSItem('Placeholder bronze trophy')).toMatchObject({ id: 26_503 });
 
-	for (const trophy of resolveOSItems(allTrophyItems)) {
+	for (const trophy of resolveItems(allTrophyItems).map(getOSItem)) {
 		expect(itemIsTradeable(trophy.id)).toEqual(false);
 		expect(trophy.customItemData?.isSuperUntradeable).toEqual(true);
 		expect(allMbTables.includes(trophy.id)).toEqual(false);

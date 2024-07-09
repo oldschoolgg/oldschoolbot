@@ -1,14 +1,14 @@
-import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { bulkUpdateCommands } from '@oldschoolgg/toolkit';
 import { DEV_SERVER_ID, production } from '../../config';
 import { cacheBadges } from '../../lib/badges';
 import { syncBlacklists } from '../../lib/blacklists';
-import { Channel, DISABLED_COMMANDS, globalConfig, META_CONSTANTS } from '../../lib/constants';
+import { Channel, DISABLED_COMMANDS, META_CONSTANTS, globalConfig } from '../../lib/constants';
 import { initCrons } from '../../lib/crons';
 import { syncDoubleLoot } from '../../lib/doubleLoot';
 import { GrandExchange } from '../../lib/grandExchange';
-import { prisma } from '../../lib/settings/prisma';
+
 import { initTickers } from '../../lib/tickers';
 import { runTimedLoggedFn } from '../../lib/util';
 import { cacheCleanup } from '../../lib/util/cachedUserIDs';
@@ -41,8 +41,10 @@ export async function onStartup() {
 		update: {}
 	});
 
-	for (const command of disabledCommands!.disabled_commands) {
-		DISABLED_COMMANDS.add(command);
+	if (disabledCommands.disabled_commands) {
+		for (const command of disabledCommands.disabled_commands) {
+			DISABLED_COMMANDS.add(command);
+		}
 	}
 
 	// Sync blacklists
@@ -52,7 +54,7 @@ export async function onStartup() {
 		console.log('Syncing commands locally...');
 		await bulkUpdateCommands({
 			client: globalClient.mahojiClient,
-			commands: globalClient.mahojiClient.commands.values,
+			commands: Array.from(globalClient.mahojiClient.commands.values()),
 			guildID: DEV_SERVER_ID
 		});
 	}
@@ -72,9 +74,11 @@ export async function onStartup() {
 
 	syncSlayerMaskLeaderboardCache();
 
-	sendToChannelID(Channel.GeneralChannel, {
-		content: `I have just turned on!
+	if (production) {
+		sendToChannelID(Channel.GeneralChannel, {
+			content: `I have just turned on!
 
 ${META_CONSTANTS.RENDERED_STR}`
-	}).catch(console.error);
+		}).catch(console.error);
+	}
 }

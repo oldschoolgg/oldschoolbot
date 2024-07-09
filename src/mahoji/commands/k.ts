@@ -1,6 +1,7 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 
-import { PVM_METHODS, PvMMethod, ZALCANO_ID } from '../../lib/constants';
+import { PVM_METHODS, type PvMMethod, ZALCANO_ID } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { KalphiteKingMonster } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
@@ -9,10 +10,9 @@ import { MOKTANG_ID } from '../../lib/minions/data/killableMonsters/custom/bosse
 import { Naxxus } from '../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { NexMonster } from '../../lib/nex';
-import { prisma } from '../../lib/settings/prisma';
 import { returnStringOrFile } from '../../lib/util/smallUtils';
 import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const autocompleteMonsters = [
 	...killableMonsters,
@@ -79,6 +79,11 @@ export const autocompleteMonsters = [
 		name: 'Moktang',
 		aliases: ['moktang'],
 		id: MOKTANG_ID
+	},
+	{
+		name: 'Colosseum',
+		aliases: ['colo', 'colosseum'],
+		id: -1
 	}
 ];
 
@@ -178,6 +183,7 @@ export const minionKCommand: OSBMahojiCommand = {
 		method?: PvMMethod;
 		show_info?: boolean;
 		wilderness?: boolean;
+		solo?: boolean;
 	}>) => {
 		const user = await mUserFetch(userID);
 		if (options.show_info) {
@@ -190,7 +196,8 @@ export const minionKCommand: OSBMahojiCommand = {
 			options.name,
 			options.quantity,
 			options.method,
-			options.wilderness
+			options.wilderness,
+			options.solo
 		);
 	}
 };

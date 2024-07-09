@@ -1,8 +1,7 @@
 import { Monsters } from 'oldschooljs';
-
 import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import { getMonster } from '../../util';
-import { AssignableSlayerTask } from '../types';
+import type { AssignableSlayerTask } from '../types';
 
 export const bossTasks: AssignableSlayerTask[] = [
 	{

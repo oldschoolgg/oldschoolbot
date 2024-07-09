@@ -1,14 +1,6 @@
-import {
-	ComponentType,
-	DMChannel,
-	Guild,
-	GuildMember,
-	InteractionReplyOptions,
-	PermissionsBitField,
-	TextChannel,
-	User
-} from 'discord.js';
-import { roll } from 'e';
+import { PerkTier } from '@oldschoolgg/toolkit';
+import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel, User } from 'discord.js';
+import { ComponentType, PermissionsBitField } from 'discord.js';
 
 import { OWNER_IDS, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
@@ -18,12 +10,11 @@ import {
 	Channel,
 	DISABLED_COMMANDS,
 	gearValidationChecks,
-	minionBuyButton,
-	PerkTier
+	minionBuyButton
 } from '../../lib/constants';
 import { perkTierCache, syncPerkTierOfUser } from '../../lib/perkTiers';
-import { CategoryFlag } from '../../lib/types';
-import { formatDuration } from '../../lib/util';
+import type { CategoryFlag } from '../../lib/types';
+import { formatDuration, roll } from '../../lib/util';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';
 import { Cooldowns } from './Cooldowns';

@@ -1,19 +1,19 @@
 import type { CropUpgradeType } from '@prisma/client';
 
-import { BathhouseTierName } from '../baxtorianBathhouses';
-import { TuraelsTrialsMethod } from '../bso/turaelsTrials';
-import { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
-import { Kibble } from '../data/kibble';
-import { IMaterialBank, MaterialType } from '../invention';
+import type { TeamMember } from 'discord.js';
+import type { ItemBank } from '.';
+import type { BathhouseTierName } from '../baxtorianBathhouses';
+import type { TuraelsTrialsMethod } from '../bso/turaelsTrials';
+import type { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
+import type { Kibble } from '../data/kibble';
+import type { IMaterialBank, MaterialType } from '../invention';
 import type { IPatchData } from '../minions/farming/types';
-import { Monkey } from '../monkeyRumble';
+import type { Monkey } from '../monkeyRumble';
 import type { MinigameName } from '../settings/minigames';
-import { RaidLevel } from '../simulation/toa';
-import { TeamMember } from '../simulation/tob';
-import { BossUser } from '../structures/Boss';
+import type { RaidLevel } from '../simulation/toa';
+import type { BossUser } from '../structures/Boss';
 import type { Peak } from '../tickers';
 import type { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
-import type { ItemBank } from '.';
 
 export interface ActivityTaskOptions {
 	userID: string;
@@ -69,7 +69,8 @@ export interface ActivityTaskOptionsWithNoChanges extends ActivityTaskOptions {
 		| 'StrongholdOfSecurity'
 		| 'TrickOrTreat'
 		| 'HalloweenMiniMinigame'
-		| 'BirthdayCollectIngredients';
+		| 'BirthdayCollectIngredients'
+		| 'CombatRing';
 }
 
 export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
@@ -98,7 +99,7 @@ export interface ShootingStarsOptions extends ActivityTaskOptions {
 	totalXp: number;
 	lootItems: ItemBank;
 }
-export interface ActivityTaskOptionsWithUsers extends ActivityTaskOptions {
+interface ActivityTaskOptionsWithUsers extends ActivityTaskOptions {
 	users: string[];
 }
 
@@ -516,11 +517,19 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptionsWithUsers 
 	cc?: string;
 }
 
+export interface ColoTaskOptions extends ActivityTaskOptions {
+	type: 'Colosseum';
+	fakeDuration: number;
+	diedAt?: number;
+	loot?: ItemBank;
+	maxGlory: number;
+}
+
 type UserID = string;
 type Points = number;
 type RoomIDsDiedAt = number[];
 
-export type TOAUser = [UserID, Points[], RoomIDsDiedAt[]];
+type TOAUser = [UserID, Points[], RoomIDsDiedAt[]];
 export interface TOAOptions extends ActivityTaskOptionsWithUsers {
 	type: 'TombsOfAmascut';
 	leader: string;
@@ -776,4 +785,6 @@ export type ActivityTaskData =
 	| CutLeapingFishActivityTaskOptions
 	| MortimerOptions
 	| MemoryHarvestOptions
-	| TuraelsTrialsOptions;
+	| TuraelsTrialsOptions
+	| CutLeapingFishActivityTaskOptions
+	| ColoTaskOptions;

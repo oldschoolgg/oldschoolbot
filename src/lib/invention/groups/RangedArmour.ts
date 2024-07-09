@@ -1,6 +1,6 @@
+import type { DisassemblySourceGroup } from '..';
 import { brokenPernixOutfit, pernixOutfit } from '../../data/CollectionsExport';
 import getOSItem from '../../util/getOSItem';
-import { DisassemblySourceGroup } from '..';
 
 const i = getOSItem;
 

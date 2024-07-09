@@ -1,19 +1,20 @@
-import { clamp, increaseNumByPercent, randInt, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { type CommandRunOptions, formatDuration, isWeekend, stringMatches } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, clamp, increaseNumByPercent, randInt } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
+import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { clueHunterOutfit } from '../../lib/data/CollectionsExport';
 import { getPOHObject } from '../../lib/poh';
-import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { calcClueScores, formatDuration, isWeekend, stringMatches } from '../../lib/util';
+import type { ClueActivityTaskOptions } from '../../lib/types/minions';
+import { calcClueScores } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { checkElderClueRequirements } from '../../lib/util/elderClueRequirements';
 import getOSItem from '../../lib/util/getOSItem';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
@@ -138,7 +139,7 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 		const boosts = [];
 
 		if (user.hasEquippedOrInBank('Clue bag')) {
-			let boostPercent = 20;
+			const boostPercent = 20;
 			maxTripLength = increaseNumByPercent(maxTripLength, boostPercent);
 			boosts.push(`${boostPercent}% longer trip length for Clue bag`);
 		}

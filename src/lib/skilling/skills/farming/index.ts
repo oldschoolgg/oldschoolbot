@@ -4,7 +4,7 @@ import { Emoji } from '../../../constants';
 import getOSItem from '../../../util/getOSItem';
 import itemID from '../../../util/itemID';
 import resolveItems from '../../../util/resolveItems';
-import { Plant, SkillsEnum } from '../../types';
+import { type Plant, SkillsEnum } from '../../types';
 import allotmentPlants from './allotments';
 import { bushes } from './bushes';
 import fruitTrees from './fruitTrees';

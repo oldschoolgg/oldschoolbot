@@ -10,10 +10,10 @@ import { GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { AbyssalDragonLootTable } from './AbyssalDragon';
-import { CustomMonster } from './customMonsters';
 import { NihilizLootTable } from './Nihiliz';
 import { KrakenTable } from './SeaKraken';
 import { TreebeardLootTable } from './Treebeard';
+import type { CustomMonster } from './customMonsters';
 
 const SeaKraken: CustomMonster = {
 	id: 53_466_534,

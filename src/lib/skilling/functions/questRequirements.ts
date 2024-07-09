@@ -1,4 +1,4 @@
-import { Skills } from '../../types';
+import type { Skills } from '../../types';
 
 export const sinsOfTheFatherSkillRequirements: Skills = {
 	woodcutting: 62,

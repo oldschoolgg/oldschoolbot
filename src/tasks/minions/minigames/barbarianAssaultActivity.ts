@@ -3,7 +3,7 @@ import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 

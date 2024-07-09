@@ -1,19 +1,20 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { IVY_MAX_TRIP_LENGTH_BOOST, TwitcherGloves, TWITCHERS_GLOVES } from '../../lib/constants';
+import { IVY_MAX_TRIP_LENGTH_BOOST, TWITCHERS_GLOVES, type TwitcherGloves } from '../../lib/constants';
 import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { determineWoodcuttingTime } from '../../lib/skilling/functions/determineWoodcuttingTime';
 import Woodcutting from '../../lib/skilling/skills/woodcutting/woodcutting';
-import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
+import type { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { minionName } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
-export const axes = [
+const axes = [
 	{
 		id: itemID('Dwarven greataxe'),
 		multiplier: 8,
@@ -201,7 +202,7 @@ export const chopCommand: OSBMahojiCommand = {
 		boosts.push(`**${axeMultiplier}x** success multiplier for Bronze axe`);
 
 		if (user.hasEquippedOrInBank(['Drygore axe'])) {
-			let [predeterminedTotalTime] = determineWoodcuttingTime({
+			const [predeterminedTotalTime] = determineWoodcuttingTime({
 				quantity,
 				user,
 				log,
@@ -266,7 +267,7 @@ export const chopCommand: OSBMahojiCommand = {
 		}
 
 		// Calculate the time it takes to chop specific quantity or as many as possible
-		let [timeToChop, newQuantity] = determineWoodcuttingTime({
+		const [timeToChop, newQuantity] = determineWoodcuttingTime({
 			quantity,
 			user,
 			log,

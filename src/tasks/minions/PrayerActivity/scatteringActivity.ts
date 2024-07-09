@@ -2,7 +2,7 @@ import { Bank } from 'oldschooljs';
 
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ScatteringActivityTaskOptions } from '../../../lib/types/minions';
+import type { ScatteringActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
@@ -22,7 +22,7 @@ export const scatteringTask: MinionTask = {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished scattering ${quantity}x ${ash.name}. ${xpRes}`;
+		const str = `${user}, ${user.minionName} finished scattering ${quantity}x ${ash.name}. ${xpRes}`;
 
 		await userStatsBankUpdate(user.id, 'scattered_ashes_bank', new Bank().add(ash.inputId, quantity));
 

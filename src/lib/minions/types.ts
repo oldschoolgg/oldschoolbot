@@ -1,21 +1,23 @@
-import { Image } from '@napi-rs/canvas';
-import { StoreBitfield } from '@oldschoolgg/toolkit';
-import { XpGainSource } from '@prisma/client';
-import { Bank, MonsterKillOptions } from 'oldschooljs';
-import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
+import type { Image } from '@napi-rs/canvas';
+import type { PerkTier, StoreBitfield } from '@oldschoolgg/toolkit';
+import type { GearSetupType, XpGainSource } from '@prisma/client';
+import type { Bank, MonsterKillOptions } from 'oldschooljs';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
-import { QuestID } from '../../mahoji/lib/abstracted_commands/questCommand';
-import { ClueTier } from '../clues/clueTiers';
-import { BitField, PerkTier } from '../constants';
-import { Diary, DiaryTier } from '../diaries';
-import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
-import { POHBoosts } from '../poh';
-import { LevelRequirements, SkillsEnum } from '../skilling/types';
-import { ArrayItemsResolved, ItemBank, Skills } from '../types';
-import { MonsterActivityTaskOptions } from '../types/minions';
-import { calculateSimpleMonsterDeathChance } from '../util';
-import { BSOMonsters } from './data/killableMonsters/custom/customMonsters';
-import { AttackStyles } from './functions';
+import type { ClueTier } from '../clues/clueTiers';
+import type { BitField } from '../constants';
+import type { GearStat, OffenceGearStat } from '../gear';
+import type { POHBoosts } from '../poh';
+import type { MinigameName } from '../settings/minigames';
+import type { LevelRequirements, SkillsEnum } from '../skilling/types';
+import type { MUserStats } from '../structures/MUserStats';
+import type { ArrayItemsResolved, Skills } from '../types';
+import type { MonsterActivityTaskOptions } from '../types/minions';
+import type { calculateSimpleMonsterDeathChance } from '../util';
+import type { BSOMonsters } from './data/killableMonsters/custom/customMonsters';
+import type { QuestID } from './data/quests';
+import type { AttackStyles } from './functions';
 
 export type BankBackground = {
 	image: Image | null;
@@ -136,7 +138,7 @@ export interface KillableMonster {
 	}[];
 	requiredQuests?: QuestID[];
 	deathProps?: Omit<Parameters<typeof calculateSimpleMonsterDeathChance>['0'], 'currentKC'>;
-	diaryRequirement?: [Diary, DiaryTier];
+	diaryRequirement?: [DiaryID, DiaryTierName];
 	wildySlayerCave?: boolean;
 	requiredBitfield?: BitField;
 
@@ -214,3 +216,33 @@ export const defaultMegaDuckLocation: Readonly<MegaDuckLocation> = {
 export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
 export type ClueBank = Record<ClueTier['name'], number>;
+
+export const diaryTiers = ['easy', 'medium', 'hard', 'elite'] as const;
+export type DiaryTierName = (typeof diaryTiers)[number];
+
+export interface DiaryTier {
+	name: 'Easy' | 'Medium' | 'Hard' | 'Elite';
+	items: Item[];
+	skillReqs: Skills;
+	ownedItems?: number[];
+	collectionLogReqs?: number[];
+	minigameReqs?: Partial<Record<MinigameName, number>>;
+	lapsReqs?: Record<string, number>;
+	qp?: number;
+	monsterScores?: Record<string, number>;
+	customReq?: (user: MUser, summary: boolean, stats: MUserStats) => [true] | [false, string];
+}
+export enum DiaryID {
+	WesternProvinces = 0,
+	Ardougne = 1,
+	Desert = 2,
+	Falador = 3,
+	Fremennik = 4,
+	Kandarin = 5,
+	Karamja = 6,
+	KourendKebos = 7,
+	LumbridgeDraynor = 8,
+	Morytania = 9,
+	Varrock = 10,
+	Wilderness = 11
+}

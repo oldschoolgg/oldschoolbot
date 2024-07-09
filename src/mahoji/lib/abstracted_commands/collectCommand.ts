@@ -1,11 +1,11 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
-import { userhasDiaryTier, WildernessDiary } from '../../../lib/diaries';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { Skills } from '../../../lib/types';
-import { CollectingOptions } from '../../../lib/types/minions';
+import { WildernessDiary, userhasDiaryTier } from '../../../lib/diaries';
+import type { SkillsEnum } from '../../../lib/skilling/types';
+import type { Skills } from '../../../lib/types';
+import type { CollectingOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -13,7 +13,7 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { getPOH } from './pohCommand';
 
-export interface Collectable {
+interface Collectable {
 	item: Item;
 	skillReqs?: Skills;
 	itemCost?: Bank;
@@ -241,11 +241,9 @@ export async function collectCommand(
 	let cost: Bank = new Bank();
 
 	if (collectable.itemCost) {
-		{
-			cost = collectable.itemCost.clone().multiply(quantity);
-			if (cost.has('Ring of dueling(8)') && hasJewelleryBox)
-				cost.remove('Ring of dueling(8)', cost.amount('Ring of dueling(8)'));
-		}
+		cost = collectable.itemCost.clone().multiply(quantity);
+		if (cost.has('Ring of dueling(8)') && hasJewelleryBox)
+			cost.remove('Ring of dueling(8)', cost.amount('Ring of dueling(8)'));
 		if (cost.has('Stamina potion(4)') && no_stams) {
 			// 50% longer trip time for not using stamina potion (4)
 			duration *= 1.5;

@@ -1,8 +1,8 @@
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
-import { ShadesOfMortonOptions } from '../../../lib/types/minions';
+import type { ShadesOfMortonOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -255,12 +255,12 @@ export const shadesLogs: ShadesLog[] = [
 const coffins = ['Bronze coffin', 'Steel coffin', 'Black coffin', 'Silver coffin', 'Gold coffin'];
 
 export async function shadesOfMortonStartCommand(user: MUser, channelID: string, logStr: string, shadeStr: string) {
-	let messages: string[] = [];
+	const messages: string[] = [];
 	let totalTime = calcMaxTripLength(user, 'ShadesOfMorton');
 	for (let i = coffins.length - 1; i >= 0; i--) {
 		const coffin = coffins[i];
 		if (user.hasEquipped(coffin)) {
-			let bonusTime = i * Time.Minute;
+			const bonusTime = i * Time.Minute;
 			if (bonusTime) {
 				totalTime += bonusTime;
 				messages.push(`${formatDuration(bonusTime)} bonus max trip length for ${itemNameFromID(coffin)}`);
@@ -287,7 +287,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 	const quantity = Math.min(logsOwned, shadesOwned, Math.floor(totalTime / timePerLog));
 	const duration = quantity * timePerLog;
 
-	let prayerXP = log.prayerXP[shade.shadeName];
+	const prayerXP = log.prayerXP[shade.shadeName];
 	if (!prayerXP) {
 		return `You can't use ${log.normalLog.name} with ${shade.item.name}.`;
 	}

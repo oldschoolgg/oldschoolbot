@@ -1,23 +1,16 @@
+import { execSync } from 'node:child_process';
 import path from 'node:path';
 
-import { Image } from '@napi-rs/canvas';
-import { StoreBitfield } from '@oldschoolgg/toolkit';
-import { Prisma } from '@prisma/client';
-import { execSync } from 'child_process';
-import {
-	APIButtonComponent,
-	APIInteractionDataResolvedChannel,
-	APIRole,
-	ButtonBuilder,
-	ButtonStyle,
-	ComponentType
-} from 'discord.js';
+import type { Image } from '@napi-rs/canvas';
+import { PerkTier, SimpleTable, StoreBitfield, dateFm } from '@oldschoolgg/toolkit';
+import type { CommandOptions } from '@oldschoolgg/toolkit';
+import type { Prisma } from '@prisma/client';
+import type { APIButtonComponent, APIInteractionDataResolvedChannel, APIRole } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import * as dotenv from 'dotenv';
 import { Time } from 'e';
-import { CommandOptions } from 'mahoji/dist/lib/types';
-import { all, create } from 'mathjs';
 import { Items } from 'oldschooljs';
-import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
+import { convertLVLtoXP, getItemOrThrow } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
 
 import { DISCORD_SETTINGS, production } from '../config';
@@ -25,11 +18,11 @@ import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { customItems } from './customItems/util';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
-import getOSItem from './util/getOSItem';
 import resolveItems from './util/resolveItems';
-import { dateFm } from './util/smallUtils';
 
-export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
+import '../lib/data/itemAliases';
+
+export { PerkTier };
 
 const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '944924763405574174';
 
@@ -55,8 +48,8 @@ export const Channel = {
 				? '346304390858145792'
 				: '1154056119019393035'
 			: production
-			? '792691343284764693'
-			: '1154056119019393035',
+				? '792691343284764693'
+				: '1154056119019393035',
 	// BSO Channels
 	BSOGeneral: DISCORD_SETTINGS.Channels?.BSOGeneral ?? '792691343284764693',
 	BSOChannel: DISCORD_SETTINGS.Channels?.BSOChannel ?? '732207379818479756',
@@ -85,7 +78,7 @@ export const Roles = {
 	EventOrganizer: '1149907536749801542'
 };
 
-export const enum DefaultPingableRoles {
+export enum DefaultPingableRoles {
 	// Tester roles:
 	Tester = '682052620809928718',
 	BSOTester = '829368646182371419',
@@ -93,7 +86,7 @@ export const enum DefaultPingableRoles {
 	BSOMass = '759573020464906242'
 }
 
-export const enum Emoji {
+export enum Emoji {
 	MoneyBag = '<:MoneyBag:493286312854683654>',
 	OSBot = '<:OSBot:601768469905801226>',
 	Joy = '😂',
@@ -213,7 +206,7 @@ export enum ActivityGroup {
 	Minigame = 'Minigame'
 }
 
-export const enum Events {
+export enum Events {
 	Error = 'error',
 	Log = 'log',
 	Verbose = 'verbose',
@@ -225,37 +218,6 @@ export const enum Events {
 }
 
 export const COINS_ID = 995;
-
-export const enum PerkTier {
-	/**
-	 * Boosters
-	 */
-	One = 1,
-	/**
-	 * Tier 1 Patron
-	 */
-	Two = 2,
-	/**
-	 * Tier 2 Patron, Contributors, Mods
-	 */
-	Three = 3,
-	/**
-	 * Tier 3 Patron
-	 */
-	Four = 4,
-	/**
-	 * Tier 4 Patron
-	 */
-	Five = 5,
-	/**
-	 * Tier 5 Patron
-	 */
-	Six = 6,
-	/**
-	 * Tier 6 Patron
-	 */
-	Seven = 7
-}
 
 export enum BitField {
 	IsPatronTier1 = 2,
@@ -568,15 +530,6 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	}
 } as const;
 
-export const enum PatronTierID {
-	One = '4608201',
-	Two = '4608226',
-	Three = '4720356',
-	Four = '5262065',
-	Five = '5262216',
-	Six = '8091554'
-}
-
 export const BadgesEnum = {
 	Developer: 0,
 	Booster: 1,
@@ -701,8 +654,7 @@ export const projectiles = {
 export type ProjectileType = keyof typeof projectiles;
 
 export const PHOSANI_NIGHTMARE_ID = 9416;
-
-export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
+const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
 export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
 	if (!Array.isArray(args)) return true;
 	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
@@ -714,7 +666,7 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandOption
 }
 
 function compressMahojiArgs(options: CommandOptions) {
-	let newOptions: Record<string, string | number | boolean | null | undefined> = {};
+	const newOptions: Record<string, string | number | boolean | null | undefined> = {};
 	for (const [key, val] of Object.entries(options) as [
 		keyof CommandOptions,
 		CommandOptions[keyof CommandOptions]
@@ -780,24 +732,24 @@ export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
 
 export const IVY_MAX_TRIP_LENGTH_BOOST = Time.Minute * 25;
 export const chompyHats = [
-	[getOSItem('Chompy bird hat (ogre bowman)'), 30],
-	[getOSItem('Chompy bird hat (bowman)'), 40],
-	[getOSItem('Chompy bird hat (ogre yeoman)'), 50],
-	[getOSItem('Chompy bird hat (yeoman)'), 70],
-	[getOSItem('Chompy bird hat (ogre marksman)'), 95],
-	[getOSItem('Chompy bird hat (marksman)'), 125],
-	[getOSItem('Chompy bird hat (ogre woodsman)'), 170],
-	[getOSItem('Chompy bird hat (woodsman)'), 225],
-	[getOSItem('Chompy bird hat (ogre forester)'), 300],
-	[getOSItem('Chompy bird hat (forester)'), 400],
-	[getOSItem('Chompy bird hat (ogre bowmaster)'), 550],
-	[getOSItem('Chompy bird hat (bowmaster)'), 700],
-	[getOSItem('Chompy bird hat (ogre expert)'), 1000],
-	[getOSItem('Chompy bird hat (expert)'), 1300],
-	[getOSItem('Chompy bird hat (ogre dragon archer)'), 1700],
-	[getOSItem('Chompy bird hat (dragon archer)'), 2250],
-	[getOSItem('Chompy bird hat (expert ogre dragon archer)'), 3000],
-	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
+	[getItemOrThrow('Chompy bird hat (ogre bowman)'), 30],
+	[getItemOrThrow('Chompy bird hat (bowman)'), 40],
+	[getItemOrThrow('Chompy bird hat (ogre yeoman)'), 50],
+	[getItemOrThrow('Chompy bird hat (yeoman)'), 70],
+	[getItemOrThrow('Chompy bird hat (ogre marksman)'), 95],
+	[getItemOrThrow('Chompy bird hat (marksman)'), 125],
+	[getItemOrThrow('Chompy bird hat (ogre woodsman)'), 170],
+	[getItemOrThrow('Chompy bird hat (woodsman)'), 225],
+	[getItemOrThrow('Chompy bird hat (ogre forester)'), 300],
+	[getItemOrThrow('Chompy bird hat (forester)'), 400],
+	[getItemOrThrow('Chompy bird hat (ogre bowmaster)'), 550],
+	[getItemOrThrow('Chompy bird hat (bowmaster)'), 700],
+	[getItemOrThrow('Chompy bird hat (ogre expert)'), 1000],
+	[getItemOrThrow('Chompy bird hat (expert)'), 1300],
+	[getItemOrThrow('Chompy bird hat (ogre dragon archer)'), 1700],
+	[getItemOrThrow('Chompy bird hat (dragon archer)'), 2250],
+	[getItemOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
+	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
 
 export const secretItems: number[] = resolveItems([]);
@@ -835,22 +787,26 @@ export const minionActivityCache: Map<string, ActivityTaskData> = new Map();
 export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
 
 const globalConfigSchema = z.object({
-	patreonToken: z.coerce.string().default(''),
-	patreonCampaignID: z.coerce.number().int().default(1),
-	patreonWebhookSecret: z.coerce.string().default(''),
-	httpPort: z.coerce.number().int().default(8080),
 	clientID: z.string().min(10).max(25),
-	geAdminChannelID: z.string().default('')
+	geAdminChannelID: z.string().default(''),
+	redisPort: z.coerce.number().int().optional(),
+	botToken: z.string().min(1),
+	isCI: z.coerce.boolean().default(false)
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
+if (!process.env.BOT_TOKEN && !process.env.CI) {
+	throw new Error(
+		`You need to specify the BOT_TOKEN environment variable, copy your bot token from your config.ts and put it in the ".env" file like so:\n\nBOT_TOKEN=your_token_here`
+	);
+}
+
 export const globalConfig = globalConfigSchema.parse({
-	patreonToken: process.env.PATREON_TOKEN,
-	patreonCampaignID: process.env.PATREON_CAMPAIGN_ID,
-	patreonWebhookSecret: process.env.PATREON_WEBHOOK_SECRET,
-	httpPort: process.env.HTTP_PORT,
 	clientID: process.env.CLIENT_ID,
-	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID
+	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID,
+	redisPort: process.env.REDIS_PORT,
+	botToken: process.env.BOT_TOKEN,
+	isCI: process.env.CI
 });
 
 export const ONE_TRILLION = 1_000_000_000_000;
@@ -880,7 +836,7 @@ export const OSB_VIRTUS_IDS = [26_241, 26_243, 26_245];
 export const YETI_ID = 129_521;
 export const KING_GOLDEMAR_GUARD_ID = 30_913;
 
-const gitHash = execSync('git rev-parse HEAD').toString().trim();
+export const gitHash = execSync('git rev-parse HEAD').toString().trim();
 const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
 
 const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
@@ -935,4 +891,25 @@ export const gearValidationChecks = new Set();
 
 export const BSO_MAX_TOTAL_LEVEL = 3120;
 
-export const mathjs = create(all);
+export const winterTodtPointsTable = new SimpleTable<number>()
+	.add(420)
+	.add(470)
+	.add(500)
+	.add(505)
+	.add(510)
+	.add(520)
+	.add(550)
+	.add(560)
+	.add(590)
+	.add(600)
+	.add(620)
+	.add(650)
+	.add(660)
+	.add(670)
+	.add(680)
+	.add(700)
+	.add(720)
+	.add(740)
+	.add(750)
+	.add(780)
+	.add(850);

@@ -1,7 +1,6 @@
 import { Bank } from 'oldschooljs';
-
 import getOSItem from '../../util/getOSItem';
-import { Createable } from '../createables';
+import type { Createable } from '../createables';
 
 export const shadesOfMortonCreatables: Createable[] = [
 	{

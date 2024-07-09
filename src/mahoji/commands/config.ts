@@ -1,29 +1,22 @@
 import { hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
-import { activity_type_enum } from '@prisma/client';
-import {
-	bold,
-	ChatInputCommandInteraction,
-	EmbedBuilder,
-	Guild,
-	HexColorString,
-	inlineCode,
-	resolveColor,
-	User
-} from 'discord.js';
-import { clamp, removeFromArr, Time, uniqueArr } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { activity_type_enum } from '@prisma/client';
+import type { ChatInputCommandInteraction, Guild, HexColorString, User } from 'discord.js';
+import { EmbedBuilder, bold, inlineCode, resolveColor } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, clamp, removeFromArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier, secretItems } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { gearImages } from '../../lib/gear/functions/generateGearImage';
 import { Inventions } from '../../lib/invention/inventions';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { prisma } from '../../lib/settings/prisma';
+
 import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
@@ -36,7 +29,8 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
 import { itemOption } from '../lib/mahojiCommandOptions';
-import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
+import { allAbstractCommands } from '../lib/util';
 import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
 interface UserConfigToggle {
@@ -237,7 +231,7 @@ async function favItemConfig(
 	}.`;
 	if (!item || secretItems.includes(item.id)) return currentItems;
 	if (itemToAdd) {
-		let limit = (user.perkTier() + 1) * 100;
+		const limit = (user.perkTier() + 1) * 100;
 		if (currentFavorites.length >= limit) {
 			return `You can't favorite anymore items, you can favorite a maximum of ${limit}.`;
 		}
@@ -293,7 +287,7 @@ async function favAlchConfig(
 
 	if (!item.highalch) return "That item isn't alchable.";
 
-	const action = Boolean(removeItem) ? 'remove' : 'add';
+	const action = removeItem ? 'remove' : 'add';
 	const isAlreadyFav = currentFavorites.includes(item.id);
 
 	if (action === 'remove') {
@@ -554,23 +548,18 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 	const settings = await mahojiUsersSettingsFetch(user.id, { combat_options: true });
 	if (!command || (command && command === 'list')) {
 		// List enabled combat options:
-		const cbOpts = settings.combat_options.map(o => CombatOptionsArray.find(coa => coa!.id === o)!.name);
+		const cbOpts = settings.combat_options.map(o => CombatOptionsArray.find(coa => coa?.id === o)?.name);
 		return `Your current combat options are:\n${cbOpts.join('\n')}\n\nTry: \`/config user combat_options help\``;
 	}
 
 	if (command === 'help' || !option || !['add', 'remove'].includes(command)) {
-		return (
-			'Changes your Combat Options. Usage: `/config user combat_options [add/remove/list] always cannon`' +
-			`\n\nList of possible options:\n${CombatOptionsArray.map(coa => `**${coa!.name}**: ${coa!.desc}`).join(
-				'\n'
-			)}`
-		);
+		return `Changes your Combat Options. Usage: \`/config user combat_options [add/remove/list] always cannon\`\n\nList of possible options:\n${CombatOptionsArray.map(
+			coa => `**${coa?.name}**: ${coa?.desc}`
+		).join('\n')}`;
 	}
 
 	const newcbopt = CombatOptionsArray.find(
-		item =>
-			stringMatches(option, item.name) ||
-			(item.aliases && item.aliases.some(alias => stringMatches(alias, option)))
+		item => stringMatches(option, item.name) || item.aliases?.some(alias => stringMatches(alias, option))
 	);
 	if (!newcbopt) return 'Cannot find matching option. Try: `/config user combat_options help`';
 
@@ -641,7 +630,6 @@ export async function pinTripCommand(
 	if (emoji) {
 		const res = ParsedCustomEmojiWithGroups.exec(emoji);
 		if (!res || !res[3]) return "That's not a valid emoji.";
-		// eslint-disable-next-line prefer-destructuring
 		emoji = res[3];
 
 		const cachedEmoji = globalClient.emojis.cache.get(emoji);
@@ -752,7 +740,7 @@ export const configCommand: OSBMahojiCommand = {
 						{
 							type: ApplicationCommandOptionType.String,
 							name: 'choice',
-							description: 'Enable or disable JMod Reddit comments for this server.',
+							description: 'Whether you want to enable or disable this command.',
 							required: true,
 							choices: [
 								{ name: 'Enable', value: 'enable' },
@@ -1096,7 +1084,7 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'The trip you want to pin.',
 							required: false,
 							autocomplete: async (_, user) => {
-								let res = await prisma.$queryRawUnsafe<
+								const res = await prisma.$queryRawUnsafe<
 									{ type: activity_type_enum; data: object; id: number; finish_date: string }[]
 								>(`
 SELECT DISTINCT ON (activity.type) activity.type, activity.data, activity.id, activity.finish_date
@@ -1172,7 +1160,10 @@ LIMIT 20;
 							name: 'name',
 							description: 'The icon pack you want to use.',
 							required: true,
-							choices: ['Default', ...ItemIconPacks.map(i => i.name)].map(i => ({ name: i, value: i }))
+							choices: ['Default', ...ItemIconPacks.map(i => i.name)].map(i => ({
+								name: i,
+								value: i
+							}))
 						}
 					]
 				}
@@ -1189,7 +1180,6 @@ LIMIT 20;
 		server?: {
 			channel?: { choice: 'enable' | 'disable' };
 			pet_messages?: { choice: 'enable' | 'disable' };
-			jmod_comments?: { choice: 'enable' | 'disable' };
 			command?: { command: string; choice: 'enable' | 'disable' };
 		};
 		user?: {

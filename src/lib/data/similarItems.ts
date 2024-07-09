@@ -1,7 +1,7 @@
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { dyedItems } from '../dyedItems';
 import { allMasterCapesBank } from '../skilling/skillcapes';
 import itemID from '../util/itemID';
-import resolveItems from '../util/resolveItems';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -193,6 +193,17 @@ const source: [string, (string | number)[]][] = [
 	['Infernal cape', ['Infernal max cape', 'Infernal max cape (l)', 'TzKal cape']],
 	['Ardougne cloak 4', ['Ardougne max cape']],
 	["Ava's accumulator", ['Accumulator max cape', 'Tidal collector']],
+	[
+		"Ava's assembler",
+		[
+			'Assembler max cape',
+			'Assembler max cape (l)',
+			'Masori assembler',
+			'Masori assembler max cape',
+			"Blessed dizana's quiver",
+			"Dizana's max cape"
+		]
+	],
 	['Mythical cape', ['Mythical max cape']],
 	['Achievement diary cape', ['Achievement diary cape(t)']],
 	[
@@ -463,7 +474,8 @@ const source: [string, (string | number)[]][] = [
 	["Artisan's cape", ['Completionist cape', 'Completionist cape (t)']],
 	['Log basket', ['Forestry basket']],
 	['Forestry kit', ['Forestry basket']],
-	['Dwarven greataxe', ['Drygore axe']]
+	['Dwarven greataxe', ['Drygore axe']],
+	['Ring of stone', ['Ring of coins', 'Crate ring', 'Ring of nature', 'Snowman ring', 'Ring of 3rd age']]
 ];
 
 // Make max cape count as all master capes
@@ -513,7 +525,7 @@ for (const [baseItem, similarItems] of source) {
 		if (!inverseSimilarItems.get(item)) {
 			inverseSimilarItems.set(item, new Set());
 		}
-		inverseSimilarItems.get(item)!.add(itemID(baseItem));
+		inverseSimilarItems.get(item)?.add(itemID(baseItem));
 	}
 }
 

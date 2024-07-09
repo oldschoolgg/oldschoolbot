@@ -2,7 +2,7 @@ import { calcWhatPercent, randInt } from 'e';
 import { itemID } from 'oldschooljs/dist/util';
 
 import { maxOffenceStats } from '../gear';
-import { GearStats } from '../gear/types';
+import type { GearStats } from '../gear/types';
 import { NexMonster } from '../nex';
 
 export async function getNexGearStats(

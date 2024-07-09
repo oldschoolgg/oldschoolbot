@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { notEmpty } from 'e';
 
 import { SupportServer } from '../config';
@@ -29,6 +29,7 @@ export function getUsersPerkTier(
 	userOrBitfield: MUser | User | BitField[],
 	noCheckOtherAccounts?: boolean
 ): PerkTier | 0 {
+	// Check if the user has a premium balance tier
 	if (userOrBitfield instanceof GlobalMUserClass && userOrBitfield.user.premium_balance_tier !== null) {
 		const date = userOrBitfield.user.premium_balance_expiry_date;
 		if (date && Date.now() < date) {
@@ -46,7 +47,7 @@ export function getUsersPerkTier(
 	}
 
 	if (noCheckOtherAccounts !== true && userOrBitfield instanceof GlobalMUserClass) {
-		let main = userOrBitfield.user.main_account;
+		const main = userOrBitfield.user.main_account;
 		const allAccounts: string[] = [...userOrBitfield.user.ironman_alts, userOrBitfield.id];
 		if (main) {
 			allAccounts.push(main);

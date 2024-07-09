@@ -5,7 +5,7 @@ import { Ignecarus } from '../../minions/data/killableMonsters/custom/bosses/Ign
 import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
-import { AssignableSlayerTask } from '../types';
+import type { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
 import { polyporeTasks } from './polyporeTasks';
 
@@ -379,7 +379,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		amount: [30, 60],
 		weight: 5,
 		monsters: [Monsters.SteelDragon.id],
-		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)!.levelRequirements,
+		levelRequirements: killableMonsters.find(k => k.id === Monsters.SteelDragon.id)?.levelRequirements,
 		combatLevel: 85,
 		questPoints: 34,
 		unlocked: true

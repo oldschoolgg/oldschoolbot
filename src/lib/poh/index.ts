@@ -1,8 +1,8 @@
-import { PlayerOwnedHouse } from '@prisma/client';
+import type { PlayerOwnedHouse } from '@prisma/client';
 import { objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { LevelRequirements } from '../skilling/types';
+import type { LevelRequirements } from '../skilling/types';
 import { Amulets } from './objects/amulets';
 import { DungeonDecorations } from './objects/dungeon_decorations';
 import { GardenDecorations } from './objects/garden_decorations';
@@ -46,11 +46,11 @@ export const TOP_FLOOR_Y = 118;
 
 export const GROUND_FLOOR_Y = 236;
 export const DUNGEON_FLOOR_Y = 351;
-export const FLOOR_HEIGHT = 112;
+const FLOOR_HEIGHT = 112;
 const GARDEN_X = 587;
 const GARDEN_Y = 236;
 
-export type PoHSlot = keyof Omit<PlayerOwnedHouse, 'background_id' | 'user_id'>;
+type PoHSlot = keyof Omit<PlayerOwnedHouse, 'background_id' | 'user_id'>;
 
 export interface PoHObject {
 	id: number;
@@ -126,11 +126,11 @@ export const GroupedPohObjects = {
 	GardenDecorations
 };
 
-export const PoHObjects = Object.values(GroupedPohObjects).flat(Infinity) as PoHObject[];
+export const PoHObjects = Object.values(GroupedPohObjects).flat(Number.POSITIVE_INFINITY) as PoHObject[];
 
 export const getPOHObject = (idOrName: number | string) => {
 	const key = typeof idOrName === 'string' ? 'name' : 'id';
-	let obj = PoHObjects.find(i => i[key] === idOrName);
+	const obj = PoHObjects.find(i => i[key] === idOrName);
 	if (!obj) throw new Error(`POH Object with id/name ${idOrName} doesn't exist.`);
 	return obj;
 };
@@ -139,7 +139,7 @@ export type POHBoosts = Partial<Record<PoHSlot, Record<string, number>>>;
 
 export function calcPOHBoosts(poh: PlayerOwnedHouse, boosts: POHBoosts): [number, string[]] {
 	let boost = 0;
-	let messages = [];
+	const messages = [];
 	for (const [slot, objBoosts] of objectEntries(boosts)) {
 		if (objBoosts === undefined) continue;
 		for (const [name, boostPercent] of objectEntries(objBoosts)) {

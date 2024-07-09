@@ -1,5 +1,6 @@
-import { calcPercentOfNum, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, calcPercentOfNum } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { BlacksmithOutfit } from '../../lib/bsoOpenables';
@@ -7,14 +8,14 @@ import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import Smithing from '../../lib/skilling/skills/smithing';
 import smithables from '../../lib/skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { SmithingActivityTaskOptions } from '../../lib/types/minions';
+import type { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import resolveItems from '../../lib/util/resolveItems';
 import { pluraliseItemName } from '../../lib/util/smallUtils';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const smithCommand: OSBMahojiCommand = {
 	name: 'smith',
@@ -76,7 +77,7 @@ export const smithCommand: OSBMahojiCommand = {
 		let setBonus = 0;
 		if (
 			user.hasEquippedOrInBank(
-				Object.keys(Smithing.smithsUniformItems).map(i => parseInt(i)),
+				Object.keys(Smithing.smithsUniformItems).map(i => Number.parseInt(i)),
 				'every'
 			)
 		) {
@@ -84,7 +85,7 @@ export const smithCommand: OSBMahojiCommand = {
 		} else {
 			// For each Smiths' Uniform item, check if they have it, give % chance to save 1 tick each item
 			for (const [itemID, bonus] of Object.entries(Smithing.smithsUniformItems)) {
-				if (user.hasEquippedOrInBank(parseInt(itemID))) {
+				if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
 					setBonus += bonus;
 				}
 			}

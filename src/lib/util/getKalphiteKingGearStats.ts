@@ -1,7 +1,7 @@
 import { calcWhatPercent, randInt } from 'e';
 
 import { maxOffenceStats } from '../gear';
-import { GearStats } from '../gear/types';
+import type { GearStats } from '../gear/types';
 import { KalphiteKingMonster } from '../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 
 export async function getKalphiteKingGearStats(

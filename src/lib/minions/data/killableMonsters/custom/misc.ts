@@ -4,14 +4,14 @@ import { GemTable } from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 
 import { LowSeedPackTable } from '../../../../data/seedPackTables';
 import { GearStat } from '../../../../gear';
-import { BattlestaffTable, runeAlchablesTable, StoneSpiritTable } from '../../../../simulation/sharedTables';
+import { BattlestaffTable, StoneSpiritTable, runeAlchablesTable } from '../../../../simulation/sharedTables';
 import resolveItems from '../../../../util/resolveItems';
-import { Akumu } from './bosses/Akumu';
-import { Venatrix } from './bosses/Venatrix';
-import { CustomMonster } from './customMonsters';
 import { TormentedDemon } from './TormentedDemon';
 import { VladimirDrakan } from './VladimirDrakan';
 import { Yeti } from './Yeti';
+import { Akumu } from './bosses/Akumu';
+import { Venatrix } from './bosses/Venatrix';
+import type { CustomMonster } from './customMonsters';
 
 export const CockroachSoldier: CustomMonster = {
 	id: 31_621,

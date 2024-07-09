@@ -1,5 +1,7 @@
-import { Activity, activity_type_enum, Prisma } from '@prisma/client';
-import { ButtonBuilder, ButtonInteraction, ButtonStyle } from 'discord.js';
+import type { Activity, Prisma } from '@prisma/client';
+import { activity_type_enum } from '@prisma/client';
+import type { ButtonInteraction } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time } from 'e';
 
 import { autocompleteMonsters } from '../../mahoji/commands/k';
@@ -8,7 +10,6 @@ import type { PvMMethod } from '../constants';
 import { kibbles } from '../data/kibble';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
-import { prisma } from '../settings/prisma';
 import { runCommand } from '../settings/settings';
 import type {
 	ActivityTaskOptionsWithQuantity,
@@ -25,9 +26,9 @@ import type {
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
 	CutLeapingFishActivityTaskOptions,
+	DOAOptions,
 	DarkAltarOptions,
 	DisassembleTaskOptions,
-	DOAOptions,
 	DungeoneeringOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
@@ -61,17 +62,18 @@ import type {
 	ShadesOfMortonOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
+	TOAOptions,
 	TempleTrekkingActivityTaskOptions,
 	TheatreOfBloodTaskOptions,
 	TiaraRunecraftActivityTaskOptions,
 	TinkeringWorkshopOptions,
-	TOAOptions,
 	TuraelsTrialsOptions,
-	WoodcuttingActivityTaskOptions
+	WoodcuttingActivityTaskOptions,
+	ZalcanoActivityTaskOptions
 } from '../types/minions';
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
-import { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
+import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
 import { deferInteraction } from './interactionReply';
 
 export const taskCanBeRepeated = (activity: Activity) => {
@@ -90,7 +92,8 @@ export const taskCanBeRepeated = (activity: Activity) => {
 			activity_type_enum.BalthazarsBigBonanza,
 			activity_type_enum.GuthixianCache,
 			activity_type_enum.Birdhouse,
-			activity_type_enum.StrongholdOfSecurity
+			activity_type_enum.StrongholdOfSecurity,
+			activity_type_enum.CombatRing
 		] as activity_type_enum[]
 	).includes(activity.type);
 };
@@ -133,6 +136,10 @@ export const tripHandlers = {
 		commandName: 'm',
 		args: () => ({})
 	},
+	[activity_type_enum.CombatRing]: {
+		commandName: 'm',
+		args: () => ({})
+	},
 	[activity_type_enum.TearsOfGuthix]: {
 		commandName: 'm',
 		args: () => ({})
@@ -158,10 +165,6 @@ export const tripHandlers = {
 		args: () => ({})
 	},
 	[activity_type_enum.Easter]: {
-		commandName: 'm',
-		args: () => ({})
-	},
-	[activity_type_enum.HalloweenEvent]: {
 		commandName: 'm',
 		args: () => ({})
 	},
@@ -271,7 +274,10 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.Cooking]: {
 		commandName: 'cook',
-		args: (data: CookingActivityTaskOptions) => ({ name: itemNameFromID(data.cookableID), quantity: data.quantity })
+		args: (data: CookingActivityTaskOptions) => ({
+			name: itemNameFromID(data.cookableID),
+			quantity: data.quantity
+		})
 	},
 	[activity_type_enum.Crafting]: {
 		commandName: 'craft',
@@ -318,7 +324,7 @@ export const tripHandlers = {
 			data.autoFarmed
 				? {
 						auto_farm: {}
-				  }
+					}
 				: {}
 	},
 	[activity_type_enum.FightCaves]: {
@@ -452,8 +458,9 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.Zalcano]: {
 		commandName: 'k',
-		args: () => ({
-			name: 'zalcano'
+		args: (data: ZalcanoActivityTaskOptions) => ({
+			name: 'zalcano',
+			quantity: data.quantity
 		})
 	},
 	[activity_type_enum.Tempoross]: {
@@ -464,8 +471,9 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.Wintertodt]: {
 		commandName: 'k',
-		args: () => ({
-			name: 'wintertodt'
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			name: 'wintertodt',
+			quantity: data.quantity
 		})
 	},
 	[activity_type_enum.Nightmare]: {
@@ -819,6 +827,12 @@ export const tripHandlers = {
 					method: _data.m
 				}
 			}
+		})
+	},
+	[activity_type_enum.Colosseum]: {
+		commandName: 'k',
+		args: () => ({
+			name: 'colosseum'
 		})
 	}
 } as const;

@@ -1,14 +1,14 @@
 import { notEmpty, objectKeys, randFloat, randInt } from 'e';
-import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import { Bank, Monsters } from 'oldschooljs';
+import type Monster from 'oldschooljs/dist/structures/Monster';
 
 import { KourendKebosDiary, LumbridgeDraynorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatAchievements } from '../combat_achievements/combatAchievements';
-import { BitField, PvMMethod } from '../constants';
+import { BitField, type PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
-import { KillableMonster } from '../minions/types';
-import { prisma } from '../settings/prisma';
+import type { KillableMonster } from '../minions/types';
+
 import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
 import { bankHasItem, roll, stringMatches } from '../util';
@@ -20,20 +20,20 @@ import { slayerMasters } from './slayerMasters';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
 import { allSlayerTasks } from './tasks';
 import { bossTasks, wildernessBossTasks } from './tasks/bossTasks';
-import { AssignableSlayerTask, SlayerMaster } from './types';
+import type { AssignableSlayerTask, SlayerMaster } from './types';
 
 export enum SlayerMasterEnum {
-	Reserved,
-	Turael,
-	Mazchna,
-	Vannaka,
-	Chaeldar,
-	Konar,
-	Nieve,
-	Duradel
+	Reserved = 0,
+	Turael = 1,
+	Mazchna = 2,
+	Vannaka = 3,
+	Chaeldar = 4,
+	Konar = 5,
+	Nieve = 6,
+	Duradel = 7
 }
 
-export interface DetermineBoostParams {
+interface DetermineBoostParams {
 	cbOpts: CombatOptionsEnum[];
 	user: MUser;
 	monster: KillableMonster;
@@ -103,7 +103,7 @@ export async function calculateSlayerPoints(currentStreak: number, master: Slaye
 	return basePoints;
 }
 
-export function weightedPick(filteredTasks: AssignableSlayerTask[]) {
+function weightedPick(filteredTasks: AssignableSlayerTask[]) {
 	let totalweight = 0;
 	for (let i = 0; i < filteredTasks.length; i++) {
 		totalweight += filteredTasks[i].weight;
@@ -121,7 +121,7 @@ export function weightedPick(filteredTasks: AssignableSlayerTask[]) {
 		}
 	}
 
-	let task = filteredTasks[result];
+	const task = filteredTasks[result];
 
 	return task;
 }
@@ -134,12 +134,7 @@ export function userCanUseMaster(user: MUser, master: SlayerMaster) {
 	);
 }
 
-export function userCanUseTask(
-	user: MUser,
-	task: AssignableSlayerTask,
-	master: SlayerMaster,
-	allowBossTasks: boolean = false
-) {
+function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerMaster, allowBossTasks = false) {
 	if (task.isBoss && !allowBossTasks) return false;
 	if (task.dontAssign) return false;
 	const myLastTask = user.user.slayer_last_task;
@@ -239,7 +234,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 
 	const newUser = await getNewUser(_user.id);
 
-	let maxQuantity = assignedTask!.amount[1];
+	let maxQuantity = assignedTask?.amount[1];
 	if (bossTask && _user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)) {
 		for (const tier of objectKeys(CombatAchievements)) {
 			if (_user.hasCompletedCATier(tier)) {
@@ -250,14 +245,14 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 
 	let quantity = randInt(assignedTask!.amount[0], maxQuantity);
 
-	const extendReward = SlayerRewardsShop.find(srs => srs.extendID && srs.extendID.includes(assignedTask!.monster.id));
+	const extendReward = SlayerRewardsShop.find(srs => srs.extendID?.includes(assignedTask!.monster.id));
 	if (extendReward && unlocks.includes(extendReward.id)) {
 		quantity = assignedTask.extendedAmount
 			? randInt(assignedTask.extendedAmount[0], assignedTask.extendedAmount[1])
 			: Math.ceil(quantity * extendReward.extendMult!);
 	}
 
-	let messages: string[] = [];
+	const messages: string[] = [];
 	if (unlocks.includes(SlayerTaskUnlocksEnum.SizeMatters) && !_user.bitfield.includes(BitField.DisableSizeMatters)) {
 		quantity *= 2;
 		messages.push('2x qty for Size Matters unlock');
@@ -276,12 +271,12 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 			quantity,
 			quantity_remaining: quantity,
 			slayer_master_id: master.id,
-			monster_id: assignedTask!.monster.id,
+			monster_id: assignedTask?.monster.id,
 			skipped: false
 		}
 	});
 	await _user.update({
-		slayer_last_task: assignedTask!.monster.id
+		slayer_last_task: assignedTask?.monster.id
 	});
 
 	return { currentTask, assignedTask, messages };
@@ -394,43 +389,9 @@ export async function getUsersCurrentSlayerInfo(id: string) {
 	};
 }
 
-export const allSlayerHelmets = [
-	'Slayer helmet',
-	'Slayer helmet (i)',
-	'Black slayer helmet',
-	'Black slayer helmet (i)',
-	'Green slayer helmet',
-	'Green slayer helmet (i)',
-	'Red slayer helmet',
-	'Red slayer helmet (i)',
-	'Purple slayer helmet',
-	'Purple slayer helmet (i)',
-	'Turquoise slayer helmet',
-	'Turquoise slayer helmet (i)',
-	'Hydra slayer helmet',
-	'Hydra slayer helmet (i)',
-	'Twisted slayer helmet',
-	'Twisted slayer helmet (i)'
-];
-
-export function getSlayerMasterOSJSbyID(slayerMasterID: number) {
-	const osjsSlayerMaster = [
-		MonsterSlayerMaster.Turael,
-		MonsterSlayerMaster.Turael,
-		MonsterSlayerMaster.Mazchna,
-		MonsterSlayerMaster.Vannaka,
-		MonsterSlayerMaster.Chaeldar,
-		MonsterSlayerMaster.Konar,
-		MonsterSlayerMaster.Nieve,
-		MonsterSlayerMaster.Duradel,
-		MonsterSlayerMaster.Krystilia
-	];
-	return osjsSlayerMaster[slayerMasterID];
-}
-
-export function getSlayerReward(id: SlayerTaskUnlocksEnum): string {
+function getSlayerReward(id: SlayerTaskUnlocksEnum): string {
 	const { name } = SlayerRewardsShop.find(srs => {
-		return srs!.id === id;
+		return srs?.id === id;
 	})!;
 	return name;
 }
@@ -542,8 +503,7 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 }
 
 export async function getSlayerTaskStats(userID: string) {
-	const result: { monster_id: number; total_quantity: number; qty: number }[] =
-		await prisma.$queryRaw`SELECT monster_id, SUM(quantity)::int AS total_quantity, COUNT(monster_id)::int AS qty
+	const result: { monster_id: number; total_quantity: number; qty: number }[] = await prisma.$queryRaw`SELECT monster_id, SUM(quantity)::int AS total_quantity, COUNT(monster_id)::int AS qty
 FROM slayer_tasks
 WHERE user_id = ${userID}
 AND quantity_remaining = 0

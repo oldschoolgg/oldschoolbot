@@ -7,7 +7,7 @@ import { GearStat } from '../../../../../gear';
 import { addStatsOfItemsTogether } from '../../../../../structures/Gear';
 import itemID from '../../../../../util/itemID';
 import resolveItems from '../../../../../util/resolveItems';
-import { CustomMonster } from '../customMonsters';
+import type { CustomMonster } from '../customMonsters';
 
 export const VenatrixLootTable = new LootTable()
 	.every('Venatrix eggs')

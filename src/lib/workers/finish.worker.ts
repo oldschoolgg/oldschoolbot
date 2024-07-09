@@ -4,11 +4,15 @@ import '../data/itemAliases';
 import { removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import getOSItem from '../util/getOSItem';
 import type { FinishWorkerArgs, FinishWorkerReturn } from '.';
+import getOSItem from '../util/getOSItem';
+
+if (global.prisma) {
+	throw new Error('Prisma is loaded in the finish worker!');
+}
 
 export default async ({ name, tertiaries }: FinishWorkerArgs): FinishWorkerReturn => {
-	const { finishables } = await import('../finishables');
+	const { finishables } = await import('../finishables.js');
 	const val = finishables.find(i => i.name === name)!;
 	let finishCL = [...val.cl];
 	if (val.tertiaryDrops && !tertiaries) {
@@ -17,7 +21,7 @@ export default async ({ name, tertiaries }: FinishWorkerArgs): FinishWorkerRetur
 		}
 	}
 	const cost = new Bank();
-	let loot = new Bank();
+	const loot = new Bank();
 	const kcBank = new Bank();
 	let kc = 0;
 	const maxAttempts = val.maxAttempts ?? 100_000;

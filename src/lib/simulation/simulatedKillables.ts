@@ -1,18 +1,17 @@
-import { randArrItem, randInt } from 'e';
+import { randArrItem, randInt, roll } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
-import { DOANonUniqueTable } from '../../tasks/minions/bso/doaActivity';
+import { DOANonUniqueTable } from '../bso/doa/doaLootTable';
 import { nexUniqueDrops } from '../data/CollectionsExport';
 import { chanceOfDOAUnique, pickUniqueToGiveUser } from '../depthsOfAtlantis';
 import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import { NEX_UNIQUE_DROPRATE, nexLootTable } from '../nex';
 import { zygomiteFarmingSource } from '../skilling/skills/farming/zygomites';
-import { roll } from '../util';
 import { WintertodtCrate } from './wintertodt';
 
 interface SimulatedKillable {
 	name: string;
-	isCustom: Boolean;
+	isCustom: boolean;
 	loot: (quantity: number) => Bank;
 }
 
@@ -49,7 +48,7 @@ export const simulatedKillables: SimulatedKillable[] = [
 		name: 'The Nightmare',
 		isCustom: false,
 		loot: (quantity: number) => {
-			let bank = new Bank();
+			const bank = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				bank.add(Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }], isPhosani: false }).id);
 			}
@@ -60,7 +59,7 @@ export const simulatedKillables: SimulatedKillable[] = [
 		name: "Phosani's Nightmare",
 		isCustom: false,
 		loot: (quantity: number) => {
-			let bank = new Bank();
+			const bank = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				bank.add(Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }], isPhosani: true }).id);
 			}
@@ -87,7 +86,7 @@ export const simulatedKillables: SimulatedKillable[] = [
 		name: 'Nex',
 		isCustom: true,
 		loot: (quantity: number) => {
-			let loot = new Bank();
+			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				if (roll(NEX_UNIQUE_DROPRATE(1))) {
 					loot.add(randArrItem(nexUniqueDrops), 1);
@@ -108,7 +107,7 @@ export const simulatedKillables: SimulatedKillable[] = [
 		name: src.name,
 		isCustom: true,
 		loot: (quantity: number) => {
-			let loot = new Bank();
+			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				loot.add(src.lootTable?.roll());
 			}

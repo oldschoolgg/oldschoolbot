@@ -1,9 +1,8 @@
 import { Items } from 'oldschooljs';
 
-import { prisma } from './settings/prisma';
 import { logError } from './util/logError';
 
-export const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
+const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
 
 const arrayColumns = [
 	['clientStorage', 'userBlacklist'],

@@ -1,29 +1,29 @@
-import { EmbedBuilder, TextChannel } from 'discord.js';
+import { EmbedBuilder, type TextChannel } from 'discord.js';
 import {
+	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
 	chunk,
 	percentChance,
 	randArrItem,
 	reduceNumByPercent,
-	shuffleArr,
-	Time
+	shuffleArr
 } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { OWNER_IDS, production } from '../config';
-import { prisma } from './settings/prisma';
+
 import {
-	getPHeadDescriptor,
-	numberOfPHeadItemsInCL,
 	PUMPKINHEAD_HEALING_NEEDED,
 	PUMPKINHEAD_ID,
+	getPHeadDescriptor,
+	numberOfPHeadItemsInCL,
 	pumpkinHeadNonUniqueTable,
 	pumpkinHeadUniqueTable
 } from './simulation/pumpkinHead';
-import { BossInstance, BossOptions, BossUser } from './structures/Boss';
+import { BossInstance, type BossOptions, type BossUser } from './structures/Boss';
 import { Gear } from './structures/Gear';
-import { NewBossOptions } from './types/minions';
+import type { NewBossOptions } from './types/minions';
 import { formatDuration, roll } from './util';
 import getOSItem from './util/getOSItem';
 import { logError } from './util/logError';
@@ -81,7 +81,7 @@ export const scaryEatables = [
 function getScaryFoodFromBank(user: MUser, totalHealingNeeded: number, _userBank?: Bank): false | Bank {
 	if (OWNER_IDS.includes(user.id)) return new Bank();
 	let totalHealingCalc = totalHealingNeeded;
-	let foodToRemove = new Bank();
+	const foodToRemove = new Bank();
 	const userBank = _userBank ?? user.bank;
 
 	const sorted = [...scaryEatables]
@@ -120,7 +120,7 @@ export const bossEvents: BossEvent[] = [
 		name: 'Pumpkinhead',
 		handleFinish: async (data, bossUsers) => {
 			const lootElligible = shuffleArr(bossUsers.filter(i => !percentChance(i.deathChance)));
-			let userLoot: Record<string, Bank> = {};
+			const userLoot: Record<string, Bank> = {};
 			for (const i of lootElligible) {
 				userLoot[i.user.id] = new Bank();
 				userLoot[i.user.id].add(pumpkinHeadNonUniqueTable.roll(5));
@@ -132,10 +132,10 @@ export const bossEvents: BossEvent[] = [
 
 			const lootGroups = chunk(lootElligible, 4).filter(i => i.length === 4);
 			const uniqueItemRecipients = lootGroups.map(groupArr => randArrItem(groupArr));
-			let uniqueLootStr = [];
-			let rerolledUsersStr = [];
+			const uniqueLootStr = [];
+			const rerolledUsersStr = [];
 
-			let secondChancePeople = [];
+			const secondChancePeople = [];
 			for (const lootElliPerson of lootElligible) {
 				if (
 					!uniqueItemRecipients.includes(lootElliPerson) &&
@@ -254,7 +254,7 @@ ${rerolledUsersStr.length > 0 ? rerolledUsersStr.join('\n') : 'Nobody was reroll
 			itemCost: async data => {
 				const foodRequired = getScaryFoodFromBank(data.user, PUMPKINHEAD_HEALING_NEEDED);
 				if (!foodRequired) {
-					let fakeBank = new Bank();
+					const fakeBank = new Bank();
 					for (const { item } of scaryEatables) fakeBank.add(item.id, 100);
 					return getScaryFoodFromBank(data.user, PUMPKINHEAD_HEALING_NEEDED, fakeBank) as Bank;
 				}
@@ -300,7 +300,7 @@ export async function bossActiveIsActiveOrSoonActive(id?: BossEvent['id']) {
 					? undefined
 					: {
 							not: id
-					  }
+						}
 		}
 	});
 

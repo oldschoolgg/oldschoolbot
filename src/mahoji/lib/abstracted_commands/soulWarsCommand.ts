@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -164,7 +164,7 @@ export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: num
 	if (!quantity) {
 		quantity = 1;
 	}
-	if (!Number.isNaN(parseInt(possibleItemName[0]))) {
+	if (!Number.isNaN(Number.parseInt(possibleItemName[0]))) {
 		quantity = Number(possibleItemName.shift());
 	}
 

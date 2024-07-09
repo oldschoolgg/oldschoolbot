@@ -1,11 +1,11 @@
 import { increaseNumByPercent, randInt } from 'e';
 
-import { chargePortentIfHasCharges, PortentID } from '../../../lib/bso/divination';
+import { PortentID, chargePortentIfHasCharges } from '../../../lib/bso/divination';
 import { BitField } from '../../../lib/constants';
 import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { SkillsEnum } from '../../../lib/skilling/types';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import type { SkillsEnum } from '../../../lib/skilling/types';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 

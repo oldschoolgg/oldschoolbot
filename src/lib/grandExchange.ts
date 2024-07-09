@@ -1,28 +1,23 @@
-import { GEListing, GEListingType, GETransaction } from '@prisma/client';
-import { Stopwatch } from '@sapphire/stopwatch';
-import { bold, ButtonBuilder, ButtonStyle, userMention } from 'discord.js';
-import { calcPercentOfNum, clamp, noOp, sumArr, Time } from 'e';
+import { PerkTier, getInterval } from '@oldschoolgg/toolkit';
+import type { GEListing, GETransaction } from '@prisma/client';
+import { GEListingType } from '@prisma/client';
+import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
+import { Time, calcPercentOfNum, clamp, noOp, sumArr } from 'e';
+import { LRUCache } from 'lru-cache';
 import { Bank } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
-import { BitField, globalConfig, ONE_TRILLION, PerkTier } from './constants';
+import { BitField, ONE_TRILLION, globalConfig } from './constants';
 import { isCustomItem } from './customItems/util';
 import { marketPricemap } from './marketPrices';
-import { RobochimpUser, roboChimpUserFetch } from './roboChimp';
-import { prisma } from './settings/prisma';
+import type { RobochimpUser } from './roboChimp';
+import { roboChimpUserFetch } from './roboChimp';
+
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
-import {
-	assert,
-	generateGrandExchangeID,
-	getInterval,
-	isGEUntradeable,
-	itemNameFromID,
-	makeComponents,
-	toKMB
-} from './util';
+import { assert, generateGrandExchangeID, isGEUntradeable, itemNameFromID, makeComponents, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
@@ -37,7 +32,7 @@ interface CreateListingArgs {
 }
 
 function validateNumber(num: number) {
-	if (num < 0 || isNaN(num) || !Number.isInteger(num) || num >= Number.MAX_SAFE_INTEGER) {
+	if (num < 0 || Number.isNaN(num) || !Number.isInteger(num) || num >= Number.MAX_SAFE_INTEGER) {
 		throw new Error(`Invalid number: ${num}.`);
 	}
 }
@@ -179,7 +174,15 @@ class GrandExchangeSingleton {
 		}
 	}
 
-	async calculateSlotsOfUser(user: MUser) {
+	private slotsCache = new LRUCache<string, Awaited<ReturnType<typeof this.calculateSlotsOfUser>>>({
+		ttl: Time.Hour,
+		max: 100
+	});
+	async calculateSlotsOfUser(
+		user: MUser
+	): Promise<{ slots: number; doesntHaveNames: string[]; possibleExtra: number; maxPossible: number }> {
+		const cached = this.slotsCache.get(user.id);
+		if (cached) return cached;
 		const robochimpUser = await roboChimpUserFetch(user.id);
 		let slots = 0;
 		const doesntHaveNames = [];
@@ -194,7 +197,9 @@ class GrandExchangeSingleton {
 				possibleExtra += boost.amount;
 			}
 		}
-		return { slots, doesntHaveNames, possibleExtra, maxPossible };
+		const result = { slots, doesntHaveNames, possibleExtra, maxPossible };
+		this.slotsCache.set(user.id, result);
+		return result;
 	}
 
 	getInterval() {
@@ -236,6 +241,10 @@ class GrandExchangeSingleton {
 			grand_exchange_is_locked: true
 		});
 		this.locked = true;
+	}
+
+	getItemBuyLimit(item: Item) {
+		return item.buy_limit ?? this.config.buyLimit.fallbackBuyLimit(item);
 	}
 
 	async checkBuyLimitForListing(geListing: GEListing) {
@@ -299,12 +308,24 @@ class GrandExchangeSingleton {
 			return { error: 'Invalid item.' };
 		}
 
-		if (!price || price <= 0 || isNaN(price) || !Number.isInteger(price) || price > this.config.maxPricePerItem) {
+		if (
+			!price ||
+			price <= 0 ||
+			Number.isNaN(price) ||
+			!Number.isInteger(price) ||
+			price > this.config.maxPricePerItem
+		) {
 			return {
 				error: `Invalid price, the price must be a number between 1 and ${toKMB(this.config.maxPricePerItem)}.`
 			};
 		}
-		if (!quantity || quantity <= 0 || isNaN(quantity) || !Number.isInteger(quantity) || quantity > 5_000_000) {
+		if (
+			!quantity ||
+			quantity <= 0 ||
+			Number.isNaN(quantity) ||
+			!Number.isInteger(quantity) ||
+			quantity > 5_000_000
+		) {
 			return { error: 'Invalid quantity, the quantity must be a number between 1 and 5m.' };
 		}
 
@@ -356,8 +377,8 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			type === 'Buy'
 				? ''
 				: applicableTax.taxedAmount > 0
-				? ` At this price, you will receive ${toKMB(totalAfterTax)} after taxes.`
-				: ' No tax will be charged on these items.'
+					? ` At this price, you will receive ${toKMB(totalAfterTax)} after taxes.`
+					: ' No tax will be charged on these items.'
 		}`;
 
 		const guidePrice = marketPricemap.get(item.id);
@@ -418,7 +439,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		sellerListing: GEListing,
 		remainingItemsInBuyLimit: number
 	) {
-		let logContext: Record<string, string> = {
+		const logContext: Record<string, string> = {
 			buyerListingID: buyerListing.id.toString(),
 			sellerListingID: sellerListing.id.toString(),
 			type: 'GE_TRANSACTION'
@@ -454,7 +475,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		}
 
 		let priceWinner: 'buyer' | 'seller' = 'buyer';
-		let pricePerItemBeforeTax: number = -1;
+		let pricePerItemBeforeTax = -1;
 		if (buyerListing.created_at < sellerListing.created_at) {
 			pricePerItemBeforeTax = Number(buyerListing.asking_price_per_item);
 			priceWinner = 'buyer';
@@ -757,16 +778,12 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	}
 
 	async extensiveVerification() {
-		const allListings = await prisma.gEListing.findMany();
-		for (const listing of allListings) sanityCheckListing(listing);
-
-		const allTransactions = await prisma.gETransaction.findMany();
-		for (const transaction of allTransactions) sanityCheckTransaction(transaction);
-
-		await this.checkGECanFullFilAllListings();
-
+		await Promise.all([
+			prisma.gETransaction.findMany().then(txs => txs.map(tx => sanityCheckTransaction(tx))),
+			prisma.gEListing.findMany().then(listings => listings.map(listing => sanityCheckListing(listing))),
+			this.checkGECanFullFilAllListings()
+		]);
 		debugLog('Validated GE and found no issues.');
-
 		return true;
 	}
 
@@ -808,16 +825,15 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	}
 
 	async tick() {
-		return new Promise<void>((resolve, reject) => {
-			this.queue.add(async () => {
-				if (this.isTicking) return reject(new Error('Already ticking.'));
-				this.isTicking = true;
+		return new Promise<void>(async (resolve, reject) => {
+			await this.queue.add(async () => {
+				if (this.isTicking) return reject('Already ticking.');
 				try {
 					await this._tick();
 				} catch (err: any) {
 					logError(err.message);
 					debugLog(err.message);
-					return reject(err);
+					reject(err);
 				} finally {
 					this.isTicking = false;
 					resolve();
@@ -849,8 +865,6 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	private async _tick() {
 		if (!this.ready) return;
 		if (this.locked) return;
-		const stopwatch = new Stopwatch();
-		stopwatch.start();
 		const { buyListings: _buyListings, sellListings: _sellListings } = await this.fetchActiveListings();
 
 		// Filter out listings from Blacklisted users:
@@ -898,8 +912,6 @@ Difference: ${shouldHave.difference(currentBank)}`);
 			// Process only one transaction per tick
 			break;
 		}
-
-		stopwatch.stop();
 	}
 
 	async totalReset() {

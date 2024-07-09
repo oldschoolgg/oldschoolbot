@@ -1,7 +1,5 @@
 # Klasa
 *.log
-bot/bwd/provider/json/
-src/bwd/provider/json/
 /config/private.js
 /config/private.json
 private.json
@@ -32,3 +30,18 @@ node_modules/
 .eslintcache
 
 /coverage
+*.cpuprofile
+
+cache.json
+
+tests/**/*.tsbuildinfo
+
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+overallItemsNotCheckedFor.txt
+*.diff

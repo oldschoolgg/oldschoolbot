@@ -1,20 +1,20 @@
-import { ChatInputCommandInteraction } from 'discord.js';
-import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { Bank } from 'oldschooljs';
 
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 import { TOTAL_GIANT_WEAPONS } from '../../../lib/giantsFoundry';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import Smithing from '../../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
+import type { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsBankUpdate, userStatsUpdate } from '../../mahojiSettings';
-import { GiantsFoundryBank } from './../../../lib/giantsFoundry';
+import type { GiantsFoundryBank } from './../../../lib/giantsFoundry';
 
 export const giantsFoundryAlloys = [
 	{
@@ -179,7 +179,7 @@ export async function giantsFoundryStartCommand(
 	let setBonus = 0;
 	if (
 		user.hasEquippedOrInBank(
-			Object.keys(Smithing.smithsUniformItems).map(i => parseInt(i)),
+			Object.keys(Smithing.smithsUniformItems).map(i => Number.parseInt(i)),
 			'every'
 		)
 	) {
@@ -187,7 +187,7 @@ export async function giantsFoundryStartCommand(
 	} else {
 		// For each Smiths' Uniform item, check if they have it, give its' set boost and covert to 15% speed bonus later.
 		for (const [itemID] of Object.entries(Smithing.smithsUniformItems)) {
-			if (user.hasEquippedOrInBank(parseInt(itemID))) {
+			if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
 				setBonus += 3;
 			}
 		}
@@ -310,7 +310,5 @@ export async function giantsFoundryShopCommand(
 		{ foundry_reputation: true }
 	);
 
-	return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(
-		shopItem.cost * quantity
-	).toLocaleString()} Foundry Reputation.\nYou now have ${newRep} Foundry Reputation left.`;
+	return `You successfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.cost * quantity).toLocaleString()} Foundry Reputation.\nYou now have ${newRep} Foundry Reputation left.`;
 }

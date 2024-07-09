@@ -1,6 +1,6 @@
-import { createCanvas, Image } from '@napi-rs/canvas';
+import { type Image, createCanvas } from '@napi-rs/canvas';
 import { LootTable } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { setCustomItem } from './customItems/util';
 import getOSItem from './util/getOSItem';

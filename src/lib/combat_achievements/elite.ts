@@ -1,13 +1,13 @@
 import { Monsters } from 'oldschooljs';
 
-import { demonBaneWeapons, MIMIC_MONSTER_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../constants';
+import { MIMIC_MONSTER_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID, demonBaneWeapons } from '../constants';
 import { NexMonster } from '../nex';
 import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { SkillsEnum } from '../skilling/types';
 import { Requirements } from '../structures/Requirements';
-import { GauntletOptions, NightmareActivityTaskOptions, TOAOptions } from '../types/minions';
+import type { ActivityTaskData, GauntletOptions, NightmareActivityTaskOptions, TOAOptions } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
-import { type CombatAchievement } from './combatAchievements';
+import type { CombatAchievement } from './combatAchievements';
 
 export const eliteCombatAchievements: CombatAchievement[] = [
 	{
@@ -1485,5 +1485,40 @@ export const eliteCombatAchievements: CombatAchievement[] = [
 				[Monsters.Zulrah.id]: 75
 			}
 		})
+	},
+	{
+		id: 1129,
+		name: 'I was here first!',
+		desc: 'Kill a Jaguar Warrior using a Claw-type weapon special attack.',
+		type: 'mechanical',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 5,
+			hasChance: 'Colosseum'
+		}
+	},
+	{
+		id: 1130,
+		name: 'Denied',
+		desc: 'Complete Wave 7 without the Minotaur ever healing other enemies.',
+		type: 'mechanical',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 12,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 7))
+		}
+	},
+	{
+		id: 1131,
+		name: 'Furball',
+		desc: 'Complete Wave 4 without taking avoidable damage from a Manticore.',
+		type: 'perfection',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 12,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 4))
+		}
 	}
 ];

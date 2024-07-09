@@ -1,4 +1,4 @@
-import { UserEvent } from '@prisma/client';
+import type { UserEvent } from '@prisma/client';
 import { randArrItem } from 'e';
 import { describe, expect, test } from 'vitest';
 

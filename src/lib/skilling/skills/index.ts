@@ -1,6 +1,6 @@
 import { Emoji } from '../../constants';
 import { skillEmoji } from '../../data/emojis';
-import { Skill, SkillsEnum } from '../types';
+import { type Skill, SkillsEnum } from '../types';
 import Agility from './agility';
 import Construction from './construction';
 import Cooking from './cooking/cooking';

@@ -1,6 +1,5 @@
-import { UserEvent } from '@prisma/client';
+import type { UserEvent } from '@prisma/client';
 
-import { prisma } from '../settings/prisma';
 import { userEventsToMap } from './userEvents';
 
 export async function fetchCLLeaderboard({

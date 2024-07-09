@@ -1,9 +1,9 @@
 import { bold } from 'discord.js';
 import { calcWhatPercent } from 'e';
-import { Bank } from 'oldschooljs';
+import type { Bank } from 'oldschooljs';
 
 export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
-	let result = [];
+	const result = [];
 	let uniquesReceived = 0;
 	for (const [item, qty] of bank.items().sort((a, b) => a[1] - b[1])) {
 		if (uniques.includes(item.id)) {
@@ -25,7 +25,7 @@ export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: n
 }
 
 export function calcDropRatesFromBankWithoutUniques(bank: Bank, iterations: number) {
-	let results = [];
+	const results = [];
 	for (const [item, qty] of bank.items().sort((a, b) => a[1] - b[1])) {
 		const rate = Math.round(iterations / qty);
 		if (rate < 2) continue;

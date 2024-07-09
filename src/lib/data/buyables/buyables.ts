@@ -1,11 +1,11 @@
 import { Bank } from 'oldschooljs';
 
-import { QuestID } from '../../../mahoji/lib/abstracted_commands/questCommand';
 import { chompyHats } from '../../constants';
-import { MinigameName } from '../../settings/settings';
+import { QuestID } from '../../minions/data/quests';
+import type { MinigameName } from '../../settings/minigames';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
-import { MUserStats } from '../../structures/MUserStats';
-import { Skills } from '../../types';
+import type { MUserStats } from '../../structures/MUserStats';
+import type { Skills } from '../../types';
 import { allTeamCapes } from '../misc';
 import { aerialFishBuyables } from './aerialFishBuyables';
 import { bsoBuyables } from './bsoBuyables';
@@ -494,7 +494,7 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Monkey',
 		outputItems: new Bank({
-			19_556: 1
+			19556: 1
 		}),
 		gpCost: 1_000_000,
 		qpRequired: 182
@@ -805,7 +805,7 @@ const Buyables: Buyable[] = [
 		name: 'Feather',
 		aliases: ['feather'],
 		gpCost: 50,
-		ironmanPrice: 3
+		ironmanPrice: 4
 	},
 	{
 		name: 'Shield right half',
@@ -1203,4 +1203,3 @@ for (const cape of allTeamCapes) {
 }
 
 export default Buyables;
-export { Buyables };

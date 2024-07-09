@@ -1,37 +1,44 @@
-import { execSync } from 'child_process';
-import { sleep } from 'e';
+import path from 'node:path';
+import { Stopwatch } from '@oldschoolgg/toolkit';
+import { config } from 'dotenv';
+
+import { execAsync } from './scriptUtil';
 
 async function main() {
+	const stopwatch = new Stopwatch();
 	try {
-		execSync('docker compose up -d --wait', { stdio: 'inherit' });
+		await execAsync(['docker compose up -d --wait', 'npm install -g wait-on']);
+		stopwatch.check('Docker compose finished.');
 
-		console.log('Waiting...');
-		await sleep(2000);
+		await execAsync('wait-on tcp:5435 -t 10s');
 
-		console.log('Getting ready...');
-		execSync('dotenv -e .env.test -- prisma db push --schema="./prisma/schema.prisma"', { stdio: 'inherit' });
-		execSync('dotenv -e .env.test -- prisma db push --schema="./prisma/robochimp.prisma"', { stdio: 'inherit' });
+		const env = { ...process.env, ...config({ path: path.resolve('.env.test') }).parsed };
+		await execAsync(
+			[
+				'yarn prisma db push --schema="./prisma/schema.prisma"',
+				'yarn prisma db push --schema="./prisma/robochimp.prisma"'
+			],
+			{ env }
+		);
+		stopwatch.check('Finished prisma pushing.');
 
-		console.log('Building...');
-		execSync('yarn prebuild:scripts', { stdio: 'inherit' });
-		execSync('yarn build:esbuild', { stdio: 'inherit' });
+		await execAsync('yarn build:tsc');
+		stopwatch.check('Finished building, starting tests.');
 
 		console.log('Starting tests...');
-		let runs = 1;
+		const runs = 1;
 		for (let i = 0; i < runs; i++) {
 			console.log(`Starting run ${i + 1}/${runs}`);
-			execSync('vitest run --config vitest.integration.config.mts', {
-				stdio: 'inherit',
-				encoding: 'utf-8'
-			});
+			await execAsync('vitest run --config vitest.integration.config.mts');
 			console.log(`Finished run ${i + 1}/${runs}`);
 		}
 	} catch (err) {
+		console.log(await execAsync('docker-compose logs'));
 		console.error(err);
 		throw new Error(err as any);
 	} finally {
-		console.log('Shutting down containers...');
-		execSync('docker-compose down', { stdio: 'inherit' });
+		await execAsync('docker-compose down');
+		stopwatch.check('Finished.');
 	}
 }
 
