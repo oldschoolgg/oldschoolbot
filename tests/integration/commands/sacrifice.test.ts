@@ -22,7 +22,7 @@ describe('Sacrifice Command', async () => {
 
 	test('No items provided', async () => {
 		const result = await user.runCommand(sacrificeCommand, { items: 'aaaa' });
-		expect(result).toEqual('No items were provided.\nYour current sacrificed value is: 1,590 (1.59k)');
+		expect(result).toEqual('No items were provided.\nYour current sacrificed value is: 1,590 (1.6k)');
 	});
 
 	test('Successful', async () => {
@@ -30,7 +30,7 @@ describe('Sacrifice Command', async () => {
 		const result = await user.runCommand(sacrificeCommand, { items: '1 trout, 10 coal' });
 		await user.sync();
 		expect(result).toEqual(
-			'You sacrificed 10x Coal, 1x Trout, with a value of 1,590gp (1.59k). Your total amount sacrificed is now: 3,180. '
+			'You sacrificed 10x Coal, 1x Trout, with a value of 1,590gp (1.6k). Your total amount sacrificed is now: 3,180. '
 		);
 		const stats = await user.fetchStats({ sacrificed_bank: true });
 		expect(user.bank.toString()).toBe(new Bank().toString());
