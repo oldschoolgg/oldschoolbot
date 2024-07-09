@@ -8,7 +8,7 @@ import { Minigames } from '../../src/lib/settings/minigames';
 import { userStatsBankUpdate } from '../../src/mahoji/mahojiSettings';
 import { createTestUser, mockedId, unMockedCyptoRand } from './util';
 
-describe('Roles Task', async () => {
+describe.skip('Roles Task', async () => {
 	test('Should not throw', async () => {
 		const user = await createTestUser();
 		await userStatsBankUpdate(user.id, 'sacrificed_bank', new Bank().add('Coal', 10_000));

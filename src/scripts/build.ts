@@ -1,41 +1,20 @@
-import { exec as execNonPromise } from 'node:child_process';
+import '../lib/safeglobals';
+
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { promisify } from 'node:util';
-import { Stopwatch } from '@oldschoolgg/toolkit';
 import fg from 'fast-glob';
 
-import '../lib/customItems/customItems';
+import { production } from '../config.js';
 import { BOT_TYPE } from '../lib/constants';
+import { getSystemInfo } from '../lib/systemInfo.js';
+import { execAsync, runTimedLoggedFn } from './scriptUtil.js';
 
 const args = process.argv.slice(2);
 
 const hasArg = (arg: string) => args.includes(arg);
 
 const forceRebuild = hasArg('--clean');
-
-async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
-	const stopwatch = new Stopwatch();
-	stopwatch.start();
-	await fn();
-	stopwatch.stop();
-	console.log(`Finished ${name} in ${stopwatch.toString()}`);
-}
-
-const rawExecAsync = promisify(execNonPromise);
-
-async function execAsync(command: string) {
-	try {
-		console.log('   Running command:', command);
-		const result = await rawExecAsync(command);
-		if (result.stderr) {
-			console.error(result.stderr);
-		}
-	} catch (err) {
-		console.error(err);
-	}
-}
 
 if (!existsSync('./cache.json')) {
 	writeFileSync('./cache.json', `${JSON.stringify({}, null, '	')}\n`);
@@ -100,7 +79,10 @@ async function handlePrismaClientGeneration() {
 	}
 
 	if (shouldRunGen || forceRebuild) {
-		await execAsync('yarn gen');
+		await Promise.all([
+			execAsync('yarn prisma generate --no-hints --schema prisma/robochimp.prisma'),
+			execAsync('yarn prisma db push')
+		]);
 	}
 }
 
@@ -145,9 +127,14 @@ async function handleCommandsJSON() {
 }
 
 async function main() {
+	if (production || process.env.NODE_ENV === 'production') {
+		throw new Error("Don't run build script in production!");
+	}
+	console.log((await getSystemInfo()).singleStr);
 	await runTimedLoggedFn('Prisma Client / Wipe Dist', () =>
 		Promise.all([handlePrismaClientGeneration(), checkForWipingDistFolder()])
 	);
+	await runTimedLoggedFn('Yarn Installation', () => execAsync('yarn'));
 	await runTimedLoggedFn('Typescript Compilation', handleTypescriptCompilation);
 	await runTimedLoggedFn('Post Build', () => Promise.all([handleCreatables(), handleCommandsJSON()]));
 }

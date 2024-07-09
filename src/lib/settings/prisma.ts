@@ -1,24 +1,9 @@
-import { isMainThread } from 'node:worker_threads';
-
 import type { Activity, Prisma } from '@prisma/client';
 import { activity_type_enum } from '@prisma/client';
 
-import { production } from '../../config';
 import type { ActivityTaskData } from '../types/minions';
-import { sqlLog } from '../util/logger';
 
 export const queryCountStore = { value: 0 };
-
-if (isMainThread) {
-	// @ts-ignore ignore
-	prisma.$on('query' as any, (_query: any) => {
-		const query = _query as Prisma.QueryEvent;
-		if (!production) {
-			sqlLog(query.query);
-		}
-		queryCountStore.value++;
-	});
-}
 
 export function convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
 	return {

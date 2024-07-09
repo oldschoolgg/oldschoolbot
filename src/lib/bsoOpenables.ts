@@ -14,7 +14,7 @@ import {
 	toaCL
 } from './data/CollectionsExport';
 import { PartyhatTable, baseHolidayItems } from './data/holidayItems';
-import { allTrophyItems } from './data/trophies';
+import { allTrophyItems } from './data/itemAliases';
 import { keyCrates } from './keyCrates';
 import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
 import type { UnifiedOpenable } from './openables';

@@ -10,7 +10,6 @@ import type { PvMMethod } from '../constants';
 import { kibbles } from '../data/kibble';
 import { SlayerActivityConstants } from '../minions/data/combatConstants';
 import { darkAltarRunes } from '../minions/functions/darkAltarCommand';
-
 import { runCommand } from '../settings/settings';
 import type {
 	ActivityTaskOptionsWithQuantity,

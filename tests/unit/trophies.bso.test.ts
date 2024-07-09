@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 
 import { allMbTables } from '../../src/lib/bsoOpenables';
-import { allTrophyItems } from '../../src/lib/data/trophies';
+import { allTrophyItems } from '../../src/lib/data/itemAliases';
 import getOSItem from '../../src/lib/util/getOSItem';
 import itemIsTradeable from '../../src/lib/util/itemIsTradeable';
 import resolveItems from '../../src/lib/util/resolveItems';

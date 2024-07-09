@@ -1,10 +1,10 @@
-import { type ProcessEnvOptions, exec as execNonPromise } from 'node:child_process';
+import { type ExecOptions, exec as execNonPromise } from 'node:child_process';
 import { promisify } from 'node:util';
 import { Stopwatch } from '@oldschoolgg/toolkit';
 
 const rawExecAsync = promisify(execNonPromise);
 
-export async function execAsync(command: string | string[], options?: ProcessEnvOptions): Promise<void> {
+export async function execAsync(command: string | string[], options?: ExecOptions): Promise<void> {
 	try {
 		console.log('   Running command:', command);
 

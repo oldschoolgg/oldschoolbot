@@ -44,16 +44,25 @@ export type FinishWorkerReturn = Promise<
 
 const maxThreads = production ? 3 : 1;
 
+let dirName = __dirname.replace('src/lib', 'dist/lib');
+if (dirName.endsWith('dist')) {
+	dirName = resolve(dirName, 'lib', 'workers');
+}
+
+const finishWorkerPath = resolve(dirName, 'finish.worker.js');
+const killWorkerPath = resolve(dirName, 'kill.worker.js');
+const casketWorkerPath = resolve(dirName, 'casket.worker.js');
+
 const finishWorker = new Piscina({
-	filename: resolve(__dirname.replace('src', 'dist'), 'finish.worker.js'),
+	filename: finishWorkerPath,
 	maxThreads
 });
 const killWorker = new Piscina({
-	filename: resolve(__dirname.replace('src', 'dist'), 'kill.worker.js'),
+	filename: killWorkerPath,
 	maxThreads
 });
 const casketWorker = new Piscina({
-	filename: resolve(__dirname.replace('src', 'dist'), 'casket.worker.js'),
+	filename: casketWorkerPath,
 	maxThreads
 });
 
