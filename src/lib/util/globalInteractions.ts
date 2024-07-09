@@ -311,7 +311,7 @@ async function handleGEButton(user: MUser, id: string, interaction: ButtonIntera
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
 	if (['CONFIRM', 'CANCEL', 'PARTY_JOIN'].includes(interaction.customId)) return;
-	if (interaction.customId.startsWith('LP_')) return;
+	if (['DYN_', 'LP_'].some(s => interaction.customId.startsWith(s))) return;
 
 	if (globalClient.isShuttingDown) {
 		return interactionReply(interaction, {
