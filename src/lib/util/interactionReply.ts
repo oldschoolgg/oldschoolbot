@@ -43,10 +43,12 @@ export async function deferInteraction(
 	if (wasDeferred.size > 1000) wasDeferred.clear();
 	if (!interaction.deferred && !wasDeferred.has(interaction.id)) {
 		wasDeferred.add(interaction.id);
-		const promise = await interaction.deferReply({ ephemeral });
 		interaction.deferred = true;
-		wasDeferred.add(interaction.id);
-		return promise;
+		try {
+			await interaction.deferReply({ ephemeral });
+		} catch (err) {
+			logErrorForInteraction(err, interaction);
+		}
 	}
 }
 
