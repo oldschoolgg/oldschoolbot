@@ -11,8 +11,7 @@ import type { KillableMonster } from '../minions/types';
 
 import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
-import { bankHasItem, roll, stringMatches } from '../util';
-import itemID from '../util/itemID';
+import { roll, stringMatches } from '../util';
 import { logError } from '../util/logError';
 import { autoslayModes } from './constants';
 import { slayerMasters } from './slayerMasters';
@@ -144,7 +143,7 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	// Slayer unlock restrictions:
 	const lmon = task.monster.name.toLowerCase();
 	const lmast = master.name.toLowerCase();
-	if (lmon === 'grotesque guardians' && !bankHasItem(user.bank.bank, itemID('Brittle key'))) return false;
+	if (lmon === 'grotesque guardians' && !user.bank.has('Brittle key')) return false;
 	if (lmon === 'lizardman' && !myUnlocks.includes(SlayerTaskUnlocksEnum.ReptileGotRipped)) return false;
 	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed)) return false;
 	if (lmon === 'mithril dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.IHopeYouMithMe)) return false;

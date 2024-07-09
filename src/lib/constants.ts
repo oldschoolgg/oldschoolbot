@@ -13,7 +13,6 @@ import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
-import { assert } from './util';
 
 export { PerkTier };
 
@@ -554,9 +553,9 @@ export const globalConfig = globalConfigSchema.parse({
 	isProduction: process.env.NODE_ENV === 'production'
 });
 
-assert(
-	(process.env.NODE_ENV === 'production') === globalConfig.isProduction && production === globalConfig.isProduction
-);
+if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction || production !== globalConfig.isProduction) {
+	throw new Error('The NODE_ENV and isProduction variables must match');
+}
 
 export const ONE_TRILLION = 1_000_000_000_000;
 export const demonBaneWeapons = resolveItems(['Silverlight', 'Darklight', 'Arclight']);
