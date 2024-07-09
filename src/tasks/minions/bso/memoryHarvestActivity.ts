@@ -11,7 +11,7 @@ import { Emoji } from '../../../lib/constants';
 import { inventionBoosts } from '../../../lib/invention/inventions';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MemoryHarvestOptions } from '../../../lib/types/minions';
-import { calculateAverageTimeForSuccess, formatDuration, roll } from '../../../lib/util';
+import { formatDuration, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
@@ -174,7 +174,7 @@ export function memoryHarvestResult({
 		totalDivinationXP,
 		totalMemoriesHarvested,
 		petChancePerMemory: petChance,
-		avgPetTime: calculateAverageTimeForSuccess((totalMemoriesHarvested / petChance) * 100, duration),
+		avgPetTime: totalMemoriesHarvested / petChance / duration,
 		boosts,
 		energyPerMemory
 	};

@@ -226,12 +226,6 @@ export function returnStringOrFile(
 	return string;
 }
 
-export function calculateAverageTimeForSuccess(probabilityPercent: number, timeFrameMilliseconds: number): number {
-	const probabilityOfSuccess = probabilityPercent / 100;
-	const averageTimeUntilSuccessMilliseconds = timeFrameMilliseconds / probabilityOfSuccess;
-	return averageTimeUntilSuccessMilliseconds;
-}
-
 export function makeTable(headers: string[], rows: unknown[][]) {
 	return new AsciiTable3()
 		.setHeading(...headers)
