@@ -2,6 +2,7 @@ import { convertAPIOptionsToCommandOptions } from '@oldschoolgg/toolkit';
 import { captureException } from '@sentry/node';
 import type { Interaction } from 'discord.js';
 
+import { isObject } from 'e';
 import { production } from '../../config';
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
@@ -43,6 +44,13 @@ export function logErrorForInteraction(err: Error | unknown, interaction: Intera
 		context.command_name = interaction.commandName;
 	} else if (interaction.isButton()) {
 		context.button_id = interaction.customId;
+	}
+
+	if ('rawError' in interaction) {
+		const _err = err as any;
+		if ('requestBody' in _err && isObject(_err.requestBody)) {
+			context.request_body = JSON.stringify(_err.requestBody);
+		}
 	}
 
 	logError(err, context);
