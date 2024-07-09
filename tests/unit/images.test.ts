@@ -14,7 +14,9 @@ import { mahojiChatHead } from '../../src/lib/util/chatHeadImage';
 import { makeBankImage } from '../../src/lib/util/makeBankImage';
 import { mockMUser } from './utils';
 
-describe('Images', () => {
+describe('Images', async () => {
+	await bankImageGenerator.ready;
+
 	test.concurrent('Chat Heads', async () => {
 		const result = await mahojiChatHead({
 			content:
