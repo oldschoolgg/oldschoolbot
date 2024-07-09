@@ -10,7 +10,7 @@ import { chunk, randInt, sumArr } from 'e';
 import fetch from 'node-fetch';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
-import { toKMB } from 'oldschooljs/dist/util/util';
+import { resolveItems, toKMB } from 'oldschooljs/dist/util/util';
 
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
@@ -30,7 +30,6 @@ import { TOBUniques } from './data/tob';
 import { marketPriceOfBank, marketPriceOrBotPrice } from './marketPrices';
 import { SkillsEnum } from './skilling/types';
 import { applyCustomItemEffects } from './util/customItemEffects';
-import resolveItems from './util/resolveItems';
 import { allSlayerMaskHelmsAndMasks, slayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
 
 const fonts = {
@@ -437,12 +436,7 @@ export class BankImageTask {
 
 		const isOnDisk = this.itemIconsList.has(itemID);
 		if (!isOnDisk) {
-			try {
-				await this.fetchAndCacheImage(itemID);
-			} catch (err) {
-				console.error(`Failed to load ${itemID} image`, err);
-				return this.getItemImage(1, user);
-			}
+			await this.fetchAndCacheImage(itemID);
 			return this.getItemImage(itemID, user);
 		}
 
