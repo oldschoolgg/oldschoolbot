@@ -6,7 +6,8 @@ import type {
 	InteractionReplyOptions,
 	InteractionResponse,
 	Message,
-	RepliableInteraction
+	RepliableInteraction,
+	StringSelectMenuInteraction
 } from 'discord.js';
 import { DiscordAPIError } from 'discord.js';
 
@@ -37,16 +38,17 @@ export async function interactionReply(interaction: RepliableInteraction, respon
 const wasDeferred = new Set();
 
 export async function deferInteraction(
-	interaction: ButtonInteraction | ChatInputCommandInteraction,
+	interaction: ButtonInteraction | ChatInputCommandInteraction | StringSelectMenuInteraction,
 	ephemeral = false
 ) {
 	if (wasDeferred.size > 1000) wasDeferred.clear();
 	if (!interaction.deferred && !wasDeferred.has(interaction.id)) {
 		wasDeferred.add(interaction.id);
-		const promise = await interaction.deferReply({ ephemeral });
-		interaction.deferred = true;
-		wasDeferred.add(interaction.id);
-		return promise;
+		try {
+			await interaction.deferReply({ ephemeral });
+		} catch (err) {
+			logErrorForInteraction(err, interaction);
+		}
 	}
 }
 

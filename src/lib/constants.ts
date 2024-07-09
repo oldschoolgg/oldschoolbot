@@ -791,7 +791,8 @@ const globalConfigSchema = z.object({
 	geAdminChannelID: z.string().default(''),
 	redisPort: z.coerce.number().int().optional(),
 	botToken: z.string().min(1),
-	isCI: z.coerce.boolean().default(false)
+	isCI: z.coerce.boolean().default(false),
+	isProduction: z.coerce.boolean().default(production)
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
@@ -806,8 +807,13 @@ export const globalConfig = globalConfigSchema.parse({
 	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID,
 	redisPort: process.env.REDIS_PORT,
 	botToken: process.env.BOT_TOKEN,
-	isCI: process.env.CI
+	isCI: process.env.CI,
+	isProduction: process.env.NODE_ENV === 'production'
 });
+
+if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction || production !== globalConfig.isProduction) {
+	throw new Error('The NODE_ENV and isProduction variables must match');
+}
 
 export const ONE_TRILLION = 1_000_000_000_000;
 export const gloriesInventorySize = 26;

@@ -11,8 +11,7 @@ import type { KillableMonster } from '../minions/types';
 
 import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
-import { bankHasItem, roll, stringMatches } from '../util';
-import itemID from '../util/itemID';
+import { roll, stringMatches } from '../util';
 import { logError } from '../util/logError';
 import resolveItems from '../util/resolveItems';
 import { autoslayModes } from './constants';
@@ -163,7 +162,7 @@ function userCanUseTask(user: MUser, task: AssignableSlayerTask, master: SlayerM
 	) {
 		return false;
 	}
-	if (lmon === 'grotesque guardians' && !bankHasItem(user.bank.bank, itemID('Brittle key'))) return false;
+	if (lmon === 'grotesque guardians' && !user.bank.has('Brittle key')) return false;
 	if (lmon === 'lizardman' && !myUnlocks.includes(SlayerTaskUnlocksEnum.ReptileGotRipped)) return false;
 	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed)) return false;
 	if (lmon === 'mithril dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.IHopeYouMithMe)) return false;
