@@ -275,6 +275,7 @@ export class BankImageTask {
 	public _bgSpriteData: Image = new Image();
 	public bgSpriteList: Record<string, IBgSprite> = {};
 	public treeImage!: Image;
+	public ready!: Promise<void>;
 
 	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
@@ -282,6 +283,8 @@ export class BankImageTask {
 
 		// If this file does exist, it might be cached in this, or need to be read from fs.
 		this.itemIconImagesCache = new Map();
+
+		this.ready = this.init();
 	}
 
 	async init() {
@@ -949,4 +952,3 @@ declare global {
 
 export const bankImageTask = new BankImageTask();
 global.bankImageGenerator = bankImageTask;
-bankImageGenerator.init();
