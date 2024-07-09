@@ -150,6 +150,7 @@ export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Fishing';
 	fishID: number;
 	quantity: number;
+	flakesQuantity?: number;
 	iQty?: number;
 }
 
