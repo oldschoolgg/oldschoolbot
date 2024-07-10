@@ -3,19 +3,16 @@ import './lib/globals';
 import './lib/crons';
 import './lib/MUser';
 import './lib/util/transactItemsFromBank';
-import './lib/geImage';
 
 import { MahojiClient } from '@oldschoolgg/toolkit';
-import { init } from '@sentry/node';
 import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
 import { isObject } from 'e';
 
-import { DEV_SERVER_ID, SENTRY_DSN, SupportServer } from './config';
+import { DEV_SERVER_ID, SupportServer } from './config';
 import { syncActivityCache } from './lib/Task';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { Channel, Events, META_CONSTANTS, gitHash, globalConfig } from './lib/constants';
-import { economyLog } from './lib/economyLogs';
+import { Channel, Events, META_CONSTANTS, globalConfig } from './lib/constants';
 import { onMessage } from './lib/events';
 import { modalInteractionHook } from './lib/modals';
 import { runStartupScripts } from './lib/startupScripts';
@@ -32,16 +29,6 @@ import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 
 debugLog(`Starting... Git Hash ${META_CONSTANTS.GIT_HASH}`);
-
-if (SENTRY_DSN) {
-	init({
-		dsn: SENTRY_DSN,
-		enableTracing: false,
-		defaultIntegrations: false,
-		integrations: [],
-		release: gitHash
-	});
-}
 
 assert(process.env.TZ === 'UTC');
 
@@ -170,9 +157,6 @@ client.on(Events.ServerNotification, (message: string) => {
 	if (channel) (channel as TextChannel).send(message);
 });
 
-client.on(Events.EconomyLog, async (message: string) => {
-	economyLog(message);
-});
 client.on('guildCreate', guild => {
 	if (!guild.available) return;
 	if (BLACKLISTED_GUILDS.has(guild.id) || BLACKLISTED_USERS.has(guild.ownerId)) {

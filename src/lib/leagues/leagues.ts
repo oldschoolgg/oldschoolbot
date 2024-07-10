@@ -1,6 +1,6 @@
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { type User, activity_type_enum } from '@prisma/client';
-import { calcWhatPercent, sumArr } from 'e';
+import { calcWhatPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { getPOH } from '../../mahoji/lib/abstracted_commands/pohCommand';
@@ -16,7 +16,6 @@ import {
 	personalSpellCastStats,
 	personalWoodcuttingStats
 } from '../../mahoji/lib/abstracted_commands/statCommand';
-import { BitField } from '../constants';
 import { calcCLDetails } from '../data/Collections';
 import { getMinigameEntity } from '../settings/minigames';
 
@@ -31,42 +30,32 @@ import { hardTasks } from './hardTasks';
 import { type HasFunctionArgs, type Task, betterHerbloreStats } from './leaguesUtils';
 import { masterTasks } from './masterTasks';
 import { mediumTasks } from './mediumTasks';
-import {
-	calcLeaguesRanking,
-	calculateAllFletchedItems,
-	calculateDartsFletchedFromScratch,
-	totalLampedXP
-} from './stats';
+import { calculateAllFletchedItems, calculateDartsFletchedFromScratch, totalLampedXP } from './stats';
 
 export const leagueTasks = [
-	{ name: 'Easy', tasks: easyTasks, points: 20 },
-	{ name: 'Medium', tasks: mediumTasks, points: 45 },
-	{ name: 'Hard', tasks: hardTasks, points: 85 },
-	{ name: 'Elite', tasks: eliteTasks, points: 150 },
-	{ name: 'Master', tasks: masterTasks, points: 250 }
+	{ name: 'Easy', tasks: easyTasks },
+	{ name: 'Medium', tasks: mediumTasks },
+	{ name: 'Hard', tasks: hardTasks },
+	{ name: 'Elite', tasks: eliteTasks },
+	{ name: 'Master', tasks: masterTasks }
 ];
-
-export const maxLeaguesPoints = sumArr(leagueTasks.map(group => group.tasks.length * group.points));
 
 export const allLeagueTasks = leagueTasks.map(i => i.tasks).flat(2);
 
 export function generateLeaguesTasksTextFile(finishedTasksIDs: number[], excludeFinished: boolean | undefined) {
 	let totalTasks = 0;
-	let totalPoints = 0;
 	let str = '';
-	for (const { name, tasks, points } of leagueTasks) {
+	for (const { name, tasks } of leagueTasks) {
 		const realTasks = excludeFinished ? tasks.filter(i => !finishedTasksIDs.includes(i.id)) : tasks;
-		const ptsThisGroup = realTasks.length * points;
-		str += `--------- ${name} (${realTasks.length} tasks - ${ptsThisGroup.toLocaleString()} points) -----------\n`;
+		str += `--------- ${name} (${realTasks.length} tasks -  -----------\n`;
 		str += realTasks
 			.map(i => i.name)
 			.sort((a, b) => b.localeCompare(a))
 			.join('\n');
 		totalTasks += realTasks.length;
-		totalPoints += ptsThisGroup;
 		str += '\n\n';
 	}
-	str = `There are a total of ${totalTasks} tasks (${totalPoints.toLocaleString()} Points).\n\n${str}`;
+	str = `There are a total of ${totalTasks} tasks.\n\n${str}`;
 	return { files: [{ attachment: Buffer.from(str), name: 'all-tasks.txt' }] };
 }
 
@@ -117,7 +106,6 @@ function calcSuppliesUsedForSmithing(itemsSmithed: Bank) {
 
 export async function leaguesCheckUser(userID: string) {
 	const mahojiUser = await mUserFetch(userID);
-	const roboChimpUser = await mahojiUser.fetchRobochimpUser();
 	const [
 		conStats,
 		poh,
@@ -135,7 +123,6 @@ export async function leaguesCheckUser(userID: string) {
 		collectingStats,
 		woodcuttingStats,
 		{ actualCluesBank },
-		ranking,
 		smeltingStats,
 		stashUnits,
 		fletchedItems
@@ -156,7 +143,6 @@ export async function leaguesCheckUser(userID: string) {
 		personalCollectingStats(mahojiUser),
 		personalWoodcuttingStats(mahojiUser),
 		mahojiUser.calcActualClues(),
-		calcLeaguesRanking(roboChimpUser),
 		personalSmeltingStats(mahojiUser),
 		getParsedStashUnits(userID),
 		calculateAllFletchedItems(mahojiUser)
@@ -237,102 +223,32 @@ export async function leaguesCheckUser(userID: string) {
 	return {
 		content: `**Your Leagues Progress**
 
-**Total Tasks Completed:** ${totalFinished} (${calcWhatPercent(totalFinished, totalTasks).toFixed(1)}%) (Rank ${
-			ranking.tasksRanking
-		})
-**Total Points:** ${roboChimpUser.leagues_points_total.toLocaleString()} (Rank ${ranking.pointsRanking})
-**Points Balance:** ${roboChimpUser.leagues_points_balance_osb.toLocaleString()} OSB / ${roboChimpUser.leagues_points_balance_bso.toLocaleString()} BSO
+**Total Tasks Completed:** ${totalFinished} (${calcWhatPercent(totalFinished, totalTasks).toFixed(1)}%)
 ${resStr}`,
-		finished: [...finishedIDs, ...roboChimpUser.leagues_completed_tasks_ids]
+		finished: [...finishedIDs, ...mahojiUser.user.leagues_completed_tasks_ids]
 	};
 }
 
-const unlockables: {
-	name: string;
-	points: number;
-	onUnlock: (user: MUser) => Promise<string>;
-	hasUnlockedAlready: (user: MUser) => boolean;
-}[] = [
-	{
-		name: 'Brain lee pet',
-		points: 40_000,
-		onUnlock: async (user: MUser) => {
-			await user.addItemsToBank({ items: new Bank().add('Brain lee'), collectionLog: true });
-			return 'You received a very brainly Brain lee!';
-		},
-		hasUnlockedAlready: (user: MUser) => {
-			return user.cl.has('Brain lee');
-		}
-	},
-	{
-		name: '+1m max trip length',
-		points: 50_000,
-		onUnlock: async (user: MUser) => {
-			await user.update({
-				bitfield: {
-					push: BitField.HasLeaguesOneMinuteLengthBoost
-				}
-			});
-			return "You've unlocked a global +1minute trip length boost!";
-		},
-		hasUnlockedAlready: (user: MUser) => {
-			return user.bitfield.includes(BitField.HasLeaguesOneMinuteLengthBoost);
-		}
-	}
-];
+export async function leaguesClaimCommand(user: MUser, finishedTaskIDs: number[]) {
+	const newlyFinishedTasks = finishedTaskIDs.filter(i => !user.user.leagues_completed_tasks_ids.includes(i));
 
-export async function leaguesClaimCommand(userID: string, finishedTaskIDs: number[]) {
-	const mahojiUser = await mUserFetch(userID);
-	const roboChimpUser = await mahojiUser.fetchRobochimpUser();
-
-	const newlyFinishedTasks = finishedTaskIDs.filter(i => !roboChimpUser.leagues_completed_tasks_ids.includes(i));
-
-	const unlockMessages: string[] = [];
-	for (const unl of unlockables) {
-		if (roboChimpUser.leagues_points_total >= unl.points && !unl.hasUnlockedAlready(mahojiUser)) {
-			const result = await unl.onUnlock(mahojiUser);
-			unlockMessages.push(result);
-		}
-	}
-
-	if (unlockMessages.length > 0) {
-		return `**You unlocked...** ${unlockMessages.join(', ')}`;
-	}
-
-	if (newlyFinishedTasks.length === 0) return "You don't have any unclaimed points.";
+	if (newlyFinishedTasks.length === 0) return "You don't have any unclaimed tasks.";
 
 	const fullNewlyFinishedTasks: Task[] = [];
-	let pointsToAward = 0;
 	for (const task of newlyFinishedTasks) {
 		const group = leagueTasks.find(i => i.tasks.some(t => t.id === task))!;
-		pointsToAward += group.points;
 		fullNewlyFinishedTasks.push(group.tasks.find(i => i.id === task)!);
 	}
 
-	const newUser = await roboChimpClient.user.update({
-		where: {
-			id: BigInt(userID)
+	await user.update({
+		leagues_completed_tasks_ids: {
+			push: newlyFinishedTasks
 		},
-		data: {
-			leagues_completed_tasks_ids: {
-				push: newlyFinishedTasks
-			},
-			leagues_points_balance_osb: {
-				increment: pointsToAward
-			},
-			leagues_points_balance_bso: {
-				increment: pointsToAward
-			},
-			leagues_points_total: {
-				increment: pointsToAward
-			}
-		}
+		leagues_completed_tasks_count: new Set([...user.user.leagues_completed_tasks_ids, ...newlyFinishedTasks]).size
 	});
 
-	const newTotal = newUser.leagues_points_total;
-
 	const response: Awaited<CommandResponse> = {
-		content: `You claimed ${newlyFinishedTasks.length} tasks, and received ${pointsToAward} points. You now have a balance of ${newUser.leagues_points_balance_osb} OSB points and ${newUser.leagues_points_balance_bso} BSO points, and ${newTotal} total points. You have completed a total of ${newUser.leagues_completed_tasks_ids.length} tasks.`
+		content: `You claimed ${newlyFinishedTasks.length} tasks, you have completed a total of ${user.user.leagues_completed_tasks_ids.length} tasks.`
 	};
 
 	if (newlyFinishedTasks.length > 10) {

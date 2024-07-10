@@ -1,5 +1,5 @@
-import type { GearSetupType, Prisma } from '@prisma/client';
-import { type ChatInputCommandInteraction, type InteractionReplyOptions, bold } from 'discord.js';
+import type { Prisma } from '@prisma/client';
+import { type ChatInputCommandInteraction, bold } from 'discord.js';
 import {
 	Time,
 	calcPercentOfNum,
@@ -16,13 +16,13 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { BitField, PeakTier, type PvMMethod, YETI_ID } from '../../../lib/constants';
+import { BitField, PeakTier, type PvMMethod } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeItem, degradeablePvmBoostItems } from '../../../lib/degradeableItems';
 import { userhasDiaryIDTier } from '../../../lib/diaries';
-import { type GearStat, maxOffenceStats } from '../../../lib/gear';
+import { type GearSetupType, type GearStat, maxOffenceStats } from '../../../lib/gear';
 import { InventionID, canAffordInventionBoost, inventionItemBoost } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import type { CombatOptionsEnum } from '../../../lib/minions/data/combatConstants';
@@ -62,10 +62,7 @@ import {
 	convertAttackStyleToGearSetup,
 	convertPvmStylesToGearSetup,
 	formatDuration,
-	formatItemBoosts,
 	formatItemCosts,
-	formatItemReqs,
-	formatPohBoosts,
 	isWeekend,
 	itemNameFromID,
 	randomVariation,
@@ -80,10 +77,8 @@ import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import resolveItems from '../../../lib/util/resolveItems';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { hasMonsterRequirements, resolveAvailableItemBoosts, userStatsUpdate } from '../../mahojiSettings';
-import { findBingosWithUserParticipating } from '../bingo/BingoManager';
 import { igneCommand } from './igneCommand';
 import { kgCommand } from './kgCommand';
 import { kkCommand } from './kkCommand';
@@ -815,9 +810,7 @@ export async function minionKillCommand(
 	}
 
 	quantity = Math.max(1, quantity);
-	if (!user.bitfield.includes(BitField.HasUnlockedYeti) && monster.id === YETI_ID) {
-		quantity = 1;
-	}
+
 	if (quantity > 1 && duration > maxTripLength) {
 		return `${minionName} can't go on PvM trips longer than ${formatDuration(
 			maxTripLength
@@ -987,10 +980,6 @@ export async function minionKillCommand(
 	const rangeSetup = { ...user.gear.range.raw() };
 	let usedDart = false;
 	if (rangeSetup.weapon?.item === itemID('Deathtouched dart')) {
-		const bingos = await findBingosWithUserParticipating(user.id);
-		if (bingos.some(bingo => bingo.isActive())) {
-			return 'You cannot use Deathtouched darts while in an active Bingo.';
-		}
 		duration = 1;
 		if (rangeSetup.weapon.quantity > 1) {
 			rangeSetup.weapon.quantity--;
@@ -1176,7 +1165,6 @@ export async function minionKillCommand(
 
 	// Remove items after food calc to prevent losing items if the user doesn't have the right amount of food. Example: Mossy key
 	if (lootToRemove.length > 0) {
-		updateBankSetting('economyStats_PVMCost', lootToRemove);
 		await user.specialRemoveItems(lootToRemove, { wildy: isInWilderness });
 		totalCost.add(lootToRemove);
 	}
@@ -1241,207 +1229,6 @@ export async function minionKillCommand(
 	if (pkString.length > 0) {
 		response += `\n${pkString}`;
 	}
-
-	return response;
-}
-
-export async function monsterInfo(user: MUser, name: string): Promise<string | InteractionReplyOptions> {
-	const monster = findMonster(name);
-
-	if (stringMatches(name, 'nightmare')) {
-		return 'The Nightmare is not supported by this command due to the complexity of the fight.';
-	}
-
-	if (!monster) {
-		return "That's not a valid monster";
-	}
-	const osjsMon = Monsters.get(monster.id);
-	const [, , attackStyles] = resolveAttackStyles(user, {
-		monsterID: monster.id
-	});
-
-	const userKc = await user.getKC(monster.id);
-	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, userKc);
-
-	// item boosts
-	const ownedBoostItems = [];
-	let totalItemBoost = 0;
-	for (const [itemID, boostAmount] of Object.entries(resolveAvailableItemBoosts(user, monster))) {
-		timeToFinish *= (100 - boostAmount) / 100;
-		totalItemBoost += boostAmount;
-		ownedBoostItems.push(itemNameFromID(Number.parseInt(itemID)));
-	}
-
-	let isDragon = false;
-	if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
-		isDragon = true;
-		if (
-			user.hasEquippedOrInBank('Dragon hunter lance') &&
-			!attackStyles.includes(SkillsEnum.Ranged) &&
-			!attackStyles.includes(SkillsEnum.Magic)
-		) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 20);
-			ownedBoostItems.push('Dragon hunter lance');
-			totalItemBoost += 20;
-		} else if (user.hasEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 20);
-			ownedBoostItems.push('Dragon hunter crossbow');
-			totalItemBoost += 20;
-		}
-	}
-	// poh boosts
-	if (monster.pohBoosts) {
-		const [boostPercent, messages] = calcPOHBoosts(await getPOH(user.id), monster.pohBoosts);
-		if (boostPercent > 0) {
-			timeToFinish = reduceNumByPercent(timeToFinish, boostPercent);
-			const boostString = messages.join(' ').replace(/[0-9]{2}% for /, '');
-			ownedBoostItems.push(`${boostString}`);
-			totalItemBoost += boostPercent;
-		}
-	}
-	// combat stat boosts
-	const skillTotal = sumArr(attackStyles.map(s => user.skillLevel(s)));
-
-	let percent = round(calcWhatPercent(skillTotal, attackStyles.length * 99), 2);
-
-	const str = [`**${monster.name}**\n`];
-
-	let skillString = '';
-
-	if (percent < 50) {
-		percent = 50 - percent;
-		skillString = `Skills boost: -${percent.toFixed(2)}% for your skills.\n`;
-		timeToFinish = increaseNumByPercent(timeToFinish, percent);
-	} else {
-		percent = Math.min(15, percent / 6.5);
-		skillString = `Skills boost: ${percent.toFixed(2)}% for your skills.\n`;
-		timeToFinish = reduceNumByPercent(timeToFinish, percent);
-	}
-	let hpString = '';
-	// Find best eatable boost and add 1% extra
-	const noFoodBoost = Math.floor(Math.max(...Eatables.map(eatable => eatable.pvmBoost ?? 0)) + 1);
-	if (monster.healAmountNeeded) {
-		const [hpNeededPerKill] = calculateMonsterFood(monster, user);
-		if (hpNeededPerKill === 0) {
-			timeToFinish = reduceNumByPercent(timeToFinish, noFoodBoost);
-			hpString = `${noFoodBoost}% boost for no food`;
-		}
-	}
-	const maxCanKillSlay = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
-	const maxCanKill = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / timeToFinish);
-
-	const { QP } = user;
-
-	str.push(`**Barrage/Burst**: ${monster.canBarrage ? 'Yes' : 'No'}`);
-	str.push(
-		`**Cannon**: ${monster.canCannon ? `Yes, ${monster.cannonMulti ? 'multi' : 'single'} combat area` : 'No'}\n`
-	);
-
-	if (monster.qpRequired) {
-		str.push(`${monster.name} requires **${monster.qpRequired}qp** to kill, and you have ${QP}qp.\n`);
-	}
-
-	const itemRequirements = [];
-	if (monster.itemsRequired && monster.itemsRequired.length > 0) {
-		itemRequirements.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}\n`);
-	}
-	if (monster.itemCost) {
-		itemRequirements.push(
-			`**Item Cost per Trip:** ${formatItemCosts(monster.itemCost, timeToFinish * maxCanKill)}\n`
-		);
-	}
-
-	if (monster.healAmountNeeded) {
-		const [hpNeededPerKill, gearStats] = calculateMonsterFood(monster, user);
-		const gearReductions = gearStats.replace(/: Reduced from (?:[0-9]+?), /, '\n').replace('), ', ')\n');
-		if (hpNeededPerKill > 0) {
-			itemRequirements.push(
-				`**Healing Required:** ${gearReductions}\nYou require ${
-					hpNeededPerKill * maxCanKill
-				} hp for a full trip\n`
-			);
-		} else {
-			itemRequirements.push(`**Healing Required:** ${gearReductions}\n**Food boost**: ${hpString}\n`);
-		}
-	}
-	str.push(`${itemRequirements.join('')}`);
-	const totalBoost = [];
-	if (isDragon) {
-		totalBoost.push('15% for Dragon hunter lance OR 15% for Dragon hunter crossbow');
-	}
-	if (monster.itemInBankBoosts) {
-		totalBoost.push(`${formatItemBoosts(monster.itemInBankBoosts)}`);
-	}
-	if (monster.equippedItemBoosts) {
-		for (const boostSet of monster.equippedItemBoosts) {
-			totalBoost.push(
-				`${boostSet.items
-					.map(i => `${i.boostPercent}% for ${itemNameFromID(i.itemID)}`)
-					.join(' OR ')}, equipped in ${boostSet.gearSetup} setup`
-			);
-		}
-	}
-	if (monster.pohBoosts) {
-		totalBoost.push(
-			`${formatPohBoosts(monster.pohBoosts)
-				.replace(/(Pool:)/, '')
-				.replace(')', '')
-				.replace('(', '')
-				.replace('\n', '')}`
-		);
-	}
-	if (totalBoost.length > 0) {
-		str.push(
-			`**Boosts**\nAvailable Boosts: ${totalBoost.join(',')}\n${
-				ownedBoostItems.length > 0 ? `Your boosts: ${ownedBoostItems.join(', ')} for ${totalItemBoost}%` : ''
-			}\n${skillString}`
-		);
-	} else {
-		str.push(`**Boosts**\n${skillString}`);
-	}
-	str.push('**Trip info**');
-
-	str.push(
-		`Maximum trip length: ${formatDuration(
-			calcMaxTripLength(user, 'MonsterKilling')
-		)}\nNormal kill time: ${formatDuration(
-			monster.timeToFinish
-		)}. You can kill up to ${maxCanKill} per trip (${formatDuration(timeToFinish)} per kill).`
-	);
-	str.push(
-		`If you were on a slayer task: ${maxCanKillSlay} per trip (${formatDuration(
-			reduceNumByPercent(timeToFinish, 15)
-		)} per kill).`
-	);
-	const kcForOnePercent = Math.ceil((Time.Hour * 5) / monster.timeToFinish);
-
-	str.push(
-		`Every ${kcForOnePercent}kc you will gain a 1% (upto 10%).\nYou currently recieve a ${percentReduced}% boost with your ${userKc}kc.\n`
-	);
-
-	const min = timeToFinish * maxCanKill * 1.01;
-	const max = timeToFinish * maxCanKill * 1.2;
-	str.push(
-		`Due to the random variation of an added 1-20% duration, ${maxCanKill}x kills can take between (${formatDuration(
-			min
-		)}) and (${formatDuration(max)})\nIf the Weekend boost is active, it takes: (${formatDuration(
-			min * 0.9
-		)}) to (${formatDuration(max * 0.9)}) to finish.\n`
-	);
-
-	if (monster.degradeableItemUsage) {
-		for (const item of monster.degradeableItemUsage) {
-			str.push(
-				`${item.items.map(i => `${itemNameFromID(i.itemID)} (${i.boostPercent}% boost)`).join(' OR ')} ${
-					item.required ? 'must' : 'can'
-				} be equipped in your ${item.gearSetup} setup, needs to be charged using /minion charge.`
-			);
-		}
-	}
-
-	const response: InteractionReplyOptions = {
-		content: str.join('\n')
-	};
 
 	return response;
 }

@@ -1943,7 +1943,7 @@ export interface UserStatsDataNeededForCL {
 	stats: MUserStats;
 }
 
-type CLType = 'sacrifice' | 'bank' | 'collection' | 'temp' | 'tame' | 'disassembly';
+type CLType = 'sacrifice' | 'bank' | 'collection' | 'tame' | 'disassembly';
 
 export async function getBank(user: MUser, type: CLType, userStats: UserStatsDataNeededForCL | MUserStats | null) {
 	switch (type) {
@@ -1958,8 +1958,7 @@ export async function getBank(user: MUser, type: CLType, userStats: UserStatsDat
 			const { getUsersTamesCollectionLog } = await import('../util/getUsersTameCL.js');
 			return getUsersTamesCollectionLog(user.id);
 		}
-		case 'temp':
-			return new Bank(user.user.temp_cl as ItemBank);
+
 		case 'disassembly': {
 			return new Bank(user.user.disassembled_items_bank as ItemBank);
 		}

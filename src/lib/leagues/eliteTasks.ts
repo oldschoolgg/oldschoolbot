@@ -300,20 +300,6 @@ export const eliteTasks: Task[] = [
 		}
 	},
 	{
-		id: 3037,
-		name: 'Complete 50 Item Contracts',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.total_item_contracts >= 50;
-		}
-	},
-	{
-		id: 3038,
-		name: 'Achieve an Item Contract streak of 20',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.item_contract_streak >= 20;
-		}
-	},
-	{
 		id: 3039,
 		name: 'Kill 150 unique monsters',
 		has: async ({ userStats }) => {

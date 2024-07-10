@@ -10,7 +10,6 @@ import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export const fightCavesCost = new Bank({
 	'Prayer potion(4)': 10,
@@ -160,8 +159,6 @@ export async function fightCavesCommand(user: MUser, channelID: string): Command
 		preJadDeathTime,
 		fakeDuration
 	});
-
-	updateBankSetting('economyStats_fightCavesCost', fightCavesCost);
 
 	const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
 

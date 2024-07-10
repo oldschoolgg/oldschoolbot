@@ -1,7 +1,6 @@
 import type { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
-import { findBingosWithUserParticipating } from '../../mahoji/lib/bingo/BingoManager';
 import { mahojiUserSettingsUpdate } from '../MUser';
 import { handleNewCLItems } from '../handleNewCLItems';
 import { filterLootReplace } from '../slayer/slayerUtil';
@@ -126,15 +125,6 @@ async function transactItemsFromBank({
 		}
 
 		const newCL = new Bank(newUser.collectionLogBank as ItemBank);
-
-		if (!dontAddToTempCL && collectionLog) {
-			const activeBingos = await findBingosWithUserParticipating(userID);
-			for (const bingo of activeBingos) {
-				if (bingo.isActive()) {
-					bingo.handleNewItems(userID, itemsAdded);
-				}
-			}
-		}
 
 		if (!options.neverUpdateHistory) {
 			await handleNewCLItems({ itemsAdded, user: settings, previousCL, newCL });

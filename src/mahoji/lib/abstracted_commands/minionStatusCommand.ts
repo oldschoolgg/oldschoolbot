@@ -1,13 +1,11 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
 import type { BaseMessageOptions } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
-import { roll, stripNonAlphanumeric } from 'e';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, PerkTier, minionBuyButton } from '../../../lib/constants';
 import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
 import { clArrayUpdate } from '../../../lib/handleNewCLItems';
-import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
+import { roboChimpSyncData } from '../../../lib/roboChimp';
 
 import { makeComponents } from '../../../lib/util';
 import {
@@ -18,66 +16,20 @@ import {
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { makeRepeatTripButtons } from '../../../lib/util/repeatStoredTrip';
 import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../../lib/util/tameUtil';
-import { getItemContractDetails } from '../../commands/ic';
-import { spawnLampIsReady } from '../../commands/tools';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
 
-async function fetchFavoriteGearPresets(userID: string) {
-	const pinnedPresets = await prisma.gearPreset.findMany({
-		where: { user_id: userID, pinned_setup: { not: null } },
-		orderBy: { times_equipped: 'desc' },
-		take: 5
-	});
-
-	if (pinnedPresets.length === 0) return [];
-
-	return pinnedPresets.map(i =>
-		new ButtonBuilder()
-			.setStyle(ButtonStyle.Secondary)
-			.setCustomId(`GPE_${i.pinned_setup}_${stripNonAlphanumeric(i.name)}`)
-			.setLabel(`Equip '${toTitleCase(i.name).replace(/_/g, ' ')}' to ${i.pinned_setup}`)
-			.setEmoji(i.emoji_id ?? Emoji.Gear)
-	);
-}
-
-async function fetchPinnedTrips(userID: string) {
-	const pinnedPresets = await prisma.pinnedTrip.findMany({
-		where: { user_id: userID },
-		take: 5
-	});
-
-	if (pinnedPresets.length === 0) return [];
-
-	return pinnedPresets.map(i =>
-		new ButtonBuilder()
-			.setStyle(ButtonStyle.Secondary)
-			.setCustomId(`PTR_${i.id}`)
-			.setLabel(`Repeat ${i.custom_name ?? i.activity_type}`)
-			.setEmoji(i.emoji_id ?? '🔁')
-	);
-}
-
-export async function minionStatusCommand(user: MUser, channelID: string): Promise<BaseMessageOptions> {
+export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptions> {
 	const { minionIsBusy } = user;
-	const [roboChimpUser, birdhouseDetails, gearPresetButtons, pinnedTripButtons, fishingResult, dailyIsReady] =
-		await Promise.all([
-			roboChimpUserFetch(user.id),
-			minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user.id),
-			minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
-			minionIsBusy ? [] : fetchPinnedTrips(user.id),
-			getUsersFishingContestDetails(user),
-			isUsersDailyReady(user)
-		]);
+	const [birdhouseDetails, fishingResult, dailyIsReady] = await Promise.all([
+		minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user.id),
+		getUsersFishingContestDetails(user),
+		isUsersDailyReady(user)
+	]);
 
 	roboChimpSyncData(user);
 	await clArrayUpdate(user, user.cl);
-	if (user.user.cached_networth_value === null || roll(100)) {
-		await user.update({
-			cached_networth_value: (await user.calculateNetWorth()).value
-		});
-	}
 
 	if (!user.user.minion_hasBought) {
 		return {
@@ -176,7 +128,7 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 	}
 
 	const perkTier = user.perkTier();
-	if (perkTier >= PerkTier.Two) {
+	if (perkTier >= 2) {
 		const { tame, species, activity } = await getUsersTame(user);
 		if (tame && !activity) {
 			const lastTameAct = await tameLastFinishedActivity(user);
@@ -190,45 +142,6 @@ export async function minionStatusCommand(user: MUser, channelID: string): Promi
 				);
 			}
 		}
-	}
-
-	const [spawnLampReady] = spawnLampIsReady(user, channelID);
-	if (spawnLampReady) {
-		buttons.push(
-			new ButtonBuilder()
-				.setCustomId('SPAWN_LAMP')
-				.setLabel('Spawn Lamp')
-				.setEmoji('988325171498721290')
-				.setStyle(ButtonStyle.Secondary)
-		);
-	}
-
-	const icDetails = getItemContractDetails(user);
-	if (perkTier >= PerkTier.Two && icDetails.currentItem && icDetails.owns) {
-		buttons.push(
-			new ButtonBuilder()
-				.setCustomId('ITEM_CONTRACT_SEND')
-				.setLabel(`IC: ${icDetails.currentItem.name.slice(0, 20)}`)
-				.setEmoji('988422348434718812')
-				.setStyle(ButtonStyle.Secondary)
-		);
-	}
-
-	if (roboChimpUser.leagues_points_total === 0) {
-		buttons.push(
-			new ButtonBuilder()
-				.setLabel('OSB/BSO Leagues')
-				.setEmoji('660333438016028723')
-				.setStyle(ButtonStyle.Link)
-				.setURL('https://bso-wiki.oldschool.gg/leagues')
-		);
-	}
-
-	if (gearPresetButtons.length > 0) {
-		buttons.push(...gearPresetButtons);
-	}
-	if (pinnedTripButtons.length > 0) {
-		buttons.push(...pinnedTripButtons);
 	}
 
 	return {

@@ -328,13 +328,6 @@ export const easyTasks: Task[] = [
 		}
 	},
 	{
-		id: 44,
-		name: 'Complete an Item Contract',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.total_item_contracts >= 1;
-		}
-	},
-	{
 		id: 45,
 		name: 'Kill 10 unique monsters',
 		has: async ({ userStats }) => {

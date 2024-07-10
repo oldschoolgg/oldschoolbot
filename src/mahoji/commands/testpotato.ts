@@ -3,7 +3,7 @@ import { Bank, Items } from 'oldschooljs';
 import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
 import { type Prisma, activity_type_enum, tame_growth, xp_gains_skill_enum } from '@prisma/client';
-import { ApplicationCommandOptionType, type User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, noOp } from 'e';
 import { production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
@@ -64,11 +64,9 @@ import { getUsersTame } from '../../lib/util/tameUtil';
 import { userEventToStr } from '../../lib/util/userEvents';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
-import { BingoManager } from '../lib/bingo/BingoManager';
 import { gearSetupOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
-import { fetchBingosThatUserIsInvolvedIn } from './bingo';
 import { generateNewTame } from './nursery';
 import { tameEquippables, tameImage } from './tames';
 
@@ -107,8 +105,6 @@ const thingsToReset = [
 			await prisma.slayerTask.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 			await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
 			await prisma.commandUsage.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
-			await prisma.gearPreset.deleteMany({ where: { user_id: user.id } }).catch(noOp);
-			await prisma.giveaway.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 			await prisma.lastManStandingGame.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
 			await prisma.minigame.deleteMany({ where: { user_id: user.id } }).catch(noOp);
 			await prisma.newUser.deleteMany({ where: { id: user.id } }).catch(noOp);
@@ -650,27 +646,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'bingo_tools',
-					description: 'Bingo tools',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'start_bingo',
-							description: 'Make your bingo start now.',
-							required: true,
-							autocomplete: async (value: string, user: User) => {
-								const bingos = await fetchBingosThatUserIsInvolvedIn(user.id);
-								return bingos
-									.map(i => new BingoManager(i))
-									.filter(b => b.creatorID === user.id || b.organizers.includes(user.id))
-									.filter(bingo => (!value ? true : bingo.id.toString() === value))
-									.map(bingo => ({ name: bingo.title, value: bingo.id.toString() }));
-							}
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
 					name: 'setslayertask',
 					description: 'Set slayer task.',
 					options: [
@@ -771,13 +746,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					return tameImage(user);
 				}
 
-				if (options.refreshic) {
-					await mahojiUserSettingsUpdate(user.id, {
-						last_item_contract_date: 0
-					});
-					return 'reset your last contract date';
-				}
-
 				if (options.events) {
 					const events = await prisma.userEvent.findMany({
 						where: {
@@ -788,26 +756,6 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						}
 					});
 					return events.map(userEventToStr).join('\n');
-				}
-				if (options.bingo_tools) {
-					if (options.bingo_tools.start_bingo) {
-						const bingo = await prisma.bingo.findFirst({
-							where: {
-								id: Number(options.bingo_tools.start_bingo),
-								creator_id: user.id
-							}
-						});
-						if (!bingo) return 'Invalid bingo.';
-						await prisma.bingo.update({
-							where: {
-								id: bingo.id
-							},
-							data: {
-								start_date: new Date()
-							}
-						});
-						return 'Your bingo start date has been set to this moment, so it has just started.';
-					}
 				}
 
 				if (options.check) {
@@ -869,15 +817,6 @@ ${droprates.join('\n')}`),
 						});
 						return 'Deleted all your trips.';
 					}
-					if (thing === 'mt') {
-						await user.update({
-							bso_mystery_trail_current_step_id: null,
-							collectionLogBank: {},
-							bank: {},
-							bitfield: user.bitfield.filter(i => i !== BitField.HasUnlockedYeti)
-						});
-						return 'MT + cl + bank reset.';
-					}
 					if (thing === 'kc') {
 						await userStatsUpdate(user.id, {
 							monster_scores: {}
@@ -907,8 +846,7 @@ ${droprates.join('\n')}`),
 					}
 					if (thing === 'cl') {
 						await mahojiUserSettingsUpdate(user.id, {
-							collectionLogBank: {},
-							temp_cl: {}
+							collectionLogBank: {}
 						});
 						await prisma.userStats.update({
 							where: {

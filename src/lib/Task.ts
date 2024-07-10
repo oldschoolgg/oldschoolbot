@@ -13,7 +13,6 @@ import { offeringTask } from '../tasks/minions/PrayerActivity/offeringActivity';
 import { scatteringTask } from '../tasks/minions/PrayerActivity/scatteringActivity';
 import { agilityTask } from '../tasks/minions/agilityActivity';
 import { alchingTask } from '../tasks/minions/alchingActivity';
-import { bossEventTask } from '../tasks/minions/bossEventActivity';
 import { bathhouseTask } from '../tasks/minions/bso/bathhousesActivity';
 import { bonanzaTask } from '../tasks/minions/bso/bonanzaActivity';
 import { disassemblingTask } from '../tasks/minions/bso/disassemblingActivity';
@@ -217,7 +216,6 @@ const tasks: MinionTask[] = [
 	dungeoneeringTask,
 	fogTask,
 	scTask,
-	bossEventTask,
 	twTask,
 	cutLeapingFishTask,
 	toaTask,

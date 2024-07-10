@@ -34,6 +34,7 @@ import type { OSBMahojiCommand } from '../lib/util';
 const LB_PAGE_SIZE = 10;
 
 function lbMsg(str: string, ironmanOnly?: boolean) {
+	ironmanOnly = true;
 	return {
 		content: `Showing you the ${str} leaderboard, click the buttons to change pages.${
 			ironmanOnly ? ' Showing only ironmen.' : ''
@@ -73,6 +74,7 @@ async function kcLb(
 	name: string,
 	ironmanOnly: boolean
 ) {
+	ironmanOnly = true;
 	const monster = effectiveMonsters.find(mon => [mon.name, ...mon.aliases].some(alias => stringMatches(alias, name)));
 	if (!monster) return "That's not a valid monster!";
 	const list = await prisma.$queryRawUnsafe<{ id: string; kc: number }[]>(
@@ -106,6 +108,7 @@ async function farmingContractLb(
 	channelID: string,
 	ironmanOnly: boolean
 ) {
+	ironmanOnly = true;
 	const list = await prisma.$queryRawUnsafe<{ id: string; count: number }[]>(
 		`SELECT id, CAST("minion.farmingContract"->>'contractsCompleted' AS INTEGER) as count
 		 FROM users
@@ -184,6 +187,7 @@ async function sacrificeLb(
 	type: 'value' | 'unique',
 	ironmanOnly: boolean
 ) {
+	ironmanOnly = true;
 	if (type === 'value') {
 		const list = (
 			await prisma.$queryRawUnsafe<{ id: string; amount: number }[]>(
@@ -415,6 +419,7 @@ async function openLb(
 	name: string,
 	ironmanOnly: boolean
 ) {
+	ironmanOnly = true;
 	if (name) {
 		name = name.trim();
 	}
@@ -461,6 +466,7 @@ async function openLb(
 }
 
 async function gpLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, ironmanOnly: boolean) {
+	ironmanOnly = true;
 	const users = (
 		await prisma.$queryRawUnsafe<{ id: string; GP: number }[]>(
 			`SELECT "id", "GP"
@@ -494,6 +500,7 @@ async function skillsLb(
 	type: 'xp' | 'level',
 	ironmanOnly: boolean
 ) {
+	ironmanOnly = true;
 	let res = [];
 	let overallUsers: {
 		id: string;
@@ -658,6 +665,7 @@ async function cluesLb(
 	clueTierName: string,
 	ironmanOnly: boolean
 ) {
+	ironmanOnly = true;
 	const clueTier = ClueTiers.find(i => stringMatches(i.name, clueTierName));
 	if (!clueTier) return "That's not a valid clue tier.";
 	const { id } = clueTier;
@@ -784,41 +792,6 @@ export async function cacheUsernames() {
 			badgesCache.set(user.id, rawBadges.join(' '));
 		}
 	}
-}
-
-async function itemContractLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	ironmanOnly?: boolean
-) {
-	const results = await prisma.user.findMany({
-		select: {
-			id: true,
-			item_contract_streak: true
-		},
-		where: {
-			item_contract_streak: {
-				gte: 5
-			},
-			minion_ironman: ironmanOnly ? true : undefined
-		},
-		orderBy: {
-			item_contract_streak: 'desc'
-		},
-		take: 10
-	});
-
-	doMenu(
-		interaction,
-		user,
-		channelID,
-		chunk(results, 10).map(subList =>
-			subList.map(({ id, item_contract_streak }) => `**${getUsername(id)}:** ${item_contract_streak}`).join('\n')
-		),
-		'Item Contract Streak Leaderboard'
-	);
-	return lbMsg('Item Contract Streak');
 }
 
 const globalLbTypes = ['xp', 'cl', 'mastery'] as const;
@@ -983,6 +956,7 @@ async function compLeaderboard(
 	ironmanOnly: boolean,
 	channelID: string
 ) {
+	ironmanOnly = true;
 	const key: keyof UserStats = untrimmed ? 'untrimmed_comp_cape_percent' : 'comp_cape_percent';
 	const list = await prisma.$queryRawUnsafe<{ id: string; percent: number }[]>(
 		`SELECT user_id::text AS id, ${key} AS percent
@@ -1184,13 +1158,6 @@ async function masteryLb(interaction: ChatInputCommandInteraction, user: MUser, 
 	return lbMsg('Mastery Leaderboard');
 }
 
-const ironmanOnlyOption = {
-	type: ApplicationCommandOptionType.Boolean,
-	name: 'ironmen_only',
-	description: 'Only include ironmen.',
-	required: false
-} as const;
-
 export const leaderboardCommand: OSBMahojiCommand = {
 	name: 'lb',
 	description: 'Simulate killing monsters.',
@@ -1210,8 +1177,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 							.filter(m => (!value ? true : m.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
-				},
-				ironmanOnlyOption
+				}
 			]
 		},
 		{
@@ -1223,11 +1189,6 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'inferno',
 			description: 'Check the inferno leaderboard.'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'challenges',
-			description: 'Check the BSO challenges won leaderboard.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -1243,8 +1204,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 						{ name: 'Most Value Sacrificed', value: 'value' },
 						{ name: 'Unique Items Sacrificed', value: 'unique' }
 					]
-				},
-				ironmanOnlyOption
+				}
 			]
 		},
 		{
@@ -1311,7 +1271,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'gp',
 			description: 'Check the GP leaderboard.',
-			options: [ironmanOnlyOption]
+			options: []
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -1335,8 +1295,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					name: 'xp',
 					description: 'Show XP instead of levels.',
 					required: false
-				},
-				ironmanOnlyOption
+				}
 			]
 		},
 		{
@@ -1360,8 +1319,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 							)
 							.map(i => ({ name: i.name, value: i.name }));
 					}
-				},
-				ironmanOnlyOption
+				}
 			]
 		},
 		{
@@ -1384,7 +1342,6 @@ export const leaderboardCommand: OSBMahojiCommand = {
 						].filter(o => (!value ? true : o.name.toLowerCase().includes(value.toLowerCase())));
 					}
 				},
-				ironmanOnlyOption,
 				{
 					type: ApplicationCommandOptionType.Boolean,
 					name: 'tames',
@@ -1392,12 +1349,6 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					required: false
 				}
 			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'item_contract_streak',
-			description: 'The item contract streak leaderboard.',
-			options: [ironmanOnlyOption]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -1424,35 +1375,6 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					description: 'The clue you want to select.',
 					required: true,
 					choices: ClueTiers.map(i => ({ name: i.name, value: i.name }))
-				},
-				ironmanOnlyOption
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'movers',
-			description: 'Check the movers leaderboards.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'type',
-					description: 'The type of movers you want to check.',
-					required: true,
-					choices: gainersTypes.map(i => ({ name: i, value: i }))
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'global',
-			description: 'Check the global (OSB+BSO) leaderboards.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'type',
-					description: 'The global leaderboard type you want to check.',
-					required: true,
-					choices: globalLbTypes.map(i => ({ name: i, value: i }))
 				}
 			]
 		},
@@ -1461,7 +1383,6 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			name: 'completion',
 			description: 'Check the completion leaderboard.',
 			options: [
-				ironmanOnlyOption,
 				{
 					type: ApplicationCommandOptionType.Boolean,
 					name: 'untrimmed',
@@ -1501,7 +1422,6 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		skills?: { skill: string; ironmen_only?: boolean; xp?: boolean };
 		opens?: { openable: string; ironmen_only?: boolean };
 		cl?: { cl: string; ironmen_only?: boolean; tames?: boolean };
-		item_contract_streak?: { ironmen_only?: boolean };
 		leagues?: { type: 'points' | 'tasks' | 'hardest_tasks' };
 		clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
 		movers?: { type: GainersType };
@@ -1527,7 +1447,6 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			gp,
 			skills,
 			cl,
-			item_contract_streak,
 			leagues,
 			clues,
 			movers,
@@ -1560,8 +1479,6 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		}
 		if (opens) return openLb(interaction, user, channelID, opens.openable, Boolean(opens.ironmen_only));
 		if (cl) return clLb(interaction, user, channelID, cl.cl, Boolean(cl.ironmen_only), Boolean(cl.tames));
-		if (item_contract_streak)
-			return itemContractLb(interaction, user, channelID, item_contract_streak.ironmen_only);
 		if (leagues) return leaguesLeaderboard(interaction, user, channelID, leagues.type);
 		if (clues) return cluesLb(interaction, user, channelID, clues.clue, Boolean(clues.ironmen_only));
 		if (movers) return gainersLB(interaction, user, channelID, movers.type);

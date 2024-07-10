@@ -1,12 +1,10 @@
 import { Bank } from 'oldschooljs';
 
 import { BlacksmithOutfit } from '../../lib/bsoOpenables';
-import { dwarvenOutfit } from '../../lib/data/CollectionsExport';
 import Smithing from '../../lib/skilling/skills/smithing/';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { findBingosWithUserParticipating } from '../../mahoji/lib/bingo/BingoManager';
 
 export const smithingTask: MinionTask = {
 	type: 'Smithing',
@@ -36,11 +34,7 @@ export const smithingTask: MinionTask = {
 			str += '\n**10%** Bonus XP For Blacksmith Outfit';
 		}
 
-		let collectionLog = true;
-		const bingos = await findBingosWithUserParticipating(user.id);
-		if (bingos.some(bingo => bingo.isActive()) && dwarvenOutfit.includes(smithedItem.id)) {
-			collectionLog = false;
-		}
+		const collectionLog = true;
 
 		await transactItems({
 			userID: user.id,

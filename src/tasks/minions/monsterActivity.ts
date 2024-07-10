@@ -383,14 +383,7 @@ export const monsterTask: MinionTask = {
 			onSlayerTask: isOnTaskResult.isOnTask,
 			slayerMaster: isOnTaskResult.isOnTask ? isOnTaskResult.slayerMaster.osjsEnum : undefined,
 			hasSuperiors: superiorTable,
-			inCatacombs: isInCatacombs,
-			lootTableOptions: {
-				tertiaryItemPercentageChanges: user.buildTertiaryItemChanges(
-					hasRingOfWealthI,
-					isInWilderness,
-					isOnTaskResult.isOnTask
-				)
-			}
+			inCatacombs: isInCatacombs
 		};
 
 		const loot = (monster as KillableMonster).table.kill(boostedQuantity, killOptions);

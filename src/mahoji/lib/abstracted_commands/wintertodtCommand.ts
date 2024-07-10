@@ -9,7 +9,6 @@ import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/type
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function wintertodtCommand(user: MUser, channelID: string, quantity?: number) {
 	const fmLevel = user.skillLevel(SkillsEnum.Firemaking);
@@ -92,9 +91,6 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 		foodStr.push(`**Removed ${cost}**`);
 
 		await user.removeItemsFromBank(cost);
-
-		// Track this food cost in Economy Stats
-		await updateBankSetting('economyStats_wintertodtCost', cost);
 
 		// Track items lost
 		await trackLoot({

@@ -1,4 +1,4 @@
-import { noOp, percentChance, randArrItem } from 'e';
+import { percentChance, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
@@ -75,38 +75,10 @@ export const kingGoldemarTask: MinionTask = {
 		const gotDWWH = roll(dwwhChance);
 		const dwwhRecipient = gotDWWH ? randArrItem(dwwhTable) : null;
 
-		const userGettingTricked = users[0];
-		let trickDidActivate = false;
-		if (users.length === 1 && dwwhRecipient !== userGettingTricked && 5 > 10) {
-			const activeTrick = await prisma.mortimerTricks.findFirst({
-				where: {
-					target_id: userGettingTricked.id,
-					completed: false
-				}
-			});
-			if (activeTrick) {
-				const trickster = await globalClient.users.fetch(activeTrick.trickster_id).catch(noOp);
-				trickster
-					?.send(
-						`You just tricked ${userGettingTricked.rawUsername} into thinking they got a Broken dwarven warhammer!`
-					)
-					.catch(noOp);
-				await prisma.mortimerTricks.update({
-					where: {
-						id: activeTrick.id
-					},
-					data: {
-						completed: true
-					}
-				});
-				trickDidActivate = true;
-			}
-		}
-
 		const killStr =
-			(gotDWWH && dwwhRecipient) || trickDidActivate
+			gotDWWH && dwwhRecipient
 				? `${
-						trickDidActivate ? userGettingTricked.usernameOrMention : dwwhRecipient?.usernameOrMention
+						dwwhRecipient?.usernameOrMention
 					} delivers a crushing blow to King Goldemars warhammer, breaking it. The king has no choice but to flee the chambers, **leaving behind his broken hammer.**`
 				: `${
 						solo ? 'You' : 'Your team'
@@ -143,9 +115,6 @@ export const kingGoldemarTask: MinionTask = {
 			teamLoot.add(user.id, loot);
 
 			const fakeLoot = loot.clone();
-			if (trickDidActivate) {
-				fakeLoot.add('Broken dwarven warhammer');
-			}
 
 			resultStr += `\n${user} received ${fakeLoot}.`;
 		}

@@ -1,19 +1,16 @@
 import { execSync } from 'node:child_process';
 
-import { type CommandRunOptions, bulkUpdateCommands, convertBankToPerHourStats, dateFm } from '@oldschoolgg/toolkit';
+import { type CommandRunOptions, bulkUpdateCommands, dateFm } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import type { ClientStorage } from '@prisma/client';
-import { economy_transaction_type } from '@prisma/client';
-import { Duration } from '@sapphire/time-utilities';
 import type { InteractionReplyOptions, Message, TextChannel } from 'discord.js';
 import { AttachmentBuilder, userMention } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, calcPercentOfNum, calcWhatPercent, noOp, notEmpty, randArrItem, roll, sleep, uniqueArr } from 'e';
+import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, roll, sleep, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import { boxFrenzy } from '../../lib/boxFrenzy';
 import {
@@ -21,23 +18,15 @@ import {
 	BadgesEnum,
 	BitField,
 	BitFieldData,
-	COINS_ID,
 	Channel,
 	DISABLED_COMMANDS,
 	META_CONSTANTS,
-	badges,
 	globalConfig
 } from '../../lib/constants';
 import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
-import { addToDoubleLootTimer, syncDoubleLoot } from '../../lib/doubleLoot';
-import { economyLog } from '../../lib/economyLogs';
 import type { GearSetup } from '../../lib/gear/types';
-import { GrandExchange } from '../../lib/grandExchange';
-import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
-import { sorts } from '../../lib/sorts';
-import { calcPerHour, cleanString, formatDuration, sanitizeBank, stringMatches, toKMB } from '../../lib/util';
-import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
+import { formatDuration, stringMatches } from '../../lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -52,61 +41,12 @@ import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { allAbstractCommands } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
-import { getLotteryBank } from './lottery';
 
 export const gifs = [
 	'https://tenor.com/view/angry-stab-monkey-knife-roof-gif-13841993',
 	'https://gfycat.com/serenegleamingfruitbat',
 	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
-
-async function allEquippedPets() {
-	const pets = await prisma.$queryRawUnsafe<{ pet: number; qty: number }[]>(`SELECT "minion.equippedPet" AS pet, COUNT("minion.equippedPet")::int AS qty
-FROM users
-WHERE "minion.equippedPet" IS NOT NULL
-GROUP BY "minion.equippedPet"
-ORDER BY qty DESC;`);
-	const bank = new Bank();
-	for (const { pet, qty } of pets) {
-		bank.add(pet, qty);
-	}
-	return bank;
-}
-
-async function getAllTradedItems(giveUniques = false) {
-	const economyTrans = await prisma.economyTransaction.findMany({
-		where: {
-			date: {
-				gt: new Date(Date.now() - Time.Month)
-			},
-			type: economy_transaction_type.trade
-		},
-		select: {
-			items_received: true,
-			items_sent: true
-		}
-	});
-
-	const total = new Bank();
-
-	if (giveUniques) {
-		for (const trans of economyTrans) {
-			const bank = new Bank().add(trans.items_received as ItemBank).add(trans.items_sent as ItemBank);
-
-			for (const item of bank.items()) {
-				total.add(item[0].id);
-			}
-		}
-	} else {
-		for (const trans of economyTrans) {
-			total.add(trans.items_received as ItemBank);
-			total.add(trans.items_sent as ItemBank);
-		}
-	}
-
-	return total;
-}
 
 const viewableThings: {
 	name: string;
@@ -160,44 +100,6 @@ AND ("gear.melee" IS NOT NULL OR
 		}
 	},
 	{
-		name: 'Most Traded Items (30d, Total Volume)',
-		run: async () => {
-			const items = await getAllTradedItems();
-			return {
-				content: items
-					.items()
-					.sort(sorts.quantity)
-					.slice(0, 10)
-					.map((i, index) => `${++index}. ${i[0].name} - ${i[1].toLocaleString()}x traded`)
-					.join('\n')
-			};
-		}
-	},
-	{
-		name: 'Most Traded Items (30d, Unique trades)',
-		run: async () => {
-			const items = await getAllTradedItems(true);
-			return {
-				content: items
-					.items()
-					.sort(sorts.quantity)
-					.slice(0, 10)
-					.map((i, index) => `${++index}. ${i[0].name} - Traded ${i[1].toLocaleString()}x times`)
-					.join('\n')
-			};
-		}
-	},
-	{
-		name: 'Memory Analysis',
-		run: async () => {
-			return {
-				content: Object.entries(memoryAnalysis())
-					.map(i => `${i[0]}: ${i[1]}`)
-					.join('\n')
-			};
-		}
-	},
-	{
 		name: 'Slayer Mask Leaderboard',
 		run: async () => {
 			let res = '';
@@ -217,51 +119,6 @@ AND ("gear.melee" IS NOT NULL OR
 		}
 	},
 	{
-		name: 'Economy Bank',
-		run: async () => {
-			const [blowpipeRes, totalGP, result] = await prisma.$transaction([
-				prisma.$queryRawUnsafe<{ scales: number; dart: number; qty: number }[]>(`SELECT (blowpipe->>'scales')::int AS scales, (blowpipe->>'dartID')::int AS dart, (blowpipe->>'dartQuantity')::int AS qty
-FROM users
-WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
-				prisma.$queryRawUnsafe<{ sum: number }[]>('SELECT SUM("GP") FROM users;'),
-				prisma.$queryRawUnsafe<{ banks: ItemBank }[]>(`SELECT
-				json_object_agg(itemID, itemQTY)::jsonb as banks
-			 from (
-				select key as itemID, sum(value::bigint) as itemQTY
-				from users
-				cross join json_each_text(bank)
-				group by key
-			 ) s;`)
-			]);
-			const totalBank: ItemBank = result[0].banks;
-			const economyBank = new Bank(totalBank);
-			economyBank.add('Coins', totalGP[0].sum);
-
-			const allPets = await allEquippedPets();
-			economyBank.add(allPets);
-
-			for (const { dart, scales, qty } of blowpipeRes) {
-				economyBank.add("Zulrah's scales", scales);
-				economyBank.add(dart, qty);
-			}
-			sanitizeBank(economyBank);
-			return {
-				files: [
-					(await makeBankImage({ bank: economyBank })).file,
-					new AttachmentBuilder(Buffer.from(JSON.stringify(economyBank.bank, null, 4)), {
-						name: 'bank.json'
-					})
-				]
-			};
-		}
-	},
-	{
-		name: 'Equipped Pets',
-		run: async () => {
-			return allEquippedPets();
-		}
-	},
-	{
 		name: 'Most Active',
 		run: async () => {
 			const res = await prisma.$queryRawUnsafe<{ num: number; username: string }[]>(`
@@ -277,66 +134,6 @@ LIMIT 10;
 				content: `Most Active Users in past 48h\n${res
 					.map((i, ind) => `${ind + 1} ${i.username}: ${formatDuration(i.num)}`)
 					.join('\n')}`
-			};
-		}
-	},
-	{
-		name: 'Grand Exchange',
-		run: async () => {
-			const settings = await GrandExchange.fetchData();
-
-			const allTx: string[][] = [];
-			const allTransactions = await prisma.gETransaction.findMany({
-				orderBy: {
-					created_at: 'desc'
-				}
-			});
-			if (allTransactions.length > 0) {
-				allTx.push(Object.keys(allTransactions[0]));
-				for (const tx of allTransactions) {
-					allTx.push(Object.values(tx).map(i => i.toString()));
-				}
-			}
-
-			const allLi: string[][] = [];
-			const allListings = await prisma.gEListing.findMany({
-				orderBy: {
-					created_at: 'desc'
-				}
-			});
-			if (allListings.length > 0) {
-				allLi.push(Object.keys(allListings[0]));
-				for (const tx of allListings) {
-					allLi.push(Object.values(tx).map(i => (i === null ? '' : i.toString())));
-				}
-			}
-
-			const buyLimitInterval = GrandExchange.getInterval();
-			return {
-				content: `**Grand Exchange Data**
-
-The next buy limit reset is at: ${buyLimitInterval.nextResetStr}, it resets every ${formatDuration(
-					GrandExchange.config.buyLimit.interval
-				)}.
-**Tax Rate:** ${GrandExchange.config.tax.rate()}%
-**Tax Cap (per item):** ${toKMB(GrandExchange.config.tax.cap())}
-**Total GP Removed From Taxation:** ${settings.totalTax.toLocaleString()} GP
-**Total Tax GP G.E Has To Spend on Item Sinks:** ${settings.taxBank.toLocaleString()} GP
-`,
-				files: [
-					(
-						await makeBankImage({
-							bank: await GrandExchange.fetchOwnedBank(),
-							title: 'Items in the G.E'
-						})
-					).file,
-					new AttachmentBuilder(Buffer.from(allTx.map(i => i.join('\t')).join('\n')), {
-						name: 'transactions.txt'
-					}),
-					new AttachmentBuilder(Buffer.from(allLi.map(i => i.join('\t')).join('\n')), {
-						name: 'listings.txt'
-					})
-				]
 			};
 		}
 	},
@@ -404,28 +201,6 @@ from bot_item_sell;`);
 						{ name: 'output.txt' }
 					)
 				]
-			};
-		}
-	},
-	{
-		name: 'Max G.E Slot users',
-		run: async () => {
-			const res = await prisma.$queryRawUnsafe<{ user_id: string; slots_used: number }[]>(`
-SELECT user_id, COUNT(*)::int AS slots_used
-FROM ge_listing
-WHERE cancelled_at IS NULL AND fulfilled_at IS NULL
-GROUP BY user_id
-HAVING COUNT(*) >= 3
-ORDER BY slots_used DESC;
-`);
-			let usersUsingAllSlots = 0;
-			for (const row of res) {
-				const user = await mUserFetch(row.user_id);
-				const { slots } = await GrandExchange.calculateSlotsOfUser(user);
-				if (row.slots_used >= slots) usersUsingAllSlots++;
-			}
-			return {
-				content: `There are ${usersUsingAllSlots}x users using all their G.E slots.`
 			};
 		}
 	}
@@ -753,27 +528,18 @@ export const adminCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		reboot?: {};
 		shut_down?: {};
-		debug_patreon?: {};
 		sync_commands?: {};
-		item_stats?: { item: string };
 		sync_blacklist?: {};
-		loot_track?: { name: string };
 		cancel_task?: { user: MahojiUserOption };
-		sync_roles?: {};
-		sync_patreon?: {};
-		badges?: { user: MahojiUserOption; add?: string; remove?: string };
 		bypass_age?: { user: MahojiUserOption };
 		command?: { enable?: string; disable?: string };
 		set_price?: { item: string; price: number };
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
-		ltc?: { item?: string };
 		double_loot?: { reset?: boolean; add?: string };
 		view?: { thing: string };
-		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string; reason?: string };
 		box_frenzy?: { amount: number };
 		lamp_frenzy?: { amount: number };
-		lottery_dump?: {};
 	}>) => {
 		await deferInteraction(interaction);
 
@@ -795,68 +561,6 @@ export const adminCommand: OSBMahojiCommand = {
 			Cooldowns.delete(user.id);
 			minionActivityCacheDelete(user.id);
 			return 'Done.';
-		}
-		if (options.sync_roles) {
-			// try {
-			// 	const result = await runRolesTask();
-			// 	if (result.length < 2000) return result;
-			// 	return {
-			// 		content: 'The result was too big! Check the file.',
-			// 		files: [new AttachmentBuilder(Buffer.from(result), { name: 'roles.txt' })]
-			// 	};
-			// } catch (err: any) {
-			// 	logError(err);
-			// 	return `Failed to run roles task. ${err.message}`;
-			// }
-			return 'The roles task is disabled for now.';
-		}
-
-		if (options.badges) {
-			if ((!options.badges.remove && !options.badges.add) || (options.badges.add && options.badges.remove)) {
-				return Object.entries(badges)
-					.map(entry => `**${entry[1]}:** ${entry[0]}`)
-					.join('\n');
-			}
-			const badgeInput = options.badges.remove ?? options.badges.add;
-			const action: 'add' | 'remove' = !options.badges.remove ? 'add' : 'remove';
-			const badge: [string, number] | undefined = Object.entries(BadgesEnum).find(i => i[0] === badgeInput);
-			if (!badge) return 'Invalid badge.';
-			const [badgeName, badgeID] = badge;
-
-			const userToUpdateBadges = await mahojiUsersSettingsFetch(options.badges.user.user.id, {
-				badges: true,
-				id: true
-			});
-			let newBadges = [...userToUpdateBadges.badges];
-
-			if (action === 'add') {
-				if (newBadges.includes(badgeID)) return "Already has this badge, so can't add.";
-				newBadges.push(badgeID);
-			} else {
-				if (!newBadges.includes(badgeID)) return "Doesn't have this badge, so can't remove.";
-				newBadges = newBadges.filter(i => i !== badgeID);
-			}
-
-			await mahojiUserSettingsUpdate(userToUpdateBadges.id, {
-				badges: uniqueArr(newBadges)
-			});
-
-			return `${action === 'add' ? 'Added' : 'Removed'} ${badgeName} ${badges[badgeID]} badge to ${
-				options.badges.user.user.username
-			}.`;
-		}
-
-		if (options.bypass_age) {
-			const input = await mahojiUsersSettingsFetch(options.bypass_age.user.user.id, { bitfield: true, id: true });
-			if (input.bitfield.includes(BitField.BypassAgeRestriction)) {
-				return 'This user is already bypassed.';
-			}
-			await mahojiUserSettingsUpdate(input.id, {
-				bitfield: {
-					push: BitField.BypassAgeRestriction
-				}
-			});
-			return `Bypassed age restriction for ${options.bypass_age.user.user.username}.`;
 		}
 
 		if (options.command) {
@@ -972,7 +676,6 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 		if (options.reboot) {
 			globalClient.isShuttingDown = true;
-			await economyLog('Flushing economy log due to reboot', true);
 			await interactionReply(interaction, {
 				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
 			});
@@ -990,8 +693,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			await interactionReply(interaction, {
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
-			await economyLog('Flushing economy log due to shutdown', true);
-			await Promise.all([sleep(timer), GrandExchange.queue.onEmpty()]);
+			await sleep(timer);
 			await sendToChannelID(Channel.GeneralChannel, {
 				content: `I am shutting down! Goodbye :(
 
@@ -1092,157 +794,6 @@ ${guildCommands.length} Guild commands`;
 		 */
 		if (!isOwner) {
 			return randArrItem(gifs);
-		}
-
-		if (options.item_stats) {
-			const item = getItem(options.item_stats.item);
-			if (!item) return 'Invalid item.';
-			const isIron = false;
-			const ownedResult: any = await prisma.$queryRawUnsafe(`SELECT SUM((bank->>'${item.id}')::int) as qty
-FROM users
-WHERE bank->>'${item.id}' IS NOT NULL;`);
-			return `There are ${ownedResult[0].qty.toLocaleString()} ${item.name} owned by everyone.
-There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' : 'people'} with atleast 1 ${
-				item.name
-			} in their collection log.`;
-		}
-
-		if (options.loot_track) {
-			const loot = await prisma.lootTrack.findFirst({
-				where: {
-					id: options.loot_track.name
-				}
-			});
-			if (!loot) return 'Invalid';
-
-			const durationMillis = loot.total_duration * Time.Minute;
-
-			const arr = [
-				['Cost', new Bank(loot.cost as ItemBank)],
-				['Loot', new Bank(loot.loot as ItemBank)]
-			] as const;
-
-			let content = `${loot.id} ${formatDuration(loot.total_duration * Time.Minute)} KC${loot.total_kc}`;
-			const files = [];
-			for (const [name, bank] of arr) {
-				content += `\n${convertBankToPerHourStats(bank, durationMillis).join(', ')}`;
-				files.push((await makeBankImage({ bank, title: name })).file);
-			}
-			return { content, files };
-		}
-		if (options.double_loot) {
-			if (options.double_loot.reset) {
-				await mahojiClientSettingsUpdate({
-					double_loot_finish_time: 0
-				});
-				await syncDoubleLoot();
-				return 'Reset the double loot timer.';
-			}
-			if (options.double_loot.add) {
-				const duration = new Duration(options.double_loot.add);
-				const ms = duration.offset;
-				await handleMahojiConfirmation(interaction, `Add ${formatDuration(ms)} to double loot timer?`);
-				addToDoubleLootTimer(ms, 'added by RP command');
-				return `Added ${formatDuration(ms)} to the double loot timer.`;
-			}
-		}
-		if (options.ltc) {
-			let str = '';
-			const results = await prisma.lootTrack.findMany();
-
-			if (options.ltc.item) {
-				str += `${['id', 'total_of_item', 'item_per_kc', 'per_hour'].join('\t')}\n`;
-				const item = getOSItem(options.ltc.item);
-
-				for (const res of results) {
-					const loot = new Bank(res.loot as ItemBank);
-					if (!loot.has(item.id)) continue;
-					const qty = loot.amount(item.id);
-					str += `${[
-						res.id,
-						qty,
-						qty / res.total_kc,
-						calcPerHour(qty, res.total_duration * Time.Minute)
-					].join('\t')}\n`;
-				}
-
-				return {
-					files: [{ attachment: Buffer.from(str), name: `${cleanString(item.name)}.txt` }]
-				};
-			}
-
-			str += `${['id', 'cost_h', 'cost', 'loot_h', 'loot', 'per_hour_h', 'per_hour', 'ratio'].join('\t')}\n`;
-			for (const res of results) {
-				if (!res.total_duration || !res.total_kc) continue;
-				if (Object.keys({ ...(res.cost as ItemBank), ...(res.loot as ItemBank) }).length === 0) continue;
-				const cost = new Bank(res.cost as ItemBank);
-				const loot = new Bank(res.loot as ItemBank);
-				sanitizeBank(cost);
-				sanitizeBank(loot);
-				const marketValueCost = Math.round(cost.value());
-				const marketValueLoot = Math.round(loot.value());
-				const ratio = marketValueLoot / marketValueCost;
-
-				if (!marketValueCost || !marketValueLoot || ratio === Number.POSITIVE_INFINITY) continue;
-
-				str += `${[
-					res.id,
-					toKMB(marketValueCost),
-					marketValueCost,
-					toKMB(marketValueLoot),
-					marketValueLoot,
-					toKMB(calcPerHour(marketValueLoot, res.total_duration * Time.Minute)),
-					calcPerHour(marketValueLoot, res.total_duration * Time.Minute),
-					ratio
-				].join('\t')}\n`;
-			}
-
-			return {
-				files: [{ attachment: Buffer.from(str), name: 'output.txt' }]
-			};
-		}
-
-		if (options.lottery_dump) {
-			const res = await getLotteryBank();
-			for (const user of res.users) {
-				if (!globalClient.users.cache.has(user.id)) {
-					await globalClient.users.fetch(user.id);
-				}
-			}
-			const taxedBank = new Bank();
-			for (const [item, qty] of res.totalLoot.items()) {
-				if (item.id === COINS_ID) {
-					taxedBank.add('Coins', qty);
-					continue;
-				}
-				const fivePercent = Math.ceil(calcPercentOfNum(5, qty));
-				taxedBank.add(item, Math.max(fivePercent, 1));
-			}
-
-			const actualLootBank = res.totalLoot.clone().remove(taxedBank);
-
-			return {
-				files: [
-					{
-						name: 'lottery.txt',
-						attachment: Buffer.from(
-							JSON.stringify(
-								res.users.map(i => [globalClient.users.cache.get(i.id)?.username ?? i.id, i.tickets])
-							)
-						)
-					},
-					{
-						name: 'totalloot.json',
-						attachment: Buffer.from(JSON.stringify(actualLootBank.bank))
-					},
-					{
-						name: 'taxedbank.json',
-						attachment: Buffer.from(JSON.stringify(taxedBank.bank))
-					},
-					(await makeBankImage({ bank: taxedBank, title: 'Taxed Bank' })).file,
-					(await makeBankImage({ bank: actualLootBank, title: 'Actual Loot' })).file
-				]
-			};
 		}
 
 		if (options.box_frenzy) {

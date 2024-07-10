@@ -1,7 +1,6 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 
-import { PerkTier } from '../../lib/constants';
 import { getAllTrackedLootForUser, getDetailsOfSingleTrackedLoot } from '../../lib/lootTrack';
 
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -64,14 +63,6 @@ export const lootCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ view?: { name: string }; reset?: { name: string } }>) => {
 		const user = await mUserFetch(userID);
 		const name = options.view?.name ?? options.reset?.name ?? '';
-		if (user.perkTier() < PerkTier.Four) {
-			const res = await prisma.lootTrack.count({
-				where: {
-					user_id: BigInt(userID)
-				}
-			});
-			return `You need to be a Tier 3 Patron to use this feature. You have ${res}x loot trackers stored currently.`;
-		}
 
 		const trackedLoot = await prisma.lootTrack
 			.findFirst({

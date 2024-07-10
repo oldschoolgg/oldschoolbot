@@ -1,32 +1,20 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
 import type { ButtonInteraction, Interaction } from 'discord.js';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { Time, removeFromArr, uniqueArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Time } from 'e';
 
-import { getItemContractDetails, handInContract } from '../../mahoji/commands/ic';
 import { Cooldowns } from '../../mahoji/lib/Cooldowns';
-import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import { userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { repeatTameTrip } from '../../tasks/tames/tameTasks';
-import { modifyBusyCounter } from '../busyCounterCache';
 import type { ClueTier } from '../clues/clueTiers';
-import { BitField, PerkTier } from '../constants';
+import { PerkTier } from '../constants';
 
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
-import type { ItemBank } from '../types';
-import { formatDuration, stringMatches } from '../util';
-import { CACHED_ACTIVE_USER_IDS } from './cachedUserIDs';
-import { updateGiveawayMessage } from './giveaway';
-import { handleMahojiConfirmation } from './handleMahojiConfirmation';
+import { formatDuration } from '../util';
 import { deferInteraction, interactionReply } from './interactionReply';
-import { logErrorForInteraction } from './logError';
 import { minionIsBusy } from './minionIsBusy';
 import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
-import { tradePlayerItems } from './tradePlayerItems';
 
 const globalInteractionActions = [
 	'DO_BEGINNER_CLUE',
@@ -59,7 +47,6 @@ const globalInteractionActions = [
 	'NEW_SLAYER_TASK',
 	'SPAWN_LAMP',
 	'REPEAT_TAME_TRIP',
-	'ITEM_CONTRACT_SEND',
 	'DO_FISHING_CONTEST',
 	'DO_SHOOTING_STAR',
 	'CHECK_TOA'
@@ -141,101 +128,6 @@ export function makeNewSlayerTaskButton() {
 		.setEmoji('630911040560824330');
 }
 
-async function giveawayButtonHandler(user: MUser, customID: string, interaction: ButtonInteraction) {
-	const split = customID.split('_');
-	if (split[0] !== 'GIVEAWAY') return;
-	const giveawayID = Number(split[2]);
-	const giveaway = await prisma.giveaway.findFirst({
-		where: {
-			id: giveawayID
-		}
-	});
-	if (!giveaway) {
-		return interactionReply(interaction, { content: 'Invalid giveaway.', ephemeral: true });
-	}
-	if (split[1] === 'REPEAT') {
-		if (user.id !== giveaway.user_id) {
-			return interactionReply(interaction, {
-				content: "You cannot repeat other peoples' giveaways.",
-				ephemeral: true
-			});
-		}
-
-		return runCommand({
-			commandName: 'giveaway',
-			args: {
-				start: {
-					duration: `${giveaway.duration}ms`,
-					items: new Bank(giveaway.loot as ItemBank)
-						.items()
-						.map(t => `${t[1]} ${t[0].name}`)
-						.join(', ')
-				}
-			},
-			user,
-			member: interaction.member,
-			channelID: interaction.channelId,
-			guildID: interaction.guildId,
-			interaction,
-			continueDeltaMillis: null
-		});
-	}
-
-	if (giveaway.finish_date.getTime() < Date.now() || giveaway.completed) {
-		return interactionReply(interaction, { content: 'This giveaway has finished.', ephemeral: true });
-	}
-
-	const action = split[1] === 'ENTER' ? 'ENTER' : 'LEAVE';
-
-	if (user.isIronman) {
-		return interactionReply(interaction, {
-			content: 'You are an ironman, you cannot enter giveaways.',
-			ephemeral: true
-		});
-	}
-
-	if (user.id === giveaway.user_id) {
-		return interactionReply(interaction, { content: 'You cannot join your own giveaway.', ephemeral: true });
-	}
-
-	if (action === 'ENTER') {
-		if (giveaway.users_entered.includes(user.id)) {
-			return interactionReply(interaction, {
-				content: 'You are already entered in this giveaway.',
-				ephemeral: true
-			});
-		}
-		await prisma.giveaway.update({
-			where: {
-				id: giveaway.id
-			},
-			data: {
-				users_entered: {
-					push: user.id
-				}
-			}
-		});
-		updateGiveawayMessage(giveaway);
-		return interactionReply(interaction, { content: 'You are now entered in this giveaway.', ephemeral: true });
-	}
-	if (!giveaway.users_entered.includes(user.id)) {
-		return interactionReply(interaction, {
-			content: "You aren't entered in this giveaway, so you can't leave it.",
-			ephemeral: true
-		});
-	}
-	await prisma.giveaway.update({
-		where: {
-			id: giveaway.id
-		},
-		data: {
-			users_entered: uniqueArr(removeFromArr(giveaway.users_entered, user.id))
-		}
-	});
-	updateGiveawayMessage(giveaway);
-	return interactionReply(interaction, { content: 'You left the giveaway.', ephemeral: true });
-}
-
 async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	if (user.minionIsBusy) return interactionReply(interaction, { content: 'Your minion is busy.' });
 	const trips = await fetchRepeatTrips(interaction.user.id);
@@ -246,160 +138,6 @@ async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
 	const matchingActivity = trips.find(i => i.type === split[2]);
 	if (!matchingActivity) return repeatTrip(interaction, trips[0]);
 	return repeatTrip(interaction, matchingActivity);
-}
-
-function icDonateValidation(user: MUser, donator: MUser) {
-	if (user.isIronman || donator.isIronman) {
-		return 'Ironmen stand alone!';
-	}
-	if (user.id === donator.id) {
-		return 'You cannot donate to yourself.';
-	}
-	if (user.bitfield.includes(BitField.NoItemContractDonations)) {
-		return "That user doesn't want donations.";
-	}
-	const details = getItemContractDetails(user);
-	if (!details.nextContractIsReady || !details.currentItem) {
-		return "That user's Item Contract isn't ready.";
-	}
-
-	if (user.isBusy || donator.isBusy) {
-		return 'One of you is busy, and cannot do this trade right now.';
-	}
-
-	const cost = new Bank().add(details.currentItem.id);
-	if (!donator.bank.has(cost)) {
-		return `You don't own ${cost}.`;
-	}
-
-	return {
-		cost,
-		details
-	};
-}
-
-async function donateICHandler(interaction: ButtonInteraction) {
-	const userID = interaction.customId.split('_')[2];
-	if (!userID || !CACHED_ACTIVE_USER_IDS.has(userID)) {
-		return interactionReply(interaction, { content: 'Invalid user.', ephemeral: true });
-	}
-
-	const user = await mUserFetch(userID);
-	const donator = await mUserFetch(interaction.user.id);
-
-	const errorStr = icDonateValidation(user, donator);
-	if (typeof errorStr === 'string') return interactionReply(interaction, { content: errorStr, ephemeral: true });
-
-	await handleMahojiConfirmation(
-		interaction,
-		`${donator}, are you sure you want to give ${errorStr.cost} to ${
-			user.badgedUsername
-		}? You own ${donator.bank.amount(errorStr.details.currentItem!.id)} of this item.`,
-		[donator.id]
-	);
-
-	await user.sync();
-	await donator.sync();
-
-	const secondaryErrorStr = icDonateValidation(user, donator);
-	if (typeof secondaryErrorStr === 'string') return interactionReply(interaction, { content: secondaryErrorStr });
-	const { cost } = secondaryErrorStr;
-
-	try {
-		modifyBusyCounter(donator.id, 1);
-		await tradePlayerItems(donator, user, cost);
-		await userStatsBankUpdate(donator.id, 'ic_donations_given_bank', cost);
-		await userStatsBankUpdate(user.id, 'ic_donations_received_bank', cost);
-
-		return interactionReply(interaction, {
-			content: `${donator}, you donated ${cost} to ${user}!
-
-${user.mention} ${await handInContract(null, user)}`,
-			allowedMentions: {
-				users: [user.id]
-			}
-		});
-	} catch (err) {
-		logErrorForInteraction(err, interaction);
-	} finally {
-		modifyBusyCounter(donator.id, -1);
-	}
-}
-
-async function handleGearPresetEquip(user: MUser, id: string, interaction: ButtonInteraction) {
-	const [, setupName, presetName] = id.split('_');
-	if (!setupName || !presetName) return;
-	const presets = await prisma.gearPreset.findMany({ where: { user_id: user.id } });
-	const matchingPreset = presets.find(p => stringMatches(p.name, presetName));
-	if (!matchingPreset) {
-		return interactionReply(interaction, { content: "You don't have a preset with this name.", ephemeral: true });
-	}
-	await runCommand({
-		commandName: 'gearpresets',
-		args: { equip: { gear_setup: setupName, preset: presetName } },
-		user,
-		member: interaction.member,
-		channelID: interaction.channelId,
-		guildID: interaction.guildId,
-		interaction,
-		continueDeltaMillis: null
-	});
-}
-
-async function handlePinnedTripRepeat(user: MUser, id: string, interaction: ButtonInteraction) {
-	const [, pinnedTripID] = id.split('_');
-	if (!pinnedTripID) return;
-	const trip = await prisma.pinnedTrip.findFirst({ where: { user_id: user.id, id: pinnedTripID } });
-	if (!trip) {
-		return interactionReply(interaction, {
-			content: "You don't have a pinned trip with this ID, and you cannot repeat trips of other users.",
-			ephemeral: true
-		});
-	}
-	await repeatTrip(interaction, { data: trip.data, type: trip.activity_type });
-}
-
-async function handleGEButton(user: MUser, id: string, interaction: ButtonInteraction) {
-	if (id === 'ge_cancel_dms') {
-		const mention = mentionCommand(globalClient, 'config', 'user', 'toggle');
-		if (user.bitfield.includes(BitField.DisableGrandExchangeDMs)) {
-			return interactionReply(interaction, {
-				content: `You already disabled Grand Exchange DM's, you can re-enable them using ${mention}.`,
-				ephemeral: true
-			});
-		}
-		await user.update({
-			bitfield: {
-				push: BitField.DisableGrandExchangeDMs
-			}
-		});
-		return interactionReply(interaction, {
-			content: `You have disabled Grand Exchange DM's, and won't receive anymore DM's, you can re-enable them using ${mention}.`,
-			ephemeral: true
-		});
-	}
-	if (id.startsWith('ge_cancel_')) {
-		const cancelUserFacingID = id.split('_')[2];
-		const listing = await prisma.gEListing.findFirst({
-			where: {
-				userfacing_id: cancelUserFacingID,
-				user_id: user.id,
-				cancelled_at: null,
-				fulfilled_at: null,
-				quantity_remaining: {
-					gt: 0
-				}
-			}
-		});
-		if (!listing) {
-			return interactionReply(interaction, {
-				content: 'You cannot cancel this listing, it is either already cancelled, fulfilled or not yours.',
-				ephemeral: true
-			});
-		}
-		const response = await cancelGEListingCommand(user, listing.userfacing_id);
-		return interactionReply(interaction, { content: response, ephemeral: true });
-	}
 }
 
 export async function interactionHook(interaction: Interaction) {
@@ -433,11 +171,7 @@ export async function interactionHook(interaction: Interaction) {
 	await deferInteraction(interaction);
 
 	const user = await mUserFetch(userID);
-	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
-	if (id.includes('DONATE_IC')) return donateICHandler(interaction);
-	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
-	if (id.startsWith('PTR_')) return handlePinnedTripRepeat(user, id, interaction);
 	if (id === 'TOA_CHECK') {
 		const response = await toaHelpCommand(user, interaction.channelId);
 		return interactionReply(interaction, {
@@ -445,7 +179,6 @@ export async function interactionHook(interaction: Interaction) {
 			ephemeral: true
 		});
 	}
-	if (id.startsWith('ge_')) return handleGEButton(user, id, interaction);
 
 	if (!isValidGlobalInteraction(id)) return;
 	if (user.isBusy) {
@@ -526,24 +259,8 @@ export async function interactionHook(interaction: Interaction) {
 		});
 	}
 
-	if (id === 'SPAWN_LAMP') {
-		return runCommand({
-			commandName: 'tools',
-			args: { patron: { spawnlamp: {} } },
-			bypassInhibitors: true,
-			...options
-		});
-	}
 	if (id === 'REPEAT_TAME_TRIP') {
 		return repeatTameTrip({ ...options });
-	}
-	if (id === 'ITEM_CONTRACT_SEND') {
-		return runCommand({
-			commandName: 'ic',
-			args: { send: {} },
-			bypassInhibitors: true,
-			...options
-		});
 	}
 
 	if (id === 'BUY_MINION') {

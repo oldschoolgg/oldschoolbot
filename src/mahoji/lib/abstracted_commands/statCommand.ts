@@ -21,7 +21,6 @@ import {
 	calculateTiarasMade,
 	calculateXPSources
 } from '../../../lib/leagues/stats';
-import { getBankBgById } from '../../../lib/minions/data/bankBackgrounds';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { RandomEvents } from '../../../lib/randomEvents';
 import { getMinigameScore } from '../../../lib/settings/minigames';
@@ -975,62 +974,6 @@ ${result
 		}
 	},
 	{
-		name: 'Global Servers',
-		perkTierNeeded: PerkTier.Four,
-		run: async () => {
-			return `Old School Bot is in ${globalClient.guilds.cache.size} servers.`;
-		}
-	},
-	{
-		name: 'Global Minions',
-		perkTierNeeded: PerkTier.Four,
-		run: async () => {
-			const result = await prisma.$queryRawUnsafe<any>(
-				'SELECT COUNT(*)::int FROM users WHERE "minion.hasBought" = true;'
-			);
-			return `There are ${result[0].count.toLocaleString()} minions!`;
-		}
-	},
-	{
-		name: 'Global Ironmen',
-		perkTierNeeded: PerkTier.Four,
-		run: async () => {
-			const result = await prisma.$queryRawUnsafe<any>(
-				'SELECT COUNT(*)::int FROM users WHERE "minion.ironman" = true;'
-			);
-			return `There are ${Number.parseInt(result[0].count).toLocaleString()} ironman minions!`;
-		}
-	},
-	{
-		name: 'Global Icons',
-		perkTierNeeded: PerkTier.Four,
-		run: async () => {
-			const result: { icon: string | null; qty: number }[] = await prisma.$queryRawUnsafe(
-				'SELECT "minion.icon" as icon, COUNT(*)::int as qty FROM users WHERE "minion.icon" is not null group by "minion.icon" order by qty asc;'
-			);
-			return `**Current minion tiers and their number of users:**\n${Object.values(result)
-				.map(row => `${row.icon ?? '<:minion:763743627092164658>'} : ${row.qty}`)
-				.join('\n')}`;
-		}
-	},
-	{
-		name: 'Global Bank Backgrounds',
-		perkTierNeeded: PerkTier.Four,
-		run: async () => {
-			const result = await prisma.$queryRawUnsafe<any>(`SELECT "bankBackground", COUNT(*)::int
-FROM users
-WHERE "bankBackground" <> 1
-GROUP BY "bankBackground";`);
-
-			return result
-				.map(
-					(res: any) =>
-						`**${getBankBgById(res.bankBackground).name}:** ${Number.parseInt(res.count).toLocaleString()}`
-				)
-				.join('\n');
-		}
-	},
-	{
 		name: 'Global Sacrificed',
 		perkTierNeeded: PerkTier.Four,
 		run: async () => {
@@ -1148,20 +1091,6 @@ GROUP BY "bankBackground";`);
 		}
 	},
 	{
-		name: 'Total Items Given For Item Contracts',
-		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(new Bank(stats.ic_cost_bank as ItemBank), 'Item Contract Items Paid');
-		}
-	},
-	{
-		name: 'Total Loot From Item Contracts',
-		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(new Bank(stats.ic_loot_bank as ItemBank), 'Item Contract Loot');
-		}
-	},
-	{
 		name: 'Personal XP gained from Tears of Guthix',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
@@ -1244,68 +1173,6 @@ GROUP BY "bankBackground";`);
 			return `You've received **${Number(
 				stats.ash_sanctifier_prayer_xp
 			).toLocaleString()}** XP from using the Ash Sanctifier.`;
-		}
-	},
-	{
-		name: 'Total Giveaway Cost',
-		perkTierNeeded: PerkTier.Four,
-		run: async u => {
-			const giveaways = await prisma.economyTransaction.findMany({
-				where: {
-					sender: BigInt(u.id),
-					type: 'giveaway'
-				},
-				select: {
-					items_sent: true
-				}
-			});
-			const items = new Bank();
-			for (const g of giveaways) {
-				items.add(g.items_sent as ItemBank);
-			}
-			sanitizeBank(items);
-			return makeResponseForBank(items, "You've given away...");
-		}
-	},
-	{
-		name: 'Total Giveaway Winnings/Loot',
-		perkTierNeeded: PerkTier.Four,
-		run: async u => {
-			const giveaways = await prisma.economyTransaction.findMany({
-				where: {
-					recipient: BigInt(u.id),
-					type: 'giveaway'
-				},
-				select: {
-					items_sent: true
-				}
-			});
-			const items = new Bank();
-			for (const g of giveaways) {
-				items.add(g.items_sent as ItemBank);
-			}
-			sanitizeBank(items);
-			return makeResponseForBank(items, "You've received from giveaways...");
-		}
-	},
-	{
-		name: 'Item Contract Donations Given',
-		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(
-				new Bank(stats.ic_donations_given_bank as ItemBank),
-				'Item Contract Donations Given'
-			);
-		}
-	},
-	{
-		name: 'Item Contract Donations Received',
-		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(
-				new Bank(stats.ic_donations_received_bank as ItemBank),
-				'Item Contract Donations Received'
-			);
 		}
 	},
 	{

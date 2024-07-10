@@ -81,7 +81,6 @@ export async function preCommand({
 		};
 	}
 	const user = await mUserFetch(userID);
-	user.checkBankBackground();
 	if (userIsBusy(userID) && !bypassInhibitors && !busyImmuneCommands.includes(abstractCommand.name)) {
 		return { silent: true, reason: { content: 'You cannot use a command right now.' }, dontRunPostCommand: true };
 	}

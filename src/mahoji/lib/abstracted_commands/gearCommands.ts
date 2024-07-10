@@ -1,8 +1,6 @@
 import { PerkTier, toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
-import type { GearPreset } from '@prisma/client';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import { objectValues } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { MAX_INT_JAVA, PATRON_ONLY_GEAR_SETUP } from '../../../lib/constants';
@@ -12,7 +10,7 @@ import { GearStat } from '../../../lib/gear/types';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
 
-import { Gear, defaultGear, globalPresets } from '../../../lib/structures/Gear';
+import { Gear, defaultGear } from '../../../lib/structures/Gear';
 import { assert, formatSkillRequirements, isValidGearSetup, stringMatches } from '../../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../../lib/util/calculateGearLostOnDeathWilderness';
 import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
@@ -20,94 +18,6 @@ import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { mahojiParseNumber } from '../../mahojiSettings';
-
-async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
-	if (user.minionIsBusy) {
-		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
-	}
-
-	if (!presetName) return "You didn't supply a preset name.";
-	if (!gearSetup) return "You didn't supply a setup.";
-
-	if (!isValidGearSetup(gearSetup)) {
-		return "That's not a valid gear setup.";
-	}
-
-	const userPreset = await prisma.gearPreset.findFirst({ where: { user_id: user.id, name: presetName } });
-	const globalPreset = globalPresets.find(i => i.name === presetName);
-	if (!userPreset && !globalPreset) {
-		return "You don't have a gear preset with that name.";
-	}
-	const preset = (userPreset ?? globalPreset) as GearPreset;
-	if (preset.two_handed !== null) {
-		preset.weapon = null;
-		preset.shield = null;
-	}
-
-	// Checks the preset to make sure the user has the required stats for every item in the preset
-	for (const gearItemId of Object.values(preset)) {
-		if (gearItemId !== null) {
-			const itemToEquip = getItem(gearItemId);
-			if (itemToEquip?.equipment?.requirements && !user.hasSkillReqs(itemToEquip.equipment.requirements)) {
-				return `You can't equip this preset because ${
-					itemToEquip.name
-				} requires these stats: ${formatSkillRequirements(itemToEquip.equipment.requirements)}.`;
-			}
-		}
-	}
-
-	const toRemove = new Bank();
-	function gearItem(val: null | number) {
-		if (val === null) return null;
-		toRemove.add(val);
-		return {
-			item: val,
-			quantity: 1
-		};
-	}
-
-	const newGear = { ...defaultGear };
-	newGear.head = gearItem(preset.head);
-	newGear.neck = gearItem(preset.neck);
-	newGear.body = gearItem(preset.body);
-	newGear.legs = gearItem(preset.legs);
-	newGear.cape = gearItem(preset.cape);
-	newGear['2h'] = gearItem(preset.two_handed);
-	newGear.hands = gearItem(preset.hands);
-	newGear.feet = gearItem(preset.feet);
-	newGear.shield = gearItem(preset.shield);
-	newGear.weapon = gearItem(preset.weapon);
-	newGear.ring = gearItem(preset.ring);
-
-	if (preset.ammo) {
-		newGear.ammo = { item: preset.ammo, quantity: preset.ammo_qty! };
-		toRemove.add(preset.ammo, preset.ammo_qty!);
-	}
-
-	const userBankWithEquippedItems = user.bank.clone();
-	for (const e of objectValues(user.gear[gearSetup].raw())) {
-		if (e) userBankWithEquippedItems.add(e.item, Math.max(e.quantity, 1));
-	}
-
-	if (!userBankWithEquippedItems.has(toRemove.bank)) {
-		return `You don't have the items in this preset. You're missing: ${toRemove.remove(user.bank)}.`;
-	}
-
-	await unEquipAllCommand(user.id, gearSetup);
-
-	await user.removeItemsFromBank(toRemove);
-
-	await user.update({
-		[`gear_${gearSetup}`]: newGear
-	});
-	const updatedGear = user.gear[gearSetup];
-	const image = await generateGearImage(user, updatedGear, gearSetup, user.user.minion_equippedPet);
-
-	return {
-		content: `You equipped the ${preset.name} preset in your ${gearSetup} setup.`,
-		files: [{ name: 'gear.jpg', attachment: image }]
-	};
-}
 
 async function gearEquipMultiCommand(
 	user: MUser,
@@ -163,12 +73,11 @@ export async function gearEquipCommand(args: {
 	setup: string;
 	item: string | undefined;
 	items: string | undefined;
-	preset: string | undefined;
 	quantity: number | undefined;
 	unEquippedItem: Bank | undefined;
 	auto: string | undefined;
 }): CommandResponse {
-	const { interaction, userID, setup, item, items, preset, quantity: _quantity, auto } = args;
+	const { interaction, userID, setup, item, items, quantity: _quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
 	const user = await mUserFetch(userID);
 	if (minionIsBusy(user.id)) {
@@ -181,14 +90,12 @@ export async function gearEquipCommand(args: {
 	if (setup === 'other' && user.perkTier() < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
-	if (preset) {
-		return gearPresetEquipCommand(user, setup, preset);
-	}
+
 	if (auto) {
 		return autoEquipCommand(user, setup, auto);
 	}
 	const itemToEquip = getItem(item);
-	if (!itemToEquip) return "You didn't supply the name of an item or preset you want to equip.";
+	if (!itemToEquip) return "You didn't supply the name of an item you want to equip.";
 	const quantity = mahojiParseNumber({ input: _quantity ?? 1, min: 1, max: MAX_INT_JAVA }) ?? 1;
 	if (!itemToEquip.equipable_by_player || !itemToEquip.equipment) return "This item isn't equipable.";
 

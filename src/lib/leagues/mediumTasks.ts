@@ -400,20 +400,6 @@ export const mediumTasks: Task[] = [
 		}
 	},
 	{
-		id: 1056,
-		name: 'Complete 10 Item Contracts',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.total_item_contracts >= 10;
-		}
-	},
-	{
-		id: 1057,
-		name: 'Achieve an Item Contract streak of 5',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.item_contract_streak >= 5;
-		}
-	},
-	{
 		id: 1058,
 		name: 'Kill 25 unique monsters',
 		has: async ({ userStats }) => {

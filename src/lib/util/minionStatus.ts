@@ -4,7 +4,6 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
 import { shades, shadesLogs } from '../../mahoji/lib/abstracted_commands/shadesOfMortonCommand';
-import { bossEvents } from '../bossEvents';
 import { divinationEnergies, memoryHarvestTypes } from '../bso/divination';
 import { ClueTiers } from '../clues/clueTiers';
 import { Emoji } from '../constants';
@@ -666,11 +665,6 @@ export function minionStatus(user: MUser) {
 			return `${data.monkeys.some(m => m.special) ? Emoji.Purple : ''} ${name} is currently doing ${
 				data.quantity
 			} fights in Monkey Rumble. ${formattedDuration}`;
-		}
-		case 'BossEvent': {
-			const data = currentTask as NewBossOptions;
-			const bossDoing = bossEvents.find(b => b.id === data.bossID)!;
-			return `${name} is currently doing a ${bossDoing.name} Boss Event! ${formattedDuration}`;
 		}
 		case 'FishingContest': {
 			const data = currentTask as FishingContestOptions;

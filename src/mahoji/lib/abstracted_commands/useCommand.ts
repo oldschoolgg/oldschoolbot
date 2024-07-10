@@ -1,6 +1,6 @@
 import type { CommandResponse } from '@oldschoolgg/toolkit';
-import { AttachmentBuilder, bold } from 'discord.js';
-import { Time, notEmpty, objectEntries, randArrItem, randInt } from 'e';
+import { AttachmentBuilder } from 'discord.js';
+import { Time, notEmpty, randArrItem, randInt } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
@@ -8,13 +8,10 @@ import { divinationEnergies } from '../../../lib/bso/divination';
 import { BitField } from '../../../lib/constants';
 import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { allDyes, dyedItems } from '../../../lib/dyedItems';
-import { gearImages } from '../../../lib/gear/functions/generateGearImage';
-import { mysteriousStepData } from '../../../lib/mysteryTrail';
 import { makeScriptImage } from '../../../lib/scriptImages';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import resolveItems from '../../../lib/util/resolveItems';
-import { flowerTable } from './hotColdCommand';
 
 const messageInABottleMessages = [
 	"We are but a week from finishing our journey, yet the seas have claimed my dearest and only friend, Felris, a noble pup. He was loyal and uplifting, and warmed the heart on a cold day. The tragedy of his loss echoes in the lonely crash of the waves, a vivid reminder of a journey he couldn't complete. Alone, I endure, with only his memory as my companion.",
@@ -220,12 +217,6 @@ const genericUsables: {
 		loot: new Bank().add('Burnt celebratory cake'),
 		response: () => 'You try to get Klik to light the candle... but he burnt the cake..',
 		addToCL: true
-	},
-	{
-		items: [getOSItem('Mithril seeds')],
-		cost: new Bank().add('Mithril seeds').freeze(),
-		loot: () => flowerTable.roll(),
-		response: loot => `You planted a Mithril seed and got ${loot}!`
 	},
 	{
 		items: [getOSItem('Gloom and doom potion'), getOSItem('Broomstick')],
@@ -495,28 +486,6 @@ usables.push({
 		return 'You planted Ivy seeds in your PoH! You can now chop Ivy.';
 	}
 });
-usables.push({
-	items: [getOSItem('Spooky gear frame unlock')],
-	run: async user => {
-		const gearFrame = gearImages[1];
-		if (user.user.unlocked_gear_templates.includes(gearFrame.id)) {
-			return 'You already have this gear frame unlocked.';
-		}
-		await user.removeItemsFromBank(new Bank().add('Spooky gear frame unlock'));
-		await user.update({
-			unlocked_gear_templates: {
-				push: gearFrame.id
-			}
-		});
-		return 'You unlocked a spooky gear frame! You can switch to it using `/config user gearframe`';
-	}
-});
-usables.push({
-	items: [getOSItem('Mysterious token')],
-	run: async () => {
-		return 'Nothing mysterious happens.';
-	}
-});
 
 usables.push({
 	items: [getOSItem('Echo'), getOSItem('Banana')],
@@ -539,31 +508,6 @@ usables.push({
 			}
 		});
 		return `You used a Guthixian cache boost, you now have ${user.user.guthixian_cache_boosts_available} boosts available.`;
-	}
-});
-
-usables.push({
-	items: [getOSItem('Christmas cake recipe')],
-	run: async () => {
-		return {
-			files: [
-				new AttachmentBuilder(
-					await makeScriptImage(`Christmas Cake Recipe:
-- The Christmas Spirit; loving help of friends.
-- 1x Fresh rodent milk
-- 1x Pristine chocolate bar
-- 1x A special egg
-- 1x Gingerbread
-- 1x Grimy salt
-- 1x Snail oil
-- 1x Banana-butter
-- 1x Ashy flour`),
-					{
-						name: 'image.png'
-					}
-				)
-			]
-		};
 	}
 });
 
@@ -626,36 +570,6 @@ for (const zygomite of resolveItems(['Herbal zygomite spores', 'Barky zygomite s
 		}
 	});
 }
-
-for (const [_, val] of objectEntries(mysteriousStepData)) {
-	if (!val.clueItem) continue;
-	usables.push({
-		items: [val.clueItem],
-		run: async (user: MUser) => {
-			const { step, track, stepData, minionMessage } = user.getMysteriousTrailData();
-			if (!step || !track || !stepData) return 'Hmmm..';
-			return `You read the ${val.clueItem.name} and it says...
-
-${bold(step.hint)}
-
-${minionMessage}`;
-		}
-	});
-}
-usables.push({
-	items: [getOSItem('Mysterious clue (1)')],
-	run: async (user: MUser) => {
-		const { step, track, stepData, minionMessage } = user.getMysteriousTrailData();
-		if (!step || !track || !stepData) return 'Hmmm..';
-		return `You read the Mysterious clue (1) and it says...
-
-${bold(`In Lumbridge's dawn, where bovine graze,
-Lay one to rest in the morning haze,
-In its yield, your path will blaze.`)}
-
-This looks like a treasure trail. ${minionMessage}`;
-	}
-});
 
 export const allUsableItems = new Set(usables.map(i => i.items.map(i => i.id)).flat(2));
 

@@ -3356,26 +3356,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nice-napi@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "nice-napi@npm:1.0.2"
-  dependencies:
-    node-addon-api: "npm:^3.0.0"
-    node-gyp: "npm:latest"
-    node-gyp-build: "npm:^4.2.2"
-  conditions: "!os=win32"
-  languageName: node
-  linkType: hard
-
-"node-addon-api@npm:^3.0.0":
-  version: 3.2.1
-  resolution: "node-addon-api@npm:3.2.1"
-  dependencies:
-    node-gyp: "npm:latest"
-  checksum: 10c0/41f21c9d12318875a2c429befd06070ce367065a3ef02952cfd4ea17ef69fa14012732f510b82b226e99c254da8d671847ea018cad785f839a5366e02dd56302
-  languageName: node
-  linkType: hard
-
 "node-cron@npm:^3.0.3":
   version: 3.0.3
   resolution: "node-cron@npm:3.0.3"
@@ -3396,17 +3376,6 @@ __metadata:
     encoding:
       optional: true
   checksum: 10c0/fcae80f5ac52fbf5012f5e19df2bd3915e67d3b3ad51cb5942943df2238d32ba15890fecabd0e166876a9f98a581ab50f3f10eb942b09405c49ef8da36b826c7
-  languageName: node
-  linkType: hard
-
-"node-gyp-build@npm:^4.2.2":
-  version: 4.3.0
-  resolution: "node-gyp-build@npm:4.3.0"
-  bin:
-    node-gyp-build: bin.js
-    node-gyp-build-optional: optional.js
-    node-gyp-build-test: build-test.js
-  checksum: 10c0/817917b256e5193c1b2f832a8e41e82cfb9915e44dfc01a9b2745ddda203344c82e27c177c1e4da39083a08d6e30859a0ce6672801ac4f0cd1df94a8c43f22b5
   languageName: node
   linkType: hard
 
@@ -3719,18 +3688,6 @@ __metadata:
   version: 2.3.0
   resolution: "picomatch@npm:2.3.0"
   checksum: 10c0/a65bde78212368e16afb82429a0ea033d20a836270446acb53ec6e31d939bccf1213f788bc49361f7aff47b67c1fb74d898f99964f67f26ca07a3cd815ddbcbb
-  languageName: node
-  linkType: hard
-
-"piscina@npm:^4.6.1":
-  version: 4.6.1
-  resolution: "piscina@npm:4.6.1"
-  dependencies:
-    nice-napi: "npm:^1.0.2"
-  dependenciesMeta:
-    nice-napi:
-      optional: true
-  checksum: 10c0/2225fb42806f8d72bf09f2528bd65721b440dcc63ece957a9542a28b3b958be353dc48802fb11a8af66fdfd28a419300ed28e04573b8bf420e6dcfe63d6f58b5
   languageName: node
   linkType: hard
 
@@ -4117,7 +4074,6 @@ __metadata:
     nodemon: "npm:^3.1.4"
     oldschooljs: "npm:^2.5.10"
     p-queue: "npm:^6.6.2"
-    piscina: "npm:^4.6.1"
     prettier: "npm:^3.3.2"
     prisma: "npm:^5.16.1"
     random-js: "npm:^2.1.0"

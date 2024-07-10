@@ -87,14 +87,6 @@ export class MUserStats {
 		return new Bank(this.userStats.clue_upgrader_bank as ItemBank);
 	}
 
-	get icCostBank(): Bank {
-		return new Bank(this.userStats.ic_cost_bank as ItemBank);
-	}
-
-	get icLootBank(): Bank {
-		return new Bank(this.userStats.ic_loot_bank as ItemBank);
-	}
-
 	get pekyLootBank(): Bank {
 		return new Bank(this.userStats.peky_loot_bank as ItemBank);
 	}
@@ -125,14 +117,6 @@ export class MUserStats {
 
 	get doubledLootBank(): Bank {
 		return new Bank(this.userStats.doubled_loot_bank as ItemBank);
-	}
-
-	get icDonationsGivenBank(): Bank {
-		return new Bank(this.userStats.ic_donations_given_bank as ItemBank);
-	}
-
-	get icDonationsReceivedBank(): Bank {
-		return new Bank(this.userStats.ic_donations_received_bank as ItemBank);
 	}
 
 	get tameClBank(): Bank {

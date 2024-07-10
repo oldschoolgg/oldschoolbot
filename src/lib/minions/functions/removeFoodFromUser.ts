@@ -6,7 +6,6 @@ import { itemID } from 'oldschooljs/dist/util';
 import { Emoji } from '../../constants';
 import { Eatables } from '../../data/eatables';
 import type { GearSetupType } from '../../gear/types';
-import { updateBankSetting } from '../../util/updateBankSetting';
 import getUserFoodFromBank, { getRealHealAmount } from './getUserFoodFromBank';
 
 export default async function removeFoodFromUser({
@@ -74,8 +73,6 @@ export default async function removeFoodFromUser({
 		);
 	} else {
 		await transactItems({ userID: user.id, itemsToRemove: foodToRemove });
-
-		updateBankSetting('economyStats_PVMCost', foodToRemove);
 
 		return {
 			foodRemoved: foodToRemove,

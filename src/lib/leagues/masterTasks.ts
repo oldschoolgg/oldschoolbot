@@ -760,20 +760,6 @@ export const masterTasks: Task[] = [
 		}
 	},
 	{
-		id: 4104,
-		name: 'Complete 100 Item Contracts',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.total_item_contracts >= 100;
-		}
-	},
-	{
-		id: 4105,
-		name: 'Achieve an Item Contract streak of 50',
-		has: async ({ mahojiUser }) => {
-			return mahojiUser.item_contract_streak >= 50;
-		}
-	},
-	{
 		id: 4106,
 		name: 'Buy every dungeoneering reward',
 		has: async ({ cl }) => {

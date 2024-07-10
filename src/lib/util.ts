@@ -21,7 +21,6 @@ import { Time, calcWhatPercent, notEmpty, objectEntries, randArrItem, randInt, s
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
-import type { PrismaClient } from '@prisma/client';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
@@ -29,15 +28,7 @@ import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../config';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { ClueTiers } from './clues/clueTiers';
-import {
-	BitField,
-	ONE_TRILLION,
-	type ProjectileType,
-	badgesCache,
-	globalConfig,
-	projectiles,
-	usernameCache
-} from './constants';
+import { BitField, ONE_TRILLION, type ProjectileType, badgesCache, projectiles, usernameCache } from './constants';
 import { doaCL } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
 import type { DefenceGearStat, GearSetupType, OffenceGearStat } from './gear/types';
@@ -417,23 +408,6 @@ export function moidLink(items: number[]) {
 	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
 }
 
-export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank) {
-	const marketPrices = (await prisma.clientStorage.findFirst({
-		where: { id: globalConfig.clientID },
-		select: {
-			market_prices: true
-		}
-	}))!.market_prices as ItemBank;
-	let price = 0;
-	for (const [item, qty] of bank.items()) {
-		if (!item) {
-			continue;
-		}
-		price += (marketPrices[item.id] ?? item.price * 0.8) * qty;
-	}
-	return price;
-}
-
 export function isValidSkill(skill: string): skill is SkillsEnum {
 	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
 }
@@ -566,15 +540,6 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	await fn();
 	stopwatch.stop();
 	debugLog(`Finished ${name} in ${stopwatch.toString()}`);
-}
-
-export function getAllIDsOfUser(user: MUser) {
-	const main = user.user.main_account;
-	const allAccounts: string[] = [...user.user.ironman_alts, user.id];
-	if (main) {
-		allAccounts.push(main);
-	}
-	return allAccounts;
 }
 
 export function getInteractionTypeName(type: InteractionType) {

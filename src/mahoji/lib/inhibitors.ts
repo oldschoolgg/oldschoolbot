@@ -1,20 +1,11 @@
-import { PerkTier } from '@oldschoolgg/toolkit';
 import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel, User } from 'discord.js';
-import { ComponentType, PermissionsBitField } from 'discord.js';
+import { ComponentType } from 'discord.js';
 
 import { OWNER_IDS, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
-import {
-	BadgesEnum,
-	BitField,
-	Channel,
-	DISABLED_COMMANDS,
-	gearValidationChecks,
-	minionBuyButton
-} from '../../lib/constants';
-import { perkTierCache, syncPerkTierOfUser } from '../../lib/perkTiers';
+import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, minionBuyButton } from '../../lib/constants';
 import type { CategoryFlag } from '../../lib/types';
-import { formatDuration, roll } from '../../lib/util';
+import { formatDuration } from '../../lib/util';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';
 import { Cooldowns } from './Cooldowns';
@@ -147,19 +138,10 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'commandRoleLimit',
-		run: async ({ member, guild, channel, user }) => {
+		run: async ({ guild, channel }) => {
 			if (!guild || guild.id !== SupportServer) return false;
 			if (channel.id !== Channel.General) return false;
-
-			let perkTier = perkTierCache.get(user.id);
-			if (!perkTier) {
-				perkTier = syncPerkTierOfUser(user);
-			}
-			if (member && perkTier >= PerkTier.Two) {
-				return false;
-			}
-
-			return { content: "You cannot use commands in the general channel unless you're a patron" };
+			return { content: 'You cannot use commands in the general channel.' };
 		},
 		canBeDisabled: false,
 		silent: true
@@ -175,19 +157,9 @@ const inhibitors: Inhibitor[] = [
 
 			// Allow contributors + moderators to use disabled channels in SupportServer
 			const userBitfield = user.bitfield;
-			const isStaff =
-				userBitfield.includes(BitField.isModerator) || userBitfield.includes(BitField.isContributor);
+			const isStaff = userBitfield.includes(BitField.isModerator);
 			if (guild.id === SupportServer && isStaff) {
 				return false;
-			}
-
-			// Allow guild-moderators to use commands in disabled channels
-			const settings = untrustedGuildSettingsCache.get(guild.id);
-			if (settings?.staffOnlyChannels.includes(channel.id)) {
-				const hasPerm = member.permissions.has(PermissionsBitField.Flags.BanMembers);
-				if (!hasPerm) {
-					return { content: "You need the 'Ban Members' permission to use commands in disabled channels." };
-				}
 			}
 
 			return false;
@@ -223,26 +195,6 @@ const inhibitors: Inhibitor[] = [
 		},
 		canBeDisabled: false,
 		silent: true
-	},
-	{
-		name: 'toa_commands_channel',
-		run: async ({ user, guild, channel, command }) => {
-			if (!guild || guild.id !== SupportServer) return false;
-			if (channel.id !== '1069176960523190292') return false;
-
-			if (user.bitfield.includes(BitField.isModerator)) {
-				return false;
-			}
-
-			if (command.name === 'raid') return false;
-
-			return {
-				content: 'You can only send TOA commands in this channel! Please use <#346304390858145792> instead.',
-				ephemeral: true
-			};
-		},
-		canBeDisabled: false,
-		silent: true
 	}
 ];
 
@@ -263,18 +215,6 @@ export async function runInhibitors({
 	guild: Guild | null;
 	bypassInhibitors: boolean;
 }): Promise<undefined | { reason: InteractionReplyOptions; silent: boolean }> {
-	if (!gearValidationChecks.has(user.id) && roll(3)) {
-		const { itemsUnequippedAndRefunded } = await user.validateEquippedGear();
-		if (itemsUnequippedAndRefunded.length > 0) {
-			return {
-				reason: {
-					content: `You had some items equipped that you didn't have the requirements to use, so they were unequipped and refunded to your bank: ${itemsUnequippedAndRefunded}`
-				},
-				silent: false
-			};
-		}
-	}
-
 	for (const { run, canBeDisabled, silent } of inhibitors) {
 		if (bypassInhibitors && canBeDisabled) continue;
 		const result = await run({ user, channel, member, command, guild, APIUser });

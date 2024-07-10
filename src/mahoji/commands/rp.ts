@@ -3,47 +3,31 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import { Duration } from '@sapphire/time-utilities';
-import { SnowflakeUtil, codeBlock } from 'discord.js';
+import { codeBlock } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, randArrItem, sumArr } from 'e';
+import { randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { analyticsTick } from '../../lib/analytics';
 import { calculateCompCapeProgress } from '../../lib/bso/calculateCompCapeProgress';
 import { BitField, Channel } from '../../lib/constants';
 import { allCollectionLogsFlat } from '../../lib/data/Collections';
 import type { GearSetupType } from '../../lib/gear/types';
-import { GrandExchange } from '../../lib/grandExchange';
-import { marketPricemap } from '../../lib/marketPrices';
 import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { allPerkBitfields } from '../../lib/perkTiers';
-import { premiumPatronTime } from '../../lib/premiumPatronTime';
 
-import { TeamLoot } from '../../lib/simulation/TeamLoot';
-import type { ItemBank } from '../../lib/types';
-import { isValidDiscordSnowflake, returnStringOrFile } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
+import { isValidDiscordSnowflake } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { migrateUser } from '../../lib/util/migrateUser';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { insertUserEvent } from '../../lib/util/userEvents';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { cancelUsersListings } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { gearSetupOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { gifs } from './admin';
-import { getUserInfo } from './minion';
-import { sellPriceOfItem } from './sell';
 
 const itemFilters = [
 	{
@@ -51,13 +35,6 @@ const itemFilters = [
 		filter: (item: Item) => itemIsTradeable(item.id, true)
 	}
 ];
-
-function isProtectedAccount(user: MUser) {
-	const botAccounts = ['303730326692429825', '729244028989603850', '969542224058654790'];
-	if ([...ADMIN_IDS, ...OWNER_IDS, ...botAccounts].includes(user.id)) return true;
-	if ([BitField.isModerator, BitField.isContributor].some(bf => user.bitfield.includes(bf))) return true;
-	return false;
-}
 
 export const rpCommand: OSBMahojiCommand = {
 	name: 'rp',
@@ -251,25 +228,6 @@ export const rpCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.Boolean,
 							name: 'delete',
 							description: 'To delete the items instead'
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'add_ironman_alt',
-					description: 'Add an ironman alt account for a user',
-					options: [
-						{
-							type: ApplicationCommandOptionType.User,
-							name: 'main',
-							description: 'The main',
-							required: true
-						},
-						{
-							type: ApplicationCommandOptionType.User,
-							name: 'ironman_alt',
-							description: 'The ironman alt',
-							required: true
 						}
 					]
 				},
@@ -470,15 +428,10 @@ export const rpCommand: OSBMahojiCommand = {
 			max?: { user: MahojiUserOption; type: UserEventType; skill: xp_gains_skill_enum; message_id: string };
 		};
 		action?: {
-			validate_ge?: {};
 			patreon_reset?: {};
 			force_comp_update?: {};
-			view_all_items?: {};
-			analytics_tick?: {};
-			networth_sync?: {};
 		};
 		player?: {
-			givetgb?: { user: MahojiUserOption };
 			viewbank?: { user: MahojiUserOption; json?: boolean };
 			add_patron_time?: { user: MahojiUserOption; tier: number; time: string };
 			steal_items?: {
@@ -494,19 +447,7 @@ export const rpCommand: OSBMahojiCommand = {
 				all?: boolean;
 				pet?: boolean;
 			};
-			set_buy_date?: {
-				user: MahojiUserOption;
-				message_id: string;
-			};
-			add_ironman_alt?: { main: MahojiUserOption; ironman_alt: MahojiUserOption };
 			view_user?: { user: MahojiUserOption };
-			migrate_user?: { source: MahojiUserOption; dest: MahojiUserOption; reason?: string };
-			list_trades?: {
-				user: MahojiUserOption;
-				partner?: MahojiUserOption;
-				guild_id?: string;
-			};
-			ge_cancel?: { user: MahojiUserOption };
 		};
 	}>) => {
 		await deferInteraction(interaction);
@@ -515,12 +456,8 @@ export const rpCommand: OSBMahojiCommand = {
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isAdmin = ADMIN_IDS.includes(userID);
 		const isMod = isOwner || isAdmin || adminUser.bitfield.includes(BitField.isModerator);
-		const isContrib = isMod || adminUser.bitfield.includes(BitField.isContributor);
-		const isTrusted = [BitField.IsWikiContributor, BitField.isContributor].some(bit =>
-			adminUser.bitfield.includes(bit)
-		);
 		if (!guildID || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
-		if (!isAdmin && !isMod && !isTrusted) return randArrItem(gifs);
+		if (!isAdmin && !isMod) return randArrItem(gifs);
 
 		if (options.user_event) {
 			const messageId =
@@ -575,26 +512,10 @@ Date: ${dateFm(date)}`;
 
 		if (!isMod) return randArrItem(gifs);
 
-		if (!guildID || !isContrib || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
-		// Contributor+ only commands:
-		if (options.player?.givetgb) {
-			const user = await mUserFetch(options.player?.givetgb.user.user.id);
-			if (user.id === adminUser.id) {
-				return randArrItem(gifs);
-			}
-			await user.addItemsToBank({ items: new Bank().add('Tester gift box'), collectionLog: true });
-			return `Gave 1x Tester gift box to ${user}.`;
-		}
+		if (!guildID || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
 
 		if (!isMod) return randArrItem(gifs);
 		// Mod+ only commands:
-		if (options.action?.validate_ge) {
-			const isValid = await GrandExchange.extensiveVerification();
-			if (isValid) {
-				return 'No issues found.';
-			}
-			return 'Something was invalid. Check logs!';
-		}
 		if (options.action?.force_comp_update) {
 			const usersToUpdate = await prisma.userStats.findMany({
 				where: {
@@ -613,73 +534,6 @@ Date: ${dateFm(date)}`;
 			return 'Done.';
 		}
 
-		if (options.action?.analytics_tick) {
-			await analyticsTick();
-			return 'Finished.';
-		}
-		if (options.action?.networth_sync) {
-			const users = await prisma.user.findMany({
-				where: {
-					GP: {
-						gt: 10_000_000_000
-					}
-				},
-				take: 20,
-				orderBy: {
-					GP: 'desc'
-				},
-				select: {
-					id: true
-				}
-			});
-			for (const { id } of users) {
-				const user = await mUserFetch(id);
-				await user.update({
-					cached_networth_value: (await user.calculateNetWorth()).value
-				});
-			}
-			return 'Done.';
-		}
-		if (options.action?.view_all_items) {
-			const result = await prisma.$queryRawUnsafe<{ item_id: number }[]>(`SELECT DISTINCT json_object_keys(bank)::int AS item_id
-FROM users
-UNION
-SELECT DISTINCT jsonb_object_keys("collectionLogBank")::int AS item_id
-FROM users
-ORDER BY item_id ASC;`);
-			return returnStringOrFile(`[${result.map(i => i.item_id).join(',')}]`);
-		}
-
-		if (options.action?.patreon_reset) {
-			const bitfieldsToRemove = [
-				BitField.IsPatronTier1,
-				BitField.IsPatronTier2,
-				BitField.IsPatronTier3,
-				BitField.IsPatronTier4,
-				BitField.IsPatronTier5,
-				BitField.IsPatronTier6
-			];
-			await prisma.$queryRaw`UPDATE users SET bitfield = bitfield - '{${bitfieldsToRemove.join(',')}'::int[];`;
-			await syncLinkedAccounts();
-			return 'Finished.';
-		}
-
-		if (options.player?.set_buy_date) {
-			const userToCheck = await mUserFetch(options.player.set_buy_date.user.user.id);
-			const res = SnowflakeUtil.deconstruct(options.player.set_buy_date.message_id);
-			const date = new Date(Number(res.timestamp));
-
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure you want to set the buy date of ${userToCheck.usernameOrMention} to ${dateFm(date)}?`
-			);
-			await sendToChannelID(Channel.BotLogs, {
-				content: `${adminUser.logName} set minion buy date of ${userToCheck.logName} to ${dateFm(date)}`
-			});
-			await userToCheck.update({ minion_bought_date: date });
-			return `Set minion buy date of ${userToCheck.usernameOrMention} to ${dateFm(date)}.`;
-		}
-
 		if (options.player?.viewbank) {
 			const userToCheck = await mUserFetch(options.player.viewbank.user.user.id);
 			const bank = userToCheck.allItemsOwned;
@@ -691,16 +545,6 @@ ORDER BY item_id ASC;`);
 				return `${codeBlock('json', json)}`;
 			}
 			return { files: [(await makeBankImage({ bank, title: userToCheck.usernameOrMention })).file] };
-		}
-
-		if (options.player?.add_patron_time) {
-			const { tier, time, user: userToGive } = options.player.add_patron_time;
-			const duration = new Duration(time);
-			if (![1, 2, 3, 4, 5, 6].includes(tier)) return 'Invalid input.';
-			const ms = duration.offset;
-			if (ms < Time.Second || ms > Time.Year * 3) return 'Invalid input.';
-			const res = await premiumPatronTime(ms, tier, await mUserFetch(userToGive.user.id), interaction);
-			return res;
 		}
 
 		// Unequip Items
@@ -794,213 +638,6 @@ ORDER BY item_id ASC;`);
 			await userToStealFrom.removeItemsFromBank(items);
 			if (!toDelete) await adminUser.addItemsToBank({ items, collectionLog: false });
 			return `${toTitleCase(actionMsgPast)} ${items.toString().slice(0, 500)} from ${userToStealFrom.mention}`;
-		}
-		if (options.player?.add_ironman_alt) {
-			const mainAccount = await mahojiUsersSettingsFetch(options.player.add_ironman_alt.main.user.id, {
-				minion_ironman: true,
-				id: true,
-				ironman_alts: true,
-				main_account: true
-			});
-			const altAccount = await mahojiUsersSettingsFetch(options.player.add_ironman_alt.ironman_alt.user.id, {
-				minion_ironman: true,
-				bitfield: true,
-				id: true,
-				ironman_alts: true,
-				main_account: true
-			});
-			const mainUser = await mUserFetch(mainAccount.id);
-			const altUser = await mUserFetch(altAccount.id);
-			if (mainAccount === altAccount) return "They're they same account.";
-			if (mainAccount.minion_ironman) return `${mainUser.usernameOrMention} is an ironman.`;
-			if (!altAccount.minion_ironman) return `${altUser.usernameOrMention} is not an ironman.`;
-
-			const peopleWithThisAltAlready = (
-				await prisma.$queryRawUnsafe<unknown[]>(
-					`SELECT id FROM users WHERE '${altAccount.id}' = ANY(ironman_alts);`
-				)
-			).length;
-			if (peopleWithThisAltAlready > 0) {
-				return `Someone already has ${altUser.usernameOrMention} as an ironman alt.`;
-			}
-			if (mainAccount.main_account) {
-				return `${mainUser.usernameOrMention} has a main account connected already.`;
-			}
-			if (altAccount.main_account) {
-				return `${altUser.usernameOrMention} has a main account connected already.`;
-			}
-			const mainAccountsAlts = mainAccount.ironman_alts;
-			if (mainAccountsAlts.includes(altAccount.id)) {
-				return `${mainUser.usernameOrMention} already has ${altUser.usernameOrMention} as an alt.`;
-			}
-
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure that \`${altUser.usernameOrMention}\` is the alt account of \`${mainUser.usernameOrMention}\`?`
-			);
-			await mahojiUserSettingsUpdate(mainAccount.id, {
-				ironman_alts: {
-					push: altAccount.id
-				}
-			});
-			await mahojiUserSettingsUpdate(altAccount.id, {
-				main_account: mainAccount.id
-			});
-			return `You set \`${altUser.usernameOrMention}\` as the alt account of \`${mainUser.usernameOrMention}\`.`;
-		}
-
-		if (options.player?.view_user) {
-			const userToView = await mUserFetch(options.player.view_user.user.user.id);
-			return (await getUserInfo(userToView)).everythingString;
-		}
-
-		if (options.player?.migrate_user) {
-			if (!isOwner && !isAdmin) {
-				return randArrItem(gifs);
-			}
-
-			const { source, dest, reason } = options.player.migrate_user;
-
-			if (source.user.id === dest.user.id) {
-				return 'Destination cannot be the same as the source!';
-			}
-			const sourceUser = await mUserFetch(source.user.id);
-			const destUser = await mUserFetch(dest.user.id);
-
-			if (isProtectedAccount(destUser)) return 'You cannot clobber that account.';
-			if (allPerkBitfields.some(pt => destUser.bitfield.includes(pt))) {
-				await handleMahojiConfirmation(
-					interaction,
-					`The target user, ${destUser.logName}, has a Patreon Tier; are you really sure you want to DELETE all data from that account?`
-				);
-			}
-			const sourceXp = sumArr(Object.values(sourceUser.skillsAsXP));
-			const destXp = sumArr(Object.values(destUser.skillsAsXP));
-			if (destXp > sourceXp) {
-				await handleMahojiConfirmation(
-					interaction,
-					`The target user, ${destUser.logName}, has more XP than the source user; are you really sure the names aren't backwards?`
-				);
-			}
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you 1000%, totally, **REALLY** sure that \`${sourceUser.logName}\` is the account you want to preserve, and \`${destUser.logName}\` is the new account that will have ALL existing data destroyed?`
-			);
-			const result = await migrateUser(sourceUser, destUser);
-			if (result === true) {
-				await sendToChannelID(Channel.BotLogs, {
-					content: `${adminUser.logName} migrated ${sourceUser.logName} to ${destUser.logName}${
-						reason ? `, for ${reason}` : ''
-					}`
-				});
-				return 'Done';
-			}
-			return result;
-		}
-		if (options.player?.list_trades) {
-			const baseSql =
-				'SELECT date, sender::text as sender_id, recipient::text as recipient_id, s.username as sender, r.username as recipient, items_sent, items_received, type, guild_id::text from economy_transaction e inner join new_users s on sender = s.id::bigint inner join new_users r on recipient = r.id::bigint';
-			const where: string[] = [];
-			if (options.player.list_trades.partner) {
-				const inUsers = `(${options.player.list_trades.partner.user.id}, ${options.player.list_trades.user.user.id})`;
-				where.push(`(sender IN ${inUsers} AND recipient IN ${inUsers})`);
-			} else {
-				where.push(
-					`(sender = ${options.player.list_trades.user.user.id} OR recipient = ${options.player.list_trades.user.user.id})`
-				);
-			}
-			if (options.player.list_trades.guild_id) {
-				where.push(`guild_id = ${options.player.list_trades.guild_id}`);
-			}
-
-			const sql = `${`${baseSql} WHERE ${where.join(' AND ')}`} ORDER BY date DESC`;
-
-			let report =
-				'date\tguild_id\tsender_id\trecipient_id\tsender\trecipient\tsent_bank\trcvd_bank\tsent_value\trcvd_value\tsent_value_last_100\trcvd_value_last_100\n';
-
-			const totalsSent = new TeamLoot();
-			const totalsRcvd = new TeamLoot();
-			const result: {
-				date: Date;
-				sender_id: string;
-				recipient_id: string;
-				sender: string;
-				recipient: string;
-				items_sent: ItemBank;
-				items_received: ItemBank;
-				type: 'gri' | 'trade' | 'giveaway';
-				guild_id: string;
-			}[] = await prisma.$queryRawUnsafe(sql);
-			for (const row of result) {
-				const sentBank = new Bank(row.items_sent);
-				const recvBank = new Bank(row.items_received);
-
-				// Calculate values of the traded banks:
-				let sentValueGuide = 0;
-				let sentValueLast100 = 0;
-				let recvValueGuide = 0;
-				let recvValueLast100 = 0;
-
-				// We use Object.entries(bank) instead of bank.items() so we can filter out deleted/broken items:
-				for (const [itemId, qty] of Object.entries(sentBank.bank)) {
-					try {
-						const item = getOSItem(Number(itemId));
-						const marketData = marketPricemap.get(item.id);
-						if (marketData) {
-							sentValueGuide += marketData.guidePrice * qty;
-							sentValueLast100 += marketData.averagePriceLast100 * qty;
-						} else {
-							const { price } = sellPriceOfItem(item, 0);
-							sentValueGuide += price * qty;
-							sentValueLast100 += price * qty;
-						}
-					} catch (e) {
-						// This means item doesn't exist at this point in time.
-						delete sentBank.bank[itemId];
-					}
-				}
-				for (const [itemId, qty] of Object.entries(recvBank.bank)) {
-					try {
-						const item = getOSItem(Number(itemId));
-						const marketData = marketPricemap.get(item.id);
-						if (marketData) {
-							recvValueGuide += marketData.guidePrice * qty;
-							recvValueLast100 += marketData.averagePriceLast100 * qty;
-						} else {
-							const { price } = sellPriceOfItem(item, 0);
-							recvValueGuide += price * qty;
-							recvValueLast100 += price * qty;
-						}
-					} catch (e) {
-						// This means item doesn't exist at this point in time.
-						delete recvBank.bank[itemId];
-					}
-				}
-				totalsSent.add(row.sender_id, 'Coins', sentValueLast100);
-				totalsRcvd.add(row.sender_id, 'Coins', recvValueLast100);
-				totalsSent.add(row.recipient_id, 'Coins', recvValueLast100);
-				totalsRcvd.add(row.recipient_id, 'Coins', sentValueLast100);
-
-				// Add report row:
-				report += `${row.date.toLocaleString('en-us')}\t${row.guild_id}\t${row.sender_id}\t${
-					row.recipient_id
-				}\t${row.sender}\t${
-					row.recipient
-				}\t${sentBank}\t${recvBank}\t${sentValueGuide}\t${recvValueGuide}\t${sentValueLast100}\t${recvValueLast100}\n`;
-			}
-			report += '\n\n';
-			report += 'User ID\tTotal Sent\tTotal Received\n';
-			for (const [userId, bank] of totalsSent.entries()) {
-				report += `${userId}\t${bank}\t${totalsRcvd.get(userId)}\n`;
-			}
-
-			return { files: [{ attachment: Buffer.from(report), name: 'trade_report.txt' }] };
-		}
-
-		if (options.player?.ge_cancel) {
-			const targetUser = await mUserFetch(options.player.ge_cancel.user.user.id);
-			await cancelUsersListings(targetUser);
-			return `Cancelled listings for ${targetUser}`;
 		}
 
 		return 'Invalid command.';

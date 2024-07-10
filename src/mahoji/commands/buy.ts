@@ -10,10 +10,8 @@ import Buyables from '../../lib/data/buyables/buyables';
 import { quests } from '../../lib/minions/data/quests';
 import { Minigames, getMinigameScore } from '../../lib/settings/minigames';
 import { countUsersWithItemInCl } from '../../lib/settings/prisma';
-import { isElligibleForPresent } from '../../lib/settings/settings';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { formatSkillRequirements, itemID, itemNameFromID, stringMatches } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
@@ -118,20 +116,7 @@ export const buyCommand: OSBMahojiCommand = {
 			}
 		}
 
-		let gpCost = user.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
-
-		if (buyable.name === getOSItem('Festive present').name) {
-			if (!(await isElligibleForPresent(user))) {
-				return "Santa doesn't want to sell you a Festive present!";
-			}
-			quantity = 1;
-			const previouslyBought = user.cl.amount('Festive present');
-			if (user.isIronman) {
-				gpCost = Math.floor(10_000_000 * (previouslyBought + 1) * ((previouslyBought + 1) / 6));
-			} else {
-				gpCost = Math.floor(100_000_000 * (previouslyBought + 1) * ((previouslyBought + 1) / 3));
-			}
-		}
+		const gpCost = user.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
 
 		if (buyable.name === 'Golden cape shard') {
 			quantity = 1;

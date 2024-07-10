@@ -27,7 +27,6 @@ import { getSimilarItems } from '../../lib/data/similarItems';
 import { trackLoot } from '../../lib/lootTrack';
 import { Planks } from '../../lib/minions/data/planks';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
-import { getUsersPerkTier } from '../../lib/perkTiers';
 
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -636,8 +635,6 @@ export async function removeRawFood({
 		}
 	});
 
-	updateBankSetting('economyStats_PVMCost', itemCost);
-
 	return {
 		success: true,
 		str: `${itemCost} from ${user.usernameOrMention}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
@@ -982,7 +979,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	const patronBoost = patronMaxTripBonus(user) * 2;
 	if (patronBoost > 0) {
 		maxTripLength += patronBoost;
-		boosts.push(`+${formatDuration(patronBoost, true)} trip length for T${getUsersPerkTier(user) - 1} patron`);
+		boosts.push(`+${formatDuration(patronBoost, true)} trip length for T${user.perkTier()} patron`);
 	}
 
 	if (isWeekend()) {
@@ -1289,7 +1286,6 @@ async function monkeyMagicHandler(
 			total_cost: new Bank(tame.total_cost as ItemBank).add(finalCost).bank
 		}
 	});
-	await updateBankSetting('economyStats_PVMCost', finalCost);
 
 	const duration = Math.floor(quantity * speed);
 
@@ -1683,7 +1679,6 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 
 	await user.removeItemsFromBank(cost);
 	await tame.addToStatsBank('total_cost', cost);
-	await updateBankSetting('economyStats_PVMCost', cost);
 	if (costSavedByDemonicJibwings) {
 		await tame.addToStatsBank('demonic_jibwings_saved_cost', costSavedByDemonicJibwings);
 	}

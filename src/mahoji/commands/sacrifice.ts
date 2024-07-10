@@ -12,17 +12,13 @@ import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmatio
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { parseBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsBankUpdate } from '../mahojiSettings';
 import { sellPriceOfItem } from './sell';
 
 async function trackSacBank(user: MUser, bank: Bank) {
-	await Promise.all([
-		updateBankSetting('economyStats_sacrificedBank', bank),
-		userStatsBankUpdate(user.id, 'sacrificed_bank', bank)
-	]);
+	await Promise.all([userStatsBankUpdate(user.id, 'sacrificed_bank', bank)]);
 	const stats = await user.fetchStats({ sacrificed_bank: true });
 	return new Bank(stats.sacrificed_bank as ItemBank);
 }

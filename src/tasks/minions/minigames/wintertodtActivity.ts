@@ -10,7 +10,6 @@ import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions
 import { clAdjustedDroprate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export const wintertodtTask: MinionTask = {
 	type: 'Wintertodt',
@@ -43,9 +42,6 @@ export const wintertodtTask: MinionTask = {
 			gotToad = true;
 			loot.add('Wintertoad');
 		}
-
-		// Track loot in Economy Stats
-		await updateBankSetting('economyStats_wintertodtLoot', loot);
 
 		/**
 		 * https://oldschool.runescape.wiki/w/Wintertodt#Rewards_2

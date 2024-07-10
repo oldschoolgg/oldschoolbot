@@ -5,14 +5,13 @@ import { calculateCompCapeProgress } from './bso/calculateCompCapeProgress';
 import { allCombatAchievementTasks } from './combat_achievements/combatAchievements';
 import { MAX_XP } from './constants';
 import { getTotalCl } from './data/Collections';
-import { maxLeaguesPoints } from './leagues/leagues';
+import { allLeagueTasks } from './leagues/leagues';
 import { MAX_QP } from './minions/data/quests';
 import { SkillsEnum } from './skilling/types';
 import type { MUserStats } from './structures/MUserStats';
 
 export async function calculateMastery(user: MUser, stats: MUserStats) {
 	const [totalClItems, clItems] = await getTotalCl(user, 'collection', stats);
-	const roboChimpUser = await user.fetchRobochimpUser();
 	const clCompletionPercentage = round(calcWhatPercent(clItems, totalClItems), 2);
 	const totalXP = sumArr(Object.values(user.skillsAsXP));
 	const maxTotalXP = Object.values(SkillsEnum).length * MAX_XP;
@@ -22,8 +21,6 @@ export async function calculateMastery(user: MUser, stats: MUserStats) {
 		calcWhatPercent(user.user.completed_ca_task_ids.length, allCombatAchievementTasks.length),
 		2
 	);
-
-	const leaguesPoints = roboChimpUser.leagues_points_total;
 
 	const { totalPercentTrimmed, totalPercentUntrimmed } = await calculateCompCapeProgress(user);
 
@@ -51,7 +48,7 @@ export async function calculateMastery(user: MUser, stats: MUserStats) {
 		},
 		{
 			name: 'Leagues',
-			percentage: calcWhatPercent(leaguesPoints, maxLeaguesPoints)
+			percentage: calcWhatPercent(user.user.leagues_completed_tasks_count, allLeagueTasks.length)
 		},
 		{
 			name: 'Trimmed Completion',

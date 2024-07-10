@@ -128,8 +128,7 @@ async function handleImplingLocator(user: MUser, tame: MTame, duration: number, 
 								await openable.output({
 									user,
 									quantity: qty,
-									self: openable,
-									totalLeaguesPoints: 0
+									self: openable
 								})
 							).bank
 						: openable.output.roll(qty)

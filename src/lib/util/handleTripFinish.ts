@@ -1,13 +1,7 @@
-import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
+import { channelIsSendable } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import {
-	type AttachmentBuilder,
-	type ButtonBuilder,
-	type MessageCollector,
-	type MessageCreateOptions,
-	bold
-} from 'discord.js';
-import { Time, notEmpty, randArrItem, randInt, roll } from 'e';
+import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
+import { Time, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
@@ -24,7 +18,6 @@ import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../invention/inventions';
-import { mysteriousStepData } from '../mysteryTrail';
 import { triggerRandomEvent } from '../randomEvents';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
@@ -33,7 +26,6 @@ import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
 import { makeComponents, toKMB } from '../util';
-import { mahojiChatHead } from './chatHeadImage';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -45,7 +37,6 @@ import {
 } from './globalInteractions';
 import { handleCrateSpawns } from './handleCrateSpawns';
 import itemID from './itemID';
-import { logError } from './logError';
 import { perHourChance } from './smallUtils';
 import { updateBankSetting } from './updateBankSetting';
 import { sendToChannelID } from './webhook';
@@ -333,56 +324,6 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: combatAchievementTripEffect
 	},
 	{
-		name: 'Mysterious trail',
-		fn: async ({ data, user, messages }) => {
-			if (user.skillsAsLevels.hunter < 100) return;
-			if (!user.owns('Mysterious clue (1)')) return;
-			if (user.user.bso_mystery_trail_current_step_id === null) return;
-			const { step, stepData, previousStepData, nextStep } = user.getMysteriousTrailData();
-			if (!step || !(await step.didPass(data))) {
-				return;
-			}
-			if (stepData.loot) {
-				if (user.cl.has(stepData.loot)) return;
-				await user.addItemsToBank({ items: stepData.loot, collectionLog: true });
-			}
-			if (previousStepData?.clueItem && user.owns(previousStepData.clueItem.id)) {
-				await user.removeItemsFromBank(new Bank().add(previousStepData.clueItem.id));
-			}
-			if (nextStep) {
-				await user.update({
-					bso_mystery_trail_current_step_id: user.user.bso_mystery_trail_current_step_id + 1
-				});
-				messages.push(`❔You found ${stepData.loot}.`);
-			} else {
-				if (user.bitfield.includes(BitField.HasUnlockedYeti)) return;
-				await user.update({
-					bitfield: {
-						push: BitField.HasUnlockedYeti
-					}
-				});
-				for (const item of [
-					...Object.values(mysteriousStepData).map(i => i.clueItem?.id),
-					itemID('Mysterious clue (1)')
-				].filter(notEmpty)) {
-					if (user.owns(item)) {
-						try {
-							await user.removeItemsFromBank(new Bank().add(item));
-						} catch (err) {
-							logError(err);
-						}
-					}
-				}
-				const message = `${
-					user.minionName
-				} arrives at the snowy area north of rellekka, finding a giant, monstrous Yeti. At his feet, lay a slain animal. The Yeti looks at ${
-					user.minionName
-				}, and prepares to attack. Use ${mentionCommand(globalClient, 'k')} to fight the yeti!.`;
-				messages.push(bold(message));
-			}
-		}
-	},
-	{
 		name: 'Divine eggs',
 		fn: async ({ data, user, portents, messages }) => {
 			const skillingTypes: activity_type_enum[] = [
@@ -534,29 +475,6 @@ export async function handleTripFinish(
 
 	if (components.length > 0) {
 		message.components = makeComponents(components);
-	}
-
-	if (!user.owns('Mysterious clue (1)') && roll(10) && !user.bitfield.includes(BitField.HasUnlockedYeti)) {
-		const img = await mahojiChatHead({
-			content: randArrItem([
-				'Traveller, I need your help... Use this clue to guide you.',
-				'I have a task for you.... Use this clue to guide you.',
-				'I have a quest for you... Use this clue to guide you.',
-				'Duty calls. Use this clue to guide you.'
-			]),
-			head: 'mysteriousFigure'
-		});
-		message.files = img.files;
-		const loot = new Bank().add('Mysterious clue (1)');
-		await user.addItemsToBank({ items: loot, collectionLog: true });
-		if (user.user.bso_mystery_trail_current_step_id === null) {
-			await user.update({
-				bso_mystery_trail_current_step_id: 1
-			});
-		}
-		if (message.content) {
-			message.content += `\nYou received ${loot}.`;
-		}
 	}
 
 	handleTriggerShootingStar(user, data, components);

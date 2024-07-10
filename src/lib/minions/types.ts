@@ -1,13 +1,13 @@
 import type { Image } from '@napi-rs/canvas';
 import type { PerkTier, StoreBitfield } from '@oldschoolgg/toolkit';
-import type { GearSetupType, XpGainSource } from '@prisma/client';
+import type { XpGainSource } from '@prisma/client';
 import type { Bank, MonsterKillOptions } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import type SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
 
 import type { ClueTier } from '../clues/clueTiers';
 import type { BitField } from '../constants';
-import type { GearStat, OffenceGearStat } from '../gear';
+import type { GearSetupType, GearStat, OffenceGearStat } from '../gear';
 import type { POHBoosts } from '../poh';
 import type { MinigameName } from '../settings/minigames';
 import type { LevelRequirements, SkillsEnum } from '../skilling/types';

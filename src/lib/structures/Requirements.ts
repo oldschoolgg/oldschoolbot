@@ -10,7 +10,6 @@ import { BOT_TYPE, BitFieldData } from '../constants';
 import { diaries, userhasDiaryIDTier } from '../diaries';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import type { ClueBank, DiaryID, DiaryTierName } from '../minions/types';
-import type { RobochimpUser } from '../roboChimp';
 import type { MinigameName } from '../settings/minigames';
 import Agility from '../skilling/skills/agility';
 import type { Skills } from '../types';
@@ -26,7 +25,6 @@ interface RequirementUserArgs {
 	stashUnits: ParsedUnit[];
 	minigames: Minigame;
 	stats: MUserStats;
-	roboChimpUser: RobochimpUser;
 	clueCounts: ClueBank;
 }
 
@@ -326,7 +324,6 @@ export class Requirements {
 		const minigames = await user.fetchMinigames();
 		const stashUnits = await getParsedStashUnits(user.id);
 		const stats = await MUserStats.fromID(user.id);
-		const roboChimpUser = await user.fetchRobochimpUser();
 		const clueCounts =
 			BOT_TYPE === 'OSB' ? stats.clueScoresFromOpenables() : (await user.calcActualClues()).clueCounts;
 
@@ -336,7 +333,6 @@ export class Requirements {
 				minigames,
 				stashUnits,
 				stats,
-				roboChimpUser,
 				clueCounts
 			}),
 			requirement: i

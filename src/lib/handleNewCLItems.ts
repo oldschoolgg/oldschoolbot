@@ -1,36 +1,14 @@
-import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { UserEventType } from '@prisma/client';
-import { roll, sumArr } from 'e';
 import type { Bank } from 'oldschooljs';
 
 import { Events } from './constants';
 import { allCLItems, allCollectionLogsFlat, calcCLDetails } from './data/Collections';
-import { calculateMastery } from './mastery';
-import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp';
+import { roboChimpSyncData } from './roboChimp';
 
-import { MUserStats } from './structures/MUserStats';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
 import { fetchStatsForCL } from './util/fetchStatsForCL';
 import { insertUserEvent } from './util/userEvents';
-
-async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
-	const clStats = calcCLDetails(user);
-	const clRank = await roboChimpClient.$queryRawUnsafe<{ count: number }[]>(roboChimpCLRankQuery(BigInt(user.id)));
-	const { totalMastery, compCapeProgress } = await calculateMastery(user, await MUserStats.fromID(user.id));
-
-	return {
-		user_id: user.id,
-		GP: user.GP,
-		total_xp: sumArr(Object.values(user.skillsAsXP)),
-		cl_completion_percentage: clStats.percent,
-		cl_completion_count: clStats.owned.length,
-		cl_global_rank: Number(clRank[0].count),
-		comp_cape_percent: compCapeProgress.totalPercentTrimmed,
-		comp_cape_percent_untrimmed: compCapeProgress.totalPercentUntrimmed,
-		mastery_percentage: totalMastery
-	};
-}
 
 export async function clArrayUpdate(user: MUser, newCL: Bank) {
 	const id = BigInt(user.id);
@@ -74,17 +52,11 @@ export async function handleNewCLItems({
 		.filter(i => !previousCL.has(i.id) && newCL.has(i.id) && allCLItems.includes(i.id));
 
 	const didGetNewCLItem = newCLItems && newCLItems.length > 0;
-	if (didGetNewCLItem || roll(30)) {
-		await prisma.historicalData.create({ data: await createHistoricalData(user) });
-	}
-
 	if (!didGetNewCLItem) return;
 
 	const previousCLDetails = calcCLDetails(previousCL);
-	const previousCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
 	await Promise.all([roboChimpSyncData(user), clArrayUpdate(user, newCL)]);
-	const newCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
 	const newCLDetails = calcCLDetails(newCL);
 
@@ -96,10 +68,6 @@ export async function handleNewCLItems({
 			newCLPercentMessage = `${user} just reached ${milestone}% Collection Log completion, after receiving ${newCLItems
 				.toString()
 				.slice(0, 500)}!`;
-
-			if (previousCLRank !== newCLRank && newCLRank !== null && previousCLRank !== null) {
-				newCLPercentMessage += ` In the overall CL leaderboard, they went from rank ${previousCLRank} to rank ${newCLRank}.`;
-			}
 		}
 		break;
 	}

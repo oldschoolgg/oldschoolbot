@@ -41,7 +41,6 @@
 		"node-fetch": "^2.6.7",
 		"oldschooljs": "^2.5.10",
 		"p-queue": "^6.6.2",
-		"piscina": "^4.6.1",
 		"random-js": "^2.1.0",
 		"simple-statistics": "^7.8.3",
 		"sonic-boom": "^4.0.1",

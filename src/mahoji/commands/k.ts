@@ -10,8 +10,7 @@ import { MOKTANG_ID } from '../../lib/minions/data/killableMonsters/custom/bosse
 import { Naxxus } from '../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { NexMonster } from '../../lib/nex';
-import { returnStringOrFile } from '../../lib/util/smallUtils';
-import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
+import { minionKillCommand } from '../lib/abstracted_commands/minionKill';
 import type { OSBMahojiCommand } from '../lib/util';
 
 export const autocompleteMonsters = [
@@ -155,20 +154,8 @@ export const minionKCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Boolean,
-			name: 'show_info',
-			description: 'Show information on this monster.',
-			required: false
-		},
-		{
-			type: ApplicationCommandOptionType.Boolean,
 			name: 'wilderness',
 			description: 'If you want to kill the monster in the wilderness.',
-			required: false
-		},
-		{
-			type: ApplicationCommandOptionType.Boolean,
-			name: 'solo',
-			description: 'Solo (if its a group boss)',
 			required: false
 		}
 	],
@@ -181,14 +168,10 @@ export const minionKCommand: OSBMahojiCommand = {
 		name: string;
 		quantity?: number;
 		method?: PvMMethod;
-		show_info?: boolean;
 		wilderness?: boolean;
-		solo?: boolean;
 	}>) => {
 		const user = await mUserFetch(userID);
-		if (options.show_info) {
-			return returnStringOrFile(await monsterInfo(user, options.name));
-		}
+
 		return minionKillCommand(
 			user,
 			interaction,
@@ -197,7 +180,7 @@ export const minionKCommand: OSBMahojiCommand = {
 			options.quantity,
 			options.method,
 			options.wilderness,
-			options.solo
+			true
 		);
 	}
 };

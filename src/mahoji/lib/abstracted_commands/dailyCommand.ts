@@ -1,13 +1,10 @@
 import type { CommandResponse } from '@oldschoolgg/toolkit';
-import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
-import { shuffleArr, uniqueArr } from 'e';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
 import { SupportServer } from '../../../config';
-import { DynamicButtons } from '../../../lib/DynamicButtons';
 import { dailyResetTime } from '../../../lib/MUser';
 import { COINS_ID, Emoji } from '../../../lib/constants';
-import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend, roll } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
@@ -138,32 +135,5 @@ export async function dailyCommand(
 		{}
 	);
 
-	const [question, ...fakeQuestions] = await getRandomTriviaQuestions();
-
-	let correctUser: string | null = null;
-	const buttons = new DynamicButtons({
-		channel: channel as TextChannel,
-		usersWhoCanInteract: [user.id],
-		deleteAfterConfirm: true
-	});
-	const allAnswers = uniqueArr(shuffleArr([question, ...fakeQuestions].map(q => q.answers[0])));
-	for (const answer of allAnswers) {
-		buttons.add({
-			name: answer,
-			fn: ({ interaction }) => {
-				if (question.answers.includes(answer)) {
-					correctUser = interaction.user.id;
-				}
-			},
-			cantBeBusy: false
-		});
-	}
-
-	await buttons.render({
-		messageOptions: {
-			content: `**${Emoji.Diango} Diango asks ${user.badgedUsername}...** ${question.question}`
-		},
-		isBusy: false
-	});
-	return reward(user, correctUser !== null);
+	return reward(user, true);
 }

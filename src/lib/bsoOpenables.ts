@@ -792,8 +792,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem(6199),
 		aliases: ['mystery', 'mystery box', 'tradeables mystery box', 'tmb'],
 
-		output: async ({ user, quantity, totalLeaguesPoints }) => ({
-			bank: getMysteryBoxItem(user, totalLeaguesPoints, true, quantity)
+		output: async ({ user, quantity }) => ({
+			bank: getMysteryBoxItem(user, true, quantity)
 		}),
 		emoji: Emoji.MysteryBox,
 		allItems: [],
@@ -805,8 +805,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		id: 19_939,
 		openedItem: getOSItem(19_939),
 		aliases: ['untradeables mystery box', 'umb'],
-		output: async ({ user, quantity, totalLeaguesPoints }) => ({
-			bank: getMysteryBoxItem(user, totalLeaguesPoints, false, quantity)
+		output: async ({ user, quantity }) => ({
+			bank: getMysteryBoxItem(user, false, quantity)
 		}),
 		allItems: [],
 		isMysteryBox: true,
@@ -1071,41 +1071,15 @@ function findMysteryBoxItem(table: number[]): number {
 	return result;
 }
 
-const leaguesUnlockedMysteryBoxItems = [
-	{
-		item: getOSItem('Fuzzy dice'),
-		unlockedAt: 5000
-	},
-	{
-		item: getOSItem('Karambinana'),
-		unlockedAt: 10_000
-	}
-];
-
-export function getMysteryBoxItem(
-	user: MUser,
-	totalLeaguesPoints: number,
-	tradeables: boolean,
-	quantity: number
-): Bank {
+export function getMysteryBoxItem(user: MUser, tradeables: boolean, quantity: number): Bank {
 	const mrEDroprate = clAdjustedDroprate(user, 'Mr. E', MR_E_DROPRATE_FROM_UMB_AND_TMB, 1.2);
 	const table = tradeables ? tmbTable : umbTable;
 	const loot = new Bank();
 
-	const elligibleLeaguesRewards = leaguesUnlockedMysteryBoxItems
-		.filter(i => totalLeaguesPoints >= i.unlockedAt)
-		.map(i => ({ ...i, dropRate: clAdjustedDroprate(user, i.item.id, 500, 1.5) }));
-
-	outer: for (let i = 0; i < quantity; i++) {
+	for (let i = 0; i < quantity; i++) {
 		if (roll(mrEDroprate)) {
 			loot.add('Mr. E');
 			continue;
-		}
-		for (const leagueReward of elligibleLeaguesRewards) {
-			if (roll(leagueReward.dropRate)) {
-				loot.add(leagueReward.item.id);
-				continue outer;
-			}
 		}
 		loot.add(findMysteryBoxItem(table));
 	}

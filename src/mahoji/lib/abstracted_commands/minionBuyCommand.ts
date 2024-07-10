@@ -5,13 +5,13 @@ import { Bank } from 'oldschooljs';
 import { mahojiInformationalButtons } from '../../../lib/constants';
 import { clArrayUpdate } from '../../../lib/handleNewCLItems';
 
-export async function minionBuyCommand(apiUser: User, user: MUser, ironman: boolean): CommandResponse {
+export async function minionBuyCommand(apiUser: User, user: MUser): CommandResponse {
 	if (user.user.minion_hasBought) return 'You already have a minion!';
 
 	await user.update({
 		minion_hasBought: true,
 		minion_bought_date: new Date(),
-		minion_ironman: Boolean(ironman)
+		minion_ironman: true
 	});
 
 	const starter = isAtleastThisOld(apiUser.createdAt, Time.Year * 2)

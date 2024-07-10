@@ -13,7 +13,6 @@ export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] 
 	const changes: Prisma.UserUpdateArgs['data'] = {};
 	const rawBank = user.bank as ItemBank;
 	const rawCL = user.collectionLogBank as ItemBank;
-	const rawTempCL = user.temp_cl as ItemBank;
 
 	const { sacrificed_bank: rawSacLog } = (await mUser.fetchStats({ sacrificed_bank: true })) as {
 		sacrificed_bank: ItemBank;
@@ -49,7 +48,6 @@ export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] 
 	const allItemsToCheck: [string, (number | string)[]][] = [
 		['bank', Object.keys(rawBank)],
 		['cl', Object.keys(rawCL)],
-		['tempcl', Object.keys(rawTempCL)],
 		['sl', Object.keys(rawSacLog)],
 		['favs', favorites],
 		['gear', allGearItemIDs]
@@ -78,13 +76,11 @@ export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] 
 
 	const newBank = { ...rawBank };
 	const newCL = { ...rawCL };
-	const newTempCL = { ...rawTempCL };
 	const newSacLog = { ...rawSacLog };
 
 	for (const id of brokenBank) {
 		delete newBank[id];
 		delete newCL[id];
-		delete newTempCL[id];
 		delete newSacLog[id];
 		for (const [, tameBank] of newTameBanks) {
 			delete tameBank[id];
@@ -112,8 +108,7 @@ export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] 
 		changes.favoriteItems = newFavs;
 		changes.bank = newBank;
 		changes.collectionLogBank = newCL;
-		changes.temp_cl = newTempCL;
-		if (newFavs.includes(Number.NaN) || [newBank, newCL, newTempCL].some(i => Boolean(i.NaN))) {
+		if (newFavs.includes(Number.NaN) || [newBank, newCL].some(i => Boolean(i.NaN))) {
 			return ['Oopsie...'];
 		}
 

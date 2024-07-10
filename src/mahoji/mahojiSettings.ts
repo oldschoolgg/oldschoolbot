@@ -153,18 +153,7 @@ export async function multipleUserStatsBankUpdate(userID: string, updates: Parti
 }
 
 export async function updateClientGPTrackSetting(
-	setting:
-		| 'gp_luckypick'
-		| 'gp_pickpocket'
-		| 'gp_alch'
-		| 'gp_slots'
-		| 'gp_dice'
-		| 'gp_open'
-		| 'gp_daily'
-		| 'gp_sell'
-		| 'gp_pvm'
-		| 'economyStats_duelTaxBank'
-		| 'gp_ic',
+	setting: 'gp_pickpocket' | 'gp_alch' | 'gp_open' | 'gp_daily' | 'gp_sell' | 'gp_pvm',
 	amount: number
 ) {
 	await prisma.clientStorage.update({

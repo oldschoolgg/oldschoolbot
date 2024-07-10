@@ -1,19 +1,15 @@
-import { hasBanMemberPerms, miniID } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
-import type { activity_type_enum } from '@prisma/client';
-import type { ChatInputCommandInteraction, Guild, HexColorString, User } from 'discord.js';
-import { EmbedBuilder, bold, inlineCode, resolveColor } from 'discord.js';
+import type { ChatInputCommandInteraction, User } from 'discord.js';
+import { inlineCode } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, clamp, removeFromArr, uniqueArr } from 'e';
+import { removeFromArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier, secretItems } from '../../lib/constants';
+import { BitField, secretItems } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
-import { gearImages } from '../../lib/gear/functions/generateGearImage';
 import { Inventions } from '../../lib/invention/inventions';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 
@@ -21,13 +17,10 @@ import { birdhouseSeeds } from '../../lib/skilling/skills/hunter/birdHouseTrappi
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
 import { BankSortMethods } from '../../lib/sorts';
-import { formatDuration, isValidNickname, itemNameFromID, stringMatches } from '../../lib/util';
-import { emojiServers } from '../../lib/util/cachedUserIDs';
+import { itemNameFromID, stringMatches } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
-import { interactionReplyGetDuration } from '../../lib/util/interactionHelpers';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
-import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../guildSettings';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { allAbstractCommands } from '../lib/util';
@@ -47,10 +40,6 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisabledRandomEvents
 	},
 	{
-		name: 'Small Bank Images',
-		bit: BitField.AlwaysSmallBank
-	},
-	{
 		name: 'Disable Birdhouse Run Button',
 		bit: BitField.DisableBirdhouseRunButton
 	},
@@ -67,71 +56,12 @@ const toggles: UserConfigToggle[] = [
 		bit: BitField.DisableAutoFarmContractButton
 	},
 	{
-		name: "Disable Grand Exchange DM's",
-		bit: BitField.DisableGrandExchangeDMs
-	},
-	{
 		name: 'Disable Scroll of Longevity',
 		bit: BitField.ScrollOfLongevityDisabled
 	},
 	{
 		name: 'Clean herbs during farm runs',
 		bit: BitField.CleanHerbsFarming
-	},
-	{
-		name: 'Lock Self From Gambling',
-		bit: BitField.SelfGamblingLocked,
-		canToggle: async (user, interaction) => {
-			if (user.bitfield.includes(BitField.SelfGamblingLocked)) {
-				if (user.user.gambling_lockout_expiry && user.user.gambling_lockout_expiry.getTime() > Date.now()) {
-					const timeRemaining = user.user.gambling_lockout_expiry.getTime() - Date.now();
-					return {
-						result: false,
-						message: `You cannot toggle this off for another ${formatDuration(
-							timeRemaining
-						)}, you locked yourself from gambling!`
-					};
-				}
-				return { result: true, message: 'Your Gambling lockout time has expired.' };
-			} else if (interaction) {
-				const durations = [
-					{ display: '24 hours', duration: Time.Day },
-					{ display: '7 days', duration: Time.Day * 7 },
-					{ display: '2 weeks', duration: Time.Day * 14 },
-					{ display: '1 month', duration: Time.Month },
-					{ display: '3 months', duration: Time.Month * 3 },
-					{ display: '6 months', duration: Time.Month * 6 },
-					{ display: '1 year', duration: Time.Year },
-					{ display: '3 years', duration: Time.Year * 3 },
-					{ display: '5 years', duration: Time.Year * 5 }
-				];
-				if (!production) {
-					durations.push({ display: '30 seconds', duration: Time.Second * 30 });
-					durations.push({ display: '1 minute', duration: Time.Minute });
-					durations.push({ display: '5 minutes', duration: Time.Minute * 5 });
-				}
-				const lockoutDuration = await interactionReplyGetDuration(
-					interaction,
-					`${user}, This will lockout your ability to gamble for the specified time. Choose carefully!`,
-					...durations
-				);
-
-				if (lockoutDuration !== false) {
-					await user.update({ gambling_lockout_expiry: new Date(Date.now() + lockoutDuration.duration) });
-					return {
-						result: true,
-						message: `Locking out gambling for ${formatDuration(lockoutDuration.duration)}`
-					};
-				}
-				return { result: false, message: 'Cancelled.' };
-			}
-			// If handleToggle called without an interaction, perhaps by non-interactive code, allow toggle.
-			return { result: true };
-		}
-	},
-	{
-		name: 'Disable farming reminders',
-		bit: BitField.DisabledFarmingReminders
 	},
 	{
 		name: 'Disable Gorajan Bonecrusher',
@@ -349,8 +279,8 @@ async function bankSortConfig(
 	const currentWeightingBank = new Bank(user.user.bank_sort_weightings as ItemBank);
 
 	const perkTier = user.perkTier();
-	if (perkTier < PerkTier.Two) {
-		return patronMsg(PerkTier.Two);
+	if (perkTier === 1) {
+		return patronMsg(1);
 	}
 
 	if (!sortMethod && !addWeightingBank && !removeWeightingBank && !resetWeightingBank) {
@@ -404,142 +334,6 @@ async function bankSortConfig(
 	});
 
 	return bankSortConfig(await mUserFetch(user.id), undefined, undefined, undefined, undefined);
-}
-
-async function bgColorConfig(user: MUser, hex?: string) {
-	const currentColor = user.user.bank_bg_hex;
-
-	const embed = new EmbedBuilder();
-
-	if (hex === 'reset') {
-		await user.update({
-			bank_bg_hex: null
-		});
-		return 'Reset your bank background color.';
-	}
-
-	if (!hex) {
-		if (!currentColor) {
-			return 'You have no background color set.';
-		}
-		return {
-			embeds: [
-				embed
-					.setColor(resolveColor(currentColor as HexColorString))
-					.setDescription(`Your current background color is \`${currentColor}\`.`)
-			]
-		};
-	}
-
-	hex = hex.toUpperCase();
-	const isValid = hex.length === 7 && /^#([0-9A-F]{3}){1,2}$/i.test(hex);
-	if (!isValid) {
-		return "That's not a valid hex color. It needs to be 7 characters long, starting with '#', for example: #4e42f5 - use this to pick one: <https://www.google.com/search?q=hex+color+picker>";
-	}
-
-	await user.update({
-		bank_bg_hex: hex
-	});
-
-	return {
-		embeds: [
-			embed
-				.setColor(resolveColor(hex as HexColorString))
-				.setDescription(`Your background color is now \`${hex}\``)
-		]
-	};
-}
-
-async function handleChannelEnable(user: MUser, guild: Guild | null, channelID: string, choice: 'enable' | 'disable') {
-	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user.id, guild)))
-		return "You need to be 'Ban Member' permissions to use this command.";
-	const cID = channelID.toString();
-	const settings = await mahojiGuildSettingsFetch(guild);
-	const isDisabled = settings.staffOnlyChannels.includes(cID);
-
-	if (choice === 'disable') {
-		if (isDisabled) return 'This channel is already disabled.';
-
-		await mahojiGuildSettingsUpdate(guild.id, {
-			staffOnlyChannels: [...settings.staffOnlyChannels, cID]
-		});
-
-		return 'Channel disabled. Staff of this server can still use commands in this channel.';
-	}
-	if (!isDisabled) return 'This channel is already enabled.';
-
-	await mahojiGuildSettingsUpdate(guild.id, {
-		staffOnlyChannels: settings.staffOnlyChannels.filter(i => i !== cID)
-	});
-
-	return 'Channel enabled. Anyone can use commands in this channel now.';
-}
-
-async function handlePetMessagesEnable(
-	user: MUser,
-	guild: Guild | null,
-	channelID: string,
-	choice: 'enable' | 'disable'
-) {
-	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user.id, guild)))
-		return "You need to be 'Ban Member' permissions to use this command.";
-	const settings = await mahojiGuildSettingsFetch(guild);
-
-	const cID = channelID.toString();
-	if (choice === 'enable') {
-		if (settings.petchannel) {
-			return 'Pet Messages are already enabled in this guild.';
-		}
-		await mahojiGuildSettingsUpdate(guild.id, {
-			petchannel: cID
-		});
-		return 'Enabled Pet Messages in this guild.';
-	}
-	if (settings.petchannel === null) {
-		return "Pet Messages aren't enabled, so you can't disable them.";
-	}
-	await mahojiGuildSettingsUpdate(guild.id, {
-		petchannel: null
-	});
-	return 'Disabled Pet Messages in this guild.';
-}
-
-async function handleCommandEnable(
-	user: MUser,
-	guild: Guild | null,
-	commandName: string,
-	choice: 'enable' | 'disable'
-) {
-	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user.id, guild)))
-		return "You need to be 'Ban Member' permissions to use this command.";
-	const settings = await mahojiGuildSettingsFetch(guild);
-	const command = allAbstractCommands(globalClient.mahojiClient).find(
-		i => i.name.toLowerCase() === commandName.toLowerCase()
-	);
-	if (!command) return "That's not a valid command.";
-
-	if (choice === 'enable') {
-		if (!settings.disabledCommands.includes(commandName)) {
-			return "That command isn't disabled.";
-		}
-		await mahojiGuildSettingsUpdate(guild.id, {
-			disabledCommands: settings.disabledCommands.filter(i => i !== command.name)
-		});
-
-		return `Successfully enabled the \`${commandName}\` command.`;
-	}
-
-	if (settings.disabledCommands.includes(command.name)) {
-		return 'That command is already disabled.';
-	}
-	await mahojiGuildSettingsUpdate(guild.id, {
-		disabledCommands: [...settings.disabledCommands, command.name]
-	});
-
-	return `Successfully disabled the \`${command.name}\` command.`;
 }
 
 const priorityWarningMsg =
@@ -611,71 +405,6 @@ async function handleCombatOptions(user: MUser, command: 'add' | 'remove' | 'lis
 	}
 
 	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`;
-}
-
-function pinnedTripLimit(perkTier: number) {
-	return clamp(perkTier + 1, 1, 4);
-}
-export async function pinTripCommand(
-	user: MUser,
-	tripId: string | undefined,
-	emoji: string | undefined,
-	customName: string | undefined
-) {
-	if (!tripId) return 'Invalid trip.';
-	const id = Number(tripId);
-	const trip = await prisma.activity.findFirst({ where: { id, user_id: BigInt(user.id) } });
-	if (!trip) return 'Invalid trip.';
-
-	if (emoji) {
-		const res = ParsedCustomEmojiWithGroups.exec(emoji);
-		if (!res || !res[3]) return "That's not a valid emoji.";
-		emoji = res[3];
-
-		const cachedEmoji = globalClient.emojis.cache.get(emoji);
-		if ((!cachedEmoji || !emojiServers.has(cachedEmoji.guild.id)) && production) {
-			return "Sorry, that emoji can't be used. Only emojis in the main support server, or our emoji servers can be used.";
-		}
-	}
-
-	if (customName) {
-		if (!isValidNickname(customName) || customName.length >= 32) return 'Invalid custom name.';
-	}
-
-	const limit = pinnedTripLimit(user.perkTier());
-	const currentPinnedTripsCount = await prisma.pinnedTrip.count({ where: { user_id: user.id } });
-	if (currentPinnedTripsCount >= limit) {
-		return `You cannot have more than ${limit}x pinned trips, unpin one first. Your limit is ${limit}, you can get up to 4 by being a patron.`;
-	}
-
-	await prisma.pinnedTrip.create({
-		data: {
-			id: miniID(7),
-			emoji_id: emoji,
-			custom_name: customName,
-			activity: {
-				connect: {
-					id: trip.id
-				}
-			},
-			user: {
-				connect: {
-					id: user.id
-				}
-			},
-			activity_type: trip.type,
-			data: trip.data as object
-		}
-	});
-
-	return `You pinned a ${trip.type} trip. You can now see it in your buttons.`;
-}
-
-async function unpinTripCommand(user: MUser, tripId: string | undefined) {
-	const trip = await prisma.pinnedTrip.findFirst({ where: { id: tripId, user_id: user.id } });
-	if (!trip) return 'Invalid trip.';
-	await prisma.pinnedTrip.delete({ where: { id: trip.id } });
-	return `You unpinned a ${trip.activity_type} trip.`;
 }
 
 export const configCommand: OSBMahojiCommand = {
@@ -816,19 +545,6 @@ export const configCommand: OSBMahojiCommand = {
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.name, value: i.name }));
 							}
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'bg_color',
-					description: 'Set a custom color for transparent bank backgrounds.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'color',
-							description: 'The color in hex format.',
-							required: false
 						}
 					]
 				},
@@ -1072,100 +788,6 @@ export const configCommand: OSBMahojiCommand = {
 							}
 						}
 					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'pin_trip',
-					description: 'Pin a trip so you can easily repeat it whenever you want.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'trip',
-							description: 'The trip you want to pin.',
-							required: false,
-							autocomplete: async (_, user) => {
-								const res = await prisma.$queryRawUnsafe<
-									{ type: activity_type_enum; data: object; id: number; finish_date: string }[]
-								>(`
-SELECT DISTINCT ON (activity.type) activity.type, activity.data, activity.id, activity.finish_date
-FROM activity
-WHERE finish_date::date > now() - INTERVAL '31 days'
-AND user_id = '${user.id}'::bigint
-ORDER BY activity.type, finish_date DESC
-LIMIT 20;
-;`);
-								return res.map(i => ({
-									name: `${i.type} (Finished ${formatDuration(
-										Date.now() - new Date(i.finish_date).getTime()
-									)} ago)`,
-									value: i.id.toString()
-								}));
-							}
-						},
-						{
-							type: ApplicationCommandOptionType.String,
-							required: false,
-							name: 'emoji',
-							description: 'Pick an emoji for the button (optional).'
-						},
-						{
-							type: ApplicationCommandOptionType.String,
-							required: false,
-							name: 'custom_name',
-							description: 'Custom name for the button (optional).'
-						},
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'unpin_trip',
-							description: 'The trip you want to unpin.',
-							required: false,
-							autocomplete: async (_, user) => {
-								const res = await prisma.pinnedTrip.findMany({ where: { user_id: user.id } });
-								return res.map(i => ({
-									name: `${i.activity_type}${i.custom_name ? `- ${i.custom_name}` : ''}`,
-									value: i.id.toString()
-								}));
-							}
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'gearframe',
-					description: 'Change your gear frame.',
-					options: [
-						{
-							name: 'name',
-							type: ApplicationCommandOptionType.String,
-							description: 'The gear frame you want to use.',
-							required: true,
-							autocomplete: async value => {
-								return gearImages
-									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-									.map(i => ({
-										name: i.name,
-										value: i.name
-									}));
-							}
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'icon_pack',
-					description: 'Change your icon pack',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'name',
-							description: 'The icon pack you want to use.',
-							required: true,
-							choices: ['Default', ...ItemIconPacks.map(i => i.name)].map(i => ({
-								name: i,
-								value: i
-							}))
-						}
-					]
 				}
 			]
 		}
@@ -1173,19 +795,11 @@ LIMIT 20;
 	run: async ({
 		options,
 		userID,
-		guildID,
-		channelID,
 		interaction
 	}: CommandRunOptions<{
-		server?: {
-			channel?: { choice: 'enable' | 'disable' };
-			pet_messages?: { choice: 'enable' | 'disable' };
-			command?: { command: string; choice: 'enable' | 'disable' };
-		};
 		user?: {
 			toggle?: { name: string };
 			combat_options?: { action: 'add' | 'remove' | 'list' | 'help'; input: string };
-			set_rsn?: { username: string };
 			bg_color?: { color?: string };
 			bank_sort?: {
 				sort_method?: string;
@@ -1199,71 +813,27 @@ LIMIT 20;
 			favorite_bh_seeds?: { add?: string; remove?: string; reset?: boolean };
 			slayer?: { master?: string; autoslay?: string };
 			toggle_invention?: { invention: string };
-			gearframe?: { name: string };
-			pin_trip?: { trip?: string; unpin_trip?: string; emoji?: string; custom_name?: string };
-			icon_pack?: { name?: string };
 		};
 	}>) => {
 		const user = await mUserFetch(userID);
-		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) ?? null : null;
-		if (options.server) {
-			if (options.server.channel) {
-				return handleChannelEnable(user, guild, channelID, options.server.channel.choice);
-			}
-			if (options.server.pet_messages) {
-				return handlePetMessagesEnable(user, guild, channelID, options.server.pet_messages.choice);
-			}
-			if (options.server.command) {
-				return handleCommandEnable(user, guild, options.server.command.command, options.server.command.choice);
-			}
-		}
+
 		if (options.user) {
 			const {
 				toggle,
 				combat_options,
-				bg_color,
 				bank_sort,
 				favorite_alchs,
 				favorite_food,
 				favorite_items,
 				favorite_bh_seeds,
-				slayer,
-				pin_trip,
-				icon_pack
+				slayer
 			} = options.user;
-			if (icon_pack) {
-				if (icon_pack.name) {
-					if (icon_pack.name === 'Default') {
-						if (user.user.icon_pack_id) {
-							await user.update({
-								icon_pack_id: null
-							});
-							return 'Your icon pack is now set to default.';
-						}
-						return 'Your icon pack is already set to default.';
-					}
-
-					const pack = ItemIconPacks.find(i => i.name === icon_pack.name);
-					if (!pack) return 'Invalid icon pack.';
-
-					if (!user.user.store_bitfield.includes(pack.storeBitfield)) {
-						return 'You do not own this icon pack.';
-					}
-					await user.update({
-						icon_pack_id: pack.id
-					});
-					return `Your icon pack is now set to ${bold(pack.name)}.`;
-				}
-			}
 
 			if (toggle) {
 				return handleToggle(user, toggle.name, interaction);
 			}
 			if (combat_options) {
 				return handleCombatOptions(user, combat_options.action, combat_options.input);
-			}
-			if (bg_color) {
-				return bgColorConfig(user, bg_color.color);
 			}
 			if (bank_sort) {
 				return bankSortConfig(
@@ -1324,26 +894,6 @@ LIMIT 20;
 					}
 				});
 				return `${invention.name} is now **Disabled**.`;
-			}
-			if (options.user.gearframe) {
-				const matchingFrame = gearImages.find(i => stringMatches(i.name, options.user?.gearframe?.name ?? ''));
-				if (!matchingFrame) return 'Invalid name.';
-				if (!user.user.unlocked_gear_templates.includes(matchingFrame.id) && matchingFrame.id !== 0) {
-					return "You don't have this gear frame unlocked.";
-				}
-				await user.update({
-					gear_template: matchingFrame.id
-				});
-				return `Your gear frame is now set to **${matchingFrame.name}**!`;
-			}
-			if (pin_trip) {
-				if (pin_trip.trip) {
-					return pinTripCommand(user, pin_trip.trip, pin_trip.emoji, pin_trip.custom_name);
-				}
-				if (pin_trip.unpin_trip) {
-					return unpinTripCommand(user, pin_trip.unpin_trip);
-				}
-				return 'You need to provide a trip to pin or unpin.';
 			}
 		}
 		return 'Invalid command.';

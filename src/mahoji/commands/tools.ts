@@ -1,22 +1,13 @@
-import {
-	type CommandResponse,
-	type CommandRunOptions,
-	type MahojiUserOption,
-	PerkTier,
-	asyncGzip
-} from '@oldschoolgg/toolkit';
+import { type CommandResponse, type CommandRunOptions, PerkTier, asyncGzip } from '@oldschoolgg/toolkit';
 import type { Activity, User } from '@prisma/client';
-import { ApplicationCommandOptionType, ChannelType, EmbedBuilder, userMention } from 'discord.js';
-import { Time } from 'e';
+import { ApplicationCommandOptionType, ChannelType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
-import { ADMIN_IDS, OWNER_IDS, production } from '../../config.example';
-import { giveBoxResetTime, isPrimaryPatron, mahojiUserSettingsUpdate, spawnLampResetTime } from '../../lib/MUser';
-import { MysteryBoxes, spookyTable } from '../../lib/bsoOpenables';
+import { spookyTable } from '../../lib/bsoOpenables';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
-import { BitField, Channel, Emoji } from '../../lib/constants';
+import { BitField } from '../../lib/constants';
 import { allCLItems, allDroppedItems } from '../../lib/data/Collections';
 import {
 	anglerOutfit,
@@ -26,25 +17,18 @@ import {
 	shadesOfMorttonCL,
 	toaCL
 } from '../../lib/data/CollectionsExport';
-import pets from '../../lib/data/pets';
-import { addToDoubleLootTimer } from '../../lib/doubleLoot';
-import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
-import { getUsersPerkTier } from '../../lib/perkTiers';
+import { NightmareMonster, effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import type { MinigameName } from '../../lib/settings/minigames';
 import { Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity } from '../../lib/settings/prisma';
-import Skills from '../../lib/skilling/skills';
 import {
 	formatDuration,
-	generateXPLevelQuestion,
 	getUsername,
 	isGroupActivity,
 	isNexActivity,
 	isRaidsActivity,
 	isTOBOrTOAActivity,
-	itemID,
 	itemNameFromID,
-	roll,
 	stringMatches
 } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
@@ -53,8 +37,6 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { repairBrokenItemsFromUser } from '../../lib/util/repairBrokenItems';
 import resolveItems from '../../lib/util/resolveItems';
-import { LampTable } from '../../lib/xpLamps';
-import { Cooldowns } from '../lib/Cooldowns';
 import {
 	getParsedStashUnits,
 	stashUnitBuildAllCommand,
@@ -62,49 +44,13 @@ import {
 	stashUnitUnfillCommand,
 	stashUnitViewCommand
 } from '../lib/abstracted_commands/stashUnitsCommand';
-import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
-import { buttonUserPicker } from '../lib/buttonUserPicker';
-import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
+import { dataPoints } from '../lib/abstracted_commands/statCommand';
+import { itemOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
 
-const INTERVAL_DAY = 'day';
-const INTERVAL_WEEK = 'week';
-const INTERVAL_MONTH = 'month';
-const skillsVals = Object.values(Skills);
-
 function dateDiff(first: number, second: number) {
 	return Math.round((second - first) / (1000 * 60 * 60 * 24));
-}
-
-async function giveBox(mahojiUser: MUser, _recipient: MahojiUserOption) {
-	if (!_recipient) return 'You need to specify a user to give a box to.';
-	const recipient = await mUserFetch(_recipient.user.id);
-	if (!isPrimaryPatron(mahojiUser)) {
-		return 'Shared-perk accounts cannot use this.';
-	}
-
-	const currentDate = Date.now();
-	const lastDate = Number(mahojiUser.user.lastGivenBoxx);
-	const difference = currentDate - lastDate;
-	const isOwner = OWNER_IDS.includes(mahojiUser.id);
-
-	// If no user or not an owner and can not send one yet, show time till next box.
-	if (difference < giveBoxResetTime && !isOwner) {
-		return `You can give another box in ${formatDuration(giveBoxResetTime - difference)}`;
-	}
-
-	if (recipient.id === mahojiUser.id) return "You can't give boxes to yourself!";
-	if (recipient.isIronman) return "You can't give boxes to ironmen!";
-	await mahojiUserSettingsUpdate(mahojiUser.id, {
-		lastGivenBoxx: currentDate
-	});
-
-	const boxToReceive = new Bank().add(roll(10) ? MysteryBoxes.roll() : itemID('Mystery box'));
-
-	await recipient.addItemsToBank({ items: boxToReceive, collectionLog: false });
-
-	return `Gave **${boxToReceive}** to ${recipient}.`;
 }
 
 const whereInMassClause = (id: string) =>
@@ -169,270 +115,6 @@ ${whereInMassClause(id)};`)
 **First Activity:** ${firstActivity.type} ${firstActivityDate.toLocaleDateString('en-CA')}
 **Average Per Day:** ${formatDuration(perDay)}
 `;
-}
-
-async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean) {
-	let tierFilter = '';
-	let title = '';
-	let intervalValue = '';
-
-	switch (interval.toLowerCase()) {
-		case INTERVAL_DAY:
-			intervalValue = 'day';
-			break;
-		case INTERVAL_WEEK:
-			intervalValue = 'week';
-			break;
-		case INTERVAL_MONTH:
-			intervalValue = 'month';
-			break;
-		default:
-			return 'Invalid time interval.';
-	}
-	if (tier) {
-		const clueTier = ClueTiers.find(t => t.name.toLowerCase() === tier.toLowerCase());
-		if (!clueTier) return 'Invalid clue scroll tier.';
-		const tierId = clueTier.id;
-		tierFilter = `AND (a."data"->>'clueID')::int = ${tierId}`;
-		title = `Highest ${clueTier.name} clue scroll completions in the past ${interval}`;
-	} else {
-		title = `Highest All clue scroll completions in the past ${interval}`;
-	}
-
-	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate
-	  FROM activity a
-	  JOIN users u ON a.user_id::text = u.id
-	  WHERE a.type = 'ClueCompletion'
-	  AND a.finish_date >= now() - interval '1 ${intervalValue}' AND a.completed = true
-	  ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
-	  ${tierFilter}
-	  GROUP BY a.user_id
-	  ORDER BY qty DESC, lastDate ASC
-	  LIMIT 10`;
-
-	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
-
-	if (res.length === 0) {
-		return 'No results found.';
-	}
-
-	let place = 0;
-	const embed = new EmbedBuilder()
-		.setTitle(title)
-		.setDescription(
-			res
-				.map((i: any) => `${++place}. **${getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`)
-				.join('\n')
-		);
-
-	return { embeds: [embed] };
-}
-
-interface XPRecord {
-	user: string;
-	total_xp: number;
-	lastDate: string;
-}
-
-async function executeXPGainsQuery(
-	intervalValue: string,
-	skillId: string | undefined,
-	ironmanOnly: boolean
-): Promise<XPRecord[]> {
-	const query = `
-        SELECT
-            x.user_id::text AS user,
-            sum(x.xp) AS total_xp,
-            max(x.date) AS lastDate
-        FROM
-            xp_gains AS x
-        INNER JOIN
-            users AS u ON u.id = x.user_id::text
-        WHERE
-            x.date > now() - INTERVAL '1 ${intervalValue}'
-            ${skillId ? `AND x.skill = '${skillId}'` : ''}
-            ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
-        GROUP BY
-            x.user_id
-        ORDER BY
-            total_xp DESC,
-            lastDate ASC
-        LIMIT 10;
-    `;
-
-	const result = await prisma.$queryRawUnsafe<XPRecord[]>(query);
-	return result;
-}
-
-async function xpGains(interval: string, skill?: string, ironmanOnly?: boolean) {
-	let intervalValue = '';
-
-	switch (interval.toLowerCase()) {
-		case INTERVAL_DAY:
-			intervalValue = 'day';
-			break;
-		case INTERVAL_WEEK:
-			intervalValue = 'week';
-			break;
-		case INTERVAL_MONTH:
-			intervalValue = 'month';
-			break;
-		default:
-			return 'Invalid time interval.';
-	}
-
-	const skillObj = skill
-		? skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, skill)))
-		: undefined;
-
-	const xpRecords = await executeXPGainsQuery(intervalValue, skillObj?.id, Boolean(ironmanOnly));
-
-	if (xpRecords.length === 0) {
-		return 'No results found.';
-	}
-
-	let place = 0;
-	const embed = new EmbedBuilder()
-		.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
-		.setDescription(
-			xpRecords
-				.map(
-					record =>
-						`${++place}. **${getUsername(record.user)}**: ${Number(record.total_xp).toLocaleString()} XP`
-				)
-				.join('\n')
-		);
-
-	return { embeds: [embed.data] };
-}
-
-async function kcGains(interval: string, monsterName: string, ironmanOnly?: boolean): CommandResponse {
-	let intervalValue = '';
-
-	switch (interval.toLowerCase()) {
-		case INTERVAL_DAY:
-			intervalValue = 'day';
-			break;
-		case INTERVAL_WEEK:
-			intervalValue = 'week';
-			break;
-		case INTERVAL_MONTH:
-			intervalValue = 'month';
-			break;
-		default:
-			return 'Invalid time interval.';
-	}
-	const monster = killableMonsters.find(
-		k => stringMatches(k.name, monsterName) || k.aliases.some(a => stringMatches(a, monsterName))
-	);
-
-	if (!monster) {
-		return 'Invalid monster.';
-	}
-
-	const query = `
-    SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate
-    FROM activity a
-    JOIN users u ON a.user_id::text = u.id
-    WHERE a.type = 'MonsterKilling' AND (a."data"->>'monsterID')::int = ${monster.id}
-    AND a.finish_date >= now() - interval '1 ${intervalValue}'  -- Corrected interval usage
-    AND a.completed = true
-    ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}
-    GROUP BY a.user_id
-    ORDER BY qty DESC, lastDate ASC
-    LIMIT 10`;
-	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
-
-	if (res.length === 0) {
-		return 'No results found.';
-	}
-
-	let place = 0;
-	const embed = new EmbedBuilder()
-		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
-		.setDescription(
-			res
-				.map((i: any) => `${++place}. **${getUsername(i.user_id)}**: ${Number(i.qty).toLocaleString()}`)
-				.join('\n')
-		);
-
-	return { embeds: [embed.data] };
-}
-
-export function spawnLampIsReady(user: MUser, channelID: string): [true] | [false, string] {
-	if (production && ![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(channelID)) {
-		return [false, "You can't use spawnlamp in this channel."];
-	}
-
-	const perkTier = getUsersPerkTier(user, true);
-	const isPatron = perkTier >= PerkTier.Four || user.bitfield.includes(BitField.HasPermanentSpawnLamp);
-	if (!isPatron) {
-		return [false, 'You need to be a T3 patron or higher to use this command.'];
-	}
-	const currentDate = Date.now();
-	const lastDate = Number(user.user.lastSpawnLamp);
-	const difference = currentDate - lastDate;
-
-	const cooldown = spawnLampResetTime(user);
-
-	if (difference < cooldown) {
-		const duration = formatDuration(Date.now() - (lastDate + cooldown));
-		return [false, `You can spawn another lamp in ${duration}.`];
-	}
-	return [true];
-}
-async function spawnLampCommand(user: MUser, channelID: string): CommandResponse {
-	const isAdmin = OWNER_IDS.includes(user.id) || ADMIN_IDS.includes(user.id);
-	const [lampIsReady, reason] = isAdmin ? [true, ''] : spawnLampIsReady(user, channelID.toString());
-	if (!lampIsReady && reason) return reason;
-
-	await mahojiUserSettingsUpdate(user.id, {
-		lastSpawnLamp: Date.now()
-	});
-
-	const { answers, question, explainAnswer } = generateXPLevelQuestion();
-
-	const winnerID = await buttonUserPicker({
-		channelID,
-		str: `<:Huge_lamp:988325171498721290> ${userMention(user.id)} spawned a Lamp: ${question}`,
-		ironmenAllowed: false,
-		answers,
-		creator: user.id,
-		creatorGetsTwoGuesses: true
-	});
-	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
-	const winner = await mUserFetch(winnerID);
-	const loot = LampTable.roll();
-	await winner.addItemsToBank({ items: loot, collectionLog: false });
-	return `${winner} got it, and won **${loot}**! ${explainAnswer}`;
-}
-async function spawnBoxCommand(user: MUser, channelID: string): CommandResponse {
-	const perkTier = getUsersPerkTier(user, true);
-	if (perkTier < PerkTier.Four && !user.bitfield.includes(BitField.HasPermanentEventBackgrounds)) {
-		return 'You need to be a T3 patron or higher to use this command.';
-	}
-	if (production && ![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(channelID.toString())) {
-		return "You can't use spawnbox in this channel.";
-	}
-	const isOnCooldown = Cooldowns.get(user.id, 'SPAWN_BOX', Time.Minute * 45);
-	if (isOnCooldown !== null) {
-		return `This command is on cooldown for you for ${formatDuration(isOnCooldown)}.`;
-	}
-	const { answers, question, explainAnswer } = generateXPLevelQuestion();
-
-	const winnerID = await buttonUserPicker({
-		channelID,
-		str: `${Emoji.MysteryBox} ${userMention(user.id)} spawned a Mystery Box: ${question}`,
-		ironmenAllowed: false,
-		answers,
-		creator: user.id
-	});
-	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
-	const winner = await mUserFetch(winnerID);
-
-	const loot = new Bank().add(MysteryBoxes.roll());
-	await winner.addItemsToBank({ items: loot, collectionLog: false });
-	return `Congratulations, ${winner}! You received: **${loot}**. ${explainAnswer}`;
 }
 
 const clueItemsOnlyDroppedInOneTier = ClueTiers.flatMap(i =>
@@ -879,46 +561,6 @@ async function checkMassesCommand(guildID: string | undefined) {
 ${massStr}`.slice(0, 1999);
 }
 
-function calcTime(perkTier: PerkTier | 0) {
-	for (const [bit, dur] of [
-		[PerkTier.Seven, Time.Minute * 90],
-		[PerkTier.Six, Time.Minute * 40],
-		[PerkTier.Five, Time.Minute * 20]
-	] as const) {
-		if (perkTier === bit) return dur;
-	}
-	throw new Error('User is not a Tier 4+ Patron');
-}
-
-export const PATRON_DOUBLE_LOOT_COOLDOWN = Time.Day * 31;
-async function patronTriggerDoubleLoot(user: MUser) {
-	const perkTier = getUsersPerkTier(user);
-	if (perkTier < PerkTier.Five) {
-		return 'Only T4, T5 or T6 patrons can use this command.';
-	}
-	if (!isPrimaryPatron(user)) {
-		return 'You can only do this from your primary account.';
-	}
-
-	const lastTime = user.user.last_patron_double_time_trigger;
-	const differenceSinceLastUsage = lastTime ? Date.now() - lastTime.getTime() : null;
-	if (differenceSinceLastUsage && differenceSinceLastUsage < PATRON_DOUBLE_LOOT_COOLDOWN) {
-		return `This command is still on cooldown, you can use it again in: ${formatDuration(
-			PATRON_DOUBLE_LOOT_COOLDOWN - differenceSinceLastUsage
-		)}.`;
-	}
-
-	const time = calcTime(perkTier);
-	await mahojiUserSettingsUpdate(user.id, {
-		last_patron_double_time_trigger: new Date()
-	});
-	await addToDoubleLootTimer(
-		time,
-		`${userMention(user.id)} used their monthly Tier ${perkTier - 1} double loot time`
-	);
-	return `Added ${formatDuration(time)} of double loot.`;
-}
-
 export const toolsCommand: OSBMahojiCommand = {
 	name: 'tools',
 	description: 'Various tools and miscellaneous commands.',
@@ -928,79 +570,6 @@ export const toolsCommand: OSBMahojiCommand = {
 			description: 'Tools that only patrons can use.',
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			options: [
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'clue_gains',
-					description: "Show's who has the highest clue scroll completions for a given time period.",
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'time',
-							description: 'The time period.',
-							required: true,
-							choices: ['day', 'week', 'month'].map(i => ({ name: i, value: i }))
-						},
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'tier',
-							description: 'The tier of clue scroll.',
-							required: false,
-							autocomplete: async value => {
-								return [...ClueTiers.map(i => ({ name: i.name, value: i }))]
-									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-									.map(i => ({ name: i.name, value: i.name }));
-							}
-						},
-						{
-							type: ApplicationCommandOptionType.Boolean,
-							name: 'ironman',
-							description: 'Only check ironmen accounts.',
-							required: false
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'kc_gains',
-					description: "Show's who has the highest KC gains for a given time period.",
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'time',
-							description: 'The time period.',
-							required: true,
-							choices: ['day', 'week', 'month'].map(i => ({ name: i, value: i }))
-						},
-						monsterOption,
-						{
-							type: ApplicationCommandOptionType.Boolean,
-							name: 'ironman',
-							description: 'Only check ironmen accounts.',
-							required: false
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'xp_gains',
-					description: "Show's who has the highest XP gains for a given time period.",
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'time',
-							description: 'The time period.',
-							required: true,
-							choices: ['day', 'week', 'month'].map(i => ({ name: i, value: i }))
-						},
-						skillOption,
-						{
-							type: ApplicationCommandOptionType.Boolean,
-							name: 'ironman',
-							description: 'Only check ironmen accounts.',
-							required: false
-						}
-					]
-				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'drystreak',
@@ -1077,34 +646,6 @@ export const toolsCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'give_box',
-					description: 'Allows you to give a mystery box to a friend.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.User,
-							name: 'user',
-							description: 'The user you want to give a box too.',
-							required: true
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'spawnlamp',
-					description: 'Allows you to spawn a lamp.'
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'spawnbox',
-					description: 'Allows you to spawn a mystery box.'
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'activity_export',
-					description: 'Export all your activities (For advanced users).'
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
 					name: 'stats',
 					description: 'Check various stats.',
 					options: [
@@ -1124,11 +665,6 @@ export const toolsCommand: OSBMahojiCommand = {
 							required: true
 						}
 					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'doubleloot',
-					description: 'Add double loot time.'
 				}
 			]
 		},
@@ -1137,25 +673,6 @@ export const toolsCommand: OSBMahojiCommand = {
 			description: 'Various tools for yourself.',
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			options: [
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'mypets',
-					description: 'See the chat pets you have.',
-					options: []
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'temp_cl',
-					description: 'Manage and view your temporary CL.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.Boolean,
-							name: 'reset',
-							description: 'Reset your temporary CL.',
-							required: false
-						}
-					]
-				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'checkmasses',
@@ -1237,25 +754,9 @@ export const toolsCommand: OSBMahojiCommand = {
 		options,
 		userID,
 		interaction,
-		channelID,
 		guildID
 	}: CommandRunOptions<{
 		patron?: {
-			clue_gains?: {
-				time: 'day' | 'week' | 'month';
-				tier?: string;
-				ironman?: boolean;
-			};
-			kc_gains?: {
-				time: 'day' | 'week' | 'month';
-				monster: string;
-				ironman?: boolean;
-			};
-			xp_gains?: {
-				time: 'day' | 'week' | 'month';
-				skill?: string;
-				ironman?: boolean;
-			};
 			drystreak?: {
 				monster: string;
 				item: string;
@@ -1270,16 +771,11 @@ export const toolsCommand: OSBMahojiCommand = {
 				format?: 'bank' | 'json';
 			};
 			minion_stats?: {};
-			give_box?: {
-				user: MahojiUserOption;
-			};
 			activity_export?: {};
-			spawnlamp?: {};
-			spawnbox?: {};
 			stats?: { stat: string };
 			doubleloot?: {};
 		};
-		user?: { mypets?: {}; temp_cl: { reset?: boolean }; checkmasses?: {}; fixbank?: {} };
+		user?: { checkmasses?: {}; fixbank?: {} };
 		stash_units?: {
 			view?: { unit?: string; not_filled?: boolean };
 			build_all?: {};
@@ -1292,18 +788,6 @@ export const toolsCommand: OSBMahojiCommand = {
 
 		if (options.patron) {
 			const { patron } = options;
-			if (patron.clue_gains) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return clueGains(patron.clue_gains.time, patron.clue_gains.tier, Boolean(patron.clue_gains.ironman));
-			}
-			if (patron.kc_gains) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return kcGains(patron.kc_gains.time, patron.kc_gains.monster, Boolean(patron.kc_gains.ironman));
-			}
-			if (patron.xp_gains) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return xpGains(patron.xp_gains.time, patron.xp_gains.skill, patron.xp_gains.ironman);
-			}
 			if (patron.drystreak) {
 				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return dryStreakCommand(
@@ -1349,10 +833,6 @@ export const toolsCommand: OSBMahojiCommand = {
 				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser.user);
 			}
-			if (patron.give_box) {
-				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
-				return giveBox(mahojiUser, patron.give_box.user);
-			}
 			if (patron.activity_export) {
 				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
 				const promise = activityExport(mahojiUser.user);
@@ -1362,31 +842,6 @@ export const toolsCommand: OSBMahojiCommand = {
 				);
 				const result = await promise;
 				return result;
-			}
-			if (patron.spawnlamp) {
-				return spawnLampCommand(mahojiUser, channelID);
-			}
-			if (patron.spawnbox) return spawnBoxCommand(mahojiUser, channelID);
-			if (patron.stats) {
-				return statsCommand(mahojiUser, patron.stats.stat);
-			}
-			if (patron.doubleloot) {
-				return patronTriggerDoubleLoot(mahojiUser);
-			}
-		}
-		if (options.user) {
-			if (options.user.mypets) {
-				const b = new Bank();
-				for (const [pet, qty] of Object.entries(mahojiUser.user.pets as ItemBank)) {
-					const petObj = pets.find(i => i.id === Number(pet));
-					if (!petObj) continue;
-					b.add(petObj.name, qty);
-				}
-				return {
-					files: [
-						(await makeBankImage({ bank: b, title: `Your Chat Pets (${b.length}/${pets.length})` })).file
-					]
-				};
 			}
 		}
 
@@ -1404,34 +859,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return stashUnitUnfillCommand(mahojiUser, options.stash_units.unfill.unit);
 			}
 		}
-		if (options.user?.temp_cl) {
-			if (options.user.temp_cl.reset === true) {
-				await handleMahojiConfirmation(
-					interaction,
-					'Are you sure you want to reset your temporary CL? If you are participating in a Bingo, this will reset your progress.'
-				);
-				await mahojiUser.update({
-					temp_cl: {},
-					last_temp_cl_reset: new Date()
-				});
-				return 'Reset your temporary CL.';
-			}
-			const lastReset = await prisma.user.findUnique({
-				where: {
-					id: mahojiUser.id
-				},
-				select: {
-					last_temp_cl_reset: true
-				}
-			});
 
-			return `You can view your temporary CL using, for example, \`/cl name:PvM type:Temp\`.
-You last reset your temporary CL: ${
-				lastReset?.last_temp_cl_reset
-					? `<t:${Math.floor((lastReset?.last_temp_cl_reset?.getTime() ?? 1) / 1000)}>`
-					: 'Never'
-			}`;
-		}
 		if (options.user?.checkmasses) {
 			return checkMassesCommand(guildID);
 		}

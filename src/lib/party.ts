@@ -82,7 +82,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 			let partyCancelled = false;
 			const collector = new InteractionCollector(globalClient, {
 				time: massTimeout,
-				maxUsers: options.usersAllowed?.length ?? options.maxSize,
+				maxUsers: 1,
 				dispose: true,
 				channel,
 				componentType: ComponentType.Button,
@@ -173,7 +173,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 
 						reply('You joined this mass.');
 
-						if (usersWhoConfirmed.length >= options.maxSize) {
+						if (usersWhoConfirmed.length === 1) {
 							collector.stop('everyoneJoin');
 							break;
 						}
