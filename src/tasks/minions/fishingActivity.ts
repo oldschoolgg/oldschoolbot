@@ -14,19 +14,47 @@ import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
 
 function radasBlessing(user: MUser) {
 	const blessingBoosts = [
-		["Rada's blessing 4", 8],
-		["Rada's blessing 3", 6],
-		["Rada's blessing 2", 4],
-		["Rada's blessing 1", 2]
+		["Rada's blessing 4", 1.08],
+		["Rada's blessing 3", 1.06],
+		["Rada's blessing 2", 1.04],
+		["Rada's blessing 1", 1.02]
 	];
 
 	for (const [itemName, boostPercent] of blessingBoosts) {
 		if (user.hasEquipped(itemName)) {
-			return { blessingEquipped: true, blessingChance: boostPercent as number };
+			return { blessingChance: boostPercent as number };
 		}
 	}
-	return { blessingEquipped: false, blessingChance: 0 };
+	return { blessingChance: 1.00 };
 }
+
+
+function rollCatches(catchChance) {
+	let catches = 0;
+	let t = 0;
+
+	if (powerfishing) {
+		while (t < tripTicks) {
+			if (Math.random() < catchChance) {
+				catches++;
+			}
+			t += 5;
+		}
+	} else {
+		while (t < tripTicks) {
+			if (Math.random() < catchChance) {
+				catches++;
+			}
+			t += 5;
+			if (catches % invSlots === 0) {
+				t += bankTime;
+			}
+		}
+	}
+
+	return catches;
+}
+
 
 const allFishIDs = Fishing.Fishes.map(fish => fish.id);
 
@@ -40,10 +68,10 @@ export const fishingTask: MinionTask = {
 		quantity: z.number().min(1)
 	}),
 	async run(data: FishingActivityTaskOptions) {
-		const { fishID, quantity, userID, channelID, duration } = data;
+		const { fishID, userID, channelID, tripTicks, powerfishing, flakes} = data;
 		const user = await mUserFetch(userID);
-		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		const { blessingEquipped, blessingChance } = radasBlessing(user);
+		const fishLvl = user.skillLevel(SkillsEnum.Fishing);
+		const { radaBoost } = radasBlessing(user);
 
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
 
@@ -56,41 +84,186 @@ export const fishingTask: MinionTask = {
 		};
 
 		let xpReceived = 0;
-		let leapingSturgeon = 0;
-		let leapingSalmon = 0;
-		let leapingTrout = 0;
+		let fish1 = 0;
+		let fish2 = 0;
+		let fish3 = 0;
 		let agilityXpReceived = 0;
 		let strengthXpReceived = 0;
 
-		const stats = user.skillsAsLevels;
-		const canGetSturgeon = stats.fishing >= 70 && stats.agility >= 45 && stats.strength >= 45;
-		const canGetSalmon = stats.fishing >= 58 && stats.agility >= 30 && stats.strength >= 30;
-		const sturgeonChance = 255 / (8 + Math.floor(0.5714 * stats.fishing));
-		const salmonChance = 255 / (16 + Math.floor(0.8616 * stats.fishing));
-		const leapingChance = 255 / (32 + Math.floor(1.632 * stats.fishing));
+		let invSlots = 26
+		if (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel')) {
+			invSlots += 28;
+		}
 
+		let bankTime = fish.bankingTime;
+
+		let loot = []
+		
 		if (fish.name === 'Barbarian fishing') {
-			for (let i = 0; i < quantity; i++) {
-				if (canGetSturgeon && roll(sturgeonChance)) {
-					xpReceived += 80;
-					leapingSturgeon += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
-					agilityXpReceived += 7;
-					strengthXpReceived += 7;
-				} else if (canGetSalmon && roll(salmonChance)) {
-					xpReceived += 70;
-					leapingSalmon += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
-					agilityXpReceived += 6;
-					strengthXpReceived += 6;
-				} else if (roll(leapingChance)) {
-					xpReceived += 50;
-					leapingTrout += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
-					agilityXpReceived += 5;
-					strengthXpReceived += 5;
+			if (powerfishing) {
+					tripTicks *= 5/3 // same effect as getting one roll every 3 ticks instead of 5
 				}
+			
+			if (fishLvl >= 70 && stats.agility >= 45 && stats.strength >= 45) {
+				const sturgeonChance = 0.2539 - (99-fishLvl)*(0.2539-0.1875)/(99-70)
+				const salmonChance   = 0.2827 - (99-fishLvl)*(0.2827-0.2317)/(99-70)
+				const troutChance    = 0.3494 - (99-fishLvl)*(0.3494-0.3312)/(99-70)
+
+				fish3 = rollCatches(sturgeonChance)
+				fish2 = rollCatches(salmonChance)
+				fish1 = rollCatches(troutChance)
+				
+				xpReceived += 80*fish3 + 70*fish2 + 50*fish1;
+				agilityXpReceived  += 7*fish3 + 6*fish2 + 5*fish1;
+				strengthXpReceived += 7*fish3 + 6*fish2 + 5*fish1;
+				
+			} else if (fishLvl >= 58 && stats.agility >= 30 && stats.strength >= 30)) {
+				const salmonChance = 0.2852 - (69-fishLvl)*(0.2852-0.2500)/(69-58)
+				const troutChance  = 0.4021 - (69-fishLvl)*(0.4021-0.3691)/(69-58)
+
+				fish2 = rollCatches(salmonChance)
+				fish1 = rollCatches(troutChance)
+				
+				xpReceived += 70*fish2 + 50*fish1;
+				agilityXpReceived  += 6*fish2 + 5*fish1;
+				strengthXpReceived += 6*fish2 + 5*fish1;
+				
+			} else if (fishLvl >= 48 && stats.agility >= 15 && stats.strength >= 15) {
+				const troutChance  = 0.4844 - (57-fishLvl)*(0.4844-0.4297)/(57-48)
+
+				fish1 = rollCatches(troutChance)
+				
+				xpReceived += 50*fish1;
+				agilityXpReceived  += 5*fish1;
+				strengthXpReceived += 5*fish1;
+			}
+			if (!powerfishing) {
+				loot.add('Leaping sturgeon', fish3*radaBoost);
+				loot.add('Leaping salmon',   fish2*radaBoost);
+				loot.add('Leaping trout',    fish1*radaBoost);
+			}
+			
+		} else if (fish.name === 'Shrimp/Anchovies') {
+			if (fishLvl >= 14) {
+				const anchovyChance = 0.5039 - (99-fishLvl)*(0.5039-0.1523)/(99-14)
+				const shrimpChance  = 0.4961 - (99-fishLvl)*(0.4961-0.2604)/(99-14)
+
+				fish2 = rollCatches(quantity, anchovyChance)
+				fish1 = rollCatches(quantity, shrimpChance)
+				
+				xpReceived += 40*fish2 + 10*fish1;
+			} else {
+				const shrimpChance  = 0.4961 - (99-fishLvl)*(0.4961-0.2604)/(99-14)
+
+				fish1 = rollCatches(quantity, shrimpChance)
+				
+				xpReceived += 40*fish2 + 10*fish1;
+			}
+			if (!powerfishing) {
+				loot.add('Raw anchovies', fish2*radaBoost);
+				loot.add('Raw shrimp',    fish1*radaBoost);
+			}
+			
+		} else if (fish.name === 'Sardine/Herring') {
+			if (fishLvl >= 10) {
+				const herringChance = 0.5039 - (99-fishLvl)*(0.5039-0.1367)/(99-10)
+				const sardineChance = 0.3740 - (99-fishLvl)*(0.3740-0.1619)/(99-10)
+
+				fish2 = rollCatches(quantity, herringChance)
+				fish1 = rollCatches(quantity, sardineChance)
+				
+				xpReceived += 30*fish2 + 20*fish1;
+			} else if (fishLvl >= 5) {
+				const sardineChance  = 0.1797 - (10-fishLvl)*(0.1797-0.1563)/(10-5)
+
+				fish1 = rollCatches(quantity, shrimpChance)
+				
+				xpReceived += 20*fish1;
+			}
+			if (!powerfishing) { 
+				loot.add('Raw herring', fish2*radaBoost);
+				loot.add('Raw sardine', fish1*radaBoost);
+			}
+			
+		} else if (fish.name === 'Trout/Salmon') {
+			if (fishLvl >= 30) {
+				const salmonChance = 0.3789 - (99-fishLvl)*(0.3789-0.2625)/(99-30)
+				const troutChance  = 0.4682 - (99-fishLvl)*(0.4682-0.1602)/(99-30)
+
+				fish2 = rollCatches(quantity, salmonChance)
+				fish1 = rollCatches(quantity, troutChance)
+				
+				xpReceived += 70*fish2 + 50*fish1;
+			} else if (fishLvl >= 20) {
+				const troutChance  = 0.3086 - (29-fishLvl)*(0.3086-0.2500)/(29-20)
+
+				fish1 = rollCatches(quantity, troutChance)
+				
+				xpReceived += 50*fish1;
+			}
+			if (!powerfishing) {
+				loot.add('Raw salmon', fish2*radaBoost);
+				loot.add('Raw trout',  fish1*radaBoost);
+			}
+			
+		} else if (fish.name === 'Tuna/Swordfish') {
+			if (powerfishing) {
+					tripTicks *= 5/2 // same effect as getting one roll every 2 ticks instead of 5
+				}
+			
+			if (fishLvl >= 50) {
+				let swordfishChance = 0.1914 - (99-fishLvl)*(0.1914-0.1055)/(99-50)
+				let tunaChance      = 0.2053 - (99-fishLvl)*(0.2053-0.1293)/(99-50)
+				
+				if (user.hasEquipped("Dragon harpoon")) {
+					swordfishChance *= 1.2
+					tunaChance 		*= 1.2
+				} else if (user.hasEquipped("Crystal harpoon")) {
+					swordfishChance *= 1.35
+					tunaChance 		*= 1.35
+				}
+				
+				fish2 = rollCatches(quantity, swordfishChance)
+				fish1 = rollCatches(quantity, tunaChance)
+				
+				xpReceived += 100*fish2 + 80*fish1;
+			} else if (fishLvl >= 35) {
+				let tunaChance  = 0.1406 - (29-fishLvl)*(0.1406-0.1094)/(49-35)
+	
+				if (user.hasEquipped("Dragon harpoon")) {
+					tunaChance 		*= 1.2
+				} else if (user.hasEquipped("Crystal harpoon")) {
+					tunaChance 		*= 1.35
+				}
+				
+				fish1 = rollCatches(tunaChance)
+				
+				xpReceived += 80*fish1;
+			}
+			if (!powerfishing) {
+				loot.add('Raw swordfish', fish2*radaBoost);
+				loot.add('Raw tune', 	  fish1*radaBoost);
 			}
 		} else {
-			xpReceived = quantity * fish.xp;
+			let catchChance = fish.maxChance- (99-fishLvl)*(fish.maxChance-fish.minChance)/(99-fish.level)
+
+			if (fish.name === 'Shark'){
+				if (user.hasEquipped("Dragon harpoon")) {
+					catchChance *= 1.2
+				} else if (user.hasEquipped("Crystal harpoon")) {
+					catchChance *= 1.35
+				}
+			}
+			
+			fish1 = rollCatches(catchChance)
+			xpReceived += fish.xp*fish1
+		
+			if (!powerfishing) {
+				loot.add(fish.id, fish1*radaBoost);
+			}
+			
 		}
+
 		let bonusXP = 0;
 
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
@@ -148,35 +321,9 @@ export const fishingTask: MinionTask = {
 			}
 		}
 
-		for (let i = 0; i < quantity; i++) {
-			if (fish.id === itemID('Raw karambwanji')) {
-				lootQuantity +=
-					blessingEquipped && percentChance(blessingChance) ? baseKarambwanji * 2 : baseKarambwanji;
-			} else if (fish.id === itemID('Minnow')) {
-				lootQuantity +=
-					blessingEquipped && percentChance(blessingChance)
-						? randInt(baseMinnow[0], baseMinnow[1]) * 2
-						: randInt(baseMinnow[0], baseMinnow[1]);
-			} else {
-				lootQuantity += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
-			}
-		}
-
-		const loot = new Bank({
-			[fish.id]: lootQuantity
-		});
-
 		// Add clue scrolls
 		if (fish.clueScrollChance) {
 			addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, fish.clueScrollChance, loot);
-		}
-
-		// Add barbarian fish to loot
-		if (fish.name === 'Barbarian fishing') {
-			loot.remove(fish.id, loot.amount(fish.id));
-			loot.add('Leaping sturgeon', leapingSturgeon);
-			loot.add('Leaping salmon', leapingSalmon);
-			loot.add('Leaping trout', leapingTrout);
 		}
 
 		const xpBonusPercent = anglerBoostPercent(user);
@@ -209,6 +356,10 @@ export const fishingTask: MinionTask = {
 					loot.add(fish.bigFish);
 				}
 			}
+		}
+
+		if (powerfish) {
+			let loot = []
 		}
 
 		await transactItems({
