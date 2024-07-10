@@ -13,7 +13,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 870_330,
 		chance1:  0.1373,
 		chance99: 1.0000,
-		movingFrequency: 0.05, // percentage of ticks spent moving/dropping,
+		lostTicks: 0.05, // percentage of ticks spent moving/dropping,
 		bankingTime: 30,
 		ticksPerRoll: 6
 	},
@@ -27,7 +27,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 1_056_000,
 		chance1:  0.1267,
 		chance99: 0.7539,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 30,
 		ticksPerRoll: 5
 	},
@@ -41,7 +41,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 443_697,
 		chance1:  0.3945,
 		chance99: 0.9805,
-		movingFrequency: 0.01,
+		lostTicks: 0.01,
 		bankingTime: 0,
 		ticksPerRoll: 6
 	},
@@ -55,7 +55,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 1_056_000,
 		chance1:  0.1273,
 		chance99: 0.5039,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 30,
 		ticksPerRoll: 5
 	},
@@ -68,7 +68,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 870_330,
 		chance1: 0.0937,
 		chance99: 0.5039,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 35,
 		ticksPerRoll: 6
 	},
@@ -81,7 +81,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 1_147_827,
 		chance1: 0.0645,
 		chance99: 0.2897,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 35,
 		ticksPerRoll: 6
 	},
@@ -95,7 +95,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 923_616,
 		chance1: 0.0174,
 		chance99: 0.7538,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 30,
 		ticksPerRoll: 5
 	},
@@ -108,7 +108,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 1_147_827,
 		chance1: 0.0173,
 		chance99: 0.2188,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 35,
 		ticksPerRoll: 5
 	},
@@ -122,7 +122,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 305_792,
 		chance1:  0.0685,
 		chance99: 0.3789,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 30,
 		ticksPerRoll: 5
 	},
@@ -137,7 +137,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 923_616,
 		chance1:  0.0683,
 		chance99: 0.3789,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 30,
 		ticksPerRoll: 5
 	},
@@ -150,7 +150,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 257_770,
 		chance1:  0.0326,
 		chance99: 0.2539,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 25,
 		ticksPerRoll: 6
 	},
@@ -161,7 +161,7 @@ const fishes: Fish[] = [
 		name: 'Cave eel',
 		chance1:  0.1900,
 		chance99: 0.3164,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 40,
 		ticksPerRoll: 5
 	},
@@ -174,7 +174,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 116_129,
 		chance1:  0.0247,
 		chance99: 0.3750,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 25,
 		ticksPerRoll: 6
 	},
@@ -189,7 +189,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 1_147_827,
 		chance1: 0.0156,
 		chance99: 0.1602,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 35,
 		ticksPerRoll: 6
 	},
@@ -205,7 +205,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 257_770,
 		chance1:  0.0196,
 		chance99: 0.1914,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 25,
 		ticksPerRoll: 6
 	},
@@ -220,7 +220,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 138_583,
 		chance1:  0.1900,
 		chance99: 0.3555,
-		movingFrequency: 0.10,
+		lostTicks: 0.10,
 		bankingTime: 20,
 		ticksPerRoll: 6
 	},
@@ -234,7 +234,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 170_874,
 		chance1:  0.0210,
 		chance99: 0.6289,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 25,
 		ticksPerRoll: 4
 	},
@@ -249,7 +249,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 82_243,
 		chance1:  0.0102,
 		chance99: 0.1602,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 25,
 		ticksPerRoll: 6
 	},
@@ -265,7 +265,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 78_649,
 		chance1:  0.0096,
 		chance99: 0.1445,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 30,
 		ticksPerRoll: 5
 	},
@@ -280,7 +280,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 977_778,
 		chance1:  0.6666, // no info on catch chance
 		chance99: 0.9259, // handpicked to match wiki sharks/hrs
-		movingFrequency: 0.25, 
+		lostTicks: 0.25, 
 		bankingTime: 0,
 		ticksPerRoll: 2
 	},
@@ -295,7 +295,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 149_434,
 		chance1:  0.0230,
 		chance99: 0.1602,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 0,
 		ticksPerRoll: 6
 	},
@@ -310,7 +310,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 1_280_862,
 		chance1: 32/255,
 		chance99: 192/255,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 35,
 		ticksPerRoll: 5
 	},
@@ -324,7 +324,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 1_280_862,
 		chance1: 16/255,
 		chance99: 96/255,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 35,
 		ticksPerRoll: 5
 	},
@@ -339,7 +339,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 1_280_862,
 		chance1: 8/255,
 		chance99: 64/255,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 35,
 		ticksPerRoll: 5
 	},
@@ -353,7 +353,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 165_000,
 		chance1:  0.1253,
 		chance99: 0.3672,
-		movingFrequency: 0.05,
+		lostTicks: 0.05,
 		bankingTime: 0,
 		ticksPerRoll: 5
 	}
