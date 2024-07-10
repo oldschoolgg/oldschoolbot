@@ -1,11 +1,10 @@
-import { modifyItem } from '@oldschoolgg/toolkit';
-import { Items } from 'oldschooljs';
+import { deepMerge, modifyItem } from '@oldschoolgg/toolkit';
+import { omit } from 'lodash';
+import { EItem, Items } from 'oldschooljs';
 import { allTeamCapes } from 'oldschooljs/dist/data/itemConstants';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { cleanString } from 'oldschooljs/dist/util/cleanString';
-import { resolveItems } from 'oldschooljs/dist/util/util';
-
-import { getOSItem } from '../util/getOSItem';
+import { getItemOrThrow, resolveItems } from 'oldschooljs/dist/util/util';
 
 import { customItems } from '../customItems/util';
 
@@ -455,7 +454,32 @@ for (const item of allTeamCapes) {
 	modifyItem(item.id, {
 		price: 100
 	});
-	if (getOSItem(item.id).price !== 100) {
+	if (getItemOrThrow(item.id).price !== 100) {
 		throw new Error(`Failed to modify price of item ${item.id}`);
 	}
+}
+
+export const itemDataSwitches = [
+	{
+		from: 25488,
+		to: EItem.BELLATOR_RING
+	},
+	{
+		from: 25486,
+		to: EItem.MAGUS_RING
+	},
+	{
+		from: 25487,
+		to: EItem.VENATOR_RING
+	},
+	{
+		from: 25485,
+		to: EItem.ULTOR_RING
+	}
+];
+
+for (const items of itemDataSwitches) {
+	const from = getItemOrThrow(items.from);
+	const to = getItemOrThrow(items.to);
+	modifyItem(to.id, deepMerge(omit(to, 'id'), omit(from, 'id')));
 }
