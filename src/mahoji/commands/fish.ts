@@ -108,7 +108,14 @@ export const fishCommand: OSBMahojiCommand = {
 				boosts.push('20% for Infernal harpoon');
 			}
 		} 
-		
+
+		if (!powerfishing) {	
+			if (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel')) {
+				boosts.push(`+9 trip minutes for having a ${user.allItemsOwned.has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'
+					}`
+				);
+			}
+		}
 		
 		if (minutes === -1) {
 			let maxTripLength = calcMaxTripLength(user, 'Fishing');
