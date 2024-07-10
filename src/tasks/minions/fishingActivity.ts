@@ -32,7 +32,8 @@ function radasBlessing(user: MUser) {
 function rollCatches(catchChance) {
 	let catches = 0;
 	let t = 0;
-
+	let lootAmount = 0;
+	
 	if (powerfishing) {
 		while (t < tripTicks) {
 			if (Math.random() < catchChance) {
@@ -40,6 +41,7 @@ function rollCatches(catchChance) {
 			}
 			t += 5;
 		}
+		return {catches, lootAmount};
 	} else {
 		while (t < tripTicks) {
 			if (Math.random() < catchChance) {
@@ -50,9 +52,27 @@ function rollCatches(catchChance) {
 				t += bankTime;
 			}
 		}
+
+		lootAmount += catches;
+		// extra loot
+		let i = 0;
+		while (i < catches) {
+			if (Math.random() < radasBoost) {
+				lootAmount++;
+			}
+			if (Math.random() < 0.5) {
+				lootAmount++;
+				flakesQuantity--;
+			}
+		}
+		
+		return {catches, lootAmount};
 	}
 
-	return catches;
+}
+
+function catchChance(fish, fishLvl) {
+	return fish.chance99 - (99-fishLvl)*(fish.chance99-fish.chance1)/(99-1);
 }
 
 
@@ -71,7 +91,7 @@ export const fishingTask: MinionTask = {
 		const { fishID, userID, channelID, tripTicks, powerfishing, flakes} = data;
 		const user = await mUserFetch(userID);
 		const fishLvl = user.skillLevel(SkillsEnum.Fishing);
-		const { radaBoost } = radasBlessing(user);
+		const { radasBoost } = radasBlessing(user);
 
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
 
@@ -105,7 +125,7 @@ export const fishingTask: MinionTask = {
 			}
 			
 			if (fishLvl >= 70 && stats.agility >= 45 && stats.strength >= 45) {
-				const sturgeonChance = 0.2539 - (99-fishLvl)*(0.2539-0.1875)/(99-70)
+				const sturgeonChance = 64/255 - (99-fishLvl)*(0.2539-0.1875)/(99-70)
 				const salmonChance   = 0.2827 - (99-fishLvl)*(0.2827-0.2317)/(99-70)
 				const troutChance    = 0.3494 - (99-fishLvl)*(0.3494-0.3312)/(99-70)
 
@@ -190,7 +210,7 @@ export const fishingTask: MinionTask = {
 					tripTicks *= 5/3 // same effect as getting one roll every 3 ticks instead of 5
 			}
 			if (fishLvl >= 30) {
-				const salmonChance = 0.3789 - (99-fishLvl)*(0.3789-0.2625)/(99-30)
+				const salmonChance = 0.3789 - (99-fishLvl)*(0.3789-0.1625)/(99-30)
 				const troutChance  = 0.4682 - (99-fishLvl)*(0.4682-0.1602)/(99-30)
 
 				fish2 = rollCatches(quantity, salmonChance)
@@ -216,7 +236,7 @@ export const fishingTask: MinionTask = {
 			
 			if (fishLvl >= 50) {
 				let swordfishChance = 0.1914 - (99-fishLvl)*(0.1914-0.1055)/(99-50)
-				let tunaChance      = 0.2053 - (99-fishLvl)*(0.2053-0.1293)/(99-50)
+				let tunaChance      = 0.2053 - (99-fishLvl)*(0.2053-0.1094)/(99-50)
 				
 				if (user.hasEquipped("Dragon harpoon")) {
 					swordfishChance *= 1.2
@@ -249,36 +269,49 @@ export const fishingTask: MinionTask = {
 			}
 
 		} else if (fish.name === 'Big net') {
-			const Nfish = 3
-			
-			const fish1 = Fishing.Fishes.find(fish => fish.id === 'Raw mackerel')!;
-			const fish2 = Fishing.Fishes.find(fish => fish.id === 'Raw cod')!;
-			const fish3 = Fishing.Fishes.find(fish => fish.id === 'Raw bass')!;
+			let numFish = 0
+			if (fishLvl >= 16) {
+				const fish1 = Fishing.Fishes.find(fish => fish.id === 'Raw mackerel')!;
+				numFish++;
+			}
+			if (fishLvl >= 23) {
+				const fish2 = Fishing.Fishes.find(fish => fish.id === 'Raw cod')!;
+				numFish++;
+			}
+			if (fishLvl >= 46) {
+				const fish3 = Fishing.Fishes.find(fish => fish.id === 'Raw bass')!;
+				numFish++;
+			}
 		}	
-		
-		if (Nfish >= 1) {
+
+		// adding xp and loot
+		let catches1 = 0, catches2 = 0, catches3  = 0;
+		let lootAmount1 = 0, lootAmount2 = 0, lootAmount3 = 0, 
+		if (numFish >= 1) {
 			let chance1 = fish1.maxChance - (99-fishLvl)*(fish1.maxChance-fish1.minChance)/(99-fish1.level);
-			catches1 = rollCatches(quantity, chance1)
+			catches1, lootAmount1 = rollCatches(quantity, chance1)
 			xpReceived += fish1.xp*catches1
 		}
-		if (Nfish >= 2) {
+		if (numFish >= 2) {
 			let chance2 = fish2.maxChance - (99-fishLvl)*(fish2.maxChance-fish2.minChance)/(99-fish2.level);
-			catches2 = rollCatches(quantity, chance2)]
+			catches2, lootAmount2 = rollCatches(quantity, chance2)]
 			xpReceived += fish2.xp*catches2
 		}
-		if (Nfish >= 3) {
+		if (numFish >= 3) {
 			let chance3 = fish3.maxChance - (99-fishLvl)*(fish3.maxChance-fish3.minChance)/(99-fish3.level);
-			catches3 = rollCatches(quantity, chance3)
+			catches3, lootAmount3 = rollCatches(quantity, chance3)
 			xpReceived += fish3.xp*catches3
 		}
 		
 		if (!powerfishing) {
-				loot.add(fish.id, fish1*radaBoost);
+			loot.add(fish1.id, lootAmount1);
+			loot.add(fish2.id, lootAmount2);
+			loot.add(fish3.id, lootAmount3);
 		}
 	
 
+		
 		let bonusXP = 0;
-
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
 		if (
 			user.gear.skilling.hasEquipped(
