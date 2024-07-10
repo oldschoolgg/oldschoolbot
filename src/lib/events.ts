@@ -1,5 +1,5 @@
 import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { UserError } from '@oldschoolgg/toolkit';
 import type { BaseMessageOptions, Message, TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, EmbedBuilder, bold } from 'discord.js';
 import { Time, isFunction, roll } from 'e';

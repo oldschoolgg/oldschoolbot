@@ -1,4 +1,4 @@
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { UserError } from '@oldschoolgg/toolkit';
 import type { BaseMessageOptions, ComponentType, MessageEditOptions, TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time } from 'e';

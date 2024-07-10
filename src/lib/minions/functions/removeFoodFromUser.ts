@@ -1,4 +1,4 @@
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { UserError } from '@oldschoolgg/toolkit';
 import { objectEntries, reduceNumByPercent } from 'e';
 import type { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
