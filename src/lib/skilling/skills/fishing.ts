@@ -278,8 +278,8 @@ const fishes: Fish[] = [
 		petChance: 977_778,
 		qpRequired: 1,
 		clueScrollChance: 977_778,
-		chance1:  0.68, // no info on catch chance
-		chance99: 0.82, // handpicked to match wiki sharks/hrs
+		chance1:  0.6666, // no info on catch chance
+		chance99: 0.9259, // handpicked to match wiki sharks/hrs
 		movingFrequency: 0.25, 
 		bankingTime: 0,
 		ticksPerRoll: 2
