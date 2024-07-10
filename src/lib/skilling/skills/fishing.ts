@@ -14,7 +14,8 @@ const fishes: Fish[] = [
 		chance1:  0.1373,
 		chance99: 1.0000,
 		movingFrequency: 0.05, // percentage of ticks spent moving/dropping,
-		bankingTime: 30
+		bankingTime: 30,
+		ticksPerRoll: 6
 	},
 	{
 		level: 5,
@@ -23,12 +24,12 @@ const fishes: Fish[] = [
 		name: 'Sardine',
 		petChance: 528_000,
 		bait: itemID('Fishing bait'),
-		timePerFish: 3.6,
 		clueScrollChance: 1_056_000,
 		chance1:  0.1267,
 		chance99: 0.7539,
 		movingFrequency: 0.05,
-		bankingTime: 30
+		bankingTime: 30,
+		ticksPerRoll: 5
 	},
 	{
 		level: 5,
@@ -40,8 +41,9 @@ const fishes: Fish[] = [
 		clueScrollChance: 443_697,
 		chance1:  0.3945,
 		chance99: 0.9805,
-		movingFrequency: 0.02,
-		bankingTime: 0
+		movingFrequency: 0.01,
+		bankingTime: 0,
+		ticksPerRoll: 6
 	},
 	{
 		level: 10,
@@ -54,7 +56,8 @@ const fishes: Fish[] = [
 		chance1:  0.1273,
 		chance99: 0.5039,
 		movingFrequency: 0.05,
-		bankingTime: 30
+		bankingTime: 30,
+		ticksPerRoll: 5
 	},
 	{
 		level: 15,
@@ -66,7 +69,8 @@ const fishes: Fish[] = [
 		chance1: 0.0937,
 		chance99: 0.5039,
 		movingFrequency: 0.05,
-		bankingTime: 35
+		bankingTime: 35,
+		ticksPerRoll: 6
 	},
 	{
 		level: 16,
@@ -78,7 +82,8 @@ const fishes: Fish[] = [
 		chance1: 0.0645,
 		chance99: 0.2897,
 		movingFrequency: 0.05,
-		bankingTime: 35
+		bankingTime: 35,
+		ticksPerRoll: 6
 	},
 	{
 		level: 20,
@@ -91,7 +96,8 @@ const fishes: Fish[] = [
 		chance1: 0.0174,
 		chance99: 0.7538,
 		movingFrequency: 0.05,
-		bankingTime: 30
+		bankingTime: 30,
+		ticksPerRoll: 5
 	},
 	{
 		level: 23,
@@ -103,7 +109,8 @@ const fishes: Fish[] = [
 		chance1: 0.0173,
 		chance99: 0.2188,
 		movingFrequency: 0.05,
-		bankingTime: 35
+		bankingTime: 35,
+		ticksPerRoll: 5
 	},
 	{
 		level: 25,
@@ -116,7 +123,8 @@ const fishes: Fish[] = [
 		chance1:  0.0685,
 		chance99: 0.3789,
 		movingFrequency: 0.05,
-		bankingTime: 30
+		bankingTime: 30,
+		ticksPerRoll: 5
 	},
 	{
 		level: 30,
@@ -130,7 +138,8 @@ const fishes: Fish[] = [
 		chance1:  0.0683,
 		chance99: 0.3789,
 		movingFrequency: 0.05,
-		bankingTime: 30
+		bankingTime: 30,
+		ticksPerRoll: 5
 	},
 	{
 		level: 35,
@@ -142,7 +151,8 @@ const fishes: Fish[] = [
 		chance1:  0.0326,
 		chance99: 0.2539,
 		movingFrequency: 0.05,
-		bankingTime: 25
+		bankingTime: 25,
+		ticksPerRoll: 6
 	},
 	{
 		level: 38,
@@ -152,7 +162,8 @@ const fishes: Fish[] = [
 		chance1:  0.1900,
 		chance99: 0.3164,
 		movingFrequency: 0.05,
-		bankingTime: 40
+		bankingTime: 40,
+		ticksPerRoll: 5
 	},
 	{
 		level: 40,
@@ -164,7 +175,8 @@ const fishes: Fish[] = [
 		chance1:  0.0247,
 		chance99: 0.3750,
 		movingFrequency: 0.05,
-		bankingTime: 25
+		bankingTime: 25,
+		ticksPerRoll: 6
 	},
 	{
 		level: 46,
@@ -178,7 +190,8 @@ const fishes: Fish[] = [
 		chance1: 0.0156,
 		chance99: 0.1602,
 		movingFrequency: 0.05,
-		bankingTime: 35
+		bankingTime: 35,
+		ticksPerRoll: 6
 	},
 	{
 		level: 50,
@@ -193,7 +206,8 @@ const fishes: Fish[] = [
 		chance1:  0.0196,
 		chance99: 0.1914,
 		movingFrequency: 0.05,
-		bankingTime: 25
+		bankingTime: 25,
+		ticksPerRoll: 6
 	},
 	{
 		level: 62,
@@ -207,7 +221,8 @@ const fishes: Fish[] = [
 		chance1:  0.1900,
 		chance99: 0.3555,
 		movingFrequency: 0.10,
-		bankingTime: 20
+		bankingTime: 20,
+		ticksPerRoll: 6
 	},
 	{
 		level: 65,
@@ -220,7 +235,8 @@ const fishes: Fish[] = [
 		chance1:  0.0210,
 		chance99: 0.6289,
 		movingFrequency: 0.05,
-		bankingTime: 25
+		bankingTime: 25,
+		ticksPerRoll: 4
 	},
 	{
 		level: 76,
@@ -234,7 +250,8 @@ const fishes: Fish[] = [
 		chance1:  0.0102,
 		chance99: 0.1602,
 		movingFrequency: 0.05,
-		bankingTime: 25
+		bankingTime: 25,
+		ticksPerRoll: 6
 	},
 	{
 		level: 82,
@@ -249,7 +266,8 @@ const fishes: Fish[] = [
 		chance1:  0.0096,
 		chance99: 0.1445,
 		movingFrequency: 0.05,
-		bankingTime: 30
+		bankingTime: 30,
+		ticksPerRoll: 5
 	},
 	{
 		level: 82,
@@ -263,7 +281,8 @@ const fishes: Fish[] = [
 		chance1:  0.68, // no info on catch chance
 		chance99: 0.82, // handpicked to match wiki sharks/hrs
 		movingFrequency: 0.25, 
-		bankingTime: 0
+		bankingTime: 0,
+		ticksPerRoll: 2
 	},
 	{
 		level: 85,
@@ -277,7 +296,8 @@ const fishes: Fish[] = [
 		chance1:  0.0230,
 		chance99: 0.1602,
 		movingFrequency: 0.05,
-		bankingTime: 0
+		bankingTime: 0,
+		ticksPerRoll: 6
 	},
 	{
 		level: 48,
@@ -291,10 +311,11 @@ const fishes: Fish[] = [
 		chance1: 32/255,
 		chance99: 192/255,
 		movingFrequency: 0.05,
-		bankingTime: 35
+		bankingTime: 35,
+		ticksPerRoll: 5
 	},
 	{
-		level: 48,
+		level: 58,
 		xp: 70,
 		id: itemID('Leaping salmon'),
 		name: 'Leaping salmon',
@@ -304,10 +325,11 @@ const fishes: Fish[] = [
 		chance1: 16/255,
 		chance99: 96/255,
 		movingFrequency: 0.05,
-		bankingTime: 35
+		bankingTime: 35,
+		ticksPerRoll: 5
 	},
 	{
-		level: 48,
+		level: 70,
 		xp: 80,
 		id: itemID('Leaping sturgeon'),
 		name: 'Leaping sturgeon',
@@ -318,7 +340,8 @@ const fishes: Fish[] = [
 		chance1: 8/255,
 		chance99: 64/255,
 		movingFrequency: 0.05,
-		bankingTime: 35
+		bankingTime: 35,
+		ticksPerRoll: 5
 	},
 	{
 		level: 80,
@@ -331,7 +354,8 @@ const fishes: Fish[] = [
 		chance1:  0.1253,
 		chance99: 0.3672,
 		movingFrequency: 0.05,
-		bankingTime: 0
+		bankingTime: 0,
+		ticksPerRoll: 5
 	}
 ];
 
