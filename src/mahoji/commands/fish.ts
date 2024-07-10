@@ -13,6 +13,8 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import type { OSBMahojiCommand } from '../lib/util';
 
+
+
 export const fishCommand: OSBMahojiCommand = {
 	name: 'fish',
 	description: 'Send your minion to fish fish.',
@@ -38,11 +40,25 @@ export const fishCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Integer,
-			name: 'quantity',
-			description: 'The quantity you want to fish (optional).',
+			name: 'minutes',
+			description: 'Trip length in minutes (optional).',
 			required: false,
-			min_value: 1
-		}
+			min_value: 1,
+			default: -1
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'powerfish',
+			description: 'Set this to true to powerfish. Higher xp/hour, No loot (default false, optional).',
+			required: false,
+			default: false
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'spirit_flakes',
+			description: 'Set this to true to use spirit flakes. (default false, optional).',
+			required: false,
+			default: false
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
@@ -82,58 +98,25 @@ export const fishCommand: OSBMahojiCommand = {
 			return 'You need to own the Angler Outfit to fish for Minnows.';
 		}
 
-		// If no quantity provided, set it to the max.
-		let scaledTimePerFish =
-			Time.Second * fish.timePerFish * (1 + (100 - user.skillLevel(SkillsEnum.Fishing)) / 100);
-
 		const boosts = [];
-		switch (fish.bait) {
-			case itemID('Fishing bait'):
-				if (fish.name === 'Infernal eel') {
-					scaledTimePerFish *= 1;
-				} else if (user.hasEquipped('Pearl fishing rod') && fish.name !== 'Infernal eel') {
-					scaledTimePerFish *= 0.95;
-					boosts.push('5% for Pearl fishing rod');
-				}
-				break;
-			case itemID('Feather'):
-				if (fish.name === 'Barbarian fishing' && user.hasEquipped('Pearl barbarian rod')) {
-					scaledTimePerFish *= 0.95;
-					boosts.push('5% for Pearl barbarian rod');
-				} else if (user.hasEquipped('Pearl fly fishing rod') && fish.name !== 'Barbarian fishing') {
-					scaledTimePerFish *= 0.95;
-					boosts.push('5% for Pearl fly fishing rod');
-				}
-				break;
-			default:
-				if (user.hasEquipped('Crystal harpoon')) {
-					scaledTimePerFish *= 0.95;
-					boosts.push('5% for Crystal harpoon');
-				}
-				break;
+		if (fish.name === 'Tuna' || fish.name === 'Swordfish || fish.name === 'Shark' || fish.name === 'Tuna/Swordfish') {
+			if (user.hasEquipped('Crystal harpoon')) {
+				boosts.push('35% for Crystal harpoon');
+			} else if (user.hasEquipped('Dragon harpoon')) {
+				boosts.push('20% for Dragon harpoon');
+			} else if (user.hasEquipped('Infernal harpoon')) {
+				boosts.push('20% for Infernal harpoon');
+			}
+		} 
+		
+		
+		if (minutes === -1) {
+			let maxTripLength = calcMaxTripLength(user, 'Fishing');
+			let tripTicks = maxTripLength / (Time.Second * 0.6);
+		} else {
+			let tripTicks = 100*minutes
 		}
-
-		if (fish.id === itemID('Minnow')) {
-			scaledTimePerFish *= Math.max(
-				0.83,
-				-0.000_541_351 * user.skillLevel(SkillsEnum.Fishing) ** 2 +
-					0.089_066_3 * user.skillLevel(SkillsEnum.Fishing) -
-					2.681_53
-			);
-		}
-
-		if (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel')) {
-			boosts.push(
-				`+9 trip minutes for having a ${
-					user.allItemsOwned.has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'
-				}`
-			);
-		}
-
-		const maxTripLength = calcMaxTripLength(user, 'Fishing');
-
-		let { quantity } = options;
-		if (!quantity) quantity = Math.floor(maxTripLength / scaledTimePerFish);
+	
 
 		if (fish.bait) {
 			const baseCost = new Bank().add(fish.bait);
@@ -153,26 +136,13 @@ export const fishCommand: OSBMahojiCommand = {
 			await user.removeItemsFromBank(new Bank().add(fish.bait, quantity));
 		}
 
-		let duration = quantity * scaledTimePerFish;
-
-		if (duration > maxTripLength) {
-			return `${user.minionName} can't go on trips longer than ${formatDuration(
-				maxTripLength
-			)}, try a lower quantity. The highest amount of ${fish.name} you can fish is ${Math.floor(
-				maxTripLength / scaledTimePerFish
-			)}.`;
-		}
-
-		const tenPercent = Math.floor(calcPercentOfNum(10, duration));
-		duration += randInt(-tenPercent, tenPercent);
-
 		await addSubTaskToActivityTask<FishingActivityTaskOptions>({
 			fishID: fish.id,
 			userID: user.id,
 			channelID: channelID.toString(),
-			quantity,
-			iQty: options.quantity ? options.quantity : undefined,
-			duration,
+			tripTicks: tripTicks,
+			powerfishing: powerfish,
+			flakes: spirit_flakes,
 			type: 'Fishing'
 		});
 
