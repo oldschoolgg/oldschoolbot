@@ -84,13 +84,12 @@ export const XPLamps: IXPLamp[] = [
 		minimumLevel: 1,
 		allowedSkills: [SkillsEnum.Magic]
 	},
-	/*	Needs OSJS Update
 	{
 		itemID: 28_820,
 		amount: 5000,
 		name: 'Antique lamp (defender of varrock)',
 		minimumLevel: 1
-	},*/
+	},
 	{
 		itemID: itemID('Antique lamp (easy ca)'),
 		amount: 5000,
@@ -149,6 +148,13 @@ export const Lampables: IXPObject[] = [
 				skills[skill] =
 					data.user.skillLevel(skill) *
 					([
+						SkillsEnum.Attack,
+						SkillsEnum.Strength,
+						SkillsEnum.Defence,
+						SkillsEnum.Magic,
+						SkillsEnum.Ranged,
+						SkillsEnum.Hitpoints,
+						SkillsEnum.Prayer,
 						SkillsEnum.Mining,
 						SkillsEnum.Woodcutting,
 						SkillsEnum.Herblore,
@@ -159,6 +165,7 @@ export const Lampables: IXPObject[] = [
 						SkillsEnum.Thieving,
 						SkillsEnum.Firemaking,
 						SkillsEnum.Agility
+
 					].includes(skill)
 						? 150
 						: 50) *
