@@ -300,6 +300,21 @@ const fishes: Fish[] = [
 		ticksPerRoll: 6
 	},
 	{
+		level: 85,
+		xp: 130,
+		id: itemID('Raw dark crab'),
+		name: 'Dark crab(diary)',
+		alias: ['crab', 'dark'],
+		petChance: 149_434,
+		bait: itemID('Dark fishing bait'),
+		clueScrollChance: 149_434,
+		chance1:  0.0961,
+		chance99: 0.3439,
+		lostTicks: 0.05,
+		bankingTime: 0,
+		ticksPerRoll: 6
+	},
+	{
 		level: 48,
 		xp: 50,
 		id: itemID('Leaping trout'),
@@ -311,7 +326,7 @@ const fishes: Fish[] = [
 		chance1: 32/255,
 		chance99: 192/255,
 		lostTicks: 0.05,
-		bankingTime: 35,
+		bankingTime: 40,
 		ticksPerRoll: 5
 	},
 	{
@@ -325,7 +340,7 @@ const fishes: Fish[] = [
 		chance1: 16/255,
 		chance99: 96/255,
 		lostTicks: 0.05,
-		bankingTime: 35,
+		bankingTime: 40,
 		ticksPerRoll: 5
 	},
 	{
@@ -340,7 +355,7 @@ const fishes: Fish[] = [
 		chance1: 8/255,
 		chance99: 64/255,
 		lostTicks: 0.05,
-		bankingTime: 35,
+		bankingTime: 40,
 		ticksPerRoll: 5
 	},
 	{
@@ -353,7 +368,7 @@ const fishes: Fish[] = [
 		clueScrollChance: 165_000,
 		chance1:  0.1253,
 		chance99: 0.3672,
-		lostTicks: 0.05,
+		lostTicks: 0.10,
 		bankingTime: 0,
 		ticksPerRoll: 5
 	}
