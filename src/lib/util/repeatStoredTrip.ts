@@ -306,7 +306,11 @@ const tripHandlers = {
 	},
 	[activity_type_enum.Fishing]: {
 		commandName: 'fish',
-		args: (data: FishingActivityTaskOptions) => ({ name: data.fishID, quantity: data.iQty })
+		args: (data: FishingActivityTaskOptions) => ({ 
+			name: data.fishID, 
+			minutes: data.minutes,
+			powerfish: data.powerfish,
+			flakes: data.flakesQuantity !== undefined})
 	},
 	[activity_type_enum.FishingTrawler]: {
 		commandName: 'minigames',
