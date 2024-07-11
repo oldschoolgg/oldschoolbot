@@ -150,8 +150,8 @@ export const buyCommand: OSBMahojiCommand = {
 			!user.cl.has(buyable.name)
 		) {
 			const [count, ironCount] = await Promise.all([
-				countUsersWithItemInCl(itemID(buyable.name), ),
-				countUsersWithItemInCl(itemID(buyable.name), )
+				countUsersWithItemInCl(itemID(buyable.name)),
+				countUsersWithItemInCl(itemID(buyable.name))
 			]);
 
 			let announcement = `**${user.badgedUsername}'s** minion, ${user.minionName}, just purchased their first ${

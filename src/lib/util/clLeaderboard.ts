@@ -74,11 +74,7 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
   FROM users
   WHERE ("collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
  )
-  ${
-		userIds.length > 0
-			? `OR (id in (${userIds.map(i => `'${i}'`).join(', ')}))`
-			: ''
-  }
+  ${userIds.length > 0 ? `OR (id in (${userIds.map(i => `'${i}'`).join(', ')}))` : ''}
 ) u
 ORDER BY qty DESC
 LIMIT ${resultLimit};

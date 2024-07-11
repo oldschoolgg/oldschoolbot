@@ -168,8 +168,8 @@ export async function pohDestroyCommand(user: MUser, name: string) {
 				[obj.slot]: null
 			}
 		});
-		const loot = new Bank().add(inPlace!)
-		await user.addItemsToBank({ items:loot, collectionLog: false });
+		const loot = new Bank().add(inPlace!);
+		await user.addItemsToBank({ items: loot, collectionLog: false });
 		return {
 			...(await makePOHImage(user)),
 			content: `You removed a ${obj.name} from your house, and were refunded ${loot}.`

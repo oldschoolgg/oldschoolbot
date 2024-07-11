@@ -182,7 +182,7 @@ export async function gearUnequipCommand(
 	const newGear = { ...currentGear };
 	newGear[slot] = null;
 
-	const loot = new Bank().add(equippedInThisSlot!.item, equippedInThisSlot!.quantity)
+	const loot = new Bank().add(equippedInThisSlot!.item, equippedInThisSlot!.quantity);
 	await user.addItemsToBank({
 		items: loot,
 		collectionLog: false

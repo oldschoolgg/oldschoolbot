@@ -30,7 +30,6 @@ import type { OSBMahojiCommand } from '../lib/util';
 const LB_PAGE_SIZE = 10;
 
 function lbMsg(str: string) {
-	;
 	return {
 		content: `Showing you the ${str} leaderboard, click the buttons to change pages.`,
 		ephemeral: true
@@ -61,14 +60,7 @@ export async function doMenu(
 	);
 }
 
-async function kcLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	name: string,
-	
-) {
-	;
+async function kcLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, name: string) {
 	const monster = effectiveMonsters.find(mon => [mon.name, ...mon.aliases].some(alias => stringMatches(alias, name)));
 	if (!monster) return "That's not a valid monster!";
 	const list = await prisma.$queryRawUnsafe<{ id: string; kc: number }[]>(
@@ -94,13 +86,7 @@ async function kcLb(
 	return lbMsg(`${monster.name} KC `);
 }
 
-async function farmingContractLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	
-) {
-	;
+async function farmingContractLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
 	const list = await prisma.$queryRawUnsafe<{ id: string; count: number }[]>(
 		`SELECT id, CAST("minion.farmingContract"->>'contractsCompleted' AS INTEGER) as count
 		 FROM users
@@ -176,10 +162,8 @@ async function sacrificeLb(
 	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	channelID: string,
-	type: 'value' | 'unique',
-	
+	type: 'value' | 'unique'
 ) {
-	;
 	if (type === 'value') {
 		const list = (
 			await prisma.$queryRawUnsafe<{ id: string; amount: number }[]>(
@@ -324,7 +308,7 @@ async function clLb(
 		}
 	});
 
-	const users = await fetchCLLeaderboard({  items, resultLimit: 200, userEvents: userEventOrders });
+	const users = await fetchCLLeaderboard({ items, resultLimit: 200, userEvents: userEventOrders });
 	doMenu(
 		interaction,
 		user,
@@ -402,13 +386,7 @@ async function lapsLb(interaction: ChatInputCommandInteraction, user: MUser, cha
 	return lbMsg(`${course.name} Laps`);
 }
 
-async function openLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	name: string,
-	
-) {
+async function openLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, name: string) {
 	if (name) {
 		name = name.trim();
 	}
@@ -452,8 +430,7 @@ async function openLb(
 	return lbMsg(`${openableName} Opening`);
 }
 
-async function gpLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, ) {
-	;
+async function gpLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
 	const users = (
 		await prisma.$queryRawUnsafe<{ id: string; GP: number }[]>(
 			`SELECT "id", "GP"
@@ -484,7 +461,7 @@ async function skillsLb(
 	user: MUser,
 	channelID: string,
 	inputSkill: string,
-	type: 'xp' | 'level',
+	type: 'xp' | 'level'
 ) {
 	let res = [];
 	let overallUsers: {
@@ -643,14 +620,7 @@ async function skillsLb(
 	return lbMsg(`Overall ${skill?.name} ${type}`);
 }
 
-async function cluesLb(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	clueTierName: string,
-	
-) {
-	;
+async function cluesLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, clueTierName: string) {
 	const clueTier = ClueTiers.find(i => stringMatches(i.name, clueTierName));
 	if (!clueTier) return "That's not a valid clue tier.";
 	const { id } = clueTier;
@@ -676,7 +646,7 @@ LIMIT 50;`
 		),
 		`${clueTier.name} Clue Leaderboard`
 	);
-	return lbMsg('Clue Leaderboard', );
+	return lbMsg('Clue Leaderboard');
 }
 
 async function compLeaderboard(
@@ -1032,21 +1002,21 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		userID,
 		interaction
 	}: CommandRunOptions<{
-		kc?: { monster: string;  };
-		farming_contracts?: {  };
+		kc?: { monster: string };
+		farming_contracts?: {};
 		inferno?: {};
 		challenges?: {};
-		sacrifice?: { type: 'value' | 'unique';  };
-		minigames?: { minigame: string;  };
+		sacrifice?: { type: 'value' | 'unique' };
+		minigames?: { minigame: string };
 		hunter_catches?: { creature: string };
 		agility_laps?: { course: string };
-		gp?: {  };
+		gp?: {};
 		skills?: { skill: string; xp?: boolean };
-		opens?: { openable: string;  };
+		opens?: { openable: string };
 		cl?: { cl: string; tames?: boolean };
 		leagues?: {};
-		clues?: { clue: ClueTier['name'];  };
-		completion?: { untrimmed?: boolean;  };
+		clues?: { clue: ClueTier['name'] };
+		completion?: { untrimmed?: boolean };
 		combat_achievements?: {};
 		mastery?: {};
 	}>) => {
@@ -1077,32 +1047,19 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		}
 		if (inferno) return infernoLb();
 		if (challenges) return bsoChallenge(interaction, user, channelID);
-		if (sacrifice)
-			return sacrificeLb(interaction, user, channelID, sacrifice.type);
+		if (sacrifice) return sacrificeLb(interaction, user, channelID, sacrifice.type);
 		if (minigames) return minigamesLb(interaction, user, channelID, minigames.minigame);
 		if (hunter_catches) return creaturesLb(interaction, user, channelID, hunter_catches.creature);
 		if (agility_laps) return lapsLb(interaction, user, channelID, agility_laps.course);
-		if (gp) return gpLb(interaction, user, channelID,);
+		if (gp) return gpLb(interaction, user, channelID);
 		if (skills) {
-			return skillsLb(
-				interaction,
-				user,
-				channelID,
-				skills.skill,
-				skills.xp ? 'xp' : 'level',
-			);
+			return skillsLb(interaction, user, channelID, skills.skill, skills.xp ? 'xp' : 'level');
 		}
-		if (opens) return openLb(interaction, user, channelID, opens.openable, );
-		if (cl) return clLb(interaction, user, channelID, cl.cl,  Boolean(cl.tames));
+		if (opens) return openLb(interaction, user, channelID, opens.openable);
+		if (cl) return clLb(interaction, user, channelID, cl.cl, Boolean(cl.tames));
 		if (leagues) return leaguesLeaderboard(interaction, user, channelID);
 		if (clues) return cluesLb(interaction, user, channelID, clues.clue);
-		if (completion)
-			return compLeaderboard(
-				interaction,
-				user,
-				Boolean(completion.untrimmed),
-				channelID
-			);
+		if (completion) return compLeaderboard(interaction, user, Boolean(completion.untrimmed), channelID);
 
 		if (combat_achievements) return caLb(interaction, user, channelID);
 		if (mastery) return masteryLb(interaction, user, channelID);

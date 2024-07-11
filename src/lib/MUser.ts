@@ -357,7 +357,7 @@ GROUP BY data->>'clueID';`);
 	}) {
 		const res = await transactItems({
 			collectionLog,
-			itemsToAdd: (items),
+			itemsToAdd: items,
 			filterLoot,
 			dontAddToTempCL,
 			userID: this.id,

@@ -35,6 +35,7 @@ import { MAX_QP } from '../../lib/minions/data/quests';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
@@ -68,7 +69,6 @@ import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { generateNewTame } from './nursery';
 import { tameEquippables, tameImage } from './tames';
-import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 export async function giveMaxStats(user: MUser) {
 	const updates: Prisma.UserUpdateArgs['data'] = {};
@@ -1029,7 +1029,7 @@ Spawned an adult of each tame, fed them all applicable items, and spawned ALL th
 					return setXP(user, options.setxp.skill, options.setxp.xp);
 				}
 				if (options.spawn) {
-					const { preset,  item, items } = options.spawn;
+					const { preset, item, items } = options.spawn;
 					const bankToGive = new Bank();
 					if (preset) {
 						const actualPreset = spawnPresets.find(i => i[0] === preset);
@@ -1079,7 +1079,7 @@ Spawned an adult of each tame, fed them all applicable items, and spawned ALL th
 					const currentBank = user.user.bank as ItemBank;
 					await user.update({
 						bank: new Bank(currentBank).add(bankToGive).bank
-					})
+					});
 					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;
 				}
 				if (options.setmonsterkc) {

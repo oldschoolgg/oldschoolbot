@@ -3,6 +3,7 @@ import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Time, reduceNumByPercent } from 'e';
 
+import { Bank } from 'oldschooljs';
 import { setupParty } from '../../lib/party';
 import {
 	determineDgLevelForFloor,
@@ -24,7 +25,6 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import type { OSBMahojiCommand } from '../lib/util';
-import { Bank } from 'oldschooljs';
 
 // Max people in a party:
 const maxTeamSize = 20;
@@ -200,7 +200,7 @@ async function buyCommand(user: MUser, name?: string, quantity?: number) {
 	}
 	const loot = new Bank().add(item.id, quantity);
 
-	await user.addItemsToBank({ items:loot , collectionLog: true });
+	await user.addItemsToBank({ items: loot, collectionLog: true });
 	await user.update({
 		dungeoneering_tokens: {
 			decrement: overallCost

@@ -32,6 +32,7 @@ import { implings } from '../implings';
 import { TormentedDemon } from '../minions/data/killableMonsters/custom/TormentedDemon';
 import { QueenBlackDragon } from '../minions/data/killableMonsters/custom/demiBosses';
 
+import { LampTable } from '../simulation/grandmasterClue';
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
@@ -40,7 +41,6 @@ import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { type Task, leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster } from './leaguesUtils';
 import { calculateChargedItems, calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats';
-import { LampTable } from '../simulation/grandmasterClue';
 
 export const mediumTasks: Task[] = [
 	{

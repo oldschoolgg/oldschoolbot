@@ -188,7 +188,7 @@ export async function soulWarsBuyCommand(user: MUser, input = '', quantity?: num
 		}
 	});
 	const loot = new Bank({ [item.item.id]: quantity });
-	await user.addItemsToBank({ items:loot , collectionLog: true });
+	await user.addItemsToBank({ items: loot, collectionLog: true });
 	return `Added ${loot} to your bank, removed ${item.tokens * quantity}x Zeal Tokens.`;
 }
 

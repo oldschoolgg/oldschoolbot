@@ -258,8 +258,6 @@ export const sellCommand: OSBMahojiCommand = {
 			itemsToRemove: bankToSell
 		});
 
-
-			return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**`;
-		
+		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**`;
 	}
 };

@@ -98,8 +98,8 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 		}
 	});
 
-	const loot = new Bank().add(item.id)
-	await user.addItemsToBank({ items:loot, collectionLog: true });
+	const loot = new Bank().add(item.id);
+	await user.addItemsToBank({ items: loot, collectionLog: true });
 
 	return `Successfully purchased ${loot} for ${cost} Pizazz Points.`;
 }

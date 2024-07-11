@@ -143,7 +143,7 @@ export const puroPuroTask: MinionTask = {
 			}
 		}
 
-			await transactItems({
+		await transactItems({
 			userID: user.id,
 			itemsToAdd: bank,
 			collectionLog: true,
@@ -153,8 +153,6 @@ export const puroPuroTask: MinionTask = {
 		str += `\nYou received: **${bank}**.`;
 
 		if (missed.length > 0) str += `\nYou missed out on ${missed} due to your hunter level being too low.`;
-
-	
 
 		userStatsBankUpdate(user.id, 'puropuro_implings_bank', bank);
 

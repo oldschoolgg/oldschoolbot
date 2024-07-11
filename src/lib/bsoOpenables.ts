@@ -20,13 +20,13 @@ import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
 import type { UnifiedOpenable } from './openables';
 import { PaintBoxTable } from './paintColors';
 import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
+import { LampTable } from './simulation/grandmasterClue';
 import { RuneTable } from './simulation/seedTable';
 import { ExoticSeedsTable } from './simulation/sharedTables';
 import { clAdjustedDroprate } from './util';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
-import { LampTable } from './simulation/grandmasterClue';
 
 const MR_E_DROPRATE_FROM_UMB_AND_TMB = 5000;
 const MR_E_DROPRATE_FROM_PMB = 200;
@@ -777,7 +777,7 @@ for (const energy of divinationEnergies) {
 const VenatrixEggTable = new LootTable().tertiary(1000, 'Baby venatrix');
 
 export const bsoOpenables: UnifiedOpenable[] = [
-		{
+	{
 		name: 'Untradeables Mystery box',
 		id: 19_939,
 		openedItem: getOSItem(19_939),

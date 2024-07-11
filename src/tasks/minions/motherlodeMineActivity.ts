@@ -134,7 +134,6 @@ export const motherlodeMiningTask: MinionTask = {
 			}
 		}
 
-		
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,
@@ -149,7 +148,6 @@ export const motherlodeMiningTask: MinionTask = {
 		if (user.hasEquippedOrInBank('Mining master cape')) {
 			str += '\n2x nuggets for Mining master cape.';
 		}
-
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}

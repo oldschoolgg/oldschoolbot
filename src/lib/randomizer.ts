@@ -21,7 +21,7 @@ for (const id of customItems) {
 	}
 }
 
-const itemsNotRandomized = resolveItems(["Coins", "Untradeable Mystery Box"]);
+const itemsNotRandomized = resolveItems(['Coins', 'Untradeable Mystery Box']);
 
 export function remapBank(user: MUser, bank: Bank) {
 	if (bank.wasRemapped) return bank;
@@ -56,7 +56,7 @@ export function buildItemMap(key: string) {
 			obj[toID] = toID;
 			continue;
 		}
-		
+
 		obj[fromID] = toID;
 	}
 

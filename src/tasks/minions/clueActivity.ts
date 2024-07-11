@@ -49,7 +49,7 @@ export const clueTask: MinionTask = {
 				str += '\nZippy has **doubled** your loot.';
 			}
 
-			str += `\n\nZippy has found items for you.`;
+			str += '\n\nZippy has found items for you.';
 		}
 		await transactItems({
 			userID: user.id,
