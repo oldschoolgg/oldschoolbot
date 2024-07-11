@@ -77,7 +77,6 @@ function catchChance(fish, fishLvl) {
 	return fish.chance99 - (99-fishLvl)*(fish.chance99-fish.chance1)/(99-1);
 }
 
-
 const allFishIDs = Fishing.Fishes.map(fish => fish.id);
 
 export const fishingTask: MinionTask = {
@@ -144,7 +143,7 @@ export const fishingTask: MinionTask = {
 				const fish1 = Fishing.Fishes.find(fish => fish.id === 'Leaping trout')!;
 				numFish++;
 			}
-			if (fishLvl >= 58 && stats.agility >= 30 && stats.strength >= 30)) {
+			if (fishLvl >= 58 && stats.agility >= 30 && stats.strength >= 30) {
 				const fish2 = Fishing.Fishes.find(fish => fish.id === 'Leaping salmon')!;
 				numFish++;
 			}
