@@ -10,14 +10,13 @@ import { Emoji, Events } from '../../../lib/constants';
 import { doaCL, doaMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { globalDroprates } from '../../../lib/data/globalDroprates';
 import { DOARooms, chanceOfDOAUnique, pickUniqueToGiveUser } from '../../../lib/depthsOfAtlantis';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import type { DOAOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 async function handleDOAXP(user: MUser, qty: number, isCm: boolean) {
@@ -239,21 +238,6 @@ export const doaTask: MinionTask = {
 		if (messages.length > 0) {
 			resultMessage += `\n\n${messages.join('\n')}`;
 		}
-
-		await updateBankSetting('doa_loot', totalLoot.totalLoot());
-		await trackLoot({
-			totalLoot: totalLoot.totalLoot(),
-			id: 'depths_of_atlantis',
-			type: 'Minigame',
-			changeType: 'loot',
-			duration,
-			kc: quantity,
-			users: allUsers.map(i => ({
-				id: i.id,
-				duration,
-				loot: totalLoot.get(i.id)
-			}))
-		});
 
 		if (isSolo) {
 			return handleTripFinish(

@@ -3,15 +3,14 @@ import type { TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, userMention } from 'discord.js';
 import { Time, debounce, noOp } from 'e';
 
-import { production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
-import { SILENT_ERROR, usernameCache } from './constants';
+import { SILENT_ERROR, globalConfig, usernameCache } from './constants';
 import type { MakePartyOptions } from './types';
 import { formatDuration, makeComponents } from './util';
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();
-if (production) {
+if (globalConfig.isProduction) {
 	setInterval(() => {
 		debugLog('Clearing partylockcache');
 		partyLockCache.clear();
@@ -91,7 +90,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 					CACHED_ACTIVE_USER_IDS.add(interaction.user.id);
 					const user = await mUserFetch(interaction.user.id);
 					if (
-						(!options.ironmanAllowed && user.user.minion_ironman) ||
+						!options.ironmanAllowed ||
 						interaction.user.bot ||
 						user.minionIsBusy ||
 						!user.user.minion_hasBought

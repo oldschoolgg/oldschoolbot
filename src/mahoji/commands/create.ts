@@ -12,9 +12,8 @@ import type { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import type { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch, userStatsBankUpdate } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 const creatablesTable = readFileSync('./src/lib/data/creatablesTable.txt', 'utf8');
 
@@ -241,11 +240,6 @@ export const createCommand: OSBMahojiCommand = {
 			itemsToAdd: outItems,
 			itemsToRemove: inItems
 		});
-
-		await updateBankSetting('create_cost', inItems);
-		await updateBankSetting('create_loot', outItems);
-		await userStatsBankUpdate(user.id, 'create_cost_bank', inItems);
-		await userStatsBankUpdate(user.id, 'create_loot_bank', outItems);
 
 		if (action === 'revert') {
 			return `You reverted ${inItems} into ${outItems}.${extraMessage}`;

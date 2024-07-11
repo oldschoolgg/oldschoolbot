@@ -20,13 +20,11 @@ export function convertStoredActivityToFlatActivity(activity: Activity): Activit
 /**
  * ⚠️ Uses queryRawUnsafe
  */
-export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolean) {
-	ironmenOnly = true;
+export async function countUsersWithItemInCl(itemID: number) {
 	const query = `SELECT COUNT(id)::int
 				   FROM users
 				   WHERE ("collectionLogBank"->>'${itemID}') IS NOT NULL 
-				   AND ("collectionLogBank"->>'${itemID}')::int >= 1
-				   ${ironmenOnly ? 'AND "minion.ironman" = true' : ''};`;
+				   AND ("collectionLogBank"->>'${itemID}')::int >= 1;`;
 	const result = Number.parseInt(((await prisma.$queryRawUnsafe(query)) as any)[0].count);
 	if (Number.isNaN(result)) {
 		throw new Error(`countUsersWithItemInCl produced invalid number '${result}' for ${itemID}`);

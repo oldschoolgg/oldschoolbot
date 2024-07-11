@@ -13,7 +13,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
-import { rogueOutfitPercentBonus, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
+import { rogueOutfitPercentBonus, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { clueUpgraderEffect } from './monsterActivity';
 
 const notMultiplied = resolveItems([
@@ -133,12 +133,6 @@ export const pickpocketTask: MinionTask = {
 				gotWil = true;
 			}
 		}
-
-		if (loot.has('Coins')) {
-			updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
-		}
-
-		await userStatsBankUpdate(user.id, 'steal_loot_bank', loot);
 
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,

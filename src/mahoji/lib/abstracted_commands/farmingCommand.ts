@@ -19,7 +19,6 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { farmingPatchNames, findPlant, isPatchName } from '../../../lib/util/farmingHelpers';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped, userStatsBankUpdate } from '../../mahojiSettings';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
@@ -298,7 +297,6 @@ export async function farmingPlantCommand({
 	if (!user.owns(cost)) return `You don't own ${cost}.`;
 	await transactItems({ userID: user.id, itemsToRemove: cost });
 
-	updateBankSetting('farming_cost_bank', cost);
 	// If user does not have something already planted, just plant the new seeds.
 	if (!patchType.patchPlanted) {
 		infoStr.unshift(`${user.minionName} is now planting ${quantity}x ${plant.name}.`);
@@ -315,18 +313,6 @@ export async function farmingPlantCommand({
 		);
 	}
 
-	const inserted = await prisma.farmedCrop.create({
-		data: {
-			user_id: user.id,
-			date_planted: new Date(),
-			item_id: plant.id,
-			quantity_planted: quantity,
-			was_autofarmed: autoFarmed,
-			paid_for_protection: didPay,
-			upgrade_type: upgradeType
-		}
-	});
-
 	await userStatsBankUpdate(user.id, 'farming_plant_cost_bank', cost);
 
 	await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
@@ -341,8 +327,7 @@ export async function farmingPlantCommand({
 		duration,
 		currentDate,
 		type: 'Farming',
-		autoFarmed,
-		pid: inserted.id
+		autoFarmed
 	});
 
 	return `${infoStr.join(' ')}

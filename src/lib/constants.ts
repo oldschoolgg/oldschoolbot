@@ -12,7 +12,6 @@ import { Items } from 'oldschooljs';
 import { convertLVLtoXP, getItemOrThrow } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
 
-import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { customItems } from './customItems/util';
 import { SkillsEnum } from './skilling/types';
@@ -23,50 +22,7 @@ import '../lib/data/itemAliases';
 
 export { PerkTier };
 
-const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '944924763405574174';
-
 export const BOT_TYPE: 'BSO' | 'OSB' = 'BSO' as 'BSO' | 'OSB';
-
-export const Channel = {
-	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
-	Notifications: production ? '811589869314899980' : '1042760447830536212',
-	ErrorLogs: DISCORD_SETTINGS.Channels?.ErrorLogs ?? '665678499578904596',
-	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
-	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
-	HelpAndSupport: '970752140324790384',
-	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? '680770361893322761',
-	BotLogs: production ? '1051725977320964197' : TestingMainChannelID,
-	GeneralChannel:
-		BOT_TYPE === 'OSB'
-			? production
-				? '346304390858145792'
-				: '1154056119019393035'
-			: production
-				? '792691343284764693'
-				: '1154056119019393035',
-	// BSO Channels
-	BSOGeneral: DISCORD_SETTINGS.Channels?.BSOGeneral ?? '792691343284764693',
-	BSOChannel: DISCORD_SETTINGS.Channels?.BSOChannel ?? '732207379818479756'
-};
-
-export const Roles = {
-	Contributor: DISCORD_SETTINGS.Roles?.Contributor ?? '456181501437018112',
-	Moderator: DISCORD_SETTINGS.Roles?.Moderator ?? '622806157563527178',
-	PatronTier1: DISCORD_SETTINGS.Roles?.PatronTier1 ?? '678970545789730826',
-	PatronTier2: DISCORD_SETTINGS.Roles?.PatronTier2 ?? '678967943979204608',
-	PatronTier3: DISCORD_SETTINGS.Roles?.PatronTier3 ?? '687408140832342043',
-	Patron: DISCORD_SETTINGS.Roles?.Patron ?? '679620175838183424',
-	MassHoster: DISCORD_SETTINGS.Roles?.MassHoster ?? '734055552933429280',
-	BSOMassHoster: DISCORD_SETTINGS.Roles?.BSOMassHoster ?? '759572886364225558',
-	TopSkiller: DISCORD_SETTINGS.Roles?.TopSkiller ?? '848966830617788427',
-	TopCollector: DISCORD_SETTINGS.Roles?.TopCollector ?? '848966773885763586',
-	TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '848966732265160775',
-	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '867967884515770419',
-	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '848967350120218636',
-	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '867967551819358219',
-	TopInventor: '992799099801833582',
-	TopLeagues: '1005417171112972349'
-};
 
 export enum Emoji {
 	MoneyBag = '<:MoneyBag:493286312854683654>',
@@ -710,7 +666,10 @@ const globalConfigSchema = z.object({
 	redisPort: z.coerce.number().int().optional(),
 	botToken: z.string().min(1),
 	isCI: z.coerce.boolean().default(false),
-	isProduction: z.coerce.boolean().default(production)
+	isProduction: z.coerce.boolean(),
+	mainServerID: z.string(),
+	generalChannelID: z.string(),
+	announcementsChannelID: z.string()
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
@@ -726,12 +685,11 @@ export const globalConfig = globalConfigSchema.parse({
 	redisPort: process.env.REDIS_PORT,
 	botToken: process.env.BOT_TOKEN,
 	isCI: process.env.CI,
-	isProduction: process.env.NODE_ENV === 'production'
+	isProduction: process.env.NODE_ENV === 'production',
+	mainServerID: process.env.MAIN_SERVER,
+	generalChannelID: process.env.GENERAL_CHANNEL,
+	announcementsChannelID: process.env.ANNOUNCEMENTS_CHANNEL
 });
-
-if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction || production !== globalConfig.isProduction) {
-	throw new Error('The NODE_ENV and isProduction variables must match');
-}
 
 export const ONE_TRILLION = 1_000_000_000_000;
 export const gloriesInventorySize = 26;

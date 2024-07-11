@@ -43,14 +43,12 @@ export async function tearsOfGuthixCommand(user: MUser, channelID: string) {
 	const skills = user.skillsAsLevels;
 	let missingIronmanSkills = false;
 	// Extra requirements if Ironman
-	if (user.user.minion_ironman) {
-		let skillsMatch = 0;
-		Object.entries(ironmanExtraReqs).forEach(([skill, level]) => {
-			if (skills[skill as SkillsEnum] >= level) skillsMatch += 1;
-		});
-		if (skillsMatch === 0) {
-			missingIronmanSkills = true;
-		}
+	let skillsMatch = 0;
+	Object.entries(ironmanExtraReqs).forEach(([skill, level]) => {
+		if (skills[skill as SkillsEnum] >= level) skillsMatch += 1;
+	});
+	if (skillsMatch === 0) {
+		missingIronmanSkills = true;
 	}
 
 	const missingIronmanSkillMessage = `As an Ironman, you also need one of the following requirements:${formatSkillRequirements(

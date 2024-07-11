@@ -5,10 +5,9 @@ import { Bank } from 'oldschooljs';
 import { Emoji } from '../../../lib/constants';
 import { kalphiteKingCL } from '../../../lib/data/CollectionsExport';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { addMonsterXP } from '../../../lib/minions/functions';
-import announceLoot from '../../../lib/minions/functions/announceLoot';
 
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
@@ -16,7 +15,6 @@ import type { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 interface KalphiteKingUser {
 	id: string;
@@ -131,35 +129,7 @@ export const kalphiteKingTask: MinionTask = {
 			resultStr += `${purple ? Emoji.Purple : ''} ${
 				isOnTask ? Emoji.Slayer : ''
 			} **${user} received:** ||${new Bank(loot)}||\n`;
-
-			announceLoot({
-				user: leaderUser,
-				monsterID: KalphiteKingMonster.id,
-				loot: new Bank(loot),
-				notifyDrops: KalphiteKingMonster.notifyDrops,
-				team: {
-					leader: leaderUser,
-					lootRecipient: user,
-					size: users.length
-				}
-			});
 		}
-
-		updateBankSetting('kk_loot', totalLoot);
-
-		await trackLoot({
-			duration,
-			totalLoot,
-			type: 'Monster',
-			changeType: 'loot',
-			id: KalphiteKingMonster.name,
-			kc: quantity,
-			users: users.map(i => ({
-				id: i,
-				loot: teamsLoot.get(i),
-				duration
-			}))
-		});
 
 		// Show deaths in the result
 		const deathEntries = Object.entries(deaths);

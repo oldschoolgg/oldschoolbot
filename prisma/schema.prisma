@@ -29,115 +29,16 @@ model Activity {
 }
 
 model ClientStorage {
-  id                     String   @id @db.VarChar(19)
-  userBlacklist          String[] @db.VarChar(19)
-  guildBlacklist         String[] @db.VarChar(19)
-  prices                 Json     @default("{}") @db.Json
-  sold_items_bank        Json     @default("{}") @db.Json
-  herblore_cost_bank     Json     @default("{}") @db.Json
-  construction_cost_bank Json     @default("{}") @db.Json
-  farming_cost_bank      Json     @default("{}") @db.Json
-  farming_loot_bank      Json     @default("{}") @db.Json
-  buy_cost_bank          Json     @default("{}") @db.Json
-  buy_loot_bank          Json     @default("{}") @db.Json
-  magic_cost_bank        Json     @default("{}") @db.Json
-  crafting_cost          Json     @default("{}") @db.Json
-  gnome_res_cost         Json     @default("{}") @db.Json
-  gnome_res_loot         Json     @default("{}") @db.Json
-  rogues_den_cost        Json     @default("{}") @db.Json
-  gauntlet_loot          Json     @default("{}") @db.Json
-  cox_cost               Json     @default("{}") @db.Json
-  cox_loot               Json     @default("{}") @db.Json
-  collecting_cost        Json     @default("{}") @db.Json
-  collecting_loot        Json     @default("{}") @db.Json
-  mta_cost               Json     @default("{}") @db.Json
-  bf_cost                Json     @default("{}") @db.Json
-  mage_arena_cost        Json     @default("{}") @db.Json
-  hunter_cost            Json     @default("{}") @db.Json
-  hunter_loot            Json     @default("{}") @db.Json
-  revs_cost              Json     @default("{}") @db.Json
-  revs_loot              Json     @default("{}") @db.Json
-  inferno_cost           Json     @default("{}") @db.Json
-  dropped_items          Json     @default("{}") @db.Json
-  runecraft_cost         Json     @default("{}") @db.Json
-  smithing_cost          Json     @default("{}") @db.Json
-  custom_prices          Json     @default("{}") @db.Json
-  nightmare_cost         Json     @default("{}") @db.Json
-  create_cost            Json     @default("{}") @db.Json
-  create_loot            Json     @default("{}") @db.Json
-  tob_cost               Json     @default("{}") @db.Json
-  tob_loot               Json     @default("{}") @db.Json
-  degraded_items_cost    Json     @default("{}") @db.Json
-  tks_cost               Json     @default("{}") @db.Json
-  tks_loot               Json     @default("{}") @db.Json
-  disabled_commands      String[] @db.VarChar(32)
-  gp_tax_balance         BigInt   @default(0)
-  gotr_cost              Json     @default("{}") @db.Json
-  gotr_loot              Json     @default("{}") @db.Json
-  gf_cost                Json     @default("{}") @db.Json
-  gf_loot                Json     @default("{}") @db.Json
-  nmz_cost               Json     @default("{}") @db.Json
-  toa_cost               Json     @default("{}") @db.Json
-  toa_loot               Json     @default("{}") @db.Json
-  colo_cost              Json     @default("{}") @db.Json
-  colo_loot              Json     @default("{}") @db.Json
-
-  // BSO
-  double_loot_finish_time BigInt @default(0)
-  gp_pet                  BigInt @default(0)
-  ignecarus_cost          Json   @default("{}") @db.Json
-  ignecarus_loot          Json   @default("{}") @db.Json
-  kibble_cost             Json   @default("{}") @db.Json
-  mr_cost                 Json   @default("{}") @db.Json
-  mr_loot                 Json   @default("{}") @db.Json
-  kg_cost                 Json   @default("{}") @db.Json
-  kg_loot                 Json   @default("{}") @db.Json
-  nex_cost                Json   @default("{}") @db.Json
-  nex_loot                Json   @default("{}") @db.Json
-  kk_cost                 Json   @default("{}") @db.Json
-  kk_loot                 Json   @default("{}") @db.Json
-  vasa_cost               Json   @default("{}") @db.Json
-  vasa_loot               Json   @default("{}") @db.Json
-  ods_cost                Json   @default("{}") @db.Json
-  ods_loot                Json   @default("{}") @db.Json
-  naxxus_loot             Json   @default("{}") @db.Json
-  naxxus_cost             Json   @default("{}") @db.Json
-  tame_merging_cost       Json   @default("{}") @db.Json
-  trip_doubling_loot      Json   @default("{}") @db.Json
-  fc_cost                 Json   @default("{}") @db.Json
-  fc_loot                 Json   @default("{}") @db.Json
-  zippy_loot              Json   @default("{}") @db.Json
-  bb_cost                 Json   @default("{}") @db.Json
-  bb_loot                 Json   @default("{}") @db.Json
-  moktang_cost            Json   @default("{}") @db.Json
-  moktang_loot            Json   @default("{}") @db.Json
-  doa_cost                Json   @default("{}") @db.Json
-  doa_loot                Json   @default("{}") @db.Json
-
-  items_disassembled_cost    Json @default("{}") @db.Json
-  invention_materials_cost   Json @default("{}") @db.Json
-  invention_prizes_remaining Json @default("{}") @db.Json
-  clue_upgrader_loot         Json @default("{}") @db.Json
-  portable_tanner_loot       Json @default("{}") @db.Json
-
-  turaels_trials_cost_bank Json @default("{}") @db.Json
-  turaels_trials_loot_bank Json @default("{}") @db.Json
+  id                      String   @id @db.VarChar(19)
+  userBlacklist           String[] @default([]) @db.VarChar(19)
+  guildBlacklist          String[] @default([]) @db.VarChar(19)
+  prices                  Json     @default("{}") @db.Json
+  sold_items_bank         Json     @default("{}") @db.Json
+  disabled_commands       String[] @db.VarChar(32)
+  double_loot_finish_time BigInt   @default(0)
+  custom_prices           Json     @default("{}") @db.Json
 
   @@map("clientStorage")
-}
-
-model BuyCommandTransaction {
-  id   String   @id @default(uuid()) @db.Uuid
-  date DateTime @default(now()) @db.Timestamp(6)
-
-  user_id BigInt
-
-  cost_gp                BigInt
-  cost_bank_excluding_gp Json?  @db.Json
-
-  loot_bank Json? @db.Json
-
-  @@map("buy_command_transaction")
 }
 
 model Guild {
@@ -207,18 +108,20 @@ enum bank_sort_method_enum {
 }
 
 model User {
+  item_map_key                  String?
+  item_map                      Json?   @db.Json
+  reverse_item_map              Json?   @db.Json
   leagues_completed_tasks_ids   Int[]
-  leagues_completed_tasks_count Int    @default(0)
-  cl_percent                    Float  @default(0)
-  total_xp                      BigInt @default(0)
+  leagues_completed_tasks_count Int     @default(0)
+  cl_percent                    Float   @default(0)
+  total_xp                      BigInt  @default(0)
   total_level                   Int?
-  mastery                       Int    @default(0)
+  mastery                       Int     @default(0)
 
   id                 String    @id @db.VarChar(19)
   last_command_date  DateTime? @db.Timestamp(6)
   minion_bought_date DateTime? @db.Timestamp(6)
   minion_hasBought   Boolean   @default(false) @map("minion.hasBought")
-  minion_ironman     Boolean   @default(false) @map("minion.ironman")
 
   sacrificedValue BigInt @default(0)
 
@@ -236,10 +139,6 @@ model User {
   minion_farmingContract Json?  @map("minion.farmingContract") @db.Json
   minion_birdhouseTraps  Json?  @map("minion.birdhouseTraps") @db.Json
   finished_quest_ids     Int[]
-
-  // Relations
-  farmedCrops FarmedCrop[]
-  botItemSell BotItemSell[]
 
   // Configs/Settings
   minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")
@@ -378,56 +277,6 @@ model Webhook {
   @@map("webhook_table")
 }
 
-enum XpGainSource {
-  TombsOfAmascut
-  BalthazarsBigBonanza
-  UnderwaterAgilityThieving
-  ChambersOfXeric
-  TheatreOfBlood
-  DepthsOfAtlantis
-  NightmareZone
-  AshSanctifier
-  OfferingBones
-  TempleTrekking
-  DarkAltar
-  MotherlodeMine
-  Birdhouses
-  GuardiansOfTheRift
-  BuryingBones
-  ScatteringAshes
-  Zalcano
-  Wintertodt
-  FishingTrawler
-  Tempoross
-  TearsOfGuthix
-  ShadesOfMorton
-  PuroPuro
-  MahoganyHomes
-  AerialFishing
-  CleaningHerbsWhileFarming
-  CamdozaalMining
-  CamdozaalSmithing
-  CamdozaalFishing
-  MemoryHarvest
-  GuthixianCache
-  ForestryEvents
-  TuraelsTrials
-}
-
-model XPGain {
-  id         Int                 @id @default(autoincrement())
-  user_id    BigInt
-  date       DateTime            @default(now()) @db.Timestamp(6)
-  skill      xp_gains_skill_enum
-  xp         Int
-  artificial Boolean?
-  post_max   Boolean             @default(false)
-  source     XpGainSource?
-
-  @@index([date, skill])
-  @@map("xp_gains")
-}
-
 model Minigame {
   id                      Int    @id @default(autoincrement())
   user_id                 String @unique @db.VarChar(19)
@@ -549,14 +398,13 @@ model Tame {
 }
 
 model CommandUsage {
-  id           Int                  @id @default(autoincrement())
-  date         DateTime             @default(now()) @db.Timestamp(6)
+  id           Int      @id @default(autoincrement())
+  date         DateTime @default(now()) @db.Timestamp(6)
   user_id      BigInt
-  command_name String               @db.VarChar(32)
-  status       command_usage_status @default(value: Unknown)
-  is_continue  Boolean              @default(false)
+  command_name String   @db.VarChar(32)
+  is_continue  Boolean  @default(false)
   flags        Json?
-  inhibited    Boolean?             @default(false)
+  inhibited    Boolean? @default(false)
 
   is_mention_command Boolean @default(false)
 
@@ -577,28 +425,6 @@ model FishingContestCatch {
   length_cm Int      @db.SmallInt
 
   @@map("fishing_contest_catch")
-}
-
-enum loot_track_type {
-  Monster
-  Minigame
-  Skilling
-}
-
-model LootTrack {
-  id String @id @default(uuid()) @db.Uuid
-
-  key            String          @db.VarChar(32)
-  type           loot_track_type
-  // In minutes
-  total_duration Int
-  total_kc       Int
-  loot           Json            @default("{}") @db.Json
-  cost           Json            @default("{}") @db.Json
-  user_id        BigInt?
-
-  @@index([key, user_id])
-  @@map("loot_track")
 }
 
 model LastManStandingGame {
@@ -664,7 +490,6 @@ model UserStats {
 
   silverhawk_boots_passive_xp BigInt @default(0)
   bonecrusher_prayer_xp       BigInt @default(0)
-  lamped_xp                   Json   @default("{}") @db.Json
 
   tame_cl_bank Json @default("{}") @db.JsonB
 
@@ -697,10 +522,6 @@ model UserStats {
   on_task_with_mask_monster_scores Json @default("{}") @db.Json
   deaths                           Int  @default(0)
   pk_evasion_exp                   Int  @default(0)
-  dice_wins                        Int  @default(0)
-  dice_losses                      Int  @default(0)
-  duel_losses                      Int  @default(0)
-  duel_wins                        Int  @default(0)
   fight_caves_attempts             Int  @default(0)
   firecapes_sacrificed             Int  @default(0)
   tithe_farms_completed            Int  @default(0)
@@ -722,20 +543,11 @@ model UserStats {
   slayer_unsired_offered   Int @default(0)
   slayer_chewed_offered    Int @default(0)
 
-  tob_cost        Json @default("{}")
-  tob_loot        Json @default("{}")
   creature_scores Json @default("{}")
   monster_scores  Json @default("{}")
   laps_scores     Json @default("{}")
   sacrificed_bank Json @default("{}")
   openable_scores Json @default("{}")
-
-  gp_luckypick BigInt @default(0)
-  gp_dice      BigInt @default(0)
-  gp_slots     BigInt @default(0)
-  gp_hotcold   BigInt @default(0)
-
-  total_gp_traded BigInt @default(0)
 
   last_daily_timestamp           BigInt @default(0)
   last_tears_of_guthix_timestamp BigInt @default(0)
@@ -756,9 +568,6 @@ model UserStats {
 
   god_favour_bank           Json? @db.Json
   god_items_sacrificed_bank Json  @default("{}") @db.Json
-
-  steal_cost_bank Json @default("{}") @db.Json
-  steal_loot_bank Json @default("{}") @db.Json
 
   xp_from_graceful_portent         BigInt @default(0)
   xp_from_dungeon_portent          BigInt @default(0)
@@ -788,49 +597,6 @@ enum CropUpgradeType {
   compost
   supercompost
   ultracompost
-}
-
-// FarmedCrop
-// - Not a source of truth, just used for tracking/stats.
-// - One is made each time you plant a crop, and then updated when you harvest that crop.
-// - Deleted when you become an iron.
-model FarmedCrop {
-  id Int @id @default(autoincrement())
-
-  user_id String @db.VarChar(19)
-  user    User   @relation(fields: [user_id], references: [id])
-
-  date_planted        DateTime
-  date_harvested      DateTime?
-  item_id             Int
-  quantity_planted    Int
-  upgrade_type        CropUpgradeType?
-  was_autofarmed      Boolean
-  paid_for_protection Boolean
-
-  @@map("farmed_crop")
-}
-
-model BotItemSell {
-  id String @id @default(uuid()) @db.Uuid
-
-  date DateTime @default(now()) @db.Timestamp(6)
-
-  item_id     Int
-  quantity    Int
-  gp_received BigInt
-
-  user_id String @db.VarChar(19)
-  user    User   @relation(fields: [user_id], references: [id])
-
-  @@map("bot_item_sell")
-}
-
-enum command_usage_status {
-  Unknown
-  Success
-  Error
-  Inhibited
 }
 
 enum activity_type_enum {

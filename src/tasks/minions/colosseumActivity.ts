@@ -3,14 +3,13 @@ import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { ColosseumWaveBank, colosseumWaves } from '../../lib/colosseum';
-import { trackLoot } from '../../lib/lootTrack';
+
 import { incrementMinigameScore } from '../../lib/settings/minigames';
 import type { ColoTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import resolveItems from '../../lib/util/resolveItems';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
-import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 const sunfireItems = resolveItems(['Sunfire fanatic helm', 'Sunfire fanatic cuirass', 'Sunfire fanatic chausses']);
 
@@ -64,25 +63,7 @@ export const colosseumTask: MinionTask = {
 			}
 		}
 
-		const { previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
-
-		await updateBankSetting('colo_loot', loot);
-		await userStatsBankUpdate(user.id, 'colo_loot', loot);
-		await trackLoot({
-			totalLoot: loot,
-			id: 'colo',
-			type: 'Minigame',
-			changeType: 'loot',
-			duration: data.duration,
-			kc: 1,
-			users: [
-				{
-					id: user.id,
-					loot,
-					duration: data.duration
-				}
-			]
-		});
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		let str = `${user}, you completed the Colosseum! You received: ${loot}. ${newWaveKcStr}`;
 
@@ -91,7 +72,7 @@ export const colosseumTask: MinionTask = {
 			str += ` Your new max glory is ${maxGlory}!`;
 		}
 
-		const image = await makeBankImage({ bank: loot, title: 'Colosseum Loot', user, previousCL });
+		const image = await makeBankImage({ bank: itemsAdded, title: 'Colosseum Loot', user, previousCL });
 
 		return handleTripFinish(user, channelID, str, image.file.attachment, data, loot);
 	}

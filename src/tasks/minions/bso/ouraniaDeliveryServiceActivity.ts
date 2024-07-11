@@ -3,13 +3,12 @@ import { Bank, LootTable } from 'oldschooljs';
 import { PrayerPageTable } from 'oldschooljs/dist/simulation/clues/General';
 
 import { userHasFlappy } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ExoticSeedsTable } from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const boxTable = new LootTable()
 	.add('Tradeable mystery box', [1, 2], 100)
@@ -62,22 +61,7 @@ export const odsTask: MinionTask = {
 				loot.multiply(2);
 			}
 			await user.addItemsToBank({ items: loot, collectionLog: true });
-			updateBankSetting('ods_loot', loot);
-			await trackLoot({
-				duration,
-				totalLoot: loot,
-				type: 'Minigame',
-				changeType: 'loot',
-				id: 'ourania_delivery_service',
-				kc: quantity,
-				users: [
-					{
-						id: user.id,
-						loot,
-						duration
-					}
-				]
-			});
+
 			str += `\n\nYou received some tips from Wizards in your delivery route: ${loot}.`;
 		}
 		if (flappyRes.userMsg) str += `\n${flappyRes.userMsg}`;

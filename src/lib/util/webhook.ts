@@ -3,8 +3,7 @@ import type { AttachmentBuilder, BaseMessageOptions, EmbedBuilder, Message } fro
 import { PartialGroupDMChannel, PermissionsBitField, WebhookClient } from 'discord.js';
 import PQueue from 'p-queue';
 
-import { production } from '../../config';
-
+import { globalConfig } from '../constants';
 import { channelIsSendable } from '../util';
 import { logError } from './logError';
 
@@ -18,7 +17,10 @@ async function resolveChannel(channelID: string): Promise<WebhookClient | Messag
 		return new WebhookClient({ id: db.webhook_id, token: db.webhook_token });
 	}
 
-	if (!production || !channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.ManageWebhooks)) {
+	if (
+		!globalConfig.isProduction ||
+		!channel.permissionsFor(globalClient.user!)?.has(PermissionsBitField.Flags.ManageWebhooks)
+	) {
 		return channel;
 	}
 

@@ -3,14 +3,13 @@ import { Bank } from 'oldschooljs';
 
 import type { GiantsFoundryBank } from '../../../lib/giantsFoundry';
 import { encodeGiantWeapons, generateRandomGiantWeapon, giantWeaponName } from '../../../lib/giantsFoundry';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { GiantsFoundryActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 export const giantsFoundryTask: MinionTask = {
 	type: 'GiantsFoundry',
@@ -84,23 +83,6 @@ export const giantsFoundryTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		updateBankSetting('gf_loot', loot);
-		await trackLoot({
-			id: 'giants_foundry',
-			type: 'Minigame',
-			duration,
-			kc: quantity,
-			totalLoot: loot,
-			changeType: 'loot',
-			users: [
-				{
-					id: user.id,
-					loot,
-					duration
-				}
-			]
-		});
-		await userStatsBankUpdate(user.id, 'gf_loot', loot);
 
 		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
 	}

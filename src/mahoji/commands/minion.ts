@@ -28,7 +28,7 @@ import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { convertLVLtoXP, isValidNickname } from '../../lib/util';
 import { getKCByName } from '../../lib/util/getKCByName';
-import getOSItem, { getItem } from '../../lib/util/getOSItem';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 import { checkPeakTimes } from '../../lib/util/minionUtils';
@@ -39,7 +39,6 @@ import {
 import { cancelTaskCommand } from '../lib/abstracted_commands/cancelTaskCommand';
 import { dailyCommand } from '../lib/abstracted_commands/dailyCommand';
 import { feedHammyCommand } from '../lib/abstracted_commands/hammyCommand';
-import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
 import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
@@ -142,51 +141,6 @@ export const minionCommand: OSBMahojiCommand = {
 					name: 'claim',
 					description: 'Claim your rewards?',
 					required: false
-				}
-			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'lamp',
-			description: 'Use lamps to claim XP.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'item',
-					description: 'The item you want to use.',
-					autocomplete: async (value, user) => {
-						const mappedLampables = Lampables.map(i => i.items)
-							.flat(2)
-							.map(getItem)
-							.filter(notEmpty)
-							.map(i => ({ id: i.id, name: i.name }));
-
-						const botUser = await mUserFetch(user.id);
-
-						return botUser.bank
-							.items()
-							.filter(i => mappedLampables.map(l => l.id).includes(i[0].id))
-							.filter(i => {
-								if (!value) return true;
-								return i[0].name.toLowerCase().includes(value.toLowerCase());
-							})
-							.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name.toLowerCase() }));
-					},
-					required: true
-				},
-				{
-					...skillOption,
-					required: true,
-					name: 'skill',
-					description: 'The skill you want to use the item on.'
-				},
-				{
-					type: ApplicationCommandOptionType.Integer,
-					name: 'quantity',
-					description: 'You quantity you want to use.',
-					required: false,
-					min_value: 1,
-					max_value: 100_000
 				}
 			]
 		},
@@ -358,7 +312,6 @@ export const minionCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		userID,
-		user: apiUser,
 		options,
 		interaction,
 		channelID
@@ -366,7 +319,6 @@ export const minionCommand: OSBMahojiCommand = {
 		stats?: { stat?: string };
 		achievementdiary?: { diary?: string; claim?: boolean };
 		bankbg?: { name?: string };
-		lamp?: { item: string; quantity?: number; skill: string };
 		cancel?: {};
 		set_icon?: { icon: string };
 		set_name?: { name: string };
@@ -401,10 +353,6 @@ export const minionCommand: OSBMahojiCommand = {
 				return claimAchievementDiaryCommand(user, options.achievementdiary.diary ?? '');
 			}
 			return achievementDiaryCommand(user, options.achievementdiary.diary ?? '');
-		}
-
-		if (options.lamp) {
-			return lampCommand(user, options.lamp.item, options.lamp.skill, options.lamp.quantity);
 		}
 
 		if (options.cancel) return cancelTaskCommand(user, interaction);
@@ -452,7 +400,7 @@ export const minionCommand: OSBMahojiCommand = {
 			return `Your ${kcName} KC is: ${kcAmount}.`;
 		}
 
-		if (options.buy) return minionBuyCommand(apiUser, user);
+		if (options.buy) return minionBuyCommand(user);
 
 		if (options.charge) {
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);

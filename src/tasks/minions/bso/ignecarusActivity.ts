@@ -3,21 +3,19 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import {
 	Ignecarus,
 	IgnecarusLootTable,
 	IgnecarusNotifyDrops
 } from '../../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { addMonsterXP } from '../../../lib/minions/functions';
-import announceLoot from '../../../lib/minions/functions/announceLoot';
 
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import type { BossUser } from '../../../lib/structures/Boss';
 import type { NewBossOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 const methodsOfDeath = ['Burnt to death', 'Eaten', 'Crushed', 'Incinerated'];
@@ -25,7 +23,7 @@ const methodsOfDeath = ['Burnt to death', 'Eaten', 'Crushed', 'Incinerated'];
 export const ignecarusTask: MinionTask = {
 	type: 'Ignecarus',
 	async run(data: NewBossOptions) {
-		const { channelID, users: idArr, duration, bossUsers: _bossUsers, quantity, userID } = data;
+		const { channelID, users: idArr, duration, bossUsers: _bossUsers, quantity } = data;
 		const wrongFoodDeaths: MUser[] = [];
 		const deaths: Record<string, { user: MUser; qty: number }> = {};
 		const bossUsers: BossUser[] = await Promise.all(
@@ -112,20 +110,7 @@ export const ignecarusTask: MinionTask = {
 				IgnecarusNotifyDrops.includes(Number.parseInt(itemID))
 			);
 			resultStr += `\n${purple ? Emoji.Purple : ''}${user} received ${loot}.`;
-
-			announceLoot({
-				user,
-				monsterID: Ignecarus.id,
-				loot,
-				notifyDrops: IgnecarusNotifyDrops,
-				team: {
-					leader: await mUserFetch(userID),
-					lootRecipient: user,
-					size: idArr.length
-				}
-			});
 		}
-		updateBankSetting('ignecarus_loot', totalLoot);
 
 		// Show deaths in the result
 		if (objectValues(deaths).length > 0) {
@@ -140,20 +125,6 @@ export const ignecarusTask: MinionTask = {
 					})`
 			)}.`;
 		}
-
-		await trackLoot({
-			duration,
-			totalLoot,
-			type: 'Monster',
-			changeType: 'loot',
-			id: Ignecarus.name,
-			kc: quantity,
-			users: bossUsers.map(i => ({
-				id: i.user.id,
-				loot: teamLoot.get(i.user.id),
-				duration
-			}))
-		});
 
 		handleTripFinish(bossUsers[0].user, channelID, resultStr, undefined, data, null);
 	}

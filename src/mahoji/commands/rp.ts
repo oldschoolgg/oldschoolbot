@@ -1,30 +1,22 @@
-import { dateFm, toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
-import { DiscordSnowflake } from '@sapphire/snowflake';
 import { codeBlock } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { randArrItem } from 'e';
-import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
-import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
 import { calculateCompCapeProgress } from '../../lib/bso/calculateCompCapeProgress';
-import { BitField, Channel } from '../../lib/constants';
+import { BitField, globalConfig } from '../../lib/constants';
 import { allCollectionLogsFlat } from '../../lib/data/Collections';
 import type { GearSetupType } from '../../lib/gear/types';
 import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 
-import { isValidDiscordSnowflake } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { parseBank } from '../../lib/util/parseStringBank';
-import { insertUserEvent } from '../../lib/util/userEvents';
-import { sendToChannelID } from '../../lib/util/webhook';
 import { gearSetupOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { gifs } from './admin';
@@ -39,7 +31,7 @@ const itemFilters = [
 export const rpCommand: OSBMahojiCommand = {
 	name: 'rp',
 	description: 'Admin tools second set',
-	guildID: SupportServer,
+	guildID: globalConfig.mainServerID,
 	options: [
 		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
@@ -453,68 +445,10 @@ export const rpCommand: OSBMahojiCommand = {
 		await deferInteraction(interaction);
 
 		const adminUser = await mUserFetch(userID);
-		const isOwner = OWNER_IDS.includes(userID.toString());
-		const isAdmin = ADMIN_IDS.includes(userID);
-		const isMod = isOwner || isAdmin || adminUser.bitfield.includes(BitField.isModerator);
-		if (!guildID || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
-		if (!isAdmin && !isMod) return randArrItem(gifs);
-
-		if (options.user_event) {
-			const messageId =
-				options.user_event.cl_completion?.message_id ??
-				options.user_event.max?.message_id ??
-				options.user_event.max_total?.message_id;
-			if (!messageId || !isValidDiscordSnowflake(messageId)) return null;
-
-			const snowflake = DiscordSnowflake.timestampFrom(messageId);
-			const date = new Date(snowflake);
-			const userId =
-				options.user_event.cl_completion?.user.user.id ??
-				options.user_event.max?.user.user.id ??
-				options.user_event.max_total?.user.user.id;
-			if (!userId) return null;
-			const targetUser = await mUserFetch(userId);
-			let type: UserEventType = UserEventType.CLCompletion;
-			let skill = undefined;
-			let collectionLogName = undefined;
-
-			let confirmationStr = `Please confirm:
-User: ${targetUser.rawUsername}
-Date: ${dateFm(date)}`;
-			if (options.user_event.cl_completion) {
-				confirmationStr += `\nCollection log: ${options.user_event.cl_completion.cl_name}`;
-				type = UserEventType.CLCompletion;
-				collectionLogName = options.user_event.cl_completion.cl_name;
-			}
-			if (options.user_event.max) {
-				confirmationStr += `\nSkill: ${options.user_event.max.skill}`;
-				type = options.user_event.max.type;
-				skill = options.user_event.max.skill;
-			}
-			if (options.user_event.max_total) {
-				type = options.user_event.max_total.type;
-			}
-			await handleMahojiConfirmation(interaction, confirmationStr);
-			await insertUserEvent({
-				userID: targetUser.id,
-				type,
-				skill,
-				collectionLogName,
-				date
-			});
-			await sendToChannelID(Channel.BotLogs, {
-				content: `${adminUser.logName} created userevent for ${targetUser.logName}: ${type} ${dateFm(date)} ${
-					skill ?? ''
-				}`
-			});
-			return `Done: ${confirmationStr.replace('Please confirm:', '')}`;
-		}
-
+		const isMod = adminUser.bitfield.includes(BitField.isModerator);
 		if (!isMod) return randArrItem(gifs);
+		if (!guildID || guildID !== globalConfig.mainServerID) return randArrItem(gifs);
 
-		if (!guildID || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
-
-		if (!isMod) return randArrItem(gifs);
 		// Mod+ only commands:
 		if (options.action?.force_comp_update) {
 			const usersToUpdate = await prisma.userStats.findMany({
@@ -549,9 +483,6 @@ Date: ${dateFm(date)}`;
 
 		// Unequip Items
 		if (options.player?.unequip_all_items) {
-			if (!isOwner && !isAdmin) {
-				return randArrItem(gifs);
-			}
 			const allGearSlots = ['melee', 'range', 'mage', 'misc', 'skilling', 'other', 'wildy', 'fashion'];
 			const opts = options.player.unequip_all_items;
 			const targetUser = await mUserFetch(opts.user.user.id);
@@ -583,61 +514,6 @@ Date: ${dateFm(date)}`;
 				petResult = await unequipPet(targetUser);
 			}
 			return `Successfully removed ${gearSlot} gear.${opts.pet ? ` ${petResult}` : ''}`;
-		}
-
-		// Steal Items
-		if (options.player?.steal_items) {
-			if (!isOwner && !isAdmin) {
-				return randArrItem(gifs);
-			}
-			const toDelete = options.player.steal_items.delete ?? false;
-			const actionMsg = toDelete ? 'delete' : 'steal';
-			const actionMsgPast = toDelete ? 'deleted' : 'stole';
-
-			const userToStealFrom = await mUserFetch(options.player.steal_items.user.user.id);
-
-			const items = new Bank();
-			if (options.player.steal_items.item_filter) {
-				const filter = itemFilters.find(i => i.name === options.player?.steal_items?.item_filter);
-				if (!filter) return 'Invalid item filter.';
-				for (const [item, qty] of userToStealFrom.bank.items()) {
-					if (filter.filter(item)) {
-						items.add(item.id, qty);
-					}
-				}
-			} else {
-				items.add(
-					parseBank({
-						inputStr: options.player.steal_items.items,
-						noDuplicateItems: true,
-						inputBank: userToStealFrom.bankWithGP
-					})
-				);
-			}
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure you want to ${actionMsg} ${items.toString().slice(0, 500)} from ${
-					userToStealFrom.usernameOrMention
-				}?`
-			);
-			let missing = new Bank();
-			if (!userToStealFrom.owns(items)) {
-				missing = items.clone().remove(userToStealFrom.bankWithGP);
-				return `${userToStealFrom.mention} doesn't have all items. Missing: ${missing
-					.toString()
-					.slice(0, 500)}`;
-			}
-
-			await sendToChannelID(Channel.BotLogs, {
-				content: `${adminUser.logName} ${actionMsgPast} \`${items.toString().slice(0, 500)}\` from ${
-					userToStealFrom.logName
-				} for ${options.player.steal_items.reason ?? 'No reason'}`,
-				files: [{ attachment: Buffer.from(items.toString()), name: 'items.txt' }]
-			});
-
-			await userToStealFrom.removeItemsFromBank(items);
-			if (!toDelete) await adminUser.addItemsToBank({ items, collectionLog: false });
-			return `${toTitleCase(actionMsgPast)} ${items.toString().slice(0, 500)} from ${userToStealFrom.mention}`;
 		}
 
 		return 'Invalid command.';

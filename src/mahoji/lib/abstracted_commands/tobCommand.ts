@@ -23,7 +23,7 @@ import {
 	inventionBoosts,
 	inventionItemBoost
 } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
 import getUserFoodFromBank from '../../../lib/minions/functions/getUserFoodFromBank';
 import { setupParty } from '../../../lib/party';
@@ -36,8 +36,7 @@ import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
 import getOSItem from '../../../lib/util/getOSItem';
 import itemID from '../../../lib/util/itemID';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { mahojiParseNumber, userStatsBankUpdate } from '../../mahojiSettings';
+import { mahojiParseNumber } from '../../mahojiSettings';
 
 const minStats = {
 	attack: 90,
@@ -463,7 +462,7 @@ export async function tobStartCommand(
 		}
 	}
 
-	const costResult = await Promise.all(
+	await Promise.all(
 		users.map(async u => {
 			const supplies = await calcTOBInput(u);
 			const { total } = calculateTOBUserGearPercents(u);
@@ -479,7 +478,6 @@ export async function tobStartCommand(
 				preChincannonCost.add(u.gear.range.ammo!.item, 100);
 			}
 			const { realCost } = await u.specialRemoveItems(preChincannonCost.multiply(qty));
-			await userStatsBankUpdate(u.id, 'tob_cost', realCost);
 			const effectiveCost = realCost.clone().remove('Coins', realCost.amount('Coins'));
 			totalCost.add(effectiveCost);
 			if (isChincannonUser) {
@@ -519,19 +517,6 @@ export async function tobStartCommand(
 			};
 		})
 	);
-
-	await updateBankSetting('tob_cost', totalCost);
-	await trackLoot({
-		totalCost,
-		id: isHardMode ? 'tob_hard' : 'tob',
-		type: 'Minigame',
-		changeType: 'cost',
-		users: costResult.map(i => ({
-			id: i.userID,
-			cost: i.effectiveCost,
-			totalDuration
-		}))
-	});
 
 	await addSubTaskToActivityTask<TheatreOfBloodTaskOptions>({
 		userID: user.id,

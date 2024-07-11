@@ -1,12 +1,11 @@
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
-import { Time, notEmpty, randArrItem, randInt } from 'e';
+import { notEmpty, randArrItem } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { divinationEnergies } from '../../../lib/bso/divination';
 import { BitField } from '../../../lib/constants';
-import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { allDyes, dyedItems } from '../../../lib/dyedItems';
 import { makeScriptImage } from '../../../lib/scriptImages';
 import { assert } from '../../../lib/util';
@@ -545,14 +544,6 @@ for (const genericU of genericUsables) {
 		}
 	});
 }
-usables.push({
-	items: [getOSItem('Double loot token')],
-	run: async (user: MUser) => {
-		await user.removeItemsFromBank(new Bank().add('Double loot token'));
-		await addToDoubleLootTimer(Time.Minute * randInt(6, 36), `${user} used a Double Loot token!`);
-		return 'You used your Double Loot Token!';
-	}
-});
 
 for (const zygomite of resolveItems(['Herbal zygomite spores', 'Barky zygomite spores', 'Fruity zygomite spores'])) {
 	usables.push({

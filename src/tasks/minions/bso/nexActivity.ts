@@ -5,9 +5,9 @@ import { Bank } from 'oldschooljs';
 import { Emoji } from '../../../lib/constants';
 import { nexCL, nexUniqueDrops } from '../../../lib/data/CollectionsExport';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { addMonsterXP } from '../../../lib/minions/functions';
-import announceLoot from '../../../lib/minions/functions/announceLoot';
+
 import { NEX_UNIQUE_DROPRATE, NexMonster } from '../../../lib/nex';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import type { BossActivityTaskOptions } from '../../../lib/types/minions';
@@ -15,7 +15,6 @@ import { roll } from '../../../lib/util';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 interface NexUser {
 	id: string;
@@ -118,34 +117,7 @@ export const nexTask: MinionTask = {
 			const purple = Object.keys(loot.bank).some(id => nexCL.includes(Number.parseInt(id)));
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${new Bank(loot)}||\n`;
-
-			announceLoot({
-				user: leaderUser,
-				monsterID: NexMonster.id,
-				loot: new Bank(loot),
-				notifyDrops: NexMonster.notifyDrops,
-				team: {
-					leader: leaderUser,
-					lootRecipient: user,
-					size: users.length
-				}
-			});
 		}
-
-		updateBankSetting('nex_loot', totalLoot);
-		await trackLoot({
-			duration,
-			totalLoot,
-			type: 'Monster',
-			changeType: 'loot',
-			id: NexMonster.name,
-			kc: quantity,
-			users: users.map(i => ({
-				id: i,
-				loot: teamsLoot.get(i),
-				duration
-			}))
-		});
 
 		// Show deaths in the result
 		const deathEntries = Object.entries(deaths);

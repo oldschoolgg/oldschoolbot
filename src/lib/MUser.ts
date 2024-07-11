@@ -187,7 +187,7 @@ export class MUserClass {
 	}
 
 	get isIronman() {
-		return this.user.minion_ironman;
+		return true;
 	}
 
 	get GP() {
@@ -349,7 +349,7 @@ GROUP BY data->>'clueID';`);
 		dontAddToTempCL = false,
 		neverUpdateHistory = false
 	}: {
-		items: ItemBank | Bank;
+		items: Bank;
 		collectionLog?: boolean;
 		filterLoot?: boolean;
 		dontAddToTempCL?: boolean;
@@ -357,7 +357,7 @@ GROUP BY data->>'clueID';`);
 	}) {
 		const res = await transactItems({
 			collectionLog,
-			itemsToAdd: new Bank(items),
+			itemsToAdd: (items),
 			filterLoot,
 			dontAddToTempCL,
 			userID: this.id,

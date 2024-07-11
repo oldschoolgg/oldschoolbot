@@ -14,7 +14,7 @@ import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { logError } from '../../lib/util/logError';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 import type { OSBMahojiCommand } from '../lib/util';
-import { rogueOutfitPercentBonus, userStatsBankUpdate } from '../mahojiSettings';
+import { rogueOutfitPercentBonus } from '../mahojiSettings';
 
 export const stealCommand: OSBMahojiCommand = {
 	name: 'steal',
@@ -169,7 +169,6 @@ export const stealCommand: OSBMahojiCommand = {
 				attackStylesUsed: []
 			});
 
-			await Promise.all([userStatsBankUpdate(user.id, 'steal_loot_bank', foodRemoved)]);
 			str += ` Removed ${foodRemoved}.`;
 		} else {
 			// Up to 5% fail chance, random

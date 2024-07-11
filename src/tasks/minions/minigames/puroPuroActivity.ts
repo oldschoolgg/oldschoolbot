@@ -143,26 +143,18 @@ export const puroPuroTask: MinionTask = {
 			}
 		}
 
-		str += `\nYou received: **${bank
-			.items()
-			.sort((curr, next) => {
-				const currHunterLevel = implings[curr[0].id].level;
-				const nextHunterLevel = implings[next[0].id].level;
-				return nextHunterLevel - currHunterLevel;
-			})
-			.map(item => {
-				return `${item[1]}x ${item[0].name}`;
-			})
-			.join(', ')}**.`;
-
-		if (missed.length > 0) str += `\nYou missed out on ${missed} due to your hunter level being too low.`;
-
-		await transactItems({
+			await transactItems({
 			userID: user.id,
 			itemsToAdd: bank,
 			collectionLog: true,
 			itemsToRemove: itemCost
 		});
+
+		str += `\nYou received: **${bank}**.`;
+
+		if (missed.length > 0) str += `\nYou missed out on ${missed} due to your hunter level being too low.`;
+
+	
 
 		userStatsBankUpdate(user.id, 'puropuro_implings_bank', bank);
 

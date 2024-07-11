@@ -3,7 +3,7 @@ import { Bank, Items, LootTable } from 'oldschooljs';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 
 import { divinationEnergies } from './bso/divination';
-import { Emoji, OSB_VIRTUS_IDS } from './constants';
+import { OSB_VIRTUS_IDS } from './constants';
 import {
 	allPetIDs,
 	chambersOfXericCL,
@@ -26,11 +26,10 @@ import { clAdjustedDroprate } from './util';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
-import { LampTable } from './xpLamps';
+import { LampTable } from './simulation/grandmasterClue';
 
 const MR_E_DROPRATE_FROM_UMB_AND_TMB = 5000;
 const MR_E_DROPRATE_FROM_PMB = 200;
-const MR_E_DROPRATE_FROM_EMB = 500;
 
 export const MysteryBoxes = new LootTable()
 	.oneIn(55, 'Pet Mystery Box')
@@ -722,14 +721,6 @@ export const itemSearchMbTable = [
 	])
 ];
 
-function makeOutputFromArrayOfItemIDs(fn: () => number, quantity: number) {
-	const loot = new Bank();
-	for (let i = 0; i < quantity; i++) {
-		loot.add(fn());
-	}
-	return { bank: loot };
-}
-
 const christmasPetFoodTable = new LootTable()
 	.add('Pumpkinhead praline')
 	.add('Takon truffle')
@@ -786,21 +777,7 @@ for (const energy of divinationEnergies) {
 const VenatrixEggTable = new LootTable().tertiary(1000, 'Baby venatrix');
 
 export const bsoOpenables: UnifiedOpenable[] = [
-	{
-		name: 'Tradeables Mystery box',
-		id: 6199,
-		openedItem: getOSItem(6199),
-		aliases: ['mystery', 'mystery box', 'tradeables mystery box', 'tmb'],
-
-		output: async ({ user, quantity }) => ({
-			bank: getMysteryBoxItem(user, true, quantity)
-		}),
-		emoji: Emoji.MysteryBox,
-		allItems: [],
-		isMysteryBox: true,
-		smokeyApplies: true
-	},
-	{
+		{
 		name: 'Untradeables Mystery box',
 		id: 19_939,
 		openedItem: getOSItem(19_939),
@@ -808,16 +785,6 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		output: async ({ user, quantity }) => ({
 			bank: getMysteryBoxItem(user, false, quantity)
 		}),
-		allItems: [],
-		isMysteryBox: true,
-		smokeyApplies: true
-	},
-	{
-		name: 'Equippable mystery box',
-		id: itemID('Equippable mystery box'),
-		openedItem: getOSItem('Equippable mystery box'),
-		aliases: ['equippable mystery box', 'emb'],
-		output: async ({ quantity }) => makeOutputFromArrayOfItemIDs(randomEquippable, quantity),
 		allItems: [],
 		isMysteryBox: true,
 		smokeyApplies: true
@@ -1052,16 +1019,6 @@ for (const crate of keyCrates) {
 		excludeFromOpenAll: true,
 		smokeyApplies: false
 	});
-}
-
-function randomEquippable(): number {
-	const res = randArrItem(embTable);
-	if (cantBeDropped.includes(res)) return randomEquippable();
-	if (res >= 40_000 && res <= 50_000) return randomEquippable();
-	if (roll(MR_E_DROPRATE_FROM_EMB)) {
-		return itemID('Mr. E');
-	}
-	return res;
 }
 
 function findMysteryBoxItem(table: number[]): number {

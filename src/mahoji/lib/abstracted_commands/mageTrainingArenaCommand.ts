@@ -9,7 +9,6 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
 import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { pizazzPointsPerHour } from '../../../tasks/minions/minigames/mageTrainingArenaActivity';
 
 const RuneTable = new LootTable()
@@ -99,9 +98,10 @@ export async function mageTrainingArenaBuyCommand(user: MUser, input = '') {
 		}
 	});
 
-	await user.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
+	const loot = new Bank().add(item.id)
+	await user.addItemsToBank({ items:loot, collectionLog: true });
 
-	return `Successfully purchased 1x ${item.name} for ${cost} Pizazz Points.`;
+	return `Successfully purchased ${loot} for ${cost} Pizazz Points.`;
 }
 
 export async function mageTrainingArenaPointsCommand(user: MUser) {
@@ -130,8 +130,6 @@ export async function mageTrainingArenaStartCommand(user: MUser, channelID: stri
 	}
 
 	await transactItems({ userID: user.id, itemsToRemove: cost });
-
-	await updateBankSetting('mta_cost', cost);
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,

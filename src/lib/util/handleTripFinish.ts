@@ -7,14 +7,14 @@ import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
-import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { PortentID, chargePortentIfHasCharges, getAllPortentCharges } from '../bso/divination';
 import { gods } from '../bso/divineDominion';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { buildClueButtons } from '../clues/clueUtils';
 import { combatAchievementTripEffect } from '../combat_achievements/combatAchievements';
-import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
+import { BitField, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../invention/inventions';
@@ -38,17 +38,9 @@ import {
 import { handleCrateSpawns } from './handleCrateSpawns';
 import itemID from './itemID';
 import { perHourChance } from './smallUtils';
-import { updateBankSetting } from './updateBankSetting';
 import { sendToChannelID } from './webhook';
 
 const collectors = new Map<string, MessageCollector>();
-
-const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
-	'GroupMonsterKilling',
-	'MonsterKilling',
-	'Raids',
-	'ClueCompletion'
-];
 
 interface TripFinishEffectOptions {
 	data: ActivityTaskData;
@@ -63,17 +55,6 @@ export interface TripFinishEffect {
 }
 
 const tripFinishEffects: TripFinishEffect[] = [
-	{
-		name: 'Track GP Analytics',
-		fn: ({ data, loot }) => {
-			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
-				const GP = loot.amount(COINS_ID);
-				if (typeof GP === 'number') {
-					updateClientGPTrackSetting('gp_pvm', GP);
-				}
-			}
-		}
-	},
 	{
 		name: 'Implings',
 		fn: async ({ data, messages, user }) => {
@@ -112,9 +93,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 				const otherLoot = new Bank().add(MysteryBoxes.roll());
 				const bonusLoot = new Bank().add(loot).add(otherLoot);
 				messages.push(`<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`);
-				userStatsBankUpdate(user.id, 'doubled_loot_bank', bonusLoot);
 				await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
-				updateBankSetting('trip_doubling_loot', bonusLoot);
 			}
 		}
 	},
@@ -233,9 +212,6 @@ const tripFinishEffects: TripFinishEffect[] = [
 					collectionLog: true
 				});
 
-				updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
-
-				updateClientGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'));
 				messages.push(
 					`<:Voidling:886284972380545034> ${alchResult.maxCasts}x ${
 						alchResult.itemToAlch.name

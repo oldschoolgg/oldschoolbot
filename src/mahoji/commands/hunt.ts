@@ -9,7 +9,7 @@ import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
 import type { UserFullGearSetup } from '../../lib/gear';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
-import { trackLoot } from '../../lib/lootTrack';
+
 import { monkeyTiers } from '../../lib/monkeyRumble';
 import { soteSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
@@ -21,7 +21,6 @@ import type { HunterActivityTaskOptions } from '../../lib/types/minions';
 import { hasSkillReqs } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import type { OSBMahojiCommand } from '../lib/util';
 import { userHasGracefulEquipped } from '../mahojiSettings';
 
@@ -406,19 +405,7 @@ export const huntCommand: OSBMahojiCommand = {
 			result;
 
 		await user.removeItemsFromBank(totalCost);
-		await updateBankSetting('hunter_cost', totalCost);
-		await trackLoot({
-			id: creature.name,
-			totalCost,
-			type: 'Skilling',
-			changeType: 'cost',
-			users: [
-				{
-					id: user.id,
-					cost: totalCost
-				}
-			]
-		});
+
 		await addSubTaskToActivityTask<HunterActivityTaskOptions>({
 			creatureName: creature.name,
 			userID: user.id,

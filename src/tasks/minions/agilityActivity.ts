@@ -15,7 +15,7 @@ import type { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 function chanceOfFailingAgilityPyramid(lvl: number) {
 	if (lvl < 40) return 95;
@@ -210,7 +210,6 @@ export const agilityTask: MinionTask = {
 				amount: alch.quantity * 65,
 				duration
 			})}`;
-			await updateClientGPTrackSetting('gp_alch', alchGP);
 		}
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${course.name} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}.\n${xpRes}`;

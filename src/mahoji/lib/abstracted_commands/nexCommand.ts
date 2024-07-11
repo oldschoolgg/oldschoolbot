@@ -5,7 +5,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, increaseNumByPercent, reduceNumByPercent, round } from 'e';
 import { calcBossFood } from '../../../lib/bso/calcBossFood';
 import { gorajanArcherOutfit, pernixOutfit } from '../../../lib/data/CollectionsExport';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { calculateMonsterFood } from '../../../lib/minions/functions';
 import type { KillableMonster } from '../../../lib/minions/types';
 import { NexMonster } from '../../../lib/nex';
@@ -16,7 +16,6 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements } from '../../mahojiSettings';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
@@ -277,17 +276,6 @@ export async function nexCommand(
 	const totalCost = new Bank();
 	for (const u of removeResult) totalCost.add(u.cost);
 
-	await trackLoot({
-		changeType: 'cost',
-		totalCost,
-		id: NexMonster.name,
-		type: 'Monster',
-		users: removeResult.map(i => ({
-			id: i.id,
-			cost: i.cost
-		}))
-	});
-
 	foodString += `${foodRemoved.join(', ')}.`;
 
 	await addSubTaskToActivityTask<BossActivityTaskOptions>({
@@ -298,8 +286,6 @@ export async function nexCommand(
 		type: 'Nex',
 		users: users.map(u => u.id)
 	});
-
-	updateBankSetting('nex_cost', totalCost);
 
 	let str =
 		type === 'solo'

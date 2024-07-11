@@ -1,7 +1,7 @@
 import type { TextChannel } from 'discord.js';
 import { Time } from 'e';
 
-import { Channel } from './constants';
+import { globalConfig } from './constants';
 import { formatDuration } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 
@@ -24,7 +24,7 @@ export async function addToDoubleLootTimer(amount: number, reason: string) {
 		double_loot_finish_time: newDoubleLootTimer
 	});
 	DOUBLE_LOOT_FINISH_TIME_CACHE = newDoubleLootTimer;
-	(globalClient.channels.cache.get(Channel.BSOGeneral)! as TextChannel).send({
+	(globalClient.channels.cache.get(globalConfig.generalChannelID)! as TextChannel).send({
 		content: `<@&923768318442229792> 🎉 ${formatDuration(
 			amount
 		)} added to the Double Loot timer because: ${reason}. 🎉`,

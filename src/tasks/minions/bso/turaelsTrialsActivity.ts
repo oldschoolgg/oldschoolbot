@@ -5,7 +5,6 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { XPBank } from '../../../lib/structures/Banks';
 import type { TuraelsTrialsOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { trackClientBankStats, userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
 export function calculateTuraelsTrialsResult({ quantity, method }: { quantity: number; method: TuraelsTrialsMethod }) {
 	const loot = new Bank();
@@ -41,8 +40,6 @@ export const turaelsTrialsTask: MinionTask = {
 		const { newScore } = await incrementMinigameScore(userID, 'turaels_trials', quantity);
 
 		await user.addItemsToBank({ items: result.loot, collectionLog: true });
-		await trackClientBankStats('turaels_trials_loot_bank', result.loot);
-		await userStatsBankUpdate(user.id, 'turaels_trials_loot_bank', result.loot);
 
 		const xpResults: string[] = await user.addXPBank({
 			bank: result.xpBank,

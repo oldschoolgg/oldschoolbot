@@ -2,7 +2,6 @@ import { Bank } from 'oldschooljs';
 
 import type { TokkulShopOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 
 export const tokkulShopTask: MinionTask = {
 	type: 'TokkulShop',
@@ -16,7 +15,6 @@ export const tokkulShopTask: MinionTask = {
 			collectionLog: false
 		});
 
-		await updateBankSetting('tks_loot', loot);
 		handleTripFinish(
 			user,
 			channelID,

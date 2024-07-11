@@ -338,7 +338,6 @@ export interface InfernoOptions extends ActivityTaskOptions {
 
 export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Farming';
-	pid?: number;
 	plantsName: string | null;
 	quantity: number;
 	upgradeType: CropUpgradeType | null;

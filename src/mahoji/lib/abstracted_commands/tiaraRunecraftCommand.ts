@@ -8,7 +8,6 @@ import type { TiaraRunecraftActivityTaskOptions } from '../../../lib/types/minio
 import { stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export async function tiaraRunecraftCommand({
@@ -95,7 +94,6 @@ export async function tiaraRunecraftCommand({
 	totalCost.add('Tiara', quantity);
 
 	await user.removeItemsFromBank(totalCost);
-	updateBankSetting('runecraft_cost', totalCost);
 
 	await addSubTaskToActivityTask<TiaraRunecraftActivityTaskOptions>({
 		tiaraID: tiaraObj.id,

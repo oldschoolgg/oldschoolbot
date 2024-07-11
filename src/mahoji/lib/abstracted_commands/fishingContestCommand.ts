@@ -8,12 +8,11 @@ import {
 	getUsersFishingContestDetails,
 	getValidLocationsForFishType
 } from '../../../lib/fishingContest';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import type { FishingContestOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function fishingContestStartCommand(user: MUser, channelID: string, loc: string | undefined) {
 	const currentFishType = getCurrentFishType();
@@ -76,7 +75,6 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 		return `You need ${cost} to bait fish at ${fishingLocation.name}.`;
 	}
 	await user.removeItemsFromBank(cost);
-	await updateBankSetting('fc_cost', cost);
 
 	await addSubTaskToActivityTask<FishingContestOptions>({
 		userID: user.id,
@@ -86,19 +84,6 @@ export async function fishingContestStartCommand(user: MUser, channelID: string,
 		type: 'FishingContest',
 		minigameID: 'fishing_contest',
 		location: fishingLocation.id
-	});
-
-	await trackLoot({
-		totalCost: cost,
-		id: 'fishing_contest',
-		type: 'Minigame',
-		changeType: 'cost',
-		users: [
-			{
-				id: user.id,
-				cost
-			}
-		]
 	});
 
 	return {

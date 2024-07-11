@@ -102,7 +102,6 @@ export async function handleNewCLItems({
 
 		const nthUser = (
 			await fetchCLLeaderboard({
-				ironmenOnly: false,
 				items: finishedCL.items,
 				resultLimit: 100_000,
 				method: 'raw_cl',

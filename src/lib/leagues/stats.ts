@@ -1,4 +1,4 @@
-import type { UserStats, XpGainSource } from '@prisma/client';
+import type { UserStats } from '@prisma/client';
 import { sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -91,17 +91,4 @@ WHERE type = 'MahoganyHomes'
 AND user_id = '${user.id}'::bigint
 AND data->>'points' IS NOT NULL;`);
 	return Number(result[0].total);
-}
-
-export async function calculateXPSources(user: MUser) {
-	const result = await prisma.$queryRawUnsafe<{ source: XpGainSource; total: bigint }[]>(`SELECT "xp_gains"."source" AS source, SUM(xp) AS total
-FROM xp_gains
-WHERE "xp_gains"."source" IS NOT NULL
-AND user_id = '${user.id}'::bigint
-GROUP BY "xp_gains"."source";`);
-	const obj: Partial<Record<XpGainSource, number>> = {};
-	for (const res of result) {
-		obj[res.source] = Number(res.total);
-	}
-	return obj;
 }

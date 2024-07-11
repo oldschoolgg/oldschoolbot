@@ -10,7 +10,6 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import type { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import type { OSBMahojiCommand } from '../lib/util';
 
 export const craftCommand: OSBMahojiCommand = {
@@ -143,8 +142,6 @@ export const craftCommand: OSBMahojiCommand = {
 		}
 
 		await user.removeItemsFromBank(itemsNeeded);
-
-		updateBankSetting('crafting_cost', itemsNeeded);
 
 		await addSubTaskToActivityTask<CraftingActivityTaskOptions>({
 			craftableID: craftable.id,

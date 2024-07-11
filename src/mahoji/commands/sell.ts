@@ -1,21 +1,18 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { calcPercentOfNum, clamp, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
-import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { customPrices } from '../../lib/customItems/util';
 
 import { NestBoxesTable } from '../../lib/simulation/misc';
-import { itemID, returnStringOrFile, toKMB } from '../../lib/util';
+import { itemID, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../mahojiSettings';
 
 /**
  * - Hardcoded prices
@@ -229,8 +226,6 @@ export const sellCommand: OSBMahojiCommand = {
 			taxRatePercent -= 5;
 		}
 
-		const botItemSellData: Prisma.BotItemSellCreateManyInput[] = [];
-
 		for (const [item, qty] of bankToSell.items()) {
 			const specialPrice = specialSoldItems.get(item.id);
 			let pricePerStack = -1;
@@ -243,12 +238,6 @@ export const sellCommand: OSBMahojiCommand = {
 				pricePerStack = Math.floor(price * qty);
 			}
 			totalPrice += pricePerStack;
-			botItemSellData.push({
-				item_id: item.id,
-				quantity: qty,
-				gp_received: pricePerStack,
-				user_id: user.id
-			});
 		}
 
 		await handleMahojiConfirmation(
@@ -269,33 +258,8 @@ export const sellCommand: OSBMahojiCommand = {
 			itemsToRemove: bankToSell
 		});
 
-		await Promise.all([
-			updateClientGPTrackSetting('gp_sell', totalPrice),
-			updateBankSetting('sold_items_bank', bankToSell),
-			userStatsUpdate(
-				user.id,
-				userStats => ({
-					items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
-					sell_gp: {
-						increment: totalPrice
-					}
-				}),
-				{}
-			),
-			prisma.botItemSell.createMany({ data: botItemSellData })
-		]);
 
-		if (user.isIronman) {
 			return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**`;
-		}
-		return returnStringOrFile(
-			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(
-				totalPrice
-			)})** (${taxRatePercent}% below market price). ${
-				hasSkipper
-					? '\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you were charged less tax on the sale!'
-					: ''
-			}`
-		);
+		
 	}
 };

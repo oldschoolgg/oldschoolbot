@@ -1,10 +1,8 @@
 import type { CommandOptions } from '@oldschoolgg/toolkit';
 
 import { modifyBusyCounter } from '../../lib/busyCounterCache';
-import { busyImmuneCommands, shouldTrackCommand } from '../../lib/constants';
+import { busyImmuneCommands } from '../../lib/constants';
 
-import { makeCommandUsage } from '../../lib/util/commandUsage';
-import { logError } from '../../lib/util/logError';
 import type { AbstractCommand } from './inhibitors';
 
 export async function postCommand({
@@ -12,10 +10,7 @@ export async function postCommand({
 	userID,
 	guildID,
 	channelID,
-	args,
-	isContinue,
-	inhibited,
-	continueDeltaMillis
+	inhibited
 }: {
 	abstractCommand: AbstractCommand;
 	userID: string;
@@ -37,36 +32,14 @@ export async function postCommand({
 		guild_id: guildID,
 		channel_id: channelID
 	});
-	if (shouldTrackCommand(abstractCommand, args)) {
-		const commandUsage = makeCommandUsage({
-			userID,
-			channelID,
-			guildID,
-			commandName: abstractCommand.name,
-			args,
-			isContinue,
-			flags: null,
-			inhibited,
-			continueDeltaMillis
-		});
-		try {
-			await prisma.$transaction([
-				prisma.commandUsage.create({
-					data: commandUsage
-				}),
-				prisma.user.update({
-					where: {
-						id: userID
-					},
-					data: {
-						last_command_date: new Date()
-					}
-				})
-			]);
-		} catch (err) {
-			logError(err);
+	await prisma.user.update({
+		where: {
+			id: userID
+		},
+		data: {
+			last_command_date: new Date()
 		}
-	}
+	});
 	if (inhibited) return;
 
 	return undefined;

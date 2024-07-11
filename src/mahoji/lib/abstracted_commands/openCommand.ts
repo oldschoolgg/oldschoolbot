@@ -14,7 +14,7 @@ import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirma
 import itemID from '../../../lib/util/itemID';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
-import { addToOpenablesScores, patronMsg, updateClientGPTrackSetting, userStatsBankUpdate } from '../../mahojiSettings';
+import { addToOpenablesScores, patronMsg, userStatsBankUpdate } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -165,17 +165,15 @@ async function finalizeOpening({
 		return `You don't own: ${cost}.`;
 	}
 	await transactItems({ userID: user.id, itemsToRemove: cost });
-	const { previousCL } = await user.addItemsToBank({
+	const { previousCL, itemsAdded } = await user.addItemsToBank({
 		items: loot,
 		collectionLog: true,
 		filterLoot: false,
 		dontAddToTempCL: openables.some(i => itemsThatDontAddToTempCL.includes(i.id))
 	});
 
-	const fakeTrickedLoot = loot.clone();
-
 	const image = await makeBankImage({
-		bank: fakeTrickedLoot,
+		bank: itemsAdded,
 		title:
 			openables.length === 1
 				? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
@@ -184,10 +182,6 @@ async function finalizeOpening({
 		previousCL,
 		mahojiFlags: user.bitfield.includes(BitField.DisableOpenableNames) ? undefined : ['show_names']
 	});
-
-	if (loot.has('Coins')) {
-		await updateClientGPTrackSetting('gp_open', loot.amount('Coins'));
-	}
 
 	const openedStr = openables
 		.map(({ openedItem }) => `${newOpenableScores.amount(openedItem.id)}x ${openedItem.name}`)

@@ -5,7 +5,6 @@ import { ClueTiers } from '../../lib/clues/clueTiers';
 import { ellipsize, itemNameFromID, returnStringOrFile } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 
@@ -88,7 +87,6 @@ export const dropCommand: OSBMahojiCommand = {
 		}
 
 		await user.removeItemsFromBank(bank);
-		updateBankSetting('dropped_items', bank);
 
 		return returnStringOrFile(`Dropped ${bank}.`);
 	}

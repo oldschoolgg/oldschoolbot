@@ -3,13 +3,11 @@ import type { UserEvent } from '@prisma/client';
 import { userEventsToMap } from './userEvents';
 
 export async function fetchCLLeaderboard({
-	ironmenOnly,
 	items,
 	resultLimit,
 	method = 'cl_array',
 	userEvents
 }: {
-	ironmenOnly: boolean;
 	items: number[];
 	resultLimit: number;
 	method?: 'cl_array' | 'raw_cl';
@@ -26,7 +24,7 @@ export async function fetchCLLeaderboard({
 		.map(i => `${i}`)
 		.join(', ')}]) AS qty
     FROM user_stats s INNER JOIN users u ON s.user_id::text = u.id
-    WHERE ${ironmenOnly ? 'u."minion.ironman" = true AND' : ''} user_id::text IN (${userIdsList})
+    WHERE user_id::text IN (${userIdsList})
 `)
 				: [];
 		const generalUsers = await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
@@ -34,9 +32,9 @@ export async function fetchCLLeaderboard({
 		.map(i => `${i}`)
 		.join(', ')}]) AS qty
     FROM user_stats
-    ${ironmenOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
+    
     WHERE (cl_array && array[${items.map(i => `${i}`).join(', ')}]
-    ${ironmenOnly ? 'AND "users"."minion.ironman" = true' : ''})
+    )
     ${userIds.length > 0 ? `AND user_id::text NOT IN (${userIdsList})` : ''}
     ORDER BY qty DESC
     LIMIT ${resultLimit}
@@ -75,10 +73,10 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 					.join(', ')}]))) "inverse_length"
   FROM users
   WHERE ("collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
-  ${ironmenOnly ? 'AND "minion.ironman" = true' : ''})
+ )
   ${
 		userIds.length > 0
-			? `OR (id in (${userIds.map(i => `'${i}'`).join(', ')})${ironmenOnly ? 'AND "minion.ironman" = true' : ''})`
+			? `OR (id in (${userIds.map(i => `'${i}'`).join(', ')}))`
 			: ''
   }
 ) u

@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, calcWhatPercent, reduceNumByPercent } from 'e';
 import { TOTAL_GIANT_WEAPONS } from '../../../lib/giantsFoundry';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import Smithing from '../../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -12,8 +12,7 @@ import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsBankUpdate, userStatsUpdate } from '../../mahojiSettings';
+import { userStatsUpdate } from '../../mahojiSettings';
 import type { GiantsFoundryBank } from './../../../lib/giantsFoundry';
 
 export const giantsFoundryAlloys = [
@@ -225,20 +224,6 @@ export async function giantsFoundryStartCommand(
 	}
 
 	await user.removeItemsFromBank(totalCost);
-	updateBankSetting('gf_cost', totalCost);
-	await trackLoot({
-		id: 'giants_foundry',
-		type: 'Minigame',
-		totalCost,
-		changeType: 'cost',
-		users: [
-			{
-				id: user.id,
-				cost: totalCost
-			}
-		]
-	});
-	await userStatsBankUpdate(user.id, 'gf_cost', totalCost);
 
 	await addSubTaskToActivityTask<GiantsFoundryActivityTaskOptions>({
 		quantity,

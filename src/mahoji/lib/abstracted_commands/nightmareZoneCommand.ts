@@ -3,7 +3,7 @@ import { Time, calcWhatPercent, reduceNumByPercent, round, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import type { NMZStrategy } from '../../../lib/constants';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { MAX_QP } from '../../../lib/minions/data/quests';
 import { resolveAttackStyles } from '../../../lib/minions/functions';
 import { getMinigameEntity } from '../../../lib/settings/minigames';
@@ -14,7 +14,6 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import type { NightmareZoneActivityTaskOptions } from './../../../lib/types/minions';
 
 const itemBoosts = [
@@ -371,19 +370,6 @@ export async function nightmareZoneStartCommand(user: MUser, strategy: NMZStrate
 	}
 
 	await user.removeItemsFromBank(totalCost);
-	updateBankSetting('nmz_cost', totalCost);
-	await trackLoot({
-		id: 'nmz',
-		type: 'Minigame',
-		totalCost,
-		changeType: 'cost',
-		users: [
-			{
-				id: user.id,
-				cost: totalCost
-			}
-		]
-	});
 
 	await addSubTaskToActivityTask<NightmareZoneActivityTaskOptions>({
 		quantity,
@@ -411,10 +397,6 @@ export async function nightmareZoneShopCommand(
 	const currentUserPoints = user.user.nmz_points;
 	if (!item) {
 		return `You currently have ${currentUserPoints.toLocaleString()} Nightmare Zone points.`;
-	}
-
-	if (user.user.minion_ironman) {
-		return `${user.usernameOrMention} is an ironman, so they can't buy anything from this shop!`;
 	}
 
 	const shopItem = nightmareZoneBuyables.find(

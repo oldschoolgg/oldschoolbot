@@ -20,7 +20,6 @@ import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { mahojiChatHead } from '../../../lib/util/chatHeadImage';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function monkeyRumbleStatsCommand(user: MUser) {
 	const tier = monkeyTiers.find(t => t.id === monkeyTierOfUser(user))!;
@@ -112,7 +111,6 @@ export async function monkeyRumbleCommand(user: MUser, channelID: string): Comma
 	}
 	const cost = new Bank().add(eatable.item.id, foodRequired);
 	await user.removeItemsFromBank(cost);
-	updateBankSetting('mr_cost', cost);
 
 	await addSubTaskToActivityTask<MonkeyRumbleOptions>({
 		userID: user.id,

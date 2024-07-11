@@ -4,14 +4,13 @@ import { Bank } from 'oldschooljs';
 import { randomVariation } from 'oldschooljs/dist/util';
 
 import { Emoji } from '../../../lib/constants';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { getMinigameEntity } from '../../../lib/settings/minigames';
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export const OuraniaBuyables = [
 	{
@@ -63,9 +62,10 @@ export async function odsBuyCommand(user: MUser, name: string, qty: number): Com
 		}
 	});
 
-	await user.addItemsToBank({ items: { [item.id]: qty }, collectionLog: true });
+	const loot = new Bank().add(item.id, qty);
+	await user.addItemsToBank({ items: loot, collectionLog: true });
 
-	return `Successfully purchased ${qty.toLocaleString()}x ${item.name} for ${cost.toLocaleString()} Ourania Tokens.`;
+	return `Successfully purchased ${loot} for ${cost.toLocaleString()} Ourania Tokens.`;
 }
 
 export async function odsStartCommand(klasaUser: MUser, channelID: string) {
@@ -95,7 +95,6 @@ export async function odsStartCommand(klasaUser: MUser, channelID: string) {
 	}
 
 	await klasaUser.removeItemsFromBank(cost);
-	updateBankSetting('ods_cost', cost);
 
 	let str = `${
 		klasaUser.minionName
@@ -106,19 +105,6 @@ export async function odsStartCommand(klasaUser: MUser, channelID: string) {
 	if (boosts.length > 0) {
 		str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 	}
-
-	await trackLoot({
-		changeType: 'cost',
-		totalCost: cost,
-		id: 'ourania_delivery_service',
-		type: 'Monster',
-		users: [
-			{
-				id: klasaUser.id,
-				cost
-			}
-		]
-	});
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: klasaUser.id,

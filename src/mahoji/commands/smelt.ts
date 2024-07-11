@@ -10,7 +10,6 @@ import type { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import type { OSBMahojiCommand } from '../lib/util';
 import { userHasGracefulEquipped } from '../mahojiSettings';
 
@@ -171,7 +170,6 @@ export const smeltingCommand: OSBMahojiCommand = {
 		}
 
 		await transactItems({ userID: user.id, itemsToRemove: cost });
-		updateBankSetting('smithing_cost', cost);
 
 		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>({
 			barID: bar.id,

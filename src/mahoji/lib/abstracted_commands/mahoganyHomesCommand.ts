@@ -10,7 +10,6 @@ import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 interface IContract {
 	name: string;
@@ -168,8 +167,6 @@ export async function mahoganyHomesBuildCommand(user: MUser, channelID: string, 
 		return `You don't have enough items for this trip. You need: ${itemsNeeded}.`;
 	}
 	await user.removeItemsFromBank(itemsNeeded);
-
-	updateBankSetting('construction_cost_bank', itemsNeeded);
 
 	await addSubTaskToActivityTask<MahoganyHomesActivityTaskOptions>({
 		userID: user.id,

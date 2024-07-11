@@ -9,7 +9,6 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { formatSkillRequirements, itemNameFromID } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export const pohWallkits = [
 	{
@@ -72,7 +71,6 @@ export async function pohBuildCommand(interaction: ChatInputCommandInteraction, 
 		}
 		await handleMahojiConfirmation(interaction, str);
 		await user.removeItemsFromBank(obj.itemCost);
-		updateBankSetting('construction_cost_bank', obj.itemCost);
 	}
 
 	let refunded: Bank | null = null;
@@ -170,10 +168,11 @@ export async function pohDestroyCommand(user: MUser, name: string) {
 				[obj.slot]: null
 			}
 		});
-		await user.addItemsToBank({ items: { [inPlace!]: 1 }, collectionLog: false });
+		const loot = new Bank().add(inPlace!)
+		await user.addItemsToBank({ items:loot, collectionLog: false });
 		return {
 			...(await makePOHImage(user)),
-			content: `You removed a ${obj.name} from your house, and were refunded 1x ${itemNameFromID(inPlace!)}.`
+			content: `You removed a ${obj.name} from your house, and were refunded ${loot}.`
 		};
 	}
 	if (inPlace !== obj.id) {

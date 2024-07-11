@@ -1,4 +1,4 @@
-import { production } from '../../config';
+import { globalConfig } from '../../lib/constants';
 import type { OSBMahojiCommand } from '../lib/util';
 import { activitiesCommand } from './activities';
 import { adminCommand } from './admin';
@@ -32,7 +32,6 @@ import { kibbleCommand } from './kibble';
 import { lapsCommand } from './laps';
 import { leaderboardCommand } from './leaderboard';
 import { lightCommand } from './light';
-import { lootCommand } from './loot';
 import { mCommand } from './m';
 import { mineCommand } from './mine';
 import { minigamesCommand } from './minigames';
@@ -44,6 +43,7 @@ import { openCommand } from './open';
 import { paintCommand } from './paint';
 import { pohCommand } from './poh';
 import { raidCommand } from './raid';
+import { randomizerCommand } from './randomizer';
 
 import { rpCommand } from './rp';
 import { runecraftCommand } from './runecraft';
@@ -96,7 +96,6 @@ export const allCommands: OSBMahojiCommand[] = [
 	openCommand,
 	offerCommand,
 	mixCommand,
-	lootCommand,
 	smeltingCommand,
 	slayerCommand,
 	smithCommand,
@@ -115,10 +114,11 @@ export const allCommands: OSBMahojiCommand[] = [
 	kibbleCommand,
 	nurseryCommand,
 	paintCommand,
-	tamesCommand
+	tamesCommand,
+	randomizerCommand
 ];
 
-if (!production && testPotatoCommand) {
+if (!globalConfig.isProduction && testPotatoCommand) {
 	allCommands.push(testPotatoCommand);
 }
 

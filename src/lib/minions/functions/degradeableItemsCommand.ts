@@ -6,7 +6,6 @@ import { mahojiParseNumber } from '../../../mahoji/mahojiSettings';
 import { degradeableItems } from '../../degradeableItems';
 import { stringMatches } from '../../util';
 import { handleMahojiConfirmation } from '../../util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../util/updateBankSetting';
 
 export async function degradeableItemsCommand(
 	interaction: ChatInputCommandInteraction,
@@ -64,7 +63,6 @@ ${degradeableItems
 	await user.update({
 		[item.settingsKey]: newCharges
 	});
-	await updateBankSetting('degraded_items_cost', cost);
 
 	return `You added **${cost}** to your ${item.item.name}, it now has ${newCharges} charges.`;
 }

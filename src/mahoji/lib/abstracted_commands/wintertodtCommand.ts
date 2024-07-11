@@ -4,7 +4,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Eatables } from '../../../lib/data/eatables';
 import { warmGear } from '../../../lib/data/filterables';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -91,20 +91,6 @@ export async function wintertodtCommand(user: MUser, channelID: string, quantity
 		foodStr.push(`**Removed ${cost}**`);
 
 		await user.removeItemsFromBank(cost);
-
-		// Track items lost
-		await trackLoot({
-			totalCost: cost,
-			id: 'wintertodt',
-			type: 'Minigame',
-			changeType: 'cost',
-			users: [
-				{
-					id: user.id,
-					cost
-				}
-			]
-		});
 
 		break;
 	}

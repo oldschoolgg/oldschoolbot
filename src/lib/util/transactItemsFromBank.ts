@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { mahojiUserSettingsUpdate } from '../MUser';
 import { handleNewCLItems } from '../handleNewCLItems';
+import { remapBank } from '../randomizer';
 import { filterLootReplace } from '../slayer/slayerUtil';
 import type { ItemBank } from '../types';
 import { logError } from './logError';
@@ -32,10 +33,14 @@ async function transactItemsFromBank({
 	...options
 }: TransactItemsArgs) {
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
+
 	const itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
 
 	return userQueueFn(userID, async function transactItemsInner() {
 		const settings = await mUserFetch(userID);
+		if (itemsToAdd) {
+			itemsToAdd.bank = remapBank(settings, itemsToAdd).bank;
+		}
 
 		const gpToRemove = (itemsToRemove?.amount('Coins') ?? 0) - (itemsToAdd?.amount('Coins') ?? 0);
 		if (itemsToRemove && settings.GP < gpToRemove) {
@@ -107,6 +112,12 @@ async function transactItemsFromBank({
 			newBank.remove(itemsToRemove);
 		}
 
+		for (const [key, val] of Object.entries(newBank.bank)) {
+			if (key.toString() === '995') continue;
+			if (val > 10_000_000) {
+				newBank.bank[key] = 10_000_000;
+			}
+		}
 		const { newUser } = await mahojiUserSettingsUpdate(userID, {
 			bank: newBank.bank,
 			GP: gpUpdate,
@@ -128,6 +139,12 @@ async function transactItemsFromBank({
 
 		if (!options.neverUpdateHistory) {
 			await handleNewCLItems({ itemsAdded, user: settings, previousCL, newCL });
+		}
+
+		if (options.itemsToAdd) {
+			options.itemsToAdd.toString = () => {
+				return itemsAdded.toString();
+			};
 		}
 
 		return {

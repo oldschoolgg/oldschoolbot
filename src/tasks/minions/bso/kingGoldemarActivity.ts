@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import KingGoldemar, {
 	KingGoldemarLootTable
 } from '../../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
@@ -14,7 +14,6 @@ import { calcDwwhChance } from '../../../lib/structures/Boss';
 import type { NewBossOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const methodsOfDeath = [
 	'Beheaded',
@@ -118,21 +117,6 @@ export const kingGoldemarTask: MinionTask = {
 
 			resultStr += `\n${user} received ${fakeLoot}.`;
 		}
-		updateBankSetting('kg_loot', totalLoot);
-
-		await trackLoot({
-			duration,
-			totalLoot,
-			type: 'Monster',
-			changeType: 'loot',
-			id: KingGoldemar.name,
-			kc: 1,
-			users: users.map(i => ({
-				id: i.id,
-				loot: teamLoot.get(i.id),
-				duration
-			}))
-		});
 
 		// Show deaths in the result
 		if (deaths.length > 0) {

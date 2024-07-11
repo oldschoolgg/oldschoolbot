@@ -8,7 +8,6 @@ import { stoneSpirits } from '../minions/data/stoneSpirits';
 import type { MinigameScore } from '../settings/minigames';
 import getOSItem from '../util/getOSItem';
 import { assert } from '../util/logError';
-import { LampTable } from '../xpLamps';
 import type { UserStatsDataNeededForCL } from './Collections';
 import {
 	gracefulCapes,
@@ -1094,7 +1093,6 @@ export const cluesGrandmasterCL = resolveItems([
 	'Ignecarus mask',
 	'Malygos mask',
 	'Blabberbeak',
-	...LampTable.allItems,
 	'Helm of raedwald',
 	'Clue hunter garb',
 	'Clue hunter gloves',

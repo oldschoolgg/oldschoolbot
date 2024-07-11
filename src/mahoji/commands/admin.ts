@@ -3,14 +3,13 @@ import { execSync } from 'node:child_process';
 import { type CommandRunOptions, bulkUpdateCommands, dateFm } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import type { ClientStorage } from '@prisma/client';
-import type { InteractionReplyOptions, Message, TextChannel } from 'discord.js';
+import type { InteractionReplyOptions } from 'discord.js';
 import { AttachmentBuilder, userMention } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, roll, sleep, uniqueArr } from 'e';
+import { Time, calcWhatPercent, noOp, notEmpty, randArrItem, sleep, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import { boxFrenzy } from '../../lib/boxFrenzy';
 import {
@@ -18,7 +17,6 @@ import {
 	BadgesEnum,
 	BitField,
 	BitFieldData,
-	Channel,
 	DISABLED_COMMANDS,
 	META_CONSTANTS,
 	globalConfig
@@ -32,10 +30,8 @@ import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { parseBank } from '../../lib/util/parseStringBank';
 import { slayerMaskLeaderboardCache } from '../../lib/util/slayerMaskLeaderboard';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { LampTable } from '../../lib/xpLamps';
 import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
@@ -52,18 +48,6 @@ const viewableThings: {
 	name: string;
 	run: (clientSettings: ClientStorage) => Promise<Bank | InteractionReplyOptions>;
 }[] = [
-	{
-		name: 'ToB Cost',
-		run: async clientSettings => {
-			return new Bank(clientSettings.tob_cost as ItemBank);
-		}
-	},
-	{
-		name: 'Invention Disassembly Cost',
-		run: async clientSettings => {
-			return new Bank(clientSettings.items_disassembled_cost as ItemBank);
-		}
-	},
 	{
 		name: 'All Equipped Items',
 		run: async () => {
@@ -209,7 +193,7 @@ from bot_item_sell;`);
 export const adminCommand: OSBMahojiCommand = {
 	name: 'admin',
 	description: 'Allows you to trade items with other players.',
-	guildID: SupportServer,
+	guildID: globalConfig.mainServerID,
 	options: [
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -238,26 +222,6 @@ export const adminCommand: OSBMahojiCommand = {
 			name: 'sync_blacklist',
 			description: 'Sync blacklist'
 		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'loot_track',
-			description: 'Loot track',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'name',
-					description: 'The name',
-					autocomplete: async (value: string) => {
-						const tracks = await prisma.lootTrack.findMany({ select: { id: true } });
-						return tracks
-							.filter(i => (!value ? true : i.id.includes(value)))
-							.map(i => ({ name: i.id, value: i.id }));
-					},
-					required: true
-				}
-			]
-		},
-		//
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'cancel_task',
@@ -544,10 +508,9 @@ export const adminCommand: OSBMahojiCommand = {
 		await deferInteraction(interaction);
 
 		const adminUser = await mUserFetch(userID);
-		const isOwner = OWNER_IDS.includes(userID.toString());
-		const isMod = isOwner || adminUser.bitfield.includes(BitField.isModerator);
-
-		if (!guildID || !isMod || (production && guildID.toString() !== '342983479501389826')) return randArrItem(gifs);
+		const isMod = adminUser.bitfield.includes(BitField.isModerator);
+		if (!isMod) return randArrItem(gifs);
+		if (!guildID || guildID !== globalConfig.mainServerID) return randArrItem(gifs);
 		/**
 		 *
 		 * Mod Only Commands
@@ -680,7 +643,7 @@ export const adminCommand: OSBMahojiCommand = {
 				content: 'https://media.discordapp.net/attachments/357422607982919680/1004657720722464880/freeze.gif'
 			});
 			await sleep(Time.Second * 20);
-			await sendToChannelID(Channel.GeneralChannel, {
+			await sendToChannelID(globalConfig.generalChannelID, {
 				content: `I am shutting down! Goodbye :(
 
 ${META_CONSTANTS.RENDERED_STR}`
@@ -689,12 +652,12 @@ ${META_CONSTANTS.RENDERED_STR}`
 		}
 		if (options.shut_down) {
 			globalClient.isShuttingDown = true;
-			const timer = production ? Time.Second * 30 : Time.Second * 5;
+			const timer = Time.Second * 30;
 			await interactionReply(interaction, {
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
 			await sleep(timer);
-			await sendToChannelID(Channel.GeneralChannel, {
+			await sendToChannelID(globalConfig.generalChannelID, {
 				content: `I am shutting down! Goodbye :(
 
 ${META_CONSTANTS.RENDERED_STR}`
@@ -708,17 +671,8 @@ ${META_CONSTANTS.RENDERED_STR}`
 Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 
-		/**
-		 *
-		 * Admin Only Commands
-		 *
-		 */
-		if (!isOwner && !ADMIN_IDS.includes(userID)) {
-			return randArrItem(gifs);
-		}
-
 		if (options.sync_commands) {
-			const global = Boolean(production);
+			const global = Boolean(globalConfig.isProduction);
 			const totalCommands = Array.from(globalClient.mahojiClient.commands.values());
 			const globalCommands = totalCommands.filter(i => !i.guildID);
 			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
@@ -742,7 +696,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			}
 
 			// If not in production, remove all global commands.
-			if (!production) {
+			if (!globalConfig.isProduction) {
 				await bulkUpdateCommands({
 					client: globalClient.mahojiClient,
 					commands: [],
@@ -770,70 +724,9 @@ ${guildCommands.length} Guild commands`;
 			return { files: [image.file] };
 		}
 
-		if (options.give_items) {
-			const items = parseBank({ inputStr: options.give_items.items, noDuplicateItems: true });
-			const user = await mUserFetch(options.give_items.user.user.id);
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure you want to give ${items} to ${user.usernameOrMention}?`
-			);
-			await sendToChannelID(Channel.BotLogs, {
-				content: `${adminUser.logName} sent \`${items}\` to ${user.logName} for ${
-					options.give_items.reason ?? 'No reason'
-				}`
-			});
-
-			await user.addItemsToBank({ items, collectionLog: false });
-			return `Gave ${items} to ${user.mention}`;
-		}
-
-		/**
-		 *
-		 * Owner Only Commands
-		 *
-		 */
-		if (!isOwner) {
-			return randArrItem(gifs);
-		}
-
 		if (options.box_frenzy) {
 			boxFrenzy(channelID, 'Box Frenzy started!', options.box_frenzy.amount);
 			return null;
-		}
-
-		if (options.lamp_frenzy) {
-			const channel = globalClient.channels.cache.get(channelID)! as TextChannel;
-			const wonCache = new Set();
-
-			const message = await channel.send(
-				`Giving out ${options.lamp_frenzy.amount} lamps! To win, just say something.`
-			);
-
-			const totalLoot = new Bank();
-
-			await channel
-				.awaitMessages({
-					time: 20_000,
-					errors: ['time'],
-					filter: async (_msg: Message) => {
-						if (!roll(3)) return false;
-						if (wonCache.has(_msg.author.id)) return false;
-						if (wonCache.size >= options.lamp_frenzy!.amount) return false;
-						wonCache.add(_msg.author.id);
-
-						const loot = LampTable.roll();
-						totalLoot.add(loot);
-
-						const user = await mUserFetch(_msg.author.id);
-						await user.addItemsToBank({ items: loot, collectionLog: true });
-						_msg.channel.send(`${_msg.author} won ${loot}.`);
-						return false;
-					}
-				})
-				.then(() => message.edit({ content: 'Finished!', files: [] }))
-				.catch(noOp);
-
-			await channel.send(`Spawnlamp frenzy finished! ${totalLoot} was given out.`);
 		}
 
 		return 'Invalid command.';

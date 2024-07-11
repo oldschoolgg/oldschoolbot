@@ -3,7 +3,7 @@ import { Time, calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent,
 import { Bank } from 'oldschooljs';
 
 import type { GearSetupType, GearStats } from '../gear';
-import { trackLoot } from '../lootTrack';
+
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { setupParty } from '../party';
 import type { Skills } from '../types';
@@ -11,7 +11,6 @@ import type { NewBossOptions } from '../types/minions';
 import { formatDuration, formatSkillRequirements, hasSkillReqs, isWeekend, makeTable } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
-import { type ClientBankKey, updateBankSetting } from '../util/updateBankSetting';
 import type { Gear } from './Gear';
 
 export const gpCostPerKill = (user: MUser) =>
@@ -117,7 +116,6 @@ export interface BossOptions {
 	mostImportantStat: keyof GearStats;
 	ignoreStats?: (keyof GearStats)[];
 	food: Bank | ((user: MUser) => Bank);
-	settingsKeys?: [ClientBankKey, ClientBankKey];
 	channel: TextChannel;
 	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent';
 	massText: string;
@@ -173,7 +171,6 @@ export class BossInstance {
 	allowMoreThan1Solo = false;
 	allowMoreThan1Group = false;
 	totalPercent = -1;
-	settingsKeys?: [ClientBankKey, ClientBankKey];
 	channel: TextChannel;
 	activity: 'VasaMagus' | 'KingGoldemar' | 'Ignecarus' | 'BossEvent';
 	massText: string;
@@ -206,7 +203,6 @@ export class BossInstance {
 		this.ignoreStats = options.ignoreStats ?? [];
 		this.id = options.id;
 		this.food = options.food;
-		this.settingsKeys = options.settingsKeys;
 		this.channel = options.channel;
 		this.activity = options.activity;
 		this.leader = options.leader;
@@ -462,24 +458,10 @@ export class BossInstance {
 				totalCost.add(bossUser.itemsToRemove);
 			}
 		}
-		if (this.settingsKeys) {
-			updateBankSetting(this.settingsKeys[0], totalCost);
-		}
 
 		const monster = effectiveMonsters.find(m => m.id === this.id);
 		if (!monster) {
 			console.error(`No monster for ${this.id}`);
-		} else {
-			await trackLoot({
-				changeType: 'cost',
-				totalCost,
-				id: monster.name,
-				type: 'Monster',
-				users: this.bossUsers.map(i => ({
-					id: i.user.id,
-					cost: i.itemsToRemove
-				}))
-			});
 		}
 
 		await addSubTaskToActivityTask<NewBossOptions>({

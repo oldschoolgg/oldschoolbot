@@ -1,7 +1,7 @@
 import { Time, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { userHasFlappy } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
@@ -133,22 +133,6 @@ export const wintertodtTask: MinionTask = {
 			output += '\n\n<:wintertoad:749945071230779493> A Wintertoad sneakily hops into your bank!';
 		}
 		if (flappyRes.shouldGiveBoost) output += `\n${flappyRes.userMsg}`;
-
-		await trackLoot({
-			totalLoot: itemsAdded,
-			id: 'wintertodt',
-			type: 'Minigame',
-			changeType: 'loot',
-			duration: data.duration,
-			kc: quantity,
-			users: [
-				{
-					id: user.id,
-					loot: itemsAdded,
-					duration: data.duration
-				}
-			]
-		});
 
 		return handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
 	}

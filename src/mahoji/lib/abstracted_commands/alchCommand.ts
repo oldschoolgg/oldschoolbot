@@ -11,7 +11,6 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const unlimitedFireRuneProviders = resolveItems([
 	'Staff of fire',
@@ -98,7 +97,6 @@ export async function alchCommand(
 		);
 	}
 	await user.removeItemsFromBank(consumedItems);
-	await updateBankSetting('magic_cost_bank', consumedItems);
 
 	await addSubTaskToActivityTask<AlchingActivityTaskOptions>({
 		itemID: osItem.id,

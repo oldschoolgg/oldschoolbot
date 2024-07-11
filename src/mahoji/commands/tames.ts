@@ -24,7 +24,7 @@ import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { PerkTier, badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
-import { trackLoot } from '../../lib/lootTrack';
+
 import { Planks } from '../../lib/minions/data/planks';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 
@@ -71,7 +71,6 @@ import {
 	tameHasBeenFed,
 	tameName
 } from '../../lib/util/tameUtil';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { arbitraryTameActivities } from '../../tasks/tames/tameTasks';
 import { collectables } from '../lib/abstracted_commands/collectCommand';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -746,7 +745,6 @@ async function mergeCommand(user: MUser, interaction: ChatInputCommandInteractio
 	);
 
 	await user.removeItemsFromBank(mergingCost);
-	updateBankSetting('tame_merging_cost', mergingCost);
 
 	// Set the merged tame activities to the tame that is consuming it
 	await prisma.tameActivity.updateMany({
@@ -1028,21 +1026,6 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	}
 
 	const fakeDuration = Math.floor(quantity * speed);
-
-	await trackLoot({
-		id: monster.name,
-		changeType: 'cost',
-		type: 'Monster',
-		totalCost: foodRes.removed,
-		suffix: 'tame',
-		users: [
-			{
-				id: user.id,
-				cost: foodRes.removed
-			}
-		]
-	});
-
 	const kcs = await getIgneTameKC(tame);
 	const deathChance = monster.deathChance ? monster.deathChance({ tame, kc: kcs.idBank[monster.id] ?? 0 }) : 0;
 	let realDuration: number = fakeDuration;
@@ -1265,19 +1248,7 @@ async function monkeyMagicHandler(
 	}
 
 	await user.removeItemsFromBank(finalCost);
-	await trackLoot({
-		id: `${spellOptions.spell.name}`,
-		changeType: 'cost',
-		type: 'Skilling',
-		totalCost: finalCost,
-		suffix: 'tame',
-		users: [
-			{
-				id: user.id,
-				cost: finalCost
-			}
-		]
-	});
+
 	await prisma.tame.update({
 		where: {
 			id: tame.id

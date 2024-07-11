@@ -13,9 +13,9 @@ export const butlerTask: MinionTask = {
 			[plankID]: plankQuantity
 		});
 
-		const str = `${user}, ${user.minionName} finished creating planks, you received ${loot}.`;
+		const res = await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		const str = `${user}, ${user.minionName} finished creating planks, you received ${res.itemsAdded}.`;
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}

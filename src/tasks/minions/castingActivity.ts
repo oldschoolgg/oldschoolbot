@@ -42,17 +42,19 @@ export const castingTask: MinionTask = {
 			});
 		}
 
+		let lootStr = 'no items';
 		const loot = spell.output?.clone().multiply(quantity);
 		if (loot) {
-			await transactItems({
+			const res = await transactItems({
 				userID: user.id,
 				collectionLog: true,
 				itemsToAdd: loot
 			});
+			lootStr = res.itemsAdded.toString();
 		}
 
 		const str = `${user}, ${user.minionName} finished casting ${quantity}x ${spell.name}, you received ${
-			loot ?? 'no items'
+			lootStr
 		}. ${xpRes} ${craftXpRes}${prayerXpRes}`;
 
 		handleTripFinish(user, channelID, str, undefined, data, loot ?? null);

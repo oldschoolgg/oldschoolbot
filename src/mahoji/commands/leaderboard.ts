@@ -1,13 +1,10 @@
 import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit';
 
-import type { Prisma, UserStats } from '@prisma/client';
+import type { UserStats } from '@prisma/client';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { Time, calcWhatPercent, chunk, objectValues } from 'e';
-import type { ClueTier } from '../../lib/clues/clueTiers';
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { Emoji, badges, badgesCache, masteryKey, usernameCache } from '../../lib/constants';
+import { calcWhatPercent, chunk } from 'e';
+import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
-import { allLeagueTasks } from '../../lib/leagues/leagues';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
@@ -22,8 +19,7 @@ import {
 	formatDuration,
 	getUsername,
 	makePaginatedMessage,
-	stringMatches,
-	stripEmojis
+	stringMatches
 } from '../../lib/util';
 import { fetchCLLeaderboard, fetchTameCLLeaderboard } from '../../lib/util/clLeaderboard';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -33,12 +29,10 @@ import type { OSBMahojiCommand } from '../lib/util';
 
 const LB_PAGE_SIZE = 10;
 
-function lbMsg(str: string, ironmanOnly?: boolean) {
-	ironmanOnly = true;
+function lbMsg(str: string) {
+	;
 	return {
-		content: `Showing you the ${str} leaderboard, click the buttons to change pages.${
-			ironmanOnly ? ' Showing only ironmen.' : ''
-		}`,
+		content: `Showing you the ${str} leaderboard, click the buttons to change pages.`,
 		ephemeral: true
 	};
 }
@@ -72,17 +66,15 @@ async function kcLb(
 	user: MUser,
 	channelID: string,
 	name: string,
-	ironmanOnly: boolean
+	
 ) {
-	ironmanOnly = true;
+	;
 	const monster = effectiveMonsters.find(mon => [mon.name, ...mon.aliases].some(alias => stringMatches(alias, name)));
 	if (!monster) return "That's not a valid monster!";
 	const list = await prisma.$queryRawUnsafe<{ id: string; kc: number }[]>(
 		`SELECT user_id::text AS id, CAST("monster_scores"->>'${monster.id}' AS INTEGER) as kc
 		 FROM user_stats
-		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
 		 WHERE CAST("monster_scores"->>'${monster.id}' AS INTEGER) > 5
-		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
 		 ORDER BY kc DESC
 		 LIMIT 2000;`
 	);
@@ -99,21 +91,21 @@ async function kcLb(
 		`KC Leaderboard for ${monster.name}`
 	);
 
-	return lbMsg(`${monster.name} KC `, ironmanOnly);
+	return lbMsg(`${monster.name} KC `);
 }
 
 async function farmingContractLb(
 	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	channelID: string,
-	ironmanOnly: boolean
+	
 ) {
-	ironmanOnly = true;
+	;
 	const list = await prisma.$queryRawUnsafe<{ id: string; count: number }[]>(
 		`SELECT id, CAST("minion.farmingContract"->>'contractsCompleted' AS INTEGER) as count
 		 FROM users
 		 WHERE "minion.farmingContract" is not null and CAST ("minion.farmingContract"->>'contractsCompleted' AS INTEGER) >= 1
-		 ${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
+		
 		 ORDER BY count DESC
 		 LIMIT 2000;`
 	);
@@ -185,16 +177,16 @@ async function sacrificeLb(
 	user: MUser,
 	channelID: string,
 	type: 'value' | 'unique',
-	ironmanOnly: boolean
+	
 ) {
-	ironmanOnly = true;
+	;
 	if (type === 'value') {
 		const list = (
 			await prisma.$queryRawUnsafe<{ id: string; amount: number }[]>(
 				`SELECT "id", "sacrificedValue"
 					   FROM users
 					   WHERE "sacrificedValue" > 0
-					   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+					   
 					   ORDER BY "sacrificedValue"
 					   DESC LIMIT 2000;`
 			)
@@ -219,7 +211,6 @@ async function sacrificeLb(
 		`SELECT u.user_id::text AS id, u.sacbanklength
 				FROM (
   					SELECT (SELECT COUNT(*)::int FROM JSONB_OBJECT_KEYS(sacrificed_bank)) sacbanklength, user_id FROM user_stats
-  						${ironmanOnly ? 'INNER JOIN users ON users.id::bigint = user_stats.user_id WHERE "minion.ironman" = true' : ''}
 				) u
 				ORDER BY u.sacbanklength DESC LIMIT 10;
 `
@@ -299,7 +290,6 @@ async function clLb(
 	user: MUser,
 	channelID: string,
 	inputType: string,
-	ironmenOnly: boolean,
 	tames: boolean
 ) {
 	const { resolvedCl, items } = getCollectionItems(inputType, false, false, true);
@@ -334,7 +324,7 @@ async function clLb(
 		}
 	});
 
-	const users = await fetchCLLeaderboard({ ironmenOnly, items, resultLimit: 200, userEvents: userEventOrders });
+	const users = await fetchCLLeaderboard({  items, resultLimit: 200, userEvents: userEventOrders });
 	doMenu(
 		interaction,
 		user,
@@ -352,7 +342,7 @@ async function clLb(
 		),
 		`${inputType} Collection Log Leaderboard (${items.length} slots)`
 	);
-	return lbMsg(`${inputType} Collection Log Leaderboard`, ironmenOnly);
+	return lbMsg(`${inputType} Collection Log Leaderboard`);
 }
 
 async function creaturesLb(
@@ -417,9 +407,8 @@ async function openLb(
 	user: MUser,
 	channelID: string,
 	name: string,
-	ironmanOnly: boolean
+	
 ) {
-	ironmanOnly = true;
 	if (name) {
 		name = name.trim();
 	}
@@ -445,9 +434,7 @@ async function openLb(
 
 	const list = await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(
 		`SELECT user_id::text AS id, ("${key}"->>'${entityID}')::int as qty FROM user_stats
-			${ironmanOnly ? 'INNER JOIN users ON users.id::bigint = user_stats.user_id' : ''}
 			WHERE ("${key}"->>'${entityID}')::int > 3
-			${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
 			ORDER BY qty DESC LIMIT 30;`
 	);
 
@@ -465,14 +452,14 @@ async function openLb(
 	return lbMsg(`${openableName} Opening`);
 }
 
-async function gpLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, ironmanOnly: boolean) {
-	ironmanOnly = true;
+async function gpLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, ) {
+	;
 	const users = (
 		await prisma.$queryRawUnsafe<{ id: string; GP: number }[]>(
 			`SELECT "id", "GP"
 					   FROM users
 					   WHERE "GP" > 1000000
-					   ${ironmanOnly ? ' AND "minion.ironman" = true ' : ''}
+					  
 					   ORDER BY "GP" DESC
 					   LIMIT 500;`
 		)
@@ -489,7 +476,7 @@ async function gpLb(interaction: ChatInputCommandInteraction, user: MUser, chann
 		),
 		'GP Leaderboard'
 	);
-	return lbMsg('GP Leaderboard', ironmanOnly);
+	return lbMsg('GP Leaderboard');
 }
 
 async function skillsLb(
@@ -498,9 +485,7 @@ async function skillsLb(
 	channelID: string,
 	inputSkill: string,
 	type: 'xp' | 'level',
-	ironmanOnly: boolean
 ) {
-	ironmanOnly = true;
 	let res = [];
 	let overallUsers: {
 		id: string;
@@ -531,7 +516,7 @@ async function skillsLb(
 								u."minion.ironman"
 							FROM
 								users u
-							${ironmanOnly ? ' WHERE "minion.ironman" = true ' : ''}
+							
 							ORDER BY totalxp DESC
 							LIMIT 2000;`;
 		res = await prisma.$queryRawUnsafe<Record<string, any>[]>(query);
@@ -579,7 +564,7 @@ async function skillsLb(
 								u."skills.${skill.id}", u.id, u."minion.ironman"
 							FROM
 								users u
-							${ironmanOnly ? ' WHERE "minion.ironman" = true ' : ''}
+							
 							ORDER BY
 								1 DESC
 							LIMIT 2000;`;
@@ -663,9 +648,9 @@ async function cluesLb(
 	user: MUser,
 	channelID: string,
 	clueTierName: string,
-	ironmanOnly: boolean
+	
 ) {
-	ironmanOnly = true;
+	;
 	const clueTier = ClueTiers.find(i => stringMatches(i.name, clueTierName));
 	if (!clueTier) return "That's not a valid clue tier.";
 	const { id } = clueTier;
@@ -675,7 +660,6 @@ async function cluesLb(
 FROM users
 WHERE "collectionLogBank"->>'${id}' IS NOT NULL
 AND ("collectionLogBank"->>'${id}')::int > 25
-${ironmanOnly ? 'AND "minion.ironman" = true ' : ''}
 ORDER BY ("collectionLogBank"->>'${id}')::int DESC
 LIMIT 50;`
 		)
@@ -692,278 +676,20 @@ LIMIT 50;`
 		),
 		`${clueTier.name} Clue Leaderboard`
 	);
-	return lbMsg('Clue Leaderboard', ironmanOnly);
-}
-
-export async function cacheUsernames() {
-	const roboChimpUseresToCache = await roboChimpClient.user.findMany({
-		where: {
-			OR: [
-				{
-					osb_cl_percent: {
-						gte: 80
-					}
-				},
-				{
-					bso_total_level: {
-						gte: 80
-					}
-				},
-				{
-					osb_total_level: {
-						gte: 1500
-					}
-				},
-				{
-					bso_total_level: {
-						gte: 1500
-					}
-				},
-				{
-					leagues_points_total: {
-						gte: 20_000
-					}
-				}
-			]
-		},
-		select: {
-			id: true
-		}
-	});
-
-	const orConditions: Prisma.UserWhereInput[] = [];
-	for (const skill of objectValues(SkillsEnum)) {
-		orConditions.push({
-			[`skills_${skill}`]: {
-				gte: 15_000_000
-			}
-		});
-	}
-	const usersToCache = await prisma.user.findMany({
-		where: {
-			OR: [
-				...orConditions,
-				{
-					last_command_date: {
-						gt: new Date(Date.now() - Number(Time.Month))
-					}
-				}
-			],
-			id: {
-				notIn: roboChimpUseresToCache.map(i => i.id.toString())
-			}
-		},
-		select: {
-			id: true
-		}
-	});
-
-	const userIDsToCache = [...usersToCache, ...roboChimpUseresToCache].map(i => i.id.toString());
-	debugLog(`Caching usernames of ${userIDsToCache.length} users`);
-
-	const allNewUsers = await prisma.newUser.findMany({
-		where: {
-			username: {
-				not: null
-			},
-			id: {
-				in: userIDsToCache
-			}
-		},
-		select: {
-			id: true,
-			username: true
-		}
-	});
-
-	const arrayOfIronmenAndBadges: { badges: number[]; id: string; ironman: boolean }[] = await prisma.$queryRawUnsafe(
-		'SELECT "badges", "id", "minion.ironman" as "ironman" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0 OR "minion.ironman" = true;'
-	);
-
-	for (const user of allNewUsers) {
-		const badgeUser = arrayOfIronmenAndBadges.find(i => i.id === user.id);
-		const name = stripEmojis(user.username!);
-		usernameCache.set(user.id, name);
-		if (badgeUser) {
-			const rawBadges = badgeUser.badges.map(num => badges[num]);
-			if (badgeUser.ironman) {
-				rawBadges.push(Emoji.Ironman);
-			}
-			badgesCache.set(user.id, rawBadges.join(' '));
-		}
-	}
-}
-
-const globalLbTypes = ['xp', 'cl', 'mastery'] as const;
-type GlobalLbType = (typeof globalLbTypes)[number];
-async function globalLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, type: GlobalLbType) {
-	if (type === 'xp') {
-		const result = await roboChimpClient.$queryRaw<
-			{
-				id: string;
-				osb_total_xp: number;
-				bso_total_xp: number;
-				osb_xp_percent: number;
-				bso_xp_percent: number;
-				average_percentage: number;
-			}[]
-		>`SELECT id::text, osb_total_xp, bso_total_xp,
-       (osb_total_xp / (200000000.0 * 23) * 100) as osb_xp_percent,
-       (bso_total_xp / (5000000000.0 * 25) * 100) as bso_xp_percent,
-       (((osb_total_xp / (200000000.0 * 23) * 100) + (bso_total_xp / (5000000000.0 * 25) * 100)) / 2) as average_percentage
-FROM public.user
-WHERE osb_total_xp IS NOT NULL AND bso_total_xp IS NOT NULL
-ORDER BY average_percentage DESC
-LIMIT 10;
-`;
-		doMenu(
-			interaction,
-			user,
-			channelID,
-			chunk(result, LB_PAGE_SIZE).map((subList, i) =>
-				subList
-					.map(
-						({ id, osb_xp_percent, bso_xp_percent }, j) =>
-							`${getPos(i, j)}**${getUsername(id)}:** ${osb_xp_percent.toFixed(
-								2
-							)}% OSB, ${bso_xp_percent.toFixed(2)}% BSO`
-					)
-					.join('\n')
-			),
-			'Global (OSB+BSO) XP Leaderboard (% of the max XP)'
-		);
-		return lbMsg('Global (OSB+BSO) XP Leaderboard');
-	}
-
-	if (type === 'mastery') {
-		const result = await roboChimpClient.$queryRaw<
-			{
-				id: string;
-				avg: number;
-			}[]
-		>`SELECT id::text, ((osb_mastery + bso_mastery) / 2) AS avg
-FROM public.user
-WHERE osb_mastery IS NOT NULL AND bso_mastery IS NOT NULL
-ORDER BY avg DESC
-LIMIT 10;
-`;
-		doMenu(
-			interaction,
-			user,
-			channelID,
-			chunk(result, LB_PAGE_SIZE).map((subList, i) =>
-				subList.map(({ id, avg }, j) => `${getPos(i, j)}**${getUsername(id)}:** ${avg.toFixed(2)}%`).join('\n')
-			),
-			'Global (OSB+BSO) Mastery Leaderboard'
-		);
-		return lbMsg('Global Mastery Leaderboard');
-	}
-
-	const result = await roboChimpClient.$queryRaw<{ id: string; total_cl_percent: number }[]>`SELECT ((osb_cl_percent + bso_cl_percent) / 2) AS total_cl_percent, id::text AS id
-FROM public.user
-WHERE osb_cl_percent IS NOT NULL AND bso_cl_percent IS NOT NULL
-ORDER BY total_cl_percent DESC
-LIMIT 20;`;
-
-	doMenu(
-		interaction,
-		user,
-		channelID,
-
-		chunk(result, LB_PAGE_SIZE).map((subList, i) =>
-			subList
-				.map(
-					({ id, total_cl_percent }, j) =>
-						`${getPos(i, j)}**${getUsername(id)}:** ${total_cl_percent.toLocaleString()}%`
-				)
-				.join('\n')
-		),
-		'Global (OSB+BSO) CL Leaderboard'
-	);
-	return lbMsg('Global (OSB+BSO) CL Leaderboard');
-}
-
-async function leaguesPointsLeaderboard(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
-	const result = await roboChimpClient.user.findMany({
-		where: {
-			leagues_points_total: {
-				gt: 0
-			}
-		},
-		orderBy: {
-			leagues_points_total: 'desc'
-		},
-		take: 100
-	});
-	doMenu(
-		interaction,
-		user,
-		channelID,
-		chunk(result, 10).map(subList =>
-			subList
-				.map(
-					({ id, leagues_points_total }) =>
-						`**${getUsername(id)}:** ${leagues_points_total.toLocaleString()} Pts`
-				)
-				.join('\n')
-		),
-		'Leagues Points Leaderboard'
-	);
-	return lbMsg('Leagues Points');
-}
-
-async function leastCompletedLeagueTasksLb() {
-	const taskCounts = await roboChimpClient.$queryRaw<{ task_id: number; qty: number }[]>`SELECT task_id, count(*) AS qty
-FROM (
-   SELECT unnest(leagues_completed_tasks_ids) AS task_id
-   FROM public.user
-   ) sub
-GROUP BY 1
-ORDER BY 2 ASC;`;
-	const taskObj: Record<number, number> = {};
-	for (const task of allLeagueTasks) {
-		taskObj[task.id] = 0;
-	}
-	for (const task of taskCounts) {
-		taskObj[task.task_id] = task.qty;
-	}
-
-	return `**Least Commonly Completed Tasks:**
-${Object.entries(taskObj)
-	.sort((a, b) => a[1] - b[1])
-	.slice(0, 10)
-	.map(task => {
-		const taskObj = allLeagueTasks.find(t => t.id === Number.parseInt(task[0]))!;
-		return `${taskObj.name}: ${task[1]} users completed`;
-	})
-	.join('\n')}
-
-**Most Commonly Completed Tasks:**
-${Object.entries(taskObj)
-	.sort((a, b) => b[1] - a[1])
-	.slice(0, 10)
-	.map((task, index) => {
-		const taskObj = allLeagueTasks.find(t => t.id === Number.parseInt(task[0]))!;
-		return `${index + 1}. ${taskObj.name}`;
-	})
-	.join('\n')}`;
+	return lbMsg('Clue Leaderboard', );
 }
 
 async function compLeaderboard(
 	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	untrimmed: boolean,
-	ironmanOnly: boolean,
 	channelID: string
 ) {
-	ironmanOnly = true;
 	const key: keyof UserStats = untrimmed ? 'untrimmed_comp_cape_percent' : 'comp_cape_percent';
 	const list = await prisma.$queryRawUnsafe<{ id: string; percent: number }[]>(
 		`SELECT user_id::text AS id, ${key} AS percent
 		 FROM user_stats
-		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
 		 WHERE ${key} IS NOT NULL
-		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
 		 ORDER BY ${key} DESC
 		 LIMIT 100;`
 	);
@@ -985,15 +711,8 @@ async function compLeaderboard(
 	return lbMsg('Completionist Leaderboard');
 }
 
-async function leaguesLeaderboard(
-	interaction: ChatInputCommandInteraction,
-	user: MUser,
-	channelID: string,
-	type: 'points' | 'tasks' | 'hardest_tasks'
-) {
-	if (type === 'points') return leaguesPointsLeaderboard(interaction, user, channelID);
-	if (type === 'hardest_tasks') return leastCompletedLeagueTasksLb();
-	const result: { id: number; tasks_completed: number }[] = await roboChimpClient.$queryRaw`SELECT id::text, COALESCE(cardinality(leagues_completed_tasks_ids), 0) AS tasks_completed
+async function leaguesLeaderboard(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
+	const result: { id: number; tasks_completed: number }[] = await prisma.$queryRaw`SELECT id::text, COALESCE(cardinality(leagues_completed_tasks_ids), 0) AS tasks_completed
 										  FROM public.user
 										  ORDER BY tasks_completed DESC
 										  LIMIT 100;`;
@@ -1012,90 +731,6 @@ async function leaguesLeaderboard(
 		'Leagues Tasks Leaderboard'
 	);
 	return lbMsg('Leagues Tasks');
-}
-
-const gainersTypes = ['overall', 'top_250'] as const;
-type GainersType = (typeof gainersTypes)[number];
-async function gainersLB(interaction: ChatInputCommandInteraction, user: MUser, channelID: string, type: GainersType) {
-	const result = await prisma.$queryRawUnsafe<
-		{
-			user_id: string;
-			cl_global_rank: number;
-			cl_completion_percentage: number;
-			cl_completion_count: number;
-			count_increase: number;
-			rank_difference: number;
-			percentage_difference: number;
-		}[]
-	>(
-		type === 'overall'
-			? `WITH latest_count AS (
-  SELECT user_id, cl_global_rank, cl_completion_percentage, cl_completion_count, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY date DESC) AS date_row
-  FROM historical_data
-	WHERE cl_global_rank != 0
-),
-seven_days_ago_count AS (
-  SELECT user_id, cl_global_rank, cl_completion_percentage, cl_completion_count, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY date DESC) AS date_row
-  FROM historical_data
-  WHERE date >= (CURRENT_DATE - INTERVAL '7 days') AND date < (CURRENT_DATE - INTERVAL '6 days')
-	 AND cl_global_rank != 0
-)
-SELECT lc.user_id::text,
-       lc.cl_global_rank,
-       lc.cl_completion_percentage,
-       lc.cl_completion_count,
-       (lc.cl_completion_count - sdac.cl_completion_count) AS count_increase,
-       (lc.cl_global_rank - sdac.cl_global_rank) AS rank_difference,
-       (lc.cl_completion_percentage - sdac.cl_completion_percentage) AS percentage_difference
-FROM latest_count lc
-JOIN seven_days_ago_count sdac ON lc.user_id = sdac.user_id AND lc.date_row = 1 AND sdac.date_row = 1
-ORDER BY count_increase DESC
-LIMIT 10;`
-			: `WITH latest_count AS (
-  SELECT user_id, cl_global_rank, cl_completion_percentage, cl_completion_count, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY date DESC) AS date_row
-  FROM historical_data
-	WHERE cl_global_rank <= 250
-),
-seven_days_ago_count AS (
-  SELECT user_id, cl_global_rank, cl_completion_percentage, cl_completion_count, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY date DESC) AS date_row
-  FROM historical_data
-  WHERE date >= (CURRENT_DATE - INTERVAL '7 days') AND date < (CURRENT_DATE - INTERVAL '6 days')
-	AND  cl_global_rank <= 250
-)
-SELECT CAST(lc.user_id AS TEXT) AS user_id,
-       lc.cl_global_rank,
-       lc.cl_completion_percentage,
-       lc.cl_completion_count,
-       (lc.cl_completion_count - sdac.cl_completion_count) AS count_increase,
-       (lc.cl_global_rank - sdac.cl_global_rank) AS rank_difference,
-       (lc.cl_completion_percentage - sdac.cl_completion_percentage) AS percentage_difference,
-       ((lc.cl_completion_count - sdac.cl_completion_count) * (1 + 0.1 * lc.cl_completion_count)) / (1 + ABS(lc.cl_global_rank - sdac.cl_global_rank)) AS score
-FROM latest_count lc
-JOIN seven_days_ago_count sdac ON lc.user_id = sdac.user_id AND lc.date_row = 1 AND sdac.date_row = 1
-ORDER BY score DESC
-LIMIT 10;
-`
-	);
-
-	doMenu(
-		interaction,
-		user,
-		channelID,
-		chunk(result, LB_PAGE_SIZE).map((subList, i) =>
-			subList
-				.map(
-					({ user_id, cl_completion_count, cl_global_rank, count_increase, rank_difference }, j) =>
-						`${getPos(i, j)}**${getUsername(
-							user_id
-						)}:** Gained ${count_increase} CL slots, from ${cl_completion_count} to ${
-							cl_completion_count + count_increase
-						}, and their global rank went from ${cl_global_rank - rank_difference} to ${cl_global_rank}`
-				)
-				.join('\n')
-		),
-		'Weekly Movers Leaderboard'
-	);
-	return lbMsg('Weekly Movers Leaderboard');
 }
 
 async function caLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
@@ -1126,18 +761,17 @@ LIMIT 50;`
 }
 
 async function masteryLb(interaction: ChatInputCommandInteraction, user: MUser, channelID: string) {
-	const users = await roboChimpClient.user.findMany({
+	const users = await prisma.user.findMany({
 		where: {
-			[masteryKey]: { not: null }
+			mastery: { not: 0 }
 		},
 		orderBy: {
-			[masteryKey]: 'desc'
+			mastery: 'desc'
 		},
 		take: 50,
 		select: {
 			id: true,
-			osb_mastery: true,
-			bso_mastery: true
+			mastery: true
 		}
 	});
 
@@ -1147,10 +781,7 @@ async function masteryLb(interaction: ChatInputCommandInteraction, user: MUser, 
 		channelID,
 		chunk(users, LB_PAGE_SIZE).map((subList, i) =>
 			subList
-				.map(
-					(lUser, j) =>
-						`${getPos(i, j)}**${getUsername(lUser.id)}:** ${lUser[masteryKey]?.toFixed(3)}% mastery`
-				)
+				.map((lUser, j) => `${getPos(i, j)}**${getUsername(lUser.id)}:** ${lUser.mastery.toFixed(3)}% mastery`)
 				.join('\n')
 		),
 		'Mastery Leaderboard'
@@ -1353,16 +984,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'leagues',
-			description: 'Check the Leagues leaderboards.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'type',
-					description: 'The leagues lb you want to select.',
-					required: true,
-					choices: ['points', 'tasks', 'hardest_tasks'].map(i => ({ name: i, value: i }))
-				}
-			]
+			description: 'Check the Leagues leaderboards.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -1410,25 +1032,21 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		userID,
 		interaction
 	}: CommandRunOptions<{
-		kc?: { monster: string; ironmen_only?: boolean };
-		farming_contracts?: { ironmen_only?: boolean };
+		kc?: { monster: string;  };
+		farming_contracts?: {  };
 		inferno?: {};
 		challenges?: {};
-		sacrifice?: { type: 'value' | 'unique'; ironmen_only?: boolean };
-		minigames?: { minigame: string; ironmen_only?: boolean };
+		sacrifice?: { type: 'value' | 'unique';  };
+		minigames?: { minigame: string;  };
 		hunter_catches?: { creature: string };
 		agility_laps?: { course: string };
-		gp?: { ironmen_only?: boolean };
-		skills?: { skill: string; ironmen_only?: boolean; xp?: boolean };
-		opens?: { openable: string; ironmen_only?: boolean };
-		cl?: { cl: string; ironmen_only?: boolean; tames?: boolean };
-		leagues?: { type: 'points' | 'tasks' | 'hardest_tasks' };
-		clues?: { clue: ClueTier['name']; ironmen_only?: boolean };
-		movers?: { type: GainersType };
-		global?: {
-			type: GlobalLbType;
-		};
-		completion?: { untrimmed?: boolean; ironmen_only?: boolean };
+		gp?: {  };
+		skills?: { skill: string; xp?: boolean };
+		opens?: { openable: string;  };
+		cl?: { cl: string; tames?: boolean };
+		leagues?: {};
+		clues?: { clue: ClueTier['name'];  };
+		completion?: { untrimmed?: boolean;  };
 		combat_achievements?: {};
 		mastery?: {};
 	}>) => {
@@ -1449,24 +1067,22 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			cl,
 			leagues,
 			clues,
-			movers,
-			global,
 			completion,
 			combat_achievements,
 			mastery
 		} = options;
-		if (kc) return kcLb(interaction, user, channelID, kc.monster, Boolean(kc.ironmen_only));
+		if (kc) return kcLb(interaction, user, channelID, kc.monster);
 		if (farming_contracts) {
-			return farmingContractLb(interaction, user, channelID, Boolean(farming_contracts.ironmen_only));
+			return farmingContractLb(interaction, user, channelID);
 		}
 		if (inferno) return infernoLb();
 		if (challenges) return bsoChallenge(interaction, user, channelID);
 		if (sacrifice)
-			return sacrificeLb(interaction, user, channelID, sacrifice.type, Boolean(sacrifice.ironmen_only));
+			return sacrificeLb(interaction, user, channelID, sacrifice.type);
 		if (minigames) return minigamesLb(interaction, user, channelID, minigames.minigame);
 		if (hunter_catches) return creaturesLb(interaction, user, channelID, hunter_catches.creature);
 		if (agility_laps) return lapsLb(interaction, user, channelID, agility_laps.course);
-		if (gp) return gpLb(interaction, user, channelID, Boolean(gp.ironmen_only));
+		if (gp) return gpLb(interaction, user, channelID,);
 		if (skills) {
 			return skillsLb(
 				interaction,
@@ -1474,21 +1090,17 @@ export const leaderboardCommand: OSBMahojiCommand = {
 				channelID,
 				skills.skill,
 				skills.xp ? 'xp' : 'level',
-				Boolean(skills.ironmen_only)
 			);
 		}
-		if (opens) return openLb(interaction, user, channelID, opens.openable, Boolean(opens.ironmen_only));
-		if (cl) return clLb(interaction, user, channelID, cl.cl, Boolean(cl.ironmen_only), Boolean(cl.tames));
-		if (leagues) return leaguesLeaderboard(interaction, user, channelID, leagues.type);
-		if (clues) return cluesLb(interaction, user, channelID, clues.clue, Boolean(clues.ironmen_only));
-		if (movers) return gainersLB(interaction, user, channelID, movers.type);
-		if (global) return globalLb(interaction, user, channelID, global.type);
+		if (opens) return openLb(interaction, user, channelID, opens.openable, );
+		if (cl) return clLb(interaction, user, channelID, cl.cl,  Boolean(cl.tames));
+		if (leagues) return leaguesLeaderboard(interaction, user, channelID);
+		if (clues) return cluesLb(interaction, user, channelID, clues.clue);
 		if (completion)
 			return compLeaderboard(
 				interaction,
 				user,
 				Boolean(completion.untrimmed),
-				Boolean(completion.ironmen_only),
 				channelID
 			);
 

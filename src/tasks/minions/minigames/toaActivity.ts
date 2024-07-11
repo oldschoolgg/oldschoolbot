@@ -8,7 +8,7 @@ import { resolveItems } from 'oldschooljs/dist/util/util';
 import { drawChestLootImage } from '../../../lib/bankImage';
 import { Emoji, Events, toaPurpleItems } from '../../../lib/constants';
 import { toaCL } from '../../../lib/data/CollectionsExport';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import {
@@ -21,7 +21,6 @@ import {
 import type { TOAOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { assert } from '../../../lib/util/logError';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 const purpleButNotAnnounced = resolveItems([
@@ -229,23 +228,6 @@ export const toaTask: MinionTask = {
 		if (messages.length > 0) {
 			resultMessage += `\n\n${messages.join('\n')}`;
 		}
-
-		if (!chincannonUser) {
-			updateBankSetting('toa_loot', totalLoot.totalLoot());
-		}
-		await trackLoot({
-			totalLoot: totalLoot.totalLoot(),
-			id: 'tombs_of_amascut',
-			type: 'Minigame',
-			changeType: 'loot',
-			duration,
-			kc: quantity,
-			users: allUsers.map(i => ({
-				id: i.id,
-				duration,
-				loot: itemsAddedTeamLoot.get(i.id)
-			}))
-		});
 
 		function makeCustomTexts(userID: string) {
 			const user = raidResults.get(userID)!;

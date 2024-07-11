@@ -4,7 +4,6 @@ import { isFunction, objectEntries, round } from 'e';
 import { Bank } from 'oldschooljs';
 
 import type { SelectedUserStats } from '../lib/MUser';
-import { globalConfig } from '../lib/constants';
 import { getSimilarItems } from '../lib/data/similarItems';
 import { GearStat } from '../lib/gear';
 import type { KillableMonster } from '../lib/minions/types';
@@ -13,7 +12,6 @@ import type { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
 import type { ItemBank } from '../lib/types';
 import { anglerBoosts, formatItemReqs, hasSkillReqs, itemNameFromID, readableStatName } from '../lib/util';
-import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../lib/util/clientSettings';
 import resolveItems from '../lib/util/resolveItems';
 
 export function mahojiParseNumber({
@@ -64,16 +62,6 @@ export function patronMsg(tierNeeded: number) {
 
 export function getMahojiBank(user: { bank: Prisma.JsonValue }) {
 	return new Bank(user.bank as ItemBank);
-}
-
-export async function trackClientBankStats(
-	key: 'clue_upgrader_loot' | 'portable_tanner_loot' | 'turaels_trials_cost_bank' | 'turaels_trials_loot_bank',
-	newItems: Bank
-) {
-	const currentTrackedLoot = await mahojiClientSettingsFetch({ [key]: true });
-	await mahojiClientSettingsUpdate({
-		[key]: new Bank(currentTrackedLoot[key] as ItemBank).add(newItems).bank
-	});
 }
 
 export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.UserStatsSelect>(
@@ -150,36 +138,6 @@ export async function multipleUserStatsBankUpdate(userID: string, updates: Parti
 		},
 		{}
 	);
-}
-
-export async function updateClientGPTrackSetting(
-	setting: 'gp_pickpocket' | 'gp_alch' | 'gp_open' | 'gp_daily' | 'gp_sell' | 'gp_pvm',
-	amount: number
-) {
-	await prisma.clientStorage.update({
-		where: {
-			id: globalConfig.clientID
-		},
-		data: {
-			[setting]: {
-				increment: amount
-			}
-		},
-		select: {
-			id: true
-		}
-	});
-}
-export async function updateGPTrackSetting(
-	setting: 'gp_dice' | 'gp_luckypick' | 'gp_slots',
-	amount: number,
-	user: MUser
-) {
-	await userStatsUpdate(user.id, {
-		[setting]: {
-			increment: amount
-		}
-	});
 }
 
 const masterFarmerOutfit = resolveItems([
@@ -334,33 +292,6 @@ export function calcMaxRCQuantity(rune: Rune, user: MUser) {
 	}
 
 	return 0;
-}
-
-export async function addToGPTaxBalance(userID: string | string, amount: number) {
-	await Promise.all([
-		prisma.clientStorage.update({
-			where: {
-				id: globalConfig.clientID
-			},
-			data: {
-				gp_tax_balance: {
-					increment: amount
-				}
-			},
-			select: {
-				id: true
-			}
-		}),
-		userStatsUpdate(
-			userID,
-			{
-				total_gp_traded: {
-					increment: amount
-				}
-			},
-			{}
-		)
-	]);
 }
 
 export async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {

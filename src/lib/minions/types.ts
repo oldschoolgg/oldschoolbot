@@ -1,6 +1,5 @@
 import type { Image } from '@napi-rs/canvas';
 import type { PerkTier, StoreBitfield } from '@oldschoolgg/toolkit';
-import type { XpGainSource } from '@prisma/client';
 import type { Bank, MonsterKillOptions } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import type SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
@@ -171,7 +170,7 @@ export interface AddXpParams {
 	minimal?: boolean;
 	artificial?: boolean;
 	masterCapeBoost?: boolean;
-	source?: XpGainSource;
+	source?: any;
 }
 
 export interface AddMonsterXpParams {

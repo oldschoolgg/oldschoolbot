@@ -17,9 +17,8 @@
 		"test:docker": "docker-compose up --build --abort-on-container-exit",
 		"test:watch": "vitest --config vitest.unit.config.mts --coverage",
 		"buildandrun": "yarn build:esbuild && node --enable-source-maps dist",
-		"build:esbuild": "concurrently --raw \"yarn build:main\" \"yarn build:workers\"",
-		"build:main": "esbuild src/index.ts src/lib/workers/index.ts --sourcemap=inline --minify --legal-comments=none --outdir=./dist --log-level=error --bundle --platform=node --loader:.node=file --external:@napi-rs/canvas --external:@prisma/robochimp --external:@prisma/client --external:zlib-sync --external:bufferutil --external:oldschooljs --external:discord.js --external:node-fetch --external:piscina",
-		"build:workers": "esbuild src/lib/workers/kill.worker.ts src/lib/workers/finish.worker.ts src/lib/workers/casket.worker.ts --sourcemap=inline --log-level=error --bundle --minify --legal-comments=none --outdir=./dist/lib/workers --platform=node --loader:.node=file --external:@napi-rs/canvas --external:@prisma/robochimp --external:@prisma/client --external:zlib-sync --external:bufferutil --external:oldschooljs --external:discord.js --external:node-fetch --external:piscina"
+		"build:esbuild": "yarn build:main",
+		"build:main": "esbuild src/index.ts --sourcemap=inline --minify --legal-comments=none --outdir=./dist --log-level=error --bundle --platform=node --loader:.node=file --external:@napi-rs/canvas --external:@prisma/robochimp --external:@prisma/client --external:zlib-sync --external:bufferutil --external:oldschooljs --external:discord.js --external:node-fetch"
 	},
 	"dependencies": {
 		"@napi-rs/canvas": "^0.1.53",
@@ -27,7 +26,6 @@
 		"@prisma/client": "^5.16.1",
 		"@sapphire/snowflake": "^3.5.3",
 		"@sapphire/time-utilities": "^1.6.0",
-		"@sentry/node": "^8.15.0",
 		"ascii-table3": "^0.9.0",
 		"bufferutil": "^4.0.8",
 		"discord.js": "^14.15.3",

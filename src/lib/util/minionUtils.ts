@@ -77,9 +77,9 @@ export const bolts = resolveItems([
 ]);
 
 export function minionName(user: MUser) {
-	let [name, isIronman, icon] = [user.user.minion_name, user.user.minion_ironman, user.user.minion_icon];
+	let [name, icon] = [user.user.minion_name, user.user.minion_icon];
 
-	const prefix = isIronman ? Emoji.Ironman : '';
+	const prefix = Emoji.Ironman;
 	icon ??= Emoji.Minion;
 
 	const strPrefix = prefix ? `${prefix} ` : '';

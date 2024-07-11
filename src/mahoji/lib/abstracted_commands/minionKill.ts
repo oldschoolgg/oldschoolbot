@@ -24,7 +24,7 @@ import { checkUserCanUseDegradeableItem, degradeItem, degradeablePvmBoostItems }
 import { userhasDiaryIDTier } from '../../../lib/diaries';
 import { type GearSetupType, type GearStat, maxOffenceStats } from '../../../lib/gear';
 import { InventionID, canAffordInventionBoost, inventionItemBoost } from '../../../lib/invention/inventions';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import type { CombatOptionsEnum } from '../../../lib/minions/data/combatConstants';
 import {
 	SlayerActivityConstants,
@@ -1167,21 +1167,6 @@ export async function minionKillCommand(
 	if (lootToRemove.length > 0) {
 		await user.specialRemoveItems(lootToRemove, { wildy: isInWilderness });
 		totalCost.add(lootToRemove);
-	}
-
-	if (totalCost.length > 0) {
-		await trackLoot({
-			id: monster.name,
-			totalCost,
-			type: 'Monster',
-			changeType: 'cost',
-			users: [
-				{
-					id: user.id,
-					cost: totalCost
-				}
-			]
-		});
 	}
 
 	await addSubTaskToActivityTask<MonsterActivityTaskOptions>({

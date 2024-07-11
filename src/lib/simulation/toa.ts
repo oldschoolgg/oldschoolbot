@@ -1,7 +1,6 @@
 import { SimpleTable, exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { Minigame } from '@prisma/client';
-import { XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
 	Time,
@@ -29,7 +28,6 @@ import { getSimilarItems } from '../data/similarItems';
 import { degradeItem } from '../degradeableItems';
 import type { GearStats, UserFullGearSetup } from '../gear/types';
 import { InventionID, canAffordInventionBoost, inventionBoosts, inventionItemBoost } from '../invention/inventions';
-import { trackLoot } from '../lootTrack';
 import { setupParty } from '../party';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
@@ -49,7 +47,6 @@ import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import { bankToStrShortNames, getToaKCs } from '../util/smallUtils';
-import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 
 const teamSizeScale: Record<number, number> = {
@@ -452,7 +449,6 @@ export function calculateXPFromRaid({
 				skillName: style,
 				amount,
 				duration: realDuration,
-				source: XpGainSource.TombsOfAmascut,
 				minimal: true
 			})
 		);
@@ -466,7 +462,6 @@ export function calculateXPFromRaid({
 			skillName: SkillsEnum.Magic,
 			amount: mageXP,
 			duration: realDuration,
-			source: XpGainSource.TombsOfAmascut,
 			minimal: true
 		})
 	);
@@ -477,7 +472,6 @@ export function calculateXPFromRaid({
 			skillName: SkillsEnum.Ranged,
 			amount: mageXP,
 			duration: realDuration,
-			source: XpGainSource.TombsOfAmascut,
 			minimal: true
 		})
 	);
@@ -487,8 +481,7 @@ export function calculateXPFromRaid({
 			skillName: SkillsEnum.Hitpoints,
 			amount: Math.floor(totalCombatXP / 4),
 			duration: realDuration,
-			minimal: true,
-			source: XpGainSource.TombsOfAmascut
+			minimal: true
 		})
 	);
 	return promises;
@@ -1236,7 +1229,7 @@ export async function toaStartCommand(
 		}
 	}
 
-	const costResult = await Promise.all(
+	await Promise.all(
 		users.map(async u => {
 			const { cost, blowpipeCost } = await calcTOAInput({ user: u, duration: fakeDuration, quantity });
 			const { realCost } = await u.specialRemoveItems(cost.clone().add(blowpipeCost));
@@ -1300,19 +1293,6 @@ export async function toaStartCommand(
 			};
 		})
 	);
-
-	updateBankSetting('toa_cost', totalCost);
-	await trackLoot({
-		totalCost,
-		id: 'tombs_of_amascut',
-		type: 'Minigame',
-		changeType: 'cost',
-		users: costResult.map(i => ({
-			id: i.userID,
-			cost: i.effectiveCost,
-			duration: realDuration
-		}))
-	});
 
 	const userArr: [string, number, number[]][][] = [];
 	for (let i = 0; i < quantity; i++) {

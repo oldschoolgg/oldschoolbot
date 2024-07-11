@@ -8,7 +8,6 @@ import defaultBirdhouseTrap, { type BirdhouseData } from '../../../lib/skilling/
 import type { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
 import { birdhouseLimit } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { mahojiUsersSettingsFetch, userHasGracefulEquipped } from '../../mahojiSettings';
 
 interface BirdhouseDetails {
@@ -151,7 +150,6 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 	}
 	if (!user.owns(removeBank)) return `You don't own: ${removeBank}.`;
 
-	await updateBankSetting('farming_cost_bank', removeBank);
 	await transactItems({ userID: user.id, itemsToRemove: removeBank });
 
 	// If user does not have something already placed, just place the new birdhouses.

@@ -14,11 +14,10 @@ import { MUserStats } from '../../lib/structures/MUserStats';
 import { formatSkillRequirements, itemID, itemNameFromID, stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
 import type { OSBMahojiCommand } from '../lib/util';
-import { mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
+import { mahojiParseNumber } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }, { name: 'Fossil Island Notes' }];
 
@@ -151,8 +150,8 @@ export const buyCommand: OSBMahojiCommand = {
 			!user.cl.has(buyable.name)
 		) {
 			const [count, ironCount] = await Promise.all([
-				countUsersWithItemInCl(itemID(buyable.name), false),
-				countUsersWithItemInCl(itemID(buyable.name), true)
+				countUsersWithItemInCl(itemID(buyable.name), ),
+				countUsersWithItemInCl(itemID(buyable.name), )
 			]);
 
 			let announcement = `**${user.badgedUsername}'s** minion, ${user.minionName}, just purchased their first ${
@@ -177,23 +176,6 @@ export const buyCommand: OSBMahojiCommand = {
 			.clone()
 			.remove('Coins', totalCost.amount('Coins')).bank;
 		if (Object.keys(costBankExcludingGP).length === 0) costBankExcludingGP = undefined;
-
-		await Promise.all([
-			updateBankSetting('buy_cost_bank', totalCost),
-			updateBankSetting('buy_loot_bank', outItems),
-			multipleUserStatsBankUpdate(user.id, {
-				buy_cost_bank: totalCost,
-				buy_loot_bank: outItems
-			}),
-			prisma.buyCommandTransaction.create({
-				data: {
-					user_id: BigInt(user.id),
-					cost_gp: totalCost.amount('Coins'),
-					cost_bank_excluding_gp: costBankExcludingGP,
-					loot_bank: outItems.bank
-				}
-			})
-		]);
 
 		return `You purchased ${outItems}.`;
 	}

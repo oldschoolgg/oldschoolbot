@@ -5,7 +5,6 @@ import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
-import announceLoot from '../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../lib/minions/functions/isImportantItemForMonster';
 import type { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -65,18 +64,6 @@ export const groupoMonsterTask: MinionTask = {
 			);
 
 			resultStr += `${purple ? Emoji.Purple : ''} **${user} received:** ||${loot}||\n`;
-
-			announceLoot({
-				user,
-				monsterID: monster.id,
-				loot,
-				notifyDrops: monster.notifyDrops,
-				team: {
-					leader: leaderUser,
-					lootRecipient: user,
-					size: users.length
-				}
-			});
 		}
 
 		const usersWithoutLoot = users.filter(id => !teamsLoot[id]);

@@ -38,9 +38,9 @@ import { ashes } from '../skilling/skills/prayer';
 import type { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
-import { LampTable } from '../xpLamps';
 import { type Task, leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster } from './leaguesUtils';
 import { calculateChargedItems, calculateTiarasMade, calculateTotalMahoganyHomesPoints } from './stats';
+import { LampTable } from '../simulation/grandmasterClue';
 
 export const mediumTasks: Task[] = [
 	{

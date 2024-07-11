@@ -19,7 +19,6 @@ import getOSItem from './util/getOSItem';
 import { handleTripFinish } from './util/handleTripFinish';
 import { makeBankImage } from './util/makeBankImage';
 import resolveItems from './util/resolveItems';
-import { updateBankSetting } from './util/updateBankSetting';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;
 export type BathhouseTierName = (typeof bathhouseTierNames)[number];
@@ -359,7 +358,6 @@ export async function baxtorianBathhousesStartCommand({
 	if (!user.owns(cost)) {
 		return `You don't have enough supplies to do a trip, for ${quantity}x ${bathHouseTier.name} baths, you need: ${cost}.`;
 	}
-	await updateBankSetting('bb_cost', cost);
 	await user.removeItemsFromBank(cost);
 
 	await addSubTaskToActivityTask<BathhouseTaskOptions>({
@@ -489,7 +487,6 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 	});
 
 	const uniqSpecies = uniqueArr(speciesServed);
-	await updateBankSetting('bb_loot', loot);
 
 	const bankImage = await makeBankImage({
 		bank: itemsAdded,

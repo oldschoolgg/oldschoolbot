@@ -18,7 +18,6 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { BitField } from '../../lib/constants';
 import { handlePassiveImplings } from '../../lib/implings';
-import { trackLoot } from '../../lib/lootTrack';
 import { allOpenables } from '../../lib/openables';
 
 import { runCommand } from '../../lib/settings/settings';
@@ -242,22 +241,6 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			}
 
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
-			await trackLoot({
-				duration: activity.duration,
-				kc: activityData.quantity,
-				id: mon.name,
-				changeType: 'loot',
-				type: 'Monster',
-				totalLoot: loot,
-				suffix: 'tame',
-				users: [
-					{
-						id: user.id,
-						loot: itemsAdded,
-						duration: activity.duration
-					}
-				]
-			});
 			handleFinish({
 				loot: itemsAdded,
 				message: str,

@@ -5,18 +5,16 @@ import type Monster from 'oldschooljs/dist/structures/Monster';
 import { globalDroprates } from '../../../lib/data/globalDroprates';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { kittens } from '../../../lib/growablePets';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { bossKillables } from '../../../lib/minions/data/killableMonsters/bosses';
 import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { addMonsterXP } from '../../../lib/minions/functions';
-import announceLoot from '../../../lib/minions/functions/announceLoot';
+
 import type { NewBossOptions } from '../../../lib/types/minions';
 import { clAdjustedDroprate, getMonster, itemNameFromID } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import resolveItems from '../../../lib/util/resolveItems';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const vasaBosses: Monster[] = [
 	Monsters.AbyssalSire,
@@ -91,21 +89,7 @@ export const vasaTask: MinionTask = {
 			taskQuantity: null
 		});
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
-		await trackLoot({
-			duration,
-			totalLoot: loot,
-			type: 'Monster',
-			changeType: 'loot',
-			id: VasaMagus.name,
-			kc: quantity,
-			users: [
-				{
-					id: user.id,
-					loot,
-					duration
-				}
-			]
-		});
+
 		const image = await makeBankImage({
 			bank: itemsAdded,
 			title: `Loot From ${quantity} ${VasaMagus.name}`,
@@ -114,15 +98,6 @@ export const vasaTask: MinionTask = {
 		});
 
 		resultStr += `\n${xpRes}\n`;
-
-		announceLoot({
-			user,
-			monsterID: VasaMagus.id,
-			loot,
-			notifyDrops: resolveItems(['Magus scroll', 'Voidling', 'Tattered robes of Vasa'])
-		});
-
-		updateBankSetting('vasa_loot', loot);
 
 		handleTripFinish(user, channelID, resultStr, image.file.attachment, data, itemsAdded);
 	}

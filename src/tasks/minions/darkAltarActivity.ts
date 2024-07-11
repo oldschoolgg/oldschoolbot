@@ -61,7 +61,13 @@ export const darkAltarTask: MinionTask = {
 			}
 		}
 
-		let str = `${user}, ${user.minionName} finished runecrafting at the Dark altar, you received ${loot}. ${xpRes1} ${xpRes2} ${xpRes3}`;
+		const res = await transactItems({
+			userID: user.id,
+			collectionLog: true,
+			itemsToAdd: loot
+		});
+
+		let str = `${user}, ${user.minionName} finished runecrafting at the Dark altar, you received ${res.itemsAdded}. ${xpRes1} ${xpRes2} ${xpRes3}`;
 
 		if (bonusQuantity > 0) {
 			str += ` **Bonus Quantity:** ${bonusQuantity.toLocaleString()}`;
@@ -74,12 +80,6 @@ export const darkAltarTask: MinionTask = {
 		if (loot.amount('Rift guardian') > 0) {
 			str += "\n\n**You have a funny feeling you're being followed...**";
 		}
-
-		await transactItems({
-			userID: user.id,
-			collectionLog: true,
-			itemsToAdd: loot
-		});
 
 		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}

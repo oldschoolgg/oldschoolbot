@@ -9,16 +9,15 @@ import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
 import { isObject } from 'e';
 
-import { DEV_SERVER_ID, SupportServer } from './config';
 import { syncActivityCache } from './lib/Task';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
-import { Channel, Events, META_CONSTANTS, globalConfig } from './lib/constants';
+import { Events, META_CONSTANTS, globalConfig } from './lib/constants';
 import { onMessage } from './lib/events';
 import { modalInteractionHook } from './lib/modals';
 import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { assert, runTimedLoggedFn } from './lib/util';
-import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUserIDs';
+import { CACHED_ACTIVE_USER_IDS } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
 import { handleInteractionError } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
@@ -58,7 +57,6 @@ const client = new OldSchoolBotClient({
 			maxSize: 200,
 			keepOverLimit: member => CACHED_ACTIVE_USER_IDS.has(member.user.id)
 		},
-		GuildEmojiManager: { maxSize: 1, keepOverLimit: i => [DEV_SERVER_ID, SupportServer].includes(i.guild.id) },
 		GuildStickerManager: { maxSize: 0 },
 		PresenceManager: { maxSize: 0 },
 		VoiceStateManager: { maxSize: 0 },
@@ -79,7 +77,7 @@ const client = new OldSchoolBotClient({
 });
 
 export const mahojiClient = new MahojiClient({
-	developmentServerID: DEV_SERVER_ID,
+	developmentServerID: globalConfig.mainServerID,
 	applicationID: globalConfig.clientID,
 	commands: allCommands,
 	handlers: {
@@ -153,7 +151,7 @@ client.on('interactionCreate', async interaction => {
 });
 
 client.on(Events.ServerNotification, (message: string) => {
-	const channel = globalClient.channels.cache.get(Channel.Notifications);
+	const channel = globalClient.channels.cache.get(globalConfig.generalChannelID);
 	if (channel) (channel as TextChannel).send(message);
 });
 
@@ -164,16 +162,12 @@ client.on('guildCreate', guild => {
 	}
 });
 
-client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 client.once('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
 
 async function main() {
 	if (process.env.TEST) return;
-	await Promise.all([
-		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
-		runTimedLoggedFn('Sync Activity Cache', syncActivityCache)
-	]);
+	await Promise.all([runTimedLoggedFn('Sync Activity Cache', syncActivityCache)]);
 	await runTimedLoggedFn('Startup Scripts', runStartupScripts);
 
 	await runTimedLoggedFn('Log In', () => client.login(globalConfig.botToken));

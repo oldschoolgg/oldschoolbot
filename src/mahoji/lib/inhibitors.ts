@@ -1,14 +1,13 @@
 import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel, User } from 'discord.js';
-import { ComponentType } from 'discord.js';
 
-import { OWNER_IDS, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
-import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, minionBuyButton } from '../../lib/constants';
+import { BitField, DISABLED_COMMANDS } from '../../lib/constants';
 import type { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';
 import { Cooldowns } from './Cooldowns';
+import { minionBuyCommand } from './abstracted_commands/minionBuyCommand';
 
 export interface AbstractCommandAttributes {
 	examples?: string[];
@@ -71,20 +70,10 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'hasMinion',
-		run: async ({ user, command }) => {
-			if (!command.attributes?.requiresMinion) return false;
-
+		run: async ({ user }) => {
 			if (!user.user.minion_hasBought) {
-				return {
-					content: 'You need a minion to use this command.',
-					components: [
-						{
-							components: [minionBuyButton],
-							type: ComponentType.ActionRow
-						}
-					],
-					flags: undefined
-				};
+				const res = await minionBuyCommand(user);
+				return { content: res };
 			}
 
 			return false;
@@ -120,11 +109,8 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'disabled',
-		run: async ({ command, guild, APIUser }) => {
-			if (
-				!OWNER_IDS.includes(APIUser.id) &&
-				(command.attributes?.enabled === false || DISABLED_COMMANDS.has(command.name))
-			) {
+		run: async ({ command, guild }) => {
+			if (command.attributes?.enabled === false || DISABLED_COMMANDS.has(command.name)) {
 				return { content: 'This command is globally disabled.' };
 			}
 			if (!guild) return false;
@@ -137,41 +123,10 @@ const inhibitors: Inhibitor[] = [
 		canBeDisabled: false
 	},
 	{
-		name: 'commandRoleLimit',
-		run: async ({ guild, channel }) => {
-			if (!guild || guild.id !== SupportServer) return false;
-			if (channel.id !== Channel.General) return false;
-			return { content: 'You cannot use commands in the general channel.' };
-		},
-		canBeDisabled: false,
-		silent: true
-	},
-	{
-		name: 'onlyStaffCanUseCommands',
-		run: async ({ channel, guild, user, member }) => {
-			if (!guild || !member) return false;
-			// Allow green gem badge holders to run commands in support channel:
-			if (channel.id === Channel.HelpAndSupport && user.user.badges.includes(BadgesEnum.GreenGem)) {
-				return false;
-			}
-
-			// Allow contributors + moderators to use disabled channels in SupportServer
-			const userBitfield = user.bitfield;
-			const isStaff = userBitfield.includes(BitField.isModerator);
-			if (guild.id === SupportServer && isStaff) {
-				return false;
-			}
-
-			return false;
-		},
-		canBeDisabled: false,
-		silent: true
-	},
-	{
 		name: 'cooldown',
 		run: async ({ user, command }) => {
 			if (!command.attributes?.cooldown) return false;
-			if (OWNER_IDS.includes(user.id) || user.bitfield.includes(BitField.isModerator)) return false;
+			if (user.bitfield.includes(BitField.isModerator)) return false;
 			const cooldownForThis = Cooldowns.get(user.id, command.name, command.attributes.cooldown);
 			if (cooldownForThis) {
 				return {

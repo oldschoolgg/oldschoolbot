@@ -1,34 +1,18 @@
 import { convertAPIOptionsToCommandOptions } from '@oldschoolgg/toolkit';
-import { captureException } from '@sentry/node';
 import type { Interaction } from 'discord.js';
 
 import { isObject } from 'e';
-import { production } from '../../config';
 import getOSItem from './getOSItem';
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {
-		if (production) {
-			logError(new Error(desc ?? 'Failed assertion'), context);
-		} else {
-			throw new Error(desc ?? 'Failed assertion');
-		}
+		logError(new Error(desc ?? 'Failed assertion'), context);
 	}
 }
 assert(getOSItem('Smokey').id === 737);
 
 export function logError(err: Error | unknown, context?: Record<string, string>, extra?: Record<string, string>) {
-	console.error(context, err);
-	if (production) {
-		captureException(err, {
-			tags: context,
-			extra
-		});
-	} else {
-		console.error(err);
-		console.log(context);
-		console.log(extra);
-	}
+	console.error(err, context, extra);
 }
 
 export function logErrorForInteraction(err: Error | unknown, interaction: Interaction) {

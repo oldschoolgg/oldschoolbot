@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 
 import { calcBossFood } from '../../../lib/bso/calcBossFood';
 import { gorajanWarriorOutfit, torvaOutfit } from '../../../lib/data/CollectionsExport';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
 import type { KillableMonster } from '../../../lib/minions/types';
@@ -18,7 +18,6 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { deferInteraction } from '../../../lib/util/interactionReply';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements } from '../../mahojiSettings';
 
 async function checkReqs(users: MUser[], monster: KillableMonster, quantity: number): Promise<string | undefined> {
@@ -300,17 +299,6 @@ export async function kkCommand(
 
 	foodString += `${foodRemoved.join(', ')}.`;
 
-	await trackLoot({
-		changeType: 'cost',
-		totalCost,
-		id: KalphiteKingMonster.name,
-		type: 'Monster',
-		users: removeResult.map(i => ({
-			id: i.id,
-			cost: i.cost
-		}))
-	});
-
 	await addSubTaskToActivityTask<BossActivityTaskOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
@@ -319,8 +307,6 @@ export async function kkCommand(
 		type: 'KalphiteKing',
 		users: users.map(u => u.id)
 	});
-
-	updateBankSetting('kk_cost', totalCost);
 
 	let str = `${partyOptions.leader.usernameOrMention}'s party (${users
 		.map(u => u.usernameOrMention)

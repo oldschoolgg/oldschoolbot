@@ -1,6 +1,7 @@
 import { bold } from 'discord.js';
 import { Time, reduceNumByPercent, roll } from 'e';
 import { Bank } from 'oldschooljs';
+import { keyCrates } from '../keyCrates';
 
 export async function handleCrateSpawns(user: MUser, duration: number) {
 	const accountAge = user.accountAgeInDays();
@@ -20,8 +21,13 @@ export async function handleCrateSpawns(user: MUser, duration: number) {
 	const minutes = Math.floor(duration / Time.Minute);
 	const loot = new Bank();
 	for (let i = 0; i < minutes; i++) {
-		if (roll(dropratePerMinute)) {
-			loot.add('Easter crate (s5)');
+		for (const crate of keyCrates) {
+			if (roll(dropratePerMinute)) {
+				loot.add(crate.item.id);
+			}
+		}
+		if (roll(40)) {
+			loot.add('Untradeable Mystery Box');
 		}
 	}
 	if (loot.length > 0) {

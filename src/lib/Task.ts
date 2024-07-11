@@ -3,7 +3,6 @@ import { activity_type_enum } from '@prisma/client';
 import type { ZodSchema } from 'zod';
 import { z } from 'zod';
 
-import { production } from '../config';
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
 import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
@@ -115,7 +114,7 @@ import { guardiansOfTheRiftTask } from './../tasks/minions/minigames/guardiansOf
 import { nightmareZoneTask } from './../tasks/minions/minigames/nightmareZoneActivity';
 import { underwaterAgilityThievingTask } from './../tasks/minions/underwaterActivity';
 import { modifyBusyCounter } from './busyCounterCache';
-import { minionActivityCache } from './constants';
+import { globalConfig, minionActivityCache } from './constants';
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
@@ -238,7 +237,7 @@ export async function processPendingActivities() {
 	const activities: Activity[] = await prisma.activity.findMany({
 		where: {
 			completed: false,
-			finish_date: production
+			finish_date: globalConfig.isProduction
 				? {
 						lt: new Date()
 					}

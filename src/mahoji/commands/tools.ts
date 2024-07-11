@@ -4,11 +4,8 @@ import { ApplicationCommandOptionType, ChannelType } from 'discord.js';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
-import { spookyTable } from '../../lib/bsoOpenables';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
-import { BitField } from '../../lib/constants';
-import { allCLItems, allDroppedItems } from '../../lib/data/Collections';
 import {
 	anglerOutfit,
 	evilChickenOutfit,
@@ -17,21 +14,11 @@ import {
 	shadesOfMorttonCL,
 	toaCL
 } from '../../lib/data/CollectionsExport';
-import { NightmareMonster, effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import type { MinigameName } from '../../lib/settings/minigames';
 import { Minigames } from '../../lib/settings/minigames';
 import { convertStoredActivityToFlatActivity } from '../../lib/settings/prisma';
-import {
-	formatDuration,
-	getUsername,
-	isGroupActivity,
-	isNexActivity,
-	isRaidsActivity,
-	isTOBOrTOAActivity,
-	itemNameFromID,
-	stringMatches
-} from '../../lib/util';
-import { getItem } from '../../lib/util/getOSItem';
+import { formatDuration, isGroupActivity, isNexActivity, isRaidsActivity, isTOBOrTOAActivity } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -45,7 +32,6 @@ import {
 	stashUnitViewCommand
 } from '../lib/abstracted_commands/stashUnitsCommand';
 import { dataPoints } from '../lib/abstracted_commands/statCommand';
-import { itemOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
 
@@ -206,11 +192,10 @@ export const dryStreakEntities: DrystreakEntity[] = [
 			'Gastly ghost cape',
 			'Spooky box'
 		]),
-		run: async ({ item, ironmanOnly }) => {
+		run: async ({ item }) => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT user_id::text AS id, COUNT(1) as val
 FROM activity WHERE
 user_id IN (SELECT id::bigint FROM users WHERE "collectionLogBank"->'${item.id}' IS NULL
-${ironmanOnly ? ' AND "minion.ironman" = TRUE' : ''})
 AND type = 'HalloweenMiniMinigame' GROUP BY user_id
 ORDER BY val DESC LIMIT 10`);
 			return result;
@@ -234,13 +219,13 @@ ORDER BY val DESC LIMIT 10`);
 			'Twisted bow',
 			'Olmlet'
 		]),
-		run: async ({ item, ironmanOnly }) => {
+		run: async ({ item }) => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; points: number; raids_total_kc: number }[]>(`SELECT "users"."id", "user_stats".total_cox_points AS points, "minigames"."raids" + "minigames"."raids_challenge_mode" AS raids_total_kc
 FROM user_stats
 INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text
 INNER JOIN "minigames" on "minigames"."user_id" = "user_stats"."user_id"::text
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
-${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+
 ORDER BY "user_stats".total_cox_points DESC
 LIMIT 10;`);
 			return result.map(i => ({
@@ -262,7 +247,7 @@ LIMIT 10;`);
 			'Volatile orb',
 			'Harmonised orb'
 		]),
-		run: async ({ item, ironmanOnly }) => {
+		run: async ({ item }) => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; val: number }[]
 			>(`SELECT "id", ("monster_scores"->>'${NightmareMonster.id}')::int AS val
@@ -270,7 +255,7 @@ LIMIT 10;`);
 		   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 		   WHERE "collectionLogBank"->>'${item.id}' IS NULL
 		   AND "monster_scores"->>'${NightmareMonster.id}' IS NOT NULL
-		   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+		  
 		   ORDER BY ("monster_scores"->>'${NightmareMonster.id}')::int DESC
 		   LIMIT 10;`);
 			return result;
@@ -281,13 +266,13 @@ LIMIT 10;`);
 	{
 		name: 'Barbarian Assault (Pet penance queen)',
 		items: resolveItems(['Pet penance queen']),
-		run: async ({ item, ironmanOnly }) => {
+		run: async ({ item }) => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT "id", high_gambles AS val
 				   FROM users
 				   INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 				   WHERE "collectionLogBank"->>'${item.id}' IS NULL
 				   AND high_gambles > 0
-				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+				  
 				   ORDER BY high_gambles DESC
 				   LIMIT 10;`);
 			return result;
@@ -297,12 +282,12 @@ LIMIT 10;`);
 	{
 		name: 'Guardians of the Rift',
 		items: guardiansOfTheRiftCL,
-		run: async ({ item, ironmanOnly }) => {
+		run: async ({ item }) => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT users.id, gotr_rift_searches AS val
             FROM users
             INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
             WHERE "collectionLogBank"->>'${item.id}' IS NULL
-            ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+            
             ORDER BY gotr_rift_searches DESC
             LIMIT 10;`);
 			return result;
@@ -312,7 +297,7 @@ LIMIT 10;`);
 	{
 		name: 'Evil Chicken Outfit',
 		items: evilChickenOutfit,
-		run: async ({ item, ironmanOnly }) => {
+		run: async ({ item }) => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`
             SELECT *
 			FROM
@@ -324,7 +309,7 @@ LIMIT 10;`);
             FROM users
             INNER JOIN "user_stats" "userstats" on "userstats"."user_id"::text = "users"."id"
             WHERE "collectionLogBank"->>'${item.id}' IS NULL
-            ${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+            
             GROUP BY users.id
             ORDER BY val DESC
             LIMIT 10
@@ -338,7 +323,7 @@ LIMIT 10;`);
 	{
 		name: 'Random Events',
 		items: resolveItems(['Stale baguette']),
-		run: async ({ ironmanOnly }) => {
+		run: async () => {
 			const result = await prisma.$queryRawUnsafe<
 				{ id: string; mbox_opens: number; baguettes_received: number }[]
 			>(`SELECT id, (openable_scores->>'6199')::int AS mbox_opens, ("collectionLogBank"->>'6961')::int AS baguettes_received,
@@ -352,7 +337,7 @@ AND "collectionLogBank"->>'6961' IS NOT NULL
 AND "collectionLogBank"->>'20590' IS NULL
 AND openable_scores->>'6199' IS NOT NULL
 AND (openable_scores->>'6199')::int > 3
-${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+
 ORDER BY factor DESC
 LIMIT 10;`);
 			return result.map(i => ({
@@ -365,7 +350,7 @@ LIMIT 10;`);
 	{
 		name: 'Clue Scrolls',
 		items: clueItemsOnlyDroppedInOneTier,
-		run: async ({ ironmanOnly, item }) => {
+		run: async ({ item }) => {
 			const clueTierWithItem = ClueTiers.filter(t => t.allItems.includes(item.id));
 			if (clueTierWithItem.length !== 1) {
 				return 'You can only check items which are dropped by only 1 clue scroll tier.';
@@ -379,7 +364,6 @@ INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
 AND openable_scores->>'${clueTier.id}' IS NOT NULL
 AND (openable_scores->>'${clueTier.id}')::int > 100
-${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
 ORDER BY opens DESC
 LIMIT 10;`);
 			return result.map(i => ({
@@ -392,12 +376,12 @@ LIMIT 10;`);
 	{
 		name: 'Superior Slayer Creatures',
 		items: resolveItems(['Imbued heart', 'Eternal gem']),
-		run: async ({ ironmanOnly, item }) => {
+		run: async ({ item }) => {
 			const result = await prisma.$queryRawUnsafe<{ id: string; slayer_superior_count: number }[]>(`SELECT id, slayer_superior_count
 FROM users
 INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
-${ironmanOnly ? 'AND "minion.ironman" = true' : ''}
+
 ORDER BY slayer_superior_count DESC
 LIMIT 10;`);
 			return result.map(i => ({
@@ -412,7 +396,7 @@ for (const minigame of dryStreakMinigames) {
 	dryStreakEntities.push({
 		name: minigame.name,
 		items: minigame.items,
-		run: async ({ item, ironmanOnly }) => {
+		run: async ({ item }) => {
 			const minigameObj = Minigames.find(i => i.column === minigame.key)!;
 			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT users.id, "minigame"."${
 				minigameObj.column
@@ -420,98 +404,13 @@ for (const minigame of dryStreakMinigames) {
 FROM users
 INNER JOIN "minigames" "minigame" on "minigame"."user_id" = "users"."id"::text
 WHERE "collectionLogBank"->>'${item.id}' IS NULL
-${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+
 ORDER BY "minigame"."${minigameObj.column}" DESC
 LIMIT 10;`);
 			return result;
 		},
 		format: num => `${num.toLocaleString()} KC`
 	});
-}
-
-async function dryStreakCommand(monsterName: string, itemName: string, ironmanOnly: boolean) {
-	const item = getItem(itemName);
-	if (!item) return 'Invalid item.';
-	const entity = dryStreakEntities.find(i => stringMatches(i.name, monsterName));
-	if (entity) {
-		if (!entity.items.includes(item.id)) {
-			return `That's not a valid item dropped for this thing, valid items are: ${entity.items
-				.map(itemNameFromID)
-				.join(', ')}.`;
-		}
-
-		const result = await entity.run({ item, ironmanOnly });
-		if (result.length === 0) return 'No results found.';
-		if (typeof result === 'string') return result;
-
-		return `**Dry Streaks for ${item.name} from ${entity.name}:**\n${result
-			.map(({ id, val }) => `${getUsername(id)}: ${entity.format(val || -1)}`)
-			.join('\n')}`;
-	}
-
-	const mon = effectiveMonsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monsterName)));
-	if (!mon) {
-		return "That's not a valid monster or minigame.";
-	}
-
-	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
-	const key = 'monster_scores';
-	const { id } = mon;
-	const query = `SELECT id, "${key}"->>'${id}' AS "KC"
-				FROM users
-				INNER JOIN "user_stats" ON "user_stats"."user_id"::text = "users"."id"
-				WHERE "collectionLogBank"->>'${item.id}' IS NULL
-						AND "${key}"->>'${id}' IS NOT NULL
-						${ironmanPart}
-				ORDER BY ("${key}"->>'${id}')::int DESC
-				LIMIT 10;`;
-
-	const result =
-		await prisma.$queryRawUnsafe<
-			{
-				id: string;
-				KC: string;
-			}[]
-		>(query);
-
-	if (result.length === 0) return 'No results found.';
-
-	return `**Dry Streaks for ${item.name} from ${mon.name}:**\n${result
-		.map(({ id, KC }) => `${getUsername(id) as string}: ${Number.parseInt(KC).toLocaleString()}`)
-		.join('\n')}`;
-}
-
-async function mostDrops(user: MUser, itemName: string, filter: string) {
-	const item = getItem(itemName);
-	const ironmanPart =
-		filter === 'Irons Only'
-			? 'AND "minion.ironman" = true'
-			: filter === 'Mains Only'
-				? 'AND "minion.ironman" = false'
-				: '';
-	if (!item) return "That's not a valid item.";
-	if (!allDroppedItems.includes(item.id) && !user.bitfield.includes(BitField.isModerator)) {
-		return "You can't check this item, because it's not on any collection log.";
-	}
-
-	const query = `SELECT "id", "collectionLogBank"->>'${item.id}' AS "qty" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL ${ironmanPart} ORDER BY ("collectionLogBank"->>'${item.id}')::int DESC LIMIT 10;`;
-
-	const result =
-		await prisma.$queryRawUnsafe<
-			{
-				id: string;
-				qty: string;
-			}[]
-		>(query);
-
-	if (result.length === 0) return 'No results found.';
-
-	return `**Most '${item.name}' received:**\n${result
-		.map(
-			({ id, qty }) =>
-				`${result.length < 10 ? '(Anonymous)' : getUsername(id)}: ${Number.parseInt(qty).toLocaleString()}`
-		)
-		.join('\n')}`;
 }
 
 async function checkMassesCommand(guildID: string | undefined) {
@@ -570,56 +469,6 @@ export const toolsCommand: OSBMahojiCommand = {
 			description: 'Tools that only patrons can use.',
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			options: [
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'drystreak',
-					description: "Show's the biggest drystreaks for certain drops from a certain monster.",
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'monster',
-							description: 'The monster you want to pick.',
-							required: true,
-							autocomplete: async value => {
-								return [
-									...dryStreakEntities.map(i => ({ name: i.name, value: i })),
-									...effectiveMonsters
-								]
-									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-									.map(i => ({ name: i.name, value: i.name }));
-							}
-						},
-						{
-							...itemOption(item => [...allCLItems, ...spookyTable.allItems].includes(item.id)),
-							required: true
-						},
-						{
-							type: ApplicationCommandOptionType.Boolean,
-							name: 'ironman',
-							description: 'Only check ironmen accounts.',
-							required: false
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'mostdrops',
-					description:
-						"Show's which players have received the most drops of an item, based on their collection log.",
-					options: [
-						{
-							...itemOption(),
-							required: true
-						},
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'filter',
-							description: 'Filter by account type.',
-							required: false,
-							choices: ['Both', 'Irons Only', 'Mains Only'].map(i => ({ name: i, value: i }))
-						}
-					]
-				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'sacrificed_bank',
@@ -757,15 +606,6 @@ export const toolsCommand: OSBMahojiCommand = {
 		guildID
 	}: CommandRunOptions<{
 		patron?: {
-			drystreak?: {
-				monster: string;
-				item: string;
-				ironman?: boolean;
-			};
-			mostdrops?: {
-				item: string;
-				filter?: string;
-			};
 			sacrificed_bank?: {};
 			cl_bank?: {
 				format?: 'bank' | 'json';
@@ -788,18 +628,6 @@ export const toolsCommand: OSBMahojiCommand = {
 
 		if (options.patron) {
 			const { patron } = options;
-			if (patron.drystreak) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return dryStreakCommand(
-					patron.drystreak.monster,
-					patron.drystreak.item,
-					Boolean(patron.drystreak.ironman)
-				);
-			}
-			if (patron.mostdrops) {
-				if (mahojiUser.perkTier() < PerkTier.Four) return patronMsg(PerkTier.Four);
-				return mostDrops(mahojiUser, patron.mostdrops.item, String(patron.mostdrops.filter));
-			}
 			if (patron.sacrificed_bank) {
 				if (mahojiUser.perkTier() < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const sacBank = await mahojiUser.fetchStats({ sacrificed_bank: true });

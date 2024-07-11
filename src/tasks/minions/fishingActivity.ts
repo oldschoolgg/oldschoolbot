@@ -214,13 +214,13 @@ export const fishingTask: MinionTask = {
 			}
 		}
 
-		await transactItems({
+		const res = await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
 		});
 
-		str += `\n\nYou received: ${loot}.`;
+		str += `\n\nYou received: ${res.itemsAdded}.`;
 
 		if (blessingEquipped) {
 			str += `\nYour Rada's Blessing gives ${blessingChance}% chance of extra fish.`;

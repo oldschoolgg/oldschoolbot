@@ -12,7 +12,6 @@ import {
 	checkDOAUser,
 	createDOATeam
 } from '../../depthsOfAtlantis';
-import { trackLoot } from '../../lootTrack';
 import { setupParty } from '../../party';
 import type { MakePartyOptions } from '../../types';
 import type { DOAOptions } from '../../types/minions';
@@ -20,7 +19,6 @@ import { bankToStrShortNames } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import getOSItem from '../../util/getOSItem';
-import { updateBankSetting } from '../../util/updateBankSetting';
 
 export async function doaStartCommand(
 	user: MUser,
@@ -114,7 +112,7 @@ export async function doaStartCommand(
 
 	const totalCost = new Bank();
 
-	const costResult = await Promise.all(
+	await Promise.all(
 		users.map(async u => {
 			const { cost, sangCharges, voidStaffCharges, tumShadowCharges } = await calcDOAInput({
 				user: u,
@@ -163,18 +161,6 @@ export async function doaStartCommand(
 		})
 	);
 
-	await updateBankSetting('doa_cost', totalCost);
-	await trackLoot({
-		totalCost,
-		id: 'depths_of_atlantis',
-		type: 'Minigame',
-		changeType: 'cost',
-		users: costResult.map(i => ({
-			id: i.userID,
-			cost: i.effectiveCost,
-			duration: createdDOATeam.realDuration
-		}))
-	});
 	await addSubTaskToActivityTask<DOAOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),

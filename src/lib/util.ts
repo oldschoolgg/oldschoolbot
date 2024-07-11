@@ -6,7 +6,6 @@ import {
 	type CacheType,
 	type Collection,
 	type CollectorFilter,
-	type Guild,
 	type InteractionReplyOptions,
 	InteractionType,
 	type Message,
@@ -24,7 +23,6 @@ import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
-import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../config';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { ClueTiers } from './clues/clueTiers';
@@ -59,19 +57,6 @@ BigInt.prototype.toJSON = function () {
 
 export function inlineCodeblock(input: string) {
 	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
-}
-
-export function britishTime() {
-	const currentDate = new Date(Date.now() - Time.Hour * 10);
-	return currentDate;
-}
-
-export function isNightTime() {
-	const time = britishTime();
-	let hours = time.getHours();
-
-	if (!production) hours = 20;
-	return hours > 16 || hours < 5;
 }
 
 export function isWeekend() {
@@ -136,13 +121,6 @@ export function isTOBOrTOAActivity(data: any): data is TheatreOfBloodTaskOptions
 
 export function isNexActivity(data: any): data is NexTaskOptions {
 	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
-}
-
-export function getSupportGuild(): Guild | null {
-	if (!globalClient || Object.keys(globalClient).length === 0) return null;
-	const guild = globalClient.guilds.cache.get(SupportServer);
-	if (!guild) return null;
-	return guild;
 }
 
 export function calcCombatLevel(skills: Skills) {
@@ -550,10 +528,6 @@ export function getInteractionTypeName(type: InteractionType) {
 		[InteractionType.ApplicationCommandAutocomplete]: 'ApplicationCommandAutocomplete',
 		[InteractionType.ModalSubmit]: 'ModalSubmit'
 	}[type];
-}
-
-export function isModOrAdmin(user: MUser) {
-	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }
 
 export async function calcClueScores(user: MUser) {

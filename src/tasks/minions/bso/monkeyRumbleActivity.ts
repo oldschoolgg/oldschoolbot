@@ -6,7 +6,6 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MonkeyRumbleOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 const rewardTable = new LootTable().add('Monkey egg').add('Monkey dye').add('Big banana');
 const baseTable = new LootTable().tertiary(25, 'Monkey crate');
@@ -79,7 +78,6 @@ export const mrTask: MinionTask = {
 		}
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
-		updateBankSetting('mr_loot', loot);
 
 		const rumbleTokensPerHour = `${Math.round((tokens / (duration / Time.Minute)) * 60).toLocaleString()}`;
 		const fightsPerHour = `${Math.round((quantity / (duration / Time.Minute)) * 60).toLocaleString()}`;

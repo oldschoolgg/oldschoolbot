@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { production } from '../../config';
 import { DOANonUniqueTable } from '../../lib/bso/doa/doaLootTable';
 import { doaStartCommand } from '../../lib/bso/doa/doaStartCommand';
 import { doaMetamorphPets } from '../../lib/data/CollectionsExport';
@@ -233,32 +232,7 @@ export const raidCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'help',
 					description: 'Shows helpful information and stats about DOA.'
-				},
-				...(production
-					? []
-					: [
-							{
-								type: ApplicationCommandOptionType.Subcommand,
-								name: 'simulate',
-								description: 'Shows helpful information and stats about DOA.',
-								options: [
-									{
-										type: ApplicationCommandOptionType.Boolean,
-										name: 'challenge_mode',
-										description: 'Try if you dare.',
-										required: false
-									},
-									{
-										type: ApplicationCommandOptionType.Integer,
-										name: 'team_size',
-										description: 'Team size (1-5).',
-										required: false,
-										min_value: 1,
-										max_value: 5
-									}
-								]
-							} as any
-						])
+				}
 			]
 		}
 	],

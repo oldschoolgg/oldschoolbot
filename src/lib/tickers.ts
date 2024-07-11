@@ -1,9 +1,8 @@
 import { Time, randInt, shuffleArr } from 'e';
 
-import { production } from '../config';
 import { runTameTask } from '../tasks/tames/tameTasks';
 import { processPendingActivities } from './Task';
-import { PeakTier } from './constants';
+import { PeakTier, globalConfig } from './constants';
 
 import { logError } from './util/logError';
 
@@ -20,7 +19,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	{
 		name: 'minion_activities',
 		timer: null,
-		interval: production ? Time.Second * 5 : 500,
+		interval: globalConfig.isProduction ? Time.Second * 5 : 500,
 		cb: async () => {
 			await processPendingActivities();
 		}
@@ -75,7 +74,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 		cb: async () => {
 			const tameTasks = await prisma.tameActivity.findMany({
 				where: {
-					finish_date: production
+					finish_date: globalConfig.isProduction
 						? {
 								lt: new Date()
 							}

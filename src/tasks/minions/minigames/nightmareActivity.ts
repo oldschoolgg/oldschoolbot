@@ -2,10 +2,9 @@ import { percentChance } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
 import { BitField, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/constants';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../../lib/minions/functions';
-import announceLoot from '../../../lib/minions/functions/announceLoot';
 import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
@@ -72,29 +71,6 @@ export const nightmareTask: MinionTask = {
 
 		// Fix purple items on solo kills
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });
-
-		announceLoot({
-			user,
-			monsterID,
-			loot: itemsAdded,
-			notifyDrops: NightmareMonster.notifyDrops
-		});
-
-		await trackLoot({
-			totalLoot: itemsAdded,
-			id: monsterName,
-			type: 'Monster',
-			changeType: 'loot',
-			duration,
-			kc: quantity,
-			users: [
-				{
-					id: user.id,
-					duration,
-					loot: itemsAdded
-				}
-			]
-		});
 
 		if (!kc) {
 			handleTripFinish(

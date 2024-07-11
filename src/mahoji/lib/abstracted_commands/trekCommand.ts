@@ -2,13 +2,12 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectEntries, randInt, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import TrekShopItems, { TrekExperience } from '../../../lib/data/buyables/trekBuyables';
+import TrekShopItems from '../../../lib/data/buyables/trekBuyables';
 import { MorytaniaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { GearStat } from '../../../lib/gear/types';
 import { difficulties, rewardTokens, trekBankBoosts } from '../../../lib/minions/data/templeTrekking';
-import type { AddXpParams, GearRequirement } from '../../../lib/minions/types';
+import type { GearRequirement } from '../../../lib/minions/types';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { SkillsEnum } from '../../../lib/skilling/types';
 import type { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, readableStatName, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -174,50 +173,7 @@ export async function trekShop(
 	const outItems = new Bank();
 
 	const inItems = new Bank();
-	const outXP: AddXpParams[] = [
-		{
-			skillName: SkillsEnum.Agility,
-			amount: 0,
-			minimal: true,
-			source: 'TempleTrekking'
-		},
-		{
-			skillName: SkillsEnum.Thieving,
-			amount: 0,
-			minimal: true,
-			source: 'TempleTrekking'
-		},
-		{
-			skillName: SkillsEnum.Slayer,
-			amount: 0,
-			minimal: true,
-			source: 'TempleTrekking'
-		},
-		{
-			skillName: SkillsEnum.Firemaking,
-			amount: 0,
-			minimal: true,
-			source: 'TempleTrekking'
-		},
-		{
-			skillName: SkillsEnum.Fishing,
-			amount: 0,
-			minimal: true,
-			source: 'TempleTrekking'
-		},
-		{
-			skillName: SkillsEnum.Woodcutting,
-			amount: 0,
-			minimal: true,
-			source: 'TempleTrekking'
-		},
-		{
-			skillName: SkillsEnum.Mining,
-			amount: 0,
-			minimal: true,
-			source: 'TempleTrekking'
-		}
-	];
+
 	for (let i = 0; i < quantity; i++) {
 		let outputTotal = 0;
 		switch (difficulty) {
@@ -243,10 +199,6 @@ export async function trekShop(
 		} else if (specifiedItem.name === 'Ore') {
 			outItems.add('Coal', Math.floor(reduceNumByPercent(outputTotal, 34)));
 			outItems.add('Iron ore', Math.floor(reduceNumByPercent(outputTotal, 66)));
-		} else if (specifiedItem.name === 'Experience') {
-			const randXP = Math.floor(Math.random() * TrekExperience.length) + 1;
-
-			(outXP.find(item => item.skillName === TrekExperience[randXP]) || outXP[0]).amount += outputTotal;
 		} else {
 			outItems.add(specifiedItem.name, outputTotal);
 		}
@@ -269,8 +221,6 @@ export async function trekShop(
 	} else {
 		ret += 'XP. You received: ';
 	}
-
-	ret += (await Promise.all(outXP.filter(xp => xp.amount > 0).map(xp => user.addXP(xp)))).join(', ');
 
 	return `${ret}.`;
 }

@@ -22,10 +22,8 @@ import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
-import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
-import announceLoot from '../../lib/minions/functions/announceLoot';
 import type { KillableMonster } from '../../lib/minions/types';
 
 import { bones } from '../../lib/skilling/skills/prayer';
@@ -40,7 +38,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { trackClientBankStats, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 async function bonecrusherEffect(user: MUser, loot: Bank, duration: number, messages: string[]) {
 	if (!user.hasEquippedOrInBank(['Gorajan bonecrusher', 'Superior bonecrusher'], 'one')) return;
@@ -123,8 +121,6 @@ async function portableTannerEffect(user: MUser, loot: Bank, duration: number, m
 		}
 	}
 	loot.add(toAdd);
-	trackClientBankStats('portable_tanner_loot', toAdd);
-	userStatsBankUpdate(user.id, 'portable_tanner_bank', toAdd);
 	if (!triggered) return;
 	messages.push(`Portable Tanner turned the hides into leathers (${boostRes.messages})`);
 }
@@ -154,8 +150,6 @@ export async function clueUpgraderEffect(user: MUser, loot: Bank, messages: stri
 		duration: durationForCost
 	});
 	if (!boostRes.success) return false;
-	trackClientBankStats('clue_upgrader_loot', upgradedClues);
-	userStatsBankUpdate(user.id, 'clue_upgrader_bank', upgradedClues);
 	loot.add(upgradedClues);
 	assert(loot.has(removeBank));
 	loot.remove(removeBank);
@@ -276,36 +270,7 @@ export const monsterTask: MinionTask = {
 					messages.push(`Your ${calc.gearThatBroke} broke, turning into ${calc.gearToRefund} in your bank.`);
 				}
 
-				// Track items lost
-				await trackLoot({
-					totalCost: calc.lostItems,
-					id: monster.name,
-					type: 'Monster',
-					changeType: 'cost',
-					users: [
-						{
-							id: user.id,
-							cost: calc.lostItems
-						}
-					]
-				});
 				// Track loot (For duration)
-				await trackLoot({
-					totalLoot: new Bank(),
-					id: monster.name,
-					type: 'Monster',
-					changeType: 'loot',
-					duration,
-					kc: quantity,
-					users: [
-						{
-							id: user.id,
-							loot: new Bank(),
-							duration
-						}
-					]
-				});
-
 				messages.push(
 					`${
 						hasPrayerLevel && !protectItem
@@ -532,8 +497,6 @@ export const monsterTask: MinionTask = {
 			messages.push('**Double Loot!**');
 		}
 
-		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
-
 		if (newSuperiorCount && newSuperiorCount > 0) {
 			await userStatsUpdate(
 				user.id,
@@ -707,22 +670,6 @@ export const monsterTask: MinionTask = {
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
-		});
-
-		await trackLoot({
-			totalLoot: itemsAdded,
-			id: monster.name.toString(),
-			type: 'Monster',
-			changeType: 'loot',
-			kc: quantity,
-			duration,
-			users: [
-				{
-					id: user.id,
-					loot: itemsAdded,
-					duration
-				}
-			]
 		});
 
 		const image =

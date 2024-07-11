@@ -2,14 +2,13 @@ import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { SupportServer } from '../../../config';
 import { dailyResetTime } from '../../../lib/MUser';
 import { COINS_ID, Emoji } from '../../../lib/constants';
 import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend, roll } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../../mahojiSettings';
+import { userStatsUpdate } from '../../mahojiSettings';
 
 export async function isUsersDailyReady(
 	user: MUser
@@ -28,9 +27,6 @@ export async function isUsersDailyReady(
 }
 
 async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
-	const guild = globalClient.guilds.cache.get(SupportServer);
-	const member = await guild?.members.fetch(user.id).catch(() => null);
-
 	const loot = dailyRoll(3, triviaCorrect);
 
 	const bonuses = [];
@@ -38,11 +34,6 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 	if (isWeekend()) {
 		loot.bank[COINS_ID] *= 2;
 		bonuses.push(Emoji.MoneyBag);
-	}
-
-	if (member) {
-		loot.bank[COINS_ID] = Math.floor(loot.bank[COINS_ID] * 1.5);
-		bonuses.push(Emoji.OSBot);
 	}
 
 	if (user.user.minion_hasBought) {
@@ -92,9 +83,7 @@ async function reward(user: MUser, triviaCorrect: boolean): CommandResponse {
 			'\n<:skipper:755853421801766912> Skipper has negotiated with Diango and gotten you 50% extra GP from your daily!';
 	}
 
-	if (loot.bank[COINS_ID] > 0) {
-		updateClientGPTrackSetting('gp_daily', loot.bank[COINS_ID]);
-	} else {
+	if (!loot.bank[COINS_ID]) {
 		delete loot.bank[COINS_ID];
 	}
 

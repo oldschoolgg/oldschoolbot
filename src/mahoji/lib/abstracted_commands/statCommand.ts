@@ -18,8 +18,7 @@ import {
 	calculateAllFletchedItems,
 	calculateChargedItems,
 	calculateDartsFletchedFromScratch,
-	calculateTiarasMade,
-	calculateXPSources
+	calculateTiarasMade
 } from '../../../lib/leagues/stats';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { RandomEvents } from '../../../lib/randomEvents';
@@ -783,35 +782,6 @@ GROUP BY data->>'plantsName'`;
 		}
 	},
 	{
-		name: 'Personal TOB Cost',
-		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(new Bank(stats.tob_cost as ItemBank), 'Your TOB Cost');
-		}
-	},
-	{
-		name: 'Personal TOB Loot',
-		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			return makeResponseForBank(new Bank(stats.tob_loot as ItemBank), 'Your TOB Loot');
-		}
-	},
-	{
-		name: 'Gambling PNL',
-		run: async (_, stats) => {
-			const gpDice = toKMB(Number(stats.gp_dice));
-			const gpLuckyPick = toKMB(Number(stats.gp_luckypick));
-			const gpSlots = toKMB(Number(stats.gp_slots));
-
-			return {
-				content: `**Dicing:** ${gpDice}
-**Lucky Pick:** ${gpLuckyPick}
-**Slots:** ${gpSlots}`
-			};
-		},
-		perkTierNeeded: PerkTier.Four
-	},
-	{
 		name: 'Personal Slayer Tasks',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
@@ -1387,34 +1357,6 @@ ${unluckiest
 		perkTierNeeded: null,
 		run: async user => {
 			return makeResponseForBank((await calculateChargedItems(user)).bankOfChargedItems, 'Charged Items');
-		}
-	},
-	{
-		name: 'XP Gain Sources',
-		perkTierNeeded: null,
-		run: async user => {
-			const result = await calculateXPSources(user);
-			return {
-				content: `You have gained....
-
-${Object.entries(result)
-	.map(i => `${i[0]}: ${i[1].toLocaleString()} XP`)
-	.join('\n')}`
-			};
-		}
-	},
-	{
-		name: 'Stealing/Thieving Cost',
-		perkTierNeeded: null,
-		run: async (_, userStats) => {
-			return makeResponseForBank(new Bank(userStats.steal_cost_bank as ItemBank), 'Your Stealing/Thieving Cost');
-		}
-	},
-	{
-		name: 'Stealing/Thieving Loot',
-		perkTierNeeded: null,
-		run: async (_, userStats) => {
-			return makeResponseForBank(new Bank(userStats.steal_loot_bank as ItemBank), 'Your Stealing/Thieving Loot');
 		}
 	},
 	{

@@ -1,9 +1,8 @@
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { bulkUpdateCommands } from '@oldschoolgg/toolkit';
-import { DEV_SERVER_ID, production } from '../../config';
 import { syncBlacklists } from '../../lib/blacklists';
-import { Channel, DISABLED_COMMANDS, META_CONSTANTS, globalConfig } from '../../lib/constants';
+import { DISABLED_COMMANDS, globalConfig } from '../../lib/constants';
 import { initCrons } from '../../lib/crons';
 import { syncDoubleLoot } from '../../lib/doubleLoot';
 
@@ -11,8 +10,6 @@ import { initTickers } from '../../lib/tickers';
 import { runTimedLoggedFn } from '../../lib/util';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { syncSlayerMaskLeaderboardCache } from '../../lib/util/slayerMaskLeaderboard';
-import { sendToChannelID } from '../../lib/util/webhook';
-import { cacheUsernames } from '../commands/leaderboard';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
 
 export async function syncCustomPrices() {
@@ -23,7 +20,9 @@ export async function syncCustomPrices() {
 }
 
 export async function onStartup() {
-	globalClient.application.commands.fetch({ guildId: production ? undefined : DEV_SERVER_ID });
+	globalClient.application.commands.fetch({
+		guildId: globalConfig.isProduction ? undefined : globalConfig.mainServerID
+	});
 
 	// Sync disabled commands
 	const disabledCommands = await prisma.clientStorage.upsert({
@@ -46,30 +45,19 @@ export async function onStartup() {
 	// Sync blacklists
 	await syncBlacklists();
 
-	if (!production) {
+	if (!globalConfig.isProduction) {
 		console.log('Syncing commands locally...');
 		await bulkUpdateCommands({
 			client: globalClient.mahojiClient,
 			commands: Array.from(globalClient.mahojiClient.commands.values()),
-			guildID: DEV_SERVER_ID
+			guildID: globalConfig.mainServerID
 		});
 	}
 
 	await syncDoubleLoot();
 	runTimedLoggedFn('Syncing prices', syncCustomPrices);
-
-	runTimedLoggedFn('Cache Usernames', cacheUsernames);
-
 	initCrons();
 	initTickers();
 
 	syncSlayerMaskLeaderboardCache();
-
-	if (production) {
-		sendToChannelID(Channel.GeneralChannel, {
-			content: `I have just turned on!
-
-${META_CONSTANTS.RENDERED_STR}`
-		}).catch(console.error);
-	}
 }

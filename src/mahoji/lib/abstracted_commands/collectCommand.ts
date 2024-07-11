@@ -10,7 +10,6 @@ import { formatDuration, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { getPOH } from './pohCommand';
 
 interface Collectable {
@@ -253,8 +252,6 @@ export async function collectCommand(
 			return `You don't have the items needed for this trip, you need: ${cost}.`;
 		}
 		await transactItems({ userID: user.id, itemsToRemove: cost });
-
-		await updateBankSetting('collecting_cost', cost);
 	}
 
 	await addSubTaskToActivityTask<CollectingOptions>({

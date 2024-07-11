@@ -5,7 +5,7 @@ import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { checkUserCanUseDegradeableItem, degradeItem, degradeablePvmBoostItems } from '../../../lib/degradeableItems';
 import type { GearStats } from '../../../lib/gear';
-import { trackLoot } from '../../../lib/lootTrack';
+
 import { NAXXUS_HP, Naxxus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { Gear } from '../../../lib/structures/Gear';
 import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
@@ -13,7 +13,6 @@ import { formatDuration, isWeekend } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { hasMonsterRequirements } from '../../mahojiSettings';
 
 const bisMageGear = new Gear({
@@ -233,19 +232,6 @@ export async function naxxusCommand(user: MUser, channelID: string, quantity: nu
 
 	await user.removeItemsFromBank(foodBank);
 
-	await trackLoot({
-		changeType: 'cost',
-		totalCost: foodBank,
-		id: Naxxus.name,
-		type: 'Monster',
-		users: [
-			{
-				id: user.id,
-				cost: foodBank
-			}
-		]
-	});
-
 	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
 		channelID: channelID.toString(),
@@ -253,8 +239,6 @@ export async function naxxusCommand(user: MUser, channelID: string, quantity: nu
 		duration,
 		type: 'Naxxus'
 	});
-
-	updateBankSetting('naxxus_cost', foodBank);
 
 	const embed = new EmbedBuilder()
 		.setDescription(

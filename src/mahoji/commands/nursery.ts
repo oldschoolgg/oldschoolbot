@@ -5,7 +5,6 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { randArrItem, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { production } from '../../config';
 import { Events } from '../../lib/constants';
 
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -13,7 +12,6 @@ import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '../../li
 import { formatDuration, gaussianRandom, roll } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import type { OSBMahojiCommand } from '../lib/util';
 
 function makeTameNickname(species: Species) {
@@ -92,7 +90,7 @@ async function view(user: MUser) {
 		diff += specie.hatchTime / 2;
 	}
 	const timeRemaining = Math.max(0, specie.hatchTime - diff);
-	if (diff >= specie.hatchTime || !production) {
+	if (diff >= specie.hatchTime) {
 		const newNursery: NonNullable<Nursery> = {
 			egg: null,
 			eggsHatched: nursery.eggsHatched + 1,
@@ -133,7 +131,6 @@ async function fuelCommand(interaction: ChatInputCommandInteraction, user: MUser
 		`Are you sure you want to use ${cost} to fuel your nursery? You need to provide fuel once per egg.`
 	);
 	await user.removeItemsFromBank(cost);
-	updateBankSetting('construction_cost_bank', cost);
 	const newNursery: NonNullable<Nursery> = {
 		...nursery,
 		hasFuel: true
@@ -157,7 +154,6 @@ async function buildCommand(user: MUser) {
 		return `You need ${cost} to build a nursery.`;
 	}
 	await user.removeItemsFromBank(cost);
-	updateBankSetting('construction_cost_bank', cost);
 	const newNursery: Nursery = {
 		egg: null,
 		eggsHatched: 0,
