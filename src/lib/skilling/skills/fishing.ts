@@ -9,7 +9,7 @@ const fishes: Fish[] = [
 		xp: 10,
 		id: itemID('Raw shrimps'),
 		name: 'Shrimps',
-		petChance: 435_165,,
+		petChance: 435_165,
 		clueScrollChance: 870_330,
 		chance1:  0.1373,
 		chance99: 1.0000,
