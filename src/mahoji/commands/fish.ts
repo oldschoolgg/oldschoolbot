@@ -59,6 +59,7 @@ export const fishCommand: OSBMahojiCommand = {
 			description: 'Set this to true to use spirit flakes. (default false, optional).',
 			required: false,
 			default: false
+		}
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const user = await mUserFetch(userID);
@@ -99,7 +100,7 @@ export const fishCommand: OSBMahojiCommand = {
 		}
 
 		const boosts = [];
-		if (fish.name === 'Tuna' || fish.name === 'Swordfish || fish.name === 'Shark' || fish.name === 'Tuna/Swordfish') {
+		if (fish.name === 'Tuna' || fish.name === 'Swordfish' || fish.name === 'Shark' || fish.name === 'Tuna/Swordfish') {
 			if (user.hasEquipped('Crystal harpoon')) {
 				boosts.push('35% for Crystal harpoon');
 			} else if (user.hasEquipped('Dragon harpoon')) {
