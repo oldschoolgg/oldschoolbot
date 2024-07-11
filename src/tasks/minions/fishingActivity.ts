@@ -245,7 +245,7 @@ export const fishingTask: MinionTask = {
 		// roll for the 2nd fish only on the ticks that the 1st one wasn't caught
 		if (numFish >= 2) {
 			let chance2 = fish2.maxChance - (99-fishLvl)*(fish2.maxChance-fish2.minChance)/(99-fish2.level);
-			catches2, lootAmount2 = rollCatches(tripTicks, chance2*harpoonBoost)];
+			catches2, lootAmount2 = rollCatches(tripTicks, chance2*harpoonBoost);
 			xpReceived += fish2.xp*catches2;
 			tripTicks -= ticksPerRoll * catches2;
 		}
@@ -259,7 +259,7 @@ export const fishingTask: MinionTask = {
 		if (fish.name === 'Minnow'){
 			let sum = 0;
 			for (let i = 0; i < lootAmount1; i++) {
-				sum += Math.floor(Math.random() * (baseMinnow[1]) - baseMinnow[0] + 1)) + baseMinnow[0];
+				sum += Math.floor(Math.random() * (baseMinnow[1] - baseMinnow[0] + 1)) + baseMinnow[0];
 			}
 		} else if (fish.name === 'Karambwanji'){
 			lootAmount1 *= baseKarambwanji;
