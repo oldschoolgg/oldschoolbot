@@ -151,7 +151,7 @@ export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	fishID: number;
 	minutes: number;
 	powerfish: boolean;
-	spirit_flakes: boolean;
+	flakesQuantity?: number;
 	iQty?: number;
 }
 
