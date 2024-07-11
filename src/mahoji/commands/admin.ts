@@ -424,11 +424,6 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'debug_patreon',
-			description: 'Debug patreon.'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'sync_commands',
 			description: 'Sync commands',
 			options: []
@@ -494,11 +489,6 @@ export const adminCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'sync_roles',
 			description: 'Sync roles'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'sync_patreon',
-			description: 'Sync patreon'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -640,11 +630,6 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 			]
 		},
-		// {
-		// 	type: ApplicationCommandOptionType.Subcommand,
-		// 	name: 'wipe_bingo_temp_cls',
-		// 	description: 'Wipe all temp cls of bingo users'
-		// },
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'give_items',
@@ -678,14 +663,12 @@ export const adminCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		reboot?: {};
 		shut_down?: {};
-		debug_patreon?: {};
 		sync_commands?: {};
 		item_stats?: { item: string };
 		sync_blacklist?: {};
 		loot_track?: { name: string };
 		cancel_task?: { user: MahojiUserOption };
 		sync_roles?: {};
-		sync_patreon?: {};
 		badges?: { user: MahojiUserOption; add?: string; remove?: string };
 		bypass_age?: { user: MahojiUserOption };
 		command?: { enable?: string; disable?: string };
@@ -693,7 +676,6 @@ export const adminCommand: OSBMahojiCommand = {
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
 		ltc?: { item?: string };
 		view?: { thing: string };
-		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string; reason?: string };
 	}>) => {
 		await deferInteraction(interaction);
