@@ -237,7 +237,7 @@ const ActivityTaskOptionsSchema = z.object({
 
 async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
-	debugLog(`Attemping to complete activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
+	debugLog(`Attemping to complete activity ID[${activity.id}]`);
 
 	if (_activity.completed) {
 		throw new Error('Tried to complete an already completed task.');
@@ -263,7 +263,7 @@ async function completeActivity(_activity: Activity) {
 	} finally {
 		modifyBusyCounter(activity.userID, -1);
 		minionActivityCacheDelete(activity.userID);
-		debugLog(`Finished completing activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
+		debugLog(`Finished completing activity ID[${activity.id}]`);
 	}
 }
 
