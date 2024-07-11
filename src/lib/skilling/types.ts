@@ -116,13 +116,17 @@ export interface Fish {
 	id: number;
 	name: string;
 	petChance?: number;
-	timePerFish: number;
 	bait?: number;
 	qpRequired?: number;
 	bigFish?: number;
 	bigFishRate?: number;
 	clueScrollChance?: number;
 	alias?: string[];
+	chance1: number;
+	chance99: number;
+	lostTicks: number;
+	bankingTime: number;
+	ticksPerRoll: number;
 }
 
 export interface Course {
