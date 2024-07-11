@@ -17,7 +17,7 @@ import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmatio
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
-import { itemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
+import { itemOption, ownedItemOption, tradeableItemArr } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 
 export type GEListingWithTransactions = GEListing & {
@@ -130,19 +130,10 @@ export const geCommand: OSBMahojiCommand = {
 			description: 'Sell something on the grand exchange.',
 			options: [
 				{
+					...ownedItemOption(item => Boolean(item.tradeable_on_ge)),
 					name: 'item',
-					type: ApplicationCommandOptionType.String,
 					description: 'The item you want to sell.',
-					required: true,
-					autocomplete: async (value, { id }) => {
-						const user = await mUserFetch(id);
-
-						return user.bank
-							.items()
-							.filter(i => i[0].tradeable_on_ge)
-							.filter(i => (!value ? true : i[0].name.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name }));
-					}
+					required: true
 				},
 				quantityOption,
 				priceOption
