@@ -164,7 +164,6 @@ class GrandExchangeSingleton {
 		try {
 			await this.fetchOwnedBank();
 			await this.extensiveVerification();
-			await this.checkGECanFullFilAllListings();
 		} catch (err: any) {
 			await this.lockGE(err.message);
 		} finally {
