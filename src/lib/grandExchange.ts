@@ -1,3 +1,4 @@
+import { Stopwatch } from '@oldschoolgg/toolkit';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { GEListingType } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
@@ -6,7 +7,6 @@ import { LRUCache } from 'lru-cache';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
-import { Stopwatch } from '@oldschoolgg/toolkit';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
@@ -769,13 +769,13 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 	async extensiveVerification() {
 		const stopwatch = new Stopwatch();
-		stopwatch.check("extensiveVerification start");
+		stopwatch.check('extensiveVerification start');
 		await Promise.all([
 			prisma.gETransaction.findMany().then(txs => txs.map(tx => sanityCheckTransaction(tx))),
 			prisma.gEListing.findMany().then(listings => listings.map(listing => sanityCheckListing(listing))),
 			this.checkGECanFullFilAllListings()
 		]);
-		stopwatch.check("extensiveVerification finish");
+		stopwatch.check('extensiveVerification finish');
 		return true;
 	}
 
