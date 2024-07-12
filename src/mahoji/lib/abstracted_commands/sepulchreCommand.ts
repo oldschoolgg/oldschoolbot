@@ -83,9 +83,9 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletch?: 
 			}
 		}
 
-		let timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6 + Time.Second / 4;
+		let timeToFletchSingleItem = (fletchable.tickRate * Time.Second * 0.6 + Time.Second / 4) * 0.318;
 		if (fletchable.tickRate < 1) {
-			timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6;
+			timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6 * 0.24;
 		}
 
 		fletchingQuantity = Math.floor(tripLength / timeToFletchSingleItem);

@@ -4,6 +4,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { LMSBuyables } from '../../lib/data/CollectionsExport';
 import TrekShopItems from '../../lib/data/buyables/trekBuyables';
 import Darts from '../../lib/skilling/skills/fletching/fletchables/darts';
+import type { Fletchable } from '../../lib/skilling/types';
 import {
 	agilityArenaBuyCommand,
 	agilityArenaBuyables,
@@ -87,7 +88,6 @@ import {
 	nightmareZoneImbueCommand,
 	nightmareZoneImbueables
 } from './../lib/abstracted_commands/nightmareZoneCommand';
-import type { Fletchable } from '../../lib/skilling/types';
 
 export const minigamesCommand: OSBMahojiCommand = {
 	name: 'minigames',
@@ -1084,7 +1084,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			start?: { difficulty: string; quantity?: number };
 			buy?: { reward: string; difficulty: string; quantity?: number };
 		};
-		sepulchre?: { start?: { fletch?: Fletchable["name"] } };
+		sepulchre?: { start?: { fletch?: Fletchable['name'] } };
 		gauntlet?: { start?: { corrupted?: boolean } };
 		mage_training_arena?: {
 			start?: {};
