@@ -52,6 +52,23 @@
 		"subOptions": []
 	},
 	{
+		"name": "bsominigames",
+		"desc": "Send your minion to do various bso minigames.",
+		"subOptions": [
+			"baxtorian_bathhouses",
+			"monkey_rumble",
+			"ourania_delivery_service",
+			"fishing_contest",
+			"fist_of_guthix",
+			"stealing_creation",
+			"tinkering_workshop",
+			"balthazars_big_bonanza",
+			"divine_dominion",
+			"guthixian_cache",
+			"turaels_trials"
+		]
+	},
+	{
 		"name": "build",
 		"desc": "Sends your minion to train Construction by building things.",
 		"examples": ["/build name:Crude chair"],
@@ -102,6 +119,11 @@
 		"subOptions": []
 	},
 	{
+		"name": "completion",
+		"desc": "Completionist tasks.",
+		"subOptions": ["view_all_tasks", "check"]
+	},
+	{
 		"name": "config",
 		"desc": "Commands configuring settings and options.",
 		"subOptions": ["server", "user"]
@@ -130,9 +152,24 @@
 		"subOptions": []
 	},
 	{
+		"name": "dg",
+		"desc": "The Dungeoneering skill.",
+		"subOptions": ["start", "stats", "buy"]
+	},
+	{
+		"name": "divination",
+		"desc": "The divination skill.",
+		"subOptions": ["harvest_memories", "portent", "charge_portent", "toggle_portent"]
+	},
+	{
 		"name": "drop",
 		"desc": "Drop items from your bank.",
 		"examples": ["/drop items:10 trout, 5 coal"],
+		"subOptions": []
+	},
+	{
+		"name": "droprate",
+		"desc": "Check the droprate of something.",
 		"subOptions": []
 	},
 	{
@@ -226,6 +263,16 @@
 		"subOptions": []
 	},
 	{
+		"name": "ic",
+		"desc": "Hand in random items for rewards.",
+		"subOptions": ["info", "send", "skip"]
+	},
+	{
+		"name": "invention",
+		"desc": "The invention skill.",
+		"subOptions": ["disassemble", "research", "invent", "tools", "details", "materials", "group"]
+	},
+	{
 		"name": "invite",
 		"desc": "Shows the invite link for the bot.",
 		"subOptions": []
@@ -240,6 +287,12 @@
 		"name": "kc",
 		"desc": "See your OSRS kc for a monster/boss.",
 		"examples": ["/kc name:General Graardor"],
+		"subOptions": []
+	},
+	{
+		"name": "kibble",
+		"desc": "Make kibble from herbs and crops.",
+		"examples": ["/kibble name:Simple kibble quantity:100"],
 		"subOptions": []
 	},
 	{
@@ -292,10 +345,9 @@
 		"subOptions": ["view", "reset"]
 	},
 	{
-		"name": "lvl",
-		"desc": "See a level in your OSRS stats.",
-		"examples": ["/lvl rsn:Magnaboy skill:Mining"],
-		"subOptions": []
+		"name": "lottery",
+		"desc": "Win big!",
+		"subOptions": ["buy_tickets", "deposit_items", "info", "prices"]
 	},
 	{
 		"name": "m",
@@ -306,6 +358,11 @@
 		"name": "mass",
 		"desc": "Arrange to mass bosses, killing them as a group.",
 		"examples": ["/mass name:General graardor"],
+		"subOptions": []
+	},
+	{
+		"name": "megaduck",
+		"desc": "Mega duck!.",
 		"subOptions": []
 	},
 	{
@@ -379,6 +436,11 @@
 		"subOptions": []
 	},
 	{
+		"name": "nursery",
+		"desc": "Manage your tame nursery.",
+		"subOptions": ["build", "fuel", "add_egg", "check"]
+	},
+	{
 		"name": "offer",
 		"desc": "Offer bones or bird eggs.",
 		"examples": ["/offer name:Dragon bones"],
@@ -387,6 +449,11 @@
 	{
 		"name": "open",
 		"desc": "Open an item (caskets, keys, boxes, etc).",
+		"subOptions": []
+	},
+	{
+		"name": "paint",
+		"desc": "Paint an item.",
 		"subOptions": []
 	},
 	{
@@ -419,6 +486,11 @@
 		"name": "raid",
 		"desc": "Send your minion to do raids - CoX or ToB.",
 		"subOptions": ["cox", "tob", "toa", "doa"]
+	},
+	{
+		"name": "rates",
+		"desc": "Check rates of various skills/activities.",
+		"subOptions": ["minigames", "tames", "xphr", "monster", "misc"]
 	},
 	{
 		"name": "redeem",
@@ -483,6 +555,34 @@
 		"name": "steal",
 		"desc": "Sends your minion to steal to train Thieving.",
 		"examples": ["/steal name:Man"],
+		"subOptions": []
+	},
+	{
+		"name": "tames",
+		"desc": "Manage your tames.",
+		"examples": ["/tames select 1"],
+		"subOptions": [
+			"status",
+			"list",
+			"set_name",
+			"cancel",
+			"merge",
+			"feed",
+			"kill",
+			"collect",
+			"select",
+			"view",
+			"equip",
+			"unequip",
+			"cast",
+			"activity",
+			"clue",
+			"set_custom_image"
+		]
+	},
+	{
+		"name": "testershop",
+		"desc": "Buy things using your testing points.",
 		"subOptions": []
 	},
 	{

@@ -47,7 +47,7 @@ test('Killing Vlad', async () => {
 	});
 	const data = convertStoredActivityToFlatActivity(_activity!) as MonsterActivityTaskOptions;
 
-	const quantityKilled = data.quantity;
+	const quantityKilled = data.q;
 	expect(user.bank.amount('Shark')).toBeLessThan(1_000_000);
 	expect(user.bank.amount('Vial of blood')).toEqual(1000 - quantityKilled);
 	expect(user.bank.amount('Silver stake')).toEqual(1000 - quantityKilled);
