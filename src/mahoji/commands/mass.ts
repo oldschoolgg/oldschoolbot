@@ -156,10 +156,10 @@ export const massCommand: OSBMahojiCommand = {
 		}
 
 		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>({
-			monsterID: monster.id,
+			mi: monster.id,
 			userID: user.id,
 			channelID: channelID.toString(),
-			quantity,
+			q: quantity,
 			duration,
 			type: 'GroupMonsterKilling',
 			leader: user.id,

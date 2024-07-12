@@ -317,9 +317,9 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'God Favour',
 		fn: async ({ data, user }) => {
-			if (!('monsterID' in data)) return;
+			if (!('mid' in data)) return;
 			if (data.type !== 'MonsterKilling') return;
-			const favourableGod = gods.find(g => g.friendlyMonsters.includes(data.monsterID as number));
+			const favourableGod = gods.find(g => g.friendlyMonsters.includes(data.mi as number));
 			if (!favourableGod) return;
 			const unfavorableGods = gods.filter(g => g.name !== favourableGod.name);
 			await user.addToGodFavour(

@@ -1,4 +1,4 @@
-import { PerkTier, getInterval } from '@oldschoolgg/toolkit';
+import { PerkTier, Stopwatch, getInterval } from '@oldschoolgg/toolkit';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { GEListingType } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
@@ -8,7 +8,6 @@ import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
-import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
 import { BitField, ONE_TRILLION, globalConfig } from './constants';
 import { isCustomItem } from './customItems/util';
@@ -16,6 +15,7 @@ import { marketPricemap } from './marketPrices';
 import type { RobochimpUser } from './roboChimp';
 import { roboChimpUserFetch } from './roboChimp';
 
+import { ADMIN_IDS, OWNER_IDS } from '../config';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
 import { assert, generateGrandExchangeID, isGEUntradeable, itemNameFromID, makeComponents, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
@@ -166,7 +166,6 @@ class GrandExchangeSingleton {
 		try {
 			await this.fetchOwnedBank();
 			await this.extensiveVerification();
-			await this.checkGECanFullFilAllListings();
 		} catch (err: any) {
 			await this.lockGE(err.message);
 		} finally {
@@ -235,7 +234,7 @@ class GrandExchangeSingleton {
 			content: `The Grand Exchange has encountered an error and has been locked. Reason: ${reason}. ${idsToNotify
 				.map(i => userMention(i))
 				.join(', ')}`,
-			allowedMentions: production ? { users: idsToNotify } : undefined
+			allowedMentions: globalConfig.isProduction ? { users: idsToNotify } : undefined
 		}).catch(noOp);
 		await mahojiClientSettingsUpdate({
 			grand_exchange_is_locked: true
@@ -778,12 +777,14 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	}
 
 	async extensiveVerification() {
+		const stopwatch = new Stopwatch();
+		stopwatch.check('extensiveVerification start');
 		await Promise.all([
 			prisma.gETransaction.findMany().then(txs => txs.map(tx => sanityCheckTransaction(tx))),
 			prisma.gEListing.findMany().then(listings => listings.map(listing => sanityCheckListing(listing))),
 			this.checkGECanFullFilAllListings()
 		]);
-		debugLog('Validated GE and found no issues.');
+		stopwatch.check('extensiveVerification finish');
 		return true;
 	}
 
@@ -915,7 +916,7 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	}
 
 	async totalReset() {
-		if (production) throw new Error("You can't reset the GE in production.");
+		if (globalConfig.isProduction) throw new Error("You can't reset the GE in production.");
 		await mahojiClientSettingsUpdate({
 			grand_exchange_is_locked: false,
 			grand_exchange_tax_bank: 0,

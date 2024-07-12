@@ -378,10 +378,10 @@ ${reqs.unmetRequirements.map(str => `- ${str}`).join('\n')}`;
 		duration += (randomAddedDuration * duration) / 100;
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
-			clueID: clueTier.id,
+			ci: clueTier.id,
 			userID: user.id,
 			channelID: channelID.toString(),
-			quantity,
+			q: quantity,
 			duration,
 			type: 'ClueCompletion'
 		});

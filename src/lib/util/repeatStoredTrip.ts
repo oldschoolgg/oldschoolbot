@@ -68,6 +68,7 @@ import type {
 	TiaraRunecraftActivityTaskOptions,
 	TinkeringWorkshopOptions,
 	TuraelsTrialsOptions,
+	UndoneChangesMonsterOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../types/minions';
@@ -365,7 +366,7 @@ export const tripHandlers = {
 	[activity_type_enum.GroupMonsterKilling]: {
 		commandName: 'mass',
 		args: (data: GroupMonsterActivityTaskOptions) => ({
-			monster: autocompleteMonsters.find(i => i.id === data.monsterID)?.name ?? data.monsterID.toString()
+			monster: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi.toString()
 		})
 	},
 	[activity_type_enum.Herblore]: {
@@ -437,10 +438,10 @@ export const tripHandlers = {
 			let method: PvMMethod = 'none';
 			if (data.usingCannon) method = 'cannon';
 			if (data.chinning) (method as string) = 'chinning';
-			else if (data.burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
-			else if (data.burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
+			else if (data.bob === SlayerActivityConstants.IceBarrage) method = 'barrage';
+			else if (data.bob === SlayerActivityConstants.IceBurst) method = 'burst';
 			return {
-				name: autocompleteMonsters.find(i => i.id === data.monsterID)?.name ?? data.monsterID.toString(),
+				name: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi.toString(),
 				quantity: data.iQty,
 				method,
 				wilderness: data.isInWilderness
@@ -601,7 +602,7 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.VasaMagus]: {
 		commandName: 'k',
-		args: (data: MonsterActivityTaskOptions) => ({
+		args: (data: UndoneChangesMonsterOptions) => ({
 			name: 'vasa',
 			quantity: data.quantity
 		})
@@ -697,7 +698,7 @@ export const tripHandlers = {
 	},
 	[activity_type_enum.ClueCompletion]: {
 		commandName: 'clue',
-		args: (data: ClueActivityTaskOptions) => ({ tier: data.clueID, quantity: data.quantity })
+		args: (data: ClueActivityTaskOptions) => ({ tier: data.ci, quantity: data.q })
 	},
 	[activity_type_enum.FistOfGuthix]: {
 		commandName: 'bsominigames',

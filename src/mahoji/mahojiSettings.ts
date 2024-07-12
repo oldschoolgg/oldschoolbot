@@ -1,4 +1,4 @@
-import { evalMathExpression } from '@oldschoolgg/toolkit/dist/util/expressionParser';
+import { evalMathExpression } from '@oldschoolgg/toolkit';
 import type { Prisma, User, UserStats } from '@prisma/client';
 import { isFunction, objectEntries, round } from 'e';
 import { Bank } from 'oldschooljs';

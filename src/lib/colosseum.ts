@@ -1,5 +1,6 @@
 import { exponentialPercentScale, formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { UserError } from '@oldschoolgg/toolkit';
+import { GeneralBank, type GeneralBankType } from '@oldschoolgg/toolkit';
 import {
 	Time,
 	calcPercentOfNum,
@@ -22,8 +23,6 @@ import type { GearSetupType } from './gear/types';
 import { trackLoot } from './lootTrack';
 import { QuestID } from './minions/data/quests';
 import { ChargeBank } from './structures/Bank';
-import type { GeneralBankType } from './structures/GeneralBank';
-import { GeneralBank } from './structures/GeneralBank';
 import type { ItemBank, Skills } from './types';
 import type { ColoTaskOptions } from './types/minions';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';

@@ -1,17 +1,9 @@
 import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import {
-	type BaseMessageOptions,
-	ButtonBuilder,
-	ButtonStyle,
-	EmbedBuilder,
-	type Message,
-	bold,
-	time
-} from 'discord.js';
+import { UserError } from '@oldschoolgg/toolkit';
+import type { BaseMessageOptions, Message } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, EmbedBuilder, bold, time } from 'discord.js';
 import { Time, isFunction } from 'e';
 import { Items } from 'oldschooljs';
-import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
@@ -22,6 +14,7 @@ import { BitField, Emoji, globalConfig, secretItems } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
 
+import { PATRON_DOUBLE_LOOT_COOLDOWN } from '../mahoji/commands/tools';
 import type { ItemBank } from './types';
 import { formatDuration, makeComponents, toKMB } from './util';
 import { logError } from './util/logError';

@@ -1,6 +1,6 @@
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { CommandOption } from '@oldschoolgg/toolkit';
-import { evalMathExpression } from '@oldschoolgg/toolkit/dist/util/expressionParser';
+import { evalMathExpression } from '@oldschoolgg/toolkit';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { ApplicationCommandOptionType } from 'discord.js';
 import { sumArr, uniqueArr } from 'e';

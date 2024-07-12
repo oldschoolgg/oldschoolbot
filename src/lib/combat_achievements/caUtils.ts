@@ -4,7 +4,7 @@ import type { CombatAchievement } from './combatAchievements';
 
 export function isCertainMonsterTrip(monsterID: number) {
 	return (data: ActivityTaskData) =>
-		data.type === 'MonsterKilling' && (data as MonsterActivityTaskOptions).monsterID === monsterID;
+		data.type === 'MonsterKilling' && (data as MonsterActivityTaskOptions).mi === monsterID;
 }
 
 interface CombatAchievementGroup {
