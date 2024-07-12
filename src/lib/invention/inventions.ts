@@ -1,19 +1,19 @@
 import { userMention } from '@discordjs/builders';
-import { Prisma } from '@prisma/client';
-import { clamp, reduceNumByPercent, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { Prisma } from '@prisma/client';
+import { Time, clamp, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
-import { ClueTier, ClueTiers } from '../clues/clueTiers';
-import { ItemBank } from '../types';
+import type { IMaterialBank, MaterialType } from '.';
+import { type ClueTier, ClueTiers } from '../clues/clueTiers';
+import type { ItemBank } from '../types';
 import { formatDuration, stringMatches, toKMB } from '../util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../util/clientSettings';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 import { minionIsBusy } from '../util/minionIsBusy';
 import resolveItems from '../util/resolveItems';
-import { IMaterialBank, MaterialType } from '.';
 import { MaterialBank } from './MaterialBank';
 
 const InventionFlags = ['equipped', 'bank'] as const;
@@ -118,15 +118,15 @@ export const inventionBoosts = {
 	},
 	clueUpgrader: {
 		chance: (clue: ClueTier) => {
-			let index = ClueTiers.indexOf(clue);
-			let chanceOfUpgradePercent = 45 - (index + 1) * 5;
+			const index = ClueTiers.indexOf(clue);
+			const chanceOfUpgradePercent = 45 - (index + 1) * 5;
 			return chanceOfUpgradePercent;
 		},
 		pickPocketChance: (clue: ClueTier) => {
 			return Math.ceil(inventionBoosts.clueUpgrader.chance(clue) / 5);
 		},
 		durationCalc: (clue: ClueTier) => {
-			let index = ClueTiers.indexOf(clue);
+			const index = ClueTiers.indexOf(clue);
 			return (index + 1) * (Time.Minute * 3);
 		}
 	},
@@ -310,8 +310,8 @@ export const Inventions: readonly Invention[] = [
 		extraDescription: () => {
 			let str = '';
 			for (const clue of ClueTiers.slice(0, 5)) {
-				let index = ClueTiers.indexOf(clue);
-				let next = ClueTiers[index + 1];
+				const index = ClueTiers.indexOf(clue);
+				const next = ClueTiers[index + 1];
 				str += `**${clue.name}:** ${inventionBoosts.clueUpgrader.chance(clue)}% chance to upgrade into ${
 					next.name
 				}, costs ${formatDuration(inventionBoosts.clueUpgrader.durationCalc(clue))}\n`;
@@ -526,8 +526,8 @@ export const materialBoosts: Map<MaterialType, { outputMulitplier?: number; redu
 ]);
 
 export function inventingCost(invention: Invention) {
-	let baseMultiplierPerType = 7;
-	let cost = new MaterialBank();
+	const baseMultiplierPerType = 7;
+	const cost = new MaterialBank();
 	for (const { type, quantity } of invention.materialTypeBank.values()) {
 		cost.add(type, quantity * 10 * baseMultiplierPerType);
 	}
@@ -681,7 +681,7 @@ export async function inventionItemBoost({
 		};
 	}
 
-	let messages: string[] = [`Removed ${materialCost}`];
+	const messages: string[] = [`Removed ${materialCost}`];
 	if (user.hasEquippedOrInBank('Invention master cape')) {
 		materialCost.mutReduceAllValuesByPercent(inventionBoosts.inventionMasterCape.materialCostReductionPercent);
 		messages.shift();

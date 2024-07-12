@@ -1,10 +1,9 @@
-import { UserStats } from '@prisma/client';
+import type { UserStats } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';
-import { ClueBank } from '../minions/types';
-import { prisma } from '../settings/prisma';
-import { ItemBank } from '../types';
+import type { ClueBank } from '../minions/types';
+import type { ItemBank } from '../types';
 import { getToaKCs } from '../util/smallUtils';
 
 export class MUserStats {
@@ -44,7 +43,7 @@ export class MUserStats {
 		for (const tier of ClueTiers) clueCounts[tier.name] = 0;
 
 		for (const [key, val] of Object.entries(this.userStats.openable_scores as ItemBank)) {
-			const clueTier = ClueTiers.find(i => i.id === parseInt(key));
+			const clueTier = ClueTiers.find(i => i.id === Number.parseInt(key));
 			if (!clueTier) continue;
 			clueCounts[clueTier.name] += val;
 		}

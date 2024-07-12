@@ -3,11 +3,11 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../lib/constants';
 import { globalDroprates } from '../../lib/data/globalDroprates';
+import { MAX_QP } from '../../lib/minions/data/quests';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { MAX_QP } from '../../mahoji/lib/abstracted_commands/questCommand';
 
 export const questingTask: MinionTask = {
 	type: 'Questing',

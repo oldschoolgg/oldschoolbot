@@ -2,16 +2,18 @@ import { activity_type_enum } from '@prisma/client';
 import { objectEntries, partition } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
 import { MIMIC_MONSTER_ID, ZALCANO_ID } from './constants';
 import { championScrolls } from './data/CollectionsExport';
 import { NexMonster } from './nex';
 import { RandomEvents } from './randomEvents';
-import { MinigameName, Minigames } from './settings/minigames';
-import { getUsersActivityCounts, prisma } from './settings/prisma';
-import { RequirementFailure, Requirements } from './structures/Requirements';
+import type { MinigameName } from './settings/minigames';
+import { Minigames } from './settings/minigames';
+import { getUsersActivityCounts } from './settings/prisma';
+import type { RequirementFailure } from './structures/Requirements';
+import { Requirements } from './structures/Requirements';
 import { itemNameFromID } from './util';
-import resolveItems from './util/resolveItems';
 
 export const musicCapeRequirements = new Requirements()
 	.add({

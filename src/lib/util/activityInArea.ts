@@ -1,7 +1,8 @@
 import { Monsters } from 'oldschooljs';
+import { resolveItems } from 'oldschooljs/dist/util/util';
 
 import { soteSkillRequirements } from '../skilling/functions/questRequirements';
-import {
+import type {
 	ActivityTaskData,
 	AgilityActivityTaskOptions,
 	HunterActivityTaskOptions,
@@ -9,11 +10,10 @@ import {
 	PickpocketActivityTaskOptions,
 	WoodcuttingActivityTaskOptions
 } from '../types/minions';
-import resolveItems from './resolveItems';
 
-export const enum WorldLocations {
-	Priffdinas,
-	World
+export enum WorldLocations {
+	Priffdinas = 0,
+	World = 1
 }
 
 const WorldLocationsChecker = [
@@ -25,7 +25,7 @@ const WorldLocationsChecker = [
 				if (
 					activity.type === 'MonsterKilling' &&
 					[Monsters.DarkBeast.id, Monsters.PrifddinasElf.id].includes(
-						(activity as MonsterActivityTaskOptions).monsterID
+						(activity as MonsterActivityTaskOptions).mi
 					)
 				) {
 					return true;

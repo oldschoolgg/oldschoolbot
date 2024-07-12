@@ -1,10 +1,13 @@
-import { AutoFarmFilterEnum, CropUpgradeType } from '@prisma/client';
-import { User } from 'discord.js';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CropUpgradeType } from '@prisma/client';
+import { AutoFarmFilterEnum } from '@prisma/client';
+import type { User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
 import { superCompostables } from '../../lib/data/filterables';
-import { ContractOption, ContractOptions } from '../../lib/minions/farming/types';
+import type { ContractOption } from '../../lib/minions/farming/types';
+import { ContractOptions } from '../../lib/minions/farming/types';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Farming, { CompostTiers } from '../../lib/skilling/skills/farming';
@@ -14,7 +17,7 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/abstracted_commands/farmingCommand';
 import { farmingContractCommand } from '../lib/abstracted_commands/farmingContractCommand';
 import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const autoFarmFilterTexts: Record<AutoFarmFilterEnum, string> = {
 	AllFarm: 'All crops will be farmed with the highest available seed',
@@ -214,7 +217,7 @@ export const farmingCommand: OSBMahojiCommand = {
 			return `'Always pay farmers' is now ${!isEnabled ? 'enabled' : 'disabled'}.`;
 		}
 		if (options.default_compost) {
-			const tier = CompostTiers.find(i => stringMatches(i.name, options.default_compost!.compost));
+			const tier = CompostTiers.find(i => stringMatches(i.name, options.default_compost?.compost));
 			if (!tier) return 'Invalid tier.';
 			await klasaUser.update({
 				minion_defaultCompostToUse: tier.name
@@ -223,7 +226,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		}
 		if (options.auto_farm_filter) {
 			const autoFarmFilterString = Object.values(AutoFarmFilterEnum).find(
-				i => i === options.auto_farm_filter!.auto_farm_filter_data
+				i => i === options.auto_farm_filter?.auto_farm_filter_data
 			);
 			if (!autoFarmFilterString) return 'Invalid auto farm filter.';
 			const autoFarmFilter = autoFarmFilterString as AutoFarmFilterEnum;

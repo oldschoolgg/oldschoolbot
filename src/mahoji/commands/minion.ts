@@ -1,24 +1,25 @@
 import { formatOrdinal, roboChimpCLRankQuery } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { notEmpty, randArrItem } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import {
-	badges,
 	BitField,
 	BitFieldData,
 	FormattedCustomEmoji,
 	MAX_LEVEL,
-	minionActivityCache,
-	PerkTier
+	PerkTier,
+	badges,
+	minionActivityCache
 } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { calculateMastery } from '../../lib/mastery';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { AttackStyles } from '../../lib/minions/functions';
+import type { AttackStyles } from '../../lib/minions/functions';
 import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
@@ -47,7 +48,7 @@ import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
 import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
 
 const patMessages = [

@@ -1,14 +1,20 @@
 import { activity_type_enum } from '@prisma/client';
-import { randArrItem, roll, Time } from 'e';
-import LRUCache from 'lru-cache';
+import { Time, randArrItem, roll } from 'e';
+import { LRUCache } from 'lru-cache';
 import { Bank } from 'oldschooljs';
+import {
+	beekeeperOutfit,
+	camoOutfit,
+	lederhosenOutfit,
+	mimeOutfit,
+	zombieOutfit
+} from 'oldschooljs/dist/data/itemConstants';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { userStatsBankUpdate } from '../mahoji/mahojiSettings';
 import { BitField } from './constants';
-import resolveItems from './util/resolveItems';
 
-export interface RandomEvent {
+interface RandomEvent {
 	id: number;
 	name: string;
 	outfit?: number[];
@@ -17,28 +23,6 @@ export interface RandomEvent {
 }
 
 const baguetteTable = new LootTable().add('Baguette', 1, 63).add('Stale baguette', 1, 1);
-
-export const beekeeperOutfit = resolveItems([
-	"Beekeeper's hat",
-	"Beekeeper's top",
-	"Beekeeper's legs",
-	"Beekeeper's gloves",
-	"Beekeeper's boots"
-]);
-
-export const camoOutfit = resolveItems(['Camo helmet', 'Camo top', 'Camo bottoms']);
-
-export const lederhosenOutfit = resolveItems(['Lederhosen hat', 'Lederhosen top', 'Lederhosen shorts']);
-
-export const zombieOutfit = resolveItems([
-	'Zombie mask',
-	'Zombie shirt',
-	'Zombie trousers',
-	'Zombie gloves',
-	'Zombie boots'
-]);
-
-export const mimeOutfit = resolveItems(['Mime mask', 'Mime top', 'Mime legs', 'Mime gloves', 'Mime boots']);
 
 // Used by Mysterious Old man, Pillory, Rick Turpentine
 const randomEventTable = new LootTable()

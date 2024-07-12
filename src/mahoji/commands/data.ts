@@ -1,8 +1,9 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const dataCommand: OSBMahojiCommand = {
 	name: 'data',

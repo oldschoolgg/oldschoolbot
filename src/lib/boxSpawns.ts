@@ -1,7 +1,6 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { EmbedBuilder, Message, User } from 'discord.js';
-import { isFunction, randArrItem, shuffleArr, Time } from 'e';
-import he from 'he';
+import { EmbedBuilder, type Message, type User } from 'discord.js';
+import { Time, isFunction, randArrItem, shuffleArr } from 'e';
 import fetch from 'node-fetch';
 import { Bank, Items, LootTable, Monsters } from 'oldschooljs';
 
@@ -26,7 +25,7 @@ const triviaChallenge: Challenge = async (msg: Message): Promise<User | null> =>
 
 	const embed = new EmbedBuilder()
 		.setTitle('Reply with the answer for a reward!')
-		.setDescription(`${he.decode(question)}\n\nPossible answers: ${allAnswers.join(', ')}`)
+		.setDescription(`${question}\n\nPossible answers: ${allAnswers.join(', ')}`)
 		.setThumbnail(
 			'https://cdn.discordapp.com/attachments/357422607982919680/1100378550189707314/534px-Mystery_box_detail.png'
 		);
@@ -99,8 +98,8 @@ const createdChallenge: Challenge = async (msg: Message): Promise<User | null> =
 				isFunction(randomCreatable.inputItems)
 					? "This shouldn't be possible..."
 					: randomCreatable.inputItems instanceof Bank
-					? randomCreatable.inputItems
-					: new Bank(randomCreatable.inputItems)
+						? randomCreatable.inputItems
+						: new Bank(randomCreatable.inputItems)
 			}`
 		)
 		.setThumbnail(
@@ -141,7 +140,7 @@ const monsters = [...Object.values(BSOMonsters), ...killableMonsters]
 	.filter(m => m.allItems.length >= 3);
 
 const monsterDropChallenge: Challenge = async (msg: Message): Promise<User | null> => {
-	let monster = randArrItem(monsters);
+	const monster = randArrItem(monsters);
 
 	const items = shuffleArr(monster.allItems).slice(0, 3);
 	const validMonsters = monsters.filter(mon => items.every(t => mon.allItems.includes(t)));
@@ -260,7 +259,7 @@ export async function boxSpawnHandler(msg: Message) {
 		},
 		{ main_server_challenges_won: true }
 	);
-	let wonStr = `This is your ${formatOrdinal(newStats.main_server_challenges_won)} challenge win!`;
+	const wonStr = `This is your ${formatOrdinal(newStats.main_server_challenges_won)} challenge win!`;
 	const loot = roll(20) ? LampTable.roll() : MysteryBoxes.roll();
 
 	await winnerUser.addItemsToBank({ items: loot, collectionLog: true });

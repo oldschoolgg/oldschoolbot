@@ -1,4 +1,4 @@
-import { calcPercentOfNum, percentChance, randInt } from 'e';
+import { calcPercentOfNum, percentChance, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { z } from 'zod';
 
@@ -8,8 +8,8 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import { Cookables } from '../../lib/skilling/skills/cooking/cooking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { clAdjustedDroprate, roll, skillingPetDropRate } from '../../lib/util';
+import type { FishingActivityTaskOptions } from '../../lib/types/minions';
+import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
@@ -42,7 +42,7 @@ export const fishingTask: MinionTask = {
 		quantity: z.number().min(1)
 	}),
 	async run(data: FishingActivityTaskOptions) {
-		let { fishID, quantity, userID, channelID, duration } = data;
+		const { fishID, quantity, userID, channelID, duration } = data;
 		const user = await mUserFetch(userID);
 		const { blessingEquipped, blessingChance } = radasBlessing(user);
 
@@ -104,7 +104,7 @@ export const fishingTask: MinionTask = {
 						skillName: SkillsEnum.Agility,
 						amount: agilityXpReceived,
 						duration
-				  })
+					})
 				: '';
 		xpRes +=
 			strengthXpReceived > 0
@@ -112,7 +112,7 @@ export const fishingTask: MinionTask = {
 						skillName: SkillsEnum.Strength,
 						amount: strengthXpReceived,
 						duration
-				  })
+					})
 				: '';
 
 		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;
@@ -121,7 +121,7 @@ export const fishingTask: MinionTask = {
 		const baseKarambwanji = 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
 		let baseMinnow = [10, 10];
 		for (const [level, quantities] of Object.entries(minnowQuantity).reverse()) {
-			if (user.skillLevel(SkillsEnum.Fishing) >= parseInt(level)) {
+			if (user.skillLevel(SkillsEnum.Fishing) >= Number.parseInt(level)) {
 				baseMinnow = quantities;
 				break;
 			}
@@ -141,7 +141,7 @@ export const fishingTask: MinionTask = {
 			}
 		}
 
-		let loot = new Bank({
+		const loot = new Bank({
 			[fish.id]: lootQuantity
 		});
 

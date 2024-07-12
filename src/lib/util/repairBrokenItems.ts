@@ -1,11 +1,11 @@
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { notEmpty } from 'e';
 import { Items } from 'oldschooljs';
 
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
-import { GearSetup, GearSetupTypes } from '../gear';
-import { prisma } from '../settings/prisma';
-import { ItemBank } from '../types';
+import { type GearSetup, GearSetupTypes } from '../gear';
+
+import type { ItemBank } from '../types';
 import { moidLink } from '../util';
 
 export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] | [string, any[]]> {
@@ -20,8 +20,8 @@ export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] 
 	};
 
 	const favorites = user.favoriteItems;
-	let rawTameBanks: [number, ItemBank][] = [];
-	let rawTameFeeds: [number, ItemBank][] = [];
+	const rawTameBanks: [number, ItemBank][] = [];
+	const rawTameFeeds: [number, ItemBank][] = [];
 
 	const userTames = await prisma.tame.findMany({
 		where: {
@@ -43,7 +43,7 @@ export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] 
 				.filter(notEmpty)
 				.map((i: any) => i.item)
 		)
-		.flat(Infinity);
+		.flat(Number.POSITIVE_INFINITY);
 
 	const brokenBank: number[] = [];
 	const allItemsToCheck: [string, (number | string)[]][] = [
@@ -54,8 +54,8 @@ export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] 
 		['favs', favorites],
 		['gear', allGearItemIDs]
 	];
-	let newTameFeeds: [number, ItemBank][] = [];
-	let newTameBanks: [number, ItemBank][] = [];
+	const newTameFeeds: [number, ItemBank][] = [];
+	const newTameBanks: [number, ItemBank][] = [];
 	for (const [tameId, tameBank] of rawTameBanks) {
 		allItemsToCheck.push([`tbank-${tameId}`, Object.keys(tameBank)]);
 		newTameBanks.push([tameId, { ...tameBank }]);
@@ -113,7 +113,7 @@ export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] 
 		changes.bank = newBank;
 		changes.collectionLogBank = newCL;
 		changes.temp_cl = newTempCL;
-		if (newFavs.includes(NaN) || [newBank, newCL, newTempCL].some(i => Boolean(i['NaN']))) {
+		if (newFavs.includes(Number.NaN) || [newBank, newCL, newTempCL].some(i => Boolean(i.NaN))) {
 			return ['Oopsie...'];
 		}
 

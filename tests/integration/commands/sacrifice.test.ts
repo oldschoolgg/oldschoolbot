@@ -1,5 +1,5 @@
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { describe, expect, test } from 'vitest';
 
 import { Emoji } from '../../../src/lib/constants';
@@ -16,26 +16,24 @@ describe('Sacrifice Command', async () => {
 		await user.runCommand(sacrificeCommand, { items: '1 trout, 10 coal' });
 		const result = await user.runCommand(sacrificeCommand, {});
 		expect(result).toEqual(
-			`${Emoji.Incinerator} **Your Sacrifice Stats** ${Emoji.Incinerator}\n\n` +
-				`**Current Minion Icon:** ${Emoji.Minion}\n` +
-				'**Sacrificed Value:** 1,590 GP\n' +
-				'**Unique Items Sacrificed:** 2 items'
+			`${Emoji.Incinerator} **Your Sacrifice Stats** ${Emoji.Incinerator}\n\n**Current Minion Icon:** ${Emoji.Minion}\n**Sacrificed Value:** 1,590 GP\n**Unique Items Sacrificed:** 2 items`
 		);
 	});
 
 	test('No items provided', async () => {
 		const result = await user.runCommand(sacrificeCommand, { items: 'aaaa' });
-		expect(result).toEqual('No items were provided.\nYour current sacrificed value is: 1,590 (1.59k)');
+		expect(result).toEqual('No items were provided.\nYour current sacrificed value is: 1,590 (1.6k)');
 	});
 
 	test('Successful', async () => {
 		await user.addItemsToBank({ items: new Bank().add('Trout').add('Coal', 10) });
 		const result = await user.runCommand(sacrificeCommand, { items: '1 trout, 10 coal' });
+		await user.sync();
 		expect(result).toEqual(
-			'You sacrificed 10x Coal, 1x Trout, with a value of 1,590gp (1.59k). Your total amount sacrificed is now: 3,180. '
+			'You sacrificed 10x Coal, 1x Trout, with a value of 1,590gp (1.6k). Your total amount sacrificed is now: 3,180. '
 		);
 		const stats = await user.fetchStats({ sacrificed_bank: true });
-		expect(user.bank.equals(new Bank())).toBe(true);
+		expect(user.bank.toString()).toBe(new Bank().toString());
 		expect(new Bank(stats.sacrificed_bank as ItemBank).equals(new Bank().add('Coal', 20).add('Trout', 2))).toBe(
 			true
 		);
@@ -52,7 +50,7 @@ describe('Sacrifice Command', async () => {
 			'You sacrificed 1x Trout, 1x Cake, with a value of 257gp (257). Your total amount sacrificed is now: 3,437. '
 		);
 		await user.sync();
-		expect(user.bank.equals(new Bank())).toBe(true);
+		expect(user.bank.toString()).toBe(new Bank().toString());
 		const stats2 = await user.fetchStats({ sacrificed_bank: true });
 		expect(
 			new Bank(stats2.sacrificed_bank as ItemBank).equals(new Bank().add('Coal', 20).add('Trout', 3).add('Cake'))

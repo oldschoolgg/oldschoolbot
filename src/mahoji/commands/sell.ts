@@ -1,19 +1,20 @@
-import { Prisma } from '@prisma/client';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { Prisma } from '@prisma/client';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { calcPercentOfNum, clamp, reduceNumByPercent } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { customPrices } from '../../lib/customItems/util';
-import { prisma } from '../../lib/settings/prisma';
+
 import { NestBoxesTable } from '../../lib/simulation/misc';
 import { itemID, returnStringOrFile, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../mahojiSettings';
 
 /**
@@ -42,11 +43,11 @@ const specialSoldItems = new Map([
 export const CUSTOM_PRICE_CACHE = new Map<number, number>();
 
 export function sellPriceOfItem(item: Item, taxRate = 25): { price: number; basePrice: number } {
-	let cachePrice = CUSTOM_PRICE_CACHE.get(item.id);
+	const cachePrice = CUSTOM_PRICE_CACHE.get(item.id);
 	if (!cachePrice && (item.price === undefined || !item.tradeable)) {
 		return { price: 0, basePrice: 0 };
 	}
-	let basePrice = cachePrice ?? item.price;
+	const basePrice = cachePrice ?? item.price;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
 	if (!(item.id in customPrices) && price < (item.highalch ?? 0) * 3) {
@@ -58,7 +59,7 @@ export function sellPriceOfItem(item: Item, taxRate = 25): { price: number; base
 
 export function sellStorePriceOfItem(item: Item, qty: number): { price: number; basePrice: number } {
 	if (!item.cost || !item.lowalch) return { price: 0, basePrice: 0 };
-	let basePrice = item.cost;
+	const basePrice = item.cost;
 	// Sell price decline with stock by 3% until 10% of item value and is always low alch price when stock is 0.
 	const percentageFirstEleven = (0.4 - 0.015 * Math.min(qty - 1, 10)) * Math.min(qty, 11);
 	let price = ((percentageFirstEleven + Math.max(qty - 11, 0) * 0.1) * item.cost) / qty;

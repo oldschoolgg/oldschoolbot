@@ -1,73 +1,47 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { execSync } from 'node:child_process';
-import { inspect } from 'node:util';
 
-import { ClientStorage, economy_transaction_type } from '@prisma/client';
-import { Stopwatch } from '@sapphire/stopwatch';
+import { type CommandRunOptions, bulkUpdateCommands, convertBankToPerHourStats, dateFm } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import type { ClientStorage } from '@prisma/client';
+import { economy_transaction_type } from '@prisma/client';
 import { Duration } from '@sapphire/time-utilities';
-import { isThenable } from '@sentry/utils';
-import {
-	AttachmentBuilder,
-	codeBlock,
-	escapeCodeBlock,
-	InteractionReplyOptions,
-	Message,
-	TextChannel,
-	userMention
-} from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, noOp, notEmpty, randArrItem, roll, sleep, Time, uniqueArr } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { MahojiUserOption } from 'mahoji/dist/lib/types';
-import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
+import type { InteractionReplyOptions, Message, TextChannel } from 'discord.js';
+import { AttachmentBuilder, userMention } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, calcPercentOfNum, calcWhatPercent, noOp, notEmpty, randArrItem, roll, sleep, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { ADMIN_IDS, OWNER_IDS, production, SupportServer } from '../../config';
+import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../../config';
+import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import { boxFrenzy } from '../../lib/boxFrenzy';
 import {
-	badges,
+	BOT_TYPE,
 	BadgesEnum,
 	BitField,
 	BitFieldData,
-	BOT_TYPE,
-	Channel,
 	COINS_ID,
+	Channel,
 	DISABLED_COMMANDS,
-	globalConfig,
-	META_CONSTANTS
+	META_CONSTANTS,
+	badges,
+	globalConfig
 } from '../../lib/constants';
 import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import { addToDoubleLootTimer, syncDoubleLoot } from '../../lib/doubleLoot';
 import { economyLog } from '../../lib/economyLogs';
-import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import { GearSetup } from '../../lib/gear/types';
+import type { GearSetup } from '../../lib/gear/types';
 import { GrandExchange } from '../../lib/grandExchange';
-import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { patreonTask } from '../../lib/patreon';
-import { runRolesTask } from '../../lib/rolesTask';
-import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
+import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { sorts } from '../../lib/sorts';
-import { Gear } from '../../lib/structures/Gear';
-import {
-	calcPerHour,
-	cleanString,
-	convertBankToPerHourStats,
-	dateFm,
-	formatDuration,
-	sanitizeBank,
-	stringMatches,
-	toKMB
-} from '../../lib/util';
+import { calcPerHour, cleanString, formatDuration, sanitizeBank, stringMatches, toKMB } from '../../lib/util';
 import { memoryAnalysis } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../../lib/util/clientSettings';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction, interactionReply } from '../../lib/util/interactionReply';
-import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
-import { logError } from '../../lib/util/logError';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { slayerMaskLeaderboardCache } from '../../lib/util/slayerMaskLeaderboard';
@@ -76,7 +50,8 @@ import { LampTable } from '../../lib/xpLamps';
 import { Cooldowns } from '../lib/Cooldowns';
 import { syncCustomPrices } from '../lib/events';
 import { itemOption } from '../lib/mahojiCommandOptions';
-import { allAbstractCommands, OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
+import { allAbstractCommands } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { getLotteryBank } from './lottery';
 
@@ -86,68 +61,8 @@ export const gifs = [
 	'https://tenor.com/view/monkey-monito-mask-gif-23036908'
 ];
 
-async function unsafeEval({ userID, code }: { userID: string; code: string }) {
-	if (!OWNER_IDS.includes(userID)) return { content: 'Unauthorized' };
-	code = code.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
-	const stopwatch = new Stopwatch();
-	let syncTime = '?';
-	let asyncTime = '?';
-	let result = null;
-	let thenable = false;
-	// eslint-disable-next-line @typescript-eslint/init-declarations
-	try {
-		code = `\nconst {Gear} = require('../../lib/structures/Gear')\n${code};`;
-		code = `\nconst {Bank} = require('oldschooljs');\n${code}`;
-		// eslint-disable-next-line no-eval
-		result = eval(code);
-		syncTime = stopwatch.toString();
-		if (isThenable(result)) {
-			thenable = true;
-			stopwatch.restart();
-			result = await result;
-			asyncTime = stopwatch.toString();
-		}
-	} catch (error: any) {
-		if (!syncTime) syncTime = stopwatch.toString();
-		if (thenable && !asyncTime) asyncTime = stopwatch.toString();
-		if (error && error.stack) logError(error);
-		result = error;
-	}
-
-	stopwatch.stop();
-	if (result instanceof Bank) {
-		return { files: [(await makeBankImage({ bank: result })).file] };
-	}
-	if (result instanceof Gear) {
-		const image = await generateGearImage(await mUserFetch(userID), result, null, null);
-		return { files: [image] };
-	}
-
-	if (Buffer.isBuffer(result)) {
-		return {
-			content: 'The result was a buffer.',
-			files: [result]
-		};
-	}
-
-	if (typeof result !== 'string') {
-		result = inspect(result, {
-			depth: 1,
-			showHidden: false
-		});
-	}
-
-	return {
-		content: `${codeBlock(escapeCodeBlock(result))}
-**Time:** ${asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`}
-`
-	};
-}
-
 async function allEquippedPets() {
-	const pets = await prisma.$queryRawUnsafe<
-		{ pet: number; qty: number }[]
-	>(`SELECT "minion.equippedPet" AS pet, COUNT("minion.equippedPet")::int AS qty
+	const pets = await prisma.$queryRawUnsafe<{ pet: number; qty: number }[]>(`SELECT "minion.equippedPet" AS pet, COUNT("minion.equippedPet")::int AS qty
 FROM users
 WHERE "minion.equippedPet" IS NOT NULL
 GROUP BY "minion.equippedPet"
@@ -157,25 +72,6 @@ ORDER BY qty DESC;`);
 		bank.add(pet, qty);
 	}
 	return bank;
-}
-
-async function evalCommand(userID: string, code: string): CommandResponse {
-	try {
-		if (!OWNER_IDS.includes(userID)) {
-			return "You don't have permission to use this command.";
-		}
-		const res = await unsafeEval({ code, userID });
-
-		if (res.content && res.content.length > 2000) {
-			return {
-				files: [{ attachment: Buffer.from(res.content), name: 'output.txt' }]
-			};
-		}
-
-		return res;
-	} catch (err: any) {
-		return err.message ?? err;
-	}
 }
 
 async function getAllTradedItems(giveUniques = false) {
@@ -192,11 +88,11 @@ async function getAllTradedItems(giveUniques = false) {
 		}
 	});
 
-	let total = new Bank();
+	const total = new Bank();
 
 	if (giveUniques) {
 		for (const trans of economyTrans) {
-			let bank = new Bank().add(trans.items_received as ItemBank).add(trans.items_sent as ItemBank);
+			const bank = new Bank().add(trans.items_received as ItemBank).add(trans.items_sent as ItemBank);
 
 			for (const item of bank.items()) {
 				total.add(item[0].id);
@@ -252,10 +148,9 @@ AND ("gear.melee" IS NOT NULL OR
 			const bank = new Bank();
 			for (const user of res) {
 				for (const gear of Object.values(user)
-					.map(i => (i === null ? [] : Object.values(i)))
-					.flat()
+					.flatMap(i => (i === null ? [] : Object.values(i)))
 					.filter(notEmpty)) {
-					let item = getItem(gear.item);
+					const item = getItem(gear.item);
 					if (item) {
 						bank.add(gear.item, gear.quantity);
 					}
@@ -325,9 +220,7 @@ AND ("gear.melee" IS NOT NULL OR
 		name: 'Economy Bank',
 		run: async () => {
 			const [blowpipeRes, totalGP, result] = await prisma.$transaction([
-				prisma.$queryRawUnsafe<
-					{ scales: number; dart: number; qty: number }[]
-				>(`SELECT (blowpipe->>'scales')::int AS scales, (blowpipe->>'dartID')::int AS dart, (blowpipe->>'dartQuantity')::int AS qty
+				prisma.$queryRawUnsafe<{ scales: number; dart: number; qty: number }[]>(`SELECT (blowpipe->>'scales')::int AS scales, (blowpipe->>'dartID')::int AS dart, (blowpipe->>'dartQuantity')::int AS qty
 FROM users
 WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 				prisma.$queryRawUnsafe<{ sum: number }[]>('SELECT SUM("GP") FROM users;'),
@@ -355,7 +248,9 @@ WHERE blowpipe iS NOT NULL and (blowpipe->>'dartQuantity')::int != 0;`),
 			return {
 				files: [
 					(await makeBankImage({ bank: economyBank })).file,
-					new AttachmentBuilder(Buffer.from(JSON.stringify(economyBank.bank, null, 4)), { name: 'bank.json' })
+					new AttachmentBuilder(Buffer.from(JSON.stringify(economyBank.bank, null, 4)), {
+						name: 'bank.json'
+					})
 				]
 			};
 		}
@@ -480,18 +375,14 @@ LIMIT
 	{
 		name: 'Sell GP Sources',
 		run: async () => {
-			const result = await prisma.$queryRawUnsafe<
-				{ item_id: number; gp: number }[]
-			>(`select item_id, sum(gp_received) as gp
+			const result = await prisma.$queryRawUnsafe<{ item_id: number; gp: number }[]>(`select item_id, sum(gp_received) as gp
 from bot_item_sell
 group by item_id
 order by gp desc
 limit 80;
 `);
 
-			const totalGPGivenOut = await prisma.$queryRawUnsafe<
-				{ total_gp_given_out: number }[]
-			>(`select sum(gp_received) as total_gp_given_out
+			const totalGPGivenOut = await prisma.$queryRawUnsafe<{ total_gp_given_out: number }[]>(`select sum(gp_received) as total_gp_given_out
 from bot_item_sell;`);
 
 			return {
@@ -554,19 +445,6 @@ export const adminCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'reboot',
 			description: 'Reboot the bot.'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'eval',
-			description: 'Eval.',
-			options: [
-				{
-					type: ApplicationCommandOptionType.String,
-					name: 'code',
-					description: 'Code',
-					required: true
-				}
-			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -635,11 +513,6 @@ export const adminCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'sync_roles',
 			description: 'Sync roles'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'sync_patreon',
-			description: 'Sync patreon'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -800,11 +673,6 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 			]
 		},
-		// {
-		// 	type: ApplicationCommandOptionType.Subcommand,
-		// 	name: 'wipe_bingo_temp_cls',
-		// 	description: 'Wipe all temp cls of bingo users'
-		// },
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'give_items',
@@ -875,15 +743,12 @@ export const adminCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		reboot?: {};
 		shut_down?: {};
-		debug_patreon?: {};
-		eval?: { code: string };
 		sync_commands?: {};
 		item_stats?: { item: string };
 		sync_blacklist?: {};
 		loot_track?: { name: string };
 		cancel_task?: { user: MahojiUserOption };
 		sync_roles?: {};
-		sync_patreon?: {};
 		badges?: { user: MahojiUserOption; add?: string; remove?: string };
 		bypass_age?: { user: MahojiUserOption };
 		command?: { enable?: string; disable?: string };
@@ -892,7 +757,6 @@ export const adminCommand: OSBMahojiCommand = {
 		ltc?: { item?: string };
 		double_loot?: { reset?: boolean; add?: string };
 		view?: { thing: string };
-		wipe_bingo_temp_cls?: {};
 		give_items?: { user: MahojiUserOption; items: string; reason?: string };
 		box_frenzy?: { amount: number };
 		lamp_frenzy?: { amount: number };
@@ -920,22 +784,18 @@ export const adminCommand: OSBMahojiCommand = {
 			return 'Done.';
 		}
 		if (options.sync_roles) {
-			try {
-				const result = await runRolesTask();
-				if (result.length < 2000) return result;
-				return {
-					content: 'The result was too big! Check the file.',
-					files: [new AttachmentBuilder(Buffer.from(result), { name: 'roles.txt' })]
-				};
-			} catch (err: any) {
-				logError(err);
-				return `Failed to run roles task. ${err.message}`;
-			}
-		}
-		if (options.sync_patreon) {
-			await patreonTask.run();
-			syncLinkedAccounts();
-			return 'Finished syncing patrons.';
+			// try {
+			// 	const result = await runRolesTask();
+			// 	if (result.length < 2000) return result;
+			// 	return {
+			// 		content: 'The result was too big! Check the file.',
+			// 		files: [new AttachmentBuilder(Buffer.from(result), { name: 'roles.txt' })]
+			// 	};
+			// } catch (err: any) {
+			// 	logError(err);
+			// 	return `Failed to run roles task. ${err.message}`;
+			// }
+			return 'The roles task is disabled for now.';
 		}
 
 		if (options.badges) {
@@ -1064,7 +924,7 @@ export const adminCommand: OSBMahojiCommand = {
 					.map(entry => `**${entry[0]}:** ${entry[1]?.name}`)
 					.join('\n');
 			}
-			const bit = parseInt(bitEntry[0]);
+			const bit = Number.parseInt(bitEntry[0]);
 
 			if (
 				!bit ||
@@ -1113,7 +973,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 		}
 		if (options.shut_down) {
 			globalClient.isShuttingDown = true;
-			let timer = production ? Time.Second * 30 : Time.Second * 5;
+			const timer = production ? Time.Second * 30 : Time.Second * 5;
 			await interactionReply(interaction, {
 				content: `Shutting down in ${dateFm(new Date(Date.now() + timer))}.`
 			});
@@ -1144,7 +1004,7 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 
 		if (options.sync_commands) {
 			const global = Boolean(production);
-			const totalCommands = globalClient.mahojiClient.commands.values;
+			const totalCommands = Array.from(globalClient.mahojiClient.commands.values());
 			const globalCommands = totalCommands.filter(i => !i.guildID);
 			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
 			if (global) {
@@ -1212,13 +1072,6 @@ ${guildCommands.length} Guild commands`;
 			return `Gave ${items} to ${user.mention}`;
 		}
 
-		if (options.debug_patreon) {
-			const result = await patreonTask.fetchPatrons();
-			return {
-				files: [{ attachment: Buffer.from(JSON.stringify(result, null, 4)), name: 'patreon.txt' }]
-			};
-		}
-
 		/**
 		 *
 		 * Owner Only Commands
@@ -1228,9 +1081,6 @@ ${guildCommands.length} Guild commands`;
 			return randArrItem(gifs);
 		}
 
-		if (options.eval) {
-			return evalCommand(userID.toString(), options.eval.code);
-		}
 		if (options.item_stats) {
 			const item = getItem(options.item_stats.item);
 			if (!item) return 'Invalid item.';
@@ -1320,7 +1170,7 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 				const marketValueLoot = Math.round(loot.value());
 				const ratio = marketValueLoot / marketValueCost;
 
-				if (!marketValueCost || !marketValueLoot || ratio === Infinity) continue;
+				if (!marketValueCost || !marketValueLoot || ratio === Number.POSITIVE_INFINITY) continue;
 
 				str += `${[
 					res.id,
@@ -1352,7 +1202,7 @@ There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' 
 					taxedBank.add('Coins', qty);
 					continue;
 				}
-				let fivePercent = Math.ceil(calcPercentOfNum(5, qty));
+				const fivePercent = Math.ceil(calcPercentOfNum(5, qty));
 				taxedBank.add(item, Math.max(fivePercent, 1));
 			}
 

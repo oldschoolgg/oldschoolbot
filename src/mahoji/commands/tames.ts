@@ -1,50 +1,49 @@
+import { readFileSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
-import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
+import { Canvas, type Image, type SKRSContext2D, loadImage } from '@napi-rs/canvas';
 import { mentionCommand } from '@oldschoolgg/toolkit';
-import { Tame, tame_growth } from '@prisma/client';
+import type { CommandResponse, CommandRunOptions } from '@oldschoolgg/toolkit';
+import { type Tame, tame_growth } from '@prisma/client';
 import { toTitleCase } from '@sapphire/utilities';
-import { ChatInputCommandInteraction, User } from 'discord.js';
+import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
 import {
+	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
 	notEmpty,
 	percentChance,
 	randInt,
-	reduceNumByPercent,
-	Time
+	reduceNumByPercent
 } from 'e';
-import { readFileSync } from 'fs';
-import { readFile } from 'fs/promises';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
-import { badges, PerkTier } from '../../lib/constants';
+import { type ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
+import { PerkTier, badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { trackLoot } from '../../lib/lootTrack';
 import { Planks } from '../../lib/minions/data/planks';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import { getUsersPerkTier } from '../../lib/perkTiers';
-import { prisma } from '../../lib/settings/prisma';
+
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
 import {
+	type SeaMonkeySpell,
+	type TameKillableMonster,
+	TameSpeciesID,
+	TameType,
 	createTameTask,
 	getIgneTameKC,
 	igneArmors,
-	SeaMonkeySpell,
 	seaMonkeySpells,
 	seaMonkeyStaves,
 	tameFeedableItems,
-	TameKillableMonster,
 	tameKillableMonsters,
-	tameSpecies,
-	TameSpeciesID,
-	TameType
+	tameSpecies
 } from '../../lib/tames';
 import {
 	assert,
@@ -76,7 +75,7 @@ import {
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { arbitraryTameActivities } from '../../tasks/tames/tameTasks';
 import { collectables } from '../lib/abstracted_commands/collectCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const tameImageSize = 96;
 
@@ -264,7 +263,6 @@ const tameImageReplacementEasterEggs = [
 	}))
 ];
 
-// eslint-disable-next-line @typescript-eslint/init-declarations
 let sprites: {
 	base: {
 		image: Image;
@@ -377,11 +375,11 @@ export async function tameImage(user: MUser): CommandResponse {
 		return "You don't have any tames.";
 	}
 
-	let { tame, activity } = await getUsersTame(user);
+	const { tame, activity } = await getUsersTame(user);
 
 	// Init the background images if they are not already
 
-	let {
+	const {
 		sprite,
 		uniqueSprite,
 		background: userBgImage
@@ -430,8 +428,8 @@ export async function tameImage(user: MUser): CommandResponse {
 	let i = 0;
 	for (const t of userTames) {
 		const species = tameSpecies.find(i => i.id === t.species_id)!;
-		let isTameActive: boolean = false;
-		let selectedTame = tame && t.id === tame.id;
+		let isTameActive = false;
+		const selectedTame = tame && t.id === tame.id;
 		if (selectedTame) isTameActive = activity !== null;
 
 		const x = i % tamesPerLine;
@@ -512,7 +510,7 @@ export async function tameImage(user: MUser): CommandResponse {
 			if (tameHasBeenFed(t, item.id)) {
 				const itemImage = await bankImageGenerator.getItemImage(item.id);
 				if (itemImage) {
-					let ratio = 19 / itemImage.height;
+					const ratio = 19 / itemImage.height;
 					const yLine = Math.floor(feedQty / 3);
 					if (feedQty % 3 === 0) prevWidth = 0;
 					ctx.drawImage(
@@ -793,13 +791,13 @@ async function feedCommand(interaction: ChatInputCommandInteraction, user: MUser
 		return 'You have no selected tame.';
 	}
 
-	let rawBank = parseStringBank(str);
-	let bankToAdd = new Bank();
-	let userBank = user.bank;
+	const rawBank = parseStringBank(str);
+	const bankToAdd = new Bank();
+	const userBank = user.bank;
 	for (const [item, qty] of rawBank) {
-		let qtyOwned = userBank.amount(item.id);
+		const qtyOwned = userBank.amount(item.id);
 		if (qtyOwned === 0) continue;
-		let qtyToUse = !qty ? 1 : qty > qtyOwned ? qtyOwned : qty;
+		const qtyToUse = !qty ? 1 : qty > qtyOwned ? qtyOwned : qty;
 		bankToAdd.add(item.id, qtyToUse);
 	}
 
@@ -876,7 +874,7 @@ Your tame will gain between (inclusively) ${levelRange[0]} and ${levelRange[1]} 
 		return `You fed ${bankToAdd} to ${tameName(tame)}. It gained ${bold(gained.toString())} levels from the egg!`;
 	}
 
-	let specialStrArr = [];
+	const specialStrArr = [];
 	for (const { item, description, tameSpeciesCanBeFedThis } of thisTameSpecialFeedableItems) {
 		const similarItems = getSimilarItems(item.id);
 		if (similarItems.some(si => bankToAdd.has(si))) {
@@ -889,7 +887,7 @@ Your tame will gain between (inclusively) ${levelRange[0]} and ${levelRange[1]} 
 			specialStrArr.push(`**${item.name}**: ${description}`);
 		}
 	}
-	let specialStr = specialStrArr.length === 0 ? '' : `\n\n${specialStrArr.join(', ')}`;
+	const specialStr = specialStrArr.length === 0 ? '' : `\n\n${specialStrArr.join(', ')}`;
 	await handleMahojiConfirmation(
 		interaction,
 		`Are you sure you want to feed \`${bankToAdd}\` to ${tameName(
@@ -906,7 +904,7 @@ Note: Some items must be equipped to your tame, not fed. Check that you are feed
 		}
 	}
 
-	let newBoosts: string[] = [];
+	const newBoosts: string[] = [];
 	for (const { item, announcementString } of thisTameSpecialFeedableItems) {
 		if (bankToAdd.has(item.id) && !tameHasBeenFed(tame, item.id)) {
 			newBoosts.push(`**${announcementString}**`);
@@ -963,7 +961,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	// Increase trip length based on minion growth:
 	let speed = monster.timeToFinish * tameGrowthLevel(tame);
 
-	let boosts = [];
+	const boosts = [];
 
 	// Apply calculated boost:
 	const combatLevelChange = reduceNumByPercent(speed, combatLevelBoost);
@@ -1085,9 +1083,7 @@ async function killCommand(user: MUser, channelID: string, str: string) {
 	reply += `\n\n${monster.name} has a base kill time of **${formatDuration(
 		monster.timeToFinish,
 		true
-	)}**, your kill time is **${formatDuration(speed, true)}**, meaning you can kill **${(
-		maxTripLength / speed
-	).toFixed(2)}** in your max trip length of **${formatDuration(maxTripLength, true)}**`;
+	)}**, your kill time is **${formatDuration(speed, true)}**, meaning you can kill **${(maxTripLength / speed).toFixed(2)}** in your max trip length of **${formatDuration(maxTripLength, true)}**`;
 
 	return reply;
 }
@@ -1124,7 +1120,7 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 		speed /= 2.5;
 	}
 
-	let boosts = [];
+	const boosts = [];
 
 	const equippedStaff = seaMonkeyStaves.find(s => s.item.id === tame.equipped_primary);
 	if (equippedStaff) {
@@ -1159,7 +1155,7 @@ async function collectCommand(user: MUser, channelID: string, str: string) {
 		return "Your tame can't kill this monster fast enough.";
 	}
 
-	let duration = Math.floor(quantity * speed);
+	const duration = Math.floor(quantity * speed);
 
 	await createTameTask({
 		user,
@@ -1233,7 +1229,7 @@ async function monkeyMagicHandler(
 	}
 
 	let speed = spellOptions.timePerSpell;
-	let boosts = [];
+	const boosts = [];
 	const [min] = getTameSpecies(tame).gathererLevelRange;
 	const minBoost = exponentialPercentScale(min, 0.01);
 	const gathererLevelBoost = exponentialPercentScale(tame.max_gatherer_level, 0.01) - minBoost;
@@ -1295,7 +1291,7 @@ async function monkeyMagicHandler(
 	});
 	await updateBankSetting('economyStats_PVMCost', finalCost);
 
-	let duration = Math.floor(quantity * speed);
+	const duration = Math.floor(quantity * speed);
 
 	await createTameTask({
 		user,
@@ -1656,7 +1652,7 @@ async function tameClueCommand(user: MUser, channelID: string, inputName: string
 		return 'Your tame lacks the *knowledge* required to complete elder clues.';
 	}
 
-	let { cost, quantity, duration, boosts, costSavedByDemonicJibwings } = determineTameClueResult({
+	const { cost, quantity, duration, boosts, costSavedByDemonicJibwings } = determineTameClueResult({
 		tameGrowthLevel: tame.growthLevel,
 		clueTier,
 		extraTripLength: patronMaxTripBonus(user) * 2,
@@ -1824,7 +1820,7 @@ export const tamesCommand: OSBMahojiCommand = {
 								!value
 									? true
 									: i.name.toLowerCase().includes(value.toLowerCase()) ||
-									  i.aliases.some(alias => stringMatches(alias, value))
+										i.aliases.some(alias => stringMatches(alias, value))
 							)
 							.map(i => ({ name: i.name, value: i.name }));
 					}

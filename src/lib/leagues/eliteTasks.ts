@@ -29,22 +29,22 @@ import {
 	KourendKebosDiary,
 	LumbridgeDraynorDiary,
 	MorytaniaDiary,
-	userhasDiaryTier,
 	VarrockDiary,
 	WesternProv,
-	WildernessDiary
+	WildernessDiary,
+	userhasDiaryTier
 } from '../diaries';
 import { implings } from '../implings';
-import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
 import { SunMoonMonsters } from '../minions/data/killableMonsters/custom/SunMoon';
+import { Naxxus } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
-import { tameFeedableItems, TameSpeciesID } from '../tames';
-import { ItemBank } from '../types';
+import { TameSpeciesID, tameFeedableItems } from '../tames';
+import type { ItemBank } from '../types';
 import { calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
-import { leaguesHasCatches, leaguesHasKC, Task } from './leaguesUtils';
+import { type Task, leaguesHasCatches, leaguesHasKC } from './leaguesUtils';
 import { calculateTiarasMade } from './stats';
 
 export const eliteTasks: Task[] = [
@@ -667,7 +667,7 @@ export const eliteTasks: Task[] = [
 		id: 3089,
 		name: 'Scatter 1000 of every ashes',
 		has: async ({ userStats }) => {
-			let vals = Object.values(userStats.scattered_ashes_bank as ItemBank);
+			const vals = Object.values(userStats.scattered_ashes_bank as ItemBank);
 			return vals.length === ashes.length && vals.every(i => i >= 1000);
 		}
 	},
@@ -682,7 +682,7 @@ export const eliteTasks: Task[] = [
 		id: 3091,
 		name: 'Offer 100 of each bird egg',
 		has: async ({ userStats }) => {
-			let vals = Object.values(userStats.bird_eggs_offered_bank as ItemBank);
+			const vals = Object.values(userStats.bird_eggs_offered_bank as ItemBank);
 			return vals.length === eggs.length && vals.every(i => Number(i) >= 100);
 		}
 	},
@@ -704,7 +704,7 @@ export const eliteTasks: Task[] = [
 		id: 3094,
 		name: 'Catch 30 of every impling passively (excluding lucky implings)',
 		has: async ({ userStats }) => {
-			let loot = new Bank(userStats.passive_implings_bank as ItemBank);
+			const loot = new Bank(userStats.passive_implings_bank as ItemBank);
 			for (const implingId of Object.keys(implings)) {
 				if (Number(implingId) !== Openables.LuckyImpling.id && loot.amount(Number(implingId)) < 30) {
 					return false;

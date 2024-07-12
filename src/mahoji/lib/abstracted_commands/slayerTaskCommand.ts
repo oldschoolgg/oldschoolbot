@@ -1,10 +1,10 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction } from 'discord.js';
-import { notEmpty, removeFromArr, Time } from 'e';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, type ChatInputCommandInteraction } from 'discord.js';
+import { Time, notEmpty, removeFromArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { runCommand } from '../../../lib/settings/settings';
 import { slayerMasters } from '../../../lib/slayer/slayerMasters';
 import {
@@ -14,7 +14,7 @@ import {
 	getUsersCurrentSlayerInfo,
 	userCanUseMaster
 } from '../../../lib/slayer/slayerUtil';
-import { AssignableSlayerTask } from '../../../lib/slayer/types';
+import type { AssignableSlayerTask } from '../../../lib/slayer/types';
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { interactionReply } from '../../../lib/util/interactionReply';
@@ -69,14 +69,14 @@ function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 		const altMobs = assignedTask.monsters;
 		const alternateMonsters = killableMonsters
 			.filter(m => {
-				return altMobs.includes(m.id) && m!.id !== assignedTask.monster.id;
+				return altMobs.includes(m.id) && m.id !== assignedTask.monster.id;
 			})
 			.map(m => {
-				return m!.name;
+				return m?.name;
 			});
-		const cname = getCommonTaskName(assignedTask!.monster);
-		if (cname !== assignedTask!.monster.name && cname.substr(0, cname.length - 1) !== assignedTask!.monster.name) {
-			alternateMonsters.unshift(assignedTask!.monster.name);
+		const cname = getCommonTaskName(assignedTask?.monster);
+		if (cname !== assignedTask?.monster.name && cname.substr(0, cname.length - 1) !== assignedTask?.monster.name) {
+			alternateMonsters.unshift(assignedTask?.monster.name);
 		}
 
 		return alternateMonsters.length > 0 ? ` (**Alternate Monsters**: ${alternateMonsters.join(', ')})` : '';
@@ -104,11 +104,11 @@ export async function slayerStatusCommand(mahojiUser: MUser) {
 	return (
 		`${
 			currentTask
-				? `\nYour current task from ${slayerMaster!.name} is to kill **${getCommonTaskName(
-						assignedTask!.monster
-				  )}**${getAlternateMonsterList(
+				? `\nYour current task from ${slayerMaster.name} is to kill **${getCommonTaskName(
+						assignedTask.monster
+					)}**${getAlternateMonsterList(
 						assignedTask
-				  )}. You have ${currentTask.quantity_remaining.toLocaleString()} kills remaining.`
+					)}. You have ${currentTask.quantity_remaining.toLocaleString()} kills remaining.`
 				: ''
 		}` +
 		`\nYou have ${slayerPoints.toLocaleString()} slayer points, and have completed ${
@@ -255,15 +255,15 @@ export async function slayerNewTaskCommand({
 		slayerMasterOverride && has99SlayerCape
 			? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, slayerMasterOverride))) ?? null
 			: slayerMasterOverride
-			? slayerMasters
-					.filter(m => userCanUseMaster(user, m))
-					.find(m => m.aliases.some(alias => stringMatches(alias, slayerMasterOverride))) ?? null
-			: rememberedSlayerMaster
-			? slayerMasters
-					.filter(m => userCanUseMaster(user, m))
-					.find(m => m.aliases.some(alias => stringMatches(alias, rememberedSlayerMaster))) ??
-			  proposedDefaultMaster
-			: proposedDefaultMaster;
+				? slayerMasters
+						.filter(m => userCanUseMaster(user, m))
+						.find(m => m.aliases.some(alias => stringMatches(alias, slayerMasterOverride))) ?? null
+				: rememberedSlayerMaster
+					? slayerMasters
+							.filter(m => userCanUseMaster(user, m))
+							.find(m => m.aliases.some(alias => stringMatches(alias, rememberedSlayerMaster))) ??
+						proposedDefaultMaster
+					: proposedDefaultMaster;
 
 	// Contains (if matched) the requested Slayer Master regardless of requirements.
 	const matchedSlayerMaster = slayerMasterOverride
@@ -271,7 +271,7 @@ export async function slayerNewTaskCommand({
 				m =>
 					stringMatches(m.name, slayerMasterOverride) ||
 					m.aliases.some(alias => stringMatches(alias, slayerMasterOverride))
-		  ) ?? null
+			) ?? null
 		: null;
 
 	// Special handling for Turael skip
@@ -299,7 +299,7 @@ export async function slayerNewTaskCommand({
 		await userStatsUpdate(user.id, { [taskStreakKey]: 0 }, {});
 
 		const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
-		let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
+		const commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 		const returnMessage =
 			`Your task has been skipped.\n\n ${slayerMaster.name}` +
 			` has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}${getAlternateMonsterList(
@@ -318,13 +318,13 @@ export async function slayerNewTaskCommand({
 	// Store favorite slayer master if requested:
 	if (saveDefaultSlayerMaster && slayerMaster) {
 		await user.update({ slayer_remember_master: slayerMaster.name });
-		resultMessage = `**Saved ${slayerMaster!.name} as default slayer master.**\n\n`;
+		resultMessage = `**Saved ${slayerMaster?.name} as default slayer master.**\n\n`;
 	}
 
 	if (currentTask || !slayerMaster) {
 		let warningInfo = '';
 		if (slayerMasterOverride && !slayerMaster && matchedSlayerMaster) {
-			let aRequirements: string[] = [];
+			const aRequirements: string[] = [];
 			if (matchedSlayerMaster.slayerLvl) aRequirements.push(`Slayer Level: ${matchedSlayerMaster.slayerLvl}`);
 			if (matchedSlayerMaster.combatLvl) aRequirements.push(`Combat Level: ${matchedSlayerMaster.combatLvl}`);
 			if (matchedSlayerMaster.questPoints) aRequirements.push(`Quest points: ${matchedSlayerMaster.questPoints}`);
@@ -332,10 +332,9 @@ export async function slayerNewTaskCommand({
 			if (aRequirements.length > 0) warningInfo += `**Requires**:\n${aRequirements.join('\n')}\n\n`;
 		}
 
-		let baseInfo = currentTask
+		const baseInfo = currentTask
 			? await slayerStatusCommand(user)
-			: 'You have no task at the moment, you can get a task using `/slayer task master:Turael`' +
-			  `All slayer Masters: ${slayerMasters.map(i => i.name).join(', ')}`;
+			: `You have no task at the moment, you can get a task using \`/slayer task master:Turael\`All slayer Masters: ${slayerMasters.map(i => i.name).join(', ')}`;
 
 		resultMessage += `${warningInfo}${baseInfo}`;
 		if (currentTask && !warningInfo) {
@@ -351,7 +350,7 @@ export async function slayerNewTaskCommand({
 
 	const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
 
-	let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
+	let commonName = getCommonTaskName(newSlayerTask.assignedTask.monster);
 	if (commonName === 'TzHaar') {
 		resultMessage += 'Ah... Tzhaar... ';
 		commonName +=
@@ -409,9 +408,7 @@ export async function slayerSkipTaskCommand({
 	if (block && myBlockList.length >= maxBlocks) {
 		interactionReply(
 			interaction,
-			`You cannot have more than ${maxBlocks} slayer blocks!\n\nUse:\n` +
-				'`/slayer rewards unblock assignment:kalphite`\n to remove a blocked monster.\n' +
-				'`/slayer manage command:list_blocks` for your list of blocked monsters.'
+			`You cannot have more than ${maxBlocks} slayer blocks!\n\nUse:\n\`/slayer rewards unblock assignment:kalphite\`\n to remove a blocked monster.\n\`/slayer manage command:list_blocks\` for your list of blocked monsters.`
 		);
 		return;
 	}

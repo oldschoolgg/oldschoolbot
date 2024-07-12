@@ -1,13 +1,12 @@
-import { randInt, roll, Time } from 'e';
+import { Time, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
-
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { clAdjustedDroprate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -18,8 +17,9 @@ export const wintertodtTask: MinionTask = {
 	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity, duration } = data;
 		const user = await mUserFetch(userID);
+		const hasMasterCape = user.hasEquippedOrInBank('Firemaking master cape');
 
-		let loot = new Bank();
+		const loot = new Bank();
 
 		let totalPoints = 0;
 
@@ -71,7 +71,7 @@ export const wintertodtTask: MinionTask = {
 		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
 		if (
 			user.hasEquippedOrInBank(
-				Object.keys(Firemaking.pyromancerItems).map(i => parseInt(i)),
+				Object.keys(Firemaking.pyromancerItems).map(i => Number.parseInt(i)),
 				'every'
 			)
 		) {
@@ -81,7 +81,7 @@ export const wintertodtTask: MinionTask = {
 		} else {
 			// For each pyromancer item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Firemaking.pyromancerItems)) {
-				if (user.hasEquippedOrInBank(parseInt(itemID))) {
+				if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
 					const amountToAdd = Math.floor(fmXpToGive * (bonus / 100));
 					fmXpToGive += amountToAdd;
 					fmBonusXP += amountToAdd;
@@ -105,7 +105,7 @@ export const wintertodtTask: MinionTask = {
 		if (flappyRes.shouldGiveBoost) {
 			loot.multiply(2);
 		}
-		if (user.hasEquippedOrInBank('Firemaking master cape')) {
+		if (hasMasterCape) {
 			loot.multiply(2);
 		}
 
@@ -114,15 +114,20 @@ export const wintertodtTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		incrementMinigameScore(user.id, 'wintertodt', quantity);
+		await incrementMinigameScore(user.id, 'wintertodt', quantity);
 
 		const image = await makeBankImage({
+			title: `Loot From ${quantity}x Wintertodt`,
 			bank: itemsAdded,
 			user,
 			previousCL
 		});
 
-		let output = `${user}, ${user.minionName} finished subduing Wintertodt ${quantity}x times. ${xpStr}, you cut ${numberOfRoots}x Bruma roots.`;
+		let output = `${user}, ${
+			user.minionName
+		} finished subduing Wintertodt ${quantity}x times. ${xpStr}, you cut ${numberOfRoots}x Bruma roots${
+			hasMasterCape ? ', 2x loot for Firemaking master cape.' : '.'
+		}`;
 
 		if (fmBonusXP > 0) {
 			output += `\n\n**Firemaking Bonus XP:** ${fmBonusXP.toLocaleString()}`;
@@ -149,6 +154,6 @@ export const wintertodtTask: MinionTask = {
 			]
 		});
 
-		handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
+		return handleTripFinish(user, channelID, output, image.file.attachment, data, itemsAdded);
 	}
 };

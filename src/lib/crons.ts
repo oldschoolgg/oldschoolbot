@@ -2,7 +2,7 @@ import { schedule } from 'node-cron';
 
 import { analyticsTick } from './analytics';
 import { syncPrescence } from './doubleLoot';
-import { prisma } from './settings/prisma';
+
 import { cacheCleanup } from './util/cachedUserIDs';
 import { syncSlayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
 

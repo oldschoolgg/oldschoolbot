@@ -4,10 +4,10 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { userHasFlappy } from '../../../lib/invention/inventions';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
+import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -43,8 +43,8 @@ export const fightCavesTask: MinionTask = {
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
-			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
+			usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
+			usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
 		if (preJadDeathTime) {
 			let slayerMsg = '';
@@ -53,7 +53,7 @@ export const fightCavesTask: MinionTask = {
 
 				await prisma.slayerTask.update({
 					where: {
-						id: usersTask.currentTask!.id
+						id: usersTask.currentTask?.id
 					},
 					data: {
 						quantity_remaining: 0,
@@ -104,7 +104,7 @@ export const fightCavesTask: MinionTask = {
 
 				await prisma.slayerTask.update({
 					where: {
-						id: usersTask.currentTask!.id
+						id: usersTask.currentTask?.id
 					},
 					data: {
 						quantity_remaining: 0,
@@ -185,7 +185,7 @@ export const fightCavesTask: MinionTask = {
 
 			await prisma.slayerTask.update({
 				where: {
-					id: usersTask.currentTask!.id
+					id: usersTask.currentTask?.id
 				},
 				data: {
 					quantity_remaining: 0

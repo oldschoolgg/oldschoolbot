@@ -3,7 +3,7 @@ import { percentChance, randInt } from 'e';
 import { zealOutfit } from '../../../lib/shadesKeys';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { OfferingActivityTaskOptions } from '../../../lib/types/minions';
+import type { OfferingActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 

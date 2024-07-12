@@ -3,10 +3,10 @@ import { Bank } from 'oldschooljs';
 
 import { BitField, discontinuedItems } from '../constants';
 import { allDyedItems } from '../dyedItems';
-import { MaterialBank } from '../invention/MaterialBank';
+import type { MaterialBank } from '../invention/MaterialBank';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
-import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import { ItemBank, Skills } from '../types';
+import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
+import type { ItemBank, Skills } from '../types';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import { itemNameFromID } from '../util/smallUtils';
@@ -1372,6 +1372,12 @@ const Reverteables: Createable[] = [
 			[itemID('Lizardman fang')]: 100
 		},
 		noCl: true
+	},
+	{
+		name: "Revert Dizana's quiver (uncharged)",
+		inputItems: new Bank().add("Dizana's quiver (uncharged)"),
+		outputItems: new Bank().add('Sunfire splinters', 4000),
+		noCl: true
 	}
 ];
 
@@ -2400,6 +2406,16 @@ const Createables: Createable[] = [
 		inputItems: new Bank().add('Venator shard', 5).freeze(),
 		outputItems: new Bank().add('Venator bow (uncharged)').freeze()
 	},
+	{
+		name: "Blessed dizana's quiver",
+		inputItems: new Bank().add('Sunfire splinters', 150_000).add("Dizana's quiver (uncharged)").freeze(),
+		outputItems: new Bank().add("Blessed dizana's quiver").freeze()
+	},
+	{
+		name: "Dizana's max cape",
+		inputItems: new Bank().add("Blessed dizana's quiver").add('Max cape').add('Max hood').freeze(),
+		outputItems: new Bank().add("Dizana's max cape").add("Dizana's max hood").freeze()
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
@@ -2439,7 +2455,6 @@ const Createables: Createable[] = [
 export default Createables;
 export const creatablesCL = uniqueArr(
 	Createables.filter(i => i.noCl !== true)
-		.map(i => (isFunction(i.outputItems) ? [] : new Bank(i.outputItems).items().map(i => i[0].id)))
-		.flat()
+		.flatMap(i => (isFunction(i.outputItems) ? [] : new Bank(i.outputItems).items().map(i => i[0].id)))
 		.filter(i => !discontinuedItems.includes(i) && !allDyedItems.includes(i))
 );

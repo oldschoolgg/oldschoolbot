@@ -6,7 +6,7 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
+import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -55,13 +55,13 @@ export const sepulchreTask: MinionTask = {
 			itemsToAdd: loot
 		});
 
-		let xpRes = await user.addXP({
+		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Agility,
 			amount: agilityXP,
 			duration
 		});
 
-		let thievingXpRes = await user.addXP({
+		const thievingXpRes = await user.addXP({
 			skillName: SkillsEnum.Thieving,
 			amount: thievingXP,
 			duration

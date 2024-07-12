@@ -1,10 +1,10 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { BitField } from '../../../lib/constants';
 import { formatSkillRequirements, getAllIDsOfUser, stringMatches, toKMB } from '../../../lib/util';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
-import resolveItems from '../../../lib/util/resolveItems';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
 export async function bankBgCommand(interaction: ChatInputCommandInteraction, user: MUser, name: string) {
@@ -20,7 +20,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 	}
 
 	const owners = selectedImage.owners ?? [];
-	let allAccounts = getAllIDsOfUser(user);
+	const allAccounts = getAllIDsOfUser(user);
 	if (user.bitfield.includes(BitField.isModerator) || allAccounts.some(a => owners.includes(a))) {
 		await user.update({
 			bankBackground: selectedImage.id
@@ -86,7 +86,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 	/**
 	 * If this bank image has a gp or item cost, confirm and charge.
 	 */
-	let economyCost = new Bank();
+	const economyCost = new Bank();
 	if (selectedImage.gpCost || selectedImage.itemCost) {
 		const userBank = user.bank;
 

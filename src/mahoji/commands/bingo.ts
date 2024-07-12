@@ -1,26 +1,29 @@
-import { formatOrdinal, mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
-import { Prisma } from '@prisma/client';
-import { bold, ChatInputCommandInteraction, User, userMention } from 'discord.js';
-import { chunk, noOp, notEmpty, Time, uniqueArr } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { MahojiUserOption } from 'mahoji/dist/lib/types';
+import { dateFm, formatOrdinal, mentionCommand, stringMatches, truncateString } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import type { Prisma } from '@prisma/client';
+import type { ChatInputCommandInteraction, User } from 'discord.js';
+import { bold, userMention } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, chunk, noOp, notEmpty, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { clImageGenerator } from '../../lib/collectionLogTask';
 import { BOT_TYPE, Emoji, usernameCache } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
-import { channelIsSendable, dateFm, isValidDiscordSnowflake, isValidNickname, md5sum, toKMB } from '../../lib/util';
+
+import { channelIsSendable, isValidDiscordSnowflake, isValidNickname, md5sum, toKMB } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { BingoManager, BingoTrophies } from '../lib/bingo/BingoManager';
-import { generateTileName, getAllTileItems, isGlobalTile, StoredBingoTile } from '../lib/bingo/bingoUtil';
+import type { StoredBingoTile } from '../lib/bingo/bingoUtil';
+import { generateTileName, getAllTileItems, isGlobalTile } from '../lib/bingo/bingoUtil';
 import { globalBingoTiles } from '../lib/bingo/globalTiles';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { doMenu, getPos } from './leaderboard';
 
 const bingoAutocomplete = async (value: string, user: User) => {
@@ -244,10 +247,10 @@ async function getBingoFromUserInput(input: string) {
 	const where = Number.isNaN(Number(input))
 		? {
 				title: input
-		  }
+			}
 		: {
 				id: Number(input)
-		  };
+			};
 	const bingo = await prisma.bingo.findFirst({
 		where
 	});
@@ -495,8 +498,7 @@ export const bingoCommand: OSBMahojiCommand = {
 							}
 						});
 						return bingos
-							.map(b => new BingoManager(b).bingoTiles)
-							.flat()
+							.flatMap(b => new BingoManager(b).bingoTiles)
 							.filter(b => b.name.toLowerCase().includes(value.toLowerCase()))
 							.map(b => ({
 								name: truncateString(b.name, 100),
@@ -589,7 +591,7 @@ export const bingoCommand: OSBMahojiCommand = {
 
 		if (options.items) {
 			const bingoID = Number(options.items.bingo);
-			if (isNaN(bingoID)) {
+			if (Number.isNaN(bingoID)) {
 				return 'Invalid bingo.';
 			}
 			const bingoParticipant = await prisma.bingoParticipant.findFirst({
@@ -827,7 +829,7 @@ The creator of the bingo (${userMention(
 				if (bingo.isActive()) {
 					return "You can't add tiles to a bingo after it has started.";
 				}
-				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo!.add_tile));
+				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo?.add_tile));
 				let tileToAdd: StoredBingoTile | null = null;
 				if (globalTile) {
 					tileToAdd = { global: globalTile.id };
@@ -858,7 +860,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					return "You can't remove tiles to a bingo after it has started.";
 				}
 				let newTiles = [...bingo.rawBingoTiles];
-				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo!.remove_tile));
+				const globalTile = globalBingoTiles.find(t => stringMatches(t.id, options.manage_bingo?.remove_tile));
 				let tileName = '';
 				if (globalTile) {
 					newTiles = newTiles.filter(
@@ -867,11 +869,11 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					tileName = generateTileName(globalTile);
 				} else {
 					const tileToRemove = newTiles.find(
-						t => md5sum(generateTileName(t)) === options.manage_bingo!.remove_tile
+						t => md5sum(generateTileName(t)) === options.manage_bingo?.remove_tile
 					);
 					if (tileToRemove) {
 						newTiles = newTiles.filter(
-							t => md5sum(generateTileName(t)) !== options.manage_bingo!.remove_tile!
+							t => md5sum(generateTileName(t)) !== options.manage_bingo?.remove_tile!
 						);
 						tileName = generateTileName(tileToRemove);
 					}
@@ -899,7 +901,7 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 
 			if (options.manage_bingo.add_extra_gp) {
 				const amount = Number(options.manage_bingo.add_extra_gp);
-				if (isNaN(amount) || amount < 1) {
+				if (Number.isNaN(amount) || amount < 1) {
 					return 'Invalid amount.';
 				}
 
@@ -1003,9 +1005,7 @@ ${yourTeam.bingoTableStr}`
 				}
 			}
 
-			let str = `**${bingo.title}** ${teams.length} teams, ${toKMB(
-				await bingo.countTotalGPInPrizePool()
-			)} GP Prize Pool
+			const str = `**${bingo.title}** ${teams.length} teams, ${toKMB(await bingo.countTotalGPInPrizePool())} GP Prize Pool
 **Start:** ${dateFm(bingo.startDate)}
 **Finish:** ${dateFm(bingo.endDate)}
 ${progressString}

@@ -18,7 +18,7 @@ model Activity {
   group_activity Boolean
   type           activity_type_enum
   channel_id     BigInt
-  data           Json               @db.Json
+  data           Json               @db.JsonB
   pinnedTrip     PinnedTrip[]
 
   @@index([user_id, finish_date])
@@ -41,6 +41,8 @@ model Analytic {
   ironMinionsCount   Int?
   totalSacrificed    BigInt?
   totalGP            BigInt?
+  totalGeGp          BigInt?
+  totalBigAlchGp     BigInt?
   dicingBank         BigInt?
   duelTaxBank        BigInt?
   dailiesAmount      BigInt?
@@ -133,6 +135,8 @@ model ClientStorage {
   nmz_cost                     Json     @default("{}") @db.Json
   toa_cost                     Json     @default("{}") @db.Json
   toa_loot                     Json     @default("{}") @db.Json
+  colo_cost                    Json     @default("{}") @db.Json
+  colo_loot                    Json     @default("{}") @db.Json
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
@@ -686,6 +690,7 @@ model Minigame {
   nmz                     Int    @default(0)
   shades_of_morton        Int    @default(0)
   tombs_of_amascut        Int    @default(0)
+  colosseum               Int    @default(0)
 
   // BSO
   ourania_delivery_service Int @default(0)
@@ -984,11 +989,11 @@ model UserStats {
   high_gambles                     Int  @default(0)
   honour_points                    Int  @default(0)
 
-  slayer_task_streak        Int @default(0)
-  slayer_wildy_task_streak  Int @default(0)
-  slayer_superior_count     Int @default(0)
-  slayer_unsired_offered    Int @default(0)
-  slayer_chewed_offered     Int @default(0)
+  slayer_task_streak       Int @default(0)
+  slayer_wildy_task_streak Int @default(0)
+  slayer_superior_count    Int @default(0)
+  slayer_unsired_offered   Int @default(0)
+  slayer_chewed_offered    Int @default(0)
 
   tob_cost        Json @default("{}")
   tob_loot        Json @default("{}")
@@ -1043,6 +1048,13 @@ model UserStats {
 
   turaels_trials_cost_bank Json @default("{}") @db.Json
   turaels_trials_loot_bank Json @default("{}") @db.Json
+
+  colo_cost      Json @default("{}") @db.Json
+  colo_loot      Json @default("{}") @db.Json
+  colo_kc_bank   Json @default("{}") @db.Json
+  colo_max_glory Int?
+
+  quivers_sacrificed Int @default(0)
 
   @@map("user_stats")
 }
@@ -1246,6 +1258,7 @@ enum activity_type_enum {
   DepthsOfAtlantis
   StrongholdOfSecurity
   BirthdayCollectIngredients
+  CombatRing
   SpecificQuest
   Mortimer
   CamdozaalFishing
@@ -1254,6 +1267,7 @@ enum activity_type_enum {
   MemoryHarvest
   GuthixianCache
   TuraelsTrials
+  Colosseum
 }
 
 enum xp_gains_skill_enum {

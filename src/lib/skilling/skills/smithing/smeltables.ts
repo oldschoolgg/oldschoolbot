@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import itemID from '../../../util/itemID';
-import { Bar } from '../../types';
+import type { Bar } from '../../types';
 
 const Bars: Bar[] = [
 	{

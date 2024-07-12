@@ -1,8 +1,8 @@
 import { Bank } from 'oldschooljs';
 
 import { bossEvents } from '../../lib/bossEvents';
-import { BossUser } from '../../lib/structures/Boss';
-import { NewBossOptions } from '../../lib/types/minions';
+import type { BossUser } from '../../lib/structures/Boss';
+import type { NewBossOptions } from '../../lib/types/minions';
 
 export const bossEventTask: MinionTask = {
 	type: 'BossEvent',

@@ -1,19 +1,21 @@
-import { stringMatches } from '@oldschoolgg/toolkit';
+import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { itemID, randomVariation } from 'oldschooljs/dist/util';
 
-import { UserFullGearSetup } from '../../lib/gear';
+import type { UserFullGearSetup } from '../../lib/gear';
 import { determineMiningTime } from '../../lib/skilling/functions/determineMiningTime';
 import { miningCapeOreEffect, miningGloves, pickaxes, varrockArmours } from '../../lib/skilling/functions/miningBoosts';
 import { sinsOfTheFatherSkillRequirements } from '../../lib/skilling/functions/questRequirements';
 import Mining from '../../lib/skilling/skills/mining';
-import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, itemID, itemNameFromID, randomVariation } from '../../lib/util';
+import type { MiningActivityTaskOptions } from '../../lib/types/minions';
+import { formatSkillRequirements, itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { minionName } from '../../lib/util/minionUtils';
 import { motherlodeMineCommand } from '../lib/abstracted_commands/motherlodeMineCommand';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export function calculateMiningInput({
 	nameInput,
@@ -232,11 +234,11 @@ export const mineCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; powermine?: boolean }>) => {
 		const user = await mUserFetch(userID);
-		let { quantity, powermine } = options;
+		const { quantity, powermine } = options;
 
 		const motherlodeMine =
 			stringMatches(Mining.MotherlodeMine.name, options.name) ||
-			Mining.MotherlodeMine.aliases!.some(a => stringMatches(a, options.name));
+			Mining.MotherlodeMine.aliases?.some(a => stringMatches(a, options.name));
 
 		if (motherlodeMine) {
 			return motherlodeMineCommand({ user, channelID, quantity });

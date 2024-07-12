@@ -1,13 +1,13 @@
 import { isGuildChannel } from '@oldschoolgg/toolkit';
-import { ChatInputCommandInteraction } from 'discord.js';
-import { CommandOptions } from 'mahoji/dist/lib/types';
+import type { CommandOptions } from '@oldschoolgg/toolkit';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { Monsters } from 'oldschooljs';
 
-import { PvMMethod } from '../../../lib/constants';
+import type { PvMMethod } from '../../../lib/constants';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { runCommand } from '../../../lib/settings/settings';
-import { autoslayModes, AutoslayOptionsEnum } from '../../../lib/slayer/constants';
-import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../../lib/slayer/slayerUtil';
+import { AutoslayOptionsEnum, autoslayModes } from '../../../lib/slayer/constants';
+import { SlayerMasterEnum, getCommonTaskName, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { hasSkillReqs, stringMatches } from '../../../lib/util';
 import { interactionReply } from '../../../lib/util/interactionReply';
 import { slayerNewTaskCommand } from './slayerTaskCommand';
@@ -369,7 +369,6 @@ const WildyAutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientMethod: 'cannon'
 	}
 ];
-
 function determineAutoslayMethod(autoslayOptions: AutoslayOptionsEnum[]) {
 	let method = 'default';
 	if (autoslayOptions.includes(AutoslayOptionsEnum.MaxEfficiency)) {
@@ -429,7 +428,10 @@ export async function autoSlayCommand({
 		let currentLow = Number.POSITIVE_INFINITY;
 		let currentMonID: number | null = null;
 
-		for (const monsterID of usersTask.assignedTask!.monsters) {
+		if (!usersTask.assignedTask) {
+			throw new Error('User had no assignedTask?');
+		}
+		for (const monsterID of usersTask.assignedTask.monsters) {
 			const osjsM = Monsters.get(monsterID);
 			if (osjsM && osjsM.data.combatLevel < currentLow) {
 				currentLow = osjsM.data.combatLevel;
@@ -470,7 +472,7 @@ export async function autoSlayCommand({
 			runCommand({
 				commandName: 'k',
 				args: {
-					name: usersTask.assignedTask!.monster.name
+					name: usersTask.assignedTask?.monster.name
 				},
 				bypassInhibitors: true,
 				...cmdRunOptions
@@ -478,8 +480,8 @@ export async function autoSlayCommand({
 			return;
 		}
 
-		if (ehpMonster && ehpMonster.efficientName) {
-			let args: CommandOptions = {
+		if (ehpMonster?.efficientName) {
+			const args: CommandOptions = {
 				name: ehpMonster.efficientName
 			};
 			if (ehpMonster.efficientMethod) {
@@ -496,7 +498,7 @@ export async function autoSlayCommand({
 		runCommand({
 			commandName: 'k',
 			args: {
-				name: usersTask.assignedTask!.monster.name
+				name: usersTask.assignedTask?.monster.name
 			},
 			bypassInhibitors: true,
 			...cmdRunOptions
@@ -506,7 +508,7 @@ export async function autoSlayCommand({
 	if (method === 'boss') {
 		// This code handles the 'highest/boss' setting of autoslay.
 		const myQPs = await user.QP;
-		let commonName = getCommonTaskName(usersTask.assignedTask!.monster);
+		const commonName = getCommonTaskName(usersTask.assignedTask!.monster);
 		if (commonName === 'TzHaar') {
 			runCommand({
 				commandName: 'activities',
@@ -518,7 +520,7 @@ export async function autoSlayCommand({
 		}
 
 		const allMonsters = killableMonsters.filter(m => {
-			return usersTask.assignedTask!.monsters.includes(m.id);
+			return usersTask.assignedTask?.monsters.includes(m.id);
 		});
 		if (allMonsters.length === 0) return 'Please report this error. No monster variations found.';
 		let maxDiff = 0;
@@ -553,7 +555,7 @@ export async function autoSlayCommand({
 	}
 	await runCommand({
 		commandName: 'k',
-		args: { name: usersTask.assignedTask!.monster.name },
+		args: { name: usersTask.assignedTask?.monster.name },
 		bypassInhibitors: true,
 		...cmdRunOptions
 	});

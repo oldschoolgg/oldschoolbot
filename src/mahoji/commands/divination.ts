@@ -1,26 +1,26 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
-import { increaseNumByPercent, removeFromArr, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { formatDuration, mentionCommand } from '@oldschoolgg/toolkit';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, increaseNumByPercent, removeFromArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import {
+	MemoryHarvestType,
 	basePortentCost,
 	divinationEnergies,
 	getAllPortentCharges,
-	MemoryHarvestType,
 	memoryHarvestTypes,
 	portents
 } from '../../lib/bso/divination';
-import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
-import { prisma } from '../../lib/settings/prisma';
-import { MemoryHarvestOptions } from '../../lib/types/minions';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
+
+import type { MemoryHarvestOptions } from '../../lib/types/minions';
 import { assert } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
-import { formatDuration } from '../../lib/util/smallUtils';
 import { memoryHarvestResult, totalTimePerRound } from '../../tasks/minions/bso/memoryHarvestActivity';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const divinationCommand: OSBMahojiCommand = {
 	name: 'divination',

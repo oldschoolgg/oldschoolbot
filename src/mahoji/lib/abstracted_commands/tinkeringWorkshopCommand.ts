@@ -1,10 +1,10 @@
 import { Time } from 'e';
 
-import { MaterialType, materialTypes } from '../../../lib/invention';
-import { transactMaterialsFromUser } from '../../../lib/invention/inventions';
+import { type MaterialType, materialTypes } from '../../../lib/invention';
 import { MaterialBank } from '../../../lib/invention/MaterialBank';
-import { ItemBank } from '../../../lib/types';
-import { TinkeringWorkshopOptions } from '../../../lib/types/minions';
+import { transactMaterialsFromUser } from '../../../lib/invention/inventions';
+import type { ItemBank } from '../../../lib/types';
+import type { TinkeringWorkshopOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -36,7 +36,7 @@ export async function tinkeringWorkshopCommand(user: MUser, material: MaterialTy
 		};
 	});
 
-	let str = `${
+	const str = `${
 		user.minionName
 	} is now off to do ${quantity}x Tinkering Workshop projects! The total trip will take ${formatDuration(
 		duration

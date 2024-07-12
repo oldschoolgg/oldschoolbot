@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 
 export const krystiliaMonsters: KillableMonster[] = [
 	{
@@ -15,6 +15,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 
 		difficultyRating: 5,
 		qpRequired: 0,
+		canCannon: true,
 		pkActivityRating: 1,
 		pkBaseDeathChance: 1,
 		revsWeaponBoost: true,

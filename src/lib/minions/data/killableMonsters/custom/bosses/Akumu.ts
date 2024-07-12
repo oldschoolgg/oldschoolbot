@@ -7,7 +7,7 @@ import { GearStat } from '../../../../../gear';
 import { UncutGemTable } from '../../../../../simulation/sharedTables';
 import itemID from '../../../../../util/itemID';
 import resolveItems from '../../../../../util/resolveItems';
-import { CustomMonster } from '../customMonsters';
+import type { CustomMonster } from '../customMonsters';
 
 export const AkumuLootTable = new LootTable()
 	.tertiary(1000, 'Mini akumu')

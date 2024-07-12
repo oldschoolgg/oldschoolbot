@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
 import { bloodEssence, raimentBonus } from '../../lib/skilling/functions/calcsRunecrafting';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { DarkAltarOptions } from '../../lib/types/minions';
+import type { DarkAltarOptions } from '../../lib/types/minions';
 import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -53,7 +53,7 @@ export const darkAltarTask: MinionTask = {
 			runeQuantity += bonusBlood;
 		}
 
-		let loot = new Bank().add(runeData.item.id, runeQuantity);
+		const loot = new Bank().add(runeData.item.id, runeQuantity);
 		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, runeData.petChance);
 		for (let i = 0; i < quantity; i++) {
 			if (roll(petDropRate)) {

@@ -10,7 +10,8 @@ import MediumClueTable from 'oldschooljs/dist/simulation/clues/Medium';
 import { ChambersOfXeric, Nightmare } from 'oldschooljs/dist/simulation/misc';
 import { EliteMimicTable, MasterMimicTable } from 'oldschooljs/dist/simulation/misc/Mimic';
 
-import { rollNaxxusLoot } from '../tasks/minions/bso/naxxusActivity';
+import { resolveItems } from 'oldschooljs/dist/util/util';
+import { rollNaxxusLoot } from './bso/naxxus/rollNaxxusLoot';
 import { allCollectionLogsFlat } from './data/Collections';
 import {
 	chambersOfXericCL,
@@ -27,12 +28,12 @@ import {
 	nexCL,
 	nexUniqueDrops,
 	temporossCL,
-	theatreOfBloodCapes,
-	theatreOfBloodHardUniques,
-	theatreOfBloodNormalUniques,
 	theGauntletCL,
 	theNightmareCL,
 	theNightmareNormalCL,
+	theatreOfBloodCapes,
+	theatreOfBloodHardUniques,
+	theatreOfBloodNormalUniques,
 	wintertodtCL
 } from './data/CollectionsExport';
 import pets from './data/pets';
@@ -47,17 +48,16 @@ import { gauntlet } from './simulation/gauntlet';
 import { getTemporossLoot } from './simulation/tempoross';
 import { TheatreOfBlood } from './simulation/tob';
 import { WintertodtCrate } from './simulation/wintertodt';
-import { calculateTripConsumableCost } from './util';
+import { calculateTripConsumableCost } from './util/calculateTripConsumableCost';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
-import resolveItems from './util/resolveItems';
 
 interface KillArgs {
 	accumulatedLoot: Bank;
 	totalRuns: number;
 }
 
-export interface Finishable {
+interface Finishable {
 	name: string;
 	aliases?: string[];
 	cl: number[];
@@ -319,15 +319,15 @@ for (const mon of monsterPairedCLs) {
 		cl: mon.cl,
 		kill: ({ accumulatedLoot }) => {
 			const cost = new Bank();
-			if (killableMonster && killableMonster.healAmountNeeded) {
+			if (killableMonster?.healAmountNeeded) {
 				cost.add('Swordfish', Math.ceil(killableMonster.healAmountNeeded / 14));
 			}
 			if (killableMonster?.itemCost) {
 				cost.add(calculateTripConsumableCost(killableMonster.itemCost, 1, killableMonster.timeToFinish));
 			}
 
-			let loot = 'kill' in mon.mon ? mon.mon.kill(1, {}) : mon.mon.table.roll();
-			if (killableMonster && killableMonster.specialLoot) {
+			const loot = 'kill' in mon.mon ? mon.mon.kill(1, {}) : mon.mon.table.roll();
+			if (killableMonster?.specialLoot) {
 				killableMonster.specialLoot({ ownedItems: accumulatedLoot, loot, quantity: 1, cl: accumulatedLoot });
 			}
 			return { loot, cost };

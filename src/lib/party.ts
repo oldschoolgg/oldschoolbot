@@ -1,22 +1,20 @@
-/* eslint-disable prefer-promise-reject-errors */
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, TextChannel, userMention } from 'discord.js';
-import { debounce, noOp, Time } from 'e';
+import { makeComponents } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit';
+import type { TextChannel } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, userMention } from 'discord.js';
+import { Time, debounce, noOp } from 'e';
 
-import { production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
 import { SILENT_ERROR, usernameCache } from './constants';
-import { MakePartyOptions } from './types';
-import { formatDuration, makeComponents } from './util';
+import type { MakePartyOptions } from './types';
+import { formatDuration } from './util';
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();
-if (production) {
-	setInterval(() => {
-		debugLog('Clearing partylockcache');
-		partyLockCache.clear();
-	}, Time.Minute * 20);
-}
+setInterval(() => {
+	debugLog('Clearing partylockcache');
+	partyLockCache.clear();
+}, Time.Minute * 20);
 
 const buttons = [
 	{

@@ -3,9 +3,6 @@ import { Bank, Monsters, Openables } from 'oldschooljs';
 
 import { eggs } from '../../mahoji/commands/offer';
 import { divinationEnergies } from '../bso/divination';
-import { circusBuyables } from '../data/buyables/circusBuyables';
-import { fistOfGuthixBuyables } from '../data/buyables/fistOfGuthixBuyables';
-import { stealingCreationBuyables } from '../data/buyables/stealingCreationBuyables';
 import {
 	allGildedItems,
 	brokenPernixOutfit,
@@ -19,6 +16,9 @@ import {
 	torvaOutfit,
 	virtusOutfit
 } from '../data/CollectionsExport';
+import { circusBuyables } from '../data/buyables/circusBuyables';
+import { fistOfGuthixBuyables } from '../data/buyables/fistOfGuthixBuyables';
+import { stealingCreationBuyables } from '../data/buyables/stealingCreationBuyables';
 import { PartyhatTable } from '../data/holidayItems';
 import {
 	ArdougneDiary,
@@ -30,10 +30,10 @@ import {
 	KourendKebosDiary,
 	LumbridgeDraynorDiary,
 	MorytaniaDiary,
-	userhasDiaryTier,
 	VarrockDiary,
 	WesternProv,
-	WildernessDiary
+	WildernessDiary,
+	userhasDiaryTier
 } from '../diaries';
 import { dyedItems } from '../dyedItems';
 import { implings } from '../implings';
@@ -45,10 +45,10 @@ import { allThirdAgeItems } from '../simulation/sharedTables';
 import Darts from '../skilling/skills/fletching/fletchables/darts';
 import Javelins from '../skilling/skills/fletching/fletchables/javelins';
 import { ashes } from '../skilling/skills/prayer';
-import { ItemBank } from '../types';
+import type { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
-import { leaguesHasCatches, leaguesHasKC, Task } from './leaguesUtils';
+import { type Task, leaguesHasCatches, leaguesHasKC } from './leaguesUtils';
 import { calculateChargedItems, calculateTiarasMade } from './stats';
 
 export const hardTasks: Task[] = [
@@ -1112,7 +1112,7 @@ export const hardTasks: Task[] = [
 		id: 2148,
 		name: 'Scatter 500 of every ashes',
 		has: async ({ userStats }) => {
-			let vals = Object.values(userStats.scattered_ashes_bank as ItemBank);
+			const vals = Object.values(userStats.scattered_ashes_bank as ItemBank);
 			return vals.length === ashes.length && vals.every(i => i >= 500);
 		}
 	},
@@ -1127,7 +1127,7 @@ export const hardTasks: Task[] = [
 		id: 2150,
 		name: 'Offer 25 of each bird egg',
 		has: async ({ userStats }) => {
-			let vals = Object.values(userStats.bird_eggs_offered_bank as ItemBank);
+			const vals = Object.values(userStats.bird_eggs_offered_bank as ItemBank);
 			return vals.length === eggs.length && vals.every(i => Number(i) >= 25);
 		}
 	},
@@ -1149,7 +1149,7 @@ export const hardTasks: Task[] = [
 		id: 2153,
 		name: 'Catch 20 of every impling passively (excluding Lucky implings)',
 		has: async ({ userStats }) => {
-			let loot = new Bank(userStats.passive_implings_bank as ItemBank);
+			const loot = new Bank(userStats.passive_implings_bank as ItemBank);
 			for (const implingId of Object.keys(implings)) {
 				if (Number(implingId) !== Openables.LuckyImpling.id && loot.amount(Number(implingId)) < 20) {
 					return false;

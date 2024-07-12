@@ -1,7 +1,7 @@
 import { Time } from 'e';
 
 import { production } from '../../../config';
-import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
@@ -16,7 +16,7 @@ export async function bonanzaCommand(user: MUser, channelID: string) {
 
 	const duration = randomVariation(Time.Minute * 15, 5);
 
-	let str = `${
+	const str = `${
 		user.minionName
 	} is now off to participate in Balthazar's Big Bonanza! The total trip will take ${formatDuration(duration)}.`;
 

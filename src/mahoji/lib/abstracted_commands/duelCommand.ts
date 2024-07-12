@@ -1,12 +1,13 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction } from 'discord.js';
-import { noOp, sleep, Time } from 'e';
-import { MahojiUserOption } from 'mahoji/dist/lib/types';
+import type { MahojiUserOption } from '@oldschoolgg/toolkit';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { Time, noOp, sleep } from 'e';
 import { Bank, Util } from 'oldschooljs';
 
+import { MUserClass } from '../../../lib/MUser';
 import { BLACKLISTED_USERS } from '../../../lib/blacklists';
 import { Emoji, Events } from '../../../lib/constants';
-import { MUserClass } from '../../../lib/MUser';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { awaitMessageComponentInteraction, channelIsSendable } from '../../../lib/util';
 import { deferInteraction } from '../../../lib/util/interactionReply';
 import { mahojiParseNumber, userStatsUpdate } from '../../mahojiSettings';

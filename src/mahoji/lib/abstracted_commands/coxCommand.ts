@@ -13,16 +13,16 @@ import {
 } from '../../../lib/data/cox';
 import { degradeItem } from '../../../lib/degradeableItems';
 import {
+	InventionID,
 	canAffordInventionBoost,
 	inventionBoosts,
-	InventionID,
 	inventionItemBoost
 } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
 import { setupParty } from '../../../lib/party';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import { MakePartyOptions } from '../../../lib/types';
-import { RaidsOptions } from '../../../lib/types/minions';
+import type { MakePartyOptions } from '../../../lib/types';
+import type { RaidsOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration, randomVariation } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -68,9 +68,7 @@ export async function coxStatsCommand(user: MUser) {
 	)}%, Team: ${Emoji.Skull} ${(await createTeam(Array(2).fill(user), false))[0].deathChance.toFixed(1)}% ${
 		Emoji.CombatSword
 	} ${calcWhatPercent(normalTeam.reductions[user.id], normalTeam.maxUserReduction).toFixed(1)}%)
-**Challenge Mode:** ${minigameScores.raids_challenge_mode} KC (Solo: ${Emoji.Skull} ${(
-		await createTeam([user], true)
-	)[0].deathChance.toFixed(1)}%  ${Emoji.CombatSword} ${calcWhatPercent(
+**Challenge Mode:** ${minigameScores.raids_challenge_mode} KC (Solo: ${Emoji.Skull} ${(await createTeam([user], true))[0].deathChance.toFixed(1)}%  ${Emoji.CombatSword} ${calcWhatPercent(
 		cmSolo.reductions[user.id],
 		cmSolo.maxUserReduction
 	).toFixed(1)}%, Team: ${Emoji.Skull} ${(await createTeam(Array(2).fill(user), true))[0].deathChance.toFixed(1)}% ${
@@ -110,7 +108,7 @@ export async function coxCommand(
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
-	let maxSize = mahojiParseNumber({ input: maxSizeInput, min: 2, max: 15 }) ?? 15;
+	const maxSize = mahojiParseNumber({ input: maxSizeInput, min: 2, max: 15 }) ?? 15;
 
 	const partyOptions: MakePartyOptions = {
 		leader: user,
@@ -186,7 +184,7 @@ export async function coxCommand(
 	}
 
 	// This gives a normal duration distribution. Better than (raidDuration * quantity) +/- 5%
-	let duration = sumArr(
+	const duration = sumArr(
 		Array(quantity)
 			.fill(raidDuration)
 			.map(d => randomVariation(d, 5))
@@ -267,12 +265,12 @@ export async function coxCommand(
 	let str = isSolo
 		? `${user.minionName} is now doing ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
 				quantity > 1 ? 's' : ''
-		  }. The total trip will take ${formatDuration(duration)}.`
+			}. The total trip will take ${formatDuration(duration)}.`
 		: `${partyOptions.leader.usernameOrMention}'s party (${users
 				.map(u => u.usernameOrMention)
 				.join(', ')}) is now off to do ${quantity > 1 ? quantity : 'a'} Chambers of Xeric raid${
 				quantity > 1 ? 's' : ''
-		  } - the total trip will take ${formatDuration(duration)}.`;
+			} - the total trip will take ${formatDuration(duration)}.`;
 
 	str += ` \n\n${debugStr}`;
 

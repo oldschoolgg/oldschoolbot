@@ -1,15 +1,14 @@
-/* eslint-disable no-case-declarations */
-import { Tame, tame_growth } from '@prisma/client';
-import { objectEntries, Time } from 'e';
+import { type Tame, tame_growth } from '@prisma/client';
+import { Time, objectEntries } from 'e';
 import { Bank, Misc, Monsters } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXeric, TheatreOfBlood } from 'oldschooljs/dist/simulation/misc';
 
 import killableMonsters, { NightmareMonster } from './minions/data/killableMonsters';
 import { customDemiBosses } from './minions/data/killableMonsters/custom/demiBosses';
 import { Planks } from './minions/data/planks';
-import { KillableMonster } from './minions/types';
-import { prisma } from './settings/prisma';
+import type { KillableMonster } from './minions/types';
+
 import Tanning from './skilling/skills/crafting/craftables/tanning';
 import { assert, calculateSimpleMonsterDeathChance } from './util';
 import getOSItem from './util/getOSItem';
@@ -231,7 +230,7 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 		difficultyRating: 4,
 		itemsRequired: resolveItems([]),
 		loot({ quantity, tame }) {
-			let loot = new Bank();
+			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				loot.add(
 					ChambersOfXeric.complete({ team: [{ id: '1', personalPoints: calcPointsForTame(tame) }] })['1']
@@ -263,9 +262,9 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 		timeToFinish: Time.Minute * 90,
 		itemsRequired: resolveItems([]),
 		loot({ quantity }) {
-			let loot = new Bank();
+			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
-				let thisLoot = TheatreOfBlood.complete({
+				const thisLoot = TheatreOfBlood.complete({
 					hardMode: true,
 					team: [
 						{ id: '1', deaths: [] },
@@ -294,7 +293,7 @@ export const tameKillableMonsters: TameKillableMonster[] = [
 		timeToFinish: Time.Minute * 35,
 		itemsRequired: resolveItems([]),
 		loot({ quantity }) {
-			let loot = new Bank();
+			const loot = new Bank();
 			for (let i = 0; i < quantity; i++) {
 				const _loot = Misc.Nightmare.kill({
 					team: [
@@ -380,15 +379,13 @@ for (const override of overrides) {
 }
 
 export async function getIgneTameKC(tame: Tame) {
-	const result = await prisma.$queryRaw<
-		{ mid: number; kc: number }[]
-	>`SELECT (data->>'monsterID')::int AS mid, SUM((data->>'quantity')::int)::int AS kc
+	const result = await prisma.$queryRaw<{ mid: number; kc: number }[]>`SELECT (data->>'monsterID')::int AS mid, SUM((data->>'quantity')::int)::int AS kc
 										  FROM tame_activity
 										  WHERE tame_id = ${tame.id}
 										  AND completed = true
 										  GROUP BY data->>'monsterID';`;
-	let namedBank: Record<string, number> = {};
-	let idBank: Record<number, number> = {};
+	const namedBank: Record<string, number> = {};
+	const idBank: Record<number, number> = {};
 	for (const { mid, kc } of result) {
 		const mon = tameKillableMonsters.find(i => i.id === mid);
 		if (!mon) continue;
@@ -408,7 +405,7 @@ export type Nursery = {
 	hasFuel: boolean;
 } | null;
 
-export const enum TameType {
+export enum TameType {
 	Combat = 'pvm',
 	Gatherer = 'collect',
 	Support = 'support',
@@ -544,7 +541,7 @@ export const tameSpecies: Species[] = [
 export async function addDurationToTame(tame: Tame, duration: number) {
 	if (tame.growth_stage === tame_growth.adult) return null;
 	const percentToAdd = duration / Time.Minute / 20;
-	let newPercent = Math.max(1, Math.min(100, tame.growth_percent + percentToAdd));
+	const newPercent = Math.max(1, Math.min(100, tame.growth_percent + percentToAdd));
 
 	if (newPercent >= 100) {
 		const newTame = await prisma.tame.update({

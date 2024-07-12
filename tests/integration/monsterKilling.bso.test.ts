@@ -1,10 +1,10 @@
 import { Bank } from 'oldschooljs';
 import { expect, test } from 'vitest';
 
+import { processPendingActivities } from '../../src/lib/Task';
 import { convertStoredActivityToFlatActivity } from '../../src/lib/settings/prisma';
 import { Gear } from '../../src/lib/structures/Gear';
-import { processPendingActivities } from '../../src/lib/Task';
-import { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
+import type { MonsterActivityTaskOptions } from '../../src/lib/types/minions';
 import { minionKCommand } from '../../src/mahoji/commands/k';
 import { giveMaxStats } from '../../src/mahoji/commands/testpotato';
 import { createTestUser, mockClient } from './util';
@@ -47,7 +47,7 @@ test('Killing Vlad', async () => {
 	});
 	const data = convertStoredActivityToFlatActivity(_activity!) as MonsterActivityTaskOptions;
 
-	const quantityKilled = data.quantity;
+	const quantityKilled = data.q;
 	expect(user.bank.amount('Shark')).toBeLessThan(1_000_000);
 	expect(user.bank.amount('Vial of blood')).toEqual(1000 - quantityKilled);
 	expect(user.bank.amount('Silver stake')).toEqual(1000 - quantityKilled);

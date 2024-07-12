@@ -10,10 +10,10 @@ import { GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { AbyssalDragonLootTable } from './AbyssalDragon';
-import { CustomMonster } from './customMonsters';
 import { NihilizLootTable } from './Nihiliz';
 import { KrakenTable } from './SeaKraken';
 import { TreebeardLootTable } from './Treebeard';
+import type { CustomMonster } from './customMonsters';
 
 const SeaKraken: CustomMonster = {
 	id: 53_466_534,
@@ -103,7 +103,8 @@ const Malygos: CustomMonster = {
 	uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
 	notifyDrops: resolveItems(['Abyssal cape', 'Ori']),
 	baseMonster: Monsters.Vorkath,
-	customMonsterData: { attributes: [MonsterAttribute.Dragon, MonsterAttribute.Fiery] }
+	customMonsterData: { attributes: [MonsterAttribute.Dragon, MonsterAttribute.Fiery] },
+	canBePked: true
 };
 
 const Treebeard: CustomMonster = {
@@ -139,7 +140,8 @@ const Treebeard: CustomMonster = {
 		resolveNameBank({
 			'Axe of the high sungod': 10
 		})
-	]
+	],
+	canBePked: true
 };
 
 export const QueenBlackDragon: CustomMonster = {

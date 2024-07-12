@@ -1,12 +1,12 @@
-import { UserStats, XpGainSource } from '@prisma/client';
-import { User as RoboChimpUser } from '@prisma/robochimp';
+import type { UserStats, XpGainSource } from '@prisma/client';
+import type { User as RoboChimpUser } from '@prisma/robochimp';
 import { sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { gloriesInventorySize, wealthInventorySize } from '../constants';
-import { prisma } from '../settings/prisma';
+
 import Darts from '../skilling/skills/fletching/fletchables/darts';
-import { ItemBank } from '../types';
+import type { ItemBank } from '../types';
 import { getItem } from '../util/getOSItem';
 
 export function totalLampedXP(userStats: UserStats) {
@@ -33,9 +33,7 @@ WHERE COALESCE(cardinality(leagues_completed_tasks_ids), 0) > ${user.leagues_com
 }
 
 export async function calculateAllFletchedItems(user: MUser) {
-	const result = await prisma.$queryRawUnsafe<
-		{ name: string; total: number }[]
-	>(`SELECT data->>'fletchableName' AS name, SUM((data->>'quantity')::int) AS total
+	const result = await prisma.$queryRawUnsafe<{ name: string; total: number }[]>(`SELECT data->>'fletchableName' AS name, SUM((data->>'quantity')::int) AS total
 FROM activity
 WHERE type = 'Fletching'
 AND user_id = '${user.id}'::bigint
@@ -71,9 +69,7 @@ export function calculateDartsFletchedFromScratch({
 }
 
 export async function calculateTiarasMade(user: MUser) {
-	const tiarasMade = await prisma.$queryRawUnsafe<
-		{ tiara_id: string; total: bigint }[]
-	>(`SELECT data->>'tiaraID' AS tiara_id, SUM((data->>'tiaraQuantity')::int) AS total
+	const tiarasMade = await prisma.$queryRawUnsafe<{ tiara_id: string; total: bigint }[]>(`SELECT data->>'tiaraID' AS tiara_id, SUM((data->>'tiaraQuantity')::int) AS total
 FROM activity
 WHERE type = 'TiaraRunecraft'
 AND user_id = '${user.id}'::bigint
@@ -118,9 +114,7 @@ AND data->>'points' IS NOT NULL;`);
 }
 
 export async function calculateXPSources(user: MUser) {
-	const result = await prisma.$queryRawUnsafe<
-		{ source: XpGainSource; total: bigint }[]
-	>(`SELECT "xp_gains"."source" AS source, SUM(xp) AS total
+	const result = await prisma.$queryRawUnsafe<{ source: XpGainSource; total: bigint }[]>(`SELECT "xp_gains"."source" AS source, SUM(xp) AS total
 FROM xp_gains
 WHERE "xp_gains"."source" IS NOT NULL
 AND user_id = '${user.id}'::bigint

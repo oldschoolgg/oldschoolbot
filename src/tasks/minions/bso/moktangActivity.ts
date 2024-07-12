@@ -1,4 +1,4 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatOrdinal, increaseBankQuantitesByPercent } from '@oldschoolgg/toolkit';
 import { userMention } from 'discord.js';
 import { randInt } from 'e';
 import { Bank } from 'oldschooljs';
@@ -11,13 +11,13 @@ import { MOKTANG_ID, MoktangLootTable } from '../../../lib/minions/data/killable
 import {
 	FletchingTipsTable,
 	HighTierStoneSpiritTable,
+	StoneSpiritTable,
 	lowRuneHighAdamantTable,
-	runeWeaponTable,
-	StoneSpiritTable
+	runeWeaponTable
 } from '../../../lib/simulation/sharedTables';
 import Smithing from '../../../lib/skilling/skills/smithing';
-import { MoktangTaskOptions } from '../../../lib/types/minions';
-import { increaseBankQuantitesByPercent, itemNameFromID } from '../../../lib/util';
+import type { MoktangTaskOptions } from '../../../lib/types/minions';
+import { itemNameFromID } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
@@ -31,7 +31,7 @@ export const moktangTask: MinionTask = {
 
 		await user.incrementKC(MOKTANG_ID, qty);
 
-		let loot = new Bank();
+		const loot = new Bank();
 
 		for (let i = 0; i < qty; i++) {
 			loot.add(MoktangLootTable.roll());
@@ -98,7 +98,7 @@ export const moktangTask: MinionTask = {
 			}
 		}
 
-		let str = `${userMention(data.userID)}, ${
+		const str = `${userMention(data.userID)}, ${
 			user.minionName
 		} finished killing ${qty}x Moktang. ${bonusPercent}% bonus loot because of your Mining level. Received ${loot}.
 

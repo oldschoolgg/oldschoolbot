@@ -1,4 +1,4 @@
-import { activity_type_enum } from '@prisma/client';
+import type { activity_type_enum } from '@prisma/client';
 
 import { ActivityGroup } from '../constants';
 

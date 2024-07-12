@@ -1,8 +1,7 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { randArrItem } from 'e';
-
 import { cancelTask } from '../../../lib/settings/settings';
-import { NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
+import type { NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { getActivityOfUser } from '../../../lib/util/minionIsBusy';
 

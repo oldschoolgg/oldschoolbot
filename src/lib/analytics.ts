@@ -1,7 +1,8 @@
 import { ActivityGroup, globalConfig } from '../lib/constants';
-import { prisma } from '../lib/settings/prisma';
-import { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
+
+import type { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
 import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
+import { getItem } from './util/getOSItem';
 
 async function calculateMinionTaskCounts() {
 	const minionTaskCounts: Record<ActivityGroup, number> = {
@@ -45,10 +46,23 @@ export async function analyticsTick() {
 				'SELECT SUM("GP") AS count FROM users;'
 			].map(query => prisma.$queryRawUnsafe(query))
 		)
-	).map((result: any) => parseInt(result[0].count)) as number[];
+	).map((result: any) => Number.parseInt(result[0].count)) as number[];
+
+	const artifact = getItem('Magical artifact')!;
+	const statuette = getItem('Demon statuette')!;
+
+	const [totalGeGp, totalArtifactGp, totalDemonStatuetteGp] = (
+		await Promise.all(
+			[
+				'SELECT quantity AS val FROM ge_bank WHERE item_id = 995',
+				`SELECT COALESCE(SUM((bank->>'${artifact.id}')::bigint) * ${artifact.highalch}, 0) as val FROM users WHERE bank->>'${artifact.id}' IS NOT NULL`,
+				`SELECT COALESCE(SUM((bank->>'${statuette.id}')::bigint) * ${statuette.highalch}, 0) as val FROM users WHERE bank->>'${artifact.id}' IS NOT NULL`
+			].map(q => prisma.$queryRawUnsafe<{ val: bigint }[]>(q))
+		)
+	).map((v: { val: bigint }[]) => BigInt(v[0].val));
 
 	const taskCounts = await calculateMinionTaskCounts();
-	const currentClientSettings = await await prisma.clientStorage.findFirst({
+	const currentClientSettings = await prisma.clientStorage.findFirst({
 		where: {
 			id: globalConfig.clientID
 		},
@@ -84,6 +98,8 @@ export async function analyticsTick() {
 			minionsCount: numberOfMinions,
 			totalSacrificed,
 			totalGP,
+			totalGeGp,
+			totalBigAlchGp: totalDemonStatuetteGp + totalArtifactGp,
 			dicingBank: currentClientSettings.economyStats_dicingBank,
 			duelTaxBank: currentClientSettings.economyStats_duelTaxBank,
 			dailiesAmount: currentClientSettings.economyStats_dailiesAmount,

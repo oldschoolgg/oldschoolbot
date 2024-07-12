@@ -1,15 +1,20 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import { AttachmentBuilder, bold, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
-import { notEmpty, randArrItem, randInt, roll, Time } from 'e';
+import {
+	type AttachmentBuilder,
+	type ButtonBuilder,
+	type MessageCollector,
+	type MessageCreateOptions,
+	bold
+} from 'discord.js';
+import { Time, notEmpty, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
-
 import { alching } from '../../mahoji/commands/laps';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
-import { chargePortentIfHasCharges, getAllPortentCharges, PortentID } from '../bso/divination';
+import { PortentID, chargePortentIfHasCharges, getAllPortentCharges } from '../bso/divination';
 import { gods } from '../bso/divineDominion';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
@@ -18,7 +23,7 @@ import { combatAchievementTripEffect } from '../combat_achievements/combatAchiev
 import { BitField, COINS_ID, Emoji, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
-import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../invention/inventions';
 import { mysteriousStepData } from '../mysteryTrail';
 import { triggerRandomEvent } from '../randomEvents';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
@@ -26,8 +31,8 @@ import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { calculateZygomiteLoot } from '../skilling/skills/farming/zygomites';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
-import { ActivityTaskData } from '../types/minions';
-import { channelIsSendable, makeComponents, perHourChance, toKMB } from '../util';
+import type { ActivityTaskData } from '../types/minions';
+import { makeComponents, toKMB } from '../util';
 import { mahojiChatHead } from './chatHeadImage';
 import {
 	makeAutoContractButton,
@@ -41,10 +46,11 @@ import {
 import { handleCrateSpawns } from './handleCrateSpawns';
 import itemID from './itemID';
 import { logError } from './logError';
+import { perHourChance } from './smallUtils';
 import { updateBankSetting } from './updateBankSetting';
 import { sendToChannelID } from './webhook';
 
-export const collectors = new Map<string, MessageCollector>();
+const collectors = new Map<string, MessageCollector>();
 
 const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'GroupMonsterKilling',
@@ -127,7 +133,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			const pet = user.user.minion_equippedPet;
 			const minutes = Math.floor(data.duration / Time.Minute);
 			if (minutes < 5) return;
-			let bonusLoot = new Bank();
+			const bonusLoot = new Bank();
 			switch (pet) {
 				case itemID('Peky'): {
 					for (let i = 0; i < minutes; i++) {
@@ -142,7 +148,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					break;
 				}
 				case itemID('Obis'): {
-					let rolls = minutes / 3;
+					const rolls = minutes / 3;
 					for (let i = 0; i < rolls; i++) {
 						bonusLoot.add(RuneTable.roll());
 					}
@@ -153,7 +159,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					break;
 				}
 				case itemID('Brock'): {
-					let rolls = minutes / 3;
+					const rolls = minutes / 3;
 					for (let i = 0; i < rolls; i++) {
 						bonusLoot.add(WoodTable.roll());
 					}
@@ -164,7 +170,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					break;
 				}
 				case itemID('Wilvus'): {
-					let rolls = minutes / 6;
+					const rolls = minutes / 6;
 					for (let i = 0; i < rolls; i++) {
 						bonusLoot.add(WilvusTable.roll());
 					}
@@ -311,9 +317,9 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'God Favour',
 		fn: async ({ data, user }) => {
-			if (!('monsterID' in data)) return;
+			if (!('mid' in data)) return;
 			if (data.type !== 'MonsterKilling') return;
-			const favourableGod = gods.find(g => g.friendlyMonsters.includes(data.monsterID as number));
+			const favourableGod = gods.find(g => g.friendlyMonsters.includes(data.mi as number));
 			if (!favourableGod) return;
 			const unfavorableGods = gods.filter(g => g.name !== favourableGod.name);
 			await user.addToGodFavour(
@@ -340,7 +346,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 				if (user.cl.has(stepData.loot)) return;
 				await user.addItemsToBank({ items: stepData.loot, collectionLog: true });
 			}
-			if (previousStepData && previousStepData.clueItem && user.owns(previousStepData.clueItem.id)) {
+			if (previousStepData?.clueItem && user.owns(previousStepData.clueItem.id)) {
 				await user.removeItemsFromBank(new Bank().add(previousStepData.clueItem.id));
 			}
 			if (nextStep) {
@@ -458,7 +464,13 @@ export async function handleTripFinish(
 ) {
 	const message = typeof _message === 'string' ? { content: _message } : _message;
 	if (attachment) {
-		!message.files ? (message.files = [attachment]) : message.files.push(attachment);
+		if (!message.files) {
+			message.files = [attachment];
+		} else if (Array.isArray(message.files)) {
+			message.files.push(attachment);
+		} else {
+			console.warn(`Unexpected attachment type in handleTripFinish: ${typeof attachment}`);
+		}
 	}
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
@@ -534,11 +546,7 @@ export async function handleTripFinish(
 			]),
 			head: 'mysteriousFigure'
 		});
-		if (message.files) {
-			message.files.push(...img.files);
-		} else {
-			message.files = img.files;
-		}
+		message.files = img.files;
 		const loot = new Bank().add('Mysterious clue (1)');
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 		if (user.user.bso_mystery_trail_current_step_id === null) {

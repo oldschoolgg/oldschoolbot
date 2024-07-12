@@ -1,9 +1,8 @@
-import { Portent } from '@prisma/client';
+import type { Portent } from '@prisma/client';
 import { Bank, LootTable } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../constants';
-import { prisma } from '../settings/prisma';
 import { hasUnlockedAtlantis } from '../util';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
@@ -253,9 +252,9 @@ for (const energy of divinationEnergies) {
 
 export const allDivinationEnergyTypes = divinationEnergies.map(e => e.type);
 export enum MemoryHarvestType {
-	ConvertToXP,
-	ConvertToEnergy,
-	ConvertWithEnergyToXP
+	ConvertToXP = 0,
+	ConvertToEnergy = 1,
+	ConvertWithEnergyToXP = 2
 }
 export const memoryHarvestTypes = [
 	{ id: MemoryHarvestType.ConvertToXP, name: 'Convert to XP (Default)' },
@@ -374,7 +373,7 @@ export async function getAllPortentCharges(user: MUser) {
 			user_id: user.id
 		}
 	});
-	let result: Record<PortentID, number> = {};
+	const result: Record<PortentID, number> = {};
 	for (const portent of portents) {
 		result[portent.id] = 0;
 	}

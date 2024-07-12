@@ -7,7 +7,7 @@ import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
 import { tmbTable, umbTable } from '../bsoOpenables';
 import { customItems } from '../customItems/util';
-import { DisassembleFlag, disassembleFlagMaterials, materialTypes } from '../invention';
+import { type DisassembleFlag, disassembleFlagMaterials, materialTypes } from '../invention';
 import { DisassemblySourceGroups } from '../invention/groups';
 import Potions from '../minions/data/potions';
 import { monkeyEatables } from '../monkeyRumble';
@@ -241,7 +241,7 @@ const gems = resolveItems([
 	'Zenyte shard'
 ]);
 
-const craftingItems = Craftables.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
+const craftingItems = Craftables.flatMap(item => Object.keys(item.inputItems.bank).map(key => Number.parseInt(key)));
 
 const craftingItemsSet = [...new Set(craftingItems)];
 
@@ -365,7 +365,7 @@ export const seedsFilter = resolveItems([
 const allPotions = Potions.flatMap(potion => potion.items);
 const potions = [...new Set(allPotions)];
 
-const grimyHerbs = Grimy.flatMap(grimy => Object.keys(grimy.inputItems.bank).map(key => parseInt(key)));
+const grimyHerbs = Grimy.flatMap(grimy => Object.keys(grimy.inputItems.bank).map(key => Number.parseInt(key)));
 const cleanHerbs = Grimy.flatMap(clean => clean.item.id);
 cleanHerbs.push(itemID('Athelas'));
 
@@ -375,7 +375,7 @@ const unfPots = unfinishedPotions.flatMap(unf => unf.item.id);
 const unfPotions = resolveItems(['Vial of water', ...new Set(unfPots)]);
 
 const allSecondaries = PotionsMixable.flatMap(item =>
-	Object.keys(item.inputItems.bank).map(key => parseInt(key))
+	Object.keys(item.inputItems.bank).map(key => Number.parseInt(key))
 ).filter(item => !potions.includes(item) && !unfPotions.includes(item) && !herbs.includes(item));
 
 export const secondaries = [...new Set(allSecondaries)];
@@ -413,7 +413,7 @@ const bones = resolveItems([
 	'Frost dragon bones'
 ]);
 
-const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
+const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems.bank).map(key => Number.parseInt(key)));
 
 const fletchingItemsSet = [...new Set(fletchingItems)];
 
@@ -962,7 +962,7 @@ export const baseFilters: Filterable[] = [
 	{
 		name: 'Pets',
 		aliases: ['pets', 'pmb'],
-		items: () => allPetIDs.flat(Infinity) as number[]
+		items: () => allPetIDs.flat(Number.POSITIVE_INFINITY) as number[]
 	},
 	{
 		name: 'Holiday',
@@ -1051,7 +1051,7 @@ for (const type of materialTypes) {
 	if (disassembleFlagMaterials.includes(type as DisassembleFlag)) {
 		items = DisassemblySourceGroups.flatMap(group =>
 			group.items
-				.filter(item => item.flags && item.flags.has(type as DisassembleFlag))
+				.filter(item => item.flags?.has(type as DisassembleFlag))
 				.flatMap(item => (Array.isArray(item.item) ? item.item.map(i => i.id) : [item.item.id]))
 		);
 	} else {

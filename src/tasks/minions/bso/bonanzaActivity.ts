@@ -5,8 +5,8 @@ import { MAX_LEVEL } from '../../../lib/constants';
 import { spectatorClothes } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { getAllUserTames, TameSpeciesID } from '../../../lib/tames';
-import { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
+import { TameSpeciesID, getAllUserTames } from '../../../lib/tames';
+import type { MinigameActivityTaskOptionsWithNoChanges } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { tameName } from '../../../lib/util/tameUtil';
 

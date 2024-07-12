@@ -3,13 +3,13 @@ import { Bank } from 'oldschooljs';
 
 import LeapingFish from '../../lib/skilling/skills/cooking/leapingFish';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { CutLeapingFishActivityTaskOptions } from '../../lib/types/minions';
+import type { CutLeapingFishActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export const cutLeapingFishTask: MinionTask = {
 	type: 'CutLeapingFish',
 	async run(data: CutLeapingFishActivityTaskOptions) {
-		let { fishID, userID, channelID, quantity, duration } = data;
+		const { fishID, userID, channelID, quantity, duration } = data;
 		const user = await mUserFetch(userID);
 		const barbarianFish = LeapingFish.find(LeapingFish => LeapingFish.item.id === fishID)!;
 
@@ -59,7 +59,7 @@ export const cutLeapingFishTask: MinionTask = {
 			}
 		}
 
-		let loot = new Bank();
+		const loot = new Bank();
 
 		loot.add('Roe', roeCreated);
 		loot.add('Caviar', caviarCreated);
@@ -75,7 +75,7 @@ export const cutLeapingFishTask: MinionTask = {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished cutting ${quantity}x ${barbarianFish.item.name}. ${xpRes}\n\n You received: ${loot}.`;
+		const str = `${user}, ${user.minionName} finished cutting ${quantity}x ${barbarianFish.item.name}. ${xpRes}\n\n You received: ${loot}.`;
 
 		await transactItems({
 			userID: user.id,

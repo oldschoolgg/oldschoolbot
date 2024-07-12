@@ -1,17 +1,19 @@
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import {
+	Time,
 	calcWhatPercent,
 	deepClone,
 	increaseNumByPercent,
 	percentChance,
 	randArrItem,
 	reduceNumByPercent,
-	sumArr,
-	Time
+	roll,
+	sumArr
 } from 'e';
-import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
+import type { MonsterKillOptions } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { ClueTiers } from '../../lib/clues/clueTiers';
@@ -19,19 +21,19 @@ import { BitField, Emoji } from '../../lib/constants';
 import { slayerMaskHelms } from '../../lib/data/slayerMaskHelms';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
-import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import { InventionID, inventionBoosts, inventionItemBoost } from '../../lib/invention/inventions';
 import { trackLoot } from '../../lib/lootTrack';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
-import { KillableMonster } from '../../lib/minions/types';
-import { prisma } from '../../lib/settings/prisma';
+import type { KillableMonster } from '../../lib/minions/types';
+
 import { bones } from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, isOnSlayerTask } from '../../lib/slayer/slayerUtil';
-import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { assert, calculateSimpleMonsterDeathChance, clAdjustedDroprate, hasSkillReqs, roll } from '../../lib/util';
+import type { MonsterActivityTaskOptions } from '../../lib/types/minions';
+import { assert, calculateSimpleMonsterDeathChance, clAdjustedDroprate, hasSkillReqs } from '../../lib/util';
 import { ashSanctifierEffect } from '../../lib/util/ashSanctifier';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import getOSItem from '../../lib/util/getOSItem';
@@ -54,7 +56,7 @@ async function bonecrusherEffect(user: MUser, loot: Bank, duration: number, mess
 		}
 	}
 
-	let durationForCost = totalXP * 16.8;
+	const durationForCost = totalXP * 16.8;
 	let boostMsg: string | null = null;
 	if (hasSuperior && durationForCost > Time.Minute) {
 		const t = await inventionItemBoost({
@@ -88,7 +90,7 @@ async function bonecrusherEffect(user: MUser, loot: Bank, duration: number, mess
 			hasSuperior
 				? `+${inventionBoosts.superiorBonecrusher.xpBoostPercent}% more from Superior bonecrusher${
 						boostMsg ? ` (${boostMsg})` : ''
-				  }`
+					}`
 				: ' from Gorajan bonecrusher'
 		}`
 	);
@@ -111,9 +113,9 @@ async function portableTannerEffect(user: MUser, loot: Bank, duration: number, m
 	});
 	if (!boostRes.success) return;
 	let triggered = false;
-	let toAdd = new Bank();
+	const toAdd = new Bank();
 	for (const [hide, leather] of hideLeatherMap) {
-		let qty = loot.amount(hide.id);
+		const qty = loot.amount(hide.id);
 		if (qty > 0) {
 			triggered = true;
 			loot.remove(hide.id, qty);
@@ -157,7 +159,7 @@ export async function clueUpgraderEffect(user: MUser, loot: Bank, messages: stri
 	loot.add(upgradedClues);
 	assert(loot.has(removeBank));
 	loot.remove(removeBank);
-	let totalCluesUpgraded = sumArr(upgradedClues.items().map(i => i[1]));
+	const totalCluesUpgraded = sumArr(upgradedClues.items().map(i => i[1]));
 	messages.push(`<:Clue_upgrader:986830303001722880> Upgraded ${totalCluesUpgraded} clues (${boostRes.messages})`);
 }
 
@@ -165,14 +167,14 @@ export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
 	async run(data: MonsterActivityTaskOptions) {
 		let {
-			monsterID,
+			mi: monsterID,
 			userID,
 			channelID,
-			quantity,
+			q: quantity,
 			duration,
 			usingCannon,
 			cannonMulti,
-			burstOrBarrage,
+			bob: burstOrBarrage,
 			died,
 			pkEncounters,
 			hasWildySupplies,
@@ -254,7 +256,7 @@ export const monsterTask: MinionTask = {
 					gear: userGear,
 					smited: hasPrayerLevel && !protectItem,
 					protectItem: hasPrayerLevel,
-					after20wilderness: monster.pkBaseDeathChance && monster.pkBaseDeathChance >= 5 ? true : false,
+					after20wilderness: !!(monster.pkBaseDeathChance && monster.pkBaseDeathChance >= 5),
 					skulled
 				});
 
@@ -372,7 +374,7 @@ export const monsterTask: MinionTask = {
 		const superiorTable = isOnTaskResult.hasSuperiorsUnlocked && monster.superior ? monster.superior : undefined;
 		const isInCatacombs = (!usingCannon ? monster.existsInCatacombs ?? undefined : undefined) && !isInWilderness;
 
-		let hasRingOfWealthI = user.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness;
+		const hasRingOfWealthI = user.gear.wildy.hasEquipped('Ring of wealth (i)') && isInWilderness;
 		if (hasRingOfWealthI) {
 			messages.push('\nYour clue scroll chance is doubled due to wearing a Ring of Wealth (i).');
 		}
@@ -418,7 +420,7 @@ export const monsterTask: MinionTask = {
 			}
 		}
 
-		let masterCapeRolls = user.hasEquippedOrInBank('Slayer master cape') ? newSuperiorCount : 0;
+		const masterCapeRolls = user.hasEquippedOrInBank('Slayer master cape') ? newSuperiorCount : 0;
 		newSuperiorCount += masterCapeRolls;
 
 		// Regular loot
@@ -428,7 +430,7 @@ export const monsterTask: MinionTask = {
 
 		if (newSuperiorCount) {
 			// Superior loot and totems if in catacombs
-			loot.add(superiorTable!.kill(newSuperiorCount));
+			loot.add(superiorTable?.kill(newSuperiorCount));
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
 		}
@@ -473,9 +475,9 @@ export const monsterTask: MinionTask = {
 			quantity === 0
 				? `${user}, ${user.minionName} died in ALL their kill attempts!${
 						roll(10) ? ` ${randArrItem(sorryMessages)}` : ''
-				  }`
+					}`
 				: `${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
-				  ` Your ${monster.name} KC is now ${newKC}.\n${xpRes}\n`;
+					` Your ${monster.name} KC is now ${newKC}.\n${xpRes}\n`;
 
 		if (masterCapeRolls > 0) {
 			messages.push(`${Emoji.SlayerMasterCape} You received ${masterCapeRolls}x bonus superior rolls`);
@@ -570,15 +572,15 @@ export const monsterTask: MinionTask = {
 			const { quantitySlayed } = isOnTaskResult;
 			const effectiveSlayed =
 				monsterID === Monsters.KrilTsutsaroth.id &&
-				isOnTaskResult.currentTask!.monster_id !== Monsters.KrilTsutsaroth.id
+				isOnTaskResult.currentTask?.monster_id !== Monsters.KrilTsutsaroth.id
 					? quantitySlayed! * 2
 					: monsterID === Monsters.Kreearra.id &&
-					  isOnTaskResult.currentTask.monster_id !== Monsters.Kreearra.id
-					? quantitySlayed * 4
-					: monsterID === Monsters.GrotesqueGuardians.id &&
-					  user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
-					? quantitySlayed * 2
-					: quantitySlayed;
+							isOnTaskResult.currentTask.monster_id !== Monsters.Kreearra.id
+						? quantitySlayed * 4
+						: monsterID === Monsters.GrotesqueGuardians.id &&
+								user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+							? quantitySlayed * 2
+							: quantitySlayed;
 
 			/**
 			 * Slayer masks/helms
@@ -662,7 +664,7 @@ export const monsterTask: MinionTask = {
 				}
 			} else {
 				str += `\nYou killed ${effectiveSlayed}x of your ${
-					isOnTaskResult.currentTask!.quantity_remaining
+					isOnTaskResult.currentTask?.quantity_remaining
 				} remaining kills, you now have ${quantityLeft} kills remaining.`;
 			}
 
@@ -687,7 +689,7 @@ export const monsterTask: MinionTask = {
 
 			await prisma.slayerTask.update({
 				where: {
-					id: isOnTaskResult.currentTask!.id
+					id: isOnTaskResult.currentTask?.id
 				},
 				data: {
 					quantity_remaining: quantityLeft
@@ -738,7 +740,7 @@ export const monsterTask: MinionTask = {
 						title: `Loot From ${quantity} ${monster.name}:`,
 						user,
 						previousCL
-				  });
+					});
 
 		return handleTripFinish(user, channelID, str, image?.file.attachment, data, itemsAdded, messages);
 	}

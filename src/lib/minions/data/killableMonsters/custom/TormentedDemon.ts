@@ -5,7 +5,7 @@ import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { GearStat } from '../../../../gear';
 import { GrimyHerbTable, lowRuneHighAdamantTable, runeAlchablesTable } from '../../../../simulation/sharedTables';
-import { CustomMonster } from './customMonsters';
+import type { CustomMonster } from './customMonsters';
 
 export const TormentedDemon: CustomMonster = {
 	id: 941_944,

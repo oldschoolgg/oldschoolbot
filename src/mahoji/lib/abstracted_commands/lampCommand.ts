@@ -1,9 +1,9 @@
 import { clamp, objectValues } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
+import type { Item } from 'oldschooljs/dist/meta/types';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { Skills } from '../../../lib/types';
+import type { ItemBank, Skills } from '../../../lib/types';
 import { assert, isValidSkill, itemID } from '../../../lib/util';
 import { getItem } from '../../../lib/util/getOSItem';
 import resolveItems from '../../../lib/util/resolveItems';
@@ -116,12 +116,13 @@ export const XPLamps: IXPLamp[] = [
 		minimumLevel: 1,
 		allowedSkills: [SkillsEnum.Magic]
 	},
+	/*	Needs OSJS Update
 	{
 		itemID: 28_820,
 		amount: 5000,
 		name: 'Antique lamp (defender of varrock)',
 		minimumLevel: 1
-	},
+	},*/
 	{
 		itemID: itemID('Antique lamp (easy ca)'),
 		amount: 5000,
@@ -303,10 +304,10 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 		]!}** in ${skill} to receive it.`;
 	}
 
-	let amount = skillsToReceive[skill]!;
+	const amount = skillsToReceive[skill]!;
 	assert(typeof amount === 'number' && amount > 0);
 	userStatsUpdate(user.id, u => {
-		let newLampedXp = {
+		const newLampedXp = {
 			...(u.lamped_xp as ItemBank)
 		};
 		if (!newLampedXp[skill]) newLampedXp[skill] = amount;

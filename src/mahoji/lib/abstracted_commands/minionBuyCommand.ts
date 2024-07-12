@@ -1,11 +1,9 @@
-import { ComponentType, User } from 'discord.js';
+import { type CommandResponse, isAtleastThisOld } from '@oldschoolgg/toolkit';
+import { ComponentType, type User } from 'discord.js';
 import { Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
-
 import { mahojiInformationalButtons } from '../../../lib/constants';
 import { clArrayUpdate } from '../../../lib/handleNewCLItems';
-import { isAtleastThisOld } from '../../../lib/util';
 
 export async function minionBuyCommand(apiUser: User, user: MUser, ironman: boolean): CommandResponse {
 	if (user.user.minion_hasBought) return 'You already have a minion!';
@@ -31,7 +29,7 @@ export async function minionBuyCommand(apiUser: User, user: MUser, ironman: bool
 				'Clue scroll (beginner)': 10,
 				'Equippable mystery box': 1,
 				'Pet Mystery box': 1
-		  })
+			})
 		: null;
 
 	if (starter) {

@@ -4,7 +4,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { userHasFlappy } from '../../../lib/invention/inventions';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
+import type { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
@@ -96,7 +96,7 @@ export const gnomeResTask: MinionTask = {
 			duration
 		});
 
-		let str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x Gnome Restaurant deliveries.  You received **${loot}**. ${xpRes} ${flappyRes.userMsg}`;
+		const str = `<@${userID}>, ${user.minionName} finished completing ${quantity}x Gnome Restaurant deliveries.  You received **${loot}**. ${xpRes} ${flappyRes.userMsg}`;
 
 		updateBankSetting('gnome_res_loot', loot);
 

@@ -1,4 +1,4 @@
-import { roll, Time } from 'e';
+import { Time, roll } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
@@ -6,7 +6,7 @@ import { globalDroprates } from '../../lib/data/globalDroprates';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { MotherlodeMiningActivityTaskOptions } from '../../lib/types/minions';
+import type { MotherlodeMiningActivityTaskOptions } from '../../lib/types/minions';
 import { clAdjustedDroprate, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -14,7 +14,7 @@ export const motherlodeMiningTask: MinionTask = {
 	type: 'MotherlodeMining',
 	async run(data: MotherlodeMiningActivityTaskOptions) {
 		const { userID, channelID, duration } = data;
-		let { quantity } = data;
+		const { quantity } = data;
 		const user = await mUserFetch(userID);
 		const motherlode = Mining.MotherlodeMine;
 
@@ -25,7 +25,7 @@ export const motherlodeMiningTask: MinionTask = {
 		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
 		if (
 			user.hasEquippedOrInBank(
-				Object.keys(Mining.prospectorItems).map(i => parseInt(i)),
+				Object.keys(Mining.prospectorItems).map(i => Number.parseInt(i)),
 				'every'
 			)
 		) {
@@ -35,7 +35,7 @@ export const motherlodeMiningTask: MinionTask = {
 		} else {
 			// For each prospector item, check if they have it, give its' XP boost if so.
 			for (const [itemID, bonus] of Object.entries(Mining.prospectorItems)) {
-				if (user.hasEquippedOrInBank(parseInt(itemID))) {
+				if (user.hasEquippedOrInBank(Number.parseInt(itemID))) {
 					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
 					xpReceived += amountToAdd;
 					bonusXP += amountToAdd;

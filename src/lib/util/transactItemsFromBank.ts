@@ -1,11 +1,11 @@
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { findBingosWithUserParticipating } from '../../mahoji/lib/bingo/BingoManager';
-import { handleNewCLItems } from '../handleNewCLItems';
 import { mahojiUserSettingsUpdate } from '../MUser';
+import { handleNewCLItems } from '../handleNewCLItems';
 import { filterLootReplace } from '../slayer/slayerUtil';
-import { ItemBank } from '../types';
+import type { ItemBank } from '../types';
 import { logError } from './logError';
 import { userQueueFn } from './userQueues';
 
@@ -21,17 +21,11 @@ export interface TransactItemsArgs {
 }
 
 declare global {
-	const transactItems: typeof transactItemsFromBank;
+	var transactItems: typeof transactItemsFromBank;
 }
-declare global {
-	namespace NodeJS {
-		interface Global {
-			transactItems: typeof transactItemsFromBank;
-		}
-	}
-}
+
 global.transactItems = transactItemsFromBank;
-export async function transactItemsFromBank({
+async function transactItemsFromBank({
 	userID,
 	collectionLog = false,
 	filterLoot = true,
@@ -39,9 +33,9 @@ export async function transactItemsFromBank({
 	...options
 }: TransactItemsArgs) {
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
-	let itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
+	const itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
 
-	return userQueueFn(userID, async () => {
+	return userQueueFn(userID, async function transactItemsInner() {
 		const settings = await mUserFetch(userID);
 
 		const gpToRemove = (itemsToRemove?.amount('Coins') ?? 0) - (itemsToAdd?.amount('Coins') ?? 0);

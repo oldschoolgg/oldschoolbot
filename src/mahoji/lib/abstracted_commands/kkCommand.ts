@@ -1,6 +1,6 @@
-import { ChatInputCommandInteraction } from 'discord.js';
-import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { Time, increaseNumByPercent, reduceNumByPercent, round } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { calcBossFood } from '../../../lib/bso/calcBossFood';
@@ -8,11 +8,11 @@ import { gorajanWarriorOutfit, torvaOutfit } from '../../../lib/data/Collections
 import { trackLoot } from '../../../lib/lootTrack';
 import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { calculateMonsterFood } from '../../../lib/minions/functions';
-import { KillableMonster } from '../../../lib/minions/types';
+import type { KillableMonster } from '../../../lib/minions/types';
 import { setupParty } from '../../../lib/party';
 import { Gear } from '../../../lib/structures/Gear';
-import { MakePartyOptions } from '../../../lib/types';
-import { BossActivityTaskOptions } from '../../../lib/types/minions';
+import type { MakePartyOptions } from '../../../lib/types';
+import type { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration, isWeekend } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
@@ -134,7 +134,7 @@ export async function kkCommand(
 			users.map(u => u.id)
 		);
 		debugStr += `**${user.usernameOrMention}**: `;
-		let msgs = [];
+		const msgs = [];
 
 		// Special inquisitor outfit damage boost
 		const meleeGear = user.gear.melee;
@@ -262,7 +262,7 @@ export async function kkCommand(
 	if (users.length === 5) minDuration = 1.2;
 	if (users.length >= 6) minDuration = 1;
 
-	let durQtyRes = await calcDurQty(
+	const durQtyRes = await calcDurQty(
 		users,
 		{ ...KalphiteKingMonster, timeToFinish: effectiveTime },
 		inputQuantity,
@@ -270,12 +270,12 @@ export async function kkCommand(
 		Time.Minute * 30
 	);
 	if (typeof durQtyRes === 'string') return durQtyRes;
-	let [quantity, duration, perKillTime] = durQtyRes;
+	const [quantity, duration, perKillTime] = durQtyRes;
 	const secondCheck = await checkReqs(users, KalphiteKingMonster, quantity);
 	if (secondCheck) return secondCheck;
 
 	let foodString = 'Removed brews/restores from users: ';
-	let foodRemoved: string[] = [];
+	const foodRemoved: string[] = [];
 	for (const user of users) {
 		const food = await calcBossFood(user, KalphiteKingMonster, users.length, quantity);
 		if (!user.bank.has(food.bank)) {

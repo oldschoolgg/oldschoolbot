@@ -1,14 +1,15 @@
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
-import {
+import { UserError } from '@oldschoolgg/toolkit';
+import type {
 	ButtonInteraction,
 	ChatInputCommandInteraction,
-	DiscordAPIError,
 	Interaction,
 	InteractionReplyOptions,
 	InteractionResponse,
 	Message,
-	RepliableInteraction
+	RepliableInteraction,
+	StringSelectMenuInteraction
 } from 'discord.js';
+import { DiscordAPIError } from 'discord.js';
 
 import { SILENT_ERROR } from '../constants';
 import { logErrorForInteraction } from './logError';
@@ -34,11 +35,20 @@ export async function interactionReply(interaction: RepliableInteraction, respon
 	}
 }
 
-export function deferInteraction(interaction: ButtonInteraction | ChatInputCommandInteraction) {
-	if (!interaction.deferred) {
-		const promise = interaction.deferReply();
-		interaction.deferred = true;
-		return promise;
+const wasDeferred = new Set();
+
+export async function deferInteraction(
+	interaction: ButtonInteraction | ChatInputCommandInteraction | StringSelectMenuInteraction,
+	ephemeral = false
+) {
+	if (wasDeferred.size > 1000) wasDeferred.clear();
+	if (!interaction.deferred && !wasDeferred.has(interaction.id)) {
+		wasDeferred.add(interaction.id);
+		try {
+			await interaction.deferReply({ ephemeral });
+		} catch (err) {
+			logErrorForInteraction(err, interaction);
+		}
 	}
 }
 

@@ -1,5 +1,5 @@
 import { bold } from 'discord.js';
-import { reduceNumByPercent, roll, Time } from 'e';
+import { Time, reduceNumByPercent, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
 import getOSItem from './getOSItem';

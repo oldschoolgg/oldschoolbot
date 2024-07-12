@@ -1,4 +1,4 @@
-import { increaseNumByPercent, Time } from 'e';
+import { Time, increaseNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';

@@ -1,20 +1,21 @@
-import { TextChannel } from 'discord.js';
-import { objectKeys, Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { TextChannel } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
+import { Time, objectKeys } from 'e';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import { KillableMonster } from '../../lib/minions/types';
+import type { KillableMonster } from '../../lib/minions/types';
 import { setupParty } from '../../lib/party';
-import { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
+import type { GroupMonsterActivityTaskOptions } from '../../lib/types/minions';
 import { channelIsSendable, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import findMonster from '../../lib/util/findMonster';
 import { deferInteraction } from '../../lib/util/interactionReply';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 import { hasMonsterRequirements } from '../mahojiSettings';
 
 function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
@@ -40,7 +41,7 @@ function checkReqs(users: MUser[], monster: KillableMonster, quantity: number) {
 		if (1 > 2 && !hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 			return `${
 				users.length === 1 ? "You don't" : `${user.usernameOrMention} doesn't`
-			} have enough food. You need at least ${monster!.healAmountNeeded! * quantity} HP in food to ${
+			} have enough food. You need at least ${monster.healAmountNeeded! * quantity} HP in food to ${
 				users.length === 1 ? 'start the mass' : 'enter the mass'
 			}.`;
 		}
@@ -130,7 +131,7 @@ export const massCommand: OSBMahojiCommand = {
 				ephemeral: true
 			};
 		}
-		let unchangedUsers = [...users];
+		const unchangedUsers = [...users];
 		users = users.filter(i => !i.minionIsBusy);
 		const usersKickedForBusy = unchangedUsers.filter(i => !users.includes(i));
 
@@ -155,10 +156,10 @@ export const massCommand: OSBMahojiCommand = {
 		}
 
 		await addSubTaskToActivityTask<GroupMonsterActivityTaskOptions>({
-			monsterID: monster.id,
+			mi: monster.id,
 			userID: user.id,
 			channelID: channelID.toString(),
-			quantity,
+			q: quantity,
 			duration,
 			type: 'GroupMonsterKilling',
 			leader: user.id,

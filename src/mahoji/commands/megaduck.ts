@@ -1,26 +1,21 @@
-/* eslint-disable prefer-destructuring */
 import { Canvas } from '@napi-rs/canvas';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Time } from 'e';
-import { readFileSync } from 'fs';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
-import { defaultMegaDuckLocation, MegaDuckLocation } from '../../lib/minions/types';
-import { prisma } from '../../lib/settings/prisma';
+import { type MegaDuckLocation, defaultMegaDuckLocation } from '../../lib/minions/types';
 import { getUsername } from '../../lib/util';
-import { canvasImageFromBuffer } from '../../lib/util/canvasUtil';
+import { loadAndCacheLocalImage } from '../../lib/util/canvasUtil';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { mahojiGuildSettingsUpdate } from '../guildSettings';
-import { OSBMahojiCommand, resetCooldown } from '../lib/util';
+import { type OSBMahojiCommand, resetCooldown } from '../lib/util';
 
-const _mapImage = readFileSync('./src/lib/resources/images/megaduckmap.png');
-const noMoveImageBuf = readFileSync('./src/lib/resources/images/megaducknomovemap.png');
-
-let apeAtoll = [1059, 1226];
-let portSarim = [1418, 422];
-let karamja = [1293, 554];
-let flyer = [1358, 728];
+const apeAtoll = [1059, 1226];
+const portSarim = [1418, 422];
+const karamja = [1293, 554];
+const flyer = [1358, 728];
 const teleportationLocations = [
 	[
 		{ name: 'Port Sarim', coords: portSarim },
@@ -48,7 +43,7 @@ const directions = ['up', 'down', 'left', 'right'] as const;
 type MegaduckDirection = (typeof directions)[number];
 
 function applyDirection(location: MegaDuckLocation, direction: MegaduckDirection): MegaDuckLocation {
-	let newLocation = { ...location };
+	const newLocation = { ...location };
 	switch (direction) {
 		case 'up':
 			newLocation.y--;
@@ -67,16 +62,14 @@ function applyDirection(location: MegaDuckLocation, direction: MegaduckDirection
 }
 
 function getPixel(x: number, y: number, data: any, width: number) {
-	let i = (width * Math.round(y) + Math.round(x)) * 4;
+	const i = (width * Math.round(y) + Math.round(x)) * 4;
 	return [data[i], data[i + 1], data[i + 2], data[i + 3]];
 }
 
-const _noMoveImage = canvasImageFromBuffer(noMoveImageBuf);
-
 async function makeImage(location: MegaDuckLocation) {
 	const { x, y, steps = [] } = location;
-	const mapImage = await canvasImageFromBuffer(_mapImage);
-	const noMoveImage = await _noMoveImage;
+	const mapImage = await loadAndCacheLocalImage('./src/lib/resources/images/megaduckmap.png');
+	const noMoveImage = await loadAndCacheLocalImage('./src/lib/resources/images/megaducknomovemap.png');
 
 	const scale = 3;
 	const canvasSize = 250;
@@ -109,8 +102,8 @@ async function makeImage(location: MegaDuckLocation) {
 
 	ctx.fillStyle = 'rgba(0,0,255,0.05)';
 	for (const [_xS, _yS] of steps) {
-		let xS = _xS - x + centerPosition;
-		let yS = _yS - y + centerPosition;
+		const xS = _xS - x + centerPosition;
+		const yS = _yS - y + centerPosition;
 		ctx.fillRect(xS, yS, 1, 1);
 	}
 
