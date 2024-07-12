@@ -25,14 +25,14 @@ export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
 	async run(data: MonsterActivityTaskOptions) {
 		let {
-			monsterID,
+			mi: monsterID,
 			userID,
 			channelID,
-			quantity,
+			q: quantity,
 			duration,
 			usingCannon,
 			cannonMulti,
-			burstOrBarrage,
+			bob: burstOrBarrage,
 			died,
 			pkEncounters,
 			hasWildySupplies,

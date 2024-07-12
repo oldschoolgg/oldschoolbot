@@ -367,12 +367,12 @@ export const clueCommand: OSBMahojiCommand = {
 		duration = timeToFinish * quantity;
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
-			clueID: clueTier.id,
+			ci: clueTier.id,
 			implingID: clueImpling ? clueImpling.id : undefined,
 			implingClues: clueImpling ? implingClues : undefined,
 			userID: user.id,
 			channelID: channelID.toString(),
-			quantity,
+			q: quantity,
 			duration,
 			type: 'ClueCompletion'
 		});

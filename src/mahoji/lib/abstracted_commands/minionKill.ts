@@ -948,17 +948,17 @@ export async function minionKillCommand(
 	}
 
 	await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
-		monsterID: monster.id,
+		mi: monster.id,
 		userID: user.id,
 		channelID: channelID.toString(),
-		quantity,
+		q: quantity,
 		iQty: inputQuantity,
 		duration,
 		type: 'MonsterKilling',
 		usingCannon: !usingCannon ? undefined : usingCannon,
 		cannonMulti: !cannonMulti ? undefined : cannonMulti,
 		chinning: !chinning ? undefined : chinning,
-		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage,
+		bob: !burstOrBarrage ? undefined : burstOrBarrage,
 		died: hasDied,
 		pkEncounters: thePkCount,
 		hasWildySupplies,

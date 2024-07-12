@@ -359,14 +359,14 @@ GROUP BY type;`);
 		name: 'Personal Monster KC',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
-			const result: { id: number; kc: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'monsterID')::int as id, SUM((data->>'quantity')::int)::int AS kc
+			const result: { id: number; kc: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'mi')::int as id, SUM((data->>'q')::int)::int AS kc
 FROM activity
 WHERE completed = true
 AND user_id = ${BigInt(user.id)}
 AND type = 'MonsterKilling'
 AND data IS NOT NULL
 AND data::text != '{}'
-GROUP BY data->>'monsterID';`);
+GROUP BY data->>'mi';`);
 			const dataPoints: [string, number][] = result
 				.sort((a, b) => b.kc - a.kc)
 				.slice(0, 30)

@@ -25,7 +25,7 @@ const WorldLocationsChecker = [
 				if (
 					activity.type === 'MonsterKilling' &&
 					[Monsters.DarkBeast.id, Monsters.PrifddinasElf.id].includes(
-						(activity as MonsterActivityTaskOptions).monsterID
+						(activity as MonsterActivityTaskOptions).mi
 					)
 				) {
 					return true;

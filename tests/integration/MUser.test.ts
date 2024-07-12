@@ -161,8 +161,8 @@ describe('MUser', () => {
 				group_activity: false,
 				data: {
 					userID: user.id,
-					clueID: tier.id,
-					quantity: randInt(1, 10)
+					ci: tier.id,
+					q: randInt(1, 10)
 				}
 			});
 		}
