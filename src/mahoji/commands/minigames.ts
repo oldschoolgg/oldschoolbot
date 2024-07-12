@@ -87,6 +87,7 @@ import {
 	nightmareZoneImbueCommand,
 	nightmareZoneImbueables
 } from './../lib/abstracted_commands/nightmareZoneCommand';
+import type { Fletchable } from '../../lib/skilling/types';
 
 export const minigamesCommand: OSBMahojiCommand = {
 	name: 'minigames',
@@ -1083,7 +1084,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			start?: { difficulty: string; quantity?: number };
 			buy?: { reward: string; difficulty: string; quantity?: number };
 		};
-		sepulchre?: { start?: { fletch?: string } };
+		sepulchre?: { start?: { fletch?: Fletchable["name"] } };
 		gauntlet?: { start?: { corrupted?: boolean } };
 		mage_training_arena?: {
 			start?: {};
@@ -1253,7 +1254,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.sepulchre?.start) {
-			return sepulchreCommand(user, channelID, options.sepulchre.start.fletch);
+			if (options.sepulchre.start.fletch) {
+				const fletch = options.sepulchre.start.fletch;
+				return sepulchreCommand(user, channelID, fletch);
+			}
 		}
 		/**
 		 *
