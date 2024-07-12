@@ -274,13 +274,13 @@ export class MUserClass {
 	}
 
 	async calcActualClues() {
-		const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
+		const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'ci')::int AS id, SUM((data->>'q')::int)::int AS qty
 FROM activity
 WHERE type = 'ClueCompletion'
 AND user_id = '${this.id}'::bigint
-AND data->>'clueID' IS NOT NULL
+AND data->>'ci' IS NOT NULL
 AND completed = true
-GROUP BY data->>'clueID';`);
+GROUP BY data->>'ci';`);
 		const casketsCompleted = new Bank();
 		for (const res of result) {
 			const item = getItem(res.id);

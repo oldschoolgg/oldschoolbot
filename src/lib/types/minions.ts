@@ -124,13 +124,13 @@ export interface ConstructionActivityTaskOptions extends ActivityTaskOptions {
 
 export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	type: 'MonsterKilling';
-	monsterID: number;
-	quantity: number;
+	mi: number;
+	q: number;
 	iQty?: number;
 	usingCannon?: boolean;
 	cannonMulti?: boolean;
 	chinning?: boolean;
-	burstOrBarrage?: number;
+	bob?: number;
 	died?: boolean;
 	pkEncounters?: number;
 	hasWildySupplies?: boolean;
@@ -139,9 +139,8 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 	type: 'ClueCompletion';
-
-	clueID: number;
-	quantity: number;
+	ci: number;
+	q: number;
 	implingID?: number;
 	implingClues?: number;
 }

@@ -1403,7 +1403,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 33,
 			hasChance: data =>
-				isCertainMonsterTrip(Monsters.Vorkath.id)(data) && (data as MonsterActivityTaskOptions).quantity >= 5
+				isCertainMonsterTrip(Monsters.Vorkath.id)(data) && (data as MonsterActivityTaskOptions).q >= 5
 		}
 	},
 	{

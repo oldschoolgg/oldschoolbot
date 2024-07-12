@@ -147,13 +147,13 @@ async function clueGains(interval: string, tier?: string, ironmanOnly?: boolean)
 		const clueTier = ClueTiers.find(t => t.name.toLowerCase() === tier.toLowerCase());
 		if (!clueTier) return 'Invalid clue scroll tier.';
 		const tierId = clueTier.id;
-		tierFilter = `AND (a."data"->>'clueID')::int = ${tierId}`;
+		tierFilter = `AND (a."data"->>'ci')::int = ${tierId}`;
 		title = `Highest ${clueTier.name} clue scroll completions in the past ${interval}`;
 	} else {
 		title = `Highest All clue scroll completions in the past ${interval}`;
 	}
 
-	const query = `SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
+	const query = `SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate 
 	  FROM activity a
 	  JOIN users u ON a.user_id::text = u.id
 	  WHERE a.type = 'ClueCompletion'
@@ -285,10 +285,10 @@ async function kcGains(interval: string, monsterName: string, ironmanOnly?: bool
 	}
 
 	const query = `
-    SELECT a.user_id::text, SUM((a."data"->>'quantity')::int) AS qty, MAX(a.finish_date) AS lastDate 
+    SELECT a.user_id::text, SUM((a."data"->>'q')::int) AS qty, MAX(a.finish_date) AS lastDate 
     FROM activity a
     JOIN users u ON a.user_id::text = u.id
-    WHERE a.type = 'MonsterKilling' AND (a."data"->>'monsterID')::int = ${monster.id}
+    WHERE a.type = 'MonsterKilling' AND (a."data"->>'mi')::int = ${monster.id}
     AND a.finish_date >= now() - interval '1 ${intervalValue}'  -- Corrected interval usage
     AND a.completed = true
     ${ironmanOnly ? ' AND u."minion.ironman" = true' : ''}

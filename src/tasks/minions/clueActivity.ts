@@ -7,7 +7,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export const clueTask: MinionTask = {
 	type: 'ClueCompletion',
 	async run(data: ClueActivityTaskOptions) {
-		const { clueID, userID, channelID, quantity, implingClues } = data;
+		const { ci: clueID, userID, channelID, q: quantity, implingClues } = data;
 		const clueTier = ClueTiers.find(mon => mon.id === clueID)!;
 		const user = await mUserFetch(userID);
 

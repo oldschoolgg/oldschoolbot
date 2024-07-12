@@ -94,16 +94,16 @@ export function minionStatus(user: MUser) {
 	switch (currentTask.type) {
 		case 'MonsterKilling': {
 			const data = currentTask as MonsterActivityTaskOptions;
-			const monster = killableMonsters.find(mon => mon.id === data.monsterID);
+			const monster = killableMonsters.find(mon => mon.id === data.mi);
 
-			return `${name} is currently killing ${data.quantity}x ${monster?.name}. ${formattedDuration}`;
+			return `${name} is currently killing ${data.q}x ${monster?.name}. ${formattedDuration}`;
 		}
 
 		case 'GroupMonsterKilling': {
 			const data = currentTask as GroupMonsterActivityTaskOptions;
-			const monster = killableMonsters.find(mon => mon.id === data.monsterID);
+			const monster = killableMonsters.find(mon => mon.id === data.mi);
 
-			return `${name} is currently killing ${data.quantity}x ${monster?.name} with a party of ${
+			return `${name} is currently killing ${data.q}x ${monster?.name} with a party of ${
 				data.users.length
 			}. ${formattedDuration}`;
 		}
@@ -111,9 +111,9 @@ export function minionStatus(user: MUser) {
 		case 'ClueCompletion': {
 			const data = currentTask as ClueActivityTaskOptions;
 
-			const clueTier = ClueTiers.find(tier => tier.id === data.clueID);
+			const clueTier = ClueTiers.find(tier => tier.id === data.ci);
 
-			return `${name} is currently completing ${data.quantity}x ${clueTier?.name} clues. ${formattedDuration}`;
+			return `${name} is currently completing ${data.q}x ${clueTier?.name} clues. ${formattedDuration}`;
 		}
 
 		case 'Crafting': {
