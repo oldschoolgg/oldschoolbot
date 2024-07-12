@@ -13,7 +13,7 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 export const sepulchreTask: MinionTask = {
 	type: 'Sepulchre',
 	async run(data: SepulchreActivityTaskOptions) {
-		const { channelID, quantity, floors, userID, duration } = data;
+		const { channelID, quantity, floors, userID, duration, fletch } = data;
 		const user = await mUserFetch(userID);
 		await incrementMinigameScore(userID, 'sepulchre', quantity);
 
@@ -40,6 +40,45 @@ export const sepulchreTask: MinionTask = {
 			}
 			if (roll(highestCompletedFloor.petChance)) {
 				loot.add('Giant squirrel');
+			}
+		}
+		let craftXpReceived = 0;
+		let craftXpRes = '';
+		let fletchXpReceived = 0;
+		let fletchXpRes = '';
+		let sets = 'x';
+		let fletchQuantity = 0;
+
+		if (fletch) {
+			const fletchable = fletch.fletchable;
+			fletchQuantity = fletch.fletchingQuantity;
+
+			if (fletchable.outputMultiple) {
+				sets = ' sets of';
+			}
+
+			const quantityToGive = fletchable.outputMultiple
+				? fletchQuantity * fletchable.outputMultiple
+				: fletchQuantity;
+
+			if (fletchable.craftingXp) {
+				craftXpReceived = fletchable.craftingXp * fletchQuantity;
+
+				craftXpRes = await user.addXP({
+					skillName: SkillsEnum.Crafting,
+					amount: craftXpReceived,
+					duration
+				});
+
+				fletchXpReceived = fletchQuantity * fletchable.xp;
+
+				fletchXpRes = await user.addXP({
+					skillName: SkillsEnum.Fletching,
+					amount: fletchXpReceived,
+					duration
+				});
+
+				loot.add(fletchable.id, quantityToGive);
 			}
 		}
 
@@ -77,7 +116,7 @@ export const sepulchreTask: MinionTask = {
 			]
 		});
 
-		const str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
+		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
 			floors[0]
 		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}\n${thievingXpRes}`;
 
@@ -87,6 +126,10 @@ export const sepulchreTask: MinionTask = {
 			user,
 			previousCL
 		});
+
+		if (fletch) {
+			str += `\n You also finished fletching ${fletchQuantity}${sets} ${fletch.fletchable.name}, and received ${loot}. ${fletchXpRes}. ${craftXpRes}`;
+		}
 
 		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);
 	}
