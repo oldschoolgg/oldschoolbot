@@ -52,7 +52,6 @@ import {
 	stashUnitBuildAllCommand,
 	stashUnitFillAllCommand
 } from '../../src/mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { syncNewUserUsername } from '../../src/mahoji/lib/preCommand';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
 import { updateClientGPTrackSetting, userStatsUpdate } from '../../src/mahoji/mahojiSettings';
 import { calculateResultOfLMSGames, getUsersLMSStats } from '../../src/tasks/minions/minigames/lmsActivity';
@@ -690,13 +689,6 @@ const allTableCommands: TestCommand[] = [
 		}
 	},
 	{
-		name: 'Create new_users entry',
-		cmd: async user => {
-			await syncNewUserUsername(user, `testUser${randInt(1000, 9999).toString()}`);
-		},
-		priority: true
-	},
-	{
 		name: 'Buy command transaction',
 		cmd: async user => {
 			const randomBuyItems: string[] = [
@@ -1062,7 +1054,6 @@ const allTableCommands: TestCommand[] = [
 				data: {
 					user_id: BigInt(user.id),
 					channel_id: 1_111_111_111n,
-					status: 'Unknown',
 					args: {},
 					command_name: randArrItem(randCommands),
 					guild_id: null,

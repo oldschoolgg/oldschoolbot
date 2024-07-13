@@ -1,12 +1,12 @@
 import { toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
-import { UserEventType, xp_gains_skill_enum } from '@prisma/client';
+import { type Prisma, UserEventType, xp_gains_skill_enum } from '@prisma/client';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { Duration } from '@sapphire/time-utilities';
 import { SnowflakeUtil, codeBlock } from 'discord.js';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, randArrItem, sumArr } from 'e';
+import { Time, objectValues, randArrItem, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 
@@ -24,6 +24,7 @@ import { allPerkBitfields } from '../../lib/perkTiers';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
+import { SkillsEnum } from '../../lib/skilling/types';
 import type { ItemBank } from '../../lib/types';
 import { dateFm, isValidDiscordSnowflake, returnStringOrFile } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
@@ -31,6 +32,7 @@ import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmatio
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
+import { makeBadgeString } from '../../lib/util/makeBadgeString';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { migrateUser } from '../../lib/util/migrateUser';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -50,6 +52,104 @@ const itemFilters = [
 		filter: (item: Item) => itemIsTradeable(item.id, true)
 	}
 ];
+
+async function redisSync() {
+	const roboChimpUsersToCache = (
+		await roboChimpClient.user.findMany({
+			where: {
+				OR: [
+					{
+						osb_cl_percent: {
+							gte: 80
+						}
+					},
+					{
+						bso_total_level: {
+							gte: 80
+						}
+					},
+					{
+						osb_total_level: {
+							gte: 1500
+						}
+					},
+					{
+						bso_total_level: {
+							gte: 1500
+						}
+					},
+					{
+						leagues_points_total: {
+							gte: 20_000
+						}
+					}
+				]
+			},
+			select: {
+				id: true
+			}
+		})
+	).map(i => i.id.toString());
+
+	const orConditions: Prisma.UserWhereInput[] = [];
+	for (const skill of objectValues(SkillsEnum)) {
+		orConditions.push({
+			[`skills_${skill}`]: {
+				gte: 15_000_000
+			}
+		});
+	}
+	const usersToCache = (
+		await prisma.user.findMany({
+			where: {
+				OR: [
+					...orConditions,
+					{
+						last_command_date: {
+							gt: new Date(Date.now() - Number(Time.Month))
+						}
+					}
+				],
+				id: {
+					notIn: roboChimpUsersToCache
+				}
+			},
+			select: {
+				id: true
+			}
+		})
+	).map(i => i.id);
+
+	const response: string[] = [];
+	const allNewUsers = await prisma.newUser.findMany({
+		where: {
+			username: {
+				not: null
+			},
+			id: {
+				in: [...usersToCache, ...roboChimpUsersToCache]
+			}
+		},
+		select: {
+			id: true,
+			username: true
+		}
+	});
+
+	for (const user of allNewUsers) {
+		redis.setUser(user.id, { username: user.username });
+	}
+	response.push(`Cached ${allNewUsers.length} usernames.`);
+
+	const arrayOfIronmenAndBadges: { badges: number[]; id: string; ironman: boolean }[] = await prisma.$queryRawUnsafe(
+		'SELECT "badges", "id", "minion.ironman" as "ironman" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0 OR "minion.ironman" = true;'
+	);
+	for (const user of arrayOfIronmenAndBadges) {
+		redis.setUser(user.id, { osb_badges: makeBadgeString(user.badges, user.ironman) });
+	}
+	response.push(`Cached ${arrayOfIronmenAndBadges.length} badges.`);
+	return response.join(', ');
+}
 
 function isProtectedAccount(user: MUser) {
 	const botAccounts = ['303730326692429825', '729244028989603850', '969542224058654790'];
@@ -96,6 +196,12 @@ export const rpCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'networth_sync',
 					description: 'networth_sync.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'redis_sync',
+					description: 'redis sync.',
 					options: []
 				}
 			]
@@ -455,6 +561,7 @@ export const rpCommand: OSBMahojiCommand = {
 			view_all_items?: {};
 			analytics_tick?: {};
 			networth_sync?: {};
+			redis_sync?: {};
 		};
 		player?: {
 			viewbank?: { user: MahojiUserOption; json?: boolean };
@@ -562,6 +669,10 @@ Date: ${dateFm(date)}`;
 		if (options.action?.analytics_tick) {
 			await analyticsTick();
 			return 'Finished.';
+		}
+		if (options.action?.redis_sync) {
+			const result = await redisSync();
+			return result;
 		}
 		if (options.action?.networth_sync) {
 			const users = await prisma.user.findMany({
