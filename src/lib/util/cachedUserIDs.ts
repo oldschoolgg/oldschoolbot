@@ -1,4 +1,3 @@
-import { Stopwatch } from '@oldschoolgg/toolkit';
 import { ChannelType } from 'discord.js';
 import { objectEntries } from 'e';
 
@@ -11,15 +10,15 @@ CACHED_ACTIVE_USER_IDS.add(globalConfig.clientID);
 for (const id of OWNER_IDS) CACHED_ACTIVE_USER_IDS.add(id);
 
 export async function syncActiveUserIDs() {
-	const [users, otherUsers] = await Promise.all([
+	const [users, otherUsers] = await prisma.$transaction([
 		prisma.$queryRaw<{ user_id: string }[]>`SELECT DISTINCT(user_id::text)
-FROM command_usage
-WHERE date > now() - INTERVAL '72 hours';`,
+FROM activity
+WHERE finish_date > now() - INTERVAL '48 hours'`,
 		prisma.$queryRaw<{ id: string }[]>`SELECT id
 FROM users
 WHERE main_account IS NOT NULL
-      OR CARDINALITY(ironman_alts) > 0
-	  OR bitfield && ARRAY[2,3,4,5,6,7,8,12,11,21,19];`
+OR CARDINALITY(ironman_alts) > 0
+OR bitfield && ARRAY[2,3,4,5,6,7,8,12,11,21,19];`
 	]);
 
 	for (const id of [...users.map(i => i.user_id), ...otherUsers.map(i => i.id)]) {
@@ -97,11 +96,6 @@ export const emojiServers = new Set([
 
 export function cacheCleanup() {
 	if (!globalClient.isReady()) return;
-	const stopwatch = new Stopwatch();
-	stopwatch.start();
-	debugLog('Cache Cleanup Start', {
-		type: 'CACHE_CLEANUP'
-	});
 	return runTimedLoggedFn('Cache Cleanup', async () => {
 		await runTimedLoggedFn('Clear Channels', async () => {
 			for (const channel of globalClient.channels.cache.values()) {
@@ -167,11 +161,6 @@ export function cacheCleanup() {
 					role.hoist = undefined;
 				}
 			}
-		});
-
-		stopwatch.stop();
-		debugLog(`Cache Cleanup Finish After ${stopwatch.toString()}`, {
-			type: 'CACHE_CLEANUP'
 		});
 	});
 }
