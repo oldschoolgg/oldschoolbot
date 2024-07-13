@@ -889,6 +889,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			process.exit();
 		}
 		if (options.shut_down) {
+			debugLog('SHUTTING DOWN');
 			globalClient.isShuttingDown = true;
 			const timer = production ? Time.Second * 30 : Time.Second * 5;
 			await interactionReply(interaction, {
@@ -901,7 +902,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 
 ${META_CONSTANTS.RENDERED_STR}`
 			}).catch(noOp);
-			execSync(`pm2 stop ${BOT_TYPE === 'OSB' ? 'osb' : 'bso'}`);
+			execSync(`sudo systemctl stop ${BOT_TYPE === 'OSB' ? 'osb' : 'bso'}`);
 		}
 
 		if (options.sync_blacklist) {
