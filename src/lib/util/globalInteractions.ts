@@ -15,6 +15,7 @@ import { modifyBusyCounter } from '../busyCounterCache';
 import type { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
 
+import { InteractionID } from '../InteractionID';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
 import type { ItemBank } from '../types';
@@ -161,6 +162,7 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 			});
 		}
 
+		await deferInteraction(interaction);
 		return runCommand({
 			commandName: 'giveaway',
 			args: {
@@ -404,7 +406,14 @@ async function handleGEButton(user: MUser, id: string, interaction: ButtonIntera
 
 export async function interactionHook(interaction: Interaction) {
 	if (!interaction.isButton()) return;
-	if (['CONFIRM', 'CANCEL', 'PARTY_JOIN'].includes(interaction.customId)) return;
+	const ignoredInteractionIDs = [
+		'CONFIRM',
+		'CANCEL',
+		'PARTY_JOIN',
+		...Object.values(InteractionID.PaginatedMessage),
+		...Object.values(InteractionID.Slayer)
+	];
+	if (ignoredInteractionIDs.includes(interaction.customId)) return;
 	if (['DYN_', 'LP_'].some(s => interaction.customId.startsWith(s))) return;
 
 	if (globalClient.isShuttingDown) {
@@ -430,9 +439,8 @@ export async function interactionHook(interaction: Interaction) {
 		});
 	}
 
-	await deferInteraction(interaction);
-
 	const user = await mUserFetch(userID);
+
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
 	if (id.includes('DONATE_IC')) return donateICHandler(interaction);
@@ -480,7 +488,7 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	async function doClue(tier: ClueTier['name']) {
-		runCommand({
+		return runCommand({
 			commandName: 'clue',
 			args: { tier },
 			bypassInhibitors: true,
@@ -489,7 +497,7 @@ export async function interactionHook(interaction: Interaction) {
 	}
 
 	async function openCasket(tier: ClueTier['name']) {
-		runCommand({
+		return runCommand({
 			commandName: 'open',
 			args: {
 				name: tier,

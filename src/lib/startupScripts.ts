@@ -1,7 +1,5 @@
 import { Items } from 'oldschooljs';
 
-import { logError } from './util/logError';
-
 const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
 
 const arrayColumns = [
@@ -68,7 +66,7 @@ const checkConstraints: CheckConstraint[] = [
 		table: 'ge_listing',
 		column: 'asking_price_per_item',
 		name: 'asking_price_per_item_min',
-		body: 'asking_price_per_item_min >= 1'
+		body: 'asking_price_per_item >= 1'
 	},
 	{
 		table: 'ge_listing',
@@ -119,9 +117,22 @@ const checkConstraints: CheckConstraint[] = [
 		body: 'quantity >= 0'
 	}
 ];
+
 for (const { table, name, body } of checkConstraints) {
-	startupScripts.push({ sql: `ALTER TABLE ${table} ADD CONSTRAINT ${name} CHECK (${body});`, ignoreErrors: true });
+	startupScripts.push({
+		sql: `DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 
+                   FROM   information_schema.check_constraints 
+                   WHERE  constraint_name = '${name}' 
+                   AND    constraint_schema = 'public')
+    THEN
+        ALTER TABLE "${table}" ADD CONSTRAINT "${name}" CHECK (${body});
+    END IF;
+END$$;`
+	});
 }
+
 startupScripts.push({
 	sql: 'CREATE UNIQUE INDEX IF NOT EXISTS activity_only_one_task ON activity (user_id, completed) WHERE NOT completed;'
 });
@@ -142,9 +153,5 @@ WHERE item_metadata.name IS DISTINCT FROM EXCLUDED.name;
 startupScripts.push({ sql: itemMetaDataQuery });
 
 export async function runStartupScripts() {
-	for (const query of startupScripts) {
-		await prisma
-			.$queryRawUnsafe(query.sql)
-			.catch(err => (query.ignoreErrors ? null : logError(`Startup script failed: ${err.message} ${query.sql}`)));
-	}
+	await prisma.$transaction(startupScripts.map(query => prisma.$queryRawUnsafe(query.sql)));
 }

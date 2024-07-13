@@ -2,7 +2,6 @@ import { schedule } from 'node-cron';
 
 import { analyticsTick } from './analytics';
 import { syncPrescence } from './doubleLoot';
-
 import { cacheCleanup } from './util/cachedUserIDs';
 import { syncSlayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
 
@@ -15,7 +14,7 @@ export function initCrons() {
 			type: 'INSERT_ECONOMY_ITEM'
 		});
 		await prisma.$queryRawUnsafe(`INSERT INTO economy_item
-SELECT item_id::integer, SUM(qty)::bigint FROM
+SELECT item_id::integer, SUM(qty)::bigint FROM 
 (
     SELECT id, (jdata).key AS item_id, (jdata).value::text::bigint AS qty FROM (select id, json_each(bank) AS jdata FROM users) AS banks
 )

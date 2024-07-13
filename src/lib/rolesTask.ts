@@ -4,12 +4,12 @@ import { Bank } from 'oldschooljs';
 
 import { SupportServer, production } from '../config';
 import { ClueTiers } from '../lib/clues/clueTiers';
-import { Roles, usernameCache } from '../lib/constants';
+import { Roles } from '../lib/constants';
 import { getCollectionItems, overallPlusItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
 
 import Skills from '../lib/skilling/skills';
-import { assert, convertXPtoLVL, sanitizeBank } from '../lib/util';
+import { assert, convertXPtoLVL, getUsername, getUsernameSync, sanitizeBank } from '../lib/util';
 import { logError } from '../lib/util/logError';
 import { TeamLoot } from './simulation/TeamLoot';
 import type { ItemBank } from './types';
@@ -113,7 +113,7 @@ async function addRoles({
 	if (userMap) {
 		const userArr = [];
 		for (const [id, arr] of Object.entries(userMap)) {
-			const username = usernameCache.get(id) ?? 'Unknown';
+			const username = await getUsername(id);
 			userArr.push(`${username}(${arr.join(', ')})`);
 		}
 		str += `\n${userArr.join(',')}`;
@@ -592,7 +592,7 @@ LIMIT 50;`
 
 		let note = '**Top Mystery Box Openers**\n\n';
 		for (const [id, score] of entries.slice(0, 10)) {
-			note += `${usernameCache.get(id) ?? id} - ${score}\n`;
+			note += `${getUsernameSync(id) ?? id} - ${score}\n`;
 		}
 
 		notes.push(note);

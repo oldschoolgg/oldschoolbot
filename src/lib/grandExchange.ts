@@ -1,4 +1,3 @@
-import { PerkTier, Stopwatch, getInterval } from '@oldschoolgg/toolkit';
 import type { GEListing, GETransaction } from '@prisma/client';
 import { GEListingType } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
@@ -17,7 +16,16 @@ import { roboChimpUserFetch } from './roboChimp';
 
 import { ADMIN_IDS, OWNER_IDS } from '../config';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
-import { assert, generateGrandExchangeID, isGEUntradeable, itemNameFromID, makeComponents, toKMB } from './util';
+import {
+	assert,
+	PerkTier,
+	generateGrandExchangeID,
+	getInterval,
+	isGEUntradeable,
+	itemNameFromID,
+	makeComponents,
+	toKMB
+} from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
@@ -777,14 +785,11 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	}
 
 	async extensiveVerification() {
-		const stopwatch = new Stopwatch();
-		stopwatch.check('extensiveVerification start');
 		await Promise.all([
 			prisma.gETransaction.findMany().then(txs => txs.map(tx => sanityCheckTransaction(tx))),
 			prisma.gEListing.findMany().then(listings => listings.map(listing => sanityCheckListing(listing))),
 			this.checkGECanFullFilAllListings()
 		]);
-		stopwatch.check('extensiveVerification finish');
 		return true;
 	}
 

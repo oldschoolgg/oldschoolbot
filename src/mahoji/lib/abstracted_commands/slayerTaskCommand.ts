@@ -5,6 +5,7 @@ import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 
+import { InteractionID } from '../../../lib/InteractionID';
 import { runCommand } from '../../../lib/settings/settings';
 import { slayerMasters } from '../../../lib/slayer/slayerMasters';
 import {
@@ -27,39 +28,34 @@ const returnSuccessButtons = [
 		new ButtonBuilder({
 			label: 'Autoslay (Saved)',
 			style: ButtonStyle.Secondary,
-			customId: 'assaved'
+			customId: InteractionID.Slayer.AutoSlaySaved
 		}),
 		new ButtonBuilder({
 			label: 'Autoslay (Default)',
 			style: ButtonStyle.Secondary,
-			customId: 'asdef'
+			customId: InteractionID.Slayer.AutoSlayDefault
 		}),
 		new ButtonBuilder({
 			label: 'Autoslay (EHP)',
 			style: ButtonStyle.Secondary,
-			customId: 'asehp'
+			customId: InteractionID.Slayer.AutoSlayEHP
 		}),
 		new ButtonBuilder({
 			label: 'Autoslay (Boss)',
 			style: ButtonStyle.Secondary,
-			customId: 'asboss'
+			customId: InteractionID.Slayer.AutoSlayBoss
 		})
 	]),
 	new ActionRowBuilder<ButtonBuilder>().addComponents([
 		new ButtonBuilder({
 			label: 'Cancel Task + New (30 points)',
 			style: ButtonStyle.Danger,
-			customId: 'skip'
+			customId: InteractionID.Slayer.SkipTask
 		}),
 		new ButtonBuilder({
 			label: 'Block Task + New (100 points)',
 			style: ButtonStyle.Danger,
-			customId: 'block'
-		}),
-		new ButtonBuilder({
-			label: 'Do Nothing',
-			style: ButtonStyle.Secondary,
-			customId: 'doNothing'
+			customId: InteractionID.Slayer.BlockTask
 		})
 	])
 ];
@@ -146,7 +142,7 @@ async function returnSuccess(channelID: string, user: MUser, content: string) {
 		});
 		if (!selection.isButton()) return;
 		switch (selection.customId) {
-			case 'assaved': {
+			case InteractionID.Slayer.AutoSlaySaved: {
 				await runCommand({
 					commandName: 'slayer',
 					args: { autoslay: {} },
@@ -156,7 +152,7 @@ async function returnSuccess(channelID: string, user: MUser, content: string) {
 				});
 				return;
 			}
-			case 'asdef': {
+			case InteractionID.Slayer.AutoSlayDefault: {
 				await runCommand({
 					commandName: 'slayer',
 					args: { autoslay: { mode: 'default' } },
@@ -166,7 +162,7 @@ async function returnSuccess(channelID: string, user: MUser, content: string) {
 				});
 				return;
 			}
-			case 'asehp': {
+			case InteractionID.Slayer.AutoSlayEHP: {
 				await runCommand({
 					commandName: 'slayer',
 					args: { autoslay: { mode: 'ehp' } },
@@ -176,7 +172,7 @@ async function returnSuccess(channelID: string, user: MUser, content: string) {
 				});
 				return;
 			}
-			case 'asboss': {
+			case InteractionID.Slayer.AutoSlayBoss: {
 				await runCommand({
 					commandName: 'slayer',
 					args: { autoslay: { mode: 'boss' } },
@@ -186,7 +182,7 @@ async function returnSuccess(channelID: string, user: MUser, content: string) {
 				});
 				return;
 			}
-			case 'skip': {
+			case InteractionID.Slayer.SkipTask: {
 				await runCommand({
 					commandName: 'slayer',
 					args: { manage: { command: 'skip', new: true } },
@@ -196,7 +192,7 @@ async function returnSuccess(channelID: string, user: MUser, content: string) {
 				});
 				return;
 			}
-			case 'block': {
+			case InteractionID.Slayer.BlockTask: {
 				await runCommand({
 					commandName: 'slayer',
 					args: { manage: { command: 'block', new: true } },
@@ -207,6 +203,11 @@ async function returnSuccess(channelID: string, user: MUser, content: string) {
 			}
 		}
 	} catch (err: unknown) {
+		if ((err as any).message === 'time') return;
+		logError(err, {
+			user_id: user.id.toString(),
+			channel_id: channelID
+		});
 	} finally {
 		await sentMessage.edit({ components: [] });
 	}

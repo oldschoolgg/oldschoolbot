@@ -13,9 +13,17 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { clImageGenerator } from '../../lib/collectionLogTask';
-import { BOT_TYPE, Emoji, usernameCache } from '../../lib/constants';
+import { BOT_TYPE, Emoji } from '../../lib/constants';
 
-import { channelIsSendable, isValidDiscordSnowflake, isValidNickname, md5sum, toKMB } from '../../lib/util';
+import {
+	channelIsSendable,
+	getUsername,
+	getUsernameSync,
+	isValidDiscordSnowflake,
+	isValidNickname,
+	md5sum,
+	toKMB
+} from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -86,7 +94,7 @@ async function bingoTeamLeaderboard(
 				.map(
 					(team, j) =>
 						`${getPos(i, j)}** ${`${team.trophy?.emoji} ` ?? ''}${team.participants
-							.map(pt => usernameCache.get(pt.user_id) ?? '?')
+							.map(pt => getUsernameSync(pt.user_id))
 							.join(', ')}:** ${team.tilesCompletedCount.toLocaleString()}`
 				)
 				.join('\n')
@@ -804,9 +812,7 @@ The creator of the bingo (${userMention(
 								teams
 									.map(team =>
 										[
-											team.participants
-												.map(u => usernameCache.get(u.user_id) ?? u.user_id)
-												.join(','),
+											team.participants.map(u => getUsernameSync(u.user_id)).join(','),
 											team.tilesCompletedCount,
 											team.trophy?.item.name ?? 'No Trophy'
 										].join('\t')
@@ -946,22 +952,20 @@ Example: \`add_tile:Coal|Trout|Egg\` is a tile where you have to receive a coal 
 					);
 
 					for (const userID of team.participants.map(t => t.user_id)) {
-						const reclaimableItems: Prisma.ReclaimableItemCreateManyInput[] = trophiesToReceive.map(
-							trophy => ({
+						const reclaimableItems: Prisma.ReclaimableItemCreateManyInput[] = await Promise.all(
+							trophiesToReceive.map(async trophy => ({
 								name: `Bingo Trophy (${trophy.item.name})`,
 								quantity: 1,
 								key: `bso-bingo-2-${trophy.item.id}`,
 								item_id: trophy.item.id,
 								description: `Awarded for placing in the top ${trophy.percentile}% of ${
 									bingo.title
-								}. Your team (${team.participants
-									.map(t => usernameCache.get(t.user_id) ?? t.user_id)
-									.join(', ')}) placed ${formatOrdinal(team.rank)} with ${
+								}. Your team (${(await Promise.all(team.participants.map(async t => await getUsername(t.user_id)))).join(', ')}) placed ${formatOrdinal(team.rank)} with ${
 									team.tilesCompletedCount
 								} tiles completed.`,
 								date: bingo.endDate.toISOString(),
 								user_id: userID
-							})
+							}))
 						);
 						toInsert.push(...reclaimableItems);
 					}

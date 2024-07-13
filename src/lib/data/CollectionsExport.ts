@@ -1718,7 +1718,8 @@ export const allPetsCL = resolveItems([
 	"Lil'viathan",
 	'Butch',
 	'Baron',
-	'Scurry'
+	'Scurry',
+	'Smol heredit'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',

@@ -103,5 +103,6 @@ export function getUsersPerkTier(
 export function syncPerkTierOfUser(user: MUser) {
 	const perkTier = getUsersPerkTier(user, true);
 	perkTierCache.set(user.id, perkTier);
+	redis.setUser(user.id, { perk_tier: perkTier });
 	return perkTier;
 }
