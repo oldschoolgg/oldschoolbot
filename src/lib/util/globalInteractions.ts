@@ -423,11 +423,6 @@ export async function interactionHook(interaction: Interaction) {
 		});
 	}
 
-	debugLog(`Interaction hook for button [${interaction.customId}]`, {
-		user_id: interaction.user.id,
-		channel_id: interaction.channelId,
-		guild_id: interaction.guildId
-	});
 	const id = interaction.customId;
 	const userID = interaction.user.id;
 
