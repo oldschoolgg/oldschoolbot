@@ -16,6 +16,7 @@ import { logErrorForInteraction } from './logError';
 
 export async function interactionReply(interaction: RepliableInteraction, response: string | InteractionReplyOptions) {
 	let i: Promise<InteractionResponse> | Promise<Message> | undefined = undefined;
+
 	if (interaction.replied) {
 		i = interaction.followUp(response);
 	} else if (interaction.deferred) {
@@ -24,8 +25,8 @@ export async function interactionReply(interaction: RepliableInteraction, respon
 		i = interaction.reply(response);
 	}
 	try {
-		await i;
-		return i;
+		const result = await i;
+		return result;
 	} catch (e: any) {
 		if (e instanceof DiscordAPIError && e.code !== 10_008) {
 			// 10_008 is unknown message, e.g. if someone deletes the message before it's replied to.
