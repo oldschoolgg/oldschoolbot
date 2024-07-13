@@ -4,6 +4,7 @@ import type { TextChannel } from 'discord.js';
 import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector } from 'discord.js';
 import { Time, debounce, noOp } from 'e';
 
+import { production } from '../config';
 import { BLACKLISTED_USERS } from './blacklists';
 import { SILENT_ERROR } from './constants';
 import type { MakePartyOptions } from './types';
@@ -11,10 +12,11 @@ import { getUsername } from './util';
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();
-setInterval(() => {
-	debugLog('Clearing partylockcache');
-	partyLockCache.clear();
-}, Time.Minute * 20);
+if (production) {
+	setInterval(() => {
+		partyLockCache.clear();
+	}, Time.Minute * 20);
+}
 
 const buttons = [
 	{
@@ -37,8 +39,8 @@ const buttons = [
 
 export async function setupParty(channel: TextChannel, leaderUser: MUser, options: MakePartyOptions): Promise<MUser[]> {
 	const usersWhoConfirmed: string[] = [options.leader.id];
-	const deleted = false;
-	const massStarted = false;
+	let deleted = false;
+	let massStarted = false;
 
 	async function getMessageContent() {
 		return {
@@ -47,7 +49,10 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 			).join(
 				', '
 			)}\n\nThis party will automatically depart in 2 minutes, or if the leader clicks the start (start early) or stop button.`,
-			components: makeComponents(buttons.map(i => i.button))
+			components: makeComponents(buttons.map(i => i.button)),
+			allowedMentions: {
+				users: []
+			}
 		};
 	}
 
@@ -70,7 +75,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 
 	const reactionAwaiter = () =>
 		new Promise<MUser[]>(async (resolve, reject) => {
-			const partyCancelled = false;
+			let partyCancelled = false;
 			const collector = new InteractionCollector(globalClient, {
 				time: Time.Minute * 5,
 				maxUsers: options.usersAllowed?.length ?? options.maxSize,
@@ -125,6 +130,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 
 			async function startTrip() {
 				if (massStarted) return;
+				massStarted = true;
 				await confirmMessage.delete().catch(noOp);
 				if (!partyCancelled && usersWhoConfirmed.length < options.minSize) {
 					channel.send(`${leaderUser} Not enough people joined your mass!`);
@@ -186,6 +192,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 
 					case 'PARTY_CANCEL': {
 						if (interaction.user.id === options.leader.id) {
+							partyCancelled = true;
 							reply('You cancelled the mass.');
 							reject(
 								new UserError(`The leader (${options.leader.usernameOrMention}) cancelled this mass!`)
@@ -214,6 +221,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 			});
 
 			collector.once('end', () => {
+				deleted = true;
 				confirmMessage.delete().catch(noOp);
 				for (const user of usersWhoConfirmed) {
 					partyLockCache.delete(user);

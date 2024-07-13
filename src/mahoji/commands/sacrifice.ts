@@ -99,7 +99,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			);
 		}
 
-		deferInteraction(interaction);
+		await deferInteraction(interaction);
 
 		const bankToSac = parseBank({
 			inputStr: options.items,

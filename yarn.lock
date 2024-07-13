@@ -679,14 +679,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#87450a60c73136601714c77092793d2f432b70b5":
+"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#654e7cd754d9884681a71b8c5dce4e1a55963952":
   version: 0.0.24
-  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=87450a60c73136601714c77092793d2f432b70b5"
+  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=654e7cd754d9884681a71b8c5dce4e1a55963952"
   dependencies:
     decimal.js: "npm:^10.4.3"
+    deep-object-diff: "npm:^1.1.9"
     deepmerge: "npm:4.3.1"
     e: "npm:0.2.33"
     emoji-regex: "npm:^10.2.1"
+    fast-deep-equal: "npm:^3.1.3"
     ioredis: "npm:^5.4.1"
     ioredis-mock: "npm:^8.9.0"
     math-expression-evaluator: "npm:^1.3.14"
@@ -695,7 +697,7 @@ __metadata:
   peerDependencies:
     discord.js: ^14.15.3
     oldschooljs: ^2.5.9
-  checksum: 10c0/3a8caa110fb1d8b90d3fb3eb24e3c98f7e388d2a3f7e35ea9a14d65d01cc3fc529cdb5e042e251f4b414d1b2fc86b62824d9d8c4814842cde9769101c6070661
+  checksum: 10c0/5dd03536722cdcb96fcdd75e1925e3251c26f0a31fdc928894a80e5b5fe18e93a9761a41236992a2806450c0d03072db315157c9f9a0bd51a699a5c8e189c7fb
   languageName: node
   linkType: hard
 
@@ -2143,6 +2145,13 @@ __metadata:
   dependencies:
     type-detect: "npm:^4.0.0"
   checksum: 10c0/ff34e8605d8253e1bf9fe48056e02c6f347b81d9b5df1c6650a1b0f6f847b4a86453b16dc226b34f853ef14b626e85d04e081b022e20b00cd7d54f079ce9bbdd
+  languageName: node
+  linkType: hard
+
+"deep-object-diff@npm:^1.1.9":
+  version: 1.1.9
+  resolution: "deep-object-diff@npm:1.1.9"
+  checksum: 10c0/12cfd1b000d16c9192fc649923c972f8aac2ddca4f71a292f8f2c1e2d5cf3c9c16c85e73ab3e7d8a89a5ec6918d6460677d0b05bd160f7bd50bb4816d496dc24
   languageName: node
   linkType: hard
 
@@ -4090,7 +4099,7 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:^1.8.3"
     "@napi-rs/canvas": "npm:^0.1.53"
-    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#87450a60c73136601714c77092793d2f432b70b5"
+    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#654e7cd754d9884681a71b8c5dce4e1a55963952"
     "@prisma/client": "npm:^5.16.1"
     "@sapphire/snowflake": "npm:^3.5.3"
     "@sapphire/time-utilities": "npm:^1.6.0"
