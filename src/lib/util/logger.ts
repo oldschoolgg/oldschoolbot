@@ -1,28 +1,22 @@
 import SonicBoom from 'sonic-boom';
 
+import { BOT_TYPE_LOWERCASE, globalConfig } from '../constants';
+
 const today = new Date();
 const year = today.getFullYear();
 const month = (today.getMonth() + 1).toString().padStart(2, '0');
 const day = today.getDate().toString().padStart(2, '0');
 const formattedDate = `${year}-${month}-${day}`;
 
-export const LOG_FILE_NAME = `./logs/${formattedDate}-${today.getHours()}-${today.getMinutes()}-debug-logs.log`;
+const LOG_FILE_NAME = globalConfig.isProduction
+	? `../logs/${BOT_TYPE_LOWERCASE}.debug.log`
+	: `./logs/${formattedDate}-${today.getHours()}-${today.getMinutes()}-debug-logs.log`;
 
 export const sonicBoom = new SonicBoom({
 	fd: LOG_FILE_NAME,
 	mkdir: true,
-	minLength: 4096,
 	sync: false
 });
-
-const sqlLogger = new SonicBoom({
-	fd: './logs/queries.sql',
-	mkdir: true,
-	minLength: 0,
-	sync: true
-});
-
-export const sqlLog = (str: string) => sqlLogger.write(`${new Date().toLocaleTimeString()} ${str}\n`);
 
 interface LogContext {
 	type?: string;

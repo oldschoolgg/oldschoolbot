@@ -283,15 +283,16 @@ const ActivityTaskOptionsSchema = z.object({
 
 async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
-	debugLog(`Attemping to complete activity ID[${activity.id}]`);
 
 	if (_activity.completed) {
-		throw new Error('Tried to complete an already completed task.');
+		logError(new Error('Tried to complete an already completed task.'));
+		return;
 	}
 
 	const task = tasks.find(i => i.type === activity.type)!;
 	if (!task) {
-		throw new Error('Missing task');
+		logError(new Error('Missing task'));
+		return;
 	}
 
 	modifyBusyCounter(activity.userID, 1);
@@ -300,7 +301,7 @@ async function completeActivity(_activity: Activity) {
 			const schema = ActivityTaskOptionsSchema.and(task.dataSchema);
 			const { success } = schema.safeParse(activity);
 			if (!success) {
-				console.error(`Invalid activity data for ${activity.type} task: ${JSON.stringify(activity)}`);
+				logError(new Error(`Invalid activity data for ${activity.type} task: ${JSON.stringify(activity)}`));
 			}
 		}
 		await task.run(activity);
@@ -309,7 +310,6 @@ async function completeActivity(_activity: Activity) {
 	} finally {
 		modifyBusyCounter(activity.userID, -1);
 		minionActivityCacheDelete(activity.userID);
-		debugLog(`Finished completing activity ID[${activity.id}]`);
 	}
 }
 
