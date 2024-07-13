@@ -537,7 +537,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			buyerListing.asking_price_per_item
 		}] SellerPrice[${
 			sellerListing.asking_price_per_item
-		}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${buyerLoot}] SellerLoot[${sellerLoot}] CurrentGEBank[${geBank}] BankToRemoveFromGeBank[${bankToRemoveFromGeBank.bank}] ExpectedAfterBank[${
+		}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${buyerLoot}] SellerLoot[${sellerLoot}] CurrentGEBank[${geBank}] BankToRemoveFromGeBank[${JSON.stringify(bankToRemoveFromGeBank.bank)}] ExpectedAfterBank[${
 			geBank.clone().remove(bankToRemoveFromGeBank).bank
 		}]`;
 
@@ -557,13 +557,13 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 		}
 
 		debugLog(
-			`Completing a transaction, removing ${bankToRemoveFromGeBank.bank} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${geBank.bank}. ${debug}`,
+			`Completing a transaction, removing ${JSON.stringify(bankToRemoveFromGeBank.bank)} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${JSON.stringify(geBank.bank)}. ${debug}`,
 			{
 				totalPriceAfterTax,
 				totalTaxPaid,
 				totalPriceBeforeTax,
 				bankToRemoveFromGeBank: bankToRemoveFromGeBank.toString(),
-				currentGEBank: geBank.toString()
+				currentGEBank: JSON.stringify(geBank.bank)
 			}
 		);
 
@@ -617,7 +617,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			...makeTransactFromTableBankQueries({ bankToRemove: bankToRemoveFromGeBank })
 		]);
 
-		debugLog(`Transaction completed, the new G.E bank is ${(await this.fetchOwnedBank()).bank}.`);
+		debugLog(`Transaction completed, the new G.E bank is ${JSON.stringify((await this.fetchOwnedBank()).bank)}.`);
 
 		const buyerUser = await mUserFetch(buyerListing.user_id);
 		const sellerUser = await mUserFetch(sellerListing.user_id);
@@ -788,7 +788,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			shouldHave.add(listing.item_id, listing.quantity_remaining);
 		}
 
-		debugLog(`Expected G.E Bank: ${shouldHave}`);
+		debugLog(`Expected G.E Bank: ${JSON.stringify(shouldHave.bank)}`);
 		if (!currentBank.equals(shouldHave)) {
 			if (!currentBank.has(shouldHave)) {
 				throw new Error(
@@ -803,11 +803,7 @@ G.E Bank Has: ${currentBank}
 G.E Bank Should Have: ${shouldHave}
 Difference: ${shouldHave.difference(currentBank)}`);
 		} else {
-			debugLog(
-				`GE has ${currentBank}, which is enough to cover the ${
-					[...buyListings, ...sellListings].length
-				}x active listings! Difference: ${shouldHave.difference(currentBank)}`
-			);
+			debugLog('GE has enough to cover the listings.');
 			return true;
 		}
 	}
