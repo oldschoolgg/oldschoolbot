@@ -544,13 +544,15 @@ if (!process.env.BOT_TOKEN && !process.env.CI) {
 	);
 }
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 export const globalConfig = globalConfigSchema.parse({
 	clientID: process.env.CLIENT_ID,
-	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID,
+	geAdminChannelID: isProduction ? '830145040495411210' : '1042760447830536212',
 	redisPort: process.env.REDIS_PORT,
 	botToken: process.env.BOT_TOKEN,
 	isCI: process.env.CI,
-	isProduction: process.env.NODE_ENV === 'production'
+	isProduction
 });
 
 if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction || production !== globalConfig.isProduction) {
