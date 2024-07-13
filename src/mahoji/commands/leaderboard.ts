@@ -1,7 +1,12 @@
 import { type CommandRunOptions, toTitleCase } from '@oldschoolgg/toolkit';
 
 import type { UserStats } from '@prisma/client';
-import { ApplicationCommandOptionType, type ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import {
+	ApplicationCommandOptionType,
+	type ChatInputCommandInteraction,
+	EmbedBuilder,
+	type MessageEditOptions
+} from 'discord.js';
 import { calcWhatPercent, chunk, isFunction } from 'e';
 import type { ClueTier } from '../../lib/clues/clueTiers';
 import { ClueTiers } from '../../lib/clues/clueTiers';
@@ -46,11 +51,12 @@ export function getPos(page: number, record: number) {
 	return `${page * LB_PAGE_SIZE + 1 + record}. `;
 }
 
+export type AsyncPageString = () => Promise<string>;
 export async function doMenu(
 	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	channelID: string,
-	pages: string[] | (() => Promise<string>)[],
+	pages: string[] | AsyncPageString[],
 	title: string
 ) {
 	if (pages.length === 0) {
@@ -74,7 +80,6 @@ export async function doMenu(
 
 function doMenuWrapper({
 	user,
-	interaction,
 	channelID,
 	users,
 	title,
@@ -90,17 +95,36 @@ function doMenuWrapper({
 	formatter?: (val: number) => string;
 }) {
 	const chunked = chunk(users, LB_PAGE_SIZE);
-	const pages = [];
-	for (const chnk of chunked) {
-		const page = chnk
-			.map(
-				(user, i) => async () =>
-					`${getPos(i, i)}**${await getUsername(user.id)}:** ${formatter ? formatter(user.score) : user.score.toLocaleString()}`
-			)
-			.join('\n');
-		pages.push(page);
+	const pages: (() => Promise<MessageEditOptions>)[] = [];
+	for (let c = 0; c < chunked.length; c++) {
+		const makePage = async () => {
+			const chnk = chunked[c];
+			const unwaited = chnk.map(
+				async (user, i) =>
+					`${getPos(c, i)}**${await getUsername(user.id)}:** ${formatter ? formatter(user.score) : user.score.toLocaleString()}`
+			);
+			const pageText = (await Promise.all(unwaited)).join('\n');
+			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(pageText)] };
+		};
+		pages.push(makePage);
 	}
-	doMenu(interaction, user, channelID, pages, title);
+	if (pages.length === 0) {
+		return 'There are no users on this leaderboard.';
+	}
+	const channel = globalClient.channels.cache.get(channelID);
+	if (!channelIsSendable(channel)) return 'Invalid channel.';
+
+	makePaginatedMessage(
+		channel,
+		pages.map(p => {
+			if (isFunction(p)) {
+				return p;
+			}
+
+			return { embeds: [new EmbedBuilder().setTitle(title).setDescription(p)] };
+		}),
+		user.id
+	);
 
 	return lbMsg(title, ironmanOnly);
 }

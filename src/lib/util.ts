@@ -503,7 +503,7 @@ const badgesKey = `${BOT_TYPE_LOWERCASE.toLowerCase()}_badges` as 'osb_badges' |
 const usernameWithBadgesCache = new LRUCache<string, string>({ max: 2000 });
 export function cacheUsername(id: string, username: string, badges: string) {
 	const current = usernameWithBadgesCache.get(id);
-	const newValue = `${badges} ${username}`;
+	const newValue = `${badges ? `${badges} ` : ''}${username}`;
 	if (!current || current !== newValue) {
 		usernameWithBadgesCache.set(id, newValue);
 		redis.setUser(id, { username: cleanUsername(username), [badgesKey]: badges });
@@ -515,7 +515,8 @@ export async function getUsername(_id: string | bigint): Promise<string> {
 	if (cached) return cached;
 	const user = await redis.getUser(id);
 	if (!user.username) return 'Unknown';
-	const newValue = `${user[badgesKey]} ${user.username}`;
+	const badges = user[badgesKey];
+	const newValue = `${badges ? `${badges} ` : ''}${user.username}`;
 	usernameWithBadgesCache.set(id, newValue);
 	return newValue;
 }
