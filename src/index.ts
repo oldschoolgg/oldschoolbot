@@ -1,6 +1,5 @@
 import './lib/safeglobals';
 import './lib/globals';
-import './lib/crons';
 import './lib/MUser';
 import './lib/util/transactItemsFromBank';
 import './lib/geImage';

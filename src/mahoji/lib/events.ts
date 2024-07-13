@@ -58,9 +58,9 @@ export async function onStartup() {
 
 	await syncDoubleLoot();
 
-	syncDisabledCommands();
+	runTimedLoggedFn('Sync Disabled Commands', syncDisabledCommands);
 
-	syncBlacklists();
+	runTimedLoggedFn('Sync Blacklist', syncBlacklists);
 
 	runTimedLoggedFn('Syncing prices', syncCustomPrices);
 
