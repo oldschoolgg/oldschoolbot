@@ -15,6 +15,7 @@ import { hasSlayerUnlock } from '../../../lib/slayer/slayerUtil';
 import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function sepulchreCommand(user: MUser, channelID: string, fletching?: string) {
 	const skills = user.skillsAsLevels;
@@ -56,7 +57,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		}
 	}
 
-	const maxLaps = Math.floor(Time.Hour / lapLength);
+	const maxLaps = Math.floor(calcMaxTripLength(user, 'Sepulchre') / lapLength);
 	const tripLength = maxLaps * lapLength;
 
 	let itemsNeeded: Bank | undefined;
