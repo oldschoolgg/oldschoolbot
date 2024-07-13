@@ -1,6 +1,5 @@
-import { Time, reduceNumByPercent, sumArr } from 'e';
-
 import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
+import { Time, reduceNumByPercent, sumArr } from 'e';
 import type { Bank } from 'oldschooljs';
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { getMinigameScore } from '../../../lib/settings/minigames';
@@ -22,45 +21,32 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 	const thievingLevel = skills.thieving;
 	const minLevel = sepulchreFloors[0].agilityLevel;
 
-	console.log(fletching);
-
 	if (agilityLevel < minLevel) {
-		return `You need atleast level ${minLevel} Agility to do the Hallowed Sepulchre.`;
+		return `You need at least level ${minLevel} Agility to do the Hallowed Sepulchre.`;
 	}
 
 	if (thievingLevel < 66) {
-		return 'You need atleast level 66 Thieving to do the Hallowed Sepulchre.';
+		return 'You need at least level 66 Thieving to do the Hallowed Sepulchre.';
 	}
 
 	if (!userHasGracefulEquipped(user)) {
 		return 'You need Graceful equipped in your Skilling setup to do the Hallowed Sepulchre.';
 	}
 
-	const fletchable = zeroTimeFletchables.find(item => stringMatches(item.name, fletching));
-	if (fletching && !fletchable) return 'That is not a valid item to fletch during Sepulchre.';
-	const dart = Darts.find(item => stringMatches(item.name, fletching));
-	const bolt = Bolts.find(item => stringMatches(item.name, fletching));
-	const arrow = Arrows.find(item => stringMatches(item.name, fletching));
-	const tippedBolt = TippedBolts.find(item => stringMatches(item.name, fletching));
-	const tippedDragonBolt = TippedDragonBolts.find(item => stringMatches(item.name, fletching));
-
 	let fletchingQuantity = 0;
-	const userBank = user.bank;
+	const fletchable = fletching ? zeroTimeFletchables.find(item => stringMatches(item.name, fletching)) : null;
+	if (fletching && !fletchable) return 'That is not a valid item to fletch during Sepulchre.';
 
 	const completableFloors = sepulchreFloors.filter(floor => agilityLevel >= floor.agilityLevel);
 	let lapLength = sumArr(completableFloors.map(floor => floor.time));
 
-	const boosts = [];
-
-	// Every 1h becomes 1% faster to a cap of 10%
+	// Calculate and apply boosts
 	const percentReduced = Math.min(
 		Math.floor((await getMinigameScore(user.id, 'sepulchre')) / (Time.Hour / lapLength)),
 		10
 	);
-
-	boosts.push(`${percentReduced.toFixed(1)}% for minion learning`);
-
 	lapLength = reduceNumByPercent(lapLength, percentReduced);
+	const boosts = [`${percentReduced.toFixed(1)}% for minion learning`];
 
 	for (const [item, percent] of sepulchreBoosts.items()) {
 		if (user.hasEquippedOrInBank(item.id)) {
@@ -68,6 +54,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 			lapLength = reduceNumByPercent(lapLength, percent);
 		}
 	}
+
 	const maxLaps = Math.floor(Time.Hour / lapLength);
 	const tripLength = maxLaps * lapLength;
 
@@ -79,36 +66,45 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		if (fletchable?.outputMultiple) {
 			sets = ' sets of';
 		}
-
 		if (user.skillLevel('fletching') < fletchable.level) {
 			return `${user.minionName} needs ${fletchable.level} Fletching to fletch ${fletchable.name}.`;
 		}
 
 		if (fletchable.requiredSlayerUnlocks) {
-			const mySlayerUnlocks = user.user.slayer_unlocks;
-
 			const { success, errors } = hasSlayerUnlock(
-				mySlayerUnlocks as SlayerTaskUnlocksEnum[],
+				user.user.slayer_unlocks as SlayerTaskUnlocksEnum[],
 				fletchable.requiredSlayerUnlocks
 			);
 			if (!success) {
 				return `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
 			}
 		}
-		if (dart || bolt || tippedDragonBolt || tippedBolt) timeToFletchSingleItem = Time.Second * 0.2;
-		if (arrow) timeToFletchSingleItem = Time.Second * 0.36;
 
-		if (timeToFletchSingleItem === 0) return 'Error selecting fletchable.';
+		const fletchableTypes = [
+			{ types: [Darts, Bolts, TippedBolts, TippedDragonBolts], time: Time.Second * 0.2 },
+			{ types: [Arrows], time: Time.Second * 0.36 }
+		];
+
+		for (const { types, time } of fletchableTypes) {
+			if (types.some(type => type.includes(fletchable))) {
+				timeToFletchSingleItem = time;
+				break;
+			}
+		}
+
+		if (timeToFletchSingleItem === 0) {
+			return 'Error selecting fletchable.';
+		}
 
 		fletchingQuantity = Math.floor(tripLength / timeToFletchSingleItem);
-		const max = userBank.fits(fletchable.inputItems);
+		const max = user.bank.fits(fletchable.inputItems);
 		if (max < fletchingQuantity && max !== 0) fletchingQuantity = max;
 
 		itemsNeeded = fletchable.inputItems.clone().multiply(fletchingQuantity);
-		if (!userBank.has(itemsNeeded.bank)) {
+		if (!user.bank.has(itemsNeeded.bank)) {
 			return `You don't have enough items. For ${fletchingQuantity}x ${fletchable.name}, you're missing **${itemsNeeded
 				.clone()
-				.remove(userBank)}**.`;
+				.remove(user.bank)}**.`;
 		}
 
 		await user.removeItemsFromBank(itemsNeeded);
@@ -122,13 +118,9 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		type: 'Sepulchre',
 		channelID: channelID.toString(),
 		minigameID: 'sepulchre',
-		fletch: fletchable
-			? {
-					fletchable,
-					fletchingQuantity
-				}
-			: undefined
+		fletch: fletchable ? { fletchable, fletchingQuantity } : undefined
 	});
+
 	let str = `${user.minionName} is now doing ${maxLaps} laps of the Sepulchre, in each lap they are doing floors ${
 		completableFloors[0].number
 	}-${completableFloors[completableFloors.length - 1].number}, the trip will take ${formatDuration(
@@ -136,9 +128,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 	)}, with each lap taking ${formatDuration(lapLength)}.`;
 
 	if (fletchingQuantity > 0) {
-		str += `\nYou are also now Fletching ${fletchingQuantity}${sets} ${
-			fletchable?.name
-		}. Removed ${itemsNeeded} from your bank.`;
+		str += `\nYou are also now Fletching ${fletchingQuantity}${sets} ${fletchable?.name}. Removed ${itemsNeeded} from your bank.`;
 	}
 
 	if (boosts.length > 0) {

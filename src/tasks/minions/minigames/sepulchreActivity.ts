@@ -48,6 +48,28 @@ export const sepulchreTask: MinionTask = {
 		let fletchQuantity = 0;
 		const fletchingLoot = new Bank();
 
+		if (fletch) {
+			const fletchable = fletch.fletchable;
+			fletchQuantity = fletch.fletchingQuantity;
+
+			if (fletchable.outputMultiple) {
+				sets = ' sets of';
+			}
+
+			const quantityToGive = fletchable.outputMultiple
+				? fletchQuantity * fletchable.outputMultiple
+				: fletchQuantity;
+
+			fletchXpReceived = fletchQuantity * fletchable.xp;
+
+			fletchXpRes = await user.addXP({
+				skillName: SkillsEnum.Fletching,
+				amount: fletchXpReceived,
+				duration
+			});
+			fletchingLoot.add(fletchable.id, quantityToGive);
+		}
+
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
 			collectionLog: true,
@@ -93,27 +115,8 @@ export const sepulchreTask: MinionTask = {
 			previousCL
 		});
 
+		// Handle fletching loot separately after generating the main loot image
 		if (fletch) {
-			const fletchable = fletch.fletchable;
-			fletchQuantity = fletch.fletchingQuantity;
-
-			if (fletchable.outputMultiple) {
-				sets = ' sets of';
-			}
-
-			const quantityToGive = fletchable.outputMultiple
-				? fletchQuantity * fletchable.outputMultiple
-				: fletchQuantity;
-
-			fletchXpReceived = fletchQuantity * fletchable.xp;
-
-			fletchXpRes = await user.addXP({
-				skillName: SkillsEnum.Fletching,
-				amount: fletchXpReceived,
-				duration
-			});
-			fletchingLoot.add(fletchable.id, quantityToGive);
-
 			await transactItems({
 				userID: user.id,
 				collectionLog: true,
