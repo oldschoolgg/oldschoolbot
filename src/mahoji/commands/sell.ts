@@ -98,7 +98,8 @@ export const sellCommand: OSBMahojiCommand = {
 			filters: [options.filter],
 			search: options.search,
 			excludeItems: user.user.favoriteItems,
-			noDuplicateItems: true
+			noDuplicateItems: true,
+			itemAliases: true
 		});
 		if (bankToSell.length === 0) return 'No items provided.';
 

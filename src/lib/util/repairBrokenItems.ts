@@ -96,24 +96,26 @@ export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] 
 
     for (const id of brokenBank) {
         const swap = itemswaps.find(s => s.wrongID === id);
-        
         if (swap) {
+            if (newBank[id]) {
                 newBank[swap.correctID] = (newBank[swap.correctID] || 0) + newBank[id];
-                delete newBank[id];
+            }
+            if (newCL[id]) {
                 newCL[swap.correctID] = (newCL[swap.correctID] || 0) + newCL[id];
-                delete newCL[id];
-                newTempCL[swap.correctID] = (newTempCL[swap.correctID] || 0) + newTempCL[id];
-                delete newTempCL[id];
+            }
+            if (newTempCL[id]) {
+                newTempCL[swap.correctID] = (newTempCL[swap.correctID] || 0) + newTempCL[id];            
+            }
+            if (newSacLog[id]) {
                 newSacLog[swap.correctID] = (newSacLog[swap.correctID] || 0) + newSacLog[id];
-                delete newSacLog[id];
-        } else {
-            delete newBank[id];
-            delete newCL[id];
-            delete newTempCL[id];
-            delete newSacLog[id];
+            }
         }
+        delete newBank[id];
+        delete newCL[id];
+        delete newTempCL[id];
+        delete newSacLog[id];
     }
-
+    
 	for (const setupType of GearSetupTypes) {
 		const _gear = user[`gear_${setupType}`] as GearSetup | null;
 		if (_gear === null) continue;
@@ -154,7 +156,7 @@ export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] 
 		return [
 			`You had ${
 				brokenBank.length
-			} broken items in your bank/collection log/favorites/gear/tame, they were removed. ${
+			} broken items in your bank/collection log/favorites/gear, they were removed. ${
 				brokenBank
 			.slice(0, 500)}`,
 			Object.keys(brokenBank)

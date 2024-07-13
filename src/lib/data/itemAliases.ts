@@ -153,6 +153,13 @@ setItemAlias(2528, 'Genie lamp');
 setItemAlias(27_019, "Ore pack (Giant's Foundry)");
 setItemAlias(27_693, 'Ore pack (Volcanic Mine)');
 
+// DT2 items
+setItemAlias(28316, 'Bellator ring');
+setItemAlias(28307, 'Ultor ring');
+setItemAlias(28313, 'Magus ring');
+setItemAlias(28310, 'Venator ring');
+// setItemAlias(28338, 'Soulreaper axe'); TODO: id 28338 is missing from OSJS in item_data.json
+
 // Birds eggs
 setItemAlias(5076, 'Red bird egg');
 setItemAlias(5077, 'Blue bird egg');

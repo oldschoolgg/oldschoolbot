@@ -284,7 +284,7 @@ export const allCollectionLogs: ICollection = {
 				]
 			},
 			Vardorvis: {
-				alias: ['vardorvis'],
+				alias: ['vard', 'vardorvis'],
 				kcActivity: {
 					Default: [Monsters.Vardorvis.name, Monsters.AwakenedVardorvis.name],
 					Awakened: Monsters.AwakenedVardorvis.name
@@ -1100,7 +1100,14 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.Vardorvis.allItems,
 					...Monsters.DukeSucellus.allItems
 				],
-				items: [...theLeviathanCL, ...theWhispererCL, ...vardorvisCL, ...dukeSucellusCL]
+				items: [25488,
+					28316,
+					25485,
+					28307,
+					25486,
+					28313,
+					25487,
+					28310]		
 			},
 			Creatables: {
 				counts: false,
