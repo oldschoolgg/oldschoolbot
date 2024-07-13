@@ -534,7 +534,8 @@ const globalConfigSchema = z.object({
 	redisPort: z.coerce.number().int().optional(),
 	botToken: z.string().min(1),
 	isCI: z.coerce.boolean().default(false),
-	isProduction: z.coerce.boolean().default(production)
+	isProduction: z.coerce.boolean().default(production),
+	testingServerID: z.string()
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
@@ -544,6 +545,7 @@ if (!process.env.BOT_TOKEN && !process.env.CI) {
 	);
 }
 
+const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
 const isProduction = process.env.NODE_ENV === 'production';
 
 export const globalConfig = globalConfigSchema.parse({
@@ -552,7 +554,8 @@ export const globalConfig = globalConfigSchema.parse({
 	redisPort: process.env.REDIS_PORT,
 	botToken: process.env.BOT_TOKEN,
 	isCI: process.env.CI,
-	isProduction
+	isProduction,
+	testingServerID: process.env.TESTING_SERVER_ID ?? OLDSCHOOLGG_TESTING_SERVER_ID
 });
 
 if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction || production !== globalConfig.isProduction) {
