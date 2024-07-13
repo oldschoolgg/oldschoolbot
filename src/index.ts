@@ -170,7 +170,9 @@ client.on('interactionCreate', async interaction => {
 
 client.on(Events.ServerNotification, (message: string) => {
 	const channel = globalClient.channels.cache.get(Channel.Notifications);
-	if (channel) (channel as TextChannel).send(message);
+	if (channel) {
+		(channel as TextChannel).send({ content: message, allowedMentions: { parse: [], users: [], roles: [] } });
+	}
 });
 
 client.on(Events.EconomyLog, async (message: string) => {
