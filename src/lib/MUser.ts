@@ -15,7 +15,7 @@ import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
 import type { CATier } from './combat_achievements/combatAchievements';
 import { CombatAchievements } from './combat_achievements/combatAchievements';
-import { BitField, Emoji, badges, projectiles, usernameCache } from './constants';
+import { BitField, projectiles } from './constants';
 import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
@@ -41,11 +41,12 @@ import type { BankSortMethod } from './sorts';
 import type { ChargeBank } from './structures/Bank';
 import { Gear, defaultGear } from './structures/Gear';
 import type { ItemBank, Skills } from './types';
-import { addItemToBank, convertXPtoLVL, itemNameFromID } from './util';
+import { addItemToBank, cacheUsername, convertXPtoLVL, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
 import { logError } from './util/logError';
+import { makeBadgeString } from './util/makeBadgeString';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import type { TransactItemsArgs } from './util/transactItemsFromBank';
@@ -94,6 +95,7 @@ export class MUserClass {
 	gear!: UserFullGearSetup;
 	skillsAsXP!: Required<Skills>;
 	skillsAsLevels!: Required<Skills>;
+	badgesString!: string;
 
 	constructor(user: User) {
 		this.user = user;
@@ -101,6 +103,10 @@ export class MUserClass {
 		this.updateProperties();
 
 		syncPerkTierOfUser(this);
+
+		if (this.user.username) {
+			cacheUsername(this.id, this.user.username, this.badgesString);
+		}
 	}
 
 	private updateProperties() {
@@ -130,6 +136,8 @@ export class MUserClass {
 
 		this.skillsAsXP = this.getSkills(false);
 		this.skillsAsLevels = this.getSkills(true);
+
+		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
 	}
 
 	countSkillsAtleast99() {
@@ -213,23 +221,15 @@ export class MUserClass {
 	}
 
 	get rawUsername() {
-		return globalClient.users.cache.get(this.id)?.username ?? usernameCache.get(this.id) ?? 'Unknown';
+		return globalClient.users.cache.get(this.id)?.username ?? this.user.username ?? 'Unknown';
 	}
 
 	get usernameOrMention() {
-		return usernameCache.get(this.id) ?? this.mention;
-	}
-
-	get badgeString() {
-		const rawBadges = this.user.badges.map(num => badges[num]);
-		if (this.isIronman) {
-			rawBadges.push(Emoji.Ironman);
-		}
-		return rawBadges.join(' ');
+		return this.user.username ?? this.mention;
 	}
 
 	get badgedUsername() {
-		return `${this.badgeString} ${this.usernameOrMention}`;
+		return `${this.badgesString} ${this.usernameOrMention}`;
 	}
 
 	toString() {
@@ -950,12 +950,12 @@ declare global {
 	var GlobalMUserClass: typeof MUserClass;
 }
 
-async function srcMUserFetch(userID: string) {
+async function srcMUserFetch(userID: string, updates: Prisma.UserUpdateInput = {}) {
 	const user = await prisma.user.upsert({
 		create: {
 			id: userID
 		},
-		update: {},
+		update: updates,
 		where: {
 			id: userID
 		}

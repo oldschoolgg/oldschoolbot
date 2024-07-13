@@ -19,6 +19,7 @@ export { PerkTier };
 const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '940760643525570591';
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB' as 'BSO' | 'OSB';
+export const BOT_TYPE_LOWERCASE: 'bso' | 'osb' = BOT_TYPE.toLowerCase() as 'bso' | 'osb';
 
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
@@ -478,8 +479,6 @@ export const TWITCHERS_GLOVES = ['egg', 'ring', 'seed', 'clue'] as const;
 export type TwitcherGloves = (typeof TWITCHERS_GLOVES)[number];
 
 export const busyImmuneCommands = ['admin', 'rp'];
-export const usernameCache = new Map<string, string>();
-export const badgesCache = new Map<string, string>();
 export const minionBuyButton = new ButtonBuilder()
 	.setCustomId('BUY_MINION')
 	.setLabel('Buy Minion')
@@ -534,7 +533,8 @@ const globalConfigSchema = z.object({
 	redisPort: z.coerce.number().int().optional(),
 	botToken: z.string().min(1),
 	isCI: z.coerce.boolean().default(false),
-	isProduction: z.coerce.boolean().default(production)
+	isProduction: z.coerce.boolean().default(production),
+	testingServerID: z.string()
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
@@ -544,13 +544,17 @@ if (!process.env.BOT_TOKEN && !process.env.CI) {
 	);
 }
 
+const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
+const isProduction = process.env.NODE_ENV === 'production';
+
 export const globalConfig = globalConfigSchema.parse({
 	clientID: process.env.CLIENT_ID,
-	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID,
+	geAdminChannelID: isProduction ? '830145040495411210' : '1042760447830536212',
 	redisPort: process.env.REDIS_PORT,
 	botToken: process.env.BOT_TOKEN,
 	isCI: process.env.CI,
-	isProduction: process.env.NODE_ENV === 'production'
+	isProduction,
+	testingServerID: process.env.TESTING_SERVER_ID ?? OLDSCHOOLGG_TESTING_SERVER_ID
 });
 
 if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction || production !== globalConfig.isProduction) {

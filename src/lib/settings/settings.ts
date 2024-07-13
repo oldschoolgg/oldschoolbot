@@ -13,7 +13,7 @@ import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
 import { minionActivityCache } from '../constants';
-import { channelIsSendable, isGroupActivity } from '../util';
+import { channelIsSendable, isGroupActivity, roughMergeMahojiResponse } from '../util';
 import { handleInteractionError, interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
 import { convertStoredActivityToFlatActivity } from './prisma';
@@ -95,6 +95,7 @@ interface RunCommandArgs {
 	guildID: string | undefined | null;
 	interaction: ButtonInteraction | ChatInputCommandInteraction;
 	continueDeltaMillis: number | null;
+	ephemeral?: boolean;
 }
 export async function runCommand({
 	commandName,
@@ -106,7 +107,8 @@ export async function runCommand({
 	user,
 	member,
 	interaction,
-	continueDeltaMillis
+	continueDeltaMillis,
+	ephemeral
 }: RunCommandArgs): Promise<null | CommandResponse> {
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channel || !channelIsSendable(channel)) return null;
@@ -152,7 +154,8 @@ export async function runCommand({
 			user,
 			interaction
 		});
-		if (result && !interaction.replied) await interactionReply(interaction, result);
+		if (result && !interaction.replied)
+			await interactionReply(interaction, roughMergeMahojiResponse(result, { ephemeral }));
 		return result;
 	} catch (err: any) {
 		await handleInteractionError(err, interaction);

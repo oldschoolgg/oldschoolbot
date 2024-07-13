@@ -11,7 +11,7 @@ import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
 import { isObject } from 'e';
 
-import { DEV_SERVER_ID, SENTRY_DSN, SupportServer } from './config';
+import { SENTRY_DSN, SupportServer } from './config';
 import { syncActivityCache } from './lib/Task';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
 import { Channel, Events, META_CONSTANTS, gitHash, globalConfig } from './lib/constants';
@@ -71,7 +71,10 @@ const client = new OldSchoolBotClient({
 			maxSize: 200,
 			keepOverLimit: member => CACHED_ACTIVE_USER_IDS.has(member.user.id)
 		},
-		GuildEmojiManager: { maxSize: 1, keepOverLimit: i => [DEV_SERVER_ID, SupportServer].includes(i.guild.id) },
+		GuildEmojiManager: {
+			maxSize: 1,
+			keepOverLimit: i => [globalConfig.testingServerID, SupportServer].includes(i.guild.id)
+		},
 		GuildStickerManager: { maxSize: 0 },
 		PresenceManager: { maxSize: 0 },
 		VoiceStateManager: { maxSize: 0 },
@@ -92,7 +95,7 @@ const client = new OldSchoolBotClient({
 });
 
 export const mahojiClient = new MahojiClient({
-	developmentServerID: DEV_SERVER_ID,
+	developmentServerID: globalConfig.testingServerID,
 	applicationID: globalConfig.clientID,
 	commands: allCommands,
 	handlers: {
@@ -138,13 +141,14 @@ client.on('interactionCreate', async interaction => {
 	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
 
 	if (!client.isReady()) {
-		if (interaction.isChatInputCommand()) {
+		if (interaction.isRepliable()) {
 			await interaction.reply({
 				content:
 					'Old School Bot is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
 				ephemeral: true
 			});
 		}
+
 		return;
 	}
 
@@ -180,7 +184,6 @@ client.on('guildCreate', guild => {
 	}
 });
 
-client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 client.once('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
 
@@ -188,11 +191,11 @@ async function main() {
 	if (process.env.TEST) return;
 	await Promise.all([
 		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
-		runTimedLoggedFn('Sync Activity Cache', syncActivityCache)
+		runTimedLoggedFn('Sync Activity Cache', syncActivityCache),
+		runTimedLoggedFn('Startup Scripts', runStartupScripts)
 	]);
-	await runTimedLoggedFn('Startup Scripts', runStartupScripts);
-
 	await runTimedLoggedFn('Log In', () => client.login(globalConfig.botToken));
+	console.log(`Logged in as ${globalClient.user.username}`);
 }
 
 process.on('uncaughtException', err => {

@@ -1,6 +1,5 @@
 import type { CommandOptions } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import { command_usage_status } from '@prisma/client';
 
 import { getCommandArgs } from '../../mahoji/lib/util';
 
@@ -28,7 +27,6 @@ export function makeCommandUsage({
 	return {
 		user_id: BigInt(userID),
 		command_name: commandName,
-		status: command_usage_status.Unknown,
 		args: getCommandArgs(commandName, args),
 		channel_id: BigInt(channelID),
 		guild_id: guildID ? BigInt(guildID) : null,
