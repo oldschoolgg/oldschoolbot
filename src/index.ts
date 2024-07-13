@@ -11,7 +11,7 @@ import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
 import { isObject } from 'e';
 
-import { DEV_SERVER_ID, SENTRY_DSN, SupportServer } from './config';
+import { SENTRY_DSN, SupportServer } from './config';
 import { syncActivityCache } from './lib/Task';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
 import { Channel, Events, META_CONSTANTS, gitHash, globalConfig } from './lib/constants';
@@ -71,7 +71,10 @@ const client = new OldSchoolBotClient({
 			maxSize: 200,
 			keepOverLimit: member => CACHED_ACTIVE_USER_IDS.has(member.user.id)
 		},
-		GuildEmojiManager: { maxSize: 1, keepOverLimit: i => [DEV_SERVER_ID, SupportServer].includes(i.guild.id) },
+		GuildEmojiManager: {
+			maxSize: 1,
+			keepOverLimit: i => [globalConfig.testingServerID, SupportServer].includes(i.guild.id)
+		},
 		GuildStickerManager: { maxSize: 0 },
 		PresenceManager: { maxSize: 0 },
 		VoiceStateManager: { maxSize: 0 },
@@ -145,6 +148,7 @@ client.on('interactionCreate', async interaction => {
 				ephemeral: true
 			});
 		}
+
 		return;
 	}
 
@@ -180,7 +184,6 @@ client.on('guildCreate', guild => {
 	}
 });
 
-client.on('shardDisconnect', ({ wasClean, code, reason }) => debugLog('Shard Disconnect', { wasClean, code, reason }));
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
 client.once('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
 
