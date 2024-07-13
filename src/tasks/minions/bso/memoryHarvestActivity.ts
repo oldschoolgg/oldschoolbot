@@ -11,7 +11,7 @@ import { Emoji } from '../../../lib/constants';
 import { inventionBoosts } from '../../../lib/invention/inventions';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { MemoryHarvestOptions } from '../../../lib/types/minions';
-import { formatDuration, roll } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
@@ -207,7 +207,7 @@ export const memoryHarvestTask: MinionTask = {
 			didGetGuthixianBoost = true;
 		}
 
-		const { boosts, totalDivinationXP, totalMemoriesHarvested, petChancePerMemory, loot, avgPetTime, cost } =
+		const { boosts, totalDivinationXP, totalMemoriesHarvested, loot,  cost } =
 			memoryHarvestResult({
 				duration,
 				hasBoon,
@@ -246,9 +246,7 @@ export const memoryHarvestTask: MinionTask = {
 			energy.type
 		} memories, and turning them into ${
 			harvestMethodIndex === MemoryHarvestType.ConvertToEnergy ? 'energies' : 'XP'
-		}. ${xpRes}.
-
-Pet chance 1 in ${petChancePerMemory.toLocaleString()}, ${formatDuration(avgPetTime)} on average to get pet`;
+		}. ${xpRes}.`;
 
 		if (loot.length > 0) {
 			await userStatsBankUpdate(user.id, 'divination_loot', loot);
