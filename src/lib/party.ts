@@ -77,7 +77,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 		new Promise<MUser[]>(async (resolve, reject) => {
 			let partyCancelled = false;
 			const collector = new InteractionCollector(globalClient, {
-				time: Time.Minute * 2,
+				time: Time.Minute * 5,
 				maxUsers: options.usersAllowed?.length ?? options.maxSize,
 				dispose: true,
 				channel,
