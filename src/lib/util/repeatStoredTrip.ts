@@ -441,7 +441,7 @@ export const tripHandlers = {
 			else if (data.bob === SlayerActivityConstants.IceBarrage) method = 'barrage';
 			else if (data.bob === SlayerActivityConstants.IceBurst) method = 'burst';
 			return {
-				name: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi.toString(),
+				name: autocompleteMonsters.find(i => i.id === data.mi)?.name ?? data.mi?.toString(),
 				quantity: data.iQty,
 				method,
 				wilderness: data.isInWilderness
