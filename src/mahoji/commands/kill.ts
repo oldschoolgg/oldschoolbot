@@ -74,7 +74,7 @@ export const killCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
 		const user = await mUserFetch(userID);
-		deferInteraction(interaction);
+		await deferInteraction(interaction);
 		const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, options.name)));
 		const simulatedKillable = simulatedKillables.find(i => stringMatches(i.name, options.name));
 
