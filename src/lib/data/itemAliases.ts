@@ -393,20 +393,8 @@ for (const item of allTeamCapes) {
 export const itemDataSwitches = [
 	{
 		from: 25488,
-		to: EItem.BELLATOR_RING
-	},
-	{
-		from: 25486,
-		to: EItem.MAGUS_RING
-	},
-	{
-		from: 25487,
-		to: EItem.VENATOR_RING
-	},
-	{
-		from: 25485,
-		to: EItem.ULTOR_RING
-	}
+		to: 25488
+	} //placeholder for future use if needed
 ];
 
 for (const items of itemDataSwitches) {
