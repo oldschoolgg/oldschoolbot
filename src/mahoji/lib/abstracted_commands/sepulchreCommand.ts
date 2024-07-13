@@ -100,7 +100,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 			return 'Error selecting fletchable.';
 		}
 
-		fletchingQuantity = Math.floor(tripLength / timeToFletchSingleItem);
+		fletchingQuantity = Math.min(Math.floor(tripLength / timeToFletchSingleItem), max);
 		const max = user.bank.fits(fletchable.inputItems);
 		if (max < fletchingQuantity && max !== 0) fletchingQuantity = max;
 
