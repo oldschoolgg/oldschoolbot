@@ -7,6 +7,7 @@ import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/flet
 import Arrows from '../../../lib/skilling/skills/fletching/fletchables/arrows';
 import Bolts from '../../../lib/skilling/skills/fletching/fletchables/bolts';
 import Darts from '../../../lib/skilling/skills/fletching/fletchables/darts';
+import { AmethystBroadBolts, BroadArrows, BroadBolts } from '../../../lib/skilling/skills/fletching/fletchables/slayer';
 import TippedBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedBolts';
 import TippedDragonBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedDragonBolts';
 import type { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
@@ -63,7 +64,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 	let timeToFletchSingleItem = 0;
 
 	if (fletchable) {
-		if (fletchable?.outputMultiple) {
+		if (fletchable.outputMultiple) {
 			sets = ' sets of';
 		}
 		if (user.skillLevel('fletching') < fletchable.level) {
@@ -81,12 +82,15 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		}
 
 		const fletchableTypes = [
-			{ types: [Darts, Bolts, TippedBolts, TippedDragonBolts], time: Time.Second * 0.2 },
-			{ types: [Arrows], time: Time.Second * 0.36 }
+			{
+				types: [Darts, Bolts, TippedBolts, TippedDragonBolts, BroadBolts, AmethystBroadBolts],
+				time: Time.Second * 0.2
+			},
+			{ types: [Arrows, BroadArrows], time: Time.Second * 0.36 }
 		];
 
 		for (const { types, time } of fletchableTypes) {
-			if (types.some(type => type.includes(fletchable))) {
+			if (types.includes(fletchable)) {
 				timeToFletchSingleItem = time;
 				break;
 			}
