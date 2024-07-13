@@ -288,6 +288,9 @@ GROUP BY data->>'collectableID';`);
 
 async function makeResponseForBank(bank: Bank, title: string, content?: string) {
 	sanitizeBank(bank);
+	if (bank.length === 0) {
+		return { content: 'No results.' };
+	}
 	const image = await makeBankImage({
 		title,
 		bank
