@@ -33,9 +33,6 @@ async function calculateMinionTaskCounts() {
 }
 
 export async function analyticsTick() {
-	debugLog('Analytics tick', {
-		type: 'ANALYTICS_TICK'
-	});
 	const [numberOfMinions, totalSacrificed, numberOfIronmen, totalGP] = (
 		await Promise.all(
 			[
