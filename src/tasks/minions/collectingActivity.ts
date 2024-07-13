@@ -28,11 +28,6 @@ export const collectingTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-		await transactItems({
-			userID: user.id,
-			collectionLog: true,
-			itemsToAdd: loot
-		});
 
 		let str = `${user}, ${user.minionName} finished collecting ${totalQuantity}x ${
 			collectable.item.name
