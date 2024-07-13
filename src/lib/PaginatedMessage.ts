@@ -1,7 +1,7 @@
 import { UserError } from '@oldschoolgg/toolkit';
 import type { BaseMessageOptions, ComponentType, MessageEditOptions, TextChannel } from 'discord.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import { Time } from 'e';
+import { Time, isFunction } from 'e';
 
 import { InteractionID } from './InteractionID';
 import type { PaginatedMessagePage } from './util';
@@ -77,8 +77,9 @@ export class PaginatedMessage {
 			const rawPage = !Array.isArray(this.pages)
 				? await this.pages.generate({ currentPage: this.index })
 				: this.pages[this.index];
+
 			return {
-				...rawPage,
+				...(isFunction(rawPage) ? await rawPage() : rawPage),
 				components:
 					numberOfPages === 1
 						? []
