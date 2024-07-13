@@ -14,8 +14,8 @@ import type { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../../lib/slayer/slayerUtil';
 import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { userHasGracefulEquipped } from '../../mahojiSettings';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import { userHasGracefulEquipped } from '../../mahojiSettings';
 
 export async function sepulchreCommand(user: MUser, channelID: string, fletching?: string) {
 	const skills = user.skillsAsLevels;
@@ -101,7 +101,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 			return 'Error selecting fletchable.';
 		}
 
-		fletchingQuantity = Math.min(Math.floor(tripLength / timeToFletchSingleItem), max);
+		fletchingQuantity = Math.floor(tripLength / timeToFletchSingleItem);
 		const max = user.bank.fits(fletchable.inputItems);
 		if (max < fletchingQuantity && max !== 0) fletchingQuantity = max;
 
