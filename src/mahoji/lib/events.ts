@@ -1,7 +1,7 @@
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { bulkUpdateCommands } from '@oldschoolgg/toolkit';
-import { DEV_SERVER_ID, production } from '../../config';
+import { production } from '../../config';
 import { cacheBadges } from '../../lib/badges';
 import { syncBlacklists } from '../../lib/blacklists';
 import { Channel, DISABLED_COMMANDS, META_CONSTANTS, globalConfig } from '../../lib/constants';
@@ -25,7 +25,7 @@ export async function syncCustomPrices() {
 }
 
 export async function onStartup() {
-	globalClient.application.commands.fetch({ guildId: production ? undefined : DEV_SERVER_ID });
+	globalClient.application.commands.fetch({ guildId: production ? undefined : globalConfig.testingServerID });
 
 	// Sync disabled commands
 	const disabledCommands = await prisma.clientStorage.upsert({
@@ -53,7 +53,7 @@ export async function onStartup() {
 		await bulkUpdateCommands({
 			client: globalClient.mahojiClient,
 			commands: Array.from(globalClient.mahojiClient.commands.values()),
-			guildID: DEV_SERVER_ID
+			guildID: globalConfig.testingServerID
 		});
 	}
 

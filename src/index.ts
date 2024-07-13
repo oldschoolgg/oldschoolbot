@@ -92,7 +92,7 @@ const client = new OldSchoolBotClient({
 });
 
 export const mahojiClient = new MahojiClient({
-	developmentServerID: DEV_SERVER_ID,
+	developmentServerID: globalConfig.testingServerID,
 	applicationID: globalConfig.clientID,
 	commands: allCommands,
 	handlers: {
@@ -138,7 +138,7 @@ client.on('interactionCreate', async interaction => {
 	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
 
 	if (!client.isReady()) {
-		if (interaction.isChatInputCommand()) {
+		if (interaction.isRepliable()) {
 			await interaction.reply({
 				content:
 					'Old School Bot is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
