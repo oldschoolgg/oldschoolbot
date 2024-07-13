@@ -296,6 +296,9 @@ GROUP BY data->>'collectableID';`);
 
 async function makeResponseForBank(bank: Bank, title: string, content?: string) {
 	sanitizeBank(bank);
+	if (bank.length === 0) {
+		return { content: 'No results.' };
+	}
 	const image = await makeBankImage({
 		title,
 		bank
@@ -1457,20 +1460,24 @@ LIMIT 5;`
 			}[][];
 
 			const response = `**Luckiest CoX Raiders**
-${luckiest
-	.map(
-		i =>
-			`${getUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
+${(
+	await Promise.all(
+		luckiest.map(
+			async i =>
+				`${await getUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
+		)
 	)
-	.join('\n')}
+).join('\n')}
 
 **Unluckiest CoX Raiders**
-${unluckiest
-	.map(
-		i =>
-			`${getUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
+${(
+	await Promise.all(
+		unluckiest.map(
+			async i =>
+				`${await getUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
+		)
 	)
-	.join('\n')}`;
+).join('\n')}`;
 			return {
 				content: response
 			};

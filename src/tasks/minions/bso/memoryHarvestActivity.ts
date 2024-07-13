@@ -207,19 +207,18 @@ export const memoryHarvestTask: MinionTask = {
 			didGetGuthixianBoost = true;
 		}
 
-		const { boosts, totalDivinationXP, totalMemoriesHarvested, loot,  cost } =
-			memoryHarvestResult({
-				duration,
-				hasBoon,
-				energy,
-				harvestMethod: harvestMethodIndex,
-				hasWispBuster,
-				hasGuthixianBoost: didGetGuthixianBoost,
-				hasDivineHand,
-				isUsingDivinationPotion,
-				hasMasterCape: user.hasEquippedOrInBank('Divination master cape'),
-				rounds
-			});
+		const { boosts, totalDivinationXP, totalMemoriesHarvested, loot, cost } = memoryHarvestResult({
+			duration,
+			hasBoon,
+			energy,
+			harvestMethod: harvestMethodIndex,
+			hasWispBuster,
+			hasGuthixianBoost: didGetGuthixianBoost,
+			hasDivineHand,
+			isUsingDivinationPotion,
+			hasMasterCape: user.hasEquippedOrInBank('Divination master cape'),
+			rounds
+		});
 
 		if (cost.length > 0) {
 			if (!user.owns(cost)) {

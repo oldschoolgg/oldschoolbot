@@ -6,7 +6,7 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { type MegaDuckLocation, defaultMegaDuckLocation } from '../../lib/minions/types';
-import { getUsername } from '../../lib/util';
+import { getUsernameSync } from '../../lib/util';
 import { loadAndCacheLocalImage } from '../../lib/util/canvasUtil';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { mahojiGuildSettingsUpdate } from '../guildSettings';
@@ -35,7 +35,7 @@ function topFeeders(entries: any[]) {
 	return `Top 10 Feeders: ${[...entries]
 		.sort((a, b) => b[1] - a[1])
 		.slice(0, 10)
-		.map(ent => `${getUsername(ent[0])}. ${ent[1]}`)
+		.map(ent => `${getUsernameSync(ent[0])}. ${ent[1]}`)
 		.join(', ')}`;
 }
 

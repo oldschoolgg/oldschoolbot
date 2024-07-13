@@ -1,10 +1,10 @@
-import { convertAPIOptionsToCommandOptions } from '@oldschoolgg/toolkit';
+import { convertAPIOptionsToCommandOptions, deepMerge } from '@oldschoolgg/toolkit';
 import { captureException } from '@sentry/node';
 import type { Interaction } from 'discord.js';
 
 import { isObject } from 'e';
 import { production } from '../../config';
-import getOSItem from './getOSItem';
+import { globalConfig } from '../constants';
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {
@@ -15,19 +15,22 @@ export function assert(condition: boolean, desc?: string, context?: Record<strin
 		}
 	}
 }
-assert(getOSItem('Smokey').id === 737);
 
 export function logError(err: Error | unknown, context?: Record<string, string>, extra?: Record<string, string>) {
-	console.error(context, err);
-	if (production) {
+	const metaInfo = deepMerge(context ?? {}, extra ?? {});
+	debugLog(`${(err as any)?.message ?? JSON.stringify(err)}`, {
+		type: 'ERROR',
+		raw: JSON.stringify(err),
+		metaInfo: JSON.stringify(metaInfo)
+	});
+	if (globalConfig.isProduction) {
 		captureException(err, {
 			tags: context,
-			extra
+			extra: metaInfo
 		});
 	} else {
 		console.error(err);
-		console.log(context);
-		console.log(extra);
+		console.log(metaInfo);
 	}
 }
 

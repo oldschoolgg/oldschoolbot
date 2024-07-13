@@ -1,44 +1,12 @@
-import type { CommandOptions } from '@oldschoolgg/toolkit';
+import { type CommandOptions, cleanUsername } from '@oldschoolgg/toolkit';
 import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 
 import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
-import { Emoji, badges, badgesCache, busyImmuneCommands, usernameCache } from '../../lib/constants';
+import { busyImmuneCommands } from '../../lib/constants';
 
-import { removeMarkdownEmojis, stripEmojis } from '../../lib/util';
 import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
 import type { AbstractCommand } from './inhibitors';
 import { runInhibitors } from './inhibitors';
-
-function cleanUsername(username: string) {
-	return removeMarkdownEmojis(username).substring(0, 32);
-}
-export async function syncNewUserUsername(user: MUser, username: string) {
-	const newUsername = cleanUsername(username);
-	const newUser = await prisma.newUser.findUnique({
-		where: { id: user.id }
-	});
-	if (!newUser || newUser.username !== newUsername) {
-		await prisma.newUser.upsert({
-			where: {
-				id: user.id
-			},
-			update: {
-				username
-			},
-			create: {
-				id: user.id,
-				username
-			}
-		});
-	}
-	const name = stripEmojis(username);
-	usernameCache.set(user.id, name);
-	const rawBadges = user.user.badges.map(num => badges[num]);
-	if (user.isIronman) {
-		rawBadges.push(Emoji.Ironman);
-	}
-	badgesCache.set(user.id, rawBadges.join(' '));
-}
 
 export async function preCommand({
 	abstractCommand,
@@ -46,8 +14,7 @@ export async function preCommand({
 	guildID,
 	channelID,
 	bypassInhibitors,
-	apiUser,
-	options
+	apiUser
 }: {
 	apiUser: User | null;
 	abstractCommand: AbstractCommand;
@@ -64,14 +31,6 @@ export async function preCommand({
 			dontRunPostCommand?: boolean;
 	  }
 > {
-	debugLog('Attempt to run command', {
-		type: 'RUN_COMMAND',
-		command_name: abstractCommand.name,
-		user_id: userID,
-		guild_id: guildID,
-		channel_id: channelID,
-		options
-	});
 	CACHED_ACTIVE_USER_IDS.add(userID);
 	if (globalClient.isShuttingDown) {
 		return {
@@ -80,7 +39,12 @@ export async function preCommand({
 			dontRunPostCommand: true
 		};
 	}
-	const user = await mUserFetch(userID);
+
+	const username = apiUser?.username ? cleanUsername(apiUser?.username) : undefined;
+	const user = await mUserFetch(userID, {
+		username
+	});
+
 	user.checkBankBackground();
 	if (userIsBusy(userID) && !bypassInhibitors && !busyImmuneCommands.includes(abstractCommand.name)) {
 		return { silent: true, reason: { content: 'You cannot use a command right now.' }, dontRunPostCommand: true };
@@ -90,9 +54,7 @@ export async function preCommand({
 	const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) : null;
 	const member = guild?.members.cache.get(userID.toString());
 	const channel = globalClient.channels.cache.get(channelID.toString()) as TextChannel;
-	if (apiUser) {
-		await syncNewUserUsername(user, apiUser.username);
-	}
+
 	const inhibitResult = await runInhibitors({
 		user,
 		APIUser: await globalClient.fetchUser(user.id),

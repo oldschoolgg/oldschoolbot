@@ -9,7 +9,7 @@ import type {
 	ThreadChannel
 } from 'discord.js';
 import { ButtonBuilder, ButtonStyle } from 'discord.js';
-import { Time, noOp } from 'e';
+import { Time, isFunction, noOp } from 'e';
 import murmurhash from 'murmurhash';
 
 import { BLACKLISTED_USERS } from './blacklists';
@@ -23,7 +23,7 @@ export class DynamicButtons {
 	buttons: {
 		name: string;
 		id: string;
-		fn: DynamicButtonFn;
+		fn?: DynamicButtonFn;
 		emoji: string | undefined;
 		cantBeBusy: boolean;
 		style?: ButtonStyle;
@@ -109,18 +109,21 @@ export class DynamicButtons {
 			for (const button of this.buttons) {
 				if (collectedInteraction.customId === button.id) {
 					if (minionIsBusy(collectedInteraction.user.id) && button.cantBeBusy) {
-						return collectedInteraction.reply({
+						await collectedInteraction.reply({
 							content: "Your action couldn't be performed, because your minion is busy.",
 							ephemeral: true
 						});
+						return null;
 					}
-					await button.fn({ message: this.message!, interaction: collectedInteraction });
-					return collectedInteraction;
+					if ('fn' in button && isFunction(button.fn)) {
+						await button.fn({ message: this.message!, interaction: collectedInteraction });
+					}
+					return button;
 				}
 			}
 		}
 
-		return collectedInteraction;
+		return null;
 	}
 
 	add({
@@ -131,7 +134,7 @@ export class DynamicButtons {
 		style
 	}: {
 		name: string;
-		fn: DynamicButtonFn;
+		fn?: DynamicButtonFn;
 		emoji?: string;
 		cantBeBusy?: boolean;
 		style?: ButtonStyle;

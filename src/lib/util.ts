@@ -1,4 +1,4 @@
-import { Stopwatch, stripEmojis } from '@oldschoolgg/toolkit';
+import { Stopwatch, cleanUsername, stripEmojis } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import {
 	type BaseMessageOptions,
@@ -22,21 +22,21 @@ import { Bank, Items, Monsters } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
 import type { PrismaClient } from '@prisma/client';
+import { LRUCache } from 'lru-cache';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import type Monster from 'oldschooljs/dist/structures/Monster';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
-import { ADMIN_IDS, OWNER_IDS, SupportServer, production } from '../config';
+import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 import { ClueTiers } from './clues/clueTiers';
 import {
+	BOT_TYPE_LOWERCASE,
 	BitField,
 	ONE_TRILLION,
 	type ProjectileType,
-	badgesCache,
 	globalConfig,
-	projectiles,
-	usernameCache
+	projectiles
 } from './constants';
 import { doaCL } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
@@ -73,14 +73,6 @@ export function inlineCodeblock(input: string) {
 export function britishTime() {
 	const currentDate = new Date(Date.now() - Time.Hour * 10);
 	return currentDate;
-}
-
-export function isNightTime() {
-	const time = britishTime();
-	let hours = time.getHours();
-
-	if (!production) hours = 20;
-	return hours > 16 || hours < 5;
 }
 
 export function isWeekend() {
@@ -254,7 +246,7 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export type PaginatedMessagePage = MessageEditOptions;
+export type PaginatedMessagePage = MessageEditOptions | (() => Promise<MessageEditOptions>);
 
 export async function makePaginatedMessage(channel: TextChannel, pages: PaginatedMessagePage[], target?: string) {
 	const m = new PaginatedMessage({ pages, channel });
@@ -506,17 +498,29 @@ export function skillingPetDropRate(
 	return { petDropRate: dropRate };
 }
 
-function getBadges(user: MUser | string | bigint) {
-	if (typeof user === 'string' || typeof user === 'bigint') {
-		return badgesCache.get(user.toString()) ?? '';
-	}
-	return user.badgeString;
-}
+const badgesKey = `${BOT_TYPE_LOWERCASE.toLowerCase()}_badges` as 'osb_badges' | 'bso_badges';
 
-export function getUsername(id: string | bigint, withBadges = true) {
-	let username = usernameCache.get(id.toString()) ?? 'Unknown';
-	if (withBadges) username = `${getBadges(id)} ${username}`;
-	return username;
+const usernameWithBadgesCache = new LRUCache<string, string>({ max: 2000 });
+export function cacheUsername(id: string, username: string, badges: string) {
+	const current = usernameWithBadgesCache.get(id);
+	const newValue = `${badges} ${username}`;
+	if (!current || current !== newValue) {
+		usernameWithBadgesCache.set(id, newValue);
+		redis.setUser(id, { username: cleanUsername(username), [badgesKey]: badges });
+	}
+}
+export async function getUsername(_id: string | bigint): Promise<string> {
+	const id = _id.toString();
+	const cached = usernameWithBadgesCache.get(id);
+	if (cached) return cached;
+	const user = await redis.getUser(id);
+	if (!user.username) return 'Unknown';
+	const newValue = `${user[badgesKey]} ${user.username}`;
+	usernameWithBadgesCache.set(id, newValue);
+	return newValue;
+}
+export function getUsernameSync(_id: string | bigint) {
+	return usernameWithBadgesCache.get(_id.toString()) ?? 'Unknown';
 }
 
 export function clAdjustedDroprate(
@@ -560,12 +564,14 @@ export function awaitMessageComponentInteraction({
 }
 
 export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
-	debugLog(`Starting ${name}...`);
+	const logger = globalConfig.isProduction ? debugLog : console.log;
 	const stopwatch = new Stopwatch();
 	stopwatch.start();
 	await fn();
 	stopwatch.stop();
-	debugLog(`Finished ${name} in ${stopwatch.toString()}`);
+	if (!globalConfig.isProduction || stopwatch.duration > 50) {
+		logger(`Took ${stopwatch} to do ${name}`);
+	}
 }
 
 export function getAllIDsOfUser(user: MUser) {

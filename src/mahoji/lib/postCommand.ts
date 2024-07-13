@@ -30,13 +30,6 @@ export async function postCommand({
 	if (!busyImmuneCommands.includes(abstractCommand.name)) {
 		setTimeout(() => modifyBusyCounter(userID, -1), 1000);
 	}
-	debugLog('Postcommand', {
-		type: 'RUN_COMMAND',
-		command_name: abstractCommand.name,
-		user_id: userID,
-		guild_id: guildID,
-		channel_id: channelID
-	});
 	if (shouldTrackCommand(abstractCommand, args)) {
 		const commandUsage = makeCommandUsage({
 			userID,

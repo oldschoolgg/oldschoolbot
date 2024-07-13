@@ -1,13 +1,13 @@
 import { makeComponents } from '@oldschoolgg/toolkit';
 import { UserError } from '@oldschoolgg/toolkit';
 import type { TextChannel } from 'discord.js';
-import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, userMention } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector } from 'discord.js';
 import { Time, debounce, noOp } from 'e';
 
 import { BLACKLISTED_USERS } from './blacklists';
-import { SILENT_ERROR, usernameCache } from './constants';
+import { SILENT_ERROR } from './constants';
 import type { MakePartyOptions } from './types';
-import { formatDuration } from './util';
+import { getUsername } from './util';
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();
@@ -37,33 +37,26 @@ const buttons = [
 
 export async function setupParty(channel: TextChannel, leaderUser: MUser, options: MakePartyOptions): Promise<MUser[]> {
 	const usersWhoConfirmed: string[] = [options.leader.id];
-	let deleted = false;
-	const massTimeout = options.massTimeout ?? Time.Minute * 2;
-	let massStarted = false;
+	const deleted = false;
+	const massStarted = false;
 
-	function getMessageContent() {
-		const userText =
-			usersWhoConfirmed.length > 25
-				? `${usersWhoConfirmed.length} users have joined`
-				: usersWhoConfirmed.map(u => usernameCache.get(u) ?? userMention(u)).join(', ');
-		const allowedMentions = options.allowedMentions ?? { users: [] };
+	async function getMessageContent() {
 		return {
-			content: `${
-				options.message
-			}\n\n**Users Joined:** ${userText}\n\nThis party will automatically depart in ${formatDuration(
-				massTimeout
-			)}, or if the leader clicks the start (start early) or stop button.`,
-			components: makeComponents(buttons.map(i => i.button)),
-			allowedMentions
+			content: `${options.message}\n\n**Users Joined:** ${(
+				await Promise.all(usersWhoConfirmed.map(u => getUsername(u)))
+			).join(
+				', '
+			)}\n\nThis party will automatically depart in 2 minutes, or if the leader clicks the start (start early) or stop button.`,
+			components: makeComponents(buttons.map(i => i.button))
 		};
 	}
 
-	const confirmMessage = await channel.send(getMessageContent());
+	const confirmMessage = await channel.send(await getMessageContent());
 
 	// Debounce message edits to prevent spam.
-	const updateUsersIn = debounce(() => {
+	const updateUsersIn = debounce(async () => {
 		if (deleted) return;
-		confirmMessage.edit(getMessageContent());
+		confirmMessage.edit(await getMessageContent());
 	}, 500);
 
 	const removeUser = (userID: string) => {
@@ -77,9 +70,9 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 
 	const reactionAwaiter = () =>
 		new Promise<MUser[]>(async (resolve, reject) => {
-			let partyCancelled = false;
+			const partyCancelled = false;
 			const collector = new InteractionCollector(globalClient, {
-				time: massTimeout,
+				time: Time.Minute * 5,
 				maxUsers: options.usersAllowed?.length ?? options.maxSize,
 				dispose: true,
 				channel,
@@ -132,7 +125,6 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 
 			async function startTrip() {
 				if (massStarted) return;
-				massStarted = true;
 				await confirmMessage.delete().catch(noOp);
 				if (!partyCancelled && usersWhoConfirmed.length < options.minSize) {
 					channel.send(`${leaderUser} Not enough people joined your mass!`);
@@ -140,7 +132,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 					return;
 				}
 
-				resolve(await Promise.all(usersWhoConfirmed.map(mUserFetch)));
+				resolve(await Promise.all(usersWhoConfirmed.map(id => mUserFetch(id))));
 			}
 
 			collector.on('collect', async interaction => {
@@ -194,7 +186,6 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 
 					case 'PARTY_CANCEL': {
 						if (interaction.user.id === options.leader.id) {
-							partyCancelled = true;
 							reply('You cancelled the mass.');
 							reject(
 								new UserError(`The leader (${options.leader.usernameOrMention}) cancelled this mass!`)
@@ -223,7 +214,6 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 			});
 
 			collector.once('end', () => {
-				deleted = true;
 				confirmMessage.delete().catch(noOp);
 				for (const user of usersWhoConfirmed) {
 					partyLockCache.delete(user);

@@ -524,6 +524,8 @@ model User {
 
   cached_networth_value BigInt?
 
+  username String? @db.VarChar(32)
+
   geListings        GEListing[]
   bingo_participant BingoParticipant[]
   bingo             Bingo[]
@@ -784,14 +786,13 @@ model Tame {
 }
 
 model CommandUsage {
-  id           Int                  @id @default(autoincrement())
-  date         DateTime             @default(now()) @db.Timestamp(6)
+  id           Int      @id @default(autoincrement())
+  date         DateTime @default(now()) @db.Timestamp(6)
   user_id      BigInt
-  command_name String               @db.VarChar(32)
-  status       command_usage_status @default(value: Unknown)
-  is_continue  Boolean              @default(false)
+  command_name String   @db.VarChar(32)
+  is_continue  Boolean  @default(false)
   flags        Json?
-  inhibited    Boolean?             @default(false)
+  inhibited    Boolean? @default(false)
 
   is_mention_command Boolean @default(false)
 
@@ -1137,13 +1138,6 @@ model HistoricalData {
 
   @@id([user_id, date])
   @@map("historical_data")
-}
-
-enum command_usage_status {
-  Unknown
-  Success
-  Error
-  Inhibited
 }
 
 enum activity_type_enum {
