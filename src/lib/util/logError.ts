@@ -1,9 +1,10 @@
-import { convertAPIOptionsToCommandOptions } from '@oldschoolgg/toolkit';
+import { convertAPIOptionsToCommandOptions, deepMerge } from '@oldschoolgg/toolkit';
 import { captureException } from '@sentry/node';
 import type { Interaction } from 'discord.js';
 
 import { isObject } from 'e';
 import { production } from '../../config';
+import { globalConfig } from '../constants';
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {
@@ -16,16 +17,20 @@ export function assert(condition: boolean, desc?: string, context?: Record<strin
 }
 
 export function logError(err: Error | unknown, context?: Record<string, string>, extra?: Record<string, string>) {
-	debugLog(`${(err as any)?.message ?? JSON.stringify(err)}`, { type: 'ERROR', raw: JSON.stringify(err) });
-	if (production) {
+	const metaInfo = deepMerge(context ?? {}, extra ?? {});
+	debugLog(`${(err as any)?.message ?? JSON.stringify(err)}`, {
+		type: 'ERROR',
+		raw: JSON.stringify(err),
+		metaInfo: JSON.stringify(metaInfo)
+	});
+	if (globalConfig.isProduction) {
 		captureException(err, {
 			tags: context,
-			extra
+			extra: metaInfo
 		});
 	} else {
 		console.error(err);
-		console.log(context);
-		console.log(extra);
+		console.log(metaInfo);
 	}
 }
 
