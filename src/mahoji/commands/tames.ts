@@ -640,7 +640,7 @@ export async function removeRawFood({
 
 	return {
 		success: true,
-		str: `${itemCost} from ${user.usernameOrMention}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
+		str: `${itemCost} from ${user.rawUsername}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
 		removed: itemCost
 	};
 }

@@ -51,6 +51,7 @@ import { kibbleCommand } from './kibble';
 import { killCommand } from './kill';
 import { lapsCommand } from './laps';
 import { leaderboardCommand } from './leaderboard';
+import { bsoLeaguesCommand } from './leagues';
 import { lightCommand } from './light';
 import { lootCommand } from './loot';
 import { lotteryCommand } from './lottery';
@@ -182,7 +183,8 @@ export const allCommands: OSBMahojiCommand[] = [
 	paintCommand,
 	ratesCommand,
 	tamesCommand,
-	testerShopCommand
+	testerShopCommand,
+	bsoLeaguesCommand
 ];
 
 if (!production && testPotatoCommand) {
