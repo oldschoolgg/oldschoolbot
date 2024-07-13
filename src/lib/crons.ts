@@ -1,7 +1,6 @@
 import { schedule } from 'node-cron';
 
 import { analyticsTick } from './analytics';
-
 import { cacheCleanup } from './util/cachedUserIDs';
 
 export function initCrons() {
