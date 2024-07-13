@@ -81,7 +81,6 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 				return `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
 			}
 		}
-
 		const fletchableTypes = [
 			{
 				types: [Darts, Bolts, TippedBolts, TippedDragonBolts, BroadBolts, AmethystBroadBolts],
@@ -91,7 +90,8 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletching
 		];
 
 		for (const { types, time } of fletchableTypes) {
-			if (types.includes(fletchable)) {
+			// Check if fletchable is in the types array
+			if (types.some(type => (Array.isArray(type) ? type.includes(fletchable) : type === fletchable))) {
 				timeToFletchSingleItem = time;
 				break;
 			}
