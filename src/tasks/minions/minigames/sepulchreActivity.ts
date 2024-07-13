@@ -42,45 +42,11 @@ export const sepulchreTask: MinionTask = {
 				loot.add('Giant squirrel');
 			}
 		}
-		let craftXpReceived = 0;
-		let craftXpRes = '';
 		let fletchXpReceived = 0;
 		let fletchXpRes = '';
 		let sets = 'x';
 		let fletchQuantity = 0;
-
-		if (fletch) {
-			const fletchable = fletch.fletchable;
-			fletchQuantity = fletch.fletchingQuantity;
-
-			if (fletchable.outputMultiple) {
-				sets = ' sets of';
-			}
-
-			const quantityToGive = fletchable.outputMultiple
-				? fletchQuantity * fletchable.outputMultiple
-				: fletchQuantity;
-
-			if (fletchable.craftingXp) {
-				craftXpReceived = fletchable.craftingXp * fletchQuantity;
-
-				craftXpRes = await user.addXP({
-					skillName: SkillsEnum.Crafting,
-					amount: craftXpReceived,
-					duration
-				});
-
-				fletchXpReceived = fletchQuantity * fletchable.xp;
-
-				fletchXpRes = await user.addXP({
-					skillName: SkillsEnum.Fletching,
-					amount: fletchXpReceived,
-					duration
-				});
-
-				loot.add(fletchable.id, quantityToGive);
-			}
-		}
+		const fletchingLoot = new Bank();
 
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,
@@ -128,7 +94,33 @@ export const sepulchreTask: MinionTask = {
 		});
 
 		if (fletch) {
-			str += `\n You also finished fletching ${fletchQuantity}${sets} ${fletch.fletchable.name}, and received ${loot}. ${fletchXpRes}. ${craftXpRes}`;
+			const fletchable = fletch.fletchable;
+			fletchQuantity = fletch.fletchingQuantity;
+
+			if (fletchable.outputMultiple) {
+				sets = ' sets of';
+			}
+
+			const quantityToGive = fletchable.outputMultiple
+				? fletchQuantity * fletchable.outputMultiple
+				: fletchQuantity;
+
+			fletchXpReceived = fletchQuantity * fletchable.xp;
+
+			fletchXpRes = await user.addXP({
+				skillName: SkillsEnum.Fletching,
+				amount: fletchXpReceived,
+				duration
+			});
+			fletchingLoot.add(fletchable.id, quantityToGive);
+
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: fletchingLoot
+			});
+
+			str += `\nYou also finished fletching ${fletchQuantity}${sets} ${fletch.fletchable.name}, and received ${fletchingLoot}. ${fletchXpRes}.`;
 		}
 
 		handleTripFinish(user, channelID, str, image.file.attachment, data, itemsAdded);

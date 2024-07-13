@@ -3,8 +3,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 
 import { LMSBuyables } from '../../lib/data/CollectionsExport';
 import TrekShopItems from '../../lib/data/buyables/trekBuyables';
-import Darts from '../../lib/skilling/skills/fletching/fletchables/darts';
-import type { Fletchable } from '../../lib/skilling/types';
+import { zeroTimeFletchables } from '../../lib/skilling/skills/fletching/fletchables';
 import {
 	agilityArenaBuyCommand,
 	agilityArenaBuyables,
@@ -496,12 +495,12 @@ export const minigamesCommand: OSBMahojiCommand = {
 							description: 'The item you wish to fletch',
 							required: false,
 							autocomplete: async (value: string) => {
-								return Darts.filter(i =>
-									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
-								).map(i => ({
-									name: i.name,
-									value: i.name
-								}));
+								return zeroTimeFletchables
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({
+										name: i.name,
+										value: i.name
+									}));
 							}
 						}
 					]
@@ -1084,7 +1083,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			start?: { difficulty: string; quantity?: number };
 			buy?: { reward: string; difficulty: string; quantity?: number };
 		};
-		sepulchre?: { start?: { fletch?: Fletchable['name'] } };
+		sepulchre?: { start?: { fletching?: string } };
 		gauntlet?: { start?: { corrupted?: boolean } };
 		mage_training_arena?: {
 			start?: {};
@@ -1254,10 +1253,8 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.sepulchre?.start) {
-			if (options.sepulchre.start.fletch) {
-				const fletch = options.sepulchre.start.fletch;
-				return sepulchreCommand(user, channelID, fletch);
-			}
+			const fletchingItem = options.sepulchre.start.fletching;
+			return sepulchreCommand(user, channelID, fletchingItem);
 		}
 		/**
 		 *

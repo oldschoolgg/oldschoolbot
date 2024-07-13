@@ -4,19 +4,26 @@ import { formatDuration, stringMatches } from '@oldschoolgg/toolkit';
 import type { Bank } from 'oldschooljs';
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { getMinigameScore } from '../../../lib/settings/minigames';
-import Fletching from '../../../lib/skilling/skills/fletching';
+import { zeroTimeFletchables } from '../../../lib/skilling/skills/fletching/fletchables';
+import Arrows from '../../../lib/skilling/skills/fletching/fletchables/arrows';
+import Bolts from '../../../lib/skilling/skills/fletching/fletchables/bolts';
+import Darts from '../../../lib/skilling/skills/fletching/fletchables/darts';
+import TippedBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedBolts';
+import TippedDragonBolts from '../../../lib/skilling/skills/fletching/fletchables/tippedDragonBolts';
 import type { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../../lib/slayer/slayerUtil';
 import type { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { userHasGracefulEquipped } from '../../mahojiSettings';
 
-export async function sepulchreCommand(user: MUser, channelID: string, fletch?: string) {
+export async function sepulchreCommand(user: MUser, channelID: string, fletching?: string) {
 	const skills = user.skillsAsLevels;
 	const agilityLevel = skills.agility;
 	const thievingLevel = skills.thieving;
 	const minLevel = sepulchreFloors[0].agilityLevel;
+
+	console.log(fletching);
+
 	if (agilityLevel < minLevel) {
 		return `You need atleast level ${minLevel} Agility to do the Hallowed Sepulchre.`;
 	}
@@ -29,8 +36,13 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletch?: 
 		return 'You need Graceful equipped in your Skilling setup to do the Hallowed Sepulchre.';
 	}
 
-	const fletchable = Fletching.Fletchables.find(item => stringMatches(item.name, fletch));
-	if (fletch && !fletchable) return 'That is not a valid item to fletch during Sepulchre.';
+	const fletchable = zeroTimeFletchables.find(item => stringMatches(item.name, fletching));
+	if (fletching && !fletchable) return 'That is not a valid item to fletch during Sepulchre.';
+	const dart = Darts.find(item => stringMatches(item.name, fletching));
+	const bolt = Bolts.find(item => stringMatches(item.name, fletching));
+	const arrow = Arrows.find(item => stringMatches(item.name, fletching));
+	const tippedBolt = TippedBolts.find(item => stringMatches(item.name, fletching));
+	const tippedDragonBolt = TippedDragonBolts.find(item => stringMatches(item.name, fletching));
 
 	let fletchingQuantity = 0;
 	const userBank = user.bank;
@@ -56,11 +68,12 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletch?: 
 			lapLength = reduceNumByPercent(lapLength, percent);
 		}
 	}
-	const maxLaps = Math.floor(calcMaxTripLength(user, 'Sepulchre') / lapLength);
+	const maxLaps = Math.floor(Time.Hour / lapLength);
 	const tripLength = maxLaps * lapLength;
 
 	let itemsNeeded: Bank | undefined;
 	let sets = 'x';
+	let timeToFletchSingleItem = 0;
 
 	if (fletchable) {
 		if (fletchable?.outputMultiple) {
@@ -82,11 +95,10 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletch?: 
 				return `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
 			}
 		}
+		if (dart || bolt || tippedDragonBolt || tippedBolt) timeToFletchSingleItem = Time.Second * 0.2;
+		if (arrow) timeToFletchSingleItem = Time.Second * 0.36;
 
-		let timeToFletchSingleItem = (fletchable.tickRate * Time.Second * 0.6 + Time.Second / 4) * 0.318;
-		if (fletchable.tickRate < 1) {
-			timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6 * 0.24;
-		}
+		if (timeToFletchSingleItem === 0) return 'Error selecting fletchable.';
 
 		fletchingQuantity = Math.floor(tripLength / timeToFletchSingleItem);
 		const max = userBank.fits(fletchable.inputItems);
@@ -124,7 +136,7 @@ export async function sepulchreCommand(user: MUser, channelID: string, fletch?: 
 	)}, with each lap taking ${formatDuration(lapLength)}.`;
 
 	if (fletchingQuantity > 0) {
-		str += `\n You are also now Fletching ${fletchingQuantity}${sets} ${
+		str += `\nYou are also now Fletching ${fletchingQuantity}${sets} ${
 			fletchable?.name
 		}. Removed ${itemsNeeded} from your bank.`;
 	}

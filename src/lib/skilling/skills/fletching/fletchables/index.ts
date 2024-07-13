@@ -26,3 +26,5 @@ export const Fletchables: Fletchable[] = [
 	...Crossbows,
 	...Slayer
 ];
+
+export const zeroTimeFletchables: Fletchable[] = [...Arrows, ...Bolts, ...TippedBolts, ...TippedDragonBolts, ...Darts];
