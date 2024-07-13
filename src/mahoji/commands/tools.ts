@@ -51,6 +51,7 @@ import {
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
+import { repairBrokenItemsFromUser } from '../../lib/util/repairBrokenItems';
 
 const INTERVAL_DAY = 'day';
 const INTERVAL_WEEK = 'week';
@@ -929,6 +930,11 @@ export const toolsCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'checkmasses',
 					description: 'Check the masses going on in the server.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'fixbank',
+					description: 'Fix broken items in your bank/gear/etc.'
 				}
 			]
 		},
@@ -1036,7 +1042,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			activity_export?: {};
 			stats?: { stat: string };
 		};
-		user?: { mypets?: {}; temp_cl: { reset?: boolean }; checkmasses?: {} };
+		user?: { mypets?: {}; temp_cl: { reset?: boolean }; checkmasses?: {}; fixbank?: {} };
 		stash_units?: {
 			view?: { unit?: string; not_filled?: boolean };
 			build_all?: {};
@@ -1172,6 +1178,9 @@ You last reset your temporary CL: ${
 		}
 		if (options.user?.checkmasses) {
 			return checkMassesCommand(guildID);
+		}
+		if (options.user?.fixbank) {
+			return (await repairBrokenItemsFromUser(mahojiUser))[0];
 		}
 		return 'Invalid command!';
 	}

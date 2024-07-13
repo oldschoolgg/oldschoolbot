@@ -16,7 +16,7 @@ const bellatorRing: Createable[] = [
 	{
 		name: 'Bellator ring',
 		inputItems: new Bank().add('Bellator icon').add('Chromium ingot', 3),
-		outputItems: new Bank().add('Bellator ring')
+		outputItems: new Bank().add(28316) //use id to prevent beta id usage
 	}
 ];
 
@@ -34,7 +34,7 @@ const ultorRing: Createable[] = [
 	{
 		name: 'Ultor ring',
 		inputItems: new Bank().add('Ultor icon').add('Chromium ingot', 3),
-		outputItems: new Bank().add('Ultor ring')
+		outputItems: new Bank().add(28307) //use id to prevent beta id usage
 	}
 ];
 
@@ -52,7 +52,7 @@ const magusRing: Createable[] = [
 	{
 		name: 'Magus ring',
 		inputItems: new Bank().add('Magus icon').add('Chromium ingot', 3),
-		outputItems: new Bank().add('Magus ring')
+		outputItems: new Bank().add(28313) //use id to prevent beta id usage
 	}
 ];
 
@@ -70,7 +70,7 @@ const venatorRing: Createable[] = [
 	{
 		name: 'Venator ring',
 		inputItems: new Bank().add('Venator icon').add('Chromium ingot', 3),
-		outputItems: new Bank().add('Venator ring')
+		outputItems: new Bank().add(28310) //use id to prevent beta id usage
 	}
 ];
 
@@ -116,6 +116,7 @@ export const dtCreatables: Createable[] = [
 			.add("Executioner's axe head")
 			.add('Eye of the duke')
 			.add('Blood rune', 2000),
-		outputItems: new Bank().add('Soulreaper axe')
+		outputItems: new Bank().add(25484) //use id to prevent beta id usage 
+		//TODO: 28338 is the proper id but OSJS is missing this item??
 	}
 ];
