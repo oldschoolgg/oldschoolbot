@@ -220,7 +220,6 @@ export async function processPendingActivities() {
 }
 export async function syncActivityCache() {
 	const tasks = await prisma.activity.findMany({ where: { completed: false } });
-
 	minionActivityCache.clear();
 	for (const task of tasks) {
 		activitySync(task);

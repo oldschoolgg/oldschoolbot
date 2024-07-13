@@ -3,12 +3,12 @@ import { noOp, notEmpty } from 'e';
 
 import { SupportServer, production } from '../config';
 import { ClueTiers } from '../lib/clues/clueTiers';
-import { Roles, usernameCache } from '../lib/constants';
+import { Roles } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
 import { Minigames } from '../lib/settings/minigames';
 
 import Skills from '../lib/skilling/skills';
-import { convertXPtoLVL } from '../lib/util';
+import { convertXPtoLVL, getUsername } from '../lib/util';
 import { logError } from '../lib/util/logError';
 import { TeamLoot } from './simulation/TeamLoot';
 import type { ItemBank } from './types';
@@ -110,7 +110,7 @@ async function addRoles({
 	if (userMap) {
 		const userArr = [];
 		for (const [id, arr] of Object.entries(userMap)) {
-			const username = usernameCache.get(id) ?? 'Unknown';
+			const username = await getUsername(id);
 			userArr.push(`${username}(${arr.join(', ')})`);
 		}
 		str += `\n${userArr.join(',')}`;

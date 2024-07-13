@@ -12,7 +12,6 @@ import {
 	FormattedCustomEmoji,
 	MAX_LEVEL,
 	PerkTier,
-	badges,
 	minionActivityCache
 } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
@@ -82,20 +81,18 @@ export async function getUserInfo(user: MUser) {
 	const task = minionActivityCache.get(user.id);
 	const taskText = task ? `${task.type}` : 'None';
 
-	const userBadges = user.user.badges.map(i => badges[i]);
-
 	const premiumDate = Number(user.user.premium_balance_expiry_date);
 	const premiumTier = user.user.premium_balance_tier;
 
 	const result = {
 		perkTier: user.perkTier(),
 		isBlacklisted: BLACKLISTED_USERS.has(user.id),
-		badges: userBadges,
+		badges: user.badgesString,
 		mainAccount:
 			user.user.main_account !== null
-				? `${getUsername(user.user.main_account)}[${user.user.main_account}]`
+				? `${user.user.username ?? 'Unknown Username'}[${user.user.main_account}]`
 				: 'None',
-		ironmanAlts: user.user.ironman_alts.map(id => `${getUsername(id)}[${id}]`),
+		ironmanAlts: user.user.ironman_alts.map(async id => `${await getUsername(id)}[${id}]`),
 		premiumBalance: `${premiumDate ? new Date(premiumDate).toLocaleString() : ''} ${
 			premiumTier ? `Tier ${premiumTier}` : ''
 		}`,
@@ -116,7 +113,7 @@ export async function getUserInfo(user: MUser) {
 **Current Trip:** ${taskText}
 **Perk Tier:** ${result.perkTier}
 **Blacklisted:** ${result.isBlacklisted}
-**Badges:** ${result.badges.join(' ')}
+**Badges:** ${result.badges}
 **Main Account:** ${result.mainAccount}
 **Ironman Alts:** ${result.ironmanAlts}
 **Patron Balance:** ${result.premiumBalance}

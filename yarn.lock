@@ -679,9 +679,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#8570a6a8b2def1bfcafdcc5e30bbf5dd614c12c7":
+"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#87450a60c73136601714c77092793d2f432b70b5":
   version: 0.0.24
-  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=8570a6a8b2def1bfcafdcc5e30bbf5dd614c12c7"
+  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=87450a60c73136601714c77092793d2f432b70b5"
   dependencies:
     decimal.js: "npm:^10.4.3"
     deepmerge: "npm:4.3.1"
@@ -695,7 +695,7 @@ __metadata:
   peerDependencies:
     discord.js: ^14.15.3
     oldschooljs: ^2.5.9
-  checksum: 10c0/8e13388aeaf1b76dc1445e71e8b120344805f1c2e8990895e26303155d27fd521c6881bbe50265c4c84b9c7281cb8c7264811f295c267c095cf35423ebdc2601
+  checksum: 10c0/3a8caa110fb1d8b90d3fb3eb24e3c98f7e388d2a3f7e35ea9a14d65d01cc3fc529cdb5e042e251f4b414d1b2fc86b62824d9d8c4814842cde9769101c6070661
   languageName: node
   linkType: hard
 
@@ -4090,7 +4090,7 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:^1.8.3"
     "@napi-rs/canvas": "npm:^0.1.53"
-    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#8570a6a8b2def1bfcafdcc5e30bbf5dd614c12c7"
+    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#87450a60c73136601714c77092793d2f432b70b5"
     "@prisma/client": "npm:^5.16.1"
     "@sapphire/snowflake": "npm:^3.5.3"
     "@sapphire/time-utilities": "npm:^1.6.0"

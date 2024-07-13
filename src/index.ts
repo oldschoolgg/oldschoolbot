@@ -191,11 +191,11 @@ async function main() {
 	if (process.env.TEST) return;
 	await Promise.all([
 		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
-		runTimedLoggedFn('Sync Activity Cache', syncActivityCache)
+		runTimedLoggedFn('Sync Activity Cache', syncActivityCache),
+		runTimedLoggedFn('Startup Scripts', runStartupScripts)
 	]);
-	await runTimedLoggedFn('Startup Scripts', runStartupScripts);
-
 	await runTimedLoggedFn('Log In', () => client.login(globalConfig.botToken));
+	console.log(`Logged in as ${globalClient.user.username}`);
 }
 
 process.on('uncaughtException', err => {

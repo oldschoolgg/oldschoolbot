@@ -14,7 +14,6 @@ import { cacheCleanup } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { cacheUsernames } from '../commands/leaderboard';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
 
 export async function syncCustomPrices() {
@@ -24,10 +23,7 @@ export async function syncCustomPrices() {
 	}
 }
 
-export async function onStartup() {
-	globalClient.application.commands.fetch({ guildId: production ? undefined : globalConfig.testingServerID });
-
-	// Sync disabled commands
+async function syncDisabledCommands() {
 	const disabledCommands = await prisma.clientStorage.upsert({
 		where: {
 			id: globalConfig.clientID
@@ -44,9 +40,10 @@ export async function onStartup() {
 			DISABLED_COMMANDS.add(command);
 		}
 	}
+}
 
-	// Sync blacklists
-	await syncBlacklists();
+export async function onStartup() {
+	globalClient.application.commands.fetch({ guildId: production ? undefined : globalConfig.testingServerID });
 
 	if (!production) {
 		console.log('Syncing commands locally...');
@@ -57,10 +54,13 @@ export async function onStartup() {
 		});
 	}
 
+	syncDisabledCommands();
+
+	syncBlacklists();
+
 	runTimedLoggedFn('Syncing prices', syncCustomPrices);
 
 	runTimedLoggedFn('Caching badges', cacheBadges);
-	runTimedLoggedFn('Cache Usernames', cacheUsernames);
 	cacheCleanup();
 
 	runTimedLoggedFn('Sync Linked Accounts', syncLinkedAccounts);

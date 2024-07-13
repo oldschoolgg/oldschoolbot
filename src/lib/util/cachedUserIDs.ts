@@ -12,14 +12,14 @@ for (const id of OWNER_IDS) CACHED_ACTIVE_USER_IDS.add(id);
 
 export async function syncActiveUserIDs() {
 	const [users, otherUsers] = await prisma.$transaction([
-		prisma.$queryRaw<{ user_id: string }[]>`SELECT DISTINCT(${Prisma.ActivityScalarFieldEnum.user_id}::text)
+		prisma.$queryRawUnsafe<{ user_id: string }[]>(`SELECT DISTINCT(${Prisma.ActivityScalarFieldEnum.user_id}::text)
 FROM activity
-WHERE finish_date > now() - INTERVAL '48 hours'`,
-		prisma.$queryRaw<{ id: string }[]>`SELECT id
+WHERE finish_date > now() - INTERVAL '48 hours'`),
+		prisma.$queryRawUnsafe<{ id: string }[]>(`SELECT id
 FROM users
 WHERE ${Prisma.UserScalarFieldEnum.main_account} IS NOT NULL
 OR CARDINALITY(${Prisma.UserScalarFieldEnum.ironman_alts}) > 0
-OR ${Prisma.UserScalarFieldEnum.bitfield} && ARRAY[2,3,4,5,6,7,8,12,11,21,19];`
+OR ${Prisma.UserScalarFieldEnum.bitfield} && ARRAY[2,3,4,5,6,7,8,12,11,21,19];`)
 	]);
 
 	for (const id of [...users.map(i => i.user_id), ...otherUsers.map(i => i.id)]) {

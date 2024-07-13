@@ -89,7 +89,8 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		QP: overrides?.QP ?? 0,
 		sacrificedValue: 0,
 		id: overrides?.id ?? '',
-		monsterScores: {}
+		monsterScores: {},
+		badges: []
 	} as unknown as User;
 
 	return r;
