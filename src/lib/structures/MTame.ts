@@ -19,10 +19,15 @@ export class MTame {
 	equippedArmor: Item | null;
 	equippedPrimary: Item | null;
 	nickname: string | null;
-	maxSupportLevel: number;
 	growthLevel: number;
 	currentSupportLevel: number;
 	totalLoot: Bank;
+	speciesVariant: number;
+
+	maxSupportLevel: number;
+	maxCombatLevel: number;
+	maxGathererLevel: number;
+	maxArtisanLevel: number;
 
 	private currentLevel(maxLevel: number) {
 		return round(maxLevel / this.growthLevel, 2);
@@ -38,10 +43,16 @@ export class MTame {
 		this.fedItems = new Bank(this.tame.fed_items as ItemBank);
 		this.equippedArmor = tame.equipped_armor === null ? null : getOSItem(tame.equipped_armor);
 		this.equippedPrimary = tame.equipped_primary === null ? null : getOSItem(tame.equipped_primary);
-		this.maxSupportLevel = tame.max_support_level;
 		this.growthLevel = 3 - [tame_growth.baby, tame_growth.juvenile, tame_growth.adult].indexOf(tame.growth_stage);
-		this.currentSupportLevel = this.currentLevel(this.maxSupportLevel);
 		this.totalLoot = new Bank(this.tame.max_total_loot as ItemBank);
+		this.speciesVariant = tame.species_variant;
+
+		this.maxSupportLevel = tame.max_support_level;
+		this.maxCombatLevel = tame.max_combat_level;
+		this.maxGathererLevel = tame.max_gatherer_level;
+		this.maxArtisanLevel = tame.max_artisan_level;
+
+		this.currentSupportLevel = this.currentLevel(this.maxSupportLevel);
 	}
 
 	toString() {

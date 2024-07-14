@@ -802,11 +802,6 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		return new Map(rawPaintedItems as [number, number][]);
 	}
 
-	async getTames() {
-		const tames = await prisma.tame.findMany({ where: { user_id: this.id } });
-		return tames.map(t => new MTame(t));
-	}
-
 	async getGodFavour(): Promise<GodFavourBank> {
 		const { god_favour_bank: currentFavour } = await this.fetchStats({ god_favour_bank: true });
 		if (!currentFavour) {
@@ -1044,12 +1039,32 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async fetchTames() {
-		const tames = await prisma.tame.findMany({
+		const rawTames = await prisma.tame.findMany({
 			where: {
 				user_id: this.id
 			}
 		});
-		return tames.map(t => new MTame(t));
+
+		const tames = rawTames.map(t => new MTame(t));
+
+		const totalBank = new Bank();
+		for (const tame of tames) {
+			totalBank.add(tame.totalLoot);
+		}
+		await prisma.userStats.upsert({
+			where: {
+				user_id: BigInt(this.id)
+			},
+			create: {
+				user_id: BigInt(this.id),
+				tame_cl_bank: totalBank.bank
+			},
+			update: {
+				tame_cl_bank: totalBank.bank
+			}
+		});
+
+		return tames;
 	}
 
 	async fetchActiveTame(): Promise<{ tame: null; activity: null } | { activity: TameActivity | null; tame: MTame }> {

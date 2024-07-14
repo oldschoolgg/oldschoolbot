@@ -442,6 +442,7 @@ export interface ArbitraryTameActivity {
 	name: string;
 	id: 'Tempoross' | 'Wintertodt';
 	run: (opts: {
+		previousTameCL: Bank;
 		handleFinish(res: { loot: Bank | null; message: string; user: MUser }): Promise<void>;
 		user: MUser;
 		tame: Tame;

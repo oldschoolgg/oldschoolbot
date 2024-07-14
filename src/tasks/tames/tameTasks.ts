@@ -37,7 +37,6 @@ import {
 import type { ActivityTaskData } from '../../lib/types/minions';
 import { assert, calcPerHour, formatDuration, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
-import { getUsersTamesCollectionLog } from '../../lib/util/getUsersTameCL';
 import { handleCrateSpawns } from '../../lib/util/handleCrateSpawns';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { tameHasBeenFed, tameLastFinishedActivity, tameName } from '../../lib/util/tameUtil';
@@ -49,13 +48,9 @@ export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 		name: 'Tempoross',
 		id: 'Tempoross',
 		allowedTames: [TameSpeciesID.Monkey],
-		run: async ({ handleFinish, user, duration, tame }) => {
+		run: async ({ handleFinish, user, duration, tame, previousTameCL }) => {
 			const quantity = Math.ceil(duration / (Time.Minute * 5));
-			const loot = getTemporossLoot(
-				quantity,
-				tame.max_gatherer_level + 15,
-				await getUsersTamesCollectionLog(user.id)
-			);
+			const loot = getTemporossLoot(quantity, tame.max_gatherer_level + 15, previousTameCL);
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
 				loot: itemsAdded,
@@ -383,8 +378,22 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 		}
 		case 'Tempoross':
 		case 'Wintertodt': {
+			const previousTameCL = await prisma.userStats.findFirst({
+				where: {
+					user_id: BigInt(user.id)
+				},
+				select: {
+					tame_cl_bank: true
+				}
+			});
 			const act = arbitraryTameActivities.find(i => i.id === activityData.type)!;
-			await act.run({ handleFinish, user, tame, duration: activity.duration });
+			await act.run({
+				handleFinish,
+				user,
+				tame,
+				duration: activity.duration,
+				previousTameCL: new Bank(previousTameCL?.tame_cl_bank as ItemBank)
+			});
 			break;
 		}
 		default: {

@@ -1,4 +1,3 @@
-import type { User } from '@prisma/client';
 import { time } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
@@ -19,11 +18,9 @@ interface BirdhouseDetails {
 	readyAt: Date | null;
 }
 
-export async function calculateBirdhouseDetails(userID: string | bigint): Promise<BirdhouseDetails> {
-	const bh = await mahojiUsersSettingsFetch(userID, {
-		minion_birdhouseTraps: true
-	});
-	if (!bh.minion_birdhouseTraps) {
+export function calculateBirdhouseDetails(user: MUser): BirdhouseDetails {
+	const birdHouseTraps = user.user.minion_birdhouseTraps;
+	if (!birdHouseTraps) {
 		return {
 			raw: defaultBirdhouseTrap,
 			isReady: false,
@@ -33,7 +30,7 @@ export async function calculateBirdhouseDetails(userID: string | bigint): Promis
 		};
 	}
 
-	const details = bh.minion_birdhouseTraps as unknown as BirdhouseData;
+	const details = birdHouseTraps as unknown as BirdhouseData;
 
 	const birdHouse = details.lastPlaced ? birdhouses.find(_birdhouse => _birdhouse.name === details.lastPlaced) : null;
 	if (!birdHouse) throw new Error(`Missing ${details.lastPlaced} birdhouse`);
@@ -51,8 +48,8 @@ export async function calculateBirdhouseDetails(userID: string | bigint): Promis
 	};
 }
 
-export async function birdhouseCheckCommand(user: User) {
-	const details = await calculateBirdhouseDetails(user.id);
+export async function birdhouseCheckCommand(user: MUser) {
+	const details = calculateBirdhouseDetails(user);
 	if (!details.birdHouse) {
 		return 'You have no birdhouses planted.';
 	}
@@ -68,8 +65,8 @@ export async function birdhouseHarvestCommand(user: MUser, channelID: string, in
 
 	const birdHouses = birdhouseLimit(user);
 
-	const existingBirdhouse = await calculateBirdhouseDetails(user.id);
-	if (!existingBirdhouse.isReady && existingBirdhouse.raw.lastPlaced) return birdhouseCheckCommand(user.user);
+	const existingBirdhouse = await calculateBirdhouseDetails(user);
+	if (!existingBirdhouse.isReady && existingBirdhouse.raw.lastPlaced) return birdhouseCheckCommand(user);
 
 	let birdhouseToPlant = inputBirdhouseName
 		? birdhouses.find(_birdhouse =>

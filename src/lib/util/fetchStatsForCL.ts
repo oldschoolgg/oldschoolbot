@@ -14,6 +14,7 @@ export async function fetchStatsForCL(user: MUser): Promise<UserStatsDataNeededF
 		kcBank: userStats.monster_scores as ItemBank,
 		highGambles: userStats.high_gambles,
 		gotrRiftSearches: userStats.gotr_rift_searches,
-		stats
+		stats,
+		tame_cl_bank: userStats.tame_cl_bank as ItemBank
 	};
 }

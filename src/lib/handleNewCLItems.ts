@@ -32,32 +32,6 @@ async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataU
 	};
 }
 
-export async function clArrayUpdate(user: MUser, newCL: Bank) {
-	const id = BigInt(user.id);
-	const newCLArray = Object.keys(newCL.bank).map(i => Number(i));
-	const updateObj = {
-		cl_array: newCLArray,
-		cl_array_length: newCLArray.length
-	} as const;
-
-	await prisma.userStats.upsert({
-		where: {
-			user_id: id
-		},
-		create: {
-			user_id: id,
-			...updateObj
-		},
-		update: {
-			...updateObj
-		}
-	});
-
-	return {
-		newCLArray
-	};
-}
-
 export async function handleNewCLItems({
 	itemsAdded,
 	user,
@@ -83,7 +57,7 @@ export async function handleNewCLItems({
 	const previousCLDetails = calcCLDetails(previousCL);
 	const previousCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
-	await Promise.all([roboChimpSyncData(user), clArrayUpdate(user, newCL)]);
+	await roboChimpSyncData(user, newCL);
 	const newCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
 	const newCLDetails = calcCLDetails(newCL);

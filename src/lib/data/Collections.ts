@@ -45,7 +45,7 @@ import { fletchingCL } from '../skilling/skills/fletching/fletchables';
 import { herbloreCL } from '../skilling/skills/herblore/mixables';
 import smithables from '../skilling/skills/smithing/smithables';
 import { SkillsEnum } from '../skilling/types';
-import type { MUserStats } from '../structures/MUserStats';
+import { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
 import { stringMatches } from '../util';
 import { fetchStatsForCL } from '../util/fetchStatsForCL';
@@ -1941,11 +1941,12 @@ export interface UserStatsDataNeededForCL {
 	highGambles: number;
 	gotrRiftSearches: number;
 	stats: MUserStats;
+	tame_cl_bank: ItemBank;
 }
 
 type CLType = 'sacrifice' | 'bank' | 'collection' | 'temp' | 'tame' | 'disassembly';
 
-export async function getBank(user: MUser, type: CLType, userStats: UserStatsDataNeededForCL | MUserStats | null) {
+export function getBank(user: MUser, type: CLType, userStats: UserStatsDataNeededForCL | MUserStats | null): Bank {
 	switch (type) {
 		case 'collection':
 			return new Bank(user.cl);
@@ -1955,8 +1956,12 @@ export async function getBank(user: MUser, type: CLType, userStats: UserStatsDat
 			if (!userStats) return new Bank();
 			return new Bank(userStats.sacrificedBank);
 		case 'tame': {
-			const { getUsersTamesCollectionLog } = await import('../util/getUsersTameCL.js');
-			return getUsersTamesCollectionLog(user.id);
+			if (!userStats) return new Bank();
+			return new Bank(
+				userStats instanceof MUserStats
+					? (userStats.userStats.tame_cl_bank as ItemBank)
+					: (userStats.tame_cl_bank as ItemBank)
+			);
 		}
 		case 'temp':
 			return new Bank(user.user.temp_cl as ItemBank);
@@ -2071,7 +2076,7 @@ export async function getCollection(options: {
 
 	const minigameScores = await user.fetchMinigameScores();
 	const userStats = await fetchStatsForCL(user);
-	const userCheckBank = await getBank(user, logType, userStats);
+	const userCheckBank = getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 
 	if (clItems.length >= 500) {

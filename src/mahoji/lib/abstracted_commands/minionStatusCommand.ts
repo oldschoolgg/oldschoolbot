@@ -6,7 +6,6 @@ import { roll, stripNonAlphanumeric } from 'e';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, PerkTier, minionBuyButton } from '../../../lib/constants';
 import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
-import { clArrayUpdate } from '../../../lib/handleNewCLItems';
 import { roboChimpSyncData, roboChimpUserFetch } from '../../../lib/roboChimp';
 
 import { makeComponents } from '../../../lib/util';
@@ -61,18 +60,16 @@ async function fetchPinnedTrips(userID: string) {
 
 export async function minionStatusCommand(user: MUser, channelID: string): Promise<BaseMessageOptions> {
 	const { minionIsBusy } = user;
-	const [roboChimpUser, birdhouseDetails, gearPresetButtons, pinnedTripButtons, fishingResult, dailyIsReady] =
-		await Promise.all([
-			roboChimpUserFetch(user.id),
-			minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user.id),
-			minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
-			minionIsBusy ? [] : fetchPinnedTrips(user.id),
-			getUsersFishingContestDetails(user),
-			isUsersDailyReady(user)
-		]);
+	const birdhouseDetails = minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user);
+	const [roboChimpUser, gearPresetButtons, pinnedTripButtons, fishingResult, dailyIsReady] = await Promise.all([
+		roboChimpUserFetch(user.id),
+		minionIsBusy ? [] : fetchFavoriteGearPresets(user.id),
+		minionIsBusy ? [] : fetchPinnedTrips(user.id),
+		getUsersFishingContestDetails(user),
+		isUsersDailyReady(user)
+	]);
 
-	roboChimpSyncData(user);
-	await clArrayUpdate(user, user.cl);
+	await roboChimpSyncData(user);
 	if (user.user.cached_networth_value === null || roll(100)) {
 		await user.update({
 			cached_networth_value: (await user.calculateNetWorth()).value
