@@ -109,7 +109,8 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			search: options.search,
 			filters: [options.filter],
 			maxSize: 70,
-			noDuplicateItems: true
+			noDuplicateItems: true,
+			itemAliases: true
 		});
 
 		if (!user.owns(bankToSac)) {
