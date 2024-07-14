@@ -94,7 +94,6 @@ function catchChance(fish: Fish, fishLvl: number) {
 	return fish.chance99! - (99 - fishLvl) * (fish.chance99! - fish.chance1!) / (99 - 1);
 }
 
-
 const allFishIDs = Fishing.Fishes.map(fish => fish.id);
 
 export const fishingTask: MinionTask = {
@@ -170,6 +169,7 @@ export const fishingTask: MinionTask = {
 			if (fishLvl >= 58 && agiLvl >= 30 && strLvl >= 30) {
 				fish2 = Fishing.Fishes.find(fish => fish.name === 'Leaping salmon')!;
 			}
+<<<<<<< HEAD
 			if (fishLvl >= 70 && agiLvl >= 45 && strLvl >= 45) {
 				fish3 = Fishing.Fishes.find(fish => fish.name === 'Leaping sturgeon')!;
 			}
@@ -180,6 +180,11 @@ export const fishingTask: MinionTask = {
 			}
 			if (fishLvl >= 23) {
 				fish2 = Fishing.Fishes.find(fish => fish.id === itemID('Raw cod'))!;
+=======
+			if (fishLvl >= 58 && stats.agility >= 30 && stats.strength >= 30) {
+				const fish2 = Fishing.Fishes.find(fish => fish.id === 'Leaping salmon')!;
+				numFish++;
+>>>>>>> 5ecb1fd0f506408bcb71a22d86e32583b800c405
 			}
 			if (fishLvl >= 46) {
 				fish3 = Fishing.Fishes.find(fish => fish.id === itemID('Raw bass'))!;
@@ -252,6 +257,7 @@ export const fishingTask: MinionTask = {
 		let flakesQuantity = user.bank.amount('Spirit flakes');
 
 		// roll the highest lvl fish first
+<<<<<<< HEAD
 		if (fish3) {
 			let chance3 = catchChance(fish3, fishLvl) * harpoonBoost;
 			({ catches: catches3, lootAmount: lootAmount3, flakesUsed: flakes3 } = rollCatches(tripTicks, chance3, powerfish, spirit_flakes, lostTicks!, ticksPerRoll!, invSlots, bankTime!, blessingChance, flakesQuantity));
@@ -260,6 +266,20 @@ export const fishingTask: MinionTask = {
 			if (!powerfish) {
 				loot.add(fish3!.id, lootAmount3);
 			}
+=======
+		if (numFish >= 3) {
+			let chance3 = fish3.maxChance - (99-fishLvl)*(fish3.maxChance-fish3.minChance)/(99-fish3.level);
+			catches3, lootAmount3 = rollCatches(tripTicks, chance3*harpoonBoost);
+			xpReceived += fish3.xp*catches3;
+			tripTicks -= ticksPerRoll * catches3;
+		}
+		// roll for the 2nd fish only on the ticks that the 1st one wasn't caught
+		if (numFish >= 2) {
+			let chance2 = fish2.maxChance - (99-fishLvl)*(fish2.maxChance-fish2.minChance)/(99-fish2.level);
+			catches2, lootAmount2 = rollCatches(tripTicks, chance2*harpoonBoost);
+			xpReceived += fish2.xp*catches2;
+			tripTicks -= ticksPerRoll * catches2;
+>>>>>>> 5ecb1fd0f506408bcb71a22d86e32583b800c405
 		}
 		// roll for the other fish only on the ticks that the previous ones weren't caught
 		if (fish2) {
@@ -271,6 +291,7 @@ export const fishingTask: MinionTask = {
 				loot.add(fish2!.id, lootAmount2);
 			}
 		}
+<<<<<<< HEAD
 		if (fish1) {
 			let chance1 = catchChance(fish1, fishLvl) * harpoonBoost;
 			({ catches: catches1, lootAmount: lootAmount1, flakesUsed: flakes1 } = rollCatches(tripTicks, chance1, powerfish, spirit_flakes, lostTicks!, ticksPerRoll!, invSlots, bankTime!, blessingChance, flakesQuantity));
@@ -287,6 +308,14 @@ export const fishingTask: MinionTask = {
 					lootAmount1 *= baseKarambwanji;
 				}
 				loot.add(fish1!.id, lootAmount1);
+=======
+
+		// handling stackable fish
+		if (fish.name === 'Minnow'){
+			let sum = 0;
+			for (let i = 0; i < lootAmount1; i++) {
+				sum += Math.floor(Math.random() * (baseMinnow[1] - baseMinnow[0] + 1)) + baseMinnow[0];
+>>>>>>> 5ecb1fd0f506408bcb71a22d86e32583b800c405
 			}
 		}
 

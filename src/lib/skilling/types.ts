@@ -124,6 +124,7 @@ export interface Fish {
 	clueScrollChance?: number;
 	timePerFish?: number;
 	alias?: string[];
+
 	chance1?: number;
 	chance99?: number;
 	lostTicks?: number;

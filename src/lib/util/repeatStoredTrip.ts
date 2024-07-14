@@ -311,6 +311,7 @@ const tripHandlers = {
 			minutes: data.minutes ?? 0,
 			powerfish: data.powerfish ?? false,
 			spirit_flakes: data.spirit_flakes ?? false })
+
 	},
 	[activity_type_enum.FishingTrawler]: {
 		commandName: 'minigames',
