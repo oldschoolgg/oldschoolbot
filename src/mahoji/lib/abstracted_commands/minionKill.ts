@@ -181,6 +181,9 @@ export async function minionKillCommand(
 		usersTask.currentTask !== null &&
 		usersTask.assignedTask.monsters.includes(monster.id);
 
+	let isUsingKonar = false;
+	if (isOnTask && usersTask.slayerMaster.id === 5) isUsingKonar = true;
+
 	if (monster.slayerOnly && !isOnTask) {
 		return `You can't kill ${monster.name}, because you're not on a slayer task.`;
 	}
@@ -960,7 +963,8 @@ export async function minionKillCommand(
 		died: hasDied,
 		pkEncounters: thePkCount,
 		hasWildySupplies,
-		isInWilderness
+		isInWilderness,
+		isUsingKonar
 	});
 	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 		duration

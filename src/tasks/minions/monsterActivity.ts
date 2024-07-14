@@ -36,7 +36,8 @@ export const monsterTask: MinionTask = {
 			died,
 			pkEncounters,
 			hasWildySupplies,
-			isInWilderness
+			isInWilderness,
+			isUsingKonar
 		} = data;
 
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
@@ -256,8 +257,7 @@ export const monsterTask: MinionTask = {
 			loot.add(superiorTable?.kill(newSuperiorCount));
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 			if (isInWilderness) loot.add("Larran's key", newSuperiorCount);
-			const usersTask = await getUsersCurrentSlayerInfo(user.id);
-			if (usersTask.currentTask?.slayer_master_id === 8) loot.add('Brimstone key', newSuperiorCount);
+			if (isUsingKonar) loot.add('Brimstone key', newSuperiorCount);
 		}
 
 		// Hill giant key wildy buff

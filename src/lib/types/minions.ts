@@ -135,6 +135,7 @@ export interface MonsterActivityTaskOptions extends ActivityTaskOptions {
 	pkEncounters?: number;
 	hasWildySupplies?: boolean;
 	isInWilderness?: boolean;
+	isUsingKonar?: boolean;
 }
 
 export interface ClueActivityTaskOptions extends ActivityTaskOptions {
