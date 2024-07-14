@@ -149,9 +149,15 @@ export interface ClueActivityTaskOptions extends ActivityTaskOptions {
 export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Fishing';
 	fishID: number;
-	quantity: number;
-	iQty?: number;
+	minutes?: number;
+	duration:number;
+	tripTicks: number; 
+	powerfish?: boolean;
+	spirit_flakes?: boolean;
 }
+
+
+
 
 export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	type: 'Mining';
@@ -610,3 +616,4 @@ export type ActivityTaskData =
 	| MinigameActivityTaskOptionsWithNoChanges
 	| CutLeapingFishActivityTaskOptions
 	| ColoTaskOptions;
+

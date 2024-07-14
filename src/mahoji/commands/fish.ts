@@ -1,14 +1,15 @@
 import { stringMatches } from '@oldschoolgg/toolkit';
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Time, calcPercentOfNum, randInt } from 'e';
+import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import type { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, itemNameFromID } from '../../lib/util';
+//import { formatDuration, itemID, itemNameFromID } from '../../lib/util';
+import { formatDuration,  itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import type { OSBMahojiCommand } from '../lib/util';
@@ -44,23 +45,30 @@ export const fishCommand: OSBMahojiCommand = {
 			description: 'Trip length in minutes (optional).',
 			required: false,
 			min_value: 1,
-			default: -1
 		},
 		{
 			type: ApplicationCommandOptionType.Boolean,
 			name: 'powerfish',
 			description: 'Set this to true to powerfish. Higher xp/hour, No loot (default false, optional).',
-			required: false,
-			default: false
+			required: false
 		},
 		{
 			type: ApplicationCommandOptionType.Boolean,
 			name: 'spirit_flakes',
 			description: 'Set this to true to use spirit flakes. (default false, optional).',
-			required: false,
-			default: false
+			required: false
+		}
 	],
-	run: async ({ options, userID, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({ 
+		options, 
+		userID, 
+		channelID 
+		}: CommandRunOptions<{ 
+			name: string; 
+			minutes?: number, 
+			powerfish?: boolean, 
+			spirit_flakes?: boolean 
+		}>) => {
 		const user = await mUserFetch(userID);
 		const fish = Fishing.Fishes.find(
 			fish =>
@@ -69,6 +77,14 @@ export const fishCommand: OSBMahojiCommand = {
 				fish.alias?.some(alias => stringMatches(alias, options.name))
 		);
 		if (!fish) return 'Thats not a valid fish to catch.';
+
+		let { minutes, powerfish, spirit_flakes } = options;
+		
+		powerfish = powerfish ?? false;
+		if (powerfish) {
+			spirit_flakes = false; // don't use flakes if power fishing
+		}
+		spirit_flakes = spirit_flakes ?? false;
 
 		if (user.skillLevel(SkillsEnum.Fishing) < fish.level) {
 			return `${user.minionName} needs ${fish.level} Fishing to fish ${fish.name}.`;
@@ -99,7 +115,7 @@ export const fishCommand: OSBMahojiCommand = {
 		}
 
 		const boosts = [];
-		if (fish.name === 'Tuna' || fish.name === 'Swordfish || fish.name === 'Shark' || fish.name === 'Tuna/Swordfish') {
+		if (fish.name === 'Tuna' || fish.name === 'Swordfish' || fish.name === 'Shark' || fish.name === 'Tuna/Swordfish') {
 			if (user.hasEquipped('Crystal harpoon')) {
 				boosts.push('35% for Crystal harpoon');
 			} else if (user.hasEquipped('Dragon harpoon')) {
@@ -109,53 +125,65 @@ export const fishCommand: OSBMahojiCommand = {
 			}
 		} 
 
-		if (!powerfishing) {	
+		if (!powerfish) {	
 			if (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel')) {
-				boosts.push(`+9 trip minutes for having a ${user.allItemsOwned.has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'
-					}`
-				);
+				if (fish.name != 'Minnow' && fish.name != 'Karambwanji' && fish.name != 'Infernal eel'){
+					boosts.push(`+9 trip minutes for having a ${user.allItemsOwned.has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'}`	);
+				} else {
+					boosts.push(`+9 trip minutes and +28 inventory slots for having a ${user.allItemsOwned.has('Fish sack barrel') ? 'Fish sack barrel' : 'Fish barrel'}`	);
+				}
 			}
 		}
-		
-		if (minutes === -1) {
-			let maxTripLength = calcMaxTripLength(user, 'Fishing');
-			let tripTicks = maxTripLength / (Time.Second * 0.6);
-		} else {
-			let tripTicks = 100*minutes
-		}
-	
 
+		if (spirit_flakes) {
+			if (!user.bank.has('Spirit flakes')) {
+				return 'You need to have at least one spirit flake!';
+			}
+
+			boosts.push(`50% more fish from using spirit flakes`);
+		}
+		
+		if (powerfish) {
+			boosts.push('**Powerfishing**');
+		}
+		
 		if (fish.bait) {
 			const baseCost = new Bank().add(fish.bait);
-
 			const maxCanDo = user.bank.fits(baseCost);
 			if (maxCanDo === 0) {
 				return `You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`;
 			}
-			if (maxCanDo < quantity) {
-				quantity = maxCanDo;
-			}
-
-			const cost = new Bank();
-			cost.add(baseCost.multiply(quantity));
-
-			// Remove the bait from their bank.
-			await user.removeItemsFromBank(new Bank().add(fish.bait, quantity));
 		}
+		
+		
+		minutes = minutes ?? 0;
+		let tripTicks = 0
+		if (minutes === 0) {
+			let maxTripLength = calcMaxTripLength(user, 'Fishing');
+			if (!powerfish && (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel'))) {
+				maxTripLength += Time.Minute * 9;
+			}
+			tripTicks = maxTripLength / (Time.Second * 0.6);
+		} else {
+			tripTicks = 100*minutes
+		}
+	
+		const duration = Time.Second* 0.6 * tripTicks;
+		
 
 		await addSubTaskToActivityTask<FishingActivityTaskOptions>({
 			fishID: fish.id,
 			userID: user.id,
 			channelID: channelID.toString(),
+			minutes: minutes,
+			duration: duration,
 			tripTicks: tripTicks,
-			powerfishing: powerfish,
-			flakes: spirit_flakes,
+			powerfish: powerfish,
+			spirit_flakes: spirit_flakes,
 			type: 'Fishing'
 		});
 
-		let response = `${user.minionName} is now fishing ${quantity}x ${fish.name}, it'll take around ${formatDuration(
-			duration
-		)} to finish.`;
+		let response = `${user.minionName} is now fishing ${fish.name}, it'll take around ${formatDuration(duration)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -164,3 +192,4 @@ export const fishCommand: OSBMahojiCommand = {
 		return response;
 	}
 };
+

@@ -1,11 +1,12 @@
-import { calcPercentOfNum, percentChance, randInt } from 'e';
+//import { calcPercentOfNum, percentChance, randInt } from 'e';
+import { calcPercentOfNum } from 'e';
 import { Bank } from 'oldschooljs';
 import { z } from 'zod';
 
 import { Emoji, Events } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Fishing from '../../lib/skilling/skills/fishing';
-import { SkillsEnum } from '../../lib/skilling/types';
+import { Fish, SkillsEnum } from '../../lib/skilling/types';
 import type { FishingActivityTaskOptions } from '../../lib/types/minions';
 import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -14,42 +15,54 @@ import { anglerBoostPercent } from '../../mahoji/mahojiSettings';
 
 function radasBlessing(user: MUser) {
 	const blessingBoosts = [
-		["Rada's blessing 4", 1.08],
-		["Rada's blessing 3", 1.06],
-		["Rada's blessing 2", 1.04],
-		["Rada's blessing 1", 1.02]
+		["Rada's blessing 4", 8],
+		["Rada's blessing 3", 6],
+		["Rada's blessing 2", 4],
+		["Rada's blessing 1", 2]
 	];
 
 	for (const [itemName, boostPercent] of blessingBoosts) {
 		if (user.hasEquipped(itemName)) {
-			return { blessingChance: boostPercent as number };
+			return { blessingEquipped: true, blessingChance: boostPercent as number };
 		}
 	}
-	return { blessingChance: 1.00 };
+	return { blessingEquipped: false, blessingChance: 0 };
 }
 
 
-function rollCatches(tripTicks, catchChance) {
+function rollCatches(
+	tripTicks: number,
+	chance: number,
+	powerfish: boolean,
+	spirit_flakes: boolean,
+	lostTicks: number,
+	ticksPerRoll: number,
+	invSlots: number,
+	bankTime: number,
+	blessingChance: number,
+	flakesQuantity: number,
+) {
 	let catches = 0;
 	let t = 0;
 	let lootAmount = 0;
-	let usefulTicks = (1-lostTicks)*tripTicks
-	
-	if (powerfishing) {
+	let usefulTicks = (1 - lostTicks) * tripTicks
+	let flakesUsed = 0;
+
+	if (powerfish) {
 		while (t < usefulTicks) {
-			if (Math.random() < catchChance) {
+			if (Math.random() < chance) {
 				catches++;
 			}
 			t += ticksPerRoll;
 		}
-		return {catches, lootAmount};
+		return { catches, lootAmount, flakesUsed };
 	} else {
 		while (t < usefulTicks) {
-			if (Math.random() < catchChance) {
+			if (Math.random() < chance) {
 				catches++;
 			}
 			t += ticksPerRoll;
-			
+
 			if (catches % invSlots === 0) {
 				t += bankTime;
 			}
@@ -59,22 +72,26 @@ function rollCatches(tripTicks, catchChance) {
 		// extra loot
 		let i = 0;
 		while (i < catches) {
-			if (Math.random() < radasBoost) {
+			if (Math.random() < blessingChance / 100) {
 				lootAmount++;
 			}
-			if (Math.random() < 0.5) {
-				lootAmount++;
-				flakesQuantity--;
+			if (spirit_flakes && flakesUsed < flakesQuantity) {
+				if (Math.random() < 0.5) {
+					lootAmount++;
+					flakesUsed++;
+				}
 			}
+			i++;
 		}
-		
-		return {catches, lootAmount};
+
+
+		return { catches, lootAmount, flakesUsed };
 	}
 
 }
 
-function catchChance(fish, fishLvl) {
-	return fish.chance99 - (99-fishLvl)*(fish.chance99-fish.chance1)/(99-1);
+function catchChance(fish: Fish, fishLvl: number) {
+	return fish.chance99! - (99 - fishLvl) * (fish.chance99! - fish.chance1!) / (99 - 1);
 }
 
 
@@ -90,10 +107,16 @@ export const fishingTask: MinionTask = {
 		quantity: z.number().min(1)
 	}),
 	async run(data: FishingActivityTaskOptions) {
-		const { fishID, userID, channelID, tripTicks, powerfishing, flakes} = data;
+		let { fishID, userID, channelID, duration, tripTicks, powerfish, spirit_flakes } = data;
+		powerfish = powerfish ?? false;
+		spirit_flakes = spirit_flakes ?? false;
+
 		const user = await mUserFetch(userID);
 		const fishLvl = user.skillLevel(SkillsEnum.Fishing);
-		const { radasBoost } = radasBlessing(user);
+		const agiLvl = user.skillLevel(SkillsEnum.Agility);
+		const strLvl = user.skillLevel(SkillsEnum.Strength);
+
+		const { blessingEquipped, blessingChance } = radasBlessing(user);
 
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
 
@@ -112,16 +135,13 @@ export const fishingTask: MinionTask = {
 				break;
 			}
 		}
-		
+
 		const baseKarambwanji = 1 + Math.floor(fishLvl / 5);
-		
+
 		let xpReceived = 0;
 		let agilityXpReceived = 0;
 		let strengthXpReceived = 0;
-		let fish1 = 0;
-		let fish2 = 0;
-		let fish3 = 0;
-		
+
 		let invSlots = 26;
 		if (user.allItemsOwned.has('Fish sack barrel') || user.allItemsOwned.has('Fish barrel')) {
 			invSlots += 28;
@@ -130,154 +150,153 @@ export const fishingTask: MinionTask = {
 		let lostTicks = fish.lostTicks;
 		let bankTime = fish.bankingTime;
 		let ticksPerRoll = fish.ticksPerRoll;
-	
-		let numFish = 0;
-		if (fish.name === 'Barbarian fishing') {
-			if (powerfishing) {
+
+		let fish1 = null;
+		let fish2 = null;
+		let fish3 = null;
+
+		if (fish.name === 'Barbarian fishing' || fish.name === 'Leaping trout' || fish.name === 'Leaping salmon' || fish.name === 'Leaping sturgeon') {
+			if (powerfish) {
 				ticksPerRoll = 3;
+				lostTicks = 0.02; // more focused
 			}
 			if (user.allItemsOwned.has('Fishing cape') || user.allItemsOwned.has('Fishing cape (t)') || user.allItemsOwned.has('Max cape')) {
 				bankTime = 20;
 			}
-			
-			if (fishLvl >= 48 && stats.agility >= 15 && stats.strength >= 15) {
-				const fish1 = Fishing.Fishes.find(fish => fish.id === 'Leaping trout')!;
-				numFish++;
+
+			if (fishLvl >= 48 && agiLvl >= 15 && strLvl >= 15) {
+				fish1 = Fishing.Fishes.find(fish => fish.name === 'Leaping trout')!;
 			}
-			if (fishLvl >= 58 && stats.agility >= 30 && stats.strength >= 30)) {
-				const fish2 = Fishing.Fishes.find(fish => fish.id === 'Leaping salmon')!;
-				numFish++;
+			if (fishLvl >= 58 && agiLvl >= 30 && strLvl >= 30) {
+				fish2 = Fishing.Fishes.find(fish => fish.name === 'Leaping salmon')!;
 			}
-			if (fishLvl >= 70 && stats.agility >= 45 && stats.strength >= 45) {
-				const fish3 = Fishing.Fishes.find(fish => fish.id === 'Leaping sturgeon')!;
-				numFish++;
-			}
-		
-		} else if (fish.name === 'Shrimp/Anchovies') {
-			if (fishLvl >= 1) {
-				const fish1 = Fishing.Fishes.find(fish => fish.id === 'Raw shrimp')!;
-				numFish++;
-			}
-			if (fishLvl >= 15) {
-				const fish2 = Fishing.Fishes.find(fish => fish.id === 'Raw anchovies')!;
-				numFish++;
-			}
-			
-		} else if (fish.name === 'Sardine/Herring') {
-			if (fishLvl >= 5) {
-				const fish1 = Fishing.Fishes.find(fish => fish.id === 'Raw sardine')!;
-				numFish++;
-			}
-			if (fishLvl >= 10) {
-				const fish2 = Fishing.Fishes.find(fish => fish.id === 'Raw herring')!;
-				numFish++;
-			}
-			
-		} else if (fish.name === 'Trout/Salmon') {
-			if (powerfishing) {
-				ticksPerRoll = 3;
-			}
-			
-			if (fishLvl >= 20) {
-				const fish1 = Fishing.Fishes.find(fish => fish.id === 'Raw trout')!;
-				numFish++;
-			}
-			if (fishLvl >= 30) {
-				const fish2 = Fishing.Fishes.find(fish => fish.id === 'Raw salmon')!;
-				numFish++;
+			if (fishLvl >= 70 && agiLvl >= 45 && strLvl >= 45) {
+				fish3 = Fishing.Fishes.find(fish => fish.name === 'Leaping sturgeon')!;
 			}
 
-			
-		} else if (fish.name === 'Tuna/Swordfish') {
-			if (powerfishing) {
+		} else if (fish.name === 'Big net fishing' || fish.name === 'Mackerel' || fish.name === 'Cod' || fish.name === 'Bass') {
+			if (fishLvl >= 16) {
+				fish1 = Fishing.Fishes.find(fish => fish.id === itemID('Raw mackerel'))!;
+			}
+			if (fishLvl >= 23) {
+				fish2 = Fishing.Fishes.find(fish => fish.id === itemID('Raw cod'))!;
+			}
+			if (fishLvl >= 46) {
+				fish3 = Fishing.Fishes.find(fish => fish.id === itemID('Raw bass'))!;
+			}
+		} else if (fish.name === 'Shrimps' || fish.name === 'Anchovies') {
+			if (fishLvl >= 1) {
+				fish1 = Fishing.Fishes.find(fish => fish.id === itemID('Raw shrimps'))!;
+			}
+			if (fishLvl >= 15) {
+				fish2 = Fishing.Fishes.find(fish => fish.id === itemID('Raw anchovies'))!;
+			}
+
+		} else if (fish.name === 'Sardine' || fish.name === 'Herring') {
+			if (fishLvl >= 5) {
+				fish1 = Fishing.Fishes.find(fish => fish.id === itemID('Raw sardine'))!;
+			}
+			if (fishLvl >= 10) {
+				fish2 = Fishing.Fishes.find(fish => fish.id === itemID('Raw herring'))!;
+			}
+
+		} else if (fish.name === 'Trout' || fish.name === 'Salmon') {
+			if (powerfish) {
+				ticksPerRoll = 3;
+				lostTicks = 0.03;
+			}
+
+			if (fishLvl >= 20) {
+				fish1 = Fishing.Fishes.find(fish => fish.id === itemID('Raw trout'))!;
+			}
+			if (fishLvl >= 30) {
+				fish2 = Fishing.Fishes.find(fish => fish.id === itemID('Raw salmon'))!;
+			}
+
+
+		} else if (fish.name === 'Tuna' || fish.name === 'Swordfish') {
+			if (powerfish) {
 				ticksPerRoll = 2;
+				lostTicks = 0.01;
 			}
 
 			if (fishLvl >= 35) {
-				const fish1 = Fishing.Fishes.find(fish => fish.id === 'Raw tuna')!;
-				numFish++;
+				fish1 = Fishing.Fishes.find(fish => fish.id === itemID('Raw tuna'))!;
 			}
 			if (fishLvl >= 50) {
-				const fish2 = Fishing.Fishes.find(fish => fish.id === 'Raw swordfish')!;
-				numFish++;
+				fish2 = Fishing.Fishes.find(fish => fish.id === itemID('Raw swordfish'))!;
 			}
 
-		} else if (fish.name === 'Big net') {
-			if (fishLvl >= 16) {
-				const fish1 = Fishing.Fishes.find(fish => fish.id === 'Raw mackerel')!;
-				numFish++;
-			}
-			if (fishLvl >= 23) {
-				const fish2 = Fishing.Fishes.find(fish => fish.id === 'Raw cod')!;
-				numFish++;
-			}
-			if (fishLvl >= 46) {
-				const fish3 = Fishing.Fishes.find(fish => fish.id === 'Raw bass')!;
-				numFish++;
-			}
 		} else {
-			if (fishLvl >= fish.level) {
-				const fish1 = fish;
-				numFish++;
-			}
+			fish1 = fish;
 		}
 
- 		if (fish.name === 'Tuna' || fish.name === 'Swordfish' || fish.name === 'Shark') {
+		let harpoonBoost = 1.0;
+		if (fish.name === 'Tuna' || fish.name === 'Swordfish' || fish.name === 'Shark') {
 			if (user.hasEquipped("Dragon harpoon")) {
-				let harpoonBoost = 1.2;
+				harpoonBoost = 1.2;
 			} else if (user.hasEquipped("Crystal harpoon")) {
-				let harpoonBoost = 1.35;
+				harpoonBoost = 1.35;
 			}
 		} else {
-			let harpoonBoost = 0;
+			harpoonBoost = 1.0;
 		}
-		
+
 		// adding xp and loot
-		let catches1 = 0, catches2 = 0, catches3  = 0;
+
+		const loot = new Bank();
+
+		let catches1 = 0, catches2 = 0, catches3 = 0;
 		let lootAmount1 = 0, lootAmount2 = 0, lootAmount3 = 0;
+		let flakes1 = 0, flakes2 = 0, flakes3 = 0;
+		let flakesQuantity = user.bank.amount('Spirit flakes');
 
 		// roll the highest lvl fish first
-		if (numFish >= 3) {
-			let chance3 = fish3.maxChance - (99-fishLvl)*(fish3.maxChance-fish3.minChance)/(99-fish3.level);
-			catches3, lootAmount3 = rollCatches(tripTicks, chance3*harpoonBoost);
-			xpReceived += fish3.xp*catches3;
-			tripTicks -= ticksPerRoll * catches3;
-		}
-		// roll for the 2nd fish only on the ticks that the 1st one wasn't caught
-		if (numFish >= 2) {
-			let chance2 = fish2.maxChance - (99-fishLvl)*(fish2.maxChance-fish2.minChance)/(99-fish2.level);
-			catches2, lootAmount2 = rollCatches(tripTicks, chance2*harpoonBoost)];
-			xpReceived += fish2.xp*catches2;
-			tripTicks -= ticksPerRoll * catches2;
-		}
-		if (numFish >= 1) {
-			let chance1 = fish1.maxChance - (99-fishLvl)*(fish1.maxChance-fish1.minChance)/(99-fish1.level);
-			catches1, lootAmount1 = rollCatches(tripTicks, chance1*harpoonBoost);
-			xpReceived += fish1.xp*catches1;
-		}
-
-		// handling stackable fish
-		if (fish.name === 'Minnow'){
-			let sum = 0;
-			for (let i = 0; i < lootAmount1; i++) {
-				sum += Math.floor(Math.random() * (baseMinnow[1]) - baseMinnow[0] + 1)) + baseMinnow[0];
+		if (fish3) {
+			let chance3 = catchChance(fish3, fishLvl) * harpoonBoost;
+			({ catches: catches3, lootAmount: lootAmount3, flakesUsed: flakes3 } = rollCatches(tripTicks, chance3, powerfish, spirit_flakes, lostTicks!, ticksPerRoll!, invSlots, bankTime!, blessingChance, flakesQuantity));
+			xpReceived += fish3!.xp * catches3;
+			tripTicks -= ticksPerRoll! * catches3;
+			if (!powerfish) {
+				loot.add(fish3!.id, lootAmount3);
 			}
-		} else if (fish.name === 'Karambwanji'){
-			lootAmount1 *= baseKarambwanji;
+		}
+		// roll for the other fish only on the ticks that the previous ones weren't caught
+		if (fish2) {
+			let chance2 = catchChance(fish2, fishLvl) * harpoonBoost;
+			({ catches: catches2, lootAmount: lootAmount2, flakesUsed: flakes2 } = rollCatches(tripTicks, chance2, powerfish, spirit_flakes, lostTicks!, ticksPerRoll!, invSlots, bankTime!, blessingChance, flakesQuantity));
+			xpReceived += fish2!.xp * catches2;
+			tripTicks -= ticksPerRoll! * catches2;
+			if (!powerfish) {
+				loot.add(fish2!.id, lootAmount2);
+			}
+		}
+		if (fish1) {
+			let chance1 = catchChance(fish1, fishLvl) * harpoonBoost;
+			({ catches: catches1, lootAmount: lootAmount1, flakesUsed: flakes1 } = rollCatches(tripTicks, chance1, powerfish, spirit_flakes, lostTicks!, ticksPerRoll!, invSlots, bankTime!, blessingChance, flakesQuantity));
+			xpReceived += fish1!.xp * catches1;
+			if (!powerfish) {
+				// handling stackable fish
+				if (fish.name === 'Minnow') {
+					let sum = 0;
+					for (let i = 0; i < lootAmount1; i++) {
+						sum += Math.floor(Math.random() * (baseMinnow[1] - baseMinnow[0] + 1)) + baseMinnow[0];
+					}
+					lootAmount1 = sum;
+				} else if (fish.name === 'Karambwanji') {
+					lootAmount1 *= baseKarambwanji;
+				}
+				loot.add(fish1!.id, lootAmount1);
+			}
 		}
 
-		let loot = [];
-		if (!powerfishing) {
-			loot.add(fish1.id, lootAmount1);
-			loot.add(fish2.id, lootAmount2);
-			loot.add(fish3.id, lootAmount3);
-		}
-	
+
+
 		if (fish.name === 'Barbarian fishing') {
-			agilityXpReceived  += 7*catches3 + 6*catches2 + 5*catches1;
-			strengthXpReceived += 7*catches3 + 6*catches2 + 5*catches1;
+			agilityXpReceived += 7 * catches3 + 6 * catches2 + 5 * catches1;
+			strengthXpReceived += 7 * catches3 + 6 * catches2 + 5 * catches1;
 		}
-		
+
 		let bonusXP = 0;
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
 		if (
@@ -300,6 +319,7 @@ export const fishingTask: MinionTask = {
 			}
 		}
 
+
 		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Fishing,
 			amount: xpReceived,
@@ -308,23 +328,45 @@ export const fishingTask: MinionTask = {
 		xpRes +=
 			agilityXpReceived > 0
 				? await user.addXP({
-						skillName: SkillsEnum.Agility,
-						amount: agilityXpReceived,
-						duration
-					})
+					skillName: SkillsEnum.Agility,
+					amount: agilityXpReceived,
+					duration
+				})
 				: '';
 		xpRes +=
 			strengthXpReceived > 0
 				? await user.addXP({
-						skillName: SkillsEnum.Strength,
-						amount: strengthXpReceived,
-						duration
-					})
+					skillName: SkillsEnum.Strength,
+					amount: strengthXpReceived,
+					duration
+				})
 				: '';
 
-		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;
 
-		
+		let str = ''
+		const quantity = catches1 + catches2 + catches3
+
+		// barb and big net fishing handled separately 
+		if (fish.name === 'Barbarian fishing' || fish.name === 'Big net fishing') {
+			str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;
+		} else if (fish2) {
+			str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish2!.name}/${fish1!.name}. ${xpRes}`;
+		} else if (fish1) {
+			str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish1!.name}. ${xpRes}`;
+		}
+
+		const flakesToRemove = flakes1 + flakes2 + flakes3
+
+		const cost = new Bank();
+		if (spirit_flakes) {
+			cost.add('Spirit flakes', flakesToRemove);
+		}
+
+		if (fish.bait) {
+			cost.add(fish.bait, quantity);
+		}
+
+		await user.removeItemsFromBank(cost);
 
 		// Add clue scrolls
 		if (fish.clueScrollChance) {
@@ -349,7 +391,7 @@ export const fishingTask: MinionTask = {
 					str += "\nYou have a funny feeling you're being followed...";
 					globalClient.emit(
 						Events.ServerNotification,
-						`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${currentLevel} Fishing!`
+						`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${fishLvl} Fishing!`
 					);
 				}
 			}
@@ -363,9 +405,6 @@ export const fishingTask: MinionTask = {
 			}
 		}
 
-		if (powerfish) {
-			let loot = []
-		}
 
 		await transactItems({
 			userID: user.id,
