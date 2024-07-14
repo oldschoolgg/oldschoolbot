@@ -229,7 +229,7 @@ export class MUserClass {
 	}
 
 	get badgedUsername() {
-		return `${this.badgesString} ${this.usernameOrMention}`;
+		return `${this.badgesString} ${this.usernameOrMention}`.trim();
 	}
 
 	toString() {
