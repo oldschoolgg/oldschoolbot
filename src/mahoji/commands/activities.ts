@@ -545,7 +545,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 			return decantCommand(user, options.decant.potion_name, options.decant.dose);
 		}
 		if (options.inferno?.action === 'stats') return infernoStatsCommand(user);
-		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user.user);
+		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user);
 
 		// Minion must be free
 		const isBusy = user.minionIsBusy;
