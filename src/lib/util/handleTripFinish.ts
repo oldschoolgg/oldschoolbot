@@ -113,25 +113,31 @@ export async function handleTripFinish(
 	const messages: string[] = [];
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
 
-	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
+const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 
-	if (_messages) messages.push(..._messages);
-	if (messages.length > 0) {
-		message.content += `\n**Messages:** ${messages.join(', ')}`;
-	}
+if (_messages) messages.push(..._messages);
+if (messages.length > 0) {
+    message.content += `\n**Messages:** ${messages.join(', ')}`;
+}
 
-	if (clueReceived.length > 0 && perkTier < PerkTier.Two) {
-		clueReceived.map(
-			clue => (message.content += `\n${Emoji.Casket} **You got a ${clue.name} clue scroll** in your loot.`)
-		);
-	}
+if (clueReceived.length > 0 && perkTier < PerkTier.Two) {
+    clueReceived.map(
+        clue => (message.content += `\n${Emoji.Casket} **You got a ${clue.name} clue scroll** in your loot.`)
+    );
+}
 
-	const existingCollector = collectors.get(user.id);
+for (const clue of ClueTiers) {
+    if (loot && loot.amount(clue.scrollID) > 0 && !user.bank.has(clue.scrollID)) {
+        message.content += `\n${Emoji.Casket} **You got a ${clue.name} clue scroll** in your loot.`;
+    }
+}
 
-	if (existingCollector) {
-		existingCollector.stop();
-		collectors.delete(user.id);
-	}
+const existingCollector = collectors.get(user.id);
+
+if (existingCollector) {
+    existingCollector.stop();
+    collectors.delete(user.id);
+}
 
 	const channel = globalClient.channels.cache.get(channelID);
 	if (!channelIsSendable(channel)) return;
