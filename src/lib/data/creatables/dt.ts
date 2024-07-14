@@ -116,7 +116,7 @@ export const dtCreatables: Createable[] = [
 			.add("Executioner's axe head")
 			.add('Eye of the duke')
 			.add('Blood rune', 2000),
-		outputItems: new Bank().add(25484) //use id to prevent beta id usage 
+		outputItems: new Bank().add(25484) //use id to prevent beta id usage
 		//TODO: 28338 is the proper id but OSJS is missing this item??
 	}
 ];

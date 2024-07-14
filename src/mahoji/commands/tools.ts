@@ -41,6 +41,7 @@ import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { repairBrokenItemsFromUser } from '../../lib/util/repairBrokenItems';
 import {
 	getParsedStashUnits,
 	stashUnitBuildAllCommand,
@@ -51,7 +52,6 @@ import {
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
 import { patronMsg } from '../mahojiSettings';
-import { repairBrokenItemsFromUser } from '../../lib/util/repairBrokenItems';
 
 const INTERVAL_DAY = 'day';
 const INTERVAL_WEEK = 'week';

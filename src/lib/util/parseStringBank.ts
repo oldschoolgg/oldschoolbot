@@ -6,9 +6,9 @@ import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
 import { ONE_TRILLION } from '../constants';
 import { filterableTypes } from '../data/filterables';
+import { setItemAlias } from '../data/itemAliases';
 import { cleanString, getItem, stringMatches } from '../util';
 import itemIsTradeable from './itemIsTradeable';
-import { setItemAlias } from '../data/itemAliases';
 
 const { floor, max, min } = Math;
 
@@ -57,7 +57,12 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	return [osItems, quantity];
 }
 
-export function parseStringBank(str = '', inputBank?: Bank, noDuplicateItems?: true, itemAliases?: true): [Item, number | undefined][] {
+export function parseStringBank(
+	str = '',
+	inputBank?: Bank,
+	noDuplicateItems?: true,
+	itemAliases?: true
+): [Item, number | undefined][] {
 	const split = str
 		.trim()
 		.replace(/\s\s+/g, ' ')
@@ -71,19 +76,19 @@ export function parseStringBank(str = '', inputBank?: Bank, noDuplicateItems?: t
 		if (resItems !== undefined) {
 			for (const item of noDuplicateItems ? resItems.slice(0, 1) : resItems) {
 				if (currentIDs.has(item.id)) continue;
-				let resolvedItem: Item | null = item;              
-                if (itemAliases) {
-                    resolvedItem = getItem(item.name);
-                }        
-                if (resolvedItem) {
-                    items.push([resolvedItem, quantity]);
-                    currentIDs.add(resolvedItem.id);
-                }
-            }
-        }
-    }
-    
-    return items;
+				let resolvedItem: Item | null = item;
+				if (itemAliases) {
+					resolvedItem = getItem(item.name);
+				}
+				if (resolvedItem) {
+					items.push([resolvedItem, quantity]);
+					currentIDs.add(resolvedItem.id);
+				}
+			}
+		}
+	}
+
+	return items;
 }
 
 function parseBankFromFlags({

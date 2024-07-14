@@ -1100,7 +1100,7 @@ export const allCollectionLogs: ICollection = {
 					...Monsters.Vardorvis.allItems,
 					...Monsters.DukeSucellus.allItems
 				],
-				items: [...theLeviathanCL, ...theWhispererCL, ...vardorvisCL, ...dukeSucellusCL]		
+				items: [...theLeviathanCL, ...theWhispererCL, ...vardorvisCL, ...dukeSucellusCL]
 			},
 			Creatables: {
 				counts: false,

@@ -3,44 +3,44 @@ import { notEmpty } from 'e';
 import { Items } from 'oldschooljs';
 
 import { userStatsUpdate } from '../../mahoji/mahojiSettings';
-import type { ItemBank } from '../types';
 import { type GearSetup, GearSetupTypes } from '../gear/types';
+import type { ItemBank } from '../types';
 
 interface ItemSwaps {
-    item: string;
-    wrongID: number;
-    correctID: number;
+	item: string;
+	wrongID: number;
+	correctID: number;
 }
 
 const itemswaps: ItemSwaps[] = [
-    {
-        item: 'Bellator ring',
-        wrongID: 25488,
-        correctID: 28316
-    },
-    {
-        item: 'Ultor ring',
-        wrongID: 25485,
-        correctID: 28307
-    },
-    {
-        item: 'Magus ring',
-        wrongID: 25486,
-        correctID: 28313
-    },
-    {
-        item: 'Venator ring',
-        wrongID: 25487,
-        correctID: 28310
-    }
-    /* TODO: id 28338 is missing from OSJS in item_data.json
+	{
+		item: 'Bellator ring',
+		wrongID: 25488,
+		correctID: 28316
+	},
+	{
+		item: 'Ultor ring',
+		wrongID: 25485,
+		correctID: 28307
+	},
+	{
+		item: 'Magus ring',
+		wrongID: 25486,
+		correctID: 28313
+	},
+	{
+		item: 'Venator ring',
+		wrongID: 25487,
+		correctID: 28310
+	}
+	/* TODO: id 28338 is missing from OSJS in item_data.json
     {
         item: 'Soulreaper axe',
         wrongID: 25484,
         correctID: 28338
     }
     */
-]
+];
 
 export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] | [string, any[]]> {
 	const { user } = mUser;
@@ -74,19 +74,19 @@ export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] 
 		['gear', allGearItemIDs]
 	];
 
-    for (const [, ids] of allItemsToCheck) {
-        for (const id of ids.map(i => Number(i))) {
-            const item = Items.get(id);
-            if (!item) {
-                brokenBank.push(id);
-            } else {
-                const swap = itemswaps.find(s => s.wrongID === id);
-                if (swap) {
-                    brokenBank.push(id);
-                }
-            }
-        }
-    }
+	for (const [, ids] of allItemsToCheck) {
+		for (const id of ids.map(i => Number(i))) {
+			const item = Items.get(id);
+			if (!item) {
+				brokenBank.push(id);
+			} else {
+				const swap = itemswaps.find(s => s.wrongID === id);
+				if (swap) {
+					brokenBank.push(id);
+				}
+			}
+		}
+	}
 
 	const newFavs = favorites.filter(i => !brokenBank.includes(i));
 	const newBank = { ...rawBank };
@@ -94,41 +94,41 @@ export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] 
 	const newTempCL = { ...rawTempCL };
 	const newSacLog = { ...rawSacLog };
 
-    for (const id of brokenBank) {
-        const swap = itemswaps.find(s => s.wrongID === id);
-        if (swap) {
-            if (newBank[id]) {
-                newBank[swap.correctID] = (newBank[swap.correctID] || 0) + newBank[id];
-            }
-            if (newCL[id]) {
-                newCL[swap.correctID] = (newCL[swap.correctID] || 0) + newCL[id];
-            }
-            if (newTempCL[id]) {
-                newTempCL[swap.correctID] = (newTempCL[swap.correctID] || 0) + newTempCL[id];            
-            }
-            if (newSacLog[id]) {
-                newSacLog[swap.correctID] = (newSacLog[swap.correctID] || 0) + newSacLog[id];
-            }
-        }
-        delete newBank[id];
-        delete newCL[id];
-        delete newTempCL[id];
-        delete newSacLog[id];
-    }
-    
+	for (const id of brokenBank) {
+		const swap = itemswaps.find(s => s.wrongID === id);
+		if (swap) {
+			if (newBank[id]) {
+				newBank[swap.correctID] = (newBank[swap.correctID] || 0) + newBank[id];
+			}
+			if (newCL[id]) {
+				newCL[swap.correctID] = (newCL[swap.correctID] || 0) + newCL[id];
+			}
+			if (newTempCL[id]) {
+				newTempCL[swap.correctID] = (newTempCL[swap.correctID] || 0) + newTempCL[id];
+			}
+			if (newSacLog[id]) {
+				newSacLog[swap.correctID] = (newSacLog[swap.correctID] || 0) + newSacLog[id];
+			}
+		}
+		delete newBank[id];
+		delete newCL[id];
+		delete newTempCL[id];
+		delete newSacLog[id];
+	}
+
 	for (const setupType of GearSetupTypes) {
 		const _gear = user[`gear_${setupType}`] as GearSetup | null;
 		if (_gear === null) continue;
 		const gear = { ..._gear };
 		for (const [key, value] of Object.entries(gear)) {
 			if (value === null) continue;
-            const swap = itemswaps.find(s => s.wrongID === value.item);
-            if (brokenBank.includes(value.item)) {
-                delete gear[key as keyof GearSetup];
-            } 
-            if (swap) {
-                gear[key as keyof GearSetup] = { ...value, item: swap.correctID };
-            }
+			const swap = itemswaps.find(s => s.wrongID === value.item);
+			if (brokenBank.includes(value.item)) {
+				delete gear[key as keyof GearSetup];
+			}
+			if (swap) {
+				gear[key as keyof GearSetup] = { ...value, item: swap.correctID };
+			}
 		}
 		// @ts-ignore ???
 		changes[`gear_${setupType}`] = gear;
@@ -156,9 +156,7 @@ export async function repairBrokenItemsFromUser(mUser: MUser): Promise<[string] 
 		return [
 			`You had ${
 				brokenBank.length
-			} broken items in your bank/collection log/favorites/gear, they were removed. ${
-				brokenBank
-			.slice(0, 500)}`,
+			} broken items in your bank/collection log/favorites/gear, they were removed. ${brokenBank.slice(0, 500)}`,
 			Object.keys(brokenBank)
 		];
 	}
