@@ -169,7 +169,6 @@ export const fishingTask: MinionTask = {
 			if (fishLvl >= 58 && agiLvl >= 30 && strLvl >= 30) {
 				fish2 = Fishing.Fishes.find(fish => fish.name === 'Leaping salmon')!;
 			}
-<<<<<<< HEAD
 			if (fishLvl >= 70 && agiLvl >= 45 && strLvl >= 45) {
 				fish3 = Fishing.Fishes.find(fish => fish.name === 'Leaping sturgeon')!;
 			}
@@ -180,11 +179,6 @@ export const fishingTask: MinionTask = {
 			}
 			if (fishLvl >= 23) {
 				fish2 = Fishing.Fishes.find(fish => fish.id === itemID('Raw cod'))!;
-=======
-			if (fishLvl >= 58 && stats.agility >= 30 && stats.strength >= 30) {
-				const fish2 = Fishing.Fishes.find(fish => fish.id === 'Leaping salmon')!;
-				numFish++;
->>>>>>> 5ecb1fd0f506408bcb71a22d86e32583b800c405
 			}
 			if (fishLvl >= 46) {
 				fish3 = Fishing.Fishes.find(fish => fish.id === itemID('Raw bass'))!;
@@ -257,7 +251,6 @@ export const fishingTask: MinionTask = {
 		let flakesQuantity = user.bank.amount('Spirit flakes');
 
 		// roll the highest lvl fish first
-<<<<<<< HEAD
 		if (fish3) {
 			let chance3 = catchChance(fish3, fishLvl) * harpoonBoost;
 			({ catches: catches3, lootAmount: lootAmount3, flakesUsed: flakes3 } = rollCatches(tripTicks, chance3, powerfish, spirit_flakes, lostTicks!, ticksPerRoll!, invSlots, bankTime!, blessingChance, flakesQuantity));
@@ -266,20 +259,7 @@ export const fishingTask: MinionTask = {
 			if (!powerfish) {
 				loot.add(fish3!.id, lootAmount3);
 			}
-=======
-		if (numFish >= 3) {
-			let chance3 = fish3.maxChance - (99-fishLvl)*(fish3.maxChance-fish3.minChance)/(99-fish3.level);
-			catches3, lootAmount3 = rollCatches(tripTicks, chance3*harpoonBoost);
-			xpReceived += fish3.xp*catches3;
-			tripTicks -= ticksPerRoll * catches3;
-		}
-		// roll for the 2nd fish only on the ticks that the 1st one wasn't caught
-		if (numFish >= 2) {
-			let chance2 = fish2.maxChance - (99-fishLvl)*(fish2.maxChance-fish2.minChance)/(99-fish2.level);
-			catches2, lootAmount2 = rollCatches(tripTicks, chance2*harpoonBoost);
-			xpReceived += fish2.xp*catches2;
-			tripTicks -= ticksPerRoll * catches2;
->>>>>>> 5ecb1fd0f506408bcb71a22d86e32583b800c405
+
 		}
 		// roll for the other fish only on the ticks that the previous ones weren't caught
 		if (fish2) {
@@ -291,7 +271,6 @@ export const fishingTask: MinionTask = {
 				loot.add(fish2!.id, lootAmount2);
 			}
 		}
-<<<<<<< HEAD
 		if (fish1) {
 			let chance1 = catchChance(fish1, fishLvl) * harpoonBoost;
 			({ catches: catches1, lootAmount: lootAmount1, flakesUsed: flakes1 } = rollCatches(tripTicks, chance1, powerfish, spirit_flakes, lostTicks!, ticksPerRoll!, invSlots, bankTime!, blessingChance, flakesQuantity));
@@ -308,145 +287,137 @@ export const fishingTask: MinionTask = {
 					lootAmount1 *= baseKarambwanji;
 				}
 				loot.add(fish1!.id, lootAmount1);
-=======
-
-		// handling stackable fish
-		if (fish.name === 'Minnow'){
-			let sum = 0;
-			for (let i = 0; i < lootAmount1; i++) {
-				sum += Math.floor(Math.random() * (baseMinnow[1] - baseMinnow[0] + 1)) + baseMinnow[0];
->>>>>>> 5ecb1fd0f506408bcb71a22d86e32583b800c405
 			}
-		}
 
 
 
-		if (fish.name === 'Barbarian fishing') {
-			agilityXpReceived += 7 * catches3 + 6 * catches2 + 5 * catches1;
-			strengthXpReceived += 7 * catches3 + 6 * catches2 + 5 * catches1;
-		}
+			if (fish.name === 'Barbarian fishing') {
+				agilityXpReceived += 7 * catches3 + 6 * catches2 + 5 * catches1;
+				strengthXpReceived += 7 * catches3 + 6 * catches2 + 5 * catches1;
+			}
 
-		let bonusXP = 0;
-		// If they have the entire angler outfit, give an extra 0.5% xp bonus
-		if (
-			user.gear.skilling.hasEquipped(
-				Object.keys(Fishing.anglerItems).map(i => Number.parseInt(i)),
-				true
-			)
-		) {
-			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
-			xpReceived += amountToAdd;
-			bonusXP += amountToAdd;
-		} else {
-			// For each angler item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasEquipped(Number.parseInt(itemID))) {
-					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
-					xpReceived += amountToAdd;
-					bonusXP += amountToAdd;
+			let bonusXP = 0;
+			// If they have the entire angler outfit, give an extra 0.5% xp bonus
+			if (
+				user.gear.skilling.hasEquipped(
+					Object.keys(Fishing.anglerItems).map(i => Number.parseInt(i)),
+					true
+				)
+			) {
+				const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
+				xpReceived += amountToAdd;
+				bonusXP += amountToAdd;
+			} else {
+				// For each angler item, check if they have it, give its' XP boost if so.
+				for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
+					if (user.hasEquipped(Number.parseInt(itemID))) {
+						const amountToAdd = Math.floor(xpReceived * (bonus / 100));
+						xpReceived += amountToAdd;
+						bonusXP += amountToAdd;
+					}
 				}
 			}
-		}
 
 
-		let xpRes = await user.addXP({
-			skillName: SkillsEnum.Fishing,
-			amount: xpReceived,
-			duration
-		});
-		xpRes +=
-			agilityXpReceived > 0
-				? await user.addXP({
-					skillName: SkillsEnum.Agility,
-					amount: agilityXpReceived,
-					duration
-				})
-				: '';
-		xpRes +=
-			strengthXpReceived > 0
-				? await user.addXP({
-					skillName: SkillsEnum.Strength,
-					amount: strengthXpReceived,
-					duration
-				})
-				: '';
+			let xpRes = await user.addXP({
+				skillName: SkillsEnum.Fishing,
+				amount: xpReceived,
+				duration
+			});
+			xpRes +=
+				agilityXpReceived > 0
+					? await user.addXP({
+						skillName: SkillsEnum.Agility,
+						amount: agilityXpReceived,
+						duration
+					})
+					: '';
+			xpRes +=
+				strengthXpReceived > 0
+					? await user.addXP({
+						skillName: SkillsEnum.Strength,
+						amount: strengthXpReceived,
+						duration
+					})
+					: '';
 
 
-		let str = ''
-		const quantity = catches1 + catches2 + catches3
+			let str = ''
+			const quantity = catches1 + catches2 + catches3
 
-		// barb and big net fishing handled separately 
-		if (fish.name === 'Barbarian fishing' || fish.name === 'Big net fishing') {
-			str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;
-		} else if (fish2) {
-			str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish2!.name}/${fish1!.name}. ${xpRes}`;
-		} else if (fish1) {
-			str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish1!.name}. ${xpRes}`;
-		}
+			// barb and big net fishing handled separately 
+			if (fish.name === 'Barbarian fishing' || fish.name === 'Big net fishing') {
+				str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;
+			} else if (fish2) {
+				str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish2!.name}/${fish1!.name}. ${xpRes}`;
+			} else if (fish1) {
+				str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish1!.name}. ${xpRes}`;
+			}
 
-		const flakesToRemove = flakes1 + flakes2 + flakes3
+			const flakesToRemove = flakes1 + flakes2 + flakes3
 
-		const cost = new Bank();
-		if (spirit_flakes) {
-			cost.add('Spirit flakes', flakesToRemove);
-		}
+			const cost = new Bank();
+			if (spirit_flakes) {
+				cost.add('Spirit flakes', flakesToRemove);
+			}
 
-		if (fish.bait) {
-			cost.add(fish.bait, quantity);
-		}
+			if (fish.bait) {
+				cost.add(fish.bait, quantity);
+			}
 
-		await user.removeItemsFromBank(cost);
+			await user.removeItemsFromBank(cost);
 
-		// Add clue scrolls
-		if (fish.clueScrollChance) {
-			addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, fish.clueScrollChance, loot);
-		}
+			// Add clue scrolls
+			if (fish.clueScrollChance) {
+				addSkillingClueToLoot(user, SkillsEnum.Fishing, quantity, fish.clueScrollChance, loot);
+			}
 
-		const xpBonusPercent = anglerBoostPercent(user);
-		if (xpBonusPercent > 0) {
-			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, xpReceived));
-		}
+			const xpBonusPercent = anglerBoostPercent(user);
+			if (xpBonusPercent > 0) {
+				bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, xpReceived));
+			}
 
-		if (bonusXP > 0) {
-			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
-		}
+			if (bonusXP > 0) {
+				str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
+			}
 
-		// Roll for pet
-		if (fish.petChance) {
-			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Fishing, fish.petChance);
-			for (let i = 0; i < quantity; i++) {
-				if (roll(petDropRate)) {
-					loot.add('Heron');
-					str += "\nYou have a funny feeling you're being followed...";
-					globalClient.emit(
-						Events.ServerNotification,
-						`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${fishLvl} Fishing!`
-					);
+			// Roll for pet
+			if (fish.petChance) {
+				const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Fishing, fish.petChance);
+				for (let i = 0; i < quantity; i++) {
+					if (roll(petDropRate)) {
+						loot.add('Heron');
+						str += "\nYou have a funny feeling you're being followed...";
+						globalClient.emit(
+							Events.ServerNotification,
+							`${Emoji.Fishing} **${user.badgedUsername}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${fishLvl} Fishing!`
+						);
+					}
 				}
 			}
-		}
 
-		if (fish.bigFishRate && fish.bigFish) {
-			for (let i = 0; i < quantity; i++) {
-				if (roll(fish.bigFishRate)) {
-					loot.add(fish.bigFish);
+			if (fish.bigFishRate && fish.bigFish) {
+				for (let i = 0; i < quantity; i++) {
+					if (roll(fish.bigFishRate)) {
+						loot.add(fish.bigFish);
+					}
 				}
 			}
+
+
+			await transactItems({
+				userID: user.id,
+				collectionLog: true,
+				itemsToAdd: loot
+			});
+
+			str += `\n\nYou received: ${loot}.`;
+
+			if (blessingEquipped) {
+				str += `\nYour Rada's Blessing gives ${blessingChance}% chance of extra fish.`;
+			}
+
+			handleTripFinish(user, channelID, str, undefined, data, loot);
 		}
-
-
-		await transactItems({
-			userID: user.id,
-			collectionLog: true,
-			itemsToAdd: loot
-		});
-
-		str += `\n\nYou received: ${loot}.`;
-
-		if (blessingEquipped) {
-			str += `\nYour Rada's Blessing gives ${blessingChance}% chance of extra fish.`;
-		}
-
-		handleTripFinish(user, channelID, str, undefined, data, loot);
 	}
-};
+}
