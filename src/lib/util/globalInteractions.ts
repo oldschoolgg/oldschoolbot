@@ -23,7 +23,7 @@ import { formatDuration, stringMatches } from '../util';
 import { CACHED_ACTIVE_USER_IDS } from './cachedUserIDs';
 import { updateGiveawayMessage } from './giveaway';
 import { handleMahojiConfirmation } from './handleMahojiConfirmation';
-import { deferInteraction, interactionReply } from './interactionReply';
+import { interactionReply } from './interactionReply';
 import { logErrorForInteraction } from './logError';
 import { minionIsBusy } from './minionIsBusy';
 import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
@@ -162,7 +162,6 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 			});
 		}
 
-		await deferInteraction(interaction);
 		return runCommand({
 			commandName: 'giveaway',
 			args: {
