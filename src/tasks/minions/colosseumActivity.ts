@@ -4,8 +4,10 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ColosseumWaveBank, colosseumWaves } from '../../lib/colosseum';
+import { refundChargeBank } from '../../lib/degradeableItems';
 import { trackLoot } from '../../lib/lootTrack';
 import { incrementMinigameScore } from '../../lib/settings/minigames';
+import { ChargeBank } from '../../lib/structures/Bank';
 import type { ColoTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -17,7 +19,16 @@ const sunfireItems = resolveItems(['Sunfire fanatic helm', 'Sunfire fanatic cuir
 export const colosseumTask: MinionTask = {
 	type: 'Colosseum',
 	async run(data: ColoTaskOptions) {
-		const { channelID, userID, loot: possibleLoot, diedAt, maxGlory } = data;
+		const {
+			channelID,
+			userID,
+			loot: possibleLoot,
+			diedAt,
+			maxGlory,
+			scytheCharges,
+			venatorBowCharges,
+			bloodFuryCharges
+		} = data;
 		const user = await mUserFetch(userID);
 
 		const newKCs = new ColosseumWaveBank();
@@ -36,6 +47,24 @@ export const colosseumTask: MinionTask = {
 		const newWaveKcStr = !diedAt || diedAt > 1 ? `New wave KCs: ${newKCsStr}.` : 'No new KCs.';
 		if (diedAt) {
 			const wave = colosseumWaves.find(i => i.waveNumber === diedAt)!;
+
+			// Calculate refund for unused charges
+			const completionPercentage = (diedAt - 1) / 12;
+			const refundCharges = {
+				scytheCharges: Math.ceil(scytheCharges * (1 - completionPercentage)),
+				venatorBowCharges: Math.ceil(venatorBowCharges * (1 - completionPercentage)),
+				bloodFuryCharges: Math.ceil(bloodFuryCharges * (1 - completionPercentage))
+			};
+			const chargeBank = new ChargeBank();
+
+			chargeBank.add('scythe_of_vitur_charges', refundCharges.scytheCharges);
+			chargeBank.add('venator_bow_charges', refundCharges.venatorBowCharges);
+			chargeBank.add('blood_fury_charges', refundCharges.bloodFuryCharges);
+
+			if (chargeBank.length() > 0) {
+				await refundChargeBank(user, chargeBank);
+			}
+
 			return handleTripFinish(
 				user,
 				channelID,
