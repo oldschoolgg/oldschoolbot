@@ -399,8 +399,8 @@ for (const item of allTeamCapes) {
 
 export const itemDataSwitches = [
 	{
-		from: 25488,
-		to: 25488
+		from: 1,
+		to: 1
 	} //placeholder for future use if needed
 ];
 
