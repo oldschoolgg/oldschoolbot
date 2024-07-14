@@ -17,7 +17,7 @@ import { toaHelpCommand } from '../simulation/toa';
 import type { ItemBank } from '../types';
 import { formatDuration, stringMatches } from '../util';
 import { updateGiveawayMessage } from './giveaway';
-import { deferInteraction, interactionReply } from './interactionReply';
+import { interactionReply } from './interactionReply';
 import { minionIsBusy } from './minionIsBusy';
 import { fetchRepeatTrips, repeatTrip } from './repeatStoredTrip';
 
@@ -146,7 +146,6 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 			});
 		}
 
-		await deferInteraction(interaction);
 		return runCommand({
 			commandName: 'giveaway',
 			args: {
