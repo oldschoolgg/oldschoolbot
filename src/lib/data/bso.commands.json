@@ -333,6 +333,11 @@
 		]
 	},
 	{
+		"name": "leagues",
+		"desc": "Manage your Leagues progress.",
+		"subOptions": ["check", "view_task", "claim", "view_all_tasks"]
+	},
+	{
 		"name": "light",
 		"desc": "Light logs to train Firemaking.",
 		"examples": ["/light name:Logs"],
