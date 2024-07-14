@@ -5,5 +5,5 @@ export function makeBadgeString(badgeIDs: number[] | null | undefined, isIronman
 	if (isIronman) {
 		rawBadges.push(Emoji.Ironman);
 	}
-	return rawBadges.join(' ');
+	return rawBadges.join(' ').trim();
 }
