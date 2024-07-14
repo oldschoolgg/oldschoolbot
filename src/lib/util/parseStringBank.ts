@@ -6,7 +6,6 @@ import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
 import { ONE_TRILLION } from '../constants';
 import { filterableTypes } from '../data/filterables';
-import { setItemAlias } from '../data/itemAliases';
 import { cleanString, getItem, stringMatches } from '../util';
 import itemIsTradeable from './itemIsTradeable';
 

@@ -1,6 +1,6 @@
 import { deepMerge, modifyItem } from '@oldschoolgg/toolkit';
 import { omit } from 'lodash';
-import { EItem, Items } from 'oldschooljs';
+import { Items } from 'oldschooljs';
 import { allTeamCapes } from 'oldschooljs/dist/data/itemConstants';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { cleanString } from 'oldschooljs/dist/util/cleanString';
