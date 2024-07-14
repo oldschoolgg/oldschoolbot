@@ -1,5 +1,3 @@
-import { execSync } from 'node:child_process';
-
 import { type CommandRunOptions, bulkUpdateCommands, convertBankToPerHourStats, dateFm } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import type { ClientStorage } from '@prisma/client';
@@ -17,7 +15,6 @@ import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import { boxFrenzy } from '../../lib/boxFrenzy';
 import {
-	BOT_TYPE,
 	BadgesEnum,
 	BitField,
 	BitFieldData,
@@ -985,7 +982,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 
 ${META_CONSTANTS.RENDERED_STR}`
 			}).catch(noOp);
-			execSync(`sudo systemctl stop ${BOT_TYPE === 'OSB' ? 'osb' : 'bso'}`);
+			process.exit(0);
 		}
 
 		if (options.sync_blacklist) {
