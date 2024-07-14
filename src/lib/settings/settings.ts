@@ -14,7 +14,7 @@ import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
 import { minionActivityCache } from '../constants';
 import { channelIsSendable, isGroupActivity, roughMergeMahojiResponse } from '../util';
-import { handleInteractionError, interactionReply } from '../util/interactionReply';
+import { deferInteraction, handleInteractionError, interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
 import { convertStoredActivityToFlatActivity } from './prisma';
 
@@ -110,6 +110,7 @@ export async function runCommand({
 	continueDeltaMillis,
 	ephemeral
 }: RunCommandArgs): Promise<null | CommandResponse> {
+	await deferInteraction(interaction);
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channel || !channelIsSendable(channel)) return null;
 	const mahojiCommand = Array.from(globalClient.mahojiClient.commands.values()).find(c => c.name === commandName);
