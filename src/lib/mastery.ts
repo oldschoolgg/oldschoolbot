@@ -46,8 +46,7 @@ export async function calculateMastery(user: MUser, stats: MUserStats) {
 		},
 		{
 			name: 'Achievement Diaries',
-			percentage: (await calculateAchievementDiaryProgress(user, stats, await user.fetchMinigameScores()))
-				.percentComplete
+			percentage: calculateAchievementDiaryProgress(user, stats, await user.fetchMinigames()).percentComplete
 		},
 		{
 			name: 'Leagues',

@@ -21,7 +21,7 @@ import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeItem, degradeablePvmBoostItems } from '../../../lib/degradeableItems';
-import { userhasDiaryIDTier } from '../../../lib/diaries';
+import { userhasDiaryTier } from '../../../lib/diaries';
 import { type GearStat, maxOffenceStats } from '../../../lib/gear';
 import { InventionID, canAffordInventionBoost, inventionItemBoost } from '../../../lib/invention/inventions';
 import { trackLoot } from '../../../lib/lootTrack';
@@ -271,10 +271,9 @@ export async function minionKillCommand(
 	if (!hasReqs) return reason ?? "You don't have the requirements to fight this monster";
 
 	if (monster.diaryRequirement) {
-		const [diaryID, tier] = monster.diaryRequirement;
-		const { hasDiary, diaryGroup } = await userhasDiaryIDTier(user, diaryID, tier);
+		const [hasDiary, _, diaryGroup] = await userhasDiaryTier(user, monster.diaryRequirement);
 		if (!hasDiary) {
-			return `${user.minionName} is missing the ${diaryGroup.name} ${tier} diary to kill ${monster.name}.`;
+			return `${user.minionName} is missing the ${diaryGroup.name} ${monster.diaryRequirement[1]} diary to kill ${monster.name}.`;
 		}
 	}
 
