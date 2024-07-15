@@ -32,10 +32,11 @@ model BlacklistedEntity {
 }
 
 model User {
-    id               BigInt  @id @unique
-    bits             Int[]
-    github_id        Int?
-    patreon_id       String?
+    id         BigInt  @id @unique
+    bits       Int[]
+    github_id  Int?
+    patreon_id String?
+
     migrated_user_id BigInt?
 
     leagues_completed_tasks_ids Int[]
@@ -60,6 +61,12 @@ model User {
 
     testing_points         Float @default(0)
     testing_points_balance Float @default(0)
+
+    perk_tier                   Int      @default(0)
+    premium_balance_tier        Int?
+    premium_balance_expiry_date BigInt?
+    ironman_alts                String[]
+    main_account                String?
 
     @@map("user")
 }

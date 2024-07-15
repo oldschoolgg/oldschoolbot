@@ -679,15 +679,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#3eb432f0349a32fde98e981c42653d927d91e7e2":
+"@oldschoolgg/toolkit@git+https://github.com/oldschoolgg/toolkit.git#c1d6559b0f8106c90d0ab8e411cda978db5cfc77":
   version: 0.0.24
-  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=3eb432f0349a32fde98e981c42653d927d91e7e2"
+  resolution: "@oldschoolgg/toolkit@https://github.com/oldschoolgg/toolkit.git#commit=c1d6559b0f8106c90d0ab8e411cda978db5cfc77"
   dependencies:
     decimal.js: "npm:^10.4.3"
     deep-object-diff: "npm:^1.1.9"
     deepmerge: "npm:4.3.1"
     e: "npm:0.2.33"
     emoji-regex: "npm:^10.2.1"
+    fast-deep-equal: "npm:^3.1.3"
     ioredis: "npm:^5.4.1"
     ioredis-mock: "npm:^8.9.0"
     math-expression-evaluator: "npm:^1.3.14"
@@ -696,7 +697,7 @@ __metadata:
   peerDependencies:
     discord.js: ^14.15.3
     oldschooljs: ^2.5.9
-  checksum: 10c0/e3dbf7ef73a2fdbc6e9beed5ec37d12ac246528d63185e387f855d2b0f64e2501db92ce0da940f00f6eba3c352e50d2f9b6e1be707471f30ffb9b9d07e599139
+  checksum: 10c0/594ac9922bad6022da71ab1c8d0dfa9ff2f5722b1826bd5b4d3b1e4a090f4be08068c8957293d972250a4cb043de1b6dffd88600091a50842adf1763871ce8a3
   languageName: node
   linkType: hard
 
@@ -4098,7 +4099,7 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:^1.8.3"
     "@napi-rs/canvas": "npm:^0.1.53"
-    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#3eb432f0349a32fde98e981c42653d927d91e7e2"
+    "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#c1d6559b0f8106c90d0ab8e411cda978db5cfc77"
     "@prisma/client": "npm:^5.16.1"
     "@sapphire/snowflake": "npm:^3.5.3"
     "@sapphire/time-utilities": "npm:^1.6.0"

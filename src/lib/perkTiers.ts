@@ -1,18 +1,8 @@
-import type { User } from '@prisma/client';
-import { notEmpty } from 'e';
-
 import { SupportServer } from '../config';
 import { BitField, PerkTier, Roles } from './constants';
-import { logError } from './util/logError';
+import { getPerkTierSync } from './roboChimp';
 
 export const perkTierCache = new Map<string, number>();
-
-const tier3ElligibleBits = [
-	BitField.IsPatronTier3,
-	BitField.isContributor,
-	BitField.isModerator,
-	BitField.IsWikiContributor
-];
 
 export const allPerkBitfields: BitField[] = [
 	BitField.IsPatronTier6,
@@ -25,41 +15,36 @@ export const allPerkBitfields: BitField[] = [
 	BitField.BothBotsMaxedFreeTierOnePerks
 ];
 
-export function getUsersPerkTier(
-	userOrBitfield: MUser | User | BitField[],
-	noCheckOtherAccounts?: boolean
-): PerkTier | 0 {
-	// Check if the user has a premium balance tier
-	if (userOrBitfield instanceof GlobalMUserClass && userOrBitfield.user.premium_balance_tier !== null) {
-		const date = userOrBitfield.user.premium_balance_expiry_date;
-		if (date && Date.now() < date) {
-			return userOrBitfield.user.premium_balance_tier + 1;
-		} else if (date && Date.now() > date) {
-			userOrBitfield
-				.update({
-					premium_balance_tier: null,
-					premium_balance_expiry_date: null
-				})
-				.catch(e => {
-					logError(e, { user_id: userOrBitfield.id, message: 'Could not remove premium time' });
-				});
+export function getUsersPerkTier(user: MUser): PerkTier | 0 {
+	if (
+		[BitField.isContributor, BitField.isModerator, BitField.IsWikiContributor].some(bit =>
+			user.bitfield.includes(bit)
+		)
+	) {
+		return PerkTier.Four;
+	}
+
+	const elligibleTiers = [];
+	if (
+		user.bitfield.includes(BitField.IsPatronTier1) ||
+		user.bitfield.includes(BitField.HasPermanentTierOne) ||
+		user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
+	) {
+		elligibleTiers.push(PerkTier.Two);
+	} else {
+		const guild = globalClient.guilds.cache.get(SupportServer);
+		const member = guild?.members.cache.get(user.id);
+		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
+			elligibleTiers.push(PerkTier.One);
 		}
 	}
 
-	if (noCheckOtherAccounts !== true && userOrBitfield instanceof GlobalMUserClass) {
-		const main = userOrBitfield.user.main_account;
-		const allAccounts: string[] = [...userOrBitfield.user.ironman_alts, userOrBitfield.id];
-		if (main) {
-			allAccounts.push(main);
-		}
-
-		const allAccountTiers = allAccounts.map(id => perkTierCache.get(id)).filter(notEmpty);
-
-		const highestAccountTier = Math.max(0, ...allAccountTiers);
-		return highestAccountTier;
+	const cached = getPerkTierSync(user.id);
+	if (cached > 0) {
+		return cached;
 	}
 
-	const bitfield = Array.isArray(userOrBitfield) ? userOrBitfield : userOrBitfield.bitfield;
+	const bitfield = user.bitfield;
 
 	if (bitfield.includes(BitField.IsPatronTier6)) {
 		return PerkTier.Seven;
@@ -73,7 +58,7 @@ export function getUsersPerkTier(
 		return PerkTier.Five;
 	}
 
-	if (tier3ElligibleBits.some(bit => bitfield.includes(bit))) {
+	if (bitfield.includes(BitField.IsPatronTier3)) {
 		return PerkTier.Four;
 	}
 
@@ -81,28 +66,5 @@ export function getUsersPerkTier(
 		return PerkTier.Three;
 	}
 
-	if (
-		bitfield.includes(BitField.IsPatronTier1) ||
-		bitfield.includes(BitField.HasPermanentTierOne) ||
-		bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
-	) {
-		return PerkTier.Two;
-	}
-
-	if (userOrBitfield instanceof GlobalMUserClass) {
-		const guild = globalClient.guilds.cache.get(SupportServer);
-		const member = guild?.members.cache.get(userOrBitfield.id);
-		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
-			return PerkTier.One;
-		}
-	}
-
 	return 0;
-}
-
-export function syncPerkTierOfUser(user: MUser) {
-	const perkTier = getUsersPerkTier(user, true);
-	perkTierCache.set(user.id, perkTier);
-	redis.setUser(user.id, { perk_tier: perkTier });
-	return perkTier;
 }

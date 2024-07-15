@@ -32,7 +32,6 @@ import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmatio
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
-import { makeBadgeString } from '../../lib/util/makeBadgeString';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { migrateUser } from '../../lib/util/migrateUser';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -53,7 +52,7 @@ const itemFilters = [
 	}
 ];
 
-async function redisSync() {
+async function usernameSync() {
 	const roboChimpUsersToCache = (
 		await roboChimpClient.user.findMany({
 			where: {
@@ -136,18 +135,7 @@ async function redisSync() {
 		}
 	});
 
-	for (const user of allNewUsers) {
-		redis.setUser(user.id, { username: user.username });
-	}
 	response.push(`Cached ${allNewUsers.length} usernames.`);
-
-	const arrayOfIronmenAndBadges: { badges: number[]; id: string; ironman: boolean }[] = await prisma.$queryRawUnsafe(
-		'SELECT "badges", "id", "minion.ironman" as "ironman" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0 OR "minion.ironman" = true;'
-	);
-	for (const user of arrayOfIronmenAndBadges) {
-		redis.setUser(user.id, { osb_badges: makeBadgeString(user.badges, user.ironman) });
-	}
-	response.push(`Cached ${arrayOfIronmenAndBadges.length} badges.`);
 	return response.join(', ');
 }
 
@@ -671,7 +659,7 @@ Date: ${dateFm(date)}`;
 			return 'Finished.';
 		}
 		if (options.action?.redis_sync) {
-			const result = await redisSync();
+			const result = await usernameSync();
 			return result;
 		}
 		if (options.action?.networth_sync) {

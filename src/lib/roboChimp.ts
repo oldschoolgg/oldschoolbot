@@ -3,6 +3,7 @@ import type { TriviaQuestion, User } from '@prisma/robochimp';
 import { calcWhatPercent, round, sumArr } from 'e';
 import deepEqual from 'fast-deep-equal';
 
+import { pick } from 'lodash';
 import type { Bank } from 'oldschooljs';
 import { BOT_TYPE, globalConfig, masteryKey } from './constants';
 import { getTotalCl } from './data/Collections';
@@ -73,7 +74,7 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 		[masteryKey]: totalMastery
 	} as const;
 
-	const newUser = await roboChimpClient.user.upsert({
+	const newUser: RobochimpUser = await roboChimpClient.user.upsert({
 		where: {
 			id: BigInt(user.id)
 		},
@@ -83,6 +84,7 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 			...updateObj
 		}
 	});
+	cacheRoboChimpUser(newUser);
 
 	if (!deepEqual(newUser.store_bitfield, user.user.store_bitfield)) {
 		await user.update({ store_bitfield: newUser.store_bitfield });
@@ -90,8 +92,8 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 	return newUser;
 }
 
-export async function roboChimpUserFetch(userID: string) {
-	const result = await roboChimpClient.user.upsert({
+export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser> {
+	const result: RobochimpUser = await roboChimpClient.user.upsert({
 		where: {
 			id: BigInt(userID)
 		},
@@ -100,6 +102,8 @@ export async function roboChimpUserFetch(userID: string) {
 		},
 		update: {}
 	});
+
+	cacheRoboChimpUser(result);
 
 	return result;
 }
@@ -112,4 +116,52 @@ WHERE osb_cl_percent >= (SELECT osb_cl_percent FROM public.user WHERE id = ${Big
 	)[0].count;
 
 	return formatOrdinal(clPercentRank);
+}
+
+const robochimpCachedKeys = [
+	'bits',
+	'github_id',
+	'patreon_id',
+	'perk_tier',
+	'main_account',
+	'ironman_alts',
+	'premium_balance_expiry_date',
+	'premium_balance_tier'
+] as const;
+type CachedRoboChimpUser = Pick<User, (typeof robochimpCachedKeys)[number]>;
+
+export const roboChimpCache = new Map<string, CachedRoboChimpUser>();
+
+export async function populateRoboChimpCache() {
+	const users = await roboChimpClient.user.findMany({
+		select: {
+			id: true,
+			bits: true,
+			github_id: true,
+			patreon_id: true,
+			perk_tier: true,
+			main_account: true,
+			ironman_alts: true,
+			premium_balance_expiry_date: true,
+			premium_balance_tier: true
+		},
+		where: {
+			perk_tier: {
+				not: 0
+			}
+		}
+	});
+	for (const user of users) {
+		roboChimpCache.set(user.id.toString(), user);
+	}
+	debugLog(`Populated RoboChimp cache with ${users.length} users.`);
+}
+
+function cacheRoboChimpUser(user: RobochimpUser) {
+	if (user.perk_tier === 0) return;
+	roboChimpCache.set(user.id.toString(), pick(user, robochimpCachedKeys));
+}
+
+export function getPerkTierSync(user: string | MUser) {
+	return roboChimpCache.get(typeof user === 'string' ? user : user.id)?.perk_tier ?? 0;
 }
