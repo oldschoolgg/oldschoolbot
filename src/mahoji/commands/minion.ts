@@ -22,12 +22,12 @@ import type { AttackStyles } from '../../lib/minions/functions';
 import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
-import { roboChimpUserFetch } from '../../lib/roboChimp';
+import { roboChimpCache, roboChimpUserFetch } from '../../lib/roboChimp';
 import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { MUserStats } from '../../lib/structures/MUserStats';
-import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
+import { convertLVLtoXP, isValidNickname } from '../../lib/util';
 import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -81,21 +81,10 @@ export async function getUserInfo(user: MUser) {
 	const task = minionActivityCache.get(user.id);
 	const taskText = task ? `${task.type}` : 'None';
 
-	const premiumDate = Number(user.user.premium_balance_expiry_date);
-	const premiumTier = user.user.premium_balance_tier;
-
 	const result = {
 		perkTier: user.perkTier(),
 		isBlacklisted: BLACKLISTED_USERS.has(user.id),
 		badges: user.badgesString,
-		mainAccount:
-			user.user.main_account !== null
-				? `${user.user.username ?? 'Unknown Username'}[${user.user.main_account}]`
-				: 'None',
-		ironmanAlts: user.user.ironman_alts.map(async id => `${await getUsername(id)}[${id}]`),
-		premiumBalance: `${premiumDate ? new Date(premiumDate).toLocaleString() : ''} ${
-			premiumTier ? `Tier ${premiumTier}` : ''
-		}`,
 		isIronman: user.isIronman,
 		bitfields,
 		currentTask: taskText,
@@ -107,16 +96,14 @@ export async function getUserInfo(user: MUser) {
 		2
 	);
 
+	const roboCache = await roboChimpCache.get(user.id);
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
 **Current Trip:** ${taskText}
-**Perk Tier:** ${result.perkTier}
+**Perk Tier:** ${roboCache?.perk_tier ?? 'None'}
 **Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges}
-**Main Account:** ${result.mainAccount}
-**Ironman Alts:** ${result.ironmanAlts}
-**Patron Balance:** ${result.premiumBalance}
 **Ironman:** ${result.isIronman}
 **Bitfields:** ${result.bitfields}
 **Patreon Connected:** ${result.patreon}

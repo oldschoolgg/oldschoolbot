@@ -260,8 +260,6 @@ class GrandExchangeSingleton {
 			}
 		});
 
-		for (const tx of allActiveListingsInTimePeriod) sanityCheckTransaction(tx);
-
 		const item = getOSItem(geListing.item_id);
 		const buyLimit = this.getItemBuyLimit(item);
 		const totalSold = sumArr(allActiveListingsInTimePeriod.map(listing => listing.quantity_bought));
@@ -414,6 +412,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				...makeTransactFromTableBankQueries({ bankToAdd: result.cost })
 			]);
 
+			sanityCheckListing(listing);
 			debugLog(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
 
 			return {
@@ -567,7 +566,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			}
 		);
 
-		await prisma.$transaction([
+		const [newTx] = await prisma.$transaction([
 			prisma.gETransaction.create({
 				data: {
 					buy_listing_id: buyerListing.id,
@@ -616,6 +615,8 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			}),
 			...makeTransactFromTableBankQueries({ bankToRemove: bankToRemoveFromGeBank })
 		]);
+
+		sanityCheckTransaction(newTx);
 
 		debugLog(`Transaction completed, the new G.E bank is ${JSON.stringify((await this.fetchOwnedBank()).bank)}.`);
 
@@ -767,11 +768,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	}
 
 	async extensiveVerification() {
-		await Promise.all([
-			prisma.gETransaction.findMany().then(txs => txs.map(tx => sanityCheckTransaction(tx))),
-			prisma.gEListing.findMany().then(listings => listings.map(listing => sanityCheckListing(listing))),
-			this.checkGECanFullFilAllListings()
-		]);
+		await this.checkGECanFullFilAllListings();
 		return true;
 	}
 

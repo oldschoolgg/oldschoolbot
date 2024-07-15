@@ -95,13 +95,9 @@ After becoming an ironman:
 	const mUser = (await mUserFetch(user.id)).user;
 
 	type KeysThatArentReset =
-		| 'ironman_alts'
-		| 'main_account'
 		| 'bank_bg_hex'
 		| 'bank_sort_weightings'
 		| 'bank_sort_method'
-		| 'premium_balance_expiry_date'
-		| 'premium_balance_tier'
 		| 'minion_bought_date'
 		| 'id'
 		| 'pets'
@@ -127,15 +123,11 @@ After becoming an ironman:
 
 	const createOptions: Required<Pick<Prisma.UserCreateInput, KeysThatArentReset>> = {
 		id: user.id,
-		main_account: mUser.main_account,
-		ironman_alts: mUser.ironman_alts,
 		bank_bg_hex: mUser.bank_bg_hex,
 		bank_sort_method: mUser.bank_sort_method,
 		bank_sort_weightings: mUser.bank_sort_weightings as ItemBank,
 		minion_bought_date: mUser.minion_bought_date,
 		RSN: mUser.RSN,
-		premium_balance_expiry_date: mUser.premium_balance_expiry_date,
-		premium_balance_tier: mUser.premium_balance_tier,
 		pets: mUser.pets as ItemBank,
 		bitfield: bitFieldsToKeep.filter(i => user.bitfield.includes(i))
 	};

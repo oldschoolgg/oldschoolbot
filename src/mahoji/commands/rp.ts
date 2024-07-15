@@ -30,7 +30,6 @@ import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { migrateUser } from '../../lib/util/migrateUser';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -692,20 +691,6 @@ SELECT DISTINCT jsonb_object_keys("collectionLogBank")::int AS item_id
 FROM users
 ORDER BY item_id ASC;`);
 			return returnStringOrFile(`[${result.map(i => i.item_id).join(',')}]`);
-		}
-
-		if (options.action?.patreon_reset) {
-			const bitfieldsToRemove = [
-				BitField.IsPatronTier1,
-				BitField.IsPatronTier2,
-				BitField.IsPatronTier3,
-				BitField.IsPatronTier4,
-				BitField.IsPatronTier5,
-				BitField.IsPatronTier6
-			];
-			await prisma.$queryRaw`UPDATE users SET bitfield = bitfield - '{${bitfieldsToRemove.join(',')}'::int[];`;
-			await syncLinkedAccounts();
-			return 'Finished.';
 		}
 
 		if (options.player?.set_buy_date) {

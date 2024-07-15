@@ -1,11 +1,12 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { PerkTier, formatOrdinal } from '@oldschoolgg/toolkit';
 import type { TriviaQuestion, User } from '@prisma/robochimp';
 import { calcWhatPercent, round, sumArr } from 'e';
 import deepEqual from 'fast-deep-equal';
 
 import { pick } from 'lodash';
 import type { Bank } from 'oldschooljs';
-import { BOT_TYPE, globalConfig, masteryKey } from './constants';
+import { SupportServer } from '../config';
+import { BOT_TYPE, BitField, Roles, globalConfig, masteryKey } from './constants';
 import { getTotalCl } from './data/Collections';
 import { calculateMastery } from './mastery';
 import { MUserStats } from './structures/MUserStats';
@@ -163,5 +164,31 @@ function cacheRoboChimpUser(user: RobochimpUser) {
 }
 
 export function getPerkTierSync(user: string | MUser) {
-	return roboChimpCache.get(typeof user === 'string' ? user : user.id)?.perk_tier ?? 0;
+	const elligibleTiers = [];
+	if (typeof user !== 'string') {
+		if (
+			[BitField.isContributor, BitField.isModerator, BitField.IsWikiContributor].some(bit =>
+				user.bitfield.includes(bit)
+			)
+		) {
+			return PerkTier.Four;
+		}
+
+		if (
+			user.bitfield.includes(BitField.IsPatronTier1) ||
+			user.bitfield.includes(BitField.HasPermanentTierOne) ||
+			user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
+		) {
+			elligibleTiers.push(PerkTier.Two);
+		} else {
+			const guild = globalClient.guilds.cache.get(SupportServer);
+			const member = guild?.members.cache.get(user.id);
+			if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
+				elligibleTiers.push(PerkTier.One);
+			}
+		}
+	}
+
+	elligibleTiers.push(roboChimpCache.get(typeof user === 'string' ? user : user.id)?.perk_tier ?? 0);
+	return Math.max(...elligibleTiers);
 }
