@@ -2,7 +2,6 @@ import type { Minigame, PlayerOwnedHouse, activity_type_enum } from '@prisma/cli
 import { calcWhatPercent, objectEntries } from 'e';
 import type { Bank } from 'oldschooljs';
 
-import { getPOH } from '../../mahoji/lib/abstracted_commands/pohCommand';
 import type { ParsedUnit } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import type { ClueTier } from '../clues/clueTiers';
@@ -323,8 +322,8 @@ export class Requirements {
 		const roboChimpUser = await user.fetchRobochimpUser();
 		const clueCounts =
 			BOT_TYPE === 'OSB' ? stats.clueScoresFromOpenables() : (await user.calcActualClues()).clueCounts;
-		const poh = await getPOH(user.id);
-		const [_uniqueRunesCrafted, uniqueActivitiesDone] = await prisma.$transaction([
+
+		const [_uniqueRunesCrafted, uniqueActivitiesDone, poh] = await prisma.$transaction([
 			prisma.$queryRaw<{ rune_id: string }[]>`SELECT DISTINCT(data->>'runeID') AS rune_id
 FROM activity
 WHERE user_id = ${BigInt(user.id)}
@@ -334,7 +333,7 @@ AND data->>'runeID' IS NOT NULL;`,
 FROM activity
 WHERE user_id = ${BigInt(user.id)}
 GROUP BY type;`,
-			prisma.playerOwnedHouse.findFirst({ where: { user_id: user.id } })
+			prisma.playerOwnedHouse.upsert({ where: { user_id: user.id }, update: {}, create: { user_id: user.id } })
 		]);
 		const uniqueRunesCrafted = _uniqueRunesCrafted.map(i => Number(i.rune_id));
 
