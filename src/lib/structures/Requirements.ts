@@ -7,7 +7,7 @@ import { getParsedStashUnits } from '../../mahoji/lib/abstracted_commands/stashU
 import type { ClueTier } from '../clues/clueTiers';
 import type { BitField } from '../constants';
 import { BOT_TYPE, BitFieldData } from '../constants';
-import { diaries, userhasDiaryIDTier } from '../diaries';
+import { diaries, userhasDiaryTierSync } from '../diaries';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import type { ClueBank, DiaryID, DiaryTierName } from '../minions/types';
 import type { RobochimpUser } from '../roboChimp';
@@ -281,10 +281,13 @@ export class Requirements {
 			const unmetDiaries = (
 				await Promise.all(
 					requirement.diaryRequirement.map(async ([diary, tier]) => {
-						const res = await userhasDiaryIDTier(user, diary, tier);
+						const { hasDiary, diaryGroup } = userhasDiaryTierSync(user, [diary, tier], {
+							stats,
+							minigameScores: minigames
+						});
 						return {
-							has: res.hasDiary,
-							tierName: `${tier} ${res.diaryGroup.name}`
+							has: hasDiary,
+							tierName: `${tier} ${diaryGroup.name}`
 						};
 					})
 				)
