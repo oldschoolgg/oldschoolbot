@@ -22,7 +22,7 @@ import { BitField, PeakTier } from '../../../lib/constants';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeItem, degradeablePvmBoostItems } from '../../../lib/degradeableItems';
-import { userhasDiaryIDTier } from '../../../lib/diaries';
+import { userhasDiaryTier } from '../../../lib/diaries';
 import type { GearSetupType } from '../../../lib/gear/types';
 import { trackLoot } from '../../../lib/lootTrack';
 import type { CombatOptionsEnum } from '../../../lib/minions/data/combatConstants';
@@ -228,10 +228,9 @@ export async function minionKillCommand(
 	if (!hasReqs) return reason ?? "You don't have the requirements to fight this monster";
 
 	if (monster.diaryRequirement) {
-		const [diaryID, tier] = monster.diaryRequirement;
-		const { hasDiary, diaryGroup } = await userhasDiaryIDTier(user, diaryID, tier);
+		const [hasDiary, _, diaryGroup] = await userhasDiaryTier(user, monster.diaryRequirement);
 		if (!hasDiary) {
-			return `${user.minionName} is missing the ${diaryGroup.name} ${tier} diary to kill ${monster.name}.`;
+			return `${user.minionName} is missing the ${diaryGroup.name} ${monster.diaryRequirement[1]} diary to kill ${monster.name}.`;
 		}
 	}
 
