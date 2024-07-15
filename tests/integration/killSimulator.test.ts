@@ -5,6 +5,6 @@ import { createTestUser } from './util';
 
 test('killSimulator.test', async () => {
 	const user = await createTestUser();
-	await bankImageGenerator.ready;
+	await bankImageGenerator.init();
 	expect(async () => await user.runCommand(killCommand, { name: 'man', quantity: 100 })).to.not.throw();
 });

@@ -3,7 +3,6 @@ import { ComponentType, type User } from 'discord.js';
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { mahojiInformationalButtons } from '../../../lib/constants';
-import { clArrayUpdate } from '../../../lib/handleNewCLItems';
 
 export async function minionBuyCommand(apiUser: User, user: MUser, ironman: boolean): CommandResponse {
 	if (user.user.minion_hasBought) return 'You already have a minion!';
@@ -36,7 +35,15 @@ export async function minionBuyCommand(apiUser: User, user: MUser, ironman: bool
 		await user.addItemsToBank({ items: starter, collectionLog: false });
 	}
 	// Ensure user has a userStats row
-	await clArrayUpdate(user, user.cl);
+	await prisma.userStats.upsert({
+		where: {
+			user_id: BigInt(user.id)
+		},
+		create: {
+			user_id: BigInt(user.id)
+		},
+		update: {}
+	});
 
 	return {
 		content: `You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.

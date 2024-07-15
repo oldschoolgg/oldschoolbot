@@ -555,7 +555,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			buyerListing.asking_price_per_item
 		}] SellerPrice[${
 			sellerListing.asking_price_per_item
-		}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${buyerLoot}] SellerLoot[${sellerLoot}] CurrentGEBank[${geBank}] BankToRemoveFromGeBank[${JSON.stringify(bankToRemoveFromGeBank.bank)}] ExpectedAfterBank[${
+		}] TotalPriceBeforeTax[${totalPriceBeforeTax}] QuantityToBuy[${quantityToBuy}] TotalTaxPaid[${totalTaxPaid}] BuyerRefund[${buyerRefund}] BuyerLoot[${JSON.stringify(buyerLoot)}] SellerLoot[${sellerLoot}] CurrentGEBank[${JSON.stringify(geBank)}] BankToRemoveFromGeBank[${JSON.stringify(bankToRemoveFromGeBank.bank)}] ExpectedAfterBank[${
 			geBank.clone().remove(bankToRemoveFromGeBank).bank
 		}]`;
 

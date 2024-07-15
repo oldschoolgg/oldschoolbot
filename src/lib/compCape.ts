@@ -691,7 +691,7 @@ const tameRequirements = new Requirements()
 	.add({
 		name: 'Obtain, hatch, and fully grow a Monkey Tame',
 		has: async ({ user }) => {
-			const tames = await user.getTames();
+			const tames = await user.fetchTames();
 			if (!tames.some(t => t.species.id === TameSpeciesID.Monkey && t.growthStage === tame_growth.adult)) {
 				return 'You need to obtain, hatch, and grow to adult a Monkey Tame.';
 			}
@@ -701,7 +701,7 @@ const tameRequirements = new Requirements()
 	.add({
 		name: 'Obtain, hatch, and fully grow a Igne Tame',
 		has: async ({ user }) => {
-			const tames = await user.getTames();
+			const tames = await user.fetchTames();
 			if (!tames.some(t => t.species.id === TameSpeciesID.Igne && t.growthStage === tame_growth.adult)) {
 				return 'You need to obtain, hatch, and grow to adult a Igne Tame.';
 			}
@@ -711,7 +711,7 @@ const tameRequirements = new Requirements()
 	.add({
 		name: 'Feed a Monkey tame all items that provide a boost',
 		has: async ({ user }) => {
-			const tames = await user.getTames();
+			const tames = await user.fetchTames();
 			const itemsToBeFed = tameFeedableItems.filter(i =>
 				i.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Monkey)
 			);
@@ -733,7 +733,7 @@ const tameRequirements = new Requirements()
 	.add({
 		name: 'Feed a Igne tame all items that provide a boost',
 		has: async ({ user }) => {
-			const tames = await user.getTames();
+			const tames = await user.fetchTames();
 			const itemsToBeFed = tameFeedableItems.filter(i => i.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Igne));
 
 			const oneTameHasAll = tames
@@ -753,7 +753,7 @@ const tameRequirements = new Requirements()
 	.add({
 		name: 'Equip a Igne tame with the BiS items',
 		has: async ({ user }) => {
-			const tames = await user.getTames();
+			const tames = await user.fetchTames();
 
 			const oneTameHasAll = tames
 				.filter(t => t.species.id === TameSpeciesID.Igne)

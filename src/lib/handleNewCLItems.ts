@@ -11,7 +11,6 @@ import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp';
 
 import { MUserStats } from './structures/MUserStats';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
-import { fetchStatsForCL } from './util/fetchStatsForCL';
 import { insertUserEvent } from './util/userEvents';
 
 async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
@@ -29,32 +28,6 @@ async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataU
 		comp_cape_percent: compCapeProgress.totalPercentTrimmed,
 		comp_cape_percent_untrimmed: compCapeProgress.totalPercentUntrimmed,
 		mastery_percentage: totalMastery
-	};
-}
-
-export async function clArrayUpdate(user: MUser, newCL: Bank) {
-	const id = BigInt(user.id);
-	const newCLArray = Object.keys(newCL.bank).map(i => Number(i));
-	const updateObj = {
-		cl_array: newCLArray,
-		cl_array_length: newCLArray.length
-	} as const;
-
-	await prisma.userStats.upsert({
-		where: {
-			user_id: id
-		},
-		create: {
-			user_id: id,
-			...updateObj
-		},
-		update: {
-			...updateObj
-		}
-	});
-
-	return {
-		newCLArray
 	};
 }
 
@@ -83,7 +56,7 @@ export async function handleNewCLItems({
 	const previousCLDetails = calcCLDetails(previousCL);
 	const previousCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
-	await Promise.all([roboChimpSyncData(user), clArrayUpdate(user, newCL)]);
+	await roboChimpSyncData(user, newCL);
 	const newCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
 
 	const newCLDetails = calcCLDetails(newCL);
@@ -128,7 +101,7 @@ export async function handleNewCLItems({
 					getKC: (id: number) => user.getKC(id),
 					user,
 					minigames: await user.fetchMinigames(),
-					stats: await fetchStatsForCL(user)
+					stats: await MUserStats.fromID(user.id)
 				})}!`
 			: '';
 
