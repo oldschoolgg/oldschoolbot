@@ -153,7 +153,7 @@ import { allLeagueTasks, leagueTasks } from './leagues/leagues';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
 import { type DiaryID, type DiaryTierName, diaryTiers } from './minions/types';
 import { PoHObjects, getPOHObject } from './poh';
-import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
+import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Skillcapes from './skilling/skillcapes';
 import Agility from './skilling/skills/agility';
 import { cookingCL } from './skilling/skills/cooking/cooking';
@@ -338,21 +338,10 @@ const skillingRequirements = new Requirements()
 	.add({ name: 'Complete Implings CL', clRequirement: implingsCL })
 	.add({
 		name: 'Grow 5 Spirit trees',
-		has: async ({ user }) => {
-			if (user.bitfield.includes(BitField.GrewFiveSpiritTrees)) {
-				return true;
-			}
-			const info = await getFarmingInfo(user.id);
+		has: ({ user }) => {
+			const info = getFarmingInfoFromUser(user.user);
 			const hasFive = info.patches.spirit.lastQuantity >= 5;
-			if (hasFive && !user.bitfield.includes(BitField.GrewFiveSpiritTrees)) {
-				await user.update({
-					bitfield: {
-						push: BitField.GrewFiveSpiritTrees
-					}
-				});
-			}
-
-			return hasFive;
+			return hasFive || user.bitfield.includes(BitField.GrewFiveSpiritTrees);
 		}
 	});
 
@@ -407,7 +396,7 @@ const cluesRequirements = new Requirements()
 	})
 	.add({
 		name: 'Collect/Complete/Open a Grandmaster clue',
-		has:  ({ clueCounts }) => {
+		has: ({ clueCounts }) => {
 			if (clueCounts.Grandmaster === 0) {
 				return 'You need to Collect/Complete/Open a Grandmaster clue';
 			}
@@ -528,7 +517,7 @@ miscRequirements
 	})
 	.add({
 		name: 'Unlock all Slayer unlocks',
-		has:  ({ user, roboChimpUser }) => {
+		has: ({ user, roboChimpUser }) => {
 			const hasAll =
 				roboChimpUser.leagues_completed_tasks_ids.includes(4103) ||
 				user.user.slayer_unlocks.length >= slayerUnlockableRewards.length ||
@@ -565,7 +554,7 @@ miscRequirements
 	})
 	.add({
 		name: 'Build the highest tier (level requirement) item in every POH Slot',
-		has:  ({ poh }) => {
+		has: ({ poh }) => {
 			const failures: RequirementFailure[] = [];
 			for (const [key, val] of objectEntries(poh)) {
 				if (key === 'user_id' || key === 'background_id' || key === 'altar') continue;
@@ -686,7 +675,7 @@ const tameRequirements = new Requirements()
 	})
 	.add({
 		name: 'Obtain, hatch, and fully grow a Monkey Tame',
-		has:  ({ tames }) => {
+		has: ({ tames }) => {
 			if (!tames.some(t => t.species.id === TameSpeciesID.Monkey && t.growthStage === tame_growth.adult)) {
 				return 'You need to obtain, hatch, and grow to adult a Monkey Tame.';
 			}
@@ -695,7 +684,7 @@ const tameRequirements = new Requirements()
 	})
 	.add({
 		name: 'Obtain, hatch, and fully grow a Igne Tame',
-		has:  ({ tames }) => {
+		has: ({ tames }) => {
 			if (!tames.some(t => t.species.id === TameSpeciesID.Igne && t.growthStage === tame_growth.adult)) {
 				return 'You need to obtain, hatch, and grow to adult a Igne Tame.';
 			}
@@ -704,7 +693,7 @@ const tameRequirements = new Requirements()
 	})
 	.add({
 		name: 'Feed a Monkey tame all items that provide a boost',
-		has:  ({ tames }) => {
+		has: ({ tames }) => {
 			const itemsToBeFed = tameFeedableItems.filter(i =>
 				i.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Monkey)
 			);

@@ -16,8 +16,8 @@ import type { MinigameName } from '../settings/minigames';
 import Agility from '../skilling/skills/agility';
 import type { Skills } from '../types';
 import { itemNameFromID } from '../util';
-import { MUserStats } from './MUserStats';
 import type { MTame } from './MTame';
+import { MUserStats } from './MUserStats';
 
 export interface RequirementFailure {
 	reason: string;
@@ -334,7 +334,7 @@ AND data->>'runeID' IS NOT NULL;`,
 FROM activity
 WHERE user_id = ${BigInt(user.id)}
 GROUP BY type;`,
- prisma.playerOwnedHouse.findFirst({ where: { user_id: user.id } })
+			prisma.playerOwnedHouse.findFirst({ where: { user_id: user.id } })
 		]);
 		const uniqueRunesCrafted = _uniqueRunesCrafted.map(i => Number(i.rune_id));
 
