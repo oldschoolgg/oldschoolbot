@@ -10,6 +10,7 @@ import type { PatchTypes } from '../../lib/minions/farming';
 import type { FarmingContract } from '../../lib/minions/farming/types';
 
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
+import { getFarmingInfoFromUser } from '../../lib/skilling/functions/getFarmingInfo';
 import Farming, { plants } from '../../lib/skilling/skills/farming';
 import { type Plant, SkillsEnum } from '../../lib/skilling/types';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -634,6 +635,15 @@ export const farmingTask: MinionTask = {
 			}
 
 			const seedPackCount = loot.amount('Seed pack');
+
+			const hasFive = getFarmingInfoFromUser(user.user).patches.spirit.lastQuantity >= 5;
+			if (hasFive && !user.bitfield.includes(BitField.GrewFiveSpiritTrees)) {
+				await user.update({
+					bitfield: {
+						push: BitField.GrewFiveSpiritTrees
+					}
+				});
+			}
 
 			return handleTripFinish(
 				user,

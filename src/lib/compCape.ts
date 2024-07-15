@@ -4,7 +4,6 @@ import { type UserStats, tame_growth } from '@prisma/client';
 import { calcWhatPercent, objectEntries, sumArr } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
-import { getPOH } from '../mahoji/lib/abstracted_commands/pohCommand';
 import { divinationEnergies } from './bso/divination';
 import { ClueTiers } from './clues/clueTiers';
 import { BitField } from './constants';
@@ -154,7 +153,7 @@ import { allLeagueTasks, leagueTasks } from './leagues/leagues';
 import { BSOMonsters } from './minions/data/killableMonsters/custom/customMonsters';
 import { type DiaryID, type DiaryTierName, diaryTiers } from './minions/types';
 import { PoHObjects, getPOHObject } from './poh';
-import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
+import { getFarmingInfoFromUser } from './skilling/functions/getFarmingInfo';
 import Skillcapes from './skilling/skillcapes';
 import Agility from './skilling/skills/agility';
 import { cookingCL } from './skilling/skills/cooking/cooking';
@@ -339,21 +338,10 @@ const skillingRequirements = new Requirements()
 	.add({ name: 'Complete Implings CL', clRequirement: implingsCL })
 	.add({
 		name: 'Grow 5 Spirit trees',
-		has: async ({ user }) => {
-			if (user.bitfield.includes(BitField.GrewFiveSpiritTrees)) {
-				return true;
-			}
-			const info = await getFarmingInfo(user.id);
+		has: ({ user }) => {
+			const info = getFarmingInfoFromUser(user.user);
 			const hasFive = info.patches.spirit.lastQuantity >= 5;
-			if (hasFive && !user.bitfield.includes(BitField.GrewFiveSpiritTrees)) {
-				await user.update({
-					bitfield: {
-						push: BitField.GrewFiveSpiritTrees
-					}
-				});
-			}
-
-			return hasFive;
+			return hasFive || user.bitfield.includes(BitField.GrewFiveSpiritTrees);
 		}
 	});
 
@@ -408,8 +396,7 @@ const cluesRequirements = new Requirements()
 	})
 	.add({
 		name: 'Collect/Complete/Open a Grandmaster clue',
-		has: async ({ user }) => {
-			const { clueCounts } = await user.calcActualClues();
+		has: ({ clueCounts }) => {
 			if (clueCounts.Grandmaster === 0) {
 				return 'You need to Collect/Complete/Open a Grandmaster clue';
 			}
@@ -417,8 +404,7 @@ const cluesRequirements = new Requirements()
 	})
 	.add({
 		name: 'Collect/Complete/Open a Elder clue',
-		has: async ({ user }) => {
-			const { clueCounts } = await user.calcActualClues();
+		has: ({ clueCounts }) => {
 			if (clueCounts.Elder === 0) {
 				return 'You need to Collect/Complete/Open a Elder clue';
 			}
@@ -531,7 +517,7 @@ miscRequirements
 	})
 	.add({
 		name: 'Unlock all Slayer unlocks',
-		has: async ({ user, roboChimpUser }) => {
+		has: ({ user, roboChimpUser }) => {
 			const hasAll =
 				roboChimpUser.leagues_completed_tasks_ids.includes(4103) ||
 				user.user.slayer_unlocks.length >= slayerUnlockableRewards.length ||
@@ -568,8 +554,7 @@ miscRequirements
 	})
 	.add({
 		name: 'Build the highest tier (level requirement) item in every POH Slot',
-		has: async ({ user }) => {
-			const poh = await getPOH(user.id);
+		has: ({ poh }) => {
 			const failures: RequirementFailure[] = [];
 			for (const [key, val] of objectEntries(poh)) {
 				if (key === 'user_id' || key === 'background_id' || key === 'altar') continue;
@@ -690,8 +675,7 @@ const tameRequirements = new Requirements()
 	})
 	.add({
 		name: 'Obtain, hatch, and fully grow a Monkey Tame',
-		has: async ({ user }) => {
-			const tames = await user.fetchTames();
+		has: ({ tames }) => {
 			if (!tames.some(t => t.species.id === TameSpeciesID.Monkey && t.growthStage === tame_growth.adult)) {
 				return 'You need to obtain, hatch, and grow to adult a Monkey Tame.';
 			}
@@ -700,8 +684,7 @@ const tameRequirements = new Requirements()
 	})
 	.add({
 		name: 'Obtain, hatch, and fully grow a Igne Tame',
-		has: async ({ user }) => {
-			const tames = await user.fetchTames();
+		has: ({ tames }) => {
 			if (!tames.some(t => t.species.id === TameSpeciesID.Igne && t.growthStage === tame_growth.adult)) {
 				return 'You need to obtain, hatch, and grow to adult a Igne Tame.';
 			}
@@ -710,8 +693,7 @@ const tameRequirements = new Requirements()
 	})
 	.add({
 		name: 'Feed a Monkey tame all items that provide a boost',
-		has: async ({ user }) => {
-			const tames = await user.fetchTames();
+		has: ({ tames }) => {
 			const itemsToBeFed = tameFeedableItems.filter(i =>
 				i.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Monkey)
 			);
@@ -732,8 +714,7 @@ const tameRequirements = new Requirements()
 	})
 	.add({
 		name: 'Feed a Igne tame all items that provide a boost',
-		has: async ({ user }) => {
-			const tames = await user.fetchTames();
+		has: ({ tames }) => {
 			const itemsToBeFed = tameFeedableItems.filter(i => i.tameSpeciesCanBeFedThis.includes(TameSpeciesID.Igne));
 
 			const oneTameHasAll = tames
@@ -752,9 +733,7 @@ const tameRequirements = new Requirements()
 	})
 	.add({
 		name: 'Equip a Igne tame with the BiS items',
-		has: async ({ user }) => {
-			const tames = await user.fetchTames();
-
+		has: ({ tames }) => {
 			const oneTameHasAll = tames
 				.filter(t => t.species.id === TameSpeciesID.Igne)
 				.some(tame => {
@@ -791,7 +770,7 @@ export const compCapeTrimmedRequirements = new Requirements()
 	})
 	.add({
 		name: 'Complete all Leagues tasks',
-		has: async ({ roboChimpUser }) => {
+		has: ({ roboChimpUser }) => {
 			const hasAll =
 				roboChimpUser.leagues_completed_tasks_ids.length === allLeagueTasks.length &&
 				allLeagueTasks.every(t => roboChimpUser.leagues_completed_tasks_ids.includes(t.id));
