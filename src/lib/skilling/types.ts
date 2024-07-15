@@ -118,11 +118,11 @@ export interface Fish {
 	//spot?: string;
 	petChance?: number;
 	bait?: number;
+	timePerFish?: number;
 	qpRequired?: number;
 	bigFish?: number;
 	bigFishRate?: number;
 	clueScrollChance?: number;
-	timePerFish?: number;
 	alias?: string[];
 
 	chance1?: number;
