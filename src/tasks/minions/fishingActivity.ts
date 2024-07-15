@@ -420,8 +420,6 @@ export const fishingTask: MinionTask = {
 			handleTripFinish(user, channelID, str, undefined, data, loot);
 		}
 	}
-<<<<<<< HEAD
+
 }
-=======
-}
->>>>>>> d2b0fe722edc462da69779780a4362b1b372dac1
+
