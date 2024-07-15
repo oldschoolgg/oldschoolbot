@@ -5,7 +5,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import type { CollectionLogType } from '../../lib/collectionLogTask';
 import { CollectionLogFlags, clImageGenerator, collectionLogTypes } from '../../lib/collectionLogTask';
 import { allCollectionLogs } from '../../lib/data/Collections';
-import { fetchStatsForCL } from '../../lib/util/fetchStatsForCL';
+import { MUserStats } from '../../lib/structures/MUserStats';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import type { OSBMahojiCommand } from '../lib/util';
 
@@ -99,7 +99,7 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			type: options.type ?? 'collection',
 			flags,
 			collection: options.name,
-			stats: await fetchStatsForCL(user)
+			stats: await MUserStats.fromID(user.id)
 		});
 		return result;
 	}

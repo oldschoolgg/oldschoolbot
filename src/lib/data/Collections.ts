@@ -48,7 +48,6 @@ import { SkillsEnum } from '../skilling/types';
 import { MUserStats } from '../structures/MUserStats';
 import type { ItemBank } from '../types';
 import { stringMatches } from '../util';
-import { fetchStatsForCL } from '../util/fetchStatsForCL';
 import resolveItems from '../util/resolveItems';
 import { shuffleRandom } from '../util/smallUtils';
 import type { FormatProgressFunction, ICollection, ILeftListStatus, IToReturnCollection } from './CollectionsExport';
@@ -741,9 +740,9 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: {
 					Default: async (_, minigameScores) =>
 						minigameScores.find(i => i.minigame.column === 'tombs_of_amascut')!.score,
-					Entry: async (_, __, { stats }) => stats.getToaKCs().entryKC,
-					Normal: async (_, __, { stats }) => stats.getToaKCs().normalKC,
-					Expert: async (_, __, { stats }) => stats.getToaKCs().expertKC
+					Entry: async (_, __, stats) => stats.getToaKCs().entryKC,
+					Normal: async (_, __, stats) => stats.getToaKCs().normalKC,
+					Expert: async (_, __, stats) => stats.getToaKCs().expertKC
 				},
 				items: toaCL,
 				isActivity: true,
@@ -1932,21 +1931,9 @@ function getLeftList(userBank: Bank, checkCategory: string, allItems = false, re
 	return leftList;
 }
 
-export interface UserStatsDataNeededForCL {
-	sacrificedBank: Bank;
-	titheFarmsCompleted: number;
-	lapsScores: ItemBank;
-	openableScores: Bank;
-	kcBank: ItemBank;
-	highGambles: number;
-	gotrRiftSearches: number;
-	stats: MUserStats;
-	tame_cl_bank: ItemBank;
-}
-
 type CLType = 'sacrifice' | 'bank' | 'collection' | 'temp' | 'tame' | 'disassembly';
 
-export function getBank(user: MUser, type: CLType, userStats: UserStatsDataNeededForCL | MUserStats | null): Bank {
+export function getBank(user: MUser, type: CLType, userStats: MUserStats | null): Bank {
 	switch (type) {
 		case 'collection':
 			return new Bank(user.cl);
@@ -1957,11 +1944,7 @@ export function getBank(user: MUser, type: CLType, userStats: UserStatsDataNeede
 			return new Bank(userStats.sacrificedBank);
 		case 'tame': {
 			if (!userStats) return new Bank();
-			return new Bank(
-				userStats instanceof MUserStats
-					? (userStats.userStats.tame_cl_bank as ItemBank)
-					: (userStats.tame_cl_bank as ItemBank)
-			);
+			return new Bank(userStats.userStats.tame_cl_bank as ItemBank);
 		}
 		case 'temp':
 			return new Bank(user.user.temp_cl as ItemBank);
@@ -1971,17 +1954,13 @@ export function getBank(user: MUser, type: CLType, userStats: UserStatsDataNeede
 	}
 }
 
-export async function getTotalCl(
-	user: MUser,
-	logType: CLType,
-	userStats: UserStatsDataNeededForCL | MUserStats | null
-) {
+export async function getTotalCl(user: MUser, logType: CLType, userStats: MUserStats | null) {
 	let result = undefined;
 	try {
-		result = getUserClData(await getBank(user, logType, userStats), allCLItemsFiltered);
+		result = getUserClData(getBank(user, logType, userStats), allCLItemsFiltered);
 	} catch (_e) {
 		await user.repairBrokenItems();
-		const newBank = await getBank(user, logType, userStats);
+		const newBank = getBank(user, logType, userStats);
 		result = getUserClData(newBank, allCLItemsFiltered);
 	}
 	return result;
@@ -2075,7 +2054,7 @@ export async function getCollection(options: {
 	}
 
 	const minigameScores = await user.fetchMinigameScores();
-	const userStats = await fetchStatsForCL(user);
+	const userStats = await MUserStats.fromID(user.id);
 	const userCheckBank = getBank(user, logType, userStats);
 	let clItems = getCollectionItems(search, allItems, logType === 'sacrifice');
 

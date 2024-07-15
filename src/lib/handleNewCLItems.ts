@@ -11,7 +11,6 @@ import { calculateOwnCLRanking, roboChimpSyncData } from './roboChimp';
 
 import { MUserStats } from './structures/MUserStats';
 import { fetchCLLeaderboard } from './util/clLeaderboard';
-import { fetchStatsForCL } from './util/fetchStatsForCL';
 import { insertUserEvent } from './util/userEvents';
 
 async function createHistoricalData(user: MUser): Promise<Prisma.HistoricalDataUncheckedCreateInput> {
@@ -102,7 +101,7 @@ export async function handleNewCLItems({
 					getKC: (id: number) => user.getKC(id),
 					user,
 					minigames: await user.fetchMinigames(),
-					stats: await fetchStatsForCL(user)
+					stats: await MUserStats.fromID(user.id)
 				})}!`
 			: '';
 

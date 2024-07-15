@@ -19,7 +19,7 @@ function makePrismaClient(): PrismaClient {
 	}
 
 	return new PrismaClient({
-		log: ['query', 'info', 'warn', 'error']
+		log: ['info', 'warn', 'error']
 	});
 }
 global.prisma = global.prisma || makePrismaClient();
@@ -30,7 +30,9 @@ function makeRobochimpPrismaClient(): RobochimpPrismaClient {
 		throw new Error('Robochimp client should only be created on the main thread.');
 	}
 
-	return new RobochimpPrismaClient();
+	return new RobochimpPrismaClient({
+		log: ['info', 'warn', 'error']
+	});
 }
 global.roboChimpClient = global.roboChimpClient || makeRobochimpPrismaClient();
 
