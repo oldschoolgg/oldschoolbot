@@ -2,8 +2,6 @@ import { SupportServer } from '../config';
 import { BitField, PerkTier, Roles } from './constants';
 import { getPerkTierSync } from './roboChimp';
 
-export const perkTierCache = new Map<string, number>();
-
 export const allPerkBitfields: BitField[] = [
 	BitField.IsPatronTier6,
 	BitField.IsPatronTier5,
@@ -41,30 +39,30 @@ export function getUsersPerkTier(user: MUser): PerkTier | 0 {
 
 	const cached = getPerkTierSync(user.id);
 	if (cached > 0) {
-		return cached;
+		elligibleTiers.push(cached);
 	}
 
 	const bitfield = user.bitfield;
 
 	if (bitfield.includes(BitField.IsPatronTier6)) {
-		return PerkTier.Seven;
+		return elligibleTiers.push(PerkTier.Seven);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier5)) {
-		return PerkTier.Six;
+		return elligibleTiers.push(PerkTier.Six);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier4)) {
-		return PerkTier.Five;
+		return elligibleTiers.push(PerkTier.Five);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier3)) {
-		return PerkTier.Four;
+		return elligibleTiers.push(PerkTier.Four);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier2)) {
-		return PerkTier.Three;
+		return elligibleTiers.push(PerkTier.Three);
 	}
 
-	return 0;
+	return Math.max(...elligibleTiers, 0);
 }

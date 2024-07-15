@@ -34,7 +34,7 @@ export async function handleEditPatron(userID: string[]) {
 			}
 		}
 	});
-	
+
 	for (const user of users) {
 		if (!user.badges.includes(BadgesEnum.Patron) && !user.badges.includes(BadgesEnum.LimitedPatron)) {
 			await prisma.user.update({

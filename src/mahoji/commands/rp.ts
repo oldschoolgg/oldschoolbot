@@ -20,7 +20,6 @@ import { GrandExchange } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { allPerkBitfields } from '../../lib/perkTiers';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
@@ -916,12 +915,6 @@ ORDER BY item_id ASC;`);
 			const destUser = await mUserFetch(dest.user.id);
 
 			if (isProtectedAccount(destUser)) return 'You cannot clobber that account.';
-			if (allPerkBitfields.some(pt => destUser.bitfield.includes(pt))) {
-				await handleMahojiConfirmation(
-					interaction,
-					`The target user, ${destUser.logName}, has a Patreon Tier; are you really sure you want to DELETE all data from that account?`
-				);
-			}
 			const sourceXp = sumArr(Object.values(sourceUser.skillsAsXP));
 			const destXp = sumArr(Object.values(destUser.skillsAsXP));
 			if (destXp > sourceXp) {

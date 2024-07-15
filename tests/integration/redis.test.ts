@@ -2,8 +2,9 @@ import { expect, test } from 'vitest';
 
 import { TSRedis } from '@oldschoolgg/toolkit/TSRedis';
 import { sleep } from 'e';
-import { BadgesEnum, globalConfig } from '../../src/lib/constants';
-import { roboChimpCache } from '../../src/lib/roboChimp';
+import { BadgesEnum, BitField, globalConfig } from '../../src/lib/constants';
+import { getUsersPerkTier } from '../../src/lib/perkTiers';
+import { getPerkTierSync, roboChimpCache } from '../../src/lib/roboChimp';
 import { createTestUser } from './util';
 
 function makeSender() {
@@ -44,15 +45,11 @@ test('Should remove patron badge', async () => {
 
 test('Should add to cache', async () => {
 	const users = [await createTestUser(), await createTestUser(), await createTestUser()];
-	await roboChimpClient.user.updateMany({
-		where: {
-			id: {
-				in: users.map(u => BigInt(u.id))
-			}
-		},
-		data: {
+	await roboChimpClient.user.createMany({
+		data: users.map(u => ({
+			id: BigInt(u.id),
 			perk_tier: 5
-		}
+		}))
 	});
 	const _redis = makeSender();
 	_redis.publish({
@@ -65,21 +62,18 @@ test('Should add to cache', async () => {
 	await sleep(100);
 	for (const user of users) {
 		const cached = roboChimpCache.get(user.id);
+		expect(getPerkTierSync(user.id)).toEqual(5);
 		expect(cached!.perk_tier).toEqual(5);
 	}
 });
 
 test('Should remove from cache', async () => {
 	const users = [await createTestUser(), await createTestUser(), await createTestUser()];
-	await roboChimpClient.user.updateMany({
-		where: {
-			id: {
-				in: users.map(u => BigInt(u.id))
-			}
-		},
-		data: {
+	await roboChimpClient.user.createMany({
+		data: users.map(u => ({
+			id: BigInt(u.id),
 			perk_tier: 0
-		}
+		}))
 	});
 	const _redis = makeSender();
 	_redis.publish({
@@ -91,7 +85,19 @@ test('Should remove from cache', async () => {
 	});
 	await sleep(100);
 	for (const user of users) {
+		expect(getPerkTierSync(user.id)).toEqual(0);
 		const cached = roboChimpCache.get(user.id);
-		expect(cached!.perk_tier).toEqual(0);
+		expect(cached).toEqual(undefined);
+	}
+});
+
+test('Should recognize special bitfields', async () => {
+	const users = [
+		await createTestUser(undefined, { bitfield: [BitField.HasPermanentTierOne] }),
+		await createTestUser(undefined, { bitfield: [BitField.BothBotsMaxedFreeTierOnePerks] })
+	];
+	for (const user of users) {
+		expect(getUsersPerkTier(user)).toEqual(2);
+		expect(getPerkTierSync(user)).toEqual(2);
 	}
 });
