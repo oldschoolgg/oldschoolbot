@@ -4,13 +4,13 @@ import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import { Time, removeFromArr, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { cancelGEListingCommand } from '../../mahoji/lib/abstracted_commands/cancelGEListingCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import type { ClueTier } from '../clues/clueTiers';
 import { BitField, PerkTier } from '../constants';
 
+import { RateLimitManager } from '@sapphire/ratelimits';
 import { InteractionID } from '../InteractionID';
 import { runCommand } from '../settings/settings';
 import { toaHelpCommand } from '../simulation/toa';
@@ -54,6 +54,8 @@ type GlobalInteractionAction = (typeof globalInteractionActions)[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 	return globalInteractionActions.includes(str as GlobalInteractionAction);
 }
+
+const buttonRatelimiter = new RateLimitManager(Time.Second * 5, 2);
 
 export function makeOpenCasketButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
@@ -331,10 +333,10 @@ export async function interactionHook(interaction: Interaction) {
 	const id = interaction.customId;
 	const userID = interaction.user.id;
 
-	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
-	if (cd !== null) {
+	const ratelimit = buttonRatelimiter.acquire(userID);
+	if (ratelimit.limited) {
 		return interactionReply(interaction, {
-			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(cd, true)}.`,
+			content: `You're on cooldown from clicking buttons, please wait: ${formatDuration(ratelimit.remainingTime, true)}.`,
 			ephemeral: true
 		});
 	}

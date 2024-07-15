@@ -1217,6 +1217,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sapphire/ratelimits@npm:^2.4.9":
+  version: 2.4.9
+  resolution: "@sapphire/ratelimits@npm:2.4.9"
+  checksum: 10c0/e2e7da0ab8180914b42807044a14a786474f179e5e5e19b8b920a5ddc255b81263cbadf3d1c7ec60e2fbffc581d4de2e99b294bfec27d35874759d1d1b537cc7
+  languageName: node
+  linkType: hard
+
 "@sapphire/shapeshift@npm:^3.9.7":
   version: 3.9.7
   resolution: "@sapphire/shapeshift@npm:3.9.7"
@@ -4101,6 +4108,7 @@ __metadata:
     "@napi-rs/canvas": "npm:^0.1.53"
     "@oldschoolgg/toolkit": "git+https://github.com/oldschoolgg/toolkit.git#c1d6559b0f8106c90d0ab8e411cda978db5cfc77"
     "@prisma/client": "npm:^5.16.1"
+    "@sapphire/ratelimits": "npm:^2.4.9"
     "@sapphire/snowflake": "npm:^3.5.3"
     "@sapphire/time-utilities": "npm:^1.6.0"
     "@sentry/node": "npm:^8.15.0"

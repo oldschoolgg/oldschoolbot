@@ -420,7 +420,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			]);
 
 			sanityCheckListing(listing);
-			log(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
+			this.log(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
 
 			return {
 				createdListing: listing,
