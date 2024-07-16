@@ -5,7 +5,6 @@ import { ComponentType, PermissionsBitField } from 'discord.js';
 import { OWNER_IDS, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, minionBuyButton } from '../../lib/constants';
-import { getPerkTierSync } from '../../lib/perkTier';
 import type { CategoryFlag } from '../../lib/types';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';
@@ -142,7 +141,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ member, guild, channel, user }) => {
 			if (!guild || guild.id !== SupportServer) return false;
 			if (channel.id !== Channel.General) return false;
-			const perkTier = getPerkTierSync(user.id);
+			const perkTier = user.perkTier();
 			if (member && perkTier >= PerkTier.Two) {
 				return false;
 			}
