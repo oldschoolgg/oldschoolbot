@@ -823,7 +823,7 @@ export async function minionKillCommand(
 		} else {
 			antiPKSupplies.add('Super restore(4)', antiPkRestoresNeeded);
 		}
-		if (user.bank.amount('Blighted karambwan') >= antiPkKarambwanNeeded) {
+		if (user.bank.amount('Blighted karambwan') >= antiPkKarambwanNeeded + 20) {
 			antiPKSupplies.add('Blighted karambwan', antiPkKarambwanNeeded);
 		} else {
 			antiPKSupplies.add('Cooked karambwan', antiPkKarambwanNeeded);
@@ -927,7 +927,7 @@ export async function minionKillCommand(
 
 	// Remove items after food calc to prevent losing items if the user doesn't have the right amount of food. Example: Mossy key
 	if (lootToRemove.length > 0) {
-		updateBankSetting('economyStats_PVMCost', lootToRemove);
+		await updateBankSetting('economyStats_PVMCost', lootToRemove);
 		await user.specialRemoveItems(lootToRemove, { wildy: !!isInWilderness });
 		totalCost.add(lootToRemove);
 	}
