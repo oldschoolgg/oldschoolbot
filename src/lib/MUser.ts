@@ -30,7 +30,7 @@ import type { FarmingContract } from './minions/farming/types';
 import type { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
-import { getUsersPerkTier, syncPerkTierOfUser } from './perkTiers';
+import { getUsersPerkTier } from './perkTiers';
 import { roboChimpUserFetch } from './roboChimp';
 import type { MinigameScore } from './settings/minigames';
 import { Minigames, getMinigameEntity } from './settings/minigames';
@@ -41,7 +41,7 @@ import type { BankSortMethod } from './sorts';
 import type { ChargeBank } from './structures/Bank';
 import { Gear, defaultGear } from './structures/Gear';
 import type { ItemBank, Skills } from './types';
-import { addItemToBank, cacheUsername, convertXPtoLVL, itemNameFromID } from './util';
+import { addItemToBank, convertXPtoLVL, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
@@ -96,17 +96,12 @@ export class MUserClass {
 	skillsAsXP!: Required<Skills>;
 	skillsAsLevels!: Required<Skills>;
 	badgesString!: string;
+	bitfield!: readonly BitField[];
 
 	constructor(user: User) {
 		this.user = user;
 		this.id = user.id;
 		this.updateProperties();
-
-		syncPerkTierOfUser(this);
-
-		if (this.user.username) {
-			cacheUsername(this.id, this.user.username, this.badgesString);
-		}
 	}
 
 	private updateProperties() {
@@ -138,6 +133,8 @@ export class MUserClass {
 		this.skillsAsLevels = this.getSkills(true);
 
 		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
+
+		this.bitfield = this.user.bitfield as readonly BitField[];
 	}
 
 	countSkillsAtleast99() {
@@ -200,12 +197,8 @@ export class MUserClass {
 		return Number(this.user.GP);
 	}
 
-	get bitfield() {
-		return this.user.bitfield as readonly BitField[];
-	}
-
-	perkTier(noCheckOtherAccounts?: boolean | undefined) {
-		return getUsersPerkTier(this, noCheckOtherAccounts);
+	perkTier() {
+		return getUsersPerkTier(this);
 	}
 
 	skillLevel(skill: xp_gains_skill_enum) {

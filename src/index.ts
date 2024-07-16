@@ -12,11 +12,14 @@ import { isObject } from 'e';
 
 import { SENTRY_DSN, SupportServer } from './config';
 import { syncActivityCache } from './lib/Task';
-import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from './lib/blacklists';
+import { cacheBadges } from './lib/badges';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from './lib/blacklists';
 import { Channel, Events, META_CONSTANTS, gitHash, globalConfig } from './lib/constants';
 import { economyLog } from './lib/economyLogs';
 import { onMessage } from './lib/events';
+import { GrandExchange } from './lib/grandExchange';
 import { modalInteractionHook } from './lib/modals';
+import { populateRoboChimpCache } from './lib/perkTier';
 import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { assert, runTimedLoggedFn } from './lib/util';
@@ -24,8 +27,9 @@ import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUser
 import { interactionHook } from './lib/util/globalInteractions';
 import { handleInteractionError } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
+import { syncDisabledCommands } from './lib/util/syncDisabledCommands';
 import { allCommands } from './mahoji/commands/allCommands';
-import { onStartup } from './mahoji/lib/events';
+import { onStartup, syncCustomPrices } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
@@ -193,7 +197,13 @@ async function main() {
 	await Promise.all([
 		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
 		runTimedLoggedFn('Sync Activity Cache', syncActivityCache),
-		runTimedLoggedFn('Startup Scripts', runStartupScripts)
+		runTimedLoggedFn('Startup Scripts', runStartupScripts),
+		runTimedLoggedFn('Sync Disabled Commands', syncDisabledCommands),
+		runTimedLoggedFn('Sync Blacklist', syncBlacklists),
+		runTimedLoggedFn('Syncing prices', syncCustomPrices),
+		runTimedLoggedFn('Caching badges', cacheBadges),
+		runTimedLoggedFn('Init Grand Exchange', () => GrandExchange.init()),
+		runTimedLoggedFn('populateRoboChimpCache', populateRoboChimpCache)
 	]);
 	await runTimedLoggedFn('Log In', () => client.login(globalConfig.botToken));
 	console.log(`Logged in as ${globalClient.user.username}`);

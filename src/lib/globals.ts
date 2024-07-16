@@ -5,6 +5,7 @@ import { PrismaClient as RobochimpPrismaClient } from '@prisma/robochimp';
 
 import { production } from '../config';
 import { globalConfig } from './constants';
+import { handleDeletedPatron, handleEditPatron } from './patreonUtils';
 
 declare global {
 	var prisma: PrismaClient;
@@ -44,3 +45,14 @@ function makeRedisClient(): TSRedis {
 	return new TSRedis({ mocked: !globalConfig.redisPort, port: globalConfig.redisPort });
 }
 global.redis = global.redis || makeRedisClient();
+
+global.redis.subscribe(message => {
+	debugLog(`Received message from Redis: ${JSON.stringify(message)}`);
+	if (message.type === 'patron_tier_change') {
+		if (message.new_tier === 0) {
+			return handleDeletedPatron(message.discord_ids);
+		} else {
+			return handleEditPatron(message.discord_ids);
+		}
+	}
+});

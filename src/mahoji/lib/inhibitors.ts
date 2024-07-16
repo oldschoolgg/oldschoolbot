@@ -1,12 +1,10 @@
+import { PerkTier, formatDuration } from '@oldschoolgg/toolkit';
 import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel, User } from 'discord.js';
 import { ComponentType, PermissionsBitField } from 'discord.js';
 
-import { PerkTier } from '@oldschoolgg/toolkit';
-import { formatDuration } from '@oldschoolgg/toolkit';
 import { OWNER_IDS, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BadgesEnum, BitField, Channel, DISABLED_COMMANDS, minionBuyButton } from '../../lib/constants';
-import { perkTierCache, syncPerkTierOfUser } from '../../lib/perkTiers';
 import type { CategoryFlag } from '../../lib/types';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';
@@ -143,11 +141,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ member, guild, channel, user }) => {
 			if (!guild || guild.id !== SupportServer) return false;
 			if (channel.id !== Channel.General) return false;
-
-			let perkTier = perkTierCache.get(user.id);
-			if (!perkTier) {
-				perkTier = syncPerkTierOfUser(user);
-			}
+			const perkTier = user.perkTier();
 			if (member && perkTier >= PerkTier.Two) {
 				return false;
 			}

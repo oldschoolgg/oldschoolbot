@@ -2,11 +2,12 @@ import { formatOrdinal } from '@oldschoolgg/toolkit';
 import type { TriviaQuestion, User } from '@prisma/robochimp';
 import { calcWhatPercent, round, sumArr } from 'e';
 import deepEqual from 'fast-deep-equal';
-
 import type { Bank } from 'oldschooljs';
+
 import { BOT_TYPE, globalConfig, masteryKey } from './constants';
 import { getTotalCl } from './data/Collections';
 import { calculateMastery } from './mastery';
+import { cacheRoboChimpUser } from './perkTier';
 import { MUserStats } from './structures/MUserStats';
 
 export type RobochimpUser = User;
@@ -73,7 +74,7 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 		[masteryKey]: totalMastery
 	} as const;
 
-	const newUser = await roboChimpClient.user.upsert({
+	const newUser: RobochimpUser = await roboChimpClient.user.upsert({
 		where: {
 			id: BigInt(user.id)
 		},
@@ -83,6 +84,7 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 			...updateObj
 		}
 	});
+	cacheRoboChimpUser(newUser);
 
 	if (!deepEqual(newUser.store_bitfield, user.user.store_bitfield)) {
 		await user.update({ store_bitfield: newUser.store_bitfield });
@@ -90,8 +92,8 @@ export async function roboChimpSyncData(user: MUser, newCL?: Bank) {
 	return newUser;
 }
 
-export async function roboChimpUserFetch(userID: string) {
-	const result = await roboChimpClient.user.upsert({
+export async function roboChimpUserFetch(userID: string): Promise<RobochimpUser> {
+	const result: RobochimpUser = await roboChimpClient.user.upsert({
 		where: {
 			id: BigInt(userID)
 		},
@@ -100,6 +102,8 @@ export async function roboChimpUserFetch(userID: string) {
 		},
 		update: {}
 	});
+
+	cacheRoboChimpUser(result);
 
 	return result;
 }
