@@ -60,7 +60,7 @@ function simulateColosseumRuns(samples = 100) {
 				hasTorture: true,
 				scytheCharges: 300,
 				venatorBowCharges: 50,
-				bloodFuryCharges: 900
+				bloodFuryCharges: 0
 			});
 			totalDuration += result.realDuration;
 			kcBank.add(result.addedWaveKCBank);
