@@ -365,13 +365,13 @@ model User {
   bank                   Json      @default("{}") @db.Json
   collectionLogBank      Json      @default("{}") @db.JsonB
   blowpipe               Json      @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
-  ironman_alts           String[]
+  ironman_alts           String[]  @default([])
   main_account           String?
   slayer_unlocks         Int[]     @map("slayer.unlocks")
   slayer_blocked_ids     Int[]     @map("slayer.blocked_ids")
   slayer_last_task       Int       @default(0) @map("slayer.last_task")
-  badges                 Int[]
-  bitfield               Int[]
+  badges                 Int[]     @default([])
+  bitfield               Int[]     @default([])
   temp_cl                Json      @default("{}") @db.Json
   last_temp_cl_reset     DateTime? @db.Timestamp(6)
   minion_equippedPet     Int?      @map("minion.equippedPet")
