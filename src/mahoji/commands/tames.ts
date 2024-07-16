@@ -74,7 +74,7 @@ import {
 } from '../../lib/util/tameUtil';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { arbitraryTameActivities } from '../../tasks/tames/tameTasks';
-import { collectables } from '../lib/abstracted_commands/collectCommand';
+import { collectables } from '../lib/collectables';
 import type { OSBMahojiCommand } from '../lib/util';
 
 const tameImageSize = 96;
