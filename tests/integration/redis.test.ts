@@ -3,7 +3,7 @@ import { expect, test } from 'vitest';
 import { TSRedis } from '@oldschoolgg/toolkit/TSRedis';
 import { sleep } from 'e';
 import { BadgesEnum, BitField, globalConfig } from '../../src/lib/constants';
-import { getPerkTierSync, roboChimpCache } from '../../src/lib/perkTier';
+import { roboChimpCache } from '../../src/lib/perkTier';
 import { getUsersPerkTier } from '../../src/lib/perkTiers';
 import { createTestUser } from './util';
 
@@ -62,7 +62,7 @@ test.concurrent('Should add to cache', async () => {
 	await sleep(250);
 	for (const user of users) {
 		const cached = roboChimpCache.get(user.id);
-		expect(getPerkTierSync(user.id)).toEqual(5);
+		expect(getUsersPerkTier(user)).toEqual(5);
 		expect(cached!.perk_tier).toEqual(5);
 	}
 });
@@ -85,7 +85,7 @@ test.concurrent('Should remove from cache', async () => {
 	});
 	await sleep(250);
 	for (const user of users) {
-		expect(getPerkTierSync(user.id)).toEqual(0);
+		expect(getUsersPerkTier(user)).toEqual(0);
 		const cached = roboChimpCache.get(user.id);
 		expect(cached).toEqual(undefined);
 	}
@@ -98,6 +98,11 @@ test.concurrent('Should recognize special bitfields', async () => {
 	];
 	for (const user of users) {
 		expect(getUsersPerkTier(user)).toEqual(2);
-		expect(getPerkTierSync(user)).toEqual(2);
 	}
+});
+
+test.concurrent('Should sdffsddfss', async () => {
+	const user = await createTestUser();
+	roboChimpCache.set(user.id, { perk_tier: 5 } as any);
+	expect(getUsersPerkTier(user)).toEqual(5);
 });

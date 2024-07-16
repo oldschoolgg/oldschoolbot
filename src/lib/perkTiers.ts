@@ -1,6 +1,6 @@
 import { SupportServer } from '../config';
 import { BitField, PerkTier, Roles } from './constants';
-import { getPerkTierSync } from './perkTier';
+import { roboChimpCache } from './perkTier';
 
 export const allPerkBitfields: BitField[] = [
 	BitField.IsPatronTier6,
@@ -41,31 +41,31 @@ export function getUsersPerkTier(user: MUser): PerkTier | 0 {
 		elligibleTiers.push(PerkTier.One);
 	}
 
-	const cached = getPerkTierSync(user.id);
-	if (cached > 0) {
-		elligibleTiers.push(cached);
+	const roboChimpCached = roboChimpCache.get(user.id);
+	if (roboChimpCached) {
+		elligibleTiers.push(roboChimpCached.perk_tier);
 	}
 
 	const bitfield = user.bitfield;
 
 	if (bitfield.includes(BitField.IsPatronTier6)) {
-		return elligibleTiers.push(PerkTier.Seven);
+		elligibleTiers.push(PerkTier.Seven);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier5)) {
-		return elligibleTiers.push(PerkTier.Six);
+		elligibleTiers.push(PerkTier.Six);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier4)) {
-		return elligibleTiers.push(PerkTier.Five);
+		elligibleTiers.push(PerkTier.Five);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier3)) {
-		return elligibleTiers.push(PerkTier.Four);
+		elligibleTiers.push(PerkTier.Four);
 	}
 
 	if (bitfield.includes(BitField.IsPatronTier2)) {
-		return elligibleTiers.push(PerkTier.Three);
+		elligibleTiers.push(PerkTier.Three);
 	}
 
 	return Math.max(...elligibleTiers, 0);
