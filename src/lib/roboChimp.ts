@@ -4,10 +4,10 @@ import { calcWhatPercent, round, sumArr } from 'e';
 import deepEqual from 'fast-deep-equal';
 import type { Bank } from 'oldschooljs';
 
-import { cacheRoboChimpUser } from '../mahoji/lib/perkTier';
 import { BOT_TYPE, globalConfig, masteryKey } from './constants';
 import { getTotalCl } from './data/Collections';
 import { calculateMastery } from './mastery';
+import { cacheRoboChimpUser } from './perkTier';
 import { MUserStats } from './structures/MUserStats';
 
 export type RobochimpUser = User;

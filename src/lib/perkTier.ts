@@ -1,8 +1,8 @@
 import { PerkTier } from '@oldschoolgg/toolkit';
 import { pick } from 'lodash';
-import { SupportServer } from '../../config';
-import { BitField, Roles } from '../../lib/constants';
-import type { RobochimpUser } from '../../lib/roboChimp';
+import { SupportServer } from '../config';
+import { BitField, Roles } from './constants';
+import type { RobochimpUser } from './roboChimp';
 
 const robochimpCachedKeys = [
 	'bits',

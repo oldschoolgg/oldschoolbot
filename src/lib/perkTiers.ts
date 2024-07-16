@@ -1,6 +1,6 @@
 import { SupportServer } from '../config';
-import { getPerkTierSync } from '../mahoji/lib/perkTier';
 import { BitField, PerkTier, Roles } from './constants';
+import { getPerkTierSync } from './perkTier';
 
 export const allPerkBitfields: BitField[] = [
 	BitField.IsPatronTier6,
