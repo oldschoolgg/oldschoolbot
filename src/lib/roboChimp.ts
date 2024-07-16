@@ -2,9 +2,9 @@ import { PerkTier, formatOrdinal } from '@oldschoolgg/toolkit';
 import type { TriviaQuestion, User } from '@prisma/robochimp';
 import { calcWhatPercent, round, sumArr } from 'e';
 import deepEqual from 'fast-deep-equal';
-
 import { pick } from 'lodash';
 import type { Bank } from 'oldschooljs';
+
 import { SupportServer } from '../config';
 import { BOT_TYPE, BitField, Roles, globalConfig, masteryKey } from './constants';
 import { getTotalCl } from './data/Collections';

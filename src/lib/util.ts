@@ -35,6 +35,7 @@ import type {
 	GroupMonsterActivityTaskOptions,
 	NexTaskOptions,
 	RaidsOptions,
+	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
 import { getItem } from './util/getOSItem';
@@ -420,4 +421,21 @@ export function checkRangeGearWeapon(gear: Gear) {
 		weapon,
 		ammo
 	};
+}
+export function normalizeTOAUsers(data: TOAOptions) {
+	const _detailedUsers = data.detailedUsers;
+	const detailedUsers = (
+		(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
+	).map(userArr =>
+		userArr.map(user => ({
+			id: user[0],
+			points: user[1],
+			deaths: user[2]
+		}))
+	);
+	return detailedUsers;
+}
+
+export function anyoneDiedInTOARaid(data: TOAOptions) {
+	return normalizeTOAUsers(data).some(userArr => userArr.some(user => user.deaths.length > 0));
 }
