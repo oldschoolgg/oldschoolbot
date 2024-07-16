@@ -1,5 +1,5 @@
 import { BadgesEnum } from './constants';
-import { populateRoboChimpCache } from './roboChimp';
+import { populateRoboChimpCache } from './perkTier';
 
 export async function handleDeletedPatron(userID: string[]) {
 	const users = await prisma.user.findMany({

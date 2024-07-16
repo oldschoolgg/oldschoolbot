@@ -3,8 +3,8 @@ import { expect, test } from 'vitest';
 import { TSRedis } from '@oldschoolgg/toolkit/TSRedis';
 import { sleep } from 'e';
 import { BadgesEnum, BitField, globalConfig } from '../../src/lib/constants';
+import { getPerkTierSync, roboChimpCache } from '../../src/lib/perkTier';
 import { getUsersPerkTier } from '../../src/lib/perkTiers';
-import { getPerkTierSync, roboChimpCache } from '../../src/lib/roboChimp';
 import { createTestUser } from './util';
 
 function makeSender() {

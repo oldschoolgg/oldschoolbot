@@ -1,6 +1,6 @@
 import { SupportServer } from '../config';
 import { BitField, PerkTier, Roles } from './constants';
-import { getPerkTierSync } from './roboChimp';
+import { getPerkTierSync } from './perkTier';
 
 export const allPerkBitfields: BitField[] = [
 	BitField.IsPatronTier6,

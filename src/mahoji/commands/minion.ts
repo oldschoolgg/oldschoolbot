@@ -22,7 +22,8 @@ import type { AttackStyles } from '../../lib/minions/functions';
 import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
-import { roboChimpCache, roboChimpUserFetch } from '../../lib/roboChimp';
+import { roboChimpCache } from '../../lib/perkTier';
+import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
@@ -96,7 +97,7 @@ export async function getUserInfo(user: MUser) {
 		2
 	);
 
-	const roboCache = await roboChimpCache.get(user.id);
+	const roboCache = roboChimpCache.get(user.id);
 	return {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
