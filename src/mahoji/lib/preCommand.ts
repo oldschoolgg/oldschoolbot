@@ -27,14 +27,12 @@ export async function preCommand({
 	| undefined
 	| {
 			reason: InteractionReplyOptions;
-			silent: boolean;
 			dontRunPostCommand?: boolean;
 	  }
 > {
 	CACHED_ACTIVE_USER_IDS.add(userID);
 	if (globalClient.isShuttingDown) {
 		return {
-			silent: true,
 			reason: { content: 'The bot is currently restarting, please try again later.' },
 			dontRunPostCommand: true
 		};
@@ -45,9 +43,9 @@ export async function preCommand({
 		username
 	});
 
-	user.checkBankBackground();
+	// TODO: user.checkBankBackground();
 	if (userIsBusy(userID) && !bypassInhibitors && !busyImmuneCommands.includes(abstractCommand.name)) {
-		return { silent: true, reason: { content: 'You cannot use a command right now.' }, dontRunPostCommand: true };
+		return { reason: { content: 'You cannot use a command right now.' }, dontRunPostCommand: true };
 	}
 	if (!busyImmuneCommands.includes(abstractCommand.name)) modifyBusyCounter(userID, 1);
 

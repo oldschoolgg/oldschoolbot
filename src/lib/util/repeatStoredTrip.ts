@@ -75,7 +75,7 @@ import type {
 import { itemNameFromID } from '../util';
 import { giantsFoundryAlloys } from './../../mahoji/lib/abstracted_commands/giantsFoundryCommand';
 import type { NightmareZoneActivityTaskOptions, UnderwaterAgilityThievingTaskOptions } from './../types/minions';
-import { deferInteraction, interactionReply } from './interactionReply';
+import { interactionReply } from './interactionReply';
 
 export const taskCanBeRepeated = (activity: Activity) => {
 	return !(
@@ -895,7 +895,6 @@ export async function repeatTrip(
 	if (!data || !data.data || !data.type) {
 		return interactionReply(interaction, { content: "Couldn't find any trip to repeat.", ephemeral: true });
 	}
-	await deferInteraction(interaction);
 	const handler = tripHandlers[data.type];
 	return runCommand({
 		commandName: handler.commandName,

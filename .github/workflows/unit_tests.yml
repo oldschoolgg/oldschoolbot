@@ -11,7 +11,7 @@ jobs:
   test:
     name: Node v${{ matrix.node_version }} - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
+    timeout-minutes: 5
     strategy:
       matrix:
         node_version: [20.15.0]
@@ -43,8 +43,4 @@ jobs:
       - name: Build
         run: yarn build:tsc
       - name: Test
-        run: |
-          yarn test:unit
-          yarn test:lint
-          tsc -p tests/integration && tsc -p tests/unit
-          npm i -g dpdm && dpdm --exit-code circular:1 --progress=false --warning=false --tree=false ./dist/index.js
+        run: yarn test:ci:unit

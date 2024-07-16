@@ -12,7 +12,7 @@ import {
 	gearValidationChecks,
 	minionBuyButton
 } from '../../lib/constants';
-import { perkTierCache, syncPerkTierOfUser } from '../../lib/perkTiers';
+import { getPerkTierSync } from '../../lib/roboChimp';
 import type { CategoryFlag } from '../../lib/types';
 import { formatDuration, roll } from '../../lib/util';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
@@ -150,11 +150,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ member, guild, channel, user }) => {
 			if (!guild || guild.id !== SupportServer) return false;
 			if (channel.id !== Channel.General) return false;
-
-			let perkTier = perkTierCache.get(user.id);
-			if (!perkTier) {
-				perkTier = syncPerkTierOfUser(user);
-			}
+			const perkTier = getPerkTierSync(user.id);
 			if (member && perkTier >= PerkTier.Two) {
 				return false;
 			}

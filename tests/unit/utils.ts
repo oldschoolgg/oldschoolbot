@@ -36,8 +36,6 @@ interface MockUserArgs {
 	skills_prayer?: number;
 	skills_fishing?: number;
 	GP?: number;
-	premium_balance_tier?: number;
-	premium_balance_expiry_date?: number;
 	bitfield?: BitField[];
 	id?: string;
 }
@@ -83,8 +81,6 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_invention: 0,
 		skills_hitpoints: overrides?.skills_hitpoints ?? convertLVLtoXP(10),
 		GP: overrides?.GP ?? 0,
-		premium_balance_tier: overrides?.premium_balance_tier,
-		premium_balance_expiry_date: overrides?.premium_balance_expiry_date,
 		ironman_alts: [],
 		bitfield: overrides?.bitfield ?? [],
 		username: 'Magnaboy',

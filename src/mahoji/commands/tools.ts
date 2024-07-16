@@ -12,7 +12,7 @@ import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { ADMIN_IDS, OWNER_IDS, production } from '../../config.example';
-import { giveBoxResetTime, isPrimaryPatron, mahojiUserSettingsUpdate, spawnLampResetTime } from '../../lib/MUser';
+import { giveBoxResetTime, mahojiUserSettingsUpdate, spawnLampResetTime } from '../../lib/MUser';
 import { MysteryBoxes, spookyTable } from '../../lib/bsoOpenables';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { allStashUnitsFlat } from '../../lib/clues/stashUnits';
@@ -47,6 +47,7 @@ import {
 	roll,
 	stringMatches
 } from '../../lib/util';
+import { findGroupOfUser } from '../../lib/util/findGroupOfUser';
 import { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
@@ -80,9 +81,6 @@ function dateDiff(first: number, second: number) {
 async function giveBox(mahojiUser: MUser, _recipient: MahojiUserOption) {
 	if (!_recipient) return 'You need to specify a user to give a box to.';
 	const recipient = await mUserFetch(_recipient.user.id);
-	if (!isPrimaryPatron(mahojiUser)) {
-		return 'Shared-perk accounts cannot use this.';
-	}
 
 	const currentDate = Date.now();
 	const lastDate = Number(mahojiUser.user.lastGivenBoxx);
@@ -376,7 +374,7 @@ export function spawnLampIsReady(user: MUser, channelID: string): [true] | [fals
 		return [false, "You can't use spawnlamp in this channel."];
 	}
 
-	const perkTier = getUsersPerkTier(user, true);
+	const perkTier = user.perkTier();
 	const isPatron = perkTier >= PerkTier.Four || user.bitfield.includes(BitField.HasPermanentSpawnLamp);
 	if (!isPatron) {
 		return [false, 'You need to be a T3 patron or higher to use this command.'];
@@ -419,7 +417,7 @@ async function spawnLampCommand(user: MUser, channelID: string): CommandResponse
 	return `${winner} got it, and won **${loot}**! ${explainAnswer}`;
 }
 async function spawnBoxCommand(user: MUser, channelID: string): CommandResponse {
-	const perkTier = getUsersPerkTier(user, true);
+	const perkTier = user.perkTier();
 	if (perkTier < PerkTier.Four && !user.bitfield.includes(BitField.HasPermanentEventBackgrounds)) {
 		return 'You need to be a T3 patron or higher to use this command.';
 	}
@@ -916,9 +914,6 @@ async function patronTriggerDoubleLoot(user: MUser) {
 	if (perkTier < PerkTier.Five) {
 		return 'Only T4, T5 or T6 patrons can use this command.';
 	}
-	if (!isPrimaryPatron(user)) {
-		return 'You can only do this from your primary account.';
-	}
 
 	const lastTime = user.user.last_patron_double_time_trigger;
 	const differenceSinceLastUsage = lastTime ? Date.now() - lastTime.getTime() : null;
@@ -929,9 +924,19 @@ async function patronTriggerDoubleLoot(user: MUser) {
 	}
 
 	const time = calcTime(perkTier);
-	await mahojiUserSettingsUpdate(user.id, {
-		last_patron_double_time_trigger: new Date()
+
+	const group = await findGroupOfUser(user.id);
+	await prisma.user.updateMany({
+		where: {
+			id: {
+				in: group
+			}
+		},
+		data: {
+			last_patron_double_time_trigger: new Date()
+		}
 	});
+
 	await addToDoubleLootTimer(
 		time,
 		`${userMention(user.id)} used their monthly Tier ${perkTier - 1} double loot time`

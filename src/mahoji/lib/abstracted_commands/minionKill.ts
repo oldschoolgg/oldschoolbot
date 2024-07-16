@@ -57,7 +57,6 @@ import { addStatsOfItemsTogether } from '../../../lib/structures/Gear';
 import type { Peak } from '../../../lib/tickers';
 import type { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
-	type CommandResponse,
 	calculateSimpleMonsterDeathChance,
 	checkRangeGearWeapon,
 	convertAttackStyleToGearSetup,
@@ -166,7 +165,7 @@ export async function minionKillCommand(
 	method: PvMMethod | undefined,
 	wilderness: boolean | undefined,
 	_solo: boolean | undefined
-): CommandResponse {
+): Promise<string | InteractionReplyOptions> {
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
@@ -267,7 +266,6 @@ export async function minionKillCommand(
 		wildyBurst
 	});
 
-	// Check requirements
 	const [hasReqs, reason] = hasMonsterRequirements(user, monster);
 	if (!hasReqs) {
 		return typeof reason === 'string' ? reason : "You don't have the requirements to fight this monster";

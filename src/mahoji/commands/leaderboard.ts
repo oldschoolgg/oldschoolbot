@@ -144,7 +144,7 @@ async function kcLb(
 		${ironmanOnly ? 'INNER JOIN "users" on "users"."id" = "user_stats"."user_id"::text' : ''}
 		 WHERE CAST("monster_scores"->>'${monster.id}' AS INTEGER) > 5
 		 ${ironmanOnly ? ' AND "users"."minion.ironman" = true ' : ''}
-		 ORDER BY kc DESC
+		 ORDER BY score DESC
 		 LIMIT 2000;`
 	);
 

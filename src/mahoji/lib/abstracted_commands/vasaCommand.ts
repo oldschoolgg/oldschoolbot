@@ -2,13 +2,12 @@ import { EmbedBuilder, type TextChannel } from 'discord.js';
 import { Time, randInt, sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
-import type { CommandResponse } from '@oldschoolgg/toolkit';
 import { VasaMagus } from '../../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { BossInstance } from '../../../lib/structures/Boss';
 import { Gear } from '../../../lib/structures/Gear';
 import { formatDuration } from '../../../lib/util';
 
-export async function vasaCommand(user: MUser, channelID: string, quantity?: number): CommandResponse {
+export async function vasaCommand(user: MUser, channelID: string, quantity?: number) {
 	const instance = new BossInstance({
 		leader: user,
 		id: VasaMagus.id,

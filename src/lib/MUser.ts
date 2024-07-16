@@ -35,7 +35,7 @@ import type { AttackStyles } from './minions/functions';
 import { blowpipeDarts, validateBlowpipeData } from './minions/functions/blowpipeCommand';
 import type { AddXpParams, BlowpipeData, ClueBank } from './minions/types';
 import { mysteriousStepData, mysteriousTrailTracks } from './mysteryTrail';
-import { getUsersPerkTier, syncPerkTierOfUser } from './perkTiers';
+import { getUsersPerkTier } from './perkTiers';
 import { roboChimpUserFetch } from './roboChimp';
 import type { MinigameScore } from './settings/minigames';
 import { Minigames, getMinigameEntity } from './settings/minigames';
@@ -47,7 +47,7 @@ import type { ChargeBank, XPBank } from './structures/Banks';
 import { Gear } from './structures/Gear';
 import { MTame } from './structures/MTame';
 import type { Skills } from './types';
-import { addItemToBank, cacheUsername, convertXPtoLVL, getAllIDsOfUser, itemNameFromID } from './util';
+import { addItemToBank, convertXPtoLVL, getAllIDsOfUser, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
@@ -105,17 +105,12 @@ export class MUserClass {
 	skillsAsLevels!: Required<Skills>;
 	paintedItems!: Map<number, number>;
 	badgesString!: string;
+	bitfield!: readonly BitField[];
 
 	constructor(user: User) {
 		this.user = user;
 		this.id = user.id;
 		this.updateProperties();
-
-		syncPerkTierOfUser(this);
-
-		if (this.user.username) {
-			cacheUsername(this.id, this.user.username, this.badgesString);
-		}
 	}
 
 	private updateProperties() {
@@ -148,6 +143,8 @@ export class MUserClass {
 
 		this.paintedItems = this.buildPaintedItems();
 		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
+
+		this.bitfield = this.user.bitfield as readonly BitField[];
 	}
 
 	get gearTemplate() {
@@ -214,12 +211,8 @@ export class MUserClass {
 		return Number(this.user.GP);
 	}
 
-	get bitfield() {
-		return this.user.bitfield as readonly BitField[];
-	}
-
-	perkTier(noCheckOtherAccounts?: boolean | undefined) {
-		return getUsersPerkTier(this, noCheckOtherAccounts);
+	perkTier() {
+		return getUsersPerkTier(this);
 	}
 
 	skillLevel(skill: xp_gains_skill_enum) {
@@ -1151,18 +1144,10 @@ async function srcMUserFetch(userID: string, updates: Prisma.UserUpdateInput = {
 
 global.mUserFetch = srcMUserFetch;
 
-/**
- * Determines if the user is only a patron because they have shared perks from another account.
- */
-export function isPrimaryPatron(user: MUser) {
-	const perkTier = getUsersPerkTier(user, true);
-	return perkTier > 0;
-}
-
 export const dailyResetTime = Time.Hour * 4;
 export const spawnLampResetTime = (user: MUser) => {
 	const bf = user.bitfield;
-	const perkTier = getUsersPerkTier(user, true);
+	const perkTier = user.perkTier();
 
 	const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
 	const hasTier5 = perkTier >= PerkTier.Five;
