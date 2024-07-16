@@ -333,7 +333,7 @@ export async function startBossEvent({ boss, id }: { boss: BossEvent; id?: BossE
 
 		return channel.send({
 			embeds: [embed],
-			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : undefined,
+			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.',
 			allowedMentions: {
 				roles: ['896845245873025067']
 			}

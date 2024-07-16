@@ -78,7 +78,7 @@ ${bossUsers.map(u => `**${u.user.usernameOrMention}**: ${u.debugStr}`).join('\n\
 
 		return {
 			embeds: [embed.data],
-			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : undefined
+			content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : 'No boosts.'
 		};
 	} catch (err: any) {
 		return `The mass failed to start for this reason: ${err}.`;
