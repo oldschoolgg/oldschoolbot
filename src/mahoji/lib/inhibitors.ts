@@ -12,7 +12,6 @@ import {
 	gearValidationChecks,
 	minionBuyButton
 } from '../../lib/constants';
-import { getPerkTierSync } from '../../lib/perkTier';
 import type { CategoryFlag } from '../../lib/types';
 import { formatDuration, roll } from '../../lib/util';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
@@ -150,7 +149,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ member, guild, channel, user }) => {
 			if (!guild || guild.id !== SupportServer) return false;
 			if (channel.id !== Channel.General) return false;
-			const perkTier = getPerkTierSync(user.id);
+			const perkTier = user.perkTier();
 			if (member && perkTier >= PerkTier.Two) {
 				return false;
 			}

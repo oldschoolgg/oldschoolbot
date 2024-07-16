@@ -393,11 +393,19 @@ export function spawnLampIsReady(user: MUser, channelID: string): [true] | [fals
 }
 async function spawnLampCommand(user: MUser, channelID: string): CommandResponse {
 	const isAdmin = OWNER_IDS.includes(user.id) || ADMIN_IDS.includes(user.id);
-	const [lampIsReady, reason] = isAdmin ? [true, ''] : spawnLampIsReady(user, channelID.toString());
+	const [lampIsReady, reason] = isAdmin ? [true, ''] : spawnLampIsReady(user, channelID);
 	if (!lampIsReady && reason) return reason;
 
-	await mahojiUserSettingsUpdate(user.id, {
-		lastSpawnLamp: Date.now()
+	const group = await findGroupOfUser(user.id);
+	await prisma.user.updateMany({
+		where: {
+			id: {
+				in: group
+			}
+		},
+		data: {
+			lastSpawnLamp: Date.now()
+		}
 	});
 
 	const { answers, question, explainAnswer } = generateXPLevelQuestion();

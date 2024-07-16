@@ -1,7 +1,4 @@
-import { PerkTier } from '@oldschoolgg/toolkit';
 import { pick } from 'lodash';
-import { SupportServer } from '../config';
-import { BitField, Roles } from './constants';
 import type { RobochimpUser } from './roboChimp';
 
 const robochimpCachedKeys = [
@@ -44,34 +41,4 @@ export async function populateRoboChimpCache() {
 export function cacheRoboChimpUser(user: RobochimpUser) {
 	if (user.perk_tier === 0) return;
 	roboChimpCache.set(user.id.toString(), pick(user, robochimpCachedKeys));
-}
-
-export function getPerkTierSync(user: string | MUser) {
-	const elligibleTiers = [];
-	if (typeof user !== 'string') {
-		if (
-			[BitField.isContributor, BitField.isModerator, BitField.IsWikiContributor].some(bit =>
-				user.bitfield.includes(bit)
-			)
-		) {
-			return PerkTier.Four;
-		}
-
-		if (
-			user.bitfield.includes(BitField.IsPatronTier1) ||
-			user.bitfield.includes(BitField.HasPermanentTierOne) ||
-			user.bitfield.includes(BitField.BothBotsMaxedFreeTierOnePerks)
-		) {
-			elligibleTiers.push(PerkTier.Two);
-		} else {
-			const guild = globalClient.guilds.cache.get(SupportServer);
-			const member = guild?.members.cache.get(user.id);
-			if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
-				elligibleTiers.push(PerkTier.One);
-			}
-		}
-	}
-
-	elligibleTiers.push(roboChimpCache.get(typeof user === 'string' ? user : user.id)?.perk_tier ?? 0);
-	return Math.max(...elligibleTiers);
 }
