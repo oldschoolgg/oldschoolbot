@@ -63,8 +63,8 @@ model Analytic {
 
 model ClientStorage {
   id                           String   @id @db.VarChar(19)
-  userBlacklist                String[] @db.VarChar(19)
-  guildBlacklist               String[] @db.VarChar(19)
+  userBlacklist                String[] @default([]) @db.VarChar(19)
+  guildBlacklist               String[] @default([]) @db.VarChar(19)
   commandStats                 Json     @default("{}") @db.Json
   totalCommandsUsed            Int      @default(0)
   prices                       Json     @default("{}") @db.Json
@@ -126,7 +126,7 @@ model ClientStorage {
   degraded_items_cost          Json     @default("{}") @db.Json
   tks_cost                     Json     @default("{}") @db.Json
   tks_loot                     Json     @default("{}") @db.Json
-  disabled_commands            String[] @db.VarChar(32)
+  disabled_commands            String[] @default([]) @db.VarChar(32)
   gp_tax_balance               BigInt   @default(0)
   gotr_cost                    Json     @default("{}") @db.Json
   gotr_loot                    Json     @default("{}") @db.Json
@@ -259,7 +259,7 @@ model Giveaway {
   message_id  String   @db.VarChar(19)
   reaction_id String?  @db.VarChar(19)
 
-  users_entered String[]
+  users_entered String[] @default([])
 
   @@index([completed, finish_date])
   @@map("giveaway")
@@ -267,11 +267,11 @@ model Giveaway {
 
 model Guild {
   id                String   @id @db.VarChar(19)
-  disabledCommands  String[]
+  disabledCommands  String[] @default([])
   jmodComments      String?  @db.VarChar(19)
   petchannel        String?  @db.VarChar(19)
   tweetchannel      String?  @db.VarChar(19)
-  staffOnlyChannels String[] @db.VarChar(19)
+  staffOnlyChannels String[] @default([]) @db.VarChar(19)
 
   // BSO
   mega_duck_location Json @default("{\"x\":1356,\"y\":209,\"usersParticipated\":{}}") @db.Json
@@ -367,8 +367,8 @@ model User {
   blowpipe               Json      @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
   ironman_alts           String[]  @default([])
   main_account           String?
-  slayer_unlocks         Int[]     @map("slayer.unlocks")
-  slayer_blocked_ids     Int[]     @map("slayer.blocked_ids")
+  slayer_unlocks         Int[]     @default([]) @map("slayer.unlocks")
+  slayer_blocked_ids     Int[]     @default([]) @map("slayer.blocked_ids")
   slayer_last_task       Int       @default(0) @map("slayer.last_task")
   badges                 Int[]     @default([])
   bitfield               Int[]     @default([])
@@ -377,7 +377,7 @@ model User {
   minion_equippedPet     Int?      @map("minion.equippedPet")
   minion_farmingContract Json?     @map("minion.farmingContract") @db.Json
   minion_birdhouseTraps  Json?     @map("minion.birdhouseTraps") @db.Json
-  finished_quest_ids     Int[]
+  finished_quest_ids     Int[]     @default([])
 
   // Relations
   farmedCrops    FarmedCrop[]
@@ -388,19 +388,19 @@ model User {
   // Configs/Settings
   minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")
   auto_farm_filter           AutoFarmFilterEnum @default(AllFarm)
-  favoriteItems              Int[]
-  favorite_alchables         Int[]
-  favorite_food              Int[]
-  favorite_bh_seeds          Int[]
+  favoriteItems              Int[]              @default([])
+  favorite_alchables         Int[]              @default([])
+  favorite_food              Int[]              @default([])
+  favorite_bh_seeds          Int[]              @default([])
   minion_defaultPay          Boolean            @default(false) @map("minion.defaultPay")
   minion_icon                String?            @map("minion.icon")
   minion_name                String?            @map("minion.name")
   bank_bg_hex                String?
   bankBackground             Int                @default(1)
-  attack_style               String[]
-  combat_options             Int[]
+  attack_style               String[]           @default([])
+  combat_options             Int[]              @default([])
   slayer_remember_master     String?            @map("slayer.remember_master")
-  slayer_autoslay_options    Int[]              @map("slayer.autoslay_options")
+  slayer_autoslay_options    Int[]              @default([]) @map("slayer.autoslay_options")
   bank_sort_method           String?            @db.VarChar(16)
   bank_sort_weightings       Json               @default("{}") @db.Json
   gambling_lockout_expiry    DateTime?
@@ -463,7 +463,7 @@ model User {
   zeal_tokens          Int @default(0)
   slayer_points        Int @default(0) @map("slayer.points")
 
-  completed_ca_task_ids Int[]
+  completed_ca_task_ids Int[] @default([])
 
   // BSO
   nursery                  Json?    @db.Json
@@ -485,7 +485,7 @@ model User {
   last_patron_double_time_trigger DateTime? @db.Timestamp(6)
   lottery_input                   Json      @default("{}") @db.Json
   gear_template                   Int       @default(0) @db.SmallInt
-  unlocked_gear_templates         Int[]
+  unlocked_gear_templates         Int[]     @default([])
   last_bonanza_date               DateTime? @db.Timestamp(6)
   painted_items_tuple             Json?     @db.Json
 
@@ -494,8 +494,8 @@ model User {
   materials_owned           Json   @default("{}") @db.Json
   disassembled_items_bank   Json   @default("{}") @db.Json
   researched_materials_bank Json   @default("{}") @db.Json
-  unlocked_blueprints       Int[]
-  disabled_inventions       Int[]
+  unlocked_blueprints       Int[]  @default([])
+  disabled_inventions       Int[]  @default([])
 
   bso_mystery_trail_current_step_id Int?
 
@@ -882,7 +882,7 @@ model EconomyTransaction {
 model StashUnit {
   stash_id        Int
   user_id         BigInt
-  items_contained Int[]
+  items_contained Int[]   @default([])
   has_built       Boolean
 
   @@unique([stash_id, user_id])
@@ -910,7 +910,7 @@ model UserStats {
   farming_plant_cost_bank   Json @default("{}") @db.Json
   farming_harvest_loot_bank Json @default("{}") @db.Json
 
-  cl_array        Int[]
+  cl_array        Int[] @default([])
   cl_array_length Int   @default(0)
 
   // BSO
@@ -1371,14 +1371,14 @@ model Bingo {
 
   is_global Boolean @default(false)
 
-  organizers               String[]
+  organizers               String[] @default([])
   start_date               DateTime @default(now()) @db.Timestamp(6)
   duration_days            Int
   team_size                Int
   title                    String
   notifications_channel_id String   @db.VarChar(19)
   ticket_price             BigInt
-  bingo_tiles              Json[]
+  bingo_tiles              Json[]   @default([])
   was_finalized            Boolean  @default(false)
 
   guild_id String @db.VarChar(19)
