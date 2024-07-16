@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { PHOSANI_NIGHTMARE_ID } from '../constants';
-import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { Requirements } from '../structures/Requirements';
 import type {
 	ActivityTaskData,
@@ -13,6 +12,7 @@ import type {
 	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from '../types/minions';
+import { anyoneDiedInTOARaid } from '../util';
 import { isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
 

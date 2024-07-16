@@ -11,14 +11,9 @@ import { toaCL } from '../../../lib/data/CollectionsExport';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
-import {
-	calcTOALoot,
-	calculateXPFromRaid,
-	normalizeTOAUsers,
-	toaOrnamentKits,
-	toaPetTransmogItems
-} from '../../../lib/simulation/toa';
+import { calcTOALoot, calculateXPFromRaid, toaOrnamentKits, toaPetTransmogItems } from '../../../lib/simulation/toa';
 import type { TOAOptions } from '../../../lib/types/minions';
+import { normalizeTOAUsers } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { assert } from '../../../lib/util/logError';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';

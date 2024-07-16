@@ -137,7 +137,7 @@ export async function minionKillCommand(
 	method: PvMMethod | undefined,
 	wilderness: boolean | undefined,
 	solo: boolean | undefined
-) {
+): Promise<string | InteractionReplyOptions> {
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
@@ -223,9 +223,10 @@ export async function minionKillCommand(
 		wildyBurst
 	});
 
-	// Check requirements
 	const [hasReqs, reason] = hasMonsterRequirements(user, monster);
-	if (!hasReqs) return reason ?? "You don't have the requirements to fight this monster";
+	if (!hasReqs) {
+		return typeof reason === 'string' ? reason : "You don't have the requirements to fight this monster";
+	}
 
 	if (monster.diaryRequirement) {
 		const [hasDiary, _, diaryGroup] = await userhasDiaryTier(user, monster.diaryRequirement);

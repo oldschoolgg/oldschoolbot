@@ -3,7 +3,6 @@ import { Monsters } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { NEX_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
-import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { Requirements } from '../structures/Requirements';
 import type {
 	ActivityTaskData,
@@ -14,6 +13,7 @@ import type {
 	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from '../types/minions';
+import { anyoneDiedInTOARaid } from '../util';
 import { isCertainMonsterTrip } from './caUtils';
 import type { CombatAchievement } from './combatAchievements';
 
