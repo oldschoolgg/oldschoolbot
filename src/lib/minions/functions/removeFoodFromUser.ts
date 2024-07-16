@@ -74,8 +74,7 @@ export default async function removeFoodFromUser({
 		);
 	} else {
 		await transactItems({ userID: user.id, itemsToRemove: foodToRemove });
-
-		updateBankSetting('economyStats_PVMCost', foodToRemove);
+		await updateBankSetting('economyStats_PVMCost', foodToRemove);
 
 		return {
 			foodRemoved: foodToRemove,
