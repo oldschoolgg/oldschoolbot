@@ -44,38 +44,47 @@ export const colosseumTask: MinionTask = {
 			.map(([kc, amount]) => `Wave ${kc}: ${amount} KC`)
 			.join(', ')}`;
 
+		let scytheRefund = 0;
+		let venatorBowRefund = 0;
+		let bloodFuryRefund = 0;
+
+		let str = ''; // Initialize the string variable
+
 		const newWaveKcStr = !diedAt || diedAt > 1 ? `New wave KCs: ${newKCsStr}.` : 'No new KCs.';
 		if (diedAt) {
 			const wave = colosseumWaves.find(i => i.waveNumber === diedAt)!;
 
 			// Calculate refund for unused charges
 			const completionPercentage = (diedAt - 1) / 12;
-			const refundCharges = {
-				scytheCharges: Math.ceil(scytheCharges * (1 - completionPercentage)),
-				venatorBowCharges: Math.ceil(venatorBowCharges * (1 - completionPercentage)),
-				bloodFuryCharges: Math.ceil(bloodFuryCharges * (1 - completionPercentage))
-			};
-			const chargeBank = new ChargeBank();
+			if (scytheCharges > 0) scytheRefund = Math.ceil(scytheCharges * (1 - completionPercentage));
+			if (venatorBowCharges > 0) venatorBowRefund = Math.ceil(venatorBowCharges * (1 - completionPercentage));
+			if (bloodFuryCharges > 0) bloodFuryRefund = Math.ceil(bloodFuryCharges * (1 - completionPercentage));
 
-			chargeBank.add('scythe_of_vitur_charges', refundCharges.scytheCharges);
-			chargeBank.add('venator_bow_charges', refundCharges.venatorBowCharges);
-			chargeBank.add('blood_fury_charges', refundCharges.bloodFuryCharges);
+			const chargeBank = new ChargeBank();
+			if (scytheRefund > 0) chargeBank.add('scythe_of_vitur_charges', scytheRefund);
+			if (venatorBowRefund > 0) chargeBank.add('venator_bow_charges', venatorBowRefund);
+			if (bloodFuryRefund > 0) chargeBank.add('blood_fury_charges', bloodFuryRefund);
 
 			if (chargeBank.length() > 0) {
-				await refundChargeBank(user, chargeBank);
-			}
+				const refundResults = await refundChargeBank(user, chargeBank);
 
-			return handleTripFinish(
-				user,
-				channelID,
-				`${user}, you died on wave ${diedAt} to ${randArrItem([
+				// Prepare refund result strings
+				const refundMessages = refundResults
+					.map(result => `${result.userMessage} Total charges: ${result.totalCharges}.`)
+					.join('\n');
+
+				str = `${user}, you died on wave ${diedAt} to ${randArrItem([
 					...(wave?.reinforcements ?? []),
 					...wave.enemies
-				])}, and received no loot. ${newWaveKcStr}`,
-				undefined,
-				data,
-				null
-			);
+				])}, and received no loot. ${newWaveKcStr}\n${refundMessages}`;
+			} else {
+				str = `${user}, you died on wave ${diedAt} to ${randArrItem([
+					...(wave?.reinforcements ?? []),
+					...wave.enemies
+				])}, and received no loot. ${newWaveKcStr}`;
+			}
+
+			return handleTripFinish(user, channelID, str, undefined, data, null);
 		}
 
 		await incrementMinigameScore(user.id, 'colosseum');
@@ -113,7 +122,7 @@ export const colosseumTask: MinionTask = {
 			]
 		});
 
-		let str = `${user}, you completed the Colosseum! You received: ${loot}. ${newWaveKcStr}`;
+		str = `${user}, you completed the Colosseum! You received: ${loot}. ${newWaveKcStr}`;
 
 		if (!stats.colo_max_glory || maxGlory > stats.colo_max_glory) {
 			await userStatsUpdate(user.id, { colo_max_glory: maxGlory });

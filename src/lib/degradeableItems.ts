@@ -64,6 +64,7 @@ interface DegradeableItemPVMBoost {
 interface RefundResult {
 	item: Item;
 	refundedCharges: number;
+	totalCharges: number;
 	userMessage: string;
 }
 
@@ -452,6 +453,7 @@ export async function refundChargeBank(user: MUser, chargeBank: ChargeBank): Pro
 		const result: RefundResult = {
 			item: degItem.item,
 			refundedCharges: chargesToRefund,
+			totalCharges: newCharges,
 			userMessage
 		};
 
