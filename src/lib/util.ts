@@ -1,4 +1,4 @@
-import { Stopwatch, cleanUsername, stripEmojis } from '@oldschoolgg/toolkit';
+import { Stopwatch, stripEmojis } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type {
 	BaseMessageOptions,
@@ -35,6 +35,7 @@ import type {
 	GroupMonsterActivityTaskOptions,
 	NexTaskOptions,
 	RaidsOptions,
+	TOAOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
 import { getItem } from './util/getOSItem';
@@ -333,20 +334,21 @@ export function skillingPetDropRate(
 const badgesKey = `${BOT_TYPE_LOWERCASE.toLowerCase()}_badges` as 'osb_badges' | 'bso_badges';
 
 const usernameWithBadgesCache = new LRUCache<string, string>({ max: 2000 });
-export function cacheUsername(id: string, username: string, badges: string) {
-	const current = usernameWithBadgesCache.get(id);
-	const newValue = `${badges ? `${badges} ` : ''}${username}`;
-	if (!current || current !== newValue) {
-		usernameWithBadgesCache.set(id, newValue);
-		redis.setUser(id, { username: cleanUsername(username), [badgesKey]: badges });
-	}
-}
+
 export async function getUsername(_id: string | bigint): Promise<string> {
 	const id = _id.toString();
 	const cached = usernameWithBadgesCache.get(id);
 	if (cached) return cached;
-	const user = await redis.getUser(id);
-	if (!user.username) return 'Unknown';
+	const user = await prisma.user.findFirst({
+		where: {
+			id
+		},
+		select: {
+			username: true,
+			[badgesKey]: true
+		}
+	});
+	if (!user?.username) return 'Unknown';
 	const badges = user[badgesKey];
 	const newValue = `${badges ? `${badges} ` : ''}${user.username}`;
 	usernameWithBadgesCache.set(id, newValue);
@@ -419,4 +421,21 @@ export function checkRangeGearWeapon(gear: Gear) {
 		weapon,
 		ammo
 	};
+}
+export function normalizeTOAUsers(data: TOAOptions) {
+	const _detailedUsers = data.detailedUsers;
+	const detailedUsers = (
+		(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
+	).map(userArr =>
+		userArr.map(user => ({
+			id: user[0],
+			points: user[1],
+			deaths: user[2]
+		}))
+	);
+	return detailedUsers;
+}
+
+export function anyoneDiedInTOARaid(data: TOAOptions) {
+	return normalizeTOAUsers(data).some(userArr => userArr.some(user => user.deaths.length > 0));
 }
