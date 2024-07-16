@@ -4,7 +4,7 @@ import { TSRedis } from '@oldschoolgg/toolkit/TSRedis';
 import { sleep } from 'e';
 import { BadgesEnum, BitField, globalConfig } from '../../src/lib/constants';
 import { getUsersPerkTier } from '../../src/lib/perkTiers';
-import { getPerkTierSync, roboChimpCache } from '../../src/lib/roboChimp';
+import { getPerkTierSync, roboChimpCache } from '../../src/mahoji/lib/perkTier';
 import { createTestUser } from './util';
 
 function makeSender() {
