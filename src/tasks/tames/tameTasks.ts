@@ -41,7 +41,7 @@ import { handleCrateSpawns } from '../../lib/util/handleCrateSpawns';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { tameHasBeenFed, tameLastFinishedActivity, tameName } from '../../lib/util/tameUtil';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
+import { collectables } from '../../mahoji/lib/collectables';
 
 export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 	{

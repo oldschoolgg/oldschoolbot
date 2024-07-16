@@ -12,12 +12,12 @@ import {
 	gearValidationChecks,
 	minionBuyButton
 } from '../../lib/constants';
-import { getPerkTierSync } from '../../lib/roboChimp';
 import type { CategoryFlag } from '../../lib/types';
 import { formatDuration, roll } from '../../lib/util';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../guildSettings';
 import { Cooldowns } from './Cooldowns';
+import { getPerkTierSync } from './perkTier';
 
 export interface AbstractCommandAttributes {
 	examples?: string[];
