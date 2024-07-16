@@ -71,7 +71,7 @@ function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 	return globalInteractionActions.includes(str as GlobalInteractionAction);
 }
 
-const buttonRatelimiter = new RateLimitManager(Time.Second * 5, 2);
+const buttonRatelimiter = new RateLimitManager(Time.Second * 2, 1);
 
 export function makeOpenCasketButton(tier: ClueTier) {
 	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
