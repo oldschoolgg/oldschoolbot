@@ -120,6 +120,13 @@ class GrandExchangeSingleton {
 	public locked = false;
 	public isTicking = false;
 	public ready = false;
+	public loggingEnabled = false;
+
+	log(message: string, context?: any) {
+		if (this.loggingEnabled) {
+			debugLog(message, context);
+		}
+	}
 
 	public config = {
 		maxPricePerItem: ONE_TRILLION,
@@ -269,8 +276,6 @@ class GrandExchangeSingleton {
 				}
 			}
 		});
-
-		for (const tx of allActiveListingsInTimePeriod) sanityCheckTransaction(tx);
 
 		const item = getOSItem(geListing.item_id);
 		let buyLimit = item.buy_limit ?? this.config.buyLimit.fallbackBuyLimit(item);
@@ -432,7 +437,8 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				...makeTransactFromTableBankQueries({ bankToAdd: result.cost })
 			]);
 
-			debugLog(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
+			sanityCheckListing(listing);
+			this.log(`${user.id} created ${type} listing, removing ${result.cost}, adding it to the g.e bank.`);
 
 			return {
 				createdListing: listing,
@@ -542,7 +548,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			buyerLoot.add('Coins', buyerRefund);
 			bankToRemoveFromGeBank.add('Coins', buyerRefund);
 
-			debugLog(
+			this.log(
 				`Buyer got refunded ${buyerRefund} GP due to price difference. Buyer was asking ${buyerListing.asking_price_per_item}GP for each of the ${quantityToBuy}x items, seller was asking ${sellerListing.asking_price_per_item}GP, and the post-tax price per item was ${pricePerItemAfterTax}`,
 				logContext
 			);
@@ -570,11 +576,11 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			const missingItems = bankGEShouldHave.clone().remove(geBank);
 			const str = `The GE did not have enough items to cover this transaction! We tried to remove ${bankGEShouldHave} missing: ${missingItems}. ${debug}`;
 			logError(str, logContext);
-			debugLog(str, logContext);
+			this.log(str, logContext);
 			throw new Error(str);
 		}
 
-		debugLog(
+		this.log(
 			`Completing a transaction, removing ${JSON.stringify(bankToRemoveFromGeBank.bank)} from the GE bank, ${totalTaxPaid} in taxed gp. The current GE bank is ${JSON.stringify(geBank.bank)}. ${debug}`,
 			{
 				totalPriceAfterTax,
@@ -585,7 +591,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			}
 		);
 
-		await prisma.$transaction([
+		const [newTx] = await prisma.$transaction([
 			prisma.gETransaction.create({
 				data: {
 					buy_listing_id: buyerListing.id,
@@ -635,7 +641,9 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			...makeTransactFromTableBankQueries({ bankToRemove: bankToRemoveFromGeBank })
 		]);
 
-		debugLog(`Transaction completed, the new G.E bank is ${JSON.stringify((await this.fetchOwnedBank()).bank)}.`);
+		sanityCheckTransaction(newTx);
+
+		this.log(`Transaction completed, the new G.E bank is ${JSON.stringify((await this.fetchOwnedBank()).bank)}.`);
 
 		const buyerUser = await mUserFetch(buyerListing.user_id);
 		const sellerUser = await mUserFetch(sellerListing.user_id);
@@ -785,11 +793,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	}
 
 	async extensiveVerification() {
-		await Promise.all([
-			prisma.gETransaction.findMany().then(txs => txs.map(tx => sanityCheckTransaction(tx))),
-			prisma.gEListing.findMany().then(listings => listings.map(listing => sanityCheckListing(listing))),
-			this.checkGECanFullFilAllListings()
-		]);
+		await this.checkGECanFullFilAllListings();
 		return true;
 	}
 
@@ -806,7 +810,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 			shouldHave.add(listing.item_id, listing.quantity_remaining);
 		}
 
-		debugLog(`Expected G.E Bank: ${JSON.stringify(shouldHave.bank)}`);
+		this.log(`Expected G.E Bank: ${JSON.stringify(shouldHave.bank)}`);
 		if (!currentBank.equals(shouldHave)) {
 			if (!currentBank.has(shouldHave)) {
 				throw new Error(
@@ -821,7 +825,7 @@ G.E Bank Has: ${currentBank}
 G.E Bank Should Have: ${shouldHave}
 Difference: ${shouldHave.difference(currentBank)}`);
 		} else {
-			debugLog('GE has enough to cover the listings.');
+			this.log('GE has enough to cover the listings.');
 			return true;
 		}
 	}

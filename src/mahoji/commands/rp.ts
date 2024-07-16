@@ -21,7 +21,6 @@ import { GrandExchange } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { allPerkBitfields } from '../../lib/perkTiers';
 import { premiumPatronTime } from '../../lib/premiumPatronTime';
 
 import { TeamLoot } from '../../lib/simulation/TeamLoot';
@@ -32,8 +31,6 @@ import getOSItem from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
-import { syncLinkedAccounts } from '../../lib/util/linkedAccountsUtil';
-import { makeBadgeString } from '../../lib/util/makeBadgeString';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { migrateUser } from '../../lib/util/migrateUser';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -54,7 +51,7 @@ const itemFilters = [
 	}
 ];
 
-async function redisSync() {
+async function usernameSync() {
 	const roboChimpUsersToCache = (
 		await roboChimpClient.user.findMany({
 			where: {
@@ -137,18 +134,7 @@ async function redisSync() {
 		}
 	});
 
-	for (const user of allNewUsers) {
-		redis.setUser(user.id, { username: user.username });
-	}
 	response.push(`Cached ${allNewUsers.length} usernames.`);
-
-	const arrayOfIronmenAndBadges: { badges: number[]; id: string; ironman: boolean }[] = await prisma.$queryRawUnsafe(
-		'SELECT "badges", "id", "minion.ironman" as "ironman" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0 OR "minion.ironman" = true;'
-	);
-	for (const user of arrayOfIronmenAndBadges) {
-		redis.setUser(user.id, { osb_badges: makeBadgeString(user.badges, user.ironman) });
-	}
-	response.push(`Cached ${arrayOfIronmenAndBadges.length} badges.`);
 	return response.join(', ');
 }
 
@@ -725,7 +711,7 @@ Date: ${dateFm(date)}`;
 			return 'Finished.';
 		}
 		if (options.action?.redis_sync) {
-			const result = await redisSync();
+			const result = await usernameSync();
 			return result;
 		}
 		if (options.action?.networth_sync) {
@@ -759,20 +745,6 @@ SELECT DISTINCT jsonb_object_keys("collectionLogBank")::int AS item_id
 FROM users
 ORDER BY item_id ASC;`);
 			return returnStringOrFile(`[${result.map(i => i.item_id).join(',')}]`);
-		}
-
-		if (options.action?.patreon_reset) {
-			const bitfieldsToRemove = [
-				BitField.IsPatronTier1,
-				BitField.IsPatronTier2,
-				BitField.IsPatronTier3,
-				BitField.IsPatronTier4,
-				BitField.IsPatronTier5,
-				BitField.IsPatronTier6
-			];
-			await prisma.$queryRaw`UPDATE users SET bitfield = bitfield - '{${bitfieldsToRemove.join(',')}'::int[];`;
-			await syncLinkedAccounts();
-			return 'Finished.';
 		}
 
 		if (options.player?.set_buy_date) {
@@ -979,12 +951,6 @@ ORDER BY item_id ASC;`);
 			const destUser = await mUserFetch(dest.user.id);
 
 			if (isProtectedAccount(destUser)) return 'You cannot clobber that account.';
-			if (allPerkBitfields.some(pt => destUser.bitfield.includes(pt))) {
-				await handleMahojiConfirmation(
-					interaction,
-					`The target user, ${destUser.logName}, has a Patreon Tier; are you really sure you want to DELETE all data from that account?`
-				);
-			}
 			const sourceXp = sumArr(Object.values(sourceUser.skillsAsXP));
 			const destXp = sumArr(Object.values(destUser.skillsAsXP));
 			if (destXp > sourceXp) {

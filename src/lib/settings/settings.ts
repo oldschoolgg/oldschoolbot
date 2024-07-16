@@ -10,11 +10,12 @@ import type {
 } from 'discord.js';
 
 import { Time } from 'e';
+import { isEmpty } from 'lodash';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
 import { PerkTier, minionActivityCache } from '../constants';
-import { channelIsSendable, isGroupActivity, roughMergeMahojiResponse } from '../util';
+import { channelIsSendable, isGroupActivity } from '../util';
 import { deferInteraction, handleInteractionError, interactionReply } from '../util/interactionReply';
 import { logError } from '../util/logError';
 import { convertStoredActivityToFlatActivity } from './prisma';
@@ -112,10 +113,15 @@ export async function runCommand({
 	ephemeral
 }: RunCommandArgs): Promise<null | CommandResponse> {
 	await deferInteraction(interaction);
-	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channel || !channelIsSendable(channel)) return null;
+	const channel = globalClient.channels.cache.get(channelID);
 	const mahojiCommand = Array.from(globalClient.mahojiClient.commands.values()).find(c => c.name === commandName);
-	if (!mahojiCommand) throw new Error('No command found');
+	if (!mahojiCommand || !channelIsSendable(channel)) {
+		await interactionReply(interaction, {
+			content: 'There was an error repeating your trip, I cannot find the channel you used the command in.',
+			ephemeral: true
+		});
+		return null;
+	}
 	const abstractCommand = convertMahojiCommandToAbstractCommand(mahojiCommand);
 
 	const error: Error | null = null;
@@ -133,19 +139,19 @@ export async function runCommand({
 
 		if (inhibitedReason) {
 			inhibited = true;
-			if (inhibitedReason.silent) return null;
+			let response =
+				typeof inhibitedReason.reason! === 'string' ? inhibitedReason.reason : inhibitedReason.reason?.content!;
+			if (isEmpty(response)) {
+				response = 'You cannot use this command right now.';
+			}
 
 			await interactionReply(interaction, {
-				content:
-					typeof inhibitedReason.reason! === 'string'
-						? inhibitedReason.reason
-						: inhibitedReason.reason?.content!,
+				content: response,
 				ephemeral: true
 			});
 			return null;
 		}
 
-		if (Array.isArray(args)) throw new Error(`Had array of args for mahoji command called ${commandName}`);
 		const result = await runMahojiCommand({
 			options: args,
 			commandName,
@@ -156,8 +162,14 @@ export async function runCommand({
 			user,
 			interaction
 		});
-		if (result && !interaction.replied)
-			await interactionReply(interaction, roughMergeMahojiResponse(result, { ephemeral }));
+		if (result && !interaction.replied) {
+			await interactionReply(
+				interaction,
+				typeof result === 'string'
+					? { content: result, ephemeral: ephemeral }
+					: { ...result, ephemeral: ephemeral }
+			);
+		}
 		return result;
 	} catch (err: any) {
 		await handleInteractionError(err, interaction);
