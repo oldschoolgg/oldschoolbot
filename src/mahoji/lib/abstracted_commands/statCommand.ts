@@ -30,7 +30,7 @@ import { createChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { Cooldowns } from '../Cooldowns';
-import { collectables } from './collectCommand';
+import { collectables } from '../collectables';
 
 interface DataPiece {
 	name: string;

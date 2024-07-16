@@ -55,18 +55,19 @@ model User {
   osb_mastery     Float?
   bso_mastery     Float?
 
-  tag Tag[]
-
   store_bitfield Int[]
 
   testing_points         Float @default(0)
   testing_points_balance Float @default(0)
 
-  perk_tier                   Int      @default(0)
+  perk_tier                   Int     @default(0)
   premium_balance_tier        Int?
   premium_balance_expiry_date BigInt?
-  ironman_alts                String[]
-  main_account                String?
+
+  user_group_id String?    @db.Uuid
+  userGroup     UserGroup? @relation(fields: [user_group_id], references: [id])
+
+  tag Tag[]
 
   @@map("user")
 }
@@ -97,4 +98,12 @@ model StoreCode {
   redeemed_by_user_id String?   @db.VarChar(19)
 
   @@map("store_code")
+}
+
+model UserGroup {
+  id String @id @default(uuid()) @db.Uuid
+
+  users User[]
+
+  @@map("user_group")
 }

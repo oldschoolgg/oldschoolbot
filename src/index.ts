@@ -19,6 +19,7 @@ import { economyLog } from './lib/economyLogs';
 import { onMessage } from './lib/events';
 import { GrandExchange } from './lib/grandExchange';
 import { modalInteractionHook } from './lib/modals';
+import { populateRoboChimpCache } from './lib/perkTier';
 import { runStartupScripts } from './lib/startupScripts';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { assert, runTimedLoggedFn } from './lib/util';
@@ -201,7 +202,8 @@ async function main() {
 		runTimedLoggedFn('Sync Blacklist', syncBlacklists),
 		runTimedLoggedFn('Syncing prices', syncCustomPrices),
 		runTimedLoggedFn('Caching badges', cacheBadges),
-		runTimedLoggedFn('Init Grand Exchange', () => GrandExchange.init())
+		runTimedLoggedFn('Init Grand Exchange', () => GrandExchange.init()),
+		runTimedLoggedFn('populateRoboChimpCache', populateRoboChimpCache)
 	]);
 	await runTimedLoggedFn('Log In', () => client.login(globalConfig.botToken));
 	console.log(`Logged in as ${globalClient.user.username}`);
