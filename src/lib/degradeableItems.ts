@@ -458,7 +458,7 @@ export async function refundChargeBank(user: MUser, chargeBank: ChargeBank): Pro
 		// Push result to results array
 		results.push(result);
 
-		// Update user asynchronously (assuming user.update is an async method)
+		// Update user
 		await user.update({
 			[degItem.settingsKey]: newCharges
 		});
