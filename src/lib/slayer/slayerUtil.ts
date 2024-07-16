@@ -230,6 +230,16 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		assignedTask = weightedPick(baseTasks);
 	}
 
+	const newUser = await prisma.newUser.upsert({
+		where: {
+			id: _user.id
+		},
+		create: {
+			id: _user.id
+		},
+		update: {}
+	});
+
 	let maxQuantity = assignedTask?.amount[1];
 	if (bossTask && _user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)) {
 		for (const tier of objectKeys(CombatAchievements)) {
@@ -263,7 +273,7 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 
 	const currentTask = await prisma.slayerTask.create({
 		data: {
-			user_id: _user.id,
+			user_id: newUser.id,
 			quantity,
 			quantity_remaining: quantity,
 			slayer_master_id: master.id,
