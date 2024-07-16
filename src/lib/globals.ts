@@ -47,7 +47,7 @@ function makeRedisClient(): TSRedis {
 global.redis = global.redis || makeRedisClient();
 
 global.redis.subscribe(message => {
-	console.log(`Received message from Redis: ${JSON.stringify(message)}`);
+	debugLog(`Received message from Redis: ${JSON.stringify(message)}`);
 	if (message.type === 'patron_tier_change') {
 		if (message.new_tier === 0) {
 			return handleDeletedPatron(message.discord_ids);
