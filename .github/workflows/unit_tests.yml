@@ -43,4 +43,4 @@ jobs:
       - name: Build
         run: yarn build:tsc
       - name: Test
-        run: test:ci:unit
+        run: yarn test:ci:unit
