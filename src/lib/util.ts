@@ -22,7 +22,7 @@ import { LRUCache } from 'lru-cache';
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
-import { BOT_TYPE_LOWERCASE, BitField, globalConfig, projectiles } from './constants';
+import { BitField, globalConfig, projectiles } from './constants';
 import { getSimilarItems } from './data/similarItems';
 import type { DefenceGearStat, GearSetupType, OffenceGearStat } from './gear/types';
 import { GearSetupTypes, GearStat } from './gear/types';
@@ -40,6 +40,7 @@ import type {
 } from './types/minions';
 import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
+import { makeBadgeString } from './util/makeBadgeString';
 import { itemNameFromID } from './util/smallUtils';
 
 export * from '@oldschoolgg/toolkit';
@@ -331,8 +332,6 @@ export function skillingPetDropRate(
 	return { petDropRate: dropRate };
 }
 
-const badgesKey = `${BOT_TYPE_LOWERCASE.toLowerCase()}_badges` as 'osb_badges' | 'bso_badges';
-
 const usernameWithBadgesCache = new LRUCache<string, string>({ max: 2000 });
 
 export async function getUsername(_id: string | bigint): Promise<string> {
@@ -345,15 +344,17 @@ export async function getUsername(_id: string | bigint): Promise<string> {
 		},
 		select: {
 			username: true,
-			[badgesKey]: true
+			badges: true,
+			minion_ironman: true
 		}
 	});
 	if (!user?.username) return 'Unknown';
-	const badges = user[badgesKey];
+	const badges = makeBadgeString(user.badges, user.minion_ironman);
 	const newValue = `${badges ? `${badges} ` : ''}${user.username}`;
 	usernameWithBadgesCache.set(id, newValue);
 	return newValue;
 }
+
 export function getUsernameSync(_id: string | bigint) {
 	return usernameWithBadgesCache.get(_id.toString()) ?? 'Unknown';
 }
