@@ -19,7 +19,9 @@
 		"buildandrun": "yarn build:esbuild && node --enable-source-maps dist",
 		"build:esbuild": "concurrently --raw \"yarn build:main\" \"yarn build:workers\"",
 		"build:main": "esbuild src/index.ts src/lib/workers/index.ts --sourcemap=inline --minify --legal-comments=none --outdir=./dist --log-level=error --bundle --platform=node --loader:.node=file --external:@napi-rs/canvas --external:@prisma/robochimp --external:@prisma/client --external:zlib-sync --external:bufferutil --external:oldschooljs --external:discord.js --external:node-fetch --external:piscina",
-		"build:workers": "esbuild src/lib/workers/kill.worker.ts src/lib/workers/finish.worker.ts src/lib/workers/casket.worker.ts --sourcemap=inline --log-level=error --bundle --minify --legal-comments=none --outdir=./dist/lib/workers --platform=node --loader:.node=file --external:@napi-rs/canvas --external:@prisma/robochimp --external:@prisma/client --external:zlib-sync --external:bufferutil --external:oldschooljs --external:discord.js --external:node-fetch --external:piscina"
+		"build:workers": "esbuild src/lib/workers/kill.worker.ts src/lib/workers/finish.worker.ts src/lib/workers/casket.worker.ts --sourcemap=inline --log-level=error --bundle --minify --legal-comments=none --outdir=./dist/lib/workers --platform=node --loader:.node=file --external:@napi-rs/canvas --external:@prisma/robochimp --external:@prisma/client --external:zlib-sync --external:bufferutil --external:oldschooljs --external:discord.js --external:node-fetch --external:piscina",
+		"test:circular": "dpdm --exit-code circular:1 --progress=false --warning=false --tree=false ./dist/index.js",
+		"test:ci:unit": "concurrently --raw --kill-others-on-fail \"yarn test:unit\" \"yarn test:lint\" \"tsc -p tests/integration\" \"tsc -p tests/unit\" \"yarn test:circular\""
 	},
 	"dependencies": {
 		"@napi-rs/canvas": "^0.1.53",
@@ -57,6 +59,7 @@
 		"@types/node-fetch": "^2.6.1",
 		"@vitest/coverage-v8": "^1.6.0",
 		"concurrently": "^8.2.2",
+		"dpdm": "^3.14.0",
 		"esbuild": "0.21.5",
 		"fast-glob": "^3.3.2",
 		"nodemon": "^3.1.4",

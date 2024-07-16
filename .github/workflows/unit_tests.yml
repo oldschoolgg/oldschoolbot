@@ -43,8 +43,4 @@ jobs:
       - name: Build
         run: yarn build:tsc
       - name: Test
-        run: |
-          yarn test:unit
-          yarn test:lint
-          tsc -p tests/integration && tsc -p tests/unit
-          npm i -g dpdm && dpdm --exit-code circular:1 --progress=false --warning=false --tree=false ./dist/index.js
+        run: test:ci:unit
