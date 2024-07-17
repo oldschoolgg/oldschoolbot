@@ -67,6 +67,8 @@ export const krystiliaTasks: AssignableSlayerTask[] = [
 		amount: [8, 16],
 		weight: 4,
 		monsters: [Monsters.BlackDragon.id],
+		extendedAmount: [40, 60],
+		extendedUnlockId: SlayerTaskUnlocksEnum.FireAndDarkness,
 		unlocked: true,
 		wilderness: true
 	},
@@ -244,6 +246,8 @@ export const krystiliaTasks: AssignableSlayerTask[] = [
 		amount: [75, 125],
 		weight: 5,
 		monsters: [Monsters.GreaterNechryael.id],
+		extendedAmount: [200, 250],
+		extendedUnlockId: SlayerTaskUnlocksEnum.NechsPlease,
 		slayerLevel: 80,
 		unlocked: true,
 		wilderness: true
