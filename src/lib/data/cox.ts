@@ -159,7 +159,8 @@ function calcSetupPercent(
 	return totalPercent;
 }
 
-const maxMageGear = constructGearSetup({
+//TODO: https://oldschool.runescape.wiki/w/Chambers_of_Xeric/Strategies#Melee
+export const COXMaxMageGear = constructGearSetup({
 	head: 'Ancestral hat',
 	neck: 'Occult necklace',
 	body: 'Ancestral robe top',
@@ -171,9 +172,9 @@ const maxMageGear = constructGearSetup({
 	shield: 'Arcane spirit shield',
 	ring: 'Magus ring'
 });
-const maxMage = new Gear(maxMageGear);
+const maxMage = new Gear(COXMaxMageGear);
 
-const maxRangeGear = constructGearSetup({
+export const COXMaxRangeGear = constructGearSetup({
 	head: 'Armadyl helmet',
 	neck: 'Necklace of anguish',
 	body: 'Armadyl chestplate',
@@ -185,9 +186,9 @@ const maxRangeGear = constructGearSetup({
 	ring: 'Venator ring',
 	ammo: 'Dragon arrow'
 });
-const maxRange = new Gear(maxRangeGear);
+const maxRange = new Gear(COXMaxRangeGear);
 
-const maxMeleeGear = constructGearSetup({
+export const COXMaxMeleeGear = constructGearSetup({
 	head: "Inquisitor's great helm",
 	neck: 'Amulet of torture',
 	body: "Inquisitor's hauberk",
@@ -199,7 +200,7 @@ const maxMeleeGear = constructGearSetup({
 	shield: 'Avernic defender',
 	ring: 'Ultor ring'
 });
-const maxMelee = new Gear(maxMeleeGear);
+const maxMelee = new Gear(COXMaxMeleeGear);
 
 export function calculateUserGearPercents(user: MUser) {
 	const melee = calcSetupPercent(
@@ -486,7 +487,7 @@ export async function calcCoxDuration(
 		userPercentChange += calcPerc(kcPercent, speedReductionForKC);
 
 		// Reduce time for item boosts
-		itemBoosts.forEach(set => {
+		for (const set of itemBoosts) {
 			for (const item of set) {
 				if (item.mustBeCharged && item.requiredCharges) {
 					if (u.hasEquippedOrInBank(item.item.id)) {
@@ -515,7 +516,8 @@ export async function calcCoxDuration(
 					break;
 				}
 			}
-		});
+		}
+
 
 		totalReduction += userPercentChange / size;
 		reductions[u.id] = userPercentChange / size;

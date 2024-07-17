@@ -8,7 +8,7 @@ import { Time, noOp } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { convertLVLtoXP, itemID, toKMB } from 'oldschooljs/dist/util';
 
-import { resolveItems } from 'oldschooljs/dist/util/util';
+import { getItem, resolveItems } from 'oldschooljs/dist/util/util';
 import { production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
 import { allStashUnitTiers, allStashUnitsFlat } from '../../lib/clues/stashUnits';
@@ -44,6 +44,8 @@ import { BingoManager } from '../lib/bingo/BingoManager';
 import type { OSBMahojiCommand } from '../lib/util';
 import { userStatsUpdate } from '../mahojiSettings';
 import { fetchBingosThatUserIsInvolvedIn } from './bingo';
+import { COXMaxMeleeGear, COXMaxMageGear, COXMaxRangeGear } from '../../lib/data/cox';
+import { gearViewCommand } from '../lib/abstracted_commands/gearCommands';
 
 export async function giveMaxStats(user: MUser) {
 	const updates: Prisma.UserUpdateArgs['data'] = {};
@@ -92,6 +94,12 @@ for (const gear of resolveItems([
 }
 
 const gearPresets = [
+	{
+		name: 'Cox',
+		melee: COXMaxMeleeGear,
+		mage: COXMaxMageGear,
+		range: COXMaxRangeGear
+	},
 	{
 		name: 'ToB',
 		melee: TOBMaxMeleeGear,
@@ -824,12 +832,21 @@ ${droprates.join('\n')}`),
 				}
 				if (options.gear) {
 					const gear = gearPresets.find(i => stringMatches(i.name, options.gear?.thing))!;
+				
+					for (const type of ['melee', 'range', 'mage'] as const) {
+						const currentGear = gear[type];
+						if (currentGear.ammo && getItem(currentGear.ammo.item)?.stackable) {
+							currentGear.ammo.quantity = 10000;
+						}
+					}
+
 					await user.update({
 						gear_melee: gear.melee.raw() as any,
 						gear_range: gear.range.raw() as any,
 						gear_mage: gear.mage.raw() as any
 					});
-					return `Set your gear for ${gear.name}.`;
+				
+					return gearViewCommand(user, 'all', false);
 				}
 				if (options.reset) {
 					const resettable = thingsToReset.find(i => i.name === options.reset?.thing);

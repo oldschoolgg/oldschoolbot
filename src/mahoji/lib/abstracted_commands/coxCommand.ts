@@ -81,13 +81,13 @@ export async function coxStatsCommand(user: MUser) {
 export async function coxCommand(
 	channelID: string,
 	user: MUser,
-	type: 'solo' | 'mass',
+	type: 'solo' | 'mass' | 'mass (4 bots teammates)',
 	maxSizeInput: number | undefined,
 	isChallengeMode: boolean,
 	_quantity?: number
 ) {
-	if (type !== 'mass' && type !== 'solo') {
-		return 'Specify your team setup for Chambers of Xeric, either solo or mass.';
+	if (type !== 'mass' && type !== 'solo' && type !== 'mass (4 bots teammates)') {
+		return 'Specify your team setup for Chambers of Xeric, either solo, mass, or mass (4 bots teammates).';
 	}
 
 	const minigameID = isChallengeMode ? 'raids_challenge_mode' : 'raids';
@@ -154,6 +154,10 @@ export async function coxCommand(
 	if (!channelIsSendable(channel)) return 'No channel found.';
 
 	let users: MUser[] = [];
+	if (type === 'mass (4 bots teammates)'){
+		users = Array(5).fill(user);
+		console.log(users);
+	}
 	if (type === 'mass') {
 		users = (await setupParty(channel, user, partyOptions)).filter(u => !u.minionIsBusy);
 	} else {
