@@ -34,13 +34,18 @@ export function logError(err: Error | unknown, context?: Record<string, string>,
 	}
 }
 
-export function logErrorForInteraction(err: Error | unknown, interaction: Interaction) {
+export function logErrorForInteraction(
+	err: Error | unknown,
+	interaction: Interaction,
+	extraContext?: Record<string, string>
+) {
 	const context: Record<string, any> = {
 		user_id: interaction.user.id,
 		channel_id: interaction.channelId,
 		guild_id: interaction.guildId,
 		interaction_id: interaction.id,
-		interaction_type: interaction.type
+		interaction_type: interaction.type,
+		...extraContext
 	};
 	if (interaction.isChatInputCommand()) {
 		context.options = JSON.stringify(
