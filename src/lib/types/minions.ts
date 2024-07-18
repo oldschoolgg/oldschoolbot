@@ -1,4 +1,4 @@
-import type { CropUpgradeType } from '@prisma/client';
+import type { CropUpgradeType, activity_type_enum } from '@prisma/client';
 
 import type { ItemBank } from '.';
 import type { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
@@ -542,6 +542,12 @@ export interface ShadesOfMortonOptions extends MinigameActivityTaskOptions {
 export interface SpecificQuestOptions extends ActivityTaskOptions {
 	type: 'SpecificQuest';
 	questID: number;
+}
+export interface ManagingMiscellaniaActivityTaskOptions extends ActivityTaskOptions {
+	type: 'ManagingMiscellania';
+	mainCollect: string;
+	secondaryCollect: string;
+	cofferCost: number;
 }
 
 export type ActivityTaskData =

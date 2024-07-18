@@ -28,6 +28,10 @@ import { driftNetCommand } from '../lib/abstracted_commands/driftNetCommand';
 import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
+import {
+	managingMicellaniaChoices,
+	managingMiscellaniaCommand
+} from '../lib/abstracted_commands/managingMiscellaniaCommand';
 import { otherActivities, otherActivitiesCommand } from '../lib/abstracted_commands/otherActivitiesCommand';
 import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
 import { questCommand } from '../lib/abstracted_commands/questCommand';
@@ -433,6 +437,27 @@ export const activitiesCommand: OSBMahojiCommand = {
 			]
 		},
 		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'managing_miscellania',
+			description: 'Collect from the kingdom of Miscellania.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'main collect',
+					description: 'Where you want to allocate the majority of the workers.',
+					required: true,
+					choices: managingMicellaniaChoices
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'secondary collect',
+					description: 'Where you want to allocate the minority of the workers.',
+					required: true,
+					choices: managingMicellaniaChoices
+				}
+			]
+		},
+		{
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'underwater',
 			description: 'The Underwater.',
@@ -528,6 +553,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		puro_puro?: { impling: string; dark_lure?: boolean; implingTier?: number };
 		alch?: { item: string; quantity?: number };
 		cast?: { spell: string; quantity?: number };
+		managing_miscellania?: { mainCollect: string; secondaryCollect: string };
 		underwater?: {
 			agility_thieving?: {
 				training_skill: UnderwaterAgilityThievingTrainingSkill;
@@ -633,6 +659,14 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.cast) {
 			return castCommand(channelID, user, options.cast.spell, options.cast.quantity);
+		}
+		if (options.managing_miscellania) {
+			return managingMiscellaniaCommand(
+				user,
+				channelID,
+				options.managing_miscellania.mainCollect,
+				options.managing_miscellania.secondaryCollect
+			);
 		}
 		if (options.underwater) {
 			if (options.underwater.agility_thieving) {

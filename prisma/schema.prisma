@@ -133,6 +133,8 @@ model ClientStorage {
   toa_loot                     Json     @default("{}") @db.Json
   colo_cost                    Json     @default("{}") @db.Json
   colo_loot                    Json     @default("{}") @db.Json
+  managing_miscellania_cost    Json     @default("{}") @db.Json
+  managing_miscellania_loot    Json     @default("{}") @db.Json
 
   grand_exchange_is_locked Boolean @default(false)
   grand_exchange_total_tax BigInt  @default(0)
@@ -754,8 +756,9 @@ model UserStats {
 
   total_gp_traded BigInt @default(0)
 
-  last_daily_timestamp           BigInt @default(0)
-  last_tears_of_guthix_timestamp BigInt @default(0)
+  last_daily_timestamp                BigInt @default(0)
+  last_tears_of_guthix_timestamp      BigInt @default(0)
+  last_managing_miscellania_timestamp BigInt @default(0)
 
   herbs_cleaned_while_farming_bank Json @default("{}") @db.Json
 
@@ -942,6 +945,7 @@ enum activity_type_enum {
   CamdozaalMining
   CamdozaalSmithing
   Colosseum
+  ManagingMiscellania
 }
 
 enum xp_gains_skill_enum {
