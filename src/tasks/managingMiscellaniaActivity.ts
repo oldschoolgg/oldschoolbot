@@ -4,7 +4,6 @@ import { makeBankImage } from '../lib/util/makeBankImage';
 import { updateBankSetting } from '../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 
-// Define LootTables
 const nests = new LootTable()
 	.add('Bird nest (seed)', 1, 65)
 	.add('Bird nest (ring)', 1, 32)
