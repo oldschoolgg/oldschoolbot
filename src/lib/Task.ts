@@ -245,7 +245,8 @@ export async function processPendingActivities() {
 						lt: new Date()
 					}
 				: undefined
-		}
+		},
+		take: 5
 	});
 
 	if (activities.length > 0) {
