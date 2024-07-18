@@ -38,7 +38,6 @@ export async function postCommand({
 			commandName: abstractCommand.name,
 			args,
 			isContinue,
-			flags: null,
 			inhibited,
 			continueDeltaMillis
 		});

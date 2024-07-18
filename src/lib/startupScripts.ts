@@ -3,8 +3,6 @@ import { Items } from 'oldschooljs';
 const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
 
 const arrayColumns = [
-	['clientStorage', 'userBlacklist'],
-	['clientStorage', 'guildBlacklist'],
 	['guilds', 'disabledCommands'],
 	['guilds', 'staffOnlyChannels'],
 	['users', 'badges'],
