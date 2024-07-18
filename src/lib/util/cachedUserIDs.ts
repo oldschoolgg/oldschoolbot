@@ -11,18 +11,17 @@ CACHED_ACTIVE_USER_IDS.add(globalConfig.clientID);
 for (const id of OWNER_IDS) CACHED_ACTIVE_USER_IDS.add(id);
 
 export async function syncActiveUserIDs() {
-	const [users, otherUsers] = await prisma.$transaction([
-		prisma.$queryRawUnsafe<{ user_id: string }[]>(`SELECT DISTINCT(${Prisma.ActivityScalarFieldEnum.user_id}::text)
+	const users = await prisma.$queryRawUnsafe<
+		{ user_id: string }[]
+	>(`SELECT DISTINCT(${Prisma.ActivityScalarFieldEnum.user_id}::text)
 FROM activity
-WHERE finish_date > now() - INTERVAL '48 hours'`),
-		prisma.$queryRawUnsafe<{ id: string }[]>(`SELECT id
-FROM users
-WHERE ${Prisma.UserScalarFieldEnum.main_account} IS NOT NULL
-OR CARDINALITY(${Prisma.UserScalarFieldEnum.ironman_alts}) > 0
-OR ${Prisma.UserScalarFieldEnum.bitfield} && ARRAY[2,3,4,5,6,7,8,12,11,21,19];`)
-	]);
+WHERE finish_date > now() - INTERVAL '48 hours'`);
 
-	for (const id of [...users.map(i => i.user_id), ...otherUsers.map(i => i.id)]) {
+	const perkTierUsers = await roboChimpClient.$queryRawUnsafe<{ id: string }[]>(`SELECT id::text
+FROM "user"
+WHERE perk_tier > 0;`);
+
+	for (const id of [...users.map(i => i.user_id), ...perkTierUsers.map(i => i.id)]) {
 		CACHED_ACTIVE_USER_IDS.add(id);
 	}
 	debugLog(`${CACHED_ACTIVE_USER_IDS.size} cached active user IDs`);
