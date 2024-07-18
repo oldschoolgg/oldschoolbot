@@ -38,7 +38,7 @@ export function getUsersPerkTier(user: MUser): PerkTier | 0 {
 	}
 
 	if (user.bitfield.includes(BitField.IsPatronTier2) || user.bitfield.includes(BitField.HasPermanentTierOne)) {
-		elligibleTiers.push(PerkTier.One);
+		elligibleTiers.push(PerkTier.Three);
 	}
 
 	const roboChimpCached = roboChimpCache.get(user.id);
