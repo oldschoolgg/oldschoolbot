@@ -8,12 +8,12 @@ import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
-import { BLACKLISTED_USERS } from './blacklists';
 import { BitField, ONE_TRILLION, PerkTier, globalConfig } from './constants';
 import { marketPricemap } from './marketPrices';
 import type { RobochimpUser } from './roboChimp';
 import { roboChimpUserFetch } from './roboChimp';
 
+import { BLACKLISTED_USERS } from './blacklists';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
 import { assert, generateGrandExchangeID, getInterval, itemNameFromID, makeComponents, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
@@ -719,8 +719,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 				fulfilled_at: null,
 				cancelled_at: null,
 				user_id: {
-					not: null,
-					notIn: Array.from(BLACKLISTED_USERS)
+					not: null
 				}
 			},
 			orderBy: [
@@ -739,8 +738,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					fulfilled_at: null,
 					cancelled_at: null,
 					user_id: {
-						not: null,
-						notIn: Array.from(BLACKLISTED_USERS)
+						not: null
 					},
 					item_id: {
 						in: uniqueArr(buyListings.map(i => i.item_id))
@@ -797,8 +795,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					fulfilled_at: null,
 					cancelled_at: null,
 					user_id: {
-						not: null,
-						notIn: Array.from(BLACKLISTED_USERS)
+						not: null
 					}
 				},
 				orderBy: [
@@ -816,8 +813,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					fulfilled_at: null,
 					cancelled_at: null,
 					user_id: {
-						not: null,
-						notIn: Array.from(BLACKLISTED_USERS)
+						not: null
 					}
 				},
 				orderBy: [
@@ -925,7 +921,11 @@ Difference: ${shouldHave.difference(currentBank)}`);
 
 		for (const buyListing of buyListings) {
 			const minPrice = minimumSellPricePerItem.get(buyListing.item_id);
-			if (minPrice === undefined || buyListing.asking_price_per_item < minPrice) {
+			if (!buyListing.user_id || minPrice === undefined || buyListing.asking_price_per_item < minPrice) {
+				continue;
+			}
+
+			if (BLACKLISTED_USERS.has(buyListing.user_id)) {
 				continue;
 			}
 
@@ -935,7 +935,9 @@ Difference: ${shouldHave.difference(currentBank)}`);
 					sellListing.item_id === buyListing.item_id &&
 					// "Trades succeed when one player's buy offer is greater than or equal to another player's sell offer."
 					buyListing.asking_price_per_item >= sellListing.asking_price_per_item &&
-					buyListing.user_id !== sellListing.user_id
+					buyListing.user_id !== sellListing.user_id &&
+					sellListing.user_id !== null &&
+					!BLACKLISTED_USERS.has(sellListing.user_id)
 			);
 
 			/**
