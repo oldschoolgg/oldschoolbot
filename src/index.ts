@@ -8,7 +8,7 @@ import { MahojiClient } from '@oldschoolgg/toolkit';
 import { init } from '@sentry/node';
 import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
-import { isObject } from 'e';
+import { Time, isObject } from 'e';
 
 import { SENTRY_DSN, SupportServer } from './config';
 import { syncActivityCache } from './lib/Task';
@@ -144,15 +144,24 @@ client.on('interactionCreate', async interaction => {
 	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
 	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
 
-	if (!client.isReady()) {
+	if (globalClient.isShuttingDown) {
 		if (interaction.isRepliable()) {
 			await interaction.reply({
 				content:
-					'BSO is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+					'BSO is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
 				ephemeral: true
 			});
 		}
+		return;
+	}
 
+	if (!client.isReady() || !client.uptime || client.uptime < Time.Second * 10) {
+		if (interaction.isRepliable()) {
+			await interaction.reply({
+				content: 'BSO is currently rebooting, please try again in a few seconds! Thank you <3',
+				ephemeral: true
+			});
+		}
 		return;
 	}
 
