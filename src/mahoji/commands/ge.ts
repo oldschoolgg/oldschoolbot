@@ -9,6 +9,8 @@ import { PerkTier } from '../../lib/constants';
 import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 
+import { Bank } from 'oldschooljs';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import {
 	formatDuration,
 	isGEUntradeable,
@@ -25,6 +27,7 @@ import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { cancelGEListingCommand } from '../lib/abstracted_commands/cancelGEListingCommand';
 import { itemArr, itemOption } from '../lib/mahojiCommandOptions';
 import type { OSBMahojiCommand } from '../lib/util';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export type GEListingWithTransactions = GEListing & {
 	buyTransactions: GETransaction[];
@@ -141,8 +144,10 @@ export const geCommand: OSBMahojiCommand = {
 					description: 'The item you want to sell.',
 					required: true,
 					autocomplete: async (value, { id }) => {
-						const user = await mUserFetch(id);
-						return user.bank
+						const raw = await mahojiUsersSettingsFetch(id, { bank: true });
+						const bank = new Bank(raw.bank as ItemBank);
+
+						return bank
 							.items()
 							.filter(i => !isGEUntradeable(i[0].id))
 							.filter(i => (!value ? true : i[0].name.toLowerCase().includes(value.toLowerCase())))
