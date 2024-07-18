@@ -10,7 +10,6 @@ import { mahojiUserSettingsUpdate } from './MUser';
 import { processPendingActivities } from './Task';
 import { BitField, Channel, PeakTier, informationalButtons } from './constants';
 import { GrandExchange } from './grandExchange';
-import { cacheGEPrices } from './marketPrices';
 import { collectMetrics } from './metrics';
 import { queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
@@ -146,7 +145,6 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 	{
 		name: 'wilderness_peak_times',
 		timer: null,
-		startupWait: Time.Minute,
 		interval: Time.Hour * 24,
 		cb: async () => {
 			let hoursUsed = 0;
@@ -376,14 +374,6 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 		interval: Time.Second * 10,
 		cb: async () => {
 			await GrandExchange.tick();
-		}
-	},
-	{
-		name: 'Cache g.e prices and validate',
-		timer: null,
-		interval: Time.Hour * 5,
-		cb: async () => {
-			await cacheGEPrices();
 		}
 	}
 ];

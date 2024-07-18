@@ -2,6 +2,7 @@ import { schedule } from 'node-cron';
 
 import { analyticsTick } from './analytics';
 import { syncPrescence } from './doubleLoot';
+import { cacheGEPrices } from './marketPrices';
 import { cacheCleanup } from './util/cachedUserIDs';
 import { syncSlayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
 
@@ -44,5 +45,10 @@ GROUP BY item_id;`);
 
 	schedule('0 0 * * *', async () => {
 		syncSlayerMaskLeaderboardCache();
+	});
+
+	schedule('35 */48 * * *', async () => {
+		debugLog('cacheGEPrices cronjob starting');
+		await cacheGEPrices();
 	});
 }

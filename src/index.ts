@@ -18,6 +18,7 @@ import { Channel, Events, META_CONSTANTS, gitHash, globalConfig } from './lib/co
 import { economyLog } from './lib/economyLogs';
 import { onMessage } from './lib/events';
 import { GrandExchange } from './lib/grandExchange';
+import { cacheGEPrices } from './lib/marketPrices';
 import { modalInteractionHook } from './lib/modals';
 import { populateRoboChimpCache } from './lib/perkTier';
 import { runStartupScripts } from './lib/startupScripts';
@@ -203,7 +204,8 @@ async function main() {
 		runTimedLoggedFn('Syncing prices', syncCustomPrices),
 		runTimedLoggedFn('Caching badges', cacheBadges),
 		runTimedLoggedFn('Init Grand Exchange', () => GrandExchange.init()),
-		runTimedLoggedFn('populateRoboChimpCache', populateRoboChimpCache)
+		runTimedLoggedFn('populateRoboChimpCache', populateRoboChimpCache),
+		runTimedLoggedFn('Cache G.E Prices', cacheGEPrices)
 	]);
 	await runTimedLoggedFn('Log In', () => client.login(globalConfig.botToken));
 	console.log(`Logged in as ${globalClient.user.username}`);
