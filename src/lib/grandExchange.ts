@@ -244,6 +244,7 @@ class GrandExchangeSingleton {
 
 	async lockGE(reason: string) {
 		if (this.locked) return;
+		debugLog(`The Grand Exchange has encountered an error and has been locked. Reason: ${reason}`);
 		const idsToNotify = [...ADMIN_IDS, ...OWNER_IDS];
 		await sendToChannelID(globalConfig.geAdminChannelID, {
 			content: `The Grand Exchange has encountered an error and has been locked. Reason: ${reason}. ${idsToNotify
@@ -814,10 +815,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					type: GEListingType.Buy,
 					fulfilled_at: null,
 					cancelled_at: null,
-					user_id: {
-						not: null,
-						notIn: Array.from(BLACKLISTED_USERS)
-					}
+					user_id: { not: null }
 				},
 				orderBy: [
 					{
@@ -833,10 +831,7 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 					type: GEListingType.Sell,
 					fulfilled_at: null,
 					cancelled_at: null,
-					user_id: {
-						not: null,
-						notIn: Array.from(BLACKLISTED_USERS)
-					}
+					user_id: { not: null }
 				},
 				orderBy: [
 					{
