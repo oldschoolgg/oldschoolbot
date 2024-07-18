@@ -10,7 +10,7 @@ import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './M
 import { boxSpawnHandler } from './boxSpawns';
 import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from './bso/guthixianCache';
 import { IronmanPMBTable, itemSearchMbTable } from './bsoOpenables';
-import { BitField, Emoji, globalConfig, secretItems } from './constants';
+import { BitField, Emoji, globalConfig } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
 
@@ -132,7 +132,7 @@ const mentionCommands: MentionCommand[] = [
 			const items = Items.filter(
 				i =>
 					[i.id.toString(), i.name.toLowerCase()].includes(content.toLowerCase()) &&
-					!secretItems.includes(i.id)
+					!i.customItemData?.isSecret
 			).array();
 			if (items.length === 0) return msg.reply('No results for that item.');
 

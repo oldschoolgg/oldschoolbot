@@ -4318,6 +4318,16 @@ exports[`BSO Buyables 1`] = `
     "outputItems": undefined,
   },
   {
+    "gpCost": 12000000,
+    "ironmanPrice": 1200000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Birthday crate key (s6)",
+    "outputItems": undefined,
+  },
+  {
     "customReq": [Function],
     "gpCost": 1000000,
     "itemCost": Bank {

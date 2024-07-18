@@ -2,6 +2,10 @@ import { bold } from 'discord.js';
 import { Time, reduceNumByPercent, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
+import getOSItem from './getOSItem';
+
+const crateItem = getOSItem('Birthday crate (s6)');
+
 export async function handleCrateSpawns(user: MUser, duration: number) {
 	const accountAge = user.accountAgeInDays();
 	let dropratePerMinute = 50 * 60;
@@ -12,7 +16,6 @@ export async function handleCrateSpawns(user: MUser, duration: number) {
 		}
 	}
 	dropratePerMinute = Math.ceil(dropratePerMinute / 3);
-	dropratePerMinute = Math.ceil(dropratePerMinute / 5.5);
 	dropratePerMinute = Math.ceil(dropratePerMinute / 2);
 	if (user.isIronman) {
 		dropratePerMinute = Math.ceil(dropratePerMinute / 3);
@@ -21,7 +24,7 @@ export async function handleCrateSpawns(user: MUser, duration: number) {
 	const loot = new Bank();
 	for (let i = 0; i < minutes; i++) {
 		if (roll(dropratePerMinute)) {
-			loot.add('Easter crate (s5)');
+			loot.add(crateItem);
 		}
 	}
 	if (loot.length > 0) {

@@ -751,8 +751,6 @@ export const chompyHats = [
 	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
 
-export const secretItems: number[] = resolveItems([]);
-
 export const toaPurpleItems = resolveItems([
 	"Tumeken's guardian",
 	"Tumeken's shadow (uncharged)",
