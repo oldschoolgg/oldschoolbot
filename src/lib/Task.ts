@@ -97,6 +97,7 @@ import { minionActivityCache } from './constants';
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
+import { managingMiscellaniaTask } from '../tasks/managingMiscellaniaActivity';
 
 const tasks: MinionTask[] = [
 	aerialFishingTask,
@@ -187,7 +188,8 @@ const tasks: MinionTask[] = [
 	camdozaalMiningTask,
 	camdozaalSmithingTask,
 	camdozaalFishingTask,
-	colosseumTask
+	colosseumTask,
+	managingMiscellaniaTask
 ];
 
 export async function processPendingActivities() {

@@ -614,4 +614,5 @@ export type ActivityTaskData =
 	| ActivityTaskOptionsWithQuantity
 	| MinigameActivityTaskOptionsWithNoChanges
 	| CutLeapingFishActivityTaskOptions
-	| ColoTaskOptions;
+	| ColoTaskOptions
+	| ManagingMiscellaniaActivityTaskOptions;
