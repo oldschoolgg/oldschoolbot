@@ -1,8 +1,10 @@
 import { Bank, LootTable } from 'oldschooljs';
 import { handleTripFinish } from '../lib/util/handleTripFinish';
 import { makeBankImage } from '../lib/util/makeBankImage';
+import { updateBankSetting } from '../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 
+// Define LootTables
 const nests = new LootTable()
 	.add('Bird nest (seed)', 1, 65)
 	.add('Bird nest (ring)', 1, 32)
@@ -44,7 +46,7 @@ const herbSeedsLoot = new LootTable()
 	.add('Marrentill seed', 1, 218)
 	.add('Tarromin seed', 1, 149)
 	.add('Harralander seed', 1, 101)
-	.add('Ranarr seed', 2, 69) // Maximum of 2
+	.add('Ranarr seed', 2, 69) // Max of 2
 	.add('Toadflax seed', 1, 47)
 	.add('Irit seed', 1, 32)
 	.add('Avantoe seed', 1, 22)
@@ -72,25 +74,25 @@ const flaxSeedsLoot = new LootTable()
 	.add('Torstol seed', 1, 2);
 
 const treeSeedsLoot = new LootTable()
-	.add('Acorn', 1, 214) // max 4
-	.add('Apple tree seed', 1, 170) // max 4
-	.add('Willow seed', 1, 135) // max 4
-	.add('Banana tree seed', 1, 108) // max 4
-	.add('Orange tree seed', 1, 85) // max 4
-	.add('Curry tree seed', 1, 68) // max 4
-	.add('Maple seed', 1, 54) // max 4
-	.add('Pineapple seed', 1, 42) // max 4
-	.add('Papaya tree seed', 1, 34) // max 4
-	.add('Yew seed', 1, 27) // max 4
-	.add('Palm tree seed', 1, 22) // max 4
-	.add('Calquat tree seed', 1, 17) // max 4
-	.add('Spirit seed', 1, 11) // max 4
-	.add('Dragonfruit tree seed', 1, 6) // max 4
-	.add('Magic seed', 1, 5) // max 4
-	.add('Teak seed', 1, 4) // max 4
-	.add('Mahogany seed', 1, 4) // max 4
-	.add('Celastrus seed', 1, 3) // max 4
-	.add('Redwood tree seed', 1, 2); // max 4;
+	.add('Acorn', 1, 214) // Max 4
+	.add('Apple tree seed', 1, 170) // Max 4
+	.add('Willow seed', 1, 135) // Max 4
+	.add('Banana tree seed', 1, 108) // Max 4
+	.add('Orange tree seed', 1, 85) // Max 4
+	.add('Curry tree seed', 1, 68) // Max 4
+	.add('Maple seed', 1, 54) // Max 4
+	.add('Pineapple seed', 1, 42) // Max 4
+	.add('Papaya tree seed', 1, 34) // Max 4
+	.add('Yew seed', 1, 27) // Max 4
+	.add('Palm tree seed', 1, 22) // Max 4
+	.add('Calquat tree seed', 1, 17) // Max 4
+	.add('Spirit seed', 1, 11) // Max 4
+	.add('Dragonfruit tree seed', 1, 6) // Max 4
+	.add('Magic seed', 1, 5) // Max 4
+	.add('Teak seed', 1, 4) // Max 4
+	.add('Mahogany seed', 1, 4) // Max 4
+	.add('Celastrus seed', 1, 3) // Max 4
+	.add('Redwood tree seed', 1, 2); // Max 4
 
 const seedsLoot = new LootTable()
 	.add('Potato seed', 1, 1567735)
@@ -172,145 +174,64 @@ export const managingMiscellaniaTask: MinionTask = {
 		const loot = new Bank();
 
 		const daysDifference = Math.round(cofferCost / 7500);
-
 		const dailyResourcePoints = 600;
-
 		const totalResourcePoints = dailyResourcePoints * daysDifference;
 
 		const mainQty = getBaseQuantity(mainCollect, 10, totalResourcePoints);
 		const secondaryQty = getBaseQuantity(secondaryCollect, 5, totalResourcePoints);
 
-		await userStatsUpdate(
-			user.id,
-			{
-				last_managing_miscellania_timestamp: new Date().getTime()
-			},
-			{}
-		);
+		await userStatsUpdate(user.id, { last_managing_miscellania_timestamp: new Date().getTime() }, {});
 
-		if (mainCollect === 'Wood') {
-			loot.add('Maple logs', mainQty);
-
-			const rateTableEntries = Math.min(999, Math.floor(mainQty / 100));
-			const rateLoot = nests.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (mainCollect === 'Mining') {
-			loot.add('Maple logs', mainQty);
-
-			const rateTableEntries = Math.floor(mainQty / 200 + 0.5);
-			const rateLoot = miningGems.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (mainCollect === 'Fishing') {
-			loot.add('Raw tuna', Math.floor(0.5 * mainQty));
-			loot.add('Raw swordfish', Math.floor(0.15 * mainQty));
-
-			const rateTableEntries = Math.floor(mainQty / 200);
-			const rateLoot = fishingLoot.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (mainCollect === 'Cooked Fish') {
-			loot.add('Tuna', Math.floor(0.5 * mainQty));
-			loot.add('Swordfish', Math.floor(0.15 * mainQty));
-
-			const rateTableEntries = Math.floor(mainQty / 200);
-			const rateLoot = fishingLoot.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (mainCollect === 'Herbs') {
-			loot.add(herbsLoot.roll(mainQty));
-
-			const rateTableEntries = Math.floor(mainQty / 100);
-			const rateLoot = herbSeedsLoot.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (mainCollect === 'Flax') {
-			loot.add('Flax', mainQty);
-
-			const rateTableEntries = Math.floor(mainQty / 600);
-			const rateLoot = flaxSeedsLoot.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (mainCollect === 'Mahogany') {
-			loot.add('Mahogany logs', mainQty);
-			const rateTableEntries = Math.floor(mainQty / 350);
-			const rateLoot = nests.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (mainCollect === 'Teak') {
-			loot.add('Teak logs', mainQty);
-			const rateTableEntries = Math.floor(mainQty / 350);
-			const rateLoot = nests.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (mainCollect === 'Hardwood (Mahogany and Teak)') {
-			loot.add('Mahogany logs', Math.floor(mainQty * 0.5));
-			loot.add('Teak logs', Math.floor(mainQty * 0.5));
-			const rateTableEntries = Math.floor(mainQty / 350);
-			const rateLoot = nests.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (mainCollect === 'Farm') {
-			loot.add(seedsLoot.roll(mainQty));
-
-			const rateTableEntries = Math.floor(mainQty / 200);
-			const rateLoot = treeSeedsLoot.roll(rateTableEntries);
-			loot.add(rateLoot);
+		function addLoot(category: string, quantity: number) {
+			switch (category) {
+				case 'Wood':
+					loot.add('Maple logs', quantity);
+					loot.add(nests.roll(Math.min(999, Math.floor(quantity / 100))));
+					break;
+				case 'Mining':
+					loot.add('Maple logs', quantity);
+					loot.add(miningGems.roll(Math.floor(quantity / 200 + 0.5)));
+					break;
+				case 'Fishing':
+					loot.add('Raw tuna', Math.floor(0.5 * quantity));
+					loot.add('Raw swordfish', Math.floor(0.15 * quantity));
+					loot.add(fishingLoot.roll(Math.floor(quantity / 200)));
+					break;
+				case 'Cooked Fish':
+					loot.add('Tuna', Math.floor(0.5 * quantity));
+					loot.add('Swordfish', Math.floor(0.15 * quantity));
+					loot.add(fishingLoot.roll(Math.floor(quantity / 200)));
+					break;
+				case 'Herbs':
+					loot.add(herbsLoot.roll(quantity));
+					loot.add(herbSeedsLoot.roll(Math.floor(quantity / 100)));
+					break;
+				case 'Flax':
+					loot.add('Flax', quantity);
+					loot.add(flaxSeedsLoot.roll(Math.floor(quantity / 600)));
+					break;
+				case 'Mahogany':
+					loot.add('Mahogany logs', quantity);
+					loot.add(nests.roll(Math.floor(quantity / 350)));
+					break;
+				case 'Teak':
+					loot.add('Teak logs', quantity);
+					loot.add(nests.roll(Math.floor(quantity / 350)));
+					break;
+				case 'Hardwood (Mahogany and Teak)':
+					loot.add('Mahogany logs', Math.floor(quantity * 0.5));
+					loot.add('Teak logs', Math.floor(quantity * 0.5));
+					loot.add(nests.roll(Math.floor(quantity / 350)));
+					break;
+				case 'Farm':
+					loot.add(seedsLoot.roll(quantity));
+					loot.add(treeSeedsLoot.roll(Math.floor(quantity / 200)));
+					break;
+			}
 		}
 
-		if (secondaryCollect === 'Wood') {
-			loot.add('Maple logs', secondaryQty);
-			// Add loot from the rate table based on the base quantity
-			const rateTableEntries = Math.min(999, Math.floor(secondaryQty / 100));
-			const rateLoot = nests.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (secondaryCollect === 'Mining') {
-			loot.add('Maple logs', secondaryQty);
-
-			const rateTableEntries = Math.floor(secondaryQty / 200 + 0.5);
-			const rateLoot = miningGems.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (secondaryCollect === 'Fishing') {
-			loot.add('Raw tuna', Math.floor(0.5 * secondaryQty));
-			loot.add('Raw swordfish', Math.floor(0.15 * secondaryQty));
-
-			const rateTableEntries = Math.floor(secondaryQty / 200);
-			const rateLoot = fishingLoot.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (secondaryCollect === 'Cooked Fish') {
-			loot.add('Tuna', Math.floor(0.5 * secondaryQty));
-			loot.add('Swordfish', Math.floor(0.15 * secondaryQty));
-
-			const rateTableEntries = Math.floor(secondaryQty / 200);
-			const rateLoot = fishingLoot.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (secondaryCollect === 'Herbs') {
-			loot.add(herbsLoot.roll(secondaryQty));
-
-			const rateTableEntries = Math.floor(secondaryQty / 100);
-			const rateLoot = herbSeedsLoot.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (secondaryCollect === 'Flax') {
-			loot.add('Flax', secondaryQty);
-
-			const rateTableEntries = Math.floor(secondaryQty / 600);
-			const rateLoot = flaxSeedsLoot.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (secondaryCollect === 'Mahogany') {
-			loot.add('Mahogany logs', secondaryQty);
-			const rateTableEntries = Math.floor(secondaryQty / 350);
-			const rateLoot = nests.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (secondaryCollect === 'Teak') {
-			loot.add('Teak logs', secondaryQty);
-			const rateTableEntries = Math.floor(secondaryQty / 350);
-			const rateLoot = nests.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (secondaryCollect === 'Hardwood (Mahogany and Teak)') {
-			loot.add('Mahogany logs', Math.floor(secondaryQty * 0.5));
-			loot.add('Teak logs', Math.floor(secondaryQty * 0.5));
-			const rateTableEntries = Math.floor(secondaryQty / 350);
-			const rateLoot = nests.roll(rateTableEntries);
-			loot.add(rateLoot);
-		} else if (secondaryCollect === 'Farm') {
-			loot.add(seedsLoot.roll(secondaryQty));
-
-			const rateTableEntries = Math.floor(secondaryQty / 200);
-			const rateLoot = treeSeedsLoot.roll(rateTableEntries);
-			loot.add(rateLoot);
-		}
+		addLoot(mainCollect, mainQty);
+		addLoot(secondaryCollect, secondaryQty);
 
 		const str = `${user}, ${user.minionName} finished collecting from the kingdom, you received ${loot}.`;
 
@@ -319,6 +240,8 @@ export const managingMiscellaniaTask: MinionTask = {
 			collectionLog: true,
 			itemsToAdd: loot
 		});
+
+		updateBankSetting('managing_miscellania_loot', loot);
 
 		const image = await makeBankImage({ bank: loot, title: 'Managing Miscellania Loot', user });
 
