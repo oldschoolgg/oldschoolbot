@@ -6,7 +6,6 @@ import { Channel, META_CONSTANTS, globalConfig } from '../../lib/constants';
 import { initCrons } from '../../lib/crons';
 
 import { initTickers } from '../../lib/tickers';
-import { cacheCleanup } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
@@ -28,8 +27,6 @@ export async function onStartup() {
 			guildID: globalConfig.testingServerID
 		});
 	}
-
-	cacheCleanup();
 
 	initCrons();
 	initTickers();
