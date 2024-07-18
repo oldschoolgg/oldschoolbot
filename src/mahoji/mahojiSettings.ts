@@ -128,7 +128,7 @@ export async function userStatsBankUpdate(userID: string, key: keyof UserStats, 
 		u => ({
 			[key]: bank.clone().add(u[key] as ItemBank).bank
 		}),
-		{}
+		{ [key]: true }
 	);
 }
 
