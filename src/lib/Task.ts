@@ -4,6 +4,7 @@ import type { ZodSchema } from 'zod';
 import { z } from 'zod';
 
 import { production } from '../config';
+import { managingMiscellaniaTask } from '../tasks/managingMiscellaniaActivity';
 import { aerialFishingTask } from '../tasks/minions/HunterActivity/aerialFishingActivity';
 import { birdHouseTask } from '../tasks/minions/HunterActivity/birdhouseActivity';
 import { driftNetTask } from '../tasks/minions/HunterActivity/driftNetActivity';
@@ -97,7 +98,6 @@ import { minionActivityCache } from './constants';
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
 import { logError } from './util/logError';
-import { managingMiscellaniaTask } from '../tasks/managingMiscellaniaActivity';
 
 const tasks: MinionTask[] = [
 	aerialFishingTask,

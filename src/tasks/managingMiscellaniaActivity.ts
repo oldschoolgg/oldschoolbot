@@ -1,4 +1,5 @@
 import { Bank, LootTable } from 'oldschooljs';
+import type { ManagingMiscellaniaActivityTaskOptions } from '../lib/types/minions';
 import { handleTripFinish } from '../lib/util/handleTripFinish';
 import { makeBankImage } from '../lib/util/makeBankImage';
 import { updateBankSetting } from '../lib/util/updateBankSetting';
