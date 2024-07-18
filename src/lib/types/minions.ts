@@ -1,4 +1,4 @@
-import type { CropUpgradeType, activity_type_enum } from '@prisma/client';
+import type { CropUpgradeType } from '@prisma/client';
 
 import type { ItemBank } from '.';
 import type { NMZStrategy, TwitcherGloves, UnderwaterAgilityThievingTrainingSkill } from '../constants';
