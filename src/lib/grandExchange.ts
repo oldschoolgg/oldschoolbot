@@ -790,8 +790,59 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 	async checkGECanFullFilAllListings() {
 		const shouldHave = new Bank();
-		const { buyListings, sellListings, currentBank } = await this.fetchActiveListings();
-
+		const [buyListings, sellListings, currentBankRaw] = await prisma.$transaction([
+			prisma.gEListing.findMany({
+				where: {
+					type: GEListingType.Buy,
+					fulfilled_at: null,
+					cancelled_at: null,
+					user_id: {
+						not: null,
+						notIn: Array.from(BLACKLISTED_USERS)
+					}
+				},
+				orderBy: [
+					{
+						asking_price_per_item: 'desc'
+					},
+					{
+						created_at: 'asc'
+					}
+				]
+			}),
+			prisma.gEListing.findMany({
+				where: {
+					type: GEListingType.Sell,
+					fulfilled_at: null,
+					cancelled_at: null,
+					user_id: {
+						not: null,
+						notIn: Array.from(BLACKLISTED_USERS)
+					}
+				},
+				orderBy: [
+					{
+						asking_price_per_item: 'asc'
+					},
+					{
+						created_at: 'asc'
+					}
+				],
+				// Take the last purchase transaction for each sell listing
+				include: {
+					sellTransactions: {
+						orderBy: {
+							created_at: 'desc'
+						},
+						take: 1
+					}
+				}
+			}),
+			prisma.$queryRawUnsafe<{ bank: ItemBank }[]>(
+				'SELECT json_object_agg(item_id, quantity) as bank FROM ge_bank WHERE quantity != 0;'
+			)
+		]);
+		const currentBank = new Bank(currentBankRaw[0].bank);
 		// How much GP the g.e still has from this listing
 		for (const listing of buyListings) {
 			shouldHave.add('Coins', Number(listing.asking_price_per_item) * listing.quantity_remaining);
