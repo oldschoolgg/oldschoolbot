@@ -92,13 +92,10 @@ test.concurrent('Should remove from cache', async () => {
 });
 
 test.concurrent('Should recognize special bitfields', async () => {
-	const users = [
-		await createTestUser(undefined, { bitfield: [BitField.HasPermanentTierOne] }),
-		await createTestUser(undefined, { bitfield: [BitField.BothBotsMaxedFreeTierOnePerks] })
-	];
-	for (const user of users) {
-		expect(getUsersPerkTier(user)).toEqual(2);
-	}
+	expect(getUsersPerkTier(await createTestUser(undefined, { bitfield: [BitField.HasPermanentTierOne] }))).toEqual(3);
+	expect(
+		getUsersPerkTier(await createTestUser(undefined, { bitfield: [BitField.BothBotsMaxedFreeTierOnePerks] }))
+	).toEqual(2);
 });
 
 test.concurrent('Should sdffsddfss', async () => {

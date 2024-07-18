@@ -8,7 +8,6 @@ import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { runTameTask } from '../tasks/tames/tameTasks';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { processPendingActivities } from './Task';
-import { bossEvents, startBossEvent } from './bossEvents';
 import { BitField, Channel, PeakTier, informationalButtons } from './constants';
 import { GrandExchange } from './grandExchange';
 import { cacheGEPrices } from './marketPrices';
@@ -367,34 +366,6 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 
 			for (const task of tameTasks) {
 				await runTameTask(task, task.tame);
-			}
-		}
-	},
-
-	{
-		name: 'pumpkinhead',
-		timer: null,
-		interval: Time.Hour * 5,
-		cb: async () => {
-			const mass = await prisma.bossEvent.findFirst({
-				where: {
-					start_date: { lt: new Date() },
-					completed: false
-				}
-			});
-			if (mass) {
-				startBossEvent({ boss: bossEvents.find(b => b.id === mass.boss_id)!, id: mass.id });
-
-				prisma.bossEvent
-					.update({
-						where: {
-							id: mass.id
-						},
-						data: {
-							completed: true
-						}
-					})
-					.catch(noOp);
 			}
 		}
 	},
