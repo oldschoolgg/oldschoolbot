@@ -89,7 +89,8 @@ export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.
 			update: {},
 			where: {
 				user_id: id
-			}
+			},
+			select: keys
 		});
 
 		return (await prisma.userStats.update({
@@ -109,7 +110,7 @@ export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.
 		where: {
 			user_id: id
 		},
-		select: undefined
+		select: keys
 	});
 
 	return (await prisma.userStats.update({
