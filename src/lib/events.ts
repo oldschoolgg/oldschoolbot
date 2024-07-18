@@ -259,7 +259,11 @@ const mentionCommands: MentionCommand[] = [
 		aliases: ['cd'],
 		description: 'Shows your cooldowns.',
 		run: async ({ msg, user, components }: MentionCommandOptions) => {
-			const stats = await user.fetchStats({ last_daily_timestamp: true, last_tears_of_guthix_timestamp: true });
+			const stats = await user.fetchStats({
+				last_daily_timestamp: true,
+				last_tears_of_guthix_timestamp: true,
+				last_managing_miscellania: true
+			});
 			return msg.reply({
 				content: cooldownTimers
 					.map(cd => {
