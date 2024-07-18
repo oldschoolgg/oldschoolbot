@@ -137,6 +137,19 @@ startupScripts.push({
 	sql: 'CREATE UNIQUE INDEX IF NOT EXISTS tame_only_one_task ON tame_activity (user_id, completed) WHERE NOT completed;'
 });
 
+startupScripts.push({
+	sql: `CREATE INDEX idx_ge_listing_buy_filter_sort 
+ON ge_listing (type, fulfilled_at, cancelled_at, user_id, asking_price_per_item DESC, created_at ASC);`
+});
+startupScripts.push({
+	sql: `CREATE INDEX idx_ge_listing_sell_filter_sort 
+ON ge_listing (type, fulfilled_at, cancelled_at, user_id, asking_price_per_item ASC, created_at ASC);`
+});
+
+startupScripts.push({
+	sql: `CREATE INDEX ge_transaction_sell_listing_id_created_at_idx 
+ON ge_transaction (sell_listing_id, created_at DESC);`
+});
 const itemMetaDataNames = Items.map(item => `(${item.id}, '${item.name.replace(/'/g, "''")}')`).join(', ');
 const itemMetaDataQuery = `
 INSERT INTO item_metadata (id, name)

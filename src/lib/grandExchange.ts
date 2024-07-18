@@ -1,7 +1,7 @@
 import type { GEListing, GETransaction } from '@prisma/client';
 import { GEListingType } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
-import { Time, calcPercentOfNum, clamp, noOp, sumArr } from 'e';
+import { Time, calcPercentOfNum, clamp, noOp, sumArr, uniqueArr } from 'e';
 import { LRUCache } from 'lru-cache';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
@@ -731,29 +731,38 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	}
 
 	async fetchActiveListings() {
-		const [buyListings, sellListings, clientStorage, currentBankRaw] = await prisma.$transaction([
-			prisma.gEListing.findMany({
-				where: {
-					type: GEListingType.Buy,
-					fulfilled_at: null,
-					cancelled_at: null,
-					user_id: { not: null }
+		const buyListings = await prisma.gEListing.findMany({
+			where: {
+				type: GEListingType.Buy,
+				fulfilled_at: null,
+				cancelled_at: null,
+				user_id: {
+					not: null,
+					notIn: Array.from(BLACKLISTED_USERS)
+				}
+			},
+			orderBy: [
+				{
+					asking_price_per_item: 'desc'
 				},
-				orderBy: [
-					{
-						asking_price_per_item: 'desc'
-					},
-					{
-						created_at: 'asc'
-					}
-				]
-			}),
+				{
+					created_at: 'asc'
+				}
+			]
+		});
+		const [sellListings, clientStorage, currentBankRaw] = await prisma.$transaction([
 			prisma.gEListing.findMany({
 				where: {
 					type: GEListingType.Sell,
 					fulfilled_at: null,
 					cancelled_at: null,
-					user_id: { not: null }
+					user_id: {
+						not: null,
+						notIn: Array.from(BLACKLISTED_USERS)
+					},
+					item_id: {
+						in: uniqueArr(buyListings.map(i => i.item_id))
+					}
 				},
 				orderBy: [
 					{
@@ -871,13 +880,22 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	private async _tick() {
 		if (!this.ready) return;
 		if (this.locked) return;
-		const { buyListings: _buyListings, sellListings: _sellListings } = await this.fetchActiveListings();
+		const { buyListings, sellListings } = await this.fetchActiveListings();
 
-		// Filter out listings from Blacklisted users:
-		const buyListings = _buyListings.filter(l => !BLACKLISTED_USERS.has(l.user_id!));
-		const sellListings = _sellListings.filter(l => !BLACKLISTED_USERS.has(l.user_id!));
+		const minimumSellPricePerItem = new Map<number, number>();
+		for (const sellListing of sellListings) {
+			const currentPrice = minimumSellPricePerItem.get(sellListing.item_id);
+			if (currentPrice === undefined || sellListing.asking_price_per_item < currentPrice) {
+				minimumSellPricePerItem.set(sellListing.item_id, Number(sellListing.asking_price_per_item));
+			}
+		}
 
 		for (const buyListing of buyListings) {
+			const minPrice = minimumSellPricePerItem.get(buyListing.item_id);
+			if (minPrice === undefined || buyListing.asking_price_per_item < minPrice) {
+				continue;
+			}
+
 			// These are all valid, matching sell listings we can match with this buy listing.
 			const matchingSellListings = sellListings.filter(
 				sellListing =>

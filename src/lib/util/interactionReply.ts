@@ -16,12 +16,16 @@ import { logErrorForInteraction } from './logError';
 
 export async function interactionReply(interaction: RepliableInteraction, response: string | InteractionReplyOptions) {
 	let i: Promise<InteractionResponse> | Promise<Message> | undefined = undefined;
+	let method = '';
 
 	if (interaction.replied) {
+		method = 'followUp';
 		i = interaction.followUp(response);
 	} else if (interaction.deferred) {
+		method = 'editReply';
 		i = interaction.editReply(response);
 	} else {
+		method = 'reply';
 		i = interaction.reply(response);
 	}
 	try {
@@ -30,7 +34,7 @@ export async function interactionReply(interaction: RepliableInteraction, respon
 	} catch (e: any) {
 		if (e instanceof DiscordAPIError && e.code !== 10_008) {
 			// 10_008 is unknown message, e.g. if someone deletes the message before it's replied to.
-			logErrorForInteraction(e, interaction);
+			logErrorForInteraction(e, interaction, { method, response: JSON.stringify(response).slice(0, 50) });
 		}
 		return undefined;
 	}

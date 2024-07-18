@@ -7,7 +7,6 @@ import { initCrons } from '../../lib/crons';
 import { syncDoubleLoot } from '../../lib/doubleLoot';
 
 import { initTickers } from '../../lib/tickers';
-import { cacheCleanup } from '../../lib/util/cachedUserIDs';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { syncSlayerMaskLeaderboardCache } from '../../lib/util/slayerMaskLeaderboard';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -32,8 +31,6 @@ export async function onStartup() {
 	}
 
 	await syncDoubleLoot();
-
-	cacheCleanup();
 
 	initCrons();
 	initTickers();
