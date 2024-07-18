@@ -7,7 +7,6 @@ export function makeCommandUsage({
 	userID,
 	channelID,
 	guildID,
-	flags,
 	commandName,
 	args,
 	isContinue,
@@ -17,7 +16,6 @@ export function makeCommandUsage({
 	userID: string | bigint;
 	channelID: string | bigint;
 	guildID?: string | bigint | null;
-	flags: null | Record<string, string>;
 	commandName: string;
 	args: CommandOptions;
 	isContinue: null | boolean;
@@ -30,7 +28,6 @@ export function makeCommandUsage({
 		args: getCommandArgs(commandName, args),
 		channel_id: BigInt(channelID),
 		guild_id: guildID ? BigInt(guildID) : null,
-		flags: flags ? (Object.keys(flags).length > 0 ? flags : undefined) : undefined,
 		is_continue: isContinue ?? undefined,
 		inhibited,
 		continue_delta_millis: continueDeltaMillis

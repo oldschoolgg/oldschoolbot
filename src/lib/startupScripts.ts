@@ -3,8 +3,6 @@ import { Items } from 'oldschooljs';
 const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
 
 const arrayColumns = [
-	['clientStorage', 'userBlacklist'],
-	['clientStorage', 'guildBlacklist'],
 	['guilds', 'disabledCommands'],
 	['guilds', 'staffOnlyChannels'],
 	['users', 'badges'],
@@ -15,7 +13,6 @@ const arrayColumns = [
 	['users', 'favorite_bh_seeds'],
 	['users', 'attack_style'],
 	['users', 'combat_options'],
-	['users', 'ironman_alts'],
 	['users', 'slayer.unlocks'],
 	['users', 'slayer.blocked_ids'],
 	['users', 'slayer.autoslay_options'],

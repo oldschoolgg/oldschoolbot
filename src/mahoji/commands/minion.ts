@@ -28,7 +28,8 @@ import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { MUserStats } from '../../lib/structures/MUserStats';
-import { convertLVLtoXP, getAllIDsOfUser, isValidNickname } from '../../lib/util';
+import { convertLVLtoXP, isValidNickname } from '../../lib/util';
+import { findGroupOfUser } from '../../lib/util/findGroupOfUser';
 import { getKCByName } from '../../lib/util/getKCByName';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -191,7 +192,7 @@ export const minionCommand: OSBMahojiCommand = {
 						const mUser = await mUserFetch(user.id);
 						const isMod = mUser.bitfield.includes(BitField.isModerator);
 						const bankImages = bankImageGenerator.backgroundImages;
-						const allAccounts = getAllIDsOfUser(mUser);
+						const allAccounts = await findGroupOfUser(mUser.id);
 						const owned = bankImages
 							.filter(
 								bg =>

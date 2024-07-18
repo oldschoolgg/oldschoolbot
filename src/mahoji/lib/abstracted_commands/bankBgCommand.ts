@@ -3,7 +3,8 @@ import { Bank } from 'oldschooljs';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { BitField } from '../../../lib/constants';
-import { formatSkillRequirements, getAllIDsOfUser, stringMatches, toKMB } from '../../../lib/util';
+import { formatSkillRequirements, stringMatches, toKMB } from '../../../lib/util';
+import { findGroupOfUser } from '../../../lib/util/findGroupOfUser';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 
@@ -20,7 +21,7 @@ export async function bankBgCommand(interaction: ChatInputCommandInteraction, us
 	}
 
 	const owners = selectedImage.owners ?? [];
-	const allAccounts = getAllIDsOfUser(user);
+	const allAccounts = await findGroupOfUser(user.id);
 	if (user.bitfield.includes(BitField.isModerator) || allAccounts.some(a => owners.includes(a))) {
 		await user.update({
 			bankBackground: selectedImage.id

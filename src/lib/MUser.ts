@@ -47,8 +47,9 @@ import type { ChargeBank, XPBank } from './structures/Banks';
 import { Gear } from './structures/Gear';
 import { MTame } from './structures/MTame';
 import type { Skills } from './types';
-import { addItemToBank, convertXPtoLVL, getAllIDsOfUser, itemNameFromID } from './util';
+import { addItemToBank, convertXPtoLVL, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
+import { findGroupOfUser } from './util/findGroupOfUser';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
@@ -938,7 +939,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			return;
 		}
 		if (background.owners) {
-			const userIDs = getAllIDsOfUser(this);
+			const userIDs = await findGroupOfUser(this.id);
 			if (background.owners.some(owner => userIDs.includes(owner))) {
 				return;
 			}

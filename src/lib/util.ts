@@ -571,15 +571,6 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	}
 }
 
-export function getAllIDsOfUser(user: MUser) {
-	const main = user.user.main_account;
-	const allAccounts: string[] = [...user.user.ironman_alts, user.id];
-	if (main) {
-		allAccounts.push(main);
-	}
-	return allAccounts;
-}
-
 export function getInteractionTypeName(type: InteractionType) {
 	return {
 		[InteractionType.Ping]: 'Ping',

@@ -296,7 +296,6 @@ export async function onMessage(msg: Message) {
 				guild_id: msg.guildId ? BigInt(msg.guildId) : undefined,
 				command_name: command.name,
 				args: msgContentWithoutCommand,
-				flags: undefined,
 				inhibited: false,
 				is_mention_command: true
 			}
