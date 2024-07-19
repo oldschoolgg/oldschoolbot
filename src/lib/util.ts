@@ -395,6 +395,10 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	}
 }
 
+export function logWrapFn(name: string, fn: () => Promise<void>) {
+	return () => runTimedLoggedFn(name, fn);
+}
+
 export function isModOrAdmin(user: MUser) {
 	return [...OWNER_IDS, ...ADMIN_IDS].includes(user.id) || user.bitfield.includes(BitField.isModerator);
 }

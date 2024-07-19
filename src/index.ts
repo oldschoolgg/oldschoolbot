@@ -201,7 +201,7 @@ client.on('guildCreate', guild => {
 });
 
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
-client.once('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
+client.once('ready', () => onStartup());
 
 async function main() {
 	if (process.env.TEST) return;

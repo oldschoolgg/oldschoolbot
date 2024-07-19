@@ -7,6 +7,7 @@ import { initTickers } from '../../lib/tickers';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
+import { logWrapFn } from '../../lib/util';
 
 export async function syncCustomPrices() {
 	const clientData = await mahojiClientSettingsFetch({ custom_prices: true });
@@ -15,27 +16,27 @@ export async function syncCustomPrices() {
 	}
 }
 
-export async function onStartup() {
-	globalClient.application.commands.fetch({
-		guildId: globalConfig.isProduction ? undefined : globalConfig.testingServerID
-	});
-	if (!globalConfig.isProduction) {
-		console.log('Syncing commands locally...');
-		await bulkUpdateCommands({
-			client: globalClient.mahojiClient,
-			commands: Array.from(globalClient.mahojiClient.commands.values()),
-			guildID: globalConfig.testingServerID
+export const onStartup = logWrapFn("onStartup", async () => {
+		globalClient.application.commands.fetch({
+			guildId: globalConfig.isProduction ? undefined : globalConfig.testingServerID
 		});
-	}
+		if (!globalConfig.isProduction) {
+			console.log('Syncing commands locally...');
+			await bulkUpdateCommands({
+				client: globalClient.mahojiClient,
+				commands: Array.from(globalClient.mahojiClient.commands.values()),
+				guildID: globalConfig.testingServerID
+			});
+		}
 
-	initCrons();
-	initTickers();
+		initCrons();
+		initTickers();
 
-	if (globalConfig.isProduction) {
-		sendToChannelID(Channel.GeneralChannel, {
-			content: `I have just turned on!
+		if (globalConfig.isProduction) {
+			sendToChannelID(Channel.GeneralChannel, {
+				content: `I have just turned on!
 
 ${META_CONSTANTS.RENDERED_STR}`
-		}).catch(console.error);
-	}
-}
+			}).catch(console.error);
+		}
+	});
