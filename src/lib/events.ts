@@ -141,7 +141,7 @@ const cooldownTimers: {
 	{
 		name: 'Managing Miscellania',
 		timeStamp: (_, stats) => Number(stats.last_managing_miscellania_timestamp),
-		cd: Time.Day * 1,
+		cd: Time.Day,
 		command: ['activities', 'managing_a', 'start']
 	}
 ];
