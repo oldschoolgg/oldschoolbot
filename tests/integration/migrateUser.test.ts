@@ -935,17 +935,18 @@ const allTableCommands: TestCommand[] = [
 				user_id: user.id
 			});
 
+			const stats = await user.fetchStats({ items_sold_bank: true });
 			await Promise.all([
 				updateClientGPTrackSetting('gp_sell', totalPrice),
 				updateBankSetting('sold_items_bank', bankToSell),
 				userStatsUpdate(
 					user.id,
-					userStats => ({
-						items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
+					{
+						items_sold_bank: new Bank(stats.items_sold_bank as ItemBank).add(bankToSell).bank,
 						sell_gp: {
 							increment: totalPrice
 						}
-					}),
+					},
 					{}
 				),
 				global.prisma!.botItemSell.createMany({ data: botItemSellData })

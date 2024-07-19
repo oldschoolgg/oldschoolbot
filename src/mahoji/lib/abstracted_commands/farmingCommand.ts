@@ -299,7 +299,7 @@ export async function farmingPlantCommand({
 		}
 	});
 
-	await userStatsBankUpdate(user.id, 'farming_plant_cost_bank', cost);
+	await userStatsBankUpdate(user, 'farming_plant_cost_bank', cost);
 
 	await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 		plantsName: plant.name,
