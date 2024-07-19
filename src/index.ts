@@ -26,7 +26,7 @@ import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { assert, runTimedLoggedFn } from './lib/util';
 import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
-import { handleInteractionError } from './lib/util/interactionReply';
+import { handleInteractionError, interactionReply } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
 import { syncDisabledCommands } from './lib/util/syncDisabledCommands';
 import { allCommands } from './mahoji/commands/allCommands';
@@ -146,7 +146,7 @@ client.on('interactionCreate', async interaction => {
 
 	if (globalClient.isShuttingDown) {
 		if (interaction.isRepliable()) {
-			await interaction.reply({
+			await interactionReply(interaction,{
 				content:
 					'Old School Bot is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
 				ephemeral: true
@@ -157,7 +157,7 @@ client.on('interactionCreate', async interaction => {
 
 	if (!client.isReady() || !client.uptime || client.uptime < Time.Second * 10) {
 		if (interaction.isRepliable()) {
-			await interaction.reply({
+			await interactionReply(interaction,{
 				content: 'Old School Bot is currently rebooting, please try again in a few seconds! Thank you <3',
 				ephemeral: true
 			});
