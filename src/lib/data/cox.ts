@@ -8,7 +8,7 @@ import {
 	reduceNumByPercent,
 	shuffleArr
 } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import type { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
@@ -31,8 +31,9 @@ const bareMinStats: Skills = {
 	prayer: 70
 };
 
-const SANGUINESTI_CHARGES_PER_COX = 150;
-const SHADOW_CHARGES_PER_COX = 130;
+const SCYTHE_CHARGERS_PER_COX = 100;
+const SHADOW_CHARGES_PER_COX = 120;
+const SANGUINESTI_CHARGES_PER_COX = 160;
 const TENTACLE_CHARGES_PER_COX = 200;
 
 export function hasMinRaidsRequirements(user: MUser) {
@@ -168,19 +169,18 @@ export const COXMaxMageGear = constructGearSetup({
 	hands: 'Tormented bracelet',
 	legs: 'Ancestral robe bottom',
 	feet: 'Eternal boots',
-	weapon: 'Harmonised nightmare staff',
-	shield: 'Arcane spirit shield',
+	'2h': "Tumeken's shadow",
 	ring: 'Magus ring'
 });
 const maxMage = new Gear(COXMaxMageGear);
 
 export const COXMaxRangeGear = constructGearSetup({
-	head: 'Armadyl helmet',
+	head: 'Masori mask(f)',
 	neck: 'Necklace of anguish',
-	body: 'Armadyl chestplate',
-	cape: "Ava's assembler",
+	body: 'Masori Body (f)',
+	cape: "Blessed dizana's quiver",
 	hands: 'Zaryte vambraces',
-	legs: 'Armadyl chainskirt',
+	legs: 'Masori body(f)',
 	feet: 'Pegasian boots',
 	'2h': 'Twisted bow',
 	ring: 'Venator ring',
@@ -358,33 +358,137 @@ function teamSizeBoostPercent(size: number) {
 }
 
 interface ItemBoost {
-	item: Item;
+	item: Item | Item[];
 	boost: number;
 	mustBeEquipped: boolean;
-	setup?: 'mage' | 'range';
+	setup?: 'melee' | 'mage' | 'range';
 	mustBeCharged?: boolean;
 	requiredCharges?: number;
 }
 
 const itemBoosts: ItemBoost[][] = [
-	[
+	[ // melee weapon boost
+		{
+			item: getOSItem('Scythe of vitur'),
+			boost: 10,
+			mustBeEquipped: true,
+			setup: 'melee',
+			mustBeCharged: true,
+			requiredCharges: SCYTHE_CHARGERS_PER_COX
+		},
+		{
+			item: getOSItem('Dragon hunter lance'),
+			boost: 6,
+			mustBeEquipped: true,
+			setup: 'melee'
+		},
+		{
+			item: getOSItem('Soulreaper axe'),
+			boost: 4,
+			mustBeEquipped: true,
+			setup: 'melee'
+		},
+		{
+			item: getOSItem("Osmumten's fang"),
+			boost: 3,
+			mustBeEquipped: true,
+			setup: 'melee'
+		},
+		{
+			item: getOSItem('Abyssal tentacle'),
+			boost: 2,
+			mustBeEquipped: true,
+			setup: 'melee',
+			mustBeCharged: true,
+			requiredCharges: TENTACLE_CHARGES_PER_COX
+		}
+	],
+	[ // melee cape boost
+		{
+			item: getOSItem('Infernal cape'),
+			boost: 5,
+			mustBeEquipped: true,
+			setup: 'melee'
+		},
+		{
+			item: getOSItem('Fire cape'),
+			boost: 2,
+			mustBeEquipped: true,
+			setup: 'melee'
+		},
+	],
+	[ // Range weapon boost
 		{
 			item: getOSItem('Twisted bow'),
-			boost: 8,
-			mustBeEquipped: false
+			boost: 10,
+			mustBeEquipped: true,
+			setup: 'range'
 		},
 		{
 			item: getOSItem('Bow of faerdhinen (c)'),
 			boost: 6,
-			mustBeEquipped: false
+			mustBeEquipped: true,
+			setup: 'range'
 		},
 		{
 			item: getOSItem('Dragon hunter crossbow'),
 			boost: 5,
-			mustBeEquipped: false
+			mustBeEquipped: true,
+			setup: 'range'
 		}
 	],
-	[
+	[ // range cape boost
+		{
+			item: getOSItem("Blessed dizana's quiver"),
+			boost: 5,
+			mustBeEquipped: true,
+			setup: 'range'
+		},
+		{
+			item: getOSItem("Ava's assembler"),
+			boost: 2,
+			mustBeEquipped: true,
+			setup: 'range'
+		},
+	],
+	[ // mage weapon boost
+		{
+			item: getOSItem("Tumeken's shadow"),
+			boost: 10,
+			mustBeEquipped: true,
+			setup: 'mage',
+			mustBeCharged: true,
+			requiredCharges: SHADOW_CHARGES_PER_COX
+		},
+		{
+			item: getOSItem('Sanguinesti staff'),
+			boost: 4,
+			mustBeEquipped: true,
+			setup: 'mage',
+			mustBeCharged: true,
+			requiredCharges: SANGUINESTI_CHARGES_PER_COX
+		}
+	],
+	[ // mage cape boost
+		{
+			item: getOSItem("Imbued saradomin cape"),
+			boost: 5,
+			mustBeEquipped: true,
+			setup: 'mage'
+		},
+		{
+			item: getOSItem("Saradomin cape"),
+			boost: 2,
+			mustBeEquipped: true,
+			setup: 'mage'
+		},
+	],
+	[ // defense reduction weapon boost
+		{
+			item: getOSItem('Elder maul'),
+			boost: 4,
+			mustBeEquipped: false
+		},
 		{
 			item: getOSItem('Dragon warhammer'),
 			boost: 3,
@@ -394,51 +498,13 @@ const itemBoosts: ItemBoost[][] = [
 			item: getOSItem('Bandos godsword'),
 			boost: 2.5,
 			mustBeEquipped: false
-		},
+		}
+	],
+	[ // Zaryte crossbow spec boost
 		{
-			item: getOSItem('Bandos godsword (or)'),
-			boost: 2.5,
+			item: getOSItem('Zaryte crossbow') && getOSItem('Lightbearer'),
+			boost: 5,
 			mustBeEquipped: false
-		}
-	],
-	[
-		{
-			item: getOSItem('Dragon hunter lance'),
-			boost: 3,
-			mustBeEquipped: false
-		},
-		{
-			item: getOSItem('Abyssal tentacle'),
-			boost: 2,
-			mustBeEquipped: false,
-			mustBeCharged: true,
-			requiredCharges: TENTACLE_CHARGES_PER_COX
-		}
-	],
-	[
-		{
-			item: getOSItem("Tumeken's shadow"),
-			boost: 9,
-			mustBeEquipped: false,
-			setup: 'mage',
-			mustBeCharged: true,
-			requiredCharges: SHADOW_CHARGES_PER_COX
-		},
-		{
-			item: getOSItem('Sanguinesti staff'),
-			boost: 6,
-			mustBeEquipped: false,
-			setup: 'mage',
-			mustBeCharged: true,
-			requiredCharges: SANGUINESTI_CHARGES_PER_COX
-		}
-	],
-	[
-		{
-			item: getOSItem('Zaryte vambraces'),
-			boost: 4,
-			mustBeEquipped: true,
-			setup: 'range'
 		}
 	]
 ];
