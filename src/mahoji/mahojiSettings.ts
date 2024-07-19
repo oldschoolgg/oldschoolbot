@@ -12,7 +12,14 @@ import type { KillableMonster } from '../lib/minions/types';
 import type { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
 import type { ItemBank } from '../lib/types';
-import { anglerBoosts, formatItemReqs, hasSkillReqs, itemNameFromID, type JsonKeys, readableStatName } from '../lib/util';
+import {
+	type JsonKeys,
+	anglerBoosts,
+	formatItemReqs,
+	hasSkillReqs,
+	itemNameFromID,
+	readableStatName
+} from '../lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../lib/util/clientSettings';
 import resolveItems from '../lib/util/resolveItems';
 
@@ -76,6 +83,25 @@ export async function trackClientBankStats(
 	});
 }
 
+export async function fetchUserStats<T extends Prisma.UserStatsSelect>(
+	userID: string,
+	selectKeys: T
+): Promise<SelectedUserStats<T>> {
+	const keysToSelect = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
+	const result = await prisma.userStats.upsert({
+		where: {
+			user_id: BigInt(userID)
+		},
+		create: {
+			user_id: BigInt(userID)
+		},
+		update: {},
+		select: keysToSelect
+	});
+
+	return result as unknown as SelectedUserStats<T>;
+}
+
 export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.UserStatsSelect>(
 	userID: string,
 	data: Omit<Prisma.UserStatsUpdateInput, 'user_id'>,
@@ -106,15 +132,19 @@ export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.
 	})) as SelectedUserStats<T>;
 }
 
-export async function userStatsBankUpdate(user: MUser, key: JsonKeys<UserStats>, bank: Bank) {
+export async function userStatsBankUpdate(user: MUser | string, key: JsonKeys<UserStats>, bank: Bank) {
 	if (!key) throw new Error('No key provided to userStatsBankUpdate');
-	const stats = await user.fetchStats({ [key]: true });
+	const userID = typeof user === 'string' ? user : user.id;
+	const stats =
+		typeof user === 'string'
+			? await fetchUserStats(userID, { [key]: true })
+			: await user.fetchStats({ [key]: true });
 	const currentItemBank = stats[key] as ItemBank;
 	if (!isObject(currentItemBank)) {
 		throw new Error(`Key ${key} is not an object.`);
 	}
 	await userStatsUpdate(
-		user.id,
+		userID,
 		{
 			[key]: bank.clone().add(currentItemBank).bank
 		},

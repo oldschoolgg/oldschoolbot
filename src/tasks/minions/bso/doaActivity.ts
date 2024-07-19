@@ -82,21 +82,20 @@ export const doaTask: MinionTask = {
 		}
 		// Increment all users attempts
 		await Promise.all(
-			allUsers.map(i =>
+			allUsers.map(async u => {
+				const stats = await u.fetchStats({ doa_room_attempts_bank: true });
+				const currentKCBank = new Bank(stats.doa_room_attempts_bank as ItemBank);
 				userStatsUpdate(
-					i.id,
-					u => {
-						const currentKCBank = new Bank(u.doa_room_attempts_bank as ItemBank);
-						return {
-							doa_room_attempts_bank: currentKCBank.add(newRoomAttempts).bank,
-							doa_attempts: {
-								increment: quantity
-							}
-						};
+					u.id,
+					{
+						doa_room_attempts_bank: currentKCBank.add(newRoomAttempts).bank,
+						doa_attempts: {
+							increment: quantity
+						}
 					},
 					{}
-				)
-			)
+				);
+			})
 		);
 
 		if (raids.every(i => i.wipedRoom !== null)) {
@@ -192,15 +191,14 @@ export const doaTask: MinionTask = {
 					collectionLog: true
 				});
 
+				const stats = await user.fetchStats({ doa_loot: true });
 				await userStatsUpdate(
 					user.id,
-					u => {
-						return {
-							doa_total_minutes_raided: {
-								increment: Math.floor(duration / Time.Minute)
-							},
-							doa_loot: new Bank(u.doa_loot as ItemBank).add(totalLoot.get(userID)).bank
-						};
+					{
+						doa_total_minutes_raided: {
+							increment: Math.floor(duration / Time.Minute)
+						},
+						doa_loot: new Bank(stats.doa_loot as ItemBank).add(totalLoot.get(userID)).bank
 					},
 					{}
 				);

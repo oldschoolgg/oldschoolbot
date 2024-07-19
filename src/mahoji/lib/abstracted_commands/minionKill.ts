@@ -1019,11 +1019,11 @@ export async function minionKillCommand(
 			return 'This monster is temporarily unable to be killed with a Deathtouched dart.';
 		}
 		usedDart = true;
-		await userStatsUpdate(user.id, () => ({
+		await userStatsUpdate(user.id, {
 			death_touched_darts_used: {
 				increment: 1
 			}
-		}));
+		});
 	}
 	if (monster.name === 'Koschei the deathless') {
 		return 'You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.';

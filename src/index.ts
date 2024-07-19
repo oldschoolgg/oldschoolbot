@@ -206,7 +206,7 @@ client.once('ready', () => onStartup());
 async function main() {
 	if (process.env.TEST) return;
 	await Promise.all([
-		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
+		syncActiveUserIDs(),
 		runTimedLoggedFn('Sync Activity Cache', syncActivityCache),
 		runTimedLoggedFn('Startup Scripts', runStartupScripts),
 		runTimedLoggedFn('Sync Disabled Commands', syncDisabledCommands),

@@ -37,7 +37,7 @@ export const onStartup = logWrapFn('onStartup', async () => {
 	initCrons();
 	initTickers();
 	syncSlayerMaskLeaderboardCache();
-	
+
 	if (globalConfig.isProduction) {
 		sendToChannelID(Channel.GeneralChannel, {
 			content: `I have just turned on!

@@ -180,14 +180,17 @@ export const toaTask: MinionTask = {
 				str = isPurple ? `${Emoji.Purple} ||${itemsAdded}||` : itemsAdded.toString();
 			}
 
-
 			const currentStats = await user.fetchStats({ toa_raid_levels_bank: true, toa_loot: true });
 			userStatsUpdate(user.id, {
-				toa_raid_levels_bank: new Bank().add(currentStats.toa_raid_levels_bank as ItemBank).add(raidLevel, quantity).bank,
+				toa_raid_levels_bank: new Bank()
+					.add(currentStats.toa_raid_levels_bank as ItemBank)
+					.add(raidLevel, quantity).bank,
 				total_toa_duration_minutes: {
 					increment: Math.floor(duration / Time.Minute)
 				},
-				toa_loot: !chincannonUser ? new Bank(currentStats.toa_loot as ItemBank).add(totalLoot.get(userID)).bank : undefined
+				toa_loot: !chincannonUser
+					? new Bank(currentStats.toa_loot as ItemBank).add(totalLoot.get(userID)).bank
+					: undefined
 			});
 
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');

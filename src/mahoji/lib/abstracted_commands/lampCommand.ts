@@ -306,16 +306,14 @@ export async function lampCommand(user: MUser, itemToUse: string, skill: string,
 
 	const amount = skillsToReceive[skill]!;
 	assert(typeof amount === 'number' && amount > 0);
-	userStatsUpdate(user.id, u => {
-		const newLampedXp = {
-			...(u.lamped_xp as ItemBank)
-		};
-		if (!newLampedXp[skill]) newLampedXp[skill] = amount;
-		else newLampedXp[skill] += amount;
-
-		return {
-			lamped_xp: newLampedXp
-		};
+	const stats = await user.fetchStats({ lamped_xp: true });
+	const newLampedXp = {
+		...(stats.lamped_xp as ItemBank)
+	};
+	if (!newLampedXp[skill]) newLampedXp[skill] = amount;
+	else newLampedXp[skill] += amount;
+	userStatsUpdate(user.id, {
+		lamped_xp: newLampedXp
 	});
 
 	await user.removeItemsFromBank(toRemoveFromBank);

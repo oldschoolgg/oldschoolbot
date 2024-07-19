@@ -275,11 +275,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 						data.duration,
 						user.skillLevel(SkillsEnum.Agility)
 					);
-					userStatsUpdate(user.id, () => ({
+					await userStatsUpdate(user.id, {
 						silverhawk_boots_passive_xp: {
 							increment: xpToReceive
 						}
-					}));
+					});
 					await user.addXP({
 						skillName: SkillsEnum.Agility,
 						amount: xpToReceive,
