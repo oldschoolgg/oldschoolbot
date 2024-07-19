@@ -4,7 +4,7 @@ import { handleTripFinish } from '../lib/util/handleTripFinish';
 import { makeBankImage } from '../lib/util/makeBankImage';
 import { updateBankSetting } from '../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
-import { nestTable } 
+import { nestTable } from './simulation/birdsNest';
 
 const miningGems = new LootTable()
 	.add('Uncut sapphire', 1, 32)
