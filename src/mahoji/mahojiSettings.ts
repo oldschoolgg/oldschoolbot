@@ -70,6 +70,25 @@ export function getMahojiBank(user: { bank: Prisma.JsonValue }) {
 	return new Bank(user.bank as ItemBank);
 }
 
+export async function fetchUserStats<T extends Prisma.UserStatsSelect>(
+	userID: string,
+	selectKeys: T
+): Promise<SelectedUserStats<T>> {
+	const keysToSelect = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
+	const result = await prisma.userStats.upsert({
+		where: {
+			user_id: BigInt(userID)
+		},
+		create: {
+			user_id: BigInt(userID)
+		},
+		update: {},
+		select: keysToSelect
+	});
+
+	return result as unknown as SelectedUserStats<T>;
+}
+
 export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.UserStatsSelect>(
 	userID: string,
 	data: Omit<Prisma.UserStatsUpdateInput, 'user_id'>,
