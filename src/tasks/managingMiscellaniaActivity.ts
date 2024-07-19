@@ -4,13 +4,7 @@ import { handleTripFinish } from '../lib/util/handleTripFinish';
 import { makeBankImage } from '../lib/util/makeBankImage';
 import { updateBankSetting } from '../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
-
-const nests = new LootTable()
-	.add('Bird nest (seed)', 1, 65)
-	.add('Bird nest (ring)', 1, 32)
-	.add('Bird nest (green egg)', 1, 1)
-	.add('Bird nest (blue egg)', 1, 1)
-	.add('Bird nest (red egg)', 1, 1);
+import { nestTable } 
 
 const miningGems = new LootTable()
 	.add('Uncut sapphire', 1, 32)
@@ -186,7 +180,7 @@ export const managingMiscellaniaTask: MinionTask = {
 			switch (category) {
 				case 'Wood':
 					loot.add('Maple logs', quantity);
-					loot.add(nests.roll(Math.min(999, Math.floor(quantity / 100))));
+					loot.add(nestTable.roll(Math.min(999, Math.floor(quantity / 100))));
 					break;
 				case 'Mining':
 					loot.add('Maple logs', quantity);
@@ -212,16 +206,16 @@ export const managingMiscellaniaTask: MinionTask = {
 					break;
 				case 'Mahogany':
 					loot.add('Mahogany logs', quantity);
-					loot.add(nests.roll(Math.floor(quantity / 350)));
+					loot.add(nestTable.roll(Math.floor(quantity / 350)));
 					break;
 				case 'Teak':
 					loot.add('Teak logs', quantity);
-					loot.add(nests.roll(Math.floor(quantity / 350)));
+					loot.add(nestTable.roll(Math.floor(quantity / 350)));
 					break;
 				case 'Hardwood (Mahogany and Teak)':
 					loot.add('Mahogany logs', Math.floor(quantity * 0.5));
 					loot.add('Teak logs', Math.floor(quantity * 0.5));
-					loot.add(nests.roll(Math.floor(quantity / 350)));
+					loot.add(nestTable.roll(Math.floor(quantity / 350)));
 					break;
 				case 'Farm':
 					loot.add(seedsLoot.roll(quantity));
