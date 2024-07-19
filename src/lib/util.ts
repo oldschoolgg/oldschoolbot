@@ -18,6 +18,7 @@ import { Time, objectEntries } from 'e';
 import type { Bank } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
+import type { Prisma } from '@prisma/client';
 import { LRUCache } from 'lru-cache';
 import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import type { MUserClass } from './MUser';
@@ -440,3 +441,7 @@ export function normalizeTOAUsers(data: TOAOptions) {
 export function anyoneDiedInTOARaid(data: TOAOptions) {
 	return normalizeTOAUsers(data).some(userArr => userArr.some(user => user.deaths.length > 0));
 }
+
+export type JsonKeys<T> = {
+	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;
+}[keyof T];
