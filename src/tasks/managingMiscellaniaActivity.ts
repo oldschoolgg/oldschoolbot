@@ -163,12 +163,12 @@ function getBaseQuantity(materialCategory: string, workers: number, resourcePoin
 export const managingMiscellaniaTask: MinionTask = {
 	type: 'ManagingMiscellania',
 	async run(data: ManagingMiscellaniaActivityTaskOptions) {
-		const { userID, channelID, main_Collect, secondary_Collect, cofferCost } = data;
+		const { userID, channelID, main_collect, secondary_collect, cofferCost } = data;
 		const user = await mUserFetch(userID);
 		const loot = new Bank();
 
-		const main = main_Collect;
-		const secondary = secondary_Collect;
+		const main = main_collect;
+		const secondary = secondary_collect;
 
 		const daysDifference = Math.round(cofferCost / 7500);
 		const dailyResourcePoints = 600;

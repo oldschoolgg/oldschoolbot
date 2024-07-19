@@ -553,7 +553,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		puro_puro?: { impling: string; dark_lure?: boolean; implingTier?: number };
 		alch?: { item: string; quantity?: number };
 		cast?: { spell: string; quantity?: number };
-		managing_miscellania?: { main_Collect: string; secondary_Collect: string };
+		managing_miscellania?: { main_collect: string; secondary_collect: string };
 		underwater?: {
 			agility_thieving?: {
 				training_skill: UnderwaterAgilityThievingTrainingSkill;
@@ -664,8 +664,8 @@ export const activitiesCommand: OSBMahojiCommand = {
 			return managingMiscellaniaCommand(
 				user,
 				channelID,
-				options.managing_miscellania.main_Collect,
-				options.managing_miscellania.secondary_Collect
+				options.managing_miscellania.main_collect,
+				options.managing_miscellania.secondary_collect
 			);
 		}
 		if (options.underwater) {

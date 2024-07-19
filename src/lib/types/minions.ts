@@ -545,8 +545,8 @@ export interface SpecificQuestOptions extends ActivityTaskOptions {
 }
 export interface ManagingMiscellaniaActivityTaskOptions extends ActivityTaskOptions {
 	type: 'ManagingMiscellania';
-	main_Collect: string;
-	secondary_Collect: string;
+	main_collect: string;
+	secondary_collect: string;
 	cofferCost: number;
 }
 

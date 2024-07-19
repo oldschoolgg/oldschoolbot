@@ -43,8 +43,8 @@ const ironmanExtraReqs = {
 export async function managingMiscellaniaCommand(
 	user: MUser,
 	channelID: string,
-	main_Collect: string,
-	secondary_Collect: string
+	main_collect: string,
+	secondary_collect: string
 ) {
 	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
 	const currentDate = new Date().getTime();
@@ -54,14 +54,22 @@ export async function managingMiscellaniaCommand(
 	const lastPlayedDate = Number(currentStats.last_managing_miscellania_timestamp);
 	const difference = currentDate - lastPlayedDate;
 
-	const main = main_Collect;
-	const secondary = secondary_Collect;
+	// Ensure inputs are defined
+	if (!main_collect || !secondary_collect) {
+		return 'Both main and secondary collection areas must be specified.';
+	}
+
+	const main = main_collect.toLowerCase();
+	const secondary = secondary_collect.toLowerCase();
 
 	// Define the number of milliseconds in a day using Time.Day
 	const millisecondsInADay = Time.Day;
 
 	// Convert the difference into days
-	const daysDifference = difference / millisecondsInADay;
+	let daysDifference = difference / millisecondsInADay;
+
+	// Cap the days Difference to a maximum of 100
+	if (daysDifference > 100) daysDifference = 100;
 
 	// If they have already claimed a Managing Miscellania in the past day
 	if (difference < millisecondsInADay) {
@@ -129,11 +137,13 @@ export async function managingMiscellaniaCommand(
 	const conflictString = `You are unable to assign the workers ${main} and ${secondary} simultaneously.`;
 
 	// Check for conflicts
-	if (conflictPairs[main]?.includes(secondary)) {
+	if (conflictPairs[main as CollectType]?.includes(secondary as CollectType)) {
 		return conflictString;
 	}
 
-	if (main === secondary) return 'You are unable to allocate workers to the same area.';
+	if (main === secondary) {
+		return 'You are unable to allocate workers to the same area.';
+	}
 
 	let duration = Time.Minute * 1;
 
@@ -155,14 +165,14 @@ export async function managingMiscellaniaCommand(
 	await addSubTaskToActivityTask<ManagingMiscellaniaActivityTaskOptions>({
 		type: 'ManagingMiscellania',
 		duration,
-		main_Collect,
-		secondary_Collect,
+		main_collect,
+		secondary_collect,
 		userID: user.id,
 		channelID: channelID.toString(),
 		cofferCost
 	});
 
-	const str = `${user.minionName} is now collecting from the Kingdom. They'll come back in around ${formatDuration(duration)}`;
+	const str = `${user.minionName} is now collecting from the Kingdom. Removed ${cofferCost} GP. They'll come back in around ${formatDuration(duration)}`;
 
 	return str;
 }
