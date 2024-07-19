@@ -119,15 +119,19 @@ export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.
 	})) as SelectedUserStats<T>;
 }
 
-export async function userStatsBankUpdate(user: MUser, key: JsonKeys<UserStats>, bank: Bank) {
+export async function userStatsBankUpdate(user: MUser | string, key: JsonKeys<UserStats>, bank: Bank) {
 	if (!key) throw new Error('No key provided to userStatsBankUpdate');
-	const stats = await user.fetchStats({ [key]: true });
+	const userID = typeof user === 'string' ? user : user.id;
+	const stats =
+		typeof user === 'string'
+			? await fetchUserStats(userID, { [key]: true })
+			: await user.fetchStats({ [key]: true });
 	const currentItemBank = stats[key] as ItemBank;
 	if (!isObject(currentItemBank)) {
 		throw new Error(`Key ${key} is not an object.`);
 	}
 	await userStatsUpdate(
-		user.id,
+		userID,
 		{
 			[key]: bank.clone().add(currentItemBank).bank
 		},
