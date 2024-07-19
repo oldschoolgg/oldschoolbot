@@ -1,10 +1,8 @@
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { bulkUpdateCommands } from '@oldschoolgg/toolkit';
-import { production } from '../../config';
 import { Channel, META_CONSTANTS, globalConfig } from '../../lib/constants';
 import { initCrons } from '../../lib/crons';
-
 import { initTickers } from '../../lib/tickers';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -18,8 +16,10 @@ export async function syncCustomPrices() {
 }
 
 export async function onStartup() {
-	globalClient.application.commands.fetch({ guildId: production ? undefined : globalConfig.testingServerID });
-	if (!production) {
+	globalClient.application.commands.fetch({
+		guildId: globalConfig.isProduction ? undefined : globalConfig.testingServerID
+	});
+	if (!globalConfig.isProduction) {
 		console.log('Syncing commands locally...');
 		await bulkUpdateCommands({
 			client: globalClient.mahojiClient,
@@ -31,7 +31,7 @@ export async function onStartup() {
 	initCrons();
 	initTickers();
 
-	if (production) {
+	if (globalConfig.isProduction) {
 		sendToChannelID(Channel.GeneralChannel, {
 			content: `I have just turned on!
 
