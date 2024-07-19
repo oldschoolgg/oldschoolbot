@@ -4,7 +4,7 @@ import type { ManagingMiscellaniaActivityTaskOptions } from '../lib/types/minion
 import { handleTripFinish } from '../lib/util/handleTripFinish';
 import { makeBankImage } from '../lib/util/makeBankImage';
 import { updateBankSetting } from '../lib/util/updateBankSetting';
-import { userStatsUpdate } from '../mahoji/mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../mahoji/mahojiSettings';
 
 const miningGems = new LootTable()
 	.add('Uncut sapphire', 1, 32)
@@ -163,16 +163,19 @@ function getBaseQuantity(materialCategory: string, workers: number, resourcePoin
 export const managingMiscellaniaTask: MinionTask = {
 	type: 'ManagingMiscellania',
 	async run(data: ManagingMiscellaniaActivityTaskOptions) {
-		const { userID, channelID, mainCollect, secondaryCollect, cofferCost } = data;
+		const { userID, channelID, main_Collect, secondary_Collect, cofferCost } = data;
 		const user = await mUserFetch(userID);
 		const loot = new Bank();
+
+		const main = main_Collect;
+		const secondary = secondary_Collect;
 
 		const daysDifference = Math.round(cofferCost / 7500);
 		const dailyResourcePoints = 600;
 		const totalResourcePoints = dailyResourcePoints * daysDifference;
 
-		const mainQty = getBaseQuantity(mainCollect, 10, totalResourcePoints);
-		const secondaryQty = getBaseQuantity(secondaryCollect, 5, totalResourcePoints);
+		const mainQty = getBaseQuantity(main, 10, totalResourcePoints);
+		const secondaryQty = getBaseQuantity(secondary, 5, totalResourcePoints);
 
 		await userStatsUpdate(user.id, { last_managing_miscellania_timestamp: new Date().getTime() }, {});
 
@@ -224,18 +227,14 @@ export const managingMiscellaniaTask: MinionTask = {
 			}
 		}
 
-		addLoot(mainCollect, mainQty);
-		addLoot(secondaryCollect, secondaryQty);
+		addLoot(main, mainQty);
+		addLoot(secondary, secondaryQty);
 
 		const str = `${user}, ${user.minionName} finished collecting from the kingdom, you received ${loot}.`;
 
-		await transactItems({
-			userID: user.id,
-			collectionLog: true,
-			itemsToAdd: loot
-		});
-
-		updateBankSetting('managing_miscellania_loot', loot);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
+		await userStatsBankUpdate(user, 'managing_miscellania_loot', loot);
+		await updateBankSetting('managing_miscellania_loot', loot);
 
 		const image = await makeBankImage({ bank: loot, title: 'Managing Miscellania Loot', user });
 

@@ -443,14 +443,14 @@ export const activitiesCommand: OSBMahojiCommand = {
 			options: [
 				{
 					type: ApplicationCommandOptionType.String,
-					name: 'main collect',
+					name: 'main_collect',
 					description: 'Where you want to allocate the majority of the workers.',
 					required: true,
 					choices: managingMicellaniaChoices
 				},
 				{
 					type: ApplicationCommandOptionType.String,
-					name: 'secondary collect',
+					name: 'secondary_collect',
 					description: 'Where you want to allocate the minority of the workers.',
 					required: true,
 					choices: managingMicellaniaChoices
@@ -553,7 +553,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		puro_puro?: { impling: string; dark_lure?: boolean; implingTier?: number };
 		alch?: { item: string; quantity?: number };
 		cast?: { spell: string; quantity?: number };
-		managing_miscellania?: { mainCollect: string; secondaryCollect: string };
+		managing_miscellania?: { main_Collect: string; secondary_Collect: string };
 		underwater?: {
 			agility_thieving?: {
 				training_skill: UnderwaterAgilityThievingTrainingSkill;
@@ -664,8 +664,8 @@ export const activitiesCommand: OSBMahojiCommand = {
 			return managingMiscellaniaCommand(
 				user,
 				channelID,
-				options.managing_miscellania.mainCollect,
-				options.managing_miscellania.secondaryCollect
+				options.managing_miscellania.main_Collect,
+				options.managing_miscellania.secondary_Collect
 			);
 		}
 		if (options.underwater) {

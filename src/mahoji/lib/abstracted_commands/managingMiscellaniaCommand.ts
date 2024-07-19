@@ -43,8 +43,8 @@ const ironmanExtraReqs = {
 export async function managingMiscellaniaCommand(
 	user: MUser,
 	channelID: string,
-	mainCollect: string,
-	secondaryCollect: string
+	main_Collect: string,
+	secondary_Collect: string
 ) {
 	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
 	const currentDate = new Date().getTime();
@@ -53,6 +53,9 @@ export async function managingMiscellaniaCommand(
 
 	const lastPlayedDate = Number(currentStats.last_managing_miscellania_timestamp);
 	const difference = currentDate - lastPlayedDate;
+
+	const main = main_Collect;
+	const secondary = secondary_Collect;
 
 	// Define the number of milliseconds in a day using Time.Day
 	const millisecondsInADay = Time.Day;
@@ -123,14 +126,14 @@ export async function managingMiscellaniaCommand(
 		Farm: []
 	};
 
-	const conflictString = `You are unable to assign the workers ${mainCollect} and ${secondaryCollect} simultaneously.`;
+	const conflictString = `You are unable to assign the workers ${main} and ${secondary} simultaneously.`;
 
 	// Check for conflicts
-	if (conflictPairs[mainCollect]?.includes(secondaryCollect)) {
+	if (conflictPairs[main]?.includes(secondary)) {
 		return conflictString;
 	}
 
-	if (mainCollect === secondaryCollect) return 'You are unable to allocate workers to the same area.';
+	if (main === secondary) return 'You are unable to allocate workers to the same area.';
 
 	let duration = Time.Minute * 1;
 
@@ -152,8 +155,8 @@ export async function managingMiscellaniaCommand(
 	await addSubTaskToActivityTask<ManagingMiscellaniaActivityTaskOptions>({
 		type: 'ManagingMiscellania',
 		duration,
-		mainCollect,
-		secondaryCollect,
+		main_Collect,
+		secondary_Collect,
 		userID: user.id,
 		channelID: channelID.toString(),
 		cofferCost
