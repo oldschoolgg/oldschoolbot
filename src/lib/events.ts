@@ -142,7 +142,7 @@ const cooldownTimers: {
 		name: 'Managing Miscellania',
 		timeStamp: (_, stats) => Number(stats.last_managing_miscellania_timestamp),
 		cd: Time.Day * 1,
-		command: ['activities', 'managing_miscellania', 'start']
+		command: ['activities', 'managing_a', 'start']
 	}
 ];
 
@@ -262,7 +262,7 @@ const mentionCommands: MentionCommand[] = [
 			const stats = await user.fetchStats({
 				last_daily_timestamp: true,
 				last_tears_of_guthix_timestamp: true,
-				last_managing_miscellania: true
+				last_managing_miscellania_timestamp: true
 			});
 			return msg.reply({
 				content: cooldownTimers
