@@ -1,6 +1,6 @@
 import { evalMathExpression } from '@oldschoolgg/toolkit';
 import type { Prisma, User, UserStats } from '@prisma/client';
-import { isFunction, objectEntries, round } from 'e';
+import { isObject, objectEntries, round } from 'e';
 import { Bank } from 'oldschooljs';
 
 import type { SelectedUserStats } from '../lib/MUser';
@@ -12,7 +12,7 @@ import type { KillableMonster } from '../lib/minions/types';
 import type { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
 import type { ItemBank } from '../lib/types';
-import { anglerBoosts, formatItemReqs, hasSkillReqs, itemNameFromID, readableStatName } from '../lib/util';
+import { anglerBoosts, formatItemReqs, hasSkillReqs, itemNameFromID, type JsonKeys, readableStatName } from '../lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../lib/util/clientSettings';
 import resolveItems from '../lib/util/resolveItems';
 
@@ -78,37 +78,14 @@ export async function trackClientBankStats(
 
 export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.UserStatsSelect>(
 	userID: string,
-	data: Omit<Prisma.UserStatsUpdateInput, 'user_id'> | ((u: UserStats) => Prisma.UserStatsUpdateInput),
+	data: Omit<Prisma.UserStatsUpdateInput, 'user_id'>,
 	selectKeys?: T
 ): Promise<SelectedUserStats<T>> {
 	const id = BigInt(userID);
-
 	let keys: object | undefined = selectKeys;
 	if (!selectKeys || Object.keys(selectKeys).length === 0) {
 		keys = { user_id: true };
 	}
-
-	if (isFunction(data)) {
-		const userStats = await prisma.userStats.upsert({
-			create: {
-				user_id: id
-			},
-			update: {},
-			where: {
-				user_id: id
-			},
-			select: keys
-		});
-
-		return (await prisma.userStats.update({
-			data: data(userStats),
-			where: {
-				user_id: id
-			},
-			select: keys
-		})) as SelectedUserStats<T>;
-	}
-
 	await prisma.userStats.upsert({
 		create: {
 			user_id: id
@@ -129,27 +106,19 @@ export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.
 	})) as SelectedUserStats<T>;
 }
 
-export async function userStatsBankUpdate(userID: string, key: keyof UserStats, bank: Bank) {
+export async function userStatsBankUpdate(user: MUser, key: JsonKeys<UserStats>, bank: Bank) {
+	if (!key) throw new Error('No key provided to userStatsBankUpdate');
+	const stats = await user.fetchStats({ [key]: true });
+	const currentItemBank = stats[key] as ItemBank;
+	if (!isObject(currentItemBank)) {
+		throw new Error(`Key ${key} is not an object.`);
+	}
 	await userStatsUpdate(
-		userID,
-		u => ({
-			[key]: bank.clone().add(u[key] as ItemBank).bank
-		}),
-		{ [key]: true }
-	);
-}
-
-export async function multipleUserStatsBankUpdate(userID: string, updates: Partial<Record<keyof UserStats, Bank>>) {
-	await userStatsUpdate(
-		userID,
-		u => {
-			const updateObj: Prisma.UserStatsUpdateInput = {};
-			for (const [key, bank] of objectEntries(updates)) {
-				updateObj[key] = bank?.clone().add(u[key] as ItemBank).bank;
-			}
-			return updateObj;
+		user.id,
+		{
+			[key]: bank.clone().add(currentItemBank).bank
 		},
-		{}
+		{ [key]: true }
 	);
 }
 
@@ -375,12 +344,13 @@ export async function addToGPTaxBalance(userID: string | string, amount: number)
 	]);
 }
 
-export async function addToOpenablesScores(mahojiUser: MUser, kcBank: Bank) {
+export async function addToOpenablesScores(user: MUser, kcBank: Bank) {
+	const stats = await user.fetchStats({ openable_scores: true });
 	const { openable_scores: newOpenableScores } = await userStatsUpdate(
-		mahojiUser.id,
-		({ openable_scores }) => ({
-			openable_scores: new Bank(openable_scores as ItemBank).add(kcBank).bank
-		}),
+		user.id,
+		{
+			openable_scores: new Bank(stats.openable_scores as ItemBank).add(kcBank).bank
+		},
 		{ openable_scores: true }
 	);
 	return new Bank(newOpenableScores as ItemBank);

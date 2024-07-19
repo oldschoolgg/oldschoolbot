@@ -479,7 +479,7 @@ export async function tobStartCommand(
 				preChincannonCost.add(u.gear.range.ammo!.item, 100);
 			}
 			const { realCost } = await u.specialRemoveItems(preChincannonCost.multiply(qty));
-			await userStatsBankUpdate(u.id, 'tob_cost', realCost);
+			await userStatsBankUpdate(u, 'tob_cost', realCost);
 			const effectiveCost = realCost.clone().remove('Coins', realCost.amount('Coins'));
 			totalCost.add(effectiveCost);
 			if (isChincannonUser) {

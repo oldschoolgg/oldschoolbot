@@ -219,6 +219,6 @@ export async function triggerRandomEvent(user: MUser, type: activity_type_enum, 
 		messages.push('Found a cute Balloon cat!');
 	}
 	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
-	await userStatsBankUpdate(user.id, 'random_event_completions_bank', new Bank().add(event.id));
+	await userStatsBankUpdate(user, 'random_event_completions_bank', new Bank().add(event.id));
 	messages.push(`Did ${event.name} random event and got ${loot}`);
 }

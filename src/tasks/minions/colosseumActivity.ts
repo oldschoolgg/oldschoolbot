@@ -67,7 +67,7 @@ export const colosseumTask: MinionTask = {
 		const { previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		await updateBankSetting('colo_loot', loot);
-		await userStatsBankUpdate(user.id, 'colo_loot', loot);
+		await userStatsBankUpdate(user, 'colo_loot', loot);
 		await trackLoot({
 			totalLoot: loot,
 			id: 'colo',

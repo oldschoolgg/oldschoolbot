@@ -123,7 +123,7 @@ export const pickpocketTask: MinionTask = {
 				const before = loot.clone();
 				loot.multiply(3, notMultiplied);
 				const after = loot.clone();
-				await userStatsBankUpdate(user.id, 'loot_from_rogues_portent', after.difference(before));
+				await userStatsBankUpdate(user, 'loot_from_rogues_portent', after.difference(before));
 			}
 		}
 
@@ -140,7 +140,7 @@ export const pickpocketTask: MinionTask = {
 			updateClientGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
 
-		await userStatsBankUpdate(user.id, 'steal_loot_bank', loot);
+		await userStatsBankUpdate(user, 'steal_loot_bank', loot);
 
 		const { previousCL, itemsAdded } = await transactItems({
 			userID: user.id,

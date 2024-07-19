@@ -21,7 +21,7 @@ import { sellPriceOfItem } from './sell';
 async function trackSacBank(user: MUser, bank: Bank) {
 	await Promise.all([
 		updateBankSetting('economyStats_sacrificedBank', bank),
-		userStatsBankUpdate(user.id, 'sacrificed_bank', bank)
+		userStatsBankUpdate(user, 'sacrificed_bank', bank)
 	]);
 	const stats = await user.fetchStats({ sacrificed_bank: true });
 	return new Bank(stats.sacrificed_bank as ItemBank);

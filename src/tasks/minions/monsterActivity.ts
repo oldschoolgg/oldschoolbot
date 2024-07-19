@@ -606,12 +606,12 @@ export const monsterTask: MinionTask = {
 					}
 				}
 
-				await userStatsUpdate(user.id, u => {
-					return {
-						on_task_monster_scores: new Bank(u.on_task_monster_scores as ItemBank).add(bankToAdd).bank,
+				const currentStats = await user.fetchStats({ on_task_monster_scores: true });
+				await userStatsUpdate(user.id, {
+						on_task_monster_scores: new Bank(currentStats.on_task_monster_scores as ItemBank).add(bankToAdd).bank,
 						on_task_with_mask_monster_scores: matchingMaskOrHelm ? newMaskScores.bank : undefined
-					};
-				});
+					}
+				);
 			}
 
 			const quantityLeft = Math.max(0, isOnTaskResult.currentTask!.quantity_remaining - effectiveSlayed);

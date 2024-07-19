@@ -1281,7 +1281,7 @@ export async function toaStartCommand(
 
 				debugStr += ` ${inventionBoosts.chincannon.toaPercentReduction}% speed increase from the Chincannon (${res.messages})`;
 			}
-			await userStatsBankUpdate(u.id, 'toa_cost', realCost);
+			await userStatsBankUpdate(u, 'toa_cost', realCost);
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
 

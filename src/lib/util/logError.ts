@@ -45,7 +45,10 @@ export function logErrorForInteraction(
 		guild_id: interaction.guildId,
 		interaction_id: interaction.id,
 		interaction_type: interaction.type,
-		...extraContext
+		...extraContext,
+		interaction_created_at: interaction.createdTimestamp,
+		current_timestamp: Date.now(),
+		difference_ms: Date.now() - interaction.createdTimestamp
 	};
 	if (interaction.isChatInputCommand()) {
 		context.options = JSON.stringify(

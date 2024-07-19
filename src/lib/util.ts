@@ -7,9 +7,7 @@ import {
 	type Collection,
 	type CollectorFilter,
 	type Guild,
-	type InteractionReplyOptions,
-	InteractionType,
-	type Message,
+	type InteractionReplyOptions, type Message,
 	type MessageEditOptions,
 	type SelectMenuInteraction,
 	type TextChannel,
@@ -21,7 +19,7 @@ import { Time, calcWhatPercent, notEmpty, objectEntries, randArrItem, randInt, s
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
-import type { PrismaClient } from '@prisma/client';
+import type { PrismaClient, Prisma } from '@prisma/client';
 import { LRUCache } from 'lru-cache';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import type Monster from 'oldschooljs/dist/structures/Monster';
@@ -571,14 +569,8 @@ export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>)
 	}
 }
 
-export function getInteractionTypeName(type: InteractionType) {
-	return {
-		[InteractionType.Ping]: 'Ping',
-		[InteractionType.ApplicationCommand]: 'ApplicationCommand',
-		[InteractionType.MessageComponent]: 'MessageComponent',
-		[InteractionType.ApplicationCommandAutocomplete]: 'ApplicationCommandAutocomplete',
-		[InteractionType.ModalSubmit]: 'ModalSubmit'
-	}[type];
+export function logWrapFn(name: string, fn: () => Promise<void>) {
+	return () => runTimedLoggedFn(name, fn);
 }
 
 export function isModOrAdmin(user: MUser) {
@@ -652,3 +644,7 @@ export function normalizeTOAUsers(data: TOAOptions) {
 export function anyoneDiedInTOARaid(data: TOAOptions) {
 	return normalizeTOAUsers(data).some(userArr => userArr.some(user => user.deaths.length > 0));
 }
+
+export type JsonKeys<T> = {
+	[K in keyof T]: T[K] extends Prisma.JsonValue ? K : never;
+}[keyof T];

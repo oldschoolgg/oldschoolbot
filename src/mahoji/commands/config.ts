@@ -235,7 +235,7 @@ async function favItemConfig(
 	const currentFavorites = user.user.favoriteItems;
 	const item = getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite items are: ${
-		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ').slice(0, 1500)
 	}.`;
 	if (!item || item.customItemData?.isSecret) return currentItems;
 	if (itemToAdd) {
