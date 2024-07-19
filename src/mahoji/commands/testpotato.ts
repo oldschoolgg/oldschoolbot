@@ -577,6 +577,57 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'setcooldown',
+					description: 'Set cooldown on various things.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'cooldown',
+							description: 'The cooldown you wish to adjust.',
+							required: true,
+							choices: [
+								{
+									name: 'Daily',
+									value: 1
+								},
+								{
+									name: 'Tears of Guthix',
+									value: 2
+								},
+								{
+									name: 'Managing Miscellania',
+									value: 3
+								}
+							]
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'length',
+							description: 'How far back you wish to adjust it.',
+							required: true,
+							choices: [
+								{
+									name: 'One Day',
+									value: 1
+								},
+								{
+									name: 'One Week',
+									value: 2
+								},
+								{
+									name: 'One Month',
+									value: 3
+								},
+								{
+									name: 'One Year',
+									value: 4
+								}
+							]
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'events',
 					description: 'See events',
 					options: []
@@ -601,6 +652,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				check?: { monster_droprates?: string };
 				bingo_tools?: { start_bingo: string };
 				setslayertask?: { master: string; monster: string; quantity: number };
+				setcooldown?: { cooldown: number; length: number };
 				events?: {};
 			}>) => {
 				if (production) {
@@ -962,6 +1014,45 @@ ${droprates.join('\n')}`),
 					});
 
 					return `You set your slayer task to ${selectedMonster.name} using ${selectedMaster.name}.`;
+				}
+
+				if (options.setcooldown) {
+					const { cooldown, length } = options.setcooldown;
+
+					const cooldownMappings: { [key: number]: string } = {
+						0: 'last_daily_timestamp',
+						1: 'last_tears_of_guthix_timestamp',
+						2: 'last_managing_miscellania_timestamp'
+					};
+
+					const lengthMappings: { [key: number]: bigint } = {
+						1: 24n * 60n * 60n * 1000n, // One Day in milliseconds
+						2: 7n * 24n * 60n * 60n * 1000n, // One Week in milliseconds
+						3: 30n * 24n * 60n * 60n * 1000n, // One Month in milliseconds
+						4: 365n * 24n * 60n * 60n * 1000n // One Year in milliseconds
+					};
+
+					// Get the timestamp field based on the selected cooldown
+					const timestampField = cooldownMappings[cooldown];
+
+					if (!timestampField) {
+						throw new Error('Invalid cooldown type');
+					}
+
+					const duration = lengthMappings[length];
+
+					if (!duration) {
+						throw new Error('Invalid length value');
+					}
+					// Calculate the new timestamp using bigint
+					const now = BigInt(Date.now()); // Current time in milliseconds
+					const previousTimestamp = now - duration; // Calculate the previous timestamp based on the length
+
+					// Convert BigInt to number for timestamp update
+					const previousTimestampNumber = Number(previousTimestamp);
+
+					// Call userStatsUpdate to update the timestamp
+					await userStatsUpdate(userID, { [timestampField]: previousTimestampNumber }, {});
 				}
 
 				return 'Nothin!';
