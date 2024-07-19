@@ -140,13 +140,14 @@ global.globalClient = client;
 client.on('messageCreate', msg => {
 	onMessage(msg);
 });
+client.on('error', console.error);
 client.on('interactionCreate', async interaction => {
 	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
 	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
 
 	if (globalClient.isShuttingDown) {
 		if (interaction.isRepliable()) {
-			await interactionReply(interaction,{
+			await interactionReply(interaction, {
 				content:
 					'Old School Bot is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
 				ephemeral: true
@@ -157,7 +158,7 @@ client.on('interactionCreate', async interaction => {
 
 	if (!client.isReady() || !client.uptime || client.uptime < Time.Second * 10) {
 		if (interaction.isRepliable()) {
-			await interactionReply(interaction,{
+			await interactionReply(interaction, {
 				content: 'Old School Bot is currently rebooting, please try again in a few seconds! Thank you <3',
 				ephemeral: true
 			});
