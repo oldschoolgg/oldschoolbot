@@ -1,4 +1,4 @@
-import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
+import { Stopwatch, channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
 import {
 	type AttachmentBuilder,
@@ -477,7 +477,14 @@ export async function handleTripFinish(
 
 	// TODO: This is called for *every* trip, even though it's used only for users with the rebirth portent.
 	const portents = await getAllPortentCharges(user);
-	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages, portents });
+	for (const effect of tripFinishEffects) {
+		const stopwatch = new Stopwatch().start();
+		await effect.fn({ data, user, loot, messages, portents });
+		stopwatch.stop();
+		if (stopwatch.duration > 200) {
+			console.log(`Finished ${effect.name} trip effect in ${stopwatch}`);
+		}
+	}
 
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 
