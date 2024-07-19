@@ -1,10 +1,10 @@
 import { Bank, LootTable } from 'oldschooljs';
+import { nestTable } from '../lib/simulation/birdsNest';
 import type { ManagingMiscellaniaActivityTaskOptions } from '../lib/types/minions';
 import { handleTripFinish } from '../lib/util/handleTripFinish';
 import { makeBankImage } from '../lib/util/makeBankImage';
 import { updateBankSetting } from '../lib/util/updateBankSetting';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
-import { nestTable } from './simulation/birdsNest';
 
 const miningGems = new LootTable()
 	.add('Uncut sapphire', 1, 32)
