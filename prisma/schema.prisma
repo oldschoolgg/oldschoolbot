@@ -771,9 +771,6 @@ model UserStats {
 
   quivers_sacrificed Int @default(0)
 
-  managing_miscellania_cost Json @default("{}") @db.Json
-  managing_miscellania_loot Json @default("{}") @db.Json
-
   @@map("user_stats")
 }
 

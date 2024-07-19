@@ -4,7 +4,7 @@ import type { ManagingMiscellaniaActivityTaskOptions } from '../lib/types/minion
 import { handleTripFinish } from '../lib/util/handleTripFinish';
 import { makeBankImage } from '../lib/util/makeBankImage';
 import { updateBankSetting } from '../lib/util/updateBankSetting';
-import { userStatsBankUpdate, userStatsUpdate } from '../mahoji/mahojiSettings';
+import { userStatsUpdate } from '../mahoji/mahojiSettings';
 
 const miningGems = new LootTable()
 	.add('Uncut sapphire', 1, 32)
@@ -233,7 +233,6 @@ export const managingMiscellaniaTask: MinionTask = {
 		const str = `${user}, ${user.minionName} finished collecting from the kingdom, you received ${loot}.`;
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
-		await userStatsBankUpdate(user, 'managing_miscellania_loot', loot);
 		await updateBankSetting('managing_miscellania_loot', loot);
 
 		const image = await makeBankImage({ bank: loot, title: 'Managing Miscellania Loot', user });
