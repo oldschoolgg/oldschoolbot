@@ -11,10 +11,10 @@ import { createTestUser, mockedId, unMockedCyptoRand } from './util';
 describe.skip('Roles Task', async () => {
 	test('Should not throw', async () => {
 		const user = await createTestUser();
-		await userStatsBankUpdate(user.id, 'sacrificed_bank', new Bank().add('Coal', 10_000));
+		await userStatsBankUpdate(user, 'sacrificed_bank', new Bank().add('Coal', 10_000));
 		const ironUser = await createTestUser();
 		await ironUser.update({ minion_ironman: true, sacrificedValue: 1_000_000 });
-		await userStatsBankUpdate(ironUser.id, 'sacrificed_bank', new Bank().add('Coal', 10_000));
+		await userStatsBankUpdate(ironUser, 'sacrificed_bank', new Bank().add('Coal', 10_000));
 
 		// Create minigame scores:
 		const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');

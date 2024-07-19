@@ -2,7 +2,7 @@ import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import type { Bank } from 'oldschooljs';
 
-import { channelIsSendable, makeComponents } from '@oldschoolgg/toolkit';
+import { Stopwatch, channelIsSendable, makeComponents } from '@oldschoolgg/toolkit';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
@@ -66,7 +66,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (imp && imp.bank.length > 0) {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
-				userStatsBankUpdate(user.id, 'passive_implings_bank', imp.bank);
+				userStatsBankUpdate(user, 'passive_implings_bank', imp.bank);
 				await transactItems({ userID: user.id, itemsToAdd: imp.bank, collectionLog: true });
 			}
 		}
@@ -111,7 +111,15 @@ export async function handleTripFinish(
 	}
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
-	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
+
+	for (const effect of tripFinishEffects) {
+		const stopwatch = new Stopwatch().start();
+		await effect.fn({ data, user, loot, messages });
+		stopwatch.stop();
+		if (stopwatch.duration > 200) {
+			console.log(`Finished ${effect.name} trip effect in ${stopwatch}`);
+		}
+	}
 
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 

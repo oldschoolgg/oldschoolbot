@@ -298,7 +298,7 @@ export async function shadesOfMortonStartCommand(user: MUser, channelID: string,
 	if (!user.owns(cost)) return `You don't own: ${cost}.`;
 
 	await user.removeItemsFromBank(cost);
-	await userStatsBankUpdate(user.id, 'shades_of_morton_cost_bank', cost);
+	await userStatsBankUpdate(user, 'shades_of_morton_cost_bank', cost);
 
 	await addSubTaskToActivityTask<ShadesOfMortonOptions>({
 		userID: user.id,
