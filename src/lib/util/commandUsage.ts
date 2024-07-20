@@ -1,5 +1,5 @@
 import type { CommandOptions } from '@oldschoolgg/toolkit';
-import type { Prisma } from '@prisma/client';
+import type { Prisma, command_name_enum } from '@prisma/client';
 
 import { getCommandArgs } from '../../mahoji/lib/util';
 
@@ -24,7 +24,7 @@ export function makeCommandUsage({
 }): Prisma.CommandUsageCreateInput {
 	return {
 		user_id: BigInt(userID),
-		command_name: commandName,
+		command_name: commandName as command_name_enum,
 		args: getCommandArgs(commandName, args),
 		channel_id: BigInt(channelID),
 		guild_id: guildID ? BigInt(guildID) : null,
