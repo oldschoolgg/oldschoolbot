@@ -578,12 +578,12 @@ model Minigame {
 }
 
 model CommandUsage {
-  id           Int      @id @default(autoincrement())
-  date         DateTime @default(now()) @db.Timestamp(6)
+  id           Int               @id @default(autoincrement())
+  date         DateTime          @default(now()) @db.Timestamp(6)
   user_id      BigInt
-  command_name String   @db.VarChar(32)
-  is_continue  Boolean  @default(false)
-  inhibited    Boolean? @default(false)
+  command_name command_name_enum
+  is_continue  Boolean           @default(false)
+  inhibited    Boolean?          @default(false)
 
   is_mention_command Boolean @default(false)
 

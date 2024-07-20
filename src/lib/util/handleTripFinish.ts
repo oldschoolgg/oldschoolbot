@@ -116,7 +116,7 @@ export async function handleTripFinish(
 		const stopwatch = new Stopwatch().start();
 		await effect.fn({ data, user, loot, messages });
 		stopwatch.stop();
-		if (stopwatch.duration > 200) {
+		if (stopwatch.duration > 500) {
 			console.log(`Finished ${effect.name} trip effect in ${stopwatch}`);
 		}
 	}
