@@ -159,7 +159,7 @@ assert(allCATaskIDs.length === new Set(allCATaskIDs).size);
 assert(sumArr(Object.values(CombatAchievements).map(i => i.length)) === allCATaskIDs.length);
 const indexesWithRng = entries.flatMap(i => i[1].tasks.filter(t => 'rng' in t));
 
-export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data, messages }) => {
+export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data, messages, user }) => {
 	const dataCopy = deepClone(data);
 	if (dataCopy.type === 'Inferno' && !dataCopy.diedPreZuk && !dataCopy.diedZuk) {
 		(dataCopy as any).quantity = 1;
@@ -183,8 +183,8 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data
 		}
 	}
 
-	const users = await Promise.all(
-		('users' in data ? (data.users as string[]) : [data.userID]).map(id => mUserFetch(id))
+	const users: MUser[] = await Promise.all(
+		'users' in data ? (data.users as string[]).map(id => mUserFetch(id)) : [user]
 	);
 
 	for (const user of users) {
