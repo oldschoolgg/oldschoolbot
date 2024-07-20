@@ -50,7 +50,8 @@ type TripEffectReturn = {
 
 export interface TripFinishEffect {
 	name: string;
-	fn: (options: TripFinishEffectOptions) => Promise<TripEffectReturn> | Promise<undefined> | Promise<void>;
+	// biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
+	fn: (options: TripFinishEffectOptions) => Promise<TripEffectReturn | undefined | void>;
 }
 
 const tripFinishEffects: TripFinishEffect[] = [
