@@ -1750,4 +1750,40 @@ enum command_name_enum {
   xpto99
   zalcano
   completion
+  tames
+  birthday
+  bsominigames
+  dg
+  divination
+  droprate
+  dung
+  fishingcontest
+  givebox
+  giverandomitem
+  hammy
+  ic
+  igne
+  invention
+  itemcontract
+  kibble
+  kinggoldemar
+  kk
+  lottery
+  lotterybank
+  megaduck
+  mmmr
+  nex
+  nursery
+  ods
+  paint
+  pingmass
+  rates
+  slots
+  smokeylottery
+  sotw
+  spawn
+  spawnbox
+  spawnlamp
+  testershop
+  vasa
 }
