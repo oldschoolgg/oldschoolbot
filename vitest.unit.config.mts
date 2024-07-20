@@ -8,7 +8,7 @@ export default defineConfig({
 		include: ['tests/unit/**/*.test.ts'],
 		coverage: {
 			provider: 'v8',
-			reporter: 'html',
+			reporter: 'text',
 			include: ['src/lib/structures/Gear.ts', 'src/lib/util/parseStringBank.ts', 'src/lib/util/equipMulti.ts']
 		},
 		setupFiles: 'tests/unit/setup.ts',
