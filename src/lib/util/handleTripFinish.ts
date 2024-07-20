@@ -132,8 +132,8 @@ export async function handleTripFinish(
 			itemsToAddWithCL.add(res.itemsToAddWithCL);
 		}
 		stopwatch.stop();
-		if (stopwatch.duration > 200) {
-			console.log(`Finished ${effect.name} trip effect in ${stopwatch}`);
+		if (stopwatch.duration > 500) {
+			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
 		}
 	}
 	if (itemsToAddWithCL.length > 0) {
