@@ -16,7 +16,6 @@ import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
-import { logWrapFn } from '../util';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -127,10 +126,7 @@ export async function handleTripFinish(
 	const itemsToAddWithCL = new Bank();
 	for (const effect of tripFinishEffects) {
 		const stopwatch = new Stopwatch().start();
-		const res = await logWrapFn(`${effect.name} TripEffect`, effect.fn)({ data, user, loot, messages });
-		if (res?.itemsToAddWithCL) {
-			itemsToAddWithCL.add(res.itemsToAddWithCL);
-		}
+		await effect.fn({ data, user, loot, messages });
 		stopwatch.stop();
 		if (stopwatch.duration > 500) {
 			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
