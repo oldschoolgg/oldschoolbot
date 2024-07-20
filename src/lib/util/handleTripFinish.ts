@@ -66,21 +66,27 @@ interface TripFinishEffectOptions {
 	messages: string[];
 	portents?: Awaited<ReturnType<typeof getAllPortentCharges>>;
 }
+
+type TripEffectReturn = {
+	itemsToAddWithCL?: Bank;
+};
+
 export interface TripFinishEffect {
 	name: string;
-	fn: (options: TripFinishEffectOptions) => unknown;
+	fn: (options: TripFinishEffectOptions) => Promise<TripEffectReturn> | Promise<undefined> | Promise<void>;
 }
 
 const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Track GP Analytics',
-		fn: ({ data, loot }) => {
+		fn: async ({ data, loot }) => {
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(COINS_ID);
 				if (typeof GP === 'number') {
-					updateClientGPTrackSetting('gp_pvm', GP);
+					await updateClientGPTrackSetting('gp_pvm', GP);
 				}
 			}
+			return {};
 		}
 	},
 	{
@@ -90,9 +96,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (imp && imp.bank.length > 0) {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
-				userStatsBankUpdate(user, 'passive_implings_bank', imp.bank);
-				await transactItems({ userID: user.id, itemsToAdd: imp.bank, collectionLog: true });
+				await userStatsBankUpdate(user, 'passive_implings_bank', imp.bank);
+				return {
+					itemsToAddWithCL: imp.bank
+				};
 			}
+			return {};
 		}
 	},
 	{
@@ -104,7 +113,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Random Events',
 		fn: async ({ data, messages, user }) => {
-			await triggerRandomEvent(user, data.type, data.duration, messages);
+			return triggerRandomEvent(user, data.type, data.duration, messages);
 		}
 	},
 	{
@@ -475,15 +484,19 @@ export async function handleTripFinish(
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
 
-	// TODO: This is called for *every* trip, even though it's used only for users with the rebirth portent.
 	const portents = await getAllPortentCharges(user);
+	const itemsToAddWithCL = new Bank();
 	for (const effect of tripFinishEffects) {
 		const stopwatch = new Stopwatch().start();
-		await effect.fn({ data, user, loot, messages, portents });
+		const res = await effect.fn({ data, user, loot, messages, portents });
+		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
 		stopwatch.stop();
-		if (stopwatch.duration > 200) {
-			console.log(`Finished ${effect.name} trip effect in ${stopwatch}`);
+		if (stopwatch.duration > 500) {
+			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
 		}
+	}
+	if (itemsToAddWithCL.length > 0) {
+		await user.addItemsToBank({ items: itemsToAddWithCL, collectionLog: true });
 	}
 
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
