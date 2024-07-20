@@ -14,7 +14,7 @@
 		"test": "concurrently --raw --kill-others-on-fail \"tsc -p src && yarn test:circular\" \"yarn test:lint\" \"yarn test:unit\" \"tsc -p tests/integration --noEmit\" \"tsc -p tests/unit --noEmit\"",
 		"test:lint": "biome check --diagnostic-level=error",
 		"test:unit": "vitest run --coverage --config vitest.unit.config.mts",
-		"test:docker": "docker-compose up --build --abort-on-container-exit",
+		"test:docker": "docker-compose up --build --abort-on-container-exit --remove-orphans && docker-compose down --volumes --remove-orphans",
 		"test:watch": "vitest --config vitest.unit.config.mts --coverage",
 		"buildandrun": "yarn build:esbuild && node --enable-source-maps dist",
 		"build:esbuild": "concurrently --raw \"yarn build:main\" \"yarn build:workers\"",
