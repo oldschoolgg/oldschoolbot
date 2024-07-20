@@ -5,7 +5,7 @@ import getOSItem from './getOSItem';
 
 const crateItem = getOSItem('Birthday crate (s6)');
 
-export async function handleCrateSpawns(user: MUser, duration: number) {
+export function handleCrateSpawns(user: MUser, duration: number) {
 	const accountAge = user.accountAgeInDays();
 	let dropratePerMinute = 50 * 60;
 	if (accountAge) {

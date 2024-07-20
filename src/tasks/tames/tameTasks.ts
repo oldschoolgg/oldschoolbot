@@ -143,22 +143,23 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 	async function handleFinish(res: { loot: Bank | null; message: string; user: MUser }) {
 		const previousTameCl = new Bank({ ...(tame.max_total_loot as ItemBank) });
 
-		if (res.loot) {
+		const loot = res.loot?.clone() ?? new Bank();
+		const crateRes = handleCrateSpawns(user, activity.duration);
+		if (crateRes !== null) loot.add(crateRes);
+
+		if (loot) {
 			await prisma.tame.update({
 				where: {
 					id: tame.id
 				},
 				data: {
-					max_total_loot: previousTameCl.clone().add(res.loot.bank).bank,
+					max_total_loot: previousTameCl.clone().add(loot.bank).bank,
 					last_activity_date: new Date()
 				}
 			});
 		}
 		const addRes = await addDurationToTame(tame, activity.duration);
 		if (addRes) res.message += `\n${addRes}`;
-
-		const crateRes = await handleCrateSpawns(user, activity.duration);
-		if (crateRes !== null) res.message += `\n${crateRes}`;
 
 		sendToChannelID(activity.channel_id, {
 			content: res.message,
@@ -170,12 +171,12 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 						.setStyle(ButtonStyle.Secondary)
 				)
 			],
-			files: res.loot
+			files: loot
 				? [
 						new AttachmentBuilder(
 							(
 								await makeBankImage({
-									bank: res.loot,
+									bank: loot,
 									title: `${tameName(tame)}'s Loot`,
 									user: res.user,
 									previousCL: previousTameCl
