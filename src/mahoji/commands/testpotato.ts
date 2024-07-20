@@ -999,9 +999,9 @@ ${droprates.join('\n')}`),
 					const { cooldown, length } = options.setcooldown;
 
 					const cooldownMappings: { [key: number]: string } = {
-						0: 'last_daily_timestamp',
-						1: 'last_tears_of_guthix_timestamp',
-						2: 'last_managing_miscellania_timestamp'
+						1: 'last_daily_timestamp',
+						2: 'last_tears_of_guthix_timestamp',
+						3: 'last_managing_miscellania_timestamp'
 					};
 
 					const lengthMappings: { [key: number]: bigint } = {
@@ -1011,27 +1011,38 @@ ${droprates.join('\n')}`),
 						4: 365n * 24n * 60n * 60n * 1000n // One Year in milliseconds
 					};
 
-					// Get the timestamp field based on the selected cooldown
 					const timestampField = cooldownMappings[cooldown];
-
 					if (!timestampField) {
 						throw new Error('Invalid cooldown type');
 					}
 
 					const duration = lengthMappings[length];
-
 					if (!duration) {
 						throw new Error('Invalid length value');
 					}
-					// Calculate the new timestamp using bigint
+
 					const now = BigInt(Date.now()); // Current time in milliseconds
 					const previousTimestamp = now - duration; // Calculate the previous timestamp based on the length
-
-					// Convert BigInt to number for timestamp update
 					const previousTimestampNumber = Number(previousTimestamp);
 
-					// Call userStatsUpdate to update the timestamp
 					await userStatsUpdate(userID, { [timestampField]: previousTimestampNumber }, {});
+
+					let cooldownDescription: string;
+					switch (cooldown) {
+						case 1:
+							cooldownDescription = 'Daily';
+							break;
+						case 2:
+							cooldownDescription = 'Tears of Guthix';
+							break;
+						case 3:
+							cooldownDescription = 'Managing Miscellania';
+							break;
+						default:
+							cooldownDescription = 'Unknown';
+					}
+
+					return `Successfully reset your last ${cooldownDescription} activity to ${new Date(Number(previousTimestamp)).toUTCString()}.`;
 				}
 
 				return 'Nothin!';
