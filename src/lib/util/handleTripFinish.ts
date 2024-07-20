@@ -126,7 +126,8 @@ export async function handleTripFinish(
 	const itemsToAddWithCL = new Bank();
 	for (const effect of tripFinishEffects) {
 		const stopwatch = new Stopwatch().start();
-		await effect.fn({ data, user, loot, messages });
+		const res = await effect.fn({ data, user, loot, messages });
+		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
 		stopwatch.stop();
 		if (stopwatch.duration > 500) {
 			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
