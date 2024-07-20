@@ -1067,7 +1067,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		},
 		superior: Monsters.Nechryarch,
 		healAmountNeeded: 24,
-		canBarrage: true,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush]
 	},
