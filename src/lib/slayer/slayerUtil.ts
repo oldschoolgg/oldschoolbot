@@ -289,6 +289,9 @@ export function getCommonTaskName(task: Monster) {
 		case Monsters.RevenantImp.id:
 			commonName = 'Revenant';
 			break;
+		case Monsters.DagannothPrime.id:
+			commonName = 'Dagannoth Kings';
+			break;
 		default:
 	}
 	if (commonName !== 'TzHaar' && !commonName.endsWith('s')) commonName += 's';
