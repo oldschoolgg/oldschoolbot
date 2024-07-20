@@ -34,43 +34,32 @@ interface DetermineBoostParams {
 	cbOpts: CombatOptionsEnum[];
 	user: MUser;
 	monster: KillableMonster;
-	method?: PvMMethod | null;
+	methods?: PvMMethod[] | null;
 	isOnTask?: boolean;
 	wildyBurst?: boolean;
 }
-export function determineBoostChoice(params: DetermineBoostParams) {
-	let boostChoice = 'none';
+export function determineCombatBoosts(params: DetermineBoostParams) {
 
-	if (params.method && params.method === 'none') {
-		return boostChoice;
-	}
-	if (params.method && params.method === 'chinning') {
-		boostChoice = 'chinning';
-	} else if (params.method && params.method === 'barrage') {
-		boostChoice = 'barrage';
-	} else if (params.method && params.method === 'burst') {
-		boostChoice = 'burst';
-	} else if (params.method && params.method === 'cannon') {
-		boostChoice = 'cannon';
-	} else if (
-		params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
-		(params.monster?.canBarrage || params.wildyBurst)
-	) {
-		boostChoice = 'barrage';
-	} else if (
-		params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) &&
-		(params.monster?.canBarrage || params.wildyBurst)
-	) {
-		boostChoice = 'burst';
-	} else if (params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)) {
-		boostChoice = 'cannon';
-	}
+    const boostMethods = (params.methods ?? ['none']).flat();
+    //console.log(`methods passed in to determineBoostChouice: ${boostMethods}`);
+	//console.log(`Combat options selected: ${params.cbOpts}`)
 
-	if (boostChoice === 'barrage' && params.user.skillLevel(SkillsEnum.Magic) < 94) {
-		boostChoice = 'burst';
+	if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
+	(params.monster?.canBarrage || params.wildyBurst)) {
+		boostMethods.push('barrage')
 	}
-	return boostChoice;
+	if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) &&
+	(params.monster?.canBarrage || params.wildyBurst)){
+		boostMethods.push('burst')
+	}
+	if(params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)){
+		boostMethods.push('cannon')
+	}
+	//console.log(`methods being returned: ${boostMethods}`)
+    return boostMethods;
+	
 }
+
 
 export async function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, user: MUser) {
 	const streaks = [1000, 250, 100, 50, 10];

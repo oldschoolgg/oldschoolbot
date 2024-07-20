@@ -48,7 +48,7 @@ import type { Consumable } from '../../../lib/minions/types';
 import { calcPOHBoosts } from '../../../lib/poh';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
-import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
+import { determineCombatBoosts, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { maxOffenceStats } from '../../../lib/structures/Gear';
 import type { Peak } from '../../../lib/tickers';
 import type { MonsterActivityTaskOptions } from '../../../lib/types/minions';
@@ -134,7 +134,7 @@ export async function minionKillCommand(
 	channelID: string,
 	name: string,
 	quantity: number | undefined,
-	method: PvMMethod | undefined,
+	method: PvMMethod | PvMMethod[] | undefined,
 	wilderness: boolean | undefined,
 	solo: boolean | undefined
 ): Promise<string | InteractionReplyOptions> {
@@ -212,13 +212,14 @@ export async function minionKillCommand(
 
 	const wildyBurst = (jelly || bloodveld) && isInWilderness;
 
-	// Set chosen boost based on priority:
+	// determines what pvm methods the user can use
 	const myCBOpts = user.combatOptions;
-	const boostChoice = determineBoostChoice({
+	const methods = [method] as PvMMethod[];
+	const combatMethods = determineCombatBoosts({
 		cbOpts: myCBOpts as CombatOptionsEnum[],
 		user,
 		monster,
-		method,
+		methods,
 		isOnTask,
 		wildyBurst
 	});
@@ -239,7 +240,7 @@ export async function minionKillCommand(
 
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
 		monsterID: monster.id,
-		boostMethod: boostChoice
+		boostMethod: combatMethods
 	});
 	const [newTime, skillBoostMsg] = applySkillBoost(user, timeToFinish, attackStyles);
 
@@ -457,18 +458,18 @@ export async function minionKillCommand(
 	}
 
 	// Check for stats
-	if (boostChoice === 'barrage' && user.skillLevel(SkillsEnum.Magic) < 94) {
+	if (combatMethods.includes('barrage') && user.skillLevel(SkillsEnum.Magic) < 94) {
 		return `You need 94 Magic to use Ice Barrage. You have ${user.skillLevel(SkillsEnum.Magic)}`;
 	}
-	if (boostChoice === 'burst' && user.skillLevel(SkillsEnum.Magic) < 70) {
+	if (combatMethods.includes('burst') && user.skillLevel(SkillsEnum.Magic) < 70) {
 		return `You need 70 Magic to use Ice Burst. You have ${user.skillLevel(SkillsEnum.Magic)}`;
 	}
-	if (boostChoice === 'chinning' && user.skillLevel(SkillsEnum.Ranged) < 65) {
+	if (combatMethods.includes('chinning') && user.skillLevel(SkillsEnum.Ranged) < 65) {
 		return `You need 65 Ranged to use Chinning method. You have ${user.skillLevel(SkillsEnum.Ranged)}`;
 	}
 
 	// Wildy Monster checks
-	if (isInWilderness === true && boostChoice === 'cannon') {
+	if (isInWilderness === true && combatMethods.includes('cannon')) {
 		if (monster.id === Monsters.HillGiant.id || monster.id === Monsters.MossGiant.id) {
 			usingCannon = isInWilderness;
 		}
@@ -496,14 +497,14 @@ export async function minionKillCommand(
 		}
 	}
 
-	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && (monster?.canBarrage || wildyBurst)) {
+	if (combatMethods.includes('barrage') && attackStyles.includes(SkillsEnum.Magic) && (monster?.canBarrage || wildyBurst)) {
 		consumableCosts.push(iceBarrageConsumables);
 		calculateVirtusBoost();
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage + virtusBoost);
 		boosts.push(`${boostIceBarrage + virtusBoost}% for Ice Barrage${virtusBoostMsg}`);
 		burstOrBarrage = SlayerActivityConstants.IceBarrage;
 	} else if (
-		boostChoice === 'burst' &&
+		combatMethods.includes('burst') &&
 		attackStyles.includes(SkillsEnum.Magic) &&
 		(monster?.canBarrage || wildyBurst)
 	) {
@@ -512,13 +513,14 @@ export async function minionKillCommand(
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst + virtusBoost);
 		boosts.push(`${boostIceBurst + virtusBoost}% for Ice Burst${virtusBoostMsg}`);
 		burstOrBarrage = SlayerActivityConstants.IceBurst;
-	} else if ((boostChoice === 'cannon' && hasCannon && monster?.cannonMulti) || cannonMulti) {
+	}
+	if ((combatMethods.includes('cannon') && hasCannon && monster?.cannonMulti) || cannonMulti) {
 		usingCannon = true;
 		cannonMulti = true;
 		consumableCosts.push(cannonMultiConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannonMulti);
 		boosts.push(`${boostCannonMulti}% for Cannon in multi`);
-	} else if ((boostChoice === 'cannon' && hasCannon && monster?.canCannon) || usingCannon) {
+	} else if ((combatMethods.includes('cannon') && hasCannon && monster?.canCannon) || usingCannon) {
 		usingCannon = true;
 		consumableCosts.push(cannonSingleConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
