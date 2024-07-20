@@ -9,7 +9,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
-import { userStatsUpdate } from '../mahoji/mahojiSettings';
+import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
@@ -704,19 +704,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async fetchStats<T extends Prisma.UserStatsSelect>(selectKeys: T): Promise<SelectedUserStats<T>> {
-		const keysToSelect = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
-		const result = await prisma.userStats.upsert({
-			where: {
-				user_id: BigInt(this.id)
-			},
-			create: {
-				user_id: BigInt(this.id)
-			},
-			update: {},
-			select: keysToSelect
-		});
-
-		return result as unknown as SelectedUserStats<T>;
+		return fetchUserStats(this.id, selectKeys);
 	}
 
 	get logName() {

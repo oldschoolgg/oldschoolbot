@@ -223,8 +223,9 @@ async function giveawayButtonHandler(user: MUser, customID: string, interaction:
 	return interactionReply(interaction, { content: 'You left the giveaway.', ephemeral: true });
 }
 
-async function repeatTripHandler(user: MUser, interaction: ButtonInteraction) {
-	if (user.minionIsBusy) return interactionReply(interaction, { content: 'Your minion is busy.', ephemeral: true });
+async function repeatTripHandler(interaction: ButtonInteraction) {
+	if (minionIsBusy(interaction.user.id))
+		return interactionReply(interaction, { content: 'Your minion is busy.', ephemeral: true });
 	const trips = await fetchRepeatTrips(interaction.user.id);
 	if (trips.length === 0) {
 		return interactionReply(interaction, { content: "Couldn't find a trip to repeat.", ephemeral: true });
@@ -344,10 +345,11 @@ export async function interactionHook(interaction: Interaction) {
 		});
 	}
 
+	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(interaction);
+
 	const user = await mUserFetch(userID);
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
-	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
 	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
 	if (id.startsWith('PTR_')) return handlePinnedTripRepeat(user, id, interaction);
 	if (id === 'TOA_CHECK') {
@@ -516,7 +518,9 @@ export async function interactionHook(interaction: Interaction) {
 		}
 		case 'AUTO_FARMING_CONTRACT': {
 			const response = await autoContract(await mUserFetch(user.id), options.channelID, user.id);
-			if (response) interactionReply(interaction, response);
+			if (response) {
+				return interactionReply(interaction, response);
+			}
 			return;
 		}
 		case 'FARMING_CONTRACT_EASIER': {

@@ -4,7 +4,6 @@ import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
 import { busyImmuneCommands } from '../../lib/constants';
 
-import { CACHED_ACTIVE_USER_IDS } from '../../lib/util/cachedUserIDs';
 import type { AbstractCommand } from './inhibitors';
 import { runInhibitors } from './inhibitors';
 
@@ -30,7 +29,6 @@ export async function preCommand({
 			dontRunPostCommand?: boolean;
 	  }
 > {
-	CACHED_ACTIVE_USER_IDS.add(userID);
 	if (globalClient.isShuttingDown) {
 		return {
 			reason: { content: 'The bot is currently restarting, please try again later.' },
@@ -55,7 +53,6 @@ export async function preCommand({
 
 	const inhibitResult = await runInhibitors({
 		user,
-		APIUser: await globalClient.fetchUser(user.id),
 		guild: guild ?? null,
 		member: member ?? null,
 		command: abstractCommand,

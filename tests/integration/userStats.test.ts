@@ -23,11 +23,11 @@ describe('User Stats', async () => {
 		expect(result).toEqual({ user_id: BigInt(userID) });
 		const result2 = await userStatsUpdate(
 			userID,
-			() => ({
+			{
 				ash_sanctifier_prayer_xp: {
 					increment: 100
 				}
-			}),
+			},
 			{}
 		);
 		expect(result2).toEqual({ user_id: BigInt(userID) });

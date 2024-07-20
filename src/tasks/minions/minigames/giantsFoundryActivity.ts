@@ -100,7 +100,7 @@ export const giantsFoundryTask: MinionTask = {
 				}
 			]
 		});
-		await userStatsBankUpdate(user.id, 'gf_loot', loot);
+		await userStatsBankUpdate(user, 'gf_loot', loot);
 
 		handleTripFinish(user, channelID, str, undefined, data, itemsAdded);
 	}

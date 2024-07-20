@@ -115,7 +115,7 @@ export const tobTask: MinionTask = {
 			// Track loot for T3+ patrons
 			await Promise.all(
 				allUsers.map(user => {
-					return userStatsBankUpdate(user.id, 'tob_loot', new Bank(result.loot[user.id]));
+					return userStatsBankUpdate(user, 'tob_loot', new Bank(result.loot[user.id]));
 				})
 			);
 

@@ -8,7 +8,7 @@ import { MahojiClient } from '@oldschoolgg/toolkit';
 import { init } from '@sentry/node';
 import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
-import { isObject } from 'e';
+import { Time, isObject } from 'e';
 
 import { SENTRY_DSN, SupportServer } from './config';
 import { syncActivityCache } from './lib/Task';
@@ -18,6 +18,7 @@ import { Channel, Events, META_CONSTANTS, gitHash, globalConfig } from './lib/co
 import { economyLog } from './lib/economyLogs';
 import { onMessage } from './lib/events';
 import { GrandExchange } from './lib/grandExchange';
+import { cacheGEPrices } from './lib/marketPrices';
 import { modalInteractionHook } from './lib/modals';
 import { populateRoboChimpCache } from './lib/perkTier';
 import { runStartupScripts } from './lib/startupScripts';
@@ -25,7 +26,7 @@ import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { assert, runTimedLoggedFn } from './lib/util';
 import { CACHED_ACTIVE_USER_IDS, syncActiveUserIDs } from './lib/util/cachedUserIDs';
 import { interactionHook } from './lib/util/globalInteractions';
-import { handleInteractionError } from './lib/util/interactionReply';
+import { handleInteractionError, interactionReply } from './lib/util/interactionReply';
 import { logError } from './lib/util/logError';
 import { syncDisabledCommands } from './lib/util/syncDisabledCommands';
 import { allCommands } from './mahoji/commands/allCommands';
@@ -139,19 +140,29 @@ global.globalClient = client;
 client.on('messageCreate', msg => {
 	onMessage(msg);
 });
+client.on('error', console.error);
 client.on('interactionCreate', async interaction => {
 	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
 	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
 
-	if (!client.isReady()) {
+	if (globalClient.isShuttingDown) {
 		if (interaction.isRepliable()) {
-			await interaction.reply({
+			await interactionReply(interaction, {
 				content:
-					'Old School Bot is currently down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+					'Old School Bot is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
 				ephemeral: true
 			});
 		}
+		return;
+	}
 
+	if (!client.isReady() || !client.uptime || client.uptime < Time.Second * 10) {
+		if (interaction.isRepliable()) {
+			await interactionReply(interaction, {
+				content: 'Old School Bot is currently rebooting, please try again in a few seconds! Thank you <3',
+				ephemeral: true
+			});
+		}
 		return;
 	}
 
@@ -190,12 +201,12 @@ client.on('guildCreate', guild => {
 });
 
 client.on('shardError', err => debugLog('Shard Error', { error: err.message }));
-client.once('ready', () => runTimedLoggedFn('OnStartup', async () => onStartup()));
+client.once('ready', () => onStartup());
 
 async function main() {
 	if (process.env.TEST) return;
 	await Promise.all([
-		runTimedLoggedFn('Sync Active User IDs', syncActiveUserIDs),
+		syncActiveUserIDs(),
 		runTimedLoggedFn('Sync Activity Cache', syncActivityCache),
 		runTimedLoggedFn('Startup Scripts', runStartupScripts),
 		runTimedLoggedFn('Sync Disabled Commands', syncDisabledCommands),
@@ -203,7 +214,8 @@ async function main() {
 		runTimedLoggedFn('Syncing prices', syncCustomPrices),
 		runTimedLoggedFn('Caching badges', cacheBadges),
 		runTimedLoggedFn('Init Grand Exchange', () => GrandExchange.init()),
-		runTimedLoggedFn('populateRoboChimpCache', populateRoboChimpCache)
+		runTimedLoggedFn('populateRoboChimpCache', populateRoboChimpCache),
+		runTimedLoggedFn('Cache G.E Prices', cacheGEPrices)
 	]);
 	await runTimedLoggedFn('Log In', () => client.login(globalConfig.botToken));
 	console.log(`Logged in as ${globalClient.user.username}`);
