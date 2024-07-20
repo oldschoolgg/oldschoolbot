@@ -627,4 +627,8 @@ export const winterTodtPointsTable = new SimpleTable<number>()
 	.add(780)
 	.add(850);
 
-console.log(`Starting... Git[${gitHash}] ClientID[${globalConfig.clientID}] Production[${globalConfig.isProduction}]`);
+if (!process.env.TEST) {
+	console.log(
+		`Starting... Git[${gitHash}] ClientID[${globalConfig.clientID}] Production[${globalConfig.isProduction}]`
+	);
+}
