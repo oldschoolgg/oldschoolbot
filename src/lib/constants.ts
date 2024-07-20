@@ -534,7 +534,8 @@ const globalConfigSchema = z.object({
 	botToken: z.string().min(1),
 	isCI: z.coerce.boolean().default(false),
 	isProduction: z.coerce.boolean().default(production),
-	testingServerID: z.string()
+	testingServerID: z.string(),
+	timeZone: z.literal('UTC')
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
@@ -554,7 +555,8 @@ export const globalConfig = globalConfigSchema.parse({
 	botToken: process.env.BOT_TOKEN,
 	isCI: process.env.CI,
 	isProduction,
-	testingServerID: process.env.TESTING_SERVER_ID ?? OLDSCHOOLGG_TESTING_SERVER_ID
+	testingServerID: process.env.TESTING_SERVER_ID ?? OLDSCHOOLGG_TESTING_SERVER_ID,
+	timeZone: process.env.TZ
 });
 
 if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction || production !== globalConfig.isProduction) {
@@ -624,3 +626,9 @@ export const winterTodtPointsTable = new SimpleTable<number>()
 	.add(750)
 	.add(780)
 	.add(850);
+
+if (!process.env.TEST) {
+	console.log(
+		`Starting... Git[${gitHash}] ClientID[${globalConfig.clientID}] Production[${globalConfig.isProduction}]`
+	);
+}
