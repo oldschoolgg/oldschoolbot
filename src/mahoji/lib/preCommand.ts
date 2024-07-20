@@ -4,17 +4,11 @@ import type { InteractionReplyOptions, TextChannel, User } from 'discord.js';
 import { modifyBusyCounter, userIsBusy } from '../../lib/busyCounterCache';
 import { busyImmuneCommands } from '../../lib/constants';
 
+import { logWrapFn } from '../../lib/util';
 import type { AbstractCommand } from './inhibitors';
 import { runInhibitors } from './inhibitors';
 
-export async function preCommand({
-	abstractCommand,
-	userID,
-	guildID,
-	channelID,
-	bypassInhibitors,
-	apiUser
-}: {
+interface PreCommandOptions {
 	apiUser: User | null;
 	abstractCommand: AbstractCommand;
 	userID: string;
@@ -22,13 +16,24 @@ export async function preCommand({
 	channelID: string | bigint;
 	bypassInhibitors: boolean;
 	options: CommandOptions;
-}): Promise<
+}
+
+type PrecommandReturn = Promise<
 	| undefined
 	| {
 			reason: InteractionReplyOptions;
 			dontRunPostCommand?: boolean;
 	  }
-> {
+>;
+export const preCommand: (opts: PreCommandOptions) => PrecommandReturn = logWrapFn('PreCommand', rawPreCommand);
+async function rawPreCommand({
+	abstractCommand,
+	userID,
+	guildID,
+	channelID,
+	bypassInhibitors,
+	apiUser
+}: PreCommandOptions): PrecommandReturn {
 	if (globalClient.isShuttingDown) {
 		return {
 			reason: { content: 'The bot is currently restarting, please try again later.' },

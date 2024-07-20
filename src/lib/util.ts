@@ -384,19 +384,23 @@ export function awaitMessageComponentInteraction({
 	});
 }
 
-export async function runTimedLoggedFn(name: string, fn: () => Promise<unknown>) {
+export async function runTimedLoggedFn<T>(name: string, fn: () => Promise<T>, threshholdToLog = 100): Promise<T> {
 	const logger = globalConfig.isProduction ? debugLog : console.log;
 	const stopwatch = new Stopwatch();
 	stopwatch.start();
-	await fn();
+	const result = await fn();
 	stopwatch.stop();
-	if (!globalConfig.isProduction || stopwatch.duration > 50) {
+	if (!globalConfig.isProduction || stopwatch.duration > threshholdToLog) {
 		logger(`Took ${stopwatch} to do ${name}`);
 	}
+	return result;
 }
 
-export function logWrapFn(name: string, fn: () => Promise<void>) {
-	return () => runTimedLoggedFn(name, fn);
+export function logWrapFn<T extends (...args: any[]) => Promise<unknown>>(
+	name: string,
+	fn: T
+): (...args: Parameters<T>) => ReturnType<T> {
+	return (...args: Parameters<T>): ReturnType<T> => runTimedLoggedFn(name, () => fn(...args)) as ReturnType<T>;
 }
 
 export function isModOrAdmin(user: MUser) {
