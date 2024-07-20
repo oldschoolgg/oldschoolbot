@@ -45,6 +45,7 @@ interface TripFinishEffectOptions {
 
 type TripEffectReturn = {
 	itemsToAddWithCL?: Bank;
+	itemsToRemove?: Bank;
 };
 
 export interface TripFinishEffect {
@@ -124,17 +125,19 @@ export async function handleTripFinish(
 	const messages: string[] = [];
 
 	const itemsToAddWithCL = new Bank();
+	const itemsToRemove = new Bank();
 	for (const effect of tripFinishEffects) {
 		const stopwatch = new Stopwatch().start();
 		const res = await effect.fn({ data, user, loot, messages });
 		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
+		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
 		stopwatch.stop();
 		if (stopwatch.duration > 500) {
 			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
 		}
 	}
-	if (itemsToAddWithCL.length > 0) {
-		await user.addItemsToBank({ items: itemsToAddWithCL, collectionLog: true });
+	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
+		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}
 
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
