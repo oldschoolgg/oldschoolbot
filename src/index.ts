@@ -142,14 +142,24 @@ client.on('messageCreate', msg => {
 });
 client.on('error', console.error);
 client.on('interactionCreate', async interaction => {
-	if (BLACKLISTED_USERS.has(interaction.user.id)) return;
-	if (interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId)) return;
-
 	if (globalClient.isShuttingDown) {
 		if (interaction.isRepliable()) {
 			await interactionReply(interaction, {
 				content:
 					'Old School Bot is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
+				ephemeral: true
+			});
+		}
+		return;
+	}
+
+	if (
+		BLACKLISTED_USERS.has(interaction.user.id) ||
+		(interaction.guildId && BLACKLISTED_GUILDS.has(interaction.guildId))
+	) {
+		if (interaction.isRepliable()) {
+			await interactionReply(interaction, {
+				content: 'You are blacklisted.',
 				ephemeral: true
 			});
 		}

@@ -48,7 +48,8 @@ export function logErrorForInteraction(
 		...extraContext,
 		interaction_created_at: interaction.createdTimestamp,
 		current_timestamp: Date.now(),
-		difference_ms: Date.now() - interaction.createdTimestamp
+		difference_ms: Date.now() - interaction.createdTimestamp,
+		was_deferred: interaction.isRepliable() ? interaction.deferred : 'N/A'
 	};
 	if (interaction.isChatInputCommand()) {
 		context.options = JSON.stringify(
