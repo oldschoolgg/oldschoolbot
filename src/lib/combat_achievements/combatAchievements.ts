@@ -159,7 +159,7 @@ assert(allCATaskIDs.length === new Set(allCATaskIDs).size);
 assert(sumArr(Object.values(CombatAchievements).map(i => i.length)) === allCATaskIDs.length);
 const indexesWithRng = entries.flatMap(i => i[1].tasks.filter(t => 'rng' in t));
 
-export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data, messages, user }) => {
+export const combatAchievementTripEffect = async ({ data, messages, user }: Parameters<TripFinishEffect['fn']>[0]) => {
 	const dataCopy = deepClone(data);
 	if (dataCopy.type === 'Inferno' && !dataCopy.diedPreZuk && !dataCopy.diedZuk) {
 		(dataCopy as any).quantity = 1;

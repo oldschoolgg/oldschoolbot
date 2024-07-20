@@ -8,7 +8,7 @@ import { MahojiClient } from '@oldschoolgg/toolkit';
 import { init } from '@sentry/node';
 import type { TextChannel } from 'discord.js';
 import { GatewayIntentBits, Options, Partials } from 'discord.js';
-import { Time, isObject } from 'e';
+import { isObject } from 'e';
 
 import { SENTRY_DSN, SupportServer } from './config';
 import { syncActivityCache } from './lib/Task';
@@ -150,16 +150,6 @@ client.on('interactionCreate', async interaction => {
 			await interactionReply(interaction, {
 				content:
 					'Old School Bot is currently shutting down for maintenance/updates, please try again in a couple minutes! Thank you <3',
-				ephemeral: true
-			});
-		}
-		return;
-	}
-
-	if (!client.isReady() || !client.uptime || client.uptime < Time.Second * 10) {
-		if (interaction.isRepliable()) {
-			await interactionReply(interaction, {
-				content: 'Old School Bot is currently rebooting, please try again in a few seconds! Thank you <3',
 				ephemeral: true
 			});
 		}

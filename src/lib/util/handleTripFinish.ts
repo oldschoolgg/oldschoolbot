@@ -1,8 +1,8 @@
+import { Stopwatch, channelIsSendable, makeComponents } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
 import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { Stopwatch, channelIsSendable, makeComponents } from '@oldschoolgg/toolkit';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
@@ -45,12 +45,12 @@ interface TripFinishEffectOptions {
 }
 
 type TripEffectReturn = {
-	itemsToAddWithCL: Bank;
+	itemsToAddWithCL?: Bank;
 };
 
 export interface TripFinishEffect {
 	name: string;
-	fn: (options: TripFinishEffectOptions) => Promise<TripEffectReturn | undefined> | Promise<void> | void;
+	fn: (options: TripFinishEffectOptions) => Promise<TripEffectReturn> | Promise<undefined> | Promise<void>;
 }
 
 const tripFinishEffects: TripFinishEffect[] = [
@@ -63,6 +63,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					await updateClientGPTrackSetting('gp_pvm', GP);
 				}
 			}
+			return {};
 		}
 	},
 	{
@@ -77,6 +78,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					itemsToAddWithCL: imp.bank
 				};
 			}
+			return {};
 		}
 	},
 	{
@@ -93,7 +95,9 @@ const tripFinishEffects: TripFinishEffect[] = [
 	},
 	{
 		name: 'Combat Achievements',
-		fn: combatAchievementTripEffect
+		fn: async options => {
+			return combatAchievementTripEffect(options);
+		}
 	}
 ];
 
