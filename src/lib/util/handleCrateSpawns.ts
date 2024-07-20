@@ -1,4 +1,3 @@
-import { bold } from 'discord.js';
 import { Time, reduceNumByPercent, roll } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -27,10 +26,6 @@ export async function handleCrateSpawns(user: MUser, duration: number) {
 			loot.add(crateItem);
 		}
 	}
-	if (loot.length > 0) {
-		await user.addItemsToBank({ items: loot, collectionLog: true });
-		const str = bold(`You found ${loot}!`);
-		return str;
-	}
-	return null;
+
+	return loot;
 }
