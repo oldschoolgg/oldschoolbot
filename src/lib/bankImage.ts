@@ -435,16 +435,16 @@ export class BankImageTask {
 
 		await fs.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
 
-	try {
+		try {
 			const image = await loadImage(imageBuffer);
 
-		this.itemIconsList.add(itemID);
-		this.itemIconImagesCache.set(itemID, image);
-	 return image;
-	} catch(err) {
-		console.error(`${itemID} image failed to load`);
-		return this.fetchAndCacheImage(getItemOrThrow("Bones").id);
-	}
+			this.itemIconsList.add(itemID);
+			this.itemIconImagesCache.set(itemID, image);
+			return image;
+		} catch (err) {
+			console.error(`${itemID} image failed to load`);
+			return this.fetchAndCacheImage(getItemOrThrow('Bones').id);
+		}
 	}
 
 	drawBorder(ctx: SKRSContext2D, sprite: IBgSprite, titleLine = true) {

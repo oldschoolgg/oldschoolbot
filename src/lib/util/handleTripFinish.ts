@@ -1,11 +1,6 @@
 import { Stopwatch, channelIsSendable } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import type {
-	AttachmentBuilder,
-	ButtonBuilder,
-	MessageCollector,
-	MessageCreateOptions
-} from 'discord.js';
+import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
 import { Time, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { alching } from '../../mahoji/commands/laps';
@@ -428,7 +423,7 @@ export async function handleTripFinish(
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 		if (itemsToAddWithCL.length > 0) {
-		messages.push(`You received: ${itemsToAddWithCL}`);
+			messages.push(`You received: ${itemsToAddWithCL}`);
 		}
 	}
 

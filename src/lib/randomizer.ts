@@ -4,9 +4,9 @@ import { Bank, Items } from 'oldschooljs';
 import { ONE_TRILLION } from './constants';
 import { customItems } from './customItems/util';
 import { keyCrates } from './keyCrates';
+import { SkillsArray } from './skilling/types';
 import type { ItemBank } from './types';
 import { resolveItems } from './util';
-import { SkillsArray } from './skilling/types';
 
 declare module 'oldschooljs' {
 	interface Bank {
@@ -85,22 +85,22 @@ export async function updateUsersRandomizerMap(user: MUser) {
 	const sourceSkills = shuffleArr(SkillsArray);
 	const shuffledSkills = seedShuffle(SkillsArray, key);
 
-	const skillMapping: Record<string,string> = {};
-	for (let i= 0; i < sourceSkills.length; i++) {
+	const skillMapping: Record<string, string> = {};
+	for (let i = 0; i < sourceSkills.length; i++) {
 		skillMapping[sourceSkills[i]] = shuffledSkills[i];
 	}
 
-		const map = buildItemMap(key);
-		const obj: ItemBank = {};
-		for (const [key, val] of Object.entries(map)) {
-			obj[Number(val)] = Number(key);
-		}
+	const map = buildItemMap(key);
+	const obj: ItemBank = {};
+	for (const [key, val] of Object.entries(map)) {
+		obj[Number(val)] = Number(key);
+	}
 
-		await user.update({ item_map: map, item_map_key: key, reverse_item_map: obj, skill_map: skillMapping });
+	await user.update({ item_map: map, item_map_key: key, reverse_item_map: obj, skill_map: skillMapping });
 
-		const testBank = new Bank();
-for (const item of allItems) {
-	testBank.add(item, 1);
-}
-remapBank(user, testBank);
+	const testBank = new Bank();
+	for (const item of allItems) {
+		testBank.add(item, 1);
+	}
+	remapBank(user, testBank);
 }
