@@ -1,13 +1,13 @@
-import { formatOrdinal } from '@oldschoolgg/toolkit';
+import { formatDuration, formatOrdinal } from '@oldschoolgg/toolkit';
 import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { prisma } from '../../../lib/settings/prisma';
+
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, percentChance } from '../../../lib/util';
+import type { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
+import { percentChance } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
@@ -42,8 +42,8 @@ export const fightCavesTask: MinionTask = {
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
-			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
+			usersTask.currentTask?.monster_id === Monsters.TzHaarKet.id &&
+			usersTask.currentTask?.quantity_remaining === usersTask.currentTask?.quantity;
 
 		if (preJadDeathTime) {
 			let slayerMsg = '';
@@ -52,7 +52,7 @@ export const fightCavesTask: MinionTask = {
 
 				await prisma.slayerTask.update({
 					where: {
-						id: usersTask.currentTask!.id
+						id: usersTask.currentTask?.id
 					},
 					data: {
 						quantity_remaining: 0,
@@ -103,7 +103,7 @@ export const fightCavesTask: MinionTask = {
 
 				await prisma.slayerTask.update({
 					where: {
-						id: usersTask.currentTask!.id
+						id: usersTask.currentTask?.id
 					},
 					data: {
 						quantity_remaining: 0,
@@ -179,7 +179,7 @@ export const fightCavesTask: MinionTask = {
 
 			await prisma.slayerTask.update({
 				where: {
-					id: usersTask.currentTask!.id
+					id: usersTask.currentTask?.id
 				},
 				data: {
 					quantity_remaining: 0

@@ -1,0 +1,53 @@
+{
+	"encoded": "{\"chart\":{\"type\":\"bar\"},\"title\":{\"text\":\"bar percent title\"},\"series\":[{\"name\":\"bar percent title\",\"data\":[{\"x\":\"Magna\",\"y\":55,\"fillColor\":\"#7eb0d5\"},{\"x\":\"Cyr\",\"y\":45,\"fillColor\":\"#e60049\"}]}],\"xaxis\":{\"categories\":[\"Magna\",\"Cyr\"]},\"dataLabels\":{\"enabled\":true,\"style\":{\"colors\":[\"#000\"]},\"formatter\":(v) => `${v}%`},\"yaxis\":{\"labels\":{\"formatter\":(v) => `${v}%`},\"min\":0,\"max\":100},\"plotOptions\":{\"bar\":{\"dataLabels\":{\"position\":\"top\"}}}}",
+	"config": {
+		"chart": {
+			"type": "bar"
+		},
+		"title": {
+			"text": "bar percent title"
+		},
+		"series": [
+			{
+				"name": "bar percent title",
+				"data": [
+					{
+						"x": "Magna",
+						"y": 55,
+						"fillColor": "#7eb0d5"
+					},
+					{
+						"x": "Cyr",
+						"y": 45,
+						"fillColor": "#e60049"
+					}
+				]
+			}
+		],
+		"xaxis": {
+			"categories": ["Magna", "Cyr"]
+		},
+		"dataLabels": {
+			"enabled": true,
+			"style": {
+				"colors": ["#000"]
+			},
+			"formatter": "FORMATTER"
+		},
+		"yaxis": {
+			"labels": {
+				"formatter": "FORMATTER"
+			},
+			"min": 0,
+			"max": 100
+		},
+		"plotOptions": {
+			"bar": {
+				"dataLabels": {
+					"position": "top"
+				}
+			}
+		}
+	},
+	"url": "https://quickchart.io/apex-charts/render?config=%7B%22chart%22%3A%7B%22type%22%3A%22bar%22%7D%2C%22title%22%3A%7B%22text%22%3A%22bar%20percent%20title%22%7D%2C%22series%22%3A%5B%7B%22name%22%3A%22bar%20percent%20title%22%2C%22data%22%3A%5B%7B%22x%22%3A%22Magna%22%2C%22y%22%3A55%2C%22fillColor%22%3A%22%237eb0d5%22%7D%2C%7B%22x%22%3A%22Cyr%22%2C%22y%22%3A45%2C%22fillColor%22%3A%22%23e60049%22%7D%5D%7D%5D%2C%22xaxis%22%3A%7B%22categories%22%3A%5B%22Magna%22%2C%22Cyr%22%5D%7D%2C%22dataLabels%22%3A%7B%22enabled%22%3Atrue%2C%22style%22%3A%7B%22colors%22%3A%5B%22%23000%22%5D%7D%2C%22formatter%22%3A(v)%20%3D%3E%20%60%24%7Bv%7D%25%60%7D%2C%22yaxis%22%3A%7B%22labels%22%3A%7B%22formatter%22%3A(v)%20%3D%3E%20%60%24%7Bv%7D%25%60%7D%2C%22min%22%3A0%2C%22max%22%3A100%7D%2C%22plotOptions%22%3A%7B%22bar%22%3A%7B%22dataLabels%22%3A%7B%22position%22%3A%22top%22%7D%7D%7D%7D"
+}

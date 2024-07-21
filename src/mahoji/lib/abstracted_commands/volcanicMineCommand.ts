@@ -1,11 +1,12 @@
-import { ChatInputCommandInteraction } from 'discord.js';
-import { objectEntries, Time } from 'e';
+import type { ChatInputCommandInteraction } from 'discord.js';
+import { Time, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 
+import { formatDuration } from '@oldschoolgg/toolkit';
 import { getMinigameScore } from '../../../lib/settings/minigames';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, hasSkillReqs, stringMatches } from '../../../lib/util';
+import type { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import { formatSkillRequirements, hasSkillReqs, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
@@ -159,7 +160,7 @@ export async function volcanicMineCommand(user: MUser, channelID: string, gameQu
 
 	await transactItems({ userID: user.id, itemsToRemove: suppliesUsage });
 
-	let duration = VolcanicMineGameTime * gameQuantity;
+	const duration = VolcanicMineGameTime * gameQuantity;
 
 	const str = `${
 		user.minionName
@@ -222,9 +223,7 @@ export async function volcanicMineShopCommand(
 		}
 	});
 
-	return `You sucessfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(
-		shopItem.cost * quantity
-	).toLocaleString()} Volcanic Mine points.${
+	return `You sucessfully bought **${quantity.toLocaleString()}x ${shopItem.name}** for ${(shopItem.cost * quantity).toLocaleString()} Volcanic Mine points.${
 		shopItem.clOnly
 			? `\n${quantity > 1 ? 'These items were' : 'This item was'} directly added to your collection log.`
 			: ''

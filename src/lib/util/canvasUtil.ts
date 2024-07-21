@@ -1,4 +1,5 @@
-import { Canvas, Image, loadImage, SKRSContext2D } from '@napi-rs/canvas';
+import type { Image, SKRSContext2D } from '@napi-rs/canvas';
+import { Canvas, loadImage } from '@napi-rs/canvas';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
 
 import { assert } from '../util';
@@ -31,10 +32,6 @@ export function drawTitleText(ctx: SKRSContext2D, title: string, x: number, y: n
 	fillTextXTimesInCtx(ctx, title, x, y);
 }
 
-export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
-	return loadImage(imageBuffer);
-}
-
 export function drawImageWithOutline(
 	ctx: SKRSContext2D,
 	image: Canvas | Image,
@@ -43,8 +40,8 @@ export function drawImageWithOutline(
 	dw: number,
 	dh: number,
 	outlineColor: string,
-	outlineWidth: number = 1,
-	alpha: number = 0.5
+	outlineWidth = 1,
+	alpha = 0.5
 ): void {
 	const dArr = [-1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1];
 	const purplecanvas = new Canvas(image.width + (outlineWidth + 2), image.height + (outlineWidth + 2));
@@ -64,11 +61,10 @@ function printMultilineText(ctx: SKRSContext2D, text: string, x: number, y: numb
 
 	let linePositionY = y;
 	for (const line of lines) {
-		let lineMeasured = ctx.measureText(line);
-		let thisX = Math.floor(x - lineMeasured.width / 2);
+		const lineMeasured = ctx.measureText(line);
+		const thisX = Math.floor(x - lineMeasured.width / 2);
 		ctx.fillText(line, thisX, Math.floor(linePositionY));
-		// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-		let height: number = lineMeasured.actualBoundingBoxAscent + lineMeasured.actualBoundingBoxDescent;
+		const height: number = lineMeasured.actualBoundingBoxAscent + lineMeasured.actualBoundingBoxDescent;
 		linePositionY += height + 1;
 	}
 }

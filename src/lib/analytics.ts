@@ -1,6 +1,6 @@
 import { ActivityGroup, globalConfig } from '../lib/constants';
-import { prisma } from '../lib/settings/prisma';
-import { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
+
+import type { GroupMonsterActivityTaskOptions } from '../lib/types/minions';
 import { taskGroupFromActivity } from '../lib/util/taskGroupFromActivity';
 
 async function calculateMinionTaskCounts() {
@@ -33,9 +33,6 @@ async function calculateMinionTaskCounts() {
 }
 
 export async function analyticsTick() {
-	debugLog('Analytics tick', {
-		type: 'ANALYTICS_TICK'
-	});
 	const [numberOfMinions, totalSacrificed, numberOfIronmen, totalGP] = (
 		await Promise.all(
 			[
@@ -45,7 +42,7 @@ export async function analyticsTick() {
 				'SELECT SUM("GP") AS count FROM users;'
 			].map(query => prisma.$queryRawUnsafe(query))
 		)
-	).map((result: any) => parseInt(result[0].count)) as number[];
+	).map((result: any) => Number.parseInt(result[0].count)) as number[];
 
 	const taskCounts = await calculateMinionTaskCounts();
 	const currentClientSettings = await await prisma.clientStorage.findFirst({

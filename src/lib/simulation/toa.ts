@@ -1,7 +1,10 @@
-import { mentionCommand, SimpleTable } from '@oldschoolgg/toolkit';
-import { Minigame, XpGainSource } from '@prisma/client';
+import { SimpleTable, exponentialPercentScale, mentionCommand } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { Minigame } from '@prisma/client';
+import { XpGainSource } from '@prisma/client';
 import { bold } from 'discord.js';
 import {
+	Time,
 	calcPercentOfNum,
 	calcWhatPercent,
 	clamp,
@@ -15,24 +18,23 @@ import {
 	round,
 	scaleNumber,
 	sumArr,
-	Time,
 	uniqueArr
 } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { mahojiParseNumber, userStatsBankUpdate } from '../../mahoji/mahojiSettings';
 import { Emoji } from '../constants';
 import { getSimilarItems } from '../data/similarItems';
 import { degradeItem } from '../degradeableItems';
-import { GearStats, UserFullGearSetup } from '../gear/types';
+import type { GearStats, UserFullGearSetup } from '../gear/types';
 import { trackLoot } from '../lootTrack';
 import { setupParty } from '../party';
 import { getMinigameScore } from '../settings/minigames';
 import { SkillsEnum } from '../skilling/types';
-import { constructGearSetup, Gear } from '../structures/Gear';
-import { MakePartyOptions, Skills } from '../types';
-import { TOAOptions } from '../types/minions';
+import { Gear, constructGearSetup } from '../structures/Gear';
+import type { MakePartyOptions, Skills } from '../types';
+import type { TOAOptions } from '../types/minions';
 import {
 	assert,
 	channelIsSendable,
@@ -45,8 +47,7 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
-import resolveItems from '../util/resolveItems';
-import { bankToStrShortNames, exponentialPercentScale, getToaKCs } from '../util/smallUtils';
+import { bankToStrShortNames, getToaKCs } from '../util/smallUtils';
 import { updateBankSetting } from '../util/updateBankSetting';
 import { TeamLoot } from './TeamLoot';
 
@@ -112,7 +113,7 @@ function estimatePoints(raidLevel: number, teamSize: number) {
 	return totalPoints;
 }
 
-export const maxMageGear = constructGearSetup({
+const maxMageGear = constructGearSetup({
 	head: 'Ancestral hat',
 	neck: 'Occult necklace',
 	body: 'Ancestral robe top',
@@ -125,7 +126,7 @@ export const maxMageGear = constructGearSetup({
 });
 const maxMage = new Gear(maxMageGear);
 
-export const maxRangeGear = constructGearSetup({
+const maxRangeGear = constructGearSetup({
 	head: 'Masori mask (f)',
 	neck: 'Necklace of anguish',
 	body: 'Masori body (f)',
@@ -141,7 +142,7 @@ export const maxRangeGear = constructGearSetup({
 const maxRange = new Gear(maxRangeGear);
 maxRange.ammo!.quantity = 100_000;
 
-export const maxMeleeLessThan300Gear = constructGearSetup({
+const maxMeleeLessThan300Gear = constructGearSetup({
 	head: 'Torva full helm',
 	neck: 'Amulet of torture',
 	body: 'Torva platebody',
@@ -153,7 +154,7 @@ export const maxMeleeLessThan300Gear = constructGearSetup({
 	shield: 'Avernic defender',
 	ring: 'Lightbearer'
 });
-export const maxMeleeOver300Gear = constructGearSetup({
+const maxMeleeOver300Gear = constructGearSetup({
 	head: 'Torva full helm',
 	neck: 'Amulet of torture',
 	body: 'Torva platebody',
@@ -421,7 +422,7 @@ export function calculateXPFromRaid({
 	let totalCombatXP = 0;
 
 	for (const style of meleeStyles) {
-		let amount = calcPercentOfNum(percentOfRaid, xpPerStyle);
+		const amount = calcPercentOfNum(percentOfRaid, xpPerStyle);
 		totalCombatXP += amount;
 		promises.push(
 			user.addXP({
@@ -490,7 +491,7 @@ const untradeables = [
 ];
 
 function untradeableRoll(kc: number, cl: Bank) {
-	let loot = new Bank();
+	const loot = new Bank();
 	for (const { item, dropRate } of untradeables) {
 		let rolls = 1;
 		if (!cl.has(item.id) && kc > 5) {
@@ -506,7 +507,7 @@ function untradeableRoll(kc: number, cl: Bank) {
 	return loot;
 }
 
-let TOAUniqueTable = new LootTable()
+const TOAUniqueTable = new LootTable()
 	.add('Lightbearer', 1, 7)
 	.add("Osmumten's fang", 1, 7)
 	.add("Elidinis' ward", 1, 3)
@@ -572,7 +573,7 @@ const nonUniqueTable = [
 function nonUniqueLoot({ points }: { points: number }) {
 	assert(typeof points === 'number', `Points must be a number, received ${typeof points} ${points}.`);
 	assert(points >= 1 && points <= 64_000, `Points (${points.toLocaleString()}) must be between 1-64,000`);
-	let loot = new Bank();
+	const loot = new Bank();
 
 	for (let i = 0; i < 3; i++) {
 		const [item, divisor] = randArrItem(nonUniqueTable);
@@ -611,14 +612,13 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 	const totalTeamPoints = sumArr(users.map(i => i.points));
 
 	// The number of raid levels less than or equal to 400
-	let x = Math.min(raidLevel, 400);
+	const x = Math.min(raidLevel, 400);
 	// The number of raid levels from 400 to 550
-	let y = Math.min(150, raidLevel - 400);
+	const y = Math.min(150, raidLevel - 400);
 
-	// prettier-ignore
-	let pointsForOnePercentUniqueChance = 10_500 - 20 * (x + (y / 3));
-	let chanceOfUnique = Math.min(totalTeamPoints / pointsForOnePercentUniqueChance, 55);
-	let didGetUnique = percentChance(chanceOfUnique);
+	const pointsForOnePercentUniqueChance = 10_500 - 20 * (x + y / 3);
+	const chanceOfUnique = Math.min(totalTeamPoints / pointsForOnePercentUniqueChance, 55);
+	const didGetUnique = percentChance(chanceOfUnique);
 	const uniqueRecipient = didGetUnique ? uniqueDeciderTable.roll() : null;
 
 	const messages: string[] = [
@@ -639,9 +639,9 @@ export function calcTOALoot({ users, raidLevel }: { users: TOALootUser[]; raidLe
 		}
 		loot.add(user.id, untradeableRoll(user.kc, user.cl));
 
-		let pointsForOnePercentPetChance = 350_000 - 700 * (x + y / 3);
-		let chanceOfPet = Math.min(user.points / pointsForOnePercentPetChance, 55);
-		let didGetPet = percentChance(chanceOfPet);
+		const pointsForOnePercentPetChance = 350_000 - 700 * (x + y / 3);
+		const chanceOfPet = Math.min(user.points / pointsForOnePercentPetChance, 55);
+		const didGetPet = percentChance(chanceOfPet);
 		if (didGetPet) {
 			loot.add(user.id, "Tumeken's guardian");
 		}
@@ -773,7 +773,7 @@ function calcDeathChance(totalAttempts: number, raidLevel: RaidLevel, tobAndCoxK
 	}
 
 	const match = map.find(i => totalAttempts <= i.attemptsMax)! ?? map[map.length - 1];
-	const nextMatch = map[map.indexOf(match) + 1] ?? { attemptsMax: Infinity, increase: 0 };
+	const nextMatch = map[map.indexOf(match) + 1] ?? { attemptsMax: Number.POSITIVE_INFINITY, increase: 0 };
 
 	const increase = scaleNumber(
 		totalAttempts,
@@ -810,7 +810,7 @@ function calculateTotalEffectiveness({
 	skillsAsLevels: Skills;
 	randomNess: boolean;
 }) {
-	let percents = [];
+	const percents = [];
 
 	percents.push(clamp(calcWhatPercent(totalKC, 20), 0, 100));
 	percents.push(clamp(calcWhatPercent(totalAttempts, 20), 0, 100));
@@ -829,7 +829,7 @@ function calculateTotalEffectiveness({
 }
 
 function calculateAdditionalDeathChance(raidLevel: RaidLevel, attempts: number) {
-	const minDeathChance = mileStoneBaseDeathChances.find(i => i.level === raidLevel)!.minChance;
+	const minDeathChance = mileStoneBaseDeathChances.find(i => i.level === raidLevel)?.minChance;
 	if (!minDeathChance) return 0;
 	let divisor = 1;
 	for (const number of [50, 100, 200, 300]) {
@@ -848,8 +848,8 @@ function calculatePointsAndDeaths(
 	coxAndTobKC: number,
 	teamSize: number
 ) {
-	let deaths: number[] = [];
-	let deathChance = calcDeathChance(totalAttempts, raidLevel, coxAndTobKC);
+	const deaths: number[] = [];
+	const deathChance = calcDeathChance(totalAttempts, raidLevel, coxAndTobKC);
 	const harshEffectivenessScale = exponentialPercentScale(effectiveness, 0.05);
 
 	let points = estimatePoints(raidLevel, teamSize) / teamSize;
@@ -893,14 +893,8 @@ function calcSetupPercent(
 	}
 	// For melee compare the highest melee attack stat of max setup with the highest melee attack stat of the user
 	if (melee) {
-		let maxMeleeStat = Math.max(
-			maxStats['attack_stab'],
-			Math.max(maxStats['attack_slash'], maxStats['attack_crush'])
-		);
-		let userMeleeStat = Math.max(
-			userStats['attack_stab'],
-			Math.max(userStats['attack_slash'], userStats['attack_crush'])
-		);
+		const maxMeleeStat = Math.max(maxStats.attack_stab, Math.max(maxStats.attack_slash, maxStats.attack_crush));
+		const userMeleeStat = Math.max(userStats.attack_stab, Math.max(userStats.attack_slash, userStats.attack_crush));
 		totalPercent += Math.min(100, calcWhatPercent(userMeleeStat, maxMeleeStat));
 		numKeys++;
 	}
@@ -918,7 +912,7 @@ interface GearSetupPercents {
 	mage: number;
 	total: number;
 }
-export function calculateUserGearPercents(gear: UserFullGearSetup, raidLevel: number): GearSetupPercents {
+function calculateUserGearPercents(gear: UserFullGearSetup, raidLevel: number): GearSetupPercents {
 	const maxMelee = raidLevel < 300 ? maxMeleeLessThan300Gear : maxMeleeOver300Gear;
 	const melee = calcSetupPercent(
 		maxMelee.stats,
@@ -983,7 +977,7 @@ async function calcTOAInput({
 	}
 
 	// Between 8-1 brews
-	let brewsNeeded = Math.max(1, 9 - Math.max(1, Math.ceil((kc + 1) / 12)));
+	const brewsNeeded = Math.max(1, 9 - Math.max(1, Math.ceil((kc + 1) / 12)));
 	let restoresNeeded = Math.max(2, Math.floor(brewsNeeded / 3));
 	if (kc < 2) restoresNeeded += 3;
 	else if (kc < 5) restoresNeeded += 2;
@@ -996,7 +990,7 @@ async function calcTOAInput({
 		throw new Error(`${user.logName} had no range weapon for TOA`);
 	}
 	if (rangeWeapon.id !== itemID('Bow of faerdhinen (c)')) {
-		cost.add(user.gear.range.ammo!.item, BOW_ARROWS_NEEDED * quantity);
+		cost.add(user.gear.range.ammo?.item, BOW_ARROWS_NEEDED * quantity);
 	}
 	if (user.gear.melee.hasEquipped('Amulet of blood fury')) {
 		cost.remove('Saradomin brew(4)', quantity);
@@ -1015,7 +1009,7 @@ async function calcTOAInput({
 	};
 }
 
-export async function checkTOAUser(
+async function checkTOAUser(
 	user: MUser,
 	kc: number,
 	raidLevel: number,
@@ -1073,7 +1067,7 @@ export async function checkTOAUser(
 	return [false];
 }
 
-export async function checkTOATeam(users: MUser[], raidLevel: number, quantity: number): Promise<string | null> {
+async function checkTOATeam(users: MUser[], raidLevel: number, quantity: number): Promise<string | null> {
 	const userWithoutSupplies = users.find(u => !u.bank.has(minimumSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.usernameOrMention} doesn't have enough supplies`;
@@ -1092,9 +1086,7 @@ export async function checkTOATeam(users: MUser[], raidLevel: number, quantity: 
 			Time.Hour,
 			quantity
 		);
-		if (!checkResult[0]) {
-			continue;
-		} else {
+		if (checkResult[1]) {
 			return checkResult[1];
 		}
 	}
@@ -1130,7 +1122,7 @@ export async function toaStartCommand(
 		return "Your minion is busy, so you can't start a raid.";
 	}
 
-	let maxSize = mahojiParseNumber({ input: teamSize, min: 2, max: 8 }) ?? 8;
+	const maxSize = mahojiParseNumber({ input: teamSize, min: 2, max: 8 }) ?? 8;
 
 	const partyOptions: MakePartyOptions = {
 		leader: user,
@@ -1238,7 +1230,7 @@ export async function toaStartCommand(
 					user: u
 				});
 			}
-			await userStatsBankUpdate(u.id, 'toa_cost', realCost);
+			await userStatsBankUpdate(u, 'toa_cost', realCost);
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
 
@@ -1271,7 +1263,7 @@ export async function toaStartCommand(
 		}))
 	});
 
-	let userArr: [string, number, number[]][][] = [];
+	const userArr: [string, number, number[]][][] = [];
 	for (let i = 0; i < quantity; i++) {
 		const thisQtyArr: [string, number, number[]][] = [];
 		for (const user of toaSimResults[i].parsedTeam) {
@@ -1318,7 +1310,7 @@ const totalSpeedReductions =
 	sumArr(miscBoosts.map(i => i[1])) +
 	15; // Os fang;
 
-let baseTOADurations: Record<RaidLevel, number> = {
+const baseTOADurations: Record<RaidLevel, number> = {
 	1: Time.Minute * 50,
 	100: Time.Minute * 50,
 	150: Time.Minute * 60,
@@ -1344,7 +1336,7 @@ interface ParsedTeamMember {
 	attempts: number;
 }
 
-export function createTOATeam({
+function createTOATeam({
 	team,
 	disableVariation,
 	raidLevel,
@@ -1355,11 +1347,11 @@ export function createTOATeam({
 	disableVariation?: true;
 	quantity: number;
 }) {
-	let arr = [];
+	const arr = [];
 	const messages: string[] = [];
 
 	for (const { user, toaAttempts, minigameScores } of team) {
-		let gearStats = calculateUserGearPercents(user.gear, raidLevel);
+		const gearStats = calculateUserGearPercents(user.gear, raidLevel);
 		const totalAttempts = toaAttempts;
 		const totalKC = minigameScores.tombs_of_amascut;
 		const effectiveness = calculateTotalEffectiveness({
@@ -1393,8 +1385,8 @@ export function createTOATeam({
 	const teamSize = team.length;
 	const maxScaling = 350;
 	assert(teamSize >= 1 && teamSize < 9, 'TOA team must be 1-8 users');
-	let individualReductions: { id: string; reduction: number }[] = [];
-	let reductions: Record<string, number> = {};
+	const individualReductions: { id: string; reduction: number }[] = [];
+	const reductions: Record<string, number> = {};
 
 	const results: {
 		duration: number;
@@ -1406,7 +1398,7 @@ export function createTOATeam({
 		messages: string[];
 	}[] = [];
 
-	let parsedTeam = [];
+	const parsedTeam = [];
 
 	for (const u of arr) {
 		let userPercentChange = 0;
@@ -1418,16 +1410,16 @@ export function createTOATeam({
 
 		// Reduce time for KC
 		const kcPercent = clamp(calcWhatPercent(u.totalAttempts, maxScaling), 1, 100);
-		let kcPercentBoost = calcPerc(kcPercent, speedReductionForKC);
+		const kcPercentBoost = calcPerc(kcPercent, speedReductionForKC);
 		userPercentChange += kcPercentBoost;
 
 		let weaponBoosts: string[] = ["Osmumten's fang", 'Ghrazi rapier'];
-		let boostAmounts = [15, 6] as const;
+		const boostAmounts = [15, 6] as const;
 
 		// If the raid level is less than 300, Ghrazi rapier is the BIS instead.
 		if (raidLevel < 300) weaponBoosts = [weaponBoosts[1], weaponBoosts[0]];
 		for (let i = 0; i < weaponBoosts.length; i++) {
-			let amount = boostAmounts[i];
+			const amount = boostAmounts[i];
 			if (u.gear.melee.hasEquipped(weaponBoosts[i])) {
 				userPercentChange += amount;
 				break;
@@ -1448,7 +1440,7 @@ export function createTOATeam({
 		}
 
 		userPercentChange = calcWhatPercent(userPercentChange, totalSpeedReductions);
-		let reduction = round(userPercentChange / teamSize, 1);
+		const reduction = round(userPercentChange / teamSize, 1);
 
 		individualReductions.push({ id: u.id, reduction: userPercentChange });
 		reductions[u.user.id] = reduction;
@@ -1477,7 +1469,7 @@ export function createTOATeam({
 		totalReduction = round(totalReduction / (teamSize - 1), 2);
 		messages.push(
 			`${
-				arr.find(i => i.id === worstTeamMember.id)!.user.badgedUsername
+				arr.find(i => i.id === worstTeamMember.id)?.user.badgedUsername
 			} is being carried by the rest of the team so they don't affect the raid time!`
 		);
 	} else {
@@ -1508,7 +1500,7 @@ export function createTOATeam({
 		}
 
 		for (let i = 0; i < TOARooms.length; i++) {
-			let room = TOARooms[i];
+			const room = TOARooms[i];
 
 			if (usersWithPointsAndDeaths.every(member => member.deaths.includes(i))) {
 				wipedRoom = room.id;
@@ -1543,7 +1535,7 @@ export function createTOATeam({
 	return results;
 }
 
-export async function toaCheckCommand(user: MUser) {
+async function toaCheckCommand(user: MUser) {
 	const result = await checkTOAUser(user, await getMinigameScore(user.id, 'tombs_of_amascut'), 200, 5, Time.Hour, 1);
 	if (result[0]) {
 		return `🔴 You aren't able to join a Tombs of Amascut raid, address these issues first: ${result[1]}`;
@@ -1608,7 +1600,7 @@ export async function toaHelpCommand(user: MUser, channelID: string) {
 		totalUniques += user.cl.amount(item);
 	}
 
-	let str = `**Tombs of Amascut** 
+	const str = `**Tombs of Amascut** 
 
 **Attempts:** ${stats.toa_attempts} 
 **Entry Mode:** ${entryKC} KC
@@ -1618,18 +1610,18 @@ export async function toaHelpCommand(user: MUser, channelID: string) {
 		totalUniques > 0
 			? `(1 unique per ${Math.floor(
 					stats.total_toa_points / totalUniques
-			  ).toLocaleString()} pts, one unique every ${Math.floor(
+				).toLocaleString()} pts, one unique every ${Math.floor(
 					totalKC / totalUniques
-			  )} raids, one unique every ${formatDuration(
+				)} raids, one unique every ${formatDuration(
 					(stats.total_toa_duration_minutes * Time.Minute) / totalUniques
-			  )})`
+				)})`
 			: ''
 	}
 
 **Requirements**
 ${toaRequirements
 	.map(i => {
-		let res = i.doesMeet({ user, gearStats, quantity: 1, allItemsOwned: user.allItemsOwned });
+		const res = i.doesMeet({ user, gearStats, quantity: 1, allItemsOwned: user.allItemsOwned });
 		if (typeof res === 'string') {
 			return `- ❌ ${bold(i.name)} ${res}`;
 		}
@@ -1644,22 +1636,4 @@ ${calculateBoostString(user)}
 `;
 
 	return channelID === '1069176960523190292' ? { content: str, ephemeral: true } : str;
-}
-
-export function normalizeTOAUsers(data: TOAOptions) {
-	const _detailedUsers = data.detailedUsers;
-	const detailedUsers = (
-		(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
-	).map(userArr =>
-		userArr.map(user => ({
-			id: user[0],
-			points: user[1],
-			deaths: user[2]
-		}))
-	);
-	return detailedUsers;
-}
-
-export function anyoneDiedInTOARaid(data: TOAOptions) {
-	return normalizeTOAUsers(data).some(userArr => userArr.some(user => user.deaths.length > 0));
 }

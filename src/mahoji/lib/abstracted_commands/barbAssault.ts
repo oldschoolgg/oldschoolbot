@@ -1,11 +1,12 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
-import { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { calcWhatPercent, clamp, reduceNumByPercent, roll, round, Time } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { ButtonBuilder, ChatInputCommandInteraction } from 'discord.js';
+import { Time, calcWhatPercent, clamp, reduceNumByPercent, roll, round } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { buildClueButtons } from '../../../lib/clues/clueUtils';
 import { Events } from '../../../lib/constants';
+import { degradeItem } from '../../../lib/degradeableItems';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib/simulation/baGamble';
@@ -142,15 +143,11 @@ export async function barbAssaultBuyCommand(
 	const stats = await user.fetchStats({ honour_points: true });
 	const balance = stats.honour_points;
 	if (balance < cost * quantity) {
-		return `You don't have enough Honour Points to buy ${quantity.toLocaleString()}x ${item.name}. You need ${(
-			cost * quantity
-		).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
+		return `You don't have enough Honour Points to buy ${quantity.toLocaleString()}x ${item.name}. You need ${(cost * quantity).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
 	}
 	await handleMahojiConfirmation(
 		interaction,
-		`Are you sure you want to buy ${quantity.toLocaleString()}x ${item.name}, for ${(
-			cost * quantity
-		).toLocaleString()} honour points?`
+		`Are you sure you want to buy ${quantity.toLocaleString()}x ${item.name}, for ${(cost * quantity).toLocaleString()} honour points?`
 	);
 	await userStatsUpdate(
 		user.id,
@@ -164,16 +161,14 @@ export async function barbAssaultBuyCommand(
 
 	await user.addItemsToBank({ items: new Bank().add(item.id, quantity), collectionLog: true });
 
-	return `Successfully purchased ${quantity.toLocaleString()}x ${item.name} for ${(
-		cost * quantity
-	).toLocaleString()} Honour Points.`;
+	return `Successfully purchased ${quantity.toLocaleString()}x ${item.name} for ${(cost * quantity).toLocaleString()} Honour Points.`;
 }
 
 export async function barbAssaultGambleCommand(
 	interaction: ChatInputCommandInteraction,
 	user: MUser,
 	tier: string,
-	quantity: number
+	quantity = 1
 ) {
 	const buyable = GambleTiers.find(i => stringMatches(tier, i.name));
 	if (!buyable) {
@@ -182,15 +177,11 @@ export async function barbAssaultGambleCommand(
 	const { honour_points: balance } = await user.fetchStats({ honour_points: true });
 	const { cost, name, table } = buyable;
 	if (balance < cost * quantity) {
-		return `You don't have enough Honour Points to do ${quantity.toLocaleString()}x ${name} gamble. You need ${(
-			cost * quantity
-		).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
+		return `You don't have enough Honour Points to do ${quantity.toLocaleString()}x ${name} gamble. You need ${(cost * quantity).toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
 	}
 	await handleMahojiConfirmation(
 		interaction,
-		`Are you sure you want to do ${quantity.toLocaleString()}x ${name} gamble, using ${(
-			cost * quantity
-		).toLocaleString()} honour points?`
+		`Are you sure you want to do ${quantity.toLocaleString()}x ${name} gamble, using ${(cost * quantity).toLocaleString()} honour points?`
 	);
 	const newStats = await userStatsUpdate(
 		user.id,
@@ -202,7 +193,7 @@ export async function barbAssaultGambleCommand(
 				name === 'High'
 					? {
 							increment: quantity
-					  }
+						}
 					: undefined
 		},
 		{
@@ -228,10 +219,8 @@ export async function barbAssaultGambleCommand(
 	const perkTier = user.perkTier();
 	const components: ButtonBuilder[] = buildClueButtons(loot, perkTier, user);
 
-	let response: Awaited<CommandResponse> = {
-		content: `You spent ${(
-			cost * quantity
-		).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`,
+	const response: Awaited<CommandResponse> = {
+		content: `You spent ${(cost * quantity).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`,
 		files: [
 			(
 				await makeBankImage({
@@ -273,6 +262,24 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 	waveTime = reduceNumByPercent(waveTime, kcPercentBoost);
 
 	let quantity = Math.floor(calcMaxTripLength(user, 'BarbarianAssault') / waveTime);
+
+	// 10% speed boost for Venator bow
+	const venatorBowChargesPerWave = 50;
+	const totalVenChargesUsed = venatorBowChargesPerWave * quantity;
+	let venBowMsg = '';
+	if (user.gear.range.hasEquipped('Venator Bow') && user.user.venator_bow_charges >= totalVenChargesUsed) {
+		await degradeItem({
+			item: getOSItem('Venator Bow'),
+			chargesToDegrade: totalVenChargesUsed,
+			user
+		});
+		boosts.push('10% for venator bow.');
+		venBowMsg = `\n\nYou have used ${totalVenChargesUsed} charges on your Venator bow, and have ${user.user.venator_bow_charges} remaining.`;
+		waveTime = reduceNumByPercent(waveTime, 10);
+	}
+
+	quantity = Math.floor(calcMaxTripLength(user, 'BarbarianAssault') / waveTime);
+
 	const duration = quantity * waveTime;
 
 	boosts.push(`Each wave takes ${formatDuration(waveTime)}`);
@@ -281,9 +288,9 @@ export async function barbAssaultStartCommand(channelID: string, user: MUser) {
 		user.minionName
 	} is now off to do ${quantity} waves of Barbarian Assault. Each wave takes ${formatDuration(
 		waveTime
-	)} - the total trip will take ${formatDuration(duration)}. `;
+	)} - the total trip will take ${formatDuration(duration)}.`;
 
-	str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+	str += `\n\n**Boosts:** ${boosts.join(', ')}.${venBowMsg}`;
 	await addSubTaskToActivityTask<MinigameActivityTaskOptionsWithNoChanges>({
 		userID: user.id,
 		channelID: channelID.toString(),

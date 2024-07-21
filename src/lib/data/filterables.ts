@@ -1,3 +1,4 @@
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import Potions from '../minions/data/potions';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
@@ -5,7 +6,6 @@ import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import Grimy from '../skilling/skills/herblore/mixables/grimy';
 import PotionsMixable from '../skilling/skills/herblore/mixables/potions';
 import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
-import resolveItems from '../util/resolveItems';
 import { allCollectionLogs } from './Collections';
 import {
 	allClueItems,
@@ -216,7 +216,7 @@ const gems = resolveItems([
 	'Zenyte shard'
 ]);
 
-const craftingItems = Craftables.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
+const craftingItems = Craftables.flatMap(item => Object.keys(item.inputItems.bank).map(key => Number.parseInt(key)));
 
 const craftingItemsSet = [...new Set(craftingItems)];
 
@@ -333,7 +333,7 @@ const seeds = resolveItems([
 const allPotions = Potions.flatMap(potion => potion.items);
 const potions = [...new Set(allPotions)];
 
-const grimyHerbs = Grimy.flatMap(grimy => Object.keys(grimy.inputItems.bank).map(key => parseInt(key)));
+const grimyHerbs = Grimy.flatMap(grimy => Object.keys(grimy.inputItems.bank).map(key => Number.parseInt(key)));
 const cleanHerbs = Grimy.flatMap(clean => clean.item.id);
 const herbs = [...new Set(grimyHerbs), ...new Set(cleanHerbs)];
 
@@ -341,7 +341,7 @@ const unfPots = unfinishedPotions.flatMap(unf => unf.item.id);
 const unfPotions = resolveItems(['Vial of water', ...new Set(unfPots)]);
 
 const allSecondaries = PotionsMixable.flatMap(item =>
-	Object.keys(item.inputItems.bank).map(key => parseInt(key))
+	Object.keys(item.inputItems.bank).map(key => Number.parseInt(key))
 ).filter(item => !potions.includes(item) && !unfPotions.includes(item) && !herbs.includes(item));
 const secondaries = [...new Set(allSecondaries)];
 
@@ -375,7 +375,7 @@ const bones = resolveItems([
 	'Zogre bones'
 ]);
 
-const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
+const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems.bank).map(key => Number.parseInt(key)));
 
 const fletchingItemsSet = [...new Set(fletchingItems)];
 

@@ -2,8 +2,8 @@ import { Bank } from 'oldschooljs';
 
 import { BitField } from '../constants';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
-import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import { ItemBank, Skills } from '../types';
+import type { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
+import type { ItemBank, Skills } from '../types';
 import getOSItem from '../util/getOSItem';
 import itemID from '../util/itemID';
 import { itemNameFromID } from '../util/smallUtils';
@@ -1364,6 +1364,12 @@ const Reverteables: Createable[] = [
 			[itemID('Lizardman fang')]: 100
 		},
 		noCl: true
+	},
+	{
+		name: "Revert Dizana's quiver (uncharged)",
+		inputItems: new Bank().add("Dizana's quiver (uncharged)"),
+		outputItems: new Bank().add('Sunfire splinters', 4000),
+		noCl: true
 	}
 ];
 
@@ -1511,7 +1517,8 @@ const Createables: Createable[] = [
 		},
 		cantHaveItems: {
 			[itemID('Hell cat ears')]: 1
-		}
+		},
+		noCl: true
 	},
 	// Runecrafting Pouches
 	{
@@ -2213,6 +2220,12 @@ const Createables: Createable[] = [
 		customReq: salveECustomReq
 	},
 	{
+		name: 'Ring of wealth (i)',
+		inputItems: new Bank().add('Ring of wealth').add('Ring of wealth scroll'),
+		GPCost: 50_000,
+		outputItems: new Bank().add('Ring of wealth (i)')
+	},
+	{
 		name: 'Strange hallowed tome',
 		inputItems: new Bank({
 			'Mysterious page 1': 1,
@@ -2365,6 +2378,21 @@ const Createables: Createable[] = [
 		requiredSkills: {
 			crafting: 35
 		}
+	},
+	{
+		name: 'Venator bow (uncharged)',
+		inputItems: new Bank().add('Venator shard', 5).freeze(),
+		outputItems: new Bank().add('Venator bow (uncharged)').freeze()
+	},
+	{
+		name: "Blessed dizana's quiver",
+		inputItems: new Bank().add('Sunfire splinters', 150_000).add("Dizana's quiver (uncharged)").freeze(),
+		outputItems: new Bank().add("Blessed dizana's quiver").freeze()
+	},
+	{
+		name: "Dizana's max cape",
+		inputItems: new Bank().add("Blessed dizana's quiver").add('Max cape').add('Max hood').freeze(),
+		outputItems: new Bank().add("Dizana's max cape").add("Dizana's max hood").freeze()
 	},
 	...Reverteables,
 	...crystalTools,

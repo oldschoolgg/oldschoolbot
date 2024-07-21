@@ -1,12 +1,12 @@
-import { activity_type_enum } from '@prisma/client';
+import type { activity_type_enum } from '@prisma/client';
 import { deepClone, notEmpty, roll, sumArr } from 'e';
-import { Item } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
-import { Requirements } from '../structures/Requirements';
-import { ActivityTaskData, TOAOptions } from '../types/minions';
+import type { Requirements } from '../structures/Requirements';
+import type { ActivityTaskData, TOAOptions } from '../types/minions';
 import { assert } from '../util';
 import getOSItem from '../util/getOSItem';
-import { TripFinishEffect } from '../util/handleTripFinish';
+import type { TripFinishEffect } from '../util/handleTripFinish';
 import { easyCombatAchievements } from './easy';
 import { eliteCombatAchievements } from './elite';
 import { grandmasterCombatAchievements } from './grandmaster';
@@ -152,21 +152,24 @@ for (const [, val] of entries) {
 	assert(val.tasks.length === val.length, `${val.name} has ${val.tasks.length} tasks, but length is ${val.length}`);
 }
 
-export const allCombatAchievementTasks = entries.map(i => i[1].tasks).flat();
+export const allCombatAchievementTasks = entries.flatMap(i => i[1].tasks);
 
-const allCATaskIDs = entries.map(i => i[1].tasks.map(t => t.id)).flat();
+const allCATaskIDs = entries.flatMap(i => i[1].tasks.map(t => t.id));
 assert(allCATaskIDs.length === new Set(allCATaskIDs).size);
 assert(sumArr(Object.values(CombatAchievements).map(i => i.length)) === allCATaskIDs.length);
-const indexesWithRng = entries.map(i => i[1].tasks.filter(t => 'rng' in t)).flat();
+const indexesWithRng = entries.flatMap(i => i[1].tasks.filter(t => 'rng' in t));
 
-export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data, messages }) => {
+export const combatAchievementTripEffect = async ({ data, messages, user }: Parameters<TripFinishEffect['fn']>[0]) => {
 	const dataCopy = deepClone(data);
 	if (dataCopy.type === 'Inferno' && !dataCopy.diedPreZuk && !dataCopy.diedZuk) {
 		(dataCopy as any).quantity = 1;
 	}
+	if (dataCopy.type === 'Colosseum') {
+		(dataCopy as any).quantity = 1;
+	}
 	if (!('quantity' in dataCopy)) return;
 	let quantity = Number(dataCopy.quantity);
-	if (isNaN(quantity)) return;
+	if (Number.isNaN(quantity)) return;
 
 	if (data.type === 'TombsOfAmascut') {
 		const wipedRoom = (data as TOAOptions).wipedRoom ?? 0;
@@ -180,8 +183,8 @@ export const combatAchievementTripEffect: TripFinishEffect['fn'] = async ({ data
 		}
 	}
 
-	const users = await Promise.all(
-		('users' in data ? (data.users as string[]) : [data.userID]).map(id => mUserFetch(id))
+	const users: MUser[] = await Promise.all(
+		'users' in data ? (data.users as string[]).map(id => mUserFetch(id)) : [user]
 	);
 
 	for (const user of users) {

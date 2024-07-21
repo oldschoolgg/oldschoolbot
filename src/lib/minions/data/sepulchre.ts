@@ -1,9 +1,9 @@
-import { randInt, roll, Time } from 'e';
+import { Time, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { ItemBank } from '../../types';
-import resolveItems from '../../util/resolveItems';
+import { resolveItems } from 'oldschooljs/dist/util/util';
+import type { ItemBank } from '../../types';
 
 const LowTierCoffin = new LootTable()
 	.add("Monk's robe top")

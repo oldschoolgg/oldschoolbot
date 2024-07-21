@@ -1,19 +1,21 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { Item, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
+import type { Item, OpenableOpenOptions } from 'oldschooljs/dist/meta/types';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
 import BrimstoneChest, { BrimstoneChestOpenable } from 'oldschooljs/dist/simulation/openables/BrimstoneChest';
 import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 import LarransChest, { LarransChestOpenable } from 'oldschooljs/dist/simulation/openables/LarransChest';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { ClueTiers } from './clues/clueTiers';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { cluesRaresCL } from './data/CollectionsExport';
 import { defaultFarmingContract } from './minions/farming';
-import { FarmingContract } from './minions/farming/types';
+import type { FarmingContract } from './minions/farming/types';
 import { shadeChestOpenables } from './shadesKeys';
+import { nestTable } from './simulation/birdsNest';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,
@@ -22,10 +24,9 @@ import {
 	SpoilsOfWarTable
 } from './simulation/misc';
 import { openSeedPack } from './skilling/functions/calcFarmingContracts';
-import { ItemBank } from './types';
+import type { ItemBank } from './types';
 import { itemID, roll } from './util';
 import getOSItem from './util/getOSItem';
-import resolveItems from './util/resolveItems';
 
 const CacheOfRunesTable = new LootTable()
 	.add('Death rune', [1000, 1500], 2)
@@ -96,7 +97,7 @@ for (const clueTier of ClueTiers) {
 		aliases: [clueTier.name.toLowerCase()],
 		output: async ({ quantity, user, self }) => {
 			const clueTier = ClueTiers.find(c => c.id === self.id)!;
-			let loot = new Bank(clueTier.table.open(quantity));
+			const loot = new Bank(clueTier.table.open(quantity));
 			let mimicNumber = 0;
 			if (clueTier.mimicChance) {
 				for (let i = 0; i < quantity; i++) {
@@ -133,7 +134,7 @@ for (const clueTier of ClueTiers) {
 			// and send a notification if they got one.
 			const announcedLoot = loot.filter(i => clueItemsToNotifyOf.includes(i.id), false);
 			if (gotMilestoneReward) {
-				announcedLoot.add(clueTier.milestoneReward!.itemReward);
+				announcedLoot.add(clueTier.milestoneReward?.itemReward);
 			}
 			if (announcedLoot.length > 0) {
 				globalClient.emit(
@@ -306,6 +307,14 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['nest box (seeds)', 'seeds nest box', 'nest box seeds', 'seed nest box'],
 		output: Openables.NestBoxSeeds.table,
 		allItems: Openables.NestBoxSeeds.table.allItems
+	},
+	{
+		name: 'Bird nest',
+		id: 5070,
+		openedItem: getOSItem(5070),
+		aliases: ['bird nest', 'nest'],
+		output: nestTable,
+		allItems: nestTable.allItems
 	},
 	{
 		name: 'Ogre coffin',

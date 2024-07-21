@@ -1,9 +1,10 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Hiscores } from 'oldschooljs';
-import { SkillsScore } from 'oldschooljs/dist/meta/types';
+import type { SkillsScore } from 'oldschooljs/dist/meta/types';
 
 import { statsEmbed } from '../../lib/util/statsEmbed';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const xpCommand: OSBMahojiCommand = {
 	name: 'xp',

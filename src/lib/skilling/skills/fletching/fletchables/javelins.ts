@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
 import itemID from '../../../../util/itemID';
-import { Fletchable } from '../../../types';
+import type { Fletchable } from '../../../types';
 
 const Javelins: Fletchable[] = [
 	{

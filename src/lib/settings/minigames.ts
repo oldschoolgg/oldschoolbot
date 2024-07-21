@@ -1,10 +1,8 @@
-import { Minigame } from '@prisma/client';
-
-import { prisma } from './prisma';
+import type { Minigame } from '@prisma/client';
 
 export type MinigameName = keyof Omit<Minigame, 'id' | 'user_id'>;
 
-export interface BotMinigame {
+interface BotMinigame {
 	name: string;
 	aliases: string[];
 	column: MinigameName;
@@ -190,6 +188,11 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Tombs of Amascut',
 		aliases: ['toa', 'tombs of amascut'],
 		column: 'tombs_of_amascut'
+	},
+	{
+		name: 'Fortis Colosseum',
+		aliases: ['colo'],
+		column: 'colosseum'
 	}
 ];
 

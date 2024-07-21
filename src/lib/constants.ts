@@ -1,30 +1,30 @@
+import { execSync } from 'node:child_process';
 import path from 'node:path';
-
-import { Image } from '@napi-rs/canvas';
-import { StoreBitfield } from '@oldschoolgg/toolkit';
-import { execSync } from 'child_process';
-import { APIButtonComponent, ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import type { Image } from '@napi-rs/canvas';
+import { PerkTier, SimpleTable, StoreBitfield, dateFm } from '@oldschoolgg/toolkit';
+import type { CommandOptions } from '@oldschoolgg/toolkit';
+import type { APIButtonComponent } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import * as dotenv from 'dotenv';
-import { CommandOptions } from 'mahoji/dist/lib/types';
+import { getItemOrThrow, resolveItems } from 'oldschooljs/dist/util/util';
 import { z } from 'zod';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import type { AbstractCommand } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
 import type { ActivityTaskData } from './types/minions';
-import getOSItem from './util/getOSItem';
-import resolveItems from './util/resolveItems';
-import { dateFm } from './util/smallUtils';
 
-export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
+export { PerkTier };
 
 const TestingMainChannelID = DISCORD_SETTINGS.Channels?.TestingMain ?? '940760643525570591';
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB' as 'BSO' | 'OSB';
+export const BOT_TYPE_LOWERCASE: 'bso' | 'osb' = BOT_TYPE.toLowerCase() as 'bso' | 'osb';
 
 export const Channel = {
 	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
-	Notifications: production ? '469523207691436042' : '1042760447830536212',
+	Notifications:
+		DISCORD_SETTINGS.Channels?.Notifications ?? (production ? '469523207691436042' : '1042760447830536212'),
 	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '682996313209831435',
 	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
 	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
@@ -41,8 +41,8 @@ export const Channel = {
 				? '346304390858145792'
 				: '1154056119019393035'
 			: production
-			? '792691343284764693'
-			: '1154056119019393035'
+				? '792691343284764693'
+				: '1154056119019393035'
 };
 
 export const Roles = {
@@ -68,7 +68,7 @@ export const Roles = {
 	TopGlobalCL: '1072426869028294747'
 };
 
-export const enum Emoji {
+export enum Emoji {
 	MoneyBag = '<:MoneyBag:493286312854683654>',
 	OSBot = '<:OSBot:601768469905801226>',
 	Joy = '😂',
@@ -177,7 +177,7 @@ export enum ActivityGroup {
 	Minigame = 'Minigame'
 }
 
-export const enum Events {
+export enum Events {
 	Error = 'error',
 	Log = 'log',
 	Verbose = 'verbose',
@@ -189,37 +189,6 @@ export const enum Events {
 }
 
 export const COINS_ID = 995;
-
-export const enum PerkTier {
-	/**
-	 * Boosters
-	 */
-	One = 1,
-	/**
-	 * Tier 1 Patron
-	 */
-	Two = 2,
-	/**
-	 * Tier 2 Patron, Contributors, Mods
-	 */
-	Three = 3,
-	/**
-	 * Tier 3 Patron
-	 */
-	Four = 4,
-	/**
-	 * Tier 4 Patron
-	 */
-	Five = 5,
-	/**
-	 * Tier 5 Patron
-	 */
-	Six = 6,
-	/**
-	 * Tier 6 Patron
-	 */
-	Seven = 7
-}
 
 export enum BitField {
 	IsPatronTier1 = 2,
@@ -261,7 +230,8 @@ export enum BitField {
 	DisabledFarmingReminders = 37,
 	DisableClueButtons = 38,
 	DisableAutoSlayButton = 39,
-	DisableHighPeakTimeWarning = 40
+	DisableHighPeakTimeWarning = 40,
+	DisableOpenableNames = 41
 }
 
 interface BitFieldData {
@@ -356,17 +326,13 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 		name: 'Disable Wilderness High Peak Time Warning',
 		protected: false,
 		userConfigurable: true
+	},
+	[BitField.DisableOpenableNames]: {
+		name: 'Disable Names On Open',
+		protected: false,
+		userConfigurable: true
 	}
 } as const;
-
-export const enum PatronTierID {
-	One = '4608201',
-	Two = '4608226',
-	Three = '4720356',
-	Four = '5262065',
-	Five = '5262216',
-	Six = '8091554'
-}
 
 export const BadgesEnum = {
 	Developer: 0,
@@ -488,7 +454,7 @@ export const projectiles = {
 export type ProjectileType = keyof typeof projectiles;
 
 export const PHOSANI_NIGHTMARE_ID = 9416;
-export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
+const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
 export function shouldTrackCommand(command: AbstractCommand, args: CommandOptions) {
 	if (!Array.isArray(args)) return true;
 	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
@@ -509,9 +475,10 @@ export type NMZStrategy = (typeof NMZ_STRATEGY)[number];
 export const UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL = ['agility', 'thieving', 'agility+thieving'] as const;
 export type UnderwaterAgilityThievingTrainingSkill = (typeof UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL)[number];
 
+export const TWITCHERS_GLOVES = ['egg', 'ring', 'seed', 'clue'] as const;
+export type TwitcherGloves = (typeof TWITCHERS_GLOVES)[number];
+
 export const busyImmuneCommands = ['admin', 'rp'];
-export const usernameCache = new Map<string, string>();
-export const badgesCache = new Map<string, string>();
 export const minionBuyButton = new ButtonBuilder()
 	.setCustomId('BUY_MINION')
 	.setLabel('Buy Minion')
@@ -519,24 +486,24 @@ export const minionBuyButton = new ButtonBuilder()
 export const FormattedCustomEmoji = /<a?:\w{2,32}:\d{17,20}>/;
 
 export const chompyHats = [
-	[getOSItem('Chompy bird hat (ogre bowman)'), 30],
-	[getOSItem('Chompy bird hat (bowman)'), 40],
-	[getOSItem('Chompy bird hat (ogre yeoman)'), 50],
-	[getOSItem('Chompy bird hat (yeoman)'), 70],
-	[getOSItem('Chompy bird hat (ogre marksman)'), 95],
-	[getOSItem('Chompy bird hat (marksman)'), 125],
-	[getOSItem('Chompy bird hat (ogre woodsman)'), 170],
-	[getOSItem('Chompy bird hat (woodsman)'), 225],
-	[getOSItem('Chompy bird hat (ogre forester)'), 300],
-	[getOSItem('Chompy bird hat (forester)'), 400],
-	[getOSItem('Chompy bird hat (ogre bowmaster)'), 550],
-	[getOSItem('Chompy bird hat (bowmaster)'), 700],
-	[getOSItem('Chompy bird hat (ogre expert)'), 1000],
-	[getOSItem('Chompy bird hat (expert)'), 1300],
-	[getOSItem('Chompy bird hat (ogre dragon archer)'), 1700],
-	[getOSItem('Chompy bird hat (dragon archer)'), 2250],
-	[getOSItem('Chompy bird hat (expert ogre dragon archer)'), 3000],
-	[getOSItem('Chompy bird hat (expert dragon archer)'), 4000]
+	[getItemOrThrow('Chompy bird hat (ogre bowman)'), 30],
+	[getItemOrThrow('Chompy bird hat (bowman)'), 40],
+	[getItemOrThrow('Chompy bird hat (ogre yeoman)'), 50],
+	[getItemOrThrow('Chompy bird hat (yeoman)'), 70],
+	[getItemOrThrow('Chompy bird hat (ogre marksman)'), 95],
+	[getItemOrThrow('Chompy bird hat (marksman)'), 125],
+	[getItemOrThrow('Chompy bird hat (ogre woodsman)'), 170],
+	[getItemOrThrow('Chompy bird hat (woodsman)'), 225],
+	[getItemOrThrow('Chompy bird hat (ogre forester)'), 300],
+	[getItemOrThrow('Chompy bird hat (forester)'), 400],
+	[getItemOrThrow('Chompy bird hat (ogre bowmaster)'), 550],
+	[getItemOrThrow('Chompy bird hat (bowmaster)'), 700],
+	[getItemOrThrow('Chompy bird hat (ogre expert)'), 1000],
+	[getItemOrThrow('Chompy bird hat (expert)'), 1300],
+	[getItemOrThrow('Chompy bird hat (ogre dragon archer)'), 1700],
+	[getItemOrThrow('Chompy bird hat (dragon archer)'), 2250],
+	[getItemOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
+	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
 
 export const toaPurpleItems = resolveItems([
@@ -561,28 +528,45 @@ export const minionActivityCache: Map<string, ActivityTaskData> = new Map();
 export const ParsedCustomEmojiWithGroups = /(?<animated>a?):(?<name>[^:]+):(?<id>\d{17,20})/;
 
 const globalConfigSchema = z.object({
-	patreonToken: z.coerce.string().default(''),
-	patreonCampaignID: z.coerce.number().int().default(1),
-	patreonWebhookSecret: z.coerce.string().default(''),
-	httpPort: z.coerce.number().int().default(8080),
-	clientID: z.string().min(15).max(25),
-	geAdminChannelID: z.string().default('')
+	clientID: z.string().min(10).max(25),
+	geAdminChannelID: z.string().default(''),
+	redisPort: z.coerce.number().int().optional(),
+	botToken: z.string().min(1),
+	isCI: z.coerce.boolean().default(false),
+	isProduction: z.coerce.boolean().default(production),
+	testingServerID: z.string(),
+	timeZone: z.literal('UTC')
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
+if (!process.env.BOT_TOKEN && !process.env.CI) {
+	throw new Error(
+		`You need to specify the BOT_TOKEN environment variable, copy your bot token from your config.ts and put it in the ".env" file like so:\n\nBOT_TOKEN=your_token_here`
+	);
+}
+
+const OLDSCHOOLGG_TESTING_SERVER_ID = '940758552425955348';
+const isProduction = process.env.NODE_ENV === 'production';
+
 export const globalConfig = globalConfigSchema.parse({
-	patreonToken: process.env.PATREON_TOKEN,
-	patreonCampaignID: process.env.PATREON_CAMPAIGN_ID,
-	patreonWebhookSecret: process.env.PATREON_WEBHOOK_SECRET,
-	httpPort: process.env.HTTP_PORT,
 	clientID: process.env.CLIENT_ID,
-	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID
+	geAdminChannelID: isProduction ? '830145040495411210' : '1042760447830536212',
+	redisPort: process.env.REDIS_PORT,
+	botToken: process.env.BOT_TOKEN,
+	isCI: process.env.CI,
+	isProduction,
+	testingServerID: process.env.TESTING_SERVER_ID ?? OLDSCHOOLGG_TESTING_SERVER_ID,
+	timeZone: process.env.TZ
 });
+
+if ((process.env.NODE_ENV === 'production') !== globalConfig.isProduction || production !== globalConfig.isProduction) {
+	throw new Error('The NODE_ENV and isProduction variables must match');
+}
 
 export const ONE_TRILLION = 1_000_000_000_000;
 export const demonBaneWeapons = resolveItems(['Silverlight', 'Darklight', 'Arclight']);
 
-const gitHash = execSync('git rev-parse HEAD').toString().trim();
+export const gitHash = execSync('git rev-parse HEAD').toString().trim();
 const gitRemote = BOT_TYPE === 'BSO' ? 'gc/oldschoolbot-secret' : 'oldschoolgg/oldschoolbot';
 
 const GIT_BRANCH = BOT_TYPE === 'BSO' ? 'bso' : 'master';
@@ -619,3 +603,32 @@ export const patronFeatures = {
 export const gearValidationChecks = new Set();
 
 export const BSO_MAX_TOTAL_LEVEL = 3120;
+
+export const winterTodtPointsTable = new SimpleTable<number>()
+	.add(420)
+	.add(470)
+	.add(500)
+	.add(505)
+	.add(510)
+	.add(520)
+	.add(550)
+	.add(560)
+	.add(590)
+	.add(600)
+	.add(620)
+	.add(650)
+	.add(660)
+	.add(670)
+	.add(680)
+	.add(700)
+	.add(720)
+	.add(740)
+	.add(750)
+	.add(780)
+	.add(850);
+
+if (!process.env.TEST) {
+	console.log(
+		`Starting... Git[${gitHash}] ClientID[${globalConfig.clientID}] Production[${globalConfig.isProduction}]`
+	);
+}

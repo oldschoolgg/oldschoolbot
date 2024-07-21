@@ -1,19 +1,21 @@
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
+import { resolveItems } from 'oldschooljs/dist/util/util';
 import { NEX_ID, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../constants';
-import { anyoneDiedInTOARaid } from '../simulation/toa';
 import { Requirements } from '../structures/Requirements';
-import {
+import type {
+	ActivityTaskData,
 	GauntletOptions,
 	MonsterActivityTaskOptions,
 	NightmareActivityTaskOptions,
 	RaidsOptions,
-	TheatreOfBloodTaskOptions,
-	TOAOptions
+	TOAOptions,
+	TheatreOfBloodTaskOptions
 } from '../types/minions';
-import resolveItems from '../util/resolveItems';
+import { anyoneDiedInTOARaid } from '../util';
 import { isCertainMonsterTrip } from './caUtils';
-import { type CombatAchievement } from './combatAchievements';
+import type { CombatAchievement } from './combatAchievements';
 
 export const masterCombatAchievements: CombatAchievement[] = [
 	{
@@ -1401,7 +1403,7 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 33,
 			hasChance: data =>
-				isCertainMonsterTrip(Monsters.Vorkath.id)(data) && (data as MonsterActivityTaskOptions).quantity >= 5
+				isCertainMonsterTrip(Monsters.Vorkath.id)(data) && (data as MonsterActivityTaskOptions).q >= 5
 		}
 	},
 	{
@@ -1459,6 +1461,64 @@ export const masterCombatAchievements: CombatAchievement[] = [
 		rng: {
 			chancePerKill: 75,
 			hasChance: isCertainMonsterTrip(Monsters.Zulrah.id)
+		}
+	},
+	{
+		id: 2129,
+		name: 'One-off',
+		desc: "Complete Wave 11 with either 'Red Flag', 'Dynamic Duo', or 'Doom II' active.",
+		type: 'mechanical',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 15,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'Colosseum' && (!data.diedAt || (Boolean(data.diedAt) && data.diedAt > 11))
+		}
+	},
+	{
+		id: 2130,
+		name: 'Showboating',
+		desc: 'Defeat Sol Heredit after using Fortis Salute to the north, east, south and west of the arena while he is below 10% hitpoints.',
+		type: 'mechanical',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 15,
+			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+		}
+	},
+	{
+		id: 2131,
+		name: 'I Brought Mine Too',
+		desc: 'Defeat Sol Heredit using only a Spear, Hasta or Halberd.',
+		type: 'restriction',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 15,
+			hasChance: (data: ActivityTaskData) => data.type === 'Colosseum' && !data.diedAt
+		}
+	},
+	{
+		id: 2132,
+		name: 'Sportsmanship',
+		desc: 'Defeat Sol Heredit once.',
+		type: 'kill_count',
+		monster: 'Colosseum',
+		requirements: new Requirements().add({
+			minigames: {
+				colosseum: 1
+			}
+		})
+	},
+	{
+		id: 2133,
+		name: 'Colosseum Speed-Chaser',
+		desc: 'Complete the Colosseum with a total time of 28:00 or less.',
+		type: 'speed',
+		monster: 'Colosseum',
+		rng: {
+			chancePerKill: 1,
+			hasChance: (data: ActivityTaskData) =>
+				data.type === 'Colosseum' && !data.diedAt && data.duration < Time.Minute * 28
 		}
 	}
 ];

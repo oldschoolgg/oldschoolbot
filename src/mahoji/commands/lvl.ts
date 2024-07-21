@@ -1,11 +1,12 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Hiscores } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
+import type { SkillsEnum } from 'oldschooljs/dist/constants';
 import { convertLVLtoXP, convertXPtoLVL } from 'oldschooljs/dist/util';
 
 import { MAX_XP } from '../../lib/constants';
 import { skillOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const xpLeft = (xp: number) => {
 	const level = convertXPtoLVL(xp);

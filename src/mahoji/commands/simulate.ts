@@ -1,16 +1,20 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { randInt, roll } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { PerkTier } from '../../lib/constants';
+import { PerkTier, averageBank } from '@oldschoolgg/toolkit';
+import { ColosseumWaveBank, startColosseumRun } from '../../lib/colosseum';
 import pets from '../../lib/data/pets';
+import { assert, formatDuration } from '../../lib/util';
+import { deferInteraction } from '../../lib/util/interactionReply';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
-export function determineCoxLimit(user: MUser) {
+function determineCoxLimit(user: MUser) {
 	const perkTier = user.perkTier();
 
 	if (perkTier >= PerkTier.Three) {
@@ -26,6 +30,65 @@ export function determineCoxLimit(user: MUser) {
 	}
 
 	return 10;
+}
+
+function simulateColosseumRuns(samples = 100) {
+	const totalSimulations = samples;
+	let totalAttempts = 0;
+	let totalDeaths = 0;
+	const totalLoot = new Bank();
+	const finishAttemptAmounts = [];
+	let totalDuration = 0;
+
+	for (let i = 0; i < totalSimulations; i++) {
+		let attempts = 0;
+		let deaths = 0;
+		let done = false;
+		const kcBank = new ColosseumWaveBank();
+		const runLoot = new Bank();
+
+		while (!done) {
+			attempts++;
+			const result = startColosseumRun({
+				kcBank,
+				hasScythe: true,
+				hasTBow: true,
+				hasVenBow: true,
+				hasBF: false,
+				hasClaws: true,
+				hasSGS: true,
+				hasTorture: true
+			});
+			totalDuration += result.realDuration;
+			kcBank.add(result.addedWaveKCBank);
+			if (result.diedAt === null) {
+				if (result.loot) runLoot.add(result.loot);
+				done = true;
+			} else {
+				deaths++;
+			}
+		}
+		assert(kcBank.amount(12) > 0);
+		finishAttemptAmounts.push(attempts);
+		totalAttempts += attempts;
+		totalDeaths += deaths;
+		totalLoot.add(runLoot);
+	}
+
+	const averageAttempts = totalAttempts / totalSimulations;
+	const averageDeaths = totalDeaths / totalSimulations;
+
+	finishAttemptAmounts.sort((a, b) => a - b);
+
+	const result = `Results from the simulation of ${totalSimulations}x people completing the Colosseum:
+**Average duration to beat wave 12 for first time:** ${formatDuration(totalDuration / totalSimulations)}
+**Average deaths before beating wave 12:** ${averageDeaths}
+**Average loot:** ${averageBank(totalLoot, totalSimulations)}
+**Fastest completion trips:** ${finishAttemptAmounts[0]}
+**Mean completion trips:** ${finishAttemptAmounts[Math.floor(finishAttemptAmounts.length / 2)]}
+**Average trips to beat wave 12:** ${averageAttempts}.
+**Longest completion trips:** ${finishAttemptAmounts[finishAttemptAmounts.length - 1]}`;
+	return result;
 }
 
 async function coxCommand(user: MUser, quantity: number, cm = false, points = 25_000, teamSize = 4): CommandResponse {
@@ -44,7 +107,7 @@ async function coxCommand(user: MUser, quantity: number, cm = false, points = 25
 		team.push({ id: `${randInt(1, 10_000_000)}`, personalPoints: points });
 	}
 
-	let loot = new Bank();
+	const loot = new Bank();
 	for (let i = 0; i < quantity; i++) {
 		const singleRaidLoot = ChambersOfXeric.complete({
 			team,
@@ -125,9 +188,15 @@ export const simulateCommand: OSBMahojiCommand = {
 					required: true
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'colosseum',
+			description: 'Simulate colosseum.'
 		}
 	],
 	run: async ({
+		interaction,
 		options,
 		userID
 	}: CommandRunOptions<{
@@ -140,8 +209,13 @@ export const simulateCommand: OSBMahojiCommand = {
 		petroll?: {
 			quantity: number;
 		};
+		colosseum?: {};
 	}>) => {
+		await deferInteraction(interaction);
 		const user = await mUserFetch(userID.toString());
+		if (options.colosseum) {
+			return simulateColosseumRuns();
+		}
 		if (options.cox) {
 			return coxCommand(
 				user,

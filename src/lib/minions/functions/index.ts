@@ -1,18 +1,18 @@
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { Monsters } from 'oldschooljs';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import type Monster from 'oldschooljs/dist/structures/Monster';
 
 import { NIGHTMARES_HP } from '../../constants';
 import { SkillsEnum } from '../../skilling/types';
 import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
-import { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
+import type { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
 
 export { default as calculateMonsterFood } from './calculateMonsterFood';
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
 
-export const attackStylesArr = [
+const attackStylesArr = [
 	SkillsEnum.Attack,
 	SkillsEnum.Strength,
 	SkillsEnum.Defence,
@@ -75,8 +75,8 @@ export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
 	const cannonQty = params.cannonMulti
 		? randomVariation(Math.floor((xpPercentToCannonM / 100) * params.quantity), xpCannonVaryPercent)
 		: params.usingCannon
-		? randomVariation(Math.floor((xpPercentToCannon / 100) * params.quantity), xpCannonVaryPercent)
-		: 0;
+			? randomVariation(Math.floor((xpPercentToCannon / 100) * params.quantity), xpCannonVaryPercent)
+			: 0;
 
 	// Remove superiors from the regular count to be added separately.
 	let normalQty = 0;
@@ -95,27 +95,27 @@ export async function addMonsterXP(user: MUser, params: AddMonsterXpParams) {
 	}
 
 	// Calculate regular monster XP
-	if (monster && monster.customMonsterHP) {
+	if (monster?.customMonsterHP) {
 		hp = monster.customMonsterHP;
 	} else if (osjsMon?.data?.hitpoints) {
 		hp = osjsMon.data.hitpoints;
 	}
-	if (monster && monster.combatXpMultiplier) {
+	if (monster?.combatXpMultiplier) {
 		xpMultiplier = monster.combatXpMultiplier;
 	}
 
 	// Calculate superior XP:
 	let superiorSlayXp = 0;
 	let superiorXp = 0;
-	if (superiorQty && osjsSuperior!.data!.hitpoints) {
-		superiorXp = 4 * superiorQty * osjsSuperior!.data!.hitpoints;
-		superiorSlayXp = superiorQty * osjsSuperior!.data!.slayerXP;
+	if (superiorQty && osjsSuperior?.data?.hitpoints) {
+		superiorXp = 4 * superiorQty * osjsSuperior?.data?.hitpoints;
+		superiorSlayXp = superiorQty * osjsSuperior?.data?.slayerXP;
 	}
 
 	const totalXP = hp * 4 * normalQty * xpMultiplier + superiorXp;
 	const xpPerSkill = totalXP / attackStyles.length;
 
-	let res: string[] = [];
+	const res: string[] = [];
 
 	for (const style of attackStyles) {
 		res.push(

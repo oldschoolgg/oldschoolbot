@@ -1,12 +1,12 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { deepResolveItems, resolveItems } from 'oldschooljs/dist/util/util';
 import { NEX_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
-import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
-import { KillableMonster } from '../../types';
+import type { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import bosses from './bosses';
 import { camdozaalMonsters } from './camdozaalMonsters';
@@ -247,10 +247,16 @@ const killableMonsters: KillableMonster[] = [
 				[itemID('Scythe of vitur')]: 15
 			},
 			{
+				[itemID('Masori body (f)')]: 4,
 				[itemID("Karil's leathertop")]: 3
 			},
 			{
+				[itemID('Masori chaps (f)')]: 3,
 				[itemID("Karil's leatherskirt")]: 2
+			},
+			// Transformation ring
+			{
+				[itemID('Ring of stone')]: 10
 			}
 		],
 		levelRequirements: {

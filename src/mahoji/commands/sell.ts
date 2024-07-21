@@ -1,19 +1,20 @@
-import { Prisma } from '@prisma/client';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { Prisma } from '@prisma/client';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { clamp, reduceNumByPercent } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import type { Item } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
+
 import { NestBoxesTable } from '../../lib/simulation/misc';
 import { itemID, returnStringOrFile, toKMB } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
-import { updateClientGPTrackSetting, userStatsUpdate } from '../mahojiSettings';
+import type { OSBMahojiCommand } from '../lib/util';
+import { updateClientGPTrackSetting, userStatsBankUpdate, userStatsUpdate } from '../mahojiSettings';
 
 /**
  * - Hardcoded prices
@@ -41,11 +42,11 @@ const specialSoldItems = new Map([
 export const CUSTOM_PRICE_CACHE = new Map<number, number>();
 
 export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; basePrice: number } {
-	let cachePrice = CUSTOM_PRICE_CACHE.get(item.id);
+	const cachePrice = CUSTOM_PRICE_CACHE.get(item.id);
 	if (!cachePrice && (item.price === undefined || !item.tradeable)) {
 		return { price: 0, basePrice: 0 };
 	}
-	let basePrice = cachePrice ?? item.price;
+	const basePrice = cachePrice ?? item.price;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
 	price = clamp(price, 0, MAX_INT_JAVA);
@@ -54,7 +55,7 @@ export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; base
 
 export function sellStorePriceOfItem(item: Item, qty: number): { price: number; basePrice: number } {
 	if (!item.cost || !item.lowalch) return { price: 0, basePrice: 0 };
-	let basePrice = item.cost;
+	const basePrice = item.cost;
 	// Sell price decline with stock by 3% until 10% of item value and is always low alch price when stock is 0.
 	const percentageFirstEleven = (0.4 - 0.015 * Math.min(qty - 1, 10)) * Math.min(qty, 11);
 	let price = ((percentageFirstEleven + Math.max(qty - 11, 0) * 0.1) * item.cost) / qty;
@@ -159,6 +160,49 @@ export const sellCommand: OSBMahojiCommand = {
 			return `You exchanged ${abbyBank} and received: ${loot}.`;
 		}
 
+		if (
+			bankToSell.has('Golden pheasant egg') ||
+			bankToSell.has('Fox whistle') ||
+			bankToSell.has('Petal garland') ||
+			bankToSell.has('Pheasant tail feathers') ||
+			bankToSell.has('Sturdy beehive parts')
+		) {
+			const forestryBank = new Bank();
+			const loot = new Bank();
+			if (bankToSell.has('Golden pheasant egg')) {
+				forestryBank.add('Golden pheasant egg', bankToSell.amount('Golden pheasant egg'));
+				loot.add('Anima-infused bark', bankToSell.amount('Golden pheasant egg') * 250);
+			}
+			if (bankToSell.has('Fox whistle')) {
+				forestryBank.add('Fox whistle', bankToSell.amount('Fox whistle'));
+				loot.add('Anima-infused bark', bankToSell.amount('Fox whistle') * 250);
+			}
+			if (bankToSell.has('Petal garland')) {
+				forestryBank.add('Petal garland', bankToSell.amount('Petal garland'));
+				loot.add('Anima-infused bark', bankToSell.amount('Petal garland') * 150);
+			}
+			if (bankToSell.has('Pheasant tail feathers')) {
+				forestryBank.add('Pheasant tail feathers', bankToSell.amount('Pheasant tail feathers'));
+				loot.add('Anima-infused bark', bankToSell.amount('Pheasant tail feathers') * 5);
+			}
+			if (bankToSell.has('Sturdy beehive parts')) {
+				forestryBank.add('Sturdy beehive parts', bankToSell.amount('Sturdy beehive parts'));
+				loot.add('Anima-infused bark', bankToSell.amount('Sturdy beehive parts') * 25);
+			}
+
+			await handleMahojiConfirmation(
+				interaction,
+				`${user}, please confirm you want to sell ${forestryBank} for **${loot}**.`
+			);
+
+			await user.transactItems({
+				collectionLog: false,
+				itemsToAdd: loot,
+				itemsToRemove: forestryBank
+			});
+			return `You exchanged ${forestryBank} and received: ${loot}.`;
+		}
+
 		if (bankToSell.has('Golden tench')) {
 			const loot = new Bank();
 			const tenchBank = new Bank();
@@ -221,14 +265,14 @@ export const sellCommand: OSBMahojiCommand = {
 		await Promise.all([
 			updateClientGPTrackSetting('gp_sell', totalPrice),
 			updateBankSetting('sold_items_bank', bankToSell),
+			userStatsBankUpdate(user, 'items_sold_bank', bankToSell),
 			userStatsUpdate(
 				user.id,
-				userStats => ({
-					items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
+				{
 					sell_gp: {
 						increment: totalPrice
 					}
-				}),
+				},
 				{}
 			),
 			prisma.botItemSell.createMany({ data: botItemSellData })

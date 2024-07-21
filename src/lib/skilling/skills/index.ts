@@ -1,5 +1,6 @@
 import { Emoji } from '../../constants';
-import { Skill, SkillsEnum } from '../types';
+import type { Skill } from '../types';
+import { SkillsEnum } from '../types';
 import Agility from './agility';
 import Construction from './construction';
 import Cooking from './cooking/cooking';
@@ -16,7 +17,7 @@ import Prayer from './prayer';
 import Runecraft from './runecraft';
 import Smithing from './smithing';
 import Thieving from './thieving';
-import Woodcutting from './woodcutting';
+import Woodcutting from './woodcutting/woodcutting';
 
 export const Skills: Record<string, Skill> = {
 	Crafting,

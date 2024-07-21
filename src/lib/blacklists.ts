@@ -6,7 +6,6 @@ export const BLACKLISTED_USERS = new Set<string>();
 export const BLACKLISTED_GUILDS = new Set<string>();
 
 export async function syncBlacklists() {
-	debugLog('Syncing blacklists');
 	const blacklistedEntities = await roboChimpClient.blacklistedEntity.findMany();
 	BLACKLISTED_USERS.clear();
 	BLACKLISTED_GUILDS.clear();

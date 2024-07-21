@@ -6,7 +6,7 @@ import { trackLoot } from '../../../lib/lootTrack';
 import { NightmareMonster } from '../../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
+import type { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -48,7 +48,7 @@ export const nightmareTask: MinionTask = {
 			}
 		}
 
-		let xpRes = await addMonsterXP(user, {
+		const xpRes = await addMonsterXP(user, {
 			monsterID: NIGHTMARE_ID,
 			quantity: Math.ceil(quantity / team.length),
 			duration,
@@ -58,7 +58,9 @@ export const nightmareTask: MinionTask = {
 
 		const { newKC } = await user.incrementKC(monsterID, kc);
 
-		const ownsOrUsedTablet = user.bank.has('Slepey tablet') || user.bitfield.includes(BitField.HasSlepeyTablet);
+		const ownsOrUsedTablet =
+			user.bank.has('Slepey tablet') ||
+			(user.bitfield.includes(BitField.HasSlepeyTablet) && user.cl.has('Slepey Tablet'));
 		if (isPhosani) {
 			if (ownsOrUsedTablet) {
 				userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));

@@ -1,16 +1,17 @@
 import { percentChance } from 'e';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
-import Monster from 'oldschooljs/dist/structures/Monster';
+import type { Item } from 'oldschooljs/dist/meta/types';
+import type Monster from 'oldschooljs/dist/structures/Monster';
 
-import { GearSetupType } from './gear/types';
-import { KillableMonster } from './minions/types';
+import type { GearSetupType } from './gear/types';
+import type { KillableMonster } from './minions/types';
+import type { ChargeBank } from './structures/Bank';
 import { assert } from './util';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import { updateBankSetting } from './util/updateBankSetting';
 
-interface DegradeableItem {
+export interface DegradeableItem {
 	item: Item;
 	settingsKey:
 		| 'tentacle_charges'
@@ -22,7 +23,8 @@ interface DegradeableItem {
 		| 'tum_shadow_charges'
 		| 'blood_essence_charges'
 		| 'trident_charges'
-		| 'scythe_of_vitur_charges';
+		| 'scythe_of_vitur_charges'
+		| 'venator_bow_charges';
 	itemsToRefundOnBreak: Bank;
 	refundVariants: {
 		variant: Item;
@@ -218,6 +220,21 @@ export const degradeableItems: DegradeableItem[] = [
 		unchargedItem: getOSItem('Scythe of vitur (uncharged)'),
 		convertOnCharge: true,
 		emoji: ''
+	},
+	{
+		item: getOSItem('Venator bow'),
+		settingsKey: 'venator_bow_charges',
+		itemsToRefundOnBreak: new Bank().add('Venator bow (uncharged)').freeze(),
+		refundVariants: [],
+		setup: 'range',
+		aliases: ['venator bow', 'ven bow'],
+		chargeInput: {
+			cost: new Bank().add('Ancient essence', 1).freeze(),
+			charges: 1
+		},
+		unchargedItem: getOSItem('Venator bow (uncharged)'),
+		convertOnCharge: true,
+		emoji: ''
 	}
 ];
 
@@ -255,6 +272,13 @@ export const degradeablePvmBoostItems: DegradeableItemPVMBoost[] = [
 		degradeable: degradeableItems.find(di => di.item.id === itemID('Abyssal tentacle'))!,
 		attackStyle: 'melee',
 		charges: ({ totalHP }) => totalHP / 20,
+		boost: 3
+	},
+	{
+		item: getOSItem('Venator bow'),
+		degradeable: degradeableItems.find(di => di.item.id === itemID('Venator bow'))!,
+		attackStyle: 'range',
+		charges: ({ totalHP }) => totalHP / 25,
 		boost: 3
 	}
 ];
@@ -380,4 +404,25 @@ export async function checkDegradeableItemCharges({ item, user }: { item: Item; 
 	const currentCharges = user.user[degItem.settingsKey];
 	assert(typeof currentCharges === 'number');
 	return currentCharges;
+}
+
+export async function degradeChargeBank(user: MUser, chargeBank: ChargeBank) {
+	const hasChargesResult = user.hasCharges(chargeBank);
+	if (!hasChargesResult.hasCharges) {
+		throw new Error(
+			`Tried to degrade a charge bank (${chargeBank}) for ${
+				user.logName
+			}, but they don't have the required charges: ${JSON.stringify(hasChargesResult)}`
+		);
+	}
+
+	const results = [];
+
+	for (const [key, chargesToDegrade] of chargeBank.entries()) {
+		const { item } = degradeableItems.find(i => i.settingsKey === key)!;
+		const result = await degradeItem({ item, chargesToDegrade, user });
+		results.push(result);
+	}
+
+	return results;
 }

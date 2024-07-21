@@ -1,13 +1,13 @@
 import { Bank } from 'oldschooljs';
 
-import { QuestID } from '../../../mahoji/lib/abstracted_commands/questCommand';
+import { allTeamCapes } from 'oldschooljs/dist/data/itemConstants';
 import { chompyHats } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
-import { MinigameName } from '../../settings/settings';
+import { QuestID } from '../../minions/data/quests';
+import type { MinigameName } from '../../settings/settings';
 import { soteSkillRequirements } from '../../skilling/functions/questRequirements';
-import { MUserStats } from '../../structures/MUserStats';
-import { Skills } from '../../types';
-import { allTeamCapes } from '../misc';
+import type { MUserStats } from '../../structures/MUserStats';
+import type { Skills } from '../../types';
 import { aerialFishBuyables } from './aerialFishBuyables';
 import { canifisClothes } from './canifisClothes';
 import { capeBuyables } from './capes';
@@ -469,7 +469,7 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Monkey',
 		outputItems: new Bank({
-			19_556: 1
+			19556: 1
 		}),
 		gpCost: 1_000_000,
 		qpRequired: 182
@@ -767,7 +767,7 @@ const Buyables: Buyable[] = [
 		name: 'Feather',
 		aliases: ['feather'],
 		gpCost: 50,
-		ironmanPrice: 2
+		ironmanPrice: 4
 	},
 	{
 		name: 'Shield right half',
@@ -1004,8 +1004,8 @@ const Buyables: Buyable[] = [
 	})),
 	{
 		name: 'Menaphite purple outfit',
-		gpCost: 5000,
-		ironmanPrice: 600,
+		gpCost: 25_000,
+		ironmanPrice: 10_000,
 		outputItems: new Bank({
 			'Menaphite purple hat': 1,
 			'Menaphite purple top': 1,
@@ -1015,8 +1015,8 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Menaphite red outfit',
-		gpCost: 5000,
-		ironmanPrice: 600,
+		gpCost: 25_000,
+		ironmanPrice: 10_000,
 		outputItems: new Bank({
 			'Menaphite red hat': 1,
 			'Menaphite red top': 1,
@@ -1079,6 +1079,15 @@ const Buyables: Buyable[] = [
 			return toaKCs.expertKC >= 25 ? [true] : [false, 'You need a 25 Expert KC in Tombs of Amascut to buy this.'];
 		}
 	},
+	{
+		name: 'Lockpick',
+		gpCost: 5000,
+		ironmanPrice: 500,
+		skillsNeeded: {
+			agility: 50,
+			thieving: 50
+		}
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -1128,4 +1137,3 @@ for (const cape of allTeamCapes) {
 }
 
 export default Buyables;
-export { Buyables };

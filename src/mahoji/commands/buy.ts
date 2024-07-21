@@ -1,11 +1,13 @@
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType } from 'discord.js';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import Buyables from '../../lib/data/buyables/buyables';
-import { getMinigameScore, Minigames } from '../../lib/settings/minigames';
-import { prisma } from '../../lib/settings/prisma';
+import { quests } from '../../lib/minions/data/quests';
+import { Minigames, getMinigameScore } from '../../lib/settings/minigames';
+
 import { MUserStats } from '../../lib/structures/MUserStats';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../lib/util';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -13,9 +15,8 @@ import { deferInteraction } from '../../lib/util/interactionReply';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { buyFossilIslandNotes } from '../lib/abstracted_commands/buyFossilIslandNotes';
 import { buyKitten } from '../lib/abstracted_commands/buyKitten';
-import { quests } from '../lib/abstracted_commands/questCommand';
-import { OSBMahojiCommand } from '../lib/util';
-import { mahojiParseNumber, multipleUserStatsBankUpdate } from '../mahojiSettings';
+import type { OSBMahojiCommand } from '../lib/util';
+import { mahojiParseNumber, userStatsUpdate } from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }, { name: 'Fossil Island Notes' }];
 
@@ -53,9 +54,7 @@ export const buyCommand: OSBMahojiCommand = {
 		}
 
 		const buyable = Buyables.find(
-			item =>
-				stringMatches(name, item.name) ||
-				(item.aliases && item.aliases.some(alias => stringMatches(alias, name)))
+			item => stringMatches(name, item.name) || item.aliases?.some(alias => stringMatches(alias, name))
 		);
 
 		if (!buyable) return "That's not a valid item you can buy.";
@@ -110,7 +109,7 @@ export const buyCommand: OSBMahojiCommand = {
 			}
 			if (kc < req) {
 				return `You need ${req} KC in ${
-					Minigames.find(i => i.column === key)!.name
+					Minigames.find(i => i.column === key)?.name
 				} to buy this, you only have ${kc} KC.`;
 			}
 		}
@@ -126,12 +125,12 @@ export const buyCommand: OSBMahojiCommand = {
 			return `You don't have the required items to purchase this. You need: ${totalCost}.`;
 		}
 
-		let singleOutput: Bank =
+		const singleOutput: Bank =
 			buyable.outputItems === undefined
 				? new Bank().add(buyable.name)
 				: buyable.outputItems instanceof Bank
-				? buyable.outputItems
-				: buyable.outputItems(user);
+					? buyable.outputItems
+					: buyable.outputItems(user);
 
 		const outItems = singleOutput.clone().multiply(quantity);
 
@@ -152,12 +151,13 @@ export const buyCommand: OSBMahojiCommand = {
 			.remove('Coins', totalCost.amount('Coins')).bank;
 		if (Object.keys(costBankExcludingGP).length === 0) costBankExcludingGP = undefined;
 
+		const currentStats = await user.fetchStats({ buy_cost_bank: true, buy_loot_bank: true });
 		await Promise.all([
 			updateBankSetting('buy_cost_bank', totalCost),
 			updateBankSetting('buy_loot_bank', outItems),
-			multipleUserStatsBankUpdate(user.id, {
-				buy_cost_bank: totalCost,
-				buy_loot_bank: outItems
+			userStatsUpdate(user.id, {
+				buy_cost_bank: totalCost.clone().add(currentStats.buy_cost_bank as ItemBank).bank,
+				buy_loot_bank: outItems.clone().add(currentStats.buy_loot_bank as ItemBank).bank
 			}),
 			prisma.buyCommandTransaction.create({
 				data: {

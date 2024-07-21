@@ -1,4 +1,5 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { ellipsize, itemNameFromID, returnStringOrFile } from '../../lib/util';
@@ -6,7 +7,7 @@ import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmatio
 import { parseBank } from '../../lib/util/parseStringBank';
 import { updateBankSetting } from '../../lib/util/updateBankSetting';
 import { filterOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const dropCommand: OSBMahojiCommand = {
 	name: 'drop',
@@ -56,7 +57,7 @@ export const dropCommand: OSBMahojiCommand = {
 		}
 
 		const favs = user.user.favoriteItems;
-		let itemsToDoubleCheck = [
+		const itemsToDoubleCheck = [
 			...favs,
 			...ClueTiers.map(c => [c.id, c.scrollID]),
 			...user.bank

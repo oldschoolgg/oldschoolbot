@@ -1,5 +1,3 @@
-import { Bank } from 'oldschooljs';
-
 import itemID from '../../util/itemID';
 
 export const pickaxes = [
@@ -55,10 +53,10 @@ export const pickaxes = [
 	}
 ];
 
-export const miningGloves = [
+export const miningGloves: { id: number; Percentages: Record<string, number> }[] = [
 	{
 		id: itemID('Expert mining gloves'),
-		Percentages: new Bank({
+		Percentages: {
 			'Silver ore': 50,
 			Coal: 40,
 			'Gold ore': 33.33,
@@ -66,11 +64,11 @@ export const miningGloves = [
 			'Adamantite ore': 16.66,
 			'Runite ore': 12.5,
 			Amethyst: 25
-		})
+		}
 	},
 	{
 		id: itemID('Superior mining gloves'),
-		Percentages: new Bank({
+		Percentages: {
 			'Silver ore': 0,
 			Coal: 0,
 			'Gold ore': 0,
@@ -78,11 +76,11 @@ export const miningGloves = [
 			'Adamantite ore': 16.66,
 			'Runite ore': 12.5,
 			Amethyst: 0
-		})
+		}
 	},
 	{
 		id: itemID('Mining gloves'),
-		Percentages: new Bank({
+		Percentages: {
 			'Silver ore': 50,
 			Coal: 40,
 			'Gold ore': 33.33,
@@ -90,14 +88,14 @@ export const miningGloves = [
 			'Adamantite ore': 0,
 			'Runite ore': 0,
 			Amethyst: 0
-		})
+		}
 	}
 ];
 
-export const varrockArmours = [
+export const varrockArmours: { id: number; Percentages: Record<string, number> }[] = [
 	{
 		id: itemID('Varrock armour 4'),
-		Percentages: new Bank({
+		Percentages: {
 			Clay: 10,
 			'Copper ore': 10,
 			'Tin ore': 10,
@@ -111,11 +109,11 @@ export const varrockArmours = [
 			'Adamantite ore': 10,
 			'Runite ore': 10,
 			Amethyst: 10
-		})
+		}
 	},
 	{
 		id: itemID('Varrock armour 3'),
-		Percentages: new Bank({
+		Percentages: {
 			Clay: 10,
 			'Copper ore': 10,
 			'Tin ore': 10,
@@ -129,11 +127,11 @@ export const varrockArmours = [
 			'Adamantite ore': 10,
 			'Runite ore': 0,
 			Amethyst: 0
-		})
+		}
 	},
 	{
 		id: itemID('Varrock armour 2'),
-		Percentages: new Bank({
+		Percentages: {
 			Clay: 10,
 			'Copper ore': 10,
 			'Tin ore': 10,
@@ -147,11 +145,11 @@ export const varrockArmours = [
 			'Adamantite ore': 0,
 			'Runite ore': 0,
 			Amethyst: 0
-		})
+		}
 	},
 	{
 		id: itemID('Varrock armour 1'),
-		Percentages: new Bank({
+		Percentages: {
 			Clay: 10,
 			'Copper ore': 10,
 			'Tin ore': 10,
@@ -165,11 +163,11 @@ export const varrockArmours = [
 			'Adamantite ore': 0,
 			'Runite ore': 0,
 			Amethyst: 0
-		})
+		}
 	}
 ];
 
-export const miningCapeOreEffect: Bank = new Bank({
+export const miningCapeOreEffect: Record<string, number> = {
 	Clay: 5,
 	'Copper ore': 5,
 	'Tin ore': 5,
@@ -183,4 +181,4 @@ export const miningCapeOreEffect: Bank = new Bank({
 	'Adamantite ore': 5,
 	'Runite ore': 0,
 	Amethyst: 0
-});
+};

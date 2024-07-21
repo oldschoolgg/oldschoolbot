@@ -1,5 +1,5 @@
 import getOSItem from '../util/getOSItem';
-import { SlayerShopItem } from './types';
+import type { SlayerShopItem } from './types';
 
 export const slayerShopBuy: readonly SlayerShopItem[] = [
 	{

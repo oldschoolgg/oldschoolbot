@@ -1,8 +1,9 @@
 import { Canvas } from '@napi-rs/canvas';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import { ApplicationCommandOptionType } from 'discord.js';
 
 import { loadAndCacheLocalImage } from '../../lib/util/canvasUtil';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 const bg = loadAndCacheLocalImage('./src/lib/resources/images/pm-bg.png');
 

@@ -1,15 +1,25 @@
-import { Prisma, User } from '@prisma/client';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { Prisma, User } from '@prisma/client';
 import murmurhash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import { expect } from 'vitest';
 
-import { BitField } from '../../src/lib/constants';
-import type { GearSetup } from '../../src/lib/gear/types';
 import { MUserClass } from '../../src/lib/MUser';
-import { filterGearSetup, Gear, PartialGearSetup } from '../../src/lib/structures/Gear';
+import type { BitField } from '../../src/lib/constants';
+import type { GearSetup } from '../../src/lib/gear/types';
+import type { PartialGearSetup } from '../../src/lib/structures/Gear';
+import { Gear, constructGearSetup } from '../../src/lib/structures/Gear';
 import type { OSBMahojiCommand } from '../../src/mahoji/lib/util';
+
+function filterGearSetup(gear: undefined | null | GearSetup | PartialGearSetup): GearSetup | undefined {
+	const filteredGear = !gear
+		? undefined
+		: typeof gear.ammo === 'undefined' || typeof gear.ammo === 'string'
+			? constructGearSetup(gear as PartialGearSetup)
+			: (gear as GearSetup);
+	return filteredGear;
+}
 
 interface MockUserArgs {
 	bank?: Bank;
@@ -26,16 +36,14 @@ interface MockUserArgs {
 	skills_prayer?: number;
 	skills_fishing?: number;
 	GP?: number;
-	premium_balance_tier?: number;
-	premium_balance_expiry_date?: number;
 	bitfield?: BitField[];
 	id?: string;
 }
 
-export const mockUser = (overrides?: MockUserArgs): User => {
+const mockUser = (overrides?: MockUserArgs): User => {
 	const gearMelee = filterGearSetup(overrides?.meleeGear);
 	const cl = new Bank().add(overrides?.cl ?? {});
-	return {
+	const r = {
 		cl,
 		gear_fashion: new Gear().raw() as Prisma.JsonValue,
 		gear_mage: new Gear().raw() as Prisma.JsonValue,
@@ -70,33 +78,21 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		skills_defence: overrides?.skills_defence ?? 0,
 		skills_slayer: 0,
 		skills_hitpoints: overrides?.skills_hitpoints ?? convertLVLtoXP(10),
-		GP: overrides?.GP,
-		premium_balance_tier: overrides?.premium_balance_tier,
-		premium_balance_expiry_date: overrides?.premium_balance_expiry_date,
-		ironman_alts: [],
+		GP: overrides?.GP ?? 0,
 		bitfield: overrides?.bitfield ?? [],
 		username: 'Magnaboy',
 		QP: overrides?.QP ?? 0,
 		sacrificedValue: 0,
 		id: overrides?.id ?? '',
-		monsterScores: {}
+		monsterScores: {},
+		badges: []
 	} as unknown as User;
+
+	return r;
 };
 
-class TestMUser extends MUserClass {
-	// @ts-expect-error Mock
-	public readonly rawUsername = 'test';
-
-	// @ts-expect-error Mock
-	async fetchStats() {
-		return {
-			monster_scores: {}
-		};
-	}
-}
-
 export const mockMUser = (overrides?: MockUserArgs) => {
-	const user = new TestMUser(mockUser(overrides));
+	const user = new MUserClass(mockUser(overrides));
 	return user;
 };
 
@@ -118,7 +114,10 @@ export async function testRunCmd({
 	Math.random = () => 0.5;
 	const hash = murmurhash(JSON.stringify({ name: cmd.name, opts, user })).toString();
 	const mockedUser = mockMUser({ id: hash, ...user });
-	mockUserMap.set(hash, mockedUser);
+	if (mockedUser.GP === null || Number.isNaN(mockedUser.GP) || mockedUser.GP < 0 || mockedUser.GP === undefined) {
+		throw new Error(`Invalid GP for user ${hash}`);
+	}
+	mockUserMap.set(hash, mockedUser as any as MUser);
 	const options: any = {
 		user: mockedUser.user,
 		channelID: '1234',

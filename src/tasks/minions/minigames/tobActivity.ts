@@ -1,4 +1,4 @@
-import { formatOrdinal, miniID } from '@oldschoolgg/toolkit';
+import { convertPercentChance, formatOrdinal, miniID } from '@oldschoolgg/toolkit';
 import { roll, shuffleArr } from 'e';
 import { Bank } from 'oldschooljs';
 
@@ -12,8 +12,7 @@ import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/
 import { TeamLoot } from '../../../lib/simulation/TeamLoot';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { convertPercentChance } from '../../../lib/util';
+import type { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { updateBankSetting } from '../../../lib/util/updateBankSetting';
 import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
@@ -116,11 +115,11 @@ export const tobTask: MinionTask = {
 			// Track loot for T3+ patrons
 			await Promise.all(
 				allUsers.map(user => {
-					return userStatsBankUpdate(user.id, 'tob_loot', new Bank(result.loot[user.id]));
+					return userStatsBankUpdate(user, 'tob_loot', new Bank(result.loot[user.id]));
 				})
 			);
 
-			for (let [userID, _userLoot] of Object.entries(result.loot)) {
+			for (const [userID, _userLoot] of Object.entries(result.loot)) {
 				if (data.solo && userID !== leader) continue;
 				const user = allUsers.find(i => i.id === userID);
 				if (!user) continue;
@@ -247,7 +246,7 @@ export const tobTask: MinionTask = {
 								}
 							],
 							type: 'Theatre of Blood'
-					  })
+						})
 					: undefined,
 				data,
 				totalLoot
@@ -267,7 +266,7 @@ export const tobTask: MinionTask = {
 							customTexts: []
 						})),
 						type: 'Theatre of Blood'
-				  })
+					})
 				: undefined,
 			data,
 			null

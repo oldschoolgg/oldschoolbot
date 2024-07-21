@@ -1,19 +1,30 @@
-import { UserStats } from '@prisma/client';
+import type { UserStats } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';
 import type { ClueBank } from '../minions/types';
-import { prisma } from '../settings/prisma';
 import type { ItemBank } from '../types';
 import { getToaKCs } from '../util/smallUtils';
 
 export class MUserStats {
 	userStats: UserStats;
 	sacrificedBank: Bank;
+	titheFarmsCompleted: number;
+	lapsScores: ItemBank;
+	openableScores: Bank;
+	kcBank: ItemBank;
+	highGambles: number;
+	gotrRiftSearches: number;
 
 	constructor(userStats: UserStats) {
 		this.userStats = userStats;
 		this.sacrificedBank = new Bank().add(this.userStats.sacrificed_bank as ItemBank);
+		this.titheFarmsCompleted = this.userStats.tithe_farms_completed;
+		this.lapsScores = userStats.laps_scores as ItemBank;
+		this.openableScores = new Bank().add(userStats.openable_scores as ItemBank);
+		this.kcBank = userStats.monster_scores as ItemBank;
+		this.highGambles = userStats.high_gambles;
+		this.gotrRiftSearches = userStats.gotr_rift_searches;
 	}
 
 	static async fromID(id: string) {
@@ -29,10 +40,6 @@ export class MUserStats {
 		return new MUserStats(userStats);
 	}
 
-	get lapsScores() {
-		return this.userStats.laps_scores as ItemBank;
-	}
-
 	getToaKCs() {
 		return getToaKCs(this.userStats.toa_raid_levels_bank);
 	}
@@ -42,7 +49,7 @@ export class MUserStats {
 		for (const tier of ClueTiers) clueCounts[tier.name] = 0;
 
 		for (const [key, val] of Object.entries(this.userStats.openable_scores as ItemBank)) {
-			const clueTier = ClueTiers.find(i => i.id === parseInt(key));
+			const clueTier = ClueTiers.find(i => i.id === Number.parseInt(key));
 			if (!clueTier) continue;
 			clueCounts[clueTier.name] += val;
 		}

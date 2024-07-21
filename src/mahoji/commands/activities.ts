@@ -1,11 +1,12 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import type { CommandRunOptions } from '@oldschoolgg/toolkit';
+import type { User } from 'discord.js';
+import { ApplicationCommandOptionType } from 'discord.js';
 
-import {
-	UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL,
-	UnderwaterAgilityThievingTrainingSkill
-} from '../../lib/constants';
+import type { UnderwaterAgilityThievingTrainingSkill } from '../../lib/constants';
+import { UNDERWATER_AGILITY_THIEVING_TRAINING_SKILL } from '../../lib/constants';
 import { Planks } from '../../lib/minions/data/planks';
 import Potions from '../../lib/minions/data/potions';
+import { quests } from '../../lib/minions/data/quests';
 import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
@@ -21,7 +22,7 @@ import { championsChallengeCommand } from '../lib/abstracted_commands/championsC
 import { chargeGloriesCommand } from '../lib/abstracted_commands/chargeGloriesCommand';
 import { chargeWealthCommand } from '../lib/abstracted_commands/chargeWealthCommand';
 import { chompyHuntClaimCommand, chompyHuntCommand } from '../lib/abstracted_commands/chompyHuntCommand';
-import { collectables, collectCommand } from '../lib/abstracted_commands/collectCommand';
+import { collectCommand } from '../lib/abstracted_commands/collectCommand';
 import { decantCommand } from '../lib/abstracted_commands/decantCommand';
 import { driftNetCommand } from '../lib/abstracted_commands/driftNetCommand';
 import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
@@ -29,13 +30,14 @@ import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand'
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
 import { otherActivities, otherActivitiesCommand } from '../lib/abstracted_commands/otherActivitiesCommand';
 import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
-import { questCommand, quests } from '../lib/abstracted_commands/questCommand';
+import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { scatterCommand } from '../lib/abstracted_commands/scatterCommand';
 import { underwaterAgilityThievingCommand } from '../lib/abstracted_commands/underwaterCommand';
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
+import { collectables } from '../lib/collectables';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
-import { OSBMahojiCommand } from '../lib/util';
+import type { OSBMahojiCommand } from '../lib/util';
 
 export const activitiesCommand: OSBMahojiCommand = {
 	name: 'activities',
@@ -173,7 +175,15 @@ export const activitiesCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					name: 'name',
 					description: 'The name of the quest (optional).',
-					choices: quests.map(i => ({ name: i.name, value: i.name })),
+					autocomplete: async (_value: string, user: User) => {
+						const mUser = await mUserFetch(user.id);
+						let list = quests
+							.filter(i => !mUser.user.finished_quest_ids.includes(i.id))
+							.map(i => ({ name: i.name, value: i.name }));
+						if (list.length === 0)
+							list = quests.map(i => ({ name: `${i.name} (completed)`, value: i.name }));
+						return list;
+					},
 					required: false
 				}
 			]
@@ -536,7 +546,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 			return decantCommand(user, options.decant.potion_name, options.decant.dose);
 		}
 		if (options.inferno?.action === 'stats') return infernoStatsCommand(user);
-		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user.user);
+		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(user);
 
 		// Minion must be free
 		const isBusy = user.minionIsBusy;

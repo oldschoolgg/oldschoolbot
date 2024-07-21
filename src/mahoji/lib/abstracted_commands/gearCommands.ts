@@ -1,27 +1,27 @@
-import { toTitleCase } from '@oldschoolgg/toolkit';
-import { GearPreset } from '@prisma/client';
-import { ChatInputCommandInteraction } from 'discord.js';
+import { PerkTier, toTitleCase } from '@oldschoolgg/toolkit';
+import type { CommandResponse } from '@oldschoolgg/toolkit';
+import type { GearPreset } from '@prisma/client';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { objectValues } from 'e';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
-import { MAX_INT_JAVA, PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../../lib/constants';
+import { MAX_INT_JAVA, PATRON_ONLY_GEAR_SETUP } from '../../../lib/constants';
 import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
-import { GearSetup, GearSetupType, GearStat } from '../../../lib/gear/types';
+import type { GearSetup, GearSetupType } from '../../../lib/gear/types';
+import { GearStat } from '../../../lib/gear/types';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
-import { prisma } from '../../../lib/settings/prisma';
-import { defaultGear, Gear, globalPresets } from '../../../lib/structures/Gear';
+
+import { Gear, defaultGear, globalPresets } from '../../../lib/structures/Gear';
 import { assert, formatSkillRequirements, isValidGearSetup, stringMatches } from '../../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../../lib/util/calculateGearLostOnDeathWilderness';
 import { gearEquipMultiImpl } from '../../../lib/util/equipMulti';
 import { getItem } from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../../lib/util/handleMahojiConfirmation';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
-import { transactItemsFromBank } from '../../../lib/util/transactItemsFromBank';
 import { mahojiParseNumber } from '../../mahojiSettings';
 
-export async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
+async function gearPresetEquipCommand(user: MUser, gearSetup: string, presetName: string): CommandResponse {
 	if (user.minionIsBusy) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
@@ -109,7 +109,7 @@ export async function gearPresetEquipCommand(user: MUser, gearSetup: string, pre
 	};
 }
 
-export async function gearEquipMultiCommand(
+async function gearEquipMultiCommand(
 	user: MUser,
 	interaction: ChatInputCommandInteraction,
 	setup: string,
@@ -223,7 +223,7 @@ export async function gearEquipCommand(args: {
 
 	const result = currentEquippedGear.equip(itemToEquip, quantity);
 
-	await transactItemsFromBank({
+	await transactItems({
 		userID: user.id,
 		collectionLog: false,
 		dontAddToTempCL: true,
@@ -293,7 +293,7 @@ export async function gearUnequipCommand(
 	};
 }
 
-export async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipmentType: string): CommandResponse {
+async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipmentType: string): CommandResponse {
 	if (gearSetup === 'other' && user.perkTier() < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
@@ -335,7 +335,7 @@ export async function gearStatsCommand(user: MUser, input: string): CommandRespo
 	const gear = { ...defaultGear };
 	for (const name of input.split(',')) {
 		const item = getItem(name);
-		if (item && item.equipment) {
+		if (item?.equipment) {
 			gear[item.equipment.slot] = { item: item.id, quantity: 1 };
 		}
 	}
@@ -353,7 +353,7 @@ export async function gearViewCommand(user: MUser, input: string, text: boolean)
 							.join('\n')
 					),
 					name: 'gear.txt'
-			  }
+				}
 			: { attachment: await generateAllGearImage(user), name: 'osbot.png' };
 		return {
 			content: 'Here are all your gear setups',
