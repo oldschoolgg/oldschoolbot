@@ -84,7 +84,6 @@ export function determineCombatBoosts(params: DetermineBoostParams) {
     return boostMethods;
 }
 
-
 export async function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, user: MUser) {
 	const streaks = [1000, 250, 100, 50, 10];
 	const multiplier = [50, 35, 25, 15, 5];
