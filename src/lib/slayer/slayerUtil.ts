@@ -40,13 +40,17 @@ interface DetermineBoostParams {
 }
 export function determineCombatBoosts(params: DetermineBoostParams) {
 
+	// if EHP slayer (PvMMethod) the methods are initilized with boostMethods variable
     const boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
     console.log(`methods passed in to determineBoostChouice: ${boostMethods}`);
 	console.log(`Combat options selected: ${params.cbOpts}`)
 
+	// check if user has cannon combat option turned on
 	if(params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)){
 		boostMethods.includes('cannon') ? null : boostMethods.push('cannon')
 	}
+
+	// check for special burst case under wildyBurst variable
 	if (params.wildyBurst){
 		if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
 			boostMethods.includes('barrage') ? null : boostMethods.push('barrage')
@@ -55,10 +59,19 @@ export function determineCombatBoosts(params: DetermineBoostParams) {
 			boostMethods.includes('burst') ? null : boostMethods.push('burst')
 		}
 	}
-
+	
+	// check if the monster can be barraged
 	if (params.monster.canBarrage){
-		if (!params.monster.cannonMulti || params.monster.existsInCatacombs) { 
-			// Don't allow bursting in single combat
+		// check if the monster exists in catacombs
+		if(params.monster.existsInCatacombs){
+			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
+				boostMethods.includes('barrage') ? null : boostMethods.push('barrage')
+			}
+			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst)) {
+				boostMethods.includes('burst') ? null : boostMethods.push('burst')
+			}
+		} else if (!params.monster.cannonMulti) { 
+			// prevents cases such as: cannoning in singles but receiving multi combat bursting boost
 			console.log(`Check failed here, methods being returned: ${boostMethods}`)
 			return boostMethods;
 		} else {
