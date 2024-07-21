@@ -171,7 +171,7 @@ export const managingMiscellaniaTask: MinionTask = {
 		const secondary = secondary_collect;
 		const cofferMax = 75000;
 
-		const daysDifference = Math.round(cofferCost / 7500);
+		const daysDifference = Math.round(cofferCost / 75_000);
 
 		const workerEffectiveness = (cofferMax * 100) / 8333;
 

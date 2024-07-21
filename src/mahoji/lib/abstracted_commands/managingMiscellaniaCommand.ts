@@ -126,7 +126,7 @@ export async function managingMiscellaniaCommand(
 	const duration = Time.Minute * 1 + Time.Second * 5 * daysDifference;
 
 	const daysDifferenceInteger = Math.floor(daysDifference);
-	const cofferCostInteger = Math.min(daysDifferenceInteger * 7_500, 750_000);
+	const cofferCostInteger = Math.min(daysDifferenceInteger * 75_000, 7_500_000);
 
 	const cofferCost = BigInt(cofferCostInteger);
 
