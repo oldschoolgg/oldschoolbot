@@ -415,8 +415,17 @@ export class BankImageTask {
 		}
 	}
 
-	drawItemIDSprite(itemID: number, ctx: SKRSContext2D, x: number, y: number) {
-		const [sX, sY, sW, sH] = this.spriteSheetData[itemID]!;
+	drawItemIDSprite(itemID: number, ctx: SKRSContext2D, x: number, y: number, user?: MUser) {
+		const data = this.spriteSheetData[itemID];
+
+		if (!data){
+			const image = this.getItemImage(itemID);
+			if (image) {
+				ctx.drawImage(image, x, y);
+			}
+			return;
+		}
+		const [sX, sY, sW, sH] = data;
 		ctx.drawImage(
 				this.spriteSheetImage,
 
