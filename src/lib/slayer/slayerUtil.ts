@@ -40,11 +40,9 @@ interface DetermineBoostParams {
 }
 export function determineCombatBoosts(params: DetermineBoostParams) {
 
-	// if EHP slayer (PvMMethod) the methods are initilized with boostMethods variable
+	// if EHP slayer (PvMMethod) the methods are initialized with boostMethods variable
     const boostMethods = (params.methods ?? ['none']).flat().filter(method => method);
-    console.log(`methods passed in to determineBoostChouice: ${boostMethods}`);
-	console.log(`Combat options selected: ${params.cbOpts}`)
-
+   
 	// check if user has cannon combat option turned on
 	if(params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)){
 		boostMethods.includes('cannon') ? null : boostMethods.push('cannon')
@@ -72,7 +70,6 @@ export function determineCombatBoosts(params: DetermineBoostParams) {
 			}
 		} else if (!params.monster.cannonMulti) { 
 			// prevents cases such as: cannoning in singles but receiving multi combat bursting boost
-			console.log(`Check failed here, methods being returned: ${boostMethods}`)
 			return boostMethods;
 		} else {
 			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
@@ -84,7 +81,6 @@ export function determineCombatBoosts(params: DetermineBoostParams) {
 		}
 	}
 
-	console.log(`methods being returned: ${boostMethods}`)
     return boostMethods;
 }
 
