@@ -182,7 +182,6 @@ export async function farmingPlantCommand({
 	if (treeStr) return treeStr;
 
 	const [numOfPatches] = calcNumOfPatches(plant, user, questPoints);
-
 	if (numOfPatches === 0) {
 		return 'There are no available patches to you.';
 	}
