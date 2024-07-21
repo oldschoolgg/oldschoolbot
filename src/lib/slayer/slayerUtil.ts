@@ -54,11 +54,11 @@ export function determineCombatBoosts(params: DetermineBoostParams) {
 			return boostMethods;
 		} else {
 			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
-			(params.monster?.canBarrage || params.wildyBurst)) {
+			(params.monster.canBarrage || params.wildyBurst)) {
 				boostMethods.includes('barrage') ? null : boostMethods.push('barrage')
 			}
 			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) &&
-			(params.monster?.canBarrage || params.wildyBurst)){
+			(params.monster.canBarrage || params.wildyBurst)){
 				boostMethods.includes('burst') ? null : boostMethods.push('burst')
 			}
 		}
