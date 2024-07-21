@@ -324,6 +324,12 @@ const tripHandlers = {
 		commandName: 'activities',
 		args: (data: ActivityTaskOptionsWithQuantity) => ({ charge: { item: 'glory', quantity: data.quantity } })
 	},
+	[activity_type_enum.GloryUncharging]: {
+		commandName: 'activities',
+		args: (data: ActivityTaskOptionsWithQuantity) => ({
+			charge: { item: 'unchargeglory', quantity: data.quantity }
+		})
+	},
 	[activity_type_enum.GnomeRestaurant]: {
 		commandName: 'minigames',
 		args: () => ({ gnome_restaurant: { start: {} } })

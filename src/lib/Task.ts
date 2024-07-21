@@ -32,7 +32,7 @@ import { farmingTask } from '../tasks/minions/farmingActivity';
 import { firemakingTask } from '../tasks/minions/firemakingActivity';
 import { fishingTask } from '../tasks/minions/fishingActivity';
 import { fletchingTask } from '../tasks/minions/fletchingActivity';
-import { gloryChargingTask } from '../tasks/minions/gloryChargingActivity';
+import { gloryChargingTask, gloryUnchargingTask } from '../tasks/minions/gloryChargingActivity';
 import { groupoMonsterTask } from '../tasks/minions/groupMonsterActivity';
 import { herbloreTask } from '../tasks/minions/herbloreActivity';
 import { mageArenaTwoTask } from '../tasks/minions/mageArena2Activity';
@@ -150,6 +150,7 @@ const tasks: MinionTask[] = [
 	fishingTask,
 	fletchingTask,
 	gloryChargingTask,
+	gloryUnchargingTask,
 	groupoMonsterTask,
 	herbloreTask,
 	fletchingTask,
