@@ -85,15 +85,12 @@ export async function managingMiscellaniaCommand(
 		.map(([skill, level]) => formatSkillRequirements({ [skill]: level }, true))
 		.join(', ');
 
-	const missingIronmanSkillsMessage = `As an Ironman, you also need one of the following requirements: ${formatSkillRequirements(ironmanExtraReqs, true)}`;
-
 	if (missingSkills.length > 0) {
-		const ironmanMessage = user.user.minion_ironman ? ` ${missingIronmanSkillsMessage}` : '';
-		return `You are not skilled enough to manage the Kingdom. You need the following requirements: ${missingSkillsMessage}.${ironmanMessage}`;
+		return `You are not skilled enough to manage the Kingdom. You need the following requirements: ${missingSkillsMessage}.`;
 	}
 
 	if (user.user.minion_ironman && !hasSkillReqs(user, ironmanExtraReqs)[0]) {
-		return `You are not skilled enough to manage the Kingdom. ${missingIronmanSkillsMessage}`;
+		return `As an Ironman, you also need one of the following requirements: ${formatSkillRequirements(ironmanExtraReqs, true)}`;
 	}
 
 	type CollectType = (typeof managingMicellaniaChoices)[number]['value'];

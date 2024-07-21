@@ -157,7 +157,7 @@ function getBaseQuantity(materialCategory: string, workers: number, resourcePoin
 	if (inverseCost === undefined) {
 		throw new Error(`Unknown material category: ${materialCategory}`);
 	}
-	return Math.floor((workers * inverseCost * resourcePoints) / 2048);
+	return Math.floor(Math.floor(workers * inverseCost * (resourcePoints / 2048)));
 }
 
 export const managingMiscellaniaTask: MinionTask = {
@@ -169,10 +169,15 @@ export const managingMiscellaniaTask: MinionTask = {
 
 		const main = main_collect;
 		const secondary = secondary_collect;
+		const cofferMax = 75000;
 
 		const daysDifference = Math.round(cofferCost / 7500);
-		const dailyResourcePoints = 600;
-		const totalResourcePoints = dailyResourcePoints * daysDifference;
+
+		const workerEffectiveness = (cofferMax * 100) / 8333;
+
+		const dailyResourcePoints = Math.floor((workerEffectiveness * 127) / 100);
+
+		const totalResourcePoints = Math.min(262143, daysDifference * dailyResourcePoints);
 
 		const mainQty = getBaseQuantity(main, 10, totalResourcePoints);
 		const secondaryQty = getBaseQuantity(secondary, 5, totalResourcePoints);
@@ -186,7 +191,7 @@ export const managingMiscellaniaTask: MinionTask = {
 					loot.add(nestTable.roll(Math.min(999, Math.floor(quantity / 100))));
 					break;
 				case 'Mining':
-					loot.add('Maple logs', quantity);
+					loot.add('Coal', quantity);
 					loot.add(miningGems.roll(Math.floor(quantity / 200 + 0.5)));
 					break;
 				case 'Fishing':
