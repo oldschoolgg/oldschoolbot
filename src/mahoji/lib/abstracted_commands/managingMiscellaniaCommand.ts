@@ -1,5 +1,5 @@
 import { formatDuration } from '@oldschoolgg/toolkit';
-import { Time, notEmpty, objectEntries } from 'e';
+import { Time, objectEntries } from 'e';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import type { ManagingMiscellaniaActivityTaskOptions } from '../../../lib/types/minions';
@@ -19,9 +19,7 @@ export const managingMicellaniaChoices = [
 	'Teak',
 	'Hardwood (Mahogany and Teak)',
 	'Farm'
-].map(smc => {
-	return { name: smc, value: smc };
-});
+].map(smc => ({ name: smc, value: smc }));
 
 const skillReqs = {
 	[SkillsEnum.Agility]: 40,
@@ -34,6 +32,7 @@ const skillReqs = {
 	[SkillsEnum.Woodcutting]: 36,
 	[SkillsEnum.Farming]: 10
 };
+
 const ironmanExtraReqs = {
 	[SkillsEnum.Fletching]: 25,
 	[SkillsEnum.Woodcutting]: 40,
@@ -47,75 +46,54 @@ export async function managingMiscellaniaCommand(
 	secondary_collect: string
 ) {
 	if (minionIsBusy(user.id)) return `${user.minionName} is busy.`;
-	const currentDate = new Date().getTime();
 
-	const currentStats = await user.fetchStats({ last_managing_miscellania_timestamp: true });
-
-	const lastPlayedDate = Number(currentStats.last_managing_miscellania_timestamp);
-	const difference = currentDate - lastPlayedDate;
-
-	// Ensure inputs are defined
+	// Ensure inputs are defined and valid
 	if (!main_collect || !secondary_collect) {
 		return 'Both main and secondary collection areas must be specified.';
 	}
 
 	const main = main_collect.toLowerCase();
 	const secondary = secondary_collect.toLowerCase();
+	const validChoices = managingMicellaniaChoices.map(choice => choice.value.toLowerCase());
 
-	// Define the number of milliseconds in a day using Time.Day
-	const millisecondsInADay = Time.Day;
-
-	// Convert the difference into days
-	let daysDifference = difference / millisecondsInADay;
-
-	// Cap the days Difference to a maximum of 100
-	if (daysDifference > 100) daysDifference = 100;
-
-	// If they have already claimed a Managing Miscellania in the past day
-	if (difference < millisecondsInADay) {
-		const duration = formatDuration(Date.now() - (lastPlayedDate + millisecondsInADay));
-		return `You can claim from the Kingdom in ${duration}.`;
+	if (!validChoices.includes(main) || !validChoices.includes(secondary)) {
+		return 'Invalid collection areas specified.';
 	}
 
-	// 61 QP for the quest
-	const userQP = user.QP;
-	if (userQP < 61) {
+	// Date and time calculations
+	const currentDate = Date.now();
+	const lastPlayedDate = Number(
+		(await user.fetchStats({ last_managing_miscellania_timestamp: true })).last_managing_miscellania_timestamp
+	);
+	const difference = currentDate - lastPlayedDate;
+	const millisecondsInADay = Time.Day;
+	const daysDifference = Math.min(difference / millisecondsInADay, 100);
+
+	if (difference < millisecondsInADay) {
+		return `You can claim from the Kingdom in ${formatDuration(lastPlayedDate + millisecondsInADay - currentDate)}.`;
+	}
+
+	// Quest and skill requirements check
+	if (user.QP < 61) {
 		return 'You can manage the Kingdom when you have 61+ QP.';
 	}
 
 	const skills = user.skillsAsLevels;
-	let missingIronmanSkills = false;
-	// Extra requirements if Ironman
-	if (user.user.minion_ironman) {
-		let skillsMatch = 0;
-		for (const [skill, level] of Object.entries(ironmanExtraReqs)) {
-			if (skills[skill as SkillsEnum] >= level) {
-				skillsMatch += 1;
-			}
-		}
-		if (skillsMatch === 0) {
-			missingIronmanSkills = true;
-		}
+
+	const missingSkills = objectEntries(skillReqs).filter(([skill, level]) => skills[skill as SkillsEnum] < level);
+	const missingSkillsMessage = missingSkills
+		.map(([skill, level]) => formatSkillRequirements({ [skill]: level }, true))
+		.join(', ');
+
+	const missingIronmanSkillsMessage = `As an Ironman, you also need one of the following requirements: ${formatSkillRequirements(ironmanExtraReqs, true)}`;
+
+	if (missingSkills.length > 0) {
+		const ironmanMessage = user.user.minion_ironman ? ` ${missingIronmanSkillsMessage}` : '';
+		return `You are not skilled enough to manage the Kingdom. You need the following requirements: ${missingSkillsMessage}.${ironmanMessage}`;
 	}
 
-	const missingIronmanSkillMessage = `As an Ironman, you also need one of the following requirements:${formatSkillRequirements(
-		ironmanExtraReqs,
-		true
-	)}`;
-	// Skills required for quest
-	if (!hasSkillReqs(user, skillReqs)[0]) {
-		const missingSkillsMessage = objectEntries(skillReqs)
-			.map(s => {
-				return skills[s[0]] < s[1] ? formatSkillRequirements({ [s[0]]: s[1] }, true) : undefined;
-			})
-			.filter(notEmpty)
-			.join(', ');
-
-		return `You are not skilled enough to manage the Kingdom. You need the following requirements: ${missingSkillsMessage}. ${
-			missingIronmanSkills ? missingIronmanSkillMessage : ''
-		}`;
-	} else if (missingIronmanSkills) {
-		return `You are not skilled enough to manage the Kingdom. ${missingIronmanSkillMessage}`;
+	if (user.user.minion_ironman && !hasSkillReqs(user, ironmanExtraReqs)[0]) {
+		return `You are not skilled enough to manage the Kingdom. ${missingIronmanSkillsMessage}`;
 	}
 
 	type CollectType = (typeof managingMicellaniaChoices)[number]['value'];
@@ -134,30 +112,36 @@ export async function managingMiscellaniaCommand(
 		Farm: []
 	};
 
-	const conflictString = `You are unable to assign the workers ${main} and ${secondary} simultaneously.`;
+	// Ensure main and secondary are of type CollectType
+	const mainPair: CollectType = main_collect as CollectType;
+	const secondaryPair: CollectType = secondary_collect as CollectType;
 
-	// Check for conflicts
-	if (conflictPairs[main as CollectType]?.includes(secondary as CollectType)) {
+	// Conflict Check
+	const conflictString = `You are unable to assign the workers ${mainPair} and ${secondaryPair} simultaneously.`;
+
+	if (conflictPairs[mainPair]?.includes(secondaryPair)) {
 		return conflictString;
 	}
 
-	if (main === secondary) {
+	if (mainPair === secondaryPair) {
 		return 'You are unable to allocate workers to the same area.';
 	}
+	const duration = Time.Minute * 1 + Time.Second * 5 * daysDifference;
 
-	let duration = Time.Minute * 1;
+	const daysDifferenceInteger = Math.floor(daysDifference);
+	const cofferCostInteger = Math.min(daysDifferenceInteger * 7_500, 750_000);
 
-	duration += Time.Second * 5 * daysDifference;
+	const cofferCost = BigInt(cofferCostInteger);
 
-	const cofferCost = Math.min(daysDifference * 7_500, 750_000);
+	const cofferCostNumber = Number(cofferCost);
 
-	const userGP = user.GP;
+	const userGPNumber = Number(user.GP);
 
-	if (cofferCost > userGP) {
-		return `You need ${cofferCost} GP to collect from your kingdom.`;
+	if (cofferCostNumber > userGPNumber) {
+		return `You need ${cofferCostNumber.toLocaleString()} GP to collect from your kingdom.`;
 	}
 
-	const cost = new Bank().add('Coins', cofferCost);
+	const cost = new Bank().add('Coins', cofferCostNumber);
 
 	await user.removeItemsFromBank(cost);
 	await updateBankSetting('managing_miscellania_cost', cost);
@@ -169,10 +153,8 @@ export async function managingMiscellaniaCommand(
 		secondary_collect,
 		userID: user.id,
 		channelID: channelID.toString(),
-		cofferCost
+		cofferCost: cofferCostNumber
 	});
 
-	const str = `${user.minionName} is now collecting from the Kingdom. Removed ${cofferCost} GP. They'll come back in around ${formatDuration(duration)}`;
-
-	return str;
+	return `${user.minionName} is now collecting from the Kingdom. Removed ${cofferCostNumber.toLocaleString()} GP. They'll come back in around ${formatDuration(duration)}`;
 }
