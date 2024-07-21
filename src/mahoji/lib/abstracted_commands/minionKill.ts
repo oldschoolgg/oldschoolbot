@@ -208,7 +208,7 @@ export async function minionKillCommand(
 
 	// Add check for burstable monsters in wilderness
 	const jelly = monster.id === Monsters.Jelly.id;
-	const wildyBurst = (jelly) && isInWilderness;
+	const wildyBurst = jelly && isInWilderness;
 
 	// determines what pvm methods the user can use
 	const myCBOpts = user.combatOptions;
@@ -471,7 +471,7 @@ export async function minionKillCommand(
 		if (monster.id === Monsters.HillGiant.id || monster.id === Monsters.MossGiant.id) {
 			usingCannon = isInWilderness;
 		}
-		if (monster.id === Monsters.Spider.id || Monsters.Scorpion.id){
+		if (monster.id === Monsters.Spider.id || Monsters.Scorpion.id) {
 			usingCannon = isInWilderness;
 			cannonMulti = isInWilderness;
 		}
@@ -500,7 +500,11 @@ export async function minionKillCommand(
 		}
 	}
 
-	if (combatMethods.includes('barrage') && attackStyles.includes(SkillsEnum.Magic) && (monster?.canBarrage || wildyBurst)) {
+	if (
+		combatMethods.includes('barrage') &&
+		attackStyles.includes(SkillsEnum.Magic) &&
+		(monster?.canBarrage || wildyBurst)
+	) {
 		consumableCosts.push(iceBarrageConsumables);
 		calculateVirtusBoost();
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage + virtusBoost);
