@@ -2,10 +2,9 @@ import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { bold, time } from '@discordjs/builders';
 import { Canvas, type Image, type SKRSContext2D, loadImage } from '@napi-rs/canvas';
-import { mentionCommand } from '@oldschoolgg/toolkit';
+import { mentionCommand, toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandResponse, CommandRunOptions } from '@oldschoolgg/toolkit';
 import { type Tame, tame_growth } from '@prisma/client';
-import { toTitleCase } from '@sapphire/utilities';
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type User } from 'discord.js';
 import {
 	Time,

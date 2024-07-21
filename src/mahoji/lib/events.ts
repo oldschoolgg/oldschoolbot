@@ -3,7 +3,6 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { bulkUpdateCommands } from '@oldschoolgg/toolkit';
 import { syncBlacklists } from '../../lib/blacklists';
 import { DISABLED_COMMANDS, globalConfig } from '../../lib/constants';
-import { initCrons } from '../../lib/crons';
 import { syncDoubleLoot } from '../../lib/doubleLoot';
 
 import { initTickers } from '../../lib/tickers';
@@ -56,7 +55,6 @@ export async function onStartup() {
 
 	await syncDoubleLoot();
 	runTimedLoggedFn('Syncing prices', syncCustomPrices);
-	initCrons();
 	initTickers();
 
 	syncSlayerMaskLeaderboardCache();
