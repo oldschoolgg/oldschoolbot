@@ -182,22 +182,10 @@ export async function farmingPlantCommand({
 	const treeStr = !planted ? null : treeCheck(planted, currentWoodcuttingLevel, GP, patchType.lastQuantity);
 	if (treeStr) return treeStr;
 
-	let [numOfPatches] = calcNumOfPatches(plant, user, questPoints);
+	const [numOfPatches] = calcNumOfPatches(plant, user, questPoints);
 
 	if (numOfPatches === 0) {
 		return 'There are no available patches to you.';
-	}
-
-	if (user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
-		switch (plant.seedType) {
-			case 'allotment':
-				numOfPatches += 2;
-				break;
-			case 'herb':
-			case 'flower':
-				numOfPatches += 1;
-				break;
-		}
 	}
 
 	const maxTripLength = calcMaxTripLength(user, 'Farming');

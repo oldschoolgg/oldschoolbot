@@ -1,5 +1,6 @@
 import { randInt } from 'e';
 
+import { QuestID } from '../../minions/data/quests';
 import type { Plant } from '../types';
 import { SkillsEnum } from '../types';
 
@@ -28,6 +29,19 @@ export function calcNumOfPatches(plant: Plant, user: MUser, qp: number): [number
 			break;
 		}
 	}
+
+	if (user.user.finished_quest_ids.includes(QuestID.ChildrenOfTheSun)) {
+		switch (plant.seedType) {
+			case 'allotment':
+				numOfPatches += 2;
+				break;
+			case 'herb':
+			case 'flower':
+				numOfPatches += 1;
+				break;
+		}
+	}
+
 	return [numOfPatches];
 }
 
