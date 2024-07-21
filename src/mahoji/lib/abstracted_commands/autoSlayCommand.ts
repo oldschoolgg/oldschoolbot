@@ -240,7 +240,7 @@ const WildyAutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		monsterID: Monsters.Bloodveld.id,
 		efficientName: Monsters.Bloodveld.name,
 		efficientMonster: Monsters.Bloodveld.id,
-		efficientMethod: 'barrage'
+		efficientMethod: 'none'
 	},
 	{
 		monsterID: Monsters.ChaosDruid.id,
