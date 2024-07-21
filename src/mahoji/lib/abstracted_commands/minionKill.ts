@@ -206,11 +206,9 @@ export async function minionKillCommand(
 		}
 	}
 
-	// Add jelly check as can barrage in wilderness
+	// Add check for burstable monsters in wilderness
 	const jelly = monster.id === Monsters.Jelly.id;
-	const bloodveld = monster.id === Monsters.Bloodveld.id;
-
-	const wildyBurst = (jelly || bloodveld) && isInWilderness;
+	const wildyBurst = (jelly) && isInWilderness;
 
 	// determines what pvm methods the user can use
 	const myCBOpts = user.combatOptions;
@@ -468,7 +466,7 @@ export async function minionKillCommand(
 		return `You need 65 Ranged to use Chinning method. You have ${user.skillLevel(SkillsEnum.Ranged)}`;
 	}
 
-	// Wildy Monster checks
+	// Wildy monster cannon checks
 	if (isInWilderness === true && combatMethods.includes('cannon')) {
 		if (monster.id === Monsters.HillGiant.id || monster.id === Monsters.MossGiant.id) {
 			usingCannon = isInWilderness;
@@ -487,8 +485,9 @@ export async function minionKillCommand(
 		}
 	}
 
+	// Burst/barrage check with wilderness conditions
 	if ((method === 'burst' || method === 'barrage') && !monster?.canBarrage) {
-		if (jelly || bloodveld) {
+		if (jelly) {
 			if (!isInWilderness) {
 				return `${monster.name} can only be barraged or burst in the wilderness.`;
 			}

@@ -243,7 +243,6 @@ export const vannakaMonsters: KillableMonster[] = [
 		healAmountNeeded: 12,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic],
-		canCannon: true,
 		pkActivityRating: 4,
 		pkBaseDeathChance: 6,
 		revsWeaponBoost: true

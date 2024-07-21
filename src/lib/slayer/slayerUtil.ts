@@ -47,18 +47,25 @@ export function determineCombatBoosts(params: DetermineBoostParams) {
 	if(params.cbOpts.includes(CombatOptionsEnum.AlwaysCannon)){
 		boostMethods.includes('cannon') ? null : boostMethods.push('cannon')
 	}
+	if (params.wildyBurst){
+		if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
+			boostMethods.includes('barrage') ? null : boostMethods.push('barrage')
+		}
+		if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst)) {
+			boostMethods.includes('burst') ? null : boostMethods.push('burst')
+		}
+	}
 
 	if (params.monster.canBarrage){
-		if (!params.monster.cannonMulti || params.monster.existsInCatacombs) { // Don't allow bursting in single combat
+		if (!params.monster.cannonMulti || params.monster.existsInCatacombs) { 
+			// Don't allow bursting in single combat
 			console.log(`Check failed here, methods being returned: ${boostMethods}`)
 			return boostMethods;
 		} else {
-			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) &&
-			(params.monster.canBarrage || params.wildyBurst)) {
+			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage)) {
 				boostMethods.includes('barrage') ? null : boostMethods.push('barrage')
 			}
-			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst) &&
-			(params.monster.canBarrage || params.wildyBurst)){
+			if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBurst)) {
 				boostMethods.includes('burst') ? null : boostMethods.push('burst')
 			}
 		}
