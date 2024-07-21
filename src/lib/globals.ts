@@ -14,12 +14,7 @@ function makePrismaClient(): PrismaClient {
 	}
 
 	return new PrismaClient({
-		log: [
-			{
-				emit: 'event',
-				level: 'query'
-			}
-		]
+		log: ['info', 'warn', 'error']
 	});
 }
 global.prisma = global.prisma || makePrismaClient();

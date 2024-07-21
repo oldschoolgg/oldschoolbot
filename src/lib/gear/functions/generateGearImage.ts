@@ -244,7 +244,6 @@ export async function generateGearImage(
 	petID: number | null,
 	titleOverride?: string
 ) {
-	debugLog('Generating gear image', { user_id: user.id });
 	const transmogItem = (gearType && transmogItems.find(t => user.gear[gearType].hasEquipped(t.item.name))) ?? null;
 	const transMogImage = transmogItem === null ? null : await transmogItem.image;
 
@@ -369,7 +368,6 @@ export async function generateAllGearImage(user: MUser) {
 	} = bankImageGenerator.getBgAndSprite(user.user.bankBackground ?? 1, user);
 
 	const hexColor = user.user.bank_bg_hex;
-	debugLog('Generating all-gear image', { user_id: user.id });
 	const gearTemplateImage = await loadImage(gearImages[0].templateCompact);
 	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');

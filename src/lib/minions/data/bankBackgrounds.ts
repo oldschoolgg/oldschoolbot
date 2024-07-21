@@ -476,6 +476,13 @@ const backgroundImages: BankBackground[] = [
 		perkTierNeeded: PerkTier.Four
 	},
 	{
+		id: 508,
+		name: 'Maledict Mortimer',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four
+	},
+	{
 		id: 1000,
 		name: 'Kiddo CustomBG',
 		image: null,

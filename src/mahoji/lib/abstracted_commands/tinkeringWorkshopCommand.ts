@@ -28,12 +28,10 @@ export async function tinkeringWorkshopCommand(user: MUser, material: MaterialTy
 		return `You don't have enough materials to workshop with this material, you need: ${materialCost}.`;
 	}
 	await transactMaterialsFromUser({ user, remove: materialCost });
-	await userStatsUpdate(user.id, oldStats => {
-		return {
-			tworkshop_material_cost_bank: new MaterialBank(oldStats.tworkshop_material_cost_bank as ItemBank).add(
-				materialCost
-			).bank
-		};
+	const stats = await user.fetchStats({ tworkshop_material_cost_bank: true });
+	await userStatsUpdate(user.id, {
+		tworkshop_material_cost_bank: new MaterialBank(stats.tworkshop_material_cost_bank as ItemBank).add(materialCost)
+			.bank
 	});
 
 	const str = `${

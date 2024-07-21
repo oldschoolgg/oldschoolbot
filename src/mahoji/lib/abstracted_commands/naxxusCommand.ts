@@ -242,15 +242,15 @@ export async function naxxusCommand(user: MUser, channelID: string, quantity: nu
 
 	const embed = new EmbedBuilder()
 		.setDescription(
-			`Your minion is now attempting to kill ${quantity}x Naxxus. The trip will take ${formatDuration(duration)}.
-			**Supplies**: ${foodBank.toString()}.
-			${boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}` : ''}`
+			`**Supplies**: ${foodBank.toString()}.
+${boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}` : ''}`
 		)
 		.setImage(
 			'https://cdn.discordapp.com/attachments/920771763976167455/935659463434698783/179ad8548cf42d494bfb473171a1124b.jpg'
 		);
 
 	return {
+		content: `Your minion is now attempting to kill ${quantity}x Naxxus, the trip will take ${formatDuration(duration)}.`,
 		embeds: [embed.data]
 	};
 }

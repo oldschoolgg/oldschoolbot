@@ -1,10 +1,12 @@
 import { miniID, seedShuffle } from '@oldschoolgg/toolkit';
-import { clamp } from 'e';
+import { clamp, shuffleArr } from 'e';
 import { Bank, Items } from 'oldschooljs';
 import { ONE_TRILLION } from './constants';
 import { customItems } from './customItems/util';
+import { keyCrates } from './keyCrates';
 import type { ItemBank } from './types';
 import { resolveItems } from './util';
+import { SkillsArray } from './skilling/types';
 
 declare module 'oldschooljs' {
 	interface Bank {
@@ -21,7 +23,7 @@ for (const id of customItems) {
 	}
 }
 
-const itemsNotRandomized = resolveItems(['Coins', 'Untradeable Mystery Box']);
+const itemsNotRandomized = resolveItems(['Coins', 'Untradeable Mystery Box', ...keyCrates.map(c => c.item.id)]);
 
 export function remapBank(user: MUser, bank: Bank) {
 	if (bank.wasRemapped) return bank;
@@ -31,7 +33,7 @@ export function remapBank(user: MUser, bank: Bank) {
 		const id = Number.parseInt(_id);
 		const newItemID = map[id];
 		if (!newItemID) {
-			throw new Error(`Invalid item ID: ${id}`);
+			throw new Error(`${user.id} tried to have their bank remapped, but item[${id}] has no mapping`);
 		}
 		newBank[newItemID] = clamp(qty, 0, id === 995 ? ONE_TRILLION : 10_000_000);
 	}
@@ -78,13 +80,27 @@ export function buildItemMap(key: string) {
 }
 
 export async function updateUsersRandomizerMap(user: MUser) {
-	const key = user.user.item_map_key ?? miniID(10);
-	if (!user.user.item_map) {
+	const key = miniID(10);
+
+	const sourceSkills = shuffleArr(SkillsArray);
+	const shuffledSkills = seedShuffle(SkillsArray, key);
+
+	const skillMapping: Record<string,string> = {};
+	for (let i= 0; i < sourceSkills.length; i++) {
+		skillMapping[sourceSkills[i]] = shuffledSkills[i];
+	}
+
 		const map = buildItemMap(key);
 		const obj: ItemBank = {};
 		for (const [key, val] of Object.entries(map)) {
 			obj[Number(val)] = Number(key);
 		}
-		await user.update({ item_map: map, item_map_key: key, reverse_item_map: obj });
-	}
+
+		await user.update({ item_map: map, item_map_key: key, reverse_item_map: obj, skill_map: skillMapping });
+
+		const testBank = new Bank();
+for (const item of allItems) {
+	testBank.add(item, 1);
+}
+remapBank(user, testBank);
 }

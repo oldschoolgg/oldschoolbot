@@ -4,7 +4,7 @@ import type { ItemBank, SkillsScore } from 'oldschooljs/dist/meta/types';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { type CommandResponse, PerkTier, toTitleCase } from '@oldschoolgg/toolkit';
+import { type CommandResponse, PerkTier } from '@oldschoolgg/toolkit';
 import type { UserStats, activity_type_enum } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Time, sumArr } from 'e';
@@ -36,7 +36,7 @@ import { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
 import { Cooldowns } from '../Cooldowns';
-import { collectables } from './collectCommand';
+import { collectables } from '../collectables';
 
 interface DataPiece {
 	name: string;
@@ -294,6 +294,9 @@ GROUP BY data->>'collectableID';`);
 
 async function makeResponseForBank(bank: Bank, title: string, content?: string) {
 	sanitizeBank(bank);
+	if (bank.length === 0) {
+		return { content: 'No results.' };
+	}
 	const image = await makeBankImage({
 		title,
 		bank
@@ -382,16 +385,6 @@ ${actualClues.actualCluesBank
 			return `You have received ${Number(
 				stats.silverhawk_boots_passive_xp
 			).toLocaleString()} XP from your Silverhawk boots passive.`;
-		}
-	},
-	{
-		name: 'XP from Lamps',
-		perkTierNeeded: PerkTier.Four,
-		run: async (_, stats) => {
-			const entries = Object.entries(stats.lamped_xp as ItemBank);
-			if (entries.length === 0) return 'No recorded lamp usages.';
-			return `**XP From Lamps**
-${entries.map(i => `**${toTitleCase(i[0])}**: ${toKMB(i[1])}`).join('\n')}`;
 		}
 	},
 	{
@@ -521,14 +514,14 @@ GROUP BY type;`);
 		name: 'Personal Monster KC',
 		perkTierNeeded: PerkTier.Four,
 		run: async (user: MUser) => {
-			const result: { id: number; kc: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'monsterID')::int as id, SUM((data->>'quantity')::int)::int AS kc
+			const result: { id: number; kc: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'mi')::int as id, SUM((data->>'q')::int)::int AS kc
 FROM activity
 WHERE completed = true
 AND user_id = ${BigInt(user.id)}
 AND type = 'MonsterKilling'
 AND data IS NOT NULL
 AND data::text != '{}'
-GROUP BY data->>'monsterID';`);
+GROUP BY data->>'mi';`);
 			const dataPoints: [string, number][] = result
 				.sort((a, b) => b.kc - a.kc)
 				.slice(0, 30)
@@ -1294,20 +1287,24 @@ LIMIT 5;`
 			}[][];
 
 			const response = `**Luckiest CoX Raiders**
-${luckiest
-	.map(
-		i =>
-			`${getUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
+${(
+	await Promise.all(
+		luckiest.map(
+			async i =>
+				`${await getUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
+		)
 	)
-	.join('\n')}
+).join('\n')}
 
 **Unluckiest CoX Raiders**
-${unluckiest
-	.map(
-		i =>
-			`${getUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
+${(
+	await Promise.all(
+		unluckiest.map(
+			async i =>
+				`${await getUsername(i.id)}: ${i.points_per_item.toLocaleString()} points per item / 1 in ${(i.raids_total_kc / i.total_cox_items).toFixed(1)} raids`
+		)
 	)
-	.join('\n')}`;
+).join('\n')}`;
 			return {
 				content: response
 			};

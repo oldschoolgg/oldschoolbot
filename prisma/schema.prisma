@@ -108,8 +108,10 @@ enum bank_sort_method_enum {
 }
 
 model User {
+  skill_map                     Json?   @db.JsonB
   item_map_key                  String?
   item_map                      Json?   @db.Json
+  unlocked_item_map             Json    @default("{}") @db.JsonB
   reverse_item_map              Json?   @db.Json
   leagues_completed_tasks_ids   Int[]
   leagues_completed_tasks_count Int     @default(0)
@@ -143,19 +145,19 @@ model User {
   // Configs/Settings
   minion_defaultCompostToUse CropUpgradeType    @default(compost) @map("minion.defaultCompostToUse")
   auto_farm_filter           AutoFarmFilterEnum @default(AllFarm)
-  favoriteItems              Int[]
-  favorite_alchables         Int[]
-  favorite_food              Int[]
-  favorite_bh_seeds          Int[]
+  favoriteItems              Int[]              @default([])
+  favorite_alchables         Int[]              @default([])
+  favorite_food              Int[]              @default([])
+  favorite_bh_seeds          Int[]              @default([])
   minion_defaultPay          Boolean            @default(false) @map("minion.defaultPay")
   minion_icon                String?            @map("minion.icon")
   minion_name                String?            @map("minion.name")
   bank_bg_hex                String?
   bankBackground             Int                @default(1)
-  attack_style               String[]
-  combat_options             Int[]
+  attack_style               String[]           @default([])
+  combat_options             Int[]              @default([])
   slayer_remember_master     String?            @map("slayer.remember_master")
-  slayer_autoslay_options    Int[]              @map("slayer.autoslay_options")
+  slayer_autoslay_options    Int[]              @default([]) @map("slayer.autoslay_options")
   bank_sort_method           String?            @db.VarChar(16)
   bank_sort_weightings       Json               @default("{}") @db.Json
 
@@ -216,7 +218,7 @@ model User {
   zeal_tokens          Int @default(0)
   slayer_points        Int @default(0) @map("slayer.points")
 
-  completed_ca_task_ids Int[]
+  completed_ca_task_ids Int[] @default([])
 
   // BSO
   nursery                  Json?    @db.Json
@@ -236,8 +238,8 @@ model User {
   materials_owned           Json   @default("{}") @db.Json
   disassembled_items_bank   Json   @default("{}") @db.Json
   researched_materials_bank Json   @default("{}") @db.Json
-  unlocked_blueprints       Int[]
-  disabled_inventions       Int[]
+  unlocked_blueprints       Int[]  @default([])
+  disabled_inventions       Int[]  @default([])
 
   // Migrate
   farmingPatches_herb       Json? @map("farmingPatches.herb") @db.Json
@@ -259,6 +261,8 @@ model User {
   farmingPatches_flower     Json? @map("farmingPatches.flower") @db.Json
   farmingPatches_mushroom   Json? @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna Json? @map("farmingPatches.belladonna") @db.Json
+
+  username String? @db.VarChar(32)
 
   skills_divination                BigInt    @default(0) @map("skills.divination")
   guthixian_cache_boosts_available Int       @default(0)
@@ -440,7 +444,7 @@ model LastManStandingGame {
 model StashUnit {
   stash_id        Int
   user_id         BigInt
-  items_contained Int[]
+  items_contained Int[]   @default([])
   has_built       Boolean
 
   @@unique([stash_id, user_id])
@@ -468,7 +472,7 @@ model UserStats {
   farming_plant_cost_bank   Json @default("{}") @db.Json
   farming_harvest_loot_bank Json @default("{}") @db.Json
 
-  cl_array        Int[]
+  cl_array        Int[] @default([])
   cl_array_length Int   @default(0)
 
   // BSO
@@ -803,4 +807,12 @@ model UserEvent {
   collection_log_name String?
 
   @@map("user_event")
+}
+
+model FullReset {
+  id         String   @id @default(uuid()) @db.Uuid
+  discord_id String
+  date       DateTime @default(now()) @db.Timestamp(6)
+
+  @@map("full_reset")
 }

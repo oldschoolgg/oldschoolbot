@@ -3,7 +3,8 @@ import type { Item } from 'oldschooljs/dist/meta/types';
 
 import type { CommandRunOptions } from '@oldschoolgg/toolkit';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { Emoji, Events } from '../../lib/constants';
+import { clamp } from 'e';
+import { Emoji, Events, ONE_TRILLION } from '../../lib/constants';
 import { cats } from '../../lib/growablePets';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import type { ItemBank } from '../../lib/types';
@@ -95,7 +96,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			);
 		}
 
-		deferInteraction(interaction);
+		await deferInteraction(interaction);
 
 		const bankToSac = parseBank({
 			inputStr: options.items,
@@ -172,20 +173,15 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			totalPrice = Math.floor(totalPrice * 1.3);
 		}
 
-		let hammyCount = 0;
+		const hammyLoot = new Bank();
 		for (let i = 0; i < Math.floor(totalPrice / 51_530_000); i++) {
 			if (roll(140)) {
-				hammyCount++;
+				hammyLoot.add('Hammy');
 			}
-		}
-		if (hammyCount) {
-			await user.addItemsToBank({ items: new Bank().add('Hammy', hammyCount), collectionLog: true });
 		}
 
 		await user.update({
-			sacrificedValue: {
-				increment: totalPrice
-			}
+			sacrificedValue: clamp(Number(user.user.sacrificedValue) + totalPrice, 0, ONE_TRILLION)
 		});
 
 		const newValue = user.user.sacrificedValue;
@@ -209,13 +205,11 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			}
 		}
 
-		if (hammyCount) {
-			str +=
-				'\n\n<:Hamstare:685036648089780234> A small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes.';
-			if (hammyCount > 1) {
-				str += ` **(x${hammyCount})**`;
-			}
+		if (hammyLoot.length > 0) {
+			await user.addItemsToBank({ items: hammyLoot, collectionLog: true });
+			str += `\n\n<:Hamstare:685036648089780234> A small hamster called Hammy has crawled into your bank and is now staring intensely into your eyes, you received: ${hammyLoot}`;
 		}
+
 		if (hasSkipper) {
 			str +=
 				'\n<:skipper:755853421801766912> Skipper has negotiated with the bank and gotten you +30% extra value from your sacrifice.';

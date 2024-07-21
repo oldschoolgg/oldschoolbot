@@ -1,18 +1,18 @@
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { makeComponents } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit';
 import type { TextChannel } from 'discord.js';
-import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector, userMention } from 'discord.js';
+import { ButtonBuilder, ButtonStyle, ComponentType, InteractionCollector } from 'discord.js';
 import { Time, debounce, noOp } from 'e';
 
 import { BLACKLISTED_USERS } from './blacklists';
-import { SILENT_ERROR, globalConfig, usernameCache } from './constants';
+import { SILENT_ERROR, globalConfig } from './constants';
 import type { MakePartyOptions } from './types';
-import { formatDuration, makeComponents } from './util';
+import { getUsername } from './util';
 import { CACHED_ACTIVE_USER_IDS } from './util/cachedUserIDs';
 
 const partyLockCache = new Set<string>();
 if (globalConfig.isProduction) {
 	setInterval(() => {
-		debugLog('Clearing partylockcache');
 		partyLockCache.clear();
 	}, Time.Minute * 20);
 }
@@ -39,32 +39,28 @@ const buttons = [
 export async function setupParty(channel: TextChannel, leaderUser: MUser, options: MakePartyOptions): Promise<MUser[]> {
 	const usersWhoConfirmed: string[] = [options.leader.id];
 	let deleted = false;
-	const massTimeout = options.massTimeout ?? Time.Minute * 2;
 	let massStarted = false;
 
-	function getMessageContent() {
-		const userText =
-			usersWhoConfirmed.length > 25
-				? `${usersWhoConfirmed.length} users have joined`
-				: usersWhoConfirmed.map(u => usernameCache.get(u) ?? userMention(u)).join(', ');
-		const allowedMentions = options.allowedMentions ?? { users: [] };
+	async function getMessageContent() {
 		return {
-			content: `${
-				options.message
-			}\n\n**Users Joined:** ${userText}\n\nThis party will automatically depart in ${formatDuration(
-				massTimeout
-			)}, or if the leader clicks the start (start early) or stop button.`,
+			content: `${options.message}\n\n**Users Joined:** ${(
+				await Promise.all(usersWhoConfirmed.map(u => getUsername(u)))
+			).join(
+				', '
+			)}\n\nThis party will automatically depart in 2 minutes, or if the leader clicks the start (start early) or stop button.`,
 			components: makeComponents(buttons.map(i => i.button)),
-			allowedMentions
+			allowedMentions: {
+				users: []
+			}
 		};
 	}
 
-	const confirmMessage = await channel.send(getMessageContent());
+	const confirmMessage = await channel.send(await getMessageContent());
 
 	// Debounce message edits to prevent spam.
-	const updateUsersIn = debounce(() => {
+	const updateUsersIn = debounce(async () => {
 		if (deleted) return;
-		confirmMessage.edit(getMessageContent());
+		confirmMessage.edit(await getMessageContent());
 	}, 500);
 
 	const removeUser = (userID: string) => {
@@ -80,7 +76,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 		new Promise<MUser[]>(async (resolve, reject) => {
 			let partyCancelled = false;
 			const collector = new InteractionCollector(globalClient, {
-				time: massTimeout,
+				time: Time.Minute * 5,
 				maxUsers: 1,
 				dispose: true,
 				channel,
@@ -141,7 +137,7 @@ export async function setupParty(channel: TextChannel, leaderUser: MUser, option
 					return;
 				}
 
-				resolve(await Promise.all(usersWhoConfirmed.map(mUserFetch)));
+				resolve(await Promise.all(usersWhoConfirmed.map(id => mUserFetch(id))));
 			}
 
 			collector.on('collect', async interaction => {

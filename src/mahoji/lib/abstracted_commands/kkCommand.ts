@@ -1,4 +1,3 @@
-import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Time, increaseNumByPercent, reduceNumByPercent, round } from 'e';
 import { Bank } from 'oldschooljs';
@@ -60,7 +59,7 @@ export async function kkCommand(
 	channelID: string,
 	inputName: string,
 	inputQuantity: number | undefined
-): CommandResponse {
+) {
 	if (interaction) await deferInteraction(interaction);
 	const failureRes = await checkReqs([user], KalphiteKingMonster, 2);
 	if (failureRes) return failureRes;

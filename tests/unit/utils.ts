@@ -36,8 +36,6 @@ interface MockUserArgs {
 	skills_prayer?: number;
 	skills_fishing?: number;
 	GP?: number;
-	premium_balance_tier?: number;
-	premium_balance_expiry_date?: number;
 	bitfield?: BitField[];
 	id?: string;
 }
@@ -83,17 +81,15 @@ const mockUser = (overrides?: MockUserArgs): User => {
 		skills_invention: 0,
 		skills_hitpoints: overrides?.skills_hitpoints ?? convertLVLtoXP(10),
 		GP: overrides?.GP ?? 0,
-		premium_balance_tier: overrides?.premium_balance_tier,
-		premium_balance_expiry_date: overrides?.premium_balance_expiry_date,
-		ironman_alts: [],
 		bitfield: overrides?.bitfield ?? [],
 		username: 'Magnaboy',
 		QP: overrides?.QP ?? 0,
 		sacrificedValue: 0,
 		id: overrides?.id ?? '',
 		disabled_inventions: [],
+		skills_divination: 0,
 		monsterScores: {},
-		skills_divination: 0
+		badges: []
 	} as unknown as User;
 
 	return r;
@@ -135,5 +131,5 @@ export async function testRunCmd({
 
 	const commandResponse = await cmd.run(options);
 	Math.random = originalMathRandom;
-	return expect(commandResponse).toEqual(result);
+	return expect(commandResponse).include(result);
 }

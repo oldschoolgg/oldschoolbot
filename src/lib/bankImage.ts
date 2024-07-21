@@ -4,13 +4,13 @@ import * as path from 'node:path';
 import type { SKRSContext2D } from '@napi-rs/canvas';
 import { Canvas, GlobalFonts, Image, loadImage } from '@napi-rs/canvas';
 import { cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { UserError } from '@oldschoolgg/toolkit';
 import { AttachmentBuilder } from 'discord.js';
 import { chunk, randInt } from 'e';
 import fetch from 'node-fetch';
 import { Bank } from 'oldschooljs';
 import type { Item } from 'oldschooljs/dist/meta/types';
-import { resolveItems, toKMB } from 'oldschooljs/dist/util/util';
+import { getItemOrThrow, resolveItems, toKMB } from 'oldschooljs/dist/util/util';
 
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
@@ -428,17 +428,23 @@ export class BankImageTask {
 		}
 	}
 
-	async fetchAndCacheImage(itemID: number) {
+	async fetchAndCacheImage(itemID: number): Promise<Image> {
 		const imageBuffer = await fetch(`https://static.runelite.net/cache/item/icon/${itemID}.png`).then(result =>
 			result.buffer()
 		);
 
 		await fs.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
 
-		const image = await loadImage(imageBuffer);
+	try {
+			const image = await loadImage(imageBuffer);
 
 		this.itemIconsList.add(itemID);
 		this.itemIconImagesCache.set(itemID, image);
+	 return image;
+	} catch(err) {
+		console.error(`${itemID} image failed to load`);
+		return this.fetchAndCacheImage(getItemOrThrow("Bones").id);
+	}
 	}
 
 	drawBorder(ctx: SKRSContext2D, sprite: IBgSprite, titleLine = true) {
@@ -687,8 +693,6 @@ export class BankImageTask {
 		}
 
 		let items = bank.items();
-
-		debugLog(`Generating a bank image with ${items.length} items`, { title, userID: user?.id });
 
 		// Sorting
 		const favorites = user?.user.favoriteItems;

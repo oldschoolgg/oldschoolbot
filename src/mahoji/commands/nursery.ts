@@ -5,7 +5,7 @@ import { ApplicationCommandOptionType } from 'discord.js';
 import { randArrItem, reduceNumByPercent } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { Events } from '../../lib/constants';
+import { Events, globalConfig } from '../../lib/constants';
 
 import { SkillsEnum } from '../../lib/skilling/types';
 import { type Nursery, type Species, TameSpeciesID, tameSpecies } from '../../lib/tames';
@@ -90,7 +90,7 @@ async function view(user: MUser) {
 		diff += specie.hatchTime / 2;
 	}
 	const timeRemaining = Math.max(0, specie.hatchTime - diff);
-	if (diff >= specie.hatchTime) {
+	if (diff >= specie.hatchTime || !globalConfig.isProduction) {
 		const newNursery: NonNullable<Nursery> = {
 			egg: null,
 			eggsHatched: nursery.eggsHatched + 1,

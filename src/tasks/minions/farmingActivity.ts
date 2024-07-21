@@ -10,6 +10,7 @@ import type { PatchTypes } from '../../lib/minions/farming';
 import type { FarmingContract } from '../../lib/minions/farming/types';
 
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
+import { getFarmingInfoFromUser } from '../../lib/skilling/functions/getFarmingInfo';
 import Farming, { plants } from '../../lib/skilling/skills/farming';
 import { type Plant, SkillsEnum } from '../../lib/skilling/types';
 import type { FarmingActivityTaskOptions, MonsterActivityTaskOptions } from '../../lib/types/minions';
@@ -324,7 +325,7 @@ export const farmingTask: MinionTask = {
 					const uncleanedHerbLoot = new Bank().add(plantToHarvest.outputCrop, cropYield);
 					await user.addItemsToCollectionLog(uncleanedHerbLoot);
 					const cleanedHerbLoot = new Bank().add(plantToHarvest.cleanHerbCrop, cropYield);
-					await userStatsBankUpdate(user.id, 'herbs_cleaned_while_farming_bank', cleanedHerbLoot);
+					await userStatsBankUpdate(user, 'herbs_cleaned_while_farming_bank', cleanedHerbLoot);
 				}
 
 				if (plantToHarvest.name === 'Limpwurt') {
@@ -449,8 +450,8 @@ export const farmingTask: MinionTask = {
 					farmingLevel: currentFarmingLevel
 				});
 				const fakeMonsterTaskOptions: MonsterActivityTaskOptions = {
-					monsterID: Monsters.Hespori.id,
-					quantity: patchType.lastQuantity,
+					mi: Monsters.Hespori.id,
+					q: patchType.lastQuantity,
 					type: 'MonsterKilling',
 					userID: user.id,
 					duration: data.duration,
@@ -617,6 +618,15 @@ export const farmingTask: MinionTask = {
 			});
 
 			const seedPackCount = loot.amount('Seed pack');
+
+			const hasFive = getFarmingInfoFromUser(user.user).patches.spirit.lastQuantity >= 5;
+			if (hasFive && !user.bitfield.includes(BitField.GrewFiveSpiritTrees)) {
+				await user.update({
+					bitfield: {
+						push: BitField.GrewFiveSpiritTrees
+					}
+				});
+			}
 
 			return handleTripFinish(
 				user,

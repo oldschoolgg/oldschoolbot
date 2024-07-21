@@ -11696,7 +11696,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		},
 		buy_limit: 100
 	},
@@ -11709,7 +11710,8 @@ setCustomItem(
 	'Coal',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
 		}
 	},
 	1
@@ -12464,6 +12466,320 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
 			isDiscontinued: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(73_185, 'Frost mask', 'Bronze full helm', {}, 100_000);
+
+setCustomItem(
+	73_186,
+	'Nex plushie',
+	'Coal',
+	{
+		tradeable: false
+	},
+	100_000
+);
+
+setCustomItem(73_187, 'Dunce hat', 'Bronze full helm', {}, 100_000);
+
+setCustomItem(73_188, 'Dunce top', 'Bronze platebody', {}, 100_000);
+
+setCustomItem(73_189, 'Dunce legs', 'Bronze platelegs', {}, 100_000);
+
+setCustomItem(73_190, 'Dunce gloves', 'Bronze gloves', {}, 100_000);
+
+setCustomItem(73_191, 'Dunce shoes', 'Bronze boots', {}, 100_000);
+
+setCustomItem(73_192, 'Chilli chocolate', 'Coal', {}, 100_000);
+
+setCustomItem(73_193, 'Zak plushie', 'Coal', { tradeable: false }, 100_000);
+
+setCustomItem(
+	73_200,
+	'Birthday crate (s6)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
+			isDiscontinued: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_201,
+	'Birthday crate key (s6)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			cantBeSacrificed: true,
+			isDiscontinued: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_202,
+	'Ethereal partyhat',
+	'Red partyhat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	73_203,
+	'Swan hat',
+	'Red partyhat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	73_204,
+	'Swan scarf',
+	'Amulet of strength',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	73_205,
+	'Rose tinted glasses',
+	'Red partyhat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	73_206,
+	'Blabberbeak jumper',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	73_207,
+	'BSO banner',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	73_208,
+	'Blueberry birthday cake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	73_209,
+	'Gambling skillcape',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isDiscontinued: true
+		}
+	},
+	1_000_000
+);
+
+setCustomItem(
+	73_210,
+	'Raw plopper bacon',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	73_211,
+	'Cooked plopper bacon',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	73_212,
+	'Monkey cape',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_213,
+	'BSO flowers',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_214,
+	'Ceremonial top',
+	'Bronze platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_215,
+	'Ceremonial legs',
+	'Bronze platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_216,
+	'Ceremonial boots',
+	'Bronze boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_217,
+	'Ceremonial cape',
+	'Red cape',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_218,
+	'Ceremonial hat',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_219,
+	'Plopper nose',
+	'Bronze full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_220,
+	'Hoppy plushie',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_221,
+	'Dice plushie',
+	'Bronze dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	73_222,
+	'Offhand dice plushie',
+	'Bronze kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	100_000

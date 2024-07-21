@@ -1274,7 +1274,7 @@ export async function toaStartCommand(
 
 				debugStr += ` ${inventionBoosts.chincannon.toaPercentReduction}% speed increase from the Chincannon (${res.messages})`;
 			}
-			await userStatsBankUpdate(u.id, 'toa_cost', realCost);
+			await userStatsBankUpdate(u, 'toa_cost', realCost);
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
 
@@ -1684,22 +1684,4 @@ ${calculateBoostString(user)}
 `;
 
 	return channelID === '1069176960523190292' ? { content: str, ephemeral: true } : str;
-}
-
-export function normalizeTOAUsers(data: TOAOptions) {
-	const _detailedUsers = data.detailedUsers;
-	const detailedUsers = (
-		(Array.isArray(_detailedUsers[0]) ? _detailedUsers : [_detailedUsers]) as [string, number, number[]][][]
-	).map(userArr =>
-		userArr.map(user => ({
-			id: user[0],
-			points: user[1],
-			deaths: user[2]
-		}))
-	);
-	return detailedUsers;
-}
-
-export function anyoneDiedInTOARaid(data: TOAOptions) {
-	return normalizeTOAUsers(data).some(userArr => userArr.some(user => user.deaths.length > 0));
 }

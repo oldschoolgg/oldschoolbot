@@ -48,16 +48,16 @@ export const twTask: MinionTask = {
 		if (data.material === 'junk') xp = Math.floor(xp / 2);
 
 		const xpStr = await user.addXP({ amount: xp, skillName: SkillsEnum.Invention, duration });
-		await userStatsUpdate(user.id, oldStats => {
-			return {
-				tinker_workshop_mats_bank: new MaterialBank(oldStats.tinker_workshop_mats_bank as ItemBank).add(
-					data.material,
-					quantity
-				).bank,
-				tworkshop_xp_gained: {
-					increment: xp
-				}
-			};
+
+		const oldStats = await user.fetchStats({ tinker_workshop_mats_bank: true });
+		await userStatsUpdate(user.id, {
+			tinker_workshop_mats_bank: new MaterialBank(oldStats.tinker_workshop_mats_bank as ItemBank).add(
+				data.material,
+				quantity
+			).bank,
+			tworkshop_xp_gained: {
+				increment: xp
+			}
 		});
 
 		handleTripFinish(

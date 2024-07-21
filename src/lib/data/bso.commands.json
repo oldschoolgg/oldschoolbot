@@ -27,29 +27,31 @@
 		]
 	},
 	{
-		"name": "ask",
-		"desc": "Ask a yes/no question to the bot and receive an answer.",
-		"subOptions": []
-	},
-	{
 		"name": "bank",
 		"desc": "See your minions bank.",
-		"subOptions": []
-	},
-	{
-		"name": "bingo",
-		"desc": "Bingo!",
-		"subOptions": ["make_team", "leave_team", "view", "leaderboard", "create_bingo", "manage_bingo", "items"]
-	},
-	{
-		"name": "bossrecords",
-		"desc": "Shows your OSRS boss records.",
 		"subOptions": []
 	},
 	{
 		"name": "bs",
 		"desc": "Search your minions bank.",
 		"subOptions": []
+	},
+	{
+		"name": "bsominigames",
+		"desc": "Send your minion to do various bso minigames.",
+		"subOptions": [
+			"baxtorian_bathhouses",
+			"monkey_rumble",
+			"ourania_delivery_service",
+			"fishing_contest",
+			"fist_of_guthix",
+			"stealing_creation",
+			"tinkering_workshop",
+			"balthazars_big_bonanza",
+			"divine_dominion",
+			"guthixian_cache",
+			"turaels_trials"
+		]
 	},
 	{
 		"name": "build",
@@ -68,17 +70,6 @@
 		"subOptions": ["view", "claim"]
 	},
 	{
-		"name": "casket",
-		"desc": "Simulate opening lots of clues caskets.",
-		"subOptions": []
-	},
-	{
-		"name": "choose",
-		"desc": "Have the bot make a choice from a list of things.",
-		"examples": ["/choose list:First option, second option, third option"],
-		"subOptions": []
-	},
-	{
 		"name": "chop",
 		"desc": "Chop logs using the Woodcutting skill.",
 		"examples": ["/chop name:Logs"],
@@ -91,15 +82,15 @@
 		"subOptions": []
 	},
 	{
-		"name": "claim",
-		"desc": "Claim prizes, rewards and other things.",
-		"subOptions": []
-	},
-	{
 		"name": "clue",
 		"desc": "Send your minion to complete clue scrolls.",
 		"examples": ["/clue tier:easy"],
 		"subOptions": []
+	},
+	{
+		"name": "completion",
+		"desc": "Completionist tasks.",
+		"subOptions": ["view_all_tasks", "check"]
 	},
 	{
 		"name": "config",
@@ -130,19 +121,19 @@
 		"subOptions": []
 	},
 	{
+		"name": "dg",
+		"desc": "The Dungeoneering skill.",
+		"subOptions": ["start", "stats", "buy"]
+	},
+	{
+		"name": "divination",
+		"desc": "The divination skill.",
+		"subOptions": ["harvest_memories", "portent", "charge_portent", "toggle_portent"]
+	},
+	{
 		"name": "drop",
 		"desc": "Drop items from your bank.",
 		"examples": ["/drop items:10 trout, 5 coal"],
-		"subOptions": []
-	},
-	{
-		"name": "fake",
-		"desc": "Generate fake images of getting loot.",
-		"subOptions": []
-	},
-	{
-		"name": "fakepm",
-		"desc": "Generate fake images of PMs.",
 		"subOptions": []
 	},
 	{
@@ -162,11 +153,6 @@
 		]
 	},
 	{
-		"name": "finish",
-		"desc": "Simulate finishing a CL.",
-		"subOptions": []
-	},
-	{
 		"name": "fish",
 		"desc": "Send your minion to fish fish.",
 		"examples": ["/fish name:Shrimp"],
@@ -179,44 +165,13 @@
 		"subOptions": []
 	},
 	{
-		"name": "gamble",
-		"desc": "Partake in various gambling activities.",
-		"subOptions": ["item", "dice", "duel", "lucky_pick", "slots", "hot_cold", "give_random_item"]
-	},
-	{
-		"name": "ge",
-		"desc": "Exchange grandly with other players on the bot!",
-		"subOptions": ["buy", "sell", "my_listings", "cancel", "stats", "price", "view"]
-	},
-	{
 		"name": "gear",
 		"desc": "Manage, equip, unequip your gear.",
 		"subOptions": ["equip", "unequip", "stats", "pet", "view", "swap", "best_in_slot"]
 	},
 	{
-		"name": "gearpresets",
-		"desc": "Manage, equip, unequip your gear presets.",
-		"subOptions": ["view", "equip", "create", "edit", "delete"]
-	},
-	{
-		"name": "gift",
-		"desc": "Create gifts for other users, or open one you received.",
-		"subOptions": ["open", "list", "create", "send"]
-	},
-	{
-		"name": "giveaway",
-		"desc": "Giveaway items from your ban to other players.",
-		"examples": ["/giveaway items:10 trout, 5 coal time:1h"],
-		"subOptions": ["start", "list"]
-	},
-	{
 		"name": "gp",
 		"desc": "See your current GP balance.",
-		"subOptions": []
-	},
-	{
-		"name": "help",
-		"desc": "Get information and help with the bot.",
 		"subOptions": []
 	},
 	{
@@ -226,9 +181,9 @@
 		"subOptions": []
 	},
 	{
-		"name": "invite",
-		"desc": "Shows the invite link for the bot.",
-		"subOptions": []
+		"name": "invention",
+		"desc": "The invention skill.",
+		"subOptions": ["disassemble", "research", "invent", "tools", "details", "materials", "group"]
 	},
 	{
 		"name": "k",
@@ -237,14 +192,9 @@
 		"subOptions": []
 	},
 	{
-		"name": "kc",
-		"desc": "See your OSRS kc for a monster/boss.",
-		"examples": ["/kc name:General Graardor"],
-		"subOptions": []
-	},
-	{
-		"name": "kill",
-		"desc": "Simulate killing monsters.",
+		"name": "kibble",
+		"desc": "Make kibble from herbs and crops.",
+		"examples": ["/kibble name:Simple kibble quantity:100"],
 		"subOptions": []
 	},
 	{
@@ -269,15 +219,17 @@
 			"skills",
 			"opens",
 			"cl",
-			"item_contract_streak",
 			"leagues",
 			"clues",
-			"movers",
-			"global",
 			"completion",
 			"combat_achievements",
 			"mastery"
 		]
+	},
+	{
+		"name": "leagues",
+		"desc": "Manage your Leagues progress.",
+		"subOptions": ["check", "view_task", "claim", "view_all_tasks"]
 	},
 	{
 		"name": "light",
@@ -286,26 +238,8 @@
 		"subOptions": []
 	},
 	{
-		"name": "loot",
-		"desc": "View your loot tracker data.",
-		"examples": ["/loot view name:Nex"],
-		"subOptions": ["view", "reset"]
-	},
-	{
-		"name": "lvl",
-		"desc": "See a level in your OSRS stats.",
-		"examples": ["/lvl rsn:Magnaboy skill:Mining"],
-		"subOptions": []
-	},
-	{
 		"name": "m",
 		"desc": "See your current minion status and helpful buttons.",
-		"subOptions": []
-	},
-	{
-		"name": "mass",
-		"desc": "Arrange to mass bosses, killing them as a group.",
-		"examples": ["/mass name:General graardor"],
 		"subOptions": []
 	},
 	{
@@ -350,17 +284,13 @@
 		"subOptions": [
 			"buy",
 			"status",
-			"cracker",
 			"stats",
 			"achievementdiary",
-			"bankbg",
-			"lamp",
 			"cancel",
 			"set_icon",
 			"set_name",
 			"level",
 			"kc",
-			"ironman",
 			"charge",
 			"daily",
 			"train",
@@ -379,6 +309,11 @@
 		"subOptions": []
 	},
 	{
+		"name": "nursery",
+		"desc": "Manage your tame nursery.",
+		"subOptions": ["build", "fuel", "add_egg", "check"]
+	},
+	{
 		"name": "offer",
 		"desc": "Offer bones or bird eggs.",
 		"examples": ["/offer name:Dragon bones"],
@@ -390,13 +325,8 @@
 		"subOptions": []
 	},
 	{
-		"name": "patreon",
-		"desc": "Shows the patreon link for the bot, where you can donate.",
-		"subOptions": []
-	},
-	{
-		"name": "pay",
-		"desc": "Send GP to another user.",
+		"name": "paint",
+		"desc": "Paint an item.",
 		"subOptions": []
 	},
 	{
@@ -406,29 +336,14 @@
 		"subOptions": ["view", "wallkit", "build", "destroy", "mount_item", "items"]
 	},
 	{
-		"name": "poll",
-		"desc": "Create a reaction poll.",
-		"subOptions": []
-	},
-	{
-		"name": "price",
-		"desc": "Looks up the price of an item.",
-		"subOptions": []
-	},
-	{
 		"name": "raid",
 		"desc": "Send your minion to do raids - CoX or ToB.",
 		"subOptions": ["cox", "tob", "toa", "doa"]
 	},
 	{
-		"name": "redeem",
-		"desc": "Redeem a code you received.",
-		"subOptions": []
-	},
-	{
-		"name": "roll",
-		"desc": "Roll a random number from 1, up to a limit.",
-		"subOptions": []
+		"name": "randomizer",
+		"desc": "randomizer.",
+		"subOptions": ["info", "test_mapping"]
 	},
 	{
 		"name": "rp",
@@ -457,12 +372,6 @@
 		"subOptions": []
 	},
 	{
-		"name": "simulate",
-		"desc": "Simulate various OSRS related things.",
-		"examples": ["/simulate cox quantity:1"],
-		"subOptions": ["cox", "petroll", "colosseum"]
-	},
-	{
 		"name": "slayer",
 		"desc": "Slayer skill commands",
 		"subOptions": ["autoslay", "new_task", "manage", "rewards", "status"]
@@ -486,6 +395,29 @@
 		"subOptions": []
 	},
 	{
+		"name": "tames",
+		"desc": "Manage your tames.",
+		"examples": ["/tames select 1"],
+		"subOptions": [
+			"status",
+			"list",
+			"set_name",
+			"cancel",
+			"merge",
+			"feed",
+			"kill",
+			"collect",
+			"select",
+			"view",
+			"equip",
+			"unequip",
+			"cast",
+			"activity",
+			"clue",
+			"set_custom_image"
+		]
+	},
+	{
 		"name": "tokkulshop",
 		"desc": "Buy or sell items from the Tzhaar shops.",
 		"examples": ["/tokkulshop buy Obsidian platebody", "/tokkulshop sell Chaos rune 5000"],
@@ -496,17 +428,6 @@
 		"name": "tools",
 		"desc": "Various tools and miscellaneous commands.",
 		"subOptions": ["patron", "user", "stash_units"]
-	},
-	{
-		"name": "trade",
-		"desc": "Allows you to trade items with other players.",
-		"subOptions": []
-	},
-	{
-		"name": "trivia",
-		"desc": "Try to answer a random trivia question!",
-		"examples": ["/trivia", "/trivia duel:@Magnaboy"],
-		"subOptions": []
 	},
 	{
 		"name": "use",

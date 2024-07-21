@@ -1,6 +1,7 @@
 import type { User } from '@prisma/robochimp';
 import { calcWhatPercent, round, sumArr } from 'e';
 
+import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { getTotalCl } from './data/Collections';
 import { calculateMastery } from './mastery';
 import { MUserStats } from './structures/MUserStats';
@@ -23,4 +24,14 @@ export async function roboChimpSyncData(user: MUser) {
 	});
 
 	return newUser;
+}
+
+export async function calculateOwnCLRanking(userID: string) {
+	const clPercentRank = (
+		await prisma.$queryRaw<{ count: number }[]>`SELECT COUNT(*)::int
+FROM public.users
+WHERE cl_percent >= (SELECT cl_percent FROM public.user WHERE id = ${BigInt(userID)});`
+	)[0].count;
+
+	return formatOrdinal(clPercentRank);
 }

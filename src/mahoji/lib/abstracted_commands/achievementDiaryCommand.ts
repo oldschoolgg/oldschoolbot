@@ -3,9 +3,9 @@ import { strikethrough } from 'discord.js';
 import { calcWhatPercent } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import type { Minigame } from '@prisma/client';
 import { diaries, userhasDiaryTier, userhasDiaryTierSync } from '../../../lib/diaries';
 import type { DiaryTier } from '../../../lib/minions/types';
-import type { MinigameScore } from '../../../lib/settings/minigames';
 import { Minigames } from '../../../lib/settings/minigames';
 import { MUserStats } from '../../../lib/structures/MUserStats';
 import { formatSkillRequirements, itemNameFromID, stringMatches } from '../../../lib/util';
@@ -153,19 +153,15 @@ export async function claimAchievementDiaryCommand(user: MUser, diaryName: strin
 	return `You have already completed the entire ${diary.name} diary!`;
 }
 
-export async function calculateAchievementDiaryProgress(
-	user: MUser,
-	stats: MUserStats,
-	minigameScores: MinigameScore[]
-) {
+export function calculateAchievementDiaryProgress(user: MUser, stats: MUserStats, minigameScores: Minigame) {
 	let totalDiaries = 0;
 	let totalCompleted = 0;
 
 	for (const diaryLocation of diaries) {
 		for (const diaryTier of [diaryLocation.easy, diaryLocation.medium, diaryLocation.hard, diaryLocation.elite]) {
-			const has = userhasDiaryTierSync(user, diaryTier, { stats, minigameScores })[0];
+			const { hasDiary } = userhasDiaryTierSync(user, diaryTier, { stats, minigameScores });
 			totalDiaries++;
-			if (has) {
+			if (hasDiary) {
 				totalCompleted++;
 			}
 		}

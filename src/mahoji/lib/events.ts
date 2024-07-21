@@ -1,12 +1,10 @@
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { bulkUpdateCommands } from '@oldschoolgg/toolkit';
-import { syncBlacklists } from '../../lib/blacklists';
 import { DISABLED_COMMANDS, globalConfig } from '../../lib/constants';
 import { syncDoubleLoot } from '../../lib/doubleLoot';
 
 import { initTickers } from '../../lib/tickers';
-import { runTimedLoggedFn } from '../../lib/util';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
 import { syncSlayerMaskLeaderboardCache } from '../../lib/util/slayerMaskLeaderboard';
 import { CUSTOM_PRICE_CACHE } from '../commands/sell';
@@ -40,10 +38,6 @@ export async function onStartup() {
 			DISABLED_COMMANDS.add(command);
 		}
 	}
-
-	// Sync blacklists
-	await syncBlacklists();
-
 	if (!globalConfig.isProduction) {
 		console.log('Syncing commands locally...');
 		await bulkUpdateCommands({
@@ -54,8 +48,6 @@ export async function onStartup() {
 	}
 
 	await syncDoubleLoot();
-	runTimedLoggedFn('Syncing prices', syncCustomPrices);
 	initTickers();
-
 	syncSlayerMaskLeaderboardCache();
 }

@@ -1,12 +1,8 @@
 import { Items } from 'oldschooljs';
 
-import { logError } from './util/logError';
-
 const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
 
 const arrayColumns = [
-	['clientStorage', 'userBlacklist'],
-	['clientStorage', 'guildBlacklist'],
 	['guilds', 'disabledCommands'],
 	['users', 'badges'],
 	['users', 'bitfield'],
@@ -56,9 +52,5 @@ WHERE item_metadata.name IS DISTINCT FROM EXCLUDED.name;
 startupScripts.push({ sql: itemMetaDataQuery });
 
 export async function runStartupScripts() {
-	for (const query of startupScripts) {
-		await prisma
-			.$queryRawUnsafe(query.sql)
-			.catch(err => (query.ignoreErrors ? null : logError(`Startup script failed: ${err.message} ${query.sql}`)));
-	}
+	await prisma.$transaction(startupScripts.map(query => prisma.$queryRawUnsafe(query.sql)));
 }

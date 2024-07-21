@@ -134,11 +134,11 @@ export const dungeoneeringTask: MinionTask = {
 			}
 
 			if (portentXP > 0) {
-				await userStatsUpdate(user.id, () => ({
+				await userStatsUpdate(user.id, {
 					xp_from_dungeon_portent: {
 						increment: portentXP
 					}
-				}));
+				});
 			}
 
 			if (portentResult.didCharge) {

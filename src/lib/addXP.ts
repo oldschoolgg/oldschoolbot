@@ -1,4 +1,4 @@
-import { formatOrdinal, seedShuffle, toTitleCase } from '@oldschoolgg/toolkit';
+import { formatOrdinal, toTitleCase } from '@oldschoolgg/toolkit';
 import { UserEventType } from '@prisma/client';
 import { bold } from 'discord.js';
 import { Time, increaseNumByPercent, noOp, notEmpty, objectValues } from 'e';
@@ -106,8 +106,10 @@ function getEquippedCapes(user: MUser) {
 }
 
 export async function addXP(user: MUser, params: AddXpParams): Promise<string> {
-	// @ts-ignore
-	params.skillName = seedShuffle(SkillsArray, user.user.item_map_key!)[0];
+	params.skillName = (user.user.skill_map as any)[params.skillName as any] as SkillsEnum;
+	if (!params.skillName || !SkillsArray.includes(params.skillName)) {
+		throw new Error(`${user.id} has skill mapping: ${params.skillName}`);
+	}
 	const currentXP = Number(user.user[`skills_${params.skillName}`]);
 	const currentLevel = user.skillLevel(params.skillName);
 	const currentTotalLevel = user.totalLevel;

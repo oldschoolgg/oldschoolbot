@@ -1,6 +1,11 @@
-import { channelIsSendable } from '@oldschoolgg/toolkit';
+import { Stopwatch, channelIsSendable } from '@oldschoolgg/toolkit';
 import { activity_type_enum } from '@prisma/client';
-import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateOptions } from 'discord.js';
+import type {
+	AttachmentBuilder,
+	ButtonBuilder,
+	MessageCollector,
+	MessageCreateOptions
+} from 'discord.js';
 import { Time, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { alching } from '../../mahoji/commands/laps';
@@ -25,7 +30,7 @@ import { calculateZygomiteLoot } from '../skilling/skills/farming/zygomites';
 import { SkillsEnum } from '../skilling/types';
 import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import type { ActivityTaskData } from '../types/minions';
-import { makeComponents, toKMB } from '../util';
+import { makeComponents } from '../util';
 import {
 	makeAutoContractButton,
 	makeAutoSlayButton,
@@ -49,9 +54,16 @@ interface TripFinishEffectOptions {
 	messages: string[];
 	portents?: Awaited<ReturnType<typeof getAllPortentCharges>>;
 }
+
+type TripEffectReturn = {
+	itemsToAddWithCL?: Bank;
+	itemsToRemove?: Bank;
+};
+
 export interface TripFinishEffect {
 	name: string;
-	fn: (options: TripFinishEffectOptions) => unknown;
+	// biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
+	fn: (options: TripFinishEffectOptions) => Promise<TripEffectReturn | undefined | void>;
 }
 
 const tripFinishEffects: TripFinishEffect[] = [
@@ -60,11 +72,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 		fn: async ({ data, messages, user }) => {
 			const imp = await handlePassiveImplings(user, data, messages);
 			if (imp && imp.bank.length > 0) {
-				const many = imp.bank.length > 1;
-				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
-				userStatsBankUpdate(user.id, 'passive_implings_bank', imp.bank);
-				await transactItems({ userID: user.id, itemsToAdd: imp.bank, collectionLog: true });
+				await userStatsBankUpdate(user, 'passive_implings_bank', imp.bank);
+				return {
+					itemsToAddWithCL: imp.bank
+				};
 			}
+			return {};
 		}
 	},
 	{
@@ -76,12 +89,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Random Events',
 		fn: async ({ data, messages, user }) => {
-			await triggerRandomEvent(user, data.type, data.duration, messages);
+			return triggerRandomEvent(user, data.type, data.duration, messages);
 		}
 	},
 	{
 		name: 'Loot Doubling',
-		fn: async ({ data, messages, user, loot }) => {
+		fn: async ({ data, user, loot }) => {
 			const cantBeDoubled = ['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'];
 			if (
 				loot &&
@@ -92,8 +105,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 			) {
 				const otherLoot = new Bank().add(MysteryBoxes.roll());
 				const bonusLoot = new Bank().add(loot).add(otherLoot);
-				messages.push(`<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`);
-				await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
+
+				await Promise.all([userStatsBankUpdate(user.id, 'doubled_loot_bank', bonusLoot)]);
+				return {
+					itemsToAddWithCL: bonusLoot
+				};
 			}
 		}
 	},
@@ -183,9 +199,10 @@ const tripFinishEffects: TripFinishEffect[] = [
 				default: {
 				}
 			}
-			if (bonusLoot.length > 0) {
-				await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
-			}
+
+			return {
+				itemsToAddWithCL: bonusLoot
+			};
 		}
 	},
 	{
@@ -206,21 +223,18 @@ const tripFinishEffects: TripFinishEffect[] = [
 						`Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`
 					);
 				}
-				await user.transactItems({
-					itemsToRemove: alchResult.bankToRemove,
-					itemsToAdd: alchResult.bankToAdd,
-					collectionLog: true
-				});
 
 				messages.push(
-					`<:Voidling:886284972380545034> ${alchResult.maxCasts}x ${
-						alchResult.itemToAlch.name
-					} <:alch:739456571347566623> ${toKMB(alchResult.bankToAdd.amount('Coins'))} GP ${
+					`<:Voidling:886284972380545034> $alchResult.maxCastsx $
+						alchResult.itemToAlch.name<:alch:739456571347566623> $toKMB(alchResult.bankToAdd.amount('Coins'))GP $
 						!voidlingEquipped && !user.hasEquipped('Magic master cape')
 							? '<:bank:739459924693614653>⏬'
-							: ''
-					}${user.hasEquipped('Magic master cape') ? '<:Magicmastercape:1115026341314703492>⏫' : ''}`
+							: ''$user.hasEquipped('Magic master cape') ? '<:Magicmastercape:1115026341314703492>⏫' : ''`
 				);
+				return {
+					itemsToAddWithCL: alchResult.bankToAdd,
+					itemsToRemove: alchResult.bankToRemove
+				};
 			} else if (user.favAlchs(Time.Minute * 30).length !== 0) {
 				messages.push(
 					"Your Voidling didn't alch anything because you either don't have any nature runes or fire runes."
@@ -242,25 +256,25 @@ const tripFinishEffects: TripFinishEffect[] = [
 						data.duration,
 						user.skillLevel(SkillsEnum.Agility)
 					);
-					userStatsUpdate(user.id, () => ({
+					await userStatsUpdate(user.id, {
 						silverhawk_boots_passive_xp: {
 							increment: xpToReceive
 						}
-					}));
+					});
 					await user.addXP({
 						skillName: SkillsEnum.Agility,
 						amount: xpToReceive,
 						multiplier: false,
 						duration: data.duration
 					});
-					messages.push(`+${toKMB(xpToReceive)} Agility XP from Silverhawk boots (${costRes.messages})`);
+					messages.push(`+$toKMB(xpToReceive)Agility XP from Silverhawk boots (${costRes.messages})`);
 				}
 			}
 		}
 	},
 	{
 		name: 'Message in a Bottle',
-		fn: async ({ data, messages, user }) => {
+		fn: async ({ data, messages }) => {
 			const underwaterTrips: activity_type_enum[] = [
 				activity_type_enum.UnderwaterAgilityThieving,
 				activity_type_enum.DepthsOfAtlantis
@@ -269,24 +283,28 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (!roll(500)) return;
 			messages.push('You found a message in a bottle!');
 			const bottleLoot = new Bank().add('Message in a bottle');
-			await user.addItemsToBank({ items: bottleLoot, collectionLog: true });
+			return {
+				itemsToAddWithCL: bottleLoot
+			};
 		}
 	},
 	{
 		name: 'Crate Spawns',
-		fn: async ({ data, messages, user }) => {
-			const crateRes = await handleCrateSpawns(user, data.duration);
-			if (crateRes !== null) {
-				messages.push(crateRes);
+		fn: async ({ data }) => {
+			const crateRes = handleCrateSpawns(data.duration);
+			if (crateRes && crateRes.length > 0) {
+				return {
+					itemsToAddWithCL: crateRes
+				};
 			}
 		}
 	},
 	{
 		name: 'God Favour',
 		fn: async ({ data, user }) => {
-			if (!('monsterID' in data)) return;
+			if (!('mid' in data)) return;
 			if (data.type !== 'MonsterKilling') return;
-			const favourableGod = gods.find(g => g.friendlyMonsters.includes(data.monsterID as number));
+			const favourableGod = gods.find(g => g.friendlyMonsters.includes(data.mi as number));
 			if (!favourableGod) return;
 			const unfavorableGods = gods.filter(g => g.name !== favourableGod.name);
 			await user.addToGodFavour(
@@ -331,10 +349,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 				charges: eggsReceived
 			});
 			if (chargeResult.didCharge) {
-				await user.addItemsToBank({ items: loot, collectionLog: true });
 				messages.push(
-					`You received ${loot}, your Rebirth portent has ${chargeResult.portent.charges_remaining}x charges remaining.`
+					'You received $loot, your Rebirth portent has $chargeResult.portent.charges_remainingx charges remaining.'
 				);
+				return {
+					itemsToAddWithCL: loot
+				};
 			}
 		}
 	},
@@ -350,20 +370,20 @@ const tripFinishEffects: TripFinishEffect[] = [
 
 			if (cost.length > 0 || loot.length > 0) {
 				if (cost.length > 0 && !user.bank.has(cost)) {
-					console.error(`User ${user.id} doesn't ML ${cost.toString()}`);
+					console.error(`User $user.iddoesn't ML ${cost.toString()}`);
 					return;
 				}
-				await user.transactItems({
-					itemsToRemove: cost,
-					itemsToAdd: loot,
-					collectionLog: true
-				});
 
 				if (cost.length > 0 && loot.length === 0) {
 					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost}, but all died`);
 				} else if (loot.length > 0) {
 					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost}; ${loot} survived`);
 				}
+
+				return {
+					itemsToAddWithCL: loot,
+					itemsToRemove: cost
+				};
 			}
 		}
 	}
@@ -392,9 +412,25 @@ export async function handleTripFinish(
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
 
-	// TODO: This is called for *every* trip, even though it's used only for users with the rebirth portent.
 	const portents = await getAllPortentCharges(user);
-	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages, portents });
+	const itemsToAddWithCL = new Bank();
+	const itemsToRemove = new Bank();
+	for (const effect of tripFinishEffects) {
+		const stopwatch = new Stopwatch().start();
+		const res = await effect.fn({ data, user, loot, messages, portents });
+		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
+		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
+		stopwatch.stop();
+		if (stopwatch.duration > 500) {
+			debugLog(`Finished ${effect.name} trip effect for ${user.id} in ${stopwatch}`);
+		}
+	}
+	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
+		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
+		if (itemsToAddWithCL.length > 0) {
+		messages.push(`You received: ${itemsToAddWithCL}`);
+		}
+	}
 
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 
@@ -425,7 +461,7 @@ export async function handleTripFinish(
 	if (casketReceived) components.push(makeOpenCasketButton(casketReceived));
 	if (perkTier > PerkTier.One) {
 		components.push(...buildClueButtons(loot, perkTier, user));
-		const birdHousedetails = await calculateBirdhouseDetails(user.id);
+		const birdHousedetails = await calculateBirdhouseDetails(user);
 		if (birdHousedetails.isReady && !user.bitfield.includes(BitField.DisableBirdhouseRunButton))
 			components.push(makeBirdHouseTripButton());
 

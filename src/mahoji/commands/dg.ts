@@ -79,7 +79,7 @@ async function startCommand(channelID: string, user: MUser, floor: string | unde
 				];
 			}
 
-			if (!hasRequiredLevels(user, floorToDo)) {
+			if (!hasRequiredLevels(user, floorToDo) && floorToDo > 1) {
 				return [
 					true,
 					`you don't have the required stats for this floor, you need: ${formatSkillRequirements(

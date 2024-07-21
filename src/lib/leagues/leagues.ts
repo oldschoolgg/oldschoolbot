@@ -30,7 +30,7 @@ import { hardTasks } from './hardTasks';
 import { type HasFunctionArgs, type Task, betterHerbloreStats } from './leaguesUtils';
 import { masterTasks } from './masterTasks';
 import { mediumTasks } from './mediumTasks';
-import { calculateAllFletchedItems, calculateDartsFletchedFromScratch, totalLampedXP } from './stats';
+import { calculateAllFletchedItems, calculateDartsFletchedFromScratch } from './stats';
 
 export const leagueTasks = [
 	{ name: 'Easy', tasks: easyTasks },
@@ -192,7 +192,6 @@ export async function leaguesCheckUser(userID: string) {
 		actualClues: actualCluesBank,
 		smeltingStats,
 		stashUnits,
-		totalLampedXP: totalLampedXP(userStats),
 		userStats,
 		fletchedItems,
 		fromScratchDarts: calculateDartsFletchedFromScratch({

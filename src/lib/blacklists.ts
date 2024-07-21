@@ -1,4 +1,5 @@
 import { Time } from 'e';
+
 import { mahojiClientSettingsFetch } from './util/clientSettings';
 
 export const BLACKLISTED_USERS = new Set<string>();

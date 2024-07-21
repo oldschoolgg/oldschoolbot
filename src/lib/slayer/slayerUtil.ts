@@ -9,7 +9,6 @@ import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import type { KillableMonster } from '../minions/types';
 
-import { getNewUser } from '../settings/settings';
 import { SkillsEnum } from '../skilling/types';
 import { roll, stringMatches } from '../util';
 import { logError } from '../util/logError';
@@ -231,7 +230,15 @@ export async function assignNewSlayerTask(_user: MUser, master: SlayerMaster) {
 		assignedTask = weightedPick(baseTasks);
 	}
 
-	const newUser = await getNewUser(_user.id);
+	const newUser = await prisma.newUser.upsert({
+		where: {
+			id: _user.id
+		},
+		create: {
+			id: _user.id
+		},
+		update: {}
+	});
 
 	let maxQuantity = assignedTask?.amount[1];
 	if (bossTask && _user.user.slayer_unlocks.includes(SlayerTaskUnlocksEnum.LikeABoss)) {

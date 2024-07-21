@@ -95,7 +95,6 @@ export async function getUserInfo(user: MUser) {
 		...result,
 		everythingString: `${user.badgedUsername}[${user.id}]
 **Current Trip:** ${taskText}
-**Perk Tier:** ${result.perkTier}
 **Blacklisted:** ${result.isBlacklisted}
 **Badges:** ${result.badges.join(' ')}
 **Bitfields:** ${result.bitfields}

@@ -12,7 +12,6 @@ import { allCollectionLogsFlat } from '../../lib/data/Collections';
 import type { GearSetupType } from '../../lib/gear/types';
 import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
-
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
 import { deferInteraction } from '../../lib/util/interactionReply';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
@@ -72,6 +71,12 @@ export const rpCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'networth_sync',
 					description: 'networth_sync.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'redis_sync',
+					description: 'redis sync.',
 					options: []
 				}
 			]

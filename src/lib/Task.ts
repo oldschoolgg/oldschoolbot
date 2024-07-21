@@ -117,6 +117,7 @@ import { modifyBusyCounter } from './busyCounterCache';
 import { globalConfig, minionActivityCache } from './constants';
 import { convertStoredActivityToFlatActivity } from './settings/prisma';
 import { activitySync, minionActivityCacheDelete } from './settings/settings';
+import { logWrapFn } from './util';
 import { logError } from './util/logError';
 
 const tasks: MinionTask[] = [
@@ -242,7 +243,8 @@ export async function processPendingActivities() {
 						lt: new Date()
 					}
 				: undefined
-		}
+		},
+		take: 5
 	});
 
 	if (activities.length > 0) {
@@ -256,20 +258,17 @@ export async function processPendingActivities() {
 				completed: true
 			}
 		});
+		await Promise.all(activities.map(completeActivity));
 	}
-
-	await Promise.all(activities.map(completeActivity));
-	return activities;
 }
 
-export async function syncActivityCache() {
+export const syncActivityCache = logWrapFn('syncActivityCache', async () => {
 	const tasks = await prisma.activity.findMany({ where: { completed: false } });
-
 	minionActivityCache.clear();
 	for (const task of tasks) {
 		activitySync(task);
 	}
-}
+});
 
 const ActivityTaskOptionsSchema = z.object({
 	userID: z.string(),
@@ -281,15 +280,16 @@ const ActivityTaskOptionsSchema = z.object({
 
 async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
-	debugLog(`Attemping to complete activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
 
 	if (_activity.completed) {
-		throw new Error('Tried to complete an already completed task.');
+		logError(new Error('Tried to complete an already completed task.'));
+		return;
 	}
 
 	const task = tasks.find(i => i.type === activity.type)!;
 	if (!task) {
-		throw new Error('Missing task');
+		logError(new Error('Missing task'));
+		return;
 	}
 
 	modifyBusyCounter(activity.userID, 1);
@@ -298,7 +298,7 @@ async function completeActivity(_activity: Activity) {
 			const schema = ActivityTaskOptionsSchema.and(task.dataSchema);
 			const { success } = schema.safeParse(activity);
 			if (!success) {
-				console.error(`Invalid activity data for ${activity.type} task: ${JSON.stringify(activity)}`);
+				logError(new Error(`Invalid activity data for ${activity.type} task: ${JSON.stringify(activity)}`));
 			}
 		}
 		await task.run(activity);
@@ -307,7 +307,6 @@ async function completeActivity(_activity: Activity) {
 	} finally {
 		modifyBusyCounter(activity.userID, -1);
 		minionActivityCacheDelete(activity.userID);
-		debugLog(`Finished completing activity ID[${activity.id}] TYPE[${activity.type}] USER[${activity.userID}]`);
 	}
 }
 

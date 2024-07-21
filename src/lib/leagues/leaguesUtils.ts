@@ -49,7 +49,6 @@ export interface HasFunctionArgs {
 	actualClues: Bank;
 	smeltingStats: Bank;
 	stashUnits: ParsedUnit[];
-	totalLampedXP: number;
 	userStats: UserStats;
 	fletchedItems: Bank;
 	fromScratchDarts: Bank;

@@ -154,7 +154,7 @@ export const puroPuroTask: MinionTask = {
 
 		if (missed.length > 0) str += `\nYou missed out on ${missed} due to your hunter level being too low.`;
 
-		userStatsBankUpdate(user.id, 'puropuro_implings_bank', bank);
+		userStatsBankUpdate(user, 'puropuro_implings_bank', bank);
 
 		handleTripFinish(user, channelID, str, undefined, data, bank);
 	}

@@ -1,5 +1,3 @@
-import { execSync } from 'node:child_process';
-
 import { type CommandRunOptions, bulkUpdateCommands, dateFm } from '@oldschoolgg/toolkit';
 import type { MahojiUserOption } from '@oldschoolgg/toolkit';
 import type { ClientStorage } from '@prisma/client';
@@ -13,7 +11,6 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import { boxFrenzy } from '../../lib/boxFrenzy';
 import {
-	BOT_TYPE,
 	BadgesEnum,
 	BitField,
 	BitFieldData,
@@ -255,11 +252,6 @@ export const adminCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'sync_patreon',
-			description: 'Sync patreon'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
 			name: 'badges',
 			description: 'Manage badges of a user',
 			options: [
@@ -417,11 +409,6 @@ export const adminCommand: OSBMahojiCommand = {
 				}
 			]
 		},
-		// {
-		// 	type: ApplicationCommandOptionType.Subcommand,
-		// 	name: 'wipe_bingo_temp_cls',
-		// 	description: 'Wipe all temp cls of bingo users'
-		// },
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'give_items',
@@ -651,6 +638,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 			process.exit();
 		}
 		if (options.shut_down) {
+			debugLog('SHUTTING DOWN');
 			globalClient.isShuttingDown = true;
 			const timer = Time.Second * 30;
 			await interactionReply(interaction, {
@@ -662,7 +650,7 @@ ${META_CONSTANTS.RENDERED_STR}`
 
 ${META_CONSTANTS.RENDERED_STR}`
 			}).catch(noOp);
-			execSync(`pm2 stop ${BOT_TYPE === 'OSB' ? 'osb' : 'bso'}`);
+			process.exit(0);
 		}
 
 		if (options.sync_blacklist) {

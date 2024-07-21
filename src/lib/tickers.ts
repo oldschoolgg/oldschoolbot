@@ -4,6 +4,7 @@ import { runTameTask } from '../tasks/tames/tameTasks';
 import { processPendingActivities } from './Task';
 import { PeakTier, globalConfig } from './constants';
 
+import { Stopwatch } from '@oldschoolgg/toolkit';
 import { logError } from './util/logError';
 
 export interface Peak {
@@ -15,9 +16,16 @@ export interface Peak {
 /**
  * Tickers should idempotent, and be able to run at any time.
  */
-export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | null; cb: () => Promise<unknown> }[] = [
+export const tickers: {
+	name: string;
+	startupWait?: number;
+	interval: number;
+	timer: NodeJS.Timeout | null;
+	cb: () => Promise<unknown>;
+}[] = [
 	{
 		name: 'minion_activities',
+		startupWait: Time.Second * 10,
 		timer: null,
 		interval: globalConfig.isProduction ? Time.Second * 5 : 500,
 		cb: async () => {
@@ -69,6 +77,7 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 	},
 	{
 		name: 'tame_activities',
+		startupWait: Time.Second * 15,
 		timer: null,
 		interval: Time.Second * 5,
 		cb: async () => {
@@ -83,7 +92,8 @@ export const tickers: { name: string; interval: number; timer: NodeJS.Timeout | 
 				},
 				include: {
 					tame: true
-				}
+				},
+				take: 5
 			});
 
 			await prisma.tameActivity.updateMany({
@@ -110,7 +120,12 @@ export function initTickers() {
 		const fn = async () => {
 			try {
 				if (globalClient.isShuttingDown) return;
+				const stopwatch = new Stopwatch().start();
 				await ticker.cb();
+				stopwatch.stop();
+				if (stopwatch.duration > 100) {
+					debugLog(`Ticker ${ticker.name} took ${stopwatch}`);
+				}
 			} catch (err) {
 				logError(err);
 				debugLog(`${ticker.name} ticker errored`, { type: 'TICKER' });
@@ -118,6 +133,8 @@ export function initTickers() {
 				ticker.timer = setTimeout(fn, ticker.interval);
 			}
 		};
-		fn();
+		setTimeout(() => {
+			fn();
+		}, ticker.startupWait ?? 1);
 	}
 }

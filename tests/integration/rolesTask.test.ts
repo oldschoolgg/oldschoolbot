@@ -20,7 +20,7 @@ describe.skip('Roles Task', async () => {
 		});
 		const ironUser = await createTestUser();
 		await ironUser.update({ minion_ironman: true, sacrificedValue: 1_000_000 });
-		await userStatsBankUpdate(ironUser.id, 'sacrificed_bank', new Bank().add('Coal', 10_000));
+		await userStatsBankUpdate(ironUser, 'sacrificed_bank', new Bank().add('Coal', 10_000));
 
 		// Create minigame scores:
 		const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');

@@ -8,8 +8,6 @@ import type { AbstractCommand } from './inhibitors';
 export async function postCommand({
 	abstractCommand,
 	userID,
-	guildID,
-	channelID,
 	inhibited
 }: {
 	abstractCommand: AbstractCommand;
@@ -25,13 +23,6 @@ export async function postCommand({
 	if (!busyImmuneCommands.includes(abstractCommand.name)) {
 		setTimeout(() => modifyBusyCounter(userID, -1), 1000);
 	}
-	debugLog('Postcommand', {
-		type: 'RUN_COMMAND',
-		command_name: abstractCommand.name,
-		user_id: userID,
-		guild_id: guildID,
-		channel_id: channelID
-	});
 	await prisma.user.update({
 		where: {
 			id: userID

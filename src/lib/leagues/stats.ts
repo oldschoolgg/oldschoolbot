@@ -1,16 +1,9 @@
-import type { UserStats } from '@prisma/client';
-import { sumArr } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { gloriesInventorySize, wealthInventorySize } from '../constants';
 
 import Darts from '../skilling/skills/fletching/fletchables/darts';
-import type { ItemBank } from '../types';
 import { getItem } from '../util/getOSItem';
-
-export function totalLampedXP(userStats: UserStats) {
-	return sumArr(Object.values(userStats.lamped_xp as ItemBank));
-}
 
 export async function calculateAllFletchedItems(user: MUser) {
 	const result = await prisma.$queryRawUnsafe<{ name: string; total: number }[]>(`SELECT data->>'fletchableName' AS name, SUM((data->>'quantity')::int) AS total

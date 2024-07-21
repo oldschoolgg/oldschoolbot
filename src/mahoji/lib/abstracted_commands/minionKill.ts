@@ -1,5 +1,5 @@
 import type { Prisma } from '@prisma/client';
-import { type ChatInputCommandInteraction, bold } from 'discord.js';
+import { type ChatInputCommandInteraction, type InteractionReplyOptions, bold } from 'discord.js';
 import {
 	Time,
 	calcPercentOfNum,
@@ -21,10 +21,10 @@ import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeItem, degradeablePvmBoostItems } from '../../../lib/degradeableItems';
-import { userhasDiaryIDTier } from '../../../lib/diaries';
 import { type GearSetupType, type GearStat, maxOffenceStats } from '../../../lib/gear';
 import { InventionID, canAffordInventionBoost, inventionItemBoost } from '../../../lib/invention/inventions';
 
+import { userhasDiaryTier } from '../../../lib/diaries';
 import type { CombatOptionsEnum } from '../../../lib/minions/data/combatConstants';
 import {
 	SlayerActivityConstants,
@@ -160,7 +160,7 @@ export async function minionKillCommand(
 	method: PvMMethod | undefined,
 	wilderness: boolean | undefined,
 	_solo: boolean | undefined
-) {
+): Promise<string | InteractionReplyOptions> {
 	if (user.minionIsBusy) {
 		return 'Your minion is busy.';
 	}
@@ -261,15 +261,15 @@ export async function minionKillCommand(
 		wildyBurst
 	});
 
-	// Check requirements
 	const [hasReqs, reason] = hasMonsterRequirements(user, monster);
-	if (!hasReqs) return reason ?? "You don't have the requirements to fight this monster";
+	if (!hasReqs) {
+		return typeof reason === 'string' ? reason : "You don't have the requirements to fight this monster";
+	}
 
 	if (monster.diaryRequirement) {
-		const [diaryID, tier] = monster.diaryRequirement;
-		const { hasDiary, diaryGroup } = await userhasDiaryIDTier(user, diaryID, tier);
+		const [hasDiary, _, diaryGroup] = await userhasDiaryTier(user, monster.diaryRequirement);
 		if (!hasDiary) {
-			return `${user.minionName} is missing the ${diaryGroup.name} ${tier} diary to kill ${monster.name}.`;
+			return `${user.minionName} is missing the ${diaryGroup.name} ${monster.diaryRequirement[1]} diary to kill ${monster.name}.`;
 		}
 	}
 
@@ -1008,11 +1008,11 @@ export async function minionKillCommand(
 			return 'This monster is temporarily unable to be killed with a Deathtouched dart.';
 		}
 		usedDart = true;
-		await userStatsUpdate(user.id, () => ({
+		await userStatsUpdate(user.id, {
 			death_touched_darts_used: {
 				increment: 1
 			}
-		}));
+		});
 	}
 	if (monster.name === 'Koschei the deathless') {
 		return 'You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.';
@@ -1055,7 +1055,7 @@ export async function minionKillCommand(
 		} else {
 			antiPKSupplies.add('Super restore(4)', antiPkRestoresNeeded);
 		}
-		if (user.bank.amount('Blighted karambwan') >= antiPkKarambwanNeeded) {
+		if (user.bank.amount('Blighted karambwan') >= antiPkKarambwanNeeded + 20) {
 			antiPKSupplies.add('Blighted karambwan', antiPkKarambwanNeeded);
 		} else {
 			antiPKSupplies.add('Cooked karambwan', antiPkKarambwanNeeded);
@@ -1170,17 +1170,17 @@ export async function minionKillCommand(
 	}
 
 	await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
-		monsterID: monster.id,
+		mi: monster.id,
 		userID: user.id,
 		channelID: channelID.toString(),
-		quantity,
+		q: quantity,
 		iQty: inputQuantity,
 		duration,
 		type: 'MonsterKilling',
 		usingCannon: !usingCannon ? undefined : usingCannon,
 		cannonMulti: !cannonMulti ? undefined : cannonMulti,
 		chinning: !chinning ? undefined : chinning,
-		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage,
+		bob: !burstOrBarrage ? undefined : burstOrBarrage,
 		died: hasDied,
 		pkEncounters: thePkCount,
 		hasWildySupplies,

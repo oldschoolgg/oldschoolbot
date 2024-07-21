@@ -1,5 +1,5 @@
-import { mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { cleanUsername, mentionCommand } from '@oldschoolgg/toolkit';
+import { UserError } from '@oldschoolgg/toolkit';
 import type { Prisma, TameActivity, User, UserStats, xp_gains_skill_enum } from '@prisma/client';
 import { userMention } from 'discord.js';
 import { Time, calcWhatPercent, objectEntries, percentChance, sumArr, uniqueArr } from 'e';
@@ -9,13 +9,13 @@ import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
-import { userStatsUpdate } from '../mahoji/mahojiSettings';
+import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
 import { addXP } from './addXP';
 import type { GodFavourBank, GodName } from './bso/divineDominion';
 import { userIsBusy } from './busyCounterCache';
 import { ClueTiers } from './clues/clueTiers';
 import { type CATier, CombatAchievements } from './combat_achievements/combatAchievements';
-import { type BitField, Emoji, badges, projectiles, usernameCache } from './constants';
+import { type BitField, projectiles } from './constants';
 import { bossCLItems } from './data/Collections';
 import { allPetIDs } from './data/CollectionsExport';
 import { getSimilarItems } from './data/similarItems';
@@ -46,6 +46,7 @@ import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
+import { makeBadgeString } from './util/makeBadgeString';
 import { minionIsBusy } from './util/minionIsBusy';
 import { minionName } from './util/minionUtils';
 import { repairBrokenItemsFromUser } from './util/repairBrokenItems';
@@ -96,6 +97,8 @@ export class MUserClass {
 	skillsAsXP!: Required<Skills>;
 	skillsAsLevels!: Required<Skills>;
 	paintedItems!: Map<number, number>;
+	badgesString!: string;
+	bitfield!: readonly BitField[];
 
 	constructor(user: User) {
 		this.user = user;
@@ -132,6 +135,9 @@ export class MUserClass {
 		this.skillsAsLevels = this.getSkills(true);
 
 		this.paintedItems = this.buildPaintedItems();
+		this.badgesString = makeBadgeString(this.user.badges, this.isIronman);
+
+		this.bitfield = this.user.bitfield as readonly BitField[];
 	}
 
 	countSkillsAtleast99() {
@@ -194,10 +200,6 @@ export class MUserClass {
 		return Number(this.user.GP);
 	}
 
-	get bitfield() {
-		return this.user.bitfield as readonly BitField[];
-	}
-
 	perkTier(): 1 | 2 | 3 | 4 | 5 {
 		return 1;
 	}
@@ -215,23 +217,15 @@ export class MUserClass {
 	}
 
 	get rawUsername() {
-		return globalClient.users.cache.get(this.id)?.username ?? usernameCache.get(this.id) ?? 'Unknown';
+		return cleanUsername(this.user.username ?? globalClient.users.cache.get(this.id)?.username ?? 'Unknown');
 	}
 
 	get usernameOrMention() {
-		return usernameCache.get(this.id) ?? this.mention;
-	}
-
-	get badgeString() {
-		const rawBadges = this.user.badges.map(num => badges[num]);
-		if (this.isIronman) {
-			rawBadges.push(Emoji.Ironman);
-		}
-		return rawBadges.join(' ');
+		return this.rawUsername;
 	}
 
 	get badgedUsername() {
-		return `${this.badgeString} ${this.usernameOrMention}`;
+		return `${this.badgesString} ${this.usernameOrMention}`.trim();
 	}
 
 	toString() {
@@ -290,13 +284,13 @@ export class MUserClass {
 	}
 
 	async calcActualClues() {
-		const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int)::int AS qty
+		const result: { id: number; qty: number }[] = await prisma.$queryRawUnsafe(`SELECT (data->>'ci')::int AS id, SUM((data->>'q')::int)::int AS qty
 FROM activity
 WHERE type = 'ClueCompletion'
 AND user_id = '${this.id}'::bigint
-AND data->>'clueID' IS NOT NULL
+AND data->>'ci' IS NOT NULL
 AND completed = true
-GROUP BY data->>'clueID';`);
+GROUP BY data->>'ci';`);
 		const casketsCompleted = new Bank();
 		for (const res of result) {
 			const item = getItem(res.id);
@@ -733,19 +727,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async fetchStats<T extends Prisma.UserStatsSelect>(selectKeys: T): Promise<SelectedUserStats<T>> {
-		const keysToSelect = Object.keys(selectKeys).length === 0 ? { user_id: true } : selectKeys;
-		const result = await prisma.userStats.upsert({
-			where: {
-				user_id: BigInt(this.id)
-			},
-			create: {
-				user_id: BigInt(this.id)
-			},
-			update: {},
-			select: keysToSelect
-		});
-
-		return result as unknown as SelectedUserStats<T>;
+		return fetchUserStats(this.id, selectKeys);
 	}
 
 	get logName() {
@@ -783,11 +765,6 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 		const rawPaintedItems = this.user.painted_items_tuple;
 		if (!rawPaintedItems) return new Map();
 		return new Map(rawPaintedItems as [number, number][]);
-	}
-
-	async getTames() {
-		const tames = await prisma.tame.findMany({ where: { user_id: this.id } });
-		return tames.map(t => new MTame(t));
 	}
 
 	async getGodFavour(): Promise<GodFavourBank> {
@@ -864,12 +841,32 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 	}
 
 	async fetchTames() {
-		const tames = await prisma.tame.findMany({
+		const rawTames = await prisma.tame.findMany({
 			where: {
 				user_id: this.id
 			}
 		});
-		return tames.map(t => new MTame(t));
+
+		const tames = rawTames.map(t => new MTame(t));
+
+		const totalBank = new Bank();
+		for (const tame of tames) {
+			totalBank.add(tame.totalLoot);
+		}
+		await prisma.userStats.upsert({
+			where: {
+				user_id: BigInt(this.id)
+			},
+			create: {
+				user_id: BigInt(this.id),
+				tame_cl_bank: totalBank.bank
+			},
+			update: {
+				tame_cl_bank: totalBank.bank
+			}
+		});
+
+		return tames;
 	}
 
 	async fetchActiveTame(): Promise<{ tame: null; activity: null } | { activity: TameActivity | null; tame: MTame }> {
@@ -895,12 +892,12 @@ declare global {
 	var GlobalMUserClass: typeof MUserClass;
 }
 
-async function srcMUserFetch(userID: string) {
+async function srcMUserFetch(userID: string, updates: Prisma.UserUpdateInput = {}) {
 	const user = await prisma.user.upsert({
 		create: {
 			id: userID
 		},
-		update: {},
+		update: updates,
 		where: {
 			id: userID
 		}

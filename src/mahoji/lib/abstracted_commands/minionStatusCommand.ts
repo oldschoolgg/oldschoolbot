@@ -4,7 +4,6 @@ import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
 import { ClueTiers } from '../../../lib/clues/clueTiers';
 import { BitField, Emoji, PerkTier, minionBuyButton } from '../../../lib/constants';
 import { getUsersFishingContestDetails } from '../../../lib/fishingContest';
-import { clArrayUpdate } from '../../../lib/handleNewCLItems';
 import { roboChimpSyncData } from '../../../lib/roboChimp';
 
 import { makeComponents } from '../../../lib/util';
@@ -23,13 +22,12 @@ import { canRunAutoContract } from './farmingContractCommand';
 export async function minionStatusCommand(user: MUser): Promise<BaseMessageOptions> {
 	const { minionIsBusy } = user;
 	const [birdhouseDetails, fishingResult, dailyIsReady] = await Promise.all([
-		minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user.id),
+		minionIsBusy ? { isReady: false } : calculateBirdhouseDetails(user),
 		getUsersFishingContestDetails(user),
 		isUsersDailyReady(user)
 	]);
 
-	roboChimpSyncData(user);
-	await clArrayUpdate(user, user.cl);
+	await roboChimpSyncData(user);
 
 	if (!user.user.minion_hasBought) {
 		return {

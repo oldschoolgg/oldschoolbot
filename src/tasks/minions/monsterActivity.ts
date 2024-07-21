@@ -71,11 +71,11 @@ async function bonecrusherEffect(user: MUser, loot: Bank, duration: number, mess
 	}
 
 	totalXP *= 5;
-	userStatsUpdate(user.id, () => ({
+	userStatsUpdate(user.id, {
 		bonecrusher_prayer_xp: {
 			increment: Math.floor(totalXP)
 		}
-	}));
+	});
 	const xpStr = await user.addXP({
 		skillName: SkillsEnum.Prayer,
 		amount: totalXP,
@@ -161,14 +161,14 @@ export const monsterTask: MinionTask = {
 	type: 'MonsterKilling',
 	async run(data: MonsterActivityTaskOptions) {
 		let {
-			monsterID,
+			mi: monsterID,
 			userID,
 			channelID,
-			quantity,
+			q: quantity,
 			duration,
 			usingCannon,
 			cannonMulti,
-			burstOrBarrage,
+			bob: burstOrBarrage,
 			died,
 			pkEncounters,
 			hasWildySupplies,
@@ -562,11 +562,11 @@ export const monsterTask: MinionTask = {
 					}
 				}
 
-				await userStatsUpdate(user.id, u => {
-					return {
-						on_task_monster_scores: new Bank(u.on_task_monster_scores as ItemBank).add(bankToAdd).bank,
-						on_task_with_mask_monster_scores: matchingMaskOrHelm ? newMaskScores.bank : undefined
-					};
+				const currentStats = await user.fetchStats({ on_task_monster_scores: true });
+				await userStatsUpdate(user.id, {
+					on_task_monster_scores: new Bank(currentStats.on_task_monster_scores as ItemBank).add(bankToAdd)
+						.bank,
+					on_task_with_mask_monster_scores: matchingMaskOrHelm ? newMaskScores.bank : undefined
 				});
 			}
 

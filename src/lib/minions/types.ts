@@ -197,21 +197,6 @@ export interface BlowpipeData {
 	dartID: number | null;
 }
 
-export interface MegaDuckLocation {
-	x: number;
-	y: number;
-	placesVisited: string[];
-	usersParticipated: Record<string, number>;
-	steps: [number, number][];
-}
-
-export const defaultMegaDuckLocation: Readonly<MegaDuckLocation> = {
-	x: 1356,
-	y: 209,
-	usersParticipated: {},
-	placesVisited: [],
-	steps: []
-};
 export type Flags = Record<string, string | number>;
 export type FlagMap = Map<string, string | number>;
 export type ClueBank = Record<ClueTier['name'], number>;

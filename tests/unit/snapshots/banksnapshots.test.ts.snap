@@ -4269,7 +4269,6 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "gpCost": 50000000,
-    "ironmanPrice": 5000000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -4279,7 +4278,6 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "gpCost": 50000000,
-    "ironmanPrice": 5000000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -4289,7 +4287,6 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "gpCost": 20000000,
-    "ironmanPrice": 2000000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -4299,7 +4296,6 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "gpCost": 20000000,
-    "ironmanPrice": 2000000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
@@ -4309,12 +4305,20 @@ exports[`BSO Buyables 1`] = `
   },
   {
     "gpCost": 10000000,
-    "ironmanPrice": 1000000,
     "itemCost": Bank {
       "bank": {},
       "frozen": false,
     },
     "name": "Easter crate key (s5)",
+    "outputItems": undefined,
+  },
+  {
+    "gpCost": 12000000,
+    "itemCost": Bank {
+      "bank": {},
+      "frozen": false,
+    },
+    "name": "Birthday crate key (s6)",
     "outputItems": undefined,
   },
   {

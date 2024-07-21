@@ -36,25 +36,20 @@ import {
 import type { ActivityTaskData } from '../../lib/types/minions';
 import { assert, calcPerHour, formatDuration, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
-import { getUsersTamesCollectionLog } from '../../lib/util/getUsersTameCL';
 import { handleCrateSpawns } from '../../lib/util/handleCrateSpawns';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { tameHasBeenFed, tameLastFinishedActivity, tameName } from '../../lib/util/tameUtil';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
+import { collectables } from '../../mahoji/lib/collectables';
 
 export const arbitraryTameActivities: ArbitraryTameActivity[] = [
 	{
 		name: 'Tempoross',
 		id: 'Tempoross',
 		allowedTames: [TameSpeciesID.Monkey],
-		run: async ({ handleFinish, user, duration, tame }) => {
+		run: async ({ handleFinish, user, duration, tame, previousTameCL }) => {
 			const quantity = Math.ceil(duration / (Time.Minute * 5));
-			const loot = getTemporossLoot(
-				quantity,
-				tame.max_gatherer_level + 15,
-				await getUsersTamesCollectionLog(user.id)
-			);
+			const loot = getTemporossLoot(quantity, tame.max_gatherer_level + 15, previousTameCL);
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
 				loot: itemsAdded,
@@ -146,22 +141,23 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 	async function handleFinish(res: { loot: Bank | null; message: string; user: MUser }) {
 		const previousTameCl = new Bank({ ...(tame.max_total_loot as ItemBank) });
 
-		if (res.loot) {
+		const loot = res.loot?.clone() ?? new Bank();
+		const crateRes = handleCrateSpawns(activity.duration);
+		if (crateRes !== null) loot.add(crateRes);
+
+		if (loot) {
 			await prisma.tame.update({
 				where: {
 					id: tame.id
 				},
 				data: {
-					max_total_loot: previousTameCl.clone().add(res.loot.bank).bank,
+					max_total_loot: previousTameCl.clone().add(loot.bank).bank,
 					last_activity_date: new Date()
 				}
 			});
 		}
 		const addRes = await addDurationToTame(tame, activity.duration);
 		if (addRes) res.message += `\n${addRes}`;
-
-		const crateRes = await handleCrateSpawns(user, activity.duration);
-		if (crateRes !== null) res.message += `\n${crateRes}`;
 
 		sendToChannelID(activity.channel_id, {
 			content: res.message,
@@ -173,12 +169,12 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 						.setStyle(ButtonStyle.Secondary)
 				)
 			],
-			files: res.loot
+			files: loot
 				? [
 						new AttachmentBuilder(
 							(
 								await makeBankImage({
-									bank: res.loot,
+									bank: loot,
 									title: `${tameName(tame)}'s Loot`,
 									user: res.user,
 									previousCL: previousTameCl
@@ -365,8 +361,22 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 		}
 		case 'Tempoross':
 		case 'Wintertodt': {
+			const previousTameCL = await prisma.userStats.findFirst({
+				where: {
+					user_id: BigInt(user.id)
+				},
+				select: {
+					tame_cl_bank: true
+				}
+			});
 			const act = arbitraryTameActivities.find(i => i.id === activityData.type)!;
-			await act.run({ handleFinish, user, tame, duration: activity.duration });
+			await act.run({
+				handleFinish,
+				user,
+				tame,
+				duration: activity.duration,
+				previousTameCL: new Bank(previousTameCL?.tame_cl_bank as ItemBank)
+			});
 			break;
 		}
 		default: {

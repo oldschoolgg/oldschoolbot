@@ -71,7 +71,7 @@ import {
 	tameName
 } from '../../lib/util/tameUtil';
 import { arbitraryTameActivities } from '../../tasks/tames/tameTasks';
-import { collectables } from '../lib/abstracted_commands/collectCommand';
+import { collectables } from '../lib/collectables';
 import type { OSBMahojiCommand } from '../lib/util';
 
 const tameImageSize = 96;
@@ -635,7 +635,7 @@ export async function removeRawFood({
 
 	return {
 		success: true,
-		str: `${itemCost} from ${user.usernameOrMention}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
+		str: `${itemCost} from ${user.rawUsername}${foodBoosts.length > 0 ? `(${foodBoosts.join(', ')})` : ''}`,
 		removed: itemCost
 	};
 }
@@ -693,13 +693,13 @@ async function mergeCommand(user: MUser, interaction: ChatInputCommandInteractio
 		)}`;
 	}
 
-	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
+	const tames = await user.fetchTames();
 	const toSelect = tames.find(t => t.id === tameID);
 	if (!toSelect || !tameID) {
 		return "Couldn't find a tame to participate in the ritual. Make sure you selected the correct Tame, by its number or nickname.";
 	}
 
-	if (toSelect.equipped_armor || toSelect.equipped_primary) {
+	if (toSelect.equippedArmor || toSelect.equippedPrimary) {
 		return "The tame you're merging has gear equipped, unequip that gear first.";
 	}
 
@@ -707,7 +707,7 @@ async function mergeCommand(user: MUser, interaction: ChatInputCommandInteractio
 	if (activity) return 'Your tame is busy. Wait for it to be free to do this.';
 	if (!tame || !species) return "You don't have a selected tame. Select your tame first.";
 	if (tame.id === toSelect.id) return `You can't merge ${tameName(tame)} with itself!`;
-	if (species.id !== getTameSpecies(toSelect).id) {
+	if (species.id !== toSelect.species.id) {
 		return "You can't merge two tames from two different species!";
 	}
 
@@ -720,27 +720,25 @@ async function mergeCommand(user: MUser, interaction: ChatInputCommandInteractio
 	}
 
 	const mergeStuff = {
-		totalLoot: new Bank(tame!.max_total_loot as ItemBank).add(toSelect.max_total_loot as ItemBank).bank,
-		fedItems: new Bank(tame!.fed_items as ItemBank).add(toSelect.fed_items as ItemBank).bank,
-		maxCombatLevel: Math.max(tame!.max_combat_level, toSelect.max_combat_level),
-		maxArtisanLevel: Math.max(tame!.max_artisan_level, toSelect.max_artisan_level),
-		maxGathererLevel: Math.max(tame!.max_gatherer_level, toSelect.max_gatherer_level),
-		maxSupportLevel: Math.max(tame!.max_support_level, toSelect.max_support_level),
+		totalLoot: new Bank(tame!.max_total_loot as ItemBank).add(toSelect.totalLoot).bank,
+		fedItems: new Bank(tame!.fed_items as ItemBank).add(toSelect.fedItems).bank,
+		maxCombatLevel: Math.max(tame!.max_combat_level, toSelect.maxCombatLevel),
+		maxArtisanLevel: Math.max(tame!.max_artisan_level, toSelect.maxArtisanLevel),
+		maxGathererLevel: Math.max(tame!.max_gatherer_level, toSelect.maxGathererLevel),
+		maxSupportLevel: Math.max(tame!.max_support_level, toSelect.maxSupportLevel),
 		speciesVariant:
-			tame!.species_variant === shinyVariant || toSelect.species_variant === shinyVariant
+			tame!.species_variant === shinyVariant || toSelect.speciesVariant === shinyVariant
 				? shinyVariant
 				: tame!.species_variant
 	};
 
 	await handleMahojiConfirmation(
 		interaction,
-		`Are you sure you want to merge **${tameName(toSelect)}** (Tame ${toSelect.id}) into **${tameName(
+		`Are you sure you want to merge **${toSelect}** (Tame ${toSelect.id}) into **${tameName(
 			tame!
 		)}** (Tame ${tame!.id})?\n\n${tameName(
 			tame!
-		)} will receive all the items fed and all loot obtained from ${tameName(
-			toSelect
-		)}, and will have its stats match the highest of both tames.\n\n**THIS ACTION CAN NOT BE REVERSED!**`
+		)} will receive all the items fed and all loot obtained from ${toSelect}, and will have its stats match the highest of both tames.\n\n**THIS ACTION CAN NOT BE REVERSED!**`
 	);
 
 	await user.removeItemsFromBank(mergingCost);
@@ -776,7 +774,7 @@ async function mergeCommand(user: MUser, interaction: ChatInputCommandInteractio
 		}
 	});
 
-	return `${tameName(tame)} consumed ${tameName(toSelect)} and all its attributes.`;
+	return `${tameName(tame)} consumed ${toSelect} and all its attributes.`;
 }
 
 async function feedCommand(interaction: ChatInputCommandInteraction, user: MUser, str: string) {
@@ -1357,7 +1355,7 @@ async function spinFlaxCommand(user: MUser, channelID: string) {
 	});
 }
 async function selectCommand(user: MUser, tameID: number) {
-	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
+	const tames = await user.fetchTames();
 	const toSelect = tames.find(t => t.id === tameID);
 	if (!toSelect) {
 		return "Couldn't find a tame to select.";
@@ -1369,7 +1367,7 @@ async function selectCommand(user: MUser, tameID: number) {
 	await user.update({
 		selected_tame: toSelect.id
 	});
-	return `You selected your ${tameName(toSelect)}.`;
+	return `You selected your ${toSelect}.`;
 }
 
 async function viewCommand(user: MUser, tameID: number): CommandResponse {

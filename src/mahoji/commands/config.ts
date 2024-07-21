@@ -8,7 +8,7 @@ import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { BitField, secretItems } from '../../lib/constants';
+import { BitField } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { Inventions } from '../../lib/invention/inventions';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
@@ -128,7 +128,7 @@ async function favFoodConfig(
 	const currentItems = `Your current favorite food is: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
-	if (!item || secretItems.includes(item.id)) return currentItems;
+	if (!item || item.customItemData?.isSecret) return currentItems;
 	if (!Eatables.some(i => i.id === item.id || i.raw === item.id)) return "That's not a valid item.";
 
 	if (itemToAdd) {
@@ -157,9 +157,9 @@ async function favItemConfig(
 	const currentFavorites = user.user.favoriteItems;
 	const item = getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite items are: ${
-		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ').slice(0, 1500)
 	}.`;
-	if (!item || secretItems.includes(item.id)) return currentItems;
+	if (!item || item.customItemData?.isSecret) return currentItems;
 	if (itemToAdd) {
 		const limit = (user.perkTier() + 1) * 100;
 		if (currentFavorites.length >= limit) {

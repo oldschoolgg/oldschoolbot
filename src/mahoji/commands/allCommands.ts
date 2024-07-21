@@ -31,6 +31,7 @@ import { minionKCommand } from './k';
 import { kibbleCommand } from './kibble';
 import { lapsCommand } from './laps';
 import { leaderboardCommand } from './leaderboard';
+import { bsoLeaguesCommand } from './leagues';
 import { lightCommand } from './light';
 import { mCommand } from './m';
 import { mineCommand } from './mine';
@@ -115,6 +116,7 @@ export const allCommands: OSBMahojiCommand[] = [
 	nurseryCommand,
 	paintCommand,
 	tamesCommand,
+	bsoLeaguesCommand,
 	randomizerCommand
 ];
 

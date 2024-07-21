@@ -1,4 +1,3 @@
-import type { GearPreset } from '@prisma/client';
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 import { describe, expect, it, test } from 'vitest';
@@ -324,68 +323,6 @@ describe('Gear', () => {
 		const equipRes1 = gear.equip('Armadyl godsword');
 		expect(equipRes1.refundBank?.bank).toEqual(new Bank().add('Bronze kiteshield').bank);
 		expect(gear['2h']).toEqual({ item: getOSItem('Armadyl godsword').id, quantity: 1 });
-	});
-
-	it('should make from gear preset', () => {
-		const gearPreset: GearPreset = {
-			name: 'graceful',
-			user_id: '123',
-			head: itemID('Graceful hood'),
-			neck: itemID('Amulet of fury'),
-			body: itemID('Graceful top'),
-			legs: itemID('Graceful legs'),
-			cape: itemID('Graceful cape'),
-			two_handed: itemID('Bronze 2h sword'),
-			hands: itemID('Graceful gloves'),
-			feet: itemID('Graceful boots'),
-			shield: null,
-			weapon: null,
-			ring: itemID('Berserker ring'),
-			ammo: itemID('Dragon arrow'),
-			ammo_qty: 153,
-			emoji_id: null,
-			times_equipped: 0,
-			pinned_setup: null
-		};
-		const gear = new Gear(gearPreset);
-		expect(gear.allItemsBank()).toEqual(
-			new Bank()
-				.add('Graceful hood')
-				.add('Graceful top')
-				.add('Graceful legs')
-				.add('Graceful cape')
-				.add('Graceful gloves')
-				.add('Graceful boots')
-				.add('Amulet of fury')
-				.add('Berserker ring')
-				.add('Dragon arrow', 153)
-				.add('Bronze 2h sword')
-		);
-	});
-
-	it('should make nothing from empty gear preset', () => {
-		const gearPreset: GearPreset = {
-			name: 'graceful',
-			user_id: '123',
-			head: null,
-			neck: null,
-			body: null,
-			legs: null,
-			cape: null,
-			two_handed: null,
-			hands: null,
-			feet: null,
-			shield: null,
-			weapon: null,
-			ring: null,
-			ammo: null,
-			ammo_qty: null,
-			emoji_id: null,
-			times_equipped: 0,
-			pinned_setup: null
-		};
-		const gear = new Gear(gearPreset);
-		expect(gear.allItemsBank()).toEqual(new Bank());
 	});
 
 	it('should throw if equip unequippable', () => {

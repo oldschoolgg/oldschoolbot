@@ -121,7 +121,7 @@ export const pickpocketTask: MinionTask = {
 				const before = loot.clone();
 				loot.multiply(3, notMultiplied);
 				const after = loot.clone();
-				await userStatsBankUpdate(user.id, 'loot_from_rogues_portent', after.difference(before));
+				await userStatsBankUpdate(user, 'loot_from_rogues_portent', after.difference(before));
 			}
 		}
 

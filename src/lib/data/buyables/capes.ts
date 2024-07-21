@@ -4,6 +4,7 @@ import { expertCapesSource } from '../../bso/expertCapes';
 import { diaries, userhasDiaryTier } from '../../diaries';
 import { MAX_QP } from '../../minions/data/quests';
 import { musicCapeRequirements } from '../../musicCape';
+import { Requirements } from '../../structures/Requirements';
 import type { Buyable } from './buyables';
 
 export const capeBuyables: Buyable[] = [
@@ -88,7 +89,7 @@ export const capeBuyables: Buyable[] = [
 		}),
 		gpCost: 99_000,
 		customReq: async user => {
-			const meetsReqs = await musicCapeRequirements.check(user);
+			const meetsReqs = await musicCapeRequirements.check(await Requirements.fetchRequiredData(user));
 			if (!meetsReqs.hasAll) {
 				return [false, `You don't meet the requirements to buy this: \n${meetsReqs.rendered}`];
 			}
@@ -102,12 +103,11 @@ export const capeBuyables: Buyable[] = [
 		}),
 		gpCost: 99_000,
 		customReq: async user => {
-			const meetsReqs = await musicCapeRequirements.check(user);
-			if (!meetsReqs.hasAll) {
-				return [false, `You don't meet the requirements to buy this: \n${meetsReqs.rendered}`];
-			}
 			if (user.QP < MAX_QP) {
 				return [false, "You can't buy this because you haven't completed all the quests!"];
+			}
+			if (!user.cl.has('Music cape')) {
+				return [false, 'You need to own the regular Music cape first.'];
 			}
 			for (const diary of diaries.map(d => d.elite)) {
 				const [has] = await userhasDiaryTier(user, diary);

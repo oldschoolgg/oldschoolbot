@@ -4,8 +4,8 @@ import path from 'node:path';
 import { PerkTier, SimpleTable, dateFm } from '@oldschoolgg/toolkit';
 import type { CommandOptions } from '@oldschoolgg/toolkit';
 import type { Prisma } from '@prisma/client';
-import type { APIButtonComponent, APIInteractionDataResolvedChannel, APIRole } from 'discord.js';
-import { ButtonBuilder, ButtonStyle, ComponentType } from 'discord.js';
+import type { APIInteractionDataResolvedChannel, APIRole } from 'discord.js';
+import { ButtonBuilder, ButtonStyle } from 'discord.js';
 import * as dotenv from 'dotenv';
 import { Time } from 'e';
 import { Items } from 'oldschooljs';
@@ -23,6 +23,7 @@ import '../lib/data/itemAliases';
 export { PerkTier };
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'BSO' as 'BSO' | 'OSB';
+export const BOT_TYPE_LOWERCASE: 'bso' | 'osb' = BOT_TYPE.toLowerCase() as 'bso' | 'osb';
 
 export enum Emoji {
 	MoneyBag = '<:MoneyBag:493286312854683654>',
@@ -458,43 +459,6 @@ export const MAX_LEVEL = 120;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
 export const SILENT_ERROR = 'SILENT_ERROR';
 
-const buttonSource = [
-	{
-		label: 'Wiki',
-		emoji: '802136964027121684',
-		url: 'https://bso-wiki.oldschool.gg/'
-	},
-	{
-		label: 'Patreon',
-		emoji: '679334888792391703',
-		url: 'https://www.patreon.com/oldschoolbot'
-	},
-	{
-		label: 'Support Server',
-		emoji: '778418736180494347',
-		url: 'https://www.discord.gg/ob'
-	},
-	{
-		label: 'Bot Invite',
-		emoji: '778418736180494347',
-		url: 'http://www.oldschool.gg/invite/bso'
-	}
-];
-
-export const informationalButtons = buttonSource.map(i =>
-	new ButtonBuilder().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle(ButtonStyle.Link)
-);
-export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
-	type: ComponentType.Button,
-	label: i.label,
-	emoji: { id: i.emoji },
-	style: ButtonStyle.Link,
-	url: i.url
-}));
-
-export const PATRON_ONLY_GEAR_SETUP =
-	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
-
 export const projectiles = {
 	arrow: {
 		items: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow', 'Hellfire arrow']),
@@ -596,8 +560,6 @@ export const TWITCHERS_GLOVES = ['egg', 'ring', 'seed', 'clue'] as const;
 export type TwitcherGloves = (typeof TWITCHERS_GLOVES)[number];
 
 export const busyImmuneCommands = ['admin', 'rp'];
-export const usernameCache = new Map<string, string>();
-export const badgesCache = new Map<string, string>();
 export const minionBuyButton = new ButtonBuilder()
 	.setCustomId('BUY_MINION')
 	.setLabel('Buy Minion')
@@ -625,8 +587,6 @@ export const chompyHats = [
 	[getItemOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
 	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
-
-export const secretItems: number[] = resolveItems([]);
 
 export const toaPurpleItems = resolveItems([
 	"Tumeken's guardian",
@@ -669,7 +629,8 @@ const globalConfigSchema = z.object({
 	isProduction: z.coerce.boolean(),
 	mainServerID: z.string(),
 	generalChannelID: z.string(),
-	announcementsChannelID: z.string()
+	announcementsChannelID: z.string(),
+	timeZone: z.literal('UTC')
 });
 dotenv.config({ path: path.resolve(process.cwd(), process.env.TEST ? '.env.test' : '.env') });
 
@@ -679,16 +640,19 @@ if (!process.env.BOT_TOKEN && !process.env.CI) {
 	);
 }
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 export const globalConfig = globalConfigSchema.parse({
 	clientID: process.env.CLIENT_ID,
-	geAdminChannelID: process.env.GE_ADMIN_CHANNEL_ID,
+	geAdminChannelID: isProduction ? '830145040495411210' : '1042760447830536212',
 	redisPort: process.env.REDIS_PORT,
 	botToken: process.env.BOT_TOKEN,
 	isCI: process.env.CI,
 	isProduction: process.env.NODE_ENV === 'production',
 	mainServerID: process.env.MAIN_SERVER,
 	generalChannelID: process.env.GENERAL_CHANNEL,
-	announcementsChannelID: process.env.ANNOUNCEMENTS_CHANNEL
+	announcementsChannelID: process.env.ANNOUNCEMENTS_CHANNEL,
+	timeZone: process.env.TZ
 });
 
 export const ONE_TRILLION = 1_000_000_000_000;
@@ -770,3 +734,9 @@ export const winterTodtPointsTable = new SimpleTable<number>()
 	.add(750)
 	.add(780)
 	.add(850);
+
+if (!process.env.TEST) {
+	console.log(
+		`Starting... Git[${gitHash}] ClientID[${globalConfig.clientID}] Production[${globalConfig.isProduction}]`
+	);
+}

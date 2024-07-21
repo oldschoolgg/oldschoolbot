@@ -25,7 +25,7 @@ const possibleFound = new LootTable()
 export const clueTask: MinionTask = {
 	type: 'ClueCompletion',
 	async run(data: ClueActivityTaskOptions) {
-		const { clueID, userID, channelID, quantity, duration } = data;
+		const { ci: clueID, userID, channelID, q: quantity, duration } = data;
 		const clueTier = ClueTiers.find(mon => mon.id === clueID)!;
 		const user = await mUserFetch(userID);
 

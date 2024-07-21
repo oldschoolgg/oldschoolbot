@@ -1,5 +1,5 @@
 import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
-import { UserError } from '@oldschoolgg/toolkit/dist/lib/UserError';
+import { UserError } from '@oldschoolgg/toolkit';
 import { type BaseMessageOptions, type Message, bold, time } from 'discord.js';
 import { Time, isFunction } from 'e';
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
@@ -181,7 +181,6 @@ export async function onMessage(msg: Message) {
 				guild_id: msg.guildId ? BigInt(msg.guildId) : undefined,
 				command_name: command.name,
 				args: msgContentWithoutCommand,
-				flags: undefined,
 				inhibited: false,
 				is_mention_command: true
 			}

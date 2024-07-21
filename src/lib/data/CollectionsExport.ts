@@ -6,9 +6,9 @@ import { resolveItems } from 'oldschooljs/dist/util/util';
 import { growablePets } from '../growablePets';
 import { stoneSpirits } from '../minions/data/stoneSpirits';
 import type { MinigameScore } from '../settings/minigames';
+import type { MUserStats } from '../structures/MUserStats';
 import getOSItem from '../util/getOSItem';
 import { assert } from '../util/logError';
-import type { UserStatsDataNeededForCL } from './Collections';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -40,7 +40,7 @@ export interface IKCActivity {
 	[key: string]:
 		| string
 		| string[]
-		| ((user: MUser, minigameScores: MinigameScore[], stats: UserStatsDataNeededForCL) => Promise<number>);
+		| ((user: MUser, minigameScores: MinigameScore[], stats: MUserStats) => Promise<number>);
 }
 
 export type FormatProgressFunction = ({
@@ -52,7 +52,7 @@ export type FormatProgressFunction = ({
 	user: MUser;
 	getKC: (id: number) => Promise<number>;
 	minigames: Minigame;
-	stats: UserStatsDataNeededForCL;
+	stats: MUserStats;
 }) => string | string[] | Promise<string | string[]>;
 
 interface ICollectionActivity {
@@ -1716,7 +1716,8 @@ export const allPetsCL = resolveItems([
 	"Lil'viathan",
 	'Butch',
 	'Baron',
-	'Scurry'
+	'Scurry',
+	'Smol heredit'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',

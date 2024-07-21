@@ -1,15 +1,14 @@
-import { PerkTier, toTitleCase } from '@oldschoolgg/toolkit';
+import { toTitleCase } from '@oldschoolgg/toolkit';
 import type { CommandResponse } from '@oldschoolgg/toolkit';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { Bank } from 'oldschooljs';
 
-import { MAX_INT_JAVA, PATRON_ONLY_GEAR_SETUP } from '../../../lib/constants';
+import { MAX_INT_JAVA } from '../../../lib/constants';
 import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
 import type { GearSetup, GearSetupType } from '../../../lib/gear/types';
 import { GearStat } from '../../../lib/gear/types';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
-
 import { Gear, defaultGear } from '../../../lib/structures/Gear';
 import { assert, formatSkillRequirements, isValidGearSetup, stringMatches } from '../../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../../lib/util/calculateGearLostOnDeathWilderness';
@@ -86,9 +85,6 @@ export async function gearEquipCommand(args: {
 
 	if (items) {
 		return gearEquipMultiCommand(user, interaction, setup, items);
-	}
-	if (setup === 'other' && user.perkTier() < PerkTier.Four) {
-		return PATRON_ONLY_GEAR_SETUP;
 	}
 
 	if (auto) {
@@ -200,10 +196,6 @@ export async function gearUnequipCommand(
 }
 
 async function autoEquipCommand(user: MUser, gearSetup: GearSetupType, equipmentType: string): CommandResponse {
-	if (gearSetup === 'other' && user.perkTier() < PerkTier.Four) {
-		return PATRON_ONLY_GEAR_SETUP;
-	}
-
 	if (!Object.values(GearStat).includes(equipmentType as any)) {
 		return 'Invalid gear stat.';
 	}
@@ -339,10 +331,6 @@ export async function gearSwapCommand(
 			interaction,
 			'Are you sure you want to swap your gear with a wilderness setup? You can lose items on your wilderness setup!'
 		);
-	}
-
-	if ([first, second].includes('other') && user.perkTier() < PerkTier.Four) {
-		return PATRON_ONLY_GEAR_SETUP;
 	}
 
 	const { gear } = user;
