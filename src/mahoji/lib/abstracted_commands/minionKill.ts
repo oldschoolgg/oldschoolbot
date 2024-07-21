@@ -473,6 +473,10 @@ export async function minionKillCommand(
 		if (monster.id === Monsters.HillGiant.id || monster.id === Monsters.MossGiant.id) {
 			usingCannon = isInWilderness;
 		}
+		if (monster.id === Monsters.Spider.id || Monsters.Scorpion.id){
+			usingCannon = isInWilderness;
+			cannonMulti = isInWilderness;
+		}
 		if (monster.wildySlayerCave) {
 			usingCannon = isInWilderness;
 			cannonMulti = isInWilderness;
