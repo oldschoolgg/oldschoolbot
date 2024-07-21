@@ -540,7 +540,7 @@ function uniqueLootRoll(kc: number, cl: Bank, raidLevel: RaidLevel) {
 	return new Bank().add(item.id);
 }
 
-const nonUniqueTable = [
+export const nonUniqueTable = [
 	['Coins', 1],
 	['Death rune', 20],
 	['Soul rune', 40],

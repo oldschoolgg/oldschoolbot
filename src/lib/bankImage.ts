@@ -276,6 +276,8 @@ export class BankImageTask {
 	public bgSpriteList: Record<string, IBgSprite> = {};
 	public treeImage!: Image;
 	public ready!: Promise<void>;
+	public spriteSheetImage!: Image;
+	public spriteSheetData!: Record<string, [number,number,number,number]>;
 
 	public constructor() {
 		// This tells us simply whether the file exists or not on disk.
@@ -312,6 +314,8 @@ export class BankImageTask {
 			};
 		}
 
+		this.spriteSheetImage = await loadImage(await fs.readFile('./src/lib/resources/images/spritesheet.png'));
+		this.spriteSheetData = JSON.parse(await fs.readFile('./src/lib/resources/images/spritesheet.json', { encoding: 'utf-8' }));
 		await this.run();
 	}
 
@@ -409,6 +413,25 @@ export class BankImageTask {
 			logError(`Failed to load item icon with id: ${itemID}`);
 			return this.getItemImage(1);
 		}
+	}
+
+	drawItemIDSprite(itemID: number, ctx: SKRSContext2D, x: number, y: number) {
+		const [sX, sY, sW, sH] = this.spriteSheetData[itemID]!;
+		ctx.drawImage(
+				this.spriteSheetImage,
+
+				sX,
+				sY,
+
+				sW,
+				sH,
+
+				x,
+				y,
+
+				sW,
+				sH
+		);
 	}
 
 	async fetchAndCacheImage(itemID: number) {
@@ -557,7 +580,7 @@ export class BankImageTask {
 			if (isNewCLItem) {
 				drawImageWithOutline(ctx, itemImage, x, y, itemWidth, itemHeight, '#ac7fff', 1);
 			} else {
-				ctx.drawImage(itemImage, x, y, itemWidth, itemHeight);
+				this.drawItemIDSprite(item.id, ctx, x, y);
 			}
 
 			// Do not draw the item qty if there is 0 of that item in the bank

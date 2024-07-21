@@ -65,6 +65,7 @@
 		"nodemon": "^3.1.4",
 		"prettier": "^3.3.2",
 		"prisma": "^5.17.0",
+		"spritesmith": "^3.4.1",
 		"tsx": "^4.16.2",
 		"typescript": "^5.5.3",
 		"vitest": "^2.0.3"
