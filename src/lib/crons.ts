@@ -1,6 +1,7 @@
 import { schedule } from 'node-cron';
 
 import { analyticsTick } from './analytics';
+import { cacheGEPrices } from './marketPrices';
 import { cacheCleanup } from './util/cachedUserIDs';
 
 export function initCrons() {
@@ -38,5 +39,10 @@ GROUP BY item_id;`);
 	schedule('0 0 */1 * *', async () => {
 		debugLog('Cache cleanup cronjob starting');
 		cacheCleanup();
+	});
+
+	schedule('35 */48 * * *', async () => {
+		debugLog('cacheGEPrices cronjob starting');
+		await cacheGEPrices();
 	});
 }

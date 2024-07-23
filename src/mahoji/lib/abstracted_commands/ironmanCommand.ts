@@ -4,7 +4,6 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
-import { GrandExchange } from '../../../lib/grandExchange';
 import { roboChimpUserFetch } from '../../../lib/roboChimp';
 
 import { assert } from '../../../lib/util';
@@ -67,8 +66,25 @@ export async function ironmanCommand(
 		return "You can't become an ironman because you have active bingos.";
 	}
 
-	const activeGEListings = await GrandExchange.fetchActiveListings();
-	if ([...activeGEListings.buyListings, ...activeGEListings.sellListings].some(i => i.user_id === user.id)) {
+	const activeListings = await prisma.gEListing.findMany({
+		where: {
+			user_id: user.id,
+			quantity_remaining: {
+				gt: 0
+			},
+			fulfilled_at: null,
+			cancelled_at: null
+		},
+		include: {
+			buyTransactions: true,
+			sellTransactions: true
+		},
+		orderBy: {
+			created_at: 'desc'
+		}
+	});
+	// Return early if no active listings.
+	if (activeListings.length !== 0) {
 		return `You can't become an ironman because you have active Grand Exchange listings. Cancel them and try again: ${mentionCommand(
 			globalClient,
 			'ge',

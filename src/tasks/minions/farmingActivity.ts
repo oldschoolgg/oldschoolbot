@@ -228,7 +228,7 @@ export const farmingTask: MinionTask = {
 					const uncleanedHerbLoot = new Bank().add(plantToHarvest.outputCrop, cropYield);
 					await user.addItemsToCollectionLog(uncleanedHerbLoot);
 					const cleanedHerbLoot = new Bank().add(plantToHarvest.cleanHerbCrop, cropYield);
-					await userStatsBankUpdate(user.id, 'herbs_cleaned_while_farming_bank', cleanedHerbLoot);
+					await userStatsBankUpdate(user, 'herbs_cleaned_while_farming_bank', cleanedHerbLoot);
 				}
 
 				if (plantToHarvest.name === 'Limpwurt') {
@@ -437,13 +437,13 @@ export const farmingTask: MinionTask = {
 				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
 			}
 
-			updateBankSetting('farming_loot_bank', loot);
+			await updateBankSetting('farming_loot_bank', loot);
 			await transactItems({
 				userID: user.id,
 				collectionLog: true,
 				itemsToAdd: loot
 			});
-			await userStatsBankUpdate(user.id, 'farming_harvest_loot_bank', loot);
+			await userStatsBankUpdate(user, 'farming_harvest_loot_bank', loot);
 			if (pid) {
 				await prisma.farmedCrop.update({
 					where: {

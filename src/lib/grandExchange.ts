@@ -1,19 +1,19 @@
 import type { GEListing, GETransaction } from '@prisma/client';
 import { GEListingType } from '@prisma/client';
 import { ButtonBuilder, ButtonStyle, bold, userMention } from 'discord.js';
-import { Time, calcPercentOfNum, clamp, noOp, sumArr } from 'e';
+import { Time, calcPercentOfNum, clamp, noOp, sumArr, uniqueArr } from 'e';
 import { LRUCache } from 'lru-cache';
 import { Bank } from 'oldschooljs';
 import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
-import { BLACKLISTED_USERS } from './blacklists';
 import { BitField, ONE_TRILLION, PerkTier, globalConfig } from './constants';
 import { marketPricemap } from './marketPrices';
 import type { RobochimpUser } from './roboChimp';
 import { roboChimpUserFetch } from './roboChimp';
 
+import { BLACKLISTED_USERS } from './blacklists';
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
 import { assert, generateGrandExchangeID, getInterval, itemNameFromID, makeComponents, toKMB } from './util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from './util/clientSettings';
@@ -713,29 +713,36 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 	}
 
 	async fetchActiveListings() {
-		const [buyListings, sellListings, clientStorage, currentBankRaw] = await prisma.$transaction([
-			prisma.gEListing.findMany({
-				where: {
-					type: GEListingType.Buy,
-					fulfilled_at: null,
-					cancelled_at: null,
-					user_id: { not: null }
+		const buyListings = await prisma.gEListing.findMany({
+			where: {
+				type: GEListingType.Buy,
+				fulfilled_at: null,
+				cancelled_at: null,
+				user_id: {
+					not: null
+				}
+			},
+			orderBy: [
+				{
+					asking_price_per_item: 'desc'
 				},
-				orderBy: [
-					{
-						asking_price_per_item: 'desc'
-					},
-					{
-						created_at: 'asc'
-					}
-				]
-			}),
+				{
+					created_at: 'asc'
+				}
+			]
+		});
+		const [sellListings, clientStorage, currentBankRaw] = await prisma.$transaction([
 			prisma.gEListing.findMany({
 				where: {
 					type: GEListingType.Sell,
 					fulfilled_at: null,
 					cancelled_at: null,
-					user_id: { not: null }
+					user_id: {
+						not: null
+					},
+					item_id: {
+						in: uniqueArr(buyListings.map(i => i.item_id))
+					}
 				},
 				orderBy: [
 					{
@@ -781,8 +788,57 @@ ${type} ${toKMB(quantity)} ${item.name} for ${toKMB(price)} each, for a total of
 
 	async checkGECanFullFilAllListings() {
 		const shouldHave = new Bank();
-		const { buyListings, sellListings, currentBank } = await this.fetchActiveListings();
-
+		const [buyListings, sellListings, currentBankRaw] = await prisma.$transaction([
+			prisma.gEListing.findMany({
+				where: {
+					type: GEListingType.Buy,
+					fulfilled_at: null,
+					cancelled_at: null,
+					user_id: {
+						not: null
+					}
+				},
+				orderBy: [
+					{
+						asking_price_per_item: 'desc'
+					},
+					{
+						created_at: 'asc'
+					}
+				]
+			}),
+			prisma.gEListing.findMany({
+				where: {
+					type: GEListingType.Sell,
+					fulfilled_at: null,
+					cancelled_at: null,
+					user_id: {
+						not: null
+					}
+				},
+				orderBy: [
+					{
+						asking_price_per_item: 'asc'
+					},
+					{
+						created_at: 'asc'
+					}
+				],
+				// Take the last purchase transaction for each sell listing
+				include: {
+					sellTransactions: {
+						orderBy: {
+							created_at: 'desc'
+						},
+						take: 1
+					}
+				}
+			}),
+			prisma.$queryRawUnsafe<{ bank: ItemBank }[]>(
+				'SELECT json_object_agg(item_id, quantity) as bank FROM ge_bank WHERE quantity != 0;'
+			)
+		]);
+		const currentBank = new Bank(currentBankRaw[0].bank);
 		// How much GP the g.e still has from this listing
 		for (const listing of buyListings) {
 			shouldHave.add('Coins', Number(listing.asking_price_per_item) * listing.quantity_remaining);
@@ -853,20 +909,35 @@ Difference: ${shouldHave.difference(currentBank)}`);
 	private async _tick() {
 		if (!this.ready) return;
 		if (this.locked) return;
-		const { buyListings: _buyListings, sellListings: _sellListings } = await this.fetchActiveListings();
+		const { buyListings, sellListings } = await this.fetchActiveListings();
 
-		// Filter out listings from Blacklisted users:
-		const buyListings = _buyListings.filter(l => !BLACKLISTED_USERS.has(l.user_id!));
-		const sellListings = _sellListings.filter(l => !BLACKLISTED_USERS.has(l.user_id!));
+		const minimumSellPricePerItem = new Map<number, number>();
+		for (const sellListing of sellListings) {
+			const currentPrice = minimumSellPricePerItem.get(sellListing.item_id);
+			if (currentPrice === undefined || sellListing.asking_price_per_item < currentPrice) {
+				minimumSellPricePerItem.set(sellListing.item_id, Number(sellListing.asking_price_per_item));
+			}
+		}
 
 		for (const buyListing of buyListings) {
+			const minPrice = minimumSellPricePerItem.get(buyListing.item_id);
+			if (!buyListing.user_id || minPrice === undefined || buyListing.asking_price_per_item < minPrice) {
+				continue;
+			}
+
+			if (BLACKLISTED_USERS.has(buyListing.user_id)) {
+				continue;
+			}
+
 			// These are all valid, matching sell listings we can match with this buy listing.
 			const matchingSellListings = sellListings.filter(
 				sellListing =>
 					sellListing.item_id === buyListing.item_id &&
 					// "Trades succeed when one player's buy offer is greater than or equal to another player's sell offer."
 					buyListing.asking_price_per_item >= sellListing.asking_price_per_item &&
-					buyListing.user_id !== sellListing.user_id
+					buyListing.user_id !== sellListing.user_id &&
+					sellListing.user_id !== null &&
+					!BLACKLISTED_USERS.has(sellListing.user_id)
 			);
 
 			/**

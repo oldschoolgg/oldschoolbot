@@ -38,14 +38,16 @@ export async function postCommand({
 			commandName: abstractCommand.name,
 			args,
 			isContinue,
-			flags: null,
 			inhibited,
 			continueDeltaMillis
 		});
 		try {
 			await prisma.$transaction([
 				prisma.commandUsage.create({
-					data: commandUsage
+					data: commandUsage,
+					select: {
+						id: true
+					}
 				}),
 				prisma.user.update({
 					where: {
@@ -53,6 +55,9 @@ export async function postCommand({
 					},
 					data: {
 						last_command_date: new Date()
+					},
+					select: {
+						id: true
 					}
 				})
 			]);

@@ -1230,7 +1230,7 @@ export async function toaStartCommand(
 					user: u
 				});
 			}
-			await userStatsBankUpdate(u.id, 'toa_cost', realCost);
+			await userStatsBankUpdate(u, 'toa_cost', realCost);
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
 

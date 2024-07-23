@@ -60,9 +60,6 @@ model Analytic {
 
 model ClientStorage {
   id                           String   @id @db.VarChar(19)
-  userBlacklist                String[] @default([]) @db.VarChar(19)
-  guildBlacklist               String[] @default([]) @db.VarChar(19)
-  commandStats                 Json     @default("{}") @db.Json
   totalCommandsUsed            Int      @default(0)
   prices                       Json     @default("{}") @db.Json
   sold_items_bank              Json     @default("{}") @db.Json
@@ -215,9 +212,7 @@ model Giveaway {
 model Guild {
   id                String   @id @db.VarChar(19)
   disabledCommands  String[] @default([])
-  jmodComments      String?  @db.VarChar(19)
   petchannel        String?  @db.VarChar(19)
-  tweetchannel      String?  @db.VarChar(19)
   staffOnlyChannels String[] @default([]) @db.VarChar(19)
 
   @@map("guilds")
@@ -309,8 +304,6 @@ model User {
   bank                   Json      @default("{}") @db.Json
   collectionLogBank      Json      @default("{}") @db.JsonB
   blowpipe               Json      @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
-  ironman_alts           String[]  @default([])
-  main_account           String?
   slayer_unlocks         Int[]     @default([]) @map("slayer.unlocks")
   slayer_blocked_ids     Int[]     @default([]) @map("slayer.blocked_ids")
   slayer_last_task       Int       @default(0) @map("slayer.last_task")
@@ -585,13 +578,12 @@ model Minigame {
 }
 
 model CommandUsage {
-  id           Int      @id @default(autoincrement())
-  date         DateTime @default(now()) @db.Timestamp(6)
+  id           Int               @id @default(autoincrement())
+  date         DateTime          @default(now()) @db.Timestamp(6)
   user_id      BigInt
-  command_name String   @db.VarChar(32)
-  is_continue  Boolean  @default(false)
-  flags        Json?
-  inhibited    Boolean? @default(false)
+  command_name command_name_enum
+  is_continue  Boolean           @default(false)
+  inhibited    Boolean?          @default(false)
 
   is_mention_command Boolean @default(false)
 
@@ -1150,4 +1142,274 @@ model UserEvent {
   collection_log_name String?
 
   @@map("user_event")
+}
+
+enum command_name_enum {
+  testpotato
+  achievementdiary
+  activities
+  admin
+  aerialfish
+  agilityarena
+  alch
+  amrod
+  ash
+  ask
+  autoequip
+  autoslay
+  bal
+  bank
+  bankbg
+  barbassault
+  bgcolor
+  bingo
+  birdhouse
+  blastfurnace
+  blowpipe
+  bossrecords
+  botleagues
+  botstats
+  bs
+  bso
+  build
+  bury
+  buy
+  ca
+  cancel
+  capegamble
+  cash
+  casket
+  cast
+  castlewars
+  cd
+  championchallenge
+  channel
+  chargeglories
+  chargewealth
+  checkmasses
+  checkpatch
+  chompyhunt
+  choose
+  chop
+  christmas
+  cl
+  claim
+  clbank
+  clue
+  clues
+  cmd
+  collect
+  collectionlog
+  combat
+  combatoptions
+  compostbin
+  config
+  cook
+  cox
+  cracker
+  craft
+  create
+  daily
+  darkaltar
+  data
+  decant
+  defaultfarming
+  defender
+  diary
+  dice
+  dicebank
+  disable
+  dmm
+  driftnet
+  drop
+  drycalc
+  drystreak
+  duel
+  easter
+  economybank
+  emotes
+  enable
+  enchant
+  equip
+  eval
+  fake
+  fakearma
+  fakebandos
+  fakeely
+  fakepm
+  fakesara
+  fakescythe
+  fakezammy
+  faq
+  farm
+  farming
+  farmingcontract
+  favalch
+  favfood
+  favorite
+  favour
+  fightcaves
+  finish
+  fish
+  fishingtrawler
+  fletch
+  gamble
+  gauntlet
+  ge
+  gear
+  gearpresets
+  gearstats
+  gift
+  github
+  giveaway
+  gnomerestaurant
+  gp
+  groupkill
+  halloween
+  hans
+  harvest
+  hcim
+  hcimdeaths
+  help
+  hiscores
+  hunt
+  inbank
+  inferno
+  info
+  invite
+  ironman
+  is
+  itemtrivia
+  jmodcomments
+  jmodtweets
+  k
+  kc
+  kcgains
+  kill
+  lamp
+  lapcount
+  laps
+  lastmanstanding
+  lb
+  leaderboard
+  leagues
+  light
+  lms
+  loot
+  love
+  luckyimp
+  luckypick
+  lvl
+  m
+  magearena
+  magearena2
+  mahoganyhomes
+  mass
+  mclue
+  mine
+  minigames
+  minion
+  minionstats
+  mix
+  monster
+  mostdrops
+  mta
+  mygiveaways
+  mypets
+  news
+  nightmare
+  offer
+  open
+  osrskc
+  patreon
+  pay
+  pestcontrol
+  pet
+  petmessages
+  petrate
+  petroll
+  pickpocket
+  ping
+  players
+  plunder
+  poh
+  poll
+  polls
+  prefix
+  price
+  pvp
+  quest
+  raid
+  randomevents
+  randquote
+  ranks
+  rc
+  redeem
+  reload
+  resetrng
+  revs
+  roguesden
+  roles
+  roll
+  rp
+  runecraft
+  runelite
+  s
+  sacrifice
+  sacrificedbank
+  sacrificegp
+  sacrificelog
+  sawmill
+  seedpack
+  sell
+  sellto
+  sendtoabutton
+  sepulchre
+  server
+  setrsn
+  shutdownlock
+  simulate
+  skillcape
+  slayer
+  slayershop
+  slayertask
+  smelt
+  smith
+  soulwars
+  stats
+  steal
+  streamertweets
+  support
+  tag
+  tearsofguthix
+  tempoross
+  tithefarm
+  tithefarmshop
+  tob
+  tokkulshop
+  tools
+  trade
+  train
+  trek
+  trekshop
+  trickortreat
+  trivia
+  tweets
+  uim
+  unequip
+  unequipall
+  use
+  user
+  virtualstats
+  volcanicmine
+  warriorsguild
+  wiki
+  wintertodt
+  world
+  wt
+  wyson
+  xp
+  xpgains
+  xpto99
+  zalcano
 }

@@ -620,7 +620,7 @@ export async function colosseumCommand(user: MUser, channelID: string) {
 	messages.push(`Removed ${realCost}`);
 
 	await updateBankSetting('colo_cost', realCost);
-	await userStatsBankUpdate(user.id, 'colo_cost', realCost);
+	await userStatsBankUpdate(user, 'colo_cost', realCost);
 	await trackLoot({
 		totalCost: realCost,
 		id: 'colo',

@@ -228,7 +228,7 @@ export async function giantsFoundryStartCommand(
 			}
 		]
 	});
-	await userStatsBankUpdate(user.id, 'gf_cost', totalCost);
+	await userStatsBankUpdate(user, 'gf_cost', totalCost);
 
 	await addSubTaskToActivityTask<GiantsFoundryActivityTaskOptions>({
 		quantity,

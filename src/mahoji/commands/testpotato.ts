@@ -896,14 +896,15 @@ ${droprates.join('\n')}`),
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
 					);
 					if (!monster) return 'Invalid monster';
+					const stats = await user.fetchStats({ monster_scores: true });
 					await userStatsUpdate(
 						user.id,
-						({ monster_scores }) => ({
+						{
 							monster_scores: {
-								...(monster_scores as Record<string, unknown>),
+								...(stats.monster_scores as Record<string, unknown>),
 								[monster.id]: options.setmonsterkc?.kc ?? 1
 							}
-						}),
+						},
 						{}
 					);
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
