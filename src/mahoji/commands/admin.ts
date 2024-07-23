@@ -883,7 +883,7 @@ export const adminCommand: OSBMahojiCommand = {
 
 ${META_CONSTANTS.RENDERED_STR}`
 			}).catch(noOp);
-			process.exit();
+			process.exit(1);
 		}
 		if (options.shut_down) {
 			debugLog('SHUTTING DOWN');
